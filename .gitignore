@@ -1,4 +1,22 @@
-client/node_modules/
-client/coverage/
+# Local secrets and machine configuration
+.env
+.env.*
+!.env.example
+.direnv/
+.DS_Store
+
+# JavaScript dependencies, caches, builds, and browser-test artifacts
+node_modules/
 .pnpm-store/
+client/coverage/
+client/dist/
+client/playwright-report/
+client/test-results/
+
+# Go test and profiling artifacts
 server/coverage/
+*.prof
+*.test
+
+# Local runtime output
+*.log
