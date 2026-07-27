@@ -1,6 +1,6 @@
 # RFC-0002: Economy Kernel
 
-- **Status:** accepted
+- **Status:** implementing
 - **Author:** Marco (initial draft by Claude; re-scoped by Codex)
 - **Created:** 2026-07-27
 - **Revised:** 2026-07-28
@@ -10,7 +10,7 @@
   `design/research/pacing-science.md`
 - **Depends on:** RFC-0001 and Numeric Core Boundary Hardening (implemented)
 - **Supersedes / superseded by:** —
-- **Planning:** — (created when implementation begins)
+- **Planning:** `planning/0002-economy-kernel/`
 
 ## Summary
 
