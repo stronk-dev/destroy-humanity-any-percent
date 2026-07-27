@@ -310,6 +310,22 @@ func TestStateValuesRequireNormalizedRepresentation(t *testing.T) {
 	}
 }
 
+func TestNormalizeCorrectsFloatingScaleCarry(t *testing.T) {
+	accumulator := Zero
+	for range 10 {
+		accumulator = accumulator.Add(FromString("1e87"))
+	}
+	if !accumulator.IsStateValue() || accumulator.mantissa != 1 || accumulator.exponent != 88 {
+		t.Fatalf("ten equal additions were not normalized: %#v", accumulator)
+	}
+
+	for _, value := range []Decimal{New(1e15, 73), New(-1e15, 73)} {
+		if !value.IsStateValue() || math.Abs(value.mantissa) < 1 || math.Abs(value.mantissa) >= 10 {
+			t.Fatalf("floating scale carry was not corrected: %#v", value)
+		}
+	}
+}
+
 func FuzzCanonicalRoundTrip(f *testing.F) {
 	for _, seed := range []string{"0", "1e0", "-4.25e-7", "9.87654321012e123456", "NaN", "Infinity"} {
 		f.Add(seed)

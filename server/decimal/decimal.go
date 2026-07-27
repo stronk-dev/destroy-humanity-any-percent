@@ -74,6 +74,24 @@ func (d Decimal) Normalize() Decimal {
 		return NaN
 	}
 	d.exponent += shift
+	// Log10/Pow10 can disagree by one ULP at exact powers of ten. In that
+	// case the first scaling pass leaves a boundary mantissa of 10 (or,
+	// symmetrically, one just below 1). Correct the carry before validating
+	// the representation and exponent domain.
+	magnitude := math.Abs(d.mantissa)
+	if magnitude >= 10 {
+		d.mantissa /= 10
+		if d.exponent == math.MaxInt64 {
+			return NaN
+		}
+		d.exponent++
+	} else if magnitude < 1 {
+		d.mantissa *= 10
+		if d.exponent == math.MinInt64 {
+			return NaN
+		}
+		d.exponent--
+	}
 	if !validExponent(d.exponent) || math.IsNaN(d.mantissa) || math.IsInf(d.mantissa, 0) {
 		return NaN
 	}

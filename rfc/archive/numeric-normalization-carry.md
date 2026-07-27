@@ -1,13 +1,13 @@
 # Numeric Normalization Carry
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex
 - **Created:** 2026-07-28
 - **Design refs:** `design/research/numeric-core.md`
 - **Depends on:** Numeric Core Boundary Hardening (implemented)
 - **Parent / amends:** `rfc/archive/0001-numeric-core.md`
 - **Supersedes / superseded by:** —
-- **Planning:** `planning/numeric-normalization-carry/`
+- **Planning:** `planning/archive/numeric-normalization-carry/`
 
 ## Summary
 
@@ -51,3 +51,5 @@ None.
 ## Changelog
 
 - 2026-07-28: created and implementation started after RFC-0002 exposed the invariant violation.
+- 2026-07-28: implemented, verified across Go, Node, Chromium, Firefox, and WebKit, documented,
+  and archived.

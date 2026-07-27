@@ -52,6 +52,11 @@ as `12.345e2`, `0.12345e4`, and `1.2345e3` all serialize as `1.2345e3`. It never
 caller-owned `Decimal`, including objects created through the library's unsafe no-normalize
 constructor.
 
+The Go normalizer also performs a final carry/borrow correction after logarithmic scaling.
+IEEE-754 rounding can otherwise leave an exact boundary mantissa such as `10e87`; the correction
+guarantees that valid arithmetic results retain the normalized `[1, 10)` representation required
+by authoritative state.
+
 ## Implemented operations
 
 The Go package at `server/decimal` provides normalization, quantization, parsing and canonical
