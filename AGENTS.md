@@ -7,8 +7,8 @@ You are working on **Cloud Clicker**: a free, browser-based MMO idle game — *"
 | Tier | Dir | Role |
 |---|---|---|
 | Design | `design/` | Intent + research. Where ideas come from. NOT the implementation spec. |
-| **RFC** | `rfc/` | **The authoritative spec. You implement RFCs, nothing else.** |
-| Planning | `planning/NNNN-slug/` | Your `plan.md` + append-only `log.md` per RFC. The long-term job log — write it so a fresh agent can resume from it alone. |
+| **RFC** | `rfc/` | **Active implementation specs. You implement RFCs, nothing else.** Implemented RFCs move to `rfc/archive/`. |
+| Planning | `planning/<rfc-slug>/` | Your `plan.md` + append-only `log.md` per RFC. The long-term job log — write it so a fresh agent can resume from it alone. |
 | Docs | `docs/` | Canonical description of what exists. Update in the same change as any behavior change. |
 
 **Current state:** design complete; RFC-0001 (numeric core) is implemented. The next Phase-0
@@ -17,10 +17,12 @@ system must be drafted and accepted as an RFC before implementation begins; see
 
 ## Your workflow
 
-1. You are assigned an **RFC** (check `rfc/README.md` for status).
-2. Create/resume `planning/NNNN-slug/`: write `plan.md` (task breakdown + acceptance gates from the RFC), append to `log.md` every session.
+1. You are assigned an **active RFC** (check `rfc/README.md` for status).
+2. Create/resume `planning/<rfc-slug>/`: write `plan.md` (task breakdown + acceptance gates from the RFC), append to `log.md` every session.
 3. Implement. Missing spec = `DESIGN-GAP` in the log + propose a draft RFC; never improvise mechanics.
-4. Done = acceptance criteria green + `docs/` updated + RFC status set to `implemented` + planning dir moved to `planning/archive/` — all in the final change.
+4. Done = acceptance criteria green + `docs/` updated + RFC status set to `implemented` +
+   RFC and planning directories moved to their archives — all in the final change. After that,
+   `docs/` is canonical; archived RFCs are history.
 
 ## Reading order (minimum to be productive)
 
@@ -64,7 +66,7 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 
 ## Where to start
 
-**RFC-0001 (numeric core)** is implemented — the foundation everything else tests against.
+**RFC-0001 (numeric core)** is implemented and archived — the foundation everything else tests against.
 Subsequent Phase-0 RFCs (save layer, production engine, client shell, balance harness, deploy
 scaffolding) are drafted from `design/07-roadmap.md`; the roadmap phase list is the sequencing
 authority. Do not start one from the roadmap alone: draft and accept its RFC first.

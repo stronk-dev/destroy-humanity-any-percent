@@ -1,12 +1,13 @@
-# RFC-NNNN: Title
+# RFC: Title
 
 - **Status:** draft | accepted | implementing | implemented | superseded | withdrawn
 - **Author:**
 - **Created:** YYYY-MM-DD
 - **Design refs:** (design doc sections this specifies, e.g. `design/02 §2.1`)
-- **Depends on:** (RFC numbers)
+- **Depends on:** (RFC names/links)
+- **Parent / amends:** — (archived RFC or existing system when this is a follow-up)
 - **Supersedes / superseded by:** —
-- **Planning:** `planning/NNNN-slug/` (once implementing)
+- **Planning:** `planning/<rfc-slug>/` (once implementing)
 
 ## Summary
 

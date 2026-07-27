@@ -1,11 +1,21 @@
 # RFC Index
 
-The authoritative spec. Process: `0000-rfc-process.md`. New RFCs start from `template.md`.
+Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs start from
+`template.md`; descriptive names are preferred over global sequence numbers.
 
-| # | Title | Status |
+## Active
+
+| RFC | Status | Parent |
 |---|---|---|
-| [0000](0000-rfc-process.md) | The RFC Process | accepted |
-| [0001](0001-numeric-core.md) | The Numeric Core | implemented |
-| [0002](0002-economy-constants-and-ceilings.md) | Economy Constants, Ceilings & Accrual Policy | draft |
+| [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
+| [RFC-0002: Economy Constants, Ceilings & Accrual Policy](0002-economy-constants-and-ceilings.md) | draft | [Numeric Core](archive/0001-numeric-core.md) |
+
+## Archive
+
+Implemented behavior lives in `docs/`; these frozen RFCs are historical specifications.
+
+| RFC | Status | Canonical docs |
+|---|---|---|
+| [RFC-0001: The Numeric Core](archive/0001-numeric-core.md) | implemented | [Numeric core](../docs/numeric-core.md) |
 
 Planned next (not yet drafted — carve from `design/07-roadmap.md` Phase 0): save layer & migrations · production engine & intent API · client shell & sim loop · balance harness · deploy scaffolding.

@@ -1,6 +1,6 @@
 # RFC-0001 Implementation Plan — Numeric Core
 
-- **RFC:** `rfc/0001-numeric-core.md`
+- **RFC:** `rfc/archive/0001-numeric-core.md`
 - **Assignee:** Codex
 - **Status:** implemented
 - **Started:** 2026-07-27

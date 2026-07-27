@@ -57,7 +57,7 @@ local acceptance command and nothing is deployed automatically.
 Four documentation tiers govern the repository (process: [RFC-0000](rfc/0000-rfc-process.md)):
 
 - [`design/`](design/) — intent + research (the game design and its evidence)
-- [`rfc/`](rfc/) — the authoritative spec, numbered and lifecycle-tracked ([index](rfc/README.md))
+- [`rfc/`](rfc/) — active implementation specs plus the frozen RFC archive ([index](rfc/README.md))
 - [`planning/`](planning/) — per-RFC implementation plans + append-only job logs (archived, never deleted)
 - [`docs/`](docs/) — canonical docs of what actually exists
 
