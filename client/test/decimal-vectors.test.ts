@@ -133,8 +133,29 @@ describe("numeric-core properties", () => {
 
   it("rejects non-finite gameplay state", () => {
     for (const source of ["NaN", "Infinity", "-Infinity"]) {
-      expect(isStateValue(new Decimal(source))).toBe(false);
+      const value = new Decimal(source);
+      expect(isStateValue(value)).toBe(false);
+      expect(classify(value)).toBe(source.startsWith("-") ? "negative-infinity" : source === "NaN" ? "nan" : "positive-infinity");
       expect(() => parseCanonical(source)).toThrow();
     }
+  });
+
+  it("normalizes equivalent scientific coefficients before quantizing", () => {
+    for (const source of ["12.345e2", "0.12345e4", "1.2345e3"]) {
+      expect(canonicalString(source)).toBe("1.2345e3");
+    }
+  });
+
+  it("rejects unsafe representation as state but canonicalizes a normalized clone", () => {
+    const unsafe = Decimal.fromMantissaExponent_noNormalize(100, 0);
+    expect(isStateValue(unsafe)).toBe(false);
+    expect(canonicalString(unsafe)).toBe("1e2");
+    expect(unsafe.mantissa).toBe(100);
+    expect(unsafe.exponent).toBe(0);
+  });
+
+  it("requires canonical zero representation", () => {
+    expect(isStateValue(Decimal.fromMantissaExponent_noNormalize(0, 7))).toBe(false);
+    expect(isStateValue(new Decimal(0))).toBe(true);
   });
 });

@@ -11,6 +11,10 @@ const canonicalPattern = /^(?:0|-?[1-9](?:\.\d{0,10}[1-9])?e(?:0|-?[1-9]\d*))$/;
 
 export type DecimalSource = Decimal | string | number;
 
+function normalizedClone(source: DecimalSource): Decimal {
+  return new Decimal(source).normalize();
+}
+
 function roundHalfEven(value: number): number {
   const floor = Math.floor(value);
   const fraction = value - floor;
@@ -20,31 +24,31 @@ function roundHalfEven(value: number): number {
 }
 
 export function isStateValue(value: Decimal): boolean {
-  return (
-    Number.isFinite(value.mantissa) &&
-    Number.isSafeInteger(value.exponent) &&
-    Math.abs(value.exponent) <= MAX_EXPONENT
-  );
+  if (
+    !Number.isFinite(value.mantissa) ||
+    !Number.isSafeInteger(value.exponent) ||
+    Math.abs(value.exponent) > MAX_EXPONENT
+  ) {
+    return false;
+  }
+  if (value.mantissa === 0) return value.exponent === 0;
+  const magnitude = Math.abs(value.mantissa);
+  return magnitude >= 1 && magnitude < 10;
 }
 
 export function quantize(
   source: DecimalSource,
   significantDigits = CANONICAL_SIGNIFICANT_DIGITS,
 ): Decimal {
-  const value = new Decimal(source);
+  const value = normalizedClone(source);
   if (!isStateValue(value) || value.eq(0)) return value;
   if (!Number.isInteger(significantDigits) || significantDigits < 1 || significantDigits > 15) {
     return new Decimal(Number.NaN);
   }
 
   const factor = 10 ** (significantDigits - 1);
-  const direct =
-    typeof source === "string"
-      ? source.match(/^(-?[0-9]+(?:\.[0-9]+)?)e(-?[0-9]+)$/)
-      : null;
-  const inputCoefficient = direct ? Number(direct[1]) : value.mantissa;
-  let coefficient = roundHalfEven(Math.abs(inputCoefficient) * factor) / factor;
-  let exponent = direct ? Number(direct[2]) : value.exponent;
+  let coefficient = roundHalfEven(Math.abs(value.mantissa) * factor) / factor;
+  let exponent = value.exponent;
   if (coefficient >= 10) {
     coefficient = 1;
     exponent += 1;
@@ -87,6 +91,9 @@ export function parseCanonical(source: string): Decimal {
 export function classify(value: Decimal): "finite" | "nan" | "positive-infinity" | "negative-infinity" {
   if (Number.isNaN(value.mantissa) || Number.isNaN(value.exponent)) {
     return "nan";
+  }
+  if (value.mantissa !== 0 && value.exponent >= 9e15) {
+    return value.mantissa < 0 ? "negative-infinity" : "positive-infinity";
   }
   if (!Number.isFinite(value.mantissa) || !Number.isFinite(value.exponent)) {
     return value.mantissa < 0 ? "negative-infinity" : "positive-infinity";

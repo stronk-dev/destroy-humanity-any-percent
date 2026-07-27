@@ -42,7 +42,14 @@ func (d Decimal) Quantize(significantDigits int) Decimal {
 
 // IsStateValue reports whether d is valid authoritative gameplay state.
 func (d Decimal) IsStateValue() bool {
-	return d.IsFinite() && d.exponent >= -maxExponent && d.exponent <= maxExponent
+	if !d.IsFinite() || d.exponent < -maxExponent || d.exponent > maxExponent {
+		return false
+	}
+	if d.mantissa == 0 {
+		return d.exponent == 0
+	}
+	magnitude := math.Abs(d.mantissa)
+	return magnitude >= 1 && magnitude < 10
 }
 
 // ParseCanonical accepts only the RFC-0001 finite wire grammar. FromString is

@@ -234,6 +234,21 @@ func TestNonFiniteValuesAreDiagnosticOnly(t *testing.T) {
 	}
 }
 
+func TestStateValuesRequireNormalizedRepresentation(t *testing.T) {
+	for _, value := range []Decimal{
+		{mantissa: 100, exponent: 0},
+		{mantissa: 0.1, exponent: 0},
+		{mantissa: 0, exponent: 7},
+	} {
+		if value.IsStateValue() {
+			t.Fatalf("malformed representation %#v must not be valid state", value)
+		}
+		if !value.Normalize().IsStateValue() {
+			t.Fatalf("normalized representation of %#v must be valid state", value)
+		}
+	}
+}
+
 func FuzzCanonicalRoundTrip(f *testing.F) {
 	for _, seed := range []string{"0", "1e0", "-4.25e-7", "9.87654321012e123456", "NaN", "Infinity"} {
 		f.Add(seed)
