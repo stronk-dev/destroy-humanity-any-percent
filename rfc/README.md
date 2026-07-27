@@ -8,7 +8,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | RFC | Status | Parent |
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
-| [RFC-0002: Economy Kernel](0002-economy-constants-and-ceilings.md) | implementing | [Numeric Core](archive/0001-numeric-core.md) |
 
 ## Archive
 
@@ -19,6 +18,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [RFC-0001: The Numeric Core](archive/0001-numeric-core.md) | implemented | [Numeric core](../docs/numeric-core.md) |
 | [Numeric Core Boundary Hardening](archive/numeric-core-boundary-hardening.md) | implemented | [Numeric core](../docs/numeric-core.md) |
 | [Numeric Normalization Carry](archive/numeric-normalization-carry.md) | implemented | [Numeric core](../docs/numeric-core.md) |
+| [RFC-0002: Economy Kernel](archive/0002-economy-constants-and-ceilings.md) | implemented | [Economy kernel](../docs/economy-kernel.md) |
 
 Planned next (not yet drafted — carve from `design/07-roadmap.md` Phase 0): save layer & migrations · production engine & intent API · client shell & sim loop · balance harness · deploy scaffolding.
 

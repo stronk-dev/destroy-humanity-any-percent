@@ -2,7 +2,7 @@
 
 - **RFC:** `rfc/0002-economy-constants-and-ceilings.md`
 - **Assignee:** Codex
-- **Status:** implementing
+- **Status:** completed 2026-07-28
 
 ## Work breakdown
 

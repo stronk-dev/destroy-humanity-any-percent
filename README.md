@@ -4,8 +4,8 @@
 
 A free, browser-based MMO idle game: climb from a 1995 garage — where you own your tools and cheat codes work — to a world-consuming AI megacorp, while a speedrun timer counts and the game slowly enshittifies itself around you. Cookie Clicker's spiritual successor with the two things it never had: **other people** and **an ending**.
 
-**Status:** design complete; RFC-0001 (the shared numeric core) is implemented. No
-playable client or deployable server exists yet.
+**Status:** design complete; the shared numeric core and configuration-driven economy kernel are
+implemented. No playable client or deployable server exists yet.
 
 ## Development setup
 

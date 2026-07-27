@@ -1,6 +1,6 @@
 # RFC-0002: Economy Kernel
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco (initial draft by Claude; re-scoped by Codex)
 - **Created:** 2026-07-27
 - **Revised:** 2026-07-28
@@ -10,7 +10,7 @@
   `design/research/pacing-science.md`
 - **Depends on:** RFC-0001 and Numeric Core Boundary Hardening (implemented)
 - **Supersedes / superseded by:** —
-- **Planning:** `planning/0002-economy-kernel/`
+- **Planning:** `planning/archive/0002-economy-kernel/`
 
 ## Summary
 
@@ -204,3 +204,5 @@ ratio are ordinary data values. The balance harness decides shipped values per g
 - 2026-07-28: re-scoped after architecture research to the implementable economy kernel; tuning,
   production, presentation, and ranking concerns deferred; accepted by owner direction to make
   the engine configuration-driven and proceed with implementation.
+- 2026-07-28: implemented, verified across Go, Node, Chromium, Firefox, and WebKit, documented,
+  and archived.

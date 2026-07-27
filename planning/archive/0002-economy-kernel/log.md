@@ -43,3 +43,11 @@ Append-only. A fresh agent should be able to resume from this file and `plan.md`
 - Pre-archive review tightened ledger ownership: each ledger now has exactly one catalog scope.
   It cannot expose or mutate Company/Founder/World/Guild balances across that boundary; later
   cross-scope actions must coordinate explicit ledgers above the kernel.
+
+## 2026-07-28 — Completion
+
+- Final `make verify` passed after scope isolation: Go tests/vet, strict TypeScript, 6,321 Node
+  tests, and 18,963 browser tests across Chromium, Firefox, and WebKit.
+- Confirmed engine source contains no global generator ratio or launch tuning default.
+- Distilled implemented behavior into `docs/economy-kernel.md`; updated repository/docs indexes.
+- RFC-0002 acceptance criteria are complete. RFC and planning records archived.
