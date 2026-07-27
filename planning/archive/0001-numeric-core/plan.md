@@ -2,13 +2,13 @@
 
 - **RFC:** `rfc/0001-numeric-core.md`
 - **Assignee:** Codex
-- **Status:** implementing
+- **Status:** implemented
 - **Started:** 2026-07-27
 
 ## Scope
 
-Implement only RFC-0001: a layer-0 Go `Decimal` compatible with the corresponding
-`break_eternity.js` behavior under the amended server-authoritative numeric contract,
+Implement only RFC-0001: a layer-0 Go `Decimal` compatible with pinned
+`break_infinity.js` 2.2.0 behavior under the amended server-authoritative numeric contract,
 TypeScript and Go geometric-series helpers, a seeded shared golden-vector generator,
 category-appropriate exact/tolerant tests, property/fuzz coverage, and browser-engine
 confidence tests. Tetration/layers, player-facing formatting, runtime client UI, deploy
@@ -19,7 +19,7 @@ scaffolding, and CI configuration remain out of scope.
 1. Create the minimal `server/`, `client/`, `testdata/`, and `tools/` structure plus
    root Make targets required by the RFC.
 2. Pin the JavaScript numeric/test dependencies and implement a deterministic vector
-   generator backed by the real `break_eternity.js` package.
+   generator backed by the real `break_infinity.js` package.
 3. Port the layer-0 decimal representation and operations to Go, including 12-digit
    quantization, canonical wire strings, comparisons, and diagnostic non-finite propagation.
 4. Implement geometric-series sum and verified max-affordable helpers with exact capped
@@ -51,5 +51,5 @@ scaffolding, and CI configuration remain out of scope.
 
 ## Resume point
 
-Read this file and `log.md`, then continue the first incomplete work item above. Do not
-expand scope without a new RFC.
+Implementation is complete and this directory is archived. Read `docs/numeric-core.md` for
+canonical behavior; use this plan and `log.md` only as the historical implementation record.

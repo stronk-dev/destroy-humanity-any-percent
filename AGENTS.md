@@ -11,7 +11,9 @@ You are working on **Cloud Clicker**: a free, browser-based MMO idle game — *"
 | Planning | `planning/NNNN-slug/` | Your `plan.md` + append-only `log.md` per RFC. The long-term job log — write it so a fresh agent can resume from it alone. |
 | Docs | `docs/` | Canonical description of what exists. Update in the same change as any behavior change. |
 
-**Current state:** design complete; RFC-0001 (numeric core) is accepted and unstarted; no engine code yet.
+**Current state:** design complete; RFC-0001 (numeric core) is implemented. The next Phase-0
+system must be drafted and accepted as an RFC before implementation begins; see
+`design/07-roadmap.md` and `rfc/README.md` for the queue.
 
 ## Your workflow
 
@@ -34,7 +36,7 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 
 1. **No real money, ever, in any direction.** No IAP, no ads, no telemetry beyond gameplay. Free-ness is the satire's foundation.
 2. **Server-authoritative.** Clients send intents, never results. Production math is closed-form and lazy (`06-tech.md §idle-math`) — never a per-player server tick loop.
-3. **Big numbers:** `break_eternity.js` (client) + the hand-written Go `Decimal` (server). Wire format is **strings**. Any change to either implementation must keep the shared golden-vector tests green in BOTH test suites.
+3. **Big numbers:** `break_infinity.js` 2.2.0 (client) + the hand-written Go `Decimal` (server). Wire format is **strings**. Any change to either implementation must keep the shared golden-vector tests green in BOTH test suites. `break_eternity.js` is deferred until an accepted design actually requires tetration/layers.
 4. **Balance data is declarative** (JSON/YAML data files, hot-reloadable), never constants in code.
 5. **Hardcaps, never softcaps.** Every cap is a visible number.
 6. **Every multiplayer feature has an AI/bot fallback**; bots never cheat (same server validation and hidden-info boundaries as humans).
@@ -62,4 +64,7 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 
 ## Where to start
 
-**RFC-0001 (numeric core)** is accepted and unassigned — the foundation everything else tests against. Subsequent Phase-0 RFCs (save layer, production engine, client shell, balance harness, deploy scaffolding) will be drafted from `design/07-roadmap.md` as 0001 lands; the roadmap phase list is the sequencing authority.
+**RFC-0001 (numeric core)** is implemented — the foundation everything else tests against.
+Subsequent Phase-0 RFCs (save layer, production engine, client shell, balance harness, deploy
+scaffolding) are drafted from `design/07-roadmap.md`; the roadmap phase list is the sequencing
+authority. Do not start one from the roadmap alone: draft and accept its RFC first.

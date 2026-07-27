@@ -1,6 +1,11 @@
 # Canonical Docs
 
-This directory describes **what actually exists** — the living truth of the implemented system. It is empty until the first RFC ships.
+This directory describes **what actually exists** — the living truth of the implemented system.
+
+Implemented systems:
+
+- [Numeric core](numeric-core.md) — cross-runtime large-number representation, canonical
+  state/wire rules, economy helpers, and verification commands.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.

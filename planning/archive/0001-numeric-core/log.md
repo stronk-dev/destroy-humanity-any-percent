@@ -78,3 +78,60 @@
   finite results with exact zero and domain classification.
 - Updated the living plan and acceptance gates to match the amended RFC. The existing spike and
   vector corpus now require rework; they are evidence, not accepted implementation.
+
+## 2026-07-27 (codex, session 2 — extreme-scale library fit)
+
+- Paused implementation at Marco's request and performed a second online research pass focused
+  on idle-game scale, precision rollover, serialization, and the actual requirements of Cloud
+  Clicker's finite nine-tier arc.
+- `DESIGN-GAP:` the first research pass incorrectly generalized constant coefficient precision
+  from mantissa/exponent numbers to `break_eternity.js`. The pinned library stores layer-1
+  values as one `float64` logarithmic magnitude, so exponent and coefficient consume the same
+  precision budget. Measured coefficient loss grows from about `1e-14` at exponent 300 to
+  `1e-10` at exponent one million; near the safe-integer exponent boundary the coefficient may
+  collapse entirely. Range remains enormous, but RFC-0001's 12-digit/full-range parity promise
+  is impossible under that representation.
+- The research identifies a better scope match: `break_infinity.js` directly stores mantissa
+  plus exponent, reaches approximately `1e(9e15)`, includes incremental economy helpers, and is
+  the documented companion of the already-selected Antimatter Dimensions notation package.
+  Cloud Clicker's accepted design has no tetration mechanic, and RFC-0001 explicitly defers
+  layers.
+- Recommended an owner-approved stack amendment from `break_eternity.js` to pinned
+  `break_infinity.js` 2.x for RFC-0001. Preserve the server-authoritative contract, 12-digit
+  state quantization, string wire values, exact discrete counts, and verified affordability.
+  Defer `break_eternity` plus a matching Go `sign/layer/magnitude` port to a future RFC only if
+  the balance harness shows an accepted route approaching the layer-0 exponent budget.
+- BLOCKED on the binding stack decision. Do not weaken the tests around `break_eternity`'s
+  extreme-scale loss or switch libraries without Marco's approval.
+
+## 2026-07-27 (codex, session 2 — stack decision approved)
+
+- Marco approved the recommendation and directed implementation to continue.
+- Amended RFC-0001, the binding tech decision, agent onboarding, and the working plan to use
+  pinned `break_infinity.js` 2.2.0 for the layer-0 client. This resolves the extreme-scale
+  representation DESIGN-GAP without weakening the 12-digit contract.
+- `break_eternity.js` and a matching server layer representation remain explicitly deferred to
+  a future RFC triggered by accepted balance requirements, not hypothetical range anxiety.
+
+## 2026-07-27 (codex, session 2 — implementation complete)
+
+- Replaced the server's obsolete layered-number spike with a direct, auditable port of
+  `break_infinity.js` 2.2.0 mantissa/exponent operation ordering. Both Go and TypeScript pass
+  the same 6,278 categorized vectors, including extreme exponents, canonical boundaries,
+  committed-state fixtures, and verified geometric purchases.
+- Added the strict 12-significant-digit state boundary, canonical parser/serializer,
+  non-finite rejection, exact integer count cap, geometric sum, and corrected/binary-searched
+  max-affordable helpers in both runtimes.
+- Added a reproducible Playwright browser setup and ran the complete vector suite in Node/V8,
+  Chromium, Firefox, and WebKit. Results: Node 6,281/6,281; each browser 6,281/6,281 (18,843
+  browser tests total).
+- Proved deterministic generation: SHA-256 before and after `make vectors` was
+  `38064aef91f215ee2d1bcdbefb4047c1b20551aff83b02411cc926589b37e5d5`.
+- Fuzzed canonical parse/arithmetic/round-trip behavior for 10 seconds: 920,276 executions,
+  zero failures or panics. `make verify` passed Go vet/tests, strict TypeScript, Node, and all
+  three browser engines.
+- Added root setup/test documentation and `docs/numeric-core.md`. Full CI configuration and
+  deploy scaffolding remain explicitly assigned to a later Phase-0 RFC; this implementation
+  exposes stable `make setup`, `make install-browsers-ci`, and `make verify` entry points for it.
+- RFC-0001 acceptance criteria are green. Status changed to `implemented`; planning record
+  archived per RFC-0000.
