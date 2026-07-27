@@ -4,7 +4,14 @@
 
 A free, browser-based MMO idle game: climb from a 1995 garage — where you own your tools and cheat codes work — to a world-consuming AI megacorp, while a speedrun timer counts and the game slowly enshittifies itself around you. Cookie Clicker's spiritual successor with the two things it never had: **other people** and **an ending**.
 
-**Status:** design phase. No engine code yet — the full game design and its research corpus live in [`design/`](design/).
+**Status:** design complete, implementation starting. Four documentation tiers (process: [rfc/0000](rfc/0000-rfc-process.md)):
+
+- [`design/`](design/) — intent + research (the game design and its evidence)
+- [`rfc/`](rfc/) — the authoritative spec, numbered and lifecycle-tracked ([index](rfc/README.md))
+- [`planning/`](planning/) — per-RFC implementation plans + append-only job logs (archived, never deleted)
+- [`docs/`](docs/) — canonical docs of what actually exists
+
+Agents: read [`AGENTS.md`](AGENTS.md).
 
 ## Design docs
 
