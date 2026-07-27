@@ -109,7 +109,7 @@ Reaching Depletion (or refusing to) resolves into one of three endings (`researc
 
 - **Ending A — ASCENSION** (canon completion): you win; the ticker fills with the real good-news dataset. *"Child mortality: 50% → 4.3%. Extreme poverty: 75% → 10%. You did not do this. It happened during your run."*
 - **Ending B — THE LONG DECAY** (canon completion, other lens): same ticker, other dataset. *"Trust: 77% → 17%. Union density: 35% → 10%. You did not do all of this either."*
-- **Ending C — BOTH GRAPHS** (the true ending, requires seeing A and B or completing Ethical%): two real line charts, opposite slopes, same x-axis, same seventy years. No text. Then: *"Play again?"* → `New Route`.
+- **Ending C — BOTH GRAPHS** (the true ending, requires seeing A and B or completing Ethical%): two real line charts, opposite slopes, same x-axis, same span. ⚠️ **The specific figures are under a `DESIGN-GAP:` — see `design/00` pillar 5. As previously specified this ending was not reproducible; the improvement series was a ~200-year record presented as a 70-year one.** No text. Then: *"Play again?"* → `New Route`.
 - **Ending variants:** transcending at Soul = 0 (you become training data); the **Ethical% ending** (see `10-playstyles.md` — the world survives, the leaderboard broadcasts the world-first); the **LAN Party ending** (triggered from the Shutdown Notice: reset to Tier 0 keeping the source code and a LAN cable — the Stop Killing Games ending, and the fiction for prestige itself).
 - Final achievement: **Both Datasets Are Real.**
 

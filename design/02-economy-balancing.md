@@ -164,4 +164,4 @@ Verification approach: a balance simulation harness (headless run of the product
 
 ## 11. Big numbers
 
-`break_eternity.js` client / Go `Decimal` port server, golden-vector tested; wire format strings; display via notations library. Full detail in `06-tech.md §3`. NaN detection refuses to persist poisoned saves (Profectus rule).
+`break_infinity.js` 2.2.0 client / Go `Decimal` port server, golden-vector tested; wire format strings; display via notations library. Full detail in `06-tech.md §3`. NaN detection refuses to persist poisoned saves (Profectus rule).

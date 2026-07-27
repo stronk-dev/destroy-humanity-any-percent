@@ -5,7 +5,7 @@
 ## Phase 0 — Foundations (engine core)
 
 - Go server skeleton: accounts (anonymous + JWT upgrade), saves (versioned from commit #1), closed-form production engine, intent API, offline calculation.
-- Go `Decimal` + TS `break_eternity` golden-vector suite (the first tests in the repo).
+- Go `Decimal` + TS `break_infinity` 2.2.0 golden-vector suite (the first tests in the repo). ✅ shipped — RFC-0001.
 - Svelte 5 client shell: sim loop, tab rendering, number formatting, save sync.
 - Balance data files + hot reload; the balance simulation harness (headless strategy runs — this gates every later phase).
 - **Exit criteria:** a private build where Tier 0–1 plays end-to-end (click → generators → first Exit) and the harness reproduces the pacing targets.
