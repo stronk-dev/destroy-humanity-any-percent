@@ -1,6 +1,6 @@
 # RFC-0001: The Numeric Core
 
-- **Status:** accepted
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-27
 - **Design refs:** `design/06-tech.md §3` (big numbers), `design/02-economy-balancing.md §2.1` (cost curves)

@@ -40,6 +40,25 @@ The Grandmapocalypse pattern: opt-in state changes with a cheap reversible valve
 - **Go Public** (Tier 4+): quarterly-earnings pressure events + a shareholder meter + a much higher ceiling and shorter, riskier windows. Reverse: `Go Private Again` — expensive, flat tax, revocable.
 - **The Golden Switch equivalent:** `Autopilot Mode` — golden opportunities stop spawning, +50% flat rate. The explicit active↔idle lever.
 
+## 3b. Doctrines — the Age-Up choice (build-to-something)
+
+Runs branch **inside** the ladder, Age-of-Mythology style: **every tier transition demands an irreversible 1-of-3 commitment** — the company's defining bet for that era. You don't pick perks; you *build toward an identity* that gates content (EU4 mission-tree logic):
+
+| Transition | The question | Example doctrines |
+|---|---|---|
+| Garage → IT Co | What did you build? | Dev Tools · Consumer App · Government Contractor |
+| IT → Cloud | Platform religion? | Open Ecosystem · Walled Garden · Defense Cloud |
+| Cloud → Data Centers | Where do you build? | Frontier Regions (cheap, dirty) · Fortress Regions (compliant, slow) · Orbital/Offshore (absurd, late-payoff) |
+| Data Centers → AI | Lab identity? | Product Lab · Frontier Lab · Open-Weights |
+| AI → AGI | Alignment posture? | Ship It · Contain It · Merge With It |
+
+Rules:
+- Each doctrine opens a **doctrine tree**: unique upgrades, Layer-1 event chains, minigame modifiers, and one building type nothing else gets. Doctrines **combo** with faction and with each other (a Bootstrapper Dev-Tools → Open-Ecosystem → Open-Weights line is a coherent, distinct game from a VC Consumer → Walled-Garden → Product-Lab line).
+- **Content gating is real:** some events, achievements, cosmetics, and at least one ending variant are only reachable via specific doctrine paths — the reason run #7 differs from run #2, and the engine behind "numerous prestiges to the first ending" feeling like *routing*, not repetition.
+- Doctrines are **run-scoped** (reset on Exit); discovering a doctrine's content contributes Route Knowledge; named route combos surface on leaderboards ("Walled-Garden rush").
+- Choice presentation is diegetic: a board meeting, three term sheets on the table, the timer running.
+- Balance law extends: doctrines are balanced to be *interesting*, not equal — but every doctrine must anchor at least one viable route to the ending (verified in the balance harness).
+
 ## 4. Challenge runs (rule-modified runs as mainline content)
 
 The AD Eternity Challenge + Trimps Challenge² model: each challenge is a **rule deletion or inversion**, gated in the Reputation tree (unlocking one is a progression reward), completable ~5× with escalating goals, paying **permanent** bonuses on **independent tracks** (deeper = more; repeating the same depth pays nothing — breadth is mandatory).

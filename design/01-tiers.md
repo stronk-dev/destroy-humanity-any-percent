@@ -11,6 +11,7 @@ Each tier defines:
 - **Automates:** which previous-tier activity becomes background.
 - **Societal beat / gaming era:** the satire anchors.
 - **Unlock:** personal threshold, and/or community milestone (†marked tiers were gated behind world-first community milestones at launch; once unlocked globally, they're open for everyone forever — see `05-mmo.md`).
+- **Doctrine:** every tier transition demands an irreversible 1-of-3 identity commitment (the Age-Up choice) that gates content within the run — see `10-playstyles.md §3b`. Runs branch; routes are the replayability.
 - **Split name:** the speedrun checkpoint.
 
 ---
