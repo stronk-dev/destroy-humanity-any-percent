@@ -59,6 +59,8 @@ The satire must be able to respond to the real world in days, safely:
 2. **Research check:** facts verified + sourced (added to the relevant research file — the citation rule holds for live content too).
 3. **Author:** ticker lines / a Layer-1 event / a dispatch series, in a dated pack (`events-YYYY-current/`), passing the copy linter + voice checklist + **the legal guardrails** (compliance research → flavor-bible satire-risk rules; when in doubt, fictionalize harder).
 4. **Ship:** pack push + hot reload — no client deploy for pure-data content.
+
+   > `DESIGN-GAP:` **this bypasses every gate in `cicd-deploy.md`, and it contradicts this document's own balance-change rule below** (which requires the harness gate + a changelog entry). The two sentences are the same sentence pointed in opposite directions. It also collides with `adaptive-balancing.md`'s **Balance Epoch** finding — hot-reload is an *unlogged mutation surface*, so a silent nerf stays structurally possible and leaderboards can be invalidated without a `constants_hash` change. **Resolve before the scaffolding RFC:** either hot-reload is dev-only, or it stamps an epoch and emits a public changelog entry like any other balance change.
 5. **Age:** current-events packs get a review date; lines that aged badly are retired (packs make removal as easy as addition). The best ones graduate into `core/` as period pieces — the game accretes a history.
 
 **Cadence guard:** current-events content is seasoning, not the meal — budgeted (a few drops/month max) so the game never becomes a news-cycle treadmill, and pack activation windows prevent stale "current" content from lingering.

@@ -22,6 +22,10 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 
 Planned next (not yet drafted — carve from `design/07-roadmap.md` Phase 0): save layer & migrations · production engine & intent API · client shell & sim loop · balance harness · deploy scaffolding.
 
+### Known implementation defect (found 2026-07-28, blocks the harness RFC)
+
+**`server/economy/curves.go:59` `MaxAffordable` binary-searches to `MaxExactInteger`** (`high := decimal.MaxExactInteger - owned`, `for low < high`) instead of delegating the geometric case to **`decimal.AffordGeometricSeries`** — the closed form RFC-0001 already shipped and tested, which currently has **no non-test caller.** Measured in `cicd-deploy.md §9.3`: **20,486 ns/op vs 660 ns/op, ~95×**, which on a 200-bot harness run is **3 min 01 s vs 1.91 s.** That is precisely the line between a CI gate you keep and a gate you bypass. The generic binary search is correct for `constant`/`linear` curves and should stay as the fallback; `geometric` should take the closed form. **Fix before drafting the balance-harness RFC.**
+
 ### Deferred decisions register
 
 RFC-0002's re-scope to the Economy Kernel correctly narrowed it to what is implementable — but two
