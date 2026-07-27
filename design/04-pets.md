@@ -22,6 +22,12 @@
 ## 2. Pet battles (pokemon-style)
 
 - **Stats derive from care quality**: battle HP/attack/speed are functions of average stat upkeep, Trust, and age — a well-loved elder cat is a monster. No pay, no grind-feed: care *is* training.
+
+  > `DESIGN-GAP:` **contradicted by research — awaiting owner decision.** `design/research/creature-battler.md §3.4` simulated this line (20,000 trials) and found that in 1v1 turn-based combat **a 2.1% stat advantage yields a ~99.6% win rate** — the duel is a deterministic race and a per-turn edge compounds past any damage roll or crit. Any care→stat mapping wide enough to *feel* meaningful is therefore wide enough to be a binary win condition, and the pet layer would become pay-to-win-by-attendance.
+  >
+  > The research's alternative (§8.3): **every pet reaches the same hardcapped stat ceiling** — design law 5 applied honestly — and care instead buys **options, consistency and tempo**. Measured: Trust→Obedience slopes smoothly (50%→30% across Trust 1.00→0.80), plus Pokémon-Amie's template of crit-doubling and survive-at-1-HP. Insurance and luck, never raw stats. Bonus: it makes **Soul drain legible in combat** for the first time, which the current design has no mechanism for.
+  >
+  > This is a genuine design change, not an implementation detail — resolve before any battle-engine RFC.
 - **Moveset** by personality + learned tricks (taught via play minigames): `Pounce`, `Zoomies` (priority), `Loaf` (defense up), `Knead` (heal), `Hairball` (debuff), `Headbonk`. Type-triangle lite: Playful > Lazy > Sassy > Playful (a rotating weakness — the Clicker Heroes daily-rotation trick appears in tournament seasons).
 - **Turn-based, ~2–3 minute matches.** Server-authoritative; same engine as board-game matches.
 - **AI fallback:** battle bots at every rating tier (minimax over the small move space + personality-flavored policies: a "lazy" bot plays Loaf too much — human-feel by characterization). Named NPC trainers with fake ratings.
