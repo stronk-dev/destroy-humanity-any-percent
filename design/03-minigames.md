@@ -83,10 +83,12 @@ An original — **the pager as a push-your-luck reflex minigame** on a regenerat
 - **Economy hook:** small click-power multiplier; achievements; purely optional skill expression for active players.
 - **AI fallback:** solo; async ghost-races against other players' keystroke recordings (or bot ghosts).
 
-## 8. Demo Disc Arcade (Tier 0–1, host: the CRT)
+## 8. Demo Disc Arcade (Tier 0–1, host: the CRT) — the evolving nostalgia container
 
 - Tiny era-authentic minigames (a Snake, a Minesweeper, a shareware-style platformer demo that ends with "ORDER NOW: $0.00"). Pure nostalgia texture with achievement hooks; the tier-0 tutorial hides here.
-- **AI fallback:** solo.
+- **The arcade evolves per era:** cover disc (T0) → **Flash portal** (T2–3, Newgrounds/Miniclip energy) → **app store parody** (T5, everything free with IAP-screen jokes). Each stage hosts era-appropriate additions from the nostalgia sweep (`BACKLOG.md`): Solitaire/FreeCell **with the Boss Key**, "Defrag" match-3, a distinct-expression block stacker, tower defense, plinko at the casino tier, a 2048-lineage daily slot. Legal rule: mechanics yes, trade dress and names never.
+- Hobby framing applies (Soul restoration) across the arcade.
+- **AI fallback:** solo; daily-slot ghost scores.
 
 ## 9. Bakery, Inc. (Tier 3 easter egg, host: tenant VM)
 

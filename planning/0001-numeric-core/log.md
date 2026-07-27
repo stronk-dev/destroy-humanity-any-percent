@@ -42,3 +42,26 @@
   scope.
 - BLOCKED: Marco must choose the parity contract before the numeric implementation can
   be completed without improvising behavior.
+
+## 2026-07-27 (codex, session 1 — numeric research correction)
+
+- Reopened the numeric architecture research after Marco correctly challenged whether the
+  original pre-RFC research covered idle-game scale, precision, rounding, purchasing boundaries,
+  and persistence deeply enough. It did not: `tech-stack.md §3` selected libraries and proposed
+  golden vectors, but did not establish a viable cross-runtime contract.
+- Landed the focused evidence report `design/research/numeric-core.md`. It distinguishes the
+  enormous available range (`1e(9e15)`) from the approximately 15–17 significant digits of useful
+  precision and documents why the former is sufficient for all currently designed magnitudes.
+- Confirmed from primary sources that ECMAScript transcendental math is
+  implementation-approximated and Go does not guarantee bit-identical `math` results across
+  architectures. Confirmed that `break_infinity.js` deliberately rounds/ignores insignificant
+  additions and that an established C# port uses relative-tolerance compatibility tests,
+  including `1e-13` for `Exp`.
+- Recommended contract for approval: keep layer-0 coefficient/exponent values; quantize
+  authoritative state to 12 significant decimal digits at transition boundaries; use a
+  project-defined canonical finite string; keep counts and other discrete facts as exact
+  integers; reserve tolerances for raw cross-runtime arithmetic tests, never authorization;
+  verify and correct every closed-form max-affordable result against the cost inequalities; and
+  reject non-finite gameplay state and saves.
+- RFC-0001 remains blocked pending approval of that contract. No RFC text or implementation was
+  changed on the basis of the recommendation.
