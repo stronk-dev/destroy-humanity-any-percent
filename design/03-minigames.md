@@ -67,6 +67,12 @@ Chess puzzles, chess, tic-tac-toe, Connect-4, Othello, Gomoku, checkers; blackja
   - Connect-4/Othello/Gomoku/checkers: ~150-line alpha-beta with iterative deepening + per-game eval; difficulty = depth + temperature.
   - Blackjack: basic-strategy table bot. Poker: rule-based hand-strength + pot odds + randomized bluffs.
   - Human-feel rules: plausible blunders (captures/checks, not random), fake think time, named bots with visible fake ratings that move, resign behavior, rubber-band toward ~55–60% player win rate, **bots never cheat** (same hidden-info boundaries as humans).
+
+  > `DESIGN-GAP:` **self-contradicting line — owner decision required.** `design/research/adaptive-balancing.md §2` flags that *"rubber-band toward ~55–60% player win rate"* **is hidden per-player outcome DDA**, and it sits one clause from **"bots never cheat"** — a design law (`00 §2`, `AGENTS.md §6`) that it falsifies. It runs on a **ranked Elo queue with spectators and guild tournaments** (`05 §42`), so results are compared between players.
+  >
+  > The dossier's harm model is **harm ≈ concealment × adversity × detectability × comparability**, and our permanent run-title bar pins *comparability* at maximum from Tier 1. (Note the corrected reasoning: this is **not** purely about concealment — Mario Kart's catch-up is the most-disclosed adjustment in the medium and the canonical resentment case. RE4's hidden system was fine, and was actually *published* in a strategy guide. Cite it that way or the argument loses the first time someone raises RE4.)
+  >
+  > **Proposed fix, preserving the intent:** published bot ratings, rating-based matchmaking, and **real ratings rather than "drifting fake" ones.** A bot that is genuinely rated 1400 and plays like it needs no rubber band to produce a ~55% win rate against a 1400 player — matchmaking already does that, honestly and legibly.
 - **PvP:** ranked matchmaking with expanding Elo bands, bot backfill after 10–30 s (disclosed, consistent, reduced rewards, never hot-swapped mid-match), spectating, guild tournaments. Show queue depth to encourage waiting for humans.
 
 ## 6. Incident Response (Tier 3, host: on-call rotation)
