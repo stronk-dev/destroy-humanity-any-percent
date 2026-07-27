@@ -43,7 +43,14 @@ in the exponent. Examples:
 ```
 
 Canonical parsing is strict and idempotent. The more permissive constructors are for
-configuration/import diagnostics and do not make a value safe to persist.
+configuration/import diagnostics and do not make a value safe to persist. State validation
+also enforces the internal representation: zero must use exponent `0`, and every non-zero
+mantissa must have absolute value in `[1, 10)`.
+
+The TypeScript boundary clones and normalizes inputs before rounding, so equivalent inputs such
+as `12.345e2`, `0.12345e4`, and `1.2345e3` all serialize as `1.2345e3`. It never mutates a
+caller-owned `Decimal`, including objects created through the library's unsafe no-normalize
+constructor.
 
 ## Implemented operations
 
@@ -60,6 +67,19 @@ The TypeScript boundary helpers live in `client/src/numeric.ts`. Both languages 
 The maximum-affordable result is always an exact integer. Floating tolerances are test metrics
 for continuous calculations; they never decide gameplay authority.
 
+### Arithmetic domain edges
+
+The Go port mirrors pinned `break_infinity.js` behavior, including its unconventional finite
+zero results for division by zero, zero divided by zero, `0` raised to a negative power,
+opposite-infinity addition, and infinity multiplied by zero. Logarithm of zero produces
+negative infinity; negative logarithm inputs produce NaN; positive exponent overflow produces
+the signed infinity diagnostic.
+
+NaN and infinity are rejected from state and canonical wire values. The finite-zero compatibility
+cases cannot carry their origin, so feature handlers must validate domains before calculation:
+a purchase, conversion, rate, or modifier may never rely on the library result of an invalid
+division or power operation.
+
 ## Verification and maintenance
 
 Run the complete local gate from the repository root:
@@ -72,8 +92,10 @@ This runs Go tests and static analysis, strict TypeScript checking, the Node/V8 
 same TypeScript vectors in Chromium, Firefox, and WebKit. First-time setup is documented in the
 root README.
 
-The committed `testdata/decimal-vectors.json` contains more than 6,000 cases produced with a
-seeded RNG and the real pinned JavaScript library. Regenerate it with:
+The committed `testdata/decimal-vectors.json` uses schema 3 and contains 6,293 cases produced
+with a seeded RNG and the real pinned JavaScript library. It includes recomputed
+operation/classification counts and 20 mandatory named domain edges, so diagnostic coverage
+cannot silently disappear. Regenerate it with:
 
 ```sh
 make vectors
@@ -90,15 +112,3 @@ and affordable counts are exact.
 Tetration and layered numbers are not implemented. They are unnecessary for the accepted game
 design and require a new RFC if future balance work approaches the layer-0 exponent boundary.
 Player-facing number notation is also separate from this storage and calculation contract.
-
-## Known boundary gaps
-
-The normal canonical gameplay path is verified, but a post-implementation audit found client
-boundary cases involving non-normalized scientific coefficients, deliberately unsafe/mutated
-`break_infinity.js` objects, and diagnostic infinity classification. Cross-runtime diagnostic
-coverage also needs explicit zero/division/logarithm/overflow cases. These values are already
-rejected from authoritative state, so existing canonical values are unaffected.
-
-The active [Numeric Core Boundary Hardening RFC](../rfc/numeric-core-boundary-hardening.md)
-specifies the required fixes and regression gates. This section must be removed or replaced by
-the corrected canonical behavior when that follow-up is implemented.

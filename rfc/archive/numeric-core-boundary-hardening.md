@@ -1,13 +1,13 @@
 # RFC: Numeric Core Boundary Hardening
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex, from owner-directed foundation audit
 - **Created:** 2026-07-27
 - **Design refs:** `design/06-tech.md §3` (big numbers), `design/research/numeric-core.md`
-- **Depends on:** [Archived RFC-0001: Numeric Core](archive/0001-numeric-core.md)
-- **Parent / amends:** [Archived RFC-0001: Numeric Core](archive/0001-numeric-core.md)
+- **Depends on:** [Archived RFC-0001: Numeric Core](0001-numeric-core.md)
+- **Parent / amends:** [Archived RFC-0001: Numeric Core](0001-numeric-core.md)
 - **Supersedes / superseded by:** —
-- **Planning:** `planning/numeric-core-boundary-hardening/`
+- **Planning:** `planning/archive/numeric-core-boundary-hardening/`
 
 ## Summary
 
@@ -137,3 +137,6 @@ validation prevent those diagnostics from becoming gameplay state.
 - 2026-07-27: clarified the executable domain-edge contract after vectors exposed the pinned
   library's finite-zero results for division by zero and `0` to a negative power. These remain
   compatibility behavior, not valid unguarded gameplay domains.
+- 2026-07-27: implemented. Shipped normalized state guards, normalize-before-quantize behavior,
+  infinity-sentinel classification, schema-3 coverage metadata, 20 mandatory edge vectors, and
+  cross-runtime diagnostic parity; updated canonical docs and archived the work.

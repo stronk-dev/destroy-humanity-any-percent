@@ -1,8 +1,8 @@
 # Numeric Core Boundary Hardening — Implementation Plan
 
-- **RFC:** `rfc/numeric-core-boundary-hardening.md`
+- **RFC:** `rfc/archive/numeric-core-boundary-hardening.md`
 - **Assignee:** Codex
-- **Status:** implementing
+- **Status:** implemented
 - **Started:** 2026-07-27
 
 ## Scope
@@ -24,7 +24,7 @@ notation abstractions here.
 
 ## Acceptance gates
 
-- Every criterion in `rfc/numeric-core-boundary-hardening.md` is represented by a regression
+- Every criterion in `rfc/archive/numeric-core-boundary-hardening.md` is represented by a regression
   test.
 - The vector generator remains byte-for-byte deterministic and reports non-zero mandatory
   diagnostic coverage.
@@ -33,5 +33,5 @@ notation abstractions here.
 
 ## Resume point
 
-Read this plan and `log.md`, then continue the first incomplete work item. Keep implementation
-in small local commits and do not push.
+Implementation is complete and this directory is archived. Read `docs/numeric-core.md` for
+canonical behavior; this plan and `log.md` are the historical implementation record.

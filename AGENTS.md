@@ -11,9 +11,9 @@ You are working on **Cloud Clicker**: a free, browser-based MMO idle game — *"
 | Planning | `planning/<rfc-slug>/` | Your `plan.md` + append-only `log.md` per RFC. The long-term job log — write it so a fresh agent can resume from it alone. |
 | Docs | `docs/` | Canonical description of what exists. Update in the same change as any behavior change. |
 
-**Current state:** design complete; RFC-0001 (numeric core) is implemented and archived. Its
-boundary-hardening follow-up is implementing; RFC-0002 (economy constants/ceilings) is a draft.
-See `rfc/README.md`.
+**Current state:** design complete; RFC-0001 (numeric core) and its boundary-hardening follow-up
+are implemented and archived. RFC-0002 (economy constants/ceilings) is a draft. See
+`rfc/README.md`.
 
 ## Your workflow
 

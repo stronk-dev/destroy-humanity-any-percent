@@ -31,3 +31,16 @@
   feature handlers to validate arithmetic domains before authorizing state transitions.
 - Node and Go suites pass the expanded corpus. Next: deterministic hash, browser matrix, vet,
   fuzz, canonical docs, and archive closure.
+
+## 2026-07-27 (codex, session 1 — implementation complete)
+
+- Proved deterministic schema-3 regeneration: SHA-256 before and after `make vectors` was
+  `e984599ff078841dbc91baa802fc1ea597ccf334a6a841dea4a9f4fa1027060a`.
+- `make verify` passed Go vet/tests, strict TypeScript, 6,299 Node tests, and 6,299 tests in each
+  of Chromium, Firefox, and WebKit (18,897 browser tests).
+- Fuzzed canonical construction, arithmetic, and round trips for 10 seconds: 5,418,353
+  executions, zero failures or panics.
+- Updated `docs/numeric-core.md` with normalized-state guarantees, arbitrary scientific-source
+  behavior, exact domain-edge compatibility, and mandatory feature-level domain validation.
+- Every follow-up acceptance criterion is green. Marked the RFC implemented and archived the
+  RFC and planning record. RFC-0002 and its design work were not changed.
