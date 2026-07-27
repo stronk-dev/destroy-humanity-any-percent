@@ -8,7 +8,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | RFC | Status | Parent |
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
-| [Numeric Core Boundary Hardening](numeric-core-boundary-hardening.md) | draft | [Numeric Core](archive/0001-numeric-core.md) |
+| [Numeric Core Boundary Hardening](numeric-core-boundary-hardening.md) | implementing | [Numeric Core](archive/0001-numeric-core.md) |
 | [RFC-0002: Economy Constants, Ceilings & Accrual Policy](0002-economy-constants-and-ceilings.md) | draft | [Numeric Core](archive/0001-numeric-core.md) |
 
 ## Archive

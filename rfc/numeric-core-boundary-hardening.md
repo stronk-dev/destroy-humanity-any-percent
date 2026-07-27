@@ -1,13 +1,13 @@
 # RFC: Numeric Core Boundary Hardening
 
-- **Status:** draft
+- **Status:** implementing
 - **Author:** Codex, from owner-directed foundation audit
 - **Created:** 2026-07-27
 - **Design refs:** `design/06-tech.md §3` (big numbers), `design/research/numeric-core.md`
 - **Depends on:** [Archived RFC-0001: Numeric Core](archive/0001-numeric-core.md)
 - **Parent / amends:** [Archived RFC-0001: Numeric Core](archive/0001-numeric-core.md)
 - **Supersedes / superseded by:** —
-- **Planning:** — (created when implementing)
+- **Planning:** `planning/numeric-core-boundary-hardening/`
 
 ## Summary
 
@@ -128,3 +128,5 @@ validation prevent those diagnostics from becoming gameplay state.
 ## Changelog
 
 - 2026-07-27: drafted from the post-RFC-0001 foundation audit at the owner's request.
+- 2026-07-27: accepted by owner direction (perfect numeric foundation before downstream
+  systems) and moved to implementing.
