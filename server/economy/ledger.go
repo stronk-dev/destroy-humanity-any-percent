@@ -11,6 +11,7 @@ import (
 var (
 	ErrInvalidTransaction = errors.New("invalid economy transaction")
 	ErrUnknownResource    = errors.New("unknown economy resource")
+	ErrResourceScope      = errors.New("economy resource belongs to another ledger scope")
 	ErrBelowMinimum       = errors.New("resource balance below minimum")
 	ErrAboveHardcap       = errors.New("resource balance above hardcap")
 )
@@ -37,18 +38,28 @@ type Receipt struct {
 
 type Ledger struct {
 	catalog  *Catalog
+	scope    Scope
 	balances map[string]decimal.Decimal
 }
 
-func NewLedger(catalog *Catalog) (*Ledger, error) {
+func NewLedger(catalog *Catalog, scope Scope) (*Ledger, error) {
 	if catalog == nil {
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidTransaction)
 	}
-	balances := make(map[string]decimal.Decimal, len(catalog.resources))
-	for _, resource := range catalog.resources {
-		balances[resource.ID] = resource.Initial
+	if !validScope(scope) {
+		return nil, fmt.Errorf("%w: unsupported ledger scope %q", ErrInvalidTransaction, scope)
 	}
-	return &Ledger{catalog: catalog, balances: balances}, nil
+	balances := make(map[string]decimal.Decimal)
+	for _, resource := range catalog.resources {
+		if resource.Scope == scope {
+			balances[resource.ID] = resource.Initial
+		}
+	}
+	return &Ledger{catalog: catalog, scope: scope, balances: balances}, nil
+}
+
+func (l *Ledger) Scope() Scope {
+	return l.scope
 }
 
 func (l *Ledger) Balance(resourceID string) (decimal.Decimal, bool) {
@@ -67,8 +78,12 @@ func (l *Ledger) Snapshot() map[string]string {
 func (l *Ledger) Apply(transaction Transaction) (Receipt, error) {
 	net := make(map[string]decimal.Decimal)
 	for index, entry := range transaction.Entries {
-		if _, exists := l.catalog.resourceByID[entry.ResourceID]; !exists {
+		definition, exists := l.catalog.resourceByID[entry.ResourceID]
+		if !exists {
 			return Receipt{}, fmt.Errorf("%w: entry %d: %q", ErrUnknownResource, index, entry.ResourceID)
+		}
+		if definition.Scope != l.scope {
+			return Receipt{}, fmt.Errorf("%w: entry %d: %q belongs to %q, ledger is %q", ErrResourceScope, index, entry.ResourceID, definition.Scope, l.scope)
 		}
 		if !entry.Delta.IsStateValue() {
 			return Receipt{}, fmt.Errorf("%w: entry %d has non-state delta", ErrInvalidTransaction, index)

@@ -186,12 +186,16 @@ func (c *Catalog) GeneratorClasses() []GeneratorClassDefinition {
 	return append([]GeneratorClassDefinition(nil), c.generators...)
 }
 
+func validScope(scope Scope) bool {
+	return scope == ScopeCompany || scope == ScopeFounder || scope == ScopeWorld || scope == ScopeGuild
+}
+
 func parseResource(source rawResource) (ResourceDefinition, error) {
 	if !validID(source.ID) {
 		return ResourceDefinition{}, fmt.Errorf("invalid id %q", source.ID)
 	}
 	scope := Scope(source.Scope)
-	if scope != ScopeCompany && scope != ScopeFounder && scope != ScopeWorld && scope != ScopeGuild {
+	if !validScope(scope) {
 		return ResourceDefinition{}, fmt.Errorf("unsupported scope %q", source.Scope)
 	}
 	if source.NumericKind != "decimal" {

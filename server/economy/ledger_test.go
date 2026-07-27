@@ -36,7 +36,7 @@ func newTestLedger(t *testing.T) *Ledger {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ledger, err := NewLedger(catalog)
+	ledger, err := NewLedger(catalog, ScopeCompany)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -128,7 +128,7 @@ func TestLedgerRejectsAggregateNumericOverflow(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ledger, _ := NewLedger(catalog)
+	ledger, _ := NewLedger(catalog, ScopeCompany)
 	maximum := mustDecimal(t, "9e8999999999999999")
 	_, err = ledger.Apply(Transaction{Entries: []Entry{
 		{ResourceID: "company.value", Delta: maximum},
@@ -163,7 +163,7 @@ func TestLedgerAggregatesSubResolutionSourcesBeforeCommit(t *testing.T) {
 		entries[index] = Entry{ResourceID: "company.bank", Delta: tiny}
 	}
 
-	aggregated, _ := NewLedger(catalog)
+	aggregated, _ := NewLedger(catalog, ScopeCompany)
 	if _, err := aggregated.Apply(Transaction{Entries: entries}); err != nil {
 		t.Fatal(err)
 	}
@@ -171,7 +171,7 @@ func TestLedgerAggregatesSubResolutionSourcesBeforeCommit(t *testing.T) {
 		t.Fatalf("aggregated balance = %s, want 1.0000001e100", got)
 	}
 
-	perEntry, _ := NewLedger(catalog)
+	perEntry, _ := NewLedger(catalog, ScopeCompany)
 	for index := 0; index < sourceCount; index++ {
 		if _, err := perEntry.Apply(Transaction{Entries: entries[index : index+1]}); err != nil {
 			t.Fatal(err)
@@ -179,5 +179,32 @@ func TestLedgerAggregatesSubResolutionSourcesBeforeCommit(t *testing.T) {
 	}
 	if got := perEntry.Snapshot()["company.bank"]; got != "1e100" {
 		t.Fatalf("per-entry balance = %s, want unchanged 1e100", got)
+	}
+}
+
+func TestLedgerEnforcesScopeBoundary(t *testing.T) {
+	catalog, err := LoadCatalog(loadKernelFixture(t).Catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ledger, err := NewLedger(catalog, ScopeCompany)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ledger.Scope() != ScopeCompany {
+		t.Fatalf("scope = %q, want company", ledger.Scope())
+	}
+	if _, exists := ledger.Balance("founder.reputation"); exists {
+		t.Fatal("company ledger exposed a founder balance")
+	}
+	_, err = ledger.Apply(Transaction{Entries: []Entry{{
+		ResourceID: "founder.reputation",
+		Delta:      decimal.One,
+	}}})
+	if !errors.Is(err, ErrResourceScope) {
+		t.Fatalf("error = %v, want ErrResourceScope", err)
+	}
+	if _, err := NewLedger(catalog, Scope("universe")); !errors.Is(err, ErrInvalidTransaction) {
+		t.Fatalf("invalid scope error = %v, want ErrInvalidTransaction", err)
 	}
 }

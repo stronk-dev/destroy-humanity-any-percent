@@ -124,8 +124,11 @@ cannot contain executable formulas or callbacks.
 
 ### K3 — The ledger is the authoritative mutation boundary
 
-A ledger is constructed from a catalog and begins with every resource's declared `initial` value.
-Its public responsibilities are:
+A ledger is constructed from a catalog for exactly one declared scope and begins with every
+resource in that scope at its declared `initial` value. Company, Founder, World, and Guild
+balances therefore live in separate ledgers owned by their respective future actors. A primitive
+transaction cannot cross scopes; later cross-scope actions require an explicit coordinating
+command that validates all participating ledgers. Its public responsibilities are:
 
 - **queries:** look up definitions, read one balance, or take a canonical-string snapshot;
 - **commands:** apply a transaction containing one or more `(resource_id, delta)` entries;
@@ -137,7 +140,7 @@ RFC and must enter through a separately validated constructor or restore path.
 
 `Apply` performs these steps:
 
-1. validate all entries and resource references;
+1. validate all entries, resource references, and the ledger scope;
 2. sum all entries for each resource at full intermediate precision;
 3. add each net delta to its prior balance and quantize exactly once to 12 significant digits;
 4. validate every prospective result against finite-state, minimum, and hardcap invariants;

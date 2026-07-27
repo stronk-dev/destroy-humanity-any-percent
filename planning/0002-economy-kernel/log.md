@@ -40,3 +40,6 @@ Append-only. A fresh agent should be able to resume from this file and `plan.md`
 - The normalization follow-up is implemented and archived in commit `708d6a1`.
 - `make verify` passes with 6,321 Node tests and 18,963 browser tests across Chromium, Firefox,
   and WebKit. Go economy tests include the million-source regression and negative control.
+- Pre-archive review tightened ledger ownership: each ledger now has exactly one catalog scope.
+  It cannot expose or mutate Company/Founder/World/Guild balances across that boundary; later
+  cross-scope actions must coordinate explicit ledgers above the kernel.
