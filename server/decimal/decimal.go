@@ -152,18 +152,16 @@ func fromFiniteNumber(value float64) Decimal {
 	if value == 0 {
 		return Zero
 	}
-	exponent := math.Floor(math.Log10(math.Abs(value)))
-	if exponent < math.MinInt64 || exponent > math.MaxInt64 {
+	parts := strings.Split(strconv.FormatFloat(value, 'e', -1, 64), "e")
+	if len(parts) != 2 {
 		return NaN
 	}
-	e := int64(exponent)
-	var mantissa float64
-	if e == -324 {
-		mantissa = value * 10 / 1e-323
-	} else {
-		mantissa = value / math.Pow10(int(e))
+	mantissa, errMantissa := strconv.ParseFloat(parts[0], 64)
+	exponent, errExponent := strconv.ParseInt(parts[1], 10, 64)
+	if errMantissa != nil || errExponent != nil {
+		return NaN
 	}
-	return New(mantissa, e)
+	return New(mantissa, exponent)
 }
 
 func fromComponent(sign float64, layer int, mag float64) Decimal {
