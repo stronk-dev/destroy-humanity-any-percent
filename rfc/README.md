@@ -9,6 +9,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [RFC-0002: Economy Kernel](0002-economy-constants-and-ceilings.md) | implementing | [Numeric Core](archive/0001-numeric-core.md) |
+| [Numeric Normalization Carry](numeric-normalization-carry.md) | implementing | [Numeric Core](archive/0001-numeric-core.md) |
 
 ## Archive
 

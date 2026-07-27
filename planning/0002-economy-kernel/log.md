@@ -17,3 +17,11 @@ Append-only. A fresh agent should be able to resume from this file and `plan.md`
   per-generator-class curve parameters are declarative data.
 - RFC accepted in commit `9076057`; implementation started immediately afterward.
 - No `DESIGN-GAP` currently blocks the bounded kernel.
+
+## 2026-07-28 — Numeric dependency defect
+
+- Implemented the first catalog, curve, ledger, schema, fixture, and test pass locally.
+- The million-source aggregation gate exposed a numeric-core invariant bug after ten equal
+  `1e87` additions: the Go normalizer returned mantissa `10`, exponent `87`.
+- Split the conformance repair into `rfc/numeric-normalization-carry.md`; RFC-0002 remains bounded
+  and resumes after that dependency is green.
