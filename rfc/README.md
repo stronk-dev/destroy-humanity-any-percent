@@ -8,7 +8,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | RFC | Status | Parent |
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
-| [RFC-0002: Economy Constants, Ceilings & Accrual Policy](0002-economy-constants-and-ceilings.md) | draft | [Numeric Core](archive/0001-numeric-core.md) |
+| [RFC-0002: Economy Kernel](0002-economy-constants-and-ceilings.md) | accepted | [Numeric Core](archive/0001-numeric-core.md) |
 
 ## Archive
 

@@ -28,10 +28,14 @@ Cross-cutting systems on their own clocks:
 ### 2.1 Generator cost curve
 
 ```
-price(n) = base × r^n          r = 1.13 (band 1.07–1.15; CC uses 1.15, AdCap 1.07)
+price(n) = base × r^n
 ```
 
-- 1.13 → price doubles every ~5.7 purchases. Slightly gentler than Cookie Clicker because our multiplier stack is thinner early (we stagger systems across tiers).
+- `r` is configured per generator class, never globally in engine code. **1.13 is the current
+  provisional balance baseline** (research band 1.07–1.15; CC uses 1.15, AdCap 1.07), not a
+  launch commitment; the balance harness selects shipped values per class.
+- At 1.13, price doubles every ~5.7 purchases. This baseline is slightly gentler than Cookie
+  Clicker because our multiplier stack is thinner early (we stagger systems across tiers).
 - Generator ladder steps ~×12 cost / ~×6.5 output between generator types (CC's proven cadence), with deliberate cadence breaks at tier boundaries (the last generator of each tier is a gated splurge).
 - **Milestone multipliers at 25 / 50 / 100 / 150 / 200… owned** (Math of Idle Games) so old generators never die; Cursor-style exception generators (one per tier scales per-other-building, a different curve in the same slot).
 - Implement geometric-series bulk-buy and max-affordable inverse in the Decimal type from day one:
