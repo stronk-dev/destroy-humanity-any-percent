@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://destroy-humanity-any-percent.invalid/schema/economy-v1.json",
+  "title": "Cloud Clicker economy catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "resources", "generator_classes"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "resources": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/resource" }
+    },
+    "generator_classes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/generator_class" }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)*$"
+    },
+    "decimal": {
+      "type": "string",
+      "pattern": "^(?:0|-?[1-9](?:\\.\\d{0,10}[1-9])?e(?:0|-?[1-9]\\d*))$"
+    },
+    "hardcap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "reason_key"],
+      "properties": {
+        "amount": { "$ref": "#/$defs/decimal" },
+        "reason_key": { "$ref": "#/$defs/id" }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "scope", "numeric_kind", "initial", "minimum", "hardcap"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "scope": { "enum": ["company", "founder", "world", "guild"] },
+        "numeric_kind": { "const": "decimal" },
+        "initial": { "$ref": "#/$defs/decimal" },
+        "minimum": { "$ref": "#/$defs/decimal" },
+        "hardcap": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/hardcap" }
+          ]
+        }
+      }
+    },
+    "constant_curve": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": { "kind": { "const": "constant" } }
+    },
+    "linear_curve": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "step"],
+      "properties": {
+        "kind": { "const": "linear" },
+        "step": { "$ref": "#/$defs/decimal" }
+      }
+    },
+    "geometric_curve": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ratio"],
+      "properties": {
+        "kind": { "const": "geometric" },
+        "ratio": { "$ref": "#/$defs/decimal" }
+      }
+    },
+    "price": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource_id", "base", "curve"],
+      "properties": {
+        "resource_id": { "$ref": "#/$defs/id" },
+        "base": { "$ref": "#/$defs/decimal" },
+        "curve": {
+          "oneOf": [
+            { "$ref": "#/$defs/constant_curve" },
+            { "$ref": "#/$defs/linear_curve" },
+            { "$ref": "#/$defs/geometric_curve" }
+          ]
+        }
+      }
+    },
+    "generator_class": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "price"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "price": { "$ref": "#/$defs/price" }
+      }
+    }
+  }
+}

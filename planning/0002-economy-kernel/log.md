@@ -25,3 +25,18 @@ Append-only. A fresh agent should be able to resume from this file and `plan.md`
   `1e87` additions: the Go normalizer returned mantissa `10`, exponent `87`.
 - Split the conformance repair into `rfc/numeric-normalization-carry.md`; RFC-0002 remains bounded
   and resumes after that dependency is green.
+
+## 2026-07-28 — Kernel implementation checkpoint
+
+- Added the version-1 JSON Schema at `balance/economy.schema.json` and shared catalog/curve
+  fixtures at `testdata/economy-kernel.json`. The fixture is deliberately test data, not shipped
+  balance.
+- Implemented strict Go and TypeScript catalog loaders with exact field sets, canonical Decimal
+  strings, stable IDs, duplicate/reference checks, explicit caps, and closed curve tags.
+- Implemented constant, linear, and geometric bulk quotes plus verified max-affordable search in
+  both runtimes. Shared vectors cover ratios `1.10` and `1.13` and an exponent above 100,000.
+- Implemented the authoritative Go ledger with read queries, aggregate-before-quantize atomic
+  transactions, invariant validation, and deterministic receipts.
+- The normalization follow-up is implemented and archived in commit `708d6a1`.
+- `make verify` passes with 6,321 Node tests and 18,963 browser tests across Chromium, Firefox,
+  and WebKit. Go economy tests include the million-source regression and negative control.

@@ -1,0 +1,136 @@
+{
+  "version": 1,
+  "catalog": {
+    "schema_version": 1,
+    "resources": [
+      {
+        "id": "company.cash",
+        "scope": "company",
+        "numeric_kind": "decimal",
+        "initial": "0",
+        "minimum": "0",
+        "hardcap": {
+          "amount": "1e1000000",
+          "reason_key": "resource.company_cash.cap.depleted"
+        }
+      },
+      {
+        "id": "company.users",
+        "scope": "company",
+        "numeric_kind": "decimal",
+        "initial": "0",
+        "minimum": "0",
+        "hardcap": null
+      },
+      {
+        "id": "founder.reputation",
+        "scope": "founder",
+        "numeric_kind": "decimal",
+        "initial": "0",
+        "minimum": "0",
+        "hardcap": null
+      }
+    ],
+    "generator_classes": [
+      {
+        "id": "generator.constant",
+        "price": {
+          "resource_id": "company.cash",
+          "base": "1e2",
+          "curve": { "kind": "constant" }
+        }
+      },
+      {
+        "id": "generator.linear",
+        "price": {
+          "resource_id": "company.cash",
+          "base": "1e2",
+          "curve": { "kind": "linear", "step": "2.5e1" }
+        }
+      },
+      {
+        "id": "generator.geometric_slow",
+        "price": {
+          "resource_id": "company.cash",
+          "base": "1e2",
+          "curve": { "kind": "geometric", "ratio": "1.1e0" }
+        }
+      },
+      {
+        "id": "generator.geometric_baseline",
+        "price": {
+          "resource_id": "company.cash",
+          "base": "1e2",
+          "curve": { "kind": "geometric", "ratio": "1.13e0" }
+        }
+      },
+      {
+        "id": "generator.geometric_huge",
+        "price": {
+          "resource_id": "company.cash",
+          "base": "1e100000",
+          "curve": { "kind": "geometric", "ratio": "1.13e0" }
+        }
+      }
+    ]
+  },
+  "curve_vectors": [
+    {
+      "generator_id": "generator.constant",
+      "owned": 7,
+      "count": 5,
+      "cash": "1e3",
+      "expect_cost": "5e2",
+      "expect_affordable": 10
+    },
+    {
+      "generator_id": "generator.linear",
+      "owned": 3,
+      "count": 4,
+      "cash": "1e3",
+      "expect_cost": "8.5e2",
+      "expect_affordable": 4
+    },
+    {
+      "generator_id": "generator.geometric_slow",
+      "owned": 0,
+      "count": 10,
+      "cash": "1e4",
+      "expect_cost": "1.5937424601e3",
+      "expect_affordable": 25
+    },
+    {
+      "generator_id": "generator.geometric_baseline",
+      "owned": 10,
+      "count": 5,
+      "cash": "1e4",
+      "expect_cost": "2.19977152906e3",
+      "expect_affordable": 12
+    },
+    {
+      "generator_id": "generator.geometric_huge",
+      "owned": 1000,
+      "count": 3,
+      "cash": "1e100055",
+      "expect_cost": "4.08134088406e100053",
+      "expect_affordable": 20
+    }
+  ],
+  "invalid_cases": [
+    "unsupported-version",
+    "missing-root-field",
+    "unknown-root-field",
+    "missing-hardcap",
+    "unknown-nested-field",
+    "duplicate-resource-id",
+    "duplicate-generator-id",
+    "dangling-resource-id",
+    "invalid-id",
+    "invalid-scope",
+    "invalid-numeric-kind",
+    "invalid-decimal",
+    "invalid-bounds",
+    "invalid-curve-kind",
+    "invalid-curve-parameter"
+  ]
+}

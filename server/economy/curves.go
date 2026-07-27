@@ -1,0 +1,101 @@
+package economy
+
+import (
+	"errors"
+	"fmt"
+
+	"cloud-clicker/server/decimal"
+)
+
+var ErrInvalidCurveInput = errors.New("invalid cost-curve input")
+
+func (c *Catalog) BulkCost(generatorID string, owned, count int64) (decimal.Decimal, error) {
+	definition, exists := c.generatorByID[generatorID]
+	if !exists {
+		return decimal.NaN, fmt.Errorf("%w: unknown generator class %q", ErrInvalidCurveInput, generatorID)
+	}
+	return BulkCost(definition.Price, owned, count)
+}
+
+func (c *Catalog) MaxAffordable(generatorID string, cash decimal.Decimal, owned int64) (int64, error) {
+	definition, exists := c.generatorByID[generatorID]
+	if !exists {
+		return 0, fmt.Errorf("%w: unknown generator class %q", ErrInvalidCurveInput, generatorID)
+	}
+	return MaxAffordable(definition.Price, cash, owned)
+}
+
+func BulkCost(price PriceDefinition, owned, count int64) (decimal.Decimal, error) {
+	if err := validateQuoteInput(price, owned, count); err != nil {
+		return decimal.NaN, err
+	}
+	if count == 0 {
+		return decimal.Zero, nil
+	}
+
+	countValue := decimal.FromFloat64(float64(count))
+	var cost decimal.Decimal
+	switch price.Curve.Kind {
+	case CurveConstant:
+		cost = price.Base.Mul(countValue)
+	case CurveLinear:
+		ownedValue := decimal.FromFloat64(float64(owned))
+		first := price.Base.Add(price.Curve.Step.Mul(ownedValue))
+		triangle := countValue.
+			Mul(decimal.FromFloat64(float64(count - 1))).
+			Div(decimal.FromFloat64(2))
+		cost = first.Mul(countValue).Add(price.Curve.Step.Mul(triangle))
+	case CurveGeometric:
+		cost = decimal.SumGeometricSeries(count, price.Base, price.Curve.Ratio, owned)
+	default:
+		return decimal.NaN, fmt.Errorf("%w: unsupported curve kind %q", ErrInvalidCurveInput, price.Curve.Kind)
+	}
+	if !cost.IsStateValue() {
+		return decimal.NaN, fmt.Errorf("%w: cost is outside the finite Decimal domain", ErrInvalidCurveInput)
+	}
+	return cost, nil
+}
+
+func MaxAffordable(price PriceDefinition, cash decimal.Decimal, owned int64) (int64, error) {
+	if !cash.IsStateValue() || cash.Lt(decimal.Zero) || owned < 0 || owned > decimal.MaxExactInteger {
+		return 0, ErrInvalidCurveInput
+	}
+	if err := validateQuoteInput(price, owned, 0); err != nil {
+		return 0, err
+	}
+
+	high := decimal.MaxExactInteger - owned
+	low := int64(0)
+	for low < high {
+		middle := low + (high-low+1)/2
+		cost, err := BulkCost(price, owned, middle)
+		if err == nil && cost.Lte(cash) {
+			low = middle
+		} else {
+			high = middle - 1
+		}
+	}
+	return low, nil
+}
+
+func validateQuoteInput(price PriceDefinition, owned, count int64) error {
+	if owned < 0 || count < 0 || owned > decimal.MaxExactInteger || count > decimal.MaxExactInteger-owned ||
+		!price.Base.IsStateValue() || !price.Base.Gt(decimal.Zero) {
+		return ErrInvalidCurveInput
+	}
+	switch price.Curve.Kind {
+	case CurveConstant:
+		return nil
+	case CurveLinear:
+		if !price.Curve.Step.IsStateValue() || price.Curve.Step.Lt(decimal.Zero) {
+			return ErrInvalidCurveInput
+		}
+	case CurveGeometric:
+		if !price.Curve.Ratio.IsStateValue() || price.Curve.Ratio.Lt(decimal.One) {
+			return ErrInvalidCurveInput
+		}
+	default:
+		return ErrInvalidCurveInput
+	}
+	return nil
+}
