@@ -65,3 +65,16 @@
   reject non-finite gameplay state and saves.
 - RFC-0001 remains blocked pending approval of that contract. No RFC text or implementation was
   changed on the basis of the recommendation.
+
+## 2026-07-27 (numeric contract adopted)
+
+- RFC-0001 was amended in place while still implementing to adopt the researched
+  server-authoritative numeric contract. The parity DESIGN-GAP is resolved and implementation is
+  unblocked.
+- Clarified the executable edges before resuming: `Quantize(12)` is a named operation with a
+  coefficient-scaling, ties-to-even algorithm and edge vectors; cross-runtime integer counts are
+  capped at JavaScript's exact `2^53 - 1`; economy helper return types are integer/Decimal rather
+  than ambiguous; and tolerant vector comparisons use symmetric relative error for non-zero
+  finite results with exact zero and domain classification.
+- Updated the living plan and acceptance gates to match the amended RFC. The existing spike and
+  vector corpus now require rework; they are evidence, not accepted implementation.
