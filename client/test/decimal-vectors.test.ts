@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import fixtureJson from "../../testdata/decimal-vectors.json";
 import { affordGeometricSeries, sumGeometricSeries } from "../src/economy";
-import { canonicalString, classify, isStateValue, parseCanonical } from "../src/numeric";
+import { canonicalString, classify, isStateValue, parseCanonical, quantize } from "../src/numeric";
 
 interface Vector {
   assert: "exact" | "approx" | "decision";
@@ -14,9 +14,45 @@ interface Vector {
   owned?: string;
   expect: string;
   expectClass?: "finite" | "nan" | "positive-infinity" | "negative-infinity";
+  edge?: string;
 }
 
-const fixture = fixtureJson as { version: number; seed: number; vectors: Vector[] };
+interface Coverage {
+  operations: Record<string, number>;
+  classifications: Record<string, number>;
+  edges: string[];
+}
+
+const fixture = fixtureJson as { version: number; seed: number; coverage: Coverage; vectors: Vector[] };
+
+const requiredEdges = [
+  "div-zero",
+  "exp-finite",
+  "exp-float-underflow",
+  "exp-infinity",
+  "infinity-cancellation",
+  "infinity-times-zero",
+  "ln-negative",
+  "ln-zero",
+  "log10-negative",
+  "log10-zero",
+  "negative-infinity-input",
+  "positive-infinity-input",
+  "pow-negative-fractional",
+  "pow-negative-integer",
+  "pow-zero-negative",
+  "pow-zero-positive",
+  "pow-zero-zero",
+  "quantize-max-carry",
+  "quantize-min-carry",
+  "zero-div-zero",
+];
+
+function countsBy(values: string[]): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const value of values) counts[value] = (counts[value] ?? 0) + 1;
+  return counts;
+}
 
 function evaluateDecimal(vector: Vector): Decimal {
   const a = new Decimal(vector.a);
@@ -39,6 +75,8 @@ function evaluateDecimal(vector: Vector): Decimal {
     case "exp":
     case "floor":
       return a[vector.op]();
+    case "quantize":
+      return quantize(vector.a);
     case "sum":
       return sumGeometricSeries(Number(vector.a), vector.b, vector.ratio!, Number(vector.owned));
     default:
@@ -98,11 +136,28 @@ function expectDecision(vector: Vector): void {
 
 describe("shared decimal golden vectors", () => {
   it("contains the RFC minimum categorized coverage", () => {
-    expect(fixture.version).toBe(2);
+    expect(fixture.version).toBe(3);
     expect(fixture.vectors.length).toBeGreaterThanOrEqual(5_000);
     expect(new Set(fixture.vectors.map((vector) => vector.assert))).toEqual(
       new Set(["exact", "approx", "decision"]),
     );
+    expect(fixture.coverage.edges).toEqual(requiredEdges);
+    expect(fixture.coverage.edges).toEqual(
+      fixture.vectors.filter((vector) => vector.edge).map((vector) => vector.edge!).sort(),
+    );
+    expect(fixture.coverage.operations).toEqual(
+      countsBy(fixture.vectors.map((vector) => vector.op)),
+    );
+    expect(fixture.coverage.classifications).toEqual(
+      countsBy(
+        fixture.vectors
+          .filter((vector) => vector.expectClass)
+          .map((vector) => vector.expectClass!),
+      ),
+    );
+    for (const classification of ["nan", "positive-infinity", "negative-infinity"]) {
+      expect(fixture.coverage.classifications[classification]).toBeGreaterThan(0);
+    }
   });
 
   it.each(fixture.vectors)("$assert/$op($a, $b)", (vector) => {

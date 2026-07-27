@@ -19,12 +19,20 @@ type goldenVector struct {
 	Owned       string `json:"owned"`
 	Expect      string `json:"expect"`
 	ExpectClass string `json:"expectClass"`
+	Edge        string `json:"edge"`
+}
+
+type goldenCoverage struct {
+	Operations      map[string]int `json:"operations"`
+	Classifications map[string]int `json:"classifications"`
+	Edges           []string       `json:"edges"`
 }
 
 type goldenFile struct {
-	Version int            `json:"version"`
-	Seed    uint32         `json:"seed"`
-	Vectors []goldenVector `json:"vectors"`
+	Version  int            `json:"version"`
+	Seed     uint32         `json:"seed"`
+	Coverage goldenCoverage `json:"coverage"`
+	Vectors  []goldenVector `json:"vectors"`
 }
 
 func loadGoldenVectors(t testing.TB) goldenFile {
@@ -68,6 +76,8 @@ func vectorDecimal(t testing.TB, vector goldenVector) Decimal {
 		return a.Exp()
 	case "floor":
 		return a.Floor()
+	case "quantize":
+		return a.Quantize(CanonicalSignificantDigits)
 	case "sum":
 		owned := parseVectorInt(t, vector.Owned)
 		count := parseVectorInt(t, vector.A)
@@ -179,11 +189,54 @@ func assertDecision(t testing.TB, vector goldenVector) {
 
 func TestGoldenVectors(t *testing.T) {
 	fixture := loadGoldenVectors(t)
-	if fixture.Version != 2 {
-		t.Fatalf("got vector schema %d, want 2", fixture.Version)
+	if fixture.Version != 3 {
+		t.Fatalf("got vector schema %d, want 3", fixture.Version)
 	}
 	if len(fixture.Vectors) < 5_000 {
 		t.Fatalf("got %d vectors, want at least 5000", len(fixture.Vectors))
+	}
+	actualOperations := make(map[string]int)
+	actualClassifications := make(map[string]int)
+	actualEdges := make(map[string]bool)
+	for _, vector := range fixture.Vectors {
+		actualOperations[vector.Op]++
+		if vector.ExpectClass != "" {
+			actualClassifications[vector.ExpectClass]++
+		}
+		if vector.Edge != "" {
+			actualEdges[vector.Edge] = true
+		}
+	}
+	for operation, count := range actualOperations {
+		if fixture.Coverage.Operations[operation] != count {
+			t.Fatalf("operation coverage %q: metadata %d, actual %d", operation, fixture.Coverage.Operations[operation], count)
+		}
+	}
+	for classification, count := range actualClassifications {
+		if fixture.Coverage.Classifications[classification] != count {
+			t.Fatalf("classification coverage %q: metadata %d, actual %d", classification, fixture.Coverage.Classifications[classification], count)
+		}
+	}
+	for _, classification := range []string{"nan", "positive-infinity", "negative-infinity"} {
+		if fixture.Coverage.Classifications[classification] == 0 {
+			t.Fatalf("missing mandatory %q classification coverage", classification)
+		}
+	}
+	requiredEdges := []string{
+		"div-zero", "exp-finite", "exp-float-underflow", "exp-infinity",
+		"infinity-cancellation", "infinity-times-zero", "ln-negative", "ln-zero",
+		"log10-negative", "log10-zero", "negative-infinity-input", "positive-infinity-input",
+		"pow-negative-fractional", "pow-negative-integer", "pow-zero-negative",
+		"pow-zero-positive", "pow-zero-zero", "quantize-max-carry", "quantize-min-carry",
+		"zero-div-zero",
+	}
+	for _, edge := range requiredEdges {
+		if !actualEdges[edge] {
+			t.Fatalf("missing mandatory edge case %q", edge)
+		}
+	}
+	if len(actualEdges) != len(requiredEdges) {
+		t.Fatalf("got %d mandatory edge cases, want %d", len(actualEdges), len(requiredEdges))
 	}
 	for index, vector := range fixture.Vectors {
 		t.Run(strconv.Itoa(index)+"/"+vector.Op, func(t *testing.T) {
@@ -198,6 +251,14 @@ func TestGoldenVectors(t *testing.T) {
 				t.Fatalf("unknown assertion category %q", vector.Assert)
 			}
 		})
+	}
+}
+
+func TestEquivalentScientificCoefficients(t *testing.T) {
+	for _, source := range []string{"12.345e2", "0.12345e4", "1.2345e3"} {
+		if got := FromString(source).Quantize(CanonicalSignificantDigits).String(); got != "1.2345e3" {
+			t.Fatalf("quantize %q: got %q, want %q", source, got, "1.2345e3")
+		}
 	}
 }
 

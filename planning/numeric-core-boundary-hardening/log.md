@@ -18,3 +18,16 @@
   tests, strict TypeScript, and Go tests pass.
 - Next: add mandatory diagnostic/domain-edge vectors and bring any revealed Go behavior into
   parity with the pinned client.
+
+## 2026-07-27 (codex, session 1 — diagnostic parity)
+
+- Upgraded the deterministic fixture to schema 3 with operation/classification counts and 20
+  named mandatory edge cases. Tests recompute the metadata so it cannot become a stale claim.
+- Edge vectors exposed pinned-client behavior not covered by RFC-0001: division by zero,
+  zero-divided-by-zero, `0^negative`, infinity cancellation, and infinity-times-zero all produce
+  finite zero; log/ln of zero produce negative infinity; exponent overflow produces the signed
+  infinity sentinel. Ported those exact classifications/results to Go.
+- Clarified the active RFC: finite-zero library compatibility does not remove the obligation for
+  feature handlers to validate arithmetic domains before authorizing state transitions.
+- Node and Go suites pass the expanded corpus. Next: deterministic hash, browser matrix, vet,
+  fuzz, canonical docs, and archive closure.

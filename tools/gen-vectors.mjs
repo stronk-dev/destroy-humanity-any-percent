@@ -32,22 +32,21 @@ function roundHalfEven(value) {
 }
 
 function isStateValue(value) {
-  return (
-    Number.isFinite(value.mantissa) &&
-    Number.isSafeInteger(value.exponent) &&
-    Math.abs(value.exponent) <= maxExponent
-  );
+  if (
+    !Number.isFinite(value.mantissa) ||
+    !Number.isSafeInteger(value.exponent) ||
+    Math.abs(value.exponent) > maxExponent
+  ) return false;
+  if (value.mantissa === 0) return value.exponent === 0;
+  return Math.abs(value.mantissa) >= 1 && Math.abs(value.mantissa) < 10;
 }
 
 function quantize(value) {
-  const source = value;
-  value = new Decimal(source);
+  value = new Decimal(value).normalize();
   if (!isStateValue(value) || value.eq(0)) return value;
   const factor = 10 ** (significantDigits - 1);
-  const direct = typeof source === "string" ? source.match(/^(-?[0-9]+(?:\.[0-9]+)?)e(-?[0-9]+)$/) : null;
-  const inputCoefficient = direct ? Number(direct[1]) : value.mantissa;
-  let coefficient = roundHalfEven(Math.abs(inputCoefficient) * factor) / factor;
-  let exponent = direct ? Number(direct[2]) : value.exponent;
+  let coefficient = roundHalfEven(Math.abs(value.mantissa) * factor) / factor;
+  let exponent = value.exponent;
   if (coefficient >= 10) {
     coefficient = 1;
     exponent += 1;
@@ -69,6 +68,9 @@ function canonicalString(value) {
 
 function classify(value) {
   if (Number.isNaN(value.mantissa) || Number.isNaN(value.exponent)) return "nan";
+  if (value.mantissa !== 0 && value.exponent >= 9e15) {
+    return value.mantissa < 0 ? "negative-infinity" : "positive-infinity";
+  }
   if (!Number.isFinite(value.mantissa) || !Number.isFinite(value.exponent)) {
     return value.mantissa < 0 ? "negative-infinity" : "positive-infinity";
   }
@@ -163,6 +165,52 @@ function verifiedAffordable(cash, base, ratio, owned, ceiling = 1_000) {
 }
 
 const vectors = [];
+
+function evaluateEdge(op, a, b) {
+  const value = new Decimal(a);
+  switch (op) {
+    case "add":
+    case "mul":
+    case "div":
+      return value[op](new Decimal(b));
+    case "pow":
+      return value.pow(Number(b));
+    case "log10":
+    case "ln":
+      return new Decimal(value[op]());
+    case "exp":
+      return value.exp();
+    case "quantize":
+      return quantize(a);
+    default:
+      throw new Error(`unknown edge operation: ${op}`);
+  }
+}
+
+for (const [edge, op, a, b = ""] of [
+  ["pow-zero-zero", "pow", "0", "0"],
+  ["pow-zero-positive", "pow", "0", "2"],
+  ["pow-zero-negative", "pow", "0", "-1"],
+  ["pow-negative-integer", "pow", "-2e0", "3"],
+  ["pow-negative-fractional", "pow", "-2e0", "0.5"],
+  ["div-zero", "div", "1e0", "0"],
+  ["zero-div-zero", "div", "0", "0"],
+  ["log10-zero", "log10", "0"],
+  ["log10-negative", "log10", "-1e0"],
+  ["ln-zero", "ln", "0"],
+  ["ln-negative", "ln", "-1e0"],
+  ["exp-float-underflow", "exp", "-1000e0"],
+  ["exp-finite", "exp", "1000e0"],
+  ["exp-infinity", "exp", "2.1e16"],
+  ["positive-infinity-input", "add", "Infinity", "1e0"],
+  ["negative-infinity-input", "mul", "-Infinity", "2e0"],
+  ["infinity-cancellation", "add", "Infinity", "-Infinity"],
+  ["infinity-times-zero", "mul", "Infinity", "0"],
+  ["quantize-max-carry", "quantize", "9.999999999995e8999999999999999"],
+  ["quantize-min-carry", "quantize", "9.999999999995e-8999999999999999"],
+]) {
+  vectors.push(approximateVector(op, a, b, evaluateEdge(op, a, b), { edge }));
+}
 
 for (const [input, expect] of [
   ["0", "0"],
@@ -280,5 +328,18 @@ for (const ratioNumber of [1.07, 1.13, 1.15]) {
   }
 }
 
-await writeFile(outputPath, `${JSON.stringify({ version: 2, seed, vectors }, null, 2)}\n`, "utf8");
+function countsBy(values) {
+  const counts = {};
+  for (const value of values) counts[value] = (counts[value] ?? 0) + 1;
+  return Object.fromEntries(Object.entries(counts).sort(([a], [b]) => a.localeCompare(b)));
+}
+
+const coverage = {
+  operations: countsBy(vectors.map((vector) => vector.op)),
+  classifications: countsBy(vectors.filter((vector) => vector.expectClass).map((vector) => vector.expectClass)),
+  edges: vectors.filter((vector) => vector.edge).map((vector) => vector.edge).sort(),
+};
+
+await writeFile(outputPath, `${JSON.stringify({ version: 3, seed, coverage, vectors }, null, 2)}\n`, "utf8");
 console.log(`wrote ${vectors.length} categorized vectors to ${outputPath}`);
+console.log(JSON.stringify(coverage));

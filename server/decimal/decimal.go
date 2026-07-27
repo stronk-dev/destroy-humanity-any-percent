@@ -204,7 +204,7 @@ func (d Decimal) Add(other Decimal) Decimal {
 	}
 	if math.IsInf(d.mantissa, 0) || math.IsInf(other.mantissa, 0) {
 		if math.IsInf(d.mantissa, 0) && math.IsInf(other.mantissa, 0) && math.Signbit(d.mantissa) != math.Signbit(other.mantissa) {
-			return NaN
+			return Zero
 		}
 		if math.IsInf(d.mantissa, 0) {
 			return d
@@ -240,7 +240,7 @@ func (d Decimal) Mul(other Decimal) Decimal {
 		return NaN
 	}
 	if (math.IsInf(d.mantissa, 0) && other.mantissa == 0) || (d.mantissa == 0 && math.IsInf(other.mantissa, 0)) {
-		return NaN
+		return Zero
 	}
 	if math.IsInf(d.mantissa, 0) || math.IsInf(other.mantissa, 0) {
 		return Decimal{mantissa: math.Copysign(math.Inf(1), d.mantissa*other.mantissa)}
@@ -252,8 +252,11 @@ func (d Decimal) Mul(other Decimal) Decimal {
 }
 
 func (d Decimal) reciprocal() Decimal {
-	if d.IsNaN() || d.mantissa == 0 {
+	if d.IsNaN() {
 		return NaN
+	}
+	if d.mantissa == 0 {
+		return Zero
 	}
 	if math.IsInf(d.mantissa, 0) {
 		return Zero
@@ -266,16 +269,22 @@ func (d Decimal) Div(other Decimal) Decimal { return d.Mul(other.reciprocal()) }
 
 // Log10 returns the base-10 logarithm as a Decimal.
 func (d Decimal) Log10() Decimal {
-	if d.IsNaN() || d.mantissa <= 0 {
+	if d.IsNaN() || d.mantissa < 0 {
 		return NaN
+	}
+	if d.mantissa == 0 {
+		return NegInf
 	}
 	return FromFloat64(float64(d.exponent) + math.Log10(d.mantissa))
 }
 
 // Ln returns the natural logarithm as a Decimal.
 func (d Decimal) Ln() Decimal {
-	if d.IsNaN() || d.mantissa <= 0 {
+	if d.IsNaN() || d.mantissa < 0 {
 		return NaN
+	}
+	if d.mantissa == 0 {
+		return NegInf
 	}
 	return FromFloat64(2.302585092994045 * (float64(d.exponent) + math.Log10(d.mantissa)))
 }
@@ -284,22 +293,16 @@ func pow10(value float64) Decimal {
 	if math.IsNaN(value) {
 		return NaN
 	}
-	if math.IsInf(value, 1) {
+	if math.IsInf(value, 1) || value > float64(maxExponent) {
 		return Inf
 	}
-	if math.IsInf(value, -1) {
+	if math.IsInf(value, -1) || value < -float64(maxExponent) {
 		return Zero
 	}
 	if math.Trunc(value) == value {
-		if math.Abs(value) > float64(maxExponent) {
-			return NaN
-		}
 		return Decimal{mantissa: 1, exponent: int64(value)}
 	}
 	exponent := math.Trunc(value)
-	if math.Abs(exponent) > float64(maxExponent) {
-		return NaN
-	}
 	return New(math.Pow(10, math.Mod(value, 1)), int64(exponent))
 }
 
@@ -307,6 +310,12 @@ func pow10(value float64) Decimal {
 func (d Decimal) Pow(power float64) Decimal {
 	if math.IsNaN(power) || d.IsNaN() {
 		return NaN
+	}
+	if d.mantissa == 0 {
+		if power == 0 {
+			return One
+		}
+		return Zero
 	}
 	exponentProduct := float64(d.exponent) * power
 	if math.Trunc(exponentProduct) == exponentProduct && math.Abs(exponentProduct) <= jsMaxInteger {

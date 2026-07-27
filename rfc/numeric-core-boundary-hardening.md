@@ -87,7 +87,11 @@ diagnostic edge behavior. Add explicit shared vectors for at least:
 - quantization carry at both gameplay exponent boundaries.
 
 The Go port must match the expected value or exact diagnostic classification for every vector.
-No diagnostic result may pass `IsStateValue`, `isStateValue`, or canonical parsing.
+NaN and infinity diagnostic results may not pass `IsStateValue`, `isStateValue`, or canonical
+parsing. The pinned library defines division by zero and `0` raised to a negative power as
+finite zero; the Go port mirrors that result for compatibility. Feature-level handlers must
+validate operation domains before calculation and must never treat those library edge results
+as authorization for gameplay state transitions.
 
 ### 5. Corpus and property strengthening
 
@@ -130,3 +134,6 @@ validation prevent those diagnostics from becoming gameplay state.
 - 2026-07-27: drafted from the post-RFC-0001 foundation audit at the owner's request.
 - 2026-07-27: accepted by owner direction (perfect numeric foundation before downstream
   systems) and moved to implementing.
+- 2026-07-27: clarified the executable domain-edge contract after vectors exposed the pinned
+  library's finite-zero results for division by zero and `0` to a negative power. These remain
+  compatibility behavior, not valid unguarded gameplay domains.
