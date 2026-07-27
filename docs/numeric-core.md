@@ -90,3 +90,15 @@ and affordable counts are exact.
 Tetration and layered numbers are not implemented. They are unnecessary for the accepted game
 design and require a new RFC if future balance work approaches the layer-0 exponent boundary.
 Player-facing number notation is also separate from this storage and calculation contract.
+
+## Known boundary gaps
+
+The normal canonical gameplay path is verified, but a post-implementation audit found client
+boundary cases involving non-normalized scientific coefficients, deliberately unsafe/mutated
+`break_infinity.js` objects, and diagnostic infinity classification. Cross-runtime diagnostic
+coverage also needs explicit zero/division/logarithm/overflow cases. These values are already
+rejected from authoritative state, so existing canonical values are unaffected.
+
+The active [Numeric Core Boundary Hardening RFC](../rfc/numeric-core-boundary-hardening.md)
+specifies the required fixes and regression gates. This section must be removed or replaced by
+the corrected canonical behavior when that follow-up is implemented.
