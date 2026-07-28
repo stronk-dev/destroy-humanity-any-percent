@@ -1,121 +1,180 @@
 # RFC: Save Layer & Migrations
 
 - **Status:** draft
-- **Author:** Marco (drafted by Claude)
+- **Author:** Marco (drafted by Claude, revised by Codex)
 - **Created:** 2026-07-28
-- **Design refs:** `design/06-tech.md §1.7`, `design/02-economy-balancing.md §1` (the four scopes), `design/07-roadmap.md` Phase 0
-- **Research:** `design/research/tech-stack.md §1.7`, Profectus + Antimatter Dimensions source reading, `design/research/adaptive-balancing.md` (Balance Epoch), `design/research/morality-systems.md` (the `New Founder` requirement)
-- **Depends on:** RFC-0001 (implemented), RFC-0002 Economy Kernel (implemented — its ledger has no persistence path by design)
-- **Planning:** `planning/save-layer-and-migrations/` (on implementing)
+- **Design refs:** `design/06-tech.md §database, §anti-cheat`, `design/02-economy-balancing.md §1`, `design/07-roadmap.md` Phase 0
+- **Research:** `design/research/tech-stack.md §1.7`, Profectus and Antimatter Dimensions source reading, `design/research/adaptive-balancing.md` (Balance Epoch)
+- **Depends on:** RFC-0001 and RFC-0002 (implemented)
+- **Planning:** `planning/save-layer-and-migrations/` (once implementing)
 
 ## Summary
 
-RFC-0002 built an authoritative in-memory ledger and **deliberately omitted persistence**: it has no public balance setter, and states that loading persisted balances "must enter through a separately validated constructor or restore path." This RFC is that path, plus the versioning and migration chain that has to exist from the first commit rather than be retrofitted.
+RFC-0002 built an authoritative in-memory ledger and deliberately omitted persistence. This RFC
+defines its validated restore path, owner-aware Postgres revision streams, and the migration chain
+that must exist from the first save version.
 
-It also closes a coupling that is currently **true by accident**: RFC-0001 defined a canonical wire grammar, and saves will contain those strings. **Nothing says the wire grammar is also the persistence grammar.** If this RFC invents its own envelope we get two grammars for the same values and a migration problem on day one.
+It also makes an implicit coupling explicit: a saved Decimal uses the RFC-0001 canonical wire
+grammar. A save is a wire payload at rest, not a second numeric format.
 
 ## Motivation
 
-Save corruption is the one class of bug an idle game cannot recover from socially. A player who loses a month of progress does not come back, and "we restored from backup" is not available when the state *is* the game.
+The Economy Kernel is complete but cannot survive a process restart. Save versioning cannot be
+retrofitted safely after players already possess unversioned state, and poisoned large-number
+values must never become the newest durable revision.
 
-Three specific things force this RFC now:
+This RFC is bounded to persistence mechanics. It does not decide account, gameplay, or leaderboard
+policy.
 
-1. **The Economy Kernel is complete but unpersistable.** Nothing else can be built on top until state survives a restart.
-2. **Migration chains must start at commit #1.** Antimatter Dimensions and Profectus both demonstrate that a save format acquires an unbroken chain of migrations from its first shipped version; there is no later moment when adding one is cheaper.
-3. **`design/research/morality-systems.md` escalated a requirement that lands here:** because we are server-authoritative, **we took away the player's save folder.** A single-player idle game lets you delete a file and start over. We must provide that affordance explicitly or we have silently removed it.
-
-**Out of scope:** leaderboard storage and the Balance Epoch's *enforcement* semantics (leaderboard RFC — D6 reserves the field only); offline progression maths (production engine RFC); anti-cheat forensics beyond the audit log's existence; client-side caching.
+**Out of scope, with owners:** account and Founder lifecycle, including the free `New Founder`
+action (a Founder-lifecycle follow-up; this storage shape supports multiple and archived founders);
+the append-only gameplay event log (intent/API RFC); leaderboard storage and Balance Epoch
+enforcement (leaderboard RFC); offline progression maths (production-engine RFC); client caching.
 
 ## Specification
 
-### D1 — The canonical grammar is the persistence grammar
+### D1 — Canonical numeric grammar
 
-**NORMATIVE: every `Decimal` in a save is an RFC-0001 canonical wire string.** No JSON numbers, no alternate encoding, no per-field precision. Parse → quantize → re-serialize is exact and idempotent, so a save round-trip is a no-op on unchanged values.
+**NORMATIVE: every Decimal in a save is an RFC-0001 canonical wire string.** No JSON numbers,
+alternate encoding, or field-specific precision. Parse, quantize, and reserialize is exact and
+idempotent, so an unchanged save round-trip is a byte-for-byte no-op for every numeric value.
 
-This is not a new decision; it is the *writing down* of one that was implicit. **A save is a wire payload at rest.** Integer counts follow contract §1: exact, capped at `2^53 − 1`, and stringified where JSON-number coercion could reach them.
+Integer counts are exact JSON integers in the inclusive range `0..2^53 − 1`. Decimal fields are
+always strings; integer fields are never Decimal strings.
 
-### D2 — Storage shape
+### D2 — Owner-aware revision streams
 
 ```sql
-saves (
-  player_id      uuid    not null,
-  scope          text    not null,   -- 'company' | 'founder' | 'world' | 'guild'
-  version        int     not null,   -- save-format version, not a save counter
-  revision       bigint  not null,   -- monotonic per (player_id, scope)
-  state          jsonb   not null,
-  constants_hash text    not null,   -- D6
-  updated_at     timestamptz not null default now(),
-  primary key (player_id, scope, revision)
+save_streams (
+  id          uuid primary key,
+  owner_kind  text not null, -- 'founder' | 'guild' | 'world'
+  owner_id    uuid not null,
+  scope       text not null, -- 'company' | 'founder' | 'guild' | 'world'
+  archived_at timestamptz null,
+  created_at  timestamptz not null default now(),
+  unique (owner_kind, owner_id, scope)
+);
+
+save_revisions (
+  stream_id      uuid references save_streams(id),
+  revision       bigint not null,
+  version        int not null,
+  state          jsonb not null,
+  constants_hash text not null,
+  created_at     timestamptz not null default now(),
+  primary key (stream_id, revision)
 );
 ```
 
-**NORMATIVE:**
-- **One row per scope, not one blob per player.** `design/02 §1` defines four scopes with different lifetimes — Company resets on Exit, Founder persists, World is server-owned, Guild is shared. A single blob would make a prestige a rewrite of data it must not touch.
-- **Keep the last 5 revisions per (player, scope);** prune older on write. This is the entire disaster-recovery story and it is worth its storage.
-- A thin **append-only `events`** table records purchases, prestiges, and match results — **not clicks.** Forensics and rollback, not analytics.
+Each lifetime is a separate revision stream. Company and Founder streams are owned by a `founder`
+UUID, Guild by a `guild` UUID, and World by a `world` UUID. Any other owner/scope pairing is
+rejected. A player's account-to-active-Founder relationship belongs to the future account/Founder
+RFC; persistence does not collapse every founder into a player UUID.
 
-### D3 — The NaN guard is a persistence invariant, not a check
+Keep the latest five revisions per stream. Insert and pruning happen in the same transaction.
+Archiving marks a stream read-only; the persistence API has no hard-delete operation.
 
-**NORMATIVE: a save containing a non-finite value is rejected at the persistence boundary and the transaction fails without mutating stored state.** RFC-0001 §5 already makes non-finite values invalid gameplay state; this RFC makes the database the place that cannot be lied to.
+Version 1 state has one exact envelope:
 
-This is Profectus's rule and it is load-bearing: **once a NaN is persisted, every subsequent load re-poisons the session,** and the player's save is unrecoverable. Rejecting the write costs one failed request; accepting it costs the account.
+```json
+{"balances":{"company.cash":"1.23e4"}}
+```
 
-The rejection path must **log the offending field path and the intent that produced it.** A NaN reaching this boundary is an invariant violation upstream, and a silent 500 discards the only evidence.
+`balances` contains exactly the resources declared for the stream's scope in the referenced
+catalog: no missing IDs, extra IDs, JSON numbers, or non-canonical strings. Later state fields
+require a save-version bump and migration.
 
-### D4 — Versioning and the migration chain
+### D3 — Non-finite values cannot cross the persistence boundary
 
-**NORMATIVE:**
-- `version` starts at **1** and increments on any change to state *shape or semantics*. Adding an optional field with a safe default is a version bump; it is cheap, and version numbers are free.
-- Migrations are an **ordered, append-only chain of pure functions** `migrate_N_to_N+1(state) -> state`. **No migration is ever edited after release** — a defective migration is fixed by appending a corrective one, because players' saves have already passed through the original.
-- **Loading a save runs every migration from its stored version to current, in order.** Loading is the only path; there is no "current-version fast path" that could diverge.
-- **Forward-incompatibility is explicit:** a save with `version` greater than the binary's is **refused with a clear message**, never best-effort parsed. This is the rollback case, and guessing corrupts.
+A save containing any invalid Decimal is rejected before the database transaction mutates state.
+Validation applies to known Decimal fields: `"NaN"` is syntactically valid JSON but invalid saved
+state. The last good revision remains current.
 
-**Test gate:** a corpus of real saves at every historical version, migrated to current on every CI run. The corpus only grows.
+The save command carries a mechanical `cause` string and optional intent ID. Rejection logs that
+context plus the offending JSON field path. A non-finite value here is an upstream invariant
+violation, not an ordinary user error.
+
+### D4 — Versioning and migration chain
+
+- Version starts at `1` and increments on every state-shape or state-semantics change, including an
+  optional field with a default.
+- Migrations are an ordered append-only chain of pure functions
+  `migrate_N_to_N+1(state) -> state`. A released migration is never edited; repairs append a new
+  migration.
+- Every load enters one migration dispatcher. It applies each step from stored version to current;
+  a current-version save enters the same dispatcher and performs zero steps.
+- A future version is refused explicitly, never best-effort parsed.
+- A checked-in corpus contains at least one save from every historical version and only grows.
 
 ### D5 — Restore is a validated constructor
 
-RFC-0002 K3 forbids a public balance setter. **NORMATIVE:** restore builds a ledger by (1) loading the catalog, (2) validating every persisted balance against that catalog's finite-state, minimum and hardcap invariants, and (3) constructing the ledger with those values — **rejecting the whole save if any single balance fails.**
+RFC-0002 forbids a public balance setter. Restore loads the catalog identified by
+`constants_hash`, migrates state, validates the exact envelope and owner/scope pairing, then
+constructs a ledger only if every balance satisfies the catalog's finite-state, minimum, hardcap,
+and scope invariants.
 
-A save that references a resource the catalog no longer defines is a **migration failure, not a silently dropped field.** Silent drops are how a player's progress disappears with no error anywhere.
+One invalid balance rejects the whole save. A resource absent from the referenced catalog is a
+migration error, not a silently dropped field. The public ledger mutation API remains unchanged.
 
-### D6 — `constants_hash` (the Balance Epoch seam)
+### D6 — Balance artifact identity
 
-**NORMATIVE: every save row records the content hash of the balance catalog under which it was written.** This RFC stores and propagates it; it defines no policy.
+Every save revision records the balance catalog under which it was written. `constants_hash` is
+`sha256:` followed by 64 lowercase hexadecimal digits, computed over the exact catalog artifact
+bytes accepted by the loader. Reformatting that artifact intentionally changes its identity.
 
-`design/research/adaptive-balancing.md` proposes the **Balance Epoch**: content-addressed balance files with the hash stamped on runs, so leaderboards freeze per epoch and **a silent nerf becomes structurally impossible.** That policy belongs to the leaderboard RFC. But the field must exist *now*, because it cannot be backfilled — a save written today without it can never be attributed to an epoch later.
+This RFC stores and propagates the identity but defines no leaderboard policy. Historical
+attribution cannot be reconstructed reliably when the exact artifact was not recorded at write
+time.
 
-### D7 — `New Founder` — the affordance we removed
+### D7 — Atomic revisions and optimistic concurrency
 
-**NORMATIVE: an unlimited, free, always-available `New Founder` action that archives the current Founder-scope save and starts a fresh one.**
+Every write supplies its expected revision. In one database transaction the repository locks the
+stream's latest revision, rejects a mismatch with a typed conflict, inserts exactly the next
+revision, and prunes revisions older than the newest five. Validation failure, conflict, insert
+failure, or pruning failure rolls back the entire transaction.
 
-`morality-systems.md` escalated this and the reasoning is sound: a single-player idle game lets you delete the save file. **Being server-authoritative took that away**, and nothing gave it back. It matters more here than in most games because our morality is founder-scoped and the docs currently say it *persists across runs* — see the `DESIGN-GAP:` at `design/10 §5`. Whichever way that resolves, **a player must be able to start genuinely clean.**
-
-Archive, do not delete: the old founder is retained (so "the game remembers" stays available as narrative) but is no longer the active save. **No cost, no cooldown, no confirmation friction beyond a single are-you-sure.** Charging for it, in any currency, would be a dark pattern we would have to satirise.
+This rule also covers Guild streams. There is no guild-specific last-write-wins path.
 
 ## Deviations from design
 
-- `design/06 §1.7` describes `saves(player_id, version, state jsonb)` as a single row. This RFC **splits by scope** (D2) because `design/02 §1`'s four lifetimes cannot share a row without prestige rewriting Founder and World data.
-- Nothing else. D1 and D6 write down couplings that were already implicit.
+- `design/06-tech.md` sketches `saves(player_id, version, state jsonb)` as one row. This RFC
+  replaces it with owner-aware streams and revisions because `design/02 §1` defines different
+  owners and lifetimes: World and Guild state are not player-owned, and multiple Founders cannot
+  share a player key.
+- The gameplay event table is deferred to the intent/API RFC so this bounded persistence kernel
+  does not invent event payloads before commands exist.
 
 ## Acceptance criteria
 
-1. Round-trip: ledger → save → restore → ledger produces byte-identical canonical strings for every resource.
-2. A save containing a non-finite value is rejected; stored state is unchanged; the field path is logged.
-3. A save at every historical `version` migrates to current in CI; the corpus is checked in and only grows.
-4. A save with a future `version` is refused with a clear message and no partial parse.
-5. A save referencing an undefined resource fails as a migration error, not a silent drop.
-6. Prestige rewrites only the Company row; Founder, World and Guild rows are untouched (asserted by revision numbers, not by inspection).
-7. `constants_hash` is present and non-empty on every written row.
-8. `New Founder` archives and resets Founder scope, is free and unlimited, and leaves the archived save readable.
-9. Concurrent writes to the same `(player_id, scope)` cannot interleave into a torn state.
+1. Ledger to save to restore produces byte-identical canonical balance strings.
+2. Invalid/non-finite Decimal state is rejected without changing the current revision; the field
+   path and write context are logged.
+3. Every historical-version fixture migrates to current in CI; the corpus only grows.
+4. Future versions are refused clearly with no partial parse.
+5. Missing, extra, cross-scope, or catalog-unknown resources reject the whole restore.
+6. A Company write advances only its stream; Founder, World, and Guild revisions are unchanged.
+7. Every revision has a syntactically valid, non-empty `constants_hash`.
+8. Owner/scope mismatches are rejected, two Founder UUIDs have independent streams, and an
+   archived stream is readable but rejects writes.
+9. Two concurrent writes with the same expected revision produce one success and one typed
+   conflict, never torn state.
+10. Integration tests run against Postgres 16 and prove insert-plus-prune retains exactly the five
+    newest complete revisions.
 
 ## Open questions
 
-- **Save cadence** — autosave interval vs. write-on-commit. Depends on the production engine's tick model; **defaulting to write-on-commit** since the Economy Kernel already commits atomically, but confirm when that RFC lands.
-- **Guild-scope concurrency.** Guild saves are written by multiple players. Optimistic revision checks are probably enough at our scale, but this is the one row where "probably" should be measured.
-- **Deferred to the leaderboard RFC:** Balance Epoch policy — what a board does when the hash changes.
-- **Not blocking, but adjacent:** the `design/10 §5` morality-persistence `DESIGN-GAP:`. D7 stands either way; only the *contents* of the Founder scope change.
+- **Migration tooling and integration environment:** choose before acceptance. It must support
+  transactional Postgres migrations and clean-checkout tests without introducing an ORM.
+- **Save cadence:** write-on-command versus scheduled coalescing belongs to the production-engine
+  RFC. The repository exposes atomic writes without selecting the caller's cadence.
+- **Founder lifecycle:** its RFC must provide a free, unlimited clean start and archive rather than
+  delete old streams. The `design/10 §5` morality-persistence `DESIGN-GAP:` affects what Founder
+  state contains, not storage identity.
+- **Leaderboard policy:** behavior across `constants_hash` changes remains owned by that RFC.
 
 ## Changelog
 
 - 2026-07-28: created (draft).
+- 2026-07-28: replaced the player-keyed schema with owner-aware revision streams; specified the v1
+  envelope, catalog hash, and concurrency transaction; split Founder lifecycle and events from the
+  bounded persistence kernel.

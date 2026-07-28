@@ -8,8 +8,8 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | RFC | Status | Parent |
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
-
-| [Scaffolding & CI](scaffolding-and-ci.md) | draft | — |
+| [Geometric Affordability Fast Path](geometric-afford-fast-path.md) | accepted | [RFC-0002](archive/0002-economy-constants-and-ceilings.md) |
+| [CI Baseline](scaffolding-and-ci.md) | draft | — |
 | [Save Layer & Migrations](save-layer-and-migrations.md) | draft | — |
 
 ## Archive
@@ -23,11 +23,17 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Numeric Normalization Carry](archive/numeric-normalization-carry.md) | implemented | [Numeric core](../docs/numeric-core.md) |
 | [RFC-0002: Economy Kernel](archive/0002-economy-constants-and-ceilings.md) | implemented | [Economy kernel](../docs/economy-kernel.md) |
 
-Planned next (not yet drafted — carve from `design/07-roadmap.md` Phase 0): save layer & migrations · production engine & intent API · client shell & sim loop · balance harness · deploy scaffolding.
+Planned next (not yet drafted — carve from `design/07-roadmap.md` Phase 0): production engine &
+intent API · client shell & sim loop · balance harness · deployment and draining.
 
 ### Known implementation defect (found 2026-07-28, blocks the harness RFC)
 
-**`server/economy/curves.go:59` `MaxAffordable` binary-searches to `MaxExactInteger`** (`high := decimal.MaxExactInteger - owned`, `for low < high`) instead of delegating the geometric case to **`decimal.AffordGeometricSeries`** — the closed form RFC-0001 already shipped and tested, which currently has **no non-test caller.** Measured in `cicd-deploy.md §9.3`: **20,486 ns/op vs 660 ns/op, ~95×**, which on a 200-bot harness run is **3 min 01 s vs 1.91 s.** That is precisely the line between a CI gate you keep and a gate you bypass. The generic binary search is correct for `constant`/`linear` curves and should stay as the fallback; `geometric` should take the closed form. **Fix before drafting the balance-harness RFC.**
+Geometric `MaxAffordable` uses the generic bounded search instead of RFC-0001's closed-form
+inverse. The standalone microbenchmarks reported by the research are about 31× apart
+(20,486 ns/op versus 660 ns/op); the 200-bot harness measurements are about 95× apart (3 min 01 s
+versus 1.91 s). They measure different scopes and must not be presented as one ratio. The accepted
+follow-up `geometric-afford-fast-path.md` owns the repair while preserving RFC-0002's exact-integer
+ceiling and affordability postconditions.
 
 ### Deferred decisions register
 
