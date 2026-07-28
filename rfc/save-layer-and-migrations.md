@@ -1,6 +1,6 @@
 # RFC: Save Layer & Migrations
 
-- **Status:** draft
+- **Status:** accepted
 - **Author:** Marco (drafted by Claude, revised by Codex)
 - **Created:** 2026-07-28
 - **Design refs:** `design/06-tech.md §database, §anti-cheat`, `design/02-economy-balancing.md §1`, `design/07-roadmap.md` Phase 0
@@ -135,6 +135,38 @@ failure, or pruning failure rolls back the entire transaction.
 
 This rule also covers Guild streams. There is no guild-specific last-write-wins path.
 
+### D8 — Migration and database tooling
+
+The implementation uses `pressly/goose/v3` 3.27.1 with sequential SQL migration filenames and
+`jackc/pgx/v5` 5.10 through its `database/sql` adapter. Migration SQL is embedded into the Go
+binary. Every schema migration runs in Goose's default transaction; `NO TRANSACTION` is forbidden
+unless a future RFC demonstrates a Postgres operation that requires it.
+
+Repository queries are hand-written SQL against `database/sql`. There is no ORM, query generator,
+second migration binary, or runtime filesystem dependency. One connection pool is shared by
+migrations and the save repository during startup; migrations finish before gameplay traffic is
+accepted.
+
+Integration tests use real Postgres 16. `TEST_DATABASE_URL` selects an already-running disposable
+database locally and a Postgres service container in CI. Unit tests do not silently replace
+Postgres with SQLite or mocks; tests requiring the database skip only when the integration URL is
+absent, and the dedicated integration command fails when it is absent.
+
+The bounded public persistence surface is:
+
+```text
+Migrate(ctx, db)
+NewStore(db, catalogResolver, logger)
+CreateStream(ctx, key, expectedInitialState, writeContext) -> revision
+Write(ctx, streamID, expectedRevision, state, writeContext) -> revision
+LoadLatest(ctx, streamID) -> restored ledger + revision metadata
+Archive(ctx, streamID, expectedRevision)
+```
+
+`CatalogResolver` resolves the exact `constants_hash` to immutable catalog bytes and a parsed
+catalog. Creation and writes derive save state from an authoritative ledger snapshot; callers do
+not submit arbitrary JSON.
+
 ## Deviations from design
 
 - `design/06-tech.md` sketches `saves(player_id, version, state jsonb)` as one row. This RFC
@@ -163,8 +195,6 @@ This rule also covers Guild streams. There is no guild-specific last-write-wins 
 
 ## Open questions
 
-- **Migration tooling and integration environment:** choose before acceptance. It must support
-  transactional Postgres migrations and clean-checkout tests without introducing an ORM.
 - **Save cadence:** write-on-command versus scheduled coalescing belongs to the production-engine
   RFC. The repository exposes atomic writes without selecting the caller's cadence.
 - **Founder lifecycle:** its RFC must provide a free, unlimited clean start and archive rather than
@@ -178,3 +208,5 @@ This rule also covers Guild streams. There is no guild-specific last-write-wins 
 - 2026-07-28: replaced the player-keyed schema with owner-aware revision streams; specified the v1
   envelope, catalog hash, and concurrency transaction; split Founder lifecycle and events from the
   bounded persistence kernel.
+- 2026-07-28: accepted after binding embedded transactional Goose 3.27.1 migrations, pgx/v5 via
+  `database/sql`, hand-written repository queries, and real Postgres 16 integration tests.
