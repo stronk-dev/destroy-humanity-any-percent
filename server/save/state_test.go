@@ -76,3 +76,26 @@ func TestConstantsHashUsesExactArtifactBytes(t *testing.T) {
 		t.Fatalf("unexpected hashes %q %q", first, second)
 	}
 }
+
+func TestStreamOwnerScopeValidation(t *testing.T) {
+	ledger, err := economy.NewLedger(stateCatalog(t), economy.ScopeCompany)
+	if err != nil {
+		t.Fatal(err)
+	}
+	validHash := ConstantsHash([]byte(stateCatalogJSON))
+	context := WriteContext{Cause: "test"}
+	valid := StreamKey{OwnerKind: OwnerFounder, OwnerID: "11111111-1111-4111-8111-111111111111", Scope: economy.ScopeCompany}
+	if err := validateWrite(valid, validHash, ledger, context); err != nil {
+		t.Fatal(err)
+	}
+	invalid := []StreamKey{
+		{OwnerKind: OwnerGuild, OwnerID: valid.OwnerID, Scope: economy.ScopeCompany},
+		{OwnerKind: OwnerWorld, OwnerID: valid.OwnerID, Scope: economy.ScopeFounder},
+		{OwnerKind: OwnerFounder, OwnerID: "not-a-uuid", Scope: economy.ScopeCompany},
+	}
+	for _, key := range invalid {
+		if err := validateWrite(key, validHash, ledger, context); !errors.Is(err, ErrInvalidStream) {
+			t.Fatalf("validateWrite(%+v) error = %v", key, err)
+		}
+	}
+}

@@ -10,6 +10,8 @@ Implemented systems:
   cost curves, scoped authoritative ledger transactions, and receipt boundary.
 - [Continuous integration](ci.md) — public hosted workflow, blocking verification jobs, dependency
   cache boundaries, and balance-schema gate.
+- [Save layer](save-layer.md) — owner-aware Postgres revision streams, canonical state format,
+  migrations, optimistic concurrency, retention, and restoration.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.

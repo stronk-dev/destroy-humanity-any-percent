@@ -1,6 +1,6 @@
 # RFC: Save Layer & Migrations
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco (drafted by Claude, revised by Codex)
 - **Created:** 2026-07-28
 - **Design refs:** `design/06-tech.md §database, §anti-cheat`, `design/02-economy-balancing.md §1`, `design/07-roadmap.md` Phase 0
@@ -210,3 +210,5 @@ not submit arbitrary JSON.
   bounded persistence kernel.
 - 2026-07-28: accepted after binding embedded transactional Goose 3.27.1 migrations, pgx/v5 via
   `database/sql`, hand-written repository queries, and real Postgres 16 integration tests.
+- 2026-07-28: implemented, verified against Postgres 16 and the complete cross-runtime suite,
+  documented, and archived.

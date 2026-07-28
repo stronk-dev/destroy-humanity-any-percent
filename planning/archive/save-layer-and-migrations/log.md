@@ -41,3 +41,9 @@
   was retained.
 - Full `make verify` also passes: Go vet/tests, schema gate, 6,321 Node tests, and 18,963 browser
   tests across Chromium, Firefox, and WebKit.
+
+## 2026-07-28 — Completion
+
+- Added canonical save documentation and explicit owner/scope unit coverage.
+- All ten acceptance criteria are represented by unit or real-Postgres integration tests.
+- RFC and planning record archived; `docs/save-layer.md` is canonical.
