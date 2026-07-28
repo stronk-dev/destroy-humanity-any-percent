@@ -70,38 +70,133 @@ Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker patte
 5. `subProgressValue` is monotonic under pure accrual within a stage.
 6. 200-bot × 30-virtual-day chaos run: zero NaN/negative/soft-lock, ledger balances (extends the CI Baseline's tiers).
 
-## DESIGN-GAPs blocking acceptance
+## Executable contracts (resolving the acceptance blockers, 2026-07-28)
 
-These are contracts, not implementation details. Per RFC-0000 and `AGENTS.md`, the RFC remains
-draft until each is specified here or deliberately split to a named follow-up with a clean boundary.
+Each blocker recorded by the 9effdde review is answered below with an executable contract. The
+original blocker list is preserved in the changelog; a blocker is closed only by a contract an
+implementer can build and test against without inventing anything.
 
-- **Intent wire contracts:** define the request and receipt schemas for `buy_generator` and
-  `perform_manual_batch`, including generator/action identifiers, count semantics, the authoritative
-  evaluation order, and typed rejection categories. The manual action also needs catalog data for
-  its output and an exact server-time clamp algorithm; “~20–25/s” is not executable.
-- **Production slot contract:** define the closed slot union, canonical order, how multiple
-  contributions within one slot combine, the shared package interface, and the balance-catalog
-  schema. The current catalog contains generator price/output data but no multiplier-slot objects.
-- **Idempotency persistence:** D3 settles the 30-day policy and replay behavior, but not key grammar,
-  canonical request hashing, which rejections are terminal, the persistence schema, expiry, or the
-  transaction boundary tying idempotency records to ledger/save/event commits.
-- **Event envelope:** define event identity, version, kind registry, stream/save revision, intent
-  reference, constants hash, timestamp, payload schemas, and atomic persistence. This RFC may emit
-  purchase events; future prestige and threshold event kinds must be extensible without pretending
-  their absent state models are implemented. Compensation semantics need a typed contract too.
-- **Compute Credit state transition:** define the save field and migration, exact integer rounding
-  for `bank_ratio = 0.5`, cap behavior, elapsed-time partition at the 24 h boundary, and the eventual
-  spend transition. If spending remains a follow-up, name that RFC and keep only accrual/persistence
-  in this one.
-- **Progress coordinate data:** add concrete T0–T3 catalog entries with stage boundaries,
-  thresholds, weights, and reset behavior. D5 itself requires these before acceptance; prose labels
-  for proposed shapes do not satisfy that requirement.
-- **Numeric invariant reporting:** RFC-0001 requires reporting when affordability correction falls
-  back or clamps a residual. Define the actor/audit interface and sink before purchase handlers make
-  those paths live.
-- **Chaos-harness ownership:** acceptance criterion 6 depends on bot inputs and a harness that do not
-  yet exist. Define its fixtures here or move that criterion to the named Balance Harness RFC while
-  retaining smaller production-engine safety tests locally.
+### C1 — Intent wire contracts
+
+Both intents share an envelope: `intent_id` (UUIDv7 — **the intent_id IS the idempotency key**),
+`kind`, `expected_revision` (the company stream revision the client evaluated against). Decimals
+are canonical strings; counts are exact integers.
+
+```json
+{"intent_id":"…","kind":"buy_generator","expected_revision":41,
+ "generator_id":"generator.example","count":{"mode":"exact","value":3}}
+{"intent_id":"…","kind":"perform_manual_batch","expected_revision":41,
+ "action_id":"manual.click","count":7}
+```
+
+`count.mode` ∈ {`exact`, `max`} (max = verified max-affordable, RFC-0001 §7). Receipt:
+
+```json
+{"intent_id":"…","outcome":"applied","applied_count":7,"receipt":{…ledger receipt…},
+ "new_revision":42,"evaluated_at":"…server time…"}
+{"intent_id":"…","outcome":"rejected","rejection":{"category":"unaffordable","detail":"…"}}
+```
+
+**Typed rejection categories (closed):** `unaffordable` · `unknown_id` · `invalid` ·
+`cap_exceeded` · `revision_conflict` · `rate_limited` · `idempotency_conflict` ·
+`internal_invariant`. **Authoritative evaluation order, one transaction:** accrue Δt (D1) →
+evaluate price/validity → apply through the ledger → persist save revision + events + idempotency
+record atomically.
+
+**Manual-action clamp, exact:** a per-stream token bucket persisted in company state —
+`rate_tokens_per_ms = 0.025` (25/s), `bucket_cap = 50`, both balance data. On intent:
+`tokens = min(cap, tokens + elapsed_ms × rate)`; `applied = min(count, floor(tokens))`;
+`tokens -= applied`. Excess is silently discarded; `applied_count` in the receipt makes the clamp
+honest without making it an error. **Manual-action catalog object:**
+`{"id":"manual.click","output":{"resource_id":"company.cash","amount_per_action":"1e0"}}`.
+
+### C2 — The production slot contract
+
+**Closed slot union, canonical order (multiplication order is the published order):**
+`base` → `upgrades` → `milestones` → `faction` → `doctrine` → `commons` → `trust` →
+`event_buffs` → `prestige`. Within-slot combination: **product** of contributions.
+`commons` and `trust` are **single-provider slots** — a second contribution is a catalog
+validation error. Slots multiply left-to-right; the formula panel renders them in this order.
+
+Catalog schema addition (`multiplier_sources`):
+```json
+{"id":"upgrade.faster-fans","slot":"upgrades","target":"generator.example",
+ "factor":"2e0","source_ref":"upgrade.faster-fans"}
+```
+`target` is a generator id or `"all"`. The shared boundary package exports exactly
+`type Contribution { Slot; SourceID; Target; Factor decimal.Decimal }` and the slot-order
+constant; production, commons, and future providers import **only** this package (build-enforced,
+amplitude-lock pattern).
+
+### C3 — Idempotency persistence
+
+- **Key grammar:** `intent_id` UUIDv7, client-generated, one per logical intent.
+- **Canonical request hash:** sha256 over the canonical JSON serialization (sorted keys, canonical
+  decimal strings, no whitespace) of the intent **minus `intent_id`**.
+- **Terminal (recorded, replayed):** `applied`, `unaffordable`, `unknown_id`, `invalid`,
+  `cap_exceeded` — deterministic against the recorded revision. **Non-terminal (never recorded):**
+  `rate_limited`, `revision_conflict`, `internal_invariant` — the client retries with the same key.
+- **Schema:** `intent_records(stream_id, intent_id pk, request_hash, outcome, receipt jsonb,
+  created_at)` — written **in the same transaction** as the ledger commit, save revision, and
+  events. Same key + different hash → `idempotency_conflict`. Expiry: daily delete beyond 30 days.
+
+### C4 — The event envelope
+
+```
+events(event_id uuid pk, stream_id, revision, schema_version int, kind text,
+       intent_id uuid null, constants_hash text, occurred_at timestamptz, payload jsonb)
+```
+- `(stream_id, revision)` references the save revision written in the same transaction — an event
+  cannot exist without its revision, nor vice versa when the transition is evented.
+- **Kind registry v1 (closed, append-only):** `generator_purchased` · `manual_batch_applied` ·
+  `threshold_crossed` · `invariant_reported` · `compensation`. Prestige and upgrade kinds are
+  **added by their own RFCs when their state models exist** — the registry grows by RFC, never by
+  implementation convenience. Unknown kinds are rejected at write.
+- Per-kind payload schemas are versioned by `schema_version`; payloads carry canonical strings.
+- **Compensation contract:** kind `compensation`, payload `{compensates_event_id, reason_key}` —
+  a new event on a later revision. **No history mutation exists in the API.**
+
+### C5 — Compute Credit accrual & persistence (spend split out)
+
+- **Save field (company scope, resets at Exit):** `compute_credit_ms` — exact integer ms.
+  Save-version bump + migration with default `0`.
+- **Partition at the 24 h boundary, exact:** `capped = min(elapsed_ms, 86_400_000)` accrues at the
+  offline rate (D4); `excess = elapsed_ms − capped`; `banked = floor(excess × bank_ratio)` with
+  `bank_ratio = 0.5`; `compute_credit_ms = min(compute_credit_ms + banked, bank_cap_ms)` with
+  `bank_cap_ms = 259_200_000` (72 h). All integer arithmetic; no Decimal anywhere in this path.
+- **Spending is the named follow-up `rfc: compute-credit-spend`** (burst ×2, 4 h max activation —
+  parameters reserved in the catalog now so the field exists, per the constants_hash lesson).
+
+### C6 — Progress coordinate catalog data (T0–T3, concrete)
+
+Coordinate values are company-scoped, zeroed at Exit, and must be monotone under pure accrual.
+`resource_log(x; target) = log10(1 + x) / log10(1 + target)` clamped to [0,1], evaluated on
+committed state. **These exact objects become checked-in catalog fixtures at implementation:**
+
+```json
+{"tier":0,"kind":"resource_log","resource":"company.cash","target":"1e3"}
+{"tier":1,"kind":"composite","terms":[
+  {"weight":"5e-1","kind":"count_fraction","count":"generators.total_owned","required":25},
+  {"weight":"5e-1","kind":"resource_log","resource":"company.cash","target":"1e6"}]}
+{"tier":2,"kind":"resource_log","resource":"company.cash","target":"1e9"}
+{"tier":3,"kind":"resource_log","resource":"company.revenue_lifetime","target":"1e12"}
+```
+Targets are provisional, harness-gated. T4+ land with their tier content (unchanged).
+
+### C7 — Numeric invariant reporting
+
+`type InvariantSink interface { Report(ctx, InvariantReport) }` with
+`InvariantReport{Kind: afford_fallback | residual_clamp | residual_abort; IntentID; Detail}`.
+The production handler owns the sink; a report writes an `invariant_reported` event (C4) in the
+same transaction and increments a metrics counter. RFC-0001 §7's dormant normative text becomes
+live here, and nowhere else.
+
+### C8 — Chaos ownership split
+
+Acceptance criterion 6 (200-bot × 30-day chaos) **moves to the Balance Harness RFC** by name.
+Retained locally: a property test driving the two intents with a seeded random policy over
+24 simulated hours × 200 seeds — zero NaN/negative/soft-lock, ledger balances, runs in tier-1 CI
+budget. The harness inherits the big version; production ships the small one.
 
 ## Named follow-ups
 
@@ -123,6 +218,7 @@ draft until each is specified here or deliberately split to a named follow-up wi
   `archive/generator-production-state.md`; undefined intent and policy mechanics remain gaps here.
 - 2026-07-28: generator production state follow-up implemented and archived; remaining open
   questions still block the parent intent engine.
+- 2026-07-28: the eight 9effdde acceptance blockers each answered with an executable contract (C1–C8); chaos AC moved to the Balance Harness RFC by name; Compute Credit spend split to a named follow-up.
 - 2026-07-28: adversarial review routed the currently-latent numeric fallback-reporting contract
   here, where the first authoritative purchase handler can provide its audit sink.
 - 2026-07-28: Codex acceptance review rejected premature acceptance: reconciled adopted decisions
