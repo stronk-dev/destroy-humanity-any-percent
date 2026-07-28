@@ -17,7 +17,7 @@ test-go:
 
 test-save-integration:
 	@test -n "$$TEST_DATABASE_URL" || (echo "TEST_DATABASE_URL is required" >&2; exit 1)
-	cd server && go test ./save -run Integration -count=1
+	cd server && go test ./... -run Integration -count=1
 
 test-client:
 	pnpm --dir client run test

@@ -65,3 +65,22 @@
   after load; the corrected integration suite proves identical replay, one event, one save mutation,
   hash conflict, rejection non-mutation, and pruning.
 - Disposable Postgres container was stopped and removed after the green integration run.
+
+## 2026-07-28 — authoritative intents
+
+- Added strict parsing and canonical request hashing for the two accepted wire intents. UUIDv7,
+  safe-integer fields, exact/max purchase modes, mechanical ids, root/nested field sets, trailing
+  JSON, and semantic-invalid recording are explicit.
+- `buy_generator` evaluates trusted elapsed time on working state, verifies exact or max cost,
+  applies one ledger transaction, updates the exact owned count, emits one purchase event, and
+  returns the net receipt plus canonical authoritative snapshot.
+- `perform_manual_batch` refills/spends integer milli-tokens from server time, silently clamps the
+  requested batch, commits no click event, and still reports `applied_count` including zero.
+- Added the dormant numeric fallback diagnostic without changing affordability results. Successful
+  fallback/clamp reports join the gameplay transaction; abort-only reports go to structured audit
+  and metrics because there is deliberately no save revision to attach an event to.
+- Real Postgres integration proves exact purchase, byte-identical replay, one purchase event,
+  manual 50-action clamp, zero-action follow-up, terminal unaffordable non-mutation, and typed stale
+  revision response. The Make target now runs all package integration tests.
+- The retained tier-1 property gate drives both intents for 24 simulated hours across 200 seeded
+  policies; every state remains finite/non-negative/encodable and every policy acquires a generator.

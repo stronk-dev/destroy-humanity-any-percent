@@ -9,6 +9,11 @@ import (
 
 var ErrInvalidCurveInput = errors.New("invalid cost-curve input")
 
+type AffordabilityResult struct {
+	Count        int64
+	UsedFallback bool
+}
+
 func (c *Catalog) BulkCost(generatorID string, owned, count int64) (decimal.Decimal, error) {
 	definition, exists := c.generatorByID[generatorID]
 	if !exists {
@@ -18,11 +23,16 @@ func (c *Catalog) BulkCost(generatorID string, owned, count int64) (decimal.Deci
 }
 
 func (c *Catalog) MaxAffordable(generatorID string, cash decimal.Decimal, owned int64) (int64, error) {
+	result, err := c.MaxAffordableDetailed(generatorID, cash, owned)
+	return result.Count, err
+}
+
+func (c *Catalog) MaxAffordableDetailed(generatorID string, cash decimal.Decimal, owned int64) (AffordabilityResult, error) {
 	definition, exists := c.generatorByID[generatorID]
 	if !exists {
-		return 0, fmt.Errorf("%w: unknown generator class %q", ErrInvalidCurveInput, generatorID)
+		return AffordabilityResult{}, fmt.Errorf("%w: unknown generator class %q", ErrInvalidCurveInput, generatorID)
 	}
-	return MaxAffordable(definition.Price, cash, owned)
+	return MaxAffordableDetailed(definition.Price, cash, owned)
 }
 
 func BulkCost(price PriceDefinition, owned, count int64) (decimal.Decimal, error) {
@@ -57,18 +67,23 @@ func BulkCost(price PriceDefinition, owned, count int64) (decimal.Decimal, error
 }
 
 func MaxAffordable(price PriceDefinition, cash decimal.Decimal, owned int64) (int64, error) {
+	result, err := MaxAffordableDetailed(price, cash, owned)
+	return result.Count, err
+}
+
+func MaxAffordableDetailed(price PriceDefinition, cash decimal.Decimal, owned int64) (AffordabilityResult, error) {
 	if !cash.IsStateValue() || cash.Lt(decimal.Zero) || owned < 0 || owned > decimal.MaxExactInteger {
-		return 0, ErrInvalidCurveInput
+		return AffordabilityResult{}, ErrInvalidCurveInput
 	}
 	if err := validateQuoteInput(price, owned, 0); err != nil {
-		return 0, err
+		return AffordabilityResult{}, err
 	}
 
 	maximum := decimal.MaxExactInteger - owned
 	if price.Curve.Kind == CurveGeometric {
-		candidate, err := decimal.AffordGeometricSeries(cash, price.Base, price.Curve.Ratio, owned)
+		candidate, decimalFallback, err := decimal.AffordGeometricSeriesDetailed(cash, price.Base, price.Curve.Ratio, owned)
 		if err != nil {
-			return 0, fmt.Errorf("%w: geometric affordability: %v", ErrInvalidCurveInput, err)
+			return AffordabilityResult{}, fmt.Errorf("%w: geometric affordability: %v", ErrInvalidCurveInput, err)
 		}
 		if candidate > maximum {
 			candidate = maximum
@@ -80,11 +95,12 @@ func MaxAffordable(price PriceDefinition, cash decimal.Decimal, owned int64) (in
 			candidate++
 		}
 		if affordabilityPostconditions(price, cash, owned, candidate, maximum) {
-			return candidate, nil
+			return AffordabilityResult{Count: candidate, UsedFallback: decimalFallback}, nil
 		}
+		return AffordabilityResult{Count: maxAffordableBySearch(price, cash, owned, maximum), UsedFallback: true}, nil
 	}
 
-	return maxAffordableBySearch(price, cash, owned, maximum), nil
+	return AffordabilityResult{Count: maxAffordableBySearch(price, cash, owned, maximum)}, nil
 }
 
 func maxAffordableBySearch(price PriceDefinition, cash decimal.Decimal, owned, maximum int64) int64 {

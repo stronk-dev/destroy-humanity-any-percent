@@ -57,6 +57,17 @@ type IntentResult struct {
 	Replay  bool
 }
 
+type RevisionConflict struct {
+	Expected int64
+	Current  int64
+}
+
+func (e *RevisionConflict) Error() string {
+	return fmt.Sprintf("%v: got %d, current %d", ErrConflict, e.Expected, e.Current)
+}
+
+func (e *RevisionConflict) Unwrap() error { return ErrConflict }
+
 func (s *Store) ApplyIntent(
 	ctx context.Context,
 	streamID string,
@@ -124,7 +135,7 @@ func (s *Store) ApplyIntent(
 	}
 	revision.StreamID = streamID
 	if revision.Number != expectedRevision {
-		return IntentResult{}, fmt.Errorf("%w: got %d, current %d", ErrConflict, expectedRevision, revision.Number)
+		return IntentResult{}, &RevisionConflict{Expected: expectedRevision, Current: revision.Number}
 	}
 	catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
 	if !ok {

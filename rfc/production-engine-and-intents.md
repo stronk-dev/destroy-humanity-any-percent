@@ -100,7 +100,9 @@ elapsed server time. Receipt schemas:
 ```json
 {"intent_id":"…","outcome":"applied","applied_count":7,
  "receipt":{"changes":[{"resource_id":"company.cash","before":"0","delta":"7e0","after":"7e0"}]},
- "new_revision":42,"evaluated_at":"2026-07-28T08:00:00Z"}
+ "new_revision":42,"evaluated_at":"2026-07-28T08:00:00Z",
+ "snapshot":{"balances":{…},"generators":{…},"evaluated_through":"…",
+             "compute_credit_ms":0,"manual_token_milli":43000,"manual_token_refilled_at":"…"}}
 {"intent_id":"…","outcome":"rejected","current_revision":41,
  "rejection":{"category":"unaffordable","detail":"generator.example"}}
 ```
@@ -223,7 +225,9 @@ Targets are provisional, harness-gated. T4+ land with their tier content (unchan
 `InvariantReport{Kind: afford_fallback | residual_clamp | residual_abort; IntentID; Detail}`.
 The production handler owns a transaction-local collecting sink; collected reports become
 `invariant_reported` events (C4) in the same commit. Metrics increment only after that commit
-succeeds. RFC-0001 §7's dormant normative text becomes live here, and nowhere else.
+succeeds. `residual_abort` has no gameplay commit to attach an event to, so it writes the structured
+server audit sink and metric only; fabricating a save revision for a failed mutation would violate
+C1/C3. RFC-0001 §7's dormant normative text becomes live here, and nowhere else.
 
 ### C8 — Chaos ownership split
 
@@ -263,3 +267,6 @@ budget. The harness inherits the big version; production ships the small one.
   classification), and accepted the RFC for implementation.
 - 2026-07-28: implementation clarification: fixed within-slot contribution order to source-id
   raw-byte ascending so catalog order and map iteration cannot alter rounded results.
+- 2026-07-28: implementation clarification: applied receipts include the canonical authoritative
+  snapshot promised by D3; abort-only numeric invariants use audit+metrics because no gameplay
+  revision exists to carry an event.

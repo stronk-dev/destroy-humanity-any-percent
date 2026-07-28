@@ -32,19 +32,26 @@ func SumGeometricSeries(count int64, base, ratio Decimal, owned int64) Decimal {
 // the two RFC-0001 affordability postconditions hold, with binary-search
 // fallback when local correction is insufficient.
 func AffordGeometricSeries(cash, base, ratio Decimal, owned int64) (int64, error) {
+	count, _, err := AffordGeometricSeriesDetailed(cash, base, ratio, owned)
+	return count, err
+}
+
+// AffordGeometricSeriesDetailed additionally reports whether verification had
+// to leave the bounded local-correction path for a full binary search.
+func AffordGeometricSeriesDetailed(cash, base, ratio Decimal, owned int64) (int64, bool, error) {
 	if owned < 0 || owned > MaxExactInteger || !cash.IsStateValue() || !base.IsStateValue() ||
 		!ratio.IsStateValue() || cash.Lt(Zero) || !base.Gt(Zero) || ratio.Lt(One) {
-		return 0, ErrInvalidEconomyInput
+		return 0, false, ErrInvalidEconomyInput
 	}
 	if cash.Lt(SumGeometricSeries(1, base, ratio, owned)) {
-		return 0, nil
+		return 0, false, nil
 	}
 	if ratio.Eq(One) || ratio.Sub(One).Eq(Zero) {
 		candidate := cash.Div(base).Floor().toFloat64()
 		if !isExactCount(candidate) {
-			return MaxExactInteger, nil
+			return MaxExactInteger, false, nil
 		}
-		return minInt64(int64(candidate), MaxExactInteger), nil
+		return minInt64(int64(candidate), MaxExactInteger), false, nil
 	}
 
 	actualStart := base.Mul(ratio.Pow(float64(owned)))
@@ -58,7 +65,7 @@ func AffordGeometricSeries(cash, base, ratio Decimal, owned int64) (int64, error
 		toFloat64()
 
 	if !isExactCount(estimate) {
-		return binarySearchAffordable(cash, base, ratio, owned), nil
+		return binarySearchAffordable(cash, base, ratio, owned), true, nil
 	}
 	candidate := minInt64(int64(estimate), MaxExactInteger)
 
@@ -70,8 +77,9 @@ func AffordGeometricSeries(cash, base, ratio Decimal, owned int64) (int64, error
 	}
 	if !affordabilityPostconditions(candidate, cash, base, ratio, owned) {
 		candidate = binarySearchAffordable(cash, base, ratio, owned)
+		return candidate, true, nil
 	}
-	return candidate, nil
+	return candidate, false, nil
 }
 
 func isExactCount(value float64) bool {
