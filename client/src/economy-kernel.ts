@@ -8,7 +8,7 @@ import {
   parseCanonical,
 } from "./numeric";
 
-export const CATALOG_SCHEMA_VERSION = 1;
+export const CATALOG_SCHEMA_VERSION = 2;
 
 export type Scope = "company" | "founder" | "world" | "guild";
 
@@ -37,9 +37,15 @@ export interface PriceDefinition {
   readonly curve: CostCurve;
 }
 
+export interface ProductionDefinition {
+  readonly resourceId: string;
+  readonly baseRate: string;
+}
+
 export interface GeneratorClassDefinition {
   readonly id: string;
   readonly price: PriceDefinition;
+  readonly production: ProductionDefinition | null;
 }
 
 const idPattern = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
@@ -89,7 +95,7 @@ export function parseCatalog(source: unknown): EconomyCatalog {
     ["schema_version", "resources", "generator_classes"],
     "catalog",
   );
-  if (root.schema_version !== CATALOG_SCHEMA_VERSION) {
+  if (root.schema_version !== 1 && root.schema_version !== CATALOG_SCHEMA_VERSION) {
     throw new SyntaxError(`unsupported catalog schema_version: ${String(root.schema_version)}`);
   }
   if (!Array.isArray(root.resources)) throw new SyntaxError("catalog.resources must be an array");
@@ -99,17 +105,31 @@ export function parseCatalog(source: unknown): EconomyCatalog {
 
   const resources = root.resources.map((value, index) => parseResource(value, index));
   ensureUnique(resources, "resource");
-  const resourceIds = new Set(resources.map((definition) => definition.id));
+  const resourceById = new Map(resources.map((definition) => [definition.id, definition]));
 
   const generatorClasses = root.generator_classes.map((value, index) =>
-    parseGeneratorClass(value, index),
+    parseGeneratorClass(value, index, root.schema_version),
   );
   ensureUnique(generatorClasses, "generator class");
   for (const generator of generatorClasses) {
-    if (!resourceIds.has(generator.price.resourceId)) {
+    const priceResource = resourceById.get(generator.price.resourceId);
+    if (!priceResource) {
       throw new SyntaxError(
         `generator class ${generator.id} references unknown resource ${generator.price.resourceId}`,
       );
+    }
+    if (generator.production) {
+      const outputResource = resourceById.get(generator.production.resourceId);
+      if (!outputResource) {
+        throw new SyntaxError(
+          `generator class ${generator.id} references unknown production resource ${generator.production.resourceId}`,
+        );
+      }
+      if (priceResource.scope !== outputResource.scope) {
+        throw new SyntaxError(
+          `generator class ${generator.id} crosses scopes from ${priceResource.scope} to ${outputResource.scope}`,
+        );
+      }
     }
   }
 
@@ -216,9 +236,14 @@ function parseResource(source: unknown, index: number): ResourceDefinition {
   });
 }
 
-function parseGeneratorClass(source: unknown, index: number): GeneratorClassDefinition {
+function parseGeneratorClass(
+  source: unknown,
+  index: number,
+  schemaVersion: unknown,
+): GeneratorClassDefinition {
   const path = `catalog.generator_classes[${index}]`;
-  const value = exactObject(source, ["id", "price"], path);
+  const keys = schemaVersion === 1 ? ["id", "price"] : ["id", "price", "production"];
+  const value = exactObject(source, keys, path);
   const id = parseId(value.id, `${path}.id`);
   const priceValue = exactObject(value.price, ["resource_id", "base", "curve"], `${path}.price`);
   const resourceId = parseId(priceValue.resource_id, `${path}.price.resource_id`);
@@ -226,7 +251,26 @@ function parseGeneratorClass(source: unknown, index: number): GeneratorClassDefi
   if (!parseCanonical(base).gt(0)) throw new SyntaxError(`${path}.price.base must be positive`);
   const curve = parseCurve(priceValue.curve, `${path}.price.curve`);
   const price = Object.freeze({ resourceId, base, curve });
-  return Object.freeze({ id, price });
+  if (schemaVersion === 1) return Object.freeze({ id, price, production: null });
+
+  const productionValue = exactObject(
+    value.production,
+    ["resource_id", "base_rate"],
+    `${path}.production`,
+  );
+  const productionResourceId = parseId(
+    productionValue.resource_id,
+    `${path}.production.resource_id`,
+  );
+  const baseRate = parseCanonicalField(
+    productionValue.base_rate,
+    `${path}.production.base_rate`,
+  );
+  if (!parseCanonical(baseRate).gt(0)) {
+    throw new SyntaxError(`${path}.production.base_rate must be positive`);
+  }
+  const production = Object.freeze({ resourceId: productionResourceId, baseRate });
+  return Object.freeze({ id, price, production });
 }
 
 function parseCurve(source: unknown, path: string): CostCurve {

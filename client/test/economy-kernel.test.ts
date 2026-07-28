@@ -35,12 +35,26 @@ describe("shared economy catalog", () => {
       "resource.company_cash.cap.depleted",
     );
     expect(catalog.resource("company.users")?.hardcap).toBeNull();
+    expect(catalog.generatorClass("generator.constant")?.production).toEqual({
+      resourceId: "company.users",
+      baseRate: "1e0",
+    });
     expect(Object.isFrozen(catalog.resources)).toBe(true);
     expect(Object.isFrozen(catalog.resources[0])).toBe(true);
   });
 
   it.each(fixture.invalid_cases)("rejects %s", (name) => {
-    expect(() => parseCatalog(mutateCatalog(fixture.catalog, name))).toThrow();
+    expect(() => parseCatalog(mutateCatalog(fixture.catalog, name))).toThrow(SyntaxError);
+  });
+
+  it("keeps catalog v1 readable without production semantics", () => {
+    const legacy = structuredClone(fixture.catalog);
+    legacy.schema_version = 1;
+    for (const generator of legacy.generator_classes as Array<Record<string, unknown>>) {
+      delete generator.production;
+    }
+    const catalog = parseCatalog(legacy);
+    expect(catalog.generatorClass("generator.constant")?.production).toBeNull();
   });
 });
 
@@ -79,10 +93,11 @@ function mutateCatalog(source: Record<string, unknown>, name: string): unknown {
   const resource = resources[0];
   const generator = generators[0];
   const price = generator.price as Record<string, unknown>;
+  const production = generator.production as Record<string, unknown>;
 
   switch (name) {
     case "unsupported-version":
-      root.schema_version = 2;
+      root.schema_version = 3;
       break;
     case "missing-root-field":
       delete root.resources;
@@ -125,6 +140,18 @@ function mutateCatalog(source: Record<string, unknown>, name: string): unknown {
       break;
     case "invalid-curve-parameter":
       price.curve = { kind: "geometric", ratio: "9e-1" };
+      break;
+    case "missing-production":
+      delete generator.production;
+      break;
+    case "dangling-production-resource":
+      production.resource_id = "company.missing";
+      break;
+    case "nonpositive-production-rate":
+      production.base_rate = "0";
+      break;
+    case "cross-scope-production":
+      production.resource_id = "founder.reputation";
       break;
     default:
       throw new Error(`unimplemented invalid fixture case: ${name}`);
