@@ -14,7 +14,7 @@ The game states its conceit in the first ten seconds, before any clicking:
 
 - One screen, era-1995 chrome, the timer already rendered. No lore dump — the category select IS the exposition (the Undertale/DDLC lesson: bold conceit stated up front, then play).
 - Below the fold, small print in the honesty voice: *"Free forever. No purchases. No ads. The only thing this game harvests is the fictional planet."*
-- Returning players land on the **splits screen** instead (your PB, your current attempt, what's new since last session — the welcome-back moment doubles as the offline-gains modal).
+- **The return sequence (one modal, maximum — holes 6/10 resolved 2026-07-28):** a returning player gets the **diorama fast-forward** (`13 §2`, ≤5 s, skippable — the stage catching up is the welcome, not a dialog), with the offline-gains line docked in the header afterward, not modal. Then **at most one modal**: the ripe Fiscal Quarter prompt, and only if one is ripe — it is the day's decision and has earned the interruption. Everything else (events digest, feed, milestone movement) is a badge. **Before the first Exit** the splits panel shows the current attempt with an **empty comparison column** — no PB means no judgment, per the timer-semantics rule (`08 §6`); the panel earns its comparison the moment a PB exists. After the first Exit, splits-vs-PB becomes the returning player's primary tab.
 
 ## 2. Teaching: diegetic, dripped, never a tutorial
 
@@ -35,6 +35,12 @@ Run-end sequence:
 5. **[ NEW ROUTE ]** — into the next run with carry-over summary.
 
 Exit obituaries are a high-variance template surface (see §6): hundreds of fragments, selected against run facts, so no two adjacent Exits read the same.
+
+**The first run ends on schedule (§6b adoption, resolved 2026-07-28).** At ~15 minutes, the first company **fails by design** — a scripted, guaranteed collapse (the fiction is honest about it: *"Your first company failed. Statistically, this is the most realistic thing in this game."*). It exists to teach the run-end screen, the Founder card, and [NEW ROUTE] while the stakes are still nothing — the Hades pattern of the tutorial death, wearing our own survivorship-bias joke. The scripted failure pays full first-Exit Reputation, so it is a *beat*, never a tax. Speedrun honesty: the scripted collapse is part of every category's route (everyone's run 1 contains it; it cannot be skipped, so it advantages nobody).
+
+**Advisor Mode (the God-Mode analogue, adopted as accessibility):** a settings toggle, off by default, honestly labeled — *"+2% production per completed run while enabled, up to +50%. For players who want the story at their own pace."* Curtain-pulled like everything else; runs with it enabled carry the `Assisted` variable (`05 §6`) and rank on Assisted boards. No shame chrome, no nag to turn it off — the label states, the boards categorize, nobody judges.
+
+**Hub NPC queues: deliberately not adopted for launch.** The Founder card and the per-run teaser already carry the between-runs narrative; a walkable hub is post-1.0 scope recorded in `BACKLOG.md`, not a missing piece.
 
 ## 4. Run-count pacing (the roguelike commitment)
 

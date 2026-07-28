@@ -97,6 +97,12 @@ ReputationLevel = ⌊ (lifetimeValue / T)^(1/3) ⌋      // cube root, lifetime-
 
 Exit types are tier-flavored (acquihire / acquisition / IPO / collapse) with slightly different payouts: e.g. collapse pays less Reputation but more Route Knowledge ("every death teaches you the map" — Increlution). Strip-Mining (convert a fully-built branch into instant currency; branch unbuildable this run) is the LBO-flavored pre-Exit squeeze.
 
+**How an Exit is triggered (hole 7, resolved 2026-07-28) — Exits are offers, plus one door that is always open:**
+- **Offers arrive as events**: acquihire/acquisition offers spawn with probability scaling on tier progress and harvested Quarters, each showing its full terms up front — a payout preview in Reputation / Network slots / Route Knowledge, in the acquirer's voice. **[Accept] ends the run now. [Decline] is real**: the offer expires, and the next one's terms drift with market events (declining is a legitimate greed/patience play, not a dismissed dialog).
+- **Wind Down** sits permanently in the company menu — the collapse-type Exit on demand (lower Reputation, higher Route Knowledge). **The player can always end a run**; agency never waits on RNG.
+- **IPO is the planned Exit**: doctrine-gated, opened by filing (an S-1 event chain with a window), the highest ceremony and the highest Reputation multiplier — the run you *land* rather than the run that ends.
+- Offer events are Layer-1 content (`09 §2`) — template pools, era-voiced, high variance.
+
 ## 4. World & guild layers
 
 Summarized here; full design in `05-mmo.md`:
@@ -116,6 +122,8 @@ The sugar-lump equivalent, diegetic:
 - **Immune to production rate by design.** No amount of output accelerates the clock. This is the long-tail pacing device and it is never for sale.
 
 ## 6. Clout (achievements + influence)
+
+> **The carry rule (hole 5, resolved 2026-07-28): Clout never enters the production stack.** PR Interns and every other production-shaped Clout effect key on **Clout earned this run**; the carried lifetime total buys *reach* — feed prominence (`05 §2`), event options ("your following expects a statement" choices), podcast/media event chains, cosmetic platforms. A 500-Clout founder starts run 2 famous, not fast — which is both the balance fix (carried Clout can never dwarf the unlock-gated Reputation bonus) and the truer satire: influence is a *distribution* advantage, not a *production* one.
 
 Two feeds, one axis:
 
