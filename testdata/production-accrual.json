@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "vectors": [
+    {"name":"zero elapsed","rates":["1e0"],"elapsed_ms":0,"efficiency":"1e0","expect":"0"},
+    {"name":"empty sources","rates":[],"elapsed_ms":1000,"efficiency":"1e0","expect":"0"},
+    {"name":"zero efficiency","rates":["1e20"],"elapsed_ms":1000,"efficiency":"0","expect":"0"},
+    {"name":"one per second","rates":["1e0"],"elapsed_ms":1000,"efficiency":"1e0","expect":"1e0"},
+    {"name":"fractional seconds","rates":["1e0","2e0"],"elapsed_ms":1500,"efficiency":"1e0","expect":"4.5e0"},
+    {"name":"offline baseline 24h","rates":["2e0"],"elapsed_ms":86400000,"efficiency":"9e-1","expect":"1.5552e5"},
+    {"name":"sub-resolution sources","rates":["1e-20","1e-20","1e-19"],"elapsed_ms":1000,"efficiency":"1e0","expect":"1.2e-19"},
+    {"name":"huge exponent","rates":["1e1000000"],"elapsed_ms":1000,"efficiency":"1e0","expect":"1e1000000"},
+    {"name":"maximum exact elapsed","rates":["1e0"],"elapsed_ms":9007199254740991,"efficiency":"1e0","expect":"9.00719925474e12"},
+    {"name":"permutation a","rates":["1e100","1e87","2e87"],"elapsed_ms":1000,"efficiency":"1e0","expect":"1e100"},
+    {"name":"permutation b","rates":["2e87","1e100","1e87"],"elapsed_ms":1000,"efficiency":"1e0","expect":"1e100"},
+    {"name":"invalid rate","rates":["NaN"],"elapsed_ms":1000,"efficiency":"1e0","expect_error":true},
+    {"name":"negative rate","rates":["-1e0"],"elapsed_ms":1000,"efficiency":"1e0","expect_error":true},
+    {"name":"negative elapsed","rates":["1e0"],"elapsed_ms":-1,"efficiency":"1e0","expect_error":true},
+    {"name":"unsafe elapsed","rates":["1e0"],"elapsed_ms":9007199254740992,"efficiency":"1e0","expect_error":true},
+    {"name":"negative efficiency","rates":["1e0"],"elapsed_ms":1000,"efficiency":"-1e0","expect_error":true}
+  ]
+}
