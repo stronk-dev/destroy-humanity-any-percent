@@ -1,6 +1,6 @@
 # RFC: Save Layer & Migrations
 
-- **Status:** accepted
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude, revised by Codex)
 - **Created:** 2026-07-28
 - **Design refs:** `design/06-tech.md §database, §anti-cheat`, `design/02-economy-balancing.md §1`, `design/07-roadmap.md` Phase 0
