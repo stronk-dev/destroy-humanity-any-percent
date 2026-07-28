@@ -41,7 +41,7 @@
 - **Connect-4 / Othello / Gomoku / checkers:** one generic ~150-line alpha-beta with iterative deepening + per-game eval functions (Pascal Pons' Connect-4 solver as the reference implementation). Difficulty = depth + temperature.
 - **Blackjack:** basic-strategy table. **Poker:** rule-based hand-strength buckets + pot odds + randomized bluff frequency (not CFR).
 - **Pet battles / raids:** small-state minimax + personality-flavored policies.
-- **Human-feel layer (shared):** plausible-blunder filter (prefer attractive-looking mistakes), jittered think time, named bots with drifting fake ratings, resign behavior, rubber-band toward ~55–60% player win rate. **Bots never cheat.** ⚠️ **`DESIGN-GAP:` these last two sentences contradict each other — see `design/03 §69` for the full note and the proposed fix (real ratings + rating-based matchmaking, no rubber band).**
+- **Human-feel layer (shared):** plausible-blunder filter (prefer attractive-looking mistakes), jittered think time, named bots with **real published ratings** (rating-based matchmaking yields the ~55% target honestly — no rubber band, decided 2026-07-28), resign behavior. **Bots never cheat.**
 - **Matchmaker:** one goroutine; expanding Elo bands (±50, widen per 5 s); bot backfill after 10–30 s (disclosed, reduced rewards, no mid-match hot-swap); queue-depth shown.
 
 ## What we take from cattery, and what we don't

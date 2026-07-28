@@ -21,28 +21,25 @@
 
 ## 2. Pet battles (pokemon-style)
 
-- **Stats derive from care quality**: battle HP/attack/speed are functions of average stat upkeep, Trust, and age — a well-loved elder cat is a monster. No pay, no grind-feed: care *is* training.
-
-  > `DESIGN-GAP:` **contradicted by research — awaiting owner decision.** `design/research/creature-battler.md §3.4` simulated this line (20,000 trials) and found that in 1v1 turn-based combat **a 2.1% stat advantage yields a ~99.6% win rate** — the duel is a deterministic race and a per-turn edge compounds past any damage roll or crit. Any care→stat mapping wide enough to *feel* meaningful is therefore wide enough to be a binary win condition, and the pet layer would become pay-to-win-by-attendance.
-  >
-  > The research's alternative (§8.3): **every pet reaches the same hardcapped stat ceiling** — design law 5 applied honestly — and care instead buys **options, consistency and tempo**. Measured: Trust→Obedience slopes smoothly (50%→30% across Trust 1.00→0.80), plus Pokémon-Amie's template of crit-doubling and survive-at-1-HP. Insurance and luck, never raw stats. Bonus: it makes **Soul drain legible in combat** for the first time, which the current design has no mechanism for.
-  >
-  > This is a genuine design change, not an implementation detail — resolve before any battle-engine RFC.
+- **Every pet reaches the same hardcapped stat ceiling** (design law 5, applied honestly — decided 2026-07-28 per `research/creature-battler.md §3.4`: in a 1v1 duel a 2.1% stat edge is a ~99.6% win rate, so any care→stat mapping wide enough to feel meaningful is a binary win condition). **Care buys options, consistency, and tempo, never raw stats:**
+  - **Trust → Obedience:** slopes smoothly (~50%→30% disobedience across Trust 1.00→0.80) — a neglected pet ignores orders at the worst moment; a loved one is *reliable*, not stronger.
+  - **Care quality → insurance & luck** (the Pokémon-Amie template): crit-rate doubling, survive-at-1-HP procs, faster stamina recovery.
+  - **Soul drain is legible in combat**: as founder Soul empties, Obedience degrades *regardless of care* — the pet looks at you before ignoring the command. Play it straight.
+  - A well-loved elder cat is still a monster — through options and reliability, which is the emotionally correct version anyway.
 - **Moveset** by personality + learned tricks (taught via play minigames): `Pounce`, `Zoomies` (priority), `Loaf` (defense up), `Knead` (heal), `Hairball` (debuff), `Headbonk`. Type-triangle lite: Playful > Lazy > Sassy > Playful (a rotating weakness — the Clicker Heroes daily-rotation trick appears in tournament seasons).
 - **Turn-based, ~2–3 minute matches.** Server-authoritative; same engine as board-game matches.
 - **AI fallback:** battle bots at every rating tier (minimax over the small move space + personality-flavored policies: a "lazy" bot plays Loaf too much — human-feel by characterization). Named NPC trainers with fake ratings.
 - **PvP:** async by default — you battle a snapshot of another player's pet with its own AI policy (their pet, their trained tricks, no wait for the owner). Live ranked matches during tournament events. Rewards: Clout, cosmetics, seasonal titles. Bot matches non-ranked.
 - **Tone guard:** pets are never hurt — battles are play-fights; the loser gets the zoomies and a treat. (The satire quota is filled elsewhere; the pet layer is the sincere heart the Bogost rule requires.)
 
-## 3. The house (base building)
+## 3. The house (cosmetic base — no raids)
 
-> `DESIGN-GAP:` **the Layout-play, Defenses and Raids bullets below are dead content.** Owner decision 2026-07-28 (`BACKLOG.md`, commit `ba1dbf0`): Clash-style async base building is **rejected**, replaced by a lane pusher. `design/research/lane-pusher-design.md §7` records why, and adds independent confirmation from simulation: **base layout explains 82 % of raid outcomes but has a single optimum — copying the meta is worth +41 percentage points**, which is the signature of a solved puzzle players outsource (Supercell itself ships a copy-a-base deep link). Keep: the tier fiction, furniture/decor cosmetics, and the Comfort → Soul-regen economy hook. Strike: defenses, raids, and the layout snapshot. **Also from that dossier: the pets must not be the lane pusher's units** (roster arithmetic, and §tone — a lane grinds bodies by construction); the pet is the **On-Call leader** instead. Resolve before any pet-house or lane-pusher RFC.
+> Re-scoped 2026-07-28: Clash-style layout/defense/raids **struck** (owner rejection; `research/lane-pusher-design.md §7` — layout is a solved puzzle players outsource: 82% of raid outcomes, one optimum, copying worth +41pp). Competitive spatial play lives in the Lane (`03 §10`) and the region draft (`13 §5`). Kept: everything below.
 
 - **Fiction:** the founder's home/base, growing with tiers: garage corner → apartment → smart home → compound → bunker (the billionaire-layer rungs appear here: the yacht is technically a room).
-- **Layout play:** place furniture, pet equipment (climbing towers, server-rack hammocks), decor, and **defenses** (Clash-of-Clans-lite): camera turrets that spray water, roomba patrols, laser-pointer decoys, a moat (late-game, obviously).
-- **Raids:** other players' *AI armies* (mischief crews — raccoons in hi-vis, rival mascots, a QAnon LARPer who bounces off the hedge) attack your **layout snapshot** async; you raid theirs. Defense success = small Influence/cosmetic payouts; losses cost nothing but tidiness (raids knock over furniture; the pet watches, judging). **No resource theft** — anti-griefing by design; raids are a puzzle-scoring game, not extraction.
-- **AI fallback:** raid targets are procedurally generated compounds when no player layouts are available; attacking armies are always AI.
-- **Economy hook:** furniture/defense from cash + Influence; some pieces buff pet stats or house "Comfort" (a small Soul-regen multiplier — the home is a touch-grass amplifier).
+- **Decor play:** place furniture, pet equipment (climbing towers, server-rack hammocks), and cosmetics; bonded pets visit and are seen lounging in the feed. Guildmates can tour your house.
+- **Economy hook:** furniture from cash + Influence; pieces buff pet stats or house **Comfort** (a small Soul-regen multiplier — the home is a touch-grass amplifier).
+- **The pet is the On-Call Leader** in the Lane (`03 §10`) — its house display shelf shows lane trophies.
 
 ## 4. Hats, cosmetics, and the free lootbox machine
 
