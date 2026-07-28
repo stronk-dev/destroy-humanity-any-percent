@@ -8,6 +8,8 @@ Implemented systems:
   state/wire rules, economy helpers, and verification commands.
 - [Economy kernel](economy-kernel.md) — strict shared resource/generator catalog, cross-runtime
   cost curves, scoped authoritative ledger transactions, and receipt boundary.
+- [Continuous integration](ci.md) — public hosted workflow, blocking verification jobs, dependency
+  cache boundaries, and balance-schema gate.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.

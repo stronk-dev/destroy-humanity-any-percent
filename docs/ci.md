@@ -1,0 +1,65 @@
+# Continuous Integration
+
+The repository has one GitHub Actions workflow, `.github/workflows/ci.yml`, triggered by every
+push and pull request. It has read-only repository permissions and cancels an older run when a
+new commit arrives on the same ref.
+
+The repository is public. CI uses GitHub-hosted `ubuntu-latest` runners; there are no self-hosted
+runners, deployment credentials, or deployment steps.
+
+## Blocking jobs
+
+| Job | Repository command | Coverage |
+|---|---|---|
+| `server` | `make verify-server` | Go vet and all Go tests |
+| `client` | `make verify-client` | strict TypeScript and Node/V8 tests |
+| `browser` | `make test-browser` | Chromium, Firefox, and WebKit suites |
+| `schema` | `make verify-schema` | schema compilation plus production and fixture catalogs |
+
+Every job has a five-minute timeout. The complete blocking workflow has a normative five-minute
+elapsed-time budget; the first hosted measurement is pending the initial push. Until that run is
+observed, the CI Baseline RFC remains implementing.
+
+## Reproducibility and caches
+
+- Go reads its version from `server/go.mod`. Only the module-download directory is cached; the Go
+  build cache is not.
+- Node is version 24. pnpm reads the exact version from `client/package.json`, installs from the
+  frozen lockfile, and caches only the pnpm dependency store.
+- The browser job runs inside `mcr.microsoft.com/playwright:v1.62.0-noble`, exactly matching the
+  `playwright` package. Browser executables come from the image and are not cached separately.
+- Workflow actions use supported major release tags. Updating Playwright requires changing the
+  package, lockfile, and container tag together.
+
+## Balance-schema gate
+
+`make verify-schema` runs the pinned Ajv Draft 2020-12 validator in strict mode. It compiles
+`balance/economy.schema.json`, which also validates the schema against its meta-schema, then checks:
+
+- every JSON file under `balance/catalogs/` as production data, if that directory contains any;
+- every `balance/testdata/valid/*.json` fixture must pass;
+- every `balance/testdata/invalid/*.json` fixture must fail.
+
+At least one positive and one negative fixture are required, so deleting the validator's proof
+cases is itself a build failure. Runtime Go and TypeScript catalog validation remains independent;
+JSON Schema is an early content-authoring gate, not the authoritative gameplay loader.
+
+## Local use
+
+Run the exact aggregate gate from the repository root:
+
+```sh
+make verify
+```
+
+The narrower commands are useful while iterating:
+
+```sh
+make verify-server
+make verify-client
+make verify-schema
+make test-browser
+```
+
+No CI job deploys anything. Compose, Caddy, migrations, websocket draining, and reconnect testing
+belong to later RFCs.

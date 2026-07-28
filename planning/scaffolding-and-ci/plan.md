@@ -3,16 +3,18 @@
 - **RFC:** `rfc/scaffolding-and-ci.md`
 - **Assignee:** Codex
 - **Started:** 2026-07-28
+- **Status:** implementation complete; hosted acceptance pending
 
 ## Work
 
-1. Split the Makefile into server, client, browser, schema, and aggregate verification targets.
-2. Add a pinned Ajv 2020-12 schema verifier plus positive and negative catalog fixtures.
-3. Add the least-privilege four-job GitHub Actions workflow with frozen installs, dependency
+1. [x] Split the Makefile into server, client, browser, schema, and aggregate verification targets.
+2. [x] Add a pinned Ajv 2020-12 schema verifier plus positive and negative catalog fixtures.
+3. [x] Add the least-privilege four-job GitHub Actions workflow with frozen installs, dependency
    caches, matching Playwright container, and superseded-run cancellation.
-4. Exercise every narrow Make target and the aggregate local gate.
-5. Update README and canonical CI documentation.
-6. Archive the completed RFC and planning record.
+4. [x] Exercise every narrow Make target and the aggregate local gate.
+5. [x] Update README and canonical CI documentation.
+6. [ ] Observe the first hosted workflow under five minutes, then archive the completed RFC and
+   planning record.
 
 ## Acceptance gates
 
