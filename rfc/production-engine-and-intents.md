@@ -1,6 +1,6 @@
 # RFC: Production Engine & Intent API
 
-- **Status:** accepted
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-28
 - **Design refs:** `design/02 §2` (production stack, cost curves), `design/02 §10` (the daily clock), `design/06 §idle-math` (closed-form, lazy, server-authoritative), `AGENTS.md` law 7 (offline default)
@@ -10,7 +10,7 @@
 - **Split follow-up:** `archive/generator-production-state.md` (implemented catalog output, owned counts, save cursor)
 - **Boundary follow-up:** `gate-predicates-and-routes.md` (gate alternatives and routes; production is read-only input)
 - **Boundary follow-up:** `commons-compact.md` (commons computes one generic multiplier-slot contribution)
-- **Planning:** `planning/production-engine-and-intents/` (once implementing)
+- **Planning:** `planning/production-engine-and-intents/`
 
 ## Summary
 
