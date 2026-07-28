@@ -1,6 +1,6 @@
 # RFC: Production Accrual Math
 
-- **Status:** accepted
+- **Status:** implementing
 - **Author:** Marco / Codex
 - **Created:** 2026-07-28
 - **Design refs:** `design/02-economy-balancing.md §2.4`, `design/06-tech.md §idle-math`
@@ -38,7 +38,7 @@ accrueConstant(rates[], elapsedMilliseconds, efficiency) -> Decimal
 - Invalid input or a non-finite intermediate returns an error/diagnostic NaN and can never be
   committed.
 - Source order cannot change the canonical result. Implementations must use a deterministic
-  magnitude-aware summation order: ascending absolute exponent, then canonical string as the tie
+  magnitude-aware summation order: ascending exponent, then canonical string as the tie
   breaker. Callers do not pre-aggregate or quantize individual sources.
 - This primitive does not apply hardcaps. The future authoritative engine computes remaining
   headroom and commits through the ledger.

@@ -10,7 +10,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Production Engine & Intent API](production-engine-and-intents.md) | draft | — |
-| [Production Accrual Math](production-accrual-math.md) | accepted | [Production Engine & Intent API](production-engine-and-intents.md) |
+| [Production Accrual Math](production-accrual-math.md) | implementing | [Production Engine & Intent API](production-engine-and-intents.md) |
 
 ## Archive
 
