@@ -11,8 +11,9 @@ You are working on **Cloud Clicker**: a free, browser-based MMO idle game — *"
 | Planning | `planning/<rfc-slug>/` | Your `plan.md` + append-only `log.md` per RFC. The long-term job log — write it so a fresh agent can resume from it alone. |
 | Docs | `docs/` | Canonical description of what exists. Update in the same change as any behavior change. |
 
-**Current state:** design complete; RFC-0001 (numeric core), its boundary-hardening follow-ups,
-and RFC-0002 (economy kernel) are implemented and archived. See `rfc/README.md` for active work.
+**Current state:** design complete; the numeric core, economy kernel, save layer, and production
+engine (including authoritative intents) are implemented and archived. See `rfc/README.md` for
+active work.
 
 ## Your workflow
 
@@ -41,7 +42,8 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 4. **Balance data is declarative** (JSON/YAML data files, hot-reloadable), never constants in code.
 5. **Hardcaps, never softcaps.** Every cap is a visible number.
 6. **Every multiplayer feature has an AI/bot fallback**; bots never cheat (same server validation and hidden-info boundaries as humans).
-7. **Offline progress is default** (90% rate, 24 h cap — normative home: `rfc/production-engine-and-intents.md` D4) — never a purchased privilege.
+7. **Offline progress is default** (90% rate, 24 h cap — canonical behavior:
+   `docs/production-engine.md`) — never a purchased privilege.
 8. **Save schema versioned from commit #1** with a migration chain; refuse to persist NaN saves.
 9. **Published formulas** for all community/contribution math (the Helldivers transparency rule).
 10. **Parodied dark patterns always pull the curtain** (tooltip states what it is). The pet layer is sincere, never a joke (`design/04-pets.md §tone`).
@@ -65,7 +67,6 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 
 ## Where to start
 
-**RFC-0001 (numeric core)** is implemented and archived — the foundation everything else tests against.
-Subsequent Phase-0 RFCs (save layer, production engine, client shell, balance harness, deploy
-scaffolding) are drafted from `design/07-roadmap.md`; the roadmap phase list is the sequencing
-authority. Do not start one from the roadmap alone: draft and accept its RFC first.
+The numeric, economy, save, and production foundations are implemented and archived. Choose work
+only from the active index in `rfc/README.md`; draft and accept missing Phase-0 contracts before
+starting from the roadmap.

@@ -84,3 +84,14 @@
   revision response. The Make target now runs all package integration tests.
 - The retained tier-1 property gate drives both intents for 24 simulated hours across 200 seeded
   policies; every state remains finite/non-negative/encodable and every policy acquires a generator.
+
+## 2026-07-28 — acceptance, docs, and archive
+
+- Added data-driven online/offline/credit policy vectors and a monotonic-progress property test.
+- Added a source generator for `docs/generated/production-formulas.json`; formula drift now fails
+  the blocking server CI command.
+- Updated canonical numeric, economy, save, CI, and production docs plus the root project status.
+- `make verify` passed: Go vet/tests, 6,354 Node tests, schema with one production catalog, generated
+  formula diff, and 19,062 tests across Chromium/Firefox/WebKit.
+- Real Postgres integration had already passed after the final intent transaction changes.
+- RFC and planning record archived; no push performed.

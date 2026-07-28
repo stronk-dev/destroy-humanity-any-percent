@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck vectors vectors-check vet fuzz fuzz-ci verify-schema verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck vectors vectors-check formulas formulas-check vet fuzz fuzz-ci verify-schema verify-server verify-client verify
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -34,6 +34,12 @@ vectors:
 vectors-check: vectors
 	git diff --exit-code -- testdata/decimal-vectors.json
 
+formulas:
+	cd server && go run ./cmd/gen-formulas -output ../docs/generated/production-formulas.json
+
+formulas-check: formulas
+	git diff --exit-code -- docs/generated/production-formulas.json
+
 vet:
 	cd server && go vet ./...
 
@@ -46,7 +52,7 @@ fuzz-ci:
 verify-schema:
 	pnpm --dir client run verify:schema
 
-verify-server: vet test-go
+verify-server: vet test-go formulas-check
 
 verify-client: typecheck test-client
 

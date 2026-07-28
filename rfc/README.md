@@ -9,7 +9,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
-| [Production Engine & Intent API](production-engine-and-intents.md) | implementing | — |
 | [Gate Predicates & the Route Registry](gate-predicates-and-routes.md) | draft | Production Engine & Intent API |
 | [The Commons Compact](commons-compact.md) | draft | Production Engine & Intent API |
 | [Combat Data Model](combat-data-model.md) | draft | — |
@@ -31,20 +30,19 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Save Archive Compare-and-Swap](archive/save-archive-cas.md) | implemented | [Save layer](../docs/save-layer.md) |
 | [Numeric Boundary Parity](archive/numeric-boundary-parity.md) | implemented | [Numeric core](../docs/numeric-core.md) |
 | [Deterministic Decimal Aggregation](archive/deterministic-decimal-aggregation.md) | implemented | [Numeric core](../docs/numeric-core.md), [economy kernel](../docs/economy-kernel.md) |
+| [Production Engine & Intent API](archive/production-engine-and-intents.md) | implemented | [Production engine](../docs/production-engine.md), [economy kernel](../docs/economy-kernel.md), [save layer](../docs/save-layer.md) |
 
 Planned next (not yet drafted — carve from `design/07-roadmap.md` Phase 0): client shell & sim loop
 · balance harness · Compute Credit spend · deployment and draining.
 
 ### Deferred decisions register
 
-RFC-0002's re-scope to the Economy Kernel correctly narrowed it to what is implementable — but two
-decisions it originally owned are now listed only as "out of scope" with **no named successor**.
-That is precisely the failure mode RFC-0002 was written to catch: *a decision with a reasonable
-default and no owner gets made silently by whoever writes the code first.* Assigning owners:
+RFC-0002's re-scope to the Economy Kernel correctly narrowed it to what was implementable. The
+remaining deferred decisions retain named successors so defaults are not chosen silently during
+later implementation:
 
 | Deferred decision | Origin | Named owner | Why it matters |
 |---|---|---|---|
 | **Leaderboard/ranking order keys** — must be exact integers or times, never quantized `Decimal`; ties displayed as ties | RFC-0002 draft D4 | **balance harness / leaderboard RFC** | 12-digit quantization makes runs differing below the 12th digit indistinguishable, in a game framed around world records |
 | **Minimum visible increment** — a counter must never appear frozen while production > 0; a counter frozen *at a cap* must show the cap and its `reason_key` | RFC-0002 draft D6 | **client shell & sim loop RFC** | A frozen number with no explanation is indistinguishable from a bug, and `design/00` forbids unexplained caps |
 | **Client reconciliation policy** — snap vs. lerp vs. rebase | never in an RFC; asserted in a `design/06` table cell | **client shell & sim loop RFC** | The most player-visible consequence of RFC-0001's whole numeric contract |
-| **Offline progression constants** | stranded in `AGENTS.md` | **production engine RFC** | A balance number living in an onboarding brief is binding on agents but untestable and unversioned |

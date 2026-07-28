@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "production_rate": "sum_generators(count * base_rate * product(multiplier_slots))",
+  "multiplier_slot_order": [
+    "upgrades",
+    "milestones",
+    "faction",
+    "doctrine",
+    "commons",
+    "trust",
+    "event_buffs",
+    "prestige"
+  ],
+  "within_slot_order": "source_id_raw_byte_ascending"
+}

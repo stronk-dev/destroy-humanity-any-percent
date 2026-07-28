@@ -1,16 +1,16 @@
 # RFC: Production Engine & Intent API
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-28
 - **Design refs:** `design/02 §2` (production stack, cost curves), `design/02 §10` (the daily clock), `design/06 §idle-math` (closed-form, lazy, server-authoritative), `AGENTS.md` law 7 (offline default)
 - **Research:** `design/research/tech-stack.md §1` (swarmsim closed forms, intent validation), `design/research/pacing-science.md` (progress checker), `design/research/cookie-clicker.md` (multiplier stack order)
 - **Depends on:** RFC-0002 (ledger), Save Layer & Migrations (implemented), Geometric Afford Fast Path (implemented)
-- **Split follow-up:** `archive/production-accrual-math.md` (implemented closed-form numeric primitive)
-- **Split follow-up:** `archive/generator-production-state.md` (implemented catalog output, owned counts, save cursor)
-- **Boundary follow-up:** `gate-predicates-and-routes.md` (gate alternatives and routes; production is read-only input)
-- **Boundary follow-up:** `commons-compact.md` (commons computes one generic multiplier-slot contribution)
-- **Planning:** `planning/production-engine-and-intents/`
+- **Split follow-up:** `production-accrual-math.md` (implemented closed-form numeric primitive)
+- **Split follow-up:** `generator-production-state.md` (implemented catalog output, owned counts, save cursor)
+- **Boundary follow-up:** `../gate-predicates-and-routes.md` (gate alternatives and routes; production is read-only input)
+- **Boundary follow-up:** `../commons-compact.md` (commons computes one generic multiplier-slot contribution)
+- **Planning:** `../../planning/archive/production-engine-and-intents/`
 
 ## Summary
 
@@ -270,3 +270,5 @@ budget. The harness inherits the big version; production ships the small one.
 - 2026-07-28: implementation clarification: applied receipts include the canonical authoritative
   snapshot promised by D3; abort-only numeric invariants use audit+metrics because no gameplay
   revision exists to carry an event.
+- 2026-07-28: implemented and archived after Go/TypeScript/schema/formula-drift and Chromium,
+  Firefox, WebKit gates passed; real Postgres integration passed separately.

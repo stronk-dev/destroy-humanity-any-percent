@@ -2,19 +2,20 @@
 
 The economy kernel is the implemented boundary between RFC-0001 large-number arithmetic and
 future gameplay systems. It provides a strict shared catalog, matching Go/TypeScript cost queries,
-and a scoped authoritative Go ledger. Generator output metadata exists, but no shipped balance
-catalog, purchase action, multiplier stack, or clocked production engine exists yet.
+and a scoped authoritative Go ledger. The production engine now consumes this boundary for shipped
+balance data, purchases, multiplier declarations, and lazy time integration.
 
 ## Catalog
 
 The authoring schema is [`balance/economy.schema.json`](../balance/economy.schema.json). Runtime
 validation is performed independently by `economy.LoadCatalog` on the server and `parseCatalog`
-on the client. Current authoring uses version 2; both runtimes retain version-1 loading for
-historical catalog hashes:
+on the client. Current authoring uses version 3; both runtimes retain version-1 and version-2
+loading for historical catalog hashes. The complete canonical example is
+[`balance/catalogs/phase0.json`](../balance/catalogs/phase0.json); this excerpt shows its root shape:
 
 ```json
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "resources": [
     {
       "id": "company.cash",
@@ -25,10 +26,6 @@ historical catalog hashes:
       "hardcap": {
         "amount": "1e1000",
         "reason_key": "resource.company_cash.cap.depleted"
-      },
-      "production": {
-        "resource_id": "company.cash",
-        "base_rate": "1e0"
       }
     }
   ],
@@ -39,19 +36,28 @@ historical catalog hashes:
         "resource_id": "company.cash",
         "base": "1e2",
         "curve": { "kind": "geometric", "ratio": "1.13e0" }
-      }
+      },
+      "production": { "resource_id": "company.cash", "base_rate": "1e0" }
     }
-  ]
+  ],
+  "manual_actions": [
+    { "id": "manual.click", "output": { "resource_id": "company.cash", "amount_per_action": "1e0" } }
+  ],
+  "multiplier_sources": [],
+  "progress_coordinates": ["four strict T0–T3 coordinate objects"],
+  "manual_policy": { "refill_milli_per_ms": 25, "bucket_cap_milli": 50000 },
+  "offline_policy": { "the strict time-policy fields": "see the canonical artifact" }
 }
 ```
 
-This example describes structure only. The repository does not yet contain a shipped game
-catalog, generator price, or launch ratio.
+The shipped Phase-0 values are provisional balance data identified by the exact artifact-byte
+`constants_hash`.
 
 Catalog rules:
 
-- Version 2 requires generator production metadata. Version 1 remains readable but its generators
-  are explicitly not production-capable.
+- Versions 2 and 3 require generator production metadata. Version 1 remains readable but its
+  generators are explicitly not production-capable. Version 3 additionally requires production
+  policies, actions, multiplier declarations, and progress coordinates.
 - IDs are lowercase mechanical identifiers, optionally dot-namespaced. Flavor and visible text
   stay in later data/localization files.
 - Resource scopes are `company`, `founder`, `world`, and `guild`.
@@ -127,9 +133,9 @@ The n-ary sum groups same-exponent terms before normalization and orders full-pr
 numerically. Transaction acceptance is therefore invariant under entry permutation, including
 domain-edge cancellations; a genuinely out-of-domain net result still rejects atomically.
 
-Hardcap overflow is rejected, never silently clamped. A future production engine may calculate
-remaining headroom and accrue exactly to a cap, while purchases and conversions remain protected
-from accidental value loss.
+Hardcap overflow is rejected, never silently clamped. The production engine calculates remaining
+headroom and accrues exactly to a cap, while purchases and conversions remain protected from
+accidental value loss.
 
 ## Query, command, and subscription responsibilities
 
@@ -165,7 +171,8 @@ and WebKit suites.
 
 ## Deliberate deferrals
 
-The kernel does not yet implement idempotency storage, production/time integration, offline
-progress, multiplier stacks, purchases/actions, cross-scope coordination,
-WebSocket publication, client interpolation, cap tooltips, leaderboard ordering, shipped balance,
-or the balance harness. Each remains owned by a later bounded RFC.
+Idempotency storage, production/time integration, offline progress, multiplier slots, purchases,
+manual actions, and shipped Phase-0 balance now exist; see [Production engine](production-engine.md).
+The kernel still does not own cross-scope coordination, WebSocket publication, client
+interpolation, cap tooltips, leaderboard ordering, Compute Credit spending, or the large balance
+harness. Each remains owned by a later bounded RFC.

@@ -11,7 +11,7 @@ runners, deployment credentials, or deployment steps.
 
 | Job | Repository command | Coverage |
 |---|---|---|
-| `server` | `make verify-server` | Go vet and all Go tests |
+| `server` | `make verify-server` | Go vet/tests plus generated production-formula drift |
 | `client` | `make verify-client` | strict TypeScript and Node/V8 tests |
 | `browser` | `make test-browser` | Chromium, Firefox, and WebKit suites |
 | `schema` | `make verify-schema` | schema compilation plus production and fixture catalogs |
@@ -54,6 +54,14 @@ At least one positive and one negative fixture are required, so deleting the val
 cases is itself a build failure. Runtime Go and TypeScript catalog validation remains independent;
 JSON Schema is an early content-authoring gate, not the authoritative gameplay loader.
 
+## Published-formula drift gate
+
+`make formulas-check` regenerates `docs/generated/production-formulas.json` from the Go multiplier
+boundary and fails if tracked bytes differ. It publishes the exact production-rate shape, slot
+order, and within-slot order used by authoritative arithmetic. The target is part of
+`make verify-server`, so changing code without updating the player-auditable artifact fails the
+blocking server job.
+
 ## Local use
 
 Run the exact aggregate gate from the repository root:
@@ -68,6 +76,7 @@ The narrower commands are useful while iterating:
 make verify-server
 make verify-client
 make verify-schema
+make formulas-check
 make test-browser
 make fuzz-ci
 make vectors-check

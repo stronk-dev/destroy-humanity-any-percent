@@ -1,7 +1,7 @@
 # Production Engine & Intent API — implementation plan
 
-- **RFC:** `rfc/production-engine-and-intents.md`
-- **Status:** implementing
+- **RFC:** `rfc/archive/production-engine-and-intents.md`
+- **Status:** implemented
 - **Assignee:** Codex
 - **Started:** 2026-07-28
 
@@ -53,3 +53,9 @@
 5. Atomic intent/event persistence.
 6. Intent handlers + property/integration tests.
 7. Canonical docs + archive.
+
+## Completion
+
+All work items and acceptance gates completed on 2026-07-28. The large 200-bot × 30-day balance
+harness remains deliberately owned by the future Balance Harness RFC; this RFC's 24-hour × 200-seed
+gate is implemented and blocking.

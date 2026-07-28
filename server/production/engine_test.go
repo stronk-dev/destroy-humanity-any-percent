@@ -117,6 +117,47 @@ func TestEvaluateOfflineCreditAndResourceHardcaps(t *testing.T) {
 	}
 }
 
+func TestEvaluationPolicyGoldenVectors(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/production-engine.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture struct {
+		Version int `json:"version"`
+		Cases   []struct {
+			Name               string         `json:"name"`
+			Mode               EvaluationMode `json:"mode"`
+			ElapsedMS          int64          `json:"elapsed_ms"`
+			InitialCash        string         `json:"initial_cash"`
+			GeneratorCount     int64          `json:"generator_count"`
+			InitialCreditMS    int64          `json:"initial_credit_ms"`
+			ExpectCash         string         `json:"expect_cash"`
+			ExpectProductionMS int64          `json:"expect_production_ms"`
+			ExpectBankedMS     int64          `json:"expect_banked_ms"`
+			ExpectCreditMS     int64          `json:"expect_credit_ms"`
+		} `json:"evaluation_cases"`
+	}
+	if err := json.Unmarshal(data, &fixture); err != nil || fixture.Version != 1 || len(fixture.Cases) == 0 {
+		t.Fatalf("fixture: version=%d cases=%d err=%v", fixture.Version, len(fixture.Cases), err)
+	}
+	catalog := phase0Catalog(t)
+	for _, vector := range fixture.Cases {
+		t.Run(vector.Name, func(t *testing.T) {
+			state := engineState(t, catalog, vector.InitialCash, vector.GeneratorCount)
+			state.ComputeCreditMS = vector.InitialCreditMS
+			result, err := Evaluate(state, catalog, engineCursor.Add(time.Duration(vector.ElapsedMS)*time.Millisecond), vector.Mode, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := state.Ledger.Snapshot()["company.cash"]; got != vector.ExpectCash ||
+				result.ProductionMS != vector.ExpectProductionMS || result.BankedCreditMS != vector.ExpectBankedMS ||
+				state.ComputeCreditMS != vector.ExpectCreditMS {
+				t.Fatalf("cash=%s result=%+v credits=%d", got, result, state.ComputeCreditMS)
+			}
+		})
+	}
+}
+
 func TestRatesValidateDeclaredContributions(t *testing.T) {
 	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
 	if err != nil {
@@ -182,5 +223,24 @@ func TestSubProgressSharedFixture(t *testing.T) {
 				t.Fatalf("progress = %s, want %s", got, vector.Expect)
 			}
 		})
+	}
+}
+
+func TestSubProgressIsMonotoneUnderPureAccrual(t *testing.T) {
+	catalog := phase0Catalog(t)
+	values := []string{"0", "1e0", "1e3", "1e6", "1e9", "1e12", "1e100"}
+	for tier := 0; tier <= 3; tier++ {
+		previous := mustDecimal(t, "0")
+		for _, cash := range values {
+			state := engineState(t, catalog, cash, 10)
+			current, err := SubProgressValue(catalog, state, tier)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if current.Lt(previous) {
+				t.Fatalf("tier %d regressed at cash %s: %s < %s", tier, cash, current.String(), previous.String())
+			}
+			previous = current
+		}
 	}
 }

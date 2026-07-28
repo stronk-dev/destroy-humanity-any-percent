@@ -76,6 +76,11 @@ The TypeScript boundary helpers live in `client/src/numeric.ts`. Both languages 
 The maximum-affordable result is always an exact integer. Floating tolerances are test metrics
 for continuous calculations; they never decide gameplay authority.
 
+The Go server additionally exposes detailed affordability queries that report whether verification
+left the bounded local-correction path for binary-search fallback. Count and error semantics are
+identical to the original API. The production purchase handler turns that diagnostic into its
+transaction-local invariant event/audit contract; numeric helpers remain transport-free.
+
 ### Constant-rate production accrual
 
 The Go primitive in `server/production` and TypeScript primitive in `client/src/production.ts`
@@ -92,9 +97,9 @@ elapsed seconds and efficiency, and quantize the final delta once. They never mu
 individually quantize the caller's sources.
 
 This function is deliberately policy-free. A 90% efficiency and a 24-hour interval appear in the
-shared vectors, but choosing offline efficiency, owning the clock, applying caps, and committing
-the delta belong to the future authoritative production engine. Invalid inputs or non-finite
-intermediates fail and cannot become state.
+shared vectors; the implemented [production engine](production-engine.md) owns offline efficiency,
+the server clock, caps, and ledger commit. Invalid inputs or non-finite intermediates fail and
+cannot become state.
 
 ### Arithmetic domain edges
 

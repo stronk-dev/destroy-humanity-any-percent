@@ -16,13 +16,16 @@ stale scalar subquery under PostgreSQL READ COMMITTED.
 
 ## State format
 
-Version 2 is strict JSON:
+Version 3 is strict JSON:
 
 ```json
 {
   "balances": {"company.cash":"1.23e4"},
   "generators": {"generator.example":7},
-  "evaluated_through": "2026-07-28T08:00:00Z"
+  "evaluated_through": "2026-07-28T08:00:00Z",
+  "compute_credit_ms": 0,
+  "manual_token_milli": 50000,
+  "manual_token_refilled_at": "2026-07-28T08:00:00Z"
 }
 ```
 
@@ -35,6 +38,11 @@ scope. Counts are JSON integers from zero through `9,007,199,254,740,991`; they 
 `evaluated_through` is canonical UTC RFC3339Nano and records the server-authored instant through
 which production state has been evaluated. The repository accepts and returns one complete state
 object containing ledger, counts, and cursor.
+
+`compute_credit_ms` and `manual_token_milli` are non-negative exact safe integers capped by the
+state's immutable catalog policy. The manual refill cursor is canonical server-authored UTC time
+and may not exceed `evaluated_through`. These fields are company-scoped; another save scope cannot
+smuggle production-policy state.
 
 `constants_hash` is `sha256:` plus the lowercase SHA-256 digest of the exact catalog artifact
 bytes. Saves resolve that immutable catalog before restoration. Reformatting a catalog therefore
@@ -49,10 +57,25 @@ Sequential SQL migrations are embedded in the Go package and applied transaction
 Goose 3.27.1 using pgx/v5's `database/sql` driver. There is no ORM, SQLite substitute, runtime
 migration directory, or separate migration artifact.
 
-Save version 1 remains readable. Its first real migration initializes every in-scope,
-production-capable generator to zero and uses the revision's database-authored `created_at` as the
-cursor. The checked-in `testdata/save-migrations.json` corpus fixes that result and grows with every
-future save version; migrations never read the wall clock implicitly.
+Save versions 1 and 2 remain readable. V1 initializes every in-scope production-capable generator
+to zero and uses the revision's database-authored `created_at` as the evaluation cursor. Both old
+versions initialize Compute Credits to zero, fill the manual bucket from the resolved catalog, and
+use the evaluation cursor as the refill baseline. The checked-in `testdata/save-migrations.json`
+corpus fixes independent v1→v3 and v2→v3 results and grows with every future version; migrations
+never read the wall clock implicitly.
+
+## Intent and event transaction
+
+`intent_records` keys normalized receipts by `(stream_id,intent_id)` with a SHA-256 canonical
+request hash. `events` stores the closed v1 event registry with stream, originating revision,
+schema version, intent, `constants_hash`, timestamp, and strict payload. It deliberately does not
+foreign-key the revision to a snapshot row because snapshot retention prunes old rows while event
+history remains append-only.
+
+`Store.ApplyIntent` locks the stream before replay/revision decisions. Applied state, next revision,
+events, and receipt commit together. A deterministic terminal rejection stores only its receipt;
+revision conflicts and internal failures store nothing. The store exposes time-cutoff pruning for
+the deployment scheduler's 30-day idempotency retention policy.
 
 Run the disposable Postgres integration suite locally:
 
@@ -67,5 +90,5 @@ tests skip database integration when the variable is absent; `make test-save-int
 immediately if it is absent.
 
 Archiving is read-only and reversible by future account policy; the persistence API exposes no
-hard delete. New-Founder gameplay, save cadence, event auditing, offline progress, and leaderboard
-Balance Epoch policy remain separate RFC responsibilities.
+hard delete. New-Founder gameplay, save cadence, event consumers, Compute Credit spending, and
+leaderboard Balance Epoch policy remain separate RFC responsibilities.

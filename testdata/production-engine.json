@@ -1,5 +1,43 @@
 {
   "version": 1,
+  "evaluation_cases": [
+    {
+      "name": "online one-second production",
+      "mode": "online",
+      "elapsed_ms": 1000,
+      "initial_cash": "0",
+      "generator_count": 1,
+      "initial_credit_ms": 0,
+      "expect_cash": "1e0",
+      "expect_production_ms": 1000,
+      "expect_banked_ms": 0,
+      "expect_credit_ms": 0
+    },
+    {
+      "name": "offline forty-eight-hour cap and bank",
+      "mode": "offline",
+      "elapsed_ms": 172800000,
+      "initial_cash": "0",
+      "generator_count": 1,
+      "initial_credit_ms": 0,
+      "expect_cash": "7.776e4",
+      "expect_production_ms": 86400000,
+      "expect_banked_ms": 43200000,
+      "expect_credit_ms": 43200000
+    },
+    {
+      "name": "offline bank clamps to published cap",
+      "mode": "offline",
+      "elapsed_ms": 172800000,
+      "initial_cash": "0",
+      "generator_count": 0,
+      "initial_credit_ms": 250000000,
+      "expect_cash": "0",
+      "expect_production_ms": 86400000,
+      "expect_banked_ms": 9200000,
+      "expect_credit_ms": 259200000
+    }
+  ],
   "progress_cases": [
     {
       "name": "tier zero starts at zero",

@@ -4,8 +4,9 @@
 
 A free, browser-based MMO idle game: climb from a 1995 garage — where you own your tools and cheat codes work — to a world-consuming AI megacorp, while a speedrun timer counts and the game slowly enshittifies itself around you. Cookie Clicker's spiritual successor with the two things it never had: **other people** and **an ending**.
 
-**Status:** design complete; the shared numeric core and configuration-driven economy kernel are
-implemented. No playable client or deployable server exists yet.
+**Status:** design complete; the shared numeric core, economy catalog/kernel, versioned Postgres
+save layer, and authoritative production/intent engine are implemented. No playable client or
+deployable server binary exists yet.
 
 ## Development setup
 
@@ -33,6 +34,7 @@ The useful repository commands are:
 make test         # Go + Node/V8 + Chromium + Firefox + WebKit
 make typecheck    # strict TypeScript check
 make verify-schema # JSON Schema + positive/negative catalog fixtures
+make formulas-check # regenerate + diff the published production formula artifact
 make vet          # Go static analysis
 make vectors      # deterministically regenerate the shared numeric vectors
 make fuzz         # run the Go canonical-value fuzzer until interrupted
@@ -49,7 +51,7 @@ GitHub Actions runs independent server, client, browser, and balance-schema jobs
 pull request. The browser job uses the Playwright image matching the pinned package and exercises
 Chromium, Firefox, and WebKit. `make verify` is the equivalent aggregate local command.
 
-There is no deployment automation yet. Container images, Compose/Caddy, database migrations,
+There is no deployment automation yet. Runtime container images, Compose/Caddy deployment,
 websocket draining, and client reconnect behavior belong to later Phase-0 RFCs listed in
 [`rfc/README.md`](rfc/README.md).
 

@@ -12,6 +12,8 @@ Implemented systems:
   cache boundaries, and balance-schema gate.
 - [Save layer](save-layer.md) — owner-aware Postgres revision streams, canonical state format,
   migrations, optimistic concurrency, retention, and restoration.
+- [Production engine](production-engine.md) — lazy authoritative accrual, multiplier slots,
+  online/offline policy, exact manual-action clamp, idempotent intents, events, and progress.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.
