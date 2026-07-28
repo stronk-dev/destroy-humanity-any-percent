@@ -6,6 +6,7 @@
 - **Design refs:** `design/02 §2` (production stack, cost curves), `design/02 §10` (the daily clock), `design/06 §idle-math` (closed-form, lazy, server-authoritative), `design/00` law 7 (offline default)
 - **Research:** `design/research/tech-stack.md §1` (swarmsim closed forms, intent validation), `design/research/pacing-science.md` (progress checker), `design/research/cookie-clicker.md` (multiplier stack order)
 - **Depends on:** RFC-0002 (ledger), Save Layer & Migrations (accepted), Geometric Afford Fast Path (accepted)
+- **Split follow-up:** `production-accrual-math.md` (closed-form numeric primitive)
 - **Planning:** `planning/production-engine-and-intents/` (once implementing)
 
 ## Summary
@@ -61,9 +62,23 @@ Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker patte
 
 ## Open questions
 
+- **Generator persistence:** save version 1 contains balances only; owned generator counts and the
+  evaluation cursor need an explicit version-2 envelope and migration behavior.
+- **Production data:** the economy catalog defines prices but no output resource or base rate.
+- **Intent semantics:** `buy_upgrade`, `collect`, and `toggle` have no data model or authoritative
+  state transition yet. They cannot be implemented from names alone.
+- **Idempotency retention:** storage shape, retention window, and whether failures are replayed are
+  unspecified.
+- **Compute Credits:** `design/02 §9` requires a bank cap while D4 names only a ratio. Both must be
+  concrete balance fields before offline time beyond 24 hours can be persisted.
+- **Events:** event payload identity and rollback semantics must be specified before creating the
+  deferred append-only table.
+- **Progress coordinate:** stage boundaries and behavior at prestige/reset are unspecified.
 - Compute Credit spend UX (needs `design/02 §9` detail — non-blocking, spend path can land as a follow-up).
 - Prestige/Exit maths — explicitly a follow-up RFC (needs `design/02 §3`'s cube-root formula plus the run-end sequence from `design/11`).
 
 ## Changelog
 
 - 2026-07-28: created (draft).
+- 2026-07-28: reviewed by Codex; recorded blocking schemas instead of improvising them and split
+  the settled cross-runtime constant-rate accrual primitive into `production-accrual-math.md`.
