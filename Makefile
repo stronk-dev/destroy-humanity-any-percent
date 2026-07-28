@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-client test-browser typecheck vectors vet fuzz verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-client test-browser typecheck vectors vet fuzz verify-schema verify-server verify-client verify
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -33,4 +33,11 @@ vet:
 fuzz:
 	cd server && go test ./decimal -run '^$$' -fuzz '^FuzzCanonicalRoundTrip$$'
 
-verify: vet typecheck test
+verify-schema:
+	pnpm --dir client run verify:schema
+
+verify-server: vet test-go
+
+verify-client: typecheck test-client
+
+verify: verify-server verify-client verify-schema test-browser

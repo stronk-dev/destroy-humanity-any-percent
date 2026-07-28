@@ -56,7 +56,8 @@ One workflow, `.github/workflows/ci.yml`, on push and pull request:
 | `schema` | `make verify-schema` → validate schema documents and every checked-in balance catalog | yes | An explicit empty catalog set succeeds; malformed checked-in catalogs fail |
 
 Workflow actions use the current supported majors at acceptance: `actions/checkout@v6`,
-`actions/setup-go@v6`, `actions/setup-node@v6`, and `pnpm/action-setup@v6`. Go reads
+`actions/setup-go@v6`, `actions/setup-node@v6`, `actions/cache@v5`, and
+`pnpm/action-setup@v6`. Go reads
 `server/go.mod`; Node uses version 24; pnpm reads the exact `packageManager` field. The browser job
 is pinned to `mcr.microsoft.com/playwright:v1.62.0-noble`, matching the exact client dependency.
 

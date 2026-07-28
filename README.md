@@ -24,15 +24,15 @@ make setup
 ```
 
 Playwright stores browser executables in its normal per-user cache, not in this repository.
-To refresh only the browser executables, run `make install-browsers`. A future CI runner
-should use `make install-browsers-ci`, which also installs Linux system dependencies, and
-cache Playwright's browser directory.
+To refresh only the browser executables, run `make install-browsers`. The CI browser job uses the
+version-matched Playwright container instead; it neither installs nor caches browser binaries.
 
 The useful repository commands are:
 
 ```sh
 make test         # Go + Node/V8 + Chromium + Firefox + WebKit
 make typecheck    # strict TypeScript check
+make verify-schema # JSON Schema + positive/negative catalog fixtures
 make vet          # Go static analysis
 make vectors      # deterministically regenerate the shared numeric vectors
 make fuzz         # run the Go canonical-value fuzzer until interrupted
@@ -45,12 +45,13 @@ by both the TypeScript and Go implementations. Do not hand-edit
 
 ## Delivery status
 
-Continuous-integration configuration, container images, Compose/Caddy, and deployment are
-intentionally not present yet. RFC-0001 authorizes only the minimal numeric workspaces and
-their test harness; deploy scaffolding is a later Phase-0 RFC listed in
-[`rfc/README.md`](rfc/README.md). This keeps infrastructure decisions reviewable instead of
-quietly inventing them inside the math change. Until that RFC lands, `make verify` is the
-local acceptance command and nothing is deployed automatically.
+GitHub Actions runs independent server, client, browser, and balance-schema jobs on every push and
+pull request. The browser job uses the Playwright image matching the pinned package and exercises
+Chromium, Firefox, and WebKit. `make verify` is the equivalent aggregate local command.
+
+There is no deployment automation yet. Container images, Compose/Caddy, database migrations,
+websocket draining, and client reconnect behavior belong to later Phase-0 RFCs listed in
+[`rfc/README.md`](rfc/README.md).
 
 ## Project documentation
 

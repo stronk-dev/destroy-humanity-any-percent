@@ -8,13 +8,15 @@
     "setup:browsers:ci": "playwright install --with-deps chromium firefox webkit",
     "test": "vitest run",
     "test:browser": "vitest run --config vitest.browser.config.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "verify:schema": "node tools/verify-schema.mjs"
   },
   "dependencies": {
     "break_infinity.js": "2.2.0"
   },
   "devDependencies": {
     "@vitest/browser": "3.2.4",
+    "ajv": "8.20.0",
     "playwright": "1.62.0",
     "typescript": "5.9.2",
     "vitest": "3.2.4"
