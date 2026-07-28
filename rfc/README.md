@@ -9,6 +9,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
+| [Balance Harness Foundation](balance-harness-foundation.md) | draft | Production Engine & Intent API |
 | [Gate Predicates & the Route Registry](gate-predicates-and-routes.md) | draft | Production Engine & Intent API |
 | [The Commons Compact](commons-compact.md) | draft | Production Engine & Intent API |
 | [Combat Data Model](combat-data-model.md) | draft | — |
@@ -33,8 +34,9 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Deterministic Decimal Aggregation](archive/deterministic-decimal-aggregation.md) | implemented | [Numeric core](../docs/numeric-core.md), [economy kernel](../docs/economy-kernel.md) |
 | [Production Engine & Intent API](archive/production-engine-and-intents.md) | implemented | [Production engine](../docs/production-engine.md), [economy kernel](../docs/economy-kernel.md), [save layer](../docs/save-layer.md) |
 
-Planned next (not yet drafted): balance harness · Compute Credit spend · deployment and
-draining.
+Remaining Phase-0 contracts (not yet drafted): account/session bootstrap · transport and save
+sync · T0–T1 content plus first Exit · production Balance Epoch/hot-reload semantics. Later named
+work: Compute Credit spend · deployment and draining.
 
 ### Deferred decisions register
 
