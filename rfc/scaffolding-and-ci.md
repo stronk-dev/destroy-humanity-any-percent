@@ -87,7 +87,7 @@ budget, slower work moves to a non-blocking tier; the blocking budget does not g
 ### D4 — Deliberately separate performance repair
 
 The geometric `MaxAffordable` repair changes implemented RFC-0002 behavior and belongs to the
-follow-up RFC `geometric-afford-fast-path.md`. That RFC owns the exact-integer cap, postcondition
+implemented follow-up RFC `archive/geometric-afford-fast-path.md`. That RFC owns the exact-integer cap, postcondition
 tests, and benchmark. This CI RFC only benefits from the repaired runtime when the future harness
 arrives.
 

@@ -5,6 +5,7 @@
 - **Design refs:** `design/05 §5` (the commons + the front door, as designed 2026-07-28), `design/02 §7` (Trust constituencies; derivation rule), `design/10 §1` (Open Source = heavier participation)
 - **Research:** `design/research/commons-game-theory.md` (the spec), `design/research/morality-systems.md` (solo floor 1.8–2.5×, corrections)
 - **Depends on:** Save Layer (implemented — compact state is stream data), Production Engine (draft — consumes one named slot)
+- **Parent / boundary split from:** `production-engine-and-intents.md`
 - **Planning:** `planning/commons-compact/` (once implementing)
 
 ## Summary

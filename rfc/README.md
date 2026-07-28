@@ -10,6 +10,9 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Production Engine & Intent API](production-engine-and-intents.md) | draft | — |
+| [Gate Predicates & the Route Registry](gate-predicates-and-routes.md) | draft | Production Engine & Intent API |
+| [The Commons Compact](commons-compact.md) | draft | Production Engine & Intent API |
+| [Combat Data Model](combat-data-model.md) | draft | — |
 
 ## Archive
 

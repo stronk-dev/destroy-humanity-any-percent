@@ -5,7 +5,7 @@
 - **Created:** 2026-07-28
 - **Design refs:** `design/04 §2` (pet battles, as re-decided 2026-07-28), `design/03 §10` (the Lane), `design/05 §4` (PvP table)
 - **Research:** `design/research/creature-battler.md §8` (the minimum viable spec + simulations), `design/research/lane-pusher-design.md` (shared-data-model finding, bypass verbs, Nash results)
-- **Depends on:** RFC-0002 (catalog patterns), Save Layer & Migrations (accepted)
+- **Depends on:** RFC-0002 (catalog patterns), Save Layer & Migrations (implemented)
 - **Planning:** `planning/combat-data-model/` (once implementing)
 
 ## Summary
