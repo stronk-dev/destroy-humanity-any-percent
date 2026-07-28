@@ -12,6 +12,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Gate Predicates & the Route Registry](gate-predicates-and-routes.md) | draft | Production Engine & Intent API |
 | [The Commons Compact](commons-compact.md) | draft | Production Engine & Intent API |
 | [Combat Data Model](combat-data-model.md) | draft | — |
+| [Client Shell & Sim Loop](client-shell-and-sim-loop.md) | draft | Production Engine & Intent API |
 
 ## Archive
 
@@ -32,8 +33,8 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Deterministic Decimal Aggregation](archive/deterministic-decimal-aggregation.md) | implemented | [Numeric core](../docs/numeric-core.md), [economy kernel](../docs/economy-kernel.md) |
 | [Production Engine & Intent API](archive/production-engine-and-intents.md) | implemented | [Production engine](../docs/production-engine.md), [economy kernel](../docs/economy-kernel.md), [save layer](../docs/save-layer.md) |
 
-Planned next (not yet drafted — carve from `design/07-roadmap.md` Phase 0): client shell & sim loop
-· balance harness · Compute Credit spend · deployment and draining.
+Planned next (not yet drafted): balance harness · Compute Credit spend · deployment and
+draining.
 
 ### Deferred decisions register
 
