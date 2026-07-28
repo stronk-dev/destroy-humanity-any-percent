@@ -88,6 +88,35 @@ export function parseCanonical(source: string): Decimal {
   return value;
 }
 
+export function sumDeterministic(sources: readonly Decimal[]): Decimal {
+  const ordered = sources.map((source) => new Decimal(source));
+  if (ordered.some((value) => !isStateValue(value))) return new Decimal(Number.NaN);
+  ordered.sort((left, right) => {
+    if (left.exponent !== right.exponent) return left.exponent - right.exponent;
+    const magnitudeDifference = Math.abs(left.mantissa) - Math.abs(right.mantissa);
+    return magnitudeDifference !== 0 ? magnitudeDifference : left.mantissa - right.mantissa;
+  });
+
+  let total = new Decimal(0);
+  for (let start = 0; start < ordered.length; ) {
+    const exponent = ordered[start].exponent;
+    let end = start;
+    let mantissa = 0;
+    while (end < ordered.length && ordered[end].exponent === exponent) {
+      mantissa += ordered[end].mantissa;
+      end += 1;
+    }
+    if (mantissa !== 0) {
+      const term = Decimal.fromMantissaExponent(mantissa, exponent);
+      if (!isStateValue(term)) return new Decimal(Number.NaN);
+      total = total.add(term);
+      if (!isStateValue(total)) return new Decimal(Number.NaN);
+    }
+    start = end;
+  }
+  return total;
+}
+
 export function classify(value: Decimal): "finite" | "nan" | "positive-infinity" | "negative-infinity" {
   if (Number.isNaN(value.mantissa) || Number.isNaN(value.exponent)) {
     return "nan";

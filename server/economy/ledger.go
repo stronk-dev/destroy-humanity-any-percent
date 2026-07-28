@@ -113,7 +113,7 @@ func (l *Ledger) Snapshot() map[string]string {
 }
 
 func (l *Ledger) Apply(transaction Transaction) (Receipt, error) {
-	net := make(map[string]decimal.Decimal)
+	entriesByResource := make(map[string][]decimal.Decimal)
 	for index, entry := range transaction.Entries {
 		definition, exists := l.catalog.resourceByID[entry.ResourceID]
 		if !exists {
@@ -125,14 +125,16 @@ func (l *Ledger) Apply(transaction Transaction) (Receipt, error) {
 		if !entry.Delta.IsStateValue() {
 			return Receipt{}, fmt.Errorf("%w: entry %d has non-state delta", ErrInvalidTransaction, index)
 		}
-		net[entry.ResourceID] = net[entry.ResourceID].Add(entry.Delta)
-		if !net[entry.ResourceID].IsStateValue() {
-			return Receipt{}, fmt.Errorf("%w: aggregate for %q is outside the finite Decimal domain at entry %d (%s; mantissa=%g exponent=%d)", ErrInvalidTransaction, entry.ResourceID, index, net[entry.ResourceID].String(), net[entry.ResourceID].Mantissa(), net[entry.ResourceID].Exponent())
-		}
+		entriesByResource[entry.ResourceID] = append(entriesByResource[entry.ResourceID], entry.Delta)
 	}
 
-	resourceIDs := make([]string, 0, len(net))
-	for resourceID := range net {
+	net := make(map[string]decimal.Decimal, len(entriesByResource))
+	resourceIDs := make([]string, 0, len(entriesByResource))
+	for resourceID, entries := range entriesByResource {
+		net[resourceID] = decimal.SumDeterministic(entries)
+		if !net[resourceID].IsStateValue() {
+			return Receipt{}, fmt.Errorf("%w: aggregate for %q is outside the finite Decimal domain", ErrInvalidTransaction, resourceID)
+		}
 		resourceIDs = append(resourceIDs, resourceID)
 	}
 	sort.Strings(resourceIDs)

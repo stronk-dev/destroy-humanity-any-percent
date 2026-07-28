@@ -3,7 +3,14 @@ import { describe, expect, it } from "vitest";
 
 import fixtureJson from "../../testdata/decimal-vectors.json";
 import { affordGeometricSeries, sumGeometricSeries } from "../src/economy";
-import { canonicalString, classify, isStateValue, parseCanonical, quantize } from "../src/numeric";
+import {
+  canonicalString,
+  classify,
+  isStateValue,
+  parseCanonical,
+  quantize,
+  sumDeterministic,
+} from "../src/numeric";
 
 interface Vector {
   assert: "exact" | "approx" | "decision";
@@ -183,6 +190,15 @@ describe("shared decimal golden vectors", () => {
 });
 
 describe("numeric-core properties", () => {
+  it("sums domain-edge cancellations without mutating or depending on order", () => {
+    const positive = new Decimal("9e8999999999999999");
+    const values = [positive, positive, positive.neg(), positive.neg()];
+    const before = values.map((value) => `${value.mantissa}e${value.exponent}`);
+    expect(sumDeterministic(values).eq(0)).toBe(true);
+    expect(sumDeterministic([...values].reverse()).eq(0)).toBe(true);
+    expect(values.map((value) => `${value.mantissa}e${value.exponent}`)).toEqual(before);
+  });
+
   it("treats a representably near-one ratio as the constant-price limit", () => {
     const ratio = Decimal.fromMantissaExponent(1.000000000000001, 0);
     expect(canonicalString(sumGeometricSeries(3, 100, ratio, 0))).toBe("3e2");

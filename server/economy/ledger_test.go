@@ -142,6 +142,41 @@ func TestLedgerRejectsAggregateNumericOverflow(t *testing.T) {
 	}
 }
 
+func TestLedgerAggregationIsPermutationInvariantAtDomainEdge(t *testing.T) {
+	catalogJSON := `{
+      "schema_version": 1,
+      "resources": [{
+        "id": "company.value", "scope": "company", "numeric_kind": "decimal",
+        "initial": "0", "minimum": "0", "hardcap": null
+      }],
+      "generator_classes": []
+    }`
+	catalog, err := LoadCatalog([]byte(catalogJSON))
+	if err != nil {
+		t.Fatal(err)
+	}
+	positive := mustDecimal(t, "9e8999999999999999")
+	negative := positive.Neg()
+	permutations := [][]decimal.Decimal{
+		{positive, positive, negative, negative},
+		{positive, negative, positive, negative},
+		{negative, negative, positive, positive},
+	}
+	for _, values := range permutations {
+		ledger, _ := NewLedger(catalog, ScopeCompany)
+		entries := make([]Entry, len(values))
+		for index, value := range values {
+			entries[index] = Entry{ResourceID: "company.value", Delta: value}
+		}
+		if _, err := ledger.Apply(Transaction{Entries: entries}); err != nil {
+			t.Fatal(err)
+		}
+		if got := ledger.Snapshot()["company.value"]; got != "0" {
+			t.Fatalf("balance = %s, want zero", got)
+		}
+	}
+}
+
 func TestLedgerAggregatesSubResolutionSourcesBeforeCommit(t *testing.T) {
 	catalogJSON := `{
       "schema_version": 1,
