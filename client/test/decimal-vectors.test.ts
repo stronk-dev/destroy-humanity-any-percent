@@ -26,6 +26,7 @@ interface Coverage {
 const fixture = fixtureJson as { version: number; seed: number; coverage: Coverage; vectors: Vector[] };
 
 const requiredEdges = [
+  "div-reciprocal-boundary",
   "div-zero",
   "exp-finite",
   "exp-float-underflow",
@@ -36,6 +37,7 @@ const requiredEdges = [
   "ln-zero",
   "log10-negative",
   "log10-zero",
+  "mul-lower-bound-carry",
   "negative-infinity-input",
   "positive-infinity-input",
   "pow-negative-fractional",
@@ -158,6 +160,15 @@ describe("shared decimal golden vectors", () => {
     for (const classification of ["nan", "positive-infinity", "negative-infinity"]) {
       expect(fixture.coverage.classifications[classification]).toBeGreaterThan(0);
     }
+    const upperDomainBinaryInputs = fixture.vectors.filter(
+      (vector) =>
+        !vector.edge &&
+        ["add", "sub", "mul", "div"].includes(vector.op) &&
+        [vector.a, vector.b].some(
+          (source) => source && Math.abs(new Decimal(source).exponent) > 4_000_000_000_000_000,
+        ),
+    );
+    expect(upperDomainBinaryInputs.length).toBeGreaterThanOrEqual(100);
   });
 
   it.each(fixture.vectors)("$assert/$op($a, $b)", (vector) => {
@@ -172,6 +183,12 @@ describe("shared decimal golden vectors", () => {
 });
 
 describe("numeric-core properties", () => {
+  it("treats a representably near-one ratio as the constant-price limit", () => {
+    const ratio = Decimal.fromMantissaExponent(1.000000000000001, 0);
+    expect(canonicalString(sumGeometricSeries(3, 100, ratio, 0))).toBe("3e2");
+    expect(affordGeometricSeries(100, 100, ratio, 0)).toBe(1);
+  });
+
   it("round-trips every canonical fixture input idempotently", () => {
     for (const vector of fixture.vectors) {
       for (const source of [vector.a, vector.b, vector.ratio]) {

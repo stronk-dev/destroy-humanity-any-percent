@@ -198,6 +198,7 @@ func TestGoldenVectors(t *testing.T) {
 	actualOperations := make(map[string]int)
 	actualClassifications := make(map[string]int)
 	actualEdges := make(map[string]bool)
+	upperDomainBinaryInputs := 0
 	for _, vector := range fixture.Vectors {
 		actualOperations[vector.Op]++
 		if vector.ExpectClass != "" {
@@ -205,6 +206,12 @@ func TestGoldenVectors(t *testing.T) {
 		}
 		if vector.Edge != "" {
 			actualEdges[vector.Edge] = true
+		}
+		aExponent, bExponent := FromString(vector.A).Exponent(), FromString(vector.B).Exponent()
+		if vector.Edge == "" && (vector.Op == "add" || vector.Op == "sub" || vector.Op == "mul" || vector.Op == "div") &&
+			(aExponent > 4_000_000_000_000_000 || aExponent < -4_000_000_000_000_000 ||
+				bExponent > 4_000_000_000_000_000 || bExponent < -4_000_000_000_000_000) {
+			upperDomainBinaryInputs++
 		}
 	}
 	for operation, count := range actualOperations {
@@ -223,9 +230,9 @@ func TestGoldenVectors(t *testing.T) {
 		}
 	}
 	requiredEdges := []string{
-		"div-zero", "exp-finite", "exp-float-underflow", "exp-infinity",
+		"div-reciprocal-boundary", "div-zero", "exp-finite", "exp-float-underflow", "exp-infinity",
 		"infinity-cancellation", "infinity-times-zero", "ln-negative", "ln-zero",
-		"log10-negative", "log10-zero", "negative-infinity-input", "positive-infinity-input",
+		"log10-negative", "log10-zero", "mul-lower-bound-carry", "negative-infinity-input", "positive-infinity-input",
 		"pow-negative-fractional", "pow-negative-integer", "pow-zero-negative",
 		"pow-zero-positive", "pow-zero-zero", "quantize-max-carry", "quantize-min-carry",
 		"zero-div-zero",
@@ -237,6 +244,9 @@ func TestGoldenVectors(t *testing.T) {
 	}
 	if len(actualEdges) != len(requiredEdges) {
 		t.Fatalf("got %d mandatory edge cases, want %d", len(actualEdges), len(requiredEdges))
+	}
+	if upperDomainBinaryInputs < 100 {
+		t.Fatalf("upper-half binary inputs = %d, want at least 100", upperDomainBinaryInputs)
 	}
 	for index, vector := range fixture.Vectors {
 		t.Run(strconv.Itoa(index)+"/"+vector.Op, func(t *testing.T) {
@@ -251,6 +261,18 @@ func TestGoldenVectors(t *testing.T) {
 				t.Fatalf("unknown assertion category %q", vector.Assert)
 			}
 		})
+	}
+}
+
+func TestNearOneGeometricRatioUsesConstantLimit(t *testing.T) {
+	ratio := New(1.000000000000001, 0)
+	cost := SumGeometricSeries(3, FromFloat64(100), ratio, 0)
+	if got := cost.String(); got != "3e2" {
+		t.Fatalf("cost = %s, want 3e2", got)
+	}
+	affordable, err := AffordGeometricSeries(FromFloat64(100), FromFloat64(100), ratio, 0)
+	if err != nil || affordable != 1 {
+		t.Fatalf("affordable = %d, error = %v", affordable, err)
 	}
 }
 

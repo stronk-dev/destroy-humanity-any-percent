@@ -95,7 +95,7 @@ const boundaryExponents = [
 
 const diagnosticInputs = ["0", "1e0", "-1e0", "Infinity", "-Infinity", "NaN"];
 
-function randomExponent(limit = 4_000_000_000_000_000) {
+function randomExponent(limit = maxExponent) {
   const roll = random();
   if (roll < 0.2) return randomInt(-Math.min(limit, 300), Math.min(limit, 300));
   if (roll < 0.4) return randomInt(-Math.min(limit, 1_000_000), Math.min(limit, 1_000_000));
@@ -103,10 +103,11 @@ function randomExponent(limit = 4_000_000_000_000_000) {
     const candidate = boundaryExponents[randomInt(0, boundaryExponents.length - 1)];
     return Math.max(-limit, Math.min(limit, candidate));
   }
-  return Math.trunc((random() * 2 - 1) * limit);
+  const sign = random() < 0.5 ? -1 : 1;
+  return sign * Math.floor(random() * (limit + 1));
 }
 
-function randomDecimal({ positive = false, exponentLimit = 4_000_000_000_000_000 } = {}) {
+function randomDecimal({ positive = false, exponentLimit = maxExponent } = {}) {
   const sign = positive || random() >= 0.45 ? "" : "-";
   const exponent = randomExponent(exponentLimit);
   const mantissa = Number((1 + random() * 8.999999999999).toPrecision(12));
@@ -208,6 +209,8 @@ for (const [edge, op, a, b = ""] of [
   ["infinity-times-zero", "mul", "Infinity", "0"],
   ["quantize-max-carry", "quantize", "9.999999999995e8999999999999999"],
   ["quantize-min-carry", "quantize", "9.999999999995e-8999999999999999"],
+  ["div-reciprocal-boundary", "div", "1e8999999999999999", "2.5e8999999999999999"],
+  ["mul-lower-bound-carry", "mul", "9e-8999999999999999", "2e-1"],
 ]) {
   vectors.push(approximateVector(op, a, b, evaluateEdge(op, a, b), { edge }));
 }

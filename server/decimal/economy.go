@@ -17,13 +17,14 @@ func SumGeometricSeries(count int64, base, ratio Decimal, owned int64) Decimal {
 	if count == 0 || base.Eq(Zero) {
 		return Zero
 	}
-	if ratio.Eq(One) {
+	denominator := One.Sub(ratio)
+	if ratio.Eq(One) || denominator.Eq(Zero) {
 		return base.Mul(FromFloat64(float64(count)))
 	}
 	return base.
 		Mul(ratio.Pow(float64(owned))).
 		Mul(One.Sub(ratio.Pow(float64(count)))).
-		Div(One.Sub(ratio))
+		Div(denominator)
 }
 
 // AffordGeometricSeries returns the exact, verified maximum affordable count.
@@ -38,7 +39,7 @@ func AffordGeometricSeries(cash, base, ratio Decimal, owned int64) (int64, error
 	if cash.Lt(SumGeometricSeries(1, base, ratio, owned)) {
 		return 0, nil
 	}
-	if ratio.Eq(One) {
+	if ratio.Eq(One) || ratio.Sub(One).Eq(Zero) {
 		candidate := cash.Div(base).Floor().toFloat64()
 		if !isExactCount(candidate) {
 			return MaxExactInteger, nil

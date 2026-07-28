@@ -263,27 +263,41 @@ func (d Decimal) Mul(other Decimal) Decimal {
 	if math.IsInf(d.mantissa, 0) || math.IsInf(other.mantissa, 0) {
 		return Decimal{mantissa: math.Copysign(math.Inf(1), d.mantissa*other.mantissa)}
 	}
-	if other.exponent > 0 && d.exponent > maxExponent-other.exponent || other.exponent < 0 && d.exponent < -maxExponent-other.exponent {
-		return NaN
-	}
-	return New(d.mantissa*other.mantissa, d.exponent+other.exponent)
+	return arithmeticResult(d.mantissa*other.mantissa, d.exponent+other.exponent)
 }
 
-func (d Decimal) reciprocal() Decimal {
-	if d.IsNaN() {
+// Div computes the final quotient directly. Building a reciprocal first can
+// leave the valid exponent domain transiently even when the quotient is valid.
+func (d Decimal) Div(other Decimal) Decimal {
+	if d.IsNaN() || other.IsNaN() {
 		return NaN
 	}
-	if d.mantissa == 0 {
+	if other.mantissa == 0 || math.IsInf(other.mantissa, 0) {
 		return Zero
 	}
 	if math.IsInf(d.mantissa, 0) {
-		return Zero
+		return Decimal{mantissa: math.Copysign(math.Inf(1), d.mantissa*other.mantissa)}
 	}
-	return New(1/d.mantissa, -d.exponent)
+	return arithmeticResult(d.mantissa/other.mantissa, d.exponent-other.exponent)
 }
 
-// Div returns d / other.
-func (d Decimal) Div(other Decimal) Decimal { return d.Mul(other.reciprocal()) }
+func arithmeticResult(mantissa float64, exponent int64) Decimal {
+	magnitude := math.Abs(mantissa)
+	if magnitude >= 10 {
+		mantissa /= 10
+		exponent++
+	} else if magnitude > 0 && magnitude < 1 {
+		mantissa *= 10
+		exponent--
+	}
+	if exponent > maxExponent {
+		return Decimal{mantissa: math.Copysign(math.Inf(1), mantissa)}
+	}
+	if exponent < -maxExponent {
+		return Zero
+	}
+	return New(mantissa, exponent)
+}
 
 // Log10 returns the base-10 logarithm as a Decimal.
 func (d Decimal) Log10() Decimal {
@@ -334,6 +348,15 @@ func (d Decimal) Pow(power float64) Decimal {
 			return One
 		}
 		return Zero
+	}
+	if math.Trunc(power) == power {
+		exactExponentProduct := float64(d.exponent) * power
+		if math.Abs(exactExponentProduct) <= float64(maxExponent+1) {
+			mantissa := math.Pow(d.mantissa, power)
+			if !math.IsNaN(mantissa) && !math.IsInf(mantissa, 0) && mantissa != 0 {
+				return arithmeticResult(mantissa, int64(exactExponentProduct))
+			}
+		}
 	}
 	exponentProduct := float64(d.exponent) * power
 	if math.Trunc(exponentProduct) == exponentProduct && math.Abs(exponentProduct) <= jsMaxInteger {

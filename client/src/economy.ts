@@ -37,10 +37,11 @@ export function sumGeometricSeries(
     return new Decimal(Number.NaN);
   }
   if (count === 0 || base.eq(0)) return new Decimal(0);
-  if (ratio.eq(1)) return base.mul(count);
+  const denominator = Decimal.sub(1, ratio);
+  if (ratio.eq(1) || denominator.eq(0)) return base.mul(count);
 
   const start = base.mul(ratio.pow(owned));
-  return start.mul(Decimal.sub(1, ratio.pow(count))).div(Decimal.sub(1, ratio));
+  return start.mul(Decimal.sub(1, ratio.pow(count))).div(denominator);
 }
 
 function affordable(
@@ -83,7 +84,7 @@ export function affordGeometricSeries(
   validateInputs(cash, base, ratio, owned);
 
   if (!affordable(1, cash, base, ratio, owned)) return 0;
-  if (ratio.eq(1)) {
+  if (ratio.eq(1) || ratio.sub(1).eq(0)) {
     return Math.min(Math.floor(cash.div(base).toNumber()), MAX_EXACT_INTEGER);
   }
 
