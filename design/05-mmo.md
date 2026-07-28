@@ -43,7 +43,11 @@
 | Pet battles | Async vs snapshot pets (owner absent); live ranked in seasons | NPC trainers + bot policies at every tier |
 | Base raids | Async vs layout snapshots | Procedural compounds; attacking armies always AI |
 | The Market | Server-global prices moved lightly by aggregate trading | Simulated market makers |
-| Trading/gifting | Cosmetic + seed gifting (no power trading — anti-RMT by construction) | NPC gift events |
+| Trading/gifting | Cosmetic + seed gifting (no power trading — anti-RMT by construction) — ⚠️ **but crate-derived cosmetics MUST be ungiftable, see below** | NPC gift events |
+
+> `DESIGN-GAP:` **the one *code* change required by `compliance-2026-refresh.md` — everything else it found is documents.** Gifting as written applies to all cosmetics, including lootbox-crate output. **Transferability is the hinge every adverse loot-box ruling turned on.** Zero price kills the *stake*; **non-transferability is what kills the *prize***, and we currently give that second protection away for free. The UK government's 2022 finding turned on exactly this — loot boxes fall outside the Gambling Act because *"the reward is confined for use within the game and cannot be sold or otherwise exchanged for real world currency."* NL's Wkans art. 1(1)(a) likewise requires *"prijzen of premies."*
+>
+> **Fix: crate-derived items carry a non-transferable flag; hand-authored cosmetics and seeds stay giftable.** Cheap now, structural later. Resolve before the lootbox suite or any trading RFC.
 | Sabotage-flavored PvP | **Deliberately soft**: "FUD campaigns" nudge a rival's outrage meter cosmetically during tournament seasons only; no destructive PvP on the main economy | n/a |
 | Human-human only | Live tournament finals, guild-vs-guild raid leagues | Explicitly the one category allowed to require humans (per the design rule: human-only only where AI is more hassle than value) |
 
