@@ -9,11 +9,17 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
+| [Production Hardcap Saturation](production-hardcap-saturation.md) | draft | Economy Kernel / Production Engine |
+| [Millisecond Cursor Canonicalization](millisecond-cursor-canonicalization.md) | draft | Save Layer / Production Engine |
+| [Resource-Log Domain Parity](resource-log-domain-parity.md) | draft | Economy Kernel / Production Engine |
 | [Balance Harness Foundation](balance-harness-foundation.md) | accepted | Production Engine & Intent API |
 | [Gate Predicates & the Route Registry](gate-predicates-and-routes.md) | draft | Production Engine & Intent API |
 | [The Commons Compact](commons-compact.md) | draft | Production Engine & Intent API |
 | [Combat Data Model](combat-data-model.md) | draft | — |
 | [Client Shell & Sim Loop](client-shell-and-sim-loop.md) | draft | Production Engine & Intent API |
+| [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | draft | Production Engine / Client Shell |
+| [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | draft | Production Engine / Gate Predicates |
+| [Prestige & Exits](prestige-and-exits.md) | draft | Production Engine / Save Layer |
 
 ## Archive
 
@@ -34,9 +40,10 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Deterministic Decimal Aggregation](archive/deterministic-decimal-aggregation.md) | implemented | [Numeric core](../docs/numeric-core.md), [economy kernel](../docs/economy-kernel.md) |
 | [Production Engine & Intent API](archive/production-engine-and-intents.md) | implemented | [Production engine](../docs/production-engine.md), [economy kernel](../docs/economy-kernel.md), [save layer](../docs/save-layer.md) |
 
-Remaining Phase-0 contracts (not yet drafted): account/session bootstrap · transport and save
-sync · T0–T1 content plus first Exit · production Balance Epoch/hot-reload semantics. Later named
-work: Compute Credit spend · deployment and draining.
+Remaining Phase-0 contracts (not yet drafted): account/session bootstrap · T0–T1 playable content
+(Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics
+(Leaderboards owns board binding). Later named work: Compute Credit spend · deployment and
+draining.
 
 ### Deferred decisions register
 
@@ -46,6 +53,6 @@ later implementation:
 
 | Deferred decision | Origin | Named owner | Why it matters |
 |---|---|---|---|
-| **Leaderboard/ranking order keys** — must be exact integers or times, never quantized `Decimal`; ties displayed as ties | RFC-0002 draft D4 | **balance harness / leaderboard RFC** | 12-digit quantization makes runs differing below the 12th digit indistinguishable, in a game framed around world records |
+| **Leaderboard/ranking order keys** — ✅ resolved in [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) D1 (exact integer/time keys; magnitude ties remain ties) | RFC-0002 draft D4 | owned | 12-digit quantization makes runs differing below the 12th digit indistinguishable, in a game framed around world records |
 | **Minimum visible increment** — ✅ resolved in [Client Shell & Sim Loop](client-shell-and-sim-loop.md) D3 (interpolate at full precision, sub-unit accumulation, cap shows `reason_key`) | RFC-0002 draft D6 | owned | A frozen number with no explanation is indistinguishable from a bug, and `design/00` forbids unexplained caps |
 | **Client reconciliation policy** — ✅ resolved in [Client Shell & Sim Loop](client-shell-and-sim-loop.md) D2 (bend continuous, snap discrete with receipts, story-not-error for gaps) | was a `design/06` table cell | owned | The most player-visible consequence of RFC-0001's whole numeric contract |

@@ -62,3 +62,21 @@ one-year offline · multiplier runtime rejections + deterministic order · **6,0
 differential: 0 mismatches** (new paths route through the fixed primitives) · migration chain
 refuses lying versions in both directions · no `time.Now()` outside injected clocks ·
 `phase0.json` validates against every loader rule.
+
+## 2026-07-28 (Codex — reproducer verification and RFC handoff)
+
+- **R1 confirmed** against the filed cap/balance pair through `production.Evaluate`: ledger commit
+  rejects `company.cash` above its hardcap. Direct probing showed nominal headroom
+  `9.81579561656e8` produces `9.87256122678e8`; one lower 12-digit ulp,
+  `9.81579561655e8`, reproduces the exact cap. Drafted `rfc/production-hardcap-saturation.md`.
+- **R2 confirmed** from a state that is legal before mutation: E=`…00.1009`, R=`…00.1001`,
+  now=`…00.1015`. Production advances 0 ms, refill advances 1 ms to R=`…00.1011`, and
+  `EncodeState` rejects R > E. Drafted `rfc/millisecond-cursor-canonicalization.md` with save v4.
+- **R3 trigger confirmed; primitive diagnosis corrected.** Installed `break_infinity.js` 2.2.0
+  returns zero for `1 / 0` and `0 / 0`, matching Go and the existing mandatory golden vectors.
+  The divergence is TypeScript `resourceLogProgress` using native number `/`, which produces
+  Infinity when the denominator collapses. Both aligned-add implementations show `4e-15` → zero
+  denominator and `5e-15` → positive. Drafted `rfc/resource-log-domain-parity.md`; it preserves
+  Decimal division semantics, rejects targets below `5e-15`, and aligns the evaluator operator.
+- Scratch repro files were removed after the probes. No implementation is authorized until the
+  three follow-up RFCs are accepted.
