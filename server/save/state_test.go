@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -12,7 +13,7 @@ import (
 )
 
 const stateCatalogJSON = `{
-  "schema_version": 2,
+  "schema_version": 3,
   "resources": [{
     "id": "company.cash", "scope": "company", "numeric_kind": "decimal",
     "initial": "0", "minimum": "0",
@@ -22,7 +23,21 @@ const stateCatalogJSON = `{
     "id": "generator.example",
     "price": {"resource_id":"company.cash","base":"1e0","curve":{"kind":"constant"}},
     "production": {"resource_id":"company.cash","base_rate":"1e0"}
-  }]
+  }],
+  "manual_actions": [{
+    "id":"manual.click","output":{"resource_id":"company.cash","amount_per_action":"1e0"}
+  }],
+  "multiplier_sources": [],
+  "progress_coordinates": [
+    {"tier":0,"kind":"resource_log","resource":"company.cash","target":"1e3"},
+    {"tier":1,"kind":"count_fraction","count":"generators.total_owned","required":25},
+    {"tier":2,"kind":"resource_log","resource":"company.cash","target":"1e9"},
+    {"tier":3,"kind":"resource_log","resource":"company.cash","target":"1e12"}
+  ],
+  "manual_policy":{"refill_milli_per_ms":25,"bucket_cap_milli":50000},
+  "offline_policy":{"efficiency":"9e-1","accrual_cap_ms":86400000,
+    "bank_ratio_numerator":1,"bank_ratio_denominator":2,"bank_cap_ms":259200000,
+    "burst_speed":"2e0","burst_max_duration_ms":14400000}
 }`
 
 var testCursor = time.Date(2026, 7, 28, 8, 0, 0, 123456789, time.UTC)
@@ -38,7 +53,7 @@ type migrationCase struct {
 	Scope             economy.Scope   `json:"scope"`
 	MigrationBaseline string          `json:"migration_baseline"`
 	Input             json.RawMessage `json:"input"`
-	ExpectV2          json.RawMessage `json:"expect_v2"`
+	ExpectV3          json.RawMessage `json:"expect_v3"`
 }
 
 func stateCatalog(t *testing.T) *economy.Catalog {
@@ -60,10 +75,11 @@ func testState(t *testing.T) *State {
 	}
 	return &State{
 		Ledger: ledger, GeneratorCounts: map[string]int64{"generator.example": 42}, EvaluatedThrough: testCursor,
+		ComputeCreditMS: 1234, ManualTokenMilli: 12_345, ManualTokenRefilledAt: testCursor.Add(-time.Second),
 	}
 }
 
-func TestStateV2RoundTrip(t *testing.T) {
+func TestStateV3RoundTrip(t *testing.T) {
 	encoded, err := EncodeState(testState(t))
 	if err != nil {
 		t.Fatal(err)
@@ -78,6 +94,10 @@ func TestStateV2RoundTrip(t *testing.T) {
 	if restored.GeneratorCounts["generator.example"] != 42 || !restored.EvaluatedThrough.Equal(testCursor) {
 		t.Fatalf("restored state = %+v", restored)
 	}
+	if restored.ComputeCreditMS != 1234 || restored.ManualTokenMilli != 12_345 ||
+		!restored.ManualTokenRefilledAt.Equal(testCursor.Add(-time.Second)) {
+		t.Fatalf("restored production state = %+v", restored)
+	}
 }
 
 func TestSaveMigrationCorpus(t *testing.T) {
@@ -89,7 +109,7 @@ func TestSaveMigrationCorpus(t *testing.T) {
 	if err := json.Unmarshal(data, &fixture); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.Version != 1 || len(fixture.Cases) == 0 {
+	if fixture.Version != 2 || len(fixture.Cases) < 2 {
 		t.Fatalf("migration fixture version=%d cases=%d", fixture.Version, len(fixture.Cases))
 	}
 	for _, vector := range fixture.Cases {
@@ -110,11 +130,11 @@ func TestSaveMigrationCorpus(t *testing.T) {
 			if err := json.Unmarshal(encoded, &got); err != nil {
 				t.Fatal(err)
 			}
-			if err := json.Unmarshal(vector.ExpectV2, &want); err != nil {
+			if err := json.Unmarshal(vector.ExpectV3, &want); err != nil {
 				t.Fatal(err)
 			}
 			if !equalJSON(got, want) {
-				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV2)
+				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV3)
 			}
 			if _, err := RestoreState(encoded, CurrentVersion, stateCatalog(t), vector.Scope, time.Time{}); err != nil {
 				t.Fatal(err)
@@ -142,6 +162,21 @@ func TestRestoreRejectsPoisonedAndMalformedState(t *testing.T) {
 		`{"balances":{"company.cash":"0"},"generators":{"generator.example":0},"evaluated_through":"2026-07-28T10:00:00+02:00"}`,
 		`{"balances":{"company.cash":"0"},"generators":{"generator.example":0},"evaluated_through":"2026-07-28T08:00:00.000Z"}`,
 		`{"balances":{"company.cash":"0"},"generators":{"generator.example":0},"evaluated_through":` + validCursor + `,"unknown":true}`,
+	}
+	for _, data := range tests {
+		withProductionState := strings.TrimSuffix(data, "}") +
+			`,"compute_credit_ms":0,"manual_token_milli":50000,"manual_token_refilled_at":"2026-07-28T08:00:00Z"}`
+		if _, err := RestoreState([]byte(withProductionState), CurrentVersion, stateCatalog(t), economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+			t.Fatalf("RestoreState(%s) error = %v", data, err)
+		}
+	}
+}
+
+func TestRestoreRejectsProductionPolicyViolations(t *testing.T) {
+	tests := []string{
+		`{"balances":{"company.cash":"0"},"generators":{"generator.example":0},"evaluated_through":"2026-07-28T08:00:00Z","compute_credit_ms":259200001,"manual_token_milli":50000,"manual_token_refilled_at":"2026-07-28T08:00:00Z"}`,
+		`{"balances":{"company.cash":"0"},"generators":{"generator.example":0},"evaluated_through":"2026-07-28T08:00:00Z","compute_credit_ms":0,"manual_token_milli":50001,"manual_token_refilled_at":"2026-07-28T08:00:00Z"}`,
+		`{"balances":{"company.cash":"0"},"generators":{"generator.example":0},"evaluated_through":"2026-07-28T08:00:00Z","compute_credit_ms":0,"manual_token_milli":50000,"manual_token_refilled_at":"2026-07-28T08:00:01Z"}`,
 	}
 	for _, data := range tests {
 		if _, err := RestoreState([]byte(data), CurrentVersion, stateCatalog(t), economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {

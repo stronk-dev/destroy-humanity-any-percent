@@ -14,14 +14,17 @@ import (
 	"cloud-clicker/server/economy"
 )
 
-const CurrentVersion = 2
+const CurrentVersion = 3
 
 var ErrInvalidState = errors.New("invalid saved state")
 
 type State struct {
-	Ledger           *economy.Ledger
-	GeneratorCounts  map[string]int64
-	EvaluatedThrough time.Time
+	Ledger                *economy.Ledger
+	GeneratorCounts       map[string]int64
+	EvaluatedThrough      time.Time
+	ComputeCreditMS       int64
+	ManualTokenMilli      int64
+	ManualTokenRefilledAt time.Time
 }
 
 type stateV1 struct {
@@ -32,6 +35,15 @@ type stateV2 struct {
 	Balances         map[string]string `json:"balances"`
 	Generators       map[string]int64  `json:"generators"`
 	EvaluatedThrough string            `json:"evaluated_through"`
+}
+
+type stateV3 struct {
+	Balances              map[string]string `json:"balances"`
+	Generators            map[string]int64  `json:"generators"`
+	EvaluatedThrough      string            `json:"evaluated_through"`
+	ComputeCreditMS       int64             `json:"compute_credit_ms"`
+	ManualTokenMilli      int64             `json:"manual_token_milli"`
+	ManualTokenRefilledAt string            `json:"manual_token_refilled_at"`
 }
 
 func ConstantsHash(catalogBytes []byte) string {
@@ -51,12 +63,25 @@ func EncodeState(state *State) ([]byte, error) {
 			return nil, fmt.Errorf("%w: invalid generator count for %q", ErrInvalidState, id)
 		}
 	}
+	if state.ComputeCreditMS < 0 || state.ComputeCreditMS > decimal.MaxExactInteger ||
+		state.ManualTokenMilli < 0 || state.ManualTokenMilli > decimal.MaxExactInteger {
+		return nil, fmt.Errorf("%w: production integers exceed the exact domain", ErrInvalidState)
+	}
 	cursor, err := formatCursor(state.EvaluatedThrough)
 	if err != nil {
 		return nil, err
 	}
-	encoded, err := json.Marshal(stateV2{
+	refilledAt, err := formatCursor(state.ManualTokenRefilledAt)
+	if err != nil {
+		return nil, fmt.Errorf("%w: manual_token_refilled_at is required", ErrInvalidState)
+	}
+	if state.ManualTokenRefilledAt.After(state.EvaluatedThrough) {
+		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
+	}
+	encoded, err := json.Marshal(stateV3{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
+		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
+		ManualTokenRefilledAt: refilledAt,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("%w: encode: %v", ErrInvalidState, err)
@@ -75,7 +100,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
 	}
 
-	var source stateV2
+	var source stateV3
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -85,9 +110,15 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err != nil {
 			return nil, fmt.Errorf("%w: version-1 migration baseline: %v", ErrInvalidState, err)
 		}
-		source = stateV2{
+		source = stateV3{
 			Balances: legacy.Balances, Generators: zeroGeneratorCounts(catalog, scope), EvaluatedThrough: cursor,
 		}
+	} else if version == 2 {
+		var previous stateV2
+		if err := decodeState(data, &previous); err != nil {
+			return nil, err
+		}
+		source = stateV3{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
 	} else if err := decodeState(data, &source); err != nil {
 		return nil, err
 	}
@@ -107,7 +138,46 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if err != nil {
 		return nil, err
 	}
-	return &State{Ledger: ledger, GeneratorCounts: counts, EvaluatedThrough: cursor}, nil
+	if version < 3 {
+		source.ComputeCreditMS = 0
+		source.ManualTokenMilli = catalog.ManualPolicy().BucketCapMilli
+		source.ManualTokenRefilledAt = source.EvaluatedThrough
+	}
+	refilledAt, err := parseCursor(source.ManualTokenRefilledAt)
+	if err != nil {
+		return nil, fmt.Errorf("%w: manual_token_refilled_at: %v", ErrInvalidState, err)
+	}
+	if refilledAt.After(cursor) {
+		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
+	}
+	if err := validateProductionState(catalog, scope, source.ComputeCreditMS, source.ManualTokenMilli); err != nil {
+		return nil, err
+	}
+	return &State{
+		Ledger: ledger, GeneratorCounts: counts, EvaluatedThrough: cursor,
+		ComputeCreditMS: source.ComputeCreditMS, ManualTokenMilli: source.ManualTokenMilli,
+		ManualTokenRefilledAt: refilledAt,
+	}, nil
+}
+
+func validateProductionState(catalog *economy.Catalog, scope economy.Scope, creditMS, tokenMilli int64) error {
+	if creditMS < 0 || creditMS > decimal.MaxExactInteger || tokenMilli < 0 || tokenMilli > decimal.MaxExactInteger {
+		return fmt.Errorf("%w: production integers exceed the exact domain", ErrInvalidState)
+	}
+	if scope != economy.ScopeCompany {
+		if creditMS != 0 || tokenMilli != 0 {
+			return fmt.Errorf("%w: production state is company-scoped", ErrInvalidState)
+		}
+		return nil
+	}
+	offlinePolicy, manualPolicy := catalog.OfflinePolicy(), catalog.ManualPolicy()
+	if offlinePolicy.BankCapMS == 0 && creditMS != 0 || offlinePolicy.BankCapMS > 0 && creditMS > offlinePolicy.BankCapMS {
+		return fmt.Errorf("%w: compute_credit_ms exceeds catalog cap", ErrInvalidState)
+	}
+	if manualPolicy.BucketCapMilli == 0 && tokenMilli != 0 || manualPolicy.BucketCapMilli > 0 && tokenMilli > manualPolicy.BucketCapMilli {
+		return fmt.Errorf("%w: manual_token_milli exceeds catalog cap", ErrInvalidState)
+	}
+	return nil
 }
 
 func validateGeneratorCounts(catalog *economy.Catalog, scope economy.Scope, source map[string]int64) (map[string]int64, error) {

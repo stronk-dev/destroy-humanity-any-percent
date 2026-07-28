@@ -23,3 +23,15 @@
 - Multiplier declarations authorize a provider/source/target/slot but do not activate it. Runtime
   factors remain state-owner outputs and must validate against those declarations.
 - Go catalog tests, TypeScript strict checking/tests, and JSON Schema verification are green.
+
+## 2026-07-28 — save state v3
+
+- Save state v3 persists `compute_credit_ms`, `manual_token_milli`, and the canonical server-authored
+  refill cursor beside balances, generator counts, and the production evaluation cursor.
+- V1 and v2 migration paths initialize credits to zero, fill the manual bucket from the immutable
+  catalog policy, and use the prior evaluation cursor as the refill baseline.
+- Extended the checked-in migration corpus with independent v1→v3 and v2→v3 cases.
+- Restore rejects credits/tokens above catalog caps, unsafe integers, company-only state in another
+  scope, and refill cursors later than evaluated production state.
+- Save unit and migration tests are green; the Postgres lifecycle suite will run with the later
+  intent/event migration integration pass.

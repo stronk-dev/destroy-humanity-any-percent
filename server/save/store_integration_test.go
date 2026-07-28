@@ -49,6 +49,7 @@ func TestStoreIntegrationRevisionLifecycle(t *testing.T) {
 	}
 	state := &State{
 		Ledger: ledger, GeneratorCounts: map[string]int64{"generator.example": 7}, EvaluatedThrough: testCursor,
+		ComputeCreditMS: 0, ManualTokenMilli: 50_000, ManualTokenRefilledAt: testCursor,
 	}
 	key := StreamKey{OwnerKind: OwnerFounder, OwnerID: "11111111-1111-4111-8111-111111111111", Scope: economy.ScopeCompany}
 	revision, err := store.CreateStream(ctx, key, hash, state, WriteContext{Cause: "integration.create"})

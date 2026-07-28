@@ -1,8 +1,8 @@
 {
-  "version": 1,
+  "version": 2,
   "cases": [
     {
-      "name": "company v1 balances to v2 production envelope",
+      "name": "company v1 balances to v3 production envelope",
       "from_version": 1,
       "scope": "company",
       "migration_baseline": "2026-07-28T08:00:00.123456789Z",
@@ -11,14 +11,44 @@
           "company.cash": "1e0"
         }
       },
-      "expect_v2": {
+      "expect_v3": {
         "balances": {
           "company.cash": "1e0"
         },
         "generators": {
           "generator.example": 0
         },
-        "evaluated_through": "2026-07-28T08:00:00.123456789Z"
+        "evaluated_through": "2026-07-28T08:00:00.123456789Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-07-28T08:00:00.123456789Z"
+      }
+    },
+    {
+      "name": "company v2 production state to v3 exact policy state",
+      "from_version": 2,
+      "scope": "company",
+      "migration_baseline": "2026-07-28T07:00:00Z",
+      "input": {
+        "balances": {
+          "company.cash": "2e0"
+        },
+        "generators": {
+          "generator.example": 3
+        },
+        "evaluated_through": "2026-07-28T08:00:00Z"
+      },
+      "expect_v3": {
+        "balances": {
+          "company.cash": "2e0"
+        },
+        "generators": {
+          "generator.example": 3
+        },
+        "evaluated_through": "2026-07-28T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-07-28T08:00:00Z"
       }
     }
   ]
