@@ -8,7 +8,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | RFC | Status | Parent |
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
-| [CI Baseline](scaffolding-and-ci.md) | accepted | — |
+| [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Save Layer & Migrations](save-layer-and-migrations.md) | draft | — |
 
 ## Archive

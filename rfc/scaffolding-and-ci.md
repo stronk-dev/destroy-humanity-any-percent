@@ -1,6 +1,6 @@
 # RFC: CI Baseline
 
-- **Status:** accepted
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude, revised by Codex)
 - **Created:** 2026-07-28
 - **Design refs:** `design/07-roadmap.md` Phase 0, `design/12-content-pipeline.md §7`
