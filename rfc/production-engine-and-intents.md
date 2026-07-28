@@ -5,8 +5,8 @@
 - **Created:** 2026-07-28
 - **Design refs:** `design/02 §2` (production stack, cost curves), `design/02 §10` (the daily clock), `design/06 §idle-math` (closed-form, lazy, server-authoritative), `design/00` law 7 (offline default)
 - **Research:** `design/research/tech-stack.md §1` (swarmsim closed forms, intent validation), `design/research/pacing-science.md` (progress checker), `design/research/cookie-clicker.md` (multiplier stack order)
-- **Depends on:** RFC-0002 (ledger), Save Layer & Migrations (accepted), Geometric Afford Fast Path (accepted)
-- **Split follow-up:** `production-accrual-math.md` (closed-form numeric primitive)
+- **Depends on:** RFC-0002 (ledger), Save Layer & Migrations (implemented), Geometric Afford Fast Path (implemented)
+- **Split follow-up:** `archive/production-accrual-math.md` (implemented closed-form numeric primitive)
 - **Planning:** `planning/production-engine-and-intents/` (once implementing)
 
 ## Summary
@@ -53,7 +53,10 @@ Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker patte
 
 ## Acceptance criteria
 
-1. A player absent `Δt` accrues exactly the closed-form amount (golden vectors incl. cap and credit-banking boundaries); online/offline paths produce identical results for identical `Δt`.
+1. A player absent `Δt` accrues exactly the closed-form amount (golden vectors incl. cap and
+   credit-banking boundaries). Online and offline evaluation use the same primitive and agree
+   when given the same efficiency; the default offline policy supplies `9e-1`, so it intentionally
+   yields 90% of the online delta.
 2. An unaffordable intent is rejected without mutation; an idempotent replay returns the original receipt.
 3. Clock-rollback attempts produce no extra accrual (server-clock property test).
 4. Multiplier stack order matches the published documentation (generated from source, per the CI formula-drift gate).
@@ -81,4 +84,7 @@ Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker patte
 
 - 2026-07-28: created (draft).
 - 2026-07-28: reviewed by Codex; recorded blocking schemas instead of improvising them and split
-  the settled cross-runtime constant-rate accrual primitive into `production-accrual-math.md`.
+  the settled cross-runtime constant-rate accrual primitive into
+  `archive/production-accrual-math.md`.
+- 2026-07-28: corrected the draft acceptance criterion that had required default 90%-efficient
+  offline accrual to equal 100%-efficient online accrual.

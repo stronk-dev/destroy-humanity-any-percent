@@ -10,7 +10,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Production Engine & Intent API](production-engine-and-intents.md) | draft | — |
-| [Production Accrual Math](production-accrual-math.md) | implementing | [Production Engine & Intent API](production-engine-and-intents.md) |
 
 ## Archive
 
@@ -24,6 +23,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [RFC-0002: Economy Kernel](archive/0002-economy-constants-and-ceilings.md) | implemented | [Economy kernel](../docs/economy-kernel.md) |
 | [Geometric Affordability Fast Path](archive/geometric-afford-fast-path.md) | implemented | [Economy kernel](../docs/economy-kernel.md) |
 | [Save Layer & Migrations](archive/save-layer-and-migrations.md) | implemented | [Save layer](../docs/save-layer.md) |
+| [Production Accrual Math](archive/production-accrual-math.md) | implemented | [Numeric core](../docs/numeric-core.md) |
 
 Planned next (not yet drafted — carve from `design/07-roadmap.md` Phase 0): client shell & sim loop
 · balance harness · deployment and draining.

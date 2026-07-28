@@ -68,9 +68,31 @@ The TypeScript boundary helpers live in `client/src/numeric.ts`. Both languages 
 - `sumGeometricSeries`: exact closed-form cost for a non-negative integer purchase count.
 - `affordGeometricSeries`: a closed-form estimate followed by correction and, when necessary,
   binary search until both affordability inequalities are proven.
+- `accrueConstant`: deterministic closed-form production from non-negative per-second rate
+  sources, exact elapsed milliseconds, and a non-negative efficiency multiplier.
 
 The maximum-affordable result is always an exact integer. Floating tolerances are test metrics
 for continuous calculations; they never decide gameplay authority.
+
+### Constant-rate production accrual
+
+The Go primitive in `server/production` and TypeScript primitive in `client/src/production.ts`
+share this boundary:
+
+```text
+accrueConstant(rates[], elapsedMilliseconds, efficiency) -> Decimal
+```
+
+Each source is an authoritative per-second Decimal state value. Elapsed time is an exact integer
+from zero through `9,007,199,254,740,991` milliseconds. Both implementations validate
+non-negative inputs, sort a copy of the sources by ascending exponent and then canonical string,
+sum them deterministically, multiply by elapsed seconds and efficiency, and quantize the final
+delta once. They never mutate or individually quantize the caller's sources.
+
+This function is deliberately policy-free. A 90% efficiency and a 24-hour interval appear in the
+shared vectors, but choosing offline efficiency, owning the clock, applying caps, and committing
+the delta belong to the future authoritative production engine. Invalid inputs or non-finite
+intermediates fail and cannot become state.
 
 ### Arithmetic domain edges
 
@@ -105,6 +127,11 @@ cannot silently disappear. Regenerate it with:
 ```sh
 make vectors
 ```
+
+The hand-reviewed `testdata/production-accrual.json` schema 1 corpus covers the production
+primitive's exact results and rejected domains, including permutation invariance, sub-resolution
+sources, a 24-hour 90% example, huge exponents, and the maximum exact elapsed time. Go, Node, and
+all three browser engines consume the same file.
 
 Any change to the client library, Go arithmetic, quantization, canonical grammar, or economy
 helpers must regenerate the vectors when appropriate and keep both language suites and all

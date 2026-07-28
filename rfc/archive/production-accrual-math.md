@@ -1,12 +1,12 @@
 # RFC: Production Accrual Math
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco / Codex
 - **Created:** 2026-07-28
 - **Design refs:** `design/02-economy-balancing.md §2.4`, `design/06-tech.md §idle-math`
 - **Depends on:** RFC-0001 Numeric Core
 - **Parent:** Production Engine & Intent API draft
-- **Planning:** `planning/production-accrual-math/` (once implementing)
+- **Planning:** `planning/archive/production-accrual-math/`
 
 ## Summary
 
@@ -68,3 +68,5 @@ None.
 
 - 2026-07-28: created and accepted as the settled mathematical slice of the reviewed production
   draft under owner direction to continue foundational work.
+- 2026-07-28: implemented in Go and TypeScript, verified from one vector corpus in Node and all
+  three browser engines, documented, and archived.
