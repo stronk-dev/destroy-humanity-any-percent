@@ -2,11 +2,14 @@ import { describe, expect, it } from "vitest";
 
 import phase0Json from "../../balance/catalogs/phase0.json";
 import fixtureJson from "../../testdata/economy-kernel.json";
+import engineFixtureJson from "../../testdata/production-engine.json";
 import {
   canonicalBulkCost,
   parseCatalog,
+  subProgressValue,
   type EconomyCatalog,
 } from "../src/economy-kernel";
+import { canonicalString } from "../src/numeric";
 
 interface CurveVector {
   generator_id: string;
@@ -25,6 +28,16 @@ interface KernelFixture {
 }
 
 const fixture = fixtureJson as KernelFixture;
+const engineFixture = engineFixtureJson as {
+  version: number;
+  progress_cases: Array<{
+    name: string;
+    tier: number;
+    cash: string;
+    generator_count: number;
+    expect: string;
+  }>;
+};
 
 describe("shared economy catalog", () => {
   it("loads strict versioned definitions", () => {
@@ -101,6 +114,18 @@ describe("shared cost-curve vectors", () => {
       .filter((curve) => curve.kind === "geometric")
       .map((curve) => curve.ratio);
     expect(new Set(ratios)).toEqual(new Set(["1.1e0", "1.13e0"]));
+  });
+});
+
+describe("shared progress coordinates", () => {
+  const catalog = parseCatalog(phase0Json);
+
+  it.each(engineFixture.progress_cases)("evaluates $name", (vector) => {
+    expect(engineFixture.version).toBe(1);
+    expect(canonicalString(subProgressValue(catalog, {
+      balances: { "company.cash": vector.cash },
+      generatorCounts: { "generator.beige_tower": vector.generator_count },
+    }, vector.tier))).toBe(vector.expect);
   });
 });
 

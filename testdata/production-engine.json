@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "progress_cases": [
+    {
+      "name": "tier zero starts at zero",
+      "tier": 0,
+      "cash": "0",
+      "generator_count": 0,
+      "expect": "0"
+    },
+    {
+      "name": "tier zero reaches its target",
+      "tier": 0,
+      "cash": "1e3",
+      "generator_count": 0,
+      "expect": "1e0"
+    },
+    {
+      "name": "tier one count term contributes half",
+      "tier": 1,
+      "cash": "0",
+      "generator_count": 25,
+      "expect": "5e-1"
+    },
+    {
+      "name": "tier one cash term contributes half",
+      "tier": 1,
+      "cash": "1e6",
+      "generator_count": 0,
+      "expect": "5e-1"
+    },
+    {
+      "name": "tier two clamps above target",
+      "tier": 2,
+      "cash": "1e12",
+      "generator_count": 0,
+      "expect": "1e0"
+    },
+    {
+      "name": "tier three reaches its target",
+      "tier": 3,
+      "cash": "1e12",
+      "generator_count": 0,
+      "expect": "1e0"
+    }
+  ]
+}

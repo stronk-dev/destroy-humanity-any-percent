@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/multiplier"
 )
 
 const CatalogSchemaVersion = 3
@@ -37,23 +38,20 @@ const (
 	CurveGeometric CurveKind = "geometric"
 )
 
-type MultiplierSlot string
+type MultiplierSlot = multiplier.Slot
 
 const (
-	SlotUpgrades   MultiplierSlot = "upgrades"
-	SlotMilestones MultiplierSlot = "milestones"
-	SlotFaction    MultiplierSlot = "faction"
-	SlotDoctrine   MultiplierSlot = "doctrine"
-	SlotCommons    MultiplierSlot = "commons"
-	SlotTrust      MultiplierSlot = "trust"
-	SlotEventBuffs MultiplierSlot = "event_buffs"
-	SlotPrestige   MultiplierSlot = "prestige"
+	SlotUpgrades   = multiplier.SlotUpgrades
+	SlotMilestones = multiplier.SlotMilestones
+	SlotFaction    = multiplier.SlotFaction
+	SlotDoctrine   = multiplier.SlotDoctrine
+	SlotCommons    = multiplier.SlotCommons
+	SlotTrust      = multiplier.SlotTrust
+	SlotEventBuffs = multiplier.SlotEventBuffs
+	SlotPrestige   = multiplier.SlotPrestige
 )
 
-var MultiplierSlotOrder = [...]MultiplierSlot{
-	SlotUpgrades, SlotMilestones, SlotFaction, SlotDoctrine,
-	SlotCommons, SlotTrust, SlotEventBuffs, SlotPrestige,
-}
+var MultiplierSlotOrder = multiplier.Order
 
 type ProgressKind string
 
@@ -358,6 +356,7 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		catalog.manualByID[definition.ID] = definition
 	}
 
+	singleProviderSlots := make(map[MultiplierSlot]string)
 	for index, source := range raw.MultiplierSources {
 		definition, err := parseMultiplierSource(source)
 		if err != nil {
@@ -370,6 +369,12 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 			if _, exists := catalog.generatorByID[definition.Target]; !exists {
 				return nil, catalogError("multiplier_sources", fmt.Errorf("%q references unknown target %q", definition.ID, definition.Target))
 			}
+		}
+		if definition.Slot == SlotCommons || definition.Slot == SlotTrust {
+			if prior, exists := singleProviderSlots[definition.Slot]; exists {
+				return nil, catalogError("multiplier_sources", fmt.Errorf("slot %q is single-provider (got %q and %q)", definition.Slot, prior, definition.ID))
+			}
+			singleProviderSlots[definition.Slot] = definition.ID
 		}
 		catalog.multipliers = append(catalog.multipliers, definition)
 		catalog.multiplierByID[definition.ID] = definition
@@ -623,12 +628,7 @@ func parseMultiplierSource(source rawMultiplierSource) (MultiplierSourceDefiniti
 }
 
 func validMultiplierSlot(slot MultiplierSlot) bool {
-	for _, candidate := range MultiplierSlotOrder {
-		if slot == candidate {
-			return true
-		}
-	}
-	return false
+	return multiplier.ValidSlot(slot)
 }
 
 func parseProgressCoordinate(source rawProgressCoordinate, resources map[string]ResourceDefinition) (ProgressCoordinateDefinition, error) {

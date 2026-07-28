@@ -131,7 +131,8 @@ commit ordinary time accrual but emits no click event. **Manual-action catalog o
 `event_buffs` → `prestige`. Within-slot combination: **product** of contributions.
 `commons` and `trust` are **single-provider slots** — a second contribution is a catalog
 validation error. The generator's `base_rate` is applied before this multiplier sequence and is not
-a slot. Slots multiply left-to-right; the formula panel renders them in this order. Factors must be
+a slot. Slots multiply left-to-right; within a slot, contributions multiply by source id in raw-byte
+ascending order. The formula panel renders that exact order. Factors must be
 positive canonical state Decimals; duplicate source ids and unknown targets/slots reject the catalog.
 
 Catalog schema addition (`multiplier_sources`):
@@ -260,3 +261,5 @@ budget. The harness inherits the big version; production ships the small one.
 - 2026-07-28: Codex re-reviewed C1–C8 at 8e8938b, resolved the remaining contradictory boundaries
   (click events, chaos ownership, exact token persistence, event payloads, and trusted online/offline
   classification), and accepted the RFC for implementation.
+- 2026-07-28: implementation clarification: fixed within-slot contribution order to source-id
+  raw-byte ascending so catalog order and map iteration cannot alter rounded results.

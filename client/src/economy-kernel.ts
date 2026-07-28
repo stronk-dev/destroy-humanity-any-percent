@@ -6,6 +6,8 @@ import {
   isStateValue,
   MAX_EXACT_INTEGER,
   parseCanonical,
+  quantize,
+  sumDeterministic,
 } from "./numeric";
 
 export const CATALOG_SCHEMA_VERSION = 3;
@@ -98,6 +100,11 @@ export interface OfflinePolicy {
   readonly bankCapMs: number;
   readonly burstSpeed: string;
   readonly burstMaxDurationMs: number;
+}
+
+export interface ProgressState {
+  readonly balances: Readonly<Record<string, string>>;
+  readonly generatorCounts: Readonly<Record<string, number>>;
 }
 
 const idPattern = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
@@ -213,6 +220,11 @@ export function parseCatalog(source: unknown): EconomyCatalog {
   ensureUnique(manualActions, "manual action");
   const multiplierSources = root.multiplier_sources.map((value, index) => parseMultiplierSource(value, index, generatorClasses));
   ensureUnique(multiplierSources, "multiplier source");
+  for (const slot of ["commons", "trust"] as const) {
+    if (multiplierSources.filter((definition) => definition.slot === slot).length > 1) {
+      throw new SyntaxError(`multiplier slot ${slot} is single-provider`);
+    }
+  }
   const progressCoordinates = root.progress_coordinates.map((value, index) => parseProgressCoordinate(value, index, resourceById));
   const tiers = new Set(progressCoordinates.map((definition) => definition.tier));
   if (tiers.size !== progressCoordinates.length || [0, 1, 2, 3].some((tier) => !tiers.has(tier))) {
@@ -279,6 +291,69 @@ export function maxAffordable(
     else high = middle - 1;
   }
   return low;
+}
+
+export function subProgressValue(
+  catalog: EconomyCatalog,
+  state: ProgressState,
+  tier: number,
+): Decimal {
+  const definition = catalog.progressCoordinates.find((coordinate) => coordinate.tier === tier);
+  if (!definition) throw new RangeError(`missing progress coordinate tier ${tier}`);
+  return evaluateProgressDefinition(definition, state);
+}
+
+function evaluateProgressDefinition(
+  definition: ProgressCoordinateDefinition,
+  state: ProgressState,
+): Decimal {
+  if (definition.kind === "resource_log") {
+    return resourceLogProgress(state, definition.resourceId!, definition.target!);
+  }
+  if (definition.kind === "count_fraction") {
+    return countFractionProgress(state, definition.countKey!, definition.required!);
+  }
+  return clampProgress(
+    sumDeterministic(
+      definition.terms!.map((term) => {
+        const value = term.kind === "resource_log"
+          ? resourceLogProgress(state, term.resourceId!, term.target!)
+          : countFractionProgress(state, term.countKey!, term.required!);
+        return value.mul(parseCanonical(term.weight));
+      }),
+    ),
+  );
+}
+
+function resourceLogProgress(state: ProgressState, resourceId: string, target: string): Decimal {
+  const encoded = state.balances[resourceId];
+  if (encoded === undefined) throw new RangeError(`missing progress resource ${resourceId}`);
+  const value = parseCanonical(encoded);
+  const targetValue = parseCanonical(target);
+  if (value.lt(0) || !targetValue.gt(0)) throw new RangeError("invalid progress resource state");
+  return clampProgress(new Decimal(Decimal.add(1, value).log10() / Decimal.add(1, targetValue).log10()));
+}
+
+function countFractionProgress(
+  state: ProgressState,
+  countKey: "generators.total_owned",
+  required: number,
+): Decimal {
+  if (countKey !== "generators.total_owned" || !Number.isSafeInteger(required) || required <= 0) {
+    throw new RangeError("invalid progress count definition");
+  }
+  let total = 0;
+  for (const count of Object.values(state.generatorCounts)) {
+    validateCount(count, "generator count");
+    if (count > MAX_EXACT_INTEGER - total) throw new RangeError("generator total exceeds exact domain");
+    total += count;
+  }
+  return clampProgress(new Decimal(total).div(required));
+}
+
+function clampProgress(value: Decimal): Decimal {
+  if (!isStateValue(value)) throw new RangeError("progress value is outside state domain");
+  return quantize(Decimal.max(0, Decimal.min(1, value)));
 }
 
 function parseResource(source: unknown, index: number): ResourceDefinition {

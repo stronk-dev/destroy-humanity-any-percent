@@ -35,3 +35,18 @@
   scope, and refill cursors later than evaluated production state.
 - Save unit and migration tests are green; the Postgres lifecycle suite will run with the later
   intent/event migration integration pass.
+
+## 2026-07-28 — production evaluation and progress parity
+
+- Added the neutral `server/multiplier` boundary with the closed slot union, canonical slot order,
+  and mechanical runtime contribution type. Catalog declarations authorize contributions; runtime
+  source/slot/target/factor mismatches reject before arithmetic.
+- Generator rate evaluation applies base rate, exact owned count, slots in published order, and
+  source ids in deterministic raw-byte order within each slot.
+- Online evaluation uses the full trusted interval at 100%; offline evaluation applies the same
+  constant-rate primitive at 90% for 24 h, banks half the excess as exact ms, and advances the
+  persisted cursor without losing sub-millisecond remainder. Resource and credit hardcaps clamp to
+  their published values; clock rollback produces no state change.
+- Implemented `subProgressValue` over the catalog's closed coordinate union in Go and TypeScript.
+  Both runtimes consume the new shared `testdata/production-engine.json` fixture.
+- Production/economy/save Go suites and strict TypeScript/unit suites are green.
