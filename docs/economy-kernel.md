@@ -72,9 +72,15 @@ geometric: price(n) = base × ratio^n        ratio ≥ 1
 their sum may not exceed JavaScript's maximum safe integer.
 
 Both runtimes expose bulk-cost and max-affordable queries. Bulk cost sums the next `count` prices
-after `owned`; geometric cost uses the RFC-0001 closed form. Max-affordable uses a bounded search
-and guarantees that the returned count is affordable while the next count is not, unless the
-exact-integer ceiling itself was reached.
+after `owned`; geometric cost uses the RFC-0001 closed form. On the authoritative Go path,
+geometric max-affordable uses RFC-0001's closed-form inverse, caps the candidate at
+`MaxExactInteger - owned`, and verifies it through the public bulk-cost semantics. Local correction
+handles rounding boundaries; a bounded search remains the safety fallback. Constant and linear
+curves use the bounded search directly.
+
+Every max-affordable result guarantees that its cost is affordable and that the next count is not,
+unless `owned + count` has reached the exact-integer ceiling. The optimization therefore changes
+runtime, not economy results or balance.
 
 There is no global price ratio. `1.10`, `1.13`, and other valid ratios are ordinary per-generator
 data. Shared fixtures currently exercise both values and enormous exponents; they are tests, not

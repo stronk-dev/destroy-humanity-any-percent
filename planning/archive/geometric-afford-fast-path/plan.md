@@ -1,18 +1,19 @@
 # Geometric Affordability Fast Path — Implementation Plan
 
-- **RFC:** `rfc/geometric-afford-fast-path.md`
+- **RFC:** `rfc/archive/geometric-afford-fast-path.md`
 - **Assignee:** Codex
 - **Started:** 2026-07-28
+- **Status:** complete
 
 ## Work
 
-1. Extract the existing generic bounded search behind an explicit helper.
-2. Dispatch validated geometric curves to `decimal.AffordGeometricSeries`.
-3. Enforce the economy cap `MaxExactInteger - owned` and verify both affordability postconditions
+1. [x] Extract the existing generic bounded search behind an explicit helper.
+2. [x] Dispatch validated geometric curves to `decimal.AffordGeometricSeries`.
+3. [x] Enforce the economy cap `MaxExactInteger - owned` and verify both affordability postconditions
    through `economy.BulkCost`; fall back to the bounded search if verification fails.
-4. Add deterministic boundary/property tests and a same-input benchmark comparison.
-5. Run focused Go tests and benchmarks, then the complete `make verify` cross-runtime gate.
-6. Update canonical economy documentation and archive the implemented RFC and planning record.
+4. [x] Add deterministic boundary/property tests and a same-input benchmark comparison.
+5. [x] Run focused Go tests and benchmarks, then the complete `make verify` cross-runtime gate.
+6. [x] Update canonical economy documentation and archive the implemented RFC and planning record.
 
 ## Acceptance gates
 

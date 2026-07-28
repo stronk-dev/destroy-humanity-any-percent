@@ -25,3 +25,14 @@
   2,504 ns/op helper (1.56×) on one calibration run.
 - Three explicit benchmark runs measured the public path at 3,979–4,207 ns/op and the helper at
   2,244–2,325 ns/op, with zero allocations. The RFC's same-run ratio guard is below 10×.
+
+## 2026-07-28 — Acceptance and handoff
+
+- Full `make verify` passed: Go vet and tests, strict TypeScript, 6,321 Node tests, and 18,963
+  browser tests across Chromium, Firefox, and WebKit.
+- The first sandboxed browser attempt could not bind an IPv6 localhost port (`EPERM`); the same
+  command passed with permission to run the local Playwright server. This was an environment
+  restriction, not a product failure.
+- Updated `docs/economy-kernel.md` with the implemented fast path, exact ceiling, verification, and
+  fallback behavior.
+- All RFC acceptance criteria are satisfied. RFC and planning records archived.

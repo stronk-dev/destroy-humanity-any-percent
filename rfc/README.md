@@ -8,7 +8,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | RFC | Status | Parent |
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
-| [Geometric Affordability Fast Path](geometric-afford-fast-path.md) | implementing | [RFC-0002](archive/0002-economy-constants-and-ceilings.md) |
 | [CI Baseline](scaffolding-and-ci.md) | draft | — |
 | [Save Layer & Migrations](save-layer-and-migrations.md) | draft | — |
 
@@ -22,18 +21,10 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Numeric Core Boundary Hardening](archive/numeric-core-boundary-hardening.md) | implemented | [Numeric core](../docs/numeric-core.md) |
 | [Numeric Normalization Carry](archive/numeric-normalization-carry.md) | implemented | [Numeric core](../docs/numeric-core.md) |
 | [RFC-0002: Economy Kernel](archive/0002-economy-constants-and-ceilings.md) | implemented | [Economy kernel](../docs/economy-kernel.md) |
+| [Geometric Affordability Fast Path](archive/geometric-afford-fast-path.md) | implemented | [Economy kernel](../docs/economy-kernel.md) |
 
 Planned next (not yet drafted — carve from `design/07-roadmap.md` Phase 0): production engine &
 intent API · client shell & sim loop · balance harness · deployment and draining.
-
-### Known implementation defect (found 2026-07-28, blocks the harness RFC)
-
-Geometric `MaxAffordable` uses the generic bounded search instead of RFC-0001's closed-form
-inverse. The standalone microbenchmarks reported by the research are about 31× apart
-(20,486 ns/op versus 660 ns/op); the 200-bot harness measurements are about 95× apart (3 min 01 s
-versus 1.91 s). They measure different scopes and must not be presented as one ratio. The accepted
-follow-up `geometric-afford-fast-path.md` owns the repair while preserving RFC-0002's exact-integer
-ceiling and affordability postconditions.
 
 ### Deferred decisions register
 

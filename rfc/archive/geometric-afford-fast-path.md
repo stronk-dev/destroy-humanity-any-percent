@@ -1,6 +1,6 @@
 # RFC: Geometric Affordability Fast Path
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco / Codex
 - **Created:** 2026-07-28
 - **Design refs:** `design/06-tech.md §idle-math`, `design/07-roadmap.md` Phase 0
@@ -71,3 +71,5 @@ None.
 
 - 2026-07-28: created and accepted by owner direction to proceed after selecting a public
   repository; split from the draft CI baseline because it amends implemented economy behavior.
+- 2026-07-28: implemented, verified in both runtime suites and all browser engines, documented,
+  and archived.
