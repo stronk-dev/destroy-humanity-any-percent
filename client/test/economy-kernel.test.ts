@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import phase0Json from "../../balance/catalogs/phase0.json";
 import fixtureJson from "../../testdata/economy-kernel.json";
 import {
   canonicalBulkCost,
@@ -56,6 +57,23 @@ describe("shared economy catalog", () => {
     const catalog = parseCatalog(legacy);
     expect(catalog.generatorClass("generator.constant")?.production).toBeNull();
   });
+
+  it("loads the strict production catalog v3 contract", () => {
+    const catalog = parseCatalog(phase0Json);
+    expect(catalog.manualActions).toEqual([
+      { id: "manual.click", output: { resourceId: "company.cash", amountPerAction: "1e0" } },
+    ]);
+    expect(catalog.multiplierSources).toEqual([]);
+    expect(catalog.progressCoordinates.map((coordinate) => coordinate.tier)).toEqual([0, 1, 2, 3]);
+    expect(catalog.manualPolicy).toEqual({ refillMilliPerMs: 25, bucketCapMilli: 50_000 });
+    expect(catalog.offlinePolicy).toMatchObject({
+      efficiency: "9e-1",
+      accrualCapMs: 86_400_000,
+      bankRatioNumerator: 1,
+      bankRatioDenominator: 2,
+      bankCapMs: 259_200_000,
+    });
+  });
 });
 
 describe("shared cost-curve vectors", () => {
@@ -97,7 +115,7 @@ function mutateCatalog(source: Record<string, unknown>, name: string): unknown {
 
   switch (name) {
     case "unsupported-version":
-      root.schema_version = 3;
+      root.schema_version = 4;
       break;
     case "missing-root-field":
       delete root.resources;

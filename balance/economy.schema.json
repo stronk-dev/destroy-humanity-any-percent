@@ -1,20 +1,33 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://destroy-humanity-any-percent.invalid/schema/economy-v2.json",
+  "$id": "https://destroy-humanity-any-percent.invalid/schema/economy-v3.json",
   "title": "Cloud Clicker economy catalog",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "resources", "generator_classes"],
+  "required": [
+    "schema_version",
+    "resources",
+    "generator_classes",
+    "manual_actions",
+    "multiplier_sources",
+    "progress_coordinates",
+    "manual_policy",
+    "offline_policy"
+  ],
   "properties": {
-    "schema_version": { "const": 2 },
-    "resources": {
+    "schema_version": { "const": 3 },
+    "resources": { "type": "array", "items": { "$ref": "#/$defs/resource" } },
+    "generator_classes": { "type": "array", "items": { "$ref": "#/$defs/generator_class" } },
+    "manual_actions": { "type": "array", "items": { "$ref": "#/$defs/manual_action" } },
+    "multiplier_sources": { "type": "array", "items": { "$ref": "#/$defs/multiplier_source" } },
+    "progress_coordinates": {
       "type": "array",
-      "items": { "$ref": "#/$defs/resource" }
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/progress_coordinate" }
     },
-    "generator_classes": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/generator_class" }
-    }
+    "manual_policy": { "$ref": "#/$defs/manual_policy" },
+    "offline_policy": { "$ref": "#/$defs/offline_policy" }
   },
   "$defs": {
     "id": {
@@ -28,6 +41,11 @@
     "positive_decimal": {
       "type": "string",
       "pattern": "^[1-9](?:\\.\\d{0,10}[1-9])?e(?:0|-?[1-9]\\d*)$"
+    },
+    "positive_safe_integer": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
     },
     "hardcap": {
       "type": "object",
@@ -48,12 +66,7 @@
         "numeric_kind": { "const": "decimal" },
         "initial": { "$ref": "#/$defs/decimal" },
         "minimum": { "$ref": "#/$defs/decimal" },
-        "hardcap": {
-          "oneOf": [
-            { "type": "null" },
-            { "$ref": "#/$defs/hardcap" }
-          ]
-        }
+        "hardcap": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/hardcap" }] }
       }
     },
     "constant_curve": {
@@ -86,7 +99,7 @@
       "required": ["resource_id", "base", "curve"],
       "properties": {
         "resource_id": { "$ref": "#/$defs/id" },
-        "base": { "$ref": "#/$defs/decimal" },
+        "base": { "$ref": "#/$defs/positive_decimal" },
         "curve": {
           "oneOf": [
             { "$ref": "#/$defs/constant_curve" },
@@ -113,6 +126,134 @@
         "id": { "$ref": "#/$defs/id" },
         "price": { "$ref": "#/$defs/price" },
         "production": { "$ref": "#/$defs/production" }
+      }
+    },
+    "manual_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "output"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "output": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["resource_id", "amount_per_action"],
+          "properties": {
+            "resource_id": { "$ref": "#/$defs/id" },
+            "amount_per_action": { "$ref": "#/$defs/positive_decimal" }
+          }
+        }
+      }
+    },
+    "multiplier_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "slot", "target", "provider"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "slot": {
+          "enum": ["upgrades", "milestones", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige"]
+        },
+        "target": { "oneOf": [{ "const": "all" }, { "$ref": "#/$defs/id" }] },
+        "provider": { "$ref": "#/$defs/id" }
+      }
+    },
+    "resource_log_term": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["weight", "kind", "resource", "target"],
+      "properties": {
+        "weight": { "$ref": "#/$defs/positive_decimal" },
+        "kind": { "const": "resource_log" },
+        "resource": { "$ref": "#/$defs/id" },
+        "target": { "$ref": "#/$defs/positive_decimal" }
+      }
+    },
+    "count_fraction_term": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["weight", "kind", "count", "required"],
+      "properties": {
+        "weight": { "$ref": "#/$defs/positive_decimal" },
+        "kind": { "const": "count_fraction" },
+        "count": { "const": "generators.total_owned" },
+        "required": { "$ref": "#/$defs/positive_safe_integer" }
+      }
+    },
+    "progress_coordinate": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tier", "kind", "resource", "target"],
+          "properties": {
+            "tier": { "type": "integer", "minimum": 0, "maximum": 3 },
+            "kind": { "const": "resource_log" },
+            "resource": { "$ref": "#/$defs/id" },
+            "target": { "$ref": "#/$defs/positive_decimal" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tier", "kind", "count", "required"],
+          "properties": {
+            "tier": { "type": "integer", "minimum": 0, "maximum": 3 },
+            "kind": { "const": "count_fraction" },
+            "count": { "const": "generators.total_owned" },
+            "required": { "$ref": "#/$defs/positive_safe_integer" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tier", "kind", "terms"],
+          "properties": {
+            "tier": { "type": "integer", "minimum": 0, "maximum": 3 },
+            "kind": { "const": "composite" },
+            "terms": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "oneOf": [
+                  { "$ref": "#/$defs/resource_log_term" },
+                  { "$ref": "#/$defs/count_fraction_term" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "manual_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["refill_milli_per_ms", "bucket_cap_milli"],
+      "properties": {
+        "refill_milli_per_ms": { "$ref": "#/$defs/positive_safe_integer" },
+        "bucket_cap_milli": { "$ref": "#/$defs/positive_safe_integer" }
+      }
+    },
+    "offline_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "efficiency",
+        "accrual_cap_ms",
+        "bank_ratio_numerator",
+        "bank_ratio_denominator",
+        "bank_cap_ms",
+        "burst_speed",
+        "burst_max_duration_ms"
+      ],
+      "properties": {
+        "efficiency": { "$ref": "#/$defs/decimal" },
+        "accrual_cap_ms": { "$ref": "#/$defs/positive_safe_integer" },
+        "bank_ratio_numerator": { "$ref": "#/$defs/positive_safe_integer" },
+        "bank_ratio_denominator": { "$ref": "#/$defs/positive_safe_integer" },
+        "bank_cap_ms": { "$ref": "#/$defs/positive_safe_integer" },
+        "burst_speed": { "$ref": "#/$defs/positive_decimal" },
+        "burst_max_duration_ms": { "$ref": "#/$defs/positive_safe_integer" }
       }
     }
   }

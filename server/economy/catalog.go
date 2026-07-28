@@ -13,7 +13,7 @@ import (
 	"cloud-clicker/server/decimal"
 )
 
-const CatalogSchemaVersion = 2
+const CatalogSchemaVersion = 3
 
 var (
 	ErrInvalidCatalog = errors.New("invalid economy catalog")
@@ -36,6 +36,34 @@ const (
 	CurveLinear    CurveKind = "linear"
 	CurveGeometric CurveKind = "geometric"
 )
+
+type MultiplierSlot string
+
+const (
+	SlotUpgrades   MultiplierSlot = "upgrades"
+	SlotMilestones MultiplierSlot = "milestones"
+	SlotFaction    MultiplierSlot = "faction"
+	SlotDoctrine   MultiplierSlot = "doctrine"
+	SlotCommons    MultiplierSlot = "commons"
+	SlotTrust      MultiplierSlot = "trust"
+	SlotEventBuffs MultiplierSlot = "event_buffs"
+	SlotPrestige   MultiplierSlot = "prestige"
+)
+
+var MultiplierSlotOrder = [...]MultiplierSlot{
+	SlotUpgrades, SlotMilestones, SlotFaction, SlotDoctrine,
+	SlotCommons, SlotTrust, SlotEventBuffs, SlotPrestige,
+}
+
+type ProgressKind string
+
+const (
+	ProgressResourceLog   ProgressKind = "resource_log"
+	ProgressCountFraction ProgressKind = "count_fraction"
+	ProgressComposite     ProgressKind = "composite"
+)
+
+const GeneratorTotalOwned = "generators.total_owned"
 
 type Hardcap struct {
 	Amount    decimal.Decimal
@@ -74,17 +102,81 @@ type ProductionDefinition struct {
 	BaseRate   decimal.Decimal
 }
 
+type ManualOutputDefinition struct {
+	ResourceID      string
+	AmountPerAction decimal.Decimal
+}
+
+type ManualActionDefinition struct {
+	ID     string
+	Output ManualOutputDefinition
+}
+
+type MultiplierSourceDefinition struct {
+	ID       string
+	Slot     MultiplierSlot
+	Target   string
+	Provider string
+}
+
+type ProgressTerm struct {
+	Weight     decimal.Decimal
+	Kind       ProgressKind
+	ResourceID string
+	Target     decimal.Decimal
+	CountKey   string
+	Required   int64
+}
+
+type ProgressCoordinateDefinition struct {
+	Tier       int
+	Kind       ProgressKind
+	ResourceID string
+	Target     decimal.Decimal
+	CountKey   string
+	Required   int64
+	Terms      []ProgressTerm
+}
+
+type ManualPolicy struct {
+	RefillMilliPerMS int64
+	BucketCapMilli   int64
+}
+
+type OfflinePolicy struct {
+	Efficiency           decimal.Decimal
+	AccrualCapMS         int64
+	BankRatioNumerator   int64
+	BankRatioDenominator int64
+	BankCapMS            int64
+	BurstSpeed           decimal.Decimal
+	BurstMaxDurationMS   int64
+}
+
 type Catalog struct {
-	resources     []ResourceDefinition
-	resourceByID  map[string]ResourceDefinition
-	generators    []GeneratorClassDefinition
-	generatorByID map[string]GeneratorClassDefinition
+	resources      []ResourceDefinition
+	resourceByID   map[string]ResourceDefinition
+	generators     []GeneratorClassDefinition
+	generatorByID  map[string]GeneratorClassDefinition
+	manualActions  []ManualActionDefinition
+	manualByID     map[string]ManualActionDefinition
+	multipliers    []MultiplierSourceDefinition
+	multiplierByID map[string]MultiplierSourceDefinition
+	progress       []ProgressCoordinateDefinition
+	progressByTier map[int]ProgressCoordinateDefinition
+	manualPolicy   ManualPolicy
+	offlinePolicy  OfflinePolicy
 }
 
 type rawCatalog struct {
-	SchemaVersion    int                 `json:"schema_version"`
-	Resources        []rawResource       `json:"resources"`
-	GeneratorClasses []rawGeneratorClass `json:"generator_classes"`
+	SchemaVersion       int                     `json:"schema_version"`
+	Resources           []rawResource           `json:"resources"`
+	GeneratorClasses    []rawGeneratorClass     `json:"generator_classes"`
+	ManualActions       []rawManualAction       `json:"manual_actions"`
+	MultiplierSources   []rawMultiplierSource   `json:"multiplier_sources"`
+	ProgressCoordinates []rawProgressCoordinate `json:"progress_coordinates"`
+	ManualPolicy        *rawManualPolicy        `json:"manual_policy"`
+	OfflinePolicy       *rawOfflinePolicy       `json:"offline_policy"`
 }
 
 type rawResource struct {
@@ -112,6 +204,57 @@ type rawProduction struct {
 	BaseRate   string `json:"base_rate"`
 }
 
+type rawManualAction struct {
+	ID     string          `json:"id"`
+	Output rawManualOutput `json:"output"`
+}
+
+type rawManualOutput struct {
+	ResourceID      string `json:"resource_id"`
+	AmountPerAction string `json:"amount_per_action"`
+}
+
+type rawMultiplierSource struct {
+	ID       string `json:"id"`
+	Slot     string `json:"slot"`
+	Target   string `json:"target"`
+	Provider string `json:"provider"`
+}
+
+type rawProgressCoordinate struct {
+	Tier       int               `json:"tier"`
+	Kind       string            `json:"kind"`
+	ResourceID string            `json:"resource"`
+	Target     string            `json:"target"`
+	CountKey   string            `json:"count"`
+	Required   int64             `json:"required"`
+	Terms      []rawProgressTerm `json:"terms"`
+}
+
+type rawProgressTerm struct {
+	Weight     string `json:"weight"`
+	Kind       string `json:"kind"`
+	ResourceID string `json:"resource"`
+	Target     string `json:"target"`
+	CountKey   string `json:"count"`
+	Required   int64  `json:"required"`
+}
+
+type rawManualPolicy struct {
+	RefillMilliPerMS int64 `json:"refill_milli_per_ms"`
+	BucketCapMilli   int64 `json:"bucket_cap_milli"`
+}
+
+type rawOfflinePolicy struct {
+	Efficiency           string `json:"efficiency"`
+	AccrualCapMS         int64  `json:"accrual_cap_ms"`
+	BankRatioNumerator   int64  `json:"bank_ratio_numerator"`
+	BankRatioDenominator int64  `json:"bank_ratio_denominator"`
+	BankCapMS            int64  `json:"bank_cap_ms"`
+	BurstSpeed           string `json:"burst_speed"`
+	BurstMaxDurationMS   int64  `json:"burst_max_duration_ms"`
+}
+
 type rawPrice struct {
 	ResourceID string   `json:"resource_id"`
 	Base       string   `json:"base"`
@@ -129,8 +272,8 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	if err := decodeStrict(data, &raw); err != nil {
 		return nil, catalogError("decode", err)
 	}
-	if raw.SchemaVersion != 1 && raw.SchemaVersion != CatalogSchemaVersion {
-		return nil, catalogError("schema_version", fmt.Errorf("got %d, supported versions are 1 and %d", raw.SchemaVersion, CatalogSchemaVersion))
+	if raw.SchemaVersion < 1 || raw.SchemaVersion > CatalogSchemaVersion {
+		return nil, catalogError("schema_version", fmt.Errorf("got %d, supported versions are 1 through %d", raw.SchemaVersion, CatalogSchemaVersion))
 	}
 	if raw.Resources == nil {
 		return nil, catalogError("resources", errors.New("field is required"))
@@ -140,10 +283,16 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	}
 
 	catalog := &Catalog{
-		resources:     make([]ResourceDefinition, 0, len(raw.Resources)),
-		resourceByID:  make(map[string]ResourceDefinition, len(raw.Resources)),
-		generators:    make([]GeneratorClassDefinition, 0, len(raw.GeneratorClasses)),
-		generatorByID: make(map[string]GeneratorClassDefinition, len(raw.GeneratorClasses)),
+		resources:      make([]ResourceDefinition, 0, len(raw.Resources)),
+		resourceByID:   make(map[string]ResourceDefinition, len(raw.Resources)),
+		generators:     make([]GeneratorClassDefinition, 0, len(raw.GeneratorClasses)),
+		generatorByID:  make(map[string]GeneratorClassDefinition, len(raw.GeneratorClasses)),
+		manualActions:  make([]ManualActionDefinition, 0, len(raw.ManualActions)),
+		manualByID:     make(map[string]ManualActionDefinition, len(raw.ManualActions)),
+		multipliers:    make([]MultiplierSourceDefinition, 0, len(raw.MultiplierSources)),
+		multiplierByID: make(map[string]MultiplierSourceDefinition, len(raw.MultiplierSources)),
+		progress:       make([]ProgressCoordinateDefinition, 0, len(raw.ProgressCoordinates)),
+		progressByTier: make(map[int]ProgressCoordinateDefinition, len(raw.ProgressCoordinates)),
 	}
 
 	for index, source := range raw.Resources {
@@ -182,6 +331,77 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		catalog.generators = append(catalog.generators, definition)
 		catalog.generatorByID[definition.ID] = definition
 	}
+
+	if raw.SchemaVersion < 3 {
+		if raw.ManualActions != nil || raw.MultiplierSources != nil || raw.ProgressCoordinates != nil || raw.ManualPolicy != nil || raw.OfflinePolicy != nil {
+			return nil, catalogError("schema_version", errors.New("catalog versions 1 and 2 forbid production-engine fields"))
+		}
+		return catalog, nil
+	}
+	if raw.ManualActions == nil || raw.MultiplierSources == nil || raw.ProgressCoordinates == nil || raw.ManualPolicy == nil || raw.OfflinePolicy == nil {
+		return nil, catalogError("production_engine", errors.New("manual_actions, multiplier_sources, progress_coordinates, manual_policy, and offline_policy are required"))
+	}
+
+	for index, source := range raw.ManualActions {
+		definition, err := parseManualAction(source)
+		if err != nil {
+			return nil, catalogError(fmt.Sprintf("manual_actions[%d]", index), err)
+		}
+		if _, exists := catalog.manualByID[definition.ID]; exists {
+			return nil, catalogError("manual_actions", fmt.Errorf("duplicate id %q", definition.ID))
+		}
+		resource, exists := catalog.resourceByID[definition.Output.ResourceID]
+		if !exists || resource.Scope != ScopeCompany {
+			return nil, catalogError("manual_actions", fmt.Errorf("%q output must reference a company resource", definition.ID))
+		}
+		catalog.manualActions = append(catalog.manualActions, definition)
+		catalog.manualByID[definition.ID] = definition
+	}
+
+	for index, source := range raw.MultiplierSources {
+		definition, err := parseMultiplierSource(source)
+		if err != nil {
+			return nil, catalogError(fmt.Sprintf("multiplier_sources[%d]", index), err)
+		}
+		if _, exists := catalog.multiplierByID[definition.ID]; exists {
+			return nil, catalogError("multiplier_sources", fmt.Errorf("duplicate id %q", definition.ID))
+		}
+		if definition.Target != "all" {
+			if _, exists := catalog.generatorByID[definition.Target]; !exists {
+				return nil, catalogError("multiplier_sources", fmt.Errorf("%q references unknown target %q", definition.ID, definition.Target))
+			}
+		}
+		catalog.multipliers = append(catalog.multipliers, definition)
+		catalog.multiplierByID[definition.ID] = definition
+	}
+
+	for index, source := range raw.ProgressCoordinates {
+		definition, err := parseProgressCoordinate(source, catalog.resourceByID)
+		if err != nil {
+			return nil, catalogError(fmt.Sprintf("progress_coordinates[%d]", index), err)
+		}
+		if _, exists := catalog.progressByTier[definition.Tier]; exists {
+			return nil, catalogError("progress_coordinates", fmt.Errorf("duplicate tier %d", definition.Tier))
+		}
+		catalog.progress = append(catalog.progress, definition)
+		catalog.progressByTier[definition.Tier] = definition
+	}
+	for tier := 0; tier <= 3; tier++ {
+		if _, exists := catalog.progressByTier[tier]; !exists {
+			return nil, catalogError("progress_coordinates", fmt.Errorf("tier %d is required", tier))
+		}
+	}
+
+	manualPolicy, err := parseManualPolicy(*raw.ManualPolicy)
+	if err != nil {
+		return nil, catalogError("manual_policy", err)
+	}
+	offlinePolicy, err := parseOfflinePolicy(*raw.OfflinePolicy)
+	if err != nil {
+		return nil, catalogError("offline_policy", err)
+	}
+	catalog.manualPolicy = manualPolicy
+	catalog.offlinePolicy = offlinePolicy
 
 	return catalog, nil
 }
@@ -225,6 +445,41 @@ func (c *Catalog) GeneratorClassesForScope(scope Scope) []GeneratorClassDefiniti
 	}
 	return definitions
 }
+
+func (c *Catalog) ManualAction(id string) (ManualActionDefinition, bool) {
+	definition, ok := c.manualByID[id]
+	return definition, ok
+}
+
+func (c *Catalog) ManualActions() []ManualActionDefinition {
+	return append([]ManualActionDefinition(nil), c.manualActions...)
+}
+
+func (c *Catalog) MultiplierSource(id string) (MultiplierSourceDefinition, bool) {
+	definition, ok := c.multiplierByID[id]
+	return definition, ok
+}
+
+func (c *Catalog) MultiplierSources() []MultiplierSourceDefinition {
+	return append([]MultiplierSourceDefinition(nil), c.multipliers...)
+}
+
+func (c *Catalog) ProgressCoordinate(tier int) (ProgressCoordinateDefinition, bool) {
+	definition, ok := c.progressByTier[tier]
+	return cloneProgress(definition), ok
+}
+
+func (c *Catalog) ProgressCoordinates() []ProgressCoordinateDefinition {
+	definitions := make([]ProgressCoordinateDefinition, len(c.progress))
+	for index, definition := range c.progress {
+		definitions[index] = cloneProgress(definition)
+	}
+	return definitions
+}
+
+func (c *Catalog) ManualPolicy() ManualPolicy { return c.manualPolicy }
+
+func (c *Catalog) OfflinePolicy() OfflinePolicy { return c.offlinePolicy }
 
 func validScope(scope Scope) bool {
 	return scope == ScopeCompany || scope == ScopeFounder || scope == ScopeWorld || scope == ScopeGuild
@@ -340,6 +595,154 @@ func parseGenerator(source rawGeneratorClass, schemaVersion int) (GeneratorClass
 	return definition, nil
 }
 
+func parseManualAction(source rawManualAction) (ManualActionDefinition, error) {
+	if !validID(source.ID) || !validID(source.Output.ResourceID) {
+		return ManualActionDefinition{}, errors.New("id and output resource_id must be mechanical ids")
+	}
+	amount, err := parseCatalogDecimal(source.Output.AmountPerAction)
+	if err != nil || !amount.Gt(decimal.Zero) {
+		return ManualActionDefinition{}, errors.New("amount_per_action must be a positive canonical decimal")
+	}
+	return ManualActionDefinition{ID: source.ID, Output: ManualOutputDefinition{
+		ResourceID: source.Output.ResourceID, AmountPerAction: amount,
+	}}, nil
+}
+
+func parseMultiplierSource(source rawMultiplierSource) (MultiplierSourceDefinition, error) {
+	if !validID(source.ID) || !validID(source.Provider) {
+		return MultiplierSourceDefinition{}, errors.New("id and provider must be mechanical ids")
+	}
+	slot := MultiplierSlot(source.Slot)
+	if !validMultiplierSlot(slot) {
+		return MultiplierSourceDefinition{}, fmt.Errorf("unsupported slot %q", source.Slot)
+	}
+	if source.Target != "all" && !validID(source.Target) {
+		return MultiplierSourceDefinition{}, fmt.Errorf("invalid target %q", source.Target)
+	}
+	return MultiplierSourceDefinition{ID: source.ID, Slot: slot, Target: source.Target, Provider: source.Provider}, nil
+}
+
+func validMultiplierSlot(slot MultiplierSlot) bool {
+	for _, candidate := range MultiplierSlotOrder {
+		if slot == candidate {
+			return true
+		}
+	}
+	return false
+}
+
+func parseProgressCoordinate(source rawProgressCoordinate, resources map[string]ResourceDefinition) (ProgressCoordinateDefinition, error) {
+	if source.Tier < 0 || source.Tier > 3 {
+		return ProgressCoordinateDefinition{}, errors.New("tier must be in the in-scope range 0..3")
+	}
+	definition := ProgressCoordinateDefinition{Tier: source.Tier, Kind: ProgressKind(source.Kind)}
+	switch definition.Kind {
+	case ProgressResourceLog:
+		term, err := parseProgressTerm(rawProgressTerm{Kind: source.Kind, ResourceID: source.ResourceID, Target: source.Target}, resources, false)
+		if err != nil || source.CountKey != "" || source.Required != 0 || source.Terms != nil {
+			if err == nil {
+				err = errors.New("resource_log forbids count, required, and terms")
+			}
+			return ProgressCoordinateDefinition{}, err
+		}
+		definition.ResourceID, definition.Target = term.ResourceID, term.Target
+	case ProgressCountFraction:
+		term, err := parseProgressTerm(rawProgressTerm{Kind: source.Kind, CountKey: source.CountKey, Required: source.Required}, resources, false)
+		if err != nil || source.ResourceID != "" || source.Target != "" || source.Terms != nil {
+			if err == nil {
+				err = errors.New("count_fraction forbids resource, target, and terms")
+			}
+			return ProgressCoordinateDefinition{}, err
+		}
+		definition.CountKey, definition.Required = term.CountKey, term.Required
+	case ProgressComposite:
+		if source.ResourceID != "" || source.Target != "" || source.CountKey != "" || source.Required != 0 || len(source.Terms) == 0 {
+			return ProgressCoordinateDefinition{}, errors.New("composite requires terms and forbids direct resource/count fields")
+		}
+		weights := make([]decimal.Decimal, 0, len(source.Terms))
+		definition.Terms = make([]ProgressTerm, 0, len(source.Terms))
+		for _, rawTerm := range source.Terms {
+			term, err := parseProgressTerm(rawTerm, resources, true)
+			if err != nil {
+				return ProgressCoordinateDefinition{}, err
+			}
+			definition.Terms = append(definition.Terms, term)
+			weights = append(weights, term.Weight)
+		}
+		if !decimal.SumDeterministic(weights).Eq(decimal.One) {
+			return ProgressCoordinateDefinition{}, errors.New("composite weights must sum exactly to 1e0")
+		}
+	default:
+		return ProgressCoordinateDefinition{}, fmt.Errorf("unsupported progress kind %q", source.Kind)
+	}
+	return definition, nil
+}
+
+func parseProgressTerm(source rawProgressTerm, resources map[string]ResourceDefinition, weighted bool) (ProgressTerm, error) {
+	term := ProgressTerm{Kind: ProgressKind(source.Kind)}
+	if weighted {
+		weight, err := parseCatalogDecimal(source.Weight)
+		if err != nil || !weight.Gt(decimal.Zero) || weight.Gt(decimal.One) {
+			return ProgressTerm{}, errors.New("term weight must be a canonical Decimal in (0,1]")
+		}
+		term.Weight = weight
+	} else if source.Weight != "" {
+		return ProgressTerm{}, errors.New("non-composite progress forbids weight")
+	}
+	switch term.Kind {
+	case ProgressResourceLog:
+		resource, exists := resources[source.ResourceID]
+		if !exists || resource.Scope != ScopeCompany || source.CountKey != "" || source.Required != 0 {
+			return ProgressTerm{}, errors.New("resource_log requires a company resource and forbids count fields")
+		}
+		target, err := parseCatalogDecimal(source.Target)
+		if err != nil || !target.Gt(decimal.Zero) {
+			return ProgressTerm{}, errors.New("resource_log target must be a positive canonical decimal")
+		}
+		term.ResourceID, term.Target = source.ResourceID, target
+	case ProgressCountFraction:
+		if source.CountKey != GeneratorTotalOwned || source.Required <= 0 || source.Required > decimal.MaxExactInteger || source.ResourceID != "" || source.Target != "" {
+			return ProgressTerm{}, errors.New("count_fraction requires generators.total_owned and a positive safe-integer required value")
+		}
+		term.CountKey, term.Required = source.CountKey, source.Required
+	default:
+		return ProgressTerm{}, fmt.Errorf("unsupported progress term kind %q", source.Kind)
+	}
+	return term, nil
+}
+
+func parseManualPolicy(source rawManualPolicy) (ManualPolicy, error) {
+	if source.RefillMilliPerMS <= 0 || source.BucketCapMilli <= 0 || source.RefillMilliPerMS > decimal.MaxExactInteger || source.BucketCapMilli > decimal.MaxExactInteger {
+		return ManualPolicy{}, errors.New("manual policy values must be positive safe integers")
+	}
+	return ManualPolicy{RefillMilliPerMS: source.RefillMilliPerMS, BucketCapMilli: source.BucketCapMilli}, nil
+}
+
+func parseOfflinePolicy(source rawOfflinePolicy) (OfflinePolicy, error) {
+	efficiency, err := parseCatalogDecimal(source.Efficiency)
+	if err != nil || efficiency.Lt(decimal.Zero) || efficiency.Gt(decimal.One) {
+		return OfflinePolicy{}, errors.New("efficiency must be a canonical Decimal in [0,1]")
+	}
+	burstSpeed, err := parseCatalogDecimal(source.BurstSpeed)
+	if err != nil || !burstSpeed.Gt(decimal.Zero) {
+		return OfflinePolicy{}, errors.New("burst_speed must be a positive canonical Decimal")
+	}
+	values := []int64{source.AccrualCapMS, source.BankRatioNumerator, source.BankRatioDenominator, source.BankCapMS, source.BurstMaxDurationMS}
+	for _, value := range values {
+		if value <= 0 || value > decimal.MaxExactInteger {
+			return OfflinePolicy{}, errors.New("offline integer fields must be positive safe integers")
+		}
+	}
+	if source.BankRatioNumerator > source.BankRatioDenominator {
+		return OfflinePolicy{}, errors.New("bank ratio may not exceed one")
+	}
+	return OfflinePolicy{
+		Efficiency: efficiency, AccrualCapMS: source.AccrualCapMS,
+		BankRatioNumerator: source.BankRatioNumerator, BankRatioDenominator: source.BankRatioDenominator,
+		BankCapMS: source.BankCapMS, BurstSpeed: burstSpeed, BurstMaxDurationMS: source.BurstMaxDurationMS,
+	}, nil
+}
+
 func parseCurve(source rawCurve) (CostCurve, error) {
 	switch CurveKind(source.Kind) {
 	case CurveConstant:
@@ -395,6 +798,11 @@ func cloneGenerator(definition GeneratorClassDefinition) GeneratorClassDefinitio
 		production := *definition.Production
 		definition.Production = &production
 	}
+	return definition
+}
+
+func cloneProgress(definition ProgressCoordinateDefinition) ProgressCoordinateDefinition {
+	definition.Terms = append([]ProgressTerm(nil), definition.Terms...)
 	return definition
 }
 

@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "resources": [
     {
       "id": "company.cash",
@@ -23,5 +23,18 @@
         "base_rate": "0"
       }
     }
-  ]
+  ],
+  "manual_actions": [],
+  "multiplier_sources": [],
+  "progress_coordinates": [],
+  "manual_policy": { "refill_milli_per_ms": 25, "bucket_cap_milli": 50000 },
+  "offline_policy": {
+    "efficiency": "9e-1",
+    "accrual_cap_ms": 86400000,
+    "bank_ratio_numerator": 1,
+    "bank_ratio_denominator": 2,
+    "bank_cap_ms": 259200000,
+    "burst_speed": "2e0",
+    "burst_max_duration_ms": 14400000
+  }
 }

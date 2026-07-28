@@ -112,7 +112,7 @@ func mutateCatalog(t *testing.T, source json.RawMessage, name string) []byte {
 
 	switch name {
 	case "unsupported-version":
-		root["schema_version"] = float64(3)
+		root["schema_version"] = float64(4)
 	case "missing-root-field":
 		delete(root, "resources")
 	case "unknown-root-field":
@@ -182,6 +182,42 @@ func TestCatalogV1RemainsReadableWithoutProduction(t *testing.T) {
 	}
 	if scoped := catalog.GeneratorClassesForScope(ScopeCompany); len(scoped) != 0 {
 		t.Fatalf("legacy scoped generators = %d", len(scoped))
+	}
+}
+
+func TestProductionCatalogV3Contract(t *testing.T) {
+	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	action, ok := catalog.ManualAction("manual.click")
+	if !ok || action.Output.ResourceID != "company.cash" || action.Output.AmountPerAction.String() != "1e0" {
+		t.Fatalf("manual action = %+v, exists=%v", action, ok)
+	}
+	if len(catalog.MultiplierSources()) != 0 {
+		t.Fatal("phase-0 catalog unexpectedly declares multiplier sources")
+	}
+	if got := catalog.ManualPolicy(); got.RefillMilliPerMS != 25 || got.BucketCapMilli != 50_000 {
+		t.Fatalf("manual policy = %+v", got)
+	}
+	if got := catalog.OfflinePolicy(); got.Efficiency.String() != "9e-1" || got.AccrualCapMS != 86_400_000 ||
+		got.BankRatioNumerator != 1 || got.BankRatioDenominator != 2 || got.BankCapMS != 259_200_000 {
+		t.Fatalf("offline policy = %+v", got)
+	}
+	for tier := 0; tier <= 3; tier++ {
+		if _, ok := catalog.ProgressCoordinate(tier); !ok {
+			t.Fatalf("missing progress coordinate tier %d", tier)
+		}
+	}
+	coordinate, _ := catalog.ProgressCoordinate(1)
+	coordinate.Terms[0].Required = 999
+	again, _ := catalog.ProgressCoordinate(1)
+	if again.Terms[0].Required == 999 {
+		t.Fatal("progress coordinate was mutated through accessor")
 	}
 }
 

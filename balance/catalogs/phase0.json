@@ -7,16 +7,19 @@
       "numeric_kind": "decimal",
       "initial": "0",
       "minimum": "0",
-      "hardcap": null
+      "hardcap": {
+        "amount": "1e1000",
+        "reason_key": "resource.company_cash.cap.phase0"
+      }
     }
   ],
   "generator_classes": [
     {
-      "id": "generator.example",
+      "id": "generator.beige_tower",
       "price": {
         "resource_id": "company.cash",
-        "base": "1e0",
-        "curve": { "kind": "constant" }
+        "base": "1e1",
+        "curve": { "kind": "geometric", "ratio": "1.13e0" }
       },
       "production": {
         "resource_id": "company.cash",
