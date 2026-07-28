@@ -55,7 +55,7 @@ type Loaded struct {
 	Key        StreamKey
 	Revision   Revision
 	ArchivedAt *time.Time
-	Ledger     *economy.Ledger
+	State      *State
 }
 
 type CatalogResolver interface {
@@ -78,12 +78,12 @@ func NewStore(db *sql.DB, catalogs CatalogResolver, logger *slog.Logger) (*Store
 	return &Store{db: db, catalogs: catalogs, logger: logger}, nil
 }
 
-func (s *Store) CreateStream(ctx context.Context, key StreamKey, constantsHash string, ledger *economy.Ledger, writeContext WriteContext) (Revision, error) {
-	if err := validateWrite(key, constantsHash, ledger, writeContext); err != nil {
+func (s *Store) CreateStream(ctx context.Context, key StreamKey, constantsHash string, state *State, writeContext WriteContext) (Revision, error) {
+	if err := validateWrite(key, constantsHash, state, writeContext); err != nil {
 		s.logRejection(err, writeContext)
 		return Revision{}, err
 	}
-	state, err := s.validatedState(constantsHash, key.Scope, ledger)
+	encodedState, err := s.validatedState(constantsHash, key.Scope, state)
 	if err != nil {
 		s.logRejection(err, writeContext)
 		return Revision{}, err
@@ -104,7 +104,7 @@ func (s *Store) CreateStream(ctx context.Context, key StreamKey, constantsHash s
 	err = tx.QueryRowContext(ctx, `
 		INSERT INTO save_revisions (stream_id, revision, version, state, constants_hash)
 		VALUES ($1, 1, $2, $3, $4) RETURNING created_at`,
-		revision.StreamID, CurrentVersion, state, constantsHash).Scan(&revision.CreatedAt)
+		revision.StreamID, CurrentVersion, encodedState, constantsHash).Scan(&revision.CreatedAt)
 	if err != nil {
 		return Revision{}, fmt.Errorf("create save revision: %w", err)
 	}
@@ -114,8 +114,8 @@ func (s *Store) CreateStream(ctx context.Context, key StreamKey, constantsHash s
 	return revision, nil
 }
 
-func (s *Store) Write(ctx context.Context, streamID string, expectedRevision int64, constantsHash string, ledger *economy.Ledger, writeContext WriteContext) (Revision, error) {
-	if !uuidPattern.MatchString(streamID) || expectedRevision < 1 || !hashPattern.MatchString(constantsHash) || ledger == nil || writeContext.Cause == "" {
+func (s *Store) Write(ctx context.Context, streamID string, expectedRevision int64, constantsHash string, state *State, writeContext WriteContext) (Revision, error) {
+	if !uuidPattern.MatchString(streamID) || expectedRevision < 1 || !hashPattern.MatchString(constantsHash) || state == nil || state.Ledger == nil || writeContext.Cause == "" {
 		return Revision{}, ErrInvalidStream
 	}
 	tx, err := s.db.BeginTx(ctx, nil)
@@ -133,10 +133,10 @@ func (s *Store) Write(ctx context.Context, streamID string, expectedRevision int
 	if archivedAt.Valid {
 		return Revision{}, ErrArchived
 	}
-	if ledger.Scope() != scope {
+	if state.Ledger.Scope() != scope {
 		return Revision{}, ErrInvalidStream
 	}
-	state, err := s.validatedState(constantsHash, scope, ledger)
+	encodedState, err := s.validatedState(constantsHash, scope, state)
 	if err != nil {
 		s.logRejection(err, writeContext)
 		return Revision{}, err
@@ -149,7 +149,7 @@ func (s *Store) Write(ctx context.Context, streamID string, expectedRevision int
 		return Revision{}, fmt.Errorf("%w: got %d, current %d", ErrConflict, expectedRevision, latest)
 	}
 	revision := Revision{StreamID: streamID, Number: latest + 1, Version: CurrentVersion, ConstantsHash: constantsHash}
-	err = tx.QueryRowContext(ctx, `INSERT INTO save_revisions (stream_id,revision,version,state,constants_hash) VALUES ($1,$2,$3,$4,$5) RETURNING created_at`, streamID, revision.Number, CurrentVersion, state, constantsHash).Scan(&revision.CreatedAt)
+	err = tx.QueryRowContext(ctx, `INSERT INTO save_revisions (stream_id,revision,version,state,constants_hash) VALUES ($1,$2,$3,$4,$5) RETURNING created_at`, streamID, revision.Number, CurrentVersion, encodedState, constantsHash).Scan(&revision.CreatedAt)
 	if err != nil {
 		return Revision{}, err
 	}
@@ -181,7 +181,7 @@ func (s *Store) LoadLatest(ctx context.Context, streamID string) (Loaded, error)
 	if !ok {
 		return Loaded{}, fmt.Errorf("%w: unknown catalog %s", ErrInvalidState, loaded.Revision.ConstantsHash)
 	}
-	loaded.Ledger, err = RestoreLedger(state, loaded.Revision.Version, catalog, loaded.Key.Scope)
+	loaded.State, err = RestoreState(state, loaded.Revision.Version, catalog, loaded.Key.Scope, loaded.Revision.CreatedAt)
 	if err != nil {
 		return Loaded{}, err
 	}
@@ -189,34 +189,68 @@ func (s *Store) LoadLatest(ctx context.Context, streamID string) (Loaded, error)
 }
 
 func (s *Store) Archive(ctx context.Context, streamID string, expectedRevision int64) error {
-	result, err := s.db.ExecContext(ctx, `UPDATE save_streams s SET archived_at=now() WHERE id=$1 AND archived_at IS NULL AND (SELECT max(revision) FROM save_revisions WHERE stream_id=s.id)=$2`, streamID, expectedRevision)
+	if !uuidPattern.MatchString(streamID) || expectedRevision < 1 {
+		return ErrInvalidStream
+	}
+	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
-	if affected, _ := result.RowsAffected(); affected != 1 {
-		return ErrConflict
+	defer tx.Rollback()
+	var archivedAt sql.NullTime
+	if err := tx.QueryRowContext(ctx,
+		`SELECT archived_at FROM save_streams WHERE id=$1 FOR UPDATE`, streamID,
+	).Scan(&archivedAt); errors.Is(err, sql.ErrNoRows) {
+		return ErrNotFound
+	} else if err != nil {
+		return err
 	}
-	return nil
+	if archivedAt.Valid {
+		return ErrArchived
+	}
+	var latest int64
+	if err := tx.QueryRowContext(ctx,
+		`SELECT max(revision) FROM save_revisions WHERE stream_id=$1`, streamID,
+	).Scan(&latest); err != nil {
+		return err
+	}
+	if latest != expectedRevision {
+		return fmt.Errorf("%w: got %d, current %d", ErrConflict, expectedRevision, latest)
+	}
+	result, err := tx.ExecContext(ctx,
+		`UPDATE save_streams SET archived_at=now() WHERE id=$1`, streamID,
+	)
+	if err != nil {
+		return err
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affected != 1 {
+		return ErrNotFound
+	}
+	return tx.Commit()
 }
 
-func (s *Store) validatedState(hash string, scope economy.Scope, ledger *economy.Ledger) ([]byte, error) {
+func (s *Store) validatedState(hash string, scope economy.Scope, state *State) ([]byte, error) {
 	catalog, ok := s.catalogs.Resolve(hash)
 	if !ok {
 		return nil, fmt.Errorf("%w: unknown catalog %s", ErrInvalidState, hash)
 	}
-	state, err := EncodeLedger(ledger)
+	encoded, err := EncodeState(state)
 	if err != nil {
 		return nil, err
 	}
-	if _, err := RestoreLedger(state, CurrentVersion, catalog, scope); err != nil {
+	if _, err := RestoreState(encoded, CurrentVersion, catalog, scope, time.Time{}); err != nil {
 		return nil, err
 	}
-	return state, nil
+	return encoded, nil
 }
 
-func validateWrite(key StreamKey, hash string, ledger *economy.Ledger, ctx WriteContext) error {
+func validateWrite(key StreamKey, hash string, state *State, ctx WriteContext) error {
 	validPair := key.OwnerKind == OwnerFounder && (key.Scope == economy.ScopeCompany || key.Scope == economy.ScopeFounder) || key.OwnerKind == OwnerGuild && key.Scope == economy.ScopeGuild || key.OwnerKind == OwnerWorld && key.Scope == economy.ScopeWorld
-	if !validPair || !uuidPattern.MatchString(key.OwnerID) || !hashPattern.MatchString(hash) || ledger == nil || ledger.Scope() != key.Scope || ctx.Cause == "" {
+	if !validPair || !uuidPattern.MatchString(key.OwnerID) || !hashPattern.MatchString(hash) || state == nil || state.Ledger == nil || state.Ledger.Scope() != key.Scope || ctx.Cause == "" {
 		return ErrInvalidStream
 	}
 	return nil

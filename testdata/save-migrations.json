@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "company v1 balances to v2 production envelope",
+      "from_version": 1,
+      "scope": "company",
+      "migration_baseline": "2026-07-28T08:00:00.123456789Z",
+      "input": {
+        "balances": {
+          "company.cash": "1e0"
+        }
+      },
+      "expect_v2": {
+        "balances": {
+          "company.cash": "1e0"
+        },
+        "generators": {
+          "generator.example": 0
+        },
+        "evaluated_through": "2026-07-28T08:00:00.123456789Z"
+      }
+    }
+  ]
+}

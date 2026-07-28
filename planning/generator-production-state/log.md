@@ -102,3 +102,15 @@ postconditions + termination · Write-vs-Write and prune-vs-read concurrency.
 (2) A1 Archive transaction shape · (3) A2/A3 Div/Mul edge fixes + A6 generator un-clamp in
 the same change (the tests that would have caught them) · (4) A4/A5 with doc-or-fix decisions
 recorded in the RFC's deviations section.
+
+## 2026-07-28 — Review fixes and save v2 implementation
+
+- Restored TypeScript catalog parity: versions 1 and 2 now match Go, v2 production definitions
+  receive the same reference/scope validation, and the shared suite is green again.
+- Added save payload v2 with exact generator counts and canonical UTC evaluation cursor.
+- Added the first checked-in save-migration corpus; v1 migration is deterministic from the
+  revision's server-authored timestamp.
+- Updated repository create/write/load to validate and return the complete state.
+- Real Postgres integration passed, including v1 migration (with PostgreSQL's microsecond timestamp
+  precision) and the forced Archive/Write interleaving from the adversarial review.
+- No push performed.

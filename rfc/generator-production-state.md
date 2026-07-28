@@ -74,10 +74,11 @@ The payload at rest becomes:
 
 ### S3 — Version-1 migration
 
-Restoring save version 1 initializes every in-scope catalog-v2 generator count to zero and uses
-the revision's server-authored `created_at` as `evaluated_through`. Version 1 could not represent
-generator ownership, so this is lossless. The migration baseline is an explicit restore input;
-unit migrations never read the wall clock.
+Restoring save version 1 initializes every in-scope production-capable generator in its referenced
+catalog to zero and uses the revision's server-authored `created_at` as `evaluated_through`.
+Version 1 could not represent generator ownership, so this is lossless. The migration baseline is
+an explicit restore input; unit migrations never read the wall clock. Moving a save to a different
+balance-catalog hash remains a separate Balance Epoch migration concern.
 
 The first subsequent write emits version 2. Future versions migrate one step at a time and version
 numbers are never skipped.
