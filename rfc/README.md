@@ -10,10 +10,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Production Engine & Intent API](production-engine-and-intents.md) | draft | — |
-| [Generator Production State](generator-production-state.md) | implementing | [Production Engine & Intent API](production-engine-and-intents.md) |
-| [Save Archive Compare-and-Swap](save-archive-cas.md) | implementing | Save Layer & Migrations |
-| [Numeric Boundary Parity](numeric-boundary-parity.md) | implementing | RFC-0001 Numeric Core |
-| [Deterministic Decimal Aggregation](deterministic-decimal-aggregation.md) | implementing | RFC-0001 / RFC-0002 / Production Accrual |
 
 ## Archive
 
@@ -28,6 +24,10 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Geometric Affordability Fast Path](archive/geometric-afford-fast-path.md) | implemented | [Economy kernel](../docs/economy-kernel.md) |
 | [Save Layer & Migrations](archive/save-layer-and-migrations.md) | implemented | [Save layer](../docs/save-layer.md) |
 | [Production Accrual Math](archive/production-accrual-math.md) | implemented | [Numeric core](../docs/numeric-core.md) |
+| [Generator Production State](archive/generator-production-state.md) | implemented | [Economy kernel](../docs/economy-kernel.md), [save layer](../docs/save-layer.md) |
+| [Save Archive Compare-and-Swap](archive/save-archive-cas.md) | implemented | [Save layer](../docs/save-layer.md) |
+| [Numeric Boundary Parity](archive/numeric-boundary-parity.md) | implemented | [Numeric core](../docs/numeric-core.md) |
+| [Deterministic Decimal Aggregation](archive/deterministic-decimal-aggregation.md) | implemented | [Numeric core](../docs/numeric-core.md), [economy kernel](../docs/economy-kernel.md) |
 
 Planned next (not yet drafted — carve from `design/07-roadmap.md` Phase 0): client shell & sim loop
 · balance harness · deployment and draining.

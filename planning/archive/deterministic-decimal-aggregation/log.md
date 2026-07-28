@@ -11,3 +11,6 @@
   equivalent helper and no longer calls locale-sensitive collation.
 - Domain-edge cancellation permutations pass; genuine out-of-domain sums still reject.
 - Focused Go and TypeScript suites passed. No push.
+- Final `make verify` passed with Go vet/tests, strict TypeScript, schema validation, 6,347 Node
+  tests, and 19,041 browser tests across Chromium, Firefox, and WebKit.
+- Canonical numeric/economy docs updated; follow-up archived. No push.

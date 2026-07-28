@@ -7,7 +7,7 @@
 - **Research:** `design/research/tech-stack.md §1` (swarmsim closed forms, intent validation), `design/research/pacing-science.md` (progress checker), `design/research/cookie-clicker.md` (multiplier stack order)
 - **Depends on:** RFC-0002 (ledger), Save Layer & Migrations (implemented), Geometric Afford Fast Path (implemented)
 - **Split follow-up:** `archive/production-accrual-math.md` (implemented closed-form numeric primitive)
-- **Split follow-up:** `generator-production-state.md` (catalog output, owned counts, save cursor)
+- **Split follow-up:** `archive/generator-production-state.md` (implemented catalog output, owned counts, save cursor)
 - **Planning:** `planning/production-engine-and-intents/` (once implementing)
 
 ## Summary
@@ -66,8 +66,8 @@ Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker patte
 
 ## Open questions
 
-- **Generator persistence and production data:** split to `generator-production-state.md`; remove
-  this gap when that follow-up is implemented and archived.
+- **Generator persistence and production data:** implemented and archived in
+  `archive/generator-production-state.md`.
 - **Intent semantics:** `buy_upgrade`, `collect`, and `toggle` have no data model or authoritative
   state transition yet. They cannot be implemented from names alone.
 - **Idempotency retention:** storage shape, retention window, and whether failures are replayed are
@@ -89,4 +89,6 @@ Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker patte
 - 2026-07-28: corrected the draft acceptance criterion that had required default 90%-efficient
   offline accrual to equal 100%-efficient online accrual.
 - 2026-07-28: split the settled generator output, ownership, and save-cursor contract into
-  `generator-production-state.md`; undefined intent and policy mechanics remain gaps here.
+  `archive/generator-production-state.md`; undefined intent and policy mechanics remain gaps here.
+- 2026-07-28: generator production state follow-up implemented and archived; remaining open
+  questions still block the parent intent engine.

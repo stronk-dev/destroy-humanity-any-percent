@@ -2,17 +2,19 @@
 
 The economy kernel is the implemented boundary between RFC-0001 large-number arithmetic and
 future gameplay systems. It provides a strict shared catalog, matching Go/TypeScript cost queries,
-and a scoped authoritative Go ledger. It contains no shipped balance or production mechanics yet.
+and a scoped authoritative Go ledger. Generator output metadata exists, but no shipped balance
+catalog, purchase action, multiplier stack, or clocked production engine exists yet.
 
 ## Catalog
 
 The authoring schema is [`balance/economy.schema.json`](../balance/economy.schema.json). Runtime
 validation is performed independently by `economy.LoadCatalog` on the server and `parseCatalog`
-on the client. Both accept the same version-1 shape:
+on the client. Current authoring uses version 2; both runtimes retain version-1 loading for
+historical catalog hashes:
 
 ```json
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "resources": [
     {
       "id": "company.cash",
@@ -23,6 +25,10 @@ on the client. Both accept the same version-1 shape:
       "hardcap": {
         "amount": "1e1000",
         "reason_key": "resource.company_cash.cap.depleted"
+      },
+      "production": {
+        "resource_id": "company.cash",
+        "base_rate": "1e0"
       }
     }
   ],
@@ -44,7 +50,8 @@ catalog, generator price, or launch ratio.
 
 Catalog rules:
 
-- The only supported schema version is `1`.
+- Version 2 requires generator production metadata. Version 1 remains readable but its generators
+  are explicitly not production-capable.
 - IDs are lowercase mechanical identifiers, optionally dot-namespaced. Flavor and visible text
   stay in later data/localization files.
 - Resource scopes are `company`, `founder`, `world`, and `guild`.
@@ -55,6 +62,8 @@ Catalog rules:
   limit is never a visible gameplay cap.
 - Missing fields, unknown fields, duplicate IDs, dangling resource references, invalid bounds,
   unsupported tags, and malformed canonical values fail the entire load.
+- A production `base_rate` is a positive canonical Decimal per second. Price and output resources
+  must share a scope; cross-scope transfers require an explicit coordinator.
 - Loading from bytes/objects is implemented. Disk watching, `go:embed`, and content hot-reload
   orchestration belong to later server/client-shell work.
 
@@ -104,7 +113,7 @@ The public primitive boundary is:
 For every transaction, `Apply`:
 
 1. validates resource existence, ledger scope, and every finite delta;
-2. aggregates all entries per resource at full intermediate precision;
+2. aggregates all entries per resource with the deterministic n-ary Decimal sum;
 3. adds each aggregate and quantizes exactly once at the commit boundary;
 4. validates all prospective balances against state, minimum, and hardcap invariants;
 5. mutates nothing if any validation fails;
@@ -113,6 +122,10 @@ For every transaction, `Apply`:
 A receipt contains canonical `before`, `delta`, and `after` strings. `delta` is the actual committed
 difference after boundary quantization, not an uncommitted requested value. Resources unchanged by
 quantization are omitted.
+
+The n-ary sum groups same-exponent terms before normalization and orders full-precision mantissas
+numerically. Transaction acceptance is therefore invariant under entry permutation, including
+domain-edge cancellations; a genuinely out-of-domain net result still rejects atomically.
 
 Hardcap overflow is rejected, never silently clamped. A future production engine may calculate
 remaining headroom and accrue exactly to a cap, while purchases and conversions remain protected
@@ -152,7 +165,7 @@ and WebKit suites.
 
 ## Deliberate deferrals
 
-The kernel does not yet implement save restoration, idempotency storage, production/time
-integration, offline progress, multiplier stacks, purchases/actions, cross-scope coordination,
+The kernel does not yet implement idempotency storage, production/time integration, offline
+progress, multiplier stacks, purchases/actions, cross-scope coordination,
 WebSocket publication, client interpolation, cap tooltips, leaderboard ordering, shipped balance,
 or the balance harness. Each remains owned by a later bounded RFC.

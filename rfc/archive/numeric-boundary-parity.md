@@ -1,13 +1,13 @@
 # RFC: Numeric Boundary Parity
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex
 - **Created:** 2026-07-28
 - **Research:** adversarial cross-runtime review recorded in
-  `planning/generator-production-state/log.md`
+  `planning/archive/generator-production-state/log.md`
 - **Depends on / amends:** RFC-0001 Numeric Core (implemented), Geometric Affordability Fast Path
   (implemented)
-- **Planning:** `planning/numeric-boundary-parity/`
+- **Planning:** `planning/archive/numeric-boundary-parity/`
 
 ## Summary
 
@@ -52,3 +52,5 @@ None.
 
 - 2026-07-28: created, accepted, and implementation started from demonstrated adversarial-review
   reproducers.
+- 2026-07-28: arithmetic, vectors, geometric limit, documentation, and all-runtime verification
+  completed and archived.

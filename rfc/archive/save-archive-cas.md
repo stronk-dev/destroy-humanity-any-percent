@@ -1,11 +1,11 @@
 # RFC: Save Archive Compare-and-Swap
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex
 - **Created:** 2026-07-28
 - **Design refs:** `design/06-tech.md §persistence`
 - **Depends on / amends:** Save Layer & Migrations (implemented)
-- **Planning:** `planning/save-archive-cas/`
+- **Planning:** `planning/archive/save-archive-cas/`
 
 ## Summary
 
@@ -42,3 +42,5 @@ None.
 
 - 2026-07-28: created, accepted, and implementation started from a demonstrated concurrency
   reproducer found during adversarial review.
+- 2026-07-28: locked-head transaction and forced real-Postgres regression implemented,
+  documented, verified, and archived.

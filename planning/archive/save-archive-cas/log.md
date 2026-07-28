@@ -9,3 +9,4 @@
 - Added a real-Postgres regression that waits until Archive is blocked on the writer's row lock,
   advances the head, then proves Archive returns `ErrConflict` and leaves the stream active.
 - Integration suite passed. No push.
+- Final full repository gate passed; canonical save docs updated and follow-up archived.

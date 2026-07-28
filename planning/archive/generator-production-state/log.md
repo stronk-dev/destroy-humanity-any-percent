@@ -114,3 +114,5 @@ recorded in the RFC's deviations section.
 - Real Postgres integration passed, including v1 migration (with PostgreSQL's microsecond timestamp
   precision) and the forced Archive/Write interleaving from the adversarial review.
 - No push performed.
+- Final `make verify` passed: 6,347 Node tests and 19,041 browser tests across Chromium, Firefox,
+  and WebKit. Canonical economy/save docs updated; RFC and planning archived.

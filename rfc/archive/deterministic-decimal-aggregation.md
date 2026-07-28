@@ -1,11 +1,11 @@
 # RFC: Deterministic Decimal Aggregation
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex
 - **Created:** 2026-07-28
 - **Depends on / amends:** RFC-0001 Numeric Core, RFC-0002 Economy Kernel, Production Accrual Math
   (implemented)
-- **Planning:** `planning/deterministic-decimal-aggregation/`
+- **Planning:** `planning/archive/deterministic-decimal-aggregation/`
 
 ## Summary
 
@@ -48,3 +48,5 @@ None.
 ## Changelog
 
 - 2026-07-28: created, accepted, and implementation started from verified review findings A5/F4.
+- 2026-07-28: n-ary aggregation, ledger/accrual integration, permutation regressions, canonical
+  docs, and all-runtime verification completed and archived.

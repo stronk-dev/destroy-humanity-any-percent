@@ -68,6 +68,8 @@ The TypeScript boundary helpers live in `client/src/numeric.ts`. Both languages 
 - `sumGeometricSeries`: exact closed-form cost for a non-negative integer purchase count.
 - `affordGeometricSeries`: a closed-form estimate followed by correction and, when necessary,
   binary search until both affordability inequalities are proven.
+- `SumDeterministic`: an order-independent n-ary sum that groups same-exponent terms before
+  normalization and orders ties by absolute then signed mantissa.
 - `accrueConstant`: deterministic closed-form production from non-negative per-second rate
   sources, exact elapsed milliseconds, and a non-negative efficiency multiplier.
 
@@ -85,9 +87,9 @@ accrueConstant(rates[], elapsedMilliseconds, efficiency) -> Decimal
 
 Each source is an authoritative per-second Decimal state value. Elapsed time is an exact integer
 from zero through `9,007,199,254,740,991` milliseconds. Both implementations validate
-non-negative inputs, sort a copy of the sources by ascending exponent and then canonical string,
-sum them deterministically, multiply by elapsed seconds and efficiency, and quantize the final
-delta once. They never mutate or individually quantize the caller's sources.
+non-negative inputs, sum a copy through the deterministic n-ary aggregation boundary, multiply by
+elapsed seconds and efficiency, and quantize the final delta once. They never mutate or
+individually quantize the caller's sources.
 
 This function is deliberately policy-free. A 90% efficiency and a 24-hour interval appear in the
 shared vectors, but choosing offline efficiency, owning the clock, applying caps, and committing
@@ -101,6 +103,12 @@ zero results for division by zero, zero divided by zero, `0` raised to a negativ
 opposite-infinity addition, and infinity multiplied by zero. Logarithm of zero produces
 negative infinity; negative logarithm inputs produce NaN; positive exponent overflow produces
 the signed infinity diagnostic.
+
+Multiplication, division, and integer powers normalize their final arithmetic result at the
+exponent edge. This preserves a mantissa carry that rescues a valid lower-bound value, avoids a
+transient reciprocal overflow during division, and matches the pinned JavaScript diagnostic for
+true overflow/underflow. A geometric ratio whose representable difference from one is zero uses
+the constant-price limit rather than dividing by zero.
 
 NaN and infinity are rejected from state and canonical wire values. The finite-zero compatibility
 cases cannot carry their origin, so feature handlers must validate domains before calculation:
@@ -119,14 +127,19 @@ This runs Go tests and static analysis, strict TypeScript checking, the Node/V8 
 same TypeScript vectors in Chromium, Firefox, and WebKit. First-time setup is documented in the
 root README.
 
-The committed `testdata/decimal-vectors.json` uses schema 3 and contains 6,293 cases produced
+The committed `testdata/decimal-vectors.json` uses schema 3 and contains 6,295 cases produced
 with a seeded RNG and the real pinned JavaScript library. It includes recomputed
-operation/classification counts and 20 mandatory named domain edges, so diagnostic coverage
-cannot silently disappear. Regenerate it with:
+operation/classification counts, 22 mandatory named domain edges, and an assertion that random
+binary inputs reach above absolute exponent `4e15`, so upper-domain coverage cannot silently
+disappear. Regenerate it with:
 
 ```sh
 make vectors
 ```
+
+The generator is a pinned-runtime compatibility oracle, not a wholly independent mathematical
+oracle: its canonical and quantization helpers intentionally mirror the client boundary. Changes
+to those helpers therefore require direct review in addition to regenerated agreement.
 
 The hand-reviewed `testdata/production-accrual.json` schema 1 corpus covers the production
 primitive's exact results and rejected domains, including permutation invariance, sub-resolution

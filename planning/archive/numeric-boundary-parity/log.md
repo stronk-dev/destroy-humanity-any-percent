@@ -15,3 +15,5 @@
 - Regenerated schema-3 vectors contain 6,295 cases, 22 mandatory edges, and enforced upper-half
   binary coverage. `make verify` passed with 19,038 browser tests across all engines.
 - No push performed.
+- Final combined gate after aggregation repairs passed with 6,347 Node and 19,041 browser tests;
+  canonical numeric docs updated and follow-up archived.
