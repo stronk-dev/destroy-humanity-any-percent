@@ -1,6 +1,6 @@
 # RFC: Production Engine & Intent API
 
-- **Status:** draft
+- **Status:** accepted
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-28
 - **Design refs:** `design/02 §2` (production stack, cost curves), `design/02 §10` (the daily clock), `design/06 §idle-math` (closed-form, lazy, server-authoritative), `AGENTS.md` law 7 (offline default)
@@ -25,12 +25,14 @@ RFC-0002 deliberately excluded "production sources, multiplier stacks, time inte
 ### D1 — Closed-form lazy evaluation
 
 - Per player: use the implemented save cursor `evaluated_through`; on any read/intent, integrate production analytically over `Δt` (swarmsim model) at full intermediate precision, commit through the ledger **once** (RFC-0002 K3 quantization). **Never tick players server-side.**
-- Threshold-crossing mechanics (caps, unlock predicates) use bucketed evaluation with capped iterations; crossing times are solved, not scanned.
+- This RFC evaluates continuous production and visible resource hardcaps. Gate/unlock threshold
+  crossings remain owned by `gate-predicates-and-routes.md`; the production engine exposes evaluated
+  committed state to that package and does not invent a second threshold model here.
 - **Server clock only.** Client-supplied timestamps are never trusted (kills clock-rollback).
 
 ### D2 — The production stack (shape is code, values are data)
 
-`rate(resource) = Σ_generators [count × base_rate × Π(multipliers)]` with the multiplier stack in a **documented, fixed order** (the Cookie Clicker lesson: order is observable; publish it). Multiplier sources register into named slots (upgrades, milestones at 25/50/100 owned, faction rules, commons buff, Trust modulation per `02 §7`). All declared in the balance catalog; **no formula strings in data** (RFC-0002 K2 rule extends here). The exact closed slot union, its order, and its contribution-combination rule are acceptance-blocking schema work below; this draft does not authorize an implementation to invent them.
+`rate(resource) = Σ_generators [count × base_rate × Π(multipliers)]` with the multiplier stack in a **documented, fixed order** (the Cookie Clicker lesson: order is observable; publish it). Multiplier sources register into named slots (upgrades, milestones at 25/50/100 owned, faction rules, commons buff, Trust modulation per `02 §7`). All declared in the balance catalog; **no formula strings in data** (RFC-0002 K2 rule extends here). C2 defines the closed union, canonical order, runtime contribution boundary, and catalog declaration.
 
 **The slot boundary (structural, per Codex's review):** multiplier providers emit mechanical contributions into **fixed named slots**. The commons compact populates its slot through the Commons Compact RFC's computed modifier — production consumes the number and knows nothing else. **Route predicates are structurally prohibited from contributing to any production slot** — the Gate Predicates RFC owns them, and its effects touch gates only. Enforce as a compile-time package boundary (the amplitude-lock pattern from `research/adaptive-balancing.md`), not review discipline.
 
@@ -39,9 +41,9 @@ RFC-0002 deliberately excluded "production sources, multiplier stacks, time inte
 - **Two intents only in this RFC: `buy_generator` and `perform_manual_batch`.** `buy_upgrade`, `toggle`, and feature-specific collection are deferred until their state models exist — an intent without a data model is a name, not a contract.
 - The server validates affordability from **its own** evaluated state, executes through the ledger, and returns the mutation receipt + new canonical snapshot.
 - **Idempotency is per save stream: `(key, request_hash)`.** Replaying a key returns the original success or the original terminal rejection; **reusing a key with a different request hash is a typed conflict.** Retention: **30 days** (provisional — comfortably beyond any reconnect scenario, bounded for storage; owner may tune).
-- `perform_manual_batch` is rate-clamped (target range ~20–25/s, silent clamp, per `design/06`). The exact request grammar, action catalog, and clamp algorithm are acceptance-blocking schema work below.
+- `perform_manual_batch` is silently rate-clamped at the exact 25/s C1 token-bucket contract.
 - Invariant checks flag impossible jumps to the audit log (forensics, not auto-bans). **The numeric fallback-reporting contract (RFC-0001 §7, routed here by the adversarial review) lands in this handler's audit sink.**
-- **Events are immutable and atomically tied to the resulting save revision.** Corrections are compensating events on later revisions — **history is never deleted.** Purchases, prestiges, threshold crossings; never clicks.
+- **Events are immutable and atomically tied to the resulting save revision.** Corrections are compensating events on later revisions — **history is never deleted.** This RFC emits purchases and invariant reports, never clicks; later RFCs add their own event kinds with their state models.
 
 ### D4 — Offline progress (adopting the stranded constants)
 
@@ -52,7 +54,7 @@ RFC-0002 deliberately excluded "production sources, multiplier stacks, time inte
 
 ### D5 — Progress coordinate
 
-Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker pattern) — the harness's y-axis and telemetry's core dimension. **Coordinates are typed, tier-local definitions, never arbitrary formulas** (Codex's review): the catalog declares one of a closed kind-union per tier — `resource_log` (log-progress toward a resource threshold), `count_fraction` (owned/required exact counts), `composite` (fixed weighted sum of the former two). **Every tier requires an explicit monotonic coordinate before this section is accepted.** Candidate T0–T3 shapes are T0 `resource_log` on cash toward the first-generator ladder, T1 `composite` counts+cash, and T2/T3 `resource_log` on the tier-gate resource. They remain proposals until concrete catalog entries define their thresholds and weights; T4+ land with their tier content.
+Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker pattern) — the harness's y-axis and telemetry's core dimension. **Coordinates are typed, tier-local definitions, never arbitrary formulas** (Codex's review): the catalog declares one of a closed kind-union per tier — `resource_log` (log-progress toward a resource threshold), `count_fraction` (owned/required exact counts), `composite` (fixed weighted sum of the former two). **Every in-scope tier (T0–T3) requires an explicit monotonic coordinate before implementation completes.** T4+ coordinates land with their tier content.
 
 ## Deviations from design
 
@@ -68,7 +70,8 @@ Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker patte
 3. Clock-rollback attempts produce no extra accrual (server-clock property test).
 4. Multiplier stack order matches the published documentation (generated from source, per the CI formula-drift gate).
 5. `subProgressValue` is monotonic under pure accrual within a stage.
-6. 200-bot × 30-virtual-day chaos run: zero NaN/negative/soft-lock, ledger balances (extends the CI Baseline's tiers).
+6. Seeded local intent property test: 24 simulated hours × 200 seeds, zero NaN/negative/soft-lock,
+   ledger balances. The 200-bot × 30-virtual-day test is owned by the future Balance Harness RFC.
 
 ## Executable contracts (resolving the acceptance blockers, 2026-07-28)
 
@@ -78,55 +81,71 @@ implementer can build and test against without inventing anything.
 
 ### C1 — Intent wire contracts
 
-Both intents share an envelope: `intent_id` (UUIDv7 — **the intent_id IS the idempotency key**),
-`kind`, `expected_revision` (the company stream revision the client evaluated against). Decimals
-are canonical strings; counts are exact integers.
+Both intents share an envelope: `intent_id` (lowercase UUIDv7 — **the intent_id IS the idempotency
+key**), `kind`, `expected_revision` (the positive safe-integer company-stream revision the client
+evaluated against). Decimals are canonical strings; counts and durations are exact safe integers.
 
 ```json
 {"intent_id":"…","kind":"buy_generator","expected_revision":41,
  "generator_id":"generator.example","count":{"mode":"exact","value":3}}
 {"intent_id":"…","kind":"perform_manual_batch","expected_revision":41,
- "action_id":"manual.click","count":7}
+ "action_id":"manual.click","count":7,"window_ms":280}
 ```
 
-`count.mode` ∈ {`exact`, `max`} (max = verified max-affordable, RFC-0001 §7). Receipt:
+For `buy_generator`, `count.mode` ∈ {`exact`, `max`}; exact values are positive safe integers and
+max means verified max-affordable (RFC-0001 §7). Manual `count` and `window_ms` are positive safe
+integers. `window_ms` is retained for audit/UX but never grants tokens; authority comes only from
+elapsed server time. Receipt schemas:
 
 ```json
-{"intent_id":"…","outcome":"applied","applied_count":7,"receipt":{…ledger receipt…},
- "new_revision":42,"evaluated_at":"…server time…"}
-{"intent_id":"…","outcome":"rejected","rejection":{"category":"unaffordable","detail":"…"}}
+{"intent_id":"…","outcome":"applied","applied_count":7,
+ "receipt":{"changes":[{"resource_id":"company.cash","before":"0","delta":"7e0","after":"7e0"}]},
+ "new_revision":42,"evaluated_at":"2026-07-28T08:00:00Z"}
+{"intent_id":"…","outcome":"rejected","current_revision":41,
+ "rejection":{"category":"unaffordable","detail":"generator.example"}}
 ```
 
 **Typed rejection categories (closed):** `unaffordable` · `unknown_id` · `invalid` ·
-`cap_exceeded` · `revision_conflict` · `rate_limited` · `idempotency_conflict` ·
+`cap_exceeded` · `revision_conflict` · `idempotency_conflict` ·
 `internal_invariant`. **Authoritative evaluation order, one transaction:** accrue Δt (D1) →
 evaluate price/validity → apply through the ledger → persist save revision + events + idempotency
-record atomically.
+record atomically. Idempotency lookup and revision comparison happen before accrual. A rejected
+intent commits no gameplay state; a deterministic terminal rejection persists only its
+idempotency record. Accrual is computed on a working state and commits with the action only when
+the intent applies.
 
-**Manual-action clamp, exact:** a per-stream token bucket persisted in company state —
-`rate_tokens_per_ms = 0.025` (25/s), `bucket_cap = 50`, both balance data. On intent:
-`tokens = min(cap, tokens + elapsed_ms × rate)`; `applied = min(count, floor(tokens))`;
-`tokens -= applied`. Excess is silently discarded; `applied_count` in the receipt makes the clamp
-honest without making it an error. **Manual-action catalog object:**
+**Manual-action clamp, exact:** a per-stream integer milli-token bucket persisted in company state:
+`manual_token_milli` (initial/cap `50_000`) and `manual_token_refilled_at` (server-authored UTC
+instant). Refill is exactly `25` milli-tokens per elapsed millisecond (25 actions/s); one applied
+action costs `1_000`. On intent: `tokens = min(50_000, tokens + elapsed_ms × 25)`;
+`applied = min(count, floor(tokens/1_000))`; `tokens -= applied × 1_000`. Integer overflow is
+prevented by saturating at the cap before addition. Excess requested actions are silently discarded;
+`applied_count` makes the clamp honest without making it an error. A zero-applied batch may still
+commit ordinary time accrual but emits no click event. **Manual-action catalog object:**
 `{"id":"manual.click","output":{"resource_id":"company.cash","amount_per_action":"1e0"}}`.
 
 ### C2 — The production slot contract
 
-**Closed slot union, canonical order (multiplication order is the published order):**
-`base` → `upgrades` → `milestones` → `faction` → `doctrine` → `commons` → `trust` →
+**Closed multiplier-slot union, canonical order (multiplication order is the published order):**
+`upgrades` → `milestones` → `faction` → `doctrine` → `commons` → `trust` →
 `event_buffs` → `prestige`. Within-slot combination: **product** of contributions.
 `commons` and `trust` are **single-provider slots** — a second contribution is a catalog
-validation error. Slots multiply left-to-right; the formula panel renders them in this order.
+validation error. The generator's `base_rate` is applied before this multiplier sequence and is not
+a slot. Slots multiply left-to-right; the formula panel renders them in this order. Factors must be
+positive canonical state Decimals; duplicate source ids and unknown targets/slots reject the catalog.
 
 Catalog schema addition (`multiplier_sources`):
 ```json
 {"id":"upgrade.faster-fans","slot":"upgrades","target":"generator.example",
- "factor":"2e0","source_ref":"upgrade.faster-fans"}
+ "provider":"upgrade.faster-fans"}
 ```
-`target` is a generator id or `"all"`. The shared boundary package exports exactly
+`target` is a generator id or `"all"`; `provider` identifies the later state-owning package that
+may emit the runtime factor. Declaring a source does not activate it. The shared boundary package exports
+exactly
 `type Contribution { Slot; SourceID; Target; Factor decimal.Decimal }` and the slot-order
 constant; production, commons, and future providers import **only** this package (build-enforced,
-amplitude-lock pattern).
+amplitude-lock pattern). Production validates every runtime contribution against its catalog
+declaration before using it. The shipped Phase-0 catalog declares no active multiplier sources.
 
 ### C3 — Idempotency persistence
 
@@ -135,10 +154,14 @@ amplitude-lock pattern).
   decimal strings, no whitespace) of the intent **minus `intent_id`**.
 - **Terminal (recorded, replayed):** `applied`, `unaffordable`, `unknown_id`, `invalid`,
   `cap_exceeded` — deterministic against the recorded revision. **Non-terminal (never recorded):**
-  `rate_limited`, `revision_conflict`, `internal_invariant` — the client retries with the same key.
-- **Schema:** `intent_records(stream_id, intent_id pk, request_hash, outcome, receipt jsonb,
-  created_at)` — written **in the same transaction** as the ledger commit, save revision, and
-  events. Same key + different hash → `idempotency_conflict`. Expiry: daily delete beyond 30 days.
+  `revision_conflict`, `internal_invariant` — the client retries with the same key.
+- **Schema:** `intent_records(stream_id, intent_id, request_hash, outcome, receipt jsonb,
+  created_at, PRIMARY KEY(stream_id,intent_id))`. Applied outcomes are written **in the same
+  transaction** as the ledger commit, save revision, and events. Terminal rejections are written in
+  a transaction that locks and confirms the referenced stream revision but creates no save revision
+  or event. Same key + different hash → `idempotency_conflict`. Expiry is exposed as a store pruning
+  operation for the deployment scheduler to call with a 30-day cutoff; this RFC does not invent a
+  process-global cron loop.
 
 ### C4 — The event envelope
 
@@ -148,11 +171,16 @@ events(event_id uuid pk, stream_id, revision, schema_version int, kind text,
 ```
 - `(stream_id, revision)` references the save revision written in the same transaction — an event
   cannot exist without its revision, nor vice versa when the transition is evented.
-- **Kind registry v1 (closed, append-only):** `generator_purchased` · `manual_batch_applied` ·
-  `threshold_crossed` · `invariant_reported` · `compensation`. Prestige and upgrade kinds are
+- **Kind registry v1 (closed, append-only):** `generator_purchased` · `invariant_reported` ·
+  `compensation`. Prestige, threshold, manual-click, and upgrade kinds are
   **added by their own RFCs when their state models exist** — the registry grows by RFC, never by
   implementation convenience. Unknown kinds are rejected at write.
-- Per-kind payload schemas are versioned by `schema_version`; payloads carry canonical strings.
+- Per-kind payload schemas at `schema_version=1` (exact keys, canonical strings):
+  - `generator_purchased`: `{generator_id, count, cost_resource_id, cost}`.
+  - `invariant_reported`: `{invariant_kind, detail}` where kind is
+    `afford_fallback | residual_clamp | residual_abort`.
+  - `compensation`: `{compensates_event_id, reason_key}`.
+  Unknown/missing keys reject before persistence.
 - **Compensation contract:** kind `compensation`, payload `{compensates_event_id, reason_key}` —
   a new event on a later revision. **No history mutation exists in the API.**
 
@@ -160,12 +188,17 @@ events(event_id uuid pk, stream_id, revision, schema_version int, kind text,
 
 - **Save field (company scope, resets at Exit):** `compute_credit_ms` — exact integer ms.
   Save-version bump + migration with default `0`.
+- Evaluation receives a server-owned mode, `online` or `offline`; it is an internal call parameter,
+  never an intent field. Online mode accrues the full non-negative interval at efficiency `1e0` and
+  banks nothing. Offline mode applies the partition below at `9e-1`. A future connection/actor RFC
+  owns presence classification; this engine owns the policy once handed that trusted mode.
 - **Partition at the 24 h boundary, exact:** `capped = min(elapsed_ms, 86_400_000)` accrues at the
   offline rate (D4); `excess = elapsed_ms − capped`; `banked = floor(excess × bank_ratio)` with
   `bank_ratio = 0.5`; `compute_credit_ms = min(compute_credit_ms + banked, bank_cap_ms)` with
   `bank_cap_ms = 259_200_000` (72 h). All integer arithmetic; no Decimal anywhere in this path.
-- **Spending is the named follow-up `rfc: compute-credit-spend`** (burst ×2, 4 h max activation —
-  parameters reserved in the catalog now so the field exists, per the constants_hash lesson).
+- **Spending is the named future Compute Credit Spend RFC** (burst ×2, 4 h max activation —
+  parameters reserved in the catalog now, per the constants_hash lesson). The follow-up is listed
+  in the RFC index and will be drafted before implementation.
 
 ### C6 — Progress coordinate catalog data (T0–T3, concrete)
 
@@ -179,17 +212,17 @@ committed state. **These exact objects become checked-in catalog fixtures at imp
   {"weight":"5e-1","kind":"count_fraction","count":"generators.total_owned","required":25},
   {"weight":"5e-1","kind":"resource_log","resource":"company.cash","target":"1e6"}]}
 {"tier":2,"kind":"resource_log","resource":"company.cash","target":"1e9"}
-{"tier":3,"kind":"resource_log","resource":"company.revenue_lifetime","target":"1e12"}
+{"tier":3,"kind":"resource_log","resource":"company.cash","target":"1e12"}
 ```
 Targets are provisional, harness-gated. T4+ land with their tier content (unchanged).
 
 ### C7 — Numeric invariant reporting
 
-`type InvariantSink interface { Report(ctx, InvariantReport) }` with
+`type InvariantSink interface { Report(InvariantReport) }` with
 `InvariantReport{Kind: afford_fallback | residual_clamp | residual_abort; IntentID; Detail}`.
-The production handler owns the sink; a report writes an `invariant_reported` event (C4) in the
-same transaction and increments a metrics counter. RFC-0001 §7's dormant normative text becomes
-live here, and nowhere else.
+The production handler owns a transaction-local collecting sink; collected reports become
+`invariant_reported` events (C4) in the same commit. Metrics increment only after that commit
+succeeds. RFC-0001 §7's dormant normative text becomes live here, and nowhere else.
 
 ### C8 — Chaos ownership split
 
@@ -224,3 +257,6 @@ budget. The harness inherits the big version; production ships the small one.
 - 2026-07-28: Codex acceptance review rejected premature acceptance: reconciled adopted decisions
   with the open-question section, corrected the implemented save-cursor name, and recorded the
   remaining executable contracts as explicit DESIGN-GAPs.
+- 2026-07-28: Codex re-reviewed C1–C8 at 8e8938b, resolved the remaining contradictory boundaries
+  (click events, chaos ownership, exact token persistence, event payloads, and trusted online/offline
+  classification), and accepted the RFC for implementation.
