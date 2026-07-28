@@ -1,0 +1,55 @@
+package save
+
+import (
+	"encoding/json"
+	"errors"
+	"testing"
+)
+
+const testIntentID = "018f6b7c-9abc-7def-8abc-0123456789ab"
+
+func TestValidateIntentDecisionEventRegistry(t *testing.T) {
+	valid := IntentDecision{
+		Outcome: IntentApplied,
+		Receipt: json.RawMessage(`{"outcome":"applied","new_revision":2}`),
+		Events: []EventWrite{{
+			Kind: EventGeneratorPurchased, SchemaVersion: 1, IntentID: testIntentID,
+			Payload: json.RawMessage(`{"generator_id":"generator.example","count":2,"cost_resource_id":"company.cash","cost":"2e0"}`),
+		}},
+	}
+	if err := validateIntentDecision(valid, testIntentID); err != nil {
+		t.Fatal(err)
+	}
+	tests := []IntentDecision{
+		{Outcome: "unknown", Receipt: json.RawMessage(`{}`)},
+		{Outcome: IntentApplied, Receipt: json.RawMessage(`[]`)},
+		{Outcome: IntentRejected, Receipt: json.RawMessage(`{}`), Events: valid.Events},
+		{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: []EventWrite{{
+			Kind: EventGeneratorPurchased, SchemaVersion: 1, IntentID: testIntentID,
+			Payload: json.RawMessage(`{"generator_id":"generator.example","count":0,"cost_resource_id":"company.cash","cost":"0"}`),
+		}}},
+		{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: []EventWrite{{
+			Kind: "manual_batch_applied", SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{}`),
+		}}},
+	}
+	for index, decision := range tests {
+		if err := validateIntentDecision(decision, testIntentID); !errors.Is(err, ErrInvalidStream) {
+			t.Fatalf("case %d error = %v", index, err)
+		}
+	}
+}
+
+func TestUUIDV7AndRequestHashGrammar(t *testing.T) {
+	if !uuidV7Pattern.MatchString(testIntentID) {
+		t.Fatal("valid UUIDv7 rejected")
+	}
+	for _, invalid := range []string{
+		"018f6b7c-9abc-4def-8abc-0123456789ab",
+		"018F6B7C-9ABC-7DEF-8ABC-0123456789AB",
+		"not-a-uuid",
+	} {
+		if uuidV7Pattern.MatchString(invalid) {
+			t.Fatalf("invalid UUIDv7 accepted: %s", invalid)
+		}
+	}
+}

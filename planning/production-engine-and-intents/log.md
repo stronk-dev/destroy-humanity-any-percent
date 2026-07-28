@@ -50,3 +50,18 @@
 - Implemented `subProgressValue` over the catalog's closed coordinate union in Go and TypeScript.
   Both runtimes consume the new shared `testdata/production-engine.json` fixture.
 - Production/economy/save Go suites and strict TypeScript/unit suites are green.
+
+## 2026-07-28 — atomic intent and event persistence
+
+- Added embedded Postgres migration 00002 for per-stream intent records and immutable v1 events.
+  Events keep their originating revision number without an FK to prunable snapshot rows.
+- Added `Store.ApplyIntent`: lock stream, replay by `(stream_id,intent_id,request_hash)`, verify
+  expected revision, restore working state, and atomically commit applied save/event/receipt state.
+  Terminal rejection receipts commit alone and never create a save revision or event.
+- Added strict UUIDv7, hash, outcome, event-kind, and per-kind payload validation plus an explicit
+  pruning API for a deployment-owned 30-day cutoff.
+- Real Postgres testing exposed that JSONB rewrites whitespace, making first and replayed receipt
+  bytes differ. Receipts now normalize through one deterministic JSON boundary before return and
+  after load; the corrected integration suite proves identical replay, one event, one save mutation,
+  hash conflict, rejection non-mutation, and pruning.
+- Disposable Postgres container was stopped and removed after the green integration run.

@@ -2,12 +2,15 @@ package save
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"os"
+	"strings"
 	"sync"
 	"testing"
 	"time"
 
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 )
 
@@ -32,7 +35,7 @@ func TestStoreIntegrationRevisionLifecycle(t *testing.T) {
 	if err := Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `TRUNCATE save_revisions, save_streams`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE events, intent_records, save_revisions, save_streams`); err != nil {
 		t.Fatal(err)
 	}
 
@@ -117,6 +120,74 @@ func TestStoreIntegrationRevisionLifecycle(t *testing.T) {
 	}
 	if successes != 1 || conflicts != 1 {
 		t.Fatalf("concurrent results: successes=%d conflicts=%d", successes, conflicts)
+	}
+
+	intentKey := StreamKey{OwnerKind: OwnerFounder, OwnerID: "55555555-5555-4555-8555-555555555555", Scope: economy.ScopeCompany}
+	intentRevision, err := store.CreateStream(ctx, intentKey, hash, state, WriteContext{Cause: "integration.intent-create"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	intentID := "018f6b7c-9abc-7def-8abc-0123456789ab"
+	requestHash := "sha256:" + strings.Repeat("1", 64)
+	mutationCalls := 0
+	result, err := store.ApplyIntent(ctx, intentRevision.StreamID, 1, intentID, requestHash, func(state *State, revision Revision) (IntentDecision, error) {
+		mutationCalls++
+		if _, err := state.Ledger.Apply(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: decimal.One}}}); err != nil {
+			return IntentDecision{}, err
+		}
+		return IntentDecision{
+			Outcome: IntentApplied,
+			Receipt: json.RawMessage(`{"outcome":"applied","new_revision":2}`),
+			Events: []EventWrite{{
+				Kind: EventGeneratorPurchased, SchemaVersion: 1, IntentID: intentID,
+				Payload: json.RawMessage(`{"generator_id":"generator.example","count":1,"cost_resource_id":"company.cash","cost":"1e0"}`),
+			}},
+		}, nil
+	})
+	if err != nil || result.Replay || mutationCalls != 1 {
+		t.Fatalf("first intent result=%+v calls=%d err=%v", result, mutationCalls, err)
+	}
+	replay, err := store.ApplyIntent(ctx, intentRevision.StreamID, 1, intentID, requestHash, func(*State, Revision) (IntentDecision, error) {
+		mutationCalls++
+		return IntentDecision{}, errors.New("replay callback must not run")
+	})
+	if err != nil || !replay.Replay || mutationCalls != 1 || string(replay.Receipt) != string(result.Receipt) {
+		t.Fatalf("replay=%+v calls=%d err=%v", replay, mutationCalls, err)
+	}
+	if _, err := store.ApplyIntent(ctx, intentRevision.StreamID, 1, intentID, "sha256:"+strings.Repeat("2", 64), func(*State, Revision) (IntentDecision, error) {
+		return IntentDecision{}, nil
+	}); !errors.Is(err, ErrIdempotencyConflict) {
+		t.Fatalf("idempotency conflict error = %v", err)
+	}
+	var revisionCount, eventCount, recordCount int
+	if err := db.QueryRowContext(ctx, `
+		SELECT
+		  (SELECT count(*) FROM save_revisions WHERE stream_id=$1),
+		  (SELECT count(*) FROM events WHERE stream_id=$1),
+		  (SELECT count(*) FROM intent_records WHERE stream_id=$1)`, intentRevision.StreamID,
+	).Scan(&revisionCount, &eventCount, &recordCount); err != nil {
+		t.Fatal(err)
+	}
+	if revisionCount != 2 || eventCount != 1 || recordCount != 1 {
+		t.Fatalf("intent rows revisions=%d events=%d records=%d", revisionCount, eventCount, recordCount)
+	}
+
+	rejectionID := "018f6b7c-9abc-7def-9abc-0123456789ab"
+	rejected, err := store.ApplyIntent(ctx, intentRevision.StreamID, 2, rejectionID, "sha256:"+strings.Repeat("3", 64), func(*State, Revision) (IntentDecision, error) {
+		return IntentDecision{Outcome: IntentRejected, Receipt: json.RawMessage(`{"outcome":"rejected","current_revision":2,"rejection":{"category":"unaffordable","detail":"generator.example"}}`)}, nil
+	})
+	if err != nil || rejected.Outcome != IntentRejected {
+		t.Fatalf("rejection=%+v err=%v", rejected, err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM save_revisions WHERE stream_id=$1`, intentRevision.StreamID).Scan(&revisionCount); err != nil || revisionCount != 2 {
+		t.Fatalf("terminal rejection mutated save: revisions=%d err=%v", revisionCount, err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE intent_records SET created_at=now()-interval '31 days' WHERE stream_id=$1 AND intent_id=$2`, intentRevision.StreamID, rejectionID); err != nil {
+		t.Fatal(err)
+	}
+	pruned, err := store.PruneIntentRecords(ctx, time.Now().Add(-30*24*time.Hour))
+	if err != nil || pruned != 1 {
+		t.Fatalf("pruned=%d err=%v", pruned, err)
 	}
 
 	raceKey := StreamKey{OwnerKind: OwnerFounder, OwnerID: "44444444-4444-4444-8444-444444444444", Scope: economy.ScopeCompany}
