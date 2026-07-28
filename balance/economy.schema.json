@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://destroy-humanity-any-percent.invalid/schema/economy-v1.json",
+  "$id": "https://destroy-humanity-any-percent.invalid/schema/economy-v2.json",
   "title": "Cloud Clicker economy catalog",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "resources", "generator_classes"],
   "properties": {
-    "schema_version": { "const": 1 },
+    "schema_version": { "const": 2 },
     "resources": {
       "type": "array",
       "items": { "$ref": "#/$defs/resource" }
@@ -24,6 +24,10 @@
     "decimal": {
       "type": "string",
       "pattern": "^(?:0|-?[1-9](?:\\.\\d{0,10}[1-9])?e(?:0|-?[1-9]\\d*))$"
+    },
+    "positive_decimal": {
+      "type": "string",
+      "pattern": "^[1-9](?:\\.\\d{0,10}[1-9])?e(?:0|-?[1-9]\\d*)$"
     },
     "hardcap": {
       "type": "object",
@@ -92,13 +96,23 @@
         }
       }
     },
+    "production": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource_id", "base_rate"],
+      "properties": {
+        "resource_id": { "$ref": "#/$defs/id" },
+        "base_rate": { "$ref": "#/$defs/positive_decimal" }
+      }
+    },
     "generator_class": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "price"],
+      "required": ["id", "price", "production"],
       "properties": {
         "id": { "$ref": "#/$defs/id" },
-        "price": { "$ref": "#/$defs/price" }
+        "price": { "$ref": "#/$defs/price" },
+        "production": { "$ref": "#/$defs/production" }
       }
     }
   }

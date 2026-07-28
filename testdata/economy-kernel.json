@@ -1,7 +1,7 @@
 {
   "version": 1,
   "catalog": {
-    "schema_version": 1,
+    "schema_version": 2,
     "resources": [
       {
         "id": "company.cash",
@@ -38,6 +38,10 @@
           "resource_id": "company.cash",
           "base": "1e2",
           "curve": { "kind": "constant" }
+        },
+        "production": {
+          "resource_id": "company.users",
+          "base_rate": "1e0"
         }
       },
       {
@@ -46,6 +50,10 @@
           "resource_id": "company.cash",
           "base": "1e2",
           "curve": { "kind": "linear", "step": "2.5e1" }
+        },
+        "production": {
+          "resource_id": "company.users",
+          "base_rate": "2e0"
         }
       },
       {
@@ -54,6 +62,10 @@
           "resource_id": "company.cash",
           "base": "1e2",
           "curve": { "kind": "geometric", "ratio": "1.1e0" }
+        },
+        "production": {
+          "resource_id": "company.users",
+          "base_rate": "3e0"
         }
       },
       {
@@ -62,6 +74,10 @@
           "resource_id": "company.cash",
           "base": "1e2",
           "curve": { "kind": "geometric", "ratio": "1.13e0" }
+        },
+        "production": {
+          "resource_id": "company.users",
+          "base_rate": "4e0"
         }
       },
       {
@@ -70,6 +86,10 @@
           "resource_id": "company.cash",
           "base": "1e100000",
           "curve": { "kind": "geometric", "ratio": "1.13e0" }
+        },
+        "production": {
+          "resource_id": "company.users",
+          "base_rate": "5e0"
         }
       }
     ]
@@ -131,6 +151,10 @@
     "invalid-decimal",
     "invalid-bounds",
     "invalid-curve-kind",
-    "invalid-curve-parameter"
+    "invalid-curve-parameter",
+    "missing-production",
+    "dangling-production-resource",
+    "nonpositive-production-rate",
+    "cross-scope-production"
   ]
 }

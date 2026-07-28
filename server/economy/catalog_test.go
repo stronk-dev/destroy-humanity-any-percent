@@ -108,10 +108,11 @@ func mutateCatalog(t *testing.T, source json.RawMessage, name string) []byte {
 	resource := resources[0].(map[string]any)
 	generator := generators[0].(map[string]any)
 	price := generator["price"].(map[string]any)
+	production := generator["production"].(map[string]any)
 
 	switch name {
 	case "unsupported-version":
-		root["schema_version"] = float64(2)
+		root["schema_version"] = float64(3)
 	case "missing-root-field":
 		delete(root, "resources")
 	case "unknown-root-field":
@@ -140,6 +141,14 @@ func mutateCatalog(t *testing.T, source json.RawMessage, name string) []byte {
 		price["curve"] = map[string]any{"kind": "script"}
 	case "invalid-curve-parameter":
 		price["curve"] = map[string]any{"kind": "geometric", "ratio": "9e-1"}
+	case "missing-production":
+		delete(generator, "production")
+	case "dangling-production-resource":
+		production["resource_id"] = "company.missing"
+	case "nonpositive-production-rate":
+		production["base_rate"] = "0"
+	case "cross-scope-production":
+		production["resource_id"] = "founder.reputation"
 	default:
 		t.Fatalf("unimplemented invalid fixture case %q", name)
 	}
@@ -149,6 +158,50 @@ func mutateCatalog(t *testing.T, source json.RawMessage, name string) []byte {
 		t.Fatal(err)
 	}
 	return data
+}
+
+func TestCatalogV1RemainsReadableWithoutProduction(t *testing.T) {
+	legacy := []byte(`{
+  "schema_version": 1,
+  "resources": [{
+    "id": "company.cash", "scope": "company", "numeric_kind": "decimal",
+    "initial": "0", "minimum": "0", "hardcap": null
+  }],
+  "generator_classes": [{
+    "id": "generator.legacy",
+    "price": {"resource_id":"company.cash","base":"1e0","curve":{"kind":"constant"}}
+  }]
+}`)
+	catalog, err := LoadCatalog(legacy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	generator, ok := catalog.GeneratorClass("generator.legacy")
+	if !ok || generator.Production != nil {
+		t.Fatal("legacy generator unexpectedly became production-capable")
+	}
+	if scoped := catalog.GeneratorClassesForScope(ScopeCompany); len(scoped) != 0 {
+		t.Fatalf("legacy scoped generators = %d", len(scoped))
+	}
+}
+
+func TestCatalogProductionAccessorsAreScopedAndImmutable(t *testing.T) {
+	catalog, err := LoadCatalog(loadKernelFixture(t).Catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	definitions := catalog.GeneratorClassesForScope(ScopeCompany)
+	if len(definitions) != 5 || definitions[0].Production == nil {
+		t.Fatalf("company production definitions = %d", len(definitions))
+	}
+	definitions[0].Production.ResourceID = "changed"
+	again, _ := catalog.GeneratorClass(definitions[0].ID)
+	if again.Production.ResourceID == "changed" {
+		t.Fatal("catalog production was mutated through an accessor")
+	}
+	if founder := catalog.GeneratorClassesForScope(ScopeFounder); len(founder) != 0 {
+		t.Fatalf("founder production definitions = %d", len(founder))
+	}
 }
 
 func TestCatalogAccessorsDoNotExposeMutableHardcaps(t *testing.T) {

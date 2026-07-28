@@ -13,7 +13,7 @@ import (
 	"cloud-clicker/server/decimal"
 )
 
-const CatalogSchemaVersion = 1
+const CatalogSchemaVersion = 2
 
 var (
 	ErrInvalidCatalog = errors.New("invalid economy catalog")
@@ -64,8 +64,14 @@ type PriceDefinition struct {
 }
 
 type GeneratorClassDefinition struct {
-	ID    string
-	Price PriceDefinition
+	ID         string
+	Price      PriceDefinition
+	Production *ProductionDefinition
+}
+
+type ProductionDefinition struct {
+	ResourceID string
+	BaseRate   decimal.Decimal
 }
 
 type Catalog struct {
@@ -96,8 +102,14 @@ type rawHardcap struct {
 }
 
 type rawGeneratorClass struct {
-	ID    string   `json:"id"`
-	Price rawPrice `json:"price"`
+	ID         string         `json:"id"`
+	Price      rawPrice       `json:"price"`
+	Production *rawProduction `json:"production"`
+}
+
+type rawProduction struct {
+	ResourceID string `json:"resource_id"`
+	BaseRate   string `json:"base_rate"`
 }
 
 type rawPrice struct {
@@ -117,8 +129,8 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	if err := decodeStrict(data, &raw); err != nil {
 		return nil, catalogError("decode", err)
 	}
-	if raw.SchemaVersion != CatalogSchemaVersion {
-		return nil, catalogError("schema_version", fmt.Errorf("got %d, want %d", raw.SchemaVersion, CatalogSchemaVersion))
+	if raw.SchemaVersion != 1 && raw.SchemaVersion != CatalogSchemaVersion {
+		return nil, catalogError("schema_version", fmt.Errorf("got %d, supported versions are 1 and %d", raw.SchemaVersion, CatalogSchemaVersion))
 	}
 	if raw.Resources == nil {
 		return nil, catalogError("resources", errors.New("field is required"))
@@ -147,7 +159,7 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	}
 
 	for index, source := range raw.GeneratorClasses {
-		definition, err := parseGenerator(source)
+		definition, err := parseGenerator(source, raw.SchemaVersion)
 		if err != nil {
 			return nil, catalogError(fmt.Sprintf("generator_classes[%d]", index), err)
 		}
@@ -156,6 +168,16 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		}
 		if _, exists := catalog.resourceByID[definition.Price.ResourceID]; !exists {
 			return nil, catalogError("generator_classes", fmt.Errorf("%q references unknown resource %q", definition.ID, definition.Price.ResourceID))
+		}
+		if definition.Production != nil {
+			output, exists := catalog.resourceByID[definition.Production.ResourceID]
+			if !exists {
+				return nil, catalogError("generator_classes", fmt.Errorf("%q references unknown production resource %q", definition.ID, definition.Production.ResourceID))
+			}
+			price := catalog.resourceByID[definition.Price.ResourceID]
+			if output.Scope != price.Scope {
+				return nil, catalogError("generator_classes", fmt.Errorf("%q crosses scopes from %q to %q", definition.ID, price.Scope, output.Scope))
+			}
 		}
 		catalog.generators = append(catalog.generators, definition)
 		catalog.generatorByID[definition.ID] = definition
@@ -179,11 +201,29 @@ func (c *Catalog) Resources() []ResourceDefinition {
 
 func (c *Catalog) GeneratorClass(id string) (GeneratorClassDefinition, bool) {
 	definition, ok := c.generatorByID[id]
-	return definition, ok
+	return cloneGenerator(definition), ok
 }
 
 func (c *Catalog) GeneratorClasses() []GeneratorClassDefinition {
-	return append([]GeneratorClassDefinition(nil), c.generators...)
+	definitions := make([]GeneratorClassDefinition, len(c.generators))
+	for index, definition := range c.generators {
+		definitions[index] = cloneGenerator(definition)
+	}
+	return definitions
+}
+
+func (c *Catalog) GeneratorClassesForScope(scope Scope) []GeneratorClassDefinition {
+	definitions := make([]GeneratorClassDefinition, 0)
+	for _, definition := range c.generators {
+		if definition.Production == nil {
+			continue
+		}
+		output := c.resourceByID[definition.Production.ResourceID]
+		if output.Scope == scope {
+			definitions = append(definitions, cloneGenerator(definition))
+		}
+	}
+	return definitions
 }
 
 func validScope(scope Scope) bool {
@@ -257,7 +297,7 @@ func parseHardcap(data json.RawMessage) (*Hardcap, error) {
 	return &Hardcap{Amount: amount, ReasonKey: source.ReasonKey}, nil
 }
 
-func parseGenerator(source rawGeneratorClass) (GeneratorClassDefinition, error) {
+func parseGenerator(source rawGeneratorClass, schemaVersion int) (GeneratorClassDefinition, error) {
 	if !validID(source.ID) {
 		return GeneratorClassDefinition{}, fmt.Errorf("invalid id %q", source.ID)
 	}
@@ -272,14 +312,32 @@ func parseGenerator(source rawGeneratorClass) (GeneratorClassDefinition, error) 
 	if err != nil {
 		return GeneratorClassDefinition{}, err
 	}
-	return GeneratorClassDefinition{
+	definition := GeneratorClassDefinition{
 		ID: source.ID,
 		Price: PriceDefinition{
 			ResourceID: source.Price.ResourceID,
 			Base:       base,
 			Curve:      curve,
 		},
-	}, nil
+	}
+	if schemaVersion == 1 {
+		if source.Production != nil {
+			return GeneratorClassDefinition{}, errors.New("catalog version 1 forbids production")
+		}
+		return definition, nil
+	}
+	if source.Production == nil {
+		return GeneratorClassDefinition{}, errors.New("production is required")
+	}
+	if !validID(source.Production.ResourceID) {
+		return GeneratorClassDefinition{}, fmt.Errorf("invalid production resource_id %q", source.Production.ResourceID)
+	}
+	baseRate, err := parseCatalogDecimal(source.Production.BaseRate)
+	if err != nil || !baseRate.Gt(decimal.Zero) {
+		return GeneratorClassDefinition{}, errors.New("production base_rate must be a positive canonical decimal")
+	}
+	definition.Production = &ProductionDefinition{ResourceID: source.Production.ResourceID, BaseRate: baseRate}
+	return definition, nil
 }
 
 func parseCurve(source rawCurve) (CostCurve, error) {
@@ -328,6 +386,14 @@ func cloneResource(definition ResourceDefinition) ResourceDefinition {
 	if definition.Hardcap != nil {
 		hardcap := *definition.Hardcap
 		definition.Hardcap = &hardcap
+	}
+	return definition
+}
+
+func cloneGenerator(definition GeneratorClassDefinition) GeneratorClassDefinition {
+	if definition.Production != nil {
+		production := *definition.Production
+		definition.Production = &production
 	}
 	return definition
 }

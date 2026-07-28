@@ -20,7 +20,7 @@
       },
       "production": {
         "resource_id": "company.cash",
-        "base_rate": "1e0"
+        "base_rate": "0"
       }
     }
   ]
