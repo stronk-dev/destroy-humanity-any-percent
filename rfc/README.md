@@ -13,6 +13,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Generator Production State](generator-production-state.md) | implementing | [Production Engine & Intent API](production-engine-and-intents.md) |
 | [Save Archive Compare-and-Swap](save-archive-cas.md) | implementing | Save Layer & Migrations |
 | [Numeric Boundary Parity](numeric-boundary-parity.md) | implementing | RFC-0001 Numeric Core |
+| [Deterministic Decimal Aggregation](deterministic-decimal-aggregation.md) | implementing | RFC-0001 / RFC-0002 / Production Accrual |
 
 ## Archive
 
