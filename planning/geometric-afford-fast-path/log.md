@@ -12,3 +12,16 @@
   `MaxExactInteger`, while the public economy query must cap purchases at
   `MaxExactInteger - owned`.
 - No design gaps remain for this bounded repair.
+
+## 2026-07-28 — Implementation and focused verification
+
+- `economy.MaxAffordable` now dispatches geometric curves to the Decimal closed-form helper,
+  clamps to remaining safe-integer capacity, verifies through public `BulkCost`, and falls back to
+  the extracted bounded search if local correction cannot establish both postconditions.
+- Constant and linear curves retain the generic search.
+- Added zero-cash, ratio-one, huge-exponent, ceiling-adjacent, deterministic generated, and
+  constant/linear regression coverage.
+- Focused economy tests pass. The in-test benchmark measured 3,895 ns/op public versus
+  2,504 ns/op helper (1.56×) on one calibration run.
+- Three explicit benchmark runs measured the public path at 3,979–4,207 ns/op and the helper at
+  2,244–2,325 ns/op, with zero allocations. The RFC's same-run ratio guard is below 10×.

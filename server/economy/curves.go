@@ -64,18 +64,53 @@ func MaxAffordable(price PriceDefinition, cash decimal.Decimal, owned int64) (in
 		return 0, err
 	}
 
-	high := decimal.MaxExactInteger - owned
+	maximum := decimal.MaxExactInteger - owned
+	if price.Curve.Kind == CurveGeometric {
+		candidate, err := decimal.AffordGeometricSeries(cash, price.Base, price.Curve.Ratio, owned)
+		if err != nil {
+			return 0, fmt.Errorf("%w: geometric affordability: %v", ErrInvalidCurveInput, err)
+		}
+		if candidate > maximum {
+			candidate = maximum
+		}
+		for correction := 0; correction < 8 && candidate > 0 && !isAffordable(price, cash, owned, candidate); correction++ {
+			candidate--
+		}
+		for correction := 0; correction < 8 && candidate < maximum && isAffordable(price, cash, owned, candidate+1); correction++ {
+			candidate++
+		}
+		if affordabilityPostconditions(price, cash, owned, candidate, maximum) {
+			return candidate, nil
+		}
+	}
+
+	return maxAffordableBySearch(price, cash, owned, maximum), nil
+}
+
+func maxAffordableBySearch(price PriceDefinition, cash decimal.Decimal, owned, maximum int64) int64 {
+	high := maximum
 	low := int64(0)
 	for low < high {
 		middle := low + (high-low+1)/2
-		cost, err := BulkCost(price, owned, middle)
-		if err == nil && cost.Lte(cash) {
+		if isAffordable(price, cash, owned, middle) {
 			low = middle
 		} else {
 			high = middle - 1
 		}
 	}
-	return low, nil
+	return low
+}
+
+func affordabilityPostconditions(price PriceDefinition, cash decimal.Decimal, owned, count, maximum int64) bool {
+	if !isAffordable(price, cash, owned, count) {
+		return false
+	}
+	return count == maximum || !isAffordable(price, cash, owned, count+1)
+}
+
+func isAffordable(price PriceDefinition, cash decimal.Decimal, owned, count int64) bool {
+	cost, err := BulkCost(price, owned, count)
+	return err == nil && cost.Lte(cash)
 }
 
 func validateQuoteInput(price PriceDefinition, owned, count int64) error {
