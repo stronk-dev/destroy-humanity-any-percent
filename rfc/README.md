@@ -9,6 +9,9 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 
+| [Scaffolding & CI](scaffolding-and-ci.md) | draft | — |
+| [Save Layer & Migrations](save-layer-and-migrations.md) | draft | — |
+
 ## Archive
 
 Implemented behavior lives in `docs/`; these frozen RFCs are historical specifications.
