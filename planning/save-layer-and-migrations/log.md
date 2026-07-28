@@ -12,3 +12,16 @@
   path will be introduced.
 - The unrelated CI RFC remains implementing solely because its hosted timing gate requires a
   future push; it does not block local save-layer work.
+
+## 2026-07-28 — Persistence foundation
+
+- Added pinned Goose and pgx modules plus an embedded transactional version-1 migration for
+  owner-aware streams and revisions. Database constraints enforce owner/scope pairings, positive
+  revisions/versions, object state, and canonical SHA-256 hash syntax.
+- Added `OpenPostgres` and `Migrate`; migration files are compiled into the package.
+- Added `economy.RestoreLedger`, the validation-only constructor required by RFC-0002. It requires
+  exactly one canonical value for every in-scope catalog resource and rechecks minima/hardcaps.
+- Added canonical version-1 state encoding/decoding, future-version refusal, exact-artifact SHA-256
+  identity, strict unknown-field rejection, and poisoned-value tests.
+- Focused economy/save tests pass. Repository stream operations and real-Postgres integration are
+  the next implementation slice.

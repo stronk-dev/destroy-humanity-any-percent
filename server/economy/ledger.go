@@ -14,6 +14,7 @@ var (
 	ErrResourceScope      = errors.New("economy resource belongs to another ledger scope")
 	ErrBelowMinimum       = errors.New("resource balance below minimum")
 	ErrAboveHardcap       = errors.New("resource balance above hardcap")
+	ErrInvalidRestore     = errors.New("invalid economy ledger restore")
 )
 
 type Entry struct {
@@ -56,6 +57,42 @@ func NewLedger(catalog *Catalog, scope Scope) (*Ledger, error) {
 		}
 	}
 	return &Ledger{catalog: catalog, scope: scope, balances: balances}, nil
+}
+
+// RestoreLedger is the persistence-only constructor. It requires one canonical
+// balance for every resource in scope and does not expose a mutation path.
+func RestoreLedger(catalog *Catalog, scope Scope, snapshot map[string]string) (*Ledger, error) {
+	ledger, err := NewLedger(catalog, scope)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %v", ErrInvalidRestore, err)
+	}
+	if len(snapshot) != len(ledger.balances) {
+		return nil, fmt.Errorf("%w: got %d balances, want %d", ErrInvalidRestore, len(snapshot), len(ledger.balances))
+	}
+
+	restored := make(map[string]decimal.Decimal, len(snapshot))
+	for resourceID, encoded := range snapshot {
+		definition, exists := catalog.resourceByID[resourceID]
+		if !exists {
+			return nil, fmt.Errorf("%w: balances.%s: %w", ErrInvalidRestore, resourceID, ErrUnknownResource)
+		}
+		if definition.Scope != scope {
+			return nil, fmt.Errorf("%w: balances.%s: %w", ErrInvalidRestore, resourceID, ErrResourceScope)
+		}
+		value, parseErr := decimal.ParseCanonical(encoded)
+		if parseErr != nil {
+			return nil, fmt.Errorf("%w: balances.%s: %v", ErrInvalidRestore, resourceID, parseErr)
+		}
+		if value.Lt(definition.Minimum) {
+			return nil, fmt.Errorf("%w: balances.%s: %w", ErrInvalidRestore, resourceID, ErrBelowMinimum)
+		}
+		if definition.Hardcap != nil && value.Gt(definition.Hardcap.Amount) {
+			return nil, fmt.Errorf("%w: balances.%s: %w", ErrInvalidRestore, resourceID, ErrAboveHardcap)
+		}
+		restored[resourceID] = value
+	}
+	ledger.balances = restored
+	return ledger, nil
 }
 
 func (l *Ledger) Scope() Scope {

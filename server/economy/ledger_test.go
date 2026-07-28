@@ -208,3 +208,33 @@ func TestLedgerEnforcesScopeBoundary(t *testing.T) {
 		t.Fatalf("invalid scope error = %v, want ErrInvalidTransaction", err)
 	}
 }
+
+func TestRestoreLedgerRequiresExactCanonicalScopedSnapshot(t *testing.T) {
+	catalog, err := LoadCatalog(loadKernelFixture(t).Catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	valid := map[string]string{
+		"company.cash":  "5e1",
+		"company.users": "1e1",
+	}
+	ledger, err := RestoreLedger(catalog, ScopeCompany, valid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := ledger.Snapshot()["company.cash"]; got != "5e1" {
+		t.Fatalf("restored cash = %s", got)
+	}
+
+	tests := []map[string]string{
+		{"company.cash": "5e1"},
+		{"company.cash": "5e1", "company.users": "NaN"},
+		{"company.cash": "5e1", "founder.reputation": "0"},
+		{"company.cash": "1e1000001", "company.users": "1e1"},
+	}
+	for _, snapshot := range tests {
+		if _, err := RestoreLedger(catalog, ScopeCompany, snapshot); !errors.Is(err, ErrInvalidRestore) {
+			t.Fatalf("RestoreLedger(%v) error = %v", snapshot, err)
+		}
+	}
+}
