@@ -8,7 +8,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | RFC | Status | Parent |
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
-| [Geometric Affordability Fast Path](geometric-afford-fast-path.md) | accepted | [RFC-0002](archive/0002-economy-constants-and-ceilings.md) |
+| [Geometric Affordability Fast Path](geometric-afford-fast-path.md) | implementing | [RFC-0002](archive/0002-economy-constants-and-ceilings.md) |
 | [CI Baseline](scaffolding-and-ci.md) | draft | — |
 | [Save Layer & Migrations](save-layer-and-migrations.md) | draft | — |
 

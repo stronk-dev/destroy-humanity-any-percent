@@ -1,6 +1,6 @@
 # RFC: Geometric Affordability Fast Path
 
-- **Status:** accepted
+- **Status:** implementing
 - **Author:** Marco / Codex
 - **Created:** 2026-07-28
 - **Design refs:** `design/06-tech.md §idle-math`, `design/07-roadmap.md` Phase 0
