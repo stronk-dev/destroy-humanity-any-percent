@@ -15,6 +15,22 @@ jobs:
   server:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      TEST_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_test@127.0.0.1:5432/cloud_clicker_test?sslmode=disable
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: cloud_clicker_test
+          POSTGRES_USER: cloud_clicker
+          POSTGRES_PASSWORD: cloud_clicker_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cloud_clicker -d cloud_clicker_test"
+          --health-interval 1s
+          --health-timeout 5s
+          --health-retries 30
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
