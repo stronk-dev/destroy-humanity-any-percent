@@ -2,6 +2,7 @@
 
 - **Status:** draft
 - **Author:** Marco (drafted by Claude; boundary split per Codex's 2026-07-28 review)
+- **Created:** 2026-07-28
 - **Design refs:** `design/08 §6` (route mechanics, as designed 2026-07-28), `design/02 §3` (Route Knowledge), `design/05 §6` (Registry + category model), `design/11 §4` (the Depletion gate), `design/10 §3b` (Doctrine exclusivity)
 - **Research:** `design/research/speedrun-governance.md §3.5`, `design/research/tile-placement.md` (draft picks as Route Knowledge)
 - **Depends on:** Save Layer (implemented — career ledger lives in Founder scope), Production Engine (implemented — gates consume its evaluated state read-only)
@@ -38,6 +39,88 @@ A gate (tier transition or subsystem unlock) is declared in the catalog with its
 
 Earned: first-execution grant (large), repeat-execution grant (small), collapse-Exit bonus, region-draft picks (`13 §5`). Values are balance data. **Spent on exactly one thing: hints** — revealing a registered route's predicate in the map/UI. Hint state is founder-scoped and permanent once bought. Route Knowledge never enters any production or gate formula.
 
+## Deviations from design
+
+- `design/05 §6` and `design/08 §6` describe detecting undocumented state-transition
+  sequences. This RFC does not make an unintended transition into a valid mechanic at runtime:
+  undeclared transitions are audit-log bugs, and become routes only through a later declared
+  catalog change. D3's variant ledger is the non-authoritative discovery surface in the interim.
+
+## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-28)
+
+The system boundary is sound, but the draft does not yet authorize implementation. These are
+contracts the RFC owner must resolve; an implementation must not choose defaults for them.
+
+### C1 — Catalog and wire schemas
+
+D1 names condition kinds but does not define their tagged JSON shapes, identifiers, numeric kinds,
+band-edge encoding, or invalid-value rules. D2 likewise has no typed schema for a gate's standard
+requirement, so `discount(fraction)` has no specified operand, rounding rule, or valid range.
+Define the catalog-version bump, complete condition/effect/gate schemas, uniqueness and reference
+checks, canonical ordering, and shared valid/invalid fixtures. Clarify whether "exact or Decimal"
+means a condition chooses one declared numeric kind or accepts either representation at runtime.
+
+### C2 — The authoritative gate-crossing command
+
+The implemented Production API intentionally contains only `buy_generator` and
+`perform_manual_batch`; there is no tier/unlock state or crossing command. Specify the new intent
+envelope, receipt, closed rejection extension, evaluation order relative to lazy accrual, standard
+requirement spend, the exact state mutation that marks a gate crossed, and the new event payloads.
+In particular, define whether a discount spends the discounted requirement and how a substitute
+interacts with non-resource requirements. If transition state belongs to another RFC, split the
+pure predicate evaluator from its gate integration explicitly.
+
+### C3 — Predicate input state
+
+Most D1 inputs do not exist in the implemented save model: constituency bands, doctrines,
+founder-ledger facts, structure, and region traits. Define a closed, immutable predicate-context
+DTO (including scope and numeric representation), the authoritative source of every field, how a
+missing/unavailable field evaluates, and the exact projection sent to TypeScript. Otherwise Go/TS
+parity can be tested only against invented fixture state, not the committed game state.
+
+### C4 — Cross-scope atomicity and persistence
+
+One execution currently needs to mutate or project across company state, founder career history,
+and the public Registry, while `save.Store.ApplyIntent` locks and revises exactly one stream.
+Choose the source of truth and transaction shape: atomic multi-stream mutation, immutable company
+event plus idempotent projections, or another explicit model. Define `run_id`/`founder_id`
+ownership, projection retry and deduplication, save-version migrations, and the consistency rule
+used when Depletion reads career history.
+
+### C5 — Global first-executor ordering and naming
+
+"Earliest committed revision" cannot order executions from different company streams because
+their revisions are local. Define the globally comparable database order and uniqueness rule,
+what the first execution actually reserves, the naming deadline/fallback, moderation state, and
+the relation between a house provisional name and the executor's permanent name. Concurrent
+execution and concurrent naming fixtures must follow from that model.
+
+### C6 — Route Knowledge and hints
+
+D5 lacks executable currency semantics. Define whether first/repeat is per founder, per run, or
+global; the catalog objects and provisional values; the hint price rule; founder save fields; the
+purchase intent/receipt/rejections; and grant/spend event payloads. A route execution, a Registry
+first execution, and a founder's first execution are different facts and must not share the word
+"first" without qualification.
+
+### C7 — The Depletion proof and shipped route set
+
+No concrete gate/route catalog exists from which acceptance criterion 4 can be proved, and
+`design/BACKLOG.md` still records missing Doctrine coverage at three transitions. Check in the
+seed routes, their gate alternatives, Doctrine/structure constraints, and N, then define the
+constraint model and validator algorithm that computes a maximum satisfiable per-run subset.
+Doctrine labels alone are insufficient if a run may choose a different Doctrine at each
+transition or if non-Doctrine predicates conflict.
+
+### C8 — Registry variants and adoption read model
+
+D3 asks for "distinct minimal condition-sets" although D1 predicates are conjunctions and no
+provenance model says which underlying actions satisfied a condition. The clustering granularity
+is also left open. Either move variants, adoption curves, public querying, and retrospectives to a
+named Registry Analytics follow-up, or define the canonical signature, storage schema, time
+buckets, and read API here. This non-mechanical surface must not silently grow the gate evaluator
+into an analytics system.
+
 ## Acceptance criteria
 
 1. Predicate parity: shared fixtures evaluate identically in Go and TS across all condition kinds, including band edges.
@@ -49,9 +132,15 @@ Earned: first-execution grant (large), repeat-execution grant (small), collapse-
 
 ## Open questions
 
-- N=5 and all grant values: provisional, harness-gated.
-- Route-variant clustering granularity (D3): implementation freedom, no gameplay effect.
+- C1–C8 above block acceptance.
+- N=5 and all grant values may remain provisional and harness-gated once C6/C7 define their
+  catalog locations and checked-in fixtures.
+- Route-variant clustering must be specified or split per C8 before acceptance; it is not
+  implementation freedom while the Registry remains in this RFC's normative scope.
 
 ## Changelog
 
 - 2026-07-28: created (draft) from the route-mechanics design + Codex's boundary split.
+- 2026-07-28: Codex acceptance review kept the RFC in draft and recorded eight executable-contract
+  gaps: schemas, command semantics, predicate inputs, cross-scope persistence, global ordering,
+  Route Knowledge, the Depletion proof, and Registry analytics.
