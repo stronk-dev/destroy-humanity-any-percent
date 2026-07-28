@@ -8,4 +8,5 @@
   while save v1 cannot represent owned counts or an authoritative evaluation cursor.
 - Split those settled contracts from undefined intent, multiplier, event, and offline-credit
   mechanics. No gameplay values or flavor identifiers are introduced.
+- RFC accepted and implementation started.
 - No push performed.

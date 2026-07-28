@@ -1,6 +1,6 @@
 # RFC: Generator Production State
 
-- **Status:** accepted
+- **Status:** implementing
 - **Author:** Codex
 - **Created:** 2026-07-28
 - **Design refs:** `design/02-economy-balancing.md §1, §2.1–2.2`,
@@ -8,7 +8,7 @@
 - **Depends on:** Economy Kernel (implemented), Save Layer & Migrations (implemented),
   Production Accrual Math (implemented)
 - **Parent:** Production Engine & Intent API draft
-- **Planning:** `planning/generator-production-state/` (once implementing)
+- **Planning:** `planning/generator-production-state/`
 
 ## Summary
 
@@ -110,3 +110,4 @@ policy remain explicit gaps in the parent draft.
 
 - 2026-07-28: created and accepted as the next schema dependency under owner direction to continue
   foundational production work without inventing unresolved intent mechanics.
+- 2026-07-28: implementation started.
