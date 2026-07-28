@@ -1,6 +1,6 @@
 # RFC: Balance Harness Foundation
 
-- **Status:** draft
+- **Status:** accepted
 - **Author:** Marco (drafted by Codex)
 - **Created:** 2026-07-28
 - **Design refs:** `design/07-roadmap.md` Phase 0 and sequencing principle 1;
@@ -268,6 +268,8 @@ The harness owns orchestration and measurement, not mechanics or target taste.
 - Balance Epoch artifact + development hot reload/production immutability.
 - Far-horizon pacing, strategy-diversity, optimizer, Sobol/identifiability, and PR visualization.
 - Player-facing golden-run verification and leaderboard epoch binding.
+
+**Absorbed from the parallel draft `balance-harness.md` (deleted 2026-07-28 — drafted concurrently, this foundation landed first and is execution-grade):** the **contributed-gates registry** — feature RFCs lodge named scenario packs here (anti-Nash-1 from Combat AC3, Depletion-unreachability from Gate Predicates, commons population-invariance from Commons AC6) and the harness runs them in the nightly tier; **best-of-N gating** for skill-sensitive envelopes (Roohi et al. — gate on best-of-N runs, never persona means); and the explicit rule that **changing a persona policy is itself a `BALANCE-CHANGE:`-class event**, because it silently moves every envelope.
 
 ## Open questions
 

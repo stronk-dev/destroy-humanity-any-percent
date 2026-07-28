@@ -46,80 +46,121 @@ Earned: first-execution grant (large), repeat-execution grant (small), collapse-
   undeclared transitions are audit-log bugs, and become routes only through a later declared
   catalog change. D3's variant ledger is the non-authoritative discovery surface in the interim.
 
-## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-28)
+## Executable contracts (answering the C1–C8 review, 2026-07-28)
 
-The system boundary is sound, but the draft does not yet authorize implementation. These are
-contracts the RFC owner must resolve; an implementation must not choose defaults for them.
+### C1 — Schemas
 
-### C1 — Catalog and wire schemas
+Routes live in their own catalog family `balance/routes/*.json`, `schema_version: 1`, strict-loaded
+under the economy loader's rules (unknown fields, dupes, dangling refs all fatal). **A condition
+declares exactly one numeric representation — there is no runtime "either":**
 
-D1 names condition kinds but does not define their tagged JSON shapes, identifiers, numeric kinds,
-band-edge encoding, or invalid-value rules. D2 likewise has no typed schema for a gate's standard
-requirement, so `discount(fraction)` has no specified operand, rounding rule, or valid range.
-Define the catalog-version bump, complete condition/effect/gate schemas, uniqueness and reference
-checks, canonical ordering, and shared valid/invalid fixtures. Clarify whether "exact or Decimal"
-means a condition chooses one declared numeric kind or accepts either representation at runtime.
+```json
+{"kind":"resource_at_least","resource_id":"company.cash","value":"1e9"}
+{"kind":"meter_band","meter_id":"trust.regulators.standing","min":70,"max":100}
+{"kind":"doctrine_is","transition":"t3_to_t4","doctrine_id":"doctrine.capture"}
+{"kind":"structure_is","structure_id":"structure.nonprofit"}
+{"kind":"ledger_fact_present","fact_kind":"exit.acquihire"}
+{"kind":"region_trait","trait_id":"trait.lax_permits"}
+```
+Resource values are canonical Decimal strings; meter bands are inclusive integer bounds on 0–100
+meters; everything else is mechanical IDs. Gate schema:
 
-### C2 — The authoritative gate-crossing command
+```json
+{"gate_id":"gate.t3_to_t4","requirement":[{"resource_id":"company.permits","amount":"1e2"}],
+ "routes":[{"route_id":"route.regulatory_capture","requires_context_version":2,
+   "predicate":[…conditions…],"effect":{"kind":"discount","fraction":"4e-1"}}]}
+```
+`fraction` ∈ (0,1), canonical Decimal; the discounted amount is `Quantize12(amount × fraction)`
+per requirement entry. `substitute` has no operand. Shared valid/invalid fixtures ship with the
+catalog family, both runtimes.
 
-The implemented Production API intentionally contains only `buy_generator` and
-`perform_manual_batch`; there is no tier/unlock state or crossing command. Specify the new intent
-envelope, receipt, closed rejection extension, evaluation order relative to lazy accrual, standard
-requirement spend, the exact state mutation that marks a gate crossed, and the new event payloads.
-In particular, define whether a discount spends the discounted requirement and how a substitute
-interacts with non-resource requirements. If transition state belongs to another RFC, split the
-pure predicate evaluator from its gate integration explicitly.
+### C2 — The `cross_gate` intent
 
-### C3 — Predicate input state
+New intent `cross_gate {gate_id, route_id|null}` under the Production C1/C3 contracts. Evaluation
+order: accrue → (route path: evaluate predicate; standard path: check requirement) → **debit the
+(possibly discounted) requirement through the ledger** → set `gates_crossed[gate_id]` in company
+state → emit `gate_crossed` (+ `route_executed` when routed), one transaction. **A discount spends
+the discounted requirement; a substitute spends nothing** — predicate satisfaction is the price,
+and predicates cost elsewhere by construction. Standard requirements are resource spends *only* in
+v1; anything non-resource is expressed as a predicate, so the "non-resource requirement" case
+does not exist. New typed rejections (registry grows by RFC): `gate_already_crossed`,
+`requirement_not_met`, `route_predicate_unmet`. **The pure evaluator is the `routes` package**
+(imports: decimal + the context DTO only); the production handler imports the evaluator —
+direction `production → routes`, never the reverse (the slot prohibition stands unchanged).
 
-Most D1 inputs do not exist in the implemented save model: constituency bands, doctrines,
-founder-ledger facts, structure, and region traits. Define a closed, immutable predicate-context
-DTO (including scope and numeric representation), the authoritative source of every field, how a
-missing/unavailable field evaluates, and the exact projection sent to TypeScript. Otherwise Go/TS
-parity can be tested only against invented fixture state, not the committed game state.
+### C3 — The predicate context DTO
 
-### C4 — Cross-scope atomicity and persistence
+A closed, immutable struct assembled by the caller from committed state:
+`{context_version, resources, doctrines_by_transition, structure_id, ledger_fact_kinds,
+meter_bands?, region_traits?}` — serialized canonically for TS (all strings/ints already).
+**Versioned availability instead of silent absence:** `context_version 1` carries resources,
+doctrines, structure, and ledger facts (all exist in the implemented save model or land with
+Prestige & Exits); meters and region traits arrive when their systems do (constituency meters →
+the Trust implementation; traits → the region draft). **Catalog validation refuses any *active*
+route whose conditions require a higher `context_version` than the build supports** — parity is
+always tested against real committed state, never invented fixtures. A condition kind can
+therefore never evaluate against a missing field: the route carrying it cannot activate.
 
-One execution currently needs to mutate or project across company state, founder career history,
-and the public Registry, while `save.Store.ApplyIntent` locks and revises exactly one stream.
-Choose the source of truth and transaction shape: atomic multi-stream mutation, immutable company
-event plus idempotent projections, or another explicit model. Define `run_id`/`founder_id`
-ownership, projection retry and deduplication, save-version migrations, and the consistency rule
-used when Depletion reads career history.
+### C4 — Cross-scope model: company event + idempotent projections
 
-### C5 — Global first-executor ordering and naming
+**The company stream is the sole source of truth.** `route_executed` and `gate_crossed` are
+company events (atomic with the crossing, per C2). Founder career history and the public Registry
+are **projections**: a projector consumes company events at-least-once and applies idempotent
+upserts keyed by `event_id`. Projection runs synchronously post-commit with retry; on any read
+miss, **read-repair recounts from events**. Consistency rule: a founder's own gate evaluations
+(Depletion's career count) must observe all events from their own committed revisions —
+read-your-writes for the founder, eventual for everyone else. `run_id = (company_stream_id,
+run_seq)` with `run_seq` incremented by the Exit transaction (Prestige D3); `founder_id` is the
+stream owner. Save migrations: `gates_crossed` and `run_seq` are a company save-version bump;
+career tables are projections and need none.
 
-"Earliest committed revision" cannot order executions from different company streams because
-their revisions are local. Define the globally comparable database order and uniqueness rule,
-what the first execution actually reserves, the naming deadline/fallback, moderation state, and
-the relation between a house provisional name and the executor's permanent name. Concurrent
-execution and concurrent naming fixtures must follow from that model.
+### C5 — Global first-executor ordering (the review is right; the old rule was wrong)
 
-### C6 — Route Knowledge and hints
+Stream-local revisions cannot order a global race. **The registry decides by database
+uniqueness:** `registry_routes(route_id pk, first_event_id, first_founder_id, occurred_at, name,
+name_state)` — the projector's insert-if-absent wins the race; deterministic order for
+simultaneous projection is `(occurred_at, event_id)` byte order. **What first execution reserves:
+the naming right, for 72 h** — unexercised, the house seed name becomes permanent; exercised,
+the name enters the standing moderation flow (`compliance.md`) as `pending` and publishes on
+pass, house name on fail. **Executor credit is permanent regardless of naming.** The loser of the
+race records as the second execution in adoption counts.
 
-D5 lacks executable currency semantics. Define whether first/repeat is per founder, per run, or
-global; the catalog objects and provisional values; the hint price rule; founder save fields; the
-purchase intent/receipt/rejections; and grant/spend event payloads. A route execution, a Registry
-first execution, and a founder's first execution are different facts and must not share the word
-"first" without qualification.
+### C6 — Route Knowledge semantics (three different "firsts", named)
 
-### C7 — The Depletion proof and shipped route set
+- **registry-first** (first execution ever): the naming right + `registry_first_bonus` (100).
+- **founder-first** (this founder's first execution of this route): `founder_first_grant` (25),
+  once per founder per route.
+- **repeat** (subsequent executions): `repeat_grant` (5), **at most once per (run, route)** —
+  `route_executed` is unique per run per route, so within-run farming is structurally impossible.
+All values provisional balance data in the routes catalog. Founder save fields:
+`route_knowledge_balance` (int), `hints_unlocked` (route ids); career executions are projection
+data (C4). New intent `buy_route_hint {route_id}` (cost: flat `hint_cost = 50`, balance data);
+rejections `insufficient_route_knowledge`, `already_unlocked`, `unknown_id`. Events:
+`route_knowledge_granted {source: registry_first|founder_first|repeat|collapse_exit|region_draft}`,
+`route_hint_purchased`.
 
-No concrete gate/route catalog exists from which acceptance criterion 4 can be proved, and
-`design/BACKLOG.md` still records missing Doctrine coverage at three transitions. Check in the
-seed routes, their gate alternatives, Doctrine/structure constraints, and N, then define the
-constraint model and validator algorithm that computes a maximum satisfiable per-run subset.
-Doctrine labels alone are insufficient if a run may choose a different Doctrine at each
-transition or if non-Doctrine predicates conflict.
+### C7 — The shipped v1 route set and the proof's constraint model
 
-### C8 — Registry variants and adoption read model
+**Exclusivity is declared, not inferred:** every route names an `exclusion_slot` —
+`structure` (one per run, fixed at incorporation) or `doctrine:{transition}` (one per transition,
+immutable once chosen, per `10 §3b`). The validator computes the exact maximum satisfiable
+per-run subset by exhaustive search over slot assignments (route counts are small; exactness over
+cleverness) and **fails the build if that maximum ≥ N whenever the Depletion gate is present in
+the catalog**. v1 ships the three seeds expressible at `context_version 1` as *active*
+(`Nonprofit Wrapper Zip` — structure substitute on the T5 gate; `IPO Sequence Break` —
+doctrine+resource discount on T3; `Acquihire Out-of-Bounds` — ledger-fact discount on T3), and
+the remaining four seeds as **declared-inactive** with their `requires_context_version` recorded —
+in the Registry as "conjectured routes," which is itself flavor. `N = 5` stays declared; the proof
+gate binds when Depletion's gate object lands. **Open dependency, recorded: BACKLOG hole #8
+(doctrine coverage at three transitions) bounds the achievable exclusivity budget — those
+transitions contribute none until designed.**
 
-D3 asks for "distinct minimal condition-sets" although D1 predicates are conjunctions and no
-provenance model says which underlying actions satisfied a condition. The clustering granularity
-is also left open. Either move variants, adoption curves, public querying, and retrospectives to a
-named Registry Analytics follow-up, or define the canonical signature, storage schema, time
-buckets, and read API here. This non-mechanical surface must not silently grow the gate evaluator
-into an analytics system.
+### C8 — Registry analytics: split out
+
+Variants, adoption *curves*, time buckets, and the public read API move to a named follow-up,
+**Registry Analytics**. This RFC keeps only: the `registry_routes` table (C5) and a plain
+execution counter per route. Retrospectives and Summoning-Salt surfaces consume the follow-up.
+The gate evaluator never grows analytics.
 
 ## Acceptance criteria
 
@@ -127,16 +168,15 @@ into an analytics system.
 2. A gate crossing via `discount`/`substitute` emits exactly one immutable `route_executed` event tied to the revision; replaying the intent does not duplicate it.
 3. The routes package does not import the production package (build-enforced).
 4. The Depletion-unreachability proof runs in CI: with the shipped catalog, max per-run route subset < N; a fixture catalog violating it fails.
-5. First-executor naming: concurrent first executions resolve deterministically (earliest committed revision wins); the loser's execution still records.
+5. First-executor race: two concurrent first executions from different company streams resolve by the registry's insert-if-absent (C5); the loser records as adoption; a replayed projection cannot double-insert.
 6. Hints reveal predicates without altering evaluation anywhere.
 
 ## Open questions
 
-- C1–C8 above block acceptance.
-- N=5 and all grant values may remain provisional and harness-gated once C6/C7 define their
-  catalog locations and checked-in fixtures.
-- Route-variant clustering must be specified or split per C8 before acceptance; it is not
-  implementation freedom while the Registry remains in this RFC's normative scope.
+- C1–C8 answered 2026-07-28 (above). Grant values, hint cost, and N remain provisional balance
+  data, harness-gated — catalog locations now defined (C6/C7).
+- Registry Analytics is the named follow-up carrying variants/curves/read-API (C8).
+- BACKLOG hole #8 (doctrine coverage at three transitions) bounds C7's exclusivity budget.
 
 ## Changelog
 

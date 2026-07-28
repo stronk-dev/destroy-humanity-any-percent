@@ -9,7 +9,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
-| [Balance Harness Foundation](balance-harness-foundation.md) | draft | Production Engine & Intent API |
+| [Balance Harness Foundation](balance-harness-foundation.md) | accepted | Production Engine & Intent API |
 | [Gate Predicates & the Route Registry](gate-predicates-and-routes.md) | draft | Production Engine & Intent API |
 | [The Commons Compact](commons-compact.md) | draft | Production Engine & Intent API |
 | [Combat Data Model](combat-data-model.md) | draft | — |
