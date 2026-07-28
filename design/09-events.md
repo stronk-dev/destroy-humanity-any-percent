@@ -85,14 +85,23 @@ Launch set:
 
 **One-time moments (Fortnite The-End model):** season finales are synchronized, non-repeatable, timestamped. Absence-as-content is allowed (the servers "go dark" for the finale's final minute, once).
 
-## 5. Seasonal arcs
+## 5. The exchange shop (the reward interface)
+
+> From `research/liveservice-idle-tier.md §3`: the live-service tier's own anti-lootbox valve, adopted as our **only** event-reward primitive.
+
+- Every event pays **event scrip**; the event's shop lists rewards at **posted prices**. No RNG between effort and reward, anywhere in the event system.
+- **Leftover scrip auto-converts** to a standard currency at event end at a published rate. Nothing expires worthless; there is no "you were 40 short" ending.
+- Curtain-pull line ships with it: *"Company scrip has historically been a scam. Ours converts. We checked with history."*
+- Cadence primitive for solo-dev sustainability: the **weekly mirror calendar** (`02 §10`) runs on this shop with rotating stock — rhythm without new content.
+
+## 6. Seasonal arcs
 
 - **Cadence:** ~3 months. Each arc = one new mechanic (trial) + one Situation (the narrative container) + 3–6 Major Orders (the story beats) + a finale.
 - **Fold-in rule (PoE):** at season end, the trial mechanic is folded into the core permanently or retired. A failure-tolerant content pipeline; the community sees the decision made (and post-OSRS, we **poll direction, not implementations** — plurality, in-client, no supermajority veto).
 - **Dispatches:** the narrative device — short in-fiction bulletins (HN front pages, TechCrunch headlines, leaked Slack screenshots) pushed server-side. Cheap, on-theme, tone-carrying. The news ticker is the dispatch surface; the flavor bible (`08-satire-flavor.md`) is its corpus.
 - **Launch-year sketch:** S1 "Going Concern" (community unlocks Tier 4; the first Raid wave) → S2 "The Race" (Tier 5 unlock; Safety-vs-e/acc server tug-of-war — a Situation whose ending the players decide) → S3 "Discovery" (the antitrust arc; The Market opens) → S4 "The Quiet Part" (conspiracy inversion begins; first Ethical% world-first window).
 
-## 6. GM operations
+## 7. GM operations
 
 - **A human game master** (us) with a dashboard: decay/impact dials, dispatch composer, incident spawner, manual awards for edge cases. Budgeted as an ops role, not just tooling.
 - **The war log:** every GM intervention is publicly logged in-fiction ("Head Office adjusted regional demand"). Opacity → meta-narrative; the Helldivers "the war is a lie" backlash is designed out by radical disclosure.

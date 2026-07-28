@@ -103,7 +103,19 @@ An original — **the pager as a push-your-luck reflex minigame** on a regenerat
 - The game-within-the-game (`01-tiers.md Tier 3`): open a terminal on the tenant, click their cookie, buy their generators. Its production consumes your compute and pays your revenue, billed by the tick. Demand curve is literally `1.15^n`.
 - **Economy hook:** an alternative active-play sink whose yield is tuned to be *almost* competitive — the joke is you keep checking on it anyway.
 
-## 10. Pet battles & base raids
+## 10. The Lane ("Push to Prod") — Tier 3+, host: the deploy pipeline
+
+> Adopted by owner 2026-07-28 in place of Clash-style base raids; spec from `research/lane-pusher-design.md` (simulation-backed). The lane is a deployment pipeline: units are workloads pushed toward the rival's core switch; towers are load balancers, rate limiters, WAFs.
+
+- **Live player, async opponent.** The simulation result is binding: auto-resolved loadout-vs-loadout collapses to a single dominant deck (Nash support 1, 9/9 configurations), so **the player plays their side in real time**; the opponent is a snapshot deck driven by a bot. Depth lives in tempo play — elixir-style trades, overloads, cycling — not in the deck.
+- **One lane ships only with bypass verbs** (RFC acceptance criterion, not a nice-to-have): a buildings-only unit, a cheap cycle unit, and at least one spell. Without them: 1% decisive, 52% draws. With them one lane reaches 44% decisive; a two-lane variant (78%) is the tournament-season stretch goal.
+- **Roster = the shared combat data model:** workloads typed by the **six Temperaments** on the 6-cycle chart, 1.3×/0.77× multipliers + stamina on advantage — one type chart, one stat schema, one balance harness, one sprite family shared with pet battles (§below). **Two engines** (turn-based duel vs continuous lane are different physics); **int32 only in both arenas** — replays bit-exact across Go and TS.
+- **The pet is the On-Call Leader** — never a unit (a lane grinds bodies; the pet layer's tone guard holds). One Trust-scaled leader ability per match; Soul drain degrades obedience visibly.
+- **Matchmaking payouts carry the punch-down multiplier** salvaged from the rejected raid design: **200% for punching up, 5% four tiers down** — the cheapest anti-bully mechanism found in any researched game.
+- **Economy hooks:** wins pay Clout + tier-scaled cash; seasonal ladder titles; deck slots unlock by play, never by purchase (there is no purchase).
+- **AI fallback:** the 40-line greedy policy family (beats random 83%, ~13,000× real time on the server) with published behaviour-flag difficulty manifests — transparently weaker bots, never secretly throttled ones.
+
+## 10b. Pet battles
 
 Specified in `04-pets.md` (turn-based battles vs AI + async PvP; Clash-style base attack/defense vs AI armies and other players' layouts). Listed here for clock coverage: turn-based match + async-defense clocks.
 

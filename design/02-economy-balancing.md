@@ -157,7 +157,17 @@ Distinct from morals: Trust is what you do to others; Soul is what's left of *yo
 - Makes absence a *decision* and creates the banker playstyle (`10-playstyles.md`).
 - **Legibility rules** (the Idle Spiral lesson): a loud, unmissable banked-time affordance in the primary HUD, and an optional auto-spend toggle so casual players aren't punished for not engaging.
 
-## 10. Pacing targets (the spreadsheet's acceptance tests)
+## 10. The daily & weekly clock (the session scaffold)
+
+> New section, 2026-07-28 — `research/liveservice-idle-tier.md` found that *no design doc owned a daily loop at all*. This is the de-fanged version of the live-service tier's best craft; the law is `00 §6`: nothing here may price absence.
+
+- **The activity bar:** a small set of daily objectives feeding one 0–100 bar with milestone chests — and a **designed "done" state**. The 100-point chest is a session *terminator*: the game visibly tells you today is complete. (The tier's most player-respecting mechanic, shipped by its least player-respecting games.)
+- **Streaks count up and never reset.** All streak-keyed bonuses key on *cumulative* days played, lifetime. Missing a day costs nothing; absence is never priced. (Supersedes the streak-fed multipliers flagged in `03 §5/§7`.)
+- **The weekly mirror calendar:** a fixed, published rotation of daily themes and one weekly rival comparison (matched by bracket) — a deterministic rhythm engine that needs zero new content per week. **Score is always play, never spend** (there is nothing to spend).
+- **The exchange shop is the only event-reward interface** (`09 §5`): event scrip at posted prices, no RNG; leftover scrip auto-converts at event end — nothing expires worthless.
+- **Fiscal Quarters (§5) remain the long clock**; the daily bar must never gate them or any tier progress — it is texture and rhythm, not a wall.
+
+## 11. Pacing targets (the spreadsheet's acceptance tests)
 
 | Milestone | Target |
 |---|---|
@@ -174,6 +184,6 @@ Distinct from morals: Trust is what you do to others; Soul is what's left of *yo
 
 Verification approach: a balance simulation harness (headless run of the production stack against scripted strategies — pure-idle, check-in, optimizer) must reproduce these targets within tolerance before launch and after every balance patch. Community-milestone thresholds are set from live telemetry with uncertainty margins (the Clash of Clans 48-hour lesson), never guessed.
 
-## 11. Big numbers
+## 12. Big numbers
 
 `break_infinity.js` 2.2.0 client / Go `Decimal` port server, golden-vector tested; wire format strings; display via notations library. Full detail in `06-tech.md §3`. NaN detection refuses to persist poisoned saves (Profectus rule).
