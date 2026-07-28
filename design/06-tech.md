@@ -40,7 +40,7 @@
 - **Chess:** Stockfish binary in the container driven via `notnil/chess`'s UCI subpackage (rules validated server-side for every move, human or bot). Difficulty = Skill Level + shallow `go depth` + **top-k softmax sampling** (temperature = the dial) + fake think time. **Maia** (lc0 sidecar) later if chess becomes headline — it makes *human* mistakes.
 - **Connect-4 / Othello / Gomoku / checkers:** one generic ~150-line alpha-beta with iterative deepening + per-game eval functions (Pascal Pons' Connect-4 solver as the reference implementation). Difficulty = depth + temperature.
 - **Blackjack:** basic-strategy table. **Poker:** rule-based hand-strength buckets + pot odds + randomized bluff frequency (not CFR).
-- **Pet battles / raids:** small-state minimax + personality-flavored policies.
+- **Pet battles:** small-state minimax + personality-flavored policies. **The Lane:** greedy policy family at published manifest levels (`rfc/combat-data-model.md`).
 - **Human-feel layer (shared):** plausible-blunder filter (prefer attractive-looking mistakes), jittered think time, named bots with **real published ratings** (rating-based matchmaking yields the ~55% target honestly — no rubber band, decided 2026-07-28), resign behavior. **Bots never cheat.**
 - **Matchmaker:** one goroutine; expanding Elo bands (±50, widen per 5 s); bot backfill after 10–30 s (disclosed, reduced rewards, no mid-match hot-swap); queue-depth shown.
 

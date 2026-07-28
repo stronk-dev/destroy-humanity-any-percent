@@ -30,11 +30,11 @@ immediate: [ { save_scope_as: target_dc, pick: random_owned_datacenter } ]
 options:
   - key: outrage.10.a
     flags: [dangerous]
-    effects: [ { modify: { trust: -15 } }, { trigger_event: { id: outrage.11, delay: { hours: [12, 48] } } } ]
+    effects: [ { modify: { "trust.users.standing": -15 } }, { trigger_event: { id: outrage.11, delay: { hours: [12, 48] } } } ]
   - key: outrage.10.b
     trigger: { cash: ">= 50000" }
     show_as_unavailable: true
-    effects: [ { spend: { cash: 50000 } }, { modify: { trust: +5 } } ]
+    effects: [ { spend: { cash: 50000 } }, { modify: { "trust.press.standing": +5 } } ]
   - key: outrage.10.c
     fallback: true
     effects: [ { modify: { uptime: -0.05, duration_hours: 24 } } ]
@@ -66,7 +66,7 @@ Launch set:
 | Meter | Fed by | Fires | While active | Ends |
 |---|---|---|---|---|
 | **Public Outrage** | moderation cuts, engagement optimization, scandals, Externality reveals | **The Raid** (the QAnon-raids-your-datacenter chain: RSVP counter 2,140,000 → 151 show up; someone "self-investigates" the lobby) | hiring +25%, ad revenue −15% | PR staffing + 90 quiet days |
-| **Conspiracy Pressure** | growth, secrecy purchases (barges!), outrage spillover | theory-spawn events (5G/microchips/lizard tier scales with tier); mast-arson; Waymo-coning | ticker floods, small Trust drain | monetize it (Gargoyle Pivot), make it true (late-game), or wait it out — **fighting it raises it** (suppression/debunking/silence all feed belief; published rule) |
+| **Conspiracy Pressure** | growth, secrecy purchases (barges!), outrage spillover | theory-spawn events (5G/microchips/lizard tier scales with tier); mast-arson; Waymo-coning | ticker floods, small Press-Standing drain (`02 §7` constituencies) | monetize it (Gargoyle Pivot), make it true (late-game), or wait it out — **fighting it raises it** (suppression/debunking/silence all feed belief; published rule) |
 | **Board Pressure** (VC faction) | missed milestones, idle runway burn | board coup event chain | equity squeeze | hit growth targets |
 | **Regulatory Heat** | dark-pattern stages, egress fees, lobbying failures | inquiry → hearing ("Senator, We Run Ads") → consent decree | compliance tax | settlements, Clout-gated lobbying |
 | **Burnout** (org) | crunch, on-call noise | attrition wave / unionization arc | output −%, Soul drain | rest policies, touch-grass |

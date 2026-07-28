@@ -2,7 +2,7 @@
 
 > Rules for every minigame: (1) it runs on a **distinct clock** (the Cookie Clicker lesson — garden/pantheon/grimoire/market each had a different time signature); (2) it **hooks into the main economy** in a stated way; (3) it has an **AI fallback** so it's fully playable with zero other players; (4) unlocks are **staggered across the tier arc** (fixing CC's all-at-once dump and the hour-5–40 sag); (5) state **persists across Exits** (fixing the Stock Market resentment) unless reset is explicitly the point.
 
-Minigames unlock via Investor Confidence (Fiscal Quarters) at their host tier — the sugar-lump unlock pattern.
+Minigames unlock **at their host tier**; from Tier 2 onward the unlock is *purchased* with Investor Confidence (Fiscal Quarters — the sugar-lump pattern). **Tier 0–1 minigames (Arcade, Typer) are tutorial-tier and free** — the arcade hosts the tutorial, so it cannot sit behind a currency that first ripens on day 2.
 
 ## Clock taxonomy
 
@@ -64,11 +64,11 @@ Chess puzzles, chess, tic-tac-toe, Connect-4, Othello, Gomoku, checkers; blackja
 - **Economy hooks:** wins pay Clout + small cash scaled to tier; achievements (beat the top bot, win N ranked games) feed Clout; a daily-puzzle streak feeds a small multiplier. Bot matches pay reduced, non-ranked rewards (anti-farm).
 
   > **Resolved 2026-07-28:** streak bonuses here and in §7 key on **cumulative days played (count-up, never reset)** per `02 §10` — the daily/weekly session scaffold now owns this pattern. Absence is never priced (`00 §6`).
-- **AI fallback (the flagship of the vs-AI system, `06-tech.md §4`):**
+- **AI fallback (the flagship of the vs-AI system, `06-tech.md §vs-AI`):**
   - Chess: Stockfish (skill level + shallow depth + top-k softmax + fake think time); Maia later if headline. Rules server-validated via notnil/chess.
   - Connect-4/Othello/Gomoku/checkers: ~150-line alpha-beta with iterative deepening + per-game eval; difficulty = depth + temperature.
   - Blackjack: basic-strategy table bot. Poker: rule-based hand-strength + pot odds + randomized bluffs.
-  - Human-feel rules: plausible blunders (captures/checks, not random), fake think time, resign behavior — and **real published ratings with rating-based matchmaking** (decided 2026-07-28 per `research/adaptive-balancing.md §2`): a bot genuinely rated 1400 plays like 1400 and needs no rubber band to give a 1400 player ~55% — matchmaking produces the target win rate honestly. No hidden outcome adjustment, ever; **bots never cheat** (same server validation and hidden-info boundaries as humans), and now nothing in this section contradicts that.
+  - Human-feel rules: plausible blunders (captures/checks, not random), fake think time, resign behavior — and **real published ratings with rating-based matchmaking** (decided 2026-07-28 per `research/adaptive-balancing.md §2`): a bot genuinely rated 1400 plays like 1400 and needs no rubber band to give a 1400 player ~55% — matchmaking produces the target win rate honestly. No hidden outcome adjustment, ever; **bots never cheat** (same server validation and hidden-info boundaries as humans).
 - **PvP:** ranked matchmaking with expanding Elo bands, bot backfill after 10–30 s (disclosed, consistent, reduced rewards, never hot-swapped mid-match), spectating, guild tournaments. Show queue depth to encourage waiting for humans.
 
 ## 6. Incident Response (Tier 3, host: on-call rotation)
@@ -111,7 +111,7 @@ An original — **the pager as a push-your-luck reflex minigame** on a regenerat
 
 ## 10b. Pet battles
 
-Specified in `04-pets.md` (turn-based battles vs AI + async PvP; Clash-style base attack/defense vs AI armies and other players' layouts). Listed here for clock coverage: turn-based match + async-defense clocks.
+Specified in `04-pets.md §2` (turn-based battles vs AI + async PvP vs snapshot pets; shared combat data model with the Lane — `rfc/combat-data-model.md`). Listed here for clock coverage: turn-based match clock.
 
 ---
 
@@ -121,9 +121,9 @@ Specified in `04-pets.md` (turn-based battles vs AI + async PvP; Clash-style bas
 |---|---|
 | 0 | Demo Disc Arcade |
 | 1 | Terminal Typer |
-| 2 | Server Garden; Board-Game Suite (first games); pet adoption |
+| 2 | Server Garden; Board-Game Suite (first games); additional pet variants adoptable (the companion itself arrives at Tier 0 — `04 §1`, `13 §2`) |
 | 3 | Advisory Board; Ship-It Spellbook; Incident Response; Bakery, Inc. |
-| 4 | The Market; base building + raids |
+| 4 | The Market; the Lane (push to prod, §10); house decor expansion |
 | 5 | Casino suite (blackjack/poker); pet battles ranked season |
 | 6+ | Policy bench (automation-of-minigames as content: writing bots for your own hobbies — with the Soul question attached) |
 

@@ -17,7 +17,7 @@ content/
   schema/                # JSON Schemas for every content type (CI-validated)
 ```
 
-A pack manifest declares: id, version, dependencies (pack ids + engine version), content types included, and activation window (always / seasonal / GM-toggled). The GM dashboard can enable/disable packs live (hot reload path from `06-tech.md`).
+A pack manifest declares: id, version, dependencies (pack ids + engine version), content types included, and activation window (always / seasonal / GM-toggled). The GM dashboard **stages** packs; production activation ships as an **epoch-stamped deploy** (hot reload is dev-only — §7).
 
 ## 2. Content types and their extension points
 

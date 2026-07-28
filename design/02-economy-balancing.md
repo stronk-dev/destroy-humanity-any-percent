@@ -8,7 +8,7 @@ Progression layers are scoped by **what persists**:
 
 | # | Layer | Scope | Persists? | Currencies / state |
 |---|---|---|---|---|
-| 1 | **Company** | the current run | resets on Exit (prestige) | Cash, Users, Compute/Tokens; constraints: Energy, Water, Permits; hidden: Trust, Externality |
+| 1 | **Company** | the current run | resets on Exit (prestige) | Cash, Users, Compute/Tokens; constraints: Energy, Water, Permits; visible: Trust (5 constituencies, §7); Externality ledger |
 | 2 | **Founder** | the player, forever | yes | Reputation, Network, Route Knowledge, Clout, Personal Wealth, **Soul**, founder age |
 | 3 | **World** | the server, everyone | never resets (ratchet) | Planet %, community milestone tiers, seasonal war state, Influence (personal payout from world events) |
 | 4 | **Guild** | the co-op | while the guild lives | Guild level (fed by automatic tithe), guild upgrades, commons pool |
@@ -17,7 +17,7 @@ Cross-cutting systems on their own clocks:
 
 - **Fiscal Quarters / Earnings Calls** — the sugar-lump equivalent (real-time, production-immune; §5).
 - **Clout** — the achievement/influence axis (milk equivalent + attention-economy gameplay; §6).
-- **The moral axis** — Trust / Externality / p(doom): deliberately **not spendable** (§7).
+- **The moral axis** — Trust constituencies + the Externality ledger + Soul: deliberately **not spendable** (§7). p(doom) is a pressure meter (`09 §3`), not a moral quantity.
 - **Soul** — the founder's personal ledger (§8).
 - **Banked time (Compute Credits)** — the idle build's spendable resource (§9).
 
@@ -153,7 +153,7 @@ Distinct from morals: Trust is what you do to others; Soul is what's left of *yo
 
 ## 10. The daily & weekly clock (the session scaffold)
 
-> New section, 2026-07-28 — `research/liveservice-idle-tier.md` found that *no design doc owned a daily loop at all*. This is the de-fanged version of the live-service tier's best craft; the law is `00 §6`: nothing here may price absence.
+> The de-fanged version of the live-service tier's best craft (`research/liveservice-idle-tier.md`). The law is `00 §6`: **nothing here may price absence.**
 
 - **The activity bar:** a small set of daily objectives feeding one 0–100 bar with milestone chests — and a **designed "done" state**. The 100-point chest is a session *terminator*: the game visibly tells you today is complete. (The tier's most player-respecting mechanic, shipped by its least player-respecting games.)
 - **Streaks count up and never reset.** All streak-keyed bonuses key on *cumulative* days played, lifetime. Missing a day costs nothing; absence is never priced. (Supersedes the streak-fed multipliers flagged in `03 §5/§7`.)
@@ -180,4 +180,4 @@ Verification approach: a balance simulation harness (headless run of the product
 
 ## 12. Big numbers
 
-`break_infinity.js` 2.2.0 client / Go `Decimal` port server, golden-vector tested; wire format strings; display via notations library. Full detail in `06-tech.md §3`. NaN detection refuses to persist poisoned saves (Profectus rule).
+`break_infinity.js` 2.2.0 client / Go `Decimal` port server, golden-vector tested; wire format strings; display via notations library. Full detail in `06-tech.md §big-numbers`. NaN detection refuses to persist poisoned saves (Profectus rule).

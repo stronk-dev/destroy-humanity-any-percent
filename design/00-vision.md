@@ -22,7 +22,7 @@ You start as a sole proprietor in the last good year of the internet. You own yo
 4. **Mock the machinery, never the joy (the Bogost rule).** Cow Clicker's lesson: satire of a compulsion loop that *is* a compulsion loop gets played sincerely. So make the sincere version the good one. Hats are genuinely great. Gacha art is genuinely gorgeous. The pet genuinely loves you. The satire lives in tooltips, disclosures, achievement names, and the corporate voice — never in making the game worse to play.
 5. **The melancholy is real data (the Both-Graphs rule).** The background radiation is the post-WW2 decay arc — 1971 wage decoupling, trust **77% (1964) → 17% (2025)** `[V]` ([Pew](https://www.pewresearch.org/politics/2024/06/24/public-trust-in-government-1958-2024/)), Bowling Alone — and the counter-thread is equally real over the same post-war span: global under-5 mortality **22.3% (1955) → 3.74% (2024)** `[V]` ([OWID](https://ourworldindata.org/grapher/child-mortality), Gapminder + UN IGME) and global extreme poverty **49.1% (1955) → 10.0% (2018)** `[V]` ([OWID, Moatsos 2021 cost-of-basic-needs](https://ourworldindata.org/grapher/share-of-population-living-in-extreme-poverty-cost-of-basic-needs)). Neither cancels the other. The ending shows both graphs and asks "Play again?"
 
-   > **Resolved (2026-07-28).** The figures previously cited here (*"child mortality 50%→4.3%, extreme poverty 75%→10%"*) were 1800/1820 baselines presented as ~70-year records; they were withheld 2026-07-27 and are now replaced with verified ~1955-baseline OWID series, baseline years stated inline above. One caveat survives: **the World Bank's own poverty series cannot be anchored at 1955** — its aggregate starts decades later (at the $3.00/day 2021-PPP line: **44% (1990) → 10% (2025)** `[V]` [OWID](https://ourworldindata.org/extreme-poverty)); the 1955 anchor is the Moatsos (2021) academic reconstruction, which ends in 2018 — if the poverty chart ships, name the source on-screen. The under-5 mortality series needs no caveat and is the recommended improvement series for Ending C. Full sourcing and candidate pairings: `research/billionaires-decay.md §2F`. *Changelog: 2026-07-28 — DESIGN-GAP closed with OWID-verified 1955-baseline figures; ending copy unblocked.*
+   > **Resolved (2026-07-28).** The figures previously cited here (*"child mortality 50%→4.3%, extreme poverty 75%→10%"*) were 1800/1820 baselines presented as ~70-year records; they were withheld 2026-07-27 and are now replaced with verified ~1955-baseline OWID series, baseline years stated inline above. One caveat survives: **the World Bank's own poverty series cannot be anchored at 1955** — its aggregate starts decades later (at the $3.00/day 2021-PPP line: **44% (1990) → 10% (2025)** `[V]` [OWID](https://ourworldindata.org/extreme-poverty)); the 1955 anchor is the Moatsos (2021) academic reconstruction, which ends in 2018 — if the poverty chart ships, name the source on-screen. The under-5 mortality series needs no caveat and is the recommended improvement series for Ending C. Full sourcing and candidate pairings: `research/billionaires-decay.md §2F`.
 
 ## Design pillars
 
@@ -69,11 +69,15 @@ You start as a sole proprietor in the last good year of the internet. You own yo
 | `01-tiers.md` | The nine-tier ladder, era mirroring, endings |
 | `02-economy-balancing.md` | Currency/layer architecture, core math, pacing |
 | `03-minigames.md` | Minigame catalog: clocks, economy hooks, AI fallbacks |
-| `04-pets.md` | Tamagotchi layer, battles, base building, cosmetics/lootboxes |
+| `04-pets.md` | Tamagotchi layer, battles, cosmetic house, cosmetics/lootboxes |
 | `05-mmo.md` | Milestones, presence, guilds, PvP, anti-leech systems |
 | `06-tech.md` | Stack, architecture, anti-cheat |
 | `07-roadmap.md` | Build order and release-as-fiction schedule |
 | `08-satire-flavor.md` | The flavor bible: eras, content banks, voice, conspiracy layer, canonization |
 | `09-events.md` | Three-layer event engine, seasonal arcs, GM ops |
 | `10-playstyles.md` | Factions, challenge runs, moral routes, time banking |
-| `research/` | The nine full research reports all of the above cites |
+| `11-ux-writing` | Surfaces, FTUE, run-end, copy production |
+| `12-content-pipeline` | Packs, extension points, effects vocabulary |
+| `13-world` | Diorama, region draft, shared map, Planet ratchet |
+| `BACKLOG.md` | The topic ledger — every idea gets a row |
+| `research/` | The research corpus (coverage matrix: `research/README.md`) |

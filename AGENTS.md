@@ -41,7 +41,7 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 4. **Balance data is declarative** (JSON/YAML data files, hot-reloadable), never constants in code.
 5. **Hardcaps, never softcaps.** Every cap is a visible number.
 6. **Every multiplayer feature has an AI/bot fallback**; bots never cheat (same server validation and hidden-info boundaries as humans).
-7. **Offline progress is default** (90% rate, 24 h cap baseline) — never a purchased privilege.
+7. **Offline progress is default** (90% rate, 24 h cap — normative home: `rfc/production-engine-and-intents.md` D4) — never a purchased privilege.
 8. **Save schema versioned from commit #1** with a migration chain; refuse to persist NaN saves.
 9. **Published formulas** for all community/contribution math (the Helldivers transparency rule).
 10. **Parodied dark patterns always pull the curtain** (tooltip states what it is). The pet layer is sincere, never a joke (`design/04-pets.md §tone`).

@@ -1,6 +1,6 @@
 # MMO Systems
 
-> Four models, all in: global shared milestones, visible presence, co-ops/guilds, direct interaction — plus the commons that makes Ethical% viable. **Every feature lists its AI/solo fallback**; the game must be complete with zero other players online. Server-authoritative throughout (`06-tech.md §1.8`), and **formulas are published** — the Helldivers transparency lesson is a design law here.
+> Four models, all in: global shared milestones, visible presence, co-ops/guilds, direct interaction — plus the commons that makes Ethical% viable. **Every feature lists its AI/solo fallback**; the game must be complete with zero other players online. Server-authoritative throughout (`06-tech.md §anti-cheat`), and **formulas are published** — the Helldivers transparency lesson is a design law here.
 
 ## 1. Global community milestones
 
@@ -19,7 +19,7 @@
 
 ## 2. Presence & feed
 
-- **The live feed** (cattery's activity feed, grown up): a sidebar stream of real player actions — Exits ("<name> sold their company for $4.2B"), world-firsts, golden-opportunity chains, big daemon pops, pet adoptions, raid outcomes. Aggregate-then-broadcast (one coalesced snapshot at 4–10 Hz; never per-click fan-out).
+- **The live feed** (cattery's activity feed, grown up): a sidebar stream of real player actions — Exits ("<name> sold their company for $4.2B"), world-firsts, golden-opportunity chains, big daemon pops, pet adoptions, lane results. Aggregate-then-broadcast (one coalesced snapshot at 4–10 Hz; never per-click fan-out).
 - **Global counters:** players online, total production this hour, Planet %, current milestone bars — ambient MMO texture on every screen.
 - **Ghosts:** anonymized presence in shared spaces (the world map shows clusters of activity; the leaderboard page shows live viewers).
 - **Feed prominence** scales with Clout (the influence axis made visible).
@@ -29,7 +29,7 @@
 
 - **Formation:** 2–50 players; open/invite/apply; guild page with shared feed and pet-visit yard.
 - **Automatic tithe (Idle Clans model):** a fixed small % of every member's output feeds guild XP passively — zero coordination required, every member visibly contributes, killing leech resentment structurally. Displayed per-member as percentile-within-faction (Egg Inc grading), not raw numbers.
-- **Guild levels → leader-purchased upgrades** benefiting all members (production %, offline cap +, extra swap tokens, raid slots).
+- **Guild levels → leader-purchased upgrades** benefiting all members (production %, offline cap +, extra swap tokens, lane deck cosmetics).
 - **Contribution windows for guild events (Clicker Heroes model):** guild bosses/objectives cap any member's contribution per hour (e.g. one 30-s "surge" per hour) — headcount and diversity beat whales.
 - **Faction interdependence (the Last Meadow rule):** each faction produces a resource **its own faction cannot consume** — Bootstrappers→Revenue→(VCs need it), VC→Hype→(Open Source needs it), Open Source→Libraries→(Enterprise needs it), Enterprise→Compliance→(Bootstrappers need it). A cycle, not a hierarchy: guilds genuinely want one of each, and recruiting a missing faction is a guild goal. Exchange is automatic within a guild (no trading UI needed) with a public exchange for guildless players.
 - **Micro-reciprocity (the warm channel — `research/liveservice-idle-tier.md §5`):** help taps (one tap shaves a visible sliver off a guildmate's timer, attributed), directed donations with names on them, and **one scheduled 30-minute guild co-presence ritual per week** (booked, not ambient — the calendar creates the appointment, the tithe does the economics). The tithe kills leech resentment; this is what makes a guild feel *inhabited*.
@@ -43,11 +43,11 @@
 |---|---|---|
 | Board-game matches | Ranked queue, expanding Elo bands, spectators, guild tournaments | Bot backfill after 10–30 s at matched rating; disclosed; reduced/non-ranked rewards; no mid-match hot-swap |
 | Pet battles | Async vs snapshot pets (owner absent); live ranked in seasons | NPC trainers + bot policies at every tier |
-| Base raids | Async vs layout snapshots | Procedural compounds; attacking armies always AI |
+| The Lane (push to prod) | Live player vs async snapshot decks (`03 §10`) | Bot-driven decks at published manifest levels; always available |
 | The Market | Server-global prices moved lightly by aggregate trading | Simulated market makers |
 | Trading/gifting | Cosmetic + seed gifting (no power trading — anti-RMT by construction). **Crate-derived items carry a non-transferable flag** (decided 2026-07-28 per `research/compliance-2026-refresh.md`: transferability is the hinge every adverse loot-box ruling turned on — zero price kills the *stake*, non-transferability kills the *prize*); hand-authored cosmetics and seeds stay giftable. | NPC gift events |
 | Sabotage-flavored PvP | **Deliberately soft**: "FUD campaigns" nudge a rival's outrage meter cosmetically during tournament seasons only; no destructive PvP on the main economy | n/a |
-| Human-human only | Live tournament finals, guild-vs-guild raid leagues | Explicitly the one category allowed to require humans (per the design rule: human-only only where AI is more hassle than value) |
+| Human-human only | Live tournament finals, guild lane leagues | Explicitly the one category allowed to require humans (per the design rule: human-only only where AI is more hassle than value) |
 
 **PvP philosophy:** the main economy is PvE/coop; competitive expression lives in minigames, races (leaderboards, speedrun categories), and seasonal tournaments. Nothing another player does can meaningfully damage your progress — the MMO's teeth are in shared stakes (milestones can fail), not player-vs-player harm.
 
@@ -72,7 +72,7 @@
 - **The Route Registry** (`08 §6`): undocumented state-transition sequences are detected server-side; **the first player to execute one names it, permanently** — a dated public ledger of every named route, its first executor, and its adoption curve.
 - Speedrun culture *chrome* kept as fiction where it's honest: `[Retimed]` tags, an Attended-Time toggle (our load-removed analogue), and one permanently "disputed" WR thread about **what counts as attended time** (the honest version of the joke — closed-form production makes IGT exact, so the clock dispute would be fake).
 - **TAS board:** the AGI's runs live on a separate machine board (never the human one).
-- Anti-cheat: boards derive from server-observed events only; flagged saves reviewed, not auto-banned (`06-tech.md §1.8`).
+- Anti-cheat: boards derive from server-observed events only; flagged saves reviewed, not auto-banned (`06-tech.md §anti-cheat`).
 
 ## 7. Anti-leech / anti-whale summary (the four tools, all used)
 
@@ -83,4 +83,4 @@
 
 ## 8. Social platform embedding (later)
 
-The Discord Embedded App SDK path (research §1d) is kept open as a post-launch channel: the game is a web app; an embedded guild-scoped view (guild dashboard + feed + quick actions) inside Discord is feasible without a separate codebase. **Hard rule from the Last Meadow backlash: nothing ambient/persistent in anyone's client chrome** — the embed is opened deliberately or not at all.
+The Discord Embedded App SDK path (`research/idle-landscape.md`, Discord Embedded App SDK) is kept open as a post-launch channel: the game is a web app; an embedded guild-scoped view (guild dashboard + feed + quick actions) inside Discord is feasible without a separate codebase. **Hard rule from the Last Meadow backlash: nothing ambient/persistent in anyone's client chrome** — the embed is opened deliberately or not at all.

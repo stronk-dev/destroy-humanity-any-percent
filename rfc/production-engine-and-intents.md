@@ -3,7 +3,7 @@
 - **Status:** draft
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-28
-- **Design refs:** `design/02 §2` (production stack, cost curves), `design/02 §10` (the daily clock), `design/06 §idle-math` (closed-form, lazy, server-authoritative), `design/00` law 7 (offline default)
+- **Design refs:** `design/02 §2` (production stack, cost curves), `design/02 §10` (the daily clock), `design/06 §idle-math` (closed-form, lazy, server-authoritative), `AGENTS.md` law 7 (offline default)
 - **Research:** `design/research/tech-stack.md §1` (swarmsim closed forms, intent validation), `design/research/pacing-science.md` (progress checker), `design/research/cookie-clicker.md` (multiplier stack order)
 - **Depends on:** RFC-0002 (ledger), Save Layer & Migrations (implemented), Geometric Afford Fast Path (implemented)
 - **Split follow-up:** `archive/production-accrual-math.md` (implemented closed-form numeric primitive)
@@ -16,7 +16,7 @@ The layer that makes the ledger a *game*: generator ownership, closed-form lazy 
 
 ## Motivation
 
-RFC-0002 deliberately excluded "production sources, multiplier stacks, time integration, and offline progress." Nothing can accrue, and no client can buy anything, until this exists. Out of scope: WebSocket transport & fan-out (its own RFC), minigame matches, prestige (needs `design/03 §Exit` maths — a follow-up), the pacing *values* themselves (balance data, harness-gated).
+RFC-0002 deliberately excluded "production sources, multiplier stacks, time integration, and offline progress." Nothing can accrue, and no client can buy anything, until this exists. Out of scope: WebSocket transport & fan-out (its own RFC), minigame matches, prestige (needs `design/02 §3` Exit maths — a follow-up), the pacing *values* themselves (balance data, harness-gated).
 
 ## Specification
 

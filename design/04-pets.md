@@ -55,7 +55,7 @@ The full Almanac §6 parody suite (`research/gaming-enshittification.md`), imple
 - **Vaulted-forever countdowns** that end with everyone getting the item and the timer restarting.
 - **AI Slop line** — deliberately six-fingered, disclosure box included, finger count varies per viewing.
 - **Battle Pass (Free Track / Free Track)** — two identical free tracks, pre-purchased, timer counts up.
-- **Acquisition paths:** crates drop from play everywhere (achievements, quarters, events, battles, raids); duplicates convert to `Compliance Points` (which convert 1:1 to everything, obviously). **Nothing is ever purchasable with real money. There is no real-money anything.**
+- **Acquisition paths:** crates drop from play everywhere (achievements, quarters, battles, lane matches; **event rewards go through the exchange shop** — `09 §5` — where event crates are shop items with 100.00% disclosed odds); duplicates convert to `Compliance Points` (which convert 1:1 to everything, obviously). **Nothing is ever purchasable with real money. There is no real-money anything.**
 - **Collection book** with completion achievements feeding Clout — collecting is load-bearing, joyful, and free. That's the whole point.
 
 ## 5. Breeding & rarity

@@ -1,6 +1,6 @@
 # UX & Writing
 
-> How the game talks, teaches, and frames itself — and how we produce copy at the volume this design demands. Voice rules live in `08-satire-flavor.md §1`; this doc covers the surfaces, the run-narrative structure, and the production system. Pending research (`design/research/README.md`: run-narrative & UX writing, in flight) will refine the numbers; structure below is the commitment.
+> How the game talks, teaches, and frames itself — and how we produce copy at the volume this design demands. Voice rules live in `08-satire-flavor.md §1`; this doc covers the surfaces, the run-narrative structure, and the production system. Research banked: `research/run-narrative-ux.md`. Structure below is the commitment; §6b's remaining adoption questions are ledgered in `BACKLOG.md` (walkthrough holes).
 
 ## 1. The contract screen (cold open)
 

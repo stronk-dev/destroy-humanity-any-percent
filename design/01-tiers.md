@@ -49,7 +49,7 @@ Each tier defines:
 
 - **Produce:** compute sold to **tenants**.
 - **New grammar:** market sim — you set prices, demand responds (Paperclips Act 1's wire market); tenant workloads with distinct demand curves; SLAs; the `us-east-1` region with its `Race Condition` event.
-- **New decision:** pricing strategy, capacity vs demand, which tenants to court. **The enshittification slider appears** — per-product, three stages, revenue up, hidden Trust down, stage 3 irreversible.
+- **New decision:** pricing strategy, capacity vs demand, which tenants to court. **The enshittification slider appears** — per-product, three stages, revenue up, Trust down — visibly, per `02 §7` — stage 3 irreversible.
 - **Automates:** headcount management (HR department; Middle Managers now self-replicate, which is the joke).
 - **Societal beat / era:** SaaS sprawl, egress fees, YAML, on-call ("3% Signal"). Gaming era: Mann-Conomy — crates + free auto-applied keys; the trading economy where everything is worth $0.00 (priceless).
 - **The Cookie Clicker easter egg begins:** an early tenant is **Bakery, Inc.**, a suspiciously familiar baking-themed idle game whose compute demand grows at literally `1.15^n`. Veterans will recognize the constant. Its viral moment is your first capacity-planning crisis. You can open a terminal on their VM and click their cookie — the game-within-the-game consumes your compute and pays your revenue, billed by the tick. Wrinkler-shaped daemon processes attach to tenants and eat cycles; let them accrue and "pop" them for a refund (garbage collection as the wrinkler mechanic).
@@ -58,8 +58,8 @@ Each tier defines:
 ## Tier 4 — Data Centers †
 
 - **Produce:** raw capacity under physical constraint.
-- **New grammar:** spatial/logistics — rack placement on a grid, **power, cooling, water, permits** as constraint resources; the Gnorp principle (render every rack; the spectacle of the machine room is the reward). Regional expansion with real-world-flavored regions (Ireland's grid share, Data Center Alley, Boxtown's `Trailer-Mounted Turbine (Non-Road Engine)`).
-- **New decision:** layout and constraint juggling; **Externality** becomes a tracked (hidden-ish) resource that leaves your ledger and lands on the map.
+- **New grammar:** spatial/logistics — the **region draft** on the shared world map (Power/Thermal/Reach axes, the Thermal Law — `13 §5`), with **power, cooling, water, permits** as constraint resources; the Gnorp principle (render every rack; the diorama shows the site your draft builds — the spectacle is the reward). Regional expansion with real-world-flavored regions (Ireland's grid share, Data Center Alley, Boxtown's `Trailer-Mounted Turbine (Non-Road Engine)`).
+- **New decision:** layout and constraint juggling; **Externality** becomes a visible **ledger** whose entries have addresses — they leave your books and land on the map (`02 §7`, the Thermal Law `13 §5`).
 - **Automates:** pricing (yield-management AI).
 - **Societal beat / era:** the full datacenter dossier — PJM ratepayer bills, `Restarted Nuclear Plant (Renamed)` ("We don't talk about Unit 2"), the **two-number water counter** (0.32 mL vs 519 mL — you choose which goes in the sustainability report). Gaming era: loot-box panic — regulator NPCs appear; drop-rate disclosures become aggressively total.
 - **Unlock:** † this tier was a launch-window community milestone ("the community must collectively provision X exaFLOPs"). **Split:** `Hyperscale`.

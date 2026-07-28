@@ -30,7 +30,7 @@
 ## Phase 3 — v0.3 "Hyperscale"
 
 - Tier 4 (community-unlocked): spatial datacenter play, constraint resources, Externality, the water counter, The Market.
-- Base building + async raids; board-game suite ranked queue + matchmaking + bot backfill (the vs-AI engine's public debut).
+- The Lane (push to prod) + house decor; the daily/weekly clock (`02 §10`) + exchange shop (`09 §5`); board-game suite ranked queue + matchmaking + bot backfill (the vs-AI engine's public debut).
 - Event Layer 3 (Situations + Major Orders), GM dashboard + public war log.
 - Speedrun chrome (timer, splits, categories v1, leaderboards).
 - **Fiction:** `S2 The Race` — the community Major Order arc unlocks Tier 5.
