@@ -1,6 +1,6 @@
 # RFC: CI Baseline
 
-- **Status:** draft
+- **Status:** accepted
 - **Author:** Marco (drafted by Claude, revised by Codex)
 - **Created:** 2026-07-28
 - **Design refs:** `design/07-roadmap.md` Phase 0, `design/12-content-pipeline.md §7`
@@ -54,6 +54,15 @@ One workflow, `.github/workflows/ci.yml`, on push and pull request:
 | `client` | `make verify-client` → strict TypeScript and Node Vitest | yes | Installs from the frozen pnpm lockfile |
 | `browser` | `make test-browser` in the Playwright image matching `client/package.json`, across Chromium, Firefox, WebKit | yes | Image supplies deterministic browser binaries |
 | `schema` | `make verify-schema` → validate schema documents and every checked-in balance catalog | yes | An explicit empty catalog set succeeds; malformed checked-in catalogs fail |
+
+Workflow actions use the current supported majors at acceptance: `actions/checkout@v6`,
+`actions/setup-go@v6`, `actions/setup-node@v6`, and `pnpm/action-setup@v6`. Go reads
+`server/go.mod`; Node uses version 24; pnpm reads the exact `packageManager` field. The browser job
+is pinned to `mcr.microsoft.com/playwright:v1.62.0-noble`, matching the exact client dependency.
+
+Schema verification uses the pinned Ajv 2020-12 implementation in the client toolchain. Compiling
+the schema validates it against its meta-schema. The command validates every production catalog,
+requires all positive fixtures to pass, and requires all negative fixtures to fail.
 
 The existing aggregate `make verify` remains the local all-gates command. It composes the narrower
 targets above; CI calls narrow targets so browser tests are not executed twice.
@@ -121,3 +130,5 @@ human-origin claim is true.
 - 2026-07-28: recorded the public-repository decision; corrected the existing-Makefile premise;
   narrowed scope to executable CI gates; split geometric affordability into its own follow-up and
   deferred deploy/policy infrastructure until their runtime inputs exist.
+- 2026-07-28: accepted by owner direction after verifying current supported action majors and the
+  Playwright 1.62.0 container guidance against their official documentation.
