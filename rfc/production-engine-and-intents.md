@@ -30,23 +30,27 @@ RFC-0002 deliberately excluded "production sources, multiplier stacks, time inte
 
 `rate(resource) = Σ_generators [count × base_rate × Π(multipliers)]` with the multiplier stack in a **documented, fixed order** (the Cookie Clicker lesson: order is observable; publish it). Multiplier sources register into named slots (upgrades, milestones at 25/50/100 owned, faction rules, commons buff, Trust modulation per `02 §7`). All declared in the balance catalog; **no formula strings in data** (RFC-0002 K2 rule extends here).
 
-### D3 — The intent API
+**The slot boundary (structural, per Codex's review):** multiplier providers emit mechanical contributions into **fixed named slots**. The commons compact populates its slot through the Commons Compact RFC's computed modifier — production consumes the number and knows nothing else. **Route predicates are structurally prohibited from contributing to any production slot** — the Gate Predicates RFC owns them, and its effects touch gates only. Enforce as a compile-time package boundary (the amplitude-lock pattern from `research/adaptive-balancing.md`), not review discipline.
 
-- Intents: `{buy_generator, buy_upgrade, collect, toggle}` + an idempotency key. The server validates affordability from **its own** evaluated state, executes through the ledger, and returns the mutation receipt + new canonical snapshot.
-- Click/collect batches are rate-clamped (~20–25/s, silent clamp, per `design/06`).
-- Invariant checks flag impossible jumps to the audit log (forensics, not auto-bans).
-- **The append-only gameplay `events` table lands here** (deferred from the Save Layer RFC): purchases, prestiges, threshold crossings — not clicks.
+### D3 — The intent API (contract per Codex's 2026-07-28 review, adopted)
+
+- **Two intents only in this RFC: `buy_generator` and `perform_manual_batch`.** `buy_upgrade`, `toggle`, and feature-specific collection are deferred until their state models exist — an intent without a data model is a name, not a contract.
+- The server validates affordability from **its own** evaluated state, executes through the ledger, and returns the mutation receipt + new canonical snapshot.
+- **Idempotency is per save stream: `(key, request_hash)`.** Replaying a key returns the original success or the original terminal rejection; **reusing a key with a different request hash is a typed conflict.** Retention: **30 days** (provisional — comfortably beyond any reconnect scenario, bounded for storage; owner may tune).
+- `perform_manual_batch` is rate-clamped (~20–25/s, silent clamp, per `design/06`).
+- Invariant checks flag impossible jumps to the audit log (forensics, not auto-bans). **The numeric fallback-reporting contract (RFC-0001 §7, routed here by the adversarial review) lands in this handler's audit sink.**
+- **Events are immutable and atomically tied to the resulting save revision.** Corrections are compensating events on later revisions — **history is never deleted.** Purchases, prestiges, threshold crossings; never clicks.
 
 ### D4 — Offline progress (adopting the stranded constants)
 
 - **Offline accrual defaults ON at 90% of online rate, capped at 24 h per absence** — moved here from `AGENTS.md` law 7; `AGENTS.md` now cites this RFC.
 - Published in-game (it is already the answer to speedrun "attended time" — `05 §6`).
-- Beyond the cap, time banks as **Compute Credits** (`design/02 §9`) at a declared ratio. Ratio is balance data.
+- Beyond the cap, time banks as **Compute Credits** — **exact integer milliseconds, never `Decimal` currency** (Codex's review; time is a count, per RFC-0001 contract §1). Required balance fields, all four: `bank_ratio` (banked ms per excess offline ms), `bank_cap_ms`, `burst_speed` (rate multiplier while spending), `burst_max_duration_ms`. **Provisional launch values, harness-gated: ratio 0.5, cap 72 h, burst ×2, max burst 4 h per activation.**
 - Offline evaluation is the same closed form as D1 — there is no separate offline code path to drift.
 
 ### D5 — Progress coordinate
 
-Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker pattern) as part of this engine — the harness's y-axis and telemetry's core dimension. Stage definitions are balance data.
+Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker pattern) — the harness's y-axis and telemetry's core dimension. **Coordinates are typed, tier-local definitions, never arbitrary formulas** (Codex's review): the catalog declares one of a closed kind-union per tier — `resource_log` (log-progress toward a resource threshold), `count_fraction` (owned/required exact counts), `composite` (fixed weighted sum of the former two). **Every tier requires an explicit monotonic coordinate before this section is accepted.** Provisional T0–T3 definitions ship with this RFC as balance data (T0: `resource_log` on cash toward first-generator ladder; T1: `composite` counts+cash; T2/T3: `resource_log` on tier-gate resource); T4+ land with their tier content.
 
 ## Deviations from design
 
