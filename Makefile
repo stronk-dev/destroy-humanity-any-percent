@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck vectors vet fuzz verify-schema verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck vectors vectors-check vet fuzz fuzz-ci verify-schema verify-server verify-client verify
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -31,11 +31,17 @@ typecheck:
 vectors:
 	node tools/gen-vectors.mjs
 
+vectors-check: vectors
+	git diff --exit-code -- testdata/decimal-vectors.json
+
 vet:
 	cd server && go vet ./...
 
 fuzz:
 	cd server && go test ./decimal -run '^$$' -fuzz '^FuzzCanonicalRoundTrip$$'
+
+fuzz-ci:
+	cd server && go test ./decimal -run '^$$' -fuzz '^FuzzCanonicalRoundTrip$$' -fuzztime=30s
 
 verify-schema:
 	pnpm --dir client run verify:schema

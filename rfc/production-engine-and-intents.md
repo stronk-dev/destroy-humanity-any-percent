@@ -77,6 +77,9 @@ Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker patte
 - **Events:** event payload identity and rollback semantics must be specified before creating the
   deferred append-only table.
 - **Progress coordinate:** stage boundaries and behavior at prestige/reset are unspecified.
+- **Numeric invariant reporting:** RFC-0001 requires reporting when affordability correction falls
+  back or clamps a residual. The numeric helpers are transport-free and currently silent; define
+  the actor/audit sink before purchase handlers make those paths live.
 - Compute Credit spend UX (needs `design/02 §9` detail — non-blocking, spend path can land as a follow-up).
 - Prestige/Exit maths — explicitly a follow-up RFC (needs `design/02 §3`'s cube-root formula plus the run-end sequence from `design/11`).
 
@@ -92,3 +95,5 @@ Ship `subProgressValue(state) → 0..1` per stage (the AD progress-checker patte
   `archive/generator-production-state.md`; undefined intent and policy mechanics remain gaps here.
 - 2026-07-28: generator production state follow-up implemented and archived; remaining open
   questions still block the parent intent engine.
+- 2026-07-28: adversarial review routed the currently-latent numeric fallback-reporting contract
+  here, where the first authoritative purchase handler can provide its audit sink.

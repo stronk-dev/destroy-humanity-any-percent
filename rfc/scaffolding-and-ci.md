@@ -79,7 +79,7 @@ not cached.
 | **1 — Baseline** | every push/PR | yes | D2's four jobs |
 | **2 — Policy** | future RFC | yes | Copy, tracker, asset-provenance, and formula-drift gates once inputs exist |
 | **3 — Balance** | future harness RFC | warn/block | Harness tiers 1–3 on balance changes |
-| **4 — Nightly** | future harness RFC | no | Harness tier 4 and pacing artifact |
+| **4 — Nightly** | schedule/manual | no | 30-second numeric fuzzing, deterministic vector-regeneration diff; future harness tier 4 and pacing artifact |
 
 **NORMATIVE: the complete blocking workflow must finish in under five minutes.** If it exceeds the
 budget, slower work moves to a non-blocking tier; the blocking budget does not grow.
@@ -133,3 +133,7 @@ human-origin claim is true.
   deferred deploy/policy infrastructure until their runtime inputs exist.
 - 2026-07-28: accepted by owner direction after verifying current supported action majors and the
   Playwright 1.62.0 container guidance against their official documentation.
+- 2026-07-28: review recorded that fuzzing and vector-regeneration drift are not yet CI-enforced;
+  assigned them to the nightly tier instead of leaving “mandatory” as a memory-based convention.
+- 2026-07-28: added the scheduled/manual non-blocking numeric-maintenance job with a 30-second fuzz
+  budget and deterministic vector-regeneration diff. Hosted execution still awaits the first push.

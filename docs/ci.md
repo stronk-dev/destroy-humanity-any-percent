@@ -1,8 +1,8 @@
 # Continuous Integration
 
 The repository has one GitHub Actions workflow, `.github/workflows/ci.yml`, triggered by every
-push and pull request. It has read-only repository permissions and cancels an older run when a
-new commit arrives on the same ref.
+push and pull request, a nightly schedule, and manual dispatch. It has read-only repository
+permissions and cancels an older run when a new commit arrives on the same ref.
 
 The repository is public. CI uses GitHub-hosted `ubuntu-latest` runners; there are no self-hosted
 runners, deployment credentials, or deployment steps.
@@ -19,6 +19,16 @@ runners, deployment credentials, or deployment steps.
 Every job has a five-minute timeout. The complete blocking workflow has a normative five-minute
 elapsed-time budget; the first hosted measurement is pending the initial push. Until that run is
 observed, the CI Baseline RFC remains implementing.
+
+## Nightly numeric maintenance
+
+Scheduled and manual runs add a non-blocking `numeric-maintenance` job outside the pull-request
+latency budget. `make fuzz-ci` fuzzes canonical round trips for 30 seconds; `make vectors-check`
+regenerates the deterministic shared corpus and fails if tracked bytes change. The job installs
+the same pinned Go, Node, and pnpm toolchains as the blocking jobs and has a ten-minute timeout.
+
+`make fuzz` remains the unbounded interactive command for deliberate local fuzzing. The bounded
+target exists so automation always terminates.
 
 ## Reproducibility and caches
 
@@ -59,6 +69,8 @@ make verify-server
 make verify-client
 make verify-schema
 make test-browser
+make fuzz-ci
+make vectors-check
 ```
 
 No CI job deploys anything. Compose, Caddy, migrations, websocket draining, and reconnect testing

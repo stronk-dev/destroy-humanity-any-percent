@@ -3,6 +3,9 @@ name: CI
 on:
   push:
   pull_request:
+  schedule:
+    - cron: "23 3 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -93,3 +96,24 @@ jobs:
           cache-dependency-path: client/pnpm-lock.yaml
       - run: pnpm --dir client install --frozen-lockfile
       - run: make verify-schema
+
+  numeric-maintenance:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: server/go.mod
+      - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: client/package.json
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: client/pnpm-lock.yaml
+      - run: pnpm --dir client install --frozen-lockfile
+      - run: make fuzz-ci
+      - run: make vectors-check
