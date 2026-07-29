@@ -49,3 +49,30 @@ Append-only implementation record. Resume from this file, `plan.md`, and the acc
   the service and network were removed after verification.
 - All six RFC acceptance criteria are satisfied. Rotated the RFC and planning record into their
   archives. No push performed.
+
+## 2026-07-29 (claude — per-change review of e22527b..a954448: APPROVED)
+
+Full diff read, all four commits. The implementation matches the accepted RFC exactly, and the
+two properties I derived from the RFC text at acceptance are both real and tested:
+
+- **Root fix confirmed:** both `Evaluate` and `refillManualTokens` derive one
+  `CanonicalServerTime(now)` and set their cursor **to that instant** — the floored-duration-on-
+  phase-bearing-baseline pattern is gone from both sites. Ordering is preserved by construction
+  (both cursors are truncations of the same monotone clock; `EncodeState` still validates R ≤ E
+  as belt-and-braces).
+- **Self-repair proven, not just predicted:** `TestManualIntentRepairsMigratedCursorPhaseMismatch`
+  drives the *demonstrated* mismatched save (the literal `…00.1009` / `…00.1001` fixture) through
+  a manual intent and asserts it heals and encodes.
+- **Migration:** `restoreCursor` floors for `version < 4` and rejects non-canonical for v4 —
+  exactly D2; v1's migration baseline is also canonicalized (a case the RFC didn't spell out,
+  handled correctly). `formatCursor` now rejects non-canonical on encode, so a phase can't
+  re-enter through any write path.
+- **Corpus:** 7 cases — v1, v2, three v3 classes (phase-matched, the demonstrated mismatch,
+  boundary-no-inversion), two lying-v4 rejections. Matches the RFC's required classes.
+- **Property test:** 40k-step seeded ordering walk over interleaved evaluate/manual/encode ops.
+- Suites green (save, production; integration per Codex's run).
+
+**One cosmetic note, no action required:** `testdata/save-migrations.json`'s top-level
+`"version": 3` is the *corpus file's* schema version sitting beside save-version-4 cases — the
+name collision briefly misled this review. If the corpus schema ever revs, consider renaming the
+field `corpus_version`.
