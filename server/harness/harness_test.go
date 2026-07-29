@@ -76,6 +76,20 @@ func TestBaselineDriftThresholdsUseIntegerCrossMultiplication(t *testing.T) {
 	}
 }
 
+func TestT0ProgressObservationParticipatesInBaselineDrift(t *testing.T) {
+	baseline := AggregateReport{Values: []AggregateValue{{PolicyID: "casual.phase0", Milestone: "milestone.t0_progress_1", Statistic: "p50", ValueMS: 337_000}}}
+	warning := AggregateReport{Values: []AggregateValue{{PolicyID: "casual.phase0", Milestone: "milestone.t0_progress_1", Statistic: "p50", ValueMS: 371_000}}}
+	warnings, failures := CompareBaseline(warning, baseline)
+	if len(warnings) != 1 || len(failures) != 0 {
+		t.Fatalf("T0 observation warning=%v failures=%v", warnings, failures)
+	}
+	failing := AggregateReport{Values: []AggregateValue{{PolicyID: "casual.phase0", Milestone: "milestone.t0_progress_1", Statistic: "p50", ValueMS: 422_000}}}
+	warnings, failures = CompareBaseline(failing, baseline)
+	if len(warnings) != 0 || len(failures) != 1 {
+		t.Fatalf("T0 observation warning=%v failures=%v", warnings, failures)
+	}
+}
+
 func TestBaselineOnlyRewriteFailsChangeGuard(t *testing.T) {
 	if err := ValidateBaselineCommit([]string{baselinePath}, nil, "BALANCE-CHANGE: retune"); err == nil {
 		t.Fatal("baseline-only rewrite passed")

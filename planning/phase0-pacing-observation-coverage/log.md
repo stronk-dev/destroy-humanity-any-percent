@@ -19,3 +19,13 @@
   failures, while a Go table test proves the same runtime boundary.
 - A repository fixture test binds exact count and order so future scenario edits cannot silently
   drop an observed distribution. Harness unit and schema gates are green before artifact update.
+
+## 2026-07-29 — artifact and local review
+
+- The standalone `BALANCE-CHANGE:` regeneration produced 16 aggregate values and changed only the
+  golden-seed and pacing-baseline artifacts. The hardened history guard accepts the source-first
+  commit followed by the artifact-only commit.
+- A named regression proves T0-progress p50 now reaches the existing integer 10% warning and 25%
+  failure paths; this was not present in the two-value baseline.
+- Local spec/adversarial review found no untracked milestone tuple or second aggregation authority.
+  Independent diff review remains the archival gate.
