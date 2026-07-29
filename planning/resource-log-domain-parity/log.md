@@ -27,3 +27,6 @@ Append-only implementation record. Resume from this file, `plan.md`, and the acc
   includes shape-valid positive/negative boundary catalogs, and asserts the TypeScript evaluator's
   Decimal-division source shape.
 - Focused Go suites, TypeScript checking, 6,364 Node tests, and semantic schema verification pass.
+- Added direct Go and TypeScript runtime tests that bypass the loaders with a forged `4e-15`
+  target; both defensive denominator guards reject it, preventing invalid catalog state from
+  becoming a progress value even if an upstream boundary is later weakened.

@@ -168,6 +168,28 @@ describe("shared progress coordinates", () => {
       ).toBe(vector.expect);
     },
   );
+
+  it("defensively rejects a collapsed denominator after parsing", () => {
+    const forgedCatalog = {
+      progressCoordinates: [
+        {
+          tier: 0,
+          kind: "resource_log",
+          resourceId: "company.cash",
+          target: "4e-15",
+        },
+      ],
+    } as unknown as EconomyCatalog;
+    expect(() =>
+      subProgressValue(
+        forgedCatalog,
+        {
+          balances: { "company.cash": "1e0" },
+          generatorCounts: { "generator.beige_tower": 0 },
+        },
+        0,
+      )).toThrow(RangeError);
+  });
 });
 
 function catalogWithResourceLogTarget(target: string, composite: boolean): EconomyCatalog {

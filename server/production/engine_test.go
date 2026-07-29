@@ -431,3 +431,11 @@ func TestSubProgressIsMonotoneUnderPureAccrual(t *testing.T) {
 		}
 	}
 }
+
+func TestResourceLogRuntimeRejectsCollapsedDenominator(t *testing.T) {
+	catalog := phase0Catalog(t)
+	state := engineState(t, catalog, "1e0", 0)
+	if _, err := resourceLog(state, "company.cash", mustDecimal(t, "4e-15")); err != ErrInvalidEngineState {
+		t.Fatalf("error = %v, want ErrInvalidEngineState", err)
+	}
+}
