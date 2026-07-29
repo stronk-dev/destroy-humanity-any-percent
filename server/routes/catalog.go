@@ -10,6 +10,7 @@ import (
 	"io"
 	"regexp"
 	"sort"
+	"strconv"
 
 	"cloud-clicker/server/decimal"
 )
@@ -20,9 +21,11 @@ const (
 )
 
 var (
-	ErrInvalidCatalog = errors.New("invalid routes catalog")
-	ErrInvalidContext = errors.New("invalid route predicate context")
-	idPattern         = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
+	ErrInvalidCatalog  = errors.New("invalid routes catalog")
+	ErrInvalidContext  = errors.New("invalid route predicate context")
+	idPattern          = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
+	gateBoundary       = regexp.MustCompile(`^gate\.t([0-9]+)_to_t([0-9]+)$`)
+	transitionBoundary = regexp.MustCompile(`^transition\.t([0-9]+)_to_t([0-9]+)$`)
 )
 
 type ConditionKind string
@@ -231,9 +234,45 @@ func parseGate(source rawGate) (Gate, error) {
 		if err != nil {
 			return Gate{}, fmt.Errorf("routes[%d]: %v", index, err)
 		}
+		if err := validateRouteChronology(source.GateID, route); err != nil {
+			return Gate{}, fmt.Errorf("routes[%d]: %v", index, err)
+		}
 		gate.Routes = append(gate.Routes, route)
 	}
 	return gate, nil
+}
+
+func validateRouteChronology(gateID string, route Alternative) error {
+	var doctrineTransitions []string
+	for _, condition := range route.Predicate {
+		if condition.Kind == ConditionDoctrineIs || condition.Kind == ConditionDoctrineIsNot {
+			doctrineTransitions = append(doctrineTransitions, condition.Transition)
+		}
+	}
+	if len(doctrineTransitions) == 0 {
+		return nil
+	}
+	gateTier, ok := adjacentBoundaryStart(gateBoundary, gateID)
+	if !ok {
+		return errors.New("doctrine-bearing route requires a canonical adjacent tier gate")
+	}
+	for _, transition := range doctrineTransitions {
+		transitionTier, ok := adjacentBoundaryStart(transitionBoundary, transition)
+		if !ok || gateTier < transitionTier {
+			return fmt.Errorf("doctrine transition %q occurs after gate %q", transition, gateID)
+		}
+	}
+	return nil
+}
+
+func adjacentBoundaryStart(pattern *regexp.Regexp, value string) (int64, bool) {
+	match := pattern.FindStringSubmatch(value)
+	if len(match) != 3 {
+		return 0, false
+	}
+	from, fromErr := strconv.ParseInt(match[1], 10, 64)
+	to, toErr := strconv.ParseInt(match[2], 10, 64)
+	return from, fromErr == nil && toErr == nil && from >= 0 && to == from+1
 }
 
 func parseAlternative(source rawAlternative) (Alternative, error) {

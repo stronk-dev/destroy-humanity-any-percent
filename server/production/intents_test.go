@@ -108,16 +108,16 @@ func TestCompactSignLeaveAndResign(t *testing.T) {
 func TestCrossGateDiscountSubstituteAndRejections(t *testing.T) {
 	economyCatalog, routeCatalog := phase0Catalog(t), phase0Routes(t)
 	revision := save.Revision{StreamID: "11111111-1111-4111-8111-111111111111", OwnerID: "22222222-2222-4222-8222-222222222222", Number: 1}
-	state := engineState(t, economyCatalog, "1e9", 0)
+	state := engineState(t, economyCatalog, "1e15", 0)
 	state.RunSeq = 1
 	state.GatesCrossed = map[string]bool{}
 	state.DoctrinesByTransition = map[string]string{"transition.t3_to_t4": "doctrine.capture"}
 	state.LedgerFactKinds = map[string]bool{}
 	state.MeterBands = map[string]int{}
 	state.RegionTraits = map[string]bool{}
-	request := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentCrossGate, GateID: "gate.t2_to_t3", RouteID: "route.ipo_sequence_break"}
+	request := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentCrossGate, GateID: "gate.t4_to_t5", RouteID: "route.ipo_sequence_break"}
 	decision, err := TransitionWithRoutes(request, state, economyCatalog, routeCatalog, revision, ModeOnline, engineCursor, nil, nil)
-	if err != nil || decision.Outcome != save.IntentApplied || state.Ledger.Snapshot()["company.cash"] != "6e8" || !state.GatesCrossed[request.GateID] || len(decision.Events) != 2 {
+	if err != nil || decision.Outcome != save.IntentApplied || state.Ledger.Snapshot()["company.cash"] != "6e14" || !state.GatesCrossed[request.GateID] || len(decision.Events) != 2 {
 		t.Fatalf("discount decision=%+v state=%+v err=%v", decision, state, err)
 	}
 	if decision.Events[0].Kind != save.EventGateCrossed || decision.Events[1].Kind != save.EventRouteExecuted {
@@ -149,7 +149,7 @@ func TestCrossGateDiscountSubstituteAndRejections(t *testing.T) {
 	unmet.LedgerFactKinds = map[string]bool{}
 	unmet.MeterBands = map[string]int{}
 	unmet.RegionTraits = map[string]bool{}
-	request.GateID, request.RouteID = "gate.t2_to_t3", "route.ipo_sequence_break"
+	request.GateID, request.RouteID = "gate.t4_to_t5", "route.ipo_sequence_break"
 	decision, err = TransitionWithRoutes(request, unmet, economyCatalog, routeCatalog, revision, ModeOnline, engineCursor, nil, nil)
 	if err != nil || decision.Outcome != save.IntentRejected || !bytes.Contains(decision.Receipt, []byte("route_predicate_unmet")) {
 		t.Fatalf("unmet=%s err=%v", decision.Receipt, err)
@@ -161,7 +161,7 @@ func TestCrossGateDiscountSubstituteAndRejections(t *testing.T) {
 	wrongGate.LedgerFactKinds = map[string]bool{}
 	wrongGate.MeterBands = map[string]int{}
 	wrongGate.RegionTraits = map[string]bool{}
-	request.GateID, request.RouteID = "gate.t4_to_t5", "route.ipo_sequence_break"
+	request.GateID, request.RouteID = "gate.t2_to_t3", "route.ipo_sequence_break"
 	decision, err = TransitionWithRoutes(request, wrongGate, economyCatalog, routeCatalog, revision, ModeOnline, engineCursor, nil, nil)
 	if err != nil || decision.Outcome != save.IntentRejected || !bytes.Contains(decision.Receipt, []byte("route_predicate_unmet")) {
 		t.Fatalf("wrong gate=%s err=%v", decision.Receipt, err)

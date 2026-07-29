@@ -118,6 +118,17 @@ function routeSemanticErrors(catalog, resourceIDs) {
       if (!resourceIDs.has(requirement.resource_id)) errors.push(`/gates/${gateIndex}/requirement/${requirementIndex} references unknown company resource`);
     }
     for (const [routeIndex, route] of (gate.routes ?? []).entries()) {
+      const doctrineTransitions = (route.predicate ?? [])
+        .filter((condition) => condition.kind === "doctrine_is" || condition.kind === "doctrine_is_not")
+        .map((condition) => condition.transition);
+      if (doctrineTransitions.length > 0) {
+        const gateTier = adjacentBoundaryStart(gate.gate_id, "gate");
+        if (gateTier === undefined) errors.push(`/gates/${gateIndex} doctrine-bearing route requires a canonical adjacent tier gate`);
+        for (const transition of doctrineTransitions) {
+          const transitionTier = adjacentBoundaryStart(transition, "transition");
+          if (transitionTier === undefined || gateTier === undefined || gateTier < transitionTier) errors.push(`/gates/${gateIndex}/routes/${routeIndex} doctrine transition occurs after gate`);
+        }
+      }
       if (route.active && route.requires_context_version > catalog.context_version) {
         errors.push(`/gates/${gateIndex}/routes/${routeIndex} active route requires unavailable context`);
       }
@@ -143,6 +154,14 @@ function routeSemanticErrors(catalog, resourceIDs) {
     errors.push("depletion is reachable in one run");
   }
   return errors;
+}
+
+function adjacentBoundaryStart(value, prefix) {
+  const match = new RegExp(`^${prefix}\\.t([0-9]+)_to_t([0-9]+)$`).exec(value);
+  if (!match) return undefined;
+  const from = Number(match[1]);
+  const to = Number(match[2]);
+  return Number.isSafeInteger(from) && Number.isSafeInteger(to) && to === from + 1 ? from : undefined;
 }
 
 async function main() {

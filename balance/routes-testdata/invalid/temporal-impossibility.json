@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "context_version": 1,
+  "depletion_distinct_routes_required": 2,
+  "knowledge": { "registry_first_bonus": 100, "founder_first_grant": 25, "repeat_grant": 5, "hint_cost": 50 },
+  "gates": [{
+    "gate_id": "gate.t2_to_t3",
+    "requirement": [{ "resource_id": "company.cash", "amount": "1e3" }],
+    "routes": [{
+      "route_id": "route.temporally_impossible",
+      "house_name": "Temporal Impossibility",
+      "active": true,
+      "requires_context_version": 1,
+      "exclusion_slot": "doctrine:transition.t3_to_t4",
+      "exclusion_value": "doctrine.capture",
+      "predicate": [{ "kind": "doctrine_is", "transition": "transition.t3_to_t4", "doctrine_id": "doctrine.capture" }],
+      "effect": { "kind": "substitute" }
+    }]
+  }]
+}

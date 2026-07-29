@@ -12,6 +12,11 @@
     {
       "gate_id": "gate.t2_to_t3",
       "requirement": [{ "resource_id": "company.cash", "amount": "1e9" }],
+      "routes": []
+    },
+    {
+      "gate_id": "gate.t4_to_t5",
+      "requirement": [{ "resource_id": "company.cash", "amount": "1e15" }],
       "routes": [
         {
           "route_id": "route.regulatory_capture",
@@ -52,13 +57,7 @@
             { "kind": "ledger_fact_present", "fact_kind": "exit.acquihire" }
           ],
           "effect": { "kind": "discount", "fraction": "5e-1" }
-        }
-      ]
-    },
-    {
-      "gate_id": "gate.t4_to_t5",
-      "requirement": [{ "resource_id": "company.cash", "amount": "1e15" }],
-      "routes": [
+        },
         {
           "route_id": "route.non_road_engine_clip",
           "house_name": "Non-Road Engine Clip",

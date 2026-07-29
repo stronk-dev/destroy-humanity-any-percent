@@ -6,6 +6,7 @@ import validCatalogJson from "../../balance/routes-testdata/valid/minimal.json";
 import reachableCatalogJson from "../../balance/routes-testdata/invalid/reachable-depletion.json";
 import unknownFieldCatalogJson from "../../balance/routes-testdata/invalid/unknown-field.json";
 import unboundExclusionCatalogJson from "../../balance/routes-testdata/invalid/unbound-exclusion.json";
+import temporalImpossibilityCatalogJson from "../../balance/routes-testdata/invalid/temporal-impossibility.json";
 import danglingResourceCatalogJson from "../../balance/routes-testdata/invalid/dangling-resource.json";
 import vectorsJson from "../../testdata/routes/predicate-vectors.json";
 import { parseCatalog } from "../src/economy-kernel";
@@ -54,16 +55,20 @@ describe("routes catalog and predicate parity", () => {
     expect(() => parseRoutesCatalog(reachableCatalogJson)).toThrow(/reachable/);
     expect(() => parseRoutesCatalog(unknownFieldCatalogJson)).toThrow(/fields/);
     expect(() => parseRoutesCatalog(unboundExclusionCatalogJson)).toThrow(/exclusion/);
+    expect(() => parseRoutesCatalog(temporalImpossibilityCatalogJson)).toThrow(/after gate/);
     expect(() => validateRouteCatalogResources(parseRoutesCatalog(danglingResourceCatalogJson), parseCatalog(economyJson))).toThrow(/unknown company resource/);
     const reachable = structuredClone(catalogJson) as typeof catalogJson;
     reachable.depletion_distinct_routes_required = 4;
     expect(() => parseRoutesCatalog(reachable)).toThrow(/reachable/);
     const unavailable = structuredClone(catalogJson) as typeof catalogJson;
-    unavailable.gates[0]!.routes[0]!.active = true;
+    unavailable.gates[1]!.routes[0]!.active = true;
     expect(() => parseRoutesCatalog(unavailable)).toThrow(/unavailable context/);
     const lyingContext = structuredClone(catalogJson) as typeof catalogJson;
-    lyingContext.gates[0]!.routes[0]!.requires_context_version = 1;
+    lyingContext.gates[1]!.routes[0]!.requires_context_version = 1;
     expect(() => parseRoutesCatalog(lyingContext)).toThrow(/context version 2/);
+    const sameBoundary = structuredClone(catalogJson) as typeof catalogJson;
+    sameBoundary.gates[1]!.gate_id = "gate.t3_to_t4";
+    expect(() => parseRoutesCatalog(sameBoundary)).not.toThrow();
   });
 
   it("rejects unknown predicate fields", () => {

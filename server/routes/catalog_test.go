@@ -54,7 +54,7 @@ func TestCatalogRejectsReachableDepletionAndUnavailableActiveRoute(t *testing.T)
 		t.Fatal(err)
 	}
 	gates := root["gates"].([]any)
-	routes := gates[0].(map[string]any)["routes"].([]any)
+	routes := gates[1].(map[string]any)["routes"].([]any)
 	routes[0].(map[string]any)["active"] = true
 	mutated, _ = json.Marshal(root)
 	if _, err := LoadCatalog(mutated); err == nil {
@@ -64,7 +64,7 @@ func TestCatalogRejectsReachableDepletionAndUnavailableActiveRoute(t *testing.T)
 		t.Fatal(err)
 	}
 	gates = root["gates"].([]any)
-	routes = gates[0].(map[string]any)["routes"].([]any)
+	routes = gates[1].(map[string]any)["routes"].([]any)
 	routes[0].(map[string]any)["requires_context_version"] = float64(1)
 	mutated, _ = json.Marshal(root)
 	if _, err := LoadCatalog(mutated); err == nil {
@@ -80,7 +80,7 @@ func TestSharedCatalogFixtures(t *testing.T) {
 	if _, err := LoadCatalog(valid); err != nil {
 		t.Fatalf("valid fixture: %v", err)
 	}
-	for _, filename := range []string{"reachable-depletion.json", "unknown-field.json", "unbound-exclusion.json"} {
+	for _, filename := range []string{"reachable-depletion.json", "temporal-impossibility.json", "unknown-field.json", "unbound-exclusion.json"} {
 		data, err := os.ReadFile("../../balance/routes-testdata/invalid/" + filename)
 		if err != nil {
 			t.Fatal(err)
@@ -88,6 +88,20 @@ func TestSharedCatalogFixtures(t *testing.T) {
 		if _, err := LoadCatalog(data); err == nil {
 			t.Fatalf("invalid fixture %s accepted", filename)
 		}
+	}
+}
+
+func TestCatalogAcceptsDoctrineRouteAtSameOrLaterBoundary(t *testing.T) {
+	_, data := loadPhase0(t)
+	var root map[string]any
+	if err := json.Unmarshal(data, &root); err != nil {
+		t.Fatal(err)
+	}
+	gates := root["gates"].([]any)
+	gates[1].(map[string]any)["gate_id"] = "gate.t3_to_t4"
+	mutated, _ := json.Marshal(root)
+	if _, err := LoadCatalog(mutated); err != nil {
+		t.Fatalf("same-boundary doctrine route rejected: %v", err)
 	}
 }
 
@@ -99,8 +113,8 @@ func TestRouteResolutionDiscountAndSubstitute(t *testing.T) {
 		DoctrinesByTransition: map[string]string{"transition.t3_to_t4": "doctrine.capture"},
 		LedgerFactKinds:       map[string]bool{},
 	}
-	discount, matched, err := catalog.Resolve("gate.t2_to_t3", "route.ipo_sequence_break", context)
-	if err != nil || !matched || len(discount.Requirement) != 1 || discount.Requirement[0].Amount.String() != "4e8" {
+	discount, matched, err := catalog.Resolve("gate.t4_to_t5", "route.ipo_sequence_break", context)
+	if err != nil || !matched || len(discount.Requirement) != 1 || discount.Requirement[0].Amount.String() != "4e14" {
 		t.Fatalf("discount=%+v matched=%v err=%v", discount, matched, err)
 	}
 	context.StructureID = "structure.nonprofit"

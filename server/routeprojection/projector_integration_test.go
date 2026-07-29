@@ -136,8 +136,8 @@ func TestProjectorIntegrationConvergesAcrossDeliveryOrder(t *testing.T) {
 		lowID  = "50000000-0000-4000-8000-000000000005"
 		highID = "60000000-0000-4000-8000-000000000006"
 	)
-	low := insertExecution(t, ctx, db, lowID, streamA, founderA, 4, 3, "route.ipo_sequence_break", "gate.t2_to_t3", hash, tieTime)
-	high := insertExecution(t, ctx, db, highID, streamB, founderB, 4, 3, "route.ipo_sequence_break", "gate.t2_to_t3", hash, tieTime)
+	low := insertExecution(t, ctx, db, lowID, streamA, founderA, 4, 3, "route.ipo_sequence_break", "gate.t4_to_t5", hash, tieTime)
+	high := insertExecution(t, ctx, db, highID, streamB, founderB, 4, 3, "route.ipo_sequence_break", "gate.t4_to_t5", hash, tieTime)
 	if err := projector.Project(ctx, []save.EventRecord{high}); err != nil {
 		t.Fatal(err)
 	}
@@ -152,8 +152,8 @@ func TestProjectorIntegrationConvergesAcrossDeliveryOrder(t *testing.T) {
 		brokenEarlierID = "70000000-0000-4000-8000-000000000007"
 		brokenLaterID   = "80000000-0000-4000-8000-000000000008"
 	)
-	brokenEarlier := insertExecution(t, ctx, db, brokenEarlierID, streamA, founderA, 6, 4, "route.acquihire_out_of_bounds", "gate.t2_to_t3", hash, brokenTime)
-	brokenLater := insertExecution(t, ctx, db, brokenLaterID, streamB, founderB, 5, 4, "route.acquihire_out_of_bounds", "gate.t2_to_t3", hash, brokenTime.Add(time.Hour))
+	brokenEarlier := insertExecution(t, ctx, db, brokenEarlierID, streamA, founderA, 6, 4, "route.acquihire_out_of_bounds", "gate.t4_to_t5", hash, brokenTime)
+	brokenLater := insertExecution(t, ctx, db, brokenLaterID, streamB, founderB, 5, 4, "route.acquihire_out_of_bounds", "gate.t4_to_t5", hash, brokenTime.Add(time.Hour))
 	if err := projector.Project(ctx, []save.EventRecord{brokenLater}); err != nil {
 		t.Fatal(err)
 	}

@@ -18,6 +18,12 @@ enforce canonical Decimal strings, unique IDs, active context availability, effe
 Depletion proof. Bundle validation also rejects a gate requirement or resource condition whose ID
 does not resolve to a company resource in the economy catalog.
 
+Doctrine conditions are chronologically validated. A `transition.tN_to_tN+1` predicate may appear
+only on `gate.tM_to_tM+1` where `M >= N`; malformed/non-adjacent boundaries and conditions that
+refer to a future doctrine fail both runtime loaders and schema semantics. The three doctrine
+seeds are therefore attached to the later `gate.t4_to_t5`, while `gate.t2_to_t3` has only its
+standard requirement.
+
 The closed predicate union is:
 
 - `resource_at_least` and `resource_at_most`, against canonical committed Decimal balances;
@@ -99,6 +105,8 @@ contain hint state.
 Every route declares one immutable exclusion slot/value (`structure` or a doctrine transition),
 and both loaders require that declaration to match an explicit `structure_is` or `doctrine_is`
 condition in the executable predicate.
+Temporal validation runs before the subset proof so an impossible route cannot inflate the
+declared choice space and silently weaken Depletion's career-breadth guarantee.
 Both loaders exhaustively enumerate all declared slot assignments and calculate the exact maximum
 route subset possible in one run. The shipped maximum is 4 and Depletion requires 5. A catalog
 with maximum greater than or equal to N fails loading and CI; the shared negative fixture proves

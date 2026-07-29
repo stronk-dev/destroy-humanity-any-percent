@@ -142,6 +142,7 @@ export function parseRoutesCatalog(source: unknown): RoutesCatalog {
         ? predicate.some((condition) => condition.kind === "structure_is" && condition.structureId === exclusionValue)
         : predicate.some((condition) => condition.kind === "doctrine_is" && `doctrine:${condition.transition}` === value.exclusion_slot && condition.doctrineId === exclusionValue);
       if (!exclusionMatched) throw new SyntaxError("exclusion slot/value must match an explicit predicate condition");
+      validateRouteChronology(gateId, predicate);
       const effect = parseEffect(value.effect);
       return Object.freeze({ routeId, houseName: value.house_name, active: value.active, requiresContextVersion, exclusionSlot: value.exclusion_slot, exclusionValue, predicate, effect });
     });
@@ -150,6 +151,27 @@ export function parseRoutesCatalog(source: unknown): RoutesCatalog {
   const catalog = new RoutesCatalog(ROUTE_CONTEXT_VERSION, depletion, knowledge, gates);
   if (routeIds.size === 0 || catalog.maxRoutesPerRun() >= depletion) throw new SyntaxError("depletion is reachable in one run");
   return catalog;
+}
+
+function validateRouteChronology(gateId: string, predicate: readonly RouteCondition[]): void {
+  const transitions = predicate
+    .filter((condition): condition is Extract<RouteCondition, { kind: "doctrine_is" | "doctrine_is_not" }> => condition.kind === "doctrine_is" || condition.kind === "doctrine_is_not")
+    .map((condition) => condition.transition);
+  if (transitions.length === 0) return;
+  const gateTier = adjacentBoundaryStart(gateId, "gate");
+  if (gateTier === undefined) throw new SyntaxError("doctrine-bearing route requires a canonical adjacent tier gate");
+  for (const transition of transitions) {
+    const transitionTier = adjacentBoundaryStart(transition, "transition");
+    if (transitionTier === undefined || gateTier < transitionTier) throw new SyntaxError(`doctrine transition ${transition} occurs after gate ${gateId}`);
+  }
+}
+
+function adjacentBoundaryStart(value: string, prefix: "gate" | "transition"): number | undefined {
+  const match = new RegExp(`^${prefix}\\.t([0-9]+)_to_t([0-9]+)$`).exec(value);
+  if (!match) return undefined;
+  const from = Number(match[1]);
+  const to = Number(match[2]);
+  return Number.isSafeInteger(from) && Number.isSafeInteger(to) && to === from + 1 ? from : undefined;
 }
 
 export function parseRoutePredicate(source: unknown): readonly RouteCondition[] {
