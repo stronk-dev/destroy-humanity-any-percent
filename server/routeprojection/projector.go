@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math/big"
 	"sort"
 	"strings"
 	"time"
@@ -51,6 +52,21 @@ type hintPayload struct {
 	Cost    int64  `json:"cost"`
 }
 
+type registryDecision struct {
+	registryFirst    bool
+	displacedEvent   string
+	displacedFounder string
+}
+
+type grantRecord struct {
+	EventID       string
+	StreamID      string
+	Revision      int64
+	ConstantsHash string
+	OccurredAt    time.Time
+	Amount        int64
+}
+
 func (p *Projector) Project(ctx context.Context, source []save.EventRecord) error {
 	events := append([]save.EventRecord(nil), source...)
 	sort.Slice(events, func(i, j int) bool {
@@ -64,6 +80,9 @@ func (p *Projector) Project(ctx context.Context, source []save.EventRecord) erro
 		return err
 	}
 	defer tx.Rollback()
+	if err := lockRegistryRoutes(ctx, tx, events); err != nil {
+		return err
+	}
 	for _, event := range events {
 		switch event.Kind {
 		case save.EventRouteExecuted:
@@ -101,16 +120,12 @@ func (p *Projector) projectExecution(ctx context.Context, tx *sql.Tx, event save
 		return err
 	}
 
-	result, err = tx.ExecContext(ctx, `INSERT INTO registry_routes(route_id,first_event_id,first_founder_id,occurred_at,house_name,name,name_state,naming_reserved_until,execution_count) VALUES ($1,$2,$3,$4,$5,$5,'reserved',$6,1) ON CONFLICT DO NOTHING`, payload.RouteID, event.EventID, payload.FounderID, event.OccurredAt, route.HouseName, event.OccurredAt.Add(72*time.Hour))
+	registry, err := p.decideRegistry(ctx, tx, event, payload, route.HouseName)
 	if err != nil {
 		return err
 	}
-	registryFirst, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-	if registryFirst == 0 {
-		if _, err := tx.ExecContext(ctx, `UPDATE registry_routes SET execution_count=execution_count+1 WHERE route_id=$1`, payload.RouteID); err != nil {
+	if registry.displacedEvent != "" {
+		if err := p.compensateRegistryGrant(ctx, tx, registry.displacedEvent, registry.displacedFounder); err != nil {
 			return err
 		}
 	}
@@ -130,36 +145,166 @@ func (p *Projector) projectExecution(ctx context.Context, tx *sql.Tx, event save
 	}
 
 	policy := catalog.KnowledgePolicy()
-	if registryFirst == 1 {
-		if err := p.grant(ctx, tx, event, payload.RouteID, payload.FounderID, "registry_first", policy.RegistryFirstBonus); err != nil {
+	if registry.registryFirst {
+		if _, err := p.grant(ctx, tx, event, payload.RouteID, payload.FounderID, "registry_first", policy.RegistryFirstBonus); err != nil {
 			return err
 		}
 	}
 	if founderFirst == 1 {
-		if err := p.grant(ctx, tx, event, payload.RouteID, payload.FounderID, "founder_first", policy.FounderFirstGrant); err != nil {
+		if _, err := p.grant(ctx, tx, event, payload.RouteID, payload.FounderID, "founder_first", policy.FounderFirstGrant); err != nil {
 			return err
 		}
-	} else if err := p.grant(ctx, tx, event, payload.RouteID, payload.FounderID, "repeat", policy.RepeatGrant); err != nil {
+	} else if _, err := p.grant(ctx, tx, event, payload.RouteID, payload.FounderID, "repeat", policy.RepeatGrant); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (p *Projector) grant(ctx context.Context, tx *sql.Tx, event save.EventRecord, routeID, founderID, source string, amount int64) error {
-	if amount <= 0 || amount > decimal.MaxExactInteger {
-		return ErrProjection
+func lockRegistryRoutes(ctx context.Context, tx *sql.Tx, events []save.EventRecord) error {
+	routeIDs := make(map[string]struct{})
+	for _, event := range events {
+		if event.Kind != save.EventRouteExecuted {
+			continue
+		}
+		var payload executionPayload
+		if err := decodeStrict(event.Payload, &payload); err != nil {
+			return fmt.Errorf("%w: route event: %v", ErrProjection, err)
+		}
+		routeIDs[payload.RouteID] = struct{}{}
 	}
-	payload, _ := json.Marshal(map[string]any{"route_id": routeID, "amount": amount, "source": source})
-	if _, err := tx.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,$2,1,'route_knowledge_granted',$3,$4,$5,$6)`, event.StreamID, event.Revision, nullIntent(event.IntentID), event.ConstantsHash, event.OccurredAt, payload); err != nil {
+	ordered := make([]string, 0, len(routeIDs))
+	for routeID := range routeIDs {
+		ordered = append(ordered, routeID)
+	}
+	sort.Strings(ordered)
+	for _, routeID := range ordered {
+		if _, err := tx.ExecContext(ctx, `SELECT pg_advisory_xact_lock(hashtextextended($1, 1381191751))`, routeID); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (p *Projector) decideRegistry(ctx context.Context, tx *sql.Tx, event save.EventRecord, payload executionPayload, houseName string) (registryDecision, error) {
+	var currentEvent, currentFounder string
+	var currentOccurred time.Time
+	err := tx.QueryRowContext(ctx, `SELECT first_event_id,first_founder_id,occurred_at FROM registry_routes WHERE route_id=$1 FOR UPDATE`, payload.RouteID).Scan(&currentEvent, &currentFounder, &currentOccurred)
+	if errors.Is(err, sql.ErrNoRows) {
+		_, err = tx.ExecContext(ctx, `INSERT INTO registry_routes(route_id,first_event_id,first_founder_id,occurred_at,house_name,name,name_state,naming_reserved_until,execution_count) VALUES ($1,$2,$3,$4,$5,$5,'reserved',$6,1)`, payload.RouteID, event.EventID, payload.FounderID, event.OccurredAt, houseName, event.OccurredAt.Add(72*time.Hour))
+		return registryDecision{registryFirst: true}, err
+	}
+	if err != nil {
+		return registryDecision{}, err
+	}
+	if !eventBefore(event.OccurredAt, event.EventID, currentOccurred, currentEvent) {
+		_, err = tx.ExecContext(ctx, `UPDATE registry_routes SET execution_count=execution_count+1 WHERE route_id=$1`, payload.RouteID)
+		return registryDecision{}, err
+	}
+	result, err := tx.ExecContext(ctx, `UPDATE registry_routes SET first_event_id=$2,first_founder_id=$3,occurred_at=$4,house_name=$5,name=$5,name_state='reserved',naming_reserved_until=$6,execution_count=execution_count+1 WHERE route_id=$1`, payload.RouteID, event.EventID, payload.FounderID, event.OccurredAt, houseName, event.OccurredAt.Add(72*time.Hour))
+	if err != nil {
+		return registryDecision{}, err
+	}
+	affected, err := result.RowsAffected()
+	if err != nil || affected != 1 {
+		return registryDecision{}, fmt.Errorf("%w: Registry displacement", ErrProjection)
+	}
+	return registryDecision{registryFirst: true, displacedEvent: currentEvent, displacedFounder: currentFounder}, nil
+}
+
+func eventBefore(leftTime time.Time, leftID string, rightTime time.Time, rightID string) bool {
+	if !leftTime.Equal(rightTime) {
+		return leftTime.Before(rightTime)
+	}
+	return strings.Compare(leftID, rightID) < 0
+}
+
+func (p *Projector) compensateRegistryGrant(ctx context.Context, tx *sql.Tx, executionEventID, founderID string) error {
+	var grant grantRecord
+	var matches int64
+	err := tx.QueryRowContext(ctx, `
+		SELECT awarded.event_id,awarded.stream_id,awarded.revision,awarded.constants_hash,awarded.occurred_at,
+		       (awarded.payload->>'amount')::bigint,count(*) OVER ()
+		FROM events execution
+		JOIN events awarded ON awarded.stream_id=execution.stream_id AND awarded.revision=execution.revision
+		JOIN save_streams stream ON stream.id=awarded.stream_id
+		WHERE execution.event_id=$1 AND stream.owner_id=$2 AND awarded.kind='route_knowledge_granted'
+		  AND awarded.payload->>'route_id'=(execution.payload->>'route_id')
+		  AND awarded.payload->>'source'='registry_first'
+		  AND NOT EXISTS (
+		      SELECT 1 FROM events compensation
+		      WHERE compensation.kind='compensation'
+		        AND compensation.payload->>'compensates_event_id'=awarded.event_id::text
+		  )`, executionEventID, founderID).Scan(&grant.EventID, &grant.StreamID, &grant.Revision, &grant.ConstantsHash, &grant.OccurredAt, &grant.Amount, &matches)
+	if err != nil || matches != 1 || grant.Amount <= 0 || grant.Amount > decimal.MaxExactInteger {
+		if err == nil {
+			err = ErrProjection
+		}
+		return fmt.Errorf("%w: active Registry grant: %v", ErrProjection, err)
+	}
+	payload, err := json.Marshal(map[string]any{
+		"compensates_event_id": grant.EventID,
+		"reason_key":           "route.registry_first_reordered",
+	})
+	if err != nil {
 		return err
 	}
-	result, err := tx.ExecContext(ctx, `INSERT INTO founder_route_state(founder_id,route_knowledge_balance) VALUES($1,$2) ON CONFLICT(founder_id) DO UPDATE SET route_knowledge_balance=founder_route_state.route_knowledge_balance+EXCLUDED.route_knowledge_balance WHERE founder_route_state.route_knowledge_balance <= $3`, founderID, amount, decimal.MaxExactInteger-amount)
+	if _, err := tx.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,$2,1,'compensation',NULL,$3,$4,$5)`, grant.StreamID, grant.Revision, grant.ConstantsHash, grant.OccurredAt, payload); err != nil {
+		return err
+	}
+	return p.applyKnowledgeDelta(ctx, tx, founderID, -grant.Amount)
+}
+
+func (p *Projector) grant(ctx context.Context, tx *sql.Tx, event save.EventRecord, routeID, founderID, source string, amount int64) (string, error) {
+	if amount <= 0 || amount > decimal.MaxExactInteger {
+		return "", ErrProjection
+	}
+	payload, _ := json.Marshal(map[string]any{"route_id": routeID, "amount": amount, "source": source})
+	var eventID string
+	if err := tx.QueryRowContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,$2,1,'route_knowledge_granted',$3,$4,$5,$6) RETURNING event_id`, event.StreamID, event.Revision, nullIntent(event.IntentID), event.ConstantsHash, event.OccurredAt, payload).Scan(&eventID); err != nil {
+		return "", err
+	}
+	if err := p.applyKnowledgeDelta(ctx, tx, founderID, amount); err != nil {
+		return "", err
+	}
+	return eventID, nil
+}
+
+func (p *Projector) applyKnowledgeDelta(ctx context.Context, tx *sql.Tx, founderID string, delta int64) error {
+	if delta == 0 || delta < -decimal.MaxExactInteger || delta > decimal.MaxExactInteger {
+		return ErrProjection
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO founder_route_state(founder_id,route_knowledge_balance,route_knowledge_debt) VALUES($1,0,0) ON CONFLICT DO NOTHING`, founderID); err != nil {
+		return err
+	}
+	var balance, debt int64
+	if err := tx.QueryRowContext(ctx, `SELECT route_knowledge_balance,route_knowledge_debt FROM founder_route_state WHERE founder_id=$1 FOR UPDATE`, founderID).Scan(&balance, &debt); err != nil {
+		return err
+	}
+	if delta > 0 {
+		repaid := min(debt, delta)
+		debt -= repaid
+		spendable := delta - repaid
+		if balance > decimal.MaxExactInteger-spendable {
+			return fmt.Errorf("%w: Route Knowledge overflow", ErrProjection)
+		}
+		balance += spendable
+	} else {
+		correction := -delta
+		consumed := min(balance, correction)
+		balance -= consumed
+		correction -= consumed
+		if debt > decimal.MaxExactInteger-correction {
+			return fmt.Errorf("%w: Route Knowledge debt overflow", ErrProjection)
+		}
+		debt += correction
+	}
+	result, err := tx.ExecContext(ctx, `UPDATE founder_route_state SET route_knowledge_balance=$2,route_knowledge_debt=$3 WHERE founder_id=$1`, founderID, balance, debt)
 	if err != nil {
 		return err
 	}
 	affected, err := result.RowsAffected()
 	if err != nil || affected != 1 {
-		return fmt.Errorf("%w: Route Knowledge overflow", ErrProjection)
+		return ErrProjection
 	}
 	return nil
 }
@@ -192,21 +337,55 @@ func (p *Projector) RepairFounder(ctx context.Context, founderID string, state *
 	if state == nil {
 		return ErrProjection
 	}
-	var balance int64
-	err := p.db.QueryRowContext(ctx, `SELECT route_knowledge_balance FROM founder_route_state WHERE founder_id=$1`, founderID).Scan(&balance)
-	if errors.Is(err, sql.ErrNoRows) {
-		var grants, costs int64
-		if err := p.db.QueryRowContext(ctx, `SELECT COALESCE(sum(CASE WHEN e.kind='route_knowledge_granted' THEN (e.payload->>'amount')::bigint ELSE 0 END),0), COALESCE(sum(CASE WHEN e.kind='route_hint_purchased' THEN (e.payload->>'cost')::bigint ELSE 0 END),0) FROM events e JOIN save_streams s ON s.id=e.stream_id WHERE s.owner_id=$1 AND e.kind IN ('route_knowledge_granted','route_hint_purchased')`, founderID).Scan(&grants, &costs); err != nil {
+	tx, err := p.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	result, err := tx.ExecContext(ctx, `INSERT INTO founder_route_state(founder_id,route_knowledge_balance,route_knowledge_debt) VALUES($1,0,0) ON CONFLICT DO NOTHING`, founderID)
+	if err != nil {
+		return err
+	}
+	inserted, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	var balance, debt int64
+	if err := tx.QueryRowContext(ctx, `SELECT route_knowledge_balance,route_knowledge_debt FROM founder_route_state WHERE founder_id=$1 FOR UPDATE`, founderID).Scan(&balance, &debt); err != nil {
+		return err
+	}
+	if inserted == 1 {
+		var netText string
+		if err := tx.QueryRowContext(ctx, `
+			SELECT (
+				COALESCE(sum((e.payload->>'amount')::numeric) FILTER (
+					WHERE e.kind='route_knowledge_granted' AND NOT EXISTS (
+						SELECT 1 FROM events compensation
+						WHERE compensation.kind='compensation'
+						  AND compensation.payload->>'compensates_event_id'=e.event_id::text
+					)
+				),0)
+				- COALESCE(sum((e.payload->>'cost')::numeric) FILTER (WHERE e.kind='route_hint_purchased'),0)
+			)::text
+			FROM events e JOIN save_streams s ON s.id=e.stream_id
+			WHERE s.owner_id=$1 AND e.kind IN ('route_knowledge_granted','route_hint_purchased')`, founderID).Scan(&netText); err != nil {
 			return err
 		}
-		balance = grants - costs
-		if balance < 0 || balance > decimal.MaxExactInteger {
+		net, ok := new(big.Int).SetString(netText, 10)
+		limit := big.NewInt(decimal.MaxExactInteger)
+		if !ok || new(big.Int).Abs(new(big.Int).Set(net)).Cmp(limit) > 0 {
 			return ErrProjection
 		}
-		if _, err := p.db.ExecContext(ctx, `INSERT INTO founder_route_state(founder_id,route_knowledge_balance) VALUES($1,$2) ON CONFLICT(founder_id) DO UPDATE SET route_knowledge_balance=EXCLUDED.route_knowledge_balance`, founderID, balance); err != nil {
+		if net.Sign() >= 0 {
+			balance = net.Int64()
+		} else {
+			debt = new(big.Int).Neg(net).Int64()
+		}
+		if _, err := tx.ExecContext(ctx, `UPDATE founder_route_state SET route_knowledge_balance=$2,route_knowledge_debt=$3 WHERE founder_id=$1`, founderID, balance, debt); err != nil {
 			return err
 		}
-	} else if err != nil {
+	}
+	if err := tx.Commit(); err != nil {
 		return err
 	}
 	state.RouteKnowledgeBalance = balance

@@ -8,3 +8,19 @@
 - The follow-up makes `(occurred_at,event_id)` authoritative across batches. It explicitly covers
   already-spent provisional grants with projection debt; silently preserving the false bonus or
   allowing a negative founder save would violate the existing currency/save contracts.
+
+## 2026-07-29 — implementation
+
+- Registry decisions now take transaction advisory locks in sorted route-ID order, avoiding the
+  absent-row race and keeping multi-route advisory-lock acquisition globally ordered.
+- An earlier delivery compensates the exact active Registry grant, resets naming to the incoming
+  event's reservation, and grants the incoming winner under its own constants epoch.
+- `founder_route_state.route_knowledge_debt` preserves non-negative saves when a provisional award
+  was already spent. Positive grants repay debt first; read-repair reconstructs the signed net from
+  uncompensated grants and permanent hint purchases.
+- Postgres coverage now includes reverse delivery, a published provisional name, a spent award,
+  replay, immutable-history repair, later debt repayment, equal-timestamp event-ID ordering, and
+  rollback when the old grant is missing.
+- Verification is green: the focused package and full Postgres integration suites pass, followed by
+  `make verify` (Go tests/vet/formula and harness gates; 6,412 client tests; 19,245 browser tests).
+  The batch now waits at the mandatory independent diff-review gate before archival.

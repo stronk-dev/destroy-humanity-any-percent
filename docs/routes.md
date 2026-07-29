@@ -64,13 +64,17 @@ legacy and new company state at 1.
 The company event stream is the source of truth. After commit—and again on replay after a lost
 response—the route projector consumes event records in `(occurred_at, event_id)` byte order.
 Projection writes are idempotent by event ID, and `(founder, company stream, run, route)` is unique,
-so a route cannot be farmed repeatedly in one run.
+so a route cannot be farmed repeatedly in one run. Registry decisions are serialized per route and
+compare this immutable order across separate deliveries; whichever batch happens to arrive first
+does not define the winner.
 
-`registry_routes` uses a primary-key insert for the global first-executor race. The winner receives
-permanent executor credit and a 72-hour naming reservation. A submitted name enters `pending`;
-approval publishes it, failure restores the catalog's house name, and an unused reservation
-expires to that same house name. The Registry stores a plain execution count; variants, time
-buckets, adoption curves, and its public read API belong to Registry Analytics.
+The earliest event receives permanent executor credit and a 72-hour naming reservation. If a
+still-earlier event is delivered later, it replaces the provisional winner and receives a fresh
+reservation from its own occurrence time. Any provisional name is reset to the catalog house name:
+it could not exist in an event-order rebuild. A submitted name otherwise enters `pending`;
+approval publishes it, failure restores the house name, and an unused reservation expires to that
+same name. The Registry stores a plain execution count; variants, time buckets, adoption curves,
+and its public read API belong to Registry Analytics.
 
 Founder career executions and Route Knowledge are idempotent projections. Grants are:
 
@@ -79,10 +83,15 @@ Founder career executions and Route Knowledge are idempotent projections. Grants
 - a later run by the same founder: 5.
 
 All values are catalog data. Each derived grant is an immutable `route_knowledge_granted` event.
-The cached founder balance can be rebuilt from grant and purchase events when its projection row
-is missing. `buy_route_hint` runs on the Founder stream, costs the catalog's 50 Route Knowledge,
-and permanently adds the route ID to `hints_unlocked`. Hints reveal catalog predicates only; the
-predicate context and evaluator do not contain hint state.
+When event ordering replaces a provisional Registry winner, the projector appends a standard
+`compensation` for that exact grant and awards the true winner from its own catalog epoch. A
+correction consumes cached spendable Knowledge first; any amount already spent becomes
+non-spendable projection debt that later grants repay before increasing the balance. Purchased
+hints remain permanent and founder saves never become negative. Read-repair rebuilds the same
+balance and debt from uncompensated grants minus purchases. `buy_route_hint` runs on the Founder
+stream, costs the catalog's 50 Route Knowledge, and permanently adds the route ID to
+`hints_unlocked`. Hints reveal catalog predicates only; the predicate context and evaluator do not
+contain hint state.
 
 ## Depletion proof and verification
 
@@ -96,5 +105,6 @@ the gate fails closed.
 
 `make verify` covers schema semantics, cross-runtime predicate parity, import boundaries, save-v5
 migration, gate debit/event behavior, hint non-interference, and Postgres integration. The database
-suite also races first executions from different company streams, replays both, and asserts one
-Registry winner, two adoptions, and no duplicated grants.
+suite races first executions, reverses delivery order across batches, exercises equal-time UUID
+ordering and an already-spent provisional award, rebuilds the cache from immutable history, and
+asserts one active Registry grant with no duplicated adoption.
