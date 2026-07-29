@@ -29,3 +29,14 @@
   failure paths; this was not present in the two-value baseline.
 - Local spec/adversarial review found no untracked milestone tuple or second aggregation authority.
   Independent diff review remains the archival gate.
+
+## 2026-07-29 — full verification
+
+- The clean 300-run check passed with all 16 aggregate values, no drift, and zero invariant
+  failures. `make harness-check` also validated the complete commit history through the hardened
+  baseline guard.
+- Full real-Postgres `make verify` passed: Go/vet/integration, formula generation, Commons
+  population invariance, harness, TypeScript diagnostics/build, schema semantics, 6,412 client
+  tests, and 19,245 browser tests.
+- Implementation is complete. The RFC remains `implementing` solely for its mandatory independent
+  diff review.
