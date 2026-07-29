@@ -57,8 +57,10 @@ Dispatch events for commons state transitions (Health band crossings, cascade on
 
 ## Open questions
 
-- Slot-weight table for `dᵢ`, sᵢ accrual/decay constants, tithe band: balance data, provisional per the research, harness-gated.
-- Guild-term fallback for guildless members (cohort substitution) is specified here; revisit if the harness shows it double-weights cohorts.
+None for this foundation. The Phase-0 source-weight table (explicitly empty), Solidarity window,
+tithe band, Health controls, population controls, and convex exponent are shipped balance data.
+Future value changes use the harness/balance-change process; the guild term and visible surfaces are
+owned by the linked successor.
 
 ## Deviations from design
 
