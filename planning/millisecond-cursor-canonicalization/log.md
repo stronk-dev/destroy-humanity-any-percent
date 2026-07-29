@@ -23,3 +23,15 @@ Append-only implementation record. Resume from this file, `plan.md`, and the acc
 - Production evaluation and manual-token refill now derive one canonical `effective_now`, compute
   exact integer milliseconds from it, and set their cursor directly to that shared instant.
 - Focused save and production suites pass.
+
+## 2026-07-29 — Reproducer and time properties green
+
+- Added the demonstrated v3 `100.9 ms` / `100.1 ms` reproducer through migration and a real manual
+  intent at `101.5 ms`. Both cursors commit at `101 ms`, receipt JSON agrees, and v4 encoding
+  succeeds.
+- Added 40,000 deterministic manual-intent steps over 200 independent cursor phases, forward
+  intervals, same-millisecond calls, and clock regressions. The manual cursor never exceeds the
+  production cursor and every resulting state encodes.
+- Added explicit 0.999 ms, exact 1 ms, same-ms, rollback, and exact 86,400,000 ms production/refill
+  boundaries without changing accrual or token results.
+- Full save and production package suites pass.

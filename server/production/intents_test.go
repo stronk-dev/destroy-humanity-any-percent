@@ -1,6 +1,7 @@
 package production
 
 import (
+	"encoding/json"
 	"io"
 	"log/slog"
 	"math/rand"
@@ -57,6 +58,125 @@ func TestManualTokenRefillAdvancesAtCap(t *testing.T) {
 	refillManualTokens(state, policy, cursor.Add(1400*time.Millisecond))
 	if state.ManualTokenMilli != 50_000 {
 		t.Fatalf("refilled tokens = %d", state.ManualTokenMilli)
+	}
+}
+
+func TestManualTokenRefillMillisecondBoundaries(t *testing.T) {
+	cursor := time.Date(2026, 7, 28, 8, 0, 0, 100_000_000, time.UTC)
+	state := &save.State{ManualTokenMilli: 0, ManualTokenRefilledAt: cursor}
+	policy := economy.ManualPolicy{RefillMilliPerMS: 25, BucketCapMilli: 50_000}
+
+	refillManualTokens(state, policy, cursor.Add(999*time.Microsecond))
+	if state.ManualTokenMilli != 0 || !state.ManualTokenRefilledAt.Equal(cursor) {
+		t.Fatalf("sub-millisecond refill state = %+v", state)
+	}
+	refillManualTokens(state, policy, cursor.Add(time.Millisecond))
+	if state.ManualTokenMilli != 25 || !state.ManualTokenRefilledAt.Equal(cursor.Add(time.Millisecond)) {
+		t.Fatalf("exact-millisecond refill state = %+v", state)
+	}
+	refillManualTokens(state, policy, cursor.Add(500*time.Microsecond))
+	if state.ManualTokenMilli != 25 || !state.ManualTokenRefilledAt.Equal(cursor.Add(time.Millisecond)) {
+		t.Fatalf("rollback refill state = %+v", state)
+	}
+}
+
+func TestManualIntentRepairsMigratedCursorPhaseMismatch(t *testing.T) {
+	catalog := phase0Catalog(t)
+	legacy := []byte(`{
+      "balances":{"company.cash":"0"},
+      "generators":{"generator.beige_tower":0},
+      "evaluated_through":"2026-07-28T08:00:00.1009Z",
+      "compute_credit_ms":0,
+      "manual_token_milli":50000,
+      "manual_token_refilled_at":"2026-07-28T08:00:00.1001Z"
+    }`)
+	state, err := save.RestoreState(legacy, 3, catalog, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantMigrated := time.Date(2026, 7, 28, 8, 0, 0, 100_000_000, time.UTC)
+	if !state.EvaluatedThrough.Equal(wantMigrated) || !state.ManualTokenRefilledAt.Equal(wantMigrated) {
+		t.Fatalf("migrated cursors = %s / %s", state.EvaluatedThrough, state.ManualTokenRefilledAt)
+	}
+
+	now := time.Date(2026, 7, 28, 8, 0, 0, 101_500_000, time.UTC)
+	service := &Service{}
+	decision, err := service.performManualBatch(parsedIntent{
+		IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentPerformManualBatch,
+		ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1,
+	}, state, catalog, save.Revision{Number: 1}, ModeOnline, now, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantAdvanced := time.Date(2026, 7, 28, 8, 0, 0, 101_000_000, time.UTC)
+	if decision.Outcome != save.IntentApplied || !state.EvaluatedThrough.Equal(wantAdvanced) ||
+		!state.ManualTokenRefilledAt.Equal(wantAdvanced) {
+		t.Fatalf("decision=%+v cursors=%s/%s", decision, state.EvaluatedThrough, state.ManualTokenRefilledAt)
+	}
+	encoded, err := save.EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !json.Valid(encoded) {
+		t.Fatalf("encoded state is invalid JSON: %s", encoded)
+	}
+	var receipt struct {
+		EvaluatedAt string `json:"evaluated_at"`
+		Snapshot    struct {
+			EvaluatedThrough      string `json:"evaluated_through"`
+			ManualTokenRefilledAt string `json:"manual_token_refilled_at"`
+		} `json:"snapshot"`
+	}
+	if err := json.Unmarshal(decision.Receipt, &receipt); err != nil {
+		t.Fatal(err)
+	}
+	if receipt.EvaluatedAt != "2026-07-28T08:00:00.101Z" ||
+		receipt.Snapshot.EvaluatedThrough != receipt.EvaluatedAt ||
+		receipt.Snapshot.ManualTokenRefilledAt != receipt.EvaluatedAt {
+		t.Fatalf("receipt cursors = %+v", receipt)
+	}
+}
+
+func TestManualIntentCursorOrderingProperty(t *testing.T) {
+	catalog := phase0Catalog(t)
+	service := &Service{}
+	base := time.Date(2026, 7, 28, 8, 0, 0, 100_000_000, time.UTC)
+	for seed := int64(0); seed < 200; seed++ {
+		random := rand.New(rand.NewSource(seed))
+		evaluatedPhase := random.Intn(1_000_000)
+		manualPhase := random.Intn(evaluatedPhase + 1)
+		legacy, err := json.Marshal(map[string]any{
+			"balances":                 map[string]string{"company.cash": "0"},
+			"generators":               map[string]int64{"generator.beige_tower": 0},
+			"evaluated_through":        base.Add(time.Duration(evaluatedPhase) * time.Nanosecond).Format(time.RFC3339Nano),
+			"compute_credit_ms":        0,
+			"manual_token_milli":       50_000,
+			"manual_token_refilled_at": base.Add(time.Duration(manualPhase) * time.Nanosecond).Format(time.RFC3339Nano),
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		state, err := save.RestoreState(legacy, 3, catalog, economy.ScopeCompany, time.Time{})
+		if err != nil {
+			t.Fatalf("seed=%d restore: %v", seed, err)
+		}
+		now := base
+		for step := 0; step < 200; step++ {
+			now = now.Add(time.Duration(random.Int63n(4_000_000)-500_000) * time.Nanosecond)
+			decision, err := service.performManualBatch(parsedIntent{
+				IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentPerformManualBatch,
+				ExpectedRevision: int64(step + 1), ActionID: "manual.click", Count: 1, WindowMS: 1,
+			}, state, catalog, save.Revision{Number: int64(step + 1)}, ModeOnline, now, nil)
+			if err != nil || decision.Outcome != save.IntentApplied {
+				t.Fatalf("seed=%d step=%d decision=%+v err=%v", seed, step, decision, err)
+			}
+			if state.ManualTokenRefilledAt.After(state.EvaluatedThrough) {
+				t.Fatalf("seed=%d step=%d manual=%s > evaluated=%s", seed, step, state.ManualTokenRefilledAt, state.EvaluatedThrough)
+			}
+			if _, err := save.EncodeState(state); err != nil {
+				t.Fatalf("seed=%d step=%d encode: %v", seed, step, err)
+			}
+		}
 	}
 }
 

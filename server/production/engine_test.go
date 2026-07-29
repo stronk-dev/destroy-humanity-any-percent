@@ -70,6 +70,42 @@ func TestEvaluateOnlineAndClockRollback(t *testing.T) {
 	}
 }
 
+func TestEvaluateMillisecondBoundaries(t *testing.T) {
+	catalog := phase0Catalog(t)
+	state := engineState(t, catalog, "0", 1)
+
+	result, err := Evaluate(state, catalog, engineCursor.Add(999*time.Microsecond), ModeOnline, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.ElapsedMS != 0 || state.Ledger.Snapshot()["company.cash"] != "0" || !state.EvaluatedThrough.Equal(engineCursor) {
+		t.Fatalf("sub-millisecond result=%+v state=%+v", result, state)
+	}
+	result, err = Evaluate(state, catalog, engineCursor.Add(time.Millisecond), ModeOnline, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.ElapsedMS != 1 || state.Ledger.Snapshot()["company.cash"] != "1e-3" ||
+		!state.EvaluatedThrough.Equal(engineCursor.Add(time.Millisecond)) {
+		t.Fatalf("exact-millisecond result=%+v cash=%s cursor=%s", result, state.Ledger.Snapshot()["company.cash"], state.EvaluatedThrough)
+	}
+	before := state.Ledger.Snapshot()["company.cash"]
+	result, err = Evaluate(state, catalog, engineCursor.Add(500*time.Microsecond), ModeOnline, nil)
+	if err != nil || result.ElapsedMS != 0 || state.Ledger.Snapshot()["company.cash"] != before {
+		t.Fatalf("rollback result=%+v cash=%s err=%v", result, state.Ledger.Snapshot()["company.cash"], err)
+	}
+
+	offline := engineState(t, catalog, "0", 1)
+	result, err = Evaluate(offline, catalog, engineCursor.Add(86_400_000*time.Millisecond), ModeOffline, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.ProductionMS != 86_400_000 || result.BankedCreditMS != 0 ||
+		offline.Ledger.Snapshot()["company.cash"] != "7.776e4" {
+		t.Fatalf("offline boundary result=%+v cash=%s", result, offline.Ledger.Snapshot()["company.cash"])
+	}
+}
+
 func TestEvaluateOfflineCapsProductionAndBanksExcess(t *testing.T) {
 	catalog := phase0Catalog(t)
 	state := engineState(t, catalog, "0", 1)
