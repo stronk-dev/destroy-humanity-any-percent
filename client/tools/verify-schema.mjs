@@ -229,6 +229,15 @@ async function main() {
     if (!commonsSource || commonsSource.slot !== "commons" || commonsSource.target !== "all" || commonsSource.provider !== "commons") throw new Error("economy catalog must declare the single commons.member provider");
   }
 
+  const shellSchema = await readJSON(path.join(balanceDirectory, "client-shell.schema.json"));
+  const validateShell = ajv.compile(shellSchema);
+  const shellCatalogs = await jsonFiles(path.join(balanceDirectory, "client-shell"));
+  if (shellCatalogs.length === 0) throw new Error("client shell schema verification requires a production catalog");
+  for (const filename of shellCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateShell(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateShell)}`);
+  }
+
   const harnessDirectory = path.join(repositoryDirectory, "testdata", "harness");
   const scenarioSchema = await readJSON(path.join(harnessDirectory, "scenario.schema.json"));
   const reportSchema = await readJSON(path.join(harnessDirectory, "report.schema.json"));
@@ -255,7 +264,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + routes + commons + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + routes + commons + client-shell + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${scenarios.length} scenario(s)`,
   );
 }
 

@@ -4,22 +4,29 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
     "setup:browsers": "playwright install chromium firefox webkit",
     "setup:browsers:ci": "playwright install --with-deps chromium firefox webkit",
     "test": "vitest run",
     "test:browser": "vitest run --config vitest.browser.config.ts",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
     "verify:schema": "node tools/verify-schema.mjs"
   },
   "dependencies": {
-    "break_infinity.js": "2.2.0"
+    "break_infinity.js": "2.2.0",
+    "svelte": "5.56.8"
   },
   "devDependencies": {
-    "@vitest/browser": "3.2.4",
+    "@sveltejs/vite-plugin-svelte": "7.2.0",
+    "@vitest/browser": "4.1.10",
+    "@vitest/browser-playwright": "4.1.10",
     "ajv": "8.20.0",
     "playwright": "1.62.0",
+    "svelte-check": "4.7.4",
     "typescript": "5.9.2",
-    "vitest": "3.2.4"
+    "vite": "8.1.5",
+    "vitest": "4.1.10"
   },
   "engines": {
     "node": ">=22"

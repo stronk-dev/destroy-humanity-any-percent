@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck vectors vectors-check formulas formulas-check harness harness-check commons-harness-check harness-update vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck build-client vectors vectors-check formulas formulas-check harness harness-check commons-harness-check harness-update vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-server verify-client verify
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -27,6 +27,9 @@ test-browser:
 
 typecheck:
 	pnpm --dir client run typecheck
+
+build-client:
+	pnpm --dir client run build
 
 vectors:
 	node tools/gen-vectors.mjs
@@ -72,8 +75,11 @@ verify-commons-boundary:
 	@if cd server && GOCACHE=/tmp/cloud-clicker-commons-go-cache go list -deps ./commons | grep -qx 'cloud-clicker/server/production'; then echo 'commons package must not import production' >&2; exit 1; fi
 	@if cd server && GOCACHE=/tmp/cloud-clicker-commons-go-cache go list -deps ./production | grep -qx 'cloud-clicker/server/commons'; then echo 'production package must not import commons' >&2; exit 1; fi
 
+verify-client-boundary:
+	node client/tools/verify-shell-boundaries.mjs
+
 verify-server: vet test-go formulas-check harness-check verify-routes-boundary verify-commons-boundary
 
-verify-client: typecheck test-client
+verify-client: typecheck build-client test-client verify-client-boundary
 
 verify: verify-server verify-client verify-schema test-browser
