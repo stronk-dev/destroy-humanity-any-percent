@@ -31,3 +31,14 @@
 - Go unit packages, schema semantics, import boundaries, and the complete serial Postgres
   integration suite are green. Harness artifacts intentionally remain stale until this input
   commit lands, after which `make harness-update` creates the required separate balance commit.
+
+## 2026-07-29 — local adversarial pass
+
+- The first route allowlist recipe had `|| true` over the complete import pipeline. That correctly
+  tolerated an empty grep result but would also have converted a failed `go list` into success.
+  The recipe now captures import enumeration first and fails closed before filtering the allowlist.
+- Re-checked the cross-transaction membership reproducer: revision is persisted in the projection
+  row, stale events are still claimed exactly once, and founder assignment timestamps use
+  `GREATEST` so old delivery cannot move the read model backward.
+- No other implementation finding emerged from the spec/adversarial pass. This is a self-review,
+  not the mandatory independent approval; neither active RFC is archived on its strength.
