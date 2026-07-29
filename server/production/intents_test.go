@@ -83,23 +83,23 @@ func TestCompactSignLeaveAndResign(t *testing.T) {
 	state.RunSeq = 1
 	band := &CompactTitheBand{MinimumPPM: 50_000, MaximumPPM: 150_000}
 	sign := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentSignCompact, TithePPM: 100_000}
-	decision, err := TransitionWithPolicies(sign, state, catalog, nil, band, revision, ModeOnline, engineCursor.Add(time.Second), nil, nil)
+	decision, err := TransitionWithPolicies(sign, state, catalog, nil, band, revision, ModeOnline, engineCursor.Add(time.Second), nil, nil, nil)
 	if err != nil || decision.Outcome != save.IntentApplied || !state.CompactMember || state.CompactTithePPM != 100_000 || len(decision.Events) != 1 || decision.Events[0].Kind != save.EventCompactSigned {
 		t.Fatalf("sign=%+v state=%+v err=%v", decision, state, err)
 	}
-	again, err := TransitionWithPolicies(sign, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 2}, ModeOnline, engineCursor.Add(time.Second), nil, nil)
+	again, err := TransitionWithPolicies(sign, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 2}, ModeOnline, engineCursor.Add(time.Second), nil, nil, nil)
 	if err != nil || again.Outcome != save.IntentRejected || !bytes.Contains(again.Receipt, []byte("already_member")) {
 		t.Fatalf("again=%s err=%v", again.Receipt, err)
 	}
 	state.CompactSolidarityPPM = 900_000
 	state.CompactSamples = []save.CompactSample{{HourStart: engineCursor.Truncate(time.Hour), CompliancePPM: 900_000, CoveredMS: 1_000}}
 	leave := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ac", Kind: IntentLeaveCompact}
-	decision, err = TransitionWithPolicies(leave, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 2}, ModeOnline, engineCursor.Add(2*time.Second), nil, nil)
+	decision, err = TransitionWithPolicies(leave, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 2}, ModeOnline, engineCursor.Add(2*time.Second), nil, nil, nil)
 	if err != nil || decision.Outcome != save.IntentApplied || state.CompactMember || state.CompactTithePPM != 0 || state.CompactSolidarityPPM != 0 || len(state.CompactSamples) != 0 || decision.Events[0].Kind != save.EventCompactLeft {
 		t.Fatalf("leave=%+v state=%+v err=%v", decision, state, err)
 	}
 	sign.IntentID = "018f6b7c-9abc-7def-8abc-0123456789ad"
-	decision, err = TransitionWithPolicies(sign, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 3}, ModeOnline, engineCursor.Add(3*time.Second), nil, nil)
+	decision, err = TransitionWithPolicies(sign, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 3}, ModeOnline, engineCursor.Add(3*time.Second), nil, nil, nil)
 	if err != nil || decision.Outcome != save.IntentApplied || !state.CompactMember || state.CompactSolidarityPPM != 0 {
 		t.Fatalf("resign=%+v state=%+v err=%v", decision, state, err)
 	}
@@ -288,7 +288,7 @@ func TestExportedTransitionMatchesServiceMutationCore(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	second, err := (&Service{}).buyGenerator(request, right, catalog, save.Revision{Number: 1}, ModeOnline, engineCursor, nil, &invariantCollector{})
+	second, err := (&Service{}).buyGenerator(request, right, catalog, save.Revision{Number: 1}, ModeOnline, engineCursor, nil, &invariantCollector{}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -361,7 +361,7 @@ func TestManualIntentRepairsMigratedCursorPhaseMismatch(t *testing.T) {
 	decision, err := service.performManualBatch(IntentRequest{
 		IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentPerformManualBatch,
 		ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1,
-	}, state, catalog, save.Revision{Number: 1}, ModeOnline, now, nil)
+	}, state, catalog, save.Revision{Number: 1}, ModeOnline, now, nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -423,7 +423,7 @@ func TestManualIntentCursorOrderingProperty(t *testing.T) {
 			decision, err := service.performManualBatch(IntentRequest{
 				IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentPerformManualBatch,
 				ExpectedRevision: int64(step + 1), ActionID: "manual.click", Count: 1, WindowMS: 1,
-			}, state, catalog, save.Revision{Number: int64(step + 1)}, ModeOnline, now, nil)
+			}, state, catalog, save.Revision{Number: int64(step + 1)}, ModeOnline, now, nil, nil)
 			if err != nil || decision.Outcome != save.IntentApplied {
 				t.Fatalf("seed=%d step=%d decision=%+v err=%v", seed, step, decision, err)
 			}
@@ -453,13 +453,13 @@ func TestIntentPolicyPropertyTwentyFourHoursTwoHundredSeeds(t *testing.T) {
 				decision, err = service.performManualBatch(IntentRequest{
 					IntentID: "018f6b7c-9abc-7def-8abc-999999999999", Kind: IntentPerformManualBatch,
 					ExpectedRevision: revision, ActionID: "manual.click", Count: int64(random.Intn(80) + 1), WindowMS: 300_000,
-				}, candidate, catalog, save.Revision{Number: revision}, ModeOnline, now, nil)
+				}, candidate, catalog, save.Revision{Number: revision}, ModeOnline, now, nil, nil)
 			} else {
 				collector := &invariantCollector{}
 				decision, err = service.buyGenerator(IntentRequest{
 					IntentID: "018f6b7c-9abc-7def-8abc-999999999999", Kind: IntentBuyGenerator,
 					ExpectedRevision: revision, GeneratorID: "generator.beige_tower", CountMode: "max",
-				}, candidate, catalog, save.Revision{Number: revision}, ModeOnline, now, nil, collector)
+				}, candidate, catalog, save.Revision{Number: revision}, ModeOnline, now, nil, collector, nil)
 			}
 			if err != nil {
 				t.Fatalf("seed=%d step=%d error=%v", seed, step, err)

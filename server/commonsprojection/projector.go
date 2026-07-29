@@ -12,7 +12,10 @@ import (
 	"io"
 	"sort"
 	"strings"
+	"time"
 
+	"cloud-clicker/server/commons"
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/save"
 )
 
@@ -26,7 +29,7 @@ type AssignmentResolver interface {
 	ResolveAssignment(founderID string) (AssignmentContext, bool)
 }
 type PolicyResolver interface {
-	CompactCohortTarget(constantsHash string) (int, bool)
+	ResolveCommons(constantsHash string) (*commons.Catalog, bool)
 }
 
 type Projector struct {
@@ -62,11 +65,15 @@ func (p *Projector) Project(ctx context.Context, source []save.EventRecord) erro
 		return strings.Compare(events[i].EventID, events[j].EventID) < 0
 	})
 	for _, event := range events {
-		if event.Kind != save.EventCompactSigned && event.Kind != save.EventCompactLeft {
-			continue
-		}
-		if err := p.project(ctx, event); err != nil {
-			return err
+		switch event.Kind {
+		case save.EventCompactSigned, save.EventCompactLeft:
+			if err := p.project(ctx, event); err != nil {
+				return err
+			}
+		case save.EventCompactSampled:
+			if err := p.projectSample(ctx, event); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
@@ -81,10 +88,11 @@ func (p *Projector) project(ctx context.Context, event save.EventRecord) error {
 	if !ok || assignment.ServerID == "" || assignment.ActivityBracket == "" {
 		return fmt.Errorf("%w: assignment context", ErrProjection)
 	}
-	target, ok := p.policies.CompactCohortTarget(event.ConstantsHash)
-	if !ok || target <= 0 {
+	catalog, ok := p.policies.ResolveCommons(event.ConstantsHash)
+	if !ok || catalog.CohortTargetSize <= 0 {
 		return fmt.Errorf("%w: catalog", ErrProjection)
 	}
+	target := catalog.CohortTargetSize
 	tx, err := p.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -148,6 +156,229 @@ func (p *Projector) project(ctx context.Context, event save.EventRecord) error {
 		return err
 	}
 	return tx.Commit()
+}
+
+type samplePayload struct {
+	FounderID string `json:"founder_id"`
+	RunID     struct {
+		CompanyStreamID string `json:"company_stream_id"`
+		RunSeq          int64  `json:"run_seq"`
+	} `json:"run_id"`
+	WeightPPM     int64  `json:"weight_ppm"`
+	CompliancePPM int64  `json:"compliance_ppm"`
+	Enclosure     string `json:"enclosure"`
+	Capacity      string `json:"capacity"`
+	SolidarityPPM int64  `json:"solidarity_ppm"`
+	SampledMS     int64  `json:"sampled_ms"`
+}
+
+func (p *Projector) projectSample(ctx context.Context, event save.EventRecord) error {
+	var payload samplePayload
+	if err := decodeStrict(event.Payload, &payload); err != nil || payload.FounderID != event.OwnerID || payload.RunID.CompanyStreamID != event.StreamID || payload.RunID.RunSeq < 1 || payload.WeightPPM < 0 || payload.WeightPPM > commons.PPM || payload.CompliancePPM < 0 || payload.CompliancePPM > commons.PPM || payload.SolidarityPPM < 0 || payload.SolidarityPPM > commons.PPM || payload.SampledMS <= 0 {
+		return fmt.Errorf("%w: sample identity", ErrProjection)
+	}
+	if value, err := decimal.ParseCanonical(payload.Enclosure); err != nil || value.Lt(decimal.Zero) || value.Gt(decimal.One) {
+		return ErrProjection
+	}
+	if value, err := decimal.ParseCanonical(payload.Capacity); err != nil || value.Lt(decimal.Zero) {
+		return ErrProjection
+	}
+	catalog, ok := p.policies.ResolveCommons(event.ConstantsHash)
+	if !ok {
+		return ErrProjection
+	}
+	tx, err := p.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	var cohortID, serverID string
+	var member bool
+	if err := tx.QueryRowContext(ctx, `SELECT m.cohort_id,a.server_id,m.member FROM company_compact_memberships m JOIN founder_commons_assignments a ON a.founder_id=m.founder_id WHERE m.company_stream_id=$1 AND m.founder_id=$2 AND m.run_seq=$3`, payload.RunID.CompanyStreamID, payload.FounderID, payload.RunID.RunSeq).Scan(&cohortID, &serverID, &member); err != nil || !member {
+		return fmt.Errorf("%w: sample without active membership", ErrProjection)
+	}
+	result, err := tx.ExecContext(ctx, `INSERT INTO commons_projection_events(event_id,kind,founder_id,company_stream_id,run_seq,occurred_at) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING`, event.EventID, event.Kind, payload.FounderID, payload.RunID.CompanyStreamID, payload.RunID.RunSeq, event.OccurredAt)
+	if err != nil {
+		return err
+	}
+	inserted, err := result.RowsAffected()
+	if err != nil || inserted == 0 {
+		if err != nil {
+			return err
+		}
+		return tx.Commit()
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO commons_member_samples(company_stream_id,founder_id,cohort_id,weight_ppm,compliance_ppm,solidarity_ppm,enclosure,capacity,sampled_ms,updated_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT(company_stream_id) DO UPDATE SET weight_ppm=EXCLUDED.weight_ppm,compliance_ppm=EXCLUDED.compliance_ppm,solidarity_ppm=EXCLUDED.solidarity_ppm,enclosure=EXCLUDED.enclosure,capacity=EXCLUDED.capacity,sampled_ms=EXCLUDED.sampled_ms,updated_at=EXCLUDED.updated_at`, payload.RunID.CompanyStreamID, payload.FounderID, cohortID, payload.WeightPPM, payload.CompliancePPM, payload.SolidarityPPM, payload.Enclosure, payload.Capacity, payload.SampledMS, event.OccurredAt); err != nil {
+		return err
+	}
+	if err := p.refreshScope(ctx, tx, catalog, "cohort", cohortID, event.OccurredAt); err != nil {
+		return err
+	}
+	if err := p.refreshScope(ctx, tx, catalog, "server", serverID, event.OccurredAt); err != nil {
+		return err
+	}
+	return tx.Commit()
+}
+
+func (p *Projector) refreshScope(ctx context.Context, tx *sql.Tx, catalog *commons.Catalog, scopeKind, scopeID string, now time.Time) error {
+	query := `SELECT s.weight_ppm,s.compliance_ppm,s.capacity FROM commons_member_samples s JOIN company_compact_memberships m ON m.company_stream_id=s.company_stream_id JOIN founder_commons_assignments a ON a.founder_id=s.founder_id WHERE m.member=true AND a.cohort_id=$1`
+	if scopeKind == "server" {
+		query = `SELECT s.weight_ppm,s.compliance_ppm,s.capacity FROM commons_member_samples s JOIN company_compact_memberships m ON m.company_stream_id=s.company_stream_id JOIN founder_commons_assignments a ON a.founder_id=s.founder_id WHERE m.member=true AND a.server_id=$1`
+	}
+	rows, err := tx.QueryContext(ctx, query, scopeID)
+	if err != nil {
+		return err
+	}
+	var samples []commons.MemberSample
+	for rows.Next() {
+		var sample commons.MemberSample
+		var raw string
+		if err := rows.Scan(&sample.WeightPPM, &sample.CompliancePPM, &raw); err != nil {
+			rows.Close()
+			return err
+		}
+		sample.Capacity, err = decimal.ParseCanonical(raw)
+		if err != nil {
+			rows.Close()
+			return err
+		}
+		samples = append(samples, sample)
+	}
+	if err := rows.Close(); err != nil {
+		return err
+	}
+	aggregate, err := commons.AggregateHealth(catalog, samples)
+	if err != nil {
+		return err
+	}
+	health := aggregate.HealthPPM
+	var previous int64
+	var evaluated time.Time
+	err = tx.QueryRowContext(ctx, `SELECT health_ppm,evaluated_at FROM commons_health_scopes WHERE scope_kind=$1 AND scope_id=$2 FOR UPDATE`, scopeKind, scopeID).Scan(&previous, &evaluated)
+	if err == nil {
+		elapsed := now.Sub(evaluated).Milliseconds()
+		if elapsed < 0 {
+			elapsed = 0
+		}
+		health, err = commons.SmoothHealthPPM(catalog, previous, aggregate.HealthPPM, elapsed)
+		if err != nil {
+			return err
+		}
+	} else if !errors.Is(err, sql.ErrNoRows) {
+		return err
+	}
+	_, err = tx.ExecContext(ctx, `INSERT INTO commons_health_scopes(scope_kind,scope_id,raw_health_ppm,health_ppm,capacity,real_members,npc_weight_ppm,evaluated_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(scope_kind,scope_id) DO UPDATE SET raw_health_ppm=EXCLUDED.raw_health_ppm,health_ppm=EXCLUDED.health_ppm,capacity=EXCLUDED.capacity,real_members=EXCLUDED.real_members,npc_weight_ppm=EXCLUDED.npc_weight_ppm,evaluated_at=EXCLUDED.evaluated_at`, scopeKind, scopeID, aggregate.HealthPPM, health, aggregate.Capacity.String(), aggregate.RealMembers, aggregate.NPCWeightPPM, now)
+	return err
+}
+
+type HealthSnapshot struct {
+	HealthPPM       int64
+	CohortHealthPPM int64
+	ServerHealthPPM int64
+	CohortCapacity  string
+	ServerCapacity  string
+	NPCWeightPPM    int64
+}
+
+func (p *Projector) Snapshot(ctx context.Context, founderID string) (HealthSnapshot, error) {
+	var cohortID, serverID string
+	if err := p.db.QueryRowContext(ctx, `SELECT cohort_id,server_id FROM founder_commons_assignments WHERE founder_id=$1`, founderID).Scan(&cohortID, &serverID); err != nil {
+		return HealthSnapshot{}, err
+	}
+	var result HealthSnapshot
+	if err := p.db.QueryRowContext(ctx, `SELECT health_ppm,capacity,npc_weight_ppm FROM commons_health_scopes WHERE scope_kind='cohort' AND scope_id=$1`, cohortID).Scan(&result.CohortHealthPPM, &result.CohortCapacity, &result.NPCWeightPPM); err != nil {
+		return HealthSnapshot{}, err
+	}
+	if err := p.db.QueryRowContext(ctx, `SELECT health_ppm,capacity FROM commons_health_scopes WHERE scope_kind='server' AND scope_id=$1`, serverID).Scan(&result.ServerHealthPPM, &result.ServerCapacity); err != nil {
+		return HealthSnapshot{}, err
+	}
+	result.HealthPPM = (result.CohortHealthPPM*800_000 + result.ServerHealthPPM*200_000) / commons.PPM
+	return result, nil
+}
+
+func (p *Projector) CompactSnapshot(ctx context.Context, founderID string) (commons.ContributionSnapshot, error) {
+	snapshot, err := p.Snapshot(ctx, founderID)
+	return commons.ContributionSnapshot{HealthPPM: snapshot.HealthPPM}, err
+}
+
+// MergeCollapsed merges every additional under-floor cohort into the oldest
+// compatible cohort. It never averages rounded Health values: refreshScope
+// recomputes numerator/denominator inputs from member samples after the move.
+func (p *Projector) MergeCollapsed(ctx context.Context, constantsHash, serverID, activityBracket string, now time.Time) (int64, error) {
+	catalog, ok := p.policies.ResolveCommons(constantsHash)
+	if !ok {
+		return 0, ErrProjection
+	}
+	tx, err := p.db.BeginTx(ctx, nil)
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback()
+	if _, err := tx.ExecContext(ctx, `SELECT pg_advisory_xact_lock(hashtextextended($1,0))`, serverID+":"+activityBracket); err != nil {
+		return 0, err
+	}
+	rows, err := tx.QueryContext(ctx, `SELECT cohort_id,member_count FROM commons_cohorts WHERE server_id=$1 AND activity_bracket=$2 AND closed_at IS NULL ORDER BY created_at,cohort_id FOR UPDATE`, serverID, activityBracket)
+	if err != nil {
+		return 0, err
+	}
+	type cohort struct {
+		id      string
+		members int
+	}
+	var cohorts []cohort
+	for rows.Next() {
+		var item cohort
+		if err := rows.Scan(&item.id, &item.members); err != nil {
+			rows.Close()
+			return 0, err
+		}
+		cohorts = append(cohorts, item)
+	}
+	if err := rows.Close(); err != nil {
+		return 0, err
+	}
+	if len(cohorts) < 2 {
+		if err := tx.Commit(); err != nil {
+			return 0, err
+		}
+		return 0, nil
+	}
+	target := cohorts[0]
+	var merged int64
+	for _, source := range cohorts[1:] {
+		if source.members >= catalog.CohortMergeFloor {
+			continue
+		}
+		if _, err := tx.ExecContext(ctx, `UPDATE founder_commons_assignments SET cohort_id=$1 WHERE cohort_id=$2`, target.id, source.id); err != nil {
+			return 0, err
+		}
+		if _, err := tx.ExecContext(ctx, `UPDATE company_compact_memberships SET cohort_id=$1 WHERE cohort_id=$2`, target.id, source.id); err != nil {
+			return 0, err
+		}
+		if _, err := tx.ExecContext(ctx, `UPDATE commons_member_samples SET cohort_id=$1 WHERE cohort_id=$2`, target.id, source.id); err != nil {
+			return 0, err
+		}
+		if _, err := tx.ExecContext(ctx, `UPDATE commons_cohorts SET member_count=member_count+$2 WHERE cohort_id=$1`, target.id, source.members); err != nil {
+			return 0, err
+		}
+		if _, err := tx.ExecContext(ctx, `UPDATE commons_cohorts SET member_count=0,closed_at=$2 WHERE cohort_id=$1`, source.id, now); err != nil {
+			return 0, err
+		}
+		target.members += source.members
+		merged++
+	}
+	if merged > 0 {
+		if err := p.refreshScope(ctx, tx, catalog, "cohort", target.id, now); err != nil {
+			return 0, err
+		}
+		if err := p.refreshScope(ctx, tx, catalog, "server", serverID, now); err != nil {
+			return 0, err
+		}
+	}
+	if err := tx.Commit(); err != nil {
+		return 0, err
+	}
+	return merged, nil
 }
 
 func (p *Projector) FounderCohort(ctx context.Context, founderID string) (string, error) {

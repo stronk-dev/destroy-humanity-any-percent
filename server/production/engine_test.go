@@ -209,7 +209,7 @@ func TestEvaluateSaturatesR1VectorAndFollowingPurchaseSucceeds(t *testing.T) {
 	decision, err := service.buyGenerator(IntentRequest{
 		IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentBuyGenerator,
 		GeneratorID: "generator.beige_tower", CountMode: "exact", Count: 1,
-	}, state, catalog, save.Revision{Number: 1}, ModeOnline, state.EvaluatedThrough, nil, &invariantCollector{})
+	}, state, catalog, save.Revision{Number: 1}, ModeOnline, state.EvaluatedThrough, nil, &invariantCollector{}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

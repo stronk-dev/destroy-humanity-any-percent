@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"cloud-clicker/server/commons"
 	"cloud-clicker/server/multiplier"
 )
 
@@ -23,6 +24,20 @@ type formulaArtifact struct {
 	MultiplierSlotOrder []multiplier.Slot `json:"multiplier_slot_order"`
 	WithinSlotOrder     string            `json:"within_slot_order"`
 	SourceFingerprint   string            `json:"source_fingerprint"`
+	Commons             commonsFormula    `json:"commons"`
+}
+
+type commonsFormula struct {
+	Enclosure           string                 `json:"enclosure"`
+	Compliance          string                 `json:"compliance"`
+	Health              string                 `json:"health"`
+	EffectiveHealth     string                 `json:"effective_health"`
+	Modifier            string                 `json:"modifier"`
+	Solidarity          string                 `json:"solidarity"`
+	SourceWeights       []commons.SourceWeight `json:"source_weights"`
+	CollapseHealthPPM   int64                  `json:"collapse_health_ppm"`
+	CollectiveWeightPPM int64                  `json:"collective_weight_ppm"`
+	MaximumBonus        string                 `json:"maximum_bonus"`
 }
 
 type authorityKind int
@@ -43,6 +58,10 @@ var formulaAuthorities = []authoritySpec{
 	{label: "production.Rates", path: "production/engine.go", kind: authorityFunction, symbol: "Rates"},
 	{label: "multiplier.Order", path: "multiplier/contribution.go", kind: authorityValue, symbol: "Order"},
 	{label: "multiplier.OrderedSourceIDs", path: "multiplier/contribution.go", kind: authorityFunction, symbol: "OrderedSourceIDs"},
+	{label: "commons.EnclosureIndex", path: "commons/formula.go", kind: authorityFunction, symbol: "EnclosureIndex"},
+	{label: "commons.Modifier", path: "commons/formula.go", kind: authorityFunction, symbol: "Modifier"},
+	{label: "commons.AggregateHealth", path: "commons/health.go", kind: authorityFunction, symbol: "AggregateHealth"},
+	{label: "commons.SmoothHealthPPM", path: "commons/health.go", kind: authorityFunction, symbol: "SmoothHealthPPM"},
 }
 
 func main() {
@@ -60,12 +79,31 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	commonsBytes, err := os.ReadFile(filepath.Join(root, "..", "balance", "commons", "phase0.json"))
+	if err != nil {
+		panic(err)
+	}
+	commonsCatalog, err := commons.LoadCatalog(commonsBytes)
+	if err != nil {
+		panic(err)
+	}
 	artifact := formulaArtifact{
-		SchemaVersion:       2,
+		SchemaVersion:       3,
 		ProductionRate:      "sum_generators(count * base_rate * product(multiplier_slots))",
 		MultiplierSlotOrder: append([]multiplier.Slot(nil), multiplier.Order[:]...),
 		WithinSlotOrder:     multiplier.WithinSlotOrder,
 		SourceFingerprint:   fingerprint,
+		Commons: commonsFormula{
+			Enclosure:         "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
+			Compliance:        "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
+			Health:            "sum(weight_ppm * compliance_ppm) / sum(weight_ppm)",
+			EffectiveHealth:   "0.5 * guild_health + 0.3 * cohort_health + 0.2 * server_health; guildless substitutes cohort for guild",
+			Modifier:          "1 + maximum_bonus * (0.6 * max(0, ((health - 0.35) / 0.65)^1.5) + 0.4 * solidarity)",
+			Solidarity:        "sum(hourly_compliance_ppm * covered_ms) / 2592000000",
+			SourceWeights:     append([]commons.SourceWeight(nil), commonsCatalog.SourceWeights...),
+			CollapseHealthPPM: commonsCatalog.CollapseHealthPPM, CollectiveWeightPPM: commonsCatalog.CollectiveWeightPPM,
+			MaximumBonus: commonsCatalog.MaximumBonus.String(),
+		},
 	}
 	data, err := json.MarshalIndent(artifact, "", "  ")
 	if err != nil {

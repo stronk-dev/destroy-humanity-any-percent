@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "production_rate": "sum_generators(count * base_rate * product(multiplier_slots))",
   "multiplier_slot_order": [
     "upgrades",
@@ -12,5 +12,17 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "b5ca78339950ebbc8378e8d5f9c8295e354955733ef689c59bb046e785c354bc"
+  "source_fingerprint": "1845c41869b173496386e166ac752d55102b83e1693010bd2eba5a02c2ae6779",
+  "commons": {
+    "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
+    "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
+    "health": "sum(weight_ppm * compliance_ppm) / sum(weight_ppm)",
+    "effective_health": "0.5 * guild_health + 0.3 * cohort_health + 0.2 * server_health; guildless substitutes cohort for guild",
+    "modifier": "1 + maximum_bonus * (0.6 * max(0, ((health - 0.35) / 0.65)^1.5) + 0.4 * solidarity)",
+    "solidarity": "sum(hourly_compliance_ppm * covered_ms) / 2592000000",
+    "source_weights": null,
+    "collapse_health_ppm": 350000,
+    "collective_weight_ppm": 600000,
+    "maximum_bonus": "5e0"
+  }
 }

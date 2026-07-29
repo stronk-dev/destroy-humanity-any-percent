@@ -10,6 +10,8 @@ import (
 
 var ErrInvalidInput = errors.New("invalid commons formula input")
 
+type ContributionSnapshot struct{ HealthPPM int64 }
+
 func ppmDecimal(value int64) decimal.Decimal { return decimal.New(float64(value), -6) }
 
 func EnclosureIndex(catalog *Catalog, contributions []multiplier.Contribution) (decimal.Decimal, error) {

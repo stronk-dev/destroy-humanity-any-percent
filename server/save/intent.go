@@ -40,6 +40,7 @@ const (
 	EventRouteKnowledgeGranted EventKind = "route_knowledge_granted"
 	EventCompactSigned         EventKind = "compact_signed"
 	EventCompactLeft           EventKind = "compact_left"
+	EventCompactSampled        EventKind = "compact_sampled"
 )
 
 type EventWrite struct {
@@ -380,6 +381,26 @@ func validateEventPayload(event EventWrite) error {
 		}
 		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) || !validRouteRunID(payload.RunID) || payload.TithePPM < 0 || payload.TithePPM > 1_000_000 || event.Kind == EventCompactSigned && (payload.PriorMember || !payload.NewMember) || event.Kind == EventCompactLeft && (!payload.PriorMember || payload.NewMember) {
 			return fmt.Errorf("%w: invalid compact membership payload", ErrInvalidStream)
+		}
+	case EventCompactSampled:
+		var payload struct {
+			FounderID     string     `json:"founder_id"`
+			RunID         routeRunID `json:"run_id"`
+			WeightPPM     int64      `json:"weight_ppm"`
+			CompliancePPM int64      `json:"compliance_ppm"`
+			Enclosure     string     `json:"enclosure"`
+			Capacity      string     `json:"capacity"`
+			SolidarityPPM int64      `json:"solidarity_ppm"`
+			SampledMS     int64      `json:"sampled_ms"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) || !validRouteRunID(payload.RunID) || payload.WeightPPM < 0 || payload.WeightPPM > 1_000_000 || payload.CompliancePPM < 0 || payload.CompliancePPM > 1_000_000 || payload.SolidarityPPM < 0 || payload.SolidarityPPM > 1_000_000 || payload.SampledMS <= 0 || payload.SampledMS > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid compact_sampled payload", ErrInvalidStream)
+		}
+		if value, err := decimal.ParseCanonical(payload.Enclosure); err != nil || value.Lt(decimal.Zero) || value.Gt(decimal.One) {
+			return fmt.Errorf("%w: invalid compact_sampled enclosure", ErrInvalidStream)
+		}
+		if value, err := decimal.ParseCanonical(payload.Capacity); err != nil || value.Lt(decimal.Zero) {
+			return fmt.Errorf("%w: invalid compact_sampled capacity", ErrInvalidStream)
 		}
 	default:
 		return fmt.Errorf("%w: unknown event kind %q", ErrInvalidStream, event.Kind)

@@ -8,11 +8,24 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/commons"
+	"cloud-clicker/server/commonsbinding"
+	"cloud-clicker/server/commonsprojection"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/routeprojection"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
+
+type integrationAssignment struct{ serverID string }
+
+func (value integrationAssignment) ResolveAssignment(string) (commonsprojection.AssignmentContext, bool) {
+	return commonsprojection.AssignmentContext{ServerID: value.serverID, ActivityBracket: "activity.standard"}, true
+}
+
+type integrationWeight int64
+
+func (value integrationWeight) CompactWeightPPM(string) (int64, bool) { return int64(value), true }
 
 type integrationCatalogs struct {
 	economy map[string]*economy.Catalog
@@ -43,7 +56,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err := save.Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `TRUNCATE commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes, route_hint_projection_events, founder_route_state, founder_route_executions, route_projection_events, events, intent_records, save_revisions, save_streams CASCADE`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE commons_health_scopes,commons_member_samples,commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes, route_hint_projection_events, founder_route_state, founder_route_executions, route_projection_events, events, intent_records, save_revisions, save_streams CASCADE`); err != nil {
 		t.Fatal(err)
 	}
 	catalogBytes, err := os.ReadFile("../../balance/catalogs/phase0.json")
@@ -62,6 +75,14 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	commonsBytes, err := os.ReadFile("../../balance/commons/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	commonsCatalog, err := commons.LoadCatalog(commonsBytes)
+	if err != nil {
+		t.Fatal(err)
+	}
 	hash := save.ConstantsHash(catalogBytes)
 	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}}
 	store, err := save.NewStore(db, resolver, nil)
@@ -72,6 +93,13 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	commonsCatalogs := commons.CatalogSet{hash: commonsCatalog}
+	commonsProjector, err := commonsprojection.New(db, integrationAssignment{serverID: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"}, commonsCatalogs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	commonsProvider := commonsbinding.Provider{Catalogs: commonsCatalogs, Snapshots: commonsProjector}
+	commonsHook := commonsbinding.Hook{Catalogs: commonsCatalogs, Weights: integrationWeight(1_000_000)}
 	ledger, err := economy.RestoreLedger(catalog, economy.ScopeCompany, map[string]string{"company.cash": "1e2"})
 	if err != nil {
 		t.Fatal(err)
@@ -89,7 +117,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	metrics := fakeInvariantMetrics{}
-	service, err := NewService(store, resolver, nil, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector))
+	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithAccrualHook(commonsHook), WithEventProjector(commonsProjector))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -246,6 +274,20 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil || !crossReplay.Replay || string(crossReplay.Receipt) != string(crossed.Receipt) {
 		t.Fatalf("cross replay=%+v err=%v", crossReplay, err)
 	}
+	sign := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-bbbbbbbbbbbb","kind":"sign_compact","expected_revision":6,"tithe_ppm":100000}`)
+	signed, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(2*time.Second), sign)
+	if err != nil || signed.Replay {
+		t.Fatalf("sign=%s replay=%v err=%v", signed.Receipt, signed.Replay, err)
+	}
+	memberManual := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-cccccccccccc","kind":"perform_manual_batch","expected_revision":7,"action_id":"manual.click","count":1,"window_ms":3600000}`)
+	sampled, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(time.Hour+2*time.Second), memberManual)
+	if err != nil || sampled.Replay {
+		t.Fatalf("sample=%s replay=%v err=%v", sampled.Receipt, sampled.Replay, err)
+	}
+	commonsSnapshot, err := commonsProjector.Snapshot(ctx, "66666666-6666-4666-8666-666666666666")
+	if err != nil || commonsSnapshot.HealthPPM <= 0 || commonsSnapshot.CohortCapacity == "0" {
+		t.Fatalf("commons snapshot=%+v err=%v", commonsSnapshot, err)
+	}
 	founderLedger, err := economy.RestoreLedger(catalog, economy.ScopeFounder, map[string]string{})
 	if err != nil {
 		t.Fatal(err)
@@ -287,7 +329,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	).Scan(&revisions, &events, &intents, &invariantEvents); err != nil {
 		t.Fatal(err)
 	}
-	if revisions != 5 || events != 6 || intents != 7 || invariantEvents != 1 {
+	if revisions != 5 || events != 8 || intents != 9 || invariantEvents != 1 {
 		t.Fatalf("rows revisions=%d events=%d intents=%d invariant_events=%d", revisions, events, intents, invariantEvents)
 	}
 	if metrics[string(InvariantAffordFallback)] != 1 || metrics[string(InvariantResidualClamp)] != 1 ||

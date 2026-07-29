@@ -21,3 +21,12 @@
 - Added migrations and an idempotent Commons projector. Founder cohort assignment is server-context-derived, protected by a per-server/bracket advisory transaction lock, fills the oldest cohort below its catalog target, and persists across runs/leaves.
 - Real Postgres concurrency tests prove two simultaneous first signs share one eligible cohort, replay does not inflate membership, leaving updates only run membership, and founder cohort identity remains stable.
 - Batch review found no unresolved correctness issue. All Go packages and the full Postgres integration target pass.
+
+## 2026-07-29 — lazy Health/Capacity pipeline and population gate
+
+- Added a neutral post-accrual hook contract. Production calls the hook but imports no Commons code; the composition adapter derives Enclosure from accepted multiplier contributions, advances hourly 30-day Solidarity buckets, computes tithed Capacity from committed accrual receipts, and emits `compact_sampled`.
+- Added idempotent sample projection, member/cohort/server read models, labeled NPC denominator weight below 40 members, guildless effective-Health fallback, asymmetric closed-form Health smoothing, and the `commons.member` contribution provider. The first sample uses the declared neutral NPC Health; subsequent intents consume the projected snapshot.
+- Added explicit collapse merge. Founder/member/sample rows move under one advisory lock, source cohorts close, and target standing is recomputed from member numerator/denominator inputs rather than averaged from rounded Health.
+- Extended the production integration test through sign → member accrual → sample projection → Health snapshot; the real-Postgres suite and replay checks pass.
+- Added the SplitMix64 population harness gate over 128 seeds. Mean modifiers at 200 vs 20,000 members remain within the shipped 100-ppm bound and their 95% intervals overlap.
+- Formula generation now fingerprints the executable Enclosure, modifier, aggregate-Health, and smoothing authorities and publishes the Commons formula family plus the exact source-weight table from balance data.

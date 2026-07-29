@@ -25,10 +25,10 @@ var (
 )
 
 type SourceWeight struct {
-	SourceID  string
-	Slot      multiplier.Slot
-	WeightPPM int64
-	Forsworn  bool
+	SourceID  string          `json:"source_id"`
+	Slot      multiplier.Slot `json:"slot"`
+	WeightPPM int64           `json:"weight_ppm"`
+	Forsworn  bool            `json:"forsworn"`
 }
 
 type Catalog struct {
@@ -114,6 +114,7 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		return nil, ErrInvalidCatalog
 	}
 	catalog := &Catalog{
+		SourceWeights:   make([]SourceWeight, 0, len(raw.SourceWeights)),
 		DefaultTithePPM: raw.DefaultTithePPM, MinimumTithePPM: raw.MinimumTithePPM, MaximumTithePPM: raw.MaximumTithePPM,
 		GuildHealthWeightPPM: raw.GuildHealthWeightPPM, CohortHealthWeightPPM: raw.CohortHealthWeightPPM, ServerHealthWeightPPM: raw.ServerHealthWeightPPM,
 		CollectiveWeightPPM: raw.CollectiveWeightPPM, CollapseHealthPPM: raw.CollapseHealthPPM, MaximumBonus: bonus,

@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck vectors vectors-check formulas formulas-check harness harness-check harness-update vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck vectors vectors-check formulas formulas-check harness harness-check commons-harness-check harness-update vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-server verify-client verify
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -44,8 +44,11 @@ harness:
 	@test -n "$(HARNESS_OUTPUT)" || (echo "HARNESS_OUTPUT is required" >&2; exit 1)
 	cd server && go run ./cmd/balance-harness -mode=run -root=.. -output="$(HARNESS_OUTPUT)"
 
-harness-check:
+harness-check: commons-harness-check
 	cd server && go run ./cmd/balance-harness -mode=check -root=..
+
+commons-harness-check:
+	cd server && go test ./harness -run '^TestCommonsPopulationInvariance$$' -count=1
 
 harness-update:
 	cd server && go run ./cmd/balance-harness -mode=update -root=..

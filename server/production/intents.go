@@ -14,6 +14,7 @@ import (
 	"sort"
 	"time"
 
+	"cloud-clicker/server/accrualhook"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/multiplier"
@@ -40,6 +41,8 @@ const (
 type CompactPolicyResolver interface {
 	CompactTitheBand(constantsHash string) (minimumPPM, maximumPPM int64, ok bool)
 }
+
+type AccrualHook = accrualhook.Hook
 
 type RouteCatalogResolver interface {
 	ResolveRoutes(constantsHash string) (*routes.Catalog, bool)
@@ -97,8 +100,18 @@ func WithCompactPolicies(resolver CompactPolicyResolver) ServiceOption {
 	}
 }
 
+func WithAccrualHook(hook AccrualHook) ServiceOption {
+	return func(service *Service) error {
+		if hook == nil {
+			return ErrInvalidIntent
+		}
+		service.accrualHook = hook
+		return nil
+	}
+}
+
 type ContributionProvider interface {
-	Contributions(state *save.State, catalog *economy.Catalog) ([]multiplier.Contribution, error)
+	Contributions(context.Context, *save.State, *economy.Catalog, save.Revision) ([]multiplier.Contribution, error)
 }
 
 type InvariantMetrics interface {
@@ -133,6 +146,7 @@ type Service struct {
 	routeProjector  RouteProjector
 	compactPolicies CompactPolicyResolver
 	projectors      []EventProjector
+	accrualHook     AccrualHook
 }
 
 type HandleResult struct {
@@ -216,7 +230,7 @@ func (s *Service) Handle(
 			var contributions []multiplier.Contribution
 			if s.contributions != nil && request.Kind != IntentBuyRouteHint {
 				var err error
-				contributions, err = s.contributions.Contributions(state, catalog)
+				contributions, err = s.contributions.Contributions(ctx, state, catalog, revision)
 				if err != nil {
 					return save.IntentDecision{}, err
 				}
@@ -251,7 +265,7 @@ func (s *Service) Handle(
 				}
 				compactBand = &CompactTitheBand{MinimumPPM: minimum, MaximumPPM: maximum}
 			}
-			return TransitionWithPolicies(request, state, catalog, routeCatalog, compactBand, revision, mode, now, contributions, collector)
+			return TransitionWithPolicies(request, state, catalog, routeCatalog, compactBand, revision, mode, now, contributions, collector, s.accrualHook)
 		})
 	if err != nil {
 		s.recordAbortedInvariants(collector.reports)
@@ -335,30 +349,30 @@ func TransitionWithRoutes(
 	contributions []multiplier.Contribution,
 	sink InvariantSink,
 ) (save.IntentDecision, error) {
-	return TransitionWithPolicies(request, state, catalog, routeCatalog, nil, revision, mode, now, contributions, sink)
+	return TransitionWithPolicies(request, state, catalog, routeCatalog, nil, revision, mode, now, contributions, sink, nil)
 }
 
-func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, compactBand *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, sink InvariantSink) (save.IntentDecision, error) {
+func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, compactBand *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, sink InvariantSink, hook AccrualHook) (save.IntentDecision, error) {
 	service := Service{}
 	switch request.Kind {
 	case IntentBuyGenerator:
-		return service.buyGenerator(request, state, catalog, revision, mode, now, contributions, sink)
+		return service.buyGenerator(request, state, catalog, revision, mode, now, contributions, sink, hook)
 	case IntentPerformManualBatch:
-		return service.performManualBatch(request, state, catalog, revision, mode, now, contributions)
+		return service.performManualBatch(request, state, catalog, revision, mode, now, contributions, hook)
 	case IntentCrossGate:
-		return service.crossGate(request, state, catalog, routeCatalog, revision, mode, now, contributions)
+		return service.crossGate(request, state, catalog, routeCatalog, revision, mode, now, contributions, hook)
 	case IntentBuyRouteHint:
 		return service.buyRouteHint(request, state, routeCatalog, revision)
 	case IntentSignCompact:
-		return service.signCompact(request, state, catalog, compactBand, revision, mode, now, contributions)
+		return service.signCompact(request, state, catalog, compactBand, revision, mode, now, contributions, hook)
 	case IntentLeaveCompact:
-		return service.leaveCompact(request, state, catalog, compactBand, revision, mode, now, contributions)
+		return service.leaveCompact(request, state, catalog, compactBand, revision, mode, now, contributions, hook)
 	default:
 		return rejectedDecision(request, revision.Number, "invalid", request.Kind)
 	}
 }
 
-func (s *Service) signCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution) (save.IntentDecision, error) {
+func (s *Service) signCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || band == nil || band.MinimumPPM < 0 || band.MaximumPPM > 1_000_000 || band.MinimumPPM > band.MaximumPPM || revision.OwnerID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
@@ -369,16 +383,22 @@ func (s *Service) signCompact(request IntentRequest, state *save.State, catalog 
 		return rejectedDecision(request, revision.Number, "invalid", "tithe_ppm")
 	}
 	before := state.Ledger.Snapshot()
-	if _, err := Evaluate(state, catalog, now, mode, contributions); err != nil {
+	result, err := Evaluate(state, catalog, now, mode, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	events, err := runAccrualHook(hook, request.IntentID, state, catalog, revision, result, contributions)
+	if err != nil {
 		return save.IntentDecision{}, err
 	}
 	state.CompactMember, state.CompactTithePPM = true, request.TithePPM
 	state.CompactSolidarityPPM, state.CompactSamples = 0, []save.CompactSample{}
 	payload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": request.TithePPM, "prior_member": false, "new_member": true})
-	return appliedDecision(request, state, revision.Number+1, 1, before, []save.EventWrite{{Kind: save.EventCompactSigned, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload}}, nil)
+	events = append(events, save.EventWrite{Kind: save.EventCompactSigned, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
+	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
 }
 
-func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution) (save.IntentDecision, error) {
+func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || band == nil || revision.OwnerID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
@@ -386,17 +406,40 @@ func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog
 		return rejectedDecision(request, revision.Number, "not_member", "compact")
 	}
 	before := state.Ledger.Snapshot()
-	if _, err := Evaluate(state, catalog, now, mode, contributions); err != nil {
+	result, err := Evaluate(state, catalog, now, mode, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	events, err := runAccrualHook(hook, request.IntentID, state, catalog, revision, result, contributions)
+	if err != nil {
 		return save.IntentDecision{}, err
 	}
 	priorTithe := state.CompactTithePPM
 	state.CompactMember, state.CompactTithePPM, state.CompactSolidarityPPM = false, 0, 0
 	state.CompactSamples = []save.CompactSample{}
 	payload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": priorTithe, "prior_member": true, "new_member": false})
-	return appliedDecision(request, state, revision.Number+1, 1, before, []save.EventWrite{{Kind: save.EventCompactLeft, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload}}, nil)
+	events = append(events, save.EventWrite{Kind: save.EventCompactLeft, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
+	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
 }
 
-func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution) (save.IntentDecision, error) {
+func runAccrualHook(hook AccrualHook, intentID string, state *save.State, catalog *economy.Catalog, revision save.Revision, result EvaluationResult, contributions []multiplier.Contribution) ([]save.EventWrite, error) {
+	if hook == nil || result.ElapsedMS == 0 {
+		return nil, nil
+	}
+	events, err := hook.AfterAccrual(state, catalog, revision, accrualhook.Result{Receipt: result.Receipt, ElapsedMS: result.ElapsedMS, ProductionMS: result.ProductionMS, BankedCreditMS: result.BankedCreditMS}, contributions)
+	if err != nil {
+		return nil, err
+	}
+	for index := range events {
+		if events[index].IntentID != "" && events[index].IntentID != intentID {
+			return nil, ErrInvalidEngineState
+		}
+		events[index].IntentID = intentID
+	}
+	return events, nil
+}
+
+func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
 	if routeCatalog == nil || state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || revision.OwnerID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
@@ -413,7 +456,12 @@ func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *e
 		}
 	}
 	before := state.Ledger.Snapshot()
-	if _, err := Evaluate(state, catalog, now, mode, contributions); err != nil {
+	result, err := Evaluate(state, catalog, now, mode, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	accrualEvents, err := runAccrualHook(hook, request.IntentID, state, catalog, revision, result, contributions)
+	if err != nil {
 		return save.IntentDecision{}, err
 	}
 	context, err := routeContext(state, routeCatalog.ContextVersion())
@@ -447,7 +495,7 @@ func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *e
 		state.GatesCrossed = map[string]bool{}
 	}
 	state.GatesCrossed[request.GateID] = true
-	events := []save.EventWrite{gateCrossedEvent(request, revision, state.RunSeq)}
+	events := append(accrualEvents, gateCrossedEvent(request, revision, state.RunSeq))
 	if request.RouteID != "" {
 		events = append(events, routeExecutedEvent(request, revision, state.RunSeq))
 	}
@@ -498,6 +546,7 @@ func (s *Service) buyGenerator(
 	now time.Time,
 	contributions []multiplier.Contribution,
 	sink InvariantSink,
+	hook AccrualHook,
 ) (save.IntentDecision, error) {
 	generator, exists := catalog.GeneratorClass(request.GeneratorID)
 	if !exists || generator.Production == nil {
@@ -508,7 +557,12 @@ func (s *Service) buyGenerator(
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
 	before := state.Ledger.Snapshot()
-	if _, err := Evaluate(state, catalog, now, mode, contributions); err != nil {
+	result, err := Evaluate(state, catalog, now, mode, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	accrualEvents, err := runAccrualHook(hook, request.IntentID, state, catalog, revision, result, contributions)
+	if err != nil {
 		return save.IntentDecision{}, err
 	}
 	cash, exists := state.Ledger.Balance(generator.Price.ResourceID)
@@ -556,9 +610,8 @@ func (s *Service) buyGenerator(
 		return save.IntentDecision{}, err
 	}
 	state.GeneratorCounts[request.GeneratorID] = owned + count
-	return appliedDecision(request, state, revision.Number+1, count, before, []save.EventWrite{
-		generatorPurchasedEvent(request, generator.Price.ResourceID, count, cost),
-	}, collectorReports(sink))
+	accrualEvents = append(accrualEvents, generatorPurchasedEvent(request, generator.Price.ResourceID, count, cost))
+	return appliedDecision(request, state, revision.Number+1, count, before, accrualEvents, collectorReports(sink))
 }
 
 func (s *Service) performManualBatch(
@@ -569,13 +622,19 @@ func (s *Service) performManualBatch(
 	mode EvaluationMode,
 	now time.Time,
 	contributions []multiplier.Contribution,
+	hook AccrualHook,
 ) (save.IntentDecision, error) {
 	action, exists := catalog.ManualAction(request.ActionID)
 	if !exists {
 		return rejectedDecision(request, revision.Number, "unknown_id", request.ActionID)
 	}
 	before := state.Ledger.Snapshot()
-	if _, err := Evaluate(state, catalog, now, mode, contributions); err != nil {
+	result, err := Evaluate(state, catalog, now, mode, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	events, err := runAccrualHook(hook, request.IntentID, state, catalog, revision, result, contributions)
+	if err != nil {
 		return save.IntentDecision{}, err
 	}
 	policy := catalog.ManualPolicy()
@@ -597,7 +656,7 @@ func (s *Service) performManualBatch(
 			return save.IntentDecision{}, err
 		}
 	}
-	return appliedDecision(request, state, revision.Number+1, applied, before, nil, nil)
+	return appliedDecision(request, state, revision.Number+1, applied, before, events, nil)
 }
 
 func refillManualTokens(state *save.State, policy economy.ManualPolicy, now time.Time) {
