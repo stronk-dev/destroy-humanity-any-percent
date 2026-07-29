@@ -20,6 +20,9 @@ Implemented systems:
   persistent cohorts, AI fallback, production multiplier, dispatches, and population invariance.
 - [Client shell](client-shell.md) — Svelte DOM routes, authoritative stream boundary, Worker
   prediction, reconciliation, visible caps, return flow, lifecycle, and client telemetry.
+- [Accounts and sessions](accounts-and-sessions.md) — anonymous recovery credentials, exact JWTs,
+  refresh-family rotation, Founder ownership/import, deletion, rate limits, and the HTTP intent
+  boundary.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.

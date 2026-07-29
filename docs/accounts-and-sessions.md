@@ -1,0 +1,65 @@
+# Accounts and Sessions
+
+The server supports anonymous-first accounts without requiring email, a password, or any third
+party identity provider. Creating an account returns a UUIDv7 account ID and a 128-bit lowercase
+base32 recovery code exactly once. The account row stores only the ID, creation time, and an
+Argon2id hash of that code. Optional email attachment is reserved by the API but returns the typed
+`not_configured` response until deployment mail configuration is specified.
+
+## Founder ownership
+
+An account owns a history of Founder identities and has exactly one active Founder. Account
+creation atomically creates the first Founder plus catalog-initialized company and Founder save
+streams. `POST /api/v1/founder` is the free, unlimited New Founder operation: it archives the old
+identity and all its active save streams, then creates fresh streams. Archives remain readable.
+Existing access tokens remain valid until their normal expiry; authenticated operations resolve
+the account's current active Founder instead of trusting the token's cached Founder claim.
+
+Offline-anonymous saves can be submitted once to the initial company stream through
+`POST /api/v1/founder/import`. The payload runs through the normal save migration and restoration
+path, is re-encoded at the current save version, and permanently marks the Founder as imported.
+Leaderboard projections must exclude that relational flag because imported history was authored
+by a client.
+
+Deleting an account archives its Founder streams and deletes the account row. Cascades remove its
+optional email, sessions, access-token records, and ownership links. The archive retains UUID
+owners but no account linkage or PII.
+
+## Credentials and sessions
+
+Recovery codes are hashed with Argon2id using 19 MiB memory, two iterations, one lane, a random
+16-byte salt, and a 32-byte result. Parameters and the algorithm version are encoded with the hash
+so a later credential upgrade can distinguish old records.
+
+Successful recovery authentication issues:
+
+- a 15-minute HS256 access token whose claims are exactly `sub`, `fid`, `exp`, `iat`, and `jti`;
+- a random 256-bit opaque refresh token, stored only as a SHA-256 hash and expiring after 30 days.
+
+The verifier accepts one current signing key and one previous key for operations-managed rotation.
+Every issued access token is also represented in the database, so revocation is effective before
+JWT expiry. Refresh tokens rotate once. Reusing a consumed token revokes every refresh and access
+token in its family in the same transaction. Session deletion applies the same family revocation.
+
+## HTTP boundary
+
+The chi router owns the versioned `/api/v1` surface:
+
+- `POST /account`, `POST /session`, and `POST /session/refresh` are IP-rate-limited;
+- authenticated account, session, Founder, import, state, and intent endpoints are
+  account-rate-limited;
+- request decoders reject unknown keys, trailing JSON values, empty required bodies, and bodies
+  over 64 KiB under the Phase-0 configuration;
+- errors use `{category, detail}` and rate-limit failures use the `rate_limited` category;
+- `POST /intents` resolves the active company stream and calls the authoritative Production
+  service. The client never chooses a stream ID.
+
+The in-memory Phase-0 token buckets resist clock regression by refusing to mint tokens when time
+moves backwards. Deployment may replace storage without changing the HTTP contract.
+
+## Verification
+
+`go test ./account` covers credential encoding, exact JWT claims, expiry and signing-key rotation,
+UUIDv7 shape, and limiter clock regression. With `TEST_DATABASE_URL` set, it additionally exercises
+the complete account → session → real Production intent path, refresh replay revocation, New
+Founder archival, import, deletion/anonymization, and rate limiting against Postgres.

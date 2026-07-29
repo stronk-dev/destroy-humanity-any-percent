@@ -7,8 +7,9 @@ A free, browser-based MMO idle game: climb from a 1995 garage — where you own 
 **Status:** design complete; the shared numeric core, economy catalog/kernel, versioned Postgres
 save layer, authoritative production/intent engine, and gate/Route Registry foundation are
 implemented, along with the Commons Compact server foundation and the Svelte/Worker client shell.
-The shell has no live transport adapter yet, so the game is not playable end to end; no deployable
-server binary exists yet.
+Anonymous account/session and Founder lifecycle infrastructure is also implemented. The shell has
+no live transport adapter yet, so the game is not playable end to end; no deployable server binary
+exists yet.
 
 ## Development setup
 
