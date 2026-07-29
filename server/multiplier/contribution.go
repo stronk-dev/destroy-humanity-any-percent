@@ -2,7 +2,11 @@
 // state-owning multiplier providers.
 package multiplier
 
-import "cloud-clicker/server/decimal"
+import (
+	"sort"
+
+	"cloud-clicker/server/decimal"
+)
 
 type Slot string
 
@@ -22,6 +26,8 @@ var Order = [...]Slot{
 	SlotCommons, SlotTrust, SlotEventBuffs, SlotPrestige,
 }
 
+const WithinSlotOrder = "source_id_raw_byte_ascending"
+
 type Contribution struct {
 	Slot     Slot
 	SourceID string
@@ -36,4 +42,15 @@ func ValidSlot(slot Slot) bool {
 		}
 	}
 	return false
+}
+
+// OrderedSourceIDs returns an independently-owned slice in the canonical
+// within-slot order. Go string comparison is lexicographic over raw UTF-8
+// bytes, which is the published cross-runtime contract.
+func OrderedSourceIDs(sourceIDs []string) []string {
+	ordered := append([]string(nil), sourceIDs...)
+	sort.Slice(ordered, func(left, right int) bool {
+		return ordered[left] < ordered[right]
+	})
+	return ordered
 }

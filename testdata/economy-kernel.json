@@ -156,5 +156,14 @@
     "dangling-production-resource",
     "nonpositive-production-rate",
     "cross-scope-production"
+  ],
+  "multiplier_catalog_cases": [
+    {"name": "valid-multiple-upgrades", "expect_valid": true},
+    {"name": "duplicate-multiplier-source", "expect_valid": false},
+    {"name": "second-commons-provider", "expect_valid": false},
+    {"name": "second-trust-provider", "expect_valid": false},
+    {"name": "unknown-multiplier-slot", "expect_valid": false},
+    {"name": "unknown-multiplier-target", "expect_valid": false},
+    {"name": "malformed-multiplier-provider", "expect_valid": false}
   ]
 }

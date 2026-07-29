@@ -147,8 +147,7 @@ func Rates(
 					sources = append(sources, sourceID)
 				}
 			}
-			sort.Strings(sources)
-			for _, sourceID := range sources {
+			for _, sourceID := range multiplier.OrderedSourceIDs(sources) {
 				rate = rate.Mul(bySource[sourceID].Factor)
 			}
 		}

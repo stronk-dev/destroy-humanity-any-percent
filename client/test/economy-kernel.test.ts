@@ -25,6 +25,7 @@ interface KernelFixture {
   catalog: Record<string, unknown>;
   curve_vectors: CurveVector[];
   invalid_cases: string[];
+  multiplier_catalog_cases: Array<{ name: string; expect_valid: boolean }>;
 }
 
 const fixture = fixtureJson as KernelFixture;
@@ -97,6 +98,12 @@ describe("shared economy catalog", () => {
       bankRatioDenominator: 2,
       bankCapMs: 259_200_000,
     });
+  });
+
+  it.each(fixture.multiplier_catalog_cases)("validates multiplier case $name", (vector) => {
+    const parse = () => parseCatalog(mutateMultiplierCatalog(vector.name));
+    if (vector.expect_valid) expect(parse).not.toThrow();
+    else expect(parse).toThrow(SyntaxError);
   });
 });
 
@@ -276,6 +283,47 @@ function mutateCatalog(source: Record<string, unknown>, name: string): unknown {
     default:
       throw new Error(`unimplemented invalid fixture case: ${name}`);
   }
+  return root;
+}
+
+function mutateMultiplierCatalog(name: string): unknown {
+  const root = structuredClone(phase0Json) as Record<string, unknown>;
+  const sources: Array<Record<string, unknown>> = [
+    { id: "upgrade.a", slot: "upgrades", target: "all", provider: "upgrade.a" },
+    {
+      id: "upgrade.b",
+      slot: "upgrades",
+      target: "generator.beige_tower",
+      provider: "upgrade.b",
+    },
+  ];
+  switch (name) {
+    case "valid-multiple-upgrades":
+      break;
+    case "duplicate-multiplier-source":
+      sources[1].id = "upgrade.a";
+      break;
+    case "second-commons-provider":
+      sources[0].slot = "commons";
+      sources[1].slot = "commons";
+      break;
+    case "second-trust-provider":
+      sources[0].slot = "trust";
+      sources[1].slot = "trust";
+      break;
+    case "unknown-multiplier-slot":
+      sources[0].slot = "dark_magic";
+      break;
+    case "unknown-multiplier-target":
+      sources[0].target = "generator.missing";
+      break;
+    case "malformed-multiplier-provider":
+      sources[0].provider = "Upgrade A";
+      break;
+    default:
+      throw new Error(`unimplemented multiplier catalog case: ${name}`);
+  }
+  root.multiplier_sources = sources;
   return root;
 }
 

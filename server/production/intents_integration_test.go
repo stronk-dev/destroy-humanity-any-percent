@@ -3,6 +3,7 @@ package production
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"os"
 	"testing"
 	"time"
@@ -64,7 +65,8 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	service, err := NewService(store, resolver, nil, nil, nil)
+	metrics := fakeInvariantMetrics{}
+	service, err := NewService(store, resolver, nil, metrics, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -148,16 +150,70 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatalf("revision conflict=%+v raw=%s err=%v", rejected, conflict.Receipt, err)
 	}
 
-	var revisions, events, intents int
+	invariantIntentID := "018f6b7c-9abc-7def-8abc-666666666666"
+	invariantRequestHash := "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	invariantReport := InvariantReport{
+		Kind: InvariantAffordFallback, IntentID: invariantIntentID, Detail: "generator.beige_tower",
+	}
+	invariantResult, err := store.ApplyIntent(ctx, revision.StreamID, 4, invariantIntentID, invariantRequestHash,
+		func(state *save.State, current save.Revision) (save.IntentDecision, error) {
+			return appliedDecision(parsedIntent{IntentID: invariantIntentID}, state, current.Number+1, 0,
+				state.Ledger.Snapshot(), nil, []InvariantReport{invariantReport})
+		})
+	if err != nil || invariantResult.Replay {
+		t.Fatalf("invariant apply=%+v err=%v", invariantResult, err)
+	}
+	service.recordCommittedInvariants(invariantResult, []InvariantReport{invariantReport})
+	invariantReplay, err := store.ApplyIntent(ctx, revision.StreamID, 4, invariantIntentID, invariantRequestHash,
+		func(*save.State, save.Revision) (save.IntentDecision, error) {
+			return save.IntentDecision{}, errors.New("invariant replay callback must not run")
+		})
+	if err != nil || !invariantReplay.Replay {
+		t.Fatalf("invariant replay=%+v err=%v", invariantReplay, err)
+	}
+	service.recordCommittedInvariants(invariantReplay, []InvariantReport{invariantReport})
+
+	rejectedReport := InvariantReport{
+		Kind: InvariantResidualClamp, IntentID: "018f6b7c-9abc-7def-8abc-777777777777", Detail: "generator.beige_tower",
+	}
+	rejectedResult, err := store.ApplyIntent(ctx, revision.StreamID, 5, rejectedReport.IntentID,
+		"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+		func(*save.State, save.Revision) (save.IntentDecision, error) {
+			return rejectedDecision(parsedIntent{IntentID: rejectedReport.IntentID}, 5, "unaffordable", "generator.beige_tower")
+		})
+	if err != nil || rejectedResult.Outcome != save.IntentRejected {
+		t.Fatalf("reported rejection=%+v err=%v", rejectedResult, err)
+	}
+	service.recordCommittedInvariants(rejectedResult, []InvariantReport{rejectedReport})
+
+	abortReport := InvariantReport{
+		Kind: InvariantResidualAbort, IntentID: "018f6b7c-9abc-7def-8abc-888888888888", Detail: "generator.beige_tower",
+	}
+	_, err = store.ApplyIntent(ctx, revision.StreamID, 5, abortReport.IntentID,
+		"sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+		func(*save.State, save.Revision) (save.IntentDecision, error) {
+			return save.IntentDecision{}, ErrInvalidEngineState
+		})
+	if !errors.Is(err, ErrInvalidEngineState) {
+		t.Fatalf("invariant abort error=%v", err)
+	}
+	service.recordAbortedInvariants([]InvariantReport{abortReport})
+
+	var revisions, events, intents, invariantEvents int
 	if err := db.QueryRowContext(ctx, `
 		SELECT
 		 (SELECT count(*) FROM save_revisions WHERE stream_id=$1),
 		 (SELECT count(*) FROM events WHERE stream_id=$1),
-		 (SELECT count(*) FROM intent_records WHERE stream_id=$1)`, revision.StreamID,
-	).Scan(&revisions, &events, &intents); err != nil {
+		 (SELECT count(*) FROM intent_records WHERE stream_id=$1),
+		 (SELECT count(*) FROM events WHERE stream_id=$1 AND kind='invariant_reported')`, revision.StreamID,
+	).Scan(&revisions, &events, &intents, &invariantEvents); err != nil {
 		t.Fatal(err)
 	}
-	if revisions != 4 || events != 1 || intents != 4 {
-		t.Fatalf("rows revisions=%d events=%d intents=%d", revisions, events, intents)
+	if revisions != 5 || events != 2 || intents != 6 || invariantEvents != 1 {
+		t.Fatalf("rows revisions=%d events=%d intents=%d invariant_events=%d", revisions, events, intents, invariantEvents)
+	}
+	if metrics[string(InvariantAffordFallback)] != 1 || metrics[string(InvariantResidualClamp)] != 1 ||
+		metrics[string(InvariantResidualAbort)] != 1 {
+		t.Fatalf("invariant metrics=%+v", metrics)
 	}
 }

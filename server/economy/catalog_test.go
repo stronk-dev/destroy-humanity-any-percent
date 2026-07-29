@@ -9,10 +9,16 @@ import (
 )
 
 type kernelFixture struct {
-	Version      int             `json:"version"`
-	Catalog      json.RawMessage `json:"catalog"`
-	CurveVectors []curveVector   `json:"curve_vectors"`
-	InvalidCases []string        `json:"invalid_cases"`
+	Version                int                     `json:"version"`
+	Catalog                json.RawMessage         `json:"catalog"`
+	CurveVectors           []curveVector           `json:"curve_vectors"`
+	InvalidCases           []string                `json:"invalid_cases"`
+	MultiplierCatalogCases []multiplierCatalogCase `json:"multiplier_catalog_cases"`
+}
+
+type multiplierCatalogCase struct {
+	Name        string `json:"name"`
+	ExpectValid bool   `json:"expect_valid"`
 }
 
 type curveVector struct {
@@ -95,6 +101,59 @@ func TestSharedInvalidCatalogCases(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSharedMultiplierCatalogCases(t *testing.T) {
+	fixture := loadKernelFixture(t)
+	phase0, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, vector := range fixture.MultiplierCatalogCases {
+		t.Run(vector.Name, func(t *testing.T) {
+			_, err := LoadCatalog(mutateMultiplierCatalog(t, phase0, vector.Name))
+			if gotValid := err == nil; gotValid != vector.ExpectValid {
+				t.Fatalf("valid=%v, want %v, error=%v", gotValid, vector.ExpectValid, err)
+			}
+		})
+	}
+}
+
+func mutateMultiplierCatalog(t *testing.T, source []byte, name string) []byte {
+	t.Helper()
+	var root map[string]any
+	if err := json.Unmarshal(source, &root); err != nil {
+		t.Fatal(err)
+	}
+	sources := []any{
+		map[string]any{"id": "upgrade.a", "slot": "upgrades", "target": "all", "provider": "upgrade.a"},
+		map[string]any{"id": "upgrade.b", "slot": "upgrades", "target": "generator.beige_tower", "provider": "upgrade.b"},
+	}
+	switch name {
+	case "valid-multiple-upgrades":
+	case "duplicate-multiplier-source":
+		sources[1].(map[string]any)["id"] = "upgrade.a"
+	case "second-commons-provider":
+		sources[0].(map[string]any)["slot"] = "commons"
+		sources[1].(map[string]any)["slot"] = "commons"
+	case "second-trust-provider":
+		sources[0].(map[string]any)["slot"] = "trust"
+		sources[1].(map[string]any)["slot"] = "trust"
+	case "unknown-multiplier-slot":
+		sources[0].(map[string]any)["slot"] = "dark_magic"
+	case "unknown-multiplier-target":
+		sources[0].(map[string]any)["target"] = "generator.missing"
+	case "malformed-multiplier-provider":
+		sources[0].(map[string]any)["provider"] = "Upgrade A"
+	default:
+		t.Fatalf("unimplemented multiplier catalog case %q", name)
+	}
+	root["multiplier_sources"] = sources
+	data, err := json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
 }
 
 func mutateCatalog(t *testing.T, source json.RawMessage, name string) []byte {

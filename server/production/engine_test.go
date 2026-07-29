@@ -195,7 +195,7 @@ func TestEvaluateSaturatesR1VectorAndFollowingPurchaseSucceeds(t *testing.T) {
 	decision, err := service.buyGenerator(parsedIntent{
 		IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentBuyGenerator,
 		GeneratorID: "generator.beige_tower", CountMode: "exact", Count: 1,
-	}, state, catalog, save.Revision{Number: 1}, ModeOnline, state.EvaluatedThrough, nil, &[]invariantReport{})
+	}, state, catalog, save.Revision{Number: 1}, ModeOnline, state.EvaluatedThrough, nil, &invariantCollector{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -306,6 +306,67 @@ func TestRatesValidateDeclaredContributions(t *testing.T) {
 		Slot: multiplier.SlotTrust, SourceID: "upgrade.double", Target: "all", Factor: mustDecimal(t, "2e0"),
 	}}); err == nil {
 		t.Fatal("mismatched contribution was accepted")
+	}
+
+	valid := multiplier.Contribution{
+		Slot: multiplier.SlotUpgrades, SourceID: "upgrade.double", Target: "all", Factor: mustDecimal(t, "2e0"),
+	}
+	tests := map[string][]multiplier.Contribution{
+		"undeclared":        {{Slot: multiplier.SlotUpgrades, SourceID: "upgrade.missing", Target: "all", Factor: mustDecimal(t, "2e0")}},
+		"mismatched target": {{Slot: multiplier.SlotUpgrades, SourceID: "upgrade.double", Target: "generator.beige_tower", Factor: mustDecimal(t, "2e0")}},
+		"duplicate source":  {valid, valid},
+		"zero factor":       {{Slot: multiplier.SlotUpgrades, SourceID: "upgrade.double", Target: "all", Factor: decimal.Zero}},
+	}
+	for name, contributions := range tests {
+		t.Run(name, func(t *testing.T) {
+			if _, err := Rates(catalog, map[string]int64{"generator.beige_tower": 2}, contributions); err == nil {
+				t.Fatal("invalid runtime contribution set was accepted")
+			}
+		})
+	}
+}
+
+func TestRatesArePermutationInvariantWithinSlot(t *testing.T) {
+	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(data, &root); err != nil {
+		t.Fatal(err)
+	}
+	root["multiplier_sources"] = []any{
+		map[string]any{"id": "a.a", "slot": "upgrades", "target": "all", "provider": "upgrade.a"},
+		map[string]any{"id": "a0", "slot": "upgrades", "target": "all", "provider": "upgrade.b"},
+		map[string]any{"id": "a_a", "slot": "upgrades", "target": "all", "provider": "upgrade.c"},
+	}
+	data, err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	contributions := []multiplier.Contribution{
+		{Slot: multiplier.SlotUpgrades, SourceID: "a.a", Target: "all", Factor: mustDecimal(t, "1.00000000001e0")},
+		{Slot: multiplier.SlotUpgrades, SourceID: "a0", Target: "all", Factor: mustDecimal(t, "9.99999999999e0")},
+		{Slot: multiplier.SlotUpgrades, SourceID: "a_a", Target: "all", Factor: mustDecimal(t, "1.23456789012e0")},
+	}
+	permutations := [][]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
+	want := ""
+	for _, order := range permutations {
+		candidate := []multiplier.Contribution{contributions[order[0]], contributions[order[1]], contributions[order[2]]}
+		rates, err := Rates(catalog, map[string]int64{"generator.beige_tower": 1}, candidate)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got := rates["company.cash"][0].String()
+		if want == "" {
+			want = got
+		} else if got != want {
+			t.Fatalf("permutation %v rate = %s, want %s", order, got, want)
+		}
 	}
 }
 

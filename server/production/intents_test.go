@@ -1,6 +1,7 @@
 package production
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"log/slog"
@@ -12,6 +13,20 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/save"
 )
+
+type fakeInvariantSink struct {
+	reports []InvariantReport
+}
+
+func (sink *fakeInvariantSink) Report(report InvariantReport) {
+	sink.reports = append(sink.reports, report)
+}
+
+type fakeInvariantMetrics map[string]int
+
+func (metrics fakeInvariantMetrics) Increment(kind string) {
+	metrics[kind]++
+}
 
 func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	first, err := parseIntent([]byte(`{
@@ -39,6 +54,58 @@ func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	}
 	if _, err := parseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"buy_generator","expected_revision":1} {}`)); err == nil {
 		t.Fatal("trailing JSON value was accepted")
+	}
+}
+
+func TestInvariantSinkEventsAndOutcomeReporting(t *testing.T) {
+	intentID := "018f6b7c-9abc-7def-8abc-0123456789ab"
+	sink := &fakeInvariantSink{}
+	reportInvariant(sink, InvariantReport{Kind: InvariantAffordFallback, IntentID: intentID, Detail: "generator.example"})
+	if len(sink.reports) != 1 || sink.reports[0].Kind != InvariantAffordFallback {
+		t.Fatalf("exported sink reports = %+v", sink.reports)
+	}
+
+	catalog := phase0Catalog(t)
+	state := engineState(t, catalog, "1e2", 0)
+	request := parsedIntent{IntentID: intentID, Kind: IntentBuyGenerator}
+	decision, err := appliedDecision(request, state, 2, 1, state.Ledger.Snapshot(), nil, []InvariantReport{
+		{Kind: InvariantAffordFallback, IntentID: intentID, Detail: "generator.example"},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(decision.Events) != 1 || decision.Events[0].Kind != save.EventInvariantReported {
+		t.Fatalf("invariant events = %+v", decision.Events)
+	}
+	var payload struct {
+		Kind   string `json:"invariant_kind"`
+		Detail string `json:"detail"`
+	}
+	if err := json.Unmarshal(decision.Events[0].Payload, &payload); err != nil ||
+		payload.Kind != string(InvariantAffordFallback) || payload.Detail != "generator.example" {
+		t.Fatalf("payload = %+v err=%v", payload, err)
+	}
+	if _, err := appliedDecision(request, state, 2, 1, state.Ledger.Snapshot(), nil, []InvariantReport{
+		{Kind: InvariantAffordFallback, IntentID: "018f6b7c-9abc-7def-8abc-999999999999", Detail: "generator.example"},
+	}); err != ErrInvalidEngineState {
+		t.Fatalf("mismatched report error = %v", err)
+	}
+
+	metrics := fakeInvariantMetrics{}
+	var logs bytes.Buffer
+	service := &Service{metrics: metrics, logger: slog.New(slog.NewJSONHandler(&logs, nil))}
+	reports := []InvariantReport{
+		{Kind: InvariantAffordFallback, IntentID: intentID, Detail: "generator.example"},
+		{Kind: InvariantResidualAbort, IntentID: intentID, Detail: "generator.example"},
+	}
+	service.recordCommittedInvariants(save.IntentResult{Outcome: save.IntentRejected}, reports[:1])
+	service.recordCommittedInvariants(save.IntentResult{Outcome: save.IntentRejected, Replay: true}, reports[:1])
+	service.recordAbortedInvariants(reports)
+	if metrics[string(InvariantAffordFallback)] != 1 || metrics[string(InvariantResidualAbort)] != 1 {
+		t.Fatalf("metrics = %+v", metrics)
+	}
+	if got := bytes.Count(logs.Bytes(), []byte(`"msg":"production invariant"`)); got != 2 {
+		t.Fatalf("audit records = %d, logs=%s", got, logs.String())
 	}
 }
 
@@ -198,11 +265,11 @@ func TestIntentPolicyPropertyTwentyFourHoursTwoHundredSeeds(t *testing.T) {
 					ExpectedRevision: revision, ActionID: "manual.click", Count: int64(random.Intn(80) + 1), WindowMS: 300_000,
 				}, candidate, catalog, save.Revision{Number: revision}, ModeOnline, now, nil)
 			} else {
-				reports := make([]invariantReport, 0)
+				collector := &invariantCollector{}
 				decision, err = service.buyGenerator(parsedIntent{
 					IntentID: "018f6b7c-9abc-7def-8abc-999999999999", Kind: IntentBuyGenerator,
 					ExpectedRevision: revision, GeneratorID: "generator.beige_tower", CountMode: "max",
-				}, candidate, catalog, save.Revision{Number: revision}, ModeOnline, now, nil, &reports)
+				}, candidate, catalog, save.Revision{Number: revision}, ModeOnline, now, nil, collector)
 			}
 			if err != nil {
 				t.Fatalf("seed=%d step=%d error=%v", seed, step, err)

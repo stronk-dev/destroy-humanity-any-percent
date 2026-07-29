@@ -40,6 +40,24 @@ type InvariantMetrics interface {
 	Increment(kind string)
 }
 
+type InvariantKind string
+
+const (
+	InvariantAffordFallback InvariantKind = "afford_fallback"
+	InvariantResidualClamp  InvariantKind = "residual_clamp"
+	InvariantResidualAbort  InvariantKind = "residual_abort"
+)
+
+type InvariantReport struct {
+	Kind     InvariantKind
+	IntentID string
+	Detail   string
+}
+
+type InvariantSink interface {
+	Report(InvariantReport)
+}
+
 type Service struct {
 	store         *save.Store
 	catalogs      save.CatalogResolver
@@ -66,9 +84,12 @@ type parsedIntent struct {
 	WindowMS         int64
 }
 
-type invariantReport struct {
-	Kind   string
-	Detail string
+type invariantCollector struct {
+	reports []InvariantReport
+}
+
+func (collector *invariantCollector) Report(report InvariantReport) {
+	collector.reports = append(collector.reports, report)
 }
 
 func NewService(
@@ -98,7 +119,7 @@ func (s *Service) Handle(
 	if err != nil {
 		return HandleResult{}, err
 	}
-	reports := make([]invariantReport, 0)
+	collector := &invariantCollector{}
 	result, err := s.store.ApplyIntent(ctx, streamID, request.ExpectedRevision, request.IntentID, request.RequestHash,
 		func(state *save.State, revision save.Revision) (save.IntentDecision, error) {
 			catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
@@ -118,7 +139,7 @@ func (s *Service) Handle(
 			}
 			switch request.Kind {
 			case IntentBuyGenerator:
-				return s.buyGenerator(request, state, catalog, revision, mode, now, contributions, &reports)
+				return s.buyGenerator(request, state, catalog, revision, mode, now, contributions, collector)
 			case IntentPerformManualBatch:
 				return s.performManualBatch(request, state, catalog, revision, mode, now, contributions)
 			default:
@@ -126,11 +147,7 @@ func (s *Service) Handle(
 			}
 		})
 	if err != nil {
-		for _, report := range reports {
-			if report.Kind == "residual_abort" {
-				s.recordInvariant(request.IntentID, report)
-			}
-		}
+		s.recordAbortedInvariants(collector.reports)
 		var conflict *save.RevisionConflict
 		switch {
 		case errors.As(err, &conflict):
@@ -145,11 +162,7 @@ func (s *Service) Handle(
 			return HandleResult{}, err
 		}
 	}
-	if !result.Replay {
-		for _, report := range reports {
-			s.recordInvariant(request.IntentID, report)
-		}
-	}
+	s.recordCommittedInvariants(result, collector.reports)
 	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
 }
 
@@ -161,7 +174,7 @@ func (s *Service) buyGenerator(
 	mode EvaluationMode,
 	now time.Time,
 	contributions []multiplier.Contribution,
-	reports *[]invariantReport,
+	sink InvariantSink,
 ) (save.IntentDecision, error) {
 	generator, exists := catalog.GeneratorClass(request.GeneratorID)
 	if !exists || generator.Production == nil {
@@ -187,7 +200,7 @@ func (s *Service) buyGenerator(
 		}
 		count = affordability.Count
 		if affordability.UsedFallback {
-			*reports = append(*reports, invariantReport{Kind: "afford_fallback", Detail: request.GeneratorID})
+			reportInvariant(sink, InvariantReport{Kind: InvariantAffordFallback, IntentID: request.IntentID, Detail: request.GeneratorID})
 		}
 	}
 	if count <= 0 {
@@ -208,9 +221,9 @@ func (s *Service) buyGenerator(
 		unit := decimal.New(1, cash.Exponent()-int64(decimal.CanonicalSignificantDigits-1))
 		if unit.IsStateValue() && residual.Abs().Lte(unit) {
 			cost = cash
-			*reports = append(*reports, invariantReport{Kind: "residual_clamp", Detail: request.GeneratorID})
+			reportInvariant(sink, InvariantReport{Kind: InvariantResidualClamp, IntentID: request.IntentID, Detail: request.GeneratorID})
 		} else {
-			*reports = append(*reports, invariantReport{Kind: "residual_abort", Detail: request.GeneratorID})
+			reportInvariant(sink, InvariantReport{Kind: InvariantResidualAbort, IntentID: request.IntentID, Detail: request.GeneratorID})
 			return save.IntentDecision{}, ErrInvalidEngineState
 		}
 	}
@@ -222,7 +235,7 @@ func (s *Service) buyGenerator(
 	state.GeneratorCounts[request.GeneratorID] = owned + count
 	return appliedDecision(request, state, revision.Number+1, count, before, []save.EventWrite{
 		generatorPurchasedEvent(request, generator.Price.ResourceID, count, cost),
-	}, *reports)
+	}, collectorReports(sink))
 }
 
 func (s *Service) performManualBatch(
@@ -291,11 +304,17 @@ func appliedDecision(
 	appliedCount int64,
 	before map[string]string,
 	events []save.EventWrite,
-	reports []invariantReport,
+	reports []InvariantReport,
 ) (save.IntentDecision, error) {
 	for _, report := range reports {
-		if report.Kind == "residual_abort" {
+		if report.IntentID != request.IntentID || report.Detail == "" {
+			return save.IntentDecision{}, ErrInvalidEngineState
+		}
+		if report.Kind == InvariantResidualAbort {
 			continue
+		}
+		if report.Kind != InvariantAffordFallback && report.Kind != InvariantResidualClamp {
+			return save.IntentDecision{}, ErrInvalidEngineState
 		}
 		payload, _ := json.Marshal(map[string]any{"invariant_kind": report.Kind, "detail": report.Detail})
 		events = append(events, save.EventWrite{
@@ -369,10 +388,41 @@ func wireSnapshot(state *save.State) map[string]any {
 	}
 }
 
-func (s *Service) recordInvariant(intentID string, report invariantReport) {
-	s.logger.Error("production invariant", "intent_id", intentID, "kind", report.Kind, "detail", report.Detail)
+func collectorReports(sink InvariantSink) []InvariantReport {
+	collector, ok := sink.(*invariantCollector)
+	if !ok {
+		return nil
+	}
+	return collector.reports
+}
+
+func reportInvariant(sink InvariantSink, report InvariantReport) {
+	if sink != nil {
+		sink.Report(report)
+	}
+}
+
+func (s *Service) recordInvariant(report InvariantReport) {
+	s.logger.Error("production invariant", "intent_id", report.IntentID, "kind", report.Kind, "detail", report.Detail)
 	if s.metrics != nil {
-		s.metrics.Increment(report.Kind)
+		s.metrics.Increment(string(report.Kind))
+	}
+}
+
+func (s *Service) recordCommittedInvariants(result save.IntentResult, reports []InvariantReport) {
+	if result.Replay {
+		return
+	}
+	for _, report := range reports {
+		s.recordInvariant(report)
+	}
+}
+
+func (s *Service) recordAbortedInvariants(reports []InvariantReport) {
+	for _, report := range reports {
+		if report.Kind == InvariantResidualAbort {
+			s.recordInvariant(report)
+		}
 	}
 }
 
