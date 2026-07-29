@@ -1,5 +1,5 @@
 {
-  "corpus_version": 5,
+  "corpus_version": 6,
   "cases": [
     {
       "name": "company v1 balances to v5 canonical route envelope",
@@ -166,6 +166,38 @@
         "manual_token_refilled_at": "2026-07-28T08:00:00.1009Z"
       },
       "expect_error": true
+    },
+    {
+      "name": "founder v6 gains closed prestige defaults",
+      "from_version": 6,
+      "scope": "founder",
+      "migration_baseline": "2026-07-29T12:00:00Z",
+      "input": {
+        "balances": {"founder.reputation": "0"},
+        "generators": {},
+        "evaluated_through": "2026-07-29T12:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 0,
+        "manual_token_refilled_at": "2026-07-29T12:00:00Z",
+        "gates_crossed": {}, "run_seq": 0, "doctrines_by_transition": {}, "structure_id": "",
+        "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
+        "route_knowledge_balance": 25, "hints_unlocked": [],
+        "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": []
+      },
+      "expect_v5": {
+        "balances": {"founder.reputation": "0"},
+        "generators": {},
+        "evaluated_through": "2026-07-29T12:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 0,
+        "manual_token_refilled_at": "2026-07-29T12:00:00Z",
+        "gates_crossed": {}, "run_seq": 0, "doctrines_by_transition": {}, "structure_id": "",
+        "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
+        "route_knowledge_balance": 25, "hints_unlocked": [],
+        "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": []
+      }
     }
   ]
 }

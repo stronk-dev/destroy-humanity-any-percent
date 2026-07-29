@@ -4,7 +4,7 @@
 - **RFC:** `rfc/prestige-and-exits.md`
 - **Started:** 2026-07-29
 
-1. [ ] Add save v7 Company/Founder state, validation, migrations, and corpus fixtures.
+1. [x] Add save v7 Company/Founder state, validation, migrations, and corpus fixtures.
 2. [ ] Implement cross-runtime prestige arithmetic and declarative Phase-0 policy.
 3. [ ] Implement deterministic offers, timers, decline, wind-down, accept, and gated IPO intents.
 4. [ ] Implement atomic two-stream Exit persistence and exact event schemas.

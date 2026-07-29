@@ -18,8 +18,9 @@ import (
 )
 
 const (
-	CurrentVersion           = 6
+	CurrentVersion           = 7
 	millisecondCursorVersion = 4
+	maxOfflineSpans          = 256
 )
 
 var ErrInvalidState = errors.New("invalid saved state")
@@ -45,12 +46,51 @@ type State struct {
 	CompactTithePPM       int64
 	CompactSolidarityPPM  int64
 	CompactSamples        []CompactSample
+	Tier                  int64
+	LifetimeValue         decimal.Decimal
+	OfferState            *ExitOfferState
+	RunStartedAt          time.Time
+	OfflineSpans          []OfflineSpan
+	ReputationLevel       int64
+	ReputationUnlockPPM   int64
+	NetworkSlots          []NetworkSlot
+	CloutLifetime         int64
+	Soul                  int64
+	AgeMS                 int64
+	Notoriety             int64
+	AdvisorMode           bool
+	ExitHistory           []ExitRecord
 }
 
 type CompactSample struct {
 	HourStart     time.Time
 	CompliancePPM int64
 	CoveredMS     int64
+}
+
+type ExitOfferState struct {
+	OfferID   string
+	ExitType  string
+	TermsJSON json.RawMessage
+	SpawnedAt time.Time
+	ExpiresAt time.Time
+}
+
+type OfflineSpan struct {
+	From time.Time
+	To   time.Time
+}
+
+type NetworkSlot struct {
+	Slot       string `json:"slot"`
+	CarriedRef string `json:"carried_ref"`
+}
+
+type ExitRecord struct {
+	RunID           int64
+	ExitType        string
+	OccurredAt      time.Time
+	ReputationDelta int64
 }
 
 type stateV1 struct {
@@ -96,6 +136,44 @@ type stateV6 struct {
 	CompactTithePPM      int64              `json:"compact_tithe_ppm"`
 	CompactSolidarityPPM int64              `json:"compact_solidarity_ppm"`
 	CompactSamples       []rawCompactSample `json:"compact_solidarity_samples"`
+}
+
+type stateV7 struct {
+	stateV6
+	Tier                int64              `json:"tier"`
+	LifetimeValue       string             `json:"lifetime_value"`
+	OfferState          *rawExitOfferState `json:"offer_state"`
+	RunStartedAtMS      int64              `json:"run_started_at_ms"`
+	OfflineSpans        []rawOfflineSpan   `json:"offline_spans"`
+	ReputationLevel     int64              `json:"reputation_level"`
+	ReputationUnlockPPM int64              `json:"reputation_unlock_ppm"`
+	NetworkSlots        []NetworkSlot      `json:"network_slots"`
+	CloutLifetime       int64              `json:"clout_lifetime"`
+	Soul                int64              `json:"soul"`
+	AgeMS               int64              `json:"age_ms"`
+	Notoriety           int64              `json:"notoriety"`
+	AdvisorMode         bool               `json:"advisor_mode"`
+	ExitHistory         []rawExitRecord    `json:"exit_history"`
+}
+
+type rawExitOfferState struct {
+	OfferID     string          `json:"offer_id"`
+	ExitType    string          `json:"exit_type"`
+	TermsJSON   json.RawMessage `json:"terms_json"`
+	SpawnedAtMS int64           `json:"spawned_at_ms"`
+	ExpiresAtMS int64           `json:"expires_at_ms"`
+}
+
+type rawOfflineSpan struct {
+	FromMS int64 `json:"from_ms"`
+	ToMS   int64 `json:"to_ms"`
+}
+
+type rawExitRecord struct {
+	RunID           int64  `json:"run_id"`
+	ExitType        string `json:"exit_type"`
+	OccurredAtMS    int64  `json:"occurred_at_ms"`
+	ReputationDelta int64  `json:"reputation_delta"`
 }
 
 type rawCompactSample struct {
@@ -165,6 +243,9 @@ func EncodeState(state *State) ([]byte, error) {
 	if err := validateCompactState(&normalized, normalized.Ledger.Scope()); err != nil {
 		return nil, err
 	}
+	if err := validatePrestigeState(&normalized, normalized.Ledger.Scope()); err != nil {
+		return nil, err
+	}
 	cursor, err := formatCursor(state.EvaluatedThrough)
 	if err != nil {
 		return nil, err
@@ -176,7 +257,7 @@ func EncodeState(state *State) ([]byte, error) {
 	if state.ManualTokenRefilledAt.After(state.EvaluatedThrough) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
-	encoded, err := json.Marshal(stateV6{stateV5: stateV5{
+	encoded, err := json.Marshal(stateV7{stateV6: stateV6{stateV5: stateV5{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
 		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: cloneBoolMap(normalized.GatesCrossed), RunSeq: normalized.RunSeq,
@@ -185,7 +266,13 @@ func EncodeState(state *State) ([]byte, error) {
 		RegionTraits: sortedTrueKeys(normalized.RegionTraits), RouteKnowledgeBalance: normalized.RouteKnowledgeBalance,
 		HintsUnlocked: sortedTrueKeys(normalized.HintsUnlocked),
 	}, CompactMember: normalized.CompactMember, CompactTithePPM: normalized.CompactTithePPM,
-		CompactSolidarityPPM: normalized.CompactSolidarityPPM, CompactSamples: encodeCompactSamples(normalized.CompactSamples)})
+		CompactSolidarityPPM: normalized.CompactSolidarityPPM, CompactSamples: encodeCompactSamples(normalized.CompactSamples)},
+		Tier: normalized.Tier, LifetimeValue: normalized.LifetimeValue.String(), OfferState: encodeExitOffer(normalized.OfferState),
+		RunStartedAtMS: timeToExactMS(normalized.RunStartedAt), OfflineSpans: encodeOfflineSpans(normalized.OfflineSpans),
+		ReputationLevel: normalized.ReputationLevel, ReputationUnlockPPM: normalized.ReputationUnlockPPM,
+		NetworkSlots: cloneNetworkSlots(normalized.NetworkSlots), CloutLifetime: normalized.CloutLifetime,
+		Soul: normalized.Soul, AgeMS: normalized.AgeMS, Notoriety: normalized.Notoriety,
+		AdvisorMode: normalized.AdvisorMode, ExitHistory: encodeExitHistory(normalized.ExitHistory)})
 	if err != nil {
 		return nil, fmt.Errorf("%w: encode: %v", ErrInvalidState, err)
 	}
@@ -203,7 +290,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
 	}
 
-	var source stateV6
+	var source stateV7
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -213,7 +300,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err != nil {
 			return nil, fmt.Errorf("%w: version-1 migration baseline: %v", ErrInvalidState, err)
 		}
-		source.stateV5 = stateV5{
+		source.stateV6.stateV5 = stateV5{
 			Balances: legacy.Balances, Generators: zeroGeneratorCounts(catalog, scope), EvaluatedThrough: cursor,
 		}
 	} else if version == 2 {
@@ -221,13 +308,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
+		source.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
 	} else if version < 5 {
 		var previous stateV4
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV5 = stateV5{
+		source.stateV6.stateV5 = stateV5{
 			Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough,
 			ComputeCreditMS: previous.ComputeCreditMS, ManualTokenMilli: previous.ManualTokenMilli,
 			ManualTokenRefilledAt: previous.ManualTokenRefilledAt,
@@ -237,7 +324,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV5 = previous
+		source.stateV6.stateV5 = previous
+	} else if version == 6 {
+		var previous stateV6
+		if err := decodeState(data, &previous); err != nil {
+			return nil, err
+		}
+		source.stateV6 = previous
 	} else if err := decodeState(data, &source); err != nil {
 		return nil, err
 	}
@@ -261,6 +354,15 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	}
 	if version < 6 {
 		source.CompactSamples = []rawCompactSample{}
+	}
+	if version < 7 {
+		source.LifetimeValue = decimal.Zero.String()
+		source.OfflineSpans = []rawOfflineSpan{}
+		source.NetworkSlots = []NetworkSlot{}
+		source.ExitHistory = []rawExitRecord{}
+	}
+	if version == 7 && (source.OfflineSpans == nil || source.NetworkSlots == nil || source.ExitHistory == nil) {
+		return nil, fmt.Errorf("%w: prestige state collections are required", ErrInvalidState)
 	}
 
 	if source.Balances == nil || source.Generators == nil {
@@ -315,6 +417,30 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		HintsUnlocked: hints,
 		CompactMember: source.CompactMember, CompactTithePPM: source.CompactTithePPM,
 		CompactSolidarityPPM: source.CompactSolidarityPPM,
+		Tier:                 source.Tier, ReputationLevel: source.ReputationLevel,
+		ReputationUnlockPPM: source.ReputationUnlockPPM, NetworkSlots: cloneNetworkSlots(source.NetworkSlots),
+		CloutLifetime: source.CloutLifetime, Soul: source.Soul, AgeMS: source.AgeMS,
+		Notoriety: source.Notoriety, AdvisorMode: source.AdvisorMode,
+	}
+	state.LifetimeValue, err = decimal.ParseCanonical(source.LifetimeValue)
+	if err != nil {
+		return nil, fmt.Errorf("%w: lifetime_value", ErrInvalidState)
+	}
+	state.OfferState, err = decodeExitOffer(source.OfferState)
+	if err != nil {
+		return nil, err
+	}
+	state.RunStartedAt, err = exactMSToTime(source.RunStartedAtMS)
+	if err != nil {
+		return nil, err
+	}
+	state.OfflineSpans, err = decodeOfflineSpans(source.OfflineSpans)
+	if err != nil {
+		return nil, err
+	}
+	state.ExitHistory, err = decodeExitHistory(source.ExitHistory)
+	if err != nil {
+		return nil, err
 	}
 	state.CompactSamples, err = decodeCompactSamples(source.CompactSamples)
 	if err != nil {
@@ -326,7 +452,179 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if err := validateCompactState(state, scope); err != nil {
 		return nil, err
 	}
+	if err := validatePrestigeState(state, scope); err != nil {
+		return nil, err
+	}
 	return state, nil
+}
+
+func validatePrestigeState(state *State, scope economy.Scope) error {
+	if state.Tier < 0 || state.Tier > 9 || !state.LifetimeValue.IsStateValue() || state.LifetimeValue.Lt(decimal.Zero) ||
+		state.ReputationLevel < 0 || state.ReputationLevel > decimal.MaxExactInteger ||
+		state.ReputationUnlockPPM < 0 || state.ReputationUnlockPPM > 1_000_000 ||
+		state.CloutLifetime < 0 || state.CloutLifetime > decimal.MaxExactInteger ||
+		state.Soul < -decimal.MaxExactInteger || state.Soul > decimal.MaxExactInteger ||
+		state.AgeMS < 0 || state.AgeMS > decimal.MaxExactInteger ||
+		state.Notoriety < 0 || state.Notoriety > decimal.MaxExactInteger {
+		return fmt.Errorf("%w: prestige values outside their exact domains", ErrInvalidState)
+	}
+	if len(state.OfflineSpans) > maxOfflineSpans {
+		return fmt.Errorf("%w: too many offline spans", ErrInvalidState)
+	}
+	if scope == economy.ScopeCompany {
+		if state.ReputationLevel != 0 || state.ReputationUnlockPPM != 0 || len(state.NetworkSlots) != 0 ||
+			state.CloutLifetime != 0 || state.Soul != 0 || state.AgeMS != 0 || state.Notoriety != 0 ||
+			state.AdvisorMode || len(state.ExitHistory) != 0 {
+			return fmt.Errorf("%w: founder prestige state leaked into company scope", ErrInvalidState)
+		}
+		if !state.RunStartedAt.IsZero() && (!isCanonicalMillisecond(state.RunStartedAt) || state.RunStartedAt.After(state.EvaluatedThrough)) {
+			return fmt.Errorf("%w: invalid run_started_at", ErrInvalidState)
+		}
+		last := time.Time{}
+		for _, span := range state.OfflineSpans {
+			if span.From.IsZero() || !isCanonicalMillisecond(span.From) || !isCanonicalMillisecond(span.To) || !span.To.After(span.From) ||
+				!last.IsZero() && span.From.Before(last) || !state.RunStartedAt.IsZero() && span.From.Before(state.RunStartedAt) || span.To.After(state.EvaluatedThrough) {
+				return fmt.Errorf("%w: invalid offline span", ErrInvalidState)
+			}
+			last = span.To
+		}
+		if state.OfferState != nil {
+			offer := state.OfferState
+			if !uuidV7Pattern.MatchString(offer.OfferID) || !validExitType(offer.ExitType) || len(offer.TermsJSON) == 0 ||
+				!json.Valid(offer.TermsJSON) || !isCanonicalMillisecond(offer.SpawnedAt) || !isCanonicalMillisecond(offer.ExpiresAt) || !offer.ExpiresAt.After(offer.SpawnedAt) {
+				return fmt.Errorf("%w: invalid exit offer", ErrInvalidState)
+			}
+		}
+		return nil
+	}
+	if state.Tier != 0 || !state.LifetimeValue.Eq(decimal.Zero) || state.OfferState != nil || !state.RunStartedAt.IsZero() || len(state.OfflineSpans) != 0 {
+		return fmt.Errorf("%w: company prestige state leaked outside company scope", ErrInvalidState)
+	}
+	if scope != economy.ScopeFounder {
+		if state.ReputationLevel != 0 || state.ReputationUnlockPPM != 0 || len(state.NetworkSlots) != 0 || state.CloutLifetime != 0 || state.Soul != 0 || state.AgeMS != 0 || state.Notoriety != 0 || state.AdvisorMode || len(state.ExitHistory) != 0 {
+			return fmt.Errorf("%w: founder prestige state leaked outside founder scope", ErrInvalidState)
+		}
+		return nil
+	}
+	seenSlots := map[string]bool{}
+	lastSlot := ""
+	for _, slot := range state.NetworkSlots {
+		if !stateMechanicalIDPattern.MatchString(slot.Slot) || !stateMechanicalIDPattern.MatchString(slot.CarriedRef) || seenSlots[slot.Slot] || slot.Slot < lastSlot {
+			return fmt.Errorf("%w: invalid network slot", ErrInvalidState)
+		}
+		seenSlots[slot.Slot], lastSlot = true, slot.Slot
+	}
+	var lastRun int64
+	for _, record := range state.ExitHistory {
+		if record.RunID <= lastRun || record.RunID > decimal.MaxExactInteger || !validExitType(record.ExitType) ||
+			record.OccurredAt.IsZero() || !isCanonicalMillisecond(record.OccurredAt) || record.ReputationDelta < 0 || record.ReputationDelta > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid exit history", ErrInvalidState)
+		}
+		lastRun = record.RunID
+	}
+	return nil
+}
+
+func validExitType(value string) bool {
+	switch value {
+	case "acquihire", "acquisition", "ipo", "collapse", "scripted_first":
+		return true
+	default:
+		return false
+	}
+}
+
+func isCanonicalMillisecond(value time.Time) bool {
+	return value.Location() == time.UTC && value.Nanosecond()%int(time.Millisecond) == 0
+}
+
+func timeToExactMS(value time.Time) int64 {
+	if value.IsZero() {
+		return 0
+	}
+	return value.UnixMilli()
+}
+
+func exactMSToTime(value int64) (time.Time, error) {
+	if value == 0 {
+		return time.Time{}, nil
+	}
+	if value < 0 || value > decimal.MaxExactInteger {
+		return time.Time{}, fmt.Errorf("%w: millisecond timestamp outside exact domain", ErrInvalidState)
+	}
+	return time.UnixMilli(value).UTC(), nil
+}
+
+func encodeExitOffer(offer *ExitOfferState) *rawExitOfferState {
+	if offer == nil {
+		return nil
+	}
+	return &rawExitOfferState{OfferID: offer.OfferID, ExitType: offer.ExitType, TermsJSON: cloneRaw(offer.TermsJSON), SpawnedAtMS: timeToExactMS(offer.SpawnedAt), ExpiresAtMS: timeToExactMS(offer.ExpiresAt)}
+}
+
+func decodeExitOffer(offer *rawExitOfferState) (*ExitOfferState, error) {
+	if offer == nil {
+		return nil, nil
+	}
+	spawned, err := exactMSToTime(offer.SpawnedAtMS)
+	if err != nil {
+		return nil, err
+	}
+	expires, err := exactMSToTime(offer.ExpiresAtMS)
+	if err != nil {
+		return nil, err
+	}
+	return &ExitOfferState{OfferID: offer.OfferID, ExitType: offer.ExitType, TermsJSON: cloneRaw(offer.TermsJSON), SpawnedAt: spawned, ExpiresAt: expires}, nil
+}
+
+func encodeOfflineSpans(spans []OfflineSpan) []rawOfflineSpan {
+	result := make([]rawOfflineSpan, len(spans))
+	for index, span := range spans {
+		result[index] = rawOfflineSpan{FromMS: timeToExactMS(span.From), ToMS: timeToExactMS(span.To)}
+	}
+	return result
+}
+
+func decodeOfflineSpans(spans []rawOfflineSpan) ([]OfflineSpan, error) {
+	result := make([]OfflineSpan, len(spans))
+	for index, span := range spans {
+		from, err := exactMSToTime(span.FromMS)
+		if err != nil {
+			return nil, err
+		}
+		to, err := exactMSToTime(span.ToMS)
+		if err != nil {
+			return nil, err
+		}
+		result[index] = OfflineSpan{From: from, To: to}
+	}
+	return result, nil
+}
+
+func cloneNetworkSlots(slots []NetworkSlot) []NetworkSlot {
+	result := make([]NetworkSlot, len(slots))
+	copy(result, slots)
+	return result
+}
+
+func encodeExitHistory(records []ExitRecord) []rawExitRecord {
+	result := make([]rawExitRecord, len(records))
+	for index, record := range records {
+		result[index] = rawExitRecord{RunID: record.RunID, ExitType: record.ExitType, OccurredAtMS: timeToExactMS(record.OccurredAt), ReputationDelta: record.ReputationDelta}
+	}
+	return result
+}
+
+func decodeExitHistory(records []rawExitRecord) ([]ExitRecord, error) {
+	result := make([]ExitRecord, len(records))
+	for index, record := range records {
+		occurred, err := exactMSToTime(record.OccurredAtMS)
+		if err != nil {
+			return nil, err
+		}
+		result[index] = ExitRecord{RunID: record.RunID, ExitType: record.ExitType, OccurredAt: occurred, ReputationDelta: record.ReputationDelta}
+	}
+	return result, nil
 }
 
 func validateCompactState(state *State, scope economy.Scope) error {

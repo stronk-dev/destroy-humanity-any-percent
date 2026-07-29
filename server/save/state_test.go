@@ -18,6 +18,10 @@ const stateCatalogJSON = `{
     "id": "company.cash", "scope": "company", "numeric_kind": "decimal",
     "initial": "0", "minimum": "0",
     "hardcap": {"amount": "1e100", "reason_key": "resource.company_cash.cap.test"}
+  }, {
+    "id": "founder.reputation", "scope": "founder", "numeric_kind": "decimal",
+    "initial": "0", "minimum": "0",
+    "hardcap": {"amount": "1e100", "reason_key": "resource.founder_reputation.cap.test"}
   }],
   "generator_classes": [{
     "id": "generator.example",
@@ -91,12 +95,16 @@ func testState(t *testing.T) *State {
 	}
 }
 
-func TestStateV6RoundTrip(t *testing.T) {
+func TestStateV7RoundTrip(t *testing.T) {
 	state := testState(t)
 	state.CompactMember = true
 	state.CompactTithePPM = 100_000
 	state.CompactSolidarityPPM = 875_000
 	state.CompactSamples = []CompactSample{{HourStart: testCursor.Truncate(time.Hour), CompliancePPM: 875_000, CoveredMS: 3_600_000}}
+	state.Tier = 3
+	state.LifetimeValue = decimal.New(25, 11)
+	state.RunStartedAt = testCursor.Add(-time.Hour)
+	state.OfflineSpans = []OfflineSpan{{From: testCursor.Add(-30 * time.Minute), To: testCursor.Add(-20 * time.Minute)}}
 	encoded, err := EncodeState(state)
 	if err != nil {
 		t.Fatal(err)
@@ -124,6 +132,10 @@ func TestStateV6RoundTrip(t *testing.T) {
 	if !restored.CompactMember || restored.CompactTithePPM != 100_000 || restored.CompactSolidarityPPM != 875_000 || len(restored.CompactSamples) != 1 || restored.CompactSamples[0].CoveredMS != 3_600_000 {
 		t.Fatalf("restored compact state = %+v", restored)
 	}
+	if restored.Tier != 3 || restored.LifetimeValue.String() != "2.5e12" || !restored.RunStartedAt.Equal(testCursor.Add(-time.Hour)) ||
+		len(restored.OfflineSpans) != 1 || !restored.OfflineSpans[0].To.Equal(testCursor.Add(-20*time.Minute)) {
+		t.Fatalf("restored prestige state = %+v", restored)
+	}
 }
 
 func TestSaveMigrationCorpus(t *testing.T) {
@@ -143,7 +155,7 @@ func TestSaveMigrationCorpus(t *testing.T) {
 	if err := json.Unmarshal(baselineData, &baseline); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.CorpusVersion != 5 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
+	if fixture.CorpusVersion != 6 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
 		len(fixture.Cases) != baseline.MinimumCaseCount {
 		t.Fatalf("migration corpus version=%d cases=%d baseline=%+v", fixture.CorpusVersion, len(fixture.Cases), baseline)
 	}
@@ -185,6 +197,15 @@ func TestSaveMigrationCorpus(t *testing.T) {
 			}
 			if err := json.Unmarshal(vector.ExpectV5, &want); err != nil {
 				t.Fatal(err)
+			}
+			if vector.FromVersion < 7 {
+				object := want.(map[string]any)
+				object["tier"], object["lifetime_value"], object["offer_state"] = float64(0), "0", nil
+				object["run_started_at_ms"], object["offline_spans"] = float64(0), []any{}
+				object["reputation_level"], object["reputation_unlock_ppm"] = float64(0), float64(0)
+				object["network_slots"], object["clout_lifetime"] = []any{}, float64(0)
+				object["soul"], object["age_ms"], object["notoriety"] = float64(0), float64(0), float64(0)
+				object["advisor_mode"], object["exit_history"] = false, []any{}
 			}
 			if !equalJSON(got, want) {
 				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV5)

@@ -11,6 +11,7 @@ import (
 	"io"
 	"time"
 
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/save"
 )
@@ -441,9 +442,12 @@ func (repository *Repository) initialStates(now time.Time) (map[economy.Scope][]
 		state := &save.State{Ledger: ledger, GeneratorCounts: counts, EvaluatedThrough: now,
 			ManualTokenRefilledAt: now, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{},
 			LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{}, RegionTraits: map[string]bool{},
-			HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{}}
+			HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{},
+			LifetimeValue: decimal.Zero, OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{},
+			ExitHistory: []save.ExitRecord{}}
 		if scope == economy.ScopeCompany {
 			state.RunSeq = 1
+			state.RunStartedAt = now
 			state.ManualTokenMilli = catalog.ManualPolicy().BucketCapMilli
 		}
 		encoded, err := save.EncodeState(state)
