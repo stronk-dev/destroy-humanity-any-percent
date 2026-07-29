@@ -491,8 +491,15 @@ func canMergeCohort(targetMembers, sourceMembers, mergeFloor, targetSize int) bo
 	if targetMembers < 0 || sourceMembers < 0 || mergeFloor <= 0 || targetSize <= 0 || sourceMembers >= mergeFloor {
 		return false
 	}
-	maximumMembers := int64(targetSize) * 3 / 2
-	return int64(targetMembers)+int64(sourceMembers) <= maximumMembers
+	maximumMembers := int64(targetSize)
+	halfTarget := maximumMembers / 2
+	maximumInt64 := int64(^uint64(0) >> 1)
+	if maximumMembers > maximumInt64-halfTarget {
+		return false
+	}
+	maximumMembers += halfTarget
+	target, source := int64(targetMembers), int64(sourceMembers)
+	return target <= maximumMembers && source <= maximumMembers-target
 }
 
 // OfferRecruitment is called by the authoritative progress boundary at mid-T3.

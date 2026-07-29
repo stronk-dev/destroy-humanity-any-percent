@@ -21,3 +21,12 @@
   use the repaired event identity.
 - Go routes/production/projection tests, 6,412 client tests, TypeScript diagnostics, and schema
   semantics are green. The Routes input commit must land before the artifact-only pacing update.
+
+## 2026-07-29 — verification and local review
+
+- The artifact-only `BALANCE-CHANGE:` commit records the relocated route catalog. The constants
+  identity changed; pacing metrics did not.
+- Full `make verify`, including real-Postgres integration, the balance guard, 6,412 client tests,
+  and 19,245 browser cases, passed.
+- A local spec/adversarial pass found no additional route defect. Independent review remains the
+  mandatory archival gate.

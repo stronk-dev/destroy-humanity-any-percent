@@ -17,3 +17,11 @@
   source remains open with target capacity available.
 - Canonical Commons documentation now states the floor-only trigger, 1.5× cap, and never-split
   behavior. Unit and integration tests are green.
+
+## 2026-07-29 — local adversarial review
+
+- Review found that spelling the ceiling as `target_size * 3 / 2` could overflow a platform-sized
+  integer before applying the cap. The helper now computes `target + floor(target/2)`, guards the
+  addition, and compares with subtraction so both policy and member totals fail closed on overflow.
+- A 64-bit boundary regression proves the fail-closed behavior; 32-bit builds skip only that
+  unreachable platform-sized fixture. Independent review remains the mandatory archival gate.

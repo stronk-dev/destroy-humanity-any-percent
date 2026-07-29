@@ -1,6 +1,9 @@
 package commonsprojection
 
-import "testing"
+import (
+	"strconv"
+	"testing"
+)
 
 func TestMergeCapacityIsFloorTriggeredWholeAndBounded(t *testing.T) {
 	tests := []struct {
@@ -20,5 +23,14 @@ func TestMergeCapacityIsFloorTriggeredWholeAndBounded(t *testing.T) {
 				t.Fatalf("canMergeCohort(%d,%d)=%v want=%v", test.targetMembers, test.sourceMembers, got, test.want)
 			}
 		})
+	}
+}
+
+func TestMergeCapacityFailsClosedWhenPolicyLimitWouldOverflow(t *testing.T) {
+	if strconv.IntSize < 64 {
+		t.Skip("a platform-sized target cannot reach the int64 overflow boundary")
+	}
+	if canMergeCohort(1, 1, 40, int(^uint(0)>>1)) {
+		t.Fatal("overflowing capacity policy must fail closed")
 	}
 }
