@@ -1,7 +1,7 @@
 # Commons Compact — implementation plan
 
 - **Assignee:** Codex
-- **RFC:** `rfc/commons-compact.md`
+- **RFC:** `rfc/archive/commons-compact.md`
 - **Started:** 2026-07-29
 - **Completed:** 2026-07-29
 
