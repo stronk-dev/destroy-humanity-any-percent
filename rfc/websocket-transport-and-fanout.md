@@ -61,8 +61,31 @@ Per-connection subscribe caps (config), per-channel publish authz (only server a
 - Redis broker threshold (named follow-up; single-node until telemetry says otherwise).
 - Feed curation rules live with `design/05 §2` content work, not here.
 
+## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-29)
+
+1. **Identity and session authority:** account/session bootstrap does not exist. Define connection
+   authentication, token issue/refresh/revocation, Origin policy, Founder identity binding, and
+   membership lookup before JWT-authorized private channels can be implemented.
+2. **Inbound intent protocol:** choose and specify the request path named in D2 (HTTP or WebSocket
+   RPC), its exact versioned envelope, `intent_id`/revision mapping, timeout and retry behavior, and
+   the adapter into the production engine's closed intent union.
+3. **Exact outbound payloads:** D3's `payload:{…}` is not a wire contract. Define closed, versioned
+   schemas for snapshots, applied/rejected receipts, events, presence, and system messages, including
+   the mapping from production's receipt JSON into the Client Shell's deliberately narrower types and
+   the `internal_invariant` wire result already assigned here.
+4. **Recovery authority:** define the Centrifuge stream position/epoch persisted by the client, the
+   bounded history size and expiry, the gap/expired-history response, and the authoritative full-sync
+   operation. A revision alone cannot recover messages from an evicted in-memory history.
+5. **Backpressure constants:** queue bounds, message/subscription limits, typed close codes, publish
+   cadence, and drain timeout must be catalog/config fields with literal Phase-0 values and loader
+   validation; “up to a bound” is not executable.
+6. **Runnable lifecycle:** no account HTTP surface or composed game server exists yet. Name the server
+   bootstrap, health/readiness behavior, in-flight transaction drain boundary, and test seam that AC5
+   exercises rather than assuming deployment infrastructure owns them.
+
 ## Changelog
 
 - 2026-07-28: created (draft).
 - 2026-07-29: removed a disproved review finding: Production C1 and the live parser both require
   `window_ms`; D3 maps the shell's mechanical `windowMs` field normally.
+- 2026-07-29: Codex acceptance review recorded six executable-contract gaps; remains draft.

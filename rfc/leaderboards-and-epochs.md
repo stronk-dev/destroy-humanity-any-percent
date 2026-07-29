@@ -4,7 +4,9 @@
 - **Author:** Marco (drafted by Claude)
 - **Design refs:** `design/05 §6` (derived boards, category model, Route Registry), `design/08 §6` (timer semantics, categories), `design/00` (world records as framing)
 - **Research:** `design/research/speedrun-governance.md` (S1–S39 — the primary source), `design/research/adaptive-balancing.md §8` (Balance Epoch, Board Mandates; **as corrected by** speedrun-governance §5.3)
-- **Depends on:** Production Engine (implemented — the intent log is the run record), Save Layer (implemented — `constants_hash` per revision), Gate Predicates (draft — `route_executed` events feed Glitchless/variables)
+- **Depends on:** Production Engine (implemented), Save Layer (implemented — `constants_hash` per
+  revision), Gate Predicates (implemented — `route_executed` events feed Glitchless/variables),
+  account/session bootstrap, Prestige & Exits (run lifecycle)
 - **Planning:** `planning/leaderboards-and-epochs/` (once implementing)
 
 ## Summary
@@ -54,6 +56,34 @@ First verified completion per `(category, epoch)` emits a feed/dispatch event (t
 - Promotion thresholds (25/10) and mandate count: provisional, data.
 - Board retention/pagination scale: implementation freedom.
 
+## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-29)
+
+1. **There is no replayable intent log:** `intent_records` stores only a request hash, outcome, and
+   receipt and is pruned after 30 days. D2 must define the immutable run-log schema containing the
+   canonical request payload, authoritative receipt/time, sequence, and retention/archive policy.
+2. **Replay identity is incomplete:** `constants_hash` identifies catalog bytes, not the executable
+   transition implementation. Define immutable catalog retrieval by hash plus a versioned engine/build
+   identity, or old runs can silently replay under new code while claiming the same constants.
+3. **Run and timer lifecycle:** specify `[BEGIN ATTEMPT]`, run ID/seed creation, offline-span authority,
+   pause/reconnect behavior, terminalization, and the exact integer derivation of RTA and Attended Time.
+   These must bind to the Prestige transaction rather than client clocks.
+4. **Player validator delivery:** the full authoritative transition exists only in Go. Choose a real
+   mechanism—WASM/shared implementation, signed server verifier, or a deliberately smaller verifier—and
+   define byte-identical input/output fixtures. “Same shared kernel” is not currently true in browsers.
+5. **Epoch storage and minting:** define tables, monotonic allocation, one-current-epoch concurrency,
+   immutable catalog artifacts, accepted-hash-set mutation, changelog identity, and the exact
+   transaction that pins a newly started run.
+6. **Board projection/query contract:** define verified-run storage, convergence/idempotency rules,
+   exact shared-rank ordering, pagination cursors, frozen-board behavior, and atomic world-first
+   deduplication. “Implementation freedom” cannot include ordering or retention semantics.
+7. **Categories and variables:** provide the closed data schema and terminal predicates for the four
+   canonical categories. Resolve whether Commons participation and Advisor Mode are one `Assisted`
+   bit or separately queryable variables before either RFC ships.
+8. **CI hook:** spell out which paths require an epoch, how the hook distinguishes balance from
+   correctness changes, and how an accepted-hash hotfix remains reproducible without weakening the
+   hardened `BALANCE-CHANGE:` history guard.
+
 ## Changelog
 
 - 2026-07-28: created (draft). Closes the deferred-decisions register.
+- 2026-07-29: updated implemented dependencies; Codex acceptance review recorded eight blockers.

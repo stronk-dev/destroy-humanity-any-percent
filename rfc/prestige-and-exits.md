@@ -4,7 +4,9 @@
 - **Author:** Marco (drafted by Claude)
 - **Design refs:** `design/02 §3` (formula, sub-currencies, **Exit offers — designed 2026-07-28**), `design/11 §3–4` (run-end sequence, **scripted first failure, Advisor Mode**), `design/02 §6` (the Clout carry rule), `design/10 §5` (ledger persists, scores reseed)
 - **Research:** `design/research/pacing-science.md` (first-Exit pacing), `design/research/morality-systems.md` (the reseed), `design/research/run-narrative-ux.md §6b` (as adopted)
-- **Depends on:** Production Engine (implemented), Save Layer (implemented — Company/Founder stream split is the whole trick), Gate Predicates (draft — collapse-Exit Route Knowledge bonus; can land with a stub grant)
+- **Depends on:** Production Engine (implemented), Save Layer (implemented — Company/Founder stream
+  split is the whole trick), Gate Predicates (implemented — collapse-Exit Route Knowledge bonus),
+  T0–T1 playable content, account/session bootstrap
 - **Planning:** `planning/prestige-and-exits/` (once implementing)
 
 ## Summary
@@ -64,6 +66,37 @@ Deterministic assembly, in order: catalog initials → Network-carried items (de
 - The S-1/IPO event chain content: `design/09` Layer-1 authoring, not blocking (the `file_ipo` intent can ship gated off until the chain exists).
 - Founder-age advancement constants: balance data; the actuarial-wall interactions live with the Tier-6 content RFC.
 
+## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-29)
+
+1. **Persisted state is unnamed:** define versioned Company/Founder fields and migrations for run ID,
+   tier, lifetime value, Reputation, Network, Route Knowledge, lifetime/run Clout, Soul, age,
+   Notoriety, offer state, Exit history, Advisor Mode, and carried items. None may be inferred from
+   flavor names at implementation time.
+2. **Prestige arithmetic:** specify `T`, exit modifiers, exact cube-root/floor algorithm over the
+   Decimal domain, quantization points, total-vs-delta semantics, caps, and golden Go/TS vectors.
+3. **Offer state machine:** define deterministic spawn scheduling/PRNG, event and terms schemas,
+   expiry boundary, decline behavior, recomputation field-by-field, and how nonnumeric Network grants
+   participate in `max(preview,recomputed)`.
+4. **Multi-stream atomicity:** the current store applies one stream per transaction. Specify ordered
+   locking, expected revisions and idempotency scope across Founder + old Company + new Company,
+   which stream owns each event, compensation/retry semantics, and the archive/new-stream identities.
+5. **Scripted-first contradiction:** D4 ends the first run at ~15 minutes, while AC8 requires the
+   Casual persona's first Exit in 45–90 minutes. Choose which event the pacing gate measures and
+   whether the scripted collapse is an Exit, a nonterminal failure, or a tutorial segment.
+6. **Category contradiction:** a one-per-Founder scripted segment cannot simultaneously be “in every
+   category's route” for later attempts. Define whether verified attempts begin only after the
+   tutorial or how its absence is normalized.
+7. **Automatic transition authority:** a server-fired `wind_down` is not a client intent. Define its
+   deterministic command identity, revision/idempotency behavior, scheduler trigger, and harness path.
+8. **Advisor Mode contract:** add the toggle intent/state transition and resolve its leaderboard
+   variable against Commons-assisted runs. D5 currently introduces an accepting action absent from D1.
+9. **Opening-state catalog:** provide literal Phase-0 initial state, carried-item validation/order,
+   reseed rounding, and starter-effect schemas so D6 and its byte-golden fixture are executable.
+10. **Run-end payload:** replace “full terms object” and copy-template references with an exact,
+    versioned `run_ended`/`run_started` schema that the client and replay verifier both consume.
+
 ## Changelog
 
 - 2026-07-28: created (draft), immediately after the run-end design sitting it depends on.
+- 2026-07-29: updated implemented dependencies; Codex acceptance review found the scripted-first
+  timing contradiction and nine additional executable-contract gaps.

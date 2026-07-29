@@ -4,7 +4,8 @@
 - **Author:** Codex
 - **Created:** 2026-07-29
 - **Design refs:** `design/05 §3, §5` (guild participation, Commons front door and governance), `design/10 §1` (Open Source participation)
-- **Depends on:** Commons Compact (server foundation), Client Shell & Sim Loop, account/session bootstrap, faction/incorporation model, guild model
+- **Depends on:** Commons Compact (server foundation), Client Shell & Sim Loop (implemented),
+  account/session bootstrap, WebSocket Transport, faction/incorporation model, guild model
 - **Parent / amends:** `archive/commons-compact.md`
 - **Supersedes / superseded by:** —
 - **Planning:** `planning/commons-onboarding-and-governance/` (once implementing)
@@ -60,7 +61,28 @@ yet exist.
 - The faction/incorporation RFC owns how Open Source identity is selected and persisted; this RFC only
   binds that result to the existing Compact intent.
 
+## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-29)
+
+1. **Missing owner contracts:** account/session, faction/incorporation, and guild models are not
+   drafted, while transport remains draft. This RFC cannot define membership-gated UI or governance
+   identity until those boundaries exist.
+2. **Incorporation contract:** define its state, every Phase-0 path, sign/decline intent timing,
+   persistence across a run, Open Source binding, and catalog tithe values. “Every path” has no closed
+   set to test today.
+3. **Ballot protocol:** replace the acknowledged `DESIGN-GAP` with exact election-window, proposal,
+   eligibility snapshot, vote, tie-break, result, audit-event, and effective-accrual-boundary schemas.
+   Define “monthly” in server time and behavior across restarts/epoch changes.
+4. **Snapshot/event surface:** enumerate the transport payloads and revisions consumed by the cohort
+   panel, including recovery ordering for collapse/recovery/recruitment news and current standing.
+5. **Guild contribution boundary:** define guild ownership/membership history, the Health input
+   snapshot, tithe band, leave/join concurrency, and small-guild mercy's permitted non-formula effects.
+6. **Generated formula UI:** identify the exact generated artifact fields exposed to the client and
+   add a source-fingerprint/parity test; “renders every formula” must not create a second hand-written
+   formula authority.
+
 ## Changelog
 
 - 2026-07-29: split from Commons Compact during implementation review so missing client/governance
   dependencies remain explicit rather than improvised or falsely marked shipped.
+- 2026-07-29: updated implemented dependencies; Codex acceptance review confirmed six blocking
+  contracts, including the RFC's existing ballot gap.

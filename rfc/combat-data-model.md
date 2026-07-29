@@ -65,6 +65,34 @@ None — this encodes the 2026-07-28 decisions already applied to `design/03 §1
 - Synergy-tag vocabulary (D1) — balance data, needs a content pass; blocks roster growth, not the engines.
 - Season/rotating-weakness mechanics (`design/04 §2` tournament note) — follow-up.
 
+## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-29)
+
+1. **Scope must split:** one content schema, two cross-runtime engines, two bot families, replay
+   verification, and balance harnesses are not one independently reviewable RFC. Split shared combat
+   data/arithmetic, duel engine, lane engine, and bot/match integration with explicit dependencies.
+2. **The data model is not specified:** enumerate the Runtime axis, stats, moves, coverage moves,
+   synergy tags, units, buildings, spells, decks/teams, leader abilities, and versioned catalog/wire
+   schemas with literal minimum fixtures. D1/D2 currently provide rules but no loadable objects.
+3. **Integer arithmetic is incomplete:** encode 1.3×/0.77× as exact rational/fixed-point operations;
+   define rounding order, saturation/overflow, damage minimums, stamina caps, and the lane tick duration.
+   “int32” alone does not produce cross-runtime parity.
+4. **Determinism contract:** specify the PRNG algorithm, seed expansion, rejection sampling, canonical
+   input ordering, log/event schema, and state hash. The balance harness's SplitMix64 can be reused only
+   by declaring that dependency.
+5. **Engine state machines:** give closed action/phase/error unions and terminal conditions for both
+   duel and lane. “Simultaneous commitment” and “timed placements” leave legality and tie resolution
+   open to invention.
+6. **Bots and snapshots:** define what hidden/public state an async opponent snapshot contains, the
+   exact behavior-flag manifests, deterministic decision tie-breaks, and how bot identity/difficulty
+   enters a replay.
+7. **Statistical gates:** pin sample spaces, seeds, roster/deck generators, match counts, confidence
+   treatment, best-of-N policy, and artifact-regeneration protocol for win rate, Nash support,
+   decisiveness, and bot monotonicity. Thresholds without the sampled population are not reproducible.
+8. **Unimplemented inputs:** Trust, Soul, pet identity/care state, matchmaking identity, and rating
+   state need named owner RFCs or explicit fixture-only boundaries before combat can consume them.
+
 ## Changelog
 
 - 2026-07-28: created (draft).
+- 2026-07-29: Codex acceptance review required a four-way scope split and recorded seven further
+  executable-contract gaps.
