@@ -19,7 +19,8 @@ export class DisplayCounter {
     const next = Decimal.fromMantissaExponent(predicted.mantissa, predicted.exponent);
     if (!isStateValue(next) || next.lt(0)) throw new RangeError("invalid predicted counter");
     if (parseCanonical(this.#resource.ratePerSecond).gt(0)) this.#activityPpm = Math.min(1_000_000, this.#activityPpm + 1);
-    this.#value = next; this.#from = next; this.#to = next; this.#durationMs = 0;
+    if (this.#durationMs > 0) this.#to = next;
+    else { this.#value = next; this.#from = next; this.#to = next; }
   }
   applyAuthoritative(resource: ResourceState, nowMs: number, receipt?: IntentReceipt): ReconciliationDecision {
     const decision = reconcileContinuous(this.#value, resource.amount, this.#policy, receipt);
@@ -28,6 +29,10 @@ export class DisplayCounter {
     else if (decision.mode === "interpolate") { this.#value = parseCanonical(resource.amount); this.#from = this.#value; this.#to = this.#value; this.#durationMs = 0; }
     else if (decision.mode === "rebase") { this.#value = parseCanonical(resource.amount); this.#from = this.#value; this.#to = this.#value; this.#durationMs = 0; this.#pulse = !this.#reducedMotion; }
     return decision;
+  }
+  replaceAuthoritative(resource: ResourceState): void {
+    this.#resource = resource; this.#value = parseCanonical(resource.amount); this.#from = this.#value; this.#to = this.#value;
+    this.#durationMs = 0; this.#explanation = undefined; this.#pulse = false; this.#reducedValue = this.#value.toString();
   }
   view(nowMs: number): CounterView {
     if (this.#durationMs > 0) {

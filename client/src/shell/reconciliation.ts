@@ -17,7 +17,7 @@ export function reconcileContinuous(predicted: Decimal, authoritativeSource: str
   return differencePPM.lt(policy.epsilonLerpPpm) ? { mode: "interpolate", durationMs: policy.lerpDurationMs } : { mode: "rebase" };
 }
 
-export function reconcileDiscrete(predicted: DiscreteFact | undefined, authoritative: DiscreteFact, receipt?: IntentReceipt): ReconciliationDecision {
+export function reconcileDiscrete(predicted: DiscreteFact | undefined, authoritative: DiscreteFact | undefined, receipt?: IntentReceipt): ReconciliationDecision {
   if (receipt?.status === "rejected") return { mode: "rebase", explanation: receipt.rejectionCode ?? "rejected" };
   return predicted === authoritative ? { mode: "none" } : { mode: "rebase" };
 }

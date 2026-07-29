@@ -1,5 +1,6 @@
 import Decimal from "break_infinity.js";
-import { isStateValue, parseCanonical } from "../numeric";
+import { isStateValue, parseCanonical, quantize } from "../numeric";
+import { accrueConstant } from "../production";
 import type { AuthoritativeSnapshot } from "./contracts";
 import type { ClientShellPolicy } from "./policy";
 
@@ -11,14 +12,19 @@ function tuple(value: Decimal): DecimalTuple { return { mantissa: value.mantissa
 
 export class PredictionMachine {
   readonly #policy: ClientShellPolicy;
-  #revision = 0; #lastPulseMs: number | undefined; #accumulatorMs = 0; #sinceSnapshotMs = 0;
-  #resources = new Map<string, { amount: Decimal; rate: Decimal; cap?: Decimal }>();
+  #revision = 0; #lastPulseMs: number | undefined; #accumulatorMs = 0; #sinceSnapshotMs = 0; #predictedElapsedMs = 0;
+  #resources = new Map<string, { base: Decimal; amount: Decimal; rateSource: string; cap?: Decimal }>();
   constructor(policy: ClientShellPolicy) { this.#policy = policy; }
   initialize(snapshot: AuthoritativeSnapshot, monotonicMs: number): void { this.applyAuthoritative(snapshot); this.#lastPulseMs = monotonicMs; this.#accumulatorMs = 0; this.#sinceSnapshotMs = 0; }
-  applyAuthoritative(snapshot: AuthoritativeSnapshot): void {
+  applyAuthoritative(snapshot: AuthoritativeSnapshot, monotonicMs?: number): void {
     if (snapshot.revision < this.#revision) return;
-    this.#revision = snapshot.revision; this.#resources.clear();
-    for (const [id, value] of Object.entries(snapshot.resources)) this.#resources.set(id, { amount: parseCanonical(value.amount), rate: parseCanonical(value.ratePerSecond), cap: value.cap ? parseCanonical(value.cap.amount) : undefined });
+    if (monotonicMs !== undefined && (!Number.isFinite(monotonicMs) || this.#lastPulseMs !== undefined && monotonicMs < this.#lastPulseMs)) throw new RangeError("non-monotonic authoritative clock");
+    this.#revision = snapshot.revision; this.#resources.clear(); this.#predictedElapsedMs = 0; this.#accumulatorMs = 0; this.#sinceSnapshotMs = 0;
+    if (monotonicMs !== undefined) this.#lastPulseMs = monotonicMs;
+    for (const [id, value] of Object.entries(snapshot.resources)) {
+      const amount = parseCanonical(value.amount);
+      this.#resources.set(id, { base: amount, amount, rateSource: value.ratePerSecond, cap: value.cap ? parseCanonical(value.cap.amount) : undefined });
+    }
   }
   pulse(monotonicMs: number): PredictionOutput[] {
     if (!Number.isFinite(monotonicMs) || this.#lastPulseMs === undefined || monotonicMs < this.#lastPulseMs) throw new RangeError("non-monotonic prediction clock");
@@ -26,9 +32,9 @@ export class PredictionMachine {
     if (gapMs > this.#policy.catchupCeilingMs) { this.#accumulatorMs = 0; this.#sinceSnapshotMs = 0; return [{ kind: "offline_required", gapMs }]; }
     this.#accumulatorMs += gapMs; const outputs: PredictionOutput[] = []; let steps = 0;
     while (this.#accumulatorMs >= this.#policy.tickMs && steps < 100) {
-      const seconds = new Decimal(this.#policy.tickMs).div(1000);
+      this.#predictedElapsedMs += this.#policy.tickMs;
       for (const value of this.#resources.values()) {
-        let next = value.amount.add(value.rate.mul(seconds));
+        let next = quantize(value.base.add(accrueConstant([value.rateSource], this.#predictedElapsedMs, "1e0")));
         if (value.cap && next.gt(value.cap)) next = value.cap;
         if (!isStateValue(next)) throw new RangeError("prediction outside Decimal domain");
         value.amount = next;
