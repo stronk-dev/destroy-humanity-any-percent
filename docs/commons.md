@@ -12,6 +12,10 @@ their shared multiplier and post-accrual contracts.
 are exact integer millionths (`ppm`); large production/capacity values and the exported modifier
 are canonical RFC-0001 Decimals. The shipped starting values are:
 
+Capacity is cumulative: every idempotently projected accrual adds its tithe to the member, cohort,
+and server absolute totals. Replaying the same sample event adds nothing, and Capacity never scales
+the production modifier.
+
 - tithe default 10%, selectable from 5% through 15%;
 - effective Health weights: guild 50%, cohort 30%, server 20%; guildless members substitute cohort
   Health for guild, making the effective split cohort 80% / server 20%;

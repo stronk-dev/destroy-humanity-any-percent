@@ -225,7 +225,32 @@ func (p *Projector) projectSample(ctx context.Context, event save.EventRecord) e
 		}
 		return tx.Commit()
 	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO commons_member_samples(company_stream_id,founder_id,cohort_id,weight_ppm,compliance_ppm,solidarity_ppm,enclosure,capacity,sampled_ms,updated_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT(company_stream_id) DO UPDATE SET weight_ppm=EXCLUDED.weight_ppm,compliance_ppm=EXCLUDED.compliance_ppm,solidarity_ppm=EXCLUDED.solidarity_ppm,enclosure=EXCLUDED.enclosure,capacity=EXCLUDED.capacity,sampled_ms=EXCLUDED.sampled_ms,updated_at=EXCLUDED.updated_at`, payload.RunID.CompanyStreamID, payload.FounderID, cohortID, payload.WeightPPM, payload.CompliancePPM, payload.SolidarityPPM, payload.Enclosure, payload.Capacity, payload.SampledMS, event.OccurredAt); err != nil {
+	// Capacity is the absolute sum of every tithe, while the other fields are
+	// latest-state samples. Serialize per company so concurrent post-commit
+	// projectors cannot lose one of those additive contributions.
+	if _, err := tx.ExecContext(ctx, `SELECT pg_advisory_xact_lock(hashtextextended($1,0))`, payload.RunID.CompanyStreamID); err != nil {
+		return err
+	}
+	capacity := decimal.Zero
+	var priorCapacity string
+	err = tx.QueryRowContext(ctx, `SELECT capacity FROM commons_member_samples WHERE company_stream_id=$1 FOR UPDATE`, payload.RunID.CompanyStreamID).Scan(&priorCapacity)
+	if err == nil {
+		capacity, err = decimal.ParseCanonical(priorCapacity)
+		if err != nil {
+			return ErrProjection
+		}
+	} else if !errors.Is(err, sql.ErrNoRows) {
+		return err
+	}
+	increment, err := decimal.ParseCanonical(payload.Capacity)
+	if err != nil {
+		return ErrProjection
+	}
+	capacity = capacity.Add(increment).Quantize(decimal.CanonicalSignificantDigits)
+	if !capacity.IsStateValue() || capacity.Lt(decimal.Zero) {
+		return ErrProjection
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO commons_member_samples(company_stream_id,founder_id,cohort_id,weight_ppm,compliance_ppm,solidarity_ppm,enclosure,capacity,sampled_ms,updated_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT(company_stream_id) DO UPDATE SET weight_ppm=EXCLUDED.weight_ppm,compliance_ppm=EXCLUDED.compliance_ppm,solidarity_ppm=EXCLUDED.solidarity_ppm,enclosure=EXCLUDED.enclosure,capacity=EXCLUDED.capacity,sampled_ms=EXCLUDED.sampled_ms,updated_at=EXCLUDED.updated_at`, payload.RunID.CompanyStreamID, payload.FounderID, cohortID, payload.WeightPPM, payload.CompliancePPM, payload.SolidarityPPM, payload.Enclosure, capacity.String(), payload.SampledMS, event.OccurredAt); err != nil {
 		return err
 	}
 	var previousServerHealth int64

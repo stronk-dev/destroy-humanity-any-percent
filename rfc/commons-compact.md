@@ -105,7 +105,8 @@ server advisory transaction lock and tested against Postgres.
 
 ### C5 — Health snapshots and AI fallback
 
-The projection stores each member's latest `(weight_ppm, compliance_ppm, capacity)` sample and
+The projection stores each member's latest `(weight_ppm, compliance_ppm)` sample and their
+cumulative canonical-Decimal Capacity (the absolute sum of every idempotently projected tithe), then
 aggregates numerator/denominator pairs at guild, cohort, and server scope. Empty real scopes add
 the declared NPC term; for fewer than 40 real members its weight is
 `max(0,40-member_count)*0.5` at compliance `0.75`, and is labeled in the query result. A

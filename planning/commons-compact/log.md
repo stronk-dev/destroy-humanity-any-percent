@@ -43,3 +43,10 @@
 
 - Found a real ordering defect before archive: PostgreSQL `now()` is transaction-stable, so the final `compact_sampled` and `compact_left` events from one leave share a timestamp. UUID ordering could project leave first and reject the legitimate final sample.
 - Bound Commons projection order for equal timestamps as sign → sample → leave, then raw event ID. Added an end-to-end sign → sample → leave integration regression and verified the projection ends non-member while retaining the final sample/Health update.
+
+## 2026-07-29 — Capacity accumulation correction
+
+- The archive review found that `compact_sampled.capacity` is the tithe from one accrual receipt, but the projection was replacing the prior value. That violated D2's absolute-sum Capacity rule even though the latest-state Health inputs were correct.
+- Capacity now adds once per idempotently projected sample under a company-scoped advisory transaction lock; Health/Compliance remain latest-state inputs. Replaying either sample adds nothing. A real-Postgres regression proves sequential `1e0` and `2e0` tithes expose `3e0` at cohort and server scope.
+- Replaced the Commons boundary's source-text scan with an executable dependency-graph check, so test-only imports do not create false failures while a real production dependency still fails closed.
+- The full existing balance report was regenerated out of tree. Pacing, milestones, outcomes, balances, and invariants are unchanged; only the expected catalog/constants and save-state hashes differ.

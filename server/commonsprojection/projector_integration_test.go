@@ -20,11 +20,17 @@ func (value fixedAssignments) ResolveAssignment(string) (AssignmentContext, bool
 
 func TestHealthBandsUseCatalogThresholds(t *testing.T) {
 	data, err := os.ReadFile("../../balance/commons/phase0.json")
-	if err != nil { t.Fatal(err) }
+	if err != nil {
+		t.Fatal(err)
+	}
 	catalog, err := commons.LoadCatalog(data)
-	if err != nil { t.Fatal(err) }
+	if err != nil {
+		t.Fatal(err)
+	}
 	for value, expected := range map[int64]string{349_999: "collapsed", 350_000: "strained", 799_999: "strained", 800_000: "healthy"} {
-		if actual := healthBand(catalog, value); actual != expected { t.Fatalf("health %d band=%s want=%s", value, actual, expected) }
+		if actual := healthBand(catalog, value); actual != expected {
+			t.Fatalf("health %d band=%s want=%s", value, actual, expected)
+		}
 	}
 }
 
@@ -141,6 +147,22 @@ func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 	snapshot, err := projector.Snapshot(ctx, founders[0])
 	if err != nil || snapshot.HealthPPM != 762195 || snapshot.CohortCapacity != "1e0" || snapshot.ServerCapacity != "1e0" || snapshot.NPCWeightPPM != 19_500_000 {
 		t.Fatalf("snapshot=%+v err=%v", snapshot, err)
+	}
+	secondPayload, _ := json.Marshal(map[string]any{"founder_id": founders[0], "run_id": map[string]any{"company_stream_id": streams[0], "run_seq": 1}, "weight_ppm": 1000000, "compliance_ppm": 1000000, "enclosure": "0", "capacity": "2e0", "solidarity_ppm": 2000, "sampled_ms": 3600000})
+	var secondID string
+	if err := db.QueryRowContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,4,1,'compact_sampled',$2,$3,$4,$5) RETURNING event_id`, streams[0], "018f6b7c-9abc-7def-8abc-444444444444", hash, occurred.Add(2*time.Second), secondPayload).Scan(&secondID); err != nil {
+		t.Fatal(err)
+	}
+	second := save.EventRecord{EventID: secondID, StreamID: streams[0], OwnerID: founders[0], Revision: 4, Kind: save.EventCompactSampled, ConstantsHash: hash, OccurredAt: occurred.Add(2 * time.Second), Payload: secondPayload}
+	if err := projector.Project(ctx, []save.EventRecord{second}); err != nil {
+		t.Fatal(err)
+	}
+	if err := projector.Project(ctx, []save.EventRecord{second}); err != nil {
+		t.Fatal(err)
+	}
+	snapshot, err = projector.Snapshot(ctx, founders[0])
+	if err != nil || snapshot.CohortCapacity != "3e0" || snapshot.ServerCapacity != "3e0" {
+		t.Fatalf("cumulative snapshot=%+v err=%v", snapshot, err)
 	}
 	payload, _ := json.Marshal(map[string]any{"founder_id": founders[0], "run_id": map[string]any{"company_stream_id": streams[0], "run_seq": 1}, "tithe_ppm": 100000, "prior_member": true, "new_member": false})
 	var leaveID string
