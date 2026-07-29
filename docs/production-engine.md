@@ -109,8 +109,8 @@ and never creates save or event history. Replays and conflicts do not duplicate 
 Transport RFC owns its wire mapping; no placeholder wire result is claimed here.
 
 Receipt change construction parses every before/after value through the canonical Decimal parser.
-A malformed internal snapshot fails the intent as `internal_invariant`; it is never hidden by
-silently omitting a change.
+A malformed internal snapshot returns Go `ErrInvalidEngineState` (the internal-invariant path); it
+is never hidden by silently omitting a change. Transport mapping remains deferred as stated above.
 
 Intent records are keyed by `(stream_id,intent_id)`. The store exposes cutoff-based pruning; the
 future deployment scheduler owns calling it at the accepted 30-day retention boundary.

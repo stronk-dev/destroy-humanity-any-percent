@@ -1,6 +1,6 @@
 # RFC: Production Contract Assertions & Integrity
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex
 - **Created:** 2026-07-29
 - **Design refs:** `design/00-vision.md` laws 2 and 9; `design/06-tech.md` §idle-math
@@ -10,7 +10,7 @@
 - **Parent / amends:** [Production Engine & Intent API](archive/production-engine-and-intents.md)
   C2, C4, and C7; [CI Baseline](scaffolding-and-ci.md) D4
 - **Supersedes / superseded by:** —
-- **Planning:** `planning/production-contract-integrity/`
+- **Planning:** `planning/archive/production-contract-integrity/`
 
 ## Summary
 
@@ -192,3 +192,5 @@ directory.
 - 2026-07-29: drafted from the accepted R4–R8 remediation sequence after R1–R3 completed and
   received per-change approval.
 - 2026-07-29: accepted by owner direction and implementation started.
+- 2026-07-29: D1–D5 implemented; canonical docs updated; full Go, Postgres, TypeScript, schema,
+  formula, and three-browser verification green; RFC archived.

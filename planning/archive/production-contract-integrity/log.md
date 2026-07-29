@@ -57,3 +57,17 @@ Append-only. A fresh agent resumes from this file and `plan.md`.
   snapshot availability, publish sticky idempotency, describe every invariant outcome path, and
   keep `internal_invariant` transport mapping explicitly deferred.
 - Focused save/production suites and the updated serialized Postgres integration target are green.
+
+## 2026-07-29 (Codex — complete diff review and verification)
+
+- Read the complete implementation diff from the pre-implementation RFC commit through D5,
+  including production behavior, shared fixtures, generator, Makefile, Postgres tests, and
+  canonical docs. No correctness defect found.
+- One wording overclaim found and corrected: receipt parse failures currently return Go
+  `ErrInvalidEngineState`; the WebSocket RFC still owns mapping that internal path to a wire
+  `internal_invariant` rejection.
+- Full verification with Postgres green: `go vet`, all serialized Go packages/integrations,
+  formula drift, TypeScript typecheck, 6,372 Node tests, schema verification, and 19,116 browser
+  tests across Chromium/Firefox/WebKit.
+- Acceptance criteria satisfied. RFC and planning record are ready to archive before the Balance
+  Harness Foundation starts.
