@@ -5,12 +5,12 @@
       "key": {
         "harness_schema_version": 1,
         "scenario_id": "scenario.phase0_production",
-        "scenario_version": 1,
-        "scenario_hash": "sha256:44c5a52c16aab7669e29991f923f66095743656e44eafa7cea9a6b0061cb31c6",
+        "scenario_version": 2,
+        "scenario_hash": "sha256:e3360d38fec97a88e2a87d11b877a8e15459ad14bf4091b864901a2b58d065a5",
         "policy_id": "casual.phase0",
         "policy_version": 1,
         "seed": "0",
-        "constants_hash": "sha256:b680a583bdd5454b999a92b803b12ea3a0699e0afc851de95be7da47b4661d9d"
+        "constants_hash": "sha256:9792146385b1fb1340ff5dec267000fe7e544bf94fc43902fa1f0afc2f635648"
       },
       "outcome": "completed",
       "final_virtual_ms": 1814400000,
@@ -69,12 +69,12 @@
       "key": {
         "harness_schema_version": 1,
         "scenario_id": "scenario.phase0_production",
-        "scenario_version": 1,
-        "scenario_hash": "sha256:44c5a52c16aab7669e29991f923f66095743656e44eafa7cea9a6b0061cb31c6",
+        "scenario_version": 2,
+        "scenario_hash": "sha256:e3360d38fec97a88e2a87d11b877a8e15459ad14bf4091b864901a2b58d065a5",
         "policy_id": "chaos.phase0",
         "policy_version": 1,
         "seed": "0",
-        "constants_hash": "sha256:b680a583bdd5454b999a92b803b12ea3a0699e0afc851de95be7da47b4661d9d"
+        "constants_hash": "sha256:9792146385b1fb1340ff5dec267000fe7e544bf94fc43902fa1f0afc2f635648"
       },
       "outcome": "completed",
       "final_virtual_ms": 2592000000,
