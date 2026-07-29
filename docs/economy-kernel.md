@@ -113,29 +113,38 @@ cannot be smuggled through a primitive transaction.
 The public primitive boundary is:
 
 - `Balance(resourceID)` and `Snapshot()` for read-only queries;
-- `Apply(Transaction)` as the only balance mutation;
+- `Apply(Transaction)` for strict ordinary mutations such as purchases and grants;
+- `ApplyAccrual(Transaction)` exclusively for non-negative production accrual;
 - `Receipt` as the committed notification fact.
 
-For every transaction, `Apply`:
+Both mutation operations:
 
 1. validates resource existence, ledger scope, and every finite delta;
 2. aggregates all entries per resource with the deterministic n-ary Decimal sum;
 3. adds each aggregate and quantizes exactly once at the commit boundary;
-4. validates all prospective balances against state, minimum, and hardcap invariants;
+4. validates all starting and prospective balances against state, minimum, and hardcap invariants;
 5. mutates nothing if any validation fails;
 6. otherwise commits all changes and returns them sorted by resource ID.
 
-A receipt contains canonical `before`, `delta`, and `after` strings. `delta` is the actual committed
-difference after boundary quantization, not an uncommitted requested value. Resources unchanged by
-quantization are omitted.
+`Apply` rejects any result above a hardcap with `ErrAboveHardcap`; it never clamps purchases,
+grants, migrations, or conversions. `ApplyAccrual` additionally rejects every negative entry. If a
+positive aggregate would exceed a cap, it commits the declared cap exactly. Multiple resources
+saturate independently inside the same all-or-nothing transaction.
+
+A receipt contains canonical `before`, `delta`, and `after` strings. For positive accrual, `delta`
+is the actual aggregate applied and is guaranteed to reproduce the authoritative result through
+`Quantize12(before + delta) == after`. Saturation selects that delta by probing the quantized
+headroom at nominal, −1, +1, −2, and +2 12-digit ulps. An unreproducible result is an invariant
+failure and commits nothing. Resources unchanged by quantization—including further production at
+an already reached cap—are omitted.
 
 The n-ary sum groups same-exponent terms before normalization and orders full-precision mantissas
 numerically. Transaction acceptance is therefore invariant under entry permutation, including
 domain-edge cancellations; a genuinely out-of-domain net result still rejects atomically.
 
-Hardcap overflow is rejected, never silently clamped. The production engine calculates remaining
-headroom and accrues exactly to a cap, while purchases and conversions remain protected from
-accidental value loss.
+The distinction is deliberate: positive time accrual saturates at its authoritative ledger
+boundary, while every ordinary hardcap overflow rejects. No above-cap state is committed or
+exposed, and rewards cannot opt themselves into silent value loss.
 
 ## Query, command, and subscription responsibilities
 
@@ -157,8 +166,11 @@ exponent queries.
 
 Go ledger tests cover scope isolation, deterministic receipts, below-minimum and above-hardcap
 rejection, non-finite/unknown inputs, numeric overflow, and all-or-nothing behavior. The accrual
-regression aggregates one million contributions individually too small to move a `1e100` bank;
-the aggregate changes committed state while committing each contribution separately does not.
+suite includes the demonstrated one-ulp hardcap regression, already-capped and multi-resource
+cases, and 2,000,000 deterministic near-cap inputs across exponent boundaries. Every emitted
+accrual receipt delta must re-apply to its exact `after`. The aggregation regression separately
+combines one million contributions individually too small to move a `1e100` bank; the aggregate
+changes committed state while committing each contribution separately does not.
 
 Run every gate from the repository root:
 

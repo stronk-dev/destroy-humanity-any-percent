@@ -33,12 +33,17 @@ blocking server CI job.
 ## Time evaluation
 
 `production.Evaluate` integrates all rates through the shared `AccrueConstant` primitive and
-commits one ledger transaction:
+commits one positive-accrual ledger transaction:
 
 - online: the complete non-negative elapsed interval at efficiency `1e0`;
 - offline: at most `86,400,000` ms at efficiency `9e-1`;
 - excess offline time: `floor(excess_ms × 1/2)` Compute Credit ms, capped at `259,200,000`;
-- resources stop exactly at declared hardcaps; they never softcap or overflow then clamp;
+- production passes raw non-negative deltas without calculating headroom; the ledger owns capped
+  accrual rounding and saturates atomically at the exact declared hardcap;
+- the authoritative accrual receipt carries a canonical applied delta that re-adds to its exact
+  `after` value, including the one-ulp correction needed at some near-cap boundaries;
+- production at an already reached cap succeeds with no ledger change and still advances the
+  evaluation cursor, so it cannot block a following intent;
 - a server-clock rollback or sub-millisecond interval advances nothing and grants nothing.
 
 The evaluation cursor advances by the exact whole milliseconds consumed, preserving any

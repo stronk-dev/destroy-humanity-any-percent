@@ -1,13 +1,13 @@
 # RFC: Production Hardcap Saturation
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco (drafted by Codex from the round-2 review)
 - **Created:** 2026-07-28
 - **Design refs:** `design/00-vision.md` law 5; `design/02-economy-balancing.md §2.2`
 - **Research:** `planning/production-review-round2/log.md` R1
 - **Amends:** `archive/0002-economy-constants-and-ceilings.md` and
   `archive/production-engine-and-intents.md`
-- **Planning:** `planning/production-hardcap-saturation/` (once implementing)
+- **Planning:** `planning/archive/production-hardcap-saturation/`
 
 ## Summary
 
@@ -110,3 +110,5 @@ None. The saturation boundary and correction order are fully specified above.
 
 - 2026-07-28: drafted from demonstrated round-2 finding R1.
 - 2026-07-29: implementation started; planning record opened.
+- 2026-07-29: ledger-owned accrual saturation, receipt reconciliation, regression coverage, and
+  canonical documentation completed; RFC archived.

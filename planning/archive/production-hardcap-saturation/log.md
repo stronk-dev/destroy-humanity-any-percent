@@ -40,3 +40,12 @@ Append-only implementation record. A fresh agent should read this file with `pla
 - Added already-capped cursor advancement, strict overflow preservation, negative/pre-existing
   invalid-state atomic rejection, and independently saturating multi-resource receipt coverage.
 - Full economy and production package tests pass.
+
+## 2026-07-29 — Completed and archived
+
+- Updated `docs/economy-kernel.md` and `docs/production-engine.md` with the distinct strict
+  transaction and positive saturating-accrual contracts.
+- Full `make verify` passed: Go vet/tests, formula drift, strict TypeScript, 6,354 Node tests,
+  schema validation, and 19,062 Chromium/Firefox/WebKit tests.
+- All six RFC acceptance criteria are satisfied. Rotated the implemented RFC and planning record
+  into their archives. No push performed.

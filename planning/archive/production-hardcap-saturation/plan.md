@@ -1,19 +1,20 @@
 # Production Hardcap Saturation — Implementation Plan
 
-- **RFC:** `rfc/production-hardcap-saturation.md`
+- **Status:** completed 2026-07-29
+- **RFC:** `rfc/archive/production-hardcap-saturation.md`
 - **Assignee:** Codex
 - **Started:** 2026-07-29
 
 ## Sequence
 
-1. Add a positive-only saturating accrual operation to the economy ledger while retaining strict
+1. [x] Add a positive-only saturating accrual operation to the economy ledger while retaining strict
    `Ledger.Apply` behavior.
-2. Move production accrual to the ledger-owned saturation path and remove production-side
+2. [x] Move production accrual to the ledger-owned saturation path and remove production-side
    hardcap headroom arithmetic.
-3. Add the demonstrated R1 regression, deterministic 2,000,000-case near-cap coverage, and
+3. [x] Add the demonstrated R1 regression, deterministic 2,000,000-case near-cap coverage, and
    atomicity/strictness regressions.
-4. Update canonical economy and production documentation.
-5. Run focused tests, the complete verification gate, archive the implemented RFC and planning
+4. [x] Update canonical economy and production documentation.
+5. [x] Run focused tests, the complete verification gate, archive the implemented RFC and planning
    record, and commit each reviewable stage locally.
 
 ## Acceptance gates
@@ -29,4 +30,3 @@
 - `docs/economy-kernel.md` and `docs/production-engine.md` state the strict-versus-saturating
   boundary.
 - `gofmt`, focused Go tests, and `make verify` pass.
-
