@@ -7,7 +7,7 @@ intents and never mutate state directly.
 
 ## Phase-0 scenario
 
-`testdata/harness/scenarios/phase0-production.json` is scenario version 3 (the economy + Routes + Commons
+`testdata/harness/scenarios/phase0-production.json` is scenario version 4 (the economy + Routes + Commons
 balance bundle) and runs two versioned policies:
 
 - `casual.phase0` v1: three eight-minute daily sessions at 09:00, 14:00, and 20:00 UTC, acting
@@ -27,8 +27,12 @@ schema validation is not the sole closed-registry gate.
 
 The blocking suite contains 200 Chaos seeds over 30 virtual days and 100 Casual seeds over 21
 days. Required milestones cover a manual action, first generator purchase, generator count one,
-and complete T0 progress. Casual p50 first purchase and p95 first generator are both 10,000 ms,
-inside their 60-second and five-minute envelopes.
+and complete T0 progress. Every declared policy/milestone pair contributes p50 and p95 observations
+to the aggregate and drift baseline: two policies × four milestones × two statistics = 16 unique
+values. The bounded Casual p50 first-purchase and p95 first-generator observations are both
+10,000 ms, inside their 60-second and five-minute envelopes; unbounded observations detect drift
+without pretending to be new pacing targets. Runtime and schema semantics reject unknown
+references, duplicate tuples, and incomplete observation matrices.
 
 ## Reports and invariants
 

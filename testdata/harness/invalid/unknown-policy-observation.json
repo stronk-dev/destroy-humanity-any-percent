@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "id": "scenario.invalid_observation_policy",
+  "version": 1,
+  "catalog": "balance/catalogs/phase0.json",
+  "routes_catalog": "balance/routes/phase0.json",
+  "commons_catalog": "balance/commons/phase0.json",
+  "runs": [{"policy_id": "chaos.phase0", "policy_version": 1, "seed_start": "0", "seed_count": 1, "horizon_ms": 1}],
+  "milestones": [{"id": "m", "kind": "intent_applied", "must_reach": true, "intent_kind": "perform_manual_batch"}],
+  "envelopes": [
+    {"policy_id": "unknown.phase0", "milestone_id": "m", "statistic": "p50"},
+    {"policy_id": "chaos.phase0", "milestone_id": "m", "statistic": "p95"}
+  ],
+  "required_invariants": []
+}

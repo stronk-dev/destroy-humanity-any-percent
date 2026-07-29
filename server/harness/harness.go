@@ -180,6 +180,9 @@ func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
 	if err := validateMilestones(scenario.Milestones); err != nil {
 		return nil, err
 	}
+	if err := validateObservationMatrix(scenario.Runs, scenario.Milestones, scenario.Envelopes); err != nil {
+		return nil, err
+	}
 	catalogBytes, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(scenario.Catalog)))
 	if err != nil {
 		return nil, err
@@ -503,6 +506,53 @@ func validateMilestones(milestones []Milestone) error {
 			}
 		default:
 			return fmt.Errorf("unknown milestone kind %q", milestone.Kind)
+		}
+	}
+	return nil
+}
+
+func validateObservationMatrix(runs []RunSpec, milestones []Milestone, envelopes []Envelope) error {
+	policies := make(map[string]bool, len(runs))
+	for _, run := range runs {
+		if run.PolicyID == "" {
+			return errors.New("scenario run requires policy_id")
+		}
+		policies[run.PolicyID] = true
+	}
+	milestoneIDs := make(map[string]bool, len(milestones))
+	for _, milestone := range milestones {
+		milestoneIDs[milestone.ID] = true
+	}
+	statistics := map[string]bool{"best": true, "p05": true, "p50": true, "p95": true, "worst": true}
+	seen := make(map[string]bool, len(envelopes))
+	for _, envelope := range envelopes {
+		if !policies[envelope.PolicyID] {
+			return fmt.Errorf("envelope references unknown policy %q", envelope.PolicyID)
+		}
+		if !milestoneIDs[envelope.Milestone] {
+			return fmt.Errorf("envelope references unknown milestone %q", envelope.Milestone)
+		}
+		if !statistics[envelope.Statistic] {
+			return fmt.Errorf("envelope uses unknown statistic %q", envelope.Statistic)
+		}
+		if envelope.MinimumMS != nil && *envelope.MinimumMS < 0 || envelope.MaximumMS != nil && *envelope.MaximumMS < 0 ||
+			envelope.MinimumMS != nil && envelope.MaximumMS != nil && *envelope.MinimumMS > *envelope.MaximumMS {
+			return fmt.Errorf("envelope %s/%s/%s has invalid bounds", envelope.PolicyID, envelope.Milestone, envelope.Statistic)
+		}
+		key := envelope.PolicyID + "\x00" + envelope.Milestone + "\x00" + envelope.Statistic
+		if seen[key] {
+			return fmt.Errorf("duplicate envelope %s/%s/%s", envelope.PolicyID, envelope.Milestone, envelope.Statistic)
+		}
+		seen[key] = true
+	}
+	for policy := range policies {
+		for milestone := range milestoneIDs {
+			for _, statistic := range []string{"p50", "p95"} {
+				key := policy + "\x00" + milestone + "\x00" + statistic
+				if !seen[key] {
+					return fmt.Errorf("missing pacing observation %s/%s/%s", policy, milestone, statistic)
+				}
+			}
 		}
 	}
 	return nil

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "scenario.phase0_production",
-  "version": 3,
+  "version": 4,
   "catalog": "balance/catalogs/phase0.json",
   "routes_catalog": "balance/routes/phase0.json",
   "commons_catalog": "balance/commons/phase0.json",
@@ -51,6 +51,56 @@
   ],
   "envelopes": [
     {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.first_manual",
+      "statistic": "p50"
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.first_manual",
+      "statistic": "p95"
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.first_generator_purchase",
+      "statistic": "p50"
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.first_generator_purchase",
+      "statistic": "p95"
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p50"
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p95"
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.t0_progress_1",
+      "statistic": "p50"
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.t0_progress_1",
+      "statistic": "p95"
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.first_manual",
+      "statistic": "p50"
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.first_manual",
+      "statistic": "p95"
+    },
+    {
       "policy_id": "casual.phase0",
       "milestone_id": "milestone.first_generator_purchase",
       "statistic": "p50",
@@ -58,9 +108,29 @@
     },
     {
       "policy_id": "casual.phase0",
+      "milestone_id": "milestone.first_generator_purchase",
+      "statistic": "p95"
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p50"
+    },
+    {
+      "policy_id": "casual.phase0",
       "milestone_id": "milestone.generator_count_1",
       "statistic": "p95",
       "maximum_ms": 300000
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.t0_progress_1",
+      "statistic": "p50"
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.t0_progress_1",
+      "statistic": "p95"
     }
   ],
   "required_invariants": [

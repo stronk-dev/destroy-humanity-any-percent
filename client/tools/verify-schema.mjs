@@ -164,6 +164,29 @@ function adjacentBoundaryStart(value, prefix) {
   return Number.isSafeInteger(from) && Number.isSafeInteger(to) && to === from + 1 ? from : undefined;
 }
 
+function harnessSemanticErrors(scenario) {
+  const errors = [];
+  const policies = new Set((scenario.runs ?? []).map((run) => run.policy_id));
+  const milestones = new Set((scenario.milestones ?? []).map((milestone) => milestone.id));
+  const seen = new Set();
+  for (const [index, envelope] of (scenario.envelopes ?? []).entries()) {
+    if (!policies.has(envelope.policy_id)) errors.push(`/envelopes/${index} references unknown policy`);
+    if (!milestones.has(envelope.milestone_id)) errors.push(`/envelopes/${index} references unknown milestone`);
+    const key = `${envelope.policy_id}\0${envelope.milestone_id}\0${envelope.statistic}`;
+    if (seen.has(key)) errors.push(`/envelopes/${index} duplicates an observation tuple`);
+    seen.add(key);
+  }
+  for (const policy of policies) {
+    for (const milestone of milestones) {
+      for (const statistic of ["p50", "p95"]) {
+        const key = `${policy}\0${milestone}\0${statistic}`;
+        if (!seen.has(key)) errors.push(`missing pacing observation ${policy}/${milestone}/${statistic}`);
+      }
+    }
+  }
+  return errors;
+}
+
 async function main() {
   const schema = await readJSON(schemaPath);
   const ajv = new Ajv2020({ allErrors: true, strict: true });
@@ -268,12 +291,18 @@ async function main() {
     throw new Error("harness schema verification requires positive and negative scenarios");
   }
   for (const filename of scenarios) {
-    if (!validateScenario(await readJSON(filename))) {
+    const data = await readJSON(filename);
+    if (!validateScenario(data)) {
       throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateScenario)}`);
     }
+    const errors = harnessSemanticErrors(data);
+    if (errors.length > 0) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${errors.join("; ")}`);
   }
   for (const filename of invalidScenarios) {
-    if (validateScenario(await readJSON(filename))) {
+    const data = await readJSON(filename);
+    const shapeValid = validateScenario(data);
+    const errors = shapeValid ? harnessSemanticErrors(data) : [];
+    if (shapeValid && errors.length === 0) {
       throw new Error(`${path.relative(repositoryDirectory, filename)}: expected harness scenario rejection`);
     }
   }

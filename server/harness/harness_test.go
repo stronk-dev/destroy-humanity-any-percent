@@ -135,6 +135,66 @@ func TestUnknownMilestoneKindFailsRuntimeValidation(t *testing.T) {
 	}
 }
 
+func TestObservationMatrixRejectsInvalidReferencesDuplicatesAndMissingCoverage(t *testing.T) {
+	runs := []RunSpec{{PolicyID: "casual.phase0"}}
+	milestones := []Milestone{{ID: "milestone.first"}}
+	complete := []Envelope{
+		{PolicyID: "casual.phase0", Milestone: "milestone.first", Statistic: "p50"},
+		{PolicyID: "casual.phase0", Milestone: "milestone.first", Statistic: "p95"},
+	}
+	tests := []struct {
+		name      string
+		envelopes []Envelope
+		contains  string
+	}{
+		{name: "unknown policy", envelopes: []Envelope{{PolicyID: "unknown", Milestone: "milestone.first", Statistic: "p50"}}, contains: "unknown policy"},
+		{name: "unknown milestone", envelopes: []Envelope{{PolicyID: "casual.phase0", Milestone: "unknown", Statistic: "p50"}}, contains: "unknown milestone"},
+		{name: "duplicate tuple", envelopes: append(append([]Envelope{}, complete...), complete[0]), contains: "duplicate envelope"},
+		{name: "missing p95", envelopes: complete[:1], contains: "missing pacing observation"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if err := validateObservationMatrix(runs, milestones, test.envelopes); err == nil || !strings.Contains(err.Error(), test.contains) {
+				t.Fatalf("error=%v want containing %q", err, test.contains)
+			}
+		})
+	}
+	if err := validateObservationMatrix(runs, milestones, complete); err != nil {
+		t.Fatalf("complete observation matrix: %v", err)
+	}
+}
+
+func TestPhase0ObservationMatrixIsCompleteAndOrdered(t *testing.T) {
+	root, err := filepath.Abs("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	suite, err := LoadSuite(root, "testdata/harness/scenarios/phase0-production.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := make([]string, 0, len(suite.Scenario.Runs)*len(suite.Scenario.Milestones)*2)
+	seenPolicies := make(map[string]bool)
+	for _, run := range suite.Scenario.Runs {
+		if seenPolicies[run.PolicyID] {
+			continue
+		}
+		seenPolicies[run.PolicyID] = true
+		for _, milestone := range suite.Scenario.Milestones {
+			for _, statistic := range []string{"p50", "p95"} {
+				expected = append(expected, run.PolicyID+"/"+milestone.ID+"/"+statistic)
+			}
+		}
+	}
+	actual := make([]string, 0, len(suite.Scenario.Envelopes))
+	for _, envelope := range suite.Scenario.Envelopes {
+		actual = append(actual, envelope.PolicyID+"/"+envelope.Milestone+"/"+envelope.Statistic)
+	}
+	if !reflect.DeepEqual(actual, expected) || len(actual) != 16 {
+		t.Fatalf("observation order/count\nactual=%v\nexpected=%v", actual, expected)
+	}
+}
+
 func TestAggregateInvariantFailureCarriesCompleteRunKey(t *testing.T) {
 	key := RunKey{HarnessSchemaVersion: 1, ScenarioID: "scenario.test", ScenarioVersion: 2,
 		ScenarioHash: "sha256:scenario", PolicyID: "policy.test", PolicyVersion: 3,
