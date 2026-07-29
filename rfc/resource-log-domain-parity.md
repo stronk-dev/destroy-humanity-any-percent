@@ -1,6 +1,6 @@
 # RFC: Resource-Log Domain Parity
 
-- **Status:** accepted
+- **Status:** implementing
 - **Author:** Marco (drafted by Codex from the round-2 review)
 - **Created:** 2026-07-28
 - **Design refs:** `design/07-roadmap.md` Phase 0; `AGENTS.md` law 3
@@ -96,3 +96,4 @@ None. The numeric threshold and the owning layer are explicit.
 
 - 2026-07-28: drafted from round-2 finding R3, correcting its primitive-level diagnosis after
   direct Go and installed-library verification.
+- 2026-07-29: implementation started; planning record opened.
