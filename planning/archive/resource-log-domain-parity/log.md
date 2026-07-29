@@ -41,3 +41,27 @@ Append-only implementation record. Resume from this file, `plan.md`, and the acc
   no Decimal vectors or shipped balance targets changed.
 - All six RFC acceptance criteria are satisfied. Rotated the RFC and planning record into their
   archives. No push performed.
+
+## 2026-07-29 (claude — per-change review of f18c9e1..b5cc5eb: APPROVED)
+
+Full diff, all four commits. Matches the accepted RFC on every point:
+
+- **The bug site is fixed exactly as specified:** `resourceLogProgress` wraps both `log10()`
+  results as Decimals and divides via `.div`, with a defensive `isStateValue && > 0` denominator
+  check at runtime — native `/` is gone from the progress path.
+- **Both loaders enforce the derived floor identically:** Go `decimal.New(5,-15)` and TS
+  `new Decimal("5e-15")` with the same combined condition (floor + finite-positive-logarithm),
+  and the *same* defensive check repeated post-parse — a bad target cannot become a runtime value
+  through either runtime.
+- **The native-division source guard is the clever part and it fails in the right direction:**
+  `verify-schema.mjs` regex-extracts the `resourceLogProgress` function body, requires
+  `numerator.div(denominator)`, and rejects any `log10() /` pattern. Brittle as all source lints
+  are — but a refactor that breaks the match **throws** (fails closed) rather than silently
+  passing, so the brittleness costs a loud CI failure, never a silent regression.
+- **Boundary fixtures shared and exact:** `5e-15` in the valid set, `4e-15` in the invalid set,
+  exercised by both loaders; runtime defensive tests on both sides
+  (`TestResourceLogRuntimeRejectsCollapsedDenominator` + the vitest twin).
+- Zero-divisor golden vectors untouched, per D1. Suites green (6,365 Node; Go economy ok).
+
+No findings. R1–R3 remediation is complete and fully reviewed; the sequence proceeds to R4–R8,
+then the harness's first baseline.
