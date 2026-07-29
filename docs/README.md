@@ -23,6 +23,8 @@ Implemented systems:
 - [Accounts and sessions](accounts-and-sessions.md) — anonymous recovery credentials, exact JWTs,
   refresh-family rotation, Founder ownership/import, deletion, rate limits, and the HTTP intent
   boundary.
+- [Prestige and Exits](prestige-and-exits.md) — exact prestige arithmetic, deterministic offers,
+  atomic Founder/Company Exit commits, server-derived timers, and new-run assembly.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.

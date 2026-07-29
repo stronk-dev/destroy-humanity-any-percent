@@ -62,7 +62,7 @@ RFC.
 
 ## Intent API
 
-The implemented command surface contains exactly six intents:
+The implemented command surface contains exactly ten intents:
 
 - `buy_generator`: exact positive safe-integer count or verified `max`;
 - `perform_manual_batch`: positive safe-integer count and `window_ms` (audit/UX only; it grants no
@@ -73,6 +73,10 @@ The implemented command surface contains exactly six intents:
   Knowledge; it never affects evaluation.
 - `sign_compact`: company-scope membership at an exact catalog-bounded tithe.
 - `leave_compact`: company-scope exit at the next accrual boundary; it clears Solidarity.
+- `decline_exit_offer`: clears one live, unexpired deterministic offer.
+- `accept_exit_offer`: terminal two-stream commit against a live offer and both expected revisions.
+- `wind_down`: terminal elective collapse from Tier 1 onward.
+- `file_ipo`: reserved terminal intent, typed `not_eligible` until the S-1 content chain exists.
 
 Both use a lowercase UUIDv7 `intent_id` as the idempotency key and a positive safe-integer
 `expected_revision`. The request hash is SHA-256 over deterministic JSON excluding `intent_id`.

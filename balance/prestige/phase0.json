@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "value_resource_id": "company.cash",
   "threshold": "1e12",
   "exit_modifiers_ppm": {
     "acquihire": 900000,

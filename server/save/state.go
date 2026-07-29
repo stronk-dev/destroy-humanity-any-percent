@@ -712,7 +712,7 @@ func validateRouteState(state *State, scope economy.Scope) error {
 			return fmt.Errorf("%w: invalid company route state", ErrInvalidState)
 		}
 	} else if scope == economy.ScopeFounder {
-		if state.RunSeq != 0 || len(state.GatesCrossed) != 0 || len(state.DoctrinesByTransition) != 0 || state.StructureID != "" || len(state.LedgerFactKinds) != 0 || len(state.MeterBands) != 0 || len(state.RegionTraits) != 0 {
+		if state.RunSeq != 0 || len(state.GatesCrossed) != 0 || len(state.DoctrinesByTransition) != 0 || state.StructureID != "" || len(state.MeterBands) != 0 || len(state.RegionTraits) != 0 {
 			return fmt.Errorf("%w: company route context leaked outside company scope", ErrInvalidState)
 		}
 	} else if state.RunSeq != 0 || state.RouteKnowledgeBalance != 0 || len(state.GatesCrossed) != 0 || len(state.HintsUnlocked) != 0 {

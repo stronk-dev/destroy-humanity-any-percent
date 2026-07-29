@@ -6,14 +6,18 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"regexp"
+	"time"
 
 	"cloud-clicker/server/decimal"
 )
 
 var ErrInvalidPolicy = errors.New("invalid prestige policy")
+var mechanicalIDPattern = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
 
 type Policy struct {
 	SchemaVersion          int              `json:"schema_version"`
+	ValueResourceID        string           `json:"value_resource_id"`
 	Threshold              string           `json:"threshold"`
 	ExitModifiersPPM       map[string]int64 `json:"exit_modifiers_ppm"`
 	CollapseRouteKnowledge int64            `json:"collapse_route_knowledge"`
@@ -38,8 +42,9 @@ func LoadPolicy(data []byte) (*Policy, error) {
 	}
 	threshold, err := decimal.ParseCanonical(policy.Threshold)
 	if err != nil || !threshold.IsStateValue() || !threshold.Gt(decimal.Zero) || policy.SchemaVersion != 1 || len(policy.SpawnGatePPM) != 10 ||
+		!mechanicalIDPattern.MatchString(policy.ValueResourceID) ||
 		policy.CollapseRouteKnowledge < 0 || policy.CollapseRouteKnowledge > decimal.MaxExactInteger ||
-		policy.OfferDurationMS <= 0 || policy.OfferDurationMS > decimal.MaxExactInteger ||
+		policy.OfferDurationMS <= 0 || policy.OfferDurationMS > int64((1<<63-1)/time.Millisecond) ||
 		policy.DeclineDriftPPM < 0 || policy.DeclineDriftPPM > 1_000_000 ||
 		policy.AdvisorPerRunPPM < 0 || policy.AdvisorPerRunPPM > 1_000_000 ||
 		policy.AdvisorCapPPM < 0 || policy.AdvisorCapPPM > 1_000_000 {

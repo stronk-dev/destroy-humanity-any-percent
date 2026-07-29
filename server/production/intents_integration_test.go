@@ -12,6 +12,7 @@ import (
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/commonsprojection"
 	"cloud-clicker/server/economy"
+	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routeprojection"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
@@ -28,8 +29,14 @@ type integrationWeight int64
 func (value integrationWeight) CompactWeightPPM(string) (int64, bool) { return int64(value), true }
 
 type integrationCatalogs struct {
-	economy map[string]*economy.Catalog
-	routes  map[string]*routes.Catalog
+	economy  map[string]*economy.Catalog
+	routes   map[string]*routes.Catalog
+	prestige map[string]*prestigecore.Policy
+}
+
+func (catalogs integrationCatalogs) ResolvePrestige(hash string) (*prestigecore.Policy, bool) {
+	policy, ok := catalogs.prestige[hash]
+	return policy, ok
 }
 
 func (catalogs integrationCatalogs) Resolve(hash string) (*economy.Catalog, bool) {

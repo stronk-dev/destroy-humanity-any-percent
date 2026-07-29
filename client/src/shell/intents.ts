@@ -5,7 +5,11 @@ export type AuthoritativeIntent =
   | (IntentEnvelope & { readonly kind: "cross_gate"; readonly gateId: string; readonly routeId: string | null })
   | (IntentEnvelope & { readonly kind: "buy_route_hint"; readonly routeId: string })
   | (IntentEnvelope & { readonly kind: "sign_compact"; readonly tithePpm: number })
-  | (IntentEnvelope & { readonly kind: "leave_compact" });
+  | (IntentEnvelope & { readonly kind: "leave_compact" })
+  | (IntentEnvelope & { readonly kind: "accept_exit_offer"; readonly expectedFounderRevision: number; readonly offerId: string })
+  | (IntentEnvelope & { readonly kind: "decline_exit_offer"; readonly offerId: string })
+  | (IntentEnvelope & { readonly kind: "wind_down"; readonly expectedFounderRevision: number })
+  | (IntentEnvelope & { readonly kind: "file_ipo"; readonly expectedFounderRevision: number });
 export interface IntentRequestAdapter { request(intent: AuthoritativeIntent): Promise<void> }
 
 const idPattern = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
@@ -38,7 +42,14 @@ function validateIntent(intent: AuthoritativeIntent): void {
   if (intent.kind === "sign_compact") {
     requireExactKeys(intent, ["intentId", "kind", "expectedRevision", "tithePpm"]); requirePositiveInteger(intent.tithePpm); if (intent.tithePpm > 1_000_000) throw new SyntaxError("invalid tithe ppm"); return;
   }
-  requireExactKeys(intent, ["intentId", "kind", "expectedRevision"]);
+  if (intent.kind === "leave_compact") { requireExactKeys(intent, ["intentId", "kind", "expectedRevision"]); return; }
+  if (intent.kind === "accept_exit_offer") {
+    requireExactKeys(intent, ["intentId", "kind", "expectedRevision", "expectedFounderRevision", "offerId"]); requirePositiveInteger(intent.expectedFounderRevision); requireUUID(intent.offerId); return;
+  }
+  if (intent.kind === "decline_exit_offer") {
+    requireExactKeys(intent, ["intentId", "kind", "expectedRevision", "offerId"]); requireUUID(intent.offerId); return;
+  }
+  requireExactKeys(intent, ["intentId", "kind", "expectedRevision", "expectedFounderRevision"]); requirePositiveInteger(intent.expectedFounderRevision);
 }
 
 function requireExactKeys(source: object, keys: readonly string[]): void {
@@ -46,4 +57,5 @@ function requireExactKeys(source: object, keys: readonly string[]): void {
   if (actual.length !== expected.length || actual.some((key, index) => key !== expected[index])) throw new SyntaxError("intent fields are not exact");
 }
 function requireId(value: string): void { if (!idPattern.test(value)) throw new SyntaxError("invalid mechanical id"); }
+function requireUUID(value: string): void { if (!intentPattern.test(value)) throw new SyntaxError("invalid UUID"); }
 function requirePositiveInteger(value: number): void { if (!Number.isSafeInteger(value) || value <= 0) throw new SyntaxError("invalid positive integer"); }

@@ -18,6 +18,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/multiplier"
+	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
@@ -36,7 +37,15 @@ const (
 	IntentBuyRouteHint       = "buy_route_hint"
 	IntentSignCompact        = "sign_compact"
 	IntentLeaveCompact       = "leave_compact"
+	IntentAcceptExitOffer    = "accept_exit_offer"
+	IntentDeclineExitOffer   = "decline_exit_offer"
+	IntentWindDown           = "wind_down"
+	IntentFileIPO            = "file_ipo"
 )
+
+type PrestigePolicyResolver interface {
+	ResolvePrestige(constantsHash string) (*prestigecore.Policy, bool)
+}
 
 type CompactPolicyResolver interface {
 	CompactTitheBand(constantsHash string) (minimumPPM, maximumPPM int64, ok bool)
@@ -105,7 +114,19 @@ func WithAccrualHook(hook AccrualHook) ServiceOption {
 		if hook == nil {
 			return ErrInvalidIntent
 		}
-		service.accrualHook = hook
+		service.accrualHook = appendAccrualHook(service.accrualHook, hook)
+		return nil
+	}
+}
+
+func WithPrestigeRuntime(resolver PrestigePolicyResolver, catchupCeilingMS int64) ServiceOption {
+	return func(service *Service) error {
+		if resolver == nil || catchupCeilingMS <= 0 || catchupCeilingMS > decimal.MaxExactInteger {
+			return ErrInvalidIntent
+		}
+		service.prestigePolicies = resolver
+		service.catchupCeilingMS = catchupCeilingMS
+		service.accrualHook = appendAccrualHook(service.accrualHook, prestigecore.AccrualHook{Policies: resolver, CatchupCeilingMS: catchupCeilingMS})
 		return nil
 	}
 }
@@ -137,16 +158,18 @@ type InvariantSink interface {
 }
 
 type Service struct {
-	store           *save.Store
-	catalogs        save.CatalogResolver
-	contributions   ContributionProvider
-	metrics         InvariantMetrics
-	logger          *slog.Logger
-	routeCatalogs   RouteCatalogResolver
-	routeProjector  RouteProjector
-	compactPolicies CompactPolicyResolver
-	projectors      []EventProjector
-	accrualHook     AccrualHook
+	store            *save.Store
+	catalogs         save.CatalogResolver
+	contributions    ContributionProvider
+	metrics          InvariantMetrics
+	logger           *slog.Logger
+	routeCatalogs    RouteCatalogResolver
+	routeProjector   RouteProjector
+	compactPolicies  CompactPolicyResolver
+	projectors       []EventProjector
+	accrualHook      AccrualHook
+	prestigePolicies PrestigePolicyResolver
+	catchupCeilingMS int64
 }
 
 type HandleResult struct {
@@ -155,19 +178,21 @@ type HandleResult struct {
 }
 
 type IntentRequest struct {
-	IntentID         string
-	Kind             string
-	ExpectedRevision int64
-	RequestHash      string
-	InvalidDetail    string
-	GeneratorID      string
-	CountMode        string
-	Count            int64
-	ActionID         string
-	WindowMS         int64
-	GateID           string
-	RouteID          string
-	TithePPM         int64
+	IntentID                string
+	Kind                    string
+	ExpectedRevision        int64
+	RequestHash             string
+	InvalidDetail           string
+	GeneratorID             string
+	CountMode               string
+	Count                   int64
+	ActionID                string
+	WindowMS                int64
+	GateID                  string
+	RouteID                 string
+	TithePPM                int64
+	ExpectedFounderRevision int64
+	OfferID                 string
 }
 
 type CompactTitheBand struct {
@@ -217,6 +242,31 @@ func (s *Service) Handle(
 	if err != nil {
 		return HandleResult{}, err
 	}
+	if request.InvalidDetail == "" && (request.Kind == IntentAcceptExitOffer || request.Kind == IntentWindDown || request.Kind == IntentFileIPO) {
+		return s.handleExit(ctx, streamID, mode, now, request)
+	}
+	if request.InvalidDetail == "" && request.Kind == IntentCrossGate && s.prestigePolicies != nil {
+		trigger, founderRevision, err := s.scriptedExitDue(ctx, streamID, now)
+		if err != nil {
+			return HandleResult{}, err
+		}
+		if trigger {
+			return s.handleScriptedCrossGateExit(ctx, streamID, mode, now, request, founderRevision)
+		}
+	}
+	var prestigeFounder *save.Loaded
+	var declinedOffers int64
+	if request.Kind == IntentCrossGate && s.prestigePolicies != nil {
+		loaded, err := s.store.LoadSiblingLatest(ctx, streamID, economy.ScopeFounder)
+		if err != nil {
+			return HandleResult{}, err
+		}
+		prestigeFounder = &loaded
+		declinedOffers, err = s.store.CountEvents(ctx, streamID, save.EventExitOfferDeclined)
+		if err != nil {
+			return HandleResult{}, err
+		}
+	}
 	collector := &invariantCollector{}
 	result, err := s.store.ApplyIntent(ctx, streamID, request.ExpectedRevision, request.IntentID, request.RequestHash,
 		func(state *save.State, revision save.Revision) (save.IntentDecision, error) {
@@ -265,7 +315,16 @@ func (s *Service) Handle(
 				}
 				compactBand = &CompactTitheBand{MinimumPPM: minimum, MaximumPPM: maximum}
 			}
-			return TransitionWithPolicies(request, state, catalog, routeCatalog, compactBand, revision, mode, now, contributions, collector, s.accrualHook)
+			decision, err := TransitionWithPolicies(request, state, catalog, routeCatalog, compactBand, revision, mode, now, contributions, collector, s.accrualHook)
+			if err != nil {
+				return save.IntentDecision{}, err
+			}
+			if s.prestigePolicies != nil && decision.Outcome == save.IntentApplied {
+				if err := s.afterPrestigeTransition(request, state, revision, now, &decision, prestigeFounder, declinedOffers); err != nil {
+					return save.IntentDecision{}, err
+				}
+			}
+			return decision, nil
 		})
 	if err != nil {
 		s.recordAbortedInvariants(collector.reports)
@@ -367,6 +426,8 @@ func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *e
 		return service.signCompact(request, state, catalog, compactBand, revision, mode, now, contributions, hook)
 	case IntentLeaveCompact:
 		return service.leaveCompact(request, state, catalog, compactBand, revision, mode, now, contributions, hook)
+	case IntentDeclineExitOffer:
+		return service.declineExitOffer(request, state, catalog, revision, mode, now, contributions, hook)
 	default:
 		return rejectedDecision(request, revision.Number, "invalid", request.Kind)
 	}
@@ -439,6 +500,30 @@ func runAccrualHook(hook AccrualHook, intentID string, state *save.State, catalo
 	return events, nil
 }
 
+type accrualHookChain []AccrualHook
+
+func appendAccrualHook(existing, next AccrualHook) AccrualHook {
+	if existing == nil {
+		return next
+	}
+	if chain, ok := existing.(accrualHookChain); ok {
+		return append(chain, next)
+	}
+	return accrualHookChain{existing, next}
+}
+
+func (chain accrualHookChain) AfterAccrual(state *save.State, catalog *economy.Catalog, revision save.Revision, result accrualhook.Result, contributions []multiplier.Contribution) ([]save.EventWrite, error) {
+	var events []save.EventWrite
+	for _, hook := range chain {
+		produced, err := hook.AfterAccrual(state, catalog, revision, result, contributions)
+		if err != nil {
+			return nil, err
+		}
+		events = append(events, produced...)
+	}
+	return events, nil
+}
+
 func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
 	if routeCatalog == nil || state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || revision.OwnerID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
@@ -495,6 +580,9 @@ func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *e
 		state.GatesCrossed = map[string]bool{}
 	}
 	state.GatesCrossed[request.GateID] = true
+	if err := setTierFromGate(state, request.GateID); err != nil {
+		return save.IntentDecision{}, err
+	}
 	events := append(accrualEvents, gateCrossedEvent(request, revision, state.RunSeq))
 	if request.RouteID != "" {
 		events = append(events, routeExecutedEvent(request, revision, state.RunSeq))
@@ -811,7 +899,32 @@ func wireSnapshot(state *save.State) map[string]any {
 		"hints_unlocked": sortedBoolKeys(state.HintsUnlocked),
 		"compact_member": state.CompactMember, "compact_tithe_ppm": state.CompactTithePPM,
 		"compact_solidarity_ppm": state.CompactSolidarityPPM,
+		"tier":                   state.Tier, "lifetime_value": state.LifetimeValue.String(),
+		"offer_state": wireOfferState(state.OfferState), "run_started_at_ms": wireTimeMS(state.RunStartedAt),
+		"offline_spans": wireOfflineSpans(state.OfflineSpans),
 	}
+}
+
+func wireTimeMS(value time.Time) int64 {
+	if value.IsZero() {
+		return 0
+	}
+	return value.UnixMilli()
+}
+
+func wireOfferState(offer *save.ExitOfferState) any {
+	if offer == nil {
+		return nil
+	}
+	return map[string]any{"offer_id": offer.OfferID, "exit_type": offer.ExitType, "terms_json": json.RawMessage(offer.TermsJSON), "spawned_at_ms": offer.SpawnedAt.UnixMilli(), "expires_at_ms": offer.ExpiresAt.UnixMilli()}
+}
+
+func wireOfflineSpans(spans []save.OfflineSpan) []map[string]int64 {
+	result := make([]map[string]int64, len(spans))
+	for index, span := range spans {
+		result[index] = map[string]int64{"from_ms": span.From.UnixMilli(), "to_ms": span.To.UnixMilli()}
+	}
+	return result
 }
 
 func cloneStrings(source map[string]string) map[string]string {
@@ -980,6 +1093,33 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 	case IntentLeaveCompact:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision") {
 			request.InvalidDetail = "leave_compact.fields"
+		}
+	case IntentAcceptExitOffer:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "expected_founder_revision", "offer_id") {
+			request.InvalidDetail = "accept_exit_offer.fields"
+			return request, nil
+		}
+		if !parsePositiveSafeInt(root["expected_founder_revision"], &request.ExpectedFounderRevision) {
+			request.InvalidDetail = "expected_founder_revision"
+		}
+		if err := json.Unmarshal(root["offer_id"], &request.OfferID); err != nil || !intentUUIDV7Pattern.MatchString(request.OfferID) {
+			request.InvalidDetail = "offer_id"
+		}
+	case IntentWindDown, IntentFileIPO:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "expected_founder_revision") {
+			request.InvalidDetail = request.Kind + ".fields"
+			return request, nil
+		}
+		if !parsePositiveSafeInt(root["expected_founder_revision"], &request.ExpectedFounderRevision) {
+			request.InvalidDetail = "expected_founder_revision"
+		}
+	case IntentDeclineExitOffer:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "offer_id") {
+			request.InvalidDetail = "decline_exit_offer.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["offer_id"], &request.OfferID); err != nil || !intentUUIDV7Pattern.MatchString(request.OfferID) {
+			request.InvalidDetail = "offer_id"
 		}
 	default:
 		request.InvalidDetail = request.Kind

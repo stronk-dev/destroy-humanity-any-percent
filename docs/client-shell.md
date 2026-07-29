@@ -35,7 +35,7 @@ The same request occurs on visibility return. The lifecycle layer measures the a
 interval independently of Worker throttling, so a Worker that continued ticking cannot bypass the
 return-story rule.
 
-Prediction is presentation only. `IntentDispatcher` accepts the closed six-intent union currently
+Prediction is presentation only. `IntentDispatcher` accepts the closed ten-intent union currently
 implemented by the production engine, validates exact fields at runtime, and always forwards the
 intent to its authoritative adapter. It accepts no predicted balance or affordability result. A
 source-boundary check also forbids prediction imports in the dispatcher and balance-mutation

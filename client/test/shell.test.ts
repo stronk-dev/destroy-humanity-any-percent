@@ -88,6 +88,9 @@ it("always dispatches intents to the authoritative adapter", async () => {
   const intent = { intentId: "018f6b7c-9abc-7def-8abc-111111111111", kind: "buy_generator", expectedRevision: 1, generatorId: "generator.example", count: { mode: "exact", value: 1 } } as const;
   await dispatcher.send(intent); expect(request).toHaveBeenCalledExactlyOnceWith(intent);
   expect(() => dispatcher.send({ ...intent, predictedAffordable: false } as typeof intent)).toThrow(/fields are not exact/);
+  const wind = { intentId: "018f6b7c-9abc-7def-8abc-222222222222", kind: "wind_down", expectedRevision: 4, expectedFounderRevision: 2 } as const;
+  await dispatcher.send(wind); expect(request).toHaveBeenLastCalledWith(wind);
+  expect(() => dispatcher.send({ ...wind, expectedFounderRevision: 0 })).toThrow(/positive integer/);
 });
 
 it("selects the one-modal return story only beyond thirty seconds", () => {

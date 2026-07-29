@@ -74,6 +74,18 @@ func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	if err != nil || leave.InvalidDetail != "" {
 		t.Fatalf("leave=%+v err=%v", leave, err)
 	}
+	accept, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"accept_exit_offer","expected_revision":2,"expected_founder_revision":3,"offer_id":"018f6b7c-9abc-7def-8abc-0123456789ac"}`))
+	if err != nil || accept.InvalidDetail != "" || accept.ExpectedFounderRevision != 3 || accept.OfferID == "" {
+		t.Fatalf("accept=%+v err=%v", accept, err)
+	}
+	wind, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"wind_down","expected_revision":2,"expected_founder_revision":3}`))
+	if err != nil || wind.InvalidDetail != "" || wind.ExpectedFounderRevision != 3 {
+		t.Fatalf("wind=%+v err=%v", wind, err)
+	}
+	decline, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"decline_exit_offer","expected_revision":2,"offer_id":"018f6b7c-9abc-7def-8abc-0123456789ac"}`))
+	if err != nil || decline.InvalidDetail != "" || decline.OfferID == "" {
+		t.Fatalf("decline=%+v err=%v", decline, err)
+	}
 }
 
 func TestCompactSignLeaveAndResign(t *testing.T) {
