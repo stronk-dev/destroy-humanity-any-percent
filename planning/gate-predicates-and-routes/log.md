@@ -30,3 +30,10 @@
 - Added `docs/routes.md` and updated the canonical production/save docs and repository status for the four-intent surface, save v5, route events, replay delivery, and projection tables.
 - The first full `make verify` correctly rejected the harness golden: save v5 changes the encoded terminal state even though pacing is unchanged. Regeneration changed only the two deterministic `final_state_hash` values; `pacing-baseline.json`, milestones, elapsed times, outcomes, and invariants are byte-identical. Accepted as a state-envelope artifact update, not a balance change.
 - Full acceptance rerun with Postgres passed: Go/vet/integration, harness golden and pacing baseline, strict TypeScript with 6,388 Node tests, routes/economy/harness schemas, and 19,164 tests across Chromium, Firefox, and WebKit.
+
+## 2026-07-29 — complete-diff review correction
+
+- The acceptance-criteria review found a proof-integrity defect before archive: `exclusion_slot`/`exclusion_value` were trusted proof annotations but were not required to constrain the executable predicate. A mismatched annotation could therefore make the exact search prove a smaller per-run subset than gameplay actually allowed.
+- Fixed in both loaders and schema semantics: every structure exclusion must match an explicit `structure_is`; every doctrine exclusion must match an explicit `doctrine_is` for that transition. The shipped seed predicates now carry those constraints. Meter/region conditions must also truthfully require context v2.
+- Added a shared unbound-exclusion negative catalog. Added cross-catalog resource-reference validation in Go, TypeScript, and schema CI plus a dangling-resource fixture, so `requirement` and resource predicates cannot survive with IDs absent from the economy catalog.
+- Focused Go, strict TypeScript, Node parity, and schema suites pass after the correction. Full acceptance is rerun below before archive.

@@ -207,7 +207,7 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 }
 
 func parseGate(source rawGate) (Gate, error) {
-	if !idPattern.MatchString(source.GateID) || source.Requirement == nil || source.Routes == nil {
+	if !idPattern.MatchString(source.GateID) || len(source.Requirement) == 0 || source.Routes == nil {
 		return Gate{}, errors.New("gate_id, requirement, and routes are required")
 	}
 	gate := Gate{ID: source.GateID}
@@ -253,12 +253,38 @@ func parseAlternative(source rawAlternative) (Alternative, error) {
 		}
 		route.Predicate = append(route.Predicate, condition)
 	}
+	for _, condition := range route.Predicate {
+		if (condition.Kind == ConditionMeterBand || condition.Kind == ConditionRegionTrait) && route.RequiresContextVersion < 2 {
+			return Alternative{}, errors.New("meter and region conditions require context version 2")
+		}
+	}
+	if !hasExclusionCondition(route) {
+		return Alternative{}, errors.New("exclusion slot/value must match an explicit predicate condition")
+	}
 	effect, err := parseEffect(source.Effect)
 	if err != nil {
 		return Alternative{}, err
 	}
 	route.Effect = effect
 	return route, nil
+}
+
+func hasExclusionCondition(route Alternative) bool {
+	if route.ExclusionSlot == "structure" {
+		for _, condition := range route.Predicate {
+			if condition.Kind == ConditionStructureIs && condition.StructureID == route.ExclusionValue {
+				return true
+			}
+		}
+		return false
+	}
+	transition := route.ExclusionSlot[len("doctrine:"):]
+	for _, condition := range route.Predicate {
+		if condition.Kind == ConditionDoctrineIs && condition.Transition == transition && condition.DoctrineID == route.ExclusionValue {
+			return true
+		}
+	}
+	return false
 }
 
 func parseCondition(source rawCondition) (Condition, error) {

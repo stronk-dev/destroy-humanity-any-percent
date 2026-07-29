@@ -60,6 +60,16 @@ func TestCatalogRejectsReachableDepletionAndUnavailableActiveRoute(t *testing.T)
 	if _, err := LoadCatalog(mutated); err == nil {
 		t.Fatal("active route with unavailable context accepted")
 	}
+	if err := json.Unmarshal(data, &root); err != nil {
+		t.Fatal(err)
+	}
+	gates = root["gates"].([]any)
+	routes = gates[0].(map[string]any)["routes"].([]any)
+	routes[0].(map[string]any)["requires_context_version"] = float64(1)
+	mutated, _ = json.Marshal(root)
+	if _, err := LoadCatalog(mutated); err == nil {
+		t.Fatal("meter route lied about its minimum context version")
+	}
 }
 
 func TestSharedCatalogFixtures(t *testing.T) {
@@ -70,7 +80,7 @@ func TestSharedCatalogFixtures(t *testing.T) {
 	if _, err := LoadCatalog(valid); err != nil {
 		t.Fatalf("valid fixture: %v", err)
 	}
-	for _, filename := range []string{"reachable-depletion.json", "unknown-field.json"} {
+	for _, filename := range []string{"reachable-depletion.json", "unknown-field.json", "unbound-exclusion.json"} {
 		data, err := os.ReadFile("../../balance/routes-testdata/invalid/" + filename)
 		if err != nil {
 			t.Fatal(err)

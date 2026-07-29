@@ -192,6 +192,9 @@ func (s *Service) Handle(
 				if !ok {
 					return save.IntentDecision{}, fmt.Errorf("%w: unknown routes catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 				}
+				if err := ValidateRouteCatalogResources(catalog, routeCatalog); err != nil {
+					return save.IntentDecision{}, err
+				}
 				if request.Kind == IntentBuyRouteHint {
 					if err := s.routeProjector.RepairFounder(ctx, revision.OwnerID, state); err != nil {
 						return save.IntentDecision{}, err
@@ -223,6 +226,36 @@ func (s *Service) Handle(
 	}
 	s.recordCommittedInvariants(result, collector.reports)
 	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
+}
+
+func ValidateRouteCatalogResources(catalog *economy.Catalog, routeCatalog *routes.Catalog) error {
+	if catalog == nil || routeCatalog == nil {
+		return ErrInvalidEngineState
+	}
+	validate := func(id string) error {
+		resource, exists := catalog.Resource(id)
+		if !exists || resource.Scope != economy.ScopeCompany {
+			return fmt.Errorf("%w: routes catalog references unknown company resource %q", ErrInvalidEngineState, id)
+		}
+		return nil
+	}
+	for _, gate := range routeCatalog.Gates() {
+		for _, requirement := range gate.Requirement {
+			if err := validate(requirement.ResourceID); err != nil {
+				return err
+			}
+		}
+		for _, route := range gate.Routes {
+			for _, condition := range route.Predicate {
+				if condition.Kind == routes.ConditionResourceAtLeast || condition.Kind == routes.ConditionResourceAtMost {
+					if err := validate(condition.ResourceID); err != nil {
+						return err
+					}
+				}
+			}
+		}
+	}
+	return nil
 }
 
 // Transition is the single deterministic intent transition used by persisted

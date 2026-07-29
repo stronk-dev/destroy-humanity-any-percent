@@ -7,6 +7,7 @@ import (
 	"io"
 	"log/slog"
 	"math/rand"
+	"os"
 	"testing"
 	"time"
 
@@ -147,6 +148,23 @@ func TestBuyRouteHintDoesNotAffectPredicateEvaluation(t *testing.T) {
 	again, err := TransitionWithRoutes(request, state, economyCatalog, routeCatalog, save.Revision{Number: 2}, ModeOnline, engineCursor, nil, nil)
 	if err != nil || !bytes.Contains(again.Receipt, []byte("already_unlocked")) {
 		t.Fatalf("again=%s err=%v", again.Receipt, err)
+	}
+}
+
+func TestRouteCatalogResourceReferencesAreBound(t *testing.T) {
+	if err := ValidateRouteCatalogResources(phase0Catalog(t), phase0Routes(t)); err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile("../../balance/routes-testdata/invalid/dangling-resource.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := routes.LoadCatalog(data)
+	if err != nil {
+		t.Fatalf("standalone shape should load before bundle validation: %v", err)
+	}
+	if err := ValidateRouteCatalogResources(phase0Catalog(t), catalog); !errors.Is(err, ErrInvalidEngineState) {
+		t.Fatalf("dangling resource error=%v", err)
 	}
 }
 

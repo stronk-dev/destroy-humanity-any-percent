@@ -21,6 +21,7 @@
           "exclusion_slot": "doctrine:transition.t3_to_t4",
           "exclusion_value": "doctrine.ethical",
           "predicate": [
+            { "kind": "doctrine_is", "transition": "transition.t3_to_t4", "doctrine_id": "doctrine.ethical" },
             { "kind": "meter_band", "meter_id": "trust.regulators.standing", "min": 70, "max": 100 },
             { "kind": "meter_band", "meter_id": "trust.regulators.grievance", "min": 0, "max": 20 }
           ],
@@ -46,7 +47,10 @@
           "requires_context_version": 1,
           "exclusion_slot": "doctrine:transition.t3_to_t4",
           "exclusion_value": "doctrine.capture",
-          "predicate": [{ "kind": "ledger_fact_present", "fact_kind": "exit.acquihire" }],
+          "predicate": [
+            { "kind": "doctrine_is", "transition": "transition.t3_to_t4", "doctrine_id": "doctrine.capture" },
+            { "kind": "ledger_fact_present", "fact_kind": "exit.acquihire" }
+          ],
           "effect": { "kind": "discount", "fraction": "5e-1" }
         }
       ]
@@ -62,7 +66,10 @@
           "requires_context_version": 2,
           "exclusion_slot": "structure",
           "exclusion_value": "structure.corporation",
-          "predicate": [{ "kind": "region_trait", "trait_id": "trait.non_road" }],
+          "predicate": [
+            { "kind": "structure_is", "structure_id": "structure.corporation" },
+            { "kind": "region_trait", "trait_id": "trait.non_road" }
+          ],
           "effect": { "kind": "discount", "fraction": "6e-1" }
         },
         {
@@ -82,7 +89,10 @@
           "requires_context_version": 2,
           "exclusion_slot": "structure",
           "exclusion_value": "structure.nonprofit",
-          "predicate": [{ "kind": "meter_band", "meter_id": "planet.offset_coverage", "min": 90, "max": 100 }],
+          "predicate": [
+            { "kind": "structure_is", "structure_id": "structure.nonprofit" },
+            { "kind": "meter_band", "meter_id": "planet.offset_coverage", "min": 90, "max": 100 }
+          ],
           "effect": { "kind": "discount", "fraction": "2e-1" }
         }
       ]
@@ -98,7 +108,10 @@
           "requires_context_version": 2,
           "exclusion_slot": "structure",
           "exclusion_value": "structure.corporation",
-          "predicate": [{ "kind": "region_trait", "trait_id": "trait.sovereign_compute" }],
+          "predicate": [
+            { "kind": "structure_is", "structure_id": "structure.corporation" },
+            { "kind": "region_trait", "trait_id": "trait.sovereign_compute" }
+          ],
           "effect": { "kind": "substitute" }
         }
       ]

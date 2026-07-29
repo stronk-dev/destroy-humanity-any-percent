@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "context_version": 1,
+  "depletion_distinct_routes_required": 2,
+  "knowledge": { "registry_first_bonus": 100, "founder_first_grant": 25, "repeat_grant": 5, "hint_cost": 50 },
+  "gates": [{
+    "gate_id": "gate.example",
+    "requirement": [{ "resource_id": "company.cash", "amount": "1e3" }],
+    "routes": [{
+      "route_id": "route.example",
+      "house_name": "Example Route",
+      "active": true,
+      "requires_context_version": 1,
+      "exclusion_slot": "structure",
+      "exclusion_value": "structure.different",
+      "predicate": [{ "kind": "structure_is", "structure_id": "structure.example" }],
+      "effect": { "kind": "substitute" }
+    }]
+  }]
+}

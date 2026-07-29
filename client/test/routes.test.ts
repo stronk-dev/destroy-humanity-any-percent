@@ -1,11 +1,15 @@
 import { describe, expect, it } from "vitest";
 
 import catalogJson from "../../balance/routes/phase0.json";
+import economyJson from "../../balance/catalogs/phase0.json";
 import validCatalogJson from "../../balance/routes-testdata/valid/minimal.json";
 import reachableCatalogJson from "../../balance/routes-testdata/invalid/reachable-depletion.json";
 import unknownFieldCatalogJson from "../../balance/routes-testdata/invalid/unknown-field.json";
+import unboundExclusionCatalogJson from "../../balance/routes-testdata/invalid/unbound-exclusion.json";
+import danglingResourceCatalogJson from "../../balance/routes-testdata/invalid/dangling-resource.json";
 import vectorsJson from "../../testdata/routes/predicate-vectors.json";
-import { evaluatePredicate, parseRoutePredicate, parseRoutesCatalog, type RouteContext } from "../src/routes";
+import { parseCatalog } from "../src/economy-kernel";
+import { evaluatePredicate, parseRoutePredicate, parseRoutesCatalog, validateRouteCatalogResources, type RouteContext } from "../src/routes";
 
 interface FixtureContext {
   context_version: number;
@@ -34,6 +38,7 @@ function context(source: FixtureContext): RouteContext {
 describe("routes catalog and predicate parity", () => {
   it("loads the shipped catalog and proves Depletion unreachable in one run", () => {
     const catalog = parseRoutesCatalog(catalogJson);
+    expect(() => validateRouteCatalogResources(catalog, parseCatalog(economyJson))).not.toThrow();
     expect(catalog.gates).toHaveLength(3);
     expect(catalog.maxRoutesPerRun()).toBe(4);
     expect(catalog.depletionDistinctRoutesRequired).toBe(5);
@@ -48,12 +53,17 @@ describe("routes catalog and predicate parity", () => {
     expect(parseRoutesCatalog(validCatalogJson).gates).toHaveLength(1);
     expect(() => parseRoutesCatalog(reachableCatalogJson)).toThrow(/reachable/);
     expect(() => parseRoutesCatalog(unknownFieldCatalogJson)).toThrow(/fields/);
+    expect(() => parseRoutesCatalog(unboundExclusionCatalogJson)).toThrow(/exclusion/);
+    expect(() => validateRouteCatalogResources(parseRoutesCatalog(danglingResourceCatalogJson), parseCatalog(economyJson))).toThrow(/unknown company resource/);
     const reachable = structuredClone(catalogJson) as typeof catalogJson;
     reachable.depletion_distinct_routes_required = 4;
     expect(() => parseRoutesCatalog(reachable)).toThrow(/reachable/);
     const unavailable = structuredClone(catalogJson) as typeof catalogJson;
     unavailable.gates[0]!.routes[0]!.active = true;
     expect(() => parseRoutesCatalog(unavailable)).toThrow(/unavailable context/);
+    const lyingContext = structuredClone(catalogJson) as typeof catalogJson;
+    lyingContext.gates[0]!.routes[0]!.requires_context_version = 1;
+    expect(() => parseRoutesCatalog(lyingContext)).toThrow(/context version 2/);
   });
 
   it("rejects unknown predicate fields", () => {

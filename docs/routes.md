@@ -14,7 +14,8 @@ Depletion's distinct-route count, gate requirements, route activation, exclusion
 predicates, and effects. JSON Schema is published at
 [`balance/routes.schema.json`](../balance/routes.schema.json); both runtime loaders additionally
 enforce canonical Decimal strings, unique IDs, active context availability, effect ranges, and the
-Depletion proof.
+Depletion proof. Bundle validation also rejects a gate requirement or resource condition whose ID
+does not resolve to a company resource in the economy catalog.
 
 The closed predicate union is:
 
@@ -85,7 +86,9 @@ predicate context and evaluator do not contain hint state.
 
 ## Depletion proof and verification
 
-Every route declares one immutable exclusion slot/value (`structure` or a doctrine transition).
+Every route declares one immutable exclusion slot/value (`structure` or a doctrine transition),
+and both loaders require that declaration to match an explicit `structure_is` or `doctrine_is`
+condition in the executable predicate.
 Both loaders exhaustively enumerate all declared slot assignments and calculate the exact maximum
 route subset possible in one run. The shipped maximum is 4 and Depletion requires 5. A catalog
 with maximum greater than or equal to N fails loading and CI; the shared negative fixture proves

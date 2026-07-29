@@ -1,4 +1,5 @@
 import { MAX_EXACT_INTEGER, parseCanonical, quantize, canonicalString } from "./numeric";
+import type { EconomyCatalog } from "./economy-kernel";
 
 export const ROUTES_SCHEMA_VERSION = 1;
 export const ROUTE_CONTEXT_VERSION = 1;
@@ -114,7 +115,7 @@ export function parseRoutesCatalog(source: unknown): RoutesCatalog {
     const gateId = mechanicalId(raw.gate_id, `gates[${index}].gate_id`);
     if (gateIds.has(gateId)) throw new SyntaxError(`duplicate gate ${gateId}`);
     gateIds.add(gateId);
-    if (!Array.isArray(raw.requirement) || !Array.isArray(raw.routes)) throw new SyntaxError(`gates[${index}] collections must be arrays`);
+    if (!Array.isArray(raw.requirement) || raw.requirement.length === 0 || !Array.isArray(raw.routes)) throw new SyntaxError(`gates[${index}] collections must be arrays and requirement must not be empty`);
     const requirementIds = new Set<string>();
     const requirement = raw.requirement.map((item, requirementIndex) => {
       const value = exactObject(item, ["resource_id", "amount"], `requirement[${requirementIndex}]`);
@@ -136,6 +137,11 @@ export function parseRoutesCatalog(source: unknown): RoutesCatalog {
       if (typeof value.exclusion_slot !== "string" || !exclusionPattern.test(value.exclusion_slot)) throw new SyntaxError("invalid exclusion_slot");
       const exclusionValue = mechanicalId(value.exclusion_value, "exclusion_value");
       const predicate = parseRoutePredicate(value.predicate);
+      if (predicate.some((condition) => condition.kind === "meter_band" || condition.kind === "region_trait") && requiresContextVersion < 2) throw new SyntaxError("meter and region conditions require context version 2");
+      const exclusionMatched = value.exclusion_slot === "structure"
+        ? predicate.some((condition) => condition.kind === "structure_is" && condition.structureId === exclusionValue)
+        : predicate.some((condition) => condition.kind === "doctrine_is" && `doctrine:${condition.transition}` === value.exclusion_slot && condition.doctrineId === exclusionValue);
+      if (!exclusionMatched) throw new SyntaxError("exclusion slot/value must match an explicit predicate condition");
       const effect = parseEffect(value.effect);
       return Object.freeze({ routeId, houseName: value.house_name, active: value.active, requiresContextVersion, exclusionSlot: value.exclusion_slot, exclusionValue, predicate, effect });
     });
@@ -221,6 +227,21 @@ export function discountedRequirements(gate: GateDefinition, route: RouteAlterna
     resourceId: requirement.resourceId,
     amount: canonicalString(quantize(parseCanonical(requirement.amount).mul(parseCanonical(fraction)))),
   })));
+}
+
+export function validateRouteCatalogResources(catalog: RoutesCatalog, economy: EconomyCatalog): void {
+  const validate = (id: string): void => {
+    const resource = economy.resource(id);
+    if (!resource || resource.scope !== "company") throw new SyntaxError(`routes catalog references unknown company resource ${id}`);
+  };
+  for (const gate of catalog.gates) {
+    for (const requirement of gate.requirement) validate(requirement.resourceId);
+    for (const route of gate.routes) {
+      for (const condition of route.predicate) {
+        if (condition.kind === "resource_at_least" || condition.kind === "resource_at_most") validate(condition.resourceId);
+      }
+    }
+  }
 }
 
 function exactObject(source: unknown, keys: readonly string[], label: string): Record<string, unknown> {

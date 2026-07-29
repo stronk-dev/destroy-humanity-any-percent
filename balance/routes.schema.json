@@ -30,7 +30,7 @@
       "required": ["gate_id", "requirement", "routes"],
       "properties": {
         "gate_id": { "$ref": "#/$defs/id" },
-        "requirement": { "type": "array", "items": { "$ref": "#/$defs/requirement" } },
+        "requirement": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/requirement" } },
         "routes": { "type": "array", "items": { "$ref": "#/$defs/route" } }
       }
     },

@@ -111,9 +111,12 @@ function maxRoutesPerRun(catalog) {
   return maximum;
 }
 
-function routeSemanticErrors(catalog) {
+function routeSemanticErrors(catalog, resourceIDs) {
   const errors = [];
   for (const [gateIndex, gate] of (catalog.gates ?? []).entries()) {
+    for (const [requirementIndex, requirement] of (gate.requirement ?? []).entries()) {
+      if (!resourceIDs.has(requirement.resource_id)) errors.push(`/gates/${gateIndex}/requirement/${requirementIndex} references unknown company resource`);
+    }
     for (const [routeIndex, route] of (gate.routes ?? []).entries()) {
       if (route.active && route.requires_context_version > catalog.context_version) {
         errors.push(`/gates/${gateIndex}/routes/${routeIndex} active route requires unavailable context`);
@@ -121,6 +124,18 @@ function routeSemanticErrors(catalog) {
       if (route.effect?.kind === "discount") {
         const fraction = new Decimal(route.effect.fraction);
         if (!fraction.gt(0) || !fraction.lt(1)) errors.push(`/gates/${gateIndex}/routes/${routeIndex}/effect/fraction must be in (0,1)`);
+      }
+      if ((route.predicate ?? []).some((condition) => condition.kind === "meter_band" || condition.kind === "region_trait") && route.requires_context_version < 2) {
+        errors.push(`/gates/${gateIndex}/routes/${routeIndex} meter/region condition requires context v2`);
+      }
+      const exclusionMatched = route.exclusion_slot === "structure"
+        ? (route.predicate ?? []).some((condition) => condition.kind === "structure_is" && condition.structure_id === route.exclusion_value)
+        : (route.predicate ?? []).some((condition) => condition.kind === "doctrine_is" && `doctrine:${condition.transition}` === route.exclusion_slot && condition.doctrine_id === route.exclusion_value);
+      if (!exclusionMatched) errors.push(`/gates/${gateIndex}/routes/${routeIndex} exclusion is not an executable predicate`);
+      for (const [conditionIndex, condition] of (route.predicate ?? []).entries()) {
+        if ((condition.kind === "resource_at_least" || condition.kind === "resource_at_most") && !resourceIDs.has(condition.resource_id)) {
+          errors.push(`/gates/${gateIndex}/routes/${routeIndex}/predicate/${conditionIndex} references unknown company resource`);
+        }
       }
     }
   }
@@ -169,6 +184,12 @@ async function main() {
 
   await verifyResourceLogSource();
 
+  const companyResourceIDs = new Set();
+  for (const filename of production) {
+    const catalog = await readJSON(filename);
+    for (const resource of catalog.resources ?? []) if (resource.scope === "company") companyResourceIDs.add(resource.id);
+  }
+
   const routesSchema = await readJSON(path.join(balanceDirectory, "routes.schema.json"));
   const validateRoutes = ajv.compile(routesSchema);
   const routeCatalogs = await jsonFiles(path.join(balanceDirectory, "routes"));
@@ -180,13 +201,13 @@ async function main() {
   for (const filename of [...routeCatalogs, ...validRoutes]) {
     const data = await readJSON(filename);
     if (!validateRoutes(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateRoutes)}`);
-    const errors = routeSemanticErrors(data);
+    const errors = routeSemanticErrors(data, companyResourceIDs);
     if (errors.length > 0) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${errors.join("; ")}`);
   }
   for (const filename of invalidRoutes) {
     const data = await readJSON(filename);
     const shapeValid = validateRoutes(data);
-    const errors = shapeValid ? routeSemanticErrors(data) : [];
+    const errors = shapeValid ? routeSemanticErrors(data, companyResourceIDs) : [];
     if (shapeValid && errors.length === 0) throw new Error(`${path.relative(repositoryDirectory, filename)}: expected routes rejection`);
   }
 
