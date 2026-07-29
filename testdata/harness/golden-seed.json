@@ -10,11 +10,11 @@
         "policy_id": "casual.phase0",
         "policy_version": 1,
         "seed": "0",
-        "constants_hash": "sha256:6b2589e82ec45ffaa2db3cdecc44136586cbd876701e5117aed5fd3727b21a20"
+        "constants_hash": "sha256:b680a583bdd5454b999a92b803b12ea3a0699e0afc851de95be7da47b4661d9d"
       },
       "outcome": "completed",
       "final_virtual_ms": 1814400000,
-      "final_state_hash": "sha256:605ab1ab0b3ead5ce85ebe8b2699995f94da1676cedc7a1fd3852de6bd451177",
+      "final_state_hash": "sha256:7bba87c4089bfa200cf58b386b4f39db8b01c6e23fb56160178715d519e49072",
       "milestones": [
         {
           "id": "milestone.first_manual",
@@ -74,11 +74,11 @@
         "policy_id": "chaos.phase0",
         "policy_version": 1,
         "seed": "0",
-        "constants_hash": "sha256:6b2589e82ec45ffaa2db3cdecc44136586cbd876701e5117aed5fd3727b21a20"
+        "constants_hash": "sha256:b680a583bdd5454b999a92b803b12ea3a0699e0afc851de95be7da47b4661d9d"
       },
       "outcome": "completed",
       "final_virtual_ms": 2592000000,
-      "final_state_hash": "sha256:89445e6c72c9c1214a7d0af3c38ff20efe7db44be66d22df582d452b9bd1293a",
+      "final_state_hash": "sha256:4b5f5026631f31bd37f05c0b236c8e1bd842655053b1ac581cbc26db9de5f38b",
       "milestones": [
         {
           "id": "milestone.first_manual",
