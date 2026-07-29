@@ -1,6 +1,6 @@
 # RFC: Balance Harness Foundation
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco (drafted by Codex)
 - **Created:** 2026-07-28
 - **Design refs:** `design/07-roadmap.md` Phase 0 and sequencing principle 1;
@@ -10,7 +10,7 @@
   §5.7, §8.4–8.5`
 - **Depends on:** Economy Kernel, Production Engine & Intent API, Geometric Affordability Fast
   Path (implemented); CI Baseline (implementing)
-- **Planning:** `planning/balance-harness-foundation/`
+- **Planning:** `planning/archive/balance-harness-foundation/`
 
 ## Summary
 
@@ -284,3 +284,5 @@ to the named scenario-pack follow-ups above.
 - 2026-07-28: created as the executable Phase-0 harness foundation; split unavailable full-game
   personas and far-horizon systems into named extensions.
 - 2026-07-29: implementation started after Production Contract Assertions & Integrity archived.
+- 2026-07-29: deterministic transition, policies, reports, schemas, baseline/drift gates, CI wiring,
+  cross-architecture golden proof, and canonical docs completed; RFC archived.

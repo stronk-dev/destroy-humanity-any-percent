@@ -45,3 +45,16 @@ Append-only. Resume from this file and `plan.md`.
 - Rechecked the authoritative-transition dependency, policy time schedules, separate RNG streams,
   fixed-slot parallel reduction, receipt-chain invariant, schema negatives, baseline guard, and
   report field types. No unresolved correctness finding remains.
+
+## 2026-07-29 (Codex — final acceptance)
+
+- Full repository verification with Postgres green after the harness joined `verify-server`: Go
+  vet/tests/integrations, formula drift, harness baseline, TypeScript typecheck, 6,372 Node tests,
+  schema gates, and 19,116 browser tests.
+- `make harness` produced a 530,700-byte canonical full report containing all 300 ordered runs and
+  aggregate. The read-only blocking check remained green after review fixes.
+- Ran the committed golden check under local Docker `linux/amd64` against the artifact generated on
+  `darwin/arm64`; it exited zero, proving byte identity across the RFC's required architectures
+  without a push.
+- RFC acceptance is complete; canonical behavior lives in `docs/balance-harness.md` and the RFC and
+  planning record are ready to archive.
