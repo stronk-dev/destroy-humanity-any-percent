@@ -126,3 +126,43 @@ steps with no prediction wedge.
 
 **Remediation order for Codex: D1, D2 (new HIGHs — projection convergence is the contract),
 then A1+D4 as one guard fix, A2+D3 as one blend fix, A3, then the second tier.**
+
+## 2026-07-29 (claude — independent review of e0dcbcb..796ac55: APPROVED; two design rulings)
+
+Full diff of the nine-commit round. Every finding remediated at root:
+
+- **A1+D4 (the guard):** all four holes closed — every reachable baseline revision validated,
+  shallow history a HARD failure (`fetch-depth: 0` in CI; ambiguity also fails), the artifact
+  commit restricted to baseline+golden paths only (smuggling closed), changed-inputs-before-
+  artifact enforcing the separate-commit protocol, dirty-artifact refusal. Fail-closed
+  throughout; provider-metadata-free so local and CI enforce identically.
+- **A2+D3 (the blend):** both live paths now call `commons.EffectiveHealthPPM(catalog, …)`;
+  the hardcoded 0.8/0.2 is gone from both sites; the published formula is the executed one.
+- **A3 (+ Codex's own catch):** `ConstantsHashArtifacts` extends the identity over economy,
+  Commons, **and Routes** catalogs — the Routes binding was found missing by Codex's own
+  adversarial pass and fixed (b7c838f), with the two `BALANCE-CHANGE:` rebaselines flowing
+  through the newly hardened guard as their own first customers.
+- **Self-found fail-open:** the first route-allowlist recipe had `|| true` spanning the whole
+  import pipeline — a failed `go list` would have passed. Now enumeration is captured first and
+  fails closed. The log correctly states self-review does not satisfy the independent gate.
+- **A8:** persisted stream revisions in projection rows (migration 00009) + `GREATEST` on
+  assignment timestamps — stale delivery cannot move the read model backward; reproducer tested.
+- Second tier landed: runtime milestone validation, full run-key diagnostics, negative-factor /
+  wrong-gate / ratchet / real-report-float / catalog-mutation tests. Suites green.
+
+**The two deferred items are genuine design decisions — ruled here per the role division:**
+
+1. **A7 (doctrine/gate alignment):** a `doctrine_is(transition=X)` condition evaluated at a gate
+   crossed *before* X is chosen is unsatisfiable-by-construction — the three seeds as placed are
+   dead routes. **Ruling: catalog validation rule — a doctrine-keyed condition may only appear on
+   gates whose crossing occurs at or after transition X completes; move the three seeds to their
+   doctrine's own-or-later gates.** (Belongs with the Depletion validator, which should also
+   reject temporally-unsatisfiable predicates outright — a dead route silently weakens the
+   exclusivity budget the proof depends on.)
+2. **S4 (cohort merge policy):** **Ruling: merge triggers on the member floor only — rename
+   `MergeCollapsed` to say so (`MergeBelowFloor`); Health is recoverable, membership is not.
+   Overfill on merge is permitted to at most ⌈1.5 × CohortTargetSize⌉, preferring the emptiest
+   target; never split.** (Lands in the active `commons-onboarding-and-governance` RFC.)
+
+Both RFCs in this round clear to archive. Remaining from the archived-four review: nothing —
+the board is clean except the two rulings' implementation.
