@@ -9,7 +9,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
-| [Phase-0 Pacing Observation Coverage](phase0-pacing-observation-coverage.md) | implementing | Balance Harness Foundation |
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | draft | Save Layer |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | blocked-on-owner (faction, guild) | Commons Compact |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | draft (split parent) | — |
@@ -54,6 +53,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Post-Review Integrity Remediation](archive/post-review-integrity-remediation.md) | implemented | [Balance harness](../docs/balance-harness.md), [Routes](../docs/routes.md), [Commons](../docs/commons.md), [Save layer](../docs/save-layer.md) |
 | [Route Temporal Validity](archive/route-temporal-validity.md) | implemented | [Routes](../docs/routes.md) |
 | [Commons Cohort Merge Capacity](archive/commons-merge-capacity.md) | implemented | [Commons](../docs/commons.md) |
+| [Phase-0 Pacing Observation Coverage](archive/phase0-pacing-observation-coverage.md) | implemented | [Balance harness](../docs/balance-harness.md) |
 
 Remaining Phase-0 contracts (not yet drafted): faction/incorporation model · guild model · T0–T1 playable content
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics

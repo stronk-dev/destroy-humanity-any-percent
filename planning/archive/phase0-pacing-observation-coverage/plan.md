@@ -9,4 +9,4 @@
 3. [x] Expand the Phase-0 scenario to the 16-value observation matrix.
 4. [x] Update canonical docs and regenerate artifacts in a separate `BALANCE-CHANGE:` commit.
 5. [x] Run the clean 300-run report and full verification.
-6. [ ] Record independent review before archival.
+6. [x] Record independent review before archival.

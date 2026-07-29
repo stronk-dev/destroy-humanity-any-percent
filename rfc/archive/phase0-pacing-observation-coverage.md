@@ -1,6 +1,6 @@
 # RFC: Phase-0 Pacing Observation Coverage
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex
 - **Created:** 2026-07-29
 - **Design refs:** `design/02-economy-balancing.md §11`; `design/research/pacing-science.md §7`
@@ -90,3 +90,4 @@ None. Later feature RFCs own new milestones and their target values.
 
 - 2026-07-29: created and implementation started by owner direction to establish the first real
   pacing baseline after remediation completed.
+- 2026-07-29: independently reviewed and approved; implemented with 16 baseline observations.
