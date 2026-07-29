@@ -44,6 +44,10 @@ therefore checks the complete canonical state chain without weakening numeric pr
 - `make harness-update` deliberately regenerates both tracked artifacts for review.
 
 Drift above 10% warns and above 25% fails using integer cross-multiplication. After the initial
-baseline, a baseline-changing commit must also change a catalog or scenario and its subject must
-begin `BALANCE-CHANGE:`. The schema gate rejects unknown scenario fields/kinds and non-string or
-unsafe seed encodings.
+baseline, catalog/scenario inputs land first. A separate commit whose subject begins
+`BALANCE-CHANGE:` then contains only the generated pacing baseline and optional golden-seed
+artifact. The repository guard scans every reachable baseline revision, not only HEAD, and fails
+on shallow history, uncommitted artifacts, missing prior inputs, wrong subjects, or any unrelated
+path in the artifact commit. CI fetches complete history so local and hosted enforcement are
+identical. The schema gate rejects unknown scenario fields/kinds and non-string or unsafe seed
+encodings.

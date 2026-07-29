@@ -74,28 +74,21 @@ func TestBaselineDriftThresholdsUseIntegerCrossMultiplication(t *testing.T) {
 }
 
 func TestBaselineOnlyRewriteFailsChangeGuard(t *testing.T) {
-	if err := ValidateBaselineChange([]string{"M\t" + baselinePath}, "BALANCE-CHANGE: retune"); err == nil {
+	if err := ValidateBaselineCommit([]string{baselinePath}, nil, "BALANCE-CHANGE: retune"); err == nil {
 		t.Fatal("baseline-only rewrite passed")
 	}
-	valid := []string{"M\t" + baselinePath, "M\tbalance/catalogs/phase0.json"}
-	if err := ValidateBaselineChange(valid, "ordinary commit"); err == nil {
+	inputs := []string{"balance/catalogs/phase0.json"}
+	if err := ValidateBaselineCommit([]string{baselinePath}, inputs, "ordinary commit"); err == nil {
 		t.Fatal("baseline rewrite without BALANCE-CHANGE subject passed")
 	}
-	if err := ValidateBaselineChange(valid, "BALANCE-CHANGE: phase0 retune"); err != nil {
+	if err := ValidateBaselineCommit([]string{baselinePath, goldenPath}, inputs, "BALANCE-CHANGE: phase0 retune"); err != nil {
 		t.Fatalf("valid balance change failed: %v", err)
 	}
-	if err := ValidateBaselineChange([]string{"A\t" + baselinePath}, "harness: initial baseline"); err != nil {
-		t.Fatalf("initial baseline failed: %v", err)
+	if err := ValidateBaselineCommit([]string{baselinePath, "server/code.go"}, inputs, "BALANCE-CHANGE: smuggle"); err == nil {
+		t.Fatal("balance label authorized a code change")
 	}
-}
-
-func TestChangesPath(t *testing.T) {
-	changes := []byte("M\ttestdata/harness/golden-seed.json\nM\ttestdata/harness/pacing-baseline.json\n")
-	if !changesPath(changes, "testdata/harness/pacing-baseline.json") {
-		t.Fatal("changed baseline was not detected")
-	}
-	if changesPath(changes, "balance/catalogs/phase0.json") {
-		t.Fatal("unchanged catalog was reported as changed")
+	if err := ValidateBaselineCommit([]string{baselinePath, "balance/catalogs/phase0.json"}, inputs, "BALANCE-CHANGE: same commit"); err == nil {
+		t.Fatal("same commit input and baseline change passed")
 	}
 }
 
