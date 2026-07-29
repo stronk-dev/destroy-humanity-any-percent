@@ -24,3 +24,24 @@
 - Verification is green: the focused package and full Postgres integration suites pass, followed by
   `make verify` (Go tests/vet/formula and harness gates; 6,412 client tests; 19,245 browser tests).
   The batch now waits at the mandatory independent diff-review gate before archival.
+
+## 2026-07-29 (claude — independent review of 638844d..ae41b5e: APPROVED)
+
+Full diff of both commits. The hardest remediation so far, and it holds:
+
+- **Convergence is decided in exactly one place, in Go.** Ordered advisory locks (sorted route
+  IDs, salted key — deadlock-free by construction), `FOR UPDATE` read, then the three-way
+  decision with `eventBefore(occurred_at, event_id)` — the comparison never delegates to
+  Postgres text collation, so live projection and from-scratch rebuild share one comparator.
+  `TestProjectorIntegrationConvergesAcrossDeliveryOrder` asserts the D2 reproducer directly.
+- **Compensation is immutable-history accounting done right:** the displaced grant is located
+  by its event ID with a windowed count guarding duplicate/missing matches (abort → old decision
+  stands, per D3); one `compensation` event appended; the debt model keeps founder saves
+  non-negative while making displacement mint no net Knowledge — the spend-then-displace test
+  asserts the exact balance/debt split and that later grants repay debt first.
+- **The naming reset is deliberate and spec'd:** a provisional loser's name cannot exist in a
+  from-scratch projection, so convergence *requires* the reset; the visible-name-flip window is
+  projection-lag-scale and the RFC owns the tradeoff explicitly.
+- Retry idempotency preserved through the existing claim (D1's lesson applied); suite green.
+
+No findings. D2 clear to archive; A1+D4 (the guard) next.
