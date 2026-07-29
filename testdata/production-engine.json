@@ -81,5 +81,19 @@
       "generator_count": 0,
       "expect": "1e0"
     }
+  ],
+  "resource_log_target_cases": [
+    { "name": "reject one e minus sixteen", "target": "1e-16", "expect_valid": false },
+    { "name": "reject one e minus fifteen", "target": "1e-15", "expect_valid": false },
+    { "name": "reject four e minus fifteen", "target": "4e-15", "expect_valid": false },
+    { "name": "accept exact floor", "target": "5e-15", "expect_valid": true },
+    { "name": "accept above floor", "target": "9e-15", "expect_valid": true },
+    { "name": "accept shipped magnitude", "target": "1e3", "expect_valid": true }
+  ],
+  "resource_log_progress_cases": [
+    { "name": "floor target starts at zero", "target": "5e-15", "value": "0", "expect": "0" },
+    { "name": "floor target reaches one", "target": "5e-15", "value": "5e-15", "expect": "1e0" },
+    { "name": "above-floor target reaches one", "target": "9e-15", "value": "9e-15", "expect": "1e0" },
+    { "name": "shipped-scale midpoint stays finite", "target": "1e3", "value": "1e1", "expect": "3.47080675085e-1" }
   ]
 }

@@ -37,6 +37,17 @@ const engineFixture = engineFixtureJson as {
     generator_count: number;
     expect: string;
   }>;
+  resource_log_target_cases: Array<{
+    name: string;
+    target: string;
+    expect_valid: boolean;
+  }>;
+  resource_log_progress_cases: Array<{
+    name: string;
+    target: string;
+    value: string;
+    expect: string;
+  }>;
 };
 
 describe("shared economy catalog", () => {
@@ -127,7 +138,51 @@ describe("shared progress coordinates", () => {
       generatorCounts: { "generator.beige_tower": vector.generator_count },
     }, vector.tier))).toBe(vector.expect);
   });
+
+  it.each(engineFixture.resource_log_target_cases)(
+    "validates $name in both positions",
+    (vector) => {
+      for (const composite of [false, true]) {
+        const parse = () => catalogWithResourceLogTarget(vector.target, composite);
+        if (vector.expect_valid) expect(parse).not.toThrow();
+        else expect(parse).toThrow(SyntaxError);
+      }
+    },
+  );
+
+  it.each(engineFixture.resource_log_progress_cases)(
+    "evaluates resource log $name",
+    (vector) => {
+      const boundaryCatalog = catalogWithResourceLogTarget(vector.target, false);
+      expect(
+        canonicalString(
+          subProgressValue(
+            boundaryCatalog,
+            {
+              balances: { "company.cash": vector.value },
+              generatorCounts: { "generator.beige_tower": 0 },
+            },
+            0,
+          ),
+        ),
+      ).toBe(vector.expect);
+    },
+  );
 });
+
+function catalogWithResourceLogTarget(target: string, composite: boolean): EconomyCatalog {
+  const root = structuredClone(phase0Json) as Record<string, unknown>;
+  const coordinates = root.progress_coordinates as Array<Record<string, unknown>>;
+  if (composite) {
+    const terms = coordinates[1].terms as Array<Record<string, unknown>>;
+    const term = terms.find((candidate) => candidate.kind === "resource_log");
+    if (!term) throw new Error("phase0 composite resource_log term is missing");
+    term.target = target;
+  } else {
+    coordinates[0].target = target;
+  }
+  return parseCatalog(root);
+}
 
 function mutateCatalog(source: Record<string, unknown>, name: string): unknown {
   const root = structuredClone(source);

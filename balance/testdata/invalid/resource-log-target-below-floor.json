@@ -1,0 +1,57 @@
+{
+  "schema_version": 3,
+  "resources": [
+    {
+      "id": "company.cash",
+      "scope": "company",
+      "numeric_kind": "decimal",
+      "initial": "0",
+      "minimum": "0",
+      "hardcap": null
+    }
+  ],
+  "generator_classes": [
+    {
+      "id": "generator.example",
+      "price": {
+        "resource_id": "company.cash",
+        "base": "1e0",
+        "curve": { "kind": "constant" }
+      },
+      "production": {
+        "resource_id": "company.cash",
+        "base_rate": "1e0"
+      }
+    }
+  ],
+  "manual_actions": [
+    {
+      "id": "manual.click",
+      "output": { "resource_id": "company.cash", "amount_per_action": "1e0" }
+    }
+  ],
+  "multiplier_sources": [],
+  "progress_coordinates": [
+    { "tier": 0, "kind": "resource_log", "resource": "company.cash", "target": "4e-15" },
+    {
+      "tier": 1,
+      "kind": "composite",
+      "terms": [
+        { "weight": "5e-1", "kind": "count_fraction", "count": "generators.total_owned", "required": 25 },
+        { "weight": "5e-1", "kind": "resource_log", "resource": "company.cash", "target": "1e6" }
+      ]
+    },
+    { "tier": 2, "kind": "resource_log", "resource": "company.cash", "target": "1e9" },
+    { "tier": 3, "kind": "resource_log", "resource": "company.cash", "target": "1e12" }
+  ],
+  "manual_policy": { "refill_milli_per_ms": 25, "bucket_cap_milli": 50000 },
+  "offline_policy": {
+    "efficiency": "9e-1",
+    "accrual_cap_ms": 86400000,
+    "bank_ratio_numerator": 1,
+    "bank_ratio_denominator": 2,
+    "bank_cap_ms": 259200000,
+    "burst_speed": "2e0",
+    "burst_max_duration_ms": 14400000
+  }
+}

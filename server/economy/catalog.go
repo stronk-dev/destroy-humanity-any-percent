@@ -17,8 +17,9 @@ import (
 const CatalogSchemaVersion = 3
 
 var (
-	ErrInvalidCatalog = errors.New("invalid economy catalog")
-	idPattern         = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
+	ErrInvalidCatalog        = errors.New("invalid economy catalog")
+	idPattern                = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
+	minimumResourceLogTarget = decimal.New(5, -15)
 )
 
 type Scope string
@@ -696,8 +697,12 @@ func parseProgressTerm(source rawProgressTerm, resources map[string]ResourceDefi
 			return ProgressTerm{}, errors.New("resource_log requires a company resource and forbids count fields")
 		}
 		target, err := parseCatalogDecimal(source.Target)
-		if err != nil || !target.Gt(decimal.Zero) {
-			return ProgressTerm{}, errors.New("resource_log target must be a positive canonical decimal")
+		if err != nil || target.Lt(minimumResourceLogTarget) {
+			return ProgressTerm{}, errors.New("resource_log target must be a canonical decimal greater than or equal to 5e-15")
+		}
+		denominator := decimal.One.Add(target).Log10()
+		if !denominator.IsStateValue() || !denominator.Gt(decimal.Zero) {
+			return ProgressTerm{}, errors.New("resource_log target must produce a finite positive logarithm")
 		}
 		term.ResourceID, term.Target = source.ResourceID, target
 	case ProgressCountFraction:

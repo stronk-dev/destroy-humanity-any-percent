@@ -13,3 +13,17 @@ Append-only implementation record. Resume from this file, `plan.md`, and the acc
   gate, fixtures, and documentation are fully specified.
 - Corrected the RFC index from stale `draft` to `implementing` as planning began.
 
+## 2026-07-29 — Domain and operator parity implemented
+
+- Both loaders now require every top-level and composite `resource_log` target to be at least
+  `5e-15` and defensively prove `log10(1 + target)` is finite and strictly positive after parsing.
+- The Go runtime retains its Decimal `Log10().Div(...)` shape with a defensive denominator guard.
+  TypeScript now wraps both native-number logarithm results in Decimal objects and calls
+  `numerator.div(denominator)`; the numeric primitive itself is untouched.
+- Added one shared fixture family covering rejection at `1e-16`, `1e-15`, and `4e-15`; acceptance
+  at `5e-15`, `9e-15`, and a shipped magnitude; both top-level/composite positions; and boundary
+  plus representative progress results.
+- Schema verification now combines Ajv shape checks with the same semantic floor/logarithm check,
+  includes shape-valid positive/negative boundary catalogs, and asserts the TypeScript evaluator's
+  Decimal-division source shape.
+- Focused Go suites, TypeScript checking, 6,364 Node tests, and semantic schema verification pass.

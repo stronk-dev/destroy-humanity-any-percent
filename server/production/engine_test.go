@@ -323,8 +323,20 @@ func TestSubProgressSharedFixture(t *testing.T) {
 			GeneratorCount int64  `json:"generator_count"`
 			Expect         string `json:"expect"`
 		} `json:"progress_cases"`
+		TargetCases []struct {
+			Name        string `json:"name"`
+			Target      string `json:"target"`
+			ExpectValid bool   `json:"expect_valid"`
+		} `json:"resource_log_target_cases"`
+		ResourceLogCases []struct {
+			Name   string `json:"name"`
+			Target string `json:"target"`
+			Value  string `json:"value"`
+			Expect string `json:"expect"`
+		} `json:"resource_log_progress_cases"`
 	}
-	if err := json.Unmarshal(data, &fixture); err != nil || fixture.Version != 1 {
+	if err := json.Unmarshal(data, &fixture); err != nil || fixture.Version != 1 ||
+		len(fixture.TargetCases) == 0 || len(fixture.ResourceLogCases) == 0 {
 		t.Fatalf("fixture: version=%d err=%v", fixture.Version, err)
 	}
 	catalog := phase0Catalog(t)
@@ -340,6 +352,65 @@ func TestSubProgressSharedFixture(t *testing.T) {
 			}
 		})
 	}
+	for _, vector := range fixture.TargetCases {
+		for _, composite := range []bool{false, true} {
+			position := "top-level"
+			if composite {
+				position = "composite"
+			}
+			t.Run(vector.Name+"/"+position, func(t *testing.T) {
+				_, err := phase0CatalogWithResourceLogTarget(t, vector.Target, composite)
+				if gotValid := err == nil; gotValid != vector.ExpectValid {
+					t.Fatalf("target %s valid=%v, want %v, error=%v", vector.Target, gotValid, vector.ExpectValid, err)
+				}
+			})
+		}
+	}
+	for _, vector := range fixture.ResourceLogCases {
+		t.Run(vector.Name, func(t *testing.T) {
+			catalog, err := phase0CatalogWithResourceLogTarget(t, vector.Target, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state := engineState(t, catalog, vector.Value, 0)
+			value, err := SubProgressValue(catalog, state, 0)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := value.String(); got != vector.Expect {
+				t.Fatalf("progress = %s, want %s", got, vector.Expect)
+			}
+		})
+	}
+}
+
+func phase0CatalogWithResourceLogTarget(t *testing.T, target string, composite bool) (*economy.Catalog, error) {
+	t.Helper()
+	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(data, &root); err != nil {
+		t.Fatal(err)
+	}
+	coordinates := root["progress_coordinates"].([]any)
+	if composite {
+		terms := coordinates[1].(map[string]any)["terms"].([]any)
+		for _, rawTerm := range terms {
+			term := rawTerm.(map[string]any)
+			if term["kind"] == "resource_log" {
+				term["target"] = target
+			}
+		}
+	} else {
+		coordinates[0].(map[string]any)["target"] = target
+	}
+	data, err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return economy.LoadCatalog(data)
 }
 
 func TestSubProgressIsMonotoneUnderPureAccrual(t *testing.T) {

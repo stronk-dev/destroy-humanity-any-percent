@@ -108,6 +108,7 @@ export interface ProgressState {
 }
 
 const idPattern = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
+const minimumResourceLogTarget = new Decimal("5e-15");
 
 export class EconomyCatalog {
   readonly resources: readonly ResourceDefinition[];
@@ -331,7 +332,12 @@ function resourceLogProgress(state: ProgressState, resourceId: string, target: s
   const value = parseCanonical(encoded);
   const targetValue = parseCanonical(target);
   if (value.lt(0) || !targetValue.gt(0)) throw new RangeError("invalid progress resource state");
-  return clampProgress(new Decimal(Decimal.add(1, value).log10() / Decimal.add(1, targetValue).log10()));
+  const numerator = new Decimal(Decimal.add(1, value).log10());
+  const denominator = new Decimal(Decimal.add(1, targetValue).log10());
+  if (!isStateValue(denominator) || !denominator.gt(0)) {
+    throw new RangeError("invalid resource_log denominator");
+  }
+  return clampProgress(numerator.div(denominator));
 }
 
 function countFractionProgress(
@@ -525,7 +531,11 @@ function parseProgressTerm(
     const resourceId = parseId(value.resource, `${path}.resource`);
     if (resources.get(resourceId)?.scope !== "company") throw new SyntaxError(`${path}.resource must reference company state`);
     const target = parseCanonicalField(value.target, `${path}.target`);
-    if (!parseCanonical(target).gt(0)) throw new SyntaxError(`${path}.target must be positive`);
+    const targetValue = parseCanonical(target);
+    const denominator = new Decimal(Decimal.add(1, targetValue).log10());
+    if (targetValue.lt(minimumResourceLogTarget) || !isStateValue(denominator) || !denominator.gt(0)) {
+      throw new SyntaxError(`${path}.target must be at least 5e-15 with a finite positive logarithm`);
+    }
     return Object.freeze({ weight, kind: "resource_log", resourceId, target });
   }
   if (source.kind === "count_fraction") {

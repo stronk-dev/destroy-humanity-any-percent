@@ -54,7 +54,11 @@ func resourceLog(state *save.State, resourceID string, target decimal.Decimal) (
 	if !exists || value.Lt(decimal.Zero) || !target.Gt(decimal.Zero) {
 		return decimal.NaN, ErrInvalidEngineState
 	}
-	coordinate := decimal.One.Add(value).Log10().Div(decimal.One.Add(target).Log10())
+	denominator := decimal.One.Add(target).Log10()
+	if !denominator.IsStateValue() || !denominator.Gt(decimal.Zero) {
+		return decimal.NaN, ErrInvalidEngineState
+	}
+	coordinate := decimal.One.Add(value).Log10().Div(denominator)
 	if !coordinate.IsStateValue() {
 		return decimal.NaN, ErrInvalidEngineState
 	}
