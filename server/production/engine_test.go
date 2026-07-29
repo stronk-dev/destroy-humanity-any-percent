@@ -330,6 +330,7 @@ func TestRatesValidateDeclaredContributions(t *testing.T) {
 		"mismatched target": {{Slot: multiplier.SlotUpgrades, SourceID: "upgrade.double", Target: "generator.beige_tower", Factor: mustDecimal(t, "2e0")}},
 		"duplicate source":  {valid, valid},
 		"zero factor":       {{Slot: multiplier.SlotUpgrades, SourceID: "upgrade.double", Target: "all", Factor: decimal.Zero}},
+		"negative factor":   {{Slot: multiplier.SlotUpgrades, SourceID: "upgrade.double", Target: "all", Factor: mustDecimal(t, "-1e0")}},
 	}
 	for name, contributions := range tests {
 		t.Run(name, func(t *testing.T) {

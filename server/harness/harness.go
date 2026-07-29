@@ -14,6 +14,7 @@ import (
 	"sync"
 	"time"
 
+	"cloud-clicker/server/commons"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/production"
@@ -29,6 +30,7 @@ type Scenario struct {
 	ID                 string      `json:"id"`
 	Version            int         `json:"version"`
 	Catalog            string      `json:"catalog"`
+	CommonsCatalog     string      `json:"commons_catalog"`
 	Runs               []RunSpec   `json:"runs"`
 	Milestones         []Milestone `json:"milestones"`
 	Envelopes          []Envelope  `json:"envelopes"`
@@ -135,12 +137,14 @@ type SuiteReport struct {
 }
 
 type Suite struct {
-	Scenario      Scenario
-	ScenarioBytes []byte
-	Catalog       *economy.Catalog
-	CatalogBytes  []byte
-	ScenarioHash  string
-	ConstantsHash string
+	Scenario            Scenario
+	ScenarioBytes       []byte
+	Catalog             *economy.Catalog
+	CatalogBytes        []byte
+	CommonsCatalog      *commons.Catalog
+	CommonsCatalogBytes []byte
+	ScenarioHash        string
+	ConstantsHash       string
 }
 
 func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
@@ -154,7 +158,7 @@ func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
 	if err := decoder.Decode(&scenario); err != nil {
 		return nil, fmt.Errorf("scenario: %w", err)
 	}
-	if scenario.SchemaVersion != 1 || scenario.ID == "" || scenario.Version < 1 || len(scenario.Runs) == 0 {
+	if scenario.SchemaVersion != 1 || scenario.ID == "" || scenario.Version < 1 || scenario.Catalog == "" || scenario.CommonsCatalog == "" || len(scenario.Runs) == 0 {
 		return nil, errors.New("invalid scenario envelope")
 	}
 	knownInvariants := map[string]bool{"state_encodes": true, "numeric_domain": true, "resource_bounds": true,
@@ -169,6 +173,9 @@ func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
 	if len(seenInvariants) != len(knownInvariants) {
 		return nil, errors.New("scenario must require the complete v1 invariant registry")
 	}
+	if err := validateMilestones(scenario.Milestones); err != nil {
+		return nil, err
+	}
 	catalogBytes, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(scenario.Catalog)))
 	if err != nil {
 		return nil, err
@@ -177,9 +184,25 @@ func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
 	if err != nil {
 		return nil, err
 	}
+	commonsCatalogBytes, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(scenario.CommonsCatalog)))
+	if err != nil {
+		return nil, err
+	}
+	commonsCatalog, err := commons.LoadCatalog(commonsCatalogBytes)
+	if err != nil {
+		return nil, err
+	}
+	constantsHash, err := save.ConstantsHashArtifacts(map[string][]byte{
+		"commons": commonsCatalogBytes,
+		"economy": catalogBytes,
+	})
+	if err != nil {
+		return nil, err
+	}
 	scenarioDigest := sha256.Sum256(scenarioBytes)
 	return &Suite{Scenario: scenario, ScenarioBytes: scenarioBytes, Catalog: catalog, CatalogBytes: catalogBytes,
-		ScenarioHash: "sha256:" + hex.EncodeToString(scenarioDigest[:]), ConstantsHash: save.ConstantsHash(catalogBytes)}, nil
+		CommonsCatalog: commonsCatalog, CommonsCatalogBytes: commonsCatalogBytes,
+		ScenarioHash: "sha256:" + hex.EncodeToString(scenarioDigest[:]), ConstantsHash: constantsHash}, nil
 }
 
 func (suite *Suite) RunAll() ([]RunReport, AggregateReport, error) {
@@ -431,12 +454,52 @@ func (suite *Suite) observeMilestones(found map[string]*int64, at int64, intentK
 	}
 }
 
+func validateMilestones(milestones []Milestone) error {
+	if len(milestones) == 0 {
+		return errors.New("scenario must define milestones")
+	}
+	seen := make(map[string]bool, len(milestones))
+	for _, milestone := range milestones {
+		if milestone.ID == "" || seen[milestone.ID] {
+			return fmt.Errorf("invalid or duplicate milestone id %q", milestone.ID)
+		}
+		seen[milestone.ID] = true
+		switch milestone.Kind {
+		case "intent_applied":
+			if milestone.IntentKind == "" {
+				return fmt.Errorf("milestone %q requires intent_kind", milestone.ID)
+			}
+		case "event_seen":
+			if milestone.EventKind == "" {
+				return fmt.Errorf("milestone %q requires event_kind", milestone.ID)
+			}
+		case "resource_at_least":
+			amount, err := decimal.ParseCanonical(milestone.Amount)
+			if milestone.ResourceID == "" || err != nil || !amount.Gt(decimal.Zero) {
+				return fmt.Errorf("milestone %q has invalid resource target", milestone.ID)
+			}
+		case "generator_count_at_least":
+			if milestone.Generator == "" || milestone.Count < 1 {
+				return fmt.Errorf("milestone %q has invalid generator target", milestone.ID)
+			}
+		case "progress_at_least":
+			amount, err := decimal.ParseCanonical(milestone.Amount)
+			if milestone.Tier < 0 || err != nil || !amount.Gt(decimal.Zero) {
+				return fmt.Errorf("milestone %q has invalid progress target", milestone.ID)
+			}
+		default:
+			return fmt.Errorf("unknown milestone kind %q", milestone.Kind)
+		}
+	}
+	return nil
+}
+
 func (suite *Suite) aggregate(reports []RunReport) AggregateReport {
 	aggregate := AggregateReport{SchemaVersion: 1, ScenarioID: suite.Scenario.ID, ScenarioHash: suite.ScenarioHash,
 		ConstantsHash: suite.ConstantsHash, RunCount: len(reports), Warnings: []string{}, Failures: []string{}}
 	for _, report := range reports {
 		for _, failure := range report.InvariantFailures {
-			aggregate.Failures = append(aggregate.Failures, report.Key.PolicyID+"/"+report.Key.Seed+":"+failure)
+			aggregate.Failures = append(aggregate.Failures, formatRunKey(report.Key)+":"+failure)
 		}
 	}
 	for _, envelope := range suite.Scenario.Envelopes {
@@ -464,6 +527,12 @@ func (suite *Suite) aggregate(reports []RunReport) AggregateReport {
 		}
 	}
 	return aggregate
+}
+
+func formatRunKey(key RunKey) string {
+	return fmt.Sprintf("schema=%d/scenario=%s@%d/scenario_hash=%s/policy=%s@%d/seed=%s/constants_hash=%s",
+		key.HarnessSchemaVersion, key.ScenarioID, key.ScenarioVersion, key.ScenarioHash,
+		key.PolicyID, key.PolicyVersion, key.Seed, key.ConstantsHash)
 }
 
 func statistic(values []int64, name string) int64 {

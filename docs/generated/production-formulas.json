@@ -12,12 +12,12 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "6b00826112f6188034573cc84f80f2100b6ee719fea2219e790e0c0f0eac0b76",
+  "source_fingerprint": "6e9d0a6cfcecb52d258bbfaf44dd05717d7fa29c24702cfa8799cf118b0f18a9",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
     "health": "sum(weight_ppm * compliance_ppm) / sum(weight_ppm)",
-    "effective_health": "0.5 * guild_health + 0.3 * cohort_health + 0.2 * server_health; guildless substitutes cohort for guild",
+    "effective_health": "(guild_health_weight_ppm * guild_health_ppm + cohort_health_weight_ppm * cohort_health_ppm + server_health_weight_ppm * server_health_ppm) / 1000000; guildless substitutes cohort for guild",
     "modifier": "1 + maximum_bonus * (collective_weight * max(0, ((health - collapse_health) / (1 - collapse_health))^collective_exponent) + (1 - collective_weight) * solidarity)",
     "solidarity": "sum(hourly_compliance_ppm * covered_ms) / 2592000000",
     "source_weights": [],

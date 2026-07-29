@@ -3,6 +3,7 @@ package save
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -106,6 +107,35 @@ type rawCompactSample struct {
 func ConstantsHash(catalogBytes []byte) string {
 	digest := sha256.Sum256(catalogBytes)
 	return "sha256:" + hex.EncodeToString(digest[:])
+}
+
+// ConstantsHashArtifacts identifies an immutable, named set of exact balance
+// artifacts. Length framing keeps names and bytes unambiguous; sorted names
+// make map iteration irrelevant.
+func ConstantsHashArtifacts(artifacts map[string][]byte) (string, error) {
+	if len(artifacts) == 0 {
+		return "", fmt.Errorf("%w: constants artifact bundle is empty", ErrInvalidState)
+	}
+	names := make([]string, 0, len(artifacts))
+	for name := range artifacts {
+		if name == "" {
+			return "", fmt.Errorf("%w: constants artifact name is empty", ErrInvalidState)
+		}
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	hash := sha256.New()
+	var frame [8]byte
+	for _, name := range names {
+		binary.BigEndian.PutUint64(frame[:], uint64(len(name)))
+		_, _ = hash.Write(frame[:])
+		_, _ = hash.Write([]byte(name))
+		data := artifacts[name]
+		binary.BigEndian.PutUint64(frame[:], uint64(len(data)))
+		_, _ = hash.Write(frame[:])
+		_, _ = hash.Write(data)
+	}
+	return "sha256:" + hex.EncodeToString(hash.Sum(nil)), nil
 }
 
 func EncodeState(state *State) ([]byte, error) {

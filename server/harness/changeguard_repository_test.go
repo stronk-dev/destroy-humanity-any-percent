@@ -60,7 +60,7 @@ func TestRepositoryGuardRejectsNoPriorInputAndDirtyArtifacts(t *testing.T) {
 	writeGuardCommit(t, root, "BALANCE-CHANGE: artifact only", map[string]string{
 		baselinePath: `{"baseline":2}`,
 	})
-	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "no changed catalog or scenario") {
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "no changed balance artifact or scenario") {
 		t.Fatalf("artifact-only err=%v", err)
 	}
 

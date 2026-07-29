@@ -58,16 +58,7 @@ type membershipPayload struct {
 
 func (p *Projector) Project(ctx context.Context, source []save.EventRecord) error {
 	events := append([]save.EventRecord(nil), source...)
-	sort.Slice(events, func(i, j int) bool {
-		if !events[i].OccurredAt.Equal(events[j].OccurredAt) {
-			return events[i].OccurredAt.Before(events[j].OccurredAt)
-		}
-		leftPriority, rightPriority := projectionPriority(events[i].Kind), projectionPriority(events[j].Kind)
-		if leftPriority != rightPriority {
-			return leftPriority < rightPriority
-		}
-		return strings.Compare(events[i].EventID, events[j].EventID) < 0
-	})
+	sort.Slice(events, func(i, j int) bool { return projectionEventBefore(events[i], events[j]) })
 	for _, event := range events {
 		switch event.Kind {
 		case save.EventCompactSigned, save.EventCompactLeft:
@@ -81,6 +72,20 @@ func (p *Projector) Project(ctx context.Context, source []save.EventRecord) erro
 		}
 	}
 	return nil
+}
+
+func projectionEventBefore(left, right save.EventRecord) bool {
+	if !left.OccurredAt.Equal(right.OccurredAt) {
+		return left.OccurredAt.Before(right.OccurredAt)
+	}
+	if left.StreamID == right.StreamID && left.Revision != right.Revision {
+		return left.Revision < right.Revision
+	}
+	leftPriority, rightPriority := projectionPriority(left.Kind), projectionPriority(right.Kind)
+	if leftPriority != rightPriority {
+		return leftPriority < rightPriority
+	}
+	return strings.Compare(left.EventID, right.EventID) < 0
 }
 
 func projectionPriority(kind save.EventKind) int {
@@ -144,23 +149,29 @@ func (p *Projector) project(ctx context.Context, event save.EventRecord) error {
 		}
 	} else if err != nil {
 		return err
-	} else if _, err := tx.ExecContext(ctx, `UPDATE founder_commons_assignments SET last_signed_at=$2 WHERE founder_id=$1`, payload.FounderID, event.OccurredAt); err != nil {
+	} else if _, err := tx.ExecContext(ctx, `UPDATE founder_commons_assignments SET last_signed_at=GREATEST(last_signed_at,$2) WHERE founder_id=$1`, payload.FounderID, event.OccurredAt); err != nil {
 		return err
 	}
 	if event.Kind == save.EventCompactSigned {
 		if payload.PriorMember || !payload.NewMember {
 			return ErrProjection
 		}
-		_, err = tx.ExecContext(ctx, `INSERT INTO company_compact_memberships(company_stream_id,founder_id,run_seq,cohort_id,member,tithe_ppm,updated_at) VALUES($1,$2,$3,$4,true,$5,$6) ON CONFLICT(company_stream_id) DO UPDATE SET founder_id=EXCLUDED.founder_id,run_seq=EXCLUDED.run_seq,cohort_id=EXCLUDED.cohort_id,member=true,tithe_ppm=EXCLUDED.tithe_ppm,updated_at=EXCLUDED.updated_at`, payload.RunID.CompanyStreamID, payload.FounderID, payload.RunID.RunSeq, cohortID, payload.TithePPM, event.OccurredAt)
+		_, err = tx.ExecContext(ctx, `INSERT INTO company_compact_memberships(company_stream_id,founder_id,run_seq,cohort_id,member,tithe_ppm,updated_at,projected_revision) VALUES($1,$2,$3,$4,true,$5,$6,$7) ON CONFLICT(company_stream_id) DO UPDATE SET founder_id=EXCLUDED.founder_id,run_seq=EXCLUDED.run_seq,cohort_id=EXCLUDED.cohort_id,member=true,tithe_ppm=EXCLUDED.tithe_ppm,updated_at=EXCLUDED.updated_at,projected_revision=EXCLUDED.projected_revision WHERE company_compact_memberships.projected_revision<EXCLUDED.projected_revision`, payload.RunID.CompanyStreamID, payload.FounderID, payload.RunID.RunSeq, cohortID, payload.TithePPM, event.OccurredAt, event.Revision)
 	} else {
 		if !payload.PriorMember || payload.NewMember {
 			return ErrProjection
 		}
-		result, err := tx.ExecContext(ctx, `UPDATE company_compact_memberships SET member=false,tithe_ppm=0,updated_at=$2 WHERE company_stream_id=$1 AND founder_id=$3`, payload.RunID.CompanyStreamID, event.OccurredAt, payload.FounderID)
+		result, err := tx.ExecContext(ctx, `UPDATE company_compact_memberships SET member=false,tithe_ppm=0,updated_at=$2,projected_revision=$4 WHERE company_stream_id=$1 AND founder_id=$3 AND projected_revision<$4`, payload.RunID.CompanyStreamID, event.OccurredAt, payload.FounderID, event.Revision)
 		if err == nil {
 			var affected int64
 			affected, err = result.RowsAffected()
-			if err == nil && affected != 1 {
+			if err == nil && affected == 0 {
+				var projectedRevision int64
+				err = tx.QueryRowContext(ctx, `SELECT projected_revision FROM company_compact_memberships WHERE company_stream_id=$1 AND founder_id=$2`, payload.RunID.CompanyStreamID, payload.FounderID).Scan(&projectedRevision)
+				if err == nil && projectedRevision < event.Revision {
+					err = ErrProjection
+				}
+			} else if err == nil && affected != 1 {
 				err = ErrProjection
 			}
 		}
@@ -367,7 +378,11 @@ type HealthSnapshot struct {
 	NPCWeightPPM    int64
 }
 
-func (p *Projector) Snapshot(ctx context.Context, founderID string) (HealthSnapshot, error) {
+func (p *Projector) Snapshot(ctx context.Context, founderID, constantsHash string) (HealthSnapshot, error) {
+	catalog, ok := p.policies.ResolveCommons(constantsHash)
+	if !ok {
+		return HealthSnapshot{}, fmt.Errorf("%w: catalog", ErrProjection)
+	}
 	var cohortID, serverID string
 	if err := p.db.QueryRowContext(ctx, `SELECT cohort_id,server_id FROM founder_commons_assignments WHERE founder_id=$1`, founderID).Scan(&cohortID, &serverID); err != nil {
 		return HealthSnapshot{}, err
@@ -379,12 +394,16 @@ func (p *Projector) Snapshot(ctx context.Context, founderID string) (HealthSnaps
 	if err := p.db.QueryRowContext(ctx, `SELECT health_ppm,capacity FROM commons_health_scopes WHERE scope_kind='server' AND scope_id=$1`, serverID).Scan(&result.ServerHealthPPM, &result.ServerCapacity); err != nil {
 		return HealthSnapshot{}, err
 	}
-	result.HealthPPM = (result.CohortHealthPPM*800_000 + result.ServerHealthPPM*200_000) / commons.PPM
+	healthPPM, err := commons.EffectiveHealthPPM(catalog, 0, result.CohortHealthPPM, result.ServerHealthPPM, false)
+	if err != nil {
+		return HealthSnapshot{}, err
+	}
+	result.HealthPPM = healthPPM
 	return result, nil
 }
 
-func (p *Projector) CompactSnapshot(ctx context.Context, founderID string) (commons.ContributionSnapshot, error) {
-	snapshot, err := p.Snapshot(ctx, founderID)
+func (p *Projector) CompactSnapshot(ctx context.Context, founderID, constantsHash string) (commons.ContributionSnapshot, error) {
+	snapshot, err := p.Snapshot(ctx, founderID, constantsHash)
 	return commons.ContributionSnapshot{HealthPPM: snapshot.HealthPPM}, err
 }
 

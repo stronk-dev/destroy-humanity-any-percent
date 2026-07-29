@@ -34,6 +34,20 @@ func TestHealthBandsUseCatalogThresholds(t *testing.T) {
 	}
 }
 
+func TestProjectionOrderUsesRevisionForSameStreamTimestamp(t *testing.T) {
+	at := time.Date(2026, 7, 29, 15, 0, 0, 0, time.UTC)
+	leave := save.EventRecord{EventID: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb", StreamID: "stream.same", Revision: 8, Kind: save.EventCompactLeft, OccurredAt: at}
+	resign := save.EventRecord{EventID: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", StreamID: "stream.same", Revision: 9, Kind: save.EventCompactSigned, OccurredAt: at}
+	if !projectionEventBefore(leave, resign) || projectionEventBefore(resign, leave) {
+		t.Fatal("same-stream timestamp tie did not follow revision order")
+	}
+	other := resign
+	other.StreamID = "stream.other"
+	if !projectionEventBefore(other, leave) {
+		t.Fatal("cross-stream timestamp tie did not retain kind priority")
+	}
+}
+
 func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
@@ -60,8 +74,13 @@ func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 		t.Fatal(err)
 	}
 	const hash = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	const retunedHash = "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 	const serverID = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
-	projector, err := New(db, fixedAssignments{serverID: serverID}, commons.CatalogSet{hash: catalog})
+	retuned := *catalog
+	retuned.GuildHealthWeightPPM = 100_000
+	retuned.CohortHealthWeightPPM = 100_000
+	retuned.ServerHealthWeightPPM = 800_000
+	projector, err := New(db, fixedAssignments{serverID: serverID}, commons.CatalogSet{hash: catalog, retunedHash: &retuned})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -144,9 +163,24 @@ func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 	if err := projector.Project(ctx, []save.EventRecord{sample}); err != nil {
 		t.Fatal(err)
 	}
-	snapshot, err := projector.Snapshot(ctx, founders[0])
+	snapshot, err := projector.Snapshot(ctx, founders[0], hash)
 	if err != nil || snapshot.HealthPPM != 762195 || snapshot.CohortCapacity != "1e0" || snapshot.ServerCapacity != "1e0" || snapshot.NPCWeightPPM != 19_500_000 {
 		t.Fatalf("snapshot=%+v err=%v", snapshot, err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE commons_health_scopes SET health_ppm=500000 WHERE scope_kind='server' AND scope_id=$1`, serverID); err != nil {
+		t.Fatal(err)
+	}
+	defaultWeighted, err := projector.Snapshot(ctx, founders[0], hash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	retunedSnapshot, err := projector.Snapshot(ctx, founders[0], retunedHash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantRetuned, err := commons.EffectiveHealthPPM(&retuned, 0, retunedSnapshot.CohortHealthPPM, retunedSnapshot.ServerHealthPPM, false)
+	if err != nil || retunedSnapshot.HealthPPM != wantRetuned || retunedSnapshot.HealthPPM == defaultWeighted.HealthPPM {
+		t.Fatalf("retuned snapshot=%+v want=%d default=%d err=%v", retunedSnapshot, wantRetuned, defaultWeighted.HealthPPM, err)
 	}
 	secondPayload, _ := json.Marshal(map[string]any{"founder_id": founders[0], "run_id": map[string]any{"company_stream_id": streams[0], "run_seq": 1}, "weight_ppm": 1000000, "compliance_ppm": 1000000, "enclosure": "0", "capacity": "2e0", "solidarity_ppm": 2000, "sampled_ms": 3600000})
 	var secondID string
@@ -160,7 +194,7 @@ func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 	if err := projector.Project(ctx, []save.EventRecord{second}); err != nil {
 		t.Fatal(err)
 	}
-	snapshot, err = projector.Snapshot(ctx, founders[0])
+	snapshot, err = projector.Snapshot(ctx, founders[0], hash)
 	if err != nil || snapshot.CohortCapacity != "3e0" || snapshot.ServerCapacity != "3e0" {
 		t.Fatalf("cumulative snapshot=%+v err=%v", snapshot, err)
 	}
@@ -201,6 +235,30 @@ func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 	var invalidProjected int
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM commons_projection_events WHERE event_id=$1`, invalidSampleID).Scan(&invalidProjected); err != nil || invalidProjected != 0 {
 		t.Fatalf("failed sample dedup rows=%d err=%v", invalidProjected, err)
+	}
+
+	tiedAt := occurred.Add(4 * time.Second)
+	resignPayload, _ := json.Marshal(map[string]any{"founder_id": founders[0], "run_id": map[string]any{"company_stream_id": streams[0], "run_seq": 1}, "tithe_ppm": 100000, "prior_member": false, "new_member": true})
+	var resignID string
+	if err := db.QueryRowContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,7,1,'compact_signed',$2,$3,$4,$5) RETURNING event_id`, streams[0], "018f6b7c-9abc-7def-8abc-777777777777", hash, tiedAt, resignPayload).Scan(&resignID); err != nil {
+		t.Fatal(err)
+	}
+	staleLeavePayload, _ := json.Marshal(map[string]any{"founder_id": founders[0], "run_id": map[string]any{"company_stream_id": streams[0], "run_seq": 1}, "tithe_ppm": 100000, "prior_member": true, "new_member": false})
+	var staleLeaveID string
+	if err := db.QueryRowContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,6,1,'compact_left',$2,$3,$4,$5) RETURNING event_id`, streams[0], "018f6b7c-9abc-7def-8abc-666666666666", hash, tiedAt, staleLeavePayload).Scan(&staleLeaveID); err != nil {
+		t.Fatal(err)
+	}
+	resign := save.EventRecord{EventID: resignID, StreamID: streams[0], OwnerID: founders[0], Revision: 7, Kind: save.EventCompactSigned, ConstantsHash: hash, OccurredAt: tiedAt, Payload: resignPayload}
+	staleLeave := save.EventRecord{EventID: staleLeaveID, StreamID: streams[0], OwnerID: founders[0], Revision: 6, Kind: save.EventCompactLeft, ConstantsHash: hash, OccurredAt: tiedAt, Payload: staleLeavePayload}
+	if err := projector.Project(ctx, []save.EventRecord{resign}); err != nil {
+		t.Fatal(err)
+	}
+	if err := projector.Project(ctx, []save.EventRecord{staleLeave}); err != nil {
+		t.Fatalf("stale leave after re-sign: %v", err)
+	}
+	var projectedRevision int64
+	if err := db.QueryRowContext(ctx, `SELECT member,projected_revision FROM company_compact_memberships WHERE company_stream_id=$1`, streams[0]).Scan(&member, &projectedRevision); err != nil || !member || projectedRevision != 7 {
+		t.Fatalf("same-time out-of-order membership member=%v revision=%d err=%v", member, projectedRevision, err)
 	}
 	stable, err := projector.FounderCohort(ctx, founders[0])
 	if err != nil || stable != left {

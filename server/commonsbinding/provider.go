@@ -12,7 +12,7 @@ import (
 )
 
 type SnapshotResolver interface {
-	CompactSnapshot(context.Context, string) (commons.ContributionSnapshot, error)
+	CompactSnapshot(context.Context, string, string) (commons.ContributionSnapshot, error)
 }
 
 type Provider struct {
@@ -31,7 +31,7 @@ func (provider Provider) Contributions(ctx context.Context, state *save.State, _
 	if !ok {
 		return nil, errors.New("commons catalog unavailable")
 	}
-	snapshot, err := provider.Snapshots.CompactSnapshot(ctx, revision.OwnerID)
+	snapshot, err := provider.Snapshots.CompactSnapshot(ctx, revision.OwnerID, revision.ConstantsHash)
 	if errors.Is(err, sql.ErrNoRows) {
 		snapshot.HealthPPM = catalog.NPCCompliancePPM
 		err = nil

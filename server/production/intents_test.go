@@ -154,6 +154,18 @@ func TestCrossGateDiscountSubstituteAndRejections(t *testing.T) {
 	if err != nil || decision.Outcome != save.IntentRejected || !bytes.Contains(decision.Receipt, []byte("route_predicate_unmet")) {
 		t.Fatalf("unmet=%s err=%v", decision.Receipt, err)
 	}
+	wrongGate := engineState(t, economyCatalog, "1e9", 0)
+	wrongGate.RunSeq = 1
+	wrongGate.GatesCrossed = map[string]bool{}
+	wrongGate.DoctrinesByTransition = map[string]string{"transition.t3_to_t4": "doctrine.capture"}
+	wrongGate.LedgerFactKinds = map[string]bool{}
+	wrongGate.MeterBands = map[string]int{}
+	wrongGate.RegionTraits = map[string]bool{}
+	request.GateID, request.RouteID = "gate.t4_to_t5", "route.ipo_sequence_break"
+	decision, err = TransitionWithRoutes(request, wrongGate, economyCatalog, routeCatalog, revision, ModeOnline, engineCursor, nil, nil)
+	if err != nil || decision.Outcome != save.IntentRejected || !bytes.Contains(decision.Receipt, []byte("route_predicate_unmet")) {
+		t.Fatalf("wrong gate=%s err=%v", decision.Receipt, err)
+	}
 }
 
 func TestBuyRouteHintDoesNotAffectPredicateEvaluation(t *testing.T) {

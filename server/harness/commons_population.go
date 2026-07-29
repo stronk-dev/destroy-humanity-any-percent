@@ -38,7 +38,10 @@ func SimulateCommonsPopulation(catalog *commons.Catalog, population int, seed ui
 		if err != nil {
 			return CommonsPopulationResult{}, err
 		}
-		health := (cohort.HealthPPM*800_000 + server.HealthPPM*200_000) / commons.PPM
+		health, err := commons.EffectiveHealthPPM(catalog, 0, cohort.HealthPPM, server.HealthPPM, false)
+		if err != nil {
+			return CommonsPopulationResult{}, err
+		}
 		factor, err := commons.Modifier(catalog, health, commons.PPM)
 		if err != nil {
 			return CommonsPopulationResult{}, err

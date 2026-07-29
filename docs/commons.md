@@ -34,10 +34,15 @@ Only cohort and server scopes exist today. With no shipped guild model, every me
 specified guildless fallback, so effective Health is cohort 80% / server 20%. The future governance
 layer may add the guild 50% term without changing the current projection contract.
 
+Both the live projection and population harness resolve the Commons catalog by the authoritative
+revision's `constants_hash` and call the same `EffectiveHealthPPM` function. There is no hardcoded
+80/20 runtime shortcut: changing the published weights changes both paths and the constants
+identity together.
+
 The authoritative formulas, exact Enclosure source-weight table, and every shipped Commons catalog
 control (including labeled NPC weight/compliance and population floor) are generated into
 [`generated/production-formulas.json`](generated/production-formulas.json). The executable
-Enclosure, modifier, aggregate-Health, smoothing, production-rate, and ordering authorities all
+Enclosure, effective-Health blend, modifier, aggregate-Health, smoothing, production-rate, and ordering authorities all
 participate in its source fingerprint.
 
 Enclosure is derived only from active multiplier source IDs/factors. For each catalog-weighted
@@ -86,6 +91,10 @@ current catalog, assignment, or membership state. An already-committed event ret
 without consulting those mutable dependencies, so replay after a later leave cannot wedge the
 worker. A first delivery's claim remains in the same transaction as every derived write; any
 validation or write failure rolls the claim back and remains retryable.
+Membership rows retain the highest projected company-stream revision. For equal timestamps, an
+older separately delivered leave therefore cannot overwrite a later re-sign; in-batch ordering
+uses that same revision before kind/event tie-breakers. Revisions are deliberately not compared
+across streams.
 
 Collapse merge is explicit and one-way: additional cohorts below 40 move into the oldest compatible
 cohort under the same lock, source cohorts close, and standing is recomputed from member

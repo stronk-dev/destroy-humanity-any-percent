@@ -144,7 +144,7 @@ func TestSaveMigrationCorpus(t *testing.T) {
 		t.Fatal(err)
 	}
 	if fixture.CorpusVersion != 5 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
-		len(fixture.Cases) < baseline.MinimumCaseCount {
+		len(fixture.Cases) != baseline.MinimumCaseCount {
 		t.Fatalf("migration corpus version=%d cases=%d baseline=%+v", fixture.CorpusVersion, len(fixture.Cases), baseline)
 	}
 	caseNames := make(map[string]bool, len(fixture.Cases))
@@ -289,6 +289,40 @@ func TestConstantsHashUsesExactArtifactBytes(t *testing.T) {
 	second := ConstantsHash([]byte("{}\n"))
 	if first == second || len(first) != len("sha256:")+64 {
 		t.Fatalf("unexpected hashes %q %q", first, second)
+	}
+}
+
+func TestConstantsHashArtifactsIsNamedOrderedAndExact(t *testing.T) {
+	first, err := ConstantsHashArtifacts(map[string][]byte{
+		"economy": []byte("{}"),
+		"commons": []byte("{\"weight\":1}"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	reordered, err := ConstantsHashArtifacts(map[string][]byte{
+		"commons": []byte("{\"weight\":1}"),
+		"economy": []byte("{}"),
+	})
+	if err != nil || reordered != first {
+		t.Fatalf("reordered hash=%q want=%q err=%v", reordered, first, err)
+	}
+	commonsChanged, err := ConstantsHashArtifacts(map[string][]byte{
+		"economy": []byte("{}"),
+		"commons": []byte("{\"weight\":2}"),
+	})
+	if err != nil || commonsChanged == first {
+		t.Fatalf("commons change hash=%q original=%q err=%v", commonsChanged, first, err)
+	}
+	economyChanged, err := ConstantsHashArtifacts(map[string][]byte{
+		"economy": []byte("{}\n"),
+		"commons": []byte("{\"weight\":1}"),
+	})
+	if err != nil || economyChanged == first || len(first) != len("sha256:")+64 {
+		t.Fatalf("economy change hash=%q original=%q err=%v", economyChanged, first, err)
+	}
+	if _, err := ConstantsHashArtifacts(nil); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("empty bundle err=%v", err)
 	}
 }
 

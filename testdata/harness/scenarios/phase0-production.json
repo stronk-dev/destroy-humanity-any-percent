@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
   "id": "scenario.phase0_production",
-  "version": 1,
+  "version": 2,
   "catalog": "balance/catalogs/phase0.json",
+  "commons_catalog": "balance/commons/phase0.json",
   "runs": [
     {
       "policy_id": "chaos.phase0",

@@ -42,11 +42,11 @@ func ValidateBaselineCommit(commitPaths, inputsBefore []string, subject string) 
 	}
 	for _, path := range inputsBefore {
 		path = strings.TrimSpace(path)
-		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "testdata/harness/scenarios/") {
+		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "testdata/harness/scenarios/") {
 			return nil
 		}
 	}
-	return fmt.Errorf("baseline rewrite has no changed catalog or scenario before its artifact commit")
+	return fmt.Errorf("baseline rewrite has no changed balance artifact or scenario before its artifact commit")
 }
 
 // ValidateRepositoryBaselineChange validates every reachable non-initial

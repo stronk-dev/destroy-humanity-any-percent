@@ -48,3 +48,29 @@ func TestCommonsPopulationInvariance(t *testing.T) {
 		t.Fatalf("95%% intervals do not overlap: 200=[%d,%d] 20000=[%d,%d]", leftValues[lower], leftValues[upper], rightValues[lower], rightValues[upper])
 	}
 }
+
+func TestCommonsPopulationUsesCatalogHealthWeights(t *testing.T) {
+	data, err := os.ReadFile("../../balance/commons/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := commons.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	baseline, err := SimulateCommonsPopulation(catalog, 350, 7)
+	if err != nil {
+		t.Fatal(err)
+	}
+	retuned := *catalog
+	retuned.GuildHealthWeightPPM = 100_000
+	retuned.CohortHealthWeightPPM = 100_000
+	retuned.ServerHealthWeightPPM = 800_000
+	changed, err := SimulateCommonsPopulation(&retuned, 350, 7)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if changed.MeanModifierPPM == baseline.MeanModifierPPM {
+		t.Fatalf("retuned health weights did not move runtime modifier: %d", baseline.MeanModifierPPM)
+	}
+}

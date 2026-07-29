@@ -72,9 +72,12 @@ have zero tithe, zero Solidarity, and no samples. Member samples are UTC whole-h
 bounded compliance and positive coverage no greater than one hour; they serialize in strictly
 increasing order. Leaving clears the complete window.
 
-`constants_hash` is `sha256:` plus the lowercase SHA-256 digest of the exact catalog artifact
-bytes. Saves resolve that immutable catalog before restoration. Reformatting a catalog therefore
-changes its identity deliberately.
+`constants_hash` is `sha256:` plus the lowercase SHA-256 digest of a deterministically ordered,
+named artifact bundle. Each artifact name and byte length is framed before its exact bytes, so
+iteration and concatenation cannot make two bundles collide structurally. Phase-0 production
+binds the economy and Commons catalogs. Saves resolve that immutable bundle before restoration;
+reformatting either catalog therefore changes its identity deliberately. Economy-only unit/store
+fixtures retain the single-artifact helper where no Commons policy participates.
 
 The economy package exposes `RestoreLedger` as a validated constructor, not a balance setter.
 The save package's `RestoreState` adds exact generator/cursor validation around it.
@@ -97,8 +100,8 @@ empty non-member Compact state. The checked-in
 `testdata/save-migrations.json` corpus fixes v1/v2 upgrades plus phase-matched, phase-mismatched,
 boundary, route-default, and lying-v4 cases; migrations never
 read the wall clock implicitly. Its `corpus_version` is metadata, not a save version. A separate
-baseline manifest makes required case names and the minimum case count a server-test gate, so the
-corpus can grow but cannot silently shrink.
+baseline manifest makes required case names and the exact case count a server-test gate, so an
+addition or removal requires an explicit reviewed baseline ratchet.
 
 ## Intent and event transaction
 

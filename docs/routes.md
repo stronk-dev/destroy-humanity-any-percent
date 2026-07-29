@@ -3,8 +3,9 @@
 Routes are declarative alternate preconditions for gates. They can reduce a gate's resource
 requirement or substitute for it; they cannot change a production rate, multiplier contribution,
 or slot. The pure Go evaluator lives in `server/routes`, the TypeScript mirror in
-`client/src/routes.ts`, and `make verify-routes-boundary` fails if the Go package acquires a
-transitive dependency on `server/production`.
+`client/src/routes.ts`, and `make verify-routes-boundary` enumerates direct internal imports and
+fails if the Go package acquires anything outside its explicit Decimal/DTO allowlist. This avoids
+a one-package grep silently weakening the amplitude lock.
 
 ## Catalog and predicate context
 

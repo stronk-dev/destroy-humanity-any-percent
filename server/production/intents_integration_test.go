@@ -83,7 +83,10 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	hash := save.ConstantsHash(catalogBytes)
+	hash, err := save.ConstantsHashArtifacts(map[string][]byte{"economy": catalogBytes, "commons": commonsBytes})
+	if err != nil {
+		t.Fatal(err)
+	}
 	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}}
 	store, err := save.NewStore(db, resolver, nil)
 	if err != nil {
@@ -284,7 +287,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil || sampled.Replay {
 		t.Fatalf("sample=%s replay=%v err=%v", sampled.Receipt, sampled.Replay, err)
 	}
-	commonsSnapshot, err := commonsProjector.Snapshot(ctx, "66666666-6666-4666-8666-666666666666")
+	commonsSnapshot, err := commonsProjector.Snapshot(ctx, "66666666-6666-4666-8666-666666666666", hash)
 	if err != nil || commonsSnapshot.HealthPPM <= 0 || commonsSnapshot.CohortCapacity == "0" {
 		t.Fatalf("commons snapshot=%+v err=%v", commonsSnapshot, err)
 	}
