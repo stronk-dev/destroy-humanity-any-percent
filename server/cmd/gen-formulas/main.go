@@ -42,6 +42,7 @@ type commonsFormula struct {
 	CohortHealthWeightPPM    int64                  `json:"cohort_health_weight_ppm"`
 	ServerHealthWeightPPM    int64                  `json:"server_health_weight_ppm"`
 	CollectiveWeightPPM      int64                  `json:"collective_weight_ppm"`
+	CollectiveExponentPPM    int64                  `json:"collective_exponent_ppm"`
 	CollapseHealthPPM        int64                  `json:"collapse_health_ppm"`
 	HealthyHealthPPM         int64                  `json:"healthy_health_ppm"`
 	MaximumBonus             string                 `json:"maximum_bonus"`
@@ -114,7 +115,7 @@ func main() {
 			Compliance:               "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
 			Health:                   "sum(weight_ppm * compliance_ppm) / sum(weight_ppm)",
 			EffectiveHealth:          "0.5 * guild_health + 0.3 * cohort_health + 0.2 * server_health; guildless substitutes cohort for guild",
-			Modifier:                 "1 + maximum_bonus * (0.6 * max(0, ((health - 0.35) / 0.65)^1.5) + 0.4 * solidarity)",
+			Modifier:                 "1 + maximum_bonus * (collective_weight * max(0, ((health - collapse_health) / (1 - collapse_health))^collective_exponent) + (1 - collective_weight) * solidarity)",
 			Solidarity:               "sum(hourly_compliance_ppm * covered_ms) / 2592000000",
 			SourceWeights:            append([]commons.SourceWeight{}, commonsCatalog.SourceWeights...),
 			DefaultTithePPM:          commonsCatalog.DefaultTithePPM,
@@ -124,6 +125,7 @@ func main() {
 			CohortHealthWeightPPM:    commonsCatalog.CohortHealthWeightPPM,
 			ServerHealthWeightPPM:    commonsCatalog.ServerHealthWeightPPM,
 			CollectiveWeightPPM:      commonsCatalog.CollectiveWeightPPM,
+			CollectiveExponentPPM:    commonsCatalog.CollectiveExponentPPM,
 			CollapseHealthPPM:        commonsCatalog.CollapseHealthPPM,
 			HealthyHealthPPM:         commonsCatalog.HealthyHealthPPM,
 			MaximumBonus:             commonsCatalog.MaximumBonus.String(),

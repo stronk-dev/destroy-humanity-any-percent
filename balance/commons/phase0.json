@@ -8,6 +8,7 @@
   "cohort_health_weight_ppm": 300000,
   "server_health_weight_ppm": 200000,
   "collective_weight_ppm": 600000,
+  "collective_exponent_ppm": 1500000,
   "collapse_health_ppm": 350000,
   "healthy_health_ppm": 800000,
   "maximum_bonus": "5e0",

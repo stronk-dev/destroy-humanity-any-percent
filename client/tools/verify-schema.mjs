@@ -266,7 +266,8 @@ function parseCommonsPolicy(data) {
       data.healthy_health_ppm <= data.collapse_health_ppm ||
       data.health_recovery_ppm_per_hour <= data.health_decay_ppm_per_hour ||
       data.cohort_merge_floor > data.cohort_target_size || data.npc_population_floor < data.cohort_merge_floor ||
-      !ppm(data.collective_weight_ppm)) throw new Error("invalid commons policy relationship");
+      !ppm(data.collective_weight_ppm) || !Number.isSafeInteger(data.collective_exponent_ppm) ||
+      data.collective_exponent_ppm < 1_000_000 || data.collective_exponent_ppm > 10_000_000) throw new Error("invalid commons policy relationship");
   const ids = new Set();
   for (const source of data.source_weights) { if (ids.has(source.source_id)) throw new Error("duplicate commons source weight"); ids.add(source.source_id); }
   return data;

@@ -3,7 +3,7 @@
   "$id": "https://cloud-clicker.invalid/schemas/commons-v1.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "source_weights", "default_tithe_ppm", "minimum_tithe_ppm", "maximum_tithe_ppm", "guild_health_weight_ppm", "cohort_health_weight_ppm", "server_health_weight_ppm", "collective_weight_ppm", "collapse_health_ppm", "healthy_health_ppm", "maximum_bonus", "health_recovery_ppm_per_hour", "health_decay_ppm_per_hour", "solidarity_window_ms", "cohort_target_size", "cohort_merge_floor", "npc_population_floor", "npc_weight_ppm", "npc_compliance_ppm", "population_tolerance_ppm"],
+  "required": ["schema_version", "source_weights", "default_tithe_ppm", "minimum_tithe_ppm", "maximum_tithe_ppm", "guild_health_weight_ppm", "cohort_health_weight_ppm", "server_health_weight_ppm", "collective_weight_ppm", "collective_exponent_ppm", "collapse_health_ppm", "healthy_health_ppm", "maximum_bonus", "health_recovery_ppm_per_hour", "health_decay_ppm_per_hour", "solidarity_window_ms", "cohort_target_size", "cohort_merge_floor", "npc_population_floor", "npc_weight_ppm", "npc_compliance_ppm", "population_tolerance_ppm"],
   "properties": {
     "schema_version": { "const": 1 },
     "source_weights": { "type": "array", "items": { "$ref": "#/$defs/source_weight" } },
@@ -14,6 +14,7 @@
     "cohort_health_weight_ppm": { "$ref": "#/$defs/ppm" },
     "server_health_weight_ppm": { "$ref": "#/$defs/ppm" },
     "collective_weight_ppm": { "$ref": "#/$defs/ppm" },
+    "collective_exponent_ppm": { "type": "integer", "minimum": 1000000, "maximum": 10000000 },
     "collapse_health_ppm": { "$ref": "#/$defs/ppm" },
     "healthy_health_ppm": { "$ref": "#/$defs/ppm" },
     "maximum_bonus": { "$ref": "#/$defs/decimal" },

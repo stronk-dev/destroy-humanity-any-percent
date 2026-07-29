@@ -85,7 +85,7 @@ func TestCommonsArtifactPublishesEveryCatalogControl(t *testing.T) {
 	for _, field := range []string{
 		"source_weights", "default_tithe_ppm", "minimum_tithe_ppm", "maximum_tithe_ppm",
 		"guild_health_weight_ppm", "cohort_health_weight_ppm", "server_health_weight_ppm",
-		"collective_weight_ppm", "collapse_health_ppm", "healthy_health_ppm", "maximum_bonus",
+		"collective_weight_ppm", "collective_exponent_ppm", "collapse_health_ppm", "healthy_health_ppm", "maximum_bonus",
 		"health_recovery_ppm_per_hour", "health_decay_ppm_per_hour", "solidarity_window_ms",
 		"cohort_target_size", "cohort_merge_floor", "npc_population_floor", "npc_weight_ppm",
 		"npc_compliance_ppm", "population_tolerance_ppm",

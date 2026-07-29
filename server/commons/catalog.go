@@ -40,6 +40,7 @@ type Catalog struct {
 	CohortHealthWeightPPM    int64
 	ServerHealthWeightPPM    int64
 	CollectiveWeightPPM      int64
+	CollectiveExponentPPM    int64
 	CollapseHealthPPM        int64
 	HealthyHealthPPM         int64
 	MaximumBonus             decimal.Decimal
@@ -65,6 +66,7 @@ type rawCatalog struct {
 	CohortHealthWeightPPM    int64             `json:"cohort_health_weight_ppm"`
 	ServerHealthWeightPPM    int64             `json:"server_health_weight_ppm"`
 	CollectiveWeightPPM      int64             `json:"collective_weight_ppm"`
+	CollectiveExponentPPM    int64             `json:"collective_exponent_ppm"`
 	CollapseHealthPPM        int64             `json:"collapse_health_ppm"`
 	HealthyHealthPPM         int64             `json:"healthy_health_ppm"`
 	MaximumBonus             string            `json:"maximum_bonus"`
@@ -107,7 +109,7 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		raw.MinimumTithePPM > raw.DefaultTithePPM || raw.DefaultTithePPM > raw.MaximumTithePPM ||
 		!validRatio(raw.GuildHealthWeightPPM) || !validRatio(raw.CohortHealthWeightPPM) || !validRatio(raw.ServerHealthWeightPPM) ||
 		raw.GuildHealthWeightPPM+raw.CohortHealthWeightPPM+raw.ServerHealthWeightPPM != PPM ||
-		!validRatio(raw.CollectiveWeightPPM) || !validRatio(raw.CollapseHealthPPM) ||
+		!validRatio(raw.CollectiveWeightPPM) || raw.CollectiveExponentPPM < PPM || raw.CollectiveExponentPPM > 10*PPM || !validRatio(raw.CollapseHealthPPM) ||
 		!validRatio(raw.HealthyHealthPPM) || raw.HealthyHealthPPM <= raw.CollapseHealthPPM ||
 		!validRatio(raw.HealthRecoveryPPMPerHour) || !validRatio(raw.HealthDecayPPMPerHour) ||
 		raw.HealthRecoveryPPMPerHour <= raw.HealthDecayPPMPerHour || raw.SolidarityWindowMS <= 0 ||
@@ -120,7 +122,7 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		SourceWeights:   make([]SourceWeight, 0, len(raw.SourceWeights)),
 		DefaultTithePPM: raw.DefaultTithePPM, MinimumTithePPM: raw.MinimumTithePPM, MaximumTithePPM: raw.MaximumTithePPM,
 		GuildHealthWeightPPM: raw.GuildHealthWeightPPM, CohortHealthWeightPPM: raw.CohortHealthWeightPPM, ServerHealthWeightPPM: raw.ServerHealthWeightPPM,
-		CollectiveWeightPPM: raw.CollectiveWeightPPM, CollapseHealthPPM: raw.CollapseHealthPPM, MaximumBonus: bonus,
+		CollectiveWeightPPM: raw.CollectiveWeightPPM, CollectiveExponentPPM: raw.CollectiveExponentPPM, CollapseHealthPPM: raw.CollapseHealthPPM, MaximumBonus: bonus,
 		HealthyHealthPPM:         raw.HealthyHealthPPM,
 		HealthRecoveryPPMPerHour: raw.HealthRecoveryPPMPerHour, HealthDecayPPMPerHour: raw.HealthDecayPPMPerHour,
 		SolidarityWindowMS: raw.SolidarityWindowMS, CohortTargetSize: raw.CohortTargetSize, CohortMergeFloor: raw.CohortMergeFloor,

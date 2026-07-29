@@ -24,8 +24,8 @@ the production modifier.
 - tithe default 10%, selectable from 5% through 15%;
 - effective Health weights: guild 50%, cohort 30%, server 20%; guildless members substitute cohort
   Health for guild, making the effective split cohort 80% / server 20%;
-- collapse below 0.35, healthy at 0.80, collective/personal modifier split 60%/40%, maximum bonus
-  `5e0`;
+- collapse below 0.35, healthy at 0.80, collective/personal modifier split 60%/40%, convex
+  exponent 1.5, maximum bonus `5e0`;
 - Health recovery 10%/hour and decay 4%/hour, applied lazily with the closed exponential form;
 - 30-day Solidarity window, 150-Founder cohort target, merge floor 40;
 - below 40 real samples, each missing member adds labeled NPC weight 0.5 at compliance 0.75.

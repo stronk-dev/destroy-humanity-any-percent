@@ -95,3 +95,12 @@ func TestNonMemberContributionIsAbsent(t *testing.T) {
 		t.Fatalf("items=%v err=%v", items, err)
 	}
 }
+
+func TestCollectiveExponentComesFromCatalog(t *testing.T) {
+	catalog := testCatalog(t)
+	catalog.CollectiveExponentPPM = 2_000_000
+	actual, err := Modifier(catalog, 675_000, 0)
+	if err != nil || actual.String() != "1.75e0" {
+		t.Fatalf("modifier=%s err=%v", actual.String(), err)
+	}
+}

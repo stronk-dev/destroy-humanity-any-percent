@@ -95,7 +95,7 @@ func Modifier(catalog *Catalog, healthPPM, solidarityPPM int64) (decimal.Decimal
 	collective := decimal.Zero
 	if healthPPM > catalog.CollapseHealthPPM {
 		x := ppmDecimal(healthPPM - catalog.CollapseHealthPPM).Div(ppmDecimal(PPM - catalog.CollapseHealthPPM))
-		collective = x.Mul(x.Pow(0.5))
+		collective = x.Mul(x.Pow(float64(catalog.CollectiveExponentPPM-PPM) / float64(PPM)))
 	}
 	personalWeight := PPM - catalog.CollectiveWeightPPM
 	inside := ppmDecimal(catalog.CollectiveWeightPPM).Mul(collective).Add(ppmDecimal(personalWeight).Mul(ppmDecimal(solidarityPPM)))
