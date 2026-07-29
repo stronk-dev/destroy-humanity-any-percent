@@ -35,7 +35,7 @@ func TestStoreIntegrationRevisionLifecycle(t *testing.T) {
 	if err := Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `TRUNCATE registry_routes, route_hint_projection_events, founder_route_state, founder_route_executions, route_projection_events, events, intent_records, save_revisions, save_streams CASCADE`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes, route_hint_projection_events, founder_route_state, founder_route_executions, route_projection_events, events, intent_records, save_revisions, save_streams CASCADE`); err != nil {
 		t.Fatal(err)
 	}
 

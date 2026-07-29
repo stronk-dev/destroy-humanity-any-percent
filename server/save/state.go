@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	CurrentVersion           = 5
+	CurrentVersion           = 6
 	millisecondCursorVersion = 4
 )
 
@@ -40,6 +40,16 @@ type State struct {
 	RegionTraits          map[string]bool
 	RouteKnowledgeBalance int64
 	HintsUnlocked         map[string]bool
+	CompactMember         bool
+	CompactTithePPM       int64
+	CompactSolidarityPPM  int64
+	CompactSamples        []CompactSample
+}
+
+type CompactSample struct {
+	HourStart     time.Time
+	CompliancePPM int64
+	CoveredMS     int64
 }
 
 type stateV1 struct {
@@ -79,6 +89,20 @@ type stateV5 struct {
 	HintsUnlocked         []string          `json:"hints_unlocked"`
 }
 
+type stateV6 struct {
+	stateV5
+	CompactMember        bool               `json:"compact_member"`
+	CompactTithePPM      int64              `json:"compact_tithe_ppm"`
+	CompactSolidarityPPM int64              `json:"compact_solidarity_ppm"`
+	CompactSamples       []rawCompactSample `json:"compact_solidarity_samples"`
+}
+
+type rawCompactSample struct {
+	HourStart     string `json:"hour_start"`
+	CompliancePPM int64  `json:"compliance_ppm"`
+	CoveredMS     int64  `json:"covered_ms"`
+}
+
 func ConstantsHash(catalogBytes []byte) string {
 	digest := sha256.Sum256(catalogBytes)
 	return "sha256:" + hex.EncodeToString(digest[:])
@@ -108,6 +132,9 @@ func EncodeState(state *State) ([]byte, error) {
 	if err := validateRouteState(&normalized, normalized.Ledger.Scope()); err != nil {
 		return nil, err
 	}
+	if err := validateCompactState(&normalized, normalized.Ledger.Scope()); err != nil {
+		return nil, err
+	}
 	cursor, err := formatCursor(state.EvaluatedThrough)
 	if err != nil {
 		return nil, err
@@ -119,7 +146,7 @@ func EncodeState(state *State) ([]byte, error) {
 	if state.ManualTokenRefilledAt.After(state.EvaluatedThrough) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
-	encoded, err := json.Marshal(stateV5{
+	encoded, err := json.Marshal(stateV6{stateV5: stateV5{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
 		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: cloneBoolMap(normalized.GatesCrossed), RunSeq: normalized.RunSeq,
@@ -127,7 +154,8 @@ func EncodeState(state *State) ([]byte, error) {
 		LedgerFactKinds: sortedTrueKeys(normalized.LedgerFactKinds), MeterBands: cloneIntMap(normalized.MeterBands),
 		RegionTraits: sortedTrueKeys(normalized.RegionTraits), RouteKnowledgeBalance: normalized.RouteKnowledgeBalance,
 		HintsUnlocked: sortedTrueKeys(normalized.HintsUnlocked),
-	})
+	}, CompactMember: normalized.CompactMember, CompactTithePPM: normalized.CompactTithePPM,
+		CompactSolidarityPPM: normalized.CompactSolidarityPPM, CompactSamples: encodeCompactSamples(normalized.CompactSamples)})
 	if err != nil {
 		return nil, fmt.Errorf("%w: encode: %v", ErrInvalidState, err)
 	}
@@ -145,7 +173,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
 	}
 
-	var source stateV5
+	var source stateV6
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -155,7 +183,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err != nil {
 			return nil, fmt.Errorf("%w: version-1 migration baseline: %v", ErrInvalidState, err)
 		}
-		source = stateV5{
+		source.stateV5 = stateV5{
 			Balances: legacy.Balances, Generators: zeroGeneratorCounts(catalog, scope), EvaluatedThrough: cursor,
 		}
 	} else if version == 2 {
@@ -163,17 +191,23 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
+		source.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
 	} else if version < 5 {
 		var previous stateV4
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source = stateV5{
+		source.stateV5 = stateV5{
 			Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough,
 			ComputeCreditMS: previous.ComputeCreditMS, ManualTokenMilli: previous.ManualTokenMilli,
 			ManualTokenRefilledAt: previous.ManualTokenRefilledAt,
 		}
+	} else if version == 5 {
+		var previous stateV5
+		if err := decodeState(data, &previous); err != nil {
+			return nil, err
+		}
+		source.stateV5 = previous
 	} else if err := decodeState(data, &source); err != nil {
 		return nil, err
 	}
@@ -191,6 +225,12 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if scope == economy.ScopeCompany {
 			source.RunSeq = 1
 		}
+	}
+	if version == 6 && source.CompactSamples == nil {
+		return nil, fmt.Errorf("%w: compact_solidarity_samples are required", ErrInvalidState)
+	}
+	if version < 6 {
+		source.CompactSamples = []rawCompactSample{}
 	}
 
 	if source.Balances == nil || source.Generators == nil {
@@ -243,11 +283,63 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		LedgerFactKinds: ledgerFacts, MeterBands: source.MeterBands,
 		RegionTraits: regionTraits, RouteKnowledgeBalance: source.RouteKnowledgeBalance,
 		HintsUnlocked: hints,
+		CompactMember: source.CompactMember, CompactTithePPM: source.CompactTithePPM,
+		CompactSolidarityPPM: source.CompactSolidarityPPM,
+	}
+	state.CompactSamples, err = decodeCompactSamples(source.CompactSamples)
+	if err != nil {
+		return nil, err
 	}
 	if err := validateRouteState(state, scope); err != nil {
 		return nil, err
 	}
+	if err := validateCompactState(state, scope); err != nil {
+		return nil, err
+	}
 	return state, nil
+}
+
+func validateCompactState(state *State, scope economy.Scope) error {
+	if state.CompactTithePPM < 0 || state.CompactTithePPM > 1_000_000 || state.CompactSolidarityPPM < 0 || state.CompactSolidarityPPM > 1_000_000 {
+		return fmt.Errorf("%w: compact ratios outside ppm domain", ErrInvalidState)
+	}
+	if scope != economy.ScopeCompany {
+		if state.CompactMember || state.CompactTithePPM != 0 || state.CompactSolidarityPPM != 0 || len(state.CompactSamples) != 0 {
+			return fmt.Errorf("%w: compact membership is company-scoped", ErrInvalidState)
+		}
+		return nil
+	}
+	if !state.CompactMember && (state.CompactTithePPM != 0 || state.CompactSolidarityPPM != 0 || len(state.CompactSamples) != 0) {
+		return fmt.Errorf("%w: non-member has compact state", ErrInvalidState)
+	}
+	last := time.Time{}
+	for _, sample := range state.CompactSamples {
+		if sample.HourStart.Location() != time.UTC || sample.HourStart.Minute() != 0 || sample.HourStart.Second() != 0 || sample.HourStart.Nanosecond() != 0 || sample.CompliancePPM < 0 || sample.CompliancePPM > 1_000_000 || sample.CoveredMS <= 0 || sample.CoveredMS > int64(time.Hour/time.Millisecond) || !last.IsZero() && !sample.HourStart.After(last) {
+			return fmt.Errorf("%w: invalid compact solidarity sample", ErrInvalidState)
+		}
+		last = sample.HourStart
+	}
+	return nil
+}
+
+func encodeCompactSamples(samples []CompactSample) []rawCompactSample {
+	result := make([]rawCompactSample, len(samples))
+	for index, sample := range samples {
+		result[index] = rawCompactSample{HourStart: sample.HourStart.Format(time.RFC3339Nano), CompliancePPM: sample.CompliancePPM, CoveredMS: sample.CoveredMS}
+	}
+	return result
+}
+
+func decodeCompactSamples(samples []rawCompactSample) ([]CompactSample, error) {
+	result := make([]CompactSample, len(samples))
+	for index, sample := range samples {
+		value, err := time.Parse(time.RFC3339Nano, sample.HourStart)
+		if err != nil || value.Location() != time.UTC || value.Format(time.RFC3339Nano) != sample.HourStart {
+			return nil, fmt.Errorf("%w: invalid compact sample time", ErrInvalidState)
+		}
+		result[index] = CompactSample{HourStart: value, CompliancePPM: sample.CompliancePPM, CoveredMS: sample.CoveredMS}
+	}
+	return result, nil
 }
 
 func validateRouteState(state *State, scope economy.Scope) error {

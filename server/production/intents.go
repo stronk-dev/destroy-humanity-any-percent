@@ -33,7 +33,13 @@ const (
 	IntentPerformManualBatch = "perform_manual_batch"
 	IntentCrossGate          = "cross_gate"
 	IntentBuyRouteHint       = "buy_route_hint"
+	IntentSignCompact        = "sign_compact"
+	IntentLeaveCompact       = "leave_compact"
 )
+
+type CompactPolicyResolver interface {
+	CompactTitheBand(constantsHash string) (minimumPPM, maximumPPM int64, ok bool)
+}
 
 type RouteCatalogResolver interface {
 	ResolveRoutes(constantsHash string) (*routes.Catalog, bool)
@@ -42,6 +48,10 @@ type RouteCatalogResolver interface {
 type RouteProjector interface {
 	Project(context.Context, []save.EventRecord) error
 	RepairFounder(context.Context, string, *save.State) error
+}
+
+type EventProjector interface {
+	Project(context.Context, []save.EventRecord) error
 }
 
 type ServiceOption func(*Service) error
@@ -62,6 +72,27 @@ func WithRouteProjector(projector RouteProjector) ServiceOption {
 			return ErrInvalidIntent
 		}
 		service.routeProjector = projector
+		service.projectors = append(service.projectors, projector)
+		return nil
+	}
+}
+
+func WithEventProjector(projector EventProjector) ServiceOption {
+	return func(service *Service) error {
+		if projector == nil {
+			return ErrInvalidIntent
+		}
+		service.projectors = append(service.projectors, projector)
+		return nil
+	}
+}
+
+func WithCompactPolicies(resolver CompactPolicyResolver) ServiceOption {
+	return func(service *Service) error {
+		if resolver == nil {
+			return ErrInvalidIntent
+		}
+		service.compactPolicies = resolver
 		return nil
 	}
 }
@@ -93,13 +124,15 @@ type InvariantSink interface {
 }
 
 type Service struct {
-	store          *save.Store
-	catalogs       save.CatalogResolver
-	contributions  ContributionProvider
-	metrics        InvariantMetrics
-	logger         *slog.Logger
-	routeCatalogs  RouteCatalogResolver
-	routeProjector RouteProjector
+	store           *save.Store
+	catalogs        save.CatalogResolver
+	contributions   ContributionProvider
+	metrics         InvariantMetrics
+	logger          *slog.Logger
+	routeCatalogs   RouteCatalogResolver
+	routeProjector  RouteProjector
+	compactPolicies CompactPolicyResolver
+	projectors      []EventProjector
 }
 
 type HandleResult struct {
@@ -120,6 +153,12 @@ type IntentRequest struct {
 	WindowMS         int64
 	GateID           string
 	RouteID          string
+	TithePPM         int64
+}
+
+type CompactTitheBand struct {
+	MinimumPPM int64
+	MaximumPPM int64
 }
 
 type invariantCollector struct {
@@ -201,7 +240,18 @@ func (s *Service) Handle(
 					}
 				}
 			}
-			return TransitionWithRoutes(request, state, catalog, routeCatalog, revision, mode, now, contributions, collector)
+			var compactBand *CompactTitheBand
+			if request.Kind == IntentSignCompact || request.Kind == IntentLeaveCompact {
+				if s.compactPolicies == nil {
+					return save.IntentDecision{}, fmt.Errorf("%w: compact runtime unavailable", ErrInvalidIntent)
+				}
+				minimum, maximum, ok := s.compactPolicies.CompactTitheBand(revision.ConstantsHash)
+				if !ok {
+					return save.IntentDecision{}, fmt.Errorf("%w: unknown commons catalog %s", ErrInvalidIntent, revision.ConstantsHash)
+				}
+				compactBand = &CompactTitheBand{MinimumPPM: minimum, MaximumPPM: maximum}
+			}
+			return TransitionWithPolicies(request, state, catalog, routeCatalog, compactBand, revision, mode, now, contributions, collector)
 		})
 	if err != nil {
 		s.recordAbortedInvariants(collector.reports)
@@ -219,8 +269,8 @@ func (s *Service) Handle(
 			return HandleResult{}, err
 		}
 	}
-	if s.routeProjector != nil {
-		if err := s.routeProjector.Project(ctx, result.Events); err != nil {
+	for _, projector := range s.projectors {
+		if err := projector.Project(ctx, result.Events); err != nil {
 			return HandleResult{}, err
 		}
 	}
@@ -285,6 +335,10 @@ func TransitionWithRoutes(
 	contributions []multiplier.Contribution,
 	sink InvariantSink,
 ) (save.IntentDecision, error) {
+	return TransitionWithPolicies(request, state, catalog, routeCatalog, nil, revision, mode, now, contributions, sink)
+}
+
+func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, compactBand *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, sink InvariantSink) (save.IntentDecision, error) {
 	service := Service{}
 	switch request.Kind {
 	case IntentBuyGenerator:
@@ -295,9 +349,51 @@ func TransitionWithRoutes(
 		return service.crossGate(request, state, catalog, routeCatalog, revision, mode, now, contributions)
 	case IntentBuyRouteHint:
 		return service.buyRouteHint(request, state, routeCatalog, revision)
+	case IntentSignCompact:
+		return service.signCompact(request, state, catalog, compactBand, revision, mode, now, contributions)
+	case IntentLeaveCompact:
+		return service.leaveCompact(request, state, catalog, compactBand, revision, mode, now, contributions)
 	default:
 		return rejectedDecision(request, revision.Number, "invalid", request.Kind)
 	}
+}
+
+func (s *Service) signCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution) (save.IntentDecision, error) {
+	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || band == nil || band.MinimumPPM < 0 || band.MaximumPPM > 1_000_000 || band.MinimumPPM > band.MaximumPPM || revision.OwnerID == "" || state.RunSeq < 1 {
+		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	if state.CompactMember {
+		return rejectedDecision(request, revision.Number, "already_member", "compact")
+	}
+	if request.TithePPM < band.MinimumPPM || request.TithePPM > band.MaximumPPM {
+		return rejectedDecision(request, revision.Number, "invalid", "tithe_ppm")
+	}
+	before := state.Ledger.Snapshot()
+	if _, err := Evaluate(state, catalog, now, mode, contributions); err != nil {
+		return save.IntentDecision{}, err
+	}
+	state.CompactMember, state.CompactTithePPM = true, request.TithePPM
+	state.CompactSolidarityPPM, state.CompactSamples = 0, []save.CompactSample{}
+	payload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": request.TithePPM, "prior_member": false, "new_member": true})
+	return appliedDecision(request, state, revision.Number+1, 1, before, []save.EventWrite{{Kind: save.EventCompactSigned, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload}}, nil)
+}
+
+func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution) (save.IntentDecision, error) {
+	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || band == nil || revision.OwnerID == "" || state.RunSeq < 1 {
+		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	if !state.CompactMember {
+		return rejectedDecision(request, revision.Number, "not_member", "compact")
+	}
+	before := state.Ledger.Snapshot()
+	if _, err := Evaluate(state, catalog, now, mode, contributions); err != nil {
+		return save.IntentDecision{}, err
+	}
+	priorTithe := state.CompactTithePPM
+	state.CompactMember, state.CompactTithePPM, state.CompactSolidarityPPM = false, 0, 0
+	state.CompactSamples = []save.CompactSample{}
+	payload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": priorTithe, "prior_member": true, "new_member": false})
+	return appliedDecision(request, state, revision.Number+1, 1, before, []save.EventWrite{{Kind: save.EventCompactLeft, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload}}, nil)
 }
 
 func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution) (save.IntentDecision, error) {
@@ -654,6 +750,8 @@ func wireSnapshot(state *save.State) map[string]any {
 		"ledger_fact_kinds": sortedBoolKeys(state.LedgerFactKinds), "meter_bands": state.MeterBands,
 		"region_traits": sortedBoolKeys(state.RegionTraits), "route_knowledge_balance": state.RouteKnowledgeBalance,
 		"hints_unlocked": sortedBoolKeys(state.HintsUnlocked),
+		"compact_member": state.CompactMember, "compact_tithe_ppm": state.CompactTithePPM,
+		"compact_solidarity_ppm": state.CompactSolidarityPPM,
 	}
 }
 
@@ -812,10 +910,26 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 		if err := json.Unmarshal(root["route_id"], &request.RouteID); err != nil || !intentIDPattern.MatchString(request.RouteID) {
 			request.InvalidDetail = "route_id"
 		}
+	case IntentSignCompact:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "tithe_ppm") {
+			request.InvalidDetail = "sign_compact.fields"
+			return request, nil
+		}
+		if !parseNonNegativeSafeInt(root["tithe_ppm"], &request.TithePPM) || request.TithePPM > 1_000_000 {
+			request.InvalidDetail = "tithe_ppm"
+		}
+	case IntentLeaveCompact:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision") {
+			request.InvalidDetail = "leave_compact.fields"
+		}
 	default:
 		request.InvalidDetail = request.Kind
 	}
 	return request, nil
+}
+
+func parseNonNegativeSafeInt(raw json.RawMessage, destination *int64) bool {
+	return len(raw) > 0 && json.Unmarshal(raw, destination) == nil && *destination >= 0 && *destination <= decimal.MaxExactInteger
 }
 
 func canonicalRequestHash(root map[string]json.RawMessage) string {

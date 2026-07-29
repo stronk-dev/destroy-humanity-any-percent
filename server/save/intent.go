@@ -38,6 +38,8 @@ const (
 	EventRouteExecuted         EventKind = "route_executed"
 	EventRouteHintPurchased    EventKind = "route_hint_purchased"
 	EventRouteKnowledgeGranted EventKind = "route_knowledge_granted"
+	EventCompactSigned         EventKind = "compact_signed"
+	EventCompactLeft           EventKind = "compact_left"
 )
 
 type EventWrite struct {
@@ -367,6 +369,17 @@ func validateEventPayload(event EventWrite) error {
 		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !mechanicalIDPattern.MatchString(payload.RouteID) || payload.Amount <= 0 || payload.Amount > decimal.MaxExactInteger ||
 			(payload.Source != "registry_first" && payload.Source != "founder_first" && payload.Source != "repeat" && payload.Source != "collapse_exit" && payload.Source != "region_draft") {
 			return fmt.Errorf("%w: invalid route_knowledge_granted payload", ErrInvalidStream)
+		}
+	case EventCompactSigned, EventCompactLeft:
+		var payload struct {
+			FounderID   string     `json:"founder_id"`
+			RunID       routeRunID `json:"run_id"`
+			TithePPM    int64      `json:"tithe_ppm"`
+			PriorMember bool       `json:"prior_member"`
+			NewMember   bool       `json:"new_member"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) || !validRouteRunID(payload.RunID) || payload.TithePPM < 0 || payload.TithePPM > 1_000_000 || event.Kind == EventCompactSigned && (payload.PriorMember || !payload.NewMember) || event.Kind == EventCompactLeft && (!payload.PriorMember || payload.NewMember) {
+			return fmt.Errorf("%w: invalid compact membership payload", ErrInvalidStream)
 		}
 	default:
 		return fmt.Errorf("%w: unknown event kind %q", ErrInvalidStream, event.Kind)

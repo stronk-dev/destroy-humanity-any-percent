@@ -91,8 +91,13 @@ func testState(t *testing.T) *State {
 	}
 }
 
-func TestStateV5RoundTrip(t *testing.T) {
-	encoded, err := EncodeState(testState(t))
+func TestStateV6RoundTrip(t *testing.T) {
+	state := testState(t)
+	state.CompactMember = true
+	state.CompactTithePPM = 100_000
+	state.CompactSolidarityPPM = 875_000
+	state.CompactSamples = []CompactSample{{HourStart: testCursor.Truncate(time.Hour), CompliancePPM: 875_000, CoveredMS: 3_600_000}}
+	encoded, err := EncodeState(state)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -116,6 +121,9 @@ func TestStateV5RoundTrip(t *testing.T) {
 		restored.MeterBands["trust.example.standing"] != 70 || !restored.RegionTraits["trait.example"] {
 		t.Fatalf("restored route state = %+v", restored)
 	}
+	if !restored.CompactMember || restored.CompactTithePPM != 100_000 || restored.CompactSolidarityPPM != 875_000 || len(restored.CompactSamples) != 1 || restored.CompactSamples[0].CoveredMS != 3_600_000 {
+		t.Fatalf("restored compact state = %+v", restored)
+	}
 }
 
 func TestSaveMigrationCorpus(t *testing.T) {
@@ -135,7 +143,7 @@ func TestSaveMigrationCorpus(t *testing.T) {
 	if err := json.Unmarshal(baselineData, &baseline); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.CorpusVersion != 4 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
+	if fixture.CorpusVersion != 5 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
 		len(fixture.Cases) < baseline.MinimumCaseCount {
 		t.Fatalf("migration corpus version=%d cases=%d baseline=%+v", fixture.CorpusVersion, len(fixture.Cases), baseline)
 	}

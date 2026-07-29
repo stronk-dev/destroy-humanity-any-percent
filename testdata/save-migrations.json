@@ -1,5 +1,5 @@
 {
-  "corpus_version": 4,
+  "corpus_version": 5,
   "cases": [
     {
       "name": "company v1 balances to v5 canonical route envelope",
@@ -24,7 +24,8 @@
         "manual_token_refilled_at": "2026-07-28T08:00:00.123Z",
         "gates_crossed": {}, "run_seq": 1, "doctrines_by_transition": {}, "structure_id": "",
         "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
-        "route_knowledge_balance": 0, "hints_unlocked": []
+        "route_knowledge_balance": 0, "hints_unlocked": [],
+        "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0, "compact_solidarity_samples": []
       }
     },
     {
@@ -54,7 +55,8 @@
         "manual_token_refilled_at": "2026-07-28T08:00:00Z",
         "gates_crossed": {}, "run_seq": 1, "doctrines_by_transition": {}, "structure_id": "",
         "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
-        "route_knowledge_balance": 0, "hints_unlocked": []
+        "route_knowledge_balance": 0, "hints_unlocked": [],
+        "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0, "compact_solidarity_samples": []
       }
     },
     {
@@ -79,7 +81,8 @@
         "manual_token_refilled_at": "2026-07-28T08:00:00.1Z",
         "gates_crossed": {}, "run_seq": 1, "doctrines_by_transition": {}, "structure_id": "",
         "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
-        "route_knowledge_balance": 0, "hints_unlocked": []
+        "route_knowledge_balance": 0, "hints_unlocked": [],
+        "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0, "compact_solidarity_samples": []
       }
     },
     {
@@ -104,7 +107,8 @@
         "manual_token_refilled_at": "2026-07-28T08:00:00.1Z",
         "gates_crossed": {}, "run_seq": 1, "doctrines_by_transition": {}, "structure_id": "",
         "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
-        "route_knowledge_balance": 0, "hints_unlocked": []
+        "route_knowledge_balance": 0, "hints_unlocked": [],
+        "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0, "compact_solidarity_samples": []
       }
     },
     {
@@ -129,7 +133,8 @@
         "manual_token_refilled_at": "2026-07-28T08:00:00.1Z",
         "gates_crossed": {}, "run_seq": 1, "doctrines_by_transition": {}, "structure_id": "",
         "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
-        "route_knowledge_balance": 0, "hints_unlocked": []
+        "route_knowledge_balance": 0, "hints_unlocked": [],
+        "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0, "compact_solidarity_samples": []
       }
     },
     {

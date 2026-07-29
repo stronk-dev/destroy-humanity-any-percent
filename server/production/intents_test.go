@@ -66,6 +66,43 @@ func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	if err != nil || hint.InvalidDetail != "" || hint.RouteID != "route.nonprofit_wrapper_zip" {
 		t.Fatalf("hint=%+v err=%v", hint, err)
 	}
+	sign, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"sign_compact","expected_revision":1,"tithe_ppm":100000}`))
+	if err != nil || sign.InvalidDetail != "" || sign.TithePPM != 100_000 {
+		t.Fatalf("sign=%+v err=%v", sign, err)
+	}
+	leave, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"leave_compact","expected_revision":1}`))
+	if err != nil || leave.InvalidDetail != "" {
+		t.Fatalf("leave=%+v err=%v", leave, err)
+	}
+}
+
+func TestCompactSignLeaveAndResign(t *testing.T) {
+	catalog := phase0Catalog(t)
+	revision := save.Revision{StreamID: "11111111-1111-4111-8111-111111111111", OwnerID: "22222222-2222-4222-8222-222222222222", Number: 1}
+	state := engineState(t, catalog, "0", 1)
+	state.RunSeq = 1
+	band := &CompactTitheBand{MinimumPPM: 50_000, MaximumPPM: 150_000}
+	sign := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentSignCompact, TithePPM: 100_000}
+	decision, err := TransitionWithPolicies(sign, state, catalog, nil, band, revision, ModeOnline, engineCursor.Add(time.Second), nil, nil)
+	if err != nil || decision.Outcome != save.IntentApplied || !state.CompactMember || state.CompactTithePPM != 100_000 || len(decision.Events) != 1 || decision.Events[0].Kind != save.EventCompactSigned {
+		t.Fatalf("sign=%+v state=%+v err=%v", decision, state, err)
+	}
+	again, err := TransitionWithPolicies(sign, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 2}, ModeOnline, engineCursor.Add(time.Second), nil, nil)
+	if err != nil || again.Outcome != save.IntentRejected || !bytes.Contains(again.Receipt, []byte("already_member")) {
+		t.Fatalf("again=%s err=%v", again.Receipt, err)
+	}
+	state.CompactSolidarityPPM = 900_000
+	state.CompactSamples = []save.CompactSample{{HourStart: engineCursor.Truncate(time.Hour), CompliancePPM: 900_000, CoveredMS: 1_000}}
+	leave := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ac", Kind: IntentLeaveCompact}
+	decision, err = TransitionWithPolicies(leave, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 2}, ModeOnline, engineCursor.Add(2*time.Second), nil, nil)
+	if err != nil || decision.Outcome != save.IntentApplied || state.CompactMember || state.CompactTithePPM != 0 || state.CompactSolidarityPPM != 0 || len(state.CompactSamples) != 0 || decision.Events[0].Kind != save.EventCompactLeft {
+		t.Fatalf("leave=%+v state=%+v err=%v", decision, state, err)
+	}
+	sign.IntentID = "018f6b7c-9abc-7def-8abc-0123456789ad"
+	decision, err = TransitionWithPolicies(sign, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 3}, ModeOnline, engineCursor.Add(3*time.Second), nil, nil)
+	if err != nil || decision.Outcome != save.IntentApplied || !state.CompactMember || state.CompactSolidarityPPM != 0 {
+		t.Fatalf("resign=%+v state=%+v err=%v", decision, state, err)
+	}
 }
 
 func TestCrossGateDiscountSubstituteAndRejections(t *testing.T) {
