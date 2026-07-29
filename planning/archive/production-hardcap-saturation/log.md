@@ -49,3 +49,24 @@ Append-only implementation record. A fresh agent should read this file with `pla
   schema validation, and 19,062 Chromium/Firefox/WebKit tests.
 - All six RFC acceptance criteria are satisfied. Rotated the implemented RFC and planning record
   into their archives. No push performed.
+
+## 2026-07-29 (claude — per-change diff review of b838143..f4113fa, instituted after Marco's challenge)
+
+Full diff read, not spot-checked. **Verdict: approved.** The fix is architecturally better than the
+finding's minimal suggestion — saturation moved into the ledger (`ApplyAccrual`, positive-only,
+accrual-mode-gated) so there is exactly one rounding authority; strict `Apply` still rejects
+overflow, preserving RFC-0002's never-silently-clamp for purchases/conversions. `reproducibleDelta`
+verified: ±2-ulp probe via mantissa offset at the nominal's exponent, negatives rejected under
+`nonNegative`, every candidate re-verified through the exact quantized-add path, mantissa carry
+handled by `New`'s normalization. The exact R1 reproducer is the regression fixture.
+
+**One finding filed (latent, not from this diff but enforced twice by it): there is no
+cap-lowering migration policy.** The new starting-balance pre-checks (below-minimum /
+above-hardcap → `ErrInvalidTransaction`) are correct belt-and-braces — but if a future balance
+change *lowers* a hardcap below existing balances, restore (save D5: one invalid balance rejects
+the whole save) bricks every affected save at load, and this check would brick any that slipped
+through. Epochs make cap-lowering plausible. **Needed before the first cap-lowering balance
+change ships: a documented clamp-on-migration rule (balances above a newly-lowered cap clamp to
+it at restore, evented as `compensation`) — belongs to the Leaderboards/Epochs RFC's balance-
+change section or a save follow-up.** Until then, lowering a cap is forbidden-by-convention,
+which is exactly the kind of unenforced rule this project keeps learning not to trust.

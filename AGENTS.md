@@ -58,6 +58,15 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 
 ## Working conventions
 
+- **Per-change review is mandatory, both directions.** Every implementation batch gets a recorded
+  diff review in its planning log *before* the next RFC acceptance — Claude reviews Codex's
+  batches, Codex reviews Claude's RFC/design commits (it already does). Milestone agent-audits
+  complement this; they do not replace it. A batch whose review found nothing still gets a
+  recorded "approved" line — the absence of a review entry means the review didn't happen, not
+  that it passed. (Instituted 2026-07-29 after the R1 batch initially received only a
+  spot-check; the review it then got found a latent cap-lowering policy gap the spot-check
+  missed.)
+
 - **Language/tooling:** Go code passes `gofmt` + `go vet`; TS is strict-mode; tests accompany every non-trivial change. The golden-vector suite and (once it exists) the balance-harness pacing targets are acceptance gates.
 - **Small, reviewable changes.** One system per PR/commit. Reference the design doc section your change implements in the commit message (e.g. `economy: implement generator cost curve (design/02 §2.1)`).
 - **Player-facing text** follows the flavor bible voice rules; any real-world statistic must come from the research files, and anything on a research file's "verify before shipping" list must be flagged, not shipped as fact.
