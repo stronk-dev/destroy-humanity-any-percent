@@ -1,6 +1,6 @@
 # RFC: Post-Review Integrity Remediation
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex, from independently verified findings A2-A9 and D3
 - **Created:** 2026-07-29
 - **Design refs:** `design/02-economy-balancing.md §11`; `design/05-mmo.md`; `design/06-tech.md §idle-math`
@@ -94,3 +94,5 @@ None. The RFC makes already published data and accepted boundaries authoritative
 
 - 2026-07-29: drafted, accepted, and implementation started as the owner-directed large
   remediation round; mechanic-changing A7/S4 findings explicitly split as design gaps.
+- 2026-07-29: independently reviewed and approved; implemented behavior distilled into canonical
+  docs and archived. The two design gaps received owner rulings and moved to explicit follow-ups.

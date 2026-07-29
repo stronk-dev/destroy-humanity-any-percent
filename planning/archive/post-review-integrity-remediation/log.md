@@ -64,3 +64,13 @@
   changed.
 - Worktree is clean. Per the review convention, this RFC and Balance Baseline Change Guard
   Hardening remain `implementing` until a separate reviewer records approval of the combined diff.
+
+## 2026-07-29 — independent review approved
+
+- Independent review approved both this RFC and Balance Baseline Change Guard Hardening with no
+  new findings. It specifically verified the fail-closed guard, catalog-driven live formula, all
+  three catalog families in constants identity, and the two self-review corrections.
+- Owner rulings close the two excluded design gaps: doctrine conditions may bind only gates at or
+  after their transition; collapsed-cohort merges remain floor-triggered, never split, and may
+  fill a target only through 1.5× its configured size. Those rules are assigned to follow-up RFCs.
+- The archived-four remediation board is clean. This RFC is implemented and ready for archival.

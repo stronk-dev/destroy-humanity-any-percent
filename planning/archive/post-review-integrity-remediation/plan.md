@@ -13,5 +13,5 @@
 5. [x] Canonicalize same-stream projection order and ratchet migration-corpus size.
 6. [x] Update canonical docs and regenerate formula/harness artifacts in the mandated commit shape.
 7. [x] Run the complete verification matrix.
-8. [ ] Record the combined independent review; archive only after it approves this RFC and the
+8. [x] Record the combined independent review; archive only after it approves this RFC and the
    active guard RFC.

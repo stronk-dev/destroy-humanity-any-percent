@@ -1,6 +1,6 @@
 # RFC: Balance Baseline Change Guard Hardening
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex, from independently verified findings A1 and D4
 - **Created:** 2026-07-29
 - **Design refs:** `design/07-roadmap.md` Phase 0; `design/02-economy-balancing.md §11`
@@ -73,3 +73,5 @@ None. Commons hash/input coverage remains explicitly assigned to A3.
 ## Changelog
 
 - 2026-07-29: drafted, accepted, and implementation started in the owner-directed A1+D4 order.
+- 2026-07-29: independently reviewed and approved; implemented behavior distilled into
+  `docs/balance-harness.md` and archived.

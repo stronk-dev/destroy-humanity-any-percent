@@ -23,3 +23,11 @@
 - Full `make verify` is green: Go vet and every Go/Postgres package, formula and balance gates,
   TypeScript checks/build, 6,412 client tests, schema/boundary checks, and 19,245 browser tests.
   The implementation now waits at the mandatory independent review gate.
+
+## 2026-07-29 — independent review approved
+
+- Independent review approved the complete guard: every reachable baseline revision is checked,
+  shallow history fails with CI fetching full history, artifact commits reject smuggled paths,
+  and local/hosted enforcement shares one metadata-independent path.
+- The round's own two artifact-only `BALANCE-CHANGE:` commits exercised and passed the hardened
+  history rule. The RFC is implemented and ready for archival.
