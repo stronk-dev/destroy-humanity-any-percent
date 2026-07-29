@@ -1,6 +1,6 @@
 # RFC: Production Hardcap Saturation
 
-- **Status:** accepted
+- **Status:** implementing
 - **Author:** Marco (drafted by Codex from the round-2 review)
 - **Created:** 2026-07-28
 - **Design refs:** `design/00-vision.md` law 5; `design/02-economy-balancing.md §2.2`
@@ -109,3 +109,4 @@ None. The saturation boundary and correction order are fully specified above.
 ## Changelog
 
 - 2026-07-28: drafted from demonstrated round-2 finding R1.
+- 2026-07-29: implementation started; planning record opened.

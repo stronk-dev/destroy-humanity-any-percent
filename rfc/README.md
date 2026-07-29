@@ -9,7 +9,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
-| [Production Hardcap Saturation](production-hardcap-saturation.md) | draft | Economy Kernel / Production Engine |
+| [Production Hardcap Saturation](production-hardcap-saturation.md) | implementing | Economy Kernel / Production Engine |
 | [Millisecond Cursor Canonicalization](millisecond-cursor-canonicalization.md) | draft | Save Layer / Production Engine |
 | [Resource-Log Domain Parity](resource-log-domain-parity.md) | draft | Economy Kernel / Production Engine |
 | [Balance Harness Foundation](balance-harness-foundation.md) | accepted | Production Engine & Intent API |
