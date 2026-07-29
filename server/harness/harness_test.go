@@ -89,6 +89,16 @@ func TestBaselineOnlyRewriteFailsChangeGuard(t *testing.T) {
 	}
 }
 
+func TestChangesPath(t *testing.T) {
+	changes := []byte("M\ttestdata/harness/golden-seed.json\nM\ttestdata/harness/pacing-baseline.json\n")
+	if !changesPath(changes, "testdata/harness/pacing-baseline.json") {
+		t.Fatal("changed baseline was not detected")
+	}
+	if changesPath(changes, "balance/catalogs/phase0.json") {
+		t.Fatal("unchanged catalog was reported as changed")
+	}
+}
+
 func TestCheckedReportsContainNoJSONFloats(t *testing.T) {
 	data, err := json.Marshal(AggregateReport{SchemaVersion: 1, RunCount: 1,
 		Values: []AggregateValue{{PolicyID: "p", Milestone: "m", Statistic: "p50", ValueMS: 1}}})

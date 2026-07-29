@@ -41,7 +41,7 @@ func ValidateBaselineChange(changes []string, subject string) error {
 }
 
 func ValidateRepositoryBaselineChange(root string) error {
-	changes, err := gitOutput(root, "diff", "--name-status", "HEAD^", "HEAD")
+	headChanges, err := gitOutput(root, "diff", "--name-status", "HEAD^", "HEAD")
 	if err != nil {
 		// A worktree without a parent is the initial repository state. Other git
 		// failures are loud because a shallow CI checkout could bypass the gate.
@@ -51,12 +51,40 @@ func ValidateRepositoryBaselineChange(root string) error {
 		}
 		return fmt.Errorf("baseline guard requires HEAD parent: %w", err)
 	}
+	if !changesPath(headChanges, baselinePath) {
+		return nil
+	}
+	// Baseline regeneration is deliberately a separate reviewable commit.
+	// Inspect inputs changed since the prior baseline revision instead of
+	// requiring the input and its review artifact in the same commit.
+	history, err := gitOutput(root, "log", "--format=%H", "--", baselinePath)
+	if err != nil {
+		return fmt.Errorf("baseline guard requires history: %w", err)
+	}
+	commits := strings.Fields(string(history))
+	if len(commits) < 2 {
+		return nil
+	}
+	changes, err := gitOutput(root, "diff", "--name-status", commits[1], "HEAD")
+	if err != nil {
+		return fmt.Errorf("baseline guard cannot inspect accepted inputs: %w", err)
+	}
 	subject, err := gitOutput(root, "log", "-1", "--format=%s")
 	if err != nil {
 		return err
 	}
 	lines := strings.Split(strings.TrimSpace(string(changes)), "\n")
 	return ValidateBaselineChange(lines, strings.TrimSpace(string(subject)))
+}
+
+func changesPath(changes []byte, path string) bool {
+	for _, line := range strings.Split(strings.TrimSpace(string(changes)), "\n") {
+		fields := strings.Fields(line)
+		if len(fields) >= 2 && fields[len(fields)-1] == path {
+			return true
+		}
+	}
+	return false
 }
 
 func gitOutput(root string, arguments ...string) ([]byte, error) {
