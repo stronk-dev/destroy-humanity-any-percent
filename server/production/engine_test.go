@@ -117,6 +117,86 @@ func TestEvaluateOfflineCreditAndResourceHardcaps(t *testing.T) {
 	}
 }
 
+func TestEvaluateSaturatesR1VectorAndFollowingPurchaseSucceeds(t *testing.T) {
+	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(data, &root); err != nil {
+		t.Fatal(err)
+	}
+	resource := root["resources"].([]any)[0].(map[string]any)
+	resource["hardcap"].(map[string]any)["amount"] = "9.87256122677e8"
+	data, err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := engineState(t, catalog, "5.6765610215e6", 1)
+	elapsed := 981_579_561_656 * time.Millisecond
+	result, err := Evaluate(state, catalog, engineCursor.Add(elapsed), ModeOnline, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := state.Ledger.Snapshot()["company.cash"]; got != "9.87256122677e8" {
+		t.Fatalf("cash = %s, want exact hardcap", got)
+	}
+	if len(result.Receipt.Changes) != 1 || result.Receipt.Changes[0].Delta != "9.81579561655e8" {
+		t.Fatalf("receipt = %+v", result.Receipt)
+	}
+	change := result.Receipt.Changes[0]
+	before := mustDecimal(t, change.Before)
+	delta := mustDecimal(t, change.Delta)
+	if got := before.Add(delta).Quantize(decimal.CanonicalSignificantDigits).String(); got != change.After {
+		t.Fatalf("receipt delta reapplies to %s, want %s", got, change.After)
+	}
+
+	service := &Service{}
+	decision, err := service.buyGenerator(parsedIntent{
+		IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentBuyGenerator,
+		GeneratorID: "generator.beige_tower", CountMode: "exact", Count: 1,
+	}, state, catalog, save.Revision{Number: 1}, ModeOnline, state.EvaluatedThrough, nil, &[]invariantReport{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if decision.Outcome != save.IntentApplied || state.GeneratorCounts["generator.beige_tower"] != 2 {
+		t.Fatalf("following purchase = %+v generators=%d", decision, state.GeneratorCounts["generator.beige_tower"])
+	}
+}
+
+func TestEvaluateAtHardcapAdvancesCursorWithoutLedgerChange(t *testing.T) {
+	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(data, &root); err != nil {
+		t.Fatal(err)
+	}
+	root["resources"].([]any)[0].(map[string]any)["hardcap"].(map[string]any)["amount"] = "1e2"
+	data, err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := engineState(t, catalog, "1e2", 1)
+	now := engineCursor.Add(time.Second)
+	result, err := Evaluate(state, catalog, now, ModeOnline, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Receipt.Changes) != 0 || state.Ledger.Snapshot()["company.cash"] != "1e2" || !state.EvaluatedThrough.Equal(now) {
+		t.Fatalf("result=%+v balance=%s cursor=%s", result, state.Ledger.Snapshot()["company.cash"], state.EvaluatedThrough)
+	}
+}
+
 func TestEvaluationPolicyGoldenVectors(t *testing.T) {
 	data, err := os.ReadFile("../../testdata/production-engine.json")
 	if err != nil {

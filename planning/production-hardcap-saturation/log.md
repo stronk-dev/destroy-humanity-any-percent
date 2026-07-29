@@ -27,3 +27,16 @@ Append-only implementation record. A fresh agent should read this file with `pla
   `Apply` receipt behavior preserves D3; positive accrual has no such cancellation and enforces the
   new re-applicability invariant.
 - Existing economy and production suites pass after the ownership change.
+
+## 2026-07-29 — Acceptance regressions green
+
+- Added the exact R1 cap/balance/rate regression. It commits `9.87256122677e8`, emits the
+  specified re-applicable `9.81579561655e8` delta, and a following generator purchase applies.
+- Added a deterministic 2,000,000-case near-cap gate across zero, lower-magnitude, same-exponent,
+  power-boundary, and extreme-exponent inputs. All cases remain within bounds or saturate exactly;
+  every emitted accrual delta reproduces its authoritative `after`. Runtime is about 3.5 seconds.
+- The exact minimum exponent is tested from zero because a difference below that representable
+  floor cannot be a canonical Decimal state value; crossing accrual still saturates at the cap.
+- Added already-capped cursor advancement, strict overflow preservation, negative/pre-existing
+  invalid-state atomic rejection, and independently saturating multi-resource receipt coverage.
+- Full economy and production package tests pass.
