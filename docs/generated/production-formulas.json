@@ -20,8 +20,9 @@
     "effective_health": "0.5 * guild_health + 0.3 * cohort_health + 0.2 * server_health; guildless substitutes cohort for guild",
     "modifier": "1 + maximum_bonus * (0.6 * max(0, ((health - 0.35) / 0.65)^1.5) + 0.4 * solidarity)",
     "solidarity": "sum(hourly_compliance_ppm * covered_ms) / 2592000000",
-    "source_weights": null,
+    "source_weights": [],
     "collapse_health_ppm": 350000,
+    "healthy_health_ppm": 800000,
     "collective_weight_ppm": 600000,
     "maximum_bonus": "5e0"
   }

@@ -263,6 +263,7 @@ function parseCommonsPolicy(data) {
   const ppm = (value) => Number.isSafeInteger(value) && value >= 0 && value <= 1_000_000;
   if (data.minimum_tithe_ppm > data.default_tithe_ppm || data.default_tithe_ppm > data.maximum_tithe_ppm ||
       data.guild_health_weight_ppm + data.cohort_health_weight_ppm + data.server_health_weight_ppm !== 1_000_000 ||
+      data.healthy_health_ppm <= data.collapse_health_ppm ||
       data.health_recovery_ppm_per_hour <= data.health_decay_ppm_per_hour ||
       data.cohort_merge_floor > data.cohort_target_size || data.npc_population_floor < data.cohort_merge_floor ||
       !ppm(data.collective_weight_ppm)) throw new Error("invalid commons policy relationship");

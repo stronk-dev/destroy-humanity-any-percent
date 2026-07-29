@@ -15,7 +15,7 @@ loadable for old `constants_hash` saves but cannot acquire v3 semantics silently
 The reviewed rate formula and slot order are published in
 [`generated/production-formulas.json`](generated/production-formulas.json). Its SHA-256
 `source_fingerprint` is generated from normalized, comment-free Go AST for the live `Rates`
-function, multiplier slot declaration, and raw-byte ordering helper. The tool does not pretend to
+function, multiplier ordering, and Commons formula/aggregate/smoothing authorities. The tool does not pretend to
 infer algebra from arbitrary Go; it binds this human-readable formula to the exact executable
 authorities that were reviewed. In prose:
 
@@ -62,7 +62,7 @@ RFC.
 
 ## Intent API
 
-The implemented command surface contains exactly four intents:
+The implemented command surface contains exactly six intents:
 
 - `buy_generator`: exact positive safe-integer count or verified `max`;
 - `perform_manual_batch`: positive safe-integer count and `window_ms` (audit/UX only; it grants no
@@ -71,6 +71,8 @@ The implemented command surface contains exactly four intents:
   requirements and commits gate state and events atomically.
 - `buy_route_hint`: Founder-scope purchase of permanent predicate disclosure with projected Route
   Knowledge; it never affects evaluation.
+- `sign_compact`: company-scope membership at an exact catalog-bounded tithe.
+- `leave_compact`: company-scope exit at the next accrual boundary; it clears Solidarity.
 
 Both use a lowercase UUIDv7 `intent_id` as the idempotency key and a positive safe-integer
 `expected_revision`. The request hash is SHA-256 over deterministic JSON excluding `intent_id`.
@@ -100,8 +102,9 @@ normalized receipt record in one Postgres transaction. A terminal rejection writ
 receipt record. JSON receipts normalize before first return and after JSONB load, so initial and
 replayed bytes are identical.
 
-Event registry v1 contains `generator_purchased`, `invariant_reported`, `compensation`,
-`gate_crossed`, `route_executed`, `route_hint_purchased`, and `route_knowledge_granted`.
+Event registry v1 additionally contains `compact_signed`, `compact_left`, `compact_sampled`,
+`compact_health_band_changed`, `compact_cascade_started`, `compact_recovered`, and
+`compact_recruitment_offered`; see [Commons](commons.md).
 Purchases emit exactly one event; manual batches emit none. Events retain stream/revision and
 `constants_hash` identity even after old snapshot rows are pruned, but retention does not guarantee
 that an old snapshot remains queryable. History has no update/delete API; corrections are later

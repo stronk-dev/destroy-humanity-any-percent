@@ -30,3 +30,11 @@
 - Extended the production integration test through sign → member accrual → sample projection → Health snapshot; the real-Postgres suite and replay checks pass.
 - Added the SplitMix64 population harness gate over 128 seeds. Mean modifiers at 200 vs 20,000 members remain within the shipped 100-ppm bound and their 95% intervals overlap.
 - Formula generation now fingerprints the executable Enclosure, modifier, aggregate-Health, and smoothing authorities and publishes the Commons formula family plus the exact source-weight table from balance data.
+
+## 2026-07-29 — ambient events and canonical documentation
+
+- Added catalog-owned collapsed/strained/healthy thresholds. Server Health band crossings now append immutable band events; entering/leaving collapse adds cascade/recovery events.
+- Added the idempotent mid-T3 recruitment operator. It verifies the authoritative company stream and refuses Founders who have ever signed or already received the offer; Postgres uniqueness proves once-per-career delivery.
+- Expanded the closed Go/DB event registry and strict payload tests for the entire Commons family.
+- Published `docs/commons.md`, updated production/save canonical docs for the six-intent surface and save v6, and updated repository/onboarding status. Formula generation publishes an explicit empty Phase-0 source-weight array rather than JSON null.
+- Focused Go/TypeScript/schema tests and the full Postgres integration target pass after the dispatch migration.

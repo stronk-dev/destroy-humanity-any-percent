@@ -56,6 +56,28 @@ func TestValidateRouteEventPayloads(t *testing.T) {
 	}
 }
 
+func TestValidateCommonsEventPayloads(t *testing.T) {
+	run := `{"company_stream_id":"11111111-1111-4111-8111-111111111111","run_seq":1}`
+	founder := `"22222222-2222-4222-8222-222222222222"`
+	intentEvents := []EventWrite{
+		{Kind: EventCompactSigned, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"founder_id":` + founder + `,"run_id":` + run + `,"tithe_ppm":100000,"prior_member":false,"new_member":true}`)},
+		{Kind: EventCompactSampled, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"founder_id":` + founder + `,"run_id":` + run + `,"weight_ppm":1000000,"compliance_ppm":900000,"enclosure":"1e-1","capacity":"1e3","solidarity_ppm":500000,"sampled_ms":3600000}`)},
+	}
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: intentEvents}, testIntentID); err != nil {
+		t.Fatal(err)
+	}
+	ambient := []EventWrite{
+		{Kind: EventCompactHealthBandChanged, SchemaVersion: 1, Payload: json.RawMessage(`{"scope_kind":"server","scope_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","from_band":"collapsed","to_band":"strained","health_ppm":400000}`)},
+		{Kind: EventCompactRecovered, SchemaVersion: 1, Payload: json.RawMessage(`{"scope_kind":"server","scope_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","health_ppm":400000}`)},
+		{Kind: EventCompactRecruitmentOffered, SchemaVersion: 1, Payload: json.RawMessage(`{"founder_id":` + founder + `,"reason_key":"compact.recruitment.mid_t3"}`)},
+	}
+	for _, event := range ambient {
+		if err := validateEventPayload(event); err != nil {
+			t.Fatalf("event %s: %v", event.Kind, err)
+		}
+	}
+}
+
 func TestUUIDV7AndRequestHashGrammar(t *testing.T) {
 	if !uuidV7Pattern.MatchString(testIntentID) {
 		t.Fatal("valid UUIDv7 rejected")

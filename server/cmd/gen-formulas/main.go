@@ -36,6 +36,7 @@ type commonsFormula struct {
 	Solidarity          string                 `json:"solidarity"`
 	SourceWeights       []commons.SourceWeight `json:"source_weights"`
 	CollapseHealthPPM   int64                  `json:"collapse_health_ppm"`
+	HealthyHealthPPM    int64                  `json:"healthy_health_ppm"`
 	CollectiveWeightPPM int64                  `json:"collective_weight_ppm"`
 	MaximumBonus        string                 `json:"maximum_bonus"`
 }
@@ -100,9 +101,10 @@ func main() {
 			EffectiveHealth:   "0.5 * guild_health + 0.3 * cohort_health + 0.2 * server_health; guildless substitutes cohort for guild",
 			Modifier:          "1 + maximum_bonus * (0.6 * max(0, ((health - 0.35) / 0.65)^1.5) + 0.4 * solidarity)",
 			Solidarity:        "sum(hourly_compliance_ppm * covered_ms) / 2592000000",
-			SourceWeights:     append([]commons.SourceWeight(nil), commonsCatalog.SourceWeights...),
+			SourceWeights:     append([]commons.SourceWeight{}, commonsCatalog.SourceWeights...),
 			CollapseHealthPPM: commonsCatalog.CollapseHealthPPM, CollectiveWeightPPM: commonsCatalog.CollectiveWeightPPM,
-			MaximumBonus: commonsCatalog.MaximumBonus.String(),
+			HealthyHealthPPM: commonsCatalog.HealthyHealthPPM,
+			MaximumBonus:     commonsCatalog.MaximumBonus.String(),
 		},
 	}
 	data, err := json.MarshalIndent(artifact, "", "  ")

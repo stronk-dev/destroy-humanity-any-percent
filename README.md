@@ -6,7 +6,8 @@ A free, browser-based MMO idle game: climb from a 1995 garage — where you own 
 
 **Status:** design complete; the shared numeric core, economy catalog/kernel, versioned Postgres
 save layer, authoritative production/intent engine, and gate/Route Registry foundation are
-implemented. No playable client or deployable server binary exists yet.
+implemented, along with the Commons Compact server foundation. No playable client or deployable
+server binary exists yet.
 
 ## Development setup
 

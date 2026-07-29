@@ -211,13 +211,57 @@ func (p *Projector) projectSample(ctx context.Context, event save.EventRecord) e
 	if _, err := tx.ExecContext(ctx, `INSERT INTO commons_member_samples(company_stream_id,founder_id,cohort_id,weight_ppm,compliance_ppm,solidarity_ppm,enclosure,capacity,sampled_ms,updated_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT(company_stream_id) DO UPDATE SET weight_ppm=EXCLUDED.weight_ppm,compliance_ppm=EXCLUDED.compliance_ppm,solidarity_ppm=EXCLUDED.solidarity_ppm,enclosure=EXCLUDED.enclosure,capacity=EXCLUDED.capacity,sampled_ms=EXCLUDED.sampled_ms,updated_at=EXCLUDED.updated_at`, payload.RunID.CompanyStreamID, payload.FounderID, cohortID, payload.WeightPPM, payload.CompliancePPM, payload.SolidarityPPM, payload.Enclosure, payload.Capacity, payload.SampledMS, event.OccurredAt); err != nil {
 		return err
 	}
+	var previousServerHealth int64
+	hadPreviousServer := tx.QueryRowContext(ctx, `SELECT health_ppm FROM commons_health_scopes WHERE scope_kind='server' AND scope_id=$1`, serverID).Scan(&previousServerHealth) == nil
 	if err := p.refreshScope(ctx, tx, catalog, "cohort", cohortID, event.OccurredAt); err != nil {
 		return err
 	}
 	if err := p.refreshScope(ctx, tx, catalog, "server", serverID, event.OccurredAt); err != nil {
 		return err
 	}
+	if hadPreviousServer {
+		var current int64
+		if err := tx.QueryRowContext(ctx, `SELECT health_ppm FROM commons_health_scopes WHERE scope_kind='server' AND scope_id=$1`, serverID).Scan(&current); err != nil {
+			return err
+		}
+		if err := emitHealthTransitions(ctx, tx, catalog, event, serverID, previousServerHealth, current); err != nil {
+			return err
+		}
+	}
 	return tx.Commit()
+}
+
+func healthBand(catalog *commons.Catalog, healthPPM int64) string {
+	if healthPPM < catalog.CollapseHealthPPM {
+		return "collapsed"
+	}
+	if healthPPM >= catalog.HealthyHealthPPM {
+		return "healthy"
+	}
+	return "strained"
+}
+
+func emitHealthTransitions(ctx context.Context, tx *sql.Tx, catalog *commons.Catalog, event save.EventRecord, serverID string, previous, current int64) error {
+	from, to := healthBand(catalog, previous), healthBand(catalog, current)
+	if from == to {
+		return nil
+	}
+	bandPayload, _ := json.Marshal(map[string]any{"scope_kind": "server", "scope_id": serverID, "from_band": from, "to_band": to, "health_ppm": current})
+	if _, err := tx.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,$2,1,'compact_health_band_changed',$3,$4,$5,$6)`, event.StreamID, event.Revision, nullIntent(event.IntentID), event.ConstantsHash, event.OccurredAt, bandPayload); err != nil {
+		return err
+	}
+	var kind save.EventKind
+	if to == "collapsed" {
+		kind = save.EventCompactCascadeStarted
+	} else if from == "collapsed" {
+		kind = save.EventCompactRecovered
+	}
+	if kind == "" {
+		return nil
+	}
+	payload, _ := json.Marshal(map[string]any{"scope_kind": "server", "scope_id": serverID, "health_ppm": current})
+	_, err := tx.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,$2,1,$3,$4,$5,$6,$7)`, event.StreamID, event.Revision, kind, nullIntent(event.IntentID), event.ConstantsHash, event.OccurredAt, payload)
+	return err
 }
 
 func (p *Projector) refreshScope(ctx context.Context, tx *sql.Tx, catalog *commons.Catalog, scopeKind, scopeID string, now time.Time) error {
@@ -379,6 +423,50 @@ func (p *Projector) MergeCollapsed(ctx context.Context, constantsHash, serverID,
 		return 0, err
 	}
 	return merged, nil
+}
+
+// OfferRecruitment is called by the authoritative progress boundary at mid-T3.
+// The unique founder row makes the ambient offer once-per-career and replay-safe.
+func (p *Projector) OfferRecruitment(ctx context.Context, streamID, founderID string, revision int64, constantsHash string, occurredAt time.Time) (bool, error) {
+	tx, err := p.db.BeginTx(ctx, nil)
+	if err != nil {
+		return false, err
+	}
+	defer tx.Rollback()
+	var ownerID string
+	var scope string
+	if err := tx.QueryRowContext(ctx, `SELECT owner_id,scope FROM save_streams WHERE id=$1 FOR UPDATE`, streamID).Scan(&ownerID, &scope); err != nil || ownerID != founderID || scope != "company" {
+		return false, ErrProjection
+	}
+	var already bool
+	if err := tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM founder_commons_assignments WHERE founder_id=$1) OR EXISTS(SELECT 1 FROM commons_recruitment_offers WHERE founder_id=$1)`, founderID).Scan(&already); err != nil {
+		return false, err
+	}
+	if already {
+		if err := tx.Commit(); err != nil {
+			return false, err
+		}
+		return false, nil
+	}
+	payload, _ := json.Marshal(map[string]any{"founder_id": founderID, "reason_key": "compact.recruitment.mid_t3"})
+	var eventID string
+	if err := tx.QueryRowContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,$2,1,'compact_recruitment_offered',NULL,$3,$4,$5) RETURNING event_id`, streamID, revision, constantsHash, occurredAt, payload).Scan(&eventID); err != nil {
+		return false, err
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO commons_recruitment_offers(founder_id,event_id,offered_at) VALUES($1,$2,$3)`, founderID, eventID, occurredAt); err != nil {
+		return false, err
+	}
+	if err := tx.Commit(); err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func nullIntent(value string) any {
+	if value == "" {
+		return nil
+	}
+	return value
 }
 
 func (p *Projector) FounderCohort(ctx context.Context, founderID string) (string, error) {

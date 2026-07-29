@@ -10,7 +10,7 @@ export interface CommonsCatalog {
   readonly sourceWeights: readonly CommonsSourceWeight[];
   readonly defaultTithePpm: number; readonly minimumTithePpm: number; readonly maximumTithePpm: number;
   readonly guildHealthWeightPpm: number; readonly cohortHealthWeightPpm: number; readonly serverHealthWeightPpm: number;
-  readonly collectiveWeightPpm: number; readonly collapseHealthPpm: number; readonly maximumBonus: string;
+  readonly collectiveWeightPpm: number; readonly collapseHealthPpm: number; readonly healthyHealthPpm: number; readonly maximumBonus: string;
   readonly healthRecoveryPpmPerHour: number; readonly healthDecayPpmPerHour: number; readonly solidarityWindowMs: number;
   readonly cohortTargetSize: number; readonly cohortMergeFloor: number; readonly npcPopulationFloor: number;
   readonly npcWeightPpm: number; readonly npcCompliancePpm: number; readonly populationTolerancePpm: number;
@@ -18,7 +18,7 @@ export interface CommonsCatalog {
 
 const idPattern = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 const slots = new Set(["upgrades", "milestones", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige"]);
-const keys = ["schema_version", "source_weights", "default_tithe_ppm", "minimum_tithe_ppm", "maximum_tithe_ppm", "guild_health_weight_ppm", "cohort_health_weight_ppm", "server_health_weight_ppm", "collective_weight_ppm", "collapse_health_ppm", "maximum_bonus", "health_recovery_ppm_per_hour", "health_decay_ppm_per_hour", "solidarity_window_ms", "cohort_target_size", "cohort_merge_floor", "npc_population_floor", "npc_weight_ppm", "npc_compliance_ppm", "population_tolerance_ppm"] as const;
+const keys = ["schema_version", "source_weights", "default_tithe_ppm", "minimum_tithe_ppm", "maximum_tithe_ppm", "guild_health_weight_ppm", "cohort_health_weight_ppm", "server_health_weight_ppm", "collective_weight_ppm", "collapse_health_ppm", "healthy_health_ppm", "maximum_bonus", "health_recovery_ppm_per_hour", "health_decay_ppm_per_hour", "solidarity_window_ms", "cohort_target_size", "cohort_merge_floor", "npc_population_floor", "npc_weight_ppm", "npc_compliance_ppm", "population_tolerance_ppm"] as const;
 
 export function parseCommonsCatalog(source: unknown): CommonsCatalog {
   const raw = exactObject(source, keys, "commons catalog");
@@ -35,12 +35,12 @@ export function parseCommonsCatalog(source: unknown): CommonsCatalog {
   const catalog: CommonsCatalog = Object.freeze({
     sourceWeights: Object.freeze(weights), defaultTithePpm: ratio("default_tithe_ppm"), minimumTithePpm: ratio("minimum_tithe_ppm"), maximumTithePpm: ratio("maximum_tithe_ppm"),
     guildHealthWeightPpm: ratio("guild_health_weight_ppm"), cohortHealthWeightPpm: ratio("cohort_health_weight_ppm"), serverHealthWeightPpm: ratio("server_health_weight_ppm"),
-    collectiveWeightPpm: ratio("collective_weight_ppm"), collapseHealthPpm: ratio("collapse_health_ppm"), maximumBonus: raw.maximum_bonus,
+    collectiveWeightPpm: ratio("collective_weight_ppm"), collapseHealthPpm: ratio("collapse_health_ppm"), healthyHealthPpm: ratio("healthy_health_ppm"), maximumBonus: raw.maximum_bonus,
     healthRecoveryPpmPerHour: ratio("health_recovery_ppm_per_hour"), healthDecayPpmPerHour: ratio("health_decay_ppm_per_hour"), solidarityWindowMs: positive("solidarity_window_ms"),
     cohortTargetSize: positive("cohort_target_size"), cohortMergeFloor: positive("cohort_merge_floor"), npcPopulationFloor: positive("npc_population_floor"),
     npcWeightPpm: ratio("npc_weight_ppm"), npcCompliancePpm: ratio("npc_compliance_ppm"), populationTolerancePpm: ratio("population_tolerance_ppm"),
   });
-  if (catalog.minimumTithePpm > catalog.defaultTithePpm || catalog.defaultTithePpm > catalog.maximumTithePpm || catalog.guildHealthWeightPpm + catalog.cohortHealthWeightPpm + catalog.serverHealthWeightPpm !== PPM || catalog.healthRecoveryPpmPerHour <= catalog.healthDecayPpmPerHour || catalog.cohortMergeFloor > catalog.cohortTargetSize || catalog.npcPopulationFloor < catalog.cohortMergeFloor) throw new SyntaxError("invalid commons policy relationship");
+  if (catalog.minimumTithePpm > catalog.defaultTithePpm || catalog.defaultTithePpm > catalog.maximumTithePpm || catalog.guildHealthWeightPpm + catalog.cohortHealthWeightPpm + catalog.serverHealthWeightPpm !== PPM || catalog.healthyHealthPpm <= catalog.collapseHealthPpm || catalog.healthRecoveryPpmPerHour <= catalog.healthDecayPpmPerHour || catalog.cohortMergeFloor > catalog.cohortTargetSize || catalog.npcPopulationFloor < catalog.cohortMergeFloor) throw new SyntaxError("invalid commons policy relationship");
   return catalog;
 }
 

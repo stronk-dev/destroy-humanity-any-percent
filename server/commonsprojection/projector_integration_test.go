@@ -18,6 +18,16 @@ func (value fixedAssignments) ResolveAssignment(string) (AssignmentContext, bool
 	return AssignmentContext{ServerID: value.serverID, ActivityBracket: "activity.standard"}, true
 }
 
+func TestHealthBandsUseCatalogThresholds(t *testing.T) {
+	data, err := os.ReadFile("../../balance/commons/phase0.json")
+	if err != nil { t.Fatal(err) }
+	catalog, err := commons.LoadCatalog(data)
+	if err != nil { t.Fatal(err) }
+	for value, expected := range map[int64]string{349_999: "collapsed", 350_000: "strained", 799_999: "strained", 800_000: "healthy"} {
+		if actual := healthBand(catalog, value); actual != expected { t.Fatalf("health %d band=%s want=%s", value, actual, expected) }
+	}
+}
+
 func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
@@ -32,7 +42,7 @@ func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 	if err := save.Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `TRUNCATE commons_health_scopes,commons_member_samples,commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes,route_hint_projection_events,founder_route_state,founder_route_executions,route_projection_events,events,intent_records,save_revisions,save_streams CASCADE`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE commons_recruitment_offers,commons_health_scopes,commons_member_samples,commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes,route_hint_projection_events,founder_route_state,founder_route_executions,route_projection_events,events,intent_records,save_revisions,save_streams CASCADE`); err != nil {
 		t.Fatal(err)
 	}
 	data, err := os.ReadFile("../../balance/commons/phase0.json")
@@ -48,6 +58,19 @@ func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 	projector, err := New(db, fixedAssignments{serverID: serverID}, commons.CatalogSet{hash: catalog})
 	if err != nil {
 		t.Fatal(err)
+	}
+	recruitFounder := "33333333-3333-4333-8333-333333333333"
+	var recruitStream string
+	if err := db.QueryRowContext(ctx, `INSERT INTO save_streams(owner_kind,owner_id,scope) VALUES('founder',$1,'company') RETURNING id`, recruitFounder).Scan(&recruitStream); err != nil {
+		t.Fatal(err)
+	}
+	offered, err := projector.OfferRecruitment(ctx, recruitStream, recruitFounder, 1, hash, time.Date(2026, 7, 29, 13, 0, 0, 0, time.UTC))
+	if err != nil || !offered {
+		t.Fatalf("offered=%v err=%v", offered, err)
+	}
+	offered, err = projector.OfferRecruitment(ctx, recruitStream, recruitFounder, 1, hash, time.Date(2026, 7, 29, 13, 1, 0, 0, time.UTC))
+	if err != nil || offered {
+		t.Fatalf("repeat offered=%v err=%v", offered, err)
 	}
 	founders := []string{"11111111-1111-4111-8111-111111111111", "22222222-2222-4222-8222-222222222222"}
 	streams := make([]string, len(founders))

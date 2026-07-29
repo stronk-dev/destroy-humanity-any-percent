@@ -31,16 +31,20 @@ const (
 type EventKind string
 
 const (
-	EventGeneratorPurchased    EventKind = "generator_purchased"
-	EventInvariantReported     EventKind = "invariant_reported"
-	EventCompensation          EventKind = "compensation"
-	EventGateCrossed           EventKind = "gate_crossed"
-	EventRouteExecuted         EventKind = "route_executed"
-	EventRouteHintPurchased    EventKind = "route_hint_purchased"
-	EventRouteKnowledgeGranted EventKind = "route_knowledge_granted"
-	EventCompactSigned         EventKind = "compact_signed"
-	EventCompactLeft           EventKind = "compact_left"
-	EventCompactSampled        EventKind = "compact_sampled"
+	EventGeneratorPurchased        EventKind = "generator_purchased"
+	EventInvariantReported         EventKind = "invariant_reported"
+	EventCompensation              EventKind = "compensation"
+	EventGateCrossed               EventKind = "gate_crossed"
+	EventRouteExecuted             EventKind = "route_executed"
+	EventRouteHintPurchased        EventKind = "route_hint_purchased"
+	EventRouteKnowledgeGranted     EventKind = "route_knowledge_granted"
+	EventCompactSigned             EventKind = "compact_signed"
+	EventCompactLeft               EventKind = "compact_left"
+	EventCompactSampled            EventKind = "compact_sampled"
+	EventCompactHealthBandChanged  EventKind = "compact_health_band_changed"
+	EventCompactCascadeStarted     EventKind = "compact_cascade_started"
+	EventCompactRecovered          EventKind = "compact_recovered"
+	EventCompactRecruitmentOffered EventKind = "compact_recruitment_offered"
 )
 
 type EventWrite struct {
@@ -402,10 +406,42 @@ func validateEventPayload(event EventWrite) error {
 		if value, err := decimal.ParseCanonical(payload.Capacity); err != nil || value.Lt(decimal.Zero) {
 			return fmt.Errorf("%w: invalid compact_sampled capacity", ErrInvalidStream)
 		}
+	case EventCompactHealthBandChanged:
+		var payload struct {
+			ScopeKind string `json:"scope_kind"`
+			ScopeID   string `json:"scope_id"`
+			FromBand  string `json:"from_band"`
+			ToBand    string `json:"to_band"`
+			HealthPPM int64  `json:"health_ppm"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || payload.ScopeKind != "server" || !uuidPattern.MatchString(payload.ScopeID) || !validHealthBand(payload.FromBand) || !validHealthBand(payload.ToBand) || payload.FromBand == payload.ToBand || payload.HealthPPM < 0 || payload.HealthPPM > 1_000_000 {
+			return fmt.Errorf("%w: invalid compact health band payload", ErrInvalidStream)
+		}
+	case EventCompactCascadeStarted, EventCompactRecovered:
+		var payload struct {
+			ScopeKind string `json:"scope_kind"`
+			ScopeID   string `json:"scope_id"`
+			HealthPPM int64  `json:"health_ppm"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || payload.ScopeKind != "server" || !uuidPattern.MatchString(payload.ScopeID) || payload.HealthPPM < 0 || payload.HealthPPM > 1_000_000 {
+			return fmt.Errorf("%w: invalid compact transition payload", ErrInvalidStream)
+		}
+	case EventCompactRecruitmentOffered:
+		var payload struct {
+			FounderID string `json:"founder_id"`
+			ReasonKey string `json:"reason_key"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) || payload.ReasonKey != "compact.recruitment.mid_t3" {
+			return fmt.Errorf("%w: invalid compact recruitment payload", ErrInvalidStream)
+		}
 	default:
 		return fmt.Errorf("%w: unknown event kind %q", ErrInvalidStream, event.Kind)
 	}
 	return nil
+}
+
+func validHealthBand(value string) bool {
+	return value == "collapsed" || value == "strained" || value == "healthy"
 }
 
 type routeRunID struct {

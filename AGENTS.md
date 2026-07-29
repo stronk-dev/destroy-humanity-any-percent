@@ -13,7 +13,7 @@ You are working on **Cloud Clicker**: a free, browser-based MMO idle game — *"
 
 **Current state:** design complete; the numeric core, economy kernel, save layer, production
 engine, balance-harness foundation, and gate/Route Registry foundation are implemented and
-archived. See `rfc/README.md` for active work.
+archived; the Commons Compact is implementing. See `rfc/README.md` for active work.
 
 ## Your workflow
 

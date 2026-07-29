@@ -16,7 +16,7 @@ stale scalar subquery under PostgreSQL READ COMMITTED.
 
 ## State format
 
-Version 5 is strict JSON:
+Version 6 is strict JSON:
 
 ```json
 {
@@ -34,7 +34,11 @@ Version 5 is strict JSON:
   "meter_bands": {},
   "region_traits": [],
   "route_knowledge_balance": 0,
-  "hints_unlocked": []
+  "hints_unlocked": [],
+  "compact_member": false,
+  "compact_tithe_ppm": 0,
+  "compact_solidarity_ppm": 0,
+  "compact_solidarity_samples": []
 }
 ```
 
@@ -63,6 +67,11 @@ set. Guild and World streams cannot carry either. Sets serialize as sorted mecha
 maps reject invalid IDs, false membership entries, duplicate list entries, and meter values outside
 0–100.
 
+Compact membership is company-scoped. Tithe and Solidarity are integer ppm. A non-member must
+have zero tithe, zero Solidarity, and no samples. Member samples are UTC whole-hour buckets with
+bounded compliance and positive coverage no greater than one hour; they serialize in strictly
+increasing order. Leaving clears the complete window.
+
 `constants_hash` is `sha256:` plus the lowercase SHA-256 digest of the exact catalog artifact
 bytes. Saves resolve that immutable catalog before restoration. Reformatting a catalog therefore
 changes its identity deliberately.
@@ -76,14 +85,15 @@ Sequential SQL migrations are embedded in the Go package and applied transaction
 Goose 3.27.1 using pgx/v5's `database/sql` driver. There is no ORM, SQLite substitute, runtime
 migration directory, or separate migration artifact.
 
-Save versions 1 through 4 remain readable. V1 initializes every in-scope production-capable
+Save versions 1 through 5 remain readable. V1 initializes every in-scope production-capable
 generator to zero and uses the revision's database-authored `created_at` as the evaluation cursor.
 Versions 1 and 2 initialize Compute Credits to zero, fill the manual bucket from the resolved
 catalog, and use the evaluation cursor as the refill baseline. During v1–v3 restoration, both
 cursor instants are independently floored to UTC whole milliseconds before their ordering is
 validated; no whole millisecond of work is invented. A claimed v4 snapshot with either
 sub-millisecond cursor is rejected. Pre-v5 company saves receive empty gate/context state and
-`run_seq = 1`; pre-v5 Founder saves receive a zero balance and no hints. The checked-in
+`run_seq = 1`; pre-v5 Founder saves receive a zero balance and no hints. Pre-v6 saves receive
+empty non-member Compact state. The checked-in
 `testdata/save-migrations.json` corpus fixes v1/v2 upgrades plus phase-matched, phase-mismatched,
 boundary, route-default, and lying-v4 cases; migrations never
 read the wall clock implicitly. Its `corpus_version` is metadata, not a save version. A separate
@@ -104,6 +114,10 @@ The routes migration expands the closed event-kind constraint and adds idempoten
 tables for per-event execution, founder career counts, the cached Route Knowledge balance, hint
 debits, and the public Registry's first-executor/name state. Projection rows are rebuildable; the
 company events remain authoritative.
+
+Commons migrations add membership/cohort/sample/Health projections, once-per-Founder recruitment,
+and the closed Commons event family. These rows are rebuildable from immutable company events;
+save v6 remains the authority for current company membership and Solidarity.
 
 `Store.ApplyIntent` locks the stream before replay/revision decisions. Applied state, next revision,
 events, and receipt commit together. A deterministic terminal rejection stores only its receipt;
