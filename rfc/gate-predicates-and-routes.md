@@ -1,6 +1,6 @@
 # RFC: Gate Predicates & the Route Registry
 
-- **Status:** draft
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude; boundary split per Codex's 2026-07-28 review)
 - **Created:** 2026-07-28
 - **Design refs:** `design/08 §6` (route mechanics, as designed 2026-07-28), `design/02 §3` (Route Knowledge), `design/05 §6` (Registry + category model), `design/11 §4` (the Depletion gate), `design/10 §3b` (Doctrine exclusivity)
@@ -184,3 +184,4 @@ The gate evaluator never grows analytics.
 - 2026-07-28: Codex acceptance review kept the RFC in draft and recorded eight executable-contract
   gaps: schemas, command semantics, predicate inputs, cross-scope persistence, global ordering,
   Route Knowledge, the Depletion proof, and Registry analytics.
+- 2026-07-29: C1–C8 accepted by owner assignment; implementation started.
