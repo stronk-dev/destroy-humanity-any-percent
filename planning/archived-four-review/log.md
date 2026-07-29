@@ -65,3 +65,64 @@ C1–C8 all faithful including the Depletion proof genuinely bound to runtime pr
 first-executor races proven on real Postgres · commons D1–D5 including s_i-zeroed leave, d_i
 from accepted contributions only, absent (not 1.0) non-member slot, additive capacity under
 advisory lock, and a compliant BALANCE-CHANGE commit.
+
+## 2026-07-29 (claude — adversarial lens; both HIGHs verified at source before filing)
+
+Reproducers ran against real Postgres; each finding below quoted actual output. I re-verified the
+two HIGH code sites directly (membership-check-before-dedup at `commonsprojection/projector.go:214`;
+first-executor `ON CONFLICT DO NOTHING` with no occurred_at comparison at
+`routeprojection/projector.go:104`). **Combined priority for remediation now leads with these.**
+
+### Demonstrated
+
+- **D1 — HIGH: commons projection is not retry-idempotent; a sampled event permanently poisons
+  the worker after the leave lands.** `projectSample` checks active membership **before** the
+  event-id dedup insert — the mirror image of `project`, which correctly dedups first. Retry of
+  an already-committed `[signed, sampled, left]` batch (at-least-once delivery, or crash between
+  commit and cursor advance) errors `sample without active membership`; `Project` aborts the
+  whole batch; **the worker wedges forever, and a full-history rebuild fails the same way.** The
+  existing integration test replays samples only *before* the leave — exactly the gap. Fix: move
+  the dedup insert/early-commit above the membership lookup, mirroring `project`.
+- **D2 — HIGH: Registry first-executor is delivery-order, not event-order; replay-from-scratch
+  disagrees with the live projection.** The `(occurred_at, event_id)` sort orders only *within*
+  a batch; different company streams arrive in different batches, and `ON CONFLICT DO NOTHING`
+  awards whoever *projects* first. Demonstrated: B (15:00, projected first) beats A (14:00) —
+  and the irreversible 100-knowledge `registry_first` grant follows the wrong founder. A
+  from-scratch rebuild yields A: **the projection is non-convergent**, the one property a
+  projection must have. Fix: on conflict compare `(occurred_at, first_event_id)` and displace
+  (compensating the grant per C4's compensation events), or funnel all `route_executed` through
+  one ordered cursor.
+- **D3 — MEDIUM: independently re-demonstrates A2** (the dead catalog weights) with a mutation:
+  retuned weights move `EffectiveHealthPPM` (940000) but not `Snapshot` (920000). One fix
+  covers A2+D3: `Snapshot` calls `EffectiveHealthPPM` with the event's resolved catalog — note
+  it currently doesn't even take a constants hash, so the fix has a plumbing component.
+- **D4 — MEDIUM: sharpens A1 — a `BALANCE-CHANGE:` commit can smuggle arbitrary code.** The
+  guard never inspects what else the baseline commit touches; demonstrated a baseline rewrite +
+  `server/code.go` change passing with verdict nil. Fix folds into A1: the baseline commit must
+  touch *only* the baseline, and the guard must fail loudly on truncated history.
+
+### Suspected (seams to close, no exploit today)
+
+- **S1:** the Depletion proof's soundness rests on exclusion-slot values being **immutable
+  within a run** — nothing writes `StructureID`/doctrines outside save-decode *today* (verified
+  by grep), but any future intent that does silently unsounds the load-time proof. Assert
+  immutability in the engine (reject writes once any gate is crossed) or record slot values at
+  first crossing. **Route this to the Prestige/Exits and future doctrine-intent RFCs as a
+  standing constraint.**
+- **S2:** same-millisecond samples never move smoothed Health (converges next spaced sample;
+  cosmetic). **S3:** solidarity window over-counts ≤1h of coverage (≤0.14% at the 30-day window;
+  a real 1.5× inflation if ever retuned to ~2h — add the guard when windows become tunable).
+  **S4:** `MergeCollapsed` merges on member-count floor only and can overfill past target —
+  needs an intent ruling (pairs with spec-lens A-tier).
+
+### Held under attack (recorded)
+
+Harness byte-identical across full runs; drift gate fails at 26%/passes at 9% exactly; **no
+commons-buff circularity — `EnclosureIndex` skips `SlotCommons`**; `CompliancePPM` matched
+exact big.Rat across ~6000 points; the Modifier is continuous at the H=0.35 knee; the 2ebea38
+in-batch reorder fix genuinely closes its case; capacity retry doesn't double-count; discount
+fractions can't zero a requirement; the client-shell 5000ms boundary drains in exactly 100
+steps with no prediction wedge.
+
+**Remediation order for Codex: D1, D2 (new HIGHs — projection convergence is the contract),
+then A1+D4 as one guard fix, A2+D3 as one blend fix, A3, then the second tier.**
