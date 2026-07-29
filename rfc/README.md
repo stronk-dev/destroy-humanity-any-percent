@@ -9,6 +9,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
+| [Phase-0 Pacing Observation Coverage](phase0-pacing-observation-coverage.md) | implementing | Balance Harness Foundation |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft | Commons Compact |
 | [Combat Data Model](combat-data-model.md) | draft | — |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | draft | Production Engine / Client Shell |
