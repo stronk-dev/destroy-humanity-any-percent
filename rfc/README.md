@@ -9,7 +9,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
-| [The Commons Compact](commons-compact.md) | implementing | Production Engine & Intent API |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft | Commons Compact |
 | [Combat Data Model](combat-data-model.md) | draft | — |
 | [Client Shell & Sim Loop](client-shell-and-sim-loop.md) | draft | Production Engine & Intent API |
@@ -41,6 +40,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Production Contract Assertions & Integrity](archive/production-contract-integrity.md) | implemented | [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Balance Harness Foundation](archive/balance-harness-foundation.md) | implemented | [Balance harness](../docs/balance-harness.md), [Production engine](../docs/production-engine.md) |
 | [Gate Predicates & the Route Registry](archive/gate-predicates-and-routes.md) | implemented | [Routes](../docs/routes.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
+| [The Commons Compact](archive/commons-compact.md) | implemented | [Commons](../docs/commons.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 
 Remaining Phase-0 contracts (not yet drafted): account/session bootstrap · T0–T1 playable content
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics

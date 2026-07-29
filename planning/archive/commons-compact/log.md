@@ -59,3 +59,9 @@
 - The formula artifact previously published the formula shapes and source table but omitted NPC, tithe, smoothing, cohort, and population controls needed to render them honestly. Artifact schema v4 now publishes every Commons catalog control, with a structural regression test guarding the complete field set.
 - The final data-boundary audit found the 1.5 collective exponent hard-coded in both runtimes despite C1 assigning it to the Commons catalog. Added `collective_exponent_ppm=1500000`, strict 1.0–10.0 validation, runtime use in Go/TypeScript, generated-artifact publication, and a quadratic mutation test proving the formula actually reads the catalog.
 - Closed the active RFC's remaining open-question text: Phase-0 values are now concrete catalog data, and every dependency-bound player/guild concern has one named successor. No unresolved implementation choice remains in the server foundation.
+
+## 2026-07-29 — final verification and approval
+
+- Re-ran `make verify` with real Postgres after the final catalog/formula changes. Go tests and vet, Postgres integration, formula drift, dependency boundaries, schema checks, balance and population harnesses, 6,397 Node tests, and 19,191 browser tests across Chromium/Firefox/WebKit all pass.
+- Reviewed the complete implementation against D1-D5, C1-C8, and every acceptance criterion. The review itself found and fixed cumulative Capacity replacement, equal-timestamp leave ordering, incomplete formula publication, the hard-coded convex exponent, stale guild/UI claims, and the mathematically incorrect collapse sentence. Regression coverage exists for each executable defect.
+- Final verdict: approved with no remaining finding in the bounded server foundation. Dependency-bound onboarding, faction, guild, transport, panel, and vote behavior is two-way linked to the draft successor and is not represented as shipped.

@@ -9,7 +9,7 @@
 - **Split follow-up:** `production-accrual-math.md` (implemented closed-form numeric primitive)
 - **Split follow-up:** `generator-production-state.md` (implemented catalog output, owned counts, save cursor)
 - **Boundary follow-up:** `gate-predicates-and-routes.md` (gate alternatives and routes; production is read-only input)
-- **Boundary follow-up:** `../commons-compact.md` (commons computes one generic multiplier-slot contribution)
+- **Boundary follow-up:** `commons-compact.md` (commons computes one generic multiplier-slot contribution)
 - **Planning:** `../../planning/archive/production-engine-and-intents/`
 
 ## Summary

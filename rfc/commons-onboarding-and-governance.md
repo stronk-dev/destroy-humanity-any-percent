@@ -5,7 +5,7 @@
 - **Created:** 2026-07-29
 - **Design refs:** `design/05 §3, §5` (guild participation, Commons front door and governance), `design/10 §1` (Open Source participation)
 - **Depends on:** Commons Compact (server foundation), Client Shell & Sim Loop, account/session bootstrap, faction/incorporation model, guild model
-- **Parent / amends:** `commons-compact.md`
+- **Parent / amends:** `archive/commons-compact.md`
 - **Supersedes / superseded by:** —
 - **Planning:** `planning/commons-onboarding-and-governance/` (once implementing)
 

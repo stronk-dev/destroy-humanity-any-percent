@@ -1,12 +1,12 @@
 # RFC: The Commons Compact
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco (drafted by Claude; boundary split per Codex's 2026-07-28 review)
 - **Design refs:** `design/05 §5` (the commons + the front door, as designed 2026-07-28), `design/02 §7` (Trust constituencies; derivation rule), `design/10 §1` (Open Source = heavier participation)
 - **Research:** `design/research/commons-game-theory.md` (the spec), `design/research/morality-systems.md` (solo floor 1.8–2.5×, corrections)
 - **Depends on:** Save Layer (implemented — compact state is stream data), Production Engine (implemented — consumes one named slot)
 - **Parent / boundary split from:** `archive/production-engine-and-intents.md`
-- **Planning:** `planning/commons-compact/` (once implementing)
+- **Planning:** `planning/archive/commons-compact/`
 
 ## Summary
 
@@ -16,7 +16,7 @@ The Mutual Aid Compact: membership, the Health/Capacity computation, the Enclosu
 
 ### D1 — Membership
 
-- `sign_compact` / `leave_compact` are intents (Production RFC contract: idempotent, evented, revision-tied). This RFC supplies the authoritative membership contract. The incorporation line-item, Open Source auto-sign behavior, and player-facing panel are owned by [Commons Onboarding & Governance](commons-onboarding-and-governance.md), because no incorporation/faction or client-shell contract exists yet.
+- `sign_compact` / `leave_compact` are intents (Production RFC contract: idempotent, evented, revision-tied). This RFC supplies the authoritative membership contract. The incorporation line-item, Open Source auto-sign behavior, and player-facing panel are owned by [Commons Onboarding & Governance](../commons-onboarding-and-governance.md), because no incorporation/faction or client-shell contract exists yet.
 - Membership is company-scoped state (resets at Exit, like the contract it lives in); the founder ledger records signature history as dated facts.
 - Leaving is always allowed, takes effect at the next accrual boundary, and zeroes `sᵢ` (Solidarity rebuilds from scratch on re-signing — the TPP no-exit lesson requires a real exit, the Ostrom lesson prices it).
 
@@ -38,7 +38,7 @@ The commons package exposes exactly one value to production: `commons_modifier(m
 - **Server-assigned, non-elective, persistent, target size ~150** (`05 §5`). Assignment on first sign; rebalancing only on population collapse (merge, never split below floor 40) — cohort identity is the shadow of the future and must not churn.
 - This server foundation owns stable cohort assignment, the cohort-scale Health term, collapse merge,
   and queryable current standing. The panel (named neighbors and co-ops), monthly tithe-dial vote,
-  guild participation, and mercy presentation are owned by [Commons Onboarding & Governance](commons-onboarding-and-governance.md).
+  guild participation, and mercy presentation are owned by [Commons Onboarding & Governance](../commons-onboarding-and-governance.md).
 - Alt-resistance in this foundation is non-elective, Founder-persistent assignment within the server's activity bracket. Account-age weighting awaits the account/session identity contract and is owned by the onboarding/governance successor.
 
 ### D5 — Ambient surfaces (the front door's server half)
@@ -66,7 +66,7 @@ owned by the linked successor.
 
 - The design specifies onboarding, the cohort panel, guild participation, and monthly direction voting
   as part of one player-facing Commons. This implementation deliberately splits those surfaces into
-  [Commons Onboarding & Governance](commons-onboarding-and-governance.md). Implementing them here
+  [Commons Onboarding & Governance](../commons-onboarding-and-governance.md). Implementing them here
   would require inventing the still-undrafted account/incorporation and guild models and would violate
   RFC-0000's DESIGN-GAP rule. The shipped server foundation retains their required membership,
   cohort, Health, Capacity, event, and query boundaries.
@@ -166,3 +166,5 @@ from the rate comparison by construction.
 - 2026-07-29: split client onboarding, faction auto-sign, guild participation, cohort-panel, and
   monthly governance surfaces into `commons-onboarding-and-governance.md`; the current RFC remains
   the complete server foundation and neutral production boundary.
+- 2026-07-29: implemented and archived after full Go/Postgres/Node/browser/schema/formula/harness
+  verification and a complete normative-claim review.
