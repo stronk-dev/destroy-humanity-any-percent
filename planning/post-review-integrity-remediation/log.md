@@ -51,3 +51,16 @@
 - D2 is amended before implementation completes. Phase-0 identity now binds economy, Routes, and
   Commons, the scenario is v3 and strict-loads all three, and the guard accepts both feature
   catalog families. Exact-byte tests independently mutate every member of the bundle.
+
+## 2026-07-29 — implementation complete, independent review pending
+
+- Local commits are deliberately layered: `60d5271` is the main implementation input,
+  `5c98632` its first artifact-only identity update, `0c6c075` the fail-closed review fix,
+  `b7c838f` the Routes identity correction, and `6f8517f` the final artifact-only update.
+- The final `make verify` passes with real Postgres: Go vet and every Go/integration package,
+  generated-formula drift, Commons population invariance, full-history balance guard, TypeScript
+  typecheck/build, 6,412 client tests, strict schemas/boundaries, and 19,245 Chromium/Firefox/WebKit
+  tests. The v3 baseline retains identical pacing values; only scenario and constants identities
+  changed.
+- Worktree is clean. Per the review convention, this RFC and Balance Baseline Change Guard
+  Hardening remain `implementing` until a separate reviewer records approval of the combined diff.
