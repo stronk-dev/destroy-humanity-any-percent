@@ -7,7 +7,7 @@ intents and never mutate state directly.
 
 ## Phase-0 scenario
 
-`testdata/harness/scenarios/phase0-production.json` is scenario version 2 (the economy + Commons
+`testdata/harness/scenarios/phase0-production.json` is scenario version 3 (the economy + Routes + Commons
 balance bundle) and runs two versioned policies:
 
 - `casual.phase0` v1: three eight-minute daily sessions at 09:00, 14:00, and 20:00 UTC, acting
@@ -20,7 +20,7 @@ separate deterministic UUIDv7 stream make every run a pure function of its compl
 are parallelized into fixed report slots and reduced by complete key order. Reports contain only
 integers and canonical Decimal strings—never binary JSON floats.
 
-Each scenario names both its economy and Commons catalog. `constants_hash` is computed from the
+Each scenario names its economy, Routes, and Commons catalogs. `constants_hash` is computed from the
 named, length-framed bundle of their exact bytes, so either balance input changes run identity while
 artifact enumeration order does not. Runtime scenario loading rejects unknown milestone kinds;
 schema validation is not the sole closed-registry gate.

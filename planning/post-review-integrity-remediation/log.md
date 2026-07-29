@@ -42,3 +42,12 @@
   `GREATEST` so old delivery cannot move the read model backward.
 - No other implementation finding emerged from the spec/adversarial pass. This is a self-review,
   not the mandatory independent approval; neither active RFC is archived on its strength.
+
+## 2026-07-29 — review correction: Routes join the identity bundle
+
+- The first D2 implementation fixed the filed Commons omission but repeated its shape for Routes:
+  the production resolver selected a Routes catalog by `constants_hash` even though those bytes
+  did not create the hash. A route retune could therefore reuse an old save/run identity.
+- D2 is amended before implementation completes. Phase-0 identity now binds economy, Routes, and
+  Commons, the scenario is v3 and strict-loads all three, and the guard accepts both feature
+  catalog families. Exact-byte tests independently mutate every member of the bundle.

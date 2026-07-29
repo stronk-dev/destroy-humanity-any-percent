@@ -96,6 +96,9 @@ func TestBaselineOnlyRewriteFailsChangeGuard(t *testing.T) {
 	if err := ValidateBaselineCommit([]string{baselinePath}, []string{"balance/commons/phase0.json"}, "BALANCE-CHANGE: Commons retune"); err != nil {
 		t.Fatalf("Commons input was not recognized: %v", err)
 	}
+	if err := ValidateBaselineCommit([]string{baselinePath}, []string{"balance/routes/phase0.json"}, "BALANCE-CHANGE: Routes retune"); err != nil {
+		t.Fatalf("Routes input was not recognized: %v", err)
+	}
 }
 
 func TestCheckedReportsContainNoJSONFloats(t *testing.T) {

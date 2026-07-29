@@ -295,6 +295,7 @@ func TestConstantsHashUsesExactArtifactBytes(t *testing.T) {
 func TestConstantsHashArtifactsIsNamedOrderedAndExact(t *testing.T) {
 	first, err := ConstantsHashArtifacts(map[string][]byte{
 		"economy": []byte("{}"),
+		"routes":  []byte("{\"gate\":1}"),
 		"commons": []byte("{\"weight\":1}"),
 	})
 	if err != nil {
@@ -303,12 +304,14 @@ func TestConstantsHashArtifactsIsNamedOrderedAndExact(t *testing.T) {
 	reordered, err := ConstantsHashArtifacts(map[string][]byte{
 		"commons": []byte("{\"weight\":1}"),
 		"economy": []byte("{}"),
+		"routes":  []byte("{\"gate\":1}"),
 	})
 	if err != nil || reordered != first {
 		t.Fatalf("reordered hash=%q want=%q err=%v", reordered, first, err)
 	}
 	commonsChanged, err := ConstantsHashArtifacts(map[string][]byte{
 		"economy": []byte("{}"),
+		"routes":  []byte("{\"gate\":1}"),
 		"commons": []byte("{\"weight\":2}"),
 	})
 	if err != nil || commonsChanged == first {
@@ -316,10 +319,19 @@ func TestConstantsHashArtifactsIsNamedOrderedAndExact(t *testing.T) {
 	}
 	economyChanged, err := ConstantsHashArtifacts(map[string][]byte{
 		"economy": []byte("{}\n"),
+		"routes":  []byte("{\"gate\":1}"),
 		"commons": []byte("{\"weight\":1}"),
 	})
 	if err != nil || economyChanged == first || len(first) != len("sha256:")+64 {
 		t.Fatalf("economy change hash=%q original=%q err=%v", economyChanged, first, err)
+	}
+	routesChanged, err := ConstantsHashArtifacts(map[string][]byte{
+		"economy": []byte("{}"),
+		"routes":  []byte("{\"gate\":2}"),
+		"commons": []byte("{\"weight\":1}"),
+	})
+	if err != nil || routesChanged == first {
+		t.Fatalf("Routes change hash=%q original=%q err=%v", routesChanged, first, err)
 	}
 	if _, err := ConstantsHashArtifacts(nil); !errors.Is(err, ErrInvalidState) {
 		t.Fatalf("empty bundle err=%v", err)

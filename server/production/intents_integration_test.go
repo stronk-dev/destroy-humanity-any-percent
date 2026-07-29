@@ -83,7 +83,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	hash, err := save.ConstantsHashArtifacts(map[string][]byte{"economy": catalogBytes, "commons": commonsBytes})
+	hash, err := save.ConstantsHashArtifacts(map[string][]byte{"economy": catalogBytes, "routes": routeBytes, "commons": commonsBytes})
 	if err != nil {
 		t.Fatal(err)
 	}

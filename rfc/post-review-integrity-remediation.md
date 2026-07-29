@@ -28,12 +28,12 @@ weights and prove both live paths move to the exact result returned by that auth
 ### D2 — Balance identity is an artifact bundle
 
 `constants_hash` is the SHA-256 identity of a named, deterministically ordered bundle of exact
-artifact bytes. The Phase-0 production bundle contains the economy catalog and Commons catalog.
+artifact bytes. The Phase-0 production bundle contains the economy, Routes, and Commons catalogs.
 Names and byte lengths are framed before bytes so concatenation is unambiguous. Reordering bundle
 inputs must not change the hash; changing either artifact must.
 
-Harness scenarios name both artifacts. The baseline change guard treats `balance/commons/**` as
-an accepted input. Adding Commons to an existing scenario is a reviewed balance-input change and
+Harness scenarios name all three artifacts. The baseline change guard treats `balance/routes/**`
+and `balance/commons/**` as accepted inputs. Adding them to an existing scenario is a reviewed balance-input change and
 requires a separate artifact-only `BALANCE-CHANGE:` baseline regeneration commit.
 
 ### D3 — Closed harness semantics and attributable failures
@@ -77,7 +77,7 @@ These exclusions do not block implementation or verification of D1-D6.
 
 1. Retuning Commons weights changes projector and harness output identically and updates the
    published artifact.
-2. Economy or Commons byte changes alter `constants_hash`; bundle iteration order does not.
+2. Economy, Routes, or Commons byte changes alter `constants_hash`; bundle iteration order does not.
 3. Commons changes are accepted guard inputs and the current harness artifacts are regenerated in
    a separate `BALANCE-CHANGE:` commit.
 4. Unknown milestone kinds and disallowed route imports fail runtime/CI respectively.

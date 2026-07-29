@@ -3,6 +3,7 @@
   "id": "scenario.invalid_seed",
   "version": 1,
   "catalog": "balance/catalogs/phase0.json",
+  "routes_catalog": "balance/routes/phase0.json",
   "commons_catalog": "balance/commons/phase0.json",
   "runs": [{"policy_id": "chaos.phase0", "policy_version": 1, "seed_start": 9007199254740992, "seed_count": 1, "horizon_ms": 1}],
   "milestones": [{"id": "m", "kind": "intent_applied", "must_reach": true}],

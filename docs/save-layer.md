@@ -75,7 +75,7 @@ increasing order. Leaving clears the complete window.
 `constants_hash` is `sha256:` plus the lowercase SHA-256 digest of a deterministically ordered,
 named artifact bundle. Each artifact name and byte length is framed before its exact bytes, so
 iteration and concatenation cannot make two bundles collide structurally. Phase-0 production
-binds the economy and Commons catalogs. Saves resolve that immutable bundle before restoration;
+binds the economy, Routes, and Commons catalogs. Saves resolve that immutable bundle before restoration;
 reformatting either catalog therefore changes its identity deliberately. Economy-only unit/store
 fixtures retain the single-artifact helper where no Commons policy participates.
 

@@ -18,6 +18,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
 
@@ -30,6 +31,7 @@ type Scenario struct {
 	ID                 string      `json:"id"`
 	Version            int         `json:"version"`
 	Catalog            string      `json:"catalog"`
+	RoutesCatalog      string      `json:"routes_catalog"`
 	CommonsCatalog     string      `json:"commons_catalog"`
 	Runs               []RunSpec   `json:"runs"`
 	Milestones         []Milestone `json:"milestones"`
@@ -141,6 +143,8 @@ type Suite struct {
 	ScenarioBytes       []byte
 	Catalog             *economy.Catalog
 	CatalogBytes        []byte
+	RoutesCatalog       *routes.Catalog
+	RoutesCatalogBytes  []byte
 	CommonsCatalog      *commons.Catalog
 	CommonsCatalogBytes []byte
 	ScenarioHash        string
@@ -158,7 +162,7 @@ func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
 	if err := decoder.Decode(&scenario); err != nil {
 		return nil, fmt.Errorf("scenario: %w", err)
 	}
-	if scenario.SchemaVersion != 1 || scenario.ID == "" || scenario.Version < 1 || scenario.Catalog == "" || scenario.CommonsCatalog == "" || len(scenario.Runs) == 0 {
+	if scenario.SchemaVersion != 1 || scenario.ID == "" || scenario.Version < 1 || scenario.Catalog == "" || scenario.RoutesCatalog == "" || scenario.CommonsCatalog == "" || len(scenario.Runs) == 0 {
 		return nil, errors.New("invalid scenario envelope")
 	}
 	knownInvariants := map[string]bool{"state_encodes": true, "numeric_domain": true, "resource_bounds": true,
@@ -192,15 +196,25 @@ func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
 	if err != nil {
 		return nil, err
 	}
+	routesCatalogBytes, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(scenario.RoutesCatalog)))
+	if err != nil {
+		return nil, err
+	}
+	routesCatalog, err := routes.LoadCatalog(routesCatalogBytes)
+	if err != nil {
+		return nil, err
+	}
 	constantsHash, err := save.ConstantsHashArtifacts(map[string][]byte{
 		"commons": commonsCatalogBytes,
 		"economy": catalogBytes,
+		"routes":  routesCatalogBytes,
 	})
 	if err != nil {
 		return nil, err
 	}
 	scenarioDigest := sha256.Sum256(scenarioBytes)
 	return &Suite{Scenario: scenario, ScenarioBytes: scenarioBytes, Catalog: catalog, CatalogBytes: catalogBytes,
+		RoutesCatalog: routesCatalog, RoutesCatalogBytes: routesCatalogBytes,
 		CommonsCatalog: commonsCatalog, CommonsCatalogBytes: commonsCatalogBytes,
 		ScenarioHash: "sha256:" + hex.EncodeToString(scenarioDigest[:]), ConstantsHash: constantsHash}, nil
 }
