@@ -2,8 +2,8 @@
   "schema_version": 1,
   "minimum_case_count": 7,
   "required_case_names": [
-    "company v1 balances to v4 canonical production envelope",
-    "company v2 production state to v4 exact policy state",
+    "company v1 balances to v5 canonical route envelope",
+    "company v2 production state to v5 route defaults",
     "company v3 phase-matched cursors floor together",
     "company v3 demonstrated phase mismatch floors to aligned cursors",
     "company v3 millisecond boundary floors independently without inversion",

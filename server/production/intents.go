@@ -17,6 +17,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
 
@@ -30,7 +31,40 @@ var (
 const (
 	IntentBuyGenerator       = "buy_generator"
 	IntentPerformManualBatch = "perform_manual_batch"
+	IntentCrossGate          = "cross_gate"
+	IntentBuyRouteHint       = "buy_route_hint"
 )
+
+type RouteCatalogResolver interface {
+	ResolveRoutes(constantsHash string) (*routes.Catalog, bool)
+}
+
+type RouteProjector interface {
+	Project(context.Context, []save.EventRecord) error
+	RepairFounder(context.Context, string, *save.State) error
+}
+
+type ServiceOption func(*Service) error
+
+func WithRouteCatalogs(resolver RouteCatalogResolver) ServiceOption {
+	return func(service *Service) error {
+		if resolver == nil {
+			return ErrInvalidIntent
+		}
+		service.routeCatalogs = resolver
+		return nil
+	}
+}
+
+func WithRouteProjector(projector RouteProjector) ServiceOption {
+	return func(service *Service) error {
+		if projector == nil {
+			return ErrInvalidIntent
+		}
+		service.routeProjector = projector
+		return nil
+	}
+}
 
 type ContributionProvider interface {
 	Contributions(state *save.State, catalog *economy.Catalog) ([]multiplier.Contribution, error)
@@ -59,11 +93,13 @@ type InvariantSink interface {
 }
 
 type Service struct {
-	store         *save.Store
-	catalogs      save.CatalogResolver
-	contributions ContributionProvider
-	metrics       InvariantMetrics
-	logger        *slog.Logger
+	store          *save.Store
+	catalogs       save.CatalogResolver
+	contributions  ContributionProvider
+	metrics        InvariantMetrics
+	logger         *slog.Logger
+	routeCatalogs  RouteCatalogResolver
+	routeProjector RouteProjector
 }
 
 type HandleResult struct {
@@ -82,6 +118,8 @@ type IntentRequest struct {
 	Count            int64
 	ActionID         string
 	WindowMS         int64
+	GateID           string
+	RouteID          string
 }
 
 type invariantCollector struct {
@@ -98,6 +136,7 @@ func NewService(
 	contributions ContributionProvider,
 	metrics InvariantMetrics,
 	logger *slog.Logger,
+	options ...ServiceOption,
 ) (*Service, error) {
 	if store == nil || catalogs == nil {
 		return nil, ErrInvalidIntent
@@ -105,7 +144,13 @@ func NewService(
 	if logger == nil {
 		logger = slog.New(slog.DiscardHandler)
 	}
-	return &Service{store: store, catalogs: catalogs, contributions: contributions, metrics: metrics, logger: logger}, nil
+	service := &Service{store: store, catalogs: catalogs, contributions: contributions, metrics: metrics, logger: logger}
+	for _, option := range options {
+		if option == nil || option(service) != nil {
+			return nil, ErrInvalidIntent
+		}
+	}
+	return service, nil
 }
 
 func (s *Service) Handle(
@@ -130,14 +175,30 @@ func (s *Service) Handle(
 				return rejectedDecision(request, revision.Number, "invalid", request.InvalidDetail)
 			}
 			var contributions []multiplier.Contribution
-			if s.contributions != nil {
+			if s.contributions != nil && request.Kind != IntentBuyRouteHint {
 				var err error
 				contributions, err = s.contributions.Contributions(state, catalog)
 				if err != nil {
 					return save.IntentDecision{}, err
 				}
 			}
-			return Transition(request, state, catalog, revision, mode, now, contributions, collector)
+			var routeCatalog *routes.Catalog
+			if request.Kind == IntentCrossGate || request.Kind == IntentBuyRouteHint {
+				if s.routeCatalogs == nil || s.routeProjector == nil {
+					return save.IntentDecision{}, fmt.Errorf("%w: route runtime unavailable", ErrInvalidIntent)
+				}
+				var ok bool
+				routeCatalog, ok = s.routeCatalogs.ResolveRoutes(revision.ConstantsHash)
+				if !ok {
+					return save.IntentDecision{}, fmt.Errorf("%w: unknown routes catalog %s", ErrInvalidIntent, revision.ConstantsHash)
+				}
+				if request.Kind == IntentBuyRouteHint {
+					if err := s.routeProjector.RepairFounder(ctx, revision.OwnerID, state); err != nil {
+						return save.IntentDecision{}, err
+					}
+				}
+			}
+			return TransitionWithRoutes(request, state, catalog, routeCatalog, revision, mode, now, contributions, collector)
 		})
 	if err != nil {
 		s.recordAbortedInvariants(collector.reports)
@@ -152,6 +213,11 @@ func (s *Service) Handle(
 			}
 			return HandleResult{Receipt: marshalRejection(request.IntentID, current, "idempotency_conflict", request.IntentID)}, nil
 		default:
+			return HandleResult{}, err
+		}
+	}
+	if s.routeProjector != nil {
+		if err := s.routeProjector.Project(ctx, result.Events); err != nil {
 			return HandleResult{}, err
 		}
 	}
@@ -172,15 +238,126 @@ func Transition(
 	contributions []multiplier.Contribution,
 	sink InvariantSink,
 ) (save.IntentDecision, error) {
+	return TransitionWithRoutes(request, state, catalog, nil, revision, mode, now, contributions, sink)
+}
+
+func TransitionWithRoutes(
+	request IntentRequest,
+	state *save.State,
+	catalog *economy.Catalog,
+	routeCatalog *routes.Catalog,
+	revision save.Revision,
+	mode EvaluationMode,
+	now time.Time,
+	contributions []multiplier.Contribution,
+	sink InvariantSink,
+) (save.IntentDecision, error) {
 	service := Service{}
 	switch request.Kind {
 	case IntentBuyGenerator:
 		return service.buyGenerator(request, state, catalog, revision, mode, now, contributions, sink)
 	case IntentPerformManualBatch:
 		return service.performManualBatch(request, state, catalog, revision, mode, now, contributions)
+	case IntentCrossGate:
+		return service.crossGate(request, state, catalog, routeCatalog, revision, mode, now, contributions)
+	case IntentBuyRouteHint:
+		return service.buyRouteHint(request, state, routeCatalog, revision)
 	default:
 		return rejectedDecision(request, revision.Number, "invalid", request.Kind)
 	}
+}
+
+func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution) (save.IntentDecision, error) {
+	if routeCatalog == nil || state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || revision.OwnerID == "" || state.RunSeq < 1 {
+		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	_, exists := routeCatalog.Gate(request.GateID)
+	if !exists {
+		return rejectedDecision(request, revision.Number, "unknown_id", request.GateID)
+	}
+	if state.GatesCrossed[request.GateID] {
+		return rejectedDecision(request, revision.Number, "gate_already_crossed", request.GateID)
+	}
+	if request.RouteID != "" {
+		if _, exists := routeCatalog.Route(request.RouteID); !exists {
+			return rejectedDecision(request, revision.Number, "unknown_id", request.RouteID)
+		}
+	}
+	before := state.Ledger.Snapshot()
+	if _, err := Evaluate(state, catalog, now, mode, contributions); err != nil {
+		return save.IntentDecision{}, err
+	}
+	context, err := routeContext(state, routeCatalog.ContextVersion())
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	resolution, matched, err := routeCatalog.Resolve(request.GateID, request.RouteID, context)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	if !matched {
+		return rejectedDecision(request, revision.Number, "route_predicate_unmet", request.RouteID)
+	}
+	entries := make([]economy.Entry, 0, len(resolution.Requirement))
+	for _, requirement := range resolution.Requirement {
+		balance, exists := state.Ledger.Balance(requirement.ResourceID)
+		if !exists {
+			return save.IntentDecision{}, ErrInvalidEngineState
+		}
+		if balance.Lt(requirement.Amount) {
+			return rejectedDecision(request, revision.Number, "requirement_not_met", requirement.ResourceID)
+		}
+		entries = append(entries, economy.Entry{ResourceID: requirement.ResourceID, Delta: requirement.Amount.Neg()})
+	}
+	if len(entries) > 0 {
+		if _, err := state.Ledger.Apply(economy.Transaction{Entries: entries}); err != nil {
+			return save.IntentDecision{}, err
+		}
+	}
+	if state.GatesCrossed == nil {
+		state.GatesCrossed = map[string]bool{}
+	}
+	state.GatesCrossed[request.GateID] = true
+	events := []save.EventWrite{gateCrossedEvent(request, revision, state.RunSeq)}
+	if request.RouteID != "" {
+		events = append(events, routeExecutedEvent(request, revision, state.RunSeq))
+	}
+	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
+}
+
+func routeContext(state *save.State, version int) (routes.Context, error) {
+	resources := make(map[string]decimal.Decimal)
+	for id, raw := range state.Ledger.Snapshot() {
+		value, err := decimal.ParseCanonical(raw)
+		if err != nil {
+			return routes.Context{}, ErrInvalidEngineState
+		}
+		resources[id] = value
+	}
+	return routes.Context{ContextVersion: version, Resources: resources, DoctrinesByTransition: cloneStrings(state.DoctrinesByTransition), StructureID: state.StructureID, LedgerFactKinds: cloneBools(state.LedgerFactKinds), MeterBands: cloneInts(state.MeterBands), RegionTraits: cloneBools(state.RegionTraits)}, nil
+}
+
+func (s *Service) buyRouteHint(request IntentRequest, state *save.State, routeCatalog *routes.Catalog, revision save.Revision) (save.IntentDecision, error) {
+	if routeCatalog == nil || state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeFounder {
+		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	if _, exists := routeCatalog.Route(request.RouteID); !exists {
+		return rejectedDecision(request, revision.Number, "unknown_id", request.RouteID)
+	}
+	if state.HintsUnlocked[request.RouteID] {
+		return rejectedDecision(request, revision.Number, "already_unlocked", request.RouteID)
+	}
+	cost := routeCatalog.KnowledgePolicy().HintCost
+	if state.RouteKnowledgeBalance < cost {
+		return rejectedDecision(request, revision.Number, "insufficient_route_knowledge", request.RouteID)
+	}
+	state.RouteKnowledgeBalance -= cost
+	if state.HintsUnlocked == nil {
+		state.HintsUnlocked = map[string]bool{}
+	}
+	state.HintsUnlocked[request.RouteID] = true
+	payload, _ := json.Marshal(map[string]any{"route_id": request.RouteID, "cost": cost})
+	return appliedDecision(request, state, revision.Number+1, 1, state.Ledger.Snapshot(), []save.EventWrite{{Kind: save.EventRouteHintPurchased, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload}}, nil)
 }
 
 func (s *Service) buyGenerator(
@@ -379,6 +556,20 @@ func generatorPurchasedEvent(request IntentRequest, resourceID string, count int
 	}
 }
 
+func gateCrossedEvent(request IntentRequest, revision save.Revision, runSeq int64) save.EventWrite {
+	var routeID any
+	if request.RouteID != "" {
+		routeID = request.RouteID
+	}
+	payload, _ := json.Marshal(map[string]any{"gate_id": request.GateID, "route_id": routeID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": runSeq}, "founder_id": revision.OwnerID})
+	return save.EventWrite{Kind: save.EventGateCrossed, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload}
+}
+
+func routeExecutedEvent(request IntentRequest, revision save.Revision, runSeq int64) save.EventWrite {
+	payload, _ := json.Marshal(map[string]any{"route_id": request.RouteID, "gate_id": request.GateID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": runSeq}, "founder_id": revision.OwnerID})
+	return save.EventWrite{Kind: save.EventRouteExecuted, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload}
+}
+
 func wireChanges(before, after map[string]string) ([]map[string]string, error) {
 	idSet := make(map[string]struct{}, len(before)+len(after))
 	for id := range before {
@@ -425,7 +616,44 @@ func wireSnapshot(state *save.State) map[string]any {
 		"evaluated_through": state.EvaluatedThrough.UTC().Format(time.RFC3339Nano),
 		"compute_credit_ms": state.ComputeCreditMS, "manual_token_milli": state.ManualTokenMilli,
 		"manual_token_refilled_at": state.ManualTokenRefilledAt.UTC().Format(time.RFC3339Nano),
+		"gates_crossed":            state.GatesCrossed, "run_seq": state.RunSeq,
+		"doctrines_by_transition": state.DoctrinesByTransition, "structure_id": state.StructureID,
+		"ledger_fact_kinds": sortedBoolKeys(state.LedgerFactKinds), "meter_bands": state.MeterBands,
+		"region_traits": sortedBoolKeys(state.RegionTraits), "route_knowledge_balance": state.RouteKnowledgeBalance,
+		"hints_unlocked": sortedBoolKeys(state.HintsUnlocked),
 	}
+}
+
+func cloneStrings(source map[string]string) map[string]string {
+	result := make(map[string]string, len(source))
+	for key, value := range source {
+		result[key] = value
+	}
+	return result
+}
+func cloneBools(source map[string]bool) map[string]bool {
+	result := make(map[string]bool, len(source))
+	for key, value := range source {
+		result[key] = value
+	}
+	return result
+}
+func cloneInts(source map[string]int) map[string]int {
+	result := make(map[string]int, len(source))
+	for key, value := range source {
+		result[key] = value
+	}
+	return result
+}
+func sortedBoolKeys(source map[string]bool) []string {
+	keys := make([]string, 0, len(source))
+	for key, value := range source {
+		if value {
+			keys = append(keys, key)
+		}
+	}
+	sort.Strings(keys)
+	return keys
 }
 
 func collectorReports(sink InvariantSink) []InvariantReport {
@@ -529,6 +757,27 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 		}
 		if !parsePositiveSafeInt(root["window_ms"], &request.WindowMS) {
 			request.InvalidDetail = "window_ms"
+		}
+	case IntentCrossGate:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "gate_id", "route_id") {
+			request.InvalidDetail = "cross_gate.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["gate_id"], &request.GateID); err != nil || !intentIDPattern.MatchString(request.GateID) {
+			request.InvalidDetail = "gate_id"
+		}
+		if string(root["route_id"]) != "null" {
+			if err := json.Unmarshal(root["route_id"], &request.RouteID); err != nil || !intentIDPattern.MatchString(request.RouteID) {
+				request.InvalidDetail = "route_id"
+			}
+		}
+	case IntentBuyRouteHint:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "route_id") {
+			request.InvalidDetail = "buy_route_hint.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["route_id"], &request.RouteID); err != nil || !intentIDPattern.MatchString(request.RouteID) {
+			request.InvalidDetail = "route_id"
 		}
 	default:
 		request.InvalidDetail = request.Kind

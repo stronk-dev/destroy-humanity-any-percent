@@ -31,15 +31,31 @@ const (
 type EventKind string
 
 const (
-	EventGeneratorPurchased EventKind = "generator_purchased"
-	EventInvariantReported  EventKind = "invariant_reported"
-	EventCompensation       EventKind = "compensation"
+	EventGeneratorPurchased    EventKind = "generator_purchased"
+	EventInvariantReported     EventKind = "invariant_reported"
+	EventCompensation          EventKind = "compensation"
+	EventGateCrossed           EventKind = "gate_crossed"
+	EventRouteExecuted         EventKind = "route_executed"
+	EventRouteHintPurchased    EventKind = "route_hint_purchased"
+	EventRouteKnowledgeGranted EventKind = "route_knowledge_granted"
 )
 
 type EventWrite struct {
 	Kind          EventKind
 	SchemaVersion int
 	IntentID      string
+	Payload       json.RawMessage
+}
+
+type EventRecord struct {
+	EventID       string
+	StreamID      string
+	OwnerID       string
+	Revision      int64
+	Kind          EventKind
+	IntentID      string
+	ConstantsHash string
+	OccurredAt    time.Time
 	Payload       json.RawMessage
 }
 
@@ -55,6 +71,7 @@ type IntentResult struct {
 	Outcome IntentOutcome
 	Receipt json.RawMessage
 	Replay  bool
+	Events  []EventRecord
 }
 
 type RevisionConflict struct {
@@ -87,8 +104,9 @@ func (s *Store) ApplyIntent(
 	defer tx.Rollback()
 
 	var scope economy.Scope
+	var ownerID string
 	var archivedAt sql.NullTime
-	if err := tx.QueryRowContext(ctx, `SELECT scope, archived_at FROM save_streams WHERE id=$1 FOR UPDATE`, streamID).Scan(&scope, &archivedAt); errors.Is(err, sql.ErrNoRows) {
+	if err := tx.QueryRowContext(ctx, `SELECT scope, owner_id, archived_at FROM save_streams WHERE id=$1 FOR UPDATE`, streamID).Scan(&scope, &ownerID, &archivedAt); errors.Is(err, sql.ErrNoRows) {
 		return IntentResult{}, ErrNotFound
 	} else if err != nil {
 		return IntentResult{}, err
@@ -112,10 +130,14 @@ func (s *Store) ApplyIntent(
 		if err != nil {
 			return IntentResult{}, fmt.Errorf("%w: stored intent receipt: %v", ErrInvalidState, err)
 		}
+		events, err := s.eventsForIntent(ctx, tx, streamID, ownerID, intentID)
+		if err != nil {
+			return IntentResult{}, err
+		}
 		if err := tx.Commit(); err != nil {
 			return IntentResult{}, err
 		}
-		return IntentResult{Outcome: recordedOutcome, Receipt: cloneRaw(recordedReceipt), Replay: true}, nil
+		return IntentResult{Outcome: recordedOutcome, Receipt: cloneRaw(recordedReceipt), Replay: true, Events: events}, nil
 	}
 	if !errors.Is(err, sql.ErrNoRows) {
 		return IntentResult{}, err
@@ -134,6 +156,7 @@ func (s *Store) ApplyIntent(
 		return IntentResult{}, err
 	}
 	revision.StreamID = streamID
+	revision.OwnerID = ownerID
 	if revision.Number != expectedRevision {
 		return IntentResult{}, &RevisionConflict{Expected: expectedRevision, Current: revision.Number}
 	}
@@ -179,17 +202,26 @@ func (s *Store) ApplyIntent(
 		VALUES ($1,$2,$3,$4,$5)`, streamID, newRevision, CurrentVersion, encodedState, revision.ConstantsHash); err != nil {
 		return IntentResult{}, err
 	}
+	recordedEvents := make([]EventRecord, 0, len(decision.Events))
 	for _, event := range decision.Events {
 		var eventIntent any
 		if event.IntentID != "" {
 			eventIntent = event.IntentID
 		}
-		if _, err := tx.ExecContext(ctx, `
+		var record EventRecord
+		var storedIntent sql.NullString
+		if err := tx.QueryRowContext(ctx, `
 			INSERT INTO events (stream_id,revision,schema_version,kind,intent_id,constants_hash,payload)
-			VALUES ($1,$2,$3,$4,$5,$6,$7)`, streamID, newRevision, event.SchemaVersion,
-			event.Kind, eventIntent, revision.ConstantsHash, event.Payload); err != nil {
+			VALUES ($1,$2,$3,$4,$5,$6,$7)
+			RETURNING event_id,kind,intent_id,occurred_at,payload`, streamID, newRevision, event.SchemaVersion,
+			event.Kind, eventIntent, revision.ConstantsHash, event.Payload).Scan(&record.EventID, &record.Kind, &storedIntent, &record.OccurredAt, &record.Payload); err != nil {
 			return IntentResult{}, err
 		}
+		record.StreamID, record.OwnerID, record.Revision, record.ConstantsHash = streamID, ownerID, newRevision, revision.ConstantsHash
+		if storedIntent.Valid {
+			record.IntentID = storedIntent.String
+		}
+		recordedEvents = append(recordedEvents, record)
 	}
 	if _, err := tx.ExecContext(ctx, `
 		INSERT INTO intent_records (stream_id,intent_id,request_hash,outcome,receipt)
@@ -202,7 +234,29 @@ func (s *Store) ApplyIntent(
 	if err := tx.Commit(); err != nil {
 		return IntentResult{}, err
 	}
-	return IntentResult{Outcome: decision.Outcome, Receipt: cloneRaw(decision.Receipt)}, nil
+	return IntentResult{Outcome: decision.Outcome, Receipt: cloneRaw(decision.Receipt), Events: recordedEvents}, nil
+}
+
+func (s *Store) eventsForIntent(ctx context.Context, tx *sql.Tx, streamID, ownerID, intentID string) ([]EventRecord, error) {
+	rows, err := tx.QueryContext(ctx, `SELECT event_id,revision,kind,intent_id,constants_hash,occurred_at,payload FROM events WHERE stream_id=$1 AND intent_id=$2 ORDER BY event_id`, streamID, intentID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var events []EventRecord
+	for rows.Next() {
+		var record EventRecord
+		var storedIntent sql.NullString
+		if err := rows.Scan(&record.EventID, &record.Revision, &record.Kind, &storedIntent, &record.ConstantsHash, &record.OccurredAt, &record.Payload); err != nil {
+			return nil, err
+		}
+		record.StreamID, record.OwnerID = streamID, ownerID
+		if storedIntent.Valid {
+			record.IntentID = storedIntent.String
+		}
+		events = append(events, record)
+	}
+	return events, rows.Err()
 }
 
 func (s *Store) PruneIntentRecords(ctx context.Context, cutoff time.Time) (int64, error) {
@@ -274,10 +328,59 @@ func validateEventPayload(event EventWrite) error {
 		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.CompensatesEventID) || !mechanicalIDPattern.MatchString(payload.ReasonKey) {
 			return fmt.Errorf("%w: invalid compensation payload", ErrInvalidStream)
 		}
+	case EventGateCrossed:
+		var payload struct {
+			GateID    string     `json:"gate_id"`
+			RouteID   *string    `json:"route_id"`
+			RunID     routeRunID `json:"run_id"`
+			FounderID string     `json:"founder_id"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !mechanicalIDPattern.MatchString(payload.GateID) ||
+			payload.RouteID != nil && !mechanicalIDPattern.MatchString(*payload.RouteID) || !validRouteRunID(payload.RunID) || !uuidPattern.MatchString(payload.FounderID) {
+			return fmt.Errorf("%w: invalid gate_crossed payload", ErrInvalidStream)
+		}
+	case EventRouteExecuted:
+		var payload struct {
+			RouteID   string     `json:"route_id"`
+			GateID    string     `json:"gate_id"`
+			RunID     routeRunID `json:"run_id"`
+			FounderID string     `json:"founder_id"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !mechanicalIDPattern.MatchString(payload.RouteID) ||
+			!mechanicalIDPattern.MatchString(payload.GateID) || !validRouteRunID(payload.RunID) || !uuidPattern.MatchString(payload.FounderID) {
+			return fmt.Errorf("%w: invalid route_executed payload", ErrInvalidStream)
+		}
+	case EventRouteHintPurchased:
+		var payload struct {
+			RouteID string `json:"route_id"`
+			Cost    int64  `json:"cost"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !mechanicalIDPattern.MatchString(payload.RouteID) || payload.Cost <= 0 || payload.Cost > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid route_hint_purchased payload", ErrInvalidStream)
+		}
+	case EventRouteKnowledgeGranted:
+		var payload struct {
+			RouteID string `json:"route_id"`
+			Amount  int64  `json:"amount"`
+			Source  string `json:"source"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !mechanicalIDPattern.MatchString(payload.RouteID) || payload.Amount <= 0 || payload.Amount > decimal.MaxExactInteger ||
+			(payload.Source != "registry_first" && payload.Source != "founder_first" && payload.Source != "repeat" && payload.Source != "collapse_exit" && payload.Source != "region_draft") {
+			return fmt.Errorf("%w: invalid route_knowledge_granted payload", ErrInvalidStream)
+		}
 	default:
 		return fmt.Errorf("%w: unknown event kind %q", ErrInvalidStream, event.Kind)
 	}
 	return nil
+}
+
+type routeRunID struct {
+	CompanyStreamID string `json:"company_stream_id"`
+	RunSeq          int64  `json:"run_seq"`
+}
+
+func validRouteRunID(run routeRunID) bool {
+	return uuidPattern.MatchString(run.CompanyStreamID) && run.RunSeq > 0 && run.RunSeq <= decimal.MaxExactInteger
 }
 
 func decodeStrictJSON(data []byte, destination any) error {

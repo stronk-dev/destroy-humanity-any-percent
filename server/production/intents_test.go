@@ -12,6 +12,7 @@ import (
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
 
@@ -55,6 +56,97 @@ func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	}
 	if _, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"buy_generator","expected_revision":1} {}`)); err == nil {
 		t.Fatal("trailing JSON value was accepted")
+	}
+	cross, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`))
+	if err != nil || cross.InvalidDetail != "" || cross.GateID != "gate.t2_to_t3" || cross.RouteID != "" {
+		t.Fatalf("cross=%+v err=%v", cross, err)
+	}
+	hint, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"buy_route_hint","expected_revision":1,"route_id":"route.nonprofit_wrapper_zip"}`))
+	if err != nil || hint.InvalidDetail != "" || hint.RouteID != "route.nonprofit_wrapper_zip" {
+		t.Fatalf("hint=%+v err=%v", hint, err)
+	}
+}
+
+func TestCrossGateDiscountSubstituteAndRejections(t *testing.T) {
+	economyCatalog, routeCatalog := phase0Catalog(t), phase0Routes(t)
+	revision := save.Revision{StreamID: "11111111-1111-4111-8111-111111111111", OwnerID: "22222222-2222-4222-8222-222222222222", Number: 1}
+	state := engineState(t, economyCatalog, "1e9", 0)
+	state.RunSeq = 1
+	state.GatesCrossed = map[string]bool{}
+	state.DoctrinesByTransition = map[string]string{"transition.t3_to_t4": "doctrine.capture"}
+	state.LedgerFactKinds = map[string]bool{}
+	state.MeterBands = map[string]int{}
+	state.RegionTraits = map[string]bool{}
+	request := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentCrossGate, GateID: "gate.t2_to_t3", RouteID: "route.ipo_sequence_break"}
+	decision, err := TransitionWithRoutes(request, state, economyCatalog, routeCatalog, revision, ModeOnline, engineCursor, nil, nil)
+	if err != nil || decision.Outcome != save.IntentApplied || state.Ledger.Snapshot()["company.cash"] != "6e8" || !state.GatesCrossed[request.GateID] || len(decision.Events) != 2 {
+		t.Fatalf("discount decision=%+v state=%+v err=%v", decision, state, err)
+	}
+	if decision.Events[0].Kind != save.EventGateCrossed || decision.Events[1].Kind != save.EventRouteExecuted {
+		t.Fatalf("events=%+v", decision.Events)
+	}
+	already, err := TransitionWithRoutes(request, state, economyCatalog, routeCatalog, save.Revision{Number: 2, StreamID: revision.StreamID, OwnerID: revision.OwnerID}, ModeOnline, engineCursor, nil, nil)
+	if err != nil || already.Outcome != save.IntentRejected || !bytes.Contains(already.Receipt, []byte("gate_already_crossed")) {
+		t.Fatalf("already=%s err=%v", already.Receipt, err)
+	}
+
+	substitute := engineState(t, economyCatalog, "0", 0)
+	substitute.RunSeq = 1
+	substitute.GatesCrossed = map[string]bool{}
+	substitute.DoctrinesByTransition = map[string]string{}
+	substitute.StructureID = "structure.nonprofit"
+	substitute.LedgerFactKinds = map[string]bool{}
+	substitute.MeterBands = map[string]int{}
+	substitute.RegionTraits = map[string]bool{}
+	request.GateID, request.RouteID = "gate.t4_to_t5", "route.nonprofit_wrapper_zip"
+	decision, err = TransitionWithRoutes(request, substitute, economyCatalog, routeCatalog, revision, ModeOnline, engineCursor, nil, nil)
+	if err != nil || decision.Outcome != save.IntentApplied || substitute.Ledger.Snapshot()["company.cash"] != "0" {
+		t.Fatalf("substitute=%+v err=%v", decision, err)
+	}
+
+	unmet := engineState(t, economyCatalog, "1e9", 0)
+	unmet.RunSeq = 1
+	unmet.GatesCrossed = map[string]bool{}
+	unmet.DoctrinesByTransition = map[string]string{}
+	unmet.LedgerFactKinds = map[string]bool{}
+	unmet.MeterBands = map[string]int{}
+	unmet.RegionTraits = map[string]bool{}
+	request.GateID, request.RouteID = "gate.t2_to_t3", "route.ipo_sequence_break"
+	decision, err = TransitionWithRoutes(request, unmet, economyCatalog, routeCatalog, revision, ModeOnline, engineCursor, nil, nil)
+	if err != nil || decision.Outcome != save.IntentRejected || !bytes.Contains(decision.Receipt, []byte("route_predicate_unmet")) {
+		t.Fatalf("unmet=%s err=%v", decision.Receipt, err)
+	}
+}
+
+func TestBuyRouteHintDoesNotAffectPredicateEvaluation(t *testing.T) {
+	economyCatalog, routeCatalog := phase0Catalog(t), phase0Routes(t)
+	ledger, err := economy.RestoreLedger(economyCatalog, economy.ScopeFounder, map[string]string{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := &save.State{Ledger: ledger, GeneratorCounts: map[string]int64{}, EvaluatedThrough: engineCursor, ManualTokenRefilledAt: engineCursor, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{}, LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{}, RegionTraits: map[string]bool{}, RouteKnowledgeBalance: 60, HintsUnlocked: map[string]bool{}}
+	route, _ := routeCatalog.Route("route.nonprofit_wrapper_zip")
+	context, err := routeContext(state, routeCatalog.ContextVersion())
+	if err != nil {
+		t.Fatal(err)
+	}
+	before, err := routes.EvaluatePredicate(route.Predicate, context)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentBuyRouteHint, RouteID: route.RouteID}
+	decision, err := TransitionWithRoutes(request, state, economyCatalog, routeCatalog, save.Revision{Number: 1}, ModeOnline, engineCursor, nil, nil)
+	if err != nil || decision.Outcome != save.IntentApplied || state.RouteKnowledgeBalance != 10 || !state.HintsUnlocked[route.RouteID] || len(decision.Events) != 1 {
+		t.Fatalf("decision=%+v state=%+v err=%v", decision, state, err)
+	}
+	afterContext, _ := routeContext(state, routeCatalog.ContextVersion())
+	after, err := routes.EvaluatePredicate(route.Predicate, afterContext)
+	if err != nil || before != after {
+		t.Fatalf("predicate changed before=%v after=%v err=%v", before, after, err)
+	}
+	again, err := TransitionWithRoutes(request, state, economyCatalog, routeCatalog, save.Revision{Number: 2}, ModeOnline, engineCursor, nil, nil)
+	if err != nil || !bytes.Contains(again.Receipt, []byte("already_unlocked")) {
+		t.Fatalf("again=%s err=%v", again.Receipt, err)
 	}
 }
 

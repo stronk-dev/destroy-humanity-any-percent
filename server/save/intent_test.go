@@ -39,6 +39,23 @@ func TestValidateIntentDecisionEventRegistry(t *testing.T) {
 	}
 }
 
+func TestValidateRouteEventPayloads(t *testing.T) {
+	run := `{"company_stream_id":"11111111-1111-4111-8111-111111111111","run_seq":1}`
+	events := []EventWrite{
+		{Kind: EventGateCrossed, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"gate_id":"gate.example","route_id":null,"run_id":` + run + `,"founder_id":"22222222-2222-4222-8222-222222222222"}`)},
+		{Kind: EventRouteExecuted, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"route_id":"route.example","gate_id":"gate.example","run_id":` + run + `,"founder_id":"22222222-2222-4222-8222-222222222222"}`)},
+		{Kind: EventRouteHintPurchased, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"route_id":"route.example","cost":50}`)},
+		{Kind: EventRouteKnowledgeGranted, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"route_id":"route.example","amount":25,"source":"founder_first"}`)},
+	}
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: events}, testIntentID); err != nil {
+		t.Fatal(err)
+	}
+	events[1].Payload = json.RawMessage(`{"route_id":"route.example","gate_id":"gate.example","run_id":` + run + `,"founder_id":"not-a-uuid"}`)
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: events}, testIntentID); !errors.Is(err, ErrInvalidStream) {
+		t.Fatalf("invalid route event error=%v", err)
+	}
+}
+
 func TestUUIDV7AndRequestHashGrammar(t *testing.T) {
 	if !uuidV7Pattern.MatchString(testIntentID) {
 		t.Fatal("valid UUIDv7 rejected")

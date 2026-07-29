@@ -1,8 +1,8 @@
 {
-  "corpus_version": 3,
+  "corpus_version": 4,
   "cases": [
     {
-      "name": "company v1 balances to v4 canonical production envelope",
+      "name": "company v1 balances to v5 canonical route envelope",
       "from_version": 1,
       "scope": "company",
       "migration_baseline": "2026-07-28T08:00:00.123456789Z",
@@ -11,7 +11,7 @@
           "company.cash": "1e0"
         }
       },
-      "expect_v4": {
+      "expect_v5": {
         "balances": {
           "company.cash": "1e0"
         },
@@ -21,11 +21,14 @@
         "evaluated_through": "2026-07-28T08:00:00.123Z",
         "compute_credit_ms": 0,
         "manual_token_milli": 50000,
-        "manual_token_refilled_at": "2026-07-28T08:00:00.123Z"
+        "manual_token_refilled_at": "2026-07-28T08:00:00.123Z",
+        "gates_crossed": {}, "run_seq": 1, "doctrines_by_transition": {}, "structure_id": "",
+        "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
+        "route_knowledge_balance": 0, "hints_unlocked": []
       }
     },
     {
-      "name": "company v2 production state to v4 exact policy state",
+      "name": "company v2 production state to v5 route defaults",
       "from_version": 2,
       "scope": "company",
       "migration_baseline": "2026-07-28T07:00:00Z",
@@ -38,7 +41,7 @@
         },
         "evaluated_through": "2026-07-28T08:00:00Z"
       },
-      "expect_v4": {
+      "expect_v5": {
         "balances": {
           "company.cash": "2e0"
         },
@@ -48,7 +51,10 @@
         "evaluated_through": "2026-07-28T08:00:00Z",
         "compute_credit_ms": 0,
         "manual_token_milli": 50000,
-        "manual_token_refilled_at": "2026-07-28T08:00:00Z"
+        "manual_token_refilled_at": "2026-07-28T08:00:00Z",
+        "gates_crossed": {}, "run_seq": 1, "doctrines_by_transition": {}, "structure_id": "",
+        "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
+        "route_knowledge_balance": 0, "hints_unlocked": []
       }
     },
     {
@@ -64,13 +70,16 @@
         "manual_token_milli": 49000,
         "manual_token_refilled_at": "2026-07-28T08:00:00.1009Z"
       },
-      "expect_v4": {
+      "expect_v5": {
         "balances": {"company.cash": "3e0"},
         "generators": {"generator.example": 4},
         "evaluated_through": "2026-07-28T08:00:00.1Z",
         "compute_credit_ms": 7,
         "manual_token_milli": 49000,
-        "manual_token_refilled_at": "2026-07-28T08:00:00.1Z"
+        "manual_token_refilled_at": "2026-07-28T08:00:00.1Z",
+        "gates_crossed": {}, "run_seq": 1, "doctrines_by_transition": {}, "structure_id": "",
+        "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
+        "route_knowledge_balance": 0, "hints_unlocked": []
       }
     },
     {
@@ -86,13 +95,16 @@
         "manual_token_milli": 48000,
         "manual_token_refilled_at": "2026-07-28T08:00:00.1001Z"
       },
-      "expect_v4": {
+      "expect_v5": {
         "balances": {"company.cash": "4e0"},
         "generators": {"generator.example": 5},
         "evaluated_through": "2026-07-28T08:00:00.1Z",
         "compute_credit_ms": 8,
         "manual_token_milli": 48000,
-        "manual_token_refilled_at": "2026-07-28T08:00:00.1Z"
+        "manual_token_refilled_at": "2026-07-28T08:00:00.1Z",
+        "gates_crossed": {}, "run_seq": 1, "doctrines_by_transition": {}, "structure_id": "",
+        "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
+        "route_knowledge_balance": 0, "hints_unlocked": []
       }
     },
     {
@@ -108,13 +120,16 @@
         "manual_token_milli": 47000,
         "manual_token_refilled_at": "2026-07-28T08:00:00.100999999Z"
       },
-      "expect_v4": {
+      "expect_v5": {
         "balances": {"company.cash": "5e0"},
         "generators": {"generator.example": 6},
         "evaluated_through": "2026-07-28T08:00:00.101Z",
         "compute_credit_ms": 9,
         "manual_token_milli": 47000,
-        "manual_token_refilled_at": "2026-07-28T08:00:00.1Z"
+        "manual_token_refilled_at": "2026-07-28T08:00:00.1Z",
+        "gates_crossed": {}, "run_seq": 1, "doctrines_by_transition": {}, "structure_id": "",
+        "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [],
+        "route_knowledge_balance": 0, "hints_unlocked": []
       }
     },
     {

@@ -9,6 +9,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
 
@@ -30,6 +31,19 @@ func phase0Catalog(t *testing.T) *economy.Catalog {
 		t.Fatal(err)
 	}
 	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return catalog
+}
+
+func phase0Routes(t *testing.T) *routes.Catalog {
+	t.Helper()
+	data, err := os.ReadFile("../../balance/routes/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := routes.LoadCatalog(data)
 	if err != nil {
 		t.Fatal(err)
 	}

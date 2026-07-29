@@ -9,13 +9,23 @@ import (
 	"time"
 
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/routeprojection"
+	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
 
-type integrationCatalogs map[string]*economy.Catalog
+type integrationCatalogs struct {
+	economy map[string]*economy.Catalog
+	routes  map[string]*routes.Catalog
+}
 
 func (catalogs integrationCatalogs) Resolve(hash string) (*economy.Catalog, bool) {
-	catalog, ok := catalogs[hash]
+	catalog, ok := catalogs.economy[hash]
+	return catalog, ok
+}
+
+func (catalogs integrationCatalogs) ResolveRoutes(hash string) (*routes.Catalog, bool) {
+	catalog, ok := catalogs.routes[hash]
 	return catalog, ok
 }
 
@@ -33,7 +43,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err := save.Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `TRUNCATE events, intent_records, save_revisions, save_streams`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE registry_routes, route_hint_projection_events, founder_route_state, founder_route_executions, route_projection_events, events, intent_records, save_revisions, save_streams CASCADE`); err != nil {
 		t.Fatal(err)
 	}
 	catalogBytes, err := os.ReadFile("../../balance/catalogs/phase0.json")
@@ -44,9 +54,21 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	routeBytes, err := os.ReadFile("../../balance/routes/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	routeCatalog, err := routes.LoadCatalog(routeBytes)
+	if err != nil {
+		t.Fatal(err)
+	}
 	hash := save.ConstantsHash(catalogBytes)
-	resolver := integrationCatalogs{hash: catalog}
+	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}}
 	store, err := save.NewStore(db, resolver, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	projector, err := routeprojection.New(db, resolver)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -58,6 +80,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	state := &save.State{
 		Ledger: ledger, GeneratorCounts: map[string]int64{"generator.beige_tower": 0},
 		EvaluatedThrough: cursor, ManualTokenMilli: 50_000, ManualTokenRefilledAt: cursor,
+		StructureID: "structure.nonprofit",
 	}
 	revision, err := store.CreateStream(ctx, save.StreamKey{
 		OwnerKind: save.OwnerFounder, OwnerID: "66666666-6666-4666-8666-666666666666", Scope: economy.ScopeCompany,
@@ -66,7 +89,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	metrics := fakeInvariantMetrics{}
-	service, err := NewService(store, resolver, nil, metrics, nil)
+	service, err := NewService(store, resolver, nil, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -205,6 +228,55 @@ func TestIntentServiceIntegration(t *testing.T) {
 	}
 	service.recordAbortedInvariants([]InvariantReport{abortReport})
 
+	cross := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-999999999999","kind":"cross_gate","expected_revision":5,"gate_id":"gate.t4_to_t5","route_id":"route.nonprofit_wrapper_zip"}`)
+	crossed, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(time.Second), cross)
+	if err != nil || crossed.Replay {
+		t.Fatalf("cross=%s replay=%v err=%v", crossed.Receipt, crossed.Replay, err)
+	}
+	var crossReceipt struct {
+		NewRevision int64 `json:"new_revision"`
+		Snapshot    struct {
+			Gates map[string]bool `json:"gates_crossed"`
+		} `json:"snapshot"`
+	}
+	if err := json.Unmarshal(crossed.Receipt, &crossReceipt); err != nil || crossReceipt.NewRevision != 6 || !crossReceipt.Snapshot.Gates["gate.t4_to_t5"] {
+		t.Fatalf("cross receipt=%+v raw=%s err=%v", crossReceipt, crossed.Receipt, err)
+	}
+	crossReplay, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(time.Second), cross)
+	if err != nil || !crossReplay.Replay || string(crossReplay.Receipt) != string(crossed.Receipt) {
+		t.Fatalf("cross replay=%+v err=%v", crossReplay, err)
+	}
+	founderLedger, err := economy.RestoreLedger(catalog, economy.ScopeFounder, map[string]string{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	founderRevision, err := store.CreateStream(ctx, save.StreamKey{
+		OwnerKind: save.OwnerFounder, OwnerID: "66666666-6666-4666-8666-666666666666", Scope: economy.ScopeFounder,
+	}, hash, &save.State{
+		Ledger: founderLedger, GeneratorCounts: map[string]int64{}, EvaluatedThrough: cursor, ManualTokenRefilledAt: cursor,
+	}, save.WriteContext{Cause: "routes.integration"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	hint := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-aaaaaaaaaaaa","kind":"buy_route_hint","expected_revision":1,"route_id":"route.nonprofit_wrapper_zip"}`)
+	hintResult, err := service.Handle(ctx, founderRevision.StreamID, ModeOnline, cursor.Add(time.Second), hint)
+	if err != nil || hintResult.Replay {
+		t.Fatalf("hint=%s replay=%v err=%v", hintResult.Receipt, hintResult.Replay, err)
+	}
+	var hintReceipt struct {
+		Snapshot struct {
+			Balance int64    `json:"route_knowledge_balance"`
+			Hints   []string `json:"hints_unlocked"`
+		} `json:"snapshot"`
+	}
+	if err := json.Unmarshal(hintResult.Receipt, &hintReceipt); err != nil || hintReceipt.Snapshot.Balance != 75 || len(hintReceipt.Snapshot.Hints) != 1 {
+		t.Fatalf("hint receipt=%+v raw=%s err=%v", hintReceipt, hintResult.Receipt, err)
+	}
+	hintReplay, err := service.Handle(ctx, founderRevision.StreamID, ModeOnline, cursor.Add(time.Second), hint)
+	if err != nil || !hintReplay.Replay || string(hintReplay.Receipt) != string(hintResult.Receipt) {
+		t.Fatalf("hint replay=%+v err=%v", hintReplay, err)
+	}
+
 	var revisions, events, intents, invariantEvents int
 	if err := db.QueryRowContext(ctx, `
 		SELECT
@@ -215,7 +287,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	).Scan(&revisions, &events, &intents, &invariantEvents); err != nil {
 		t.Fatal(err)
 	}
-	if revisions != 5 || events != 2 || intents != 6 || invariantEvents != 1 {
+	if revisions != 5 || events != 6 || intents != 7 || invariantEvents != 1 {
 		t.Fatalf("rows revisions=%d events=%d intents=%d invariant_events=%d", revisions, events, intents, invariantEvents)
 	}
 	if metrics[string(InvariantAffordFallback)] != 1 || metrics[string(InvariantResidualClamp)] != 1 ||

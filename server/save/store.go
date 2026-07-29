@@ -45,6 +45,7 @@ type WriteContext struct {
 
 type Revision struct {
 	StreamID      string
+	OwnerID       string
 	Number        int64
 	Version       int
 	ConstantsHash string

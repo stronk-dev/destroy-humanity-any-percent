@@ -59,7 +59,7 @@ type migrationCase struct {
 	Scope             economy.Scope   `json:"scope"`
 	MigrationBaseline string          `json:"migration_baseline"`
 	Input             json.RawMessage `json:"input"`
-	ExpectV4          json.RawMessage `json:"expect_v4"`
+	ExpectV5          json.RawMessage `json:"expect_v5"`
 	ExpectError       bool            `json:"expect_error"`
 }
 
@@ -83,10 +83,15 @@ func testState(t *testing.T) *State {
 	return &State{
 		Ledger: ledger, GeneratorCounts: map[string]int64{"generator.example": 42}, EvaluatedThrough: testCursor,
 		ComputeCreditMS: 1234, ManualTokenMilli: 12_345, ManualTokenRefilledAt: testCursor.Add(-time.Second),
+		GatesCrossed: map[string]bool{"gate.example": true}, RunSeq: 3,
+		DoctrinesByTransition: map[string]string{"transition.example": "doctrine.example"},
+		StructureID:           "structure.example", LedgerFactKinds: map[string]bool{"exit.example": true},
+		MeterBands: map[string]int{"trust.example.standing": 70}, RegionTraits: map[string]bool{"trait.example": true},
+		HintsUnlocked: map[string]bool{},
 	}
 }
 
-func TestStateV4RoundTrip(t *testing.T) {
+func TestStateV5RoundTrip(t *testing.T) {
 	encoded, err := EncodeState(testState(t))
 	if err != nil {
 		t.Fatal(err)
@@ -104,6 +109,12 @@ func TestStateV4RoundTrip(t *testing.T) {
 	if restored.ComputeCreditMS != 1234 || restored.ManualTokenMilli != 12_345 ||
 		!restored.ManualTokenRefilledAt.Equal(testCursor.Add(-time.Second)) {
 		t.Fatalf("restored production state = %+v", restored)
+	}
+	if restored.RunSeq != 3 || !restored.GatesCrossed["gate.example"] ||
+		restored.DoctrinesByTransition["transition.example"] != "doctrine.example" ||
+		restored.StructureID != "structure.example" || !restored.LedgerFactKinds["exit.example"] ||
+		restored.MeterBands["trust.example.standing"] != 70 || !restored.RegionTraits["trait.example"] {
+		t.Fatalf("restored route state = %+v", restored)
 	}
 }
 
@@ -124,7 +135,7 @@ func TestSaveMigrationCorpus(t *testing.T) {
 	if err := json.Unmarshal(baselineData, &baseline); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.CorpusVersion != 3 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
+	if fixture.CorpusVersion != 4 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
 		len(fixture.Cases) < baseline.MinimumCaseCount {
 		t.Fatalf("migration corpus version=%d cases=%d baseline=%+v", fixture.CorpusVersion, len(fixture.Cases), baseline)
 	}
@@ -164,11 +175,11 @@ func TestSaveMigrationCorpus(t *testing.T) {
 			if err := json.Unmarshal(encoded, &got); err != nil {
 				t.Fatal(err)
 			}
-			if err := json.Unmarshal(vector.ExpectV4, &want); err != nil {
+			if err := json.Unmarshal(vector.ExpectV5, &want); err != nil {
 				t.Fatal(err)
 			}
 			if !equalJSON(got, want) {
-				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV4)
+				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV5)
 			}
 			if _, err := RestoreState(encoded, CurrentVersion, stateCatalog(t), vector.Scope, time.Time{}); err != nil {
 				t.Fatal(err)
