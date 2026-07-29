@@ -16,7 +16,7 @@ The Mutual Aid Compact: membership, the Health/Capacity computation, the Enclosu
 
 ### D1 — Membership
 
-- `sign_compact` / `leave_compact` are intents (Production RFC contract: idempotent, evented, revision-tied). Signing is offered as the incorporation contract line-item every run (`05 §5`); Open Source incorporation auto-signs with the larger faction tithe.
+- `sign_compact` / `leave_compact` are intents (Production RFC contract: idempotent, evented, revision-tied). This RFC supplies the authoritative membership contract. The incorporation line-item, Open Source auto-sign behavior, and player-facing panel are owned by [Commons Onboarding & Governance](commons-onboarding-and-governance.md), because no incorporation/faction or client-shell contract exists yet.
 - Membership is company-scoped state (resets at Exit, like the contract it lives in); the founder ledger records signature history as dated facts.
 - Leaving is always allowed, takes effect at the next accrual boundary, and zeroes `sᵢ` (Solidarity rebuilds from scratch on re-signing — the TPP no-exit lesson requires a real exit, the Ostrom lesson prices it).
 
@@ -36,7 +36,9 @@ The commons package exposes exactly one value to production: `commons_modifier(m
 ### D4 — Cohorts
 
 - **Server-assigned, non-elective, persistent, target size ~150** (`05 §5`). Assignment on first sign; rebalancing only on population collapse (merge, never split below floor 40) — cohort identity is the shadow of the future and must not churn.
-- Cohort surface: the panel (named neighbors, co-ops, current standing — **current state only, never a permanent badge**, The Button rule), the cohort-scale Health term, the tithe-dial vote (monthly, direction-not-implementation, within a server band), and mercy scaling for small guilds (`05 §3`).
+- This server foundation owns stable cohort assignment, the cohort-scale Health term, collapse merge,
+  and queryable current standing. The panel (named neighbors and co-ops), monthly tithe-dial vote,
+  guild participation, and mercy presentation are owned by [Commons Onboarding & Governance](commons-onboarding-and-governance.md).
 - Alt-resistance: assignment is non-elective and account-age-weighted; a founder's cohort persists across runs (founder-scoped).
 
 ### D5 — Ambient surfaces (the front door's server half)
@@ -48,7 +50,7 @@ Dispatch events for commons state transitions (Health band crossings, cascade on
 1. `dᵢ` derivation: golden fixtures over representative production stacks (canon-heavy, ethical, mixed) produce the specified indices; **no code path reads route flags or player declarations.**
 2. The buff formula matches spec across the H × sᵢ grid, including the clamp and the 40% floor property (total collapse costs a loyal member ≤ 47% of their commons contribution, never the base game).
 3. Slot boundary: commons and production packages share no imports beyond the slot contract (build-enforced); a non-member has no `commons` slot.
-4. Sign/leave/re-sign: evented, idempotent, `sᵢ` zeroed on leave; the incorporation line-item appears every run.
+4. Sign/leave/re-sign: evented, idempotent, and `sᵢ` zeroed on leave. Incorporation presentation is a successor acceptance gate.
 5. Cohort assignment is deterministic given server state, non-elective, and stable across runs; merge preserves standing.
 6. Population invariance: Health-driven buff rates are statistically indistinguishable at simulated 200 vs 20,000 CCU (harness scenario).
 7. All formulas render in the in-game formula panel (law 9), including `dᵢ`'s slot-weight table.
@@ -57,6 +59,15 @@ Dispatch events for commons state transitions (Health band crossings, cascade on
 
 - Slot-weight table for `dᵢ`, sᵢ accrual/decay constants, tithe band: balance data, provisional per the research, harness-gated.
 - Guild-term fallback for guildless members (cohort substitution) is specified here; revisit if the harness shows it double-weights cohorts.
+
+## Deviations from design
+
+- The design specifies onboarding, the cohort panel, guild participation, and monthly direction voting
+  as part of one player-facing Commons. This implementation deliberately splits those surfaces into
+  [Commons Onboarding & Governance](commons-onboarding-and-governance.md). Implementing them here
+  would require inventing the still-undrafted account/incorporation and guild models and would violate
+  RFC-0000's DESIGN-GAP rule. The shipped server foundation retains their required membership,
+  cohort, Health, Capacity, event, and query boundaries.
 
 ## Executable contracts
 
@@ -144,3 +155,6 @@ from the rate comparison by construction.
 - 2026-07-28: created (draft) from the commons front-door design + Codex's boundary split.
 - 2026-07-29: accepted for implementation by owner direction; C1-C8 bind the previously open
   wire, numeric, persistence, concurrency, projection, and population-invariance contracts.
+- 2026-07-29: split client onboarding, faction auto-sign, guild participation, cohort-panel, and
+  monthly governance surfaces into `commons-onboarding-and-governance.md`; the current RFC remains
+  the complete server foundation and neutral production boundary.

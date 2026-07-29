@@ -1,0 +1,64 @@
+# RFC: Commons Onboarding & Governance
+
+- **Status:** draft
+- **Author:** Codex
+- **Created:** 2026-07-29
+- **Design refs:** `design/05 §3, §5` (guild participation, Commons front door and governance), `design/10 §1` (Open Source participation)
+- **Depends on:** Commons Compact (server foundation), Client Shell & Sim Loop, account/session bootstrap, faction/incorporation model, guild model
+- **Parent / amends:** `commons-compact.md`
+- **Supersedes / superseded by:** —
+- **Planning:** `planning/commons-onboarding-and-governance/` (once implementing)
+
+## Summary
+
+Complete the player-facing half of the Mutual Aid Compact after its server foundation: expose the
+incorporation choice every run, bind Open Source auto-membership, render the cohort and current-standing
+surfaces, connect guild participation, and implement the monthly direction-only tithe vote. This split
+prevents the server RFC from improvising incorporation, faction, guild, or client contracts that do not
+yet exist.
+
+## Specification
+
+- Every run's incorporation contract renders a plain `sign` / `decline` Compact line item. Declining
+  leaves a persistent non-signatory affordance; signing sends the authoritative `sign_compact` intent.
+- Once the faction/incorporation RFC defines Open Source identity, its incorporation path signs the same
+  Compact automatically at the catalog-declared faction tithe. It does not create a private pool.
+- The cohort panel consumes server snapshots/events and shows named neighbors, current Health/Capacity,
+  labeled NPC fallback, co-op entry points, and current standing. It never materializes a permanent moral
+  badge from historical standing.
+- The monthly cohort ballot chooses direction within the server-owned tithe band; it does not accept
+  implementation proposals or arbitrary numeric values. The authoritative election window, eligibility,
+  tie-break, result event, and effective-boundary schemas remain a `DESIGN-GAP` until account, faction,
+  guild, and transport identities are specified.
+- Guild participation contributes to the same Commons and supplies the guild Health term. Guildless
+  members continue using the already-shipped cohort substitution. Small-guild mercy changes access or
+  progress, never the population-normalized Health formula.
+
+## Deviations from design
+
+- None. This RFC is a boundary split from the implemented server foundation, not a mechanics change.
+
+## Acceptance criteria
+
+1. Browser tests prove the Compact line item appears on every incorporation path; decline remains visible,
+   sign uses the server intent, and Open Source uses the same pool with its catalog tithe.
+2. The cohort panel accurately renders current server snapshots, named neighbors, NPC labels, and ambient
+   collapse/recovery/recruitment events without inventing client state.
+3. A closed, versioned ballot contract proves one eligible vote per Founder, deterministic resolution,
+   bounded results, an auditable result event, and application at the declared accrual boundary.
+4. Guild, cohort, and guildless fallback fixtures produce the server-published Health inputs; small-guild
+   mercy cannot change the population-invariance calculation.
+5. Leaving remains available from every member surface and visibly explains Solidarity reset before the
+   authoritative intent is sent.
+
+## Open questions
+
+- `DESIGN-GAP`: ballot identity/eligibility and tie policy await account/session and guild ownership.
+- `DESIGN-GAP`: exact cohort-panel interaction design awaits the Client Shell RFC's implementation.
+- The faction/incorporation RFC owns how Open Source identity is selected and persisted; this RFC only
+  binds that result to the existing Compact intent.
+
+## Changelog
+
+- 2026-07-29: split from Commons Compact during implementation review so missing client/governance
+  dependencies remain explicit rather than improvised or falsely marked shipped.

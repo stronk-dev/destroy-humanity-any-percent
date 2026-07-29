@@ -6,6 +6,11 @@ Founder cohort, and exports one neutral `commons.member` multiplier contribution
 not import Commons code and Commons does not import production; the composition layer connects
 their shared multiplier and post-accrual contracts.
 
+This is the shipped server foundation. The incorporation contract line item, Open Source auto-sign,
+cohort UI, guild term, and monthly direction vote are not yet shipped; their explicit successor is
+`rfc/commons-onboarding-and-governance.md`, which depends on the client, account, faction, and guild
+contracts rather than inventing them here.
+
 ## Catalog and arithmetic
 
 [`balance/commons/phase0.json`](../balance/commons/phase0.json) is strict schema v1. Bounded ratios

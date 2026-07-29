@@ -50,3 +50,8 @@
 - Capacity now adds once per idempotently projected sample under a company-scoped advisory transaction lock; Health/Compliance remain latest-state inputs. Replaying either sample adds nothing. A real-Postgres regression proves sequential `1e0` and `2e0` tithes expose `3e0` at cohort and server scope.
 - Replaced the Commons boundary's source-text scan with an executable dependency-graph check, so test-only imports do not create false failures while a real production dependency still fails closed.
 - The full existing balance report was regenerated out of tree. Pacing, milestones, outcomes, balances, and invariants are unchanged; only the expected catalog/constants and save-state hashes differ.
+
+## 2026-07-29 — dependency-bound surface split
+
+- Final acceptance review found two design obligations that cannot be truthfully implemented in this server foundation: the every-run incorporation/Open Source front door, and the cohort-panel/guild/monthly-vote surface. The repository has no implemented incorporation, faction, guild, transport, or client shell contract, and inventing those models here would violate RFC-0000.
+- Split those obligations into draft `commons-onboarding-and-governance.md`, linked in both directions. Its unresolved ballot and UI schemas are explicit `DESIGN-GAP`s with named dependencies. The current RFC now states the implemented server boundary exactly; no shipped behavior was weakened or silently deferred.
