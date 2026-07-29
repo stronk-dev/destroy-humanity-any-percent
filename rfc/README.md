@@ -9,7 +9,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
-| [The Commons Compact](commons-compact.md) | draft | Production Engine & Intent API |
+| [The Commons Compact](commons-compact.md) | implementing | Production Engine & Intent API |
 | [Combat Data Model](combat-data-model.md) | draft | — |
 | [Client Shell & Sim Loop](client-shell-and-sim-loop.md) | draft | Production Engine & Intent API |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | draft | Production Engine / Client Shell |
