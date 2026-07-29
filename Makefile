@@ -62,7 +62,10 @@ fuzz-ci:
 verify-schema:
 	pnpm --dir client run verify:schema
 
-verify-server: vet test-go formulas-check harness-check
+verify-routes-boundary:
+	@if cd server && GOCACHE=/tmp/cloud-clicker-routes-go-cache go list -deps ./routes | grep -qx 'cloud-clicker/server/production'; then echo 'routes package must not import production' >&2; exit 1; fi
+
+verify-server: vet test-go formulas-check harness-check verify-routes-boundary
 
 verify-client: typecheck test-client
 

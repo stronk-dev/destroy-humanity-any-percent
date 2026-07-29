@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "context_version": 1,
+  "depletion_distinct_routes_required": 2,
+  "knowledge": { "registry_first_bonus": 100, "founder_first_grant": 25, "repeat_grant": 5, "hint_cost": 50 },
+  "gates": [],
+  "surprise": true
+}

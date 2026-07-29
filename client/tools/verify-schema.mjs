@@ -82,6 +82,54 @@ async function verifyResourceLogSource() {
   }
 }
 
+function maxRoutesPerRun(catalog) {
+  const valuesBySlot = new Map();
+  const routes = [];
+  for (const gate of catalog.gates ?? []) {
+    for (const route of gate.routes ?? []) {
+      routes.push(route);
+      const values = valuesBySlot.get(route.exclusion_slot) ?? new Set();
+      values.add(route.exclusion_value);
+      valuesBySlot.set(route.exclusion_slot, values);
+    }
+  }
+  const slots = [...valuesBySlot.keys()].sort();
+  let maximum = 0;
+  const assignment = new Map();
+  const search = (index) => {
+    if (index === slots.length) {
+      maximum = Math.max(maximum, routes.filter((route) => assignment.get(route.exclusion_slot) === route.exclusion_value).length);
+      return;
+    }
+    const slot = slots[index];
+    for (const value of [...valuesBySlot.get(slot)].sort()) {
+      assignment.set(slot, value);
+      search(index + 1);
+    }
+  };
+  search(0);
+  return maximum;
+}
+
+function routeSemanticErrors(catalog) {
+  const errors = [];
+  for (const [gateIndex, gate] of (catalog.gates ?? []).entries()) {
+    for (const [routeIndex, route] of (gate.routes ?? []).entries()) {
+      if (route.active && route.requires_context_version > catalog.context_version) {
+        errors.push(`/gates/${gateIndex}/routes/${routeIndex} active route requires unavailable context`);
+      }
+      if (route.effect?.kind === "discount") {
+        const fraction = new Decimal(route.effect.fraction);
+        if (!fraction.gt(0) || !fraction.lt(1)) errors.push(`/gates/${gateIndex}/routes/${routeIndex}/effect/fraction must be in (0,1)`);
+      }
+    }
+  }
+  if (maxRoutesPerRun(catalog) >= catalog.depletion_distinct_routes_required) {
+    errors.push("depletion is reachable in one run");
+  }
+  return errors;
+}
+
 async function main() {
   const schema = await readJSON(schemaPath);
   const ajv = new Ajv2020({ allErrors: true, strict: true });
@@ -121,6 +169,27 @@ async function main() {
 
   await verifyResourceLogSource();
 
+  const routesSchema = await readJSON(path.join(balanceDirectory, "routes.schema.json"));
+  const validateRoutes = ajv.compile(routesSchema);
+  const routeCatalogs = await jsonFiles(path.join(balanceDirectory, "routes"));
+  const validRoutes = await jsonFiles(path.join(balanceDirectory, "routes-testdata", "valid"));
+  const invalidRoutes = await jsonFiles(path.join(balanceDirectory, "routes-testdata", "invalid"));
+  if (routeCatalogs.length === 0 || validRoutes.length === 0 || invalidRoutes.length === 0) {
+    throw new Error("routes schema verification requires production, positive, and negative catalogs");
+  }
+  for (const filename of [...routeCatalogs, ...validRoutes]) {
+    const data = await readJSON(filename);
+    if (!validateRoutes(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateRoutes)}`);
+    const errors = routeSemanticErrors(data);
+    if (errors.length > 0) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${errors.join("; ")}`);
+  }
+  for (const filename of invalidRoutes) {
+    const data = await readJSON(filename);
+    const shapeValid = validateRoutes(data);
+    const errors = shapeValid ? routeSemanticErrors(data) : [];
+    if (shapeValid && errors.length === 0) throw new Error(`${path.relative(repositoryDirectory, filename)}: expected routes rejection`);
+  }
+
   const harnessDirectory = path.join(repositoryDirectory, "testdata", "harness");
   const scenarioSchema = await readJSON(path.join(harnessDirectory, "scenario.schema.json"));
   const reportSchema = await readJSON(path.join(harnessDirectory, "report.schema.json"));
@@ -147,7 +216,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + harness, ${production.length} catalog(s), ${scenarios.length} scenario(s), ${invalidScenarios.length} negative harness fixture(s)`,
+    `schema ok: economy + routes + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${scenarios.length} scenario(s)`,
   );
 }
 

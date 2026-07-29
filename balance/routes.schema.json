@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cloud-clicker.invalid/routes.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "context_version", "depletion_distinct_routes_required", "knowledge", "gates"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "context_version": { "const": 1 },
+    "depletion_distinct_routes_required": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "knowledge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registry_first_bonus", "founder_first_grant", "repeat_grant", "hint_cost"],
+      "properties": {
+        "registry_first_bonus": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "founder_first_grant": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "repeat_grant": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "hint_cost": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }
+      }
+    },
+    "gates": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/gate" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)*$" },
+    "decimal": { "type": "string", "pattern": "^(?:0|-?[1-9](?:\\.[0-9]{1,11})?e-?[0-9]+)$" },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gate_id", "requirement", "routes"],
+      "properties": {
+        "gate_id": { "$ref": "#/$defs/id" },
+        "requirement": { "type": "array", "items": { "$ref": "#/$defs/requirement" } },
+        "routes": { "type": "array", "items": { "$ref": "#/$defs/route" } }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource_id", "amount"],
+      "properties": { "resource_id": { "$ref": "#/$defs/id" }, "amount": { "$ref": "#/$defs/decimal" } }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route_id", "house_name", "active", "requires_context_version", "exclusion_slot", "exclusion_value", "predicate", "effect"],
+      "properties": {
+        "route_id": { "$ref": "#/$defs/id" },
+        "house_name": { "type": "string", "minLength": 1 },
+        "active": { "type": "boolean" },
+        "requires_context_version": { "type": "integer", "minimum": 1 },
+        "exclusion_slot": { "type": "string", "pattern": "^(?:structure|doctrine:[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)*)$" },
+        "exclusion_value": { "$ref": "#/$defs/id" },
+        "predicate": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } },
+        "effect": { "$ref": "#/$defs/effect" }
+      }
+    },
+    "condition": {
+      "oneOf": [
+        { "$ref": "#/$defs/resourceCondition" },
+        { "$ref": "#/$defs/meterCondition" },
+        { "$ref": "#/$defs/doctrineCondition" },
+        { "$ref": "#/$defs/structureCondition" },
+        { "$ref": "#/$defs/factCondition" },
+        { "$ref": "#/$defs/traitCondition" }
+      ]
+    },
+    "resourceCondition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "resource_id", "value"],
+      "properties": { "kind": { "enum": ["resource_at_least", "resource_at_most"] }, "resource_id": { "$ref": "#/$defs/id" }, "value": { "$ref": "#/$defs/decimal" } }
+    },
+    "meterCondition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "meter_id", "min", "max"],
+      "properties": { "kind": { "const": "meter_band" }, "meter_id": { "$ref": "#/$defs/id" }, "min": { "type": "integer", "minimum": 0, "maximum": 100 }, "max": { "type": "integer", "minimum": 0, "maximum": 100 } }
+    },
+    "doctrineCondition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "transition", "doctrine_id"],
+      "properties": { "kind": { "enum": ["doctrine_is", "doctrine_is_not"] }, "transition": { "$ref": "#/$defs/id" }, "doctrine_id": { "$ref": "#/$defs/id" } }
+    },
+    "structureCondition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "structure_id"],
+      "properties": { "kind": { "const": "structure_is" }, "structure_id": { "$ref": "#/$defs/id" } }
+    },
+    "factCondition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "fact_kind"],
+      "properties": { "kind": { "const": "ledger_fact_present" }, "fact_kind": { "$ref": "#/$defs/id" } }
+    },
+    "traitCondition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "trait_id"],
+      "properties": { "kind": { "const": "region_trait" }, "trait_id": { "$ref": "#/$defs/id" } }
+    },
+    "effect": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["kind", "fraction"], "properties": { "kind": { "const": "discount" }, "fraction": { "$ref": "#/$defs/decimal" } } },
+        { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "substitute" } } }
+      ]
+    }
+  }
+}
