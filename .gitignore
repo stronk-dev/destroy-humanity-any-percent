@@ -12,6 +12,8 @@ client/coverage/
 client/dist/
 client/playwright-report/
 client/test-results/
+client/.vitest-attachments/
+client/test/__screenshots__/
 
 # Go test and profiling artifacts
 server/coverage/

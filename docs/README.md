@@ -18,6 +18,8 @@ Implemented systems:
   gate costs, Depletion proof, first-executor naming, Route Knowledge, and idempotent projections.
 - [Commons Compact](commons.md) — membership, source-derived Enclosure, Health/Capacity,
   persistent cohorts, AI fallback, production multiplier, dispatches, and population invariance.
+- [Client shell](client-shell.md) — Svelte DOM routes, authoritative stream boundary, Worker
+  prediction, reconciliation, visible caps, return flow, lifecycle, and client telemetry.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.

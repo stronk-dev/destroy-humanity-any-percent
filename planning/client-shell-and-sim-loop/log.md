@@ -26,3 +26,17 @@
 - Focused verification: typecheck and Svelte diagnostics clean; 6,412 Node tests pass; production
   build emits a separate prediction Worker chunk; 19,245 tests pass across Chromium, Firefox, and
   WebKit; schema and source-boundary checks pass.
+
+## 2026-07-29 — canonical docs and full gate
+
+- Added `docs/client-shell.md`, updated the canonical docs index and root status, and made the
+  production entry validate the shipped Phase-0 economy catalog before mounting. The docs state
+  the transport gap explicitly: the shell waits on a pending `SnapshotStream`; it does not pretend
+  that an end-to-end playable client exists.
+- `TEST_DATABASE_URL=… make verify` passes: Go vet and all Go packages; formula drift; Commons
+  population invariance; deterministic harness baseline; TypeScript and Svelte checks; production
+  build with a separate Worker; 6,412 Node tests; schemas and source boundaries; and 19,245 tests
+  across Chromium, Firefox, and WebKit.
+- Attempted an extra in-app visual smoke pass after the automated browser gate; this session
+  exposed no controllable browser. No alternate UI surface was substituted. Independent per-change
+  review remains the only process gate before archive.

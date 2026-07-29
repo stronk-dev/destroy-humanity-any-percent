@@ -6,12 +6,12 @@
 
 ## Work breakdown
 
-1. Add the pinned Svelte/Vite shell and strict client-shell policy catalog.
-2. Implement the pure worker state machine and dedicated Worker entry point.
-3. Implement authoritative adaptation, reconciliation, display counters, lifecycle, and intent boundary.
-4. Build the DOM-first contract/main shell with reduced-motion and return-story states.
-5. Add Node/browser/property/boundary tests, canonical docs, and build/CI gates.
-6. Review the complete diff, run full verification, and archive.
+1. [x] Add the pinned Svelte/Vite shell and strict client-shell policy catalog.
+2. [x] Implement the pure worker state machine and dedicated Worker entry point.
+3. [x] Implement authoritative adaptation, reconciliation, display counters, lifecycle, and intent boundary.
+4. [x] Build the DOM-first contract/main/run-end shell with reduced-motion and return-story states.
+5. [x] Add Node/browser/property/boundary tests, canonical docs, and build/CI gates.
+6. [ ] Record the mandatory independent diff review, then archive.
 
 ## Acceptance gates
 

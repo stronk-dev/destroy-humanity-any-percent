@@ -6,7 +6,8 @@ A free, browser-based MMO idle game: climb from a 1995 garage — where you own 
 
 **Status:** design complete; the shared numeric core, economy catalog/kernel, versioned Postgres
 save layer, authoritative production/intent engine, and gate/Route Registry foundation are
-implemented, along with the Commons Compact server foundation. No playable client or deployable
+implemented, along with the Commons Compact server foundation and the Svelte/Worker client shell.
+The shell has no live transport adapter yet, so the game is not playable end to end; no deployable
 server binary exists yet.
 
 ## Development setup
@@ -34,7 +35,9 @@ The useful repository commands are:
 ```sh
 make test         # Go + Node/V8 + Chromium + Firefox + WebKit
 make typecheck    # strict TypeScript check
+make build-client # production Svelte build, including the prediction Worker chunk
 make verify-schema # JSON Schema + positive/negative catalog fixtures
+make verify-client-boundary # prediction/action and balance-mutation package boundaries
 make formulas-check # regenerate + diff the published production formula artifact
 make vet          # Go static analysis
 make vectors      # deterministically regenerate the shared numeric vectors
@@ -53,7 +56,7 @@ pull request. The browser job uses the Playwright image matching the pinned pack
 Chromium, Firefox, and WebKit. `make verify` is the equivalent aggregate local command.
 
 There is no deployment automation yet. Runtime container images, Compose/Caddy deployment,
-websocket draining, and client reconnect behavior belong to later Phase-0 RFCs listed in
+websocket draining, and the live snapshot transport belong to later Phase-0 RFCs listed in
 [`rfc/README.md`](rfc/README.md).
 
 ## Project documentation
