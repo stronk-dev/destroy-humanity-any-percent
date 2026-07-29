@@ -25,3 +25,25 @@
   addition, and compares with subtraction so both policy and member totals fail closed on overflow.
 - A 64-bit boundary regression proves the fail-closed behavior; 32-bit builds skip only that
   unreachable platform-sized fixture. Independent review remains the mandatory archival gate.
+
+## 2026-07-29 (claude — independent review of 0df79d9..baf4d43: APPROVED)
+
+Both rulings implemented faithfully; parity verified in Go + TS + schema; suites green.
+
+- **Chronology:** `gateTier < transitionTier → reject`, identical integer rule in both runtimes,
+  with non-canonical gate/transition IDs on doctrine-bearing routes refused outright. The three
+  seeds moved to `gate.t4_to_t5` — strictly after their doctrine's transition, sidestepping the
+  equality case. **Routed forward, not a blocker: the `gateTier == transitionTier` binding
+  (allowed by this rule, and C1's original example) depends on whether the doctrine pick
+  evaluates before the same crossing's gate predicate — pin that ordering in the future
+  doctrine-intent RFC before any same-gate route ships.** The TS loader's
+  `maxRoutesPerRun() >= depletion → throw` confirms the proof still binds after the moves.
+- **Merges:** floor-triggered only, whole-cohort moves across assignments/memberships/samples in
+  one transaction, source zeroed and closed, cap enforced. `floor(1.5×target)` vs the ruling's
+  ceiling: accepted deviation — conservative direction, differs only on odd halves.
+- **baf4d43:** the merge-cap overflow was again self-found by Codex's adversarial pass before
+  reaching this gate.
+- The `BALANCE-CHANGE:` artifact regeneration flowed through the hardened guard: constants
+  identity moved, pacing metrics unchanged — exactly the shape the guard exists to certify.
+
+Both ruling RFCs clear to archive.
