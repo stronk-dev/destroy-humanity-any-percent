@@ -1,6 +1,6 @@
 # RFC: Leaderboards & Balance Epochs
 
-- **Status:** draft
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Design refs:** `design/05 §6` (derived boards, category model, Route Registry), `design/08 §6` (timer semantics, categories), `design/00` (world records as framing)
 - **Research:** `design/research/speedrun-governance.md` (S1–S39 — the primary source), `design/research/adaptive-balancing.md §8` (Balance Epoch, Board Mandates; **as corrected by** speedrun-governance §5.3)
@@ -95,3 +95,4 @@ The existing history guard already walks every reachable revision. Extension, sa
 - 2026-07-28: created (draft). Closes the deferred-decisions register.
 - 2026-07-29: updated implemented dependencies; Codex acceptance review recorded eight blockers.
 - 2026-07-29: all eight answered with executable contracts L1–L8; Assisted ruled as two structural variables (commons, advisor); cap-lowering rule landed in L8.
+- 2026-07-29: accepted for implementation by `planning/codex-batch-2026-07-29.md`; implementation started immediately behind Prestige so L1 can replace its provisional terminal sequence.

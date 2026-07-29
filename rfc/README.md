@@ -16,8 +16,8 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | draft | Production Engine / Client Shell / Account Bootstrap |
-| [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | draft | Production Engine / Gate Predicates / Prestige |
-| [Prestige & Exits](prestige-and-exits.md) | draft | Production Engine / Save Layer / Account Bootstrap |
+| [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
+| [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 
