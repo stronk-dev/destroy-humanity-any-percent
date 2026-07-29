@@ -1,6 +1,6 @@
 # RFC: Client Shell & Sim Loop
 
-- **Status:** draft
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Design refs:** `design/06 §frontend` (Svelte 5, 20 Hz, DOM-first), `design/00` law 5 (visible caps), `design/11 §1–2` (contract screen, FTUE surfaces), `design/13 §2` (offline-return fast-forward)
 - **Research:** `design/research/browser-rendering.md` (workers, wall-clock deltas, tab throttling), `design/research/tech-stack.md §2`, `design/research/adaptive-balancing.md` (the amplitude-lock boundary, client side)
@@ -57,9 +57,76 @@ Rationale: pure snap (the old table cell) makes every network hiccup a visible t
 
 ## Open questions
 
-- `ε_lerp` default and pulse styling: balance/design data, harness- and taste-gated respectively.
-- The offline-return modal composition (walkthrough hole #10 — splits vs fast-forward vs ripe-Quarter ordering) **lands in this RFC's implementation but is designed in `design/11`**; blocked on that design note, not on engineering.
+- Pulse styling remains presentation data and may change without changing reconciliation semantics.
+- The offline-return composition is resolved in `design/11 §1`: ≤5 s skippable diorama
+  fast-forward, gains docked in the header, then at most one ripe-Quarter modal.
+
+## Executable contracts
+
+### C1 — Abstract authoritative stream
+
+The shell consumes an injected `SnapshotStream`; it does not own WebSocket framing. A snapshot has
+an exact non-negative safe-integer revision and evaluated-through millisecond, a canonical
+`constants_hash`, resource records `{amount, rate_per_second, cap?}`, discrete facts, and typed
+progress coordinates. A receipt has revision, intent ID, applied/rejected status, and the Production
+Engine rejection code. Resource amounts/rates/caps are canonical Decimal strings. Unknown or
+non-canonical state fails at the adapter boundary; revisions below the last committed revision are
+ignored. The transport RFC maps its wire envelope into this interface.
+
+### C2 — Worker and clock protocol
+
+The dedicated module Worker owns prediction state. Exact message kinds are `initialize`,
+`authoritative_snapshot`, `clock_pulse`, and `dispose`; outputs are `predicted_snapshot`,
+`offline_required`, and `worker_metric`. Every pulse carries `performance.now()` from the injected
+monotonic clock. The worker uses a 50-ms accumulator, executes at most 100 fixed steps per pulse,
+and sends a 100-ms snapshot cadence. A gap beyond 5,000 ms emits `offline_required` and performs no
+local catch-up. Worker messages contain structured-clone data only; no `SharedArrayBuffer`, WASM,
+or client persistence authority is introduced.
+
+### C3 — Reconciliation policy data
+
+Strict client-shell catalog schema v1 owns `tick_ms=50`, `snapshot_ms=100`,
+`catchup_ceiling_ms=5000`, `epsilon_lerp_ppm=10000`, `lerp_duration_ms=400`,
+`reconnect_story_threshold_ms=30000`, and `reduced_motion_render_ms=500`. Continuous relative
+divergence is `abs(predicted-authoritative)/max(abs(authoritative),1)` through Decimal operations.
+Below epsilon, a resource converges linearly over the configured duration; at/above epsilon it
+rebases. Discrete differences always rebase. Rejected receipts always rebase and expose their typed
+code as the explanation. Gaps over 30 s select the design/11 return story.
+
+### C4 — Display state
+
+Display arithmetic never calls canonical quantization. Each counter retains committed Decimal,
+predicted Decimal, interpolation endpoints, and an unquantized sub-unit accumulator. The view exposes
+the live Decimal plus a monotonic `activity_ppm` indicator, so a producing counter cannot render as
+unchanged even when notation digits cannot move. A counter equal to its catalog cap exposes the cap's
+`reason_key`; missing reasons reject catalog/snapshot adaptation. Counts/unlocks/tier are discrete and
+never interpolated. Reduced motion uses 500-ms discrete presentation samples with identical values and
+receipts.
+
+### C5 — Lifecycle and return story
+
+`visibilitychange` requests an authoritative snapshot; `pagehide` requests a flush; `freeze`
+disposes worker/channel resources. No `unload` handler exists. A reconnect gap over 30 s yields the
+single return sequence from design/11: skippable fast-forward capped at 5 s, gains header, optional
+ripe-Quarter modal, everything else badges. The shell exposes this state but does not invent Fiscal
+Quarter mechanics.
+
+### C6 — Action and package boundaries
+
+`IntentDispatcher.send(intent)` accepts no predicted state or affordability result and always invokes
+the injected authoritative request adapter. A source-boundary test forbids the dispatcher from
+importing prediction modules and forbids shell code from importing balance mutation paths. Shell code
+may read validated catalogs, snapshots, receipts, and the existing numeric/production kernels only.
+
+## Deviations from design
+
+None. The worker uses structured-clone snapshots initially; the research's transferable ArrayBuffer
+optimization remains optional because canonical Decimal strings cannot be represented losslessly as
+binary floats.
 
 ## Changelog
 
 - 2026-07-28: created (draft). Owns and resolves the two orphaned decisions from the deferred-decisions register.
+- 2026-07-29: accepted for implementation by owner direction; C1-C6 close the abstract stream,
+  worker, catalog, reconciliation, display, lifecycle, and action-boundary contracts. The stale
+  offline-return blocker was resolved by the already-adopted `design/11 §1` sequence.
