@@ -62,6 +62,10 @@ func (p *Projector) Project(ctx context.Context, source []save.EventRecord) erro
 		if !events[i].OccurredAt.Equal(events[j].OccurredAt) {
 			return events[i].OccurredAt.Before(events[j].OccurredAt)
 		}
+		leftPriority, rightPriority := projectionPriority(events[i].Kind), projectionPriority(events[j].Kind)
+		if leftPriority != rightPriority {
+			return leftPriority < rightPriority
+		}
 		return strings.Compare(events[i].EventID, events[j].EventID) < 0
 	})
 	for _, event := range events {
@@ -77,6 +81,19 @@ func (p *Projector) Project(ctx context.Context, source []save.EventRecord) erro
 		}
 	}
 	return nil
+}
+
+func projectionPriority(kind save.EventKind) int {
+	switch kind {
+	case save.EventCompactSigned:
+		return 0
+	case save.EventCompactSampled:
+		return 1
+	case save.EventCompactLeft:
+		return 2
+	default:
+		return 3
+	}
 }
 
 func (p *Projector) project(ctx context.Context, event save.EventRecord) error {

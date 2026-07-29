@@ -38,3 +38,8 @@
 - Expanded the closed Go/DB event registry and strict payload tests for the entire Commons family.
 - Published `docs/commons.md`, updated production/save canonical docs for the six-intent surface and save v6, and updated repository/onboarding status. Formula generation publishes an explicit empty Phase-0 source-weight array rather than JSON null.
 - Focused Go/TypeScript/schema tests and the full Postgres integration target pass after the dispatch migration.
+
+## 2026-07-29 — complete-diff review correction
+
+- Found a real ordering defect before archive: PostgreSQL `now()` is transaction-stable, so the final `compact_sampled` and `compact_left` events from one leave share a timestamp. UUID ordering could project leave first and reject the legitimate final sample.
+- Bound Commons projection order for equal timestamps as sign → sample → leave, then raw event ID. Added an end-to-end sign → sample → leave integration regression and verified the projection ends non-member while retaining the final sample/Health update.

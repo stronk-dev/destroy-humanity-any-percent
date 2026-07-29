@@ -288,6 +288,15 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil || commonsSnapshot.HealthPPM <= 0 || commonsSnapshot.CohortCapacity == "0" {
 		t.Fatalf("commons snapshot=%+v err=%v", commonsSnapshot, err)
 	}
+	leave := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-dddddddddddd","kind":"leave_compact","expected_revision":8}`)
+	leftCompact, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(2*time.Hour+2*time.Second), leave)
+	if err != nil || leftCompact.Replay {
+		t.Fatalf("leave=%s replay=%v err=%v", leftCompact.Receipt, leftCompact.Replay, err)
+	}
+	var projectedMember bool
+	if err := db.QueryRowContext(ctx, `SELECT member FROM company_compact_memberships WHERE company_stream_id=$1`, revision.StreamID).Scan(&projectedMember); err != nil || projectedMember {
+		t.Fatalf("projected member=%v err=%v", projectedMember, err)
+	}
 	founderLedger, err := economy.RestoreLedger(catalog, economy.ScopeFounder, map[string]string{})
 	if err != nil {
 		t.Fatal(err)
@@ -329,7 +338,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	).Scan(&revisions, &events, &intents, &invariantEvents); err != nil {
 		t.Fatal(err)
 	}
-	if revisions != 5 || events != 8 || intents != 9 || invariantEvents != 1 {
+	if revisions != 5 || events != 10 || intents != 10 || invariantEvents != 1 {
 		t.Fatalf("rows revisions=%d events=%d intents=%d invariant_events=%d", revisions, events, intents, invariantEvents)
 	}
 	if metrics[string(InvariantAffordFallback)] != 1 || metrics[string(InvariantResidualClamp)] != 1 ||
