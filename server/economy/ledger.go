@@ -43,6 +43,13 @@ type Ledger struct {
 	balances map[string]decimal.Decimal
 }
 
+type applyMode uint8
+
+const (
+	applyStrict applyMode = iota
+	applyPositiveAccrual
+)
+
 func NewLedger(catalog *Catalog, scope Scope) (*Ledger, error) {
 	if catalog == nil {
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidTransaction)
@@ -113,6 +120,17 @@ func (l *Ledger) Snapshot() map[string]string {
 }
 
 func (l *Ledger) Apply(transaction Transaction) (Receipt, error) {
+	return l.apply(transaction, applyStrict)
+}
+
+// ApplyAccrual atomically applies non-negative production deltas. Unlike Apply,
+// it saturates resources at their declared hardcaps and returns a canonical
+// delta that reproduces the authoritative after value when re-applied.
+func (l *Ledger) ApplyAccrual(transaction Transaction) (Receipt, error) {
+	return l.apply(transaction, applyPositiveAccrual)
+}
+
+func (l *Ledger) apply(transaction Transaction, mode applyMode) (Receipt, error) {
 	entriesByResource := make(map[string][]decimal.Decimal)
 	for index, entry := range transaction.Entries {
 		definition, exists := l.catalog.resourceByID[entry.ResourceID]
@@ -124,6 +142,9 @@ func (l *Ledger) Apply(transaction Transaction) (Receipt, error) {
 		}
 		if !entry.Delta.IsStateValue() {
 			return Receipt{}, fmt.Errorf("%w: entry %d has non-state delta", ErrInvalidTransaction, index)
+		}
+		if mode == applyPositiveAccrual && entry.Delta.Lt(decimal.Zero) {
+			return Receipt{}, fmt.Errorf("%w: entry %d has negative accrual delta", ErrInvalidTransaction, index)
 		}
 		entriesByResource[entry.ResourceID] = append(entriesByResource[entry.ResourceID], entry.Delta)
 	}
@@ -140,17 +161,41 @@ func (l *Ledger) Apply(transaction Transaction) (Receipt, error) {
 	sort.Strings(resourceIDs)
 
 	prospective := make(map[string]decimal.Decimal, len(resourceIDs))
+	appliedDeltas := make(map[string]decimal.Decimal, len(resourceIDs))
 	for _, resourceID := range resourceIDs {
 		definition := l.catalog.resourceByID[resourceID]
-		next := l.balances[resourceID].Add(net[resourceID]).Quantize(decimal.CanonicalSignificantDigits)
+		before := l.balances[resourceID]
+		if !before.IsStateValue() || before.Lt(definition.Minimum) {
+			return Receipt{}, fmt.Errorf("%w: starting balance for %q is below its minimum", ErrInvalidTransaction, resourceID)
+		}
+		if definition.Hardcap != nil && before.Gt(definition.Hardcap.Amount) {
+			return Receipt{}, fmt.Errorf("%w: starting balance for %q exceeds its hardcap", ErrInvalidTransaction, resourceID)
+		}
+
+		next := before.Add(net[resourceID]).Quantize(decimal.CanonicalSignificantDigits)
 		if !next.IsStateValue() {
 			return Receipt{}, fmt.Errorf("%w: result for %q is outside the finite Decimal domain", ErrInvalidTransaction, resourceID)
 		}
 		if next.Lt(definition.Minimum) {
 			return Receipt{}, fmt.Errorf("%w: %q", ErrBelowMinimum, resourceID)
 		}
+		preferredDelta := net[resourceID]
 		if definition.Hardcap != nil && next.Gt(definition.Hardcap.Amount) {
-			return Receipt{}, fmt.Errorf("%w: %q", ErrAboveHardcap, resourceID)
+			if mode == applyStrict {
+				return Receipt{}, fmt.Errorf("%w: %q", ErrAboveHardcap, resourceID)
+			}
+			next = definition.Hardcap.Amount
+			preferredDelta = next.Sub(before).Quantize(decimal.CanonicalSignificantDigits)
+		}
+		if mode == applyPositiveAccrual && !before.Eq(next) {
+			applied, ok := reproducibleDelta(before, next, preferredDelta, mode == applyPositiveAccrual)
+			if !ok {
+				return Receipt{}, fmt.Errorf(
+					"%w: receipt delta for %q cannot reproduce committed value (before=%s preferred=%s after=%s)",
+					ErrInvalidTransaction, resourceID, before.String(), preferredDelta.String(), next.String(),
+				)
+			}
+			appliedDeltas[resourceID] = applied
 		}
 		prospective[resourceID] = next
 	}
@@ -163,12 +208,47 @@ func (l *Ledger) Apply(transaction Transaction) (Receipt, error) {
 			continue
 		}
 		l.balances[resourceID] = after
+		delta := after.Sub(before).Quantize(decimal.CanonicalSignificantDigits)
+		if mode == applyPositiveAccrual {
+			delta = appliedDeltas[resourceID]
+		}
 		receipt.Changes = append(receipt.Changes, Change{
 			ResourceID: resourceID,
 			Before:     before.String(),
-			Delta:      after.Sub(before).Quantize(decimal.CanonicalSignificantDigits).String(),
+			Delta:      delta.String(),
 			After:      after.String(),
 		})
 	}
 	return receipt, nil
+}
+
+// reproducibleDelta selects the closest canonical 12-digit representation of
+// preferred that reproduces after through the ledger's quantized-add path.
+// The probe order is nominal, -1, +1, -2, +2 ulps, as specified for saturated
+// accrual receipts.
+func reproducibleDelta(before, after, preferred decimal.Decimal, nonNegative bool) (decimal.Decimal, bool) {
+	nominal := preferred.Quantize(decimal.CanonicalSignificantDigits)
+	if !nominal.IsStateValue() {
+		return decimal.NaN, false
+	}
+	if nominal.Eq(decimal.Zero) {
+		if before.Add(nominal).Quantize(decimal.CanonicalSignificantDigits).Eq(after) {
+			return nominal, true
+		}
+		return decimal.NaN, false
+	}
+
+	for _, offset := range []float64{0, -1, 1, -2, 2} {
+		candidate := decimal.New(
+			nominal.Mantissa()+offset*1e-11,
+			nominal.Exponent(),
+		).Quantize(decimal.CanonicalSignificantDigits)
+		if !candidate.IsStateValue() || nonNegative && candidate.Lt(decimal.Zero) {
+			continue
+		}
+		if before.Add(candidate).Quantize(decimal.CanonicalSignificantDigits).Eq(after) {
+			return candidate, true
+		}
+	}
+	return decimal.NaN, false
 }

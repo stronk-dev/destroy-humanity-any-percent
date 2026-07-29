@@ -89,25 +89,11 @@ func Evaluate(
 		if err != nil {
 			return EvaluationResult{}, fmt.Errorf("%w: accrue %s: %v", ErrInvalidEngineState, resourceID, err)
 		}
-		balance, exists := state.Ledger.Balance(resourceID)
-		definition, defined := catalog.Resource(resourceID)
-		if !exists || !defined {
-			return EvaluationResult{}, fmt.Errorf("%w: missing production resource %q", ErrInvalidEngineState, resourceID)
-		}
-		if definition.Hardcap != nil {
-			headroom := definition.Hardcap.Amount.Sub(balance).Quantize(decimal.CanonicalSignificantDigits)
-			if headroom.Lt(decimal.Zero) {
-				return EvaluationResult{}, fmt.Errorf("%w: resource %q exceeds hardcap", ErrInvalidEngineState, resourceID)
-			}
-			if delta.Gt(headroom) {
-				delta = headroom
-			}
-		}
 		if !delta.Eq(decimal.Zero) {
 			entries = append(entries, economy.Entry{ResourceID: resourceID, Delta: delta})
 		}
 	}
-	receipt, err := state.Ledger.Apply(economy.Transaction{Entries: entries})
+	receipt, err := state.Ledger.ApplyAccrual(economy.Transaction{Entries: entries})
 	if err != nil {
 		return EvaluationResult{}, fmt.Errorf("%w: ledger commit: %v", ErrInvalidEngineState, err)
 	}
