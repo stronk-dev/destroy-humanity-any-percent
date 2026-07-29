@@ -1,8 +1,8 @@
 {
-  "version": 2,
+  "version": 3,
   "cases": [
     {
-      "name": "company v1 balances to v3 production envelope",
+      "name": "company v1 balances to v4 canonical production envelope",
       "from_version": 1,
       "scope": "company",
       "migration_baseline": "2026-07-28T08:00:00.123456789Z",
@@ -11,21 +11,21 @@
           "company.cash": "1e0"
         }
       },
-      "expect_v3": {
+      "expect_v4": {
         "balances": {
           "company.cash": "1e0"
         },
         "generators": {
           "generator.example": 0
         },
-        "evaluated_through": "2026-07-28T08:00:00.123456789Z",
+        "evaluated_through": "2026-07-28T08:00:00.123Z",
         "compute_credit_ms": 0,
         "manual_token_milli": 50000,
-        "manual_token_refilled_at": "2026-07-28T08:00:00.123456789Z"
+        "manual_token_refilled_at": "2026-07-28T08:00:00.123Z"
       }
     },
     {
-      "name": "company v2 production state to v3 exact policy state",
+      "name": "company v2 production state to v4 exact policy state",
       "from_version": 2,
       "scope": "company",
       "migration_baseline": "2026-07-28T07:00:00Z",
@@ -38,7 +38,7 @@
         },
         "evaluated_through": "2026-07-28T08:00:00Z"
       },
-      "expect_v3": {
+      "expect_v4": {
         "balances": {
           "company.cash": "2e0"
         },
@@ -50,6 +50,102 @@
         "manual_token_milli": 50000,
         "manual_token_refilled_at": "2026-07-28T08:00:00Z"
       }
+    },
+    {
+      "name": "company v3 phase-matched cursors floor together",
+      "from_version": 3,
+      "scope": "company",
+      "migration_baseline": "2026-07-28T07:00:00Z",
+      "input": {
+        "balances": {"company.cash": "3e0"},
+        "generators": {"generator.example": 4},
+        "evaluated_through": "2026-07-28T08:00:00.1009Z",
+        "compute_credit_ms": 7,
+        "manual_token_milli": 49000,
+        "manual_token_refilled_at": "2026-07-28T08:00:00.1009Z"
+      },
+      "expect_v4": {
+        "balances": {"company.cash": "3e0"},
+        "generators": {"generator.example": 4},
+        "evaluated_through": "2026-07-28T08:00:00.1Z",
+        "compute_credit_ms": 7,
+        "manual_token_milli": 49000,
+        "manual_token_refilled_at": "2026-07-28T08:00:00.1Z"
+      }
+    },
+    {
+      "name": "company v3 demonstrated phase mismatch floors to aligned cursors",
+      "from_version": 3,
+      "scope": "company",
+      "migration_baseline": "2026-07-28T07:00:00Z",
+      "input": {
+        "balances": {"company.cash": "4e0"},
+        "generators": {"generator.example": 5},
+        "evaluated_through": "2026-07-28T08:00:00.1009Z",
+        "compute_credit_ms": 8,
+        "manual_token_milli": 48000,
+        "manual_token_refilled_at": "2026-07-28T08:00:00.1001Z"
+      },
+      "expect_v4": {
+        "balances": {"company.cash": "4e0"},
+        "generators": {"generator.example": 5},
+        "evaluated_through": "2026-07-28T08:00:00.1Z",
+        "compute_credit_ms": 8,
+        "manual_token_milli": 48000,
+        "manual_token_refilled_at": "2026-07-28T08:00:00.1Z"
+      }
+    },
+    {
+      "name": "company v3 millisecond boundary floors independently without inversion",
+      "from_version": 3,
+      "scope": "company",
+      "migration_baseline": "2026-07-28T07:00:00Z",
+      "input": {
+        "balances": {"company.cash": "5e0"},
+        "generators": {"generator.example": 6},
+        "evaluated_through": "2026-07-28T08:00:00.101000001Z",
+        "compute_credit_ms": 9,
+        "manual_token_milli": 47000,
+        "manual_token_refilled_at": "2026-07-28T08:00:00.100999999Z"
+      },
+      "expect_v4": {
+        "balances": {"company.cash": "5e0"},
+        "generators": {"generator.example": 6},
+        "evaluated_through": "2026-07-28T08:00:00.101Z",
+        "compute_credit_ms": 9,
+        "manual_token_milli": 47000,
+        "manual_token_refilled_at": "2026-07-28T08:00:00.1Z"
+      }
+    },
+    {
+      "name": "lying v4 evaluated cursor is rejected",
+      "from_version": 4,
+      "scope": "company",
+      "migration_baseline": "2026-07-28T07:00:00Z",
+      "input": {
+        "balances": {"company.cash": "6e0"},
+        "generators": {"generator.example": 7},
+        "evaluated_through": "2026-07-28T08:00:00.1009Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-07-28T08:00:00.1Z"
+      },
+      "expect_error": true
+    },
+    {
+      "name": "lying v4 manual cursor is rejected",
+      "from_version": 4,
+      "scope": "company",
+      "migration_baseline": "2026-07-28T07:00:00Z",
+      "input": {
+        "balances": {"company.cash": "7e0"},
+        "generators": {"generator.example": 8},
+        "evaluated_through": "2026-07-28T08:00:00.101Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-07-28T08:00:00.1009Z"
+      },
+      "expect_error": true
     }
   ]
 }

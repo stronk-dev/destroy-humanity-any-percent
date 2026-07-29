@@ -265,10 +265,11 @@ func (s *Service) performManualBatch(
 }
 
 func refillManualTokens(state *save.State, policy economy.ManualPolicy, now time.Time) {
-	if !now.After(state.ManualTokenRefilledAt) {
+	effectiveNow := save.CanonicalServerTime(now)
+	if !effectiveNow.After(state.ManualTokenRefilledAt) {
 		return
 	}
-	elapsedMS := now.Sub(state.ManualTokenRefilledAt).Milliseconds()
+	elapsedMS := effectiveNow.Sub(state.ManualTokenRefilledAt).Milliseconds()
 	if elapsedMS <= 0 {
 		return
 	}
@@ -280,7 +281,7 @@ func refillManualTokens(state *save.State, policy economy.ManualPolicy, now time
 			state.ManualTokenMilli += elapsedMS * policy.RefillMilliPerMS
 		}
 	}
-	state.ManualTokenRefilledAt = state.ManualTokenRefilledAt.Add(time.Duration(elapsedMS) * time.Millisecond)
+	state.ManualTokenRefilledAt = effectiveNow
 }
 
 func appliedDecision(

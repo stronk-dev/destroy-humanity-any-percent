@@ -40,7 +40,7 @@ const stateCatalogJSON = `{
     "burst_speed":"2e0","burst_max_duration_ms":14400000}
 }`
 
-var testCursor = time.Date(2026, 7, 28, 8, 0, 0, 123456789, time.UTC)
+var testCursor = time.Date(2026, 7, 28, 8, 0, 0, 123_000_000, time.UTC)
 
 type migrationFixture struct {
 	Version int             `json:"version"`
@@ -53,7 +53,8 @@ type migrationCase struct {
 	Scope             economy.Scope   `json:"scope"`
 	MigrationBaseline string          `json:"migration_baseline"`
 	Input             json.RawMessage `json:"input"`
-	ExpectV3          json.RawMessage `json:"expect_v3"`
+	ExpectV4          json.RawMessage `json:"expect_v4"`
+	ExpectError       bool            `json:"expect_error"`
 }
 
 func stateCatalog(t *testing.T) *economy.Catalog {
@@ -79,7 +80,7 @@ func testState(t *testing.T) *State {
 	}
 }
 
-func TestStateV3RoundTrip(t *testing.T) {
+func TestStateV4RoundTrip(t *testing.T) {
 	encoded, err := EncodeState(testState(t))
 	if err != nil {
 		t.Fatal(err)
@@ -109,7 +110,7 @@ func TestSaveMigrationCorpus(t *testing.T) {
 	if err := json.Unmarshal(data, &fixture); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.Version != 2 || len(fixture.Cases) < 2 {
+	if fixture.Version != 3 || len(fixture.Cases) < 7 {
 		t.Fatalf("migration fixture version=%d cases=%d", fixture.Version, len(fixture.Cases))
 	}
 	for _, vector := range fixture.Cases {
@@ -119,6 +120,12 @@ func TestSaveMigrationCorpus(t *testing.T) {
 				t.Fatal(err)
 			}
 			restored, err := RestoreState(vector.Input, vector.FromVersion, stateCatalog(t), vector.Scope, baseline)
+			if vector.ExpectError {
+				if !errors.Is(err, ErrInvalidState) {
+					t.Fatalf("migration error = %v, want ErrInvalidState", err)
+				}
+				return
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -130,11 +137,11 @@ func TestSaveMigrationCorpus(t *testing.T) {
 			if err := json.Unmarshal(encoded, &got); err != nil {
 				t.Fatal(err)
 			}
-			if err := json.Unmarshal(vector.ExpectV3, &want); err != nil {
+			if err := json.Unmarshal(vector.ExpectV4, &want); err != nil {
 				t.Fatal(err)
 			}
 			if !equalJSON(got, want) {
-				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV3)
+				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV4)
 			}
 			if _, err := RestoreState(encoded, CurrentVersion, stateCatalog(t), vector.Scope, time.Time{}); err != nil {
 				t.Fatal(err)
@@ -202,6 +209,32 @@ func TestEncodeRejectsUnsafeGeneratorCountAndMissingCursor(t *testing.T) {
 	state.EvaluatedThrough = time.Time{}
 	if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
 		t.Fatalf("missing cursor error = %v", err)
+	}
+}
+
+func TestEncodeRejectsNonCanonicalProductionCursors(t *testing.T) {
+	tests := []struct {
+		name   string
+		mutate func(*State)
+	}{
+		{name: "evaluated sub-millisecond", mutate: func(state *State) {
+			state.EvaluatedThrough = state.EvaluatedThrough.Add(time.Nanosecond)
+		}},
+		{name: "manual sub-millisecond", mutate: func(state *State) {
+			state.ManualTokenRefilledAt = state.ManualTokenRefilledAt.Add(time.Nanosecond)
+		}},
+		{name: "non-UTC location", mutate: func(state *State) {
+			state.EvaluatedThrough = state.EvaluatedThrough.In(time.FixedZone("test", 3600))
+		}},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			state := testState(t)
+			test.mutate(state)
+			if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
+				t.Fatalf("error = %v, want ErrInvalidState", err)
+			}
+		})
 	}
 }
 

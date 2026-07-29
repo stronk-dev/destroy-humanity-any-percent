@@ -14,7 +14,10 @@ import (
 	"cloud-clicker/server/economy"
 )
 
-const CurrentVersion = 3
+const (
+	CurrentVersion           = 4
+	millisecondCursorVersion = 4
+)
 
 var ErrInvalidState = errors.New("invalid saved state")
 
@@ -37,7 +40,7 @@ type stateV2 struct {
 	EvaluatedThrough string            `json:"evaluated_through"`
 }
 
-type stateV3 struct {
+type stateV4 struct {
 	Balances              map[string]string `json:"balances"`
 	Generators            map[string]int64  `json:"generators"`
 	EvaluatedThrough      string            `json:"evaluated_through"`
@@ -78,7 +81,7 @@ func EncodeState(state *State) ([]byte, error) {
 	if state.ManualTokenRefilledAt.After(state.EvaluatedThrough) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
-	encoded, err := json.Marshal(stateV3{
+	encoded, err := json.Marshal(stateV4{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
 		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt,
@@ -100,17 +103,17 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
 	}
 
-	var source stateV3
+	var source stateV4
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
 			return nil, err
 		}
-		cursor, err := formatCursor(migrationBaseline)
+		cursor, err := formatCursor(CanonicalServerTime(migrationBaseline))
 		if err != nil {
 			return nil, fmt.Errorf("%w: version-1 migration baseline: %v", ErrInvalidState, err)
 		}
-		source = stateV3{
+		source = stateV4{
 			Balances: legacy.Balances, Generators: zeroGeneratorCounts(catalog, scope), EvaluatedThrough: cursor,
 		}
 	} else if version == 2 {
@@ -118,7 +121,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source = stateV3{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
+		source = stateV4{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
 	} else if err := decodeState(data, &source); err != nil {
 		return nil, err
 	}
@@ -134,7 +137,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if err != nil {
 		return nil, err
 	}
-	cursor, err := parseCursor(source.EvaluatedThrough)
+	cursor, err := restoreCursor(source.EvaluatedThrough, version)
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +146,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		source.ManualTokenMilli = catalog.ManualPolicy().BucketCapMilli
 		source.ManualTokenRefilledAt = source.EvaluatedThrough
 	}
-	refilledAt, err := parseCursor(source.ManualTokenRefilledAt)
+	refilledAt, err := restoreCursor(source.ManualTokenRefilledAt, version)
 	if err != nil {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at: %v", ErrInvalidState, err)
 	}
@@ -204,11 +207,20 @@ func zeroGeneratorCounts(catalog *economy.Catalog, scope economy.Scope) map[stri
 	return counts
 }
 
+// CanonicalServerTime returns the only timestamp representation permitted for
+// authoritative production cursors: UTC truncated to an exact millisecond.
+func CanonicalServerTime(value time.Time) time.Time {
+	return value.UTC().Truncate(time.Millisecond)
+}
+
 func formatCursor(value time.Time) (string, error) {
 	if value.IsZero() {
 		return "", fmt.Errorf("%w: evaluated_through is required", ErrInvalidState)
 	}
-	return value.UTC().Format(time.RFC3339Nano), nil
+	if !isCanonicalServerTime(value) {
+		return "", fmt.Errorf("%w: production cursor must be canonical UTC whole milliseconds", ErrInvalidState)
+	}
+	return value.Format(time.RFC3339Nano), nil
 }
 
 func parseCursor(source string) (time.Time, error) {
@@ -217,6 +229,24 @@ func parseCursor(source string) (time.Time, error) {
 		return time.Time{}, fmt.Errorf("%w: evaluated_through must be canonical UTC RFC3339Nano", ErrInvalidState)
 	}
 	return value, nil
+}
+
+func restoreCursor(source string, version int) (time.Time, error) {
+	value, err := parseCursor(source)
+	if err != nil {
+		return time.Time{}, err
+	}
+	if version < millisecondCursorVersion {
+		return CanonicalServerTime(value), nil
+	}
+	if !isCanonicalServerTime(value) {
+		return time.Time{}, fmt.Errorf("%w: production cursor must be canonical UTC whole milliseconds", ErrInvalidState)
+	}
+	return value, nil
+}
+
+func isCanonicalServerTime(value time.Time) bool {
+	return value.Location() == time.UTC && value.Nanosecond()%int(time.Millisecond) == 0
 }
 
 func decodeState(data []byte, destination any) error {

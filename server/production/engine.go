@@ -40,10 +40,11 @@ func Evaluate(
 		(mode != ModeOnline && mode != ModeOffline) {
 		return EvaluationResult{}, ErrInvalidEngineState
 	}
-	if !now.After(state.EvaluatedThrough) {
+	effectiveNow := save.CanonicalServerTime(now)
+	if !effectiveNow.After(state.EvaluatedThrough) {
 		return EvaluationResult{}, nil
 	}
-	elapsedMS := now.Sub(state.EvaluatedThrough).Milliseconds()
+	elapsedMS := effectiveNow.Sub(state.EvaluatedThrough).Milliseconds()
 	if elapsedMS <= 0 {
 		return EvaluationResult{}, nil
 	}
@@ -98,7 +99,7 @@ func Evaluate(
 		return EvaluationResult{}, fmt.Errorf("%w: ledger commit: %v", ErrInvalidEngineState, err)
 	}
 	state.ComputeCreditMS += banked
-	state.EvaluatedThrough = state.EvaluatedThrough.Add(time.Duration(elapsedMS) * time.Millisecond)
+	state.EvaluatedThrough = effectiveNow
 	return EvaluationResult{
 		Receipt: receipt, ElapsedMS: elapsedMS, ProductionMS: productionMS, BankedCreditMS: banked,
 	}, nil

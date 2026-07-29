@@ -12,3 +12,14 @@ Append-only implementation record. Resume from this file, `plan.md`, and the acc
   required boundary corpus are fully specified.
 - Corrected the RFC index from stale `draft` to `implementing` as planning began.
 
+## 2026-07-29 — Save v4 and shared advancement implemented
+
+- Added `save.CanonicalServerTime`: UTC truncated to an exact millisecond. Encoding v4 rejects
+  zero, non-UTC, or sub-millisecond cursors rather than changing caller state.
+- Incremented `save.CurrentVersion` to 4. V1–v3 restoration floors both cursor instants
+  independently before validating their order; v4 restoration requires already-canonical values.
+- Expanded the migration corpus with v1/v2 conversion, v3 phase-matched, demonstrated
+  phase-mismatched, cross-boundary, and two lying-v4 cases.
+- Production evaluation and manual-token refill now derive one canonical `effective_now`, compute
+  exact integer milliseconds from it, and set their cursor directly to that shared instant.
+- Focused save and production suites pass.
