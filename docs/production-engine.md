@@ -82,7 +82,9 @@ cursor, and the complete canonical authoritative snapshot. All cursor timestamps
 same UTC millisecond instant used by save v4. Terminal deterministic rejections
 (`unaffordable`, `unknown_id`, `invalid`, `cap_exceeded`) are idempotently recorded without a save
 mutation. Revision and idempotency conflicts are typed but unrecorded so the same logical request
-can be retried correctly.
+can be retried correctly. A recorded terminal request is different: its UUIDv7 remains bound to
+that request hash, so a corrected payload needs a new intent id and reusing the old id returns
+`idempotency_conflict`.
 
 ## Persistence and events
 
@@ -94,8 +96,21 @@ replayed bytes are identical.
 
 Event registry v1 contains `generator_purchased`, `invariant_reported`, and `compensation`.
 Purchases emit exactly one event; manual batches emit none. Events retain stream/revision and
-`constants_hash` identity even after old snapshot rows are pruned. History has no update/delete
-API; corrections are later compensation events.
+`constants_hash` identity even after old snapshot rows are pruned, but retention does not guarantee
+that an old snapshot remains queryable. History has no update/delete API; corrections are later
+compensation events.
+
+Numeric diagnostics flow through the exported `InvariantSink`. Applied fallback/clamp reports are
+events on the gameplay revision and become audit/metric records only after that transaction
+commits. A terminal rejection has no gameplay revision, so its collected reports become audit and
+metrics only after the rejection receipt commits. `residual_abort` is emitted only after rollback
+and never creates save or event history. Replays and conflicts do not duplicate observability.
+`internal_invariant` remains an internal Go rejection plus audit/metric signal until the WebSocket
+Transport RFC owns its wire mapping; no placeholder wire result is claimed here.
+
+Receipt change construction parses every before/after value through the canonical Decimal parser.
+A malformed internal snapshot fails the intent as `internal_invariant`; it is never hidden by
+silently omitting a change.
 
 Intent records are keyed by `(stream_id,intent_id)`. The store exposes cutoff-based pruning; the
 future deployment scheduler owns calling it at the accepted 30-day retention boundary.

@@ -43,8 +43,14 @@ const stateCatalogJSON = `{
 var testCursor = time.Date(2026, 7, 28, 8, 0, 0, 123_000_000, time.UTC)
 
 type migrationFixture struct {
-	Version int             `json:"version"`
-	Cases   []migrationCase `json:"cases"`
+	CorpusVersion int             `json:"corpus_version"`
+	Cases         []migrationCase `json:"cases"`
+}
+
+type migrationCorpusBaseline struct {
+	SchemaVersion     int      `json:"schema_version"`
+	MinimumCaseCount  int      `json:"minimum_case_count"`
+	RequiredCaseNames []string `json:"required_case_names"`
 }
 
 type migrationCase struct {
@@ -110,8 +116,29 @@ func TestSaveMigrationCorpus(t *testing.T) {
 	if err := json.Unmarshal(data, &fixture); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.Version != 3 || len(fixture.Cases) < 7 {
-		t.Fatalf("migration fixture version=%d cases=%d", fixture.Version, len(fixture.Cases))
+	baselineData, err := os.ReadFile("../../testdata/save-migrations-baseline.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var baseline migrationCorpusBaseline
+	if err := json.Unmarshal(baselineData, &baseline); err != nil {
+		t.Fatal(err)
+	}
+	if fixture.CorpusVersion != 3 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
+		len(fixture.Cases) < baseline.MinimumCaseCount {
+		t.Fatalf("migration corpus version=%d cases=%d baseline=%+v", fixture.CorpusVersion, len(fixture.Cases), baseline)
+	}
+	caseNames := make(map[string]bool, len(fixture.Cases))
+	for _, vector := range fixture.Cases {
+		if vector.Name == "" || caseNames[vector.Name] {
+			t.Fatalf("missing or duplicate migration case name %q", vector.Name)
+		}
+		caseNames[vector.Name] = true
+	}
+	for _, required := range baseline.RequiredCaseNames {
+		if !caseNames[required] {
+			t.Fatalf("required migration case %q was removed", required)
+		}
 	}
 	for _, vector := range fixture.Cases {
 		t.Run(vector.Name, func(t *testing.T) {

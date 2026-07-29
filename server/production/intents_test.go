@@ -3,6 +3,7 @@ package production
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
 	"log/slog"
 	"math/rand"
@@ -106,6 +107,25 @@ func TestInvariantSinkEventsAndOutcomeReporting(t *testing.T) {
 	}
 	if got := bytes.Count(logs.Bytes(), []byte(`"msg":"production invariant"`)); got != 2 {
 		t.Fatalf("audit records = %d, logs=%s", got, logs.String())
+	}
+}
+
+func TestWireChangesRejectsMalformedCanonicalValues(t *testing.T) {
+	if _, err := wireChanges(map[string]string{"company.cash": "not-canonical"}, map[string]string{"company.cash": "1e0"}); !errors.Is(err, ErrInvalidEngineState) {
+		t.Fatalf("malformed before error = %v", err)
+	}
+	if _, err := wireChanges(map[string]string{"company.cash": "1e0"}, map[string]string{"company.cash": "not-canonical"}); !errors.Is(err, ErrInvalidEngineState) {
+		t.Fatalf("malformed after error = %v", err)
+	}
+	if _, err := wireChanges(map[string]string{"company.cash": "not-canonical"}, map[string]string{"company.cash": "not-canonical"}); !errors.Is(err, ErrInvalidEngineState) {
+		t.Fatalf("equal malformed values error = %v", err)
+	}
+	if _, err := wireChanges(map[string]string{"company.cash": "1e0"}, map[string]string{}); !errors.Is(err, ErrInvalidEngineState) {
+		t.Fatalf("missing resource error = %v", err)
+	}
+	changes, err := wireChanges(map[string]string{"company.cash": "1e0"}, map[string]string{"company.cash": "2e0"})
+	if err != nil || len(changes) != 1 || changes[0]["delta"] != "1e0" {
+		t.Fatalf("valid changes=%+v err=%v", changes, err)
 	}
 }
 

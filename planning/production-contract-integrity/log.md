@@ -42,3 +42,18 @@ Append-only. A fresh agent resumes from this file and `plan.md`.
   same first-run migration race under another name.
 - Ran the explicit integration target ten consecutive times against Postgres 16: all ten passed,
   including the new invariant transaction cases.
+
+## 2026-07-29 (Codex — D5 implementation)
+
+- Renamed save-migration fixture metadata to `corpus_version` and added a checked-in baseline
+  manifest. Server verification now rejects a smaller corpus, a missing required case, duplicate
+  names, or an unexpected corpus/baseline schema.
+- Made receipt change construction fallible. It parses every before/after canonical value, rejects
+  changed resource sets, and propagates `ErrInvalidEngineState` rather than omitting bad data.
+  Regression tests cover malformed equal and unequal values plus a missing resource.
+- Added the service-level Postgres regression for a corrected payload reusing a terminal intent id:
+  it returns `idempotency_conflict`, does not mutate state, and requires a new UUIDv7.
+- Canonical save/production docs now distinguish immutable event origin identity from retained
+  snapshot availability, publish sticky idempotency, describe every invariant outcome path, and
+  keep `internal_invariant` transport mapping explicitly deferred.
+- Focused save/production suites and the updated serialized Postgres integration target are green.

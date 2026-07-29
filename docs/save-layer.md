@@ -68,7 +68,9 @@ cursor instants are independently floored to UTC whole milliseconds before their
 validated; no whole millisecond of work is invented. A claimed v4 snapshot with either
 sub-millisecond cursor is rejected. The checked-in `testdata/save-migrations.json` corpus fixes
 v1/v2 upgrades plus phase-matched, phase-mismatched, boundary, and lying-v4 cases; migrations never
-read the wall clock implicitly.
+read the wall clock implicitly. Its `corpus_version` is metadata, not a save version. A separate
+baseline manifest makes required case names and the minimum case count a server-test gate, so the
+corpus can grow but cannot silently shrink.
 
 ## Intent and event transaction
 
@@ -76,12 +78,19 @@ read the wall clock implicitly.
 request hash. `events` stores the closed v1 event registry with stream, originating revision,
 schema version, intent, `constants_hash`, timestamp, and strict payload. It deliberately does not
 foreign-key the revision to a snapshot row because snapshot retention prunes old rows while event
-history remains append-only.
+history remains append-only. The origin revision number and constants hash remain immutable event
+identity; retention does not promise that the corresponding historical snapshot is still
+queryable.
 
 `Store.ApplyIntent` locks the stream before replay/revision decisions. Applied state, next revision,
 events, and receipt commit together. A deterministic terminal rejection stores only its receipt;
 revision conflicts and internal failures store nothing. The store exposes time-cutoff pruning for
 the deployment scheduler's 30-day idempotency retention policy.
+
+An intent id is bound to the canonical hash of its first recorded terminal or applied request for
+that retention window. Replaying the identical request returns the original normalized receipt;
+correcting a payload under the same id returns `idempotency_conflict`. A corrected payload is a
+different logical request and must use a new UUIDv7.
 
 Run the disposable Postgres integration suite locally:
 

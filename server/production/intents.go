@@ -321,9 +321,13 @@ func appliedDecision(
 			Kind: save.EventInvariantReported, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload,
 		})
 	}
+	changes, err := wireChanges(before, state.Ledger.Snapshot())
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
 	receipt := map[string]any{
 		"intent_id": request.IntentID, "outcome": "applied", "applied_count": appliedCount,
-		"receipt":      map[string]any{"changes": wireChanges(before, state.Ledger.Snapshot())},
+		"receipt":      map[string]any{"changes": changes},
 		"new_revision": newRevision, "evaluated_at": state.EvaluatedThrough.UTC().Format(time.RFC3339Nano),
 		"snapshot": wireSnapshot(state),
 	}
@@ -358,25 +362,43 @@ func generatorPurchasedEvent(request parsedIntent, resourceID string, count int6
 	}
 }
 
-func wireChanges(before, after map[string]string) []map[string]string {
-	ids := make([]string, 0, len(after))
+func wireChanges(before, after map[string]string) ([]map[string]string, error) {
+	idSet := make(map[string]struct{}, len(before)+len(after))
+	for id := range before {
+		idSet[id] = struct{}{}
+	}
 	for id := range after {
+		idSet[id] = struct{}{}
+	}
+	ids := make([]string, 0, len(idSet))
+	for id := range idSet {
 		ids = append(ids, id)
 	}
 	sort.Strings(ids)
 	changes := make([]map[string]string, 0)
 	for _, id := range ids {
-		if before[id] == after[id] {
+		beforeRaw, beforeExists := before[id]
+		afterRaw, afterExists := after[id]
+		if !beforeExists || !afterExists {
+			return nil, fmt.Errorf("%w: receipt resource set changed at %s", ErrInvalidEngineState, id)
+		}
+		beforeValue, err := decimal.ParseCanonical(beforeRaw)
+		if err != nil {
+			return nil, fmt.Errorf("%w: receipt before value for %s: %v", ErrInvalidEngineState, id, err)
+		}
+		afterValue, err := decimal.ParseCanonical(afterRaw)
+		if err != nil {
+			return nil, fmt.Errorf("%w: receipt after value for %s: %v", ErrInvalidEngineState, id, err)
+		}
+		if beforeRaw == afterRaw {
 			continue
 		}
-		beforeValue, _ := decimal.ParseCanonical(before[id])
-		afterValue, _ := decimal.ParseCanonical(after[id])
 		changes = append(changes, map[string]string{
-			"resource_id": id, "before": before[id],
-			"delta": afterValue.Sub(beforeValue).Quantize(decimal.CanonicalSignificantDigits).String(), "after": after[id],
+			"resource_id": id, "before": beforeRaw,
+			"delta": afterValue.Sub(beforeValue).Quantize(decimal.CanonicalSignificantDigits).String(), "after": afterRaw,
 		})
 	}
-	return changes
+	return changes, nil
 }
 
 func wireSnapshot(state *save.State) map[string]any {

@@ -143,6 +143,12 @@ func TestIntentServiceIntegration(t *testing.T) {
 		rejected.CurrentRevision != 4 || rejected.Rejection.Category != "unaffordable" {
 		t.Fatalf("rejection=%+v raw=%s err=%v", rejected, rejection.Receipt, err)
 	}
+	correctedSameID := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-444444444444","kind":"buy_generator","expected_revision":4,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":1}}`)
+	stickyConflict, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(time.Second), correctedSameID)
+	if err != nil || json.Unmarshal(stickyConflict.Receipt, &rejected) != nil ||
+		rejected.Rejection.Category != "idempotency_conflict" || rejected.CurrentRevision != 4 {
+		t.Fatalf("sticky idempotency conflict=%+v raw=%s err=%v", rejected, stickyConflict.Receipt, err)
+	}
 
 	conflictingRevision := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-555555555555","kind":"buy_generator","expected_revision":2,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":1}}`)
 	conflict, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor, conflictingRevision)
