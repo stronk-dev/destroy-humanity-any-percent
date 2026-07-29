@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "production_rate": "sum_generators(count * base_rate * product(multiplier_slots))",
   "multiplier_slot_order": [
     "upgrades",
@@ -11,5 +11,6 @@
     "event_buffs",
     "prestige"
   ],
-  "within_slot_order": "source_id_raw_byte_ascending"
+  "within_slot_order": "source_id_raw_byte_ascending",
+  "source_fingerprint": "b5ca78339950ebbc8378e8d5f9c8295e354955733ef689c59bb046e785c354bc"
 }

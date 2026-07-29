@@ -28,3 +28,17 @@ Append-only. A fresh agent resumes from this file and `plan.md`.
   terminal-rejection, rollback, and replay cases.
 - Focused verification green: `go test ./multiplier ./economy ./production`; client Vitest 6,372
   tests green.
+
+## 2026-07-29 (Codex — D3/D4 implementation)
+
+- Upgraded the published formula artifact to schema v2. The generator hashes normalized,
+  comment-free AST for `production.Rates`, `multiplier.Order`, and the ordering helper actually
+  called by Rates. The published order token now comes from the multiplier package.
+- Generator tests prove comment/format changes preserve the fingerprint, executable rate changes
+  alter it, and a renamed/missing authority fails closed. Canonical docs now say source-bound and
+  review-gated rather than claiming algebra is automatically inferred.
+- Serialized both the explicit integration target and `test-go` package execution with `-p 1`;
+  CI supplies `TEST_DATABASE_URL` to `test-go`, so leaving that target parallel would retain the
+  same first-run migration race under another name.
+- Ran the explicit integration target ten consecutive times against Postgres 16: all ten passed,
+  including the new invariant transaction cases.

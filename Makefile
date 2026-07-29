@@ -13,11 +13,11 @@ install-browsers-ci:
 test: test-go test-client test-browser
 
 test-go:
-	cd server && go test ./...
+	cd server && go test -p 1 ./...
 
 test-save-integration:
 	@test -n "$$TEST_DATABASE_URL" || (echo "TEST_DATABASE_URL is required" >&2; exit 1)
-	cd server && go test ./... -run Integration -count=1
+	cd server && go test -p 1 ./... -run Integration -count=1
 
 test-client:
 	pnpm --dir client run test

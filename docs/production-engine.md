@@ -12,8 +12,12 @@ manual-token policy, and offline/Compute Credit policy. The shipped Phase-0 arti
 [`balance/catalogs/phase0.json`](../balance/catalogs/phase0.json). Historical v1/v2 catalogs remain
 loadable for old `constants_hash` saves but cannot acquire v3 semantics silently.
 
-The rate formula and slot order are generated from the Go source into
-[`generated/production-formulas.json`](generated/production-formulas.json). In prose:
+The reviewed rate formula and slot order are published in
+[`generated/production-formulas.json`](generated/production-formulas.json). Its SHA-256
+`source_fingerprint` is generated from normalized, comment-free Go AST for the live `Rates`
+function, multiplier slot declaration, and raw-byte ordering helper. The tool does not pretend to
+infer algebra from arbitrary Go; it binds this human-readable formula to the exact executable
+authorities that were reviewed. In prose:
 
 ```text
 rate(resource) = sum over generators (
@@ -27,8 +31,9 @@ runtime contribution must match a catalog declaration's source, slot, and target
 positive canonical Decimal factor. Commons and Trust are single-provider slots. Providers share
 only the neutral `server/multiplier` package; production does not import feature packages.
 
-`make formulas-check` regenerates the published artifact and fails on drift. It is part of the
-blocking server CI job.
+`make formulas-check` regenerates the published artifact and fails on executable drift. Formatting
+and comments do not change the fingerprint; changing a rate or ordering authority requires a
+separate reviewed artifact-regeneration commit. The gate is part of the blocking server CI job.
 
 ## Time evaluation
 
