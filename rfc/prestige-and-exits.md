@@ -1,6 +1,6 @@
 # RFC: Prestige & Exits
 
-- **Status:** draft
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Design refs:** `design/02 §3` (formula, sub-currencies, **Exit offers — designed 2026-07-28**), `design/11 §3–4` (run-end sequence, **scripted first failure, Advisor Mode**), `design/02 §6` (the Clout carry rule), `design/10 §5` (ledger persists, scores reseed)
 - **Research:** `design/research/pacing-science.md` (first-Exit pacing), `design/research/morality-systems.md` (the reseed), `design/research/run-narrative-ux.md §6b` (as adopted)
@@ -104,3 +104,5 @@ Account & Session Bootstrap (new draft) supplies founder/session identity; T0–
 - 2026-07-28: created (draft), immediately after the run-end design sitting it depends on.
 - 2026-07-29: updated implemented dependencies; Codex acceptance review found the scripted-first
   timing contradiction and nine additional executable-contract gaps.
+- 2026-07-29: accepted for implementation by the ordered Codex batch manifest; implementation
+  started after Account & Session Bootstrap supplied the required Founder owner.
