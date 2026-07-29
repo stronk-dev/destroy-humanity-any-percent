@@ -9,7 +9,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
-| [Commons Projection Retry Idempotency](commons-projection-retry-idempotency.md) | implementing | Commons Compact |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft | Commons Compact |
 | [Combat Data Model](combat-data-model.md) | draft | — |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | draft | Production Engine / Client Shell |
@@ -42,6 +41,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Gate Predicates & the Route Registry](archive/gate-predicates-and-routes.md) | implemented | [Routes](../docs/routes.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [The Commons Compact](archive/commons-compact.md) | implemented | [Commons](../docs/commons.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Client Shell & Sim Loop](archive/client-shell-and-sim-loop.md) | implemented | [Client shell](../docs/client-shell.md) |
+| [Commons Projection Retry Idempotency](archive/commons-projection-retry-idempotency.md) | implemented | [Commons](../docs/commons.md) |
 
 Remaining Phase-0 contracts (not yet drafted): account/session bootstrap · T0–T1 playable content
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics

@@ -46,3 +46,8 @@ source-evidence correction stands; the Transport RFC open item is void. Review r
 **verify findings against the implemented surface, not the document that preceded it.**
 
 D1 clear to archive. D2 (Registry event-order convergence) may proceed.
+
+## 2026-07-29 — archive
+
+- Independent review approved the shared claim-then-validate transaction and both-direction
+  regressions. RFC and planning record archived; D2 is unblocked.

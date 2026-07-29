@@ -1,12 +1,12 @@
 # RFC: Commons Projection Retry Idempotency
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex, from independently demonstrated review finding D1
 - **Created:** 2026-07-29
 - **Design refs:** `design/05-mmo.md §5`; `design/06-tech.md §persistence`
 - **Research / reproducer:** `planning/archived-four-review/log.md` D1
 - **Amends:** `archive/commons-compact.md` C7
-- **Planning:** `planning/commons-projection-retry-idempotency/`
+- **Planning:** `planning/archive/commons-projection-retry-idempotency/`
 
 ## Summary
 
@@ -46,3 +46,5 @@ None.
 
 - 2026-07-29: drafted, accepted, and implementation started by owner-directed remediation order
   after D1 was independently reproduced against Postgres.
+- 2026-07-29: claim-before-mutable-state transaction boundary, both-direction Postgres regressions,
+  canonical docs, full verification, and independent review completed; archived.
