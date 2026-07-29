@@ -24,3 +24,9 @@
 - A real-Postgres concurrency test races two company streams, proves one registry winner and two adoptions, replays both events without double counting, exercises hint repair, and completes the naming flow. The production integration test proves a route crossing replay emits no duplicate and a founder can immediately spend the projected grant.
 - Review finding fixed before commit: route projection tables initially survived test `TRUNCATE` because the balance table intentionally has no save-stream FK. Integration setup now names every projection table, preventing state leakage between packages. Hint intents also skip company contribution providers.
 - Verification: `go test ./...`, `go vet ./...`, and the full Postgres integration target pass.
+
+## 2026-07-29 — canonical docs and harness artifact review
+
+- Added `docs/routes.md` and updated the canonical production/save docs and repository status for the four-intent surface, save v5, route events, replay delivery, and projection tables.
+- The first full `make verify` correctly rejected the harness golden: save v5 changes the encoded terminal state even though pacing is unchanged. Regeneration changed only the two deterministic `final_state_hash` values; `pacing-baseline.json`, milestones, elapsed times, outcomes, and invariants are byte-identical. Accepted as a state-envelope artifact update, not a balance change.
+- Full acceptance rerun with Postgres passed: Go/vet/integration, harness golden and pacing baseline, strict TypeScript with 6,388 Node tests, routes/economy/harness schemas, and 19,164 tests across Chromium, Firefox, and WebKit.

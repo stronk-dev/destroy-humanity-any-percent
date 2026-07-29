@@ -62,11 +62,15 @@ RFC.
 
 ## Intent API
 
-The implemented command surface contains exactly two intents:
+The implemented command surface contains exactly four intents:
 
 - `buy_generator`: exact positive safe-integer count or verified `max`;
 - `perform_manual_batch`: positive safe-integer count and `window_ms` (audit/UX only; it grants no
   authority).
+- `cross_gate`: mechanical gate id plus nullable route id; the server evaluates standard or route
+  requirements and commits gate state and events atomically.
+- `buy_route_hint`: Founder-scope purchase of permanent predicate disclosure with projected Route
+  Knowledge; it never affects evaluation.
 
 Both use a lowercase UUIDv7 `intent_id` as the idempotency key and a positive safe-integer
 `expected_revision`. The request hash is SHA-256 over deterministic JSON excluding `intent_id`.
@@ -81,7 +85,9 @@ Applied receipts contain the net ledger changes, applied count, resulting revisi
 cursor, and the complete canonical authoritative snapshot. All cursor timestamps serialize the
 same UTC millisecond instant used by save v4. Terminal deterministic rejections
 (`unaffordable`, `unknown_id`, `invalid`, `cap_exceeded`) are idempotently recorded without a save
-mutation. Revision and idempotency conflicts are typed but unrecorded so the same logical request
+mutation. Gate-specific terminal categories are `gate_already_crossed`, `requirement_not_met`,
+`route_predicate_unmet`, `insufficient_route_knowledge`, and `already_unlocked`. Revision and
+idempotency conflicts are typed but unrecorded so the same logical request
 can be retried correctly. A recorded terminal request is different: its UUIDv7 remains bound to
 that request hash, so a corrected payload needs a new intent id and reusing the old id returns
 `idempotency_conflict`.
@@ -94,11 +100,17 @@ normalized receipt record in one Postgres transaction. A terminal rejection writ
 receipt record. JSON receipts normalize before first return and after JSONB load, so initial and
 replayed bytes are identical.
 
-Event registry v1 contains `generator_purchased`, `invariant_reported`, and `compensation`.
+Event registry v1 contains `generator_purchased`, `invariant_reported`, `compensation`,
+`gate_crossed`, `route_executed`, `route_hint_purchased`, and `route_knowledge_granted`.
 Purchases emit exactly one event; manual batches emit none. Events retain stream/revision and
 `constants_hash` identity even after old snapshot rows are pruned, but retention does not guarantee
 that an old snapshot remains queryable. History has no update/delete API; corrections are later
 compensation events.
+
+Applied and replayed intent results also return their immutable event envelopes to internal
+post-commit consumers. The Route Registry projector uses this to make projection retry part of the
+same idempotency loop: if the gameplay transaction commits but projection fails, replaying the
+identical intent re-delivers the original events without re-running gameplay mutation.
 
 Numeric diagnostics flow through the exported `InvariantSink`. Applied fallback/clamp reports are
 events on the gameplay revision and become audit/metric records only after that transaction

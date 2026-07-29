@@ -16,7 +16,7 @@ stale scalar subquery under PostgreSQL READ COMMITTED.
 
 ## State format
 
-Version 4 is strict JSON:
+Version 5 is strict JSON:
 
 ```json
 {
@@ -25,7 +25,16 @@ Version 4 is strict JSON:
   "evaluated_through": "2026-07-28T08:00:00Z",
   "compute_credit_ms": 0,
   "manual_token_milli": 50000,
-  "manual_token_refilled_at": "2026-07-28T08:00:00Z"
+  "manual_token_refilled_at": "2026-07-28T08:00:00Z",
+  "gates_crossed": {"gate.t2_to_t3":true},
+  "run_seq": 1,
+  "doctrines_by_transition": {},
+  "structure_id": "",
+  "ledger_fact_kinds": [],
+  "meter_bands": {},
+  "region_traits": [],
+  "route_knowledge_balance": 0,
+  "hints_unlocked": []
 }
 ```
 
@@ -47,6 +56,13 @@ rather than silently rewriting it. New company streams require both cursors to s
 canonical instant. These fields are company-scoped; another save scope cannot smuggle
 production-policy state.
 
+Route state is scope-checked. Company streams own crossed gates, a positive exact `run_seq`, and
+the committed predicate context (doctrines, structure, ledger facts, meter bands, region traits).
+Founder streams own the exact non-negative Route Knowledge balance and permanent unlocked-hint
+set. Guild and World streams cannot carry either. Sets serialize as sorted mechanical-ID arrays;
+maps reject invalid IDs, false membership entries, duplicate list entries, and meter values outside
+0–100.
+
 `constants_hash` is `sha256:` plus the lowercase SHA-256 digest of the exact catalog artifact
 bytes. Saves resolve that immutable catalog before restoration. Reformatting a catalog therefore
 changes its identity deliberately.
@@ -60,14 +76,16 @@ Sequential SQL migrations are embedded in the Go package and applied transaction
 Goose 3.27.1 using pgx/v5's `database/sql` driver. There is no ORM, SQLite substitute, runtime
 migration directory, or separate migration artifact.
 
-Save versions 1 through 3 remain readable. V1 initializes every in-scope production-capable
+Save versions 1 through 4 remain readable. V1 initializes every in-scope production-capable
 generator to zero and uses the revision's database-authored `created_at` as the evaluation cursor.
 Versions 1 and 2 initialize Compute Credits to zero, fill the manual bucket from the resolved
 catalog, and use the evaluation cursor as the refill baseline. During v1–v3 restoration, both
 cursor instants are independently floored to UTC whole milliseconds before their ordering is
 validated; no whole millisecond of work is invented. A claimed v4 snapshot with either
-sub-millisecond cursor is rejected. The checked-in `testdata/save-migrations.json` corpus fixes
-v1/v2 upgrades plus phase-matched, phase-mismatched, boundary, and lying-v4 cases; migrations never
+sub-millisecond cursor is rejected. Pre-v5 company saves receive empty gate/context state and
+`run_seq = 1`; pre-v5 Founder saves receive a zero balance and no hints. The checked-in
+`testdata/save-migrations.json` corpus fixes v1/v2 upgrades plus phase-matched, phase-mismatched,
+boundary, route-default, and lying-v4 cases; migrations never
 read the wall clock implicitly. Its `corpus_version` is metadata, not a save version. A separate
 baseline manifest makes required case names and the minimum case count a server-test gate, so the
 corpus can grow but cannot silently shrink.
@@ -81,6 +99,11 @@ foreign-key the revision to a snapshot row because snapshot retention prunes old
 history remains append-only. The origin revision number and constants hash remain immutable event
 identity; retention does not promise that the corresponding historical snapshot is still
 queryable.
+
+The routes migration expands the closed event-kind constraint and adds idempotent projection
+tables for per-event execution, founder career counts, the cached Route Knowledge balance, hint
+debits, and the public Registry's first-executor/name state. Projection rows are rebuildable; the
+company events remain authoritative.
 
 `Store.ApplyIntent` locks the stream before replay/revision decisions. Applied state, next revision,
 events, and receipt commit together. A deterministic terminal rejection stores only its receipt;
