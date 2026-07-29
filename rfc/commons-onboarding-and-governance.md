@@ -63,8 +63,15 @@ yet exist.
 
 ## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-29)
 
-1. **Missing owner contracts:** account/session, faction/incorporation, and guild models are not
-   drafted, while transport remains draft. This RFC cannot define membership-gated UI or governance
+**Status ruling (2026-07-29): explicitly BLOCKED-ON-OWNER — do not implement.** Blocker #1 is
+one-third answered (`account-and-session-bootstrap.md` now owns identity; transport's contracts are
+answered T1–T6). The remaining owners — **faction/incorporation model** and **guild model** — are not
+drafted, and blockers #2–#5 all hang off them. This RFC stays out of the implementable queue until
+those two RFCs exist; nothing here may be improvised around their absence (the reason this split
+exists at all).
+
+1. **Missing owner contracts:** ~~account/session~~ (drafted 2026-07-29), faction/incorporation, and
+   guild models are not drafted. This RFC cannot define membership-gated UI or governance
    identity until those boundaries exist.
 2. **Incorporation contract:** define its state, every Phase-0 path, sign/decline intent timing,
    persistence across a run, Open Source binding, and catalog tithe values. “Every path” has no closed
@@ -86,3 +93,5 @@ yet exist.
   dependencies remain explicit rather than improvised or falsely marked shipped.
 - 2026-07-29: updated implemented dependencies; Codex acceptance review confirmed six blocking
   contracts, including the RFC's existing ballot gap.
+- 2026-07-29: ruled blocked-on-owner (faction/incorporation + guild RFCs); account/session and
+  transport dependencies now answered.

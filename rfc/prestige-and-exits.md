@@ -66,35 +66,39 @@ Deterministic assembly, in order: catalog initials → Network-carried items (de
 - The S-1/IPO event chain content: `design/09` Layer-1 authoring, not blocking (the `file_ipo` intent can ship gated off until the chain exists).
 - Founder-age advancement constants: balance data; the actuarial-wall interactions live with the Tier-6 content RFC.
 
-## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-29)
+## Executable contracts (answering the 2026-07-29 review)
 
-1. **Persisted state is unnamed:** define versioned Company/Founder fields and migrations for run ID,
-   tier, lifetime value, Reputation, Network, Route Knowledge, lifetime/run Clout, Soul, age,
-   Notoriety, offer state, Exit history, Advisor Mode, and carried items. None may be inferred from
-   flavor names at implementation time.
-2. **Prestige arithmetic:** specify `T`, exit modifiers, exact cube-root/floor algorithm over the
-   Decimal domain, quantization points, total-vs-delta semantics, caps, and golden Go/TS vectors.
-3. **Offer state machine:** define deterministic spawn scheduling/PRNG, event and terms schemas,
-   expiry boundary, decline behavior, recomputation field-by-field, and how nonnumeric Network grants
-   participate in `max(preview,recomputed)`.
-4. **Multi-stream atomicity:** the current store applies one stream per transaction. Specify ordered
-   locking, expected revisions and idempotency scope across Founder + old Company + new Company,
-   which stream owns each event, compensation/retry semantics, and the archive/new-stream identities.
-5. **Scripted-first contradiction:** D4 ends the first run at ~15 minutes, while AC8 requires the
-   Casual persona's first Exit in 45–90 minutes. Choose which event the pacing gate measures and
-   whether the scripted collapse is an Exit, a nonterminal failure, or a tutorial segment.
-6. **Category contradiction:** a one-per-Founder scripted segment cannot simultaneously be “in every
-   category's route” for later attempts. Define whether verified attempts begin only after the
-   tutorial or how its absence is normalized.
-7. **Automatic transition authority:** a server-fired `wind_down` is not a client intent. Define its
-   deterministic command identity, revision/idempotency behavior, scheduler trigger, and harness path.
-8. **Advisor Mode contract:** add the toggle intent/state transition and resolve its leaderboard
-   variable against Commons-assisted runs. D5 currently introduces an accepting action absent from D1.
-9. **Opening-state catalog:** provide literal Phase-0 initial state, carried-item validation/order,
-   reseed rounding, and starter-effect schemas so D6 and its byte-golden fixture are executable.
-10. **Run-end payload:** replace “full terms object” and copy-template references with an exact,
-    versioned `run_ended`/`run_started` schema that the client and replay verifier both consume.
+### P1 — Persisted state (save-version bump, both scopes)
 
+**Company v(next):** adds `tier int`, `lifetime_value canonical`, `offer_state {offer_id, exit_type, terms_json, spawned_at, expires_at} | null` (at most one live offer), `run_started_at ms`. **Founder v(next):** adds `reputation_level int`, `reputation_unlock_ppm int`, `network_slots [{slot, carried_ref}]`, `clout_lifetime int`, `soul int`, `age_ms int`, `notoriety int`, `advisor_mode bool`, `exit_history [{run_id, exit_type, occurred_at, reputation_delta}]` (append-only), plus the existing route/knowledge fields. Migrations default everything to zero/null/empty; corpus gains one fixture per scope. **No field is inferred from flavor names; this list is the closed set.**
+
+### P2 — Prestige arithmetic (exact, both runtimes)
+
+`T` is balance data (provisional `1e12`). Algorithm: `ratio = lifetimeValue.Div(T)` (Decimal); `level = floor(cbrt(ratio))` computed as **integer binary search over n: largest n with `Decimal(n)^3 ≤ ratio`**, n capped at MaxExactInteger — no floating cbrt anywhere, identical by construction in Go/TS. Exit-type modifiers are integer ppm multipliers on the **delta** (`new_level − old_level`, never total), applied then floored; collapse's Route-Knowledge bonus is a flat grant (routes catalog). Golden vectors: cube boundaries n³±1ulp, zero, T-exact, modifier rounding.
+
+### P3 — Offer state machine
+
+Spawn check runs **inside accrual evaluation** (Production D1) at threshold crossings and Quarter harvests only (deterministic sites, no timers): if no live offer and `spawn_gate(tier_progress, harvested_quarters)` (balance data, integer ppm table) exceeds a draw from **the save-seeded SplitMix64 stream** (seed = founder seed ⊕ run_seq — replayable), emit `exit_offer_spawned` with the full terms object (P1 shape). Expiry is checked at evaluation sites (an expired offer nulls state and emits `exit_offer_expired` — no background jobs). **Decline = `decline_exit_offer` intent** (evented; next spawn's terms drift by the declared ppm walk). `max(preview, recomputed)` is **field-wise on integer fields** (reputation_delta, route_knowledge); Network slot unlocks are **set-union** (preview slots ∪ recomputed slots); nothing non-monotonic exists in terms.
+
+### P4 — Multi-stream atomicity (the store extension this RFC owns)
+
+New store op `ApplyExitTransaction(founderStream, companyStream, newRunInit)`: **lock order is founder-then-company (lexicographic stream-id tiebreak), both `FOR UPDATE`, one Postgres transaction**; expected-revisions for both streams in the intent envelope; idempotency record written under the **company** stream (the intent's origin); events: `run_ended` on the old company revision, `run_started` on the new, founder events on the founder revision — all in the same commit. The "new run" is **the same company stream, `run_seq+1`** (established by Gate Predicates C4) — no new stream identity, archives are revision-history. Retry = standard idempotent replay; compensation is never needed because nothing partial can commit.
+
+### P5 — Scripted-first (contradiction resolved by ruling, 2026-07-29)
+
+The pacing envelope measures the **first elective Exit** (AC8 as amended). The scripted trigger is: first `threshold_crossed` event with `attended_ms ≥ 900_000` on a founder with `exit_history == []` — evaluated server-side at event emission, firing `wind_down(exit_type=scripted_first)` in the same evaluation. Attended-ms derivation is P6's.
+
+### P6 — Timer facts (recorded here, consumed by Leaderboards)
+
+`run_started_at` (server ms, P1) starts RTA. **Attended Time = RTA − Σ offline spans**, where an offline span is any accrual evaluation whose elapsed exceeded the online session gap (`catchup_ceiling_ms`, already catalog data) — the span is recorded as `{from, to}` on the company state's append-only `offline_spans` (capped list, oldest-collapsed). All integer ms, all server-derived; the client clock contributes nothing.
+
+### P7 — Log retention for replay (shared answer with Leaderboards #1)
+
+This RFC emits every event replay needs; **the run log itself is the Leaderboards RFC's `run_log` table** (canonical intent payloads, receipts, sequence — written at intent commit, retained per-run until the run is verified+archived or abandoned+expired, exempt from the 30-day `intent_records` prune). Prestige's only obligation: `run_ended` carries the log's terminal sequence number so verification knows completeness.
+
+### P8 — Unblocked-by
+
+Account & Session Bootstrap (new draft) supplies founder/session identity; T0–T1 playable content remains the only *content* dependency and gates only the *feel*, not this RFC's transaction — implementable against the Phase-0 catalog with fixture content.
 ## Changelog
 
 - 2026-07-28: created (draft), immediately after the run-end design sitting it depends on.

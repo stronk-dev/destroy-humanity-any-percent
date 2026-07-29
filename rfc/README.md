@@ -10,11 +10,17 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Phase-0 Pacing Observation Coverage](phase0-pacing-observation-coverage.md) | implementing | Balance Harness Foundation |
-| [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft | Commons Compact |
-| [Combat Data Model](combat-data-model.md) | draft | — |
-| [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | draft | Production Engine / Client Shell |
-| [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | draft | Production Engine / Gate Predicates |
-| [Prestige & Exits](prestige-and-exits.md) | draft | Production Engine / Save Layer |
+| [Account & Session Bootstrap](account-and-session-bootstrap.md) | draft | Save Layer |
+| [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | blocked-on-owner (faction, guild) | Commons Compact |
+| [Combat Shared Data & Arithmetic](combat-data-model.md) | draft (split parent) | — |
+| [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
+| [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
+| [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
+| [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | draft | Production Engine / Client Shell / Account Bootstrap |
+| [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | draft | Production Engine / Gate Predicates / Prestige |
+| [Prestige & Exits](prestige-and-exits.md) | draft | Production Engine / Save Layer / Account Bootstrap |
+
+**Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 
 ## Archive
 
@@ -49,7 +55,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Route Temporal Validity](archive/route-temporal-validity.md) | implemented | [Routes](../docs/routes.md) |
 | [Commons Cohort Merge Capacity](archive/commons-merge-capacity.md) | implemented | [Commons](../docs/commons.md) |
 
-Remaining Phase-0 contracts (not yet drafted): account/session bootstrap · T0–T1 playable content
+Remaining Phase-0 contracts (not yet drafted): faction/incorporation model · guild model · T0–T1 playable content
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics
 (Leaderboards owns board binding) · doctrine intents (must define doctrine-pick ordering before
 same-boundary doctrine routes can ship). Later named work: Compute Credit spend · deployment and

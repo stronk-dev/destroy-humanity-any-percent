@@ -56,34 +56,42 @@ First verified completion per `(category, epoch)` emits a feed/dispatch event (t
 - Promotion thresholds (25/10) and mandate count: provisional, data.
 - Board retention/pagination scale: implementation freedom.
 
-## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-29)
+## Executable contracts (answering the 2026-07-29 review)
 
-1. **There is no replayable intent log:** `intent_records` stores only a request hash, outcome, and
-   receipt and is pruned after 30 days. D2 must define the immutable run-log schema containing the
-   canonical request payload, authoritative receipt/time, sequence, and retention/archive policy.
-2. **Replay identity is incomplete:** `constants_hash` identifies catalog bytes, not the executable
-   transition implementation. Define immutable catalog retrieval by hash plus a versioned engine/build
-   identity, or old runs can silently replay under new code while claiming the same constants.
-3. **Run and timer lifecycle:** specify `[BEGIN ATTEMPT]`, run ID/seed creation, offline-span authority,
-   pause/reconnect behavior, terminalization, and the exact integer derivation of RTA and Attended Time.
-   These must bind to the Prestige transaction rather than client clocks.
-4. **Player validator delivery:** the full authoritative transition exists only in Go. Choose a real
-   mechanism—WASM/shared implementation, signed server verifier, or a deliberately smaller verifier—and
-   define byte-identical input/output fixtures. “Same shared kernel” is not currently true in browsers.
-5. **Epoch storage and minting:** define tables, monotonic allocation, one-current-epoch concurrency,
-   immutable catalog artifacts, accepted-hash-set mutation, changelog identity, and the exact
-   transaction that pins a newly started run.
-6. **Board projection/query contract:** define verified-run storage, convergence/idempotency rules,
-   exact shared-rank ordering, pagination cursors, frozen-board behavior, and atomic world-first
-   deduplication. “Implementation freedom” cannot include ordering or retention semantics.
-7. **Categories and variables:** provide the closed data schema and terminal predicates for the four
-   canonical categories. Resolve whether Commons participation and Advisor Mode are one `Assisted`
-   bit or separately queryable variables before either RFC ships.
-8. **CI hook:** spell out which paths require an epoch, how the hook distinguishes balance from
-   correctness changes, and how an accepted-hash hotfix remains reproducible without weakening the
-   hardened `BALANCE-CHANGE:` history guard.
+### L1 — The run log (the missing table, owned here)
+
+`run_log(run_id, seq bigint, intent_id, canonical_payload bytea, receipt jsonb, applied_revision, server_ts_ms)` — **written in the same transaction as intent commit** (the production engine gains one insert), `PRIMARY KEY (run_id, seq)`, seq strictly monotonic per run. `canonical_payload` is the exact canonical-JSON bytes the idempotency hash was computed over (so the log is self-verifying against `intent_records` hashes while those still exist). Retention: rows live until the run is **verified+archived** (log compressed into an immutable `run_log_archive` object, one blob per run) or **abandoned** (no terminal event within `run_ttl_days` catalog value, provisional 90 — then deleted, run unrankable). Exempt from the 30-day `intent_records` prune; the prune and this table never share a policy.
+
+### L2 — Replay identity
+
+A verified run pins `(constants_hash set, engine_version)`. **`engine_version` = the shared-kernel version constant** (semver, bumped by RFC whenever transition semantics change — a new source-of-truth `kernel/VERSION` read by both runtimes and embedded in builds) plus the build's VCS hash as forensic detail. Replay runs the **exact catalog bytes** fetched by hash from `catalog_artifacts(constants_hash, bytes, created_at)` — immutable, insert-only, populated at epoch mint/hotfix — under a kernel whose VERSION matches the run's. A version mismatch is verdict `engine_mismatch` (fifth machine cause, added to D2's four), never a silent replay-under-new-code.
+
+### L3 — Timer lifecycle (binds to Prestige P6)
+
+`[BEGIN ATTEMPT]` **is** the `run_started` event; run_id and seed come from Prestige P3 (founder seed ⊕ run_seq); RTA = `run_ended.server_ts − run_started.server_ts` (integer ms); Attended Time = RTA − Σ `offline_spans` (Prestige P6's server-derived spans; the client clock contributes nothing). Pause does not exist (an idle game has no pause; disconnection simply accrues an offline span). Terminalization = the Prestige Exit transaction; `run_ended` carries the terminal `run_log` seq (P7), and verification's completeness check is exactly `max(seq) == run_ended.terminal_seq`.
+
+### L4 — Player validator delivery
+
+**The validator is the existing TS shared kernel** — no WASM, no second implementation: the golden-vector regime already holds Go and TS byte-identical, and that regime *is* the parity proof. Delivery: the client bundle ships a `verify(runLogArchive, catalogBytes)` entry that replays and emits the same five-cause verdict. Fixtures: every verification cause gets one committed `(log, catalog, verdict)` fixture asserted by **both** suites. The server verdict is authoritative; the shipped validator is the transparency instrument (governance §5.3's requirement), and any Go/TS verdict divergence is by definition a kernel parity bug — InvariantSink severity, not a rules dispute.
+
+### L5 — Epoch storage and minting
+
+`epochs(epoch_id bigserial, name, started_at, ended_at nullable, changelog_ref NOT NULL)` — **one current epoch enforced by partial unique index on `ended_at IS NULL`**; minting = one transaction: close current (set ended_at), insert next, insert its `catalog_artifacts` rows and `epoch_hashes(epoch_id, constants_hash)` set. Hotfix = insert one `epoch_hashes` row + its artifact (append-only; nothing is ever removed from an accepted set). **Run pinning:** the Prestige `run_started` write reads the current epoch **in the same transaction** (`FOR SHARE` on the current-epoch row) — a run started concurrently with a mint gets exactly one epoch, atomically. `changelog_ref` is a repo path (`changelog/epoch-<id>.md`); loader validation fails an epoch whose file is missing.
+
+### L6 — Board projection contract
+
+`verified_runs(run_id PK, founder_id, category, variables jsonb, epoch_id, key_ms bigint | key_int bigint, verified_at, world_first bool)` — projected from verification events, **idempotent by event_id** (the commons/routes claim-then-validate pattern). Ordering: **standard competition ranking ("1224")** on the exact key; ties share a rank by construction because the key is the sort. Pagination: keyset cursor `(key, run_id)` — no offsets. Frozen boards are ordinary queries on ended epochs (freezing is a property of no-new-rows, not a mode). **World-first: partial unique index on `(category, variables, epoch_id) WHERE world_first`**; the verification transaction attempts `world_first = true` insert-on-conflict-do-nothing — atomic dedup, no race. `imported` founders (Account RFC D4) are excluded by the projection, never by query-time filtering.
+
+### L7 — Categories and variables (ruling: two variables, not one bit)
+
+Closed category schema: `{category_id, name, terminal_predicate, timer ∈ {rta, attended}}` where `terminal_predicate` is a **closed union over run-terminal facts** (`exit_type == X`, `tier_reached ≥ N`, `ledger_clean` — grows by RFC): the four canonical categories are four catalog rows with literal predicates. Variables are **structural and separate**: `commons: bool` (any compact membership this run), `advisor: bool` (Prestige D5), `glitched: bool` (any route_executed). **Boards key on the full variable tuple; "Solo" is the display name for `{commons: false, advisor: false}`** — nothing is ever a computed subtraction, and Commons-assisted vs Advisor-assisted remain separately queryable (resolving the routed-forward question).
+
+### L8 — CI hook (extends the hardened guard, weakens nothing)
+
+The existing history guard already walks every reachable revision. Extension, same job: for any commit whose diff touches a `ConstantsHashArtifacts` path — **with `BALANCE-CHANGE:`** → the same commit must add an `epochs` seed row + changelog file (mint), else fail; **without** → the commit must add its resulting hash to the current epoch's accepted-set seed file (hotfix), else fail. Both are ordinary in-repo files, so the artifact-commit-touches-only-baseline rule and fetch-depth guarantees apply unchanged; reproducibility of a hotfix = its artifact row carries the exact bytes (L2). The cap-lowering migration rule routed here lands as: **a hotfix may not lower any hardcap** (guard compares the declared cap fields across the diff; lowering a cap is definitionally a balance change and requires a mint + the clamp-on-migration policy in its changelog).
 
 ## Changelog
 
 - 2026-07-28: created (draft). Closes the deferred-decisions register.
 - 2026-07-29: updated implemented dependencies; Codex acceptance review recorded eight blockers.
+- 2026-07-29: all eight answered with executable contracts L1–L8; Assisted ruled as two structural variables (commons, advisor); cap-lowering rule landed in L8.

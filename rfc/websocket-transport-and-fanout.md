@@ -61,27 +61,36 @@ Per-connection subscribe caps (config), per-channel publish authz (only server a
 - Redis broker threshold (named follow-up; single-node until telemetry says otherwise).
 - Feed curation rules live with `design/05 §2` content work, not here.
 
-## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-29)
+## Executable contracts (answering the 2026-07-29 review)
 
-1. **Identity and session authority:** account/session bootstrap does not exist. Define connection
-   authentication, token issue/refresh/revocation, Origin policy, Founder identity binding, and
-   membership lookup before JWT-authorized private channels can be implemented.
-2. **Inbound intent protocol:** choose and specify the request path named in D2 (HTTP or WebSocket
-   RPC), its exact versioned envelope, `intent_id`/revision mapping, timeout and retry behavior, and
-   the adapter into the production engine's closed intent union.
-3. **Exact outbound payloads:** D3's `payload:{…}` is not a wire contract. Define closed, versioned
-   schemas for snapshots, applied/rejected receipts, events, presence, and system messages, including
-   the mapping from production's receipt JSON into the Client Shell's deliberately narrower types and
-   the `internal_invariant` wire result already assigned here.
-4. **Recovery authority:** define the Centrifuge stream position/epoch persisted by the client, the
-   bounded history size and expiry, the gap/expired-history response, and the authoritative full-sync
-   operation. A revision alone cannot recover messages from an evicted in-memory history.
-5. **Backpressure constants:** queue bounds, message/subscription limits, typed close codes, publish
-   cadence, and drain timeout must be catalog/config fields with literal Phase-0 values and loader
-   validation; “up to a bound” is not executable.
-6. **Runnable lifecycle:** no account HTTP surface or composed game server exists yet. Name the server
-   bootstrap, health/readiness behavior, in-flight transaction drain boundary, and test seam that AC5
-   exercises rather than assuming deployment infrastructure owns them.
+### T1 — Identity (answered by a new owner RFC)
+
+`rfc/account-and-session-bootstrap.md` (drafted 2026-07-29) owns accounts, sessions, JWT claims (exactly `{sub, fid, exp, iat, jti}`), refresh/revocation, and founder binding. This RFC consumes its access token at connect; membership lookups stay server-side at subscribe (D1 unchanged). **Origin policy:** allowlist from deployment config, checked at upgrade; same-origin in dev.
+
+### T2 — Inbound intents (resolved: HTTP, not WS-RPC)
+
+Intents travel `POST /api/v1/intents` (Account RFC D3): body = one Production-C1 envelope verbatim — **no adapter, no second envelope**; response = the receipt JSON. Client timeout 10 s; retry = resubmit the same `intent_id` (idempotency is already the engine's contract); an HTTP failure after commit is healed by the receipt arriving on `player:{fid}` — the channel is the authority, the HTTP response is a convenience copy.
+
+### T3 — Outbound wire schemas (closed, versioned)
+
+The envelope (D3) gains `v: 1`. Closed `kind` payloads, exact-key validated in the TS decoder:
+- `receipt`: the production receipt JSON **unmodified** (its schema is C1's; this RFC adds nothing and strips nothing). The shell's narrower internal types are produced by the shell's own mapping (already implemented and reviewed); `internal_invariant` maps to the shell's existing wire result of that name.
+- `snapshot`: `{scope: "company"|"world"|"guild"|"cohort", rev, state}` — `state` is the save-layer canonical state for `company`, the published aggregate schemas (Commons/world dials, already generated artifacts) for the rest.
+- `event`: `{event_id, kind, rev, payload}` — the event-envelope registry as-is.
+- `presence`: `{joined: [id], left: [id], count}` · `system`: `{code, resume_after_ms?}` with closed code set `{server_restarting, history_expired, resync_required}`.
+Unknown `kind` ignored (forward-compat); unknown field inside a known kind = decode error (strictness where we have a contract).
+
+### T4 — Recovery authority
+
+Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `player:*` history: **size 512 messages / TTL 10 min** (config, Phase-0 literals). Recovery inside the window replays in order; **outside it centrifuge reports unrecoverable → client receives `system:resync_required` semantics and performs the authoritative full sync: `GET /api/v1/founder/state`** (Account RFC surface; returns latest committed revision + state, same bytes as a `snapshot`), then resubscribes from live. A revision gap detected by the shell (rev N+2 after N) triggers the same path. Full sync is the single recovery of last resort everywhere; nothing else invents catch-up.
+
+### T5 — Backpressure constants (Phase-0 literals, config-validated)
+
+`world` publish 4 Hz; `feed` history 50; `player:*` queue bound 256 messages / 1 MiB; message size cap 64 KiB; subscriptions per connection ≤ 16; connections per account ≤ 3 (oldest closed); drain timeout 15 s. Typed close codes: `4000 queue_overflow`, `4001 auth_expired`, `4002 replaced`, `4003 server_drain`. All loader-validated (positive, caps ≥ minima) like every catalog.
+
+### T6 — Runnable lifecycle (the composed server, named here)
+
+`cmd/gameserver` composes: chi router (Account RFC surface + `/api/v1/intents`) + centrifuge node + production engine + projections, one binary. `/healthz` = process up; `/readyz` = Postgres reachable ∧ catalogs loaded ∧ not draining. Drain seam: `Drain(ctx)` — set not-ready → broadcast `server_restarting` → stop accepting intents (503 typed rejection) → wait in-flight transactions (bounded by drain timeout) → close connections with 4003. AC5 exercises `Drain` directly in-process; deployment infra later just calls the same seam.
 
 ## Changelog
 
@@ -89,3 +98,4 @@ Per-connection subscribe caps (config), per-channel publish authz (only server a
 - 2026-07-29: removed a disproved review finding: Production C1 and the live parser both require
   `window_ms`; D3 maps the shell's mechanical `windowMs` field normally.
 - 2026-07-29: Codex acceptance review recorded six executable-contract gaps; remains draft.
+- 2026-07-29: all six answered (T1–T6); identity delegated to the new Account & Session Bootstrap RFC; inbound path ruled HTTP.

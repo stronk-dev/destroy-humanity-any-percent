@@ -1,98 +1,70 @@
-# RFC: Combat Data Model (shared: pet battles + the Lane)
+# RFC: Combat Shared Data & Arithmetic
 
-- **Status:** draft
+- **Status:** draft (split parent, 2026-07-29 — was "Combat Data Model"; the four-way split Codex's review required)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-28
 - **Design refs:** `design/04 §2` (pet battles, as re-decided 2026-07-28), `design/03 §10` (the Lane), `design/05 §4` (PvP table)
-- **Research:** `design/research/creature-battler.md §8` (the minimum viable spec + simulations), `design/research/lane-pusher-design.md` (shared-data-model finding, bypass verbs, Nash results)
-- **Depends on:** RFC-0002 (catalog patterns), Save Layer & Migrations (implemented)
-- **Planning:** `planning/combat-data-model/` (once implementing)
+- **Research:** `design/research/creature-battler.md §8`, `design/research/lane-pusher-design.md`
+- **Depends on:** RFC-0002 (catalog patterns), Save Layer (implemented), Balance Harness (implemented — SplitMix64)
+- **Children:** `combat-duel-engine.md`, `combat-lane-engine.md`, `combat-bots-and-integration.md`
+- **Planning:** `planning/combat-shared-data/` (once implementing)
 
 ## Summary
 
-One combat **content layer**, two **engines**. Both combat games — the turn-based pet battler and the continuous-time Lane — share a single data model: the six-Temperament type chart, one stat schema, one balance harness, one sprite family. The engines stay separate (~600 lines each; a duel and a lane are different physics). This RFC specifies the shared layer and the two engine contracts; both simulations that validated it are reproducible from the research files.
-
-## Motivation
-
-Two independent simulators (~29,000 matches total) converged on the same laws; encoding them as spec prevents both games from re-deriving or violating them. Out of scope: matchmaking/ratings service (PvP RFC), tournament seasons, cosmetics, the pet care sim itself (cattery port — already specced in `design/04 §1`).
+The shared content layer both combat engines consume: the type chart, stat schema, catalog objects, exact integer arithmetic, and the determinism contract. Engines, bots, and statistical gates live in the three child RFCs. Nothing here runs a battle; everything here is what both battles agree on.
 
 ## Specification
 
-### D1 — The type layer
+### C1 — The type layer (unchanged laws)
 
-- **Six Temperaments** (= the cattery personalities: lazy/playful/curious/sassy/shy/chaotic) on a **6-cycle chart**: each beats the next two, loses to the previous two.
-- **Multipliers 1.3× / 0.77×** — never 2× (simulated: 2× produces 100% win rates in 1v1) — **plus +1 stamina on advantage** (independently reproduces Cassette Beasts).
-- Units/pets are typed `Temperament × Runtime` (the swappable second axis) → **36 identities** sharing sprites via the CSS-palette system.
-- ⚠️ **Synergy-tag layer required before any roster >12 ships** (`liveservice-idle-tier.md`'s gap): without decorrelated team axes, the Lane's Nash-support-1 result predicts one best bench everywhere. Tags are balance data; the harness gate below enforces the outcome.
+- **Six Temperaments** (lazy/playful/curious/sassy/shy/chaotic) on a 6-cycle: each beats the next two, loses to the previous two.
+- Advantage **×13/10**, disadvantage **×10/13 — both exact rationals** (see C3; "0.77" was display shorthand), **+1 stamina on advantage**. Never 2×.
+- **Runtime axis (closed, enumerated):** `{container, vm, bare_metal, serverless, edge, mainframe}` → 36 identities `Temperament × Runtime`, sprites via the CSS-palette system. Runtime carries no chart interaction at Phase 0 — it is the synergy-tag carrier (each Runtime declares its tag list in the catalog; tags are balance data). **Roster >12 remains gated on a populated tag vocabulary** (harness gate in the bots RFC).
 
-### D2 — The stat contract
+### C2 — Catalog objects (loadable, versioned, strict)
 
-- **Hardcapped identical stat ceiling for every pet/unit of a given identity** (owner decision 2026-07-28). Care/investment buys **options, consistency, tempo**: Trust→Obedience (smooth 50%→30% across Trust 1.00→0.80), crit-rate doubling, survive-at-1-HP, stamina regen.
-- **Soul modulates Obedience in both engines** (the On-Call Leader ability in the Lane; command reliability in duels).
-- **All arena math is int32.** No `Decimal` in combat. Replays are bit-exact across Go and TS by construction.
+New catalog file family `combat/*.json`, loaded by the strict loader like every catalog:
 
-### D3 — Engine contracts
+- `species`: `{id, temperament, runtime, stats: {hp, atk, def, spd, stamina_max}, moves: [move_id × 4], tags: [string]}` — stats are the **hardcapped identity ceiling** (int32; owner decision 2026-07-28: care buys options/consistency/tempo, never stats).
+- `moves`: `{id, temperament | null (neutral), power int, stamina_cost int, kind: "strike"|"coverage"|"guard"|"utility", effect: closed union}` — `coverage` moves are typed off-temperament by definition (day-one mandatory; they convert 100% matchup cliffs to 67–76%).
+- `lane_units` / `lane_buildings` / `lane_spells`: `{id, temperament, cost int, hp, atk, spd, range, targets: "units"|"buildings"|"any", tags}` — the mandated bypass verbs are catalog rows flagged `bypass: true` (≥1 buildings-only unit, ≥1 cheap cycle card, ≥1 spell — loader-validated presence).
+- `teams` (duel: exactly 3 species refs) and `decks` (lane: exactly 8 refs) are player data validated against the catalog; wire schema `{v: 1, ids: [...]}` exact-key.
+- **Minimum Phase-0 fixture committed with this RFC:** 12 species (2/temperament), 24 moves, 8 lane units, 3 buildings, 3 spells — enough for every child RFC's tests, explicitly not balance-final.
 
-| | Duel engine (pets) | Lane engine |
-|---|---|---|
-| Time | Turn-based, simultaneous commitment, no switching | Continuous, fixed tick |
-| Player | Live or async-vs-snapshot | **Live only**; opponent is async snapshot + bot |
-| Depth source | Coverage moves (mandatory day one — they convert a 100% matchup cliff to 67–76%) | Real-time tempo; **bypass verbs mandatory** (buildings-only unit + cheap cycle + ≥1 spell) |
-| Resource | Stamina (Temtem overexertion), not PP | Elixir-style flow |
-| Resolution | `(seed, teams, choice list)` → deterministic replay | `(seed, decks, timed placements)` → deterministic replay |
+### C3 — Exact integer arithmetic (the parity contract)
 
-### D4 — Verification & bots
+- All combat state is **int32**; every intermediate is computed in int64 then **saturated to int32 on store** (no wrap, ever).
+- Rational multipliers are exact: advantage `x*13/10`, disadvantage `x*10/13`, **integer multiply first, then floor-divide** — one rounding site per multiplier application, in declared order: `base power → attacker atk scaling (×atk/64) → chart multiplier → crit (×3/2) → floor at each step`.
+- **Damage minimum 1** after all multipliers if base power > 0. Stamina clamps to `[0, stamina_max]`. HP clamps to `[0, hp_max]`.
+- No `Decimal`, no floats, no native `/` anywhere in combat paths (the economy-kernel.ts:334 lesson is a lint rule here: TS combat modules use a `idiv(a,b)` helper; direct `/` in `combat/` fails CI).
 
-- **A battle is its inputs.** Server re-simulates every submitted match (cheap: the research measured ~13,000× real time); PvP results are derived from replays, never client-reported.
-- Bots: duel = expectimax over the small action space with personality-flavored policies; lane = the greedy policy family with **published behaviour-flag difficulty manifests**. **Real ratings, rating-based matchmaking, no rubber-band** (owner decision 2026-07-28). Bots never cheat.
-- **Matchmaking payouts carry the punch-down multiplier: 200% punching up, 5% four tiers down.**
+### C4 — Determinism contract
 
-## Deviations from design
+- **PRNG: the harness's SplitMix64, exactly** (declared dependency). Seed expansion: `battle_seed = splitmix(match_seed)` per battle; each consumer draws from its own labeled substream `splitmix(battle_seed ⊕ fnv1a(label))` — labels are catalog-declared strings (`"crit"`, `"obedience"`, `"bot_policy"`), so adding a consumer never shifts another's draws.
+- Bounded draws use **rejection sampling** (multiply-shift bias is forbidden); the helper is shared kernel code with golden vectors.
+- Canonical input ordering: duel = the choice list as committed (simultaneous choices ordered by player slot 0,1); lane = placements sorted `(tick, player_slot, placement_seq)`.
+- **Battle log schema:** `{v: 1, engine: "duel"|"lane", seed, catalog_hash, inputs, events: [...]}` with a closed per-engine event union (owned by each engine RFC) and a terminal `state_hash` = fnv1a over the canonical serialized end state. Golden replays assert byte-identical logs Go↔TS.
 
-None — this encodes the 2026-07-28 decisions already applied to `design/03 §10` and `design/04 §2`.
+### C5 — External inputs: fixture-only boundaries (blocker #8 resolved)
+
+Trust→Obedience (smooth 50%→30% across Trust 1.00→0.80) and Soul modulation are **functions over two int inputs `(trust_ppm, soul)` declared here** (integer piecewise-linear tables in the catalog); *where those inputs come from* is the pet-care RFC and Prestige P1 respectively — until those land, engines consume committed fixtures. Matchmaking/rating identity is the bots/integration RFC's boundary. **No combat RFC blocks on the care sim; the seam is these two integers.**
 
 ## Acceptance criteria
 
-1. Golden replays: identical `(seed, inputs)` produce byte-identical battle logs in Go and TS, both engines.
-2. Chart property tests: no 2× path exists; every identity has ≥2 winning and ≥2 losing matchups.
-3. **Harness gate (the anti-Nash-1 test):** across the sampled deck/team space, the best loadout's field win rate ≤ 65% and Nash support ≥ 3 — run per balance change to combat data.
-4. Obedience curve matches spec across the Trust range; Soul modulation visible in logs.
-5. Lane decisiveness ≥ 40% core-kills with the mandated bypass verbs present (regression: removing them drops it below 10%, asserting the verbs are load-bearing).
-6. A bot at published manifest level `n` beats level `n−1` ≥ 60% of the time (difficulty monotonicity).
+1. Strict-loader round-trip of the full Phase-0 fixture; every closed union exact-key validated; bypass-verb presence loader-enforced.
+2. Golden vectors for C3 arithmetic (chart multipliers at extremes, saturation, damage minimum, crit ordering) asserted byte-identical in Go and TS.
+3. PRNG substream isolation: adding a labeled consumer leaves all other substreams' golden draws unchanged (regression fixture).
+4. Chart property tests: no 2× path; every identity ≥2 winning and ≥2 losing matchups.
+5. Obedience/Soul tables match spec across the input ranges (golden vectors, both runtimes).
+6. The `/` lint rule fails a seeded violation in `combat/`.
 
 ## Open questions
 
-- Synergy-tag vocabulary (D1) — balance data, needs a content pass; blocks roster growth, not the engines.
-- Season/rotating-weakness mechanics (`design/04 §2` tournament note) — follow-up.
-
-## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-29)
-
-1. **Scope must split:** one content schema, two cross-runtime engines, two bot families, replay
-   verification, and balance harnesses are not one independently reviewable RFC. Split shared combat
-   data/arithmetic, duel engine, lane engine, and bot/match integration with explicit dependencies.
-2. **The data model is not specified:** enumerate the Runtime axis, stats, moves, coverage moves,
-   synergy tags, units, buildings, spells, decks/teams, leader abilities, and versioned catalog/wire
-   schemas with literal minimum fixtures. D1/D2 currently provide rules but no loadable objects.
-3. **Integer arithmetic is incomplete:** encode 1.3×/0.77× as exact rational/fixed-point operations;
-   define rounding order, saturation/overflow, damage minimums, stamina caps, and the lane tick duration.
-   “int32” alone does not produce cross-runtime parity.
-4. **Determinism contract:** specify the PRNG algorithm, seed expansion, rejection sampling, canonical
-   input ordering, log/event schema, and state hash. The balance harness's SplitMix64 can be reused only
-   by declaring that dependency.
-5. **Engine state machines:** give closed action/phase/error unions and terminal conditions for both
-   duel and lane. “Simultaneous commitment” and “timed placements” leave legality and tie resolution
-   open to invention.
-6. **Bots and snapshots:** define what hidden/public state an async opponent snapshot contains, the
-   exact behavior-flag manifests, deterministic decision tie-breaks, and how bot identity/difficulty
-   enters a replay.
-7. **Statistical gates:** pin sample spaces, seeds, roster/deck generators, match counts, confidence
-   treatment, best-of-N policy, and artifact-regeneration protocol for win rate, Nash support,
-   decisiveness, and bot monotonicity. Thresholds without the sampled population are not reproducible.
-8. **Unimplemented inputs:** Trust, Soul, pet identity/care state, matchmaking identity, and rating
-   state need named owner RFCs or explicit fixture-only boundaries before combat can consume them.
+- Synergy-tag vocabulary content pass — blocks roster growth, not this RFC.
+- Runtime-axis mechanical meaning beyond tags — future RFC, deliberately inert now.
 
 ## Changelog
 
-- 2026-07-28: created (draft).
-- 2026-07-29: Codex acceptance review required a four-way scope split and recorded seven further
-  executable-contract gaps.
+- 2026-07-28: created (draft) as "Combat Data Model".
+- 2026-07-29: Codex acceptance review required a four-way scope split and recorded seven further executable-contract gaps.
+- 2026-07-29: split executed — this file is now the shared data/arithmetic parent (blockers #2, #3, #4, #8 answered here as C2–C5); engines, bots, and statistical gates moved to the three child RFCs.
