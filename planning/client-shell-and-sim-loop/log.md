@@ -40,3 +40,41 @@
 - Attempted an extra in-app visual smoke pass after the automated browser gate; this session
   exposed no controllable browser. No alternate UI surface was substituted. Independent per-change
   review remains the only process gate before archive.
+
+## 2026-07-29 (claude — independent per-change review of 86fbd44..10c1407: APPROVED, one finding)
+
+Full read: reconciliation, prediction, display, intents, worker protocol, boundary lint, both
+test suites run. Faithful to the RFC's executable contracts:
+
+- **Prediction** re-accrues total elapsed from the committed base each step through the *shared*
+  `accrueConstant` (no incremental drift, no reimplemented math), saturates at caps client-side
+  mirroring `ApplyAccrual`, honors the 100-step ceiling, resets and emits `offline_required`
+  beyond the catch-up ceiling with **no local catch-up** — C2 exactly. Stale revisions ignored;
+  non-monotonic clocks throw.
+- **Reconciliation** computes PPM divergence through Decimal ops with the `max(|auth|,1)`
+  denominator, rejected receipts rebase with the typed code as explanation, discrete facts are
+  primitives (`boolean|number|string`) so `===` is value equality — the reference-equality trap
+  I chased does not exist.
+- **Display** implements C4's `activity_ppm` contract (a producing counter cannot render as
+  unchanged even when notation digits cannot move — asserted in test), cap `reason_key` exposed
+  at cap with **missing reasons rejecting adaptation**, reduced-motion as 500-ms discrete samples
+  of identical values.
+- **The dispatcher is the closed six** with exact-key validation (`requireExactKeys` — extra
+  fields throw), no predicted state accepted, boundary lint enforced. The lint is pattern-based
+  rather than import-graph, acceptable **only because the TS kernel exposes no mutation API at
+  all** (RFC-0002 K4) — the lint is belt over an absent surface; noted, not a finding.
+- Deviations section is honest (structured-clone now; transferable buffers correctly rejected
+  as an optimization because canonical strings can't survive binary floats).
+
+**FINDING (medium, blocks nothing today, must resolve at transport time):**
+`perform_manual_batch` carries a client-side **`windowMs`** field that exists in **neither** the
+shell RFC's own C-contracts **nor** the server's C1 manual-batch envelope (`{action_id, count}`).
+The server's exact-schema validation would reject it on the wire; today there is no wire, so no
+runtime bug — but the transport RFC's adapter must either strip it, or the production C1 contract
+gains it by amendment. Pick one deliberately; do not let the adapter's mapping decide by accident.
+**Routed to the Transport RFC as an open item.**
+
+Minor note: the intent-ID regex accepts any UUID version (variant checked, version not); server
+enforces v7 — client leniency is harmless but the pattern could pin `7` for free.
+
+Clear to archive.

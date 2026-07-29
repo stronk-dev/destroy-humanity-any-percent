@@ -58,6 +58,8 @@ Per-connection subscribe caps (config), per-channel publish authz (only server a
 
 ## Open questions
 
+- **`windowMs` on `perform_manual_batch`** (client-shell review finding, 2026-07-29): the shell dispatcher carries a `windowMs` field that exists in neither the shell RFC's contracts nor the server's C1 envelope — the adapter mapping (D3 here) must either strip it or the production contract gains it by amendment. Decide deliberately at implementation.
+
 - Redis broker threshold (named follow-up; single-node until telemetry says otherwise).
 - Feed curation rules live with `design/05 §2` content work, not here.
 
