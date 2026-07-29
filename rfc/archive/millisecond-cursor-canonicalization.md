@@ -1,13 +1,13 @@
 # RFC: Millisecond Cursor Canonicalization
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco (drafted by Codex from the round-2 review)
 - **Created:** 2026-07-28
 - **Design refs:** `design/06-tech.md §idle-math`; `design/00-vision.md` law 2
 - **Research:** `planning/production-review-round2/log.md` R2
 - **Amends:** `archive/save-layer-and-migrations.md` and
   `archive/production-engine-and-intents.md`
-- **Planning:** `planning/millisecond-cursor-canonicalization/` (once implementing)
+- **Planning:** `planning/archive/millisecond-cursor-canonicalization/`
 
 ## Summary
 
@@ -109,3 +109,5 @@ None. This RFC changes representation precision, not any rate or balance constan
 
 - 2026-07-28: drafted from demonstrated round-2 finding R2.
 - 2026-07-29: implementation started; planning record opened.
+- 2026-07-29: save v4, shared cursor advancement, migration/property coverage, canonical docs,
+  and Postgres verification completed; RFC archived.

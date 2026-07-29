@@ -35,3 +35,17 @@ Append-only implementation record. Resume from this file, `plan.md`, and the acc
 - Added explicit 0.999 ms, exact 1 ms, same-ms, rollback, and exact 86,400,000 ms production/refill
   boundaries without changing accrual or token results.
 - Full save and production package suites pass.
+
+## 2026-07-29 — Completed and archived
+
+- Closed the new-state boundary: `CreateStream` rejects a company whose two production cursors do
+  not begin at the same canonical server instant. Historical mismatches remain accepted only by
+  the v1–v3 migration path that repairs them.
+- Updated `docs/save-layer.md` and `docs/production-engine.md` to describe save v4, strict UTC-ms
+  persistence, historical flooring, shared advancement, and receipt serialization.
+- Full `make verify` passed: Go vet/tests, formula drift, strict TypeScript, 6,354 Node tests,
+  schema validation, and 19,062 Chromium/Firefox/WebKit tests.
+- The real Postgres 16 save/intent integration suite passed against the disposable compose service;
+  the service and network were removed after verification.
+- All six RFC acceptance criteria are satisfied. Rotated the RFC and planning record into their
+  archives. No push performed.

@@ -1,17 +1,18 @@
 # Millisecond Cursor Canonicalization — Implementation Plan
 
-- **RFC:** `rfc/millisecond-cursor-canonicalization.md`
+- **Status:** completed 2026-07-29
+- **RFC:** `rfc/archive/millisecond-cursor-canonicalization.md`
 - **Assignee:** Codex
 - **Started:** 2026-07-29
 
 ## Sequence
 
-1. Introduce the canonical UTC whole-millisecond time constructor and save-v4 validation/migration.
-2. Change production and manual-token cursor advancement to the shared canonical server instant.
-3. Expand the migration corpus and add the demonstrated dead-click regression, phase properties,
+1. [x] Introduce the canonical UTC whole-millisecond time constructor and save-v4 validation/migration.
+2. [x] Change production and manual-token cursor advancement to the shared canonical server instant.
+3. [x] Expand the migration corpus and add the demonstrated dead-click regression, phase properties,
    and time-boundary tests.
-4. Update canonical save and production documentation.
-5. Run focused and complete verification, archive the RFC and planning record, and commit each
+4. [x] Update canonical save and production documentation.
+5. [x] Run focused and complete verification, archive the RFC and planning record, and commit each
    reviewable stage locally.
 
 ## Acceptance gates
@@ -26,4 +27,3 @@
 - State, receipt JSON, and migration fixtures serialize the same canonical millisecond instant.
 - `docs/save-layer.md` and `docs/production-engine.md` describe save v4 and shared cursor semantics.
 - `gofmt`, focused tests, and `make verify` pass.
-

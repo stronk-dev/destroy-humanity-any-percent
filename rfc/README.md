@@ -9,7 +9,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
-| [Millisecond Cursor Canonicalization](millisecond-cursor-canonicalization.md) | implementing | Save Layer / Production Engine |
 | [Resource-Log Domain Parity](resource-log-domain-parity.md) | draft | Economy Kernel / Production Engine |
 | [Balance Harness Foundation](balance-harness-foundation.md) | accepted | Production Engine & Intent API |
 | [Gate Predicates & the Route Registry](gate-predicates-and-routes.md) | draft | Production Engine & Intent API |
@@ -39,6 +38,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Deterministic Decimal Aggregation](archive/deterministic-decimal-aggregation.md) | implemented | [Numeric core](../docs/numeric-core.md), [economy kernel](../docs/economy-kernel.md) |
 | [Production Engine & Intent API](archive/production-engine-and-intents.md) | implemented | [Production engine](../docs/production-engine.md), [economy kernel](../docs/economy-kernel.md), [save layer](../docs/save-layer.md) |
 | [Production Hardcap Saturation](archive/production-hardcap-saturation.md) | implemented | [Production engine](../docs/production-engine.md), [economy kernel](../docs/economy-kernel.md) |
+| [Millisecond Cursor Canonicalization](archive/millisecond-cursor-canonicalization.md) | implemented | [Save layer](../docs/save-layer.md), [Production engine](../docs/production-engine.md) |
 
 Remaining Phase-0 contracts (not yet drafted): account/session bootstrap · T0–T1 playable content
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics

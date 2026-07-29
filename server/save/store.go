@@ -83,6 +83,10 @@ func (s *Store) CreateStream(ctx context.Context, key StreamKey, constantsHash s
 		s.logRejection(err, writeContext)
 		return Revision{}, err
 	}
+	if err := validateInitialCursors(key.Scope, state); err != nil {
+		s.logRejection(err, writeContext)
+		return Revision{}, err
+	}
 	encodedState, err := s.validatedState(constantsHash, key.Scope, state)
 	if err != nil {
 		s.logRejection(err, writeContext)
@@ -252,6 +256,13 @@ func validateWrite(key StreamKey, hash string, state *State, ctx WriteContext) e
 	validPair := key.OwnerKind == OwnerFounder && (key.Scope == economy.ScopeCompany || key.Scope == economy.ScopeFounder) || key.OwnerKind == OwnerGuild && key.Scope == economy.ScopeGuild || key.OwnerKind == OwnerWorld && key.Scope == economy.ScopeWorld
 	if !validPair || !uuidPattern.MatchString(key.OwnerID) || !hashPattern.MatchString(hash) || state == nil || state.Ledger == nil || state.Ledger.Scope() != key.Scope || ctx.Cause == "" {
 		return ErrInvalidStream
+	}
+	return nil
+}
+
+func validateInitialCursors(scope economy.Scope, state *State) error {
+	if scope == economy.ScopeCompany && !state.EvaluatedThrough.Equal(state.ManualTokenRefilledAt) {
+		return fmt.Errorf("%w: new company cursors must share one canonical server instant", ErrInvalidState)
 	}
 	return nil
 }

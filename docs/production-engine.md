@@ -46,9 +46,14 @@ commits one positive-accrual ledger transaction:
   evaluation cursor, so it cannot block a following intent;
 - a server-clock rollback or sub-millisecond interval advances nothing and grants nothing.
 
-The evaluation cursor advances by the exact whole milliseconds consumed, preserving any
-sub-millisecond remainder for the next evaluation. Compute Credits are integer time state, never a
-Decimal currency. Spending them belongs to a later RFC.
+Production evaluation and manual-token refill first derive the same
+`effective_now = CanonicalServerTime(now)`. They compute work from the exact integer-millisecond
+difference and, when positive, set their cursor directly to `effective_now`; they never add a
+separately floored duration back to a phase-bearing baseline. Calls within one millisecond and
+clock rollback grant nothing. The caller's fractional current-millisecond remainder remains
+naturally available to a later call, but it is never persisted as an independent cursor phase.
+Compute Credits are integer time state, never a Decimal currency. Spending them belongs to a later
+RFC.
 
 ## Intent API
 
@@ -68,7 +73,8 @@ refills at 25 actions/s. Excess requested actions are silently discarded, while 
 makes the clamp visible. Manual batches do not create click events.
 
 Applied receipts contain the net ledger changes, applied count, resulting revision, evaluation
-cursor, and the complete canonical authoritative snapshot. Terminal deterministic rejections
+cursor, and the complete canonical authoritative snapshot. All cursor timestamps serialize the
+same UTC millisecond instant used by save v4. Terminal deterministic rejections
 (`unaffordable`, `unknown_id`, `invalid`, `cap_exceeded`) are idempotently recorded without a save
 mutation. Revision and idempotency conflicts are typed but unrecorded so the same logical request
 can be retried correctly.

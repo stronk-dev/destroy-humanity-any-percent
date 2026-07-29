@@ -265,3 +265,14 @@ func TestStreamOwnerScopeValidation(t *testing.T) {
 		}
 	}
 }
+
+func TestNewCompanyStreamRequiresAlignedCursors(t *testing.T) {
+	state := testState(t)
+	if err := validateInitialCursors(economy.ScopeCompany, state); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("mismatched cursor error = %v, want ErrInvalidState", err)
+	}
+	state.ManualTokenRefilledAt = state.EvaluatedThrough
+	if err := validateInitialCursors(economy.ScopeCompany, state); err != nil {
+		t.Fatal(err)
+	}
+}

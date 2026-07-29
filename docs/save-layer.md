@@ -16,7 +16,7 @@ stale scalar subquery under PostgreSQL READ COMMITTED.
 
 ## State format
 
-Version 3 is strict JSON:
+Version 4 is strict JSON:
 
 ```json
 {
@@ -35,14 +35,17 @@ hardcap violations, unknown fields, trailing JSON, and future save versions reje
 
 `generators` contains exactly the production-capable generator classes in the stream's catalog
 scope. Counts are JSON integers from zero through `9,007,199,254,740,991`; they are not Decimals.
-`evaluated_through` is canonical UTC RFC3339Nano and records the server-authored instant through
-which production state has been evaluated. The repository accepts and returns one complete state
-object containing ledger, counts, and cursor.
+`evaluated_through` is a canonical UTC RFC3339 instant on an exact whole-millisecond boundary and
+records the server-authored instant through which production state has been evaluated. The
+repository accepts and returns one complete state object containing ledger, counts, and cursor.
 
 `compute_credit_ms` and `manual_token_milli` are non-negative exact safe integers capped by the
-state's immutable catalog policy. The manual refill cursor is canonical server-authored UTC time
-and may not exceed `evaluated_through`. These fields are company-scoped; another save scope cannot
-smuggle production-policy state.
+state's immutable catalog policy. The manual refill cursor uses the same exact UTC-millisecond
+domain and may not exceed `evaluated_through`. `save.CanonicalServerTime(t)`—UTC plus truncation to
+a millisecond—is the shared constructor. Encoding rejects non-UTC or sub-millisecond caller state
+rather than silently rewriting it. New company streams require both cursors to start at the same
+canonical instant. These fields are company-scoped; another save scope cannot smuggle
+production-policy state.
 
 `constants_hash` is `sha256:` plus the lowercase SHA-256 digest of the exact catalog artifact
 bytes. Saves resolve that immutable catalog before restoration. Reformatting a catalog therefore
@@ -57,12 +60,15 @@ Sequential SQL migrations are embedded in the Go package and applied transaction
 Goose 3.27.1 using pgx/v5's `database/sql` driver. There is no ORM, SQLite substitute, runtime
 migration directory, or separate migration artifact.
 
-Save versions 1 and 2 remain readable. V1 initializes every in-scope production-capable generator
-to zero and uses the revision's database-authored `created_at` as the evaluation cursor. Both old
-versions initialize Compute Credits to zero, fill the manual bucket from the resolved catalog, and
-use the evaluation cursor as the refill baseline. The checked-in `testdata/save-migrations.json`
-corpus fixes independent v1→v3 and v2→v3 results and grows with every future version; migrations
-never read the wall clock implicitly.
+Save versions 1 through 3 remain readable. V1 initializes every in-scope production-capable
+generator to zero and uses the revision's database-authored `created_at` as the evaluation cursor.
+Versions 1 and 2 initialize Compute Credits to zero, fill the manual bucket from the resolved
+catalog, and use the evaluation cursor as the refill baseline. During v1–v3 restoration, both
+cursor instants are independently floored to UTC whole milliseconds before their ordering is
+validated; no whole millisecond of work is invented. A claimed v4 snapshot with either
+sub-millisecond cursor is rejected. The checked-in `testdata/save-migrations.json` corpus fixes
+v1/v2 upgrades plus phase-matched, phase-mismatched, boundary, and lying-v4 cases; migrations never
+read the wall clock implicitly.
 
 ## Intent and event transaction
 
