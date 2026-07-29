@@ -9,4 +9,4 @@
 3. [x] Relocate the three Phase-0 doctrine routes and update affected intent/projection tests.
 4. [x] Update canonical docs and regenerate balance artifacts separately.
 5. [x] Run full verification.
-6. [ ] Record independent review before archival.
+6. [x] Record independent review before archival.

@@ -9,8 +9,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
-| [Route Temporal Validity](route-temporal-validity.md) | implementing | Gate Predicates & Route Registry |
-| [Commons Cohort Merge Capacity](commons-merge-capacity.md) | implementing | Commons Compact |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft | Commons Compact |
 | [Combat Data Model](combat-data-model.md) | draft | — |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | draft | Production Engine / Client Shell |
@@ -47,10 +45,13 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Route Registry Event-Order Convergence](archive/route-registry-event-order-convergence.md) | implemented | [Routes](../docs/routes.md) |
 | [Balance Baseline Change Guard Hardening](archive/balance-baseline-change-guard.md) | implemented | [Balance harness](../docs/balance-harness.md) |
 | [Post-Review Integrity Remediation](archive/post-review-integrity-remediation.md) | implemented | [Balance harness](../docs/balance-harness.md), [Routes](../docs/routes.md), [Commons](../docs/commons.md), [Save layer](../docs/save-layer.md) |
+| [Route Temporal Validity](archive/route-temporal-validity.md) | implemented | [Routes](../docs/routes.md) |
+| [Commons Cohort Merge Capacity](archive/commons-merge-capacity.md) | implemented | [Commons](../docs/commons.md) |
 
 Remaining Phase-0 contracts (not yet drafted): account/session bootstrap · T0–T1 playable content
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics
-(Leaderboards owns board binding). Later named work: Compute Credit spend · deployment and
+(Leaderboards owns board binding) · doctrine intents (must define doctrine-pick ordering before
+same-boundary doctrine routes can ship). Later named work: Compute Credit spend · deployment and
 draining.
 
 ### Deferred decisions register

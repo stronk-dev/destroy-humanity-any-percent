@@ -1,6 +1,6 @@
 # RFC: Commons Cohort Merge Capacity
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex, implementing the owner's 2026-07-29 S4 ruling
 - **Created:** 2026-07-29
 - **Design refs:** `design/05-mmo.md`; `design/02-economy-balancing.md`
@@ -42,3 +42,4 @@ trigger or cohort splitting.
 
 - 2026-07-29: owner ruled floor-only trigger, 1.5× ceiling, and never split; accepted and
   implementation started.
+- 2026-07-29: implemented with overflow-safe capacity arithmetic and independently reviewed.

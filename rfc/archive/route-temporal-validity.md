@@ -1,6 +1,6 @@
 # RFC: Route Temporal Validity
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex, implementing the owner's 2026-07-29 A7 ruling
 - **Created:** 2026-07-29
 - **Design refs:** `design/01-tiers.md`; `design/02-economy-balancing.md`; `design/08-satire-flavor.md §6`
@@ -55,3 +55,6 @@ instead of inventing a resource or balance amount.
 ## Changelog
 
 - 2026-07-29: owner ruled temporal impossibility invalid; accepted and implementation started.
+- 2026-07-29: implemented across Go, TypeScript, and schema semantics; independent review
+  approved the implementation. Same-boundary doctrine ordering remains assigned to the future
+  doctrine-intent RFC before any such route may ship.
