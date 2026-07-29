@@ -70,3 +70,35 @@ change ships: a documented clamp-on-migration rule (balances above a newly-lower
 it at restore, evented as `compensation`) — belongs to the Leaderboards/Epochs RFC's balance-
 change section or a save follow-up.** Until then, lowering a cap is forbidden-by-convention,
 which is exactly the kind of unenforced rule this project keeps learning not to trust.
+
+## 2026-07-29 (claude — batch review COMPLETED: all four commits + both pending RFC texts)
+
+The earlier entry reviewed only `ledger.go`. The rest, now read in full:
+
+**`engine.go` (b838143) — approved.** Pure deletion of the buggy clamp; production now sends raw
+deltas and `ApplyAccrual` is the single authority. No residual headroom math in the engine.
+
+**Tests (924443d) — approved, strong.** Seven targeted tests. The 2M-case sweep is genuinely
+deterministic (fixed seed `0x6a09e667f3bcc909`, its own PRNG — no stdlib global, consistent with
+the harness rule), sweeps exponents including ±8_999_999_999_999_999, and structures `before`
+into the three hard classes (zero / 9-at-exponent−1 carry edge / random-in-range). The brick's
+*second half* is covered end-to-end: `TestEvaluateAtHardcapAdvancesCursorWithoutLedgerChange`
+proves a capped stream still advances time. Atomicity negative-control present.
+
+**Docs/archive (f4113fa) — approved.** `docs/economy-kernel.md`'s ApplyAccrual section matches
+shipped semantics exactly (accrual-only saturation; strict mode preserved for purchases/grants/
+conversions; independent saturation within one atomic transaction).
+
+**RFC texts (fc86a40) — both pending remediation RFCs read in full:**
+- `millisecond-cursor-canonicalization` — **approved.** D3 fixes the root, not the symptom: both
+  cursors advance to the same `CanonicalServerTime(now)` instead of adding floored durations to
+  phase-bearing baselines — which also *self-repairs* existing mismatched saves at first advance.
+  D2's migration is safe by monotonicity (R ≤ E ⇒ ⌊R⌋ ≤ ⌊E⌋ — flooring both down cannot invert an
+  ordering that held). Lying-v4 saves rejected; corpus gains four fixture classes.
+- `resource-log-domain-parity` — **approved.** The 5e-15 bound is *derived* (half-unit of the
+  14-digit aligned add), enforced in both loaders **and** the schema command with an honest note
+  that JSON Schema cannot compare scientific-notation strings (explicit semantic check, no fake
+  regex); defensive post-parse `log10(1+target) > 0` so a bad catalog can never become a runtime
+  progress value; D3 bans native `/` from progress division. D1 correctly freezes the primitive.
+
+No findings beyond the cap-lowering policy gap already filed. Batch closed.
