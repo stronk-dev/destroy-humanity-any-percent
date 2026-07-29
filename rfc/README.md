@@ -11,7 +11,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft | Commons Compact |
 | [Combat Data Model](combat-data-model.md) | draft | — |
-| [Client Shell & Sim Loop](client-shell-and-sim-loop.md) | draft | Production Engine & Intent API |
+| [Client Shell & Sim Loop](client-shell-and-sim-loop.md) | implementing | Production Engine & Intent API |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | draft | Production Engine / Client Shell |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | draft | Production Engine / Gate Predicates |
 | [Prestige & Exits](prestige-and-exits.md) | draft | Production Engine / Save Layer |

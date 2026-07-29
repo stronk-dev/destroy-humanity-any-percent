@@ -5,7 +5,7 @@
 - **Design refs:** `design/06 §frontend` (Svelte 5, 20 Hz, DOM-first), `design/00` law 5 (visible caps), `design/11 §1–2` (contract screen, FTUE surfaces), `design/13 §2` (offline-return fast-forward)
 - **Research:** `design/research/browser-rendering.md` (workers, wall-clock deltas, tab throttling), `design/research/tech-stack.md §2`, `design/research/adaptive-balancing.md` (the amplitude-lock boundary, client side)
 - **Depends on:** Production Engine (implemented — this consumes its intents, receipts, snapshots, and progress coordinates)
-- **Planning:** `planning/client-shell-and-sim-loop/` (once implementing)
+- **Planning:** `planning/client-shell-and-sim-loop/`
 
 ## Summary
 
