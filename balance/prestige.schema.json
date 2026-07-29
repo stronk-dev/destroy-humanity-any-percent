@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cloud-clicker.invalid/schemas/prestige.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "threshold", "exit_modifiers_ppm", "collapse_route_knowledge", "offer_duration_ms", "decline_drift_ppm", "spawn_gate_ppm", "advisor_per_run_ppm", "advisor_cap_ppm"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "threshold": {"type": "string", "pattern": "^(?:0|[1-9](?:\\.\\d{0,10}[1-9])?e(?:0|-?[1-9]\\d*))$"},
+    "exit_modifiers_ppm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["acquihire", "acquisition", "ipo", "collapse", "scripted_first"],
+      "properties": {
+        "acquihire": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "acquisition": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "ipo": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "collapse": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "scripted_first": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}
+      }
+    },
+    "collapse_route_knowledge": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "offer_duration_ms": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+    "decline_drift_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+    "spawn_gate_ppm": {
+      "type": "array", "minItems": 10, "maxItems": 10,
+      "items": {"type": "integer", "minimum": 0, "maximum": 1000000}
+    },
+    "advisor_per_run_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000},
+    "advisor_cap_ppm": {"type": "integer", "minimum": 0, "maximum": 1000000}
+  }
+}

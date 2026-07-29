@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "threshold": "1e12",
+  "vectors": [
+    {"name":"zero","lifetime_value":"0","current_level":0,"modifier_ppm":1000000,"level":0,"delta":0},
+    {"name":"threshold exact","lifetime_value":"1e12","current_level":0,"modifier_ppm":1000000,"level":1,"delta":1},
+    {"name":"cube boundary below","lifetime_value":"7.99999999999e12","current_level":0,"modifier_ppm":1000000,"level":1,"delta":1},
+    {"name":"cube boundary exact","lifetime_value":"8e12","current_level":0,"modifier_ppm":1000000,"level":2,"delta":2},
+    {"name":"cube boundary above","lifetime_value":"8.00000000001e12","current_level":1,"modifier_ppm":1000000,"level":2,"delta":1},
+    {"name":"modifier floors delta","lifetime_value":"2.7e13","current_level":1,"modifier_ppm":750000,"level":3,"delta":1},
+    {"name":"large exact cube","lifetime_value":"1e21","current_level":0,"modifier_ppm":1000000,"level":1000,"delta":1000},
+    {"name":"numeric cap","lifetime_value":"1e300","current_level":9007199254740990,"modifier_ppm":1000000,"level":9007199254740991,"delta":1}
+  ]
+}

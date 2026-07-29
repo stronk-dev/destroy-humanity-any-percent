@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "threshold": "1e12",
+  "exit_modifiers_ppm": {
+    "acquihire": 900000,
+    "acquisition": 1000000,
+    "ipo": 1250000,
+    "collapse": 750000,
+    "scripted_first": 1000000
+  },
+  "collapse_route_knowledge": 25,
+  "offer_duration_ms": 900000,
+  "decline_drift_ppm": 50000,
+  "spawn_gate_ppm": [0, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1000000],
+  "advisor_per_run_ppm": 20000,
+  "advisor_cap_ppm": 500000
+}

@@ -26,3 +26,15 @@
   Founder-v6 fixture as well as the existing Company history. New account-created company runs set
   `run_started_at` from canonical server time.
 - `go test -p 1 ./...` passes across every server package after the save bump.
+
+## 2026-07-29 — numeric policy core
+
+- Added a strict declarative Prestige policy and JSON Schema. The provisional P8 fixture supplies
+  the `1e12` threshold, typed payout modifiers, collapse Knowledge, offer lifetime/drift, tier spawn
+  gates, and Advisor constants; unknown fields fail in both the Go loader and schema gate.
+- Added the P2 integer binary-search cube root in Go and TypeScript. Both consume one shared corpus
+  covering zero, threshold, `n³` below/exact/above boundaries, modifier flooring, a large exact
+  cube, and the numeric-domain cap. Neither runtime calls floating `cbrt`.
+- Added exact moral reseeding, bounded Advisor multiplication, and the mandated SplitMix64 stream
+  with fixed output vectors. Go tests, all 6,422 client tests, strict TypeScript/Svelte checks, and
+  the expanded schema verifier pass.

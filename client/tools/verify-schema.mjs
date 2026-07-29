@@ -280,6 +280,19 @@ async function main() {
     if (!validateShell(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateShell)}`);
   }
 
+  const prestigeSchema = await readJSON(path.join(balanceDirectory, "prestige.schema.json"));
+  const validatePrestige = ajv.compile(prestigeSchema);
+  const prestigeCatalogs = await jsonFiles(path.join(balanceDirectory, "prestige"));
+  if (prestigeCatalogs.length === 0) throw new Error("prestige schema verification requires a production catalog");
+  for (const filename of prestigeCatalogs) {
+    const data = await readJSON(filename);
+    if (!validatePrestige(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validatePrestige)}`);
+    const threshold = new Decimal(data.threshold);
+    if (!threshold.gt(0) || !Number.isFinite(threshold.mantissa) || !Number.isSafeInteger(threshold.exponent)) {
+      throw new Error(`${path.relative(repositoryDirectory, filename)}: threshold must be a positive state Decimal`);
+    }
+  }
+
   const harnessDirectory = path.join(repositoryDirectory, "testdata", "harness");
   const scenarioSchema = await readJSON(path.join(harnessDirectory, "scenario.schema.json"));
   const reportSchema = await readJSON(path.join(harnessDirectory, "report.schema.json"));
@@ -312,7 +325,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + routes + commons + client-shell + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + routes + commons + client-shell + prestige + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${scenarios.length} scenario(s)`,
   );
 }
 
