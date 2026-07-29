@@ -28,17 +28,32 @@ type formulaArtifact struct {
 }
 
 type commonsFormula struct {
-	Enclosure           string                 `json:"enclosure"`
-	Compliance          string                 `json:"compliance"`
-	Health              string                 `json:"health"`
-	EffectiveHealth     string                 `json:"effective_health"`
-	Modifier            string                 `json:"modifier"`
-	Solidarity          string                 `json:"solidarity"`
-	SourceWeights       []commons.SourceWeight `json:"source_weights"`
-	CollapseHealthPPM   int64                  `json:"collapse_health_ppm"`
-	HealthyHealthPPM    int64                  `json:"healthy_health_ppm"`
-	CollectiveWeightPPM int64                  `json:"collective_weight_ppm"`
-	MaximumBonus        string                 `json:"maximum_bonus"`
+	Enclosure                string                 `json:"enclosure"`
+	Compliance               string                 `json:"compliance"`
+	Health                   string                 `json:"health"`
+	EffectiveHealth          string                 `json:"effective_health"`
+	Modifier                 string                 `json:"modifier"`
+	Solidarity               string                 `json:"solidarity"`
+	SourceWeights            []commons.SourceWeight `json:"source_weights"`
+	DefaultTithePPM          int64                  `json:"default_tithe_ppm"`
+	MinimumTithePPM          int64                  `json:"minimum_tithe_ppm"`
+	MaximumTithePPM          int64                  `json:"maximum_tithe_ppm"`
+	GuildHealthWeightPPM     int64                  `json:"guild_health_weight_ppm"`
+	CohortHealthWeightPPM    int64                  `json:"cohort_health_weight_ppm"`
+	ServerHealthWeightPPM    int64                  `json:"server_health_weight_ppm"`
+	CollectiveWeightPPM      int64                  `json:"collective_weight_ppm"`
+	CollapseHealthPPM        int64                  `json:"collapse_health_ppm"`
+	HealthyHealthPPM         int64                  `json:"healthy_health_ppm"`
+	MaximumBonus             string                 `json:"maximum_bonus"`
+	HealthRecoveryPPMPerHour int64                  `json:"health_recovery_ppm_per_hour"`
+	HealthDecayPPMPerHour    int64                  `json:"health_decay_ppm_per_hour"`
+	SolidarityWindowMS       int64                  `json:"solidarity_window_ms"`
+	CohortTargetSize         int                    `json:"cohort_target_size"`
+	CohortMergeFloor         int                    `json:"cohort_merge_floor"`
+	NPCPopulationFloor       int                    `json:"npc_population_floor"`
+	NPCWeightPPM             int64                  `json:"npc_weight_ppm"`
+	NPCCompliancePPM         int64                  `json:"npc_compliance_ppm"`
+	PopulationTolerancePPM   int64                  `json:"population_tolerance_ppm"`
 }
 
 type authorityKind int
@@ -89,22 +104,38 @@ func main() {
 		panic(err)
 	}
 	artifact := formulaArtifact{
-		SchemaVersion:       3,
+		SchemaVersion:       4,
 		ProductionRate:      "sum_generators(count * base_rate * product(multiplier_slots))",
 		MultiplierSlotOrder: append([]multiplier.Slot(nil), multiplier.Order[:]...),
 		WithinSlotOrder:     multiplier.WithinSlotOrder,
 		SourceFingerprint:   fingerprint,
 		Commons: commonsFormula{
-			Enclosure:         "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
-			Compliance:        "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
-			Health:            "sum(weight_ppm * compliance_ppm) / sum(weight_ppm)",
-			EffectiveHealth:   "0.5 * guild_health + 0.3 * cohort_health + 0.2 * server_health; guildless substitutes cohort for guild",
-			Modifier:          "1 + maximum_bonus * (0.6 * max(0, ((health - 0.35) / 0.65)^1.5) + 0.4 * solidarity)",
-			Solidarity:        "sum(hourly_compliance_ppm * covered_ms) / 2592000000",
-			SourceWeights:     append([]commons.SourceWeight{}, commonsCatalog.SourceWeights...),
-			CollapseHealthPPM: commonsCatalog.CollapseHealthPPM, CollectiveWeightPPM: commonsCatalog.CollectiveWeightPPM,
-			HealthyHealthPPM: commonsCatalog.HealthyHealthPPM,
-			MaximumBonus:     commonsCatalog.MaximumBonus.String(),
+			Enclosure:                "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
+			Compliance:               "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
+			Health:                   "sum(weight_ppm * compliance_ppm) / sum(weight_ppm)",
+			EffectiveHealth:          "0.5 * guild_health + 0.3 * cohort_health + 0.2 * server_health; guildless substitutes cohort for guild",
+			Modifier:                 "1 + maximum_bonus * (0.6 * max(0, ((health - 0.35) / 0.65)^1.5) + 0.4 * solidarity)",
+			Solidarity:               "sum(hourly_compliance_ppm * covered_ms) / 2592000000",
+			SourceWeights:            append([]commons.SourceWeight{}, commonsCatalog.SourceWeights...),
+			DefaultTithePPM:          commonsCatalog.DefaultTithePPM,
+			MinimumTithePPM:          commonsCatalog.MinimumTithePPM,
+			MaximumTithePPM:          commonsCatalog.MaximumTithePPM,
+			GuildHealthWeightPPM:     commonsCatalog.GuildHealthWeightPPM,
+			CohortHealthWeightPPM:    commonsCatalog.CohortHealthWeightPPM,
+			ServerHealthWeightPPM:    commonsCatalog.ServerHealthWeightPPM,
+			CollectiveWeightPPM:      commonsCatalog.CollectiveWeightPPM,
+			CollapseHealthPPM:        commonsCatalog.CollapseHealthPPM,
+			HealthyHealthPPM:         commonsCatalog.HealthyHealthPPM,
+			MaximumBonus:             commonsCatalog.MaximumBonus.String(),
+			HealthRecoveryPPMPerHour: commonsCatalog.HealthRecoveryPPMPerHour,
+			HealthDecayPPMPerHour:    commonsCatalog.HealthDecayPPMPerHour,
+			SolidarityWindowMS:       commonsCatalog.SolidarityWindowMS,
+			CohortTargetSize:         commonsCatalog.CohortTargetSize,
+			CohortMergeFloor:         commonsCatalog.CohortMergeFloor,
+			NPCPopulationFloor:       commonsCatalog.NPCPopulationFloor,
+			NPCWeightPPM:             commonsCatalog.NPCWeightPPM,
+			NPCCompliancePPM:         commonsCatalog.NPCCompliancePPM,
+			PopulationTolerancePPM:   commonsCatalog.PopulationTolerancePPM,
 		},
 	}
 	data, err := json.MarshalIndent(artifact, "", "  ")

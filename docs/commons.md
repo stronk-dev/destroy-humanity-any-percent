@@ -30,7 +30,12 @@ the production modifier.
 - 30-day Solidarity window, 150-Founder cohort target, merge floor 40;
 - below 40 real samples, each missing member adds labeled NPC weight 0.5 at compliance 0.75.
 
-The authoritative formulas and exact Enclosure source-weight table are generated into
+Only cohort and server scopes exist today. With no shipped guild model, every member takes the
+specified guildless fallback, so effective Health is cohort 80% / server 20%. The future governance
+layer may add the guild 50% term without changing the current projection contract.
+
+The authoritative formulas, exact Enclosure source-weight table, and every shipped Commons catalog
+control (including labeled NPC weight/compliance and population floor) are generated into
 [`generated/production-formulas.json`](generated/production-formulas.json). The executable
 Enclosure, modifier, aggregate-Health, smoothing, production-rate, and ordering authorities all
 participate in its source fingerprint.

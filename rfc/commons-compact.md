@@ -24,14 +24,14 @@ The Mutual Aid Compact: membership, the Health/Capacity computation, the Enclosu
 
 Per `research/commons-game-theory.md`, normative here:
 
-- **Enclosure index `dᵢ ∈ [0,1]`** — derived **entirely from the member's own production stack**: the fraction of their multiplier stack (weight-normalized) coming from dark-pattern stages, externality-ledger-generating sources, and route-of-harm slots, evaluated at each accrual boundary. **No reports, no votes, no declared route flags.** The exact slot-weight table is balance data; the formula is published in-game.
-- **Health** = weighted mean of member compliance `(1 − dᵢ)`, computed at three scales and blended `H = 0.5·H_guild + 0.3·H_cohort + 0.2·H_server`. Members without a guild take the cohort value in the guild term.
+- **Enclosure index `dᵢ ∈ [0,1]`** — derived **entirely from the member's own production stack**: the fraction of their multiplier stack (weight-normalized) coming from dark-pattern stages, externality-ledger-generating sources, and route-of-harm slots, evaluated at each accrual boundary. **No reports, no votes, no declared route flags.** The exact slot-weight table is balance data; the formula is published in the generated artifact now and rendered in-game by the successor.
+- **Health** = weighted mean of member compliance `(1 − dᵢ)`. This foundation computes cohort and server scales. Until the guild model lands, every member uses the specified guildless substitution, so `H = 0.8·H_cohort + 0.2·H_server`; the successor wires the full `0.5·H_guild + 0.3·H_cohort + 0.2·H_server` blend.
 - **Capacity** = absolute sum of tithes; drives caps and content gates only, never the buff rate.
-- **The buff**: `M = 1 + 5·[0.6·f(H) + 0.4·sᵢ]`, `f(H) = ((H−0.35)/0.65)^1.5` clamped ≥ 0. `sᵢ` (personal Solidarity, `[0,1]`) accrues with tithe-in-good-standing time, decays under `dᵢ` above threshold; parameters are balance data. All published.
+- **The buff**: `M = 1 + 5·[0.6·f(H) + 0.4·sᵢ]`, `f(H) = ((H−0.35)/0.65)^1.5` clamped ≥ 0. `sᵢ` (personal Solidarity, `[0,1]`) is the 30-day rolling mean of personal compliance `cᵢ = clamp(tithe/target,0,1)·(1−dᵢ)`. Parameters are balance data and published in the generated artifact.
 
 ### D3 — The slot boundary
 
-The commons package exposes exactly one value to production: `commons_modifier(member) → Decimal`, populated into the fixed named slot `commons` (Production RFC D2). Non-members: slot absent (not 1.0 — absent; the panel shows no line). **The production package must not import the commons package or vice versa** — both depend on a shared slot-contract package only (compile-enforced).
+The commons package exposes exactly one value to production: `commons_modifier(member) → Decimal`, populated into the fixed named slot `commons` (Production RFC D2). Non-members: slot absent (not 1.0 — absent; the future panel therefore has no line to render). **The production package must not import the commons package or vice versa** — both depend on a shared slot-contract package only (compile-enforced).
 
 ### D4 — Cohorts
 
@@ -39,21 +39,21 @@ The commons package exposes exactly one value to production: `commons_modifier(m
 - This server foundation owns stable cohort assignment, the cohort-scale Health term, collapse merge,
   and queryable current standing. The panel (named neighbors and co-ops), monthly tithe-dial vote,
   guild participation, and mercy presentation are owned by [Commons Onboarding & Governance](commons-onboarding-and-governance.md).
-- Alt-resistance: assignment is non-elective and account-age-weighted; a founder's cohort persists across runs (founder-scoped).
+- Alt-resistance in this foundation is non-elective, Founder-persistent assignment within the server's activity bracket. Account-age weighting awaits the account/session identity contract and is owned by the onboarding/governance successor.
 
 ### D5 — Ambient surfaces (the front door's server half)
 
-Dispatch events for commons state transitions (Health band crossings, cascade onset, recovery) are Layer-3 server events (`09 §4`), visible to non-members. The one NPC recruiting event fires per founder per career at mid-T3 if never-signed. NPC co-ops hold Health near neutral below population floor (labeled in the formula panel).
+Dispatch events for commons state transitions (Health band crossings, cascade onset, recovery) are Layer-3 server events (`09 §4`) available to the future transport, including non-member delivery. The one NPC recruiting event fires per founder per career at mid-T3 if never-signed. NPC fallback holds Health near neutral below population floor and is labeled in query state and the generated formula artifact; the successor renders that label.
 
 ## Acceptance criteria
 
 1. `dᵢ` derivation: golden fixtures over representative production stacks (canon-heavy, ethical, mixed) produce the specified indices; **no code path reads route flags or player declarations.**
-2. The buff formula matches spec across the H × sᵢ grid, including the clamp and the 40% floor property (total collapse costs a loyal member ≤ 47% of their commons contribution, never the base game).
+2. The buff formula matches spec across the H × sᵢ grid, including the clamp and the 40%-of-bonus Solidarity floor (at maximum loyalty, total collapse leaves ×3 of the maximum ×6 and never reduces the base game).
 3. Slot boundary: commons and production packages share no imports beyond the slot contract (build-enforced); a non-member has no `commons` slot.
 4. Sign/leave/re-sign: evented, idempotent, and `sᵢ` zeroed on leave. Incorporation presentation is a successor acceptance gate.
 5. Cohort assignment is deterministic given server state, non-elective, and stable across runs; merge preserves standing.
 6. Population invariance: Health-driven buff rates are statistically indistinguishable at simulated 200 vs 20,000 CCU (harness scenario).
-7. All formulas render in the in-game formula panel (law 9), including `dᵢ`'s slot-weight table.
+7. All formulas and `dᵢ`'s exact slot-weight table are generated from executable authorities into the canonical formula artifact; the onboarding/client successor owns their in-game rendering.
 
 ## Open questions
 
@@ -68,6 +68,12 @@ Dispatch events for commons state transitions (Health band crossings, cascade on
   would require inventing the still-undrafted account/incorporation and guild models and would violate
   RFC-0000's DESIGN-GAP rule. The shipped server foundation retains their required membership,
   cohort, Health, Capacity, event, and query boundaries.
+- The design's account-age-weighted assignment cannot run before account/session bootstrap. The shipped
+  resolver boundary accepts a server/activity bracket and makes assignment non-elective and permanent;
+  the successor adds age to bracket derivation without changing cohort ownership.
+- The research proposed 24-hour leave and seven-day rejoin cooldowns. The accepted membership contract
+  intentionally ships immediate exit/re-entry with the full Solidarity reset as its price; adding a
+  cooldown later would be a behavior change requiring a follow-up RFC.
 
 ## Executable contracts
 
@@ -118,7 +124,7 @@ server advisory transaction lock and tested against Postgres.
 
 The projection stores each member's latest `(weight_ppm, compliance_ppm)` sample and their
 cumulative canonical-Decimal Capacity (the absolute sum of every idempotently projected tithe), then
-aggregates numerator/denominator pairs at guild, cohort, and server scope. Empty real scopes add
+aggregates numerator/denominator pairs at cohort and server scope. Empty real scopes add
 the declared NPC term; for fewer than 40 real members its weight is
 `max(0,40-member_count)*0.5` at compliance `0.75`, and is labeled in the query result. A
 guildless member substitutes cohort Health for the 0.5 guild term. Smoothed Health advances

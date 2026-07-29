@@ -25,7 +25,8 @@ yet exist.
   Compact automatically at the catalog-declared faction tithe. It does not create a private pool.
 - The cohort panel consumes server snapshots/events and shows named neighbors, current Health/Capacity,
   labeled NPC fallback, co-op entry points, and current standing. It never materializes a permanent moral
-  badge from historical standing.
+  badge from historical standing. Its formula view renders every Commons formula and the exact
+  Enclosure source-weight table from the shipped generated artifact.
 - The monthly cohort ballot chooses direction within the server-owned tithe band; it does not accept
   implementation proposals or arbitrary numeric values. The authoritative election window, eligibility,
   tie-break, result event, and effective-boundary schemas remain a `DESIGN-GAP` until account, faction,
@@ -43,7 +44,8 @@ yet exist.
 1. Browser tests prove the Compact line item appears on every incorporation path; decline remains visible,
    sign uses the server intent, and Open Source uses the same pool with its catalog tithe.
 2. The cohort panel accurately renders current server snapshots, named neighbors, NPC labels, and ambient
-   collapse/recovery/recruitment events without inventing client state.
+   collapse/recovery/recruitment events without inventing client state; its formula view matches the
+   generated artifact exactly.
 3. A closed, versioned ballot contract proves one eligible vote per Founder, deterministic resolution,
    bounded results, an auditable result event, and application at the declared accrual boundary.
 4. Guild, cohort, and guildless fallback fixtures produce the server-published Health inputs; small-guild
