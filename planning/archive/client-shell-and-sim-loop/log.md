@@ -78,3 +78,16 @@ Minor note: the intent-ID regex accepts any UUID version (variant checked, versi
 enforces v7 — client leniency is harmless but the pattern could pin `7` for free.
 
 Clear to archive.
+
+## 2026-07-29 (Codex — review-finding correction and archive)
+
+- Re-verified the review's sole finding before acting on it. The finding is false: Production C1
+  specifies `perform_manual_batch {action_id,count,window_ms}` and says `window_ms` is retained for
+  audit/UX but grants no authority (`rfc/archive/production-engine-and-intents.md` C1). Canonical
+  `docs/production-engine.md` says the same. The live exact-schema parser requires `window_ms` at
+  `server/production/intents.go`, and both unit and real-Postgres integration fixtures send it.
+  The shell's `windowMs` is therefore the correct internal spelling for Transport D3 to map to
+  `window_ms`; no production amendment or stripping decision exists.
+- Removed the false Transport open question rather than letting a disproved diagnosis survive as
+  future work. The independent review's approval remains valid. All acceptance gates and canonical
+  docs were already green; Client Shell & Sim Loop is archived.

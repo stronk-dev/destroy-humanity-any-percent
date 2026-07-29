@@ -1,7 +1,7 @@
 # Client Shell & Sim Loop — implementation plan
 
 - **Assignee:** Codex
-- **RFC:** `rfc/client-shell-and-sim-loop.md`
+- **RFC:** `rfc/archive/client-shell-and-sim-loop.md`
 - **Started:** 2026-07-29
 
 ## Work breakdown
@@ -11,7 +11,7 @@
 3. [x] Implement authoritative adaptation, reconciliation, display counters, lifecycle, and intent boundary.
 4. [x] Build the DOM-first contract/main/run-end shell with reduced-motion and return-story states.
 5. [x] Add Node/browser/property/boundary tests, canonical docs, and build/CI gates.
-6. [ ] Record the mandatory independent diff review, then archive.
+6. [x] Record the mandatory independent diff review, then archive.
 
 ## Acceptance gates
 

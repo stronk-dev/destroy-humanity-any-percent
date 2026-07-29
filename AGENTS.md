@@ -13,7 +13,8 @@ You are working on **Cloud Clicker**: a free, browser-based MMO idle game — *"
 
 **Current state:** design complete; the numeric core, economy kernel, save layer, production
 engine, balance-harness foundation, gate/Route Registry foundation, and Commons server foundation
-are implemented and archived. See `rfc/README.md` for active work.
+and the Client Shell/Worker foundation are implemented and archived. See `rfc/README.md` for
+active work.
 
 ## Your workflow
 
@@ -76,6 +77,6 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 
 ## Where to start
 
-The numeric, economy, save, production, harness, route, and Commons foundations are implemented and
-archived. Choose work only from the active index in `rfc/README.md`; draft and accept missing
-Phase-0 contracts before starting from the roadmap.
+The numeric, economy, save, production, harness, route, Commons, and client-shell foundations are
+implemented and archived. Choose work only from the active index in `rfc/README.md`; draft and
+accept missing Phase-0 contracts before starting from the roadmap.

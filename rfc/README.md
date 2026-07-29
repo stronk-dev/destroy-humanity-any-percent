@@ -11,7 +11,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft | Commons Compact |
 | [Combat Data Model](combat-data-model.md) | draft | — |
-| [Client Shell & Sim Loop](client-shell-and-sim-loop.md) | implementing | Production Engine & Intent API |
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | draft | Production Engine / Client Shell |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | draft | Production Engine / Gate Predicates |
 | [Prestige & Exits](prestige-and-exits.md) | draft | Production Engine / Save Layer |
@@ -41,6 +40,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Balance Harness Foundation](archive/balance-harness-foundation.md) | implemented | [Balance harness](../docs/balance-harness.md), [Production engine](../docs/production-engine.md) |
 | [Gate Predicates & the Route Registry](archive/gate-predicates-and-routes.md) | implemented | [Routes](../docs/routes.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [The Commons Compact](archive/commons-compact.md) | implemented | [Commons](../docs/commons.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
+| [Client Shell & Sim Loop](archive/client-shell-and-sim-loop.md) | implemented | [Client shell](../docs/client-shell.md) |
 
 Remaining Phase-0 contracts (not yet drafted): account/session bootstrap · T0–T1 playable content
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics
@@ -56,5 +56,5 @@ later implementation:
 | Deferred decision | Origin | Named owner | Why it matters |
 |---|---|---|---|
 | **Leaderboard/ranking order keys** — ✅ resolved in [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) D1 (exact integer/time keys; magnitude ties remain ties) | RFC-0002 draft D4 | owned | 12-digit quantization makes runs differing below the 12th digit indistinguishable, in a game framed around world records |
-| **Minimum visible increment** — ✅ resolved in [Client Shell & Sim Loop](client-shell-and-sim-loop.md) D3 (interpolate at full precision, sub-unit accumulation, cap shows `reason_key`) | RFC-0002 draft D6 | owned | A frozen number with no explanation is indistinguishable from a bug, and `design/00` forbids unexplained caps |
-| **Client reconciliation policy** — ✅ resolved in [Client Shell & Sim Loop](client-shell-and-sim-loop.md) D2 (bend continuous, snap discrete with receipts, story-not-error for gaps) | was a `design/06` table cell | owned | The most player-visible consequence of RFC-0001's whole numeric contract |
+| **Minimum visible increment** — ✅ resolved in [Client Shell & Sim Loop](archive/client-shell-and-sim-loop.md) D3 (interpolate at full precision, sub-unit accumulation, cap shows `reason_key`) | RFC-0002 draft D6 | owned | A frozen number with no explanation is indistinguishable from a bug, and `design/00` forbids unexplained caps |
+| **Client reconciliation policy** — ✅ resolved in [Client Shell & Sim Loop](archive/client-shell-and-sim-loop.md) D2 (bend continuous, snap discrete with receipts, story-not-error for gaps) | was a `design/06` table cell | owned | The most player-visible consequence of RFC-0001's whole numeric contract |
