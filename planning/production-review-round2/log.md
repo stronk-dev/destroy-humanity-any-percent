@@ -101,3 +101,19 @@ vector corpus before drafting the fix — that re-verification step is now part 
 All three micro-RFCs reviewed against the findings and the reproducers: accepted 2026-07-29
 (standing owner mandate). Implementation order per Codex: R1 → R2 (save v4) → R3, then R4–R8
 before the harness's first baseline.
+
+## 2026-07-29 (Codex — R4–R8 contract draft)
+
+- Confirmed R1–R3 are implemented, archived, and independently approved. No accepted active RFC
+  specified R4–R8, so implementation did not start from review prose.
+- Drafted `rfc/production-contract-integrity.md` as one bounded follow-up covering the multiplier
+  assertions, invariant-path contract, formula provenance gate, integration-test migration race,
+  and minor integrity debt. Added it to the active RFC index as `draft`.
+- Resolved the C7/C4 collision explicitly: invariant reports become persisted events only when a
+  committed gameplay revision exists. Terminal rejections and internal aborts use structured audit
+  output and metrics without fabricating a revision.
+- Chose a source-bound formula artifact rather than claiming automatic algebra inference: schema
+  v2 fingerprints normalized AST for the live rate path and ordering authorities, so executable
+  changes force reviewed regeneration while comments and formatting do not.
+- Kept transport mapping and deployed-process migration coordination out of scope with named
+  owners. No code, planning directory, or harness baseline is authorized until owner acceptance.
