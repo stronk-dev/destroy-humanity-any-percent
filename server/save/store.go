@@ -47,12 +47,13 @@ type WriteContext struct {
 }
 
 type Revision struct {
-	StreamID      string
-	OwnerID       string
-	Number        int64
-	Version       int
-	ConstantsHash string
-	CreatedAt     time.Time
+	StreamID       string
+	OwnerID        string
+	Number         int64
+	Version        int
+	ConstantsHash  string
+	CreatedAt      time.Time
+	RunLogSequence int64
 }
 
 type Loaded struct {

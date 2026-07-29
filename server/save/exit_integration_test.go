@@ -2,6 +2,8 @@ package save
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"os"
@@ -47,6 +49,27 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	loggedPayload := []byte(`{"expected_founder_revision":1,"expected_revision":1,"kind":"wind_down"}`)
+	loggedDigest := sha256.Sum256(loggedPayload)
+	loggedHash := "sha256:" + hex.EncodeToString(loggedDigest[:])
+	loggedIntentID := "01985555-0009-7000-8000-000000000009"
+	_, err = store.ApplyExitTransactionLogged(ctx, companyRevision.StreamID, 1, 1, loggedIntentID, loggedHash, loggedPayload,
+		exitTestMutation(ownerID, companyRevision.StreamID, loggedIntentID, now), func(step string) error {
+			if step == "run_log" {
+				return errors.New("injected run-log fault")
+			}
+			return nil
+		})
+	if err == nil {
+		t.Fatal("run-log fault committed")
+	}
+	var loggedRows int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1`, companyRevision.StreamID).Scan(&loggedRows); err != nil || loggedRows != 0 {
+		t.Fatalf("run-log rollback rows=%d err=%v", loggedRows, err)
+	}
+	assertLatestRevision(t, ctx, store, founderRevision.StreamID, 1)
+	assertLatestRevision(t, ctx, store, companyRevision.StreamID, 1)
 
 	steps := []string{"founder_revision", "founder_events", "company_final_revision", "company_ended_events", "company_started_revision", "company_started_events", "intent_record", "retention"}
 	for index, failStep := range steps {

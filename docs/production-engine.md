@@ -134,6 +134,13 @@ is never hidden by silently omitting a change. Transport mapping remains deferre
 Intent records are keyed by `(stream_id,intent_id)`. The store exposes cutoff-based pruning; the
 future deployment scheduler owns calling it at the accepted 30-day retention boundary.
 
+Every Company-run command also appends one `run_log` row in that same transaction. The row contains
+the canonical request bytes covered by the idempotency hash, normalized receipt, nullable applied
+revision, and database server time. Terminal rejections are replay facts and therefore consume a
+sequence; revision conflicts and idempotent retries do not. Founder-career commands are outside the
+Company run log. An Exit allocates its sequence before building `run_ended`, making the event's
+`terminal_seq` a transaction-local completeness proof.
+
 ## Progress coordinate
 
 Both Go and TypeScript evaluate the same closed catalog union:

@@ -351,6 +351,23 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if revisions != 5 || events != 10 || intents != 10 || invariantEvents != 1 {
 		t.Fatalf("rows revisions=%d events=%d intents=%d invariant_events=%d", revisions, events, intents, invariantEvents)
 	}
+	var runLogCount int
+	var firstSequence, firstAppliedRevision int64
+	var firstCanonical []byte
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, revision.StreamID).Scan(&runLogCount); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT seq,canonical_payload,applied_revision FROM run_log WHERE company_stream_id=$1 AND run_seq=1 ORDER BY seq LIMIT 1`, revision.StreamID).Scan(&firstSequence, &firstCanonical, &firstAppliedRevision); err != nil {
+		t.Fatal(err)
+	}
+	parsedBuy, err := ParseIntent(buy)
+	if err != nil || runLogCount != 8 || firstSequence != 1 || firstAppliedRevision != 2 || string(firstCanonical) != string(parsedBuy.CanonicalPayload) {
+		t.Fatalf("run log count=%d seq=%d revision=%d canonical=%s want=%s err=%v", runLogCount, firstSequence, firstAppliedRevision, firstCanonical, parsedBuy.CanonicalPayload, err)
+	}
+	var rejectedRevision *int64
+	if err := db.QueryRowContext(ctx, `SELECT applied_revision FROM run_log WHERE company_stream_id=$1 AND intent_id=$2`, revision.StreamID, "018f6b7c-9abc-7def-8abc-444444444444").Scan(&rejectedRevision); err != nil || rejectedRevision != nil {
+		t.Fatalf("rejected run-log revision=%v err=%v", rejectedRevision, err)
+	}
 	if metrics[string(InvariantAffordFallback)] != 1 || metrics[string(InvariantResidualClamp)] != 1 ||
 		metrics[string(InvariantResidualAbort)] != 1 {
 		t.Fatalf("invariant metrics=%+v", metrics)

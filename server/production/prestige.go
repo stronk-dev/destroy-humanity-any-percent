@@ -117,7 +117,7 @@ func (s *Service) handleExit(ctx context.Context, streamID string, mode Evaluati
 	if err != nil {
 		return HandleResult{}, err
 	}
-	result, err := s.store.ApplyExitTransaction(ctx, streamID, request.ExpectedRevision, request.ExpectedFounderRevision, request.IntentID, request.RequestHash,
+	result, err := s.store.ApplyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, request.ExpectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
 		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision) (save.ExitDecision, error) {
 			policy, ok := s.prestigePolicies.ResolvePrestige(companyRevision.ConstantsHash)
 			if !ok {
@@ -206,7 +206,7 @@ func (s *Service) handleScriptedCrossGateExit(ctx context.Context, streamID stri
 	if err != nil {
 		return HandleResult{}, err
 	}
-	result, err := s.store.ApplyExitTransaction(ctx, streamID, request.ExpectedRevision, expectedFounderRevision, request.IntentID, request.RequestHash,
+	result, err := s.store.ApplyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, expectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
 		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision) (save.ExitDecision, error) {
 			catalog := s.mustCatalog(companyRevision.ConstantsHash)
 			routeCatalog, ok := s.routeCatalogs.ResolveRoutes(companyRevision.ConstantsHash)
@@ -279,7 +279,7 @@ func (s *Service) finishExit(request IntentRequest, founder *save.State, founder
 	assisted := map[string]bool{"commons": company.CompactMember, "advisor": founder.AdvisorMode}
 	endedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType,
 		"started_at_ms": company.RunStartedAt.UnixMilli(), "ended_at_ms": now.UnixMilli(), "rta_ms": now.Sub(company.RunStartedAt).Milliseconds(),
-		"attended_ms": attended, "terminal_seq": companyRevision.Number, "payout": terms, "tier": company.Tier,
+		"attended_ms": attended, "terminal_seq": companyRevision.RunLogSequence, "payout": terms, "tier": company.Tier,
 		"lifetime_value": company.LifetimeValue.String(), "ledger_fact_kinds": sortedBoolKeys(company.LedgerFactKinds), "executed_routes": executedRoutes, "assisted": assisted})
 	startedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": newCompany.RunSeq}, "started_at_ms": now.UnixMilli(), "assisted": map[string]bool{"commons": false, "advisor": founder.AdvisorMode}})
 	advancedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType, "reputation_delta": terms.ReputationDelta, "route_knowledge": terms.RouteKnowledge, "occurred_at_ms": now.UnixMilli()})

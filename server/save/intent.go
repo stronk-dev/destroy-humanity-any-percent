@@ -106,6 +106,33 @@ func (s *Store) ApplyIntent(
 	requestHash string,
 	mutate IntentMutation,
 ) (IntentResult, error) {
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, nil, mutate)
+}
+
+func (s *Store) ApplyIntentLogged(
+	ctx context.Context,
+	streamID string,
+	expectedRevision int64,
+	intentID string,
+	requestHash string,
+	canonicalPayload []byte,
+	mutate IntentMutation,
+) (IntentResult, error) {
+	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
+		return IntentResult{}, err
+	}
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, mutate)
+}
+
+func (s *Store) applyIntent(
+	ctx context.Context,
+	streamID string,
+	expectedRevision int64,
+	intentID string,
+	requestHash string,
+	canonicalPayload []byte,
+	mutate IntentMutation,
+) (IntentResult, error) {
 	if !uuidPattern.MatchString(streamID) || expectedRevision < 1 || !uuidV7Pattern.MatchString(intentID) ||
 		!hashPattern.MatchString(requestHash) || mutate == nil {
 		return IntentResult{}, ErrInvalidStream
@@ -181,6 +208,14 @@ func (s *Store) ApplyIntent(
 	if err != nil {
 		return IntentResult{}, err
 	}
+	var runLogSequence int64
+	if scope == economy.ScopeCompany && len(canonicalPayload) != 0 {
+		runLogSequence, err = nextRunLogSequence(ctx, tx, streamID, state.RunSeq)
+		if err != nil {
+			return IntentResult{}, err
+		}
+		revision.RunLogSequence = runLogSequence
+	}
 	decision, err := mutate(state, revision)
 	if err != nil {
 		return IntentResult{}, err
@@ -194,6 +229,11 @@ func (s *Store) ApplyIntent(
 	}
 
 	if decision.Outcome == IntentRejected {
+		if runLogSequence != 0 {
+			if err := insertRunLog(ctx, tx, streamID, state.RunSeq, runLogSequence, intentID, canonicalPayload, decision.Receipt, nil); err != nil {
+				return IntentResult{}, err
+			}
+		}
 		if _, err := tx.ExecContext(ctx, `
 			INSERT INTO intent_records (stream_id,intent_id,request_hash,outcome,receipt)
 			VALUES ($1,$2,$3,$4,$5)`, streamID, intentID, requestHash, decision.Outcome, decision.Receipt); err != nil {
@@ -235,6 +275,11 @@ func (s *Store) ApplyIntent(
 			record.IntentID = storedIntent.String
 		}
 		recordedEvents = append(recordedEvents, record)
+	}
+	if runLogSequence != 0 {
+		if err := insertRunLog(ctx, tx, streamID, state.RunSeq, runLogSequence, intentID, canonicalPayload, decision.Receipt, &newRevision); err != nil {
+			return IntentResult{}, err
+		}
 	}
 	if _, err := tx.ExecContext(ctx, `
 		INSERT INTO intent_records (stream_id,intent_id,request_hash,outcome,receipt)

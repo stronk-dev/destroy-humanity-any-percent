@@ -52,6 +52,8 @@ record belongs to the Company stream. The `run_ended` event is self-contained fo
 run identity, exit type, server start/end times, RTA, Attended Time, payout, tier, lifetime value,
 ledger facts, revision-bounded executed routes, and separate Commons/Advisor assisted variables.
 `run_started` is the next timer's `[BEGIN ATTEMPT]` fact.
+The terminal sequence is the Exit command's atomically committed per-run intent-log sequence, not a
+save revision or an eventually projected counter.
 
 Attended Time is RTA less recorded offline spans. An accrual gap larger than the production
 catch-up ceiling is recorded using canonical integer milliseconds; the bounded span list collapses

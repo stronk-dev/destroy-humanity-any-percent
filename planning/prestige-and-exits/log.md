@@ -87,3 +87,9 @@
 - Focused verification is green: all Go packages; strict TS/Svelte checks; 6,422 client tests;
   client shell boundary lint; real-Postgres elective, scripted, preview-promise, route-fact, eight
   fault-boundary, and replay integration cases.
+
+## 2026-07-29 — Leaderboards L1 integration
+
+- The provisional terminal Company revision has been replaced by the Exit intent's transaction-local
+  run-log sequence. `run_ended.terminal_seq` and the committed `run_log.seq` are asserted equal in
+  the real-Postgres lifecycle test, closing P7 without a second write path.

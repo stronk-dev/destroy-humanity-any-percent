@@ -11,5 +11,5 @@
 5. [x] Add real-Postgres fault, replay, and concurrency tests plus arithmetic properties.
 6. [ ] Add the first-elective-Exit harness gate after the accepted T0–T1 content dependency lands.
 7. [x] Update canonical docs and run focused verification.
-8. [ ] Replace the provisional terminal revision with Leaderboards L1's atomic run-log sequence.
+8. [x] Replace the provisional terminal revision with Leaderboards L1's atomic run-log sequence.
 9. [ ] Record independent review before archival.

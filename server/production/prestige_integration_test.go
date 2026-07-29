@@ -100,9 +100,15 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		}
 		var ended struct {
 			ExecutedRoutes []string `json:"executed_routes"`
+			TerminalSeq    int64    `json:"terminal_seq"`
 		}
-		if err := json.Unmarshal(endedPayload, &ended); err != nil || len(ended.ExecutedRoutes) != 1 || ended.ExecutedRoutes[0] != "route.nonprofit_wrapper_zip" {
+		if err := json.Unmarshal(endedPayload, &ended); err != nil || len(ended.ExecutedRoutes) != 1 || ended.ExecutedRoutes[0] != "route.nonprofit_wrapper_zip" || ended.TerminalSeq != 1 {
 			t.Fatalf("run_ended=%s err=%v", endedPayload, err)
+		}
+		var sequence int64
+		var loggedPayload []byte
+		if err := db.QueryRowContext(ctx, `SELECT seq,canonical_payload FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&sequence, &loggedPayload); err != nil || sequence != ended.TerminalSeq {
+			t.Fatalf("run log sequence=%d terminal=%d payload=%s err=%v", sequence, ended.TerminalSeq, loggedPayload, err)
 		}
 		replay, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, request)
 		if err != nil || !replay.Replay || string(replay.Receipt) != string(result.Receipt) {

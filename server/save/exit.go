@@ -44,6 +44,33 @@ func (s *Store) ApplyExitTransaction(
 	mutate ExitMutation,
 	fault ExitFaultInjector,
 ) (IntentResult, error) {
+	return s.applyExitTransaction(ctx, companyStreamID, expectedCompanyRevision, expectedFounderRevision, intentID, requestHash, nil, mutate, fault)
+}
+
+func (s *Store) ApplyExitTransactionLogged(
+	ctx context.Context,
+	companyStreamID string,
+	expectedCompanyRevision, expectedFounderRevision int64,
+	intentID, requestHash string,
+	canonicalPayload []byte,
+	mutate ExitMutation,
+	fault ExitFaultInjector,
+) (IntentResult, error) {
+	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
+		return IntentResult{}, err
+	}
+	return s.applyExitTransaction(ctx, companyStreamID, expectedCompanyRevision, expectedFounderRevision, intentID, requestHash, canonicalPayload, mutate, fault)
+}
+
+func (s *Store) applyExitTransaction(
+	ctx context.Context,
+	companyStreamID string,
+	expectedCompanyRevision, expectedFounderRevision int64,
+	intentID, requestHash string,
+	canonicalPayload []byte,
+	mutate ExitMutation,
+	fault ExitFaultInjector,
+) (IntentResult, error) {
 	if !uuidPattern.MatchString(companyStreamID) || expectedCompanyRevision < 1 || expectedFounderRevision < 1 ||
 		!uuidV7Pattern.MatchString(intentID) || !hashPattern.MatchString(requestHash) || mutate == nil {
 		return IntentResult{}, ErrInvalidStream
@@ -120,6 +147,14 @@ func (s *Store) ApplyExitTransaction(
 	if founderHash != companyHash {
 		return IntentResult{}, fmt.Errorf("%w: Founder and Company constants differ", ErrInvalidState)
 	}
+	var runLogSequence int64
+	if len(canonicalPayload) != 0 {
+		runLogSequence, err = nextRunLogSequence(ctx, tx, companyStreamID, company.RunSeq)
+		if err != nil {
+			return IntentResult{}, err
+		}
+		companyRevision.RunLogSequence = runLogSequence
+	}
 
 	decision, err := mutate(founder, founderRevision, company, companyRevision)
 	if err != nil {
@@ -133,6 +168,11 @@ func (s *Store) ApplyExitTransaction(
 		return IntentResult{}, err
 	}
 	if decision.Outcome == IntentRejected {
+		if runLogSequence != 0 {
+			if err := insertRunLog(ctx, tx, companyStreamID, company.RunSeq, runLogSequence, intentID, canonicalPayload, decision.Receipt, nil); err != nil {
+				return IntentResult{}, err
+			}
+		}
 		if _, err := tx.ExecContext(ctx, `INSERT INTO intent_records(stream_id,intent_id,request_hash,outcome,receipt) VALUES($1,$2,$3,$4,$5)`, companyStreamID, intentID, requestHash, decision.Outcome, decision.Receipt); err != nil {
 			return IntentResult{}, err
 		}
@@ -201,6 +241,14 @@ func (s *Store) ApplyExitTransaction(
 	}
 	recorded = append(recorded, startedRecords...)
 	if err := runExitFault(fault, "company_started_events"); err != nil {
+		return IntentResult{}, err
+	}
+	if runLogSequence != 0 {
+		if err := insertRunLog(ctx, tx, companyStreamID, company.RunSeq, runLogSequence, intentID, canonicalPayload, decision.Receipt, &companyFinal); err != nil {
+			return IntentResult{}, err
+		}
+	}
+	if err := runExitFault(fault, "run_log"); err != nil {
 		return IntentResult{}, err
 	}
 

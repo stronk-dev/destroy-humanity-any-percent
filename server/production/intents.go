@@ -182,6 +182,7 @@ type IntentRequest struct {
 	Kind                    string
 	ExpectedRevision        int64
 	RequestHash             string
+	CanonicalPayload        []byte
 	InvalidDetail           string
 	GeneratorID             string
 	CountMode               string
@@ -268,7 +269,7 @@ func (s *Service) Handle(
 		}
 	}
 	collector := &invariantCollector{}
-	result, err := s.store.ApplyIntent(ctx, streamID, request.ExpectedRevision, request.IntentID, request.RequestHash,
+	result, err := s.store.ApplyIntentLogged(ctx, streamID, request.ExpectedRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
 		func(state *save.State, revision save.Revision) (save.IntentDecision, error) {
 			catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
 			if !ok {
@@ -1016,8 +1017,8 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 	if !parsePositiveSafeInt(root["expected_revision"], &request.ExpectedRevision) {
 		return IntentRequest{}, ErrInvalidIntent
 	}
-	request.RequestHash = canonicalRequestHash(root)
-	if request.RequestHash == "" {
+	request.CanonicalPayload, request.RequestHash = canonicalRequest(root)
+	if request.RequestHash == "" || len(request.CanonicalPayload) == 0 {
 		return IntentRequest{}, ErrInvalidIntent
 	}
 
@@ -1131,7 +1132,7 @@ func parseNonNegativeSafeInt(raw json.RawMessage, destination *int64) bool {
 	return len(raw) > 0 && json.Unmarshal(raw, destination) == nil && *destination >= 0 && *destination <= decimal.MaxExactInteger
 }
 
-func canonicalRequestHash(root map[string]json.RawMessage) string {
+func canonicalRequest(root map[string]json.RawMessage) ([]byte, string) {
 	copyRoot := make(map[string]any, len(root)-1)
 	for key, raw := range root {
 		if key != "intent_id" {
@@ -1139,17 +1140,17 @@ func canonicalRequestHash(root map[string]json.RawMessage) string {
 			decoder.UseNumber()
 			var value any
 			if decoder.Decode(&value) != nil || ensureIntentJSONEnd(decoder) != nil {
-				return ""
+				return nil, ""
 			}
 			copyRoot[key] = value
 		}
 	}
 	encoded, err := json.Marshal(copyRoot)
 	if err != nil {
-		return ""
+		return nil, ""
 	}
 	digest := sha256.Sum256(encoded)
-	return "sha256:" + hex.EncodeToString(digest[:])
+	return encoded, "sha256:" + hex.EncodeToString(digest[:])
 }
 
 func parsePositiveSafeInt(raw json.RawMessage, destination *int64) bool {
