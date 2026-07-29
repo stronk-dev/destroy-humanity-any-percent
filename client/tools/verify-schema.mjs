@@ -211,6 +211,24 @@ async function main() {
     if (shapeValid && errors.length === 0) throw new Error(`${path.relative(repositoryDirectory, filename)}: expected routes rejection`);
   }
 
+  const commonsSchema = await readJSON(path.join(balanceDirectory, "commons.schema.json"));
+  const validateCommons = ajv.compile(commonsSchema);
+  const commonsCatalogs = await jsonFiles(path.join(balanceDirectory, "commons"));
+  if (commonsCatalogs.length === 0) throw new Error("commons schema verification requires a production catalog");
+  for (const filename of commonsCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateCommons(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateCommons)}`);
+    const catalog = parseCommonsPolicy(data);
+    const economySources = new Map();
+    for (const economyFile of production) for (const source of (await readJSON(economyFile)).multiplier_sources ?? []) economySources.set(source.id, source);
+    for (const weight of catalog.source_weights) {
+      const source = economySources.get(weight.source_id);
+      if (!source || source.slot !== weight.slot || source.slot === "commons") throw new Error(`${path.relative(repositoryDirectory, filename)}: source weight does not match economy declaration`);
+    }
+    const commonsSource = economySources.get("commons.member");
+    if (!commonsSource || commonsSource.slot !== "commons" || commonsSource.target !== "all" || commonsSource.provider !== "commons") throw new Error("economy catalog must declare the single commons.member provider");
+  }
+
   const harnessDirectory = path.join(repositoryDirectory, "testdata", "harness");
   const scenarioSchema = await readJSON(path.join(harnessDirectory, "scenario.schema.json"));
   const reportSchema = await readJSON(path.join(harnessDirectory, "report.schema.json"));
@@ -237,8 +255,20 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + routes + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + routes + commons + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${scenarios.length} scenario(s)`,
   );
+}
+
+function parseCommonsPolicy(data) {
+  const ppm = (value) => Number.isSafeInteger(value) && value >= 0 && value <= 1_000_000;
+  if (data.minimum_tithe_ppm > data.default_tithe_ppm || data.default_tithe_ppm > data.maximum_tithe_ppm ||
+      data.guild_health_weight_ppm + data.cohort_health_weight_ppm + data.server_health_weight_ppm !== 1_000_000 ||
+      data.health_recovery_ppm_per_hour <= data.health_decay_ppm_per_hour ||
+      data.cohort_merge_floor > data.cohort_target_size || data.npc_population_floor < data.cohort_merge_floor ||
+      !ppm(data.collective_weight_ppm)) throw new Error("invalid commons policy relationship");
+  const ids = new Set();
+  for (const source of data.source_weights) { if (ids.has(source.source_id)) throw new Error("duplicate commons source weight"); ids.add(source.source_id); }
+  return data;
 }
 
 main().catch((error) => {

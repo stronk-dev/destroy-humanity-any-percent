@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cloud-clicker.invalid/schemas/commons-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source_weights", "default_tithe_ppm", "minimum_tithe_ppm", "maximum_tithe_ppm", "guild_health_weight_ppm", "cohort_health_weight_ppm", "server_health_weight_ppm", "collective_weight_ppm", "collapse_health_ppm", "maximum_bonus", "health_recovery_ppm_per_hour", "health_decay_ppm_per_hour", "solidarity_window_ms", "cohort_target_size", "cohort_merge_floor", "npc_population_floor", "npc_weight_ppm", "npc_compliance_ppm", "population_tolerance_ppm"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "source_weights": { "type": "array", "items": { "$ref": "#/$defs/source_weight" } },
+    "default_tithe_ppm": { "$ref": "#/$defs/ppm" },
+    "minimum_tithe_ppm": { "$ref": "#/$defs/ppm" },
+    "maximum_tithe_ppm": { "$ref": "#/$defs/ppm" },
+    "guild_health_weight_ppm": { "$ref": "#/$defs/ppm" },
+    "cohort_health_weight_ppm": { "$ref": "#/$defs/ppm" },
+    "server_health_weight_ppm": { "$ref": "#/$defs/ppm" },
+    "collective_weight_ppm": { "$ref": "#/$defs/ppm" },
+    "collapse_health_ppm": { "$ref": "#/$defs/ppm" },
+    "maximum_bonus": { "$ref": "#/$defs/decimal" },
+    "health_recovery_ppm_per_hour": { "$ref": "#/$defs/ppm" },
+    "health_decay_ppm_per_hour": { "$ref": "#/$defs/ppm" },
+    "solidarity_window_ms": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "cohort_target_size": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "cohort_merge_floor": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "npc_population_floor": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "npc_weight_ppm": { "$ref": "#/$defs/ppm" },
+    "npc_compliance_ppm": { "$ref": "#/$defs/ppm" },
+    "population_tolerance_ppm": { "$ref": "#/$defs/ppm" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)*$" },
+    "ppm": { "type": "integer", "minimum": 0, "maximum": 1000000 },
+    "decimal": { "type": "string", "pattern": "^(?:0|-?[1-9](?:\\.[0-9]+)?e-?(?:0|[1-9][0-9]*))$" },
+    "source_weight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "slot", "weight_ppm", "forsworn"],
+      "properties": {
+        "source_id": { "$ref": "#/$defs/id" },
+        "slot": { "enum": ["upgrades", "milestones", "faction", "doctrine", "trust", "event_buffs", "prestige"] },
+        "weight_ppm": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "forsworn": { "type": "boolean" }
+      }
+    }
+  }
+}

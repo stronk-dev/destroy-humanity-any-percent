@@ -88,7 +88,9 @@ describe("shared economy catalog", () => {
     expect(catalog.manualActions).toEqual([
       { id: "manual.click", output: { resourceId: "company.cash", amountPerAction: "1e0" } },
     ]);
-    expect(catalog.multiplierSources).toEqual([]);
+    expect(catalog.multiplierSources).toEqual([
+      { id: "commons.member", slot: "commons", target: "all", provider: "commons" },
+    ]);
     expect(catalog.progressCoordinates.map((coordinate) => coordinate.tier)).toEqual([0, 1, 2, 3]);
     expect(catalog.manualPolicy).toEqual({ refillMilliPerMs: 25, bucketCapMilli: 50_000 });
     expect(catalog.offlinePolicy).toMatchObject({

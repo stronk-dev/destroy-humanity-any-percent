@@ -154,7 +154,7 @@
         "slot": {
           "enum": ["upgrades", "milestones", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige"]
         },
-        "target": { "oneOf": [{ "const": "all" }, { "$ref": "#/$defs/id" }] },
+        "target": { "anyOf": [{ "const": "all" }, { "$ref": "#/$defs/id" }] },
         "provider": { "$ref": "#/$defs/id" }
       }
     },

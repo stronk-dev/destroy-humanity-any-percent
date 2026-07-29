@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "enclosure": [
+    { "name": "no active source", "sources": [], "expected": "0" },
+    { "name": "ethical source only", "sources": [{ "source_id": "source.ethical", "factor": "2e0" }], "expected": "0" },
+    { "name": "single dark double", "sources": [{ "source_id": "source.dark", "factor": "2e0" }], "expected": "5e-1" },
+    { "name": "mixed clean and dark", "sources": [{ "source_id": "source.ethical", "factor": "3e0" }, { "source_id": "source.dark", "factor": "2e0" }], "expected": "5e-1" }
+  ],
+  "modifiers": [
+    { "health_ppm": 1000000, "solidarity_ppm": 1000000, "expected": "6e0" },
+    { "health_ppm": 350000, "solidarity_ppm": 1000000, "expected": "3e0" },
+    { "health_ppm": 0, "solidarity_ppm": 0, "expected": "1e0" },
+    { "health_ppm": 600000, "solidarity_ppm": 1000000, "expected": "3.71558500725e0" }
+  ]
+}

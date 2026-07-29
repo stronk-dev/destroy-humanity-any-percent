@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck vectors vectors-check formulas formulas-check harness harness-check harness-update vet fuzz fuzz-ci verify-schema verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck vectors vectors-check formulas formulas-check harness harness-check harness-update vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-server verify-client verify
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -65,7 +65,11 @@ verify-schema:
 verify-routes-boundary:
 	@if cd server && GOCACHE=/tmp/cloud-clicker-routes-go-cache go list -deps ./routes | grep -qx 'cloud-clicker/server/production'; then echo 'routes package must not import production' >&2; exit 1; fi
 
-verify-server: vet test-go formulas-check harness-check verify-routes-boundary
+verify-commons-boundary:
+	@if cd server && GOCACHE=/tmp/cloud-clicker-commons-go-cache go list -deps ./commons | grep -qx 'cloud-clicker/server/production'; then echo 'commons package must not import production' >&2; exit 1; fi
+	@if rg -n 'cloud-clicker/server/commons' server/production >/dev/null; then echo 'production package must not import commons' >&2; exit 1; fi
+
+verify-server: vet test-go formulas-check harness-check verify-routes-boundary verify-commons-boundary
 
 verify-client: typecheck test-client
 

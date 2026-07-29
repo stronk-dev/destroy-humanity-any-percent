@@ -33,7 +33,14 @@
       "output": { "resource_id": "company.cash", "amount_per_action": "1e0" }
     }
   ],
-  "multiplier_sources": [],
+  "multiplier_sources": [
+    {
+      "id": "commons.member",
+      "slot": "commons",
+      "target": "all",
+      "provider": "commons"
+    }
+  ],
   "progress_coordinates": [
     { "tier": 0, "kind": "resource_log", "resource": "company.cash", "target": "1e3" },
     {

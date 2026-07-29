@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "source_weights": [],
+  "default_tithe_ppm": 100000,
+  "minimum_tithe_ppm": 50000,
+  "maximum_tithe_ppm": 150000,
+  "guild_health_weight_ppm": 500000,
+  "cohort_health_weight_ppm": 300000,
+  "server_health_weight_ppm": 200000,
+  "collective_weight_ppm": 600000,
+  "collapse_health_ppm": 350000,
+  "maximum_bonus": "5e0",
+  "health_recovery_ppm_per_hour": 100000,
+  "health_decay_ppm_per_hour": 40000,
+  "solidarity_window_ms": 2592000000,
+  "cohort_target_size": 150,
+  "cohort_merge_floor": 40,
+  "npc_population_floor": 40,
+  "npc_weight_ppm": 500000,
+  "npc_compliance_ppm": 750000,
+  "population_tolerance_ppm": 100
+}

@@ -257,8 +257,8 @@ func TestProductionCatalogV3Contract(t *testing.T) {
 	if !ok || action.Output.ResourceID != "company.cash" || action.Output.AmountPerAction.String() != "1e0" {
 		t.Fatalf("manual action = %+v, exists=%v", action, ok)
 	}
-	if len(catalog.MultiplierSources()) != 0 {
-		t.Fatal("phase-0 catalog unexpectedly declares multiplier sources")
+	if sources := catalog.MultiplierSources(); len(sources) != 1 || sources[0].ID != "commons.member" || sources[0].Slot != SlotCommons || sources[0].Provider != "commons" {
+		t.Fatalf("phase-0 multiplier sources = %+v", sources)
 	}
 	if got := catalog.ManualPolicy(); got.RefillMilliPerMS != 25 || got.BucketCapMilli != 50_000 {
 		t.Fatalf("manual policy = %+v", got)
