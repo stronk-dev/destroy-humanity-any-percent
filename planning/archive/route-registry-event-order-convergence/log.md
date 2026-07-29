@@ -25,6 +25,14 @@
   `make verify` (Go tests/vet/formula and harness gates; 6,412 client tests; 19,245 browser tests).
   The batch now waits at the mandatory independent diff-review gate before archival.
 
+## 2026-07-29 — independent review and archive
+
+- Independent review approved D2 with no findings. It verified the single Go comparator and
+  per-route locking authority, immutable compensation with ambiguity guard, exact spent-award debt
+  behavior, naming convergence, claim-backed retry idempotency, and the reproduced delivery-order
+  failure.
+- The RFC and planning record are archived; `docs/routes.md` remains canonical.
+
 ## 2026-07-29 (claude — independent review of 638844d..ae41b5e: APPROVED)
 
 Full diff of both commits. The hardest remediation so far, and it holds:

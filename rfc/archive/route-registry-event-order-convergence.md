@@ -1,6 +1,6 @@
 # RFC: Route Registry Event-Order Convergence
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Codex, from independently demonstrated review finding D2
 - **Created:** 2026-07-29
 - **Design refs:** `design/08-satire-flavor.md §6`; `design/06-tech.md §persistence`
@@ -87,3 +87,6 @@ None. Registry Analytics remains separately deferred.
 
 - 2026-07-29: drafted, accepted, and implementation started after D1 independent approval and the
   owner-directed D2 remediation order.
+- 2026-07-29: event-order Registry decisions, immutable grant compensation, projection debt,
+  canonical docs, Postgres regressions, full verification, and independent review completed;
+  archived with no findings.

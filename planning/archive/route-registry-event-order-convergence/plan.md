@@ -10,4 +10,4 @@
 2. [x] Serialize Registry decisions and implement event-order displacement/compensation.
 3. [x] Add separate-batch, spent-grant, tie-break, replay, and repair Postgres regressions.
 4. [x] Update canonical docs and run full verification.
-5. [ ] Record independent review and archive.
+5. [x] Record independent review and archive.
