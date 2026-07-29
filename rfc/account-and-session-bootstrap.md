@@ -1,6 +1,6 @@
 # RFC: Account & Session Bootstrap
 
-- **Status:** draft
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Design refs:** `design/06 §backend` (JWT accounts; anonymous play with local-only saves + upgrade path), `design/research/compliance-2026-refresh.md` (data minimisation; no third parties), `design/research/save-layer` archive (owner-aware streams; `New Founder` follow-up)
 - **Depends on:** Save Layer (implemented — this RFC supplies the missing owner: who a `founder` UUID belongs to)
@@ -58,3 +58,5 @@ Account deletion (`DELETE /api/v1/account`): archives all founders, deletes the 
 ## Changelog
 
 - 2026-07-29: created (draft) — the shared root of the five drafts' blocker lists.
+- 2026-07-29: accepted and implementation assigned through
+  `planning/codex-batch-2026-07-29.md`.

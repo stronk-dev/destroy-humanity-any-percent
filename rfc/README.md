@@ -9,7 +9,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
-| [Account & Session Bootstrap](account-and-session-bootstrap.md) | draft | Save Layer |
+| [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | blocked-on-owner (faction, guild) | Commons Compact |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | draft (split parent) | — |
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
