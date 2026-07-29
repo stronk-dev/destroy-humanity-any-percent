@@ -1,7 +1,7 @@
 # Gate Predicates & Route Registry — implementation plan
 
 - **Assignee:** Codex
-- **RFC:** `rfc/gate-predicates-and-routes.md`
+- **RFC:** `rfc/archive/gate-predicates-and-routes.md`
 - **Started:** 2026-07-29
 
 ## Work breakdown
@@ -12,6 +12,10 @@
 4. Add founder and registry projection persistence with at-least-once idempotency, read repair, global first-executor race semantics, naming reservation, execution counters, Route Knowledge grants, and hint purchases.
 5. Add tests for route parity, discount/substitute crossing, replay, projection concurrency, proof rejection, and hint non-interference; wire schema/proof gates into CI.
 6. Update canonical docs, run the complete verification suite, record the per-change review, then archive the RFC and planning record.
+
+## Completion
+
+All six steps and all six RFC acceptance criteria completed on 2026-07-29.
 
 ## Acceptance gates
 

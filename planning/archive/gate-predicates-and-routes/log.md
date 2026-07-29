@@ -37,3 +37,10 @@
 - Fixed in both loaders and schema semantics: every structure exclusion must match an explicit `structure_is`; every doctrine exclusion must match an explicit `doctrine_is` for that transition. The shipped seed predicates now carry those constraints. Meter/region conditions must also truthfully require context v2.
 - Added a shared unbound-exclusion negative catalog. Added cross-catalog resource-reference validation in Go, TypeScript, and schema CI plus a dangling-resource fixture, so `requirement` and resource predicates cannot survive with IDs absent from the economy catalog.
 - Focused Go, strict TypeScript, Node parity, and schema suites pass after the correction. Full acceptance is rerun below before archive.
+
+## 2026-07-29 — final acceptance and complete-diff approval
+
+- Re-ran `make verify` with Postgres after the proof correction: Go vet/tests/integrations, formula drift, harness golden/baseline, TypeScript, 6,388 Node tests, routes/economy/harness schema gates, and 19,164 Chromium/Firefox/WebKit tests all pass.
+- Acceptance mapping: shared predicate parity covers all condition kinds and meter edges; discount/substitute integration emits one revision-tied route event and replay does not duplicate; the import boundary is build-enforced; the exact proof passes at 4<5 and both reachable/unbound fixtures fail; the concurrent Postgres projector chooses one first executor and replay preserves counts; hint purchase tests prove predicate output is unchanged.
+- Complete implementation diff reviewed in both directions against C1–C8, save v5, event validation, projection retry/read repair, grant arithmetic, name fallback, catalog cross-references, canonical docs, and CI wiring. The proof-binding defect above was the only substantive finding and is closed. No unresolved correctness or acceptance finding remains.
+- RFC is complete; canonical behavior is in `docs/routes.md`, `docs/production-engine.md`, and `docs/save-layer.md`. Archive is ready.
