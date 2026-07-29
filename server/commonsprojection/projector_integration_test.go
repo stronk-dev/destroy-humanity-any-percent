@@ -289,4 +289,55 @@ func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 	if err := db.QueryRowContext(ctx, `SELECT closed_at IS NOT NULL FROM commons_cohorts WHERE cohort_id=$1`, splitID).Scan(&closed); err != nil || !closed {
 		t.Fatalf("closed=%v err=%v", closed, err)
 	}
+
+	var overflowID string
+	if err := db.QueryRowContext(ctx, `INSERT INTO commons_cohorts(server_id,activity_bracket,cohort_seq,member_count) VALUES($1,'activity.standard',3,26) RETURNING cohort_id`, serverID).Scan(&overflowID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE founder_commons_assignments SET cohort_id=$1 WHERE founder_id=$2`, overflowID, founders[1]); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE company_compact_memberships SET cohort_id=$1 WHERE founder_id=$2`, overflowID, founders[1]); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE commons_cohorts SET member_count=200 WHERE cohort_id=$1`, left); err != nil {
+		t.Fatal(err)
+	}
+	merged, err = projector.MergeCollapsed(ctx, hash, serverID, "activity.standard", occurred.Add(3*time.Second))
+	if err != nil || merged != 0 {
+		t.Fatalf("over-cap merge=%d err=%v", merged, err)
+	}
+	unchanged, err := projector.FounderCohort(ctx, founders[1])
+	if err != nil || unchanged != overflowID {
+		t.Fatalf("over-cap source moved cohort=%s want=%s err=%v", unchanged, overflowID, err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT closed_at IS NOT NULL FROM commons_cohorts WHERE cohort_id=$1`, overflowID).Scan(&closed); err != nil || closed {
+		t.Fatalf("over-cap source closed=%v err=%v", closed, err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE commons_cohorts SET member_count=25 WHERE cohort_id=$1`, overflowID); err != nil {
+		t.Fatal(err)
+	}
+	merged, err = projector.MergeCollapsed(ctx, hash, serverID, "activity.standard", occurred.Add(4*time.Second))
+	if err != nil || merged != 1 {
+		t.Fatalf("exact-cap merge=%d err=%v", merged, err)
+	}
+	var targetMembers int
+	if err := db.QueryRowContext(ctx, `SELECT member_count FROM commons_cohorts WHERE cohort_id=$1`, left).Scan(&targetMembers); err != nil || targetMembers != 225 {
+		t.Fatalf("exact-cap target members=%d err=%v", targetMembers, err)
+	}
+
+	var atFloorID string
+	if err := db.QueryRowContext(ctx, `INSERT INTO commons_cohorts(server_id,activity_bracket,cohort_seq,member_count) VALUES($1,'activity.standard',4,40) RETURNING cohort_id`, serverID).Scan(&atFloorID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE commons_cohorts SET member_count=150 WHERE cohort_id=$1`, left); err != nil {
+		t.Fatal(err)
+	}
+	merged, err = projector.MergeCollapsed(ctx, hash, serverID, "activity.standard", occurred.Add(5*time.Second))
+	if err != nil || merged != 0 {
+		t.Fatalf("at-floor merge=%d err=%v", merged, err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT closed_at IS NOT NULL FROM commons_cohorts WHERE cohort_id=$1`, atFloorID).Scan(&closed); err != nil || closed {
+		t.Fatalf("at-floor source closed=%v err=%v", closed, err)
+	}
 }

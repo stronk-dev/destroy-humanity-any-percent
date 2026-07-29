@@ -96,9 +96,12 @@ older separately delivered leave therefore cannot overwrite a later re-sign; in-
 uses that same revision before kind/event tie-breakers. Revisions are deliberately not compared
 across streams.
 
-Collapse merge is explicit and one-way: additional cohorts below 40 move into the oldest compatible
-cohort under the same lock, source cohorts close, and standing is recomputed from member
-weight/compliance inputs. Rounded cohort means are never averaged together.
+Collapse merge is explicit and one-way: membership below the configured floor is the only trigger;
+Health is not. An additional below-floor cohort moves whole into the oldest compatible cohort only
+when the result is at most `floor(1.5 × cohort_target_size)` (225 at the shipped target of 150).
+A source at the floor or one that would exceed the ceiling stays intact—members are never split.
+Successful source cohorts close, and standing is recomputed from member weight/compliance inputs.
+Rounded cohort means are never averaged together.
 
 Health is a weighted mean; Capacity is a Decimal sum. Cohort and server snapshots store both raw
 and asymmetrically smoothed Health plus labeled NPC weight. Health band changes create immutable

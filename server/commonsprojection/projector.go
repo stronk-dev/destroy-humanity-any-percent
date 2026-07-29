@@ -452,7 +452,7 @@ func (p *Projector) MergeCollapsed(ctx context.Context, constantsHash, serverID,
 	target := cohorts[0]
 	var merged int64
 	for _, source := range cohorts[1:] {
-		if source.members >= catalog.CohortMergeFloor {
+		if !canMergeCohort(target.members, source.members, catalog.CohortMergeFloor, catalog.CohortTargetSize) {
 			continue
 		}
 		if _, err := tx.ExecContext(ctx, `UPDATE founder_commons_assignments SET cohort_id=$1 WHERE cohort_id=$2`, target.id, source.id); err != nil {
@@ -485,6 +485,14 @@ func (p *Projector) MergeCollapsed(ctx context.Context, constantsHash, serverID,
 		return 0, err
 	}
 	return merged, nil
+}
+
+func canMergeCohort(targetMembers, sourceMembers, mergeFloor, targetSize int) bool {
+	if targetMembers < 0 || sourceMembers < 0 || mergeFloor <= 0 || targetSize <= 0 || sourceMembers >= mergeFloor {
+		return false
+	}
+	maximumMembers := int64(targetSize) * 3 / 2
+	return int64(targetMembers)+int64(sourceMembers) <= maximumMembers
 }
 
 // OfferRecruitment is called by the authoritative progress boundary at mid-T3.
