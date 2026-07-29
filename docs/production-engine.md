@@ -99,12 +99,19 @@ future deployment scheduler owns calling it at the accepted 30-day retention bou
 
 Both Go and TypeScript evaluate the same closed catalog union:
 
-- `resource_log`: `log10(1+x) / log10(1+target)`, clamped to `[0,1]`;
+- `resource_log`: `Decimal(log10(1+x)).div(Decimal(log10(1+target)))`, clamped to `[0,1]`;
 - `count_fraction`: total owned generator count divided by a required safe integer;
 - `composite`: deterministic weighted sum of those two kinds.
 
+Resource-log targets are canonical Decimals greater than or equal to `5e-15`; loaders reject any
+target whose post-parse denominator is not finite and strictly positive. Go and TypeScript both
+divide through their Decimal implementations. Native JavaScript `/` is forbidden in this
+evaluator and the schema/source verification gate asserts the `.div` shape. Decimal division by
+zero retains the numeric core's existing zero result; the caller prevents a zero denominator.
+
 The shared fixture [`testdata/production-engine.json`](../testdata/production-engine.json) covers
-progress parity plus online/offline cap and credit-bank policy boundaries.
+the exact target floor, representative progress parity, and online/offline cap and credit-bank
+policy boundaries.
 
 ## Verification
 

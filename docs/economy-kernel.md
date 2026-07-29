@@ -70,6 +70,10 @@ Catalog rules:
   unsupported tags, and malformed canonical values fail the entire load.
 - A production `base_rate` is a positive canonical Decimal per second. Price and output resources
   must share a scope; cross-scope transfers require an explicit coordinator.
+- Every top-level or composite `resource_log` progress target is at least `5e-15`. At that exact
+  shared aligned-add boundary, `log10(1 + target)` first remains positive; smaller targets are
+  rejected even though they are otherwise valid positive Decimals. Both loaders also verify the
+  parsed logarithm is finite and strictly positive.
 - Loading from bytes/objects is implemented. Disk watching, `go:embed`, and content hot-reload
   orchestration belong to later server/client-shell work.
 
@@ -160,9 +164,15 @@ loads definitions and predicts costs but has no authoritative balance-commit API
 
 ## Verification
 
-The shared fixture is [`testdata/economy-kernel.json`](../testdata/economy-kernel.json). It covers
-strict rejection categories and cross-runtime constant, linear, geometric, multi-ratio, and huge
-exponent queries.
+The shared fixtures are [`testdata/economy-kernel.json`](../testdata/economy-kernel.json) and
+[`testdata/production-engine.json`](../testdata/production-engine.json). They cover strict rejection
+categories; cross-runtime constant, linear, geometric, multi-ratio, and huge-exponent queries; and
+the exact resource-log target boundary in top-level and composite positions.
+
+Schema verification first applies the JSON shape schema and then performs an explicit Decimal
+semantic check for the resource-log floor. JSON Schema cannot compare canonical scientific strings
+numerically, so this is deliberately not approximated with a regex. A checked-in `4e-15` catalog
+must fail while the `5e-15` boundary catalog passes.
 
 Go ledger tests cover scope isolation, deterministic receipts, below-minimum and above-hardcap
 rejection, non-finite/unknown inputs, numeric overflow, and all-or-nothing behavior. The accrual

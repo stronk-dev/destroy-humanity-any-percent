@@ -30,3 +30,14 @@ Append-only implementation record. Resume from this file, `plan.md`, and the acc
 - Added direct Go and TypeScript runtime tests that bypass the loaders with a forged `4e-15`
   target; both defensive denominator guards reject it, preventing invalid catalog state from
   becoming a progress value even if an upstream boundary is later weakened.
+
+## 2026-07-29 — Completed and archived
+
+- Updated `docs/economy-kernel.md` and `docs/production-engine.md` with the exact target floor,
+  semantic schema layer, Decimal-only division shape, and unchanged zero-divisor primitive.
+- Final `make verify` passed: Go vet/tests, formula drift, strict TypeScript, 6,365 Node tests,
+  semantic schema/source validation, and 19,095 Chromium/Firefox/WebKit tests.
+- The existing mandatory `div-zero` and `zero-div-zero` corpus edges remain unchanged and green;
+  no Decimal vectors or shipped balance targets changed.
+- All six RFC acceptance criteria are satisfied. Rotated the RFC and planning record into their
+  archives. No push performed.

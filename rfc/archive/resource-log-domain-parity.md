@@ -1,13 +1,13 @@
 # RFC: Resource-Log Domain Parity
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco (drafted by Codex from the round-2 review)
 - **Created:** 2026-07-28
 - **Design refs:** `design/07-roadmap.md` Phase 0; `AGENTS.md` law 3
 - **Research:** `planning/production-review-round2/log.md` R3, corrected by direct runtime probe
 - **Amends:** `archive/0002-economy-constants-and-ceilings.md` and
   `archive/production-engine-and-intents.md`
-- **Planning:** `planning/resource-log-domain-parity/` (once implementing)
+- **Planning:** `planning/archive/resource-log-domain-parity/`
 
 ## Summary
 
@@ -97,3 +97,5 @@ None. The numeric threshold and the owning layer are explicit.
 - 2026-07-28: drafted from round-2 finding R3, correcting its primitive-level diagnosis after
   direct Go and installed-library verification.
 - 2026-07-29: implementation started; planning record opened.
+- 2026-07-29: target-domain guards, Decimal evaluator parity, shared fixtures, semantic/source
+  schema gates, defensive runtime tests, and canonical docs completed; RFC archived.
