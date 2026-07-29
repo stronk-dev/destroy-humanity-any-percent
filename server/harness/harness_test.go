@@ -67,6 +67,10 @@ func TestBaselineDriftThresholdsUseIntegerCrossMultiplication(t *testing.T) {
 	if len(warnings) != 0 || len(failures) != 1 {
 		t.Fatalf("26%% drift warnings=%v failures=%v", warnings, failures)
 	}
+	_, failures = CompareBaseline(AggregateReport{}, baseline)
+	if len(failures) != 1 {
+		t.Fatalf("removed baseline key failures=%v", failures)
+	}
 }
 
 func TestBaselineOnlyRewriteFailsChangeGuard(t *testing.T) {

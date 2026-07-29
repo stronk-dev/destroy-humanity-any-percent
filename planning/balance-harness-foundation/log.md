@@ -35,3 +35,13 @@ Append-only. Resume from this file and `plan.md`.
 - `make harness-check` is green and completes in about 47 seconds locally, below the normative
   60-second blocking target. The 300-run aggregate has zero failures; Casual p50/p95 automation is
   10 seconds.
+
+## 2026-07-29 (Codex — implementation diff review)
+
+- Read the complete harness implementation diff. Found and fixed three deterministic-contract
+  gaps before archive: manual-action candidates now sort by raw-byte id; drift comparison now fails
+  when a baseline key disappears from the current report; early-failure reports serialize empty
+  ordered arrays rather than ambiguous JSON nulls.
+- Rechecked the authoritative-transition dependency, policy time schedules, separate RNG streams,
+  fixed-slot parallel reduction, receipt-chain invariant, schema negatives, baseline guard, and
+  report field types. No unresolved correctness finding remains.

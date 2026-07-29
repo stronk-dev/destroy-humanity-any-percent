@@ -334,6 +334,7 @@ func (suite *Suite) intentBytes(policy string, state *save.State, revision int64
 		return nil, "", err
 	}
 	manual := suite.Catalog.ManualActions()
+	sort.Slice(manual, func(i, j int) bool { return manual[i].ID < manual[j].ID })
 	generators := suite.Catalog.GeneratorClassesForScope(economy.ScopeCompany)
 	sort.Slice(generators, func(i, j int) bool { return generators[i].ID < generators[j].ID })
 	if policy == "casual.phase0" {
@@ -507,7 +508,12 @@ func CompareBaseline(current, baseline AggregateReport) (warnings, failures []st
 		} else if delta*100 > denominator*10 {
 			warnings = append(warnings, "drift over 10%: "+key)
 		}
+		delete(baselineByKey, key)
 	}
+	for key := range baselineByKey {
+		failures = append(failures, "current report missing baseline key "+key)
+	}
+	sort.Strings(failures)
 	return warnings, failures
 }
 
@@ -594,6 +600,12 @@ func rejectionCategory(data []byte) string {
 
 func failed(report RunReport, err error) RunReport {
 	report.Outcome = "failed"
+	report.Milestones = []TimedMilestone{}
+	report.Applied = []NamedCount{}
+	report.Rejected = []NamedCount{}
+	report.SourceTotals = []ResourceAmount{}
+	report.SinkTotals = []ResourceAmount{}
+	report.FinalBalances = []ResourceAmount{}
 	report.InvariantFailures = []string{err.Error()}
 	return report
 }
