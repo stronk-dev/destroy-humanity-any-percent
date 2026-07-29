@@ -58,7 +58,7 @@ Deterministic assembly, in order: catalog initials → Network-carried items (de
 5. Wind Down is accepted from any eligible state, including mid-event-chain (no state can trap a player in a run).
 6. Run 2 assembly is byte-deterministic given the Founder stream (golden fixture: same founder state → identical opening company state).
 7. `run_ended` contains everything `design/11 §3`'s screen renders (schema-checked against the copy system's template slots).
-8. Harness hook: the Casual persona's first-Exit time lands in the [45, 90] min envelope with the scripted failure included (H2).
+8. Harness hook: the Casual persona's **first elective Exit** (first non-scripted Exit) lands in the [45, 90] min envelope; the scripted first failure is a fixed ~15-min segment excluded from this envelope and included in total run time (ruling 2026-07-29, resolving the D4/AC8 contradiction found by Codex's review).
 
 ## Open questions
 

@@ -82,7 +82,7 @@ ReputationLevel = ⌊ (lifetimeValue / T)^(1/3) ⌋      // cube root, lifetime-
 - **Cube root** (CC's choice): ~8× lifetime value to double Reputation — generous early (first Exits minutes-to-hours apart, dopamine front-loaded), naturally decelerating.
 - **Lifetime-based** (not per-run): forces forward progress, prevents same-point farming.
 - Each Reputation level = +1% production, additive — but the benefit is **unlock-gated** (5% → 25% → 50% → 75% → 100% of your Reputation bonus, bought with Reputation): the first several Exits are about buying the right to benefit from Exiting.
-- **First-Exit pacing target: the first Exit pays off visibly within the same session** (the Unnamed Space Idle churn lesson). Aim: first Exit available ~45–90 min in; second run reaches the same point in <15 min.
+- **First-Exit pacing target: the first *elective* Exit pays off visibly within the same session** (the Unnamed Space Idle churn lesson). Aim: first elective Exit available ~45–90 min in (the scripted first failure at ~15 min is a fixed curriculum segment, outside this envelope — `11 §3`); second run reaches the same point in <15 min.
 
 ### 3.2 Founder sub-currencies
 
