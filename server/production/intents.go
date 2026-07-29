@@ -71,7 +71,7 @@ type HandleResult struct {
 	Replay  bool
 }
 
-type parsedIntent struct {
+type IntentRequest struct {
 	IntentID         string
 	Kind             string
 	ExpectedRevision int64
@@ -115,7 +115,7 @@ func (s *Service) Handle(
 	now time.Time,
 	requestBytes []byte,
 ) (HandleResult, error) {
-	request, err := parseIntent(requestBytes)
+	request, err := ParseIntent(requestBytes)
 	if err != nil {
 		return HandleResult{}, err
 	}
@@ -137,14 +137,7 @@ func (s *Service) Handle(
 					return save.IntentDecision{}, err
 				}
 			}
-			switch request.Kind {
-			case IntentBuyGenerator:
-				return s.buyGenerator(request, state, catalog, revision, mode, now, contributions, collector)
-			case IntentPerformManualBatch:
-				return s.performManualBatch(request, state, catalog, revision, mode, now, contributions)
-			default:
-				return rejectedDecision(request, revision.Number, "invalid", request.Kind)
-			}
+			return Transition(request, state, catalog, revision, mode, now, contributions, collector)
 		})
 	if err != nil {
 		s.recordAbortedInvariants(collector.reports)
@@ -166,8 +159,32 @@ func (s *Service) Handle(
 	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
 }
 
+// Transition is the single deterministic intent transition used by persisted
+// service execution and the in-memory balance harness. It performs no I/O and
+// mutates only the supplied working state.
+func Transition(
+	request IntentRequest,
+	state *save.State,
+	catalog *economy.Catalog,
+	revision save.Revision,
+	mode EvaluationMode,
+	now time.Time,
+	contributions []multiplier.Contribution,
+	sink InvariantSink,
+) (save.IntentDecision, error) {
+	service := Service{}
+	switch request.Kind {
+	case IntentBuyGenerator:
+		return service.buyGenerator(request, state, catalog, revision, mode, now, contributions, sink)
+	case IntentPerformManualBatch:
+		return service.performManualBatch(request, state, catalog, revision, mode, now, contributions)
+	default:
+		return rejectedDecision(request, revision.Number, "invalid", request.Kind)
+	}
+}
+
 func (s *Service) buyGenerator(
-	request parsedIntent,
+	request IntentRequest,
 	state *save.State,
 	catalog *economy.Catalog,
 	revision save.Revision,
@@ -239,7 +256,7 @@ func (s *Service) buyGenerator(
 }
 
 func (s *Service) performManualBatch(
-	request parsedIntent,
+	request IntentRequest,
 	state *save.State,
 	catalog *economy.Catalog,
 	revision save.Revision,
@@ -298,7 +315,7 @@ func refillManualTokens(state *save.State, policy economy.ManualPolicy, now time
 }
 
 func appliedDecision(
-	request parsedIntent,
+	request IntentRequest,
 	state *save.State,
 	newRevision int64,
 	appliedCount int64,
@@ -338,7 +355,7 @@ func appliedDecision(
 	return save.IntentDecision{Outcome: save.IntentApplied, Receipt: encoded, Events: events}, nil
 }
 
-func rejectedDecision(request parsedIntent, currentRevision int64, category, detail string) (save.IntentDecision, error) {
+func rejectedDecision(request IntentRequest, currentRevision int64, category, detail string) (save.IntentDecision, error) {
 	return save.IntentDecision{
 		Outcome: save.IntentRejected,
 		Receipt: marshalRejection(request.IntentID, currentRevision, category, detail),
@@ -353,7 +370,7 @@ func marshalRejection(intentID string, currentRevision int64, category, detail s
 	return encoded
 }
 
-func generatorPurchasedEvent(request parsedIntent, resourceID string, count int64, cost decimal.Decimal) save.EventWrite {
+func generatorPurchasedEvent(request IntentRequest, resourceID string, count int64, cost decimal.Decimal) save.EventWrite {
 	payload, _ := json.Marshal(map[string]any{
 		"generator_id": request.GeneratorID, "count": count, "cost_resource_id": resourceID, "cost": cost.String(),
 	})
@@ -393,9 +410,10 @@ func wireChanges(before, after map[string]string) ([]map[string]string, error) {
 		if beforeRaw == afterRaw {
 			continue
 		}
+		delta := afterValue.Sub(beforeValue).Quantize(decimal.CanonicalSignificantDigits)
 		changes = append(changes, map[string]string{
 			"resource_id": id, "before": beforeRaw,
-			"delta": afterValue.Sub(beforeValue).Quantize(decimal.CanonicalSignificantDigits).String(), "after": afterRaw,
+			"delta": delta.String(), "after": afterRaw,
 		})
 	}
 	return changes, nil
@@ -448,28 +466,28 @@ func (s *Service) recordAbortedInvariants(reports []InvariantReport) {
 	}
 }
 
-func parseIntent(data []byte) (parsedIntent, error) {
+func ParseIntent(data []byte) (IntentRequest, error) {
 	var root map[string]json.RawMessage
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	if err := decoder.Decode(&root); err != nil || root == nil {
-		return parsedIntent{}, ErrInvalidIntent
+		return IntentRequest{}, ErrInvalidIntent
 	}
 	if err := ensureIntentJSONEnd(decoder); err != nil {
-		return parsedIntent{}, ErrInvalidIntent
+		return IntentRequest{}, ErrInvalidIntent
 	}
-	var request parsedIntent
+	var request IntentRequest
 	if err := json.Unmarshal(root["intent_id"], &request.IntentID); err != nil || !intentUUIDV7Pattern.MatchString(request.IntentID) {
-		return parsedIntent{}, ErrInvalidIntent
+		return IntentRequest{}, ErrInvalidIntent
 	}
 	if err := json.Unmarshal(root["kind"], &request.Kind); err != nil || request.Kind == "" {
-		return parsedIntent{}, ErrInvalidIntent
+		return IntentRequest{}, ErrInvalidIntent
 	}
 	if !parsePositiveSafeInt(root["expected_revision"], &request.ExpectedRevision) {
-		return parsedIntent{}, ErrInvalidIntent
+		return IntentRequest{}, ErrInvalidIntent
 	}
 	request.RequestHash = canonicalRequestHash(root)
 	if request.RequestHash == "" {
-		return parsedIntent{}, ErrInvalidIntent
+		return IntentRequest{}, ErrInvalidIntent
 	}
 
 	switch request.Kind {

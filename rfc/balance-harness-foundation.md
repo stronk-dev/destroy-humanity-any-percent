@@ -175,7 +175,10 @@ The v1 invariant registry is closed:
 - `state_encodes` — every applied transition passes `save.EncodeState`;
 - `numeric_domain` — every persisted Decimal is canonical, finite, and within the state domain;
 - `resource_bounds` — no resource is below its minimum or above its hardcap;
-- `ledger_reconciles` — initial balance plus authoritative receipt deltas equals final balance;
+- `ledger_reconciles` — every receipt's canonical `before` matches the preceding committed balance,
+  its canonical `after` matches the resulting committed balance, and every changed resource appears
+  exactly once. The 12-digit explanatory `delta` is domain-valid and signed for source/sink totals,
+  but is not required to re-add exactly across lossy cancellation where no 12-digit delta exists;
 - `revision_monotone` — applied transitions advance once, terminal rejections do not;
 - `must_reach` — every required milestone is reached within the scenario horizon.
 

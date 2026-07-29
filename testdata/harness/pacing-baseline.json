@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "scenario_id": "scenario.phase0_production",
+  "scenario_hash": "sha256:44c5a52c16aab7669e29991f923f66095743656e44eafa7cea9a6b0061cb31c6",
+  "constants_hash": "sha256:6b2589e82ec45ffaa2db3cdecc44136586cbd876701e5117aed5fd3727b21a20",
+  "run_count": 300,
+  "values": [
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.first_generator_purchase",
+      "statistic": "p50",
+      "value_ms": 10000
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p95",
+      "value_ms": 10000
+    }
+  ],
+  "warnings": [],
+  "failures": []
+}

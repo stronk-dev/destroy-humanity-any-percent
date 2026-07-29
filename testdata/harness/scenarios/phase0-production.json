@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "id": "scenario.phase0_production",
+  "version": 1,
+  "catalog": "balance/catalogs/phase0.json",
+  "runs": [
+    {
+      "policy_id": "chaos.phase0",
+      "policy_version": 1,
+      "seed_start": "0",
+      "seed_count": 200,
+      "horizon_ms": 2592000000
+    },
+    {
+      "policy_id": "casual.phase0",
+      "policy_version": 1,
+      "seed_start": "0",
+      "seed_count": 100,
+      "horizon_ms": 1814400000
+    }
+  ],
+  "milestones": [
+    {
+      "id": "milestone.first_manual",
+      "kind": "intent_applied",
+      "must_reach": true,
+      "intent_kind": "perform_manual_batch"
+    },
+    {
+      "id": "milestone.first_generator_purchase",
+      "kind": "event_seen",
+      "must_reach": true,
+      "event_kind": "generator_purchased"
+    },
+    {
+      "id": "milestone.generator_count_1",
+      "kind": "generator_count_at_least",
+      "must_reach": true,
+      "generator_id": "generator.beige_tower",
+      "count": 1
+    },
+    {
+      "id": "milestone.t0_progress_1",
+      "kind": "progress_at_least",
+      "must_reach": true,
+      "tier": 0,
+      "amount": "1e0"
+    }
+  ],
+  "envelopes": [
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.first_generator_purchase",
+      "statistic": "p50",
+      "maximum_ms": 60000
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p95",
+      "maximum_ms": 300000
+    }
+  ],
+  "required_invariants": [
+    "state_encodes",
+    "numeric_domain",
+    "resource_bounds",
+    "ledger_reconciles",
+    "revision_monotone",
+    "must_reach"
+  ]
+}

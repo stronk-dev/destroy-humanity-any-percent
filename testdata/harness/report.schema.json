@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cloud-clicker.invalid/harness-report.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "scenario_id", "scenario_hash", "constants_hash", "run_count", "values", "warnings", "failures"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "scenario_id": {"type": "string"},
+    "scenario_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "constants_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "run_count": {"type": "integer", "minimum": 1},
+    "values": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["policy_id", "milestone_id", "statistic", "value_ms"], "properties": {"policy_id": {"type": "string"}, "milestone_id": {"type": "string"}, "statistic": {"type": "string"}, "value_ms": {"type": "integer", "minimum": 0}}}},
+    "warnings": {"type": "array", "items": {"type": "string"}},
+    "failures": {"type": "array", "items": {"type": "string"}}
+  }
+}

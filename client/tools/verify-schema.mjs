@@ -121,8 +121,33 @@ async function main() {
 
   await verifyResourceLogSource();
 
+  const harnessDirectory = path.join(repositoryDirectory, "testdata", "harness");
+  const scenarioSchema = await readJSON(path.join(harnessDirectory, "scenario.schema.json"));
+  const reportSchema = await readJSON(path.join(harnessDirectory, "report.schema.json"));
+  const validateScenario = ajv.compile(scenarioSchema);
+  const validateReport = ajv.compile(reportSchema);
+  const scenarios = await jsonFiles(path.join(harnessDirectory, "scenarios"));
+  const invalidScenarios = await jsonFiles(path.join(harnessDirectory, "invalid"));
+  if (scenarios.length === 0 || invalidScenarios.length === 0) {
+    throw new Error("harness schema verification requires positive and negative scenarios");
+  }
+  for (const filename of scenarios) {
+    if (!validateScenario(await readJSON(filename))) {
+      throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateScenario)}`);
+    }
+  }
+  for (const filename of invalidScenarios) {
+    if (validateScenario(await readJSON(filename))) {
+      throw new Error(`${path.relative(repositoryDirectory, filename)}: expected harness scenario rejection`);
+    }
+  }
+  const baseline = path.join(harnessDirectory, "pacing-baseline.json");
+  if (!validateReport(await readJSON(baseline))) {
+    throw new Error(`${path.relative(repositoryDirectory, baseline)}: ${validationErrors(validateReport)}`);
+  }
+
   console.log(
-    `schema ok: 1 shape schema + resource_log semantics/source, ${production.length} production catalog(s), ${positive.length} positive fixture(s), ${negative.length} negative fixture(s)`,
+    `schema ok: economy + harness, ${production.length} catalog(s), ${scenarios.length} scenario(s), ${invalidScenarios.length} negative harness fixture(s)`,
   );
 }
 

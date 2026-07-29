@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck vectors vectors-check formulas formulas-check vet fuzz fuzz-ci verify-schema verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck vectors vectors-check formulas formulas-check harness harness-check harness-update vet fuzz fuzz-ci verify-schema verify-server verify-client verify
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -40,6 +40,16 @@ formulas:
 formulas-check: formulas
 	git diff --exit-code -- docs/generated/production-formulas.json
 
+harness:
+	@test -n "$(HARNESS_OUTPUT)" || (echo "HARNESS_OUTPUT is required" >&2; exit 1)
+	cd server && go run ./cmd/balance-harness -mode=run -root=.. -output="$(HARNESS_OUTPUT)"
+
+harness-check:
+	cd server && go run ./cmd/balance-harness -mode=check -root=..
+
+harness-update:
+	cd server && go run ./cmd/balance-harness -mode=update -root=..
+
 vet:
 	cd server && go vet ./...
 
@@ -52,7 +62,7 @@ fuzz-ci:
 verify-schema:
 	pnpm --dir client run verify:schema
 
-verify-server: vet test-go formulas-check
+verify-server: vet test-go formulas-check harness-check
 
 verify-client: typecheck test-client
 

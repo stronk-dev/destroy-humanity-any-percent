@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "runs": [
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.phase0_production",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:44c5a52c16aab7669e29991f923f66095743656e44eafa7cea9a6b0061cb31c6",
+        "policy_id": "casual.phase0",
+        "policy_version": 1,
+        "seed": "0",
+        "constants_hash": "sha256:6b2589e82ec45ffaa2db3cdecc44136586cbd876701e5117aed5fd3727b21a20"
+      },
+      "outcome": "completed",
+      "final_virtual_ms": 1814400000,
+      "final_state_hash": "sha256:0c8a24c9244094a7a37f744e3d00ff2ac4ee22b5c15b4d3ae635c44e4007cce6",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 0
+        },
+        {
+          "id": "milestone.first_generator_purchase",
+          "first_ms": 10000
+        },
+        {
+          "id": "milestone.generator_count_1",
+          "first_ms": 10000
+        },
+        {
+          "id": "milestone.t0_progress_1",
+          "first_ms": 337000
+        }
+      ],
+      "applied": [
+        {
+          "id": "buy_generator",
+          "count": 119
+        },
+        {
+          "id": "perform_manual_batch",
+          "count": 30122
+        }
+      ],
+      "rejected": [],
+      "source_totals": [
+        {
+          "resource_id": "company.cash",
+          "amount": "1.793590306e8"
+        }
+      ],
+      "sink_totals": [
+        {
+          "resource_id": "company.cash",
+          "amount": "1.59357342531e8"
+        }
+      ],
+      "final_balances": [
+        {
+          "resource_id": "company.cash",
+          "amount": "2.00016880692e7"
+        }
+      ],
+      "maximum_progress_gap_ms": 327000,
+      "invariant_failures": []
+    },
+    {
+      "key": {
+        "harness_schema_version": 1,
+        "scenario_id": "scenario.phase0_production",
+        "scenario_version": 1,
+        "scenario_hash": "sha256:44c5a52c16aab7669e29991f923f66095743656e44eafa7cea9a6b0061cb31c6",
+        "policy_id": "chaos.phase0",
+        "policy_version": 1,
+        "seed": "0",
+        "constants_hash": "sha256:6b2589e82ec45ffaa2db3cdecc44136586cbd876701e5117aed5fd3727b21a20"
+      },
+      "outcome": "completed",
+      "final_virtual_ms": 2592000000,
+      "final_state_hash": "sha256:2e118e6836bc6d234943909b4ff9f0feb34ba9e23a4e343a8bddf32575df63de",
+      "milestones": [
+        {
+          "id": "milestone.first_manual",
+          "first_ms": 2700000
+        },
+        {
+          "id": "milestone.first_generator_purchase",
+          "first_ms": 3600000
+        },
+        {
+          "id": "milestone.generator_count_1",
+          "first_ms": 3600000
+        },
+        {
+          "id": "milestone.t0_progress_1",
+          "first_ms": 3900000
+        }
+      ],
+      "applied": [
+        {
+          "id": "buy_generator",
+          "count": 62
+        },
+        {
+          "id": "perform_manual_batch",
+          "count": 4225
+        }
+      ],
+      "rejected": [
+        {
+          "id": "unaffordable",
+          "count": 4353
+        }
+      ],
+      "source_totals": [
+        {
+          "resource_id": "company.cash",
+          "amount": "2.94041237514e8"
+        }
+      ],
+      "sink_totals": [
+        {
+          "resource_id": "company.cash",
+          "amount": "2.90819171013e8"
+        }
+      ],
+      "final_balances": [
+        {
+          "resource_id": "company.cash",
+          "amount": "3.22206650138e6"
+        }
+      ],
+      "maximum_progress_gap_ms": 2700000,
+      "invariant_failures": []
+    }
+  ]
+}

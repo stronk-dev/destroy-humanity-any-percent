@@ -163,7 +163,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	}
 	invariantResult, err := store.ApplyIntent(ctx, revision.StreamID, 4, invariantIntentID, invariantRequestHash,
 		func(state *save.State, current save.Revision) (save.IntentDecision, error) {
-			return appliedDecision(parsedIntent{IntentID: invariantIntentID}, state, current.Number+1, 0,
+			return appliedDecision(IntentRequest{IntentID: invariantIntentID}, state, current.Number+1, 0,
 				state.Ledger.Snapshot(), nil, []InvariantReport{invariantReport})
 		})
 	if err != nil || invariantResult.Replay {
@@ -185,7 +185,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	rejectedResult, err := store.ApplyIntent(ctx, revision.StreamID, 5, rejectedReport.IntentID,
 		"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
 		func(*save.State, save.Revision) (save.IntentDecision, error) {
-			return rejectedDecision(parsedIntent{IntentID: rejectedReport.IntentID}, 5, "unaffordable", "generator.beige_tower")
+			return rejectedDecision(IntentRequest{IntentID: rejectedReport.IntentID}, 5, "unaffordable", "generator.beige_tower")
 		})
 	if err != nil || rejectedResult.Outcome != save.IntentRejected {
 		t.Fatalf("reported rejection=%+v err=%v", rejectedResult, err)

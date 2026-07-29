@@ -30,7 +30,7 @@ func (metrics fakeInvariantMetrics) Increment(kind string) {
 }
 
 func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
-	first, err := parseIntent([]byte(`{
+	first, err := ParseIntent([]byte(`{
       "intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab",
       "kind":"buy_generator","expected_revision":41,
       "generator_id":"generator.example","count":{"mode":"exact","value":3}
@@ -38,7 +38,7 @@ func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	second, err := parseIntent([]byte(`{"count": {"value": 3, "mode": "exact"}, "generator_id":"generator.example", "expected_revision":41, "kind":"buy_generator", "intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab"}`))
+	second, err := ParseIntent([]byte(`{"count": {"value": 3, "mode": "exact"}, "generator_id":"generator.example", "expected_revision":41, "kind":"buy_generator", "intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,14 +46,14 @@ func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 		t.Fatalf("first=%+v second=%+v", first, second)
 	}
 
-	invalid, err := parseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":0,"window_ms":1}`))
+	invalid, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":0,"window_ms":1}`))
 	if err != nil || invalid.InvalidDetail != "count" {
 		t.Fatalf("invalid=%+v err=%v", invalid, err)
 	}
-	if _, err := parseIntent([]byte(`{"intent_id":"not-v7","kind":"buy_generator","expected_revision":1}`)); err == nil {
+	if _, err := ParseIntent([]byte(`{"intent_id":"not-v7","kind":"buy_generator","expected_revision":1}`)); err == nil {
 		t.Fatal("malformed envelope was accepted")
 	}
-	if _, err := parseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"buy_generator","expected_revision":1} {}`)); err == nil {
+	if _, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"buy_generator","expected_revision":1} {}`)); err == nil {
 		t.Fatal("trailing JSON value was accepted")
 	}
 }
@@ -68,7 +68,7 @@ func TestInvariantSinkEventsAndOutcomeReporting(t *testing.T) {
 
 	catalog := phase0Catalog(t)
 	state := engineState(t, catalog, "1e2", 0)
-	request := parsedIntent{IntentID: intentID, Kind: IntentBuyGenerator}
+	request := IntentRequest{IntentID: intentID, Kind: IntentBuyGenerator}
 	decision, err := appliedDecision(request, state, 2, 1, state.Ledger.Snapshot(), nil, []InvariantReport{
 		{Kind: InvariantAffordFallback, IntentID: intentID, Detail: "generator.example"},
 	})
@@ -126,6 +126,29 @@ func TestWireChangesRejectsMalformedCanonicalValues(t *testing.T) {
 	changes, err := wireChanges(map[string]string{"company.cash": "1e0"}, map[string]string{"company.cash": "2e0"})
 	if err != nil || len(changes) != 1 || changes[0]["delta"] != "1e0" {
 		t.Fatalf("valid changes=%+v err=%v", changes, err)
+	}
+}
+
+func TestExportedTransitionMatchesServiceMutationCore(t *testing.T) {
+	catalog := phase0Catalog(t)
+	left := engineState(t, catalog, "1e2", 0)
+	right := clonePolicyState(t, catalog, left)
+	request, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":2}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, err := Transition(request, left, catalog, save.Revision{Number: 1}, ModeOnline, engineCursor, nil, &invariantCollector{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := (&Service{}).buyGenerator(request, right, catalog, save.Revision{Number: 1}, ModeOnline, engineCursor, nil, &invariantCollector{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	leftState, _ := save.EncodeState(left)
+	rightState, _ := save.EncodeState(right)
+	if string(first.Receipt) != string(second.Receipt) || string(leftState) != string(rightState) {
+		t.Fatalf("transition differs from service core\n%s\n%s\n%s\n%s", first.Receipt, second.Receipt, leftState, rightState)
 	}
 }
 
@@ -188,7 +211,7 @@ func TestManualIntentRepairsMigratedCursorPhaseMismatch(t *testing.T) {
 
 	now := time.Date(2026, 7, 28, 8, 0, 0, 101_500_000, time.UTC)
 	service := &Service{}
-	decision, err := service.performManualBatch(parsedIntent{
+	decision, err := service.performManualBatch(IntentRequest{
 		IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentPerformManualBatch,
 		ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1,
 	}, state, catalog, save.Revision{Number: 1}, ModeOnline, now, nil)
@@ -250,7 +273,7 @@ func TestManualIntentCursorOrderingProperty(t *testing.T) {
 		now := base
 		for step := 0; step < 200; step++ {
 			now = now.Add(time.Duration(random.Int63n(4_000_000)-500_000) * time.Nanosecond)
-			decision, err := service.performManualBatch(parsedIntent{
+			decision, err := service.performManualBatch(IntentRequest{
 				IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentPerformManualBatch,
 				ExpectedRevision: int64(step + 1), ActionID: "manual.click", Count: 1, WindowMS: 1,
 			}, state, catalog, save.Revision{Number: int64(step + 1)}, ModeOnline, now, nil)
@@ -280,13 +303,13 @@ func TestIntentPolicyPropertyTwentyFourHoursTwoHundredSeeds(t *testing.T) {
 			var decision save.IntentDecision
 			var err error
 			if step == 1 || random.Intn(2) == 0 {
-				decision, err = service.performManualBatch(parsedIntent{
+				decision, err = service.performManualBatch(IntentRequest{
 					IntentID: "018f6b7c-9abc-7def-8abc-999999999999", Kind: IntentPerformManualBatch,
 					ExpectedRevision: revision, ActionID: "manual.click", Count: int64(random.Intn(80) + 1), WindowMS: 300_000,
 				}, candidate, catalog, save.Revision{Number: revision}, ModeOnline, now, nil)
 			} else {
 				collector := &invariantCollector{}
-				decision, err = service.buyGenerator(parsedIntent{
+				decision, err = service.buyGenerator(IntentRequest{
 					IntentID: "018f6b7c-9abc-7def-8abc-999999999999", Kind: IntentBuyGenerator,
 					ExpectedRevision: revision, GeneratorID: "generator.beige_tower", CountMode: "max",
 				}, candidate, catalog, save.Revision{Number: revision}, ModeOnline, now, nil, collector)
