@@ -1,6 +1,6 @@
 # RFC: Resource-Log Domain Parity
 
-- **Status:** draft
+- **Status:** accepted
 - **Author:** Marco (drafted by Codex from the round-2 review)
 - **Created:** 2026-07-28
 - **Design refs:** `design/07-roadmap.md` Phase 0; `AGENTS.md` law 3

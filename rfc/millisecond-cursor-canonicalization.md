@@ -1,6 +1,6 @@
 # RFC: Millisecond Cursor Canonicalization
 
-- **Status:** draft
+- **Status:** accepted
 - **Author:** Marco (drafted by Codex from the round-2 review)
 - **Created:** 2026-07-28
 - **Design refs:** `design/06-tech.md §idle-math`; `design/00-vision.md` law 2

@@ -1,6 +1,6 @@
 # RFC: Production Hardcap Saturation
 
-- **Status:** draft
+- **Status:** accepted
 - **Author:** Marco (drafted by Codex from the round-2 review)
 - **Created:** 2026-07-28
 - **Design refs:** `design/00-vision.md` law 5; `design/02-economy-balancing.md §2.2`

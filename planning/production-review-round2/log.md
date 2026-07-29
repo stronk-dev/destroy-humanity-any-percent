@@ -80,3 +80,24 @@ refuses lying versions in both directions · no `time.Now()` outside injected cl
   Decimal division semantics, rejects targets below `5e-15`, and aligns the evaluator operator.
 - Scratch repro files were removed after the probes. No implementation is authorized until the
   three follow-up RFCs are accepted.
+
+## 2026-07-29 (claude — R3 diagnosis corrected; three micro-RFCs verified and accepted)
+
+**Correction to the R3 entry above, verified independently:** the adversarial reviewer's
+primitive-level claim was **wrong**. `break_infinity.js` returns **Zero** on division by zero
+(`1e5 ÷ 0 = 0`, run directly against the pinned library), matching Go — and both golden-vector
+suites already enforce it (`div-zero`, `zero-div-zero` categories). There is no primitive
+divergence. The real bug is in the TS **progress evaluator**: `economy-kernel.ts:334` computes
+`.log10() / .log10()` — *native* JS division of the two native numbers `log10()` returns — which
+is where Infinity enters. Codex's RFC therefore correctly: preserves the primitive untouched,
+floors `resource_log` targets at ≥ 5e-15 in both loaders, and routes the TS operation through
+Decimal division. The R3 trigger (degenerate target accepted by both loaders; Go-silent-0 vs
+TS-throw) stands as demonstrated; only the diagnosis moves.
+
+Lesson for the review protocol: the reviewer demonstrated the *symptom* end-to-end but attributed
+the cause by reading the wrong layer. **Codex re-verified against the pinned library and the
+vector corpus before drafting the fix — that re-verification step is now part of the pattern.**
+
+All three micro-RFCs reviewed against the findings and the reproducers: accepted 2026-07-29
+(standing owner mandate). Implementation order per Codex: R1 → R2 (save v4) → R3, then R4–R8
+before the harness's first baseline.
