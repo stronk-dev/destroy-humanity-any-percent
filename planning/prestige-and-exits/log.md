@@ -38,3 +38,19 @@
 - Added exact moral reseeding, bounded Advisor multiplication, and the mandated SplitMix64 stream
   with fixed output vectors. Go tests, all 6,422 client tests, strict TypeScript/Svelte checks, and
   the expanded schema verifier pass.
+
+## 2026-07-29 — atomic Exit store
+
+- Added `ApplyExitTransaction`: it discovers the active sibling Founder stream, locks Founder then
+  Company, checks both expected revisions, and writes Founder advance, final old-Company revision,
+  new-run Company revision, all events, and the Company-keyed idempotency record in one transaction.
+- Added the six Prestige event kinds to both the Go closed registry and migration 00011's database
+  constraint. Strict payload validators cover offer transitions, complete run-end rendering facts,
+  structural Assisted variables, new-run identity, and Founder payout facts.
+- Real-Postgres tests inject rollback failures after each of eight write boundaries and prove both
+  streams remain at revision 1 every time. The successful path advances Founder `1→2` and Company
+  `1→3`; retry returns the same receipt and the identical three ordered event records without
+  rerunning mutation.
+- Adversarial replay review found that database UUID/timestamp order could differ from first-delivery
+  group order. Replay now applies an explicit Founder-advance → run-ended → run-started order and
+  the integration test compares event IDs position by position.

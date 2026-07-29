@@ -45,6 +45,12 @@ const (
 	EventCompactCascadeStarted     EventKind = "compact_cascade_started"
 	EventCompactRecovered          EventKind = "compact_recovered"
 	EventCompactRecruitmentOffered EventKind = "compact_recruitment_offered"
+	EventExitOfferSpawned          EventKind = "exit_offer_spawned"
+	EventExitOfferExpired          EventKind = "exit_offer_expired"
+	EventExitOfferDeclined         EventKind = "exit_offer_declined"
+	EventRunEnded                  EventKind = "run_ended"
+	EventRunStarted                EventKind = "run_started"
+	EventFounderAdvanced           EventKind = "founder_advanced"
 )
 
 type EventWrite struct {
@@ -434,10 +440,123 @@ func validateEventPayload(event EventWrite) error {
 		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) || payload.ReasonKey != "compact.recruitment.mid_t3" {
 			return fmt.Errorf("%w: invalid compact recruitment payload", ErrInvalidStream)
 		}
+	case EventExitOfferSpawned:
+		var payload struct {
+			OfferID       string             `json:"offer_id"`
+			ExitType      string             `json:"exit_type"`
+			ExpiresAtMS   int64              `json:"expires_at_ms"`
+			PayoutPreview eventPrestigeTerms `json:"payout_preview"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidV7Pattern.MatchString(payload.OfferID) ||
+			!validExitType(payload.ExitType) || payload.ExpiresAtMS <= 0 || payload.ExpiresAtMS > decimal.MaxExactInteger ||
+			validatePrestigeTerms(payload.PayoutPreview) != nil {
+			return fmt.Errorf("%w: invalid exit_offer_spawned payload", ErrInvalidStream)
+		}
+	case EventExitOfferExpired, EventExitOfferDeclined:
+		var payload struct {
+			OfferID string `json:"offer_id"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidV7Pattern.MatchString(payload.OfferID) {
+			return fmt.Errorf("%w: invalid exit offer transition payload", ErrInvalidStream)
+		}
+	case EventRunEnded:
+		var payload eventRunEnded
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) ||
+			!validRouteRunID(payload.RunID) || !validExitType(payload.ExitType) || payload.StartedAtMS <= 0 ||
+			payload.EndedAtMS < payload.StartedAtMS || payload.EndedAtMS > decimal.MaxExactInteger ||
+			payload.RTAMS != payload.EndedAtMS-payload.StartedAtMS || payload.AttendedMS < 0 || payload.AttendedMS > payload.RTAMS ||
+			payload.TerminalSeq <= 0 || payload.TerminalSeq > decimal.MaxExactInteger || payload.Tier < 0 || payload.Tier > 9 ||
+			validatePrestigeTerms(payload.Payout) != nil || !sortedMechanicalIDs(payload.LedgerFactKinds) || !sortedMechanicalIDs(payload.ExecutedRoutes) {
+			return fmt.Errorf("%w: invalid run_ended payload", ErrInvalidStream)
+		}
+		if value, err := decimal.ParseCanonical(payload.LifetimeValue); err != nil || value.Lt(decimal.Zero) {
+			return fmt.Errorf("%w: invalid run_ended lifetime value", ErrInvalidStream)
+		}
+	case EventRunStarted:
+		var payload struct {
+			FounderID   string        `json:"founder_id"`
+			RunID       routeRunID    `json:"run_id"`
+			StartedAtMS int64         `json:"started_at_ms"`
+			Assisted    eventAssisted `json:"assisted"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) ||
+			!validRouteRunID(payload.RunID) || payload.StartedAtMS <= 0 || payload.StartedAtMS > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid run_started payload", ErrInvalidStream)
+		}
+	case EventFounderAdvanced:
+		var payload struct {
+			FounderID       string     `json:"founder_id"`
+			RunID           routeRunID `json:"run_id"`
+			ExitType        string     `json:"exit_type"`
+			ReputationDelta int64      `json:"reputation_delta"`
+			RouteKnowledge  int64      `json:"route_knowledge"`
+			OccurredAtMS    int64      `json:"occurred_at_ms"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) ||
+			!validRouteRunID(payload.RunID) || !validExitType(payload.ExitType) || payload.ReputationDelta < 0 ||
+			payload.ReputationDelta > decimal.MaxExactInteger || payload.RouteKnowledge < 0 || payload.RouteKnowledge > decimal.MaxExactInteger ||
+			payload.OccurredAtMS <= 0 || payload.OccurredAtMS > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid founder_advanced payload", ErrInvalidStream)
+		}
 	default:
 		return fmt.Errorf("%w: unknown event kind %q", ErrInvalidStream, event.Kind)
 	}
 	return nil
+}
+
+type eventPrestigeTerms struct {
+	ReputationDelta    int64         `json:"reputation_delta"`
+	NetworkSlotUnlocks []NetworkSlot `json:"network_slot_unlocks"`
+	RouteKnowledge     int64         `json:"route_knowledge"`
+	CloutReachNote     string        `json:"clout_reach_note"`
+}
+
+type eventAssisted struct {
+	Commons bool `json:"commons"`
+	Advisor bool `json:"advisor"`
+}
+
+type eventRunEnded struct {
+	FounderID       string             `json:"founder_id"`
+	RunID           routeRunID         `json:"run_id"`
+	ExitType        string             `json:"exit_type"`
+	StartedAtMS     int64              `json:"started_at_ms"`
+	EndedAtMS       int64              `json:"ended_at_ms"`
+	RTAMS           int64              `json:"rta_ms"`
+	AttendedMS      int64              `json:"attended_ms"`
+	TerminalSeq     int64              `json:"terminal_seq"`
+	Payout          eventPrestigeTerms `json:"payout"`
+	Tier            int64              `json:"tier"`
+	LifetimeValue   string             `json:"lifetime_value"`
+	LedgerFactKinds []string           `json:"ledger_fact_kinds"`
+	ExecutedRoutes  []string           `json:"executed_routes"`
+	Assisted        eventAssisted      `json:"assisted"`
+}
+
+func validatePrestigeTerms(terms eventPrestigeTerms) error {
+	if terms.ReputationDelta < 0 || terms.ReputationDelta > decimal.MaxExactInteger || terms.RouteKnowledge < 0 ||
+		terms.RouteKnowledge > decimal.MaxExactInteger || terms.CloutReachNote == "" {
+		return ErrInvalidStream
+	}
+	last := ""
+	for _, slot := range terms.NetworkSlotUnlocks {
+		if !mechanicalIDPattern.MatchString(slot.Slot) || !mechanicalIDPattern.MatchString(slot.CarriedRef) || slot.Slot <= last {
+			return ErrInvalidStream
+		}
+		last = slot.Slot
+	}
+	return nil
+}
+
+func sortedMechanicalIDs(values []string) bool {
+	last := ""
+	for _, value := range values {
+		if !mechanicalIDPattern.MatchString(value) || value <= last {
+			return false
+		}
+		last = value
+	}
+	return true
 }
 
 func validHealthBand(value string) bool {
