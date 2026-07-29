@@ -101,6 +101,18 @@ func (p *Projector) project(ctx context.Context, event save.EventRecord) error {
 	if err := decodeStrict(event.Payload, &payload); err != nil || payload.FounderID != event.OwnerID || payload.RunID.CompanyStreamID != event.StreamID || payload.RunID.RunSeq < 1 || payload.TithePPM < 0 || payload.TithePPM > 1_000_000 {
 		return fmt.Errorf("%w: membership event identity", ErrProjection)
 	}
+	tx, err := p.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	claimed, err := claimEvent(ctx, tx, event, payload.FounderID, payload.RunID.CompanyStreamID, payload.RunID.RunSeq)
+	if err != nil {
+		return err
+	}
+	if !claimed {
+		return tx.Commit()
+	}
 	assignment, ok := p.assignments.ResolveAssignment(payload.FounderID)
 	if !ok || assignment.ServerID == "" || assignment.ActivityBracket == "" {
 		return fmt.Errorf("%w: assignment context", ErrProjection)
@@ -110,22 +122,6 @@ func (p *Projector) project(ctx context.Context, event save.EventRecord) error {
 		return fmt.Errorf("%w: catalog", ErrProjection)
 	}
 	target := catalog.CohortTargetSize
-	tx, err := p.db.BeginTx(ctx, nil)
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
-	result, err := tx.ExecContext(ctx, `INSERT INTO commons_projection_events(event_id,kind,founder_id,company_stream_id,run_seq,occurred_at) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING`, event.EventID, event.Kind, payload.FounderID, payload.RunID.CompanyStreamID, payload.RunID.RunSeq, event.OccurredAt)
-	if err != nil {
-		return err
-	}
-	inserted, err := result.RowsAffected()
-	if err != nil || inserted == 0 {
-		if err != nil {
-			return err
-		}
-		return tx.Commit()
-	}
 	if _, err := tx.ExecContext(ctx, `SELECT pg_advisory_xact_lock(hashtextextended($1,0))`, assignment.ServerID+":"+assignment.ActivityBracket); err != nil {
 		return err
 	}
@@ -160,7 +156,7 @@ func (p *Projector) project(ctx context.Context, event save.EventRecord) error {
 		if !payload.PriorMember || payload.NewMember {
 			return ErrProjection
 		}
-		result, err = tx.ExecContext(ctx, `UPDATE company_compact_memberships SET member=false,tithe_ppm=0,updated_at=$2 WHERE company_stream_id=$1 AND founder_id=$3`, payload.RunID.CompanyStreamID, event.OccurredAt, payload.FounderID)
+		result, err := tx.ExecContext(ctx, `UPDATE company_compact_memberships SET member=false,tithe_ppm=0,updated_at=$2 WHERE company_stream_id=$1 AND founder_id=$3`, payload.RunID.CompanyStreamID, event.OccurredAt, payload.FounderID)
 		if err == nil {
 			var affected int64
 			affected, err = result.RowsAffected()
@@ -200,30 +196,26 @@ func (p *Projector) projectSample(ctx context.Context, event save.EventRecord) e
 	if value, err := decimal.ParseCanonical(payload.Capacity); err != nil || value.Lt(decimal.Zero) {
 		return ErrProjection
 	}
-	catalog, ok := p.policies.ResolveCommons(event.ConstantsHash)
-	if !ok {
-		return ErrProjection
-	}
 	tx, err := p.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback()
+	claimed, err := claimEvent(ctx, tx, event, payload.FounderID, payload.RunID.CompanyStreamID, payload.RunID.RunSeq)
+	if err != nil {
+		return err
+	}
+	if !claimed {
+		return tx.Commit()
+	}
+	catalog, ok := p.policies.ResolveCommons(event.ConstantsHash)
+	if !ok {
+		return ErrProjection
+	}
 	var cohortID, serverID string
 	var member bool
 	if err := tx.QueryRowContext(ctx, `SELECT m.cohort_id,a.server_id,m.member FROM company_compact_memberships m JOIN founder_commons_assignments a ON a.founder_id=m.founder_id WHERE m.company_stream_id=$1 AND m.founder_id=$2 AND m.run_seq=$3`, payload.RunID.CompanyStreamID, payload.FounderID, payload.RunID.RunSeq).Scan(&cohortID, &serverID, &member); err != nil || !member {
 		return fmt.Errorf("%w: sample without active membership", ErrProjection)
-	}
-	result, err := tx.ExecContext(ctx, `INSERT INTO commons_projection_events(event_id,kind,founder_id,company_stream_id,run_seq,occurred_at) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING`, event.EventID, event.Kind, payload.FounderID, payload.RunID.CompanyStreamID, payload.RunID.RunSeq, event.OccurredAt)
-	if err != nil {
-		return err
-	}
-	inserted, err := result.RowsAffected()
-	if err != nil || inserted == 0 {
-		if err != nil {
-			return err
-		}
-		return tx.Commit()
 	}
 	// Capacity is the absolute sum of every tithe, while the other fields are
 	// latest-state samples. Serialize per company so concurrent post-commit
@@ -271,6 +263,15 @@ func (p *Projector) projectSample(ctx context.Context, event save.EventRecord) e
 		}
 	}
 	return tx.Commit()
+}
+
+func claimEvent(ctx context.Context, tx *sql.Tx, event save.EventRecord, founderID, companyStreamID string, runSeq int64) (bool, error) {
+	result, err := tx.ExecContext(ctx, `INSERT INTO commons_projection_events(event_id,kind,founder_id,company_stream_id,run_seq,occurred_at) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING`, event.EventID, event.Kind, founderID, companyStreamID, runSeq, event.OccurredAt)
+	if err != nil {
+		return false, err
+	}
+	inserted, err := result.RowsAffected()
+	return inserted == 1, err
 }
 
 func healthBand(catalog *commons.Catalog, healthPPM int64) string {

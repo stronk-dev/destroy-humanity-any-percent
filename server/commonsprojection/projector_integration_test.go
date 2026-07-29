@@ -180,6 +180,28 @@ func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 	if err := db.QueryRowContext(ctx, `SELECT member FROM company_compact_memberships WHERE company_stream_id=$1`, streams[0]).Scan(&member); err != nil || member {
 		t.Fatalf("member=%v err=%v", member, err)
 	}
+	if err := projector.Project(ctx, []save.EventRecord{events[0], sample, leave}); err != nil {
+		t.Fatalf("replay signed/sample/left after leave: %v", err)
+	}
+	var replayCapacity string
+	if err := db.QueryRowContext(ctx, `SELECT capacity FROM commons_member_samples WHERE company_stream_id=$1`, streams[0]).Scan(&replayCapacity); err != nil || replayCapacity != "3e0" {
+		t.Fatalf("replay capacity=%s err=%v", replayCapacity, err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM commons_projection_events`).Scan(&projected); err != nil || projected != 5 {
+		t.Fatalf("projected after replay=%d err=%v", projected, err)
+	}
+	var invalidSampleID string
+	if err := db.QueryRowContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,5,1,'compact_sampled',$2,$3,$4,$5) RETURNING event_id`, streams[0], "018f6b7c-9abc-7def-8abc-555555555555", hash, occurred.Add(3*time.Second), samplePayload).Scan(&invalidSampleID); err != nil {
+		t.Fatal(err)
+	}
+	invalidSample := save.EventRecord{EventID: invalidSampleID, StreamID: streams[0], OwnerID: founders[0], Revision: 5, Kind: save.EventCompactSampled, ConstantsHash: hash, OccurredAt: occurred.Add(3 * time.Second), Payload: samplePayload}
+	if err := projector.Project(ctx, []save.EventRecord{invalidSample}); err == nil {
+		t.Fatal("first-delivery sample after leave succeeded")
+	}
+	var invalidProjected int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM commons_projection_events WHERE event_id=$1`, invalidSampleID).Scan(&invalidProjected); err != nil || invalidProjected != 0 {
+		t.Fatalf("failed sample dedup rows=%d err=%v", invalidProjected, err)
+	}
 	stable, err := projector.FounderCohort(ctx, founders[0])
 	if err != nil || stable != left {
 		t.Fatalf("stable=%s want=%s err=%v", stable, left, err)

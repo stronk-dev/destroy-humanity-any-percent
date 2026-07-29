@@ -81,6 +81,11 @@ The first `compact_signed` event assigns the Founder to the oldest open cohort i
 server/activity bracket below its 150 target. A server/bracket advisory transaction lock makes
 concurrent first-sign order an actual database decision. Assignment is non-elective and reused by
 later runs and re-signs. Membership and sample projections are idempotent by event ID.
+After strict payload validation, each projection transaction claims its event ID before resolving
+current catalog, assignment, or membership state. An already-committed event returns successfully
+without consulting those mutable dependencies, so replay after a later leave cannot wedge the
+worker. A first delivery's claim remains in the same transaction as every derived write; any
+validation or write failure rolls the claim back and remains retryable.
 
 Collapse merge is explicit and one-way: additional cohorts below 40 move into the oldest compatible
 cohort under the same lock, source cohorts close, and standing is recomputed from member
@@ -96,8 +101,9 @@ per never-signed Founder. Transport and visible client panels remain owned by th
 ## Verification
 
 Shared Go/TypeScript vectors cover Enclosure and the H × Solidarity modifier edges. Save migration
-tests cover v1–v5 to v6. Real Postgres tests cover concurrent cohort assignment, replay, sign/leave,
-sample projection, stable re-sign identity, collapse merge, and recruitment uniqueness. The
+tests cover v1–v5 to v6. Real Postgres tests cover concurrent cohort assignment, full-history
+replay after leave, failed-first-delivery rollback, sign/leave, sample projection, stable re-sign
+identity, collapse merge, and recruitment uniqueness. The
 SplitMix64 harness runs 128 seeds at 200 and 20,000 members; mean modifiers must stay within 100 ppm
 and the 95% intervals must overlap. `make verify-commons-boundary`, `make commons-harness-check`,
 formula drift, schema checks, and the complete `make verify` matrix are blocking gates.
