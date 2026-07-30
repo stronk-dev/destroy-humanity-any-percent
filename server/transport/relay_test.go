@@ -14,6 +14,7 @@ type memoryReceiptSource struct {
 	items    []save.ReceiptOutboxItem
 	marked   []int64
 	released []int64
+	deferred []int64
 	failed   []int64
 	markErr  int64
 }
@@ -30,6 +31,10 @@ func (source *memoryReceiptSource) MarkReceiptPublished(_ context.Context, id in
 }
 func (source *memoryReceiptSource) ReleaseReceiptClaim(_ context.Context, id int64, _ string) error {
 	source.released = append(source.released, id)
+	return nil
+}
+func (source *memoryReceiptSource) DeferReceiptClaim(_ context.Context, id int64, _ string, _ string, _ time.Duration) error {
+	source.deferred = append(source.deferred, id)
 	return nil
 }
 func (source *memoryReceiptSource) FailReceiptClaim(_ context.Context, id int64, _ string, _ string, maxAttempts int) (bool, error) {
@@ -50,12 +55,16 @@ func (sink *memoryRelaySink) ReportRelayInvariant(report RelayInvariant) {
 }
 
 type memoryPublisher struct {
-	envelopes []Envelope
-	failAt    int
+	envelopes     []Envelope
+	failAt        int
+	deterministic bool
 }
 
 func (publisher *memoryPublisher) Publish(envelope Envelope) error {
 	if publisher.failAt > 0 && len(publisher.envelopes)+1 == publisher.failAt {
+		if publisher.deterministic {
+			return ErrInvalidPolicy
+		}
 		return errors.New("publish unavailable")
 	}
 	publisher.envelopes = append(publisher.envelopes, envelope)
@@ -91,8 +100,8 @@ func TestReceiptRelayReleasesFailedPublication(t *testing.T) {
 		ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Receipt: json.RawMessage(`{"outcome":"rejected"}`), OccurredAt: time.Now().UTC(),
 	}}}
 	relay, _ := NewReceiptRelay(source, &memoryPublisher{failAt: 1}, &memoryRelaySink{})
-	if count, err := relay.Flush(context.Background()); err == nil || count != 0 || len(source.marked) != 0 || len(source.failed) != 1 {
-		t.Fatalf("count=%d marked=%v failed=%v err=%v", count, source.marked, source.failed, err)
+	if count, err := relay.Flush(context.Background()); err == nil || count != 0 || len(source.marked) != 0 || len(source.failed) != 0 || len(source.deferred) != 1 {
+		t.Fatalf("count=%d marked=%v failed=%v deferred=%v err=%v", count, source.marked, source.failed, source.deferred, err)
 	}
 }
 
@@ -108,8 +117,8 @@ func TestReceiptRelayReleasesWholeRemainderAndPreservesOrder(t *testing.T) {
 	relay, _ := NewReceiptRelay(source, &memoryPublisher{failAt: 2}, &memoryRelaySink{})
 	count, err := relay.Flush(context.Background())
 	if err == nil || count != 1 || len(source.marked) != 1 || source.marked[0] != 1 ||
-		len(source.failed) != 1 || source.failed[0] != 2 || len(source.released) != 1 || source.released[0] != 3 {
-		t.Fatalf("count=%d marked=%v failed=%v released=%v err=%v", count, source.marked, source.failed, source.released, err)
+		len(source.deferred) != 1 || source.deferred[0] != 2 || len(source.released) != 1 || source.released[0] != 3 {
+		t.Fatalf("count=%d marked=%v deferred=%v released=%v err=%v", count, source.marked, source.deferred, source.released, err)
 	}
 }
 
@@ -121,8 +130,8 @@ func TestReceiptRelayMarkFailureAlsoReleasesRemainder(t *testing.T) {
 	source := &memoryReceiptSource{items: items, markErr: 1}
 	relay, _ := NewReceiptRelay(source, &memoryPublisher{}, &memoryRelaySink{})
 	count, err := relay.Flush(context.Background())
-	if err == nil || count != 0 || len(source.failed) != 1 || source.failed[0] != 1 || len(source.released) != 1 || source.released[0] != 2 {
-		t.Fatalf("count=%d failed=%v released=%v err=%v", count, source.failed, source.released, err)
+	if err == nil || count != 0 || len(source.deferred) != 1 || source.deferred[0] != 1 || len(source.released) != 1 || source.released[0] != 2 {
+		t.Fatalf("count=%d deferred=%v released=%v err=%v", count, source.deferred, source.released, err)
 	}
 }
 
@@ -134,7 +143,7 @@ func TestReceiptRelayDeadLettersAndReportsBoundedPoison(t *testing.T) {
 		Receipt:       json.RawMessage(`{"outcome":"rejected"}`), OccurredAt: time.Now().UTC(),
 	}}}
 	sink := &memoryRelaySink{}
-	relay, _ := NewReceiptRelay(source, &memoryPublisher{failAt: 1}, sink)
+	relay, _ := NewReceiptRelay(source, &memoryPublisher{failAt: 1, deterministic: true}, sink)
 	for attempt := 1; attempt <= receiptFailureLimit; attempt++ {
 		if _, err := relay.Flush(context.Background()); err == nil {
 			t.Fatalf("attempt %d succeeded", attempt)

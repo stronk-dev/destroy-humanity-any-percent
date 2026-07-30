@@ -75,7 +75,16 @@ func TestReceiptOutboxOrderingDeadLetterAndSizeIntegration(t *testing.T) {
 	if err := store.MarkReceiptPublished(ctx, claimed[0].ID, claimed[0].ClaimToken); err != nil {
 		t.Fatal(err)
 	}
-	if err := store.ReleaseReceiptClaim(ctx, claimed[1].ID, claimed[1].ClaimToken); err != nil {
+	if err := store.DeferReceiptClaim(ctx, claimed[1].ID, claimed[1].ClaimToken, "temporary publisher outage", 100*time.Millisecond); err != nil {
+		t.Fatal(err)
+	}
+	var transientAttempts int
+	var transientDetail string
+	var deferred bool
+	if err := db.QueryRowContext(ctx, `SELECT attempt_count,last_error,claimed_until > clock_timestamp() FROM transport_receipt_outbox WHERE outbox_id=$1`, claimed[1].ID).Scan(&transientAttempts, &transientDetail, &deferred); err != nil || transientAttempts != 0 || transientDetail != "temporary publisher outage" || !deferred {
+		t.Fatalf("transient attempt=%d detail=%q deferred=%v err=%v", transientAttempts, transientDetail, deferred, err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE transport_receipt_outbox SET claimed_until=clock_timestamp()-interval '1 millisecond' WHERE outbox_id=$1`, claimed[1].ID); err != nil {
 		t.Fatal(err)
 	}
 	for attempt := 1; attempt <= 5; attempt++ {

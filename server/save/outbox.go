@@ -138,6 +138,30 @@ func (s *Store) ReleaseReceiptClaim(ctx context.Context, id int64, claimToken st
 	return nil
 }
 
+func (s *Store) DeferReceiptClaim(ctx context.Context, id int64, claimToken, detail string, delay time.Duration) error {
+	detail = strings.TrimSpace(detail)
+	if id < 1 || !uuidPattern.MatchString(claimToken) || detail == "" || !utf8.ValidString(detail) || utf8.RuneCountInString(detail) > 512 ||
+		delay < 100*time.Millisecond || delay > 5*time.Minute {
+		return ErrInvalidStream
+	}
+	result, err := s.db.ExecContext(ctx, `
+		UPDATE transport_receipt_outbox
+		SET claimed_until=clock_timestamp()+$3::interval,last_error=$4
+		WHERE outbox_id=$1 AND claim_token=$2 AND published_at IS NULL AND dead_lettered_at IS NULL`,
+		id, claimToken, intervalLiteral(delay), detail)
+	if err != nil {
+		return err
+	}
+	changed, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if changed != 1 {
+		return ErrConflict
+	}
+	return nil
+}
+
 func (s *Store) FailReceiptClaim(ctx context.Context, id int64, claimToken, detail string, maxAttempts int) (bool, error) {
 	detail = strings.TrimSpace(detail)
 	if id < 1 || !uuidPattern.MatchString(claimToken) || detail == "" || !utf8.ValidString(detail) || utf8.RuneCountInString(detail) > 512 || maxAttempts < 1 || maxAttempts > 1000 {

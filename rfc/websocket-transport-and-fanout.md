@@ -113,3 +113,7 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
 - 2026-07-30: transport boundary cleanup makes drain readiness irreversible, keys private queue
   releases to reserved publication revisions, parses both JSON/protobuf writer frames, and aligns
   the application receipt-size check with PostgreSQL's exact jsonb text representation.
+- 2026-07-30: relay failure classification limits the five-attempt dead-letter budget to
+  deterministic envelope-policy failures. Publisher and acknowledgement infrastructure failures
+  retain the claimed Founder head for a one-second backoff without incrementing attempts; later
+  claims are released so unrelated Founders continue.

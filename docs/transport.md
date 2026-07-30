@@ -63,12 +63,15 @@ so structural spacing cannot pass Go and then abort the surrounding intent on th
 This leaves room for the closed 64-KiB transport envelope. Relay workers claim at most the oldest
 pending row per Founder with expiring leases and `SKIP LOCKED`, sort the returned batch by outbox
 identity, publish the receipt unchanged to `player:{founder_id}`, then acknowledge it. On publish or
-acknowledgement failure the failed row records an attempt and every unprocessed claim is released;
-newer rows for that Founder remain ineligible until the head is published or dead-lettered. Five
-deterministic failures dead-letter the row and emit a `receipt_dead_letter` invariant report, so a
-poison receipt cannot pin readiness forever. A crash after publication but before acknowledgement
-may redeliver the same receipt, which is safe because intent identity and revision reconciliation
-are already idempotent; a crash before publication cannot lose it.
+acknowledgement failure every unprocessed claim is released. Deterministic envelope-policy failures
+consume the failed head's attempt budget; five dead-letter the row and emit a
+`receipt_dead_letter` invariant report. Publisher and acknowledgement infrastructure failures do
+not consume that budget: the head retains its lease for a one-second backoff, records the last
+error, and blocks newer rows for that Founder without blocking other Founders. A poison receipt
+therefore cannot pin readiness forever, while a short outage cannot destroy a valid receipt. A
+crash after publication but before acknowledgement may redeliver the same receipt, which is safe
+because intent identity and revision reconciliation are already idempotent; a crash before
+publication cannot lose it.
 
 The embedded node sets Centrifuge's process-wide slow-writer policy once, before any node runs, so
 its bounded byte queue closes stalled clients with application code 4000 rather than the library's

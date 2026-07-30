@@ -16,6 +16,7 @@ type ReceiptSource interface {
 	ClaimReceiptOutbox(context.Context, int, time.Duration) ([]save.ReceiptOutboxItem, error)
 	MarkReceiptPublished(context.Context, int64, string) error
 	ReleaseReceiptClaim(context.Context, int64, string) error
+	DeferReceiptClaim(context.Context, int64, string, string, time.Duration) error
 	FailReceiptClaim(context.Context, int64, string, string, int) (bool, error)
 }
 
@@ -42,6 +43,7 @@ type ReceiptRelay struct {
 	sink      RelayInvariantSink
 	batchSize int
 	lease     time.Duration
+	backoff   time.Duration
 	mu        sync.Mutex
 }
 
@@ -51,7 +53,7 @@ func NewReceiptRelay(source ReceiptSource, publisher EnvelopePublisher, sink Rel
 	if source == nil || publisher == nil || sink == nil {
 		return nil, ErrRelay
 	}
-	return &ReceiptRelay{source: source, publisher: publisher, sink: sink, batchSize: 64, lease: 30 * time.Second}, nil
+	return &ReceiptRelay{source: source, publisher: publisher, sink: sink, batchSize: 64, lease: 30 * time.Second, backoff: time.Second}, nil
 }
 
 func (relay *ReceiptRelay) Flush(ctx context.Context) (int, error) {
@@ -68,23 +70,29 @@ func (relay *ReceiptRelay) Flush(ctx context.Context) (int, error) {
 			ConstantsHash: item.ConstantsHash, Timestamp: item.OccurredAt, Payload: item.Receipt,
 		}
 		if err := relay.publisher.Publish(envelope); err != nil {
-			return published, relay.failBatch(ctx, items, index, err)
+			return published, relay.failBatch(ctx, items, index, err, errors.Is(err, ErrInvalidPolicy))
 		}
 		if err := relay.source.MarkReceiptPublished(ctx, item.ID, item.ClaimToken); err != nil {
-			return published, relay.failBatch(ctx, items, index, err)
+			return published, relay.failBatch(ctx, items, index, err, false)
 		}
 		published++
 	}
 	return published, nil
 }
 
-func (relay *ReceiptRelay) failBatch(ctx context.Context, items []save.ReceiptOutboxItem, failedIndex int, cause error) error {
+func (relay *ReceiptRelay) failBatch(ctx context.Context, items []save.ReceiptOutboxItem, failedIndex int, cause error, deterministic bool) error {
 	failed := items[failedIndex]
 	detail := failureDetail(cause)
-	dead, failErr := relay.source.FailReceiptClaim(ctx, failed.ID, failed.ClaimToken, detail, receiptFailureLimit)
-	if dead {
-		relay.sink.ReportRelayInvariant(RelayInvariant{Kind: "receipt_dead_letter", OutboxID: failed.ID, FounderID: failed.FounderID,
-			IntentID: failed.IntentID, AttemptCount: failed.AttemptCount + 1, Detail: detail})
+	var dead bool
+	var failErr error
+	if deterministic {
+		dead, failErr = relay.source.FailReceiptClaim(ctx, failed.ID, failed.ClaimToken, detail, receiptFailureLimit)
+		if dead {
+			relay.sink.ReportRelayInvariant(RelayInvariant{Kind: "receipt_dead_letter", OutboxID: failed.ID, FounderID: failed.FounderID,
+				IntentID: failed.IntentID, AttemptCount: failed.AttemptCount + 1, Detail: detail})
+		}
+	} else {
+		failErr = relay.source.DeferReceiptClaim(ctx, failed.ID, failed.ClaimToken, detail, relay.backoff)
 	}
 	var releaseErr error
 	for _, item := range items[failedIndex+1:] {

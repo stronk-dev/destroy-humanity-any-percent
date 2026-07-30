@@ -356,3 +356,19 @@ Findings (fix queue):
 - The Go outbox insertion uses PostgreSQL's exact `jsonb::text` byte count in an insert-select, the
   same representation as the database CHECK. A real-Postgres fixture is compact under 60 KiB but
   expands beyond it as jsonb text and is rejected before any row mutation.
+
+## 2026-07-30 — relay poison/transient separation
+
+- Closed the remaining failure-kind-blind dead-letter finding. `ErrInvalidPolicy` is the relay's
+  deterministic envelope-policy failure and consumes the bounded five-attempt poison budget.
+  Publisher availability failures and acknowledgement-store failures are transient: they retain
+  the failed Founder head's claim for a fixed one-second backoff, persist `last_error`, and do not
+  increment `attempt_count` or emit a dead-letter invariant.
+- The rest of a failed batch is released immediately. The store's existing oldest-pending-row rule
+  keeps later receipts for the deferred Founder blocked while allowing other Founders to progress.
+- Added unit coverage for transient publish and acknowledgement paths and deterministic poison
+  exhaustion. The real-Postgres integration test proves a transient deferral advances
+  `claimed_until` while leaving `attempt_count = 0`, then proves the same row can be reclaimed after
+  lease expiry alongside the established five-attempt dead-letter ordering fixture.
+- Verification: focused `./transport ./save`, full Compose Postgres integration, and transport
+  `-race` all pass through repository-root commands.
