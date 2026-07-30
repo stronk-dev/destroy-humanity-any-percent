@@ -268,3 +268,23 @@ this entry closes the record.
   in-flight frame followed by revision 8, never revisions 2–7; the stalled-player test repeatedly
   reaches close code 4000 after filling 64 queued messages while total bytes remain far below the
   1 MiB limit. The focused transport suite and `go vet ./...` are green.
+
+## 2026-07-30 — MEDIUM/LOW remediation: ordered relay, poison rows, complete drain
+
+- Outbox claim now returns only the oldest unpublished/non-dead row per Founder and sorts SQL's
+  unordered `UPDATE ... RETURNING` result by identity. Parallel workers therefore cannot claim a
+  later Founder receipt while an earlier row is locked, leased, or retrying.
+- Publish and acknowledgement failures share one path: increment the failed head's attempt count,
+  release every untouched row from the batch immediately, and return the joined error. After five
+  deterministic failures the row receives `dead_lettered_at` and the required invariant sink gets
+  one `receipt_dead_letter` report with Founder/intent/outbox identity. Pending readiness excludes
+  dead letters, so one poison payload cannot hold the service unavailable forever.
+- Added the application and Postgres 60-KiB receipt limit beneath the 64-KiB envelope cap. The real
+  Postgres test demonstrates A1/A2/B1 ordering, attempt persistence across leases, fifth-attempt
+  dead-lettering, B1 progress afterward, and both size guards.
+- Drain now broadcasts before closing admission, but a broadcast error still begins draining,
+  stops the relay, closes sockets, and invokes shutdown under the same 15-second context. The
+  duplicate exported `Node.Drain` sequence was removed. Rev-0 courtesy messages bypass history;
+  a real WebSocket reconnect proves the system frame is delivered live and never replayed.
+- Focused save/transport/gameserver suites and `go vet ./...` are green; full Postgres and
+  repository verification follow after the remediation commit.

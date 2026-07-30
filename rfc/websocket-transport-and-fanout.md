@@ -103,3 +103,6 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
 - 2026-07-29: accepted by the ordered Codex batch manifest; implementation started after the account, Prestige, and epoch-pinning foundations landed.
 - 2026-07-30: D2 remediation wires the player message-count and world drop-stale disciplines into
   Centrifuge's live transport-write path; Centrifuge remains the sole byte-queue and history owner.
+- 2026-07-30: relay/drain remediation enforces per-Founder outbox heads, bounded poison-row
+  dead-lettering, whole-remainder claim release, live-only drain courtesy, and shutdown on every
+  broadcast outcome.

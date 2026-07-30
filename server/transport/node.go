@@ -237,14 +237,6 @@ func (n *Node) Publish(envelope Envelope) error {
 	return err
 }
 
-func (n *Node) Drain(ctx context.Context, constantsHash string, now time.Time) error {
-	if err := n.BroadcastDrain(constantsHash, now); err != nil {
-		return err
-	}
-	n.CloseForDrain()
-	return n.Shutdown(ctx)
-}
-
 func (n *Node) BroadcastDrain(constantsHash string, now time.Time) error {
 	if !hashPattern.MatchString(constantsHash) || now.IsZero() {
 		return ErrInvalidNode
@@ -260,7 +252,9 @@ func (n *Node) BroadcastDrain(constantsHash string, now time.Time) error {
 		if err != nil {
 			return err
 		}
-		if _, err := n.node.Publish(channel, data, n.publishOptions(channel)...); err != nil {
+		// Courtesy messages carry no save revision and must never enter
+		// recoverable history, where rev 0 would violate reconciliation.
+		if _, err := n.node.Publish(channel, data); err != nil {
 			return err
 		}
 	}

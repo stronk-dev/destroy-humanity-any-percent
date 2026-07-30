@@ -134,6 +134,12 @@ events, and receipt commit together. A deterministic terminal rejection stores o
 revision conflicts and internal failures store nothing. The store exposes time-cutoff pruning for
 the deployment scheduler's 30-day idempotency retention policy.
 
+That same transaction inserts the normalized receipt into the transport outbox. Persistence
+enforces a 60-KiB receipt ceiling, per-Founder head ordering, leased claims, an attempt counter, and
+an immutable dead-letter timestamp after the relay's fifth deterministic failure. Dead letters stay
+queryable as operational evidence but no longer count as pending readiness work; successful rows
+retain their publication timestamp.
+
 An intent id is bound to the canonical hash of its first recorded terminal or applied request for
 that retention window. Replaying the identical request returns the original normalized receipt;
 correcting a payload under the same id returns `idempotency_conflict`. A corrected payload is a

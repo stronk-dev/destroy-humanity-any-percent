@@ -102,12 +102,15 @@ func (server *Server) Drain(ctx context.Context, now time.Time) error {
 		return ErrInvalidServer
 	}
 	server.ready.Store(false)
-	zero := server.gate.beginDrain()
-	if err := server.realtime.BroadcastDrain(server.constantsHash, now.UTC()); err != nil {
-		return err
-	}
 	drainContext, cancel := context.WithTimeout(ctx, server.realtime.DrainTimeout())
 	defer cancel()
+	if err := server.realtime.BroadcastDrain(server.constantsHash, now.UTC()); err != nil {
+		server.gate.beginDrain()
+		server.stopRelay()
+		server.realtime.CloseForDrain()
+		return errors.Join(err, server.realtime.Shutdown(drainContext))
+	}
+	zero := server.gate.beginDrain()
 	select {
 	case <-zero:
 	case <-drainContext.Done():

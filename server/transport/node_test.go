@@ -204,6 +204,39 @@ func TestActualWebsocketRecoveryReplaysPrivateReceiptsAndLatestWorld(t *testing.
 	}
 }
 
+func TestDrainCourtesyMessageIsLiveOnlyNotRecoverableHistory(t *testing.T) {
+	node := testNode(t)
+	server := testhttp.New(node.Handler())
+	defer server.Close()
+	endpoint := "ws" + strings.TrimPrefix(server.URL, "http")
+	connection := dialAuthenticated(t, endpoint, server.Client)
+	writeCommand(t, connection, map[string]any{"id": 2, "subscribe": map[string]any{"channel": "player:founder"}})
+	initial := decodeSubscribe(t, readReply(t, connection).Subscribe)
+	publishReceipt(t, node, 1)
+	receipt := readPush(t, connection)
+	if receipt.Publication == nil || receipt.Publication.Offset == 0 {
+		t.Fatalf("receipt=%+v", receipt)
+	}
+	if err := node.BroadcastDrain("sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", time.Now().UTC()); err != nil {
+		t.Fatal(err)
+	}
+	courtesy := readPush(t, connection)
+	if courtesy.Publication == nil || courtesy.Publication.Offset != 0 || envelopeKind(t, courtesy.Publication.Data) != "system" {
+		t.Fatalf("courtesy=%+v", courtesy)
+	}
+	_ = connection.CloseNow()
+
+	reconnected := dialAuthenticated(t, endpoint, server.Client)
+	defer reconnected.CloseNow()
+	writeCommand(t, reconnected, map[string]any{"id": 2, "subscribe": map[string]any{
+		"channel": "player:founder", "recover": true, "epoch": initial.Epoch, "offset": receipt.Publication.Offset,
+	}})
+	recovered := decodeSubscribe(t, readReply(t, reconnected).Subscribe)
+	if !recovered.Recovered || !recovered.WasRecovering || len(recovered.Publications) != 0 {
+		t.Fatalf("courtesy entered recovery history: %+v", recovered)
+	}
+}
+
 func TestActualSlowPrivateConsumerClosesWithQueueOverflowCode(t *testing.T) {
 	policy := phase0Policy(t)
 	// Keep the byte bound far above this test's total payload. The disconnect
@@ -474,4 +507,15 @@ func envelopeRevision(t *testing.T, data json.RawMessage) int64 {
 		t.Fatalf("decode envelope %s: %v", data, err)
 	}
 	return envelope.Revision
+}
+
+func envelopeKind(t *testing.T, data json.RawMessage) string {
+	t.Helper()
+	var envelope struct {
+		Kind string `json:"kind"`
+	}
+	if err := json.Unmarshal(data, &envelope); err != nil {
+		t.Fatalf("decode envelope %s: %v", data, err)
+	}
+	return envelope.Kind
 }

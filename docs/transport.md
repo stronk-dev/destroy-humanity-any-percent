@@ -55,11 +55,16 @@ clients with code 4003, and shuts down under the caller's context.
 Every new Company intent record inserts its exact normalized receipt into
 `transport_receipt_outbox` in the same database transaction as the rejection or new save revision;
 an Exit inserts against the new run's authoritative revision. Idempotent replay does not create a
-second row. Relay workers claim ordered batches with expiring leases and `SKIP LOCKED`, publish the
-receipt unchanged to `player:{founder_id}`, then acknowledge it. Failed publication releases its
-claim immediately. A crash after publication but before acknowledgement may redeliver the same
-receipt, which is safe because intent identity and revision reconciliation are already idempotent;
-a crash before publication cannot lose it.
+second row. Receipts above 60 KiB are rejected at both the application and database boundaries,
+leaving room for the closed 64-KiB transport envelope. Relay workers claim at most the oldest
+pending row per Founder with expiring leases and `SKIP LOCKED`, sort the returned batch by outbox
+identity, publish the receipt unchanged to `player:{founder_id}`, then acknowledge it. On publish or
+acknowledgement failure the failed row records an attempt and every unprocessed claim is released;
+newer rows for that Founder remain ineligible until the head is published or dead-lettered. Five
+deterministic failures dead-letter the row and emit a `receipt_dead_letter` invariant report, so a
+poison receipt cannot pin readiness forever. A crash after publication but before acknowledgement
+may redeliver the same receipt, which is safe because intent identity and revision reconciliation
+are already idempotent; a crash before publication cannot lose it.
 
 The embedded node sets Centrifuge's process-wide slow-writer policy once, before any node runs, so
 its bounded byte queue closes stalled clients with application code 4000 rather than the library's
@@ -68,6 +73,9 @@ generic code. Channel namespace metrics use only the bounded labels `world`, `fe
 channel metadata required by the transport-write guard. The acceptance soak holds 5,000
 authenticated in-memory WebSocket connections on one node at 10 Hz and inspects 50,000 public
 envelopes; no click-shaped publication can enter `world`.
+Drain courtesy messages deliberately bypass recoverable history because their revision is zero.
+The gameserver broadcasts first, then closes intent admission; every exit branch—including a failed
+broadcast—closes sockets and shuts down under the same bounded context.
 
 The runnable `cmd/gameserver` wiring and event/snapshot relays remain implementing; this document
 does not claim those paths exist yet.

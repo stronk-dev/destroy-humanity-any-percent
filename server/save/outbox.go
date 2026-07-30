@@ -6,7 +6,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sort"
+	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 type ReceiptOutboxItem struct {
@@ -19,11 +22,14 @@ type ReceiptOutboxItem struct {
 	ConstantsHash string
 	Receipt       json.RawMessage
 	OccurredAt    time.Time
+	AttemptCount  int
 }
+
+const MaxReceiptOutboxBytes = 60 * 1024
 
 func insertReceiptOutbox(ctx context.Context, tx *sql.Tx, founderID, companyStreamID, intentID string, revision int64, constantsHash string, receipt json.RawMessage) error {
 	if tx == nil || !uuidPattern.MatchString(founderID) || !uuidPattern.MatchString(companyStreamID) || !uuidV7Pattern.MatchString(intentID) ||
-		revision < 1 || !hashPattern.MatchString(constantsHash) || len(receipt) == 0 {
+		revision < 1 || !hashPattern.MatchString(constantsHash) || len(receipt) == 0 || len(receipt) > MaxReceiptOutboxBytes {
 		return ErrInvalidStream
 	}
 	_, err := tx.ExecContext(ctx, `
@@ -39,8 +45,15 @@ func (s *Store) ClaimReceiptOutbox(ctx context.Context, limit int, lease time.Du
 	rows, err := s.db.QueryContext(ctx, `
 		WITH selected AS (
 			SELECT outbox_id
-			FROM transport_receipt_outbox
-			WHERE published_at IS NULL AND (claimed_until IS NULL OR claimed_until <= clock_timestamp())
+			FROM transport_receipt_outbox AS candidate
+			WHERE published_at IS NULL AND dead_lettered_at IS NULL
+			  AND (claimed_until IS NULL OR claimed_until <= clock_timestamp())
+			  AND NOT EXISTS (
+			    SELECT 1 FROM transport_receipt_outbox AS earlier
+			    WHERE earlier.founder_id=candidate.founder_id
+			      AND earlier.published_at IS NULL AND earlier.dead_lettered_at IS NULL
+			      AND earlier.outbox_id<candidate.outbox_id
+			  )
 			ORDER BY outbox_id
 			FOR UPDATE SKIP LOCKED
 			LIMIT $1
@@ -50,7 +63,8 @@ func (s *Store) ClaimReceiptOutbox(ctx context.Context, limit int, lease time.Du
 		FROM selected
 		WHERE outbox.outbox_id=selected.outbox_id
 		RETURNING outbox.outbox_id,outbox.claim_token,outbox.founder_id,outbox.company_stream_id,
-		          outbox.intent_id,outbox.revision,outbox.constants_hash,outbox.receipt,outbox.occurred_at`, limit, intervalLiteral(lease))
+		          outbox.intent_id,outbox.revision,outbox.constants_hash,outbox.receipt,outbox.occurred_at,
+		          outbox.attempt_count`, limit, intervalLiteral(lease))
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +73,7 @@ func (s *Store) ClaimReceiptOutbox(ctx context.Context, limit int, lease time.Du
 	for rows.Next() {
 		var item ReceiptOutboxItem
 		if err := rows.Scan(&item.ID, &item.ClaimToken, &item.FounderID, &item.CompanyStream, &item.IntentID,
-			&item.Revision, &item.ConstantsHash, &item.Receipt, &item.OccurredAt); err != nil {
+			&item.Revision, &item.ConstantsHash, &item.Receipt, &item.OccurredAt, &item.AttemptCount); err != nil {
 			return nil, err
 		}
 		normalized, err := normalizeJSON(item.Receipt)
@@ -70,7 +84,11 @@ func (s *Store) ClaimReceiptOutbox(ctx context.Context, limit int, lease time.Du
 		item.OccurredAt = item.OccurredAt.UTC()
 		items = append(items, item)
 	}
-	return items, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	sort.Slice(items, func(left, right int) bool { return items[left].ID < items[right].ID })
+	return items, nil
 }
 
 func (s *Store) MarkReceiptPublished(ctx context.Context, id int64, claimToken string) error {
@@ -114,13 +132,34 @@ func (s *Store) ReleaseReceiptClaim(ctx context.Context, id int64, claimToken st
 	return nil
 }
 
+func (s *Store) FailReceiptClaim(ctx context.Context, id int64, claimToken, detail string, maxAttempts int) (bool, error) {
+	detail = strings.TrimSpace(detail)
+	if id < 1 || !uuidPattern.MatchString(claimToken) || detail == "" || !utf8.ValidString(detail) || utf8.RuneCountInString(detail) > 512 || maxAttempts < 1 || maxAttempts > 1000 {
+		return false, ErrInvalidStream
+	}
+	var dead bool
+	err := s.db.QueryRowContext(ctx, `
+		UPDATE transport_receipt_outbox
+		SET attempt_count=attempt_count+1,
+		    last_error=$3,
+		    dead_lettered_at=CASE WHEN attempt_count+1 >= $4 THEN clock_timestamp() ELSE NULL END,
+		    claim_token=NULL,
+		    claimed_until=NULL
+		WHERE outbox_id=$1 AND claim_token=$2 AND published_at IS NULL AND dead_lettered_at IS NULL
+		RETURNING dead_lettered_at IS NOT NULL`, id, claimToken, detail, maxAttempts).Scan(&dead)
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, ErrConflict
+	}
+	return dead, err
+}
+
 func intervalLiteral(duration time.Duration) string {
 	return fmt.Sprintf("%d milliseconds", duration.Milliseconds())
 }
 
 func (s *Store) PendingReceiptCount(ctx context.Context) (int64, error) {
 	var count int64
-	err := s.db.QueryRowContext(ctx, `SELECT count(*) FROM transport_receipt_outbox WHERE published_at IS NULL`).Scan(&count)
+	err := s.db.QueryRowContext(ctx, `SELECT count(*) FROM transport_receipt_outbox WHERE published_at IS NULL AND dead_lettered_at IS NULL`).Scan(&count)
 	if errors.Is(err, sql.ErrNoRows) {
 		return 0, nil
 	}

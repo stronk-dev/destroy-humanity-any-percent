@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -32,10 +33,11 @@ func (epochs fakeEpochs) Sync(context.Context) (string, error) {
 func syncedEpochs() fakeEpochs { return fakeEpochs{hash: testConstantsHash} }
 
 type fakeRealtime struct {
-	mu          sync.Mutex
-	events      []string
-	broadcasted chan struct{}
-	timeout     time.Duration
+	mu           sync.Mutex
+	events       []string
+	broadcasted  chan struct{}
+	broadcastErr error
+	timeout      time.Duration
 }
 
 func (realtime *fakeRealtime) Run() error            { realtime.record("run"); return nil }
@@ -47,7 +49,7 @@ func (realtime *fakeRealtime) BroadcastDrain(_ string, _ time.Time) error {
 	default:
 		close(realtime.broadcasted)
 	}
-	return nil
+	return realtime.broadcastErr
 }
 func (realtime *fakeRealtime) CloseForDrain() { realtime.record("close") }
 func (realtime *fakeRealtime) Shutdown(context.Context) error {
@@ -168,6 +170,18 @@ func TestDrainDeadlineStillClosesSockets(t *testing.T) {
 	}
 	if events := realtime.snapshot(); len(events) != 3 || events[0] != "broadcast" || events[1] != "close" || events[2] != "shutdown" {
 		t.Fatalf("deadline drain events=%v", events)
+	}
+}
+
+func TestDrainBroadcastFailureStillClosesSockets(t *testing.T) {
+	realtime := &fakeRealtime{broadcasted: make(chan struct{}), broadcastErr: errors.New("broadcast unavailable"), timeout: time.Second}
+	server, _ := New(fakeDatabase{}, http.NotFoundHandler(), realtime, &fakeRelay{}, syncedEpochs(), testConstantsHash)
+	err := server.Drain(context.Background(), time.Now().UTC())
+	if err == nil || !strings.Contains(err.Error(), "broadcast unavailable") {
+		t.Fatalf("drain err=%v", err)
+	}
+	if events := realtime.snapshot(); len(events) != 3 || events[0] != "broadcast" || events[1] != "close" || events[2] != "shutdown" {
+		t.Fatalf("broadcast failure events=%v", events)
 	}
 }
 
