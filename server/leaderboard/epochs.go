@@ -229,10 +229,10 @@ func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochsee
 	default:
 		return ErrInvalidEpoch
 	}
-	if err := insertCatalogSet(ctx, tx, bundle.Hash, normalized); err != nil {
+	if err := insertDeclaredEpochHashes(ctx, tx, currentSeed); err != nil {
 		return err
 	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2) ON CONFLICT DO NOTHING`, currentSeed.ID, bundle.Hash); err != nil {
+	if err := insertCatalogSet(ctx, tx, bundle.Hash, normalized); err != nil {
 		return err
 	}
 	hashes, err := loadEpochHashes(ctx, tx, currentSeed.ID)
@@ -240,6 +240,18 @@ func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochsee
 		return ErrInvalidEpoch
 	}
 	return tx.Commit()
+}
+
+func insertDeclaredEpochHashes(ctx context.Context, tx *sql.Tx, declared epochseed.Epoch) error {
+	for _, hash := range declared.AcceptedHashes {
+		if _, err := tx.ExecContext(ctx, `INSERT INTO catalog_sets(constants_hash) VALUES($1) ON CONFLICT DO NOTHING`, hash); err != nil {
+			return err
+		}
+		if _, err := tx.ExecContext(ctx, `INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2) ON CONFLICT DO NOTHING`, declared.ID, hash); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func bootstrapEpochHistory(ctx context.Context, tx *sql.Tx, seed epochseed.Seed, currentStartedAt time.Time) error {
@@ -262,10 +274,8 @@ func bootstrapEpochHistory(ctx context.Context, tx *sql.Tx, seed epochseed.Seed,
 			declared.ID, declared.Name, startedAt, endedAt, declared.ChangelogRef); err != nil {
 			return err
 		}
-		for _, hash := range declared.AcceptedHashes {
-			if _, err := tx.ExecContext(ctx, `INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)`, declared.ID, hash); err != nil {
-				return err
-			}
+		if err := insertDeclaredEpochHashes(ctx, tx, declared); err != nil {
+			return err
 		}
 	}
 	return advanceEpochSequence(ctx, tx, seed.CurrentEpochID)
