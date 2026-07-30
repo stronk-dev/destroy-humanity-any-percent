@@ -24,9 +24,12 @@ curated events/presence/system messages. Consequently a per-click receipt cannot
 channel through the generic publisher. Unknown future kinds remain client-ignored before payload
 interpretation as the version-1 forward-compatibility rule requires.
 
-Connection queues implement the two distinct loss rules: `world` is a gauge and replaces its stale
-queued value, while private receipts remain ordered and lossless until the declared bound; overflow
-returns the typed queue-overflow condition so the socket layer closes with code 4000. History uses
+The live Centrifuge writer is wrapped by an application-owned queue discipline. Its byte queue is
+the first bound. A separate per-connection counter enforces the declared private-player message
+bound; receipts remain ordered and lossless until either bound is reached, then the socket closes
+with code 4000. `world` is a gauge: each flushed revision marks the newest value for every current
+subscriber, and the transport-write hook discards older queued snapshots while preserving any
+frame already in flight. Centrifuge's own history is the sole history implementation and provides
 monotonic per-channel offsets. Player recovery fails explicitly outside its count/TTL window,
 causing the one full-state resync path; world recovery returns only the latest snapshot.
 
@@ -60,8 +63,11 @@ a crash before publication cannot lose it.
 
 The embedded node sets Centrifuge's process-wide slow-writer policy once, before any node runs, so
 its bounded byte queue closes stalled clients with application code 4000 rather than the library's
-generic code. The acceptance soak holds 5,000 authenticated in-memory WebSocket connections on one
-node at 10 Hz and inspects 50,000 public envelopes; no click-shaped publication can enter `world`.
+generic code. Channel namespace metrics use only the bounded labels `world`, `feed`, `player`,
+`guild`, `cohort`, `match`, and `other`; enabling that classifier also makes Centrifuge retain the
+channel metadata required by the transport-write guard. The acceptance soak holds 5,000
+authenticated in-memory WebSocket connections on one node at 10 Hz and inspects 50,000 public
+envelopes; no click-shaped publication can enter `world`.
 
 The runnable `cmd/gameserver` wiring and event/snapshot relays remain implementing; this document
 does not claim those paths exist yet.

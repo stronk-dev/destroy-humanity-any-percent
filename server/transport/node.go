@@ -40,6 +40,8 @@ type Node struct {
 	worldMu       sync.Mutex
 	worldPending  []byte
 	worldRevision uint64
+	queueMu       sync.Mutex
+	queues        map[string]*ConnectionQueue
 
 	startOnce sync.Once
 	stopOnce  sync.Once
@@ -64,16 +66,40 @@ func NewNode(policy Policy, auth Authenticator, memberships Memberships) (*Node,
 		ClientChannelLimit:             policy.SubscriptionsPerConnection,
 		RecoveryMaxPublicationLimit:    policy.PlayerHistorySize,
 		HistoryMaxPublicationLimit:     policy.PlayerHistorySize,
+		// Centrifuge only retains queue-item channel metadata when namespace
+		// metrics are enabled. The live queue discipline needs that metadata at
+		// OnTransportWrite, so this bounded classifier is part of correctness as
+		// well as observability. It never returns founder/guild/match IDs.
+		Metrics: centrifuge.MetricsConfig{GetChannelNamespaceLabel: channelNamespaceLabel},
 	})
 	if err != nil {
 		return nil, err
 	}
-	result := &Node{policy: policy, auth: auth, memberships: memberships, node: engine, stop: make(chan struct{}), done: make(chan struct{})}
+	result := &Node{policy: policy, auth: auth, memberships: memberships, node: engine, queues: map[string]*ConnectionQueue{}, stop: make(chan struct{}), done: make(chan struct{})}
 	result.bindHandlers()
 	return result, nil
 }
 
 func (n *Node) bindHandlers() {
+	n.node.OnTransportWrite(func(client *centrifuge.Client, event centrifuge.TransportWriteEvent) bool {
+		n.queueMu.Lock()
+		queue := n.queues[client.ID()]
+		n.queueMu.Unlock()
+		if queue == nil {
+			return true
+		}
+		switch {
+		case event.Channel == "world":
+			kind, revision, ok := publicationEnvelopeMetadata(event.Data)
+			if !ok || kind != "snapshot" {
+				return true
+			}
+			return queue.AllowWorldWrite(revision)
+		case isPlayerChannel(event.Channel):
+			queue.FinishPlayer()
+		}
+		return true
+	})
 	n.node.OnConnecting(func(ctx context.Context, event centrifuge.ConnectEvent) (centrifuge.ConnectReply, error) {
 		if event.Token == "" {
 			return centrifuge.ConnectReply{}, disconnectAuthExpired
@@ -94,6 +120,20 @@ func (n *Node) bindHandlers() {
 	})
 
 	n.node.OnConnect(func(client *centrifuge.Client) {
+		queue, _ := NewConnectionQueue(n.policy)
+		n.queueMu.Lock()
+		n.queues[client.ID()] = queue
+		n.queueMu.Unlock()
+		client.OnDisconnect(func(_ centrifuge.DisconnectEvent) {
+			n.queueMu.Lock()
+			delete(n.queues, client.ID())
+			n.queueMu.Unlock()
+		})
+		client.OnUnsubscribe(func(event centrifuge.UnsubscribeEvent) {
+			if isPlayerChannel(event.Channel) {
+				queue.ResetPlayer()
+			}
+		})
 		n.replaceOldestConnections(client)
 		client.OnSubscribe(func(event centrifuge.SubscribeEvent, callback centrifuge.SubscribeCallback) {
 			identity, ok := identityFromClient(client)
@@ -165,7 +205,35 @@ func (n *Node) Publish(envelope Envelope) error {
 		n.worldMu.Unlock()
 		return nil
 	}
+	type playerReservation struct {
+		client *centrifuge.Client
+		queue  *ConnectionQueue
+	}
+	queuedFor := []playerReservation{}
+	if isPlayerChannel(envelope.Channel) {
+		for _, client := range n.node.Hub().Connections() {
+			if !client.IsSubscribed(envelope.Channel) {
+				continue
+			}
+			n.queueMu.Lock()
+			queue := n.queues[client.ID()]
+			n.queueMu.Unlock()
+			if queue == nil {
+				continue
+			}
+			if err := queue.ReservePlayer(); err != nil {
+				client.Disconnect(disconnectQueueFull)
+				continue
+			}
+			queuedFor = append(queuedFor, playerReservation{client: client, queue: queue})
+		}
+	}
 	_, err = n.node.Publish(envelope.Channel, data, n.publishOptions(envelope.Channel)...)
+	for _, reserved := range queuedFor {
+		if err != nil || !reserved.client.IsSubscribed(envelope.Channel) {
+			reserved.queue.FinishPlayer()
+		}
+	}
 	return err
 }
 
@@ -245,9 +313,51 @@ func (n *Node) flushWorld() {
 	if len(data) == 0 {
 		return
 	}
-	_, _ = n.node.Publish("world", data,
+	type reservation struct {
+		queue    *ConnectionQueue
+		previous int64
+	}
+	reservations := []reservation{}
+	for _, client := range n.node.Hub().Connections() {
+		if !client.IsSubscribed("world") {
+			continue
+		}
+		n.queueMu.Lock()
+		queue := n.queues[client.ID()]
+		n.queueMu.Unlock()
+		if queue != nil {
+			reservations = append(reservations, reservation{queue: queue, previous: queue.ReserveWorld(int64(revision))})
+		}
+	}
+	_, err := n.node.Publish("world", data,
 		centrifuge.WithHistory(1, time.Duration(n.policy.PlayerHistoryTTLMS)*time.Millisecond),
 		centrifuge.WithVersion(revision, kernel.Version))
+	if err != nil {
+		for _, reserved := range reservations {
+			reserved.queue.RollbackWorld(int64(revision), reserved.previous)
+		}
+	}
+}
+
+func publicationEnvelopeMetadata(data []byte) (string, int64, bool) {
+	var frame struct {
+		Push struct {
+			Publication struct {
+				Data json.RawMessage `json:"data"`
+			} `json:"pub"`
+		} `json:"push"`
+	}
+	if err := json.Unmarshal(data, &frame); err != nil || len(frame.Push.Publication.Data) == 0 {
+		return "", 0, false
+	}
+	var envelope struct {
+		Kind     string `json:"kind"`
+		Revision int64  `json:"rev"`
+	}
+	if err := json.Unmarshal(frame.Push.Publication.Data, &envelope); err != nil || envelope.Kind == "" || envelope.Revision < 0 {
+		return "", 0, false
+	}
+	return envelope.Kind, envelope.Revision, true
 }
 
 func (n *Node) publishOptions(channel string) []centrifuge.PublishOption {
@@ -314,4 +424,21 @@ func identityFromClient(client *centrifuge.Client) (Identity, bool) {
 		return Identity{}, false
 	}
 	return identity, true
+}
+
+func channelNamespaceLabel(channel string) string {
+	switch {
+	case channel == "world", channel == "feed":
+		return channel
+	case isPlayerChannel(channel):
+		return "player"
+	case strings.HasPrefix(channel, "guild:"):
+		return "guild"
+	case strings.HasPrefix(channel, "cohort:"):
+		return "cohort"
+	case strings.HasPrefix(channel, "match:"):
+		return "match"
+	default:
+		return "other"
+	}
 }

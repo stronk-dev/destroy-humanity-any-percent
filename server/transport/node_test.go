@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -127,6 +128,14 @@ func TestWorldPublishesAreCoalescedAtConfiguredRate(t *testing.T) {
 	}
 }
 
+func TestPublicationEnvelopeMetadata(t *testing.T) {
+	data := []byte(`{"push":{"channel":"world","pub":{"data":{"v":1,"ch":"world","kind":"snapshot","rev":42}}}}`)
+	kind, revision, ok := publicationEnvelopeMetadata(data)
+	if !ok || kind != "snapshot" || revision != 42 {
+		t.Fatalf("kind=%q revision=%d ok=%v", kind, revision, ok)
+	}
+}
+
 func TestActualWebsocketRecoveryReplaysPrivateReceiptsAndLatestWorld(t *testing.T) {
 	node := testNode(t)
 	server := testhttp.New(node.Handler())
@@ -197,7 +206,9 @@ func TestActualWebsocketRecoveryReplaysPrivateReceiptsAndLatestWorld(t *testing.
 
 func TestActualSlowPrivateConsumerClosesWithQueueOverflowCode(t *testing.T) {
 	policy := phase0Policy(t)
-	policy.PlayerQueueBytes = 65_536
+	// Keep the byte bound far above this test's total payload. The disconnect
+	// must come from the independent application message-count bound.
+	policy.PlayerQueueBytes = 1_048_576
 	now := time.Now().UTC()
 	node, err := NewNode(policy, staticAuthenticator{claims: account.Claims{
 		Subject: "account", FounderID: "founder", IssuedAt: now.Add(-time.Minute).Unix(), ExpiresAt: now.Add(time.Hour).Unix(), TokenID: "token",
@@ -225,12 +236,18 @@ func TestActualSlowPrivateConsumerClosesWithQueueOverflowCode(t *testing.T) {
 	writeCommand(t, connection, map[string]any{"id": 2, "subscribe": map[string]any{"channel": "player:founder"}})
 	_ = readReply(t, connection)
 
-	padding := strings.Repeat("x", 32_000)
-	for revision := int64(1); revision <= 10; revision++ {
+	padding := strings.Repeat("x", 256)
+	for revision := int64(1); revision <= int64(policy.PlayerQueueMessages)+2; revision++ {
 		payload, _ := json.Marshal(map[string]any{"outcome": "applied", "padding": padding})
 		if err := node.Publish(Envelope{Version: WireVersion, Channel: "player:founder", Kind: "receipt", Revision: revision,
 			ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Timestamp: time.Now().UTC(), Payload: payload}); err != nil {
 			t.Fatal(err)
+		}
+		if revision == 1 {
+			// Let the transport writer take the first publication. The in-flight
+			// write is not queued; the next 64 publications fill the declared
+			// message-count bound and the final one must disconnect.
+			time.Sleep(10 * time.Millisecond)
 		}
 	}
 	deadline := time.Now().Add(time.Second)
@@ -242,7 +259,7 @@ func TestActualSlowPrivateConsumerClosesWithQueueOverflowCode(t *testing.T) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	for reads := 0; reads < 3; reads++ {
+	for reads := 0; reads < policy.PlayerQueueMessages+3; reads++ {
 		_, _, err = connection.Read(ctx)
 		if err != nil {
 			break
@@ -250,6 +267,79 @@ func TestActualSlowPrivateConsumerClosesWithQueueOverflowCode(t *testing.T) {
 	}
 	if websocket.CloseStatus(err) != CloseQueueOverflow {
 		t.Fatalf("close status=%d err=%v", websocket.CloseStatus(err), err)
+	}
+}
+
+func TestActualStalledWorldConsumerSkipsQueuedStaleSnapshots(t *testing.T) {
+	policy := phase0Policy(t)
+	policy.WorldHz = 10
+	policy.PlayerQueueBytes = 1_048_576
+	now := time.Now().UTC()
+	node, err := NewNode(policy, staticAuthenticator{claims: account.Claims{
+		Subject: "account", FounderID: "founder", IssuedAt: now.Add(-time.Minute).Unix(), ExpiresAt: now.Add(time.Hour).Unix(), TokenID: "token",
+	}}, testMemberships{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := node.Run(); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+		_ = node.Shutdown(ctx)
+	}()
+	server := testhttp.New(node.Handler())
+	defer server.Close()
+	endpoint := "ws" + strings.TrimPrefix(server.URL, "http")
+	connection := dialAuthenticated(t, endpoint, server.Client)
+	defer connection.CloseNow()
+	connection.SetReadLimit(int64(policy.PlayerQueueBytes * 2))
+	writeCommand(t, connection, map[string]any{"id": 2, "subscribe": map[string]any{"channel": "world"}})
+	_ = readReply(t, connection)
+
+	padding := strings.Repeat("x", 32_000)
+	for revision := int64(1); revision <= 8; revision++ {
+		payload, _ := json.Marshal(map[string]any{
+			"scope": "world",
+			"rev":   revision,
+			"state": map[string]any{"revision": revision, "padding": padding},
+		})
+		if err := node.Publish(Envelope{Version: WireVersion, Channel: "world", Kind: "snapshot", Revision: revision,
+			ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Timestamp: time.Now().UTC(), Payload: payload}); err != nil {
+			t.Fatal(err)
+		}
+		time.Sleep(110 * time.Millisecond)
+	}
+
+	revisions := []int64{}
+	for {
+		ctx, cancel := context.WithTimeout(context.Background(), 150*time.Millisecond)
+		_, data, readErr := connection.Read(ctx)
+		cancel()
+		if readErr != nil {
+			if errors.Is(readErr, context.DeadlineExceeded) {
+				break
+			}
+			t.Fatal(readErr)
+		}
+		decoder := json.NewDecoder(bytes.NewReader(data))
+		for decoder.More() {
+			var reply protocolPushReply
+			if err := decoder.Decode(&reply); err != nil || reply.Push == nil || reply.Push.Publication == nil {
+				t.Fatalf("decode push batch: %v", err)
+			}
+			revisions = append(revisions, envelopeRevision(t, reply.Push.Publication.Data))
+		}
+	}
+	if len(revisions) == 0 || revisions[len(revisions)-1] != 8 {
+		t.Fatalf("latest world revision missing: %v", revisions)
+	}
+	if len(revisions) > 2 {
+		t.Fatalf("stale queued world revisions leaked: %v", revisions)
+	}
+	if len(revisions) == 2 && revisions[0] >= 8 {
+		t.Fatalf("only the in-flight and newest queued snapshots may arrive: %v", revisions)
 	}
 }
 

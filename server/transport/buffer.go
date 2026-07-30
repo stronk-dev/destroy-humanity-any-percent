@@ -7,58 +7,68 @@ import (
 
 var ErrQueueOverflow = errors.New("transport receipt queue overflow")
 
-type QueuedMessage struct {
-	Channel string
-	Kind    string
-	Data    []byte
-}
-
+// ConnectionQueue is the application-owned discipline layered over
+// Centrifuge's byte-bounded writer. It enforces the second independent player
+// bound (message count) and marks all but the newest queued world revision
+// stale at the transport-write hook.
 type ConnectionQueue struct {
-	mu       sync.Mutex
-	messages []QueuedMessage
-	bytes    int
-	maxCount int
-	maxBytes int
+	mu                  sync.Mutex
+	privatePending      int
+	maxPrivateMessages  int
+	latestWorldRevision int64
 }
 
 func NewConnectionQueue(policy Policy) (*ConnectionQueue, error) {
 	if !policy.valid() {
 		return nil, ErrInvalidPolicy
 	}
-	return &ConnectionQueue{maxCount: policy.PlayerQueueMessages, maxBytes: policy.PlayerQueueBytes}, nil
+	return &ConnectionQueue{maxPrivateMessages: policy.PlayerQueueMessages}, nil
 }
 
-func (queue *ConnectionQueue) Enqueue(message QueuedMessage) error {
-	if message.Channel == "" || !knownKind(message.Kind) || len(message.Data) == 0 {
-		return ErrInvalidPolicy
-	}
+func (queue *ConnectionQueue) ReservePlayer() error {
 	queue.mu.Lock()
 	defer queue.mu.Unlock()
-	if message.Channel == "world" {
-		for index := len(queue.messages) - 1; index >= 0; index-- {
-			if queue.messages[index].Channel == "world" {
-				nextBytes := queue.bytes - len(queue.messages[index].Data) + len(message.Data)
-				if nextBytes > queue.maxBytes {
-					return ErrQueueOverflow
-				}
-				queue.messages[index] = QueuedMessage{Channel: message.Channel, Kind: message.Kind, Data: append([]byte(nil), message.Data...)}
-				queue.bytes = nextBytes
-				return nil
-			}
-		}
-	}
-	if len(queue.messages)+1 > queue.maxCount || queue.bytes+len(message.Data) > queue.maxBytes {
+	if queue.privatePending >= queue.maxPrivateMessages {
 		return ErrQueueOverflow
 	}
-	queue.messages = append(queue.messages, QueuedMessage{Channel: message.Channel, Kind: message.Kind, Data: append([]byte(nil), message.Data...)})
-	queue.bytes += len(message.Data)
+	queue.privatePending++
 	return nil
 }
 
-func (queue *ConnectionQueue) Drain() []QueuedMessage {
+func (queue *ConnectionQueue) FinishPlayer() {
+	queue.mu.Lock()
+	if queue.privatePending > 0 {
+		queue.privatePending--
+	}
+	queue.mu.Unlock()
+}
+
+func (queue *ConnectionQueue) ResetPlayer() {
+	queue.mu.Lock()
+	queue.privatePending = 0
+	queue.mu.Unlock()
+}
+
+func (queue *ConnectionQueue) ReserveWorld(revision int64) int64 {
+	queue.mu.Lock()
+	previous := queue.latestWorldRevision
+	if revision >= previous {
+		queue.latestWorldRevision = revision
+	}
+	queue.mu.Unlock()
+	return previous
+}
+
+func (queue *ConnectionQueue) RollbackWorld(revision, previous int64) {
+	queue.mu.Lock()
+	if queue.latestWorldRevision == revision {
+		queue.latestWorldRevision = previous
+	}
+	queue.mu.Unlock()
+}
+
+func (queue *ConnectionQueue) AllowWorldWrite(revision int64) bool {
 	queue.mu.Lock()
 	defer queue.mu.Unlock()
-	result := append([]QueuedMessage(nil), queue.messages...)
-	queue.messages, queue.bytes = nil, 0
-	return result
+	return revision >= queue.latestWorldRevision
 }

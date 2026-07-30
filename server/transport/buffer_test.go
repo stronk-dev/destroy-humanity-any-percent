@@ -3,7 +3,6 @@ package transport
 import (
 	"errors"
 	"testing"
-	"time"
 )
 
 type testMemberships struct{}
@@ -23,61 +22,48 @@ func phase0Policy(t *testing.T) Policy {
 
 func TestDropStaleWorldAndLosslessReceiptOverflow(t *testing.T) {
 	queue, _ := NewConnectionQueue(phase0Policy(t))
-	for index := 0; index < 100; index++ {
-		if err := queue.Enqueue(QueuedMessage{Channel: "world", Kind: "snapshot", Data: []byte{byte(index)}}); err != nil {
-			t.Fatal(err)
+	for revision := int64(1); revision <= 100; revision++ {
+		queue.ReserveWorld(revision)
+	}
+	for revision := int64(1); revision < 100; revision++ {
+		if queue.AllowWorldWrite(revision) {
+			t.Fatalf("stale world revision %d was allowed", revision)
 		}
 	}
-	drained := queue.Drain()
-	if len(drained) != 1 || drained[0].Data[0] != 99 {
-		t.Fatalf("world queue=%+v", drained)
+	if !queue.AllowWorldWrite(100) {
+		t.Fatal("latest world revision was dropped")
 	}
 	for index := 0; index < 64; index++ {
-		if err := queue.Enqueue(QueuedMessage{Channel: "player:founder", Kind: "receipt", Data: []byte{1}}); err != nil {
+		if err := queue.ReservePlayer(); err != nil {
 			t.Fatal(err)
 		}
 	}
-	if err := queue.Enqueue(QueuedMessage{Channel: "player:founder", Kind: "receipt", Data: []byte{1}}); !errors.Is(err, ErrQueueOverflow) {
+	if err := queue.ReservePlayer(); !errors.Is(err, ErrQueueOverflow) {
 		t.Fatalf("overflow err=%v", err)
 	}
-}
-
-func TestWorldReplacementCannotBypassByteBound(t *testing.T) {
-	policy := phase0Policy(t)
-	policy.PlayerQueueBytes = 65_536
-	queue, err := NewConnectionQueue(policy)
-	if err != nil {
-		t.Fatal(err)
+	queue.FinishPlayer()
+	if err := queue.ReservePlayer(); err != nil {
+		t.Fatalf("finished receipt did not free one slot: %v", err)
 	}
-	if err := queue.Enqueue(QueuedMessage{Channel: "player:founder", Kind: "receipt", Data: make([]byte, 65_000)}); err != nil {
-		t.Fatal(err)
-	}
-	if err := queue.Enqueue(QueuedMessage{Channel: "world", Kind: "snapshot", Data: make([]byte, 100)}); err != nil {
-		t.Fatal(err)
-	}
-	if err := queue.Enqueue(QueuedMessage{Channel: "world", Kind: "snapshot", Data: make([]byte, 1_000)}); !errors.Is(err, ErrQueueOverflow) {
-		t.Fatalf("replacement overflow err=%v", err)
-	}
-	drained := queue.Drain()
-	if len(drained) != 2 || len(drained[1].Data) != 100 {
-		t.Fatalf("failed replacement mutated queue: %+v", drained)
+	queue.ResetPlayer()
+	for index := 0; index < 64; index++ {
+		if err := queue.ReservePlayer(); err != nil {
+			t.Fatalf("reset left stale reservations at %d: %v", index, err)
+		}
 	}
 }
 
-func TestRecoveryKindsAndAuthorization(t *testing.T) {
-	history, _ := NewHistory(phase0Policy(t))
-	now := time.Date(2026, 7, 29, 12, 0, 0, 0, time.UTC)
-	for index := 0; index < 300; index++ {
-		_, _ = history.Publish("player:founder", []byte{byte(index)}, now.Add(time.Duration(index)*time.Millisecond))
-		_, _ = history.Publish("world", []byte{byte(index)}, now.Add(time.Duration(index)*time.Millisecond))
+func TestWorldReservationRollbackRestoresPriorRevision(t *testing.T) {
+	queue, _ := NewConnectionQueue(phase0Policy(t))
+	queue.ReserveWorld(10)
+	previous := queue.ReserveWorld(11)
+	queue.RollbackWorld(11, previous)
+	if !queue.AllowWorldWrite(10) || queue.AllowWorldWrite(9) {
+		t.Fatal("world rollback did not restore revision 10")
 	}
-	if _, recoverable := history.Recover("player:founder", Position{}, now.Add(time.Second)); recoverable {
-		t.Fatal("truncated player history reported recoverable")
-	}
-	world, recoverable := history.Recover("world", Position{}, now.Add(10*time.Second))
-	if !recoverable || len(world) != 1 || world[0].Data[0] != byte(299%256) {
-		t.Fatalf("world=%+v recoverable=%v", world, recoverable)
-	}
+}
+
+func TestAuthorization(t *testing.T) {
 	identity := Identity{AccountID: "account", FounderID: "founder"}
 	if !Authorized(identity, "player:founder", testMemberships{}) || Authorized(identity, "player:other", testMemberships{}) ||
 		!Authorized(identity, "guild:guild.allowed", testMemberships{}) || Authorized(identity, "match:match.denied", testMemberships{}) {

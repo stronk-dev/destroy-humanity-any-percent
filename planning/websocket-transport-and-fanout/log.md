@@ -246,3 +246,25 @@ Reconciled: the core-commit gap "close code 4000 never used" was fixed at HEAD b
 (`centrifuge.DisconnectSlow`, observed in test). The 2026-07-29 "policy, wire, recovery core" log
 entry overstated ("drop-stale queues... implemented"); later entries partially corrected it, and
 this entry closes the record.
+
+## 2026-07-30 — HIGH remediation: live queue disciplines
+
+- Replaced the orphaned in-memory `ConnectionQueue` with the application discipline actually
+  attached to every live Centrifuge client. The library byte queue remains authoritative for the
+  1 MiB bound; an independent reservation counter now enforces the 256-message player bound.
+  Reservations are released at the transport-write hook, on publish failure, and when a player
+  subscription disappears, so reconnect/resubscribe cannot inherit stale counts.
+- Each world flush reserves its revision on every subscribed connection. At the actual writer hook,
+  snapshot frames older than that connection's newest reserved revision are skipped; system and
+  presence frames are never treated as stale snapshots. Failed publication rolls reservations back.
+- Found and closed a Centrifuge seam while writing the live test: queue items retain their channel
+  only when `Metrics.GetChannelNamespaceLabel` is configured. The node now supplies a bounded,
+  low-cardinality classifier, making `TransportWriteEvent.Channel` a tested correctness dependency
+  without exposing founder/guild/match IDs in metrics.
+- Deleted the unused parallel `History` implementation. Production and tests now have one history
+  authority: Centrifuge's configured stream history/recovery, already exercised over real in-memory
+  WebSockets.
+- Regression evidence: the stalled-world socket test repeatedly delivers at most the one already
+  in-flight frame followed by revision 8, never revisions 2–7; the stalled-player test repeatedly
+  reaches close code 4000 after filling 64 queued messages while total bytes remain far below the
+  1 MiB limit. The focused transport suite and `go vet ./...` are green.

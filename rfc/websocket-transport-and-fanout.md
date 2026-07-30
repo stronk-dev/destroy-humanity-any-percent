@@ -101,3 +101,5 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
 - 2026-07-29: all six answered (T1–T6); identity delegated to the new Account & Session Bootstrap RFC; inbound path ruled HTTP.
 - 2026-07-30: T3 events gain required `scope` with per-scope revisions (review ruling); T6 gains the deny-closed guild/match resolver ruling unblocking `cmd/gameserver` composition.
 - 2026-07-29: accepted by the ordered Codex batch manifest; implementation started after the account, Prestige, and epoch-pinning foundations landed.
+- 2026-07-30: D2 remediation wires the player message-count and world drop-stale disciplines into
+  Centrifuge's live transport-write path; Centrifuge remains the sole byte-queue and history owner.
