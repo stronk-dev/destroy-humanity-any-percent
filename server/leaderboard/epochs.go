@@ -141,29 +141,29 @@ func (repository *Repository) AddHotfix(ctx context.Context, constantsHash strin
 func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochseed.Bundle, startedAt time.Time) error {
 	if startedAt.IsZero() || bundle.Hash == "" || epochseed.Validate(bundle.Seed) != nil ||
 		!epochseed.Accepts(epochseed.Current(bundle.Seed), bundle.Hash) {
-		return ErrInvalidEpoch
+		return fmt.Errorf("%w: invalid seed envelope", ErrInvalidEpoch)
 	}
 	artifacts := make([]Artifact, 0, len(bundle.Seed.Artifacts))
 	seen := make(map[string]bool, len(bundle.Seed.Artifacts))
 	for _, declaration := range bundle.Seed.Artifacts {
 		data := bundle.Artifacts[declaration.Name]
 		if len(data) == 0 || seen[declaration.Name] {
-			return ErrInvalidEpoch
+			return fmt.Errorf("%w: missing or duplicate artifact %s", ErrInvalidEpoch, declaration.Name)
 		}
 		seen[declaration.Name] = true
 		artifacts = append(artifacts, Artifact{Name: declaration.Name, Bytes: data})
 	}
 	if len(seen) != len(bundle.Artifacts) {
-		return ErrInvalidEpoch
+		return fmt.Errorf("%w: undeclared artifact", ErrInvalidEpoch)
 	}
 	computed, normalized, err := validateArtifacts(artifacts)
 	if err != nil || computed != bundle.Hash {
-		return ErrInvalidEpoch
+		return fmt.Errorf("%w: artifact hash mismatch", ErrInvalidEpoch)
 	}
 	currentSeed := epochseed.Current(bundle.Seed)
 	for _, declared := range bundle.Seed.Epochs {
 		if err := ValidateChangelog(repository.repositoryRoot, declared.ChangelogRef); err != nil {
-			return err
+			return fmt.Errorf("%w: changelog %s", err, declared.ChangelogRef)
 		}
 	}
 	startedAt = save.CanonicalServerTime(startedAt)
@@ -180,7 +180,7 @@ func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochsee
 		return err
 	}
 	if len(databaseEpochs) > len(bundle.Seed.Epochs) {
-		return ErrInvalidEpoch
+		return fmt.Errorf("%w: database history exceeds seed", ErrInvalidEpoch)
 	}
 	for index, databaseEpoch := range databaseEpochs {
 		declared := bundle.Seed.Epochs[index]
@@ -189,22 +189,22 @@ func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochsee
 			hashesMatch = stringSubset(databaseEpoch.Hashes, declared.AcceptedHashes)
 		}
 		if databaseEpoch.ID != declared.ID || databaseEpoch.Name != declared.Name || databaseEpoch.ChangelogRef != declared.ChangelogRef || !hashesMatch {
-			return ErrInvalidEpoch
+			return fmt.Errorf("%w: database epoch %d differs from seed", ErrInvalidEpoch, databaseEpoch.ID)
 		}
 	}
 	currentDatabaseID := int64(0)
 	if len(databaseEpochs) > 0 {
 		currentDatabaseID = databaseEpochs[len(databaseEpochs)-1].ID
 		if databaseEpochs[len(databaseEpochs)-1].EndedAt != nil {
-			return ErrInvalidEpoch
+			return fmt.Errorf("%w: current database epoch is closed", ErrInvalidEpoch)
 		}
 	}
 	if currentDatabaseID == 0 {
 		if err := bootstrapEpochHistory(ctx, tx, bundle.Seed, startedAt); err != nil {
-			return err
+			return fmt.Errorf("bootstrap epoch history: %w", err)
 		}
 		if err := insertCatalogSet(ctx, tx, bundle.Hash, normalized); err != nil {
-			return err
+			return fmt.Errorf("bootstrap catalog set: %w", err)
 		}
 		return tx.Commit()
 	}
@@ -227,17 +227,17 @@ func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochsee
 			return err
 		}
 	default:
-		return ErrInvalidEpoch
+		return fmt.Errorf("%w: seed advances more than one epoch", ErrInvalidEpoch)
 	}
 	if err := insertDeclaredEpochHashes(ctx, tx, currentSeed); err != nil {
-		return err
+		return fmt.Errorf("insert current epoch hashes: %w", err)
 	}
 	if err := insertCatalogSet(ctx, tx, bundle.Hash, normalized); err != nil {
-		return err
+		return fmt.Errorf("insert current catalog set: %w", err)
 	}
 	hashes, err := loadEpochHashes(ctx, tx, currentSeed.ID)
 	if err != nil || !equalStrings(hashes, currentSeed.AcceptedHashes) {
-		return ErrInvalidEpoch
+		return fmt.Errorf("%w: current accepted set differs after reconciliation", ErrInvalidEpoch)
 	}
 	return tx.Commit()
 }

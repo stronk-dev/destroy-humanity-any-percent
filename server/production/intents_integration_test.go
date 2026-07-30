@@ -401,7 +401,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	parsedBuy, err := ParseIntent(buy)
-	if err != nil || runLogCount != 8 || firstSequence != 1 || firstAppliedRevision != 2 || string(firstCanonical) != string(parsedBuy.CanonicalPayload) {
+	if err != nil || runLogCount != 9 || firstSequence != 1 || firstAppliedRevision != 2 || string(firstCanonical) != string(parsedBuy.CanonicalPayload) {
 		t.Fatalf("run log count=%d seq=%d revision=%d canonical=%s want=%s err=%v", runLogCount, firstSequence, firstAppliedRevision, firstCanonical, parsedBuy.CanonicalPayload, err)
 	}
 	var rejectedRevision *int64

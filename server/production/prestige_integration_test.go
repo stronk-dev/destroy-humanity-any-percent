@@ -325,7 +325,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		if err := json.Unmarshal(encoded, &legacy); err != nil {
 			t.Fatal(err)
 		}
-		for _, key := range []string{"tier", "lifetime_value", "offer_state", "run_started_at_ms", "run_pre_timer", "offline_spans", "collapsed_offline_ms", "reputation_level", "reputation_unlock_ppm", "network_slots", "clout_lifetime", "soul", "age_ms", "notoriety", "advisor_mode", "exit_history"} {
+		for _, key := range []string{"tier", "lifetime_value", "offer_state", "run_started_at_ms", "run_pre_timer", "offline_spans", "collapsed_offline_ms", "reputation_level", "reputation_unlock_ppm", "network_slots", "clout_lifetime", "soul", "age_ms", "notoriety", "advisor_mode", "exit_history", "faction_id", "incorporated_at_ms", "stock_units", "stock_progress_ms", "consumed_stock_units"} {
 			delete(legacy, key)
 		}
 		legacyBytes, _ := json.Marshal(legacy)
