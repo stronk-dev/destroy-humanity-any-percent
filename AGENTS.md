@@ -75,6 +75,27 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
 - **Naming in code is mechanical, not flavored** (`generator`, `pressure_meter`, `contribution`) — flavor lives in data files/localization keys, so the satire can be retuned without refactors.
 - **Balance numbers in `design/02` are starting values**, expected to be retuned via data files — implement the formula shapes exactly, treat the constants as config.
 
+### Routine command authority
+
+Routine local development commands are pre-authorized. Agents should run them directly and in
+useful batches instead of asking for permission one invocation at a time:
+
+- formatting and generation (`gofmt -w`, repository format/generation targets);
+- local verification (`go test`, `go vet`, `pnpm` checks/tests/builds, and `make` verification
+  targets such as `make verify`);
+- non-destructive Git bookkeeping (`git status`, `git diff`, `git add`, and intentional
+  intermediate `git commit`s).
+
+Use stable, narrowly scoped command prefixes so the execution environment can remember approval.
+Do not wrap an otherwise approved command in a custom shell, environment assignment, or compound
+command unless the wrapper is actually required; wrappers often defeat persistent prefix approval.
+Group related checks into the repository's existing `make`/package targets where practical.
+
+If sandbox or network access genuinely requires escalation, request a reusable narrow prefix for
+that class of command once, then continue. Approval is still required for destructive operations,
+external publication or deployment, secret access, and commands outside the repository's normal
+development surface. **Never push, publish, deploy, or open a PR unless the user explicitly asks.**
+
 ## Where to start
 
 The numeric, economy, save, production, harness, route, Commons, and client-shell foundations are
