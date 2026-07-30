@@ -68,3 +68,5 @@ Trust→Obedience (smooth 50%→30% across Trust 1.00→0.80) and Soul modulatio
 - 2026-07-28: created (draft) as "Combat Data Model".
 - 2026-07-29: Codex acceptance review required a four-way scope split and recorded seven further executable-contract gaps.
 - 2026-07-29: split executed — this file is now the shared data/arithmetic parent (blockers #2, #3, #4, #8 answered here as C2–C5); engines, bots, and statistical gates moved to the three child RFCs.
+- 2026-07-30: AC6 remediation makes the division gate recursive and tokenizer-based, with seeded
+  self-attacks for nested files, string/comment confusion, and template interpolation.

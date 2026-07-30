@@ -76,3 +76,19 @@ Findings (fix queue, ordered):
    today; rename/align before any caller can pass a negative intermediate). OBSERVATION — Go RNG
    test hardcodes seed 42 instead of reading the fixture field; substream-isolation tests are a weak
    stand-in for AC3's regression fixture until an engine consumes streams in sequence.
+
+## 2026-07-30 — HIGH remediation: recursive tokenizer boundary
+
+- Replaced hand-written comment/string stripping plus a `/` regex with TypeScript's scanner. The
+  guard now detects `SlashToken` and `SlashEqualsToken` directly, so URLs and comments cannot hide a
+  later operator and division inside template interpolation remains visible.
+- Replaced the top-level-only directory read with a deterministic recursive walk over every `.ts`
+  file beneath `client/src/combat`; future duel/lane engine subdirectories are covered without
+  needing to update a file list.
+- Made the review's three escapes executable self-attacks on every gate run: a nested seeded file,
+  a string containing `//` followed by real division, and template interpolation with division.
+  Safe division-shaped text in strings and comments is also asserted to prevent a useless
+  false-positive-only gate.
+- `pnpm --dir client run verify:combat` and strict TypeScript validation are green. The vector
+  coverage findings remain separate MEDIUM work; this entry closes only the guard findings 1–2
+  without claiming the arithmetic corpus is complete.
