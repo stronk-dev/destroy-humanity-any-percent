@@ -25,7 +25,11 @@ func productionCatalog(t *testing.T) *Catalog {
 	if err != nil {
 		t.Fatal(err)
 	}
-	catalog, err := LoadCatalog(data, commonsCatalog)
+	catalog, err := LoadCatalog(data, CompactTitheBand{
+		MinimumPPM: commonsCatalog.MinimumTithePPM,
+		DefaultPPM: commonsCatalog.DefaultTithePPM,
+		MaximumPPM: commonsCatalog.MaximumTithePPM,
+	})
 	if err != nil {
 		t.Fatal(err)
 	}

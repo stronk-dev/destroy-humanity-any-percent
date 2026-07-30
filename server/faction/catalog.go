@@ -11,7 +11,6 @@ import (
 	"regexp"
 	"sort"
 
-	"cloud-clicker/server/commons"
 	"cloud-clicker/server/save"
 )
 
@@ -28,6 +27,15 @@ var phase0Resources = []string{"compliance", "hype", "libraries", "revenue"}
 type CompactBinding struct {
 	AutoSign bool
 	TithePPM int64
+}
+
+// CompactTitheBand is the feature-neutral portion of the Commons catalog that
+// faction validation needs. Keeping the boundary as values prevents the
+// production -> faction dependency from acquiring a transitive Commons import.
+type CompactTitheBand struct {
+	MinimumPPM int64
+	DefaultPPM int64
+	MaximumPPM int64
 }
 
 type Faction struct {
@@ -71,8 +79,9 @@ type rawModifier struct {
 	PPM  int64  `json:"ppm"`
 }
 
-func LoadCatalog(data []byte, commonsCatalog *commons.Catalog) (*Catalog, error) {
-	if commonsCatalog == nil {
+func LoadCatalog(data []byte, compactBand CompactTitheBand) (*Catalog, error) {
+	if compactBand.MinimumPPM < 0 || compactBand.DefaultPPM < compactBand.MinimumPPM ||
+		compactBand.MaximumPPM < compactBand.DefaultPPM {
 		return nil, ErrInvalidCatalog
 	}
 	var raw rawCatalog
@@ -99,8 +108,8 @@ func LoadCatalog(data []byte, commonsCatalog *commons.Catalog) (*Catalog, error)
 		}
 		faction := Faction{ID: source.ID, Produces: source.Produces, Consumes: source.Consumes, IncorporationCopyKey: source.IncorporationCopyKey}
 		if source.Compact != nil {
-			if source.ID != "open_source" || !source.Compact.AutoSign || source.Compact.TithePPM <= commonsCatalog.DefaultTithePPM ||
-				source.Compact.TithePPM < commonsCatalog.MinimumTithePPM || source.Compact.TithePPM > commonsCatalog.MaximumTithePPM {
+			if source.ID != "open_source" || !source.Compact.AutoSign || source.Compact.TithePPM <= compactBand.DefaultPPM ||
+				source.Compact.TithePPM < compactBand.MinimumPPM || source.Compact.TithePPM > compactBand.MaximumPPM {
 				return nil, fmt.Errorf("%w: factions[%d].compact", ErrInvalidCatalog, index)
 			}
 			faction.Compact = &CompactBinding{AutoSign: true, TithePPM: source.Compact.TithePPM}

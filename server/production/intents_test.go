@@ -151,7 +151,11 @@ func phase0Factions(t *testing.T) *faction.Catalog {
 	if err != nil {
 		t.Fatal(err)
 	}
-	catalog, err := faction.LoadCatalog(data, commonsCatalog)
+	catalog, err := faction.LoadCatalog(data, faction.CompactTitheBand{
+		MinimumPPM: commonsCatalog.MinimumTithePPM,
+		DefaultPPM: commonsCatalog.DefaultTithePPM,
+		MaximumPPM: commonsCatalog.MaximumTithePPM,
+	})
 	if err != nil {
 		t.Fatal(err)
 	}

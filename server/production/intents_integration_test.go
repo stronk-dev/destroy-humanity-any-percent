@@ -106,7 +106,11 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	factionCatalog, err := faction.LoadCatalog(bundle.Artifacts["factions"], commonsCatalog)
+	factionCatalog, err := faction.LoadCatalog(bundle.Artifacts["factions"], faction.CompactTitheBand{
+		MinimumPPM: commonsCatalog.MinimumTithePPM,
+		DefaultPPM: commonsCatalog.DefaultTithePPM,
+		MaximumPPM: commonsCatalog.MaximumTithePPM,
+	})
 	if err != nil {
 		t.Fatal(err)
 	}

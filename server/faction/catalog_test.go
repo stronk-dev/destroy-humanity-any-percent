@@ -22,7 +22,8 @@ func TestPhase0CatalogAndCycleValidation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	catalog, err := LoadCatalog(data, commonsCatalog)
+	band := CompactTitheBand{MinimumPPM: commonsCatalog.MinimumTithePPM, DefaultPPM: commonsCatalog.DefaultTithePPM, MaximumPPM: commonsCatalog.MaximumTithePPM}
+	catalog, err := LoadCatalog(data, band)
 	if err != nil || catalog.StockCap != 100_000 || catalog.StockIntervalMS != 60_000 || len(catalog.Factions) != 4 {
 		t.Fatalf("catalog=%+v err=%v", catalog, err)
 	}
@@ -37,7 +38,7 @@ func TestPhase0CatalogAndCycleValidation(t *testing.T) {
 	}
 	selfRaw.Factions[0].Consumes = selfRaw.Factions[0].Produces
 	selfConsuming, _ := json.Marshal(selfRaw)
-	if _, err := LoadCatalog(selfConsuming, commonsCatalog); err == nil {
+	if _, err := LoadCatalog(selfConsuming, band); err == nil {
 		t.Fatal("self-consuming fixture accepted")
 	}
 	var cycleRaw rawCatalog
@@ -47,7 +48,7 @@ func TestPhase0CatalogAndCycleValidation(t *testing.T) {
 	cycleRaw.Factions[0].Consumes = "hype"
 	cycleRaw.Factions[2].Consumes = "compliance"
 	twoCycles, _ := json.Marshal(cycleRaw)
-	if _, err := LoadCatalog(twoCycles, commonsCatalog); err == nil {
+	if _, err := LoadCatalog(twoCycles, band); err == nil {
 		t.Fatal("two-cycle fixture accepted")
 	}
 }
@@ -55,12 +56,13 @@ func TestPhase0CatalogAndCycleValidation(t *testing.T) {
 func TestCatalogRejectsUnknownAndTrailingFields(t *testing.T) {
 	commonsData, _ := os.ReadFile("../../balance/commons/phase0.json")
 	commonsCatalog, _ := commons.LoadCatalog(commonsData)
+	band := CompactTitheBand{MinimumPPM: commonsCatalog.MinimumTithePPM, DefaultPPM: commonsCatalog.DefaultTithePPM, MaximumPPM: commonsCatalog.MaximumTithePPM}
 	data, _ := os.ReadFile("../../balance/factions/phase0.json")
-	if _, err := LoadCatalog(append(data, []byte(` {}`)...), commonsCatalog); err == nil {
+	if _, err := LoadCatalog(append(data, []byte(` {}`)...), band); err == nil {
 		t.Fatal("trailing JSON accepted")
 	}
 	unknown := bytes.Replace(data, []byte(`"stock_cap": 100000`), []byte(`"stock_cap": 100000, "unknown": true`), 1)
-	if _, err := LoadCatalog(unknown, commonsCatalog); err == nil {
+	if _, err := LoadCatalog(unknown, band); err == nil {
 		t.Fatal("unknown field accepted")
 	}
 }

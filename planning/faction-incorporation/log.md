@@ -59,3 +59,14 @@
   committed separately from implementation and documentation.
 - Implementation remains `implementing` until the mandatory independent diff review is recorded;
   self-review and green verification do not satisfy that archive gate.
+
+## 2026-07-30 — amplitude-lock boundary correction
+
+- The first complete `make verify` caught a transitive `production -> faction -> commons` import.
+  Gameplay behavior and the atomic Open Source mutation were correct, but the faction loader's
+  cross-catalog validation had made the package graph violate the existing Commons amplitude-lock
+  gate.
+- Replaced the concrete Commons catalog parameter with faction's value-only `CompactTitheBand`.
+  Composition still derives those three bounds from the immutable Commons catalog, while the
+  production dependency graph can no longer reach the Commons implementation. The boundary gate
+  and focused faction/production suites pass after the correction.
