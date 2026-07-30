@@ -57,6 +57,9 @@ func (s *Service) afterPrestigeTransition(request IntentRequest, state *save.Sta
 		if founder == nil || founder.State == nil || founder.Revision.ConstantsHash != revision.ConstantsHash {
 			return ErrInvalidEngineState
 		}
+		if len(founder.State.ExitHistory) == 0 {
+			return refreshAppliedSnapshot(decision, state)
+		}
 		policy, ok := s.prestigePolicies.ResolvePrestige(revision.ConstantsHash)
 		if !ok || state.Tier < 0 || state.Tier >= int64(len(policy.SpawnGatePPM)) {
 			return ErrInvalidEngineState

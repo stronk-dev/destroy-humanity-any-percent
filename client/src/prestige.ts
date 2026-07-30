@@ -38,11 +38,10 @@ export function reputationDelta(
     throw new RangeError("invalid prestige integers");
   }
   const delta = Math.max(0, reputationLevel(lifetimeValue, threshold) - currentLevel);
-  const exact = new Decimal(delta).mul(modifierPPM).div(1_000_000).floor();
-  if (exact.gte(MAX_EXACT_INTEGER)) return MAX_EXACT_INTEGER;
-  const result = exact.toNumber();
-  if (!Number.isSafeInteger(result)) throw new RangeError("prestige delta outside exact domain");
-  return result;
+  const exact = (BigInt(delta) * BigInt(modifierPPM)) / 1_000_000n;
+  const cap = BigInt(MAX_EXACT_INTEGER);
+  if (exact >= cap) return MAX_EXACT_INTEGER;
+  return Number(exact);
 }
 
 export function moralReseed(notoriety: number): number {

@@ -158,10 +158,28 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	t.Run("offer preview remains a promise", func(t *testing.T) {
 		owner := "01985555-3000-7000-8000-000000000003"
 		founderRevision, companyRevision := createPrestigeStreams(t, ctx, store, catalog, hash, owner, now, now, now, "1e25", decimal.New(8, 12), 7)
-		if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 1, hash); err != nil {
+		founderLoaded, err := store.LoadLatest(ctx, founderRevision.StreamID)
+		if err != nil {
 			t.Fatal(err)
 		}
-		cross := []byte(`{"intent_id":"01985555-3001-7000-8000-000000000003","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t7_to_t8","route_id":null}`)
+		founderLoaded.State.ExitHistory = append(founderLoaded.State.ExitHistory, save.ExitRecord{RunID: 1, ExitType: "collapse", OccurredAt: now.Add(-time.Hour), ReputationDelta: 1})
+		founderRevision, err = store.Write(ctx, founderRevision.StreamID, founderRevision.Number, hash, founderLoaded.State, save.WriteContext{Cause: "prestige.test.prior_exit"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		companyLoaded, err := store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		companyLoaded.State.RunSeq = 2
+		companyRevision, err = store.Write(ctx, companyRevision.StreamID, companyRevision.Number, hash, companyLoaded.State, save.WriteContext{Cause: "prestige.test.second_run"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 2, hash); err != nil {
+			t.Fatal(err)
+		}
+		cross := []byte(`{"intent_id":"01985555-3001-7000-8000-000000000003","kind":"cross_gate","expected_revision":2,"gate_id":"gate.t7_to_t8","route_id":null}`)
 		if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, cross); err != nil || result.Replay {
 			t.Fatalf("cross=%+v err=%v", result, err)
 		}
@@ -175,17 +193,37 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		}
 		offerID := offered.State.OfferState.OfferID
 		offered.State.LifetimeValue = decimal.New(27, 12)
-		written, err := store.Write(ctx, companyRevision.StreamID, 2, hash, offered.State, save.WriteContext{Cause: "prestige.test.progress"})
-		if err != nil || written.Number != 3 {
+		written, err := store.Write(ctx, companyRevision.StreamID, 3, hash, offered.State, save.WriteContext{Cause: "prestige.test.progress"})
+		if err != nil || written.Number != 4 {
 			t.Fatalf("write=%+v err=%v", written, err)
 		}
-		acceptBody, _ := json.Marshal(map[string]any{"intent_id": "01985555-3002-7000-8000-000000000003", "kind": "accept_exit_offer", "expected_revision": 3, "expected_founder_revision": 1, "offer_id": offerID})
+		acceptBody, _ := json.Marshal(map[string]any{"intent_id": "01985555-3002-7000-8000-000000000003", "kind": "accept_exit_offer", "expected_revision": 4, "expected_founder_revision": founderRevision.Number, "offer_id": offerID})
 		if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, acceptBody); err != nil || result.Replay {
 			t.Fatalf("accept=%+v err=%v", result, err)
 		}
 		founder, err := store.LoadLatest(ctx, founderRevision.StreamID)
 		if err != nil || founder.State.ReputationLevel < stored.PayoutPreview.ReputationDelta {
 			t.Fatalf("founder reputation=%d preview=%d err=%v", founder.State.ReputationLevel, stored.PayoutPreview.ReputationDelta, err)
+		}
+	})
+
+	t.Run("offers wait for scripted first exit", func(t *testing.T) {
+		owner := "01985555-3500-7000-8000-000000000003"
+		_, companyRevision := createPrestigeStreams(t, ctx, store, catalog, hash, owner, now, now, now, "1e25", decimal.New(8, 12), 7)
+		if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 1, hash); err != nil {
+			t.Fatal(err)
+		}
+		cross := []byte(`{"intent_id":"01985555-3501-7000-8000-000000000003","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t7_to_t8","route_id":null}`)
+		if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, cross); err != nil || result.Replay {
+			t.Fatalf("cross=%+v err=%v", result, err)
+		}
+		company, err := store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil || company.State.OfferState != nil {
+			t.Fatalf("company=%+v err=%v", company.State, err)
+		}
+		var offers int
+		if err := db.QueryRowContext(ctx, `SELECT count(*) FROM events WHERE stream_id=$1 AND kind='exit_offer_spawned'`, companyRevision.StreamID).Scan(&offers); err != nil || offers != 0 {
+			t.Fatalf("offers=%d err=%v", offers, err)
 		}
 	})
 

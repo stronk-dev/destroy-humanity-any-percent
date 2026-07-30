@@ -12,6 +12,7 @@
     {"name":"numeric cap","lifetime_value":"1e300","current_level":9007199254740990,"modifier_ppm":1000000,"level":9007199254740991,"delta":1},
     {"name":"non-unit threshold below cube","threshold":"2.5e12","lifetime_value":"1.99999999999e13","current_level":0,"modifier_ppm":1000000,"level":1,"delta":1},
     {"name":"non-unit threshold exact cube","threshold":"2.5e12","lifetime_value":"2e13","current_level":0,"modifier_ppm":1000000,"level":2,"delta":2},
-    {"name":"modified delta saturates","lifetime_value":"1e300","current_level":0,"modifier_ppm":9007199254740991,"level":9007199254740991,"delta":9007199254740991}
+    {"name":"modified delta saturates","lifetime_value":"1e300","current_level":0,"modifier_ppm":9007199254740991,"level":9007199254740991,"delta":9007199254740991},
+    {"name":"modifier product remains exact","lifetime_value":"1e300","current_level":3,"modifier_ppm":750000,"level":9007199254740991,"delta":6755399441055741}
   ]
 }
