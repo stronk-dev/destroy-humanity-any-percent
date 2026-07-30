@@ -283,6 +283,18 @@ async function main() {
     if (errors.length > 0) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${errors.join("; ")}`);
   }
 
+  const guildSchema = await readJSON(path.join(balanceDirectory, "guilds.schema.json"));
+  const validateGuild = ajv.compile(guildSchema);
+  const guildCatalogs = await jsonFiles(path.join(balanceDirectory, "guilds"));
+  if (guildCatalogs.length === 0) throw new Error("guild schema verification requires a production catalog");
+  for (const filename of guildCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateGuild(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateGuild)}`);
+    if (data.npc_exchange_ppm >= data.clearing_rate_ppm || data.min_members > data.max_members) {
+      throw new Error(`${path.relative(repositoryDirectory, filename)}: invalid guild policy relationship`);
+    }
+  }
+
   const shellSchema = await readJSON(path.join(balanceDirectory, "client-shell.schema.json"));
   const validateShell = ajv.compile(shellSchema);
   const shellCatalogs = await jsonFiles(path.join(balanceDirectory, "client-shell"));
@@ -346,7 +358,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + routes + commons + factions + client-shell + prestige + transport + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + routes + commons + factions + guilds + client-shell + prestige + transport + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${scenarios.length} scenario(s)`,
   );
 }
 

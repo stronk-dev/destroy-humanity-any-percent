@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cloud-clicker.invalid/guilds.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "guild_tithe_ppm",
+    "clearing_rate_ppm",
+    "npc_exchange_ppm",
+    "stock_intake_cap",
+    "consumption_bonus_ppm_per_unit",
+    "max_members",
+    "min_members",
+    "grace_days"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "guild_tithe_ppm": { "const": 20000 },
+    "clearing_rate_ppm": { "const": 500000 },
+    "npc_exchange_ppm": { "const": 250000 },
+    "stock_intake_cap": { "const": 120 },
+    "consumption_bonus_ppm_per_unit": { "const": 0 },
+    "max_members": { "const": 50 },
+    "min_members": { "const": 2 },
+    "grace_days": { "const": 7 }
+  }
+}
