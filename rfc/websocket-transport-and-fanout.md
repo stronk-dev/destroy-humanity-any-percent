@@ -1,6 +1,6 @@
 # RFC: WebSocket Transport & Fan-out
 
-- **Status:** draft
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Design refs:** `design/06 §backend/fan-out`, `design/05 §2` (presence & feed), `design/00` law 2 (AI fallback — NPC traffic rides the same channels)
 - **Research:** `design/research/tech-stack.md §1` (centrifuge-embedded recommendation, aggregate-then-broadcast, backpressure), `design/research/cicd-deploy.md §5` (the drain handshake)
@@ -99,3 +99,4 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
   `window_ms`; D3 maps the shell's mechanical `windowMs` field normally.
 - 2026-07-29: Codex acceptance review recorded six executable-contract gaps; remains draft.
 - 2026-07-29: all six answered (T1–T6); identity delegated to the new Account & Session Bootstrap RFC; inbound path ruled HTTP.
+- 2026-07-29: accepted by the ordered Codex batch manifest; implementation started after the account, Prestige, and epoch-pinning foundations landed.

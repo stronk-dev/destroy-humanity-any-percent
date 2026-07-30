@@ -15,7 +15,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
-| [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | draft | Production Engine / Client Shell / Account Bootstrap |
+| [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 
