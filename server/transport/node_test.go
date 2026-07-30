@@ -12,6 +12,7 @@ import (
 	"cloud-clicker/server/account"
 	"cloud-clicker/server/internal/testhttp"
 
+	"github.com/centrifugal/centrifuge"
 	"github.com/coder/websocket"
 )
 
@@ -191,6 +192,64 @@ func TestActualWebsocketRecoveryReplaysPrivateReceiptsAndLatestWorld(t *testing.
 	if !recoveredWorld.Recovered || !recoveredWorld.WasRecovering || len(recoveredWorld.Publications) != 1 ||
 		envelopeRevision(t, recoveredWorld.Publications[0].Data) != 20 {
 		t.Fatalf("world recovery=%+v", recoveredWorld)
+	}
+}
+
+func TestActualSlowPrivateConsumerClosesWithQueueOverflowCode(t *testing.T) {
+	policy := phase0Policy(t)
+	policy.PlayerQueueBytes = 65_536
+	now := time.Now().UTC()
+	node, err := NewNode(policy, staticAuthenticator{claims: account.Claims{
+		Subject: "account", FounderID: "founder", IssuedAt: now.Add(-time.Minute).Unix(), ExpiresAt: now.Add(time.Hour).Unix(), TokenID: "token",
+	}}, testMemberships{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if centrifuge.DisconnectSlow.Code != CloseQueueOverflow {
+		t.Fatalf("library slow code=%d", centrifuge.DisconnectSlow.Code)
+	}
+	if err := node.Run(); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+		_ = node.Shutdown(ctx)
+	}()
+	server := testhttp.New(node.Handler())
+	defer server.Close()
+	endpoint := "ws" + strings.TrimPrefix(server.URL, "http")
+	connection := dialAuthenticated(t, endpoint, server.Client)
+	defer connection.CloseNow()
+	connection.SetReadLimit(int64(policy.PlayerQueueBytes * 4))
+	writeCommand(t, connection, map[string]any{"id": 2, "subscribe": map[string]any{"channel": "player:founder"}})
+	_ = readReply(t, connection)
+
+	padding := strings.Repeat("x", 32_000)
+	for revision := int64(1); revision <= 10; revision++ {
+		payload, _ := json.Marshal(map[string]any{"outcome": "applied", "padding": padding})
+		if err := node.Publish(Envelope{Version: WireVersion, Channel: "player:founder", Kind: "receipt", Revision: revision,
+			ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Timestamp: time.Now().UTC(), Payload: payload}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	deadline := time.Now().Add(time.Second)
+	for node.ConnectionCount() != 0 && time.Now().Before(deadline) {
+		time.Sleep(time.Millisecond)
+	}
+	if node.ConnectionCount() != 0 {
+		t.Fatal("slow consumer remained connected")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	for reads := 0; reads < 3; reads++ {
+		_, _, err = connection.Read(ctx)
+		if err != nil {
+			break
+		}
+	}
+	if websocket.CloseStatus(err) != CloseQueueOverflow {
+		t.Fatalf("close status=%d err=%v", websocket.CloseStatus(err), err)
 	}
 }
 

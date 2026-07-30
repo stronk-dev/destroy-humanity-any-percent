@@ -135,3 +135,20 @@
 - Added `testdata/transport/wire-vectors.json` with valid and invalid boundary envelopes and made
   both suites consume it. Focused Go tests, eight TypeScript transport tests, strict TypeScript, and
   Svelte diagnostics are green.
+
+## 2026-07-30 — 5k fan-out and typed slow-consumer close
+
+- Added the literal 5,000-connection acceptance soak against one embedded Centrifuge node over the
+  in-memory WebSocket transport. Each connection authenticates as a distinct account, subscribes to
+  `world`, and sniffs ten 10-Hz publications. The test inspects 50,000 envelopes for exact
+  world/snapshot/revision order and attempts a click-shaped public receipt on every tick; the closed
+  publisher rejects every attempt. The complete Transport suite, including the soak, runs in about
+  three seconds locally.
+- Resolved the library close-code gap without a fork or a race. Centrifuge v0.38 exposes its
+  slow-writer disconnect as package policy; `NewNode` sets it through one process-wide `sync.Once`
+  before any node can run. Every node therefore uses application code 4000 and no per-node mutation
+  occurs after writers exist.
+- An actual stalled private WebSocket test fills the configured 64-KiB queue, waits for the embedded
+  node to remove the connection, drains the one already-in-flight frame, and observes close code
+  `4000 queue_overflow`. Together with the full-state account endpoint and private-history recovery,
+  this closes the lossless-overflow/re-sync boundary in AC4.

@@ -18,10 +18,13 @@ import (
 
 var (
 	ErrInvalidNode        = errors.New("invalid transport node")
+	disconnectQueueFull   = centrifuge.Disconnect{Code: CloseQueueOverflow, Reason: "receipt queue overflow"}
 	disconnectAuthExpired = centrifuge.Disconnect{Code: CloseAuthExpired, Reason: "access token expired"}
 	disconnectReplaced    = centrifuge.Disconnect{Code: CloseReplaced, Reason: "older connection replaced"}
 	disconnectServerDrain = centrifuge.Disconnect{Code: CloseServerDrain, Reason: "server draining"}
 )
+
+var configureSlowDisconnectOnce sync.Once
 
 type Authenticator interface {
 	Authenticate(context.Context, string) (account.Claims, error)
@@ -49,6 +52,11 @@ func NewNode(policy Policy, auth Authenticator, memberships Memberships) (*Node,
 	if !policy.valid() || auth == nil {
 		return nil, ErrInvalidNode
 	}
+	// Centrifuge exposes its slow-writer disconnect as a package policy rather
+	// than a per-node option. Configure it exactly once before any Node can run;
+	// this avoids per-node mutation races while preserving the application wire
+	// contract that overflow is recoverable close code 4000.
+	configureSlowDisconnectOnce.Do(func() { centrifuge.DisconnectSlow = disconnectQueueFull })
 	engine, err := centrifuge.New(centrifuge.Config{
 		Version:                        kernel.Version,
 		ClientConnectIncludeServerTime: true,

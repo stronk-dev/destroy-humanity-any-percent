@@ -58,8 +58,12 @@ claim immediately. A crash after publication but before acknowledgement may rede
 receipt, which is safe because intent identity and revision reconciliation are already idempotent;
 a crash before publication cannot lose it.
 
-The runnable `cmd/gameserver` wiring, event and snapshot relays, typed 4000 mapping from
-Centrifuge's internal byte queue, and the 5,000-connection soak remain implementing; this document
+The embedded node sets Centrifuge's process-wide slow-writer policy once, before any node runs, so
+its bounded byte queue closes stalled clients with application code 4000 rather than the library's
+generic code. The acceptance soak holds 5,000 authenticated in-memory WebSocket connections on one
+node at 10 Hz and inspects 50,000 public envelopes; no click-shaped publication can enter `world`.
+
+The runnable `cmd/gameserver` wiring and event/snapshot relays remain implementing; this document
 does not claim those paths exist yet.
 
 The in-process gameserver lifecycle now owns `/healthz`, `/readyz`, WebSocket mounting, and exact
