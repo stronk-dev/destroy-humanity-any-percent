@@ -86,6 +86,15 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 	if err != nil || second.ID != 2 {
 		t.Fatalf("second=%+v err=%v", second, err)
 	}
+	if _, err := db.ExecContext(ctx, `UPDATE epochs SET ended_at=ended_at + interval '1 millisecond' WHERE epoch_id=1`); err == nil {
+		t.Fatal("closed epoch timestamp update bypassed history guard")
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE epochs SET name='rewritten' WHERE epoch_id=2`); err == nil {
+		t.Fatal("current epoch metadata update bypassed history guard")
+	}
+	if _, err := db.ExecContext(ctx, `DELETE FROM epochs WHERE epoch_id=1`); err == nil {
+		t.Fatal("closed epoch delete bypassed history guard")
+	}
 	if epochID, err := store.PinRunToCurrentEpoch(ctx, revision.StreamID, ownerID, 2, first.Hashes[0]); err != nil || epochID != 2 {
 		t.Fatalf("second pin epoch=%d err=%v", epochID, err)
 	}
@@ -132,6 +141,10 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 	importedKey := int64(500)
 	if _, err := repository.ProjectVerifiedRun(ctx, VerifiedRun{EventID: "01985555-4204-7000-8000-000000000004", RunID: founders[3] + ":1", FounderID: founders[3], CategoryID: "category.any", Variables: variables, EpochID: 1, KeyMS: &importedKey, VerifiedAt: now}); !errors.Is(err, ErrInvalidEpoch) {
 		t.Fatalf("imported projection err=%v", err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO verified_runs(run_id,event_id,founder_id,category_id,variables,epoch_id,mandate_level,key_ms,verified_at) VALUES('malformed',$1,$2,'category.any',$3,1,0,1,now())`,
+		"01985555-4299-7000-8000-000000000099", founders[0], []byte(`{"commons":false,"advisor":false,"glitched":false}`)); err == nil {
+		t.Fatal("malformed verified run id bypassed database constraint")
 	}
 	board, err := repository.TimeBoard(ctx, "category.any", variables, 1, 0, 10, nil)
 	if err != nil || len(board) != 3 || board[0].Rank != 1 || board[1].Rank != 1 || board[2].Rank != 3 || !board[0].WorldFirst {

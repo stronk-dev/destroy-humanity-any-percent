@@ -265,3 +265,15 @@ Findings:
   changelog in the seed is validated before mutation. A real-Postgres test bootstraps two epochs and
   three accepted memberships from empty state, proves closed/open status and idempotency, and checks
   the historical identity has no invented artifact rows.
+
+## 2026-07-30 — governance-row integrity remediation
+
+- Migration 00021 closes the remaining mutable-evidence path on `epochs`: the current row may gain
+  exactly one `ended_at` while all identity metadata remains unchanged; a closed-row rewrite,
+  current-row metadata rewrite, or delete raises. The existing mint path remains the only caller of
+  the permitted transition.
+- The same migration adds a database CHECK for canonical `company UUID:positive run_seq` board
+  identities. Real-Postgres coverage attacks both epoch states and a malformed direct board insert.
+- The verified-run supersession contract and rejected-log catalog value remain explicitly
+  unimplemented: the review requires a follow-up contract for the former, and no accepted catalog
+  owns the latter value. This batch does not hide either DESIGN-GAP behind a code constant.

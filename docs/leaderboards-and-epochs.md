@@ -17,6 +17,11 @@ repository changelog reference, and append-only accepted hash set. Minting close
 and creates the next epoch plus its artifacts in one transaction. A correctness-only hotfix can
 append a hash to the current set but cannot replace historical bytes.
 
+Epoch rows have a dedicated history guard. The sole legal update changes the current epoch's
+`ended_at` from null to its closing instant while leaving every other column byte-identical;
+subsequent updates and every delete fail. This allows minting the successor without leaving a
+metadata rewrite path through the `epochs` table itself.
+
 [`balance/epochs/phase0.json`](../balance/epochs/phase0.json) is the repository seed for that same
 identity. It names the exact artifact bundle and the hashes accepted by each epoch. The harness
 and runtime load that declaration through one strict `epochseed` authority; no composition site
@@ -78,6 +83,9 @@ use `(key, run_id)` keyset cursors and remain ordinary queries when an epoch is 
 boards freeze without a special mutable mode. A partial unique index permits exactly one
 world-first per category/variable/epoch tuple; the projection first attempts the world-first insert
 and falls back to a normal immutable row on conflict.
+The database independently constrains every `run_id` to canonical `company-uuid:positive-run-seq`
+form, so direct projection/storage callers cannot insert an identity that the verifier cannot
+resolve.
 
 ## Incomplete replay boundary
 

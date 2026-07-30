@@ -133,4 +133,7 @@ cannot be relabeled identity-only even when the harness does not execute that ar
   the preceding baseline, closing the hashed-but-unexecuted catalog escape.
 - 2026-07-30: L5c empty-database reconciliation replays the full declared epoch/hash history instead
   of rejecting every deployment after the first mint or hotfix.
+- 2026-07-30: governance-integrity remediation permits only the current→closed `ended_at`
+  transition on epoch rows, rejects all historical rewrites/deletes, and constrains board run IDs
+  to canonical Company-stream/run-sequence identity.
 - 2026-07-29: accepted for implementation by `planning/codex-batch-2026-07-29.md`; implementation started immediately behind Prestige so L1 can replace its provisional terminal sequence.
