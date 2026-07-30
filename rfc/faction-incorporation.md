@@ -61,6 +61,16 @@ land as balance/content on these hooks, tier by tier — this RFC makes them exp
   the faction's `produces` output accrues to a ledger resource nothing consumes — visible,
   inert, honest.
 
+**F2a (review ruling, 2026-07-30):** an existing compact signatory incorporating Open Source
+CONTINUES membership: tithe raised to `max(current, faction tithe)` (never lowered), Solidarity
+preserved, `incorporated` + `compact_tithe_raised` in one commit. Leave-then-rejoin is never
+required to incorporate.
+
+**FB-1 (review ruling, 2026-07-30, = Prestige P6c):** `catchup_ceiling_ms` moves into the prestige
+catalog artifact (hash-pinned; P6 owns attended time); faction and prestige runtimes consume one
+value from the run's resolved policy. The wire snapshot's fourth field `stock_progress_ms` is
+admitted into FA's declaration.
+
 ### F3 — Board variable
 
 `faction` joins the Leaderboards variable tuple as a fourth structural variable
@@ -139,3 +149,4 @@ provisional balance data; changes ride the epoch protocol like every catalog.
 
 - 2026-07-30: created (draft) — the faction owner contract Commons Onboarding blocker #1 named.
 - 2026-07-30: Codex bounce answered — FA (stocks are int64 save fields, not ledger resources), FB (attended-minute accrual, integer-exact, accrual-only saturation), FC (complete literal catalog; Open Source tithe 130000 ppm inside the commons band).
+- 2026-07-30: complete-diff review APPROVED (see planning log); rulings F2a (signatory incorporation continues membership, tithe max-raised) and FB-1 (ceiling hash-pinned in the prestige catalog) added.

@@ -79,3 +79,50 @@
   accrual is tested with a non-zero `consumed_stock_units` value and must preserve it across both
   attended and offline evaluations. The Guild successor may replace that assertion only when its
   evented clearing mutation lands.
+
+## 2026-07-30 — independent complete-diff review (9b5f4b3..91d089b)
+
+Two-lane review: mint/catalog lane by the reviewer directly; intent/accrual lane adversarial with
+probe confirmation. **Verdict: APPROVED with two MEDIUM findings, both now ruled below. Guild may
+start immediately; the two rulings join the top of its implementation queue.**
+
+Reviewer-verified (mint lane): the epoch-2 mint is protocol-compliant (BALANCE-CHANGE subject,
+appended epoch + changelog same-commit, separate baseline BALANCE-CHANGE); the artifact-growth
+guard relaxation is growth-only + mint-only with prefix DeepEqual and uniqueness over the running
+set (removal/rename/reorder still fail); `make epoch-hash` at HEAD reproduces the epoch-2 accepted
+hash exactly; the catalog loader is FC to the letter (strict decode, closed sets, single-cycle,
+open_source-only compact with band validation via the value-only CompactTitheBand boundary — and
+f506daa's "amplitude boundary" is the real `verify-commons-boundary` build-graph gate, run green).
+
+Agent-verified with evidence (intent lane): C1 conformance incl. byte-identical replay;
+incorporate/Exit serialization via stream FOR UPDATE + revision CAS; catalog resolved at the RUN's
+hash everywhere; one-transaction OS binding with leave→`faction_bound`; FB accrual exact (offline
+skipped with P6-mirrored boundary, carry-while-saturated, once-per-crossing saturation event);
+all 8 evaluation sites paired with the hook; save v10 closed field list with pairing/scope-leak
+negative tests; migration 00023 faithful incl. Down; tooling change weakens nothing.
+
+Findings and rulings:
+
+1. **MEDIUM — unspecified path: an existing compact signatory who incorporates Open Source is
+   rejected `already_member`** (undeclared category for this intent; the only path forward would
+   reset Solidarity — perverse for the most-committed player). **Ruling F2a: incorporation
+   CONTINUES membership** — the tithe is raised to `max(current, faction tithe)` (never lowered),
+   Solidarity and membership history are preserved, and the transition emits `incorporated` +
+   `compact_tithe_raised` (new kind, registry grows by this ruling) in the same commit.
+   `already_member` is removed from this path's rejection set.
+2. **MEDIUM — attended-time ceiling is duplicated, un-cross-checked, and not hash-pinned**
+   (faction and prestige runtimes each take their own `catchupCeilingMS`; a mismatch splits the
+   attended/offline definitions, and replay under run-genesis would be process-config-dependent).
+   **Ruling FB-1/P6c: `catchup_ceiling_ms` becomes a field of the PRESTIGE catalog artifact**
+   (P6 owns the attended-time definition; the artifact is hash-pinned) — both runtimes read it
+   from the run's resolved prestige policy; the two ServiceOptions collapse to one; `NewService`
+   fails if any secondary source disagrees. Client-shell keeps its copy for display pacing only.
+3. LOW batch (queued, non-blocking): `run_ended` should carry `faction` (F3's variable currently
+   has no producer — acceptable pre-verifier, but add the field now so the verifier never scans);
+   wire snapshot exposes `stock_progress_ms` beyond FA's declared three (RFC amended to admit it —
+   display-useful, harmless); unknown-faction rejection needs a transition-level test and the
+   check-order (unknown_id before tier gate) pinned; the inert-consumption assertion should
+   enumerate stock-field writers structurally; `StatePolicyValidator` is opt-in by type assertion
+   — the composed gameserver must assert it at construction (fail-closed), noted for composition;
+   AC4's next-run re-incorporation and an incorporated-company-through-real-exit test are missing;
+   accrual-hook chain order must be pinned before run-genesis lands (byte-stable event order).
