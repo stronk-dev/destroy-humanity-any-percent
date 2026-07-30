@@ -103,7 +103,33 @@ supplies, labeled `npc: true` in the receipt).
 - Officer permission matrix beyond admit/invite — successor RFC with guild events.
 - Name moderation shares the existing rules; display surfaces are client work.
 
+## DESIGN-GAPs blocking completion (implementation audit, 2026-07-30)
+
+The implemented structural round proved six owner contracts are absent. They are not implementation
+freedom because each changes persisted value semantics, production order, or account lifecycle:
+
+1. **GD1 — name validator:** G1 names an “existing” moderation charset, but no runtime name-policy
+   owner exists. Specify normalization, accepted characters, and the injected validator contract.
+2. **GD2 — tithe units:** G3 maps a percentage of arbitrary Decimal production deltas into int64
+   `guild_xp` without naming the qualifying resource(s), magnitude normalization, rounding, or
+   saturation/overflow behavior.
+3. **GD3 — Guild Health:** G3 stores `(active_founders,tithed_xp)` but gives no formula/denominator
+   mapping that pair to the required 0..1,000,000 `H_guild` input.
+4. **GD4 — account deletion:** G1 covers New Founder, not deletion of a leader/member account.
+   Specify deterministic succession/disband and how append-only history is anonymized while the
+   account row is physically removed.
+5. **GD5 — clearing activation:** GC defines the arithmetic but not the accrual-boundary identity,
+   mixed-run-epoch catalog authority, or atomic multi-company-save mutation boundary. Those choices
+   determine replay and lock ordering.
+6. **GD6 — multiplier order:** GB names a `stock_consumption` production slot but does not place it
+   in the canonical rounding-sensitive slot order or declare its economy source/provider row.
+
+Until these are answered, composition remains fail-closed. The catalog, storage, lifecycle, pure GC
+kernel, NPC kernel, resolver, presence relay, HTTP surface, and disband sweep are implemented and
+tested; no placeholder math runs in production.
+
 ## Changelog
 
 - 2026-07-30: created (draft) — the guild owner contract Commons Onboarding blockers #1/#5 named; unblocks the transport guild resolver.
 - 2026-07-30: Codex bounce answered — GA (parent resolved), GB (complete literal catalog incl. the 0-ppm consumption hook), GC (total deterministic clearing: ordered one-pass allocation, no intra-boundary redistribution, NPC = one capped virtual counterparty).
+- 2026-07-30: implementation audit added GD1–GD6 after the structural implementation exposed missing owner contracts; no mechanic was inferred.

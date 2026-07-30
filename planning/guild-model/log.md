@@ -28,3 +28,28 @@
   history and leadership reference account identity. The RFC defines New-Founder survival but not
   leader succession, disbanding, or anonymization on account deletion. Production composition is
   fail-closed rather than letting the new foreign keys brick the existing deletion contract.
+
+## 2026-07-30 — structural implementation round complete; review gate open
+
+- Commits `3c9f770..d519003` implement the strict catalog and Epoch-3 mint, isolated harness
+  identity refresh, Postgres lifecycle model, closed account intents, byte-identical idempotency,
+  append-only membership periods, cap/leader serialization, applications/invitations, role
+  transfer, manual and seven-day automatic disband, and canonical docs.
+- GC is a pure integer kernel with raw-account ordering, base/remainder allocation, per-boundary
+  intake/headroom limits, deliberately no redistribution, absent-link inertia, and the reduced-rate
+  labeled NPC path. Detached kernel values were renamed after the full writer-closure gate correctly
+  rejected authoritative-looking `StockUnits` field names outside the Faction owner.
+- Active membership implements Guild authorization. Join/leave commits also append a durable,
+  leased presence-outbox row; the transport relay emits schema-validated `guild:{id}` presence
+  envelopes and marks publication only after success. The authenticated account router exposes the
+  separate exact-schema Guild intent surface.
+- Real Postgres integration proves idempotent replay, concurrent cap admission, leave denial in
+  authz, rejoin-as-second-history-row, deletion trigger refusal, and the exact grace boundary. The
+  entire Compose integration suite is green.
+- `make verify` is green: Go vet/tests, formula and epoch/baseline history guards, deterministic
+  pacing harness, client typecheck/build, 6,452 client unit tests, schema parity including Guild,
+  and 19,365 browser tests.
+- Completion is intentionally blocked on GD1–GD6 now listed in the RFC. The most important newly
+  surfaced gaps are Decimal production→int64 XP dimensionality, XP→Guild-Health normalization,
+  mixed-epoch clearing authority/transaction ownership, and rounding-sensitive placement of the
+  named `stock_consumption` slot. No runtime placeholder implements any of them.
