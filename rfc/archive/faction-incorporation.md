@@ -1,12 +1,12 @@
 # RFC: Faction & Incorporation Model
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-30
 - **Design refs:** `design/10 §1` (four Phase-0 factions, rule-variance law, Tier-2 incorporation moment), `design/05 §3–5` (faction interdependence cycle, Commons front door), `design/02` (production stack slots)
 - **Depends on:** Production Engine (implemented), Save Layer (implemented), Commons Compact (implemented — Open Source binding), Prestige & Exits (implementing — per-run reset)
 - **Unblocks:** Commons Onboarding & Governance blocker #1 (faction owner), transport `guild:*` sibling work, doctrine-intent RFC
-- **Planning:** `planning/faction-incorporation/` (once implementing)
+- **Planning:** `planning/archive/faction-incorporation/`
 
 ## Summary
 
