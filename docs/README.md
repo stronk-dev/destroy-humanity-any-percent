@@ -27,6 +27,8 @@ Implemented systems:
   atomic Founder/Company Exit commits, server-derived timers, and new-run assembly.
 - [Leaderboards and Balance Epochs](leaderboards-and-epochs.md) — atomic run logs, immutable catalog
   artifacts, run epoch pinning, exact competition ranks, world-first arbitration, and replay status.
+- [WebSocket transport](transport.md) — strict outbound envelopes, literal limits, recovery history,
+  drop-stale versus lossless queues, and server-side channel authorization.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.

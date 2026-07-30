@@ -293,6 +293,15 @@ async function main() {
     }
   }
 
+  const transportSchema = await readJSON(path.join(balanceDirectory, "transport.schema.json"));
+  const validateTransport = ajv.compile(transportSchema);
+  const transportCatalogs = await jsonFiles(path.join(balanceDirectory, "transport"));
+  if (transportCatalogs.length === 0) throw new Error("transport schema verification requires a production policy");
+  for (const filename of transportCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateTransport(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateTransport)}`);
+  }
+
   const harnessDirectory = path.join(repositoryDirectory, "testdata", "harness");
   const scenarioSchema = await readJSON(path.join(harnessDirectory, "scenario.schema.json"));
   const reportSchema = await readJSON(path.join(harnessDirectory, "report.schema.json"));
@@ -325,7 +334,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + routes + commons + client-shell + prestige + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + routes + commons + client-shell + prestige + transport + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${scenarios.length} scenario(s)`,
   );
 }
 

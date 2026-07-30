@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "world_hz": 4,
+  "feed_history_size": 50,
+  "player_history_size": 512,
+  "player_history_ttl_ms": 600000,
+  "player_queue_messages": 256,
+  "player_queue_bytes": 1048576,
+  "message_bytes": 65536,
+  "subscriptions_per_connection": 16,
+  "connections_per_account": 3,
+  "drain_timeout_ms": 15000,
+  "allowed_origins": ["http://localhost:5173"]
+}
