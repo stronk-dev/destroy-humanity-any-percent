@@ -92,3 +92,32 @@ Findings (fix queue, ordered):
 - `pnpm --dir client run verify:combat` and strict TypeScript validation are green. The vector
   coverage findings remain separate MEDIUM work; this entry closes only the guard findings 1–2
   without claiming the arithmetic corpus is complete.
+
+## 2026-07-30 — independent review: combat gate remediation (112680b)
+
+The three demonstrated escapes from the 15fa881 review are fixed and self-tested (recursive walk
+with nested seeded violation; string-`//` same-line division; `${a / b}` interpolation), and the
+gate is a real tokenizer wired into `verify-client`. **But the remediation introduced a NEW
+demonstrated HIGH:**
+
+1. **HIGH — flat `ts.createScanner` loop mishandles template literals: after `${expr}`, the
+   template's closing backtick is scanned as the OPENING of a phantom template, swallowing
+   everything to the next backtick or EOF.** Not theoretical: `client/src/combat/arithmetic.ts:47`
+   contains an interpolated template TODAY, so that file's remaining lines are unscanned (verified
+   first-hand: gate misses a planted division after it). Fix: replace the token loop with
+   `ts.createSourceFile` + AST walk for `/` and `/=` binary operators — which also fixes the LOWs
+   below — and add "division after a closed template" to the seeded self-tests.
+2. LOW — gate scans `.ts` only (`.tsx/.mts/.cts` invisible); the AST approach covers by extension
+   list. LOW — regex literals and post-interpolation template text false-positive as divisions
+   (fail-closed, but the AST walk eliminates both).
+
+## 2026-07-30 — round-2 HIGH remediation: AST boundary
+
+- Replaced the context-free scanner loop with `ts.createSourceFile` and a recursive AST walk over
+  binary `/` and `/=` operators. Template interpolation is now parsed as syntax rather than
+  approximated as a flat token stream, so a closed template cannot swallow the rest of a module.
+- Extended the recursive surface to `.ts`, `.tsx`, `.mts`, and `.cts`. The executable self-attacks
+  now include the review's exact division-after-closed-template shape, division inside a template,
+  a TSX expression, and a nested `.mts` violation. A regex literal is an explicit safe control.
+- Parse diagnostics fail closed instead of permitting an unscanned malformed module. Canonical
+  docs and the implementing RFC now describe the AST boundary actually shipped.

@@ -17,9 +17,10 @@ Damage is calculated identically in Go and TypeScript using integer stages:
 
 Every intermediate is int64/BigInt. HP and stamina use explicit integer clamp operations. Native
 division is absent from `client/src/combat`; the shared `idiv` helper is outside that directory and a
-fail-closed source gate recursively scans every combat subdirectory with TypeScript's own tokenizer.
-On every verification run it proves direct `/`, `/=` and template-interpolation division are
-rejected, strings/comments cannot hide a later division, and a seeded violation in a nested future
+fail-closed source gate recursively parses every `.ts`, `.tsx`, `.mts`, and `.cts` combat module
+with TypeScript's AST. On every verification run it proves direct `/`, `/=`, division inside or
+after a template interpolation, and TSX division are rejected; strings, comments, and regular
+expressions cannot create blind spots or false positives; and a seeded violation in a nested future
 engine directory is discovered.
 
 SplitMix64 and unbiased rejection sampling have one Go authority in `server/determinism`; the

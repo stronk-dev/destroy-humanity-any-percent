@@ -6,12 +6,32 @@ import ts from "typescript";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "src", "combat");
 
-export function hasDirectDivision(source) {
-  const scanner = ts.createScanner(ts.ScriptTarget.Latest, true, ts.LanguageVariant.Standard, source);
-  for (let token = scanner.scan(); token !== ts.SyntaxKind.EndOfFileToken; token = scanner.scan()) {
-    if (token === ts.SyntaxKind.SlashToken || token === ts.SyntaxKind.SlashEqualsToken) return true;
+function scriptKind(fileName) {
+  return fileName.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
+}
+
+export function hasDirectDivision(source, fileName = "combat.ts") {
+  const sourceFile = ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true, scriptKind(fileName));
+  if (sourceFile.parseDiagnostics.length > 0) {
+    const diagnostic = sourceFile.parseDiagnostics[0];
+    throw new SyntaxError(
+      `combat division guard could not parse ${fileName}: ${ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n")}`,
+    );
   }
-  return false;
+
+  let found = false;
+  function visit(node) {
+    if (
+      ts.isBinaryExpression(node) &&
+      (node.operatorToken.kind === ts.SyntaxKind.SlashToken || node.operatorToken.kind === ts.SyntaxKind.SlashEqualsToken)
+    ) {
+      found = true;
+      return;
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(sourceFile);
+  return found;
 }
 
 async function typescriptFiles(directory) {
@@ -19,7 +39,7 @@ async function typescriptFiles(directory) {
   for (const entry of (await readdir(directory, { withFileTypes: true })).sort((left, right) => left.name.localeCompare(right.name))) {
     const absolute = path.join(directory, entry.name);
     if (entry.isDirectory()) files.push(...(await typescriptFiles(absolute)));
-    else if (entry.isFile() && entry.name.endsWith(".ts")) files.push(absolute);
+    else if (entry.isFile() && /\.(?:ts|tsx|mts|cts)$/.test(entry.name)) files.push(absolute);
   }
   return files;
 }
@@ -27,21 +47,25 @@ async function typescriptFiles(directory) {
 async function assertSelfTests() {
   const cases = [
     ["const invalid = left / right;", true],
+    ["let invalid = left; invalid /= right;", true],
     ['const url = "https://example.test"; const invalid = left / right;', true],
     ["const invalid = `value=${left / right}`;", true],
+    ["const label = `value=${left}`; const invalid = top / bottom;", true],
+    ["const invalid = <output>{left / right}</output>;", true, "combat.tsx"],
     ['const safe = "left / right"; // left / right\n/* left / right */', false],
+    ["const safe = /left \/ right/g; const label = `value=${left}`;", false],
   ];
-  for (const [source, expected] of cases) {
-    if (hasDirectDivision(source) !== expected) throw new Error(`combat division tokenizer self-test failed: ${source}`);
+  for (const [source, expected, fileName] of cases) {
+    if (hasDirectDivision(source, fileName) !== expected) throw new Error(`combat division AST self-test failed: ${source}`);
   }
 
   const fixture = await mkdtemp(path.join(tmpdir(), "cloud-clicker-combat-boundary-"));
   try {
     const nested = path.join(fixture, "duel", "engine");
     await mkdir(nested, { recursive: true });
-    await writeFile(path.join(nested, "violation.ts"), "export const invalid = left / right;\n");
+    await writeFile(path.join(nested, "violation.mts"), "export const invalid = left / right;\n");
     const files = await typescriptFiles(fixture);
-    if (files.length !== 1 || !hasDirectDivision(await readFile(files[0], "utf8"))) {
+    if (files.length !== 1 || !hasDirectDivision(await readFile(files[0], "utf8"), files[0])) {
       throw new Error("combat division guard does not reject its recursive seeded violation");
     }
   } finally {
@@ -52,7 +76,7 @@ async function assertSelfTests() {
 await assertSelfTests();
 for (const file of await typescriptFiles(root)) {
   const source = await readFile(file, "utf8");
-  if (hasDirectDivision(source)) {
+  if (hasDirectDivision(source, file)) {
     throw new Error(`${path.relative(path.dirname(root), file)}: native division is forbidden; use idiv`);
   }
 }
