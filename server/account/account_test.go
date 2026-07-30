@@ -37,6 +37,10 @@ func TestRecoveryCredentialRoundTripAndEncodedParameters(t *testing.T) {
 	if valid, _ := verifyRecoveryCodeForUpgrade(belowFloor, code); valid {
 		t.Fatal("credential below the Argon2 memory floor verified")
 	}
+	aboveCeiling := strings.Replace(dummyRecoveryHash, "m=19456", fmt.Sprintf("m=%d", argonMemoryMaxKiB+1), 1)
+	if valid, _ := verifyRecoveryCodeForUpgrade(aboveCeiling, code); valid {
+		t.Fatal("credential above the Argon2 work ceiling verified")
+	}
 	if verifyRecoveryCode(dummyRecoveryHash, code) {
 		t.Fatal("dummy recovery hash authenticated a real code")
 	}

@@ -88,7 +88,7 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
 
 ### T5 — Backpressure constants (Phase-0 literals, config-validated)
 
-`world` publish 4 Hz; `feed` history 50; `player:*` queue bound 256 messages / 1 MiB; message size cap 64 KiB; subscriptions per connection ≤ 16; connections per account ≤ 3 (oldest closed); drain timeout 15 s. Typed close codes: `4000 queue_overflow`, `4001 auth_expired`, `4002 replaced`, `4003 server_drain`. All loader-validated (positive, caps ≥ minima) like every catalog.
+`world` publish 4 Hz; `feed` history 50; `player:*` queue bound 256 messages / 1 MiB; message size cap 64 KiB; subscriptions per connection ≤ 16; connections per account ≤ 3 (oldest closed); drain timeout 15 s. Typed close codes: `4000 queue_overflow`, `4001 auth_expired`, `4002 replaced`, `4003 server_drain`, `4004 invalid_frame`. All loader-validated (positive, caps ≥ minima) like every catalog.
 
 ### T6 — Runnable lifecycle (the composed server, named here)
 
@@ -117,3 +117,6 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
   deterministic envelope-policy failures. Publisher and acknowledgement infrastructure failures
   retain the claimed Founder head for a one-second backoff without incrementing attempts; later
   claims are released so unrelated Founders continue.
+- 2026-07-30: boundary cleanup separates invalid private reservations from real queue overflow and
+  assigns malformed publication framing close code 4004, so code 4000 remains an honest capacity
+  diagnosis.

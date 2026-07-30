@@ -5,7 +5,10 @@ import (
 	"sync"
 )
 
-var ErrQueueOverflow = errors.New("transport receipt queue overflow")
+var (
+	ErrQueueOverflow      = errors.New("transport receipt queue overflow")
+	ErrInvalidReservation = errors.New("invalid transport queue reservation")
+)
 
 // ConnectionQueue is the application-owned discipline layered over
 // Centrifuge's byte-bounded writer. It enforces the second independent player
@@ -29,7 +32,10 @@ func NewConnectionQueue(policy Policy) (*ConnectionQueue, error) {
 func (queue *ConnectionQueue) ReservePlayer(revision int64) error {
 	queue.mu.Lock()
 	defer queue.mu.Unlock()
-	if revision < 1 || queue.privatePending >= queue.maxPrivateMessages {
+	if revision < 1 {
+		return ErrInvalidReservation
+	}
+	if queue.privatePending >= queue.maxPrivateMessages {
 		return ErrQueueOverflow
 	}
 	queue.privatePending++

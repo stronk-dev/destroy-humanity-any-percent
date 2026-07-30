@@ -27,11 +27,14 @@ interpretation as the version-1 forward-compatibility rule requires.
 The live Centrifuge writer is wrapped by an application-owned queue discipline. Its byte queue is
 the first bound. A separate per-connection counter enforces the declared private-player message
 bound; receipts remain ordered and lossless until either bound is reached, then the socket closes
-with code 4000. Reservations are keyed by authoritative revision, so command replies and rev-0
-drain frames cannot decrement receipt capacity they never reserved. `world` is a gauge: each flushed revision marks the newest value for every current
+with code 4000. Invalid publication framing closes with code 4004 instead of being mislabeled as
+queue pressure. Reservations reject invalid revisions separately from overflow and are keyed by
+authoritative revision, so command replies and rev-0 drain frames cannot decrement receipt
+capacity they never reserved. `world` is a gauge: each flushed revision marks the newest value for every current
 subscriber, and the transport-write hook discards older queued snapshots while preserving any
 frame already in flight. The hook decodes both Centrifuge JSON and protobuf publication framing
-before applying either discipline; malformed publication metadata fails closed. Centrifuge's own history is the sole history implementation and provides
+before applying either discipline; malformed publication metadata fails closed with its typed
+invalid-frame diagnosis. Centrifuge's own history is the sole history implementation and provides
 monotonic per-channel offsets. Player recovery fails explicitly outside its count/TTL window,
 causing the one full-state resync path; world recovery returns only the latest snapshot.
 

@@ -29,7 +29,8 @@ find the largest exact integer whose Decimal cube does not exceed the ratio usin
 search. TypeScript constructs the ratio directly from mantissa division and exponent subtraction,
 matching the Go Decimal path without reciprocal double-rounding. Neither runtime calls a floating-
 point cube-root function. Exit modifiers are integer ppm applied to the positive level delta and
-then floored; a result beyond the exact integer domain saturates at `9,007,199,254,740,991` so an
+then floored using exact integer products (`big.Int` in Go and `BigInt` in TypeScript); a result
+beyond the exact integer domain saturates at `9,007,199,254,740,991` so an
 extreme valid run cannot become un-exitable. The shared Prestige vector corpus asserts cube
 boundaries including non-unit thresholds, modifier rounding, saturation, zero, threshold equality,
 and the exact-number cap in both runtimes.
@@ -47,7 +48,8 @@ The production intent surface adds:
 - `file_ipo`, currently returning typed `not_eligible` until the S-1 content chain exists.
 
 Offer checks happen only at deterministic evaluation sites. Their SplitMix64 stream is seeded from
-the immutable Founder id and run sequence. A spawned offer persists its server-computed terms and
+the immutable Founder id and run sequence. Offers cannot spawn until Founder Exit history is
+non-empty, so the market path cannot bypass the scripted first-collapse curriculum. A spawned offer persists its server-computed terms and
 market modifier. Acceptance recomputes against commit-time state, reapplies that same modifier,
 then takes the field-wise maximum for integer rewards and the set union for Network slots. The
 preview therefore remains a promise as the run advances. Expiry and decline are events; there are

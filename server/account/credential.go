@@ -15,11 +15,14 @@ import (
 )
 
 const (
-	argonMemoryKiB   = 19 * 1024
-	argonIterations  = 2
-	argonParallelism = 1
-	argonSaltBytes   = 16
-	argonKeyBytes    = 32
+	argonMemoryKiB      = 19 * 1024
+	argonIterations     = 2
+	argonParallelism    = 1
+	argonMemoryMaxKiB   = argonMemoryKiB * 4
+	argonIterationsMax  = argonIterations * 4
+	argonParallelismMax = argonParallelism * 4
+	argonSaltBytes      = 16
+	argonKeyBytes       = 32
 )
 
 var errInvalidCredential = errors.New("invalid recovery credential")
@@ -81,7 +84,9 @@ func verifyRecoveryCodeForUpgrade(encoded, code string) (valid, needsRehash bool
 	var parameters recoveryHashParameters
 	if _, err := fmt.Sscanf(parts[3], "m=%d,t=%d,p=%d", &parameters.memory, &parameters.iterations, &parameters.parallelism); err != nil ||
 		parts[3] != fmt.Sprintf("m=%d,t=%d,p=%d", parameters.memory, parameters.iterations, parameters.parallelism) ||
-		parameters.memory < argonMemoryKiB || parameters.iterations < argonIterations || parameters.parallelism < argonParallelism {
+		parameters.memory < argonMemoryKiB || parameters.memory > argonMemoryMaxKiB ||
+		parameters.iterations < argonIterations || parameters.iterations > argonIterationsMax ||
+		parameters.parallelism < argonParallelism || parameters.parallelism > argonParallelismMax {
 		return false, false
 	}
 	salt, err := base64.RawStdEncoding.DecodeString(parts[4])

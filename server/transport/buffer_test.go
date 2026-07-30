@@ -22,6 +22,9 @@ func phase0Policy(t *testing.T) Policy {
 
 func TestDropStaleWorldAndLosslessReceiptOverflow(t *testing.T) {
 	queue, _ := NewConnectionQueue(phase0Policy(t))
+	if err := queue.ReservePlayer(0); !errors.Is(err, ErrInvalidReservation) {
+		t.Fatalf("invalid reservation err=%v", err)
+	}
 	for revision := int64(1); revision <= 100; revision++ {
 		queue.ReserveWorld(revision)
 	}

@@ -89,6 +89,9 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `UPDATE epochs SET ended_at=ended_at + interval '1 millisecond' WHERE epoch_id=1`); err == nil {
 		t.Fatal("closed epoch timestamp update bypassed history guard")
 	}
+	if _, err := db.ExecContext(ctx, `UPDATE epochs SET ended_at=NULL WHERE epoch_id=1`); err == nil {
+		t.Fatal("closed epoch reopen bypassed history guard")
+	}
 	if _, err := db.ExecContext(ctx, `UPDATE epochs SET name='rewritten' WHERE epoch_id=2`); err == nil {
 		t.Fatal("current epoch metadata update bypassed history guard")
 	}

@@ -40,8 +40,11 @@ the database is empty; all historical epochs are closed and only the manifest cu
 open. The current worktree bundle supplies artifact bytes for the current hash. Historical hashes
 are restored as identities without fabricated bytes; replayable historical artifact bytes remain
 the database backup's responsibility. An existing database must be an exact manifest prefix and may
-advance only one deployed epoch. Epoch IDs are allocated explicitly under the same transaction lock,
-so an invalid changelog reference cannot burn a sequence number and poison every retry.
+advance only one deployed epoch. Both bootstrap and one-step advance install the complete declared
+accepted-hash set, including hotfixes declared on the new epoch before its first deployment; only
+the current worktree hash receives locally available artifact bytes. Epoch IDs are allocated
+explicitly under the same transaction lock, so an invalid changelog reference cannot burn a
+sequence number and poison every retry.
 
 A `CONSTANTS-IDENTITY:` baseline commit is a narrow non-balance repair path: the guard proves that
 only constants-hash fields changed, every new hash equals the manifest-computed value, and all pacing

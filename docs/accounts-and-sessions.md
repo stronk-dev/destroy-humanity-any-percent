@@ -38,7 +38,9 @@ so a later credential upgrade can distinguish old records. Login verifies the st
 when they meet those security floors; a successful login with non-current parameters rehashes the
 credential to current settings inside the same transaction. A missing account performs the same
 Argon2id work against a constant dummy hash, preventing account-existence timing from bypassing the
-KDF. Recovery input is case/outer-whitespace normalized before validation.
+KDF. Stored parameters are also bounded before any allocation (76 MiB memory, eight iterations,
+four lanes), so a corrupted or malicious database row cannot turn login into unbounded work.
+Recovery input is case/outer-whitespace normalized before validation.
 
 Successful recovery authentication issues:
 
@@ -72,7 +74,9 @@ moves backwards. Their key map is a bounded LRU; entries idle for one full-refil
 evicted. `TrustedProxyHops` is explicit deployment configuration: zero ignores forwarded headers,
 while a positive value selects the client address at that exact trusted depth from
 `X-Forwarded-For`. Malformed/short chains fall back to the socket peer. Deployment may replace
-storage without changing the HTTP contract.
+storage without changing the HTTP contract. A positive hop count is safe only when the game server
+is reachable exclusively through those trusted proxies; deployments must firewall direct origin
+traffic, because a directly connected client can otherwise supply the trusted header chain.
 
 ## Verification
 

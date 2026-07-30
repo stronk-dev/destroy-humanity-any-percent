@@ -16,6 +16,7 @@ const (
 	CloseAuthExpired   = 4001
 	CloseReplaced      = 4002
 	CloseServerDrain   = 4003
+	CloseInvalidFrame  = 4004
 )
 
 var hashPattern = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)

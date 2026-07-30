@@ -73,3 +73,6 @@ Account deletion (`DELETE /api/v1/account`): archives all founders — **A-D5a (
 - 2026-07-30: review remediation implements A-D1a/A-D5a and the D3 limiter contract: transactional
   stored-parameter Argon2 upgrade plus dummy verification, anonymized Founder retention, trusted
   proxy depth, bounded idle/LRU buckets, and failed-auth IP limiting.
+- 2026-07-30: credential parsing bounds stored Argon2 work before allocation, and canonical docs
+  make the trusted-proxy deployment precondition explicit: positive hop depth requires a
+  firewalled origin reachable only through that proxy chain.

@@ -18,11 +18,12 @@ import (
 )
 
 var (
-	ErrInvalidNode        = errors.New("invalid transport node")
-	disconnectQueueFull   = centrifuge.Disconnect{Code: CloseQueueOverflow, Reason: "receipt queue overflow"}
-	disconnectAuthExpired = centrifuge.Disconnect{Code: CloseAuthExpired, Reason: "access token expired"}
-	disconnectReplaced    = centrifuge.Disconnect{Code: CloseReplaced, Reason: "older connection replaced"}
-	disconnectServerDrain = centrifuge.Disconnect{Code: CloseServerDrain, Reason: "server draining"}
+	ErrInvalidNode         = errors.New("invalid transport node")
+	disconnectQueueFull    = centrifuge.Disconnect{Code: CloseQueueOverflow, Reason: "receipt queue overflow"}
+	disconnectAuthExpired  = centrifuge.Disconnect{Code: CloseAuthExpired, Reason: "access token expired"}
+	disconnectReplaced     = centrifuge.Disconnect{Code: CloseReplaced, Reason: "older connection replaced"}
+	disconnectServerDrain  = centrifuge.Disconnect{Code: CloseServerDrain, Reason: "server draining"}
+	disconnectInvalidFrame = centrifuge.Disconnect{Code: CloseInvalidFrame, Reason: "invalid publication frame"}
 )
 
 var configureSlowDisconnectOnce sync.Once
@@ -94,7 +95,7 @@ func (n *Node) bindHandlers() {
 		}
 		kind, revision, ok := publicationEnvelopeMetadataForProtocol(client.Transport().Protocol(), event.Data)
 		if !ok {
-			client.Disconnect(disconnectQueueFull)
+			client.Disconnect(disconnectInvalidFrame)
 			return false
 		}
 		switch {
@@ -219,6 +220,9 @@ func (n *Node) Publish(envelope Envelope) error {
 	}
 	queuedFor := []playerReservation{}
 	if isPlayerChannel(envelope.Channel) {
+		if envelope.Revision < 1 {
+			return ErrInvalidPolicy
+		}
 		for _, client := range n.node.Hub().Connections() {
 			if !client.IsSubscribed(envelope.Channel) {
 				continue
@@ -230,8 +234,14 @@ func (n *Node) Publish(envelope Envelope) error {
 				continue
 			}
 			if err := queue.ReservePlayer(envelope.Revision); err != nil {
-				client.Disconnect(disconnectQueueFull)
-				continue
+				if errors.Is(err, ErrQueueOverflow) {
+					client.Disconnect(disconnectQueueFull)
+					continue
+				}
+				for _, reserved := range queuedFor {
+					reserved.queue.FinishPlayer(envelope.Revision)
+				}
+				return err
 			}
 			queuedFor = append(queuedFor, playerReservation{client: client, queue: queue})
 		}

@@ -8,6 +8,7 @@
     {"name":"disadvantage_crit_order","base_power":100,"attacker_atk":64,"chart":-1,"critical":true,"expected":114},
     {"name":"atk_scaling_non_identity","base_power":100,"attacker_atk":100,"chart":0,"critical":false,"expected":156},
     {"name":"advantage_rounds_after_chart","base_power":101,"attacker_atk":64,"chart":1,"critical":false,"expected":131},
+    {"name":"advantage_floors_half","base_power":105,"attacker_atk":64,"chart":1,"critical":false,"expected":136},
     {"name":"minimum_one","base_power":1,"attacker_atk":1,"chart":-1,"critical":false,"expected":1},
     {"name":"zero_power","base_power":0,"attacker_atk":2147483647,"chart":1,"critical":true,"expected":0},
     {"name":"saturates_store","base_power":2147483647,"attacker_atk":2147483647,"chart":1,"critical":true,"expected":2147483647}
