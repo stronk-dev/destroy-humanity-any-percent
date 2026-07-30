@@ -17,6 +17,7 @@ import (
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
@@ -207,19 +208,21 @@ func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
 	if err != nil {
 		return nil, err
 	}
-	constantsHash, err := save.ConstantsHashArtifacts(map[string][]byte{
-		"commons": commonsCatalogBytes,
-		"economy": catalogBytes,
-		"routes":  routesCatalogBytes,
-	})
+	bundle, err := epochseed.Load(repositoryRoot)
 	if err != nil {
 		return nil, err
+	}
+	for name, scenarioPath := range map[string]string{"commons": scenario.CommonsCatalog, "economy": scenario.Catalog, "routes": scenario.RoutesCatalog} {
+		manifestPath, ok := epochseed.ArtifactPath(bundle.Seed, name)
+		if !ok || manifestPath != scenarioPath {
+			return nil, fmt.Errorf("scenario %s path %q differs from epoch manifest %q", name, scenarioPath, manifestPath)
+		}
 	}
 	scenarioDigest := sha256.Sum256(scenarioBytes)
 	return &Suite{Scenario: scenario, ScenarioBytes: scenarioBytes, Catalog: catalog, CatalogBytes: catalogBytes,
 		RoutesCatalog: routesCatalog, RoutesCatalogBytes: routesCatalogBytes,
 		CommonsCatalog: commonsCatalog, CommonsCatalogBytes: commonsCatalogBytes,
-		ScenarioHash: "sha256:" + hex.EncodeToString(scenarioDigest[:]), ConstantsHash: constantsHash}, nil
+		ScenarioHash: "sha256:" + hex.EncodeToString(scenarioDigest[:]), ConstantsHash: bundle.Hash}, nil
 }
 
 func (suite *Suite) RunAll() ([]RunReport, AggregateReport, error) {

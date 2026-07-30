@@ -7,7 +7,24 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+
+	"cloud-clicker/server/epochseed"
 )
+
+func TestSuiteConstantsHashUsesEpochManifest(t *testing.T) {
+	root := filepath.Join("..", "..")
+	suite, err := LoadSuite(root, "testdata/harness/scenarios/phase0-production.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle, err := epochseed.Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if suite.ConstantsHash != bundle.Hash || len(bundle.Artifacts) != len(bundle.Seed.Artifacts) {
+		t.Fatalf("suite=%s manifest=%s artifacts=%d declarations=%d", suite.ConstantsHash, bundle.Hash, len(bundle.Artifacts), len(bundle.Seed.Artifacts))
+	}
+}
 
 func TestSplitMix64AndBoundArePinned(t *testing.T) {
 	random := NewSplitMix64(0)
@@ -112,6 +129,30 @@ func TestBaselineOnlyRewriteFailsChangeGuard(t *testing.T) {
 	}
 	if err := ValidateBaselineCommit([]string{baselinePath}, []string{"balance/routes/phase0.json"}, "BALANCE-CHANGE: Routes retune"); err != nil {
 		t.Fatalf("Routes input was not recognized: %v", err)
+	}
+	if err := ValidateBaselineCommit([]string{baselinePath, goldenPath}, nil, "CONSTANTS-IDENTITY: repair hash domain"); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestConstantsIdentityGuardAllowsOnlyManifestHash(t *testing.T) {
+	baseline := AggregateReport{SchemaVersion: 1, ScenarioID: "scenario", ScenarioHash: "sha256:scenario", ConstantsHash: "sha256:old", RunCount: 1,
+		Values: []AggregateValue{{PolicyID: "policy", Milestone: "milestone", Statistic: "p50", ValueMS: 10}}}
+	golden := GoldenReport{SchemaVersion: 1, Runs: []RunReport{{Key: RunKey{ConstantsHash: "sha256:old"}, Outcome: "completed"}}}
+	beforeBaseline, _ := json.Marshal(baseline)
+	beforeGolden, _ := json.Marshal(golden)
+	want := "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	baseline.ConstantsHash = want
+	golden.Runs[0].Key.ConstantsHash = want
+	afterBaseline, _ := json.Marshal(baseline)
+	afterGolden, _ := json.Marshal(golden)
+	if err := validateConstantsIdentityBlobs(beforeBaseline, afterBaseline, beforeGolden, afterGolden, want); err != nil {
+		t.Fatal(err)
+	}
+	baseline.Values[0].ValueMS++
+	changedBaseline, _ := json.Marshal(baseline)
+	if err := validateConstantsIdentityBlobs(beforeBaseline, changedBaseline, beforeGolden, afterGolden, want); err == nil {
+		t.Fatal("identity-only guard accepted pacing drift")
 	}
 }
 

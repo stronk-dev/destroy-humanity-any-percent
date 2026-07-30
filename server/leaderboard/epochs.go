@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/save"
 )
 
@@ -20,6 +21,8 @@ var (
 	artifactPattern  = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
 	changelogPattern = regexp.MustCompile(`^changelog/epoch-([0-9]+)\.md$`)
 )
+
+const epochMutationLock int64 = 0x434c4f554445504f
 
 type Artifact struct {
 	Name  string
@@ -64,36 +67,45 @@ func (repository *Repository) MintEpoch(ctx context.Context, name string, starte
 		return Epoch{}, err
 	}
 	defer tx.Rollback()
+	if err := lockEpochMutation(ctx, tx); err != nil {
+		return Epoch{}, err
+	}
 	var currentID int64
 	var currentStarted time.Time
 	err = tx.QueryRowContext(ctx, `SELECT epoch_id,started_at FROM epochs WHERE ended_at IS NULL FOR UPDATE`).Scan(&currentID, &currentStarted)
+	nextID := int64(1)
 	if err == nil {
+		nextID = currentID + 1
 		if startedAt.Before(currentStarted) {
 			return Epoch{}, ErrInvalidEpoch
-		}
-		if _, err := tx.ExecContext(ctx, `UPDATE epochs SET ended_at=$2 WHERE epoch_id=$1`, currentID, startedAt); err != nil {
-			return Epoch{}, err
 		}
 	} else if !errors.Is(err, sql.ErrNoRows) {
 		return Epoch{}, err
 	}
-	var epochID int64
-	if err := tx.QueryRowContext(ctx, `INSERT INTO epochs(name,started_at,changelog_ref) VALUES($1,$2,$3) RETURNING epoch_id`, name, startedAt, changelogRef).Scan(&epochID); err != nil {
+	if changelogRef != fmt.Sprintf("changelog/epoch-%d.md", nextID) {
+		return Epoch{}, ErrInvalidEpoch
+	}
+	if currentID != 0 {
+		if _, err := tx.ExecContext(ctx, `UPDATE epochs SET ended_at=$2 WHERE epoch_id=$1`, currentID, startedAt); err != nil {
+			return Epoch{}, err
+		}
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO epochs(epoch_id,name,started_at,changelog_ref) VALUES($1,$2,$3,$4)`, nextID, name, startedAt, changelogRef); err != nil {
 		return Epoch{}, err
 	}
-	if changelogRef != fmt.Sprintf("changelog/epoch-%d.md", epochID) {
-		return Epoch{}, ErrInvalidEpoch
+	if err := advanceEpochSequence(ctx, tx, nextID); err != nil {
+		return Epoch{}, err
 	}
 	if err := insertCatalogSet(ctx, tx, constantsHash, normalized); err != nil {
 		return Epoch{}, err
 	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)`, epochID, constantsHash); err != nil {
+	if _, err := tx.ExecContext(ctx, `INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)`, nextID, constantsHash); err != nil {
 		return Epoch{}, err
 	}
 	if err := tx.Commit(); err != nil {
 		return Epoch{}, err
 	}
-	return Epoch{ID: epochID, Name: name, StartedAt: startedAt, ChangelogRef: changelogRef, Hashes: []string{constantsHash}}, nil
+	return Epoch{ID: nextID, Name: name, StartedAt: startedAt, ChangelogRef: changelogRef, Hashes: []string{constantsHash}}, nil
 }
 
 func (repository *Repository) AddHotfix(ctx context.Context, constantsHash string, artifacts []Artifact) error {
@@ -106,8 +118,11 @@ func (repository *Repository) AddHotfix(ctx context.Context, constantsHash strin
 		return err
 	}
 	defer tx.Rollback()
+	if err := lockEpochMutation(ctx, tx); err != nil {
+		return err
+	}
 	var epochID int64
-	if err := tx.QueryRowContext(ctx, `SELECT epoch_id FROM epochs WHERE ended_at IS NULL FOR SHARE`).Scan(&epochID); err != nil {
+	if err := tx.QueryRowContext(ctx, `SELECT epoch_id FROM epochs WHERE ended_at IS NULL FOR UPDATE`).Scan(&epochID); err != nil {
 		return err
 	}
 	if err := insertCatalogSet(ctx, tx, constantsHash, normalized); err != nil {
@@ -115,6 +130,105 @@ func (repository *Repository) AddHotfix(ctx context.Context, constantsHash strin
 	}
 	if _, err := tx.ExecContext(ctx, `INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)`, epochID, constantsHash); err != nil {
 		return err
+	}
+	return tx.Commit()
+}
+
+// ReconcileSeed makes the repository manifest and database agree before a
+// gameserver can become ready. The worktree contains bytes only for its current
+// hash, so reconciliation may bootstrap epoch 1 or advance one epoch; skipped
+// historical epochs fail closed instead of fabricating their catalog bytes.
+func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochseed.Bundle, startedAt time.Time) error {
+	if startedAt.IsZero() || bundle.Hash == "" || len(bundle.Seed.Epochs) == 0 ||
+		!epochseed.Accepts(epochseed.Current(bundle.Seed), bundle.Hash) {
+		return ErrInvalidEpoch
+	}
+	artifacts := make([]Artifact, 0, len(bundle.Seed.Artifacts))
+	seen := make(map[string]bool, len(bundle.Seed.Artifacts))
+	for _, declaration := range bundle.Seed.Artifacts {
+		data := bundle.Artifacts[declaration.Name]
+		if len(data) == 0 || seen[declaration.Name] {
+			return ErrInvalidEpoch
+		}
+		seen[declaration.Name] = true
+		artifacts = append(artifacts, Artifact{Name: declaration.Name, Bytes: data})
+	}
+	if len(seen) != len(bundle.Artifacts) {
+		return ErrInvalidEpoch
+	}
+	computed, normalized, err := validateArtifacts(artifacts)
+	if err != nil || computed != bundle.Hash {
+		return ErrInvalidEpoch
+	}
+	currentSeed := epochseed.Current(bundle.Seed)
+	if err := ValidateChangelog(repository.repositoryRoot, currentSeed.ChangelogRef); err != nil {
+		return err
+	}
+	startedAt = save.CanonicalServerTime(startedAt)
+	tx, err := repository.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	if err := lockEpochMutation(ctx, tx); err != nil {
+		return err
+	}
+	databaseEpochs, err := loadEpochRows(ctx, tx)
+	if err != nil {
+		return err
+	}
+	if len(databaseEpochs) > len(bundle.Seed.Epochs) {
+		return ErrInvalidEpoch
+	}
+	for index, databaseEpoch := range databaseEpochs {
+		declared := bundle.Seed.Epochs[index]
+		hashesMatch := equalStrings(databaseEpoch.Hashes, declared.AcceptedHashes)
+		if databaseEpoch.ID == currentSeed.ID {
+			hashesMatch = stringSubset(databaseEpoch.Hashes, declared.AcceptedHashes)
+		}
+		if databaseEpoch.ID != declared.ID || databaseEpoch.Name != declared.Name || databaseEpoch.ChangelogRef != declared.ChangelogRef || !hashesMatch {
+			return ErrInvalidEpoch
+		}
+	}
+	currentDatabaseID := int64(0)
+	if len(databaseEpochs) > 0 {
+		currentDatabaseID = databaseEpochs[len(databaseEpochs)-1].ID
+		if databaseEpochs[len(databaseEpochs)-1].EndedAt != nil {
+			return ErrInvalidEpoch
+		}
+	}
+	switch {
+	case currentDatabaseID == currentSeed.ID:
+		// Current row already exists; the exact current bytes may still need an
+		// idempotent catalog insert after a process/database restore.
+	case currentDatabaseID+1 == currentSeed.ID:
+		if currentDatabaseID > 0 {
+			last := databaseEpochs[len(databaseEpochs)-1]
+			if startedAt.Before(last.StartedAt) {
+				return ErrInvalidEpoch
+			}
+			if _, err := tx.ExecContext(ctx, `UPDATE epochs SET ended_at=$2 WHERE epoch_id=$1`, currentDatabaseID, startedAt); err != nil {
+				return err
+			}
+		}
+		if _, err := tx.ExecContext(ctx, `INSERT INTO epochs(epoch_id,name,started_at,changelog_ref) VALUES($1,$2,$3,$4)`, currentSeed.ID, currentSeed.Name, startedAt, currentSeed.ChangelogRef); err != nil {
+			return err
+		}
+		if err := advanceEpochSequence(ctx, tx, currentSeed.ID); err != nil {
+			return err
+		}
+	default:
+		return ErrInvalidEpoch
+	}
+	if err := insertCatalogSet(ctx, tx, bundle.Hash, normalized); err != nil {
+		return err
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2) ON CONFLICT DO NOTHING`, currentSeed.ID, bundle.Hash); err != nil {
+		return err
+	}
+	hashes, err := loadEpochHashes(ctx, tx, currentSeed.ID)
+	if err != nil || !equalStrings(hashes, currentSeed.AcceptedHashes) {
+		return ErrInvalidEpoch
 	}
 	return tx.Commit()
 }
@@ -195,4 +309,80 @@ func insertCatalogSet(ctx context.Context, tx *sql.Tx, constantsHash string, art
 		return ErrInvalidEpoch
 	}
 	return nil
+}
+
+func lockEpochMutation(ctx context.Context, tx *sql.Tx) error {
+	_, err := tx.ExecContext(ctx, `SELECT pg_advisory_xact_lock($1)`, epochMutationLock)
+	return err
+}
+
+func advanceEpochSequence(ctx context.Context, tx *sql.Tx, epochID int64) error {
+	_, err := tx.ExecContext(ctx, `SELECT setval(pg_get_serial_sequence('epochs','epoch_id'),$1,true)`, epochID)
+	return err
+}
+
+func loadEpochRows(ctx context.Context, tx *sql.Tx) ([]Epoch, error) {
+	rows, err := tx.QueryContext(ctx, `SELECT epoch_id,name,started_at,ended_at,changelog_ref FROM epochs ORDER BY epoch_id`)
+	if err != nil {
+		return nil, err
+	}
+	var epochs []Epoch
+	for rows.Next() {
+		var epoch Epoch
+		if err := rows.Scan(&epoch.ID, &epoch.Name, &epoch.StartedAt, &epoch.EndedAt, &epoch.ChangelogRef); err != nil {
+			rows.Close()
+			return nil, err
+		}
+		epochs = append(epochs, epoch)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	for index := range epochs {
+		hashes, err := loadEpochHashes(ctx, tx, epochs[index].ID)
+		if err != nil {
+			return nil, err
+		}
+		epochs[index].Hashes = hashes
+	}
+	return epochs, nil
+}
+
+func loadEpochHashes(ctx context.Context, tx *sql.Tx, epochID int64) ([]string, error) {
+	rows, err := tx.QueryContext(ctx, `SELECT constants_hash FROM epoch_hashes WHERE epoch_id=$1 ORDER BY constants_hash`, epochID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var hashes []string
+	for rows.Next() {
+		var hash string
+		if err := rows.Scan(&hash); err != nil {
+			return nil, err
+		}
+		hashes = append(hashes, hash)
+	}
+	return hashes, rows.Err()
+}
+
+func equalStrings(left, right []string) bool {
+	if len(left) != len(right) {
+		return false
+	}
+	for index := range left {
+		if left[index] != right[index] {
+			return false
+		}
+	}
+	return true
+}
+
+func stringSubset(subset, set []string) bool {
+	for _, value := range subset {
+		index := sort.SearchStrings(set, value)
+		if index >= len(set) || set[index] != value {
+			return false
+		}
+	}
+	return true
 }

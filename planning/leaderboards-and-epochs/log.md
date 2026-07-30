@@ -180,3 +180,25 @@ identical-artifact mint.
   `run_version_drift` fact and permits the command; a second command proves deduplication. Board
   projection rejects a run whose canonical Company-stream/run-seq identity has that fact.
 - Focused Go tests/vet and the full Postgres integration target are green.
+
+## 2026-07-30 — MEDIUM remediation: artifact authority and startup reconciliation
+
+- Added `server/epochseed` as the single strict owner of the manifest schema, artifact names/paths,
+  worktree bytes, current epoch, accepted hashes, and composed constants hash. The history guard now
+  aliases that schema instead of maintaining a second decoder.
+- Harness loading derives its identity from every manifest declaration and asserts its three
+  executed catalog paths match the manifest. Prestige therefore participates in the harness hash
+  even though pacing does not execute Prestige policy. Production/Prestige integration fixtures
+  seed Postgres from the same four-artifact bundle; adding a fixture artifact to the manifest is
+  proven to change composition without a code edit.
+- Added transaction-serialized seed reconciliation. Before readiness, the gameserver's required
+  synchronizer verifies its expected process hash, idempotently inserts exact current bytes, and
+  either bootstraps epoch 1 or advances one epoch. Missing/skipped historical accepted sets fail
+  closed because the current worktree cannot honestly recreate their immutable bytes.
+- Epoch mint now computes and validates the next explicit ID before any insert, under the same
+  advisory transaction lock used by reconcile/hotfix. The demonstrated invalid-first-attempt case
+  no longer burns the bigserial sequence; a valid epoch-1 mint still receives ID 1.
+- Added the narrow `CONSTANTS-IDENTITY:` baseline path required by this correction. Repository
+  validation permits only the two harness artifacts, recomputes the manifest hash at that commit,
+  blanks old/new hash fields, and then demands semantic equality of every pacing/golden field. The
+  regenerated diff is exactly three hash replacements; no metric or final-state value changed.

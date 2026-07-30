@@ -2,67 +2,29 @@ package harness
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
-	"os"
 	"os/exec"
-	"path"
-	"path/filepath"
 	"reflect"
-	"regexp"
 	"sort"
 	"strings"
 
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/save"
 )
 
-const epochSeedPath = "balance/epochs/phase0.json"
+const epochSeedPath = epochseed.Path
 
-var epochHashPattern = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
-var epochArtifactNamePattern = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
-
-type epochSeed struct {
-	SchemaVersion  int             `json:"schema_version"`
-	CurrentEpochID int64           `json:"current_epoch_id"`
-	Artifacts      []epochArtifact `json:"artifacts"`
-	Epochs         []epochRecord   `json:"epochs"`
-}
-
-type epochArtifact struct {
-	Name string `json:"name"`
-	Path string `json:"path"`
-}
-
-type epochRecord struct {
-	ID             int64    `json:"epoch_id"`
-	Name           string   `json:"name"`
-	ChangelogRef   string   `json:"changelog_ref"`
-	AcceptedHashes []string `json:"accepted_hashes"`
-}
+type epochSeed = epochseed.Seed
+type epochArtifact = epochseed.Artifact
+type epochRecord = epochseed.Epoch
 
 // ComputeEpochSeedHash returns the exact constants identity described by the
 // worktree seed. It is a maintenance aid: registration still requires a
 // reviewed seed diff and the history guard validates the committed bytes.
 func ComputeEpochSeedHash(root string) (string, error) {
-	data, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(epochSeedPath)))
-	if err != nil {
-		return "", err
-	}
-	seed, err := decodeEpochSeed(data)
-	if err != nil {
-		return "", err
-	}
-	artifacts := make(map[string][]byte, len(seed.Artifacts))
-	for _, artifact := range seed.Artifacts {
-		data, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(artifact.Path)))
-		if err != nil {
-			return "", err
-		}
-		artifacts[artifact.Name] = data
-	}
-	return save.ConstantsHashArtifacts(artifacts)
+	bundle, err := epochseed.Load(root)
+	return bundle.Hash, err
 }
 
 // ValidateRepositoryEpochChanges enforces Leaderboards L8 from the first
@@ -117,7 +79,7 @@ func ValidateRepositoryEpochChanges(root string) error {
 	if err != nil {
 		return err
 	}
-	if !currentEpoch(seed).accepts(currentHash) {
+	if !epochseed.Accepts(currentEpoch(seed), currentHash) {
 		return fmt.Errorf("current epoch %d does not accept resulting constants hash %s", seed.CurrentEpochID, currentHash)
 	}
 	return nil
@@ -169,7 +131,7 @@ func validateEpochRevision(root, commit string) error {
 	if err != nil {
 		return err
 	}
-	if !currentEpoch(after).accepts(resultingHash) {
+	if !epochseed.Accepts(currentEpoch(after), resultingHash) {
 		return fmt.Errorf("resulting constants hash %s is absent from current epoch", resultingHash)
 	}
 	lowered, err := loweredHardcaps(root, parent, commit, before, after)
@@ -200,7 +162,7 @@ func validateMint(root, parent, commit string, before, after epochSeed, changed 
 		return fmt.Errorf("BALANCE-CHANGE must append exactly one immutable epoch")
 	}
 	added := currentEpoch(after)
-	if added.ID != after.CurrentEpochID || !added.accepts(resultingHash) {
+	if added.ID != after.CurrentEpochID || !epochseed.Accepts(added, resultingHash) {
 		return fmt.Errorf("new epoch does not own resulting constants hash")
 	}
 	if !containsPath(changed, added.ChangelogRef) {
@@ -231,38 +193,7 @@ func validateHotfix(before, after epochSeed, resultingHash string) error {
 }
 
 func decodeEpochSeed(data []byte) (epochSeed, error) {
-	var seed epochSeed
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&seed); err != nil {
-		return seed, err
-	}
-	if err := decoder.Decode(&struct{}{}); err != io.EOF {
-		return seed, fmt.Errorf("epoch seed must contain exactly one JSON value")
-	}
-	if seed.SchemaVersion != 1 || seed.CurrentEpochID < 1 || len(seed.Artifacts) == 0 || len(seed.Epochs) == 0 {
-		return seed, fmt.Errorf("invalid epoch seed root")
-	}
-	seenNames, seenPaths := map[string]bool{}, map[string]bool{}
-	for _, artifact := range seed.Artifacts {
-		if !epochArtifactNamePattern.MatchString(artifact.Name) || path.Clean(artifact.Path) != artifact.Path ||
-			seenNames[artifact.Name] || seenPaths[artifact.Path] || !strings.HasPrefix(artifact.Path, "balance/") {
-			return seed, fmt.Errorf("invalid or duplicate artifact %q", artifact.Name)
-		}
-		seenNames[artifact.Name], seenPaths[artifact.Path] = true, true
-	}
-	for index, epoch := range seed.Epochs {
-		if epoch.ID != int64(index+1) || epoch.Name == "" || epoch.ChangelogRef != fmt.Sprintf("changelog/epoch-%d.md", epoch.ID) || len(epoch.AcceptedHashes) == 0 {
-			return seed, fmt.Errorf("invalid epoch %d", epoch.ID)
-		}
-		if !sortedUniqueHashes(epoch.AcceptedHashes) {
-			return seed, fmt.Errorf("epoch %d hashes must be sorted and unique", epoch.ID)
-		}
-	}
-	if seed.CurrentEpochID != seed.Epochs[len(seed.Epochs)-1].ID {
-		return seed, fmt.Errorf("current epoch is not the last epoch")
-	}
-	return seed, nil
+	return epochseed.Decode(data)
 }
 
 func loweredHardcaps(root, parent, commit string, before, after epochSeed) ([]string, error) {
@@ -332,28 +263,13 @@ func artifactPaths(seed epochSeed) []string {
 }
 
 func artifactPath(seed epochSeed, name string) (string, bool) {
-	for _, artifact := range seed.Artifacts {
-		if artifact.Name == name {
-			return artifact.Path, true
-		}
-	}
-	return "", false
+	return epochseed.ArtifactPath(seed, name)
 }
 
-func currentEpoch(seed epochSeed) epochRecord { return seed.Epochs[len(seed.Epochs)-1] }
-
-func (epoch epochRecord) accepts(hash string) bool {
-	index := sort.SearchStrings(epoch.AcceptedHashes, hash)
-	return index < len(epoch.AcceptedHashes) && epoch.AcceptedHashes[index] == hash
-}
+func currentEpoch(seed epochSeed) epochRecord { return epochseed.Current(seed) }
 
 func sortedUniqueHashes(hashes []string) bool {
-	for index, hash := range hashes {
-		if !epochHashPattern.MatchString(hash) || index > 0 && hashes[index-1] >= hash {
-			return false
-		}
-	}
-	return true
+	return epochseed.SortedUniqueHashes(hashes)
 }
 
 func isAppendOnlySet(before, after []string, required string) bool {

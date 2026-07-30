@@ -19,11 +19,25 @@ append a hash to the current set but cannot replace historical bytes.
 
 [`balance/epochs/phase0.json`](../balance/epochs/phase0.json) is the repository seed for that same
 identity. It names the exact artifact bundle and the hashes accepted by each epoch. The harness
-history gate walks every commit after the seed: a correctness-only artifact change must append its
+and runtime load that declaration through one strict `epochseed` authority; no composition site
+owns a parallel list. Scenario-owned economy/routes/commons paths must equal their manifest entries,
+and artifacts not executed by the harness (currently Prestige) still participate in its identity.
+The history gate walks every commit after the seed: a correctness-only artifact change must append its
 resulting hash to the current epoch in the same commit, while a `BALANCE-CHANGE:` must append one
 new epoch and its numbered changelog. Hardcap reductions can never be hotfixes and require an
 explicit `Cap migration:` policy in the new epoch changelog. `make epoch-hash` prints the exact
 worktree hash to register; it does not modify the seed.
+
+Before the realtime node starts or readiness can become true, the gameserver requires an epoch-seed
+synchronizer to reconcile that exact bundle into Postgres. Reconciliation is idempotent, serializes
+with mint/hotfix operations, and can bootstrap epoch 1 or advance exactly one deployed epoch. It
+fails closed on skipped history, mismatched accepted sets, or unavailable historical bytes rather
+than fabricating a replay identity. Epoch IDs are allocated explicitly under the same transaction
+lock, so an invalid changelog reference cannot burn a sequence number and poison every retry.
+
+A `CONSTANTS-IDENTITY:` baseline commit is a narrow non-balance repair path: the guard proves that
+only constants-hash fields changed, every new hash equals the manifest-computed value, and all pacing
+and golden behavior is byte-semantically unchanged. It cannot authorize code or tuning changes.
 
 ## Run pinning
 

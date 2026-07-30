@@ -10,6 +10,7 @@ import (
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/leaderboard"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
@@ -38,9 +39,13 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,save_streams RESTART IDENTITY CASCADE`); err != nil {
 		t.Fatal(err)
 	}
-	economyBytes, _ := os.ReadFile("../../balance/catalogs/phase0.json")
-	routeBytes, _ := os.ReadFile("../../balance/routes/phase0.json")
-	prestigeBytes, _ := os.ReadFile("../../balance/prestige/phase0.json")
+	bundle, err := epochseed.Load(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	economyBytes := bundle.Artifacts["economy"]
+	routeBytes := bundle.Artifacts["routes"]
+	prestigeBytes := bundle.Artifacts["prestige"]
 	catalog, err := economy.LoadCatalog(economyBytes)
 	if err != nil {
 		t.Fatal(err)
@@ -53,11 +58,8 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	hash, err := save.ConstantsHashArtifacts(map[string][]byte{"economy": economyBytes, "routes": routeBytes, "prestige": prestigeBytes})
-	if err != nil {
-		t.Fatal(err)
-	}
-	seedProductionEpoch(t, db, hash, map[string][]byte{"economy": economyBytes, "routes": routeBytes, "prestige": prestigeBytes})
+	hash := bundle.Hash
+	seedProductionEpoch(t, db, hash, bundle.Artifacts)
 	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}, prestige: map[string]*prestigecore.Policy{hash: policy}}
 	store, err := save.NewStore(db, resolver, nil)
 	if err != nil {
@@ -193,7 +195,11 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	changedEconomyBytes := append(append([]byte(nil), economyBytes...), '\n')
-	changedArtifacts := map[string][]byte{"economy": changedEconomyBytes, "routes": routeBytes, "prestige": prestigeBytes}
+	changedArtifacts := make(map[string][]byte, len(bundle.Artifacts))
+	for name, data := range bundle.Artifacts {
+		changedArtifacts[name] = append([]byte(nil), data...)
+	}
+	changedArtifacts["economy"] = changedEconomyBytes
 	currentHash, err := save.ConstantsHashArtifacts(changedArtifacts)
 	if err != nil || currentHash == hash {
 		t.Fatalf("changed hash=%s old=%s err=%v", currentHash, hash, err)
@@ -209,7 +215,10 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	artifacts := []leaderboard.Artifact{{Name: "economy", Bytes: changedEconomyBytes}, {Name: "routes", Bytes: routeBytes}, {Name: "prestige", Bytes: prestigeBytes}}
+	artifacts := make([]leaderboard.Artifact, 0, len(changedArtifacts))
+	for _, declaration := range bundle.Seed.Artifacts {
+		artifacts = append(artifacts, leaderboard.Artifact{Name: declaration.Name, Bytes: changedArtifacts[declaration.Name]})
+	}
 	var firstEpochStarted time.Time
 	if err := db.QueryRowContext(ctx, `SELECT started_at FROM epochs WHERE ended_at IS NULL`).Scan(&firstEpochStarted); err != nil {
 		t.Fatal(err)

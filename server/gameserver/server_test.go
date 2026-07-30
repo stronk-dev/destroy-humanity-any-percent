@@ -14,6 +14,23 @@ type fakeDatabase struct{ err error }
 
 func (database fakeDatabase) PingContext(context.Context) error { return database.err }
 
+const testConstantsHash = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+type fakeEpochs struct {
+	hash   string
+	err    error
+	events *[]string
+}
+
+func (epochs fakeEpochs) Sync(context.Context) (string, error) {
+	if epochs.events != nil {
+		*epochs.events = append(*epochs.events, "epochs")
+	}
+	return epochs.hash, epochs.err
+}
+
+func syncedEpochs() fakeEpochs { return fakeEpochs{hash: testConstantsHash} }
+
 type fakeRealtime struct {
 	mu          sync.Mutex
 	events      []string
@@ -83,7 +100,7 @@ func TestDrainOrdersAdmissionCommitFlushAndSocketClose(t *testing.T) {
 	})
 	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
 	relay := &fakeRelay{results: []int{2, 0}}
-	server, err := New(fakeDatabase{}, api, realtime, relay, "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+	server, err := New(fakeDatabase{}, api, realtime, relay, syncedEpochs(), testConstantsHash)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -119,7 +136,7 @@ func TestDrainOrdersAdmissionCommitFlushAndSocketClose(t *testing.T) {
 
 func TestHealthAndReadinessAreDistinct(t *testing.T) {
 	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
-	server, _ := New(fakeDatabase{err: errors.New("database unavailable")}, http.NotFoundHandler(), realtime, &fakeRelay{}, "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+	server, _ := New(fakeDatabase{err: errors.New("database unavailable")}, http.NotFoundHandler(), realtime, &fakeRelay{}, syncedEpochs(), testConstantsHash)
 	handler := server.Handler()
 	health := httptest.NewRecorder()
 	handler.ServeHTTP(health, httptest.NewRequest(http.MethodGet, "/healthz", nil))
@@ -141,7 +158,7 @@ func TestDrainDeadlineStillClosesSockets(t *testing.T) {
 		response.WriteHeader(http.StatusOK)
 	})
 	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: 20 * time.Millisecond}
-	server, _ := New(fakeDatabase{}, api, realtime, &fakeRelay{}, "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+	server, _ := New(fakeDatabase{}, api, realtime, &fakeRelay{}, syncedEpochs(), testConstantsHash)
 	go server.Handler().ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(http.MethodPost, "/api/v1/intents", nil))
 	<-intentEntered
 	err := server.Drain(context.Background(), time.Now().UTC())
@@ -157,7 +174,9 @@ func TestDrainDeadlineStillClosesSockets(t *testing.T) {
 func TestStartRunsRealtimeAndReceiptRelay(t *testing.T) {
 	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
 	relay := &fakeRelay{}
-	server, _ := New(fakeDatabase{}, http.NotFoundHandler(), realtime, relay, "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+	events := []string{}
+	epochs := fakeEpochs{hash: testConstantsHash, events: &events}
+	server, _ := New(fakeDatabase{}, http.NotFoundHandler(), realtime, relay, epochs, testConstantsHash)
 	ctx, cancel := context.WithCancel(context.Background())
 	if err := server.Start(ctx); err != nil {
 		t.Fatal(err)
@@ -170,5 +189,27 @@ func TestStartRunsRealtimeAndReceiptRelay(t *testing.T) {
 	}
 	if events := realtime.snapshot(); len(events) != 1 || events[0] != "run" {
 		t.Fatalf("start events=%v", events)
+	}
+	if len(events) != 1 || events[0] != "epochs" {
+		t.Fatalf("startup order=%v", events)
+	}
+}
+
+func TestStartFailsClosedBeforeRealtimeOnEpochMismatch(t *testing.T) {
+	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
+	server, err := New(fakeDatabase{}, http.NotFoundHandler(), realtime, &fakeRelay{}, fakeEpochs{hash: "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}, testConstantsHash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := server.Start(context.Background()); !errors.Is(err, ErrInvalidServer) {
+		t.Fatalf("start err=%v", err)
+	}
+	if events := realtime.snapshot(); len(events) != 0 {
+		t.Fatalf("realtime started before epoch sync: %v", events)
+	}
+	ready := httptest.NewRecorder()
+	server.Handler().ServeHTTP(ready, httptest.NewRequest(http.MethodGet, "/readyz", nil))
+	if ready.Code != http.StatusServiceUnavailable {
+		t.Fatalf("ready=%d", ready.Code)
 	}
 }

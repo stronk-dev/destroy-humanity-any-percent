@@ -120,4 +120,6 @@ The existing history guard already walks every reachable revision. Extension, sa
 - 2026-07-29: all eight answered with executable contracts L1–L8; Assisted ruled as two structural variables (commons, advisor); cap-lowering rule landed in L8.
 - 2026-07-30: L8 guard implementation reviewed and approved; L2a added (seed as single artifact-set authority + parity test) from the review's MEDIUM finding; constants reverts documented as mint-only.
 - 2026-07-30: core review found two architectural HIGHs rooted in this RFC's contracts; rulings L2b (version-drift runs stay playable, unrankable), L5b (run N+1 starts under the current hash), L5c (startup epoch seed sync) added.
+- 2026-07-30: L2a/L5c remediation centralizes artifact composition in `epochseed`, requires
+  manifest reconciliation before gameserver readiness, and adds a hash-only baseline repair gate.
 - 2026-07-29: accepted for implementation by `planning/codex-batch-2026-07-29.md`; implementation started immediately behind Prestige so L1 can replace its provisional terminal sequence.

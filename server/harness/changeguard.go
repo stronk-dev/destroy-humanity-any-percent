@@ -2,8 +2,10 @@ package harness
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"os/exec"
+	"reflect"
 	"strings"
 )
 
@@ -38,7 +40,10 @@ func ValidateBaselineCommit(commitPaths, inputsBefore []string, subject string) 
 		return fmt.Errorf("baseline artifact commit does not change %s", baselinePath)
 	}
 	if !strings.HasPrefix(subject, "BALANCE-CHANGE:") {
-		return fmt.Errorf("baseline rewrite commit subject must begin BALANCE-CHANGE:")
+		if strings.HasPrefix(subject, "CONSTANTS-IDENTITY:") {
+			return nil
+		}
+		return fmt.Errorf("baseline rewrite commit subject must begin BALANCE-CHANGE: or CONSTANTS-IDENTITY:")
 	}
 	for _, path := range inputsBefore {
 		path = strings.TrimSpace(path)
@@ -102,6 +107,80 @@ func ValidateRepositoryBaselineChange(root string) error {
 		if err := ValidateBaselineCommit(commitPaths, inputPaths, string(subject)); err != nil {
 			return fmt.Errorf("invalid baseline commit %s: %w", commit, err)
 		}
+		if strings.HasPrefix(string(subject), "CONSTANTS-IDENTITY:") {
+			if err := validateConstantsIdentityCommit(root, parent, commit); err != nil {
+				return fmt.Errorf("invalid constants-identity commit %s: %w", commit, err)
+			}
+		}
+	}
+	return nil
+}
+
+func validateConstantsIdentityCommit(root, parent, commit string) error {
+	seedBytes, err := gitBlob(root, commit, epochSeedPath)
+	if err != nil {
+		return err
+	}
+	seed, err := decodeEpochSeed(seedBytes)
+	if err != nil {
+		return err
+	}
+	expectedHash, err := hashArtifactsAt(root, commit, seed)
+	if err != nil {
+		return err
+	}
+	beforeBaseline, err := gitBlob(root, parent, baselinePath)
+	if err != nil {
+		return err
+	}
+	afterBaseline, err := gitBlob(root, commit, baselinePath)
+	if err != nil {
+		return err
+	}
+	beforeGolden, err := gitBlob(root, parent, goldenPath)
+	if err != nil {
+		return err
+	}
+	afterGolden, err := gitBlob(root, commit, goldenPath)
+	if err != nil {
+		return err
+	}
+	return validateConstantsIdentityBlobs(beforeBaseline, afterBaseline, beforeGolden, afterGolden, expectedHash)
+}
+
+func validateConstantsIdentityBlobs(beforeBaseline, afterBaseline, beforeGolden, afterGolden []byte, expectedHash string) error {
+	var oldBaseline, newBaseline AggregateReport
+	if err := json.Unmarshal(beforeBaseline, &oldBaseline); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(afterBaseline, &newBaseline); err != nil {
+		return err
+	}
+	if newBaseline.ConstantsHash != expectedHash {
+		return fmt.Errorf("baseline hash %s differs from epoch manifest %s", newBaseline.ConstantsHash, expectedHash)
+	}
+	oldBaseline.ConstantsHash, newBaseline.ConstantsHash = "", ""
+	if !reflect.DeepEqual(oldBaseline, newBaseline) {
+		return fmt.Errorf("constants-identity commit changes pacing baseline content")
+	}
+	var oldGolden, newGolden GoldenReport
+	if err := json.Unmarshal(beforeGolden, &oldGolden); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(afterGolden, &newGolden); err != nil {
+		return err
+	}
+	for index := range newGolden.Runs {
+		if newGolden.Runs[index].Key.ConstantsHash != expectedHash {
+			return fmt.Errorf("golden run %d hash differs from epoch manifest", index)
+		}
+		newGolden.Runs[index].Key.ConstantsHash = ""
+	}
+	for index := range oldGolden.Runs {
+		oldGolden.Runs[index].Key.ConstantsHash = ""
+	}
+	if !reflect.DeepEqual(oldGolden, newGolden) {
+		return fmt.Errorf("constants-identity commit changes golden behavior")
 	}
 	return nil
 }

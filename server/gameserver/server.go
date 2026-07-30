@@ -32,11 +32,16 @@ type ReceiptRelay interface {
 	Flush(context.Context) (int, error)
 }
 
+type EpochSynchronizer interface {
+	Sync(context.Context) (string, error)
+}
+
 type Server struct {
 	database      Database
 	api           http.Handler
 	realtime      Realtime
 	relay         ReceiptRelay
+	epochs        EpochSynchronizer
 	constantsHash string
 	gate          *intentGate
 	ready         atomic.Bool
@@ -46,13 +51,11 @@ type Server struct {
 	startErr      error
 }
 
-func New(database Database, api http.Handler, realtime Realtime, relay ReceiptRelay, constantsHash string) (*Server, error) {
-	if database == nil || api == nil || realtime == nil || relay == nil || !validConstantsHash(constantsHash) {
+func New(database Database, api http.Handler, realtime Realtime, relay ReceiptRelay, epochs EpochSynchronizer, constantsHash string) (*Server, error) {
+	if database == nil || api == nil || realtime == nil || relay == nil || epochs == nil || !validConstantsHash(constantsHash) {
 		return nil, ErrInvalidServer
 	}
-	server := &Server{database: database, api: api, realtime: realtime, relay: relay, constantsHash: constantsHash, gate: newIntentGate(), relayDone: make(chan struct{})}
-	server.ready.Store(true)
-	return server, nil
+	return &Server{database: database, api: api, realtime: realtime, relay: relay, epochs: epochs, constantsHash: constantsHash, gate: newIntentGate(), relayDone: make(chan struct{})}, nil
 }
 
 func validConstantsHash(value string) bool {
@@ -65,6 +68,12 @@ func validConstantsHash(value string) bool {
 
 func (server *Server) Start(ctx context.Context) error {
 	server.startOnce.Do(func() {
+		hash, err := server.epochs.Sync(ctx)
+		if err != nil || hash != server.constantsHash {
+			server.startErr = errors.Join(ErrInvalidServer, err)
+			close(server.relayDone)
+			return
+		}
 		server.startErr = server.realtime.Run()
 		if server.startErr != nil {
 			server.ready.Store(false)
@@ -73,6 +82,7 @@ func (server *Server) Start(ctx context.Context) error {
 		}
 		var relayContext context.Context
 		relayContext, server.relayCancel = context.WithCancel(ctx)
+		server.ready.Store(true)
 		go server.runRelay(relayContext)
 	})
 	return server.startErr

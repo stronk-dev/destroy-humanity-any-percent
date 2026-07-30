@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/save"
 )
 
@@ -50,6 +51,9 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 		}
 	}
 	repository, _ := NewRepository(db, root)
+	if _, err := repository.MintEpoch(ctx, "bad ref", time.Date(2026, 7, 29, 11, 0, 0, 0, time.UTC), "changelog/epoch-2.md", artifacts); !errors.Is(err, ErrInvalidEpoch) {
+		t.Fatalf("bad first changelog err=%v", err)
+	}
 	first, err := repository.MintEpoch(ctx, "Phase 0", time.Date(2026, 7, 29, 12, 0, 0, 0, time.UTC), "changelog/epoch-1.md", artifacts)
 	if err != nil || first.ID != 1 || len(first.Hashes) != 1 {
 		t.Fatalf("first=%+v err=%v", first, err)
@@ -136,6 +140,81 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 		t.Fatalf("page=%+v err=%v", page, err)
 	}
 	assertEpochRows(t, db, 2, 2)
+}
+
+func TestEpochSeedReconciliationIntegration(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets RESTART IDENTITY CASCADE`); err != nil {
+		t.Fatal(err)
+	}
+	bundle, err := epochseed.Load(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	root := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(root, "changelog"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"epoch-1.md", "epoch-2.md"} {
+		if err := os.WriteFile(filepath.Join(root, "changelog", name), []byte("# reconciled epoch\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	repository, err := NewRepository(db, root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	started := time.Date(2026, 7, 30, 10, 0, 0, 123_456_789, time.UTC)
+	if err := repository.ReconcileSeed(ctx, bundle, started); err != nil {
+		t.Fatal(err)
+	}
+	if err := repository.ReconcileSeed(ctx, bundle, started.Add(time.Hour)); err != nil {
+		t.Fatalf("idempotent reconcile: %v", err)
+	}
+	current, err := repository.Current(ctx)
+	if err != nil || current.ID != 1 || len(current.Hashes) != 1 || current.Hashes[0] != bundle.Hash {
+		t.Fatalf("current=%+v err=%v", current, err)
+	}
+	var artifactCount int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM catalog_artifacts WHERE constants_hash=$1`, bundle.Hash).Scan(&artifactCount); err != nil || artifactCount != len(bundle.Seed.Artifacts) {
+		t.Fatalf("artifact count=%d err=%v", artifactCount, err)
+	}
+
+	next := bundle
+	next.Seed.CurrentEpochID = 2
+	next.Seed.Epochs = append(append([]epochseed.Epoch(nil), bundle.Seed.Epochs...), epochseed.Epoch{
+		ID: 2, Name: "Phase 0.1", ChangelogRef: "changelog/epoch-2.md", AcceptedHashes: []string{bundle.Hash},
+	})
+	if err := repository.ReconcileSeed(ctx, next, started.Add(time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	current, err = repository.Current(ctx)
+	if err != nil || current.ID != 2 || current.Name != "Phase 0.1" {
+		t.Fatalf("advanced current=%+v err=%v", current, err)
+	}
+	if _, err := repository.MintEpoch(ctx, "Phase 0.2", started.Add(2*time.Hour), "changelog/epoch-3.md", artifactsFromBundle(bundle)); !errors.Is(err, ErrInvalidEpoch) {
+		t.Fatalf("missing changelog should fail before sequence allocation: %v", err)
+	}
+}
+
+func artifactsFromBundle(bundle epochseed.Bundle) []Artifact {
+	artifacts := make([]Artifact, 0, len(bundle.Seed.Artifacts))
+	for _, declaration := range bundle.Seed.Artifacts {
+		artifacts = append(artifacts, Artifact{Name: declaration.Name, Bytes: bundle.Artifacts[declaration.Name]})
+	}
+	return artifacts
 }
 
 func assertEpochRows(t *testing.T, db *sql.DB, epochs, pins int) {

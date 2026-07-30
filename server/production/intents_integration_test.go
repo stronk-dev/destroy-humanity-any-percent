@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/commonsprojection"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/epochseed"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routeprojection"
 	"cloud-clicker/server/routes"
@@ -67,35 +69,27 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,commons_recruitment_offers,commons_health_scopes,commons_member_samples,commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes, route_hint_projection_events, founder_route_state, founder_route_executions, route_projection_events, events, intent_records, save_revisions, save_streams CASCADE`); err != nil {
 		t.Fatal(err)
 	}
-	catalogBytes, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	bundle, err := epochseed.Load(filepath.Join("..", ".."))
 	if err != nil {
 		t.Fatal(err)
 	}
+	catalogBytes := bundle.Artifacts["economy"]
 	catalog, err := economy.LoadCatalog(catalogBytes)
 	if err != nil {
 		t.Fatal(err)
 	}
-	routeBytes, err := os.ReadFile("../../balance/routes/phase0.json")
-	if err != nil {
-		t.Fatal(err)
-	}
+	routeBytes := bundle.Artifacts["routes"]
 	routeCatalog, err := routes.LoadCatalog(routeBytes)
 	if err != nil {
 		t.Fatal(err)
 	}
-	commonsBytes, err := os.ReadFile("../../balance/commons/phase0.json")
-	if err != nil {
-		t.Fatal(err)
-	}
+	commonsBytes := bundle.Artifacts["commons"]
 	commonsCatalog, err := commons.LoadCatalog(commonsBytes)
 	if err != nil {
 		t.Fatal(err)
 	}
-	hash, err := save.ConstantsHashArtifacts(map[string][]byte{"economy": catalogBytes, "routes": routeBytes, "commons": commonsBytes})
-	if err != nil {
-		t.Fatal(err)
-	}
-	seedProductionEpoch(t, db, hash, map[string][]byte{"economy": catalogBytes, "routes": routeBytes, "commons": commonsBytes})
+	hash := bundle.Hash
+	seedProductionEpoch(t, db, hash, bundle.Artifacts)
 	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}}
 	store, err := save.NewStore(db, resolver, nil)
 	if err != nil {
