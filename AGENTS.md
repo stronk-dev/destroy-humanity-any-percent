@@ -86,6 +86,12 @@ useful batches instead of asking for permission one invocation at a time:
 - non-destructive Git bookkeeping (`git status`, `git diff`, `git add`, and intentional
   intermediate `git commit`s).
 
+History rewriting (rebase/amend of committed work) is permitted for exactly one purpose: correcting
+a protocol-violating commit subject (`BALANCE-CHANGE:`/`CONSTANTS-IDENTITY:` classes) — and only
+while no review verdict references the affected hashes and nothing has been pushed. Once a
+planning-log verdict cites a hash, that history is append-only; a wrong-subject commit discovered
+after that point gets a follow-up correction commit and a planning-log ruling, never a rewrite.
+
 Use stable, narrowly scoped command prefixes so the execution environment can remember approval.
 Run every routine format, build, test, and Git command with the repository root as its working
 directory. Do not create task-specific cache directories or move into package subdirectories just

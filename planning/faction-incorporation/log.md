@@ -175,3 +175,28 @@ Findings and rulings:
   validation, client typecheck/build, 6,452 client unit tests, and 19,365 browser tests. The browser
   target required ordinary loopback permission because the filesystem sandbox rejected its first
   local IPv6 listener with `EPERM`; the unrestricted standard target passed with zero failures.
+
+## 2026-07-30 — independent review: remediation commits 81251ca..6f2bdcd + the rebase
+
+**Verdict: approved, including the history rewrite — with the convention it exposed now written
+down.** The reflog shows the rewritten commits (c90a7bf `CONSTANTS-IDENTITY: bind attended-time
+policy`, 06241ac) were post-approval and referenced by NO review verdict; the reviewed range
+9b5f4b3..91d089b is intact. The original subject was genuinely wrong (a semantic prestige-artifact
+change under the identity class — the byte-pinning guard would have rejected the repo's history
+permanently), and a pre-publication rebase was the correct, and only, remedy. AGENTS.md now
+carries the explicit rule (below).
+
+Reviewed:
+- **81251ca (FB-1/P6c):** `catchup_ceiling_ms` (5000 — matching the client-shell display copy) is
+  now a prestige-catalog field consumed by BOTH the prestige and faction hooks from the run's
+  resolved policy; the duplicate ServiceOption ceilings are gone. Registered as an epoch-2 hotfix
+  (accepted set now 2 hashes) — correct classification: structural field addition, no numeric
+  change.
+- **866a237 (F2a):** existing-member branch preserves membership and Solidarity, raises the tithe,
+  emits `compact_tithe_raised`; new-member branch byte-untouched; `already_member` removed from
+  the path exactly per the ruling.
+- **4647f7f:** one-line allowlist addition — `balance/prestige/` joins the recognized
+  balance-input prefixes for baseline rewrites (its absence is what misclassified the original
+  commit), with regression coverage.
+- **5f9bc5f:** the baseline rewrite, properly `BALANCE-CHANGE:`-subjected, touching only the two
+  harness artifacts, justified by the newly-recognized prestige input.
