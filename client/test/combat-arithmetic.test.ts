@@ -7,7 +7,12 @@ import { battleSeed, substream } from "../src/combat/rng";
 const fixture = fixtureJson as {
   version: number;
   damage: readonly { name: string; base_power: number; attacker_atk: number; chart: ChartResult; critical: boolean; expected: number }[];
-  rng: { match_seed: string; battle_seed: string; substreams: Readonly<Record<string, string>> };
+  rng: {
+    match_seed: string;
+    battle_seed: string;
+    substreams: Readonly<Record<string, string>>;
+    bounded: readonly { label: string; bound: string; expected: string; draws: number }[];
+  };
 };
 const temperaments: readonly Temperament[] = ["lazy", "playful", "curious", "sassy", "shy", "chaotic"];
 
@@ -34,5 +39,19 @@ describe("combat shared arithmetic", () => {
     for (const [label, expected] of Object.entries(fixture.rng.substreams)) expect(substream(battle, label).next().toString()).toBe(expected);
     const before = substream(battle, "crit").next(); substream(battle, "new_consumer").next();
     expect(substream(battle, "crit").next()).toBe(before);
+  });
+  it.each(fixture.rng.bounded)("bounds $label to $bound", (vector) => {
+    const battle = battleSeed(BigInt(fixture.rng.match_seed));
+    const random = substream(battle, vector.label);
+    expect(random.bound(BigInt(vector.bound)).toString()).toBe(vector.expected);
+
+    const replay = substream(battle, vector.label);
+    const bound = BigInt(vector.bound);
+    const threshold = ((1n << 64n) - bound) % bound;
+    let draws = 0;
+    do {
+      draws++;
+    } while (replay.next() < threshold);
+    expect(draws).toBe(vector.draws);
   });
 });

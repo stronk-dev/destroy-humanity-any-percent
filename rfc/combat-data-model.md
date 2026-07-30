@@ -71,3 +71,5 @@ Trust→Obedience (smooth 50%→30% across Trust 1.00→0.80) and Soul modulatio
 - 2026-07-30: AC6 remediation makes the division gate recursive and AST-based, with seeded
   self-attacks for nested/extended TypeScript files, string/comment/regex confusion, division
   inside template interpolation, and division after a closed template.
+- 2026-07-30: AC2/AC3 vector remediation adds order-sensitive disadvantage+crit, non-identity ATK,
+  advantage-rounding, and bounded-draw cases in both runtimes, including a four-rejection sample.

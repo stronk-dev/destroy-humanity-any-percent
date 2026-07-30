@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math"
 	"os"
+	"strconv"
 	"testing"
 
 	"cloud-clicker/server/determinism"
@@ -23,6 +24,12 @@ type arithmeticFixture struct {
 		MatchSeed  string            `json:"match_seed"`
 		BattleSeed string            `json:"battle_seed"`
 		Substreams map[string]string `json:"substreams"`
+		Bounded    []struct {
+			Label    string `json:"label"`
+			Bound    string `json:"bound"`
+			Expected string `json:"expected"`
+			Draws    int    `json:"draws"`
+		} `json:"bounded"`
 	} `json:"rng"`
 }
 
@@ -67,7 +74,11 @@ func TestTemperamentChartProperties(t *testing.T) {
 
 func TestLabeledSubstreamVectorsAndIsolation(t *testing.T) {
 	fixture := loadArithmeticFixture(t)
-	battle := determinism.BattleSeed(42)
+	matchSeed, err := strconv.ParseUint(fixture.RNG.MatchSeed, 10, 64)
+	if err != nil {
+		t.Fatal(err)
+	}
+	battle := determinism.BattleSeed(matchSeed)
 	if formatUint(battle) != fixture.RNG.BattleSeed {
 		t.Fatalf("battle seed=%d", battle)
 	}
@@ -81,6 +92,31 @@ func TestLabeledSubstreamVectorsAndIsolation(t *testing.T) {
 	critAfter := determinism.Substream(battle, "crit").Next()
 	if critBefore != critAfter {
 		t.Fatal("adding a consumer shifted the crit substream")
+	}
+	for _, vector := range fixture.RNG.Bounded {
+		t.Run("bound_"+vector.Label+"_"+vector.Bound, func(t *testing.T) {
+			bound, err := strconv.ParseUint(vector.Bound, 10, 64)
+			if err != nil {
+				t.Fatal(err)
+			}
+			random := determinism.Substream(battle, vector.Label)
+			actual := random.Bound(bound)
+			if formatUint(actual) != vector.Expected {
+				t.Fatalf("bound result=%d want=%s", actual, vector.Expected)
+			}
+			threshold := (-bound) % bound
+			replay := determinism.Substream(battle, vector.Label)
+			draws := 0
+			for {
+				draws++
+				if replay.Next() >= threshold {
+					break
+				}
+			}
+			if draws != vector.Draws {
+				t.Fatalf("draws=%d want=%d", draws, vector.Draws)
+			}
+		})
 	}
 }
 

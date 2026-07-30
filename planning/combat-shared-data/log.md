@@ -121,3 +121,15 @@ demonstrated HIGH:**
   a TSX expression, and a nested `.mts` violation. A regex literal is an explicit safe control.
 - Parse diagnostics fail closed instead of permitting an unscanned malformed module. Canonical
   docs and the implementing RFC now describe the AST boundary actually shipped.
+
+## 2026-07-30 — arithmetic and bounded-RNG vector remediation
+
+- Expanded the shared damage corpus with the review's three distinguishing cases: disadvantage
+  followed by crit (114, while the swapped order is 115), ATK 100 scaling, and a non-integral
+  advantage result. Skipping ATK scaling or commuting stages no longer passes either runtime.
+- Added shared labeled bounded-draw vectors. Both suites parse the exact uint64 strings, assert the
+  result, independently count rejection attempts, and require the obedience vector's four rejected
+  draws before its fifth is accepted. The Go test now also consumes `match_seed` from the fixture
+  instead of hardcoding 42.
+- Focused Go combat/determinism tests and the shared TypeScript combat suite are green. The parent
+  remains implementing because its catalog/effect-table DESIGN-GAPs are still owner-blocked.
