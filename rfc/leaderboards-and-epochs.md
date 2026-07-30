@@ -99,7 +99,10 @@ live at its timer start" true across mints.
 
 **L5c — Epoch seed sync (ruling, 2026-07-30):** `cmd/gameserver` reconciles DB epochs/hashes with
 the repo seed idempotently at startup, before readiness; the process's constants hash is therefore
-always in the current epoch's accepted set.
+always in the current epoch's accepted set. An empty database replays every seed epoch and accepted
+hash, with all predecessors closed; a non-empty database must be a valid prefix and may advance by
+one epoch. Only the current worktree hash has artifact bytes available during an empty bootstrap;
+historical identities are never assigned fabricated bytes.
 
 ### L6 — Board projection contract
 
@@ -128,4 +131,6 @@ cannot be relabeled identity-only even when the harness does not execute that ar
   manifest reconciliation before gameserver readiness, and adds a hash-only baseline repair gate.
 - 2026-07-30: round-2 review tightens the identity-only gate to pin every seed artifact's bytes at
   the preceding baseline, closing the hashed-but-unexecuted catalog escape.
+- 2026-07-30: L5c empty-database reconciliation replays the full declared epoch/hash history instead
+  of rejecting every deployment after the first mint or hotfix.
 - 2026-07-29: accepted for implementation by `planning/codex-batch-2026-07-29.md`; implementation started immediately behind Prestige so L1 can replace its provisional terminal sequence.

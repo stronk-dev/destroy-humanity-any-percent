@@ -135,9 +135,9 @@ func (repository *Repository) AddHotfix(ctx context.Context, constantsHash strin
 }
 
 // ReconcileSeed makes the repository manifest and database agree before a
-// gameserver can become ready. The worktree contains bytes only for its current
-// hash, so reconciliation may bootstrap epoch 1 or advance one epoch; skipped
-// historical epochs fail closed instead of fabricating their catalog bytes.
+// gameserver can become ready. An empty database is reconstructed from the
+// manifest's complete epoch/hash history; an existing database must remain a
+// prefix of that history and may advance by only one deployed epoch.
 func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochseed.Bundle, startedAt time.Time) error {
 	if startedAt.IsZero() || bundle.Hash == "" || epochseed.Validate(bundle.Seed) != nil ||
 		!epochseed.Accepts(epochseed.Current(bundle.Seed), bundle.Hash) {
@@ -161,8 +161,10 @@ func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochsee
 		return ErrInvalidEpoch
 	}
 	currentSeed := epochseed.Current(bundle.Seed)
-	if err := ValidateChangelog(repository.repositoryRoot, currentSeed.ChangelogRef); err != nil {
-		return err
+	for _, declared := range bundle.Seed.Epochs {
+		if err := ValidateChangelog(repository.repositoryRoot, declared.ChangelogRef); err != nil {
+			return err
+		}
 	}
 	startedAt = save.CanonicalServerTime(startedAt)
 	tx, err := repository.db.BeginTx(ctx, nil)
@@ -197,19 +199,26 @@ func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochsee
 			return ErrInvalidEpoch
 		}
 	}
+	if currentDatabaseID == 0 {
+		if err := bootstrapEpochHistory(ctx, tx, bundle.Seed, startedAt); err != nil {
+			return err
+		}
+		if err := insertCatalogSet(ctx, tx, bundle.Hash, normalized); err != nil {
+			return err
+		}
+		return tx.Commit()
+	}
 	switch {
 	case currentDatabaseID == currentSeed.ID:
 		// Current row already exists; the exact current bytes may still need an
 		// idempotent catalog insert after a process/database restore.
 	case currentDatabaseID+1 == currentSeed.ID:
-		if currentDatabaseID > 0 {
-			last := databaseEpochs[len(databaseEpochs)-1]
-			if startedAt.Before(last.StartedAt) {
-				return ErrInvalidEpoch
-			}
-			if _, err := tx.ExecContext(ctx, `UPDATE epochs SET ended_at=$2 WHERE epoch_id=$1`, currentDatabaseID, startedAt); err != nil {
-				return err
-			}
+		last := databaseEpochs[len(databaseEpochs)-1]
+		if startedAt.Before(last.StartedAt) {
+			return ErrInvalidEpoch
+		}
+		if _, err := tx.ExecContext(ctx, `UPDATE epochs SET ended_at=$2 WHERE epoch_id=$1`, currentDatabaseID, startedAt); err != nil {
+			return err
 		}
 		if _, err := tx.ExecContext(ctx, `INSERT INTO epochs(epoch_id,name,started_at,changelog_ref) VALUES($1,$2,$3,$4)`, currentSeed.ID, currentSeed.Name, startedAt, currentSeed.ChangelogRef); err != nil {
 			return err
@@ -231,6 +240,35 @@ func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochsee
 		return ErrInvalidEpoch
 	}
 	return tx.Commit()
+}
+
+func bootstrapEpochHistory(ctx context.Context, tx *sql.Tx, seed epochseed.Seed, currentStartedAt time.Time) error {
+	for _, declared := range seed.Epochs {
+		for _, hash := range declared.AcceptedHashes {
+			if _, err := tx.ExecContext(ctx, `INSERT INTO catalog_sets(constants_hash) VALUES($1) ON CONFLICT DO NOTHING`, hash); err != nil {
+				return err
+			}
+		}
+	}
+	step := time.Millisecond
+	firstStartedAt := currentStartedAt.Add(-time.Duration(len(seed.Epochs)-1) * step)
+	for index, declared := range seed.Epochs {
+		startedAt := firstStartedAt.Add(time.Duration(index) * step)
+		var endedAt any
+		if index+1 < len(seed.Epochs) {
+			endedAt = startedAt.Add(step)
+		}
+		if _, err := tx.ExecContext(ctx, `INSERT INTO epochs(epoch_id,name,started_at,ended_at,changelog_ref) VALUES($1,$2,$3,$4,$5)`,
+			declared.ID, declared.Name, startedAt, endedAt, declared.ChangelogRef); err != nil {
+			return err
+		}
+		for _, hash := range declared.AcceptedHashes {
+			if _, err := tx.ExecContext(ctx, `INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)`, declared.ID, hash); err != nil {
+				return err
+			}
+		}
+	}
+	return advanceEpochSequence(ctx, tx, seed.CurrentEpochID)
 }
 
 func (repository *Repository) Current(ctx context.Context) (Epoch, error) {

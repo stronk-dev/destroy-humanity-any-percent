@@ -251,3 +251,17 @@ Findings:
   artifacts.
 - A real temporary-Git-repository regression registers changed Prestige bytes as a hotfix and
   proves the identity artifact check rejects them by name; the unchanged control passes.
+
+## 2026-07-30 — round-2 MEDIUM remediation: full-history seed bootstrap
+
+- Empty-database reconciliation now inserts the manifest's complete ordered epoch history and every
+  accepted-hash identity in one advisory-locked transaction. Predecessor epochs are closed on a
+  deterministic millisecond timeline ending at the supplied current start; only the declared
+  current epoch remains open.
+- The current worktree bundle still supplies the only artifact bytes reconciliation can prove.
+  Historical hashes receive catalog-set identities to satisfy the immutable foreign-key graph, but
+  never fabricated bytes; recovering old replay bytes remains a database-backup obligation.
+- Existing databases retain the stricter prefix rule and one-epoch deployment advance. Every
+  changelog in the seed is validated before mutation. A real-Postgres test bootstraps two epochs and
+  three accepted memberships from empty state, proves closed/open status and idempotency, and checks
+  the historical identity has no invented artifact rows.

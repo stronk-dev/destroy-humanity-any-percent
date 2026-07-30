@@ -4,8 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 	"time"
 
@@ -206,6 +208,53 @@ func TestEpochSeedReconciliationIntegration(t *testing.T) {
 	}
 	if _, err := repository.MintEpoch(ctx, "Phase 0.2", started.Add(2*time.Hour), "changelog/epoch-3.md", artifactsFromBundle(bundle)); !errors.Is(err, ErrInvalidEpoch) {
 		t.Fatalf("missing changelog should fail before sequence allocation: %v", err)
+	}
+
+	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets RESTART IDENTITY CASCADE`); err != nil {
+		t.Fatal(err)
+	}
+	historicalHash := "sha256:0000000000000000000000000000000000000000000000000000000000000001"
+	history := bundle
+	history.Seed.CurrentEpochID = 2
+	history.Seed.Epochs = []epochseed.Epoch{
+		{ID: 1, Name: "Phase 0", ChangelogRef: "changelog/epoch-1.md", AcceptedHashes: []string{historicalHash, bundle.Hash}},
+		{ID: 2, Name: "Phase 0.1", ChangelogRef: "changelog/epoch-2.md", AcceptedHashes: []string{bundle.Hash}},
+	}
+	if err := repository.ReconcileSeed(ctx, history, started.Add(3*time.Hour)); err != nil {
+		t.Fatalf("fresh database full-history reconcile: %v", err)
+	}
+	if err := repository.ReconcileSeed(ctx, history, started.Add(4*time.Hour)); err != nil {
+		t.Fatalf("full-history reconcile idempotency: %v", err)
+	}
+	rows, err := repository.db.QueryContext(ctx, `SELECT epoch_id,ended_at IS NOT NULL FROM epochs ORDER BY epoch_id`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer rows.Close()
+	var epochStates []string
+	for rows.Next() {
+		var id int64
+		var ended bool
+		if err := rows.Scan(&id, &ended); err != nil {
+			t.Fatal(err)
+		}
+		epochStates = append(epochStates, fmt.Sprintf("%d:%t", id, ended))
+	}
+	if err := rows.Err(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(epochStates, []string{"1:true", "2:false"}) {
+		t.Fatalf("fresh history epoch states=%v", epochStates)
+	}
+	var accepted, historicalArtifacts int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM epoch_hashes`).Scan(&accepted); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM catalog_artifacts WHERE constants_hash=$1`, historicalHash).Scan(&historicalArtifacts); err != nil {
+		t.Fatal(err)
+	}
+	if accepted != 3 || historicalArtifacts != 0 {
+		t.Fatalf("fresh history accepted=%d historical artifacts=%d", accepted, historicalArtifacts)
 	}
 }
 

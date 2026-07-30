@@ -30,10 +30,13 @@ worktree hash to register; it does not modify the seed.
 
 Before the realtime node starts or readiness can become true, the gameserver requires an epoch-seed
 synchronizer to reconcile that exact bundle into Postgres. Reconciliation is idempotent, serializes
-with mint/hotfix operations, and can bootstrap epoch 1 or advance exactly one deployed epoch. It
-fails closed on skipped history, mismatched accepted sets, or unavailable historical bytes rather
-than fabricating a replay identity. Epoch IDs are allocated explicitly under the same transaction
-lock, so an invalid changelog reference cannot burn a sequence number and poison every retry.
+with mint/hotfix operations, and reconstructs every declared epoch and accepted-hash identity when
+the database is empty; all historical epochs are closed and only the manifest current epoch stays
+open. The current worktree bundle supplies artifact bytes for the current hash. Historical hashes
+are restored as identities without fabricated bytes; replayable historical artifact bytes remain
+the database backup's responsibility. An existing database must be an exact manifest prefix and may
+advance only one deployed epoch. Epoch IDs are allocated explicitly under the same transaction lock,
+so an invalid changelog reference cannot burn a sequence number and poison every retry.
 
 A `CONSTANTS-IDENTITY:` baseline commit is a narrow non-balance repair path: the guard proves that
 only constants-hash fields changed, every new hash equals the manifest-computed value, and all pacing
