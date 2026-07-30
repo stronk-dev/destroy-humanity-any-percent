@@ -4,6 +4,7 @@ go 1.26.0
 
 require (
 	github.com/centrifugal/centrifuge v0.38.0
+	github.com/centrifugal/protocol v0.17.0
 	github.com/coder/websocket v1.8.15
 	github.com/go-chi/chi/v5 v5.3.1
 	github.com/jackc/pgx/v5 v5.10.0
@@ -14,7 +15,6 @@ require (
 require (
 	github.com/FZambia/eagle v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/centrifugal/protocol v0.17.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dolthub/maphash v0.1.0 // indirect
 	github.com/gammazero/deque v0.2.1 // indirect

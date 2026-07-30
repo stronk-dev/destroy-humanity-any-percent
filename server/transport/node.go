@@ -14,6 +14,7 @@ import (
 	"cloud-clicker/server/kernel"
 
 	"github.com/centrifugal/centrifuge"
+	"github.com/centrifugal/protocol"
 )
 
 var (
@@ -88,15 +89,22 @@ func (n *Node) bindHandlers() {
 		if queue == nil {
 			return true
 		}
+		if event.FrameType != protocol.FrameTypePushPublication {
+			return true
+		}
+		kind, revision, ok := publicationEnvelopeMetadataForProtocol(client.Transport().Protocol(), event.Data)
+		if !ok {
+			client.Disconnect(disconnectQueueFull)
+			return false
+		}
 		switch {
 		case event.Channel == "world":
-			kind, revision, ok := publicationEnvelopeMetadata(event.Data)
-			if !ok || kind != "snapshot" {
+			if kind != "snapshot" {
 				return true
 			}
 			return queue.AllowWorldWrite(revision)
 		case isPlayerChannel(event.Channel):
-			queue.FinishPlayer()
+			queue.FinishPlayer(revision)
 		}
 		return true
 	})
@@ -221,7 +229,7 @@ func (n *Node) Publish(envelope Envelope) error {
 			if queue == nil {
 				continue
 			}
-			if err := queue.ReservePlayer(); err != nil {
+			if err := queue.ReservePlayer(envelope.Revision); err != nil {
 				client.Disconnect(disconnectQueueFull)
 				continue
 			}
@@ -231,7 +239,7 @@ func (n *Node) Publish(envelope Envelope) error {
 	_, err = n.node.Publish(envelope.Channel, data, n.publishOptions(envelope.Channel)...)
 	for _, reserved := range queuedFor {
 		if err != nil || !reserved.client.IsSubscribed(envelope.Channel) {
-			reserved.queue.FinishPlayer()
+			reserved.queue.FinishPlayer(envelope.Revision)
 		}
 	}
 	return err
@@ -349,6 +357,27 @@ func publicationEnvelopeMetadata(data []byte) (string, int64, bool) {
 		Revision int64  `json:"rev"`
 	}
 	if err := json.Unmarshal(frame.Push.Publication.Data, &envelope); err != nil || envelope.Kind == "" || envelope.Revision < 0 {
+		return "", 0, false
+	}
+	return envelope.Kind, envelope.Revision, true
+}
+
+func publicationEnvelopeMetadataForProtocol(protocolType centrifuge.ProtocolType, data []byte) (string, int64, bool) {
+	if protocolType == centrifuge.ProtocolTypeJSON {
+		return publicationEnvelopeMetadata(data)
+	}
+	if protocolType != centrifuge.ProtocolTypeProtobuf {
+		return "", 0, false
+	}
+	var reply protocol.Reply
+	if err := reply.UnmarshalVT(data); err != nil || reply.Push == nil || reply.Push.Pub == nil {
+		return "", 0, false
+	}
+	var envelope struct {
+		Kind     string `json:"kind"`
+		Revision int64  `json:"rev"`
+	}
+	if err := json.Unmarshal(reply.Push.Pub.Data, &envelope); err != nil || envelope.Kind == "" || envelope.Revision < 0 {
 		return "", 0, false
 	}
 	return envelope.Kind, envelope.Revision, true

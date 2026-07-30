@@ -32,9 +32,15 @@ func insertReceiptOutbox(ctx context.Context, tx *sql.Tx, founderID, companyStre
 		revision < 1 || !hashPattern.MatchString(constantsHash) || len(receipt) == 0 || len(receipt) > MaxReceiptOutboxBytes {
 		return ErrInvalidStream
 	}
-	_, err := tx.ExecContext(ctx, `
+	var insertedID int64
+	err := tx.QueryRowContext(ctx, `
 		INSERT INTO transport_receipt_outbox(founder_id,company_stream_id,intent_id,revision,constants_hash,receipt)
-		VALUES($1,$2,$3,$4,$5,$6)`, founderID, companyStreamID, intentID, revision, constantsHash, receipt)
+		SELECT $1,$2,$3,$4,$5,$6
+		WHERE octet_length($6::jsonb::text) <= $7
+		RETURNING outbox_id`, founderID, companyStreamID, intentID, revision, constantsHash, receipt, MaxReceiptOutboxBytes).Scan(&insertedID)
+	if errors.Is(err, sql.ErrNoRows) {
+		return ErrInvalidStream
+	}
 	return err
 }
 

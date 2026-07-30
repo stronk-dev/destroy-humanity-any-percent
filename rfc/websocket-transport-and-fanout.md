@@ -110,3 +110,6 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
   broadcast outcome.
 - 2026-07-30: round-2 review aligns the 5k soak oracle with live drop-stale semantics: monotonic
   subsequences ending at the final revision replace the obsolete exact-sequence assertion.
+- 2026-07-30: transport boundary cleanup makes drain readiness irreversible, keys private queue
+  releases to reserved publication revisions, parses both JSON/protobuf writer frames, and aligns
+  the application receipt-size check with PostgreSQL's exact jsonb text representation.

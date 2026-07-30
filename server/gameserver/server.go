@@ -44,7 +44,9 @@ type Server struct {
 	epochs        EpochSynchronizer
 	constantsHash string
 	gate          *intentGate
+	stateMu       sync.Mutex
 	ready         atomic.Bool
+	draining      atomic.Bool
 	relayCancel   context.CancelFunc
 	relayDone     chan struct{}
 	startOnce     sync.Once
@@ -82,7 +84,7 @@ func (server *Server) Start(ctx context.Context) error {
 		}
 		var relayContext context.Context
 		relayContext, server.relayCancel = context.WithCancel(ctx)
-		server.ready.Store(true)
+		server.markReadyIfRunning()
 		go server.runRelay(relayContext)
 	})
 	return server.startErr
@@ -101,7 +103,10 @@ func (server *Server) Drain(ctx context.Context, now time.Time) error {
 	if now.IsZero() {
 		return ErrInvalidServer
 	}
+	server.stateMu.Lock()
+	server.draining.Store(true)
 	server.ready.Store(false)
+	server.stateMu.Unlock()
 	drainContext, cancel := context.WithTimeout(ctx, server.realtime.DrainTimeout())
 	defer cancel()
 	if err := server.realtime.BroadcastDrain(server.constantsHash, now.UTC()); err != nil {
@@ -155,8 +160,8 @@ func (server *Server) runRelay(ctx context.Context) {
 	for {
 		if _, err := server.relay.Flush(ctx); err != nil && ctx.Err() == nil {
 			server.ready.Store(false)
-		} else if err == nil && !server.gate.isDraining() {
-			server.ready.Store(true)
+		} else if err == nil {
+			server.markReadyIfRunning()
 		}
 		select {
 		case <-ctx.Done():
@@ -166,8 +171,16 @@ func (server *Server) runRelay(ctx context.Context) {
 	}
 }
 
+func (server *Server) markReadyIfRunning() {
+	server.stateMu.Lock()
+	defer server.stateMu.Unlock()
+	if !server.draining.Load() && !server.gate.isDraining() {
+		server.ready.Store(true)
+	}
+}
+
 func (server *Server) handleReady(response http.ResponseWriter, request *http.Request) {
-	if !server.ready.Load() || server.gate.isDraining() || server.database.PingContext(request.Context()) != nil {
+	if !server.ready.Load() || server.draining.Load() || server.gate.isDraining() || server.database.PingContext(request.Context()) != nil {
 		response.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}

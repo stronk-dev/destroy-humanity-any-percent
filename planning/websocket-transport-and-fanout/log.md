@@ -341,3 +341,18 @@ Findings (fix queue):
   so relaxing intermediate revision cardinality does not weaken the public-traffic boundary.
 - Canonical docs and AC1 now state the same oracle the live writer implements. The focused soak is
   run both normally and under `-race`; timing luck is no longer part of its pass condition.
+
+## 2026-07-30 — round-2 transport boundary cleanup
+
+- Readiness now has an irreversible drain flag serialized with successful relay readiness writes.
+  A relay tick that began before Drain cannot raise `/readyz` after Drain marks the process
+  unavailable, while the required courtesy-broadcast-before-admission-close order remains intact.
+- Player queue reservations are keyed by authoritative revision and released only by actual
+  publication frames carrying a matching reservation. Equal-revision rejected receipts retain
+  counts; command replies and rev-0 courtesy frames cannot consume another receipt's reservation.
+- The live transport-write guard decodes both JSON and protobuf Centrifuge Reply framing before
+  inspecting the embedded game envelope. Malformed publication metadata now drops and disconnects
+  instead of disabling drop-stale or leaking a private reservation.
+- The Go outbox insertion uses PostgreSQL's exact `jsonb::text` byte count in an insert-select, the
+  same representation as the database CHECK. A real-Postgres fixture is compact under 60 KiB but
+  expands beyond it as jsonb text and is rejected before any row mutation.

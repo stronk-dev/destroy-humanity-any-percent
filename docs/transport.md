@@ -27,9 +27,11 @@ interpretation as the version-1 forward-compatibility rule requires.
 The live Centrifuge writer is wrapped by an application-owned queue discipline. Its byte queue is
 the first bound. A separate per-connection counter enforces the declared private-player message
 bound; receipts remain ordered and lossless until either bound is reached, then the socket closes
-with code 4000. `world` is a gauge: each flushed revision marks the newest value for every current
+with code 4000. Reservations are keyed by authoritative revision, so command replies and rev-0
+drain frames cannot decrement receipt capacity they never reserved. `world` is a gauge: each flushed revision marks the newest value for every current
 subscriber, and the transport-write hook discards older queued snapshots while preserving any
-frame already in flight. Centrifuge's own history is the sole history implementation and provides
+frame already in flight. The hook decodes both Centrifuge JSON and protobuf publication framing
+before applying either discipline; malformed publication metadata fails closed. Centrifuge's own history is the sole history implementation and provides
 monotonic per-channel offsets. Player recovery fails explicitly outside its count/TTL window,
 causing the one full-state resync path; world recovery returns only the latest snapshot.
 
@@ -55,8 +57,10 @@ clients with code 4003, and shuts down under the caller's context.
 Every new Company intent record inserts its exact normalized receipt into
 `transport_receipt_outbox` in the same database transaction as the rejection or new save revision;
 an Exit inserts against the new run's authoritative revision. Idempotent replay does not create a
-second row. Receipts above 60 KiB are rejected at both the application and database boundaries,
-leaving room for the closed 64-KiB transport envelope. Relay workers claim at most the oldest
+second row. Receipts above 60 KiB are rejected at both the application and database boundaries.
+The application insert measures PostgreSQL's exact `jsonb::text` representation before mutation,
+so structural spacing cannot pass Go and then abort the surrounding intent on the database CHECK.
+This leaves room for the closed 64-KiB transport envelope. Relay workers claim at most the oldest
 pending row per Founder with expiring leases and `SKIP LOCKED`, sort the returned batch by outbox
 identity, publish the receipt unchanged to `player:{founder_id}`, then acknowledge it. On publish or
 acknowledgement failure the failed row records an attempt and every unprocessed claim is released;
@@ -83,8 +87,9 @@ The runnable `cmd/gameserver` wiring and event/snapshot relays remain implementi
 does not claim those paths exist yet.
 
 The in-process gameserver lifecycle now owns `/healthz`, `/readyz`, WebSocket mounting, and exact
-intent admission during shutdown. Draining marks readiness false and atomically closes admission
-before publishing the courtesy message. It then waits for every already-admitted HTTP intent,
+intent admission during shutdown. Draining irreversibly marks readiness false before publishing
+the courtesy message, then closes admission immediately after that broadcast. A relay tick cannot
+raise readiness during the broadcast window. It then waits for every already-admitted HTTP intent,
 flushes the receipt outbox to empty, stops the relay, closes sockets with code 4003, and shuts down
 Centrifuge under the configured 15-second bound. New intents during that interval receive HTTP 503
 with `server_draining/retry_same_intent_id`; health remains process-liveness while readiness also

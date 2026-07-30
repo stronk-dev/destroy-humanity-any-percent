@@ -14,6 +14,7 @@ import (
 	"cloud-clicker/server/internal/testhttp"
 
 	"github.com/centrifugal/centrifuge"
+	"github.com/centrifugal/protocol"
 	"github.com/coder/websocket"
 )
 
@@ -129,10 +130,19 @@ func TestWorldPublishesAreCoalescedAtConfiguredRate(t *testing.T) {
 }
 
 func TestPublicationEnvelopeMetadata(t *testing.T) {
-	data := []byte(`{"push":{"channel":"world","pub":{"data":{"v":1,"ch":"world","kind":"snapshot","rev":42}}}}`)
+	envelope := []byte(`{"v":1,"ch":"world","kind":"snapshot","rev":42}`)
+	data := []byte(`{"push":{"channel":"world","pub":{"data":` + string(envelope) + `}}}`)
 	kind, revision, ok := publicationEnvelopeMetadata(data)
 	if !ok || kind != "snapshot" || revision != 42 {
 		t.Fatalf("kind=%q revision=%d ok=%v", kind, revision, ok)
+	}
+	encoded, err := (&protocol.Reply{Push: &protocol.Push{Channel: "world", Pub: &protocol.Publication{Data: envelope}}}).MarshalVT()
+	if err != nil {
+		t.Fatal(err)
+	}
+	kind, revision, ok = publicationEnvelopeMetadataForProtocol(centrifuge.ProtocolTypeProtobuf, encoded)
+	if !ok || kind != "snapshot" || revision != 42 {
+		t.Fatalf("protobuf kind=%q revision=%d ok=%v", kind, revision, ok)
 	}
 }
 

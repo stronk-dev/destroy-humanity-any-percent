@@ -34,20 +34,25 @@ func TestDropStaleWorldAndLosslessReceiptOverflow(t *testing.T) {
 		t.Fatal("latest world revision was dropped")
 	}
 	for index := 0; index < 64; index++ {
-		if err := queue.ReservePlayer(); err != nil {
+		if err := queue.ReservePlayer(int64(index%2 + 7)); err != nil {
 			t.Fatal(err)
 		}
 	}
-	if err := queue.ReservePlayer(); !errors.Is(err, ErrQueueOverflow) {
+	if err := queue.ReservePlayer(9); !errors.Is(err, ErrQueueOverflow) {
 		t.Fatalf("overflow err=%v", err)
 	}
-	queue.FinishPlayer()
-	if err := queue.ReservePlayer(); err != nil {
+	if queue.FinishPlayer(99) {
+		t.Fatal("unreserved player frame decremented the queue")
+	}
+	if !queue.FinishPlayer(7) {
+		t.Fatal("reserved player frame did not decrement the queue")
+	}
+	if err := queue.ReservePlayer(9); err != nil {
 		t.Fatalf("finished receipt did not free one slot: %v", err)
 	}
 	queue.ResetPlayer()
 	for index := 0; index < 64; index++ {
-		if err := queue.ReservePlayer(); err != nil {
+		if err := queue.ReservePlayer(10); err != nil {
 			t.Fatalf("reset left stale reservations at %d: %v", index, err)
 		}
 	}

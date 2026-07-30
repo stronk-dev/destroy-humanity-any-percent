@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -120,4 +121,21 @@ func TestReceiptOutboxOrderingDeadLetterAndSizeIntegration(t *testing.T) {
 		founderA, streamA.StreamID, "01985555-1005-7000-8000-000000000005", hash, oversize); err == nil {
 		t.Fatal("database accepted oversized receipt")
 	}
+
+	spaced := make(map[string]int, 5_500)
+	for index := 0; index < 5_500; index++ {
+		spaced[fmt.Sprintf("k%04d", index)] = 0
+	}
+	canonical, err := json.Marshal(spaced)
+	if err != nil || len(canonical) >= MaxReceiptOutboxBytes {
+		t.Fatalf("jsonb expansion fixture bytes=%d err=%v", len(canonical), err)
+	}
+	tx, err = db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := insertReceiptOutbox(ctx, tx, founderA, streamA.StreamID, "01985555-1006-7000-8000-000000000006", 3, hash, canonical); !errors.Is(err, ErrInvalidStream) {
+		t.Fatalf("jsonb text size guard err=%v", err)
+	}
+	_ = tx.Rollback()
 }

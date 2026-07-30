@@ -14,6 +14,7 @@ var ErrQueueOverflow = errors.New("transport receipt queue overflow")
 type ConnectionQueue struct {
 	mu                  sync.Mutex
 	privatePending      int
+	privateByRevision   map[int64]int
 	maxPrivateMessages  int
 	latestWorldRevision int64
 }
@@ -22,30 +23,38 @@ func NewConnectionQueue(policy Policy) (*ConnectionQueue, error) {
 	if !policy.valid() {
 		return nil, ErrInvalidPolicy
 	}
-	return &ConnectionQueue{maxPrivateMessages: policy.PlayerQueueMessages}, nil
+	return &ConnectionQueue{maxPrivateMessages: policy.PlayerQueueMessages, privateByRevision: map[int64]int{}}, nil
 }
 
-func (queue *ConnectionQueue) ReservePlayer() error {
+func (queue *ConnectionQueue) ReservePlayer(revision int64) error {
 	queue.mu.Lock()
 	defer queue.mu.Unlock()
-	if queue.privatePending >= queue.maxPrivateMessages {
+	if revision < 1 || queue.privatePending >= queue.maxPrivateMessages {
 		return ErrQueueOverflow
 	}
 	queue.privatePending++
+	queue.privateByRevision[revision]++
 	return nil
 }
 
-func (queue *ConnectionQueue) FinishPlayer() {
+func (queue *ConnectionQueue) FinishPlayer(revision int64) bool {
 	queue.mu.Lock()
-	if queue.privatePending > 0 {
-		queue.privatePending--
+	defer queue.mu.Unlock()
+	if queue.privateByRevision[revision] == 0 {
+		return false
 	}
-	queue.mu.Unlock()
+	queue.privatePending--
+	queue.privateByRevision[revision]--
+	if queue.privateByRevision[revision] == 0 {
+		delete(queue.privateByRevision, revision)
+	}
+	return true
 }
 
 func (queue *ConnectionQueue) ResetPlayer() {
 	queue.mu.Lock()
 	queue.privatePending = 0
+	clear(queue.privateByRevision)
 	queue.mu.Unlock()
 }
 

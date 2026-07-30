@@ -185,6 +185,20 @@ func TestDrainBroadcastFailureStillClosesSockets(t *testing.T) {
 	}
 }
 
+func TestReadinessCannotRiseAfterDrainStarts(t *testing.T) {
+	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
+	server, _ := New(fakeDatabase{}, http.NotFoundHandler(), realtime, &fakeRelay{}, syncedEpochs(), testConstantsHash)
+	server.ready.Store(true)
+	server.draining.Store(true)
+	server.ready.Store(false)
+	server.markReadyIfRunning()
+	ready := httptest.NewRecorder()
+	server.Handler().ServeHTTP(ready, httptest.NewRequest(http.MethodGet, "/readyz", nil))
+	if ready.Code != http.StatusServiceUnavailable {
+		t.Fatalf("ready rose during drain: %d", ready.Code)
+	}
+}
+
 func TestStartRunsRealtimeAndReceiptRelay(t *testing.T) {
 	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
 	relay := &fakeRelay{}
