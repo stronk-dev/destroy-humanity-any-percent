@@ -46,18 +46,46 @@ Within a guild, the interdependence cycle clears **automatically at accrual boun
 
 A solo founder's "partner network" is a **virtual guild**: the exchange clears against catalog-declared NPC counterparties at a reduced rate (`npc_exchange_ppm < guild clearing rate`, catalog). No guild row, no membership — a pure function in the accrual path, clearly labeled in receipts. This satisfies the design law (all guild content completable solo, slower) for the only guild mechanic Phase 0 ships.
 
-## DESIGN-GAPs blocking acceptance
+## Executable contracts (answering the 2026-07-30 bounce)
 
-- This RFC inherits the Faction RFC's undeclared stock resources and accrual formula, so G4 has no
-  valid ledger input until that parent is amended and accepted.
-- G3 and G6 promise Phase-0 literal tithe/clearing rates without declaring them or naming a
-  complete catalog object. The constants cannot be invented in code.
-- “Pro-rata” does not totally specify deterministic clearing: the allocation denominator,
-  integer remainder recipient/order, per-boundary maximum, insufficient-demand behavior, and
-  exact debit/credit resources are missing. AC5 cannot have a unique golden answer yet.
+### GA — Parent resolved
 
-The guild table/lifecycle portion is separable, but this RFC's acceptance criteria bind it to the
-unresolved economy path; partial implementation would leave the claimed structural guild orphaned.
+Faction FA/FB/FC (amended 2026-07-30) declare the stocks (int64 Company fields), the accrual
+formula, and the literal catalog. G4's ledger input exists.
+
+### GB — The complete catalog object
+
+`balance/guilds/phase0.json` (strict loader, joins the epoch seed — mint):
+```json
+{"schema_version": 1, "guild_tithe_ppm": 20000, "clearing_rate_ppm": 500000,
+ "npc_exchange_ppm": 250000, "stock_intake_cap": 120, "consumption_bonus_ppm_per_unit": 0,
+ "max_members": 50, "min_members": 2, "grace_days": 7}
+```
+`consumption_bonus_ppm_per_unit` is the modifier hook consumed units feed (a `stock_consumption`
+slot in the production stack's registry): **literally 0 at Phase 0** — the flow is real and
+observable, the buff is balance work. All provisional; epoch protocol applies.
+
+### GC — Deterministic clearing (total specification)
+
+At each accrual boundary, per guild, in one transaction:
+1. **Producers** = active members with `stock_units > 0`, ascending `account_id`. For each:
+   `offered = stock_units * clearing_rate_ppm / 1_000_000` (integer division).
+2. **Consumers** of resource R = active members whose faction `consumes` R, ascending
+   `account_id`, each with remaining intake `cap_i = stock_intake_cap − consumed_this_boundary_i`.
+3. Per producer in order: `n` = consumers with `cap_i > 0`; `base = offered / n` (integer),
+   `rem = offered mod n`; consumer `i` (in account_id order) is allocated
+   `min(base + (1 if index(i) < rem else 0), cap_i)`; allocation runs one pass in order —
+   **units an over-cap consumer cannot take are NOT redistributed within the boundary** (they
+   stay with the producer; next boundary retries). Zero consumers → nothing clears.
+4. Debit `producer.stock_units`, credit `consumer.consumed_stock_units` (saturating at
+   `stock_cap`), emit one `exchange_cleared {producer, allocations: [{account, units}]}` event
+   per producer with any allocation. No RNG, no clocks: the golden answer is unique given
+   member set + stocks.
+NPC fallback (G6): a solo founder's clearing uses the same algorithm with one virtual consumer of
+infinite… no — **one NPC consumer with `cap = stock_intake_cap`**, clearing at
+`offered_npc = stock_units * npc_exchange_ppm / 1_000_000`, credited to nothing (units leave the
+stock; the founder's `consumed_stock_units` gains `offered_npc` — the NPC network both buys and
+supplies, labeled `npc: true` in the receipt).
 
 ## Acceptance criteria
 
@@ -78,3 +106,4 @@ unresolved economy path; partial implementation would leave the claimed structur
 ## Changelog
 
 - 2026-07-30: created (draft) — the guild owner contract Commons Onboarding blockers #1/#5 named; unblocks the transport guild resolver.
+- 2026-07-30: Codex bounce answered — GA (parent resolved), GB (complete literal catalog incl. the 0-ppm consumption hook), GC (total deterministic clearing: ordered one-pass allocation, no intra-boundary redistribution, NPC = one capped virtual counterparty).

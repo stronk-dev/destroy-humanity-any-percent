@@ -69,23 +69,47 @@ catalog, evaluation instant)`. The evaluation instant is IN the canonical payloa
 the verifier compares receipts, so any hidden input shows up as `state_divergence` on honest
 replays. AC5 hunts these before ship.
 
-## DESIGN-GAPs blocking acceptance
+## Executable contracts (answering the 2026-07-30 bounce)
 
-- R4 states that the evaluation instant is in the canonical payload. The implemented canonical
-  request payload contains only client intent fields; `evaluated_at` is server-authored in the
-  receipt. Replay therefore cannot call the live transition with the original time from the
-  declared input tuple.
-- Live transitions consume server-side multiplier contributions, Route/Commons projection state,
-  and other resolved policy inputs that are not reconstructible from `(genesis, canonical payload,
-  catalog)`. A logged receipt can detect disagreement only after the verifier has a normative way
-  to reconstruct or snapshot those inputs; it cannot serve as both missing input and oracle.
-- The “same transition entry in both runtimes” is not currently an owned interface: Go owns the
-  authoritative transition while TypeScript owns presentation prediction. The RFC must define the
-  replay-input record and precise shared-kernel boundary before AC2 can be implemented without a
-  second, drifting engine.
+### RA — The replay-input record (closes bounce items 1 and 2)
 
-The immutable genesis table is technically separable, but R1 requires it at every pin site and R2
-defines its consumer. Landing only storage would not close the stated replay DESIGN-GAP.
+`run_log` gains `replay_inputs jsonb NOT NULL` — the **closed, versioned record of every
+server-resolved input the transition consumed**, written in the same transaction as the log row:
+
+```json
+{"v": 1, "evaluated_at_ms": int,
+ "contributions": [{"slot": string, "ppm_or_value": canonical, "source": string}],
+ "policy": {"commons_modifier": canonical|null, "route_context_version": int,
+            "registry_decisions": [...], "drift_declined_count": int}}
+```
+
+Field set grows by RFC exactly like the event-kind registry; the loader/validator exact-key
+rejects unknown fields per version. The correct mental model: **canonical payload = what the
+player said; replay_inputs = what the server resolved; receipt = what happened.** Inputs and
+oracle are now distinct objects — the both-at-once problem is dissolved. Backfill: none (no
+verifier consumed old rows; rows predating the column are unrankable-by-construction and the
+column is NOT NULL from its migration forward — pre-column runs verify `log_gap`).
+
+### RB — The owned transition boundary (closes bounce item 3)
+
+New shared-kernel entry, **the only legal way to apply a logged mutation**:
+
+`ApplyLogged(state, canonicalPayload, catalog, replayInputs) → (state', receipt)`
+
+- **The live Go path is refactored to call `ApplyLogged` itself**: it computes `replayInputs`
+  from live sources (projections, contribution providers, clock), persists them to the log row,
+  and applies through the same function the verifier uses. One engine, no drift possible on the
+  Go side — the live path and replay path are the same code by construction, which is the
+  strongest available answer to "same transition entry".
+- TS implements `ApplyLogged` for the shipped validator; parity is enforced by AC2's full-run
+  golden fixture plus the existing golden-vector regime (the TS shell's *prediction* path remains
+  presentation-only and unchanged — the validator is a separate consumer of the kernel).
+- Anything the Go live path reads OUTSIDE `ApplyLogged`'s four arguments is definitionally a bug
+  (AC6's hidden-input hunt becomes a structural rule, not a test-time hope).
+
+Sequencing note: RA/RB land FIRST (a refactor of the live engine + log schema), then genesis
+storage, then the verifier — the bounce's "storage alone would not close the gap" is accepted and
+built into the implementation order.
 
 ## Acceptance criteria
 
@@ -111,3 +135,4 @@ defines its consumer. Landing only storage would not close the stated replay DES
 ## Changelog
 
 - 2026-07-30: created (draft) — closes the initial-run-state DESIGN-GAP; completes L1/L2/L4.
+- 2026-07-30: Codex bounce answered — RA (replay_inputs record: payload=said, inputs=resolved, receipt=happened), RB (ApplyLogged as the owned shared-kernel boundary the LIVE path itself calls; implementation order RA/RB → genesis → verifier).

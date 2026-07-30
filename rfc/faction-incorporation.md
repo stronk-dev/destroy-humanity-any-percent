@@ -1,6 +1,6 @@
 # RFC: Faction & Incorporation Model
 
-- **Status:** draft
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-30
 - **Design refs:** `design/10 §1` (four Phase-0 factions, rule-variance law, Tier-2 incorporation moment), `design/05 §3–5` (faction interdependence cycle, Commons front door), `design/02` (production stack slots)
@@ -75,20 +75,45 @@ Per-faction rule packages (the five rule-change moves), doctrine combos, later f
 on F1's hooks or a successor RFC. Nothing may improvise a faction mechanic that bypasses the
 catalog object.
 
-## DESIGN-GAPs blocking acceptance
+## Executable contracts (answering the 2026-07-30 bounce)
 
-- F2 names `revenue`, `hype`, `libraries`, and `compliance`, but the Economy catalog has no
-  corresponding scoped resource objects. Their mechanical IDs, Company/Guild scope, initial
-  values, and visible hardcaps must be declared before the save ledger can store them.
-- AC5 requires the selected faction's stock to accrue, but no formula defines the accrual input,
-  rate, timing, rounding, or cap behavior. “Per `produces`” is a relationship, not an executable
-  transition rule.
-- F1 does not enumerate the four literal Phase-0 catalog objects, including Open Source's exact
-  tithe and any registered modifier slots. “Above the base rate” cannot be loader-tested or
-  golden-vector-tested. Supply those values or explicitly defer the binding behavior.
+### FA — Stock resources (closed declaration)
 
-These gaps require an owner amendment. Implementing them from inference would invent economy and
-balance mechanics, contrary to RFC-0000 and `AGENTS.md`.
+Stocks are **plain int64 unit counters on Company state, NOT economy-ledger Decimals** — they never
+enter the production stack, so they get save fields, not catalog resource objects: `stock_units
+int64` (the run's `produces` stock), `stock_progress_ms int64`, `consumed_stock_units int64` (what
+guildmates delivered this run). Save-version bump, defaults 0, corpus fixtures both scopes
+(founder scope: none — stocks are run identity). Cap: `stock_cap = 100_000` units (catalog,
+faction file) — **accrual-only saturation**, same law as hardcaps (never silently clamp a spend).
+Which resource the units ARE is `faction.produces` — one counter, typed by incorporation; wire
+snapshot exposes `{stock_resource, stock_units, consumed_stock_units}`.
+
+### FB — Accrual formula (executable)
+
+Stock accrues **attended-time-based, not production-magnitude-based** (deliberate: cross-tier
+neutral, integer-exact, nothing to balance against the Decimal stack at Phase 0). At every accrual
+evaluation of an incorporated company: `total_ms = stock_progress_ms + attended_ms_delta` (P6's
+attended derivation — offline spans do NOT accrue stock); `earned = total_ms / stock_interval_ms`
+(integer division); `stock_units = min(stock_units + earned, stock_cap)`; `stock_progress_ms =
+total_ms mod stock_interval_ms` (remainder carries; when saturated at cap the remainder still
+carries but earned units are forfeited — accrual-only saturation, evented once per crossing as the
+hardcap pattern). `stock_interval_ms = 60_000` (Phase-0 literal: one unit per attended minute).
+
+### FC — Literal Phase-0 catalog (complete object)
+
+`balance/factions/phase0.json`:
+```json
+{"schema_version": 1, "stock_cap": 100000, "stock_interval_ms": 60000,
+ "factions": [
+  {"id": "bootstrapper", "produces": "revenue",    "consumes": "compliance", "compact": null, "modifier_slots": [], "incorporation_copy_key": "incorporate.bootstrapper"},
+  {"id": "vc_funded",    "produces": "hype",       "consumes": "revenue",    "compact": null, "modifier_slots": [], "incorporation_copy_key": "incorporate.vc_funded"},
+  {"id": "open_source",  "produces": "libraries",  "consumes": "hype",       "compact": {"auto_sign": true, "tithe_ppm": 130000}, "modifier_slots": [], "incorporation_copy_key": "incorporate.open_source"},
+  {"id": "enterprise",   "produces": "compliance", "consumes": "libraries",  "compact": null, "modifier_slots": [], "incorporation_copy_key": "incorporate.enterprise"}]}
+```
+Open Source tithe **130_000 ppm** — above `default_tithe_ppm` 100_000, inside the commons band
+[50_000, 150_000] (loader-validated against the commons catalog: `minimum ≤ tithe ≤ maximum`).
+`modifier_slots` are literally empty at Phase 0 (the hook exists, registers nothing). All values
+provisional balance data; changes ride the epoch protocol like every catalog.
 
 ## Acceptance criteria
 
@@ -113,3 +138,4 @@ balance mechanics, contrary to RFC-0000 and `AGENTS.md`.
 ## Changelog
 
 - 2026-07-30: created (draft) — the faction owner contract Commons Onboarding blocker #1 named.
+- 2026-07-30: Codex bounce answered — FA (stocks are int64 save fields, not ledger resources), FB (attended-minute accrual, integer-exact, accrual-only saturation), FC (complete literal catalog; Open Source tithe 130000 ppm inside the commons band).

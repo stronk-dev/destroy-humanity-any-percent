@@ -18,7 +18,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
-| [Faction & Incorporation](faction-incorporation.md) | draft — DESIGN-GAPs | Production Engine / Commons / Prestige |
+| [Faction & Incorporation](faction-incorporation.md) | implementing | Production Engine / Commons / Prestige |
 | [Guild Model](guild-model.md) | draft — blocked by Faction + DESIGN-GAPs | Account / Commons / Transport |
 | [Run Genesis & Replay](run-genesis-and-replay.md) | draft — DESIGN-GAPs | Leaderboards / Prestige / Account |
 
