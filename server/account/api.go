@@ -1,6 +1,7 @@
 package account
 
 import (
+	"container/list"
 	"context"
 	"encoding/json"
 	"errors"
@@ -26,10 +27,13 @@ type APIConfig struct {
 	AccountBurst          int
 	AccountPerMin         int
 	MaxBodyBytes          int64
+	TrustedProxyHops      int
+	LimiterMaxEntries     int
 }
 
 func Phase0APIConfig() APIConfig {
-	return APIConfig{UnauthenticatedBurst: 10, UnauthenticatedPerMin: 30, AccountBurst: 60, AccountPerMin: 300, MaxBodyBytes: 64 << 10}
+	return APIConfig{UnauthenticatedBurst: 10, UnauthenticatedPerMin: 30, AccountBurst: 60, AccountPerMin: 300,
+		MaxBodyBytes: 64 << 10, LimiterMaxEntries: 65_536}
 }
 
 type API struct {
@@ -43,17 +47,27 @@ type API struct {
 type claimsContextKey struct{}
 
 func NewAPI(repository *Repository, intents IntentHandler, config APIConfig) (*API, error) {
+	if config.LimiterMaxEntries == 0 {
+		config.LimiterMaxEntries = Phase0APIConfig().LimiterMaxEntries
+	}
 	if repository == nil || intents == nil || config.UnauthenticatedBurst < 1 || config.UnauthenticatedPerMin < 1 ||
-		config.AccountBurst < 1 || config.AccountPerMin < 1 || config.MaxBodyBytes < 1024 {
+		config.AccountBurst < 1 || config.AccountPerMin < 1 || config.MaxBodyBytes < 1024 ||
+		config.TrustedProxyHops < 0 || config.TrustedProxyHops > 8 || config.LimiterMaxEntries < 1 {
 		return nil, ErrInvalidRequest
 	}
 	return &API{repository: repository, intents: intents, config: config,
-		unauth:   newTokenBuckets(config.UnauthenticatedBurst, config.UnauthenticatedPerMin),
-		accounts: newTokenBuckets(config.AccountBurst, config.AccountPerMin)}, nil
+		unauth:   newTokenBuckets(config.UnauthenticatedBurst, config.UnauthenticatedPerMin, config.LimiterMaxEntries),
+		accounts: newTokenBuckets(config.AccountBurst, config.AccountPerMin, config.LimiterMaxEntries)}, nil
 }
 
 func (api *API) Router() http.Handler {
 	router := chi.NewRouter()
+	router.NotFound(func(response http.ResponseWriter, _ *http.Request) {
+		writeError(response, http.StatusNotFound, "unknown_id", "route")
+	})
+	router.MethodNotAllowed(func(response http.ResponseWriter, _ *http.Request) {
+		writeError(response, http.StatusMethodNotAllowed, "invalid", "method")
+	})
 	router.Route("/api/v1", func(v1 chi.Router) {
 		v1.With(api.limitUnauthenticated).Post("/account", api.createAccount)
 		v1.With(api.limitUnauthenticated).Post("/session", api.createSession)
@@ -84,6 +98,7 @@ func (api *API) createAccount(response http.ResponseWriter, request *http.Reques
 		writeError(response, http.StatusInternalServerError, "internal_invariant", "account_create")
 		return
 	}
+	response.Header().Set("Cache-Control", "no-store")
 	writeJSON(response, http.StatusCreated, created)
 }
 
@@ -158,6 +173,10 @@ func (api *API) newFounder(response http.ResponseWriter, request *http.Request) 
 		return
 	}
 	founder, err := api.repository.NewFounder(request.Context(), requestClaims(request).Subject)
+	if errors.Is(err, ErrAccountNotFound) {
+		writeError(response, http.StatusNotFound, "unknown_id", "account")
+		return
+	}
 	if err != nil {
 		writeError(response, http.StatusInternalServerError, "internal_invariant", "founder_create")
 		return
@@ -238,12 +257,12 @@ func (api *API) authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		authorization := request.Header.Get("Authorization")
 		if !strings.HasPrefix(authorization, "Bearer ") || strings.Contains(strings.TrimPrefix(authorization, "Bearer "), " ") {
-			writeError(response, http.StatusUnauthorized, "unauthorized", "access_token")
+			api.writeAuthenticationFailure(response, request)
 			return
 		}
 		claims, err := api.repository.Authenticate(request.Context(), strings.TrimPrefix(authorization, "Bearer "))
 		if err != nil {
-			writeError(response, http.StatusUnauthorized, "unauthorized", "access_token")
+			api.writeAuthenticationFailure(response, request)
 			return
 		}
 		next.ServeHTTP(response, request.WithContext(context.WithValue(request.Context(), claimsContextKey{}, claims)))
@@ -252,16 +271,47 @@ func (api *API) authenticate(next http.Handler) http.Handler {
 
 func (api *API) limitUnauthenticated(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
-		host, _, err := net.SplitHostPort(request.RemoteAddr)
-		if err != nil {
-			host = request.RemoteAddr
-		}
-		if !api.unauth.allow(host, api.repository.clock()) {
+		if !api.unauth.allow(api.clientIP(request), api.repository.clock()) {
 			writeError(response, http.StatusTooManyRequests, "rate_limited", "ip")
 			return
 		}
 		next.ServeHTTP(response, request)
 	})
+}
+
+func (api *API) writeAuthenticationFailure(response http.ResponseWriter, request *http.Request) {
+	if !api.unauth.allow(api.clientIP(request), api.repository.clock()) {
+		writeError(response, http.StatusTooManyRequests, "rate_limited", "ip")
+		return
+	}
+	writeError(response, http.StatusUnauthorized, "unauthorized", "access_token")
+}
+
+func (api *API) clientIP(request *http.Request) string {
+	host, _, err := net.SplitHostPort(request.RemoteAddr)
+	if err != nil {
+		host = request.RemoteAddr
+	}
+	if parsed := net.ParseIP(strings.TrimSpace(host)); parsed != nil {
+		host = parsed.String()
+	}
+	if api.config.TrustedProxyHops == 0 {
+		return host
+	}
+	var forwarded []string
+	for _, value := range request.Header.Values("X-Forwarded-For") {
+		for _, entry := range strings.Split(value, ",") {
+			forwarded = append(forwarded, strings.TrimSpace(entry))
+		}
+	}
+	if len(forwarded) < api.config.TrustedProxyHops {
+		return host
+	}
+	candidate := forwarded[len(forwarded)-api.config.TrustedProxyHops]
+	if parsed := net.ParseIP(candidate); parsed != nil {
+		return parsed.String()
+	}
+	return host
 }
 
 func (api *API) limitAccount(next http.Handler) http.Handler {
@@ -321,27 +371,46 @@ func writeError(response http.ResponseWriter, status int, category, detail strin
 }
 
 type bucket struct {
-	tokens float64
-	last   time.Time
+	tokens   float64
+	last     time.Time
+	lastSeen time.Time
+	element  *list.Element
 }
 
 type tokenBuckets struct {
 	mu       sync.Mutex
-	buckets  map[string]bucket
+	buckets  map[string]*bucket
+	recency  *list.List
 	capacity float64
 	perMS    float64
+	idleTTL  time.Duration
+	max      int
 }
 
-func newTokenBuckets(capacity, perMinute int) *tokenBuckets {
-	return &tokenBuckets{buckets: make(map[string]bucket), capacity: float64(capacity), perMS: float64(perMinute) / float64(time.Minute/time.Millisecond)}
+func newTokenBuckets(capacity, perMinute, maxEntries int) *tokenBuckets {
+	refillMinutes := (capacity + perMinute - 1) / perMinute
+	if refillMinutes < 1 {
+		refillMinutes = 1
+	}
+	return &tokenBuckets{buckets: make(map[string]*bucket), recency: list.New(), capacity: float64(capacity),
+		perMS: float64(perMinute) / float64(time.Minute/time.Millisecond), idleTTL: time.Duration(refillMinutes) * time.Minute, max: maxEntries}
 }
 
 func (buckets *tokenBuckets) allow(key string, now time.Time) bool {
 	buckets.mu.Lock()
 	defer buckets.mu.Unlock()
+	buckets.evictExpired(now)
 	current, ok := buckets.buckets[key]
 	if !ok {
-		current = bucket{tokens: buckets.capacity, last: now}
+		if len(buckets.buckets) >= buckets.max {
+			buckets.removeOldest()
+		}
+		current = &bucket{tokens: buckets.capacity, last: now, lastSeen: now}
+		current.element = buckets.recency.PushFront(key)
+		buckets.buckets[key] = current
+	} else if !now.Before(current.lastSeen) {
+		current.lastSeen = now
+		buckets.recency.MoveToFront(current.element)
 	}
 	elapsed := now.Sub(current.last).Milliseconds()
 	if elapsed > 0 {
@@ -352,10 +421,29 @@ func (buckets *tokenBuckets) allow(key string, now time.Time) bool {
 		current.last = now
 	}
 	if current.tokens < 1 {
-		buckets.buckets[key] = current
 		return false
 	}
 	current.tokens--
-	buckets.buckets[key] = current
 	return true
+}
+
+func (buckets *tokenBuckets) evictExpired(now time.Time) {
+	for element := buckets.recency.Back(); element != nil; element = buckets.recency.Back() {
+		key := element.Value.(string)
+		current := buckets.buckets[key]
+		if now.Before(current.lastSeen) || now.Sub(current.lastSeen) < buckets.idleTTL {
+			return
+		}
+		buckets.recency.Remove(element)
+		delete(buckets.buckets, key)
+	}
+}
+
+func (buckets *tokenBuckets) removeOldest() {
+	element := buckets.recency.Back()
+	if element == nil {
+		return
+	}
+	delete(buckets.buckets, element.Value.(string))
+	buckets.recency.Remove(element)
 }

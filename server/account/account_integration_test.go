@@ -85,14 +85,29 @@ func TestAccountSessionIntegration(t *testing.T) {
 	if createdResponse.StatusCode != http.StatusCreated {
 		t.Fatalf("create status=%d body=%s", createdResponse.StatusCode, readBody(createdResponse))
 	}
+	if createdResponse.Header.Get("Cache-Control") != "no-store" {
+		t.Fatalf("recovery response cache control=%q", createdResponse.Header.Get("Cache-Control"))
+	}
 	var created CreatedAccount
 	decodeResponse(t, createdResponse, &created)
 	if created.AccountID == "" || created.RecoveryCode == "" || created.FounderID != "" {
 		t.Fatalf("created=%+v", created)
 	}
+	unknownResponse := requestJSON(t, server.Client, http.MethodGet, server.URL+"/api/v1/unknown", "", "")
+	if unknownResponse.StatusCode != http.StatusNotFound || !strings.Contains(readBody(unknownResponse), `"category":"unknown_id"`) {
+		t.Fatal("router 404 was not typed")
+	}
+	methodResponse := requestJSON(t, server.Client, http.MethodGet, server.URL+"/api/v1/account", "", "")
+	if methodResponse.StatusCode != http.StatusMethodNotAllowed || !strings.Contains(readBody(methodResponse), `"detail":"method"`) {
+		t.Fatal("router 405 was not typed")
+	}
 	var accountColumns int
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM information_schema.columns WHERE table_schema=current_schema() AND table_name='accounts'`).Scan(&accountColumns); err != nil || accountColumns != 3 {
 		t.Fatalf("account columns=%d err=%v", accountColumns, err)
+	}
+	storedUpgradeHash := recoveryHashForTest(created.RecoveryCode, argonMemoryKiB+1024, argonIterations, argonParallelism)
+	if _, err := db.ExecContext(ctx, `UPDATE accounts SET recovery_hash=$2 WHERE account_id=$1`, created.AccountID, storedUpgradeHash); err != nil {
+		t.Fatal(err)
 	}
 
 	sessionResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/session", "", fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
@@ -101,6 +116,11 @@ func TestAccountSessionIntegration(t *testing.T) {
 	}
 	var firstPair TokenPair
 	decodeResponse(t, sessionResponse, &firstPair)
+	var upgradedHash string
+	if err := db.QueryRowContext(ctx, `SELECT recovery_hash FROM accounts WHERE account_id=$1`, created.AccountID).Scan(&upgradedHash); err != nil ||
+		upgradedHash == storedUpgradeHash || !strings.Contains(upgradedHash, "$m=19456,t=2,p=1$") {
+		t.Fatalf("credential was not upgraded in login transaction: %s err=%v", upgradedHash, err)
+	}
 	claims, err := repository.Authenticate(ctx, firstPair.AccessToken)
 	if err != nil || claims.Subject != created.AccountID {
 		t.Fatalf("claims=%+v err=%v", claims, err)
@@ -224,6 +244,11 @@ func TestAccountSessionIntegration(t *testing.T) {
 	loadedImported, err := saveStore.LoadLatest(ctx, newState.StreamID)
 	if err != nil || loadedImported.ArchivedAt == nil {
 		t.Fatalf("anonymized save missing after account deletion: %+v err=%v", loadedImported, err)
+	}
+	var founderRows, linkedRows, unarchivedRows, importedRows int
+	if err := db.QueryRowContext(ctx, `SELECT count(*),count(account_id),count(*) FILTER (WHERE archived_at IS NULL),count(*) FILTER (WHERE imported) FROM account_founders`).Scan(
+		&founderRows, &linkedRows, &unarchivedRows, &importedRows); err != nil || founderRows != 2 || linkedRows != 0 || unarchivedRows != 0 || importedRows != 1 {
+		t.Fatalf("anonymized founders rows=%d linked=%d active=%d imported=%d err=%v", founderRows, linkedRows, unarchivedRows, importedRows, err)
 	}
 }
 

@@ -6,9 +6,14 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
+
+	"golang.org/x/crypto/argon2"
 )
 
 func TestRecoveryCredentialRoundTripAndEncodedParameters(t *testing.T) {
@@ -21,8 +26,19 @@ func TestRecoveryCredentialRoundTripAndEncodedParameters(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(encoded, "$m=19456,t=2,p=1$") || !verifyRecoveryCode(encoded, code) || verifyRecoveryCode(encoded, strings.Repeat("a", 26)) {
+	if !strings.Contains(encoded, "$m=19456,t=2,p=1$") || !verifyRecoveryCode(encoded, "  "+strings.ToUpper(code)+"  ") || verifyRecoveryCode(encoded, strings.Repeat("a", 26)) {
 		t.Fatalf("credential verification/parameters failed: %s", encoded)
+	}
+	stronger := recoveryHashForTest(code, argonMemoryKiB+1024, argonIterations+1, argonParallelism)
+	if valid, upgrade := verifyRecoveryCodeForUpgrade(stronger, code); !valid || !upgrade {
+		t.Fatalf("stored stronger credential valid=%v upgrade=%v", valid, upgrade)
+	}
+	belowFloor := recoveryHashForTest(code, argonMemoryKiB-1, argonIterations, argonParallelism)
+	if valid, _ := verifyRecoveryCodeForUpgrade(belowFloor, code); valid {
+		t.Fatal("credential below the Argon2 memory floor verified")
+	}
+	if verifyRecoveryCode(dummyRecoveryHash, code) {
+		t.Fatal("dummy recovery hash authenticated a real code")
 	}
 }
 
@@ -70,10 +86,53 @@ func TestUUIDv7AndTokenBucketClockRegression(t *testing.T) {
 	if err != nil || len(id) != 36 || id[14] != '7' || !strings.Contains("89ab", string(id[19])) {
 		t.Fatalf("uuid=%q err=%v", id, err)
 	}
-	buckets := newTokenBuckets(1, 60)
+	buckets := newTokenBuckets(1, 60, 2)
 	if !buckets.allow("client", now) || buckets.allow("client", now.Add(-time.Hour)) || !buckets.allow("client", now.Add(time.Second)) {
 		t.Fatal("token bucket did not fail closed on clock regression/refill")
 	}
+	if !buckets.allow("second", now.Add(2*time.Second)) || !buckets.allow("third", now.Add(2*time.Second)) || len(buckets.buckets) != 2 {
+		t.Fatalf("bounded LRU buckets=%d", len(buckets.buckets))
+	}
+	if _, retained := buckets.buckets["client"]; retained {
+		t.Fatal("least-recently-used bucket was not evicted")
+	}
+}
+
+func TestTrustedProxyAddressAndFailedAuthenticationLimit(t *testing.T) {
+	request := httptest.NewRequest(http.MethodGet, "/api/v1/founder", nil)
+	request.RemoteAddr = "10.0.0.5:443"
+	request.Header.Set("X-Forwarded-For", "203.0.113.8, 10.0.0.4")
+	api := &API{config: APIConfig{TrustedProxyHops: 2}}
+	if got := api.clientIP(request); got != "203.0.113.8" {
+		t.Fatalf("trusted proxy client=%q", got)
+	}
+	api.config.TrustedProxyHops = 0
+	if got := api.clientIP(request); got != "10.0.0.5" {
+		t.Fatalf("untrusted forwarded chain changed client=%q", got)
+	}
+
+	now := time.Date(2026, 7, 30, 12, 0, 0, 0, time.UTC)
+	api = &API{repository: &Repository{clock: func() time.Time { return now }}, config: APIConfig{}, unauth: newTokenBuckets(1, 1, 10)}
+	handler := api.authenticate(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		t.Fatal("unauthenticated request reached handler")
+	}))
+	for index, want := range []int{http.StatusUnauthorized, http.StatusTooManyRequests} {
+		response := httptest.NewRecorder()
+		attempt := httptest.NewRequest(http.MethodGet, "/api/v1/founder", nil)
+		attempt.RemoteAddr = "192.0.2.10:1234"
+		handler.ServeHTTP(response, attempt)
+		if response.Code != want {
+			t.Fatalf("attempt %d status=%d want=%d body=%s", index, response.Code, want, response.Body.String())
+		}
+	}
+}
+
+func recoveryHashForTest(code string, memory, iterations uint32, parallelism uint8) string {
+	salt := bytes.Repeat([]byte{0x33}, argonSaltBytes)
+	hash := argon2.IDKey([]byte(code), salt, iterations, memory, parallelism, argonKeyBytes)
+	encoding := base64.RawStdEncoding
+	return fmt.Sprintf("$argon2id$v=%d$m=%d,t=%d,p=%d$%s$%s", argon2.Version, memory, iterations, parallelism,
+		encoding.EncodeToString(salt), encoding.EncodeToString(hash))
 }
 
 func signRawJWT(t *testing.T, key []byte, encodedHeader string, payload []byte) string {

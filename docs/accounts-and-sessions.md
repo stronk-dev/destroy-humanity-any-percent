@@ -24,15 +24,21 @@ imported in the same transaction.
 Leaderboard projections must exclude that relational flag because imported history was authored
 by a client.
 
-Deleting an account archives its Founder streams and deletes the account row. Cascades remove its
-optional email, sessions, access-token records, and ownership links. The archive retains UUID
-owners but no account linkage or PII.
+Deleting an account first archives every Founder identity and stream, then deletes the account row.
+Foreign-key deletion nulls `account_founders.account_id` instead of cascading those rows: Founder
+identity, archive time, and the permanent `imported` exclusion marker survive anonymized. Cascades
+still remove optional email, sessions, session families, and access-token records. The retained
+save/Founder history has UUID owners but no account linkage or PII.
 
 ## Credentials and sessions
 
 Recovery codes are hashed with Argon2id using 19 MiB memory, two iterations, one lane, a random
 16-byte salt, and a 32-byte result. Parameters and the algorithm version are encoded with the hash
-so a later credential upgrade can distinguish old records.
+so a later credential upgrade can distinguish old records. Login verifies the stored parameters
+when they meet those security floors; a successful login with non-current parameters rehashes the
+credential to current settings inside the same transaction. A missing account performs the same
+Argon2id work against a constant dummy hash, preventing account-existence timing from bypassing the
+KDF. Recovery input is case/outer-whitespace normalized before validation.
 
 Successful recovery authentication issues:
 
@@ -52,21 +58,29 @@ The chi router owns the versioned `/api/v1` surface:
 
 - `POST /account`, `POST /session`, and `POST /session/refresh` are IP-rate-limited;
 - authenticated account, session, Founder, import, state, and intent endpoints are
-  account-rate-limited;
+  account-rate-limited; failed authentication also consumes the caller's IP bucket;
 - request decoders reject unknown keys, trailing JSON values, empty required bodies, and bodies
   over 64 KiB under the Phase-0 configuration;
 - errors use `{category, detail}` and rate-limit failures use the `rate_limited` category;
+- router-level 404/405 responses use that same typed shape, and the one-time recovery-code response
+  carries `Cache-Control: no-store`;
 - `POST /intents` resolves the active company stream and calls the authoritative Production
   service. The client never chooses a stream ID.
 
 The in-memory Phase-0 token buckets resist clock regression by refusing to mint tokens when time
-moves backwards. Deployment may replace storage without changing the HTTP contract.
+moves backwards. Their key map is a bounded LRU; entries idle for one full-refill interval are
+evicted. `TrustedProxyHops` is explicit deployment configuration: zero ignores forwarded headers,
+while a positive value selects the client address at that exact trusted depth from
+`X-Forwarded-For`. Malformed/short chains fall back to the socket peer. Deployment may replace
+storage without changing the HTTP contract.
 
 ## Verification
 
 `go test ./account` covers credential encoding, exact JWT claims, expiry and signing-key rotation,
-UUIDv7 shape, and limiter clock regression. With `TEST_DATABASE_URL` set, it additionally exercises
+UUIDv7 shape, proxy extraction, failed-auth limiting, bounded limiter eviction, and limiter clock
+regression. With `TEST_DATABASE_URL` set, it additionally exercises
 the complete account → session → real Production intent path, refresh replay revocation, New
 Founder archival, import, deletion/anonymization, and rate limiting against Postgres.
 The integration suite also forces a legitimate rotation to race a replay and proves that no
-descendant refresh or access token remains live.
+descendant refresh or access token remains live. The account path also proves stored-parameter
+credential upgrade and anonymized Founder/import-marker retention after deletion.

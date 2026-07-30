@@ -24,6 +24,17 @@ const (
 
 var errInvalidCredential = errors.New("invalid recovery credential")
 
+// dummyRecoveryHash is structurally valid and deliberately never corresponds
+// to a user credential. Missing-account login attempts still pay one Argon2id
+// verification so account existence is not exposed by the password KDF cost.
+const dummyRecoveryHash = "$argon2id$v=19$m=19456,t=2,p=1$AAAAAAAAAAAAAAAAAAAAAA$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+
+type recoveryHashParameters struct {
+	memory      uint32
+	iterations  uint32
+	parallelism uint8
+}
+
 func newRecoveryCode(random io.Reader) (string, error) {
 	if random == nil {
 		random = rand.Reader
@@ -36,6 +47,7 @@ func newRecoveryCode(random io.Reader) (string, error) {
 }
 
 func hashRecoveryCode(code string, random io.Reader) (string, error) {
+	code = normalizeRecoveryCode(code)
 	if random == nil {
 		random = rand.Reader
 	}
@@ -53,30 +65,37 @@ func hashRecoveryCode(code string, random io.Reader) (string, error) {
 }
 
 func verifyRecoveryCode(encoded, code string) bool {
+	valid, _ := verifyRecoveryCodeForUpgrade(encoded, code)
+	return valid
+}
+
+func verifyRecoveryCodeForUpgrade(encoded, code string) (valid, needsRehash bool) {
+	code = normalizeRecoveryCode(code)
 	if !validRecoveryCode(code) {
-		return false
+		return false, false
 	}
 	parts := strings.Split(encoded, "$")
 	if len(parts) != 6 || parts[1] != "argon2id" || parts[2] != "v="+strconv.Itoa(argon2.Version) {
-		return false
+		return false, false
 	}
-	var memory uint32
-	var iterations uint32
-	var parallelism uint8
-	if _, err := fmt.Sscanf(parts[3], "m=%d,t=%d,p=%d", &memory, &iterations, &parallelism); err != nil ||
-		memory != argonMemoryKiB || iterations != argonIterations || parallelism != argonParallelism {
-		return false
+	var parameters recoveryHashParameters
+	if _, err := fmt.Sscanf(parts[3], "m=%d,t=%d,p=%d", &parameters.memory, &parameters.iterations, &parameters.parallelism); err != nil ||
+		parts[3] != fmt.Sprintf("m=%d,t=%d,p=%d", parameters.memory, parameters.iterations, parameters.parallelism) ||
+		parameters.memory < argonMemoryKiB || parameters.iterations < argonIterations || parameters.parallelism < argonParallelism {
+		return false, false
 	}
 	salt, err := base64.RawStdEncoding.DecodeString(parts[4])
 	if err != nil || len(salt) != argonSaltBytes {
-		return false
+		return false, false
 	}
 	want, err := base64.RawStdEncoding.DecodeString(parts[5])
 	if err != nil || len(want) != argonKeyBytes {
-		return false
+		return false, false
 	}
-	got := argon2.IDKey([]byte(code), salt, iterations, memory, parallelism, uint32(len(want)))
-	return subtle.ConstantTimeCompare(got, want) == 1
+	got := argon2.IDKey([]byte(code), salt, parameters.iterations, parameters.memory, parameters.parallelism, uint32(len(want)))
+	valid = subtle.ConstantTimeCompare(got, want) == 1
+	needsRehash = valid && (parameters.memory != argonMemoryKiB || parameters.iterations != argonIterations || parameters.parallelism != argonParallelism)
+	return valid, needsRehash
 }
 
 func validRecoveryCode(code string) bool {
@@ -85,4 +104,8 @@ func validRecoveryCode(code string) bool {
 	}
 	decoded, err := base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString(strings.ToUpper(code))
 	return err == nil && len(decoded) == 16
+}
+
+func normalizeRecoveryCode(code string) string {
+	return strings.ToLower(strings.TrimSpace(code))
 }

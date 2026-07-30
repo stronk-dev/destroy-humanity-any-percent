@@ -110,3 +110,21 @@ The account RFC's D3 list is amended to include it; the bookkeeping gap was mine
   Production intent at revision 3.
 - `make test-go GO_PACKAGES='./account ./save'`, matching `go vet`, and the complete account suite
   against local Postgres are green.
+
+## 2026-07-30 — MEDIUM security and anonymization remediation
+
+- Recovery verification now parses the stored Argon2id parameters, enforces the 19-MiB/2-pass/1-lane
+  floors, and flags any valid non-current hash for replacement. Login locks the account row, verifies,
+  rehashes with fresh salt, and issues the session in one transaction. Missing valid-shaped account
+  IDs pay an Argon2id verification against a constant dummy hash. Recovery input is case/outer-space
+  normalized.
+- Migration 00019 changes Founder ownership deletion from cascade to nullable `ON DELETE SET NULL`.
+  `DeleteAccount` stamps every identity's archive time before deleting the account; the imported flag
+  and Founder rows survive while email/session/token PII continues to cascade. Real-Postgres coverage
+  asserts two retained identities, zero account links, zero active rows, and the one imported marker.
+- Rate limiting now has a bounded LRU map and semantically free idle eviction after one full-refill
+  interval. Explicit trusted-proxy depth controls X-Forwarded-For selection; zero ignores it and
+  malformed/short chains fall back to the socket. Failed authenticated requests consume the same
+  per-IP authority and become typed 429s after the burst.
+- Batched adjacent LOWs: typed router 404/405, typed missing-account New Founder, normalized recovery
+  input, and `Cache-Control: no-store` on the one-time credential response.

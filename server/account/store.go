@@ -133,14 +133,8 @@ func (repository *Repository) CreateAccount(ctx context.Context) (CreatedAccount
 }
 
 func (repository *Repository) CreateSession(ctx context.Context, accountID, recoveryCode string) (TokenPair, error) {
+	recoveryCode = normalizeRecoveryCode(recoveryCode)
 	if accountID == "" || !validRecoveryCode(recoveryCode) {
-		return TokenPair{}, ErrAuthentication
-	}
-	var encoded string
-	if err := repository.db.QueryRowContext(ctx, `SELECT recovery_hash FROM accounts WHERE account_id=$1`, accountID).Scan(&encoded); err != nil {
-		return TokenPair{}, ErrAuthentication
-	}
-	if !verifyRecoveryCode(encoded, recoveryCode) {
 		return TokenPair{}, ErrAuthentication
 	}
 	tx, err := repository.db.BeginTx(ctx, nil)
@@ -148,6 +142,26 @@ func (repository *Repository) CreateSession(ctx context.Context, accountID, reco
 		return TokenPair{}, err
 	}
 	defer tx.Rollback()
+	var encoded string
+	if err := tx.QueryRowContext(ctx, `SELECT recovery_hash FROM accounts WHERE account_id=$1 FOR UPDATE`, accountID).Scan(&encoded); errors.Is(err, sql.ErrNoRows) {
+		verifyRecoveryCode(dummyRecoveryHash, recoveryCode)
+		return TokenPair{}, ErrAuthentication
+	} else if err != nil {
+		return TokenPair{}, err
+	}
+	valid, needsRehash := verifyRecoveryCodeForUpgrade(encoded, recoveryCode)
+	if !valid {
+		return TokenPair{}, ErrAuthentication
+	}
+	if needsRehash {
+		upgraded, err := hashRecoveryCode(recoveryCode, repository.random)
+		if err != nil {
+			return TokenPair{}, err
+		}
+		if _, err := tx.ExecContext(ctx, `UPDATE accounts SET recovery_hash=$2 WHERE account_id=$1`, accountID, upgraded); err != nil {
+			return TokenPair{}, err
+		}
+	}
 	founderID, err := activeFounderForUpdate(ctx, tx, accountID)
 	if err != nil {
 		return TokenPair{}, ErrAuthentication
@@ -413,6 +427,9 @@ func (repository *Repository) DeleteAccount(ctx context.Context, accountID strin
 	}
 	if len(founders) == 0 {
 		return ErrAccountNotFound
+	}
+	if _, err := tx.ExecContext(ctx, `UPDATE account_founders SET archived_at=COALESCE(archived_at,$2) WHERE account_id=$1`, accountID, now); err != nil {
+		return err
 	}
 	for _, founderID := range founders {
 		if _, err := tx.ExecContext(ctx, `UPDATE save_streams SET archived_at=COALESCE(archived_at,$2) WHERE owner_kind='founder' AND owner_id=$1`, founderID, now); err != nil {
