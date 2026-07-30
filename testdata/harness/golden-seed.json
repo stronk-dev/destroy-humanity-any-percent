@@ -10,7 +10,7 @@
         "policy_id": "casual.phase0",
         "policy_version": 1,
         "seed": "0",
-        "constants_hash": "sha256:2ad70ae19dd50be278094debf5908ce68eb072dc132dbf7e62e05f282330166b"
+        "constants_hash": "sha256:7b46452c3cfe62d74bc6b48c8526cabe85a71bf439b6de0bc946e543fd7c0764"
       },
       "outcome": "completed",
       "final_virtual_ms": 1814400000,
@@ -74,7 +74,7 @@
         "policy_id": "chaos.phase0",
         "policy_version": 1,
         "seed": "0",
-        "constants_hash": "sha256:2ad70ae19dd50be278094debf5908ce68eb072dc132dbf7e62e05f282330166b"
+        "constants_hash": "sha256:7b46452c3cfe62d74bc6b48c8526cabe85a71bf439b6de0bc946e543fd7c0764"
       },
       "outcome": "completed",
       "final_virtual_ms": 2592000000,
