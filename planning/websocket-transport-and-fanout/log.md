@@ -152,3 +152,15 @@
   node to remove the connection, drains the one already-in-flight frame, and observes close code
   `4000 queue_overflow`. Together with the full-state account endpoint and private-history recovery,
   this closes the lossless-overflow/re-sync boundary in AC4.
+- **DESIGN-GAP (blocks event relay):** Exit transactions commit both Company-scope events
+  (`run_ended`, `run_started`) and Founder-scope events (`founder_advanced`). T3 gives every event a
+  `rev` and D3 says player-channel revisions drive shell ordering, but the event payload carries no
+  scope and Company/Founder revision sequences are independent. Relaying both onto one
+  `player:{founder}` stream would make ordinary revision-gap detection falsely treat valid
+  cross-scope events as missing Company state. The owner must either add event scope/stream identity
+  to T3 or declare which scope is relayed; no ordering rule is improvised here.
+- Verification after the round is green: all Go packages and vet, generated formulas, pacing and
+  epoch-history guards, package-boundary checks, strict TypeScript/Svelte, production client build,
+  6,441 Node tests (3 skipped), schema validation, and 19,332 browser cases. The aggregate runner's
+  output boundary stopped after the long harness command, so the remaining repository targets were
+  invoked explicitly and recorded rather than inferred.
