@@ -136,7 +136,7 @@ the deployment scheduler's 30-day idempotency retention policy.
 
 That same transaction inserts the normalized receipt into the transport outbox. Persistence
 enforces a 60-KiB receipt ceiling, per-Founder head ordering, leased claims, an attempt counter, and
-an immutable dead-letter timestamp after the relay's fifth deterministic failure. Dead letters stay
+a durable dead-letter timestamp after the relay's fifth deterministic failure. Dead letters stay
 queryable as operational evidence but no longer count as pending readiness work; successful rows
 retain their publication timestamp.
 

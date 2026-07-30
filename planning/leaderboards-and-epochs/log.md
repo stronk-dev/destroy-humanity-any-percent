@@ -202,3 +202,7 @@ identical-artifact mint.
   validation permits only the two harness artifacts, recomputes the manifest hash at that commit,
   blanks old/new hash fields, and then demands semantic equality of every pacing/golden field. The
   regenerated diff is exactly three hash replacements; no metric or final-state value changed.
+- Post-commit self-review closed two boundary assumptions before handoff: exported/in-process Seed
+  values now pass the same validator as decoded JSON before artifact reads or DB reconciliation,
+  and identity-only baseline comparison strict-decodes exact schemas so unknown fields cannot be
+  ignored by semantic comparison. Seeded negative tests cover both paths.

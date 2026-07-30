@@ -139,7 +139,7 @@ func (repository *Repository) AddHotfix(ctx context.Context, constantsHash strin
 // hash, so reconciliation may bootstrap epoch 1 or advance one epoch; skipped
 // historical epochs fail closed instead of fabricating their catalog bytes.
 func (repository *Repository) ReconcileSeed(ctx context.Context, bundle epochseed.Bundle, startedAt time.Time) error {
-	if startedAt.IsZero() || bundle.Hash == "" || len(bundle.Seed.Epochs) == 0 ||
+	if startedAt.IsZero() || bundle.Hash == "" || epochseed.Validate(bundle.Seed) != nil ||
 		!epochseed.Accepts(epochseed.Current(bundle.Seed), bundle.Hash) {
 		return ErrInvalidEpoch
 	}

@@ -46,3 +46,14 @@ func TestAddedManifestArtifactChangesCompositionWithoutCode(t *testing.T) {
 		t.Fatalf("bundle=%+v", bundle)
 	}
 }
+
+func TestValidateRejectsForgedInProcessSeed(t *testing.T) {
+	bundle, err := Load(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle.Seed.Artifacts = append(bundle.Seed.Artifacts, bundle.Seed.Artifacts[0])
+	if err := Validate(bundle.Seed); err == nil {
+		t.Fatal("duplicate in-process artifact declaration passed")
+	}
+}

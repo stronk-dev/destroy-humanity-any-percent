@@ -154,6 +154,10 @@ func TestConstantsIdentityGuardAllowsOnlyManifestHash(t *testing.T) {
 	if err := validateConstantsIdentityBlobs(beforeBaseline, changedBaseline, beforeGolden, afterGolden, want); err == nil {
 		t.Fatal("identity-only guard accepted pacing drift")
 	}
+	unknownBaseline := append(afterBaseline[:len(afterBaseline)-1], []byte(`,"unknown":true}`)...)
+	if err := validateConstantsIdentityBlobs(beforeBaseline, unknownBaseline, beforeGolden, afterGolden, want); err == nil {
+		t.Fatal("identity-only guard accepted an unknown field")
+	}
 }
 
 func TestCheckedReportsContainNoJSONFloats(t *testing.T) {

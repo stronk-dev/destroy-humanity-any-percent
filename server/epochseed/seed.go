@@ -62,27 +62,34 @@ func Decode(data []byte) (Seed, error) {
 	if err := decoder.Decode(&struct{}{}); err != io.EOF {
 		return Seed{}, fmt.Errorf("%w: seed must contain exactly one JSON value", ErrInvalidSeed)
 	}
+	if err := Validate(seed); err != nil {
+		return Seed{}, err
+	}
+	return seed, nil
+}
+
+func Validate(seed Seed) error {
 	if seed.SchemaVersion != 1 || seed.CurrentEpochID < 1 || len(seed.Artifacts) == 0 || len(seed.Epochs) == 0 {
-		return Seed{}, fmt.Errorf("%w: invalid root", ErrInvalidSeed)
+		return fmt.Errorf("%w: invalid root", ErrInvalidSeed)
 	}
 	seenNames, seenPaths := map[string]bool{}, map[string]bool{}
 	for _, artifact := range seed.Artifacts {
 		if !artifactNamePattern.MatchString(artifact.Name) || path.Clean(artifact.Path) != artifact.Path ||
 			seenNames[artifact.Name] || seenPaths[artifact.Path] || !strings.HasPrefix(artifact.Path, "balance/") {
-			return Seed{}, fmt.Errorf("%w: invalid or duplicate artifact %q", ErrInvalidSeed, artifact.Name)
+			return fmt.Errorf("%w: invalid or duplicate artifact %q", ErrInvalidSeed, artifact.Name)
 		}
 		seenNames[artifact.Name], seenPaths[artifact.Path] = true, true
 	}
 	for index, epoch := range seed.Epochs {
 		if epoch.ID != int64(index+1) || strings.TrimSpace(epoch.Name) == "" ||
 			epoch.ChangelogRef != fmt.Sprintf("changelog/epoch-%d.md", epoch.ID) || !SortedUniqueHashes(epoch.AcceptedHashes) {
-			return Seed{}, fmt.Errorf("%w: invalid epoch %d", ErrInvalidSeed, epoch.ID)
+			return fmt.Errorf("%w: invalid epoch %d", ErrInvalidSeed, epoch.ID)
 		}
 	}
 	if seed.CurrentEpochID != seed.Epochs[len(seed.Epochs)-1].ID {
-		return Seed{}, fmt.Errorf("%w: current epoch is not last", ErrInvalidSeed)
+		return fmt.Errorf("%w: current epoch is not last", ErrInvalidSeed)
 	}
-	return seed, nil
+	return nil
 }
 
 func Load(repositoryRoot string) (Bundle, error) {
@@ -109,7 +116,7 @@ func Load(repositoryRoot string) (Bundle, error) {
 }
 
 func ReadArtifacts(repositoryRoot string, seed Seed) (map[string][]byte, error) {
-	if repositoryRoot == "" || len(seed.Artifacts) == 0 {
+	if repositoryRoot == "" || Validate(seed) != nil {
 		return nil, ErrInvalidSeed
 	}
 	artifacts := make(map[string][]byte, len(seed.Artifacts))

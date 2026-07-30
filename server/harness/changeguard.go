@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os/exec"
 	"reflect"
 	"strings"
@@ -150,10 +151,10 @@ func validateConstantsIdentityCommit(root, parent, commit string) error {
 
 func validateConstantsIdentityBlobs(beforeBaseline, afterBaseline, beforeGolden, afterGolden []byte, expectedHash string) error {
 	var oldBaseline, newBaseline AggregateReport
-	if err := json.Unmarshal(beforeBaseline, &oldBaseline); err != nil {
+	if err := decodeStrictJSON(beforeBaseline, &oldBaseline); err != nil {
 		return err
 	}
-	if err := json.Unmarshal(afterBaseline, &newBaseline); err != nil {
+	if err := decodeStrictJSON(afterBaseline, &newBaseline); err != nil {
 		return err
 	}
 	if newBaseline.ConstantsHash != expectedHash {
@@ -164,10 +165,10 @@ func validateConstantsIdentityBlobs(beforeBaseline, afterBaseline, beforeGolden,
 		return fmt.Errorf("constants-identity commit changes pacing baseline content")
 	}
 	var oldGolden, newGolden GoldenReport
-	if err := json.Unmarshal(beforeGolden, &oldGolden); err != nil {
+	if err := decodeStrictJSON(beforeGolden, &oldGolden); err != nil {
 		return err
 	}
-	if err := json.Unmarshal(afterGolden, &newGolden); err != nil {
+	if err := decodeStrictJSON(afterGolden, &newGolden); err != nil {
 		return err
 	}
 	for index := range newGolden.Runs {
@@ -181,6 +182,18 @@ func validateConstantsIdentityBlobs(beforeBaseline, afterBaseline, beforeGolden,
 	}
 	if !reflect.DeepEqual(oldGolden, newGolden) {
 		return fmt.Errorf("constants-identity commit changes golden behavior")
+	}
+	return nil
+}
+
+func decodeStrictJSON(data []byte, target any) error {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(target); err != nil {
+		return err
+	}
+	if err := decoder.Decode(&struct{}{}); err != io.EOF {
+		return fmt.Errorf("artifact must contain exactly one JSON value")
 	}
 	return nil
 }
