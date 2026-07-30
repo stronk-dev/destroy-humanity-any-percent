@@ -149,7 +149,7 @@ Run the disposable Postgres integration suite locally:
 
 ```sh
 docker compose -f compose.save-test.yml up -d --wait
-TEST_DATABASE_URL='postgres://cloud_clicker:cloud_clicker_test@127.0.0.1:55432/cloud_clicker_test?sslmode=disable' make test-save-integration
+docker compose -f compose.save-test.yml run --rm test
 docker compose -f compose.save-test.yml down
 ```
 

@@ -23,8 +23,7 @@ test-go:
 	cd server && go test -p 1 $(GO_TEST_FLAGS) $(GO_PACKAGES)
 
 test-save-integration:
-	@test -n "$$TEST_DATABASE_URL" || (echo "TEST_DATABASE_URL is required" >&2; exit 1)
-	cd server && go test -p 1 ./... -run Integration -count=1
+	docker compose -f compose.save-test.yml run --rm test
 
 test-client:
 	pnpm --dir client run test

@@ -92,7 +92,11 @@ command unless the wrapper is actually required; wrappers often defeat persisten
 Group related checks into the repository's existing `make`/package targets where practical.
 The Makefile exports a repository-local ignored `GOCACHE`; use `make test-go` or
 `make test-go GO_PACKAGES='./harness ./transport'` for Go tests so normal compilation never needs
-permission to write into a user-level cache.
+permission to write into a user-level cache. Postgres integration runs through the declared Docker
+service: `docker compose -f compose.save-test.yml run --rm test` (the Make target is the human-facing
+alias). It owns its test URL, network, and Go caches, so agents never wrap tests in environment
+assignments, run them from `server/`, or request host-network approval. Focus ordinary non-Postgres
+runs through `GO_PACKAGES`/`GO_TEST_FLAGS` on the root Make target.
 
 If sandbox or network access genuinely requires escalation, request a reusable narrow prefix for
 that class of command once, then continue. Approval is still required for destructive operations,

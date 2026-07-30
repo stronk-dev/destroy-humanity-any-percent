@@ -14,3 +14,22 @@ services:
       retries: 30
     tmpfs:
       - /var/lib/postgresql/data
+
+  test:
+    image: golang:1.26
+    profiles: ["test"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    working_dir: /workspace/server
+    environment:
+      TEST_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_test@postgres:5432/cloud_clicker_test?sslmode=disable
+      GOCACHE: /go-cache/build
+      GOMODCACHE: /go-cache/mod
+    volumes:
+      - .:/workspace
+      - go-cache:/go-cache
+    command: ["go", "test", "-p", "1", "./...", "-run", "Integration", "-count=1"]
+
+volumes:
+  go-cache:
