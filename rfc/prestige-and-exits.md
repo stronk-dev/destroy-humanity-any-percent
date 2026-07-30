@@ -93,6 +93,14 @@ The pacing envelope measures the **first elective Exit** (AC8 as amended). The s
 regardless of attended time. The always-open door (D1) and the unskippable curriculum (D4) are both
 preserved; AC4 gains this case.
 
+**P5c (review ruling, 2026-07-30):** Exit offers do not spawn while `exit_history` is empty — the
+scripted first failure precedes the market noticing you. Closes the offer-path curriculum skip the
+P5b implementation review found.
+
+**P2d (review ruling, 2026-07-30):** the delta × modifier ÷ 1e6 product is exact integer
+arithmetic in BOTH runtimes (Go big.Int, TS BigInt); no Decimal float path. The reproduced ±1
+divergence point is a corpus vector.
+
 **P2b/P2c (review rulings, 2026-07-30):** the TS kernel wraps prestige division as
 mantissa/mantissa to match Go's `Div` (reciprocal-multiply double-rounds; a non-unit-mantissa
 threshold can flip a cube boundary by 1 ulp); golden vectors gain non-unit-mantissa thresholds at

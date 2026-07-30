@@ -181,3 +181,42 @@ Findings (fix queue, ordered):
   remaining Founder headroom, preserving both the hardcap and preview-is-a-promise.
 - Canonical docs now describe save v9 and the implemented replay, timer, arithmetic, and lifecycle
   behavior. Independent review remains required before archival.
+
+## 2026-07-30 — independent review: c3af220 (lifecycle findings round)
+
+**Approved with two MEDIUM findings, one requiring a new ruling.** Verified to the letter: P5b's
+elective path (wind_down + empty history → scripted_first, full modifier, no attended gate;
+threshold path and once-ever intact); P6b save v9 accumulator with exact-duration eviction, Σ-bound
+invariants, corpus + leak-check coverage; P2b TS mantissa/mantissa ratio structurally identical to
+Go with non-unit-mantissa cube-boundary vectors in the shared corpus; P2c big.Int saturation both
+runtimes + founder-headroom clamp preserving preview-promise; replay order by committed event_seq
+with a faithful backfill and a prefixed-event fixture; gate tier = max(current, gate) with
+gate_crossed intact; decline drift scoped per run with validator-enforced run_seq.
+
+1. **MEDIUM — P5b is incomplete on the OFFER path** (verified first-hand at prestige.go:132-150):
+   only wind_down retypes; `accept_exit_offer` takes the stored offer's exit type with no
+   empty-history check, and offer spawning is not history-gated — a run-1 founder who crosses a
+   tier-1+ gate can accept a spawned acquisition and skip the curriculum forever. **Ruling P5c:
+   offers do not spawn while `exit_history` is empty** — the market does not notice you before
+   your first collapse (fiction-consistent, and it keeps offer previews honest instead of retyping
+   an accepted acquisition into a scripted collapse). AC: spawn-gated fixture + the existing
+   once-ever suite.
+2. **MEDIUM — P2c residual: TS `reputationDelta` still computes delta×ppm/1e6 through
+   break_infinity floats** — reproduced ±1 divergence vs Go's exact big.Int at
+   delta=9007199254740988 × the actual collapse modifier; the corpus samples only agreeing points,
+   so both suites are green while runtimes disagree. **Ruling P2d: the delta-modifier product is
+   exact integer arithmetic in BOTH runtimes** (TS BigInt — the values are integers by
+   construction); the reproduced mismatch point joins the shared corpus as a vector.
+3. LOW — decline-drift discontinuity at deploy (historical declined events lack run_seq; mid-run
+   drift silently resets once — accepted as a one-time upgrade artifact, recorded here) and the
+   count is an unindexed JSON scan per cross_gate (index or counter-cache when it shows up in
+   profiles).
+
+## 2026-07-30 — P5c/P2d remediation
+
+- Offer spawning returns without drawing while Founder Exit history is empty. A real-Postgres
+  fixture proves a T8 crossing emits no offer before the scripted exit, while a seeded second run
+  still spawns and accepts its promised offer.
+- TypeScript modifier application is exact BigInt multiplication and integer division. The shared
+  mismatch vector agrees with Go at 6,755,399,441,055,741.
+- Added the expression index used by run-scoped decline counts.

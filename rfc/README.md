@@ -10,7 +10,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
-| [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | blocked-on-owner (faction, guild) | Commons Compact |
+| [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | blocked-on-owner (faction+guild drafts now exist — unblocks when they accept) | Commons Compact |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | implementing | — |
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
@@ -18,6 +18,9 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
+| [Faction & Incorporation](faction-incorporation.md) | draft — DESIGN-GAPs | Production Engine / Commons / Prestige |
+| [Guild Model](guild-model.md) | draft — blocked by Faction + DESIGN-GAPs | Account / Commons / Transport |
+| [Run Genesis & Replay](run-genesis-and-replay.md) | draft — DESIGN-GAPs | Leaderboards / Prestige / Account |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 
@@ -55,7 +58,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Commons Cohort Merge Capacity](archive/commons-merge-capacity.md) | implemented | [Commons](../docs/commons.md) |
 | [Phase-0 Pacing Observation Coverage](archive/phase0-pacing-observation-coverage.md) | implemented | [Balance harness](../docs/balance-harness.md) |
 
-Remaining Phase-0 contracts (not yet drafted): faction/incorporation model · guild model · T0–T1 playable content
+Remaining Phase-0 contracts (not yet drafted): T0–T1 playable content
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics
 (Leaderboards owns board binding) · doctrine intents (must define doctrine-pick ordering before
 same-boundary doctrine routes can ship). Later named work: Compute Credit spend · deployment and

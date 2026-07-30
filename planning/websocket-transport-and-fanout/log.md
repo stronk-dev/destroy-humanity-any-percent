@@ -372,3 +372,53 @@ Findings (fix queue):
   lease expiry alongside the established five-attempt dead-letter ordering fixture.
 - Verification: focused `./transport ./save`, full Compose Postgres integration, and transport
   `-race` all pass through repository-root commands.
+
+## 2026-07-30 — independent review: 82ba351 (poison vs transient relay failures)
+
+**Approved.** `DeferReceiptClaim` extends the claim (bounded 100 ms–5 min, token-checked, excludes
+published/dead rows) without touching `attempt_count`; the deterministic class is exactly
+`errors.Is(err, ErrInvalidPolicy)` — the envelope/encode/size poison family — while publisher
+infrastructure and Mark failures defer on a 1 s backoff with later founders' claims still released.
+This matches the round-2 ruling: only deterministic failures spend the five-attempt dead-letter
+budget. The per-founder head stays claimed through a transient outage, which is the ordering
+invariant doing its job. One note: the backoff is flat 1 s (no exponential); acceptable at Phase-0
+scale, revisit with the multi-instance relay RFC. e42248b (root-level command convention in
+AGENTS.md) is a docs-only workflow rule — no code verdict needed.
+
+## 2026-07-30 — independent review: 728cd96, 346ec8d, 929b078 (writer boundary + soak + Compose)
+
+**Verdict: approved — all four 728cd96 claims verified with evidence, and the fixes are structural,
+not cosmetic.** Readiness is irreversible via a never-cleared `draining` flag under one mutex (the
+mid-drain flip is impossible by construction); queue releases are keyed to per-revision reservation
+counts with a zero-count guard, so command replies, rev-0 courtesy frames, recovery replays, and
+equal-rev rejected receipts can neither double-decrement nor leak (attack test present; `-race`
+clean including the disconnect-during-flush path); protobuf frames get a real `protocol.Reply`
+decode from the same library centrifuge encodes with — the fail-open is now fail-closed; the jsonb
+size guard delegates to Postgres inside the same INSERT (`octet_length($::jsonb::text)`), matching
+the CHECK by construction with a clean typed error instead of a transaction abort, proven by a
+genuine 5,500-key attack fixture against live Postgres. The soak's new oracle (strictly-increasing
+world snapshots, terminal rev, wrong-channel/kind fails) matches the drop-stale contract and passes
+under `-race` in 3.85 s — fixed for the right reason, leak detection intact. Compose is infra-only,
+byte-identical test command, no new silent-skip path.
+
+Findings (minor):
+1. LOW — malformed publication metadata disconnects with code 4000 ("queue overflow") — a false
+   diagnosis for ops and clients; give validation failures their own close code.
+2. LOW (latent) — `ReservePlayer` reports rev<1 as overflow → a future rev-0 publish to `player:*`
+   via the exported Publish would 4000 every subscriber; unreachable today (DB CHECK rev>0 on the
+   only caller). Separate validation from overflow in the reservation API.
+3. INFO — soak sniffer stops at the terminal rev (post-terminal leaks unobserved; primary guard is
+   upstream); readiness race test wouldn't catch mutex deletion (guarantee verified by inspection);
+   integration suites still silently skip without TEST_DATABASE_URL outside Compose/CI
+   (pre-existing; the dedicated target and CI cannot skip).
+
+## 2026-07-30 — round-3 boundary and T3 remediation
+
+- Malformed JSON/protobuf publication metadata now disconnects with typed code 4004
+  `invalid_frame`; code 4000 remains exclusively queue capacity. `ReservePlayer` returns a separate
+  validation error for non-positive revisions, and the publisher rejects that input without
+  disconnecting unrelated subscribers.
+- The accepted T3 scope ruling had not reached either wire validator or its shared fixtures.
+  Event payloads now require the exact field `scope` with closed values `company|founder` in Go and
+  TypeScript; missing and unknown scopes are negative vectors. This repairs the boundary needed by
+  the still-unimplemented durable event relay.

@@ -133,3 +133,37 @@ demonstrated HIGH:**
   instead of hardcoding 42.
 - Focused Go combat/determinism tests and the shared TypeScript combat suite are green. The parent
   remains implementing because its catalog/effect-table DESIGN-GAPs are still owner-blocked.
+
+## 2026-07-30 — independent review: 02cc096 (AST gate) + 22c67b6 (vectors)
+
+**02cc096: the AST rewrite is logically correct and closes every demonstrated escape — but the
+commit is BROKEN AT HEAD and its verification claim was false.** The regex safe-control self-test
+writes `\/` in a double-quoted JS string, which collapses to `/`, making the tested source
+unparseable TypeScript; the gate's own fail-closed parse error throws inside `assertSelfTests()`
+and the tool exits 1 before scanning anything. Reproduced by the reviewer directly: `node
+tools/verify-combat-boundaries.mjs` → SyntaxError, exit 1 — `make verify-client` and CI are red at
+HEAD, and the planning-log claim that `verify:combat` ran green is untrue (the file is
+byte-identical to the commit; it has never passed). Fail direction is loud, not a bypass — but a
+false green claim is a process violation on top of a red pipeline. **Fix: double-escape the slash
+in the string literal; then re-run the full self-test suite and re-record verification honestly.**
+
+Otherwise verified correct with independent probing: `createSourceFile` + `forEachChild` walk
+catches division after closed templates (the arithmetic.ts:47 shape), decorators, enum
+initializers, arrow bodies, static blocks, nested/tagged templates; correctly-escaped regex
+literals and JSDoc no longer false-positive; `.ts/.tsx/.mts/.cts` recursed. Residual: `.js/.jsx`
+under `src/combat/` unscanned (add to the extension list with the fix above).
+
+**22c67b6: approved.** All ten damage vectors independently recomputed and exact;
+`disadvantage_crit_order` = 114 vs swapped 115 (genuinely order-pinning); atk scaling 156;
+bounded-draw vectors reproduce on an independent SplitMix64+FNV1a implementation including the
+4-rejection obedience case; both suites count draws from the fixture; Go now reads `match_seed`
+from the fixture (closing the round-1 observation). One LOW: `advantage_rounds_after_chart`
+(101×13/10 = 131.3) doesn't separate floor from round-half — a bp=105 vector (136.5) would; add
+when touching the fixture next.
+
+## 2026-07-30 — round-3 remediation
+
+- `e18cc6e` double-escapes the regex self-test and includes JS/JSX in the AST walk. Direct gate
+  execution passes; the false green claim is not repeated.
+- `6e55f45` adds base power 105: the chart stage computes floor(136.5) = 136 in both runtimes,
+  distinguishing the mandated floor from round-to-nearest.

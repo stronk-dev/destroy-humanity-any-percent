@@ -277,3 +277,37 @@ Findings:
 - The verified-run supersession contract and rejected-log catalog value remain explicitly
   unimplemented: the review requires a follow-up contract for the former, and no accepted catalog
   owns the latter value. This batch does not hide either DESIGN-GAP behind a code constant.
+
+## 2026-07-30 — independent review: 4115e78 (identity byte-pinning), cc2cb50 (seed bootstrap), 6f2047b (governance)
+
+**4115e78: approved.** The identity guard now compares git blob bytes per seed artifact against the
+previous baseline-walk commit with the artifact set DeepEqual-pinned; same-commit smuggling is
+blocked upstream by the artifact-only path rule; negative test drives a prestige-byte hotfix +
+identity commit through the full guard and demands rejection naming the artifact. The round-2
+mint-free balance-change hole is closed structurally.
+
+**cc2cb50: approved with one MEDIUM residual.** Empty-DB bootstrap now replays the full seed
+history (deterministic timeline, all accepted-hash memberships, catalog-set identity rows for
+historical hashes WITHOUT fabricated bytes — honest; docs assign historical bytes to backups).
+**MEDIUM: the one-epoch ADVANCE path still wedges on a multi-hash current epoch** — mint N+1 plus
+a hotfix on N+1 before redeploy leaves the DB at N; the advance inserts only the worktree hash and
+then demands full equality with the declared set → `ErrInvalidEpoch`, server never ready, no
+in-band recovery (AddHotfix needs a ready server). Fix: the advance path inserts the DECLARED
+accepted set for the new epoch, exactly as bootstrap does — same code path, same honesty.
+
+**6f2047b: approved as scoped.** The epochs trigger admits exactly one transition (NULL→NOT NULL
+ended_at, all other columns byte-equal) — closed-epoch reopening is impossible regardless of
+current-epoch existence; verified_runs gains the run_id format CHECK; live-Postgres attack tests.
+Scope honesty: supersession and the rejected-log cap did NOT land and are recorded as open gaps
+(correct); INSERT remains unguarded on epochs (load-bearing for bootstrap — a deliberate,
+documented trade-off; a fabricated closed row is the residual surface, noted). Add a dedicated
+reopen-attack test when convenient.
+
+## 2026-07-30 — round-3 epoch remediation
+
+- Reconciliation now inserts every declared accepted-hash membership before validating equality,
+  for both an already-current epoch and a one-step advance. Only the worktree hash receives local
+  artifact bytes; historical hotfix identities remain honest placeholders.
+- The real-Postgres advance fixture declares a second accepted hash on epoch N+1 before first
+  deployment and proves startup succeeds. Governance coverage explicitly attacks reopening a
+  closed epoch with `ended_at = NULL`.

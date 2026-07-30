@@ -128,3 +128,29 @@ The account RFC's D3 list is amended to include it; the bookkeeping gap was mine
   per-IP authority and become typed 429s after the burst.
 - Batched adjacent LOWs: typed router 404/405, typed missing-account New Founder, normalized recovery
   input, and `Cache-Control: no-store` on the one-time credential response.
+
+## 2026-07-30 — independent review: 2cdf1be (credentials, deletion, limiting)
+
+**Approved.** Every ruling verified to the letter with live-Postgres proof: A-D1a stored-param
+verify with floors + rehash-to-current inside the same row-locked transaction (concurrent logins
+serialize on the account row); the timing oracle closed with a structurally valid dummy Argon2 on
+the miss path (asserted never-authenticating); A-D5a via ON DELETE SET NULL + archive-stamp-before-
+delete (the partial unique index needs no change — rows leave its predicate first), `imported`
+survives, board projection works for deleted accounts; limiter gains bounded LRU + idle-TTL
+(unbounded growth gone), trusted-proxy depth 0–8 with fail-to-socket on malformed chains, and
+failed-auth requests now consume the IP bucket; the LOW batch (typed 404/405, no-store, input
+normalization, typed NewFounder 404) all landed as claimed.
+
+Residual findings: LOW — no upper bound on stored Argon2 params (a DB-write attacker could plant a
+4 TiB-memory hash; add a ceiling alongside the floor); LOW — trusted-proxy docs must state the
+origin-only-reachable-via-proxy precondition (XFF spoof bypasses bucketing when violated); LOW —
+session/access-token GC remains open (correctly unclaimed). Observation: LRU capacity eviction can
+be cycled to reset a bucket — equivalent to IP rotation, inherent to per-IP limiting, accepted.
+
+## 2026-07-30 — round-3 LOW remediation
+
+- Stored Argon2 parameters are rejected before allocation above 76 MiB, eight iterations, or four
+  lanes while preserving the accepted upgrade window above current floors. Canonical deployment
+  docs now require a positive trusted-proxy depth to be paired with an origin firewall.
+- Session/access-token GC remains open: wiring a recurring job belongs with the not-yet-composed
+  gameserver process. No orphan method is presented as a live cleanup path.
