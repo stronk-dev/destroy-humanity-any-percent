@@ -39,19 +39,19 @@ func productionCatalog(t *testing.T) *Catalog {
 func TestStockAccrualCarriesRemainderAndSkipsOffline(t *testing.T) {
 	catalog := productionCatalog(t)
 	hook := AccrualHook{Catalogs: CatalogSet{testHash: catalog}, CatchupCeilingMS: 30_000}
-	state := &save.State{FactionID: "bootstrapper", StockProgressMS: 50_000}
+	state := &save.State{FactionID: "bootstrapper", StockProgressMS: 50_000, ConsumedStockUnits: 17}
 	revision := save.Revision{ConstantsHash: testHash}
 	if events, err := hook.AfterAccrual(state, nil, revision, accrualhook.Result{ElapsedMS: 20_001}, nil); err != nil || len(events) != 0 {
 		t.Fatalf("attended accrual events=%v err=%v", events, err)
 	}
-	if state.StockUnits != 1 || state.StockProgressMS != 10_001 {
-		t.Fatalf("stock=%d remainder=%d", state.StockUnits, state.StockProgressMS)
+	if state.StockUnits != 1 || state.StockProgressMS != 10_001 || state.ConsumedStockUnits != 17 {
+		t.Fatalf("stock=%d remainder=%d consumed=%d", state.StockUnits, state.StockProgressMS, state.ConsumedStockUnits)
 	}
 	if events, err := hook.AfterAccrual(state, nil, revision, accrualhook.Result{ElapsedMS: 30_001}, nil); err != nil || len(events) != 0 {
 		t.Fatalf("offline accrual events=%v err=%v", events, err)
 	}
-	if state.StockUnits != 1 || state.StockProgressMS != 10_001 {
-		t.Fatalf("offline changed stock=%d remainder=%d", state.StockUnits, state.StockProgressMS)
+	if state.StockUnits != 1 || state.StockProgressMS != 10_001 || state.ConsumedStockUnits != 17 {
+		t.Fatalf("offline changed stock=%d remainder=%d consumed=%d", state.StockUnits, state.StockProgressMS, state.ConsumedStockUnits)
 	}
 }
 

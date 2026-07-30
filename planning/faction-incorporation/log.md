@@ -75,3 +75,7 @@
   checks, the production build, 6,452 Node tests, every schema gate, and 19,365 browser tests.
   `make test-save-integration` then passed every integration package against the Compose-managed
   PostgreSQL 16 service. The only remaining step is the mandatory independent complete-diff review.
+- The final acceptance mapping also pins Phase 0's inert-consumer contract directly: faction
+  accrual is tested with a non-zero `consumed_stock_units` value and must preserve it across both
+  attended and offline evaluations. The Guild successor may replace that assertion only when its
+  evented clearing mutation lands.

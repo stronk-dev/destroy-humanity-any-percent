@@ -19,7 +19,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 | [Faction & Incorporation](faction-incorporation.md) | implementing | Production Engine / Commons / Prestige |
-| [Guild Model](guild-model.md) | draft — blocked by Faction + DESIGN-GAPs | Account / Commons / Transport |
+| [Guild Model](guild-model.md) | draft — executable contracts complete; waits on Faction review | Account / Commons / Transport |
 | [Run Genesis & Replay](run-genesis-and-replay.md) | draft — DESIGN-GAPs | Leaderboards / Prestige / Account |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
