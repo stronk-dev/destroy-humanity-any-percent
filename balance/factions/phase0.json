@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "stock_cap": 100000,
+  "stock_interval_ms": 60000,
+  "factions": [
+    {
+      "id": "bootstrapper",
+      "produces": "revenue",
+      "consumes": "compliance",
+      "compact": null,
+      "modifier_slots": [],
+      "incorporation_copy_key": "incorporate.bootstrapper"
+    },
+    {
+      "id": "vc_funded",
+      "produces": "hype",
+      "consumes": "revenue",
+      "compact": null,
+      "modifier_slots": [],
+      "incorporation_copy_key": "incorporate.vc_funded"
+    },
+    {
+      "id": "open_source",
+      "produces": "libraries",
+      "consumes": "hype",
+      "compact": { "auto_sign": true, "tithe_ppm": 130000 },
+      "modifier_slots": [],
+      "incorporation_copy_key": "incorporate.open_source"
+    },
+    {
+      "id": "enterprise",
+      "produces": "compliance",
+      "consumes": "libraries",
+      "compact": null,
+      "modifier_slots": [],
+      "incorporation_copy_key": "incorporate.enterprise"
+    }
+  ]
+}
