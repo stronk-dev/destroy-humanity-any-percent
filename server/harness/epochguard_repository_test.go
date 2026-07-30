@@ -133,6 +133,43 @@ func TestEpochGuardAcceptsMintWithCapMigrationPolicy(t *testing.T) {
 	}
 }
 
+func TestEpochGuardAcceptsArtifactAdditionOnlyInMint(t *testing.T) {
+	root, seed, _ := newEpochGuardRepository(t)
+	factionsPath := "balance/factions/phase0.json"
+	factions := `{"schema_version":1,"factions":[]}`
+	seed.Artifacts = append(seed.Artifacts, epochArtifact{Name: "factions", Path: factionsPath})
+	resultingHash := epochHash(t, root, seed, map[string]string{factionsPath: factions})
+	seed.CurrentEpochID = 2
+	seed.Epochs = append(seed.Epochs, epochRecord{
+		ID: 2, Name: "Faction foundation", ChangelogRef: "changelog/epoch-2.md", AcceptedHashes: []string{resultingHash},
+	})
+	writeGuardCommit(t, root, "BALANCE-CHANGE: register faction catalog", map[string]string{
+		factionsPath:           factions,
+		epochSeedPath:          encodeEpochSeed(t, seed),
+		"changelog/epoch-2.md": "# Epoch 2\n\nRegisters the faction catalog.\n",
+	})
+	if err := ValidateRepositoryEpochChanges(root); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestEpochGuardRejectsArtifactAdditionAsHotfix(t *testing.T) {
+	root, seed, _ := newEpochGuardRepository(t)
+	factionsPath := "balance/factions/phase0.json"
+	factions := `{"schema_version":1,"factions":[]}`
+	seed.Artifacts = append(seed.Artifacts, epochArtifact{Name: "factions", Path: factionsPath})
+	seed.Epochs[0].AcceptedHashes = append(seed.Epochs[0].AcceptedHashes,
+		epochHash(t, root, seed, map[string]string{factionsPath: factions}))
+	sort.Strings(seed.Epochs[0].AcceptedHashes)
+	writeGuardCommit(t, root, "factions: register catalog", map[string]string{
+		factionsPath:  factions,
+		epochSeedPath: encodeEpochSeed(t, seed),
+	})
+	if err := ValidateRepositoryEpochChanges(root); err == nil || !strings.Contains(err.Error(), "BALANCE-CHANGE successor mint") {
+		t.Fatalf("artifact-addition hotfix err=%v", err)
+	}
+}
+
 func TestEpochGuardRejectsSeedOnlyAndMintWithoutChangelog(t *testing.T) {
 	root, seed, _ := newEpochGuardRepository(t)
 	seed.Epochs[0].Name = "renamed"

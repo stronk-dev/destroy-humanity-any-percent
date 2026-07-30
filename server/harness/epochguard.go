@@ -118,15 +118,16 @@ func validateEpochRevision(root, commit string) error {
 	if !seedChanged {
 		return fmt.Errorf("constants artifact changed without %s", epochSeedPath)
 	}
-	if !reflect.DeepEqual(before.Artifacts, after.Artifacts) {
-		return fmt.Errorf("artifact identity changes require a successor RFC")
-	}
-
 	subjectBytes, err := gitOutput(root, "show", "-s", "--format=%s", commit)
 	if err != nil {
 		return err
 	}
 	balanceChange := strings.HasPrefix(string(subjectBytes), "BALANCE-CHANGE:")
+	if !reflect.DeepEqual(before.Artifacts, after.Artifacts) {
+		if !balanceChange || !isAppendOnlyArtifactSet(before.Artifacts, after.Artifacts) {
+			return fmt.Errorf("artifact identity may only grow in a BALANCE-CHANGE successor mint")
+		}
+	}
 	resultingHash, err := hashArtifactsAt(root, commit, after)
 	if err != nil {
 		return err
@@ -287,6 +288,24 @@ func isAppendOnlySet(before, after []string, required string) bool {
 		}
 	}
 	return seenRequired
+}
+
+func isAppendOnlyArtifactSet(before, after []epochArtifact) bool {
+	if len(after) <= len(before) || !reflect.DeepEqual(before, after[:len(before)]) {
+		return false
+	}
+	for _, artifact := range after[len(before):] {
+		if containsPath(artifactPaths(epochSeed{Artifacts: before}), artifact.Path) {
+			return false
+		}
+		for _, existing := range before {
+			if existing.Name == artifact.Name {
+				return false
+			}
+		}
+		before = append(before, artifact)
+	}
+	return true
 }
 
 func intersects(changed, watched []string) bool {

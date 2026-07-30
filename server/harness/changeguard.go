@@ -48,7 +48,7 @@ func ValidateBaselineCommit(commitPaths, inputsBefore []string, subject string) 
 	}
 	for _, path := range inputsBefore {
 		path = strings.TrimSpace(path)
-		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/routes/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "testdata/harness/scenarios/") {
+		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/routes/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "balance/factions/") || strings.HasPrefix(path, "testdata/harness/scenarios/") {
 			return nil
 		}
 	}

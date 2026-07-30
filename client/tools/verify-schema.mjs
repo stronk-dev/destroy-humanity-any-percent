@@ -271,6 +271,18 @@ async function main() {
     if (!commonsSource || commonsSource.slot !== "commons" || commonsSource.target !== "all" || commonsSource.provider !== "commons") throw new Error("economy catalog must declare the single commons.member provider");
   }
 
+  const factionSchema = await readJSON(path.join(balanceDirectory, "factions.schema.json"));
+  const validateFaction = ajv.compile(factionSchema);
+  const factionCatalogs = await jsonFiles(path.join(balanceDirectory, "factions"));
+  if (factionCatalogs.length === 0) throw new Error("faction schema verification requires a production catalog");
+  const commonsPolicy = parseCommonsPolicy(await readJSON(commonsCatalogs[0]));
+  for (const filename of factionCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateFaction(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateFaction)}`);
+    const errors = factionSemanticErrors(data, commonsPolicy);
+    if (errors.length > 0) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${errors.join("; ")}`);
+  }
+
   const shellSchema = await readJSON(path.join(balanceDirectory, "client-shell.schema.json"));
   const validateShell = ajv.compile(shellSchema);
   const shellCatalogs = await jsonFiles(path.join(balanceDirectory, "client-shell"));
@@ -334,7 +346,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + routes + commons + client-shell + prestige + transport + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + routes + commons + factions + client-shell + prestige + transport + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${scenarios.length} scenario(s)`,
   );
 }
 
@@ -350,6 +362,38 @@ function parseCommonsPolicy(data) {
   const ids = new Set();
   for (const source of data.source_weights) { if (ids.has(source.source_id)) throw new Error("duplicate commons source weight"); ids.add(source.source_id); }
   return data;
+}
+
+function factionSemanticErrors(catalog, commonsPolicy) {
+  const errors = [];
+  const expectedIDs = ["bootstrapper", "enterprise", "open_source", "vc_funded"];
+  const expectedResources = ["compliance", "hype", "libraries", "revenue"];
+  const byID = new Map();
+  const produced = new Set();
+  const consumed = new Set();
+  for (const faction of catalog.factions ?? []) {
+    if (byID.has(faction.id)) errors.push(`duplicate faction ${faction.id}`);
+    if (produced.has(faction.produces)) errors.push(`duplicate produced resource ${faction.produces}`);
+    if (consumed.has(faction.consumes)) errors.push(`duplicate consumed resource ${faction.consumes}`);
+    if (faction.produces === faction.consumes) errors.push(`${faction.id} consumes its own stock`);
+    if (faction.incorporation_copy_key !== `incorporate.${faction.id}`) errors.push(`${faction.id} copy key mismatch`);
+    if ((faction.modifier_slots ?? []).length !== 0) errors.push(`${faction.id} has undeclared Phase-0 modifiers`);
+    byID.set(faction.id, faction); produced.add(faction.produces); consumed.add(faction.consumes);
+  }
+  if (JSON.stringify([...byID.keys()].sort()) !== JSON.stringify(expectedIDs)) errors.push("faction id set mismatch");
+  if (JSON.stringify([...produced].sort()) !== JSON.stringify(expectedResources) || JSON.stringify([...consumed].sort()) !== JSON.stringify(expectedResources)) errors.push("stock resource set mismatch");
+  const openSource = byID.get("open_source");
+  if (!openSource?.compact?.auto_sign || openSource.compact.tithe_ppm <= commonsPolicy.default_tithe_ppm ||
+      openSource.compact.tithe_ppm < commonsPolicy.minimum_tithe_ppm || openSource.compact.tithe_ppm > commonsPolicy.maximum_tithe_ppm) errors.push("Open Source tithe is outside the Commons contract");
+  for (const [id, faction] of byID) if (id !== "open_source" && faction.compact !== null) errors.push(`${id} compact must be null`);
+  const consumer = new Map([...byID.values()].map((faction) => [faction.consumes, faction.id]));
+  let current = expectedIDs[0]; const visited = new Set();
+  for (let index = 0; index < expectedIDs.length; index++) {
+    if (visited.has(current)) break;
+    visited.add(current); current = consumer.get(byID.get(current)?.produces);
+  }
+  if (visited.size !== expectedIDs.length || current !== expectedIDs[0]) errors.push("faction stock graph is not one Hamiltonian cycle");
+  return errors;
 }
 
 main().catch((error) => {

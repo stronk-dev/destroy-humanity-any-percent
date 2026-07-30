@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cloud-clicker.invalid/factions.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "stock_cap", "stock_interval_ms", "factions"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "stock_cap": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "stock_interval_ms": { "type": "integer", "minimum": 1, "maximum": 86400000 },
+    "factions": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/faction" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)*$" },
+    "faction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "produces", "consumes", "compact", "modifier_slots", "incorporation_copy_key"],
+      "properties": {
+        "id": { "enum": ["bootstrapper", "vc_funded", "open_source", "enterprise"] },
+        "produces": { "enum": ["revenue", "hype", "libraries", "compliance"] },
+        "consumes": { "enum": ["revenue", "hype", "libraries", "compliance"] },
+        "compact": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["auto_sign", "tithe_ppm"],
+              "properties": {
+                "auto_sign": { "const": true },
+                "tithe_ppm": { "type": "integer", "minimum": 0, "maximum": 1000000 }
+              }
+            }
+          ]
+        },
+        "modifier_slots": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["slot", "ppm"],
+            "properties": {
+              "slot": { "$ref": "#/$defs/id" },
+              "ppm": { "type": "integer", "minimum": 0, "maximum": 1000000 }
+            }
+          }
+        },
+        "incorporation_copy_key": { "$ref": "#/$defs/id" }
+      }
+    }
+  }
+}
