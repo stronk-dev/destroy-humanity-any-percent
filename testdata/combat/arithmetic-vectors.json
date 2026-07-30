@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "damage": [
+    {"name":"neutral_identity","base_power":100,"attacker_atk":64,"chart":0,"critical":false,"expected":100},
+    {"name":"advantage_exact","base_power":100,"attacker_atk":64,"chart":1,"critical":false,"expected":130},
+    {"name":"disadvantage_floor","base_power":100,"attacker_atk":64,"chart":-1,"critical":false,"expected":76},
+    {"name":"crit_after_chart","base_power":100,"attacker_atk":64,"chart":1,"critical":true,"expected":195},
+    {"name":"minimum_one","base_power":1,"attacker_atk":1,"chart":-1,"critical":false,"expected":1},
+    {"name":"zero_power","base_power":0,"attacker_atk":2147483647,"chart":1,"critical":true,"expected":0},
+    {"name":"saturates_store","base_power":2147483647,"attacker_atk":2147483647,"chart":1,"critical":true,"expected":2147483647}
+  ],
+  "rng": {
+    "match_seed": "42",
+    "battle_seed": "13679457532755275413",
+    "substreams": {
+      "crit": "15610968233845892314",
+      "obedience": "2306868096585562568",
+      "bot_policy": "13127054933185908140"
+    }
+  }
+}

@@ -11,7 +11,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | blocked-on-owner (faction, guild) | Commons Compact |
-| [Combat Shared Data & Arithmetic](combat-data-model.md) | draft (split parent) | — |
+| [Combat Shared Data & Arithmetic](combat-data-model.md) | implementing | — |
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |

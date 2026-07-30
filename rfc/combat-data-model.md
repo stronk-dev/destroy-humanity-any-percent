@@ -1,6 +1,6 @@
 # RFC: Combat Shared Data & Arithmetic
 
-- **Status:** draft (split parent, 2026-07-29 — was "Combat Data Model"; the four-way split Codex's review required)
+- **Status:** implementing (accepted through `planning/codex-batch-2026-07-29.md`)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-28
 - **Design refs:** `design/04 §2` (pet battles, as re-decided 2026-07-28), `design/03 §10` (the Lane), `design/05 §4` (PvP table)
