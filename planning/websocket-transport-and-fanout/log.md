@@ -288,3 +288,56 @@ this entry closes the record.
   a real WebSocket reconnect proves the system frame is delivered live and never replayed.
 - Focused save/transport/gameserver suites and `go vet ./...` are green; full Postgres and
   repository verification follow after the remediation commit.
+
+## 2026-07-30 — independent review: transport remediation (c87be53, fc97436)
+
+**Verdict: HIGH 6 and MEDIUMs 10–11 are genuinely fixed on the live path — approved.** Evidence
+highlights: `OnTransportWrite` intercepts inside centrifuge's per-connection writer (not a parallel
+type; the orphaned `History` type was deleted); a stalled-but-connected consumer test passes under
+`-race` asserting ≤ in-flight+newest with drop-stale scoped ONLY to world snapshots (receipts can
+never be dropped by the hook); the 256-message player bound closes 4000 at the real socket; per-
+founder ordering is enforced IN the claim SQL (`NOT EXISTS` earlier pending row — reordering after
+Mark failure is structurally impossible single-process); dead-letter attempt state is a DB column
+surviving restart, fifth failure dead-letters atomically with exactly one invariant report and the
+founder's stream resumes; BroadcastDrain-error branch closes and shuts down; courtesy frames are
+proven live-only (zero publications on recovery).
+
+Findings (fix queue):
+
+1. **MEDIUM — the 5k soak test now contradicts the discipline it predates**: it asserts every
+   subscriber sees the exact world revision sequence, but drop-stale legitimately skips stale
+   snapshots for lagging writers — reproduced failing twice under `-race` ("unexpected envelope
+   rev 3"). Plain-mode passes are timing luck. Fix: assert monotonic revisions ending at the final
+   rev with no non-world/non-snapshot frames, not exact sequence — that is what the discipline
+   promises.
+2. **LOW — readiness can flip true mid-drain** (relay tick between `ready=false` and
+   `beginDrain()` re-stores true): store a drain flag checked by runRelay before re-asserting
+   readiness, or beginDrain before broadcast (the T6 order says not-ready → broadcast anyway).
+3. LOW — player message-count discipline decrements on channel-tagged command replies and drain
+   broadcasts that never reserved (bound client-inflatable; losslessness/byte-backstop unaffected)
+   — decrement only frames Publish reserved (tag reservations, or count only `pub` frames).
+   LOW — drop-stale is fail-open for protobuf-protocol clients (metadata parse fails → pass);
+   either restrict the endpoint to JSON protocol explicitly or parse both. LOW — the two size
+   guards measure different serializations (raw bytes vs jsonb::text expansion): guard the
+   canonical jsonb text length in Go too, or the CHECK can abort an intent commit the Go guard
+   passed. LOW — dead-letter attempt counting is failure-kind-blind with no backoff (a 125 ms DB
+   flap can dead-letter a valid receipt): count only deterministic failures (encode/size), back
+   off transients.
+4. OBSERVATIONS — cancelled-context release leaves rows leased (lease is the real backstop —
+   acceptable, log wording corrected by this entry); multi-instance relay would reopen the
+   reordering hole (zombie lease) — the relay is single-process by contract until a successor RFC;
+   per-founder head-only claiming caps delivery at ~40 receipts/s/founder (fine at Phase-0 rates;
+   noted for the composition's flush cadence); relay unit fixtures use batch shapes the real store
+   can't produce and no end-to-end store→relay→node test exists yet — add one with an A3 row
+   behind a dead-lettered A2; relay defines its own InvariantSink instead of reusing production's.
+
+## 2026-07-30 — round-2 MEDIUM remediation: drop-stale-compatible soak
+
+- Replaced the 5k sniffer's exact `1..10` expectation with the actual world-gauge contract: each
+  connection must receive a strictly increasing revision subsequence whose terminal value is 10.
+  Intermediate snapshots may be coalesced; duplicates, regression, overshoot, missing final state,
+  wrong channel/kind, and every click-shaped publication still fail structurally.
+- The publisher's deliberate private-receipt-on-world self-attack remains before every world tick,
+  so relaxing intermediate revision cardinality does not weaken the public-traffic boundary.
+- Canonical docs and AC1 now state the same oracle the live writer implements. The focused soak is
+  run both normally and under `-race`; timing luck is no longer part of its pass condition.

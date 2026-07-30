@@ -49,7 +49,9 @@ Per-connection subscribe caps (config), per-channel publish authz (only server a
 
 ## Acceptance criteria
 
-1. A soak test at simulated 5k connections holds one node: `world` at 10 Hz, zero per-click messages observed on any public channel (asserted by a wire sniffer in the test).
+1. A soak test at simulated 5k connections holds one node: `world` at 10 Hz, zero per-click messages observed on any public channel (asserted by a wire sniffer in the test). Each subscriber's
+   world revisions are a strictly increasing subsequence ending at the final revision; drop-stale
+   may remove intermediate gauges and the test must not demand a lossless world stream.
 2. Kill a subscriber mid-burst: on reconnect, `player:*` recovery replays every missed receipt in order; `world` shows only the latest snapshot.
 3. Drop-stale property: a consumer stalled for 10 s receives exactly one `world` snapshot on resume.
 4. A receipt-queue overflow closes the connection with a typed close code; the client's re-sync lands on the committed revision.
@@ -106,3 +108,5 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
 - 2026-07-30: relay/drain remediation enforces per-Founder outbox heads, bounded poison-row
   dead-lettering, whole-remainder claim release, live-only drain courtesy, and shutdown on every
   broadcast outcome.
+- 2026-07-30: round-2 review aligns the 5k soak oracle with live drop-stale semantics: monotonic
+  subsequences ending at the final revision replace the obsolete exact-sequence assertion.

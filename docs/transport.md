@@ -71,8 +71,10 @@ its bounded byte queue closes stalled clients with application code 4000 rather 
 generic code. Channel namespace metrics use only the bounded labels `world`, `feed`, `player`,
 `guild`, `cohort`, `match`, and `other`; enabling that classifier also makes Centrifuge retain the
 channel metadata required by the transport-write guard. The acceptance soak holds 5,000
-authenticated in-memory WebSocket connections on one node at 10 Hz and inspects 50,000 public
-envelopes; no click-shaped publication can enter `world`.
+authenticated in-memory WebSocket connections on one node at 10 Hz. Every subscriber must observe
+a strictly increasing subsequence ending at the final world revision; skipped intermediate gauges
+are valid under drop-stale, while any wrong channel/kind, duplicate/regressing revision, missing
+final state, or click-shaped publication fails the soak.
 Drain courtesy messages deliberately bypass recoverable history because their revision is zero.
 The gameserver broadcasts first, then closes intent admission; every exit branch—including a failed
 broadcast—closes sockets and shuts down under the same bounded context.

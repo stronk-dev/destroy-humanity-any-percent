@@ -5,6 +5,7 @@
 REPO_CACHE_DIR ?= $(CURDIR)/.cache
 export GOCACHE ?= $(REPO_CACHE_DIR)/go-build
 GO_PACKAGES ?= ./...
+GO_TEST_FLAGS ?=
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -19,7 +20,7 @@ install-browsers-ci:
 test: test-go test-client test-browser
 
 test-go:
-	cd server && go test -p 1 $(GO_PACKAGES)
+	cd server && go test -p 1 $(GO_TEST_FLAGS) $(GO_PACKAGES)
 
 test-save-integration:
 	@test -n "$$TEST_DATABASE_URL" || (echo "TEST_DATABASE_URL is required" >&2; exit 1)

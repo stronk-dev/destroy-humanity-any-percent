@@ -115,7 +115,8 @@ func dialSoakSubscriber(t *testing.T, endpoint string, client *http.Client, inde
 func sniffWorldPublications(connection *websocket.Conn, result chan<- error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	for revision := int64(1); revision <= soakWorldTicks; revision++ {
+	var lastRevision int64
+	for lastRevision < soakWorldTicks {
 		_, data, err := connection.Read(ctx)
 		if err != nil {
 			result <- err
@@ -127,10 +128,12 @@ func sniffWorldPublications(connection *websocket.Conn, result chan<- error) {
 			return
 		}
 		var envelope Envelope
-		if err := json.Unmarshal(reply.Push.Publication.Data, &envelope); err != nil || envelope.Channel != "world" || envelope.Kind != "snapshot" || envelope.Revision != revision {
+		if err := json.Unmarshal(reply.Push.Publication.Data, &envelope); err != nil || envelope.Channel != "world" || envelope.Kind != "snapshot" ||
+			envelope.Revision <= lastRevision || envelope.Revision > soakWorldTicks {
 			result <- fmt.Errorf("unexpected public envelope %s: %v", reply.Push.Publication.Data, err)
 			return
 		}
+		lastRevision = envelope.Revision
 	}
 	result <- nil
 }
