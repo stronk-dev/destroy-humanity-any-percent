@@ -1,12 +1,12 @@
 # RFC: Guild Model
 
-- **Status:** draft
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-30
 - **Design refs:** `design/05 §3` (formation 2–50, automatic tithe, contribution windows, faction interdependence exchange, Break Room seats, small-guild mercy keyed on cohort, NPC fallback), `design/04 §4` (no scarcity economy — satire target)
-- **Depends on:** Account & Session Bootstrap (implementing — account identity), Commons Compact (implemented — guild Health term seam), Faction & Incorporation (draft — exchange cycle), Transport (implementing — `guild:{id}` channels + membership resolver)
+- **Depends on:** Account & Session Bootstrap (implementing — account identity), Commons Compact (implemented — guild Health term seam), Faction & Incorporation (implemented — exchange cycle), Transport (implementing — `guild:{id}` channels + membership resolver)
 - **Unblocks:** Commons Onboarding blockers #1/#5, transport guild resolver (replaces the deny-closed stub), Break Room / guild-events successor RFCs
-- **Planning:** `planning/guild-model/` (once implementing)
+- **Planning:** `planning/guild-model/`
 
 ## Summary
 
