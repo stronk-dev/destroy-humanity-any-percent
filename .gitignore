@@ -16,6 +16,7 @@ client/.vitest-attachments/
 client/test/__screenshots__/
 
 # Go test and profiling artifacts
+.cache/
 server/coverage/
 *.prof
 *.test

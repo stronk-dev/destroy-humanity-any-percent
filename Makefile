@@ -1,5 +1,11 @@
 .PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck build-client vectors vectors-check formulas formulas-check harness harness-check commons-harness-check harness-update vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-server verify-client verify
 
+# Keep ordinary Go builds inside the writable repository sandbox. Override either
+# variable when a developer deliberately wants another cache or a focused package set.
+REPO_CACHE_DIR ?= $(CURDIR)/.cache
+export GOCACHE ?= $(REPO_CACHE_DIR)/go-build
+GO_PACKAGES ?= ./...
+
 setup:
 	pnpm --dir client install --frozen-lockfile
 	$(MAKE) install-browsers
@@ -13,7 +19,7 @@ install-browsers-ci:
 test: test-go test-client test-browser
 
 test-go:
-	cd server && go test -p 1 ./...
+	cd server && go test -p 1 $(GO_PACKAGES)
 
 test-save-integration:
 	@test -n "$$TEST_DATABASE_URL" || (echo "TEST_DATABASE_URL is required" >&2; exit 1)
@@ -57,7 +63,7 @@ harness-update:
 	cd server && go run ./cmd/balance-harness -mode=update -root=..
 
 vet:
-	cd server && go vet ./...
+	cd server && go vet $(GO_PACKAGES)
 
 fuzz:
 	cd server && go test ./decimal -run '^$$' -fuzz '^FuzzCanonicalRoundTrip$$'

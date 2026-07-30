@@ -90,6 +90,9 @@ Use stable, narrowly scoped command prefixes so the execution environment can re
 Do not wrap an otherwise approved command in a custom shell, environment assignment, or compound
 command unless the wrapper is actually required; wrappers often defeat persistent prefix approval.
 Group related checks into the repository's existing `make`/package targets where practical.
+The Makefile exports a repository-local ignored `GOCACHE`; use `make test-go` or
+`make test-go GO_PACKAGES='./harness ./transport'` for Go tests so normal compilation never needs
+permission to write into a user-level cache.
 
 If sandbox or network access genuinely requires escalation, request a reusable narrow prefix for
 that class of command once, then continue. Approval is still required for destructive operations,
