@@ -164,3 +164,85 @@
   6,441 Node tests (3 skipped), schema validation, and 19,332 browser cases. The aggregate runner's
   output boundary stopped after the long harness command, so the remaining repository targets were
   invoked explicitly and recorded rather than inferred.
+
+## 2026-07-30 — independent review: transport round (e2fce6c..2096916)
+
+Full-diff review of 8caf05c (wire contracts), 44e74bc (in-memory recovery tests), 7030ab1 (soak +
+overflow close), e2fce6c (sandbox-local Go cache), 2096916 (scope gap).
+
+**Verdict: approved.** The channel-kind matrix is enforced symmetrically (Go encoder and TS decoder
+share `testdata/transport/wire-vectors.json`, ≥10 vectors asserted by both suites); snapshot/event
+revisions bind to the envelope revision and scope binds to channel family; the soak test's sniffers
+assert an exact world snapshot revision sequence at 5k connections, so any leaked per-click message
+fails structurally, and the test also proves the encoder rejects a receipt aimed at `world`. The
+`centrifuge.DisconnectSlow` package-global mutation is correctly Once-guarded and documented; it is a
+process-wide policy, acceptable while one Node per process is the deployment shape — if that ever
+changes, revisit. Recovery tests exercise real protocol frames over the permission-free in-memory
+listener; private replay-in-order and world latest-only both asserted against offsets, not sleeps
+alone (the one 300 ms sleep is belt-and-braces before a latest-only assertion — fine).
+
+**Ruling on the cross-scope event DESIGN-GAP (T3 amended in the RFC):** the event payload gains a
+required `scope: "company" | "founder"` field; `rev` is the revision within that scope's stream, and
+the envelope `rev` equals the payload rev (unchanged rule, now per-scope). The shell keeps one
+reconciliation cursor per scope on `player:{fid}`; gap detection is per-scope, so interleaved
+Company/Founder events never falsely trip it. Both Exit-transaction event families relay; nothing is
+dropped. Wire vectors must gain valid/invalid scope cases.
+
+**Ruling on the ownership resolvers blocking `cmd/gameserver`:** compose the binary now with the
+real resolvers that exist — Account (sessions/founders) and Commons cohort membership (server-
+assigned, already projected) — and **fail-closed deny-all resolvers for `guild:*` and `match:*`**
+(subscribe rejected with the existing authz path). Guild/faction resolvers arrive with their owner
+RFCs; the binary's composition does not wait for them. AC1/AC5 run against this composition.
+
+## 2026-07-30 — independent review: transport CORE (e2eeadf..e7c1e60) — the review I owed before approving the follow-ups
+
+Adversarial two-lens review of the core commits, findings verified against source at HEAD (later
+commits reconciled). **Verdict: auth/authz/outbox-transactionality/drain-boundedness approved with
+evidence; the queue-discipline layer is NOT implemented as documented — fix queue below.** This
+entry also corrects my 2026-07-30 approval of 8caf05c, which repeated a doc claim I failed to check.
+
+Verified correct (evidence in the review record): cross-founder `player:*` subscribe denial with
+socket-level proof; unconditional client-publish rejection; outbox insert inside the intent-commit
+transaction for applied/rejected/Exit receipts with idempotent-replay returning before any insert;
+single-drainer claim tokens with `FOR UPDATE SKIP LOCKED`; drain bounded by one 15 s context with
+every post-broadcast branch closing sockets (regression-tested against a stalled intent); connect
+auth via the account Authenticator with fail-closed Origin allowlist; 4002 oldest-replacement.
+
+Findings (fix queue, ordered):
+
+1. **HIGH — D2's queue disciplines are orphaned types, not wired behavior.** `ConnectionQueue`
+   (drop-stale world / lossless-bounded player, `server/transport/buffer.go`) and `History`
+   (`history.go`) are referenced only by their own tests; the live path is centrifuge's single
+   per-connection byte FIFO (`node.go` ClientQueueMaxSize). Consequences at HEAD: a stalled-but-
+   connected consumer accumulates ~40 stale `world` snapshots over 10 s instead of one (AC3 is
+   reconnect-only via history size 1, not live-queue drop-stale), and the 256-message player bound
+   is unenforced (bytes only). **Correction to my 8caf05c approval:** docs/transport.md's
+   "Connection queues implement the two distinct loss rules" describes the orphaned types, not the
+   wiring; I approved that text without checking call sites. Fix: wire per-channel-class queue
+   discipline into the publish path (centrifuge write hook or replace-on-enqueue for gauge
+   channels), or amend D2/docs to the byte-FIFO model deliberately — no silent doc drift.
+2. **MEDIUM — outbox ordering breaks across partial failures** (`relay.go:52-58`, `outbox.go`): a
+   failed `Publish` releases only the failing claim and a failed `MarkReceiptPublished` releases
+   nothing, so the remainder of a claimed batch stays invisible for the 30 s lease while newer rows
+   publish first — rev 6 before rev 5 on one player channel, tripping shell gap detection into a
+   full resync. Fix: release the whole unclaimed remainder on any failure, and treat per-founder
+   ordering as the invariant (skip founders with a pending unacked item in the batch).
+3. **MEDIUM — no poison-row path**: a row that deterministically fails Encode/Publish (e.g. receipt
+   > 64 KiB; `insertReceiptOutbox` has no size guard) is re-claimed head-of-line every 25 ms
+   forever; `runRelay` pins readiness false and everything behind it stalls. Fix: size guard at
+   insert + bounded retries then dead-letter with InvariantSink severity.
+4. **MEDIUM — `Drain`'s BroadcastDrain-error branch wedges the server half-drained**
+   (`gameserver/server.go:96-98`): readiness already false and admission closed, but sockets stay
+   open and no Shutdown runs. Fix: fall through to CloseForDrain/Shutdown on that branch too.
+5. LOW — drain broadcast enters `player:*` history with rev 0 (recovery replays it; violates the
+   rev-ties-to-revisions rule; use skip-history publish for system messages). LOW — 503 gate opens
+   before the courtesy broadcast (T6 order). LOW — exported `Node.Drain` implements the wrong
+   sequence and is uncalled; unexport or fix. OBSERVATIONS — rejected intents share a `rev` (shell
+   must not drop equal-rev receipts as stale — noting for the shell's contract); `OnAlive`
+   re-auths against Postgres per tick with no timeout (load + hang risk at scale); only
+   company-scope receipts relay (disclosed; T3 scope ruling now governs the event path).
+
+Reconciled: the core-commit gap "close code 4000 never used" was fixed at HEAD by 7030ab1
+(`centrifuge.DisconnectSlow`, observed in test). The 2026-07-29 "policy, wire, recovery core" log
+entry overstated ("drop-stale queues... implemented"); later entries partially corrected it, and
+this entry closes the record.

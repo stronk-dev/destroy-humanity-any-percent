@@ -76,7 +76,7 @@ Intents travel `POST /api/v1/intents` (Account RFC D3): body = one Production-C1
 The envelope (D3) gains `v: 1`. Closed `kind` payloads, exact-key validated in the TS decoder:
 - `receipt`: the production receipt JSON **unmodified** (its schema is C1's; this RFC adds nothing and strips nothing). The shell's narrower internal types are produced by the shell's own mapping (already implemented and reviewed); `internal_invariant` maps to the shell's existing wire result of that name.
 - `snapshot`: `{scope: "company"|"world"|"guild"|"cohort", rev, state}` — `state` is the save-layer canonical state for `company`, the published aggregate schemas (Commons/world dials, already generated artifacts) for the rest.
-- `event`: `{event_id, kind, rev, payload}` — the event-envelope registry as-is.
+- `event`: `{event_id, kind, scope: "company"|"founder", rev, payload}` — the event-envelope registry as-is, plus the required `scope` field (ruling 2026-07-30, resolving the cross-scope revision gap): `rev` is the revision within that scope's save stream, envelope `rev` equals it, and the shell keeps one reconciliation cursor **per scope** on `player:{fid}` so interleaved Company/Founder events (the Exit transaction emits both) never falsely trip gap detection. Both families relay; wire vectors carry valid/invalid scope cases.
 - `presence`: `{joined: [id], left: [id], count}` · `system`: `{code, resume_after_ms?}` with closed code set `{server_restarting, history_expired, resync_required}`.
 Unknown `kind` ignored (forward-compat); unknown field inside a known kind = decode error (strictness where we have a contract).
 
@@ -90,7 +90,7 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
 
 ### T6 — Runnable lifecycle (the composed server, named here)
 
-`cmd/gameserver` composes: chi router (Account RFC surface + `/api/v1/intents`) + centrifuge node + production engine + projections, one binary. `/healthz` = process up; `/readyz` = Postgres reachable ∧ catalogs loaded ∧ not draining. Drain seam: `Drain(ctx)` — set not-ready → broadcast `server_restarting` → stop accepting intents (503 typed rejection) → wait in-flight transactions (bounded by drain timeout) → close connections with 4003. AC5 exercises `Drain` directly in-process; deployment infra later just calls the same seam.
+`cmd/gameserver` composes: chi router (Account RFC surface + `/api/v1/intents`) + centrifuge node + production engine + projections, one binary. **Membership resolvers (ruling 2026-07-30):** compose now with the resolvers that exist — Account (sessions/founders) and Commons cohort membership — and **fail-closed deny-all resolvers for `guild:*` and `match:*`** until their owner RFCs land; the binary's composition does not wait for them. `/healthz` = process up; `/readyz` = Postgres reachable ∧ catalogs loaded ∧ not draining. Drain seam: `Drain(ctx)` — set not-ready → broadcast `server_restarting` → stop accepting intents (503 typed rejection) → wait in-flight transactions (bounded by drain timeout) → close connections with 4003. AC5 exercises `Drain` directly in-process; deployment infra later just calls the same seam.
 
 ## Changelog
 
@@ -99,4 +99,5 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
   `window_ms`; D3 maps the shell's mechanical `windowMs` field normally.
 - 2026-07-29: Codex acceptance review recorded six executable-contract gaps; remains draft.
 - 2026-07-29: all six answered (T1–T6); identity delegated to the new Account & Session Bootstrap RFC; inbound path ruled HTTP.
+- 2026-07-30: T3 events gain required `scope` with per-scope revisions (review ruling); T6 gains the deny-closed guild/match resolver ruling unblocking `cmd/gameserver` composition.
 - 2026-07-29: accepted by the ordered Codex batch manifest; implementation started after the account, Prestige, and epoch-pinning foundations landed.

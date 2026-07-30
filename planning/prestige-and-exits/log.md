@@ -93,3 +93,61 @@
 - The provisional terminal Company revision has been replaced by the Exit intent's transaction-local
   run-log sequence. `run_ended.terminal_seq` and the committed `run_log.seq` are asserted equal in
   the real-Postgres lifecycle test, closing P7 without a second write path.
+
+## 2026-07-30 — independent review: prestige implementation (8c20820..db38c80, a67e93b) — the review I owed
+
+Adversarial two-lens review; the four load-bearing findings re-verified against source by the
+reviewer (state.go:355-363, prestige.go:129-131, runtime.go:173-176, exit.go:275-280 all read
+first-hand). **Verdict: P2's core search, P4's atomicity (8-boundary fault injection with
+byte-identical replay), and P5's once-ever are verified correct with evidence. One HIGH and a band
+of MEDIUMs — several rooted in MY contracts — with rulings below, now normative in the RFC.**
+
+Findings (fix queue, ordered):
+
+1. **HIGH — migrated pre-v7 companies can never Exit**: v<7 migration leaves `RunStartedAt` zero,
+   `AttendedMS` errors on zero, every exit fails un-typed forever; the scripted trigger silently
+   never fires. **Ruling P6a-migration:** next save version backfills `RunStartedAt :=
+   EvaluatedThrough` when zero at migration; such runs are flagged pre-timer (excluded from
+   time-ranked boards — they predate the timer contract anyway). Corpus gains the company v6→v7→v8
+   case (finding: the company-scope v6 branch currently has zero corpus coverage).
+2. **MEDIUM — the scripted first failure is skippable** (elective `wind_down` accepted for a
+   zero-exit founder, contradicting D4's "cannot be skipped"). **Ruling P5b:** an elective
+   `wind_down` from a founder with empty `exit_history` IS the first failure — the engine types it
+   `scripted_first` with full first-exit payout regardless of attended time. D1's always-open door
+   and D4's unskippable curriculum are both preserved; AC4 gains this case.
+3. **MEDIUM — offline-span collapse absorbs online time into offline** (runtime.go:173-176 rewrites
+   span[1].From), shrinking attended time and falsifying the doc's "without changing the total
+   offline duration". **Ruling P6b:** overflow drops the oldest span into a new
+   `collapsed_offline_ms` accumulator (save field, next version); attended = RTA − (Σ spans +
+   accumulator); total-offline invariance becomes a property test.
+4. **MEDIUM — Go/TS division parity is not "by construction"**: Go `Div` is mantissa/mantissa (one
+   rounding), break_infinity is reciprocal-multiply (two) — a non-unit-mantissa threshold (schema-
+   legal balance data) can flip a cube boundary by 1 ulp between runtimes; no vector covers it.
+   **Ruling P2b:** the TS kernel wraps division as mantissa/mantissa to match Go; golden vectors
+   gain non-unit-mantissa thresholds (e.g. 2.5e12) at cube boundaries.
+5. **MEDIUM — `ReputationDelta` overflow: Go errors (trapping exits at extreme lifetime values ≈
+   ≥5e41), TS computes through floats.** **Ruling P2c:** both runtimes SATURATE the modified delta
+   at MaxExactInteger; never an error on the exit path; parity vector at the saturation boundary.
+6. **MEDIUM — idempotent replay reorders events when accrual-hook events prefix the exit trio**
+   (exitEventOrder maps unknown kinds last). Fix: return recorded order (order by committed event
+   seq); the existing byte-identical-replay test extends to a prefixed fixture.
+7. **MEDIUM — out-of-order gate crossing hard-errors forever** (`setTierFromGate`: a legal
+   lower-tier gate after a higher one → `ErrInvalidEngineState` un-typed, every retry). **Ruling:**
+   tier is `max(current, gate tier)`; the gate still records `gate_crossed`; never an internal
+   error for catalog-legal input.
+8. **MEDIUM — the "archived-final" company revision is pruned by the same op's 5-revision
+   retention.** **Ruling P4b (spec correction, mine):** the `run_ended` event + run log are the
+   obituary's source of record (AC7 already guarantees the screen renders from the event alone);
+   P4's "archives are revision-history" language is corrected — revision retention stays at 5.
+9. LOW — DeleteAccount archives both streams in one unordered UPDATE (deadlock window vs the
+   exit's founder-then-company order; make it two ordered updates). LOW — decline-drift count is
+   whole-stream, so declines carry across runs undocumented (scope `CountEvents` by run or document
+   the carryover in P3 — ruling: scope by run; drift resets each run). LOW — planning-log claim
+   about offer identity deriving only from immutable inputs is false (OfferID embeds now-ms and
+   mutable tier/declineCount; harmless for uniqueness, log corrected by this entry).
+10. OBSERVATIONS — Advisor Mode is flag-only with the toggle intent correctly logged as a gap;
+    the runtime is wired only in tests and `catchup_ceiling_ms` is not yet bound to its catalog
+    value (composition work); P6's attended-time-is-intent-cadence semantics noted as pacing-
+    relevant (spec-faithful); a67e93b's rebaseline is protocol-compliant with the noted wrinkle
+    that six intervening commits carried stale golden hashes (pre-guard; the epoch guard now
+    prevents recurrence).

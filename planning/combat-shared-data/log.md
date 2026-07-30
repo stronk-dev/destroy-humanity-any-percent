@@ -35,3 +35,44 @@
 - Focused Go tests, strict TypeScript/Svelte checks, the guard, and the full 6,437-test Node suite are
   green. Canonical `docs/combat.md` describes only this shipped kernel and preserves the catalog/table
   gaps explicitly.
+
+## 2026-07-30 — independent review: shared combat kernel (15fa881)
+
+Two-lens review (spec compliance + adversarial, findings verified against source by the reviewer,
+demonstrations reproduced). **Verdict: arithmetic/RNG core approved — the boundary gate and vector
+coverage are NOT acceptable; four findings below become the fix queue before any engine RFC lands
+code under `src/combat/`.**
+
+Verified correct first: SplitMix64 constants + canonical seed-0 vector match the reference in both
+runtimes; fnv1a is 64-bit with matching basis/prime; substream derivation `splitmix(battle ^
+fnv1a64(label))` matches C4 both sides; rejection sampling is the standard unbiased construction,
+identical loops; saturation branch-clamps before narrowing with int64-overflow unreachable in the
+damage chain (max product ≈4.61e18 < 2^63−1); TS is BigInt end-to-end with masking, no 2^53 hazard;
+both suites assert the one shared vector file; the C2/C5 "blocked" claims are honest (no stubs).
+
+Findings (fix queue, ordered):
+
+1. **HIGH — `client/tools/verify-combat-boundaries.mjs:19` does not recurse.** `readdir` without
+   `recursive`; directories fail `isFile()` silently. Any file under `src/combat/<subdir>/` is never
+   scanned — demonstrated with a planted `evil/deep.ts` containing native `/` (gate exited 0). The
+   duel/lane engines will land exactly there. AC6's law is void for all future combat code. Fix:
+   recursive walk + a seeded-violation self-test in a subdirectory.
+2. **MEDIUM — same file, lines 8–12: comment stripping precedes string stripping.** A string literal
+   containing `//` (any URL) swallows the rest of its line, hiding a real division on the same line
+   (demonstrated). Template-literal interpolation `${a / b}` is likewise stripped. Fix: strip strings
+   first or use a real tokenizer; add both cases as seeded self-tests.
+3. **MEDIUM — `testdata/combat/arithmetic-vectors.json` does not discharge AC2.** `crit_after_chart`
+   uses chart=+1 where ×13/10 and ×3/2 commute (both orders → 195); the ordering-sensitive case is
+   disadvantage+crit (declared order → 114, swapped → 115). Every vector's atk ∈ {64, 1, 2^31−1}
+   (identity/clamped/saturated), so a runtime that skips ×atk/64 entirely passes all seven; and the
+   advantage rounding site is unpinned. Fix: add disadvantage+crit, atk=100 scaling, and an
+   advantage-rounding vector.
+4. **MEDIUM — rejection-sampling `bound()` has zero golden vectors and zero TS tests** (contra C4's
+   "the helper is shared kernel code with golden vectors"); Go has only a range property test. A
+   biased TS `bound()` would pass the repo today. Fix: golden `(seed, label, bound) → value` vectors
+   incl. a bound that forces ≥1 rejection, asserted by both suites.
+5. LOW — `Clamp`/`clamp` have no tests, vectors, or callers; add vectors when the first engine calls
+   them. LOW — Go `floorRatio` silently returns 0 out-of-domain where TS `idiv` throws (unreachable
+   today; rename/align before any caller can pass a negative intermediate). OBSERVATION — Go RNG
+   test hardcodes seed 42 instead of reading the fixture field; substream-isolation tests are a weak
+   stand-in for AC3's regression fixture until an engine consumes streams in sequence.

@@ -25,20 +25,29 @@ The keystone the five drafts all named as missing: accounts, sessions, tokens, a
 - **Access token: JWT, HS256, 15-minute TTL**, claims exactly `{sub: account_id, fid: active_founder_id, exp, iat, jti}` — nothing else in the token; membership/authorization is always a server-side lookup at use (Transport D1's rule, honored here). Signing key from deployment secret; **key rotation = two accepted keys (current+previous), rotated by ops, no in-band negotiation.**
 - **Refresh token: opaque 256-bit, stored hashed** in `sessions(token_hash, account_id, created_at, expires_at (30 d), revoked_at)`; single-use rotation (refresh consumes and reissues; reuse of a consumed token revokes the session family — standard theft detection).
 - `DELETE /api/v1/session` revokes. Founder switch (`New Founder`) revokes nothing but changes `fid` at next refresh.
+- **A-D2a (review ruling, 2026-07-30):** family state is a row: `session_families(family_id PK, account_id, revoked_at)`, created at issue. Every refresh and every revocation locks the family row `FOR UPDATE` before validating; refresh rejects a revoked family. Per-row revocation flags alone are NOT sufficient (a concurrent rotation's insert escapes a bulk UPDATE's snapshot — demonstrated).
+- **A-D1a (review ruling, 2026-07-30):** recovery-code verification uses the STORED Argon2 parameters subject to a floor (m ≥ 19 MiB, t ≥ 2, p ≥ 1) and rehashes to current parameters on successful verify; a parameter bump must never lock accounts out. Session creation dummy-verifies a constant hash when the account is missing (timing-oracle fix).
 - Centrifuge connects with the access token; channel subscriptions re-check membership server-side (already normative in Transport D1).
 
 ### D3 — The HTTP surface (chi, versioned, closed)
 
-`/api/v1/`: `POST account` · `POST account/email` · `POST session` · `POST session/refresh` · `DELETE session` · `POST founder` · `GET founder` (active founder's public profile: id, created_at, display fields). **Closed set; additions by RFC.** All errors are the typed-rejection shape from Production C1 (`{category, detail}`); rate limits per-IP on the unauthenticated three (token bucket, config), per-account elsewhere.
+`/api/v1/`: `POST account` · `POST account/email` · `POST session` · `POST session/refresh` · `DELETE session` · `POST founder` · `GET founder` (active founder's public profile: id, created_at, display fields) · `GET founder/state` (authoritative full sync — added by the Transport T4 ruling, 2026-07-29) · `POST founder/import` (D4). **Closed set; additions by RFC.** Router-edge 404/405 use the typed rejection shape; failed-auth requests on authenticated routes consume an IP bucket; limiter state is evicted (TTL/LRU) and deployment config names trusted proxy hops. All errors are the typed-rejection shape from Production C1 (`{category, detail}`); rate limits per-IP on the unauthenticated three (token bucket, config), per-account elsewhere.
 **Intent submission (`POST /api/v1/intents`) mounts here as well** — the "request path" Transport D2 references: body = one Production-C1 intent envelope, response = the receipt; auth = access token; the transport RFC owes only the *streaming* side, not the request side. This closes Transport blocker #2's "choose HTTP or WS-RPC": **HTTP for intents, WebSocket for streams.**
 
 ### D4 — Anonymous local play and the upgrade path
 
 The client may run **fully offline-anonymous** (local saves, no account) per `design/06`. "Upgrade" = create account + `POST /api/v1/founder/import` with the local save; the server validates it through the Save Layer's restore path exactly as any save, then **marks the founder `imported: true` — imported founders are permanently excluded from ranked boards** (their history is client-authored and unverifiable; Leaderboards consumes this flag). Everything else works.
 
+**A-D4a (review ruling, 2026-07-30):** the request's `constants_hash`/`version` select only the
+migration catalog. The server re-encodes the restored state under its CURRENT constants hash,
+resets `RunSeq` to 1 with a fresh `RunStartedAt`, and writes through the standard store path so the
+existing run-1 pin holds by construction (run identity is server-owned; the founder is ranked-
+excluded regardless). Acceptance fixture: a locally-prestiged (`run_seq=3`), old-hash save imports
+and then plays — the review demonstrated both axes brick the stream without this ruling.
+
 ### D5 — Compliance hooks (from the 2026 refresh, made structural)
 
-Account deletion (`DELETE /api/v1/account`): archives all founders, deletes the email binding and sessions, retains the anonymized save streams (they contain no PII by construction — an account row is the *only* PII surface, and only if email was attached). The accountable-person line, MAU counting (DSA Art. 24(3)), and the age-neutral posture are ops/docs items riding this RFC's data model; the children's-risk-assessment inputs cite D1's no-PII-at-creation design.
+Account deletion (`DELETE /api/v1/account`): archives all founders — **A-D5a (review ruling, 2026-07-30): `account_founders.account_id` is nullable with ON DELETE SET NULL; the delete transaction stamps `archived_at`, so founder rows and the `imported` flag survive anonymized** (a cascade delete breaks board projection and destroys the exclusion marker) — deletes the email binding and sessions, retains the anonymized save streams (they contain no PII by construction — an account row is the *only* PII surface, and only if email was attached). The accountable-person line, MAU counting (DSA Art. 24(3)), and the age-neutral posture are ops/docs items riding this RFC's data model; the children's-risk-assessment inputs cite D1's no-PII-at-creation design.
 
 ## Acceptance criteria
 
@@ -58,5 +67,6 @@ Account deletion (`DELETE /api/v1/account`): archives all founders, deletes the 
 ## Changelog
 
 - 2026-07-29: created (draft) — the shared root of the five drafts' blocker lists.
+- 2026-07-30: independent review (see planning log) — rulings A-D1a, A-D2a, A-D4a, A-D5a; D3 list gains `founder/state` (transport T4) and router-edge/limiter contracts.
 - 2026-07-29: accepted and implementation assigned through
   `planning/codex-batch-2026-07-29.md`.

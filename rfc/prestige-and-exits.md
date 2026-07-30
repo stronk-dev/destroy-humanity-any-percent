@@ -88,9 +88,32 @@ New store op `ApplyExitTransaction(founderStream, companyStream, newRunInit)`: *
 
 The pacing envelope measures the **first elective Exit** (AC8 as amended). The scripted trigger is: first `threshold_crossed` event with `attended_ms ≥ 900_000` on a founder with `exit_history == []` — evaluated server-side at event emission, firing `wind_down(exit_type=scripted_first)` in the same evaluation. Attended-ms derivation is P6's.
 
+**P5b (review ruling, 2026-07-30):** an elective `wind_down` from a founder with empty
+`exit_history` IS the scripted first failure — typed `scripted_first`, full first-exit payout,
+regardless of attended time. The always-open door (D1) and the unskippable curriculum (D4) are both
+preserved; AC4 gains this case.
+
+**P2b/P2c (review rulings, 2026-07-30):** the TS kernel wraps prestige division as
+mantissa/mantissa to match Go's `Div` (reciprocal-multiply double-rounds; a non-unit-mantissa
+threshold can flip a cube boundary by 1 ulp); golden vectors gain non-unit-mantissa thresholds at
+cube boundaries. `ReputationDelta` SATURATES at MaxExactInteger in both runtimes — never an error
+on the exit path.
+
 ### P6 — Timer facts (recorded here, consumed by Leaderboards)
 
 `run_started_at` (server ms, P1) starts RTA. **Attended Time = RTA − Σ offline spans**, where an offline span is any accrual evaluation whose elapsed exceeded the online session gap (`catchup_ceiling_ms`, already catalog data) — the span is recorded as `{from, to}` on the company state's append-only `offline_spans` (capped list, oldest-collapsed). All integer ms, all server-derived; the client clock contributes nothing.
+
+**P6a/P6b (review rulings, 2026-07-30):** the next save version backfills `RunStartedAt :=
+EvaluatedThrough` where zero (pre-v7 migrated runs — currently trapped un-exitable) and flags such
+runs pre-timer (time-board excluded); span-list overflow drops the oldest span into a
+`collapsed_offline_ms` accumulator so total offline duration is invariant (the shipped collapse
+absorbed online time). Corpus gains the company v6→current case.
+
+**P4b (spec correction, 2026-07-30):** the `run_ended` event + run log are the obituary's source of
+record (AC7 already guarantees this); revision retention stays at 5 and P4's "archives are
+revision-history" phrase is corrected accordingly. Idempotent replay returns events in RECORDED
+order (by committed seq), not kind-mapped order. Decline drift (P3) is scoped per run: `declined`
+counts reset with `run_seq`.
 
 ### P7 — Log retention for replay (shared answer with Leaderboards #1)
 

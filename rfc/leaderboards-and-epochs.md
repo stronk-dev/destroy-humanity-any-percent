@@ -66,6 +66,14 @@ First verified completion per `(category, epoch)` emits a feed/dispatch event (t
 
 A verified run pins `(constants_hash set, engine_version)`. **`engine_version` = the shared-kernel version constant** (semver, bumped by RFC whenever transition semantics change — a new source-of-truth `kernel/VERSION` read by both runtimes and embedded in builds) plus the build's VCS hash as forensic detail. Replay runs the **exact catalog bytes** fetched by hash from `catalog_artifacts(constants_hash, bytes, created_at)` — immutable, insert-only, populated at epoch mint/hotfix — under a kernel whose VERSION matches the run's. A version mismatch is verdict `engine_mismatch` (fifth machine cause, added to D2's four), never a silent replay-under-new-code.
 
+**L2a — Artifact-set authority (review finding, 2026-07-30, MEDIUM):** the epoch seed
+(`balance/epochs/phase0.json`) is the **single authority** for which artifacts compose a
+constants hash. Today three sites hardcode divergent sets (seed: 4; `harness.go:210`: 3 without
+prestige; prestige integration fixtures: 3 without commons) — self-consistent individually, but the
+composed server would mint run hashes no epoch accepts. Contract: every composition site derives its
+artifact list from the seed, and a parity test asserts seed set == every site. Acceptance: change
+the seed's artifact list in a fixture and every composer follows without code edits.
+
 ### L3 — Timer lifecycle (binds to Prestige P6)
 
 `[BEGIN ATTEMPT]` **is** the `run_started` event; run_id and seed come from Prestige P3 (founder seed ⊕ run_seq); RTA = `run_ended.server_ts − run_started.server_ts` (integer ms); Attended Time = RTA − Σ `offline_spans` (Prestige P6's server-derived spans; the client clock contributes nothing). Pause does not exist (an idle game has no pause; disconnection simply accrues an offline span). Terminalization = the Prestige Exit transaction; `run_ended` carries the terminal `run_log` seq (P7), and verification's completeness check is exactly `max(seq) == run_ended.terminal_seq`.
@@ -77,6 +85,21 @@ A verified run pins `(constants_hash set, engine_version)`. **`engine_version` =
 ### L5 — Epoch storage and minting
 
 `epochs(epoch_id bigserial, name, started_at, ended_at nullable, changelog_ref NOT NULL)` — **one current epoch enforced by partial unique index on `ended_at IS NULL`**; minting = one transaction: close current (set ended_at), insert next, insert its `catalog_artifacts` rows and `epoch_hashes(epoch_id, constants_hash)` set. Hotfix = insert one `epoch_hashes` row + its artifact (append-only; nothing is ever removed from an accepted set). **Run pinning:** the Prestige `run_started` write reads the current epoch **in the same transaction** (`FOR SHARE` on the current-epoch row) — a run started concurrently with a mint gets exactly one epoch, atomically. `changelog_ref` is a repo path (`changelog/epoch-<id>.md`); loader validation fails an epoch whose file is missing.
+
+**L2b — Version-drift run policy (ruling, 2026-07-30):** play-time pin enforcement is hash-only.
+On engine-version drift the command executes and the run is recorded once in append-only
+`run_version_drift(company_stream_id, run_seq, observed_version, first_seen)`; drifted runs remain
+playable, verify as `engine_mismatch`, and are excluded from board projection. A version bump may
+never strand an active run.
+
+**L5b — New-run hash transition (ruling, 2026-07-30):** the Exit transaction starts run N+1 under
+the server's CURRENT constants hash (D6 assembly from the current catalog; new company revision and
+pin both carry it). The ended run keeps its original pin. This is what makes D3's "pins to the epoch
+live at its timer start" true across mints.
+
+**L5c — Epoch seed sync (ruling, 2026-07-30):** `cmd/gameserver` reconciles DB epochs/hashes with
+the repo seed idempotently at startup, before readiness; the process's constants hash is therefore
+always in the current epoch's accepted set.
 
 ### L6 — Board projection contract
 
@@ -95,4 +118,6 @@ The existing history guard already walks every reachable revision. Extension, sa
 - 2026-07-28: created (draft). Closes the deferred-decisions register.
 - 2026-07-29: updated implemented dependencies; Codex acceptance review recorded eight blockers.
 - 2026-07-29: all eight answered with executable contracts L1–L8; Assisted ruled as two structural variables (commons, advisor); cap-lowering rule landed in L8.
+- 2026-07-30: L8 guard implementation reviewed and approved; L2a added (seed as single artifact-set authority + parity test) from the review's MEDIUM finding; constants reverts documented as mint-only.
+- 2026-07-30: core review found two architectural HIGHs rooted in this RFC's contracts; rulings L2b (version-drift runs stay playable, unrankable), L5b (run N+1 starts under the current hash), L5c (startup epoch seed sync) added.
 - 2026-07-29: accepted for implementation by `planning/codex-batch-2026-07-29.md`; implementation started immediately behind Prestige so L1 can replace its provisional terminal sequence.
