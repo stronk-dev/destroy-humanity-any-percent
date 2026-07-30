@@ -16,6 +16,14 @@ TypeScript decoder ignores unknown kinds for forward compatibility, but exact-ke
 known envelope and owned payload. Production receipts pass through unchanged because their closed
 schema belongs to the Production Engine.
 
+Go publication and TypeScript decoding enforce the same shared wire corpus. Snapshot and event
+payload revisions must equal the envelope revision, snapshot scope must match its channel family,
+and nested state/event payloads must be objects. A closed channel-kind matrix permits receipts only
+on private player channels; `world` accepts gauges/presence/system messages and `feed` accepts
+curated events/presence/system messages. Consequently a per-click receipt cannot reach a public
+channel through the generic publisher. Unknown future kinds remain client-ignored before payload
+interpretation as the version-1 forward-compatibility rule requires.
+
 Connection queues implement the two distinct loss rules: `world` is a gauge and replaces its stale
 queued value, while private receipts remain ordered and lossless until the declared bound; overflow
 returns the typed queue-overflow condition so the socket layer closes with code 4000. History uses

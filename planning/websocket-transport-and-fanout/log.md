@@ -118,3 +118,20 @@
   actual HTTP upgrade, WebSocket framing, origin checks, and account API client/server exchange all
   remain exercised, but routine Go tests no longer need permission to bind localhost. Transport and
   Account focused suites now run inside the repository sandbox with the local Go build cache.
+
+## 2026-07-30 — closed outbound wire parity
+
+- Complete-diff review found that the Go encoder recognized kinds but did not bind them to channel
+  families or validate transport-owned payload shapes. A generic caller could therefore publish a
+  receipt to `world`, violating the no-public-per-click law even though intended call sites did not.
+- Go publication and TypeScript decoding now share the same channel-kind matrix: receipts are
+  player-private; world carries snapshot/presence/system; feed carries curated
+  event/presence/system; social/match channels reject receipts. Channel IDs cannot be empty or
+  contain a second separator.
+- Both runtimes exact-key validate owned payloads, require snapshot/event revisions to equal the
+  envelope revision, bind snapshot scope to the channel family, reject array/scalar state payloads,
+  and enforce the closed system-code duration shape. Production C1 still owns receipt internals;
+  transport asserts only that its pass-through bytes encode an object.
+- Added `testdata/transport/wire-vectors.json` with valid and invalid boundary envelopes and made
+  both suites consume it. Focused Go tests, eight TypeScript transport tests, strict TypeScript, and
+  Svelte diagnostics are green.

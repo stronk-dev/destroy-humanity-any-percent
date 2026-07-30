@@ -19,24 +19,29 @@ export function decodeTransportEnvelope(source: unknown): TransportEnvelope | un
   if (typeof kind !== "string" || !kinds.has(kind as TransportKind)) return undefined;
   exact(root, ["v", "ch", "kind", "rev", "constants_hash", "ts", "payload"], "transport envelope");
   if (root.v !== 1 || typeof root.ch !== "string" || root.ch.length === 0 || !Number.isSafeInteger(root.rev) || (root.rev as number) < 0 ||
-      typeof root.constants_hash !== "string" || !hashPattern.test(root.constants_hash) || typeof root.ts !== "string" || !Number.isFinite(Date.parse(root.ts))) {
+      typeof root.constants_hash !== "string" || !hashPattern.test(root.constants_hash) || typeof root.ts !== "string" || !Number.isFinite(Date.parse(root.ts)) ||
+      !channelAllowsKind(root.ch, kind as TransportKind)) {
     throw new SyntaxError("invalid transport envelope");
   }
   const payload = object(root.payload, `${kind} payload`);
-  validatePayload(kind as TransportKind, payload);
+  validatePayload(kind as TransportKind, payload, root.ch, root.rev as number);
   return root as unknown as TransportEnvelope;
 }
 
-function validatePayload(kind: TransportKind, payload: Record<string, unknown>): void {
+function validatePayload(kind: TransportKind, payload: Record<string, unknown>, channel: string, envelopeRevision: number): void {
   if (kind === "receipt") return; // Production C1 owns and validates this object unchanged.
   if (kind === "snapshot") {
     exact(payload, ["scope", "rev", "state"], "snapshot payload");
-    if (!["company", "world", "guild", "cohort"].includes(String(payload.scope)) || !Number.isSafeInteger(payload.rev) || (payload.rev as number) < 0 || typeof payload.state !== "object" || payload.state === null) throw new SyntaxError("invalid snapshot payload");
+    if (!["company", "world", "guild", "cohort"].includes(String(payload.scope)) || !Number.isSafeInteger(payload.rev) || (payload.rev as number) < 0 ||
+        payload.rev !== envelopeRevision || typeof payload.state !== "object" || payload.state === null || Array.isArray(payload.state) ||
+        !scopeMatchesChannel(String(payload.scope), channel)) throw new SyntaxError("invalid snapshot payload");
     return;
   }
   if (kind === "event") {
     exact(payload, ["event_id", "kind", "rev", "payload"], "event payload");
-    if (typeof payload.event_id !== "string" || typeof payload.kind !== "string" || !idPattern.test(payload.kind) || !Number.isSafeInteger(payload.rev) || (payload.rev as number) < 1 || typeof payload.payload !== "object" || payload.payload === null) throw new SyntaxError("invalid event payload");
+    if (typeof payload.event_id !== "string" || payload.event_id.length === 0 || typeof payload.kind !== "string" || !idPattern.test(payload.kind) ||
+        !Number.isSafeInteger(payload.rev) || (payload.rev as number) < 1 || payload.rev !== envelopeRevision ||
+        typeof payload.payload !== "object" || payload.payload === null || Array.isArray(payload.payload)) throw new SyntaxError("invalid event payload");
     return;
   }
   if (kind === "presence") {
@@ -59,5 +64,25 @@ function exact(source: object, fields: readonly string[], name: string): void {
 }
 
 function stringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every((item) => typeof item === "string");
+  return Array.isArray(value) && value.every((item) => typeof item === "string" && item.length > 0);
+}
+
+function channelAllowsKind(channel: string, kind: TransportKind): boolean {
+  if (channel.startsWith("player:")) return validChannelID(channel.slice("player:".length));
+  if (channel === "world") return kind === "snapshot" || kind === "presence" || kind === "system";
+  if (channel === "feed") return kind === "event" || kind === "presence" || kind === "system";
+  for (const prefix of ["guild:", "cohort:", "match:"]) {
+    if (channel.startsWith(prefix)) return validChannelID(channel.slice(prefix.length)) && kind !== "receipt";
+  }
+  return false;
+}
+
+function validChannelID(value: string): boolean { return value.length > 0 && !value.includes(":"); }
+
+function scopeMatchesChannel(scope: string, channel: string): boolean {
+  if (scope === "company") return channel.startsWith("player:");
+  if (scope === "world") return channel === "world";
+  if (scope === "guild") return channel.startsWith("guild:");
+  if (scope === "cohort") return channel.startsWith("cohort:");
+  return false;
 }

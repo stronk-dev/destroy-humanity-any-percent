@@ -1,0 +1,67 @@
+[
+  {
+    "name": "company_snapshot",
+    "valid": true,
+    "envelope": { "v": 1, "ch": "player:founder", "kind": "snapshot", "rev": 7, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "company", "rev": 7, "state": {} } }
+  },
+  {
+    "name": "world_snapshot",
+    "valid": true,
+    "envelope": { "v": 1, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 8, "state": {} } }
+  },
+  {
+    "name": "feed_event",
+    "valid": true,
+    "envelope": { "v": 1, "ch": "feed", "kind": "event", "rev": 9, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-9", "kind": "run.ended", "rev": 9, "payload": {} } }
+  },
+  {
+    "name": "guild_presence",
+    "valid": true,
+    "envelope": { "v": 1, "ch": "guild:g", "kind": "presence", "rev": 0, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "joined": [], "left": [], "count": 2 } }
+  },
+  {
+    "name": "restart_system",
+    "valid": true,
+    "envelope": { "v": 1, "ch": "world", "kind": "system", "rev": 0, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "code": "server_restarting", "resume_after_ms": 15000 } }
+  },
+  {
+    "name": "public_receipt",
+    "valid": false,
+    "envelope": { "v": 1, "ch": "world", "kind": "receipt", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "outcome": "applied" } }
+  },
+  {
+    "name": "receipt_array",
+    "valid": false,
+    "envelope": { "v": 1, "ch": "player:founder", "kind": "receipt", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": [] }
+  },
+  {
+    "name": "snapshot_revision_mismatch",
+    "valid": false,
+    "envelope": { "v": 1, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 7, "state": {} } }
+  },
+  {
+    "name": "snapshot_scope_mismatch",
+    "valid": false,
+    "envelope": { "v": 1, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "company", "rev": 8, "state": {} } }
+  },
+  {
+    "name": "snapshot_unknown_field",
+    "valid": false,
+    "envelope": { "v": 1, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 8, "state": {}, "extra": true } }
+  },
+  {
+    "name": "event_scalar_payload",
+    "valid": false,
+    "envelope": { "v": 1, "ch": "feed", "kind": "event", "rev": 9, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-9", "kind": "run.ended", "rev": 9, "payload": 1 } }
+  },
+  {
+    "name": "resync_with_duration",
+    "valid": false,
+    "envelope": { "v": 1, "ch": "world", "kind": "system", "rev": 0, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "code": "resync_required", "resume_after_ms": 1 } }
+  },
+  {
+    "name": "unknown_channel",
+    "valid": false,
+    "envelope": { "v": 1, "ch": "public", "kind": "event", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-1", "kind": "run.ended", "rev": 1, "payload": {} } }
+  }
+]
