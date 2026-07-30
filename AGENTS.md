@@ -87,6 +87,9 @@ useful batches instead of asking for permission one invocation at a time:
   intermediate `git commit`s).
 
 Use stable, narrowly scoped command prefixes so the execution environment can remember approval.
+Run every routine format, build, test, and Git command with the repository root as its working
+directory. Do not create task-specific cache directories or move into package subdirectories just
+to run tooling; use the root Make targets and their package selectors.
 Do not wrap an otherwise approved command in a custom shell, environment assignment, or compound
 command unless the wrapper is actually required; wrappers often defeat persistent prefix approval.
 Group related checks into the repository's existing `make`/package targets where practical.
