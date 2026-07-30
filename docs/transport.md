@@ -26,5 +26,21 @@ Channel authorization is closed: world/feed are public to authenticated sessions
 must match the Founder identity, and guild/cohort/match channels delegate to server-side membership
 lookups. Identity never grants membership through token claims.
 
-The embedded Centrifuge socket adapter, committed-receipt publisher, composed gameserver, drain
-lifecycle, and soak tests remain implementing; this document does not claim those paths exist yet.
+The server embeds Centrifuge behind an origin-checked WebSocket handler. Its connect command consumes
+the account service's access token, uses the opaque account ID for the per-account connection limit,
+and retains only the Founder ID as connection information. Subscription authorization is evaluated
+server-side for every channel; client publication is always rejected. Three concurrent connections
+are permitted per account and the oldest is closed with code 4002 when a fourth connects. Access
+tokens carry their existing expiry into the socket and expire with code 4001; periodic liveness
+checks also detect server-side revocation.
+
+Publishing `world` state stores only the greatest pending revision and a node-owned ticker emits at
+the configured rate, so call sites cannot accidentally turn player actions into public per-click
+traffic. Centrifuge history is configured at publication time: 512/10 minutes for player streams,
+50 for feed and social streams, and one latest snapshot for world and match state. The node's drain
+operation publishes the courtesy `server_restarting` system envelope to active channels, closes
+clients with code 4003, and shuts down under the caller's context.
+
+Committed-receipt mapping, the composed gameserver/in-flight transaction gate, typed 4000 mapping
+from Centrifuge's internal byte queue, and the 5,000-connection soak remain implementing; this
+document does not claim those paths exist yet.

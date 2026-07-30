@@ -37,9 +37,12 @@ func (queue *ConnectionQueue) Enqueue(message QueuedMessage) error {
 	if message.Channel == "world" {
 		for index := len(queue.messages) - 1; index >= 0; index-- {
 			if queue.messages[index].Channel == "world" {
-				queue.bytes -= len(queue.messages[index].Data)
-				queue.messages[index] = message
-				queue.bytes += len(message.Data)
+				nextBytes := queue.bytes - len(queue.messages[index].Data) + len(message.Data)
+				if nextBytes > queue.maxBytes {
+					return ErrQueueOverflow
+				}
+				queue.messages[index] = QueuedMessage{Channel: message.Channel, Kind: message.Kind, Data: append([]byte(nil), message.Data...)}
+				queue.bytes = nextBytes
 				return nil
 			}
 		}

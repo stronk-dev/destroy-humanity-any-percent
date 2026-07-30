@@ -42,6 +42,28 @@ func TestDropStaleWorldAndLosslessReceiptOverflow(t *testing.T) {
 	}
 }
 
+func TestWorldReplacementCannotBypassByteBound(t *testing.T) {
+	policy := phase0Policy(t)
+	policy.PlayerQueueBytes = 65_536
+	queue, err := NewConnectionQueue(policy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := queue.Enqueue(QueuedMessage{Channel: "player:founder", Kind: "receipt", Data: make([]byte, 65_000)}); err != nil {
+		t.Fatal(err)
+	}
+	if err := queue.Enqueue(QueuedMessage{Channel: "world", Kind: "snapshot", Data: make([]byte, 100)}); err != nil {
+		t.Fatal(err)
+	}
+	if err := queue.Enqueue(QueuedMessage{Channel: "world", Kind: "snapshot", Data: make([]byte, 1_000)}); !errors.Is(err, ErrQueueOverflow) {
+		t.Fatalf("replacement overflow err=%v", err)
+	}
+	drained := queue.Drain()
+	if len(drained) != 2 || len(drained[1].Data) != 100 {
+		t.Fatalf("failed replacement mutated queue: %+v", drained)
+	}
+}
+
 func TestRecoveryKindsAndAuthorization(t *testing.T) {
 	history, _ := NewHistory(phase0Policy(t))
 	now := time.Date(2026, 7, 29, 12, 0, 0, 0, time.UTC)
