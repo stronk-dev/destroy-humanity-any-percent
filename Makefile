@@ -6,6 +6,7 @@ REPO_CACHE_DIR ?= $(CURDIR)/.cache
 export GOCACHE ?= $(REPO_CACHE_DIR)/go-build
 GO_PACKAGES ?= ./...
 GO_TEST_FLAGS ?=
+CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -26,16 +27,16 @@ test-save-integration:
 	docker compose -f compose.save-test.yml run --rm test
 
 test-client:
-	pnpm --dir client run test
+	cd client && $(CLIENT_BIN)/vitest run
 
 test-browser:
-	pnpm --dir client run test:browser
+	cd client && $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts
 
 typecheck:
-	pnpm --dir client run typecheck
+	cd client && $(CLIENT_BIN)/tsc --noEmit && $(CLIENT_BIN)/svelte-check --tsconfig ./tsconfig.json
 
 build-client:
-	pnpm --dir client run build
+	cd client && $(CLIENT_BIN)/vite build
 
 vectors:
 	node tools/gen-vectors.mjs
@@ -75,7 +76,7 @@ fuzz-ci:
 	cd server && go test ./decimal -run '^$$' -fuzz '^FuzzCanonicalRoundTrip$$' -fuzztime=30s
 
 verify-schema:
-	pnpm --dir client run verify:schema
+	node client/tools/verify-schema.mjs
 
 verify-routes-boundary:
 	@imports=$$(cd server && GOCACHE=/tmp/cloud-clicker-routes-go-cache go list -f '{{range .Imports}}{{println .}}{{end}}' ./routes) || { echo 'routes import enumeration failed' >&2; exit 1; }; unexpected=$$(printf '%s\n' "$$imports" | grep '^cloud-clicker/server/' | grep -vx 'cloud-clicker/server/decimal' || true); if [ -n "$$unexpected" ]; then echo "routes package has disallowed internal imports:" >&2; echo "$$unexpected" >&2; exit 1; fi
@@ -91,7 +92,7 @@ verify-kernel-version:
 	node client/tools/verify-kernel-version.mjs
 
 verify-combat-boundary:
-	pnpm --dir client run verify:combat
+	node client/tools/verify-combat-boundaries.mjs
 
 verify-server: vet test-go formulas-check harness-check verify-routes-boundary verify-commons-boundary
 
