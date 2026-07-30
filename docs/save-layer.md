@@ -16,7 +16,9 @@ stale scalar subquery under PostgreSQL READ COMMITTED.
 
 ## State format
 
-Version 6 is strict JSON:
+Version 8 is strict JSON. It contains the economy, production, Routes, Commons, and Prestige fields
+described by their owning canonical docs; unknown or missing required fields remain invalid. A
+representative prefix is:
 
 ```json
 {
@@ -38,7 +40,10 @@ Version 6 is strict JSON:
   "compact_member": false,
   "compact_tithe_ppm": 0,
   "compact_solidarity_ppm": 0,
-  "compact_solidarity_samples": []
+  "compact_solidarity_samples": [],
+  "run_started_at_ms": 1785326400000,
+  "run_pre_timer": false,
+  "offline_spans": []
 }
 ```
 
@@ -88,7 +93,7 @@ Sequential SQL migrations are embedded in the Go package and applied transaction
 Goose 3.27.1 using pgx/v5's `database/sql` driver. There is no ORM, SQLite substitute, runtime
 migration directory, or separate migration artifact.
 
-Save versions 1 through 5 remain readable. V1 initializes every in-scope production-capable
+Save versions 1 through 7 remain readable. V1 initializes every in-scope production-capable
 generator to zero and uses the revision's database-authored `created_at` as the evaluation cursor.
 Versions 1 and 2 initialize Compute Credits to zero, fill the manual bucket from the resolved
 catalog, and use the evaluation cursor as the refill baseline. During v1–v3 restoration, both
@@ -96,9 +101,11 @@ cursor instants are independently floored to UTC whole milliseconds before their
 validated; no whole millisecond of work is invented. A claimed v4 snapshot with either
 sub-millisecond cursor is rejected. Pre-v5 company saves receive empty gate/context state and
 `run_seq = 1`; pre-v5 Founder saves receive a zero balance and no hints. Pre-v6 saves receive
-empty non-member Compact state. The checked-in
+empty non-member Compact state. Pre-v7 Company saves backfill `run_started_at_ms` from their
+authoritative `evaluated_through` cursor and set `run_pre_timer=true`; the marker preserves
+playability while excluding those historical runs from time ranking. The checked-in
 `testdata/save-migrations.json` corpus fixes v1/v2 upgrades plus phase-matched, phase-mismatched,
-boundary, route-default, and lying-v4 cases; migrations never
+boundary, route-default, lying-v4, founder-v6, and company-v6 pre-timer cases; migrations never
 read the wall clock implicitly. Its `corpus_version` is metadata, not a save version. A separate
 baseline manifest makes required case names and the exact case count a server-test gate, so an
 addition or removal requires an explicit reviewed baseline ratchet.

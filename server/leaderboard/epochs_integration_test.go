@@ -108,6 +108,13 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO run_version_drift(company_stream_id,run_seq,observed_version) VALUES($1,1,'9.9.9')`, revision.StreamID); err != nil {
+		t.Fatal(err)
+	}
+	driftedKey := int64(750)
+	if _, err := repository.ProjectVerifiedRun(ctx, VerifiedRun{EventID: "01985555-4205-7000-8000-000000000005", RunID: revision.StreamID + ":1", FounderID: founders[0], CategoryID: "category.any", Variables: Variables{}, EpochID: 1, KeyMS: &driftedKey, VerifiedAt: now}); !errors.Is(err, ErrInvalidEpoch) {
+		t.Fatalf("drifted projection err=%v", err)
+	}
 	variables := Variables{}
 	keys := []int64{1_000, 1_000, 2_000}
 	for index, key := range keys {

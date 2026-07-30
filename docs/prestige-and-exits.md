@@ -7,11 +7,13 @@ their pre-Exit revisions; an idempotent retry returns the original receipt and e
 
 ## Persisted state
 
-Save version 7 carries the run lifecycle explicitly. Company state records tier, lifetime value,
+Save version 8 carries the run lifecycle explicitly. Company state records tier, lifetime value,
 the optional live offer, run start time, and server-derived offline spans. Founder state records
 Reputation, Reputation unlock strength, Network slots, lifetime Clout, Soul, age, Notoriety,
-Advisor Mode, and append-only Exit history. Older saves migrate with zero, empty, or null defaults;
-v7 encoding refuses non-canonical cursor times or invalid cross-scope state.
+Advisor Mode, and append-only Exit history. A pre-v7 Company backfills its missing run start from
+`evaluated_through` and persists `run_pre_timer=true`, so it can Exit but cannot claim a time-ranked
+record for a run that predates timer semantics. V8 encoding refuses non-canonical cursor times or
+invalid cross-scope state.
 
 The Phase-0 Prestige policy is declarative in
 [`balance/prestige/phase0.json`](../balance/prestige/phase0.json). Its `value_resource_id` names the
@@ -50,7 +52,8 @@ no background timers.
 and commits Founder revision `+1` plus Company terminal and new-run revisions `+2`. The idempotency
 record belongs to the Company stream. The `run_ended` event is self-contained for the obituary:
 run identity, exit type, server start/end times, RTA, Attended Time, payout, tier, lifetime value,
-ledger facts, revision-bounded executed routes, and separate Commons/Advisor assisted variables.
+ledger facts, revision-bounded executed routes, its pre-timer status, and separate Commons/Advisor
+assisted variables.
 `run_started` is the next timer's `[BEGIN ATTEMPT]` fact.
 The terminal sequence is the Exit command's atomically committed per-run intent-log sequence, not a
 save revision or an eventually projected counter.
@@ -72,11 +75,19 @@ Reputation-tree content, so those declared seams are empty. Trust-facing meter b
 Founder Notoriety using the published clamp, while lifetime Founder facts and the old run's ledger
 facts remain intact.
 
+An Exit may cross a balance-epoch boundary. The terminal Company revision and `run_ended` event
+retain the ended run's pinned hash. The Founder transition, new Company revision, `run_started`
+event, receipt snapshot, and run-N+1 epoch pin all use the process's current constants hash in the
+same transaction. The next run is therefore assembled from current catalog initials without
+rewriting the forensic identity of the run that just ended.
+
 ## Verification status
 
 Unit and shared-vector tests cover arithmetic, offer monotonicity, deterministic run assembly,
 offline accounting, and exact parsing. Real-Postgres tests inject failure at every Exit write
 boundary, assert byte-identical replay, execute elective and scripted Exits end to end, preserve
-executed-route facts, and prove a progressed offer never pays below its preview. The first elective
+executed-route facts, and prove a progressed offer never pays below its preview. The suite also
+mints an epoch with changed artifact bytes while a run is active and exits it across the boundary,
+and migrates a literal v6 Company through a successful pre-timer scripted Exit. The first elective
 Exit pacing envelope remains gated on the explicitly missing T0–T1 playable-content contract; no
 fixture timing is presented as shipped balance.

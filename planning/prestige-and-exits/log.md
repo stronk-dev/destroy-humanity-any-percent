@@ -151,3 +151,14 @@ Findings (fix queue, ordered):
     relevant (spec-faithful); a67e93b's rebaseline is protocol-compliant with the noted wrinkle
     that six intervening commits carried stale golden hashes (pre-guard; the epoch guard now
     prevents recurrence).
+
+## 2026-07-30 — HIGH remediation: save v8 pre-timer migration
+
+- Save v8 adds the persisted `run_pre_timer` fact. Restoring a pre-v7 Company backfills
+  `RunStartedAt` from its already-authoritative `EvaluatedThrough` cursor and marks the run; new
+  runs remain ordinary timer runs. `run_ended` carries the fact for verification and board policy.
+- The migration corpus now contains the previously absent Company-v6 branch and ratchets its
+  append-only baseline. A real Postgres fixture rewrites an actual Company revision as v6, loads it
+  through the normal store, crosses a threshold after 16 attended minutes, and completes the
+  scripted Exit. The next run is v8 and not pre-timer.
+- Focused Go tests/vet and the full Postgres integration target are green.

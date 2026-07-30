@@ -167,3 +167,16 @@ Findings:
 
 Planning-log claims all cross-checked and held; the only test-vs-reality gap is finding 1's
 identical-artifact mint.
+
+## 2026-07-30 — HIGH remediation: epoch transitions and engine drift
+
+- Exit decisions now declare the current hash for run N+1. The store validates the Founder and new
+  Company under it, writes their revisions/events and receipt outbox under it, and pins the new run
+  to the current epoch with it; the terminal Company revision/event remain on run N's hash.
+- The regression fixture starts under epoch 1, mints epoch 2 with genuinely changed artifact bytes,
+  exits, and asserts old/new run pins, Founder/Company revision hashes, and ended/started event
+  hashes independently.
+- Play-time run validation is hash-only. A kernel mismatch inserts one append-only
+  `run_version_drift` fact and permits the command; a second command proves deduplication. Board
+  projection rejects a run whose canonical Company-stream/run-seq identity has that fact.
+- Focused Go tests/vet and the full Postgres integration target are green.

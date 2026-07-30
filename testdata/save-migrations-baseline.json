@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "minimum_case_count": 8,
+  "minimum_case_count": 9,
   "required_case_names": [
     "company v1 balances to v5 canonical route envelope",
     "company v2 production state to v5 route defaults",
@@ -9,6 +9,7 @@
     "company v3 millisecond boundary floors independently without inversion",
     "lying v4 evaluated cursor is rejected",
     "lying v4 manual cursor is rejected",
+    "company v6 backfills pre-timer run start",
     "founder v6 gains closed prestige defaults"
   ]
 }

@@ -78,6 +78,17 @@ func (repository *Repository) ProjectVerifiedRun(ctx context.Context, run Verifi
 	if imported {
 		return false, ErrInvalidEpoch
 	}
+	var drifted bool
+	if err := tx.QueryRowContext(ctx, `
+		SELECT EXISTS (
+			SELECT 1 FROM run_version_drift
+			WHERE company_stream_id::text || ':' || run_seq::text = $1
+		)`, run.RunID).Scan(&drifted); err != nil {
+		return false, err
+	}
+	if drifted {
+		return false, ErrInvalidEpoch
+	}
 	var insertedRunID string
 	err = tx.QueryRowContext(ctx, `
 		INSERT INTO verified_runs(run_id,event_id,founder_id,category_id,variables,epoch_id,mandate_level,key_ms,key_int,verified_at,world_first)

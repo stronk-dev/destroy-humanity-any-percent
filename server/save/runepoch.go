@@ -82,8 +82,15 @@ func requireRunEpochTx(ctx context.Context, tx *sql.Tx, companyStreamID string, 
 	} else if err != nil {
 		return err
 	}
-	if storedHash != constantsHash || version != kernel.Version {
+	if storedHash != constantsHash {
 		return fmt.Errorf("%w: run identity mismatch", ErrInvalidState)
+	}
+	if version != kernel.Version {
+		if _, err := tx.ExecContext(ctx, `
+			INSERT INTO run_version_drift(company_stream_id,run_seq,observed_version)
+			VALUES($1,$2,$3) ON CONFLICT DO NOTHING`, companyStreamID, runSeq, kernel.Version); err != nil {
+			return err
+		}
 	}
 	return nil
 }

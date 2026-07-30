@@ -16,6 +16,7 @@ type ExitDecision struct {
 	Receipt              json.RawMessage
 	FinalCompanyState    *State
 	NewCompanyState      *State
+	NewConstantsHash     string
 	FounderEvents        []EventWrite
 	CompanyEndedEvents   []EventWrite
 	CompanyStartedEvents []EventWrite
@@ -130,7 +131,7 @@ func (s *Store) applyExitTransaction(
 		return IntentResult{}, err
 	}
 
-	founder, founderRevision, founderHash, err := s.loadExitState(ctx, tx, founderStreamID, ownerID, economy.ScopeFounder)
+	founder, founderRevision, _, err := s.loadExitState(ctx, tx, founderStreamID, ownerID, economy.ScopeFounder)
 	if err != nil {
 		return IntentResult{}, err
 	}
@@ -143,9 +144,6 @@ func (s *Store) applyExitTransaction(
 	}
 	if companyRevision.Number != expectedCompanyRevision {
 		return IntentResult{}, &ExitRevisionConflict{Stream: economy.ScopeCompany, Expected: expectedCompanyRevision, Current: companyRevision.Number}
-	}
-	if founderHash != companyHash {
-		return IntentResult{}, fmt.Errorf("%w: Founder and Company constants differ", ErrInvalidState)
 	}
 	var runLogSequence int64
 	if len(canonicalPayload) != 0 {
@@ -188,7 +186,8 @@ func (s *Store) applyExitTransaction(
 		return IntentResult{Outcome: IntentRejected, Receipt: cloneRaw(decision.Receipt)}, nil
 	}
 
-	founderEncoded, err := s.validatedState(founderHash, economy.ScopeFounder, founder)
+	transitionHash := decision.NewConstantsHash
+	founderEncoded, err := s.validatedState(transitionHash, economy.ScopeFounder, founder)
 	if err != nil {
 		return IntentResult{}, err
 	}
@@ -196,20 +195,20 @@ func (s *Store) applyExitTransaction(
 	if err != nil {
 		return IntentResult{}, err
 	}
-	newEncoded, err := s.validatedState(companyHash, economy.ScopeCompany, decision.NewCompanyState)
+	newEncoded, err := s.validatedState(transitionHash, economy.ScopeCompany, decision.NewCompanyState)
 	if err != nil {
 		return IntentResult{}, err
 	}
 
 	recorded := make([]EventRecord, 0, len(decision.FounderEvents)+len(decision.CompanyEndedEvents)+len(decision.CompanyStartedEvents))
 	founderNext := founderRevision.Number + 1
-	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`, founderStreamID, founderNext, CurrentVersion, founderEncoded, founderHash); err != nil {
+	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`, founderStreamID, founderNext, CurrentVersion, founderEncoded, transitionHash); err != nil {
 		return IntentResult{}, err
 	}
 	if err := runExitFault(fault, "founder_revision"); err != nil {
 		return IntentResult{}, err
 	}
-	founderRecords, err := insertExitEvents(ctx, tx, founderStreamID, ownerID, founderNext, founderHash, decision.FounderEvents)
+	founderRecords, err := insertExitEvents(ctx, tx, founderStreamID, ownerID, founderNext, transitionHash, decision.FounderEvents)
 	if err != nil {
 		return IntentResult{}, err
 	}
@@ -235,19 +234,19 @@ func (s *Store) applyExitTransaction(
 	}
 
 	companyNext := companyRevision.Number + 2
-	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`, companyStreamID, companyNext, CurrentVersion, newEncoded, companyHash); err != nil {
+	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`, companyStreamID, companyNext, CurrentVersion, newEncoded, transitionHash); err != nil {
 		return IntentResult{}, err
 	}
 	if err := runExitFault(fault, "company_started_revision"); err != nil {
 		return IntentResult{}, err
 	}
-	startedRecords, err := insertExitEvents(ctx, tx, companyStreamID, ownerID, companyNext, companyHash, decision.CompanyStartedEvents)
+	startedRecords, err := insertExitEvents(ctx, tx, companyStreamID, ownerID, companyNext, transitionHash, decision.CompanyStartedEvents)
 	if err != nil {
 		return IntentResult{}, err
 	}
 	recorded = append(recorded, startedRecords...)
 	if runLogSequence != 0 {
-		if _, err := PinRunToCurrentEpochTx(ctx, tx, companyStreamID, ownerID, decision.NewCompanyState.RunSeq, companyHash); err != nil {
+		if _, err := PinRunToCurrentEpochTx(ctx, tx, companyStreamID, ownerID, decision.NewCompanyState.RunSeq, transitionHash); err != nil {
 			return IntentResult{}, err
 		}
 	}
@@ -266,7 +265,7 @@ func (s *Store) applyExitTransaction(
 	if _, err := tx.ExecContext(ctx, `INSERT INTO intent_records(stream_id,intent_id,request_hash,outcome,receipt) VALUES($1,$2,$3,$4,$5)`, companyStreamID, intentID, requestHash, decision.Outcome, decision.Receipt); err != nil {
 		return IntentResult{}, err
 	}
-	if err := insertReceiptOutbox(ctx, tx, ownerID, companyStreamID, intentID, companyNext, companyHash, decision.Receipt); err != nil {
+	if err := insertReceiptOutbox(ctx, tx, ownerID, companyStreamID, intentID, companyNext, transitionHash, decision.Receipt); err != nil {
 		return IntentResult{}, err
 	}
 	if err := runExitFault(fault, "intent_record"); err != nil {
@@ -311,10 +310,10 @@ func validateExitDecision(decision ExitDecision, intentID string) error {
 		return err
 	}
 	if decision.Outcome == IntentApplied {
-		if decision.FinalCompanyState == nil || decision.NewCompanyState == nil || len(decision.CompanyEndedEvents) == 0 || len(decision.CompanyStartedEvents) == 0 {
+		if decision.FinalCompanyState == nil || decision.NewCompanyState == nil || !hashPattern.MatchString(decision.NewConstantsHash) || len(decision.CompanyEndedEvents) == 0 || len(decision.CompanyStartedEvents) == 0 {
 			return ErrInvalidStream
 		}
-	} else if decision.FinalCompanyState != nil || decision.NewCompanyState != nil {
+	} else if decision.FinalCompanyState != nil || decision.NewCompanyState != nil || decision.NewConstantsHash != "" {
 		return ErrInvalidStream
 	}
 	return nil

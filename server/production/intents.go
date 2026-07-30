@@ -12,6 +12,7 @@ import (
 	"log/slog"
 	"regexp"
 	"sort"
+	"strings"
 	"time"
 
 	"cloud-clicker/server/accrualhook"
@@ -131,6 +132,22 @@ func WithPrestigeRuntime(resolver PrestigePolicyResolver, catchupCeilingMS int64
 	}
 }
 
+// WithCurrentConstantsHash binds the process's authoritative balance identity.
+// Existing runs continue under their pinned hash; only a Prestige transition
+// uses this value to assemble and pin the next run.
+func WithCurrentConstantsHash(constantsHash string) ServiceOption {
+	return func(service *Service) error {
+		if len(constantsHash) != len("sha256:")+64 || !strings.HasPrefix(constantsHash, "sha256:") {
+			return ErrInvalidIntent
+		}
+		if _, ok := service.catalogs.Resolve(constantsHash); !ok {
+			return ErrInvalidIntent
+		}
+		service.currentConstantsHash = constantsHash
+		return nil
+	}
+}
+
 type ContributionProvider interface {
 	Contributions(context.Context, *save.State, *economy.Catalog, save.Revision) ([]multiplier.Contribution, error)
 }
@@ -158,18 +175,19 @@ type InvariantSink interface {
 }
 
 type Service struct {
-	store            *save.Store
-	catalogs         save.CatalogResolver
-	contributions    ContributionProvider
-	metrics          InvariantMetrics
-	logger           *slog.Logger
-	routeCatalogs    RouteCatalogResolver
-	routeProjector   RouteProjector
-	compactPolicies  CompactPolicyResolver
-	projectors       []EventProjector
-	accrualHook      AccrualHook
-	prestigePolicies PrestigePolicyResolver
-	catchupCeilingMS int64
+	store                *save.Store
+	catalogs             save.CatalogResolver
+	contributions        ContributionProvider
+	metrics              InvariantMetrics
+	logger               *slog.Logger
+	routeCatalogs        RouteCatalogResolver
+	routeProjector       RouteProjector
+	compactPolicies      CompactPolicyResolver
+	projectors           []EventProjector
+	accrualHook          AccrualHook
+	prestigePolicies     PrestigePolicyResolver
+	catchupCeilingMS     int64
+	currentConstantsHash string
 }
 
 type HandleResult struct {
@@ -228,6 +246,9 @@ func NewService(
 		if option == nil || option(service) != nil {
 			return nil, ErrInvalidIntent
 		}
+	}
+	if service.prestigePolicies != nil && service.currentConstantsHash == "" {
+		return nil, ErrInvalidIntent
 	}
 	return service, nil
 }
@@ -901,7 +922,7 @@ func wireSnapshot(state *save.State) map[string]any {
 		"compact_member": state.CompactMember, "compact_tithe_ppm": state.CompactTithePPM,
 		"compact_solidarity_ppm": state.CompactSolidarityPPM,
 		"tier":                   state.Tier, "lifetime_value": state.LifetimeValue.String(),
-		"offer_state": wireOfferState(state.OfferState), "run_started_at_ms": wireTimeMS(state.RunStartedAt),
+		"offer_state": wireOfferState(state.OfferState), "run_started_at_ms": wireTimeMS(state.RunStartedAt), "run_pre_timer": state.RunPreTimer,
 		"offline_spans": wireOfflineSpans(state.OfflineSpans),
 	}
 }

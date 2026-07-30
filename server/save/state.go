@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	CurrentVersion           = 7
+	CurrentVersion           = 8
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
 )
@@ -50,6 +50,7 @@ type State struct {
 	LifetimeValue         decimal.Decimal
 	OfferState            *ExitOfferState
 	RunStartedAt          time.Time
+	RunPreTimer           bool
 	OfflineSpans          []OfflineSpan
 	ReputationLevel       int64
 	ReputationUnlockPPM   int64
@@ -156,6 +157,11 @@ type stateV7 struct {
 	ExitHistory         []rawExitRecord    `json:"exit_history"`
 }
 
+type stateV8 struct {
+	stateV7
+	RunPreTimer bool `json:"run_pre_timer"`
+}
+
 type rawExitOfferState struct {
 	OfferID     string          `json:"offer_id"`
 	ExitType    string          `json:"exit_type"`
@@ -257,7 +263,7 @@ func EncodeState(state *State) ([]byte, error) {
 	if state.ManualTokenRefilledAt.After(state.EvaluatedThrough) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
-	encoded, err := json.Marshal(stateV7{stateV6: stateV6{stateV5: stateV5{
+	encoded, err := json.Marshal(stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
 		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: cloneBoolMap(normalized.GatesCrossed), RunSeq: normalized.RunSeq,
@@ -272,7 +278,8 @@ func EncodeState(state *State) ([]byte, error) {
 		ReputationLevel: normalized.ReputationLevel, ReputationUnlockPPM: normalized.ReputationUnlockPPM,
 		NetworkSlots: cloneNetworkSlots(normalized.NetworkSlots), CloutLifetime: normalized.CloutLifetime,
 		Soul: normalized.Soul, AgeMS: normalized.AgeMS, Notoriety: normalized.Notoriety,
-		AdvisorMode: normalized.AdvisorMode, ExitHistory: encodeExitHistory(normalized.ExitHistory)})
+		AdvisorMode: normalized.AdvisorMode, ExitHistory: encodeExitHistory(normalized.ExitHistory)},
+		RunPreTimer: normalized.RunPreTimer})
 	if err != nil {
 		return nil, fmt.Errorf("%w: encode: %v", ErrInvalidState, err)
 	}
@@ -290,7 +297,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
 	}
 
-	var source stateV7
+	var source stateV8
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -300,7 +307,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err != nil {
 			return nil, fmt.Errorf("%w: version-1 migration baseline: %v", ErrInvalidState, err)
 		}
-		source.stateV6.stateV5 = stateV5{
+		source.stateV7.stateV6.stateV5 = stateV5{
 			Balances: legacy.Balances, Generators: zeroGeneratorCounts(catalog, scope), EvaluatedThrough: cursor,
 		}
 	} else if version == 2 {
@@ -308,13 +315,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
+		source.stateV7.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
 	} else if version < 5 {
 		var previous stateV4
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV6.stateV5 = stateV5{
+		source.stateV7.stateV6.stateV5 = stateV5{
 			Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough,
 			ComputeCreditMS: previous.ComputeCreditMS, ManualTokenMilli: previous.ManualTokenMilli,
 			ManualTokenRefilledAt: previous.ManualTokenRefilledAt,
@@ -324,13 +331,17 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV6.stateV5 = previous
+		source.stateV7.stateV6.stateV5 = previous
 	} else if version == 6 {
 		var previous stateV6
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV6 = previous
+		source.stateV7.stateV6 = previous
+	} else if version == 7 {
+		if err := decodeState(data, &source.stateV7); err != nil {
+			return nil, err
+		}
 	} else if err := decodeState(data, &source); err != nil {
 		return nil, err
 	}
@@ -434,6 +445,12 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if err != nil {
 		return nil, err
 	}
+	if version < 7 && scope == economy.ScopeCompany {
+		state.RunStartedAt = cursor
+		state.RunPreTimer = true
+	} else {
+		state.RunPreTimer = source.RunPreTimer
+	}
 	state.OfflineSpans, err = decodeOfflineSpans(source.OfflineSpans)
 	if err != nil {
 		return nil, err
@@ -477,7 +494,7 @@ func validatePrestigeState(state *State, scope economy.Scope) error {
 			state.AdvisorMode || len(state.ExitHistory) != 0 {
 			return fmt.Errorf("%w: founder prestige state leaked into company scope", ErrInvalidState)
 		}
-		if !state.RunStartedAt.IsZero() && (!isCanonicalMillisecond(state.RunStartedAt) || state.RunStartedAt.After(state.EvaluatedThrough)) {
+		if state.RunPreTimer && state.RunStartedAt.IsZero() || !state.RunStartedAt.IsZero() && (!isCanonicalMillisecond(state.RunStartedAt) || state.RunStartedAt.After(state.EvaluatedThrough)) {
 			return fmt.Errorf("%w: invalid run_started_at", ErrInvalidState)
 		}
 		last := time.Time{}
@@ -497,7 +514,7 @@ func validatePrestigeState(state *State, scope economy.Scope) error {
 		}
 		return nil
 	}
-	if state.Tier != 0 || !state.LifetimeValue.Eq(decimal.Zero) || state.OfferState != nil || !state.RunStartedAt.IsZero() || len(state.OfflineSpans) != 0 {
+	if state.Tier != 0 || !state.LifetimeValue.Eq(decimal.Zero) || state.OfferState != nil || !state.RunStartedAt.IsZero() || state.RunPreTimer || len(state.OfflineSpans) != 0 {
 		return fmt.Errorf("%w: company prestige state leaked outside company scope", ErrInvalidState)
 	}
 	if scope != economy.ScopeFounder {

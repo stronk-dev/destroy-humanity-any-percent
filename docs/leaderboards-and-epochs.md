@@ -33,15 +33,24 @@ the first save revisions. A Prestige Exit takes a shared lock on the current epo
 run in the same transaction as `run_started`; an epoch mint cannot place the run in both epochs or
 neither. Once written, a pin is immutable.
 
-Every logged Company command requires an existing pin whose hash and kernel version match the live
-save. This is fail-closed: a missing epoch is an infrastructure error, never an unranked command
-that silently continues.
+Every logged Company command requires an existing pin whose hash matches the live save. A missing
+pin or hash mismatch is an infrastructure error. A kernel-version mismatch does not strand the
+run: the command commits and the transaction inserts one immutable `run_version_drift` row for the
+run. Drifted runs verify as `engine_mismatch` once replay verification lands and are rejected by
+board projection today. Thus playability survives a deployment while ranked integrity remains
+fail-closed.
+
+At Exit, the ended run retains its original pin. Run N+1 is assembled under the server's current
+catalog hash and pinned to the epoch current in that same transaction. A real-Postgres fixture
+mints changed artifact bytes between start and Exit and asserts both hashes, epochs, revisions,
+events, and the next run's continued play.
 
 ## Exact boards
 
 Verified rows carry three separate structural variables: Commons, Advisor, and Glitched. “Solo” is
 only the display name for Commons=false and Advisor=false. Imported Founders are rejected before a
 projection claim commits, so they can never enter ranked storage.
+Runs recorded in `run_version_drift` are rejected at the same projection boundary.
 
 Time queries use SQL `rank()` ordered by integer milliseconds; equal keys therefore produce
 standard competition ranks such as `1, 1, 3`. Count queries rank exact integers descending. Both

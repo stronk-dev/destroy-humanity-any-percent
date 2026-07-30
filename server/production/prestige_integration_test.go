@@ -4,11 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/leaderboard"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
@@ -33,7 +35,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err := save.Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,save_streams CASCADE`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,save_streams RESTART IDENTITY CASCADE`); err != nil {
 		t.Fatal(err)
 	}
 	economyBytes, _ := os.ReadFile("../../balance/catalogs/phase0.json")
@@ -61,7 +63,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithPrestigeRuntime(resolver, 5_000))
+	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithPrestigeRuntime(resolver, 5_000), WithCurrentConstantsHash(hash))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -182,6 +184,126 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		founder, err := store.LoadLatest(ctx, founderRevision.StreamID)
 		if err != nil || founder.State.ReputationLevel < stored.PayoutPreview.ReputationDelta {
 			t.Fatalf("founder reputation=%d preview=%d err=%v", founder.State.ReputationLevel, stored.PayoutPreview.ReputationDelta, err)
+		}
+	})
+
+	ownerAcrossEpoch := "01985555-4000-7000-8000-000000000004"
+	founderAcrossEpoch, companyAcrossEpoch := createPrestigeStreams(t, ctx, store, catalog, hash, ownerAcrossEpoch, now, now.Add(-10*time.Minute), now, "0", decimal.New(8, 12), 1)
+	if _, err := store.PinRunToCurrentEpoch(ctx, companyAcrossEpoch.StreamID, ownerAcrossEpoch, 1, hash); err != nil {
+		t.Fatal(err)
+	}
+	changedEconomyBytes := append(append([]byte(nil), economyBytes...), '\n')
+	changedArtifacts := map[string][]byte{"economy": changedEconomyBytes, "routes": routeBytes, "prestige": prestigeBytes}
+	currentHash, err := save.ConstantsHashArtifacts(changedArtifacts)
+	if err != nil || currentHash == hash {
+		t.Fatalf("changed hash=%s old=%s err=%v", currentHash, hash, err)
+	}
+	root := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(root, "changelog"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "changelog", "epoch-2.md"), []byte("# changed balance bytes\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	epochRepository, err := leaderboard.NewRepository(db, root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts := []leaderboard.Artifact{{Name: "economy", Bytes: changedEconomyBytes}, {Name: "routes", Bytes: routeBytes}, {Name: "prestige", Bytes: prestigeBytes}}
+	var firstEpochStarted time.Time
+	if err := db.QueryRowContext(ctx, `SELECT started_at FROM epochs WHERE ended_at IS NULL`).Scan(&firstEpochStarted); err != nil {
+		t.Fatal(err)
+	}
+	secondEpoch, err := epochRepository.MintEpoch(ctx, "Phase 0.1", firstEpochStarted.Add(time.Hour), "changelog/epoch-2.md", artifacts)
+	if err != nil || secondEpoch.ID != 2 || secondEpoch.Hashes[0] != currentHash {
+		t.Fatalf("second epoch=%+v err=%v", secondEpoch, err)
+	}
+	resolver.economy[currentHash], resolver.routes[currentHash], resolver.prestige[currentHash] = catalog, routeCatalog, policy
+	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithPrestigeRuntime(resolver, 3_600_000), WithCurrentConstantsHash(currentHash))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("epoch mint moves only the new run to changed bytes", func(t *testing.T) {
+		request := []byte(`{"intent_id":"01985555-4001-7000-8000-000000000004","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`)
+		if result, err := currentService.Handle(ctx, companyAcrossEpoch.StreamID, ModeOnline, now.Add(time.Hour), request); err != nil || result.Replay {
+			t.Fatalf("epoch-crossing exit=%+v err=%v", result, err)
+		}
+		company, err := store.LoadLatest(ctx, companyAcrossEpoch.StreamID)
+		if err != nil || company.Revision.ConstantsHash != currentHash || company.State.RunSeq != 2 {
+			t.Fatalf("company revision=%+v state=%+v err=%v", company.Revision, company.State, err)
+		}
+		founder, err := store.LoadLatest(ctx, founderAcrossEpoch.StreamID)
+		if err != nil || founder.Revision.ConstantsHash != currentHash {
+			t.Fatalf("founder revision=%+v err=%v", founder.Revision, err)
+		}
+		var oldEpoch, newEpoch int64
+		var oldHash, newHash string
+		if err := db.QueryRowContext(ctx, `SELECT epoch_id,constants_hash FROM run_epochs WHERE company_stream_id=$1 AND run_seq=1`, companyAcrossEpoch.StreamID).Scan(&oldEpoch, &oldHash); err != nil {
+			t.Fatal(err)
+		}
+		if err := db.QueryRowContext(ctx, `SELECT epoch_id,constants_hash FROM run_epochs WHERE company_stream_id=$1 AND run_seq=2`, companyAcrossEpoch.StreamID).Scan(&newEpoch, &newHash); err != nil || oldEpoch != 1 || oldHash != hash || newEpoch != 2 || newHash != currentHash {
+			t.Fatalf("pins old=(%d,%s) new=(%d,%s) err=%v", oldEpoch, oldHash, newEpoch, newHash, err)
+		}
+		rows, err := db.QueryContext(ctx, `SELECT kind,constants_hash FROM events WHERE stream_id=$1 AND kind IN ('run_ended','run_started') ORDER BY revision`, companyAcrossEpoch.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer rows.Close()
+		var pairs [][2]string
+		for rows.Next() {
+			var pair [2]string
+			if err := rows.Scan(&pair[0], &pair[1]); err != nil {
+				t.Fatal(err)
+			}
+			pairs = append(pairs, pair)
+		}
+		if len(pairs) != 2 || pairs[0] != [2]string{"run_ended", hash} || pairs[1] != [2]string{"run_started", currentHash} {
+			t.Fatalf("transition events=%v", pairs)
+		}
+	})
+
+	t.Run("company v6 migrates to an exitable pre-timer run", func(t *testing.T) {
+		owner := "01985555-5000-7000-8000-000000000005"
+		founderRevision, companyRevision := createPrestigeStreams(t, ctx, store, catalog, currentHash, owner, now, now, now, "1e10", decimal.Zero, 0)
+		loaded, err := store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		encoded, err := save.EncodeState(loaded.State)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var legacy map[string]any
+		if err := json.Unmarshal(encoded, &legacy); err != nil {
+			t.Fatal(err)
+		}
+		for _, key := range []string{"tier", "lifetime_value", "offer_state", "run_started_at_ms", "run_pre_timer", "offline_spans", "reputation_level", "reputation_unlock_ppm", "network_slots", "clout_lifetime", "soul", "age_ms", "notoriety", "advisor_mode", "exit_history"} {
+			delete(legacy, key)
+		}
+		legacyBytes, _ := json.Marshal(legacy)
+		if _, err := db.ExecContext(ctx, `UPDATE save_revisions SET version=6,state=$2 WHERE stream_id=$1 AND revision=1`, companyRevision.StreamID, legacyBytes); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 1, currentHash); err != nil {
+			t.Fatal(err)
+		}
+		request := []byte(`{"intent_id":"01985555-5001-7000-8000-000000000005","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`)
+		result, err := currentService.Handle(ctx, companyRevision.StreamID, ModeOnline, now.Add(16*time.Minute), request)
+		if err != nil || result.Replay {
+			t.Fatalf("v6 exit=%+v err=%v", result, err)
+		}
+		company, err := store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil || company.State.RunSeq != 2 || company.State.RunPreTimer {
+			t.Fatalf("new company=%+v err=%v", company.State, err)
+		}
+		founder, err := store.LoadLatest(ctx, founderRevision.StreamID)
+		if err != nil || len(founder.State.ExitHistory) != 1 || founder.State.ExitHistory[0].ExitType != "scripted_first" {
+			t.Fatalf("founder=%+v err=%v", founder.State, err)
+		}
+		var preTimer bool
+		if err := db.QueryRowContext(ctx, `SELECT (payload->>'pre_timer')::boolean FROM events WHERE stream_id=$1 AND kind='run_ended'`, companyRevision.StreamID).Scan(&preTimer); err != nil || !preTimer {
+			t.Fatalf("pre-timer event=%v err=%v", preTimer, err)
 		}
 	})
 }

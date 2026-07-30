@@ -270,7 +270,10 @@ func (s *Service) finishExit(request IntentRequest, founder *save.State, founder
 	}
 	founder.NetworkSlots = mergeNetworkSlots(founder.NetworkSlots, terms.NetworkSlotUnlocks)
 	founder.ExitHistory = append(founder.ExitHistory, save.ExitRecord{RunID: company.RunSeq, ExitType: exitType, OccurredAt: now, ReputationDelta: terms.ReputationDelta})
-	catalog := s.mustCatalog(companyRevision.ConstantsHash)
+	catalog := s.mustCatalog(s.currentConstantsHash)
+	if catalog == nil {
+		return save.ExitDecision{}, ErrInvalidEngineState
+	}
 	newCompany, err := prestigecore.NewRunState(catalog, company, founder, now)
 	if err != nil {
 		return save.ExitDecision{}, err
@@ -279,14 +282,14 @@ func (s *Service) finishExit(request IntentRequest, founder *save.State, founder
 	assisted := map[string]bool{"commons": company.CompactMember, "advisor": founder.AdvisorMode}
 	endedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType,
 		"started_at_ms": company.RunStartedAt.UnixMilli(), "ended_at_ms": now.UnixMilli(), "rta_ms": now.Sub(company.RunStartedAt).Milliseconds(),
-		"attended_ms": attended, "terminal_seq": companyRevision.RunLogSequence, "payout": terms, "tier": company.Tier,
+		"attended_ms": attended, "pre_timer": company.RunPreTimer, "terminal_seq": companyRevision.RunLogSequence, "payout": terms, "tier": company.Tier,
 		"lifetime_value": company.LifetimeValue.String(), "ledger_fact_kinds": sortedBoolKeys(company.LedgerFactKinds), "executed_routes": executedRoutes, "assisted": assisted})
 	startedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": newCompany.RunSeq}, "started_at_ms": now.UnixMilli(), "assisted": map[string]bool{"commons": false, "advisor": founder.AdvisorMode}})
 	advancedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType, "reputation_delta": terms.ReputationDelta, "route_knowledge": terms.RouteKnowledge, "occurred_at_ms": now.UnixMilli()})
 	receipt, _ := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": "applied", "applied_count": 1, "receipt": map[string]any{"changes": []any{}}, "new_revision": companyRevision.Number + 2, "founder_revision": founderRevision.Number + 1, "evaluated_at": now.Format(time.RFC3339Nano), "snapshot": wireSnapshot(newCompany)})
 	endedEvents := append([]save.EventWrite(nil), endedPrefix...)
 	endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventRunEnded, SchemaVersion: 1, IntentID: request.IntentID, Payload: endedPayload})
-	return save.ExitDecision{Outcome: save.IntentApplied, Receipt: receipt, FinalCompanyState: company, NewCompanyState: newCompany,
+	return save.ExitDecision{Outcome: save.IntentApplied, Receipt: receipt, FinalCompanyState: company, NewCompanyState: newCompany, NewConstantsHash: s.currentConstantsHash,
 		FounderEvents:      []save.EventWrite{{Kind: save.EventFounderAdvanced, SchemaVersion: 1, IntentID: request.IntentID, Payload: advancedPayload}},
 		CompanyEndedEvents: endedEvents, CompanyStartedEvents: []save.EventWrite{{Kind: save.EventRunStarted, SchemaVersion: 1, IntentID: request.IntentID, Payload: startedPayload}}}, nil
 }

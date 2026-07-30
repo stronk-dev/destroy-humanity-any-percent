@@ -582,6 +582,7 @@ type eventRunEnded struct {
 	EndedAtMS       int64              `json:"ended_at_ms"`
 	RTAMS           int64              `json:"rta_ms"`
 	AttendedMS      int64              `json:"attended_ms"`
+	PreTimer        bool               `json:"pre_timer"`
 	TerminalSeq     int64              `json:"terminal_seq"`
 	Payout          eventPrestigeTerms `json:"payout"`
 	Tier            int64              `json:"tier"`
