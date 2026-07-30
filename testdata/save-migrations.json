@@ -1,5 +1,5 @@
 {
-  "corpus_version": 7,
+  "corpus_version": 8,
   "cases": [
     {
       "name": "company v1 balances to v5 canonical route envelope",
@@ -229,6 +229,64 @@
         "route_knowledge_balance": 25, "hints_unlocked": [],
         "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0,
         "compact_solidarity_samples": []
+      }
+    },
+    {
+      "name": "company v9 gains faction defaults",
+      "from_version": 9,
+      "scope": "company",
+      "migration_baseline": "2026-07-30T12:00:00Z",
+      "input": {
+        "balances": {"company.cash": "9e0"}, "generators": {"generator.example": 10},
+        "evaluated_through": "2026-07-30T12:00:00Z", "compute_credit_ms": 0,
+        "manual_token_milli": 50000, "manual_token_refilled_at": "2026-07-30T12:00:00Z",
+        "gates_crossed": {}, "run_seq": 2, "doctrines_by_transition": {}, "structure_id": "",
+        "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [], "route_knowledge_balance": 0, "hints_unlocked": [],
+        "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0, "compact_solidarity_samples": [],
+        "tier": 2, "lifetime_value": "9e0", "offer_state": null, "run_started_at_ms": 1785412800000,
+        "offline_spans": [], "reputation_level": 0, "reputation_unlock_ppm": 0, "network_slots": [],
+        "clout_lifetime": 0, "soul": 0, "age_ms": 0, "notoriety": 0, "advisor_mode": false, "exit_history": [],
+        "run_pre_timer": false, "collapsed_offline_ms": 0
+      },
+      "expect_v5": {
+        "balances": {"company.cash": "9e0"}, "generators": {"generator.example": 10},
+        "evaluated_through": "2026-07-30T12:00:00Z", "compute_credit_ms": 0,
+        "manual_token_milli": 50000, "manual_token_refilled_at": "2026-07-30T12:00:00Z",
+        "gates_crossed": {}, "run_seq": 2, "doctrines_by_transition": {}, "structure_id": "",
+        "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [], "route_knowledge_balance": 0, "hints_unlocked": [],
+        "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0, "compact_solidarity_samples": [],
+        "tier": 2, "lifetime_value": "9e0", "offer_state": null, "run_started_at_ms": 1785412800000,
+        "offline_spans": [], "reputation_level": 0, "reputation_unlock_ppm": 0, "network_slots": [],
+        "clout_lifetime": 0, "soul": 0, "age_ms": 0, "notoriety": 0, "advisor_mode": false, "exit_history": []
+      }
+    },
+    {
+      "name": "founder v9 excludes faction state",
+      "from_version": 9,
+      "scope": "founder",
+      "migration_baseline": "2026-07-30T12:00:00Z",
+      "input": {
+        "balances": {"founder.reputation": "0"}, "generators": {},
+        "evaluated_through": "2026-07-30T12:00:00Z", "compute_credit_ms": 0,
+        "manual_token_milli": 0, "manual_token_refilled_at": "2026-07-30T12:00:00Z",
+        "gates_crossed": {}, "run_seq": 0, "doctrines_by_transition": {}, "structure_id": "",
+        "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [], "route_knowledge_balance": 0, "hints_unlocked": [],
+        "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0, "compact_solidarity_samples": [],
+        "tier": 0, "lifetime_value": "0", "offer_state": null, "run_started_at_ms": 0,
+        "offline_spans": [], "reputation_level": 4, "reputation_unlock_ppm": 0, "network_slots": [],
+        "clout_lifetime": 0, "soul": 0, "age_ms": 0, "notoriety": 0, "advisor_mode": false, "exit_history": [],
+        "run_pre_timer": false, "collapsed_offline_ms": 0
+      },
+      "expect_v5": {
+        "balances": {"founder.reputation": "0"}, "generators": {},
+        "evaluated_through": "2026-07-30T12:00:00Z", "compute_credit_ms": 0,
+        "manual_token_milli": 0, "manual_token_refilled_at": "2026-07-30T12:00:00Z",
+        "gates_crossed": {}, "run_seq": 0, "doctrines_by_transition": {}, "structure_id": "",
+        "ledger_fact_kinds": [], "meter_bands": {}, "region_traits": [], "route_knowledge_balance": 0, "hints_unlocked": [],
+        "compact_member": false, "compact_tithe_ppm": 0, "compact_solidarity_ppm": 0, "compact_solidarity_samples": [],
+        "tier": 0, "lifetime_value": "0", "offer_state": null, "run_started_at_ms": 0,
+        "offline_spans": [], "reputation_level": 4, "reputation_unlock_ppm": 0, "network_slots": [],
+        "clout_lifetime": 0, "soul": 0, "age_ms": 0, "notoriety": 0, "advisor_mode": false, "exit_history": []
       }
     }
   ]

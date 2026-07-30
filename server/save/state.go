@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	CurrentVersion           = 9
+	CurrentVersion           = 10
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
 )
@@ -62,6 +62,14 @@ type State struct {
 	Notoriety             int64
 	AdvisorMode           bool
 	ExitHistory           []ExitRecord
+	FactionID             string
+	IncorporatedAt        time.Time
+	StockUnits            int64
+	StockProgressMS       int64
+	ConsumedStockUnits    int64
+	// FactionStockResource is derived from FactionID and the pinned catalog at
+	// runtime. It is intentionally not persisted as a second source of truth.
+	FactionStockResource string
 }
 
 type CompactSample struct {
@@ -168,6 +176,15 @@ type stateV9 struct {
 	CollapsedOfflineMS int64 `json:"collapsed_offline_ms"`
 }
 
+type stateV10 struct {
+	stateV9
+	FactionID          *string `json:"faction_id"`
+	IncorporatedAtMS   *int64  `json:"incorporated_at_ms"`
+	StockUnits         int64   `json:"stock_units"`
+	StockProgressMS    int64   `json:"stock_progress_ms"`
+	ConsumedStockUnits int64   `json:"consumed_stock_units"`
+}
+
 type rawExitOfferState struct {
 	OfferID     string          `json:"offer_id"`
 	ExitType    string          `json:"exit_type"`
@@ -258,6 +275,9 @@ func EncodeState(state *State) ([]byte, error) {
 	if err := validatePrestigeState(&normalized, normalized.Ledger.Scope()); err != nil {
 		return nil, err
 	}
+	if err := validateFactionState(&normalized, normalized.Ledger.Scope()); err != nil {
+		return nil, err
+	}
 	cursor, err := formatCursor(state.EvaluatedThrough)
 	if err != nil {
 		return nil, err
@@ -269,7 +289,7 @@ func EncodeState(state *State) ([]byte, error) {
 	if state.ManualTokenRefilledAt.After(state.EvaluatedThrough) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
-	encoded, err := json.Marshal(stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
+	encoded, err := json.Marshal(stateV10{stateV9: stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
 		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: cloneBoolMap(normalized.GatesCrossed), RunSeq: normalized.RunSeq,
@@ -285,7 +305,9 @@ func EncodeState(state *State) ([]byte, error) {
 		NetworkSlots: cloneNetworkSlots(normalized.NetworkSlots), CloutLifetime: normalized.CloutLifetime,
 		Soul: normalized.Soul, AgeMS: normalized.AgeMS, Notoriety: normalized.Notoriety,
 		AdvisorMode: normalized.AdvisorMode, ExitHistory: encodeExitHistory(normalized.ExitHistory)},
-		RunPreTimer: normalized.RunPreTimer}, CollapsedOfflineMS: normalized.CollapsedOfflineMS})
+		RunPreTimer: normalized.RunPreTimer}, CollapsedOfflineMS: normalized.CollapsedOfflineMS},
+		FactionID: optionalString(normalized.FactionID), IncorporatedAtMS: optionalTimeMS(normalized.IncorporatedAt),
+		StockUnits: normalized.StockUnits, StockProgressMS: normalized.StockProgressMS, ConsumedStockUnits: normalized.ConsumedStockUnits})
 	if err != nil {
 		return nil, fmt.Errorf("%w: encode: %v", ErrInvalidState, err)
 	}
@@ -303,7 +325,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
 	}
 
-	var source stateV9
+	var source stateV10
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -313,7 +335,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err != nil {
 			return nil, fmt.Errorf("%w: version-1 migration baseline: %v", ErrInvalidState, err)
 		}
-		source.stateV8.stateV7.stateV6.stateV5 = stateV5{
+		source.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
 			Balances: legacy.Balances, Generators: zeroGeneratorCounts(catalog, scope), EvaluatedThrough: cursor,
 		}
 	} else if version == 2 {
@@ -321,13 +343,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV8.stateV7.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
+		source.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
 	} else if version < 5 {
 		var previous stateV4
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV8.stateV7.stateV6.stateV5 = stateV5{
+		source.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
 			Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough,
 			ComputeCreditMS: previous.ComputeCreditMS, ManualTokenMilli: previous.ManualTokenMilli,
 			ManualTokenRefilledAt: previous.ManualTokenRefilledAt,
@@ -337,19 +359,23 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV8.stateV7.stateV6.stateV5 = previous
+		source.stateV9.stateV8.stateV7.stateV6.stateV5 = previous
 	} else if version == 6 {
 		var previous stateV6
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV8.stateV7.stateV6 = previous
+		source.stateV9.stateV8.stateV7.stateV6 = previous
 	} else if version == 7 {
-		if err := decodeState(data, &source.stateV8.stateV7); err != nil {
+		if err := decodeState(data, &source.stateV9.stateV8.stateV7); err != nil {
 			return nil, err
 		}
 	} else if version == 8 {
-		if err := decodeState(data, &source.stateV8); err != nil {
+		if err := decodeState(data, &source.stateV9.stateV8); err != nil {
+			return nil, err
+		}
+	} else if version == 9 {
+		if err := decodeState(data, &source.stateV9); err != nil {
 			return nil, err
 		}
 	} else if err := decodeState(data, &source); err != nil {
@@ -442,6 +468,17 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		ReputationUnlockPPM: source.ReputationUnlockPPM, NetworkSlots: cloneNetworkSlots(source.NetworkSlots),
 		CloutLifetime: source.CloutLifetime, Soul: source.Soul, AgeMS: source.AgeMS,
 		Notoriety: source.Notoriety, AdvisorMode: source.AdvisorMode,
+		StockUnits: source.StockUnits, StockProgressMS: source.StockProgressMS,
+		ConsumedStockUnits: source.ConsumedStockUnits,
+	}
+	if source.FactionID != nil {
+		state.FactionID = *source.FactionID
+	}
+	if source.IncorporatedAtMS != nil {
+		state.IncorporatedAt, err = exactMSToTime(*source.IncorporatedAtMS)
+		if err != nil || state.IncorporatedAt.IsZero() {
+			return nil, fmt.Errorf("%w: incorporated_at_ms", ErrInvalidState)
+		}
 	}
 	state.LifetimeValue, err = decimal.ParseCanonical(source.LifetimeValue)
 	if err != nil {
@@ -483,7 +520,51 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if err := validatePrestigeState(state, scope); err != nil {
 		return nil, err
 	}
+	if err := validateFactionState(state, scope); err != nil {
+		return nil, err
+	}
 	return state, nil
+}
+
+func validateFactionState(state *State, scope economy.Scope) error {
+	if state.StockUnits < 0 || state.StockUnits > decimal.MaxExactInteger ||
+		state.StockProgressMS < 0 || state.StockProgressMS > decimal.MaxExactInteger ||
+		state.ConsumedStockUnits < 0 || state.ConsumedStockUnits > decimal.MaxExactInteger {
+		return fmt.Errorf("%w: faction stock values outside their exact domains", ErrInvalidState)
+	}
+	if scope != economy.ScopeCompany {
+		if state.FactionID != "" || !state.IncorporatedAt.IsZero() || state.StockUnits != 0 || state.StockProgressMS != 0 || state.ConsumedStockUnits != 0 {
+			return fmt.Errorf("%w: company faction state leaked outside company scope", ErrInvalidState)
+		}
+		return nil
+	}
+	if state.FactionID == "" {
+		if !state.IncorporatedAt.IsZero() || state.StockUnits != 0 || state.StockProgressMS != 0 || state.ConsumedStockUnits != 0 {
+			return fmt.Errorf("%w: stock state exists before incorporation", ErrInvalidState)
+		}
+		return nil
+	}
+	if !stateMechanicalIDPattern.MatchString(state.FactionID) || state.IncorporatedAt.IsZero() ||
+		!isCanonicalMillisecond(state.IncorporatedAt) || state.IncorporatedAt.After(state.EvaluatedThrough) {
+		return fmt.Errorf("%w: invalid faction incorporation", ErrInvalidState)
+	}
+	return nil
+}
+
+func optionalString(value string) *string {
+	if value == "" {
+		return nil
+	}
+	copyValue := value
+	return &copyValue
+}
+
+func optionalTimeMS(value time.Time) *int64 {
+	if value.IsZero() {
+		return nil
+	}
+	milliseconds := value.UnixMilli()
+	return &milliseconds
 }
 
 func validatePrestigeState(state *State, scope economy.Scope) error {

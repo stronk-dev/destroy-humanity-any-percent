@@ -51,6 +51,8 @@ const (
 	EventRunEnded                  EventKind = "run_ended"
 	EventRunStarted                EventKind = "run_started"
 	EventFounderAdvanced           EventKind = "founder_advanced"
+	EventIncorporated              EventKind = "incorporated"
+	EventFactionStockSaturated     EventKind = "faction_stock_saturated"
 )
 
 type EventWrite struct {
@@ -564,6 +566,30 @@ func validateEventPayload(event EventWrite) error {
 			payload.ReputationDelta > decimal.MaxExactInteger || payload.RouteKnowledge < 0 || payload.RouteKnowledge > decimal.MaxExactInteger ||
 			payload.OccurredAtMS <= 0 || payload.OccurredAtMS > decimal.MaxExactInteger {
 			return fmt.Errorf("%w: invalid founder_advanced payload", ErrInvalidStream)
+		}
+	case EventIncorporated:
+		var payload struct {
+			FounderID         string     `json:"founder_id"`
+			RunID             routeRunID `json:"run_id"`
+			FactionID         string     `json:"faction_id"`
+			StockResource     string     `json:"stock_resource"`
+			IncorporatedAtMS  int64      `json:"incorporated_at_ms"`
+			CompactAutoSigned bool       `json:"compact_auto_signed"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) ||
+			!validRouteRunID(payload.RunID) || !mechanicalIDPattern.MatchString(payload.FactionID) ||
+			!mechanicalIDPattern.MatchString(payload.StockResource) || payload.IncorporatedAtMS <= 0 || payload.IncorporatedAtMS > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid incorporated payload", ErrInvalidStream)
+		}
+	case EventFactionStockSaturated:
+		var payload struct {
+			FactionID     string `json:"faction_id"`
+			StockResource string `json:"stock_resource"`
+			StockCap      int64  `json:"stock_cap"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !mechanicalIDPattern.MatchString(payload.FactionID) ||
+			!mechanicalIDPattern.MatchString(payload.StockResource) || payload.StockCap <= 0 || payload.StockCap > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid faction_stock_saturated payload", ErrInvalidStream)
 		}
 	default:
 		return fmt.Errorf("%w: unknown event kind %q", ErrInvalidStream, event.Kind)

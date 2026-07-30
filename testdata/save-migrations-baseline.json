@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "minimum_case_count": 9,
+  "minimum_case_count": 11,
   "required_case_names": [
     "company v1 balances to v5 canonical route envelope",
     "company v2 production state to v5 route defaults",
@@ -10,6 +10,8 @@
     "lying v4 evaluated cursor is rejected",
     "lying v4 manual cursor is rejected",
     "company v6 backfills pre-timer run start",
-    "founder v6 gains closed prestige defaults"
+    "founder v6 gains closed prestige defaults",
+    "company v9 gains faction defaults",
+    "founder v9 excludes faction state"
   ]
 }

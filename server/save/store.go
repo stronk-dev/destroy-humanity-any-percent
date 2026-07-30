@@ -67,6 +67,12 @@ type CatalogResolver interface {
 	Resolve(constantsHash string) (*economy.Catalog, bool)
 }
 
+// StatePolicyValidator lets catalog bundles enforce data-owned bounds without
+// making the persistence package import feature packages.
+type StatePolicyValidator interface {
+	ValidateState(constantsHash string, state *State) error
+}
+
 type Store struct {
 	db       *sql.DB
 	catalogs CatalogResolver
@@ -356,6 +362,11 @@ func (s *Store) validatedState(hash string, scope economy.Scope, state *State) (
 	catalog, ok := s.catalogs.Resolve(hash)
 	if !ok {
 		return nil, fmt.Errorf("%w: unknown catalog %s", ErrInvalidState, hash)
+	}
+	if validator, ok := s.catalogs.(StatePolicyValidator); ok {
+		if err := validator.ValidateState(hash, state); err != nil {
+			return nil, fmt.Errorf("%w: catalog state policy: %v", ErrInvalidState, err)
+		}
 	}
 	encoded, err := EncodeState(state)
 	if err != nil {

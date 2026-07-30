@@ -78,6 +78,21 @@ func TestValidateCommonsEventPayloads(t *testing.T) {
 	}
 }
 
+func TestValidateFactionEventPayloads(t *testing.T) {
+	run := `{"company_stream_id":"11111111-1111-4111-8111-111111111111","run_seq":1}`
+	events := []EventWrite{
+		{Kind: EventIncorporated, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"founder_id":"22222222-2222-4222-8222-222222222222","run_id":` + run + `,"faction_id":"open_source","stock_resource":"libraries","incorporated_at_ms":1785412800000,"compact_auto_signed":true}`)},
+		{Kind: EventFactionStockSaturated, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"faction_id":"open_source","stock_resource":"libraries","stock_cap":100000}`)},
+	}
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: events}, testIntentID); err != nil {
+		t.Fatal(err)
+	}
+	events[1].Payload = json.RawMessage(`{"faction_id":"open_source","stock_resource":"libraries","stock_cap":0}`)
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: events}, testIntentID); !errors.Is(err, ErrInvalidStream) {
+		t.Fatalf("invalid faction event error=%v", err)
+	}
+}
+
 func TestUUIDV7AndRequestHashGrammar(t *testing.T) {
 	if !uuidV7Pattern.MatchString(testIntentID) {
 		t.Fatal("valid UUIDv7 rejected")

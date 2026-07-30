@@ -95,7 +95,7 @@ func testState(t *testing.T) *State {
 	}
 }
 
-func TestStateV9RoundTrip(t *testing.T) {
+func TestStateV10RoundTrip(t *testing.T) {
 	state := testState(t)
 	state.CompactMember = true
 	state.CompactTithePPM = 100_000
@@ -107,6 +107,11 @@ func TestStateV9RoundTrip(t *testing.T) {
 	state.RunPreTimer = true
 	state.OfflineSpans = []OfflineSpan{{From: testCursor.Add(-30 * time.Minute), To: testCursor.Add(-20 * time.Minute)}}
 	state.CollapsedOfflineMS = 1_800_000
+	state.FactionID = "open_source"
+	state.IncorporatedAt = testCursor.Add(-45 * time.Minute)
+	state.StockUnits = 42
+	state.StockProgressMS = 12_345
+	state.ConsumedStockUnits = 7
 	encoded, err := EncodeState(state)
 	if err != nil {
 		t.Fatal(err)
@@ -138,6 +143,10 @@ func TestStateV9RoundTrip(t *testing.T) {
 		len(restored.OfflineSpans) != 1 || !restored.OfflineSpans[0].To.Equal(testCursor.Add(-20*time.Minute)) || restored.CollapsedOfflineMS != 1_800_000 {
 		t.Fatalf("restored prestige state = %+v", restored)
 	}
+	if restored.FactionID != "open_source" || !restored.IncorporatedAt.Equal(testCursor.Add(-45*time.Minute)) ||
+		restored.StockUnits != 42 || restored.StockProgressMS != 12_345 || restored.ConsumedStockUnits != 7 {
+		t.Fatalf("restored faction state = %+v", restored)
+	}
 }
 
 func TestStateV8MigratesCollapsedOfflineAccumulator(t *testing.T) {
@@ -153,6 +162,11 @@ func TestStateV8MigratesCollapsedOfflineAccumulator(t *testing.T) {
 		t.Fatal(err)
 	}
 	delete(previous, "collapsed_offline_ms")
+	delete(previous, "faction_id")
+	delete(previous, "incorporated_at_ms")
+	delete(previous, "stock_units")
+	delete(previous, "stock_progress_ms")
+	delete(previous, "consumed_stock_units")
 	v8, err := json.Marshal(previous)
 	if err != nil {
 		t.Fatal(err)
@@ -194,7 +208,7 @@ func TestSaveMigrationCorpus(t *testing.T) {
 	if err := json.Unmarshal(baselineData, &baseline); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.CorpusVersion != 7 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
+	if fixture.CorpusVersion != 8 || baseline.SchemaVersion != 1 || baseline.MinimumCaseCount < 1 ||
 		len(fixture.Cases) != baseline.MinimumCaseCount {
 		t.Fatalf("migration corpus version=%d cases=%d baseline=%+v", fixture.CorpusVersion, len(fixture.Cases), baseline)
 	}
@@ -256,6 +270,11 @@ func TestSaveMigrationCorpus(t *testing.T) {
 				want.(map[string]any)["run_pre_timer"] = false
 			}
 			want.(map[string]any)["collapsed_offline_ms"] = float64(0)
+			want.(map[string]any)["faction_id"] = nil
+			want.(map[string]any)["incorporated_at_ms"] = nil
+			want.(map[string]any)["stock_units"] = float64(0)
+			want.(map[string]any)["stock_progress_ms"] = float64(0)
+			want.(map[string]any)["consumed_stock_units"] = float64(0)
 			if !equalJSON(got, want) {
 				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV5)
 			}
@@ -263,6 +282,46 @@ func TestSaveMigrationCorpus(t *testing.T) {
 				t.Fatal(err)
 			}
 		})
+	}
+}
+
+func TestFactionStateScopeAndPairing(t *testing.T) {
+	tests := []struct {
+		name   string
+		mutate func(*State)
+	}{
+		{name: "stock before incorporation", mutate: func(state *State) { state.StockUnits = 1 }},
+		{name: "id without time", mutate: func(state *State) { state.FactionID = "open_source" }},
+		{name: "time without id", mutate: func(state *State) { state.IncorporatedAt = testCursor }},
+		{name: "future incorporation", mutate: func(state *State) {
+			state.FactionID, state.IncorporatedAt = "open_source", testCursor.Add(time.Millisecond)
+		}},
+		{name: "noncanonical incorporation", mutate: func(state *State) {
+			state.FactionID, state.IncorporatedAt = "open_source", testCursor.Add(time.Nanosecond)
+		}},
+		{name: "negative stock", mutate: func(state *State) {
+			state.FactionID, state.IncorporatedAt, state.StockUnits = "open_source", testCursor, -1
+		}},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			state := testState(t)
+			test.mutate(state)
+			if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
+				t.Fatalf("error=%v", err)
+			}
+		})
+	}
+
+	ledger, err := economy.RestoreLedger(stateCatalog(t), economy.ScopeFounder, map[string]string{"founder.reputation": "0"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	founder := &State{Ledger: ledger, GeneratorCounts: map[string]int64{}, EvaluatedThrough: testCursor, ManualTokenRefilledAt: testCursor,
+		GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{}, LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{},
+		CompactSamples: []CompactSample{}, LifetimeValue: decimal.Zero, OfflineSpans: []OfflineSpan{}, NetworkSlots: []NetworkSlot{}, ExitHistory: []ExitRecord{}, FactionID: "open_source", IncorporatedAt: testCursor}
+	if _, err := EncodeState(founder); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("founder faction leak error=%v", err)
 	}
 }
 

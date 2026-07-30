@@ -16,9 +16,10 @@ var (
 )
 
 type Variables struct {
-	Commons  bool `json:"commons"`
-	Advisor  bool `json:"advisor"`
-	Glitched bool `json:"glitched"`
+	Commons  bool    `json:"commons"`
+	Advisor  bool    `json:"advisor"`
+	Glitched bool    `json:"glitched"`
+	Faction  *string `json:"faction"`
 }
 
 type VerifiedRun struct {
@@ -49,7 +50,7 @@ type Cursor struct {
 }
 
 func (repository *Repository) ProjectVerifiedRun(ctx context.Context, run VerifiedRun) (bool, error) {
-	if !uuidPattern.MatchString(run.EventID) || !uuidPattern.MatchString(run.FounderID) || run.RunID == "" || !mechanicalPattern.MatchString(run.CategoryID) ||
+	if !uuidPattern.MatchString(run.EventID) || !uuidPattern.MatchString(run.FounderID) || run.RunID == "" || !mechanicalPattern.MatchString(run.CategoryID) || !validVariables(run.Variables) ||
 		run.EpochID < 1 || run.MandateLevel < 0 || run.MandateLevel > 20 || run.VerifiedAt.IsZero() || (run.KeyMS == nil) == (run.KeyInt == nil) {
 		return false, ErrInvalidEpoch
 	}
@@ -111,7 +112,7 @@ func (repository *Repository) ProjectVerifiedRun(ctx context.Context, run Verifi
 }
 
 func (repository *Repository) TimeBoard(ctx context.Context, categoryID string, variables Variables, epochID int64, mandateLevel, limit int, after *Cursor) ([]BoardEntry, error) {
-	if !mechanicalPattern.MatchString(categoryID) || epochID < 1 || mandateLevel < 0 || mandateLevel > 20 || limit < 1 || limit > 100 || after != nil && after.RunID == "" {
+	if !mechanicalPattern.MatchString(categoryID) || !validVariables(variables) || epochID < 1 || mandateLevel < 0 || mandateLevel > 20 || limit < 1 || limit > 100 || after != nil && after.RunID == "" {
 		return nil, ErrInvalidEpoch
 	}
 	encoded, _ := json.Marshal(variables)
@@ -149,7 +150,7 @@ func (repository *Repository) TimeBoard(ctx context.Context, categoryID string, 
 }
 
 func (repository *Repository) CountBoard(ctx context.Context, categoryID string, variables Variables, epochID int64, mandateLevel, limit int, after *Cursor) ([]BoardEntry, error) {
-	if !mechanicalPattern.MatchString(categoryID) || epochID < 1 || mandateLevel < 0 || mandateLevel > 20 || limit < 1 || limit > 100 || after != nil && after.RunID == "" {
+	if !mechanicalPattern.MatchString(categoryID) || !validVariables(variables) || epochID < 1 || mandateLevel < 0 || mandateLevel > 20 || limit < 1 || limit > 100 || after != nil && after.RunID == "" {
 		return nil, ErrInvalidEpoch
 	}
 	encoded, _ := json.Marshal(variables)
@@ -181,4 +182,8 @@ func (repository *Repository) CountBoard(ctx context.Context, categoryID string,
 		entries = append(entries, entry)
 	}
 	return entries, rows.Err()
+}
+
+func validVariables(variables Variables) bool {
+	return variables.Faction == nil || mechanicalPattern.MatchString(*variables.Faction)
 }
