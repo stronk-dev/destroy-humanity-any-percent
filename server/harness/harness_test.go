@@ -133,6 +133,9 @@ func TestBaselineOnlyRewriteFailsChangeGuard(t *testing.T) {
 	if err := ValidateBaselineCommit([]string{baselinePath}, []string{"balance/prestige/phase0.json"}, "BALANCE-CHANGE: Prestige retune"); err != nil {
 		t.Fatalf("Prestige input was not recognized: %v", err)
 	}
+	if err := ValidateBaselineCommit([]string{baselinePath}, []string{"balance/guilds/phase0.json"}, "BALANCE-CHANGE: Guild retune"); err != nil {
+		t.Fatalf("Guild input was not recognized: %v", err)
+	}
 	if err := ValidateBaselineCommit([]string{baselinePath, goldenPath}, nil, "CONSTANTS-IDENTITY: repair hash domain"); err != nil {
 		t.Fatal(err)
 	}
