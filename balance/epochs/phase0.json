@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
-  "current_epoch_id": 2,
+  "current_epoch_id": 3,
   "artifacts": [
     { "name": "commons", "path": "balance/commons/phase0.json" },
     { "name": "economy", "path": "balance/catalogs/phase0.json" },
     { "name": "prestige", "path": "balance/prestige/phase0.json" },
     { "name": "routes", "path": "balance/routes/phase0.json" },
-    { "name": "factions", "path": "balance/factions/phase0.json" }
+    { "name": "factions", "path": "balance/factions/phase0.json" },
+    { "name": "guilds", "path": "balance/guilds/phase0.json" }
   ],
   "epochs": [
     {
@@ -24,6 +25,14 @@
       "accepted_hashes": [
         "sha256:0ca091775f5cc9d149b1afb8d10ef2c68906be08f0e2c8f7184001d60c08e509",
         "sha256:2ad70ae19dd50be278094debf5908ce68eb072dc132dbf7e62e05f282330166b"
+      ]
+    },
+    {
+      "epoch_id": 3,
+      "name": "Guild Foundation",
+      "changelog_ref": "changelog/epoch-3.md",
+      "accepted_hashes": [
+        "sha256:7b46452c3cfe62d74bc6b48c8526cabe85a71bf439b6de0bc946e543fd7c0764"
       ]
     }
   ]
