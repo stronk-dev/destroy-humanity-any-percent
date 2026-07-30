@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck build-client vectors vectors-check formulas formulas-check harness harness-check commons-harness-check harness-update vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck build-client vectors vectors-check formulas formulas-check harness harness-check commons-harness-check harness-update vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-server verify-client verify
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -78,8 +78,11 @@ verify-commons-boundary:
 verify-client-boundary:
 	node client/tools/verify-shell-boundaries.mjs
 
+verify-kernel-version:
+	node client/tools/verify-kernel-version.mjs
+
 verify-server: vet test-go formulas-check harness-check verify-routes-boundary verify-commons-boundary
 
-verify-client: typecheck build-client test-client verify-client-boundary
+verify-client: typecheck build-client test-client verify-client-boundary verify-kernel-version
 
 verify: verify-server verify-client verify-schema test-browser

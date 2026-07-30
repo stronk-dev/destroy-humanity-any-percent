@@ -28,11 +28,24 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	if err := Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `TRUNCATE save_streams CASCADE`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,save_streams CASCADE`); err != nil {
 		t.Fatal(err)
 	}
 	catalog := stateCatalog(t)
 	hash := ConstantsHash([]byte(stateCatalogJSON))
+	if _, err := db.Exec(`INSERT INTO catalog_sets(constants_hash) VALUES($1)`, hash); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`INSERT INTO catalog_artifacts(constants_hash,artifact_name,bytes) VALUES($1,'economy',$2)`, hash, []byte(stateCatalogJSON)); err != nil {
+		t.Fatal(err)
+	}
+	var epochID int64
+	if err := db.QueryRow(`INSERT INTO epochs(name,started_at,changelog_ref) VALUES('Phase 0',now(),'changelog/epoch-1.md') RETURNING epoch_id`).Scan(&epochID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)`, epochID, hash); err != nil {
+		t.Fatal(err)
+	}
 	store, err := NewStore(db, catalogMap{hash: catalog}, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -47,6 +60,16 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	}
 	companyRevision, err := store.CreateStream(ctx, StreamKey{OwnerKind: OwnerFounder, OwnerID: ownerID, Scope: economy.ScopeCompany}, hash, companyState, WriteContext{Cause: "exit_test"})
 	if err != nil {
+		t.Fatal(err)
+	}
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := PinRunToCurrentEpochTx(ctx, tx, companyRevision.StreamID, ownerID, 1, hash); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.Commit(); err != nil {
 		t.Fatal(err)
 	}
 

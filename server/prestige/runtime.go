@@ -2,7 +2,6 @@ package prestige
 
 import (
 	"bytes"
-	"crypto/sha256"
 	"encoding/binary"
 	"encoding/json"
 	"errors"
@@ -14,6 +13,7 @@ import (
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/runidentity"
 	"cloud-clicker/server/save"
 )
 
@@ -231,8 +231,7 @@ func NewRunState(catalog *economy.Catalog, priorCompany, founder *save.State, no
 }
 
 func FounderSeed(founderID string, runSeq int64) uint64 {
-	digest := sha256.Sum256([]byte(founderID))
-	return binary.BigEndian.Uint64(digest[:8]) ^ uint64(runSeq)
+	return runidentity.Seed(founderID, runSeq)
 }
 
 func OfferID(founderID string, runSeq, tier, declineCount int64, at time.Time) string {

@@ -210,6 +210,9 @@ func (s *Store) applyIntent(
 	}
 	var runLogSequence int64
 	if scope == economy.ScopeCompany && len(canonicalPayload) != 0 {
+		if err := requireRunEpochTx(ctx, tx, streamID, state.RunSeq, revision.ConstantsHash); err != nil {
+			return IntentResult{}, err
+		}
 		runLogSequence, err = nextRunLogSequence(ctx, tx, streamID, state.RunSeq)
 		if err != nil {
 			return IntentResult{}, err

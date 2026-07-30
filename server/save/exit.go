@@ -149,6 +149,9 @@ func (s *Store) applyExitTransaction(
 	}
 	var runLogSequence int64
 	if len(canonicalPayload) != 0 {
+		if err := requireRunEpochTx(ctx, tx, companyStreamID, company.RunSeq, companyHash); err != nil {
+			return IntentResult{}, err
+		}
 		runLogSequence, err = nextRunLogSequence(ctx, tx, companyStreamID, company.RunSeq)
 		if err != nil {
 			return IntentResult{}, err
@@ -240,6 +243,11 @@ func (s *Store) applyExitTransaction(
 		return IntentResult{}, err
 	}
 	recorded = append(recorded, startedRecords...)
+	if runLogSequence != 0 {
+		if _, err := PinRunToCurrentEpochTx(ctx, tx, companyStreamID, ownerID, decision.NewCompanyState.RunSeq, companyHash); err != nil {
+			return IntentResult{}, err
+		}
+	}
 	if err := runExitFault(fault, "company_started_events"); err != nil {
 		return IntentResult{}, err
 	}

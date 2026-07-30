@@ -51,6 +51,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	hash := save.ConstantsHash(catalogBytes)
+	seedAccountEpoch(t, db, hash, catalogBytes)
 	resolver := integrationCatalogs{hash: catalog}
 	keys := SigningKeys{CurrentID: "test-current", Current: bytes.Repeat([]byte{0x42}, 32), PreviousID: "test-previous", Previous: bytes.Repeat([]byte{0x24}, 32)}
 	now := time.Date(2026, 7, 29, 12, 0, 0, 0, time.UTC)
@@ -209,6 +210,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	catalogBytes, _ := os.ReadFile("../../balance/catalogs/phase0.json")
 	catalog, _ := economy.LoadCatalog(catalogBytes)
 	hash := save.ConstantsHash(catalogBytes)
+	seedAccountEpoch(t, db, hash, catalogBytes)
 	resolver := integrationCatalogs{hash: catalog}
 	repository, err := NewRepository(db, resolver, hash, SigningKeys{CurrentID: "test", Current: bytes.Repeat([]byte{1}, 32)}, time.Now, nil)
 	if err != nil {
@@ -232,9 +234,26 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	}
 }
 
+func seedAccountEpoch(t *testing.T, db *sql.DB, hash string, artifact []byte) {
+	t.Helper()
+	if _, err := db.Exec(`INSERT INTO catalog_sets(constants_hash) VALUES($1)`, hash); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`INSERT INTO catalog_artifacts(constants_hash,artifact_name,bytes) VALUES($1,'economy',$2)`, hash, artifact); err != nil {
+		t.Fatal(err)
+	}
+	var epochID int64
+	if err := db.QueryRow(`INSERT INTO epochs(name,started_at,changelog_ref) VALUES('Phase 0',now(),'changelog/epoch-1.md') RETURNING epoch_id`).Scan(&epochID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)`, epochID, hash); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func truncateAccountIntegration(t *testing.T, db *sql.DB) {
 	t.Helper()
-	_, err := db.Exec(`TRUNCATE access_tokens,sessions,account_emails,account_founders,accounts,commons_recruitment_offers,commons_health_scopes,commons_member_samples,commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes,route_hint_projection_events,founder_route_state,founder_route_executions,route_projection_events,events,intent_records,save_revisions,save_streams CASCADE`)
+	_, err := db.Exec(`TRUNCATE epochs,catalog_sets,access_tokens,sessions,account_emails,account_founders,accounts,commons_recruitment_offers,commons_health_scopes,commons_member_samples,commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes,route_hint_projection_events,founder_route_state,founder_route_executions,route_projection_events,events,intent_records,save_revisions,save_streams CASCADE`)
 	if err != nil {
 		t.Fatal(err)
 	}

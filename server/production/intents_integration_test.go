@@ -2,6 +2,7 @@ package production
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"os"
@@ -63,7 +64,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err := save.Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `TRUNCATE commons_recruitment_offers,commons_health_scopes,commons_member_samples,commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes, route_hint_projection_events, founder_route_state, founder_route_executions, route_projection_events, events, intent_records, save_revisions, save_streams CASCADE`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,commons_recruitment_offers,commons_health_scopes,commons_member_samples,commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes, route_hint_projection_events, founder_route_state, founder_route_executions, route_projection_events, events, intent_records, save_revisions, save_streams CASCADE`); err != nil {
 		t.Fatal(err)
 	}
 	catalogBytes, err := os.ReadFile("../../balance/catalogs/phase0.json")
@@ -94,6 +95,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	seedProductionEpoch(t, db, hash, map[string][]byte{"economy": catalogBytes, "routes": routeBytes, "commons": commonsBytes})
 	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}}
 	store, err := save.NewStore(db, resolver, nil)
 	if err != nil {
@@ -124,6 +126,9 @@ func TestIntentServiceIntegration(t *testing.T) {
 		OwnerKind: save.OwnerFounder, OwnerID: "66666666-6666-4666-8666-666666666666", Scope: economy.ScopeCompany,
 	}, hash, state, save.WriteContext{Cause: "production.integration"})
 	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := store.PinRunToCurrentEpoch(ctx, revision.StreamID, "66666666-6666-4666-8666-666666666666", 1, hash); err != nil {
 		t.Fatal(err)
 	}
 	metrics := fakeInvariantMetrics{}
@@ -371,5 +376,24 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if metrics[string(InvariantAffordFallback)] != 1 || metrics[string(InvariantResidualClamp)] != 1 ||
 		metrics[string(InvariantResidualAbort)] != 1 {
 		t.Fatalf("invariant metrics=%+v", metrics)
+	}
+}
+
+func seedProductionEpoch(t *testing.T, db *sql.DB, hash string, artifacts map[string][]byte) {
+	t.Helper()
+	if _, err := db.Exec(`INSERT INTO catalog_sets(constants_hash) VALUES($1)`, hash); err != nil {
+		t.Fatal(err)
+	}
+	for name, data := range artifacts {
+		if _, err := db.Exec(`INSERT INTO catalog_artifacts(constants_hash,artifact_name,bytes) VALUES($1,$2,$3)`, hash, name, data); err != nil {
+			t.Fatal(err)
+		}
+	}
+	var epochID int64
+	if err := db.QueryRow(`INSERT INTO epochs(name,started_at,changelog_ref) VALUES('Phase 0',now(),'changelog/epoch-1.md') RETURNING epoch_id`).Scan(&epochID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)`, epochID, hash); err != nil {
+		t.Fatal(err)
 	}
 }

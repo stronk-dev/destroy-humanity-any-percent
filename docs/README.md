@@ -25,6 +25,8 @@ Implemented systems:
   boundary.
 - [Prestige and Exits](prestige-and-exits.md) — exact prestige arithmetic, deterministic offers,
   atomic Founder/Company Exit commits, server-derived timers, and new-run assembly.
+- [Leaderboards and Balance Epochs](leaderboards-and-epochs.md) — atomic run logs, immutable catalog
+  artifacts, run epoch pinning, exact competition ranks, world-first arbitration, and replay status.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.

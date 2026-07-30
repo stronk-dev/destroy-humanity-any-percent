@@ -471,6 +471,11 @@ func insertFounderStreams(ctx context.Context, tx *sql.Tx, founderID, constantsH
 		if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,1,$2,$3,$4)`, streamID, save.CurrentVersion, states[scope], constantsHash); err != nil {
 			return err
 		}
+		if scope == economy.ScopeCompany {
+			if _, err := save.PinRunToCurrentEpochTx(ctx, tx, streamID, founderID, 1, constantsHash); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }

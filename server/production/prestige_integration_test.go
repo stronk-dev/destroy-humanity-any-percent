@@ -33,7 +33,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err := save.Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `TRUNCATE save_streams CASCADE`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,save_streams CASCADE`); err != nil {
 		t.Fatal(err)
 	}
 	economyBytes, _ := os.ReadFile("../../balance/catalogs/phase0.json")
@@ -55,6 +55,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	seedProductionEpoch(t, db, hash, map[string][]byte{"economy": economyBytes, "routes": routeBytes, "prestige": prestigeBytes})
 	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}, prestige: map[string]*prestigecore.Policy{hash: policy}}
 	store, err := save.NewStore(db, resolver, nil)
 	if err != nil {
@@ -69,6 +70,9 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	t.Run("elective wind down", func(t *testing.T) {
 		owner := "01985555-1000-7000-8000-000000000001"
 		founderRevision, companyRevision := createPrestigeStreams(t, ctx, store, catalog, hash, owner, now, now.Add(-10*time.Minute), now, "0", decimal.New(8, 12), 1)
+		if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 1, hash); err != nil {
+			t.Fatal(err)
+		}
 		routePayload, _ := json.Marshal(map[string]any{"route_id": "route.nonprofit_wrapper_zip", "gate_id": "gate.t1_to_t2", "run_id": map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": 1}, "founder_id": owner})
 		if _, err := db.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,1,1,'route_executed',$2,$3,$4,$5)`, companyRevision.StreamID, "01985555-1000-7000-8000-000000000099", hash, now.Add(-time.Minute), routePayload); err != nil {
 			t.Fatal(err)
@@ -119,6 +123,9 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	t.Run("scripted first threshold", func(t *testing.T) {
 		owner := "01985555-2000-7000-8000-000000000002"
 		founderRevision, companyRevision := createPrestigeStreams(t, ctx, store, catalog, hash, owner, now, now.Add(-16*time.Minute), now.Add(-time.Second), "1e10", decimal.New(1, 12), 2)
+		if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 1, hash); err != nil {
+			t.Fatal(err)
+		}
 		request := []byte(`{"intent_id":"01985555-2001-7000-8000-000000000002","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`)
 		result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, request)
 		if err != nil || result.Replay {
@@ -147,6 +154,9 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	t.Run("offer preview remains a promise", func(t *testing.T) {
 		owner := "01985555-3000-7000-8000-000000000003"
 		founderRevision, companyRevision := createPrestigeStreams(t, ctx, store, catalog, hash, owner, now, now, now, "1e25", decimal.New(8, 12), 7)
+		if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 1, hash); err != nil {
+			t.Fatal(err)
+		}
 		cross := []byte(`{"intent_id":"01985555-3001-7000-8000-000000000003","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t7_to_t8","route_id":null}`)
 		if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, cross); err != nil || result.Replay {
 			t.Fatalf("cross=%+v err=%v", result, err)

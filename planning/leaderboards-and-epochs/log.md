@@ -26,3 +26,36 @@
 - Real-Postgres coverage proves ordered applied/rejected logging, byte-identical canonical payloads,
   replay non-duplication, terminal-sequence equality, and rollback when a fault is injected after
   the run-log insert but before the rest of the Exit commit.
+
+## 2026-07-29 — epoch identity and board storage
+
+- Added `kernel/VERSION` as the transition-semantics source of truth with fail-closed Go/TypeScript
+  parity checks. Run pins record this semver, build VCS detail, the accepted constants hash, and the
+  deterministic unsigned Founder/run seed.
+- Catalog sets/artifacts, accepted hash sets, closed/current epochs, and run pins are append-only
+  evidence. Database triggers reject historical updates/deletes. Mint closes the current epoch and
+  inserts the next epoch plus artifacts atomically; hotfix adds an accepted immutable hash.
+- Account creation pins run 1 inside its stream-creation transaction. Logged Company commands refuse
+  an absent/mismatched pin. Prestige pins run N+1 under a shared current-epoch lock in the same Exit
+  transaction as `run_started`, so a concurrent mint produces exactly one epoch assignment.
+- Implemented immutable verified-run projection, imported-Founder rejection before claim, separate
+  Commons/Advisor/Glitched variables, atomic partial-unique world-first arbitration, time and count
+  boards, competition ties, and keyset cursors. Real PostgreSQL asserts `1,1,3`, page continuity,
+  old-epoch queryability, and artifact immutability.
+- Migration review caught an attempted edit to already-applied migration 00013 while board tables
+  were still uncommitted. Board storage moved to append-only migration 00014; upgraded and fresh
+  databases now converge through the same history.
+- **DESIGN-GAP (blocks L2/L4 and final L1 archival):** `run_log` preserves canonical commands and
+  receipts, but neither L1 nor `run_started` preserves the immutable initial Company state (or a
+  sufficient Founder snapshot/reference). Run 2 includes Network-carried items and Reputation
+  starter effects, while historical save revisions are pruned. A verifier cannot reconstruct its
+  initial state from catalog bytes and seed alone. Do not invent an oracle or claim replay parity;
+  the RFC needs an executable initial-state/archive contract.
+- **DESIGN-GAP (blocks L7 catalog completion):** the RFC requires four literal canonical category
+  rows, but only names Any%/100%/Ethical%/Low%; the exact terminal predicates for the latter three
+  are not enumerated in accepted design. The closed predicate loader can land after those content
+  contracts are supplied; no plausible-sounding terminal rules were improvised.
+- Full `make verify` is green with the local PostgreSQL integration path: Go vet/tests, formula and
+  harness gates, strict TS/Svelte, production build, 6,422 client tests, schema/boundary checks, and
+  19,275 Chromium/Firefox/WebKit cases. The preceding save-v7 state-hash drift was regenerated and
+  committed separately under `BALANCE-CHANGE:`; pacing observations and balances did not move.
