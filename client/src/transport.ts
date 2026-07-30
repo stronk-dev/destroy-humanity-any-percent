@@ -38,8 +38,9 @@ function validatePayload(kind: TransportKind, payload: Record<string, unknown>, 
     return;
   }
   if (kind === "event") {
-    exact(payload, ["event_id", "kind", "rev", "payload"], "event payload");
+    exact(payload, ["event_id", "kind", "scope", "rev", "payload"], "event payload");
     if (typeof payload.event_id !== "string" || payload.event_id.length === 0 || typeof payload.kind !== "string" || !idPattern.test(payload.kind) ||
+        !["company", "founder"].includes(String(payload.scope)) ||
         !Number.isSafeInteger(payload.rev) || (payload.rev as number) < 1 || payload.rev !== envelopeRevision ||
         typeof payload.payload !== "object" || payload.payload === null || Array.isArray(payload.payload)) throw new SyntaxError("invalid event payload");
     return;

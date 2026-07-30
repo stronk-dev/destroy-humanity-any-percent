@@ -88,11 +88,13 @@ func validatePayload(envelope Envelope) error {
 		var payload struct {
 			EventID string          `json:"event_id"`
 			Kind    string          `json:"kind"`
+			Scope   string          `json:"scope"`
 			Rev     int64           `json:"rev"`
 			Payload json.RawMessage `json:"payload"`
 		}
 		if decodeExactPayload(envelope.Payload, &payload) != nil || payload.EventID == "" || !eventKindPattern.MatchString(payload.Kind) ||
-			payload.Rev < 1 || payload.Rev != envelope.Revision || !isJSONObject(payload.Payload) {
+			(payload.Scope != "company" && payload.Scope != "founder") || payload.Rev < 1 ||
+			payload.Rev != envelope.Revision || !isJSONObject(payload.Payload) {
 			return ErrInvalidPolicy
 		}
 	case "presence":

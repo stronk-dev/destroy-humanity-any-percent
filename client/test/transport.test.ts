@@ -34,7 +34,7 @@ describe("transport wire", () => {
   });
 
   it("binds event revision and object payloads", () => {
-    const event = { ...base, ch: "feed", rev: 4, kind: "event", payload: { event_id: "event-4", kind: "run.ended", rev: 4, payload: {} } };
+    const event = { ...base, ch: "feed", rev: 4, kind: "event", payload: { event_id: "event-4", kind: "run.ended", scope: "company", rev: 4, payload: {} } };
     expect(decodeTransportEnvelope(event)?.kind).toBe("event");
     expect(() => decodeTransportEnvelope({ ...event, payload: { ...event.payload, rev: 5 } })).toThrow(SyntaxError);
     expect(() => decodeTransportEnvelope({ ...event, payload: { ...event.payload, payload: [] } })).toThrow(SyntaxError);

@@ -12,7 +12,7 @@
   {
     "name": "feed_event",
     "valid": true,
-    "envelope": { "v": 1, "ch": "feed", "kind": "event", "rev": 9, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-9", "kind": "run.ended", "rev": 9, "payload": {} } }
+    "envelope": { "v": 1, "ch": "feed", "kind": "event", "rev": 9, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-9", "kind": "run.ended", "scope": "company", "rev": 9, "payload": {} } }
   },
   {
     "name": "guild_presence",
@@ -52,7 +52,7 @@
   {
     "name": "event_scalar_payload",
     "valid": false,
-    "envelope": { "v": 1, "ch": "feed", "kind": "event", "rev": 9, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-9", "kind": "run.ended", "rev": 9, "payload": 1 } }
+    "envelope": { "v": 1, "ch": "feed", "kind": "event", "rev": 9, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-9", "kind": "run.ended", "scope": "company", "rev": 9, "payload": 1 } }
   },
   {
     "name": "resync_with_duration",
@@ -62,6 +62,16 @@
   {
     "name": "unknown_channel",
     "valid": false,
-    "envelope": { "v": 1, "ch": "public", "kind": "event", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-1", "kind": "run.ended", "rev": 1, "payload": {} } }
+    "envelope": { "v": 1, "ch": "public", "kind": "event", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-1", "kind": "run.ended", "scope": "company", "rev": 1, "payload": {} } }
+  },
+  {
+    "name": "event_missing_scope",
+    "valid": false,
+    "envelope": { "v": 1, "ch": "player:founder", "kind": "event", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-1", "kind": "run.ended", "rev": 1, "payload": {} } }
+  },
+  {
+    "name": "event_unknown_scope",
+    "valid": false,
+    "envelope": { "v": 1, "ch": "player:founder", "kind": "event", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-1", "kind": "run.ended", "scope": "guild", "rev": 1, "payload": {} } }
   }
 ]

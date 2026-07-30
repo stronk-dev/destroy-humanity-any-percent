@@ -51,7 +51,7 @@ func TestWirePayloadAndChannelContractsAreClosed(t *testing.T) {
 	}{
 		{name: "company snapshot", channel: "player:founder", kind: "snapshot", rev: 7, payload: `{"scope":"company","rev":7,"state":{}}`, valid: true},
 		{name: "world snapshot", channel: "world", kind: "snapshot", rev: 8, payload: `{"scope":"world","rev":8,"state":{}}`, valid: true},
-		{name: "event", channel: "feed", kind: "event", rev: 9, payload: `{"event_id":"event-9","kind":"run.ended","rev":9,"payload":{}}`, valid: true},
+		{name: "event", channel: "feed", kind: "event", rev: 9, payload: `{"event_id":"event-9","kind":"run.ended","scope":"company","rev":9,"payload":{}}`, valid: true},
 		{name: "presence", channel: "guild:g", kind: "presence", rev: 0, payload: `{"joined":[],"left":[],"count":2}`, valid: true},
 		{name: "system", channel: "world", kind: "system", rev: 0, payload: `{"code":"server_restarting","resume_after_ms":15000}`, valid: true},
 		{name: "public receipt", channel: "world", kind: "receipt", rev: 1, payload: `{"outcome":"applied"}`},
@@ -59,9 +59,9 @@ func TestWirePayloadAndChannelContractsAreClosed(t *testing.T) {
 		{name: "revision mismatch", channel: "world", kind: "snapshot", rev: 8, payload: `{"scope":"world","rev":7,"state":{}}`},
 		{name: "scope mismatch", channel: "world", kind: "snapshot", rev: 8, payload: `{"scope":"company","rev":8,"state":{}}`},
 		{name: "unknown snapshot field", channel: "world", kind: "snapshot", rev: 8, payload: `{"scope":"world","rev":8,"state":{},"extra":true}`},
-		{name: "event payload scalar", channel: "feed", kind: "event", rev: 9, payload: `{"event_id":"event-9","kind":"run.ended","rev":9,"payload":1}`},
+		{name: "event payload scalar", channel: "feed", kind: "event", rev: 9, payload: `{"event_id":"event-9","kind":"run.ended","scope":"company","rev":9,"payload":1}`},
 		{name: "system extra duration", channel: "world", kind: "system", rev: 0, payload: `{"code":"resync_required","resume_after_ms":1}`},
-		{name: "unknown channel", channel: "public", kind: "event", rev: 1, payload: `{"event_id":"event-1","kind":"run.ended","rev":1,"payload":{}}`},
+		{name: "unknown channel", channel: "public", kind: "event", rev: 1, payload: `{"event_id":"event-1","kind":"run.ended","scope":"company","rev":1,"payload":{}}`},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
