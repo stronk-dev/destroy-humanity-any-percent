@@ -26,7 +26,8 @@ metadata rewrite path through the `epochs` table itself.
 identity. It names the exact artifact bundle and the hashes accepted by each epoch. The harness
 and runtime load that declaration through one strict `epochseed` authority; no composition site
 owns a parallel list. Scenario-owned economy/routes/commons paths must equal their manifest entries,
-and artifacts not executed by the harness (currently Prestige) still participate in its identity.
+and artifacts not executed by the harness (currently Prestige and factions) still participate in
+its identity.
 The history gate walks every commit after the seed: a correctness-only artifact change must append its
 resulting hash to the current epoch in the same commit, while a `BALANCE-CHANGE:` must append one
 new epoch and its numbered changelog. Hardcap reductions can never be hotfixes and require an
@@ -75,8 +76,8 @@ events, and the next run's continued play.
 
 ## Exact boards
 
-Verified rows carry three separate structural variables: Commons, Advisor, and Glitched. “Solo” is
-only the display name for Commons=false and Advisor=false. Imported Founders are rejected before a
+Verified rows carry four separate structural variables: Commons, Advisor, Glitched, and nullable
+Faction. “Solo” is only the display name for Commons=false and Advisor=false. Imported Founders are rejected before a
 projection claim commits, so they can never enter ranked storage.
 Runs recorded in `run_version_drift` are rejected at the same projection boundary.
 

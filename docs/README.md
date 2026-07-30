@@ -29,6 +29,8 @@ Implemented systems:
   artifacts, run epoch pinning, exact competition ranks, world-first arbitration, and replay status.
 - [WebSocket transport](transport.md) — strict outbound envelopes, literal limits, recovery history,
   drop-stale versus lossless queues, and server-side channel authorization.
+- [Factions and incorporation](factions.md) — four run-scoped faction identities, Tier-2
+  incorporation, Open Source Compact binding, and attended-time interdependence stock.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.

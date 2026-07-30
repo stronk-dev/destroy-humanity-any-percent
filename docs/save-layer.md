@@ -16,7 +16,7 @@ stale scalar subquery under PostgreSQL READ COMMITTED.
 
 ## State format
 
-Version 9 is strict JSON. It contains the economy, production, Routes, Commons, and Prestige fields
+Version 10 is strict JSON. It contains the economy, production, Routes, Commons, Prestige, and Faction fields
 described by their owning canonical docs; unknown or missing required fields remain invalid. A
 representative prefix is:
 
@@ -44,7 +44,12 @@ representative prefix is:
   "run_started_at_ms": 1785326400000,
   "run_pre_timer": false,
   "offline_spans": [],
-  "collapsed_offline_ms": 0
+  "collapsed_offline_ms": 0,
+  "faction_id": null,
+  "incorporated_at_ms": null,
+  "stock_units": 0,
+  "stock_progress_ms": 0,
+  "consumed_stock_units": 0
 }
 ```
 
@@ -78,11 +83,18 @@ have zero tithe, zero Solidarity, and no samples. Member samples are UTC whole-h
 bounded compliance and positive coverage no greater than one hour; they serialize in strictly
 increasing order. Leaving clears the complete window.
 
+Faction identity and interdependence stock are Company-only. An unincorporated run has null
+faction/time and all three stock integers at zero. An incorporated run stores a mechanical
+faction id, a canonical UTC whole-millisecond incorporation time no later than the evaluation
+cursor, non-negative stock units, the carried millisecond remainder, and received stock units.
+The stock resource is derived from the immutable faction catalog and is not persisted as a second
+source of truth. Catalog-aware persistence enforces the catalog cap and interval.
+
 `constants_hash` is `sha256:` plus the lowercase SHA-256 digest of a deterministically ordered,
 named artifact bundle. Each artifact name and byte length is framed before its exact bytes, so
 iteration and concatenation cannot make two bundles collide structurally. Phase-0 production
-binds the economy, Routes, and Commons catalogs. Saves resolve that immutable bundle before restoration;
-reformatting either catalog therefore changes its identity deliberately. Economy-only unit/store
+binds the Commons, economy, Prestige, Routes, and faction catalogs. Saves resolve that immutable
+bundle before restoration; reformatting any catalog therefore changes its identity deliberately. Economy-only unit/store
 fixtures retain the single-artifact helper where no Commons policy participates.
 
 The economy package exposes `RestoreLedger` as a validated constructor, not a balance setter.
@@ -106,7 +118,9 @@ empty non-member Compact state. Pre-v7 Company saves backfill `run_started_at_ms
 authoritative `evaluated_through` cursor and set `run_pre_timer=true`; the marker preserves
 playability while excluding those historical runs from time ranking. V8 saves initialize
 `collapsed_offline_ms` to zero; V9 moves evicted offline-span durations into that exact integer
-accumulator so bounded history does not alter Attended Time. The checked-in
+accumulator so bounded history does not alter Attended Time. V10 adds null faction identity and
+zero stock state in both Company and Founder migration fixtures; Founder scope rejects any later
+faction leakage. The checked-in
 `testdata/save-migrations.json` corpus fixes v1/v2 upgrades plus phase-matched, phase-mismatched,
 boundary, route-default, lying-v4, founder-v6, and company-v6 pre-timer cases; migrations never
 read the wall clock implicitly. Its `corpus_version` is metadata, not a save version. A separate

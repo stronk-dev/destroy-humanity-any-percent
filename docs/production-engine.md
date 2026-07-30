@@ -62,7 +62,7 @@ RFC.
 
 ## Intent API
 
-The implemented command surface contains exactly ten intents:
+The implemented command surface contains exactly eleven intents:
 
 - `buy_generator`: exact positive safe-integer count or verified `max`;
 - `perform_manual_batch`: positive safe-integer count and `window_ms` (audit/UX only; it grants no
@@ -73,6 +73,8 @@ The implemented command surface contains exactly ten intents:
   Knowledge; it never affects evaluation.
 - `sign_compact`: company-scope membership at an exact catalog-bounded tithe.
 - `leave_compact`: company-scope exit at the next accrual boundary; it clears Solidarity.
+- `incorporate`: a Tier-2-or-later, once-per-run faction choice. Open Source atomically signs the
+  Compact at its catalog tithe; its membership remains faction-bound until the run ends.
 - `decline_exit_offer`: clears one live, unexpired deterministic offer.
 - `accept_exit_offer`: terminal two-stream commit against a live offer and both expected revisions.
 - `wind_down`: terminal elective collapse from Tier 1 onward.
@@ -98,6 +100,13 @@ can be retried correctly. A recorded terminal request is different: its UUIDv7 r
 that request hash, so a corrected payload needs a new intent id and reusing the old id returns
 `idempotency_conflict`.
 
+Faction terminal categories add `not_eligible`, `already_incorporated`, and `faction_bound`.
+Interdependence stock observes the same evaluated elapsed interval through the neutral accrual
+hook: spans no longer than the configured catch-up ceiling accrue one unit per catalog interval,
+carry the exact integer-millisecond remainder, and saturate at the visible catalog cap. Longer
+catch-up spans accrue ordinary offline production but no faction stock. Stock never enters the
+Decimal ledger or multiplier stack, and Phase 0 exposes no consumer path.
+
 ## Persistence and events
 
 `save.Store.ApplyIntent` locks the stream and performs idempotency lookup before revision checking
@@ -109,6 +118,8 @@ replayed bytes are identical.
 Event registry v1 additionally contains `compact_signed`, `compact_left`, `compact_sampled`,
 `compact_health_band_changed`, `compact_cascade_started`, `compact_recovered`, and
 `compact_recruitment_offered`; see [Commons](commons.md).
+Faction incorporation adds `incorporated` and `faction_stock_saturated`; both are strict v1 event
+payloads committed on the same revision as their state change.
 Purchases emit exactly one event; manual batches emit none. Events retain stream/revision and
 `constants_hash` identity even after old snapshot rows are pruned, but retention does not guarantee
 that an old snapshot remains queryable. History has no update/delete API; corrections are later
