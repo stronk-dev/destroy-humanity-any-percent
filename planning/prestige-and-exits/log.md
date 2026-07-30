@@ -162,3 +162,22 @@ Findings (fix queue, ordered):
   through the normal store, crosses a threshold after 16 attended minutes, and completes the
   scripted Exit. The next run is v8 and not pre-timer.
 - Focused Go tests/vet and the full Postgres integration target are green.
+
+## 2026-07-30 — prestige review remediation batch
+
+- Implemented P2b/P2c with a direct mantissa/exponent ratio in TypeScript, `big.Int` ppm arithmetic
+  in Go, and exact-domain saturation in both runtimes. Shared vectors now cover non-unit threshold
+  cube boundaries and the saturation path.
+- Save v9 adds `collapsed_offline_ms`. Evicting the oldest of 256 offline spans transfers only its
+  exact duration into the accumulator; a 257-span alternating online/offline property test proves
+  Attended Time stays invariant. V8 restoration defaults the accumulator to zero and current
+  encoding makes the field mandatory.
+- Exit replay now follows a database-authored `event_seq`, removing the kind-based reorder. The
+  real-Postgres fixture includes an offer event between the Founder and terminal Company events and
+  requires initial delivery and replay to be position-identical. Upgrade backfill preserves the
+  former closed-kind replay order for already-committed intents; new rows record insertion order.
+- An empty-history Wind Down is `scripted_first`; gate tier advancement is monotonic; decline drift
+  counts only current-run events; extreme Reputation payout is clamped while terms are computed to
+  remaining Founder headroom, preserving both the hardcap and preview-is-a-promise.
+- Canonical docs now describe save v9 and the implemented replay, timer, arithmetic, and lifecycle
+  behavior. Independent review remains required before archival.

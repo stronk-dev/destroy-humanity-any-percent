@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"sort"
 
 	"cloud-clicker/server/economy"
 )
@@ -344,7 +343,7 @@ func eventsForExitIntent(ctx context.Context, tx *sql.Tx, streams []string, owne
 	if len(streams) != 2 {
 		return nil, ErrInvalidStream
 	}
-	rows, err := tx.QueryContext(ctx, `SELECT event_id,stream_id,revision,kind,intent_id,constants_hash,occurred_at,payload FROM events WHERE stream_id IN ($1,$2) AND intent_id=$3 ORDER BY occurred_at,event_id`, streams[0], streams[1], intentID)
+	rows, err := tx.QueryContext(ctx, `SELECT event_id,stream_id,revision,kind,intent_id,constants_hash,occurred_at,payload FROM events WHERE stream_id IN ($1,$2) AND intent_id=$3 ORDER BY event_seq`, streams[0], streams[1], intentID)
 	if err != nil {
 		return nil, err
 	}
@@ -362,33 +361,7 @@ func eventsForExitIntent(ctx context.Context, tx *sql.Tx, streams []string, owne
 		}
 		events = append(events, record)
 	}
-	sort.SliceStable(events, func(i, j int) bool {
-		left, right := exitEventOrder(events[i].Kind), exitEventOrder(events[j].Kind)
-		if left != right {
-			return left < right
-		}
-		if events[i].Revision != events[j].Revision {
-			return events[i].Revision < events[j].Revision
-		}
-		if events[i].StreamID != events[j].StreamID {
-			return events[i].StreamID < events[j].StreamID
-		}
-		return events[i].EventID < events[j].EventID
-	})
 	return events, rows.Err()
-}
-
-func exitEventOrder(kind EventKind) int {
-	switch kind {
-	case EventFounderAdvanced:
-		return 0
-	case EventRunEnded:
-		return 1
-	case EventRunStarted:
-		return 2
-	default:
-		return 3
-	}
 }
 
 func runExitFault(inject ExitFaultInjector, step string) error {

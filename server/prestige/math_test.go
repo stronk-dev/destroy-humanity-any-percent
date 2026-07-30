@@ -13,6 +13,7 @@ type vectorFile struct {
 	Threshold string `json:"threshold"`
 	Vectors   []struct {
 		Name          string `json:"name"`
+		Threshold     string `json:"threshold"`
 		LifetimeValue string `json:"lifetime_value"`
 		CurrentLevel  int64  `json:"current_level"`
 		ModifierPPM   int64  `json:"modifier_ppm"`
@@ -30,9 +31,16 @@ func TestPrestigeVectors(t *testing.T) {
 	if err := json.Unmarshal(data, &fixture); err != nil || fixture.Version != 1 || len(fixture.Vectors) < 8 {
 		t.Fatalf("fixture=%+v err=%v", fixture, err)
 	}
-	threshold, _ := decimal.ParseCanonical(fixture.Threshold)
 	for _, vector := range fixture.Vectors {
 		t.Run(vector.Name, func(t *testing.T) {
+			thresholdSource := vector.Threshold
+			if thresholdSource == "" {
+				thresholdSource = fixture.Threshold
+			}
+			threshold, err := decimal.ParseCanonical(thresholdSource)
+			if err != nil {
+				t.Fatal(err)
+			}
 			value, err := decimal.ParseCanonical(vector.LifetimeValue)
 			if err != nil {
 				t.Fatal(err)

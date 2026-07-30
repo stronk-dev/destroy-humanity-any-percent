@@ -37,7 +37,7 @@ func (s *Service) declineExitOffer(request IntentRequest, state *save.State, cat
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
-	payload, _ := json.Marshal(map[string]string{"offer_id": request.OfferID})
+	payload, _ := json.Marshal(map[string]any{"offer_id": request.OfferID, "run_seq": state.RunSeq})
 	state.OfferState = nil
 	events = append(events, save.EventWrite{Kind: save.EventExitOfferDeclined, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
 	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
@@ -130,6 +130,9 @@ func (s *Service) handleExit(ctx context.Context, streamID string, mode Evaluati
 				return rejectedExitDecision(request, companyRevision.Number, "not_eligible", "tier"), nil
 			}
 			exitType := "collapse"
+			if request.Kind == IntentWindDown && len(founder.ExitHistory) == 0 {
+				exitType = "scripted_first"
+			}
 			var preview *prestigecore.Terms
 			if request.Kind == IntentAcceptExitOffer {
 				if company.OfferState == nil || company.OfferState.OfferID != request.OfferID {
@@ -253,7 +256,10 @@ func (s *Service) finishExit(request IntentRequest, founder *save.State, founder
 	if err != nil {
 		return save.ExitDecision{}, err
 	}
-	if terms.ReputationDelta > decimal.MaxExactInteger-founder.ReputationLevel || terms.RouteKnowledge > decimal.MaxExactInteger-founder.RouteKnowledgeBalance {
+	if terms.ReputationDelta > decimal.MaxExactInteger-founder.ReputationLevel {
+		terms.ReputationDelta = decimal.MaxExactInteger - founder.ReputationLevel
+	}
+	if terms.RouteKnowledge > decimal.MaxExactInteger-founder.RouteKnowledgeBalance {
 		return save.ExitDecision{}, ErrInvalidEngineState
 	}
 	founder.ReputationLevel += terms.ReputationDelta
@@ -370,9 +376,11 @@ func mergeNetworkSlots(existing, grants []save.NetworkSlot) []save.NetworkSlot {
 
 func setTierFromGate(state *save.State, gateID string) error {
 	tier, ok := tierForGate(gateID)
-	if !ok || tier <= state.Tier {
+	if !ok {
 		return ErrInvalidEngineState
 	}
-	state.Tier = tier
+	if tier > state.Tier {
+		state.Tier = tier
+	}
 	return nil
 }

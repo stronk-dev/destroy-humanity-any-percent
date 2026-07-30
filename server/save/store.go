@@ -246,6 +246,18 @@ func (s *Store) CountEvents(ctx context.Context, streamID string, kind EventKind
 	return count, nil
 }
 
+func (s *Store) CountRunEvents(ctx context.Context, streamID string, kind EventKind, runSeq int64) (int64, error) {
+	if !uuidPattern.MatchString(streamID) || runSeq < 1 || runSeq > decimal.MaxExactInteger {
+		return 0, ErrInvalidStream
+	}
+	var count int64
+	if err := s.db.QueryRowContext(ctx, `SELECT count(*) FROM events WHERE stream_id=$1 AND kind=$2 AND payload->>'run_seq'=$3`,
+		streamID, kind, fmt.Sprintf("%d", runSeq)).Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 // ExecutedRouteIDs returns the distinct route facts committed for one run at
 // or before the supplied Company revision. The revision boundary lets callers
 // assemble a terminal run record before ApplyExitTransaction takes its locks:

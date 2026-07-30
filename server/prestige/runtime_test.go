@@ -20,6 +20,23 @@ func TestPromiseTermsIsFieldwiseMonotonicUnion(t *testing.T) {
 	}
 }
 
+func TestComputeTermsClampsReputationToFounderHeadroom(t *testing.T) {
+	data, err := os.ReadFile("../../balance/prestige/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	policy, err := LoadPolicy(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company := &save.State{LifetimeValue: decimal.New(1, 300)}
+	founder := &save.State{ReputationLevel: decimal.MaxExactInteger - 7}
+	terms, err := ComputeTerms(company, founder, policy, "ipo")
+	if err != nil || terms.ReputationDelta != 7 {
+		t.Fatalf("terms=%+v err=%v", terms, err)
+	}
+}
+
 func TestLifetimeOfflineAndNewRunDeterminism(t *testing.T) {
 	catalogBytes, err := os.ReadFile("../../balance/catalogs/phase0.json")
 	if err != nil {
@@ -61,6 +78,25 @@ func TestLifetimeOfflineAndNewRunDeterminism(t *testing.T) {
 	right, _ := save.EncodeState(second)
 	if string(left) != string(right) || first.RunSeq != 5 || first.MeterBands["trust.regulators.standing"] != 83 || first.MeterBands["trust.regulators.grievance"] != 17 {
 		t.Fatalf("first=%s second=%s", left, right)
+	}
+}
+
+func TestOfflineSpanCollapsePreservesExactDuration(t *testing.T) {
+	start := time.Date(2026, 7, 1, 0, 0, 0, 0, time.UTC)
+	state := &save.State{RunStartedAt: start, EvaluatedThrough: start.Add(600 * time.Hour), OfflineSpans: []save.OfflineSpan{}}
+	for index := 0; index < 257; index++ {
+		from := start.Add(time.Duration(index*2) * time.Hour)
+		if err := RecordOfflineSpan(state, from, from.Add(time.Hour), 1); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if len(state.OfflineSpans) != 256 || state.CollapsedOfflineMS != int64(time.Hour/time.Millisecond) {
+		t.Fatalf("spans=%d collapsed=%d", len(state.OfflineSpans), state.CollapsedOfflineMS)
+	}
+	attended, err := AttendedMS(state, state.EvaluatedThrough)
+	want := int64((600*time.Hour - 257*time.Hour) / time.Millisecond)
+	if err != nil || attended != want {
+		t.Fatalf("attended=%d want=%d err=%v", attended, want, err)
 	}
 }
 

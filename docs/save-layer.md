@@ -16,7 +16,7 @@ stale scalar subquery under PostgreSQL READ COMMITTED.
 
 ## State format
 
-Version 8 is strict JSON. It contains the economy, production, Routes, Commons, and Prestige fields
+Version 9 is strict JSON. It contains the economy, production, Routes, Commons, and Prestige fields
 described by their owning canonical docs; unknown or missing required fields remain invalid. A
 representative prefix is:
 
@@ -43,7 +43,8 @@ representative prefix is:
   "compact_solidarity_samples": [],
   "run_started_at_ms": 1785326400000,
   "run_pre_timer": false,
-  "offline_spans": []
+  "offline_spans": [],
+  "collapsed_offline_ms": 0
 }
 ```
 
@@ -103,7 +104,9 @@ sub-millisecond cursor is rejected. Pre-v5 company saves receive empty gate/cont
 `run_seq = 1`; pre-v5 Founder saves receive a zero balance and no hints. Pre-v6 saves receive
 empty non-member Compact state. Pre-v7 Company saves backfill `run_started_at_ms` from their
 authoritative `evaluated_through` cursor and set `run_pre_timer=true`; the marker preserves
-playability while excluding those historical runs from time ranking. The checked-in
+playability while excluding those historical runs from time ranking. V8 saves initialize
+`collapsed_offline_ms` to zero; V9 moves evicted offline-span durations into that exact integer
+accumulator so bounded history does not alter Attended Time. The checked-in
 `testdata/save-migrations.json` corpus fixes v1/v2 upgrades plus phase-matched, phase-mismatched,
 boundary, route-default, lying-v4, founder-v6, and company-v6 pre-timer cases; migrations never
 read the wall clock implicitly. Its `corpus_version` is metadata, not a save version. A separate
@@ -114,7 +117,9 @@ addition or removal requires an explicit reviewed baseline ratchet.
 
 `intent_records` keys normalized receipts by `(stream_id,intent_id)` with a SHA-256 canonical
 request hash. `events` stores the closed v1 event registry with stream, originating revision,
-schema version, intent, `constants_hash`, timestamp, and strict payload. It deliberately does not
+schema version, intent, `constants_hash`, timestamp, database-authored `event_seq`, and strict
+payload. The sequence is the cross-stream committed order used for idempotent Exit replay. It
+deliberately does not
 foreign-key the revision to a snapshot row because snapshot retention prunes old rows while event
 history remains append-only. The origin revision number and constants hash remain immutable event
 identity; retention does not promise that the corresponding historical snapshot is still
@@ -145,12 +150,11 @@ that retention window. Replaying the identical request returns the original norm
 correcting a payload under the same id returns `idempotency_conflict`. A corrected payload is a
 different logical request and must use a new UUIDv7.
 
-Run the disposable Postgres integration suite locally:
+Run the disposable Postgres integration suite locally. The test service owns its network,
+database URL, and Go cache, and starts its declared Postgres dependency:
 
 ```sh
-docker compose -f compose.save-test.yml up -d --wait
 docker compose -f compose.save-test.yml run --rm test
-docker compose -f compose.save-test.yml down
 ```
 
 The CI server job supplies the same variable through a Postgres 16 service container. Normal unit

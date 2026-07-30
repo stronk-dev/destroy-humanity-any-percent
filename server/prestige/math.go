@@ -2,6 +2,7 @@ package prestige
 
 import (
 	"errors"
+	"math/big"
 
 	"cloud-clicker/server/decimal"
 )
@@ -42,10 +43,12 @@ func ReputationDelta(lifetimeValue, threshold decimal.Decimal, currentLevel, mod
 		return 0, nil
 	}
 	delta := level - currentLevel
-	if modifierPPM != 0 && delta > decimal.MaxExactInteger/modifierPPM {
-		return 0, ErrInvalidArithmetic
+	product := new(big.Int).Mul(big.NewInt(delta), big.NewInt(modifierPPM))
+	product.Quo(product, big.NewInt(1_000_000))
+	if product.Cmp(big.NewInt(decimal.MaxExactInteger)) >= 0 {
+		return decimal.MaxExactInteger, nil
 	}
-	return delta * modifierPPM / 1_000_000, nil
+	return product.Int64(), nil
 }
 
 func MoralReseed(notoriety int64) (int64, error) {

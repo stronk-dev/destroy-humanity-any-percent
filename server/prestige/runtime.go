@@ -48,6 +48,9 @@ func ComputeTerms(company, founder *save.State, policy *Policy, exitType string)
 	if err != nil {
 		return Terms{}, err
 	}
+	if headroom := decimal.MaxExactInteger - founder.ReputationLevel; delta > headroom {
+		delta = headroom
+	}
 	knowledge := int64(0)
 	if exitType == "collapse" || exitType == "scripted_first" {
 		knowledge = policy.CollapseRouteKnowledge
@@ -169,11 +172,15 @@ func RecordOfflineSpan(state *save.State, from, to time.Time, catchupCeilingMS i
 		}
 		return nil
 	}
-	state.OfflineSpans = append(state.OfflineSpans, span)
-	if len(state.OfflineSpans) > 256 {
-		state.OfflineSpans[1].From = state.OfflineSpans[0].From
+	if len(state.OfflineSpans) == 256 {
+		duration := state.OfflineSpans[0].To.Sub(state.OfflineSpans[0].From).Milliseconds()
+		if duration > decimal.MaxExactInteger-state.CollapsedOfflineMS {
+			return ErrInvalidArithmetic
+		}
+		state.CollapsedOfflineMS += duration
 		state.OfflineSpans = append([]save.OfflineSpan(nil), state.OfflineSpans[1:]...)
 	}
+	state.OfflineSpans = append(state.OfflineSpans, span)
 	return nil
 }
 
@@ -183,7 +190,10 @@ func AttendedMS(state *save.State, endedAt time.Time) (int64, error) {
 		return 0, ErrInvalidArithmetic
 	}
 	rta := endedAt.Sub(state.RunStartedAt).Milliseconds()
-	offline := int64(0)
+	offline := state.CollapsedOfflineMS
+	if offline > rta {
+		offline = rta
+	}
 	for _, span := range state.OfflineSpans {
 		from, to := span.From, span.To
 		if from.Before(state.RunStartedAt) {
@@ -226,7 +236,7 @@ func NewRunState(catalog *economy.Catalog, priorCompany, founder *save.State, no
 		GatesCrossed: map[string]bool{}, RunSeq: priorCompany.RunSeq + 1, DoctrinesByTransition: map[string]string{},
 		LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{"trust.regulators.standing": int(reseed), "trust.regulators.grievance": int(100 - reseed)},
 		RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{},
-		LifetimeValue: decimal.Zero, RunStartedAt: now, OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
+		LifetimeValue: decimal.Zero, RunStartedAt: now, OfflineSpans: []save.OfflineSpan{}, CollapsedOfflineMS: 0, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
 	return state, nil
 }
 

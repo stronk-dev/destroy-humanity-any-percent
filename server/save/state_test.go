@@ -95,7 +95,7 @@ func testState(t *testing.T) *State {
 	}
 }
 
-func TestStateV8RoundTrip(t *testing.T) {
+func TestStateV9RoundTrip(t *testing.T) {
 	state := testState(t)
 	state.CompactMember = true
 	state.CompactTithePPM = 100_000
@@ -106,6 +106,7 @@ func TestStateV8RoundTrip(t *testing.T) {
 	state.RunStartedAt = testCursor.Add(-time.Hour)
 	state.RunPreTimer = true
 	state.OfflineSpans = []OfflineSpan{{From: testCursor.Add(-30 * time.Minute), To: testCursor.Add(-20 * time.Minute)}}
+	state.CollapsedOfflineMS = 1_800_000
 	encoded, err := EncodeState(state)
 	if err != nil {
 		t.Fatal(err)
@@ -134,8 +135,45 @@ func TestStateV8RoundTrip(t *testing.T) {
 		t.Fatalf("restored compact state = %+v", restored)
 	}
 	if restored.Tier != 3 || restored.LifetimeValue.String() != "2.5e12" || !restored.RunStartedAt.Equal(testCursor.Add(-time.Hour)) || !restored.RunPreTimer ||
-		len(restored.OfflineSpans) != 1 || !restored.OfflineSpans[0].To.Equal(testCursor.Add(-20*time.Minute)) {
+		len(restored.OfflineSpans) != 1 || !restored.OfflineSpans[0].To.Equal(testCursor.Add(-20*time.Minute)) || restored.CollapsedOfflineMS != 1_800_000 {
 		t.Fatalf("restored prestige state = %+v", restored)
+	}
+}
+
+func TestStateV8MigratesCollapsedOfflineAccumulator(t *testing.T) {
+	state := testState(t)
+	state.Tier = 2
+	state.RunStartedAt = testCursor.Add(-time.Hour)
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var previous map[string]any
+	if err := json.Unmarshal(encoded, &previous); err != nil {
+		t.Fatal(err)
+	}
+	delete(previous, "collapsed_offline_ms")
+	v8, err := json.Marshal(previous)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err := RestoreState(v8, 8, stateCatalog(t), economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if restored.CollapsedOfflineMS != 0 {
+		t.Fatalf("collapsed offline = %d, want 0", restored.CollapsedOfflineMS)
+	}
+	current, err := EncodeState(restored)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var migrated map[string]any
+	if err := json.Unmarshal(current, &migrated); err != nil {
+		t.Fatal(err)
+	}
+	if value, ok := migrated["collapsed_offline_ms"]; !ok || value != float64(0) {
+		t.Fatalf("migrated collapsed_offline_ms=%v present=%v", value, ok)
 	}
 }
 
@@ -217,6 +255,7 @@ func TestSaveMigrationCorpus(t *testing.T) {
 			} else {
 				want.(map[string]any)["run_pre_timer"] = false
 			}
+			want.(map[string]any)["collapsed_offline_ms"] = float64(0)
 			if !equalJSON(got, want) {
 				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV5)
 			}

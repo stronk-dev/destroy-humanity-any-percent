@@ -180,6 +180,19 @@ func TestCrossGateDiscountSubstituteAndRejections(t *testing.T) {
 	}
 }
 
+func TestTierFromGateIsMonotonicAcrossLegalOutOfOrderCrossings(t *testing.T) {
+	state := &save.State{Tier: 4}
+	if err := setTierFromGate(state, "gate.t1_to_t2"); err != nil || state.Tier != 4 {
+		t.Fatalf("lower legal gate tier=%d err=%v", state.Tier, err)
+	}
+	if err := setTierFromGate(state, "gate.t4_to_t5"); err != nil || state.Tier != 5 {
+		t.Fatalf("higher gate tier=%d err=%v", state.Tier, err)
+	}
+	if err := setTierFromGate(state, "gate.invalid"); err == nil {
+		t.Fatal("invalid gate changed tier")
+	}
+}
+
 func TestBuyRouteHintDoesNotAffectPredicateEvaluation(t *testing.T) {
 	economyCatalog, routeCatalog := phase0Catalog(t), phase0Routes(t)
 	ledger, err := economy.RestoreLedger(economyCatalog, economy.ScopeFounder, map[string]string{})

@@ -121,8 +121,20 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	intentID := "01985555-0010-7000-8000-000000000010"
 	requestHash := "sha256:2222222222222222222222222222222222222222222222222222222222222222"
 	result, err := store.ApplyExitTransaction(ctx, companyRevision.StreamID, 1, 1, intentID, requestHash, exitTestMutation(ownerID, companyRevision.StreamID, intentID, hash, now), nil)
-	if err != nil || result.Outcome != IntentApplied || result.Replay || len(result.Events) != 3 {
+	if err != nil || result.Outcome != IntentApplied || result.Replay || len(result.Events) != 4 {
 		t.Fatalf("result=%+v err=%v", result, err)
+	}
+	wantKinds := []EventKind{EventFounderAdvanced, EventExitOfferDeclined, EventRunEnded, EventRunStarted}
+	for index, want := range wantKinds {
+		if result.Events[index].Kind != want {
+			t.Fatalf("event %d kind=%s want=%s", index, result.Events[index].Kind, want)
+		}
+	}
+	if count, err := store.CountRunEvents(ctx, companyRevision.StreamID, EventExitOfferDeclined, 1); err != nil || count != 1 {
+		t.Fatalf("run 1 decline count=%d err=%v", count, err)
+	}
+	if count, err := store.CountRunEvents(ctx, companyRevision.StreamID, EventExitOfferDeclined, 2); err != nil || count != 0 {
+		t.Fatalf("run 2 decline count=%d err=%v", count, err)
 	}
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM transport_receipt_outbox WHERE company_stream_id=$1`, companyRevision.StreamID).Scan(&outboxRows); err != nil || outboxRows != 1 {
 		t.Fatalf("exit outbox rows=%d err=%v", outboxRows, err)
@@ -133,7 +145,7 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 		t.Fatal("replay mutation ran")
 		return ExitDecision{}, nil
 	}, nil)
-	if err != nil || !replayed.Replay || len(replayed.Events) != 3 || string(replayed.Receipt) != string(result.Receipt) {
+	if err != nil || !replayed.Replay || len(replayed.Events) != 4 || string(replayed.Receipt) != string(result.Receipt) {
 		t.Fatalf("replay=%+v err=%v", replayed, err)
 	}
 	for index := range result.Events {
@@ -180,9 +192,13 @@ func exitTestMutation(ownerID, companyStreamID, intentID, hash string, now time.
 		ended, _ := json.Marshal(map[string]any{"founder_id": ownerID, "run_id": runID, "exit_type": "collapse", "started_at_ms": company.RunStartedAt.UnixMilli(), "ended_at_ms": now.UnixMilli(), "rta_ms": now.Sub(company.RunStartedAt).Milliseconds(), "attended_ms": now.Sub(company.RunStartedAt).Milliseconds(), "terminal_seq": 1, "payout": terms, "tier": company.Tier, "lifetime_value": company.LifetimeValue.String(), "ledger_fact_kinds": []string{}, "executed_routes": []string{}, "assisted": map[string]bool{"commons": false, "advisor": false}})
 		started, _ := json.Marshal(map[string]any{"founder_id": ownerID, "run_id": map[string]any{"company_stream_id": companyStreamID, "run_seq": company.RunSeq + 1}, "started_at_ms": now.UnixMilli(), "assisted": map[string]bool{"commons": false, "advisor": false}})
 		advanced, _ := json.Marshal(map[string]any{"founder_id": ownerID, "run_id": runID, "exit_type": "collapse", "reputation_delta": 2, "route_knowledge": 25, "occurred_at_ms": now.UnixMilli()})
+		declined, _ := json.Marshal(map[string]any{"offer_id": "01985555-0011-7000-8000-000000000011", "run_seq": company.RunSeq})
 		return ExitDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`), FinalCompanyState: company, NewCompanyState: newCompany, NewConstantsHash: hash,
-			FounderEvents:        []EventWrite{{Kind: EventFounderAdvanced, SchemaVersion: 1, IntentID: intentID, Payload: advanced}},
-			CompanyEndedEvents:   []EventWrite{{Kind: EventRunEnded, SchemaVersion: 1, IntentID: intentID, Payload: ended}},
+			FounderEvents: []EventWrite{{Kind: EventFounderAdvanced, SchemaVersion: 1, IntentID: intentID, Payload: advanced}},
+			CompanyEndedEvents: []EventWrite{
+				{Kind: EventExitOfferDeclined, SchemaVersion: 1, IntentID: intentID, Payload: declined},
+				{Kind: EventRunEnded, SchemaVersion: 1, IntentID: intentID, Payload: ended},
+			},
 			CompanyStartedEvents: []EventWrite{{Kind: EventRunStarted, SchemaVersion: 1, IntentID: intentID, Payload: started}}}, nil
 	}
 }

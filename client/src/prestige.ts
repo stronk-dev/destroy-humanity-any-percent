@@ -6,7 +6,10 @@ export function reputationLevel(lifetimeValueSource: string, thresholdSource: st
   const lifetimeValue = parseCanonical(lifetimeValueSource);
   const threshold = parseCanonical(thresholdSource);
   if (lifetimeValue.lt(0) || !threshold.gt(0)) throw new RangeError("invalid prestige values");
-  const ratio = lifetimeValue.div(threshold);
+  const ratio = Decimal.fromMantissaExponent(
+    lifetimeValue.mantissa / threshold.mantissa,
+    lifetimeValue.exponent - threshold.exponent,
+  ).normalize();
   if (ratio.lt(1)) return 0;
   let low = 1;
   let high = MAX_EXACT_INTEGER;
@@ -35,7 +38,9 @@ export function reputationDelta(
     throw new RangeError("invalid prestige integers");
   }
   const delta = Math.max(0, reputationLevel(lifetimeValue, threshold) - currentLevel);
-  const result = new Decimal(delta).mul(modifierPPM).div(1_000_000).floor().toNumber();
+  const exact = new Decimal(delta).mul(modifierPPM).div(1_000_000).floor();
+  if (exact.gte(MAX_EXACT_INTEGER)) return MAX_EXACT_INTEGER;
+  const result = exact.toNumber();
   if (!Number.isSafeInteger(result)) throw new RangeError("prestige delta outside exact domain");
   return result;
 }

@@ -129,3 +129,7 @@ Account & Session Bootstrap (new draft) supplies founder/session identity; T0–
   timing contradiction and nine additional executable-contract gaps.
 - 2026-07-29: accepted for implementation by the ordered Codex batch manifest; implementation
   started after Account & Session Bootstrap supplied the required Founder owner.
+- 2026-07-30: implemented P2b/P2c, P4b, P5b, and P6b remediation: save v9 preserves collapsed
+  offline duration, prestige math is cross-runtime exact and saturating, replay follows committed
+  event order, decline drift is run-scoped, tier advancement is monotonic, and the first Wind Down
+  remains the scripted curriculum Exit.

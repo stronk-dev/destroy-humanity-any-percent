@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	CurrentVersion           = 8
+	CurrentVersion           = 9
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
 )
@@ -52,6 +52,7 @@ type State struct {
 	RunStartedAt          time.Time
 	RunPreTimer           bool
 	OfflineSpans          []OfflineSpan
+	CollapsedOfflineMS    int64
 	ReputationLevel       int64
 	ReputationUnlockPPM   int64
 	NetworkSlots          []NetworkSlot
@@ -162,6 +163,11 @@ type stateV8 struct {
 	RunPreTimer bool `json:"run_pre_timer"`
 }
 
+type stateV9 struct {
+	stateV8
+	CollapsedOfflineMS int64 `json:"collapsed_offline_ms"`
+}
+
 type rawExitOfferState struct {
 	OfferID     string          `json:"offer_id"`
 	ExitType    string          `json:"exit_type"`
@@ -263,7 +269,7 @@ func EncodeState(state *State) ([]byte, error) {
 	if state.ManualTokenRefilledAt.After(state.EvaluatedThrough) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
-	encoded, err := json.Marshal(stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
+	encoded, err := json.Marshal(stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
 		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: cloneBoolMap(normalized.GatesCrossed), RunSeq: normalized.RunSeq,
@@ -279,7 +285,7 @@ func EncodeState(state *State) ([]byte, error) {
 		NetworkSlots: cloneNetworkSlots(normalized.NetworkSlots), CloutLifetime: normalized.CloutLifetime,
 		Soul: normalized.Soul, AgeMS: normalized.AgeMS, Notoriety: normalized.Notoriety,
 		AdvisorMode: normalized.AdvisorMode, ExitHistory: encodeExitHistory(normalized.ExitHistory)},
-		RunPreTimer: normalized.RunPreTimer})
+		RunPreTimer: normalized.RunPreTimer}, CollapsedOfflineMS: normalized.CollapsedOfflineMS})
 	if err != nil {
 		return nil, fmt.Errorf("%w: encode: %v", ErrInvalidState, err)
 	}
@@ -297,7 +303,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
 	}
 
-	var source stateV8
+	var source stateV9
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -307,7 +313,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err != nil {
 			return nil, fmt.Errorf("%w: version-1 migration baseline: %v", ErrInvalidState, err)
 		}
-		source.stateV7.stateV6.stateV5 = stateV5{
+		source.stateV8.stateV7.stateV6.stateV5 = stateV5{
 			Balances: legacy.Balances, Generators: zeroGeneratorCounts(catalog, scope), EvaluatedThrough: cursor,
 		}
 	} else if version == 2 {
@@ -315,13 +321,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV7.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
+		source.stateV8.stateV7.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
 	} else if version < 5 {
 		var previous stateV4
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV7.stateV6.stateV5 = stateV5{
+		source.stateV8.stateV7.stateV6.stateV5 = stateV5{
 			Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough,
 			ComputeCreditMS: previous.ComputeCreditMS, ManualTokenMilli: previous.ManualTokenMilli,
 			ManualTokenRefilledAt: previous.ManualTokenRefilledAt,
@@ -331,15 +337,19 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV7.stateV6.stateV5 = previous
+		source.stateV8.stateV7.stateV6.stateV5 = previous
 	} else if version == 6 {
 		var previous stateV6
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV7.stateV6 = previous
+		source.stateV8.stateV7.stateV6 = previous
 	} else if version == 7 {
-		if err := decodeState(data, &source.stateV7); err != nil {
+		if err := decodeState(data, &source.stateV8.stateV7); err != nil {
+			return nil, err
+		}
+	} else if version == 8 {
+		if err := decodeState(data, &source.stateV8); err != nil {
 			return nil, err
 		}
 	} else if err := decodeState(data, &source); err != nil {
@@ -455,6 +465,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if err != nil {
 		return nil, err
 	}
+	state.CollapsedOfflineMS = source.CollapsedOfflineMS
 	state.ExitHistory, err = decodeExitHistory(source.ExitHistory)
 	if err != nil {
 		return nil, err
@@ -482,7 +493,8 @@ func validatePrestigeState(state *State, scope economy.Scope) error {
 		state.CloutLifetime < 0 || state.CloutLifetime > decimal.MaxExactInteger ||
 		state.Soul < -decimal.MaxExactInteger || state.Soul > decimal.MaxExactInteger ||
 		state.AgeMS < 0 || state.AgeMS > decimal.MaxExactInteger ||
-		state.Notoriety < 0 || state.Notoriety > decimal.MaxExactInteger {
+		state.Notoriety < 0 || state.Notoriety > decimal.MaxExactInteger ||
+		state.CollapsedOfflineMS < 0 || state.CollapsedOfflineMS > decimal.MaxExactInteger {
 		return fmt.Errorf("%w: prestige values outside their exact domains", ErrInvalidState)
 	}
 	if len(state.OfflineSpans) > maxOfflineSpans {
@@ -497,13 +509,25 @@ func validatePrestigeState(state *State, scope economy.Scope) error {
 		if state.RunPreTimer && state.RunStartedAt.IsZero() || !state.RunStartedAt.IsZero() && (!isCanonicalMillisecond(state.RunStartedAt) || state.RunStartedAt.After(state.EvaluatedThrough)) {
 			return fmt.Errorf("%w: invalid run_started_at", ErrInvalidState)
 		}
+		if state.RunStartedAt.IsZero() && state.CollapsedOfflineMS != 0 {
+			return fmt.Errorf("%w: collapsed offline time without a run start", ErrInvalidState)
+		}
 		last := time.Time{}
+		totalOfflineMS := state.CollapsedOfflineMS
 		for _, span := range state.OfflineSpans {
 			if span.From.IsZero() || !isCanonicalMillisecond(span.From) || !isCanonicalMillisecond(span.To) || !span.To.After(span.From) ||
 				!last.IsZero() && span.From.Before(last) || !state.RunStartedAt.IsZero() && span.From.Before(state.RunStartedAt) || span.To.After(state.EvaluatedThrough) {
 				return fmt.Errorf("%w: invalid offline span", ErrInvalidState)
 			}
+			duration := span.To.Sub(span.From).Milliseconds()
+			if duration > decimal.MaxExactInteger-totalOfflineMS {
+				return fmt.Errorf("%w: offline duration exceeds the exact domain", ErrInvalidState)
+			}
+			totalOfflineMS += duration
 			last = span.To
+		}
+		if !state.RunStartedAt.IsZero() && totalOfflineMS > state.EvaluatedThrough.Sub(state.RunStartedAt).Milliseconds() {
+			return fmt.Errorf("%w: offline duration exceeds run duration", ErrInvalidState)
 		}
 		if state.OfferState != nil {
 			offer := state.OfferState
@@ -514,7 +538,7 @@ func validatePrestigeState(state *State, scope economy.Scope) error {
 		}
 		return nil
 	}
-	if state.Tier != 0 || !state.LifetimeValue.Eq(decimal.Zero) || state.OfferState != nil || !state.RunStartedAt.IsZero() || state.RunPreTimer || len(state.OfflineSpans) != 0 {
+	if state.Tier != 0 || !state.LifetimeValue.Eq(decimal.Zero) || state.OfferState != nil || !state.RunStartedAt.IsZero() || state.RunPreTimer || len(state.OfflineSpans) != 0 || state.CollapsedOfflineMS != 0 {
 		return fmt.Errorf("%w: company prestige state leaked outside company scope", ErrInvalidState)
 	}
 	if scope != economy.ScopeFounder {

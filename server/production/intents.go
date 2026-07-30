@@ -284,7 +284,11 @@ func (s *Service) Handle(
 			return HandleResult{}, err
 		}
 		prestigeFounder = &loaded
-		declinedOffers, err = s.store.CountEvents(ctx, streamID, save.EventExitOfferDeclined)
+		company, err := s.store.LoadLatest(ctx, streamID)
+		if err != nil {
+			return HandleResult{}, err
+		}
+		declinedOffers, err = s.store.CountRunEvents(ctx, streamID, save.EventExitOfferDeclined, company.State.RunSeq)
 		if err != nil {
 			return HandleResult{}, err
 		}
@@ -923,7 +927,8 @@ func wireSnapshot(state *save.State) map[string]any {
 		"compact_solidarity_ppm": state.CompactSolidarityPPM,
 		"tier":                   state.Tier, "lifetime_value": state.LifetimeValue.String(),
 		"offer_state": wireOfferState(state.OfferState), "run_started_at_ms": wireTimeMS(state.RunStartedAt), "run_pre_timer": state.RunPreTimer,
-		"offline_spans": wireOfflineSpans(state.OfflineSpans),
+		"offline_spans":        wireOfflineSpans(state.OfflineSpans),
+		"collapsed_offline_ms": state.CollapsedOfflineMS,
 	}
 }
 

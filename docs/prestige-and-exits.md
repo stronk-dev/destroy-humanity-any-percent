@@ -7,12 +7,13 @@ their pre-Exit revisions; an idempotent retry returns the original receipt and e
 
 ## Persisted state
 
-Save version 8 carries the run lifecycle explicitly. Company state records tier, lifetime value,
-the optional live offer, run start time, and server-derived offline spans. Founder state records
+Save version 9 carries the run lifecycle explicitly. Company state records tier, lifetime value,
+the optional live offer, run start time, server-derived offline spans, and the exact duration of
+older spans collapsed out of the bounded list. Founder state records
 Reputation, Reputation unlock strength, Network slots, lifetime Clout, Soul, age, Notoriety,
 Advisor Mode, and append-only Exit history. A pre-v7 Company backfills its missing run start from
 `evaluated_through` and persists `run_pre_timer=true`, so it can Exit but cannot claim a time-ranked
-record for a run that predates timer semantics. V8 encoding refuses non-canonical cursor times or
+record for a run that predates timer semantics. V9 encoding refuses non-canonical cursor times or
 invalid cross-scope state.
 
 The Phase-0 Prestige policy is declarative in
@@ -25,10 +26,16 @@ data, never code constants.
 
 The new Reputation level is `floor(cuberoot(lifetime_value / threshold))`. Both Go and TypeScript
 find the largest exact integer whose Decimal cube does not exceed the ratio using integer binary
-search. Neither runtime calls a floating-point cube-root function. Exit modifiers are integer ppm
-applied to the positive level delta and then floored. The shared Prestige vector corpus asserts
-cube boundaries, modifier rounding, zero, threshold equality, and the exact-number cap in both
-runtimes.
+search. TypeScript constructs the ratio directly from mantissa division and exponent subtraction,
+matching the Go Decimal path without reciprocal double-rounding. Neither runtime calls a floating-
+point cube-root function. Exit modifiers are integer ppm applied to the positive level delta and
+then floored; a result beyond the exact integer domain saturates at `9,007,199,254,740,991` so an
+extreme valid run cannot become un-exitable. The shared Prestige vector corpus asserts cube
+boundaries including non-unit thresholds, modifier rounding, saturation, zero, threshold equality,
+and the exact-number cap in both runtimes.
+
+Server-computed terms also clamp Reputation delta to the Founder's remaining exact-domain
+headroom. Offer previews therefore never promise a payout that the Founder hardcap cannot accept.
 
 ## Offers and intents
 
@@ -44,7 +51,8 @@ the immutable Founder id and run sequence. A spawned offer persists its server-c
 market modifier. Acceptance recomputes against commit-time state, reapplies that same modifier,
 then takes the field-wise maximum for integer rewards and the set union for Network slots. The
 preview therefore remains a promise as the run advances. Expiry and decline are events; there are
-no background timers.
+no background timers. Decline drift counts only declines from the current `run_seq`, so a new run
+begins with a clean offer walk.
 
 ## Exit transaction and run facts
 
@@ -56,16 +64,20 @@ ledger facts, revision-bounded executed routes, its pre-timer status, and separa
 assisted variables.
 `run_started` is the next timer's `[BEGIN ATTEMPT]` fact.
 The terminal sequence is the Exit command's atomically committed per-run intent-log sequence, not a
-save revision or an eventually projected counter.
+save revision or an eventually projected counter. Exit events also receive a database-authored
+commit sequence; idempotent replay returns every event for the intent in that recorded order,
+including evaluation events that precede the terminal Exit events.
 
 Attended Time is RTA less recorded offline spans. An accrual gap larger than the production
-catch-up ceiling is recorded using canonical integer milliseconds; the bounded span list collapses
-its oldest entries without changing the total offline duration.
+catch-up ceiling is recorded using canonical integer milliseconds. When the bounded 256-span list
+fills, the oldest exact duration moves into `collapsed_offline_ms` before the span is removed;
+online gaps are never absorbed and total offline duration is invariant.
 
 The first Founder run has one scripted curriculum Exit: the first threshold crossing at or after
-900,000 attended milliseconds ends as `scripted_first`. The Founder Exit history makes it
-once-per-Founder, while creating a New Founder provides a genuinely fresh lifecycle. Elective
-Wind Down remains separate and is the event measured by the future T0–T1 first-Exit pacing gate.
+900,000 attended milliseconds ends as `scripted_first`. Choosing Wind Down before that trigger is
+also typed `scripted_first`; the curriculum cannot be skipped through the always-open Exit. The
+Founder Exit history makes it once-per-Founder, while creating a New Founder provides a genuinely
+fresh lifecycle. The pacing gate measures the first later, genuinely elective Exit.
 
 ## New-run assembly
 
@@ -80,6 +92,10 @@ retain the ended run's pinned hash. The Founder transition, new Company revision
 event, receipt snapshot, and run-N+1 epoch pin all use the process's current constants hash in the
 same transaction. The next run is therefore assembled from current catalog initials without
 rewriting the forensic identity of the run that just ended.
+
+Gate delivery is monotonic: crossing a catalog-legal gate records the fact, while Company tier is
+updated to `max(current_tier, gate_tier)`. A delayed lower-tier gate can never brick an otherwise
+valid run.
 
 ## Verification status
 

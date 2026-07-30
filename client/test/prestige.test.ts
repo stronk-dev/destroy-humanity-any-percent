@@ -5,6 +5,7 @@ import { moralReseed, reputationDelta, reputationLevel } from "../src/prestige";
 
 interface Vector {
   name: string;
+  threshold?: string;
   lifetime_value: string;
   current_level: number;
   modifier_ppm: number;
@@ -17,11 +18,12 @@ const fixture = fixtureJson as { version: number; threshold: string; vectors: Ve
 describe("shared prestige vectors", () => {
   it("uses vector schema 1", () => expect(fixture.version).toBe(1));
   it.each(fixture.vectors)("$name", (vector) => {
-    expect(reputationLevel(vector.lifetime_value, fixture.threshold)).toBe(vector.level);
+    const threshold = vector.threshold ?? fixture.threshold;
+    expect(reputationLevel(vector.lifetime_value, threshold)).toBe(vector.level);
     expect(
       reputationDelta(
         vector.lifetime_value,
-        fixture.threshold,
+        threshold,
         vector.current_level,
         vector.modifier_ppm,
       ),

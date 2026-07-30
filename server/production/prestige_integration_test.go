@@ -95,7 +95,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 			t.Fatalf("receipt=%s err=%v", result.Receipt, err)
 		}
 		founder, err := store.LoadLatest(ctx, founderRevision.StreamID)
-		if err != nil || founder.State.ReputationLevel != 1 || founder.State.RouteKnowledgeBalance != 25 || len(founder.State.ExitHistory) != 1 || founder.State.ExitHistory[0].ExitType != "collapse" {
+		if err != nil || founder.State.ReputationLevel != 2 || founder.State.RouteKnowledgeBalance != 25 || len(founder.State.ExitHistory) != 1 || founder.State.ExitHistory[0].ExitType != "scripted_first" {
 			t.Fatalf("founder=%+v err=%v", founder.State, err)
 		}
 		company, err := store.LoadLatest(ctx, companyRevision.StreamID)
@@ -287,7 +287,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		if err := json.Unmarshal(encoded, &legacy); err != nil {
 			t.Fatal(err)
 		}
-		for _, key := range []string{"tier", "lifetime_value", "offer_state", "run_started_at_ms", "run_pre_timer", "offline_spans", "reputation_level", "reputation_unlock_ppm", "network_slots", "clout_lifetime", "soul", "age_ms", "notoriety", "advisor_mode", "exit_history"} {
+		for _, key := range []string{"tier", "lifetime_value", "offer_state", "run_started_at_ms", "run_pre_timer", "offline_spans", "collapsed_offline_ms", "reputation_level", "reputation_unlock_ppm", "network_slots", "clout_lifetime", "soul", "age_ms", "notoriety", "advisor_mode", "exit_history"} {
 			delete(legacy, key)
 		}
 		legacyBytes, _ := json.Marshal(legacy)

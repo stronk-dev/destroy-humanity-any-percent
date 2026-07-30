@@ -510,12 +510,21 @@ func validateEventPayload(event EventWrite) error {
 			validatePrestigeTerms(payload.PayoutPreview) != nil {
 			return fmt.Errorf("%w: invalid exit_offer_spawned payload", ErrInvalidStream)
 		}
-	case EventExitOfferExpired, EventExitOfferDeclined:
+	case EventExitOfferExpired:
 		var payload struct {
 			OfferID string `json:"offer_id"`
 		}
 		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidV7Pattern.MatchString(payload.OfferID) {
 			return fmt.Errorf("%w: invalid exit offer transition payload", ErrInvalidStream)
+		}
+	case EventExitOfferDeclined:
+		var payload struct {
+			OfferID string `json:"offer_id"`
+			RunSeq  int64  `json:"run_seq"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidV7Pattern.MatchString(payload.OfferID) ||
+			payload.RunSeq < 1 || payload.RunSeq > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid exit offer decline payload", ErrInvalidStream)
 		}
 	case EventRunEnded:
 		var payload eventRunEnded
