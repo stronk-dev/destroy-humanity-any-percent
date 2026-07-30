@@ -10,6 +10,8 @@
    event/snapshot relay remains)
 4. [ ] Compose `cmd/gameserver`, readiness, HTTP intents, and bounded drain lifecycle. (lifecycle
    complete; binary blocked on the Commons owner resolver recorded in the log)
-5. [ ] Add recovery, overflow, authz, drain, and 5k-connection soak coverage.
+5. [ ] Add recovery, overflow, authz, drain, and 5k-connection soak coverage. (actual private/world
+   recovery, overflow semantics, authz, and drain complete; 5k soak and application close-code
+   adapter remain)
 6. [ ] Update canonical docs and run full verification.
 7. [ ] Record independent review before archival.

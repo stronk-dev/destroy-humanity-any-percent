@@ -8,13 +8,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
 	"time"
 
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/internal/testhttp"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/save"
 )
@@ -71,10 +71,10 @@ func TestAccountSessionIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	server := httptest.NewServer(api.Router())
+	server := testhttp.New(api.Router())
 	defer server.Close()
 
-	createdResponse := requestJSON(t, http.MethodPost, server.URL+"/api/v1/account", "", `{}`)
+	createdResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/account", "", `{}`)
 	if createdResponse.StatusCode != http.StatusCreated {
 		t.Fatalf("create status=%d body=%s", createdResponse.StatusCode, readBody(createdResponse))
 	}
@@ -88,7 +88,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 		t.Fatalf("account columns=%d err=%v", accountColumns, err)
 	}
 
-	sessionResponse := requestJSON(t, http.MethodPost, server.URL+"/api/v1/session", "", fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
+	sessionResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/session", "", fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
 	if sessionResponse.StatusCode != http.StatusOK {
 		t.Fatalf("session status=%d body=%s", sessionResponse.StatusCode, readBody(sessionResponse))
 	}
@@ -99,7 +99,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 		t.Fatalf("claims=%+v err=%v", claims, err)
 	}
 
-	profileResponse := requestJSON(t, http.MethodGet, server.URL+"/api/v1/founder", firstPair.AccessToken, "")
+	profileResponse := requestJSON(t, server.Client, http.MethodGet, server.URL+"/api/v1/founder", firstPair.AccessToken, "")
 	if profileResponse.StatusCode != http.StatusOK {
 		t.Fatalf("profile status=%d body=%s", profileResponse.StatusCode, readBody(profileResponse))
 	}
@@ -118,7 +118,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 	}
 
 	intent := `{"intent_id":"01985555-1111-7111-8111-111111111111","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`
-	intentResponse := requestJSON(t, http.MethodPost, server.URL+"/api/v1/intents", firstPair.AccessToken, intent)
+	intentResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/intents", firstPair.AccessToken, intent)
 	if intentResponse.StatusCode != http.StatusOK {
 		t.Fatalf("intent status=%d body=%s", intentResponse.StatusCode, readBody(intentResponse))
 	}
@@ -128,13 +128,13 @@ func TestAccountSessionIntegration(t *testing.T) {
 		t.Fatalf("receipt=%v", receipt)
 	}
 
-	refreshResponse := requestJSON(t, http.MethodPost, server.URL+"/api/v1/session/refresh", "", fmt.Sprintf(`{"refresh_token":%q}`, firstPair.RefreshToken))
+	refreshResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/session/refresh", "", fmt.Sprintf(`{"refresh_token":%q}`, firstPair.RefreshToken))
 	if refreshResponse.StatusCode != http.StatusOK {
 		t.Fatalf("refresh status=%d body=%s", refreshResponse.StatusCode, readBody(refreshResponse))
 	}
 	var rotated TokenPair
 	decodeResponse(t, refreshResponse, &rotated)
-	reuseResponse := requestJSON(t, http.MethodPost, server.URL+"/api/v1/session/refresh", "", fmt.Sprintf(`{"refresh_token":%q}`, firstPair.RefreshToken))
+	reuseResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/session/refresh", "", fmt.Sprintf(`{"refresh_token":%q}`, firstPair.RefreshToken))
 	if reuseResponse.StatusCode != http.StatusUnauthorized || !strings.Contains(readBody(reuseResponse), "refresh_reused") {
 		t.Fatalf("reuse status=%d", reuseResponse.StatusCode)
 	}
@@ -142,10 +142,10 @@ func TestAccountSessionIntegration(t *testing.T) {
 		t.Fatal("refresh-family reuse did not revoke rotated access token")
 	}
 
-	freshSession := requestJSON(t, http.MethodPost, server.URL+"/api/v1/session", "", fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
+	freshSession := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/session", "", fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
 	var freshPair TokenPair
 	decodeResponse(t, freshSession, &freshPair)
-	newFounderResponse := requestJSON(t, http.MethodPost, server.URL+"/api/v1/founder", freshPair.AccessToken, `{}`)
+	newFounderResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/founder", freshPair.AccessToken, `{}`)
 	if newFounderResponse.StatusCode != http.StatusCreated {
 		t.Fatalf("new founder status=%d body=%s", newFounderResponse.StatusCode, readBody(newFounderResponse))
 	}
@@ -168,7 +168,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 		ConstantsHash string          `json:"constants_hash"`
 		State         json.RawMessage `json:"state"`
 	}{Version: newState.Version, ConstantsHash: newState.ConstantsHash, State: newState.State})
-	importResponse := requestJSON(t, http.MethodPost, server.URL+"/api/v1/founder/import", freshPair.AccessToken, string(importBody))
+	importResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/founder/import", freshPair.AccessToken, string(importBody))
 	if importResponse.StatusCode != http.StatusOK {
 		t.Fatalf("import status=%d body=%s", importResponse.StatusCode, readBody(importResponse))
 	}
@@ -178,7 +178,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 		t.Fatal("imported flag did not round-trip")
 	}
 
-	deleteResponse := requestJSON(t, http.MethodDelete, server.URL+"/api/v1/account", freshPair.AccessToken, "")
+	deleteResponse := requestJSON(t, server.Client, http.MethodDelete, server.URL+"/api/v1/account", freshPair.AccessToken, "")
 	if deleteResponse.StatusCode != http.StatusNoContent {
 		t.Fatalf("delete status=%d body=%s", deleteResponse.StatusCode, readBody(deleteResponse))
 	}
@@ -222,13 +222,13 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	server := httptest.NewServer(api.Router())
+	server := testhttp.New(api.Router())
 	defer server.Close()
-	first := requestJSON(t, http.MethodPost, server.URL+"/api/v1/account", "", `{}`)
+	first := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/account", "", `{}`)
 	if first.StatusCode != http.StatusCreated {
 		t.Fatalf("first status=%d body=%s", first.StatusCode, readBody(first))
 	}
-	second := requestJSON(t, http.MethodPost, server.URL+"/api/v1/account", "", `{}`)
+	second := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/account", "", `{}`)
 	if second.StatusCode != http.StatusTooManyRequests || !strings.Contains(readBody(second), `"category":"rate_limited"`) {
 		t.Fatalf("second status=%d", second.StatusCode)
 	}
@@ -259,7 +259,7 @@ func truncateAccountIntegration(t *testing.T, db *sql.DB) {
 	}
 }
 
-func requestJSON(t *testing.T, method, url, accessToken, body string) *http.Response {
+func requestJSON(t *testing.T, client *http.Client, method, url, accessToken, body string) *http.Response {
 	t.Helper()
 	request, err := http.NewRequest(method, url, strings.NewReader(body))
 	if err != nil {
@@ -269,7 +269,7 @@ func requestJSON(t *testing.T, method, url, accessToken, body string) *http.Resp
 	if accessToken != "" {
 		request.Header.Set("Authorization", "Bearer "+accessToken)
 	}
-	response, err := http.DefaultClient.Do(request)
+	response, err := client.Do(request)
 	if err != nil {
 		t.Fatal(err)
 	}

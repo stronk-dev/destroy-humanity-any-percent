@@ -104,3 +104,17 @@
   shutdown when its caller context is already expired instead of returning before the library sees
   shutdown. A blocked-intent regression proves `broadcast -> close -> shutdown` still occurs at the
   deadline and the caller receives `context.DeadlineExceeded`.
+
+## 2026-07-30 — actual recovery and sandbox-safe network tests
+
+- Added an actual Centrifuge JSON-protocol recovery test over coder/websocket. It records the live
+  stream epoch/offset, disconnects after revision 1, publishes private revisions 2 and 3 while the
+  client is absent, and proves both return in order with their consecutive offsets on recovery.
+- The same test disconnects a world subscriber, submits revisions 2–20 inside one coalescing
+  interval, and proves recovery returns exactly one cached publication containing revision 20.
+  This exercises the embedded node's real history/recovery options rather than the separate
+  in-memory history model, closing Transport AC2 and AC3 at the socket boundary.
+- Replaced OS-bound `httptest.NewServer` use with a shared in-memory `net.Pipe` HTTP server. The
+  actual HTTP upgrade, WebSocket framing, origin checks, and account API client/server exchange all
+  remain exercised, but routine Go tests no longer need permission to bind localhost. Transport and
+  Account focused suites now run inside the repository sandbox with the local Go build cache.

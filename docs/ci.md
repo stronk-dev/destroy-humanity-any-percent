@@ -101,5 +101,9 @@ Focused tests can run without writing to a user-level cache or requiring sandbox
 make test-go GO_PACKAGES='./harness ./transport'
 ```
 
+HTTP and WebSocket tests use a real `net/http` client/server exchange over in-memory `net.Pipe`
+connections. They exercise upgrades, framing, and protocol recovery without binding a localhost
+port, so ordinary test runs do not require network permission.
+
 No CI job deploys anything. Compose, Caddy, migrations, websocket draining, and reconnect testing
 belong to later RFCs.

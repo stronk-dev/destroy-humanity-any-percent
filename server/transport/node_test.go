@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
 
 	"cloud-clicker/server/account"
+	"cloud-clicker/server/internal/testhttp"
 
 	"github.com/coder/websocket"
 )
@@ -49,18 +49,18 @@ func testNode(t *testing.T) *Node {
 
 func TestActualWebsocketAuthOriginSubscriptionsAndNoClientPublish(t *testing.T) {
 	node := testNode(t)
-	server := httptest.NewServer(node.Handler())
+	server := testhttp.New(node.Handler())
 	defer server.Close()
-	endpoint := "ws" + strings.TrimPrefix(server.URL, "http")
+	endpoint, httpClient := "ws"+strings.TrimPrefix(server.URL, "http"), server.Client
 
-	if connection, response, err := websocket.Dial(context.Background(), endpoint, &websocket.DialOptions{HTTPHeader: http.Header{"Origin": []string{"https://denied.example"}}}); err == nil {
+	if connection, response, err := websocket.Dial(context.Background(), endpoint, &websocket.DialOptions{HTTPClient: httpClient, HTTPHeader: http.Header{"Origin": []string{"https://denied.example"}}}); err == nil {
 		_ = connection.CloseNow()
 		t.Fatal("disallowed origin upgraded")
 	} else if response == nil || response.StatusCode != http.StatusForbidden {
 		t.Fatalf("disallowed response=%v err=%v", response, err)
 	}
 
-	connection, _, err := websocket.Dial(context.Background(), endpoint, &websocket.DialOptions{HTTPHeader: http.Header{"Origin": []string{"http://localhost:5173"}}})
+	connection, _, err := websocket.Dial(context.Background(), endpoint, &websocket.DialOptions{HTTPClient: httpClient, HTTPHeader: http.Header{"Origin": []string{"http://localhost:5173"}}})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -87,9 +87,10 @@ func TestActualWebsocketAuthOriginSubscriptionsAndNoClientPublish(t *testing.T) 
 
 func TestWorldPublishesAreCoalescedAtConfiguredRate(t *testing.T) {
 	node := testNode(t)
-	server := httptest.NewServer(node.Handler())
+	server := testhttp.New(node.Handler())
 	defer server.Close()
-	connection, _, err := websocket.Dial(context.Background(), "ws"+strings.TrimPrefix(server.URL, "http"), &websocket.DialOptions{HTTPHeader: http.Header{"Origin": []string{"http://localhost:5173"}}})
+	endpoint, httpClient := "ws"+strings.TrimPrefix(server.URL, "http"), server.Client
+	connection, _, err := websocket.Dial(context.Background(), endpoint, &websocket.DialOptions{HTTPClient: httpClient, HTTPHeader: http.Header{"Origin": []string{"http://localhost:5173"}}})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -125,11 +126,103 @@ func TestWorldPublishesAreCoalescedAtConfiguredRate(t *testing.T) {
 	}
 }
 
+func TestActualWebsocketRecoveryReplaysPrivateReceiptsAndLatestWorld(t *testing.T) {
+	node := testNode(t)
+	server := testhttp.New(node.Handler())
+	defer server.Close()
+	endpoint, httpClient := "ws"+strings.TrimPrefix(server.URL, "http"), server.Client
+
+	private := dialAuthenticated(t, endpoint, httpClient)
+	writeCommand(t, private, map[string]any{"id": 2, "subscribe": map[string]any{"channel": "player:founder"}})
+	initialPrivate := decodeSubscribe(t, readReply(t, private).Subscribe)
+	if !initialPrivate.Recoverable || !initialPrivate.Positioned || initialPrivate.Epoch == "" {
+		t.Fatalf("private position=%+v", initialPrivate)
+	}
+	publishReceipt(t, node, 1)
+	firstPrivate := readPush(t, private)
+	if firstPrivate.Channel != "player:founder" || firstPrivate.Publication == nil || firstPrivate.Publication.Offset == 0 {
+		t.Fatalf("first private push=%+v", firstPrivate)
+	}
+	privateOffset := firstPrivate.Publication.Offset
+	_ = private.CloseNow()
+	publishReceipt(t, node, 2)
+	publishReceipt(t, node, 3)
+
+	reconnectedPrivate := dialAuthenticated(t, endpoint, httpClient)
+	defer reconnectedPrivate.CloseNow()
+	writeCommand(t, reconnectedPrivate, map[string]any{"id": 2, "subscribe": map[string]any{
+		"channel": "player:founder", "recover": true, "epoch": initialPrivate.Epoch, "offset": privateOffset,
+	}})
+	recoveredPrivate := decodeSubscribe(t, readReply(t, reconnectedPrivate).Subscribe)
+	if !recoveredPrivate.Recovered || !recoveredPrivate.WasRecovering || len(recoveredPrivate.Publications) != 2 {
+		t.Fatalf("private recovery=%+v", recoveredPrivate)
+	}
+	for index, wantRevision := range []int64{2, 3} {
+		publication := recoveredPrivate.Publications[index]
+		if publication.Offset != privateOffset+uint64(index+1) || envelopeRevision(t, publication.Data) != wantRevision {
+			t.Fatalf("private publication[%d]=%+v", index, publication)
+		}
+	}
+
+	world := dialAuthenticated(t, endpoint, httpClient)
+	writeCommand(t, world, map[string]any{"id": 2, "subscribe": map[string]any{"channel": "world"}})
+	initialWorld := decodeSubscribe(t, readReply(t, world).Subscribe)
+	if !initialWorld.Recoverable || !initialWorld.Positioned || initialWorld.Epoch == "" {
+		t.Fatalf("world position=%+v", initialWorld)
+	}
+	publishWorld(t, node, 1)
+	firstWorld := readPush(t, world)
+	if firstWorld.Publication == nil || envelopeRevision(t, firstWorld.Publication.Data) != 1 {
+		t.Fatalf("first world push=%+v", firstWorld)
+	}
+	worldOffset := firstWorld.Publication.Offset
+	_ = world.CloseNow()
+	for revision := int64(2); revision <= 20; revision++ {
+		publishWorld(t, node, revision)
+	}
+	time.Sleep(300 * time.Millisecond)
+
+	reconnectedWorld := dialAuthenticated(t, endpoint, httpClient)
+	defer reconnectedWorld.CloseNow()
+	writeCommand(t, reconnectedWorld, map[string]any{"id": 2, "subscribe": map[string]any{
+		"channel": "world", "recover": true, "epoch": initialWorld.Epoch, "offset": worldOffset,
+	}})
+	recoveredWorld := decodeSubscribe(t, readReply(t, reconnectedWorld).Subscribe)
+	if !recoveredWorld.Recovered || !recoveredWorld.WasRecovering || len(recoveredWorld.Publications) != 1 ||
+		envelopeRevision(t, recoveredWorld.Publications[0].Data) != 20 {
+		t.Fatalf("world recovery=%+v", recoveredWorld)
+	}
+}
+
 type protocolReply struct {
 	ID        uint32          `json:"id"`
 	Error     *protocolError  `json:"error"`
 	Connect   json.RawMessage `json:"connect"`
 	Subscribe json.RawMessage `json:"subscribe"`
+}
+
+type protocolSubscribeResult struct {
+	Recoverable   bool                  `json:"recoverable"`
+	Recovered     bool                  `json:"recovered"`
+	WasRecovering bool                  `json:"was_recovering"`
+	Positioned    bool                  `json:"positioned"`
+	Epoch         string                `json:"epoch"`
+	Offset        uint64                `json:"offset"`
+	Publications  []protocolPublication `json:"publications"`
+}
+
+type protocolPublication struct {
+	Data   json.RawMessage `json:"data"`
+	Offset uint64          `json:"offset"`
+}
+
+type protocolPush struct {
+	Channel     string               `json:"channel"`
+	Publication *protocolPublication `json:"pub"`
+}
+
+type protocolPushReply struct {
+	Push *protocolPush `json:"push"`
 }
 
 type protocolError struct {
@@ -162,4 +255,74 @@ func readReply(t *testing.T, connection *websocket.Conn) protocolReply {
 		t.Fatalf("decode %s: %v", data, err)
 	}
 	return reply
+}
+
+func dialAuthenticated(t *testing.T, endpoint string, httpClient *http.Client) *websocket.Conn {
+	t.Helper()
+	connection, _, err := websocket.Dial(context.Background(), endpoint, &websocket.DialOptions{HTTPClient: httpClient, HTTPHeader: http.Header{"Origin": []string{"http://localhost:5173"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	writeCommand(t, connection, map[string]any{"id": 1, "connect": map[string]any{"token": "access.good"}})
+	if reply := readReply(t, connection); reply.Error != nil || reply.Connect == nil {
+		_ = connection.CloseNow()
+		t.Fatalf("connect reply=%+v", reply)
+	}
+	return connection
+}
+
+func decodeSubscribe(t *testing.T, data json.RawMessage) protocolSubscribeResult {
+	t.Helper()
+	var result protocolSubscribeResult
+	if len(data) == 0 {
+		t.Fatal("missing subscribe result")
+	}
+	if err := json.Unmarshal(data, &result); err != nil {
+		t.Fatalf("decode subscribe %s: %v", data, err)
+	}
+	return result
+}
+
+func readPush(t *testing.T, connection *websocket.Conn) protocolPush {
+	t.Helper()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	_, data, err := connection.Read(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var reply protocolPushReply
+	if err := json.Unmarshal(data, &reply); err != nil || reply.Push == nil {
+		t.Fatalf("decode push %s: %v", data, err)
+	}
+	return *reply.Push
+}
+
+func publishReceipt(t *testing.T, node *Node, revision int64) {
+	t.Helper()
+	payload, _ := json.Marshal(map[string]any{"intent_id": "01985555-0010-7000-8000-000000000010", "outcome": "applied", "new_revision": revision})
+	if err := node.Publish(Envelope{Version: WireVersion, Channel: "player:founder", Kind: "receipt", Revision: revision,
+		ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Timestamp: time.Now().UTC(), Payload: payload}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func publishWorld(t *testing.T, node *Node, revision int64) {
+	t.Helper()
+	payload, _ := json.Marshal(map[string]any{"scope": "world", "rev": revision, "state": map[string]any{"revision": revision}})
+	if err := node.Publish(Envelope{Version: WireVersion, Channel: "world", Kind: "snapshot", Revision: revision,
+		ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Timestamp: time.Now().UTC(), Payload: payload}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func envelopeRevision(t *testing.T, data json.RawMessage) int64 {
+	t.Helper()
+	var envelope struct {
+		Revision int64 `json:"rev"`
+	}
+	if err := json.Unmarshal(data, &envelope); err != nil {
+		t.Fatalf("decode envelope %s: %v", data, err)
+	}
+	return envelope.Revision
 }
