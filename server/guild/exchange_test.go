@@ -8,11 +8,11 @@ import (
 func TestClearUsesOrderedOnePassWithoutRedistribution(t *testing.T) {
 	catalog, _ := LoadCatalog([]byte(phase0Catalog))
 	members := []MemberStock{
-		{AccountID: "018f0000-0000-4000-8000-000000000004", Produces: "compliance", Consumes: "libraries", StockUnits: 0, ConsumedUnits: 99_950},
-		{AccountID: "018f0000-0000-4000-8000-000000000002", Produces: "hype", Consumes: "revenue", StockUnits: 0},
-		{AccountID: "018f0000-0000-4000-8000-000000000001", Produces: "revenue", Consumes: "compliance", StockUnits: 401},
-		{AccountID: "018f0000-0000-4000-8000-000000000003", Produces: "libraries", Consumes: "hype", StockUnits: 0},
-		{AccountID: "018f0000-0000-4000-8000-000000000005", Produces: "hype", Consumes: "revenue", StockUnits: 0},
+		{AccountID: "018f0000-0000-4000-8000-000000000004", Produces: "compliance", Consumes: "libraries", ReceivedUnits: 99_950},
+		{AccountID: "018f0000-0000-4000-8000-000000000002", Produces: "hype", Consumes: "revenue"},
+		{AccountID: "018f0000-0000-4000-8000-000000000001", Produces: "revenue", Consumes: "compliance", AvailableUnits: 401},
+		{AccountID: "018f0000-0000-4000-8000-000000000003", Produces: "libraries", Consumes: "hype"},
+		{AccountID: "018f0000-0000-4000-8000-000000000005", Produces: "hype", Consumes: "revenue"},
 	}
 	got, events, err := Clear(catalog, members, 100_000)
 	if err != nil {
@@ -20,18 +20,18 @@ func TestClearUsesOrderedOnePassWithoutRedistribution(t *testing.T) {
 	}
 	// Offered=200, split 100/100. The first consumer can take 100; the
 	// second can take 100. The cap-limited case is separately asserted below.
-	if got[0].StockUnits != 201 || len(events) != 1 || !reflect.DeepEqual(events[0].Allocations,
+	if got[0].AvailableUnits != 201 || len(events) != 1 || !reflect.DeepEqual(events[0].Allocations,
 		[]Allocation{{AccountID: members[1].AccountID, Units: 100}, {AccountID: members[4].AccountID, Units: 100}}) {
 		t.Fatalf("got=%+v events=%+v", got, events)
 	}
 
 	limited := []MemberStock{
-		{AccountID: "018f0000-0000-4000-8000-000000000001", Produces: "revenue", Consumes: "compliance", StockUnits: 401},
-		{AccountID: "018f0000-0000-4000-8000-000000000002", Produces: "hype", Consumes: "revenue", ConsumedUnits: 99_950},
+		{AccountID: "018f0000-0000-4000-8000-000000000001", Produces: "revenue", Consumes: "compliance", AvailableUnits: 401},
+		{AccountID: "018f0000-0000-4000-8000-000000000002", Produces: "hype", Consumes: "revenue", ReceivedUnits: 99_950},
 		{AccountID: "018f0000-0000-4000-8000-000000000003", Produces: "hype", Consumes: "revenue"},
 	}
 	got, events, err = Clear(catalog, limited, 100_000)
-	if err != nil || got[0].StockUnits != 251 || len(events) != 1 || !reflect.DeepEqual(events[0].Allocations,
+	if err != nil || got[0].AvailableUnits != 251 || len(events) != 1 || !reflect.DeepEqual(events[0].Allocations,
 		[]Allocation{{AccountID: limited[1].AccountID, Units: 50}, {AccountID: limited[2].AccountID, Units: 100}}) {
 		t.Fatalf("limited got=%+v events=%+v err=%v", got, events, err)
 	}
@@ -39,13 +39,13 @@ func TestClearUsesOrderedOnePassWithoutRedistribution(t *testing.T) {
 
 func TestClearAbsentLinkAndNPCFallback(t *testing.T) {
 	catalog, _ := LoadCatalog([]byte(phase0Catalog))
-	member := MemberStock{AccountID: "018f0000-0000-4000-8000-000000000001", Produces: "libraries", Consumes: "hype", StockUnits: 1000}
+	member := MemberStock{AccountID: "018f0000-0000-4000-8000-000000000001", Produces: "libraries", Consumes: "hype", AvailableUnits: 1000}
 	got, events, err := Clear(catalog, []MemberStock{member}, 100_000)
-	if err != nil || got[0].StockUnits != 1000 || len(events) != 0 {
+	if err != nil || got[0].AvailableUnits != 1000 || len(events) != 0 {
 		t.Fatalf("guild got=%+v events=%v err=%v", got, events, err)
 	}
 	npc, event, err := ClearNPC(catalog, member, 100_000)
-	if err != nil || npc.StockUnits != 880 || npc.ConsumedUnits != 120 || event == nil || !event.NPC {
+	if err != nil || npc.AvailableUnits != 880 || npc.ReceivedUnits != 120 || event == nil || !event.NPC {
 		t.Fatalf("npc=%+v event=%+v err=%v", npc, event, err)
 	}
 }

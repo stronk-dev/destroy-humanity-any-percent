@@ -11,8 +11,8 @@ type MemberStock struct {
 	AccountID     string
 	Produces      string
 	Consumes      string
-	StockUnits    int64
-	ConsumedUnits int64
+	AvailableUnits int64
+	ReceivedUnits  int64
 }
 
 type Allocation struct {
@@ -38,8 +38,8 @@ func Clear(catalog *Catalog, members []MemberStock, stockCap int64) ([]MemberSto
 	seen := map[string]bool{}
 	for _, member := range result {
 		if !uuidPattern.MatchString(member.AccountID) || member.Produces == "" || member.Consumes == "" ||
-			member.Produces == member.Consumes || member.StockUnits < 0 || member.StockUnits > stockCap ||
-			member.ConsumedUnits < 0 || member.ConsumedUnits > stockCap || seen[member.AccountID] {
+			member.Produces == member.Consumes || member.AvailableUnits < 0 || member.AvailableUnits > stockCap ||
+			member.ReceivedUnits < 0 || member.ReceivedUnits > stockCap || seen[member.AccountID] {
 			return nil, nil, ErrInvalidExchange
 		}
 		seen[member.AccountID] = true
@@ -48,13 +48,13 @@ func Clear(catalog *Catalog, members []MemberStock, stockCap int64) ([]MemberSto
 	clearings := make([]Clearing, 0)
 	for producerIndex := range result {
 		producer := &result[producerIndex]
-		offered := producer.StockUnits * catalog.ClearingRatePPM / 1_000_000
+		offered := producer.AvailableUnits * catalog.ClearingRatePPM / 1_000_000
 		if offered <= 0 {
 			continue
 		}
 		consumerIndexes := make([]int, 0)
 		for index := range result {
-			capacity := min64(catalog.StockIntakeCap-intakeUsed[index], stockCap-result[index].ConsumedUnits)
+			capacity := min64(catalog.StockIntakeCap-intakeUsed[index], stockCap-result[index].ReceivedUnits)
 			if result[index].Consumes == producer.Produces && capacity > 0 {
 				consumerIndexes = append(consumerIndexes, index)
 			}
@@ -70,18 +70,18 @@ func Clear(catalog *Catalog, members []MemberStock, stockCap int64) ([]MemberSto
 			if int64(order) < remainder {
 				requested++
 			}
-			capacity := min64(catalog.StockIntakeCap-intakeUsed[consumerIndex], stockCap-result[consumerIndex].ConsumedUnits)
+			capacity := min64(catalog.StockIntakeCap-intakeUsed[consumerIndex], stockCap-result[consumerIndex].ReceivedUnits)
 			units := min64(requested, capacity)
 			if units <= 0 {
 				continue
 			}
-			result[consumerIndex].ConsumedUnits += units
+			result[consumerIndex].ReceivedUnits += units
 			intakeUsed[consumerIndex] += units
 			debited += units
 			allocations = append(allocations, Allocation{AccountID: result[consumerIndex].AccountID, Units: units})
 		}
 		if debited > 0 {
-			producer.StockUnits -= debited
+			producer.AvailableUnits -= debited
 			clearings = append(clearings, Clearing{ProducerAccountID: producer.AccountID, Resource: producer.Produces, Allocations: allocations})
 		}
 	}
@@ -89,17 +89,17 @@ func Clear(catalog *Catalog, members []MemberStock, stockCap int64) ([]MemberSto
 }
 
 func ClearNPC(catalog *Catalog, member MemberStock, stockCap int64) (MemberStock, *Clearing, error) {
-	if catalog == nil || stockCap < 1 || !uuidPattern.MatchString(member.AccountID) || member.StockUnits < 0 || member.StockUnits > stockCap ||
-		member.ConsumedUnits < 0 || member.ConsumedUnits > stockCap {
+	if catalog == nil || stockCap < 1 || !uuidPattern.MatchString(member.AccountID) || member.AvailableUnits < 0 || member.AvailableUnits > stockCap ||
+		member.ReceivedUnits < 0 || member.ReceivedUnits > stockCap {
 		return MemberStock{}, nil, ErrInvalidExchange
 	}
-	offered := member.StockUnits * catalog.NPCExchangePPM / 1_000_000
-	units := min64(offered, min64(catalog.StockIntakeCap, stockCap-member.ConsumedUnits))
+	offered := member.AvailableUnits * catalog.NPCExchangePPM / 1_000_000
+	units := min64(offered, min64(catalog.StockIntakeCap, stockCap-member.ReceivedUnits))
 	if units <= 0 {
 		return member, nil, nil
 	}
-	member.StockUnits -= units
-	member.ConsumedUnits += units
+	member.AvailableUnits -= units
+	member.ReceivedUnits += units
 	return member, &Clearing{ProducerAccountID: member.AccountID, Resource: member.Produces,
 		Allocations: []Allocation{{AccountID: member.AccountID, Units: units}}, NPC: true}, nil
 }
