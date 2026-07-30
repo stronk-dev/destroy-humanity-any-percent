@@ -6,6 +6,7 @@ export type AuthoritativeIntent =
   | (IntentEnvelope & { readonly kind: "buy_route_hint"; readonly routeId: string })
   | (IntentEnvelope & { readonly kind: "sign_compact"; readonly tithePpm: number })
   | (IntentEnvelope & { readonly kind: "leave_compact" })
+  | (IntentEnvelope & { readonly kind: "incorporate"; readonly factionId: string })
   | (IntentEnvelope & { readonly kind: "accept_exit_offer"; readonly expectedFounderRevision: number; readonly offerId: string })
   | (IntentEnvelope & { readonly kind: "decline_exit_offer"; readonly offerId: string })
   | (IntentEnvelope & { readonly kind: "wind_down"; readonly expectedFounderRevision: number })
@@ -43,6 +44,7 @@ function validateIntent(intent: AuthoritativeIntent): void {
     requireExactKeys(intent, ["intentId", "kind", "expectedRevision", "tithePpm"]); requirePositiveInteger(intent.tithePpm); if (intent.tithePpm > 1_000_000) throw new SyntaxError("invalid tithe ppm"); return;
   }
   if (intent.kind === "leave_compact") { requireExactKeys(intent, ["intentId", "kind", "expectedRevision"]); return; }
+  if (intent.kind === "incorporate") { requireExactKeys(intent, ["intentId", "kind", "expectedRevision", "factionId"]); requireId(intent.factionId); return; }
   if (intent.kind === "accept_exit_offer") {
     requireExactKeys(intent, ["intentId", "kind", "expectedRevision", "expectedFounderRevision", "offerId"]); requirePositiveInteger(intent.expectedFounderRevision); requireUUID(intent.offerId); return;
   }

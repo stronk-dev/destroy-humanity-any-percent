@@ -223,7 +223,7 @@ func (s *Service) handleScriptedCrossGateExit(ctx context.Context, streamID stri
 			if err != nil {
 				return save.ExitDecision{}, err
 			}
-			decision, err := TransitionWithPolicies(request, company, catalog, routeCatalog, nil, companyRevision, mode, now, contributions, &invariantCollector{}, s.accrualHook)
+			decision, err := TransitionWithPolicies(request, company, catalog, routeCatalog, nil, nil, companyRevision, mode, now, contributions, &invariantCollector{}, s.accrualHook)
 			if err != nil {
 				return save.ExitDecision{}, err
 			}

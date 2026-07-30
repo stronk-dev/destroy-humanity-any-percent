@@ -91,6 +91,9 @@ it("always dispatches intents to the authoritative adapter", async () => {
   const wind = { intentId: "018f6b7c-9abc-7def-8abc-222222222222", kind: "wind_down", expectedRevision: 4, expectedFounderRevision: 2 } as const;
   await dispatcher.send(wind); expect(request).toHaveBeenLastCalledWith(wind);
   expect(() => dispatcher.send({ ...wind, expectedFounderRevision: 0 })).toThrow(/positive integer/);
+  const incorporate = { intentId: "018f6b7c-9abc-7def-8abc-333333333333", kind: "incorporate", expectedRevision: 5, factionId: "open_source" } as const;
+  await dispatcher.send(incorporate); expect(request).toHaveBeenLastCalledWith(incorporate);
+  expect(() => dispatcher.send({ ...incorporate, factionId: "Open Source" })).toThrow(/mechanical id/);
 });
 
 it("selects the one-modal return story only beyond thirty seconds", () => {

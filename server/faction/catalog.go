@@ -12,6 +12,7 @@ import (
 	"sort"
 
 	"cloud-clicker/server/commons"
+	"cloud-clicker/server/save"
 )
 
 const CatalogSchemaVersion = 1
@@ -123,6 +124,22 @@ func (catalog *Catalog) Faction(id string) (Faction, bool) {
 	}
 	value, ok := catalog.byID[id]
 	return value, ok
+}
+
+func (catalog *Catalog) ValidateState(state *save.State) error {
+	if catalog == nil || state == nil {
+		return ErrInvalidStockState
+	}
+	if state.FactionID == "" {
+		return nil
+	}
+	member, ok := catalog.Faction(state.FactionID)
+	if !ok || state.StockUnits < 0 || state.StockUnits > catalog.StockCap ||
+		state.StockProgressMS < 0 || state.StockProgressMS >= catalog.StockIntervalMS ||
+		state.FactionStockResource != "" && state.FactionStockResource != member.Produces {
+		return ErrInvalidStockState
+	}
+	return nil
 }
 
 func sameSortedKeys(values map[string]Faction, expected []string) bool {

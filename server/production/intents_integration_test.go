@@ -15,6 +15,7 @@ import (
 	"cloud-clicker/server/commonsprojection"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
+	"cloud-clicker/server/faction"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routeprojection"
 	"cloud-clicker/server/routes"
@@ -35,6 +36,7 @@ type integrationCatalogs struct {
 	economy  map[string]*economy.Catalog
 	routes   map[string]*routes.Catalog
 	prestige map[string]*prestigecore.Policy
+	factions map[string]*faction.Catalog
 }
 
 func (catalogs integrationCatalogs) ResolvePrestige(hash string) (*prestigecore.Policy, bool) {
@@ -50,6 +52,22 @@ func (catalogs integrationCatalogs) Resolve(hash string) (*economy.Catalog, bool
 func (catalogs integrationCatalogs) ResolveRoutes(hash string) (*routes.Catalog, bool) {
 	catalog, ok := catalogs.routes[hash]
 	return catalog, ok
+}
+
+func (catalogs integrationCatalogs) ResolveFaction(hash string) (*faction.Catalog, bool) {
+	catalog, ok := catalogs.factions[hash]
+	return catalog, ok
+}
+
+func (catalogs integrationCatalogs) ValidateState(hash string, state *save.State) error {
+	if state != nil && state.FactionID == "" {
+		return nil
+	}
+	catalog, ok := catalogs.ResolveFaction(hash)
+	if !ok {
+		return faction.ErrInvalidStockState
+	}
+	return catalog.ValidateState(state)
 }
 
 func TestIntentServiceIntegration(t *testing.T) {
@@ -88,9 +106,13 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	factionCatalog, err := faction.LoadCatalog(bundle.Artifacts["factions"], commonsCatalog)
+	if err != nil {
+		t.Fatal(err)
+	}
 	hash := bundle.Hash
 	seedProductionEpoch(t, db, hash, bundle.Artifacts)
-	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}}
+	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}, factions: map[string]*faction.Catalog{hash: factionCatalog}}
 	store, err := save.NewStore(db, resolver, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -126,7 +148,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	metrics := fakeInvariantMetrics{}
-	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithAccrualHook(commonsHook), WithEventProjector(commonsProjector))
+	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithFactionRuntime(resolver, 30_000), WithAccrualHook(commonsHook), WithEventProjector(commonsProjector))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -283,12 +305,31 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil || !crossReplay.Replay || string(crossReplay.Receipt) != string(crossed.Receipt) {
 		t.Fatalf("cross replay=%+v err=%v", crossReplay, err)
 	}
-	sign := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-bbbbbbbbbbbb","kind":"sign_compact","expected_revision":6,"tithe_ppm":100000}`)
+	incorporate := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-abababababab","kind":"incorporate","expected_revision":6,"faction_id":"bootstrapper"}`)
+	incorporated, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(time.Second), incorporate)
+	if err != nil || incorporated.Replay {
+		t.Fatalf("incorporate=%s replay=%v err=%v", incorporated.Receipt, incorporated.Replay, err)
+	}
+	var incorporatedReceipt struct {
+		NewRevision int64 `json:"new_revision"`
+		Snapshot    struct {
+			FactionID     *string `json:"faction_id"`
+			StockResource *string `json:"stock_resource"`
+		} `json:"snapshot"`
+	}
+	if err := json.Unmarshal(incorporated.Receipt, &incorporatedReceipt); err != nil || incorporatedReceipt.NewRevision != 7 || incorporatedReceipt.Snapshot.FactionID == nil || *incorporatedReceipt.Snapshot.FactionID != "bootstrapper" || incorporatedReceipt.Snapshot.StockResource == nil || *incorporatedReceipt.Snapshot.StockResource != "revenue" {
+		t.Fatalf("incorporate receipt=%+v raw=%s err=%v", incorporatedReceipt, incorporated.Receipt, err)
+	}
+	incorporateReplay, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(time.Second), incorporate)
+	if err != nil || !incorporateReplay.Replay || string(incorporateReplay.Receipt) != string(incorporated.Receipt) {
+		t.Fatalf("incorporate replay=%+v err=%v", incorporateReplay, err)
+	}
+	sign := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-bbbbbbbbbbbb","kind":"sign_compact","expected_revision":7,"tithe_ppm":100000}`)
 	signed, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(2*time.Second), sign)
 	if err != nil || signed.Replay {
 		t.Fatalf("sign=%s replay=%v err=%v", signed.Receipt, signed.Replay, err)
 	}
-	memberManual := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-cccccccccccc","kind":"perform_manual_batch","expected_revision":7,"action_id":"manual.click","count":1,"window_ms":3600000}`)
+	memberManual := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-cccccccccccc","kind":"perform_manual_batch","expected_revision":8,"action_id":"manual.click","count":1,"window_ms":3600000}`)
 	sampled, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(time.Hour+2*time.Second), memberManual)
 	if err != nil || sampled.Replay {
 		t.Fatalf("sample=%s replay=%v err=%v", sampled.Receipt, sampled.Replay, err)
@@ -297,7 +338,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil || commonsSnapshot.HealthPPM <= 0 || commonsSnapshot.CohortCapacity == "0" {
 		t.Fatalf("commons snapshot=%+v err=%v", commonsSnapshot, err)
 	}
-	leave := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-dddddddddddd","kind":"leave_compact","expected_revision":8}`)
+	leave := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-dddddddddddd","kind":"leave_compact","expected_revision":9}`)
 	leftCompact, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(2*time.Hour+2*time.Second), leave)
 	if err != nil || leftCompact.Replay {
 		t.Fatalf("leave=%s replay=%v err=%v", leftCompact.Receipt, leftCompact.Replay, err)
@@ -347,7 +388,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	).Scan(&revisions, &events, &intents, &invariantEvents); err != nil {
 		t.Fatal(err)
 	}
-	if revisions != 5 || events != 10 || intents != 10 || invariantEvents != 1 {
+	if revisions != 5 || events != 11 || intents != 11 || invariantEvents != 1 {
 		t.Fatalf("rows revisions=%d events=%d intents=%d invariant_events=%d", revisions, events, intents, invariantEvents)
 	}
 	var runLogCount int

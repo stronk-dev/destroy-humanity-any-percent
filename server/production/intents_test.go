@@ -11,8 +11,10 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/commons"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/faction"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
@@ -74,6 +76,10 @@ func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	if err != nil || leave.InvalidDetail != "" {
 		t.Fatalf("leave=%+v err=%v", leave, err)
 	}
+	incorporate, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"incorporate","expected_revision":1,"faction_id":"open_source"}`))
+	if err != nil || incorporate.InvalidDetail != "" || incorporate.FactionID != "open_source" {
+		t.Fatalf("incorporate=%+v err=%v", incorporate, err)
+	}
 	accept, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"accept_exit_offer","expected_revision":2,"expected_founder_revision":3,"offer_id":"018f6b7c-9abc-7def-8abc-0123456789ac"}`))
 	if err != nil || accept.InvalidDetail != "" || accept.ExpectedFounderRevision != 3 || accept.OfferID == "" {
 		t.Fatalf("accept=%+v err=%v", accept, err)
@@ -88,6 +94,70 @@ func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	}
 }
 
+func TestIncorporateAndOpenSourceBinding(t *testing.T) {
+	economyCatalog := phase0Catalog(t)
+	factionCatalog := phase0Factions(t)
+	band := &CompactTitheBand{MinimumPPM: 50_000, MaximumPPM: 150_000}
+	revision := save.Revision{StreamID: "11111111-1111-4111-8111-111111111111", OwnerID: "22222222-2222-4222-8222-222222222222", Number: 1}
+	request := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentIncorporate, FactionID: "open_source"}
+
+	tooEarly := engineState(t, economyCatalog, "0", 0)
+	tooEarly.RunSeq, tooEarly.Tier = 1, 1
+	decision, err := TransitionWithPolicies(request, tooEarly, economyCatalog, nil, band, factionCatalog, revision, ModeOnline, engineCursor, nil, nil, nil)
+	if err != nil || decision.Outcome != save.IntentRejected || !bytes.Contains(decision.Receipt, []byte("not_eligible")) || tooEarly.FactionID != "" {
+		t.Fatalf("early=%s state=%+v err=%v", decision.Receipt, tooEarly, err)
+	}
+
+	state := engineState(t, economyCatalog, "0", 0)
+	state.RunSeq, state.Tier = 1, 2
+	decision, err = TransitionWithPolicies(request, state, economyCatalog, nil, band, factionCatalog, revision, ModeOnline, engineCursor.Add(time.Second), nil, nil, nil)
+	if err != nil || decision.Outcome != save.IntentApplied || state.FactionID != "open_source" || state.FactionStockResource != "libraries" ||
+		!state.CompactMember || state.CompactTithePPM != 130_000 || len(decision.Events) != 2 || decision.Events[0].Kind != save.EventIncorporated || decision.Events[1].Kind != save.EventCompactSigned {
+		t.Fatalf("decision=%+v state=%+v err=%v", decision, state, err)
+	}
+	second := revision
+	second.Number = 2
+	again, err := TransitionWithPolicies(request, state, economyCatalog, nil, band, factionCatalog, second, ModeOnline, engineCursor.Add(2*time.Second), nil, nil, nil)
+	if err != nil || again.Outcome != save.IntentRejected || !bytes.Contains(again.Receipt, []byte("already_incorporated")) {
+		t.Fatalf("again=%s err=%v", again.Receipt, err)
+	}
+	leave := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ac", Kind: IntentLeaveCompact}
+	bound, err := TransitionWithPolicies(leave, state, economyCatalog, nil, band, factionCatalog, second, ModeOnline, engineCursor.Add(2*time.Second), nil, nil, nil)
+	if err != nil || bound.Outcome != save.IntentRejected || !bytes.Contains(bound.Receipt, []byte("faction_bound")) {
+		t.Fatalf("bound=%s err=%v", bound.Receipt, err)
+	}
+
+	ordinary := engineState(t, economyCatalog, "0", 0)
+	ordinary.RunSeq, ordinary.Tier = 1, 2
+	request.FactionID = "enterprise"
+	request.IntentID = "018f6b7c-9abc-7def-8abc-0123456789ad"
+	decision, err = TransitionWithPolicies(request, ordinary, economyCatalog, nil, band, factionCatalog, revision, ModeOnline, engineCursor, nil, nil, nil)
+	if err != nil || decision.Outcome != save.IntentApplied || ordinary.CompactMember || len(decision.Events) != 1 || ordinary.FactionStockResource != "compliance" {
+		t.Fatalf("ordinary=%+v state=%+v err=%v", decision, ordinary, err)
+	}
+}
+
+func phase0Factions(t *testing.T) *faction.Catalog {
+	t.Helper()
+	commonsData, err := os.ReadFile("../../balance/commons/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	commonsCatalog, err := commons.LoadCatalog(commonsData)
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile("../../balance/factions/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := faction.LoadCatalog(data, commonsCatalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return catalog
+}
+
 func TestCompactSignLeaveAndResign(t *testing.T) {
 	catalog := phase0Catalog(t)
 	revision := save.Revision{StreamID: "11111111-1111-4111-8111-111111111111", OwnerID: "22222222-2222-4222-8222-222222222222", Number: 1}
@@ -95,23 +165,23 @@ func TestCompactSignLeaveAndResign(t *testing.T) {
 	state.RunSeq = 1
 	band := &CompactTitheBand{MinimumPPM: 50_000, MaximumPPM: 150_000}
 	sign := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentSignCompact, TithePPM: 100_000}
-	decision, err := TransitionWithPolicies(sign, state, catalog, nil, band, revision, ModeOnline, engineCursor.Add(time.Second), nil, nil, nil)
+	decision, err := TransitionWithPolicies(sign, state, catalog, nil, band, nil, revision, ModeOnline, engineCursor.Add(time.Second), nil, nil, nil)
 	if err != nil || decision.Outcome != save.IntentApplied || !state.CompactMember || state.CompactTithePPM != 100_000 || len(decision.Events) != 1 || decision.Events[0].Kind != save.EventCompactSigned {
 		t.Fatalf("sign=%+v state=%+v err=%v", decision, state, err)
 	}
-	again, err := TransitionWithPolicies(sign, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 2}, ModeOnline, engineCursor.Add(time.Second), nil, nil, nil)
+	again, err := TransitionWithPolicies(sign, state, catalog, nil, band, nil, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 2}, ModeOnline, engineCursor.Add(time.Second), nil, nil, nil)
 	if err != nil || again.Outcome != save.IntentRejected || !bytes.Contains(again.Receipt, []byte("already_member")) {
 		t.Fatalf("again=%s err=%v", again.Receipt, err)
 	}
 	state.CompactSolidarityPPM = 900_000
 	state.CompactSamples = []save.CompactSample{{HourStart: engineCursor.Truncate(time.Hour), CompliancePPM: 900_000, CoveredMS: 1_000}}
 	leave := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ac", Kind: IntentLeaveCompact}
-	decision, err = TransitionWithPolicies(leave, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 2}, ModeOnline, engineCursor.Add(2*time.Second), nil, nil, nil)
+	decision, err = TransitionWithPolicies(leave, state, catalog, nil, band, nil, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 2}, ModeOnline, engineCursor.Add(2*time.Second), nil, nil, nil)
 	if err != nil || decision.Outcome != save.IntentApplied || state.CompactMember || state.CompactTithePPM != 0 || state.CompactSolidarityPPM != 0 || len(state.CompactSamples) != 0 || decision.Events[0].Kind != save.EventCompactLeft {
 		t.Fatalf("leave=%+v state=%+v err=%v", decision, state, err)
 	}
 	sign.IntentID = "018f6b7c-9abc-7def-8abc-0123456789ad"
-	decision, err = TransitionWithPolicies(sign, state, catalog, nil, band, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 3}, ModeOnline, engineCursor.Add(3*time.Second), nil, nil, nil)
+	decision, err = TransitionWithPolicies(sign, state, catalog, nil, band, nil, save.Revision{StreamID: revision.StreamID, OwnerID: revision.OwnerID, Number: 3}, ModeOnline, engineCursor.Add(3*time.Second), nil, nil, nil)
 	if err != nil || decision.Outcome != save.IntentApplied || !state.CompactMember || state.CompactSolidarityPPM != 0 {
 		t.Fatalf("resign=%+v state=%+v err=%v", decision, state, err)
 	}

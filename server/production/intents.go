@@ -18,6 +18,7 @@ import (
 	"cloud-clicker/server/accrualhook"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/faction"
 	"cloud-clicker/server/multiplier"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
@@ -42,6 +43,7 @@ const (
 	IntentDeclineExitOffer   = "decline_exit_offer"
 	IntentWindDown           = "wind_down"
 	IntentFileIPO            = "file_ipo"
+	IntentIncorporate        = "incorporate"
 )
 
 type PrestigePolicyResolver interface {
@@ -50,6 +52,10 @@ type PrestigePolicyResolver interface {
 
 type CompactPolicyResolver interface {
 	CompactTitheBand(constantsHash string) (minimumPPM, maximumPPM int64, ok bool)
+}
+
+type FactionCatalogResolver interface {
+	ResolveFaction(constantsHash string) (*faction.Catalog, bool)
 }
 
 type AccrualHook = accrualhook.Hook
@@ -106,6 +112,17 @@ func WithCompactPolicies(resolver CompactPolicyResolver) ServiceOption {
 			return ErrInvalidIntent
 		}
 		service.compactPolicies = resolver
+		return nil
+	}
+}
+
+func WithFactionRuntime(resolver FactionCatalogResolver, catchupCeilingMS int64) ServiceOption {
+	return func(service *Service) error {
+		if resolver == nil || catchupCeilingMS <= 0 || catchupCeilingMS > decimal.MaxExactInteger {
+			return ErrInvalidIntent
+		}
+		service.factionCatalogs = resolver
+		service.accrualHook = appendAccrualHook(service.accrualHook, faction.AccrualHook{Catalogs: resolver, CatchupCeilingMS: catchupCeilingMS})
 		return nil
 	}
 }
@@ -183,6 +200,7 @@ type Service struct {
 	routeCatalogs        RouteCatalogResolver
 	routeProjector       RouteProjector
 	compactPolicies      CompactPolicyResolver
+	factionCatalogs      FactionCatalogResolver
 	projectors           []EventProjector
 	accrualHook          AccrualHook
 	prestigePolicies     PrestigePolicyResolver
@@ -212,6 +230,7 @@ type IntentRequest struct {
 	TithePPM                int64
 	ExpectedFounderRevision int64
 	OfferID                 string
+	FactionID               string
 }
 
 type CompactTitheBand struct {
@@ -331,7 +350,7 @@ func (s *Service) Handle(
 				}
 			}
 			var compactBand *CompactTitheBand
-			if request.Kind == IntentSignCompact || request.Kind == IntentLeaveCompact {
+			if request.Kind == IntentSignCompact || request.Kind == IntentLeaveCompact || request.Kind == IntentIncorporate {
 				if s.compactPolicies == nil {
 					return save.IntentDecision{}, fmt.Errorf("%w: compact runtime unavailable", ErrInvalidIntent)
 				}
@@ -341,7 +360,25 @@ func (s *Service) Handle(
 				}
 				compactBand = &CompactTitheBand{MinimumPPM: minimum, MaximumPPM: maximum}
 			}
-			decision, err := TransitionWithPolicies(request, state, catalog, routeCatalog, compactBand, revision, mode, now, contributions, collector, s.accrualHook)
+			var factionCatalog *faction.Catalog
+			if request.Kind == IntentIncorporate || request.Kind == IntentLeaveCompact || state.FactionID != "" {
+				if s.factionCatalogs == nil {
+					return save.IntentDecision{}, fmt.Errorf("%w: faction runtime unavailable", ErrInvalidIntent)
+				}
+				var ok bool
+				factionCatalog, ok = s.factionCatalogs.ResolveFaction(revision.ConstantsHash)
+				if !ok {
+					return save.IntentDecision{}, fmt.Errorf("%w: unknown faction catalog %s", ErrInvalidIntent, revision.ConstantsHash)
+				}
+				if state.FactionID != "" {
+					member, exists := factionCatalog.Faction(state.FactionID)
+					if !exists {
+						return save.IntentDecision{}, ErrInvalidEngineState
+					}
+					state.FactionStockResource = member.Produces
+				}
+			}
+			decision, err := TransitionWithPolicies(request, state, catalog, routeCatalog, compactBand, factionCatalog, revision, mode, now, contributions, collector, s.accrualHook)
 			if err != nil {
 				return save.IntentDecision{}, err
 			}
@@ -434,10 +471,10 @@ func TransitionWithRoutes(
 	contributions []multiplier.Contribution,
 	sink InvariantSink,
 ) (save.IntentDecision, error) {
-	return TransitionWithPolicies(request, state, catalog, routeCatalog, nil, revision, mode, now, contributions, sink, nil)
+	return TransitionWithPolicies(request, state, catalog, routeCatalog, nil, nil, revision, mode, now, contributions, sink, nil)
 }
 
-func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, compactBand *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, sink InvariantSink, hook AccrualHook) (save.IntentDecision, error) {
+func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, compactBand *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, sink InvariantSink, hook AccrualHook) (save.IntentDecision, error) {
 	service := Service{}
 	switch request.Kind {
 	case IntentBuyGenerator:
@@ -451,7 +488,9 @@ func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *e
 	case IntentSignCompact:
 		return service.signCompact(request, state, catalog, compactBand, revision, mode, now, contributions, hook)
 	case IntentLeaveCompact:
-		return service.leaveCompact(request, state, catalog, compactBand, revision, mode, now, contributions, hook)
+		return service.leaveCompact(request, state, catalog, compactBand, factionCatalog, revision, mode, now, contributions, hook)
+	case IntentIncorporate:
+		return service.incorporate(request, state, catalog, compactBand, factionCatalog, revision, mode, now, contributions, hook)
 	case IntentDeclineExitOffer:
 		return service.declineExitOffer(request, state, catalog, revision, mode, now, contributions, hook)
 	default:
@@ -485,9 +524,21 @@ func (s *Service) signCompact(request IntentRequest, state *save.State, catalog 
 	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
 }
 
-func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || band == nil || revision.OwnerID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	if state.FactionID != "" {
+		if factionCatalog == nil {
+			return save.IntentDecision{}, ErrInvalidEngineState
+		}
+		member, ok := factionCatalog.Faction(state.FactionID)
+		if !ok {
+			return save.IntentDecision{}, ErrInvalidEngineState
+		}
+		if member.Compact != nil && member.Compact.AutoSign {
+			return rejectedDecision(request, revision.Number, "faction_bound", state.FactionID)
+		}
 	}
 	if !state.CompactMember {
 		return rejectedDecision(request, revision.Number, "not_member", "compact")
@@ -506,6 +557,54 @@ func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog
 	state.CompactSamples = []save.CompactSample{}
 	payload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": priorTithe, "prior_member": true, "new_member": false})
 	events = append(events, save.EventWrite{Kind: save.EventCompactLeft, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
+	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
+}
+
+func (s *Service) incorporate(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || factionCatalog == nil || revision.OwnerID == "" || state.RunSeq < 1 {
+		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	chosen, ok := factionCatalog.Faction(request.FactionID)
+	if !ok {
+		return rejectedDecision(request, revision.Number, "unknown_id", request.FactionID)
+	}
+	if state.Tier < 2 {
+		return rejectedDecision(request, revision.Number, "not_eligible", "tier")
+	}
+	if state.FactionID != "" {
+		return rejectedDecision(request, revision.Number, "already_incorporated", state.FactionID)
+	}
+	if chosen.Compact != nil {
+		if band == nil || chosen.Compact.TithePPM < band.MinimumPPM || chosen.Compact.TithePPM > band.MaximumPPM {
+			return save.IntentDecision{}, ErrInvalidEngineState
+		}
+		if state.CompactMember {
+			return rejectedDecision(request, revision.Number, "already_member", "compact")
+		}
+	}
+	before := state.Ledger.Snapshot()
+	result, err := Evaluate(state, catalog, now, mode, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	events, err := runAccrualHook(hook, request.IntentID, state, catalog, revision, result, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	state.FactionID = chosen.ID
+	state.FactionStockResource = chosen.Produces
+	state.IncorporatedAt = state.EvaluatedThrough
+	payload, _ := json.Marshal(map[string]any{
+		"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq},
+		"faction_id": chosen.ID, "stock_resource": chosen.Produces, "incorporated_at_ms": state.IncorporatedAt.UnixMilli(), "compact_auto_signed": chosen.Compact != nil,
+	})
+	events = append(events, save.EventWrite{Kind: save.EventIncorporated, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
+	if chosen.Compact != nil {
+		state.CompactMember, state.CompactTithePPM = true, chosen.Compact.TithePPM
+		state.CompactSolidarityPPM, state.CompactSamples = 0, []save.CompactSample{}
+		compactPayload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": chosen.Compact.TithePPM, "prior_member": false, "new_member": true})
+		events = append(events, save.EventWrite{Kind: save.EventCompactSigned, SchemaVersion: 1, IntentID: request.IntentID, Payload: compactPayload})
+	}
 	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
 }
 
@@ -929,7 +1028,24 @@ func wireSnapshot(state *save.State) map[string]any {
 		"offer_state": wireOfferState(state.OfferState), "run_started_at_ms": wireTimeMS(state.RunStartedAt), "run_pre_timer": state.RunPreTimer,
 		"offline_spans":        wireOfflineSpans(state.OfflineSpans),
 		"collapsed_offline_ms": state.CollapsedOfflineMS,
+		"faction_id":           nullableString(state.FactionID), "incorporated_at_ms": nullableTimeMS(state.IncorporatedAt),
+		"stock_resource": nullableString(state.FactionStockResource), "stock_units": state.StockUnits,
+		"stock_progress_ms": state.StockProgressMS, "consumed_stock_units": state.ConsumedStockUnits,
 	}
+}
+
+func nullableString(value string) any {
+	if value == "" {
+		return nil
+	}
+	return value
+}
+
+func nullableTimeMS(value time.Time) any {
+	if value.IsZero() {
+		return nil
+	}
+	return value.UnixMilli()
 }
 
 func wireTimeMS(value time.Time) int64 {
@@ -1120,6 +1236,14 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 	case IntentLeaveCompact:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision") {
 			request.InvalidDetail = "leave_compact.fields"
+		}
+	case IntentIncorporate:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "faction_id") {
+			request.InvalidDetail = "incorporate.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["faction_id"], &request.FactionID); err != nil || !intentIDPattern.MatchString(request.FactionID) {
+			request.InvalidDetail = "faction_id"
 		}
 	case IntentAcceptExitOffer:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "expected_founder_revision", "offer_id") {
