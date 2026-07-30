@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "current_epoch_id": 1,
+  "artifacts": [
+    { "name": "commons", "path": "balance/commons/phase0.json" },
+    { "name": "economy", "path": "balance/catalogs/phase0.json" },
+    { "name": "prestige", "path": "balance/prestige/phase0.json" },
+    { "name": "routes", "path": "balance/routes/phase0.json" }
+  ],
+  "epochs": [
+    {
+      "epoch_id": 1,
+      "name": "Phase 0",
+      "changelog_ref": "changelog/epoch-1.md",
+      "accepted_hashes": [
+        "sha256:269fb1545b7a3418c0533cbfc6584f0e46ad83f27f4d65be82cbebbea655a6dd"
+      ]
+    }
+  ]
+}

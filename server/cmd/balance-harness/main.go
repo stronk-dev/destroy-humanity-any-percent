@@ -11,10 +11,18 @@ import (
 )
 
 func main() {
-	mode := flag.String("mode", "check", "run, check, or update")
+	mode := flag.String("mode", "check", "run, check, update, or epoch-hash")
 	output := flag.String("output", "", "explicit output path for run mode")
 	root := flag.String("root", "..", "repository root")
 	flag.Parse()
+	if *mode == "epoch-hash" {
+		hash, err := harness.ComputeEpochSeedHash(*root)
+		if err != nil {
+			fail(err)
+		}
+		fmt.Println(hash)
+		return
+	}
 	suite, err := harness.LoadSuite(*root, "testdata/harness/scenarios/phase0-production.json")
 	if err != nil {
 		fail(err)
@@ -51,6 +59,9 @@ func main() {
 		}
 	case "check":
 		if err := harness.ValidateRepositoryBaselineChange(*root); err != nil {
+			fail(err)
+		}
+		if err := harness.ValidateRepositoryEpochChanges(*root); err != nil {
 			fail(err)
 		}
 		wantGolden, err := os.ReadFile(goldenPath)

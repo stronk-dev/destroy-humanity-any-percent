@@ -59,3 +59,22 @@
   harness gates, strict TS/Svelte, production build, 6,422 client tests, schema/boundary checks, and
   19,275 Chromium/Firefox/WebKit cases. The preceding save-v7 state-hash drift was regenerated and
   committed separately under `BALANCE-CHANGE:`; pacing observations and balances did not move.
+
+## 2026-07-30 — repository epoch history guard (L8)
+
+- Added `balance/epochs/phase0.json` as the repository source for the current epoch, its immutable
+  predecessors, the named exact artifact bundle, and each epoch's sorted accepted-hash set. The
+  first committed seed is the enforcement boundary; later changes are walked across complete Git
+  history rather than trusting only `HEAD` or CI metadata.
+- Any later commit touching a declared constants artifact must update the seed in the same commit.
+  An ordinary commit may append only the exact resulting hash to the current epoch. A
+  `BALANCE-CHANGE:` commit must append exactly one epoch and add its numbered changelog in the same
+  commit. Seed-only registration and artifact-identity changes fail closed.
+- The guard loads the parent and resulting economy catalogs through the production parser and
+  compares every declared hardcap using the numeric core. A lower cap is rejected as a hotfix; a
+  mint additionally requires a literal `Cap migration:` policy in the new changelog. Tests exercise
+  unregistered changes, valid hotfixes, forbidden hotfix cap reductions, valid cap-lowering mints,
+  missing changelogs, and seed-only edits in temporary real Git repositories.
+- `make epoch-hash` prints the exact worktree bundle identity for review without running the pacing
+  simulation. `make harness-check` owns both the earlier baseline-history guard and this epoch
+  registration guard.

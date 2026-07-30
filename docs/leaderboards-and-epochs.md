@@ -17,6 +17,14 @@ repository changelog reference, and append-only accepted hash set. Minting close
 and creates the next epoch plus its artifacts in one transaction. A correctness-only hotfix can
 append a hash to the current set but cannot replace historical bytes.
 
+[`balance/epochs/phase0.json`](../balance/epochs/phase0.json) is the repository seed for that same
+identity. It names the exact artifact bundle and the hashes accepted by each epoch. The harness
+history gate walks every commit after the seed: a correctness-only artifact change must append its
+resulting hash to the current epoch in the same commit, while a `BALANCE-CHANGE:` must append one
+new epoch and its numbered changelog. Hardcap reductions can never be hotfixes and require an
+explicit `Cap migration:` policy in the new epoch changelog. `make epoch-hash` prints the exact
+worktree hash to register; it does not modify the seed.
+
 ## Run pinning
 
 `run_epochs` records Company stream/run sequence, epoch, constants hash, kernel version, build VCS

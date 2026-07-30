@@ -62,6 +62,18 @@ order, and within-slot order used by authoritative arithmetic. The target is par
 `make verify-server`, so changing code without updating the player-auditable artifact fails the
 blocking server job.
 
+## Balance-history and epoch gate
+
+`make harness-check` validates both pacing output and the complete committed governance history.
+The baseline guard enforces separate, artifact-only `BALANCE-CHANGE:` regeneration commits. The
+epoch guard starts at [`balance/epochs/phase0.json`](../balance/epochs/phase0.json) and rejects any
+later constants-artifact commit that does not register its exact resulting hash. Ordinary hotfixes
+may only extend the current epoch; balance changes mint one successor with a same-commit public
+changelog. A hardcap reduction additionally requires an explicit `Cap migration:` policy.
+
+Both guards reject shallow history and uncommitted governed artifacts, so local and hosted checks
+apply the same rules. CI checks out complete history for the server job.
+
 ## Local use
 
 Run the exact aggregate gate from the repository root:
@@ -80,6 +92,13 @@ make formulas-check
 make test-browser
 make fuzz-ci
 make vectors-check
+```
+
+Go commands invoked by the Makefile use the ignored repository-local `.cache/go-build` directory.
+Focused tests can run without writing to a user-level cache or requiring sandbox permission:
+
+```sh
+make test-go GO_PACKAGES='./harness ./transport'
 ```
 
 No CI job deploys anything. Compose, Caddy, migrations, websocket draining, and reconnect testing
