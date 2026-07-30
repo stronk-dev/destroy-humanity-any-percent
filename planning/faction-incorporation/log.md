@@ -162,3 +162,16 @@ Findings and rulings:
   evaluation; and a 16-minute reconnect is correctly offline under the 5-second policy, so the
   pre-v7 exitable regression now uses the always-open Wind Down after migration. All were corrected
   to the new contract; the complete Compose integration suite passes.
+
+## 2026-07-30 — baseline protocol correction and final verification
+
+- The first harness refresh was incorrectly committed as `CONSTANTS-IDENTITY:` even though the
+  Prestige artifact bytes changed. Before publication, local history was rewritten to remove that
+  mislabeled artifact-only commit; no files were discarded and nothing was pushed.
+- The balance-change guard now recognizes `balance/prestige/` as a balance input, with a focused
+  regression assertion. The harness then regenerated the same two artifact files in an isolated
+  writable Go cache and committed them alone as `BALANCE-CHANGE: bind attended-time policy`.
+- Full verification passed through server tests and vet, formula and harness drift checks, schema
+  validation, client typecheck/build, 6,452 client unit tests, and 19,365 browser tests. The browser
+  target required ordinary loopback permission because the filesystem sandbox rejected its first
+  local IPv6 listener with `EPERM`; the unrestricted standard target passed with zero failures.
