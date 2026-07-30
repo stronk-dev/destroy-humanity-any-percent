@@ -2,6 +2,7 @@ package production
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"io"
@@ -15,6 +16,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
+	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
@@ -31,6 +33,62 @@ type fakeInvariantMetrics map[string]int
 
 func (metrics fakeInvariantMetrics) Increment(kind string) {
 	metrics[kind]++
+}
+
+type noStatePolicyCatalogs map[string]*economy.Catalog
+
+func (catalogs noStatePolicyCatalogs) Resolve(hash string) (*economy.Catalog, bool) {
+	catalog, ok := catalogs[hash]
+	return catalog, ok
+}
+
+type progressionFixture struct {
+	hash    string
+	policy  *prestigecore.Policy
+	faction *faction.Catalog
+}
+
+func (fixture progressionFixture) ResolvePrestige(hash string) (*prestigecore.Policy, bool) {
+	return fixture.policy, hash == fixture.hash
+}
+
+func (fixture progressionFixture) ResolveFaction(hash string) (*faction.Catalog, bool) {
+	return fixture.faction, hash == fixture.hash
+}
+
+func TestProgressionAccrualHookOrderIsCanonical(t *testing.T) {
+	hook := canonicalProgressionAccrualHook(nil, nil, nil)
+	chain, ok := hook.(accrualHookChain)
+	if !ok || len(chain) != 2 {
+		t.Fatalf("hook chain=%T %#v", hook, hook)
+	}
+	if _, ok := chain[0].(prestigecore.AccrualHook); !ok {
+		t.Fatalf("first hook=%T", chain[0])
+	}
+	if _, ok := chain[1].(faction.AccrualHook); !ok {
+		t.Fatalf("second hook=%T", chain[1])
+	}
+}
+
+func TestProgressionRuntimeRequiresStatePolicyValidation(t *testing.T) {
+	const hash = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	catalog := phase0Catalog(t)
+	store, err := save.NewStore(&sql.DB{}, noStatePolicyCatalogs{hash: catalog}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	policyData, err := os.ReadFile("../../balance/prestige/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	policy, err := prestigecore.LoadPolicy(policyData)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resolver := progressionFixture{hash: hash, policy: policy, faction: phase0Factions(t)}
+	if _, err := NewService(store, noStatePolicyCatalogs{hash: catalog}, nil, nil, nil, WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash)); !errors.Is(err, ErrInvalidIntent) {
+		t.Fatalf("progression runtime without StatePolicyValidator error=%v", err)
+	}
 }
 
 func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
@@ -101,9 +159,18 @@ func TestIncorporateAndOpenSourceBinding(t *testing.T) {
 	revision := save.Revision{StreamID: "11111111-1111-4111-8111-111111111111", OwnerID: "22222222-2222-4222-8222-222222222222", Number: 1}
 	request := IntentRequest{IntentID: "018f6b7c-9abc-7def-8abc-0123456789ab", Kind: IntentIncorporate, FactionID: "open_source"}
 
+	unknown := engineState(t, economyCatalog, "0", 0)
+	unknown.RunSeq, unknown.Tier = 1, 1
+	unknownRequest := request
+	unknownRequest.FactionID = "unknown"
+	decision, err := TransitionWithPolicies(unknownRequest, unknown, economyCatalog, nil, band, factionCatalog, revision, ModeOnline, engineCursor, nil, nil, nil)
+	if err != nil || decision.Outcome != save.IntentRejected || !bytes.Contains(decision.Receipt, []byte("unknown_id")) {
+		t.Fatalf("unknown=%s err=%v", decision.Receipt, err)
+	}
+
 	tooEarly := engineState(t, economyCatalog, "0", 0)
 	tooEarly.RunSeq, tooEarly.Tier = 1, 1
-	decision, err := TransitionWithPolicies(request, tooEarly, economyCatalog, nil, band, factionCatalog, revision, ModeOnline, engineCursor, nil, nil, nil)
+	decision, err = TransitionWithPolicies(request, tooEarly, economyCatalog, nil, band, factionCatalog, revision, ModeOnline, engineCursor, nil, nil, nil)
 	if err != nil || decision.Outcome != save.IntentRejected || !bytes.Contains(decision.Receipt, []byte("not_eligible")) || tooEarly.FactionID != "" {
 		t.Fatalf("early=%s state=%+v err=%v", decision.Receipt, tooEarly, err)
 	}
@@ -125,6 +192,26 @@ func TestIncorporateAndOpenSourceBinding(t *testing.T) {
 	bound, err := TransitionWithPolicies(leave, state, economyCatalog, nil, band, factionCatalog, second, ModeOnline, engineCursor.Add(2*time.Second), nil, nil, nil)
 	if err != nil || bound.Outcome != save.IntentRejected || !bytes.Contains(bound.Receipt, []byte("faction_bound")) {
 		t.Fatalf("bound=%s err=%v", bound.Receipt, err)
+	}
+
+	existingMember := engineState(t, economyCatalog, "0", 0)
+	existingMember.RunSeq, existingMember.Tier = 1, 2
+	existingMember.CompactMember, existingMember.CompactTithePPM, existingMember.CompactSolidarityPPM = true, 100_000, 777_000
+	existingMember.CompactSamples = []save.CompactSample{{HourStart: engineCursor.Truncate(time.Hour), CompliancePPM: 900_000, CoveredMS: 1_000}}
+	existingRequest := request
+	existingRequest.IntentID = "018f6b7c-9abc-7def-8abc-0123456789ae"
+	continued, err := TransitionWithPolicies(existingRequest, existingMember, economyCatalog, nil, band, factionCatalog, revision, ModeOnline, engineCursor, nil, nil, nil)
+	if err != nil || continued.Outcome != save.IntentApplied || existingMember.FactionID != "open_source" || existingMember.CompactTithePPM != 130_000 ||
+		existingMember.CompactSolidarityPPM != 777_000 || len(existingMember.CompactSamples) != 1 || len(continued.Events) != 2 || continued.Events[1].Kind != save.EventCompactTitheRaised {
+		t.Fatalf("continued=%+v state=%+v err=%v", continued, existingMember, err)
+	}
+	highTithe := engineState(t, economyCatalog, "0", 0)
+	highTithe.RunSeq, highTithe.Tier = 1, 2
+	highTithe.CompactMember, highTithe.CompactTithePPM = true, 150_000
+	existingRequest.IntentID = "018f6b7c-9abc-7def-8abc-0123456789af"
+	continued, err = TransitionWithPolicies(existingRequest, highTithe, economyCatalog, nil, band, factionCatalog, revision, ModeOnline, engineCursor, nil, nil, nil)
+	if err != nil || continued.Outcome != save.IntentApplied || highTithe.CompactTithePPM != 150_000 || len(continued.Events) != 2 || continued.Events[1].Kind != save.EventCompactTitheRaised {
+		t.Fatalf("high-tithe continued=%+v state=%+v err=%v", continued, highTithe, err)
 	}
 
 	ordinary := engineState(t, economyCatalog, "0", 0)

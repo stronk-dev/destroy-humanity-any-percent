@@ -65,6 +65,10 @@ func (p *Projector) Project(ctx context.Context, source []save.EventRecord) erro
 			if err := p.project(ctx, event); err != nil {
 				return err
 			}
+		case save.EventCompactTitheRaised:
+			if err := p.projectTitheRaised(ctx, event); err != nil {
+				return err
+			}
 		case save.EventCompactSampled:
 			if err := p.projectSample(ctx, event); err != nil {
 				return err
@@ -92,13 +96,69 @@ func projectionPriority(kind save.EventKind) int {
 	switch kind {
 	case save.EventCompactSigned:
 		return 0
-	case save.EventCompactSampled:
+	case save.EventCompactTitheRaised:
 		return 1
-	case save.EventCompactLeft:
+	case save.EventCompactSampled:
 		return 2
+	case save.EventCompactLeft:
+		return 3
 	default:
 		return 3
 	}
+}
+
+type titheRaisedPayload struct {
+	FounderID string `json:"founder_id"`
+	RunID     struct {
+		CompanyStreamID string `json:"company_stream_id"`
+		RunSeq          int64  `json:"run_seq"`
+	} `json:"run_id"`
+	PriorTithePPM int64 `json:"prior_tithe_ppm"`
+	NewTithePPM   int64 `json:"new_tithe_ppm"`
+}
+
+func (p *Projector) projectTitheRaised(ctx context.Context, event save.EventRecord) error {
+	var payload titheRaisedPayload
+	if err := decodeStrict(event.Payload, &payload); err != nil || payload.FounderID != event.OwnerID ||
+		payload.RunID.CompanyStreamID != event.StreamID || payload.RunID.RunSeq < 1 ||
+		payload.PriorTithePPM < 0 || payload.NewTithePPM < payload.PriorTithePPM || payload.NewTithePPM > commons.PPM {
+		return fmt.Errorf("%w: tithe raise identity", ErrProjection)
+	}
+	tx, err := p.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	claimed, err := claimEvent(ctx, tx, event, payload.FounderID, payload.RunID.CompanyStreamID, payload.RunID.RunSeq)
+	if err != nil {
+		return err
+	}
+	if !claimed {
+		return tx.Commit()
+	}
+	result, err := tx.ExecContext(ctx, `
+		UPDATE company_compact_memberships
+		SET tithe_ppm=$4, updated_at=$5, projected_revision=$6
+		WHERE company_stream_id=$1 AND founder_id=$2 AND run_seq=$3 AND member=true
+		  AND tithe_ppm=$7 AND projected_revision<$6`,
+		payload.RunID.CompanyStreamID, payload.FounderID, payload.RunID.RunSeq,
+		payload.NewTithePPM, event.OccurredAt, event.Revision, payload.PriorTithePPM)
+	if err != nil {
+		return err
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affected == 0 {
+		var member bool
+		var tithePPM, projectedRevision int64
+		err = tx.QueryRowContext(ctx, `SELECT member,tithe_ppm,projected_revision FROM company_compact_memberships WHERE company_stream_id=$1 AND founder_id=$2`, payload.RunID.CompanyStreamID, payload.FounderID).Scan(&member, &tithePPM, &projectedRevision)
+		if err != nil || projectedRevision < event.Revision || !member || tithePPM < payload.NewTithePPM {
+			return fmt.Errorf("%w: tithe raise state", ErrProjection)
+		}
+	}
+	return tx.Commit()
 }
 
 func (p *Projector) project(ctx context.Context, event save.EventRecord) error {

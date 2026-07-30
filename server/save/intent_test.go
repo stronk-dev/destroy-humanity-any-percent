@@ -61,10 +61,15 @@ func TestValidateCommonsEventPayloads(t *testing.T) {
 	founder := `"22222222-2222-4222-8222-222222222222"`
 	intentEvents := []EventWrite{
 		{Kind: EventCompactSigned, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"founder_id":` + founder + `,"run_id":` + run + `,"tithe_ppm":100000,"prior_member":false,"new_member":true}`)},
+		{Kind: EventCompactTitheRaised, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"founder_id":` + founder + `,"run_id":` + run + `,"prior_tithe_ppm":100000,"new_tithe_ppm":130000}`)},
 		{Kind: EventCompactSampled, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"founder_id":` + founder + `,"run_id":` + run + `,"weight_ppm":1000000,"compliance_ppm":900000,"enclosure":"1e-1","capacity":"1e3","solidarity_ppm":500000,"sampled_ms":3600000}`)},
 	}
 	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: intentEvents}, testIntentID); err != nil {
 		t.Fatal(err)
+	}
+	intentEvents[1].Payload = json.RawMessage(`{"founder_id":` + founder + `,"run_id":` + run + `,"prior_tithe_ppm":130000,"new_tithe_ppm":100000}`)
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: intentEvents}, testIntentID); !errors.Is(err, ErrInvalidStream) {
+		t.Fatalf("decreasing tithe event error=%v", err)
 	}
 	ambient := []EventWrite{
 		{Kind: EventCompactHealthBandChanged, SchemaVersion: 1, Payload: json.RawMessage(`{"scope_kind":"server","scope_id":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","from_band":"collapsed","to_band":"strained","health_ppm":400000}`)},

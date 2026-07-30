@@ -75,11 +75,12 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	hash := bundle.Hash
 	seedProductionEpoch(t, db, hash, bundle.Artifacts)
 	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}, prestige: map[string]*prestigecore.Policy{hash: policy}, factions: map[string]*faction.Catalog{hash: factionCatalog}}
+	commonsCatalogs := commons.CatalogSet{hash: commonsCatalog}
 	store, err := save.NewStore(db, resolver, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash))
+	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -135,6 +136,49 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		replay, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, request)
 		if err != nil || !replay.Replay || string(replay.Receipt) != string(result.Receipt) {
 			t.Fatalf("replay=%+v err=%v", replay, err)
+		}
+	})
+
+	t.Run("incorporated run exits and may incorporate again", func(t *testing.T) {
+		owner := "01985555-1500-7000-8000-000000000001"
+		founderRevision, companyRevision := createPrestigeStreams(t, ctx, store, catalog, hash, owner, now, now.Add(-10*time.Minute), now, "0", decimal.New(8, 12), 2)
+		if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 1, hash); err != nil {
+			t.Fatal(err)
+		}
+		incorporate := []byte(`{"intent_id":"01985555-1501-7000-8000-000000000001","kind":"incorporate","expected_revision":1,"faction_id":"open_source"}`)
+		if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, incorporate); err != nil || result.Replay {
+			t.Fatalf("incorporate=%+v err=%v", result, err)
+		}
+		exit := []byte(`{"intent_id":"01985555-1502-7000-8000-000000000001","kind":"wind_down","expected_revision":2,"expected_founder_revision":1}`)
+		if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now.Add(time.Minute), exit); err != nil || result.Replay {
+			t.Fatalf("exit=%+v err=%v", result, err)
+		}
+		var endedFaction string
+		if err := db.QueryRowContext(ctx, `SELECT payload->>'faction' FROM events WHERE stream_id=$1 AND kind='run_ended'`, companyRevision.StreamID).Scan(&endedFaction); err != nil || endedFaction != "open_source" {
+			t.Fatalf("ended faction=%v err=%v", endedFaction, err)
+		}
+		company, err := store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil || company.Revision.Number != 4 || company.State.RunSeq != 2 || company.State.FactionID != "" {
+			t.Fatalf("new run company=%+v err=%v", company, err)
+		}
+		advanced, err := store.ApplyIntent(ctx, companyRevision.StreamID, company.Revision.Number, "01985555-1503-7000-8000-000000000001", "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", func(state *save.State, revision save.Revision) (save.IntentDecision, error) {
+			state.Tier = 2
+			return save.IntentDecision{Outcome: save.IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied","new_revision":5}`)}, nil
+		})
+		if err != nil || advanced.Outcome != save.IntentApplied {
+			t.Fatalf("test progression=%+v err=%v", advanced, err)
+		}
+		reincorporate := []byte(`{"intent_id":"01985555-1504-7000-8000-000000000001","kind":"incorporate","expected_revision":5,"faction_id":"enterprise"}`)
+		if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now.Add(2*time.Minute), reincorporate); err != nil || result.Replay {
+			t.Fatalf("reincorporate=%+v err=%v", result, err)
+		}
+		company, err = store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil || company.State.FactionID != "enterprise" {
+			t.Fatalf("reincorporated company=%+v err=%v", company, err)
+		}
+		founder, err := store.LoadLatest(ctx, founderRevision.StreamID)
+		if err != nil || len(founder.State.ExitHistory) != 1 {
+			t.Fatalf("founder=%+v err=%v", founder, err)
 		}
 	})
 
@@ -280,7 +324,8 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		t.Fatalf("second epoch=%+v err=%v", secondEpoch, err)
 	}
 	resolver.economy[currentHash], resolver.routes[currentHash], resolver.prestige[currentHash], resolver.factions[currentHash] = catalog, routeCatalog, policy, factionCatalog
-	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithProgressionRuntime(resolver), WithCurrentConstantsHash(currentHash))
+	commonsCatalogs[currentHash] = commonsCatalog
+	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(currentHash))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -351,6 +396,11 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		}
 		request := []byte(`{"intent_id":"01985555-5001-7000-8000-000000000005","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`)
 		result, err := currentService.Handle(ctx, companyRevision.StreamID, ModeOnline, now.Add(16*time.Minute), request)
+		if err != nil || result.Replay {
+			t.Fatalf("v6 cross=%+v err=%v", result, err)
+		}
+		exit := []byte(`{"intent_id":"01985555-5002-7000-8000-000000000005","kind":"wind_down","expected_revision":2,"expected_founder_revision":1}`)
+		result, err = currentService.Handle(ctx, companyRevision.StreamID, ModeOnline, now.Add(16*time.Minute), exit)
 		if err != nil || result.Replay {
 			t.Fatalf("v6 exit=%+v err=%v", result, err)
 		}

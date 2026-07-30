@@ -25,10 +25,12 @@ run at Tier 2 or later. Unknown ids, early use, and a second choice return typed
 rejections without mutating the revision. Success records the server's canonical evaluation
 instant, emits `incorporated`, and exposes the derived stock resource in the authoritative receipt.
 
-Open Source incorporation additionally emits `compact_signed` and establishes Compact membership
-at 130,000 ppm in the same save/event/receipt transaction. An already-signed company must leave
-before choosing Open Source; after incorporation, `leave_compact` returns `faction_bound` until an
-Exit ends the run. The other three choices do not modify existing Compact state.
+Open Source incorporation establishes Compact membership at 130,000 ppm in the same
+save/event/receipt transaction. A non-member receives `compact_signed`. An existing signatory
+continues without losing Solidarity or membership history: its tithe becomes the greater of its
+current value and 130,000 ppm, recorded by `compact_tithe_raised`. After incorporation,
+`leave_compact` returns `faction_bound` until an Exit ends the run. The other three choices do not
+modify existing Compact state.
 
 Prestige new-run assembly clears faction identity, incorporation time, stock, and remainder. The
 Founder stream never contains faction state, so a later run may choose again independently.

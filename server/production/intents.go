@@ -263,18 +263,31 @@ func NewService(
 		return nil, ErrInvalidIntent
 	}
 	if service.prestigePolicies != nil {
+		if _, ok := service.catalogs.(save.StatePolicyValidator); !ok {
+			return nil, ErrInvalidIntent
+		}
 		policy, policyOK := service.prestigePolicies.ResolvePrestige(service.currentConstantsHash)
 		_, factionOK := service.factionCatalogs.ResolveFaction(service.currentConstantsHash)
 		if !policyOK || !factionOK || policy.CatchupCeilingMS <= 0 {
 			return nil, ErrInvalidIntent
 		}
-		service.accrualHook = appendAccrualHook(service.accrualHook, prestigecore.AccrualHook{Policies: service.prestigePolicies})
-		service.accrualHook = appendAccrualHook(service.accrualHook, faction.AccrualHook{Catalogs: service.factionCatalogs, Policies: prestigeCatchupPolicies{service.prestigePolicies}})
-	}
-	for _, hook := range service.extraAccrualHooks {
-		service.accrualHook = appendAccrualHook(service.accrualHook, hook)
+		service.accrualHook = canonicalProgressionAccrualHook(service.prestigePolicies, service.factionCatalogs, service.extraAccrualHooks)
+	} else {
+		for _, hook := range service.extraAccrualHooks {
+			service.accrualHook = appendAccrualHook(service.accrualHook, hook)
+		}
 	}
 	return service, nil
+}
+
+func canonicalProgressionAccrualHook(prestigePolicies PrestigePolicyResolver, factionCatalogs FactionCatalogResolver, extras []AccrualHook) AccrualHook {
+	var chain AccrualHook
+	chain = appendAccrualHook(chain, prestigecore.AccrualHook{Policies: prestigePolicies})
+	chain = appendAccrualHook(chain, faction.AccrualHook{Catalogs: factionCatalogs, Policies: prestigeCatchupPolicies{prestigePolicies}})
+	for _, hook := range extras {
+		chain = appendAccrualHook(chain, hook)
+	}
+	return chain
 }
 
 type prestigeCatchupPolicies struct{ resolver PrestigePolicyResolver }
@@ -593,9 +606,6 @@ func (s *Service) incorporate(request IntentRequest, state *save.State, catalog 
 		if band == nil || chosen.Compact.TithePPM < band.MinimumPPM || chosen.Compact.TithePPM > band.MaximumPPM {
 			return save.IntentDecision{}, ErrInvalidEngineState
 		}
-		if state.CompactMember {
-			return rejectedDecision(request, revision.Number, "already_member", "compact")
-		}
 	}
 	before := state.Ledger.Snapshot()
 	result, err := Evaluate(state, catalog, now, mode, contributions)
@@ -615,10 +625,19 @@ func (s *Service) incorporate(request IntentRequest, state *save.State, catalog 
 	})
 	events = append(events, save.EventWrite{Kind: save.EventIncorporated, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
 	if chosen.Compact != nil {
-		state.CompactMember, state.CompactTithePPM = true, chosen.Compact.TithePPM
-		state.CompactSolidarityPPM, state.CompactSamples = 0, []save.CompactSample{}
-		compactPayload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": chosen.Compact.TithePPM, "prior_member": false, "new_member": true})
-		events = append(events, save.EventWrite{Kind: save.EventCompactSigned, SchemaVersion: 1, IntentID: request.IntentID, Payload: compactPayload})
+		if state.CompactMember {
+			priorTithe := state.CompactTithePPM
+			if state.CompactTithePPM < chosen.Compact.TithePPM {
+				state.CompactTithePPM = chosen.Compact.TithePPM
+			}
+			compactPayload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "prior_tithe_ppm": priorTithe, "new_tithe_ppm": state.CompactTithePPM})
+			events = append(events, save.EventWrite{Kind: save.EventCompactTitheRaised, SchemaVersion: 1, IntentID: request.IntentID, Payload: compactPayload})
+		} else {
+			state.CompactMember, state.CompactTithePPM = true, chosen.Compact.TithePPM
+			state.CompactSolidarityPPM, state.CompactSamples = 0, []save.CompactSample{}
+			compactPayload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": chosen.Compact.TithePPM, "prior_member": false, "new_member": true})
+			events = append(events, save.EventWrite{Kind: save.EventCompactSigned, SchemaVersion: 1, IntentID: request.IntentID, Payload: compactPayload})
+		}
 	}
 	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
 }

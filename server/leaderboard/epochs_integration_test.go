@@ -202,7 +202,7 @@ func TestEpochSeedReconciliationIntegration(t *testing.T) {
 		t.Fatalf("idempotent reconcile: %v", err)
 	}
 	current, err := repository.Current(ctx)
-	if err != nil || current.ID != bundle.Seed.CurrentEpochID || len(current.Hashes) != 1 || current.Hashes[0] != bundle.Hash {
+	if err != nil || current.ID != bundle.Seed.CurrentEpochID || len(current.Hashes) != len(bundle.Seed.Epochs[len(bundle.Seed.Epochs)-1].AcceptedHashes) || current.Hashes[len(current.Hashes)-1] != bundle.Hash {
 		t.Fatalf("current=%+v err=%v", current, err)
 	}
 	var artifactCount int

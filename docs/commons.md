@@ -86,6 +86,8 @@ The first `compact_signed` event assigns the Founder to the oldest open cohort i
 server/activity bracket below its 150 target. A server/bracket advisory transaction lock makes
 concurrent first-sign order an actual database decision. Assignment is non-elective and reused by
 later runs and re-signs. Membership and sample projections are idempotent by event ID.
+`compact_tithe_raised` preserves that assignment and membership while advancing the projected
+tithe at the same Company revision as Open Source incorporation.
 After strict payload validation, each projection transaction claims its event ID before resolving
 current catalog, assignment, or membership state. An already-committed event returns successfully
 without consulting those mutable dependencies, so replay after a later leave cannot wedge the

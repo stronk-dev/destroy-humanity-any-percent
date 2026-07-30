@@ -64,7 +64,7 @@ and commits Founder revision `+1` plus Company terminal and new-run revisions `+
 record belongs to the Company stream. The `run_ended` event is self-contained for the obituary:
 run identity, exit type, server start/end times, RTA, Attended Time, payout, tier, lifetime value,
 ledger facts, revision-bounded executed routes, its pre-timer status, and separate Commons/Advisor
-assisted variables.
+assisted variables plus the nullable run faction.
 `run_started` is the next timer's `[BEGIN ATTEMPT]` fact.
 The terminal sequence is the Exit command's atomically committed per-run intent-log sequence, not a
 save revision or an eventually projected counter. Exit events also receive a database-authored

@@ -293,10 +293,15 @@ func (s *Service) finishExit(request IntentRequest, founder *save.State, founder
 	}
 	runID := map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": company.RunSeq}
 	assisted := map[string]bool{"commons": company.CompactMember, "advisor": founder.AdvisorMode}
+	var factionID *string
+	if company.FactionID != "" {
+		value := company.FactionID
+		factionID = &value
+	}
 	endedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType,
 		"started_at_ms": company.RunStartedAt.UnixMilli(), "ended_at_ms": now.UnixMilli(), "rta_ms": now.Sub(company.RunStartedAt).Milliseconds(),
 		"attended_ms": attended, "pre_timer": company.RunPreTimer, "terminal_seq": companyRevision.RunLogSequence, "payout": terms, "tier": company.Tier,
-		"lifetime_value": company.LifetimeValue.String(), "ledger_fact_kinds": sortedBoolKeys(company.LedgerFactKinds), "executed_routes": executedRoutes, "assisted": assisted})
+		"lifetime_value": company.LifetimeValue.String(), "ledger_fact_kinds": sortedBoolKeys(company.LedgerFactKinds), "executed_routes": executedRoutes, "assisted": assisted, "faction": factionID})
 	startedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": newCompany.RunSeq}, "started_at_ms": now.UnixMilli(), "assisted": map[string]bool{"commons": false, "advisor": founder.AdvisorMode}})
 	advancedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType, "reputation_delta": terms.ReputationDelta, "route_knowledge": terms.RouteKnowledge, "occurred_at_ms": now.UnixMilli()})
 	receipt, _ := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": "applied", "applied_count": 1, "receipt": map[string]any{"changes": []any{}}, "new_revision": companyRevision.Number + 2, "founder_revision": founderRevision.Number + 1, "evaluated_at": now.Format(time.RFC3339Nano), "snapshot": wireSnapshot(newCompany)})

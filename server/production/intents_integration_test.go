@@ -155,6 +155,18 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if _, err := store.PinRunToCurrentEpoch(ctx, revision.StreamID, "66666666-6666-4666-8666-666666666666", 1, hash); err != nil {
 		t.Fatal(err)
 	}
+	founderLedger, err := economy.RestoreLedger(catalog, economy.ScopeFounder, map[string]string{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	founderRevision, err := store.CreateStream(ctx, save.StreamKey{
+		OwnerKind: save.OwnerFounder, OwnerID: "66666666-6666-4666-8666-666666666666", Scope: economy.ScopeFounder,
+	}, hash, &save.State{
+		Ledger: founderLedger, GeneratorCounts: map[string]int64{}, EvaluatedThrough: cursor, ManualTokenRefilledAt: cursor,
+	}, save.WriteContext{Cause: "routes.integration"})
+	if err != nil {
+		t.Fatal(err)
+	}
 	metrics := fakeInvariantMetrics{}
 	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithAccrualHook(commonsHook), WithEventProjector(commonsProjector))
 	if err != nil {
@@ -355,17 +367,35 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err := db.QueryRowContext(ctx, `SELECT member FROM company_compact_memberships WHERE company_stream_id=$1`, revision.StreamID).Scan(&projectedMember); err != nil || projectedMember {
 		t.Fatalf("projected member=%v err=%v", projectedMember, err)
 	}
-	founderLedger, err := economy.RestoreLedger(catalog, economy.ScopeFounder, map[string]string{})
+
+	existingOwner := "77777777-7777-4777-8777-777777777777"
+	existingLedger, err := economy.RestoreLedger(catalog, economy.ScopeCompany, map[string]string{"company.cash": "1e2"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	founderRevision, err := store.CreateStream(ctx, save.StreamKey{
-		OwnerKind: save.OwnerFounder, OwnerID: "66666666-6666-4666-8666-666666666666", Scope: economy.ScopeFounder,
-	}, hash, &save.State{
-		Ledger: founderLedger, GeneratorCounts: map[string]int64{}, EvaluatedThrough: cursor, ManualTokenRefilledAt: cursor,
-	}, save.WriteContext{Cause: "routes.integration"})
+	existingRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: existingOwner, Scope: economy.ScopeCompany}, hash, &save.State{
+		Ledger: existingLedger, GeneratorCounts: map[string]int64{"generator.beige_tower": 0}, EvaluatedThrough: cursor,
+		ManualTokenRefilledAt: cursor, Tier: 2, RunSeq: 1, GatesCrossed: map[string]bool{},
+		DoctrinesByTransition: map[string]string{}, LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{},
+		CompactSamples: []save.CompactSample{}, OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}, RunStartedAt: cursor,
+	}, save.WriteContext{Cause: "production.integration.open_source"})
 	if err != nil {
 		t.Fatal(err)
+	}
+	if _, err := store.PinRunToCurrentEpoch(ctx, existingRevision.StreamID, existingOwner, 1, hash); err != nil {
+		t.Fatal(err)
+	}
+	existingSign := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-eeeeeeeeeeee","kind":"sign_compact","expected_revision":1,"tithe_ppm":100000}`)
+	if _, err := service.Handle(ctx, existingRevision.StreamID, ModeOnline, cursor, existingSign); err != nil {
+		t.Fatal(err)
+	}
+	existingIncorporate := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-ffffffffffff","kind":"incorporate","expected_revision":2,"faction_id":"open_source"}`)
+	if _, err := service.Handle(ctx, existingRevision.StreamID, ModeOnline, cursor.Add(time.Second), existingIncorporate); err != nil {
+		t.Fatal(err)
+	}
+	var projectedTithe, projectedRevision int64
+	if err := db.QueryRowContext(ctx, `SELECT tithe_ppm,projected_revision FROM company_compact_memberships WHERE company_stream_id=$1`, existingRevision.StreamID).Scan(&projectedTithe, &projectedRevision); err != nil || projectedTithe != 130_000 || projectedRevision != 3 {
+		t.Fatalf("continued membership tithe=%d revision=%d err=%v", projectedTithe, projectedRevision, err)
 	}
 	hint := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-aaaaaaaaaaaa","kind":"buy_route_hint","expected_revision":1,"route_id":"route.nonprofit_wrapper_zip"}`)
 	hintResult, err := service.Handle(ctx, founderRevision.StreamID, ModeOnline, cursor.Add(time.Second), hint)

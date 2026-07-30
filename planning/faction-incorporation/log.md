@@ -140,3 +140,25 @@ Findings and rulings:
   hooks), removing option order as a replay variable.
 - Focused Prestige, faction, and production tests pass; the shared schema validator accepts the
   new required field. The constants-only harness refresh remains a separate guarded commit.
+
+## 2026-07-30 — F2a and LOW remediation
+
+- Existing Compact members may now incorporate Open Source without leaving. The transition keeps
+  Solidarity and sample history, applies `max(current_tithe, 130000)`, and emits strict
+  `compact_tithe_raised` after `incorporated`; fresh members still receive `compact_signed`.
+- Migration 00024 grows both the authoritative event registry and the Commons projection claim
+  registry. The projection advances tithe without recreating membership/cohort state, is
+  idempotent, and rejects missing, decreasing, or state-inconsistent first deliveries. A real
+  Postgres service path signs at 100,000 ppm, incorporates, and observes projected 130,000 ppm.
+- `run_ended` now carries nullable faction directly. A real incorporated run Exits, resets its
+  Company faction fields, advances through a test-owned Tier-2 setup seam, and incorporates again
+  in run 2.
+- Unknown faction is pinned before the Tier gate. A Go-AST writer-closure test permits stock and
+  remainder mutation only in the faction accrual hook and permits no Phase-0 consumed-stock
+  writer. Progression service construction requires `StatePolicyValidator`, and the canonical
+  accrual chain order is asserted as Prestige → faction → extension hooks.
+- The first Postgres pass exposed three fixture assumptions after FB-1: current epochs may carry
+  multiple accepted hotfix hashes; unified progression needs the Founder sibling before gate
+  evaluation; and a 16-minute reconnect is correctly offline under the 5-second policy, so the
+  pre-v7 exitable regression now uses the always-open Wind Down after migration. All were corrected
+  to the new contract; the complete Compose integration suite passes.

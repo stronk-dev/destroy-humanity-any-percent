@@ -115,7 +115,7 @@ normalized receipt record in one Postgres transaction. A terminal rejection writ
 receipt record. JSON receipts normalize before first return and after JSONB load, so initial and
 replayed bytes are identical.
 
-Event registry v1 additionally contains `compact_signed`, `compact_left`, `compact_sampled`,
+Event registry v1 additionally contains `compact_signed`, `compact_tithe_raised`, `compact_left`, `compact_sampled`,
 `compact_health_band_changed`, `compact_cascade_started`, `compact_recovered`, and
 `compact_recruitment_offered`; see [Commons](commons.md).
 Faction incorporation adds `incorporated` and `faction_stock_saturated`; both are strict v1 event

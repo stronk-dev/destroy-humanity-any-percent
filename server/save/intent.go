@@ -39,6 +39,7 @@ const (
 	EventRouteHintPurchased        EventKind = "route_hint_purchased"
 	EventRouteKnowledgeGranted     EventKind = "route_knowledge_granted"
 	EventCompactSigned             EventKind = "compact_signed"
+	EventCompactTitheRaised        EventKind = "compact_tithe_raised"
 	EventCompactLeft               EventKind = "compact_left"
 	EventCompactSampled            EventKind = "compact_sampled"
 	EventCompactHealthBandChanged  EventKind = "compact_health_band_changed"
@@ -452,6 +453,17 @@ func validateEventPayload(event EventWrite) error {
 		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) || !validRouteRunID(payload.RunID) || payload.TithePPM < 0 || payload.TithePPM > 1_000_000 || event.Kind == EventCompactSigned && (payload.PriorMember || !payload.NewMember) || event.Kind == EventCompactLeft && (!payload.PriorMember || payload.NewMember) {
 			return fmt.Errorf("%w: invalid compact membership payload", ErrInvalidStream)
 		}
+	case EventCompactTitheRaised:
+		var payload struct {
+			FounderID     string     `json:"founder_id"`
+			RunID         routeRunID `json:"run_id"`
+			PriorTithePPM int64      `json:"prior_tithe_ppm"`
+			NewTithePPM   int64      `json:"new_tithe_ppm"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) || !validRouteRunID(payload.RunID) ||
+			payload.PriorTithePPM < 0 || payload.PriorTithePPM > 1_000_000 || payload.NewTithePPM < payload.PriorTithePPM || payload.NewTithePPM > 1_000_000 {
+			return fmt.Errorf("%w: invalid compact tithe raise payload", ErrInvalidStream)
+		}
 	case EventCompactSampled:
 		var payload struct {
 			FounderID     string     `json:"founder_id"`
@@ -535,7 +547,8 @@ func validateEventPayload(event EventWrite) error {
 			payload.EndedAtMS < payload.StartedAtMS || payload.EndedAtMS > decimal.MaxExactInteger ||
 			payload.RTAMS != payload.EndedAtMS-payload.StartedAtMS || payload.AttendedMS < 0 || payload.AttendedMS > payload.RTAMS ||
 			payload.TerminalSeq <= 0 || payload.TerminalSeq > decimal.MaxExactInteger || payload.Tier < 0 || payload.Tier > 9 ||
-			validatePrestigeTerms(payload.Payout) != nil || !sortedMechanicalIDs(payload.LedgerFactKinds) || !sortedMechanicalIDs(payload.ExecutedRoutes) {
+			validatePrestigeTerms(payload.Payout) != nil || !sortedMechanicalIDs(payload.LedgerFactKinds) || !sortedMechanicalIDs(payload.ExecutedRoutes) ||
+			payload.Faction != nil && !mechanicalIDPattern.MatchString(*payload.Faction) {
 			return fmt.Errorf("%w: invalid run_ended payload", ErrInvalidStream)
 		}
 		if value, err := decimal.ParseCanonical(payload.LifetimeValue); err != nil || value.Lt(decimal.Zero) {
@@ -625,6 +638,7 @@ type eventRunEnded struct {
 	LedgerFactKinds []string           `json:"ledger_fact_kinds"`
 	ExecutedRoutes  []string           `json:"executed_routes"`
 	Assisted        eventAssisted      `json:"assisted"`
+	Faction         *string            `json:"faction"`
 }
 
 func validatePrestigeTerms(terms eventPrestigeTerms) error {
