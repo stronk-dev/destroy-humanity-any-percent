@@ -132,6 +132,24 @@ func (s *Store) Write(ctx context.Context, streamID string, expectedRevision int
 		return Revision{}, err
 	}
 	defer tx.Rollback()
+	revision, err := s.WriteInTransaction(ctx, tx, streamID, expectedRevision, constantsHash, state, writeContext)
+	if err != nil {
+		return Revision{}, err
+	}
+	if err := tx.Commit(); err != nil {
+		return Revision{}, err
+	}
+	return revision, nil
+}
+
+// WriteInTransaction applies the same validation, locking, conflict check, and
+// retention policy as Write inside a caller-owned transaction. It exists for
+// cross-owner operations, such as account import, whose relational marker must
+// commit atomically with the save revision.
+func (s *Store) WriteInTransaction(ctx context.Context, tx *sql.Tx, streamID string, expectedRevision int64, constantsHash string, state *State, writeContext WriteContext) (Revision, error) {
+	if tx == nil || !uuidPattern.MatchString(streamID) || expectedRevision < 1 || !hashPattern.MatchString(constantsHash) || state == nil || state.Ledger == nil || writeContext.Cause == "" {
+		return Revision{}, ErrInvalidStream
+	}
 	var scope economy.Scope
 	var archivedAt sql.NullTime
 	if err := tx.QueryRowContext(ctx, `SELECT scope, archived_at FROM save_streams WHERE id=$1 FOR UPDATE`, streamID).Scan(&scope, &archivedAt); errors.Is(err, sql.ErrNoRows) {
@@ -163,9 +181,6 @@ func (s *Store) Write(ctx context.Context, streamID string, expectedRevision int
 		return Revision{}, err
 	}
 	if _, err := tx.ExecContext(ctx, `DELETE FROM save_revisions WHERE stream_id=$1 AND revision <= $2`, streamID, revision.Number-5); err != nil {
-		return Revision{}, err
-	}
-	if err := tx.Commit(); err != nil {
 		return Revision{}, err
 	}
 	return revision, nil

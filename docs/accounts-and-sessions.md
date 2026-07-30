@@ -17,7 +17,10 @@ the account's current active Founder instead of trusting the token's cached Foun
 
 Offline-anonymous saves can be submitted once to the initial company stream through
 `POST /api/v1/founder/import`. The payload runs through the normal save migration and restoration
-path, is re-encoded at the current save version, and permanently marks the Founder as imported.
+path. Its submitted version and constants hash select only that migration input: the server resets
+the imported company to run 1 at the canonical import instant, validates and writes it through the
+normal save-store path under the current constants hash, and permanently marks the Founder as
+imported in the same transaction.
 Leaderboard projections must exclude that relational flag because imported history was authored
 by a client.
 
@@ -39,7 +42,9 @@ Successful recovery authentication issues:
 The verifier accepts one current signing key and one previous key for operations-managed rotation.
 Every issued access token is also represented in the database, so revocation is effective before
 JWT expiry. Refresh tokens rotate once. Reusing a consumed token revokes every refresh and access
-token in its family in the same transaction. Session deletion applies the same family revocation.
+token in its family in the same transaction. A `session_families` row is the serialization point:
+every rotation and revocation locks it before validating a token, so a concurrent rotation cannot
+escape replay detection or logout. Session deletion applies the same family revocation.
 
 ## HTTP boundary
 
@@ -63,3 +68,5 @@ moves backwards. Deployment may replace storage without changing the HTTP contra
 UUIDv7 shape, and limiter clock regression. With `TEST_DATABASE_URL` set, it additionally exercises
 the complete account → session → real Production intent path, refresh replay revocation, New
 Founder archival, import, deletion/anonymization, and rate limiting against Postgres.
+The integration suite also forces a legitimate rotation to race a replay and proves that no
+descendant refresh or access token remains live.

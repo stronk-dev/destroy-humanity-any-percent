@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -51,8 +52,14 @@ func TestAccountSessionIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	hash := save.ConstantsHash(catalogBytes)
+	oldCatalogBytes := append(append([]byte(nil), catalogBytes...), ' ')
+	oldCatalog, err := economy.LoadCatalog(oldCatalogBytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	oldHash := save.ConstantsHash(oldCatalogBytes)
 	seedAccountEpoch(t, db, hash, catalogBytes)
-	resolver := integrationCatalogs{hash: catalog}
+	resolver := integrationCatalogs{hash: catalog, oldHash: oldCatalog}
 	keys := SigningKeys{CurrentID: "test-current", Current: bytes.Repeat([]byte{0x42}, 32), PreviousID: "test-previous", Previous: bytes.Repeat([]byte{0x24}, 32)}
 	now := time.Date(2026, 7, 29, 12, 0, 0, 0, time.UTC)
 	repository, err := NewRepository(db, resolver, hash, keys, func() time.Time { return now }, nil)
@@ -163,11 +170,21 @@ func TestAccountSessionIntegration(t *testing.T) {
 	if err != nil || newState.Revision != 1 {
 		t.Fatalf("new state=%+v err=%v", newState, err)
 	}
+	importedState, err := save.RestoreState(newState.State, newState.Version, catalog, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	importedState.RunSeq = 3
+	importedState.RunStartedAt = now.Add(-time.Hour)
+	importedStateBytes, err := save.EncodeState(importedState)
+	if err != nil {
+		t.Fatal(err)
+	}
 	importBody, _ := json.Marshal(struct {
 		Version       int             `json:"version"`
 		ConstantsHash string          `json:"constants_hash"`
 		State         json.RawMessage `json:"state"`
-	}{Version: newState.Version, ConstantsHash: newState.ConstantsHash, State: newState.State})
+	}{Version: newState.Version, ConstantsHash: oldHash, State: importedStateBytes})
 	importResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/founder/import", freshPair.AccessToken, string(importBody))
 	if importResponse.StatusCode != http.StatusOK {
 		t.Fatalf("import status=%d body=%s", importResponse.StatusCode, readBody(importResponse))
@@ -176,6 +193,24 @@ func TestAccountSessionIntegration(t *testing.T) {
 	decodeResponse(t, importResponse, &imported)
 	if !imported.Imported {
 		t.Fatal("imported flag did not round-trip")
+	}
+	afterImport, err := repository.ActiveCompanyState(ctx, created.AccountID)
+	if err != nil || afterImport.Revision != 2 || afterImport.ConstantsHash != hash {
+		t.Fatalf("imported state=%+v err=%v", afterImport, err)
+	}
+	restoredImport, err := save.RestoreState(afterImport.State, afterImport.Version, catalog, economy.ScopeCompany, time.Time{})
+	if err != nil || restoredImport.RunSeq != 1 || !restoredImport.RunStartedAt.Equal(now) {
+		t.Fatalf("restored import run=%d started=%s err=%v", restoredImport.RunSeq, restoredImport.RunStartedAt, err)
+	}
+	importIntent := `{"intent_id":"01985555-1112-7111-8111-111111111112","kind":"perform_manual_batch","expected_revision":2,"action_id":"manual.click","count":1,"window_ms":1}`
+	importIntentResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/intents", freshPair.AccessToken, importIntent)
+	if importIntentResponse.StatusCode != http.StatusOK {
+		t.Fatalf("import intent status=%d body=%s", importIntentResponse.StatusCode, readBody(importIntentResponse))
+	}
+	var importReceipt map[string]json.RawMessage
+	decodeResponse(t, importIntentResponse, &importReceipt)
+	if string(importReceipt["outcome"]) != `"applied"` || string(importReceipt["new_revision"]) != "3" {
+		t.Fatalf("import receipt=%v", importReceipt)
 	}
 
 	deleteResponse := requestJSON(t, server.Client, http.MethodDelete, server.URL+"/api/v1/account", freshPair.AccessToken, "")
@@ -189,6 +224,105 @@ func TestAccountSessionIntegration(t *testing.T) {
 	loadedImported, err := saveStore.LoadLatest(ctx, newState.StreamID)
 	if err != nil || loadedImported.ArchivedAt == nil {
 		t.Fatalf("anonymized save missing after account deletion: %+v err=%v", loadedImported, err)
+	}
+}
+
+func TestConcurrentRefreshReplayRevokesEntireFamilyIntegration(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	truncateAccountIntegration(t, db)
+	catalogBytes, _ := os.ReadFile("../../balance/catalogs/phase0.json")
+	catalog, _ := economy.LoadCatalog(catalogBytes)
+	hash := save.ConstantsHash(catalogBytes)
+	seedAccountEpoch(t, db, hash, catalogBytes)
+	repository, err := NewRepository(db, integrationCatalogs{hash: catalog}, hash,
+		SigningKeys{CurrentID: "test", Current: bytes.Repeat([]byte{0x42}, 32)}, time.Now, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	created, err := repository.CreateAccount(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, err := repository.CreateSession(ctx, created.AccountID, created.RecoveryCode)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := repository.RefreshSession(ctx, first.RefreshToken)
+	if err != nil {
+		t.Fatal(err)
+	}
+	firstHash, _ := opaqueTokenHash(first.RefreshToken)
+	var familyID string
+	if err := db.QueryRowContext(ctx, `SELECT family_id FROM sessions WHERE token_hash=$1`, firstHash[:]).Scan(&familyID); err != nil {
+		t.Fatal(err)
+	}
+	blocker, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := blocker.ExecContext(ctx, `SELECT family_id FROM session_families WHERE family_id=$1 FOR UPDATE`, familyID); err != nil {
+		t.Fatal(err)
+	}
+	type refreshResult struct {
+		pair TokenPair
+		err  error
+	}
+	legitimate := make(chan refreshResult, 1)
+	replay := make(chan refreshResult, 1)
+	go func() {
+		pair, err := repository.RefreshSession(ctx, second.RefreshToken)
+		legitimate <- refreshResult{pair: pair, err: err}
+	}()
+	time.Sleep(25 * time.Millisecond)
+	go func() {
+		pair, err := repository.RefreshSession(ctx, first.RefreshToken)
+		replay <- refreshResult{pair: pair, err: err}
+	}()
+	time.Sleep(25 * time.Millisecond)
+	if err := blocker.Commit(); err != nil {
+		t.Fatal(err)
+	}
+	legitimateResult, replayResult := <-legitimate, <-replay
+	if !errors.Is(legitimateResult.err, ErrAuthentication) && !errors.Is(legitimateResult.err, ErrRefreshReuse) && legitimateResult.err != nil {
+		t.Fatalf("legitimate err=%v", legitimateResult.err)
+	}
+	if !errors.Is(replayResult.err, ErrRefreshReuse) && !errors.Is(replayResult.err, ErrAuthentication) {
+		t.Fatalf("replay err=%v", replayResult.err)
+	}
+	if !errors.Is(legitimateResult.err, ErrRefreshReuse) && !errors.Is(replayResult.err, ErrRefreshReuse) {
+		t.Fatalf("reuse was not detected legitimate=%v replay=%v", legitimateResult.err, replayResult.err)
+	}
+	for _, pair := range []TokenPair{legitimateResult.pair, replayResult.pair} {
+		if pair.AccessToken != "" {
+			if _, err := repository.Authenticate(ctx, pair.AccessToken); !errors.Is(err, ErrAuthentication) {
+				t.Fatalf("descendant access token survived family revocation: %v", err)
+			}
+		}
+		if pair.RefreshToken != "" {
+			if _, err := repository.RefreshSession(ctx, pair.RefreshToken); err == nil {
+				t.Fatal("descendant refresh token survived family revocation")
+			}
+		}
+	}
+	var familyRevoked bool
+	if err := db.QueryRowContext(ctx, `SELECT revoked_at IS NOT NULL FROM session_families WHERE family_id=$1`, familyID).Scan(&familyRevoked); err != nil || !familyRevoked {
+		t.Fatalf("family revoked=%v err=%v", familyRevoked, err)
+	}
+	var live int
+	if err := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM sessions WHERE family_id=$1 AND revoked_at IS NULL)+(SELECT count(*) FROM access_tokens WHERE family_id=$1 AND revoked_at IS NULL)`, familyID).Scan(&live); err != nil || live != 0 {
+		t.Fatalf("live family rows=%d err=%v", live, err)
 	}
 }
 

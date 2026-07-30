@@ -95,3 +95,18 @@ Findings (fix queue, ordered):
 **Record correction:** the review harness flagged `GET /api/v1/founder/state` as a closed-surface
 violation; it is NOT — the 2026-07-29 transport T4 ruling authorized it as the full-sync endpoint.
 The account RFC's D3 list is amended to include it; the bookkeeping gap was mine.
+
+## 2026-07-30 — remediation: family serialization and authoritative import
+
+- Added `session_families` as the single lock and revocation authority. Refresh and revoke resolve
+  the family, take its `FOR UPDATE` lock, then re-read and validate the presented token. A real
+  Postgres test forces a legitimate rotation and consumed-token replay to queue behind the same
+  family lock and proves the resulting family has no live refresh or access rows.
+- Import now treats the submitted version/hash only as migration inputs, resets server-owned run
+  identity to run 1 at the canonical import instant, and writes under the current hash through
+  `save.Store.WriteInTransaction`. That store entry point shares Write's validation, stream lock,
+  compare-and-swap, and retention policy while keeping the imported marker atomic with revision 2.
+- The old-hash, run-3 reproducer now imports as current-hash run 1 and successfully commits a real
+  Production intent at revision 3.
+- `make test-go GO_PACKAGES='./account ./save'`, matching `go vet`, and the complete account suite
+  against local Postgres are green.

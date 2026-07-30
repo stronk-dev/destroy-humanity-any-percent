@@ -34,6 +34,7 @@ type Clock func() time.Time
 
 type Repository struct {
 	db            *sql.DB
+	saves         *save.Store
 	catalogs      save.CatalogResolver
 	constantsHash string
 	keys          SigningKeys
@@ -81,7 +82,11 @@ func NewRepository(db *sql.DB, catalogs save.CatalogResolver, constantsHash stri
 	if random == nil {
 		random = rand.Reader
 	}
-	return &Repository{db: db, catalogs: catalogs, constantsHash: constantsHash, keys: keys, clock: clock, random: random}, nil
+	saves, err := save.NewStore(db, catalogs, nil)
+	if err != nil {
+		return nil, ErrInvalidRequest
+	}
+	return &Repository{db: db, saves: saves, catalogs: catalogs, constantsHash: constantsHash, keys: keys, clock: clock, random: random}, nil
 }
 
 func (repository *Repository) CreateAccount(ctx context.Context) (CreatedAccount, error) {
@@ -147,8 +152,12 @@ func (repository *Repository) CreateSession(ctx context.Context, accountID, reco
 	if err != nil {
 		return TokenPair{}, ErrAuthentication
 	}
-	familyID, err := newUUIDv7(save.CanonicalServerTime(repository.clock()), repository.random)
+	now := save.CanonicalServerTime(repository.clock())
+	familyID, err := newUUIDv7(now, repository.random)
 	if err != nil {
+		return TokenPair{}, err
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO session_families(family_id,account_id,created_at) VALUES($1,$2,$3)`, familyID, accountID, now); err != nil {
 		return TokenPair{}, err
 	}
 	pair, err := repository.issueTokenPair(ctx, tx, accountID, founderID, familyID)
@@ -172,10 +181,22 @@ func (repository *Repository) RefreshSession(ctx context.Context, refreshToken s
 		return TokenPair{}, err
 	}
 	defer tx.Rollback()
-	var familyID, accountID string
+	var familyID string
+	if err := tx.QueryRowContext(ctx, `SELECT family_id FROM sessions WHERE token_hash=$1`, hash[:]).Scan(&familyID); errors.Is(err, sql.ErrNoRows) {
+		return TokenPair{}, ErrAuthentication
+	} else if err != nil {
+		return TokenPair{}, err
+	}
+	accountID, familyRevoked, err := lockSessionFamily(ctx, tx, familyID)
+	if err != nil {
+		return TokenPair{}, err
+	}
+	if familyRevoked {
+		return TokenPair{}, ErrAuthentication
+	}
 	var expiresAt time.Time
 	var consumedAt, revokedAt sql.NullTime
-	err = tx.QueryRowContext(ctx, `SELECT family_id,account_id,expires_at,consumed_at,revoked_at FROM sessions WHERE token_hash=$1 FOR UPDATE`, hash[:]).Scan(&familyID, &accountID, &expiresAt, &consumedAt, &revokedAt)
+	err = tx.QueryRowContext(ctx, `SELECT expires_at,consumed_at,revoked_at FROM sessions WHERE token_hash=$1 AND family_id=$2 AND account_id=$3 FOR UPDATE`, hash[:], familyID, accountID).Scan(&expiresAt, &consumedAt, &revokedAt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return TokenPair{}, ErrAuthentication
 	}
@@ -240,7 +261,14 @@ func (repository *Repository) RevokeSession(ctx context.Context, claims Claims) 
 	}
 	defer tx.Rollback()
 	var familyID string
-	if err := tx.QueryRowContext(ctx, `SELECT family_id FROM access_tokens WHERE jti=$1 AND account_id=$2 FOR UPDATE`, claims.TokenID, claims.Subject).Scan(&familyID); err != nil {
+	if err := tx.QueryRowContext(ctx, `SELECT family_id FROM access_tokens WHERE jti=$1 AND account_id=$2`, claims.TokenID, claims.Subject).Scan(&familyID); err != nil {
+		return ErrAuthentication
+	}
+	accountID, _, err := lockSessionFamily(ctx, tx, familyID)
+	if err != nil || accountID != claims.Subject {
+		return ErrAuthentication
+	}
+	if err := tx.QueryRowContext(ctx, `SELECT family_id FROM access_tokens WHERE jti=$1 AND account_id=$2 AND family_id=$3 FOR UPDATE`, claims.TokenID, claims.Subject, familyID).Scan(&familyID); err != nil {
 		return ErrAuthentication
 	}
 	if err := revokeFamily(ctx, tx, familyID, now); err != nil {
@@ -314,21 +342,25 @@ func (repository *Repository) ActiveCompanyState(ctx context.Context, accountID 
 }
 
 func (repository *Repository) ImportFounder(ctx context.Context, accountID, constantsHash string, version int, rawState []byte) (Founder, error) {
-	catalog, ok := repository.catalogs.Resolve(constantsHash)
+	migrationCatalog, ok := repository.catalogs.Resolve(constantsHash)
 	if !ok || version < 1 {
 		return Founder{}, ErrInvalidRequest
 	}
+	now := save.CanonicalServerTime(repository.clock())
 	// Pre-v4 saves do not carry canonical millisecond cursors. Import time is the
 	// migration baseline, matching the standard restore path's requirement that
 	// the caller supply an authoritative instant rather than inventing epoch zero.
-	state, err := save.RestoreState(rawState, version, catalog, economy.ScopeCompany, save.CanonicalServerTime(repository.clock()))
+	state, err := save.RestoreState(rawState, version, migrationCatalog, economy.ScopeCompany, now)
 	if err != nil {
 		return Founder{}, ErrInvalidRequest
 	}
-	encoded, err := save.EncodeState(state)
-	if err != nil {
-		return Founder{}, ErrInvalidRequest
-	}
+	// Run identity is server-owned. Imported history is intentionally unranked;
+	// the migrated company begins a fresh run under the current authoritative
+	// catalog and the run-1 pin created with its account.
+	state.RunSeq = 1
+	state.RunStartedAt = now
+	state.OfflineSpans = []save.OfflineSpan{}
+	state.OfferState = nil
 	tx, err := repository.db.BeginTx(ctx, nil)
 	if err != nil {
 		return Founder{}, err
@@ -339,14 +371,12 @@ func (repository *Repository) ImportFounder(ctx context.Context, accountID, cons
 		return Founder{}, ErrAccountNotFound
 	}
 	var streamID string
-	var latest int64
-	if err := tx.QueryRowContext(ctx, `SELECT s.id,(SELECT max(revision) FROM save_revisions WHERE stream_id=s.id) FROM save_streams s WHERE owner_kind='founder' AND owner_id=$1 AND scope='company' AND archived_at IS NULL FOR UPDATE`, founderID).Scan(&streamID, &latest); err != nil {
+	if err := tx.QueryRowContext(ctx, `SELECT s.id FROM save_streams s WHERE owner_kind='founder' AND owner_id=$1 AND scope='company' AND archived_at IS NULL`, founderID).Scan(&streamID); err != nil {
 		return Founder{}, err
 	}
-	if latest != 1 {
+	if _, err := repository.saves.WriteInTransaction(ctx, tx, streamID, 1, repository.constantsHash, state, save.WriteContext{Cause: "founder_import"}); errors.Is(err, save.ErrConflict) {
 		return Founder{}, ErrImportUnavailable
-	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,2,$2,$3,$4)`, streamID, save.CurrentVersion, encoded, constantsHash); err != nil {
+	} else if err != nil {
 		return Founder{}, err
 	}
 	if _, err := tx.ExecContext(ctx, `UPDATE account_founders SET imported=true WHERE founder_id=$1`, founderID); err != nil {
@@ -490,11 +520,31 @@ func activeFounderForUpdate(ctx context.Context, tx *sql.Tx, accountID string) (
 }
 
 func revokeFamily(ctx context.Context, tx *sql.Tx, familyID string, now time.Time) error {
+	result, err := tx.ExecContext(ctx, `UPDATE session_families SET revoked_at=COALESCE(revoked_at,$2) WHERE family_id=$1`, familyID, now)
+	if err != nil {
+		return err
+	}
+	if changed, err := result.RowsAffected(); err != nil || changed != 1 {
+		if err != nil {
+			return err
+		}
+		return ErrAuthentication
+	}
 	if _, err := tx.ExecContext(ctx, `UPDATE sessions SET revoked_at=COALESCE(revoked_at,$2) WHERE family_id=$1`, familyID, now); err != nil {
 		return err
 	}
-	_, err := tx.ExecContext(ctx, `UPDATE access_tokens SET revoked_at=COALESCE(revoked_at,$2) WHERE family_id=$1`, familyID, now)
+	_, err = tx.ExecContext(ctx, `UPDATE access_tokens SET revoked_at=COALESCE(revoked_at,$2) WHERE family_id=$1`, familyID, now)
 	return err
+}
+
+func lockSessionFamily(ctx context.Context, tx *sql.Tx, familyID string) (string, bool, error) {
+	var accountID string
+	var revokedAt sql.NullTime
+	err := tx.QueryRowContext(ctx, `SELECT account_id,revoked_at FROM session_families WHERE family_id=$1 FOR UPDATE`, familyID).Scan(&accountID, &revokedAt)
+	if errors.Is(err, sql.ErrNoRows) {
+		return "", false, ErrAuthentication
+	}
+	return accountID, revokedAt.Valid, err
 }
 
 func newOpaqueToken(random io.Reader) (string, [32]byte, error) {
