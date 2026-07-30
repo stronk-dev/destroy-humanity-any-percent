@@ -7,7 +7,10 @@ import ts from "typescript";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "src", "combat");
 
 function scriptKind(fileName) {
-  return fileName.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
+  if (fileName.endsWith(".tsx")) return ts.ScriptKind.TSX;
+  if (fileName.endsWith(".jsx")) return ts.ScriptKind.JSX;
+  if (fileName.endsWith(".js")) return ts.ScriptKind.JS;
+  return ts.ScriptKind.TS;
 }
 
 export function hasDirectDivision(source, fileName = "combat.ts") {
@@ -39,7 +42,7 @@ async function typescriptFiles(directory) {
   for (const entry of (await readdir(directory, { withFileTypes: true })).sort((left, right) => left.name.localeCompare(right.name))) {
     const absolute = path.join(directory, entry.name);
     if (entry.isDirectory()) files.push(...(await typescriptFiles(absolute)));
-    else if (entry.isFile() && /\.(?:ts|tsx|mts|cts)$/.test(entry.name)) files.push(absolute);
+    else if (entry.isFile() && /\.(?:js|jsx|ts|tsx|mts|cts)$/.test(entry.name)) files.push(absolute);
   }
   return files;
 }
@@ -53,7 +56,7 @@ async function assertSelfTests() {
     ["const label = `value=${left}`; const invalid = top / bottom;", true],
     ["const invalid = <output>{left / right}</output>;", true, "combat.tsx"],
     ['const safe = "left / right"; // left / right\n/* left / right */', false],
-    ["const safe = /left \/ right/g; const label = `value=${left}`;", false],
+    ["const safe = /left \\/ right/g; const label = `value=${left}`;", false],
   ];
   for (const [source, expected, fileName] of cases) {
     if (hasDirectDivision(source, fileName) !== expected) throw new Error(`combat division AST self-test failed: ${source}`);
