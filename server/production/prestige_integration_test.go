@@ -8,9 +8,11 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/commons"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
+	"cloud-clicker/server/faction"
 	"cloud-clicker/server/leaderboard"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
@@ -58,14 +60,26 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	commonsCatalog, err := commons.LoadCatalog(bundle.Artifacts["commons"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	factionCatalog, err := faction.LoadCatalog(bundle.Artifacts["factions"], faction.CompactTitheBand{
+		MinimumPPM: commonsCatalog.MinimumTithePPM,
+		DefaultPPM: commonsCatalog.DefaultTithePPM,
+		MaximumPPM: commonsCatalog.MaximumTithePPM,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	hash := bundle.Hash
 	seedProductionEpoch(t, db, hash, bundle.Artifacts)
-	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}, prestige: map[string]*prestigecore.Policy{hash: policy}}
+	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}, prestige: map[string]*prestigecore.Policy{hash: policy}, factions: map[string]*faction.Catalog{hash: factionCatalog}}
 	store, err := save.NewStore(db, resolver, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithPrestigeRuntime(resolver, 5_000), WithCurrentConstantsHash(hash))
+	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -265,8 +279,8 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil || secondEpoch.ID != 2 || secondEpoch.Hashes[0] != currentHash {
 		t.Fatalf("second epoch=%+v err=%v", secondEpoch, err)
 	}
-	resolver.economy[currentHash], resolver.routes[currentHash], resolver.prestige[currentHash] = catalog, routeCatalog, policy
-	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithPrestigeRuntime(resolver, 3_600_000), WithCurrentConstantsHash(currentHash))
+	resolver.economy[currentHash], resolver.routes[currentHash], resolver.prestige[currentHash], resolver.factions[currentHash] = catalog, routeCatalog, policy, factionCatalog
+	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithProgressionRuntime(resolver), WithCurrentConstantsHash(currentHash))
 	if err != nil {
 		t.Fatal(err)
 	}

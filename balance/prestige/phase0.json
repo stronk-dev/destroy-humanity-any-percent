@@ -10,6 +10,7 @@
     "scripted_first": 1000000
   },
   "collapse_route_knowledge": 25,
+  "catchup_ceiling_ms": 5000,
   "offer_duration_ms": 900000,
   "decline_drift_ppm": 50000,
   "spawn_gate_ppm": [0, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1000000],

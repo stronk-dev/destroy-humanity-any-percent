@@ -37,8 +37,8 @@ Founder stream never contains faction state, so a later run may choose again ind
 
 Stock is exact integer Company state, not a Decimal ledger currency. After every ordinary lazy
 production evaluation, the faction accrual hook receives the same authoritative elapsed result.
-An elapsed span at or below the catch-up ceiling is attended: elapsed milliseconds join the saved
-remainder, each complete catalog interval earns one unit, and the remainder carries. A longer
+An elapsed span at or below the run's hash-pinned Prestige `catchup_ceiling_ms` is attended:
+elapsed milliseconds join the saved remainder, each complete catalog interval earns one unit, and the remainder carries. A longer
 catch-up span advances ordinary offline production but earns no faction stock.
 
 Accrual saturates at the catalog cap rather than overflowing. Crossing the cap emits one

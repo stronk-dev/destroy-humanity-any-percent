@@ -22,7 +22,8 @@
       "name": "Faction Foundation",
       "changelog_ref": "changelog/epoch-2.md",
       "accepted_hashes": [
-        "sha256:0ca091775f5cc9d149b1afb8d10ef2c68906be08f0e2c8f7184001d60c08e509"
+        "sha256:0ca091775f5cc9d149b1afb8d10ef2c68906be08f0e2c8f7184001d60c08e509",
+        "sha256:2ad70ae19dd50be278094debf5908ce68eb072dc132dbf7e62e05f282330166b"
       ]
     }
   ]

@@ -17,13 +17,17 @@ type CatalogResolver interface {
 	ResolveFaction(constantsHash string) (*Catalog, bool)
 }
 
+type CatchupPolicyResolver interface {
+	ResolveCatchupCeilingMS(constantsHash string) (int64, bool)
+}
+
 type AccrualHook struct {
-	Catalogs         CatalogResolver
-	CatchupCeilingMS int64
+	Catalogs CatalogResolver
+	Policies CatchupPolicyResolver
 }
 
 func (hook AccrualHook) AfterAccrual(state *save.State, _ *economy.Catalog, revision save.Revision, result accrualhook.Result, _ []multiplier.Contribution) ([]save.EventWrite, error) {
-	if state == nil || hook.Catalogs == nil || hook.CatchupCeilingMS <= 0 || result.ElapsedMS <= 0 {
+	if state == nil || hook.Catalogs == nil || hook.Policies == nil || result.ElapsedMS <= 0 {
 		return nil, ErrInvalidStockState
 	}
 	if state.FactionID == "" {
@@ -33,6 +37,10 @@ func (hook AccrualHook) AfterAccrual(state *save.State, _ *economy.Catalog, revi
 	if !ok {
 		return nil, ErrInvalidStockState
 	}
+	catchupCeilingMS, ok := hook.Policies.ResolveCatchupCeilingMS(revision.ConstantsHash)
+	if !ok || catchupCeilingMS <= 0 {
+		return nil, ErrInvalidStockState
+	}
 	faction, ok := catalog.Faction(state.FactionID)
 	if !ok || state.StockUnits < 0 || state.StockUnits > catalog.StockCap || state.StockProgressMS < 0 || state.StockProgressMS >= catalog.StockIntervalMS ||
 		state.ConsumedStockUnits < 0 || state.ConsumedStockUnits > decimal.MaxExactInteger {
@@ -40,7 +48,7 @@ func (hook AccrualHook) AfterAccrual(state *save.State, _ *economy.Catalog, revi
 	}
 	// P6 defines attended spans by the catch-up ceiling. Offline catch-up still
 	// advances the production cursor, but never enters the stock accumulator.
-	if result.ElapsedMS > hook.CatchupCeilingMS {
+	if result.ElapsedMS > catchupCeilingMS {
 		return nil, nil
 	}
 	if result.ElapsedMS > decimal.MaxExactInteger-state.StockProgressMS {

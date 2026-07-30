@@ -21,6 +21,7 @@ type Policy struct {
 	Threshold              string           `json:"threshold"`
 	ExitModifiersPPM       map[string]int64 `json:"exit_modifiers_ppm"`
 	CollapseRouteKnowledge int64            `json:"collapse_route_knowledge"`
+	CatchupCeilingMS       int64            `json:"catchup_ceiling_ms"`
 	OfferDurationMS        int64            `json:"offer_duration_ms"`
 	DeclineDriftPPM        int64            `json:"decline_drift_ppm"`
 	SpawnGatePPM           []int64          `json:"spawn_gate_ppm"`
@@ -44,6 +45,7 @@ func LoadPolicy(data []byte) (*Policy, error) {
 	if err != nil || !threshold.IsStateValue() || !threshold.Gt(decimal.Zero) || policy.SchemaVersion != 1 || len(policy.SpawnGatePPM) != 10 ||
 		!mechanicalIDPattern.MatchString(policy.ValueResourceID) ||
 		policy.CollapseRouteKnowledge < 0 || policy.CollapseRouteKnowledge > decimal.MaxExactInteger ||
+		policy.CatchupCeilingMS <= 0 || policy.CatchupCeilingMS > 86_400_000 ||
 		policy.OfferDurationMS <= 0 || policy.OfferDurationMS > int64((1<<63-1)/time.Millisecond) ||
 		policy.DeclineDriftPPM < 0 || policy.DeclineDriftPPM > 1_000_000 ||
 		policy.AdvisorPerRunPPM < 0 || policy.AdvisorPerRunPPM > 1_000_000 ||

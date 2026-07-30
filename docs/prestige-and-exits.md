@@ -18,9 +18,10 @@ invalid cross-scope state.
 
 The Phase-0 Prestige policy is declarative in
 [`balance/prestige/phase0.json`](../balance/prestige/phase0.json). Its `value_resource_id` names the
-authoritative Company resource whose positive accrual advances lifetime value. Offer duration,
-spawn gates, decline drift, payout modifiers, collapse Route Knowledge, and Advisor constants are
-data, never code constants.
+authoritative Company resource whose positive accrual advances lifetime value. Its
+`catchup_ceiling_ms` is the sole server-side attended/offline boundary used by both Prestige span
+accounting and faction stock accrual. Offer duration, spawn gates, decline drift, payout modifiers,
+collapse Route Knowledge, and Advisor constants are data, never code constants.
 
 ## Exact arithmetic
 
@@ -70,8 +71,8 @@ save revision or an eventually projected counter. Exit events also receive a dat
 commit sequence; idempotent replay returns every event for the intent in that recorded order,
 including evaluation events that precede the terminal Exit events.
 
-Attended Time is RTA less recorded offline spans. An accrual gap larger than the production
-catch-up ceiling is recorded using canonical integer milliseconds. When the bounded 256-span list
+Attended Time is RTA less recorded offline spans. An accrual gap larger than the run-hash-pinned
+Prestige policy's catch-up ceiling is recorded using canonical integer milliseconds. When the bounded 256-span list
 fills, the oldest exact duration moves into `collapsed_offline_ms` before the span is removed;
 online gaps are never absorbed and total offline duration is invariant.
 

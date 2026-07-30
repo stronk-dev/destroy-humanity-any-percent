@@ -114,9 +114,13 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	prestigePolicy, err := prestigecore.LoadPolicy(bundle.Artifacts["prestige"])
+	if err != nil {
+		t.Fatal(err)
+	}
 	hash := bundle.Hash
 	seedProductionEpoch(t, db, hash, bundle.Artifacts)
-	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}, factions: map[string]*faction.Catalog{hash: factionCatalog}}
+	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}, prestige: map[string]*prestigecore.Policy{hash: prestigePolicy}, factions: map[string]*faction.Catalog{hash: factionCatalog}}
 	store, err := save.NewStore(db, resolver, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -152,7 +156,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	metrics := fakeInvariantMetrics{}
-	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithFactionRuntime(resolver, 30_000), WithAccrualHook(commonsHook), WithEventProjector(commonsProjector))
+	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithAccrualHook(commonsHook), WithEventProjector(commonsProjector))
 	if err != nil {
 		t.Fatal(err)
 	}

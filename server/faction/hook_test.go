@@ -11,6 +11,13 @@ import (
 
 const testHash = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
+type testCatchupPolicies map[string]int64
+
+func (policies testCatchupPolicies) ResolveCatchupCeilingMS(hash string) (int64, bool) {
+	value, ok := policies[hash]
+	return value, ok
+}
+
 func productionCatalog(t *testing.T) *Catalog {
 	t.Helper()
 	commonsData, err := os.ReadFile("../../balance/commons/phase0.json")
@@ -38,7 +45,7 @@ func productionCatalog(t *testing.T) *Catalog {
 
 func TestStockAccrualCarriesRemainderAndSkipsOffline(t *testing.T) {
 	catalog := productionCatalog(t)
-	hook := AccrualHook{Catalogs: CatalogSet{testHash: catalog}, CatchupCeilingMS: 30_000}
+	hook := AccrualHook{Catalogs: CatalogSet{testHash: catalog}, Policies: testCatchupPolicies{testHash: 30_000}}
 	state := &save.State{FactionID: "bootstrapper", StockProgressMS: 50_000, ConsumedStockUnits: 17}
 	revision := save.Revision{ConstantsHash: testHash}
 	if events, err := hook.AfterAccrual(state, nil, revision, accrualhook.Result{ElapsedMS: 20_001}, nil); err != nil || len(events) != 0 {
@@ -57,7 +64,7 @@ func TestStockAccrualCarriesRemainderAndSkipsOffline(t *testing.T) {
 
 func TestStockAccrualSaturatesOnceAndCarriesRemainder(t *testing.T) {
 	catalog := productionCatalog(t)
-	hook := AccrualHook{Catalogs: CatalogSet{testHash: catalog}, CatchupCeilingMS: 120_000}
+	hook := AccrualHook{Catalogs: CatalogSet{testHash: catalog}, Policies: testCatchupPolicies{testHash: 120_000}}
 	state := &save.State{FactionID: "open_source", StockUnits: catalog.StockCap - 1, StockProgressMS: 59_999}
 	revision := save.Revision{ConstantsHash: testHash}
 	events, err := hook.AfterAccrual(state, nil, revision, accrualhook.Result{ElapsedMS: 60_002}, nil)

@@ -126,3 +126,17 @@ Findings and rulings:
    — the composed gameserver must assert it at construction (fail-closed), noted for composition;
    AC4's next-run re-incorporation and an incorporated-company-through-real-exit test are missing;
    accrual-hook chain order must be pinned before run-genesis lands (byte-stable event order).
+
+## 2026-07-30 — FB-1/P6c remediation
+
+- Added `catchup_ceiling_ms=5000` to the strict Prestige policy and schema. The correctness hotfix
+  is hash-pinned as the second accepted Epoch-2 artifact set; it does not mint a balance epoch.
+- Replaced the two process-configured faction/Prestige runtime options with one
+  `WithProgressionRuntime` bundle. Prestige resolves the ceiling from each run's constants hash;
+  faction receives that same resolved value through a feature-neutral policy boundary. Scripted
+  Exit timing now resolves the pinned policy as well.
+- Service construction fails closed unless the current hash resolves both policy owners. The
+  canonical hook chain is assembled once by the service (Prestige, then faction, then extension
+  hooks), removing option order as a replay variable.
+- Focused Prestige, faction, and production tests pass; the shared schema validator accepts the
+  new required field. The constants-only harness refresh remains a separate guarded commit.

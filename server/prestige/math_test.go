@@ -86,7 +86,7 @@ func TestPhase0PolicyLoadsStrictly(t *testing.T) {
 		t.Fatal(err)
 	}
 	policy, err := LoadPolicy(data)
-	if err != nil || policy.ThresholdValue().String() != "1e12" || policy.SpawnGatePPM[1] != 300_000 {
+	if err != nil || policy.ThresholdValue().String() != "1e12" || policy.SpawnGatePPM[1] != 300_000 || policy.CatchupCeilingMS != 5_000 {
 		t.Fatalf("policy=%+v err=%v", policy, err)
 	}
 	if _, err := LoadPolicy(append(data[:len(data)-2], []byte(",\"unknown\":true}\n")...)); err == nil {

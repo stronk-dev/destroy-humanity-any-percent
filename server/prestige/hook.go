@@ -14,16 +14,15 @@ type PolicyResolver interface {
 }
 
 type AccrualHook struct {
-	Policies         PolicyResolver
-	CatchupCeilingMS int64
+	Policies PolicyResolver
 }
 
 func (hook AccrualHook) AfterAccrual(state *save.State, _ *economy.Catalog, revision save.Revision, result accrualhook.Result, _ []multiplier.Contribution) ([]save.EventWrite, error) {
-	if hook.Policies == nil || hook.CatchupCeilingMS <= 0 || state == nil || result.ElapsedMS <= 0 {
+	if hook.Policies == nil || state == nil || result.ElapsedMS <= 0 {
 		return nil, ErrInvalidPolicy
 	}
 	policy, ok := hook.Policies.ResolvePrestige(revision.ConstantsHash)
-	if !ok {
+	if !ok || policy.CatchupCeilingMS <= 0 {
 		return nil, ErrInvalidPolicy
 	}
 	if err := AccumulateLifetimeValue(state, result.Receipt, policy.ValueResourceID); err != nil {
@@ -31,7 +30,7 @@ func (hook AccrualHook) AfterAccrual(state *save.State, _ *economy.Catalog, revi
 	}
 	to := state.EvaluatedThrough
 	from := to.Add(-time.Duration(result.ElapsedMS) * time.Millisecond)
-	if err := RecordOfflineSpan(state, from, to, hook.CatchupCeilingMS); err != nil {
+	if err := RecordOfflineSpan(state, from, to, policy.CatchupCeilingMS); err != nil {
 		return nil, err
 	}
 	return nil, nil

@@ -199,7 +199,11 @@ func (s *Service) scriptedExitDue(ctx context.Context, companyStreamID string, n
 	copyState.OfflineSpans = append([]save.OfflineSpan(nil), company.State.OfflineSpans...)
 	effectiveNow := save.CanonicalServerTime(now)
 	if effectiveNow.After(copyState.EvaluatedThrough) {
-		if err := prestigecore.RecordOfflineSpan(&copyState, copyState.EvaluatedThrough, effectiveNow, s.catchupCeilingMS); err != nil {
+		policy, ok := s.prestigePolicies.ResolvePrestige(company.Revision.ConstantsHash)
+		if !ok {
+			return false, 0, ErrInvalidEngineState
+		}
+		if err := prestigecore.RecordOfflineSpan(&copyState, copyState.EvaluatedThrough, effectiveNow, policy.CatchupCeilingMS); err != nil {
 			return false, 0, err
 		}
 	}

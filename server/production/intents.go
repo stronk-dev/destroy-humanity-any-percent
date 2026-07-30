@@ -58,6 +58,11 @@ type FactionCatalogResolver interface {
 	ResolveFaction(constantsHash string) (*faction.Catalog, bool)
 }
 
+type ProgressionRuntimeResolver interface {
+	PrestigePolicyResolver
+	FactionCatalogResolver
+}
+
 type AccrualHook = accrualhook.Hook
 
 type RouteCatalogResolver interface {
@@ -116,35 +121,23 @@ func WithCompactPolicies(resolver CompactPolicyResolver) ServiceOption {
 	}
 }
 
-func WithFactionRuntime(resolver FactionCatalogResolver, catchupCeilingMS int64) ServiceOption {
-	return func(service *Service) error {
-		if resolver == nil || catchupCeilingMS <= 0 || catchupCeilingMS > decimal.MaxExactInteger {
-			return ErrInvalidIntent
-		}
-		service.factionCatalogs = resolver
-		service.accrualHook = appendAccrualHook(service.accrualHook, faction.AccrualHook{Catalogs: resolver, CatchupCeilingMS: catchupCeilingMS})
-		return nil
-	}
-}
-
 func WithAccrualHook(hook AccrualHook) ServiceOption {
 	return func(service *Service) error {
 		if hook == nil {
 			return ErrInvalidIntent
 		}
-		service.accrualHook = appendAccrualHook(service.accrualHook, hook)
+		service.extraAccrualHooks = append(service.extraAccrualHooks, hook)
 		return nil
 	}
 }
 
-func WithPrestigeRuntime(resolver PrestigePolicyResolver, catchupCeilingMS int64) ServiceOption {
+func WithProgressionRuntime(resolver ProgressionRuntimeResolver) ServiceOption {
 	return func(service *Service) error {
-		if resolver == nil || catchupCeilingMS <= 0 || catchupCeilingMS > decimal.MaxExactInteger {
+		if resolver == nil {
 			return ErrInvalidIntent
 		}
 		service.prestigePolicies = resolver
-		service.catchupCeilingMS = catchupCeilingMS
-		service.accrualHook = appendAccrualHook(service.accrualHook, prestigecore.AccrualHook{Policies: resolver, CatchupCeilingMS: catchupCeilingMS})
+		service.factionCatalogs = resolver
 		return nil
 	}
 }
@@ -203,8 +196,8 @@ type Service struct {
 	factionCatalogs      FactionCatalogResolver
 	projectors           []EventProjector
 	accrualHook          AccrualHook
+	extraAccrualHooks    []AccrualHook
 	prestigePolicies     PrestigePolicyResolver
-	catchupCeilingMS     int64
 	currentConstantsHash string
 }
 
@@ -269,7 +262,29 @@ func NewService(
 	if service.prestigePolicies != nil && service.currentConstantsHash == "" {
 		return nil, ErrInvalidIntent
 	}
+	if service.prestigePolicies != nil {
+		policy, policyOK := service.prestigePolicies.ResolvePrestige(service.currentConstantsHash)
+		_, factionOK := service.factionCatalogs.ResolveFaction(service.currentConstantsHash)
+		if !policyOK || !factionOK || policy.CatchupCeilingMS <= 0 {
+			return nil, ErrInvalidIntent
+		}
+		service.accrualHook = appendAccrualHook(service.accrualHook, prestigecore.AccrualHook{Policies: service.prestigePolicies})
+		service.accrualHook = appendAccrualHook(service.accrualHook, faction.AccrualHook{Catalogs: service.factionCatalogs, Policies: prestigeCatchupPolicies{service.prestigePolicies}})
+	}
+	for _, hook := range service.extraAccrualHooks {
+		service.accrualHook = appendAccrualHook(service.accrualHook, hook)
+	}
 	return service, nil
+}
+
+type prestigeCatchupPolicies struct{ resolver PrestigePolicyResolver }
+
+func (policies prestigeCatchupPolicies) ResolveCatchupCeilingMS(constantsHash string) (int64, bool) {
+	policy, ok := policies.resolver.ResolvePrestige(constantsHash)
+	if !ok || policy == nil {
+		return 0, false
+	}
+	return policy.CatchupCeilingMS, true
 }
 
 func (s *Service) Handle(

@@ -117,6 +117,11 @@ runs pre-timer (time-board excluded); span-list overflow drops the oldest span i
 `collapsed_offline_ms` accumulator so total offline duration is invariant (the shipped collapse
 absorbed online time). Corpus gains the company v6→current case.
 
+**P6c (Faction review ruling, 2026-07-30):** `catchup_ceiling_ms` is owned by the immutable
+Prestige policy artifact. Prestige offline-span accounting and faction attended-stock accrual
+resolve the same value from the run's pinned `constants_hash`; no process-configured gameplay
+ceiling remains. The client-shell copy is presentation policy only.
+
 **P4b (spec correction, 2026-07-30):** the `run_ended` event + run log are the obituary's source of
 record (AC7 already guarantees this); revision retention stays at 5 and P4's "archives are
 revision-history" phrase is corrected accordingly. Idempotent replay returns events in RECORDED
