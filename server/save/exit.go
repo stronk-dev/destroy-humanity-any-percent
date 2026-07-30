@@ -179,6 +179,9 @@ func (s *Store) applyExitTransaction(
 		if _, err := tx.ExecContext(ctx, `INSERT INTO intent_records(stream_id,intent_id,request_hash,outcome,receipt) VALUES($1,$2,$3,$4,$5)`, companyStreamID, intentID, requestHash, decision.Outcome, decision.Receipt); err != nil {
 			return IntentResult{}, err
 		}
+		if err := insertReceiptOutbox(ctx, tx, ownerID, companyStreamID, intentID, companyRevision.Number, companyHash, decision.Receipt); err != nil {
+			return IntentResult{}, err
+		}
 		if err := tx.Commit(); err != nil {
 			return IntentResult{}, err
 		}
@@ -261,6 +264,9 @@ func (s *Store) applyExitTransaction(
 	}
 
 	if _, err := tx.ExecContext(ctx, `INSERT INTO intent_records(stream_id,intent_id,request_hash,outcome,receipt) VALUES($1,$2,$3,$4,$5)`, companyStreamID, intentID, requestHash, decision.Outcome, decision.Receipt); err != nil {
+		return IntentResult{}, err
+	}
+	if err := insertReceiptOutbox(ctx, tx, ownerID, companyStreamID, intentID, companyNext, companyHash, decision.Receipt); err != nil {
 		return IntentResult{}, err
 	}
 	if err := runExitFault(fault, "intent_record"); err != nil {

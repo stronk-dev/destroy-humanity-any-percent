@@ -49,3 +49,21 @@
 - Remaining acceptance work is explicit: receipt/event mapping from committed intents, composed
   gameserver plus in-flight drain gate, mapping Centrifuge's internal slow-consumer close to typed
   code 4000, actual recovery/drain integration, and the 5k-connection soak.
+
+## 2026-07-29 — crash-safe receipt relay
+
+- Rejected the tempting post-HTTP callback design: a crash after commit but before callback would
+  permanently lose the receipt even though the RFC names the player channel as authority.
+- Added migration 00015 and an intent-transaction outbox. Applied and rejected Company intents,
+  including the two-stream Exit transaction, insert the exact normalized Production receipt with
+  Founder identity, authoritative Company revision, constants hash, and database timestamp in the
+  same transaction as the intent record and state transition. Idempotent replay does not duplicate
+  the unique `(company_stream_id,intent_id)` row.
+- Added ordered lease claims using `FOR UPDATE SKIP LOCKED`, explicit release on publish failure,
+  claim-token-checked acknowledgement, and a transport relay that maps the stored row to the v1
+  player receipt envelope without modifying the payload. Delivery is at least once; duplicate
+  delivery after publish-before-ack is intentionally absorbed by existing intent/revision
+  idempotency rather than weakened into at-most-once loss.
+- Real Postgres tests prove ordinary and Exit intent atomicity, replay deduplication, claim expiry
+  ownership, acknowledgement, and rollback at the existing injected Exit fault boundaries. Relay
+  unit tests prove exact payload mapping and immediate failure release.

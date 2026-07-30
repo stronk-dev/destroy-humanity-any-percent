@@ -41,6 +41,15 @@ traffic. Centrifuge history is configured at publication time: 512/10 minutes fo
 operation publishes the courtesy `server_restarting` system envelope to active channels, closes
 clients with code 4003, and shuts down under the caller's context.
 
-Committed-receipt mapping, the composed gameserver/in-flight transaction gate, typed 4000 mapping
+Every new Company intent record inserts its exact normalized receipt into
+`transport_receipt_outbox` in the same database transaction as the rejection or new save revision;
+an Exit inserts against the new run's authoritative revision. Idempotent replay does not create a
+second row. Relay workers claim ordered batches with expiring leases and `SKIP LOCKED`, publish the
+receipt unchanged to `player:{founder_id}`, then acknowledge it. Failed publication releases its
+claim immediately. A crash after publication but before acknowledgement may redeliver the same
+receipt, which is safe because intent identity and revision reconciliation are already idempotent;
+a crash before publication cannot lose it.
+
+The composed gameserver/in-flight transaction gate, event and snapshot relays, typed 4000 mapping
 from Centrifuge's internal byte queue, and the 5,000-connection soak remain implementing; this
 document does not claim those paths exist yet.

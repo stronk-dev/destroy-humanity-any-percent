@@ -87,9 +87,12 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	if err == nil {
 		t.Fatal("run-log fault committed")
 	}
-	var loggedRows int
+	var loggedRows, outboxRows int
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1`, companyRevision.StreamID).Scan(&loggedRows); err != nil || loggedRows != 0 {
 		t.Fatalf("run-log rollback rows=%d err=%v", loggedRows, err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM transport_receipt_outbox WHERE company_stream_id=$1`, companyRevision.StreamID).Scan(&outboxRows); err != nil || outboxRows != 0 {
+		t.Fatalf("outbox rollback rows=%d err=%v", outboxRows, err)
 	}
 	assertLatestRevision(t, ctx, store, founderRevision.StreamID, 1)
 	assertLatestRevision(t, ctx, store, companyRevision.StreamID, 1)
@@ -120,6 +123,9 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	result, err := store.ApplyExitTransaction(ctx, companyRevision.StreamID, 1, 1, intentID, requestHash, exitTestMutation(ownerID, companyRevision.StreamID, intentID, now), nil)
 	if err != nil || result.Outcome != IntentApplied || result.Replay || len(result.Events) != 3 {
 		t.Fatalf("result=%+v err=%v", result, err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM transport_receipt_outbox WHERE company_stream_id=$1`, companyRevision.StreamID).Scan(&outboxRows); err != nil || outboxRows != 1 {
+		t.Fatalf("exit outbox rows=%d err=%v", outboxRows, err)
 	}
 	assertLatestRevision(t, ctx, store, founderRevision.StreamID, 2)
 	assertLatestRevision(t, ctx, store, companyRevision.StreamID, 3)

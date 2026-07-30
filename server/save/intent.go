@@ -242,6 +242,11 @@ func (s *Store) applyIntent(
 			VALUES ($1,$2,$3,$4,$5)`, streamID, intentID, requestHash, decision.Outcome, decision.Receipt); err != nil {
 			return IntentResult{}, err
 		}
+		if scope == economy.ScopeCompany {
+			if err := insertReceiptOutbox(ctx, tx, ownerID, streamID, intentID, revision.Number, revision.ConstantsHash, decision.Receipt); err != nil {
+				return IntentResult{}, err
+			}
+		}
 		if err := tx.Commit(); err != nil {
 			return IntentResult{}, err
 		}
@@ -288,6 +293,11 @@ func (s *Store) applyIntent(
 		INSERT INTO intent_records (stream_id,intent_id,request_hash,outcome,receipt)
 		VALUES ($1,$2,$3,$4,$5)`, streamID, intentID, requestHash, decision.Outcome, decision.Receipt); err != nil {
 		return IntentResult{}, err
+	}
+	if scope == economy.ScopeCompany {
+		if err := insertReceiptOutbox(ctx, tx, ownerID, streamID, intentID, newRevision, revision.ConstantsHash, decision.Receipt); err != nil {
+			return IntentResult{}, err
+		}
 	}
 	if _, err := tx.ExecContext(ctx, `DELETE FROM save_revisions WHERE stream_id=$1 AND revision <= $2`, streamID, newRevision-5); err != nil {
 		return IntentResult{}, err

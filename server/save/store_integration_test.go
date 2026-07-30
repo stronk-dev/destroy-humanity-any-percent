@@ -171,6 +171,27 @@ func TestStoreIntegrationRevisionLifecycle(t *testing.T) {
 	if revisionCount != 2 || eventCount != 1 || recordCount != 1 {
 		t.Fatalf("intent rows revisions=%d events=%d records=%d", revisionCount, eventCount, recordCount)
 	}
+	if pending, err := store.PendingReceiptCount(ctx); err != nil || pending != 1 {
+		t.Fatalf("pending receipts=%d err=%v", pending, err)
+	}
+	claimed, err := store.ClaimReceiptOutbox(ctx, 10, 30*time.Second)
+	if err != nil || len(claimed) != 1 || claimed[0].FounderID != intentKey.OwnerID || claimed[0].Revision != 2 || string(claimed[0].Receipt) != string(result.Receipt) {
+		t.Fatalf("claimed=%+v err=%v", claimed, err)
+	}
+	firstClaim := claimed[0].ClaimToken
+	if err := store.ReleaseReceiptClaim(ctx, claimed[0].ID, firstClaim); err != nil {
+		t.Fatal(err)
+	}
+	claimed, err = store.ClaimReceiptOutbox(ctx, 10, 30*time.Second)
+	if err != nil || len(claimed) != 1 || claimed[0].ClaimToken == firstClaim {
+		t.Fatalf("reclaimed=%+v err=%v", claimed, err)
+	}
+	if err := store.MarkReceiptPublished(ctx, claimed[0].ID, claimed[0].ClaimToken); err != nil {
+		t.Fatal(err)
+	}
+	if pending, err := store.PendingReceiptCount(ctx); err != nil || pending != 0 {
+		t.Fatalf("pending after publish=%d err=%v", pending, err)
+	}
 
 	rejectionID := "018f6b7c-9abc-7def-9abc-0123456789ab"
 	rejected, err := store.ApplyIntent(ctx, intentRevision.StreamID, 2, rejectionID, "sha256:"+strings.Repeat("3", 64), func(*State, Revision) (IntentDecision, error) {
@@ -178,6 +199,9 @@ func TestStoreIntegrationRevisionLifecycle(t *testing.T) {
 	})
 	if err != nil || rejected.Outcome != IntentRejected {
 		t.Fatalf("rejection=%+v err=%v", rejected, err)
+	}
+	if pending, err := store.PendingReceiptCount(ctx); err != nil || pending != 1 {
+		t.Fatalf("rejected receipt pending=%d err=%v", pending, err)
 	}
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM save_revisions WHERE stream_id=$1`, intentRevision.StreamID).Scan(&revisionCount); err != nil || revisionCount != 2 {
 		t.Fatalf("terminal rejection mutated save: revisions=%d err=%v", revisionCount, err)
