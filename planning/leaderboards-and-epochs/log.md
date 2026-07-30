@@ -206,3 +206,48 @@ identical-artifact mint.
   values now pass the same validator as decoded JSON before artifact reads or DB reconciliation,
   and identity-only baseline comparison strict-decodes exact schemas so unknown fields cannot be
   ignored by semantic comparison. Seeded negative tests cover both paths.
+
+## 2026-07-30 — independent review: remediation round, epoch identity half (ac022cd, 8a291ae, 0e6cbe5, d7b4754)
+
+**Verdict: L2a, L5c, and the mint-livelock fix are approved with evidence.** Single artifact
+authority is real (epochseed bundle drives harness, guard, and every integration fixture; parity
+test + seed-drives-composition-without-code-edit both proven); startup sync runs before readiness,
+is idempotent, serializes all three mutators on one advisory lock, and fails closed on every
+divergence probed (DB-ahead, hash conflict, forged bundle hash, unknown fields); mint allocates its
+id explicitly under FOR UPDATE with the changelog check before any insert — an aborted attempt
+burns nothing (regression-tested). The CONSTANTS-IDENTITY class is structurally checked, not
+honor-system: artifact-only commit paths, recomputed-hash equality, and DeepEqual over fully
+concrete structs with only hash fields blanked. d7b4754's `test:` subject is legal under the
+current guard (golden-seed-only commits are outside the baseline walk — see finding 3).
+
+Findings:
+
+1. **MEDIUM — identity-class residual: a semantic change to a hashed-but-unexecuted artifact can
+   ship as hotfix + CONSTANTS-IDENTITY with no mint.** Prestige bytes are in the constants hash but
+   the pacing harness never executes them, so halving prestige costs leaves observations identical:
+   hotfix (no subject demand) + identity-only baseline refresh = a balance change with history
+   asserting "identity-only". Fix (structural, small): the identity guard additionally requires
+   artifact BYTES unchanged between the previous baseline commit and this one for every seed
+   artifact — identity refreshes may follow composition changes only.
+2. **MEDIUM — ReconcileSeed cannot bootstrap a fresh database once real history exists** (empty DB
+   + multi-epoch seed hits the fail-closed default; a past hotfix's multi-hash set fails the final
+   equality even for single-epoch seeds). Fail-closed is right; unrecoverable-DR is not. Fix:
+   bootstrap branch replays the FULL seed history (all epochs + accepted sets, closed ones ended)
+   — deterministic, still fail-closed against divergence.
+3. LOW — golden-seed-only commits bypass subject classification (pre-existing; operationally
+   backstopped by check-mode regeneration). Extend the baseline walk to both artifacts when
+   convenient. OBSERVATION — `advanceEpochSequence` setval is non-transactional (harmless: inserts
+   use explicit ids); MintEpoch trusts its caller for artifact names until next reconcile;
+   gameserver library still has no `cmd/` binary (known, queued).
+
+## 2026-07-30 — round-2 MEDIUM remediation: identity artifact pin
+
+- `CONSTANTS-IDENTITY:` now compares every seed-declared artifact byte-for-byte between the
+  preceding pacing-baseline commit and the identity commit, in addition to its existing strict
+  report comparison. A Prestige hotfix can no longer hide behind unchanged pacing observations.
+- Artifact membership is pinned too. The only migration exception is the repository's first
+  historical identity repair, whose previous baseline predates the seed manifest and therefore has
+  no declared bundle to compare. Every later repair fails closed on missing, renamed, or changed
+  artifacts.
+- A real temporary-Git-repository regression registers changed Prestige bytes as a hotfix and
+  proves the identity artifact check rejects them by name; the unchanged control passes.

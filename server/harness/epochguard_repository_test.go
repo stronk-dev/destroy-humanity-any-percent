@@ -36,6 +36,62 @@ func TestEpochGuardAcceptsRegisteredHotfix(t *testing.T) {
 	}
 }
 
+func TestConstantsIdentityPinsArtifactBytesAtPreviousBaseline(t *testing.T) {
+	root, seed, artifacts := newEpochGuardRepository(t)
+	initialHash := seed.Epochs[0].AcceptedHashes[0]
+	baseline := AggregateReport{SchemaVersion: 1, ConstantsHash: initialHash}
+	golden := GoldenReport{SchemaVersion: 1, Runs: []RunReport{{Key: RunKey{ConstantsHash: initialHash}}}}
+	baselineBytes, err := json.Marshal(baseline)
+	if err != nil {
+		t.Fatal(err)
+	}
+	goldenBytes, err := json.Marshal(golden)
+	if err != nil {
+		t.Fatal(err)
+	}
+	writeGuardCommit(t, root, "harness: initial baseline", map[string]string{
+		baselinePath: string(baselineBytes),
+		goldenPath:   string(goldenBytes),
+	})
+	previousBaselineBytes, err := gitOutput(root, "rev-parse", "HEAD")
+	if err != nil {
+		t.Fatal(err)
+	}
+	previousBaseline := string(previousBaselineBytes)
+
+	if err := validateConstantsIdentityArtifactBytes(root, previousBaseline, previousBaseline, seed); err != nil {
+		t.Fatalf("unchanged identity bytes failed: %v", err)
+	}
+
+	prestige := `{"prestige_cost":"halved"}`
+	resultingHash := epochHash(t, root, seed, map[string]string{artifacts["prestige"]: prestige})
+	seed.Epochs[0].AcceptedHashes = append(seed.Epochs[0].AcceptedHashes,
+		resultingHash)
+	sort.Strings(seed.Epochs[0].AcceptedHashes)
+	writeGuardCommit(t, root, "prestige: hotfix cost", map[string]string{
+		artifacts["prestige"]: prestige,
+		epochSeedPath:         encodeEpochSeed(t, seed),
+	})
+	baseline.ConstantsHash = resultingHash
+	golden.Runs[0].Key.ConstantsHash = resultingHash
+	baselineBytes, err = json.Marshal(baseline)
+	if err != nil {
+		t.Fatal(err)
+	}
+	goldenBytes, err = json.Marshal(golden)
+	if err != nil {
+		t.Fatal(err)
+	}
+	writeGuardCommit(t, root, "CONSTANTS-IDENTITY: hide prestige retune", map[string]string{
+		baselinePath: string(baselineBytes),
+		goldenPath:   string(goldenBytes),
+	})
+	if err := ValidateRepositoryBaselineChange(root); err == nil ||
+		!strings.Contains(err.Error(), "prestige") {
+		t.Fatalf("identity guard accepted changed prestige bytes: %v", err)
+	}
+}
+
 func TestEpochGuardRejectsHardcapLoweringAsHotfix(t *testing.T) {
 	root, seed, artifacts := newEpochGuardRepository(t)
 	economyBytes, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(artifacts["economy"])))

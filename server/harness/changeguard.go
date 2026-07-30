@@ -109,7 +109,7 @@ func ValidateRepositoryBaselineChange(root string) error {
 			return fmt.Errorf("invalid baseline commit %s: %w", commit, err)
 		}
 		if strings.HasPrefix(string(subject), "CONSTANTS-IDENTITY:") {
-			if err := validateConstantsIdentityCommit(root, parent, commit); err != nil {
+			if err := validateConstantsIdentityCommit(root, commits[index-1], parent, commit); err != nil {
 				return fmt.Errorf("invalid constants-identity commit %s: %w", commit, err)
 			}
 		}
@@ -117,13 +117,16 @@ func ValidateRepositoryBaselineChange(root string) error {
 	return nil
 }
 
-func validateConstantsIdentityCommit(root, parent, commit string) error {
+func validateConstantsIdentityCommit(root, previousBaseline, parent, commit string) error {
 	seedBytes, err := gitBlob(root, commit, epochSeedPath)
 	if err != nil {
 		return err
 	}
 	seed, err := decodeEpochSeed(seedBytes)
 	if err != nil {
+		return err
+	}
+	if err := validateConstantsIdentityArtifactBytes(root, previousBaseline, commit, seed); err != nil {
 		return err
 	}
 	expectedHash, err := hashArtifactsAt(root, commit, seed)
@@ -147,6 +150,51 @@ func validateConstantsIdentityCommit(root, parent, commit string) error {
 		return err
 	}
 	return validateConstantsIdentityBlobs(beforeBaseline, afterBaseline, beforeGolden, afterGolden, expectedHash)
+}
+
+func validateConstantsIdentityArtifactBytes(root, previousBaseline, commit string, current epochSeed) error {
+	previousSeed, present, err := epochSeedAt(root, previousBaseline)
+	if err != nil {
+		return err
+	}
+	// The repository's first identity repair predates the manifest at its previous
+	// baseline. There is no declared bundle to pin across that one migration.
+	if !present {
+		return nil
+	}
+	if !reflect.DeepEqual(previousSeed.Artifacts, current.Artifacts) {
+		return fmt.Errorf("constants-identity commit changes the seed artifact set")
+	}
+	for _, artifact := range current.Artifacts {
+		before, err := gitBlob(root, previousBaseline, artifact.Path)
+		if err != nil {
+			return err
+		}
+		after, err := gitBlob(root, commit, artifact.Path)
+		if err != nil {
+			return err
+		}
+		if !bytes.Equal(before, after) {
+			return fmt.Errorf("constants-identity commit changes artifact bytes for %s", artifact.Name)
+		}
+	}
+	return nil
+}
+
+func epochSeedAt(root, commit string) (epochSeed, bool, error) {
+	history, err := gitOutput(root, "log", "-1", "--format=%H", commit, "--", epochSeedPath)
+	if err != nil {
+		return epochSeed{}, false, err
+	}
+	if len(history) == 0 {
+		return epochSeed{}, false, nil
+	}
+	data, err := gitBlob(root, commit, epochSeedPath)
+	if err != nil {
+		return epochSeed{}, false, err
+	}
+	seed, err := decodeEpochSeed(data)
+	return seed, true, err
 }
 
 func validateConstantsIdentityBlobs(beforeBaseline, afterBaseline, beforeGolden, afterGolden []byte, expectedHash string) error {

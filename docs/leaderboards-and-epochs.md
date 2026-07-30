@@ -37,7 +37,10 @@ lock, so an invalid changelog reference cannot burn a sequence number and poison
 
 A `CONSTANTS-IDENTITY:` baseline commit is a narrow non-balance repair path: the guard proves that
 only constants-hash fields changed, every new hash equals the manifest-computed value, and all pacing
-and golden behavior is byte-semantically unchanged. It cannot authorize code or tuning changes.
+and golden behavior is byte-semantically unchanged. Every manifest artifact must also be byte-for-byte
+identical to its state at the previous pacing-baseline commit. The first historical identity repair
+is the sole migration exception because its previous baseline predates the manifest authority. This
+path can repair composition code; it cannot authorize code or tuning changes.
 
 ## Run pinning
 

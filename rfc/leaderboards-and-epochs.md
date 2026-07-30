@@ -113,6 +113,10 @@ Closed category schema: `{category_id, name, terminal_predicate, timer ∈ {rta,
 
 The existing history guard already walks every reachable revision. Extension, same job: for any commit whose diff touches a `ConstantsHashArtifacts` path — **with `BALANCE-CHANGE:`** → the same commit must add an `epochs` seed row + changelog file (mint), else fail; **without** → the commit must add its resulting hash to the current epoch's accepted-set seed file (hotfix), else fail. Both are ordinary in-repo files, so the artifact-commit-touches-only-baseline rule and fetch-depth guarantees apply unchanged; reproducibility of a hotfix = its artifact row carries the exact bytes (L2). The cap-lowering migration rule routed here lands as: **a hotfix may not lower any hardcap** (guard compares the declared cap fields across the diff; lowering a cap is definitionally a balance change and requires a mint + the clamp-on-migration policy in its changelog).
 
+`CONSTANTS-IDENTITY:` is composition repair only: every seed-declared artifact's bytes must equal
+its bytes at the previous pacing-baseline commit. An artifact change between baselines therefore
+cannot be relabeled identity-only even when the harness does not execute that artifact.
+
 ## Changelog
 
 - 2026-07-28: created (draft). Closes the deferred-decisions register.
@@ -122,4 +126,6 @@ The existing history guard already walks every reachable revision. Extension, sa
 - 2026-07-30: core review found two architectural HIGHs rooted in this RFC's contracts; rulings L2b (version-drift runs stay playable, unrankable), L5b (run N+1 starts under the current hash), L5c (startup epoch seed sync) added.
 - 2026-07-30: L2a/L5c remediation centralizes artifact composition in `epochseed`, requires
   manifest reconciliation before gameserver readiness, and adds a hash-only baseline repair gate.
+- 2026-07-30: round-2 review tightens the identity-only gate to pin every seed artifact's bytes at
+  the preceding baseline, closing the hashed-but-unexecuted catalog escape.
 - 2026-07-29: accepted for implementation by `planning/codex-batch-2026-07-29.md`; implementation started immediately behind Prestige so L1 can replace its provisional terminal sequence.
