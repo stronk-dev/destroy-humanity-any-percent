@@ -202,7 +202,7 @@ func (n *Node) Shutdown(ctx context.Context) error {
 	select {
 	case <-n.done:
 	case <-ctx.Done():
-		return ctx.Err()
+		return errors.Join(ctx.Err(), n.node.Shutdown(ctx))
 	}
 	return n.node.Shutdown(ctx)
 }

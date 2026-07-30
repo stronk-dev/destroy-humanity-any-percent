@@ -101,27 +101,38 @@ func (server *Server) Drain(ctx context.Context, now time.Time) error {
 	select {
 	case <-zero:
 	case <-drainContext.Done():
-		return drainContext.Err()
+		server.stopRelay()
+		server.realtime.CloseForDrain()
+		return errors.Join(drainContext.Err(), server.realtime.Shutdown(drainContext))
 	}
 	for {
 		count, err := server.relay.Flush(drainContext)
 		if err != nil {
-			return err
+			server.stopRelay()
+			server.realtime.CloseForDrain()
+			return errors.Join(err, server.realtime.Shutdown(drainContext))
 		}
 		if count == 0 {
 			break
 		}
 	}
 	if server.relayCancel != nil {
-		server.relayCancel()
+		server.stopRelay()
 		select {
 		case <-server.relayDone:
 		case <-drainContext.Done():
-			return drainContext.Err()
+			server.realtime.CloseForDrain()
+			return errors.Join(drainContext.Err(), server.realtime.Shutdown(drainContext))
 		}
 	}
 	server.realtime.CloseForDrain()
 	return server.realtime.Shutdown(drainContext)
+}
+
+func (server *Server) stopRelay() {
+	if server.relayCancel != nil {
+		server.relayCancel()
+	}
 }
 
 func (server *Server) runRelay(ctx context.Context) {

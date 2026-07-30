@@ -92,3 +92,15 @@
   This exact adapter/library mismatch remains an implementation blocker to resolve by an accepted
   dependency patch/fork decision; the separate bounded queue continues to prove the required loss
   semantics without falsely claiming the actual socket emits 4000.
+
+## 2026-07-29 — complete-diff self-review correction
+
+- Found a bounded-drain defect in the lifecycle diff: if an already-admitted intent outlived the
+  15-second budget, the timeout branch returned before closing sockets. The ordinary ordering test
+  passed because its intent completed, so the missing exceptional cleanup needed a dedicated stalled
+  transaction case.
+- Every failure/timeout branch now cancels the relay, closes sockets with the typed drain code, and
+  invokes Centrifuge shutdown before returning the joined cause. The node also initiates Centrifuge
+  shutdown when its caller context is already expired instead of returning before the library sees
+  shutdown. A blocked-intent regression proves `broadcast -> close -> shutdown` still occurs at the
+  deadline and the caller receives `context.DeadlineExceeded`.

@@ -130,6 +130,30 @@ func TestHealthAndReadinessAreDistinct(t *testing.T) {
 	}
 }
 
+func TestDrainDeadlineStillClosesSockets(t *testing.T) {
+	intentEntered := make(chan struct{})
+	blocked := make(chan struct{})
+	api := http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		if request.URL.Path == "/api/v1/intents" {
+			close(intentEntered)
+			<-blocked
+		}
+		response.WriteHeader(http.StatusOK)
+	})
+	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: 20 * time.Millisecond}
+	server, _ := New(fakeDatabase{}, api, realtime, &fakeRelay{}, "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+	go server.Handler().ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(http.MethodPost, "/api/v1/intents", nil))
+	<-intentEntered
+	err := server.Drain(context.Background(), time.Now().UTC())
+	close(blocked)
+	if !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatalf("deadline error=%v", err)
+	}
+	if events := realtime.snapshot(); len(events) != 3 || events[0] != "broadcast" || events[1] != "close" || events[2] != "shutdown" {
+		t.Fatalf("deadline drain events=%v", events)
+	}
+}
+
 func TestStartRunsRealtimeAndReceiptRelay(t *testing.T) {
 	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
 	relay := &fakeRelay{}
