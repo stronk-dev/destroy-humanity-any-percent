@@ -185,7 +185,8 @@ func TestEpochSeedReconciliationIntegration(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(root, "changelog"), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	for _, name := range []string{"epoch-1.md", "epoch-2.md", "epoch-3.md"} {
+	for id := int64(1); id <= bundle.Seed.CurrentEpochID+1; id++ {
+		name := fmt.Sprintf("epoch-%d.md", id)
 		if err := os.WriteFile(filepath.Join(root, "changelog", name), []byte("# reconciled epoch\n"), 0o644); err != nil {
 			t.Fatal(err)
 		}
@@ -212,9 +213,10 @@ func TestEpochSeedReconciliationIntegration(t *testing.T) {
 
 	next := bundle
 	next.Seed.CurrentEpochID = bundle.Seed.CurrentEpochID + 1
+	nextChangelog := fmt.Sprintf("changelog/epoch-%d.md", next.Seed.CurrentEpochID)
 	advancedHotfixHash := "sha256:0000000000000000000000000000000000000000000000000000000000000002"
 	next.Seed.Epochs = append(append([]epochseed.Epoch(nil), bundle.Seed.Epochs...), epochseed.Epoch{
-		ID: next.Seed.CurrentEpochID, Name: "Phase 0.1", ChangelogRef: "changelog/epoch-3.md", AcceptedHashes: []string{advancedHotfixHash, bundle.Hash},
+		ID: next.Seed.CurrentEpochID, Name: "Phase 0.1", ChangelogRef: nextChangelog, AcceptedHashes: []string{advancedHotfixHash, bundle.Hash},
 	})
 	if err := epochseed.Validate(next.Seed); err != nil || !epochseed.Accepts(epochseed.Current(next.Seed), next.Hash) {
 		t.Fatalf("next seed invalid before reconciliation: %v seed=%+v hash=%s", err, next.Seed, next.Hash)
@@ -223,14 +225,15 @@ func TestEpochSeedReconciliationIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	current, err = repository.Current(ctx)
-	if err != nil || current.ID != 3 || current.Name != "Phase 0.1" || !reflect.DeepEqual(current.Hashes, []string{advancedHotfixHash, bundle.Hash}) {
+	if err != nil || current.ID != next.Seed.CurrentEpochID || current.Name != "Phase 0.1" || !reflect.DeepEqual(current.Hashes, []string{advancedHotfixHash, bundle.Hash}) {
 		t.Fatalf("advanced current=%+v err=%v", current, err)
 	}
 	var advancedHotfixArtifacts int
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM catalog_artifacts WHERE constants_hash=$1`, advancedHotfixHash).Scan(&advancedHotfixArtifacts); err != nil || advancedHotfixArtifacts != 0 {
 		t.Fatalf("advanced hotfix artifacts=%d err=%v", advancedHotfixArtifacts, err)
 	}
-	if _, err := repository.MintEpoch(ctx, "Phase 0.2", started.Add(2*time.Hour), "changelog/epoch-4.md", artifactsFromBundle(bundle)); !errors.Is(err, ErrInvalidEpoch) {
+	missingChangelog := fmt.Sprintf("changelog/epoch-%d.md", next.Seed.CurrentEpochID+1)
+	if _, err := repository.MintEpoch(ctx, "Phase 0.2", started.Add(2*time.Hour), missingChangelog, artifactsFromBundle(bundle)); !errors.Is(err, ErrInvalidEpoch) {
 		t.Fatalf("missing changelog should fail before sequence allocation: %v", err)
 	}
 
