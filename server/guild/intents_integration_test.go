@@ -14,7 +14,9 @@ import (
 
 type integrationNames struct{}
 
-func (integrationNames) ValidateGuildName(value string) bool { return value == "Small Systems" }
+func (integrationNames) ValidateGuildName(value string) bool {
+	return value == "Small Systems" || value == "Small Systems 2"
+}
 
 func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	url := os.Getenv("TEST_DATABASE_URL")
@@ -112,6 +114,25 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 
 	if _, err := db.ExecContext(ctx, `DELETE FROM guild_members WHERE guild_id=$1 AND account_id=$2`, guildID, joinedAccount); err == nil {
 		t.Fatal("membership history deletion succeeded")
+	}
+
+	sweepAccount := "018f0000-0000-4000-8000-000000000104"
+	if _, err := db.ExecContext(ctx, `INSERT INTO accounts(account_id,recovery_hash,created_at) VALUES($1,'test',clock_timestamp()) ON CONFLICT DO NOTHING`, sweepAccount); err != nil {
+		t.Fatal(err)
+	}
+	sweepGuild := "018f0000-0000-7000-8000-000000000104"
+	sweepCreated, err := service.Handle(ctx, sweepAccount, []byte(guildIntent(sweepGuild, "create_guild", 1, `,"name":"Small Systems 2","join_policy":"open"`)))
+	if err != nil || receiptOutcome(t, sweepCreated.Receipt) != "applied" {
+		t.Fatalf("sweep create=%s err=%v", sweepCreated.Receipt, err)
+	}
+	if count, err := service.SweepDisbanded(ctx, now.Add(7*24*time.Hour-time.Millisecond), 10); err != nil || count != 0 {
+		t.Fatalf("early sweep=%d err=%v", count, err)
+	}
+	if count, err := service.SweepDisbanded(ctx, now.Add(7*24*time.Hour), 10); err != nil || count != 1 {
+		t.Fatalf("due sweep=%d err=%v", count, err)
+	}
+	if service.GuildMember(sweepAccount, sweepGuild) {
+		t.Fatal("swept guild retained membership")
 	}
 }
 

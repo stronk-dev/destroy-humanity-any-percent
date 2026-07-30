@@ -415,6 +415,9 @@ func (service *Service) apply(ctx context.Context, tx *sql.Tx, actor string, req
 		if err := insertPresence(ctx, tx, guildID, actor, "left", guildRevision, now); err != nil {
 			return mutationResult{}, err
 		}
+		if err := service.refreshFloorState(ctx, tx, guildID, now); err != nil {
+			return mutationResult{}, err
+		}
 		return applied(guildID), nil
 	case "set_role":
 		guildID, role, _, err := activeMembership(ctx, tx, actor, false)
@@ -500,7 +503,17 @@ func (service *Service) join(ctx context.Context, tx *sql.Tx, guildID, accountID
 	if err := insertGuildEvent(ctx, tx, guildID, revision, "member_joined", accountID, accountID, intentID, map[string]any{"role": role}); err != nil {
 		return err
 	}
-	return insertPresence(ctx, tx, guildID, accountID, "joined", revision, now)
+	if err := insertPresence(ctx, tx, guildID, accountID, "joined", revision, now); err != nil {
+		return err
+	}
+	return service.refreshFloorState(ctx, tx, guildID, now)
+}
+
+func (service *Service) refreshFloorState(ctx context.Context, tx *sql.Tx, guildID string, now time.Time) error {
+	_, err := tx.ExecContext(ctx, `UPDATE guilds SET below_floor_since=CASE
+		WHEN (SELECT count(*) FROM guild_members WHERE guild_id=$1 AND left_at IS NULL) < $2
+		THEN COALESCE(below_floor_since,$3) ELSE NULL END WHERE guild_id=$1`, guildID, service.catalog.MinMembers, now)
+	return err
 }
 
 func (service *Service) finish(ctx context.Context, tx *sql.Tx, actor string, request IntentRequest, revision int64, outcome, category, detail, guildID string, now time.Time) (HandleResult, error) {
