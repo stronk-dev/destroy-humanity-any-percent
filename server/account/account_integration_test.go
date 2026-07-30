@@ -22,6 +22,18 @@ import (
 
 type integrationCatalogs map[string]*economy.Catalog
 
+type integrationGuildNames struct{}
+
+func (integrationGuildNames) HandleGuild(_ context.Context, _ string, body []byte) (json.RawMessage, bool, error) {
+	if !json.Valid(body) {
+		return nil, false, ErrInvalidRequest
+	}
+	return json.RawMessage(`{"intent_id":"018f0000-0000-7000-8000-000000000201","outcome":"applied","new_revision":2,"guild_id":"018f0000-0000-7000-8000-000000000201"}`), false, nil
+}
+func (integrationGuildNames) IsInvalidGuildIntent(err error) bool {
+	return errors.Is(err, ErrInvalidRequest)
+}
+
 func (catalogs integrationCatalogs) Resolve(hash string) (*economy.Catalog, bool) {
 	catalog, ok := catalogs[hash]
 	return catalog, ok
@@ -78,6 +90,9 @@ func TestAccountSessionIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if err := api.AttachGuildIntents(integrationGuildNames{}); err != nil {
+		t.Fatalf("guild composition: %v", err)
+	}
 	server := testhttp.New(api.Router())
 	defer server.Close()
 
@@ -124,6 +139,11 @@ func TestAccountSessionIntegration(t *testing.T) {
 	claims, err := repository.Authenticate(ctx, firstPair.AccessToken)
 	if err != nil || claims.Subject != created.AccountID {
 		t.Fatalf("claims=%+v err=%v", claims, err)
+	}
+	guildResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/guild/intents", firstPair.AccessToken,
+		`{"intent_id":"018f0000-0000-7000-8000-000000000201","kind":"create_guild","expected_revision":1,"name":"Small Systems","join_policy":"open"}`)
+	if guildResponse.StatusCode != http.StatusOK || !strings.Contains(readBody(guildResponse), `"outcome":"applied"`) {
+		t.Fatalf("guild intent status=%d", guildResponse.StatusCode)
 	}
 
 	profileResponse := requestJSON(t, server.Client, http.MethodGet, server.URL+"/api/v1/founder", firstPair.AccessToken, "")

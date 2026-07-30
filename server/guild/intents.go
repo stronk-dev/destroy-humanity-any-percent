@@ -218,6 +218,13 @@ func (service *Service) Handle(ctx context.Context, actorAccount string, data []
 	return service.finish(ctx, tx, actorAccount, request, revision, result.outcome, result.category, result.detail, result.guildID, now)
 }
 
+func (service *Service) HandleGuild(ctx context.Context, actorAccount string, data []byte) (json.RawMessage, bool, error) {
+	result, err := service.Handle(ctx, actorAccount, data)
+	return result.Receipt, result.Replay, err
+}
+
+func (service *Service) IsInvalidGuildIntent(err error) bool { return errors.Is(err, ErrInvalidIntent) }
+
 type mutationResult struct{ outcome, category, detail, guildID string }
 
 func applied(guildID string) mutationResult {

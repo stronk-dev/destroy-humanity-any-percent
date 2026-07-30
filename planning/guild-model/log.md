@@ -24,3 +24,7 @@
 - `DESIGN-GAP (guild Health sample)`: `guild_health_inputs(active_founders,tithed_xp)` is declared,
   but no normative formula maps those two integers to the 0..1,000,000 guild Health term. The
   existing Commons weighted-Health function cannot derive that missing denominator.
+- `DESIGN-GAP (account deletion)`: account deletion physically removes `accounts`, while Guild
+  history and leadership reference account identity. The RFC defines New-Founder survival but not
+  leader succession, disbanding, or anonymization on account deletion. Production composition is
+  fail-closed rather than letting the new foreign keys brick the existing deletion contract.

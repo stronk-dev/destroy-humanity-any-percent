@@ -21,6 +21,11 @@ type IntentHandler interface {
 	Handle(context.Context, string, production.EvaluationMode, time.Time, []byte) (production.HandleResult, error)
 }
 
+type GuildIntentHandler interface {
+	HandleGuild(context.Context, string, []byte) (json.RawMessage, bool, error)
+	IsInvalidGuildIntent(error) bool
+}
+
 type APIConfig struct {
 	UnauthenticatedBurst  int
 	UnauthenticatedPerMin int
@@ -39,9 +44,18 @@ func Phase0APIConfig() APIConfig {
 type API struct {
 	repository *Repository
 	intents    IntentHandler
+	guilds     GuildIntentHandler
 	config     APIConfig
 	unauth     *tokenBuckets
 	accounts   *tokenBuckets
+}
+
+func (api *API) AttachGuildIntents(handler GuildIntentHandler) error {
+	if api == nil || handler == nil || api.guilds != nil {
+		return ErrInvalidRequest
+	}
+	api.guilds = handler
+	return nil
 }
 
 type claimsContextKey struct{}
@@ -83,9 +97,34 @@ func (api *API) Router() http.Handler {
 			authenticated.Post("/founder/import", api.importFounder)
 			authenticated.Get("/founder/state", api.getFounderState)
 			authenticated.Post("/intents", api.submitIntent)
+			authenticated.Post("/guild/intents", api.submitGuildIntent)
 		})
 	})
 	return router
+}
+
+func (api *API) submitGuildIntent(response http.ResponseWriter, request *http.Request) {
+	if api.guilds == nil {
+		writeError(response, http.StatusServiceUnavailable, "not_configured", "guild_intents")
+		return
+	}
+	body, err := io.ReadAll(http.MaxBytesReader(response, request.Body, api.config.MaxBodyBytes))
+	if err != nil || len(body) == 0 || !json.Valid(body) {
+		writeError(response, http.StatusBadRequest, "invalid", "body")
+		return
+	}
+	receipt, _, err := api.guilds.HandleGuild(request.Context(), requestClaims(request).Subject, body)
+	if err != nil && api.guilds.IsInvalidGuildIntent(err) {
+		writeError(response, http.StatusBadRequest, "invalid", "guild_intent")
+		return
+	}
+	if err != nil {
+		writeError(response, http.StatusConflict, "conflict", "guild_intent")
+		return
+	}
+	response.Header().Set("Content-Type", "application/json")
+	response.WriteHeader(http.StatusOK)
+	_, _ = response.Write(receipt)
 }
 
 func (api *API) createAccount(response http.ResponseWriter, request *http.Request) {
