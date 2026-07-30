@@ -3,6 +3,7 @@ package transport
 import (
 	"context"
 	"errors"
+	"sync"
 	"time"
 
 	"cloud-clicker/server/save"
@@ -25,6 +26,7 @@ type ReceiptRelay struct {
 	publisher EnvelopePublisher
 	batchSize int
 	lease     time.Duration
+	mu        sync.Mutex
 }
 
 func NewReceiptRelay(source ReceiptSource, publisher EnvelopePublisher) (*ReceiptRelay, error) {
@@ -35,6 +37,8 @@ func NewReceiptRelay(source ReceiptSource, publisher EnvelopePublisher) (*Receip
 }
 
 func (relay *ReceiptRelay) Flush(ctx context.Context) (int, error) {
+	relay.mu.Lock()
+	defer relay.mu.Unlock()
 	items, err := relay.source.ClaimReceiptOutbox(ctx, relay.batchSize, relay.lease)
 	if err != nil {
 		return 0, err

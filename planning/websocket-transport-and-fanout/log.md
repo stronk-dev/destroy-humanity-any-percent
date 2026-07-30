@@ -67,3 +67,28 @@
 - Real Postgres tests prove ordinary and Exit intent atomicity, replay deduplication, claim expiry
   ownership, acknowledgement, and rollback at the existing injected Exit fault boundaries. Relay
   unit tests prove exact payload mapping and immediate failure release.
+
+## 2026-07-29 — composed in-process drain lifecycle
+
+- Added the composed server boundary around the account HTTP router, embedded WebSocket handler,
+  Postgres readiness, and receipt relay. Health means process-up; readiness additionally requires a
+  successful database ping, a healthy relay, and non-draining state.
+- Intent admission is an explicit gate around only `POST /api/v1/intents`. Beginning drain closes
+  admission and returns typed HTTP 503 responses for new work while retaining an exact count of
+  already-admitted transactions. No `sync.WaitGroup.Add` races with `Wait`; the gate's zero channel
+  is changed under the same mutex as admission.
+- Drain order is now executable: mark not-ready/close admission -> broadcast courtesy -> await
+  admitted intents -> flush the transactional receipt outbox to empty -> stop relay -> close sockets
+  with 4003 -> shut down Centrifuge, all under the catalog's 15-second bound. Unit coverage blocks an
+  intent mid-handler and proves sockets remain open until it commits and its relay flush completes.
+- `cmd/gameserver` remains a DESIGN-GAP rather than a fake binary: production composition needs a
+  concrete Founder-to-server/activity-bracket resolver and participation-weight resolver for the
+  already-shipped Commons projector. The active Commons Onboarding RFC explicitly assigns those
+  owners to the still-undrafted faction/incorporation and guild contracts. The generic lifecycle is
+  complete, but hard-coding a deployment-wide cohort owner here would improvise that blocked model.
+- The pinned Centrifuge API closes its internal byte queue with library code 3008 and exposes no
+  per-node override for that disconnect. T5 requires application code 4000. Mutating Centrifuge's
+  exported package-global `DisconnectSlow` would make multiple nodes/tests race and is rejected.
+  This exact adapter/library mismatch remains an implementation blocker to resolve by an accepted
+  dependency patch/fork decision; the separate bounded queue continues to prove the required loss
+  semantics without falsely claiming the actual socket emits 4000.

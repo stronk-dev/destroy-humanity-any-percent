@@ -50,6 +50,14 @@ claim immediately. A crash after publication but before acknowledgement may rede
 receipt, which is safe because intent identity and revision reconciliation are already idempotent;
 a crash before publication cannot lose it.
 
-The composed gameserver/in-flight transaction gate, event and snapshot relays, typed 4000 mapping
-from Centrifuge's internal byte queue, and the 5,000-connection soak remain implementing; this
-document does not claim those paths exist yet.
+The runnable `cmd/gameserver` wiring, event and snapshot relays, typed 4000 mapping from
+Centrifuge's internal byte queue, and the 5,000-connection soak remain implementing; this document
+does not claim those paths exist yet.
+
+The in-process gameserver lifecycle now owns `/healthz`, `/readyz`, WebSocket mounting, and exact
+intent admission during shutdown. Draining marks readiness false and atomically closes admission
+before publishing the courtesy message. It then waits for every already-admitted HTTP intent,
+flushes the receipt outbox to empty, stops the relay, closes sockets with code 4003, and shuts down
+Centrifuge under the configured 15-second bound. New intents during that interval receive HTTP 503
+with `server_draining/retry_same_intent_id`; health remains process-liveness while readiness also
+checks Postgres.

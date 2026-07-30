@@ -162,6 +162,14 @@ func (n *Node) Publish(envelope Envelope) error {
 }
 
 func (n *Node) Drain(ctx context.Context, constantsHash string, now time.Time) error {
+	if err := n.BroadcastDrain(constantsHash, now); err != nil {
+		return err
+	}
+	n.CloseForDrain()
+	return n.Shutdown(ctx)
+}
+
+func (n *Node) BroadcastDrain(constantsHash string, now time.Time) error {
 	if !hashPattern.MatchString(constantsHash) || now.IsZero() {
 		return ErrInvalidNode
 	}
@@ -180,10 +188,13 @@ func (n *Node) Drain(ctx context.Context, constantsHash string, now time.Time) e
 			return err
 		}
 	}
+	return nil
+}
+
+func (n *Node) CloseForDrain() {
 	for _, client := range n.node.Hub().Connections() {
 		client.Disconnect(disconnectServerDrain)
 	}
-	return n.Shutdown(ctx)
 }
 
 func (n *Node) Shutdown(ctx context.Context) error {
@@ -197,6 +208,10 @@ func (n *Node) Shutdown(ctx context.Context) error {
 }
 
 func (n *Node) ConnectionCount() int { return n.node.Hub().NumClients() }
+
+func (n *Node) DrainTimeout() time.Duration {
+	return time.Duration(n.policy.DrainTimeoutMS) * time.Millisecond
+}
 
 func (n *Node) worldLoop() {
 	defer close(n.done)
