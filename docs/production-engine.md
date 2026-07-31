@@ -151,11 +151,14 @@ revision, database server time, and a normalized `replay_inputs` object. Persist
 validates the authoritative command envelope (intent, Company stream, Founder, revision, run, and
 run-log sequence); production owns the closed resolved-input union. Decimal contributions are
 canonical strings and are sorted before persistence. Evaluation mode/time, Commons participation
-weight, explicit empty Guild settlement batches, Route context version, offer inputs, and terminal
-Founder carry/route/next-hash inputs are frozen rather than re-read from mutable projections.
+weight, explicit ordered Guild settlement batches (currently produced empty until the scheduler is
+composed), Route context version, offer inputs, and terminal Founder carry/route/next-hash inputs
+are frozen rather than re-read from mutable projections. Non-empty settlement batches already have
+closed UUID/safe-integer/order validation, so composition does not require a replay schema change.
 
 Rows written before replay-input migration deliberately retain SQL NULL and will become `log_gap`
-when verification lands. A database trigger rejects NULL for every new run-log insert. Terminal
+when verification lands. Database triggers reject NULL for every new run-log insert and reject all
+updates or deletes of run-log evidence. Terminal
 rejections are replay facts and therefore consume a sequence; revision conflicts and idempotent
 retries do not. Founder-career commands are outside the Company run log. An Exit allocates its
 sequence before building `run_ended`, making the event's `terminal_seq` a transaction-local
@@ -167,7 +170,15 @@ intent-less canonical payload, one six-artifact catalog bundle, and replay input
 new state, receipt, and ordered events. Terminal Exits use its terminal arm and include the next
 catalog bundle selected by the frozen next hash. Founder mutation itself remains a separate stream
 audit concern, but every Founder-derived value in the Exit receipt and next Company snapshot is
-computed from the frozen carry view.
+computed from the frozen carry view. The live service rejects mixed Founder/Company catalog hashes
+before freezing that carry, and `ApplyLogged` independently asserts its recorded
+`founder_constants_hash` against the bundle. The bundle likewise recomputes its constants identity
+from the exact six artifact byte strings; a caller cannot relabel parsed catalogs under another
+hash. Company services cannot be constructed without the Prestige/faction runtime.
+
+Faction stock-resource identity is derived inside `ApplyLogged` from the restored faction ID and
+the pinned faction artifact. It is not an ambient live-service repair, so restored revisions and
+live transitions produce the same receipt field.
 
 The replayable post-accrual registry is closed and ordered: Prestige, faction, Guild, Commons.
 Commons receives its projection-derived participation weight as a resolved input. Runtime service

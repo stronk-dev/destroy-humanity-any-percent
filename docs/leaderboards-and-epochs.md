@@ -98,7 +98,8 @@ The live run log now separates the three replay facts: canonical payload is what
 rows require a versioned replay-input object in the gameplay transaction. Historical rows remain
 nullable and are explicitly unrankable rather than receiving invented backfill values. The command
 envelope is persistence-authoritative; the per-intent resolved union is exact-key validated by the
-production kernel.
+production kernel. Active run-log rows are immutable at SQL (`UPDATE` and `DELETE` both fail), so
+tampering cannot be laundered into a historical `log_gap`.
 
 The Go live service now executes through the shared `ApplyLogged` transition and compares cleanly
 when the persisted input is replayed from the pre-command state, including terminal receipt and

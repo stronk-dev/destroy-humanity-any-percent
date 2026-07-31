@@ -42,6 +42,13 @@ func (catalogs integrationCatalogs) Resolve(hash string) (*economy.Catalog, bool
 	return catalog, ok
 }
 
+func (catalogs integrationCatalogs) ValidateState(hash string, state *save.State) error {
+	if _, ok := catalogs.Resolve(hash); !ok || state == nil || state.FactionID != "" {
+		return save.ErrInvalidState
+	}
+	return nil
+}
+
 func TestAccountSessionIntegration(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
@@ -58,30 +65,27 @@ func TestAccountSessionIntegration(t *testing.T) {
 	}
 	truncateAccountIntegration(t, db)
 
-	catalogBytes, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	repositoryBundle, err := epochseed.Load(filepath.Join("..", ".."))
 	if err != nil {
 		t.Fatal(err)
 	}
+	catalogBytes := repositoryBundle.Artifacts["economy"]
 	catalog, err := economy.LoadCatalog(catalogBytes)
 	if err != nil {
 		t.Fatal(err)
 	}
-	hash := save.ConstantsHash(catalogBytes)
+	hash := repositoryBundle.Hash
 	oldCatalogBytes := append(append([]byte(nil), catalogBytes...), ' ')
 	oldCatalog, err := economy.LoadCatalog(oldCatalogBytes)
 	if err != nil {
 		t.Fatal(err)
 	}
 	oldHash := save.ConstantsHash(oldCatalogBytes)
-	repositoryBundle, err := epochseed.Load(filepath.Join("..", ".."))
-	if err != nil {
-		t.Fatal(err)
-	}
 	replayBundle, err := replaycatalog.Load(hash, repositoryBundle.Artifacts)
 	if err != nil {
 		t.Fatal(err)
 	}
-	seedAccountEpoch(t, db, hash, catalogBytes)
+	seedAccountEpoch(t, db, hash, repositoryBundle.Artifacts)
 	resolver := integrationCatalogs{hash: catalog, oldHash: oldCatalog}
 	keys := SigningKeys{CurrentID: "test-current", Current: bytes.Repeat([]byte{0x42}, 32), PreviousID: "test-previous", Previous: bytes.Repeat([]byte{0x24}, 32)}
 	now := time.Date(2026, 7, 29, 12, 0, 0, 0, time.UTC)
@@ -93,7 +97,9 @@ func TestAccountSessionIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	intentService, err := production.NewService(saveStore, resolver, nil, nil, nil, production.WithReplayCatalogs(production.ReplayCatalogSet{hash: replayBundle}))
+	replaySet := production.ReplayCatalogSet{hash: replayBundle}
+	intentService, err := production.NewService(saveStore, resolver, nil, nil, nil, production.WithReplayCatalogs(replaySet),
+		production.WithProgressionRuntime(replaySet), production.WithCurrentConstantsHash(hash))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -301,7 +307,7 @@ func TestConcurrentRefreshReplayRevokesEntireFamilyIntegration(t *testing.T) {
 	catalogBytes, _ := os.ReadFile("../../balance/catalogs/phase0.json")
 	catalog, _ := economy.LoadCatalog(catalogBytes)
 	hash := save.ConstantsHash(catalogBytes)
-	seedAccountEpoch(t, db, hash, catalogBytes)
+	seedAccountEpoch(t, db, hash, map[string][]byte{"economy": catalogBytes})
 	repository, err := NewRepository(db, integrationCatalogs{hash: catalog}, hash,
 		SigningKeys{CurrentID: "test", Current: bytes.Repeat([]byte{0x42}, 32)}, time.Now, nil)
 	if err != nil {
@@ -397,17 +403,32 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	truncateAccountIntegration(t, db)
-	catalogBytes, _ := os.ReadFile("../../balance/catalogs/phase0.json")
-	catalog, _ := economy.LoadCatalog(catalogBytes)
-	hash := save.ConstantsHash(catalogBytes)
-	seedAccountEpoch(t, db, hash, catalogBytes)
+	bundle, err := epochseed.Load(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(bundle.Artifacts["economy"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	hash := bundle.Hash
+	seedAccountEpoch(t, db, hash, bundle.Artifacts)
 	resolver := integrationCatalogs{hash: catalog}
 	repository, err := NewRepository(db, resolver, hash, SigningKeys{CurrentID: "test", Current: bytes.Repeat([]byte{1}, 32)}, time.Now, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	store, _ := save.NewStore(db, resolver, nil)
-	service, _ := production.NewService(store, resolver, nil, nil, nil)
+	replayBundle, err := replaycatalog.Load(bundle.Hash, bundle.Artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	replaySet := production.ReplayCatalogSet{bundle.Hash: replayBundle}
+	service, err := production.NewService(store, resolver, nil, nil, nil, production.WithReplayCatalogs(replaySet),
+		production.WithProgressionRuntime(replaySet), production.WithCurrentConstantsHash(bundle.Hash))
+	if err != nil {
+		t.Fatal(err)
+	}
 	api, err := NewAPI(repository, service, APIConfig{UnauthenticatedBurst: 1, UnauthenticatedPerMin: 1, AccountBurst: 1, AccountPerMin: 1, MaxBodyBytes: 64 << 10})
 	if err != nil {
 		t.Fatal(err)
@@ -424,13 +445,15 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	}
 }
 
-func seedAccountEpoch(t *testing.T, db *sql.DB, hash string, artifact []byte) {
+func seedAccountEpoch(t *testing.T, db *sql.DB, hash string, artifacts map[string][]byte) {
 	t.Helper()
 	if _, err := db.Exec(`INSERT INTO catalog_sets(constants_hash) VALUES($1)`, hash); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.Exec(`INSERT INTO catalog_artifacts(constants_hash,artifact_name,bytes) VALUES($1,'economy',$2)`, hash, artifact); err != nil {
-		t.Fatal(err)
+	for name, artifact := range artifacts {
+		if _, err := db.Exec(`INSERT INTO catalog_artifacts(constants_hash,artifact_name,bytes) VALUES($1,$2,$3)`, hash, name, artifact); err != nil {
+			t.Fatal(err)
+		}
 	}
 	var epochID int64
 	if err := db.QueryRow(`INSERT INTO epochs(name,started_at,changelog_ref) VALUES('Phase 0',now(),'changelog/epoch-1.md') RETURNING epoch_id`).Scan(&epochID); err != nil {

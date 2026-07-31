@@ -105,6 +105,30 @@ func TestProgressionRuntimeRequiresStatePolicyValidation(t *testing.T) {
 	}
 }
 
+func TestCompanyServiceRequiresProgressionRuntime(t *testing.T) {
+	catalog := phase0Catalog(t)
+	store, err := save.NewStore(&sql.DB{}, noStatePolicyCatalogs{"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": catalog}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := NewService(store, noStatePolicyCatalogs{"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": catalog}, nil, nil, nil); !errors.Is(err, ErrInvalidIntent) {
+		t.Fatalf("prestige-less production service error=%v", err)
+	}
+}
+
+func TestFounderCatalogCoherenceFailsClosed(t *testing.T) {
+	company := save.Revision{ConstantsHash: "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+	if err := requireFounderCatalogCoherence(save.Revision{ConstantsHash: company.ConstantsHash}, company); err != nil {
+		t.Fatalf("matching catalogs rejected: %v", err)
+	}
+	if err := requireFounderCatalogCoherence(save.Revision{ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}, company); !errors.Is(err, ErrInvalidEngineState) {
+		t.Fatalf("mixed-catalog founder error=%v", err)
+	}
+	if err := requireFounderCatalogCoherence(save.Revision{}, company); !errors.Is(err, ErrInvalidEngineState) {
+		t.Fatalf("unlabeled founder catalog error=%v", err)
+	}
+}
+
 func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	first, err := ParseIntent([]byte(`{
       "intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab",

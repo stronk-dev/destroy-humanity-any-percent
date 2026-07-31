@@ -364,8 +364,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	}
 	resolver.economy[currentHash], resolver.routes[currentHash], resolver.prestige[currentHash], resolver.factions[currentHash] = catalog, routeCatalog, policy, factionCatalog
 	commonsCatalogs[currentHash] = commonsCatalog
-	currentReplayBundle := replayBundle
-	currentReplayBundle.ConstantsHash = currentHash
+	currentReplayBundle := loadReplayTestBundle(t, currentHash, changedArtifacts)
 	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(currentHash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle, currentHash: currentReplayBundle}))
 	if err != nil {
 		t.Fatal(err)

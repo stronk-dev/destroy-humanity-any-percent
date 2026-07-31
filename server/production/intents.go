@@ -287,18 +287,16 @@ func NewService(
 			return nil, ErrInvalidIntent
 		}
 	}
-	if service.prestigePolicies != nil && service.currentConstantsHash == "" {
+	if service.prestigePolicies == nil || service.factionCatalogs == nil || service.currentConstantsHash == "" {
 		return nil, ErrInvalidIntent
 	}
-	if service.prestigePolicies != nil {
-		if _, ok := service.catalogs.(save.StatePolicyValidator); !ok {
-			return nil, ErrInvalidIntent
-		}
-		policy, policyOK := service.prestigePolicies.ResolvePrestige(service.currentConstantsHash)
-		_, factionOK := service.factionCatalogs.ResolveFaction(service.currentConstantsHash)
-		if !policyOK || !factionOK || policy.CatchupCeilingMS <= 0 {
-			return nil, ErrInvalidIntent
-		}
+	if _, ok := service.catalogs.(save.StatePolicyValidator); !ok {
+		return nil, ErrInvalidIntent
+	}
+	policy, policyOK := service.prestigePolicies.ResolvePrestige(service.currentConstantsHash)
+	_, factionOK := service.factionCatalogs.ResolveFaction(service.currentConstantsHash)
+	if !policyOK || !factionOK || policy.CatchupCeilingMS <= 0 {
+		return nil, ErrInvalidIntent
 	}
 	return service, nil
 }
@@ -338,6 +336,9 @@ func (s *Service) Handle(
 		if err != nil {
 			return HandleResult{}, err
 		}
+		if err := requireFounderCatalogCoherence(prestigeFounder.Revision, company.Revision); err != nil {
+			return HandleResult{}, err
+		}
 		declinedOffers, err = s.store.CountRunEvents(ctx, streamID, save.EventExitOfferDeclined, company.State.RunSeq)
 		if err != nil {
 			return HandleResult{}, err
@@ -356,19 +357,20 @@ func (s *Service) Handle(
 			build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind,
 				DeclinedExitOfferCount: declinedOffers, RouteContextVersion: bundle.Routes.ContextVersion()}
 			if prestigeFounder != nil {
+				if err := requireFounderCatalogCoherence(prestigeFounder.Revision, revision); err != nil {
+					return save.IntentDecision{}, nil, err
+				}
 				value := founderCarry(prestigeFounder.State)
 				value.FounderRevision = prestigeFounder.Revision.Number
+				value.FounderConstantsHash = prestigeFounder.Revision.ConstantsHash
 				build.FounderCarry = &value
 			}
 			catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
 			if !ok {
 				return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 			}
-			if request.InvalidDetail != "" {
-				build.Contributions = []multiplier.Contribution{}
-			}
 			var contributions []multiplier.Contribution
-			if s.contributions != nil && request.Kind != IntentBuyRouteHint {
+			if request.InvalidDetail == "" && s.contributions != nil && request.Kind != IntentBuyRouteHint {
 				var err error
 				contributions, err = s.contributions.Contributions(ctx, state, catalog, revision)
 				if err != nil {
@@ -429,11 +431,9 @@ func (s *Service) Handle(
 					return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown faction catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 				}
 				if state.FactionID != "" {
-					member, exists := factionCatalog.Faction(state.FactionID)
-					if !exists {
+					if _, exists := factionCatalog.Faction(state.FactionID); !exists {
 						return save.IntentDecision{}, nil, ErrInvalidEngineState
 					}
-					state.FactionStockResource = member.Produces
 				}
 			}
 			if command.RunLogSeq == 0 {

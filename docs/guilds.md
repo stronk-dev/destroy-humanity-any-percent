@@ -72,6 +72,7 @@ current guild. On a later guild change, the watermark moves directly to that gui
 committed boundary, so only post-join boundaries can apply; leaving keeps the old pair inert.
 Consumed units declare `guild.stock_consumption` in the existing faction slot;
 the Epoch-4 rate is zero, so the structural path is live without a hidden output buff. Replay inputs
-now reserve an explicit ordered Guild settlement batch (empty until the scheduler composes it), so
-no alternate clearing math can leak into replayable production. The scheduler and real-socket driver
+now reserve an explicit ordered Guild settlement batch (produced empty until the scheduler composes
+it, but already accepting validated non-empty batches), so no alternate clearing math can leak into
+replayable production. The scheduler and real-socket driver
 remain explicit composition work owned by the Run Genesis and gameserver rounds.

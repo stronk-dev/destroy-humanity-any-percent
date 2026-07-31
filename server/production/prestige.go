@@ -18,6 +18,13 @@ import (
 
 var adjacentGatePattern = regexp.MustCompile(`^gate\.t([0-9]+)_to_t([0-9]+)$`)
 
+func requireFounderCatalogCoherence(founder, company save.Revision) error {
+	if founder.ConstantsHash == "" || founder.ConstantsHash != company.ConstantsHash {
+		return ErrInvalidEngineState
+	}
+	return nil
+}
+
 func (s *Service) declineExitOffer(request IntentRequest, state *save.State, catalog *economy.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany {
 		return save.IntentDecision{}, ErrInvalidEngineState
@@ -41,21 +48,6 @@ func (s *Service) declineExitOffer(request IntentRequest, state *save.State, cat
 	state.OfferState = nil
 	events = append(events, save.EventWrite{Kind: save.EventExitOfferDeclined, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
 	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
-}
-
-func (s *Service) afterPrestigeTransition(request IntentRequest, state *save.State, revision save.Revision, now time.Time, decision *save.IntentDecision, founder *save.Loaded, declinedOffers int64) error {
-	var founderState *save.State
-	if founder != nil {
-		if founder.Revision.ConstantsHash != revision.ConstantsHash {
-			return ErrInvalidEngineState
-		}
-		founderState = founder.State
-	}
-	policy, ok := s.prestigePolicies.ResolvePrestige(revision.ConstantsHash)
-	if !ok {
-		return ErrInvalidEngineState
-	}
-	return afterPrestigeTransitionResolved(policy, request, state, revision, now, decision, founderState, declinedOffers)
 }
 
 func afterPrestigeTransitionResolved(policy *prestigecore.Policy, request IntentRequest, state *save.State, revision save.Revision, now time.Time, decision *save.IntentDecision, founder *save.State, declinedOffers int64) error {
@@ -274,6 +266,9 @@ func (s *Service) exitContributions(ctx context.Context, state *save.State, revi
 }
 
 func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand, mode EvaluationMode, now time.Time, executedRoutes []string) (save.ExitDecision, json.RawMessage, error) {
+	if err := requireFounderCatalogCoherence(founderRevision, companyRevision); err != nil {
+		return save.ExitDecision{}, nil, err
+	}
 	if s.replayCatalogs == nil {
 		return save.ExitDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
 	}
@@ -292,6 +287,7 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 	}
 	carry := founderCarry(founder)
 	carry.FounderRevision = founderRevision.Number
+	carry.FounderConstantsHash = founderRevision.ConstantsHash
 	selectedType := "collapse"
 	selectedTerms := json.RawMessage(`{}`)
 	switch request.Kind {

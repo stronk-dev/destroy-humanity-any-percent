@@ -2,6 +2,7 @@ package production
 
 import (
 	"encoding/json"
+	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -21,6 +22,10 @@ import (
 
 func loadReplayTestBundle(t *testing.T, hash string, artifacts map[string][]byte) CatalogBundle {
 	t.Helper()
+	computed, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil || computed != hash {
+		t.Fatalf("replay artifact identity computed=%s labeled=%s err=%v", computed, hash, err)
+	}
 	economyCatalog, err := economy.LoadCatalog(artifacts["economy"])
 	if err != nil {
 		t.Fatal(err)
@@ -45,7 +50,11 @@ func loadReplayTestBundle(t *testing.T, hash string, artifacts map[string][]byte
 	if err != nil {
 		t.Fatal(err)
 	}
-	return CatalogBundle{ConstantsHash: hash, Economy: economyCatalog, Routes: routeCatalog,
+	frozen := make(map[string][]byte, len(artifacts))
+	for name, data := range artifacts {
+		frozen[name] = append([]byte(nil), data...)
+	}
+	return CatalogBundle{ConstantsHash: hash, Artifacts: frozen, Economy: economyCatalog, Routes: routeCatalog,
 		Commons: commonsbinding.ReplayPolicy{Catalog: commonsCatalog}, Prestige: policy, Faction: factionCatalog, Guild: guildCatalog}
 }
 
@@ -83,6 +92,90 @@ func TestReplayInputsAreClosedCanonicalInputs(t *testing.T) {
 	}
 	if strings.Contains(string(inputs), `"factor":1.3`) {
 		t.Fatal("factor was encoded as a binary JSON number instead of canonical Decimal string")
+	}
+}
+
+func TestReplaySettlementBatchIsRepresentableAndOrdered(t *testing.T) {
+	valid := replayAccrual{Contributions: []replayContribution{}, CommonsWeightPPM: nil, RouteContextVersion: 1,
+		GuildSettlementBatch: []replayGuildSettlement{
+			{GuildID: "01985555-7100-7000-8000-000000000001", BoundarySeq: 7, Units: 0},
+			{GuildID: "01985555-7100-7000-8000-000000000001", BoundarySeq: 8, Units: 42},
+		}}
+	if _, err := contributionsFromReplay(valid); err != nil {
+		t.Fatalf("well-formed non-empty settlement batch rejected: %v", err)
+	}
+	unsorted := valid
+	unsorted.GuildSettlementBatch = append([]replayGuildSettlement(nil), valid.GuildSettlementBatch...)
+	unsorted.GuildSettlementBatch[0], unsorted.GuildSettlementBatch[1] = unsorted.GuildSettlementBatch[1], unsorted.GuildSettlementBatch[0]
+	if _, err := contributionsFromReplay(unsorted); !errors.Is(err, ErrInvalidReplayInputs) {
+		t.Fatalf("out-of-order settlement batch error=%v", err)
+	}
+	invalid := valid
+	invalid.GuildSettlementBatch = []replayGuildSettlement{{GuildID: "not-a-guild", BoundarySeq: 1, Units: -1}}
+	if _, err := contributionsFromReplay(invalid); !errors.Is(err, ErrInvalidReplayInputs) {
+		t.Fatalf("invalid settlement batch error=%v", err)
+	}
+}
+
+func TestFounderScopeRouteHintHasNoReplayUnionArm(t *testing.T) {
+	command := save.ReplayCommand{IntentID: "01985555-7110-7000-8000-000000000001", CompanyStreamID: "01985555-7110-4000-8000-000000000002", FounderID: "01985555-7110-4000-8000-000000000003", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	if _, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: time.Now(), IntentKind: IntentBuyRouteHint}); !errors.Is(err, ErrInvalidReplayInputs) {
+		t.Fatalf("founder-scope route hint replay error=%v", err)
+	}
+}
+
+func TestApplyLoggedDerivesFactionStockResourceInsideBoundary(t *testing.T) {
+	bundleBytes, err := epochseed.Load("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs := loadReplayTestBundle(t, bundleBytes.Hash, bundleBytes.Artifacts)
+	member, ok := catalogs.Faction.Faction("open_source")
+	if !ok {
+		t.Fatal("open_source fixture missing")
+	}
+	request, err := ParseIntent([]byte(`{"intent_id":"01985555-7120-7000-8000-000000000001","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":0,"window_ms":10}`))
+	if err != nil || request.InvalidDetail == "" {
+		t.Fatalf("invalid fixture request=%+v err=%v", request, err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01985555-7120-4000-8000-000000000002", FounderID: "01985555-7120-4000-8000-000000000003", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	now := time.Date(2026, 7, 31, 12, 0, 0, 0, time.UTC)
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+		Contributions: []multiplier.Contribution{}, RouteContextVersion: catalogs.Routes.ContextVersion()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := &save.State{RunSeq: 1, FactionID: "open_source", EvaluatedThrough: now}
+	result, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
+	if err != nil || result.Outcome != save.IntentRejected || state.FactionStockResource != member.Produces {
+		t.Fatalf("outcome=%s stock=%q want=%q err=%v", result.Outcome, state.FactionStockResource, member.Produces, err)
+	}
+}
+
+func TestApplyLoggedRejectsMismatchedFounderCatalogCarry(t *testing.T) {
+	bundleBytes, err := epochseed.Load("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs := loadReplayTestBundle(t, bundleBytes.Hash, bundleBytes.Artifacts)
+	request, err := ParseIntent([]byte(`{"intent_id":"01985555-7130-7000-8000-000000000001","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	carry := founderCarry(&save.State{LedgerFactKinds: map[string]bool{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}})
+	carry.FounderRevision = 1
+	carry.FounderConstantsHash = "sha256:" + strings.Repeat("a", 64)
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01985555-7130-4000-8000-000000000002", FounderID: "01985555-7130-4000-8000-000000000003", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	now := time.Date(2026, 7, 31, 12, 0, 0, 0, time.UTC)
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+		Contributions: []multiplier.Contribution{}, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry,
+		Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: catalogs.ConstantsHash})
+	if err != nil {
+		t.Fatal(err)
+	}
+	company := &save.State{RunSeq: 1, EvaluatedThrough: now}
+	if _, err := ApplyLoggedExit(company, request.CanonicalPayload, catalogs, inputs); !errors.Is(err, ErrInvalidReplayInputs) {
+		t.Fatalf("mixed-catalog founder carry error=%v", err)
 	}
 }
 
@@ -149,6 +242,8 @@ func TestTerminalReplayInputsFreezeFounderCarry(t *testing.T) {
 	founder := &save.State{ReputationLevel: 17, RouteKnowledgeBalance: 4, AgeMS: 50, Notoriety: 6, AdvisorMode: true,
 		LedgerFactKinds: map[string]bool{"fact.z": true, "fact.a": true}, NetworkSlots: []save.NetworkSlot{{Slot: "slot.z", CarriedRef: "ref.z"}}}
 	carry := founderCarry(founder)
+	carry.FounderRevision = 1
+	carry.FounderConstantsHash = "sha256:" + strings.Repeat("a", 64)
 	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: IntentWindDown,
 		FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{"route.z", "route.a"}, SelectedExitType: "collapse",
 		SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: "sha256:" + strings.Repeat("a", 64)})

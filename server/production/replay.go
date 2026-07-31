@@ -25,6 +25,7 @@ var ErrInvalidReplayInputs = errors.New("invalid replay inputs")
 
 type CatalogBundle struct {
 	ConstantsHash string
+	Artifacts     map[string][]byte
 	Economy       *economy.Catalog
 	Routes        *routes.Catalog
 	Commons       ReplayCommonsPolicy
@@ -70,9 +71,34 @@ func (set ReplayCatalogSet) ResolveReplayCatalogs(constantsHash string) (Catalog
 	return bundle, ok && bundle.valid(constantsHash)
 }
 
+func (set ReplayCatalogSet) ResolvePrestige(constantsHash string) (*prestigecore.Policy, bool) {
+	bundle, ok := set.ResolveReplayCatalogs(constantsHash)
+	if !ok {
+		return nil, false
+	}
+	return bundle.Prestige, true
+}
+
+func (set ReplayCatalogSet) ResolveFaction(constantsHash string) (*faction.Catalog, bool) {
+	bundle, ok := set.ResolveReplayCatalogs(constantsHash)
+	if !ok {
+		return nil, false
+	}
+	return bundle.Faction, true
+}
+
 func (bundle CatalogBundle) valid(constantsHash string) bool {
-	return constantsHash != "" && bundle.ConstantsHash == constantsHash && bundle.Economy != nil && bundle.Routes != nil &&
-		bundle.Commons != nil && bundle.Prestige != nil && bundle.Faction != nil && bundle.Guild != nil
+	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != 6 || bundle.Economy == nil ||
+		bundle.Routes == nil || bundle.Commons == nil || bundle.Prestige == nil || bundle.Faction == nil || bundle.Guild == nil {
+		return false
+	}
+	for _, name := range [...]string{"commons", "economy", "factions", "guilds", "prestige", "routes"} {
+		if len(bundle.Artifacts[name]) == 0 {
+			return false
+		}
+	}
+	computed, err := save.ConstantsHashArtifacts(bundle.Artifacts)
+	return err == nil && computed == constantsHash
 }
 
 type replayContribution struct {
@@ -97,6 +123,7 @@ type replayAccrual struct {
 
 type replayFounderCarry struct {
 	FounderRevision       int64              `json:"founder_revision"`
+	FounderConstantsHash  string             `json:"founder_constants_hash"`
 	ReputationLevel       int64              `json:"reputation_level"`
 	RouteKnowledgeBalance int64              `json:"route_knowledge_balance"`
 	AgeMS                 int64              `json:"age_ms"`
@@ -152,8 +179,14 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 			request.IntentID == wire.Command.IntentID, request.ExpectedRevision == wire.Command.Revision,
 			wire.Command.RunSeq == state.RunSeq, bytes.Equal(request.CanonicalPayload, canonicalPayload), err)
 	}
+	if request.Kind == IntentBuyRouteHint {
+		return LoggedTransition{}, fmt.Errorf("%w: founder-scope intent", ErrInvalidReplayInputs)
+	}
 	revision := save.Revision{StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
 		Number: wire.Command.Revision, ConstantsHash: catalogs.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
+	if err := deriveFactionStockResource(state, catalogs.Faction); err != nil {
+		return LoggedTransition{}, err
+	}
 	if request.InvalidDetail != "" {
 		decision, decisionErr := rejectedDecision(request, revision.Number, "invalid", request.InvalidDetail)
 		if decisionErr != nil {
@@ -168,32 +201,24 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	var accrual replayAccrual
 	var founder *save.State
 	var declined int64
-	switch request.Kind {
-	case IntentBuyRouteHint:
-		var resolved replayRouteHintResolved
-		if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil || resolved.IntentKind != request.Kind || resolved.RouteContextVersion != catalogs.Routes.ContextVersion() {
-			return LoggedTransition{}, ErrInvalidReplayInputs
+	if request.Kind == IntentCrossGate {
+		var resolved replayCrossGateResolved
+		if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil || resolved.IntentKind != request.Kind {
+			return LoggedTransition{}, fmt.Errorf("%w: cross-gate resolved union", ErrInvalidReplayInputs)
 		}
-	default:
-		if request.Kind == IntentCrossGate {
-			var resolved replayCrossGateResolved
-			if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil || resolved.IntentKind != request.Kind {
-				return LoggedTransition{}, fmt.Errorf("%w: cross-gate resolved union", ErrInvalidReplayInputs)
+		accrual, declined = resolved.Accrual, resolved.DeclinedExitOfferCount
+		if resolved.FounderCarry != nil {
+			if !validFounderCarry(*resolved.FounderCarry) || resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash {
+				return LoggedTransition{}, fmt.Errorf("%w: founder carry", ErrInvalidReplayInputs)
 			}
-			accrual, declined = resolved.Accrual, resolved.DeclinedExitOfferCount
-			if resolved.FounderCarry != nil {
-				if !validFounderCarry(*resolved.FounderCarry) {
-					return LoggedTransition{}, fmt.Errorf("%w: founder carry", ErrInvalidReplayInputs)
-				}
-				founder = stateFromFounderCarry(*resolved.FounderCarry)
-			}
-		} else {
-			var resolved replayAccrualResolved
-			if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil || resolved.IntentKind != request.Kind {
-				return LoggedTransition{}, fmt.Errorf("%w: accrual resolved union", ErrInvalidReplayInputs)
-			}
-			accrual = resolved.Accrual
+			founder = stateFromFounderCarry(*resolved.FounderCarry)
 		}
+	} else {
+		var resolved replayAccrualResolved
+		if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil || resolved.IntentKind != request.Kind {
+			return LoggedTransition{}, fmt.Errorf("%w: accrual resolved union", ErrInvalidReplayInputs)
+		}
+		accrual = resolved.Accrual
 	}
 	contributions, err := contributionsFromReplay(accrual)
 	if err != nil || accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
@@ -255,7 +280,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal accrual inputs", ErrInvalidReplayInputs)
 	}
 	if company.CompactMember != (resolved.Accrual.CommonsWeightPPM != nil) || !validFounderCarry(resolved.FounderCarry) ||
-		!sortedUniqueMechanical(resolved.ExecutedRouteIDs) {
+		resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash || !sortedUniqueMechanical(resolved.ExecutedRouteIDs) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal frozen inputs", ErrInvalidReplayInputs)
 	}
 	revision := save.Revision{StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
@@ -382,8 +407,18 @@ func closedReplayAccrualHook(catalogs CatalogBundle, commonsWeightPPM *int64) Ac
 }
 
 func contributionsFromReplay(accrual replayAccrual) ([]multiplier.Contribution, error) {
-	if accrual.Contributions == nil || accrual.GuildSettlementBatch == nil || len(accrual.GuildSettlementBatch) != 0 || accrual.RouteContextVersion < 0 {
+	if accrual.Contributions == nil || accrual.GuildSettlementBatch == nil || accrual.RouteContextVersion < 0 {
 		return nil, ErrInvalidReplayInputs
+	}
+	lastSettlement := ""
+	for index, settlement := range accrual.GuildSettlementBatch {
+		key := settlement.GuildID + "\x00" + fmt.Sprintf("%016d", settlement.BoundarySeq)
+		if !intentUUIDV7Pattern.MatchString(settlement.GuildID) || settlement.BoundarySeq < 1 ||
+			settlement.BoundarySeq > decimal.MaxExactInteger || settlement.Units < 0 || settlement.Units > decimal.MaxExactInteger ||
+			index > 0 && key <= lastSettlement {
+			return nil, ErrInvalidReplayInputs
+		}
+		lastSettlement = key
 	}
 	result := make([]multiplier.Contribution, len(accrual.Contributions))
 	lastKey := ""
@@ -402,6 +437,7 @@ func contributionsFromReplay(accrual replayAccrual) ([]multiplier.Contribution, 
 
 func validFounderCarry(carry replayFounderCarry) bool {
 	if carry.FounderRevision < 1 || carry.FounderRevision > decimal.MaxExactInteger ||
+		len(carry.FounderConstantsHash) != len("sha256:")+64 || !strings.HasPrefix(carry.FounderConstantsHash, "sha256:") ||
 		carry.ReputationLevel < 0 || carry.ReputationLevel > decimal.MaxExactInteger ||
 		carry.RouteKnowledgeBalance < 0 || carry.RouteKnowledgeBalance > decimal.MaxExactInteger ||
 		carry.AgeMS < 0 || carry.AgeMS > decimal.MaxExactInteger || carry.Notoriety < 0 ||
@@ -456,12 +492,6 @@ type replayAccrualResolved struct {
 	Accrual    replayAccrual `json:"accrual"`
 }
 
-type replayRouteHintResolved struct {
-	Kind                string `json:"kind"`
-	IntentKind          string `json:"intent_kind"`
-	RouteContextVersion int    `json:"route_context_version"`
-}
-
 type replayCrossGateResolved struct {
 	Kind                   string              `json:"kind"`
 	IntentKind             string              `json:"intent_kind"`
@@ -502,6 +532,9 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 	if input.Command.RunLogSeq == 0 {
 		return nil, nil
 	}
+	if input.IntentKind == IntentBuyRouteHint {
+		return nil, ErrInvalidReplayInputs
+	}
 	if input.Mode != ModeOnline && input.Mode != ModeOffline {
 		return nil, ErrInvalidReplayInputs
 	}
@@ -523,8 +556,6 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 		resolved, err = json.Marshal(replayExitResolved{Kind: "exit", IntentKind: input.IntentKind, Accrual: accrual,
 			FounderCarry: *input.FounderCarry, ExecutedRouteIDs: routes, SelectedExitType: input.SelectedExitType,
 			SelectedTerms: append(json.RawMessage(nil), input.SelectedTerms...), NextConstantsHash: input.NextConstantsHash})
-	case input.IntentKind == IntentBuyRouteHint:
-		resolved, err = json.Marshal(replayRouteHintResolved{Kind: "route_hint", IntentKind: input.IntentKind, RouteContextVersion: input.RouteContextVersion})
 	case input.IntentKind == IntentCrossGate:
 		var carry *replayFounderCarry
 		if input.FounderCarry != nil {
@@ -611,11 +642,6 @@ func parseReplayInputs(data []byte) (replayInputsWire, error) {
 		if err := decodeReplayStrict(wire.Resolved, &value); err != nil || value.IntentKind == "" {
 			return replayInputsWire{}, ErrInvalidReplayInputs
 		}
-	case "route_hint":
-		var value replayRouteHintResolved
-		if err := decodeReplayStrict(wire.Resolved, &value); err != nil || value.IntentKind != IntentBuyRouteHint || value.RouteContextVersion < 0 {
-			return replayInputsWire{}, ErrInvalidReplayInputs
-		}
 	case "cross_gate":
 		var value replayCrossGateResolved
 		if err := decodeReplayStrict(wire.Resolved, &value); err != nil || value.IntentKind != IntentCrossGate || value.DeclinedExitOfferCount < 0 {
@@ -631,6 +657,21 @@ func parseReplayInputs(data []byte) (replayInputsWire, error) {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}
 	return wire, nil
+}
+
+func deriveFactionStockResource(state *save.State, catalog *faction.Catalog) error {
+	if state.FactionID == "" {
+		if state.FactionStockResource != "" {
+			return ErrInvalidEngineState
+		}
+		return nil
+	}
+	member, ok := catalog.Faction(state.FactionID)
+	if !ok {
+		return ErrInvalidEngineState
+	}
+	state.FactionStockResource = member.Produces
+	return nil
 }
 
 func jsonObjectValue(data []byte) bool {

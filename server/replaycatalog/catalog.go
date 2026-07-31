@@ -11,10 +11,15 @@ import (
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/routes"
+	"cloud-clicker/server/save"
 )
 
 func Load(constantsHash string, artifacts map[string][]byte) (production.CatalogBundle, error) {
 	if constantsHash == "" || len(artifacts) != 6 {
+		return production.CatalogBundle{}, production.ErrInvalidReplayInputs
+	}
+	computed, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil || computed != constantsHash {
 		return production.CatalogBundle{}, production.ErrInvalidReplayInputs
 	}
 	economyCatalog, err := economy.LoadCatalog(artifacts["economy"])
@@ -43,7 +48,11 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 	if err != nil {
 		return production.CatalogBundle{}, err
 	}
-	return production.CatalogBundle{ConstantsHash: constantsHash, Economy: economyCatalog, Routes: routeCatalog,
+	frozen := make(map[string][]byte, len(artifacts))
+	for name, data := range artifacts {
+		frozen[name] = append([]byte(nil), data...)
+	}
+	return production.CatalogBundle{ConstantsHash: constantsHash, Artifacts: frozen, Economy: economyCatalog, Routes: routeCatalog,
 		Commons: commonsbinding.ReplayPolicy{Catalog: commonsCatalog}, Prestige: prestigePolicy,
 		Faction: factionCatalog, Guild: guildCatalog}, nil
 }

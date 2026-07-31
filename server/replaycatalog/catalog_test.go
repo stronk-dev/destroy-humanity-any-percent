@@ -33,4 +33,12 @@ func TestLoadRequiresExactSixArtifactBundle(t *testing.T) {
 	if _, err := Load(bundle.Hash, extra); err == nil {
 		t.Fatal("catalog bundle with unregistered artifact was accepted")
 	}
+	relabeled := "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	if _, err := Load(relabeled, bundle.Artifacts); err == nil {
+		t.Fatal("catalog bundle bytes were accepted under a false constants hash")
+	}
+	loaded.Artifacts["economy"] = append(loaded.Artifacts["economy"], '\n')
+	if _, ok := loaded.ResolvePrestige(bundle.Hash); ok {
+		t.Fatal("mutated catalog bundle remained valid under its old constants hash")
+	}
 }
