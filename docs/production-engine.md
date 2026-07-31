@@ -147,10 +147,19 @@ future deployment scheduler owns calling it at the accepted 30-day retention bou
 
 Every Company-run command also appends one `run_log` row in that same transaction. The row contains
 the canonical request bytes covered by the idempotency hash, normalized receipt, nullable applied
-revision, and database server time. Terminal rejections are replay facts and therefore consume a
-sequence; revision conflicts and idempotent retries do not. Founder-career commands are outside the
-Company run log. An Exit allocates its sequence before building `run_ended`, making the event's
-`terminal_seq` a transaction-local completeness proof.
+revision, database server time, and a normalized `replay_inputs` object. Persistence supplies and
+validates the authoritative command envelope (intent, Company stream, Founder, revision, run, and
+run-log sequence); production owns the closed resolved-input union. Decimal contributions are
+canonical strings and are sorted before persistence. Evaluation mode/time, Commons participation
+weight, explicit empty Guild settlement batches, Route context version, offer inputs, and terminal
+Founder carry/route/next-hash inputs are frozen rather than re-read from mutable projections.
+
+Rows written before replay-input migration deliberately retain SQL NULL and will become `log_gap`
+when verification lands. A database trigger rejects NULL for every new run-log insert. Terminal
+rejections are replay facts and therefore consume a sequence; revision conflicts and idempotent
+retries do not. Founder-career commands are outside the Company run log. An Exit allocates its
+sequence before building `run_ended`, making the event's `terminal_seq` a transaction-local
+completeness proof.
 
 ## Progress coordinate
 

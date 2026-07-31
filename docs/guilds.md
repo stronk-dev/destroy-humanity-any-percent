@@ -71,7 +71,7 @@ projection never locks more than one company. A legacy v11 bare sequence binds t
 current guild. On a later guild change, the watermark moves directly to that guild's latest
 committed boundary, so only post-join boundaries can apply; leaving keeps the old pair inert.
 Consumed units declare `guild.stock_consumption` in the existing faction slot;
-the Epoch-4 rate is zero, so the structural path is live without a hidden output buff. The scheduler,
-replay-input capture, and real-socket driver remain explicit composition work owned by the queued
-Run Genesis and gameserver rounds; no alternate clearing math runs meanwhile. Composition also
-waits on Run Genesis's resolved-input contract, not on watermark identity.
+the Epoch-4 rate is zero, so the structural path is live without a hidden output buff. Replay inputs
+now reserve an explicit ordered Guild settlement batch (empty until the scheduler composes it), so
+no alternate clearing math can leak into replayable production. The scheduler and real-socket driver
+remain explicit composition work owned by the Run Genesis and gameserver rounds.

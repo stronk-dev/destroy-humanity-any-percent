@@ -168,7 +168,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	metrics := fakeInvariantMetrics{}
-	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithAccrualHook(commonsHook), WithEventProjector(commonsProjector))
+	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithAccrualHook(commonsHook), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithEventProjector(commonsProjector))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -431,15 +431,17 @@ func TestIntentServiceIntegration(t *testing.T) {
 	}
 	var runLogCount int
 	var firstSequence, firstAppliedRevision int64
-	var firstCanonical []byte
+	var firstCanonical, firstReplayInputs []byte
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, revision.StreamID).Scan(&runLogCount); err != nil {
 		t.Fatal(err)
 	}
-	if err := db.QueryRowContext(ctx, `SELECT seq,canonical_payload,applied_revision FROM run_log WHERE company_stream_id=$1 AND run_seq=1 ORDER BY seq LIMIT 1`, revision.StreamID).Scan(&firstSequence, &firstCanonical, &firstAppliedRevision); err != nil {
+	if err := db.QueryRowContext(ctx, `SELECT seq,canonical_payload,replay_inputs,applied_revision FROM run_log WHERE company_stream_id=$1 AND run_seq=1 ORDER BY seq LIMIT 1`, revision.StreamID).Scan(&firstSequence, &firstCanonical, &firstReplayInputs, &firstAppliedRevision); err != nil {
 		t.Fatal(err)
 	}
 	parsedBuy, err := ParseIntent(buy)
-	if err != nil || runLogCount != 9 || firstSequence != 1 || firstAppliedRevision != 2 || string(firstCanonical) != string(parsedBuy.CanonicalPayload) {
+	parsedReplay, replayErr := parseReplayInputs(firstReplayInputs)
+	if err != nil || replayErr != nil || runLogCount != 9 || firstSequence != 1 || firstAppliedRevision != 2 || string(firstCanonical) != string(parsedBuy.CanonicalPayload) ||
+		parsedReplay.Command.IntentID != parsedBuy.IntentID || parsedReplay.Command.CompanyStreamID != revision.StreamID || parsedReplay.Command.RunLogSeq != 1 || parsedReplay.EvaluationMode != ModeOnline {
 		t.Fatalf("run log count=%d seq=%d revision=%d canonical=%s want=%s err=%v", runLogCount, firstSequence, firstAppliedRevision, firstCanonical, parsedBuy.CanonicalPayload, err)
 	}
 	var rejectedRevision *int64

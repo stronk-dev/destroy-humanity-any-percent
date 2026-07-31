@@ -85,6 +85,12 @@ type IntentDecision struct {
 
 type IntentMutation func(state *State, revision Revision) (IntentDecision, error)
 
+// LoggedIntentMutation owns the immutable inputs consumed by a replayable
+// Company transition. The Store supplies the authoritative command envelope;
+// the mutation returns the exact closed replay-input object persisted beside
+// the canonical player payload and computed receipt.
+type LoggedIntentMutation func(state *State, revision Revision, command ReplayCommand) (IntentDecision, json.RawMessage, error)
+
 type IntentResult struct {
 	Outcome IntentOutcome
 	Receipt json.RawMessage
@@ -111,7 +117,7 @@ func (s *Store) ApplyIntent(
 	requestHash string,
 	mutate IntentMutation,
 ) (IntentResult, error) {
-	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, nil, mutate)
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, nil, mutate, nil)
 }
 
 func (s *Store) ApplyIntentLogged(
@@ -121,12 +127,12 @@ func (s *Store) ApplyIntentLogged(
 	intentID string,
 	requestHash string,
 	canonicalPayload []byte,
-	mutate IntentMutation,
+	mutate LoggedIntentMutation,
 ) (IntentResult, error) {
 	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
 		return IntentResult{}, err
 	}
-	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, mutate)
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, nil, mutate)
 }
 
 func (s *Store) applyIntent(
@@ -137,9 +143,10 @@ func (s *Store) applyIntent(
 	requestHash string,
 	canonicalPayload []byte,
 	mutate IntentMutation,
+	loggedMutate LoggedIntentMutation,
 ) (IntentResult, error) {
 	if !uuidPattern.MatchString(streamID) || expectedRevision < 1 || !uuidV7Pattern.MatchString(intentID) ||
-		!hashPattern.MatchString(requestHash) || mutate == nil {
+		!hashPattern.MatchString(requestHash) || mutate == nil == (loggedMutate == nil) {
 		return IntentResult{}, ErrInvalidStream
 	}
 	tx, err := s.db.BeginTx(ctx, nil)
@@ -214,6 +221,7 @@ func (s *Store) applyIntent(
 		return IntentResult{}, err
 	}
 	var runLogSequence int64
+	var command ReplayCommand
 	if scope == economy.ScopeCompany && len(canonicalPayload) != 0 {
 		if err := requireRunEpochTx(ctx, tx, streamID, state.RunSeq, revision.ConstantsHash); err != nil {
 			return IntentResult{}, err
@@ -223,10 +231,26 @@ func (s *Store) applyIntent(
 			return IntentResult{}, err
 		}
 		revision.RunLogSequence = runLogSequence
+		command = ReplayCommand{
+			IntentID: intentID, CompanyStreamID: streamID, FounderID: ownerID,
+			Revision: revision.Number, RunSeq: state.RunSeq, RunLogSeq: runLogSequence,
+		}
 	}
-	decision, err := mutate(state, revision)
+	var decision IntentDecision
+	var replayInputs json.RawMessage
+	if loggedMutate != nil {
+		decision, replayInputs, err = loggedMutate(state, revision, command)
+	} else {
+		decision, err = mutate(state, revision)
+	}
 	if err != nil {
 		return IntentResult{}, err
+	}
+	if runLogSequence != 0 {
+		replayInputs, err = ValidateReplayInputs(replayInputs, command)
+		if err != nil {
+			return IntentResult{}, err
+		}
 	}
 	if err := validateIntentDecision(decision, intentID); err != nil {
 		return IntentResult{}, err
@@ -238,7 +262,7 @@ func (s *Store) applyIntent(
 
 	if decision.Outcome == IntentRejected {
 		if runLogSequence != 0 {
-			if err := insertRunLog(ctx, tx, streamID, state.RunSeq, runLogSequence, intentID, canonicalPayload, decision.Receipt, nil); err != nil {
+			if err := insertRunLog(ctx, tx, streamID, state.RunSeq, runLogSequence, intentID, canonicalPayload, replayInputs, decision.Receipt, nil); err != nil {
 				return IntentResult{}, err
 			}
 		}
@@ -290,7 +314,7 @@ func (s *Store) applyIntent(
 		recordedEvents = append(recordedEvents, record)
 	}
 	if runLogSequence != 0 {
-		if err := insertRunLog(ctx, tx, streamID, state.RunSeq, runLogSequence, intentID, canonicalPayload, decision.Receipt, &newRevision); err != nil {
+		if err := insertRunLog(ctx, tx, streamID, state.RunSeq, runLogSequence, intentID, canonicalPayload, replayInputs, decision.Receipt, &newRevision); err != nil {
 			return IntentResult{}, err
 		}
 	}

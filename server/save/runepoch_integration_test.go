@@ -65,12 +65,17 @@ func TestEngineVersionDriftRemainsPlayableAndIsRecordedOnceIntegration(t *testin
 		VALUES($1,1,$2,$3,'0.0.1','review-fixture',$4)`, revision.StreamID, epochID, hash, runidentity.SeedString(ownerID, 1)); err != nil {
 		t.Fatal(err)
 	}
+	if _, err := db.ExecContext(ctx, `
+		INSERT INTO run_log(company_stream_id,run_seq,seq,intent_id,canonical_payload,receipt,server_ts_ms)
+		VALUES($1,1,1,'01985555-6100-7000-8000-000000000007','{}','{}',1)`, revision.StreamID); err == nil {
+		t.Fatal("new run-log row without replay_inputs was accepted")
+	}
 	payload := []byte(`{"kind":"perform_manual_batch"}`)
 	digest := sha256.Sum256(payload)
 	requestHash := "sha256:" + hex.EncodeToString(digest[:])
 	intentID := "01985555-6101-7000-8000-000000000006"
-	result, err := store.ApplyIntentLogged(ctx, revision.StreamID, 1, intentID, requestHash, payload, func(state *State, revision Revision) (IntentDecision, error) {
-		return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`)}, nil
+	result, err := store.ApplyIntentLogged(ctx, revision.StreamID, 1, intentID, requestHash, payload, func(state *State, revision Revision, command ReplayCommand) (IntentDecision, json.RawMessage, error) {
+		return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`)}, testReplayInputs(t, command, now), nil
 	})
 	if err != nil || result.Outcome != IntentApplied {
 		t.Fatalf("drifted command=%+v err=%v", result, err)
@@ -82,8 +87,8 @@ func TestEngineVersionDriftRemainsPlayableAndIsRecordedOnceIntegration(t *testin
 	}
 	secondPayload := []byte(`{"kind":"buy_generator"}`)
 	secondDigest := sha256.Sum256(secondPayload)
-	if _, err := store.ApplyIntentLogged(ctx, revision.StreamID, 2, "01985555-6102-7000-8000-000000000006", "sha256:"+hex.EncodeToString(secondDigest[:]), secondPayload, func(state *State, revision Revision) (IntentDecision, error) {
-		return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`)}, nil
+	if _, err := store.ApplyIntentLogged(ctx, revision.StreamID, 2, "01985555-6102-7000-8000-000000000006", "sha256:"+hex.EncodeToString(secondDigest[:]), secondPayload, func(state *State, revision Revision, command ReplayCommand) (IntentDecision, json.RawMessage, error) {
+		return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`)}, testReplayInputs(t, command, now), nil
 	}); err != nil {
 		t.Fatal(err)
 	}

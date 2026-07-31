@@ -80,7 +80,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash))
+	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(integrationWeight(1_000_000)))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,9 +129,17 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 			t.Fatalf("run_ended=%s err=%v", endedPayload, err)
 		}
 		var sequence int64
-		var loggedPayload []byte
-		if err := db.QueryRowContext(ctx, `SELECT seq,canonical_payload FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&sequence, &loggedPayload); err != nil || sequence != ended.TerminalSeq {
+		var loggedPayload, replayInputs []byte
+		if err := db.QueryRowContext(ctx, `SELECT seq,canonical_payload,replay_inputs FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&sequence, &loggedPayload, &replayInputs); err != nil || sequence != ended.TerminalSeq {
 			t.Fatalf("run log sequence=%d terminal=%d payload=%s err=%v", sequence, ended.TerminalSeq, loggedPayload, err)
+		}
+		parsedInputs, err := parseReplayInputs(replayInputs)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var terminal replayExitResolved
+		if err := decodeReplayStrict(parsedInputs.Resolved, &terminal); err != nil || terminal.Kind != "exit" || terminal.SelectedExitType != "scripted_first" || terminal.NextConstantsHash != hash || len(terminal.ExecutedRouteIDs) != 1 {
+			t.Fatalf("terminal replay inputs=%s err=%v", replayInputs, err)
 		}
 		replay, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, request)
 		if err != nil || !replay.Replay || string(replay.Receipt) != string(result.Receipt) {
@@ -325,7 +333,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	}
 	resolver.economy[currentHash], resolver.routes[currentHash], resolver.prestige[currentHash], resolver.factions[currentHash] = catalog, routeCatalog, policy, factionCatalog
 	commonsCatalogs[currentHash] = commonsCatalog
-	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(currentHash))
+	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(currentHash), WithCommonsWeightResolver(integrationWeight(1_000_000)))
 	if err != nil {
 		t.Fatal(err)
 	}

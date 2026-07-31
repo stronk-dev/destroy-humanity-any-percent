@@ -22,6 +22,7 @@ type ExitDecision struct {
 }
 
 type ExitMutation func(founder *State, founderRevision Revision, company *State, companyRevision Revision) (ExitDecision, error)
+type LoggedExitMutation func(founder *State, founderRevision Revision, company *State, companyRevision Revision, command ReplayCommand) (ExitDecision, json.RawMessage, error)
 type ExitFaultInjector func(step string) error
 
 type ExitRevisionConflict struct {
@@ -44,7 +45,7 @@ func (s *Store) ApplyExitTransaction(
 	mutate ExitMutation,
 	fault ExitFaultInjector,
 ) (IntentResult, error) {
-	return s.applyExitTransaction(ctx, companyStreamID, expectedCompanyRevision, expectedFounderRevision, intentID, requestHash, nil, mutate, fault)
+	return s.applyExitTransaction(ctx, companyStreamID, expectedCompanyRevision, expectedFounderRevision, intentID, requestHash, nil, mutate, nil, fault)
 }
 
 func (s *Store) ApplyExitTransactionLogged(
@@ -53,13 +54,13 @@ func (s *Store) ApplyExitTransactionLogged(
 	expectedCompanyRevision, expectedFounderRevision int64,
 	intentID, requestHash string,
 	canonicalPayload []byte,
-	mutate ExitMutation,
+	mutate LoggedExitMutation,
 	fault ExitFaultInjector,
 ) (IntentResult, error) {
 	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
 		return IntentResult{}, err
 	}
-	return s.applyExitTransaction(ctx, companyStreamID, expectedCompanyRevision, expectedFounderRevision, intentID, requestHash, canonicalPayload, mutate, fault)
+	return s.applyExitTransaction(ctx, companyStreamID, expectedCompanyRevision, expectedFounderRevision, intentID, requestHash, canonicalPayload, nil, mutate, fault)
 }
 
 func (s *Store) applyExitTransaction(
@@ -69,10 +70,11 @@ func (s *Store) applyExitTransaction(
 	intentID, requestHash string,
 	canonicalPayload []byte,
 	mutate ExitMutation,
+	loggedMutate LoggedExitMutation,
 	fault ExitFaultInjector,
 ) (IntentResult, error) {
 	if !uuidPattern.MatchString(companyStreamID) || expectedCompanyRevision < 1 || expectedFounderRevision < 1 ||
-		!uuidV7Pattern.MatchString(intentID) || !hashPattern.MatchString(requestHash) || mutate == nil {
+		!uuidV7Pattern.MatchString(intentID) || !hashPattern.MatchString(requestHash) || mutate == nil == (loggedMutate == nil) {
 		return IntentResult{}, ErrInvalidStream
 	}
 	var founderStreamID string
@@ -145,6 +147,7 @@ func (s *Store) applyExitTransaction(
 		return IntentResult{}, &ExitRevisionConflict{Stream: economy.ScopeCompany, Expected: expectedCompanyRevision, Current: companyRevision.Number}
 	}
 	var runLogSequence int64
+	var command ReplayCommand
 	if len(canonicalPayload) != 0 {
 		if err := requireRunEpochTx(ctx, tx, companyStreamID, company.RunSeq, companyHash); err != nil {
 			return IntentResult{}, err
@@ -154,11 +157,27 @@ func (s *Store) applyExitTransaction(
 			return IntentResult{}, err
 		}
 		companyRevision.RunLogSequence = runLogSequence
+		command = ReplayCommand{
+			IntentID: intentID, CompanyStreamID: companyStreamID, FounderID: ownerID,
+			Revision: companyRevision.Number, RunSeq: company.RunSeq, RunLogSeq: runLogSequence,
+		}
 	}
 
-	decision, err := mutate(founder, founderRevision, company, companyRevision)
+	var decision ExitDecision
+	var replayInputs json.RawMessage
+	if loggedMutate != nil {
+		decision, replayInputs, err = loggedMutate(founder, founderRevision, company, companyRevision, command)
+	} else {
+		decision, err = mutate(founder, founderRevision, company, companyRevision)
+	}
 	if err != nil {
 		return IntentResult{}, err
+	}
+	if runLogSequence != 0 {
+		replayInputs, err = ValidateReplayInputs(replayInputs, command)
+		if err != nil {
+			return IntentResult{}, err
+		}
 	}
 	if err := validateExitDecision(decision, intentID); err != nil {
 		return IntentResult{}, err
@@ -169,7 +188,7 @@ func (s *Store) applyExitTransaction(
 	}
 	if decision.Outcome == IntentRejected {
 		if runLogSequence != 0 {
-			if err := insertRunLog(ctx, tx, companyStreamID, company.RunSeq, runLogSequence, intentID, canonicalPayload, decision.Receipt, nil); err != nil {
+			if err := insertRunLog(ctx, tx, companyStreamID, company.RunSeq, runLogSequence, intentID, canonicalPayload, replayInputs, decision.Receipt, nil); err != nil {
 				return IntentResult{}, err
 			}
 		}
@@ -253,7 +272,7 @@ func (s *Store) applyExitTransaction(
 		return IntentResult{}, err
 	}
 	if runLogSequence != 0 {
-		if err := insertRunLog(ctx, tx, companyStreamID, company.RunSeq, runLogSequence, intentID, canonicalPayload, decision.Receipt, &companyFinal); err != nil {
+		if err := insertRunLog(ctx, tx, companyStreamID, company.RunSeq, runLogSequence, intentID, canonicalPayload, replayInputs, decision.Receipt, &companyFinal); err != nil {
 			return IntentResult{}, err
 		}
 	}

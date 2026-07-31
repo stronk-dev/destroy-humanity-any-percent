@@ -66,6 +66,10 @@ type ProgressionRuntimeResolver interface {
 
 type AccrualHook = accrualhook.Hook
 
+type CommonsWeightResolver interface {
+	CompactWeightPPM(founderID string) (int64, bool)
+}
+
 type RouteCatalogResolver interface {
 	ResolveRoutes(constantsHash string) (*routes.Catalog, bool)
 }
@@ -128,6 +132,18 @@ func WithAccrualHook(hook AccrualHook) ServiceOption {
 			return ErrInvalidIntent
 		}
 		service.extraAccrualHooks = append(service.extraAccrualHooks, hook)
+		return nil
+	}
+}
+
+// WithCommonsWeightResolver binds the projection-derived Commons input that
+// must be frozen into replay_inputs before the closed hook chain executes.
+func WithCommonsWeightResolver(resolver CommonsWeightResolver) ServiceOption {
+	return func(service *Service) error {
+		if resolver == nil {
+			return ErrInvalidIntent
+		}
+		service.commonsWeights = resolver
 		return nil
 	}
 }
@@ -204,6 +220,7 @@ type Service struct {
 	routeCatalogs        RouteCatalogResolver
 	routeProjector       RouteProjector
 	compactPolicies      CompactPolicyResolver
+	commonsWeights       CommonsWeightResolver
 	factionCatalogs      FactionCatalogResolver
 	projectors           []EventProjector
 	accrualHook          AccrualHook
@@ -357,80 +374,104 @@ func (s *Service) Handle(
 	}
 	collector := &invariantCollector{}
 	result, err := s.store.ApplyIntentLogged(ctx, streamID, request.ExpectedRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
-		func(state *save.State, revision save.Revision) (save.IntentDecision, error) {
+		func(state *save.State, revision save.Revision, command save.ReplayCommand) (decision save.IntentDecision, replayInputs json.RawMessage, resultErr error) {
+			build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind,
+				DeclinedExitOfferCount: declinedOffers, RouteContextVersion: 0}
+			if prestigeFounder != nil {
+				value := founderCarry(prestigeFounder.State)
+				build.FounderCarry = &value
+			}
+			defer func() {
+				if resultErr == nil && command.RunLogSeq != 0 {
+					replayInputs, resultErr = buildReplayInputs(build)
+				}
+			}()
 			catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
 			if !ok {
-				return save.IntentDecision{}, fmt.Errorf("%w: unknown catalog %s", ErrInvalidIntent, revision.ConstantsHash)
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 			}
 			if request.InvalidDetail != "" {
-				return rejectedDecision(request, revision.Number, "invalid", request.InvalidDetail)
+				decision, resultErr = rejectedDecision(request, revision.Number, "invalid", request.InvalidDetail)
+				return decision, nil, resultErr
 			}
 			var contributions []multiplier.Contribution
 			if s.contributions != nil && request.Kind != IntentBuyRouteHint {
 				var err error
 				contributions, err = s.contributions.Contributions(ctx, state, catalog, revision)
 				if err != nil {
-					return save.IntentDecision{}, err
+					return save.IntentDecision{}, nil, err
 				}
+			}
+			build.Contributions = contributions
+			if state.CompactMember {
+				if s.commonsWeights == nil {
+					return save.IntentDecision{}, nil, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
+				}
+				weight, ok := s.commonsWeights.CompactWeightPPM(revision.OwnerID)
+				if !ok || weight < 0 || weight > 1_000_000 {
+					return save.IntentDecision{}, nil, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
+				}
+				build.CommonsWeightPPM = &weight
 			}
 			var routeCatalog *routes.Catalog
 			if request.Kind == IntentCrossGate || request.Kind == IntentBuyRouteHint {
 				if s.routeCatalogs == nil || s.routeProjector == nil {
-					return save.IntentDecision{}, fmt.Errorf("%w: route runtime unavailable", ErrInvalidIntent)
+					return save.IntentDecision{}, nil, fmt.Errorf("%w: route runtime unavailable", ErrInvalidIntent)
 				}
 				var ok bool
 				routeCatalog, ok = s.routeCatalogs.ResolveRoutes(revision.ConstantsHash)
 				if !ok {
-					return save.IntentDecision{}, fmt.Errorf("%w: unknown routes catalog %s", ErrInvalidIntent, revision.ConstantsHash)
+					return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown routes catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 				}
+				build.RouteContextVersion = routeCatalog.ContextVersion()
 				if err := ValidateRouteCatalogResources(catalog, routeCatalog); err != nil {
-					return save.IntentDecision{}, err
+					return save.IntentDecision{}, nil, err
 				}
 				if request.Kind == IntentBuyRouteHint {
 					if err := s.routeProjector.RepairFounder(ctx, revision.OwnerID, state); err != nil {
-						return save.IntentDecision{}, err
+						return save.IntentDecision{}, nil, err
 					}
 				}
 			}
 			var compactBand *CompactTitheBand
 			if request.Kind == IntentSignCompact || request.Kind == IntentLeaveCompact || request.Kind == IntentIncorporate {
 				if s.compactPolicies == nil {
-					return save.IntentDecision{}, fmt.Errorf("%w: compact runtime unavailable", ErrInvalidIntent)
+					return save.IntentDecision{}, nil, fmt.Errorf("%w: compact runtime unavailable", ErrInvalidIntent)
 				}
 				minimum, maximum, ok := s.compactPolicies.CompactTitheBand(revision.ConstantsHash)
 				if !ok {
-					return save.IntentDecision{}, fmt.Errorf("%w: unknown commons catalog %s", ErrInvalidIntent, revision.ConstantsHash)
+					return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown commons catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 				}
 				compactBand = &CompactTitheBand{MinimumPPM: minimum, MaximumPPM: maximum}
 			}
 			var factionCatalog *faction.Catalog
 			if request.Kind == IntentIncorporate || request.Kind == IntentLeaveCompact || state.FactionID != "" {
 				if s.factionCatalogs == nil {
-					return save.IntentDecision{}, fmt.Errorf("%w: faction runtime unavailable", ErrInvalidIntent)
+					return save.IntentDecision{}, nil, fmt.Errorf("%w: faction runtime unavailable", ErrInvalidIntent)
 				}
 				var ok bool
 				factionCatalog, ok = s.factionCatalogs.ResolveFaction(revision.ConstantsHash)
 				if !ok {
-					return save.IntentDecision{}, fmt.Errorf("%w: unknown faction catalog %s", ErrInvalidIntent, revision.ConstantsHash)
+					return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown faction catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 				}
 				if state.FactionID != "" {
 					member, exists := factionCatalog.Faction(state.FactionID)
 					if !exists {
-						return save.IntentDecision{}, ErrInvalidEngineState
+						return save.IntentDecision{}, nil, ErrInvalidEngineState
 					}
 					state.FactionStockResource = member.Produces
 				}
 			}
-			decision, err := TransitionWithPolicies(request, state, catalog, routeCatalog, compactBand, factionCatalog, revision, mode, now, contributions, collector, s.accrualHook)
-			if err != nil {
-				return save.IntentDecision{}, err
+			decision, resultErr = TransitionWithPolicies(request, state, catalog, routeCatalog, compactBand, factionCatalog, revision, mode, now, contributions, collector, s.accrualHook)
+			if resultErr != nil {
+				return save.IntentDecision{}, nil, resultErr
 			}
 			if s.prestigePolicies != nil && decision.Outcome == save.IntentApplied {
 				if err := s.afterPrestigeTransition(request, state, revision, now, &decision, prestigeFounder, declinedOffers); err != nil {
-					return save.IntentDecision{}, err
+					return save.IntentDecision{}, nil, err
 				}
 			}
-			return decision, nil
+			return decision, nil, nil
 		})
 	if err != nil {
 		s.recordAbortedInvariants(collector.reports)
@@ -455,6 +496,17 @@ func (s *Service) Handle(
 	}
 	s.recordCommittedInvariants(result, collector.reports)
 	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
+}
+
+func (s *Service) resolveCommonsReplayWeight(founderID string) (int64, error) {
+	if s.commonsWeights == nil {
+		return 0, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
+	}
+	weight, ok := s.commonsWeights.CompactWeightPPM(founderID)
+	if !ok || weight < 0 || weight > 1_000_000 {
+		return 0, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
+	}
+	return weight, nil
 }
 
 func ValidateRouteCatalogResources(catalog *economy.Catalog, routeCatalog *routes.Catalog) error {

@@ -91,11 +91,16 @@ The database independently constrains every `run_id` to canonical `company-uuid:
 form, so direct projection/storage callers cannot insert an identity that the verifier cannot
 resolve.
 
-## Incomplete replay boundary
+## Replay-input boundary
 
-The live run log and identity storage exist, but replay verification and archive compaction are not
-yet claimed as implemented. The accepted RFC's log records canonical commands and receipts but
-does not preserve an immutable initial run state. That state cannot always be reconstructed from
-catalog initials because later runs include Founder-carried Network and Reputation effects. The
-planning record carries this as a DESIGN-GAP requiring an executable contract before the verifier
-or player validator can honestly ship.
+The live run log now separates the three replay facts: canonical payload is what the player said,
+`replay_inputs` is what the server resolved, and receipt/events are what happened. New Company log
+rows require a versioned replay-input object in the gameplay transaction. Historical rows remain
+nullable and are explicitly unrankable rather than receiving invented backfill values. The command
+envelope is persistence-authoritative; the per-intent resolved union is exact-key validated by the
+production kernel.
+
+Genesis storage, the shared `ApplyLogged` transition, replay verification, and archive compaction
+are not yet claimed as implemented. Catalog initials still cannot reconstruct later runs because
+Founder-carried effects alter their starting state; the active Run Genesis RFC owns that remaining
+boundary in that order.

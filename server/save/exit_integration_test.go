@@ -78,7 +78,7 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	loggedHash := "sha256:" + hex.EncodeToString(loggedDigest[:])
 	loggedIntentID := "01985555-0009-7000-8000-000000000009"
 	_, err = store.ApplyExitTransactionLogged(ctx, companyRevision.StreamID, 1, 1, loggedIntentID, loggedHash, loggedPayload,
-		exitTestMutation(ownerID, companyRevision.StreamID, loggedIntentID, hash, now), func(step string) error {
+		loggedExitTestMutation(t, ownerID, companyRevision.StreamID, loggedIntentID, hash, now), func(step string) error {
 			if step == "run_log" {
 				return errors.New("injected run-log fault")
 			}
@@ -200,6 +200,14 @@ func exitTestMutation(ownerID, companyStreamID, intentID, hash string, now time.
 				{Kind: EventRunEnded, SchemaVersion: 1, IntentID: intentID, Payload: ended},
 			},
 			CompanyStartedEvents: []EventWrite{{Kind: EventRunStarted, SchemaVersion: 1, IntentID: intentID, Payload: started}}}, nil
+	}
+}
+
+func loggedExitTestMutation(t *testing.T, ownerID, companyStreamID, intentID, hash string, now time.Time) LoggedExitMutation {
+	base := exitTestMutation(ownerID, companyStreamID, intentID, hash, now)
+	return func(founder *State, founderRevision Revision, company *State, companyRevision Revision, command ReplayCommand) (ExitDecision, json.RawMessage, error) {
+		decision, err := base(founder, founderRevision, company, companyRevision)
+		return decision, testReplayInputs(t, command, now), err
 	}
 }
 

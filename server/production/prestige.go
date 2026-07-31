@@ -121,16 +121,24 @@ func (s *Service) handleExit(ctx context.Context, streamID string, mode Evaluati
 		return HandleResult{}, err
 	}
 	result, err := s.store.ApplyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, request.ExpectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
-		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision) (save.ExitDecision, error) {
+		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand) (decision save.ExitDecision, replayInputs json.RawMessage, resultErr error) {
+			carry := founderCarry(founder)
+			build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind, FounderCarry: &carry,
+				ExecutedRouteIDs: executedRoutes, RouteContextVersion: 0, SelectedTerms: json.RawMessage(`{}`)}
+			defer func() {
+				if resultErr == nil && command.RunLogSeq != 0 {
+					replayInputs, resultErr = buildReplayInputs(build)
+				}
+			}()
 			policy, ok := s.prestigePolicies.ResolvePrestige(companyRevision.ConstantsHash)
 			if !ok {
-				return save.ExitDecision{}, ErrInvalidEngineState
+				return save.ExitDecision{}, nil, ErrInvalidEngineState
 			}
 			if request.Kind == IntentFileIPO {
-				return rejectedExitDecision(request, companyRevision.Number, "not_eligible", "ipo_chain"), nil
+				return rejectedExitDecision(request, companyRevision.Number, "not_eligible", "ipo_chain"), nil, nil
 			}
 			if request.Kind == IntentWindDown && company.Tier < 1 {
-				return rejectedExitDecision(request, companyRevision.Number, "not_eligible", "tier"), nil
+				return rejectedExitDecision(request, companyRevision.Number, "not_eligible", "tier"), nil, nil
 			}
 			exitType := "collapse"
 			if request.Kind == IntentWindDown && len(founder.ExitHistory) == 0 {
@@ -139,43 +147,59 @@ func (s *Service) handleExit(ctx context.Context, streamID string, mode Evaluati
 			var preview *prestigecore.Terms
 			if request.Kind == IntentAcceptExitOffer {
 				if company.OfferState == nil || company.OfferState.OfferID != request.OfferID {
-					return rejectedExitDecision(request, companyRevision.Number, "not_eligible", "exit_offer"), nil
+					return rejectedExitDecision(request, companyRevision.Number, "not_eligible", "exit_offer"), nil, nil
 				}
 				if !company.OfferState.ExpiresAt.After(save.CanonicalServerTime(now)) {
-					return rejectedExitDecision(request, companyRevision.Number, "offer_expired", request.OfferID), nil
+					return rejectedExitDecision(request, companyRevision.Number, "offer_expired", request.OfferID), nil, nil
 				}
 				exitType = company.OfferState.ExitType
 				stored, err := prestigecore.DecodeStoredOfferTerms(company.OfferState.TermsJSON)
 				if err != nil {
-					return save.ExitDecision{}, err
+					return save.ExitDecision{}, nil, err
 				}
+				build.SelectedTerms = append(json.RawMessage(nil), company.OfferState.TermsJSON...)
 				preview = &stored.PayoutPreview
 			}
 			contributions, err := s.exitContributions(ctx, company, companyRevision)
 			if err != nil {
-				return save.ExitDecision{}, err
+				return save.ExitDecision{}, nil, err
+			}
+			build.Contributions = contributions
+			if s.routeCatalogs != nil {
+				if catalog, ok := s.routeCatalogs.ResolveRoutes(companyRevision.ConstantsHash); ok {
+					build.RouteContextVersion = catalog.ContextVersion()
+				}
+			}
+			if company.CompactMember {
+				weight, err := s.resolveCommonsReplayWeight(companyRevision.OwnerID)
+				if err != nil {
+					return save.ExitDecision{}, nil, err
+				}
+				build.CommonsWeightPPM = &weight
 			}
 			result, err := Evaluate(company, s.mustCatalog(companyRevision.ConstantsHash), now, mode, contributions)
 			if err != nil {
-				return save.ExitDecision{}, err
+				return save.ExitDecision{}, nil, err
 			}
 			prefix, err := runAccrualHook(s.accrualHook, request.IntentID, company, s.mustCatalog(companyRevision.ConstantsHash), companyRevision, result, contributions)
 			if err != nil {
-				return save.ExitDecision{}, err
+				return save.ExitDecision{}, nil, err
 			}
 			terms, err := prestigecore.ComputeTerms(company, founder, policy, exitType)
 			if err != nil {
-				return save.ExitDecision{}, err
+				return save.ExitDecision{}, nil, err
 			}
 			if preview != nil {
 				stored, err := prestigecore.DecodeStoredOfferTerms(company.OfferState.TermsJSON)
 				if err != nil {
-					return save.ExitDecision{}, err
+					return save.ExitDecision{}, nil, err
 				}
 				terms = prestigecore.ApplyMarketModifier(terms, stored.MarketModifierPPM)
 				terms = prestigecore.PromiseTerms(*preview, terms)
 			}
-			return s.finishExit(request, founder, founderRevision, company, companyRevision, now, exitType, terms, prefix, executedRoutes)
+			build.Terminal, build.SelectedExitType, build.NextConstantsHash = true, exitType, s.currentConstantsHash
+			decision, resultErr = s.finishExit(request, founder, founderRevision, company, companyRevision, now, exitType, terms, prefix, executedRoutes)
+			return decision, nil, resultErr
 		}, nil)
 	if err != nil {
 		return s.exitErrorReceipt(ctx, streamID, request, err)
@@ -217,39 +241,58 @@ func (s *Service) handleScriptedCrossGateExit(ctx context.Context, streamID stri
 		return HandleResult{}, err
 	}
 	result, err := s.store.ApplyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, expectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
-		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision) (save.ExitDecision, error) {
+		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand) (decision save.ExitDecision, replayInputs json.RawMessage, resultErr error) {
+			carry := founderCarry(founder)
+			build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind, FounderCarry: &carry,
+				ExecutedRouteIDs: executedRoutes, SelectedTerms: json.RawMessage(`{}`)}
+			defer func() {
+				if resultErr == nil && command.RunLogSeq != 0 {
+					replayInputs, resultErr = buildReplayInputs(build)
+				}
+			}()
 			catalog := s.mustCatalog(companyRevision.ConstantsHash)
 			routeCatalog, ok := s.routeCatalogs.ResolveRoutes(companyRevision.ConstantsHash)
 			if !ok {
-				return save.ExitDecision{}, ErrInvalidEngineState
+				return save.ExitDecision{}, nil, ErrInvalidEngineState
 			}
+			build.RouteContextVersion = routeCatalog.ContextVersion()
 			contributions, err := s.exitContributions(ctx, company, companyRevision)
 			if err != nil {
-				return save.ExitDecision{}, err
+				return save.ExitDecision{}, nil, err
 			}
-			decision, err := TransitionWithPolicies(request, company, catalog, routeCatalog, nil, nil, companyRevision, mode, now, contributions, &invariantCollector{}, s.accrualHook)
+			build.Contributions = contributions
+			if company.CompactMember {
+				weight, err := s.resolveCommonsReplayWeight(companyRevision.OwnerID)
+				if err != nil {
+					return save.ExitDecision{}, nil, err
+				}
+				build.CommonsWeightPPM = &weight
+			}
+			transitionDecision, err := TransitionWithPolicies(request, company, catalog, routeCatalog, nil, nil, companyRevision, mode, now, contributions, &invariantCollector{}, s.accrualHook)
 			if err != nil {
-				return save.ExitDecision{}, err
+				return save.ExitDecision{}, nil, err
 			}
-			if decision.Outcome == save.IntentRejected {
-				return save.ExitDecision{Outcome: save.IntentRejected, Receipt: decision.Receipt}, nil
+			if transitionDecision.Outcome == save.IntentRejected {
+				return save.ExitDecision{Outcome: save.IntentRejected, Receipt: transitionDecision.Receipt}, nil, nil
 			}
 			if len(founder.ExitHistory) != 0 {
-				return save.ExitDecision{}, ErrInvalidEngineState
+				return save.ExitDecision{}, nil, ErrInvalidEngineState
 			}
 			attended, err := prestigecore.AttendedMS(company, save.CanonicalServerTime(now))
 			if err != nil || attended < 900_000 {
-				return save.ExitDecision{}, ErrInvalidEngineState
+				return save.ExitDecision{}, nil, ErrInvalidEngineState
 			}
 			policy, ok := s.prestigePolicies.ResolvePrestige(companyRevision.ConstantsHash)
 			if !ok {
-				return save.ExitDecision{}, ErrInvalidEngineState
+				return save.ExitDecision{}, nil, ErrInvalidEngineState
 			}
 			terms, err := prestigecore.ComputeTerms(company, founder, policy, "scripted_first")
 			if err != nil {
-				return save.ExitDecision{}, err
+				return save.ExitDecision{}, nil, err
 			}
-			return s.finishExit(request, founder, founderRevision, company, companyRevision, now, "scripted_first", terms, decision.Events, executedRoutes)
+			build.Terminal, build.SelectedExitType, build.NextConstantsHash = true, "scripted_first", s.currentConstantsHash
+			decision, resultErr = s.finishExit(request, founder, founderRevision, company, companyRevision, now, "scripted_first", terms, transitionDecision.Events, executedRoutes)
+			return decision, nil, resultErr
 		}, nil)
 	if err != nil {
 		return s.exitErrorReceipt(ctx, streamID, request, err)

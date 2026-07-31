@@ -43,3 +43,21 @@ The replay-input schema starts directly at this accepted shape because no earlie
 
 The RFC is now implementing. The landing order remains: immutable replay inputs and the shared
 `ApplyLogged` live/replay boundary first, then run genesis, then verification and projection.
+
+## 2026-07-31 — RA replay-input persistence implemented
+
+Migration 00030 adds nullable historical `run_log.replay_inputs` plus a fail-closed insert trigger:
+old rows preserve the honest `log_gap` marker, while every new row must carry an object. The Store
+now supplies the authoritative six-coordinate command envelope to logged mutations, validates it
+against the returned replay object, normalizes the object, and inserts payload + inputs + receipt in
+the gameplay transaction for applied and rejected commands, including Exits.
+
+Production owns a strict version-1 resolved union. It freezes evaluation time/mode, canonically
+ordered Decimal contribution strings, explicit Guild settlement batches, Commons weight, Route
+context version, offer-count/Founder inputs, and terminal Founder carry/executed routes/selected
+terms/next hash. Terminal carry is copied before Founder mutation. Postgres integration proves the
+new-write trigger, ordinary and terminal capture, and rollback at the run-log fault boundary.
+
+This is the RA landing only. RB remains open: the next batch makes the live engine consume this
+same object through `ApplyLogged`, closes the hook registry, and removes live transition reads not
+represented by its four arguments.
