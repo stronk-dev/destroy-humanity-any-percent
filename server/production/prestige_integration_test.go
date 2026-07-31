@@ -45,6 +45,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	replayBundle := loadReplayTestBundle(t, bundle.Hash, bundle.Artifacts)
 	economyBytes := bundle.Artifacts["economy"]
 	routeBytes := bundle.Artifacts["routes"]
 	prestigeBytes := bundle.Artifacts["prestige"]
@@ -80,7 +81,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(integrationWeight(1_000_000)))
+	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -90,6 +91,10 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		owner := "01985555-1000-7000-8000-000000000001"
 		founderRevision, companyRevision := createPrestigeStreams(t, ctx, store, catalog, hash, owner, now, now.Add(-10*time.Minute), now, "0", decimal.New(8, 12), 1)
 		if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 1, hash); err != nil {
+			t.Fatal(err)
+		}
+		companyBefore, err := store.LoadLatest(ctx, companyRevision.StreamID)
+		if err != nil {
 			t.Fatal(err)
 		}
 		routePayload, _ := json.Marshal(map[string]any{"route_id": "route.nonprofit_wrapper_zip", "gate_id": "gate.t1_to_t2", "run_id": map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": 1}, "founder_id": owner})
@@ -140,6 +145,32 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		var terminal replayExitResolved
 		if err := decodeReplayStrict(parsedInputs.Resolved, &terminal); err != nil || terminal.Kind != "exit" || terminal.SelectedExitType != "scripted_first" || terminal.NextConstantsHash != hash || len(terminal.ExecutedRouteIDs) != 1 {
 			t.Fatalf("terminal replay inputs=%s err=%v", replayInputs, err)
+		}
+		terminalBundle := replayBundle
+		terminalBundle.Next = &terminalBundle
+		replayed, err := ApplyLoggedExit(companyBefore.State, loggedPayload, terminalBundle, replayInputs, &invariantCollector{})
+		if err != nil || string(replayed.Decision.Receipt) != string(result.Receipt) {
+			t.Fatalf("terminal replay receipt=%s live=%s err=%v", replayed.Decision.Receipt, result.Receipt, err)
+		}
+		expectedEvents := append([]save.EventWrite(nil), replayed.Decision.FounderEvents...)
+		expectedEvents = append(expectedEvents, replayed.Decision.CompanyEndedEvents...)
+		expectedEvents = append(expectedEvents, replayed.Decision.CompanyStartedEvents...)
+		rows, err := db.QueryContext(ctx, `SELECT kind,payload FROM events WHERE intent_id=$1 ORDER BY event_seq`, parsedInputs.Command.IntentID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer rows.Close()
+		index := 0
+		for rows.Next() {
+			var kind save.EventKind
+			var payload []byte
+			if err := rows.Scan(&kind, &payload); err != nil || index >= len(expectedEvents) || expectedEvents[index].Kind != kind || !jsonSemanticallyEqual(expectedEvents[index].Payload, payload) {
+				t.Fatalf("terminal event[%d] replay=%v live=%s/%s err=%v", index, expectedEvents, kind, payload, err)
+			}
+			index++
+		}
+		if err := rows.Err(); err != nil || index != len(expectedEvents) {
+			t.Fatalf("terminal replay events=%d live=%d err=%v", len(expectedEvents), index, err)
 		}
 		replay, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, request)
 		if err != nil || !replay.Replay || string(replay.Receipt) != string(result.Receipt) {
@@ -333,7 +364,9 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	}
 	resolver.economy[currentHash], resolver.routes[currentHash], resolver.prestige[currentHash], resolver.factions[currentHash] = catalog, routeCatalog, policy, factionCatalog
 	commonsCatalogs[currentHash] = commonsCatalog
-	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(currentHash), WithCommonsWeightResolver(integrationWeight(1_000_000)))
+	currentReplayBundle := replayBundle
+	currentReplayBundle.ConstantsHash = currentHash
+	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(currentHash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle, currentHash: currentReplayBundle}))
 	if err != nil {
 		t.Fatal(err)
 	}

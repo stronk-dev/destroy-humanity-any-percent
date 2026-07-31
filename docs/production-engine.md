@@ -161,6 +161,18 @@ retries do not. Founder-career commands are outside the Company run log. An Exit
 sequence before building `run_ended`, making the event's `terminal_seq` a transaction-local
 completeness proof.
 
+All replayable Company commands execute through `ApplyLogged`; the live service is a producer and
+consumer of the same object rather than a separate oracle. The boundary receives Company state,
+intent-less canonical payload, one six-artifact catalog bundle, and replay inputs, then returns the
+new state, receipt, and ordered events. Terminal Exits use its terminal arm and include the next
+catalog bundle selected by the frozen next hash. Founder mutation itself remains a separate stream
+audit concern, but every Founder-derived value in the Exit receipt and next Company snapshot is
+computed from the frozen carry view.
+
+The replayable post-accrual registry is closed and ordered: Prestige, faction, Guild, Commons.
+Commons receives its projection-derived participation weight as a resolved input. Runtime service
+options cannot append hooks to this chain; a new hook requires a new replay-input/RFC version.
+
 ## Progress coordinate
 
 Both Go and TypeScript evaluate the same closed catalog union:

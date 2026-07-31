@@ -91,6 +91,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	replayBundle := loadReplayTestBundle(t, bundle.Hash, bundle.Artifacts)
 	catalogBytes := bundle.Artifacts["economy"]
 	catalog, err := economy.LoadCatalog(catalogBytes)
 	if err != nil {
@@ -135,7 +136,6 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	commonsProvider := commonsbinding.Provider{Catalogs: commonsCatalogs, Snapshots: commonsProjector}
-	commonsHook := commonsbinding.Hook{Catalogs: commonsCatalogs, Weights: integrationWeight(1_000_000)}
 	ledger, err := economy.RestoreLedger(catalog, economy.ScopeCompany, map[string]string{"company.cash": "1e2"})
 	if err != nil {
 		t.Fatal(err)
@@ -168,7 +168,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	metrics := fakeInvariantMetrics{}
-	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithAccrualHook(commonsHook), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithEventProjector(commonsProjector))
+	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}), WithEventProjector(commonsProjector))
 	if err != nil {
 		t.Fatal(err)
 	}

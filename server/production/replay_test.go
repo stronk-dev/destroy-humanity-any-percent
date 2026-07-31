@@ -6,10 +6,48 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/commons"
+	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/epochseed"
+	"cloud-clicker/server/faction"
+	"cloud-clicker/server/guild"
 	"cloud-clicker/server/multiplier"
+	prestigecore "cloud-clicker/server/prestige"
+	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
+
+func loadReplayTestBundle(t *testing.T, hash string, artifacts map[string][]byte) CatalogBundle {
+	t.Helper()
+	economyCatalog, err := economy.LoadCatalog(artifacts["economy"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	routeCatalog, err := routes.LoadCatalog(artifacts["routes"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	commonsCatalog, err := commons.LoadCatalog(artifacts["commons"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	policy, err := prestigecore.LoadPolicy(artifacts["prestige"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	factionCatalog, err := faction.LoadCatalog(artifacts["factions"], faction.CompactTitheBand{MinimumPPM: commonsCatalog.MinimumTithePPM, DefaultPPM: commonsCatalog.DefaultTithePPM, MaximumPPM: commonsCatalog.MaximumTithePPM})
+	if err != nil {
+		t.Fatal(err)
+	}
+	guildCatalog, err := guild.LoadCatalog(artifacts["guilds"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	return CatalogBundle{ConstantsHash: hash, Economy: economyCatalog, Routes: routeCatalog,
+		Commons: commonsbinding.ReplayPolicy{Catalog: commonsCatalog}, Prestige: policy, Faction: factionCatalog, Guild: guildCatalog}
+}
 
 func TestReplayInputsAreClosedCanonicalInputs(t *testing.T) {
 	now := time.Date(2026, 7, 31, 12, 0, 0, 0, time.UTC)
@@ -45,6 +83,63 @@ func TestReplayInputsAreClosedCanonicalInputs(t *testing.T) {
 	}
 	if strings.Contains(string(inputs), `"factor":1.3`) {
 		t.Fatal("factor was encoded as a binary JSON number instead of canonical Decimal string")
+	}
+}
+
+func TestApplyLoggedReplaysByteIdenticalTransition(t *testing.T) {
+	bundleBytes, err := epochseed.Load("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs := loadReplayTestBundle(t, bundleBytes.Hash, bundleBytes.Artifacts)
+	cursor := time.Date(2026, 7, 31, 8, 0, 0, 0, time.UTC)
+	newState := func() *save.State {
+		ledger, ledgerErr := economy.RestoreLedger(catalogs.Economy, economy.ScopeCompany, map[string]string{"company.cash": "1e2"})
+		if ledgerErr != nil {
+			t.Fatal(ledgerErr)
+		}
+		return &save.State{Ledger: ledger, GeneratorCounts: map[string]int64{"generator.beige_tower": 0},
+			EvaluatedThrough: cursor, ManualTokenMilli: 50_000, ManualTokenRefilledAt: cursor,
+			GatesCrossed: map[string]bool{}, RunSeq: 1, DoctrinesByTransition: map[string]string{},
+			LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{}, RegionTraits: map[string]bool{},
+			HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{}, LifetimeValue: decimal.Zero,
+			RunStartedAt: cursor, OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
+	}
+	request, err := ParseIntent([]byte(`{"intent_id":"01985555-7300-7000-8000-000000000001","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":3,"window_ms":10}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	payload := request.CanonicalPayload
+	command := save.ReplayCommand{IntentID: "01985555-7300-7000-8000-000000000001", CompanyStreamID: "01985555-7300-4000-8000-000000000002", FounderID: "01985555-7300-4000-8000-000000000003", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: cursor.Add(time.Second),
+		IntentKind: IntentPerformManualBatch, Contributions: []multiplier.Contribution{}, RouteContextVersion: catalogs.Routes.ContextVersion()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, err := ApplyLogged(newState(), payload, catalogs, inputs, &fakeInvariantSink{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := ApplyLogged(newState(), payload, catalogs, inputs, &fakeInvariantSink{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	firstState, _ := json.Marshal(wireSnapshot(first.State))
+	secondState, _ := json.Marshal(wireSnapshot(second.State))
+	firstEvents, _ := json.Marshal(first.Events)
+	secondEvents, _ := json.Marshal(second.Events)
+	if first.Outcome != save.IntentApplied || string(first.Receipt) != string(second.Receipt) || string(firstState) != string(secondState) || string(firstEvents) != string(secondEvents) {
+		t.Fatalf("first=%s state=%s events=%s second=%s state=%s events=%s", first.Receipt, firstState, firstEvents, second.Receipt, secondState, secondEvents)
+	}
+
+	var root map[string]any
+	if err := json.Unmarshal(inputs, &root); err != nil {
+		t.Fatal(err)
+	}
+	root["evaluated_at_ms"] = cursor.Add(-time.Second).UnixMilli()
+	regressed, _ := json.Marshal(root)
+	if _, err := ApplyLogged(newState(), payload, catalogs, regressed, nil); err == nil {
+		t.Fatal("clock-regressed replay input was accepted")
 	}
 }
 

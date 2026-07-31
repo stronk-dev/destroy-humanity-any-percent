@@ -61,3 +61,26 @@ new-write trigger, ordinary and terminal capture, and rollback at the run-log fa
 This is the RA landing only. RB remains open: the next batch makes the live engine consume this
 same object through `ApplyLogged`, closes the hook registry, and removes live transition reads not
 represented by its four arguments.
+
+## 2026-07-31 — RB Go live/replay boundary implemented
+
+The Go live path now computes the replay object first and invokes the exported `ApplyLogged`
+boundary that future verification invokes. The boundary reconstructs the player intent from the
+intent-less canonical payload plus the authoritative command envelope, rejects clock regression,
+loads a closed six-artifact `CatalogBundle`, reconstructs canonical contribution values, and
+returns state, receipt, and ordered event writes. Cross-gate offer resolution consumes only the
+frozen Founder carry and decline count.
+
+Terminal commands use the matching `ApplyLoggedExit` arm. It reconstructs the minimal Founder
+view, computes the Exit receipt and next-run snapshot under the declared next hash, and returns the
+Founder-derived output for the live transaction to merge into the full Founder stream. A persisted
+elective-Exit integration fixture replays from the pre-command Company state and compares receipt
+bytes plus every event kind/payload in committed order.
+
+Replayable accrual construction is no longer service-option extensible. Its registry is exactly
+Prestige → faction → Guild → Commons, with Commons consuming a frozen weight through
+`commonsbinding.ResolvedHook`; adding a fifth hook now requires an explicit code/RFC change. The
+catalog loader rejects any artifact map other than the six accepted kinds.
+
+The Go half of RB is complete. The TypeScript validator port and cross-runtime full-run fixture are
+the next plan item and remain unclaimed.

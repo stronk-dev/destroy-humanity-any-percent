@@ -7,7 +7,7 @@
 1. [x] Accept an executable RA/RB contract: close every live transition input, terminal Exit
    dependency, hook-order rule, and legacy-row migration semantic before creating the immutable
    replay schema.
-2. [ ] Add the versioned replay-input wire object and run-log persistence, then refactor the live
+2. [x] Add the versioned replay-input wire object and run-log persistence, then refactor the live
    Go engine so every logged mutation uses `ApplyLogged` and persists the exact consumed inputs in
    the same transaction.
 3. [ ] Port `ApplyLogged` to the TypeScript verification kernel and land shared full-transition

@@ -23,6 +23,36 @@ type Hook struct {
 	Weights  WeightResolver
 }
 
+// ResolvedHook is the replay-safe form: both catalog and projection-derived
+// participation weight are already frozen in ApplyLogged's arguments.
+type ResolvedHook struct {
+	Catalog   *commons.Catalog
+	WeightPPM *int64
+}
+
+// ReplayPolicy is the amplitude-safe adapter exposed to the production
+// replay bundle. Production sees only tithe bounds plus a neutral hook; the
+// Commons catalog and arithmetic remain owned by this package.
+type ReplayPolicy struct{ Catalog *commons.Catalog }
+
+func (policy ReplayPolicy) MinimumTithePPM() int64 {
+	if policy.Catalog == nil {
+		return -1
+	}
+	return policy.Catalog.MinimumTithePPM
+}
+
+func (policy ReplayPolicy) MaximumTithePPM() int64 {
+	if policy.Catalog == nil {
+		return -1
+	}
+	return policy.Catalog.MaximumTithePPM
+}
+
+func (policy ReplayPolicy) ResolvedAccrualHook(weightPPM *int64) accrualhook.Hook {
+	return ResolvedHook{Catalog: policy.Catalog, WeightPPM: weightPPM}
+}
+
 func (hook Hook) AfterAccrual(state *save.State, _ *economy.Catalog, revision save.Revision, result accrualhook.Result, contributions []multiplier.Contribution) ([]save.EventWrite, error) {
 	if state == nil || !state.CompactMember || result.ProductionMS <= 0 {
 		return nil, nil
@@ -35,6 +65,20 @@ func (hook Hook) AfterAccrual(state *save.State, _ *economy.Catalog, revision sa
 	if !ok || weightPPM < 0 || weightPPM > commons.PPM {
 		return nil, errors.New("commons participation weight unavailable")
 	}
+	return applyResolved(state, revision, result, contributions, catalog, weightPPM)
+}
+
+func (hook ResolvedHook) AfterAccrual(state *save.State, _ *economy.Catalog, revision save.Revision, result accrualhook.Result, contributions []multiplier.Contribution) ([]save.EventWrite, error) {
+	if state == nil || !state.CompactMember || result.ProductionMS <= 0 {
+		return nil, nil
+	}
+	if hook.Catalog == nil || hook.WeightPPM == nil || *hook.WeightPPM < 0 || *hook.WeightPPM > commons.PPM {
+		return nil, errors.New("commons resolved input unavailable")
+	}
+	return applyResolved(state, revision, result, contributions, hook.Catalog, *hook.WeightPPM)
+}
+
+func applyResolved(state *save.State, revision save.Revision, result accrualhook.Result, contributions []multiplier.Contribution, catalog *commons.Catalog, weightPPM int64) ([]save.EventWrite, error) {
 	enclosure, err := commons.EnclosureIndex(catalog, contributions)
 	if err != nil {
 		return nil, err

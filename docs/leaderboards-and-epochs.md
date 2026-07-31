@@ -100,7 +100,9 @@ nullable and are explicitly unrankable rather than receiving invented backfill v
 envelope is persistence-authoritative; the per-intent resolved union is exact-key validated by the
 production kernel.
 
-Genesis storage, the shared `ApplyLogged` transition, replay verification, and archive compaction
-are not yet claimed as implemented. Catalog initials still cannot reconstruct later runs because
+The Go live service now executes through the shared `ApplyLogged` transition and compares cleanly
+when the persisted input is replayed from the pre-command state, including terminal receipt and
+event order. The TypeScript port, genesis storage, full-run verifier, and archive compaction are not
+yet claimed as implemented. Catalog initials still cannot reconstruct later runs because
 Founder-carried effects alter their starting state; the active Run Genesis RFC owns that remaining
-boundary in that order.
+work in that order.

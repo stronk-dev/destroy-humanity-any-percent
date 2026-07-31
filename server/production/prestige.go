@@ -44,6 +44,21 @@ func (s *Service) declineExitOffer(request IntentRequest, state *save.State, cat
 }
 
 func (s *Service) afterPrestigeTransition(request IntentRequest, state *save.State, revision save.Revision, now time.Time, decision *save.IntentDecision, founder *save.Loaded, declinedOffers int64) error {
+	var founderState *save.State
+	if founder != nil {
+		if founder.Revision.ConstantsHash != revision.ConstantsHash {
+			return ErrInvalidEngineState
+		}
+		founderState = founder.State
+	}
+	policy, ok := s.prestigePolicies.ResolvePrestige(revision.ConstantsHash)
+	if !ok {
+		return ErrInvalidEngineState
+	}
+	return afterPrestigeTransitionResolved(policy, request, state, revision, now, decision, founderState, declinedOffers)
+}
+
+func afterPrestigeTransitionResolved(policy *prestigecore.Policy, request IntentRequest, state *save.State, revision save.Revision, now time.Time, decision *save.IntentDecision, founder *save.State, declinedOffers int64) error {
 	if state == nil || decision == nil {
 		return ErrInvalidEngineState
 	}
@@ -54,19 +69,18 @@ func (s *Service) afterPrestigeTransition(request IntentRequest, state *save.Sta
 		state.OfferState = nil
 	}
 	if request.Kind == IntentCrossGate && state.OfferState == nil {
-		if founder == nil || founder.State == nil || founder.Revision.ConstantsHash != revision.ConstantsHash {
+		if founder == nil || policy == nil {
 			return ErrInvalidEngineState
 		}
-		if len(founder.State.ExitHistory) == 0 {
+		if len(founder.ExitHistory) == 0 {
 			return refreshAppliedSnapshot(decision, state)
 		}
-		policy, ok := s.prestigePolicies.ResolvePrestige(revision.ConstantsHash)
-		if !ok || state.Tier < 0 || state.Tier >= int64(len(policy.SpawnGatePPM)) {
+		if state.Tier < 0 || state.Tier >= int64(len(policy.SpawnGatePPM)) {
 			return ErrInvalidEngineState
 		}
 		draw, exitType, driftUp := prestigecore.OfferDraws(revision.OwnerID, state.RunSeq, state.Tier, declinedOffers)
 		if policy.SpawnGatePPM[state.Tier] > draw {
-			terms, err := prestigecore.ComputeTerms(state, founder.State, policy, exitType)
+			terms, err := prestigecore.ComputeTerms(state, founder, policy, exitType)
 			if err != nil {
 				return err
 			}
@@ -121,85 +135,8 @@ func (s *Service) handleExit(ctx context.Context, streamID string, mode Evaluati
 		return HandleResult{}, err
 	}
 	result, err := s.store.ApplyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, request.ExpectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
-		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand) (decision save.ExitDecision, replayInputs json.RawMessage, resultErr error) {
-			carry := founderCarry(founder)
-			build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind, FounderCarry: &carry,
-				ExecutedRouteIDs: executedRoutes, RouteContextVersion: 0, SelectedTerms: json.RawMessage(`{}`)}
-			defer func() {
-				if resultErr == nil && command.RunLogSeq != 0 {
-					replayInputs, resultErr = buildReplayInputs(build)
-				}
-			}()
-			policy, ok := s.prestigePolicies.ResolvePrestige(companyRevision.ConstantsHash)
-			if !ok {
-				return save.ExitDecision{}, nil, ErrInvalidEngineState
-			}
-			if request.Kind == IntentFileIPO {
-				return rejectedExitDecision(request, companyRevision.Number, "not_eligible", "ipo_chain"), nil, nil
-			}
-			if request.Kind == IntentWindDown && company.Tier < 1 {
-				return rejectedExitDecision(request, companyRevision.Number, "not_eligible", "tier"), nil, nil
-			}
-			exitType := "collapse"
-			if request.Kind == IntentWindDown && len(founder.ExitHistory) == 0 {
-				exitType = "scripted_first"
-			}
-			var preview *prestigecore.Terms
-			if request.Kind == IntentAcceptExitOffer {
-				if company.OfferState == nil || company.OfferState.OfferID != request.OfferID {
-					return rejectedExitDecision(request, companyRevision.Number, "not_eligible", "exit_offer"), nil, nil
-				}
-				if !company.OfferState.ExpiresAt.After(save.CanonicalServerTime(now)) {
-					return rejectedExitDecision(request, companyRevision.Number, "offer_expired", request.OfferID), nil, nil
-				}
-				exitType = company.OfferState.ExitType
-				stored, err := prestigecore.DecodeStoredOfferTerms(company.OfferState.TermsJSON)
-				if err != nil {
-					return save.ExitDecision{}, nil, err
-				}
-				build.SelectedTerms = append(json.RawMessage(nil), company.OfferState.TermsJSON...)
-				preview = &stored.PayoutPreview
-			}
-			contributions, err := s.exitContributions(ctx, company, companyRevision)
-			if err != nil {
-				return save.ExitDecision{}, nil, err
-			}
-			build.Contributions = contributions
-			if s.routeCatalogs != nil {
-				if catalog, ok := s.routeCatalogs.ResolveRoutes(companyRevision.ConstantsHash); ok {
-					build.RouteContextVersion = catalog.ContextVersion()
-				}
-			}
-			if company.CompactMember {
-				weight, err := s.resolveCommonsReplayWeight(companyRevision.OwnerID)
-				if err != nil {
-					return save.ExitDecision{}, nil, err
-				}
-				build.CommonsWeightPPM = &weight
-			}
-			result, err := Evaluate(company, s.mustCatalog(companyRevision.ConstantsHash), now, mode, contributions)
-			if err != nil {
-				return save.ExitDecision{}, nil, err
-			}
-			prefix, err := runAccrualHook(s.accrualHook, request.IntentID, company, s.mustCatalog(companyRevision.ConstantsHash), companyRevision, result, contributions)
-			if err != nil {
-				return save.ExitDecision{}, nil, err
-			}
-			terms, err := prestigecore.ComputeTerms(company, founder, policy, exitType)
-			if err != nil {
-				return save.ExitDecision{}, nil, err
-			}
-			if preview != nil {
-				stored, err := prestigecore.DecodeStoredOfferTerms(company.OfferState.TermsJSON)
-				if err != nil {
-					return save.ExitDecision{}, nil, err
-				}
-				terms = prestigecore.ApplyMarketModifier(terms, stored.MarketModifierPPM)
-				terms = prestigecore.PromiseTerms(*preview, terms)
-			}
-			build.Terminal, build.SelectedExitType, build.NextConstantsHash = true, exitType, s.currentConstantsHash
-			decision, resultErr = s.finishExit(request, founder, founderRevision, company, companyRevision, now, exitType, terms, prefix, executedRoutes)
-			return decision, nil, resultErr
+		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand) (save.ExitDecision, json.RawMessage, error) {
+			return s.applyLoggedExit(ctx, request, founder, founderRevision, company, companyRevision, command, mode, now, executedRoutes)
 		}, nil)
 	if err != nil {
 		return s.exitErrorReceipt(ctx, streamID, request, err)
@@ -241,58 +178,8 @@ func (s *Service) handleScriptedCrossGateExit(ctx context.Context, streamID stri
 		return HandleResult{}, err
 	}
 	result, err := s.store.ApplyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, expectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
-		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand) (decision save.ExitDecision, replayInputs json.RawMessage, resultErr error) {
-			carry := founderCarry(founder)
-			build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind, FounderCarry: &carry,
-				ExecutedRouteIDs: executedRoutes, SelectedTerms: json.RawMessage(`{}`)}
-			defer func() {
-				if resultErr == nil && command.RunLogSeq != 0 {
-					replayInputs, resultErr = buildReplayInputs(build)
-				}
-			}()
-			catalog := s.mustCatalog(companyRevision.ConstantsHash)
-			routeCatalog, ok := s.routeCatalogs.ResolveRoutes(companyRevision.ConstantsHash)
-			if !ok {
-				return save.ExitDecision{}, nil, ErrInvalidEngineState
-			}
-			build.RouteContextVersion = routeCatalog.ContextVersion()
-			contributions, err := s.exitContributions(ctx, company, companyRevision)
-			if err != nil {
-				return save.ExitDecision{}, nil, err
-			}
-			build.Contributions = contributions
-			if company.CompactMember {
-				weight, err := s.resolveCommonsReplayWeight(companyRevision.OwnerID)
-				if err != nil {
-					return save.ExitDecision{}, nil, err
-				}
-				build.CommonsWeightPPM = &weight
-			}
-			transitionDecision, err := TransitionWithPolicies(request, company, catalog, routeCatalog, nil, nil, companyRevision, mode, now, contributions, &invariantCollector{}, s.accrualHook)
-			if err != nil {
-				return save.ExitDecision{}, nil, err
-			}
-			if transitionDecision.Outcome == save.IntentRejected {
-				return save.ExitDecision{Outcome: save.IntentRejected, Receipt: transitionDecision.Receipt}, nil, nil
-			}
-			if len(founder.ExitHistory) != 0 {
-				return save.ExitDecision{}, nil, ErrInvalidEngineState
-			}
-			attended, err := prestigecore.AttendedMS(company, save.CanonicalServerTime(now))
-			if err != nil || attended < 900_000 {
-				return save.ExitDecision{}, nil, ErrInvalidEngineState
-			}
-			policy, ok := s.prestigePolicies.ResolvePrestige(companyRevision.ConstantsHash)
-			if !ok {
-				return save.ExitDecision{}, nil, ErrInvalidEngineState
-			}
-			terms, err := prestigecore.ComputeTerms(company, founder, policy, "scripted_first")
-			if err != nil {
-				return save.ExitDecision{}, nil, err
-			}
-			build.Terminal, build.SelectedExitType, build.NextConstantsHash = true, "scripted_first", s.currentConstantsHash
-			decision, resultErr = s.finishExit(request, founder, founderRevision, company, companyRevision, now, "scripted_first", terms, transitionDecision.Events, executedRoutes)
-			return decision, nil, resultErr
+		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand) (save.ExitDecision, json.RawMessage, error) {
+			return s.applyLoggedExit(ctx, request, founder, founderRevision, company, companyRevision, command, mode, now, executedRoutes)
 		}, nil)
 	if err != nil {
 		return s.exitErrorReceipt(ctx, streamID, request, err)
@@ -301,6 +188,14 @@ func (s *Service) handleScriptedCrossGateExit(ctx context.Context, streamID stri
 }
 
 func (s *Service) finishExit(request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, now time.Time, exitType string, terms prestigecore.Terms, endedPrefix []save.EventWrite, executedRoutes []string) (save.ExitDecision, error) {
+	nextCatalog := s.mustCatalog(s.currentConstantsHash)
+	if nextCatalog == nil {
+		return save.ExitDecision{}, ErrInvalidEngineState
+	}
+	return finishExitResolved(request, founder, founderRevision, company, companyRevision, now, exitType, terms, endedPrefix, executedRoutes, nextCatalog, s.currentConstantsHash)
+}
+
+func finishExitResolved(request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, now time.Time, exitType string, terms prestigecore.Terms, endedPrefix []save.EventWrite, executedRoutes []string, nextCatalog *economy.Catalog, nextConstantsHash string) (save.ExitDecision, error) {
 	now = save.CanonicalServerTime(now)
 	attended, err := prestigecore.AttendedMS(company, now)
 	if err != nil {
@@ -326,11 +221,10 @@ func (s *Service) finishExit(request IntentRequest, founder *save.State, founder
 	}
 	founder.NetworkSlots = mergeNetworkSlots(founder.NetworkSlots, terms.NetworkSlotUnlocks)
 	founder.ExitHistory = append(founder.ExitHistory, save.ExitRecord{RunID: company.RunSeq, ExitType: exitType, OccurredAt: now, ReputationDelta: terms.ReputationDelta})
-	catalog := s.mustCatalog(s.currentConstantsHash)
-	if catalog == nil {
+	if nextCatalog == nil || nextConstantsHash == "" {
 		return save.ExitDecision{}, ErrInvalidEngineState
 	}
-	newCompany, err := prestigecore.NewRunState(catalog, company, founder, now)
+	newCompany, err := prestigecore.NewRunState(nextCatalog, company, founder, now)
 	if err != nil {
 		return save.ExitDecision{}, err
 	}
@@ -350,7 +244,7 @@ func (s *Service) finishExit(request IntentRequest, founder *save.State, founder
 	receipt, _ := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": "applied", "applied_count": 1, "receipt": map[string]any{"changes": []any{}}, "new_revision": companyRevision.Number + 2, "founder_revision": founderRevision.Number + 1, "evaluated_at": now.Format(time.RFC3339Nano), "snapshot": wireSnapshot(newCompany)})
 	endedEvents := append([]save.EventWrite(nil), endedPrefix...)
 	endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventRunEnded, SchemaVersion: 1, IntentID: request.IntentID, Payload: endedPayload})
-	return save.ExitDecision{Outcome: save.IntentApplied, Receipt: receipt, FinalCompanyState: company, NewCompanyState: newCompany, NewConstantsHash: s.currentConstantsHash,
+	return save.ExitDecision{Outcome: save.IntentApplied, Receipt: receipt, FinalCompanyState: company, NewCompanyState: newCompany, NewConstantsHash: nextConstantsHash,
 		FounderEvents:      []save.EventWrite{{Kind: save.EventFounderAdvanced, SchemaVersion: 1, IntentID: request.IntentID, Payload: advancedPayload}},
 		CompanyEndedEvents: endedEvents, CompanyStartedEvents: []save.EventWrite{{Kind: save.EventRunStarted, SchemaVersion: 1, IntentID: request.IntentID, Payload: startedPayload}}}, nil
 }
@@ -377,6 +271,82 @@ func (s *Service) exitContributions(ctx context.Context, state *save.State, revi
 		return nil, nil
 	}
 	return s.contributions.Contributions(ctx, state, s.mustCatalog(revision.ConstantsHash), revision)
+}
+
+func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand, mode EvaluationMode, now time.Time, executedRoutes []string) (save.ExitDecision, json.RawMessage, error) {
+	if s.replayCatalogs == nil {
+		return save.ExitDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
+	}
+	current, ok := s.replayCatalogs.ResolveReplayCatalogs(companyRevision.ConstantsHash)
+	if !ok {
+		return save.ExitDecision{}, nil, fmt.Errorf("%w: current replay catalog bundle unavailable", ErrInvalidIntent)
+	}
+	next, ok := s.replayCatalogs.ResolveReplayCatalogs(s.currentConstantsHash)
+	if !ok {
+		return save.ExitDecision{}, nil, fmt.Errorf("%w: next replay catalog bundle unavailable", ErrInvalidIntent)
+	}
+	current.Next = &next
+	contributions, err := s.exitContributions(ctx, company, companyRevision)
+	if err != nil {
+		return save.ExitDecision{}, nil, err
+	}
+	carry := founderCarry(founder)
+	carry.FounderRevision = founderRevision.Number
+	selectedType := "collapse"
+	selectedTerms := json.RawMessage(`{}`)
+	switch request.Kind {
+	case IntentCrossGate:
+		selectedType = "scripted_first"
+	case IntentWindDown:
+		if len(founder.ExitHistory) == 0 {
+			selectedType = "scripted_first"
+		}
+	case IntentAcceptExitOffer:
+		selectedType = "unresolved"
+		if company.OfferState != nil && company.OfferState.OfferID == request.OfferID {
+			selectedType = company.OfferState.ExitType
+			selectedTerms = append(json.RawMessage(nil), company.OfferState.TermsJSON...)
+		}
+	default:
+		selectedType = "unresolved"
+	}
+	build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind, Contributions: contributions,
+		RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true,
+		ExecutedRouteIDs: executedRoutes, SelectedExitType: selectedType, SelectedTerms: selectedTerms, NextConstantsHash: s.currentConstantsHash}
+	if company.CompactMember {
+		weight, weightErr := s.resolveCommonsReplayWeight(companyRevision.OwnerID)
+		if weightErr != nil {
+			return save.ExitDecision{}, nil, weightErr
+		}
+		build.CommonsWeightPPM = &weight
+	}
+	replayInputs, err := buildReplayInputs(build)
+	if err != nil {
+		return save.ExitDecision{}, nil, err
+	}
+	transition, err := ApplyLoggedExit(company, request.CanonicalPayload, current, replayInputs, &invariantCollector{})
+	if err != nil {
+		return save.ExitDecision{}, nil, err
+	}
+	if transition.Decision.Outcome == save.IntentApplied {
+		if err := applyFounderReplayOutput(founder, transition.Founder); err != nil {
+			return save.ExitDecision{}, nil, err
+		}
+	}
+	return transition.Decision, replayInputs, nil
+}
+
+func applyFounderReplayOutput(target, replayed *save.State) error {
+	if target == nil || replayed == nil || len(replayed.ExitHistory) != len(target.ExitHistory)+1 {
+		return ErrInvalidEngineState
+	}
+	target.ReputationLevel = replayed.ReputationLevel
+	target.RouteKnowledgeBalance = replayed.RouteKnowledgeBalance
+	target.AgeMS = replayed.AgeMS
+	target.NetworkSlots = append([]save.NetworkSlot(nil), replayed.NetworkSlots...)
+	target.LedgerFactKinds = cloneBools(replayed.LedgerFactKinds)
+	target.ExitHistory = append(target.ExitHistory, replayed.ExitHistory[len(replayed.ExitHistory)-1])
+	return nil
 }
 
 func (s *Service) mustCatalog(hash string) *economy.Catalog {

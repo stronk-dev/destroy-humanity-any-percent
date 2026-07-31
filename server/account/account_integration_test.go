@@ -10,13 +10,16 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/internal/testhttp"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/save"
 )
 
@@ -70,6 +73,14 @@ func TestAccountSessionIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	oldHash := save.ConstantsHash(oldCatalogBytes)
+	repositoryBundle, err := epochseed.Load(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	replayBundle, err := replaycatalog.Load(hash, repositoryBundle.Artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
 	seedAccountEpoch(t, db, hash, catalogBytes)
 	resolver := integrationCatalogs{hash: catalog, oldHash: oldCatalog}
 	keys := SigningKeys{CurrentID: "test-current", Current: bytes.Repeat([]byte{0x42}, 32), PreviousID: "test-previous", Previous: bytes.Repeat([]byte{0x24}, 32)}
@@ -82,7 +93,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	intentService, err := production.NewService(saveStore, resolver, nil, nil, nil)
+	intentService, err := production.NewService(saveStore, resolver, nil, nil, nil, production.WithReplayCatalogs(production.ReplayCatalogSet{hash: replayBundle}))
 	if err != nil {
 		t.Fatal(err)
 	}

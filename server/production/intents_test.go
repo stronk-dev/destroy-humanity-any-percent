@@ -13,9 +13,12 @@ import (
 	"time"
 
 	"cloud-clicker/server/commons"
+	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/faction"
+	"cloud-clicker/server/guild"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
@@ -56,17 +59,28 @@ func (fixture progressionFixture) ResolveFaction(hash string) (*faction.Catalog,
 	return fixture.faction, hash == fixture.hash
 }
 
-func TestProgressionAccrualHookOrderIsCanonical(t *testing.T) {
-	hook := canonicalProgressionAccrualHook(nil, nil, nil, nil)
+func TestReplayAccrualHookOrderIsClosed(t *testing.T) {
+	bundleBytes, err := epochseed.Load("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle := loadReplayTestBundle(t, bundleBytes.Hash, bundleBytes.Artifacts)
+	hook := closedReplayAccrualHook(bundle, nil)
 	chain, ok := hook.(accrualHookChain)
-	if !ok || len(chain) != 2 {
+	if !ok || len(chain) != len(ReplayHookOrder) {
 		t.Fatalf("hook chain=%T %#v", hook, hook)
 	}
 	if _, ok := chain[0].(prestigecore.AccrualHook); !ok {
-		t.Fatalf("first hook=%T", chain[0])
+		t.Fatalf("hook[0]=%T", chain[0])
 	}
 	if _, ok := chain[1].(faction.AccrualHook); !ok {
-		t.Fatalf("second hook=%T", chain[1])
+		t.Fatalf("hook[1]=%T", chain[1])
+	}
+	if _, ok := chain[2].(guild.AccrualHook); !ok {
+		t.Fatalf("hook[2]=%T", chain[2])
+	}
+	if _, ok := chain[3].(commonsbinding.ResolvedHook); !ok {
+		t.Fatalf("hook[3]=%T", chain[3])
 	}
 }
 

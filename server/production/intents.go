@@ -126,16 +126,6 @@ func WithCompactPolicies(resolver CompactPolicyResolver) ServiceOption {
 	}
 }
 
-func WithAccrualHook(hook AccrualHook) ServiceOption {
-	return func(service *Service) error {
-		if hook == nil {
-			return ErrInvalidIntent
-		}
-		service.extraAccrualHooks = append(service.extraAccrualHooks, hook)
-		return nil
-	}
-}
-
 // WithCommonsWeightResolver binds the projection-derived Commons input that
 // must be frozen into replay_inputs before the closed hook chain executes.
 func WithCommonsWeightResolver(resolver CommonsWeightResolver) ServiceOption {
@@ -144,6 +134,16 @@ func WithCommonsWeightResolver(resolver CommonsWeightResolver) ServiceOption {
 			return ErrInvalidIntent
 		}
 		service.commonsWeights = resolver
+		return nil
+	}
+}
+
+func WithReplayCatalogs(resolver ReplayCatalogResolver) ServiceOption {
+	return func(service *Service) error {
+		if resolver == nil {
+			return ErrInvalidIntent
+		}
+		service.replayCatalogs = resolver
 		return nil
 	}
 }
@@ -221,10 +221,9 @@ type Service struct {
 	routeProjector       RouteProjector
 	compactPolicies      CompactPolicyResolver
 	commonsWeights       CommonsWeightResolver
+	replayCatalogs       ReplayCatalogResolver
 	factionCatalogs      FactionCatalogResolver
 	projectors           []EventProjector
-	accrualHook          AccrualHook
-	extraAccrualHooks    []AccrualHook
 	guildCatalogs        guild.CatalogResolver
 	prestigePolicies     PrestigePolicyResolver
 	currentConstantsHash string
@@ -300,36 +299,8 @@ func NewService(
 		if !policyOK || !factionOK || policy.CatchupCeilingMS <= 0 {
 			return nil, ErrInvalidIntent
 		}
-		service.accrualHook = canonicalProgressionAccrualHook(service.prestigePolicies, service.factionCatalogs, service.guildCatalogs, service.extraAccrualHooks)
-	} else {
-		for _, hook := range service.extraAccrualHooks {
-			service.accrualHook = appendAccrualHook(service.accrualHook, hook)
-		}
 	}
 	return service, nil
-}
-
-func canonicalProgressionAccrualHook(prestigePolicies PrestigePolicyResolver, factionCatalogs FactionCatalogResolver, guildCatalogs guild.CatalogResolver, extras []AccrualHook) AccrualHook {
-	var chain AccrualHook
-	chain = appendAccrualHook(chain, prestigecore.AccrualHook{Policies: prestigePolicies})
-	chain = appendAccrualHook(chain, faction.AccrualHook{Catalogs: factionCatalogs, Policies: prestigeCatchupPolicies{prestigePolicies}})
-	if guildCatalogs != nil {
-		chain = appendAccrualHook(chain, guild.AccrualHook{Catalogs: guildCatalogs})
-	}
-	for _, hook := range extras {
-		chain = appendAccrualHook(chain, hook)
-	}
-	return chain
-}
-
-type prestigeCatchupPolicies struct{ resolver PrestigePolicyResolver }
-
-func (policies prestigeCatchupPolicies) ResolveCatchupCeilingMS(constantsHash string) (int64, bool) {
-	policy, ok := policies.resolver.ResolvePrestige(constantsHash)
-	if !ok || policy == nil {
-		return 0, false
-	}
-	return policy.CatchupCeilingMS, true
 }
 
 func (s *Service) Handle(
@@ -375,24 +346,26 @@ func (s *Service) Handle(
 	collector := &invariantCollector{}
 	result, err := s.store.ApplyIntentLogged(ctx, streamID, request.ExpectedRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
 		func(state *save.State, revision save.Revision, command save.ReplayCommand) (decision save.IntentDecision, replayInputs json.RawMessage, resultErr error) {
+			if s.replayCatalogs == nil {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
+			}
+			bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(revision.ConstantsHash)
+			if !ok {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
+			}
 			build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind,
-				DeclinedExitOfferCount: declinedOffers, RouteContextVersion: 0}
+				DeclinedExitOfferCount: declinedOffers, RouteContextVersion: bundle.Routes.ContextVersion()}
 			if prestigeFounder != nil {
 				value := founderCarry(prestigeFounder.State)
+				value.FounderRevision = prestigeFounder.Revision.Number
 				build.FounderCarry = &value
 			}
-			defer func() {
-				if resultErr == nil && command.RunLogSeq != 0 {
-					replayInputs, resultErr = buildReplayInputs(build)
-				}
-			}()
 			catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
 			if !ok {
 				return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 			}
 			if request.InvalidDetail != "" {
-				decision, resultErr = rejectedDecision(request, revision.Number, "invalid", request.InvalidDetail)
-				return decision, nil, resultErr
+				build.Contributions = []multiplier.Contribution{}
 			}
 			var contributions []multiplier.Contribution
 			if s.contributions != nil && request.Kind != IntentBuyRouteHint {
@@ -433,7 +406,6 @@ func (s *Service) Handle(
 					}
 				}
 			}
-			var compactBand *CompactTitheBand
 			if request.Kind == IntentSignCompact || request.Kind == IntentLeaveCompact || request.Kind == IntentIncorporate {
 				if s.compactPolicies == nil {
 					return save.IntentDecision{}, nil, fmt.Errorf("%w: compact runtime unavailable", ErrInvalidIntent)
@@ -442,7 +414,9 @@ func (s *Service) Handle(
 				if !ok {
 					return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown commons catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 				}
-				compactBand = &CompactTitheBand{MinimumPPM: minimum, MaximumPPM: maximum}
+				if minimum < 0 || maximum > 1_000_000 || minimum > maximum {
+					return save.IntentDecision{}, nil, ErrInvalidEngineState
+				}
 			}
 			var factionCatalog *faction.Catalog
 			if request.Kind == IntentIncorporate || request.Kind == IntentLeaveCompact || state.FactionID != "" {
@@ -462,16 +436,20 @@ func (s *Service) Handle(
 					state.FactionStockResource = member.Produces
 				}
 			}
-			decision, resultErr = TransitionWithPolicies(request, state, catalog, routeCatalog, compactBand, factionCatalog, revision, mode, now, contributions, collector, s.accrualHook)
+			if command.RunLogSeq == 0 {
+				decision, resultErr = TransitionWithPolicies(request, state, catalog, routeCatalog, nil, factionCatalog, revision, mode, now, contributions, collector, nil)
+				return decision, nil, resultErr
+			}
+			replayInputs, resultErr = buildReplayInputs(build)
 			if resultErr != nil {
 				return save.IntentDecision{}, nil, resultErr
 			}
-			if s.prestigePolicies != nil && decision.Outcome == save.IntentApplied {
-				if err := s.afterPrestigeTransition(request, state, revision, now, &decision, prestigeFounder, declinedOffers); err != nil {
-					return save.IntentDecision{}, nil, err
-				}
+			transition, resultErr := ApplyLogged(state, request.CanonicalPayload, bundle, replayInputs, collector)
+			if resultErr != nil {
+				return save.IntentDecision{}, nil, resultErr
 			}
-			return decision, nil, nil
+			decision = save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt, Events: transition.Events}
+			return decision, replayInputs, nil
 		})
 	if err != nil {
 		s.recordAbortedInvariants(collector.reports)
