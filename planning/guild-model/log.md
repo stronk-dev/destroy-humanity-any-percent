@@ -53,3 +53,49 @@
   surfaced gaps are Decimal production→int64 XP dimensionality, XP→Guild-Health normalization,
   mixed-epoch clearing authority/transaction ownership, and rounding-sensitive placement of the
   named `stock_consumption` slot. No runtime placeholder implements any of them.
+
+## 2026-07-30 — independent complete-diff review (3c9f770..d1e7503)
+
+Two lanes: mint/catalog by the reviewer directly (epoch-3 mint protocol-compliant, guilds artifact
+appended append-only, accepted hash reproduced at HEAD, catalog byte-exact to GB, guard
+registration one-line-pattern-consistent); lifecycle/exchange/presence/HTTP adversarial with live
+Postgres. **Verdict: APPROVED with findings — the structural core is genuinely strong** (real
+two-goroutine cap-race proof, partial-unique leader/membership invariants with savepoint-typed
+23505 handling, append-only history trigger attacked directly, transactional presence outbox with
+token-guarded claims, server-resolved actor identity, and the six recorded gaps verified HONEST —
+no writer exists for any deferred surface, exactly as claimed).
+
+Findings (fix queue, ordered):
+
+1. **MEDIUM — officer-permission TOCTOU** (verified first-hand, intents.go:298-306): actor role is
+   read unlocked before `lockGuild` and never re-checked — a just-demoted officer's in-flight
+   admit/invite lands after the demotion commits. Leader invariants unaffected. Fix: re-read the
+   actor's role after taking the guild lock, all officer-gated arms.
+2. **MEDIUM — two G1 "all mutations evented" violations:** leadership transfer emits no
+   `role_changed` for the self-demotion (a projection replaying events reconstructs two leaders);
+   sweep and manual disband close memberships without `member_left` events. Fix: emit the missing
+   events in the same transactions.
+3. **MEDIUM→ruling — GC kernel deviates from the RFC's literal arithmetic** (consumer eligibility
+   and allocation capped by min(intake headroom, stock-cap headroom); near-cap consumers excluded
+   from `n`). The code's answer is BETTER than the spec's (no units silently destroyed at
+   saturation-on-credit). **Ruling GC-1: the RFC adopts the implemented semantics** — `cap_i =
+   min(intake headroom, stock_cap − received)`, zero-headroom consumers excluded from the
+   denominator; RFC text amended; the kernel is now the spec's golden answer.
+4. LOW/MEDIUM — AB-BA lock order between leave/disband (membership→guild) and set_role
+   (guild→membership): real deadlock window surfacing as a generic 409 after a ~1 s stall. Fix:
+   guild-lock-first everywhere.
+5. LOW batch: `guild_id` is client-supplied via intent_id (collision → permanent generic conflict
+   against the victim's intent; server-generate the id); per-arm typed-rejection tests missing
+   (nine arms untested) + concurrent leader-uniqueness test absent (AC1's letter) + the literal
+   3-present-1-absent AC5 fixture; **AC6 (real-socket presence) is unproven and was NOT in the
+   gap list** — now recorded here: it parks under composition with the sweep/relay drivers, but it
+   must be NAMED, not implied; generic-409 masking of internal errors is a shared account-API wart
+   (queued once, both surfaces).
+6. INFO — d519003 verified as a pure rename correctly satisfying the faction writer-closure gate
+   (not a bug fix); sweep presence rows share one guild_revision (moot, count=0); epoch-test
+   parameterization legitimate.
+
+**Process note for Marco:** commit 1c4b418 ("review: approve faction remediation round") also
+carried the new AGENTS.md history-rewrite convention — the rule is the reviewer's (this log's
+author), but it entered the repo riding a review commit; it deserves Marco's explicit sign-off and
+is called out in the session summary.

@@ -72,11 +72,13 @@ At each accrual boundary, per guild, in one transaction:
    `offered = stock_units * clearing_rate_ppm / 1_000_000` (integer division).
 2. **Consumers** of resource R = active members whose faction `consumes` R, ascending
    `account_id`, each with remaining intake `cap_i = stock_intake_cap − consumed_this_boundary_i`.
-3. Per producer in order: `n` = consumers with `cap_i > 0`; `base = offered / n` (integer),
-   `rem = offered mod n`; consumer `i` (in account_id order) is allocated
-   `min(base + (1 if index(i) < rem else 0), cap_i)`; allocation runs one pass in order —
-   **units an over-cap consumer cannot take are NOT redistributed within the boundary** (they
-   stay with the producer; next boundary retries). Zero consumers → nothing clears.
+3. Per producer in order (as amended by ruling GC-1, 2026-07-30, adopting the implemented
+   kernel): `cap_i = min(intake headroom, stock_cap − received_i)` — a consumer with zero
+   headroom on EITHER bound is excluded from `n`; `base = offered / n` (integer), `rem = offered
+   mod n`; consumer `i` (in account_id order) is allocated `min(base + (1 if index(i) < rem else
+   0), cap_i)`; one pass, **no intra-boundary redistribution** (undelivered units stay with the
+   producer; next boundary retries). Zero eligible consumers → nothing clears. Nothing is ever
+   destroyed at credit-saturation because saturation is an eligibility bound, not a clamp.
 4. Debit `producer.stock_units`, credit `consumer.consumed_stock_units` (saturating at
    `stock_cap`), emit one `exchange_cleared {producer, allocations: [{account, units}]}` event
    per producer with any allocation. No RNG, no clocks: the golden answer is unique given
@@ -128,8 +130,76 @@ Until these are answered, composition remains fail-closed. The catalog, storage,
 kernel, NPC kernel, resolver, presence relay, HTTP surface, and disband sweep are implemented and
 tested; no placeholder math runs in production.
 
+## Executable contracts GD1–GD6 (owner answers, 2026-07-30)
+
+### GD1 — Name validator
+
+Normalize: NFKC → lowercase → trim → collapse internal whitespace runs to one space. Accept:
+`[a-z0-9 _-]`, length 3–24 after normalization, no leading/trailing space/`-`/`_`, at least one
+`[a-z0-9]`. Uniqueness compares the NORMALIZED form among non-disbanded guilds. Denylist: injected
+`NameValidator` interface (fail-closed: nil validator ⇒ `create_guild` rejects `name_policy`);
+baseline list committed at `moderation/guild-names.txt` (substring match on the normalized form),
+deployment may extend, never shrink below the committed file. Rejection category: `name_policy`.
+
+### GD2 — Tithe units (exact, cross-tier fair)
+
+Guild XP tithes **tier-local progress, not raw Decimals**: at each accrual evaluation of a member
+company, `progress_delta_ppm` = the increase in the SHIPPED tier-local resource_log progress
+coordinate (already integer ppm, already cross-runtime exact); `xp_delta = progress_delta_ppm *
+guild_tithe_ppm / 1_000_000` (integer division, remainder carried per-company in
+`guild_tithe_carry_ppm`, new company field). `guild_xp` is int64, **accrual-only saturating at
+MaxExactInteger**. No Decimal ever crosses the boundary; a tier-N whale and a tier-1 newcomer
+contribute comparable progress units by construction. Negative progress (cap-lowering migrations)
+contributes zero — XP never decreases from production.
+
+### GD3 — Guild Health
+
+`H_guild_ppm = clamp(1_000_000 * window_xp / (active_founders * guild_xp_target_per_founder), 0,
+1_000_000)` — per-capita, population-invariant by construction. `window_xp` = guild_xp accrued in
+the trailing commons health window (the same window the cohort term uses);
+`guild_xp_target_per_founder = 250_000` (new guilds-catalog literal, provisional, epoch protocol).
+`active_founders` = accounts with an active membership AND ≥1 accrual evaluation in the window
+(the cohort activity rule, reused). Zero active founders ⇒ term contributes 0 (the compact's
+guildless substitution never applies to members — a dead guild is a real signal).
+
+### GD4 — Account deletion
+
+In the account-deletion transaction (A-D5a's), for each ACTIVE membership: stamp `left_at`,
+`account_id` → NULL (FK ON DELETE SET NULL — history rows survive anonymized; the append-only
+trigger admits exactly this transition). If the deleted account held `leader`: succession in the
+same transaction — oldest active `officer` by `(joined_at, row id)`, else oldest active `member`,
+promoted with `role_changed`; no remaining active members ⇒ `guild_disbanded`. All evented,
+deterministic, single transaction with the deletion.
+
+### GD5 — Clearing activation (the commons-projection precedent, replay-safe via RA)
+
+Clearing is **projection-side, never a multi-company transaction**: a boundary job (composed
+gameserver, claim/outbox discipline) runs per guild every `clearing_interval_ms` (new catalog
+literal, 300_000) computing GC's allocations from members' latest COMMITTED stock snapshots,
+writing idempotent `guild_clearing_results(guild_id, boundary_seq, allocations jsonb)` rows +
+`exchange_cleared` events. Each member company then applies ITS OWN slice at its next accrual
+evaluation — debit and credit both — reading the projection exactly as `commons_modifier` is read
+today, watermarked by `guild_boundary_seq` (new company field, monotonic). Double-spend is
+impossible: stocks have no other consumer, and a company applies each boundary exactly once by
+watermark. **Catalog authority: the CURRENT epoch's guilds artifact** (guilds are server-shared,
+not run-pinned); replay stays exact because applied slices are server-resolved inputs and land in
+`replay_inputs` (RA) — a replayer never recomputes clearing. Lock ordering: none needed — every
+company transaction locks only itself; the projection is the sole coordination point.
+
+### GD6 — Multiplier slot
+
+Slot key `guild.stock_consumption`, Company scope, multiplicative, value `1 + consumed_this_window
+* consumption_bonus_ppm_per_unit / 1e6` (ppm arithmetic, catalog rate currently 0). Provider: the
+faction accrual hook (it already owns `consumed_stock_units`). Ordering: the slot enters the
+SHIPPED deterministic-aggregation order (contributions sorted canonically by slot key — the
+existing kernel rule); no bespoke position exists or is needed. The provider row is registered in
+the production stack's slot registry by this contract; a second provider for the key is a loader
+error.
+
 ## Changelog
 
 - 2026-07-30: created (draft) — the guild owner contract Commons Onboarding blockers #1/#5 named; unblocks the transport guild resolver.
 - 2026-07-30: Codex bounce answered — GA (parent resolved), GB (complete literal catalog incl. the 0-ppm consumption hook), GC (total deterministic clearing: ordered one-pass allocation, no intra-boundary redistribution, NPC = one capped virtual counterparty).
 - 2026-07-30: implementation audit added GD1–GD6 after the structural implementation exposed missing owner contracts; no mechanic was inferred.
+- 2026-07-30: GD1–GD6 answered with executable contracts (name policy; tier-progress tithe units; per-capita Health; deletion succession; projection-side clearing under the RA replay-input rule; canonical slot ordering).
+- 2026-07-30: complete-diff review APPROVED with findings (see planning log); ruling GC-1 adopts the implemented headroom-eligibility clearing semantics; AC6 explicitly parked under composition by name.
