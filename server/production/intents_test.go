@@ -57,7 +57,7 @@ func (fixture progressionFixture) ResolveFaction(hash string) (*faction.Catalog,
 }
 
 func TestProgressionAccrualHookOrderIsCanonical(t *testing.T) {
-	hook := canonicalProgressionAccrualHook(nil, nil, nil)
+	hook := canonicalProgressionAccrualHook(nil, nil, nil, nil)
 	chain, ok := hook.(accrualHookChain)
 	if !ok || len(chain) != 2 {
 		t.Fatalf("hook chain=%T %#v", hook, hook)

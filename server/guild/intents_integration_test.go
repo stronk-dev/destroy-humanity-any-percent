@@ -14,6 +14,12 @@ import (
 
 type integrationNames struct{}
 
+type integrationWindow struct{}
+
+func (integrationWindow) GuildHealthWindowMS(string) (int64, bool) {
+	return int64(30 * 24 * time.Hour / time.Millisecond), true
+}
+
 func (integrationNames) ValidateGuildName(value string) bool {
 	return value == "small systems" || value == "small systems 2"
 }
@@ -142,6 +148,58 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	var sweptLeaves int
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM guild_events WHERE guild_id=$1 AND kind='member_left'`, sweepGuild).Scan(&sweptLeaves); err != nil || sweptLeaves != 1 {
 		t.Fatalf("swept member_left events=%d err=%v", sweptLeaves, err)
+	}
+
+	founderID := "018f0000-0000-7000-8000-000000000201"
+	if _, err := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id,created_at) VALUES($1,$2,$3)`, accounts[0], founderID, now); err != nil {
+		t.Fatal(err)
+	}
+	projector, err := NewProjector(db, integrationWindow{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	event := save.EventRecord{EventID: "018f0000-0000-4000-8000-000000000301", StreamID: "018f0000-0000-7000-8000-000000000301", OwnerID: founderID,
+		Revision: 2, Kind: save.EventGuildTitheAccrued, IntentID: "018f0000-0000-7000-8000-000000000302", ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", OccurredAt: now,
+		Payload: json.RawMessage(`{"founder_id":"` + founderID + `","run_id":{"company_stream_id":"018f0000-0000-7000-8000-000000000301","run_seq":1},"progress_delta_ppm":500000,"xp_delta":10}`)}
+	if err := projector.Project(ctx, []save.EventRecord{event, event}); err != nil {
+		t.Fatal(err)
+	}
+	var guildXP int64
+	if err := db.QueryRowContext(ctx, `SELECT guild_xp FROM guilds WHERE guild_id=$1`, guildID).Scan(&guildXP); err != nil || guildXP != 10 {
+		t.Fatalf("guild xp=%d err=%v", guildXP, err)
+	}
+
+	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), []MemberStock{
+		{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10},
+		{AccountID: joinedAccount, Produces: "carbon", Consumes: "libraries", AvailableUnits: 10},
+	}, 100); err != nil {
+		t.Fatal(err)
+	}
+	pending, err := service.PendingSettlements(ctx, founderID, 0)
+	if err != nil || len(pending) != 1 || pending[0].DebitUnits != 5 || pending[0].CreditUnits != 5 {
+		t.Fatalf("pending=%+v err=%v", pending, err)
+	}
+
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := service.PrepareAccountDeletion(ctx, tx, accounts[0], now.Add(2*time.Minute)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.ExecContext(ctx, `DELETE FROM accounts WHERE account_id=$1`, accounts[0]); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.Commit(); err != nil {
+		t.Fatal(err)
+	}
+	var successorRole string
+	if err := db.QueryRowContext(ctx, `SELECT role FROM guild_members WHERE guild_id=$1 AND account_id=$2 AND left_at IS NULL`, guildID, joinedAccount).Scan(&successorRole); err != nil || successorRole != "leader" {
+		t.Fatalf("successor role=%q err=%v", successorRole, err)
+	}
+	var anonymized int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM guild_members WHERE guild_id=$1 AND account_id IS NULL AND left_at IS NOT NULL`, guildID).Scan(&anonymized); err != nil || anonymized != 1 {
+		t.Fatalf("anonymized memberships=%d err=%v", anonymized, err)
 	}
 }
 

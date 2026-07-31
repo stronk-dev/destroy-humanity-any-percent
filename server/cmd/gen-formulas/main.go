@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"cloud-clicker/server/commons"
+	"cloud-clicker/server/guild"
 	"cloud-clicker/server/multiplier"
 )
 
@@ -25,6 +26,21 @@ type formulaArtifact struct {
 	WithinSlotOrder     string            `json:"within_slot_order"`
 	SourceFingerprint   string            `json:"source_fingerprint"`
 	Commons             commonsFormula    `json:"commons"`
+	Guild               guildFormula      `json:"guild"`
+}
+
+type guildFormula struct {
+	Tithe                      string `json:"tithe"`
+	Health                     string `json:"health"`
+	Clearing                   string `json:"clearing"`
+	StockConsumption           string `json:"stock_consumption"`
+	GuildTithePPM              int64  `json:"guild_tithe_ppm"`
+	GuildXPTargetPerFounder    int64  `json:"guild_xp_target_per_founder"`
+	ClearingRatePPM            int64  `json:"clearing_rate_ppm"`
+	NPCExchangePPM             int64  `json:"npc_exchange_ppm"`
+	StockIntakeCap             int64  `json:"stock_intake_cap"`
+	ConsumptionBonusPPMPerUnit int64  `json:"consumption_bonus_ppm_per_unit"`
+	ClearingIntervalMS         int64  `json:"clearing_interval_ms"`
 }
 
 type commonsFormula struct {
@@ -80,6 +96,9 @@ var formulaAuthorities = []authoritySpec{
 	{label: "commons.Modifier", path: "commons/formula.go", kind: authorityFunction, symbol: "Modifier"},
 	{label: "commons.AggregateHealth", path: "commons/health.go", kind: authorityFunction, symbol: "AggregateHealth"},
 	{label: "commons.SmoothHealthPPM", path: "commons/health.go", kind: authorityFunction, symbol: "SmoothHealthPPM"},
+	{label: "guild.HealthPPM", path: "guild/projector.go", kind: authorityFunction, symbol: "HealthPPM"},
+	{label: "guild.Clear", path: "guild/exchange.go", kind: authorityFunction, symbol: "Clear"},
+	{label: "guild.ApplySettlements", path: "guild/clearing_store.go", kind: authorityFunction, symbol: "ApplySettlements"},
 }
 
 func main() {
@@ -105,8 +124,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	guildBytes, err := os.ReadFile(filepath.Join(root, "..", "balance", "guilds", "phase0.json"))
+	if err != nil {
+		panic(err)
+	}
+	guildCatalog, err := guild.LoadCatalog(guildBytes)
+	if err != nil {
+		panic(err)
+	}
 	artifact := formulaArtifact{
-		SchemaVersion:       4,
+		SchemaVersion:       5,
 		ProductionRate:      "sum_generators(count * base_rate * product(multiplier_slots))",
 		MultiplierSlotOrder: append([]multiplier.Slot(nil), multiplier.Order[:]...),
 		WithinSlotOrder:     multiplier.WithinSlotOrder,
@@ -139,6 +166,16 @@ func main() {
 			NPCWeightPPM:             commonsCatalog.NPCWeightPPM,
 			NPCCompliancePPM:         commonsCatalog.NPCCompliancePPM,
 			PopulationTolerancePPM:   commonsCatalog.PopulationTolerancePPM,
+		},
+		Guild: guildFormula{
+			Tithe:            "xp_delta = floor((progress_delta_ppm * guild_tithe_ppm + carry_ppm) / 1000000); persist remainder",
+			Health:           "clamp(1000000 * window_xp / (active_founders * guild_xp_target_per_founder), 0, 1000000)",
+			Clearing:         "ordered one-pass allocation of floor(stock_units * clearing_rate_ppm / 1000000), capped by intake and stock headroom, no redistribution",
+			StockConsumption: "1 + consumed_this_window * consumption_bonus_ppm_per_unit / 1000000",
+			GuildTithePPM:    guildCatalog.GuildTithePPM, GuildXPTargetPerFounder: guildCatalog.GuildXPTargetPerFounder,
+			ClearingRatePPM: guildCatalog.ClearingRatePPM, NPCExchangePPM: guildCatalog.NPCExchangePPM,
+			StockIntakeCap: guildCatalog.StockIntakeCap, ConsumptionBonusPPMPerUnit: guildCatalog.ConsumptionBonusPPMPerUnit,
+			ClearingIntervalMS: guildCatalog.ClearingIntervalMS,
 		},
 	}
 	data, err := json.MarshalIndent(artifact, "", "  ")

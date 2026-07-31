@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-const phase0Catalog = `{"schema_version":1,"guild_tithe_ppm":20000,"clearing_rate_ppm":500000,"npc_exchange_ppm":250000,"stock_intake_cap":120,"consumption_bonus_ppm_per_unit":0,"max_members":50,"min_members":2,"grace_days":7}`
+const phase0Catalog = `{"schema_version":1,"guild_tithe_ppm":20000,"clearing_rate_ppm":500000,"npc_exchange_ppm":250000,"stock_intake_cap":120,"consumption_bonus_ppm_per_unit":0,"max_members":50,"min_members":2,"grace_days":7,"guild_xp_target_per_founder":250000,"clearing_interval_ms":300000}`
 
 func TestLoadCatalogPhase0Literal(t *testing.T) {
 	catalog, err := LoadCatalog([]byte(phase0Catalog))

@@ -40,6 +40,11 @@ type Repository struct {
 	keys          SigningKeys
 	clock         Clock
 	random        io.Reader
+	deletion      AccountDeletionParticipant
+}
+
+type AccountDeletionParticipant interface {
+	PrepareAccountDeletion(context.Context, *sql.Tx, string, time.Time) error
 }
 
 type CreatedAccount struct {
@@ -87,6 +92,14 @@ func NewRepository(db *sql.DB, catalogs save.CatalogResolver, constantsHash stri
 		return nil, ErrInvalidRequest
 	}
 	return &Repository{db: db, saves: saves, catalogs: catalogs, constantsHash: constantsHash, keys: keys, clock: clock, random: random}, nil
+}
+
+func (repository *Repository) AttachAccountDeletionParticipant(participant AccountDeletionParticipant) error {
+	if repository == nil || participant == nil || repository.deletion != nil {
+		return ErrInvalidRequest
+	}
+	repository.deletion = participant
+	return nil
 }
 
 func (repository *Repository) CreateAccount(ctx context.Context) (CreatedAccount, error) {
@@ -427,6 +440,11 @@ func (repository *Repository) DeleteAccount(ctx context.Context, accountID strin
 	}
 	if len(founders) == 0 {
 		return ErrAccountNotFound
+	}
+	if repository.deletion != nil {
+		if err := repository.deletion.PrepareAccountDeletion(ctx, tx, accountID, now); err != nil {
+			return err
+		}
 	}
 	if _, err := tx.ExecContext(ctx, `UPDATE account_founders SET archived_at=COALESCE(archived_at,$2) WHERE account_id=$1`, accountID, now); err != nil {
 		return err

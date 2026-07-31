@@ -167,6 +167,9 @@ func TestStateV8MigratesCollapsedOfflineAccumulator(t *testing.T) {
 	delete(previous, "stock_units")
 	delete(previous, "stock_progress_ms")
 	delete(previous, "consumed_stock_units")
+	delete(previous, "guild_tithe_carry_ppm")
+	delete(previous, "guild_boundary_seq")
+	delete(previous, "guild_consumed_window_units")
 	v8, err := json.Marshal(previous)
 	if err != nil {
 		t.Fatal(err)
@@ -275,6 +278,9 @@ func TestSaveMigrationCorpus(t *testing.T) {
 			want.(map[string]any)["stock_units"] = float64(0)
 			want.(map[string]any)["stock_progress_ms"] = float64(0)
 			want.(map[string]any)["consumed_stock_units"] = float64(0)
+			want.(map[string]any)["guild_tithe_carry_ppm"] = float64(0)
+			want.(map[string]any)["guild_boundary_seq"] = float64(0)
+			want.(map[string]any)["guild_consumed_window_units"] = float64(0)
 			if !equalJSON(got, want) {
 				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV5)
 			}

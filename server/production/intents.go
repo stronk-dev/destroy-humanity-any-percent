@@ -19,6 +19,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
+	"cloud-clicker/server/guild"
 	"cloud-clicker/server/multiplier"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
@@ -142,6 +143,16 @@ func WithProgressionRuntime(resolver ProgressionRuntimeResolver) ServiceOption {
 	}
 }
 
+func WithGuildRuntime(resolver guild.CatalogResolver) ServiceOption {
+	return func(service *Service) error {
+		if resolver == nil {
+			return ErrInvalidIntent
+		}
+		service.guildCatalogs = resolver
+		return nil
+	}
+}
+
 // WithCurrentConstantsHash binds the process's authoritative balance identity.
 // Existing runs continue under their pinned hash; only a Prestige transition
 // uses this value to assemble and pin the next run.
@@ -197,6 +208,7 @@ type Service struct {
 	projectors           []EventProjector
 	accrualHook          AccrualHook
 	extraAccrualHooks    []AccrualHook
+	guildCatalogs        guild.CatalogResolver
 	prestigePolicies     PrestigePolicyResolver
 	currentConstantsHash string
 }
@@ -271,7 +283,7 @@ func NewService(
 		if !policyOK || !factionOK || policy.CatchupCeilingMS <= 0 {
 			return nil, ErrInvalidIntent
 		}
-		service.accrualHook = canonicalProgressionAccrualHook(service.prestigePolicies, service.factionCatalogs, service.extraAccrualHooks)
+		service.accrualHook = canonicalProgressionAccrualHook(service.prestigePolicies, service.factionCatalogs, service.guildCatalogs, service.extraAccrualHooks)
 	} else {
 		for _, hook := range service.extraAccrualHooks {
 			service.accrualHook = appendAccrualHook(service.accrualHook, hook)
@@ -280,10 +292,13 @@ func NewService(
 	return service, nil
 }
 
-func canonicalProgressionAccrualHook(prestigePolicies PrestigePolicyResolver, factionCatalogs FactionCatalogResolver, extras []AccrualHook) AccrualHook {
+func canonicalProgressionAccrualHook(prestigePolicies PrestigePolicyResolver, factionCatalogs FactionCatalogResolver, guildCatalogs guild.CatalogResolver, extras []AccrualHook) AccrualHook {
 	var chain AccrualHook
 	chain = appendAccrualHook(chain, prestigecore.AccrualHook{Policies: prestigePolicies})
 	chain = appendAccrualHook(chain, faction.AccrualHook{Catalogs: factionCatalogs, Policies: prestigeCatchupPolicies{prestigePolicies}})
+	if guildCatalogs != nil {
+		chain = appendAccrualHook(chain, guild.AccrualHook{Catalogs: guildCatalogs})
+	}
 	for _, hook := range extras {
 		chain = appendAccrualHook(chain, hook)
 	}
@@ -646,7 +661,7 @@ func runAccrualHook(hook AccrualHook, intentID string, state *save.State, catalo
 	if hook == nil || result.ElapsedMS == 0 {
 		return nil, nil
 	}
-	events, err := hook.AfterAccrual(state, catalog, revision, accrualhook.Result{Receipt: result.Receipt, ElapsedMS: result.ElapsedMS, ProductionMS: result.ProductionMS, BankedCreditMS: result.BankedCreditMS}, contributions)
+	events, err := hook.AfterAccrual(state, catalog, revision, accrualhook.Result{Receipt: result.Receipt, ElapsedMS: result.ElapsedMS, ProductionMS: result.ProductionMS, BankedCreditMS: result.BankedCreditMS, ProgressDeltaPPM: result.ProgressDeltaPPM}, contributions)
 	if err != nil {
 		return nil, err
 	}
@@ -1065,6 +1080,8 @@ func wireSnapshot(state *save.State) map[string]any {
 		"faction_id":           nullableString(state.FactionID), "incorporated_at_ms": nullableTimeMS(state.IncorporatedAt),
 		"stock_resource": nullableString(state.FactionStockResource), "stock_units": state.StockUnits,
 		"stock_progress_ms": state.StockProgressMS, "consumed_stock_units": state.ConsumedStockUnits,
+		"guild_tithe_carry_ppm": state.GuildTitheCarryPPM, "guild_boundary_seq": state.GuildBoundarySeq,
+		"guild_consumed_window_units": state.GuildConsumedWindow,
 	}
 }
 

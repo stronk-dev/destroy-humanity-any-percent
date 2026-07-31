@@ -664,5 +664,14 @@ func (service *Service) GuildMember(accountID, guildID string) bool {
 	return service.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM guild_members WHERE account_id=$1 AND guild_id=$2 AND left_at IS NULL)`, accountID, guildID).Scan(&exists) == nil && exists
 }
 
+func (service *Service) FounderGuildMember(ctx context.Context, founderID string) (bool, error) {
+	if service == nil || !uuidPattern.MatchString(founderID) {
+		return false, ErrInvalidIntent
+	}
+	var exists bool
+	err := service.db.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM account_founders f JOIN guild_members m ON m.account_id=f.account_id WHERE f.founder_id=$1 AND m.left_at IS NULL)`, founderID).Scan(&exists)
+	return exists, err
+}
+
 func (service *Service) CohortMember(_, _ string) bool     { return false }
 func (service *Service) MatchParticipant(_, _ string) bool { return false }

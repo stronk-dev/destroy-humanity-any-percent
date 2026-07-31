@@ -23,10 +23,11 @@ const (
 )
 
 type EvaluationResult struct {
-	Receipt        economy.Receipt
-	ElapsedMS      int64
-	ProductionMS   int64
-	BankedCreditMS int64
+	Receipt          economy.Receipt
+	ElapsedMS        int64
+	ProductionMS     int64
+	BankedCreditMS   int64
+	ProgressDeltaPPM int64
 }
 
 func Evaluate(
@@ -50,6 +51,10 @@ func Evaluate(
 	}
 	if elapsedMS > decimal.MaxExactInteger {
 		return EvaluationResult{}, fmt.Errorf("%w: elapsed time exceeds exact integer domain", ErrInvalidEngineState)
+	}
+	beforeProgressPPM, err := tierProgressPPM(catalog, state)
+	if err != nil {
+		return EvaluationResult{}, err
 	}
 
 	productionMS := elapsedMS
@@ -100,9 +105,33 @@ func Evaluate(
 	}
 	state.ComputeCreditMS += banked
 	state.EvaluatedThrough = effectiveNow
+	afterProgressPPM, err := tierProgressPPM(catalog, state)
+	if err != nil {
+		return EvaluationResult{}, err
+	}
+	progressDeltaPPM := afterProgressPPM - beforeProgressPPM
+	if progressDeltaPPM < 0 {
+		progressDeltaPPM = 0
+	}
 	return EvaluationResult{
 		Receipt: receipt, ElapsedMS: elapsedMS, ProductionMS: productionMS, BankedCreditMS: banked,
+		ProgressDeltaPPM: progressDeltaPPM,
 	}, nil
+}
+
+func tierProgressPPM(catalog *economy.Catalog, state *save.State) (int64, error) {
+	if _, ok := catalog.ProgressCoordinate(int(state.Tier)); !ok {
+		return 0, nil
+	}
+	progress, err := SubProgressValue(catalog, state, int(state.Tier))
+	if err != nil {
+		return 0, err
+	}
+	value, ok := progress.Mul(decimal.FromFloat64(1_000_000)).Floor().Int64Exact()
+	if !ok || value < 0 || value > 1_000_000 {
+		return 0, ErrInvalidEngineState
+	}
+	return value, nil
 }
 
 func Rates(

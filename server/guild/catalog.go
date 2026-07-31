@@ -23,6 +23,8 @@ type Catalog struct {
 	MaxMembers                 int
 	MinMembers                 int
 	GraceDays                  int
+	GuildXPTargetPerFounder    int64
+	ClearingIntervalMS         int64
 }
 
 type rawCatalog struct {
@@ -35,6 +37,8 @@ type rawCatalog struct {
 	MaxMembers                 int   `json:"max_members"`
 	MinMembers                 int   `json:"min_members"`
 	GraceDays                  int   `json:"grace_days"`
+	GuildXPTargetPerFounder    int64 `json:"guild_xp_target_per_founder"`
+	ClearingIntervalMS         int64 `json:"clearing_interval_ms"`
 }
 
 func LoadCatalog(data []byte) (*Catalog, error) {
@@ -52,6 +56,7 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		raw.ClearingRatePPM != 500_000 || raw.NPCExchangePPM != 250_000 ||
 		raw.StockIntakeCap != 120 || raw.ConsumptionBonusPPMPerUnit != 0 ||
 		raw.MaxMembers != 50 || raw.MinMembers != 2 || raw.GraceDays != 7 ||
+		raw.GuildXPTargetPerFounder != 250_000 || raw.ClearingIntervalMS != 300_000 ||
 		raw.NPCExchangePPM >= raw.ClearingRatePPM || raw.MinMembers > raw.MaxMembers {
 		return nil, ErrInvalidCatalog
 	}
@@ -60,5 +65,6 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		NPCExchangePPM: raw.NPCExchangePPM, StockIntakeCap: raw.StockIntakeCap,
 		ConsumptionBonusPPMPerUnit: raw.ConsumptionBonusPPMPerUnit,
 		MaxMembers:                 raw.MaxMembers, MinMembers: raw.MinMembers, GraceDays: raw.GraceDays,
+		GuildXPTargetPerFounder: raw.GuildXPTargetPerFounder, ClearingIntervalMS: raw.ClearingIntervalMS,
 	}, nil
 }

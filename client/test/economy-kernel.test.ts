@@ -90,6 +90,7 @@ describe("shared economy catalog", () => {
     ]);
     expect(catalog.multiplierSources).toEqual([
       { id: "commons.member", slot: "commons", target: "all", provider: "commons" },
+      { id: "guild.stock_consumption", slot: "faction", target: "all", provider: "faction" },
     ]);
     expect(catalog.progressCoordinates.map((coordinate) => coordinate.tier)).toEqual([0, 1, 2, 3]);
     expect(catalog.manualPolicy).toEqual({ refillMilliPerMs: 25, bucketCapMilli: 50_000 });

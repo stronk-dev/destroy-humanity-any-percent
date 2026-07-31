@@ -8,10 +8,11 @@ import (
 )
 
 type Result struct {
-	Receipt        economy.Receipt
-	ElapsedMS      int64
-	ProductionMS   int64
-	BankedCreditMS int64
+	Receipt          economy.Receipt
+	ElapsedMS        int64
+	ProductionMS     int64
+	BankedCreditMS   int64
+	ProgressDeltaPPM int64
 }
 
 type Hook interface {

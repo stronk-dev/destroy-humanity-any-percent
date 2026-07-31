@@ -36,6 +36,19 @@ type Projector struct {
 	db          *sql.DB
 	assignments AssignmentResolver
 	policies    PolicyResolver
+	guildHealth GuildHealthResolver
+}
+
+type GuildHealthResolver interface {
+	FounderGuildHealthPPM(context.Context, string, string) (healthPPM int64, hasGuild bool, err error)
+}
+
+func (p *Projector) AttachGuildHealth(resolver GuildHealthResolver) error {
+	if p == nil || resolver == nil || p.guildHealth != nil {
+		return ErrProjection
+	}
+	p.guildHealth = resolver
+	return nil
 }
 
 func New(db *sql.DB, assignments AssignmentResolver, policies PolicyResolver) (*Projector, error) {
@@ -454,7 +467,15 @@ func (p *Projector) Snapshot(ctx context.Context, founderID, constantsHash strin
 	if err := p.db.QueryRowContext(ctx, `SELECT health_ppm,capacity FROM commons_health_scopes WHERE scope_kind='server' AND scope_id=$1`, serverID).Scan(&result.ServerHealthPPM, &result.ServerCapacity); err != nil {
 		return HealthSnapshot{}, err
 	}
-	healthPPM, err := commons.EffectiveHealthPPM(catalog, 0, result.CohortHealthPPM, result.ServerHealthPPM, false)
+	guildPPM, hasGuild := int64(0), false
+	if p.guildHealth != nil {
+		resolvedGuildPPM, resolvedHasGuild, err := p.guildHealth.FounderGuildHealthPPM(ctx, founderID, constantsHash)
+		if err != nil {
+			return HealthSnapshot{}, err
+		}
+		guildPPM, hasGuild = resolvedGuildPPM, resolvedHasGuild
+	}
+	healthPPM, err := commons.EffectiveHealthPPM(catalog, guildPPM, result.CohortHealthPPM, result.ServerHealthPPM, hasGuild)
 	if err != nil {
 		return HealthSnapshot{}, err
 	}

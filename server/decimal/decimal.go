@@ -439,6 +439,20 @@ func (d Decimal) toFloat64() float64 {
 	return value
 }
 
+// Int64Exact crosses from the continuous Decimal domain into an exact
+// discrete count only when the value is already an integer in the shared safe
+// range. Callers must choose rounding before invoking it.
+func (d Decimal) Int64Exact() (int64, bool) {
+	if !d.IsStateValue() {
+		return 0, false
+	}
+	value := d.toFloat64()
+	if math.Trunc(value) != value || value < -jsMaxInteger || value > jsMaxInteger {
+		return 0, false
+	}
+	return int64(value), true
+}
+
 // Cmp returns -1, 0, or 1 according to d's ordering relative to other. It
 // returns NaN when either operand is NaN.
 func (d Decimal) Cmp(other Decimal) float64 {

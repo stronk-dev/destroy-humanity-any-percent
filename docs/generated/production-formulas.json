@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "production_rate": "sum_generators(count * base_rate * product(multiplier_slots))",
   "multiplier_slot_order": [
     "upgrades",
@@ -12,7 +12,7 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "6e9d0a6cfcecb52d258bbfaf44dd05717d7fa29c24702cfa8799cf118b0f18a9",
+  "source_fingerprint": "4f74fbb3d255ec64df4bf65f265287883f05e1ca53003adcca36d844f1165832",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
@@ -41,5 +41,18 @@
     "npc_weight_ppm": 500000,
     "npc_compliance_ppm": 750000,
     "population_tolerance_ppm": 100
+  },
+  "guild": {
+    "tithe": "xp_delta = floor((progress_delta_ppm * guild_tithe_ppm + carry_ppm) / 1000000); persist remainder",
+    "health": "clamp(1000000 * window_xp / (active_founders * guild_xp_target_per_founder), 0, 1000000)",
+    "clearing": "ordered one-pass allocation of floor(stock_units * clearing_rate_ppm / 1000000), capped by intake and stock headroom, no redistribution",
+    "stock_consumption": "1 + consumed_this_window * consumption_bonus_ppm_per_unit / 1000000",
+    "guild_tithe_ppm": 20000,
+    "guild_xp_target_per_founder": 250000,
+    "clearing_rate_ppm": 500000,
+    "npc_exchange_ppm": 250000,
+    "stock_intake_cap": 120,
+    "consumption_bonus_ppm_per_unit": 0,
+    "clearing_interval_ms": 300000
   }
 }

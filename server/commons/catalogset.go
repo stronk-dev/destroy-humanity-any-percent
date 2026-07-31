@@ -22,3 +22,11 @@ func (set CatalogSet) CompactCohortTarget(constantsHash string) (int, bool) {
 	}
 	return catalog.CohortTargetSize, true
 }
+
+func (set CatalogSet) GuildHealthWindowMS(constantsHash string) (int64, bool) {
+	catalog, ok := set.ResolveCommons(constantsHash)
+	if !ok {
+		return 0, false
+	}
+	return catalog.SolidarityWindowMS, true
+}
