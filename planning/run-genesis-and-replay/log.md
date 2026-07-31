@@ -93,3 +93,42 @@ were materialized, so it was an undeclared behavioral input and contradicted the
 contract. The boundary now constructs its own collector and returns invariant reports alongside
 state/receipt/events; the live service forwards those reports to metrics after the deterministic
 transition. Both ordinary and terminal entry points now have exactly four data arguments.
+
+## 2026-07-31 — independent review: RA/RB Go landing (21be3eb..ec872ec)
+
+**Verdict: the reroute itself is APPROVED — RB's same-code-by-construction promise is real and
+verified to an unusual depth** (every non-test transition entry accounted for; zero ambient reads
+in the boundary — no time.Now anywhere in transition code, PRNG fully state/command-derived;
+baselines byte-untouched; C1–C5/C7/C8 verified with evidence including terminal receipt+event
+byte/order parity against live DB rows; hooks closed BY CONSTRUCTION — the extras registration
+surface was deleted outright; ec872ec's self-caught fifth-argument removal honestly recorded).
+**Two MEDIUMs must land before genesis storage; rulings below.**
+
+1. **MEDIUM (verified first-hand) — run_log is mutable at the SQL layer**: 00030's trigger is
+   INSERT-only and run_log has no `reject_immutable_change` at all — `UPDATE run_log SET
+   replay_inputs=NULL` launders tampering into a benign legacy `log_gap` verdict. **Fix: one
+   `BEFORE UPDATE OR DELETE` immutability trigger on run_log** (the same function every other
+   forensic table uses). C6's letter was met; its premise wasn't.
+2. **MEDIUM (verified first-hand) — the founder/catalog coherence guard was dropped in the
+   reroute**: the old fail-closed `founder hash == company hash` check survives only in
+   now-dead-code `afterPrestigeTransition` (zero callers); the live path builds the founder carry
+   uncheckedand freezes it into replay_inputs — the mixed-catalog class RA exists to kill becomes
+   UNAUDITABLE instead of impossible. **Ruling C5a: (a) Handle re-adds the fail-closed equality
+   check before constructing the carry; (b) the C5 carry view gains `founder_constants_hash`,
+   asserted equal to the bundle hash INSIDE ApplyLogged** — live fails closed AND replay audits
+   the same invariant. Delete the dead function.
+3. **Rulings on the LOWs:** **C4a** — the settlement-batch validator accepts well-formed non-empty
+   batches now (the contract says representable; production writes empty until GD5 composition —
+   a validator that contradicts the schema is re-versioning debt). **C4b** — the `route_hint`
+   resolved arm is DELETED (founder-scope intents are non-replayable by design; a dead union arm
+   would mislead the TS port). **RB-1** — prestige-less company-scope services are no longer
+   legal: `NewService` requires the prestige runtime (the permissive construction is a trap that
+   hard-errors on cross_gate). **C3a** — `CatalogBundle.valid` recomputes the constants hash over
+   the six artifact bytes and compares to the label (the relabeling the repo's own test performs
+   must be impossible in production); the catalog_artifacts-backed resolver lands with
+   composition. **RB-2** — `FactionStockResource` is derived inside ApplyLogged from
+   state.FactionID + bundle (restored-revision replays currently diverge on a receipt field).
+   Fix the dead contribution-freeze assignment for invalid intents while there.
+4. NOTES accepted as recorded: kernel-only union closure at the persistence layer (intentional
+   layering; the save-layer writer is single); C6 reader clause lands with the verifier; the
+   mid-round shape change needed no version bump (no producer existed).
