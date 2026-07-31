@@ -158,7 +158,11 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	event := save.EventRecord{EventID: "018f0000-0000-4000-8000-000000000301", StreamID: "018f0000-0000-7000-8000-000000000301", OwnerID: founderID,
+	eventID, err := newGuildID(now.Add(3 * time.Minute))
+	if err != nil {
+		t.Fatal(err)
+	}
+	event := save.EventRecord{EventID: eventID, StreamID: "018f0000-0000-7000-8000-000000000301", OwnerID: founderID,
 		Revision: 2, Kind: save.EventGuildTitheAccrued, IntentID: "018f0000-0000-7000-8000-000000000302", ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", OccurredAt: now,
 		Payload: json.RawMessage(`{"founder_id":"` + founderID + `","run_id":{"company_stream_id":"018f0000-0000-7000-8000-000000000301","run_seq":1},"progress_delta_ppm":500000,"xp_delta":10}`)}
 	if err := projector.Project(ctx, []save.EventRecord{event, event}); err != nil {
