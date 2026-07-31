@@ -4,7 +4,7 @@
 - **RFC:** `rfc/run-genesis-and-replay.md`
 - **Started:** 2026-07-31
 
-1. [ ] Accept an executable RA/RB contract: close every live transition input, terminal Exit
+1. [x] Accept an executable RA/RB contract: close every live transition input, terminal Exit
    dependency, hook-order rule, and legacy-row migration semantic before creating the immutable
    replay schema.
 2. [ ] Add the versioned replay-input wire object and run-log persistence, then refactor the live

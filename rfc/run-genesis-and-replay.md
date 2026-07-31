@@ -1,6 +1,6 @@
 # RFC: Run Genesis & Replay Verification
 
-- **Status:** draft — DESIGN-GAPs
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-30
 - **Design refs:** `design/05 §6`, `design/08 §6` (verification-is-replay, shipped validator), `design/research/speedrun-governance.md`
@@ -195,6 +195,26 @@ Solidarity and emits events.
 unregistered extras in replayable production, and grow a closed hook-kind registry by RFC. The
 same ordered registry constructs live Go and replay Go; TS implements the identical order.
 
+## Owner ruling on C1–C8 (2026-07-31)
+
+**All eight proposed contracts are ACCEPTED as written and are now normative**, with one addition:
+
+- **C5's open question is ruled: cross-run Founder verification remains a non-goal** (R1's stance
+  stands). The founder-carry view in the terminal `resolved` arm exists so the Exit receipt —
+  including the next-run snapshot it embeds — reproduces byte-for-byte; the receipt comparison
+  therefore covers every founder-DERIVED output. The Founder stream's own integrity remains the
+  audit surface of its events and log; verifying Founder mutations end-to-end would require a
+  founder genesis + founder log and is a successor RFC if the need ever materializes.
+- C7 is confirmed in its strong form: `ApplyLogged` returns `(state', receipt, events)` and replay
+  compares event bytes AND order against the immutable `events` rows — the guild rounds proved
+  event drift is a real, silent corruption channel; receipt-only parity is insufficient.
+- C8's declared Phase-0 order **Prestige → faction → Guild → Commons** also discharges the
+  faction-round LOW ("pin accrual-hook chain order"); the closed hook registry grows by RFC like
+  every other registry.
+
+RA/RB are amended by these contracts wherever they conflict; the RA `replay_inputs` schema version
+starts at the post-C1–C8 shape (there is no pre-C1 producer to preserve).
+
 ## Acceptance criteria
 
 1. Genesis invariants: every pinned run has exactly one genesis, byte-identical to its first
@@ -221,3 +241,4 @@ same ordered registry constructs live Go and replay Go; TS implements the identi
 - 2026-07-30: created (draft) — closes the initial-run-state DESIGN-GAP; completes L1/L2/L4.
 - 2026-07-30: Codex bounce answered — RA (replay_inputs record: payload=said, inputs=resolved, receipt=happened), RB (ApplyLogged as the owned shared-kernel boundary the LIVE path itself calls; implementation order RA/RB → genesis → verifier).
 - 2026-07-31: live-surface acceptance pass found C1–C8: command identity, evaluation mode, artifact bundle, per-intent resolved inputs, terminal Founder carry, legacy NULL semantics, event parity, and hook-order closure remain owner decisions before RA/RB can be persisted.
+- 2026-07-31: owner ruling — all eight proposals accepted as normative; C5's Founder question ruled (cross-run verification stays a non-goal; the carry view exists for receipt byte-parity); C7 confirmed strong-form; C8 discharges the hook-order LOW.

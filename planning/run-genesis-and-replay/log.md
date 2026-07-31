@@ -32,3 +32,14 @@ the live engine yet. The gaps are source-demonstrated, not speculative:
 
 The RFC now carries C1–C8 owner decisions with recommended executable shapes. No code schema was
 improvised because changing any of these answers changes persisted replay meaning.
+
+## 2026-07-31 — C1–C8 accepted; RA/RB implementation authorized
+
+The owner accepted all eight proposed contracts as normative. Cross-run Founder mutation
+verification remains a named non-goal; the terminal founder-carry input exists only to reproduce
+the Exit receipt and embedded next-run snapshot. Event bytes and order are part of replay parity,
+and the replayable Phase-0 accrual chain is closed in Prestige → faction → Guild → Commons order.
+The replay-input schema starts directly at this accepted shape because no earlier producer exists.
+
+The RFC is now implementing. The landing order remains: immutable replay inputs and the shared
+`ApplyLogged` live/replay boundary first, then run genesis, then verification and projection.
