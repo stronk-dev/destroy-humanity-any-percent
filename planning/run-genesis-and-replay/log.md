@@ -1,0 +1,34 @@
+# Run Genesis & Replay Verification — running log
+
+## 2026-07-31 — acceptance pass: RA/RB bounced with executable blockers
+
+Guild archived first as required (`06106c9`). The Run Genesis RFC and every current logged
+transition call site were then read against RA/RB. The storage/genesis half is coherent, but the
+declared closed `replay_inputs` object and four-argument `ApplyLogged` boundary cannot reproduce
+the live engine yet. The gaps are source-demonstrated, not speculative:
+
+1. `canonical_payload` excludes `intent_id`, while receipts/events require it; `State` also lacks
+   stream/owner identity and the current revision/run-log sequence. `ApplyLogged` receives none of
+   those values.
+2. `EvaluationMode` changes accrual efficiency/caps but is absent from all four arguments and RA.
+3. “catalog” is singular, while transitions consume immutable economy, Routes, Commons,
+   Prestige, faction, and Guild artifacts under one constants hash.
+4. The canonical hook chain reads a Commons participation weight from a projection, Guild
+   membership through provider output, and future clearing slices; only a nullable Commons
+   modifier is declared. The Commons weight alone changes persisted Solidarity and receipt events.
+5. Cross-gate offer generation consumes the Founder snapshot and declined-offer count. Terminal
+   Exit consumes Founder state, executed-route projection facts, current constants hash, and
+   produces a next-run receipt whose snapshot depends on Founder carry. R1 explicitly declines a
+   Founder genesis, so the current terminal receipt cannot be recomputed from the four arguments.
+6. RA says `replay_inputs NOT NULL` and “no backfill / old rows verify log_gap” simultaneously.
+   Postgres needs the exact legacy representation and new-write invariant before the migration is
+   immutable.
+7. RB returns only `(state,receipt)`, but the live owned result is `IntentDecision`/`ExitDecision`
+   including events; the contract must say whether logged event parity is verified or deliberately
+   outside the shared transition.
+8. The hook-order test currently pins only Prestige→faction and does not name Guild→Commons or a
+   closed extension registry. Replay determinism cannot depend on ServiceOption construction
+   order.
+
+The RFC now carries C1–C8 owner decisions with recommended executable shapes. No code schema was
+improvised because changing any of these answers changes persisted replay meaning.

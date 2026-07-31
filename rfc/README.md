@@ -18,7 +18,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
-| [Run Genesis & Replay](run-genesis-and-replay.md) | implementing | Leaderboards / Prestige / Account |
+| [Run Genesis & Replay](run-genesis-and-replay.md) | draft — DESIGN-GAPs C1–C8 | Leaderboards / Prestige / Account |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 

@@ -1,6 +1,6 @@
 # RFC: Run Genesis & Replay Verification
 
-- **Status:** implementing
+- **Status:** draft — DESIGN-GAPs
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-30
 - **Design refs:** `design/05 §6`, `design/08 §6` (verification-is-replay, shipped validator), `design/research/speedrun-governance.md`
@@ -111,6 +111,90 @@ Sequencing note: RA/RB land FIRST (a refactor of the live engine + log schema), 
 storage, then the verifier — the bounce's "storage alone would not close the gap" is accepted and
 built into the implementation order.
 
+## DESIGN-GAPs blocking acceptance (live-surface pass, 2026-07-31)
+
+RA/RB name the right ownership boundary, but their declared closed inputs cannot represent values
+the shipped transition demonstrably consumes. Because `replay_inputs` becomes immutable history,
+these are owner contracts, not implementation freedom:
+
+### C1 — command/execution identity
+
+`canonical_payload` deliberately excludes `intent_id`; Company `State` contains neither
+`stream_id` nor `owner_id`; receipts/events also consume current revision and terminal
+`run_log_seq`. Specify the exact execution envelope available inside `ApplyLogged`.
+
+**Proposed:** RA adds `command: {intent_id, company_stream_id, founder_id, revision, run_seq,
+run_log_seq}` with exact UUID/safe-integer validation. These are authoritative coordinates, not
+player inputs. The four arguments remain unchanged because the envelope is inside `replayInputs`.
+
+### C2 — evaluation mode
+
+`online|offline` changes accrual efficiency, cap, and Compute Credits. It is absent from RA.
+
+**Proposed:** required `evaluation_mode: "online"|"offline"` beside `evaluated_at_ms`; clock
+validation compares that instant to the state cursor inside `ApplyLogged`.
+
+### C3 — catalog means an artifact bundle
+
+The live path consumes economy, Routes, Commons, Prestige, faction, and Guild artifacts under the
+same constants hash. A singular economy catalog cannot apply several accepted intent kinds.
+
+**Proposed:** RB's third argument is a closed `CatalogBundle` resolved from exact
+`catalog_artifacts`, with all six typed loaders and a required shared constants hash. Missing or
+extra artifact kinds fail before transition.
+
+### C4 — closed per-intent resolved policy
+
+The proposed generic policy object omits live inputs: Commons participation weight, Guild
+settlement batch/membership, compact tithe band, and the exact resolved values used by offer and
+route paths. `registry_decisions: [...]` has no item schema.
+
+**Proposed:** replace `policy` with a discriminated `resolved` union keyed by intent kind. Every
+arm has exact keys; common accrual keys are Commons weight (nullable), ordered Guild settlement
+batch (possibly empty), contributions, and route-context version. Offer/cross-gate arms add the
+closed offer inputs. Empty arrays remain explicit. New arms require a new replay-input version.
+
+### C5 — terminal Exit and Founder carry
+
+An Exit receipt contains the next Company snapshot. Its construction consumes Founder
+Reputation/Network/Advisor state, executed-route projection facts, and the server's current hash;
+R1 explicitly does not snapshot Founder state. The ended run therefore cannot reproduce its final
+logged receipt from the stated four arguments.
+
+**Proposed:** terminal `resolved` carries the minimal closed Founder carry view consumed by
+`ComputeTerms`/`NewRunState`, executed route IDs, selected exit terms inputs, and next constants
+hash. `ApplyLogged` still computes both the final current-run state and next-run snapshot; it does
+not log the resulting receipt or next state as an input. Specify whether Founder mutation itself
+is verified or remains the stated cross-run non-goal.
+
+### C6 — pre-column rows versus NOT NULL
+
+“No backfill; pre-column runs return `log_gap`” conflicts literally with adding a table-level
+`NOT NULL` column to existing rows.
+
+**Proposed:** historical rows retain SQL NULL; a database trigger/check rejects NULL on every new
+insert after the migration. The reader maps legacy NULL to `log_gap`. Archive storage preserves
+the same nullable legacy marker.
+
+### C7 — events are transition output
+
+The live shared result includes events, but RB returns only state and receipt. Silent event drift
+would corrupt projections while receipt parity stayed green.
+
+**Proposed:** `ApplyLogged` returns `(state', receipt, events)` with canonical event envelopes;
+run-log replay compares receipt bytes and event bytes/order against immutable `events` rows. If
+events are intentionally excluded, name a separate owned event verifier and its join key.
+
+### C8 — accrual-hook order and extension closure
+
+The shipped chain is constructed as Prestige → faction → optional Guild → ServiceOption extras;
+only the first two are tested. Commons is currently an unnamed extra even though it mutates saved
+Solidarity and emits events.
+
+**Proposed:** declare and test the Phase-0 order Prestige → faction → Guild → Commons, forbid
+unregistered extras in replayable production, and grow a closed hook-kind registry by RFC. The
+same ordered registry constructs live Go and replay Go; TS implements the identical order.
+
 ## Acceptance criteria
 
 1. Genesis invariants: every pinned run has exactly one genesis, byte-identical to its first
@@ -136,3 +220,4 @@ built into the implementation order.
 
 - 2026-07-30: created (draft) — closes the initial-run-state DESIGN-GAP; completes L1/L2/L4.
 - 2026-07-30: Codex bounce answered — RA (replay_inputs record: payload=said, inputs=resolved, receipt=happened), RB (ApplyLogged as the owned shared-kernel boundary the LIVE path itself calls; implementation order RA/RB → genesis → verifier).
+- 2026-07-31: live-surface acceptance pass found C1–C8: command identity, evaluation mode, artifact bundle, per-intent resolved inputs, terminal Founder carry, legacy NULL semantics, event parity, and hook-order closure remain owner decisions before RA/RB can be persisted.
