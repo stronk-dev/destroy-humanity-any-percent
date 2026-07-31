@@ -138,8 +138,10 @@ Normalize: NFKC → lowercase → trim → collapse internal whitespace runs to 
 `[a-z0-9 _-]`, length 3–24 after normalization, no leading/trailing space/`-`/`_`, at least one
 `[a-z0-9]`. Uniqueness compares the NORMALIZED form among non-disbanded guilds. Denylist: injected
 `NameValidator` interface (fail-closed: nil validator ⇒ `create_guild` rejects `name_policy`);
-baseline list committed at `moderation/guild-names.txt` (substring match on the normalized form),
-deployment may extend, never shrink below the committed file. Rejection category: `name_policy`.
+baseline list committed at `moderation/guild-names.txt`; **matching (GD1-1, 2026-07-31) runs
+against both the normalized form and the normalized form with `[ _-]` stripped** — separator
+padding does not evade. Denylist entries validate under a laxer rule (≥2 chars, `[a-z0-9]` only).
+Deployment may extend, never shrink below the committed file. Rejection category: `name_policy`.
 
 ### GD2 — Tithe units (exact, cross-tier fair)
 
@@ -158,8 +160,10 @@ contributes zero — XP never decreases from production.
 1_000_000)` — per-capita, population-invariant by construction. `window_xp` = guild_xp accrued in
 the trailing commons health window (the same window the cohort term uses);
 `guild_xp_target_per_founder = 250_000` (new guilds-catalog literal, provisional, epoch protocol).
-`active_founders` = accounts with an active membership AND ≥1 accrual evaluation in the window
-(the cohort activity rule, reused). Zero active founders ⇒ term contributes 0 (the compact's
+`active_founders` = accounts with an active membership AND ≥1 accrual EVALUATION in the window
+(the cohort activity rule, reused) — **ruling GD3-1 (2026-07-31): evaluation, not XP production;
+the projector records activity on every member evaluation regardless of progress** (the narrower
+implemented definition inflated H_guild by excluding parked members from the denominator). Zero active founders ⇒ term contributes 0 (the compact's
 guildless substitution never applies to members — a dead guild is a real signal).
 
 ### GD4 — Account deletion
@@ -207,6 +211,21 @@ that identity is specified; the clearing writer/results and pure application ker
 and tested. This is not delegated to Run Genesis: RA records resolved inputs but cannot repair an
 ambiguous authoritative watermark.
 
+### GD5a — Ruling (2026-07-31)
+
+The company watermark is the PAIR `(guild_id, boundary_seq)` (save-version bump; migration maps
+the existing bare seq to `(current guild at migration, seq)` — correct because pre-v-next states
+can only have earned watermarks in their current guild). Application rule: a clearing result is
+applied iff `result.guild_id == watermark.guild_id AND result.boundary_seq > watermark.seq`. On
+membership change (join, or first evaluation where the active guild differs from the watermark's),
+the watermark RESETS FORWARD to `(new_guild_id, latest computed boundary_seq for that guild at
+that instant)` — never backward, never cross-guild. This is safe by construction: GC allocations
+only ever include members present in the boundary's committed snapshot, so a joiner appears first
+in post-join boundaries; forfeiting pre-join boundaries is not a loss, it is the definition.
+Leaving a guild leaves the watermark in place (inert until the next membership). AC: the
+guild-switch fixture from the gap report (boundary 10,000 → other guild boundary 5) applies the
+new guild's boundaries 6.. and never re-applies or cross-applies.
+
 ## Changelog
 
 - 2026-07-30: created (draft) — the guild owner contract Commons Onboarding blockers #1/#5 named; unblocks the transport guild resolver.
@@ -215,3 +234,5 @@ ambiguous authoritative watermark.
 - 2026-07-30: GD1–GD6 answered with executable contracts (name policy; tier-progress tithe units; per-capita Health; deletion succession; projection-side clearing under the RA replay-input rule; canonical slot ordering).
 - 2026-07-30: complete-diff review APPROVED with findings (see planning log); ruling GC-1 adopts the implemented headroom-eligibility clearing semantics; AC6 explicitly parked under composition by name.
 - 2026-07-31: implementation re-review found GD5a: a per-guild sequence needs its guild identity in the company watermark (or a global sequence); composition remains fail-closed pending owner ruling.
+- 2026-07-31: GD5a ruled — watermark is the (guild_id, boundary_seq) pair with forward-only reset on membership change; migration maps bare seqs to the current guild.
+- 2026-07-31: runtime-round review — F1 HIGH blocks archival (closed-row deletion trigger); rulings GD3-1 (activity = evaluation) and GD1-1 (separator-stripped denylist matching) recorded.

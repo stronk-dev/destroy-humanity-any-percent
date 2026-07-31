@@ -140,3 +140,45 @@ is called out in the session summary.
 - Account deletion now explicitly fails closed when an active Guild membership exists but the
   transactional Guild participant was not attached; the database trigger independently rejects
   an active-history nulling attempt.
+
+## 2026-07-31 — independent review: guild runtime round (727676d..f9d1b9a)
+
+Mint lane (reviewer, direct): epoch-4 mint protocol-compliant, hash reproduced at HEAD, changelog
+in the mint commit. GD5a ruled in the RFC (watermark = (guild_id, boundary_seq) pair, forward-only
+reset). Runtime lane: adversarial with live Postgres, F1 re-verified first-hand in the trigger SQL.
+
+**Verdict: NOT archivable yet — one HIGH blocks. Everything else is approved with rulings.**
+
+All five prior-review fixes verified closed with evidence (TOCTOU re-reads post-lock in every
+gated arm; self-demotion evented; per-member `member_left` on sweep AND manual disband; guild-first
+order unified; server-generated ids with replay identity from the stored receipt). GD1/GD2/GD5/
+GD6/save-v11 verified to contract, including: the shipped-evaluator tithe delta with carry
+round-trip, event_id-keyed idempotent XP projection with no double-count path, GC-1 kernel
+byte-matching the ruling, the set-equality snapshot hardening, the undeclared-source skip that
+would otherwise have bricked pre-guild-epoch members, and honest fail-closed GD5a recording.
+
+Findings and rulings:
+
+1. **HIGH (blocks archival) — account deletion is bricked for any account with a CLOSED guild
+   membership row** (verified first-hand: 00028's trigger raises on any update to a closed row —
+   `OLD.left_at IS NOT NULL` is an unconditional arm — so the FK cascade's `account_id → NULL`
+   aborts the deletion; proven live by the review). The shipped test only covers an active-row
+   deletion. **Fix contract: the trigger admits exactly one closed-row transition —
+   `account_id → NULL` with every other column unchanged**; regression fixture = join, leave,
+   rejoin elsewhere, leave, delete account (two closed rows + one active).
+2. **MEDIUM→ruling GD3-1 — the SPEC stands: "active" = ≥1 accrual EVALUATION in window,** not
+   ≥1 whole XP produced (implemented). The implemented narrowing inflates H_guild by dropping
+   parked/low-progress members from the denominator — player-favorable drift of a Commons health
+   input, exactly what the Compact laws forbid. The projector writes activity on every member
+   evaluation regardless of XP; fixture: 3 evaluating members, 1 producing → denominator 3.
+3. **LOW→ruling GD1-1 — denylist matching also strips separators**: match against the normalized
+   form AND the form with `[ _-]` removed (`a-dmin` falls). Denylist entries validate under a
+   laxer rule (≥2 chars, charset `[a-z0-9]` only) so short terms are deniable.
+4. LOW batch: deletion emits no presence to `guild:{id}` (add `insertPresence` in the deletion
+   participant, same tx); residual cross-guild set_role deadlock (reject `targetGuild != guildID`
+   from an unlocked read BEFORE locking the target row); clearing replay-after-membership-change
+   errors instead of no-oping (order the seq≤last check first) and committed-seq retries with
+   different snapshots should hard-fail, not silently no-op (compare snapshot hash); orphaned
+   applications/invitations on disband/sweep (close them in the same tx); the F7 test debt now
+   two rounds old — per-arm rejection suite, concurrent leader-uniqueness, lock-order regression —
+   lands with the F1 fix round, no further deferral.
