@@ -1,4 +1,4 @@
 # Baseline impersonation and protected-service terms. Deployments may append.
 admin
 moderator
-official cloud clicker
+officialcloudclicker

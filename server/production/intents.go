@@ -1081,6 +1081,7 @@ func wireSnapshot(state *save.State) map[string]any {
 		"stock_resource": nullableString(state.FactionStockResource), "stock_units": state.StockUnits,
 		"stock_progress_ms": state.StockProgressMS, "consumed_stock_units": state.ConsumedStockUnits,
 		"guild_tithe_carry_ppm": state.GuildTitheCarryPPM, "guild_boundary_seq": state.GuildBoundarySeq,
+		"guild_boundary_guild_id":     nullableString(state.GuildBoundaryGuildID),
 		"guild_consumed_window_units": state.GuildConsumedWindow,
 	}
 }

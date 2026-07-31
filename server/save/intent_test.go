@@ -98,6 +98,29 @@ func TestValidateFactionEventPayloads(t *testing.T) {
 	}
 }
 
+func TestValidateGuildActivityEventPayloads(t *testing.T) {
+	run := `{"company_stream_id":"11111111-1111-4111-8111-111111111111","run_seq":1}`
+	founder := `"22222222-2222-4222-8222-222222222222"`
+	valid := []EventWrite{
+		{Kind: EventGuildTitheAccrued, SchemaVersion: 1, Payload: json.RawMessage(`{"founder_id":` + founder + `,"run_id":` + run + `,"progress_delta_ppm":50,"xp_delta":1}`)},
+		{Kind: EventGuildActivityEvaluated, SchemaVersion: 1, Payload: json.RawMessage(`{"founder_id":` + founder + `,"run_id":` + run + `,"progress_delta_ppm":0,"xp_delta":0}`)},
+	}
+	for _, event := range valid {
+		if err := validateEventPayload(event); err != nil {
+			t.Fatalf("event %s: %v", event.Kind, err)
+		}
+	}
+	invalid := []EventWrite{
+		{Kind: EventGuildTitheAccrued, SchemaVersion: 1, Payload: json.RawMessage(`{"founder_id":` + founder + `,"run_id":` + run + `,"progress_delta_ppm":0,"xp_delta":0}`)},
+		{Kind: EventGuildActivityEvaluated, SchemaVersion: 1, Payload: json.RawMessage(`{"founder_id":` + founder + `,"run_id":` + run + `,"progress_delta_ppm":50,"xp_delta":1}`)},
+	}
+	for _, event := range invalid {
+		if err := validateEventPayload(event); !errors.Is(err, ErrInvalidStream) {
+			t.Fatalf("invalid event %s: %v", event.Kind, err)
+		}
+	}
+}
+
 func TestUUIDV7AndRequestHashGrammar(t *testing.T) {
 	if !uuidV7Pattern.MatchString(testIntentID) {
 		t.Fatal("valid UUIDv7 rejected")

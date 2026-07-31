@@ -69,6 +69,18 @@ func (service *Service) PrepareAccountDeletion(ctx context.Context, tx *sql.Tx, 
 		if err := setGuildRevision(ctx, tx, guildID, revision); err != nil {
 			return err
 		}
+		if err := insertPresence(ctx, tx, guildID, accountID, "left", revision, now); err != nil {
+			return err
+		}
+		var disbanded bool
+		if err := tx.QueryRowContext(ctx, `SELECT disbanded_at IS NOT NULL FROM guilds WHERE guild_id=$1`, guildID).Scan(&disbanded); err != nil {
+			return err
+		}
+		if disbanded {
+			if err := closePendingGuildRequests(ctx, tx, guildID, now); err != nil {
+				return err
+			}
+		}
 		if err := service.refreshFloorState(ctx, tx, guildID, now); err != nil {
 			return err
 		}

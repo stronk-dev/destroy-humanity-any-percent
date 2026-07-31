@@ -55,6 +55,7 @@ const (
 	EventIncorporated              EventKind = "incorporated"
 	EventFactionStockSaturated     EventKind = "faction_stock_saturated"
 	EventGuildTitheAccrued         EventKind = "guild_tithe_accrued"
+	EventGuildActivityEvaluated    EventKind = "guild_activity_evaluated"
 )
 
 type EventWrite struct {
@@ -605,7 +606,7 @@ func validateEventPayload(event EventWrite) error {
 			!mechanicalIDPattern.MatchString(payload.StockResource) || payload.StockCap <= 0 || payload.StockCap > decimal.MaxExactInteger {
 			return fmt.Errorf("%w: invalid faction_stock_saturated payload", ErrInvalidStream)
 		}
-	case EventGuildTitheAccrued:
+	case EventGuildTitheAccrued, EventGuildActivityEvaluated:
 		var payload struct {
 			FounderID        string     `json:"founder_id"`
 			RunID            routeRunID `json:"run_id"`
@@ -613,8 +614,10 @@ func validateEventPayload(event EventWrite) error {
 			XPDelta          int64      `json:"xp_delta"`
 		}
 		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) ||
-			!validRouteRunID(payload.RunID) || payload.ProgressDeltaPPM <= 0 || payload.ProgressDeltaPPM > 1_000_000 ||
-			payload.XPDelta <= 0 || payload.XPDelta > decimal.MaxExactInteger {
+			!validRouteRunID(payload.RunID) || payload.ProgressDeltaPPM < 0 || payload.ProgressDeltaPPM > 1_000_000 ||
+			payload.XPDelta < 0 || payload.XPDelta > decimal.MaxExactInteger ||
+			(event.Kind == EventGuildTitheAccrued && payload.XPDelta == 0) ||
+			(event.Kind == EventGuildActivityEvaluated && payload.XPDelta != 0) {
 			return fmt.Errorf("%w: invalid guild_tithe_accrued payload", ErrInvalidStream)
 		}
 	default:

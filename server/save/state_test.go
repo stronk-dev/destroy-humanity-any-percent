@@ -170,6 +170,7 @@ func TestStateV8MigratesCollapsedOfflineAccumulator(t *testing.T) {
 	delete(previous, "guild_tithe_carry_ppm")
 	delete(previous, "guild_boundary_seq")
 	delete(previous, "guild_consumed_window_units")
+	delete(previous, "guild_boundary_guild_id")
 	v8, err := json.Marshal(previous)
 	if err != nil {
 		t.Fatal(err)
@@ -191,6 +192,48 @@ func TestStateV8MigratesCollapsedOfflineAccumulator(t *testing.T) {
 	}
 	if value, ok := migrated["collapsed_offline_ms"]; !ok || value != float64(0) {
 		t.Fatalf("migrated collapsed_offline_ms=%v present=%v", value, ok)
+	}
+}
+
+func TestGuildWatermarkV12PairAndLegacyMigration(t *testing.T) {
+	state := testState(t)
+	state.GuildBoundaryGuildID = "018f0000-0000-7000-8000-000000000012"
+	state.GuildBoundarySeq = 10_000
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err := RestoreState(encoded, CurrentVersion, stateCatalog(t), economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if restored.GuildBoundaryGuildID != state.GuildBoundaryGuildID || restored.GuildBoundarySeq != 10_000 {
+		t.Fatalf("watermark=%q/%d", restored.GuildBoundaryGuildID, restored.GuildBoundarySeq)
+	}
+
+	var previous map[string]any
+	if err := json.Unmarshal(encoded, &previous); err != nil {
+		t.Fatal(err)
+	}
+	delete(previous, "guild_boundary_guild_id")
+	v11, err := json.Marshal(previous)
+	if err != nil {
+		t.Fatal(err)
+	}
+	legacy, err := RestoreState(v11, 11, stateCatalog(t), economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if legacy.GuildBoundaryGuildID != "" || legacy.GuildBoundarySeq != 10_000 {
+		t.Fatalf("legacy watermark=%q/%d", legacy.GuildBoundaryGuildID, legacy.GuildBoundarySeq)
+	}
+	if _, err := EncodeState(legacy); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("unresolved legacy watermark encoded: %v", err)
+	}
+
+	state.GuildBoundaryGuildID = ""
+	if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("unpaired current watermark encoded: %v", err)
 	}
 }
 
@@ -281,6 +324,7 @@ func TestSaveMigrationCorpus(t *testing.T) {
 			want.(map[string]any)["guild_tithe_carry_ppm"] = float64(0)
 			want.(map[string]any)["guild_boundary_seq"] = float64(0)
 			want.(map[string]any)["guild_consumed_window_units"] = float64(0)
+			want.(map[string]any)["guild_boundary_guild_id"] = nil
 			if !equalJSON(got, want) {
 				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV5)
 			}

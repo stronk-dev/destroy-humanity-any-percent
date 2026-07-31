@@ -10,9 +10,10 @@
    and exchange persistence with migrations and database invariants.
 3. [x] Implement the closed account-scoped lifecycle intent surface with C1-compatible exact
    schemas, idempotency, typed rejections, transactional member/leader/cap enforcement, and events.
-4. [ ] Integrate server-derived production tithe, deterministic GC clearing, the 0-ppm consumption
-   hook, NPC fallback, receipts, replay idempotency, and the canonical accrual boundary order. The
-   runtime/kernel is implemented; composition is blocked on GD5a watermark identity and RA inputs.
+4. [x] Integrate server-derived production tithe, deterministic GC clearing, the 0-ppm consumption
+   hook, NPC fallback, receipts, replay idempotency, and the canonical accrual boundary order.
+   Save v12 owns the guild-scoped watermark; scheduler composition and replay-input capture remain
+   the named Run Genesis/gameserver work rather than an alternate Guild implementation.
 5. [x] Replace the deny-all `guild:*` transport resolver with active-membership authorization and
    relay membership presence changes through the existing transactional outbox path.
 6. [x] Publish the shipped lifecycle/tithe/Health/exchange formulas and operations in canonical

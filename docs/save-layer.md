@@ -120,7 +120,10 @@ playability while excluding those historical runs from time ranking. V8 saves in
 `collapsed_offline_ms` to zero; V9 moves evicted offline-span durations into that exact integer
 accumulator so bounded history does not alter Attended Time. V10 adds null faction identity and
 zero stock state in both Company and Founder migration fixtures; Founder scope rejects any later
-faction leakage. The checked-in
+faction leakage. V11 adds the exact Guild tithe carry, clearing sequence, and consumed-window
+counter. V12 pairs that clearing sequence with its Guild UUID; a restored v11 bare sequence stays
+explicitly legacy until the Guild resolver binds it to the account's active membership, and cannot
+be re-encoded as a current save while unpaired. The checked-in
 `testdata/save-migrations.json` corpus fixes v1/v2 upgrades plus phase-matched, phase-mismatched,
 boundary, route-default, lying-v4, founder-v6, and company-v6 pre-timer cases; migrations never
 read the wall clock implicitly. Its `corpus_version` is metadata, not a save version. A separate

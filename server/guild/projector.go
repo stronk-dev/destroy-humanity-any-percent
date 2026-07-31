@@ -42,7 +42,7 @@ type tithePayload struct {
 
 func (projector *Projector) Project(ctx context.Context, events []save.EventRecord) error {
 	for _, event := range events {
-		if event.Kind == save.EventGuildTitheAccrued {
+		if event.Kind == save.EventGuildTitheAccrued || event.Kind == save.EventGuildActivityEvaluated {
 			if err := projector.projectTithe(ctx, event); err != nil {
 				return err
 			}
@@ -56,8 +56,10 @@ func (projector *Projector) projectTithe(ctx context.Context, event save.EventRe
 	decoder := json.NewDecoder(bytes.NewReader(event.Payload))
 	decoder.DisallowUnknownFields()
 	if decoder.Decode(&payload) != nil || decoder.Decode(&struct{}{}) != io.EOF || payload.FounderID != event.OwnerID ||
-		payload.RunID.CompanyStreamID != event.StreamID || payload.RunID.RunSeq < 1 || payload.ProgressDeltaPPM <= 0 ||
-		payload.ProgressDeltaPPM > 1_000_000 || payload.XPDelta <= 0 || payload.XPDelta > decimal.MaxExactInteger {
+		payload.RunID.CompanyStreamID != event.StreamID || payload.RunID.RunSeq < 1 || payload.ProgressDeltaPPM < 0 ||
+		payload.ProgressDeltaPPM > 1_000_000 || payload.XPDelta < 0 || payload.XPDelta > decimal.MaxExactInteger ||
+		(event.Kind == save.EventGuildTitheAccrued && payload.XPDelta == 0) ||
+		(event.Kind == save.EventGuildActivityEvaluated && payload.XPDelta != 0) {
 		return ErrInvalidTithe
 	}
 	windowMS, ok := projector.windows.GuildHealthWindowMS(event.ConstantsHash)
@@ -96,8 +98,10 @@ func (projector *Projector) projectTithe(ctx context.Context, event save.EventRe
 	}
 	windowStart := event.OccurredAt.UTC()
 	windowFloor := event.OccurredAt.Add(-time.Duration(windowMS) * time.Millisecond)
-	if _, err := tx.ExecContext(ctx, `UPDATE guilds SET guild_xp=guild_xp+$2,revision=revision+1 WHERE guild_id=$1`, guildID, appliedXP); err != nil {
-		return err
+	if appliedXP > 0 {
+		if _, err := tx.ExecContext(ctx, `UPDATE guilds SET guild_xp=guild_xp+$2,revision=revision+1 WHERE guild_id=$1`, guildID, appliedXP); err != nil {
+			return err
+		}
 	}
 	if _, err := tx.ExecContext(ctx, `INSERT INTO guild_activity_windows(guild_id,window_start,account_id,xp) VALUES($1,$2,$3,$4)
 		ON CONFLICT(guild_id,window_start,account_id) DO UPDATE SET xp=LEAST(9007199254740991,guild_activity_windows.xp+EXCLUDED.xp)`, guildID, windowStart, accountID, appliedXP); err != nil {
@@ -111,10 +115,12 @@ func (projector *Projector) projectTithe(ctx context.Context, event save.EventRe
 		ON CONFLICT(guild_id,window_start) DO UPDATE SET active_founders=EXCLUDED.active_founders,tithed_xp=EXCLUDED.tithed_xp`, guildID, windowStart, windowFloor); err != nil {
 		return err
 	}
-	payloadJSON, _ := json.Marshal(map[string]any{"xp_delta": appliedXP, "source_event_id": event.EventID})
-	if _, err := tx.ExecContext(ctx, `INSERT INTO guild_events(guild_id,revision,kind,actor_account,subject_account,intent_id,payload)
+	if appliedXP > 0 {
+		payloadJSON, _ := json.Marshal(map[string]any{"xp_delta": appliedXP, "source_event_id": event.EventID})
+		if _, err := tx.ExecContext(ctx, `INSERT INTO guild_events(guild_id,revision,kind,actor_account,subject_account,intent_id,payload)
 		VALUES($1,$2,'guild_xp_accrued',$3,$3,$4,$5)`, guildID, revision+1, accountID, nullableUUID(event.IntentID), payloadJSON); err != nil {
-		return err
+			return err
+		}
 	}
 	return tx.Commit()
 }

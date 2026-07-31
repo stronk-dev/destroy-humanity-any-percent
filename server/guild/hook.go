@@ -34,7 +34,7 @@ func (hook AccrualHook) AfterAccrual(state *save.State, _ *economy.Catalog, revi
 			member = true
 		}
 	}
-	if !member || result.ProgressDeltaPPM == 0 {
+	if !member {
 		return nil, nil
 	}
 	catalog, ok := hook.Catalogs.ResolveGuild(revision.ConstantsHash)
@@ -44,9 +44,6 @@ func (hook AccrualHook) AfterAccrual(state *save.State, _ *economy.Catalog, revi
 	numerator := result.ProgressDeltaPPM*catalog.GuildTithePPM + state.GuildTitheCarryPPM
 	xp := numerator / 1_000_000
 	state.GuildTitheCarryPPM = numerator % 1_000_000
-	if xp == 0 {
-		return nil, nil
-	}
 	if xp > decimal.MaxExactInteger {
 		return nil, ErrInvalidTithe
 	}
@@ -56,5 +53,9 @@ func (hook AccrualHook) AfterAccrual(state *save.State, _ *economy.Catalog, revi
 		"progress_delta_ppm": result.ProgressDeltaPPM,
 		"xp_delta":           xp,
 	})
-	return []save.EventWrite{{Kind: save.EventGuildTitheAccrued, SchemaVersion: 1, Payload: payload}}, nil
+	kind := save.EventGuildTitheAccrued
+	if xp == 0 {
+		kind = save.EventGuildActivityEvaluated
+	}
+	return []save.EventWrite{{Kind: kind, SchemaVersion: 1, Payload: payload}}, nil
 }

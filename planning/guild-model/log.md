@@ -182,3 +182,31 @@ Findings and rulings:
    applications/invitations on disband/sweep (close them in the same tx); the F7 test debt now
    two rounds old — per-arm rejection suite, concurrent leader-uniqueness, lock-order regression —
    lands with the F1 fix round, no further deferral.
+
+## 2026-07-31 — runtime remediation implementation
+
+- Fixed F1 at the database invariant: closed membership rows admit exactly the FK-owned
+  `account_id -> NULL` anonymization transition with identity, role, join, and leave facts
+  unchanged. The live-Postgres regression owns two closed histories plus one active history and
+  deletes the account successfully; all three rows survive anonymized.
+- Implemented GD3-1 with a distinct strict `guild_activity_evaluated` event for evaluations that
+  produce zero whole XP. Projection claims both event kinds idempotently, records every active
+  evaluator, and mutates XP/revision/feed only for positive XP. The three-evaluator/one-producer
+  Postgres fixture proves a denominator of three.
+- Implemented GD1-1 by validating additive denylist terms under the declared short alphanumeric
+  grammar and checking names both normally and with separators removed. `a-dmin` is a regression.
+- Closed the lifecycle seams: deletion writes transactional presence whose routing reference is
+  cleared after publication; disband and floor-sweep resolve pending applications/invitations;
+  cross-guild role targets are rejected before a foreign membership-row lock.
+- Clearing retries now compare a SHA-256 identity of the ordered committed member snapshot and
+  stock cap before live-membership validation. Exact retries no-op; a different snapshot at an
+  already-committed sequence hard-fails. Save v12 persists `(guild_id,boundary_seq)` and the
+  resolver implements the ruled legacy binding and forward reset. The 10,000 -> other-guild 5 ->
+  apply 6 fixture is green.
+- Promoted the two-round test debt: typed rejection coverage for every lifecycle arm, concurrent
+  leadership transfer proving one winner/one revision conflict and one active leader, and an
+  opposite-direction cross-guild lock-order regression. Focused Go, schema, formula generation,
+  and the full Docker-backed Postgres integration suite are green. The generated formula
+  fingerprint moved because `ApplySettlements` is a published executable authority.
+- The RFC stays `implementing`: this batch requires the mandated independent diff review before
+  archival. AC6's real socket/scheduler composition remains explicitly owned by gameserver work.

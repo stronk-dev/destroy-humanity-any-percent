@@ -72,9 +72,16 @@ func parseNameDenylist(data []byte) ([]string, error) {
 		if line == "" || strings.HasPrefix(line, "#") {
 			continue
 		}
-		normalized, ok := NormalizeGuildName(line)
-		if !ok {
+		normalized := strings.ToLower(norm.NFKC.String(line))
+		if len(normalized) < 2 {
 			return nil, ErrInvalidNamePolicy
+		}
+		for _, character := range normalized {
+			if character < 'a' || character > 'z' {
+				if character < '0' || character > '9' {
+					return nil, ErrInvalidNamePolicy
+				}
+			}
 		}
 		values = append(values, normalized)
 	}
@@ -89,8 +96,14 @@ func (validator *DenylistNameValidator) ValidateGuildName(value string) bool {
 	if !ok || normalized != value {
 		return false
 	}
+	stripped := strings.Map(func(character rune) rune {
+		if character == ' ' || character == '_' || character == '-' {
+			return -1
+		}
+		return character
+	}, normalized)
 	for _, blocked := range validator.blocked {
-		if strings.Contains(normalized, blocked) {
+		if strings.Contains(normalized, blocked) || strings.Contains(stripped, blocked) {
 			return false
 		}
 	}

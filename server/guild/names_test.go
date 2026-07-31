@@ -19,11 +19,11 @@ func TestNormalizeGuildNameAndDenylist(t *testing.T) {
 			t.Fatalf("NormalizeGuildName(%q)=(%q,true)", input, actual)
 		}
 	}
-	validator, err := NewDenylistNameValidator([]byte("admin\nmoderator\n"), []byte("house name\nadmin\n"))
+	validator, err := NewDenylistNameValidator([]byte("admin\nmod\n"), []byte("xx\nadmin\n"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if validator.ValidateGuildName("small admin club") || !validator.ValidateGuildName("small systems") {
+	if validator.ValidateGuildName("small admin club") || validator.ValidateGuildName("a-dmin club") || !validator.ValidateGuildName("small systems") {
 		t.Fatal("denylist substring policy mismatch")
 	}
 }

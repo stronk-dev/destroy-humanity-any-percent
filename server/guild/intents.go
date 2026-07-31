@@ -454,6 +454,16 @@ func (service *Service) apply(ctx context.Context, tx *sql.Tx, actor string, req
 		if guildID == "" {
 			return rejected("not_leader", request.AccountID), nil
 		}
+		// Reject cross-guild targets before taking their membership-row lock.
+		// Every guild mutation locks its guild first, so locking another guild's
+		// member here would reintroduce an AB-BA edge.
+		targetGuild, _, _, err := activeMembership(ctx, tx, request.AccountID, false)
+		if err != nil {
+			return mutationResult{}, err
+		}
+		if targetGuild != guildID {
+			return rejected("not_member", request.AccountID), nil
+		}
 		guildRevision, _, err := lockGuild(ctx, tx, guildID)
 		if err != nil {
 			return mutationResult{}, err
@@ -536,6 +546,9 @@ func (service *Service) apply(ctx context.Context, tx *sql.Tx, actor string, req
 			return mutationResult{}, err
 		}
 		if err := insertPresence(ctx, tx, guildID, actor, "left", guildRevision, now); err != nil {
+			return mutationResult{}, err
+		}
+		if err := closePendingGuildRequests(ctx, tx, guildID, now); err != nil {
 			return mutationResult{}, err
 		}
 		return applied(guildID), nil
@@ -631,8 +644,16 @@ func setGuildRevision(ctx context.Context, tx *sql.Tx, guildID string, revision 
 	return err
 }
 func insertPresence(ctx context.Context, tx *sql.Tx, guildID, accountID, kind string, revision int64, now time.Time) error {
-	_, err := tx.ExecContext(ctx, `INSERT INTO guild_presence_outbox(guild_id,account_id,kind,guild_revision,occurred_at,active_count)
-		SELECT $1,$2,$3,$4,$5,count(*) FROM guild_members WHERE guild_id=$1 AND left_at IS NULL`, guildID, accountID, kind, revision, now)
+	_, err := tx.ExecContext(ctx, `INSERT INTO guild_presence_outbox(guild_id,account_id,account_ref,kind,guild_revision,occurred_at,active_count)
+		SELECT $1,$2,$2,$3,$4,$5,count(*) FROM guild_members WHERE guild_id=$1 AND left_at IS NULL`, guildID, accountID, kind, revision, now)
+	return err
+}
+
+func closePendingGuildRequests(ctx context.Context, tx *sql.Tx, guildID string, now time.Time) error {
+	if _, err := tx.ExecContext(ctx, `UPDATE guild_applications SET resolved_at=$2,admitted=false WHERE guild_id=$1 AND resolved_at IS NULL`, guildID, now); err != nil {
+		return err
+	}
+	_, err := tx.ExecContext(ctx, `UPDATE guild_invitations SET resolved_at=$2,accepted=false WHERE guild_id=$1 AND resolved_at IS NULL`, guildID, now)
 	return err
 }
 func insertGuildEvent(ctx context.Context, tx *sql.Tx, guildID string, revision int64, kind, actor, subject, intentID string, payload map[string]any) error {

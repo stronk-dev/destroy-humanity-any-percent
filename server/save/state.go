@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	CurrentVersion           = 11
+	CurrentVersion           = 12
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
 )
@@ -68,6 +68,7 @@ type State struct {
 	StockProgressMS       int64
 	ConsumedStockUnits    int64
 	GuildTitheCarryPPM    int64
+	GuildBoundaryGuildID  string
 	GuildBoundarySeq      int64
 	GuildConsumedWindow   int64
 	// FactionStockResource is derived from FactionID and the pinned catalog at
@@ -195,6 +196,11 @@ type stateV11 struct {
 	GuildConsumedWindow int64 `json:"guild_consumed_window_units"`
 }
 
+type stateV12 struct {
+	stateV11
+	GuildBoundaryGuildID *string `json:"guild_boundary_guild_id"`
+}
+
 type rawExitOfferState struct {
 	OfferID     string          `json:"offer_id"`
 	ExitType    string          `json:"exit_type"`
@@ -288,7 +294,7 @@ func EncodeState(state *State) ([]byte, error) {
 	if err := validateFactionState(&normalized, normalized.Ledger.Scope()); err != nil {
 		return nil, err
 	}
-	if err := validateGuildState(&normalized, normalized.Ledger.Scope()); err != nil {
+	if err := validateGuildState(&normalized, normalized.Ledger.Scope(), false); err != nil {
 		return nil, err
 	}
 	cursor, err := formatCursor(state.EvaluatedThrough)
@@ -302,7 +308,7 @@ func EncodeState(state *State) ([]byte, error) {
 	if state.ManualTokenRefilledAt.After(state.EvaluatedThrough) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
-	encoded, err := json.Marshal(stateV11{stateV10: stateV10{stateV9: stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
+	encoded, err := json.Marshal(stateV12{stateV11: stateV11{stateV10: stateV10{stateV9: stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
 		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: cloneBoolMap(normalized.GatesCrossed), RunSeq: normalized.RunSeq,
@@ -322,7 +328,7 @@ func EncodeState(state *State) ([]byte, error) {
 		FactionID: optionalString(normalized.FactionID), IncorporatedAtMS: optionalTimeMS(normalized.IncorporatedAt),
 		StockUnits: normalized.StockUnits, StockProgressMS: normalized.StockProgressMS, ConsumedStockUnits: normalized.ConsumedStockUnits},
 		GuildTitheCarryPPM: normalized.GuildTitheCarryPPM, GuildBoundarySeq: normalized.GuildBoundarySeq,
-		GuildConsumedWindow: normalized.GuildConsumedWindow})
+		GuildConsumedWindow: normalized.GuildConsumedWindow}, GuildBoundaryGuildID: optionalString(normalized.GuildBoundaryGuildID)})
 	if err != nil {
 		return nil, fmt.Errorf("%w: encode: %v", ErrInvalidState, err)
 	}
@@ -340,7 +346,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
 	}
 
-	var source stateV11
+	var source stateV12
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -395,6 +401,10 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		}
 	} else if version == 10 {
 		if err := decodeState(data, &source.stateV10); err != nil {
+			return nil, err
+		}
+	} else if version == 11 {
+		if err := decodeState(data, &source.stateV11); err != nil {
 			return nil, err
 		}
 	} else if err := decodeState(data, &source); err != nil {
@@ -492,6 +502,9 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		GuildTitheCarryPPM: source.GuildTitheCarryPPM, GuildBoundarySeq: source.GuildBoundarySeq,
 		GuildConsumedWindow: source.GuildConsumedWindow,
 	}
+	if source.GuildBoundaryGuildID != nil {
+		state.GuildBoundaryGuildID = *source.GuildBoundaryGuildID
+	}
 	if source.FactionID != nil {
 		state.FactionID = *source.FactionID
 	}
@@ -544,7 +557,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if err := validateFactionState(state, scope); err != nil {
 		return nil, err
 	}
-	if err := validateGuildState(state, scope); err != nil {
+	if err := validateGuildState(state, scope, version < 12); err != nil {
 		return nil, err
 	}
 	return state, nil
@@ -575,13 +588,17 @@ func validateFactionState(state *State, scope economy.Scope) error {
 	return nil
 }
 
-func validateGuildState(state *State, scope economy.Scope) error {
+func validateGuildState(state *State, scope economy.Scope, allowLegacyUnpairedWatermark bool) error {
 	if state.GuildTitheCarryPPM < 0 || state.GuildTitheCarryPPM >= 1_000_000 ||
 		state.GuildBoundarySeq < 0 || state.GuildBoundarySeq > decimal.MaxExactInteger ||
 		state.GuildConsumedWindow < 0 || state.GuildConsumedWindow > decimal.MaxExactInteger {
 		return fmt.Errorf("%w: guild values outside their exact domains", ErrInvalidState)
 	}
-	if scope != economy.ScopeCompany && (state.GuildTitheCarryPPM != 0 || state.GuildBoundarySeq != 0 || state.GuildConsumedWindow != 0) {
+	if (state.GuildBoundaryGuildID == "" && state.GuildBoundarySeq != 0 && !allowLegacyUnpairedWatermark) ||
+		(state.GuildBoundaryGuildID != "" && !uuidV7Pattern.MatchString(state.GuildBoundaryGuildID)) {
+		return fmt.Errorf("%w: invalid guild clearing watermark", ErrInvalidState)
+	}
+	if scope != economy.ScopeCompany && (state.GuildTitheCarryPPM != 0 || state.GuildBoundaryGuildID != "" || state.GuildBoundarySeq != 0 || state.GuildConsumedWindow != 0) {
 		return fmt.Errorf("%w: company guild state leaked outside company scope", ErrInvalidState)
 	}
 	return nil

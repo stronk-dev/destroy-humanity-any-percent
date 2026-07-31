@@ -84,6 +84,9 @@ func (service *Service) SweepDisbanded(ctx context.Context, now time.Time, limit
 				return 0, err
 			}
 		}
+		if err := closePendingGuildRequests(ctx, tx, value.id, now); err != nil {
+			return 0, err
+		}
 		disbanded++
 	}
 	if err := tx.Commit(); err != nil {

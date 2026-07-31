@@ -2,8 +2,11 @@ package guild
 
 import (
 	"context"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"slices"
 	"sort"
 	"time"
@@ -13,9 +16,16 @@ import (
 )
 
 type Settlement struct {
+	GuildID     string
 	BoundarySeq int64
 	DebitUnits  int64
 	CreditUnits int64
+}
+
+type SettlementBatch struct {
+	GuildID     string
+	BaseSeq     int64
+	Settlements []Settlement
 }
 
 func (service *Service) CommitClearingBoundary(ctx context.Context, guildID string, boundarySeq int64, committedAt time.Time, members []MemberStock, stockCap int64) error {
@@ -23,6 +33,10 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 		return ErrInvalidExchange
 	}
 	states, clearings, err := Clear(service.catalog, members, stockCap)
+	if err != nil {
+		return err
+	}
+	snapshotHash, err := clearingSnapshotHash(members, stockCap)
 	if err != nil {
 		return err
 	}
@@ -34,7 +48,7 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 	}
 	for _, state := range states {
 		prior := before[state.AccountID]
-		byAccount[state.AccountID] = Settlement{BoundarySeq: boundarySeq, DebitUnits: prior.AvailableUnits - state.AvailableUnits, CreditUnits: state.ReceivedUnits - prior.ReceivedUnits}
+		byAccount[state.AccountID] = Settlement{GuildID: guildID, BoundarySeq: boundarySeq, DebitUnits: prior.AvailableUnits - state.AvailableUnits, CreditUnits: state.ReceivedUnits - prior.ReceivedUnits}
 	}
 	for _, clearing := range clearings {
 		allocations[clearing.ProducerAccountID] = clearing.Allocations
@@ -46,6 +60,17 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 	defer tx.Rollback()
 	var revision int64
 	if err := tx.QueryRowContext(ctx, `SELECT revision FROM guilds WHERE guild_id=$1 AND disbanded_at IS NULL FOR UPDATE`, guildID).Scan(&revision); err != nil {
+		return err
+	}
+	var committedHash string
+	err = tx.QueryRowContext(ctx, `SELECT snapshot_hash FROM guild_clearing_results WHERE guild_id=$1 AND boundary_seq=$2 LIMIT 1`, guildID, boundarySeq).Scan(&committedHash)
+	if err == nil {
+		if committedHash != snapshotHash {
+			return ErrInvalidExchange
+		}
+		return tx.Commit()
+	}
+	if !errors.Is(err, sql.ErrNoRows) {
 		return err
 	}
 	rows, err := tx.QueryContext(ctx, `SELECT account_id FROM guild_members WHERE guild_id=$1 AND left_at IS NULL ORDER BY account_id FOR UPDATE`, guildID)
@@ -77,7 +102,7 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 		return err
 	}
 	if last.Valid && boundarySeq <= last.Int64 {
-		return tx.Commit()
+		return ErrInvalidExchange
 	}
 	if last.Valid && boundarySeq != last.Int64+1 || !last.Valid && boundarySeq != 1 {
 		return ErrInvalidExchange
@@ -88,7 +113,7 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 		if allocations[state.AccountID] == nil {
 			encoded = []byte("[]")
 		}
-		if _, err := tx.ExecContext(ctx, `INSERT INTO guild_clearing_results(guild_id,boundary_seq,account_id,debit_units,credit_units,allocations,committed_at) VALUES($1,$2,$3,$4,$5,$6,$7)`, guildID, boundarySeq, state.AccountID, settlement.DebitUnits, settlement.CreditUnits, encoded, committedAt.UTC()); err != nil {
+		if _, err := tx.ExecContext(ctx, `INSERT INTO guild_clearing_results(guild_id,boundary_seq,account_id,debit_units,credit_units,allocations,committed_at,snapshot_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`, guildID, boundarySeq, state.AccountID, settlement.DebitUnits, settlement.CreditUnits, encoded, committedAt.UTC(), snapshotHash); err != nil {
 			return err
 		}
 	}
@@ -105,42 +130,85 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 	return tx.Commit()
 }
 
-func (service *Service) PendingSettlements(ctx context.Context, founderID string, afterSeq int64) ([]Settlement, error) {
-	// DESIGN-GAP (GD5a): boundary_seq is scoped by guild, while save v11 stores
-	// only the integer watermark. Switching from a high-sequence guild to a
-	// lower-sequence guild cannot be ordered without persisting the watermark's
-	// guild identity or declaring a global sequence. Keep this resolver
-	// uncomposed until the owner contract chooses one.
-	if service == nil || !uuidPattern.MatchString(founderID) || afterSeq < 0 {
-		return nil, ErrInvalidExchange
+func (service *Service) PendingSettlements(ctx context.Context, founderID, watermarkGuildID string, afterSeq int64) (SettlementBatch, error) {
+	if service == nil || !uuidPattern.MatchString(founderID) || watermarkGuildID != "" && !uuidV7Pattern.MatchString(watermarkGuildID) || afterSeq < 0 {
+		return SettlementBatch{}, ErrInvalidExchange
 	}
-	rows, err := service.db.QueryContext(ctx, `SELECT result.boundary_seq,result.debit_units,result.credit_units
-		FROM account_founders founder JOIN guild_members member ON member.account_id=founder.account_id
-		JOIN guild_clearing_results result ON result.guild_id=member.guild_id AND result.account_id=member.account_id
-		WHERE founder.founder_id=$1 AND result.boundary_seq>$2 AND member.joined_at<=result.committed_at
-		  AND (member.left_at IS NULL OR member.left_at>result.committed_at)
-		ORDER BY result.boundary_seq`, founderID, afterSeq)
+	var guildID, accountID string
+	var joinedAt time.Time
+	err := service.db.QueryRowContext(ctx, `SELECT member.guild_id,founder.account_id,member.joined_at FROM account_founders founder
+		JOIN guild_members member ON member.account_id=founder.account_id AND member.left_at IS NULL
+		WHERE founder.founder_id=$1`, founderID).Scan(&guildID, &accountID, &joinedAt)
+	if errors.Is(err, sql.ErrNoRows) {
+		return SettlementBatch{}, nil
+	}
 	if err != nil {
-		return nil, err
+		return SettlementBatch{}, err
+	}
+	var latest sql.NullInt64
+	if err := service.db.QueryRowContext(ctx, `SELECT max(boundary_seq) FROM guild_clearing_results WHERE guild_id=$1`, guildID).Scan(&latest); err != nil {
+		return SettlementBatch{}, err
+	}
+	latestSeq := int64(0)
+	if latest.Valid {
+		latestSeq = latest.Int64
+	}
+	if watermarkGuildID != "" && watermarkGuildID != guildID {
+		return SettlementBatch{GuildID: guildID, BaseSeq: latestSeq}, nil
+	}
+	baseSeq := afterSeq
+	rows, err := service.db.QueryContext(ctx, `SELECT boundary_seq,debit_units,credit_units
+		FROM guild_clearing_results
+		WHERE guild_id=$1 AND account_id=$2 AND boundary_seq>$3 AND committed_at>=$4
+		ORDER BY boundary_seq`, guildID, accountID, afterSeq, joinedAt)
+	if err != nil {
+		return SettlementBatch{}, err
 	}
 	defer rows.Close()
 	var result []Settlement
 	for rows.Next() {
 		var value Settlement
 		if err := rows.Scan(&value.BoundarySeq, &value.DebitUnits, &value.CreditUnits); err != nil {
-			return nil, err
+			return SettlementBatch{}, err
 		}
+		value.GuildID = guildID
 		result = append(result, value)
 	}
-	return result, rows.Err()
+	if err := rows.Err(); err != nil {
+		return SettlementBatch{}, err
+	}
+	return SettlementBatch{GuildID: guildID, BaseSeq: baseSeq, Settlements: result}, nil
 }
 
-func ApplySettlements(state *save.State, settlements []Settlement, stockCap int64) error {
+func ApplySettlements(state *save.State, batch SettlementBatch, stockCap int64) error {
 	if state == nil || stockCap <= 0 {
 		return ErrInvalidExchange
 	}
-	for _, settlement := range settlements {
-		if settlement.BoundarySeq != state.GuildBoundarySeq+1 || settlement.DebitUnits < 0 || settlement.CreditUnits < 0 || settlement.DebitUnits > state.StockUnits || settlement.CreditUnits > stockCap-state.ConsumedStockUnits {
+	if batch.GuildID == "" {
+		if batch.BaseSeq != 0 || len(batch.Settlements) != 0 {
+			return ErrInvalidExchange
+		}
+		return nil
+	}
+	if !uuidV7Pattern.MatchString(batch.GuildID) || batch.BaseSeq < 0 || batch.BaseSeq > decimal.MaxExactInteger {
+		return ErrInvalidExchange
+	}
+	if state.GuildBoundaryGuildID != batch.GuildID {
+		if state.GuildBoundaryGuildID == "" {
+			if batch.BaseSeq != state.GuildBoundarySeq {
+				return ErrInvalidExchange
+			}
+		} else if len(batch.Settlements) != 0 {
+			return ErrInvalidExchange
+		}
+		state.GuildBoundaryGuildID = batch.GuildID
+		state.GuildBoundarySeq = batch.BaseSeq
+		state.GuildConsumedWindow = 0
+	} else if batch.BaseSeq != state.GuildBoundarySeq {
+		return ErrInvalidExchange
+	}
+	for _, settlement := range batch.Settlements {
+		if settlement.GuildID != batch.GuildID || settlement.BoundarySeq <= state.GuildBoundarySeq || settlement.DebitUnits < 0 || settlement.CreditUnits < 0 || settlement.DebitUnits > state.StockUnits || settlement.CreditUnits > stockCap-state.ConsumedStockUnits {
 			return ErrInvalidExchange
 		}
 		state.StockUnits -= settlement.DebitUnits
@@ -149,4 +217,18 @@ func ApplySettlements(state *save.State, settlements []Settlement, stockCap int6
 		state.GuildBoundarySeq = settlement.BoundarySeq
 	}
 	return nil
+}
+
+func clearingSnapshotHash(members []MemberStock, stockCap int64) (string, error) {
+	ordered := append([]MemberStock(nil), members...)
+	sort.Slice(ordered, func(left, right int) bool { return ordered[left].AccountID < ordered[right].AccountID })
+	encoded, err := json.Marshal(struct {
+		StockCap int64         `json:"stock_cap"`
+		Members  []MemberStock `json:"members"`
+	}{StockCap: stockCap, Members: ordered})
+	if err != nil {
+		return "", ErrInvalidExchange
+	}
+	digest := sha256.Sum256(encoded)
+	return "sha256:" + hex.EncodeToString(digest[:]), nil
 }

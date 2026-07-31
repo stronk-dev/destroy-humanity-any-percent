@@ -32,7 +32,7 @@ func (service *Service) ClaimPresence(ctx context.Context, limit int, lease time
 		UPDATE guild_presence_outbox AS outbox
 		SET claim_token=gen_random_uuid(),claimed_until=clock_timestamp()+$2::interval
 		FROM selected WHERE outbox.outbox_id=selected.outbox_id
-		RETURNING outbox.outbox_id,outbox.claim_token,outbox.guild_id,outbox.account_id,outbox.kind,
+		RETURNING outbox.outbox_id,outbox.claim_token,outbox.guild_id,COALESCE(outbox.account_id,outbox.account_ref),outbox.kind,
 		          outbox.guild_revision,outbox.active_count,outbox.occurred_at`, limit, fmt.Sprintf("%d milliseconds", lease.Milliseconds()))
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func (service *Service) MarkPresencePublished(ctx context.Context, id int64, cla
 		return ErrInvalidIntent
 	}
 	result, err := service.db.ExecContext(ctx, `UPDATE guild_presence_outbox
-		SET published_at=clock_timestamp(),claim_token=NULL,claimed_until=NULL
+		SET published_at=clock_timestamp(),claim_token=NULL,claimed_until=NULL,account_ref=NULL
 		WHERE outbox_id=$1 AND claim_token=$2 AND published_at IS NULL`, id, claimToken)
 	if err != nil {
 		return err
