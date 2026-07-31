@@ -196,6 +196,17 @@ existing kernel rule); no bespoke position exists or is needed. The provider row
 the production stack's slot registry by this contract; a second provider for the key is a loader
 error.
 
+### DESIGN-GAP GD5a — watermark identity (implementation re-review, 2026-07-31)
+
+`guild_boundary_seq` is scoped by `guild_id`, but the v11 company field stores only the sequence.
+After moving from a mature guild at boundary 10,000 to a new guild at boundary 5, the monotonic
+watermark would reject every new-guild slice forever. The owner must choose one executable shape:
+persist `(guild_id,boundary_seq)` in the company save (reset-to-current on membership change), or
+make clearing sequence globally monotonic. The shipped resolver is intentionally uncomposed until
+that identity is specified; the clearing writer/results and pure application kernel remain usable
+and tested. This is not delegated to Run Genesis: RA records resolved inputs but cannot repair an
+ambiguous authoritative watermark.
+
 ## Changelog
 
 - 2026-07-30: created (draft) — the guild owner contract Commons Onboarding blockers #1/#5 named; unblocks the transport guild resolver.
@@ -203,3 +214,4 @@ error.
 - 2026-07-30: implementation audit added GD1–GD6 after the structural implementation exposed missing owner contracts; no mechanic was inferred.
 - 2026-07-30: GD1–GD6 answered with executable contracts (name policy; tier-progress tithe units; per-capita Health; deletion succession; projection-side clearing under the RA replay-input rule; canonical slot ordering).
 - 2026-07-30: complete-diff review APPROVED with findings (see planning log); ruling GC-1 adopts the implemented headroom-eligibility clearing semantics; AC6 explicitly parked under composition by name.
+- 2026-07-31: implementation re-review found GD5a: a per-guild sequence needs its guild identity in the company watermark (or a global sequence); composition remains fail-closed pending owner ruling.

@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"slices"
+	"sort"
 	"time"
 
 	"cloud-clicker/server/decimal"
@@ -46,6 +48,30 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 	if err := tx.QueryRowContext(ctx, `SELECT revision FROM guilds WHERE guild_id=$1 AND disbanded_at IS NULL FOR UPDATE`, guildID).Scan(&revision); err != nil {
 		return err
 	}
+	rows, err := tx.QueryContext(ctx, `SELECT account_id FROM guild_members WHERE guild_id=$1 AND left_at IS NULL ORDER BY account_id FOR UPDATE`, guildID)
+	if err != nil {
+		return err
+	}
+	var activeAccounts []string
+	for rows.Next() {
+		var accountID string
+		if err := rows.Scan(&accountID); err != nil {
+			rows.Close()
+			return err
+		}
+		activeAccounts = append(activeAccounts, accountID)
+	}
+	if err := rows.Close(); err != nil {
+		return err
+	}
+	memberAccounts := make([]string, len(members))
+	for index := range members {
+		memberAccounts[index] = members[index].AccountID
+	}
+	sort.Strings(memberAccounts)
+	if !slices.Equal(activeAccounts, memberAccounts) {
+		return ErrInvalidExchange
+	}
 	var last sql.NullInt64
 	if err := tx.QueryRowContext(ctx, `SELECT max(boundary_seq) FROM guild_clearing_results WHERE guild_id=$1`, guildID).Scan(&last); err != nil {
 		return err
@@ -80,6 +106,11 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 }
 
 func (service *Service) PendingSettlements(ctx context.Context, founderID string, afterSeq int64) ([]Settlement, error) {
+	// DESIGN-GAP (GD5a): boundary_seq is scoped by guild, while save v11 stores
+	// only the integer watermark. Switching from a high-sequence guild to a
+	// lower-sequence guild cannot be ordered without persisting the watermark's
+	// guild identity or declaring a global sequence. Keep this resolver
+	// uncomposed until the owner contract chooses one.
 	if service == nil || !uuidPattern.MatchString(founderID) || afterSeq < 0 {
 		return nil, ErrInvalidExchange
 	}

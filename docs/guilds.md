@@ -63,4 +63,6 @@ debit/credit slice exactly once using save-v11's monotonic watermark; projection
 than one company. Consumed units declare `guild.stock_consumption` in the existing faction slot;
 the Epoch-4 rate is zero, so the structural path is live without a hidden output buff. The scheduler,
 replay-input capture, and real-socket driver remain explicit composition work owned by the queued
-Run Genesis and gameserver rounds; no alternate clearing math runs meanwhile.
+Run Genesis and gameserver rounds; no alternate clearing math runs meanwhile. Composition also
+waits on GD5a: the persisted watermark must include its guild identity (or clearing must receive a
+global sequence) before switching guilds can be ordered safely.

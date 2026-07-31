@@ -175,6 +175,11 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 
 	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), []MemberStock{
 		{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10},
+	}, 100); err == nil {
+		t.Fatal("clearing accepted a partial active-member snapshot")
+	}
+	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), []MemberStock{
+		{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10},
 		{AccountID: joinedAccount, Produces: "carbon", Consumes: "libraries", AvailableUnits: 10},
 	}, 100); err != nil {
 		t.Fatal(err)

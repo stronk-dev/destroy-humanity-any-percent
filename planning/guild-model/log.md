@@ -126,3 +126,17 @@ is called out in the session summary.
 - Focused Go, schema, client (6,452 tests), and full Postgres integration suites are green. The RFC
   remains `implementing` until this complete delta receives the required independent review. AC6's
   real socket/scheduler composition stays named under the gameserver round, not implied complete.
+
+## 2026-07-31 — implementation adversarial pass
+
+- Fixed two cross-component bugs before handoff: Guild Health now excludes founders who are no
+  longer active members, and the clearing writer locks the guild then requires its authoritative
+  active-account set to equal the supplied snapshot set. Old pinned economy catalogs also omit the
+  new membership contribution cleanly instead of receiving an undeclared source.
+- Found **GD5a (blocking composition, not the completed kernels):** `boundary_seq` is per-guild but
+  save v11 records no guild identity. A company moving from boundary 10,000 in one guild to boundary
+  5 in another would reject all future slices. Recorded in the RFC with the two legitimate owner
+  choices; no improvised reset/global ordering was added. RA cannot resolve this ambiguity for us.
+- Account deletion now explicitly fails closed when an active Guild membership exists but the
+  transactional Guild participant was not attached; the database trigger independently rejects
+  an active-history nulling attempt.

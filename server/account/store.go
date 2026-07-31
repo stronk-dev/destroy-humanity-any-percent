@@ -441,6 +441,15 @@ func (repository *Repository) DeleteAccount(ctx context.Context, accountID strin
 	if len(founders) == 0 {
 		return ErrAccountNotFound
 	}
+	if repository.deletion == nil {
+		var activeGuild bool
+		if err := tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM guild_members WHERE account_id=$1 AND left_at IS NULL)`, accountID).Scan(&activeGuild); err != nil {
+			return err
+		}
+		if activeGuild {
+			return ErrInvalidRequest
+		}
+	}
 	if repository.deletion != nil {
 		if err := repository.deletion.PrepareAccountDeletion(ctx, tx, accountID, now); err != nil {
 			return err

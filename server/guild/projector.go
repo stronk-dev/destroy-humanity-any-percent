@@ -104,7 +104,10 @@ func (projector *Projector) projectTithe(ctx context.Context, event save.EventRe
 		return err
 	}
 	if _, err := tx.ExecContext(ctx, `INSERT INTO guild_health_inputs(guild_id,window_start,active_founders,tithed_xp)
-		SELECT $1,$2,count(DISTINCT account_id),COALESCE(sum(xp),0) FROM guild_activity_windows WHERE guild_id=$1 AND window_start>$3 AND window_start<=$2
+		SELECT $1,$2,count(DISTINCT activity.account_id),COALESCE(sum(activity.xp),0)
+		FROM guild_activity_windows activity JOIN guild_members member ON member.guild_id=activity.guild_id AND member.account_id=activity.account_id
+		WHERE activity.guild_id=$1 AND activity.window_start>$3 AND activity.window_start<=$2
+		  AND member.joined_at<=$2 AND (member.left_at IS NULL OR member.left_at>$2)
 		ON CONFLICT(guild_id,window_start) DO UPDATE SET active_founders=EXCLUDED.active_founders,tithed_xp=EXCLUDED.tithed_xp`, guildID, windowStart, windowFloor); err != nil {
 		return err
 	}

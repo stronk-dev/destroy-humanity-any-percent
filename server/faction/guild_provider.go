@@ -20,9 +20,12 @@ type StockConsumptionProvider struct {
 	Members  GuildMembershipResolver
 }
 
-func (provider StockConsumptionProvider) Contributions(ctx context.Context, state *save.State, _ *economy.Catalog, revision save.Revision) ([]multiplier.Contribution, error) {
-	if state == nil || provider.Catalogs == nil || provider.Members == nil || state.GuildConsumedWindow < 0 {
+func (provider StockConsumptionProvider) Contributions(ctx context.Context, state *save.State, economyCatalog *economy.Catalog, revision save.Revision) ([]multiplier.Contribution, error) {
+	if state == nil || economyCatalog == nil || provider.Catalogs == nil || provider.Members == nil || state.GuildConsumedWindow < 0 {
 		return nil, errors.New("guild stock-consumption provider unavailable")
+	}
+	if _, declared := economyCatalog.MultiplierSource(guild.StockConsumptionSourceID); !declared {
+		return nil, nil
 	}
 	member, err := provider.Members.FounderGuildMember(ctx, revision.OwnerID)
 	if err != nil || !member {

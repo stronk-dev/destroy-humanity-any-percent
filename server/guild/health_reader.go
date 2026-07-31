@@ -38,7 +38,9 @@ func (reader HealthReader) FounderGuildHealthPPM(ctx context.Context, founderID,
 		return 0, false, err
 	}
 	var active, xp int64
-	err = reader.DB.QueryRowContext(ctx, `SELECT count(DISTINCT account_id),COALESCE(sum(xp),0) FROM guild_activity_windows WHERE guild_id=$1 AND window_start>$2 AND window_start<=$3`, guildID, now.Add(-time.Duration(windowMS)*time.Millisecond), now).Scan(&active, &xp)
+	err = reader.DB.QueryRowContext(ctx, `SELECT count(DISTINCT activity.account_id),COALESCE(sum(activity.xp),0)
+		FROM guild_activity_windows activity JOIN guild_members member ON member.guild_id=activity.guild_id AND member.account_id=activity.account_id AND member.left_at IS NULL
+		WHERE activity.guild_id=$1 AND activity.window_start>$2 AND activity.window_start<=$3`, guildID, now.Add(-time.Duration(windowMS)*time.Millisecond), now).Scan(&active, &xp)
 	if err != nil {
 		return 0, true, err
 	}
