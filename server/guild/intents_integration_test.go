@@ -15,7 +15,7 @@ import (
 type integrationNames struct{}
 
 func (integrationNames) ValidateGuildName(value string) bool {
-	return value == "Small Systems" || value == "Small Systems 2"
+	return value == "small systems" || value == "small systems 2"
 }
 
 func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
@@ -50,8 +50,8 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	guildID := "018f0000-0000-7000-8000-000000000101"
-	created := guildIntent(guildID, "create_guild", 1, `,"name":"Small Systems","join_policy":"open"`)
+	createIntentID := "018f0000-0000-7000-8000-000000000101"
+	created := guildIntent(createIntentID, "create_guild", 1, `,"name":"Small Systems","join_policy":"open"`)
 	result, err := service.Handle(ctx, accounts[0], []byte(created))
 	if err != nil || receiptOutcome(t, result.Receipt) != "applied" {
 		t.Fatalf("create=%s err=%v", result.Receipt, err)
@@ -59,6 +59,10 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	replay, err := service.Handle(ctx, accounts[0], []byte(created))
 	if err != nil || !replay.Replay || string(replay.Receipt) != string(result.Receipt) {
 		t.Fatalf("replay=%+v err=%v", replay, err)
+	}
+	guildID := receiptGuildID(t, result.Receipt)
+	if guildID == createIntentID || !uuidV7Pattern.MatchString(guildID) {
+		t.Fatalf("guild id was not independently server-generated: %q", guildID)
 	}
 
 	var wait sync.WaitGroup
@@ -120,11 +124,12 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `INSERT INTO accounts(account_id,recovery_hash,created_at) VALUES($1,'test',clock_timestamp()) ON CONFLICT DO NOTHING`, sweepAccount); err != nil {
 		t.Fatal(err)
 	}
-	sweepGuild := "018f0000-0000-7000-8000-000000000104"
-	sweepCreated, err := service.Handle(ctx, sweepAccount, []byte(guildIntent(sweepGuild, "create_guild", 1, `,"name":"Small Systems 2","join_policy":"open"`)))
+	sweepCreateID := "018f0000-0000-7000-8000-000000000104"
+	sweepCreated, err := service.Handle(ctx, sweepAccount, []byte(guildIntent(sweepCreateID, "create_guild", 1, `,"name":"Small Systems 2","join_policy":"open"`)))
 	if err != nil || receiptOutcome(t, sweepCreated.Receipt) != "applied" {
 		t.Fatalf("sweep create=%s err=%v", sweepCreated.Receipt, err)
 	}
+	sweepGuild := receiptGuildID(t, sweepCreated.Receipt)
 	if count, err := service.SweepDisbanded(ctx, now.Add(7*24*time.Hour-time.Millisecond), 10); err != nil || count != 0 {
 		t.Fatalf("early sweep=%d err=%v", count, err)
 	}
@@ -133,6 +138,10 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	}
 	if service.GuildMember(sweepAccount, sweepGuild) {
 		t.Fatal("swept guild retained membership")
+	}
+	var sweptLeaves int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM guild_events WHERE guild_id=$1 AND kind='member_left'`, sweepGuild).Scan(&sweptLeaves); err != nil || sweptLeaves != 1 {
+		t.Fatalf("swept member_left events=%d err=%v", sweptLeaves, err)
 	}
 }
 
@@ -149,4 +158,15 @@ func receiptOutcome(t *testing.T, data json.RawMessage) string {
 		t.Fatal(err)
 	}
 	return receipt.Outcome
+}
+
+func receiptGuildID(t *testing.T, data json.RawMessage) string {
+	t.Helper()
+	var receipt struct {
+		GuildID string `json:"guild_id"`
+	}
+	if err := json.Unmarshal(data, &receipt); err != nil || receipt.GuildID == "" {
+		t.Fatalf("receipt guild id: data=%s err=%v", data, err)
+	}
+	return receipt.GuildID
 }

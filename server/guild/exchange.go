@@ -8,9 +8,9 @@ import (
 var ErrInvalidExchange = errors.New("invalid guild exchange")
 
 type MemberStock struct {
-	AccountID     string
-	Produces      string
-	Consumes      string
+	AccountID      string
+	Produces       string
+	Consumes       string
 	AvailableUnits int64
 	ReceivedUnits  int64
 }

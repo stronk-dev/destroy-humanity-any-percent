@@ -70,6 +70,11 @@ func (service *Service) SweepDisbanded(ctx context.Context, now time.Time, limit
 		if _, err := tx.ExecContext(ctx, `UPDATE guilds SET revision=$2,disbanded_at=$3 WHERE guild_id=$1`, value.id, value.revision, now); err != nil {
 			return 0, err
 		}
+		for _, account := range accounts {
+			if err := insertGuildEvent(ctx, tx, value.id, value.revision, "member_left", "", account, "", map[string]any{"reason": "below_member_floor"}); err != nil {
+				return 0, err
+			}
+		}
 		payload, _ := json.Marshal(map[string]any{"reason": "below_member_floor"})
 		if _, err := tx.ExecContext(ctx, `INSERT INTO guild_events(guild_id,revision,kind,payload) VALUES($1,$2,'guild_disbanded',$3)`, value.id, value.revision, payload); err != nil {
 			return 0, err

@@ -147,9 +147,6 @@ func (service *Service) Handle(ctx context.Context, actorAccount string, data []
 	if err != nil {
 		return HandleResult{}, err
 	}
-	if request.Kind == "create_guild" && (!service.names.ValidateGuildName(request.Name) || len([]rune(request.Name)) < 3 || len([]rune(request.Name)) > 24) {
-		return HandleResult{}, ErrInvalidIntent
-	}
 	now := service.clock().UTC().Truncate(time.Millisecond)
 	tx, err := service.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -237,22 +234,31 @@ func rejected(category, detail string) mutationResult {
 func (service *Service) apply(ctx context.Context, tx *sql.Tx, actor string, request IntentRequest, accountRevision int64, now time.Time) (mutationResult, error) {
 	switch request.Kind {
 	case "create_guild":
+		normalizedName, ok := NormalizeGuildName(request.Name)
+		if !ok || !service.names.ValidateGuildName(normalizedName) {
+			return rejected("name_policy", "name"), nil
+		}
+		request.Name = normalizedName
 		if active, _, _, err := activeMembership(ctx, tx, actor, false); err != nil {
 			return mutationResult{}, err
 		} else if active != "" {
 			return rejected("already_member", active), nil
 		}
-		_, err := tx.ExecContext(ctx, `INSERT INTO guilds(guild_id,name,created_at,founder_account,join_policy,revision) VALUES($1,$2,$3,$4,$5,1)`, request.IntentID, request.Name, now, actor, request.JoinPolicy)
+		guildID, err := newGuildID(now)
 		if err != nil {
 			return mutationResult{}, err
 		}
-		if err := service.join(ctx, tx, request.IntentID, actor, "leader", 1, request.IntentID, now); err != nil {
+		_, err = tx.ExecContext(ctx, `INSERT INTO guilds(guild_id,name,created_at,founder_account,join_policy,revision) VALUES($1,$2,$3,$4,$5,1)`, guildID, request.Name, now, actor, request.JoinPolicy)
+		if err != nil {
 			return mutationResult{}, err
 		}
-		if err := insertGuildEvent(ctx, tx, request.IntentID, 1, "guild_created", actor, actor, request.IntentID, map[string]any{"name": request.Name, "join_policy": request.JoinPolicy}); err != nil {
+		if err := service.join(ctx, tx, guildID, actor, "leader", 1, request.IntentID, now); err != nil {
 			return mutationResult{}, err
 		}
-		return applied(request.IntentID), nil
+		if err := insertGuildEvent(ctx, tx, guildID, 1, "guild_created", actor, actor, request.IntentID, map[string]any{"name": request.Name, "join_policy": request.JoinPolicy}); err != nil {
+			return mutationResult{}, err
+		}
+		return applied(guildID), nil
 	case "join_guild":
 		guildRevision, policy, err := lockGuild(ctx, tx, request.GuildID)
 		if err != nil {
@@ -295,16 +301,23 @@ func (service *Service) apply(ctx context.Context, tx *sql.Tx, actor string, req
 		_, err = tx.ExecContext(ctx, `INSERT INTO guild_applications(guild_id,account_id,created_at) VALUES($1,$2,$3) ON CONFLICT (guild_id,account_id) WHERE resolved_at IS NULL DO NOTHING`, request.GuildID, actor, now)
 		return applied(request.GuildID), err
 	case "admit_member":
-		guildID, role, _, err := activeMembership(ctx, tx, actor, false)
+		guildID, _, _, err := activeMembership(ctx, tx, actor, false)
 		if err != nil {
 			return mutationResult{}, err
 		}
-		if guildID == "" || role == "member" {
+		if guildID == "" {
 			return rejected("not_officer", request.AccountID), nil
 		}
 		guildRevision, _, err := lockGuild(ctx, tx, guildID)
 		if err != nil {
 			return mutationResult{}, err
+		}
+		lockedGuild, role, _, err := activeMembership(ctx, tx, actor, true)
+		if err != nil {
+			return mutationResult{}, err
+		}
+		if lockedGuild != guildID || role == "member" {
+			return rejected("not_officer", request.AccountID), nil
 		}
 		var exists bool
 		err = tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM guild_applications WHERE guild_id=$1 AND account_id=$2 AND resolved_at IS NULL)`, guildID, request.AccountID).Scan(&exists)
@@ -336,15 +349,22 @@ func (service *Service) apply(ctx context.Context, tx *sql.Tx, actor string, req
 		}
 		return applied(guildID), nil
 	case "invite_member":
-		guildID, role, _, err := activeMembership(ctx, tx, actor, false)
+		guildID, _, _, err := activeMembership(ctx, tx, actor, false)
 		if err != nil {
 			return mutationResult{}, err
 		}
-		if guildID == "" || role == "member" {
+		if guildID == "" {
 			return rejected("not_officer", request.AccountID), nil
 		}
 		if _, _, err := lockGuild(ctx, tx, guildID); err != nil {
 			return mutationResult{}, err
+		}
+		lockedGuild, role, _, err := activeMembership(ctx, tx, actor, true)
+		if err != nil {
+			return mutationResult{}, err
+		}
+		if lockedGuild != guildID || role == "member" {
+			return rejected("not_officer", request.AccountID), nil
 		}
 		if active, _, _, err := activeMembership(ctx, tx, request.AccountID, false); err != nil {
 			return mutationResult{}, err
@@ -388,19 +408,26 @@ func (service *Service) apply(ctx context.Context, tx *sql.Tx, actor string, req
 		}
 		return applied(request.GuildID), nil
 	case "leave_guild":
-		guildID, role, membershipID, err := activeMembership(ctx, tx, actor, true)
+		guildID, _, _, err := activeMembership(ctx, tx, actor, false)
 		if err != nil {
 			return mutationResult{}, err
 		}
 		if guildID == "" {
 			return rejected("not_member", actor), nil
 		}
-		if role == "leader" {
-			return rejected("leader_required", guildID), nil
-		}
 		guildRevision, _, err := lockGuild(ctx, tx, guildID)
 		if err != nil {
 			return mutationResult{}, err
+		}
+		lockedGuild, role, membershipID, err := activeMembership(ctx, tx, actor, true)
+		if err != nil {
+			return mutationResult{}, err
+		}
+		if lockedGuild != guildID {
+			return rejected("not_member", actor), nil
+		}
+		if role == "leader" {
+			return rejected("leader_required", guildID), nil
 		}
 		guildRevision++
 		if _, err := tx.ExecContext(ctx, `UPDATE guild_members SET left_at=$2 WHERE membership_id=$1`, membershipID, now); err != nil {
@@ -420,16 +447,23 @@ func (service *Service) apply(ctx context.Context, tx *sql.Tx, actor string, req
 		}
 		return applied(guildID), nil
 	case "set_role":
-		guildID, role, _, err := activeMembership(ctx, tx, actor, false)
+		guildID, _, _, err := activeMembership(ctx, tx, actor, false)
 		if err != nil {
 			return mutationResult{}, err
 		}
-		if guildID == "" || role != "leader" {
+		if guildID == "" {
 			return rejected("not_leader", request.AccountID), nil
 		}
 		guildRevision, _, err := lockGuild(ctx, tx, guildID)
 		if err != nil {
 			return mutationResult{}, err
+		}
+		lockedGuild, role, _, err := activeMembership(ctx, tx, actor, true)
+		if err != nil {
+			return mutationResult{}, err
+		}
+		if lockedGuild != guildID || role != "leader" {
+			return rejected("not_leader", request.AccountID), nil
 		}
 		targetGuild, targetRole, _, err := activeMembership(ctx, tx, request.AccountID, true)
 		if err != nil {
@@ -446,6 +480,9 @@ func (service *Service) apply(ctx context.Context, tx *sql.Tx, actor string, req
 			if _, err := tx.ExecContext(ctx, `UPDATE guild_members SET role='officer' WHERE guild_id=$1 AND account_id=$2 AND left_at IS NULL`, guildID, actor); err != nil {
 				return mutationResult{}, err
 			}
+			if err := insertGuildEvent(ctx, tx, guildID, guildRevision, "role_changed", actor, actor, request.IntentID, map[string]any{"role": "officer"}); err != nil {
+				return mutationResult{}, err
+			}
 		}
 		if targetRole != request.Role {
 			if _, err := tx.ExecContext(ctx, `UPDATE guild_members SET role=$3 WHERE guild_id=$1 AND account_id=$2 AND left_at IS NULL`, guildID, request.AccountID, request.Role); err != nil {
@@ -460,16 +497,23 @@ func (service *Service) apply(ctx context.Context, tx *sql.Tx, actor string, req
 		}
 		return applied(guildID), nil
 	case "disband_guild":
-		guildID, role, membershipID, err := activeMembership(ctx, tx, actor, true)
+		guildID, _, _, err := activeMembership(ctx, tx, actor, false)
 		if err != nil {
 			return mutationResult{}, err
 		}
-		if guildID == "" || role != "leader" {
+		if guildID == "" {
 			return rejected("not_leader", actor), nil
 		}
 		guildRevision, _, err := lockGuild(ctx, tx, guildID)
 		if err != nil {
 			return mutationResult{}, err
+		}
+		lockedGuild, role, membershipID, err := activeMembership(ctx, tx, actor, true)
+		if err != nil {
+			return mutationResult{}, err
+		}
+		if lockedGuild != guildID || role != "leader" {
+			return rejected("not_leader", actor), nil
 		}
 		var count int
 		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM guild_members WHERE guild_id=$1 AND left_at IS NULL`, guildID).Scan(&count); err != nil {
@@ -483,6 +527,9 @@ func (service *Service) apply(ctx context.Context, tx *sql.Tx, actor string, req
 			return mutationResult{}, err
 		}
 		if _, err := tx.ExecContext(ctx, `UPDATE guilds SET revision=$2,disbanded_at=$3 WHERE guild_id=$1`, guildID, guildRevision, now); err != nil {
+			return mutationResult{}, err
+		}
+		if err := insertGuildEvent(ctx, tx, guildID, guildRevision, "member_left", actor, actor, request.IntentID, map[string]any{}); err != nil {
 			return mutationResult{}, err
 		}
 		if err := insertGuildEvent(ctx, tx, guildID, guildRevision, "guild_disbanded", actor, actor, request.IntentID, map[string]any{}); err != nil {
@@ -590,8 +637,16 @@ func insertPresence(ctx context.Context, tx *sql.Tx, guildID, accountID, kind st
 }
 func insertGuildEvent(ctx context.Context, tx *sql.Tx, guildID string, revision int64, kind, actor, subject, intentID string, payload map[string]any) error {
 	encoded, _ := json.Marshal(payload)
-	_, err := tx.ExecContext(ctx, `INSERT INTO guild_events(guild_id,revision,kind,actor_account,subject_account,intent_id,payload) VALUES($1,$2,$3,$4,$5,$6,$7)`, guildID, revision, kind, actor, subject, intentID, encoded)
+	_, err := tx.ExecContext(ctx, `INSERT INTO guild_events(guild_id,revision,kind,actor_account,subject_account,intent_id,payload) VALUES($1,$2,$3,$4,$5,$6,$7)`,
+		guildID, revision, kind, nullableUUID(actor), nullableUUID(subject), nullableUUID(intentID), encoded)
 	return err
+}
+
+func nullableUUID(value string) any {
+	if value == "" {
+		return nil
+	}
+	return value
 }
 func uniqueConstraint(err error) (string, bool) {
 	var pg *pgconn.PgError
