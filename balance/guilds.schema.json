@@ -12,7 +12,9 @@
     "consumption_bonus_ppm_per_unit",
     "max_members",
     "min_members",
-    "grace_days"
+    "grace_days",
+    "guild_xp_target_per_founder",
+    "clearing_interval_ms"
   ],
   "properties": {
     "schema_version": { "const": 1 },
@@ -23,6 +25,8 @@
     "consumption_bonus_ppm_per_unit": { "const": 0 },
     "max_members": { "const": 50 },
     "min_members": { "const": 2 },
-    "grace_days": { "const": 7 }
+    "grace_days": { "const": 7 },
+    "guild_xp_target_per_founder": { "const": 250000 },
+    "clearing_interval_ms": { "const": 300000 }
   }
 }

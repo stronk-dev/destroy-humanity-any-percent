@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "current_epoch_id": 3,
+  "current_epoch_id": 4,
   "artifacts": [
     { "name": "commons", "path": "balance/commons/phase0.json" },
     { "name": "economy", "path": "balance/catalogs/phase0.json" },
@@ -33,6 +33,14 @@
       "changelog_ref": "changelog/epoch-3.md",
       "accepted_hashes": [
         "sha256:7b46452c3cfe62d74bc6b48c8526cabe85a71bf439b6de0bc946e543fd7c0764"
+      ]
+    },
+    {
+      "epoch_id": 4,
+      "name": "Guild Runtime",
+      "changelog_ref": "changelog/epoch-4.md",
+      "accepted_hashes": [
+        "sha256:05f3aa267c699f0f5a63612b32e59af60f62de3a9c2baa119d6177b7e35ce7b3"
       ]
     }
   ]

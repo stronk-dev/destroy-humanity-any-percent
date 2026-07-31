@@ -39,6 +39,12 @@
       "slot": "commons",
       "target": "all",
       "provider": "commons"
+    },
+    {
+      "id": "guild.stock_consumption",
+      "slot": "faction",
+      "target": "all",
+      "provider": "faction"
     }
   ],
   "progress_coordinates": [
