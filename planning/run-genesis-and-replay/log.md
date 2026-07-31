@@ -132,3 +132,26 @@ surface was deleted outright; ec872ec's self-caught fifth-argument removal hones
 4. NOTES accepted as recorded: kernel-only union closure at the persistence layer (intentional
    layering; the save-layer writer is single); C6 reader clause lands with the verifier; the
    mid-round shape change needed no version bump (no producer existed).
+
+## 2026-07-31 — RA/RB review remediation implemented
+
+The two gating findings and all attached rulings landed in three reviewable commits. `bb04c72`
+makes active `run_log` evidence immutable against both UPDATE and DELETE using the repository's
+standard forensic trigger; its real-Postgres regression attacks replay-input laundering and row
+deletion directly. `e9f28e0` restores Founder/Company catalog coherence before carry construction,
+records `founder_constants_hash`, and reasserts it inside both logged transition arms. The dead
+pre-reroute helper was deleted.
+
+The same runtime landing closes C4a/C4b/RB-1/C3a/RB-2: ordered non-empty Guild settlement batches
+are accepted with UUID and safe-integer validation; the founder-only route-hint union arm is gone;
+production services require the Prestige/faction runtime; every six-artifact bundle recomputes its
+hash from frozen exact bytes and rejects relabeling; and faction stock-resource identity is derived
+inside `ApplyLogged`. Invalid intents no longer call or freeze contribution providers.
+
+Verification is green: all Go packages, the focused replay/account suites, and the direct
+Compose-owned Postgres integration command. The latter is intentionally recorded as
+`docker compose -f compose.save-test.yml run --rm test`; an attempted environment-wrapped Make
+alias incorrectly triggered sandbox escalation despite AGENTS.md already forbidding that wrapper.
+No approval-dependent test path is part of this landing.
+
+The TypeScript `ApplyLogged` port and cross-runtime fixture remain the next implementation item.
