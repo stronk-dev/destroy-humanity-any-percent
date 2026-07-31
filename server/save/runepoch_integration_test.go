@@ -95,4 +95,14 @@ func TestEngineVersionDriftRemainsPlayableAndIsRecordedOnceIntegration(t *testin
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_version_drift WHERE company_stream_id=$1 AND run_seq=1`, revision.StreamID).Scan(&driftRows); err != nil || driftRows != 1 {
 		t.Fatalf("deduplicated drift rows=%d err=%v", driftRows, err)
 	}
+	if _, err := db.ExecContext(ctx, `UPDATE run_log SET replay_inputs=NULL WHERE company_stream_id=$1 AND run_seq=1`, revision.StreamID); err == nil {
+		t.Fatal("immutable run-log replay inputs were mutable")
+	}
+	if _, err := db.ExecContext(ctx, `DELETE FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, revision.StreamID); err == nil {
+		t.Fatal("immutable run-log row was deletable")
+	}
+	var replayInputRows int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND run_seq=1 AND replay_inputs IS NOT NULL`, revision.StreamID).Scan(&replayInputRows); err != nil || replayInputRows != 2 {
+		t.Fatalf("immutable run-log rows=%d err=%v", replayInputRows, err)
+	}
 }
