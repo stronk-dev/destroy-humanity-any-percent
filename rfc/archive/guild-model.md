@@ -1,6 +1,6 @@
 # RFC: Guild Model
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-30
 - **Design refs:** `design/05 §3` (formation 2–50, automatic tithe, contribution windows, faction interdependence exchange, Break Room seats, small-guild mercy keyed on cohort, NPC fallback), `design/04 §4` (no scarcity economy — satire target)
@@ -236,4 +236,5 @@ new guild's boundaries 6.. and never re-applies or cross-applies.
 - 2026-07-31: implementation re-review found GD5a: a per-guild sequence needs its guild identity in the company watermark (or a global sequence); composition remains fail-closed pending owner ruling.
 - 2026-07-31: GD5a ruled — watermark is the (guild_id, boundary_seq) pair with forward-only reset on membership change; migration maps bare seqs to the current guild.
 - 2026-07-31: runtime-round review — F1 HIGH blocks archival (closed-row deletion trigger); rulings GD3-1 (activity = evaluation) and GD1-1 (separator-stripped denylist matching) recorded.
+- 2026-07-31: remediation round approved — all five ruled contracts verified in source; archive unblocked.
 - 2026-07-31: runtime remediation implemented — closed-history deletion anonymization, evaluation-only activity events, separator-resistant moderation, content-addressed clearing retries, save-v12 guild-scoped watermarks, lifecycle cleanup, and the deferred rejection/concurrency regressions.

@@ -18,8 +18,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
-| [Guild Model](guild-model.md) | implementing | Account / Commons / Faction / Transport |
-| [Run Genesis & Replay](run-genesis-and-replay.md) | draft — DESIGN-GAPs | Leaderboards / Prestige / Account |
+| [Run Genesis & Replay](run-genesis-and-replay.md) | implementing | Leaderboards / Prestige / Account |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 
@@ -57,6 +56,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Commons Cohort Merge Capacity](archive/commons-merge-capacity.md) | implemented | [Commons](../docs/commons.md) |
 | [Phase-0 Pacing Observation Coverage](archive/phase0-pacing-observation-coverage.md) | implemented | [Balance harness](../docs/balance-harness.md) |
 | [Faction & Incorporation](archive/faction-incorporation.md) | implemented | [Factions](../docs/factions.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
+| [Guild Model](archive/guild-model.md) | implemented | [Guilds](../docs/guilds.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 
 Remaining Phase-0 contracts (not yet drafted): T0–T1 playable content
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics

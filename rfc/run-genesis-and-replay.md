@@ -1,6 +1,6 @@
 # RFC: Run Genesis & Replay Verification
 
-- **Status:** draft
+- **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-30
 - **Design refs:** `design/05 §6`, `design/08 §6` (verification-is-replay, shipped validator), `design/research/speedrun-governance.md`

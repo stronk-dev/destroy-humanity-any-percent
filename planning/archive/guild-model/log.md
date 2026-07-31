@@ -210,3 +210,27 @@ Findings and rulings:
   fingerprint moved because `ApplySettlements` is a published executable authority.
 - The RFC stays `implementing`: this batch requires the mandated independent diff review before
   archival. AC6's real socket/scheduler composition remains explicitly owned by gameserver work.
+
+## 2026-07-31 — independent review: remediation round (47a20d9, 1f649e4) — APPROVED, archive unblocked
+
+Direct diff review by the reviewer, all five ruled contracts verified in source:
+
+1. **F1 (HIGH) closed exactly to the ruling:** 00029 rewrites the trigger so closed rows admit
+   precisely one transition — `account_id → NULL` with `left_at`/`role` IS NOT DISTINCT and
+   identity columns pinned — and the regression fixture builds multiple closed rows (join, leave,
+   rejoin, sweep paths) before deleting the account inside one transaction.
+2. **GD3-1:** zero-XP evaluations emit the new `guild_activity_evaluated` kind; the projector
+   upserts activity per (guild, window, account) regardless of production — the denominator counts
+   evaluators, with the 3-evaluate-1-produce fixture.
+3. **GD5a:** save v12 pairs `GuildBoundaryGuildID` with the seq (optional-string encoding,
+   migration mapping bare seqs to the current guild); switch semantics per the ruling.
+4. **Content-addressed clearing retries:** `snapshot_hash` column; a committed-seq retry compares
+   hashes — same snapshot no-ops, different snapshot hard-fails (the silent-no-op divergence hole
+   is gone), and the seq≤last check now precedes set-equality.
+5. **GD1-1:** separator-stripped matching implemented (`strings.Map` strip + dual Contains);
+   denylist file updated under the laxer entry rule. Deletion presence, orphan cleanup, and the
+   cross-guild lock fix all present; the two-rounds-deferred test debt landed (+310 test lines:
+   per-arm rejections, leadership concurrency, lock-order, deletion-history, denominator, retry).
+
+1f649e4 is a correctly-classified BALANCE-CHANGE baseline (v12 state encoding moved the hashes).
+**Guild Model archives. Run Genesis & Replay starts, RA/RB first.**
