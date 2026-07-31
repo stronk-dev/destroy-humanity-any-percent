@@ -99,3 +99,30 @@ Findings (fix queue, ordered):
 carried the new AGENTS.md history-rewrite convention — the rule is the reviewer's (this log's
 author), but it entered the repo riding a review commit; it deserves Marco's explicit sign-off and
 is called out in the session summary.
+
+## 2026-07-31 — review remediation and GD1–GD6 implementation round
+
+- Banked the independent verdict/spec amendments in `9a1df1b`, then closed the authority TOCTOU
+  and AB-BA window with one guild-first lock order and post-lock role validation. Leadership
+  transfer, manual disband, and sweep now emit every membership/role mutation. Guild IDs are
+  server-generated rather than aliasing idempotency IDs (`727676d`).
+- GD1 is concrete: NFKC/lowercase/whitespace normalization, closed ASCII grammar, committed
+  substring denylist plus additive deployment policy, and typed `name_policy` receipts.
+- Minted Balance Epoch 4 (`3a00c24`) for the two owner literals and the declared
+  `guild.stock_consumption` faction-slot source. No hardcap or nonzero multiplier changed.
+- Save v11 owns `guild_tithe_carry_ppm`, `guild_boundary_seq`, and the consumed-window count.
+  Production computes exact integer tier-progress deltas; the Guild hook carries division
+  remainder and emits strict tithe events only when the server-resolved membership contribution is
+  present. The idempotent projector saturates XP, records trailing-window activity, and exposes the
+  population-invariant Guild Health term to Commons.
+- Clearing boundaries persist one deterministic result per member and sequence; company-local
+  application enforces a monotonic watermark and owns both debit and credit without cross-company
+  locks. The stock-consumption provider publishes the current zero-rate factor through the declared
+  economy source. RA will record these server-resolved slices rather than recomputing them.
+- Account deletion now invokes a transactional Guild participant: membership history is closed and
+  anonymized, leadership succession is deterministic, and the empty-guild case disbands. A real
+  Postgres test covers tithe projection idempotency, clearing slices, deletion succession, and FK
+  anonymization; the existing lifecycle/concurrency suite remains green.
+- Focused Go, schema, client (6,452 tests), and full Postgres integration suites are green. The RFC
+  remains `implementing` until this complete delta receives the required independent review. AC6's
+  real socket/scheduler composition stays named under the gameserver round, not implied complete.

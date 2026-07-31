@@ -10,11 +10,11 @@
    and exchange persistence with migrations and database invariants.
 3. [x] Implement the closed account-scoped lifecycle intent surface with C1-compatible exact
    schemas, idempotency, typed rejections, transactional member/leader/cap enforcement, and events.
-4. [ ] Integrate server-derived production tithe, deterministic GC clearing, the 0-ppm consumption
+4. [x] Integrate server-derived production tithe, deterministic GC clearing, the 0-ppm consumption
    hook, NPC fallback, receipts, replay idempotency, and the canonical accrual boundary order.
 5. [x] Replace the deny-all `guild:*` transport resolver with active-membership authorization and
    relay membership presence changes through the existing transactional outbox path.
-6. [ ] Publish the shipped lifecycle/tithe/Health/exchange formulas and operations in canonical
+6. [x] Publish the shipped lifecycle/tithe/Health/exchange formulas and operations in canonical
    docs; run focused unit/schema/boundary tests, real-Postgres concurrency/integration, the full
    verification suite, and an independent diff review before archival.
 
