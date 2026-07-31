@@ -116,11 +116,11 @@ func TestApplyLoggedReplaysByteIdenticalTransition(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	first, err := ApplyLogged(newState(), payload, catalogs, inputs, &fakeInvariantSink{})
+	first, err := ApplyLogged(newState(), payload, catalogs, inputs)
 	if err != nil {
 		t.Fatal(err)
 	}
-	second, err := ApplyLogged(newState(), payload, catalogs, inputs, &fakeInvariantSink{})
+	second, err := ApplyLogged(newState(), payload, catalogs, inputs)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -138,7 +138,7 @@ func TestApplyLoggedReplaysByteIdenticalTransition(t *testing.T) {
 	}
 	root["evaluated_at_ms"] = cursor.Add(-time.Second).UnixMilli()
 	regressed, _ := json.Marshal(root)
-	if _, err := ApplyLogged(newState(), payload, catalogs, regressed, nil); err == nil {
+	if _, err := ApplyLogged(newState(), payload, catalogs, regressed); err == nil {
 		t.Fatal("clock-regressed replay input was accepted")
 	}
 }

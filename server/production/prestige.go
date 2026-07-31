@@ -324,7 +324,7 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 	if err != nil {
 		return save.ExitDecision{}, nil, err
 	}
-	transition, err := ApplyLoggedExit(company, request.CanonicalPayload, current, replayInputs, &invariantCollector{})
+	transition, err := ApplyLoggedExit(company, request.CanonicalPayload, current, replayInputs)
 	if err != nil {
 		return save.ExitDecision{}, nil, err
 	}

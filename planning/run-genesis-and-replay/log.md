@@ -84,3 +84,12 @@ catalog loader rejects any artifact map other than the six accepted kinds.
 
 The Go half of RB is complete. The TypeScript validator port and cross-runtime full-run fixture are
 the next plan item and remain unclaimed.
+
+### Self-review correction before independent gate
+
+The first RB commit still exposed an optional fifth `InvariantSink` parameter on `ApplyLogged`.
+Although intended only for diagnostics, the concrete sink type controlled whether invariant events
+were materialized, so it was an undeclared behavioral input and contradicted the four-argument
+contract. The boundary now constructs its own collector and returns invariant reports alongside
+state/receipt/events; the live service forwards those reports to metrics after the deterministic
+transition. Both ordinary and terminal entry points now have exactly four data arguments.

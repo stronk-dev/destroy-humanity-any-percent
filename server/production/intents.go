@@ -444,7 +444,8 @@ func (s *Service) Handle(
 			if resultErr != nil {
 				return save.IntentDecision{}, nil, resultErr
 			}
-			transition, resultErr := ApplyLogged(state, request.CanonicalPayload, bundle, replayInputs, collector)
+			transition, resultErr := ApplyLogged(state, request.CanonicalPayload, bundle, replayInputs)
+			collector.reports = append(collector.reports, transition.Invariants...)
 			if resultErr != nil {
 				return save.IntentDecision{}, nil, resultErr
 			}

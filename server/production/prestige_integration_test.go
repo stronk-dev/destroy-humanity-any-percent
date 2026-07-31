@@ -148,7 +148,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		}
 		terminalBundle := replayBundle
 		terminalBundle.Next = &terminalBundle
-		replayed, err := ApplyLoggedExit(companyBefore.State, loggedPayload, terminalBundle, replayInputs, &invariantCollector{})
+		replayed, err := ApplyLoggedExit(companyBefore.State, loggedPayload, terminalBundle, replayInputs)
 		if err != nil || string(replayed.Decision.Receipt) != string(result.Receipt) {
 			t.Fatalf("terminal replay receipt=%s live=%s err=%v", replayed.Decision.Receipt, result.Receipt, err)
 		}

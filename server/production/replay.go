@@ -116,25 +116,28 @@ type replayInputsWire struct {
 }
 
 type LoggedTransition struct {
-	State   *save.State
-	Outcome save.IntentOutcome
-	Receipt json.RawMessage
-	Events  []save.EventWrite
+	State      *save.State
+	Outcome    save.IntentOutcome
+	Receipt    json.RawMessage
+	Events     []save.EventWrite
+	Invariants []InvariantReport
 }
 
 type LoggedExitTransition struct {
-	Founder  *save.State
-	Company  *save.State
-	Decision save.ExitDecision
+	Founder    *save.State
+	Company    *save.State
+	Decision   save.ExitDecision
+	Invariants []InvariantReport
 }
 
 var ReplayHookOrder = [...]string{"prestige", "faction", "guild", "commons"}
 
 // ApplyLogged is the only replayable non-terminal Company mutation boundary.
 // It consumes no projection, clock, or catalog resolver outside its four data
-// arguments; the optional sink reports invariant diagnostics and does not
-// affect state, receipt, or events.
-func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBundle, replayInputs []byte, sink InvariantSink) (LoggedTransition, error) {
+// arguments. Invariant diagnostics are deterministic transition output.
+func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBundle, replayInputs []byte) (result LoggedTransition, resultErr error) {
+	collector := &invariantCollector{}
+	defer func() { result.Invariants = append([]InvariantReport(nil), collector.reports...) }()
 	if state == nil || !catalogs.valid(catalogs.ConstantsHash) {
 		return LoggedTransition{}, fmt.Errorf("%w: catalog bundle", ErrInvalidReplayInputs)
 	}
@@ -202,7 +205,7 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	hook := closedReplayAccrualHook(catalogs, accrual.CommonsWeightPPM)
 	band := &CompactTitheBand{MinimumPPM: catalogs.Commons.MinimumTithePPM(), MaximumPPM: catalogs.Commons.MaximumTithePPM()}
 	decision, err := TransitionWithPolicies(request, state, catalogs.Economy, catalogs.Routes, band, catalogs.Faction,
-		revision, wire.EvaluationMode, now, contributions, sink, hook)
+		revision, wire.EvaluationMode, now, contributions, collector, hook)
 	if err != nil {
 		return LoggedTransition{}, err
 	}
@@ -218,7 +221,9 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 // input is reconstructed solely from the frozen carry view; the returned
 // Founder state is applied by the live transaction but cross-run Founder
 // verification remains outside this RFC.
-func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs CatalogBundle, replayInputs []byte, sink InvariantSink) (LoggedExitTransition, error) {
+func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs CatalogBundle, replayInputs []byte) (result LoggedExitTransition, resultErr error) {
+	collector := &invariantCollector{}
+	defer func() { result.Invariants = append([]InvariantReport(nil), collector.reports...) }()
 	if company == nil || !catalogs.valid(catalogs.ConstantsHash) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: catalog bundle", ErrInvalidReplayInputs)
 	}
@@ -262,7 +267,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	var terms prestigecore.Terms
 	if request.Kind == IntentCrossGate {
 		transition, transitionErr := TransitionWithPolicies(request, company, catalogs.Economy, catalogs.Routes, nil, nil,
-			revision, wire.EvaluationMode, now, contributions, sink, hook)
+			revision, wire.EvaluationMode, now, contributions, collector, hook)
 		if transitionErr != nil {
 			return LoggedExitTransition{}, transitionErr
 		}
