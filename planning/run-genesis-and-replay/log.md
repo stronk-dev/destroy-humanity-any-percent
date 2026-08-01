@@ -656,7 +656,8 @@ but blocked archival on four verified contract failures:
    removal to erase coverage, and treated a cosmetic VERSION edit as a bump. The remediation uses
    every commit's own append-only registry and compares parsed parent/child versions. An adversarial
    temporary-Git fixture also exposed and fixed a leading-whitespace bug in porcelain parsing that
-   had hidden the first modified path.
+   had hidden the first modified path. Shallow repositories fail closed before the history walk;
+   the adversarial fixture clones at depth one and requires rejection.
 3. **HIGH:** the sequential Guild fixture proved only decoder acceptance; the settlement was ignored
    by both replay engines and lacked debit/credit semantics. Replay-input v2 now records one
    `(guild_id, base_seq, ordered settlements)` batch, the live engine resolves it before contribution

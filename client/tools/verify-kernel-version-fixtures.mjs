@@ -26,6 +26,13 @@ try {
   write(root, "client/src/replay.ts", "export const replay = 2;\n"); versionFiles(root, "0.1.1"); commit(root, "kernel: bump replay");
   run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
 
+  const shallow = path.join(root, "shallow-clone");
+  run(root, "git", ["clone", "--depth", "1", `file://${root}`, shallow]);
+  let shallowFailed = false;
+  try { run(shallow, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { shallowFailed = true; }
+  rmSync(shallow, { recursive: true, force: true });
+  if (!shallowFailed) throw new Error("kernel guard accepted shallow history");
+
   write(root, "kernel/affecting-paths.json", `${JSON.stringify({ schema_version: 1, paths: [] }, null, 2)}\n`);
   let removalFailed = false;
   try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { removalFailed = true; }

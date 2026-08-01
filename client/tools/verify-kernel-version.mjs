@@ -43,6 +43,9 @@ const assertBump = (label, files, paths, before, after) => {
   }
 };
 validateGuard(guard, "worktree");
+if (git("rev-parse", "--is-shallow-repository") === "true") {
+  throw new Error("kernel history guard requires complete Git history");
+}
 
 const guardIntroduction = git("log", "--diff-filter=A", "--format=%H", "--", "kernel/affecting-paths.json").split("\n").filter(Boolean).at(-1);
 if (guardIntroduction) {
