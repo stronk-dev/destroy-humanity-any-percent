@@ -22,6 +22,7 @@ export interface ReplayCatalogBundle {
 export interface ReplayContribution { readonly slot: MultiplierSlot; readonly source_id: string; readonly target: string; readonly factor: string }
 export interface ReplayEvent { readonly kind: string; readonly schema_version: number; readonly intent_id: string; readonly payload: unknown }
 export interface ReplayChange { readonly resource_id: string; readonly before: string; readonly delta: string; readonly after: string }
+export interface ReplayInvariant { readonly kind: "afford_fallback" | "residual_clamp" | "residual_abort"; readonly intent_id: string; readonly detail: string }
 export interface ReplayState {
   balances: Record<string, string>; generators: Record<string, number>; evaluatedThroughMs: number; computeCreditMs: number;
   manualTokenMilli: number; manualTokenRefilledAtMs: number; gatesCrossed: Record<string, boolean>; runSeq: number;
@@ -33,7 +34,7 @@ export interface ReplayState {
   factionId: string; incorporatedAtMs: number | null; factionStockResource: string; stockUnits: number; stockProgressMs: number;
   consumedStockUnits: number; guildTitheCarryPpm: number; guildBoundaryGuildId: string; guildBoundarySeq: number; guildConsumedWindow: number;
 }
-export interface LoggedTransition { readonly state: ReplayState; readonly outcome: "applied" | "rejected"; readonly receipt: unknown; readonly events: readonly ReplayEvent[] }
+export interface LoggedTransition { readonly state: ReplayState; readonly outcome: "applied" | "rejected"; readonly receipt: unknown; readonly events: readonly ReplayEvent[]; readonly invariants: readonly ReplayInvariant[] }
 export interface LoggedExitTransition {
   readonly founder: FounderCarry; readonly finalCompany: ReplayState; readonly newCompany: ReplayState | null;
   readonly outcome: "applied" | "rejected"; readonly receipt: unknown;
@@ -130,18 +131,20 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   deriveFactionStockResource(state, catalogs.factions);
   const revision = wire.command.revision; const before = { ...state.balances };
   if (request.invalid !== undefined) return rejected(state, request.intent_id, revision, "invalid", request.invalid);
+  if (wire.evaluated_at_ms < state.evaluatedThroughMs) throw new RangeError("clock regression");
   const resolved = wire.resolved; const kind = string(resolved.kind); if (string(resolved.intent_kind) !== request.kind) throw new RangeError("resolved intent mismatch");
   let accrual: ReplayAccrual; let founderCarry: FounderCarry | null = null; let declined = 0;
-  if (kind === "cross_gate" && request.kind === "cross_gate") { exactKeys(resolved, ["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry"], "cross gate inputs"); accrual = parseAccrual(resolved.accrual, catalogs); declined = safeInteger(resolved.declined_exit_offer_count, 0, MAX_EXACT_INTEGER); founderCarry = resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs.constantsHash); }
-  else { if (kind !== "accrual") throw new RangeError("resolved union mismatch"); exactKeys(resolved, ["kind", "intent_kind", "accrual"], "accrual inputs"); accrual = parseAccrual(resolved.accrual, catalogs); }
+  if (kind === "cross_gate" && request.kind === "cross_gate") { onlyKeys(resolved, ["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry"], "cross gate inputs"); accrual = parseAccrual(resolved.accrual, catalogs); declined = safeInteger(resolved.declined_exit_offer_count ?? 0, 0, MAX_EXACT_INTEGER); founderCarry = resolved.founder_carry === undefined || resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs.constantsHash); }
+  else { if (kind !== "accrual") throw new RangeError("resolved union mismatch"); onlyKeys(resolved, ["kind", "intent_kind", "accrual"], "accrual inputs"); accrual = parseAccrual(resolved.accrual, catalogs); }
   if (state.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
   const preflight = preflightRejection(state, catalogs, request, wire.evaluated_at_ms);
   if (preflight !== null) return rejected(state, request.intent_id, revision, preflight[0], preflight[1]);
   const evaluation = evaluate(state, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, accrual.contributions);
   const events = runHooks(state, catalogs, wire.command, evaluation, accrual);
+  const invariants: ReplayInvariant[] = [];
   let appliedCount = 0;
   switch (request.kind) {
-    case "buy_generator": { const result = buyGenerator(state, catalogs.economy, request); if (result.rejection) return rejected(state, request.intent_id, revision, result.rejection[0], result.rejection[1]); appliedCount = result.count; events.push(event("generator_purchased", request.intent_id, { generator_id: request.generator_id, count: appliedCount, cost_resource_id: request.costResource, cost: request.cost })); break; }
+    case "buy_generator": { const result = buyGenerator(state, catalogs.economy, request, invariants); if (result.rejection) return rejected(state, request.intent_id, revision, result.rejection[0], result.rejection[1]); appliedCount = result.count; events.push(event("generator_purchased", request.intent_id, { generator_id: request.generator_id, count: appliedCount, cost_resource_id: request.costResource, cost: request.cost })); break; }
     case "perform_manual_batch": { const result = manualBatch(state, catalogs.economy, request, wire.evaluated_at_ms); if (result.rejection) return rejected(state, request.intent_id, revision, result.rejection[0], result.rejection[1]); appliedCount = result.count; break; }
     case "cross_gate": { const result = crossGate(state, catalogs.routes, request, wire.command); if (result.rejection) return rejected(state, request.intent_id, revision, result.rejection[0], result.rejection[1]); events.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); if (request.route_id !== null) events.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); appliedCount = 1; break; }
     case "sign_compact": state.compactMember = true; state.compactTithePpm = request.tithe_ppm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, request.tithe_ppm, false, true))); appliedCount = 1; break;
@@ -150,8 +153,12 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
     case "decline_exit_offer": state.offerState = null; events.push(event("exit_offer_declined", request.intent_id, { offer_id: request.offer_id, run_seq: state.runSeq })); appliedCount = 1; break;
     default: return rejected(state, request.intent_id, revision, "invalid", request.kind);
   }
-  if (request.kind === "cross_gate") await afterPrestigeCrossGate(state, catalogs.prestige, request.intent_id, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
-  return applied(state, request.intent_id, revision + 1, appliedCount, before, events);
+  await afterPrestigeTransition(state, catalogs.prestige, request, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
+  for (const report of invariants) {
+    if (report.kind === "residual_abort") continue;
+    events.push(event("invariant_reported", request.intent_id, { detail: report.detail, invariant_kind: report.kind }));
+  }
+  return applied(state, request.intent_id, revision + 1, appliedCount, before, events, invariants);
 }
 
 export async function applyLoggedExit(company: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedExitTransition> {
@@ -159,7 +166,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const request = parseIntent(canonicalPayload, wire.command.intent_id);
   if (request.expected_revision !== wire.command.revision || wire.command.run_seq !== company.runSeq) throw new RangeError("terminal command/state mismatch");
   const resolved = wire.resolved;
-  exactKeys(resolved, ["kind", "intent_kind", "accrual", "founder_carry", "executed_route_ids", "selected_exit_type", "selected_terms", "next_constants_hash"], "terminal resolved inputs");
+  onlyKeys(resolved, ["kind", "intent_kind", "accrual", "founder_carry", "executed_route_ids", "selected_exit_type", "selected_terms", "next_constants_hash"], "terminal resolved inputs");
   if (resolved.kind !== "exit" || resolved.intent_kind !== request.kind || typeof resolved.selected_exit_type !== "string" || !hashPattern.test(string(resolved.next_constants_hash))) throw new RangeError("terminal resolved union mismatch");
   const selectedTerms = exactObject(resolved.selected_terms, Object.keys(resolved.selected_terms as object), "selected terms");
   const nextHash = string(resolved.next_constants_hash);
@@ -168,7 +175,6 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const accrual = parseAccrual(resolved.accrual, catalogs);
   if (company.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
   const founder = parseFounderCarry(resolved.founder_carry, catalogs.constantsHash);
-  if (request.expected_founder_revision !== undefined && request.expected_founder_revision !== founder.founder_revision) throw new RangeError("founder revision mismatch");
   const executedRoutes = sortedUniqueMechanical(array(resolved.executed_route_ids, "executed route ids"));
   deriveFactionStockResource(company, catalogs.factions);
   const revision = wire.command.revision;
@@ -295,8 +301,9 @@ function runHooks(state: ReplayState, catalogs: ReplayCatalogBundle, command: Re
   return events;
 }
 
-function buyGenerator(state: ReplayState, catalog: EconomyCatalog, request: Intent): { count: number; rejection?: [string, string] } {
-  const generator = catalog.generatorClass(request.generator_id)!; const owned = state.generators[generator.id]; if (owned === undefined) throw new RangeError("missing generator count"); const balance = parseCanonical(state.balances[generator.price.resourceId]!); const count = request.count.mode === "max" ? catalog.maxAffordable(generator.id, balance, owned) : request.count.value;
+function buyGenerator(state: ReplayState, catalog: EconomyCatalog, request: Intent, invariants: ReplayInvariant[]): { count: number; rejection?: [string, string] } {
+  const generator = catalog.generatorClass(request.generator_id)!; const owned = state.generators[generator.id]; if (owned === undefined) throw new RangeError("missing generator count"); const balance = parseCanonical(state.balances[generator.price.resourceId]!); let count = request.count.value;
+  if (request.count.mode === "max") { const affordability = catalog.maxAffordableDetailed(generator.id, balance, owned); count = affordability.count; if (affordability.usedFallback) invariants.push({ kind: "afford_fallback", intent_id: request.intent_id, detail: request.generator_id }); }
   if (count <= 0) return { count: 0, rejection: ["unaffordable", request.generator_id] };
   if (count > MAX_EXACT_INTEGER - owned) return { count: 0, rejection: ["cap_exceeded", request.generator_id] };
   let cost: Decimal;
@@ -305,18 +312,18 @@ function buyGenerator(state: ReplayState, catalog: EconomyCatalog, request: Inte
   const residual = quantize(balance.sub(cost));
   if (residual.lt(0)) {
     const unit = Decimal.fromMantissaExponent(1, balance.exponent - 11);
-    if (isStateValue(unit) && residual.abs().lte(unit)) cost = balance;
-    else throw new RangeError("generator residual cannot be reconciled");
+    if (isStateValue(unit) && residual.abs().lte(unit)) { cost = balance; invariants.push({ kind: "residual_clamp", intent_id: request.intent_id, detail: request.generator_id }); }
+    else { invariants.push({ kind: "residual_abort", intent_id: request.intent_id, detail: request.generator_id }); throw new RangeError("generator residual cannot be reconciled"); }
   }
   applyLedger(state, catalog, [{ resource: generator.price.resourceId, delta: cost.neg() }], false); state.generators[generator.id] = owned + count; request.cost = canonicalString(cost); request.costResource = generator.price.resourceId; return { count };
 }
 function manualBatch(state: ReplayState, catalog: EconomyCatalog, request: Intent, nowMs: number): { count: number; rejection?: [string, string] } { const action = catalog.manualActions.find((value) => value.id === request.action_id)!; const policy = catalog.manualPolicy!; if (nowMs > state.manualTokenRefilledAtMs) { const elapsed = nowMs - state.manualTokenRefilledAtMs; state.manualTokenMilli = Math.min(policy.bucketCapMilli, state.manualTokenMilli + elapsed * policy.refillMilliPerMs); state.manualTokenRefilledAtMs = nowMs; } const applied = Math.min(request.count, Math.floor(state.manualTokenMilli / 1000)); state.manualTokenMilli -= applied * 1000; if (applied > 0) { try { applyLedger(state, catalog, [{ resource: action.output.resourceId, delta: parseCanonical(action.output.amountPerAction).mul(applied) }], false); } catch (error) { if (error instanceof LedgerError && error.code === "above_hardcap") return { count: 0, rejection: ["cap_exceeded", request.action_id] }; throw error; } } return { count: applied }; }
 function crossGate(state: ReplayState, routes: RoutesCatalog, request: Intent, command: ReplayCommand): { rejection?: [string, string] } { const gate = routes.gate(request.gate_id); if (!gate) return { rejection: ["unknown_id", request.gate_id] }; if (state.gatesCrossed[request.gate_id]) return { rejection: ["gate_already_crossed", request.gate_id] }; let requirements = gate.requirement; if (request.route_id !== null) { const route = routes.route(request.route_id); if (!route) return { rejection: ["unknown_id", request.route_id] }; const context: RouteContext = { contextVersion: routes.contextVersion, resources: state.balances, doctrinesByTransition: state.doctrinesByTransition, structureId: state.structureId, ledgerFactKinds: state.ledgerFactKinds, meterBands: state.meterBands, regionTraits: state.regionTraits }; if (!route.active || route.requiresContextVersion > context.contextVersion || !evaluatePredicate(route.predicate, context)) return { rejection: ["route_predicate_unmet", request.route_id] }; requirements = discountedRequirements(gate, route); }
-  for (const requirement of requirements) if (parseCanonical(state.balances[requirement.resourceId]!).lt(parseCanonical(requirement.amount))) return { rejection: ["requirement_not_met", requirement.resourceId] }; for (const requirement of requirements) state.balances[requirement.resourceId] = canonicalString(quantize(parseCanonical(state.balances[requirement.resourceId]!).sub(parseCanonical(requirement.amount)))); state.gatesCrossed[request.gate_id] = true; const match = /^gate\.t([0-9]+)_to_t([0-9]+)$/.exec(request.gate_id); if (!match || Number(match[2]) !== Number(match[1]) + 1 || state.tier !== Number(match[1])) throw new RangeError("gate tier mismatch"); state.tier = Number(match[2]); void command; return {}; }
+  for (const requirement of requirements) if (parseCanonical(state.balances[requirement.resourceId]!).lt(parseCanonical(requirement.amount))) return { rejection: ["requirement_not_met", requirement.resourceId] }; for (const requirement of requirements) state.balances[requirement.resourceId] = canonicalString(quantize(parseCanonical(state.balances[requirement.resourceId]!).sub(parseCanonical(requirement.amount)))); state.gatesCrossed[request.gate_id] = true; const match = /^gate\.t([0-9]+)_to_t([0-9]+)$/.exec(request.gate_id); const from = Number(match?.[1]); const to = Number(match?.[2]); if (!match || !Number.isSafeInteger(from) || !Number.isSafeInteger(to) || to !== from + 1 || to > 9) throw new RangeError("gate tier mismatch"); state.tier = Math.max(state.tier, to); void command; return {}; }
 
-async function afterPrestigeCrossGate(state: ReplayState, policy: PrestigePolicy, intentId: string, command: ReplayCommand, nowMs: number, carry: FounderCarry | null, declined: number, events: ReplayEvent[]): Promise<void> {
-  if (state.offerState && state.offerState.expiresAtMs <= nowMs) { events.push(event("exit_offer_expired", intentId, { offer_id: state.offerState.offerId })); state.offerState = null; }
-  if (state.offerState || carry === null) return;
+async function afterPrestigeTransition(state: ReplayState, policy: PrestigePolicy, request: Intent, command: ReplayCommand, nowMs: number, carry: FounderCarry | null, declined: number, events: ReplayEvent[]): Promise<void> {
+  if (state.offerState && state.offerState.expiresAtMs <= nowMs) { events.push(event("exit_offer_expired", request.intent_id, { offer_id: state.offerState.offerId })); state.offerState = null; }
+  if (request.kind !== "cross_gate" || state.offerState || carry === null) return;
   if (safeInteger(carry.exit_history_count, 0, MAX_EXACT_INTEGER) === 0) return;
   if (state.tier < 0 || state.tier >= policy.spawnGatePpm.length) throw new RangeError("tier outside offer policy");
   const seed = (await founderSeed(command.founder_id, state.runSeq)) ^ (BigInt(state.tier) << 32n) ^ BigInt(declined);
@@ -329,7 +336,7 @@ async function afterPrestigeCrossGate(state: ReplayState, policy: PrestigePolicy
   const termsJSON = { market_modifier_ppm: factor, payout_preview: terms };
   const offerId = offerUUID(seed, nowMs); const expiresAtMs = nowMs + policy.offerDurationMs;
   state.offerState = { offerId, exitType, terms: termsJSON, spawnedAtMs: nowMs, expiresAtMs };
-  events.push(event("exit_offer_spawned", intentId, { exit_type: exitType, expires_at_ms: expiresAtMs, offer_id: offerId, payout_preview: terms }));
+  events.push(event("exit_offer_spawned", request.intent_id, { exit_type: exitType, expires_at_ms: expiresAtMs, offer_id: offerId, payout_preview: terms }));
 }
 
 function reputationDeltaExact(lifetimeValue: string, threshold: string, current: number, modifier: number): number {
@@ -435,11 +442,13 @@ function sortedUniqueMechanical(source: unknown[]): string[] {
   return source.map((item) => { const value = mechanicalString(item); if (byteCompare(value, last) <= 0) throw new SyntaxError("values must be sorted and unique"); last = value; return value; });
 }
 
-function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 1 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = exactObject(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: uuidString(command.company_stream_id), founder_id: uuidString(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: 1, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: exactObject(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
+function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 1 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: 1, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
 function parseAccrual(source: unknown, catalogs: ReplayCatalogBundle): ReplayAccrual {
-  const raw = exactObject(source, ["contributions", "commons_weight_ppm", "guild_settlement_batch", "route_context_version"], "accrual");
-  if (raw.commons_weight_ppm !== null) safeInteger(raw.commons_weight_ppm, 0, 1_000_000);
-  if (raw.route_context_version !== catalogs.routes.contextVersion) throw new RangeError("route context mismatch");
+  const raw = objectWithOnlyKeys(source, ["contributions", "commons_weight_ppm", "guild_settlement_batch", "route_context_version"], "accrual");
+  const commonsWeight = raw.commons_weight_ppm ?? null;
+  if (commonsWeight !== null) safeInteger(commonsWeight, 0, 1_000_000);
+  const routeContextVersion = raw.route_context_version ?? 0;
+  if (routeContextVersion !== catalogs.routes.contextVersion) throw new RangeError("route context mismatch");
   let lastContribution = "";
   const contributions = array(raw.contributions, "contributions").map((item) => {
     const value = exactObject(item, ["slot", "source_id", "target", "factor"], "contribution");
@@ -453,26 +462,26 @@ function parseAccrual(source: unknown, catalogs: ReplayCatalogBundle): ReplayAcc
   });
   let lastSettlement = "";
   const settlements = array(raw.guild_settlement_batch, "settlements").map((item) => {
-    const value = exactObject(item, ["guild_id", "boundary_seq", "units"], "settlement");
-    const settlement = { guild_id: uuidV7String(value.guild_id), boundary_seq: safeInteger(value.boundary_seq, 1, MAX_EXACT_INTEGER), units: safeInteger(value.units, 0, MAX_EXACT_INTEGER) };
+    const value = objectWithOnlyKeys(item, ["guild_id", "boundary_seq", "units"], "settlement");
+    const settlement = { guild_id: uuidV7String(value.guild_id), boundary_seq: safeInteger(value.boundary_seq, 1, MAX_EXACT_INTEGER), units: safeInteger(value.units ?? 0, 0, MAX_EXACT_INTEGER) };
     const key = `${settlement.guild_id}\0${settlement.boundary_seq.toString().padStart(16, "0")}`;
     if (lastSettlement !== "" && byteCompare(key, lastSettlement) <= 0) throw new SyntaxError("settlements must be sorted and unique");
     lastSettlement = key;
     return settlement;
   });
-  return { contributions, commons_weight_ppm: raw.commons_weight_ppm as number | null, guild_settlement_batch: settlements, route_context_version: raw.route_context_version as number };
+  return { contributions, commons_weight_ppm: commonsWeight as number | null, guild_settlement_batch: settlements, route_context_version: routeContextVersion as number };
 }
 
 function parseFounderCarry(source: unknown, constantsHash: string): FounderCarry {
-  const carry = exactObject(source, ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"], "founder carry");
+  const carry = objectWithOnlyKeys(source, ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"], "founder carry");
   safeInteger(carry.founder_revision, 1, MAX_EXACT_INTEGER);
   if (carry.founder_constants_hash !== constantsHash) throw new RangeError("founder catalog mismatch");
-  safeInteger(carry.reputation_level, 0, MAX_EXACT_INTEGER);
-  safeInteger(carry.route_knowledge_balance, 0, MAX_EXACT_INTEGER);
-  safeInteger(carry.age_ms, 0, MAX_EXACT_INTEGER);
-  safeInteger(carry.notoriety, 0, MAX_EXACT_INTEGER);
-  boolean(carry.advisor_mode);
-  safeInteger(carry.exit_history_count, 0, MAX_EXACT_INTEGER);
+  carry.reputation_level = safeInteger(carry.reputation_level ?? 0, 0, MAX_EXACT_INTEGER);
+  carry.route_knowledge_balance = safeInteger(carry.route_knowledge_balance ?? 0, 0, MAX_EXACT_INTEGER);
+  carry.age_ms = safeInteger(carry.age_ms ?? 0, 0, MAX_EXACT_INTEGER);
+  carry.notoriety = safeInteger(carry.notoriety ?? 0, 0, MAX_EXACT_INTEGER);
+  carry.advisor_mode = carry.advisor_mode ?? false; boolean(carry.advisor_mode);
+  carry.exit_history_count = safeInteger(carry.exit_history_count ?? 0, 0, MAX_EXACT_INTEGER);
   let lastFact = "";
   for (const item of array(carry.ledger_fact_kinds, "founder facts")) {
     const fact = string(item);
@@ -489,11 +498,76 @@ function parseFounderCarry(source: unknown, constantsHash: string): FounderCarry
   return carry as unknown as FounderCarry;
 }
 
-function parseIntent(payload: string, intentId: string): Intent { const source = parseJSON(payload); if (typeof source !== "object" || source === null || Array.isArray(source) || "intent_id" in source || canonicalJSONString(source) !== payload) throw new SyntaxError("invalid canonical payload"); const raw = source as Record<string, unknown>; const kind = string(raw.kind); const base: Intent = { intent_id: intentId, kind, expected_revision: safeInteger(raw.expected_revision, 1, MAX_EXACT_INTEGER) };
-  try { switch (kind) { case "buy_generator": exactKeys(raw, ["kind", "expected_revision", "generator_id", "count"], "buy"); base.generator_id = mechanicalString(raw.generator_id); { const count = exactObject(raw.count, Object.keys(raw.count as object), "count"); if (count.mode === "max") exactKeys(count, ["mode"], "max count"); else { exactKeys(count, ["mode", "value"], "exact count"); if (count.mode !== "exact") throw new SyntaxError("count mode"); count.value = safeInteger(count.value, 1, MAX_EXACT_INTEGER); } base.count = count; } break; case "perform_manual_batch": exactKeys(raw, ["kind", "expected_revision", "action_id", "count", "window_ms"], "manual"); base.action_id = mechanicalString(raw.action_id); if (typeof raw.count !== "number" || !Number.isSafeInteger(raw.count) || raw.count < 1 || raw.count > MAX_EXACT_INTEGER) { base.invalid = "count"; break; } base.count = raw.count; base.window_ms = safeInteger(raw.window_ms, 1, 3_600_000); break; case "cross_gate": exactKeys(raw, ["kind", "expected_revision", "gate_id", "route_id"], "gate"); base.gate_id = mechanicalString(raw.gate_id); base.route_id = raw.route_id === null ? null : mechanicalString(raw.route_id); break; case "sign_compact": exactKeys(raw, ["kind", "expected_revision", "tithe_ppm"], "sign"); base.tithe_ppm = safeInteger(raw.tithe_ppm, 0, 1_000_000); break; case "leave_compact": exactKeys(raw, ["kind", "expected_revision"], "leave"); break; case "incorporate": exactKeys(raw, ["kind", "expected_revision", "faction_id"], "incorporate"); base.faction_id = mechanicalString(raw.faction_id); break; case "decline_exit_offer": exactKeys(raw, ["kind", "expected_revision", "offer_id"], "decline"); base.offer_id = uuidV7String(raw.offer_id); break; case "accept_exit_offer": exactKeys(raw, ["kind", "expected_revision", "expected_founder_revision", "offer_id"], "accept exit offer"); base.expected_founder_revision = safeInteger(raw.expected_founder_revision, 1, MAX_EXACT_INTEGER); base.offer_id = uuidV7String(raw.offer_id); break; case "wind_down": case "file_ipo": exactKeys(raw, ["kind", "expected_revision", "expected_founder_revision"], kind); base.expected_founder_revision = safeInteger(raw.expected_founder_revision, 1, MAX_EXACT_INTEGER); break; default: base.invalid = kind; } } catch { base.invalid = `${kind}.fields`; } return base; }
+function parseIntent(payload: string, intentId: string): Intent {
+  const source = parseJSON(payload);
+  if (typeof source !== "object" || source === null || Array.isArray(source) || "intent_id" in source || canonicalJSONString(source) !== payload) throw new SyntaxError("invalid canonical payload");
+  const raw = source as Record<string, unknown>;
+  const kind = string(raw.kind);
+  const base: Intent = { intent_id: intentId, kind, expected_revision: safeInteger(raw.expected_revision, 1, MAX_EXACT_INTEGER) };
+  switch (kind) {
+    case "buy_generator": {
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "generator_id", "count"])) { base.invalid = "buy_generator.fields"; return base; }
+      if (!isMechanical(raw.generator_id)) base.invalid = "generator_id"; else base.generator_id = raw.generator_id;
+      if (!isRecord(raw.count)) { base.invalid = "count"; return base; }
+      const count = raw.count;
+      base.count = count;
+      if (count.mode === "max") {
+        if (!hasExactKeys(count, ["mode"])) base.invalid = "count.max";
+      } else if (count.mode === "exact") {
+        if (!hasExactKeys(count, ["mode", "value"]) || !isPositiveSafeInteger(count.value)) base.invalid = "count.exact";
+      } else base.invalid = "count.mode";
+      return base;
+    }
+    case "perform_manual_batch":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "action_id", "count", "window_ms"])) { base.invalid = "perform_manual_batch.fields"; return base; }
+      if (!isMechanical(raw.action_id)) base.invalid = "action_id"; else base.action_id = raw.action_id;
+      if (!isPositiveSafeInteger(raw.count)) base.invalid = "count"; else base.count = raw.count;
+      if (!isPositiveSafeInteger(raw.window_ms)) base.invalid = "window_ms"; else base.window_ms = raw.window_ms;
+      return base;
+    case "cross_gate":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "gate_id", "route_id"])) { base.invalid = "cross_gate.fields"; return base; }
+      if (!isMechanical(raw.gate_id)) base.invalid = "gate_id"; else base.gate_id = raw.gate_id;
+      if (raw.route_id === null) base.route_id = null;
+      else if (!isMechanical(raw.route_id)) base.invalid = "route_id";
+      else base.route_id = raw.route_id;
+      return base;
+    case "buy_route_hint":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "route_id"])) { base.invalid = "buy_route_hint.fields"; return base; }
+      if (!isMechanical(raw.route_id)) base.invalid = "route_id"; else base.route_id = raw.route_id;
+      return base;
+    case "sign_compact":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "tithe_ppm"])) { base.invalid = "sign_compact.fields"; return base; }
+      if (!isNonNegativeSafeInteger(raw.tithe_ppm) || raw.tithe_ppm > 1_000_000) base.invalid = "tithe_ppm"; else base.tithe_ppm = raw.tithe_ppm;
+      return base;
+    case "leave_compact":
+      if (!hasExactKeys(raw, ["kind", "expected_revision"])) base.invalid = "leave_compact.fields";
+      return base;
+    case "incorporate":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "faction_id"])) { base.invalid = "incorporate.fields"; return base; }
+      if (!isMechanical(raw.faction_id)) base.invalid = "faction_id"; else base.faction_id = raw.faction_id;
+      return base;
+    case "accept_exit_offer":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "expected_founder_revision", "offer_id"])) { base.invalid = "accept_exit_offer.fields"; return base; }
+      if (!isPositiveSafeInteger(raw.expected_founder_revision)) base.invalid = "expected_founder_revision"; else base.expected_founder_revision = raw.expected_founder_revision;
+      if (!isUUIDV7(raw.offer_id)) base.invalid = "offer_id"; else base.offer_id = raw.offer_id;
+      return base;
+    case "wind_down":
+    case "file_ipo":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "expected_founder_revision"])) { base.invalid = `${kind}.fields`; return base; }
+      if (!isPositiveSafeInteger(raw.expected_founder_revision)) base.invalid = "expected_founder_revision"; else base.expected_founder_revision = raw.expected_founder_revision;
+      return base;
+    case "decline_exit_offer":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "offer_id"])) { base.invalid = "decline_exit_offer.fields"; return base; }
+      if (!isUUIDV7(raw.offer_id)) base.invalid = "offer_id"; else base.offer_id = raw.offer_id;
+      return base;
+    default:
+      base.invalid = kind;
+      return base;
+  }
+}
 
-function applied(state: ReplayState, intentId: string, revision: number, count: number, before: Record<string, string>, events: ReplayEvent[]): LoggedTransition { for (const value of events) if (value.intent_id === "") (value as { intent_id: string }).intent_id = intentId; const changes = Object.keys(before).sort(byteCompare).flatMap((resource) => before[resource] === state.balances[resource] ? [] : [{ resource_id: resource, before: before[resource]!, delta: canonicalString(quantize(parseCanonical(state.balances[resource]!).sub(parseCanonical(before[resource]!)))), after: state.balances[resource]! }]); return { state, outcome: "applied", receipt: { applied_count: count, evaluated_at: rfc3339(state.evaluatedThroughMs), intent_id: intentId, new_revision: revision, outcome: "applied", receipt: { changes }, snapshot: wireSnapshot(state) }, events }; }
-function rejected(state: ReplayState, intentId: string, revision: number, category: string, detail: string): LoggedTransition { return { state, outcome: "rejected", receipt: { current_revision: revision, intent_id: intentId, outcome: "rejected", rejection: { category, detail } }, events: [] }; }
+function applied(state: ReplayState, intentId: string, revision: number, count: number, before: Record<string, string>, events: ReplayEvent[], invariants: ReplayInvariant[]): LoggedTransition { for (const value of events) if (value.intent_id === "") (value as { intent_id: string }).intent_id = intentId; const changes = Object.keys(before).sort(byteCompare).flatMap((resource) => before[resource] === state.balances[resource] ? [] : [{ resource_id: resource, before: before[resource]!, delta: canonicalString(quantize(parseCanonical(state.balances[resource]!).sub(parseCanonical(before[resource]!)))), after: state.balances[resource]! }]); return { state, outcome: "applied", receipt: { applied_count: count, evaluated_at: rfc3339(state.evaluatedThroughMs), intent_id: intentId, new_revision: revision, outcome: "applied", receipt: { changes }, snapshot: wireSnapshot(state) }, events, invariants }; }
+function rejected(state: ReplayState, intentId: string, revision: number, category: string, detail: string): LoggedTransition { return { state, outcome: "rejected", receipt: { current_revision: revision, intent_id: intentId, outcome: "rejected", rejection: { category, detail } }, events: [], invariants: [] }; }
 function event(kind: string, intentId: string, payload: unknown): ReplayEvent { return { kind, schema_version: 1, intent_id: intentId, payload }; }
 function compactMembershipPayload(command: ReplayCommand, runSeq: number, tithe: number, prior: boolean, next: boolean): unknown { return { founder_id: command.founder_id, new_member: next, prior_member: prior, run_id: { company_stream_id: command.company_stream_id, run_seq: runSeq }, tithe_ppm: tithe }; }
 function deriveFactionStockResource(state: ReplayState, catalog: FactionCatalog): void { if (state.factionId === "") { if (state.factionStockResource !== "") throw new RangeError("orphan stock resource"); return; } const member = catalog.byId.get(state.factionId); if (!member) throw new RangeError("unknown faction state"); state.factionStockResource = member.produces; }
@@ -510,6 +584,14 @@ function frame(value: number): Uint8Array { const result = new Uint8Array(8); ne
 function validateBalance(value: string, minimum: string, hardcap?: string): void { const parsed = parseCanonical(value); if (!isStateValue(parsed) || parsed.lt(parseCanonical(minimum)) || hardcap !== undefined && parsed.gt(parseCanonical(hardcap))) throw new SyntaxError("invalid balance"); }
 function rfc3339(ms: number): string { return new Date(ms).toISOString().replace(/\.000Z$/, "Z").replace(/(\.\d*?)0+Z$/, "$1Z"); }
 function parseJSON(source: string): unknown { return JSON.parse(source) as unknown; }
+function isRecord(value: unknown): value is Record<string, unknown> { return typeof value === "object" && value !== null && !Array.isArray(value); }
+function hasExactKeys(value: Record<string, unknown>, keys: readonly string[]): boolean { return same(Object.keys(value).sort(byteCompare), [...keys].sort(byteCompare)); }
+function isMechanical(value: unknown): value is string { return typeof value === "string" && mechanical.test(value); }
+function isUUIDV7(value: unknown): value is string { return typeof value === "string" && uuidV7.test(value); }
+function isPositiveSafeInteger(value: unknown): value is number { return typeof value === "number" && Number.isSafeInteger(value) && value >= 1 && value <= MAX_EXACT_INTEGER; }
+function isNonNegativeSafeInteger(value: unknown): value is number { return typeof value === "number" && Number.isSafeInteger(value) && value >= 0 && value <= MAX_EXACT_INTEGER; }
+function objectWithOnlyKeys(source: unknown, keys: readonly string[], label: string): Record<string, unknown> { if (!isRecord(source)) throw new SyntaxError(`${label} must be an object`); onlyKeys(source, keys, label); return source; }
+function onlyKeys(value: Record<string, unknown>, keys: readonly string[], label: string): void { const allowed = new Set(keys); if (Object.keys(value).some((key) => !allowed.has(key))) throw new SyntaxError(`${label} has unknown fields`); }
 function exactObject(source: unknown, keys: readonly string[], label: string): Record<string, unknown> { if (typeof source !== "object" || source === null || Array.isArray(source)) throw new SyntaxError(`${label} must be an object`); const value = source as Record<string, unknown>; exactKeys(value, keys, label); return value; }
 function exactKeys(value: Record<string, unknown>, keys: readonly string[], label: string): void { if (!same(Object.keys(value).sort(byteCompare), [...keys].sort(byteCompare))) throw new SyntaxError(`${label} fields are not exact`); }
 function array(value: unknown, label: string): unknown[] { if (!Array.isArray(value)) throw new SyntaxError(`${label} must be an array`); return value; }

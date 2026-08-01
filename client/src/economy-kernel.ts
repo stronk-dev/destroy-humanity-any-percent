@@ -1,6 +1,6 @@
 import Decimal from "break_infinity.js";
 
-import { sumGeometricSeries } from "./economy";
+import { affordGeometricSeriesDetailed, sumGeometricSeries } from "./economy";
 import {
   canonicalString,
   isStateValue,
@@ -158,9 +158,26 @@ export class EconomyCatalog {
   }
 
   maxAffordable(generatorId: string, cashSource: string | Decimal, owned: number): number {
+    return this.maxAffordableDetailed(generatorId, cashSource, owned).count;
+  }
+
+  maxAffordableDetailed(generatorId: string, cashSource: string | Decimal, owned: number): { count: number; usedFallback: boolean } {
     const generator = this.generatorClass(generatorId);
     if (!generator) throw new RangeError(`unknown generator class: ${generatorId}`);
-    return maxAffordable(generator.price, cashSource, owned);
+    const cash = cashSource instanceof Decimal ? new Decimal(cashSource) : parseCanonical(cashSource);
+    if (generator.price.curve.kind === "geometric") {
+      const result = affordGeometricSeriesDetailed(
+        cash,
+        parseCanonical(generator.price.base),
+        parseCanonical(generator.price.curve.ratio),
+        owned,
+      );
+      return {
+        count: Math.min(result.count, MAX_EXACT_INTEGER - owned),
+        usedFallback: result.usedFallback,
+      };
+    }
+    return { count: maxAffordable(generator.price, cash, owned), usedFallback: false };
   }
 }
 

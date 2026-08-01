@@ -240,3 +240,74 @@ The Postgres matrix proves account/import/Exit byte identity, genesis update rej
 transaction rollback when faults fire after the new-run pin or after the genesis insert. The
 direct repository-owned integration command is green: `docker compose -f compose.save-test.yml
 run --rm test`. Plan items 3 and 4 are complete; the six-verdict verifier is next.
+
+## 2026-08-01 — independent review: TS port + genesis storage (0dc005f, f51f6a9, 6c9cdcd)
+
+**Verdict: genesis storage is APPROVED — the strongest schema work yet** (deferred constraint
+trigger makes a pin uncommittable without genesis; genesis bytes via `RETURNING state::text` so
+byte-identity is by construction — the log honestly records the first draft failing against jsonb
+canonicalization; three-step fault loop proves no partial state; all four write sites
+single-transaction). **The TS port is NOT approved — two HIGHs produce false verdicts on HONEST
+runs, plus a band of drift findings. The port's frame must change: Go is the reference semantics,
+and ANY divergence in either direction is a bug** (a stricter TS is as wrong as a looser one —
+the verifier's one job is reproducing Go's verdicts).
+
+1. **HIGH (verified first-hand, replay.ts:153) — the offer-expiry sweep only runs on cross_gate
+   in TS**; Go runs the after-prestige phase on EVERY applied intent. An offer expiring during a
+   manual batch produces a Go log row with `exit_offer_expired` + cleared offer state; TS replays
+   no event and a stale offer → false `state_divergence`. Fix: run the after-phase on every
+   applied intent, exactly as Go; fixture: offer-expires-during-manual-batch.
+2. **HIGH (verified first-hand, replay.ts crossGate) — TS enforces `state.tier === from` and
+   assigns `tier = to`, contradicting the RULED Go semantics (tier = max(current, gate), never an
+   error for catalog-legal input).** TS hard-fails histories Go accepts (skipping/out-of-order
+   gates). Fix: port `setTierFromGate` exactly incl. the `to ≤ 9` cap; fixtures: skip-ahead gate
+   and lower-gate-after-higher.
+3. **MEDIUM — TS has no invariant collector**: Go's buy-generator fallback/clamp paths append
+   `invariant_reported` into the committed event stream; any such row fails C7 parity in TS. Port
+   the collector; fixture: `count.mode=max` exercising the fallback (currently zero max-mode
+   coverage).
+4. **MEDIUM — rejection-detail drift**: Go emits per-field invalid details with last-check-wins;
+   TS collapses to `kind.fields` with one special case. Port the per-field details and check
+   order exactly; fixtures per field.
+5. **MEDIUM — clock-regression check placement**: Go checks before both arms (rejections
+   included); TS only inside evaluate. Match Go. LOW batch (same rule — Go is reference, both
+   directions): missing-key zero-fill vs exactKeys; UUID-pattern strictness TS-only;
+   founder-revision equality check TS-only; null-carry cross-gate hard-error vs silent skip.
+6. **MEDIUM (test methodology) — "byte identity" is canonical-JSON equality after a JS number
+   round-trip**: key ORDER never asserted, >2^53 masking possible (currently saved only by
+   MaxExactInteger == MAX_SAFE_INTEGER). Fix: compare raw fixture strings against
+   TS-serialized-canonical output without a parse round-trip on the expected side.
+7. **Genesis LOW:** `Store.PinRunToCurrentEpoch` derives genesis from the LATEST revision (a
+   future-caller trap violating R1's first(run) definition) — restrict to revision 1 or assert;
+   pre-00032 pins are permanently genesis-less (accepted: unpublished repo, rebuilt DBs —
+   recorded).
+8. **Import ruling A-D4b:** the redesign (archive-and-mint founder swap; genesis-preserving) is
+   ACCEPTED — it is cleaner than the ruled A-D4a shape and R1 forced it. The once-only semantics
+   are ruled REPLACED by **replace-while-pristine**: importing again before any intent archives
+   the previous imported founder and mints another (each attempt archived, every minted founder
+   `imported=true`, no ranking-integrity surface). docs/accounts-and-sessions.md's "once" claim
+   must be amended to match; the per-account rate limit already bounds row litter.
+9. Fixture-coverage debt recorded from the review's list (route-discounted gates, max-mode,
+   compact-faction incorporation branches, terminal rejections, non-empty settlement batches) —
+   lands with the verifier round alongside AC2's ≥50-intent sequential corpus (whose non-claiming
+   in this round was honest and is appreciated).
+
+## 2026-08-01 — TypeScript parity remediation after independent review
+
+The two false-verdict HIGHs are fixed against the Go reference: prestige expiry now runs after
+every applied intent before gate-only spawning, and gate transitions use the same validated
+adjacent target with `tier=max(current,target)`. The ordinary shared corpus now includes an offer
+expiring during a manual batch, a skip-ahead gate, and a lower gate crossed after a higher tier.
+
+The same landing ports Go's deterministic invariant collector and detailed affordability fallback,
+including a separate Go-authored artifact bundle whose legal hardcap forces the fallback and the
+`invariant_reported` event. Intent parsing now preserves Go's exact per-field detail and
+last-check-wins order; clock regression is checked before preflight rejection; omitted struct
+scalars take Go's zero values while unknown fields still fail closed; the TS-only Founder revision
+and command UUID restrictions are gone.
+
+The fixture no longer parses expected receipts, events, or states before comparing them. Go emits
+canonical JSON strings into the fixture, and TypeScript compares its canonical serialization
+directly to those raw strings. The corpus is 32 ordinary cases plus 3 terminal cases and the
+fallback bundle. Root checks passed: `make replay-fixture-check`, `make test-client`, and
+`make test-go GO_PACKAGES=./production`.

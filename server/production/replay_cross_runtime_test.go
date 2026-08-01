@@ -27,6 +27,13 @@ type crossRuntimeFixture struct {
 	Artifacts     map[string]string          `json:"artifacts"`
 	Cases         []crossRuntimeFixtureCase  `json:"cases"`
 	TerminalCases []crossRuntimeTerminalCase `json:"terminal_cases"`
+	Additional    []crossRuntimeBundleCase   `json:"additional_bundles"`
+}
+
+type crossRuntimeBundleCase struct {
+	ConstantsHash string                  `json:"constants_hash"`
+	Artifacts     map[string]string       `json:"artifacts"`
+	Case          crossRuntimeFixtureCase `json:"case"`
 }
 
 type crossRuntimeFixtureCase struct {
@@ -38,6 +45,9 @@ type crossRuntimeFixtureCase struct {
 	Receipt          json.RawMessage `json:"receipt"`
 	Events           []fixtureEvent  `json:"events"`
 	PostState        json.RawMessage `json:"post_state"`
+	ReceiptJSON      string          `json:"receipt_json"`
+	EventsJSON       string          `json:"events_json"`
+	PostStateJSON    string          `json:"post_state_json"`
 }
 
 type fixtureEvent struct {
@@ -60,6 +70,13 @@ type crossRuntimeTerminalCase struct {
 	FounderEvents        []fixtureEvent  `json:"founder_events"`
 	CompanyEndedEvents   []fixtureEvent  `json:"company_ended_events"`
 	CompanyStartedEvents []fixtureEvent  `json:"company_started_events"`
+	ReceiptJSON          string          `json:"receipt_json"`
+	FounderOutputJSON    string          `json:"founder_output_json"`
+	FinalCompanyJSON     string          `json:"final_company_json"`
+	NewCompanyJSON       string          `json:"new_company_json"`
+	FounderEventsJSON    string          `json:"founder_events_json"`
+	CompanyEndedJSON     string          `json:"company_ended_events_json"`
+	CompanyStartedJSON   string          `json:"company_started_events_json"`
 }
 
 func TestApplyLoggedCrossRuntimeFixture(t *testing.T) {
@@ -114,6 +131,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		{name: "manual-online", payload: `{"intent_id":"01986666-0001-7000-8000-000000000001","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":3,"window_ms":10}`, advance: time.Second, mode: ModeOnline},
 		{name: "manual-offline-accrual", payload: `{"intent_id":"01986666-0002-7000-8000-000000000002","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":2,"window_ms":100}`, advance: 48 * time.Hour, mode: ModeOffline, configure: func(state *save.State) { state.GeneratorCounts["generator.beige_tower"] = 3 }},
 		{name: "buy-generator", payload: `{"intent_id":"01986666-0003-7000-8000-000000000003","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":4}}`, mode: ModeOnline, configure: func(state *save.State) { setCash(t, state, "1e4") }},
+		{name: "buy-generator-max", payload: `{"intent_id":"01986666-0014-7000-8000-000000000014","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"max"}}`, mode: ModeOnline, configure: func(state *save.State) { setCash(t, state, "1e1000") }},
 		{name: "cross-gate", payload: `{"intent_id":"01986666-0004-7000-8000-000000000004","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline, configure: func(state *save.State) { state.Tier = 2; setCash(t, state, "1e10") }, carry: &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: bundleBytes.Hash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}},
 		{name: "cross-gate-offer-spawn", payload: `{"intent_id":"01986666-0011-7000-8000-000000000011","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline,
 			configure: func(state *save.State) {
@@ -129,6 +147,11 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		{name: "decline-offer", payload: `{"intent_id":"01986666-0008-7000-8000-000000000008","kind":"decline_exit_offer","expected_revision":1,"offer_id":"01986666-0008-7000-8000-000000000099"}`, mode: ModeOnline, configure: func(state *save.State) {
 			state.OfferState = &save.ExitOfferState{OfferID: "01986666-0008-7000-8000-000000000099", ExitType: "acquisition", TermsJSON: json.RawMessage(`{"market_modifier_ppm":1000000,"payout_preview":{"reputation_delta":0,"network_slot_unlocks":[],"route_knowledge":0,"clout_reach_note":"clout.reach.preserved"}}`), SpawnedAt: baseNow.Add(-time.Minute), ExpiresAt: baseNow.Add(time.Minute)}
 		}},
+		{name: "offer-expires-during-manual-batch", payload: `{"intent_id":"01986666-0015-7000-8000-000000000015","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`, mode: ModeOnline, configure: func(state *save.State) {
+			state.OfferState = &save.ExitOfferState{OfferID: "01986666-0015-7000-8000-000000000099", ExitType: "acquisition", TermsJSON: json.RawMessage(`{"market_modifier_ppm":1000000,"payout_preview":{"reputation_delta":0,"network_slot_unlocks":[],"route_knowledge":0,"clout_reach_note":"clout.reach.preserved"}}`), SpawnedAt: baseNow.Add(-time.Minute), ExpiresAt: baseNow}
+		}},
+		{name: "skip-ahead-gate", payload: `{"intent_id":"01986666-0016-7000-8000-000000000016","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline, configure: func(state *save.State) { state.Tier = 1; setCash(t, state, "1e10") }, carry: &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: bundleBytes.Hash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}},
+		{name: "lower-gate-after-higher", payload: `{"intent_id":"01986666-0017-7000-8000-000000000017","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline, configure: func(state *save.State) { state.Tier = 4; setCash(t, state, "1e10") }, carry: &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: bundleBytes.Hash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}},
 		{name: "closed-hook-chain", payload: `{"intent_id":"01986666-0009-7000-8000-000000000009","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":60000}`, advance: time.Minute, mode: ModeOnline,
 			configure: func(state *save.State) {
 				state.GeneratorCounts["generator.beige_tower"] = 2
@@ -138,6 +161,21 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 			},
 			contributions: []multiplier.Contribution{{Slot: multiplier.SlotFaction, SourceID: "guild.stock_consumption", Target: "all", Factor: decimal.One}, {Slot: multiplier.SlotCommons, SourceID: "commons.member", Target: "all", Factor: decimal.New(11, -1)}}, weight: int64Pointer(812_345)},
 		{name: "invalid-manual", payload: `{"intent_id":"01986666-0010-7000-8000-000000000010","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":0,"window_ms":1}`, mode: ModeOnline},
+		{name: "invalid-buy-generator-id", payload: `{"intent_id":"01986666-0101-7000-8000-000000000101","kind":"buy_generator","expected_revision":1,"generator_id":"INVALID","count":{"mode":"exact","value":1}}`, mode: ModeOnline},
+		{name: "invalid-buy-count-object", payload: `{"intent_id":"01986666-0102-7000-8000-000000000102","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":1}`, mode: ModeOnline},
+		{name: "invalid-buy-count-max", payload: `{"intent_id":"01986666-0103-7000-8000-000000000103","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"max","value":1}}`, mode: ModeOnline},
+		{name: "invalid-buy-count-exact", payload: `{"intent_id":"01986666-0104-7000-8000-000000000104","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":0}}`, mode: ModeOnline},
+		{name: "invalid-buy-count-mode", payload: `{"intent_id":"01986666-0105-7000-8000-000000000105","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"some"}}`, mode: ModeOnline},
+		{name: "invalid-manual-action", payload: `{"intent_id":"01986666-0106-7000-8000-000000000106","kind":"perform_manual_batch","expected_revision":1,"action_id":"INVALID","count":1,"window_ms":1}`, mode: ModeOnline},
+		{name: "invalid-manual-window-last", payload: `{"intent_id":"01986666-0107-7000-8000-000000000107","kind":"perform_manual_batch","expected_revision":1,"action_id":"INVALID","count":0,"window_ms":0}`, mode: ModeOnline},
+		{name: "invalid-cross-gate-id", payload: `{"intent_id":"01986666-0108-7000-8000-000000000108","kind":"cross_gate","expected_revision":1,"gate_id":"INVALID","route_id":null}`, mode: ModeOnline},
+		{name: "invalid-cross-route-last", payload: `{"intent_id":"01986666-0109-7000-8000-000000000109","kind":"cross_gate","expected_revision":1,"gate_id":"INVALID","route_id":"INVALID"}`, mode: ModeOnline},
+		{name: "invalid-compact-tithe", payload: `{"intent_id":"01986666-0110-7000-8000-000000000110","kind":"sign_compact","expected_revision":1,"tithe_ppm":1000001}`, mode: ModeOnline},
+		{name: "invalid-incorporate-faction", payload: `{"intent_id":"01986666-0111-7000-8000-000000000111","kind":"incorporate","expected_revision":1,"faction_id":"INVALID"}`, mode: ModeOnline},
+		{name: "invalid-decline-offer", payload: `{"intent_id":"01986666-0112-7000-8000-000000000112","kind":"decline_exit_offer","expected_revision":1,"offer_id":"INVALID"}`, mode: ModeOnline},
+		{name: "invalid-accept-offer-last", payload: `{"intent_id":"01986666-0113-7000-8000-000000000113","kind":"accept_exit_offer","expected_revision":1,"expected_founder_revision":0,"offer_id":"INVALID"}`, mode: ModeOnline},
+		{name: "invalid-wind-down-founder", payload: `{"intent_id":"01986666-0114-7000-8000-000000000114","kind":"wind_down","expected_revision":1,"expected_founder_revision":0}`, mode: ModeOnline},
+		{name: "invalid-leave-fields", payload: `{"intent_id":"01986666-0115-7000-8000-000000000115","kind":"leave_compact","expected_revision":1,"extra":true}`, mode: ModeOnline},
 		{name: "unknown-buy-rejects-before-accrual", payload: `{"intent_id":"01986666-0012-7000-8000-000000000012","kind":"buy_generator","expected_revision":1,"generator_id":"generator.unknown","count":{"mode":"exact","value":1}}`, advance: time.Minute, mode: ModeOnline,
 			configure: func(state *save.State) { state.GeneratorCounts["generator.beige_tower"] = 3 }},
 		{name: "existing-compact-rejects-before-accrual", payload: `{"intent_id":"01986666-0013-7000-8000-000000000013","kind":"sign_compact","expected_revision":1,"tithe_ppm":110000}`, advance: time.Minute, mode: ModeOnline,
@@ -184,14 +222,76 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 			events[eventIndex] = fixtureEvent{Kind: string(event.Kind), SchemaVersion: event.SchemaVersion, IntentID: event.IntentID, Payload: event.Payload}
 		}
 		result.Cases = append(result.Cases, crossRuntimeFixtureCase{Name: definition.name, PreState: preState, CanonicalPayload: request.CanonicalPayload,
-			ReplayInputs: inputs, Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: postState})
+			ReplayInputs: inputs, Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: postState,
+			ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, postState)})
 	}
 	result.TerminalCases = []crossRuntimeTerminalCase{
 		makeTerminalFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
 		makeAcceptedOfferFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
 		makeScriptedGateFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
 	}
+	result.Additional = []crossRuntimeBundleCase{makeFallbackInvariantFixture(t, bundleBytes.Artifacts, baseNow)}
 	return result
+}
+
+func makeFallbackInvariantFixture(t *testing.T, source map[string][]byte, now time.Time) crossRuntimeBundleCase {
+	t.Helper()
+	artifacts := make(map[string][]byte, len(source))
+	for name, data := range source {
+		artifacts[name] = bytes.Clone(data)
+	}
+	var economyArtifact map[string]any
+	if err := json.Unmarshal(artifacts["economy"], &economyArtifact); err != nil {
+		t.Fatal(err)
+	}
+	resources := economyArtifact["resources"].([]any)
+	resources[0].(map[string]any)["hardcap"].(map[string]any)["amount"] = "1e4000000000000000"
+	modified, err := json.Marshal(economyArtifact)
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts["economy"] = modified
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs := loadReplayTestBundle(t, hash, artifacts)
+	state := replayFixtureState(t, catalogs.Economy, now)
+	setCash(t, state, "1e4000000000000000")
+	preState, err := save.EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0201-7000-8000-000000000201","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"max"}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001", FounderID: "01986666-2000-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(transition.Invariants) != 1 || transition.Invariants[0].Kind != InvariantAffordFallback {
+		t.Fatalf("fallback invariant missing: %+v", transition.Invariants)
+	}
+	postState, err := save.EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	events := fixtureEvents(transition.Events)
+	fixtureArtifacts := make(map[string]string, len(artifacts))
+	for name, data := range artifacts {
+		fixtureArtifacts[name] = string(data)
+	}
+	return crossRuntimeBundleCase{ConstantsHash: hash, Artifacts: fixtureArtifacts, Case: crossRuntimeFixtureCase{
+		Name: "buy-generator-max-fallback-invariant", PreState: preState, CanonicalPayload: request.CanonicalPayload,
+		ReplayInputs: inputs, Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: postState,
+		ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, postState),
+	}}
 }
 
 func makeTerminalFixtureCase(t *testing.T, catalogs CatalogBundle, constantsHash string, now time.Time) crossRuntimeTerminalCase {
@@ -226,10 +326,10 @@ func makeTerminalFixtureCase(t *testing.T, catalogs CatalogBundle, constantsHash
 	if err != nil {
 		t.Fatal(err)
 	}
-	return crossRuntimeTerminalCase{Name: "wind-down-scripted-first", PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+	return withTerminalRawJSON(t, crossRuntimeTerminalCase{Name: "wind-down-scripted-first", PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
 		Outcome: string(transition.Decision.Outcome), Receipt: transition.Decision.Receipt, FounderOutput: replayFounderOutput(transition.Founder, carry),
 		FinalCompany: finalCompany, NewCompany: newCompany, FounderEvents: fixtureEvents(transition.Decision.FounderEvents),
-		CompanyEndedEvents: fixtureEvents(transition.Decision.CompanyEndedEvents), CompanyStartedEvents: fixtureEvents(transition.Decision.CompanyStartedEvents)}
+		CompanyEndedEvents: fixtureEvents(transition.Decision.CompanyEndedEvents), CompanyStartedEvents: fixtureEvents(transition.Decision.CompanyStartedEvents)})
 }
 
 func makeAcceptedOfferFixtureCase(t *testing.T, catalogs CatalogBundle, constantsHash string, now time.Time) crossRuntimeTerminalCase {
@@ -295,10 +395,52 @@ func executeTerminalFixture(t *testing.T, name string, catalogs CatalogBundle, c
 	if err != nil {
 		t.Fatal(err)
 	}
-	return crossRuntimeTerminalCase{Name: name, PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+	return withTerminalRawJSON(t, crossRuntimeTerminalCase{Name: name, PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
 		Outcome: string(transition.Decision.Outcome), Receipt: transition.Decision.Receipt, FounderOutput: replayFounderOutput(transition.Founder, carry),
 		FinalCompany: finalCompany, NewCompany: newCompany, FounderEvents: fixtureEvents(transition.Decision.FounderEvents),
-		CompanyEndedEvents: fixtureEvents(transition.Decision.CompanyEndedEvents), CompanyStartedEvents: fixtureEvents(transition.Decision.CompanyStartedEvents)}
+		CompanyEndedEvents: fixtureEvents(transition.Decision.CompanyEndedEvents), CompanyStartedEvents: fixtureEvents(transition.Decision.CompanyStartedEvents)})
+}
+
+func withTerminalRawJSON(t *testing.T, value crossRuntimeTerminalCase) crossRuntimeTerminalCase {
+	t.Helper()
+	value.ReceiptJSON = canonicalFixtureJSON(t, value.Receipt)
+	value.FounderOutputJSON = canonicalFixtureValue(t, value.FounderOutput)
+	value.FinalCompanyJSON = canonicalFixtureJSON(t, value.FinalCompany)
+	value.NewCompanyJSON = canonicalFixtureJSON(t, value.NewCompany)
+	value.FounderEventsJSON = canonicalFixtureValue(t, value.FounderEvents)
+	value.CompanyEndedJSON = canonicalFixtureValue(t, value.CompanyEndedEvents)
+	value.CompanyStartedJSON = canonicalFixtureValue(t, value.CompanyStartedEvents)
+	return value
+}
+
+func canonicalFixtureJSON(t *testing.T, raw json.RawMessage) string {
+	t.Helper()
+	decoder := json.NewDecoder(bytes.NewReader(raw))
+	decoder.UseNumber()
+	var value any
+	if err := decoder.Decode(&value); err != nil {
+		t.Fatal(err)
+	}
+	return canonicalFixtureValue(t, value)
+}
+
+func canonicalFixtureValue(t *testing.T, value any) string {
+	t.Helper()
+	encoded, err := json.Marshal(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	decoder := json.NewDecoder(bytes.NewReader(encoded))
+	decoder.UseNumber()
+	var canonical any
+	if err := decoder.Decode(&canonical); err != nil {
+		t.Fatal(err)
+	}
+	encoded, err = json.Marshal(canonical)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(encoded)
 }
 
 func replayFounderOutput(state *save.State, carry replayFounderCarry) any {

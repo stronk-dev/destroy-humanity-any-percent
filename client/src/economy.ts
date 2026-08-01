@@ -72,31 +72,41 @@ function binarySearchAffordable(
   return low;
 }
 
-export function affordGeometricSeries(
+export interface AffordabilityResult {
+  readonly count: number;
+  readonly usedFallback: boolean;
+}
+
+export function affordGeometricSeriesDetailed(
   cashSource: DecimalSource,
   baseSource: DecimalSource,
   ratioSource: DecimalSource,
   owned: number,
-): number {
+): AffordabilityResult {
   const cash = new Decimal(cashSource);
   const base = new Decimal(baseSource);
   const ratio = new Decimal(ratioSource);
   validateInputs(cash, base, ratio, owned);
 
-  if (!affordable(1, cash, base, ratio, owned)) return 0;
+  if (!affordable(1, cash, base, ratio, owned)) return { count: 0, usedFallback: false };
   if (ratio.eq(1) || ratio.sub(1).eq(0)) {
-    return Math.min(Math.floor(cash.div(base).toNumber()), MAX_EXACT_INTEGER);
+    return {
+      count: Math.min(Math.floor(cash.div(base).toNumber()), MAX_EXACT_INTEGER),
+      usedFallback: false,
+    };
   }
 
   const start = base.mul(ratio.pow(owned));
-  const estimate = Math.floor(cash
+  const estimate = new Decimal(cash
     .div(start)
     .mul(ratio.sub(1))
     .add(1)
-    .log10()
-    / ratio.log10());
+    .log10())
+    .div(new Decimal(ratio.log10()))
+    .floor()
+    .toNumber();
   if (!Number.isSafeInteger(estimate) || estimate < 0) {
-    return binarySearchAffordable(cash, base, ratio, owned);
+    return { count: binarySearchAffordable(cash, base, ratio, owned), usedFallback: true };
   }
 
   let candidate = Math.min(estimate, MAX_EXACT_INTEGER);
@@ -113,7 +123,16 @@ export function affordGeometricSeries(
 
   if (!affordable(candidate, cash, base, ratio, owned) ||
       (candidate < MAX_EXACT_INTEGER && affordable(candidate + 1, cash, base, ratio, owned))) {
-    return binarySearchAffordable(cash, base, ratio, owned);
+    return { count: binarySearchAffordable(cash, base, ratio, owned), usedFallback: true };
   }
-  return candidate;
+  return { count: candidate, usedFallback: false };
+}
+
+export function affordGeometricSeries(
+  cashSource: DecimalSource,
+  baseSource: DecimalSource,
+  ratioSource: DecimalSource,
+  owned: number,
+): number {
+  return affordGeometricSeriesDetailed(cashSource, baseSource, ratioSource, owned).count;
 }
