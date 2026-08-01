@@ -85,6 +85,8 @@ and terminal Exit—must verify identically in both runtimes. The same corpus mu
 at a time to assert every failure verdict. Its successful path also returns the independently
 replayed terminal Company state to the parity suites; both compare it with the shared
 `final_state_json`, so terminal facts cannot agree while hidden state silently diverges.
+The player validator consumes the archived genesis save version; its explicit v12→v13 migration
+backfills the purchase accumulator exactly as Go does, while a mislabeled envelope fails closed.
 
 Ended runs enter `verification_queue` in the Exit transaction. Workers claim only the oldest
 unfinished run per Company, using expiring UUID claim tokens; projection and the token-checked

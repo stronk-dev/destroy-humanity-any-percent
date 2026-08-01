@@ -77,7 +77,7 @@ export async function verifyReplayRun(
   genesis: unknown,
   catalogs: ReplayCatalogBundle,
   entries: readonly ReplayLogEntry[],
-  identity: { readonly constantsHash: string; readonly engineMismatch?: boolean },
+  identity: { readonly constantsHash: string; readonly engineMismatch?: boolean; readonly genesisVersion?: number },
 ): Promise<ReplayVerdict> {
   return (await verifyReplayRunDetailed(genesis, catalogs, entries, identity)).verdict;
 }
@@ -86,12 +86,12 @@ export async function verifyReplayRunDetailed(
   genesis: unknown,
   catalogs: ReplayCatalogBundle,
   entries: readonly ReplayLogEntry[],
-  identity: { readonly constantsHash: string; readonly engineMismatch?: boolean },
+  identity: { readonly constantsHash: string; readonly engineMismatch?: boolean; readonly genesisVersion?: number },
 ): Promise<ReplayVerificationResult> {
   if (identity.engineMismatch) return { verdict: "engine_mismatch", finalState: null };
   if (identity.constantsHash !== catalogs.constantsHash) return { verdict: "constants_mismatch", finalState: null };
   let state: ReplayState;
-  try { state = restoreReplayStateV12(genesis, catalogs.economy); }
+  try { state = restoreReplayState(genesis, identity.genesisVersion ?? 13, catalogs.economy); }
   catch { return { verdict: "constants_mismatch", finalState: null }; }
   let terminal = false;
   for (let index = 0; index < entries.length; index++) {
@@ -118,7 +118,17 @@ export async function verifyReplayRunDetailed(
   return terminal ? { verdict: "verified", finalState: state } : { verdict: "log_gap", finalState: null };
 }
 
-export function restoreReplayStateV12(source: unknown, catalog: EconomyCatalog): ReplayState {
+export function restoreReplayState(source: unknown, version: number, catalog: EconomyCatalog): ReplayState {
+  if (version === 12) {
+    if (!isRecord(source) || Object.hasOwn(source, "generators_purchased_total")) throw new SyntaxError("invalid save v12 envelope");
+    const generators = integerRecord(source.generators, 0, MAX_EXACT_INTEGER, "generators");
+    let purchased = 0;
+    for (const count of Object.values(generators)) {
+      if (count > MAX_EXACT_INTEGER - purchased) { purchased = MAX_EXACT_INTEGER; break; }
+      purchased += count;
+    }
+    source = { ...source, generators_purchased_total: purchased };
+  } else if (version !== 13) throw new SyntaxError("unsupported replay save version");
   const raw = exactObject(source, ["balances", "generators", "generators_purchased_total", "evaluated_through", "compute_credit_ms", "manual_token_milli", "manual_token_refilled_at", "gates_crossed", "run_seq", "doctrines_by_transition", "structure_id", "ledger_fact_kinds", "meter_bands", "region_traits", "route_knowledge_balance", "hints_unlocked", "compact_member", "compact_tithe_ppm", "compact_solidarity_ppm", "compact_solidarity_samples", "tier", "lifetime_value", "offer_state", "run_started_at_ms", "reputation_level", "reputation_unlock_ppm", "network_slots", "clout_lifetime", "soul", "age_ms", "notoriety", "advisor_mode", "exit_history", "run_pre_timer", "offline_spans", "collapsed_offline_ms", "faction_id", "incorporated_at_ms", "stock_units", "stock_progress_ms", "consumed_stock_units", "guild_tithe_carry_ppm", "guild_boundary_seq", "guild_consumed_window_units", "guild_boundary_guild_id"], "save v13");
   const balances = stringRecord(raw.balances, "balances"); const expectedResources = catalog.resources.filter((value) => value.scope === "company").map((value) => value.id).sort(byteCompare);
   if (!same(Object.keys(balances).sort(byteCompare), expectedResources)) throw new SyntaxError("company balance set differs from catalog");
@@ -158,7 +168,7 @@ export function restoreReplayStateV12(source: unknown, catalog: EconomyCatalog):
   return state;
 }
 
-export function encodeReplayStateV12(state: ReplayState): unknown {
+export function encodeReplayStateV13(state: ReplayState): unknown {
   return { balances: sortedRecord(state.balances), generators: sortedRecord(state.generators), generators_purchased_total: state.generatorPurchasedTotal, evaluated_through: rfc3339(state.evaluatedThroughMs),
     compute_credit_ms: state.computeCreditMs, manual_token_milli: state.manualTokenMilli, manual_token_refilled_at: rfc3339(state.manualTokenRefilledAtMs),
     gates_crossed: sortedRecord(state.gatesCrossed), run_seq: state.runSeq, doctrines_by_transition: sortedRecord(state.doctrinesByTransition), structure_id: state.structureId,

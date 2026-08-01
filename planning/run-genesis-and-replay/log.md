@@ -569,3 +569,12 @@ The Run Genesis acceptance item “pre-timer runs enter count boards” also rem
 rows explicitly select `rta` or `attended`, so there is no count-keyed canonical category to enter.
 The implemented projector structurally excludes pre-timer runs from all four time boards without
 fabricating a fifth category.
+
+## 2026-08-01 — self-review follow-up: versioned TypeScript genesis migration
+
+Save v13 activated a pre-existing validator seam: Go receives `run_genesis.version`, while the
+TypeScript verifier previously assumed only the current envelope. The player verifier now accepts
+the archived genesis version, explicitly migrates v12 by summing then-owned counts with the same
+exact-domain saturation as Go, rejects a mislabeled v12 envelope, and retains the verdict-only API.
+The shared 51-entry run proves both current-v13 and migrated-v12 genesis reach the same verified
+terminal state.
