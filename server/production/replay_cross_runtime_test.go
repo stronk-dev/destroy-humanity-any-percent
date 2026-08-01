@@ -493,8 +493,16 @@ func assertFullRunVerifier(t *testing.T, full crossRuntimeFullRun, catalogs Cata
 		return result
 	}
 	entries := convert(full.Entries)
-	if verdict := VerifyReplayRun(full.Genesis, save.CurrentVersion, catalogs, entries, constantsHash, false); verdict != ReplayVerified {
+	verdict, finalState := verifyReplayRunDetailed(full.Genesis, save.CurrentVersion, catalogs, entries, constantsHash, false)
+	if verdict != ReplayVerified {
 		t.Fatalf("full run verdict=%s", verdict)
+	}
+	encodedFinal, err := save.EncodeState(finalState)
+	if err != nil {
+		t.Fatalf("encode verified final state: %v", err)
+	}
+	if got := canonicalFixtureJSON(t, encodedFinal); got != full.FinalStateJSON {
+		t.Fatalf("verified final state differs\ngot:  %s\nwant: %s", got, full.FinalStateJSON)
 	}
 	gap := append([]ReplayLogEntry(nil), entries[:19]...)
 	gap = append(gap, entries[20:]...)

@@ -29,7 +29,7 @@ Carried acceptance debt (must remain here until checked off):
 - [ ] Existing-member Open Source incorporation producing `compact_tithe_raised` in sequence.
 - [x] Legacy `run_log.replay_inputs IS NULL` maps to `log_gap` in the database reader.
 - [x] `run_version_drift` is wired to `engine_mismatch`; no caller-supplied production shortcut.
-- [ ] Final terminal state is checked against `run_ended` facts and the shared `final_state_json`.
+- [x] Final terminal state is checked against `run_ended` facts and the shared `final_state_json`.
 - [ ] Pre-timer runs verify, enter count boards, and are structurally excluded from time boards.
 - [ ] Implement the L7 category catalog and its transaction-owned queue projector; until then the
   queue cannot mark a run verified because `Projector` is intentionally mandatory.

@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	CurrentVersion           = 12
+	CurrentVersion           = 13
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
 )
@@ -27,50 +27,51 @@ var ErrInvalidState = errors.New("invalid saved state")
 var stateMechanicalIDPattern = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
 
 type State struct {
-	Ledger                *economy.Ledger
-	GeneratorCounts       map[string]int64
-	EvaluatedThrough      time.Time
-	ComputeCreditMS       int64
-	ManualTokenMilli      int64
-	ManualTokenRefilledAt time.Time
-	GatesCrossed          map[string]bool
-	RunSeq                int64
-	DoctrinesByTransition map[string]string
-	StructureID           string
-	LedgerFactKinds       map[string]bool
-	MeterBands            map[string]int
-	RegionTraits          map[string]bool
-	RouteKnowledgeBalance int64
-	HintsUnlocked         map[string]bool
-	CompactMember         bool
-	CompactTithePPM       int64
-	CompactSolidarityPPM  int64
-	CompactSamples        []CompactSample
-	Tier                  int64
-	LifetimeValue         decimal.Decimal
-	OfferState            *ExitOfferState
-	RunStartedAt          time.Time
-	RunPreTimer           bool
-	OfflineSpans          []OfflineSpan
-	CollapsedOfflineMS    int64
-	ReputationLevel       int64
-	ReputationUnlockPPM   int64
-	NetworkSlots          []NetworkSlot
-	CloutLifetime         int64
-	Soul                  int64
-	AgeMS                 int64
-	Notoriety             int64
-	AdvisorMode           bool
-	ExitHistory           []ExitRecord
-	FactionID             string
-	IncorporatedAt        time.Time
-	StockUnits            int64
-	StockProgressMS       int64
-	ConsumedStockUnits    int64
-	GuildTitheCarryPPM    int64
-	GuildBoundaryGuildID  string
-	GuildBoundarySeq      int64
-	GuildConsumedWindow   int64
+	Ledger                  *economy.Ledger
+	GeneratorCounts         map[string]int64
+	GeneratorPurchasedTotal int64
+	EvaluatedThrough        time.Time
+	ComputeCreditMS         int64
+	ManualTokenMilli        int64
+	ManualTokenRefilledAt   time.Time
+	GatesCrossed            map[string]bool
+	RunSeq                  int64
+	DoctrinesByTransition   map[string]string
+	StructureID             string
+	LedgerFactKinds         map[string]bool
+	MeterBands              map[string]int
+	RegionTraits            map[string]bool
+	RouteKnowledgeBalance   int64
+	HintsUnlocked           map[string]bool
+	CompactMember           bool
+	CompactTithePPM         int64
+	CompactSolidarityPPM    int64
+	CompactSamples          []CompactSample
+	Tier                    int64
+	LifetimeValue           decimal.Decimal
+	OfferState              *ExitOfferState
+	RunStartedAt            time.Time
+	RunPreTimer             bool
+	OfflineSpans            []OfflineSpan
+	CollapsedOfflineMS      int64
+	ReputationLevel         int64
+	ReputationUnlockPPM     int64
+	NetworkSlots            []NetworkSlot
+	CloutLifetime           int64
+	Soul                    int64
+	AgeMS                   int64
+	Notoriety               int64
+	AdvisorMode             bool
+	ExitHistory             []ExitRecord
+	FactionID               string
+	IncorporatedAt          time.Time
+	StockUnits              int64
+	StockProgressMS         int64
+	ConsumedStockUnits      int64
+	GuildTitheCarryPPM      int64
+	GuildBoundaryGuildID    string
+	GuildBoundarySeq        int64
+	GuildConsumedWindow     int64
 	// FactionStockResource is derived from FactionID and the pinned catalog at
 	// runtime. It is intentionally not persisted as a second source of truth.
 	FactionStockResource string
@@ -201,6 +202,11 @@ type stateV12 struct {
 	GuildBoundaryGuildID *string `json:"guild_boundary_guild_id"`
 }
 
+type stateV13 struct {
+	stateV12
+	GeneratorPurchasedTotal int64 `json:"generators_purchased_total"`
+}
+
 type rawExitOfferState struct {
 	OfferID     string          `json:"offer_id"`
 	ExitType    string          `json:"exit_type"`
@@ -273,6 +279,9 @@ func EncodeState(state *State) ([]byte, error) {
 			return nil, fmt.Errorf("%w: invalid generator count for %q", ErrInvalidState, id)
 		}
 	}
+	if state.GeneratorPurchasedTotal < 0 || state.GeneratorPurchasedTotal > decimal.MaxExactInteger {
+		return nil, fmt.Errorf("%w: generator purchase total exceeds the exact domain", ErrInvalidState)
+	}
 	if state.ComputeCreditMS < 0 || state.ComputeCreditMS > decimal.MaxExactInteger ||
 		state.ManualTokenMilli < 0 || state.ManualTokenMilli > decimal.MaxExactInteger ||
 		state.RouteKnowledgeBalance < 0 || state.RouteKnowledgeBalance > decimal.MaxExactInteger {
@@ -308,7 +317,7 @@ func EncodeState(state *State) ([]byte, error) {
 	if state.ManualTokenRefilledAt.After(state.EvaluatedThrough) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
-	encoded, err := json.Marshal(stateV12{stateV11: stateV11{stateV10: stateV10{stateV9: stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
+	encoded, err := json.Marshal(stateV13{stateV12: stateV12{stateV11: stateV11{stateV10: stateV10{stateV9: stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
 		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: cloneBoolMap(normalized.GatesCrossed), RunSeq: normalized.RunSeq,
@@ -328,7 +337,8 @@ func EncodeState(state *State) ([]byte, error) {
 		FactionID: optionalString(normalized.FactionID), IncorporatedAtMS: optionalTimeMS(normalized.IncorporatedAt),
 		StockUnits: normalized.StockUnits, StockProgressMS: normalized.StockProgressMS, ConsumedStockUnits: normalized.ConsumedStockUnits},
 		GuildTitheCarryPPM: normalized.GuildTitheCarryPPM, GuildBoundarySeq: normalized.GuildBoundarySeq,
-		GuildConsumedWindow: normalized.GuildConsumedWindow}, GuildBoundaryGuildID: optionalString(normalized.GuildBoundaryGuildID)})
+		GuildConsumedWindow: normalized.GuildConsumedWindow}, GuildBoundaryGuildID: optionalString(normalized.GuildBoundaryGuildID)},
+		GeneratorPurchasedTotal: normalized.GeneratorPurchasedTotal})
 	if err != nil {
 		return nil, fmt.Errorf("%w: encode: %v", ErrInvalidState, err)
 	}
@@ -346,7 +356,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
 	}
 
-	var source stateV12
+	var source stateV13
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -356,7 +366,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err != nil {
 			return nil, fmt.Errorf("%w: version-1 migration baseline: %v", ErrInvalidState, err)
 		}
-		source.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
+		source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
 			Balances: legacy.Balances, Generators: zeroGeneratorCounts(catalog, scope), EvaluatedThrough: cursor,
 		}
 	} else if version == 2 {
@@ -364,13 +374,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
+		source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
 	} else if version < 5 {
 		var previous stateV4
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
+		source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
 			Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough,
 			ComputeCreditMS: previous.ComputeCreditMS, ManualTokenMilli: previous.ManualTokenMilli,
 			ManualTokenRefilledAt: previous.ManualTokenRefilledAt,
@@ -380,31 +390,35 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = previous
+		source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = previous
 	} else if version == 6 {
 		var previous stateV6
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV10.stateV9.stateV8.stateV7.stateV6 = previous
+		source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6 = previous
 	} else if version == 7 {
-		if err := decodeState(data, &source.stateV10.stateV9.stateV8.stateV7); err != nil {
+		if err := decodeState(data, &source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7); err != nil {
 			return nil, err
 		}
 	} else if version == 8 {
-		if err := decodeState(data, &source.stateV10.stateV9.stateV8); err != nil {
+		if err := decodeState(data, &source.stateV12.stateV11.stateV10.stateV9.stateV8); err != nil {
 			return nil, err
 		}
 	} else if version == 9 {
-		if err := decodeState(data, &source.stateV10.stateV9); err != nil {
+		if err := decodeState(data, &source.stateV12.stateV11.stateV10.stateV9); err != nil {
 			return nil, err
 		}
 	} else if version == 10 {
-		if err := decodeState(data, &source.stateV10); err != nil {
+		if err := decodeState(data, &source.stateV12.stateV11.stateV10); err != nil {
 			return nil, err
 		}
 	} else if version == 11 {
-		if err := decodeState(data, &source.stateV11); err != nil {
+		if err := decodeState(data, &source.stateV12.stateV11); err != nil {
+			return nil, err
+		}
+	} else if version == 12 {
+		if err := decodeState(data, &source.stateV12); err != nil {
 			return nil, err
 		}
 	} else if err := decodeState(data, &source); err != nil {
@@ -452,6 +466,9 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if err != nil {
 		return nil, err
 	}
+	if version < 13 {
+		source.GeneratorPurchasedTotal = sumGeneratorCounts(counts)
+	}
 	cursor, err := restoreCursor(source.EvaluatedThrough, version)
 	if err != nil {
 		return nil, err
@@ -484,7 +501,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, err
 	}
 	state := &State{
-		Ledger: ledger, GeneratorCounts: counts, EvaluatedThrough: cursor,
+		Ledger: ledger, GeneratorCounts: counts, GeneratorPurchasedTotal: source.GeneratorPurchasedTotal, EvaluatedThrough: cursor,
 		ComputeCreditMS: source.ComputeCreditMS, ManualTokenMilli: source.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: source.GatesCrossed, RunSeq: source.RunSeq,
 		DoctrinesByTransition: source.DoctrinesByTransition, StructureID: source.StructureID,
@@ -974,6 +991,17 @@ func validateGeneratorCounts(catalog *economy.Catalog, scope economy.Scope, sour
 		counts[definition.ID] = count
 	}
 	return counts, nil
+}
+
+func sumGeneratorCounts(counts map[string]int64) int64 {
+	var total int64
+	for _, count := range counts {
+		if count > decimal.MaxExactInteger-total {
+			return decimal.MaxExactInteger
+		}
+		total += count
+	}
+	return total
 }
 
 func zeroGeneratorCounts(catalog *economy.Catalog, scope economy.Scope) map[string]int64 {

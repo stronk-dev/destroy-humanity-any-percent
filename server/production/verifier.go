@@ -39,46 +39,55 @@ type ReplayLogEntry struct {
 // transition boundary used by live commands. Receipt and ordered event bytes
 // are canonical JSON captured from persistence, never an alternate oracle.
 func VerifyReplayRun(genesis []byte, version int, catalogs CatalogBundle, entries []ReplayLogEntry, constantsHash string, engineMismatch bool) ReplayVerdict {
+	verdict, _ := verifyReplayRunDetailed(genesis, version, catalogs, entries, constantsHash, engineMismatch)
+	return verdict
+}
+
+// verifyReplayRunDetailed returns the terminal Company state only for a fully
+// verified run. The queue consumes the stable verdict-only API; shared-kernel
+// parity tests consume the state so final_state_json cannot become a generated
+// but unasserted fixture field.
+func verifyReplayRunDetailed(genesis []byte, version int, catalogs CatalogBundle, entries []ReplayLogEntry, constantsHash string, engineMismatch bool) (ReplayVerdict, *save.State) {
 	if engineMismatch {
-		return ReplayEngineMismatch
+		return ReplayEngineMismatch, nil
 	}
 	if constantsHash != catalogs.ConstantsHash || !catalogs.valid(constantsHash) {
-		return ReplayConstantsMismatch
+		return ReplayConstantsMismatch, nil
 	}
 	state, err := save.RestoreState(genesis, version, catalogs.Economy, economy.ScopeCompany, time.Time{})
 	if err != nil {
-		return ReplayConstantsMismatch
+		return ReplayConstantsMismatch, nil
 	}
 	terminal := false
 	for index, entry := range entries {
 		if entry.Sequence != int64(index+1) || terminal {
-			return ReplayLogGap
+			return ReplayLogGap, nil
 		}
 		wire, wireErr := parseReplayInputs(entry.ReplayInputs)
 		if wireErr != nil {
-			return ReplayStateDivergence
+			return ReplayStateDivergence, nil
 		}
 		if wire.Command.RunLogSeq != entry.Sequence {
-			return ReplayLogGap
+			return ReplayLogGap, nil
 		}
 		var discriminator struct {
 			Kind string `json:"kind"`
 		}
 		if json.Unmarshal(wire.Resolved, &discriminator) != nil {
-			return ReplayStateDivergence
+			return ReplayStateDivergence, nil
 		}
 		if discriminator.Kind == "exit" {
 			entryCatalogs := catalogs
 			entryCatalogs.Next = entry.NextCatalog
 			transition, transitionErr := ApplyLoggedExit(state, entry.CanonicalPayload, entryCatalogs, entry.ReplayInputs)
 			if transitionErr != nil {
-				return replayErrorVerdict(transitionErr)
+				return replayErrorVerdict(transitionErr), nil
 			}
 			events := append([]save.EventWrite(nil), transition.Decision.FounderEvents...)
 			events = append(events, transition.Decision.CompanyEndedEvents...)
 			events = append(events, transition.Decision.CompanyStartedEvents...)
 			if !canonicalJSONEqual(transition.Decision.Receipt, entry.ReceiptJSON) || !canonicalJSONEqual(marshalReplayEvents(events), entry.EventsJSON) {
-				return ReplayStateDivergence
+				return ReplayStateDivergence, nil
 			}
 			state = transition.Company
 			terminal = transition.Decision.Outcome == save.IntentApplied
@@ -86,17 +95,17 @@ func VerifyReplayRun(genesis []byte, version int, catalogs CatalogBundle, entrie
 		}
 		transition, transitionErr := ApplyLogged(state, entry.CanonicalPayload, catalogs, entry.ReplayInputs)
 		if transitionErr != nil {
-			return replayErrorVerdict(transitionErr)
+			return replayErrorVerdict(transitionErr), nil
 		}
 		if !canonicalJSONEqual(transition.Receipt, entry.ReceiptJSON) || !canonicalJSONEqual(marshalReplayEvents(transition.Events), entry.EventsJSON) {
-			return ReplayStateDivergence
+			return ReplayStateDivergence, nil
 		}
 		state = transition.State
 	}
 	if !terminal {
-		return ReplayLogGap
+		return ReplayLogGap, nil
 	}
-	return ReplayVerified
+	return ReplayVerified, state
 }
 
 func replayErrorVerdict(err error) ReplayVerdict {

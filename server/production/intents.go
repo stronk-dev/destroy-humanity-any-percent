@@ -879,6 +879,9 @@ func (s *Service) buyGenerator(
 	if count > decimal.MaxExactInteger-owned {
 		return rejectedDecision(request, revision.Number, "cap_exceeded", request.GeneratorID)
 	}
+	if count > decimal.MaxExactInteger-state.GeneratorPurchasedTotal {
+		return rejectedDecision(request, revision.Number, "cap_exceeded", "generators_purchased_total")
+	}
 	cost, err := catalog.BulkCost(request.GeneratorID, owned, count)
 	if err != nil {
 		return rejectedDecision(request, revision.Number, "invalid", request.GeneratorID)
@@ -903,6 +906,7 @@ func (s *Service) buyGenerator(
 		return save.IntentDecision{}, err
 	}
 	state.GeneratorCounts[request.GeneratorID] = owned + count
+	state.GeneratorPurchasedTotal += count
 	accrualEvents = append(accrualEvents, generatorPurchasedEvent(request, generator.Price.ResourceID, count, cost))
 	return appliedDecision(request, state, revision.Number+1, count, before, accrualEvents, collectorReports(sink))
 }
@@ -1094,8 +1098,9 @@ func wireChanges(before, after map[string]string) ([]map[string]string, error) {
 func wireSnapshot(state *save.State) map[string]any {
 	return map[string]any{
 		"balances": state.Ledger.Snapshot(), "generators": state.GeneratorCounts,
-		"evaluated_through": state.EvaluatedThrough.UTC().Format(time.RFC3339Nano),
-		"compute_credit_ms": state.ComputeCreditMS, "manual_token_milli": state.ManualTokenMilli,
+		"generators_purchased_total": state.GeneratorPurchasedTotal,
+		"evaluated_through":          state.EvaluatedThrough.UTC().Format(time.RFC3339Nano),
+		"compute_credit_ms":          state.ComputeCreditMS, "manual_token_milli": state.ManualTokenMilli,
 		"manual_token_refilled_at": state.ManualTokenRefilledAt.UTC().Format(time.RFC3339Nano),
 		"gates_crossed":            state.GatesCrossed, "run_seq": state.RunSeq,
 		"doctrines_by_transition": state.DoctrinesByTransition, "structure_id": state.StructureID,

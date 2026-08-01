@@ -3,6 +3,7 @@ package save
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"testing"
 )
 
@@ -117,6 +118,22 @@ func TestValidateGuildActivityEventPayloads(t *testing.T) {
 	for _, event := range invalid {
 		if err := validateEventPayload(event); !errors.Is(err, ErrInvalidStream) {
 			t.Fatalf("invalid event %s: %v", event.Kind, err)
+		}
+	}
+}
+
+func TestRunEndedV2RequiresTerminalCategoryFacts(t *testing.T) {
+	base := `{"founder_id":"22222222-2222-4222-8222-222222222222","run_id":{"company_stream_id":"11111111-1111-4111-8111-111111111111","run_seq":1},"exit_type":"collapse","started_at_ms":100,"ended_at_ms":200,"rta_ms":100,"attended_ms":90,"pre_timer":false,"terminal_seq":1,"payout":{"reputation_delta":0,"network_slot_unlocks":[],"route_knowledge":0,"clout_reach_note":"clout.reach.preserved"},"tier":1,"lifetime_value":"1e0","ledger_fact_kinds":[],"executed_routes":[],%s"assisted":{"commons":false,"advisor":false},"faction":null}`
+	valid := EventWrite{Kind: EventRunEnded, SchemaVersion: 2, IntentID: testIntentID,
+		Payload: json.RawMessage(fmt.Sprintf(base, `"gates_crossed":[],"generators_purchased_total":0,`))}
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: []EventWrite{valid}}, testIntentID); err != nil {
+		t.Fatal(err)
+	}
+	for _, fields := range []string{`"generators_purchased_total":0,`, `"gates_crossed":[],`} {
+		invalid := valid
+		invalid.Payload = json.RawMessage(fmt.Sprintf(base, fields))
+		if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: []EventWrite{invalid}}, testIntentID); !errors.Is(err, ErrInvalidStream) {
+			t.Fatalf("missing v2 terminal fact accepted: %s err=%v", fields, err)
 		}
 	}
 }

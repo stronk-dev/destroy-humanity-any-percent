@@ -171,6 +171,7 @@ func TestStateV8MigratesCollapsedOfflineAccumulator(t *testing.T) {
 	delete(previous, "guild_boundary_seq")
 	delete(previous, "guild_consumed_window_units")
 	delete(previous, "guild_boundary_guild_id")
+	delete(previous, "generators_purchased_total")
 	v8, err := json.Marshal(previous)
 	if err != nil {
 		t.Fatal(err)
@@ -216,6 +217,7 @@ func TestGuildWatermarkV12PairAndLegacyMigration(t *testing.T) {
 		t.Fatal(err)
 	}
 	delete(previous, "guild_boundary_guild_id")
+	delete(previous, "generators_purchased_total")
 	v11, err := json.Marshal(previous)
 	if err != nil {
 		t.Fatal(err)
@@ -224,8 +226,8 @@ func TestGuildWatermarkV12PairAndLegacyMigration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if legacy.GuildBoundaryGuildID != "" || legacy.GuildBoundarySeq != 10_000 {
-		t.Fatalf("legacy watermark=%q/%d", legacy.GuildBoundaryGuildID, legacy.GuildBoundarySeq)
+	if legacy.GuildBoundaryGuildID != "" || legacy.GuildBoundarySeq != 10_000 || legacy.GeneratorPurchasedTotal != 42 {
+		t.Fatalf("legacy watermark=%q/%d purchases=%d", legacy.GuildBoundaryGuildID, legacy.GuildBoundarySeq, legacy.GeneratorPurchasedTotal)
 	}
 	if _, err := EncodeState(legacy); !errors.Is(err, ErrInvalidState) {
 		t.Fatalf("unresolved legacy watermark encoded: %v", err)
@@ -325,6 +327,11 @@ func TestSaveMigrationCorpus(t *testing.T) {
 			want.(map[string]any)["guild_boundary_seq"] = float64(0)
 			want.(map[string]any)["guild_consumed_window_units"] = float64(0)
 			want.(map[string]any)["guild_boundary_guild_id"] = nil
+			var purchased float64
+			for _, value := range want.(map[string]any)["generators"].(map[string]any) {
+				purchased += value.(float64)
+			}
+			want.(map[string]any)["generators_purchased_total"] = purchased
 			if !equalJSON(got, want) {
 				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV5)
 			}

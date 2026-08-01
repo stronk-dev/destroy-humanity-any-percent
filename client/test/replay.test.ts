@@ -9,6 +9,7 @@ import {
   loadReplayCatalogBundle,
   restoreReplayStateV12,
   verifyReplayRun,
+  verifyReplayRunDetailed,
   type ReplayArtifacts,
 } from "../src/replay";
 
@@ -133,6 +134,9 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     const entries = fixture.full_run.entries.map((entry) => ({ seq: entry.seq, canonicalPayload: canonicalJSONString(entry.canonical_payload), replayInputs: entry.replay_inputs, receiptJSON: entry.receipt_json, eventsJSON: entry.events_json, terminal: entry.terminal }));
     const identity = { constantsHash: fixture.constants_hash };
     await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries, identity)).resolves.toBe("verified");
+    const detailed = await verifyReplayRunDetailed(fixture.full_run.genesis, bundle, entries, identity);
+    expect(detailed.verdict).toBe("verified");
+    expect(canonicalJSONString(encodeReplayStateV12(detailed.finalState!))).toBe(fixture.full_run.final_state_json);
     await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries.filter((entry) => entry.seq !== 20), identity)).resolves.toBe("log_gap");
     await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries, { constantsHash: `sha256:${"f".repeat(64)}` })).resolves.toBe("constants_mismatch");
     await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries, { ...identity, engineMismatch: true })).resolves.toBe("engine_mismatch");

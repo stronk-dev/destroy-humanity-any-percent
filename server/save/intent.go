@@ -382,7 +382,7 @@ func validateIntentDecision(decision IntentDecision, intentID string) error {
 		return fmt.Errorf("%w: rejected intent cannot emit events", ErrInvalidStream)
 	}
 	for _, event := range decision.Events {
-		if event.SchemaVersion != 1 || event.IntentID != "" && !uuidV7Pattern.MatchString(event.IntentID) {
+		if !validEventSchemaVersion(event) || event.IntentID != "" && !uuidV7Pattern.MatchString(event.IntentID) {
 			return fmt.Errorf("%w: invalid event envelope", ErrInvalidStream)
 		}
 		if event.Kind != EventCompensation && event.IntentID != intentID {
@@ -393,6 +393,13 @@ func validateIntentDecision(decision IntentDecision, intentID string) error {
 		}
 	}
 	return nil
+}
+
+func validEventSchemaVersion(event EventWrite) bool {
+	if event.Kind == EventRunEnded {
+		return event.SchemaVersion == 2
+	}
+	return event.SchemaVersion == 1
 }
 
 func validateEventPayload(event EventWrite) error {
@@ -574,6 +581,8 @@ func validateEventPayload(event EventWrite) error {
 			payload.RTAMS != payload.EndedAtMS-payload.StartedAtMS || payload.AttendedMS < 0 || payload.AttendedMS > payload.RTAMS ||
 			payload.TerminalSeq <= 0 || payload.TerminalSeq > decimal.MaxExactInteger || payload.Tier < 0 || payload.Tier > 9 ||
 			validatePrestigeTerms(payload.Payout) != nil || !sortedMechanicalIDs(payload.LedgerFactKinds) || !sortedMechanicalIDs(payload.ExecutedRoutes) ||
+			payload.GatesCrossed == nil || !sortedMechanicalIDs(*payload.GatesCrossed) || payload.GeneratorsPurchasedTotal == nil ||
+			*payload.GeneratorsPurchasedTotal < 0 || *payload.GeneratorsPurchasedTotal > decimal.MaxExactInteger ||
 			payload.Faction != nil && !mechanicalIDPattern.MatchString(*payload.Faction) {
 			return fmt.Errorf("%w: invalid run_ended payload", ErrInvalidStream)
 		}
@@ -663,22 +672,24 @@ type eventAssisted struct {
 }
 
 type eventRunEnded struct {
-	FounderID       string             `json:"founder_id"`
-	RunID           routeRunID         `json:"run_id"`
-	ExitType        string             `json:"exit_type"`
-	StartedAtMS     int64              `json:"started_at_ms"`
-	EndedAtMS       int64              `json:"ended_at_ms"`
-	RTAMS           int64              `json:"rta_ms"`
-	AttendedMS      int64              `json:"attended_ms"`
-	PreTimer        bool               `json:"pre_timer"`
-	TerminalSeq     int64              `json:"terminal_seq"`
-	Payout          eventPrestigeTerms `json:"payout"`
-	Tier            int64              `json:"tier"`
-	LifetimeValue   string             `json:"lifetime_value"`
-	LedgerFactKinds []string           `json:"ledger_fact_kinds"`
-	ExecutedRoutes  []string           `json:"executed_routes"`
-	Assisted        eventAssisted      `json:"assisted"`
-	Faction         *string            `json:"faction"`
+	FounderID                string             `json:"founder_id"`
+	RunID                    routeRunID         `json:"run_id"`
+	ExitType                 string             `json:"exit_type"`
+	StartedAtMS              int64              `json:"started_at_ms"`
+	EndedAtMS                int64              `json:"ended_at_ms"`
+	RTAMS                    int64              `json:"rta_ms"`
+	AttendedMS               int64              `json:"attended_ms"`
+	PreTimer                 bool               `json:"pre_timer"`
+	TerminalSeq              int64              `json:"terminal_seq"`
+	Payout                   eventPrestigeTerms `json:"payout"`
+	Tier                     int64              `json:"tier"`
+	LifetimeValue            string             `json:"lifetime_value"`
+	LedgerFactKinds          []string           `json:"ledger_fact_kinds"`
+	ExecutedRoutes           []string           `json:"executed_routes"`
+	GatesCrossed             *[]string          `json:"gates_crossed"`
+	GeneratorsPurchasedTotal *int64             `json:"generators_purchased_total"`
+	Assisted                 eventAssisted      `json:"assisted"`
+	Faction                  *string            `json:"faction"`
 }
 
 func validatePrestigeTerms(terms eventPrestigeTerms) error {
