@@ -328,7 +328,8 @@ async function main() {
 
   const leaderboardSchema = await readJSON(path.join(balanceDirectory, "leaderboards.schema.json"));
   const validateLeaderboards = ajv.compile(leaderboardSchema);
-  const leaderboardCatalogs = [path.join(repositoryDirectory, "testdata", "leaderboards", "l7a-fixture.json")];
+  const leaderboardCatalogs = await jsonFiles(path.join(balanceDirectory, "categories"));
+  if (leaderboardCatalogs.length === 0) throw new Error("leaderboard schema verification requires a production catalog");
   const routeGateIDs = (await readJSON(routeCatalogs[0])).gates.map((gate) => gate.gate_id).sort();
   for (const filename of leaderboardCatalogs) {
     const data = await readJSON(filename);

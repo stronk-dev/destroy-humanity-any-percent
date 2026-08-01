@@ -8,20 +8,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"sort"
 	"strconv"
 	"time"
+
+	"cloud-clicker/server/routes"
 )
 
-type QueueProjector struct {
-	catalog *CategoryCatalog
-}
+type QueueProjector struct{}
 
-func NewQueueProjector(catalog *CategoryCatalog) (*QueueProjector, error) {
-	if catalog == nil || len(catalog.Categories) != 4 {
-		return nil, ErrInvalidEpoch
-	}
-	return &QueueProjector{catalog: catalog}, nil
-}
+func NewQueueProjector() *QueueProjector { return &QueueProjector{} }
 
 type terminalRun struct {
 	FounderID                string          `json:"founder_id"`
@@ -56,7 +52,7 @@ type terminalRunID struct {
 // and the projection claim plus every matching category row therefore commit
 // atomically with the verification queue's token-checked mark.
 func (projector *QueueProjector) ProjectVerifiedRun(ctx context.Context, tx *sql.Tx, streamID string, runSeq int64) error {
-	if projector == nil || projector.catalog == nil || tx == nil || !uuidPattern.MatchString(streamID) || runSeq < 1 {
+	if projector == nil || tx == nil || !uuidPattern.MatchString(streamID) || runSeq < 1 {
 		return ErrInvalidEpoch
 	}
 	terminal, eventID, occurredAt, err := loadTerminalRun(ctx, tx, streamID, runSeq)
@@ -64,7 +60,8 @@ func (projector *QueueProjector) ProjectVerifiedRun(ctx context.Context, tx *sql
 		return err
 	}
 	var epochID int64
-	if err := tx.QueryRowContext(ctx, `SELECT epoch_id FROM run_epochs WHERE company_stream_id=$1 AND run_seq=$2`, streamID, runSeq).Scan(&epochID); err != nil {
+	var constantsHash string
+	if err := tx.QueryRowContext(ctx, `SELECT epoch_id,constants_hash FROM run_epochs WHERE company_stream_id=$1 AND run_seq=$2`, streamID, runSeq).Scan(&epochID, &constantsHash); err != nil {
 		return err
 	}
 	var imported, drifted bool
@@ -81,6 +78,10 @@ func (projector *QueueProjector) ProjectVerifiedRun(ctx context.Context, tx *sql
 		}
 		return verifyProjectedCategories(ctx, tx, eventID, nil)
 	}
+	catalog, err := loadPinnedCategoryCatalog(ctx, tx, constantsHash)
+	if err != nil {
+		return err
+	}
 	faction, glitched, err := scanRunVariables(ctx, tx, streamID, runSeq)
 	if err != nil {
 		return err
@@ -88,7 +89,7 @@ func (projector *QueueProjector) ProjectVerifiedRun(ctx context.Context, tx *sql
 	if !sameOptionalString(faction, terminal.Faction) || glitched != (len(terminal.ExecutedRoutes) != 0) {
 		return fmt.Errorf("%w: terminal variables disagree with event history", ErrInvalidEpoch)
 	}
-	matching, err := projector.catalog.Matching(TerminalFacts{GatesCrossed: *terminal.GatesCrossed,
+	matching, err := catalog.Matching(TerminalFacts{GatesCrossed: *terminal.GatesCrossed,
 		Facts: terminal.LedgerFactKinds, GeneratorsPurchasedTotal: *terminal.GeneratorsPurchasedTotal})
 	if err != nil {
 		return err
@@ -98,7 +99,7 @@ func (projector *QueueProjector) ProjectVerifiedRun(ctx context.Context, tx *sql
 	runID := streamID + ":" + strconv.FormatInt(runSeq, 10)
 	expected := make([]string, 0, len(matching))
 	for _, category := range matching {
-		if !terminal.PreTimer || category.Timer != TimerRTA && category.Timer != TimerAttended {
+		if !terminal.PreTimer || category.Timer == TimerNone {
 			expected = append(expected, category.ID)
 		}
 	}
@@ -110,20 +111,67 @@ func (projector *QueueProjector) ProjectVerifiedRun(ctx context.Context, tx *sql
 		return verifyProjectedCategories(ctx, tx, eventID, expected)
 	}
 	for _, category := range matching {
-		if terminal.PreTimer && (category.Timer == TimerRTA || category.Timer == TimerAttended) {
+		if terminal.PreTimer && category.Timer != TimerNone {
 			continue
 		}
-		key := terminal.RTAMS
-		if category.Timer == TimerAttended {
-			key = terminal.AttendedMS
-		}
 		run := VerifiedRun{EventID: eventID, RunID: runID, FounderID: terminal.FounderID, CategoryID: category.ID,
-			Variables: variables, EpochID: epochID, MandateLevel: 0, KeyMS: &key, VerifiedAt: occurredAt}
+			Variables: variables, EpochID: epochID, MandateLevel: 0, VerifiedAt: occurredAt}
+		switch category.Timer {
+		case TimerRTA:
+			key := terminal.RTAMS
+			run.KeyMS = &key
+		case TimerAttended:
+			key := terminal.AttendedMS
+			run.KeyMS = &key
+		case TimerNone:
+			key, err := magnitudeKeyFromCanonical(terminal.LifetimeValue)
+			if err != nil {
+				return err
+			}
+			run.KeyMagnitude = &key
+		default:
+			return ErrInvalidEpoch
+		}
 		if _, err := insertBoardRowTx(ctx, tx, run, encodedVariables); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func loadPinnedCategoryCatalog(ctx context.Context, tx *sql.Tx, constantsHash string) (*CategoryCatalog, error) {
+	rows, err := tx.QueryContext(ctx, `SELECT artifact_name,bytes FROM catalog_artifacts
+		WHERE constants_hash=$1 AND artifact_name IN ('categories','routes') ORDER BY artifact_name`, constantsHash)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	artifacts := map[string][]byte{}
+	for rows.Next() {
+		var name string
+		var data []byte
+		if err := rows.Scan(&name, &data); err != nil {
+			return nil, err
+		}
+		artifacts[name] = bytes.Clone(data)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	if len(artifacts) != 2 {
+		return nil, fmt.Errorf("%w: pinned category artifacts", ErrInvalidEpoch)
+	}
+	routeCatalog, err := routes.LoadCatalog(artifacts["routes"])
+	if err != nil {
+		return nil, fmt.Errorf("%w: pinned routes catalog", ErrInvalidEpoch)
+	}
+	gates := routeCatalog.Gates()
+	gateIDs := make([]string, len(gates))
+	for index, gate := range gates {
+		gateIDs[index] = gate.ID
+	}
+	sort.Strings(gateIDs)
+	return LoadCategoryCatalog(artifacts["categories"], gateIDs)
 }
 
 func verifyProjectedCategories(ctx context.Context, tx *sql.Tx, eventID string, expected []string) error {

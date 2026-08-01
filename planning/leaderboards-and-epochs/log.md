@@ -311,3 +311,21 @@ reopen-attack test when convenient.
 - The real-Postgres advance fixture declares a second accepted hash on epoch N+1 before first
   deployment and proves startup succeeds. Governance coverage explicitly attacks reopening a
   closed epoch with `ended_at = NULL`.
+
+## 2026-08-01 — L7b canonical categories and exact Valuation boards
+
+- Replaced the synthetic L7a fixture with `balance/categories/phase0.json`: five literal category
+  rows, an intentionally empty completion set, and prefix-matched `darkpattern.*` /
+  `externality.*` exclusions. The Go loader and JSON Schema both pin those Phase-0 literals; the
+  evaluator rejects unregistered terminal-fact namespaces.
+- Registered categories as the seventh constants artifact in epoch 5. Go replay loading validates
+  category bytes against the pinned route gate set; TypeScript hashes the same exact seven-artifact
+  set. The queue projector resolves route/category bytes from `catalog_artifacts` by the run's
+  immutable constants hash rather than from process-current data.
+- Added the Valuation magnitude key as two exact SQL columns: canonical exponent and a padded
+  12-digit quantized mantissa. SQL competition ranking and keyset pagination operate on the tuple;
+  no binary float or packed surrogate participates. Pre-timer runs project only Valuation, while
+  imported and version-drifted runs still project nowhere.
+- Proof shipped with the checkbox changes: loader/prefix/namespace tests, exact magnitude parser
+  vectors at extreme exponents, shared-rank and pagination integration coverage, pinned artifact
+  validation, five-category projection, and pre-timer-only Valuation projection.

@@ -13,7 +13,7 @@ const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]
 const hashPattern = /^sha256:[0-9a-f]{64}$/;
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 
-export interface ReplayArtifacts { readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string }
+export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string }
 export interface ReplayCatalogBundle {
   readonly constantsHash: string; readonly artifacts: ReplayArtifacts; readonly economy: EconomyCatalog; readonly routes: RoutesCatalog;
   readonly commons: CommonsCatalog; readonly prestige: PrestigePolicy; readonly factions: FactionCatalog; readonly guilds: GuildCatalog;
@@ -59,7 +59,7 @@ interface FounderCarry {
 interface ExitTerms { reputation_delta: number; network_slot_unlocks: NetworkSlot[]; route_knowledge: number; clout_reach_note: string }
 
 export async function loadReplayCatalogBundle(constantsHash: string, artifacts: ReplayArtifacts): Promise<ReplayCatalogBundle> {
-  if (!hashPattern.test(constantsHash) || Object.keys(artifacts).sort(byteCompare).join("\0") !== "commons\0economy\0factions\0guilds\0prestige\0routes") throw new SyntaxError("invalid replay artifact set");
+  if (!hashPattern.test(constantsHash) || Object.keys(artifacts).sort(byteCompare).join("\0") !== "categories\0commons\0economy\0factions\0guilds\0prestige\0routes") throw new SyntaxError("invalid replay artifact set");
   const computed = await constantsHashArtifacts(artifacts);
   if (computed !== constantsHash) throw new SyntaxError("replay artifact label mismatch");
   const economy = parseCatalog(parseJSON(artifacts.economy)); const routes = parseRoutesCatalog(parseJSON(artifacts.routes));
@@ -369,6 +369,7 @@ function buyGenerator(state: ReplayState, catalog: EconomyCatalog, request: Inte
   if (request.count.mode === "max") { const affordability = catalog.maxAffordableDetailed(generator.id, balance, owned); count = affordability.count; if (affordability.usedFallback) invariants.push({ kind: "afford_fallback", intent_id: request.intent_id, detail: request.generator_id }); }
   if (count <= 0) return { count: 0, rejection: ["unaffordable", request.generator_id] };
   if (count > MAX_EXACT_INTEGER - owned) return { count: 0, rejection: ["cap_exceeded", request.generator_id] };
+  if (count > MAX_EXACT_INTEGER - state.generatorPurchasedTotal) return { count: 0, rejection: ["cap_exceeded", "generators_purchased_total"] };
   let cost: Decimal;
   try { cost = catalog.bulkCost(generator.id, owned, count); } catch { return { count: 0, rejection: ["invalid", request.generator_id] }; }
   if (cost.gt(balance)) return { count: 0, rejection: ["unaffordable", request.generator_id] };
@@ -378,7 +379,6 @@ function buyGenerator(state: ReplayState, catalog: EconomyCatalog, request: Inte
     if (isStateValue(unit) && residual.abs().lte(unit)) { cost = balance; invariants.push({ kind: "residual_clamp", intent_id: request.intent_id, detail: request.generator_id }); }
     else { invariants.push({ kind: "residual_abort", intent_id: request.intent_id, detail: request.generator_id }); throw new RangeError("generator residual cannot be reconciled"); }
   }
-  if (count > MAX_EXACT_INTEGER - state.generatorPurchasedTotal) return { count: 0, rejection: ["cap_exceeded", "generators_purchased_total"] };
   applyLedger(state, catalog, [{ resource: generator.price.resourceId, delta: cost.neg() }], false); state.generators[generator.id] = owned + count; state.generatorPurchasedTotal += count; request.cost = canonicalString(cost); request.costResource = generator.price.resourceId; return { count };
 }
 function manualBatch(state: ReplayState, catalog: EconomyCatalog, request: Intent, nowMs: number): { count: number; rejection?: [string, string] } { const action = catalog.manualActions.find((value) => value.id === request.action_id)!; const policy = catalog.manualPolicy!; if (nowMs > state.manualTokenRefilledAtMs) { const elapsed = nowMs - state.manualTokenRefilledAtMs; state.manualTokenMilli = Math.min(policy.bucketCapMilli, state.manualTokenMilli + elapsed * policy.refillMilliPerMs); state.manualTokenRefilledAtMs = nowMs; } const applied = Math.min(request.count, Math.floor(state.manualTokenMilli / 1000)); state.manualTokenMilli -= applied * 1000; if (applied > 0) { try { applyLedger(state, catalog, [{ resource: action.output.resourceId, delta: parseCanonical(action.output.amountPerAction).mul(applied) }], false); } catch (error) { if (error instanceof LedgerError && error.code === "above_hardcap") return { count: 0, rejection: ["cap_exceeded", request.action_id] }; throw error; } } return { count: applied }; }

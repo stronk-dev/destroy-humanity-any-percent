@@ -204,7 +204,7 @@ type stateV12 struct {
 
 type stateV13 struct {
 	stateV12
-	GeneratorPurchasedTotal int64 `json:"generators_purchased_total"`
+	GeneratorPurchasedTotal *int64 `json:"generators_purchased_total"`
 }
 
 type rawExitOfferState struct {
@@ -317,6 +317,7 @@ func EncodeState(state *State) ([]byte, error) {
 	if state.ManualTokenRefilledAt.After(state.EvaluatedThrough) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
+	purchasedTotal := normalized.GeneratorPurchasedTotal
 	encoded, err := json.Marshal(stateV13{stateV12: stateV12{stateV11: stateV11{stateV10: stateV10{stateV9: stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
 		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
@@ -338,7 +339,7 @@ func EncodeState(state *State) ([]byte, error) {
 		StockUnits: normalized.StockUnits, StockProgressMS: normalized.StockProgressMS, ConsumedStockUnits: normalized.ConsumedStockUnits},
 		GuildTitheCarryPPM: normalized.GuildTitheCarryPPM, GuildBoundarySeq: normalized.GuildBoundarySeq,
 		GuildConsumedWindow: normalized.GuildConsumedWindow}, GuildBoundaryGuildID: optionalString(normalized.GuildBoundaryGuildID)},
-		GeneratorPurchasedTotal: normalized.GeneratorPurchasedTotal})
+		GeneratorPurchasedTotal: &purchasedTotal})
 	if err != nil {
 		return nil, fmt.Errorf("%w: encode: %v", ErrInvalidState, err)
 	}
@@ -467,7 +468,10 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, err
 	}
 	if version < 13 {
-		source.GeneratorPurchasedTotal = sumGeneratorCounts(counts)
+		purchasedTotal := sumGeneratorCounts(counts)
+		source.GeneratorPurchasedTotal = &purchasedTotal
+	} else if source.GeneratorPurchasedTotal == nil {
+		return nil, fmt.Errorf("%w: generators_purchased_total is required", ErrInvalidState)
 	}
 	cursor, err := restoreCursor(source.EvaluatedThrough, version)
 	if err != nil {
@@ -501,7 +505,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, err
 	}
 	state := &State{
-		Ledger: ledger, GeneratorCounts: counts, GeneratorPurchasedTotal: source.GeneratorPurchasedTotal, EvaluatedThrough: cursor,
+		Ledger: ledger, GeneratorCounts: counts, GeneratorPurchasedTotal: *source.GeneratorPurchasedTotal, EvaluatedThrough: cursor,
 		ComputeCreditMS: source.ComputeCreditMS, ManualTokenMilli: source.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: source.GatesCrossed, RunSeq: source.RunSeq,
 		DoctrinesByTransition: source.DoctrinesByTransition, StructureID: source.StructureID,

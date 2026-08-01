@@ -7,7 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strconv"
+	"strings"
 	"time"
+
+	"cloud-clicker/server/decimal"
 )
 
 var (
@@ -32,7 +36,13 @@ type VerifiedRun struct {
 	MandateLevel int
 	KeyMS        *int64
 	KeyInt       *int64
+	KeyMagnitude *MagnitudeKey
 	VerifiedAt   time.Time
+}
+
+type MagnitudeKey struct {
+	Exponent int64 `json:"exponent"`
+	Mantissa int64 `json:"quantized_mantissa"`
 }
 
 type BoardEntry struct {
@@ -49,9 +59,23 @@ type Cursor struct {
 	RunID string
 }
 
+type MagnitudeBoardEntry struct {
+	RunID      string       `json:"run_id"`
+	FounderID  string       `json:"founder_id"`
+	Rank       int64        `json:"rank"`
+	Key        MagnitudeKey `json:"key"`
+	VerifiedAt time.Time    `json:"verified_at"`
+	WorldFirst bool         `json:"world_first"`
+}
+
+type MagnitudeCursor struct {
+	Key   MagnitudeKey
+	RunID string
+}
+
 func (repository *Repository) ProjectVerifiedRun(ctx context.Context, run VerifiedRun) (bool, error) {
 	if !uuidPattern.MatchString(run.EventID) || !uuidPattern.MatchString(run.FounderID) || run.RunID == "" || !mechanicalPattern.MatchString(run.CategoryID) || !validVariables(run.Variables) ||
-		run.EpochID < 1 || run.MandateLevel < 0 || run.MandateLevel > 20 || run.VerifiedAt.IsZero() || (run.KeyMS == nil) == (run.KeyInt == nil) {
+		run.EpochID < 1 || run.MandateLevel < 0 || run.MandateLevel > 20 || run.VerifiedAt.IsZero() || !validRankingKey(run) {
 		return false, ErrInvalidEpoch
 	}
 	variables, _ := json.Marshal(run.Variables)
@@ -103,15 +127,17 @@ func (repository *Repository) ProjectVerifiedRun(ctx context.Context, run Verifi
 func insertBoardRowTx(ctx context.Context, tx *sql.Tx, run VerifiedRun, variables []byte) (bool, error) {
 	var insertedRunID string
 	err := tx.QueryRowContext(ctx, `
-		INSERT INTO verified_runs(run_id,event_id,founder_id,category_id,variables,epoch_id,mandate_level,key_ms,key_int,verified_at,world_first)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,true)
+		INSERT INTO verified_runs(run_id,event_id,founder_id,category_id,variables,epoch_id,mandate_level,key_ms,key_int,key_exponent,key_mantissa,verified_at,world_first)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,true)
 		ON CONFLICT (category_id,variables,epoch_id) WHERE world_first DO NOTHING
-		RETURNING run_id`, run.RunID, run.EventID, run.FounderID, run.CategoryID, variables, run.EpochID, run.MandateLevel, run.KeyMS, run.KeyInt, run.VerifiedAt.UTC()).Scan(&insertedRunID)
+		RETURNING run_id`, run.RunID, run.EventID, run.FounderID, run.CategoryID, variables, run.EpochID, run.MandateLevel, run.KeyMS, run.KeyInt,
+		magnitudeExponent(run.KeyMagnitude), magnitudeMantissa(run.KeyMagnitude), run.VerifiedAt.UTC()).Scan(&insertedRunID)
 	worldFirst := err == nil
 	if errors.Is(err, sql.ErrNoRows) {
 		_, err = tx.ExecContext(ctx, `
-			INSERT INTO verified_runs(run_id,event_id,founder_id,category_id,variables,epoch_id,mandate_level,key_ms,key_int,verified_at,world_first)
-			VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,false)`, run.RunID, run.EventID, run.FounderID, run.CategoryID, variables, run.EpochID, run.MandateLevel, run.KeyMS, run.KeyInt, run.VerifiedAt.UTC())
+			INSERT INTO verified_runs(run_id,event_id,founder_id,category_id,variables,epoch_id,mandate_level,key_ms,key_int,key_exponent,key_mantissa,verified_at,world_first)
+			VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,false)`, run.RunID, run.EventID, run.FounderID, run.CategoryID, variables, run.EpochID, run.MandateLevel, run.KeyMS, run.KeyInt,
+			magnitudeExponent(run.KeyMagnitude), magnitudeMantissa(run.KeyMagnitude), run.VerifiedAt.UTC())
 	}
 	if err != nil {
 		return false, err
@@ -190,6 +216,104 @@ func (repository *Repository) CountBoard(ctx context.Context, categoryID string,
 		entries = append(entries, entry)
 	}
 	return entries, rows.Err()
+}
+
+func (repository *Repository) MagnitudeBoard(ctx context.Context, categoryID string, variables Variables, epochID int64, mandateLevel, limit int, after *MagnitudeCursor) ([]MagnitudeBoardEntry, error) {
+	if !mechanicalPattern.MatchString(categoryID) || !validVariables(variables) || epochID < 1 || mandateLevel < 0 || mandateLevel > 20 || limit < 1 || limit > 100 ||
+		after != nil && (after.RunID == "" || !validMagnitudeKey(after.Key)) {
+		return nil, ErrInvalidEpoch
+	}
+	encoded, _ := json.Marshal(variables)
+	afterExponent, afterMantissa, afterRun, hasAfter := int64(0), int64(0), "", false
+	if after != nil {
+		afterExponent, afterMantissa, afterRun, hasAfter = after.Key.Exponent, after.Key.Mantissa, after.RunID, true
+	}
+	rows, err := repository.db.QueryContext(ctx, `
+		WITH ranked AS (
+			SELECT run_id,founder_id,key_exponent,key_mantissa,verified_at,world_first,
+			       rank() OVER (ORDER BY key_exponent DESC,key_mantissa DESC) AS competition_rank
+			FROM verified_runs
+			WHERE category_id=$1 AND variables=$2 AND epoch_id=$3 AND mandate_level=$4
+			  AND key_exponent IS NOT NULL AND key_mantissa IS NOT NULL
+		)
+		SELECT run_id,founder_id,competition_rank,key_exponent,key_mantissa,verified_at,world_first
+		FROM ranked
+		WHERE NOT $5 OR key_exponent < $6 OR
+		      (key_exponent=$6 AND (key_mantissa < $7 OR (key_mantissa=$7 AND run_id>$8)))
+		ORDER BY key_exponent DESC,key_mantissa DESC,run_id LIMIT $9`, categoryID, encoded, epochID, mandateLevel,
+		hasAfter, afterExponent, afterMantissa, afterRun, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var entries []MagnitudeBoardEntry
+	for rows.Next() {
+		var entry MagnitudeBoardEntry
+		if err := rows.Scan(&entry.RunID, &entry.FounderID, &entry.Rank, &entry.Key.Exponent, &entry.Key.Mantissa, &entry.VerifiedAt, &entry.WorldFirst); err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, rows.Err()
+}
+
+func magnitudeKeyFromCanonical(value string) (MagnitudeKey, error) {
+	parsed, err := decimal.ParseCanonical(value)
+	if err != nil || parsed.Mantissa() < 0 {
+		return MagnitudeKey{}, ErrInvalidEpoch
+	}
+	if value == "0" {
+		return MagnitudeKey{}, nil
+	}
+	coefficient, exponentText, ok := strings.Cut(value, "e")
+	if !ok || strings.HasPrefix(coefficient, "-") {
+		return MagnitudeKey{}, ErrInvalidEpoch
+	}
+	digits := strings.ReplaceAll(coefficient, ".", "")
+	if len(digits) > decimal.CanonicalSignificantDigits {
+		return MagnitudeKey{}, ErrInvalidEpoch
+	}
+	digits += strings.Repeat("0", decimal.CanonicalSignificantDigits-len(digits))
+	mantissa, mantissaErr := strconv.ParseInt(digits, 10, 64)
+	exponent, exponentErr := strconv.ParseInt(exponentText, 10, 64)
+	key := MagnitudeKey{Exponent: exponent, Mantissa: mantissa}
+	if mantissaErr != nil || exponentErr != nil || !validMagnitudeKey(key) {
+		return MagnitudeKey{}, ErrInvalidEpoch
+	}
+	return key, nil
+}
+
+func validRankingKey(run VerifiedRun) bool {
+	count := 0
+	if run.KeyMS != nil {
+		count++
+	}
+	if run.KeyInt != nil {
+		count++
+	}
+	if run.KeyMagnitude != nil {
+		count++
+	}
+	return count == 1 && (run.KeyMagnitude == nil || validMagnitudeKey(*run.KeyMagnitude))
+}
+
+func validMagnitudeKey(key MagnitudeKey) bool {
+	return key.Exponent >= -8_999_999_999_999_999 && key.Exponent <= 8_999_999_999_999_999 &&
+		(key.Mantissa == 0 && key.Exponent == 0 || key.Mantissa >= 100_000_000_000 && key.Mantissa <= 999_999_999_999)
+}
+
+func magnitudeExponent(key *MagnitudeKey) any {
+	if key == nil {
+		return nil
+	}
+	return key.Exponent
+}
+
+func magnitudeMantissa(key *MagnitudeKey) any {
+	if key == nil {
+		return nil
+	}
+	return key.Mantissa
 }
 
 func validVariables(variables Variables) bool {

@@ -226,6 +226,20 @@ same ordered registry constructs live Go and replay Go; TS implements the identi
 RA/RB are amended by these contracts wherever they conflict; the RA `replay_inputs` schema version
 starts at the post-C1–C8 shape (there is no pre-C1 producer to preserve).
 
+### KV-1 — kernel-version changes are structural (owner ruling, 2026-08-01)
+
+Any commit changing receipt, event, snapshot, transition, or persisted-state encoding bytes MUST
+bump `kernel/VERSION` in that same commit. `kernel/affecting-paths.json` is the closed in-repo path
+registry; the CI gate walks every commit since that registry was introduced and fails if an
+affected non-test path changes without the version source changing. The generated Go and
+TypeScript constants must still equal the source. The registry grows by RFC, never by an implicit
+review convention.
+
+Replay genesis has a version floor of save v12: no earlier `run_genesis` producer exists. Go and
+TypeScript both reject a purported pre-v12 genesis as `constants_mismatch` rather than attempting
+unowned migration archaeology. Save v13 requires `generators_purchased_total` to be present in
+both runtimes; v12 alone backfills it by exact, saturating sum of then-owned generator counts.
+
 ## Acceptance criteria
 
 1. Genesis invariants: every pinned run has exactly one genesis, byte-identical to its first
@@ -244,8 +258,7 @@ starts at the post-C1–C8 shape (there is no pre-C1 producer to preserve).
 ## Open questions
 
 - Verification queue latency targets and batch size — implementation freedom.
-- Category terminal predicates (L7 catalog) consume the verified terminal state; their content
-  pass is Leaderboards follow-up, not this RFC.
+- Category terminal predicates and their epoch ownership are defined by Leaderboards L7b.
 
 ## Changelog
 
@@ -253,4 +266,5 @@ starts at the post-C1–C8 shape (there is no pre-C1 producer to preserve).
 - 2026-07-30: Codex bounce answered — RA (replay_inputs record: payload=said, inputs=resolved, receipt=happened), RB (ApplyLogged as the owned shared-kernel boundary the LIVE path itself calls; implementation order RA/RB → genesis → verifier).
 - 2026-07-31: live-surface acceptance pass found C1–C8: command identity, evaluation mode, artifact bundle, per-intent resolved inputs, terminal Founder carry, legacy NULL semantics, event parity, and hook-order closure remain owner decisions before RA/RB can be persisted.
 - 2026-07-31: owner ruling — all eight proposals accepted as normative; C5's Founder question ruled (cross-run verification stays a non-goal; the carry view exists for receipt byte-parity); C7 confirmed strong-form; C8 discharges the hook-order LOW.
+- 2026-08-01: KV-1 makes kernel-version bumps structural and pins the replay-genesis floor at v12.
 - 2026-07-31: RA/RB Go landing reviewed — reroute APPROVED; rulings C5a (founder-hash coherence: live fail-closed + carry carries founder_constants_hash asserted in-boundary), C4a (non-empty batches representable), C4b (route_hint arm deleted), RB-1 (prestige runtime required), C3a (bundle hash recomputed over bytes), RB-2 (stock resource derived in-boundary); run_log gains the standard immutability trigger.

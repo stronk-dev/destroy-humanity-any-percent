@@ -82,7 +82,7 @@ const fixture = fixtureJSON as {
 };
 
 describe("TypeScript ApplyLogged cross-runtime fixture", () => {
-  it("loads the exact six artifact bytes under their Go constants hash", async () => {
+  it("loads the exact seven artifact bytes under their Go constants hash", async () => {
     expect(fixture.version).toBe(1);
     const bundle = await loadReplayCatalogBundle(fixture.constants_hash, fixture.artifacts);
     expect(bundle.constantsHash).toBe(fixture.constants_hash);
@@ -140,7 +140,14 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     const v12Genesis = structuredClone(fixture.full_run.genesis) as Record<string, unknown>;
     delete v12Genesis.generators_purchased_total;
     await expect(verifyReplayRun(v12Genesis, bundle, entries, { ...identity, genesisVersion: 12 })).resolves.toBe("verified");
+    const nonzeroV12 = structuredClone(v12Genesis) as Record<string, any>;
+    nonzeroV12.generators["generator.beige_tower"] = 37;
+    expect(restoreReplayState(nonzeroV12, 12, bundle.economy).generatorPurchasedTotal).toBe(37);
+    const saturatedV12 = structuredClone(v12Genesis) as Record<string, any>;
+    saturatedV12.generators["generator.beige_tower"] = Number.MAX_SAFE_INTEGER;
+    expect(restoreReplayState(saturatedV12, 12, bundle.economy).generatorPurchasedTotal).toBe(Number.MAX_SAFE_INTEGER);
     await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries, { ...identity, genesisVersion: 12 })).resolves.toBe("constants_mismatch");
+    await expect(verifyReplayRun(v12Genesis, bundle, entries, { ...identity, genesisVersion: 11 })).resolves.toBe("constants_mismatch");
     await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries.filter((entry) => entry.seq !== 20), identity)).resolves.toBe("log_gap");
     await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries, { constantsHash: `sha256:${"f".repeat(64)}` })).resolves.toBe("constants_mismatch");
     await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries, { ...identity, engineMismatch: true })).resolves.toBe("engine_mismatch");

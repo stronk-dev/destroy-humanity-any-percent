@@ -133,6 +133,28 @@ the event registry rules; both already live in state):
 - Future rows (`net_zero_percent`, `pacifist`) are content on this union, not new machinery;
   Exhibition and player-authored predicates stay behind the promotion thresholds (D4).
 
+**L7b — the three L7a holes (owner answers, 2026-08-01):**
+
+1. **Literal Phase-0 fact sets, honest about today's vocabulary.** `completion_set = []` — at
+   Phase 0, 100% ≡ all_gates, DECLARED as such (side-completion facts arrive with content epochs;
+   adding one is a mint). `facts_disjoint` gains prefix entries (a set member ending in `.`
+   matches any fact with that prefix — one closed-union extension); `forbidden_set =
+   ["darkpattern.", "externality."]` — structurally real, content-empty: every Phase-0 run
+   trivially qualifies for Ethical% because no dark pattern is purchasable yet (TRUE), and the
+   first content epoch emitting a `darkpattern.*` fact gives the category teeth with zero catalog
+   surgery. The fact-namespace registry (`exit.*` today, `darkpattern.*`/`externality.*`
+   declared) grows by RFC like every registry.
+2. **Epoch ownership: the category catalog is a constants artifact** — `balance/categories/
+   phase0.json` joins the epoch seed (append = mint, the factions/guilds pattern). Boards already
+   key on epoch_id, so category evolution rides the existing machinery; a run is judged by its
+   PINNED epoch's category catalog at verification, never the current one.
+3. **The fifth canonical row — the count destination pre-timer runs need:** `valuation` — a
+   count-class board on terminal `lifetime_value` under D1's exact `(exponent,
+   quantized_mantissa)` key with shared-rank ties (the D1 magnitude rule finally has its
+   shipping consumer). Predicate `any`; timer NONE (count boards have no timer field — the
+   schema's timer becomes `rta | attended | none`). Pre-timer, and only pre-timer-compatible,
+   boards accept pre-timer runs; imported and drifted runs remain excluded from ALL boards.
+
 ### L8 — CI hook (extends the hardened guard, weakens nothing)
 
 The existing history guard already walks every reachable revision. Extension, same job: for any commit whose diff touches a `ConstantsHashArtifacts` path — **with `BALANCE-CHANGE:`** → the same commit must add an `epochs` seed row + changelog file (mint), else fail; **without** → the commit must add its resulting hash to the current epoch's accepted-set seed file (hotfix), else fail. Both are ordinary in-repo files, so the artifact-commit-touches-only-baseline rule and fetch-depth guarantees apply unchanged; reproducibility of a hotfix = its artifact row carries the exact bytes (L2). The cap-lowering migration rule routed here lands as: **a hotfix may not lower any hardcap** (guard compares the declared cap fields across the diff; lowering a cap is definitionally a balance change and requires a mint + the clamp-on-migration policy in its changelog).
@@ -149,6 +171,7 @@ cannot be relabeled identity-only even when the harness does not execute that ar
 - 2026-07-30: L8 guard implementation reviewed and approved; L2a added (seed as single artifact-set authority + parity test) from the review's MEDIUM finding; constants reverts documented as mint-only.
 - 2026-07-30: core review found two architectural HIGHs rooted in this RFC's contracts; rulings L2b (version-drift runs stay playable, unrankable), L5b (run N+1 starts under the current hash), L5c (startup epoch seed sync) added.
 - 2026-08-01: L7a — the four canonical category rows with literal predicates over a closed union; run_ended gains gates_crossed + generators_purchased_total (additive, schema bump).
+- 2026-08-01: L7b — literal Phase-0 fact sets (empty completion set declared; prefix-matched forbidden namespaces); category catalog joins the epoch seed; fifth canonical row `valuation` (count-class, D1 magnitude key) as the pre-timer destination.
 - 2026-07-30: L2a/L5c remediation centralizes artifact composition in `epochseed`, requires
   manifest reconciliation before gameserver readiness, and adds a hash-only baseline repair gate.
 - 2026-07-30: round-2 review tightens the identity-only gate to pin every seed artifact's bytes at

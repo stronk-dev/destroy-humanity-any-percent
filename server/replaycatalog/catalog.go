@@ -3,11 +3,14 @@
 package replaycatalog
 
 import (
+	"sort"
+
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
+	"cloud-clicker/server/leaderboard"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/routes"
@@ -15,7 +18,7 @@ import (
 )
 
 func Load(constantsHash string, artifacts map[string][]byte) (production.CatalogBundle, error) {
-	if constantsHash == "" || len(artifacts) != 6 {
+	if constantsHash == "" || len(artifacts) != 7 {
 		return production.CatalogBundle{}, production.ErrInvalidReplayInputs
 	}
 	computed, err := save.ConstantsHashArtifacts(artifacts)
@@ -46,6 +49,15 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 	}
 	guildCatalog, err := guild.LoadCatalog(artifacts["guilds"])
 	if err != nil {
+		return production.CatalogBundle{}, err
+	}
+	gates := routeCatalog.Gates()
+	gateIDs := make([]string, len(gates))
+	for index, gate := range gates {
+		gateIDs[index] = gate.ID
+	}
+	sort.Strings(gateIDs)
+	if _, err := leaderboard.LoadCategoryCatalog(artifacts["categories"], gateIDs); err != nil {
 		return production.CatalogBundle{}, err
 	}
 	frozen := make(map[string][]byte, len(artifacts))

@@ -12,7 +12,7 @@ func TestFixtureArtifactSetIsManifestDriven(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"commons", "economy", "factions", "guilds", "prestige", "routes"}
+	want := []string{"categories", "commons", "economy", "factions", "guilds", "prestige", "routes"}
 	if len(bundle.Artifacts) != len(want) || !Accepts(Current(bundle.Seed), bundle.Hash) {
 		t.Fatalf("artifacts=%v hash=%s", bundle.Artifacts, bundle.Hash)
 	}

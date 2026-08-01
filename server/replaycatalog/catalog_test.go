@@ -5,9 +5,10 @@ import (
 	"testing"
 
 	"cloud-clicker/server/epochseed"
+	"cloud-clicker/server/save"
 )
 
-func TestLoadRequiresExactSixArtifactBundle(t *testing.T) {
+func TestLoadRequiresExactSevenArtifactBundle(t *testing.T) {
 	bundle, err := epochseed.Load(filepath.Join("..", ".."))
 	if err != nil {
 		t.Fatal(err)
@@ -36,6 +37,18 @@ func TestLoadRequiresExactSixArtifactBundle(t *testing.T) {
 	relabeled := "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	if _, err := Load(relabeled, bundle.Artifacts); err == nil {
 		t.Fatal("catalog bundle bytes were accepted under a false constants hash")
+	}
+	invalidCategories := make(map[string][]byte, len(bundle.Artifacts))
+	for name, data := range bundle.Artifacts {
+		invalidCategories[name] = append([]byte(nil), data...)
+	}
+	invalidCategories["categories"] = []byte(`{"schema_version":1}`)
+	invalidHash, err := save.ConstantsHashArtifacts(invalidCategories)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Load(invalidHash, invalidCategories); err == nil {
+		t.Fatal("invalid pinned category artifact was accepted")
 	}
 	loaded.Artifacts["economy"] = append(loaded.Artifacts["economy"], '\n')
 	if _, ok := loaded.ResolvePrestige(bundle.Hash); ok {

@@ -54,6 +54,9 @@ func verifyReplayRunDetailed(genesis []byte, version int, catalogs CatalogBundle
 	if constantsHash != catalogs.ConstantsHash || !catalogs.valid(constantsHash) {
 		return ReplayConstantsMismatch, nil
 	}
+	if version < 12 {
+		return ReplayConstantsMismatch, nil
+	}
 	state, err := save.RestoreState(genesis, version, catalogs.Economy, economy.ScopeCompany, time.Time{})
 	if err != nil {
 		return ReplayConstantsMismatch, nil

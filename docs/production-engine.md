@@ -166,14 +166,14 @@ completeness proof.
 
 All replayable Company commands execute through `ApplyLogged`; the live service is a producer and
 consumer of the same object rather than a separate oracle. The boundary receives Company state,
-intent-less canonical payload, one six-artifact catalog bundle, and replay inputs, then returns the
+intent-less canonical payload, one seven-artifact catalog bundle, and replay inputs, then returns the
 new state, receipt, and ordered events. Terminal Exits use its terminal arm and include the next
 catalog bundle selected by the frozen next hash. Founder mutation itself remains a separate stream
 audit concern, but every Founder-derived value in the Exit receipt and next Company snapshot is
 computed from the frozen carry view. The live service rejects mixed Founder/Company catalog hashes
 before freezing that carry, and `ApplyLogged` independently asserts its recorded
 `founder_constants_hash` against the bundle. The bundle likewise recomputes its constants identity
-from the exact six artifact byte strings; a caller cannot relabel parsed catalogs under another
+from the exact seven artifact byte strings; a caller cannot relabel parsed catalogs under another
 hash. Company services cannot be constructed without the Prestige/faction runtime.
 
 Faction stock-resource identity is derived inside `ApplyLogged` from the restored faction ID and

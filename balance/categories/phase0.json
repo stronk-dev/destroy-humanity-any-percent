@@ -2,8 +2,8 @@
   "schema_version": 1,
   "full_gate_set": ["gate.t2_to_t3", "gate.t4_to_t5", "gate.t7_to_t8"],
   "fact_sets": {
-    "completion_set": ["fact.completion"],
-    "forbidden_set": ["fact.forbidden"]
+    "completion_set": [],
+    "forbidden_set": ["darkpattern.", "externality."]
   },
   "categories": [
     {
@@ -39,6 +39,12 @@
         "field": "generators_purchased_total",
         "literal": 40
       }
+    },
+    {
+      "id": "valuation",
+      "name_key": "category.valuation",
+      "timer": "none",
+      "predicate": { "kind": "any" }
     }
   ]
 }

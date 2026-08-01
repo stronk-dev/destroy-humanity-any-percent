@@ -16,22 +16,22 @@
       "additionalProperties": false,
       "required": ["completion_set", "forbidden_set"],
       "properties": {
-        "completion_set": { "$ref": "#/$defs/idSet" },
-        "forbidden_set": { "$ref": "#/$defs/idSet" }
+        "completion_set": { "const": [] },
+        "forbidden_set": { "const": ["darkpattern.", "externality."] }
       }
     },
     "categories": {
       "type": "array",
-      "minItems": 4,
-      "maxItems": 4,
+      "minItems": 5,
+      "maxItems": 5,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": ["id", "name_key", "timer", "predicate"],
         "properties": {
-          "id": { "enum": ["any_percent", "hundred_percent", "ethical_percent", "low_percent"] },
+          "id": { "enum": ["any_percent", "hundred_percent", "ethical_percent", "low_percent", "valuation"] },
           "name_key": { "$ref": "#/$defs/id" },
-          "timer": { "enum": ["rta", "attended"] },
+          "timer": { "enum": ["rta", "attended", "none"] },
           "predicate": { "$ref": "#/$defs/predicate" }
         }
       }
@@ -39,7 +39,6 @@
   },
   "$defs": {
     "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)*$" },
-    "idSet": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
     "predicate": {
       "oneOf": [
         { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "enum": ["any", "all_gates"] } } },

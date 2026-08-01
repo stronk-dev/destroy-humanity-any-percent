@@ -1,13 +1,14 @@
 {
   "schema_version": 1,
-  "current_epoch_id": 4,
+  "current_epoch_id": 5,
   "artifacts": [
     { "name": "commons", "path": "balance/commons/phase0.json" },
     { "name": "economy", "path": "balance/catalogs/phase0.json" },
     { "name": "prestige", "path": "balance/prestige/phase0.json" },
     { "name": "routes", "path": "balance/routes/phase0.json" },
     { "name": "factions", "path": "balance/factions/phase0.json" },
-    { "name": "guilds", "path": "balance/guilds/phase0.json" }
+    { "name": "guilds", "path": "balance/guilds/phase0.json" },
+    { "name": "categories", "path": "balance/categories/phase0.json" }
   ],
   "epochs": [
     {
@@ -41,6 +42,14 @@
       "changelog_ref": "changelog/epoch-4.md",
       "accepted_hashes": [
         "sha256:05f3aa267c699f0f5a63612b32e59af60f62de3a9c2baa119d6177b7e35ce7b3"
+      ]
+    },
+    {
+      "epoch_id": 5,
+      "name": "Canonical Boards",
+      "changelog_ref": "changelog/epoch-5.md",
+      "accepted_hashes": [
+        "sha256:63ab30c96b5d76b941b053131fcee63c94b6b3ad91322f9160d94973ce8c58fa"
       ]
     }
   ]

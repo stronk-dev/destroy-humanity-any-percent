@@ -578,3 +578,56 @@ the archived genesis version, explicitly migrates v12 by summing then-owned coun
 exact-domain saturation as Go, rejects a mislabeled v12 envelope, and retains the verdict-only API.
 The shared 51-entry run proves both current-v13 and migrated-v12 genesis reach the same verified
 terminal state.
+
+## 2026-08-01 — L7b owner gaps closed
+
+- The production category catalog is now an epoch-owned constants artifact and the projector loads
+  it by each run's pinned hash. The synthetic current-catalog fallback is gone.
+- Valuation supplies the exact magnitude-key destination for pre-timer runs. Real-Postgres coverage
+  proves those runs enter only Valuation and no RTA/Attended board, closing both carried L7 debts in
+  the same commit as their tests.
+
+## 2026-08-01 — independent review: category projector round (20b115b..104256c)
+
+**Verdict: the projector/archive machinery is APPROVED with evidence** (transaction-owned
+multi-category projection idempotent by run_ended event_id with a claim table; variables from the
+terminal payload cross-checked against a deterministic event scan; imported/drifted/pre-timer
+enforced inside the projector; archive-at-mark byte-deterministic across rollback/retry with the
+run_log trigger narrowed to archive-backed DELETE only; the fixture-only category rows honestly
+NOT invented into balance/). **Two HIGHs block the next landing; both verified first-hand.**
+
+1. **HIGH — cross-runtime rejection-ORDER divergence on the new purchase-total cap**: Go checks
+   it before cost/affordability (intents.go:882), TS after (replay.ts:381) — a saturated-total
+   run attempting an unaffordable buy produces different rejection receipts → the player
+   validator calls an honest server-verified run divergent (L4's definitional parity bug, and the
+   committed fixture itself reaches saturation). Fix: move the TS check to mirror Go's site;
+   fixture: saturated-total + unaffordable buy.
+2. **HIGH — transition semantics changed without a `kernel/VERSION` bump** (VERSION still 0.1.0,
+   last touched at abcd110, while this round changed EVERY applied receipt's bytes via
+   wireSnapshot + run_ended v2): the L2b deferral ruling keys on engine_version ≠ kernel.Version —
+   with no bump, pre-deploy runs verified post-deploy replay under new semantics into immutable
+   deterministic dead letters, the exact wrong-verdict class the queue remediation closed.
+   Test-only blast radius today (unpublished), but the mechanism is broken by construction.
+   **Ruling KV-1: any commit changing receipt/event/snapshot/state-encoding bytes bumps
+   kernel/VERSION, enforced by a CI guard — a diff touching the kernel-affecting surface
+   (production transition code, save encoding, event schemas) without a VERSION diff fails the
+   build.** The guard's path list is declared in-repo and grows by RFC, like every guard.
+3. MEDIUM — the TS v12→v13 genesis backfill is tested only at the trivial zero point (a one-line
+   summation error ships green): add non-zero and saturated parity cases. LOW batch: v13
+   missing-key asymmetry (Go zero-fills, TS errors — pointer-presence pattern per run_ended v2);
+   TS genesis floor at v12 vs Go's v1 (ruling: Go-side floor at 12 — no pre-v12 genesis rows
+   exist and the archive stores version explicitly; declare, don't migrate blind); imported-lane
+   projector test rides the legacy suite (add the branch test); run_ended v1 rows dead-end as
+   poison (accepted — nothing pre-deploy can project, moot pre-launch, recorded).
+
+## 2026-08-01 — category-review remediation and KV-1 implementation
+
+- Moved the TypeScript purchase-total cap check to Go's pre-cost/pre-affordability position. The
+  shared Go-authored fixture now combines a saturated career total with an unaffordable purchase
+  and asserts the typed `cap_exceeded/generators_purchased_total` receipt in both runtimes.
+- Bumped the shared kernel identity to 0.2.0 and added the fail-closed history/worktree guard over
+  the declared kernel-affecting path registry. Receipt/event/snapshot/state semantic changes can no
+  longer land without the version source changing in the same commit.
+- Closed the migration band: non-zero and saturated v12 backfills are asserted in TypeScript; both
+  verifiers reject pre-v12 genesis; Go v13 decoding now requires explicit accumulator presence just
+  like TypeScript. The imported-projector branch has its own real-Postgres fixture.

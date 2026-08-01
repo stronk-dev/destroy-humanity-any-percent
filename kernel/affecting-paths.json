@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "paths": [
+    "client/src/economy-kernel.ts",
+    "client/src/numeric.ts",
+    "client/src/replay.ts",
+    "client/src/routes.ts",
+    "server/accrualhook/",
+    "server/commonsbinding/",
+    "server/decimal/",
+    "server/economy/",
+    "server/faction/",
+    "server/guild/",
+    "server/prestige/",
+    "server/production/",
+    "server/routes/",
+    "server/save/intent.go",
+    "server/save/state.go"
+  ]
+}

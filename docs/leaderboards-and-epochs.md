@@ -10,6 +10,11 @@ use integer milliseconds and count boards use exact integers.
 TypeScript client. Generated constants are embedded in both builds, and `make verify-client`
 fails if either differs from the source file. Server builds also record their VCS revision as
 forensic detail; unknown local revisions remain explicit rather than being fabricated.
+The version gate also walks the repository history from the introduction of
+[`kernel/affecting-paths.json`](../kernel/affecting-paths.json): any registered non-test transition,
+receipt, event, snapshot, or state-encoding path changing without the same commit bumping
+`kernel/VERSION` fails. This makes version drift detectable by construction rather than review
+memory.
 
 Catalog bytes are immutable rows keyed by `constants_hash` and artifact name. Database triggers
 reject update/delete attempts. An epoch is a deliberate interval with a monotonic id, start/end,
@@ -26,7 +31,7 @@ metadata rewrite path through the `epochs` table itself.
 identity. It names the exact artifact bundle and the hashes accepted by each epoch. The harness
 and runtime load that declaration through one strict `epochseed` authority; no composition site
 owns a parallel list. Scenario-owned economy/routes/commons paths must equal their manifest entries,
-and artifacts not executed by the harness (currently Prestige and factions) still participate in
+and artifacts not executed by the harness (currently Prestige, factions, guilds, and categories) still participate in
 its identity.
 The history gate walks every commit after the seed: a correctness-only artifact change must append its
 resulting hash to the current epoch in the same commit, while a `BALANCE-CHANGE:` must append one
@@ -87,6 +92,8 @@ replayed terminal Company state to the parity suites; both compare it with the s
 `final_state_json`, so terminal facts cannot agree while hidden state silently diverges.
 The player validator consumes the archived genesis save version; its explicit v12→v13 migration
 backfills the purchase accumulator exactly as Go does, while a mislabeled envelope fails closed.
+Both runtimes reject pre-v12 genesis (none was ever produced), require the accumulator field on a
+v13 envelope, and test non-zero plus exact-domain-saturated v12 backfills.
 
 Ended runs enter `verification_queue` in the Exit transaction. Workers claim only the oldest
 unfinished run per Company, using expiring UUID claim tokens; projection and the token-checked
@@ -111,12 +118,18 @@ Runs recorded in `run_version_drift` are rejected at the same projection boundar
 
 The L7 evaluator is a strict, closed data union: `any`, `all_gates`, fact-set superset/disjoint,
 an exact count ceiling, and bounded `all_of`. It rejects unknown predicate kinds, open fields,
-route-gate drift, and any Phase-0 category shape other than Any%, 100%, Ethical%, and Low%. The
+route-gate drift, and any Phase-0 category shape other than Any%, 100%, Ethical%, Low%, and
+Valuation. The Phase-0 completion set is empty, so 100% is explicitly all gates. Ethical% rejects
+exact or prefix-matched facts in the registered `darkpattern.*` and `externality.*` namespaces;
+neither namespace has a Phase-0 producer yet, so every otherwise eligible Phase-0 run qualifies.
+The
 queue-owned projector reads the sole schema-v2 `run_ended`, checks its terminal sequence against
 the immutable log, derives Faction and Glitched from run-scoped events, takes Commons and Advisor
 from the terminal assisted record, and projects every matching category in the queue's mark
-transaction. Imported and version-drift runs claim projection with no board rows. Pre-timer runs
-also claim without entering any of the current four time-keyed categories.
+transaction. It loads category and route bytes by the run's pinned constants hash, never from the
+current worktree, so later epochs cannot reclassify historical runs. Imported and version-drift
+runs claim projection with no board rows. Pre-timer runs enter only Valuation and remain
+structurally excluded from every time-keyed category.
 
 `run_ended` schema v2 carries sorted crossed gates plus an exact
 `generators_purchased_total`. The latter is a save-v13 run accumulator incremented only by accepted
@@ -125,7 +138,10 @@ when later systems provision or consume generator units.
 
 Time queries use SQL `rank()` ordered by integer milliseconds; equal keys therefore produce
 standard competition ranks such as `1, 1, 3`. Count queries rank exact integers descending. Both
-use `(key, run_id)` keyset cursors and remain ordinary queries when an epoch is closed, so historical
+use `(key, run_id)` keyset cursors. Valuation parses the canonical terminal Decimal into an exact
+`(exponent, 12-digit padded quantized_mantissa)` pair and ranks both columns descending; equal pairs
+share a rank, including values beyond native integer or floating-point range. Magnitude pagination
+uses `(exponent, mantissa, run_id)`. All queries remain ordinary when an epoch is closed, so historical
 boards freeze without a special mutable mode. A partial unique index permits exactly one
 world-first per category/variable/epoch tuple; the projection first attempts the world-first insert
 and falls back to a normal immutable row on conflict.
@@ -150,12 +166,10 @@ partial deletion.
 
 The Go live service now executes through the shared `ApplyLogged` transition and compares cleanly
 when the persisted input is replayed from the pre-command state. The TypeScript verification kernel
-loads the same six-artifact bundle and reproduces ordinary transitions plus wind-down, stored-offer,
+loads the same seven-artifact bundle and reproduces ordinary transitions plus wind-down, stored-offer,
 and scripted cross-gate terminal transitions. The shared Go-authored corpus compares receipts,
 event bytes/order, final Company state, Founder-derived output, and next-run snapshots. Immutable
 genesis storage, queue failure handling, the L7 evaluator/projector, terminal-state comparison, and
-archive compaction are live. The production category file is intentionally not composed yet: L7a
-names `completion_set` and `forbidden_set` but does not enumerate their mechanical fact ids or say
-how category bytes are versioned across epochs. The committed fixture proves the closed machinery;
-shipping literal membership waits on that owner contract rather than inventing morality or
-completion facts in code.
+archive compaction are live. The production category file is an epoch-owned constants artifact;
+the category loader, projector, Go replay loader, TypeScript artifact identity, and schema gate all
+consume the same pinned bytes.

@@ -150,6 +150,8 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		{name: "manual-offline-accrual", payload: `{"intent_id":"01986666-0002-7000-8000-000000000002","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":2,"window_ms":100}`, advance: 48 * time.Hour, mode: ModeOffline, configure: func(state *save.State) { state.GeneratorCounts["generator.beige_tower"] = 3 }},
 		{name: "buy-generator", payload: `{"intent_id":"01986666-0003-7000-8000-000000000003","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":4}}`, mode: ModeOnline, configure: func(state *save.State) { setCash(t, state, "1e4") }},
 		{name: "buy-generator-max", payload: `{"intent_id":"01986666-0014-7000-8000-000000000014","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"max"}}`, mode: ModeOnline, configure: func(state *save.State) { setCash(t, state, "1e1000") }},
+		{name: "purchase-total-cap-precedes-affordability", payload: `{"intent_id":"01986666-0018-7000-8000-000000000018","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":1}}`, mode: ModeOnline,
+			configure: func(state *save.State) { state.GeneratorPurchasedTotal = decimal.MaxExactInteger }},
 		{name: "cross-gate", payload: `{"intent_id":"01986666-0004-7000-8000-000000000004","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline, configure: func(state *save.State) { state.Tier = 2; setCash(t, state, "1e10") }, carry: &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: bundleBytes.Hash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}},
 		{name: "cross-gate-offer-spawn", payload: `{"intent_id":"01986666-0011-7000-8000-000000000011","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline,
 			configure: func(state *save.State) {
@@ -514,6 +516,9 @@ func assertFullRunVerifier(t *testing.T, full crossRuntimeFullRun, catalogs Cata
 	}
 	if verdict := VerifyReplayRun(full.Genesis, save.CurrentVersion, catalogs, entries, constantsHash, true); verdict != ReplayEngineMismatch {
 		t.Fatalf("engine verdict=%s", verdict)
+	}
+	if verdict := VerifyReplayRun(full.Genesis, 11, catalogs, entries, constantsHash, false); verdict != ReplayConstantsMismatch {
+		t.Fatalf("pre-genesis-version-floor verdict=%s", verdict)
 	}
 	tampered := append([]ReplayLogEntry(nil), entries...)
 	tampered[10].ReceiptJSON = []byte(`{}`)

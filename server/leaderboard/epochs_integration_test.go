@@ -179,6 +179,22 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 	if err != nil || len(page) != 2 || page[0].RunID != board[1].RunID || page[1].Rank != 3 {
 		t.Fatalf("page=%+v err=%v", page, err)
 	}
+	magnitudeKeys := []MagnitudeKey{{Exponent: 15, Mantissa: 125_000_000_000}, {Exponent: 15, Mantissa: 125_000_000_000}, {Exponent: 14, Mantissa: 999_000_000_000}}
+	for index, key := range magnitudeKeys {
+		_, err := repository.ProjectVerifiedRun(ctx, VerifiedRun{EventID: []string{"01985555-4211-7000-8000-000000000011", "01985555-4212-7000-8000-000000000012", "01985555-4213-7000-8000-000000000013"}[index],
+			RunID: founders[index] + ":1", FounderID: founders[index], CategoryID: "valuation", Variables: variables, EpochID: 1, KeyMagnitude: &key, VerifiedAt: now.Add(time.Duration(index+10) * time.Second)})
+		if err != nil {
+			t.Fatalf("magnitude project %d: %v", index, err)
+		}
+	}
+	magnitudeBoard, err := repository.MagnitudeBoard(ctx, "valuation", variables, 1, 0, 10, nil)
+	if err != nil || len(magnitudeBoard) != 3 || magnitudeBoard[0].Rank != 1 || magnitudeBoard[1].Rank != 1 || magnitudeBoard[2].Rank != 3 || magnitudeBoard[0].Key != magnitudeKeys[0] {
+		t.Fatalf("magnitude board=%+v err=%v", magnitudeBoard, err)
+	}
+	magnitudePage, err := repository.MagnitudeBoard(ctx, "valuation", variables, 1, 0, 2, &MagnitudeCursor{Key: magnitudeBoard[0].Key, RunID: magnitudeBoard[0].RunID})
+	if err != nil || len(magnitudePage) != 2 || magnitudePage[0].RunID != magnitudeBoard[1].RunID || magnitudePage[1].Rank != 3 {
+		t.Fatalf("magnitude page=%+v err=%v", magnitudePage, err)
+	}
 	assertEpochRows(t, db, 2, 2)
 }
 

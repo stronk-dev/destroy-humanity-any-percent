@@ -431,6 +431,22 @@ func TestRestoreRejectsFutureVersion(t *testing.T) {
 	}
 }
 
+func TestRestoreV13RequiresPurchaseAccumulatorPresence(t *testing.T) {
+	encoded, err := EncodeState(testState(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var object map[string]any
+	if err := json.Unmarshal(encoded, &object); err != nil {
+		t.Fatal(err)
+	}
+	delete(object, "generators_purchased_total")
+	missing, _ := json.Marshal(object)
+	if _, err := RestoreState(missing, CurrentVersion, stateCatalog(t), economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("missing v13 purchase accumulator err=%v", err)
+	}
+}
+
 func TestEncodeRejectsUnsafeGeneratorCountAndMissingCursor(t *testing.T) {
 	state := testState(t)
 	state.GeneratorCounts["generator.example"] = decimal.MaxExactInteger + 1

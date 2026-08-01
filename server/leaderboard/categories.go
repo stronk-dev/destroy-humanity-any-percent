@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"sort"
+	"strings"
 )
 
 type CategoryTimer string
@@ -14,6 +15,7 @@ type CategoryTimer string
 const (
 	TimerRTA      CategoryTimer = "rta"
 	TimerAttended CategoryTimer = "attended"
+	TimerNone     CategoryTimer = "none"
 )
 
 type PredicateKind string
@@ -84,13 +86,13 @@ func LoadCategoryCatalog(data []byte, routeGateIDs []string) (*CategoryCatalog, 
 		return nil, fmt.Errorf("%w: category catalog: %v", ErrInvalidEpoch, err)
 	}
 	if err := rejectTrailingCategoryJSON(decoder); err != nil || raw.SchemaVersion != 1 ||
-		!sortedUniqueMechanical(raw.FullGateSet) || !sameStrings(raw.FullGateSet, routeGateIDs) || len(raw.FactSets) != 2 || len(raw.Categories) != 4 {
+		!sortedUniqueMechanical(raw.FullGateSet) || !sameStrings(raw.FullGateSet, routeGateIDs) || len(raw.FactSets) != 2 || len(raw.Categories) != 5 {
 		return nil, fmt.Errorf("%w: category catalog envelope", ErrInvalidEpoch)
 	}
-	catalog := &CategoryCatalog{FullGateSet: append([]string(nil), raw.FullGateSet...), FactSets: map[string][]string{}, Categories: make([]Category, 0, 4)}
+	catalog := &CategoryCatalog{FullGateSet: append([]string(nil), raw.FullGateSet...), FactSets: map[string][]string{}, Categories: make([]Category, 0, 5)}
 	for _, id := range []string{"completion_set", "forbidden_set"} {
 		values, ok := raw.FactSets[id]
-		if !ok || !sortedUniqueMechanical(values) {
+		if !ok || !sortedUniqueFactSet(values, id == "forbidden_set") {
 			return nil, fmt.Errorf("%w: fact set %s", ErrInvalidEpoch, id)
 		}
 		catalog.FactSets[id] = append([]string(nil), values...)
@@ -98,7 +100,7 @@ func LoadCategoryCatalog(data []byte, routeGateIDs []string) (*CategoryCatalog, 
 	seen := map[string]bool{}
 	for _, source := range raw.Categories {
 		if seen[source.ID] || !mechanicalPattern.MatchString(source.ID) || !mechanicalPattern.MatchString(source.NameKey) ||
-			(source.Timer != string(TimerRTA) && source.Timer != string(TimerAttended)) {
+			(source.Timer != string(TimerRTA) && source.Timer != string(TimerAttended) && source.Timer != string(TimerNone)) {
 			return nil, fmt.Errorf("%w: category row", ErrInvalidEpoch)
 		}
 		predicate, err := decodePredicate(source.Predicate, catalog.FactSets, 0)
@@ -108,7 +110,7 @@ func LoadCategoryCatalog(data []byte, routeGateIDs []string) (*CategoryCatalog, 
 		seen[source.ID] = true
 		catalog.Categories = append(catalog.Categories, Category{ID: source.ID, NameKey: source.NameKey, Timer: CategoryTimer(source.Timer), Predicate: predicate})
 	}
-	expected := []string{"any_percent", "ethical_percent", "hundred_percent", "low_percent"}
+	expected := []string{"any_percent", "ethical_percent", "hundred_percent", "low_percent", "valuation"}
 	sort.Slice(catalog.Categories, func(i, j int) bool { return catalog.Categories[i].ID < catalog.Categories[j].ID })
 	actual := make([]string, len(catalog.Categories))
 	for index := range catalog.Categories {
@@ -121,7 +123,7 @@ func LoadCategoryCatalog(data []byte, routeGateIDs []string) (*CategoryCatalog, 
 }
 
 func (catalog *CategoryCatalog) Matching(facts TerminalFacts) ([]Category, error) {
-	if catalog == nil || !sortedUniqueMechanical(facts.GatesCrossed) || !sortedUniqueMechanical(facts.Facts) || facts.GeneratorsPurchasedTotal < 0 {
+	if catalog == nil || !sortedUniqueMechanical(facts.GatesCrossed) || !sortedUniqueTerminalFacts(facts.Facts) || facts.GeneratorsPurchasedTotal < 0 {
 		return nil, ErrInvalidEpoch
 	}
 	result := make([]Category, 0, len(catalog.Categories))
@@ -146,7 +148,7 @@ func (catalog *CategoryCatalog) evaluate(predicate Predicate, facts TerminalFact
 	case PredicateFactsSuperset:
 		return containsAll(facts.Facts, catalog.FactSets[predicate.SetRef]), nil
 	case PredicateFactsDisjoint:
-		return disjoint(facts.Facts, catalog.FactSets[predicate.SetRef]), nil
+		return disjointPatterns(facts.Facts, catalog.FactSets[predicate.SetRef]), nil
 	case PredicateCountAtMost:
 		return facts.GeneratorsPurchasedTotal <= predicate.Literal, nil
 	case PredicateAllOf:
@@ -211,11 +213,15 @@ func canonicalPhase0Shapes(catalog *CategoryCatalog) bool {
 	ethical := byID["ethical_percent"]
 	hundred := byID["hundred_percent"]
 	low := byID["low_percent"]
-	return any.Timer == TimerRTA && any.Predicate.Kind == PredicateAny &&
+	valuation := byID["valuation"]
+	return len(catalog.FactSets["completion_set"]) == 0 &&
+		sameStrings(catalog.FactSets["forbidden_set"], []string{"darkpattern.", "externality."}) &&
+		any.Timer == TimerRTA && any.Predicate.Kind == PredicateAny &&
 		ethical.Timer == TimerAttended && ethical.Predicate.Kind == PredicateFactsDisjoint && ethical.Predicate.SetRef == "forbidden_set" &&
 		hundred.Timer == TimerRTA && hundred.Predicate.Kind == PredicateAllOf && len(hundred.Predicate.Children) == 2 &&
 		hundred.Predicate.Children[0].Kind == PredicateAllGates && hundred.Predicate.Children[1].Kind == PredicateFactsSuperset && hundred.Predicate.Children[1].SetRef == "completion_set" &&
-		low.Timer == TimerRTA && low.Predicate.Kind == PredicateCountAtMost && low.Predicate.Literal == 40
+		low.Timer == TimerRTA && low.Predicate.Kind == PredicateCountAtMost && low.Predicate.Literal == 40 &&
+		valuation.Timer == TimerNone && valuation.Predicate.Kind == PredicateAny
 }
 
 func rejectTrailingCategoryJSON(decoder *json.Decoder) error {
@@ -235,6 +241,49 @@ func sortedUniqueMechanical(values []string) bool {
 		last = value
 	}
 	return true
+}
+
+var terminalFactNamespaces = map[string]struct{}{
+	"darkpattern": {},
+	"exit":        {},
+	"externality": {},
+}
+
+func sortedUniqueTerminalFacts(values []string) bool {
+	last := ""
+	for _, value := range values {
+		if !mechanicalPattern.MatchString(value) || value <= last || !knownTerminalFactNamespace(value) {
+			return false
+		}
+		last = value
+	}
+	return true
+}
+
+func sortedUniqueFactSet(values []string, allowPrefixes bool) bool {
+	last := ""
+	for _, value := range values {
+		prefix := strings.HasSuffix(value, ".")
+		exact := strings.TrimSuffix(value, ".")
+		validNamespace := knownTerminalFactNamespace(exact)
+		if prefix {
+			_, validNamespace = terminalFactNamespaces[exact]
+		}
+		if value <= last || prefix && !allowPrefixes || !mechanicalPattern.MatchString(exact) || !validNamespace {
+			return false
+		}
+		last = value
+	}
+	return true
+}
+
+func knownTerminalFactNamespace(value string) bool {
+	namespace, _, ok := strings.Cut(value, ".")
+	if !ok {
+		return false
+	}
+	_, registered := terminalFactNamespaces[namespace]
+	return registered
 }
 
 func sameStrings(left, right []string) bool {
@@ -262,14 +311,12 @@ func containsAll(values, required []string) bool {
 	return true
 }
 
-func disjoint(left, right []string) bool {
-	present := make(map[string]bool, len(left))
-	for _, value := range left {
-		present[value] = true
-	}
-	for _, value := range right {
-		if present[value] {
-			return false
+func disjointPatterns(facts, forbidden []string) bool {
+	for _, fact := range facts {
+		for _, member := range forbidden {
+			if strings.HasSuffix(member, ".") && strings.HasPrefix(fact, member) || fact == member {
+				return false
+			}
 		}
 	}
 	return true

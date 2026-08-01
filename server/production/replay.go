@@ -88,11 +88,11 @@ func (set ReplayCatalogSet) ResolveFaction(constantsHash string) (*faction.Catal
 }
 
 func (bundle CatalogBundle) valid(constantsHash string) bool {
-	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != 6 || bundle.Economy == nil ||
+	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != 7 || bundle.Economy == nil ||
 		bundle.Routes == nil || bundle.Commons == nil || bundle.Prestige == nil || bundle.Faction == nil || bundle.Guild == nil {
 		return false
 	}
-	for _, name := range [...]string{"commons", "economy", "factions", "guilds", "prestige", "routes"} {
+	for _, name := range [...]string{"categories", "commons", "economy", "factions", "guilds", "prestige", "routes"} {
 		if len(bundle.Artifacts[name]) == 0 {
 			return false
 		}
