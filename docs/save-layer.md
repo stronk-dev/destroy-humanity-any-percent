@@ -9,6 +9,12 @@ snapshots. Each write locks its stream, compares the caller's expected revision,
 the next revision, and prunes within the same transaction so only the latest five remain. Two
 writers with one expected revision produce one commit and one typed conflict.
 
+`run_genesis` preserves the unprunable first revision of every pinned Company run as bytea plus its
+save version and constants hash. Its bytes come from `INSERT ... RETURNING state::text`, so genesis
+and the committed `jsonb` revision share PostgreSQL's actual representation rather than merely
+decoding to equal objects. A deferred constraint requires one genesis per pin, and the standard
+forensic trigger makes genesis update/delete impossible.
+
 Archive uses the same locked-head transaction: it locks the stream row, reads and compares the
 latest revision, then marks the stream archived. If a concurrent write advances the head first,
 archive returns a conflict; if archive wins, the writer returns archived. It never relies on a
@@ -16,7 +22,7 @@ stale scalar subquery under PostgreSQL READ COMMITTED.
 
 ## State format
 
-Version 10 is strict JSON. It contains the economy, production, Routes, Commons, Prestige, and Faction fields
+Version 12 is strict JSON. It contains the economy, production, Routes, Commons, Prestige, Faction, and Guild fields
 described by their owning canonical docs; unknown or missing required fields remain invalid. A
 representative prefix is:
 

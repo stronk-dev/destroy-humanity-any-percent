@@ -227,6 +227,10 @@ func TestAccountSessionIntegration(t *testing.T) {
 	if err != nil || newState.Revision != 1 {
 		t.Fatalf("new state=%+v err=%v", newState, err)
 	}
+	initialGenesis, err := saveStore.LoadRunGenesis(ctx, newState.StreamID, 1)
+	if err != nil || initialGenesis.Version != newState.Version || initialGenesis.ConstantsHash != newState.ConstantsHash || !bytes.Equal(initialGenesis.State, newState.State) {
+		t.Fatalf("initial genesis=%+v state_equal=%t err=%v", initialGenesis, bytes.Equal(initialGenesis.State, newState.State), err)
+	}
 	importedState, err := save.RestoreState(newState.State, newState.Version, catalog, economy.ScopeCompany, time.Time{})
 	if err != nil {
 		t.Fatal(err)
@@ -252,21 +256,25 @@ func TestAccountSessionIntegration(t *testing.T) {
 		t.Fatal("imported flag did not round-trip")
 	}
 	afterImport, err := repository.ActiveCompanyState(ctx, created.AccountID)
-	if err != nil || afterImport.Revision != 2 || afterImport.ConstantsHash != hash {
+	if err != nil || afterImport.Revision != 1 || afterImport.ConstantsHash != hash || afterImport.StreamID == newState.StreamID {
 		t.Fatalf("imported state=%+v err=%v", afterImport, err)
+	}
+	importGenesis, err := saveStore.LoadRunGenesis(ctx, afterImport.StreamID, 1)
+	if err != nil || importGenesis.Version != afterImport.Version || importGenesis.ConstantsHash != afterImport.ConstantsHash || !bytes.Equal(importGenesis.State, afterImport.State) {
+		t.Fatalf("import genesis=%+v state_equal=%t err=%v", importGenesis, bytes.Equal(importGenesis.State, afterImport.State), err)
 	}
 	restoredImport, err := save.RestoreState(afterImport.State, afterImport.Version, catalog, economy.ScopeCompany, time.Time{})
 	if err != nil || restoredImport.RunSeq != 1 || !restoredImport.RunStartedAt.Equal(now) {
 		t.Fatalf("restored import run=%d started=%s err=%v", restoredImport.RunSeq, restoredImport.RunStartedAt, err)
 	}
-	importIntent := `{"intent_id":"01985555-1112-7111-8111-111111111112","kind":"perform_manual_batch","expected_revision":2,"action_id":"manual.click","count":1,"window_ms":1}`
+	importIntent := `{"intent_id":"01985555-1112-7111-8111-111111111112","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`
 	importIntentResponse := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/intents", freshPair.AccessToken, importIntent)
 	if importIntentResponse.StatusCode != http.StatusOK {
 		t.Fatalf("import intent status=%d body=%s", importIntentResponse.StatusCode, readBody(importIntentResponse))
 	}
 	var importReceipt map[string]json.RawMessage
 	decodeResponse(t, importIntentResponse, &importReceipt)
-	if string(importReceipt["outcome"]) != `"applied"` || string(importReceipt["new_revision"]) != "3" {
+	if string(importReceipt["outcome"]) != `"applied"` || string(importReceipt["new_revision"]) != "2" {
 		t.Fatalf("import receipt=%v", importReceipt)
 	}
 
@@ -284,7 +292,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 	}
 	var founderRows, linkedRows, unarchivedRows, importedRows int
 	if err := db.QueryRowContext(ctx, `SELECT count(*),count(account_id),count(*) FILTER (WHERE archived_at IS NULL),count(*) FILTER (WHERE imported) FROM account_founders`).Scan(
-		&founderRows, &linkedRows, &unarchivedRows, &importedRows); err != nil || founderRows != 2 || linkedRows != 0 || unarchivedRows != 0 || importedRows != 1 {
+		&founderRows, &linkedRows, &unarchivedRows, &importedRows); err != nil || founderRows != 3 || linkedRows != 0 || unarchivedRows != 0 || importedRows != 1 {
 		t.Fatalf("anonymized founders rows=%d linked=%d active=%d imported=%d err=%v", founderRows, linkedRows, unarchivedRows, importedRows, err)
 	}
 }

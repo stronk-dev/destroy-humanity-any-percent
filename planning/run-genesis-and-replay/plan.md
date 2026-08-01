@@ -10,9 +10,9 @@
 2. [x] Add the versioned replay-input wire object and run-log persistence, then refactor the live
    Go engine so every logged mutation uses `ApplyLogged` and persists the exact consumed inputs in
    the same transaction.
-3. [ ] Port `ApplyLogged` to the TypeScript verification kernel and land shared full-transition
+3. [x] Port `ApplyLogged` to the TypeScript verification kernel and land shared full-transition
    parity fixtures.
-4. [ ] Add immutable run genesis storage at account creation, import, and Exit run-start sites,
+4. [x] Add immutable run genesis storage at account creation, import, and Exit run-start sites,
    with pin/genesis atomicity and byte-identity proofs.
 5. [ ] Implement the six-verdict verifier and shared failure corpus, including pre-timer board
    behavior and terminal-fact checks.

@@ -62,6 +62,13 @@ the first save revisions. A Prestige Exit takes a shared lock on the current epo
 run in the same transaction as `run_started`; an epoch mint cannot place the run in both epochs or
 neither. Once written, a pin is immutable.
 
+Every pin has exactly one `run_genesis` row containing the authoritative save version, constants
+hash, and PostgreSQL-canonical bytes of the run's first revision. A deferred database trigger
+rejects a transaction that commits a pin without its genesis; the genesis row rejects every update
+and delete. Account creation, normalized import, and Exit-created run N+1 write the pin, first
+revision, and genesis atomically. Fault injection attacks both sides of the pin/genesis boundary,
+and the account/import/Exit integration matrix compares genesis with the actual first revision.
+
 Every logged Company command requires an existing pin whose hash matches the live save. A missing
 pin or hash mismatch is an infrastructure error. A kernel-version mismatch does not strand the
 run: the command commits and the transaction inserts one immutable `run_version_drift` row for the
@@ -102,8 +109,9 @@ production kernel. Active run-log rows are immutable at SQL (`UPDATE` and `DELET
 tampering cannot be laundered into a historical `log_gap`.
 
 The Go live service now executes through the shared `ApplyLogged` transition and compares cleanly
-when the persisted input is replayed from the pre-command state, including terminal receipt and
-event order. The TypeScript port, genesis storage, full-run verifier, and archive compaction are not
-yet claimed as implemented. Catalog initials still cannot reconstruct later runs because
-Founder-carried effects alter their starting state; the active Run Genesis RFC owns that remaining
-work in that order.
+when the persisted input is replayed from the pre-command state. The TypeScript verification kernel
+loads the same six-artifact bundle and reproduces ordinary transitions plus wind-down, stored-offer,
+and scripted cross-gate terminal transitions. The shared Go-authored corpus compares receipts,
+event bytes/order, final Company state, Founder-derived output, and next-run snapshots. Immutable
+genesis storage is also live. The sequential ≥50-intent verifier/failure corpus, queue projection,
+and archive compaction remain the unimplemented portion of the active Run Genesis RFC.

@@ -388,25 +388,61 @@ func (repository *Repository) ImportFounder(ctx context.Context, accountID, cons
 	state.RunStartedAt = now
 	state.OfflineSpans = []save.OfflineSpan{}
 	state.OfferState = nil
+	currentCatalog, ok := repository.catalogs.Resolve(repository.constantsHash)
+	if !ok {
+		return Founder{}, ErrInvalidRequest
+	}
+	normalizedBytes, err := save.EncodeState(state)
+	if err != nil {
+		return Founder{}, ErrInvalidRequest
+	}
+	normalized, err := save.RestoreState(normalizedBytes, save.CurrentVersion, currentCatalog, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return Founder{}, ErrInvalidRequest
+	}
+	normalizedBytes, err = save.EncodeState(normalized)
+	if err != nil {
+		return Founder{}, ErrInvalidRequest
+	}
+	states, err := repository.initialStates(now)
+	if err != nil {
+		return Founder{}, err
+	}
+	states[economy.ScopeCompany] = normalizedBytes
+	importedFounderID, err := newUUIDv7(now, repository.random)
+	if err != nil {
+		return Founder{}, err
+	}
 	tx, err := repository.db.BeginTx(ctx, nil)
 	if err != nil {
 		return Founder{}, err
 	}
 	defer tx.Rollback()
-	founderID, err := activeFounderForUpdate(ctx, tx, accountID)
+	priorFounderID, err := activeFounderForUpdate(ctx, tx, accountID)
 	if err != nil {
 		return Founder{}, ErrAccountNotFound
 	}
-	var streamID string
-	if err := tx.QueryRowContext(ctx, `SELECT s.id FROM save_streams s WHERE owner_kind='founder' AND owner_id=$1 AND scope='company' AND archived_at IS NULL`, founderID).Scan(&streamID); err != nil {
+	var priorStreamID string
+	if err := tx.QueryRowContext(ctx, `SELECT s.id FROM save_streams s WHERE owner_kind='founder' AND owner_id=$1 AND scope='company' AND archived_at IS NULL FOR UPDATE`, priorFounderID).Scan(&priorStreamID); err != nil {
 		return Founder{}, err
 	}
-	if _, err := repository.saves.WriteInTransaction(ctx, tx, streamID, 1, repository.constantsHash, state, save.WriteContext{Cause: "founder_import"}); errors.Is(err, save.ErrConflict) {
+	var headRevision int64
+	if err := tx.QueryRowContext(ctx, `SELECT max(revision) FROM save_revisions WHERE stream_id=$1`, priorStreamID).Scan(&headRevision); err != nil {
+		return Founder{}, err
+	}
+	if headRevision != 1 {
 		return Founder{}, ErrImportUnavailable
-	} else if err != nil {
+	}
+	if _, err := tx.ExecContext(ctx, `UPDATE account_founders SET archived_at=$2 WHERE account_id=$1 AND archived_at IS NULL`, accountID, now); err != nil {
 		return Founder{}, err
 	}
-	if _, err := tx.ExecContext(ctx, `UPDATE account_founders SET imported=true WHERE founder_id=$1`, founderID); err != nil {
+	if _, err := tx.ExecContext(ctx, `UPDATE save_streams SET archived_at=$2 WHERE owner_kind='founder' AND owner_id=$1 AND archived_at IS NULL`, priorFounderID, now); err != nil {
+		return Founder{}, err
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id,created_at,imported) VALUES($1,$2,$3,true)`, accountID, importedFounderID, now); err != nil {
+		return Founder{}, err
+	}
+	if err := insertFounderStreams(ctx, tx, importedFounderID, repository.constantsHash, states); err != nil {
 		return Founder{}, err
 	}
 	if err := tx.Commit(); err != nil {
@@ -542,11 +578,12 @@ func insertFounderStreams(ctx context.Context, tx *sql.Tx, founderID, constantsH
 		if err := tx.QueryRowContext(ctx, `INSERT INTO save_streams(owner_kind,owner_id,scope) VALUES('founder',$1,$2) RETURNING id`, founderID, scope).Scan(&streamID); err != nil {
 			return err
 		}
-		if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,1,$2,$3,$4)`, streamID, save.CurrentVersion, states[scope], constantsHash); err != nil {
+		var persistedState []byte
+		if err := tx.QueryRowContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,1,$2,$3,$4) RETURNING state::text`, streamID, save.CurrentVersion, states[scope], constantsHash).Scan(&persistedState); err != nil {
 			return err
 		}
 		if scope == economy.ScopeCompany {
-			if _, err := save.PinRunToCurrentEpochTx(ctx, tx, streamID, founderID, 1, constantsHash); err != nil {
+			if _, err := save.PinRunWithGenesisTx(ctx, tx, streamID, founderID, 1, constantsHash, save.CurrentVersion, persistedState); err != nil {
 				return err
 			}
 		}

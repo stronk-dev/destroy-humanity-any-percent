@@ -252,7 +252,8 @@ func (s *Store) applyExitTransaction(
 	}
 
 	companyNext := companyRevision.Number + 2
-	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`, companyStreamID, companyNext, CurrentVersion, newEncoded, transitionHash); err != nil {
+	var persistedNewState []byte
+	if err := tx.QueryRowContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5) RETURNING state::text`, companyStreamID, companyNext, CurrentVersion, newEncoded, transitionHash).Scan(&persistedNewState); err != nil {
 		return IntentResult{}, err
 	}
 	if err := runExitFault(fault, "company_started_revision"); err != nil {
@@ -265,6 +266,15 @@ func (s *Store) applyExitTransaction(
 	recorded = append(recorded, startedRecords...)
 	if runLogSequence != 0 {
 		if _, err := PinRunToCurrentEpochTx(ctx, tx, companyStreamID, ownerID, decision.NewCompanyState.RunSeq, transitionHash); err != nil {
+			return IntentResult{}, err
+		}
+		if err := runExitFault(fault, "run_epoch"); err != nil {
+			return IntentResult{}, err
+		}
+		if err := InsertRunGenesisTx(ctx, tx, RunGenesis{CompanyStreamID: companyStreamID, RunSeq: decision.NewCompanyState.RunSeq, State: persistedNewState, Version: CurrentVersion, ConstantsHash: transitionHash}); err != nil {
+			return IntentResult{}, err
+		}
+		if err := runExitFault(fault, "run_genesis"); err != nil {
 			return IntentResult{}, err
 		}
 	}

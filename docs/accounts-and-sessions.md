@@ -18,9 +18,12 @@ the account's current active Founder instead of trusting the token's cached Foun
 Offline-anonymous saves can be submitted once to the initial company stream through
 `POST /api/v1/founder/import`. The payload runs through the normal save migration and restoration
 path. Its submitted version and constants hash select only that migration input: the server resets
-the imported company to run 1 at the canonical import instant, validates and writes it through the
-normal save-store path under the current constants hash, and permanently marks the Founder as
-imported in the same transaction.
+the imported company to run 1 at the canonical import instant and validates it under the current
+constants hash. Import archives the untouched initial Founder and its streams, then creates a new
+active imported Founder whose normalized Company state is revision 1 and immutable run genesis;
+the fresh Founder-scope stream and permanent imported marker commit in that same transaction.
+Existing access tokens remain valid because authenticated operations resolve the account's active
+Founder instead of trusting the token's cached Founder id.
 Leaderboard projections must exclude that relational flag because imported history was authored
 by a client.
 

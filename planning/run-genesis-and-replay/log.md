@@ -215,3 +215,28 @@ the scripted attended-time exit.
 The shared artifact now contains 13 ordinary and 3 terminal transition cases. Root-only checks are
 green: `make test-go GO_PACKAGES='./production'`, `make typecheck`, and `make test-client` (6,470
 passed). AC2's sequential ≥50-intent full-run fixture remains part of the verifier landing.
+
+## 2026-08-01 — immutable run genesis storage
+
+Migration 00032 adds `run_genesis` keyed by Company stream/run sequence with immutable state bytes,
+save version, and constants hash. A deferred constraint rejects any committed `run_epochs` insert
+that lacks its matching genesis, so “every pin has exactly one genesis” is structural rather than a
+production-call-site convention. The public pin helper captures the latest revision for existing
+composition/test callers; account creation and Exit use the explicit pin+genesis transaction seam.
+
+Genesis bytes are captured from PostgreSQL's `INSERT ... RETURNING state::text`. The first draft
+stored the pre-insert Go encoder bytes; real Postgres correctly exposed that `jsonb` canonicalizes
+its textual representation, making semantic equality weaker than R1's byte-identity requirement.
+The database's committed representation is now the one authority at all three write sites.
+
+Import cannot replace the initial run-1 genesis without violating immutability, and
+`save_streams` intentionally has a permanent owner/scope uniqueness constraint. The resulting R1
+implementation archives the untouched initial Founder and both streams, then creates a new active
+imported Founder whose normalized Company state is revision 1/genesis under the current hash.
+Account-authenticated operations already resolve the active Founder, so existing access tokens
+continue to work; the imported exclusion marker remains relational and permanent.
+
+The Postgres matrix proves account/import/Exit byte identity, genesis update rejection, and
+transaction rollback when faults fire after the new-run pin or after the genesis insert. The
+direct repository-owned integration command is green: `docker compose -f compose.save-test.yml
+run --rm test`. Plan items 3 and 4 are complete; the six-verdict verifier is next.

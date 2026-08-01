@@ -1,11 +1,13 @@
 package save
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -66,7 +68,11 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := PinRunToCurrentEpochTx(ctx, tx, companyRevision.StreamID, ownerID, 1, hash); err != nil {
+	companyGenesis, err := EncodeState(companyState)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := PinRunWithGenesisTx(ctx, tx, companyRevision.StreamID, ownerID, 1, hash, CurrentVersion, companyGenesis); err != nil {
 		t.Fatal(err)
 	}
 	if err := tx.Commit(); err != nil {
@@ -76,16 +82,25 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	loggedPayload := []byte(`{"expected_founder_revision":1,"expected_revision":1,"kind":"wind_down"}`)
 	loggedDigest := sha256.Sum256(loggedPayload)
 	loggedHash := "sha256:" + hex.EncodeToString(loggedDigest[:])
-	loggedIntentID := "01985555-0009-7000-8000-000000000009"
-	_, err = store.ApplyExitTransactionLogged(ctx, companyRevision.StreamID, 1, 1, loggedIntentID, loggedHash, loggedPayload,
-		loggedExitTestMutation(t, ownerID, companyRevision.StreamID, loggedIntentID, hash, now), func(step string) error {
-			if step == "run_log" {
-				return errors.New("injected run-log fault")
-			}
-			return nil
-		})
-	if err == nil {
-		t.Fatal("run-log fault committed")
+	for index, failStep := range []string{"run_epoch", "run_genesis", "run_log"} {
+		loggedIntentID := fmt.Sprintf("01985555-009%d-7000-8000-00000000000%d", index, index)
+		_, err = store.ApplyExitTransactionLogged(ctx, companyRevision.StreamID, 1, 1, loggedIntentID, loggedHash, loggedPayload,
+			loggedExitTestMutation(t, ownerID, companyRevision.StreamID, loggedIntentID, hash, now), func(step string) error {
+				if step == failStep {
+					return errors.New("injected " + failStep + " fault")
+				}
+				return nil
+			})
+		if err == nil {
+			t.Fatalf("%s fault committed", failStep)
+		}
+		var runTwoPins, runTwoGenesis int
+		if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_epochs WHERE company_stream_id=$1 AND run_seq=2`, companyRevision.StreamID).Scan(&runTwoPins); err != nil || runTwoPins != 0 {
+			t.Fatalf("%s rollback pins=%d err=%v", failStep, runTwoPins, err)
+		}
+		if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_genesis WHERE company_stream_id=$1 AND run_seq=2`, companyRevision.StreamID).Scan(&runTwoGenesis); err != nil || runTwoGenesis != 0 {
+			t.Fatalf("%s rollback genesis=%d err=%v", failStep, runTwoGenesis, err)
+		}
 	}
 	var loggedRows, outboxRows int
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1`, companyRevision.StreamID).Scan(&loggedRows); err != nil || loggedRows != 0 {
@@ -141,6 +156,20 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	}
 	assertLatestRevision(t, ctx, store, founderRevision.StreamID, 2)
 	assertLatestRevision(t, ctx, store, companyRevision.StreamID, 3)
+	genesis, err := store.LoadRunGenesis(ctx, companyRevision.StreamID, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var firstRunTwoState []byte
+	if err := db.QueryRowContext(ctx, `SELECT state FROM save_revisions WHERE stream_id=$1 AND revision=3`, companyRevision.StreamID).Scan(&firstRunTwoState); err != nil {
+		t.Fatal(err)
+	}
+	if genesis.Version != CurrentVersion || genesis.ConstantsHash != hash || !bytes.Equal(genesis.State, firstRunTwoState) {
+		t.Fatalf("run-2 genesis mismatch: %+v bytes_equal=%t", genesis, bytes.Equal(genesis.State, firstRunTwoState))
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE run_genesis SET version=version+1 WHERE company_stream_id=$1 AND run_seq=2`, companyRevision.StreamID); err == nil {
+		t.Fatal("run genesis update succeeded")
+	}
 	replayed, err := store.ApplyExitTransaction(ctx, companyRevision.StreamID, 1, 1, intentID, requestHash, func(*State, Revision, *State, Revision) (ExitDecision, error) {
 		t.Fatal("replay mutation ran")
 		return ExitDecision{}, nil

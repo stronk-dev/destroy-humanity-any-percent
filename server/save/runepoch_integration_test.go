@@ -60,10 +60,34 @@ func TestEngineVersionDriftRemainsPlayableAndIsRecordedOnceIntegration(t *testin
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `
+	var genesisState []byte
+	if err := db.QueryRowContext(ctx, `SELECT state::text FROM save_revisions WHERE stream_id=$1 AND revision=1`, revision.StreamID).Scan(&genesisState); err != nil {
+		t.Fatal(err)
+	}
+	identityTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := identityTx.ExecContext(ctx, `
 		INSERT INTO run_epochs(company_stream_id,run_seq,epoch_id,constants_hash,engine_version,build_vcs_hash,seed)
 		VALUES($1,1,$2,$3,'0.0.1','review-fixture',$4)`, revision.StreamID, epochID, hash, runidentity.SeedString(ownerID, 1)); err != nil {
 		t.Fatal(err)
+	}
+	if err := InsertRunGenesisTx(ctx, identityTx, RunGenesis{CompanyStreamID: revision.StreamID, RunSeq: 1, State: genesisState, Version: CurrentVersion, ConstantsHash: hash}); err != nil {
+		t.Fatal(err)
+	}
+	if err := identityTx.Commit(); err != nil {
+		t.Fatal(err)
+	}
+	orphanTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := PinRunToCurrentEpochTx(ctx, orphanTx, revision.StreamID, ownerID, 2, hash); err != nil {
+		t.Fatal(err)
+	}
+	if err := orphanTx.Commit(); err == nil {
+		t.Fatal("run pin without genesis committed")
 	}
 	if _, err := db.ExecContext(ctx, `
 		INSERT INTO run_log(company_stream_id,run_seq,seq,intent_id,canonical_payload,receipt,server_ts_ms)
