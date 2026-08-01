@@ -51,6 +51,19 @@ try {
   try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { growthFailed = true; }
   if (!growthFailed) throw new Error("kernel guard accepted registry growth plus semantics without a bump");
 
+  run(root, "git", ["restore", "."]);
+  const mainBranch = run(root, "git", ["branch", "--show-current"]).trim();
+  run(root, "git", ["switch", "-c", "guard-merge-side"]);
+  write(root, "merge-side.txt", "side\n"); commit(root, "test: side branch");
+  run(root, "git", ["switch", mainBranch]);
+  write(root, "merge-main.txt", "main\n"); commit(root, "test: main branch");
+  run(root, "git", ["merge", "--no-ff", "--no-commit", "guard-merge-side"]);
+  write(root, "client/src/replay.ts", "export const replay = 99;\n");
+  commit(root, "test: semantic merge resolution without bump");
+  let mergeFailed = false;
+  try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { mergeFailed = true; }
+  if (!mergeFailed) throw new Error("kernel guard accepted unversioned merge-resolution semantics");
+
   console.log("kernel history guard adversarial fixtures ok");
 } finally {
   rmSync(root, { recursive: true, force: true });

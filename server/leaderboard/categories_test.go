@@ -57,6 +57,10 @@ func TestCategoryCatalogRejectsDriftAndOpenUnion(t *testing.T) {
 	if _, err := LoadCategoryCatalog(driftedFacts, []string{"gate.t2_to_t3", "gate.t4_to_t5", "gate.t7_to_t8"}); err == nil {
 		t.Fatal("accepted Phase-0 fact-set drift")
 	}
+	driftedName := bytes.Replace(data, []byte(`"name_key": "category.any_percent"`), []byte(`"name_key": "category.wrong"`), 1)
+	if _, err := LoadCategoryCatalog(driftedName, []string{"gate.t2_to_t3", "gate.t4_to_t5", "gate.t7_to_t8"}); err == nil {
+		t.Fatal("accepted a non-canonical category name key")
+	}
 }
 
 func categoryIDs(categories []Category) []string {

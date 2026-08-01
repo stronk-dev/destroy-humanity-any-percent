@@ -20,7 +20,10 @@
     "server/prestige/",
     "server/production/",
     "server/routes/",
+    "server/save/exit.go",
+    "server/save/genesis.go",
     "server/save/intent.go",
+    "server/save/runlog.go",
     "server/save/state.go"
   ]
 }

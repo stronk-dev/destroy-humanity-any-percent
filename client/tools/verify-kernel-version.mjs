@@ -52,16 +52,16 @@ if (guardIntroduction) {
   const descendants = git("rev-list", "--reverse", `${guardIntroduction}..HEAD`).split("\n").filter(Boolean);
   const commits = [guardIntroduction, ...descendants];
   for (const commit of commits) {
-    const files = git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", commit).split("\n").filter(Boolean);
     const parents = git("rev-list", "--parents", "-n", "1", commit).split(" ").slice(1);
     const childGuard = parseGuard(git("show", `${commit}:${guardPath}`), `commit ${commit}`);
-    const parentGuard = parents.length === 0 || commit === guardIntroduction ? childGuard : parseGuard(git("show", `${parents[0]}:${guardPath}`), `parent of ${commit}`);
-    const removed = parentGuard.paths.filter((entry) => !childGuard.paths.includes(entry));
-    if (removed.length !== 0) throw new Error(`commit ${commit} removes kernel-affecting paths: ${removed.join(", ")}`);
-    if (parents.length !== 0) {
-      const before = git("show", `${parents[0]}:kernel/VERSION`).trim();
+    for (const parent of parents) {
+      const files = git("diff", "--name-only", parent, commit).split("\n").filter(Boolean);
+      const parentGuard = commit === guardIntroduction ? childGuard : parseGuard(git("show", `${parent}:${guardPath}`), `parent ${parent} of ${commit}`);
+      const removed = parentGuard.paths.filter((entry) => !childGuard.paths.includes(entry));
+      if (removed.length !== 0) throw new Error(`commit ${commit} removes kernel-affecting paths from parent ${parent}: ${removed.join(", ")}`);
+      const before = git("show", `${parent}:kernel/VERSION`).trim();
       const after = git("show", `${commit}:kernel/VERSION`).trim();
-      assertBump(`commit ${commit}`, files, [...new Set([...parentGuard.paths, ...childGuard.paths])], before, after);
+      assertBump(`commit ${commit} against parent ${parent}`, files, [...new Set([...parentGuard.paths, ...childGuard.paths])], before, after);
     }
   }
 }

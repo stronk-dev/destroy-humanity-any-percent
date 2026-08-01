@@ -15,6 +15,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
+	"cloud-clicker/server/guild"
 	"cloud-clicker/server/multiplier"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/save"
@@ -260,19 +261,45 @@ func makeRejectedExitFixture(t *testing.T, catalogs CatalogBundle, constantsHash
 	t.Helper()
 	assertPerEntryNextCatalog(t, catalogs, constantsHash, now)
 	state := replayFixtureState(t, catalogs.Economy, now)
-	state.Tier = 0
+	state.Tier = 3
+	state.GatesCrossed["gate.t2_to_t3"] = true
+	state.FactionID = "open_source"
+	state.IncorporatedAt = now.Add(-time.Minute)
+	state.StockUnits = 3
 	genesis, err := save.EncodeState(state)
 	if err != nil {
 		t.Fatal(err)
 	}
 	founderID := "01987778-2000-7000-8000-000000000001"
-	request, err := parseLoggedIntent([]byte(`{"kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`), "01987778-0001-7000-8000-000000000001")
+	request, err := parseLoggedIntent([]byte(`{"kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":1}}`), "01987778-0001-7000-8000-000000000001")
 	if err != nil {
 		t.Fatal(err)
 	}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01987778-1000-7000-8000-000000000001", FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(time.Second), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	ordinaryRejected, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
+	if err != nil || ordinaryRejected.Outcome != save.IntentRejected {
+		t.Fatalf("late rejected intent outcome=%s err=%v", ordinaryRejected.Outcome, err)
+	}
+	if after := mustEncodeState(t, state); !bytes.Equal(genesis, after) {
+		t.Fatalf("late rejected intent mutated replay state\nbefore=%s\nafter=%s", genesis, after)
+	}
+	entries := []crossRuntimeFullRunEntry{{Seq: 1, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs, ReceiptJSON: canonicalFixtureJSON(t, ordinaryRejected.Receipt), EventsJSON: "[]"}}
+
+	request, err = parseLoggedIntent([]byte(`{"kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`), "01987778-0002-7000-8000-000000000002")
+	if err != nil {
+		t.Fatal(err)
+	}
+	command = save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: command.CompanyStreamID, FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 2}
 	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
+	inputs, err = buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(2 * time.Second), IntentKind: request.Kind,
+		RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
+		SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash,
+		GuildSettlementBatch: guild.SettlementBatch{GuildID: "01987778-3000-7000-8000-000000000001", BaseSeq: 0,
+			Settlements: []guild.Settlement{{GuildID: "01987778-3000-7000-8000-000000000001", BoundarySeq: 1, DebitUnits: 1, CreditUnits: 2}}}})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -280,13 +307,17 @@ func makeRejectedExitFixture(t *testing.T, catalogs CatalogBundle, constantsHash
 	if err != nil || exit.Decision.Outcome != save.IntentRejected {
 		t.Fatalf("rejected exit outcome=%s err=%v", exit.Decision.Outcome, err)
 	}
-	entries := []crossRuntimeFullRunEntry{{Seq: 1, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs, ReceiptJSON: canonicalFixtureJSON(t, exit.Decision.Receipt), EventsJSON: "[]", Terminal: true}}
-	request, err = parseLoggedIntent([]byte(`{"kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1000}`), "01987778-0002-7000-8000-000000000002")
+	if after := mustEncodeState(t, state); !bytes.Equal(genesis, after) {
+		t.Fatalf("rejected terminal preflight mutated replay state\nbefore=%s\nafter=%s", genesis, after)
+	}
+	entries = append(entries, crossRuntimeFullRunEntry{Seq: 2, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs, ReceiptJSON: canonicalFixtureJSON(t, exit.Decision.Receipt), EventsJSON: "[]", Terminal: true})
+
+	request, err = parseLoggedIntent([]byte(`{"kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1000}`), "01987778-0003-7000-8000-000000000003")
 	if err != nil {
 		t.Fatal(err)
 	}
-	command = save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: command.CompanyStreamID, FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 2}
-	inputs, err = buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(time.Second), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
+	command = save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: command.CompanyStreamID, FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 3}
+	inputs, err = buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(3 * time.Second), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -294,21 +325,22 @@ func makeRejectedExitFixture(t *testing.T, catalogs CatalogBundle, constantsHash
 	if err != nil {
 		t.Fatal(err)
 	}
-	entries = append(entries, crossRuntimeFullRunEntry{Seq: 2, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs, ReceiptJSON: canonicalFixtureJSON(t, ordinary.Receipt), EventsJSON: canonicalFixtureValue(t, fixtureEvents(ordinary.Events))})
+	entries = append(entries, crossRuntimeFullRunEntry{Seq: 3, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs, ReceiptJSON: canonicalFixtureJSON(t, ordinary.Receipt), EventsJSON: canonicalFixtureValue(t, fixtureEvents(ordinary.Events))})
 	full := crossRuntimeFullRun{Genesis: genesis, Entries: entries, FinalStateJSON: canonicalFixtureJSON(t, mustEncodeState(t, state))}
 	verifiedEntries := []ReplayLogEntry{
-		{Sequence: 1, CanonicalPayload: entries[0].CanonicalPayload, ReplayInputs: entries[0].ReplayInputs, ReceiptJSON: []byte(entries[0].ReceiptJSON), EventsJSON: []byte(entries[0].EventsJSON), Terminal: true},
-		{Sequence: 2, CanonicalPayload: entries[1].CanonicalPayload, ReplayInputs: entries[1].ReplayInputs, ReceiptJSON: []byte(entries[1].ReceiptJSON), EventsJSON: []byte(entries[1].EventsJSON)},
+		{Sequence: 1, CanonicalPayload: entries[0].CanonicalPayload, ReplayInputs: entries[0].ReplayInputs, ReceiptJSON: []byte(entries[0].ReceiptJSON), EventsJSON: []byte(entries[0].EventsJSON)},
+		{Sequence: 2, CanonicalPayload: entries[1].CanonicalPayload, ReplayInputs: entries[1].ReplayInputs, ReceiptJSON: []byte(entries[1].ReceiptJSON), EventsJSON: []byte(entries[1].EventsJSON), Terminal: true},
+		{Sequence: 3, CanonicalPayload: entries[2].CanonicalPayload, ReplayInputs: entries[2].ReplayInputs, ReceiptJSON: []byte(entries[2].ReceiptJSON), EventsJSON: []byte(entries[2].EventsJSON)},
 	}
 	if verdict := VerifyReplayRun(genesis, save.CurrentVersion, catalogs, verifiedEntries, constantsHash, false); verdict != ReplayLogGap {
 		t.Fatalf("rejected-exit continuation verdict=%s", verdict)
 	}
 	tampered := append([]ReplayLogEntry(nil), verifiedEntries...)
-	tampered[1].ReceiptJSON = []byte(`{}`)
+	tampered[2].ReceiptJSON = []byte(`{}`)
 	if verdict := VerifyReplayRun(genesis, save.CurrentVersion, catalogs, tampered, constantsHash, false); verdict != ReplayStateDivergence {
 		t.Fatalf("rejected-exit continuation tamper verdict=%s", verdict)
 	}
-	if verdict := VerifyReplayRun(genesis, save.CurrentVersion, catalogs, verifiedEntries[:1], constantsHash, false); verdict != ReplayLogGap {
+	if verdict := VerifyReplayRun(genesis, save.CurrentVersion, catalogs, verifiedEntries[:2], constantsHash, false); verdict != ReplayLogGap {
 		t.Fatalf("final rejected exit verdict=%s", verdict)
 	}
 	clock := append([]ReplayLogEntry(nil), verifiedEntries...)

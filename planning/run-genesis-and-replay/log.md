@@ -669,3 +669,26 @@ but blocked archival on four verified contract failures:
 The semantic repair bumps the shared kernel to 0.3.0 and replay-inputs to v2. The regenerated shared
 fixture proves a non-zero Guild debit and credit mutate the sequential state identically in Go and
 TypeScript rather than merely surviving decode.
+
+## 2026-08-01 — independent review blockers and whole-state replay remediation
+
+The independent diff review rejected the first 0.3.0 landing on verified seams rather than local
+math: the composed account server omitted the now-required Guild settlement resolver; rejected
+replay restored only the five settlement fields even though evaluation and hooks can mutate the
+whole Company; terminal TypeScript preflight bypassed even that partial restore; the kernel registry
+omitted save-owned replay/genesis surfaces; merge-resolution changes escaped the history guard; and
+the Go category loader accepted a name key TypeScript rejected.
+
+The remediation makes rejection transactional at the owned boundary. Both kernels snapshot the
+complete Company before settlement/evaluation and restore it for every typed rejection or error.
+The shared sequential corpus now proves two independent rollback paths before a following applied
+command: an unaffordable purchase rejected after elapsed evaluation, and a terminal gate preflight
+rejected after a non-zero Guild debit/credit batch. Both must leave the encoded genesis bytes
+untouched before the next command. Service construction now fails closed without the settlement
+resolver, and the full account/Postgres composition supplies the real dependency explicitly.
+
+KV-1 now includes `save/exit.go`, `save/runlog.go`, and `save/genesis.go`. History validation compares
+every merge result against every parent, with a temporary-Git fixture that injects an unversioned
+semantic merge-resolution change and requires rejection. Go requires `name_key = category.<id>` like
+TypeScript. These transition/receipt semantics advance the shared kernel to 0.3.1; no reviewed hash
+was rewritten.

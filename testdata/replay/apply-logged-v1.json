@@ -9649,7 +9649,9 @@
       "compute_credit_ms": 0,
       "manual_token_milli": 50000,
       "manual_token_refilled_at": "2026-08-01T08:00:00Z",
-      "gates_crossed": {},
+      "gates_crossed": {
+        "gate.t2_to_t3": true
+      },
       "run_seq": 1,
       "doctrines_by_transition": {},
       "structure_id": "",
@@ -9662,7 +9664,7 @@
       "compact_tithe_ppm": 0,
       "compact_solidarity_ppm": 0,
       "compact_solidarity_samples": [],
-      "tier": 0,
+      "tier": 3,
       "lifetime_value": "0",
       "offer_state": null,
       "run_started_at_ms": 1785571200000,
@@ -9678,9 +9680,9 @@
       "exit_history": [],
       "run_pre_timer": false,
       "collapsed_offline_ms": 0,
-      "faction_id": null,
-      "incorporated_at_ms": null,
-      "stock_units": 0,
+      "faction_id": "open_source",
+      "incorporated_at_ms": 1785571140000,
+      "stock_units": 3,
       "stock_progress_ms": 0,
       "consumed_stock_units": 0,
       "guild_tithe_carry_ppm": 0,
@@ -9693,9 +9695,13 @@
       {
         "seq": 1,
         "canonical_payload": {
-          "expected_founder_revision": 1,
+          "count": {
+            "mode": "exact",
+            "value": 1
+          },
           "expected_revision": 1,
-          "kind": "wind_down"
+          "generator_id": "generator.beige_tower",
+          "kind": "buy_generator"
         },
         "replay_inputs": {
           "v": 2,
@@ -9707,11 +9713,11 @@
             "run_seq": 1,
             "run_log_seq": 1
           },
-          "evaluated_at_ms": 1785571200000,
+          "evaluated_at_ms": 1785571201000,
           "evaluation_mode": "online",
           "resolved": {
-            "kind": "exit",
-            "intent_kind": "wind_down",
+            "kind": "accrual",
+            "intent_kind": "buy_generator",
             "accrual": {
               "contributions": [],
               "commons_weight_ppm": null,
@@ -9719,6 +9725,51 @@
                 "guild_id": "",
                 "base_seq": 0,
                 "settlements": []
+              },
+              "route_context_version": 1
+            }
+          }
+        },
+        "receipt_json": "{\"current_revision\":1,\"intent_id\":\"01987778-0001-7000-8000-000000000001\",\"outcome\":\"rejected\",\"rejection\":{\"category\":\"unaffordable\",\"detail\":\"generator.beige_tower\"}}",
+        "events_json": "[]",
+        "terminal": false
+      },
+      {
+        "seq": 2,
+        "canonical_payload": {
+          "expected_revision": 1,
+          "gate_id": "gate.t2_to_t3",
+          "kind": "cross_gate",
+          "route_id": null
+        },
+        "replay_inputs": {
+          "v": 2,
+          "command": {
+            "intent_id": "01987778-0002-7000-8000-000000000002",
+            "company_stream_id": "01987778-1000-7000-8000-000000000001",
+            "founder_id": "01987778-2000-7000-8000-000000000001",
+            "revision": 1,
+            "run_seq": 1,
+            "run_log_seq": 2
+          },
+          "evaluated_at_ms": 1785571202000,
+          "evaluation_mode": "online",
+          "resolved": {
+            "kind": "exit",
+            "intent_kind": "cross_gate",
+            "accrual": {
+              "contributions": [],
+              "commons_weight_ppm": null,
+              "guild_settlement_batch": {
+                "guild_id": "01987778-3000-7000-8000-000000000001",
+                "base_seq": 0,
+                "settlements": [
+                  {
+                    "boundary_seq": 1,
+                    "debit_units": 1,
+                    "credit_units": 2
+                  }
+                ]
               },
               "route_context_version": 1
             },
@@ -9740,12 +9791,12 @@
             "next_constants_hash": "sha256:63ab30c96b5d76b941b053131fcee63c94b6b3ad91322f9160d94973ce8c58fa"
           }
         },
-        "receipt_json": "{\"current_revision\":1,\"intent_id\":\"01987778-0001-7000-8000-000000000001\",\"outcome\":\"rejected\",\"rejection\":{\"category\":\"not_eligible\",\"detail\":\"tier\"}}",
+        "receipt_json": "{\"current_revision\":1,\"intent_id\":\"01987778-0002-7000-8000-000000000002\",\"outcome\":\"rejected\",\"rejection\":{\"category\":\"gate_already_crossed\",\"detail\":\"gate.t2_to_t3\"}}",
         "events_json": "[]",
         "terminal": true
       },
       {
-        "seq": 2,
+        "seq": 3,
         "canonical_payload": {
           "action_id": "manual.click",
           "count": 1,
@@ -9756,14 +9807,14 @@
         "replay_inputs": {
           "v": 2,
           "command": {
-            "intent_id": "01987778-0002-7000-8000-000000000002",
+            "intent_id": "01987778-0003-7000-8000-000000000003",
             "company_stream_id": "01987778-1000-7000-8000-000000000001",
             "founder_id": "01987778-2000-7000-8000-000000000001",
             "revision": 1,
             "run_seq": 1,
-            "run_log_seq": 2
+            "run_log_seq": 3
           },
-          "evaluated_at_ms": 1785571201000,
+          "evaluated_at_ms": 1785571203000,
           "evaluation_mode": "online",
           "resolved": {
             "kind": "accrual",
@@ -9780,11 +9831,11 @@
             }
           }
         },
-        "receipt_json": "{\"applied_count\":1,\"evaluated_at\":\"2026-08-01T08:00:01Z\",\"intent_id\":\"01987778-0002-7000-8000-000000000002\",\"new_revision\":2,\"outcome\":\"applied\",\"receipt\":{\"changes\":[{\"after\":\"1e0\",\"before\":\"0\",\"delta\":\"1e0\",\"resource_id\":\"company.cash\"}]},\"snapshot\":{\"balances\":{\"company.cash\":\"1e0\"},\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_tithe_ppm\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:01Z\",\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.beige_tower\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":49000,\"manual_token_refilled_at\":\"2026-08-01T08:00:01Z\",\"meter_bands\":{},\"offer_state\":null,\"offline_spans\":[],\"region_traits\":[],\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785571200000,\"stock_progress_ms\":0,\"stock_resource\":null,\"stock_units\":0,\"structure_id\":\"\",\"tier\":0}}",
+        "receipt_json": "{\"applied_count\":1,\"evaluated_at\":\"2026-08-01T08:00:03Z\",\"intent_id\":\"01987778-0003-7000-8000-000000000003\",\"new_revision\":2,\"outcome\":\"applied\",\"receipt\":{\"changes\":[{\"after\":\"1e0\",\"before\":\"0\",\"delta\":\"1e0\",\"resource_id\":\"company.cash\"}]},\"snapshot\":{\"balances\":{\"company.cash\":\"1e0\"},\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_tithe_ppm\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:03Z\",\"faction_id\":\"open_source\",\"gates_crossed\":{\"gate.t2_to_t3\":true},\"generators\":{\"generator.beige_tower\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":1785571140000,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":49000,\"manual_token_refilled_at\":\"2026-08-01T08:00:03Z\",\"meter_bands\":{},\"offer_state\":null,\"offline_spans\":[],\"region_traits\":[],\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785571200000,\"stock_progress_ms\":3000,\"stock_resource\":\"libraries\",\"stock_units\":3,\"structure_id\":\"\",\"tier\":3}}",
         "events_json": "[]",
         "terminal": false
       }
     ],
-    "final_state_json": "{\"advisor_mode\":false,\"age_ms\":0,\"balances\":{\"company.cash\":\"1e0\"},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:01Z\",\"exit_history\":[],\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.beige_tower\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":49000,\"manual_token_refilled_at\":\"2026-08-01T08:00:01Z\",\"meter_bands\":{},\"network_slots\":[],\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[],\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785571200000,\"soul\":0,\"stock_progress_ms\":0,\"stock_units\":0,\"structure_id\":\"\",\"tier\":0}"
+    "final_state_json": "{\"advisor_mode\":false,\"age_ms\":0,\"balances\":{\"company.cash\":\"1e0\"},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:03Z\",\"exit_history\":[],\"faction_id\":\"open_source\",\"gates_crossed\":{\"gate.t2_to_t3\":true},\"generators\":{\"generator.beige_tower\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":1785571140000,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":49000,\"manual_token_refilled_at\":\"2026-08-01T08:00:03Z\",\"meter_bands\":{},\"network_slots\":[],\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[],\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785571200000,\"soul\":0,\"stock_progress_ms\":3000,\"stock_units\":3,\"structure_id\":\"\",\"tier\":3}"
   }
 }

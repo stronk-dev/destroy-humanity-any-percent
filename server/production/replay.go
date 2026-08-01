@@ -195,6 +195,15 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	if err := deriveFactionStockResource(state, catalogs.Faction); err != nil {
 		return LoggedTransition{}, err
 	}
+	stateBefore, err := cloneReplayState(state, catalogs.Economy)
+	if err != nil {
+		return LoggedTransition{}, fmt.Errorf("%w: snapshot state: %v", ErrInvalidReplayInputs, err)
+	}
+	defer func() {
+		if resultErr != nil || result.Outcome != save.IntentApplied {
+			*state = *stateBefore
+		}
+	}()
 	if request.InvalidDetail != "" {
 		decision, decisionErr := rejectedDecision(request, revision.Number, "invalid", request.InvalidDetail)
 		if decisionErr != nil {
@@ -232,15 +241,9 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	if err != nil || accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
 		return LoggedTransition{}, fmt.Errorf("%w: accrual inputs", ErrInvalidReplayInputs)
 	}
-	settlementBefore, err := applyReplayGuildSettlements(state, accrual.GuildSettlementBatch, catalogs.Faction.StockCap)
-	if err != nil {
+	if err := applyReplayGuildSettlements(state, accrual.GuildSettlementBatch, catalogs.Faction.StockCap); err != nil {
 		return LoggedTransition{}, fmt.Errorf("%w: guild settlement inputs", ErrInvalidReplayInputs)
 	}
-	defer func() {
-		if resultErr != nil || result.Outcome != save.IntentApplied {
-			settlementBefore.restore(state)
-		}
-	}()
 	if state.CompactMember != (accrual.CommonsWeightPPM != nil) {
 		return LoggedTransition{}, fmt.Errorf("%w: commons weight presence", ErrInvalidReplayInputs)
 	}
@@ -292,6 +295,18 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	if now.Before(company.EvaluatedThrough) {
 		return LoggedExitTransition{}, ErrReplayClockViolation
 	}
+	if err := deriveFactionStockResource(company, catalogs.Faction); err != nil {
+		return LoggedExitTransition{}, err
+	}
+	companyBefore, err := cloneReplayState(company, catalogs.Economy)
+	if err != nil {
+		return LoggedExitTransition{}, fmt.Errorf("%w: snapshot state: %v", ErrInvalidReplayInputs, err)
+	}
+	defer func() {
+		if resultErr != nil || result.Decision.Outcome != save.IntentApplied {
+			*company = *companyBefore
+		}
+	}()
 	contributions, err := contributionsFromReplay(resolved.Accrual)
 	if err != nil || resolved.Accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal accrual inputs", ErrInvalidReplayInputs)
@@ -300,15 +315,9 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash || !sortedUniqueMechanical(resolved.ExecutedRouteIDs) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal frozen inputs", ErrInvalidReplayInputs)
 	}
-	settlementBefore, err := applyReplayGuildSettlements(company, resolved.Accrual.GuildSettlementBatch, catalogs.Faction.StockCap)
-	if err != nil {
+	if err := applyReplayGuildSettlements(company, resolved.Accrual.GuildSettlementBatch, catalogs.Faction.StockCap); err != nil {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal guild settlement inputs", ErrInvalidReplayInputs)
 	}
-	defer func() {
-		if resultErr != nil || result.Decision.Outcome != save.IntentApplied {
-			settlementBefore.restore(company)
-		}
-	}()
 	revision := save.Revision{StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
 		Number: wire.Command.Revision, ConstantsHash: catalogs.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
 	founder := stateFromFounderCarry(resolved.FounderCarry)
@@ -467,7 +476,26 @@ func contributionsFromReplay(accrual replayAccrual) ([]multiplier.Contribution, 
 	return result, nil
 }
 
-type replaySettlementState struct {
+func applyReplayGuildSettlements(state *save.State, encoded replayGuildSettlementBatch, stockCap int64) error {
+	if state == nil {
+		return ErrInvalidReplayInputs
+	}
+	batch := guild.SettlementBatch{GuildID: encoded.GuildID, BaseSeq: encoded.BaseSeq, Settlements: make([]guild.Settlement, len(encoded.Settlements))}
+	for index, settlement := range encoded.Settlements {
+		batch.Settlements[index] = guild.Settlement{GuildID: encoded.GuildID, BoundarySeq: settlement.BoundarySeq,
+			DebitUnits: settlement.DebitUnits, CreditUnits: settlement.CreditUnits}
+	}
+	if err := guild.ApplySettlements(state, batch, stockCap); err != nil {
+		return err
+	}
+	return nil
+}
+
+// resolvedSettlementState exists only for the live input-resolution read in
+// resolveReplayAccrual. ApplyLogged rejection rollback uses cloneReplayState
+// so every transition-owned field, not merely these settlement fields, rolls
+// back atomically.
+type resolvedSettlementState struct {
 	stockUnits          int64
 	consumedStockUnits  int64
 	consumedWindowUnits int64
@@ -475,29 +503,25 @@ type replaySettlementState struct {
 	boundarySeq         int64
 }
 
-func applyReplayGuildSettlements(state *save.State, encoded replayGuildSettlementBatch, stockCap int64) (replaySettlementState, error) {
-	if state == nil {
-		return replaySettlementState{}, ErrInvalidReplayInputs
-	}
-	before := replaySettlementState{stockUnits: state.StockUnits, consumedStockUnits: state.ConsumedStockUnits,
-		consumedWindowUnits: state.GuildConsumedWindow, boundaryGuildID: state.GuildBoundaryGuildID, boundarySeq: state.GuildBoundarySeq}
-	batch := guild.SettlementBatch{GuildID: encoded.GuildID, BaseSeq: encoded.BaseSeq, Settlements: make([]guild.Settlement, len(encoded.Settlements))}
-	for index, settlement := range encoded.Settlements {
-		batch.Settlements[index] = guild.Settlement{GuildID: encoded.GuildID, BoundarySeq: settlement.BoundarySeq,
-			DebitUnits: settlement.DebitUnits, CreditUnits: settlement.CreditUnits}
-	}
-	if err := guild.ApplySettlements(state, batch, stockCap); err != nil {
-		return replaySettlementState{}, err
-	}
-	return before, nil
-}
-
-func (before replaySettlementState) restore(state *save.State) {
+func (before resolvedSettlementState) restore(state *save.State) {
 	state.StockUnits = before.stockUnits
 	state.ConsumedStockUnits = before.consumedStockUnits
 	state.GuildConsumedWindow = before.consumedWindowUnits
 	state.GuildBoundaryGuildID = before.boundaryGuildID
 	state.GuildBoundarySeq = before.boundarySeq
+}
+
+func cloneReplayState(state *save.State, catalog *economy.Catalog) (*save.State, error) {
+	encoded, err := save.EncodeState(state)
+	if err != nil {
+		return nil, err
+	}
+	cloned, err := save.RestoreState(encoded, save.CurrentVersion, catalog, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		return nil, err
+	}
+	cloned.FactionStockResource = state.FactionStockResource
+	return cloned, nil
 }
 
 func validFounderCarry(carry replayFounderCarry) bool {

@@ -306,7 +306,7 @@ func NewService(
 			return nil, ErrInvalidIntent
 		}
 	}
-	if service.prestigePolicies == nil || service.factionCatalogs == nil || service.currentConstantsHash == "" {
+	if service.prestigePolicies == nil || service.factionCatalogs == nil || service.guildSettlements == nil || service.currentConstantsHash == "" {
 		return nil, ErrInvalidIntent
 	}
 	if _, ok := service.catalogs.(save.StatePolicyValidator); !ok {
@@ -522,7 +522,7 @@ func (s *Service) resolveReplayAccrual(ctx context.Context, state *save.State, r
 	if err != nil {
 		return nil, guild.SettlementBatch{}, err
 	}
-	before := replaySettlementState{stockUnits: state.StockUnits, consumedStockUnits: state.ConsumedStockUnits,
+	before := resolvedSettlementState{stockUnits: state.StockUnits, consumedStockUnits: state.ConsumedStockUnits,
 		consumedWindowUnits: state.GuildConsumedWindow, boundaryGuildID: state.GuildBoundaryGuildID, boundarySeq: state.GuildBoundarySeq}
 	if err := guild.ApplySettlements(state, batch, stockCap); err != nil {
 		return nil, guild.SettlementBatch{}, err

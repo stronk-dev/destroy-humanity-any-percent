@@ -116,6 +116,32 @@ func TestCompanyServiceRequiresProgressionRuntime(t *testing.T) {
 	}
 }
 
+func TestCompanyServiceRequiresGuildSettlementResolver(t *testing.T) {
+	bundleBytes, err := epochseed.Load("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	bundle := loadReplayTestBundle(t, bundleBytes.Hash, bundleBytes.Artifacts)
+	resolver := integrationCatalogs{
+		economy:  map[string]*economy.Catalog{bundleBytes.Hash: bundle.Economy},
+		routes:   map[string]*routes.Catalog{bundleBytes.Hash: bundle.Routes},
+		prestige: map[string]*prestigecore.Policy{bundleBytes.Hash: bundle.Prestige},
+		factions: map[string]*faction.Catalog{bundleBytes.Hash: bundle.Faction},
+	}
+	store, err := save.NewStore(&sql.DB{}, resolver, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	options := []ServiceOption{WithProgressionRuntime(resolver), WithCurrentConstantsHash(bundleBytes.Hash)}
+	if _, err := NewService(store, resolver, nil, nil, nil, options...); !errors.Is(err, ErrInvalidIntent) {
+		t.Fatalf("service without Guild settlement resolver error=%v", err)
+	}
+	options = append(options, WithGuildSettlements(emptyGuildSettlements{}))
+	if _, err := NewService(store, resolver, nil, nil, nil, options...); err != nil {
+		t.Fatalf("service with Guild settlement resolver error=%v", err)
+	}
+}
+
 func TestFounderCatalogCoherenceFailsClosed(t *testing.T) {
 	company := save.Revision{ConstantsHash: "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
 	if err := requireFounderCatalogCoherence(save.Revision{ConstantsHash: company.ConstantsHash}, company); err != nil {

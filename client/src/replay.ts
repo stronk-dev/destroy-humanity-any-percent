@@ -235,6 +235,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   if (request.expected_revision !== wire.command.revision || wire.command.run_seq !== state.runSeq) throw new RangeError("command/state mismatch");
   if (request.kind === "buy_route_hint") throw new RangeError("founder-scope intent is not replayable");
   deriveFactionStockResource(state, catalogs.factions);
+  const stateBefore = cloneReplayState(state, catalogs.economy);
   const revision = wire.command.revision; const before = { ...state.balances };
   if (request.invalid !== undefined) return rejected(state, request.intent_id, revision, "invalid", request.invalid);
   if (wire.evaluated_at_ms < state.evaluatedThroughMs) throw new ReplayClockViolation();
@@ -243,24 +244,24 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   if (kind === "cross_gate" && request.kind === "cross_gate") { onlyKeys(resolved, ["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry"], "cross gate inputs"); accrual = parseAccrual(resolved.accrual, catalogs); declined = safeInteger(resolved.declined_exit_offer_count ?? 0, 0, MAX_EXACT_INTEGER); founderCarry = resolved.founder_carry === undefined || resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs.constantsHash); }
   else { if (kind !== "accrual") throw new RangeError("resolved union mismatch"); onlyKeys(resolved, ["kind", "intent_kind", "accrual"], "accrual inputs"); accrual = parseAccrual(resolved.accrual, catalogs); }
   if (state.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
-  const settlementBefore = applyGuildSettlements(state, accrual.guild_settlement_batch, catalogs.factions.stockCap);
-  const rejectSettlement = (category: string, detail: string): LoggedTransition => { restoreGuildSettlement(state, settlementBefore); return rejected(state, request.intent_id, revision, category, detail); };
-  const preflight = preflightRejection(state, catalogs, request, wire.evaluated_at_ms);
-  if (preflight !== null) return rejectSettlement(preflight[0], preflight[1]);
+  const rejectState = (category: string, detail: string): LoggedTransition => { restoreReplaySnapshot(state, stateBefore); return rejected(state, request.intent_id, revision, category, detail); };
   try {
+  applyGuildSettlements(state, accrual.guild_settlement_batch, catalogs.factions.stockCap);
+  const preflight = preflightRejection(state, catalogs, request, wire.evaluated_at_ms);
+  if (preflight !== null) return rejectState(preflight[0], preflight[1]);
   const evaluation = evaluate(state, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, accrual.contributions);
   const events = runHooks(state, catalogs, wire.command, evaluation, accrual);
   const invariants: ReplayInvariant[] = [];
   let appliedCount = 0;
   switch (request.kind) {
-    case "buy_generator": { const result = buyGenerator(state, catalogs.economy, request, invariants); if (result.rejection) return rejectSettlement(result.rejection[0], result.rejection[1]); appliedCount = result.count; events.push(event("generator_purchased", request.intent_id, { generator_id: request.generator_id, count: appliedCount, cost_resource_id: request.costResource, cost: request.cost })); break; }
-    case "perform_manual_batch": { const result = manualBatch(state, catalogs.economy, request, wire.evaluated_at_ms); if (result.rejection) return rejectSettlement(result.rejection[0], result.rejection[1]); appliedCount = result.count; break; }
-    case "cross_gate": { const result = crossGate(state, catalogs.routes, request, wire.command); if (result.rejection) return rejectSettlement(result.rejection[0], result.rejection[1]); events.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); if (request.route_id !== null) events.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); appliedCount = 1; break; }
+    case "buy_generator": { const result = buyGenerator(state, catalogs.economy, request, invariants); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); appliedCount = result.count; events.push(event("generator_purchased", request.intent_id, { generator_id: request.generator_id, count: appliedCount, cost_resource_id: request.costResource, cost: request.cost })); break; }
+    case "perform_manual_batch": { const result = manualBatch(state, catalogs.economy, request, wire.evaluated_at_ms); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); appliedCount = result.count; break; }
+    case "cross_gate": { const result = crossGate(state, catalogs.routes, request, wire.command); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); events.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); if (request.route_id !== null) events.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); appliedCount = 1; break; }
     case "sign_compact": state.compactMember = true; state.compactTithePpm = request.tithe_ppm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, request.tithe_ppm, false, true))); appliedCount = 1; break;
     case "leave_compact": { const prior = state.compactTithePpm; state.compactMember = false; state.compactTithePpm = 0; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_left", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, prior, true, false))); appliedCount = 1; break; }
     case "incorporate": { const member = catalogs.factions.byId.get(request.faction_id)!; state.factionId = member.id; state.factionStockResource = member.produces; state.incorporatedAtMs = state.evaluatedThroughMs; events.push(event("incorporated", request.intent_id, { compact_auto_signed: member.compact !== null, faction_id: member.id, founder_id: wire.command.founder_id, incorporated_at_ms: state.incorporatedAtMs, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq }, stock_resource: member.produces })); if (member.compact) { if (state.compactMember) { const prior = state.compactTithePpm; state.compactTithePpm = Math.max(prior, member.compact.tithePpm); events.push(event("compact_tithe_raised", request.intent_id, { founder_id: wire.command.founder_id, new_tithe_ppm: state.compactTithePpm, prior_tithe_ppm: prior, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); } else { state.compactMember = true; state.compactTithePpm = member.compact.tithePpm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, member.compact.tithePpm, false, true))); } } appliedCount = 1; break; }
     case "decline_exit_offer": state.offerState = null; events.push(event("exit_offer_declined", request.intent_id, { offer_id: request.offer_id, run_seq: state.runSeq })); appliedCount = 1; break;
-    default: return rejectSettlement("invalid", request.kind);
+    default: return rejectState("invalid", request.kind);
   }
   for (const report of invariants) {
     if (report.kind === "residual_abort") continue;
@@ -268,7 +269,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   }
   await afterPrestigeTransition(state, catalogs.prestige, request, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
   return applied(state, request.intent_id, revision + 1, appliedCount, before, events, invariants);
-  } catch (error) { restoreGuildSettlement(state, settlementBefore); throw error; }
+  } catch (error) { restoreReplaySnapshot(state, stateBefore); throw error; }
 }
 
 export async function applyLoggedExit(company: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedExitTransition> {
@@ -287,35 +288,36 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const founder = parseFounderCarry(resolved.founder_carry, catalogs.constantsHash);
   const executedRoutes = sortedUniqueMechanical(array(resolved.executed_route_ids, "executed route ids"));
   deriveFactionStockResource(company, catalogs.factions);
+  const companyBefore = cloneReplayState(company, catalogs.economy);
   const revision = wire.command.revision;
   if (wire.evaluated_at_ms < company.evaluatedThroughMs) throw new ReplayClockViolation();
   let prefix: ReplayEvent[] = [];
   let exitType: string;
   let terms: ExitTerms;
-  const settlementBefore = applyGuildSettlements(company, accrual.guild_settlement_batch, catalogs.factions.stockCap);
-  const rejectSettlement = (category: string, detail: string): LoggedExitTransition => { restoreGuildSettlement(company, settlementBefore); return rejectedExit(company, founder, request.intent_id, revision, category, detail); };
+  const rejectState = (category: string, detail: string): LoggedExitTransition => { restoreReplaySnapshot(company, companyBefore); return rejectedExit(company, founder, request.intent_id, revision, category, detail); };
   try {
+  applyGuildSettlements(company, accrual.guild_settlement_batch, catalogs.factions.stockCap);
 
   if (request.kind === "cross_gate") {
     const preflight = preflightRejection(company, catalogs, request, wire.evaluated_at_ms);
-    if (preflight !== null) return rejectedExit(company, founder, request.intent_id, revision, preflight[0], preflight[1]);
+    if (preflight !== null) return rejectState(preflight[0], preflight[1]);
     const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, accrual.contributions);
     prefix = runHooks(company, catalogs, wire.command, evaluation, accrual);
     const result = crossGate(company, catalogs.routes, request, wire.command);
-    if (result.rejection) return rejectSettlement(result.rejection[0], result.rejection[1]);
+    if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]);
     prefix.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: company.runSeq } }));
     if (request.route_id !== null) prefix.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: company.runSeq } }));
     if (attendedMS(company, wire.evaluated_at_ms) < 900_000 || founder.exit_history_count !== 0) throw new RangeError("invalid scripted exit state");
     exitType = "scripted_first";
     terms = computeExitTerms(company, founder, catalogs.prestige, exitType);
   } else {
-    if (request.kind === "file_ipo") return rejectSettlement("not_eligible", "ipo_chain");
-    if (request.kind === "wind_down" && company.tier < 1) return rejectSettlement("not_eligible", "tier");
+    if (request.kind === "file_ipo") return rejectState("not_eligible", "ipo_chain");
+    if (request.kind === "wind_down" && company.tier < 1) return rejectState("not_eligible", "tier");
     exitType = request.kind === "wind_down" && founder.exit_history_count === 0 ? "scripted_first" : "collapse";
     let promised: { payout_preview: ExitTerms; market_modifier_ppm: number } | null = null;
     if (request.kind === "accept_exit_offer") {
-      if (!company.offerState || company.offerState.offerId !== request.offer_id) return rejectSettlement("not_eligible", "exit_offer");
-      if (company.offerState.expiresAtMs <= wire.evaluated_at_ms) return rejectSettlement("offer_expired", request.offer_id);
+      if (!company.offerState || company.offerState.offerId !== request.offer_id) return rejectState("not_eligible", "exit_offer");
+      if (company.offerState.expiresAtMs <= wire.evaluated_at_ms) return rejectState("offer_expired", request.offer_id);
       if (canonicalJSONString(company.offerState.terms) !== canonicalJSONString(selectedTerms)) throw new RangeError("selected offer terms mismatch");
       promised = decodeStoredOfferTerms(selectedTerms);
       exitType = company.offerState.exitType;
@@ -327,7 +329,17 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   }
   if (resolved.selected_exit_type !== exitType) throw new RangeError("selected exit type mismatch");
   return finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, next);
-  } catch (error) { restoreGuildSettlement(company, settlementBefore); throw error; }
+  } catch (error) { restoreReplaySnapshot(company, companyBefore); throw error; }
+}
+
+function cloneReplayState(state: ReplayState, catalog: EconomyCatalog): ReplayState {
+  const cloned = restoreReplayState(encodeReplayStateV13(state), 13, catalog);
+  cloned.factionStockResource = state.factionStockResource;
+  return cloned;
+}
+
+function restoreReplaySnapshot(target: ReplayState, snapshot: ReplayState): void {
+  Object.assign(target, snapshot);
 }
 
 type Intent = Record<string, any> & { intent_id: string; kind: string; expected_revision: number; invalid?: string; cost?: string; costResource?: string };
@@ -592,10 +604,8 @@ function parseAccrual(source: unknown, catalogs: ReplayCatalogBundle): ReplayAcc
   return { contributions, commons_weight_ppm: commonsWeight as number | null, guild_settlement_batch: { guild_id: guildId, base_seq: baseSeq, settlements }, route_context_version: routeContextVersion as number };
 }
 
-interface GuildSettlementState { stockUnits: number; consumedStockUnits: number; guildConsumedWindow: number; guildBoundaryGuildId: string; guildBoundarySeq: number }
-function applyGuildSettlements(state: ReplayState, batch: ReplayGuildSettlementBatch, stockCap: number): GuildSettlementState {
-  const before = { stockUnits: state.stockUnits, consumedStockUnits: state.consumedStockUnits, guildConsumedWindow: state.guildConsumedWindow, guildBoundaryGuildId: state.guildBoundaryGuildId, guildBoundarySeq: state.guildBoundarySeq };
-  if (batch.guild_id === "") return before;
+function applyGuildSettlements(state: ReplayState, batch: ReplayGuildSettlementBatch, stockCap: number): void {
+  if (batch.guild_id === "") return;
   if (state.guildBoundaryGuildId !== batch.guild_id) {
     if (state.guildBoundaryGuildId === "") { if (batch.base_seq !== state.guildBoundarySeq) throw new RangeError("guild settlement base mismatch"); }
     else if (batch.settlements.length !== 0) throw new RangeError("guild settlement switch carries results");
@@ -606,11 +616,6 @@ function applyGuildSettlements(state: ReplayState, batch: ReplayGuildSettlementB
     state.stockUnits -= settlement.debit_units; state.consumedStockUnits += settlement.credit_units;
     state.guildConsumedWindow = settlement.credit_units; state.guildBoundarySeq = settlement.boundary_seq;
   }
-  return before;
-}
-function restoreGuildSettlement(state: ReplayState, before: GuildSettlementState): void {
-  state.stockUnits = before.stockUnits; state.consumedStockUnits = before.consumedStockUnits; state.guildConsumedWindow = before.guildConsumedWindow;
-  state.guildBoundaryGuildId = before.guildBoundaryGuildId; state.guildBoundarySeq = before.guildBoundarySeq;
 }
 
 function parseFounderCarry(source: unknown, constantsHash: string): FounderCarry {

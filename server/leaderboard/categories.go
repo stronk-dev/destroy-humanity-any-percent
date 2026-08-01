@@ -99,7 +99,7 @@ func LoadCategoryCatalog(data []byte, routeGateIDs []string) (*CategoryCatalog, 
 	}
 	seen := map[string]bool{}
 	for _, source := range raw.Categories {
-		if seen[source.ID] || !mechanicalPattern.MatchString(source.ID) || !mechanicalPattern.MatchString(source.NameKey) ||
+		if seen[source.ID] || !mechanicalPattern.MatchString(source.ID) || source.NameKey != "category."+source.ID ||
 			(source.Timer != string(TimerRTA) && source.Timer != string(TimerAttended) && source.Timer != string(TimerNone)) {
 			return nil, fmt.Errorf("%w: category row", ErrInvalidEpoch)
 		}

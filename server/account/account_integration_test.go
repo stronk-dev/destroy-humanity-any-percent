@@ -17,6 +17,7 @@ import (
 
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
+	"cloud-clicker/server/guild"
 	"cloud-clicker/server/internal/testhttp"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/replaycatalog"
@@ -24,6 +25,12 @@ import (
 )
 
 type integrationCatalogs map[string]*economy.Catalog
+
+type integrationGuildSettlements struct{}
+
+func (integrationGuildSettlements) PendingSettlements(context.Context, string, string, int64) (guild.SettlementBatch, error) {
+	return guild.SettlementBatch{}, nil
+}
 
 type integrationGuildNames struct{}
 
@@ -99,7 +106,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 	}
 	replaySet := production.ReplayCatalogSet{hash: replayBundle}
 	intentService, err := production.NewService(saveStore, resolver, nil, nil, nil, production.WithReplayCatalogs(replaySet),
-		production.WithProgressionRuntime(replaySet), production.WithCurrentConstantsHash(hash))
+		production.WithProgressionRuntime(replaySet), production.WithCurrentConstantsHash(hash), production.WithGuildSettlements(integrationGuildSettlements{}))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -433,7 +440,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	}
 	replaySet := production.ReplayCatalogSet{bundle.Hash: replayBundle}
 	service, err := production.NewService(store, resolver, nil, nil, nil, production.WithReplayCatalogs(replaySet),
-		production.WithProgressionRuntime(replaySet), production.WithCurrentConstantsHash(bundle.Hash))
+		production.WithProgressionRuntime(replaySet), production.WithCurrentConstantsHash(bundle.Hash), production.WithGuildSettlements(integrationGuildSettlements{}))
 	if err != nil {
 		t.Fatal(err)
 	}

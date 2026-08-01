@@ -185,7 +185,9 @@ func TestApplyLoggedDerivesFactionStockResourceInsideBoundary(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	state := &save.State{RunSeq: 1, FactionID: "open_source", EvaluatedThrough: now}
+	state := replayFixtureState(t, catalogs.Economy, now)
+	state.FactionID = "open_source"
+	state.IncorporatedAt = now.Add(-time.Minute)
 	result, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
 	if err != nil || result.Outcome != save.IntentRejected || state.FactionStockResource != member.Produces {
 		t.Fatalf("outcome=%s stock=%q want=%q err=%v", result.Outcome, state.FactionStockResource, member.Produces, err)
