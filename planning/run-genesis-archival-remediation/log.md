@@ -49,3 +49,20 @@ Seam review found that a dead-lettered event is not guaranteed to create a later
 same-revision receipt can follow it. The relay now publishes a bounded `resync_required` system
 frame when an event reaches its fifth deterministic failure; a regression test proves the poison
 row is dead-lettered and the recovery signal is emitted exactly then.
+
+## 2026-08-01 — implementation diff review
+
+**Review by: root Codex. Recorded by: root Codex. Range: `6141a0f..6332c6c`.**
+
+Reviewed the CI workflow/guard fixture, KV-1 registry growth, sequential bundle and both-runtime
+assertions, v2 kind/effect matrix, migration Up/Down behavior, live queue reservations, relay
+failure path, client scope cursor, and canonical docs. The live private queue counts reservations
+by revision but does not require monotonic revisions, so historical compensation reaches the
+client as designed. Review found one adjacent recovery defect: a dead-lettered event could be
+followed by a same-revision receipt, hiding the presumed forward gap. Commit `6332c6c` adds the
+explicit recovery signal and regression proof. No other open defect was found in this scope.
+
+This is an implementer self-review and does **not** satisfy plan item 7's independent gate. The
+real Guild settlement composition box also remains open: the false fixture claim is corrected,
+but the production owner contracts and composed test have not landed, so the checkbox convention
+forbids marking it complete.
