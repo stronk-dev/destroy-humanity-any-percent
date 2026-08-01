@@ -418,3 +418,11 @@ Founder-revision, and null-carry differences; Go bounds `exit_history_count` bef
 
 Every remaining corpus and database-reader obligation is now carried explicitly in `plan.md` per
 the independent-review ruling; none is implied closed by this landing.
+
+The persistence adapter now resolves immutable genesis, pinned engine identity, drift rows, exact
+artifact bytes, run-log rows, and intent events itself. Legacy NULL replay inputs return `log_gap`;
+`run_version_drift` or a pinned-version mismatch returns `engine_mismatch` without caller input.
+Exit commits enqueue the ended run transactionally. The queue uses SKIP LOCKED claims with a crash
+lease, requires a projector before a run can be marked verified, and dead-letters every non-
+verified verdict. Category projection remains an explicit unchecked plan item because the closed
+L7 category catalog does not yet exist; the queue seam does not invent one.

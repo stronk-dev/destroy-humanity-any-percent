@@ -285,6 +285,12 @@ func (s *Store) applyExitTransaction(
 		if err := insertRunLog(ctx, tx, companyStreamID, company.RunSeq, runLogSequence, intentID, canonicalPayload, replayInputs, decision.Receipt, &companyFinal); err != nil {
 			return IntentResult{}, err
 		}
+		if _, err := tx.ExecContext(ctx, `
+			INSERT INTO verification_queue(company_stream_id,run_seq)
+			VALUES($1,$2)
+			ON CONFLICT DO NOTHING`, companyStreamID, company.RunSeq); err != nil {
+			return IntentResult{}, err
+		}
 	}
 	if err := runExitFault(fault, "run_log"); err != nil {
 		return IntentResult{}, err
