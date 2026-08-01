@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "full_gate_set": ["gate.t2_to_t3", "gate.t4_to_t5", "gate.t7_to_t8"],
+  "fact_sets": {
+    "completion_set": ["fact.completion"],
+    "forbidden_set": ["fact.forbidden"]
+  },
+  "categories": [
+    {
+      "id": "any_percent",
+      "name_key": "category.any_percent",
+      "timer": "rta",
+      "predicate": { "kind": "any" }
+    },
+    {
+      "id": "hundred_percent",
+      "name_key": "category.hundred_percent",
+      "timer": "rta",
+      "predicate": {
+        "kind": "all_of",
+        "all": [
+          { "kind": "all_gates" },
+          { "kind": "facts_superset", "set_ref": "completion_set" }
+        ]
+      }
+    },
+    {
+      "id": "ethical_percent",
+      "name_key": "category.ethical_percent",
+      "timer": "attended",
+      "predicate": { "kind": "facts_disjoint", "set_ref": "forbidden_set" }
+    },
+    {
+      "id": "low_percent",
+      "name_key": "category.low_percent",
+      "timer": "rta",
+      "predicate": {
+        "kind": "count_at_most",
+        "field": "generators_purchased_total",
+        "literal": 40
+      }
+    }
+  ]
+}

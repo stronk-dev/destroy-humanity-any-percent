@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "full_gate_set", "fact_sets", "categories"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "full_gate_set": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "fact_sets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["completion_set", "forbidden_set"],
+      "properties": {
+        "completion_set": { "$ref": "#/$defs/idSet" },
+        "forbidden_set": { "$ref": "#/$defs/idSet" }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name_key", "timer", "predicate"],
+        "properties": {
+          "id": { "enum": ["any_percent", "hundred_percent", "ethical_percent", "low_percent"] },
+          "name_key": { "$ref": "#/$defs/id" },
+          "timer": { "enum": ["rta", "attended"] },
+          "predicate": { "$ref": "#/$defs/predicate" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)*$" },
+    "idSet": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+    "predicate": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "enum": ["any", "all_gates"] } } },
+        { "type": "object", "additionalProperties": false, "required": ["kind", "set_ref"], "properties": { "kind": { "enum": ["facts_superset", "facts_disjoint"] }, "set_ref": { "enum": ["completion_set", "forbidden_set"] } } },
+        { "type": "object", "additionalProperties": false, "required": ["kind", "field", "literal"], "properties": { "kind": { "const": "count_at_most" }, "field": { "const": "generators_purchased_total" }, "literal": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 } } },
+        { "type": "object", "additionalProperties": false, "required": ["kind", "all"], "properties": { "kind": { "const": "all_of" }, "all": { "type": "array", "minItems": 2, "maxItems": 8, "items": { "$ref": "#/$defs/predicate" } } } }
+      ]
+    }
+  }
+}

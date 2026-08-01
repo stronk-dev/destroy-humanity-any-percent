@@ -326,6 +326,19 @@ async function main() {
     if (!validateTransport(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateTransport)}`);
   }
 
+  const leaderboardSchema = await readJSON(path.join(balanceDirectory, "leaderboards.schema.json"));
+  const validateLeaderboards = ajv.compile(leaderboardSchema);
+  const leaderboardCatalogs = [path.join(repositoryDirectory, "testdata", "leaderboards", "l7a-fixture.json")];
+  const routeGateIDs = (await readJSON(routeCatalogs[0])).gates.map((gate) => gate.gate_id).sort();
+  for (const filename of leaderboardCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateLeaderboards(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateLeaderboards)}`);
+    if (JSON.stringify(data.full_gate_set) !== JSON.stringify(routeGateIDs)) throw new Error(`${path.relative(repositoryDirectory, filename)}: full gate set drift`);
+    for (const [name, values] of Object.entries(data.fact_sets)) {
+      if (JSON.stringify(values) !== JSON.stringify([...values].sort())) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${name} must be byte-sorted`);
+    }
+  }
+
   const harnessDirectory = path.join(repositoryDirectory, "testdata", "harness");
   const scenarioSchema = await readJSON(path.join(harnessDirectory, "scenario.schema.json"));
   const reportSchema = await readJSON(path.join(harnessDirectory, "report.schema.json"));
@@ -358,7 +371,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + routes + commons + factions + guilds + client-shell + prestige + transport + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s)`,
   );
 }
 

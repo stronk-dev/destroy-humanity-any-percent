@@ -112,6 +112,27 @@ historical identities are never assigned fabricated bytes.
 
 Closed category schema: `{category_id, name, terminal_predicate, timer ∈ {rta, attended}}` where `terminal_predicate` is a **closed union over run-terminal facts** (`exit_type == X`, `tier_reached ≥ N`, `ledger_clean` — grows by RFC): the four canonical categories are four catalog rows with literal predicates. Variables are **structural and separate**: `commons: bool` (any compact membership this run), `advisor: bool` (Prestige D5), `glitched: bool` (any route_executed). **Boards key on the full variable tuple; "Solo" is the display name for `{commons: false, advisor: false}`** — nothing is ever a computed subtraction, and Commons-assisted vs Advisor-assisted remain separately queryable (resolving the routed-forward question).
 
+**L7a — The canonical category catalog (owner answer, 2026-08-01, closing the projector
+blocker):** four Phase-0 rows with LITERAL terminal predicates, expressed in a closed predicate
+union evaluated over run-terminal facts (the `run_ended` payload — which gains two additive
+fields, `gates_crossed` sorted list and `generators_purchased_total` int, schema_version bump per
+the event registry rules; both already live in state):
+
+- Predicate union (closed, grows by RFC): `any` · `all_gates` (gates_crossed == the catalog's
+  full gate set) · `facts_superset(set_ref)` · `facts_disjoint(set_ref)` ·
+  `count_at_most(field, literal)` · `all_of([...])`.
+- `any_percent`: predicate `any`; timer `rta`.
+- `hundred_percent`: `all_of([all_gates, facts_superset(completion_set)])`; timer `rta`.
+  `completion_set` is a catalog-declared fact list (grows with content; starts with the Phase-0
+  gate/doctrine facts).
+- `ethical_percent`: `facts_disjoint(forbidden_set)`; timer `attended`. `forbidden_set` = the
+  catalog-declared dark-pattern/externality fact kinds (the morality ledger's structural teeth —
+  design/02 §7's Ethical% made executable).
+- `low_percent`: `count_at_most(generators_purchased_total, low_max)`; timer `rta`; `low_max` a
+  catalog literal (provisional 40).
+- Future rows (`net_zero_percent`, `pacifist`) are content on this union, not new machinery;
+  Exhibition and player-authored predicates stay behind the promotion thresholds (D4).
+
 ### L8 — CI hook (extends the hardened guard, weakens nothing)
 
 The existing history guard already walks every reachable revision. Extension, same job: for any commit whose diff touches a `ConstantsHashArtifacts` path — **with `BALANCE-CHANGE:`** → the same commit must add an `epochs` seed row + changelog file (mint), else fail; **without** → the commit must add its resulting hash to the current epoch's accepted-set seed file (hotfix), else fail. Both are ordinary in-repo files, so the artifact-commit-touches-only-baseline rule and fetch-depth guarantees apply unchanged; reproducibility of a hotfix = its artifact row carries the exact bytes (L2). The cap-lowering migration rule routed here lands as: **a hotfix may not lower any hardcap** (guard compares the declared cap fields across the diff; lowering a cap is definitionally a balance change and requires a mint + the clamp-on-migration policy in its changelog).
@@ -127,6 +148,7 @@ cannot be relabeled identity-only even when the harness does not execute that ar
 - 2026-07-29: all eight answered with executable contracts L1–L8; Assisted ruled as two structural variables (commons, advisor); cap-lowering rule landed in L8.
 - 2026-07-30: L8 guard implementation reviewed and approved; L2a added (seed as single artifact-set authority + parity test) from the review's MEDIUM finding; constants reverts documented as mint-only.
 - 2026-07-30: core review found two architectural HIGHs rooted in this RFC's contracts; rulings L2b (version-drift runs stay playable, unrankable), L5b (run N+1 starts under the current hash), L5c (startup epoch seed sync) added.
+- 2026-08-01: L7a — the four canonical category rows with literal predicates over a closed union; run_ended gains gates_crossed + generators_purchased_total (additive, schema bump).
 - 2026-07-30: L2a/L5c remediation centralizes artifact composition in `epochseed`, requires
   manifest reconciliation before gameserver readiness, and adds a hash-only baseline repair gate.
 - 2026-07-30: round-2 review tightens the identity-only gate to pin every seed artifact's bytes at

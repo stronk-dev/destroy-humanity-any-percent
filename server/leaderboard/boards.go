@@ -90,8 +90,19 @@ func (repository *Repository) ProjectVerifiedRun(ctx context.Context, run Verifi
 	if drifted {
 		return false, ErrInvalidEpoch
 	}
+	worldFirst, err := insertBoardRowTx(ctx, tx, run, variables)
+	if err != nil {
+		return false, err
+	}
+	if err := tx.Commit(); err != nil {
+		return false, err
+	}
+	return worldFirst, nil
+}
+
+func insertBoardRowTx(ctx context.Context, tx *sql.Tx, run VerifiedRun, variables []byte) (bool, error) {
 	var insertedRunID string
-	err = tx.QueryRowContext(ctx, `
+	err := tx.QueryRowContext(ctx, `
 		INSERT INTO verified_runs(run_id,event_id,founder_id,category_id,variables,epoch_id,mandate_level,key_ms,key_int,verified_at,world_first)
 		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,true)
 		ON CONFLICT (category_id,variables,epoch_id) WHERE world_first DO NOTHING
@@ -103,9 +114,6 @@ func (repository *Repository) ProjectVerifiedRun(ctx context.Context, run Verifi
 			VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,false)`, run.RunID, run.EventID, run.FounderID, run.CategoryID, variables, run.EpochID, run.MandateLevel, run.KeyMS, run.KeyInt, run.VerifiedAt.UTC())
 	}
 	if err != nil {
-		return false, err
-	}
-	if err := tx.Commit(); err != nil {
 		return false, err
 	}
 	return worldFirst, nil
