@@ -136,6 +136,9 @@ func TestBaselineOnlyRewriteFailsChangeGuard(t *testing.T) {
 	if err := ValidateBaselineCommit([]string{baselinePath}, []string{"balance/guilds/phase0.json"}, "BALANCE-CHANGE: Guild retune"); err != nil {
 		t.Fatalf("Guild input was not recognized: %v", err)
 	}
+	if err := ValidateBaselineCommit([]string{baselinePath}, []string{"balance/categories/phase0.json"}, "BALANCE-CHANGE: category retune"); err != nil {
+		t.Fatalf("category input was not recognized: %v", err)
+	}
 	if err := ValidateBaselineCommit([]string{baselinePath, goldenPath}, nil, "CONSTANTS-IDENTITY: repair hash domain"); err != nil {
 		t.Fatal(err)
 	}
