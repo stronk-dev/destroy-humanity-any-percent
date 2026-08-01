@@ -329,3 +329,18 @@ The complete Postgres integration matrix passed through the prescribed
 attempt exposed a stale development tmpfs whose migration ledger said 32 was applied while its
 deferred trigger was absent; resetting only that declared test container restored the committed
 migration and the full matrix passed.
+
+## 2026-08-01 — shared verifier and full-run corpus
+
+The pure replay verifier now exists in both runtimes with the exact six-cause verdict union. It
+restores genesis under the pinned artifact bundle, requires contiguous log sequence, applies
+ordinary and terminal rows through the owned live transition functions, and compares canonical
+receipt bytes plus ordered event-envelope bytes. Terminal completion is mandatory; a partial run
+returns `log_gap`.
+
+The shared Go-authored corpus is now a genuine full run: 50 ordinary mixed transitions followed by
+terminal Exit (51 rows total), including online accrual, exact purchase, Compact join/leave,
+incorporation, gate crossing, deterministic offer spawn and decline. Go and TypeScript both assert
+`verified` and mutate the same corpus to cover log gap, catalog mismatch, engine drift, clock
+regression, and receipt/event state divergence. `make replay-fixture-check`, `make typecheck`, and
+`make test-client` pass at this landing.

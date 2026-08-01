@@ -40,6 +40,11 @@ export interface LoggedExitTransition {
   readonly outcome: "applied" | "rejected"; readonly receipt: unknown;
   readonly founderEvents: readonly ReplayEvent[]; readonly companyEndedEvents: readonly ReplayEvent[]; readonly companyStartedEvents: readonly ReplayEvent[];
 }
+export type ReplayVerdict = "verified" | "log_gap" | "state_divergence" | "constants_mismatch" | "clock_violation" | "engine_mismatch";
+export interface ReplayLogEntry {
+  readonly seq: number; readonly canonicalPayload: string; readonly replayInputs: unknown;
+  readonly receiptJSON: string; readonly eventsJSON: string; readonly terminal: boolean;
+}
 
 interface ReplayCommand { intent_id: string; company_stream_id: string; founder_id: string; revision: number; run_seq: number; run_log_seq: number }
 interface ReplayAccrual { contributions: ReplayContribution[]; commons_weight_ppm: number | null; guild_settlement_batch: { guild_id: string; boundary_seq: number; units: number }[]; route_context_version: number }
@@ -64,6 +69,40 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
 
 export function withNextReplayCatalogBundle(current: ReplayCatalogBundle, next: ReplayCatalogBundle): ReplayCatalogBundle {
   return Object.freeze({ ...current, next });
+}
+
+export async function verifyReplayRun(
+  genesis: unknown,
+  catalogs: ReplayCatalogBundle,
+  entries: readonly ReplayLogEntry[],
+  identity: { readonly constantsHash: string; readonly engineMismatch?: boolean },
+): Promise<ReplayVerdict> {
+  if (identity.engineMismatch) return "engine_mismatch";
+  if (identity.constantsHash !== catalogs.constantsHash) return "constants_mismatch";
+  let state: ReplayState;
+  try { state = restoreReplayStateV12(genesis, catalogs.economy); }
+  catch { return "constants_mismatch"; }
+  let terminal = false;
+  for (let index = 0; index < entries.length; index++) {
+    const entry = entries[index]!;
+    if (entry.seq !== index + 1 || terminal) return "log_gap";
+    try {
+      if (entry.terminal) {
+        const transition = await applyLoggedExit(state, entry.canonicalPayload, catalogs, entry.replayInputs);
+        const events = [...transition.founderEvents, ...transition.companyEndedEvents, ...transition.companyStartedEvents];
+        if (canonicalJSONString(transition.receipt) !== entry.receiptJSON || canonicalJSONString(events) !== entry.eventsJSON) return "state_divergence";
+        state = transition.finalCompany;
+        terminal = true;
+      } else {
+        const transition = await applyLogged(state, entry.canonicalPayload, catalogs, entry.replayInputs);
+        if (canonicalJSONString(transition.receipt) !== entry.receiptJSON || canonicalJSONString(transition.events) !== entry.eventsJSON) return "state_divergence";
+        state = transition.state;
+      }
+    } catch (error) {
+      return error instanceof Error && /clock regression/.test(error.message) ? "clock_violation" : "state_divergence";
+    }
+  }
+  return terminal ? "verified" : "log_gap";
 }
 
 export function restoreReplayStateV12(source: unknown, catalog: EconomyCatalog): ReplayState {

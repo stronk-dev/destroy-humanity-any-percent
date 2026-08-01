@@ -72,9 +72,17 @@ and the account/import/Exit integration matrix compares genesis with the actual 
 Every logged Company command requires an existing pin whose hash matches the live save. A missing
 pin or hash mismatch is an infrastructure error. A kernel-version mismatch does not strand the
 run: the command commits and the transaction inserts one immutable `run_version_drift` row for the
-run. Drifted runs verify as `engine_mismatch` once replay verification lands and are rejected by
-board projection today. Thus playability survives a deployment while ranked integrity remains
-fail-closed.
+run. Drifted runs verify as `engine_mismatch` and are rejected by board projection. Thus
+playability survives a deployment while ranked integrity remains fail-closed.
+
+The shared replay verifier exists in Go and TypeScript and returns only the closed verdict union:
+`verified`, `log_gap`, `state_divergence`, `constants_mismatch`, `clock_violation`, or
+`engine_mismatch`. It restores immutable genesis, replays each sequence through the same
+`ApplyLogged`/`ApplyLoggedExit` boundary used live, and compares canonical receipt bytes plus the
+ordered event envelope bytes. A Go-authored 51-entry mixed run—manual accrual, a purchase,
+Compact join/leave, incorporation, a gate-generated offer, decline, a long transition sequence,
+and terminal Exit—must verify identically in both runtimes. The same corpus mutates one dimension
+at a time to assert every failure verdict.
 
 At Exit, the ended run retains its original pin. Run N+1 is assembled under the server's current
 catalog hash and pinned to the epoch current in that same transaction. A real-Postgres fixture

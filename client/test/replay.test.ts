@@ -8,6 +8,7 @@ import {
   encodeReplayStateV12,
   loadReplayCatalogBundle,
   restoreReplayStateV12,
+  verifyReplayRun,
   type ReplayArtifacts,
 } from "../src/replay";
 
@@ -58,6 +59,18 @@ const fixture = fixtureJSON as {
     readonly artifacts: ReplayArtifacts;
     readonly case: FixtureCase;
   }[];
+  readonly full_run: {
+    readonly genesis: unknown;
+    readonly entries: readonly {
+      readonly seq: number;
+      readonly canonical_payload: Record<string, unknown>;
+      readonly replay_inputs: unknown;
+      readonly receipt_json: string;
+      readonly events_json: string;
+      readonly terminal: boolean;
+    }[];
+    readonly final_state_json: string;
+  };
 };
 
 describe("TypeScript ApplyLogged cross-runtime fixture", () => {
@@ -106,6 +119,23 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(canonicalJSONString(transition.founderEvents)).toBe(testCase.founder_events_json);
     expect(canonicalJSONString(transition.companyEndedEvents)).toBe(testCase.company_ended_events_json);
     expect(canonicalJSONString(transition.companyStartedEvents)).toBe(testCase.company_started_events_json);
+  });
+
+  it("verifies the 51-entry mixed full-run corpus and all closed failure verdicts", async () => {
+    const bundle = await loadReplayCatalogBundle(fixture.constants_hash, fixture.artifacts);
+    const entries = fixture.full_run.entries.map((entry) => ({ seq: entry.seq, canonicalPayload: canonicalJSONString(entry.canonical_payload), replayInputs: entry.replay_inputs, receiptJSON: entry.receipt_json, eventsJSON: entry.events_json, terminal: entry.terminal }));
+    const identity = { constantsHash: fixture.constants_hash };
+    await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries, identity)).resolves.toBe("verified");
+    await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries.filter((entry) => entry.seq !== 20), identity)).resolves.toBe("log_gap");
+    await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries, { constantsHash: `sha256:${"f".repeat(64)}` })).resolves.toBe("constants_mismatch");
+    await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries, { ...identity, engineMismatch: true })).resolves.toBe("engine_mismatch");
+
+    const driftedClock = structuredClone(entries);
+    (driftedClock[10]!.replayInputs as Record<string, unknown>).evaluated_at_ms = 1;
+    await expect(verifyReplayRun(fixture.full_run.genesis, bundle, driftedClock, identity)).resolves.toBe("clock_violation");
+    const tampered = structuredClone(entries);
+    tampered[10] = { ...tampered[10]!, receiptJSON: "{}" };
+    await expect(verifyReplayRun(fixture.full_run.genesis, bundle, tampered, identity)).resolves.toBe("state_divergence");
   });
 
   it("fails closed on a hidden catalog input and clock regression", async () => {

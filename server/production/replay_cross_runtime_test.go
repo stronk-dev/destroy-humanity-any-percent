@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"testing"
 	"time"
 
@@ -28,6 +29,22 @@ type crossRuntimeFixture struct {
 	Cases         []crossRuntimeFixtureCase  `json:"cases"`
 	TerminalCases []crossRuntimeTerminalCase `json:"terminal_cases"`
 	Additional    []crossRuntimeBundleCase   `json:"additional_bundles"`
+	FullRun       crossRuntimeFullRun        `json:"full_run"`
+}
+
+type crossRuntimeFullRun struct {
+	Genesis        json.RawMessage            `json:"genesis"`
+	Entries        []crossRuntimeFullRunEntry `json:"entries"`
+	FinalStateJSON string                     `json:"final_state_json"`
+}
+
+type crossRuntimeFullRunEntry struct {
+	Seq              int64           `json:"seq"`
+	CanonicalPayload json.RawMessage `json:"canonical_payload"`
+	ReplayInputs     json.RawMessage `json:"replay_inputs"`
+	ReceiptJSON      string          `json:"receipt_json"`
+	EventsJSON       string          `json:"events_json"`
+	Terminal         bool            `json:"terminal"`
 }
 
 type crossRuntimeBundleCase struct {
@@ -231,7 +248,139 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		makeScriptedGateFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
 	}
 	result.Additional = []crossRuntimeBundleCase{makeFallbackInvariantFixture(t, bundleBytes.Artifacts, baseNow)}
+	result.FullRun = makeFullRunFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	return result
+}
+
+func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash string, startedAt time.Time) crossRuntimeFullRun {
+	t.Helper()
+	founderID := offerFixtureFounder(t, catalogs.Prestige.SpawnGatePPM[3])
+	state := replayFixtureState(t, catalogs.Economy, startedAt)
+	state.Tier = 2
+	state.LifetimeValue = decimal.New(8, 12)
+	setCash(t, state, "1e10")
+	genesis, err := save.EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	entries := make([]crossRuntimeFullRunEntry, 0, 51)
+	revision := int64(1)
+	now := startedAt
+	ordinary := []string{
+		`{"kind":"perform_manual_batch","expected_revision":%d,"action_id":"manual.click","count":2,"window_ms":1000}`,
+		`{"kind":"buy_generator","expected_revision":%d,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":3}}`,
+		`{"kind":"sign_compact","expected_revision":%d,"tithe_ppm":110000}`,
+		`{"kind":"leave_compact","expected_revision":%d}`,
+		`{"kind":"incorporate","expected_revision":%d,"faction_id":"vc_funded"}`,
+		`{"kind":"cross_gate","expected_revision":%d,"gate_id":"gate.t2_to_t3","route_id":null}`,
+	}
+	for index := 0; index < 50; index++ {
+		mode := ModeOnline
+		if index == 10 {
+			now = now.Add(48 * time.Hour)
+			mode = ModeOffline
+		} else {
+			now = now.Add(time.Second)
+		}
+		payload := fmt.Sprintf(`{"kind":"perform_manual_batch","expected_revision":%d,"action_id":"manual.click","count":1,"window_ms":1000}`, revision)
+		if index < len(ordinary) {
+			payload = fmt.Sprintf(ordinary[index], revision)
+		}
+		if index == 6 {
+			payload = fmt.Sprintf(`{"kind":"decline_exit_offer","expected_revision":%d,"offer_id":"%s"}`, revision, prestigecore.OfferID(founderID, 1, 3, 0, now.Add(-time.Second)))
+		}
+		intentID := fmt.Sprintf("01987777-%04d-7000-8000-%012d", index+1, index+1)
+		request, err := parseLoggedIntent([]byte(payload), intentID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		command := save.ReplayCommand{IntentID: intentID, CompanyStreamID: "01987777-1000-7000-8000-000000000001", FounderID: founderID, Revision: revision, RunSeq: 1, RunLogSeq: int64(index + 1)}
+		var carry *replayFounderCarry
+		if request.Kind == IntentCrossGate {
+			carry = &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1}
+		}
+		var weight *int64
+		if state.CompactMember {
+			weight = int64Pointer(800_000)
+		}
+		inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: carry, CommonsWeightPPM: weight})
+		if err != nil {
+			t.Fatal(err)
+		}
+		transition, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
+		if err != nil || transition.Outcome != save.IntentApplied {
+			t.Fatalf("full run step %d outcome=%s err=%v", index+1, transition.Outcome, err)
+		}
+		entries = append(entries, crossRuntimeFullRunEntry{Seq: int64(index + 1), CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs, ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, fixtureEvents(transition.Events))})
+		revision++
+	}
+	now = now.Add(time.Second)
+	intentID := "01987777-0051-7000-8000-000000000051"
+	request, err := parseLoggedIntent([]byte(fmt.Sprintf(`{"kind":"wind_down","expected_revision":%d,"expected_founder_revision":1}`, revision)), intentID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := save.ReplayCommand{IntentID: intentID, CompanyStreamID: "01987777-1000-7000-8000-000000000001", FounderID: founderID, Revision: revision, RunSeq: 1, RunLogSeq: 51}
+	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyLoggedExit(state, request.CanonicalPayload, catalogs, inputs)
+	if err != nil || transition.Decision.Outcome != save.IntentApplied {
+		t.Fatalf("full run terminal outcome=%s err=%v", transition.Decision.Outcome, err)
+	}
+	allEvents := append(fixtureEvents(transition.Decision.FounderEvents), fixtureEvents(transition.Decision.CompanyEndedEvents)...)
+	allEvents = append(allEvents, fixtureEvents(transition.Decision.CompanyStartedEvents)...)
+	entries = append(entries, crossRuntimeFullRunEntry{Seq: 51, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs, ReceiptJSON: canonicalFixtureJSON(t, transition.Decision.Receipt), EventsJSON: canonicalFixtureValue(t, allEvents), Terminal: true})
+	finalState, err := save.EncodeState(transition.Company)
+	if err != nil {
+		t.Fatal(err)
+	}
+	full := crossRuntimeFullRun{Genesis: genesis, Entries: entries, FinalStateJSON: canonicalFixtureJSON(t, finalState)}
+	assertFullRunVerifier(t, full, catalogs, constantsHash)
+	return full
+}
+
+func assertFullRunVerifier(t *testing.T, full crossRuntimeFullRun, catalogs CatalogBundle, constantsHash string) {
+	t.Helper()
+	convert := func(source []crossRuntimeFullRunEntry) []ReplayLogEntry {
+		result := make([]ReplayLogEntry, len(source))
+		for index, entry := range source {
+			result[index] = ReplayLogEntry{Sequence: entry.Seq, CanonicalPayload: entry.CanonicalPayload, ReplayInputs: entry.ReplayInputs, ReceiptJSON: []byte(entry.ReceiptJSON), EventsJSON: []byte(entry.EventsJSON), Terminal: entry.Terminal}
+		}
+		return result
+	}
+	entries := convert(full.Entries)
+	if verdict := VerifyReplayRun(full.Genesis, save.CurrentVersion, catalogs, entries, constantsHash, false); verdict != ReplayVerified {
+		t.Fatalf("full run verdict=%s", verdict)
+	}
+	gap := append([]ReplayLogEntry(nil), entries[:19]...)
+	gap = append(gap, entries[20:]...)
+	if verdict := VerifyReplayRun(full.Genesis, save.CurrentVersion, catalogs, gap, constantsHash, false); verdict != ReplayLogGap {
+		t.Fatalf("gap verdict=%s", verdict)
+	}
+	if verdict := VerifyReplayRun(full.Genesis, save.CurrentVersion, catalogs, entries, "sha256:"+strings.Repeat("f", 64), false); verdict != ReplayConstantsMismatch {
+		t.Fatalf("constants verdict=%s", verdict)
+	}
+	if verdict := VerifyReplayRun(full.Genesis, save.CurrentVersion, catalogs, entries, constantsHash, true); verdict != ReplayEngineMismatch {
+		t.Fatalf("engine verdict=%s", verdict)
+	}
+	tampered := append([]ReplayLogEntry(nil), entries...)
+	tampered[10].ReceiptJSON = []byte(`{}`)
+	if verdict := VerifyReplayRun(full.Genesis, save.CurrentVersion, catalogs, tampered, constantsHash, false); verdict != ReplayStateDivergence {
+		t.Fatalf("state verdict=%s", verdict)
+	}
+	clock := append([]ReplayLogEntry(nil), entries...)
+	var wire map[string]any
+	if err := json.Unmarshal(clock[10].ReplayInputs, &wire); err != nil {
+		t.Fatal(err)
+	}
+	wire["evaluated_at_ms"] = 1
+	clock[10].ReplayInputs, _ = json.Marshal(wire)
+	if verdict := VerifyReplayRun(full.Genesis, save.CurrentVersion, catalogs, clock, constantsHash, false); verdict != ReplayClockViolation {
+		t.Fatalf("clock verdict=%s", verdict)
+	}
 }
 
 func makeFallbackInvariantFixture(t *testing.T, source map[string][]byte, now time.Time) crossRuntimeBundleCase {
