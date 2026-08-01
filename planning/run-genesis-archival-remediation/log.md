@@ -66,3 +66,31 @@ This is an implementer self-review and does **not** satisfy plan item 7's indepe
 real Guild settlement composition box also remains open: the false fixture claim is corrected,
 but the production owner contracts and composed test have not landed, so the checkbox convention
 forbids marking it complete.
+
+## 2026-08-02 — designated independent review (6141a0f..8578fb1) — APPROVED
+
+Review by: the project's designated Claude reviewer. Recorded by: same.
+
+All four reopen items verified closed in source: both CI jobs fetch full history with a
+repository-owned checker + adversarial workflow fixtures; KV-1 registers `server/replaycatalog/`
+and `server/leaderboard/categories.go`; the sequential 51-intent run now carries max-mode (with
+`invariant_reported` asserted at generation AND before TS replay), a live offer expiring during a
+later ordinary intent, and its own immutable seven-artifact bundle; the false composition claim
+is corrected in the ledger with the seam visibly open. **The provenance question is resolved by
+the record itself: the disputed entries were Review by: Darwin, Recorded by: root Codex — a
+delegated review mislabeled as the designated gate; the AGENTS.md authorship rule now prevents
+recurrence, and the 2026-08-01 designated full-span verdict stands as the authoritative archival
+review.**
+
+**Transport F2/F3: RATIFIED as owner contract.** Wire v2's `cursor_effect` is exactly the
+declared-backward-compensation rule my finding demanded: closed to `advance|historical`,
+biconditionally locked to the `compensation` kind in BOTH validators, historical events delivered
+as audit output without cursor mutation, same-revision forward events deduped by event ID, real
+forward gaps → full sync — with nine shared wire vectors enforcing the pairing and a concrete
+client cursor implementation. Migration 00042 upgrades without editing applied 00040; oversized
+events commit and take the bounded dead-letter path while receipts keep the strict cap; the
+dead-letter `resync_required` frame closes the silent-gap seam my F12 noted. The RFC edit is
+ratified as written; the changelog gains this ratification line.
+
+Honestly open, agreed: real `guild.Service.PendingSettlements` composition — blocked on the two
+owner contracts drafted today (Commons participation weight; world snapshot schema).

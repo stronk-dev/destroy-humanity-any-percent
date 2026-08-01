@@ -129,3 +129,6 @@ presentation but cannot veto game history.
   diagnosis.
 - 2026-08-01: v2 adds the historical-compensation cursor rule and removes event-size validation
   from authoritative transactions; receipts remain pre-commit bounded.
+- 2026-08-02: wire v2 ratified by the designated reviewer as the owner contract answering the
+  F2/F3 findings (closed `cursor_effect`, kind/effect biconditional, per-scope client cursors,
+  oversized-event dead-letter path).
