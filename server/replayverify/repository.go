@@ -2,8 +2,11 @@ package replayverify
 
 import (
 	"bytes"
+	"compress/gzip"
 	"context"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -120,6 +123,10 @@ func (repository *Repository) ProcessNext(ctx context.Context, projector Project
 			_ = tx.Rollback()
 			return true, repository.failTransient(ctx, claimed, err)
 		}
+		if err := archiveVerifiedRun(ctx, tx, claimed.StreamID, claimed.RunSeq); err != nil {
+			_ = tx.Rollback()
+			return true, repository.failTransient(ctx, claimed, err)
+		}
 		if err := markVerified(ctx, tx, claimed); err != nil {
 			return true, err
 		}
@@ -127,6 +134,177 @@ func (repository *Repository) ProcessNext(ctx context.Context, projector Project
 		return true, err
 	}
 	return true, tx.Commit()
+}
+
+type runArchive struct {
+	SchemaVersion   int               `json:"schema_version"`
+	CompanyStreamID string            `json:"company_stream_id"`
+	RunSeq          int64             `json:"run_seq"`
+	Pin             runArchivePin     `json:"pin"`
+	Genesis         runArchiveGenesis `json:"genesis"`
+	Entries         []runArchiveEntry `json:"entries"`
+}
+
+type runArchivePin struct {
+	EpochID       int64  `json:"epoch_id"`
+	ConstantsHash string `json:"constants_hash"`
+	EngineVersion string `json:"engine_version"`
+	BuildVCSHash  string `json:"build_vcs_hash"`
+	Seed          string `json:"seed"`
+}
+
+type runArchiveGenesis struct {
+	Version int             `json:"version"`
+	State   json.RawMessage `json:"state"`
+}
+
+type runArchiveEntry struct {
+	Sequence         int64             `json:"seq"`
+	IntentID         string            `json:"intent_id"`
+	CanonicalPayload json.RawMessage   `json:"canonical_payload"`
+	ReplayInputs     json.RawMessage   `json:"replay_inputs"`
+	Receipt          json.RawMessage   `json:"receipt"`
+	AppliedRevision  *int64            `json:"applied_revision"`
+	ServerTSMS       int64             `json:"server_ts_ms"`
+	Events           []runArchiveEvent `json:"events"`
+}
+
+type runArchiveEvent struct {
+	EventID       string          `json:"event_id"`
+	StreamID      string          `json:"stream_id"`
+	EventSequence int64           `json:"event_seq"`
+	Kind          string          `json:"kind"`
+	SchemaVersion int             `json:"schema_version"`
+	IntentID      string          `json:"intent_id"`
+	Payload       json.RawMessage `json:"payload"`
+}
+
+func archiveVerifiedRun(ctx context.Context, tx *sql.Tx, streamID string, runSeq int64) error {
+	runID := streamID + ":" + fmt.Sprintf("%d", runSeq)
+	var existingHash string
+	if err := tx.QueryRowContext(ctx, `SELECT sha256 FROM run_log_archive WHERE run_id=$1`, runID).Scan(&existingHash); err == nil {
+		var liveRows int64
+		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND run_seq=$2`, streamID, runSeq).Scan(&liveRows); err != nil {
+			return err
+		}
+		if liveRows != 0 {
+			return errors.New("archive exists while active run log remains")
+		}
+		return nil
+	} else if !errors.Is(err, sql.ErrNoRows) {
+		return err
+	}
+	archive := runArchive{SchemaVersion: 1, CompanyStreamID: streamID, RunSeq: runSeq, Entries: []runArchiveEntry{}}
+	var genesis []byte
+	if err := tx.QueryRowContext(ctx, `SELECT p.epoch_id,p.constants_hash,p.engine_version,p.build_vcs_hash,p.seed,g.version,g.state
+		FROM run_epochs p JOIN run_genesis g USING(company_stream_id,run_seq)
+		WHERE p.company_stream_id=$1 AND p.run_seq=$2`, streamID, runSeq).
+		Scan(&archive.Pin.EpochID, &archive.Pin.ConstantsHash, &archive.Pin.EngineVersion, &archive.Pin.BuildVCSHash, &archive.Pin.Seed,
+			&archive.Genesis.Version, &genesis); err != nil {
+		return err
+	}
+	if !json.Valid(genesis) {
+		return errors.New("invalid run genesis JSON")
+	}
+	archive.Genesis.State = bytes.Clone(genesis)
+	rows, err := tx.QueryContext(ctx, `SELECT seq,intent_id,canonical_payload,replay_inputs::text,receipt::text,applied_revision,server_ts_ms
+		FROM run_log WHERE company_stream_id=$1 AND run_seq=$2 ORDER BY seq`, streamID, runSeq)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var entry runArchiveEntry
+		var replayInputs, receipt string
+		var applied sql.NullInt64
+		if err := rows.Scan(&entry.Sequence, &entry.IntentID, &entry.CanonicalPayload, &replayInputs, &receipt, &applied, &entry.ServerTSMS); err != nil {
+			return err
+		}
+		entry.ReplayInputs, entry.Receipt = json.RawMessage(replayInputs), json.RawMessage(receipt)
+		if !json.Valid(entry.CanonicalPayload) || !json.Valid(entry.ReplayInputs) || !json.Valid(entry.Receipt) {
+			return errors.New("invalid run-log JSON")
+		}
+		if applied.Valid {
+			value := applied.Int64
+			entry.AppliedRevision = &value
+		}
+		archive.Entries = append(archive.Entries, entry)
+	}
+	if err := rows.Err(); err != nil {
+		return err
+	}
+	if err := rows.Close(); err != nil {
+		return err
+	}
+	if len(archive.Entries) == 0 {
+		return errors.New("cannot archive empty run log")
+	}
+	for index := range archive.Entries {
+		archive.Entries[index].Events, err = archiveEvents(ctx, tx, streamID, archive.Entries[index].IntentID)
+		if err != nil {
+			return err
+		}
+	}
+	var encoded bytes.Buffer
+	zipper, err := gzip.NewWriterLevel(&encoded, gzip.BestCompression)
+	if err != nil {
+		return err
+	}
+	zipper.Header.ModTime = time.Unix(0, 0).UTC()
+	zipper.Header.OS = 255
+	encoder := json.NewEncoder(zipper)
+	encoder.SetEscapeHTML(false)
+	if err := encoder.Encode(archive); err != nil {
+		_ = zipper.Close()
+		return err
+	}
+	if err := zipper.Close(); err != nil {
+		return err
+	}
+	digest := sha256.Sum256(encoded.Bytes())
+	sha := "sha256:" + hex.EncodeToString(digest[:])
+	terminalSeq := archive.Entries[len(archive.Entries)-1].Sequence
+	if _, err := tx.ExecContext(ctx, `INSERT INTO run_log_archive(run_id,company_stream_id,run_seq,terminal_seq,encoding,bytes,sha256)
+		VALUES($1,$2,$3,$4,'gzip+json.v1',$5,$6)`, runID, streamID, runSeq, terminalSeq, encoded.Bytes(), sha); err != nil {
+		return err
+	}
+	result, err := tx.ExecContext(ctx, `DELETE FROM run_log WHERE company_stream_id=$1 AND run_seq=$2`, streamID, runSeq)
+	if err != nil {
+		return err
+	}
+	deleted, err := result.RowsAffected()
+	if err != nil || deleted != int64(len(archive.Entries)) {
+		return errors.Join(err, errors.New("run-log compaction count mismatch"))
+	}
+	return nil
+}
+
+func archiveEvents(ctx context.Context, tx *sql.Tx, companyStreamID, intentID string) ([]runArchiveEvent, error) {
+	rows, err := tx.QueryContext(ctx, `SELECT e.event_id,e.stream_id,e.event_seq,e.kind,e.schema_version,e.intent_id,e.payload::text
+		FROM events e
+		JOIN save_streams company ON company.id=$1 AND company.owner_kind='founder' AND company.scope='company'
+		WHERE e.intent_id=$2 AND (e.stream_id=company.id OR e.stream_id IN (
+			SELECT founder.id FROM save_streams founder
+			WHERE founder.owner_kind='founder' AND founder.scope='founder' AND founder.owner_id=company.owner_id
+		)) ORDER BY CASE WHEN e.stream_id=company.id THEN 1 ELSE 0 END,e.event_seq,e.event_id`, companyStreamID, intentID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	result := []runArchiveEvent{}
+	for rows.Next() {
+		var event runArchiveEvent
+		var payload string
+		if err := rows.Scan(&event.EventID, &event.StreamID, &event.EventSequence, &event.Kind, &event.SchemaVersion, &event.IntentID, &payload); err != nil {
+			return nil, err
+		}
+		event.Payload = json.RawMessage(payload)
+		if !json.Valid(event.Payload) {
+			return nil, errors.New("invalid archive event payload")
+		}
+		result = append(result, event)
+	}
+	return result, rows.Err()
 }
 
 func (repository *Repository) claimNext(ctx context.Context) (claim, error) {
@@ -450,7 +628,7 @@ func (repository *Repository) events(ctx context.Context, companyStreamID, inten
 				WHERE founder.owner_kind='founder' AND founder.scope='founder' AND founder.owner_id=company.owner_id
 			)
 		)
-		ORDER BY e.event_seq`, companyStreamID, intentID)
+		ORDER BY CASE WHEN e.stream_id=company.id THEN 1 ELSE 0 END,e.event_seq,e.event_id`, companyStreamID, intentID)
 	if err != nil {
 		return nil, err
 	}

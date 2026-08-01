@@ -33,7 +33,7 @@ Carried acceptance debt (must remain here until checked off):
 - [ ] Pre-timer runs verify, enter count boards, and are structurally excluded from time boards.
 - [ ] Implement the L7 category catalog and its transaction-owned queue projector; until then the
   queue cannot mark a run verified because `Projector` is intentionally mandatory.
-- [ ] Archive verified run logs at queue mark time and prove crash/retry byte identity.
+- [x] Archive verified run logs at queue mark time and prove crash/retry byte identity.
 
 Acceptance gates are the RFC's six criteria. No migration or transition refactor lands while the
 closed RA/RB shape cannot represent inputs the current live code demonstrably consumes.

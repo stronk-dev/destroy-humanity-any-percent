@@ -518,3 +518,54 @@ site). Approved as intended; commit messages must name their findings next time.
   legacy NULL→`log_gap`, DB-derived drift, the cross-stream intent-ID collision attack, and forced
   cursor failure. The production suite contains the two-rejected-Exit/two-next-catalog regression.
 - Green gates: focused Go packages and the root real-Postgres integration target.
+
+## 2026-08-01 — independent review: queue remediation (873ec9c, 2599a11) — APPROVED
+
+Direct review, all seven findings verified closed in source with a NAMED integration test each
+(nine tests, real Postgres): token-owned claims with RowsAffected assertions and terminal
+immutability; the transient/deterministic split via sentinel errors (transient → release + retry
+under lease, capped attempts → poison dead-letter with InvariantSink per R3's letter); version
+skew DEFERS without spending an attempt (`engine_mismatch` now means exactly a run_version_drift
+row); events scoped to the run's stream pair with `rows.Err()` fail-closed at all three read
+sites; per-entry Next catalogs; per-company in-order claiming; legacy NULL and drift as
+database-verdict tests. The checkbox convention was honored — every flipped box ships its test.
+2599a11 adds the projection-poison and ordering proofs. The L7 projector remains
+contract-blocked; the missing predicates are the OWNER's gap, closed below in the Leaderboards RFC
+(L7a).
+
+## 2026-08-01 — L7 projector, terminal facts, and archive-at-mark implementation
+
+- `20b115b` makes `generators_purchased_total` a save-v13 exact run accumulator rather than
+  inferring Low% from currently owned units. V1–v12 migration backfills from owned counts; accepted
+  buys increment it in Go and TypeScript; `run_ended` schema v2 adds it plus sorted crossed gates.
+  The shared verifier now returns terminal state to its parity tests and asserts the generated
+  `final_state_json` in both runtimes. Repeated TS verification also caught and fixed mutation of
+  recorded Founder carry inputs.
+- `ff0a1d5` implements the closed L7a predicate decoder/evaluator and transaction-owned queue
+  projector. One verified run can enter multiple immutable categories; Faction/Glitched come from
+  stream-scoped events, Commons/Advisor from `run_ended.assisted`; imported, drifted, and pre-timer
+  runs claim without time-board rows. Real Postgres proves four-category projection, exact keys and
+  variable tuple, retry idempotence, pre-timer exclusion, and drift exclusion.
+- Archive-at-mark writes deterministic `gzip+json.v1` bytes over pin, genesis, command inputs,
+  receipts, and totally ordered Company/Founder events; hashes the compressed bytes; deletes live
+  log rows only behind the archive row; and token-marks the queue in the same transaction. The
+  integration proof compares rollback/retry bytes, checks live-row survival after rollback,
+  compaction after commit, archive immutability, and idempotent retry.
+- Green before commits: focused Go packages, 6,492 client tests, typecheck/Svelte diagnostics,
+  schema verification, replay-fixture drift check, and the root real-Postgres integration suite.
+
+### DESIGN-GAP — production L7 fact membership and epoch ownership
+
+L7a closes the predicate SHAPES but does not enumerate the mechanical members of
+`completion_set` or `forbidden_set`; the current state has no Phase-0 completion/doctrine fact
+catalog and only one declared exit fact. It also does not assign category-catalog bytes to an
+epoch/hash authority, so a singleton production file would reclassify queued historical runs after
+a retune. Per AGENTS.md, this round commits the strict schema plus a clearly synthetic test fixture,
+not invented morality/completion mechanics or an unversioned production catalog. The evaluator,
+projector, terminal event, storage shape, and archive path are implemented; composition and the L7
+plan checkbox remain open until the owner specifies literal set members and version ownership.
+
+The Run Genesis acceptance item “pre-timer runs enter count boards” also remains open: all four L7a
+rows explicitly select `rta` or `attended`, so there is no count-keyed canonical category to enter.
+The implemented projector structurally excludes pre-timer runs from all four time boards without
+fabricating a fifth category.

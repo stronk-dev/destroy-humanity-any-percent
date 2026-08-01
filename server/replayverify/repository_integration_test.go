@@ -1,6 +1,8 @@
 package replayverify
 
 import (
+	"bytes"
+	"compress/gzip"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -348,6 +350,88 @@ func TestVerificationEventsAreStreamPairScopedAndIterationFailsClosedIntegration
 	}
 	if _, err := repository.events(ctx, victimCompany, intentID); !errors.Is(err, injected) {
 		t.Fatalf("iteration err=%v", err)
+	}
+}
+
+func TestVerifiedArchiveCompactionIsDeterministicAtomicAndImmutableIntegration(t *testing.T) {
+	db := replayIntegrationDB(t)
+	ctx := context.Background()
+	streamID := "1ccccccc-cccc-4ccc-8ccc-cccccccccccc"
+	seedVerificationRun(t, db, streamID, "2ccccccc-cccc-4ccc-8ccc-cccccccccccc", 1, kernel.Version)
+	intentID := "01989999-0003-7000-8000-000000000003"
+	if _, err := db.ExecContext(ctx, `INSERT INTO run_log(company_stream_id,run_seq,seq,intent_id,canonical_payload,replay_inputs,receipt,applied_revision,server_ts_ms)
+		VALUES($1,1,1,$2,'{}','{}','{}',1,100)`, streamID, intentID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `DELETE FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, streamID); err == nil {
+		t.Fatal("active run log deleted without archive")
+	}
+
+	firstTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := archiveVerifiedRun(ctx, firstTx, streamID, 1); err != nil {
+		t.Fatal(err)
+	}
+	var firstBytes []byte
+	var firstHash string
+	if err := firstTx.QueryRowContext(ctx, `SELECT bytes,sha256 FROM run_log_archive WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&firstBytes, &firstHash); err != nil {
+		t.Fatal(err)
+	}
+	if err := firstTx.Rollback(); err != nil {
+		t.Fatal(err)
+	}
+	var live int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&live); err != nil || live != 1 {
+		t.Fatalf("rollback live=%d err=%v", live, err)
+	}
+
+	secondTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := archiveVerifiedRun(ctx, secondTx, streamID, 1); err != nil {
+		t.Fatal(err)
+	}
+	if err := secondTx.Commit(); err != nil {
+		t.Fatal(err)
+	}
+	var secondBytes []byte
+	var secondHash, encoding string
+	if err := db.QueryRowContext(ctx, `SELECT bytes,sha256,encoding FROM run_log_archive WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&secondBytes, &secondHash, &encoding); err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(firstBytes, secondBytes) || firstHash != secondHash || encoding != "gzip+json.v1" {
+		t.Fatalf("archive drift first=%s second=%s encoding=%s", firstHash, secondHash, encoding)
+	}
+	reader, err := gzip.NewReader(bytes.NewReader(secondBytes))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var archive runArchive
+	if err := json.NewDecoder(reader).Decode(&archive); err != nil {
+		t.Fatal(err)
+	}
+	_ = reader.Close()
+	if archive.SchemaVersion != 1 || archive.CompanyStreamID != streamID || archive.RunSeq != 1 || len(archive.Entries) != 1 || len(archive.Entries[0].Events) != 0 {
+		t.Fatalf("archive=%+v", archive)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&live); err != nil || live != 0 {
+		t.Fatalf("compacted live=%d err=%v", live, err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE run_log_archive SET sha256=$2 WHERE company_stream_id=$1 AND run_seq=1`, streamID, firstHash); err == nil {
+		t.Fatal("archive history was mutable")
+	}
+	retryTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := archiveVerifiedRun(ctx, retryTx, streamID, 1); err != nil {
+		t.Fatal(err)
+	}
+	if err := retryTx.Commit(); err != nil {
+		t.Fatal(err)
 	}
 }
 

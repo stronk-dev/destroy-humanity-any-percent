@@ -82,7 +82,9 @@ The shared replay verifier exists in Go and TypeScript and returns only the clos
 ordered event envelope bytes. A Go-authored 51-entry mixed run—manual accrual, a purchase,
 Compact join/leave, incorporation, a gate-generated offer, decline, a long transition sequence,
 and terminal Exit—must verify identically in both runtimes. The same corpus mutates one dimension
-at a time to assert every failure verdict.
+at a time to assert every failure verdict. Its successful path also returns the independently
+replayed terminal Company state to the parity suites; both compare it with the shared
+`final_state_json`, so terminal facts cannot agree while hidden state silently diverges.
 
 Ended runs enter `verification_queue` in the Exit transaction. Workers claim only the oldest
 unfinished run per Company, using expiring UUID claim tokens; projection and the token-checked
@@ -105,6 +107,20 @@ Faction. “Solo” is only the display name for Commons=false and Advisor=false
 projection claim commits, so they can never enter ranked storage.
 Runs recorded in `run_version_drift` are rejected at the same projection boundary.
 
+The L7 evaluator is a strict, closed data union: `any`, `all_gates`, fact-set superset/disjoint,
+an exact count ceiling, and bounded `all_of`. It rejects unknown predicate kinds, open fields,
+route-gate drift, and any Phase-0 category shape other than Any%, 100%, Ethical%, and Low%. The
+queue-owned projector reads the sole schema-v2 `run_ended`, checks its terminal sequence against
+the immutable log, derives Faction and Glitched from run-scoped events, takes Commons and Advisor
+from the terminal assisted record, and projects every matching category in the queue's mark
+transaction. Imported and version-drift runs claim projection with no board rows. Pre-timer runs
+also claim without entering any of the current four time-keyed categories.
+
+`run_ended` schema v2 carries sorted crossed gates plus an exact
+`generators_purchased_total`. The latter is a save-v13 run accumulator incremented only by accepted
+generator purchases; v1–v12 saves backfill it from then-owned counts. This avoids redefining Low%
+when later systems provision or consume generator units.
+
 Time queries use SQL `rank()` ordered by integer milliseconds; equal keys therefore produce
 standard competition ranks such as `1, 1, 3`. Count queries rank exact integers descending. Both
 use `(key, run_id)` keyset cursors and remain ordinary queries when an epoch is closed, so historical
@@ -123,13 +139,21 @@ rows require a versioned replay-input object in the gameplay transaction. Histor
 nullable and are explicitly unrankable rather than receiving invented backfill values. The command
 envelope is persistence-authoritative; the per-intent resolved union is exact-key validated by the
 production kernel. Active run-log rows are immutable at SQL (`UPDATE` and `DELETE` both fail), so
-tampering cannot be laundered into a historical `log_gap`.
+tampering cannot be laundered into a historical `log_gap`. On a verified verdict, the queue writes
+one deterministic `gzip+json.v1` archive containing pin, genesis, every canonical command/input/
+receipt, and totally ordered Company/Founder event evidence; stores its SHA-256; deletes the live
+rows; and token-marks the queue in the same transaction. The delete trigger permits that one
+archive-backed compaction and no update. Rollback/retry tests prove byte-identical archives and no
+partial deletion.
 
 The Go live service now executes through the shared `ApplyLogged` transition and compares cleanly
 when the persisted input is replayed from the pre-command state. The TypeScript verification kernel
 loads the same six-artifact bundle and reproduces ordinary transitions plus wind-down, stored-offer,
 and scripted cross-gate terminal transitions. The shared Go-authored corpus compares receipts,
 event bytes/order, final Company state, Founder-derived output, and next-run snapshots. Immutable
-genesis storage is also live. Queue claiming and failure handling are live; the literal L7 category
-catalog, its verified-run projector, terminal-fact comparison, and archive compaction remain the
-unimplemented portion of the active Run Genesis RFC.
+genesis storage, queue failure handling, the L7 evaluator/projector, terminal-state comparison, and
+archive compaction are live. The production category file is intentionally not composed yet: L7a
+names `completion_set` and `forbidden_set` but does not enumerate their mechanical fact ids or say
+how category bytes are versioned across epochs. The committed fixture proves the closed machinery;
+shipping literal membership waits on that owner contract rather than inventing morality or
+completion facts in code.
