@@ -329,3 +329,7 @@ reopen-attack test when convenient.
 - Proof shipped with the checkbox changes: loader/prefix/namespace tests, exact magnitude parser
   vectors at extreme exponents, shared-rank and pagination integration coverage, pinned artifact
   validation, five-category projection, and pre-timer-only Valuation projection.
+- Post-commit adversarial review caught canonical zero's tuple `(0,0)` sorting above positive
+  sub-unit values under a naïve exponent-first order. Migration 00039 adds an indexed zero-order
+  component, and the integration board proves `1.25e15, 1.25e15, 9.99e14, 9e-1, 0` ranks
+  `1,1,3,4,5` with keyset pagination intact.

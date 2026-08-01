@@ -179,16 +179,26 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 	if err != nil || len(page) != 2 || page[0].RunID != board[1].RunID || page[1].Rank != 3 {
 		t.Fatalf("page=%+v err=%v", page, err)
 	}
-	magnitudeKeys := []MagnitudeKey{{Exponent: 15, Mantissa: 125_000_000_000}, {Exponent: 15, Mantissa: 125_000_000_000}, {Exponent: 14, Mantissa: 999_000_000_000}}
+	magnitudeKeys := []MagnitudeKey{{Exponent: 15, Mantissa: 125_000_000_000}, {Exponent: 15, Mantissa: 125_000_000_000}, {Exponent: 14, Mantissa: 999_000_000_000}, {Exponent: -1, Mantissa: 900_000_000_000}, {}}
 	for index, key := range magnitudeKeys {
-		_, err := repository.ProjectVerifiedRun(ctx, VerifiedRun{EventID: []string{"01985555-4211-7000-8000-000000000011", "01985555-4212-7000-8000-000000000012", "01985555-4213-7000-8000-000000000013"}[index],
-			RunID: founders[index] + ":1", FounderID: founders[index], CategoryID: "valuation", Variables: variables, EpochID: 1, KeyMagnitude: &key, VerifiedAt: now.Add(time.Duration(index+10) * time.Second)})
+		eventIDs := []string{"01985555-4211-7000-8000-000000000011", "01985555-4212-7000-8000-000000000012", "01985555-4213-7000-8000-000000000013", "01985555-4214-7000-8000-000000000014", "01985555-4215-7000-8000-000000000015"}
+		founderIndex := index
+		if founderIndex >= len(founders)-1 {
+			founderIndex = 0
+		}
+		runSequence := 1
+		if index >= len(founders)-1 {
+			runSequence = index - len(founders) + 3
+		}
+		_, err := repository.ProjectVerifiedRun(ctx, VerifiedRun{EventID: eventIDs[index], RunID: fmt.Sprintf("%s:%d", founders[founderIndex], runSequence), FounderID: founders[founderIndex],
+			CategoryID: "valuation", Variables: variables, EpochID: 1, KeyMagnitude: &key, VerifiedAt: now.Add(time.Duration(index+10) * time.Second)})
 		if err != nil {
 			t.Fatalf("magnitude project %d: %v", index, err)
 		}
 	}
 	magnitudeBoard, err := repository.MagnitudeBoard(ctx, "valuation", variables, 1, 0, 10, nil)
-	if err != nil || len(magnitudeBoard) != 3 || magnitudeBoard[0].Rank != 1 || magnitudeBoard[1].Rank != 1 || magnitudeBoard[2].Rank != 3 || magnitudeBoard[0].Key != magnitudeKeys[0] {
+	if err != nil || len(magnitudeBoard) != 5 || magnitudeBoard[0].Rank != 1 || magnitudeBoard[1].Rank != 1 || magnitudeBoard[2].Rank != 3 || magnitudeBoard[3].Rank != 4 || magnitudeBoard[4].Rank != 5 ||
+		magnitudeBoard[0].Key != magnitudeKeys[0] || magnitudeBoard[3].Key != magnitudeKeys[3] || magnitudeBoard[4].Key != (MagnitudeKey{}) {
 		t.Fatalf("magnitude board=%+v err=%v", magnitudeBoard, err)
 	}
 	magnitudePage, err := repository.MagnitudeBoard(ctx, "valuation", variables, 1, 0, 2, &MagnitudeCursor{Key: magnitudeBoard[0].Key, RunID: magnitudeBoard[0].RunID})

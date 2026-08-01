@@ -141,7 +141,8 @@ standard competition ranks such as `1, 1, 3`. Count queries rank exact integers 
 use `(key, run_id)` keyset cursors. Valuation parses the canonical terminal Decimal into an exact
 `(exponent, 12-digit padded quantized_mantissa)` pair and ranks both columns descending; equal pairs
 share a rank, including values beyond native integer or floating-point range. Magnitude pagination
-uses `(exponent, mantissa, run_id)`. All queries remain ordinary when an epoch is closed, so historical
+uses `(zero, exponent, mantissa, run_id)`: canonical `(0,0)` is the unique last value, below every
+positive sub-unit magnitude. All queries remain ordinary when an epoch is closed, so historical
 boards freeze without a special mutable mode. A partial unique index permits exactly one
 world-first per category/variable/epoch tuple; the projection first attempts the world-first insert
 and falls back to a normal immutable row on conflict.

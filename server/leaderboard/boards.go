@@ -224,24 +224,25 @@ func (repository *Repository) MagnitudeBoard(ctx context.Context, categoryID str
 		return nil, ErrInvalidEpoch
 	}
 	encoded, _ := json.Marshal(variables)
-	afterExponent, afterMantissa, afterRun, hasAfter := int64(0), int64(0), "", false
+	afterExponent, afterMantissa, afterRun, afterZero, hasAfter := int64(0), int64(0), "", false, false
 	if after != nil {
-		afterExponent, afterMantissa, afterRun, hasAfter = after.Key.Exponent, after.Key.Mantissa, after.RunID, true
+		afterExponent, afterMantissa, afterRun, afterZero, hasAfter = after.Key.Exponent, after.Key.Mantissa, after.RunID, after.Key.Mantissa == 0, true
 	}
 	rows, err := repository.db.QueryContext(ctx, `
 		WITH ranked AS (
 			SELECT run_id,founder_id,key_exponent,key_mantissa,verified_at,world_first,
-			       rank() OVER (ORDER BY key_exponent DESC,key_mantissa DESC) AS competition_rank
+			       rank() OVER (ORDER BY (key_mantissa=0) ASC,key_exponent DESC,key_mantissa DESC) AS competition_rank
 			FROM verified_runs
 			WHERE category_id=$1 AND variables=$2 AND epoch_id=$3 AND mandate_level=$4
 			  AND key_exponent IS NOT NULL AND key_mantissa IS NOT NULL
 		)
 		SELECT run_id,founder_id,competition_rank,key_exponent,key_mantissa,verified_at,world_first
 		FROM ranked
-		WHERE NOT $5 OR key_exponent < $6 OR
-		      (key_exponent=$6 AND (key_mantissa < $7 OR (key_mantissa=$7 AND run_id>$8)))
-		ORDER BY key_exponent DESC,key_mantissa DESC,run_id LIMIT $9`, categoryID, encoded, epochID, mandateLevel,
-		hasAfter, afterExponent, afterMantissa, afterRun, limit)
+		WHERE NOT $5 OR (key_mantissa=0) > $6 OR
+		      ((key_mantissa=0)=$6 AND (key_exponent < $7 OR
+		       (key_exponent=$7 AND (key_mantissa < $8 OR (key_mantissa=$8 AND run_id>$9)))))
+		ORDER BY (key_mantissa=0) ASC,key_exponent DESC,key_mantissa DESC,run_id LIMIT $10`, categoryID, encoded, epochID, mandateLevel,
+		hasAfter, afterZero, afterExponent, afterMantissa, afterRun, limit)
 	if err != nil {
 		return nil, err
 	}
