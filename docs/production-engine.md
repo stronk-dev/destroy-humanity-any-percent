@@ -182,7 +182,11 @@ live transitions produce the same receipt field.
 
 The replayable post-accrual registry is closed and ordered: Prestige, faction, Guild, Commons.
 Commons receives its projection-derived participation weight as a resolved input. Runtime service
-options cannot append hooks to this chain; a new hook requires a new replay-input/RFC version.
+resolution is scoped by Company stream, Founder, and pinned constants hash; the first accrual
+after signing uses the catalog-derived zero-Solidarity entry weight, and every later accrual reads
+the current-run projected sample. Resolver failures are internal invariants, never silent absence.
+Service options cannot append hooks to this chain; a new hook requires a new replay-input/RFC
+version.
 
 ## Progress coordinate
 

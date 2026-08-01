@@ -76,6 +76,12 @@ Leaving is always allowed and clears the entire Solidarity window. Re-signing st
 Member accrual emits `compact_sampled` with founder/run identity, participation weight,
 compliance, Enclosure, tithed Capacity, resulting Solidarity, and sampled milliseconds. The hook
 runs only during an authoritative intent transition; there is no player or world tick loop.
+The live participation resolver reads the current run's latest projected sample. Before the first
+sample it computes `floor(tithe_ppm × 1,000,000 / default_tithe_ppm)`, bounded by the same
+normalized catalog tithe band and the ppm ceiling. Sample rows carry `run_seq`, so a previous
+run's weight cannot seed a fresh membership. Resolver failures abort as `internal_invariant`;
+absence is valid only for a non-member.
+
 The first member accrual uses the declared neutral NPC Health when no projection exists. Later
 intents consume the latest projected effective Health and contribute exactly one
 `commons.member` factor in the fixed Commons slot.

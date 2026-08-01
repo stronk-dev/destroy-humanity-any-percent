@@ -50,6 +50,7 @@ type commonsFormula struct {
 	EffectiveHealth          string                 `json:"effective_health"`
 	Modifier                 string                 `json:"modifier"`
 	Solidarity               string                 `json:"solidarity"`
+	EntryParticipationWeight string                 `json:"entry_participation_weight"`
 	SourceWeights            []commons.SourceWeight `json:"source_weights"`
 	DefaultTithePPM          int64                  `json:"default_tithe_ppm"`
 	MinimumTithePPM          int64                  `json:"minimum_tithe_ppm"`
@@ -92,6 +93,7 @@ var formulaAuthorities = []authoritySpec{
 	{label: "multiplier.Order", path: "multiplier/contribution.go", kind: authorityValue, symbol: "Order"},
 	{label: "multiplier.OrderedSourceIDs", path: "multiplier/contribution.go", kind: authorityFunction, symbol: "OrderedSourceIDs"},
 	{label: "commons.EnclosureIndex", path: "commons/formula.go", kind: authorityFunction, symbol: "EnclosureIndex"},
+	{label: "commons.EntryParticipationWeightPPM", path: "commons/formula.go", kind: authorityFunction, symbol: "EntryParticipationWeightPPM"},
 	{label: "commons.EffectiveHealthPPM", path: "commons/formula.go", kind: authorityFunction, symbol: "EffectiveHealthPPM"},
 	{label: "commons.Modifier", path: "commons/formula.go", kind: authorityFunction, symbol: "Modifier"},
 	{label: "commons.AggregateHealth", path: "commons/health.go", kind: authorityFunction, symbol: "AggregateHealth"},
@@ -145,6 +147,7 @@ func main() {
 			EffectiveHealth:          "(guild_health_weight_ppm * guild_health_ppm + cohort_health_weight_ppm * cohort_health_ppm + server_health_weight_ppm * server_health_ppm) / 1000000; guildless substitutes cohort for guild",
 			Modifier:                 "1 + maximum_bonus * (collective_weight * max(0, ((health - collapse_health) / (1 - collapse_health))^collective_exponent) + (1 - collective_weight) * solidarity)",
 			Solidarity:               "sum(hourly_compliance_ppm * covered_ms) / 2592000000",
+			EntryParticipationWeight: "clamp(floor(tithe_ppm * 1000000 / default_tithe_ppm), floor(minimum_tithe_ppm * 1000000 / default_tithe_ppm), min(1000000, floor(maximum_tithe_ppm * 1000000 / default_tithe_ppm)))",
 			SourceWeights:            append([]commons.SourceWeight{}, commonsCatalog.SourceWeights...),
 			DefaultTithePPM:          commonsCatalog.DefaultTithePPM,
 			MinimumTithePPM:          commonsCatalog.MinimumTithePPM,

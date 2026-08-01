@@ -2,6 +2,7 @@ package commons
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -102,5 +103,18 @@ func TestCollectiveExponentComesFromCatalog(t *testing.T) {
 	actual, err := Modifier(catalog, 675_000, 0)
 	if err != nil || actual.String() != "1.75e0" {
 		t.Fatalf("modifier=%s err=%v", actual.String(), err)
+	}
+}
+
+func TestEntryParticipationWeightNormalizesAndClamps(t *testing.T) {
+	catalog := testCatalog(t)
+	for tithe, want := range map[int64]int64{50_000: 500_000, 100_000: 1_000_000, 150_000: 1_000_000} {
+		got, err := EntryParticipationWeightPPM(catalog, tithe)
+		if err != nil || got != want {
+			t.Fatalf("tithe=%d weight=%d want=%d err=%v", tithe, got, want, err)
+		}
+	}
+	if _, err := EntryParticipationWeightPPM(catalog, 49_999); !errors.Is(err, ErrInvalidInput) {
+		t.Fatalf("below-band error=%v", err)
 	}
 }

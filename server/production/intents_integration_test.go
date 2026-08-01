@@ -30,7 +30,9 @@ func (value integrationAssignment) ResolveAssignment(string) (commonsprojection.
 
 type integrationWeight int64
 
-func (value integrationWeight) CompactWeightPPM(string) (int64, bool) { return int64(value), true }
+func (value integrationWeight) CompactWeightPPM(context.Context, string, string, string) (int64, bool, error) {
+	return int64(value), true, nil
+}
 
 type integrationCatalogs struct {
 	economy  map[string]*economy.Catalog
@@ -168,7 +170,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	metrics := fakeInvariantMetrics{}
-	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}), WithGuildSettlements(emptyGuildSettlements{}), WithEventProjector(commonsProjector))
+	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(commonsProjector), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}), WithGuildSettlements(emptyGuildSettlements{}), WithEventProjector(commonsProjector))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -353,6 +355,10 @@ func TestIntentServiceIntegration(t *testing.T) {
 	sampled, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(time.Hour+2*time.Second), memberManual)
 	if err != nil || sampled.Replay {
 		t.Fatalf("sample=%s replay=%v err=%v", sampled.Receipt, sampled.Replay, err)
+	}
+	sampledReplay, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(time.Hour+2*time.Second), memberManual)
+	if err != nil || !sampledReplay.Replay || string(sampledReplay.Receipt) != string(sampled.Receipt) {
+		t.Fatalf("sample replay=%s original=%s replay=%v err=%v", sampledReplay.Receipt, sampled.Receipt, sampledReplay.Replay, err)
 	}
 	commonsSnapshot, err := commonsProjector.Snapshot(ctx, "66666666-6666-4666-8666-666666666666", hash)
 	if err != nil || commonsSnapshot.HealthPPM <= 0 || commonsSnapshot.CohortCapacity == "0" {

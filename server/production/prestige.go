@@ -306,7 +306,7 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 		RouteContextVersion:  current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true,
 		ExecutedRouteIDs: executedRoutes, SelectedExitType: selectedType, SelectedTerms: selectedTerms, NextConstantsHash: s.currentConstantsHash}
 	if company.CompactMember {
-		weight, weightErr := s.resolveCommonsReplayWeight(companyRevision.OwnerID)
+		weight, weightErr := s.resolveCommonsReplayWeight(ctx, companyRevision.StreamID, companyRevision.OwnerID, companyRevision.ConstantsHash)
 		if weightErr != nil {
 			return save.ExitDecision{}, nil, weightErr
 		}

@@ -283,6 +283,10 @@ func (api *API) submitIntent(response http.ResponseWriter, request *http.Request
 		writeError(response, http.StatusBadRequest, "invalid", "intent")
 		return
 	}
+	if errors.Is(err, production.ErrInvalidEngineState) {
+		writeError(response, http.StatusInternalServerError, "internal_invariant", "intent")
+		return
+	}
 	if err != nil {
 		writeError(response, http.StatusConflict, "conflict", "intent")
 		return

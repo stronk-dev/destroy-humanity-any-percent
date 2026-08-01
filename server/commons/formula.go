@@ -3,6 +3,7 @@ package commons
 import (
 	"errors"
 	"math"
+	"math/big"
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/multiplier"
@@ -11,6 +12,35 @@ import (
 var ErrInvalidInput = errors.New("invalid commons formula input")
 
 type ContributionSnapshot struct{ HealthPPM int64 }
+
+// EntryParticipationWeightPPM is the authoritative pre-first-sample Commons
+// weight. Tithe is normalized against the catalog default, bounded in that
+// normalized space, then capped to the ppm wire domain. Integer division
+// deliberately rounds down.
+func EntryParticipationWeightPPM(catalog *Catalog, tithePPM int64) (int64, error) {
+	if catalog == nil || catalog.DefaultTithePPM <= 0 || tithePPM < catalog.MinimumTithePPM || tithePPM > catalog.MaximumTithePPM {
+		return 0, ErrInvalidInput
+	}
+	normalized := func(value int64) *big.Int {
+		result := new(big.Int).Mul(big.NewInt(value), big.NewInt(PPM))
+		return result.Quo(result, big.NewInt(catalog.DefaultTithePPM))
+	}
+	weight := normalized(tithePPM)
+	minimum, maximum := normalized(catalog.MinimumTithePPM), normalized(catalog.MaximumTithePPM)
+	if weight.Cmp(minimum) < 0 {
+		weight.Set(minimum)
+	}
+	if weight.Cmp(maximum) > 0 {
+		weight.Set(maximum)
+	}
+	if weight.Cmp(big.NewInt(PPM)) > 0 {
+		weight.SetInt64(PPM)
+	}
+	if !weight.IsInt64() || weight.Sign() < 0 {
+		return 0, ErrInvalidInput
+	}
+	return weight.Int64(), nil
+}
 
 func ppmDecimal(value int64) decimal.Decimal { return decimal.New(float64(value), -6) }
 

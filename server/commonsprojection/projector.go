@@ -19,7 +19,10 @@ import (
 	"cloud-clicker/server/save"
 )
 
-var ErrProjection = errors.New("commons projection failed")
+var (
+	ErrProjection          = errors.New("commons projection failed")
+	ErrParticipationWeight = errors.New("commons participation weight unavailable")
+)
 
 type AssignmentContext struct {
 	ServerID        string
@@ -326,7 +329,7 @@ func (p *Projector) projectSample(ctx context.Context, event save.EventRecord) e
 	if !capacity.IsStateValue() || capacity.Lt(decimal.Zero) {
 		return ErrProjection
 	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO commons_member_samples(company_stream_id,founder_id,cohort_id,weight_ppm,compliance_ppm,solidarity_ppm,enclosure,capacity,sampled_ms,updated_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT(company_stream_id) DO UPDATE SET weight_ppm=EXCLUDED.weight_ppm,compliance_ppm=EXCLUDED.compliance_ppm,solidarity_ppm=EXCLUDED.solidarity_ppm,enclosure=EXCLUDED.enclosure,capacity=EXCLUDED.capacity,sampled_ms=EXCLUDED.sampled_ms,updated_at=EXCLUDED.updated_at`, payload.RunID.CompanyStreamID, payload.FounderID, cohortID, payload.WeightPPM, payload.CompliancePPM, payload.SolidarityPPM, payload.Enclosure, capacity.String(), payload.SampledMS, event.OccurredAt); err != nil {
+	if _, err := tx.ExecContext(ctx, `INSERT INTO commons_member_samples(company_stream_id,founder_id,cohort_id,run_seq,weight_ppm,compliance_ppm,solidarity_ppm,enclosure,capacity,sampled_ms,updated_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) ON CONFLICT(company_stream_id) DO UPDATE SET run_seq=EXCLUDED.run_seq,weight_ppm=EXCLUDED.weight_ppm,compliance_ppm=EXCLUDED.compliance_ppm,solidarity_ppm=EXCLUDED.solidarity_ppm,enclosure=EXCLUDED.enclosure,capacity=EXCLUDED.capacity,sampled_ms=EXCLUDED.sampled_ms,updated_at=EXCLUDED.updated_at`, payload.RunID.CompanyStreamID, payload.FounderID, cohortID, payload.RunID.RunSeq, payload.WeightPPM, payload.CompliancePPM, payload.SolidarityPPM, payload.Enclosure, capacity.String(), payload.SampledMS, event.OccurredAt); err != nil {
 		return err
 	}
 	var previousServerHealth int64
@@ -486,6 +489,48 @@ func (p *Projector) Snapshot(ctx context.Context, founderID, constantsHash strin
 func (p *Projector) CompactSnapshot(ctx context.Context, founderID, constantsHash string) (commons.ContributionSnapshot, error) {
 	snapshot, err := p.Snapshot(ctx, founderID, constantsHash)
 	return commons.ContributionSnapshot{HealthPPM: snapshot.HealthPPM}, err
+}
+
+// CompactWeightPPM resolves the current run's projection-owned participation
+// input. A committed sample is authoritative; before the first sample, the
+// member's declared tithe is normalized under the pinned Commons catalog.
+func (p *Projector) CompactWeightPPM(ctx context.Context, streamID, founderID, constantsHash string) (int64, bool, error) {
+	if p == nil || streamID == "" || founderID == "" || constantsHash == "" {
+		return 0, false, ErrParticipationWeight
+	}
+	var member bool
+	var tithePPM, runSeq int64
+	var sampledRunSeq, sampledWeight sql.NullInt64
+	err := p.db.QueryRowContext(ctx, `
+		SELECT m.member,m.tithe_ppm,m.run_seq,s.run_seq,s.weight_ppm
+		FROM company_compact_memberships m
+		LEFT JOIN commons_member_samples s ON s.company_stream_id=m.company_stream_id
+		WHERE m.company_stream_id=$1 AND m.founder_id=$2`, streamID, founderID).
+		Scan(&member, &tithePPM, &runSeq, &sampledRunSeq, &sampledWeight)
+	if errors.Is(err, sql.ErrNoRows) {
+		return 0, false, nil
+	}
+	if err != nil {
+		return 0, false, errors.Join(ErrParticipationWeight, err)
+	}
+	if !member {
+		return 0, false, nil
+	}
+	if sampledRunSeq.Valid && sampledWeight.Valid && sampledRunSeq.Int64 == runSeq {
+		if sampledWeight.Int64 < 0 || sampledWeight.Int64 > commons.PPM {
+			return 0, false, ErrParticipationWeight
+		}
+		return sampledWeight.Int64, true, nil
+	}
+	catalog, ok := p.policies.ResolveCommons(constantsHash)
+	if !ok {
+		return 0, false, ErrParticipationWeight
+	}
+	weight, err := commons.EntryParticipationWeightPPM(catalog, tithePPM)
+	if err != nil {
+		return 0, false, errors.Join(ErrParticipationWeight, err)
+	}
+	return weight, true, nil
 }
 
 // MergeCollapsed merges every additional under-floor cohort into the oldest

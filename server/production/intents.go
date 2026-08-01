@@ -67,7 +67,7 @@ type ProgressionRuntimeResolver interface {
 type AccrualHook = accrualhook.Hook
 
 type CommonsWeightResolver interface {
-	CompactWeightPPM(founderID string) (int64, bool)
+	CompactWeightPPM(context.Context, string, string, string) (int64, bool, error)
 }
 
 type RouteCatalogResolver interface {
@@ -408,7 +408,10 @@ func (s *Service) Handle(
 				if s.commonsWeights == nil {
 					return save.IntentDecision{}, nil, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
 				}
-				weight, ok := s.commonsWeights.CompactWeightPPM(revision.OwnerID)
+				weight, ok, weightErr := s.commonsWeights.CompactWeightPPM(ctx, revision.StreamID, revision.OwnerID, revision.ConstantsHash)
+				if weightErr != nil {
+					return save.IntentDecision{}, nil, fmt.Errorf("%w: commons participation resolver: %v", ErrInvalidEngineState, weightErr)
+				}
 				if !ok || weight < 0 || weight > 1_000_000 {
 					return save.IntentDecision{}, nil, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
 				}
@@ -503,11 +506,14 @@ func (s *Service) Handle(
 	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
 }
 
-func (s *Service) resolveCommonsReplayWeight(founderID string) (int64, error) {
+func (s *Service) resolveCommonsReplayWeight(ctx context.Context, streamID, founderID, constantsHash string) (int64, error) {
 	if s.commonsWeights == nil {
 		return 0, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
 	}
-	weight, ok := s.commonsWeights.CompactWeightPPM(founderID)
+	weight, ok, err := s.commonsWeights.CompactWeightPPM(ctx, streamID, founderID, constantsHash)
+	if err != nil {
+		return 0, fmt.Errorf("%w: commons participation resolver: %v", ErrInvalidEngineState, err)
+	}
 	if !ok || weight < 0 || weight > 1_000_000 {
 		return 0, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
 	}
