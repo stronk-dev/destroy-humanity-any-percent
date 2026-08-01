@@ -74,7 +74,7 @@ func (publisher *memoryPublisher) Publish(envelope Envelope) error {
 func TestPlayerRelayMapsMixedCommittedOutboxExactly(t *testing.T) {
 	when := time.Date(2026, 7, 29, 15, 0, 0, 0, time.UTC)
 	receipt := json.RawMessage(`{"intent_id":"01985555-0010-7000-8000-000000000010","outcome":"applied","new_revision":9}`)
-	event := json.RawMessage(`{"event_id":"01985555-0009-7000-8000-000000000009","kind":"gate_crossed","scope":"company","rev":8,"payload":{}}`)
+	event := json.RawMessage(`{"event_id":"01985555-0009-7000-8000-000000000009","kind":"gate_crossed","scope":"company","rev":8,"cursor_effect":"advance","payload":{}}`)
 	source := &memoryPlayerSource{items: []save.PlayerOutboxItem{{
 		ID: 6, ClaimToken: "01985555-0011-7000-8000-000000000011", FounderID: "founder", MessageKind: "event", Scope: "company", Revision: 8,
 		SourceID: "01985555-0009-7000-8000-000000000009", ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Payload: event, OccurredAt: when,

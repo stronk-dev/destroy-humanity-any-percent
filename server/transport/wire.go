@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const WireVersion = 1
+const WireVersion = 2
 
 const (
 	CloseQueueOverflow = 4000
@@ -86,15 +86,18 @@ func validatePayload(envelope Envelope) error {
 		}
 	case "event":
 		var payload struct {
-			EventID string          `json:"event_id"`
-			Kind    string          `json:"kind"`
-			Scope   string          `json:"scope"`
-			Rev     int64           `json:"rev"`
-			Payload json.RawMessage `json:"payload"`
+			EventID      string          `json:"event_id"`
+			Kind         string          `json:"kind"`
+			Scope        string          `json:"scope"`
+			Rev          int64           `json:"rev"`
+			CursorEffect string          `json:"cursor_effect"`
+			Payload      json.RawMessage `json:"payload"`
 		}
 		if decodeExactPayload(envelope.Payload, &payload) != nil || payload.EventID == "" || !eventKindPattern.MatchString(payload.Kind) ||
 			(payload.Scope != "company" && payload.Scope != "founder") || payload.Rev < 1 ||
-			payload.Rev != envelope.Revision || !isJSONObject(payload.Payload) {
+			payload.Rev != envelope.Revision || !isJSONObject(payload.Payload) ||
+			(payload.Kind == "compensation") != (payload.CursorEffect == "historical") ||
+			(payload.CursorEffect != "advance" && payload.CursorEffect != "historical") {
 			return ErrInvalidPolicy
 		}
 	case "presence":

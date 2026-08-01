@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { decodeTransportEnvelope } from "../src/transport";
+import { decodeTransportEnvelope, PlayerRevisionCursor } from "../src/transport";
 import wireVectors from "../../testdata/transport/wire-vectors.json";
 
-const base = { v: 1, ch: "player:01985555-0000-7000-8000-000000000001", rev: 3, constants_hash: `sha256:${"a".repeat(64)}`, ts: "2026-07-29T12:00:00.000Z" };
+const base = { v: 2, ch: "player:01985555-0000-7000-8000-000000000001", rev: 3, constants_hash: `sha256:${"a".repeat(64)}`, ts: "2026-07-29T12:00:00.000Z" };
 
 describe("transport wire", () => {
   it("passes receipt payloads through unchanged", () => {
@@ -34,10 +34,36 @@ describe("transport wire", () => {
   });
 
   it("binds event revision and object payloads", () => {
-    const event = { ...base, ch: "feed", rev: 4, kind: "event", payload: { event_id: "event-4", kind: "run.ended", scope: "company", rev: 4, payload: {} } };
+    const event = { ...base, ch: "feed", rev: 4, kind: "event", payload: { event_id: "event-4", kind: "run.ended", scope: "company", rev: 4, cursor_effect: "advance", payload: {} } };
     expect(decodeTransportEnvelope(event)?.kind).toBe("event");
     expect(() => decodeTransportEnvelope({ ...event, payload: { ...event.payload, rev: 5 } })).toThrow(SyntaxError);
     expect(() => decodeTransportEnvelope({ ...event, payload: { ...event.payload, payload: [] } })).toThrow(SyntaxError);
+  });
+
+  it("keeps historical compensation outside both scope cursors", () => {
+    const cursor = new PlayerRevisionCursor();
+    cursor.reset("company", 8);
+    cursor.reset("founder", 2);
+    const historical = decodeTransportEnvelope({ ...base, rev: 5, kind: "event", payload: {
+      event_id: "event-compensation", kind: "compensation", scope: "company", rev: 5, cursor_effect: "historical", payload: {},
+    } })!;
+    expect(cursor.event(historical)).toBe("deliver");
+    expect(cursor.revision("company")).toBe(8);
+    expect(cursor.revision("founder")).toBe(2);
+
+    const next = decodeTransportEnvelope({ ...base, rev: 9, kind: "event", payload: {
+      event_id: "event-9a", kind: "run.ended", scope: "company", rev: 9, cursor_effect: "advance", payload: {},
+    } })!;
+    expect(cursor.event(next)).toBe("deliver");
+    const sameRevision = decodeTransportEnvelope({ ...base, rev: 9, kind: "event", payload: {
+      event_id: "event-9b", kind: "run.started", scope: "company", rev: 9, cursor_effect: "advance", payload: {},
+    } })!;
+    expect(cursor.event(sameRevision)).toBe("deliver");
+    expect(cursor.event(sameRevision)).toBe("duplicate");
+    expect(cursor.event(decodeTransportEnvelope({ ...base, rev: 11, kind: "event", payload: {
+      event_id: "event-11", kind: "run.ended", scope: "company", rev: 11, cursor_effect: "advance", payload: {},
+    } })!)).toBe("resync_required");
+    expect(cursor.revision("company")).toBe(9);
   });
 
   it("matches the shared Go wire corpus", () => {

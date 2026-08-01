@@ -1,6 +1,6 @@
 export type TransportKind = "receipt" | "snapshot" | "event" | "presence" | "system";
 export interface TransportEnvelope {
-  readonly v: 1;
+  readonly v: 2;
   readonly ch: string;
   readonly kind: TransportKind;
   readonly rev: number;
@@ -18,7 +18,7 @@ export function decodeTransportEnvelope(source: unknown): TransportEnvelope | un
   const kind = root.kind;
   if (typeof kind !== "string" || !kinds.has(kind as TransportKind)) return undefined;
   exact(root, ["v", "ch", "kind", "rev", "constants_hash", "ts", "payload"], "transport envelope");
-  if (root.v !== 1 || typeof root.ch !== "string" || root.ch.length === 0 || !Number.isSafeInteger(root.rev) || (root.rev as number) < 0 ||
+  if (root.v !== 2 || typeof root.ch !== "string" || root.ch.length === 0 || !Number.isSafeInteger(root.rev) || (root.rev as number) < 0 ||
       typeof root.constants_hash !== "string" || !hashPattern.test(root.constants_hash) || typeof root.ts !== "string" || !Number.isFinite(Date.parse(root.ts)) ||
       !channelAllowsKind(root.ch, kind as TransportKind)) {
     throw new SyntaxError("invalid transport envelope");
@@ -38,10 +38,12 @@ function validatePayload(kind: TransportKind, payload: Record<string, unknown>, 
     return;
   }
   if (kind === "event") {
-    exact(payload, ["event_id", "kind", "scope", "rev", "payload"], "event payload");
+    exact(payload, ["event_id", "kind", "scope", "rev", "cursor_effect", "payload"], "event payload");
     if (typeof payload.event_id !== "string" || payload.event_id.length === 0 || typeof payload.kind !== "string" || !idPattern.test(payload.kind) ||
         !["company", "founder"].includes(String(payload.scope)) ||
         !Number.isSafeInteger(payload.rev) || (payload.rev as number) < 1 || payload.rev !== envelopeRevision ||
+        !["advance", "historical"].includes(String(payload.cursor_effect)) ||
+        (payload.kind === "compensation") !== (payload.cursor_effect === "historical") ||
         typeof payload.payload !== "object" || payload.payload === null || Array.isArray(payload.payload)) throw new SyntaxError("invalid event payload");
     return;
   }
@@ -86,4 +88,43 @@ function scopeMatchesChannel(scope: string, channel: string): boolean {
   if (scope === "guild") return channel.startsWith("guild:");
   if (scope === "cohort") return channel.startsWith("cohort:");
   return false;
+}
+
+export type CursorResult = "deliver" | "duplicate" | "resync_required";
+
+interface ScopeCursor { revision: number; seenAtRevision: Set<string> }
+
+// PlayerRevisionCursor is the client-shell gap authority for private events.
+// Historical compensation is visible audit output but never rewinds or advances
+// authoritative state. Forward events may share a revision, so event IDs dedupe
+// within the current revision instead of treating the second event as stale.
+export class PlayerRevisionCursor {
+  readonly #scopes = new Map<"company" | "founder", ScopeCursor>();
+
+  reset(scope: "company" | "founder", revision: number): void {
+    if (!Number.isSafeInteger(revision) || revision < 0) throw new RangeError("invalid stream revision");
+    this.#scopes.set(scope, { revision, seenAtRevision: new Set() });
+  }
+
+  event(envelope: TransportEnvelope): CursorResult {
+    if (envelope.kind !== "event") throw new TypeError("cursor accepts event envelopes only");
+    const payload = envelope.payload;
+    const scope = payload.scope as "company" | "founder";
+    const effect = payload.cursor_effect as "advance" | "historical";
+    const eventID = payload.event_id as string;
+    if (effect === "historical") return "deliver";
+    const current = this.#scopes.get(scope) ?? { revision: 0, seenAtRevision: new Set<string>() };
+    if (envelope.rev < current.revision) return "duplicate";
+    if (envelope.rev > current.revision + 1) return "resync_required";
+    if (envelope.rev === current.revision + 1) {
+      current.revision = envelope.rev;
+      current.seenAtRevision.clear();
+    }
+    if (current.seenAtRevision.has(eventID)) return "duplicate";
+    current.seenAtRevision.add(eventID);
+    this.#scopes.set(scope, current);
+    return "deliver";
+  }
+
+  revision(scope: "company" | "founder"): number { return this.#scopes.get(scope)?.revision ?? 0; }
 }

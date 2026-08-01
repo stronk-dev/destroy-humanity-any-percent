@@ -2,76 +2,96 @@
   {
     "name": "company_snapshot",
     "valid": true,
-    "envelope": { "v": 1, "ch": "player:founder", "kind": "snapshot", "rev": 7, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "company", "rev": 7, "state": {} } }
+    "envelope": { "v": 2, "ch": "player:founder", "kind": "snapshot", "rev": 7, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "company", "rev": 7, "state": {} } }
   },
   {
     "name": "world_snapshot",
     "valid": true,
-    "envelope": { "v": 1, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 8, "state": {} } }
+    "envelope": { "v": 2, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 8, "state": {} } }
   },
   {
-    "name": "feed_event",
+    "name": "forward_event",
     "valid": true,
-    "envelope": { "v": 1, "ch": "feed", "kind": "event", "rev": 9, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-9", "kind": "run.ended", "scope": "company", "rev": 9, "payload": {} } }
+    "envelope": { "v": 2, "ch": "feed", "kind": "event", "rev": 9, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-9", "kind": "run.ended", "scope": "company", "rev": 9, "cursor_effect": "advance", "payload": {} } }
+  },
+  {
+    "name": "historical_compensation",
+    "valid": true,
+    "envelope": { "v": 2, "ch": "player:founder", "kind": "event", "rev": 5, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-compensation", "kind": "compensation", "scope": "company", "rev": 5, "cursor_effect": "historical", "payload": {} } }
   },
   {
     "name": "guild_presence",
     "valid": true,
-    "envelope": { "v": 1, "ch": "guild:g", "kind": "presence", "rev": 0, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "joined": [], "left": [], "count": 2 } }
+    "envelope": { "v": 2, "ch": "guild:g", "kind": "presence", "rev": 0, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "joined": [], "left": [], "count": 2 } }
   },
   {
     "name": "restart_system",
     "valid": true,
-    "envelope": { "v": 1, "ch": "world", "kind": "system", "rev": 0, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "code": "server_restarting", "resume_after_ms": 15000 } }
+    "envelope": { "v": 2, "ch": "world", "kind": "system", "rev": 0, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "code": "server_restarting", "resume_after_ms": 15000 } }
   },
   {
     "name": "public_receipt",
     "valid": false,
-    "envelope": { "v": 1, "ch": "world", "kind": "receipt", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "outcome": "applied" } }
+    "envelope": { "v": 2, "ch": "world", "kind": "receipt", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "outcome": "applied" } }
   },
   {
     "name": "receipt_array",
     "valid": false,
-    "envelope": { "v": 1, "ch": "player:founder", "kind": "receipt", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": [] }
+    "envelope": { "v": 2, "ch": "player:founder", "kind": "receipt", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": [] }
   },
   {
     "name": "snapshot_revision_mismatch",
     "valid": false,
-    "envelope": { "v": 1, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 7, "state": {} } }
+    "envelope": { "v": 2, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 7, "state": {} } }
   },
   {
     "name": "snapshot_scope_mismatch",
     "valid": false,
-    "envelope": { "v": 1, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "company", "rev": 8, "state": {} } }
+    "envelope": { "v": 2, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "company", "rev": 8, "state": {} } }
   },
   {
     "name": "snapshot_unknown_field",
     "valid": false,
-    "envelope": { "v": 1, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 8, "state": {}, "extra": true } }
+    "envelope": { "v": 2, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 8, "state": {}, "extra": true } }
   },
   {
     "name": "event_scalar_payload",
     "valid": false,
-    "envelope": { "v": 1, "ch": "feed", "kind": "event", "rev": 9, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-9", "kind": "run.ended", "scope": "company", "rev": 9, "payload": 1 } }
+    "envelope": { "v": 2, "ch": "feed", "kind": "event", "rev": 9, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-9", "kind": "run.ended", "scope": "company", "rev": 9, "cursor_effect": "advance", "payload": 1 } }
+  },
+  {
+    "name": "compensation_cannot_advance",
+    "valid": false,
+    "envelope": { "v": 2, "ch": "player:founder", "kind": "event", "rev": 5, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-compensation", "kind": "compensation", "scope": "company", "rev": 5, "cursor_effect": "advance", "payload": {} } }
+  },
+  {
+    "name": "ordinary_event_cannot_be_historical",
+    "valid": false,
+    "envelope": { "v": 2, "ch": "player:founder", "kind": "event", "rev": 5, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-5", "kind": "run.ended", "scope": "company", "rev": 5, "cursor_effect": "historical", "payload": {} } }
+  },
+  {
+    "name": "event_missing_cursor_effect",
+    "valid": false,
+    "envelope": { "v": 2, "ch": "player:founder", "kind": "event", "rev": 5, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-5", "kind": "run.ended", "scope": "company", "rev": 5, "payload": {} } }
   },
   {
     "name": "resync_with_duration",
     "valid": false,
-    "envelope": { "v": 1, "ch": "world", "kind": "system", "rev": 0, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "code": "resync_required", "resume_after_ms": 1 } }
+    "envelope": { "v": 2, "ch": "world", "kind": "system", "rev": 0, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "code": "resync_required", "resume_after_ms": 1 } }
   },
   {
     "name": "unknown_channel",
     "valid": false,
-    "envelope": { "v": 1, "ch": "public", "kind": "event", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-1", "kind": "run.ended", "scope": "company", "rev": 1, "payload": {} } }
+    "envelope": { "v": 2, "ch": "public", "kind": "event", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-1", "kind": "run.ended", "scope": "company", "rev": 1, "cursor_effect": "advance", "payload": {} } }
   },
   {
     "name": "event_missing_scope",
     "valid": false,
-    "envelope": { "v": 1, "ch": "player:founder", "kind": "event", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-1", "kind": "run.ended", "rev": 1, "payload": {} } }
+    "envelope": { "v": 2, "ch": "player:founder", "kind": "event", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-1", "kind": "run.ended", "rev": 1, "cursor_effect": "advance", "payload": {} } }
   },
   {
     "name": "event_unknown_scope",
     "valid": false,
-    "envelope": { "v": 1, "ch": "player:founder", "kind": "event", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-1", "kind": "run.ended", "scope": "guild", "rev": 1, "payload": {} } }
+    "envelope": { "v": 2, "ch": "player:founder", "kind": "event", "rev": 1, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "event_id": "event-1", "kind": "run.ended", "scope": "guild", "rev": 1, "cursor_effect": "advance", "payload": {} } }
   }
 ]

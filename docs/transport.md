@@ -1,6 +1,6 @@
 # WebSocket Transport
 
-The transport foundation defines a strict version-1 outbound envelope and the bounded policies for
+The transport foundation defines a strict version-2 outbound envelope and the bounded policies for
 realtime delivery. HTTP remains the only inbound intent path; WebSocket clients never publish game
 commands or results.
 
@@ -22,7 +22,7 @@ and nested state/event payloads must be objects. A closed channel-kind matrix pe
 on private player channels; `world` accepts gauges/presence/system messages and `feed` accepts
 curated events/presence/system messages. Consequently a per-click receipt cannot reach a public
 channel through the generic publisher. Unknown future kinds remain client-ignored before payload
-interpretation as the version-1 forward-compatibility rule requires.
+interpretation as the version-2 forward-compatibility rule requires.
 
 The live Centrifuge writer is wrapped by an application-owned queue discipline. Its byte queue is
 the first bound. A separate per-connection counter enforces the declared private-player message
@@ -62,13 +62,20 @@ Every Founder/Company event and every Company intent receipt enters one durable
 insertion for every event writer; intent and Exit transactions insert their exact normalized
 receipts. An Exit therefore produces one transaction-ordered Founder sequence spanning its Founder
 event, final-run Company events, next-run Company event, and receipt. Event payloads carry their
-required `company|founder` scope and the revision in that scope. Those per-scope revisions—not
-cross-scope arrival order—are the reconciliation authority when independent transactions interleave.
+required `company|founder` scope, the revision in that scope, and a closed cursor effect. Ordinary
+events are `advance`; `compensation` alone is `historical`. Historical compensation remains visible
+audit output but does not advance, rewind, or gap-check the client cursor. Forward events may share
+one revision, so the per-scope client cursor dedupes by event ID within its current revision. Those
+per-scope revisions—not cross-scope arrival order—are the reconciliation authority when independent
+transactions interleave.
 Idempotent replay does not create a
-second row. Player payloads above 60 KiB are rejected at both the application and database boundaries.
+second row. Receipts above 60 KiB are rejected at both the application and database boundaries.
 The application insert measures PostgreSQL's exact `jsonb::text` representation before mutation,
 so structural spacing cannot pass Go and then abort the surrounding intent on the database CHECK.
-This leaves room for the closed 64-KiB transport envelope. Relay workers claim at most the oldest
+Authoritative events always commit, even when the resulting envelope is oversized. Such a row
+reaches the relay, fails the 64-KiB envelope policy deterministically, dead-letters after five
+attempts, and is healed by the client's ordinary forward-gap/full-sync path. Transport can delay
+event presentation; it cannot roll back game or projection history. Relay workers claim at most the oldest
 pending row per Founder with expiring leases and `SKIP LOCKED`, sort the returned batch by outbox
 identity, publish its event or receipt unchanged to `player:{founder_id}`, then acknowledge it. On publish or
 acknowledgement failure every unprocessed claim is released. Deterministic envelope-policy failures
@@ -80,6 +87,12 @@ therefore cannot pin readiness forever, while a short outage cannot destroy a va
 crash after publication but before acknowledgement may redeliver a message, which is safe because
 events have immutable event IDs and receipts retain intent identity plus authoritative revision; a
 crash before publication cannot lose it.
+
+The outbox migration is a single-process, migrate-before-readiness operation. It intentionally
+does not replay historical events that predate installation; live delivery begins at installation
+and full sync remains authoritative. Applied migration files are immutable—later corrections use
+new forward migrations. A dead-lettered event is not skipped invisibly: the next forward revision
+exposes the gap and triggers full sync.
 
 The embedded node sets Centrifuge's process-wide slow-writer policy once, before any node runs, so
 its bounded byte queue closes stalled clients with application code 4000 rather than the library's

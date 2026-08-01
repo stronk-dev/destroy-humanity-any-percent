@@ -75,16 +75,22 @@ Intents travel `POST /api/v1/intents` (Account RFC D3): body = one Production-C1
 
 ### T3 — Outbound wire schemas (closed, versioned)
 
-The envelope (D3) gains `v: 1`. Closed `kind` payloads, exact-key validated in the TS decoder:
+The envelope is currently `v: 2`. Closed `kind` payloads, exact-key validated in the TS decoder:
 - `receipt`: the production receipt JSON **unmodified** (its schema is C1's; this RFC adds nothing and strips nothing). The shell's narrower internal types are produced by the shell's own mapping (already implemented and reviewed); `internal_invariant` maps to the shell's existing wire result of that name.
 - `snapshot`: `{scope: "company"|"world"|"guild"|"cohort", rev, state}` — `state` is the save-layer canonical state for `company`, the published aggregate schemas (Commons/world dials, already generated artifacts) for the rest.
-- `event`: `{event_id, kind, scope: "company"|"founder", rev, payload}` — the event-envelope registry as-is, plus the required `scope` field (ruling 2026-07-30, resolving the cross-scope revision gap): `rev` is the revision within that scope's save stream, envelope `rev` equals it, and the shell keeps one reconciliation cursor **per scope** on `player:{fid}` so interleaved Company/Founder events (the Exit transaction emits both) never falsely trip gap detection. Both families relay; wire vectors carry valid/invalid scope cases.
+- `event`: `{event_id, kind, scope: "company"|"founder", rev, cursor_effect, payload}` — the event-envelope registry as-is, plus the required scope and cursor effect. `cursor_effect` is `advance` for every ordinary event and `historical` exactly for `compensation`. A historical compensation is delivered as audit output but never advances, rewinds, or gap-checks a scope cursor. This is required because a projector may discover a correction after later stream revisions already committed. The shell keeps one reconciliation cursor **per scope** on `player:{fid}`; forward events can share a revision and dedupe by event ID within that revision. Both scope families relay; shared wire vectors enforce the kind/effect pairing.
 - `presence`: `{joined: [id], left: [id], count}` · `system`: `{code, resume_after_ms?}` with closed code set `{server_restarting, history_expired, resync_required}`.
 Unknown `kind` ignored (forward-compat); unknown field inside a known kind = decode error (strictness where we have a contract).
 
 ### T4 — Recovery authority
 
 Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `player:*` history: **size 512 messages / TTL 10 min** (config, Phase-0 literals). Recovery inside the window replays in order; **outside it centrifuge reports unrecoverable → client receives `system:resync_required` semantics and performs the authoritative full sync: `GET /api/v1/founder/state`** (Account RFC surface; returns latest committed revision + state, same bytes as a `snapshot`), then resubscribes from live. A revision gap detected by the shell (rev N+2 after N) triggers the same path. Full sync is the single recovery of last resort everywhere; nothing else invents catch-up.
+
+Message size is not an authoritative-write invariant. Receipt bytes are measured before commit because
+the receipt is produced by the request transaction. Event rows, including projector events, always
+commit; an event whose v2 envelope exceeds the transport cap enters the relay's existing bounded
+deterministic dead-letter lane and the client eventually heals through the same forward-gap/full-sync
+path. Transport can delay presentation but cannot veto game history.
 
 ### T5 — Backpressure constants (Phase-0 literals, config-validated)
 
@@ -120,3 +126,5 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
 - 2026-07-30: boundary cleanup separates invalid private reservations from real queue overflow and
   assigns malformed publication framing close code 4004, so code 4000 remains an honest capacity
   diagnosis.
+- 2026-08-01: v2 adds the historical-compensation cursor rule and removes event-size validation
+  from authoritative transactions; receipts remain pre-commit bounded.

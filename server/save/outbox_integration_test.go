@@ -131,6 +131,35 @@ func TestPlayerOutboxOrderingDeadLetterAndSizeIntegration(t *testing.T) {
 		t.Fatal("database accepted oversized receipt")
 	}
 
+	// Projectors append authoritative events directly. An event that exceeds
+	// the transport cap must commit and enter the deterministic relay lane; the
+	// transport concern may not roll back authoritative history.
+	oversizedEvent := json.RawMessage(`{"compensates_event_id":"01985555-1001-7000-8000-000000000001","reason_key":"` + strings.Repeat("x", MaxPlayerOutboxBytes) + `"}`)
+	var oversizedEventID string
+	tx, err = db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.QueryRowContext(ctx, `
+		INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,payload)
+		VALUES($1,1,1,'compensation',NULL,$2,$3)
+		RETURNING event_id`, streamA.StreamID, hash, oversizedEvent).Scan(&oversizedEventID); err != nil {
+		_ = tx.Rollback()
+		t.Fatalf("authoritative oversized event insert: %v", err)
+	}
+	if err := tx.Commit(); err != nil {
+		t.Fatalf("authoritative oversized event commit: %v", err)
+	}
+	var cursorEffect string
+	var queuedBytes int
+	if err := db.QueryRowContext(ctx, `
+		SELECT payload->>'cursor_effect',octet_length(payload::text)
+		FROM transport_player_outbox
+		WHERE message_kind='event' AND source_id=$1`, oversizedEventID).Scan(&cursorEffect, &queuedBytes); err != nil ||
+		cursorEffect != "historical" || queuedBytes <= MaxPlayerOutboxBytes {
+		t.Fatalf("oversized historical event effect=%q bytes=%d err=%v", cursorEffect, queuedBytes, err)
+	}
+
 	spaced := make(map[string]int, 5_500)
 	for index := 0; index < 5_500; index++ {
 		spaced[fmt.Sprintf("k%04d", index)] = 0

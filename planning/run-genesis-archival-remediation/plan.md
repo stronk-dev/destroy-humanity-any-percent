@@ -12,5 +12,5 @@
 4. [ ] Correct the false Guild-composition claim and explicitly carry real settlement composition
    under the active Transport/cmd owner item.
 5. [x] Record review provenance explicitly and make the convention repository-wide.
-6. [ ] Close Transport F2/F3 with an append-only migration and cross-runtime/integration proofs.
+6. [x] Close Transport F2/F3 with an append-only migration and cross-runtime/integration proofs.
 7. [ ] Run the hosted-CI-equivalent root gates and real-Postgres suite; request independent review.

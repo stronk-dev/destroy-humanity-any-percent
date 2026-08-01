@@ -464,3 +464,43 @@ Migration 00041's Down path no longer attempts to resurrect the invalid global s
 constraint. It restores the stream-scoped key declared by the current 00040 source, so a database
 containing two legitimate streams with the same client intent ID can roll back without data loss or
 migration failure.
+
+## 2026-08-01 — designated reviewer: transport findings from the 0.3.x span review
+
+1. **F2 HIGH — c782b57's per-scope revision-ordering claim is not enforced for projector-written
+   events**: route/commons compensation events insert at HISTORICAL revisions in later
+   transactions with no stream lock; outbox delivers in outbox_id order; a founder at rev 9 can
+   receive a rev-5 compensation event, and the T3/T4 gap-cursor contract defines forward gaps
+   only. Fix: either the relay reorders per (founder, scope) before publish, or T4 gains a
+   declared backward-compensation rule the shell handles (surface, don't improvise — owner
+   contract either way).
+2. **F3 HIGH — the event-size CHECK (00040) can abort authoritative game transactions**: no
+   application-side pre-measure exists on the event path (receipts have one). An oversized event
+   payload hard-fails every affected intent/exit/projection commit. Fix: pre-measure at event
+   write with the typed rejection, mirroring the receipt guard.
+3. F8 MEDIUM batch: 00040 Down destroys undelivered event rows (restore both kinds); no
+   event backfill on Up (declare); receipt-outbox drop in the same migration is
+   single-process-migrate-at-startup-only (document as a deployment invariant); the claimed
+   client per-scope gap cursor does not exist in client/src (implement or retract from the
+   commit narrative); in-place edits of applied migrations across the span noted (goose doesn't
+   checksum — convention: never edit an applied migration file).
+4. F12 LOW: receipt scope hardcoded 'company'; dead-lettered events give the client only an
+   eventual forward gap (acceptable, now declared).
+
+## 2026-08-01 — F2/F3 remediation implemented
+
+**Recorded by: root Codex. Review by: pending independent diff review.**
+
+F2 is closed by wire v2's declared historical-compensation rule. Migration 00042 labels existing
+and future queued events; Go/TypeScript exact validators bind `compensation` to `historical`; and
+the concrete client cursor delivers those events without mutating either scope revision. Forward
+events remain gap-checked and same-revision event IDs remain independently deliverable.
+
+F3 is closed at the ownership boundary rather than by letting transport reject authoritative
+history. The new constraint keeps receipts capped but permits event rows of any size to enter the
+outbox. The relay's existing deterministic failure budget dead-letters an unencodable event and
+the subsequent forward gap invokes full sync. Real Postgres proves an oversized compensation
+commits and oversized receipts remain rejected. Applied migration 00040 was not edited.
+
+Verification: focused Go transport/save tests, TypeScript typecheck, 6,494 client tests, shared
+schema validation, and the complete Docker/Postgres integration target are green.

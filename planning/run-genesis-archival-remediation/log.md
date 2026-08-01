@@ -29,3 +29,18 @@ the numeric-domain boundary without mutating catalogs between commands; the same
 performs a max purchase that emits `invariant_reported`, keeps the spawned offer alive, and expires
 it during the next ordinary intent. Go asserts all three at generation and TypeScript asserts all
 three are present before replaying the entire sequence to byte-identical receipts/events/state.
+
+## 2026-08-01 — Transport F2/F3 implementation
+
+Outbound wire v2 adds the closed `cursor_effect` field. `compensation` is exactly `historical`;
+all other event kinds are `advance`. Go and TypeScript reject mismatched pairs through one shared
+wire corpus. The client now owns a concrete Company/Founder cursor implementation: historical
+events deliver without cursor mutation, same-revision forward events dedupe by event ID, and real
+forward gaps request full sync.
+
+Migration 00042 upgrades queued events and the event trigger without editing applied migration
+00040. It retains the strict receipt cap while allowing authoritative event history to commit at
+any payload size. Oversized events then take the relay's bounded deterministic dead-letter path.
+The real-Postgres fixture commits a >60 KiB compensation event, observes its historical marker in
+the outbox, and independently proves oversized receipts still fail. The migration Down refuses to
+destroy legal oversized event rows.
