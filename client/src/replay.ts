@@ -1,0 +1,370 @@
+import Decimal from "break_infinity.js";
+
+import { enclosureIndex, parseCommonsCatalog, type CommonsCatalog } from "./commons";
+import { parseCatalog, subProgressValue, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
+import { parseFactionCatalog, type FactionCatalog } from "./faction";
+import { parseGuildCatalog, type GuildCatalog } from "./guild";
+import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
+import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
+import { discountedRequirements, evaluatePredicate, parseRoutesCatalog, type RouteContext, type RoutesCatalog } from "./routes";
+
+const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+const hashPattern = /^sha256:[0-9a-f]{64}$/;
+const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
+
+export interface ReplayArtifacts { readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string }
+export interface ReplayCatalogBundle {
+  readonly constantsHash: string; readonly artifacts: ReplayArtifacts; readonly economy: EconomyCatalog; readonly routes: RoutesCatalog;
+  readonly commons: CommonsCatalog; readonly prestige: PrestigePolicy; readonly factions: FactionCatalog; readonly guilds: GuildCatalog;
+}
+export interface ReplayContribution { readonly slot: MultiplierSlot; readonly source_id: string; readonly target: string; readonly factor: string }
+export interface ReplayEvent { readonly kind: string; readonly schema_version: number; readonly intent_id: string; readonly payload: unknown }
+export interface ReplayChange { readonly resource_id: string; readonly before: string; readonly delta: string; readonly after: string }
+export interface ReplayState {
+  balances: Record<string, string>; generators: Record<string, number>; evaluatedThroughMs: number; computeCreditMs: number;
+  manualTokenMilli: number; manualTokenRefilledAtMs: number; gatesCrossed: Record<string, boolean>; runSeq: number;
+  doctrinesByTransition: Record<string, string>; structureId: string; ledgerFactKinds: Set<string>; meterBands: Record<string, number>;
+  regionTraits: Set<string>; routeKnowledgeBalance: number; hintsUnlocked: Set<string>; compactMember: boolean; compactTithePpm: number;
+  compactSolidarityPpm: number; compactSamples: { hourStartMs: number; compliancePpm: number; coveredMs: number }[]; tier: number;
+  lifetimeValue: string; offerState: null | { offerId: string; exitType: string; terms: unknown; spawnedAtMs: number; expiresAtMs: number };
+  runStartedAtMs: number; runPreTimer: boolean; offlineSpans: { fromMs: number; toMs: number }[]; collapsedOfflineMs: number;
+  factionId: string; incorporatedAtMs: number | null; factionStockResource: string; stockUnits: number; stockProgressMs: number;
+  consumedStockUnits: number; guildTitheCarryPpm: number; guildBoundaryGuildId: string; guildBoundarySeq: number; guildConsumedWindow: number;
+}
+export interface LoggedTransition { readonly state: ReplayState; readonly outcome: "applied" | "rejected"; readonly receipt: unknown; readonly events: readonly ReplayEvent[] }
+
+interface ReplayCommand { intent_id: string; company_stream_id: string; founder_id: string; revision: number; run_seq: number; run_log_seq: number }
+interface ReplayAccrual { contributions: ReplayContribution[]; commons_weight_ppm: number | null; guild_settlement_batch: { guild_id: string; boundary_seq: number; units: number }[]; route_context_version: number }
+interface ReplayWire { v: 1; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; resolved: Record<string, unknown> }
+
+export async function loadReplayCatalogBundle(constantsHash: string, artifacts: ReplayArtifacts): Promise<ReplayCatalogBundle> {
+  if (!hashPattern.test(constantsHash) || Object.keys(artifacts).sort(byteCompare).join("\0") !== "commons\0economy\0factions\0guilds\0prestige\0routes") throw new SyntaxError("invalid replay artifact set");
+  const computed = await constantsHashArtifacts(artifacts);
+  if (computed !== constantsHash) throw new SyntaxError("replay artifact label mismatch");
+  const economy = parseCatalog(parseJSON(artifacts.economy)); const routes = parseRoutesCatalog(parseJSON(artifacts.routes));
+  const commons = parseCommonsCatalog(parseJSON(artifacts.commons)); const prestige = parsePrestigePolicy(parseJSON(artifacts.prestige));
+  const factions = parseFactionCatalog(parseJSON(artifacts.factions), commons.minimumTithePpm, commons.defaultTithePpm, commons.maximumTithePpm);
+  const guilds = parseGuildCatalog(parseJSON(artifacts.guilds));
+  return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds });
+}
+
+export function restoreReplayStateV12(source: unknown, catalog: EconomyCatalog): ReplayState {
+  const raw = exactObject(source, ["balances", "generators", "evaluated_through", "compute_credit_ms", "manual_token_milli", "manual_token_refilled_at", "gates_crossed", "run_seq", "doctrines_by_transition", "structure_id", "ledger_fact_kinds", "meter_bands", "region_traits", "route_knowledge_balance", "hints_unlocked", "compact_member", "compact_tithe_ppm", "compact_solidarity_ppm", "compact_solidarity_samples", "tier", "lifetime_value", "offer_state", "run_started_at_ms", "reputation_level", "reputation_unlock_ppm", "network_slots", "clout_lifetime", "soul", "age_ms", "notoriety", "advisor_mode", "exit_history", "run_pre_timer", "offline_spans", "collapsed_offline_ms", "faction_id", "incorporated_at_ms", "stock_units", "stock_progress_ms", "consumed_stock_units", "guild_tithe_carry_ppm", "guild_boundary_seq", "guild_consumed_window_units", "guild_boundary_guild_id"], "save v12");
+  const balances = stringRecord(raw.balances, "balances"); const expectedResources = catalog.resources.filter((value) => value.scope === "company").map((value) => value.id).sort(byteCompare);
+  if (!same(Object.keys(balances).sort(byteCompare), expectedResources)) throw new SyntaxError("company balance set differs from catalog");
+  for (const definition of catalog.resources.filter((value) => value.scope === "company")) validateBalance(balances[definition.id]!, definition.minimum, definition.hardcap?.amount);
+  const generators = integerRecord(raw.generators, 0, MAX_EXACT_INTEGER, "generators"); const expectedGenerators = catalog.generatorClasses.filter((value) => value.production !== null).map((value) => value.id).sort(byteCompare);
+  if (!same(Object.keys(generators).sort(byteCompare), expectedGenerators)) throw new SyntaxError("generator set differs from catalog");
+  const evaluatedThroughMs = cursor(raw.evaluated_through, "evaluated_through"); const manualTokenRefilledAtMs = cursor(raw.manual_token_refilled_at, "manual_token_refilled_at");
+  if (manualTokenRefilledAtMs > evaluatedThroughMs) throw new SyntaxError("manual cursor exceeds evaluation cursor");
+  const compactSamples = array(raw.compact_solidarity_samples, "compact samples").map((item) => { const value = exactObject(item, ["hour_start", "compliance_ppm", "covered_ms"], "compact sample"); return { hourStartMs: cursor(value.hour_start, "hour_start"), compliancePpm: safeInteger(value.compliance_ppm, 0, 1_000_000), coveredMs: safeInteger(value.covered_ms, 1, 3_600_000) }; });
+  const offlineSpans = array(raw.offline_spans, "offline_spans").map((item) => { const value = exactObject(item, ["from_ms", "to_ms"], "offline span"); const fromMs = safeInteger(value.from_ms, 1, MAX_EXACT_INTEGER); const toMs = safeInteger(value.to_ms, 1, MAX_EXACT_INTEGER); if (toMs <= fromMs) throw new SyntaxError("invalid offline span"); return { fromMs, toMs }; });
+  let offerState: ReplayState["offerState"] = null;
+  if (raw.offer_state !== null) { const value = exactObject(raw.offer_state, ["offer_id", "exit_type", "terms_json", "spawned_at_ms", "expires_at_ms"], "offer state"); if (typeof value.offer_id !== "string" || !uuidV7.test(value.offer_id) || typeof value.exit_type !== "string") throw new SyntaxError("invalid offer"); offerState = { offerId: value.offer_id, exitType: value.exit_type, terms: value.terms_json, spawnedAtMs: safeInteger(value.spawned_at_ms, 1, MAX_EXACT_INTEGER), expiresAtMs: safeInteger(value.expires_at_ms, 1, MAX_EXACT_INTEGER) }; }
+  const factionId = nullableMechanical(raw.faction_id); const incorporatedAtMs = raw.incorporated_at_ms === null ? null : safeInteger(raw.incorporated_at_ms, 1, MAX_EXACT_INTEGER);
+  const state: ReplayState = { balances, generators, evaluatedThroughMs, computeCreditMs: safeInteger(raw.compute_credit_ms, 0, MAX_EXACT_INTEGER), manualTokenMilli: safeInteger(raw.manual_token_milli, 0, MAX_EXACT_INTEGER), manualTokenRefilledAtMs,
+    gatesCrossed: booleanRecord(raw.gates_crossed), runSeq: safeInteger(raw.run_seq, 1, MAX_EXACT_INTEGER), doctrinesByTransition: mechanicalRecord(raw.doctrines_by_transition), structureId: nullableMechanical(raw.structure_id, false),
+    ledgerFactKinds: mechanicalSet(raw.ledger_fact_kinds), meterBands: integerRecord(raw.meter_bands, 0, 100, "meter_bands"), regionTraits: mechanicalSet(raw.region_traits), routeKnowledgeBalance: safeInteger(raw.route_knowledge_balance, 0, MAX_EXACT_INTEGER), hintsUnlocked: mechanicalSet(raw.hints_unlocked),
+    compactMember: boolean(raw.compact_member), compactTithePpm: safeInteger(raw.compact_tithe_ppm, 0, 1_000_000), compactSolidarityPpm: safeInteger(raw.compact_solidarity_ppm, 0, 1_000_000), compactSamples,
+    tier: safeInteger(raw.tier, 0, 9), lifetimeValue: canonical(raw.lifetime_value), offerState, runStartedAtMs: safeInteger(raw.run_started_at_ms, 0, MAX_EXACT_INTEGER), runPreTimer: boolean(raw.run_pre_timer), offlineSpans, collapsedOfflineMs: safeInteger(raw.collapsed_offline_ms, 0, MAX_EXACT_INTEGER),
+    factionId, incorporatedAtMs, factionStockResource: "", stockUnits: safeInteger(raw.stock_units, 0, MAX_EXACT_INTEGER), stockProgressMs: safeInteger(raw.stock_progress_ms, 0, MAX_EXACT_INTEGER), consumedStockUnits: safeInteger(raw.consumed_stock_units, 0, MAX_EXACT_INTEGER),
+    guildTitheCarryPpm: safeInteger(raw.guild_tithe_carry_ppm, 0, 999_999), guildBoundaryGuildId: nullableUUID(raw.guild_boundary_guild_id), guildBoundarySeq: safeInteger(raw.guild_boundary_seq, 0, MAX_EXACT_INTEGER), guildConsumedWindow: safeInteger(raw.guild_consumed_window_units, 0, MAX_EXACT_INTEGER) };
+  if (safeInteger(raw.reputation_level, 0, MAX_EXACT_INTEGER) !== 0 || safeInteger(raw.reputation_unlock_ppm, 0, 1_000_000) !== 0 || array(raw.network_slots, "network_slots").length !== 0 || safeInteger(raw.clout_lifetime, 0, MAX_EXACT_INTEGER) !== 0 || safeInteger(raw.soul, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER) !== 0 || safeInteger(raw.age_ms, 0, MAX_EXACT_INTEGER) !== 0 || safeInteger(raw.notoriety, 0, MAX_EXACT_INTEGER) !== 0 || boolean(raw.advisor_mode) || array(raw.exit_history, "exit_history").length !== 0) throw new SyntaxError("founder prestige state leaked into company scope");
+  if (state.routeKnowledgeBalance !== 0 || state.hintsUnlocked.size !== 0 || Object.values(state.gatesCrossed).some((value) => !value)) throw new SyntaxError("invalid company route state");
+  if (parseCanonical(state.lifetimeValue).lt(0)) throw new SyntaxError("negative lifetime value");
+  if (state.computeCreditMs > (catalog.offlinePolicy?.bankCapMs ?? 0) || state.manualTokenMilli > (catalog.manualPolicy?.bucketCapMilli ?? 0)) throw new SyntaxError("production counter exceeds catalog cap");
+  if (!state.compactMember && (state.compactTithePpm !== 0 || state.compactSolidarityPpm !== 0 || state.compactSamples.length !== 0)) throw new SyntaxError("non-member has compact state");
+  let lastSample = -1;
+  for (const sample of state.compactSamples) { if (sample.hourStartMs % 3_600_000 !== 0 || sample.hourStartMs <= lastSample) throw new SyntaxError("invalid compact sample order"); lastSample = sample.hourStartMs; }
+  if (state.offerState && (state.offerState.expiresAtMs <= state.offerState.spawnedAtMs || !["acquihire", "acquisition", "ipo", "collapse", "scripted_first"].includes(state.offerState.exitType))) throw new SyntaxError("invalid offer state");
+  if (state.runPreTimer && state.runStartedAtMs === 0 || state.runStartedAtMs > state.evaluatedThroughMs) throw new SyntaxError("invalid run start");
+  let lastOfflineEnd = -1;
+  let totalOffline = state.collapsedOfflineMs;
+  for (const span of state.offlineSpans) { if (span.fromMs < state.runStartedAtMs || span.toMs > state.evaluatedThroughMs || span.fromMs < lastOfflineEnd) throw new SyntaxError("invalid offline span order"); totalOffline += span.toMs - span.fromMs; if (!Number.isSafeInteger(totalOffline) || totalOffline > MAX_EXACT_INTEGER) throw new SyntaxError("offline total exceeds exact domain"); lastOfflineEnd = span.toMs; }
+  if (state.runStartedAtMs === 0 && totalOffline !== 0 || state.runStartedAtMs !== 0 && totalOffline > state.evaluatedThroughMs - state.runStartedAtMs) throw new SyntaxError("offline total exceeds run duration");
+  if (state.factionId === "" && (state.incorporatedAtMs !== null || state.stockUnits !== 0 || state.stockProgressMs !== 0 || state.consumedStockUnits !== 0)) throw new SyntaxError("orphan faction stock state");
+  if (state.factionId !== "" && (state.incorporatedAtMs === null || state.incorporatedAtMs > state.evaluatedThroughMs)) throw new SyntaxError("invalid faction incorporation");
+  if (state.guildBoundaryGuildId === "" && state.guildBoundarySeq !== 0) throw new SyntaxError("invalid guild watermark");
+  return state;
+}
+
+export function encodeReplayStateV12(state: ReplayState): unknown {
+  return { balances: sortedRecord(state.balances), generators: sortedRecord(state.generators), evaluated_through: rfc3339(state.evaluatedThroughMs),
+    compute_credit_ms: state.computeCreditMs, manual_token_milli: state.manualTokenMilli, manual_token_refilled_at: rfc3339(state.manualTokenRefilledAtMs),
+    gates_crossed: sortedRecord(state.gatesCrossed), run_seq: state.runSeq, doctrines_by_transition: sortedRecord(state.doctrinesByTransition), structure_id: state.structureId,
+    ledger_fact_kinds: [...state.ledgerFactKinds].sort(byteCompare), meter_bands: sortedRecord(state.meterBands), region_traits: [...state.regionTraits].sort(byteCompare),
+    route_knowledge_balance: state.routeKnowledgeBalance, hints_unlocked: [...state.hintsUnlocked].sort(byteCompare), compact_member: state.compactMember,
+    compact_tithe_ppm: state.compactTithePpm, compact_solidarity_ppm: state.compactSolidarityPpm,
+    compact_solidarity_samples: state.compactSamples.map((value) => ({ hour_start: rfc3339(value.hourStartMs), compliance_ppm: value.compliancePpm, covered_ms: value.coveredMs })),
+    tier: state.tier, lifetime_value: state.lifetimeValue,
+    offer_state: state.offerState ? { offer_id: state.offerState.offerId, exit_type: state.offerState.exitType, terms_json: state.offerState.terms, spawned_at_ms: state.offerState.spawnedAtMs, expires_at_ms: state.offerState.expiresAtMs } : null,
+    run_started_at_ms: state.runStartedAtMs, reputation_level: 0, reputation_unlock_ppm: 0, network_slots: [], clout_lifetime: 0, soul: 0, age_ms: 0,
+    notoriety: 0, advisor_mode: false, exit_history: [], run_pre_timer: state.runPreTimer,
+    offline_spans: state.offlineSpans.map((value) => ({ from_ms: value.fromMs, to_ms: value.toMs })), collapsed_offline_ms: state.collapsedOfflineMs,
+    faction_id: state.factionId || null, incorporated_at_ms: state.incorporatedAtMs, stock_units: state.stockUnits, stock_progress_ms: state.stockProgressMs,
+    consumed_stock_units: state.consumedStockUnits, guild_tithe_carry_ppm: state.guildTitheCarryPpm, guild_boundary_seq: state.guildBoundarySeq,
+    guild_consumed_window_units: state.guildConsumedWindow, guild_boundary_guild_id: state.guildBoundaryGuildId || null };
+}
+
+export async function applyLogged(state: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedTransition> {
+  const wire = parseReplayWire(replayInputs, state, catalogs); const request = parseIntent(canonicalPayload, wire.command.intent_id);
+  if (request.expected_revision !== wire.command.revision || wire.command.run_seq !== state.runSeq) throw new RangeError("command/state mismatch");
+  if (request.kind === "buy_route_hint") throw new RangeError("founder-scope intent is not replayable");
+  deriveFactionStockResource(state, catalogs.factions);
+  const revision = wire.command.revision; const before = { ...state.balances };
+  if (request.invalid !== undefined) return rejected(state, request.intent_id, revision, "invalid", request.invalid);
+  const resolved = wire.resolved; const kind = string(resolved.kind); if (string(resolved.intent_kind) !== request.kind) throw new RangeError("resolved intent mismatch");
+  let accrual: ReplayAccrual; let founderCarry: Record<string, unknown> | null = null; let declined = 0;
+  if (kind === "cross_gate" && request.kind === "cross_gate") { exactKeys(resolved, ["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry"], "cross gate inputs"); accrual = parseAccrual(resolved.accrual, catalogs); declined = safeInteger(resolved.declined_exit_offer_count, 0, MAX_EXACT_INTEGER); founderCarry = resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs.constantsHash); }
+  else { if (kind !== "accrual") throw new RangeError("resolved union mismatch"); exactKeys(resolved, ["kind", "intent_kind", "accrual"], "accrual inputs"); accrual = parseAccrual(resolved.accrual, catalogs); }
+  if (state.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
+  const preflight = preflightRejection(state, catalogs, request, wire.evaluated_at_ms);
+  if (preflight !== null) return rejected(state, request.intent_id, revision, preflight[0], preflight[1]);
+  const evaluation = evaluate(state, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, accrual.contributions);
+  const events = runHooks(state, catalogs, wire.command, evaluation, accrual);
+  let appliedCount = 0;
+  switch (request.kind) {
+    case "buy_generator": { const result = buyGenerator(state, catalogs.economy, request); if (result.rejection) return rejected(state, request.intent_id, revision, result.rejection[0], result.rejection[1]); appliedCount = result.count; events.push(event("generator_purchased", request.intent_id, { generator_id: request.generator_id, count: appliedCount, cost_resource_id: request.costResource, cost: request.cost })); break; }
+    case "perform_manual_batch": { const result = manualBatch(state, catalogs.economy, request, wire.evaluated_at_ms); if (result.rejection) return rejected(state, request.intent_id, revision, result.rejection[0], result.rejection[1]); appliedCount = result.count; break; }
+    case "cross_gate": { const result = crossGate(state, catalogs.routes, request, wire.command); if (result.rejection) return rejected(state, request.intent_id, revision, result.rejection[0], result.rejection[1]); events.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); if (request.route_id !== null) events.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); appliedCount = 1; break; }
+    case "sign_compact": state.compactMember = true; state.compactTithePpm = request.tithe_ppm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, request.tithe_ppm, false, true))); appliedCount = 1; break;
+    case "leave_compact": { const prior = state.compactTithePpm; state.compactMember = false; state.compactTithePpm = 0; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_left", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, prior, true, false))); appliedCount = 1; break; }
+    case "incorporate": { const member = catalogs.factions.byId.get(request.faction_id)!; state.factionId = member.id; state.factionStockResource = member.produces; state.incorporatedAtMs = state.evaluatedThroughMs; events.push(event("incorporated", request.intent_id, { compact_auto_signed: member.compact !== null, faction_id: member.id, founder_id: wire.command.founder_id, incorporated_at_ms: state.incorporatedAtMs, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq }, stock_resource: member.produces })); if (member.compact) { if (state.compactMember) { const prior = state.compactTithePpm; state.compactTithePpm = Math.max(prior, member.compact.tithePpm); events.push(event("compact_tithe_raised", request.intent_id, { founder_id: wire.command.founder_id, new_tithe_ppm: state.compactTithePpm, prior_tithe_ppm: prior, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); } else { state.compactMember = true; state.compactTithePpm = member.compact.tithePpm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, member.compact.tithePpm, false, true))); } } appliedCount = 1; break; }
+    case "decline_exit_offer": state.offerState = null; events.push(event("exit_offer_declined", request.intent_id, { offer_id: request.offer_id, run_seq: state.runSeq })); appliedCount = 1; break;
+    default: return rejected(state, request.intent_id, revision, "invalid", request.kind);
+  }
+  if (request.kind === "cross_gate") await afterPrestigeCrossGate(state, catalogs.prestige, request.intent_id, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
+  return applied(state, request.intent_id, revision + 1, appliedCount, before, events);
+}
+
+type Intent = Record<string, any> & { intent_id: string; kind: string; expected_revision: number; invalid?: string; cost?: string; costResource?: string };
+interface Evaluation { changes: ReplayChange[]; elapsedMs: number; productionMs: number; bankedMs: number; progressDeltaPpm: number }
+
+function preflightRejection(state: ReplayState, catalogs: ReplayCatalogBundle, request: Intent, nowMs: number): [string, string] | null {
+  switch (request.kind) {
+    case "buy_generator": {
+      const generator = catalogs.economy.generatorClass(request.generator_id);
+      return generator?.production ? null : ["unknown_id", request.generator_id];
+    }
+    case "perform_manual_batch":
+      return catalogs.economy.manualActions.some((value) => value.id === request.action_id) ? null : ["unknown_id", request.action_id];
+    case "cross_gate":
+      if (!catalogs.routes.gate(request.gate_id)) return ["unknown_id", request.gate_id];
+      if (state.gatesCrossed[request.gate_id]) return ["gate_already_crossed", request.gate_id];
+      if (request.route_id !== null && !catalogs.routes.route(request.route_id)) return ["unknown_id", request.route_id];
+      return null;
+    case "sign_compact":
+      if (state.compactMember) return ["already_member", "compact"];
+      return request.tithe_ppm < catalogs.commons.minimumTithePpm || request.tithe_ppm > catalogs.commons.maximumTithePpm ? ["invalid", "tithe_ppm"] : null;
+    case "leave_compact": {
+      const faction = state.factionId === "" ? undefined : catalogs.factions.byId.get(state.factionId);
+      if (faction?.compact?.autoSign) return ["faction_bound", state.factionId];
+      return state.compactMember ? null : ["not_member", "compact"];
+    }
+    case "incorporate":
+      if (!catalogs.factions.byId.has(request.faction_id)) return ["unknown_id", request.faction_id];
+      if (state.tier < 2) return ["not_eligible", "tier"];
+      return state.factionId === "" ? null : ["already_incorporated", state.factionId];
+    case "decline_exit_offer":
+      if (!state.offerState || state.offerState.offerId !== request.offer_id) return ["not_eligible", "exit_offer"];
+      return state.offerState.expiresAtMs <= nowMs ? ["offer_expired", request.offer_id] : null;
+    default:
+      return ["invalid", request.kind];
+  }
+}
+
+function evaluate(state: ReplayState, catalog: EconomyCatalog, nowMs: number, mode: "online" | "offline", contributions: readonly ReplayContribution[]): Evaluation {
+  if (nowMs < state.evaluatedThroughMs) throw new RangeError("clock regression"); if (nowMs === state.evaluatedThroughMs) return { changes: [], elapsedMs: 0, productionMs: 0, bankedMs: 0, progressDeltaPpm: 0 };
+  const elapsedMs = nowMs - state.evaluatedThroughMs; let productionMs = elapsedMs; let efficiency = new Decimal(1); let bankedMs = 0; const beforeProgress = progressPpm(catalog, state);
+  if (mode === "offline") { const policy = catalog.offlinePolicy!; efficiency = parseCanonical(policy.efficiency); productionMs = Math.min(productionMs, policy.accrualCapMs); bankedMs = Number((BigInt(elapsedMs - productionMs) * BigInt(policy.bankRatioNumerator)) / BigInt(policy.bankRatioDenominator)); bankedMs = Math.min(bankedMs, policy.bankCapMs - state.computeCreditMs); }
+  const rates = productionRates(catalog, state.generators, contributions); const entries = [...rates.entries()].sort(([a], [b]) => byteCompare(a, b)).map(([resource, values]) => ({ resource, delta: quantize(sumDeterministic(values).mul(productionMs).div(1000).mul(efficiency)) })).filter((entry) => !entry.delta.eq(0));
+  const changes = applyLedger(state, catalog, entries, true); state.computeCreditMs += bankedMs; state.evaluatedThroughMs = nowMs; return { changes, elapsedMs, productionMs, bankedMs, progressDeltaPpm: Math.max(0, progressPpm(catalog, state) - beforeProgress) };
+}
+
+function productionRates(catalog: EconomyCatalog, counts: Record<string, number>, contributions: readonly ReplayContribution[]): Map<string, Decimal[]> {
+  const declared = new Map(catalog.multiplierSources.map((value) => [value.id, value])); const bySource = new Map<string, ReplayContribution>();
+  for (const contribution of contributions) { const source = declared.get(contribution.source_id); if (!source || source.slot !== contribution.slot || source.target !== contribution.target || bySource.has(contribution.source_id)) throw new RangeError("invalid multiplier contribution"); bySource.set(contribution.source_id, contribution); }
+  const result = new Map<string, Decimal[]>();
+  for (const generator of catalog.generatorClasses.filter((value) => value.production !== null)) { const count = counts[generator.id]; if (!Number.isSafeInteger(count) || count! < 0) throw new RangeError("invalid generator count"); if (count === 0) continue; let rate = parseCanonical(generator.production!.baseRate).mul(count!); for (const slot of MULTIPLIER_SLOT_ORDER) { const sources = [...bySource.values()].filter((value) => value.slot === slot && (value.target === "all" || value.target === generator.id)).sort((a, b) => byteCompare(a.source_id, b.source_id)); for (const source of sources) rate = rate.mul(parseCanonical(source.factor)); } const values = result.get(generator.production!.resourceId) ?? []; values.push(rate); result.set(generator.production!.resourceId, values); }
+  return result;
+}
+
+function applyLedger(state: ReplayState, catalog: EconomyCatalog, entries: readonly { resource: string; delta: Decimal }[], saturating: boolean): ReplayChange[] {
+  const grouped = new Map<string, Decimal[]>(); for (const entry of entries) { const values = grouped.get(entry.resource) ?? []; values.push(entry.delta); grouped.set(entry.resource, values); }
+  const changes: ReplayChange[] = []; for (const resource of [...grouped.keys()].sort(byteCompare)) { const definition = catalog.resource(resource); if (!definition || definition.scope !== "company") throw new LedgerError("unknown_resource"); const before = parseCanonical(state.balances[resource]!); const net = sumDeterministic(grouped.get(resource)!); let after = quantize(before.add(net)); if (after.lt(parseCanonical(definition.minimum))) throw new LedgerError("below_minimum"); let preferred = net; if (definition.hardcap && after.gt(parseCanonical(definition.hardcap.amount))) { if (!saturating) throw new LedgerError("above_hardcap"); after = parseCanonical(definition.hardcap.amount); preferred = quantize(after.sub(before)); } if (after.eq(before)) continue; const delta = saturating ? reproducibleDelta(before, after, preferred) : quantize(after.sub(before)); state.balances[resource] = canonicalString(after); changes.push({ resource_id: resource, before: canonicalString(before), delta: canonicalString(delta), after: canonicalString(after) }); }
+  return changes;
+}
+
+class LedgerError extends RangeError { constructor(readonly code: "unknown_resource" | "below_minimum" | "above_hardcap") { super(code); } }
+
+function reproducibleDelta(before: Decimal, after: Decimal, preferred: Decimal): Decimal {
+  const nominal = quantize(preferred);
+  if (!isStateValue(nominal)) throw new LedgerError("above_hardcap");
+  if (nominal.eq(0)) {
+    if (quantize(before.add(nominal)).eq(after)) return nominal;
+    throw new LedgerError("above_hardcap");
+  }
+  for (const offset of [0, -1, 1, -2, 2]) {
+    const candidate = quantize(Decimal.fromMantissaExponent(nominal.mantissa + offset * 1e-11, nominal.exponent));
+    if (!isStateValue(candidate) || candidate.lt(0)) continue;
+    if (quantize(before.add(candidate)).eq(after)) return candidate;
+  }
+  throw new LedgerError("above_hardcap");
+}
+
+function runHooks(state: ReplayState, catalogs: ReplayCatalogBundle, command: ReplayCommand, result: Evaluation, accrual: ReplayAccrual): ReplayEvent[] {
+  if (result.elapsedMs === 0) return [];
+  for (const change of result.changes) if (change.resource_id === catalogs.prestige.valueResourceId) state.lifetimeValue = canonicalString(quantize(parseCanonical(state.lifetimeValue).add(parseCanonical(change.delta))));
+  recordOfflineSpan(state, state.evaluatedThroughMs - result.elapsedMs, state.evaluatedThroughMs, catalogs.prestige.catchupCeilingMs);
+  const events: ReplayEvent[] = [];
+  if (state.factionId !== "" && result.elapsedMs <= catalogs.prestige.catchupCeilingMs) { const total = state.stockProgressMs + result.elapsedMs; let earned = Math.floor(total / catalogs.factions.stockIntervalMs); state.stockProgressMs = total % catalogs.factions.stockIntervalMs; const before = state.stockUnits; earned = Math.min(earned, catalogs.factions.stockCap - state.stockUnits); state.stockUnits += earned; if (before !== catalogs.factions.stockCap && state.stockUnits === catalogs.factions.stockCap) events.push(event("faction_stock_saturated", "", { faction_id: state.factionId, stock_cap: catalogs.factions.stockCap, stock_resource: state.factionStockResource })); }
+  if (accrual.contributions.some((value) => value.source_id === "guild.stock_consumption")) { const numerator = BigInt(result.progressDeltaPpm) * BigInt(catalogs.guilds.guildTithePpm) + BigInt(state.guildTitheCarryPpm); const xp = Number(numerator / 1_000_000n); state.guildTitheCarryPpm = Number(numerator % 1_000_000n); events.push(event(xp === 0 ? "guild_activity_evaluated" : "guild_tithe_accrued", "", { founder_id: command.founder_id, progress_delta_ppm: result.progressDeltaPpm, run_id: { company_stream_id: command.company_stream_id, run_seq: state.runSeq }, xp_delta: xp })); }
+  if (state.compactMember && result.productionMs > 0) { if (accrual.commons_weight_ppm === null) throw new RangeError("missing commons weight"); const enclosure = enclosureIndex(catalogs.commons, accrual.contributions.map((value) => ({ sourceId: value.source_id, slot: value.slot, factor: value.factor }))); const compliance = compliancePpm(state.compactTithePpm, catalogs.commons.defaultTithePpm, enclosure); appendCompactSamples(state, state.evaluatedThroughMs - result.productionMs, state.evaluatedThroughMs, compliance, catalogs.commons.solidarityWindowMs); let capacity = new Decimal(0); for (const change of result.changes) capacity = capacity.add(parseCanonical(change.delta).mul(state.compactTithePpm).div(1_000_000)); events.push(event("compact_sampled", "", { capacity: canonicalString(quantize(capacity)), compliance_ppm: compliance, enclosure, founder_id: command.founder_id, run_id: { company_stream_id: command.company_stream_id, run_seq: state.runSeq }, sampled_ms: result.productionMs, solidarity_ppm: state.compactSolidarityPpm, weight_ppm: accrual.commons_weight_ppm })); }
+  return events;
+}
+
+function buyGenerator(state: ReplayState, catalog: EconomyCatalog, request: Intent): { count: number; rejection?: [string, string] } {
+  const generator = catalog.generatorClass(request.generator_id)!; const owned = state.generators[generator.id]; if (owned === undefined) throw new RangeError("missing generator count"); const balance = parseCanonical(state.balances[generator.price.resourceId]!); const count = request.count.mode === "max" ? catalog.maxAffordable(generator.id, balance, owned) : request.count.value;
+  if (count <= 0) return { count: 0, rejection: ["unaffordable", request.generator_id] };
+  if (count > MAX_EXACT_INTEGER - owned) return { count: 0, rejection: ["cap_exceeded", request.generator_id] };
+  let cost: Decimal;
+  try { cost = catalog.bulkCost(generator.id, owned, count); } catch { return { count: 0, rejection: ["invalid", request.generator_id] }; }
+  if (cost.gt(balance)) return { count: 0, rejection: ["unaffordable", request.generator_id] };
+  const residual = quantize(balance.sub(cost));
+  if (residual.lt(0)) {
+    const unit = Decimal.fromMantissaExponent(1, balance.exponent - 11);
+    if (isStateValue(unit) && residual.abs().lte(unit)) cost = balance;
+    else throw new RangeError("generator residual cannot be reconciled");
+  }
+  applyLedger(state, catalog, [{ resource: generator.price.resourceId, delta: cost.neg() }], false); state.generators[generator.id] = owned + count; request.cost = canonicalString(cost); request.costResource = generator.price.resourceId; return { count };
+}
+function manualBatch(state: ReplayState, catalog: EconomyCatalog, request: Intent, nowMs: number): { count: number; rejection?: [string, string] } { const action = catalog.manualActions.find((value) => value.id === request.action_id)!; const policy = catalog.manualPolicy!; if (nowMs > state.manualTokenRefilledAtMs) { const elapsed = nowMs - state.manualTokenRefilledAtMs; state.manualTokenMilli = Math.min(policy.bucketCapMilli, state.manualTokenMilli + elapsed * policy.refillMilliPerMs); state.manualTokenRefilledAtMs = nowMs; } const applied = Math.min(request.count, Math.floor(state.manualTokenMilli / 1000)); state.manualTokenMilli -= applied * 1000; if (applied > 0) { try { applyLedger(state, catalog, [{ resource: action.output.resourceId, delta: parseCanonical(action.output.amountPerAction).mul(applied) }], false); } catch (error) { if (error instanceof LedgerError && error.code === "above_hardcap") return { count: 0, rejection: ["cap_exceeded", request.action_id] }; throw error; } } return { count: applied }; }
+function crossGate(state: ReplayState, routes: RoutesCatalog, request: Intent, command: ReplayCommand): { rejection?: [string, string] } { const gate = routes.gate(request.gate_id); if (!gate) return { rejection: ["unknown_id", request.gate_id] }; if (state.gatesCrossed[request.gate_id]) return { rejection: ["gate_already_crossed", request.gate_id] }; let requirements = gate.requirement; if (request.route_id !== null) { const route = routes.route(request.route_id); if (!route) return { rejection: ["unknown_id", request.route_id] }; const context: RouteContext = { contextVersion: routes.contextVersion, resources: state.balances, doctrinesByTransition: state.doctrinesByTransition, structureId: state.structureId, ledgerFactKinds: state.ledgerFactKinds, meterBands: state.meterBands, regionTraits: state.regionTraits }; if (!route.active || route.requiresContextVersion > context.contextVersion || !evaluatePredicate(route.predicate, context)) return { rejection: ["route_predicate_unmet", request.route_id] }; requirements = discountedRequirements(gate, route); }
+  for (const requirement of requirements) if (parseCanonical(state.balances[requirement.resourceId]!).lt(parseCanonical(requirement.amount))) return { rejection: ["requirement_not_met", requirement.resourceId] }; for (const requirement of requirements) state.balances[requirement.resourceId] = canonicalString(quantize(parseCanonical(state.balances[requirement.resourceId]!).sub(parseCanonical(requirement.amount)))); state.gatesCrossed[request.gate_id] = true; const match = /^gate\.t([0-9]+)_to_t([0-9]+)$/.exec(request.gate_id); if (!match || Number(match[2]) !== Number(match[1]) + 1 || state.tier !== Number(match[1])) throw new RangeError("gate tier mismatch"); state.tier = Number(match[2]); void command; return {}; }
+
+async function afterPrestigeCrossGate(state: ReplayState, policy: PrestigePolicy, intentId: string, command: ReplayCommand, nowMs: number, carry: Record<string, unknown> | null, declined: number, events: ReplayEvent[]): Promise<void> {
+  if (state.offerState && state.offerState.expiresAtMs <= nowMs) { events.push(event("exit_offer_expired", intentId, { offer_id: state.offerState.offerId })); state.offerState = null; }
+  if (state.offerState || carry === null) return;
+  if (safeInteger(carry.exit_history_count, 0, MAX_EXACT_INTEGER) === 0) return;
+  if (state.tier < 0 || state.tier >= policy.spawnGatePpm.length) throw new RangeError("tier outside offer policy");
+  const seed = (await founderSeed(command.founder_id, state.runSeq)) ^ (BigInt(state.tier) << 32n) ^ BigInt(declined);
+  const draws = new SplitMix64(seed); const spawn = draws.ppm(); const exitType = (draws.next() & 1n) === 0n ? "acquihire" : "acquisition"; const driftUp = (draws.next() & 1n) === 0n;
+  if (policy.spawnGatePpm[state.tier]! <= spawn) return;
+  const reputationLevelValue = safeInteger(carry.reputation_level, 0, MAX_EXACT_INTEGER);
+  const baseDelta = reputationDeltaExact(state.lifetimeValue, policy.threshold, reputationLevelValue, policy.exitModifiersPpm[exitType]!);
+  const factor = marketModifierPpm(declined, policy.declineDriftPpm, driftUp);
+  const terms = { reputation_delta: ppmFloor(baseDelta, factor), network_slot_unlocks: [], route_knowledge: 0, clout_reach_note: "clout.reach.preserved" };
+  const termsJSON = { market_modifier_ppm: factor, payout_preview: terms };
+  const offerId = offerUUID(seed, nowMs); const expiresAtMs = nowMs + policy.offerDurationMs;
+  state.offerState = { offerId, exitType, terms: termsJSON, spawnedAtMs: nowMs, expiresAtMs };
+  events.push(event("exit_offer_spawned", intentId, { exit_type: exitType, expires_at_ms: expiresAtMs, offer_id: offerId, payout_preview: terms }));
+}
+
+function reputationDeltaExact(lifetimeValue: string, threshold: string, current: number, modifier: number): number {
+  const ratio = parseCanonical(lifetimeValue).div(parseCanonical(threshold)); if (ratio.lt(1)) return 0; let low = 1; let high = MAX_EXACT_INTEGER;
+  while (low < high) { const middle = low + Math.floor((high - low + 1) / 2); const candidate = new Decimal(middle); const cube = candidate.mul(candidate).mul(candidate); if (isStateValue(cube) && cube.lte(ratio)) low = middle; else high = middle - 1; }
+  if (low <= current) return 0; return Number((BigInt(low - current) * BigInt(modifier)) / 1_000_000n);
+}
+function marketModifierPpm(declined: number, step: number, up: boolean): number { if (declined <= 0 || step <= 0) return 1_000_000; const delta = Math.min(declined, 10) * step; return up ? 1_000_000 + delta : delta < 1_000_000 ? 1_000_000 - delta : 0; }
+function ppmFloor(value: number, factor: number): number { const result = (BigInt(value) * BigInt(factor)) / 1_000_000n; return result > BigInt(MAX_EXACT_INTEGER) ? MAX_EXACT_INTEGER : Number(result); }
+async function founderSeed(founderId: string, runSeq: number): Promise<bigint> { const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(founderId)); return new DataView(digest).getBigUint64(0) ^ BigInt(runSeq); }
+class SplitMix64 { #state: bigint; constructor(seed: bigint) { this.#state = seed & ((1n << 64n) - 1n); } next(): bigint { const mask = (1n << 64n) - 1n; this.#state = (this.#state + 0x9e3779b97f4a7c15n) & mask; let value = this.#state; value = ((value ^ (value >> 30n)) * 0xbf58476d1ce4e5b9n) & mask; value = ((value ^ (value >> 27n)) * 0x94d049bb133111ebn) & mask; return (value ^ (value >> 31n)) & mask; } ppm(): number { const bound = 1_000_000n; const threshold = (1n << 64n) % bound; for (;;) { const draw = this.next(); if (draw >= threshold) return Number(draw % bound); } } }
+function offerUUID(seed: bigint, nowMs: number): string { const random = new SplitMix64(seed); const bytes = new Uint8Array(16); let timestamp = BigInt(nowMs) & ((1n << 48n) - 1n); for (let index = 5; index >= 0; index--) { bytes[index] = Number(timestamp & 255n); timestamp >>= 8n; } let first = random.next(); for (let index = 13; index >= 6; index--) { bytes[index] = Number(first & 255n); first >>= 8n; } bytes[14] = Number((random.next() >> 56n) & 255n); bytes[15] = Number((random.next() >> 48n) & 255n); bytes[6] = (bytes[6]! & 0x0f) | 0x70; bytes[8] = (bytes[8]! & 0x3f) | 0x80; const hex = [...bytes].map((value) => value.toString(16).padStart(2, "0")).join(""); return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`; }
+
+function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 1 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = exactObject(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: uuidString(command.company_stream_id), founder_id: uuidString(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: 1, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: exactObject(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
+function parseAccrual(source: unknown, catalogs: ReplayCatalogBundle): ReplayAccrual {
+  const raw = exactObject(source, ["contributions", "commons_weight_ppm", "guild_settlement_batch", "route_context_version"], "accrual");
+  if (raw.commons_weight_ppm !== null) safeInteger(raw.commons_weight_ppm, 0, 1_000_000);
+  if (raw.route_context_version !== catalogs.routes.contextVersion) throw new RangeError("route context mismatch");
+  let lastContribution = "";
+  const contributions = array(raw.contributions, "contributions").map((item) => {
+    const value = exactObject(item, ["slot", "source_id", "target", "factor"], "contribution");
+    if (typeof value.slot !== "string" || !(MULTIPLIER_SLOT_ORDER as readonly string[]).includes(value.slot) || typeof value.source_id !== "string" || !mechanical.test(value.source_id) || typeof value.target !== "string" || !mechanical.test(value.target) && value.target !== "all") throw new SyntaxError("invalid contribution");
+    const factor = canonical(value.factor);
+    if (!parseCanonical(factor).gt(0)) throw new SyntaxError("non-positive contribution");
+    const key = `${value.slot}\0${value.source_id}\0${value.target}`;
+    if (lastContribution !== "" && byteCompare(key, lastContribution) <= 0) throw new SyntaxError("contributions must be sorted and unique");
+    lastContribution = key;
+    return { slot: value.slot as MultiplierSlot, source_id: value.source_id, target: value.target, factor };
+  });
+  let lastSettlement = "";
+  const settlements = array(raw.guild_settlement_batch, "settlements").map((item) => {
+    const value = exactObject(item, ["guild_id", "boundary_seq", "units"], "settlement");
+    const settlement = { guild_id: uuidV7String(value.guild_id), boundary_seq: safeInteger(value.boundary_seq, 1, MAX_EXACT_INTEGER), units: safeInteger(value.units, 0, MAX_EXACT_INTEGER) };
+    const key = `${settlement.guild_id}\0${settlement.boundary_seq.toString().padStart(16, "0")}`;
+    if (lastSettlement !== "" && byteCompare(key, lastSettlement) <= 0) throw new SyntaxError("settlements must be sorted and unique");
+    lastSettlement = key;
+    return settlement;
+  });
+  return { contributions, commons_weight_ppm: raw.commons_weight_ppm as number | null, guild_settlement_batch: settlements, route_context_version: raw.route_context_version as number };
+}
+
+function parseFounderCarry(source: unknown, constantsHash: string): Record<string, unknown> {
+  const carry = exactObject(source, ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"], "founder carry");
+  safeInteger(carry.founder_revision, 1, MAX_EXACT_INTEGER);
+  if (carry.founder_constants_hash !== constantsHash) throw new RangeError("founder catalog mismatch");
+  safeInteger(carry.reputation_level, 0, MAX_EXACT_INTEGER);
+  safeInteger(carry.route_knowledge_balance, 0, MAX_EXACT_INTEGER);
+  safeInteger(carry.age_ms, 0, MAX_EXACT_INTEGER);
+  safeInteger(carry.notoriety, 0, MAX_EXACT_INTEGER);
+  boolean(carry.advisor_mode);
+  safeInteger(carry.exit_history_count, 0, MAX_EXACT_INTEGER);
+  let lastFact = "";
+  for (const item of array(carry.ledger_fact_kinds, "founder facts")) {
+    const fact = string(item);
+    if (fact === "" || byteCompare(fact, lastFact) <= 0) throw new SyntaxError("founder facts must be sorted and unique");
+    lastFact = fact;
+  }
+  let lastSlot = "";
+  for (const item of array(carry.network_slots, "network slots")) {
+    const slot = exactObject(item, ["slot", "carried_ref"], "network slot");
+    const slotID = string(slot.slot);
+    if (slotID === "" || byteCompare(slotID, lastSlot) <= 0 || string(slot.carried_ref) === "") throw new SyntaxError("network slots must be sorted and complete");
+    lastSlot = slotID;
+  }
+  return carry;
+}
+
+function parseIntent(payload: string, intentId: string): Intent { const source = parseJSON(payload); if (typeof source !== "object" || source === null || Array.isArray(source) || "intent_id" in source || canonicalJSONString(source) !== payload) throw new SyntaxError("invalid canonical payload"); const raw = source as Record<string, unknown>; const kind = string(raw.kind); const base: Intent = { intent_id: intentId, kind, expected_revision: safeInteger(raw.expected_revision, 1, MAX_EXACT_INTEGER) };
+  try { switch (kind) { case "buy_generator": exactKeys(raw, ["kind", "expected_revision", "generator_id", "count"], "buy"); base.generator_id = mechanicalString(raw.generator_id); { const count = exactObject(raw.count, Object.keys(raw.count as object), "count"); if (count.mode === "max") exactKeys(count, ["mode"], "max count"); else { exactKeys(count, ["mode", "value"], "exact count"); if (count.mode !== "exact") throw new SyntaxError("count mode"); count.value = safeInteger(count.value, 1, MAX_EXACT_INTEGER); } base.count = count; } break; case "perform_manual_batch": exactKeys(raw, ["kind", "expected_revision", "action_id", "count", "window_ms"], "manual"); base.action_id = mechanicalString(raw.action_id); if (typeof raw.count !== "number" || !Number.isSafeInteger(raw.count) || raw.count < 1 || raw.count > MAX_EXACT_INTEGER) { base.invalid = "count"; break; } base.count = raw.count; base.window_ms = safeInteger(raw.window_ms, 1, 3_600_000); break; case "cross_gate": exactKeys(raw, ["kind", "expected_revision", "gate_id", "route_id"], "gate"); base.gate_id = mechanicalString(raw.gate_id); base.route_id = raw.route_id === null ? null : mechanicalString(raw.route_id); break; case "sign_compact": exactKeys(raw, ["kind", "expected_revision", "tithe_ppm"], "sign"); base.tithe_ppm = safeInteger(raw.tithe_ppm, 0, 1_000_000); break; case "leave_compact": exactKeys(raw, ["kind", "expected_revision"], "leave"); break; case "incorporate": exactKeys(raw, ["kind", "expected_revision", "faction_id"], "incorporate"); base.faction_id = mechanicalString(raw.faction_id); break; case "decline_exit_offer": exactKeys(raw, ["kind", "expected_revision", "offer_id"], "decline"); base.offer_id = uuidV7String(raw.offer_id); break; default: base.invalid = kind; } } catch { base.invalid = `${kind}.fields`; } return base; }
+
+function applied(state: ReplayState, intentId: string, revision: number, count: number, before: Record<string, string>, events: ReplayEvent[]): LoggedTransition { for (const value of events) if (value.intent_id === "") (value as { intent_id: string }).intent_id = intentId; const changes = Object.keys(before).sort(byteCompare).flatMap((resource) => before[resource] === state.balances[resource] ? [] : [{ resource_id: resource, before: before[resource]!, delta: canonicalString(quantize(parseCanonical(state.balances[resource]!).sub(parseCanonical(before[resource]!)))), after: state.balances[resource]! }]); return { state, outcome: "applied", receipt: { applied_count: count, evaluated_at: rfc3339(state.evaluatedThroughMs), intent_id: intentId, new_revision: revision, outcome: "applied", receipt: { changes }, snapshot: wireSnapshot(state) }, events }; }
+function rejected(state: ReplayState, intentId: string, revision: number, category: string, detail: string): LoggedTransition { return { state, outcome: "rejected", receipt: { current_revision: revision, intent_id: intentId, outcome: "rejected", rejection: { category, detail } }, events: [] }; }
+function event(kind: string, intentId: string, payload: unknown): ReplayEvent { return { kind, schema_version: 1, intent_id: intentId, payload }; }
+function compactMembershipPayload(command: ReplayCommand, runSeq: number, tithe: number, prior: boolean, next: boolean): unknown { return { founder_id: command.founder_id, new_member: next, prior_member: prior, run_id: { company_stream_id: command.company_stream_id, run_seq: runSeq }, tithe_ppm: tithe }; }
+function deriveFactionStockResource(state: ReplayState, catalog: FactionCatalog): void { if (state.factionId === "") { if (state.factionStockResource !== "") throw new RangeError("orphan stock resource"); return; } const member = catalog.byId.get(state.factionId); if (!member) throw new RangeError("unknown faction state"); state.factionStockResource = member.produces; }
+function progressPpm(catalog: EconomyCatalog, state: ReplayState): number { if (!catalog.progressCoordinates.some((value) => value.tier === state.tier)) return 0; return Math.floor(subProgressValue(catalog, { balances: state.balances, generatorCounts: state.generators }, state.tier).mul(1_000_000).toNumber()); }
+function recordOfflineSpan(state: ReplayState, fromMs: number, toMs: number, ceiling: number): void { if (toMs - fromMs <= ceiling) return; const last = state.offlineSpans.at(-1); if (last && fromMs <= last.toMs) { last.toMs = Math.max(last.toMs, toMs); return; } if (state.offlineSpans.length === 256) { const removed = state.offlineSpans.shift()!; state.collapsedOfflineMs += removed.toMs - removed.fromMs; } state.offlineSpans.push({ fromMs, toMs }); }
+function compliancePpm(tithe: number, defaultTithe: number, enclosure: string): number { if (defaultTithe <= 0) return 0; const titheRatio = Decimal.min(1, new Decimal(tithe).div(defaultTithe)); const clean = new Decimal(1).sub(parseCanonical(enclosure)); return Math.max(0, Math.min(1_000_000, Math.floor(titheRatio.mul(clean).mul(1_000_000).toNumber()))); }
+function appendCompactSamples(state: ReplayState, start: number, end: number, compliance: number, windowMs: number): void { while (start < end) { const hour = Math.floor(start / 3_600_000) * 3_600_000; const boundary = Math.min(end, hour + 3_600_000); const covered = boundary - start; const last = state.compactSamples.at(-1); if (last?.hourStartMs === hour) { const numerator = BigInt(last.compliancePpm) * BigInt(last.coveredMs) + BigInt(compliance) * BigInt(covered); last.coveredMs += covered; last.compliancePpm = Number(numerator / BigInt(last.coveredMs)); } else state.compactSamples.push({ hourStartMs: hour, compliancePpm: compliance, coveredMs: covered }); start = boundary; } const cutoff = Math.floor((end - windowMs) / 3_600_000) * 3_600_000; state.compactSamples = state.compactSamples.filter((value) => value.hourStartMs >= cutoff); const numerator = state.compactSamples.reduce((sum, value) => sum + BigInt(value.compliancePpm) * BigInt(value.coveredMs), 0n); state.compactSolidarityPpm = Math.max(0, Math.min(1_000_000, Number(numerator / BigInt(windowMs)))); }
+
+function wireSnapshot(state: ReplayState): unknown { return { balances: sortedRecord(state.balances), collapsed_offline_ms: state.collapsedOfflineMs, compact_member: state.compactMember, compact_solidarity_ppm: state.compactSolidarityPpm, compact_tithe_ppm: state.compactTithePpm, compute_credit_ms: state.computeCreditMs, consumed_stock_units: state.consumedStockUnits, doctrines_by_transition: sortedRecord(state.doctrinesByTransition), evaluated_through: rfc3339(state.evaluatedThroughMs), faction_id: state.factionId || null, gates_crossed: sortedRecord(state.gatesCrossed), generators: sortedRecord(state.generators), guild_boundary_guild_id: state.guildBoundaryGuildId || null, guild_boundary_seq: state.guildBoundarySeq, guild_consumed_window_units: state.guildConsumedWindow, guild_tithe_carry_ppm: state.guildTitheCarryPpm, hints_unlocked: [...state.hintsUnlocked].sort(byteCompare), incorporated_at_ms: state.incorporatedAtMs, ledger_fact_kinds: [...state.ledgerFactKinds].sort(byteCompare), lifetime_value: state.lifetimeValue, manual_token_milli: state.manualTokenMilli, manual_token_refilled_at: rfc3339(state.manualTokenRefilledAtMs), meter_bands: sortedRecord(state.meterBands), offer_state: state.offerState ? { expires_at_ms: state.offerState.expiresAtMs, exit_type: state.offerState.exitType, offer_id: state.offerState.offerId, spawned_at_ms: state.offerState.spawnedAtMs, terms_json: state.offerState.terms } : null, offline_spans: state.offlineSpans.map((value) => ({ from_ms: value.fromMs, to_ms: value.toMs })), region_traits: [...state.regionTraits].sort(byteCompare), route_knowledge_balance: state.routeKnowledgeBalance, run_pre_timer: state.runPreTimer, run_seq: state.runSeq, run_started_at_ms: state.runStartedAtMs, stock_progress_ms: state.stockProgressMs, stock_resource: state.factionStockResource || null, stock_units: state.stockUnits, structure_id: state.structureId, tier: state.tier }; }
+export function canonicalJSONString(value: unknown): string { if (value === null || typeof value !== "object") return JSON.stringify(value); if (Array.isArray(value)) return `[${value.map(canonicalJSONString).join(",")}]`; const object = value as Record<string, unknown>; return `{${Object.keys(object).sort(byteCompare).map((key) => `${JSON.stringify(key)}:${canonicalJSONString(object[key])}`).join(",")}}`; }
+
+async function constantsHashArtifacts(artifacts: ReplayArtifacts): Promise<string> { const encoder = new TextEncoder(); const chunks: Uint8Array[] = []; for (const name of Object.keys(artifacts).sort(byteCompare) as (keyof ReplayArtifacts)[]) { const nameBytes = encoder.encode(name); const data = encoder.encode(artifacts[name]); chunks.push(frame(nameBytes.length), nameBytes, frame(data.length), data); } const total = chunks.reduce((sum, value) => sum + value.length, 0); const input = new Uint8Array(total); let offset = 0; for (const chunk of chunks) { input.set(chunk, offset); offset += chunk.length; } const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", input)); return `sha256:${[...digest].map((value) => value.toString(16).padStart(2, "0")).join("")}`; }
+function frame(value: number): Uint8Array { const result = new Uint8Array(8); new DataView(result.buffer).setBigUint64(0, BigInt(value)); return result; }
+function validateBalance(value: string, minimum: string, hardcap?: string): void { const parsed = parseCanonical(value); if (!isStateValue(parsed) || parsed.lt(parseCanonical(minimum)) || hardcap !== undefined && parsed.gt(parseCanonical(hardcap))) throw new SyntaxError("invalid balance"); }
+function rfc3339(ms: number): string { return new Date(ms).toISOString().replace(/\.000Z$/, "Z").replace(/(\.\d*?)0+Z$/, "$1Z"); }
+function parseJSON(source: string): unknown { return JSON.parse(source) as unknown; }
+function exactObject(source: unknown, keys: readonly string[], label: string): Record<string, unknown> { if (typeof source !== "object" || source === null || Array.isArray(source)) throw new SyntaxError(`${label} must be an object`); const value = source as Record<string, unknown>; exactKeys(value, keys, label); return value; }
+function exactKeys(value: Record<string, unknown>, keys: readonly string[], label: string): void { if (!same(Object.keys(value).sort(byteCompare), [...keys].sort(byteCompare))) throw new SyntaxError(`${label} fields are not exact`); }
+function array(value: unknown, label: string): unknown[] { if (!Array.isArray(value)) throw new SyntaxError(`${label} must be an array`); return value; }
+function string(value: unknown): string { if (typeof value !== "string") throw new SyntaxError("expected string"); return value; }
+function mechanicalString(value: unknown): string { const result = string(value); if (!mechanical.test(result)) throw new SyntaxError("expected mechanical id"); return result; }
+function uuidString(value: unknown): string { const result = string(value); if (!uuid.test(result)) throw new SyntaxError("expected UUID"); return result; }
+function uuidV7String(value: unknown): string { const result = string(value); if (!uuidV7.test(result)) throw new SyntaxError("expected UUIDv7"); return result; }
+function nullableUUID(value: unknown): string { return value === null ? "" : uuidV7String(value); }
+function nullableMechanical(value: unknown, nullAllowed = true): string { if (value === null && nullAllowed) return ""; if (value === "" && !nullAllowed) return ""; return mechanicalString(value); }
+function canonical(value: unknown): string { const result = string(value); if (canonicalString(parseCanonical(result)) !== result) throw new SyntaxError("non-canonical Decimal"); return result; }
+function safeInteger(value: unknown, min: number, max: number): number { if (typeof value !== "number" || !Number.isSafeInteger(value) || value < min || value > max) throw new SyntaxError("integer outside exact domain"); return value; }
+function boolean(value: unknown): boolean { if (typeof value !== "boolean") throw new SyntaxError("expected boolean"); return value; }
+function stringRecord(value: unknown, label: string): Record<string, string> { if (typeof value !== "object" || value === null || Array.isArray(value)) throw new SyntaxError(`${label} must be an object`); const result: Record<string, string> = {}; for (const [key, item] of Object.entries(value)) { mechanicalString(key); result[key] = canonical(item); } return result; }
+function integerRecord(value: unknown, min: number, max: number, label: string): Record<string, number> { if (typeof value !== "object" || value === null || Array.isArray(value)) throw new SyntaxError(`${label} must be an object`); const result: Record<string, number> = {}; for (const [key, item] of Object.entries(value)) { mechanicalString(key); result[key] = safeInteger(item, min, max); } return result; }
+function booleanRecord(value: unknown): Record<string, boolean> { if (typeof value !== "object" || value === null || Array.isArray(value)) throw new SyntaxError("expected boolean object"); const result: Record<string, boolean> = {}; for (const [key, item] of Object.entries(value)) { mechanicalString(key); result[key] = boolean(item); } return result; }
+function mechanicalRecord(value: unknown): Record<string, string> { if (typeof value !== "object" || value === null || Array.isArray(value)) throw new SyntaxError("expected mechanical object"); const result: Record<string, string> = {}; for (const [key, item] of Object.entries(value)) { mechanicalString(key); result[key] = mechanicalString(item); } return result; }
+function mechanicalSet(value: unknown): Set<string> { const result = new Set<string>(); for (const item of array(value, "mechanical set")) { const key = mechanicalString(item); if (result.has(key)) throw new SyntaxError("duplicate mechanical id"); result.add(key); } return result; }
+function cursor(value: unknown, label: string): number { const source = string(value); const parsed = Date.parse(source); if (!Number.isSafeInteger(parsed) || parsed <= 0 || rfc3339(parsed) !== source) throw new SyntaxError(`invalid ${label}`); return parsed; }
+function sortedRecord<T>(value: Record<string, T>): Record<string, T> { return Object.fromEntries(Object.keys(value).sort(byteCompare).map((key) => [key, value[key]!])); }
+function same(left: readonly string[], right: readonly string[]): boolean { return left.length === right.length && left.every((value, index) => value === right[index]); }
+function byteCompare(left: string, right: string): number { const a = new TextEncoder().encode(left); const b = new TextEncoder().encode(right); for (let i = 0; i < Math.min(a.length, b.length); i++) if (a[i] !== b[i]) return a[i]! - b[i]!; return a.length - b.length; }

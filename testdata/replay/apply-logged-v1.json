@@ -1,0 +1,2619 @@
+{
+  "version": 1,
+  "constants_hash": "sha256:05f3aa267c699f0f5a63612b32e59af60f62de3a9c2baa119d6177b7e35ce7b3",
+  "artifacts": {
+    "commons": "{\n  \"schema_version\": 1,\n  \"source_weights\": [],\n  \"default_tithe_ppm\": 100000,\n  \"minimum_tithe_ppm\": 50000,\n  \"maximum_tithe_ppm\": 150000,\n  \"guild_health_weight_ppm\": 500000,\n  \"cohort_health_weight_ppm\": 300000,\n  \"server_health_weight_ppm\": 200000,\n  \"collective_weight_ppm\": 600000,\n  \"collective_exponent_ppm\": 1500000,\n  \"collapse_health_ppm\": 350000,\n  \"healthy_health_ppm\": 800000,\n  \"maximum_bonus\": \"5e0\",\n  \"health_recovery_ppm_per_hour\": 100000,\n  \"health_decay_ppm_per_hour\": 40000,\n  \"solidarity_window_ms\": 2592000000,\n  \"cohort_target_size\": 150,\n  \"cohort_merge_floor\": 40,\n  \"npc_population_floor\": 40,\n  \"npc_weight_ppm\": 500000,\n  \"npc_compliance_ppm\": 750000,\n  \"population_tolerance_ppm\": 100\n}\n",
+    "economy": "{\n  \"schema_version\": 3,\n  \"resources\": [\n    {\n      \"id\": \"company.cash\",\n      \"scope\": \"company\",\n      \"numeric_kind\": \"decimal\",\n      \"initial\": \"0\",\n      \"minimum\": \"0\",\n      \"hardcap\": {\n        \"amount\": \"1e1000\",\n        \"reason_key\": \"resource.company_cash.cap.phase0\"\n      }\n    }\n  ],\n  \"generator_classes\": [\n    {\n      \"id\": \"generator.beige_tower\",\n      \"price\": {\n        \"resource_id\": \"company.cash\",\n        \"base\": \"1e1\",\n        \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.13e0\" }\n      },\n      \"production\": {\n        \"resource_id\": \"company.cash\",\n        \"base_rate\": \"1e0\"\n      }\n    }\n  ],\n  \"manual_actions\": [\n    {\n      \"id\": \"manual.click\",\n      \"output\": { \"resource_id\": \"company.cash\", \"amount_per_action\": \"1e0\" }\n    }\n  ],\n  \"multiplier_sources\": [\n    {\n      \"id\": \"commons.member\",\n      \"slot\": \"commons\",\n      \"target\": \"all\",\n      \"provider\": \"commons\"\n    },\n    {\n      \"id\": \"guild.stock_consumption\",\n      \"slot\": \"faction\",\n      \"target\": \"all\",\n      \"provider\": \"faction\"\n    }\n  ],\n  \"progress_coordinates\": [\n    { \"tier\": 0, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e3\" },\n    {\n      \"tier\": 1,\n      \"kind\": \"composite\",\n      \"terms\": [\n        { \"weight\": \"5e-1\", \"kind\": \"count_fraction\", \"count\": \"generators.total_owned\", \"required\": 25 },\n        { \"weight\": \"5e-1\", \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e6\" }\n      ]\n    },\n    { \"tier\": 2, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e9\" },\n    { \"tier\": 3, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e12\" }\n  ],\n  \"manual_policy\": { \"refill_milli_per_ms\": 25, \"bucket_cap_milli\": 50000 },\n  \"offline_policy\": {\n    \"efficiency\": \"9e-1\",\n    \"accrual_cap_ms\": 86400000,\n    \"bank_ratio_numerator\": 1,\n    \"bank_ratio_denominator\": 2,\n    \"bank_cap_ms\": 259200000,\n    \"burst_speed\": \"2e0\",\n    \"burst_max_duration_ms\": 14400000\n  }\n}\n",
+    "factions": "{\n  \"schema_version\": 1,\n  \"stock_cap\": 100000,\n  \"stock_interval_ms\": 60000,\n  \"factions\": [\n    {\n      \"id\": \"bootstrapper\",\n      \"produces\": \"revenue\",\n      \"consumes\": \"compliance\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.bootstrapper\"\n    },\n    {\n      \"id\": \"vc_funded\",\n      \"produces\": \"hype\",\n      \"consumes\": \"revenue\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.vc_funded\"\n    },\n    {\n      \"id\": \"open_source\",\n      \"produces\": \"libraries\",\n      \"consumes\": \"hype\",\n      \"compact\": { \"auto_sign\": true, \"tithe_ppm\": 130000 },\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.open_source\"\n    },\n    {\n      \"id\": \"enterprise\",\n      \"produces\": \"compliance\",\n      \"consumes\": \"libraries\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.enterprise\"\n    }\n  ]\n}\n",
+    "guilds": "{\n  \"schema_version\": 1,\n  \"guild_tithe_ppm\": 20000,\n  \"clearing_rate_ppm\": 500000,\n  \"npc_exchange_ppm\": 250000,\n  \"stock_intake_cap\": 120,\n  \"consumption_bonus_ppm_per_unit\": 0,\n  \"max_members\": 50,\n  \"min_members\": 2,\n  \"grace_days\": 7,\n  \"guild_xp_target_per_founder\": 250000,\n  \"clearing_interval_ms\": 300000\n}\n",
+    "prestige": "{\n  \"schema_version\": 1,\n  \"value_resource_id\": \"company.cash\",\n  \"threshold\": \"1e12\",\n  \"exit_modifiers_ppm\": {\n    \"acquihire\": 900000,\n    \"acquisition\": 1000000,\n    \"ipo\": 1250000,\n    \"collapse\": 750000,\n    \"scripted_first\": 1000000\n  },\n  \"collapse_route_knowledge\": 25,\n  \"catchup_ceiling_ms\": 5000,\n  \"offer_duration_ms\": 900000,\n  \"decline_drift_ppm\": 50000,\n  \"spawn_gate_ppm\": [0, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1000000],\n  \"advisor_per_run_ppm\": 20000,\n  \"advisor_cap_ppm\": 500000\n}\n",
+    "routes": "{\n  \"schema_version\": 1,\n  \"context_version\": 1,\n  \"depletion_distinct_routes_required\": 5,\n  \"knowledge\": {\n    \"registry_first_bonus\": 100,\n    \"founder_first_grant\": 25,\n    \"repeat_grant\": 5,\n    \"hint_cost\": 50\n  },\n  \"gates\": [\n    {\n      \"gate_id\": \"gate.t2_to_t3\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e9\" }],\n      \"routes\": []\n    },\n    {\n      \"gate_id\": \"gate.t4_to_t5\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e15\" }],\n      \"routes\": [\n        {\n          \"route_id\": \"route.regulatory_capture\",\n          \"house_name\": \"Regulatory Capture Skip\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.ethical\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.ethical\" },\n            { \"kind\": \"meter_band\", \"meter_id\": \"trust.regulators.standing\", \"min\": 70, \"max\": 100 },\n            { \"kind\": \"meter_band\", \"meter_id\": \"trust.regulators.grievance\", \"min\": 0, \"max\": 20 }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"4e-1\" }\n        },\n        {\n          \"route_id\": \"route.ipo_sequence_break\",\n          \"house_name\": \"IPO Sequence Break\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.capture\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.capture\" },\n            { \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"4e8\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"4e-1\" }\n        },\n        {\n          \"route_id\": \"route.acquihire_out_of_bounds\",\n          \"house_name\": \"Acquihire Out-of-Bounds\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.capture\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.capture\" },\n            { \"kind\": \"ledger_fact_present\", \"fact_kind\": \"exit.acquihire\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"5e-1\" }\n        },\n        {\n          \"route_id\": \"route.non_road_engine_clip\",\n          \"house_name\": \"Non-Road Engine Clip\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.corporation\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.corporation\" },\n            { \"kind\": \"region_trait\", \"trait_id\": \"trait.non_road\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"6e-1\" }\n        },\n        {\n          \"route_id\": \"route.nonprofit_wrapper_zip\",\n          \"house_name\": \"Nonprofit Wrapper Zip\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.nonprofit\",\n          \"predicate\": [{ \"kind\": \"structure_is\", \"structure_id\": \"structure.nonprofit\" }],\n          \"effect\": { \"kind\": \"substitute\" }\n        },\n        {\n          \"route_id\": \"route.offset_warp\",\n          \"house_name\": \"Offset Warp\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.nonprofit\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.nonprofit\" },\n            { \"kind\": \"meter_band\", \"meter_id\": \"planet.offset_coverage\", \"min\": 90, \"max\": 100 }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"2e-1\" }\n        }\n      ]\n    },\n    {\n      \"gate_id\": \"gate.t7_to_t8\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e24\" }],\n      \"routes\": [\n        {\n          \"route_id\": \"route.sovereign_ai_early_warp\",\n          \"house_name\": \"Sovereign AI Early Warp\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.corporation\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.corporation\" },\n            { \"kind\": \"region_trait\", \"trait_id\": \"trait.sovereign_compute\" }\n          ],\n          \"effect\": { \"kind\": \"substitute\" }\n        }\n      ]\n    }\n  ]\n}\n"
+  },
+  "cases": [
+    {
+      "name": "manual-online",
+      "pre_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "action_id": "manual.click",
+        "count": 3,
+        "expected_revision": 1,
+        "kind": "perform_manual_batch",
+        "window_ms": 10
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0001-7000-8000-000000000001",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 1
+        },
+        "evaluated_at_ms": 1785571201000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "perform_manual_batch",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 3,
+        "evaluated_at": "2026-08-01T08:00:01Z",
+        "intent_id": "01986666-0001-7000-8000-000000000001",
+        "new_revision": 2,
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "3e0",
+              "before": "0",
+              "delta": "3e0",
+              "resource_id": "company.cash"
+            }
+          ]
+        },
+        "snapshot": {
+          "balances": {
+            "company.cash": "3e0"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": false,
+          "compact_solidarity_ppm": 0,
+          "compact_tithe_ppm": 0,
+          "compute_credit_ms": 0,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-01T08:00:01Z",
+          "faction_id": null,
+          "gates_crossed": {},
+          "generators": {
+            "generator.beige_tower": 0
+          },
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 0,
+          "hints_unlocked": [],
+          "incorporated_at_ms": null,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "0",
+          "manual_token_milli": 47000,
+          "manual_token_refilled_at": "2026-08-01T08:00:01Z",
+          "meter_bands": {},
+          "offer_state": null,
+          "offline_spans": [],
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 1,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_resource": null,
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 0
+        }
+      },
+      "events": [],
+      "post_state": {
+        "balances": {
+          "company.cash": "3e0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:01Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 47000,
+        "manual_token_refilled_at": "2026-08-01T08:00:01Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "manual-offline-accrual",
+      "pre_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 3
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "action_id": "manual.click",
+        "count": 2,
+        "expected_revision": 1,
+        "kind": "perform_manual_batch",
+        "window_ms": 100
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0002-7000-8000-000000000002",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 2
+        },
+        "evaluated_at_ms": 1785744000000,
+        "evaluation_mode": "offline",
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "perform_manual_batch",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 2,
+        "evaluated_at": "2026-08-03T08:00:00Z",
+        "intent_id": "01986666-0002-7000-8000-000000000002",
+        "new_revision": 2,
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "2.33282e5",
+              "before": "0",
+              "delta": "2.33282e5",
+              "resource_id": "company.cash"
+            }
+          ]
+        },
+        "snapshot": {
+          "balances": {
+            "company.cash": "2.33282e5"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": false,
+          "compact_solidarity_ppm": 0,
+          "compact_tithe_ppm": 0,
+          "compute_credit_ms": 43200000,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-03T08:00:00Z",
+          "faction_id": null,
+          "gates_crossed": {},
+          "generators": {
+            "generator.beige_tower": 3
+          },
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 0,
+          "hints_unlocked": [],
+          "incorporated_at_ms": null,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "2.3328e5",
+          "manual_token_milli": 48000,
+          "manual_token_refilled_at": "2026-08-03T08:00:00Z",
+          "meter_bands": {},
+          "offer_state": null,
+          "offline_spans": [
+            {
+              "from_ms": 1785571200000,
+              "to_ms": 1785744000000
+            }
+          ],
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 1,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_resource": null,
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 0
+        }
+      },
+      "events": [],
+      "post_state": {
+        "balances": {
+          "company.cash": "2.33282e5"
+        },
+        "generators": {
+          "generator.beige_tower": 3
+        },
+        "evaluated_through": "2026-08-03T08:00:00Z",
+        "compute_credit_ms": 43200000,
+        "manual_token_milli": 48000,
+        "manual_token_refilled_at": "2026-08-03T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "2.3328e5",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [
+          {
+            "from_ms": 1785571200000,
+            "to_ms": 1785744000000
+          }
+        ],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "buy-generator",
+      "pre_state": {
+        "balances": {
+          "company.cash": "1e4"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "count": {
+          "mode": "exact",
+          "value": 4
+        },
+        "expected_revision": 1,
+        "generator_id": "generator.beige_tower",
+        "kind": "buy_generator"
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0003-7000-8000-000000000003",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 3
+        },
+        "evaluated_at_ms": 1785571200000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "buy_generator",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 4,
+        "evaluated_at": "2026-08-01T08:00:00Z",
+        "intent_id": "01986666-0003-7000-8000-000000000003",
+        "new_revision": 2,
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "9.95150203e3",
+              "before": "1e4",
+              "delta": "-4.849797e1",
+              "resource_id": "company.cash"
+            }
+          ]
+        },
+        "snapshot": {
+          "balances": {
+            "company.cash": "9.95150203e3"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": false,
+          "compact_solidarity_ppm": 0,
+          "compact_tithe_ppm": 0,
+          "compute_credit_ms": 0,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-01T08:00:00Z",
+          "faction_id": null,
+          "gates_crossed": {},
+          "generators": {
+            "generator.beige_tower": 4
+          },
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 0,
+          "hints_unlocked": [],
+          "incorporated_at_ms": null,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "0",
+          "manual_token_milli": 50000,
+          "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+          "meter_bands": {},
+          "offer_state": null,
+          "offline_spans": [],
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 1,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_resource": null,
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 0
+        }
+      },
+      "events": [
+        {
+          "kind": "generator_purchased",
+          "schema_version": 1,
+          "intent_id": "01986666-0003-7000-8000-000000000003",
+          "payload": {
+            "cost": "4.849797e1",
+            "cost_resource_id": "company.cash",
+            "count": 4,
+            "generator_id": "generator.beige_tower"
+          }
+        }
+      ],
+      "post_state": {
+        "balances": {
+          "company.cash": "9.95150203e3"
+        },
+        "generators": {
+          "generator.beige_tower": 4
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "cross-gate",
+      "pre_state": {
+        "balances": {
+          "company.cash": "1e10"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 2,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "expected_revision": 1,
+        "gate_id": "gate.t2_to_t3",
+        "kind": "cross_gate",
+        "route_id": null
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0004-7000-8000-000000000004",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 4
+        },
+        "evaluated_at_ms": 1785571200000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "cross_gate",
+          "intent_kind": "cross_gate",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          },
+          "declined_exit_offer_count": 0,
+          "founder_carry": {
+            "founder_revision": 1,
+            "founder_constants_hash": "sha256:05f3aa267c699f0f5a63612b32e59af60f62de3a9c2baa119d6177b7e35ce7b3",
+            "reputation_level": 0,
+            "route_knowledge_balance": 0,
+            "age_ms": 0,
+            "notoriety": 0,
+            "advisor_mode": false,
+            "network_slots": [],
+            "ledger_fact_kinds": [],
+            "exit_history_count": 0
+          }
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 1,
+        "evaluated_at": "2026-08-01T08:00:00Z",
+        "intent_id": "01986666-0004-7000-8000-000000000004",
+        "new_revision": 2,
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "9e9",
+              "before": "1e10",
+              "delta": "-1e9",
+              "resource_id": "company.cash"
+            }
+          ]
+        },
+        "snapshot": {
+          "balances": {
+            "company.cash": "9e9"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": false,
+          "compact_solidarity_ppm": 0,
+          "compact_tithe_ppm": 0,
+          "compute_credit_ms": 0,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-01T08:00:00Z",
+          "faction_id": null,
+          "gates_crossed": {
+            "gate.t2_to_t3": true
+          },
+          "generators": {
+            "generator.beige_tower": 0
+          },
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 0,
+          "hints_unlocked": [],
+          "incorporated_at_ms": null,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "0",
+          "manual_token_milli": 50000,
+          "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+          "meter_bands": {},
+          "offer_state": null,
+          "offline_spans": [],
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 1,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_resource": null,
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 3
+        }
+      },
+      "events": [
+        {
+          "kind": "gate_crossed",
+          "schema_version": 1,
+          "intent_id": "01986666-0004-7000-8000-000000000004",
+          "payload": {
+            "founder_id": "01986666-2000-7000-8000-000000000001",
+            "gate_id": "gate.t2_to_t3",
+            "route_id": null,
+            "run_id": {
+              "company_stream_id": "01986666-1000-7000-8000-000000000001",
+              "run_seq": 1
+            }
+          }
+        }
+      ],
+      "post_state": {
+        "balances": {
+          "company.cash": "9e9"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {
+          "gate.t2_to_t3": true
+        },
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 3,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "cross-gate-offer-spawn",
+      "pre_state": {
+        "balances": {
+          "company.cash": "1e10"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 2,
+        "lifetime_value": "8e12",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "expected_revision": 1,
+        "gate_id": "gate.t2_to_t3",
+        "kind": "cross_gate",
+        "route_id": null
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0011-7000-8000-000000000011",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 5
+        },
+        "evaluated_at_ms": 1785571200000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "cross_gate",
+          "intent_kind": "cross_gate",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          },
+          "declined_exit_offer_count": 0,
+          "founder_carry": {
+            "founder_revision": 1,
+            "founder_constants_hash": "sha256:05f3aa267c699f0f5a63612b32e59af60f62de3a9c2baa119d6177b7e35ce7b3",
+            "reputation_level": 0,
+            "route_knowledge_balance": 0,
+            "age_ms": 0,
+            "notoriety": 0,
+            "advisor_mode": false,
+            "network_slots": [],
+            "ledger_fact_kinds": [],
+            "exit_history_count": 1
+          }
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 1,
+        "evaluated_at": "2026-08-01T08:00:00Z",
+        "intent_id": "01986666-0011-7000-8000-000000000011",
+        "new_revision": 2,
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "9e9",
+              "before": "1e10",
+              "delta": "-1e9",
+              "resource_id": "company.cash"
+            }
+          ]
+        },
+        "snapshot": {
+          "balances": {
+            "company.cash": "9e9"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": false,
+          "compact_solidarity_ppm": 0,
+          "compact_tithe_ppm": 0,
+          "compute_credit_ms": 0,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-01T08:00:00Z",
+          "faction_id": null,
+          "gates_crossed": {
+            "gate.t2_to_t3": true
+          },
+          "generators": {
+            "generator.beige_tower": 0
+          },
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 0,
+          "hints_unlocked": [],
+          "incorporated_at_ms": null,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "8e12",
+          "manual_token_milli": 50000,
+          "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+          "meter_bands": {},
+          "offer_state": {
+            "exit_type": "acquisition",
+            "expires_at_ms": 1785572100000,
+            "offer_id": "019fbc56-4c00-7c01-abf9-761061eaa873",
+            "spawned_at_ms": 1785571200000,
+            "terms_json": {
+              "payout_preview": {
+                "reputation_delta": 2,
+                "network_slot_unlocks": [],
+                "route_knowledge": 0,
+                "clout_reach_note": "clout.reach.preserved"
+              },
+              "market_modifier_ppm": 1000000
+            }
+          },
+          "offline_spans": [],
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 1,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_resource": null,
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 3
+        }
+      },
+      "events": [
+        {
+          "kind": "gate_crossed",
+          "schema_version": 1,
+          "intent_id": "01986666-0011-7000-8000-000000000011",
+          "payload": {
+            "founder_id": "01986666-2000-7000-8000-000000000001",
+            "gate_id": "gate.t2_to_t3",
+            "route_id": null,
+            "run_id": {
+              "company_stream_id": "01986666-1000-7000-8000-000000000001",
+              "run_seq": 1
+            }
+          }
+        },
+        {
+          "kind": "exit_offer_spawned",
+          "schema_version": 1,
+          "intent_id": "01986666-0011-7000-8000-000000000011",
+          "payload": {
+            "exit_type": "acquisition",
+            "expires_at_ms": 1785572100000,
+            "offer_id": "019fbc56-4c00-7c01-abf9-761061eaa873",
+            "payout_preview": {
+              "reputation_delta": 2,
+              "network_slot_unlocks": [],
+              "route_knowledge": 0,
+              "clout_reach_note": "clout.reach.preserved"
+            }
+          }
+        }
+      ],
+      "post_state": {
+        "balances": {
+          "company.cash": "9e9"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {
+          "gate.t2_to_t3": true
+        },
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 3,
+        "lifetime_value": "8e12",
+        "offer_state": {
+          "offer_id": "019fbc56-4c00-7c01-abf9-761061eaa873",
+          "exit_type": "acquisition",
+          "terms_json": {
+            "payout_preview": {
+              "reputation_delta": 2,
+              "network_slot_unlocks": [],
+              "route_knowledge": 0,
+              "clout_reach_note": "clout.reach.preserved"
+            },
+            "market_modifier_ppm": 1000000
+          },
+          "spawned_at_ms": 1785571200000,
+          "expires_at_ms": 1785572100000
+        },
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "sign-compact",
+      "pre_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "expected_revision": 1,
+        "kind": "sign_compact",
+        "tithe_ppm": 110000
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0005-7000-8000-000000000005",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 6
+        },
+        "evaluated_at_ms": 1785571200000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "sign_compact",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 1,
+        "evaluated_at": "2026-08-01T08:00:00Z",
+        "intent_id": "01986666-0005-7000-8000-000000000005",
+        "new_revision": 2,
+        "outcome": "applied",
+        "receipt": {
+          "changes": []
+        },
+        "snapshot": {
+          "balances": {
+            "company.cash": "0"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": true,
+          "compact_solidarity_ppm": 0,
+          "compact_tithe_ppm": 110000,
+          "compute_credit_ms": 0,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-01T08:00:00Z",
+          "faction_id": null,
+          "gates_crossed": {},
+          "generators": {
+            "generator.beige_tower": 0
+          },
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 0,
+          "hints_unlocked": [],
+          "incorporated_at_ms": null,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "0",
+          "manual_token_milli": 50000,
+          "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+          "meter_bands": {},
+          "offer_state": null,
+          "offline_spans": [],
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 1,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_resource": null,
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 0
+        }
+      },
+      "events": [
+        {
+          "kind": "compact_signed",
+          "schema_version": 1,
+          "intent_id": "01986666-0005-7000-8000-000000000005",
+          "payload": {
+            "founder_id": "01986666-2000-7000-8000-000000000001",
+            "new_member": true,
+            "prior_member": false,
+            "run_id": {
+              "company_stream_id": "01986666-1000-7000-8000-000000000001",
+              "run_seq": 1
+            },
+            "tithe_ppm": 110000
+          }
+        }
+      ],
+      "post_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": true,
+        "compact_tithe_ppm": 110000,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "leave-compact",
+      "pre_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": true,
+        "compact_tithe_ppm": 110000,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "expected_revision": 1,
+        "kind": "leave_compact"
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0006-7000-8000-000000000006",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 7
+        },
+        "evaluated_at_ms": 1785571200000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "leave_compact",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": 800000,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 1,
+        "evaluated_at": "2026-08-01T08:00:00Z",
+        "intent_id": "01986666-0006-7000-8000-000000000006",
+        "new_revision": 2,
+        "outcome": "applied",
+        "receipt": {
+          "changes": []
+        },
+        "snapshot": {
+          "balances": {
+            "company.cash": "0"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": false,
+          "compact_solidarity_ppm": 0,
+          "compact_tithe_ppm": 0,
+          "compute_credit_ms": 0,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-01T08:00:00Z",
+          "faction_id": null,
+          "gates_crossed": {},
+          "generators": {
+            "generator.beige_tower": 0
+          },
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 0,
+          "hints_unlocked": [],
+          "incorporated_at_ms": null,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "0",
+          "manual_token_milli": 50000,
+          "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+          "meter_bands": {},
+          "offer_state": null,
+          "offline_spans": [],
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 1,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_resource": null,
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 0
+        }
+      },
+      "events": [
+        {
+          "kind": "compact_left",
+          "schema_version": 1,
+          "intent_id": "01986666-0006-7000-8000-000000000006",
+          "payload": {
+            "founder_id": "01986666-2000-7000-8000-000000000001",
+            "new_member": false,
+            "prior_member": true,
+            "run_id": {
+              "company_stream_id": "01986666-1000-7000-8000-000000000001",
+              "run_seq": 1
+            },
+            "tithe_ppm": 110000
+          }
+        }
+      ],
+      "post_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "incorporate-open-source",
+      "pre_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 2,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "expected_revision": 1,
+        "faction_id": "open_source",
+        "kind": "incorporate"
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0007-7000-8000-000000000007",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 8
+        },
+        "evaluated_at_ms": 1785571200000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "incorporate",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 1,
+        "evaluated_at": "2026-08-01T08:00:00Z",
+        "intent_id": "01986666-0007-7000-8000-000000000007",
+        "new_revision": 2,
+        "outcome": "applied",
+        "receipt": {
+          "changes": []
+        },
+        "snapshot": {
+          "balances": {
+            "company.cash": "0"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": true,
+          "compact_solidarity_ppm": 0,
+          "compact_tithe_ppm": 130000,
+          "compute_credit_ms": 0,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-01T08:00:00Z",
+          "faction_id": "open_source",
+          "gates_crossed": {},
+          "generators": {
+            "generator.beige_tower": 0
+          },
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 0,
+          "hints_unlocked": [],
+          "incorporated_at_ms": 1785571200000,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "0",
+          "manual_token_milli": 50000,
+          "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+          "meter_bands": {},
+          "offer_state": null,
+          "offline_spans": [],
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 1,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_resource": "libraries",
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 2
+        }
+      },
+      "events": [
+        {
+          "kind": "incorporated",
+          "schema_version": 1,
+          "intent_id": "01986666-0007-7000-8000-000000000007",
+          "payload": {
+            "compact_auto_signed": true,
+            "faction_id": "open_source",
+            "founder_id": "01986666-2000-7000-8000-000000000001",
+            "incorporated_at_ms": 1785571200000,
+            "run_id": {
+              "company_stream_id": "01986666-1000-7000-8000-000000000001",
+              "run_seq": 1
+            },
+            "stock_resource": "libraries"
+          }
+        },
+        {
+          "kind": "compact_signed",
+          "schema_version": 1,
+          "intent_id": "01986666-0007-7000-8000-000000000007",
+          "payload": {
+            "founder_id": "01986666-2000-7000-8000-000000000001",
+            "new_member": true,
+            "prior_member": false,
+            "run_id": {
+              "company_stream_id": "01986666-1000-7000-8000-000000000001",
+              "run_seq": 1
+            },
+            "tithe_ppm": 130000
+          }
+        }
+      ],
+      "post_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": true,
+        "compact_tithe_ppm": 130000,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 2,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": "open_source",
+        "incorporated_at_ms": 1785571200000,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "decline-offer",
+      "pre_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": {
+          "offer_id": "01986666-0008-7000-8000-000000000099",
+          "exit_type": "acquisition",
+          "terms_json": {
+            "market_modifier_ppm": 1000000,
+            "payout_preview": {
+              "reputation_delta": 0,
+              "network_slot_unlocks": [],
+              "route_knowledge": 0,
+              "clout_reach_note": "clout.reach.preserved"
+            }
+          },
+          "spawned_at_ms": 1785571140000,
+          "expires_at_ms": 1785571260000
+        },
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "expected_revision": 1,
+        "kind": "decline_exit_offer",
+        "offer_id": "01986666-0008-7000-8000-000000000099"
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0008-7000-8000-000000000008",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 9
+        },
+        "evaluated_at_ms": 1785571200000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "decline_exit_offer",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 1,
+        "evaluated_at": "2026-08-01T08:00:00Z",
+        "intent_id": "01986666-0008-7000-8000-000000000008",
+        "new_revision": 2,
+        "outcome": "applied",
+        "receipt": {
+          "changes": []
+        },
+        "snapshot": {
+          "balances": {
+            "company.cash": "0"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": false,
+          "compact_solidarity_ppm": 0,
+          "compact_tithe_ppm": 0,
+          "compute_credit_ms": 0,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-01T08:00:00Z",
+          "faction_id": null,
+          "gates_crossed": {},
+          "generators": {
+            "generator.beige_tower": 0
+          },
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 0,
+          "hints_unlocked": [],
+          "incorporated_at_ms": null,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "0",
+          "manual_token_milli": 50000,
+          "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+          "meter_bands": {},
+          "offer_state": null,
+          "offline_spans": [],
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 1,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_resource": null,
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 0
+        }
+      },
+      "events": [
+        {
+          "kind": "exit_offer_declined",
+          "schema_version": 1,
+          "intent_id": "01986666-0008-7000-8000-000000000008",
+          "payload": {
+            "offer_id": "01986666-0008-7000-8000-000000000099",
+            "run_seq": 1
+          }
+        }
+      ],
+      "post_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "closed-hook-chain",
+      "pre_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 2
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": true,
+        "compact_tithe_ppm": 130000,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": "open_source",
+        "incorporated_at_ms": 1785571140000,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "action_id": "manual.click",
+        "count": 1,
+        "expected_revision": 1,
+        "kind": "perform_manual_batch",
+        "window_ms": 60000
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0009-7000-8000-000000000009",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 10
+        },
+        "evaluated_at_ms": 1785571260000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "perform_manual_batch",
+          "accrual": {
+            "contributions": [
+              {
+                "slot": "commons",
+                "source_id": "commons.member",
+                "target": "all",
+                "factor": "1.1e0"
+              },
+              {
+                "slot": "faction",
+                "source_id": "guild.stock_consumption",
+                "target": "all",
+                "factor": "1e0"
+              }
+            ],
+            "commons_weight_ppm": 812345,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 1,
+        "evaluated_at": "2026-08-01T08:01:00Z",
+        "intent_id": "01986666-0009-7000-8000-000000000009",
+        "new_revision": 2,
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "1.33e2",
+              "before": "0",
+              "delta": "1.33e2",
+              "resource_id": "company.cash"
+            }
+          ]
+        },
+        "snapshot": {
+          "balances": {
+            "company.cash": "1.33e2"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": true,
+          "compact_solidarity_ppm": 23,
+          "compact_tithe_ppm": 130000,
+          "compute_credit_ms": 0,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-01T08:01:00Z",
+          "faction_id": "open_source",
+          "gates_crossed": {},
+          "generators": {
+            "generator.beige_tower": 2
+          },
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 960000,
+          "hints_unlocked": [],
+          "incorporated_at_ms": 1785571140000,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "1.32e2",
+          "manual_token_milli": 49000,
+          "manual_token_refilled_at": "2026-08-01T08:01:00Z",
+          "meter_bands": {},
+          "offer_state": null,
+          "offline_spans": [
+            {
+              "from_ms": 1785571200000,
+              "to_ms": 1785571260000
+            }
+          ],
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 1,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_resource": "libraries",
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 0
+        }
+      },
+      "events": [
+        {
+          "kind": "guild_tithe_accrued",
+          "schema_version": 1,
+          "intent_id": "01986666-0009-7000-8000-000000000009",
+          "payload": {
+            "founder_id": "01986666-2000-7000-8000-000000000001",
+            "progress_delta_ppm": 707848,
+            "run_id": {
+              "company_stream_id": "01986666-1000-7000-8000-000000000001",
+              "run_seq": 1
+            },
+            "xp_delta": 14156
+          }
+        },
+        {
+          "kind": "compact_sampled",
+          "schema_version": 1,
+          "intent_id": "01986666-0009-7000-8000-000000000009",
+          "payload": {
+            "capacity": "1.716e1",
+            "compliance_ppm": 1000000,
+            "enclosure": "0",
+            "founder_id": "01986666-2000-7000-8000-000000000001",
+            "run_id": {
+              "company_stream_id": "01986666-1000-7000-8000-000000000001",
+              "run_seq": 1
+            },
+            "sampled_ms": 60000,
+            "solidarity_ppm": 23,
+            "weight_ppm": 812345
+          }
+        }
+      ],
+      "post_state": {
+        "balances": {
+          "company.cash": "1.33e2"
+        },
+        "generators": {
+          "generator.beige_tower": 2
+        },
+        "evaluated_through": "2026-08-01T08:01:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 49000,
+        "manual_token_refilled_at": "2026-08-01T08:01:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": true,
+        "compact_tithe_ppm": 130000,
+        "compact_solidarity_ppm": 23,
+        "compact_solidarity_samples": [
+          {
+            "hour_start": "2026-08-01T08:00:00Z",
+            "compliance_ppm": 1000000,
+            "covered_ms": 60000
+          }
+        ],
+        "tier": 0,
+        "lifetime_value": "1.32e2",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [
+          {
+            "from_ms": 1785571200000,
+            "to_ms": 1785571260000
+          }
+        ],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": "open_source",
+        "incorporated_at_ms": 1785571140000,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 960000,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "invalid-manual",
+      "pre_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "action_id": "manual.click",
+        "count": 0,
+        "expected_revision": 1,
+        "kind": "perform_manual_batch",
+        "window_ms": 1
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0010-7000-8000-000000000010",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 11
+        },
+        "evaluated_at_ms": 1785571200000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "perform_manual_batch",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "rejected",
+      "receipt": {
+        "current_revision": 1,
+        "intent_id": "01986666-0010-7000-8000-000000000010",
+        "outcome": "rejected",
+        "rejection": {
+          "category": "invalid",
+          "detail": "count"
+        }
+      },
+      "events": [],
+      "post_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 0
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "unknown-buy-rejects-before-accrual",
+      "pre_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 3
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "count": {
+          "mode": "exact",
+          "value": 1
+        },
+        "expected_revision": 1,
+        "generator_id": "generator.unknown",
+        "kind": "buy_generator"
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0012-7000-8000-000000000012",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 12
+        },
+        "evaluated_at_ms": 1785571260000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "buy_generator",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "rejected",
+      "receipt": {
+        "current_revision": 1,
+        "intent_id": "01986666-0012-7000-8000-000000000012",
+        "outcome": "rejected",
+        "rejection": {
+          "category": "unknown_id",
+          "detail": "generator.unknown"
+        }
+      },
+      "events": [],
+      "post_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 3
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    },
+    {
+      "name": "existing-compact-rejects-before-accrual",
+      "pre_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 3
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": true,
+        "compact_tithe_ppm": 110000,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      },
+      "canonical_payload": {
+        "expected_revision": 1,
+        "kind": "sign_compact",
+        "tithe_ppm": 110000
+      },
+      "replay_inputs": {
+        "v": 1,
+        "command": {
+          "intent_id": "01986666-0013-7000-8000-000000000013",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 13
+        },
+        "evaluated_at_ms": 1785571260000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "sign_compact",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": 800000,
+            "guild_settlement_batch": [],
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "rejected",
+      "receipt": {
+        "current_revision": 1,
+        "intent_id": "01986666-0013-7000-8000-000000000013",
+        "outcome": "rejected",
+        "rejection": {
+          "category": "already_member",
+          "detail": "compact"
+        }
+      },
+      "events": [],
+      "post_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 3
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": true,
+        "compact_tithe_ppm": 110000,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null
+      }
+    }
+  ]
+}

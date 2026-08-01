@@ -175,3 +175,25 @@ Direct diff review; all seven rulings verified in source:
    well-formed non-empty).
 
 Next landing: TS ApplyLogged port + cross-runtime transition fixture, then genesis storage.
+
+## 2026-08-01 — TypeScript ordinary ApplyLogged port
+
+The TypeScript verification kernel now owns the ordinary (non-terminal) `ApplyLogged` boundary.
+It loads the exact six hash-pinned artifacts, restores a strict Company save-v12 state, validates
+the closed replay envelope and ordered resolved inputs, evaluates through the same Decimal rules,
+and emits the authoritative receipt plus ordered events for every ordinary Phase-0 Company intent.
+The closed accrual hook order is Prestige → faction → Guild → Commons. Pre-transition rejections
+run before accrual where the Go service does; post-evaluation affordability/predicate rejections
+retain the Go mutation boundary.
+
+A Go-authored shared fixture currently covers 13 independent transitions: online/offline manual
+work, buy, gate, deterministic offer spawn, Compact sign/leave, Open Source incorporation, offer
+decline, the complete hook chain, invalid input, and two reject-before-accrual cases. Go regenerates
+the committed artifact and fails on drift; TypeScript compares receipt, event bytes/order, and
+post-state. Adding the offer branch exposed and fixed a real port bug: Go's `OfferID` consumes
+separate SplitMix64 draws for its last two bytes, while the first TS draft reused one draw.
+
+This is an intermediate RB landing, not AC2 completion. The RFC's ≥50 mixed-intent sequential run
+still requires the terminal Exit arm and the genesis/verifier work; it is deliberately not being
+papered over by counting independent transition cases. Root-only verification is green:
+`make typecheck`, `make test-client` (6,467 passed), and `make replay-fixture-check`.
