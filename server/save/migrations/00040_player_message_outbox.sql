@@ -16,7 +16,7 @@ CREATE TABLE transport_player_outbox (
     attempt_count integer NOT NULL DEFAULT 0 CHECK (attempt_count >= 0 AND attempt_count <= 1000),
     last_error text CHECK (last_error IS NULL OR char_length(last_error) BETWEEN 1 AND 512),
     dead_lettered_at timestamptz,
-    UNIQUE (message_kind, source_id),
+    CONSTRAINT transport_player_outbox_message_stream_source_key UNIQUE (message_kind,stream_id,source_id),
     CHECK ((claim_token IS NULL) = (claimed_until IS NULL)),
     CHECK (published_at IS NULL OR dead_lettered_at IS NULL)
 );

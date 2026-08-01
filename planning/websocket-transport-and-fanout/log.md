@@ -446,4 +446,6 @@ The post-commit seam audit caught a HIGH before review approval: migration 00040
 authority is only per stream. Two Founders may legitimately submit the same UUID. Append-only
 migration 00041 narrows uniqueness to `(message_kind, stream_id, source_id)`; event IDs remain safe
 under the same key. A live-Postgres regression inserts the same intent ID for two independent
-Founder streams and requires both durable receipt rows.
+Founder streams and requires both durable receipt rows. Migration 00040 itself also declares the
+stream-scoped key so a fresh install can copy pre-existing same-ID receipts before 00041 runs;
+00041 is conditional/idempotent so databases that already applied the original 00040 are repaired.
