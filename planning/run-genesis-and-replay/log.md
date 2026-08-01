@@ -631,3 +631,16 @@ NOT invented into balance/). **Two HIGHs block the next landing; both verified f
 - Closed the migration band: non-zero and saturated v12 backfills are asserted in TypeScript; both
   verifiers reject pre-v12 genesis; Go v13 decoding now requires explicit accumulator presence just
   like TypeScript. The imported-projector branch has its own real-Postgres fixture.
+
+## 2026-08-01 — sequential replay corpus debt closure
+
+- The shared 51-entry run now signs the Compact and incorporates as Open Source before leaving,
+  asserting the existing-member `compact_tithe_raised` event in Go-authored bytes replayed by TS.
+- The same run crosses T4 with `route.ipo_sequence_break` under its real discounted predicate and
+  carries the executed route into terminal facts.
+- A later ordinary entry carries a non-empty, ordered Guild settlement batch through both strict
+  replay-input decoders. These are sequential stateful coverage, not isolated parser-only cases.
+- The stronger corpus exposed one real parity defect before commit: terminal TypeScript replay did
+  not bind hook-emitted events to the command intent while Go did. The shared `bindEventIntent`
+  path now enforces the Go rule for ordinary and terminal transitions, and `kernel/VERSION` moves
+  to 0.2.1 in the same semantic commit under KV-1.

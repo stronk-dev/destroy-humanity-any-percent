@@ -401,7 +401,8 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 	state := replayFixtureState(t, catalogs.Economy, startedAt)
 	state.Tier = 2
 	state.LifetimeValue = decimal.New(8, 12)
-	setCash(t, state, "1e10")
+	state.DoctrinesByTransition["transition.t3_to_t4"] = "doctrine.capture"
+	setCash(t, state, "5e14")
 	genesis, err := save.EncodeState(state)
 	if err != nil {
 		t.Fatal(err)
@@ -413,8 +414,8 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 		`{"kind":"perform_manual_batch","expected_revision":%d,"action_id":"manual.click","count":2,"window_ms":1000}`,
 		`{"kind":"buy_generator","expected_revision":%d,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":3}}`,
 		`{"kind":"sign_compact","expected_revision":%d,"tithe_ppm":110000}`,
-		`{"kind":"leave_compact","expected_revision":%d}`,
-		`{"kind":"incorporate","expected_revision":%d,"faction_id":"vc_funded"}`,
+		`{"kind":"incorporate","expected_revision":%d,"faction_id":"open_source"}`,
+		`{"kind":"perform_manual_batch","expected_revision":%d,"action_id":"manual.click","count":1,"window_ms":1000}`,
 		`{"kind":"cross_gate","expected_revision":%d,"gate_id":"gate.t2_to_t3","route_id":null}`,
 	}
 	for index := 0; index < 50; index++ {
@@ -431,6 +432,9 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 		}
 		if index == 6 {
 			payload = fmt.Sprintf(`{"kind":"decline_exit_offer","expected_revision":%d,"offer_id":"%s"}`, revision, prestigecore.OfferID(founderID, 1, 3, 0, now.Add(-time.Second)))
+		}
+		if index == 7 {
+			payload = fmt.Sprintf(`{"kind":"cross_gate","expected_revision":%d,"gate_id":"gate.t4_to_t5","route_id":"route.ipo_sequence_break"}`, revision)
 		}
 		intentID := fmt.Sprintf("01987777-%04d-7000-8000-%012d", index+1, index+1)
 		request, err := parseLoggedIntent([]byte(payload), intentID)
@@ -450,9 +454,27 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 		if err != nil {
 			t.Fatal(err)
 		}
+		if index == 8 {
+			inputs = withReplaySettlement(t, inputs, replayGuildSettlement{GuildID: "01987777-3000-7000-8000-000000000001", BoundarySeq: 1, Units: 7})
+		}
 		transition, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
 		if err != nil || transition.Outcome != save.IntentApplied {
 			t.Fatalf("full run step %d outcome=%s err=%v", index+1, transition.Outcome, err)
+		}
+		if index == 3 && !hasEventKind(transition.Events, save.EventCompactTitheRaised) {
+			t.Fatal("full run existing-member Open Source incorporation omitted compact_tithe_raised")
+		}
+		if index == 7 && !hasEventKind(transition.Events, save.EventRouteExecuted) {
+			t.Fatal("full run discounted route crossing omitted route_executed")
+		}
+		if index == 8 {
+			parsed, parseErr := parseReplayInputs(inputs)
+			var resolved replayAccrualResolved
+			if parseErr != nil || decodeReplayStrict(parsed.Resolved, &resolved) != nil || len(resolved.Accrual.GuildSettlementBatch) != 1 ||
+				resolved.Accrual.GuildSettlementBatch[0].GuildID != "01987777-3000-7000-8000-000000000001" ||
+				resolved.Accrual.GuildSettlementBatch[0].BoundarySeq != 1 || resolved.Accrual.GuildSettlementBatch[0].Units != 7 {
+				t.Fatalf("full run guild settlement batch missing or changed: %+v", resolved.Accrual.GuildSettlementBatch)
+			}
 		}
 		entries = append(entries, crossRuntimeFullRunEntry{Seq: int64(index + 1), CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs, ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, fixtureEvents(transition.Events))})
 		revision++
@@ -465,7 +487,7 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 	}
 	command := save.ReplayCommand{IntentID: intentID, CompanyStreamID: "01987777-1000-7000-8000-000000000001", FounderID: founderID, Revision: revision, RunSeq: 1, RunLogSeq: 51}
 	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, CommonsWeightPPM: int64Pointer(800_000), Terminal: true, ExecutedRouteIDs: []string{"route.ipo_sequence_break"}, SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -483,6 +505,49 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 	full := crossRuntimeFullRun{Genesis: genesis, Entries: entries, FinalStateJSON: canonicalFixtureJSON(t, finalState)}
 	assertFullRunVerifier(t, full, catalogs, constantsHash)
 	return full
+}
+
+func hasEventKind(events []save.EventWrite, kind save.EventKind) bool {
+	for _, event := range events {
+		if event.Kind == kind {
+			return true
+		}
+	}
+	return false
+}
+
+func withReplaySettlement(t *testing.T, inputs json.RawMessage, settlement replayGuildSettlement) json.RawMessage {
+	t.Helper()
+	var wire map[string]json.RawMessage
+	if err := json.Unmarshal(inputs, &wire); err != nil {
+		t.Fatal(err)
+	}
+	var resolved map[string]json.RawMessage
+	if err := json.Unmarshal(wire["resolved"], &resolved); err != nil {
+		t.Fatal(err)
+	}
+	var accrual map[string]json.RawMessage
+	if err := json.Unmarshal(resolved["accrual"], &accrual); err != nil {
+		t.Fatal(err)
+	}
+	batch, err := json.Marshal([]replayGuildSettlement{settlement})
+	if err != nil {
+		t.Fatal(err)
+	}
+	accrual["guild_settlement_batch"] = batch
+	resolved["accrual"], err = json.Marshal(accrual)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wire["resolved"], err = json.Marshal(resolved)
+	if err != nil {
+		t.Fatal(err)
+	}
+	encoded, err := json.Marshal(wire)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return encoded
 }
 
 func assertFullRunVerifier(t *testing.T, full crossRuntimeFullRun, catalogs CatalogBundle, constantsHash string) {

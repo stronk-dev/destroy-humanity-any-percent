@@ -24,9 +24,9 @@ Carried acceptance debt (must remain here until checked off):
 - [x] Combined invariant-report + offer-expiry event-order fixture.
 - [x] Rejected Exit mid-run continuation and final-row non-terminal fixtures.
 - [x] Fail-closed corrupt JSON, typed clock verdict, event-only tamper, and terminal-sequence checks.
-- [ ] Route-discounted gate in the sequential corpus.
-- [ ] Non-empty Guild settlement batch in the sequential corpus.
-- [ ] Existing-member Open Source incorporation producing `compact_tithe_raised` in sequence.
+- [x] Route-discounted gate in the sequential corpus.
+- [x] Non-empty Guild settlement batch in the sequential corpus.
+- [x] Existing-member Open Source incorporation producing `compact_tithe_raised` in sequence.
 - [x] Legacy `run_log.replay_inputs IS NULL` maps to `log_gap` in the database reader.
 - [x] `run_version_drift` is wired to `engine_mismatch`; no caller-supplied production shortcut.
 - [x] Final terminal state is checked against `run_ended` facts and the shared `final_state_json`.
