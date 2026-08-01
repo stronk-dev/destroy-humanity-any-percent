@@ -71,6 +71,13 @@ const fixture = fixtureJSON as {
     }[];
     readonly final_state_json: string;
   };
+  readonly rejected_exit_run: {
+    readonly genesis: unknown;
+    readonly entries: readonly {
+      readonly seq: number; readonly canonical_payload: Record<string, unknown>; readonly replay_inputs: unknown;
+      readonly receipt_json: string; readonly events_json: string; readonly terminal: boolean;
+    }[];
+  };
 };
 
 describe("TypeScript ApplyLogged cross-runtime fixture", () => {
@@ -136,6 +143,22 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     const tampered = structuredClone(entries);
     tampered[10] = { ...tampered[10]!, receiptJSON: "{}" };
     await expect(verifyReplayRun(fixture.full_run.genesis, bundle, tampered, identity)).resolves.toBe("state_divergence");
+    const corrupt = structuredClone(entries); corrupt[10] = { ...corrupt[10]!, receiptJSON: "not-json" };
+    await expect(verifyReplayRun(fixture.full_run.genesis, bundle, corrupt, identity)).resolves.toBe("state_divergence");
+    const eventTamper = structuredClone(entries); eventTamper[1] = { ...eventTamper[1]!, eventsJSON: "[]" };
+    await expect(verifyReplayRun(fixture.full_run.genesis, bundle, eventTamper, identity)).resolves.toBe("state_divergence");
+  });
+
+  it("continues after a rejected exit and never treats a final rejection as terminal", async () => {
+    const bundle = await loadReplayCatalogBundle(fixture.constants_hash, fixture.artifacts);
+    const entries = fixture.rejected_exit_run.entries.map((entry) => ({ seq: entry.seq, canonicalPayload: canonicalJSONString(entry.canonical_payload), replayInputs: entry.replay_inputs, receiptJSON: entry.receipt_json, eventsJSON: entry.events_json, terminal: entry.terminal }));
+    const identity = { constantsHash: fixture.constants_hash };
+    await expect(verifyReplayRun(fixture.rejected_exit_run.genesis, bundle, entries, identity)).resolves.toBe("log_gap");
+    const tampered = structuredClone(entries); tampered[1] = { ...tampered[1]!, receiptJSON: "{}" };
+    await expect(verifyReplayRun(fixture.rejected_exit_run.genesis, bundle, tampered, identity)).resolves.toBe("state_divergence");
+    await expect(verifyReplayRun(fixture.rejected_exit_run.genesis, bundle, entries.slice(0, 1), identity)).resolves.toBe("log_gap");
+    const clock = structuredClone(entries); (clock[0]!.replayInputs as Record<string, unknown>).evaluated_at_ms = 1;
+    await expect(verifyReplayRun(fixture.rejected_exit_run.genesis, bundle, clock, identity)).resolves.toBe("clock_violation");
   });
 
   it("fails closed on a hidden catalog input and clock regression", async () => {
@@ -144,13 +167,13 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     const state = restoreReplayStateV12(testCase.pre_state, bundle.economy);
     const replay = structuredClone(testCase.replay_inputs) as Record<string, any>;
     replay.evaluated_at_ms = state.evaluatedThroughMs - 1;
-    await expect(applyLogged(state, canonicalJSONString(testCase.canonical_payload), bundle, replay)).rejects.toThrow(/clock regression/);
+    await expect(applyLogged(state, canonicalJSONString(testCase.canonical_payload), bundle, replay)).rejects.toThrow(/replay clock violation/);
 
     const rejectedCase = fixture.cases.find((value) => value.name === "unknown-buy-rejects-before-accrual")!;
     const rejectedState = restoreReplayStateV12(rejectedCase.pre_state, bundle.economy);
     const rejectedReplay = structuredClone(rejectedCase.replay_inputs) as Record<string, any>;
     rejectedReplay.evaluated_at_ms = rejectedState.evaluatedThroughMs - 1;
-    await expect(applyLogged(rejectedState, canonicalJSONString(rejectedCase.canonical_payload), bundle, rejectedReplay)).rejects.toThrow(/clock regression/);
+    await expect(applyLogged(rejectedState, canonicalJSONString(rejectedCase.canonical_payload), bundle, rejectedReplay)).rejects.toThrow(/replay clock violation/);
 
     const founderCase = fixture.cases.find((value) => value.name === "cross-gate")!;
     const founderState = restoreReplayStateV12(founderCase.pre_state, bundle.economy);

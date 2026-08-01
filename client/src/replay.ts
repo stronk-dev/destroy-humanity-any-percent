@@ -41,6 +41,7 @@ export interface LoggedExitTransition {
   readonly founderEvents: readonly ReplayEvent[]; readonly companyEndedEvents: readonly ReplayEvent[]; readonly companyStartedEvents: readonly ReplayEvent[];
 }
 export type ReplayVerdict = "verified" | "log_gap" | "state_divergence" | "constants_mismatch" | "clock_violation" | "engine_mismatch";
+export class ReplayClockViolation extends RangeError { constructor() { super("replay clock violation"); } }
 export interface ReplayLogEntry {
   readonly seq: number; readonly canonicalPayload: string; readonly replayInputs: unknown;
   readonly receiptJSON: string; readonly eventsJSON: string; readonly terminal: boolean;
@@ -87,19 +88,21 @@ export async function verifyReplayRun(
     const entry = entries[index]!;
     if (entry.seq !== index + 1 || terminal) return "log_gap";
     try {
-      if (entry.terminal) {
+      if (!isRecord(entry.replayInputs) || !isRecord(entry.replayInputs.command) || !isRecord(entry.replayInputs.resolved)) return "state_divergence";
+      if (entry.replayInputs.command.run_log_seq !== entry.seq) return "log_gap";
+      if (entry.replayInputs.resolved.kind === "exit") {
         const transition = await applyLoggedExit(state, entry.canonicalPayload, catalogs, entry.replayInputs);
         const events = [...transition.founderEvents, ...transition.companyEndedEvents, ...transition.companyStartedEvents];
         if (canonicalJSONString(transition.receipt) !== entry.receiptJSON || canonicalJSONString(events) !== entry.eventsJSON) return "state_divergence";
         state = transition.finalCompany;
-        terminal = true;
+        terminal = transition.outcome === "applied";
       } else {
         const transition = await applyLogged(state, entry.canonicalPayload, catalogs, entry.replayInputs);
         if (canonicalJSONString(transition.receipt) !== entry.receiptJSON || canonicalJSONString(transition.events) !== entry.eventsJSON) return "state_divergence";
         state = transition.state;
       }
     } catch (error) {
-      return error instanceof Error && /clock regression/.test(error.message) ? "clock_violation" : "state_divergence";
+      return error instanceof ReplayClockViolation ? "clock_violation" : "state_divergence";
     }
   }
   return terminal ? "verified" : "log_gap";
@@ -170,7 +173,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   deriveFactionStockResource(state, catalogs.factions);
   const revision = wire.command.revision; const before = { ...state.balances };
   if (request.invalid !== undefined) return rejected(state, request.intent_id, revision, "invalid", request.invalid);
-  if (wire.evaluated_at_ms < state.evaluatedThroughMs) throw new RangeError("clock regression");
+  if (wire.evaluated_at_ms < state.evaluatedThroughMs) throw new ReplayClockViolation();
   const resolved = wire.resolved; const kind = string(resolved.kind); if (string(resolved.intent_kind) !== request.kind) throw new RangeError("resolved intent mismatch");
   let accrual: ReplayAccrual; let founderCarry: FounderCarry | null = null; let declined = 0;
   if (kind === "cross_gate" && request.kind === "cross_gate") { onlyKeys(resolved, ["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry"], "cross gate inputs"); accrual = parseAccrual(resolved.accrual, catalogs); declined = safeInteger(resolved.declined_exit_offer_count ?? 0, 0, MAX_EXACT_INTEGER); founderCarry = resolved.founder_carry === undefined || resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs.constantsHash); }
@@ -192,11 +195,11 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
     case "decline_exit_offer": state.offerState = null; events.push(event("exit_offer_declined", request.intent_id, { offer_id: request.offer_id, run_seq: state.runSeq })); appliedCount = 1; break;
     default: return rejected(state, request.intent_id, revision, "invalid", request.kind);
   }
-  await afterPrestigeTransition(state, catalogs.prestige, request, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
   for (const report of invariants) {
     if (report.kind === "residual_abort") continue;
     events.push(event("invariant_reported", request.intent_id, { detail: report.detail, invariant_kind: report.kind }));
   }
+  await afterPrestigeTransition(state, catalogs.prestige, request, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
   return applied(state, request.intent_id, revision + 1, appliedCount, before, events, invariants);
 }
 
@@ -217,6 +220,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const executedRoutes = sortedUniqueMechanical(array(resolved.executed_route_ids, "executed route ids"));
   deriveFactionStockResource(company, catalogs.factions);
   const revision = wire.command.revision;
+  if (wire.evaluated_at_ms < company.evaluatedThroughMs) throw new ReplayClockViolation();
   let prefix: ReplayEvent[] = [];
   let exitType: string;
   let terms: ExitTerms;
@@ -291,7 +295,7 @@ function preflightRejection(state: ReplayState, catalogs: ReplayCatalogBundle, r
 }
 
 function evaluate(state: ReplayState, catalog: EconomyCatalog, nowMs: number, mode: "online" | "offline", contributions: readonly ReplayContribution[]): Evaluation {
-  if (nowMs < state.evaluatedThroughMs) throw new RangeError("clock regression"); if (nowMs === state.evaluatedThroughMs) return { changes: [], elapsedMs: 0, productionMs: 0, bankedMs: 0, progressDeltaPpm: 0 };
+  if (nowMs < state.evaluatedThroughMs) throw new ReplayClockViolation(); if (nowMs === state.evaluatedThroughMs) return { changes: [], elapsedMs: 0, productionMs: 0, bankedMs: 0, progressDeltaPpm: 0 };
   const elapsedMs = nowMs - state.evaluatedThroughMs; let productionMs = elapsedMs; let efficiency = new Decimal(1); let bankedMs = 0; const beforeProgress = progressPpm(catalog, state);
   if (mode === "offline") { const policy = catalog.offlinePolicy!; efficiency = parseCanonical(policy.efficiency); productionMs = Math.min(productionMs, policy.accrualCapMs); bankedMs = Number((BigInt(elapsedMs - productionMs) * BigInt(policy.bankRatioNumerator)) / BigInt(policy.bankRatioDenominator)); bankedMs = Math.min(bankedMs, policy.bankCapMs - state.computeCreditMs); }
   const rates = productionRates(catalog, state.generators, contributions); const entries = [...rates.entries()].sort(([a], [b]) => byteCompare(a, b)).map(([resource, values]) => ({ resource, delta: quantize(sumDeterministic(values).mul(productionMs).div(1000).mul(efficiency)) })).filter((entry) => !entry.delta.eq(0));
@@ -362,7 +366,8 @@ function crossGate(state: ReplayState, routes: RoutesCatalog, request: Intent, c
 
 async function afterPrestigeTransition(state: ReplayState, policy: PrestigePolicy, request: Intent, command: ReplayCommand, nowMs: number, carry: FounderCarry | null, declined: number, events: ReplayEvent[]): Promise<void> {
   if (state.offerState && state.offerState.expiresAtMs <= nowMs) { events.push(event("exit_offer_expired", request.intent_id, { offer_id: state.offerState.offerId })); state.offerState = null; }
-  if (request.kind !== "cross_gate" || state.offerState || carry === null) return;
+  if (request.kind !== "cross_gate" || state.offerState) return;
+  if (carry === null) throw new RangeError("missing founder carry");
   if (safeInteger(carry.exit_history_count, 0, MAX_EXACT_INTEGER) === 0) return;
   if (state.tier < 0 || state.tier >= policy.spawnGatePpm.length) throw new RangeError("tier outside offer policy");
   const seed = (await founderSeed(command.founder_id, state.runSeq)) ^ (BigInt(state.tier) << 32n) ^ BigInt(declined);
@@ -539,7 +544,7 @@ function parseFounderCarry(source: unknown, constantsHash: string): FounderCarry
 
 function parseIntent(payload: string, intentId: string): Intent {
   const source = parseJSON(payload);
-  if (typeof source !== "object" || source === null || Array.isArray(source) || "intent_id" in source || canonicalJSONString(source) !== payload) throw new SyntaxError("invalid canonical payload");
+  if (typeof source !== "object" || source === null || Array.isArray(source) || "intent_id" in source) throw new SyntaxError("invalid canonical payload");
   const raw = source as Record<string, unknown>;
   const kind = string(raw.kind);
   const base: Intent = { intent_id: intentId, kind, expected_revision: safeInteger(raw.expected_revision, 1, MAX_EXACT_INTEGER) };
@@ -547,8 +552,8 @@ function parseIntent(payload: string, intentId: string): Intent {
     case "buy_generator": {
       if (!hasExactKeys(raw, ["kind", "expected_revision", "generator_id", "count"])) { base.invalid = "buy_generator.fields"; return base; }
       if (!isMechanical(raw.generator_id)) base.invalid = "generator_id"; else base.generator_id = raw.generator_id;
-      if (!isRecord(raw.count)) { base.invalid = "count"; return base; }
-      const count = raw.count;
+      if (raw.count !== null && !isRecord(raw.count)) { base.invalid = "count"; return base; }
+      const count = (raw.count ?? {}) as Record<string, unknown>;
       base.count = count;
       if (count.mode === "max") {
         if (!hasExactKeys(count, ["mode"])) base.invalid = "count.max";

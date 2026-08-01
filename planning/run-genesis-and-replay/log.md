@@ -344,3 +344,77 @@ incorporation, gate crossing, deterministic offer spawn and decline. Go and Type
 `verified` and mutate the same corpus to cover log gap, catalog mismatch, engine drift, clock
 regression, and receipt/event state divergence. `make replay-fixture-check`, `make typecheck`, and
 `make test-client` pass at this landing.
+
+## 2026-08-01 — independent review: parity fixes + verifier (c746863, f716aa7, ac2dc6f)
+
+Two-lane review (agent adversarial pass + reviewer's direct read of verifier.go). **Verdicts:
+c746863 closes all nine prior findings at the letter (each fix verified against Go line-by-line
+with its named fixture) but introduces ONE new HIGH at the intersection of two fixes; f716aa7
+APPROVED (genesis = earliest revision of the requested run, regression-tested, F11 caveat
+recorded); ac2dc6f's verifier is the right flow in both kernels but is NOT approved — one HIGH
+soundness hole plus reviewer-found fail-open behavior.**
+
+Fix queue, ordered:
+
+1. **HIGH (new regression, c746863) — invariant-vs-offer-sweep event ordering**: TS pushes
+   `invariant_reported` AFTER the sweep; Go appends invariants inside appliedDecision BEFORE the
+   after-phase — an applied buy tripping `residual_clamp` while an offer expires produces
+   opposite event orders → false `state_divergence` on an honest run. No fixture combines the
+   two. Fix: match Go's append site; fixture: invariant+expiry in one intent.
+2. **HIGH (ac2dc6f) — rejected exit attempts are unrepresentable AND terminal handling is
+   unsound**: live provably logs rejected exit commands with exit-kind inputs; Terminal:false
+   rows fail the resolved-union decode (false `state_divergence`), Terminal:true rows set
+   `terminal=true` even on a REJECTED outcome — subsequent rows become `log_gap` and a run ENDING
+   in a rejected exit verifies as complete (**false `verified`**). Fix: terminal only on APPLIED
+   outcome; rejected exit rows replay through the exit arm and continue; fixtures: wind_down-at-
+   tier-0 mid-run and as final row. (This was named debt in the prior review's finding 9 —
+   "lands with the verifier round" — it did not land and was not re-recorded: tracking slip,
+   second occurrence of the class; debt items now carry forward EXPLICITLY in plan.md until
+   closed.)
+3. **MEDIUM (reviewer, first-hand) — `canonicalJSONEqual` fails OPEN on double-invalid bytes**
+   (`canonical()` → nil on decode failure; `bytes.Equal(nil,nil)` is true; same for
+   `marshalReplayEvents` nil) — undecodable receipt/event bytes on both sides VERIFY. Fix: any
+   decode failure → verdict `state_divergence` (fail closed), negative test with corrupt bytes.
+4. **MEDIUM (reviewer, first-hand) — verdict classification by error-string matching**
+   (`strings.Contains(err.Error(), "clock regression")`, mirrored in TS): a reworded message
+   silently reclassifies clock violations. Fix: sentinel error + errors.Is in Go; TS matches a
+   shared constant.
+5. **MEDIUM batch (agent, all verified with line cites):** exit-arm clock check still missing
+   pre-branch in TS (half of prior finding 5; tampered terminal rejection can verify where Go
+   says clock_violation); `count: null` detail divergence (`count.mode` vs `count`); TS
+   input-side JS parse round-trip breaks the payload echo on number literals Go tolerates
+   (`3.0`, >2^53) → false divergence on honest rejections; C6's NULL→log_gap reader clause
+   STILL unimplemented while docs/production-engine.md promises it (third deferral — it lands in
+   the queue round or the docs claim is retracted, one or the other); null-carry cross_gate
+   silent-skip vs Go hard-error.
+6. **LOW batch:** terminal_seq never cross-checked against entry sequence (R2.3's letter —
+   honestly unchecked in plan); engine_mismatch is caller-supplied with no run_version_drift
+   wiring while ac2dc6f's docs edit dropped the qualifier (retract or wire); corpus is 44/51
+   identical manual clicks with no max-mode/invariant/expiry/rejected rows in-sequence and the
+   finding-9 fixture debt (route-discounted gate, non-empty settlement batch,
+   compact_tithe_raised) still absent; event-only tamper unasserted at verifier level (C7's
+   silent channel!); final_state_json generated but unasserted; Go unbounded exit_history_count
+   is a tampered-row memory bomb (`make([]save.ExitRecord, huge)`); f716aa7's earliest-SURVIVING-
+   revision caveat recorded against future pruning.
+
+The structural core stands: same-boundary replay in both kernels, deterministic verdict priority,
+recomputed-hash bundles, genuinely-sequential corpus verifying `verified` from shared bytes with
+a green drift gate. The gap between "the flow is right" and "the verdicts are sound" is exactly
+findings 1–5.
+
+## 2026-08-01 — verifier soundness remediation
+
+The two HIGHs are closed at their seams. Invariant events are appended before the prestige
+after-phase exactly like Go, and the fallback artifact case now combines `afford_fallback` with an
+expired offer so the committed order is asserted directly. Exit-arm selection is derived from the
+immutable resolved-input discriminator rather than a caller flag; a rejected Exit never marks the
+run terminal, subsequent rows still replay, and a final rejected Exit returns `log_gap`.
+
+Both verifiers now use typed clock violations, enforce command `run_log_seq` against the log row,
+fail closed on either malformed JSON side, and assert event-only tampering. The shared corpus adds
+a tier-0 rejected `wind_down` followed by another command, plus the final-rejection and terminal-
+clock mutations. TS parser parity closes `count:null`, number-spelling, optional scalar, command-ID,
+Founder-revision, and null-carry differences; Go bounds `exit_history_count` before allocation.
+
+Every remaining corpus and database-reader obligation is now carried explicitly in `plan.md` per
+the independent-review ruling; none is implied closed by this landing.

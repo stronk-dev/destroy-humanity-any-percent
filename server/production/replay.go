@@ -159,6 +159,8 @@ type LoggedExitTransition struct {
 
 var ReplayHookOrder = [...]string{"prestige", "faction", "guild", "commons"}
 
+var ErrReplayClockViolation = errors.New("replay clock violation")
+
 // ApplyLogged is the only replayable non-terminal Company mutation boundary.
 // It consumes no projection, clock, or catalog resolver outside its four data
 // arguments. Invariant diagnostics are deterministic transition output.
@@ -196,7 +198,7 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	}
 	now := time.UnixMilli(wire.EvaluatedAtMS).UTC()
 	if now.Before(state.EvaluatedThrough) {
-		return LoggedTransition{}, fmt.Errorf("%w: clock regression", ErrInvalidReplayInputs)
+		return LoggedTransition{}, ErrReplayClockViolation
 	}
 	var accrual replayAccrual
 	var founder *save.State
@@ -273,7 +275,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	}
 	now := time.UnixMilli(wire.EvaluatedAtMS).UTC()
 	if now.Before(company.EvaluatedThrough) {
-		return LoggedExitTransition{}, fmt.Errorf("%w: clock regression", ErrInvalidReplayInputs)
+		return LoggedExitTransition{}, ErrReplayClockViolation
 	}
 	contributions, err := contributionsFromReplay(resolved.Accrual)
 	if err != nil || resolved.Accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
@@ -441,7 +443,7 @@ func validFounderCarry(carry replayFounderCarry) bool {
 		carry.ReputationLevel < 0 || carry.ReputationLevel > decimal.MaxExactInteger ||
 		carry.RouteKnowledgeBalance < 0 || carry.RouteKnowledgeBalance > decimal.MaxExactInteger ||
 		carry.AgeMS < 0 || carry.AgeMS > decimal.MaxExactInteger || carry.Notoriety < 0 ||
-		carry.Notoriety > decimal.MaxExactInteger || carry.ExitHistoryCount < 0 || carry.NetworkSlots == nil || carry.LedgerFactKinds == nil {
+		carry.Notoriety > decimal.MaxExactInteger || carry.ExitHistoryCount < 0 || int64(carry.ExitHistoryCount) > decimal.MaxExactInteger || carry.NetworkSlots == nil || carry.LedgerFactKinds == nil {
 		return false
 	}
 	last := ""

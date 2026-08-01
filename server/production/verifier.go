@@ -3,7 +3,8 @@ package production
 import (
 	"bytes"
 	"encoding/json"
-	"strings"
+	"errors"
+	"io"
 	"time"
 
 	"cloud-clicker/server/economy"
@@ -49,7 +50,20 @@ func VerifyReplayRun(genesis []byte, version int, catalogs CatalogBundle, entrie
 		if entry.Sequence != int64(index+1) || terminal {
 			return ReplayLogGap
 		}
-		if entry.Terminal {
+		wire, wireErr := parseReplayInputs(entry.ReplayInputs)
+		if wireErr != nil {
+			return ReplayStateDivergence
+		}
+		if wire.Command.RunLogSeq != entry.Sequence {
+			return ReplayLogGap
+		}
+		var discriminator struct {
+			Kind string `json:"kind"`
+		}
+		if json.Unmarshal(wire.Resolved, &discriminator) != nil {
+			return ReplayStateDivergence
+		}
+		if discriminator.Kind == "exit" {
 			transition, transitionErr := ApplyLoggedExit(state, entry.CanonicalPayload, catalogs, entry.ReplayInputs)
 			if transitionErr != nil {
 				return replayErrorVerdict(transitionErr)
@@ -60,7 +74,8 @@ func VerifyReplayRun(genesis []byte, version int, catalogs CatalogBundle, entrie
 			if !canonicalJSONEqual(transition.Decision.Receipt, entry.ReceiptJSON) || !canonicalJSONEqual(marshalReplayEvents(events), entry.EventsJSON) {
 				return ReplayStateDivergence
 			}
-			state, terminal = transition.Company, true
+			state = transition.Company
+			terminal = transition.Decision.Outcome == save.IntentApplied
 			continue
 		}
 		transition, transitionErr := ApplyLogged(state, entry.CanonicalPayload, catalogs, entry.ReplayInputs)
@@ -79,7 +94,7 @@ func VerifyReplayRun(genesis []byte, version int, catalogs CatalogBundle, entrie
 }
 
 func replayErrorVerdict(err error) ReplayVerdict {
-	if strings.Contains(err.Error(), "clock regression") {
+	if errors.Is(err, ErrReplayClockViolation) {
 		return ReplayClockViolation
 	}
 	return ReplayStateDivergence
@@ -101,15 +116,20 @@ func marshalReplayEvents(events []save.EventWrite) []byte {
 }
 
 func canonicalJSONEqual(left, right []byte) bool {
-	canonical := func(source []byte) []byte {
+	canonical := func(source []byte) ([]byte, bool) {
 		decoder := json.NewDecoder(bytes.NewReader(source))
 		decoder.UseNumber()
 		var value any
 		if decoder.Decode(&value) != nil {
-			return nil
+			return nil, false
 		}
-		encoded, _ := json.Marshal(value)
-		return encoded
+		if decoder.Decode(&struct{}{}) != io.EOF {
+			return nil, false
+		}
+		encoded, err := json.Marshal(value)
+		return encoded, err == nil
 	}
-	return bytes.Equal(canonical(left), canonical(right))
+	leftCanonical, leftOK := canonical(left)
+	rightCanonical, rightOK := canonical(right)
+	return leftOK && rightOK && bytes.Equal(leftCanonical, rightCanonical)
 }
