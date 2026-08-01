@@ -57,24 +57,27 @@ traffic. Centrifuge history is configured at publication time: 512/10 minutes fo
 operation publishes the courtesy `server_restarting` system envelope to active channels, closes
 clients with code 4003, and shuts down under the caller's context.
 
-Every new Company intent record inserts its exact normalized receipt into
-`transport_receipt_outbox` in the same database transaction as the rejection or new save revision;
-an Exit inserts against the new run's authoritative revision. Idempotent replay does not create a
-second row. Receipts above 60 KiB are rejected at both the application and database boundaries.
+Every Founder/Company event and every Company intent receipt enters one durable
+`transport_player_outbox` in the transaction that commits it. A database trigger owns event
+insertion for every event writer; intent and Exit transactions insert their exact normalized
+receipts. An Exit therefore produces one totally ordered Founder sequence spanning its Founder
+event, final-run Company events, next-run Company event, and receipt. Event payloads carry their
+required `company|founder` scope and the revision in that scope. Idempotent replay does not create a
+second row. Player payloads above 60 KiB are rejected at both the application and database boundaries.
 The application insert measures PostgreSQL's exact `jsonb::text` representation before mutation,
 so structural spacing cannot pass Go and then abort the surrounding intent on the database CHECK.
 This leaves room for the closed 64-KiB transport envelope. Relay workers claim at most the oldest
 pending row per Founder with expiring leases and `SKIP LOCKED`, sort the returned batch by outbox
-identity, publish the receipt unchanged to `player:{founder_id}`, then acknowledge it. On publish or
+identity, publish its event or receipt unchanged to `player:{founder_id}`, then acknowledge it. On publish or
 acknowledgement failure every unprocessed claim is released. Deterministic envelope-policy failures
 consume the failed head's attempt budget; five dead-letter the row and emit a
-`receipt_dead_letter` invariant report. Publisher and acknowledgement infrastructure failures do
+`player_message_dead_letter` invariant report. Publisher and acknowledgement infrastructure failures do
 not consume that budget: the head retains its lease for a one-second backoff, records the last
 error, and blocks newer rows for that Founder without blocking other Founders. A poison receipt
 therefore cannot pin readiness forever, while a short outage cannot destroy a valid receipt. A
-crash after publication but before acknowledgement may redeliver the same receipt, which is safe
-because intent identity and revision reconciliation are already idempotent; a crash before
-publication cannot lose it.
+crash after publication but before acknowledgement may redeliver a message, which is safe because
+events have immutable event IDs and receipts retain intent identity plus authoritative revision; a
+crash before publication cannot lose it.
 
 The embedded node sets Centrifuge's process-wide slow-writer policy once, before any node runs, so
 its bounded byte queue closes stalled clients with application code 4000 rather than the library's
@@ -89,14 +92,14 @@ Drain courtesy messages deliberately bypass recoverable history because their re
 The gameserver broadcasts first, then closes intent admission; every exit branch—including a failed
 broadcast—closes sockets and shuts down under the same bounded context.
 
-The runnable `cmd/gameserver` wiring and event/snapshot relays remain implementing; this document
-does not claim those paths exist yet.
+The event/receipt relay is implemented. The runnable `cmd/gameserver` composition and world-snapshot
+driver remain implementing; this document does not claim those paths exist yet.
 
 The in-process gameserver lifecycle now owns `/healthz`, `/readyz`, WebSocket mounting, and exact
 intent admission during shutdown. Draining irreversibly marks readiness false before publishing
 the courtesy message, then closes admission immediately after that broadcast. A relay tick cannot
 raise readiness during the broadcast window. It then waits for every already-admitted HTTP intent,
-flushes the receipt outbox to empty, stops the relay, closes sockets with code 4003, and shuts down
-Centrifuge under the configured 15-second bound. New intents during that interval receive HTTP 503
+flushes the player-message outbox to empty, stops the relay, closes sockets with code 4003, and
+shuts down Centrifuge under the configured 15-second bound. New intents during that interval receive HTTP 503
 with `server_draining/retry_same_intent_id`; health remains process-liveness while readiness also
 checks Postgres.

@@ -422,3 +422,19 @@ Findings (minor):
   Event payloads now require the exact field `scope` with closed values `company|founder` in Go and
   TypeScript; missing and unknown scopes are negative vectors. This repairs the boundary needed by
   the still-unimplemented durable event relay.
+
+## 2026-08-01 — unified durable player event/receipt relay
+
+- Replaced the receipt-only queue with one `transport_player_outbox`. A trigger on the authoritative
+  `events` table makes every Founder/Company event writer participate without a second hand-maintained
+  call path; receipt rows use the same transaction and queue. The outbox identity is now the sole
+  per-Founder delivery order across scopes.
+- Event messages freeze `scope` and that scope's revision in their exact payload. The Exit integration
+  proof asserts the committed order founder event → final Company events → next-run Company event →
+  receipt; ordinary intent coverage proves a Founder cannot claim its receipt ahead of its event.
+- The live relay now maps both closed kinds, preserves the existing lease/transient/poison semantics,
+  and emits the generalized `player_message_dead_letter` invariant. Migration 00040 preserves every
+  existing receipt row and its claim/dead-letter state.
+- Focused unit suites and the real-Postgres save/production integration surface pass through the
+  repository-root commands. Plan item 3 flips in this proof-carrying change; `cmd/gameserver` and the
+  world snapshot driver remain the forward composition work.

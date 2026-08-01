@@ -106,7 +106,7 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1`, companyRevision.StreamID).Scan(&loggedRows); err != nil || loggedRows != 0 {
 		t.Fatalf("run-log rollback rows=%d err=%v", loggedRows, err)
 	}
-	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM transport_receipt_outbox WHERE company_stream_id=$1`, companyRevision.StreamID).Scan(&outboxRows); err != nil || outboxRows != 0 {
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM transport_player_outbox WHERE stream_id=$1`, companyRevision.StreamID).Scan(&outboxRows); err != nil || outboxRows != 0 {
 		t.Fatalf("outbox rollback rows=%d err=%v", outboxRows, err)
 	}
 	assertLatestRevision(t, ctx, store, founderRevision.StreamID, 1)
@@ -151,8 +151,29 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	if count, err := store.CountRunEvents(ctx, companyRevision.StreamID, EventExitOfferDeclined, 2); err != nil || count != 0 {
 		t.Fatalf("run 2 decline count=%d err=%v", count, err)
 	}
-	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM transport_receipt_outbox WHERE company_stream_id=$1`, companyRevision.StreamID).Scan(&outboxRows); err != nil || outboxRows != 1 {
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM transport_player_outbox WHERE founder_id=$1`, ownerID).Scan(&outboxRows); err != nil || outboxRows != 5 {
 		t.Fatalf("exit outbox rows=%d err=%v", outboxRows, err)
+	}
+	rows, err := db.QueryContext(ctx, `SELECT message_kind,scope,revision,COALESCE(payload->>'kind','') FROM transport_player_outbox WHERE founder_id=$1 ORDER BY outbox_id`, ownerID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var delivered []string
+	for rows.Next() {
+		var kind, scope, eventKind string
+		var revision int64
+		if err := rows.Scan(&kind, &scope, &revision, &eventKind); err != nil {
+			rows.Close()
+			t.Fatal(err)
+		}
+		delivered = append(delivered, fmt.Sprintf("%s:%s:%d:%s", kind, scope, revision, eventKind))
+	}
+	if err := rows.Close(); err != nil {
+		t.Fatal(err)
+	}
+	wantDelivery := []string{"event:founder:2:founder_advanced", "event:company:2:exit_offer_declined", "event:company:2:run_ended", "event:company:3:run_started", "receipt:company:3:"}
+	if fmt.Sprint(delivered) != fmt.Sprint(wantDelivery) {
+		t.Fatalf("player delivery order=%v want=%v", delivered, wantDelivery)
 	}
 	assertLatestRevision(t, ctx, store, founderRevision.StreamID, 2)
 	assertLatestRevision(t, ctx, store, companyRevision.StreamID, 3)

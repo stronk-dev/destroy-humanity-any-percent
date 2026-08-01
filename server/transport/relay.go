@@ -10,14 +10,14 @@ import (
 	"cloud-clicker/server/save"
 )
 
-var ErrRelay = errors.New("transport receipt relay failed")
+var ErrRelay = errors.New("transport player relay failed")
 
-type ReceiptSource interface {
-	ClaimReceiptOutbox(context.Context, int, time.Duration) ([]save.ReceiptOutboxItem, error)
-	MarkReceiptPublished(context.Context, int64, string) error
-	ReleaseReceiptClaim(context.Context, int64, string) error
-	DeferReceiptClaim(context.Context, int64, string, string, time.Duration) error
-	FailReceiptClaim(context.Context, int64, string, string, int) (bool, error)
+type PlayerSource interface {
+	ClaimPlayerOutbox(context.Context, int, time.Duration) ([]save.PlayerOutboxItem, error)
+	MarkPlayerPublished(context.Context, int64, string) error
+	ReleasePlayerClaim(context.Context, int64, string) error
+	DeferPlayerClaim(context.Context, int64, string, string, time.Duration) error
+	FailPlayerClaim(context.Context, int64, string, string, int) (bool, error)
 }
 
 type EnvelopePublisher interface {
@@ -28,7 +28,7 @@ type RelayInvariant struct {
 	Kind         string
 	OutboxID     int64
 	FounderID    string
-	IntentID     string
+	SourceID     string
 	AttemptCount int
 	Detail       string
 }
@@ -37,8 +37,8 @@ type RelayInvariantSink interface {
 	ReportRelayInvariant(RelayInvariant)
 }
 
-type ReceiptRelay struct {
-	source    ReceiptSource
+type PlayerRelay struct {
+	source    PlayerSource
 	publisher EnvelopePublisher
 	sink      RelayInvariantSink
 	batchSize int
@@ -47,32 +47,32 @@ type ReceiptRelay struct {
 	mu        sync.Mutex
 }
 
-const receiptFailureLimit = 5
+const playerFailureLimit = 5
 
-func NewReceiptRelay(source ReceiptSource, publisher EnvelopePublisher, sink RelayInvariantSink) (*ReceiptRelay, error) {
+func NewPlayerRelay(source PlayerSource, publisher EnvelopePublisher, sink RelayInvariantSink) (*PlayerRelay, error) {
 	if source == nil || publisher == nil || sink == nil {
 		return nil, ErrRelay
 	}
-	return &ReceiptRelay{source: source, publisher: publisher, sink: sink, batchSize: 64, lease: 30 * time.Second, backoff: time.Second}, nil
+	return &PlayerRelay{source: source, publisher: publisher, sink: sink, batchSize: 64, lease: 30 * time.Second, backoff: time.Second}, nil
 }
 
-func (relay *ReceiptRelay) Flush(ctx context.Context) (int, error) {
+func (relay *PlayerRelay) Flush(ctx context.Context) (int, error) {
 	relay.mu.Lock()
 	defer relay.mu.Unlock()
-	items, err := relay.source.ClaimReceiptOutbox(ctx, relay.batchSize, relay.lease)
+	items, err := relay.source.ClaimPlayerOutbox(ctx, relay.batchSize, relay.lease)
 	if err != nil {
 		return 0, err
 	}
 	published := 0
 	for index, item := range items {
 		envelope := Envelope{
-			Version: WireVersion, Channel: "player:" + item.FounderID, Kind: "receipt", Revision: item.Revision,
-			ConstantsHash: item.ConstantsHash, Timestamp: item.OccurredAt, Payload: item.Receipt,
+			Version: WireVersion, Channel: "player:" + item.FounderID, Kind: item.MessageKind, Revision: item.Revision,
+			ConstantsHash: item.ConstantsHash, Timestamp: item.OccurredAt, Payload: item.Payload,
 		}
 		if err := relay.publisher.Publish(envelope); err != nil {
 			return published, relay.failBatch(ctx, items, index, err, errors.Is(err, ErrInvalidPolicy))
 		}
-		if err := relay.source.MarkReceiptPublished(ctx, item.ID, item.ClaimToken); err != nil {
+		if err := relay.source.MarkPlayerPublished(ctx, item.ID, item.ClaimToken); err != nil {
 			return published, relay.failBatch(ctx, items, index, err, false)
 		}
 		published++
@@ -80,23 +80,23 @@ func (relay *ReceiptRelay) Flush(ctx context.Context) (int, error) {
 	return published, nil
 }
 
-func (relay *ReceiptRelay) failBatch(ctx context.Context, items []save.ReceiptOutboxItem, failedIndex int, cause error, deterministic bool) error {
+func (relay *PlayerRelay) failBatch(ctx context.Context, items []save.PlayerOutboxItem, failedIndex int, cause error, deterministic bool) error {
 	failed := items[failedIndex]
 	detail := failureDetail(cause)
 	var dead bool
 	var failErr error
 	if deterministic {
-		dead, failErr = relay.source.FailReceiptClaim(ctx, failed.ID, failed.ClaimToken, detail, receiptFailureLimit)
+		dead, failErr = relay.source.FailPlayerClaim(ctx, failed.ID, failed.ClaimToken, detail, playerFailureLimit)
 		if dead {
-			relay.sink.ReportRelayInvariant(RelayInvariant{Kind: "receipt_dead_letter", OutboxID: failed.ID, FounderID: failed.FounderID,
-				IntentID: failed.IntentID, AttemptCount: failed.AttemptCount + 1, Detail: detail})
+			relay.sink.ReportRelayInvariant(RelayInvariant{Kind: "player_message_dead_letter", OutboxID: failed.ID, FounderID: failed.FounderID,
+				SourceID: failed.SourceID, AttemptCount: failed.AttemptCount + 1, Detail: detail})
 		}
 	} else {
-		failErr = relay.source.DeferReceiptClaim(ctx, failed.ID, failed.ClaimToken, detail, relay.backoff)
+		failErr = relay.source.DeferPlayerClaim(ctx, failed.ID, failed.ClaimToken, detail, relay.backoff)
 	}
 	var releaseErr error
 	for _, item := range items[failedIndex+1:] {
-		if err := relay.source.ReleaseReceiptClaim(ctx, item.ID, item.ClaimToken); err != nil {
+		if err := relay.source.ReleasePlayerClaim(ctx, item.ID, item.ClaimToken); err != nil {
 			releaseErr = errors.Join(releaseErr, err)
 		}
 	}

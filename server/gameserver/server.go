@@ -28,7 +28,7 @@ type Realtime interface {
 	DrainTimeout() time.Duration
 }
 
-type ReceiptRelay interface {
+type PlayerRelay interface {
 	Flush(context.Context) (int, error)
 }
 
@@ -40,7 +40,7 @@ type Server struct {
 	database      Database
 	api           http.Handler
 	realtime      Realtime
-	relay         ReceiptRelay
+	relay         PlayerRelay
 	epochs        EpochSynchronizer
 	constantsHash string
 	gate          *intentGate
@@ -53,7 +53,7 @@ type Server struct {
 	startErr      error
 }
 
-func New(database Database, api http.Handler, realtime Realtime, relay ReceiptRelay, epochs EpochSynchronizer, constantsHash string) (*Server, error) {
+func New(database Database, api http.Handler, realtime Realtime, relay PlayerRelay, epochs EpochSynchronizer, constantsHash string) (*Server, error) {
 	if database == nil || api == nil || realtime == nil || relay == nil || epochs == nil || !validConstantsHash(constantsHash) {
 		return nil, ErrInvalidServer
 	}
