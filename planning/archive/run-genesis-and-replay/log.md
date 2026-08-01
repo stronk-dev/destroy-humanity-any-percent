@@ -692,3 +692,13 @@ every merge result against every parent, with a temporary-Git fixture that injec
 semantic merge-resolution change and requires rejection. Go requires `name_key = category.<id>` like
 TypeScript. These transition/receipt semantics advance the shared kernel to 0.3.1; no reviewed hash
 was rewritten.
+
+## 2026-08-01 — independent remediation approval and archival gate
+
+Independent review approved `f25e2c5` and `c782b57` with no new findings. The reviewer verified all
+eight prior blockers plus the whole-state rejection and merge-commit seams directly in source, then
+independently ran root `make verify` and the full Postgres Compose integration to exit 0 (6,493
+client unit tests and 19,488 browser tests included). No review exception or carried acceptance debt
+remains. The six-verdict verifier, projection/dead-letter queue, category projector, immutable
+genesis, sequential cross-runtime corpus, and archive compaction are canonical in
+`docs/leaderboards-and-epochs.md`; this RFC is ready to freeze and archive.

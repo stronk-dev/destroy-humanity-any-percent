@@ -14,9 +14,9 @@
    parity fixtures.
 4. [x] Add immutable run genesis storage at account creation, import, and Exit run-start sites,
    with pin/genesis atomicity and byte-identity proofs.
-5. [ ] Implement the six-verdict verifier and shared failure corpus, including pre-timer board
+5. [x] Implement the six-verdict verifier and shared failure corpus, including pre-timer board
    behavior and terminal-fact checks.
-6. [ ] Add the verification queue/dead-letter/project-only path, archive compaction, canonical
+6. [x] Add the verification queue/dead-letter/project-only path, archive compaction, canonical
    docs, full verification, and independent review before archival.
 
 Carried acceptance debt (must remain here until checked off):
