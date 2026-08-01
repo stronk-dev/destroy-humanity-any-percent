@@ -61,6 +61,8 @@ const fixture = fixtureJSON as {
     readonly case: FixtureCase;
   }[];
   readonly full_run: {
+    readonly constants_hash: string;
+    readonly artifacts: ReplayArtifacts;
     readonly genesis: unknown;
     readonly entries: readonly {
       readonly seq: number;
@@ -135,9 +137,12 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
   });
 
   it("verifies the 51-entry mixed full-run corpus and all closed failure verdicts", async () => {
-    const bundle = await loadReplayCatalogBundle(fixture.constants_hash, fixture.artifacts);
+    const bundle = await loadReplayCatalogBundle(fixture.full_run.constants_hash, fixture.full_run.artifacts);
     const entries = fixture.full_run.entries.map((entry) => ({ seq: entry.seq, canonicalPayload: canonicalJSONString(entry.canonical_payload), replayInputs: entry.replay_inputs, receiptJSON: entry.receipt_json, eventsJSON: entry.events_json, terminal: entry.terminal }));
-    const identity = { constantsHash: fixture.constants_hash };
+    expect(entries.some((entry) => entry.canonicalPayload.includes('"mode":"max"'))).toBe(true);
+    expect(entries.some((entry) => entry.eventsJSON.includes('"kind":"invariant_reported"'))).toBe(true);
+    expect(entries.some((entry) => entry.eventsJSON.includes('"kind":"exit_offer_expired"'))).toBe(true);
+    const identity = { constantsHash: fixture.full_run.constants_hash };
     await expect(verifyReplayRun(fixture.full_run.genesis, bundle, entries, identity)).resolves.toBe("verified");
     const detailed = await verifyReplayRunDetailed(fixture.full_run.genesis, bundle, entries, identity);
     expect(detailed.verdict).toBe("verified");

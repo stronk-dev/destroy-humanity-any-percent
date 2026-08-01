@@ -35,6 +35,8 @@ type crossRuntimeFixture struct {
 }
 
 type crossRuntimeFullRun struct {
+	ConstantsHash  string                     `json:"constants_hash"`
+	Artifacts      map[string]string          `json:"artifacts"`
 	Genesis        json.RawMessage            `json:"genesis"`
 	Entries        []crossRuntimeFullRunEntry `json:"entries"`
 	FinalStateJSON string                     `json:"final_state_json"`
@@ -429,12 +431,36 @@ func mustEncodeState(t *testing.T, state *save.State) json.RawMessage {
 
 func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash string, startedAt time.Time) crossRuntimeFullRun {
 	t.Helper()
+	boundaryArtifacts := make(map[string][]byte, len(catalogs.Artifacts))
+	for name, data := range catalogs.Artifacts {
+		boundaryArtifacts[name] = bytes.Clone(data)
+	}
+	var economyArtifact map[string]any
+	if err := json.Unmarshal(boundaryArtifacts["economy"], &economyArtifact); err != nil {
+		t.Fatal(err)
+	}
+	resources := economyArtifact["resources"].([]any)
+	resources[0].(map[string]any)["hardcap"].(map[string]any)["amount"] = "1e4000000000000000"
+	boundaryArtifacts["economy"], _ = json.Marshal(economyArtifact)
+	var err error
+	constantsHash, err = save.ConstantsHashArtifacts(boundaryArtifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs = loadReplayTestBundle(t, constantsHash, boundaryArtifacts)
+	fixtureArtifacts := make(map[string]string, len(boundaryArtifacts))
+	for name, data := range boundaryArtifacts {
+		fixtureArtifacts[name] = string(data)
+	}
 	founderID := offerFixtureFounder(t, catalogs.Prestige.SpawnGatePPM[3])
 	state := replayFixtureState(t, catalogs.Economy, startedAt)
 	state.Tier = 2
 	state.LifetimeValue = decimal.New(8, 12)
 	state.DoctrinesByTransition["transition.t3_to_t4"] = "doctrine.capture"
-	setCash(t, state, "5e14")
+	// The sequential corpus deliberately begins at the declared hardcap. Its
+	// max purchase reaches the closed-form boundary and exercises the invariant
+	// event path without swapping catalogs mid-run.
+	setCash(t, state, "1e4000000000000000")
 	genesis, err := save.EncodeState(state)
 	if err != nil {
 		t.Fatal(err)
@@ -444,7 +470,7 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 	now := startedAt
 	ordinary := []string{
 		`{"kind":"perform_manual_batch","expected_revision":%d,"action_id":"manual.click","count":2,"window_ms":1000}`,
-		`{"kind":"buy_generator","expected_revision":%d,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":3}}`,
+		`{"kind":"buy_generator","expected_revision":%d,"generator_id":"generator.beige_tower","count":{"mode":"max"}}`,
 		`{"kind":"sign_compact","expected_revision":%d,"tithe_ppm":110000}`,
 		`{"kind":"incorporate","expected_revision":%d,"faction_id":"open_source"}`,
 		`{"kind":"perform_manual_batch","expected_revision":%d,"action_id":"manual.click","count":1,"window_ms":1000}`,
@@ -458,12 +484,15 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 		} else {
 			now = now.Add(5 * time.Second)
 		}
+		if index == 6 {
+			if state.OfferState == nil {
+				t.Fatal("full run gate did not spawn the offer required by the expiry step")
+			}
+			now = state.OfferState.ExpiresAt
+		}
 		payload := fmt.Sprintf(`{"kind":"perform_manual_batch","expected_revision":%d,"action_id":"manual.click","count":1,"window_ms":1000}`, revision)
 		if index < len(ordinary) {
 			payload = fmt.Sprintf(ordinary[index], revision)
-		}
-		if index == 6 {
-			payload = fmt.Sprintf(`{"kind":"decline_exit_offer","expected_revision":%d,"offer_id":"%s"}`, revision, state.OfferState.OfferID)
 		}
 		if index == 7 {
 			payload = fmt.Sprintf(`{"kind":"cross_gate","expected_revision":%d,"gate_id":"gate.t4_to_t5","route_id":"route.ipo_sequence_break"}`, revision)
@@ -496,6 +525,17 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 		}
 		if index == 3 && !hasEventKind(transition.Events, save.EventCompactTitheRaised) {
 			t.Fatal("full run existing-member Open Source incorporation omitted compact_tithe_raised")
+		}
+		if index == 1 {
+			var receipt struct {
+				AppliedCount int64 `json:"applied_count"`
+			}
+			if err := json.Unmarshal(transition.Receipt, &receipt); err != nil || request.CountMode != "max" || receipt.AppliedCount < 1 || !hasEventKind(transition.Events, save.EventInvariantReported) {
+				t.Fatalf("full run max/invariant step missing: mode=%q count=%d events=%+v err=%v", request.CountMode, receipt.AppliedCount, transition.Events, err)
+			}
+		}
+		if index == 6 && !hasEventKind(transition.Events, save.EventExitOfferExpired) {
+			t.Fatalf("full run offer expiry missing: events=%+v", transition.Events)
 		}
 		if index == 7 && !hasEventKind(transition.Events, save.EventRouteExecuted) {
 			t.Fatal("full run discounted route crossing omitted route_executed")
@@ -538,7 +578,7 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 	if err != nil {
 		t.Fatal(err)
 	}
-	full := crossRuntimeFullRun{Genesis: genesis, Entries: entries, FinalStateJSON: canonicalFixtureJSON(t, finalState)}
+	full := crossRuntimeFullRun{ConstantsHash: constantsHash, Artifacts: fixtureArtifacts, Genesis: genesis, Entries: entries, FinalStateJSON: canonicalFixtureJSON(t, finalState)}
 	assertFullRunVerifier(t, full, catalogs, constantsHash)
 	return full
 }

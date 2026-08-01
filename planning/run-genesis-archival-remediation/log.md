@@ -21,3 +21,11 @@ Review provenance correction: the three disputed entries in the archived Run Gen
 reviews by the project's designated Claude reviewer and must not be cited as that gate. The later
 2026-08-01 designated full-span verdict is the authoritative archival review. `AGENTS.md` now
 requires every future verdict to label reviewer and recorder explicitly.
+
+## 2026-08-01 — sequential corpus debt closed in sequence
+
+The 51-intent run now carries its own immutable seven-artifact bundle. Its economy hardcap reaches
+the numeric-domain boundary without mutating catalogs between commands; the same evolving run
+performs a max purchase that emits `invariant_reported`, keeps the spawned offer alive, and expires
+it during the next ordinary intent. Go asserts all three at generation and TypeScript asserts all
+three are present before replaying the entire sequence to byte-identical receipts/events/state.
