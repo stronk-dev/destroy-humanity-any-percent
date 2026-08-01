@@ -89,8 +89,9 @@ Client persists `(channel, centrifuge stream position/epoch)` from the SDK. `pla
 Message size is not an authoritative-write invariant. Receipt bytes are measured before commit because
 the receipt is produced by the request transaction. Event rows, including projector events, always
 commit; an event whose v2 envelope exceeds the transport cap enters the relay's existing bounded
-deterministic dead-letter lane and the client eventually heals through the same forward-gap/full-sync
-path. Transport can delay presentation but cannot veto game history.
+deterministic dead-letter lane. At terminal failure the relay emits a small `resync_required` frame,
+so a same-revision receipt cannot conceal the lost presentation event. Transport can delay
+presentation but cannot veto game history.
 
 ### T5 — Backpressure constants (Phase-0 literals, config-validated)
 

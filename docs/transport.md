@@ -74,7 +74,8 @@ The application insert measures PostgreSQL's exact `jsonb::text` representation 
 so structural spacing cannot pass Go and then abort the surrounding intent on the database CHECK.
 Authoritative events always commit, even when the resulting envelope is oversized. Such a row
 reaches the relay, fails the 64-KiB envelope policy deterministically, dead-letters after five
-attempts, and is healed by the client's ordinary forward-gap/full-sync path. Transport can delay
+attempts, and emits a small `resync_required` frame that invokes the ordinary full-sync path.
+Transport can delay
 event presentation; it cannot roll back game or projection history. Relay workers claim at most the oldest
 pending row per Founder with expiring leases and `SKIP LOCKED`, sort the returned batch by outbox
 identity, publish its event or receipt unchanged to `player:{founder_id}`, then acknowledge it. On publish or
@@ -91,8 +92,8 @@ crash before publication cannot lose it.
 The outbox migration is a single-process, migrate-before-readiness operation. It intentionally
 does not replay historical events that predate installation; live delivery begins at installation
 and full sync remains authoritative. Applied migration files are immutable—later corrections use
-new forward migrations. A dead-lettered event is not skipped invisibly: the next forward revision
-exposes the gap and triggers full sync.
+new forward migrations. A dead-lettered event is not skipped invisibly: the relay explicitly
+requests full sync even when a same-revision receipt would otherwise conceal the missing event.
 
 The embedded node sets Centrifuge's process-wide slow-writer policy once, before any node runs, so
 its bounded byte queue closes stalled clients with application code 4000 rather than the library's

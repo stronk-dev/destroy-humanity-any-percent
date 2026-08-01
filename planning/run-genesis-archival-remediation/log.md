@@ -44,3 +44,8 @@ any payload size. Oversized events then take the relay's bounded deterministic d
 The real-Postgres fixture commits a >60 KiB compensation event, observes its historical marker in
 the outbox, and independently proves oversized receipts still fail. The migration Down refuses to
 destroy legal oversized event rows.
+
+Seam review found that a dead-lettered event is not guaranteed to create a later numeric gap: a
+same-revision receipt can follow it. The relay now publishes a bounded `resync_required` system
+frame when an event reaches its fifth deterministic failure; a regression test proves the poison
+row is dead-lettered and the recovery signal is emitted exactly then.

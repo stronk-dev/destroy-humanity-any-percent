@@ -62,6 +62,10 @@ type memoryPublisher struct {
 
 func (publisher *memoryPublisher) Publish(envelope Envelope) error {
 	if publisher.failAt > 0 && len(publisher.envelopes)+1 == publisher.failAt {
+		if publisher.deterministic && envelope.Kind == "system" {
+			publisher.envelopes = append(publisher.envelopes, envelope)
+			return nil
+		}
 		if publisher.deterministic {
 			return ErrInvalidPolicy
 		}
@@ -146,18 +150,20 @@ func TestPlayerRelayMarkFailureAlsoReleasesRemainder(t *testing.T) {
 func TestPlayerRelayDeadLettersAndReportsBoundedPoison(t *testing.T) {
 	source := &memoryPlayerSource{items: []save.PlayerOutboxItem{{
 		ID: 9, ClaimToken: "01985555-0012-7000-8000-000000000012", FounderID: "founder",
-		MessageKind: "receipt", Scope: "company", SourceID: "01985555-0010-7000-8000-000000000010", Revision: 1,
+		MessageKind: "event", Scope: "company", SourceID: "01985555-0010-7000-8000-000000000010", Revision: 1,
 		ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-		Payload:       json.RawMessage(`{"outcome":"rejected"}`), OccurredAt: time.Now().UTC(),
+		Payload:       json.RawMessage(`{"event_id":"event-poison","kind":"run.ended","scope":"company","rev":1,"cursor_effect":"advance","payload":{}}`), OccurredAt: time.Now().UTC(),
 	}}}
 	sink := &memoryRelaySink{}
-	relay, _ := NewPlayerRelay(source, &memoryPublisher{failAt: 1, deterministic: true}, sink)
+	publisher := &memoryPublisher{failAt: 1, deterministic: true}
+	relay, _ := NewPlayerRelay(source, publisher, sink)
 	for attempt := 1; attempt <= playerFailureLimit; attempt++ {
 		if _, err := relay.Flush(context.Background()); err == nil {
 			t.Fatalf("attempt %d succeeded", attempt)
 		}
 	}
-	if len(sink.reports) != 1 || sink.reports[0].Kind != "player_message_dead_letter" || sink.reports[0].AttemptCount != playerFailureLimit {
-		t.Fatalf("reports=%+v", sink.reports)
+	if len(sink.reports) != 1 || sink.reports[0].Kind != "player_message_dead_letter" || sink.reports[0].AttemptCount != playerFailureLimit ||
+		len(publisher.envelopes) != 1 || publisher.envelopes[0].Kind != "system" || string(publisher.envelopes[0].Payload) != `{"code":"resync_required"}` {
+		t.Fatalf("reports=%+v envelopes=%+v", sink.reports, publisher.envelopes)
 	}
 }

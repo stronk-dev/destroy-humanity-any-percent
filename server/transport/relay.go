@@ -2,6 +2,7 @@ package transport
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"strings"
 	"sync"
@@ -85,11 +86,21 @@ func (relay *PlayerRelay) failBatch(ctx context.Context, items []save.PlayerOutb
 	detail := failureDetail(cause)
 	var dead bool
 	var failErr error
+	var resyncErr error
 	if deterministic {
 		dead, failErr = relay.source.FailPlayerClaim(ctx, failed.ID, failed.ClaimToken, detail, playerFailureLimit)
 		if dead {
 			relay.sink.ReportRelayInvariant(RelayInvariant{Kind: "player_message_dead_letter", OutboxID: failed.ID, FounderID: failed.FounderID,
 				SourceID: failed.SourceID, AttemptCount: failed.AttemptCount + 1, Detail: detail})
+			if failed.MessageKind == "event" {
+				payload, _ := json.Marshal(map[string]string{"code": "resync_required"})
+				resyncErr = relay.publisher.Publish(Envelope{Version: WireVersion, Channel: "player:" + failed.FounderID, Kind: "system",
+					Revision: failed.Revision, ConstantsHash: failed.ConstantsHash, Timestamp: time.Now().UTC(), Payload: payload})
+				if resyncErr != nil {
+					relay.sink.ReportRelayInvariant(RelayInvariant{Kind: "player_resync_signal_failed", OutboxID: failed.ID, FounderID: failed.FounderID,
+						SourceID: failed.SourceID, AttemptCount: failed.AttemptCount + 1, Detail: failureDetail(resyncErr)})
+				}
+			}
 		}
 	} else {
 		failErr = relay.source.DeferPlayerClaim(ctx, failed.ID, failed.ClaimToken, detail, relay.backoff)
@@ -100,7 +111,7 @@ func (relay *PlayerRelay) failBatch(ctx context.Context, items []save.PlayerOutb
 			releaseErr = errors.Join(releaseErr, err)
 		}
 	}
-	return errors.Join(cause, failErr, releaseErr)
+	return errors.Join(cause, failErr, resyncErr, releaseErr)
 }
 
 func failureDetail(err error) string {
