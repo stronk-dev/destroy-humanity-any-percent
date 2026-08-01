@@ -428,7 +428,8 @@ Findings (minor):
 - Replaced the receipt-only queue with one `transport_player_outbox`. A trigger on the authoritative
   `events` table makes every Founder/Company event writer participate without a second hand-maintained
   call path; receipt rows use the same transaction and queue. The outbox identity is now the sole
-  per-Founder delivery order across scopes.
+  per-Founder delivery lane across scopes; T3's per-scope revision cursors remain authoritative when
+  independent Founder and Company transactions interleave.
 - Event messages freeze `scope` and that scope's revision in their exact payload. The Exit integration
   proof asserts the committed order founder event → final Company events → next-run Company event →
   receipt; ordinary intent coverage proves a Founder cannot claim its receipt ahead of its event.
@@ -449,3 +450,17 @@ under the same key. A live-Postgres regression inserts the same intent ID for tw
 Founder streams and requires both durable receipt rows. Migration 00040 itself also declares the
 stream-scoped key so a fresh install can copy pre-existing same-ID receipts before 00041 runs;
 00041 is conditional/idempotent so databases that already applied the original 00040 are repaired.
+
+### Independent review correction — ordering and rollback safety
+
+The review correctly rejected the phrase "sole per-Founder delivery order": sequence identities are
+allocated inside transactions, so independent Founder and Company commits may become visible in a
+different cross-scope order. T3 never made that order authoritative—the client owns one gap cursor
+per scope—so the contract and canonical docs now say exactly that: one durable delivery lane, with
+scope revisions as reconciliation authority. Exit rows written by one transaction retain their
+asserted local order.
+
+Migration 00041's Down path no longer attempts to resurrect the invalid global source-ID uniqueness
+constraint. It restores the stream-scoped key declared by the current 00040 source, so a database
+containing two legitimate streams with the same client intent ID can roll back without data loss or
+migration failure.

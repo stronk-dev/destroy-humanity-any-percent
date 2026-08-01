@@ -60,9 +60,11 @@ clients with code 4003, and shuts down under the caller's context.
 Every Founder/Company event and every Company intent receipt enters one durable
 `transport_player_outbox` in the transaction that commits it. A database trigger owns event
 insertion for every event writer; intent and Exit transactions insert their exact normalized
-receipts. An Exit therefore produces one totally ordered Founder sequence spanning its Founder
+receipts. An Exit therefore produces one transaction-ordered Founder sequence spanning its Founder
 event, final-run Company events, next-run Company event, and receipt. Event payloads carry their
-required `company|founder` scope and the revision in that scope. Idempotent replay does not create a
+required `company|founder` scope and the revision in that scope. Those per-scope revisions—not
+cross-scope arrival order—are the reconciliation authority when independent transactions interleave.
+Idempotent replay does not create a
 second row. Player payloads above 60 KiB are rejected at both the application and database boundaries.
 The application insert measures PostgreSQL's exact `jsonb::text` representation before mutation,
 so structural spacing cannot pass Go and then abort the surrounding intent on the database CHECK.
