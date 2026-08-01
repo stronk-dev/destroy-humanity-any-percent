@@ -2,7 +2,7 @@
   "schema_version": 1,
   "scenario_id": "scenario.phase0_production",
   "scenario_hash": "sha256:10aa5c8a2dd8a5c79a5902e74f4e55a1ca3ab46a2d35c9bf3dd25fc729dbb07a",
-  "constants_hash": "sha256:05f3aa267c699f0f5a63612b32e59af60f62de3a9c2baa119d6177b7e35ce7b3",
+  "constants_hash": "sha256:63ab30c96b5d76b941b053131fcee63c94b6b3ad91322f9160d94973ce8c58fa",
   "run_count": 300,
   "values": [
     {
