@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"testing"
 	"time"
 
@@ -21,10 +22,11 @@ import (
 var updateReplayFixture = flag.Bool("update-replay-fixture", false, "rewrite the shared ApplyLogged fixture")
 
 type crossRuntimeFixture struct {
-	Version       int                       `json:"version"`
-	ConstantsHash string                    `json:"constants_hash"`
-	Artifacts     map[string]string         `json:"artifacts"`
-	Cases         []crossRuntimeFixtureCase `json:"cases"`
+	Version       int                        `json:"version"`
+	ConstantsHash string                     `json:"constants_hash"`
+	Artifacts     map[string]string          `json:"artifacts"`
+	Cases         []crossRuntimeFixtureCase  `json:"cases"`
+	TerminalCases []crossRuntimeTerminalCase `json:"terminal_cases"`
 }
 
 type crossRuntimeFixtureCase struct {
@@ -43,6 +45,21 @@ type fixtureEvent struct {
 	SchemaVersion int             `json:"schema_version"`
 	IntentID      string          `json:"intent_id"`
 	Payload       json.RawMessage `json:"payload"`
+}
+
+type crossRuntimeTerminalCase struct {
+	Name                 string          `json:"name"`
+	PreState             json.RawMessage `json:"pre_state"`
+	CanonicalPayload     json.RawMessage `json:"canonical_payload"`
+	ReplayInputs         json.RawMessage `json:"replay_inputs"`
+	Outcome              string          `json:"outcome"`
+	Receipt              json.RawMessage `json:"receipt"`
+	FounderOutput        any             `json:"founder_output"`
+	FinalCompany         json.RawMessage `json:"final_company"`
+	NewCompany           json.RawMessage `json:"new_company"`
+	FounderEvents        []fixtureEvent  `json:"founder_events"`
+	CompanyEndedEvents   []fixtureEvent  `json:"company_ended_events"`
+	CompanyStartedEvents []fixtureEvent  `json:"company_started_events"`
 }
 
 func TestApplyLoggedCrossRuntimeFixture(t *testing.T) {
@@ -168,6 +185,138 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		}
 		result.Cases = append(result.Cases, crossRuntimeFixtureCase{Name: definition.name, PreState: preState, CanonicalPayload: request.CanonicalPayload,
 			ReplayInputs: inputs, Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: postState})
+	}
+	result.TerminalCases = []crossRuntimeTerminalCase{
+		makeTerminalFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
+		makeAcceptedOfferFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
+		makeScriptedGateFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
+	}
+	return result
+}
+
+func makeTerminalFixtureCase(t *testing.T, catalogs CatalogBundle, constantsHash string, now time.Time) crossRuntimeTerminalCase {
+	t.Helper()
+	company := replayFixtureState(t, catalogs.Economy, now.Add(-20*time.Minute))
+	company.Tier = 1
+	company.LifetimeValue = decimal.New(8, 12)
+	company.GeneratorCounts["generator.beige_tower"] = 2
+	preState, err := save.EncodeState(company)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0100-7000-8000-000000000100","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001", FounderID: "01986666-2000-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 100}
+	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyLoggedExit(company, request.CanonicalPayload, catalogs, inputs)
+	if err != nil {
+		t.Fatalf("wind-down-scripted-first transition: %v", err)
+	}
+	finalCompany, err := save.EncodeState(transition.Company)
+	if err != nil {
+		t.Fatal(err)
+	}
+	newCompany, err := save.EncodeState(transition.Decision.NewCompanyState)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return crossRuntimeTerminalCase{Name: "wind-down-scripted-first", PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+		Outcome: string(transition.Decision.Outcome), Receipt: transition.Decision.Receipt, FounderOutput: replayFounderOutput(transition.Founder, carry),
+		FinalCompany: finalCompany, NewCompany: newCompany, FounderEvents: fixtureEvents(transition.Decision.FounderEvents),
+		CompanyEndedEvents: fixtureEvents(transition.Decision.CompanyEndedEvents), CompanyStartedEvents: fixtureEvents(transition.Decision.CompanyStartedEvents)}
+}
+
+func makeAcceptedOfferFixtureCase(t *testing.T, catalogs CatalogBundle, constantsHash string, now time.Time) crossRuntimeTerminalCase {
+	t.Helper()
+	company := replayFixtureState(t, catalogs.Economy, now.Add(-20*time.Minute))
+	company.Tier = 3
+	company.LifetimeValue = decimal.New(27, 12)
+	terms := json.RawMessage(`{"market_modifier_ppm":1100000,"payout_preview":{"reputation_delta":5,"network_slot_unlocks":[],"route_knowledge":0,"clout_reach_note":"clout.reach.preserved"}}`)
+	company.OfferState = &save.ExitOfferState{OfferID: "01986666-0200-7000-8000-000000000200", ExitType: "acquisition", TermsJSON: terms, SpawnedAt: now.Add(-time.Minute), ExpiresAt: now.Add(time.Minute)}
+	preState, err := save.EncodeState(company)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0200-7000-8000-000000000201","kind":"accept_exit_offer","expected_revision":1,"expected_founder_revision":2,"offer_id":"01986666-0200-7000-8000-000000000200"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001", FounderID: "01986666-2000-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 101}
+	carry := replayFounderCarry{FounderRevision: 2, FounderConstantsHash: constantsHash, ReputationLevel: 1, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "acquisition", SelectedTerms: terms, NextConstantsHash: constantsHash})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return executeTerminalFixture(t, "accept-stored-offer", catalogs, company, preState, request, inputs, carry)
+}
+
+func makeScriptedGateFixtureCase(t *testing.T, catalogs CatalogBundle, constantsHash string, now time.Time) crossRuntimeTerminalCase {
+	t.Helper()
+	company := replayFixtureState(t, catalogs.Economy, now.Add(-20*time.Minute))
+	company.EvaluatedThrough = now
+	company.ManualTokenRefilledAt = now
+	company.Tier = 2
+	company.LifetimeValue = decimal.New(8, 12)
+	setCash(t, company, "1e10")
+	preState, err := save.EncodeState(company)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0300-7000-8000-000000000300","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001", FounderID: "01986666-2000-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 102}
+	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return executeTerminalFixture(t, "scripted-cross-gate", catalogs, company, preState, request, inputs, carry)
+}
+
+func executeTerminalFixture(t *testing.T, name string, catalogs CatalogBundle, company *save.State, preState json.RawMessage, request IntentRequest, inputs json.RawMessage, carry replayFounderCarry) crossRuntimeTerminalCase {
+	t.Helper()
+	transition, err := ApplyLoggedExit(company, request.CanonicalPayload, catalogs, inputs)
+	if err != nil {
+		t.Fatalf("%s transition: %v", name, err)
+	}
+	finalCompany, err := save.EncodeState(transition.Company)
+	if err != nil {
+		t.Fatal(err)
+	}
+	newCompany, err := save.EncodeState(transition.Decision.NewCompanyState)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return crossRuntimeTerminalCase{Name: name, PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+		Outcome: string(transition.Decision.Outcome), Receipt: transition.Decision.Receipt, FounderOutput: replayFounderOutput(transition.Founder, carry),
+		FinalCompany: finalCompany, NewCompany: newCompany, FounderEvents: fixtureEvents(transition.Decision.FounderEvents),
+		CompanyEndedEvents: fixtureEvents(transition.Decision.CompanyEndedEvents), CompanyStartedEvents: fixtureEvents(transition.Decision.CompanyStartedEvents)}
+}
+
+func replayFounderOutput(state *save.State, carry replayFounderCarry) any {
+	facts := make([]string, 0, len(state.LedgerFactKinds))
+	for fact := range state.LedgerFactKinds {
+		facts = append(facts, fact)
+	}
+	sort.Strings(facts)
+	return map[string]any{"founder_revision": carry.FounderRevision, "founder_constants_hash": carry.FounderConstantsHash,
+		"reputation_level": state.ReputationLevel, "route_knowledge_balance": state.RouteKnowledgeBalance, "age_ms": state.AgeMS,
+		"notoriety": state.Notoriety, "advisor_mode": state.AdvisorMode, "network_slots": state.NetworkSlots,
+		"ledger_fact_kinds": facts, "exit_history_count": len(state.ExitHistory)}
+}
+
+func fixtureEvents(events []save.EventWrite) []fixtureEvent {
+	result := make([]fixtureEvent, len(events))
+	for index, event := range events {
+		result[index] = fixtureEvent{Kind: string(event.Kind), SchemaVersion: event.SchemaVersion, IntentID: event.IntentID, Payload: event.Payload}
 	}
 	return result
 }

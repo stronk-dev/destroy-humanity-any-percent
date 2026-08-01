@@ -17,6 +17,7 @@ export interface ReplayArtifacts { readonly economy: string; readonly routes: st
 export interface ReplayCatalogBundle {
   readonly constantsHash: string; readonly artifacts: ReplayArtifacts; readonly economy: EconomyCatalog; readonly routes: RoutesCatalog;
   readonly commons: CommonsCatalog; readonly prestige: PrestigePolicy; readonly factions: FactionCatalog; readonly guilds: GuildCatalog;
+  readonly next?: ReplayCatalogBundle;
 }
 export interface ReplayContribution { readonly slot: MultiplierSlot; readonly source_id: string; readonly target: string; readonly factor: string }
 export interface ReplayEvent { readonly kind: string; readonly schema_version: number; readonly intent_id: string; readonly payload: unknown }
@@ -33,10 +34,21 @@ export interface ReplayState {
   consumedStockUnits: number; guildTitheCarryPpm: number; guildBoundaryGuildId: string; guildBoundarySeq: number; guildConsumedWindow: number;
 }
 export interface LoggedTransition { readonly state: ReplayState; readonly outcome: "applied" | "rejected"; readonly receipt: unknown; readonly events: readonly ReplayEvent[] }
+export interface LoggedExitTransition {
+  readonly founder: FounderCarry; readonly finalCompany: ReplayState; readonly newCompany: ReplayState | null;
+  readonly outcome: "applied" | "rejected"; readonly receipt: unknown;
+  readonly founderEvents: readonly ReplayEvent[]; readonly companyEndedEvents: readonly ReplayEvent[]; readonly companyStartedEvents: readonly ReplayEvent[];
+}
 
 interface ReplayCommand { intent_id: string; company_stream_id: string; founder_id: string; revision: number; run_seq: number; run_log_seq: number }
 interface ReplayAccrual { contributions: ReplayContribution[]; commons_weight_ppm: number | null; guild_settlement_batch: { guild_id: string; boundary_seq: number; units: number }[]; route_context_version: number }
 interface ReplayWire { v: 1; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; resolved: Record<string, unknown> }
+interface NetworkSlot { readonly slot: string; readonly carried_ref: string }
+interface FounderCarry {
+  founder_revision: number; founder_constants_hash: string; reputation_level: number; route_knowledge_balance: number;
+  age_ms: number; notoriety: number; advisor_mode: boolean; network_slots: NetworkSlot[]; ledger_fact_kinds: string[]; exit_history_count: number;
+}
+interface ExitTerms { reputation_delta: number; network_slot_unlocks: NetworkSlot[]; route_knowledge: number; clout_reach_note: string }
 
 export async function loadReplayCatalogBundle(constantsHash: string, artifacts: ReplayArtifacts): Promise<ReplayCatalogBundle> {
   if (!hashPattern.test(constantsHash) || Object.keys(artifacts).sort(byteCompare).join("\0") !== "commons\0economy\0factions\0guilds\0prestige\0routes") throw new SyntaxError("invalid replay artifact set");
@@ -47,6 +59,10 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const factions = parseFactionCatalog(parseJSON(artifacts.factions), commons.minimumTithePpm, commons.defaultTithePpm, commons.maximumTithePpm);
   const guilds = parseGuildCatalog(parseJSON(artifacts.guilds));
   return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds });
+}
+
+export function withNextReplayCatalogBundle(current: ReplayCatalogBundle, next: ReplayCatalogBundle): ReplayCatalogBundle {
+  return Object.freeze({ ...current, next });
 }
 
 export function restoreReplayStateV12(source: unknown, catalog: EconomyCatalog): ReplayState {
@@ -115,7 +131,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   const revision = wire.command.revision; const before = { ...state.balances };
   if (request.invalid !== undefined) return rejected(state, request.intent_id, revision, "invalid", request.invalid);
   const resolved = wire.resolved; const kind = string(resolved.kind); if (string(resolved.intent_kind) !== request.kind) throw new RangeError("resolved intent mismatch");
-  let accrual: ReplayAccrual; let founderCarry: Record<string, unknown> | null = null; let declined = 0;
+  let accrual: ReplayAccrual; let founderCarry: FounderCarry | null = null; let declined = 0;
   if (kind === "cross_gate" && request.kind === "cross_gate") { exactKeys(resolved, ["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry"], "cross gate inputs"); accrual = parseAccrual(resolved.accrual, catalogs); declined = safeInteger(resolved.declined_exit_offer_count, 0, MAX_EXACT_INTEGER); founderCarry = resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs.constantsHash); }
   else { if (kind !== "accrual") throw new RangeError("resolved union mismatch"); exactKeys(resolved, ["kind", "intent_kind", "accrual"], "accrual inputs"); accrual = parseAccrual(resolved.accrual, catalogs); }
   if (state.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
@@ -136,6 +152,61 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   }
   if (request.kind === "cross_gate") await afterPrestigeCrossGate(state, catalogs.prestige, request.intent_id, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
   return applied(state, request.intent_id, revision + 1, appliedCount, before, events);
+}
+
+export async function applyLoggedExit(company: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedExitTransition> {
+  const wire = parseReplayWire(replayInputs, company, catalogs);
+  const request = parseIntent(canonicalPayload, wire.command.intent_id);
+  if (request.expected_revision !== wire.command.revision || wire.command.run_seq !== company.runSeq) throw new RangeError("terminal command/state mismatch");
+  const resolved = wire.resolved;
+  exactKeys(resolved, ["kind", "intent_kind", "accrual", "founder_carry", "executed_route_ids", "selected_exit_type", "selected_terms", "next_constants_hash"], "terminal resolved inputs");
+  if (resolved.kind !== "exit" || resolved.intent_kind !== request.kind || typeof resolved.selected_exit_type !== "string" || !hashPattern.test(string(resolved.next_constants_hash))) throw new RangeError("terminal resolved union mismatch");
+  const selectedTerms = exactObject(resolved.selected_terms, Object.keys(resolved.selected_terms as object), "selected terms");
+  const nextHash = string(resolved.next_constants_hash);
+  const next = nextHash === catalogs.constantsHash ? catalogs : catalogs.next;
+  if (!next || next.constantsHash !== nextHash) throw new RangeError("next catalog bundle mismatch");
+  const accrual = parseAccrual(resolved.accrual, catalogs);
+  if (company.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
+  const founder = parseFounderCarry(resolved.founder_carry, catalogs.constantsHash);
+  if (request.expected_founder_revision !== undefined && request.expected_founder_revision !== founder.founder_revision) throw new RangeError("founder revision mismatch");
+  const executedRoutes = sortedUniqueMechanical(array(resolved.executed_route_ids, "executed route ids"));
+  deriveFactionStockResource(company, catalogs.factions);
+  const revision = wire.command.revision;
+  let prefix: ReplayEvent[] = [];
+  let exitType: string;
+  let terms: ExitTerms;
+
+  if (request.kind === "cross_gate") {
+    const preflight = preflightRejection(company, catalogs, request, wire.evaluated_at_ms);
+    if (preflight !== null) return rejectedExit(company, founder, request.intent_id, revision, preflight[0], preflight[1]);
+    const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, accrual.contributions);
+    prefix = runHooks(company, catalogs, wire.command, evaluation, accrual);
+    const result = crossGate(company, catalogs.routes, request, wire.command);
+    if (result.rejection) return rejectedExit(company, founder, request.intent_id, revision, result.rejection[0], result.rejection[1]);
+    prefix.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: company.runSeq } }));
+    if (request.route_id !== null) prefix.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: company.runSeq } }));
+    if (attendedMS(company, wire.evaluated_at_ms) < 900_000 || founder.exit_history_count !== 0) throw new RangeError("invalid scripted exit state");
+    exitType = "scripted_first";
+    terms = computeExitTerms(company, founder, catalogs.prestige, exitType);
+  } else {
+    if (request.kind === "file_ipo") return rejectedExit(company, founder, request.intent_id, revision, "not_eligible", "ipo_chain");
+    if (request.kind === "wind_down" && company.tier < 1) return rejectedExit(company, founder, request.intent_id, revision, "not_eligible", "tier");
+    exitType = request.kind === "wind_down" && founder.exit_history_count === 0 ? "scripted_first" : "collapse";
+    let promised: { payout_preview: ExitTerms; market_modifier_ppm: number } | null = null;
+    if (request.kind === "accept_exit_offer") {
+      if (!company.offerState || company.offerState.offerId !== request.offer_id) return rejectedExit(company, founder, request.intent_id, revision, "not_eligible", "exit_offer");
+      if (company.offerState.expiresAtMs <= wire.evaluated_at_ms) return rejectedExit(company, founder, request.intent_id, revision, "offer_expired", request.offer_id);
+      if (canonicalJSONString(company.offerState.terms) !== canonicalJSONString(selectedTerms)) throw new RangeError("selected offer terms mismatch");
+      promised = decodeStoredOfferTerms(selectedTerms);
+      exitType = company.offerState.exitType;
+    } else if (request.kind !== "wind_down") throw new RangeError("non-terminal intent at terminal boundary");
+    const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, accrual.contributions);
+    prefix = runHooks(company, catalogs, wire.command, evaluation, accrual);
+    terms = computeExitTerms(company, founder, catalogs.prestige, exitType);
+    if (promised) terms = promiseTerms(promised.payout_preview, applyTermsModifier(terms, promised.market_modifier_ppm));
+  }
+  if (resolved.selected_exit_type !== exitType) throw new RangeError("selected exit type mismatch");
+  return finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, next);
 }
 
 type Intent = Record<string, any> & { intent_id: string; kind: string; expected_revision: number; invalid?: string; cost?: string; costResource?: string };
@@ -243,7 +314,7 @@ function manualBatch(state: ReplayState, catalog: EconomyCatalog, request: Inten
 function crossGate(state: ReplayState, routes: RoutesCatalog, request: Intent, command: ReplayCommand): { rejection?: [string, string] } { const gate = routes.gate(request.gate_id); if (!gate) return { rejection: ["unknown_id", request.gate_id] }; if (state.gatesCrossed[request.gate_id]) return { rejection: ["gate_already_crossed", request.gate_id] }; let requirements = gate.requirement; if (request.route_id !== null) { const route = routes.route(request.route_id); if (!route) return { rejection: ["unknown_id", request.route_id] }; const context: RouteContext = { contextVersion: routes.contextVersion, resources: state.balances, doctrinesByTransition: state.doctrinesByTransition, structureId: state.structureId, ledgerFactKinds: state.ledgerFactKinds, meterBands: state.meterBands, regionTraits: state.regionTraits }; if (!route.active || route.requiresContextVersion > context.contextVersion || !evaluatePredicate(route.predicate, context)) return { rejection: ["route_predicate_unmet", request.route_id] }; requirements = discountedRequirements(gate, route); }
   for (const requirement of requirements) if (parseCanonical(state.balances[requirement.resourceId]!).lt(parseCanonical(requirement.amount))) return { rejection: ["requirement_not_met", requirement.resourceId] }; for (const requirement of requirements) state.balances[requirement.resourceId] = canonicalString(quantize(parseCanonical(state.balances[requirement.resourceId]!).sub(parseCanonical(requirement.amount)))); state.gatesCrossed[request.gate_id] = true; const match = /^gate\.t([0-9]+)_to_t([0-9]+)$/.exec(request.gate_id); if (!match || Number(match[2]) !== Number(match[1]) + 1 || state.tier !== Number(match[1])) throw new RangeError("gate tier mismatch"); state.tier = Number(match[2]); void command; return {}; }
 
-async function afterPrestigeCrossGate(state: ReplayState, policy: PrestigePolicy, intentId: string, command: ReplayCommand, nowMs: number, carry: Record<string, unknown> | null, declined: number, events: ReplayEvent[]): Promise<void> {
+async function afterPrestigeCrossGate(state: ReplayState, policy: PrestigePolicy, intentId: string, command: ReplayCommand, nowMs: number, carry: FounderCarry | null, declined: number, events: ReplayEvent[]): Promise<void> {
   if (state.offerState && state.offerState.expiresAtMs <= nowMs) { events.push(event("exit_offer_expired", intentId, { offer_id: state.offerState.offerId })); state.offerState = null; }
   if (state.offerState || carry === null) return;
   if (safeInteger(carry.exit_history_count, 0, MAX_EXACT_INTEGER) === 0) return;
@@ -271,6 +342,98 @@ function ppmFloor(value: number, factor: number): number { const result = (BigIn
 async function founderSeed(founderId: string, runSeq: number): Promise<bigint> { const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(founderId)); return new DataView(digest).getBigUint64(0) ^ BigInt(runSeq); }
 class SplitMix64 { #state: bigint; constructor(seed: bigint) { this.#state = seed & ((1n << 64n) - 1n); } next(): bigint { const mask = (1n << 64n) - 1n; this.#state = (this.#state + 0x9e3779b97f4a7c15n) & mask; let value = this.#state; value = ((value ^ (value >> 30n)) * 0xbf58476d1ce4e5b9n) & mask; value = ((value ^ (value >> 27n)) * 0x94d049bb133111ebn) & mask; return (value ^ (value >> 31n)) & mask; } ppm(): number { const bound = 1_000_000n; const threshold = (1n << 64n) % bound; for (;;) { const draw = this.next(); if (draw >= threshold) return Number(draw % bound); } } }
 function offerUUID(seed: bigint, nowMs: number): string { const random = new SplitMix64(seed); const bytes = new Uint8Array(16); let timestamp = BigInt(nowMs) & ((1n << 48n) - 1n); for (let index = 5; index >= 0; index--) { bytes[index] = Number(timestamp & 255n); timestamp >>= 8n; } let first = random.next(); for (let index = 13; index >= 6; index--) { bytes[index] = Number(first & 255n); first >>= 8n; } bytes[14] = Number((random.next() >> 56n) & 255n); bytes[15] = Number((random.next() >> 48n) & 255n); bytes[6] = (bytes[6]! & 0x0f) | 0x70; bytes[8] = (bytes[8]! & 0x3f) | 0x80; const hex = [...bytes].map((value) => value.toString(16).padStart(2, "0")).join(""); return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`; }
+
+function attendedMS(state: ReplayState, endedAtMs: number): number {
+  if (state.runStartedAtMs === 0 || endedAtMs < state.runStartedAtMs) throw new RangeError("invalid attended-time state");
+  const rta = endedAtMs - state.runStartedAtMs;
+  let offline = Math.min(state.collapsedOfflineMs, rta);
+  for (const span of state.offlineSpans) {
+    const from = Math.max(span.fromMs, state.runStartedAtMs);
+    const to = Math.min(span.toMs, endedAtMs);
+    if (to <= from) continue;
+    const duration = to - from;
+    if (duration > rta - offline) { offline = rta; break; }
+    offline += duration;
+  }
+  return rta - offline;
+}
+
+function computeExitTerms(company: ReplayState, founder: FounderCarry, policy: PrestigePolicy, exitType: string): ExitTerms {
+  const modifier = policy.exitModifiersPpm[exitType];
+  if (modifier === undefined) throw new RangeError("unknown exit type");
+  const reputation = Math.min(reputationDeltaExact(company.lifetimeValue, policy.threshold, founder.reputation_level, modifier), MAX_EXACT_INTEGER - founder.reputation_level);
+  const knowledge = exitType === "collapse" || exitType === "scripted_first" ? policy.collapseRouteKnowledge : 0;
+  return { reputation_delta: reputation, network_slot_unlocks: [], route_knowledge: knowledge, clout_reach_note: "clout.reach.preserved" };
+}
+
+function decodeStoredOfferTerms(source: Record<string, unknown>): { payout_preview: ExitTerms; market_modifier_ppm: number } {
+  exactKeys(source, ["payout_preview", "market_modifier_ppm"], "stored offer terms");
+  const preview = exactObject(source.payout_preview, ["reputation_delta", "network_slot_unlocks", "route_knowledge", "clout_reach_note"], "offer payout");
+  const slots = parseNetworkSlots(preview.network_slot_unlocks);
+  if (typeof preview.clout_reach_note !== "string" || preview.clout_reach_note === "") throw new SyntaxError("invalid clout note");
+  return { market_modifier_ppm: safeInteger(source.market_modifier_ppm, 0, 2_000_000), payout_preview: { reputation_delta: safeInteger(preview.reputation_delta, 0, MAX_EXACT_INTEGER), network_slot_unlocks: slots, route_knowledge: safeInteger(preview.route_knowledge, 0, MAX_EXACT_INTEGER), clout_reach_note: preview.clout_reach_note } };
+}
+
+function parseNetworkSlots(source: unknown): NetworkSlot[] {
+  let last = "";
+  return array(source, "network slots").map((item) => {
+    const raw = exactObject(item, ["slot", "carried_ref"], "network slot");
+    const slot = mechanicalString(raw.slot); const carried_ref = mechanicalString(raw.carried_ref);
+    if (byteCompare(slot, last) <= 0) throw new SyntaxError("network slots must be sorted and unique");
+    last = slot;
+    return { slot, carried_ref };
+  });
+}
+
+function applyTermsModifier(terms: ExitTerms, factor: number): ExitTerms {
+  return { ...terms, reputation_delta: ppmFloor(terms.reputation_delta, factor), route_knowledge: ppmFloor(terms.route_knowledge, factor) };
+}
+
+function promiseTerms(preview: ExitTerms, current: ExitTerms): ExitTerms {
+  const slots = new Map<string, NetworkSlot>();
+  for (const slot of current.network_slot_unlocks) slots.set(slot.slot, slot);
+  for (const slot of preview.network_slot_unlocks) slots.set(slot.slot, slot);
+  return { ...current, reputation_delta: Math.max(preview.reputation_delta, current.reputation_delta), route_knowledge: Math.max(preview.route_knowledge, current.route_knowledge), network_slot_unlocks: [...slots.values()].sort((left, right) => byteCompare(left.slot, right.slot)) };
+}
+
+function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId: string, command: ReplayCommand, nowMs: number, exitType: string, inputTerms: ExitTerms, prefix: ReplayEvent[], executedRoutes: string[], next: ReplayCatalogBundle): LoggedExitTransition {
+  const attended = attendedMS(company, nowMs);
+  const terms = { ...inputTerms, reputation_delta: Math.min(inputTerms.reputation_delta, MAX_EXACT_INTEGER - founder.reputation_level) };
+  if (terms.route_knowledge > MAX_EXACT_INTEGER - founder.route_knowledge_balance || attended > MAX_EXACT_INTEGER - founder.age_ms) throw new RangeError("founder carry overflow");
+  founder.reputation_level += terms.reputation_delta;
+  founder.route_knowledge_balance += terms.route_knowledge;
+  founder.age_ms += attended;
+  founder.ledger_fact_kinds = [...new Set([...founder.ledger_fact_kinds, ...company.ledgerFactKinds])].sort(byteCompare);
+  const slots = new Map<string, NetworkSlot>();
+  for (const slot of founder.network_slots) slots.set(slot.slot, slot);
+  for (const slot of terms.network_slot_unlocks) slots.set(slot.slot, slot);
+  founder.network_slots = [...slots.values()].sort((left, right) => byteCompare(left.slot, right.slot));
+  founder.exit_history_count++;
+  const newCompany = newRunState(next.economy, company, founder, nowMs);
+  const runID = { company_stream_id: command.company_stream_id, run_seq: company.runSeq };
+  const founderEvent = event("founder_advanced", intentId, { exit_type: exitType, founder_id: command.founder_id, occurred_at_ms: nowMs, reputation_delta: terms.reputation_delta, route_knowledge: terms.route_knowledge, run_id: runID });
+  const endedEvent = event("run_ended", intentId, { assisted: { advisor: founder.advisor_mode, commons: company.compactMember }, attended_ms: attended, ended_at_ms: nowMs, executed_routes: executedRoutes, exit_type: exitType, faction: company.factionId || null, founder_id: command.founder_id, ledger_fact_kinds: [...company.ledgerFactKinds].sort(byteCompare), lifetime_value: company.lifetimeValue, payout: terms, pre_timer: company.runPreTimer, rta_ms: nowMs - company.runStartedAtMs, run_id: runID, started_at_ms: company.runStartedAtMs, terminal_seq: command.run_log_seq, tier: company.tier });
+  const startedEvent = event("run_started", intentId, { assisted: { advisor: founder.advisor_mode, commons: false }, founder_id: command.founder_id, run_id: { company_stream_id: command.company_stream_id, run_seq: newCompany.runSeq }, started_at_ms: nowMs });
+  const receipt = { applied_count: 1, evaluated_at: rfc3339(nowMs), founder_revision: founder.founder_revision + 1, intent_id: intentId, new_revision: command.revision + 2, outcome: "applied", receipt: { changes: [] }, snapshot: wireSnapshot(newCompany) };
+  return { founder, finalCompany: company, newCompany, outcome: "applied", receipt, founderEvents: [founderEvent], companyEndedEvents: [...prefix, endedEvent], companyStartedEvents: [startedEvent] };
+}
+
+function newRunState(catalog: EconomyCatalog, prior: ReplayState, founder: FounderCarry, nowMs: number): ReplayState {
+  if (prior.runSeq >= MAX_EXACT_INTEGER) throw new RangeError("run sequence exhausted");
+  const balances = Object.fromEntries(catalog.resources.filter((value) => value.scope === "company").map((value) => [value.id, value.minimum]));
+  const generators = Object.fromEntries(catalog.generatorClasses.filter((value) => value.production !== null).map((value) => [value.id, 0]));
+  const reseed = founder.notoriety >= 100 ? 55 : Math.max(55, Math.min(90, 90 - Math.floor(founder.notoriety * 35 / 100)));
+  return { balances, generators, evaluatedThroughMs: nowMs, computeCreditMs: 0, manualTokenMilli: catalog.manualPolicy!.bucketCapMilli, manualTokenRefilledAtMs: nowMs, gatesCrossed: {}, runSeq: prior.runSeq + 1, doctrinesByTransition: {}, structureId: "", ledgerFactKinds: new Set(), meterBands: { "trust.regulators.standing": reseed, "trust.regulators.grievance": 100 - reseed }, regionTraits: new Set(), routeKnowledgeBalance: 0, hintsUnlocked: new Set(), compactMember: false, compactTithePpm: 0, compactSolidarityPpm: 0, compactSamples: [], tier: 0, lifetimeValue: "0", offerState: null, runStartedAtMs: nowMs, runPreTimer: false, offlineSpans: [], collapsedOfflineMs: 0, factionId: "", incorporatedAtMs: null, factionStockResource: "", stockUnits: 0, stockProgressMs: 0, consumedStockUnits: 0, guildTitheCarryPpm: 0, guildBoundaryGuildId: "", guildBoundarySeq: 0, guildConsumedWindow: 0 };
+}
+
+function rejectedExit(company: ReplayState, founder: FounderCarry, intentId: string, revision: number, category: string, detail: string): LoggedExitTransition {
+  return { founder, finalCompany: company, newCompany: null, outcome: "rejected", receipt: { current_revision: revision, intent_id: intentId, outcome: "rejected", rejection: { category, detail } }, founderEvents: [], companyEndedEvents: [], companyStartedEvents: [] };
+}
+
+function sortedUniqueMechanical(source: unknown[]): string[] {
+  let last = "";
+  return source.map((item) => { const value = mechanicalString(item); if (byteCompare(value, last) <= 0) throw new SyntaxError("values must be sorted and unique"); last = value; return value; });
+}
 
 function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 1 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = exactObject(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: uuidString(command.company_stream_id), founder_id: uuidString(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: 1, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: exactObject(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
 function parseAccrual(source: unknown, catalogs: ReplayCatalogBundle): ReplayAccrual {
@@ -300,7 +463,7 @@ function parseAccrual(source: unknown, catalogs: ReplayCatalogBundle): ReplayAcc
   return { contributions, commons_weight_ppm: raw.commons_weight_ppm as number | null, guild_settlement_batch: settlements, route_context_version: raw.route_context_version as number };
 }
 
-function parseFounderCarry(source: unknown, constantsHash: string): Record<string, unknown> {
+function parseFounderCarry(source: unknown, constantsHash: string): FounderCarry {
   const carry = exactObject(source, ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"], "founder carry");
   safeInteger(carry.founder_revision, 1, MAX_EXACT_INTEGER);
   if (carry.founder_constants_hash !== constantsHash) throw new RangeError("founder catalog mismatch");
@@ -323,11 +486,11 @@ function parseFounderCarry(source: unknown, constantsHash: string): Record<strin
     if (slotID === "" || byteCompare(slotID, lastSlot) <= 0 || string(slot.carried_ref) === "") throw new SyntaxError("network slots must be sorted and complete");
     lastSlot = slotID;
   }
-  return carry;
+  return carry as unknown as FounderCarry;
 }
 
 function parseIntent(payload: string, intentId: string): Intent { const source = parseJSON(payload); if (typeof source !== "object" || source === null || Array.isArray(source) || "intent_id" in source || canonicalJSONString(source) !== payload) throw new SyntaxError("invalid canonical payload"); const raw = source as Record<string, unknown>; const kind = string(raw.kind); const base: Intent = { intent_id: intentId, kind, expected_revision: safeInteger(raw.expected_revision, 1, MAX_EXACT_INTEGER) };
-  try { switch (kind) { case "buy_generator": exactKeys(raw, ["kind", "expected_revision", "generator_id", "count"], "buy"); base.generator_id = mechanicalString(raw.generator_id); { const count = exactObject(raw.count, Object.keys(raw.count as object), "count"); if (count.mode === "max") exactKeys(count, ["mode"], "max count"); else { exactKeys(count, ["mode", "value"], "exact count"); if (count.mode !== "exact") throw new SyntaxError("count mode"); count.value = safeInteger(count.value, 1, MAX_EXACT_INTEGER); } base.count = count; } break; case "perform_manual_batch": exactKeys(raw, ["kind", "expected_revision", "action_id", "count", "window_ms"], "manual"); base.action_id = mechanicalString(raw.action_id); if (typeof raw.count !== "number" || !Number.isSafeInteger(raw.count) || raw.count < 1 || raw.count > MAX_EXACT_INTEGER) { base.invalid = "count"; break; } base.count = raw.count; base.window_ms = safeInteger(raw.window_ms, 1, 3_600_000); break; case "cross_gate": exactKeys(raw, ["kind", "expected_revision", "gate_id", "route_id"], "gate"); base.gate_id = mechanicalString(raw.gate_id); base.route_id = raw.route_id === null ? null : mechanicalString(raw.route_id); break; case "sign_compact": exactKeys(raw, ["kind", "expected_revision", "tithe_ppm"], "sign"); base.tithe_ppm = safeInteger(raw.tithe_ppm, 0, 1_000_000); break; case "leave_compact": exactKeys(raw, ["kind", "expected_revision"], "leave"); break; case "incorporate": exactKeys(raw, ["kind", "expected_revision", "faction_id"], "incorporate"); base.faction_id = mechanicalString(raw.faction_id); break; case "decline_exit_offer": exactKeys(raw, ["kind", "expected_revision", "offer_id"], "decline"); base.offer_id = uuidV7String(raw.offer_id); break; default: base.invalid = kind; } } catch { base.invalid = `${kind}.fields`; } return base; }
+  try { switch (kind) { case "buy_generator": exactKeys(raw, ["kind", "expected_revision", "generator_id", "count"], "buy"); base.generator_id = mechanicalString(raw.generator_id); { const count = exactObject(raw.count, Object.keys(raw.count as object), "count"); if (count.mode === "max") exactKeys(count, ["mode"], "max count"); else { exactKeys(count, ["mode", "value"], "exact count"); if (count.mode !== "exact") throw new SyntaxError("count mode"); count.value = safeInteger(count.value, 1, MAX_EXACT_INTEGER); } base.count = count; } break; case "perform_manual_batch": exactKeys(raw, ["kind", "expected_revision", "action_id", "count", "window_ms"], "manual"); base.action_id = mechanicalString(raw.action_id); if (typeof raw.count !== "number" || !Number.isSafeInteger(raw.count) || raw.count < 1 || raw.count > MAX_EXACT_INTEGER) { base.invalid = "count"; break; } base.count = raw.count; base.window_ms = safeInteger(raw.window_ms, 1, 3_600_000); break; case "cross_gate": exactKeys(raw, ["kind", "expected_revision", "gate_id", "route_id"], "gate"); base.gate_id = mechanicalString(raw.gate_id); base.route_id = raw.route_id === null ? null : mechanicalString(raw.route_id); break; case "sign_compact": exactKeys(raw, ["kind", "expected_revision", "tithe_ppm"], "sign"); base.tithe_ppm = safeInteger(raw.tithe_ppm, 0, 1_000_000); break; case "leave_compact": exactKeys(raw, ["kind", "expected_revision"], "leave"); break; case "incorporate": exactKeys(raw, ["kind", "expected_revision", "faction_id"], "incorporate"); base.faction_id = mechanicalString(raw.faction_id); break; case "decline_exit_offer": exactKeys(raw, ["kind", "expected_revision", "offer_id"], "decline"); base.offer_id = uuidV7String(raw.offer_id); break; case "accept_exit_offer": exactKeys(raw, ["kind", "expected_revision", "expected_founder_revision", "offer_id"], "accept exit offer"); base.expected_founder_revision = safeInteger(raw.expected_founder_revision, 1, MAX_EXACT_INTEGER); base.offer_id = uuidV7String(raw.offer_id); break; case "wind_down": case "file_ipo": exactKeys(raw, ["kind", "expected_revision", "expected_founder_revision"], kind); base.expected_founder_revision = safeInteger(raw.expected_founder_revision, 1, MAX_EXACT_INTEGER); break; default: base.invalid = kind; } } catch { base.invalid = `${kind}.fields`; } return base; }
 
 function applied(state: ReplayState, intentId: string, revision: number, count: number, before: Record<string, string>, events: ReplayEvent[]): LoggedTransition { for (const value of events) if (value.intent_id === "") (value as { intent_id: string }).intent_id = intentId; const changes = Object.keys(before).sort(byteCompare).flatMap((resource) => before[resource] === state.balances[resource] ? [] : [{ resource_id: resource, before: before[resource]!, delta: canonicalString(quantize(parseCanonical(state.balances[resource]!).sub(parseCanonical(before[resource]!)))), after: state.balances[resource]! }]); return { state, outcome: "applied", receipt: { applied_count: count, evaluated_at: rfc3339(state.evaluatedThroughMs), intent_id: intentId, new_revision: revision, outcome: "applied", receipt: { changes }, snapshot: wireSnapshot(state) }, events }; }
 function rejected(state: ReplayState, intentId: string, revision: number, category: string, detail: string): LoggedTransition { return { state, outcome: "rejected", receipt: { current_revision: revision, intent_id: intentId, outcome: "rejected", rejection: { category, detail } }, events: [] }; }

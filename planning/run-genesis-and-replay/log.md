@@ -197,3 +197,21 @@ This is an intermediate RB landing, not AC2 completion. The RFC's ≥50 mixed-in
 still requires the terminal Exit arm and the genesis/verifier work; it is deliberately not being
 papered over by counting independent transition cases. Root-only verification is green:
 `make typecheck`, `make test-client` (6,467 passed), and `make replay-fixture-check`.
+
+## 2026-08-01 — TypeScript terminal ApplyLogged arm
+
+The TS boundary now reproduces terminal mutation as well: frozen Founder carry validation,
+attended-time accounting, terms and stored-offer promises, final old-run evaluation, Founder-
+derived output, new-run construction under the declared next bundle, terminal receipt, and the
+Founder/ended-run/started-run event families in their persisted grouping and order.
+
+Three Go-authored terminal fixtures cover wind-down scripted-first, accepted stored offer, and the
+15-minute scripted cross-gate path. Each asserts the receipt, Founder carry output, final Company
+state, next Company state, and all event bytes in TypeScript. The cross-gate fixture also records
+the important attended-time premise: the run can be 20 minutes old while the evaluation cursor is
+current; an unobserved 20-minute accrual gap is correctly classified as offline and cannot trigger
+the scripted attended-time exit.
+
+The shared artifact now contains 13 ordinary and 3 terminal transition cases. Root-only checks are
+green: `make test-go GO_PACKAGES='./production'`, `make typecheck`, and `make test-client` (6,470
+passed). AC2's sequential ≥50-intent full-run fixture remains part of the verifier landing.
