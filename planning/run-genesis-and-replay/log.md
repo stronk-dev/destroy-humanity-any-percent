@@ -155,3 +155,23 @@ alias incorrectly triggered sandbox escalation despite AGENTS.md already forbidd
 No approval-dependent test path is part of this landing.
 
 The TypeScript `ApplyLogged` port and cross-runtime fixture remain the next implementation item.
+
+## 2026-08-01 — independent review: RA/RB remediation (bb04c72, e9f28e0) — APPROVED
+
+Direct diff review; all seven rulings verified in source:
+
+1. 00031 gives run_log the standard `reject_immutable_change` trigger (UPDATE OR DELETE) with a
+   negative test — the tamper-laundering hole is closed.
+2. **C5a closed elegantly:** the carry view carries `founder_constants_hash` (populated from the
+   founder revision live-side) and ApplyLogged asserts it equals the bundle hash at BOTH the
+   ordinary and terminal sites — because the live path routes through ApplyLogged, one in-boundary
+   assertion both fail-closes live AND audits replay. Better than the two-mechanism shape I ruled.
+3. `afterPrestigeTransition` dead code deleted. C4b: `route_hint` is an explicit typed rejection
+   inside the boundary, not a dead union arm. RB-1: `NewService` now requires prestige runtime +
+   faction catalogs + current hash. C3a: `replaycatalog.Load` recomputes `ConstantsHashArtifacts`
+   over the six artifact bytes and compares to the label, with tests. RB-2:
+   `deriveFactionStockResource` runs inside ApplyLogged before the transition; the incorporate
+   path remains the in-boundary writer. C4a landed per the diff (batch validator accepts
+   well-formed non-empty).
+
+Next landing: TS ApplyLogged port + cross-runtime transition fixture, then genesis storage.
