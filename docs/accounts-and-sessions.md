@@ -15,10 +15,12 @@ identity and all its active save streams, then creates fresh streams. Archives r
 Existing access tokens remain valid until their normal expiry; authenticated operations resolve
 the account's current active Founder instead of trusting the token's cached Founder claim.
 
-Offline-anonymous saves can be submitted once to the initial company stream through
-`POST /api/v1/founder/import`. The payload runs through the normal save migration and restoration
-path. Its submitted version and constants hash select only that migration input: the server resets
-the imported company to run 1 at the canonical import instant and validates it under the current
+Offline-anonymous saves can be submitted through `POST /api/v1/founder/import` while the active
+Founder is pristine. Re-importing before any intent archives that pristine Founder and mints a
+replacement; every attempt remains archived and every replacement remains ranked-excluded. Once
+the active Founder has played, import is closed. The payload runs through the normal save migration
+and restoration path. Its submitted version and constants hash select only that migration input:
+the server resets the imported company to run 1 at the canonical import instant and validates it under the current
 constants hash. Import archives the untouched initial Founder and its streams, then creates a new
 active imported Founder whose normalized Company state is revision 1 and immutable run genesis;
 the fresh Founder-scope stream and permanent imported marker commit in that same transaction.

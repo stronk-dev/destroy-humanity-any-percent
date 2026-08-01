@@ -311,3 +311,21 @@ canonical JSON strings into the fixture, and TypeScript compares its canonical s
 directly to those raw strings. The corpus is 32 ordinary cases plus 3 terminal cases and the
 fallback bundle. Root checks passed: `make replay-fixture-check`, `make test-client`, and
 `make test-go GO_PACKAGES=./production`.
+
+## 2026-08-01 — public pin helper and import-contract cleanup
+
+The public `Store.PinRunToCurrentEpoch` helper no longer selects the stream head. It selects the
+earliest persisted revision whose encoded `run_seq` equals the requested run, then inserts those
+bytes as genesis. The epoch integration fixture now writes two revisions for run 2 before pinning
+and proves genesis equals the first run-2 revision and differs from the latest revision. Production
+account/import/Exit paths continue to use the stronger explicit transaction seam.
+
+Owner ruling A-D4b is reflected in canonical account documentation: import is replace-while-
+pristine, not once-only; every replaced Founder is archived and every replacement remains excluded
+from ranking.
+
+The complete Postgres integration matrix passed through the prescribed
+`docker compose -f compose.save-test.yml run --rm test` path on a fresh ephemeral schema. The first
+attempt exposed a stale development tmpfs whose migration ledger said 32 was applied while its
+deferred trigger was absent; resetting only that declared test container restored the committed
+migration and the full matrix passed.

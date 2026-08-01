@@ -98,8 +98,30 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `DELETE FROM epochs WHERE epoch_id=1`); err == nil {
 		t.Fatal("closed epoch delete bypassed history guard")
 	}
+	state.RunSeq = 2
+	firstRunTwo, err := store.Write(ctx, revision.StreamID, 1, first.Hashes[0], state, save.WriteContext{Cause: "epoch.run2.genesis"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.ManualTokenMilli--
+	if _, err := store.Write(ctx, revision.StreamID, firstRunTwo.Number, first.Hashes[0], state, save.WriteContext{Cause: "epoch.run2.after_genesis"}); err != nil {
+		t.Fatal(err)
+	}
 	if epochID, err := store.PinRunToCurrentEpoch(ctx, revision.StreamID, ownerID, 2, first.Hashes[0]); err != nil || epochID != 2 {
 		t.Fatalf("second pin epoch=%d err=%v", epochID, err)
+	}
+	var pinnedGenesis, firstRunTwoState, latestRunTwoState string
+	if err := db.QueryRowContext(ctx, `SELECT convert_from(state,'UTF8') FROM run_genesis WHERE company_stream_id=$1 AND run_seq=2`, revision.StreamID).Scan(&pinnedGenesis); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT state::text FROM save_revisions WHERE stream_id=$1 AND revision=$2`, revision.StreamID, firstRunTwo.Number).Scan(&firstRunTwoState); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT state::text FROM save_revisions WHERE stream_id=$1 ORDER BY revision DESC LIMIT 1`, revision.StreamID).Scan(&latestRunTwoState); err != nil {
+		t.Fatal(err)
+	}
+	if pinnedGenesis != firstRunTwoState || pinnedGenesis == latestRunTwoState {
+		t.Fatal("run genesis did not use the first revision of the requested run")
 	}
 	var runOne, runTwo int64
 	if err := db.QueryRowContext(ctx, `SELECT epoch_id FROM run_epochs WHERE company_stream_id=$1 AND run_seq=1`, revision.StreamID).Scan(&runOne); err != nil {

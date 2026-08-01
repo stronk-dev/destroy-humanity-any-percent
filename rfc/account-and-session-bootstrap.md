@@ -68,6 +68,7 @@ Account deletion (`DELETE /api/v1/account`): archives all founders — **A-D5a (
 
 - 2026-07-29: created (draft) — the shared root of the five drafts' blocker lists.
 - 2026-07-30: independent review (see planning log) — rulings A-D1a, A-D2a, A-D4a, A-D5a; D3 list gains `founder/state` (transport T4) and router-edge/limiter contracts.
+- 2026-08-01: ruling A-D4b — import is an archive-and-mint founder swap (genesis-preserving, forced by Run Genesis R1); once-only becomes replace-while-pristine; docs amended to match.
 - 2026-07-29: accepted and implementation assigned through
   `planning/codex-batch-2026-07-29.md`.
 - 2026-07-30: review remediation implements A-D1a/A-D5a and the D3 limiter contract: transactional

@@ -72,11 +72,17 @@ func (s *Store) PinRunToCurrentEpoch(ctx context.Context, companyStreamID, found
 	var state []byte
 	var version int
 	var revisionHash string
-	if err := tx.QueryRowContext(ctx, `SELECT state::text,version,constants_hash FROM save_revisions WHERE stream_id=$1 ORDER BY revision DESC LIMIT 1 FOR SHARE`, companyStreamID).Scan(&state, &version, &revisionHash); err != nil {
+	if err := tx.QueryRowContext(ctx, `
+		SELECT state::text,version,constants_hash
+		FROM save_revisions
+		WHERE stream_id=$1 AND state->>'run_seq'=$2
+		ORDER BY revision ASC
+		LIMIT 1
+		FOR SHARE`, companyStreamID, fmt.Sprint(runSeq)).Scan(&state, &version, &revisionHash); err != nil {
 		return 0, err
 	}
 	if revisionHash != constantsHash {
-		return 0, fmt.Errorf("%w: pin hash differs from latest revision", ErrInvalidState)
+		return 0, fmt.Errorf("%w: pin hash differs from run genesis revision", ErrInvalidState)
 	}
 	if err := InsertRunGenesisTx(ctx, tx, RunGenesis{CompanyStreamID: companyStreamID, RunSeq: runSeq, State: state, Version: version, ConstantsHash: constantsHash}); err != nil {
 		return 0, err
