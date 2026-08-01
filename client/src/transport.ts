@@ -9,6 +9,16 @@ export interface TransportEnvelope {
   readonly payload: Readonly<Record<string, unknown>>;
 }
 
+export interface WorldSnapshot {
+  readonly v: 1;
+  readonly world_rev: number;
+  readonly planet: { readonly depletion_ppm: number; readonly health_ppm: number };
+  readonly commons: { readonly server_health_ppm: number; readonly active_founders: number; readonly compact_members: number };
+  readonly population: { readonly online: number; readonly founders_total: number };
+  readonly milestones: { readonly active_id: string | null; readonly progress_ppm: number };
+  readonly epoch: { readonly epoch_id: number; readonly name: string };
+}
+
 const hashPattern = /^sha256:[0-9a-f]{64}$/;
 const idPattern = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 const kinds = new Set<TransportKind>(["receipt", "snapshot", "event", "presence", "system"]);
@@ -35,6 +45,10 @@ function validatePayload(kind: TransportKind, payload: Record<string, unknown>, 
     if (!["company", "world", "guild", "cohort"].includes(String(payload.scope)) || !Number.isSafeInteger(payload.rev) || (payload.rev as number) < 0 ||
         payload.rev !== envelopeRevision || typeof payload.state !== "object" || payload.state === null || Array.isArray(payload.state) ||
         !scopeMatchesChannel(String(payload.scope), channel)) throw new SyntaxError("invalid snapshot payload");
+    if (payload.scope === "world") {
+      const snapshot = decodeWorldSnapshot(payload.state);
+      if (snapshot.world_rev !== payload.rev) throw new SyntaxError("world snapshot revision mismatch");
+    }
     return;
   }
   if (kind === "event") {
@@ -54,6 +68,30 @@ function validatePayload(kind: TransportKind, payload: Record<string, unknown>, 
   }
   exact(payload, payload.code === "server_restarting" ? ["code", "resume_after_ms"] : ["code"], "system payload");
   if (!["server_restarting", "history_expired", "resync_required"].includes(String(payload.code)) || payload.code === "server_restarting" && (!Number.isSafeInteger(payload.resume_after_ms) || (payload.resume_after_ms as number) < 0)) throw new SyntaxError("invalid system payload");
+}
+
+export function decodeWorldSnapshot(source: unknown): WorldSnapshot {
+  const root = object(source, "world snapshot");
+  exact(root, ["v", "world_rev", "planet", "commons", "population", "milestones", "epoch"], "world snapshot");
+  const planet = object(root.planet, "world planet");
+  const commons = object(root.commons, "world commons");
+  const population = object(root.population, "world population");
+  const milestones = object(root.milestones, "world milestones");
+  const epoch = object(root.epoch, "world epoch");
+  exact(planet, ["depletion_ppm", "health_ppm"], "world planet");
+  exact(commons, ["server_health_ppm", "active_founders", "compact_members"], "world commons");
+  exact(population, ["online", "founders_total"], "world population");
+  exact(milestones, ["active_id", "progress_ppm"], "world milestones");
+  exact(epoch, ["epoch_id", "name"], "world epoch");
+  const ppm = (value: unknown): boolean => Number.isSafeInteger(value) && (value as number) >= 0 && (value as number) <= 1_000_000;
+  const count = (value: unknown): boolean => Number.isSafeInteger(value) && (value as number) >= 0;
+  if (root.v !== 1 || !count(root.world_rev) || (root.world_rev as number) < 1 || !ppm(planet.depletion_ppm) || !ppm(planet.health_ppm) ||
+      !ppm(commons.server_health_ppm) || !count(commons.active_founders) || !count(commons.compact_members) ||
+      !count(population.online) || !count(population.founders_total) || !ppm(milestones.progress_ppm) ||
+      milestones.active_id !== null && (typeof milestones.active_id !== "string" || !idPattern.test(milestones.active_id)) ||
+      milestones.active_id === null && milestones.progress_ppm !== 0 || !count(epoch.epoch_id) || (epoch.epoch_id as number) < 1 ||
+      typeof epoch.name !== "string" || epoch.name.length === 0) throw new SyntaxError("invalid world snapshot");
+  return root as unknown as WorldSnapshot;
 }
 
 function object(source: unknown, name: string): Record<string, unknown> {

@@ -6,7 +6,7 @@
 
 1. [x] Implement the projection-owned Commons participation-weight resolver and prove the
    pre-first-sample/live/replay contract.
-2. [ ] Implement the closed Go/TypeScript world-snapshot schema and the 4 Hz aggregator with a
+2. [x] Implement the closed Go/TypeScript world-snapshot schema and the 4 Hz aggregator with a
    strictly monotonic world-owned revision.
 3. [ ] Compose the production service with the real Guild settlement resolver and every owned
    account, projection, verification, relay, sweep, and GC driver.

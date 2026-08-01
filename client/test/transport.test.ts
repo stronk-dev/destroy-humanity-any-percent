@@ -28,9 +28,11 @@ describe("transport wire", () => {
   });
 
   it("binds snapshot scope and payload revision to the envelope", () => {
-    expect(decodeTransportEnvelope({ ...base, ch: "world", rev: 7, kind: "snapshot", payload: { scope: "world", rev: 7, state: {} } })?.kind).toBe("snapshot");
+    const state = { v: 1, world_rev: 7, planet: { depletion_ppm: 0, health_ppm: 0 }, commons: { server_health_ppm: 0, active_founders: 0, compact_members: 0 }, population: { online: 0, founders_total: 0 }, milestones: { active_id: null, progress_ppm: 0 }, epoch: { epoch_id: 5, name: "Phase 0" } };
+    expect(decodeTransportEnvelope({ ...base, ch: "world", rev: 7, kind: "snapshot", payload: { scope: "world", rev: 7, state } })?.kind).toBe("snapshot");
     expect(() => decodeTransportEnvelope({ ...base, ch: "world", rev: 7, kind: "snapshot", payload: { scope: "company", rev: 7, state: {} } })).toThrow(SyntaxError);
-    expect(() => decodeTransportEnvelope({ ...base, ch: "world", rev: 7, kind: "snapshot", payload: { scope: "world", rev: 8, state: {} } })).toThrow(SyntaxError);
+    expect(() => decodeTransportEnvelope({ ...base, ch: "world", rev: 7, kind: "snapshot", payload: { scope: "world", rev: 8, state: { ...state, world_rev: 8 } } })).toThrow(SyntaxError);
+    expect(() => decodeTransportEnvelope({ ...base, ch: "world", rev: 7, kind: "snapshot", payload: { scope: "world", rev: 7, state: { ...state, milestones: { active_id: null, progress_ppm: 1 } } } })).toThrow(SyntaxError);
   });
 
   it("binds event revision and object payloads", () => {

@@ -104,7 +104,8 @@ func TestWorldPublishesAreCoalescedAtConfiguredRate(t *testing.T) {
 	_ = readReply(t, connection)
 
 	for revision := int64(1); revision <= 20; revision++ {
-		payload, _ := json.Marshal(map[string]any{"scope": "world", "rev": revision, "state": map[string]any{"revision": revision}})
+		payload, _ := json.Marshal(map[string]any{"scope": "world", "rev": revision, "state": WorldSnapshot{Version: 1, WorldRev: revision,
+			Planet: WorldPlanet{}, Commons: WorldCommons{}, Population: WorldPopulation{}, Milestones: WorldMilestones{}, Epoch: WorldEpoch{EpochID: 5, Name: "Phase 0"}}})
 		if err := node.Publish(Envelope{Version: WireVersion, Channel: "world", Kind: "snapshot", Revision: revision,
 			ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Timestamp: time.Now().UTC(), Payload: payload}); err != nil {
 			t.Fatal(err)
@@ -116,7 +117,7 @@ func TestWorldPublishesAreCoalescedAtConfiguredRate(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(data), `"revision":20`) {
+	if !strings.Contains(string(data), `"world_rev":20`) {
 		t.Fatalf("latest world state missing: %s", data)
 	}
 
@@ -346,7 +347,7 @@ func TestActualStalledWorldConsumerSkipsQueuedStaleSnapshots(t *testing.T) {
 		payload, _ := json.Marshal(map[string]any{
 			"scope": "world",
 			"rev":   revision,
-			"state": map[string]any{"revision": revision, "padding": padding},
+			"state": WorldSnapshot{Version: 1, WorldRev: revision, Planet: WorldPlanet{}, Commons: WorldCommons{}, Population: WorldPopulation{}, Milestones: WorldMilestones{}, Epoch: WorldEpoch{EpochID: 5, Name: padding}},
 		})
 		if err := node.Publish(Envelope{Version: WireVersion, Channel: "world", Kind: "snapshot", Revision: revision,
 			ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Timestamp: time.Now().UTC(), Payload: payload}); err != nil {
@@ -501,7 +502,8 @@ func publishReceipt(t *testing.T, node *Node, revision int64) {
 
 func publishWorld(t *testing.T, node *Node, revision int64) {
 	t.Helper()
-	payload, _ := json.Marshal(map[string]any{"scope": "world", "rev": revision, "state": map[string]any{"revision": revision}})
+	payload, _ := json.Marshal(map[string]any{"scope": "world", "rev": revision, "state": WorldSnapshot{Version: 1, WorldRev: revision,
+		Planet: WorldPlanet{}, Commons: WorldCommons{}, Population: WorldPopulation{}, Milestones: WorldMilestones{}, Epoch: WorldEpoch{EpochID: 5, Name: "Phase 0"}}})
 	if err := node.Publish(Envelope{Version: WireVersion, Channel: "world", Kind: "snapshot", Revision: revision,
 		ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Timestamp: time.Now().UTC(), Payload: payload}); err != nil {
 		t.Fatal(err)

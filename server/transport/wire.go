@@ -84,6 +84,12 @@ func validatePayload(envelope Envelope) error {
 			!isJSONObject(payload.State) || !scopeMatchesChannel(payload.Scope, envelope.Channel) {
 			return ErrInvalidPolicy
 		}
+		if payload.Scope == "world" {
+			snapshot, err := decodeWorldSnapshot(payload.State)
+			if err != nil || snapshot.WorldRev != payload.Rev {
+				return ErrInvalidPolicy
+			}
+		}
 	case "event":
 		var payload struct {
 			EventID      string          `json:"event_id"`

@@ -7,7 +7,7 @@
   {
     "name": "world_snapshot",
     "valid": true,
-    "envelope": { "v": 2, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 8, "state": {} } }
+    "envelope": { "v": 2, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 8, "state": { "v": 1, "world_rev": 8, "planet": { "depletion_ppm": 0, "health_ppm": 0 }, "commons": { "server_health_ppm": 750000, "active_founders": 12, "compact_members": 7 }, "population": { "online": 3, "founders_total": 20 }, "milestones": { "active_id": null, "progress_ppm": 0 }, "epoch": { "epoch_id": 5, "name": "Phase 0" } } } }
   },
   {
     "name": "forward_event",
@@ -42,7 +42,7 @@
   {
     "name": "snapshot_revision_mismatch",
     "valid": false,
-    "envelope": { "v": 2, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 7, "state": {} } }
+    "envelope": { "v": 2, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 7, "state": { "v": 1, "world_rev": 7, "planet": { "depletion_ppm": 0, "health_ppm": 0 }, "commons": { "server_health_ppm": 0, "active_founders": 0, "compact_members": 0 }, "population": { "online": 0, "founders_total": 0 }, "milestones": { "active_id": null, "progress_ppm": 0 }, "epoch": { "epoch_id": 5, "name": "Phase 0" } } } }
   },
   {
     "name": "snapshot_scope_mismatch",
@@ -53,6 +53,11 @@
     "name": "snapshot_unknown_field",
     "valid": false,
     "envelope": { "v": 2, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 8, "state": {}, "extra": true } }
+  },
+  {
+    "name": "world_state_unknown_field",
+    "valid": false,
+    "envelope": { "v": 2, "ch": "world", "kind": "snapshot", "rev": 8, "constants_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "ts": "2026-07-29T12:00:00Z", "payload": { "scope": "world", "rev": 8, "state": { "v": 1, "world_rev": 8, "planet": { "depletion_ppm": 0, "health_ppm": 0 }, "commons": { "server_health_ppm": 0, "active_founders": 0, "compact_members": 0 }, "population": { "online": 0, "founders_total": 0 }, "milestones": { "active_id": null, "progress_ppm": 0 }, "epoch": { "epoch_id": 5, "name": "Phase 0" }, "extra": true } } }
   },
   {
     "name": "event_scalar_payload",

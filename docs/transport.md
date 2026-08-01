@@ -57,6 +57,15 @@ traffic. Centrifuge history is configured at publication time: 512/10 minutes fo
 operation publishes the courtesy `server_restarting` system envelope to active channels, closes
 clients with code 4003, and shuts down under the caller's context.
 
+World snapshot state is a closed version-1 integer schema: a world-owned monotonic revision;
+planet depletion/Health; Commons server Health, active Founders, and members; online/total Founder
+population; nullable milestone identity plus progress; and epoch identity/name. The envelope and
+state revisions are identical. Go encoding and TypeScript decoding share the same corpus, ppm
+fields are bounded to `[0,1,000,000]`, counts are safe integers, and an absent milestone requires
+zero progress. Planet and milestone values are deliberately zero/null until those owners ship.
+The gameserver aggregator samples at the catalog's 4 Hz cadence and advances its revision only
+after the snapshot is accepted by the publisher.
+
 Every Founder/Company event and every Company intent receipt enters one durable
 `transport_player_outbox` in the transaction that commits it. A database trigger owns event
 insertion for every event writer; intent and Exit transactions insert their exact normalized

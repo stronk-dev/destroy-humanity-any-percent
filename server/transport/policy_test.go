@@ -50,14 +50,14 @@ func TestWirePayloadAndChannelContractsAreClosed(t *testing.T) {
 		valid   bool
 	}{
 		{name: "company snapshot", channel: "player:founder", kind: "snapshot", rev: 7, payload: `{"scope":"company","rev":7,"state":{}}`, valid: true},
-		{name: "world snapshot", channel: "world", kind: "snapshot", rev: 8, payload: `{"scope":"world","rev":8,"state":{}}`, valid: true},
+		{name: "world snapshot", channel: "world", kind: "snapshot", rev: 8, payload: `{"scope":"world","rev":8,"state":{"v":1,"world_rev":8,"planet":{"depletion_ppm":0,"health_ppm":0},"commons":{"server_health_ppm":750000,"active_founders":12,"compact_members":7},"population":{"online":3,"founders_total":20},"milestones":{"active_id":null,"progress_ppm":0},"epoch":{"epoch_id":5,"name":"Phase 0"}}}`, valid: true},
 		{name: "event", channel: "feed", kind: "event", rev: 9, payload: `{"event_id":"event-9","kind":"run.ended","scope":"company","rev":9,"cursor_effect":"advance","payload":{}}`, valid: true},
 		{name: "historical compensation", channel: "player:founder", kind: "event", rev: 5, payload: `{"event_id":"event-c","kind":"compensation","scope":"company","rev":5,"cursor_effect":"historical","payload":{}}`, valid: true},
 		{name: "presence", channel: "guild:g", kind: "presence", rev: 0, payload: `{"joined":[],"left":[],"count":2}`, valid: true},
 		{name: "system", channel: "world", kind: "system", rev: 0, payload: `{"code":"server_restarting","resume_after_ms":15000}`, valid: true},
 		{name: "public receipt", channel: "world", kind: "receipt", rev: 1, payload: `{"outcome":"applied"}`},
 		{name: "receipt is object", channel: "player:founder", kind: "receipt", rev: 1, payload: `[]`},
-		{name: "revision mismatch", channel: "world", kind: "snapshot", rev: 8, payload: `{"scope":"world","rev":7,"state":{}}`},
+		{name: "revision mismatch", channel: "world", kind: "snapshot", rev: 8, payload: `{"scope":"world","rev":7,"state":{"v":1,"world_rev":7,"planet":{"depletion_ppm":0,"health_ppm":0},"commons":{"server_health_ppm":0,"active_founders":0,"compact_members":0},"population":{"online":0,"founders_total":0},"milestones":{"active_id":null,"progress_ppm":0},"epoch":{"epoch_id":5,"name":"Phase 0"}}}`},
 		{name: "scope mismatch", channel: "world", kind: "snapshot", rev: 8, payload: `{"scope":"company","rev":8,"state":{}}`},
 		{name: "unknown snapshot field", channel: "world", kind: "snapshot", rev: 8, payload: `{"scope":"world","rev":8,"state":{},"extra":true}`},
 		{name: "event payload scalar", channel: "feed", kind: "event", rev: 9, payload: `{"event_id":"event-9","kind":"run.ended","scope":"company","rev":9,"cursor_effect":"advance","payload":1}`},
