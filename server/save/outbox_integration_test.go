@@ -147,4 +147,16 @@ func TestPlayerOutboxOrderingDeadLetterAndSizeIntegration(t *testing.T) {
 		t.Fatalf("jsonb text size guard err=%v", err)
 	}
 	_ = tx.Rollback()
+
+	sharedIntent := "01985555-1007-7000-8000-000000000007"
+	for _, row := range []struct{ founder, stream string }{{founderA, streamA.StreamID}, {founderB, streamB.StreamID}} {
+		if _, err := db.ExecContext(ctx, `INSERT INTO transport_player_outbox(founder_id,stream_id,message_kind,source_id,scope,revision,constants_hash,payload) VALUES($1,$2,'receipt',$3,'company',3,$4,'{"outcome":"applied"}')`,
+			row.founder, row.stream, sharedIntent, hash); err != nil {
+			t.Fatalf("same intent id in independent stream rejected: %v", err)
+		}
+	}
+	var sharedRows int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM transport_player_outbox WHERE message_kind='receipt' AND source_id=$1`, sharedIntent).Scan(&sharedRows); err != nil || sharedRows != 2 {
+		t.Fatalf("cross-stream intent identity rows=%d err=%v", sharedRows, err)
+	}
 }

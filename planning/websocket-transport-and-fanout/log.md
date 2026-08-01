@@ -438,3 +438,12 @@ Findings (minor):
 - Focused unit suites and the real-Postgres save/production integration surface pass through the
   repository-root commands. Plan item 3 flips in this proof-carrying change; `cmd/gameserver` and the
   world snapshot driver remain the forward composition work.
+
+### Self-review follow-up — stream-scoped receipt identity
+
+The post-commit seam audit caught a HIGH before review approval: migration 00040 initially declared
+`UNIQUE(message_kind, source_id)`, but receipt source IDs are client-supplied intent IDs whose
+authority is only per stream. Two Founders may legitimately submit the same UUID. Append-only
+migration 00041 narrows uniqueness to `(message_kind, stream_id, source_id)`; event IDs remain safe
+under the same key. A live-Postgres regression inserts the same intent ID for two independent
+Founder streams and requires both durable receipt rows.
