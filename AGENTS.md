@@ -68,6 +68,12 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
   spot-check; the review it then got found a latent cap-lowering policy gap the spot-check
   missed.)
 
+- **Review provenance is explicit.** Every verdict entry names both `Review by:` (the person or
+  agent that actually inspected the diff) and `Recorded by:` (when someone else transcribed or
+  summarized it). A recorder may not relabel a delegated or self-review as the project's
+  designated independent review. An archival gate cites the exact verdict entry and reviewed
+  commit range it consumed.
+
 - **Language/tooling:** Go code passes `gofmt` + `go vet`; TS is strict-mode; tests accompany every non-trivial change. The golden-vector suite and (once it exists) the balance-harness pacing targets are acceptance gates.
 - **Small, reviewable changes.** One system per PR/commit. Reference the design doc section your change implements in the commit message (e.g. `economy: implement generator cost curve (design/02 §2.1)`).
 - **Player-facing text** follows the flavor bible voice rules; any real-world statistic must come from the research files, and anything on a research file's "verify before shipping" list must be flagged, not shipped as fact.
@@ -95,6 +101,9 @@ a protocol-violating commit subject (`BALANCE-CHANGE:`/`CONSTANTS-IDENTITY:` cla
 while no review verdict references the affected hashes and nothing has been pushed. Once a
 planning-log verdict cites a hash, that history is append-only; a wrong-subject commit discovered
 after that point gets a follow-up correction commit and a planning-log ruling, never a rewrite.
+
+Applied migrations are append-only. Once a migration has landed in a commit, corrections use a
+new migration; do not edit its Up or Down body in place, even before publication.
 
 Use stable, narrowly scoped command prefixes so the execution environment can remember approval.
 Run every routine format, build, test, and Git command with the repository root as its working

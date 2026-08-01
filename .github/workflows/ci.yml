@@ -53,6 +53,10 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
+        with:
+          # verify-kernel-version walks every guarded commit and deliberately
+          # fails closed when history is shallow.
+          fetch-depth: 0
       - uses: pnpm/action-setup@v6
         with:
           package_json_file: client/package.json

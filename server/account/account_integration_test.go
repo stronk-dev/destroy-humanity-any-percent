@@ -26,9 +26,11 @@ import (
 
 type integrationCatalogs map[string]*economy.Catalog
 
-type integrationGuildSettlements struct{}
+// emptyGuildSettlements is a constructor-only account fixture. It is not the
+// production guild settlement resolver and must never be cited as composition.
+type emptyGuildSettlements struct{}
 
-func (integrationGuildSettlements) PendingSettlements(context.Context, string, string, int64) (guild.SettlementBatch, error) {
+func (emptyGuildSettlements) PendingSettlements(context.Context, string, string, int64) (guild.SettlementBatch, error) {
 	return guild.SettlementBatch{}, nil
 }
 
@@ -106,7 +108,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 	}
 	replaySet := production.ReplayCatalogSet{hash: replayBundle}
 	intentService, err := production.NewService(saveStore, resolver, nil, nil, nil, production.WithReplayCatalogs(replaySet),
-		production.WithProgressionRuntime(replaySet), production.WithCurrentConstantsHash(hash), production.WithGuildSettlements(integrationGuildSettlements{}))
+		production.WithProgressionRuntime(replaySet), production.WithCurrentConstantsHash(hash), production.WithGuildSettlements(emptyGuildSettlements{}))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -440,7 +442,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	}
 	replaySet := production.ReplayCatalogSet{bundle.Hash: replayBundle}
 	service, err := production.NewService(store, resolver, nil, nil, nil, production.WithReplayCatalogs(replaySet),
-		production.WithProgressionRuntime(replaySet), production.WithCurrentConstantsHash(bundle.Hash), production.WithGuildSettlements(integrationGuildSettlements{}))
+		production.WithProgressionRuntime(replaySet), production.WithCurrentConstantsHash(bundle.Hash), production.WithGuildSettlements(emptyGuildSettlements{}))
 	if err != nil {
 		t.Fatal(err)
 	}

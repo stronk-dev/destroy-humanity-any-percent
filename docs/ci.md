@@ -12,7 +12,7 @@ runners, deployment credentials, or deployment steps.
 | Job | Repository command | Coverage |
 |---|---|---|
 | `server` | `make verify-server` | Go vet/tests plus generated production-formula drift |
-| `client` | `make verify-client` | strict TypeScript and Node/V8 tests |
+| `client` | `make verify-client` | strict TypeScript and Node/V8 tests; full Git history is required by KV-1 |
 | `browser` | `make test-browser` | Chromium, Firefox, and WebKit suites |
 | `schema` | `make verify-schema` | schema compilation plus production and fixture catalogs |
 

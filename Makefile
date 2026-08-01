@@ -95,6 +95,8 @@ verify-client-boundary:
 	node client/tools/verify-shell-boundaries.mjs
 
 verify-kernel-version:
+	node client/tools/verify-ci-kernel-history.mjs
+	node client/tools/verify-ci-kernel-history-fixtures.mjs
 	node client/tools/verify-kernel-version.mjs
 	node client/tools/verify-kernel-version-fixtures.mjs
 

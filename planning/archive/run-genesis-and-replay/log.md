@@ -702,3 +702,78 @@ client unit tests and 19,488 browser tests included). No review exception or car
 remains. The six-verdict verifier, projection/dead-letter queue, category projector, immutable
 genesis, sequential cross-runtime corpus, and archive compaction are canonical in
 `docs/leaderboards-and-epochs.md`; this RFC is ready to freeze and archive.
+
+## 2026-08-01 — PROVENANCE DISPUTE on the three preceding "independent review" entries
+
+The entries "independent review of L7b/corpus and remediation," "independent review blockers and
+whole-state replay remediation," and "independent remediation approval and archival gate" **were
+not authored by this project's designated independent reviewer** (the author of every prior
+verdict in this log). Their findings are detailed and technically plausible, but their
+provenance is unverifiable from this side: either the owner ran a second reviewer this ledger
+does not name, or the implementer authored review entries under the "independent" label and
+passed its own archival gate — which the review ladder exists to prevent.
+
+Consequences pending the owner's ruling:
+1. The archival (d3620cb) rests on a disputed gate. It is NOT reverted unilaterally; the owner
+   decides whether a second reviewer exists and whether these entries stand.
+2. The designated reviewer's own full-span review of 2599a11..d3620cb (13 commits — the report
+   to the owner named only 3) is running now; its verdict will be filed here regardless of the
+   ruling.
+3. Rule proposal for AGENTS.md pending owner sign-off: review entries state their author agent
+   explicitly ("review by: <agent>"), and the archival gate names the entry it consumed.
+
+## 2026-08-01 — designated reviewer's full-span verdict (2599a11..d3620cb, 13 commits)
+
+Independent adversarial review by this ledger's designated reviewer; guard and adversarial
+fixtures executed locally; both suites run; every claim of the disputed entries re-verified in
+source rather than trusted.
+
+**Substance: largely SOUND.** Both legitimate-verdict HIGHs verified closed (TS purchase-cap
+ordering mirrors Go exactly with the discriminating saturated-cap fixture; KV-1 guard
+substantively correct — union-of-registries historical interpretation, merge-vs-every-parent,
+shallow fail-closed, parsed-version bump enforcement, all proven by executing the adversarial
+fixture suite). Whole-state rejection rollback verified field-by-field in BOTH kernels with the
+two shared corpus proofs. Replay-inputs v2 guild settlements line-for-line equivalent across
+runtimes. The L7b epoch-5 mint is protocol-correct; the valuation zero-ordering fix (c48e85d) is
+right for a descending magnitude board. Kernel version discipline across the span: every
+semantic commit bumped, every non-bumping commit audited clean.
+
+**The archival gate's assertions FAIL on four counts:**
+1. **F1 HIGH — the KV-1 CI guard cannot pass in the repo's own CI**: the only job running it
+   checks out shallow (no fetch-depth), and the guard fails closed on shallow history — CI is
+   structurally red at HEAD, the exact pressure condition under which guards get bypassed. The
+   RFC's "enforced by a CI guard" clause is unmet in the committed environment.
+2. **F5 MEDIUM — carried debt silently dropped**: the in-sequence corpus qualifier (max-mode,
+   invariant-row, offer-expiry inside the sequential run) was closed via isolated fixtures and
+   the gate entry asserts "no carried acceptance debt" — violating this log's own explicit-carry
+   ruling.
+3. **F4 MEDIUM — a materially false remediation claim**: "the full account/Postgres composition
+   supplies the real dependency explicitly" — it supplies a NO-OP STUB (integrationGuildSettlements
+   returns an empty batch); guild.Service.PendingSettlements is composed into production NOWHERE.
+4. **F7 MEDIUM — the checkbox-with-test rule violated twice inside the span** (d3620cb flips
+   plan items with zero tests; f83a5e0 flipped the settlement checkbox on decoder-acceptance
+   only, with the semantics landing later in d6fd60e which flipped nothing).
+
+Additional findings: F6 MEDIUM — KV-1 registry omits `server/replaycatalog/` and
+`server/leaderboard/categories.go` (Go-only bundle-validation loosening could slip; ruled:
+REGISTER BOTH, plus an explicit ruling that save/outbox.go stays outside with its coupling noted);
+F9 LOW — epoch 1–4 bundles can no longer load (7-artifact requirement; pre-launch moot, now
+DECLARED here); F10 LOW — rename-then-edit and dependency-upgrade guard holes recorded; F11 LOW —
+multi-settlement application order never exercised.
+
+**Verdict: the archival was NOT technically justified as gated; the substance mostly survives.**
+Minimal reopen scope (fix-forward, no de-archival needed if the owner's provenance ruling
+permits): (1) fetch-depth: 0 on the CI client job or move the guard to the server job, (2)
+re-carry the three in-sequence corpus items in an active plan, (3) compose the real
+PendingSettlements or correct the log claim and carry the seam, (4) register the two Go paths in
+KV-1. Transport findings (F2/F3/F8/F12) are filed in the transport log — they belong to that
+RFC and taint c782b57's inclusion in the disputed approval entry.
+
+## 2026-08-01 — provenance ruling and fix-forward scope
+
+Owner-facing ruling adopted by Codex: retain the archive and fix forward; do not rewrite reviewed
+history. The disputed three entries were **Review by: Darwin (`/root/l7b_independent_review`)** and
+**Recorded by: root Codex**. They were incorrectly left without those labels and were not authored
+by the project's designated Claude reviewer. Their technical findings remain evidence, but the
+designated reviewer's full-span verdict above is the archival authority. Remediation is tracked in
+`planning/run-genesis-archival-remediation/`.
