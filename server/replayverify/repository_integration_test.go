@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/kernel"
+	"cloud-clicker/server/production"
 	"cloud-clicker/server/save"
 )
 
@@ -25,11 +26,12 @@ func (sink *recordingSink) ReportVerificationInvariant(report VerificationInvari
 
 type recordingProjector struct {
 	calls int
+	err   error
 }
 
 func (projector *recordingProjector) ProjectVerifiedRun(context.Context, *sql.Tx, string, int64) error {
 	projector.calls++
-	return nil
+	return projector.err
 }
 
 func TestVerificationClaimTokenLeaseAndTerminalImmutabilityIntegration(t *testing.T) {
@@ -188,6 +190,68 @@ func TestVerificationExpiredFinalClaimPoisonsWithoutSixthAttemptIntegration(t *t
 	}
 }
 
+func TestVerificationProjectionFailureRollsBackThenPoisonsIntegration(t *testing.T) {
+	db := replayIntegrationDB(t)
+	ctx := context.Background()
+	streamID := "1aaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+	seedVerificationRun(t, db, streamID, "2aaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", 1, kernel.Version)
+	sink := &recordingSink{}
+	repository, err := NewRepository(db, sink)
+	if err != nil {
+		t.Fatal(err)
+	}
+	repository.verify = func(context.Context, string, int64) (production.ReplayVerdict, error) {
+		return production.ReplayVerified, nil
+	}
+	injected := errors.New("deterministic projection payload failure")
+	projector := &recordingProjector{err: injected}
+	for attempt := 1; attempt <= verificationFailureLimit; attempt++ {
+		worked, err := repository.ProcessNext(ctx, projector)
+		if !worked || !errors.Is(err, injected) {
+			t.Fatalf("attempt %d worked=%v err=%v", attempt, worked, err)
+		}
+		if attempt < verificationFailureLimit {
+			if _, err := db.ExecContext(ctx, `UPDATE verification_queue SET available_at=clock_timestamp()-interval '1 millisecond' WHERE company_stream_id=$1 AND run_seq=1`, streamID); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	var status string
+	var verdict sql.NullString
+	if err := db.QueryRowContext(ctx, `SELECT status,verdict FROM verification_queue WHERE company_stream_id=$1 AND run_seq=1`, streamID).Scan(&status, &verdict); err != nil {
+		t.Fatal(err)
+	}
+	if status != "dead" || verdict.Valid || projector.calls != verificationFailureLimit || len(sink.reports) != 1 {
+		t.Fatalf("status=%s verdict=%v calls=%d reports=%+v", status, verdict, projector.calls, sink.reports)
+	}
+}
+
+func TestVerificationClaimsCompanyRunsInSequenceIntegration(t *testing.T) {
+	db := replayIntegrationDB(t)
+	ctx := context.Background()
+	streamID := "1bbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
+	ownerID := "2bbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
+	seedVerificationRun(t, db, streamID, ownerID, 1, kernel.Version)
+	seedAdditionalRun(t, db, streamID, 2, kernel.Version)
+	if _, err := db.ExecContext(ctx, `UPDATE verification_queue SET available_at=clock_timestamp()+interval '1 hour' WHERE company_stream_id=$1 AND run_seq=1`, streamID); err != nil {
+		t.Fatal(err)
+	}
+	repository, err := NewRepository(db, &recordingSink{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if claimed, err := repository.claimNext(ctx); !errors.Is(err, sql.ErrNoRows) {
+		t.Fatalf("later run bypassed head: claim=%+v err=%v", claimed, err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE verification_queue SET available_at=clock_timestamp()-interval '1 millisecond' WHERE company_stream_id=$1 AND run_seq=1`, streamID); err != nil {
+		t.Fatal(err)
+	}
+	claimed, err := repository.claimNext(ctx)
+	if err != nil || claimed.RunSeq != 1 {
+		t.Fatalf("head claim=%+v err=%v", claimed, err)
+	}
+}
+
 func TestVerificationLegacyGapAndVersionDriftAreDatabaseVerdictsIntegration(t *testing.T) {
 	db := replayIntegrationDB(t)
 	ctx := context.Background()
@@ -335,6 +399,34 @@ func seedVerificationRun(t *testing.T, db *sql.DB, streamID, ownerID string, run
 	}
 	if _, err := tx.ExecContext(ctx, `INSERT INTO run_epochs(company_stream_id,run_seq,epoch_id,constants_hash,engine_version,build_vcs_hash,seed)
 		VALUES($1,$2,$3,$4,$5,'integration','1')`, streamID, runSeq, epochID, integrationHash, engineVersion); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO run_genesis(company_stream_id,run_seq,state,version,constants_hash)
+		VALUES($1,$2,'{}',1,$3)`, streamID, runSeq, integrationHash); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO verification_queue(company_stream_id,run_seq) VALUES($1,$2)`, streamID, runSeq); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.Commit(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func seedAdditionalRun(t *testing.T, db *sql.DB, streamID string, runSeq int64, engineVersion string) {
+	t.Helper()
+	ctx := context.Background()
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tx.Rollback()
+	var epochID int64
+	if err := tx.QueryRowContext(ctx, `SELECT epoch_id FROM epochs WHERE ended_at IS NULL`).Scan(&epochID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO run_epochs(company_stream_id,run_seq,epoch_id,constants_hash,engine_version,build_vcs_hash,seed)
+		VALUES($1,$2,$3,$4,$5,'integration','2')`, streamID, runSeq, epochID, integrationHash, engineVersion); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := tx.ExecContext(ctx, `INSERT INTO run_genesis(company_stream_id,run_seq,state,version,constants_hash)

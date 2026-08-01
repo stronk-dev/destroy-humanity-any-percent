@@ -45,8 +45,9 @@ type InvariantSink interface {
 }
 
 type Repository struct {
-	db   *sql.DB
-	sink InvariantSink
+	db     *sql.DB
+	sink   InvariantSink
+	verify func(context.Context, string, int64) (production.ReplayVerdict, error)
 	// fault is an integration-test seam for failures that database/sql cannot
 	// deterministically inject between a successful query and rows.Err.
 	fault func(string) error
@@ -94,7 +95,11 @@ func (repository *Repository) ProcessNext(ctx context.Context, projector Project
 		return false, err
 	}
 
-	verdict, verifyErr := repository.VerifyStoredRun(ctx, claimed.StreamID, claimed.RunSeq)
+	verify := repository.VerifyStoredRun
+	if repository.verify != nil {
+		verify = repository.verify
+	}
+	verdict, verifyErr := verify(ctx, claimed.StreamID, claimed.RunSeq)
 	if errors.Is(verifyErr, ErrVerificationDeferred) {
 		return true, repository.deferVersion(ctx, claimed)
 	}
