@@ -117,8 +117,10 @@ Drain courtesy messages deliberately bypass recoverable history because their re
 The gameserver broadcasts first, then closes intent admission; every exit branch—including a failed
 broadcast—closes sockets and shuts down under the same bounded context.
 
-The event/receipt relay is implemented. The runnable `cmd/gameserver` composition and world-snapshot
-driver remain implementing; this document does not claim those paths exist yet.
+The runnable `cmd/gameserver` composes the event/receipt and Guild-presence relays, the 4 Hz world
+snapshot driver, Postgres-backed Guild and Commons membership resolvers, and a deny-closed Match
+resolver. Its real-socket integration proof uses the same authenticated handler mounted in the
+production binary.
 
 The in-process gameserver lifecycle now owns `/healthz`, `/readyz`, WebSocket mounting, and exact
 intent admission during shutdown. Draining irreversibly marks readiness false before publishing

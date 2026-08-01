@@ -678,6 +678,19 @@ func (p *Projector) FounderCohort(ctx context.Context, founderID string) (string
 	return id, err
 }
 
+func (p *Projector) CohortMember(founderID, cohortID string) bool {
+	if p == nil || founderID == "" || cohortID == "" {
+		return false
+	}
+	var member bool
+	err := p.db.QueryRow(`SELECT EXISTS(
+		SELECT 1 FROM founder_commons_assignments assignment
+		JOIN company_compact_memberships membership ON membership.founder_id=assignment.founder_id
+		WHERE assignment.founder_id::text=$1 AND assignment.cohort_id::text=$2 AND membership.member=true
+	)`, founderID, cohortID).Scan(&member)
+	return err == nil && member
+}
+
 func decodeStrict(data []byte, destination any) error {
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()

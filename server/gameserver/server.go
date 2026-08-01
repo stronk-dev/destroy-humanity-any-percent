@@ -36,6 +36,10 @@ type EpochSynchronizer interface {
 	Sync(context.Context) (string, error)
 }
 
+type BackgroundJob interface {
+	Run(context.Context) error
+}
+
 type Server struct {
 	database      Database
 	api           http.Handler
@@ -47,8 +51,12 @@ type Server struct {
 	stateMu       sync.Mutex
 	ready         atomic.Bool
 	draining      atomic.Bool
+	jobsHealthy   atomic.Bool
 	relayCancel   context.CancelFunc
 	relayDone     chan struct{}
+	jobs          []BackgroundJob
+	jobsCancel    context.CancelFunc
+	jobsDone      chan struct{}
 	startOnce     sync.Once
 	startErr      error
 }
@@ -57,7 +65,22 @@ func New(database Database, api http.Handler, realtime Realtime, relay PlayerRel
 	if database == nil || api == nil || realtime == nil || relay == nil || epochs == nil || !validConstantsHash(constantsHash) {
 		return nil, ErrInvalidServer
 	}
-	return &Server{database: database, api: api, realtime: realtime, relay: relay, epochs: epochs, constantsHash: constantsHash, gate: newIntentGate(), relayDone: make(chan struct{})}, nil
+	return &Server{database: database, api: api, realtime: realtime, relay: relay, epochs: epochs, constantsHash: constantsHash, gate: newIntentGate(), relayDone: make(chan struct{}), jobsDone: make(chan struct{})}, nil
+}
+
+func (server *Server) AttachJobs(jobs ...BackgroundJob) error {
+	server.stateMu.Lock()
+	defer server.stateMu.Unlock()
+	if server.ready.Load() || server.draining.Load() || server.jobsCancel != nil {
+		return ErrInvalidServer
+	}
+	for _, job := range jobs {
+		if job == nil {
+			return ErrInvalidServer
+		}
+	}
+	server.jobs = append(server.jobs, jobs...)
+	return nil
 }
 
 func validConstantsHash(value string) bool {
@@ -74,16 +97,19 @@ func (server *Server) Start(ctx context.Context) error {
 		if err != nil || hash != server.constantsHash {
 			server.startErr = errors.Join(ErrInvalidServer, err)
 			close(server.relayDone)
+			close(server.jobsDone)
 			return
 		}
 		server.startErr = server.realtime.Run()
 		if server.startErr != nil {
 			server.ready.Store(false)
 			close(server.relayDone)
+			close(server.jobsDone)
 			return
 		}
 		var relayContext context.Context
 		relayContext, server.relayCancel = context.WithCancel(ctx)
+		server.startJobs(ctx)
 		server.markReadyIfRunning()
 		go server.runRelay(relayContext)
 	})
@@ -109,11 +135,12 @@ func (server *Server) Drain(ctx context.Context, now time.Time) error {
 	server.stateMu.Unlock()
 	drainContext, cancel := context.WithTimeout(ctx, server.realtime.DrainTimeout())
 	defer cancel()
+	jobsErr := server.stopJobs(drainContext)
 	if err := server.realtime.BroadcastDrain(server.constantsHash, now.UTC()); err != nil {
 		server.gate.beginDrain()
 		server.stopRelay()
 		server.realtime.CloseForDrain()
-		return errors.Join(err, server.realtime.Shutdown(drainContext))
+		return errors.Join(jobsErr, err, server.realtime.Shutdown(drainContext))
 	}
 	zero := server.gate.beginDrain()
 	select {
@@ -121,14 +148,14 @@ func (server *Server) Drain(ctx context.Context, now time.Time) error {
 	case <-drainContext.Done():
 		server.stopRelay()
 		server.realtime.CloseForDrain()
-		return errors.Join(drainContext.Err(), server.realtime.Shutdown(drainContext))
+		return errors.Join(jobsErr, drainContext.Err(), server.realtime.Shutdown(drainContext))
 	}
 	for {
 		count, err := server.relay.Flush(drainContext)
 		if err != nil {
 			server.stopRelay()
 			server.realtime.CloseForDrain()
-			return errors.Join(err, server.realtime.Shutdown(drainContext))
+			return errors.Join(jobsErr, err, server.realtime.Shutdown(drainContext))
 		}
 		if count == 0 {
 			break
@@ -140,11 +167,46 @@ func (server *Server) Drain(ctx context.Context, now time.Time) error {
 		case <-server.relayDone:
 		case <-drainContext.Done():
 			server.realtime.CloseForDrain()
-			return errors.Join(drainContext.Err(), server.realtime.Shutdown(drainContext))
+			return errors.Join(jobsErr, drainContext.Err(), server.realtime.Shutdown(drainContext))
 		}
 	}
 	server.realtime.CloseForDrain()
-	return server.realtime.Shutdown(drainContext)
+	return errors.Join(jobsErr, server.realtime.Shutdown(drainContext))
+}
+
+func (server *Server) startJobs(parent context.Context) {
+	ctx, cancel := context.WithCancel(parent)
+	server.jobsCancel = cancel
+	server.jobsHealthy.Store(true)
+	var wait sync.WaitGroup
+	wait.Add(len(server.jobs))
+	for _, job := range server.jobs {
+		go func(job BackgroundJob) {
+			defer wait.Done()
+			if err := job.Run(ctx); err != nil && ctx.Err() == nil {
+				server.jobsHealthy.Store(false)
+				server.ready.Store(false)
+				cancel()
+			}
+		}(job)
+	}
+	go func() {
+		wait.Wait()
+		close(server.jobsDone)
+	}()
+}
+
+func (server *Server) stopJobs(ctx context.Context) error {
+	if server.jobsCancel == nil {
+		return nil
+	}
+	server.jobsCancel()
+	select {
+	case <-server.jobsDone:
+		return nil
+	case <-ctx.Done():
+		return ctx.Err()
+	}
 }
 
 func (server *Server) stopRelay() {
@@ -174,7 +236,7 @@ func (server *Server) runRelay(ctx context.Context) {
 func (server *Server) markReadyIfRunning() {
 	server.stateMu.Lock()
 	defer server.stateMu.Unlock()
-	if !server.draining.Load() && !server.gate.isDraining() {
+	if server.jobsHealthy.Load() && !server.draining.Load() && !server.gate.isDraining() {
 		server.ready.Store(true)
 	}
 }

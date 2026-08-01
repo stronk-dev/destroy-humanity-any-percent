@@ -3,6 +3,8 @@
 package replaycatalog
 
 import (
+	"context"
+	"database/sql"
 	"sort"
 
 	"cloud-clicker/server/commons"
@@ -16,6 +18,44 @@ import (
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
+
+func LoadDatabase(ctx context.Context, db *sql.DB) (production.ReplayCatalogSet, error) {
+	if db == nil {
+		return nil, production.ErrInvalidReplayInputs
+	}
+	rows, err := db.QueryContext(ctx, `SELECT constants_hash,artifact_name,bytes FROM catalog_artifacts ORDER BY constants_hash,artifact_name`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	artifacts := map[string]map[string][]byte{}
+	for rows.Next() {
+		var hash, name string
+		var data []byte
+		if err := rows.Scan(&hash, &name, &data); err != nil {
+			return nil, err
+		}
+		if artifacts[hash] == nil {
+			artifacts[hash] = map[string][]byte{}
+		}
+		artifacts[hash][name] = append([]byte(nil), data...)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	set := make(production.ReplayCatalogSet, len(artifacts))
+	for hash, values := range artifacts {
+		bundle, err := Load(hash, values)
+		if err != nil {
+			return nil, err
+		}
+		set[hash] = bundle
+	}
+	if len(set) == 0 {
+		return nil, production.ErrInvalidReplayInputs
+	}
+	return set, nil
+}
 
 func Load(constantsHash string, artifacts map[string][]byte) (production.CatalogBundle, error) {
 	if constantsHash == "" || len(artifacts) != 7 {

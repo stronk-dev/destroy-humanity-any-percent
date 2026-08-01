@@ -92,3 +92,4 @@ its contract; this RFC's AC list is the composition proof.
 - 2026-08-02: created — GC1/GC2 answer the two contracts Codex refused to invent (correctly);
   GC3 assembles.
 - 2026-08-02: accepted for implementation by owner assignment; GC1-GC3 are normative.
+- 2026-08-02: GC1-GC3 implemented; awaiting the designated independent diff review before archival.

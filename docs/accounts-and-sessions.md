@@ -58,6 +58,9 @@ JWT expiry. Refresh tokens rotate once. Reusing a consumed token revokes every r
 token in its family in the same transaction. A `session_families` row is the serialization point:
 every rotation and revocation locks it before validating a token, so a concurrent rotation cannot
 escape replay detection or logout. Session deletion applies the same family revocation.
+The composed gameserver runs a bounded collector for credentials at or beyond their authoritative
+expiry. It deletes refresh and access rows with locked, skip-safe batches, then removes only
+families with no remaining token rows; an unexpired rotation chain is never collected.
 
 ## HTTP boundary
 

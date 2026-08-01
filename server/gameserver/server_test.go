@@ -74,6 +74,22 @@ type fakeRelay struct {
 	events  *[]string
 }
 
+type fakeJob struct {
+	started chan struct{}
+	stopped chan struct{}
+	err     error
+}
+
+func (job *fakeJob) Run(ctx context.Context) error {
+	close(job.started)
+	if job.err != nil {
+		return job.err
+	}
+	<-ctx.Done()
+	close(job.stopped)
+	return nil
+}
+
 func (relay *fakeRelay) Flush(context.Context) (int, error) {
 	relay.mu.Lock()
 	defer relay.mu.Unlock()
@@ -220,6 +236,61 @@ func TestStartRunsRealtimeAndReceiptRelay(t *testing.T) {
 	}
 	if len(events) != 1 || events[0] != "epochs" {
 		t.Fatalf("startup order=%v", events)
+	}
+}
+
+func TestAttachedJobsStartBeforeReadinessAndStopDuringDrain(t *testing.T) {
+	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
+	server, err := New(fakeDatabase{}, http.NotFoundHandler(), realtime, &fakeRelay{}, syncedEpochs(), testConstantsHash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	job := &fakeJob{started: make(chan struct{}), stopped: make(chan struct{})}
+	if err := server.AttachJobs(job); err != nil {
+		t.Fatal(err)
+	}
+	if err := server.Start(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case <-job.started:
+	case <-time.After(time.Second):
+		t.Fatal("job did not start")
+	}
+	ready := httptest.NewRecorder()
+	server.Handler().ServeHTTP(ready, httptest.NewRequest(http.MethodGet, "/readyz", nil))
+	if ready.Code != http.StatusNoContent {
+		t.Fatalf("readiness=%d", ready.Code)
+	}
+	if err := server.Drain(context.Background(), time.Now().UTC()); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case <-job.stopped:
+	case <-time.After(time.Second):
+		t.Fatal("job did not stop during drain")
+	}
+}
+
+func TestFailedJobCannotBeHiddenByHealthyRelay(t *testing.T) {
+	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
+	server, err := New(fakeDatabase{}, http.NotFoundHandler(), realtime, &fakeRelay{}, syncedEpochs(), testConstantsHash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	job := &fakeJob{started: make(chan struct{}), stopped: make(chan struct{}), err: errors.New("worker failed")}
+	if err := server.AttachJobs(job); err != nil {
+		t.Fatal(err)
+	}
+	if err := server.Start(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	<-job.started
+	time.Sleep(50 * time.Millisecond)
+	ready := httptest.NewRecorder()
+	server.Handler().ServeHTTP(ready, httptest.NewRequest(http.MethodGet, "/readyz", nil))
+	if ready.Code != http.StatusServiceUnavailable {
+		t.Fatalf("failed job was masked by relay readiness: %d", ready.Code)
 	}
 }
 

@@ -37,8 +37,9 @@ func Clear(catalog *Catalog, members []MemberStock, stockCap int64) ([]MemberSto
 	sort.Slice(result, func(left, right int) bool { return result[left].AccountID < result[right].AccountID })
 	seen := map[string]bool{}
 	for _, member := range result {
-		if !uuidPattern.MatchString(member.AccountID) || member.Produces == "" || member.Consumes == "" ||
-			member.Produces == member.Consumes || member.AvailableUnits < 0 || member.AvailableUnits > stockCap ||
+		neutral := member.Produces == "" && member.Consumes == "" && member.AvailableUnits == 0 && member.ReceivedUnits == 0
+		if !uuidPattern.MatchString(member.AccountID) || !neutral && (member.Produces == "" || member.Consumes == "" || member.Produces == member.Consumes) ||
+			member.AvailableUnits < 0 || member.AvailableUnits > stockCap ||
 			member.ReceivedUnits < 0 || member.ReceivedUnits > stockCap || seen[member.AccountID] {
 			return nil, nil, ErrInvalidExchange
 		}

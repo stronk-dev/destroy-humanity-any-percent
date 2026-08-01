@@ -74,6 +74,59 @@ type FounderState struct {
 	State         json.RawMessage `json:"state"`
 }
 
+type SessionGCResult struct {
+	RefreshTokens int64
+	AccessTokens  int64
+	Families      int64
+}
+
+// PruneExpiredSessions removes only credentials that can no longer
+// authenticate. Families are removed after both token tables are empty, so a
+// live rotation chain is never collected.
+func (repository *Repository) PruneExpiredSessions(ctx context.Context, before time.Time, limit int) (SessionGCResult, error) {
+	if repository == nil || before.IsZero() || limit < 1 || limit > 10_000 {
+		return SessionGCResult{}, ErrInvalidRequest
+	}
+	tx, err := repository.db.BeginTx(ctx, nil)
+	if err != nil {
+		return SessionGCResult{}, err
+	}
+	defer tx.Rollback()
+	remove := func(query string) (int64, error) {
+		result, err := tx.ExecContext(ctx, query, save.CanonicalServerTime(before), limit)
+		if err != nil {
+			return 0, err
+		}
+		return result.RowsAffected()
+	}
+	var result SessionGCResult
+	result.RefreshTokens, err = remove(`DELETE FROM sessions WHERE token_hash IN (SELECT token_hash FROM sessions WHERE expires_at<=$1 ORDER BY expires_at,token_hash LIMIT $2 FOR UPDATE SKIP LOCKED)`)
+	if err != nil {
+		return SessionGCResult{}, err
+	}
+	result.AccessTokens, err = remove(`DELETE FROM access_tokens WHERE jti IN (SELECT jti FROM access_tokens WHERE expires_at<=$1 ORDER BY expires_at,jti LIMIT $2 FOR UPDATE SKIP LOCKED)`)
+	if err != nil {
+		return SessionGCResult{}, err
+	}
+	families, err := tx.ExecContext(ctx, `DELETE FROM session_families family WHERE family_id IN (
+		SELECT candidate.family_id FROM session_families candidate
+		WHERE NOT EXISTS(SELECT 1 FROM sessions WHERE family_id=candidate.family_id)
+		  AND NOT EXISTS(SELECT 1 FROM access_tokens WHERE family_id=candidate.family_id)
+		ORDER BY candidate.family_id LIMIT $1 FOR UPDATE SKIP LOCKED
+	)`, limit)
+	if err != nil {
+		return SessionGCResult{}, err
+	}
+	result.Families, err = families.RowsAffected()
+	if err != nil {
+		return SessionGCResult{}, err
+	}
+	if err := tx.Commit(); err != nil {
+		return SessionGCResult{}, err
+	}
+	return result, nil
+}
+
 func NewRepository(db *sql.DB, catalogs save.CatalogResolver, constantsHash string, keys SigningKeys, clock Clock, random io.Reader) (*Repository, error) {
 	if db == nil || catalogs == nil || constantsHash == "" || keys.validate() != nil {
 		return nil, ErrInvalidRequest

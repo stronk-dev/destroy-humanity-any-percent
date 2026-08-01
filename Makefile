@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck build-client vectors vectors-check replay-fixture replay-fixture-check formulas formulas-check harness harness-check commons-harness-check harness-update epoch-hash vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check formulas formulas-check harness harness-check commons-harness-check harness-update epoch-hash vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-server verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -37,6 +37,10 @@ typecheck:
 
 build-client:
 	cd client && $(CLIENT_BIN)/vite build
+
+build-gameserver:
+	mkdir -p $(REPO_CACHE_DIR)/bin
+	cd server && go build -o $(REPO_CACHE_DIR)/bin/gameserver ./cmd/gameserver
 
 vectors:
 	node tools/gen-vectors.mjs

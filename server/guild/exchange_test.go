@@ -49,3 +49,20 @@ func TestClearAbsentLinkAndNPCFallback(t *testing.T) {
 		t.Fatalf("npc=%+v event=%+v err=%v", npc, event, err)
 	}
 }
+
+func TestClearKeepsUnincorporatedMembersInert(t *testing.T) {
+	catalog, _ := LoadCatalog([]byte(phase0Catalog))
+	members := []MemberStock{
+		{AccountID: "018f0000-0000-4000-8000-000000000001", Produces: "libraries", Consumes: "hype", AvailableUnits: 100},
+		{AccountID: "018f0000-0000-4000-8000-000000000002"},
+	}
+	got, clearings, err := Clear(catalog, members, 100_000)
+	if err != nil || len(got) != 2 || len(clearings) != 0 || got[1] != members[1] {
+		t.Fatalf("states=%+v clearings=%+v err=%v", got, clearings, err)
+	}
+	invalid := append([]MemberStock(nil), members...)
+	invalid[1].AvailableUnits = 1
+	if _, _, err := Clear(catalog, invalid, 100_000); err == nil {
+		t.Fatal("partially initialized faction stock was accepted")
+	}
+}

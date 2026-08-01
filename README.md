@@ -7,9 +7,9 @@ A free, browser-based MMO idle game: climb from a 1995 garage — where you own 
 **Status:** design complete; the shared numeric core, economy catalog/kernel, versioned Postgres
 save layer, authoritative production/intent engine, and gate/Route Registry foundation are
 implemented, along with the Commons Compact server foundation and the Svelte/Worker client shell.
-Anonymous account/session and Founder lifecycle infrastructure is also implemented. The shell has
-no live transport adapter yet, so the game is not playable end to end; no deployable server binary
-exists yet.
+Anonymous account/session and Founder lifecycle infrastructure is also implemented. A runnable
+gameserver now composes those systems, the Postgres workers, and authenticated realtime transport;
+the shell still has no live transport adapter, so the game is not yet playable end to end.
 
 ## Development setup
 
@@ -37,6 +37,7 @@ The useful repository commands are:
 make test         # Go + Node/V8 + Chromium + Firefox + WebKit
 make typecheck    # strict TypeScript check
 make build-client # production Svelte build, including the prediction Worker chunk
+make build-gameserver # production Go gameserver binary
 make verify-schema # JSON Schema + positive/negative catalog fixtures
 make verify-client-boundary # prediction/action and balance-mutation package boundaries
 make formulas-check # regenerate + diff the published production formula artifact
@@ -56,9 +57,9 @@ GitHub Actions runs independent server, client, browser, and balance-schema jobs
 pull request. The browser job uses the Playwright image matching the pinned package and exercises
 Chromium, Firefox, and WebKit. `make verify` is the equivalent aggregate local command.
 
-There is no deployment automation yet. Runtime container images, Compose/Caddy deployment,
-websocket draining, and the live snapshot transport belong to later Phase-0 RFCs listed in
-[`rfc/README.md`](rfc/README.md).
+There is no deployment automation yet. The gameserver binary, websocket draining, and live world
+snapshot transport exist; runtime images and Compose/Caddy deployment remain later delivery work
+listed in [`rfc/README.md`](rfc/README.md).
 
 ## Project documentation
 
