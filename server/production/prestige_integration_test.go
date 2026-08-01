@@ -81,7 +81,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}))
+	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}), WithGuildSettlements(emptyGuildSettlements{}))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -365,7 +365,7 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	resolver.economy[currentHash], resolver.routes[currentHash], resolver.prestige[currentHash], resolver.factions[currentHash] = catalog, routeCatalog, policy, factionCatalog
 	commonsCatalogs[currentHash] = commonsCatalog
 	currentReplayBundle := loadReplayTestBundle(t, currentHash, changedArtifacts)
-	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(currentHash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle, currentHash: currentReplayBundle}))
+	currentService, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(currentHash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle, currentHash: currentReplayBundle}), WithGuildSettlements(emptyGuildSettlements{}))
 	if err != nil {
 		t.Fatal(err)
 	}

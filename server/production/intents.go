@@ -83,6 +83,14 @@ type EventProjector interface {
 	Project(context.Context, []save.EventRecord) error
 }
 
+// GuildSettlementResolver freezes every committed clearing since the
+// Company's last watermark into replay_inputs before any contribution reads
+// stock-consumption state. The guild service is the production owner; tests
+// must bind an explicit resolver instead of silently inventing an empty lane.
+type GuildSettlementResolver interface {
+	PendingSettlements(context.Context, string, string, int64) (guild.SettlementBatch, error)
+}
+
 type ServiceOption func(*Service) error
 
 func WithRouteCatalogs(resolver RouteCatalogResolver) ServiceOption {
@@ -169,6 +177,16 @@ func WithGuildRuntime(resolver guild.CatalogResolver) ServiceOption {
 	}
 }
 
+func WithGuildSettlements(resolver GuildSettlementResolver) ServiceOption {
+	return func(service *Service) error {
+		if resolver == nil {
+			return ErrInvalidIntent
+		}
+		service.guildSettlements = resolver
+		return nil
+	}
+}
+
 // WithCurrentConstantsHash binds the process's authoritative balance identity.
 // Existing runs continue under their pinned hash; only a Prestige transition
 // uses this value to assemble and pin the next run.
@@ -225,6 +243,7 @@ type Service struct {
 	factionCatalogs      FactionCatalogResolver
 	projectors           []EventProjector
 	guildCatalogs        guild.CatalogResolver
+	guildSettlements     GuildSettlementResolver
 	prestigePolicies     PrestigePolicyResolver
 	currentConstantsHash string
 }
@@ -369,15 +388,22 @@ func (s *Service) Handle(
 			if !ok {
 				return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 			}
-			var contributions []multiplier.Contribution
-			if request.InvalidDetail == "" && s.contributions != nil && request.Kind != IntentBuyRouteHint {
-				var err error
-				contributions, err = s.contributions.Contributions(ctx, state, catalog, revision)
+			var directContributions []multiplier.Contribution
+			if command.RunLogSeq > 0 {
+				contributions, settlements, err := s.resolveReplayAccrual(ctx, state, revision, catalog, bundle.Faction.StockCap, request)
 				if err != nil {
 					return save.IntentDecision{}, nil, err
 				}
+				build.Contributions = contributions
+				build.GuildSettlementBatch = settlements
+			} else if request.InvalidDetail == "" && s.contributions != nil && request.Kind != IntentBuyRouteHint {
+				contributions, err := s.contributions.Contributions(ctx, state, catalog, revision)
+				if err != nil {
+					return save.IntentDecision{}, nil, err
+				}
+				build.Contributions = contributions
+				directContributions = contributions
 			}
-			build.Contributions = contributions
 			if state.CompactMember {
 				if s.commonsWeights == nil {
 					return save.IntentDecision{}, nil, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
@@ -437,7 +463,7 @@ func (s *Service) Handle(
 				}
 			}
 			if command.RunLogSeq == 0 {
-				decision, resultErr = TransitionWithPolicies(request, state, catalog, routeCatalog, nil, factionCatalog, revision, mode, now, contributions, collector, nil)
+				decision, resultErr = TransitionWithPolicies(request, state, catalog, routeCatalog, nil, factionCatalog, revision, mode, now, directContributions, collector, nil)
 				return decision, nil, resultErr
 			}
 			replayInputs, resultErr = buildReplayInputs(build)
@@ -486,6 +512,30 @@ func (s *Service) resolveCommonsReplayWeight(founderID string) (int64, error) {
 		return 0, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
 	}
 	return weight, nil
+}
+
+func (s *Service) resolveReplayAccrual(ctx context.Context, state *save.State, revision save.Revision, catalog *economy.Catalog, stockCap int64, request IntentRequest) ([]multiplier.Contribution, guild.SettlementBatch, error) {
+	if s.guildSettlements == nil {
+		return nil, guild.SettlementBatch{}, fmt.Errorf("%w: guild settlement runtime unavailable", ErrInvalidIntent)
+	}
+	batch, err := s.guildSettlements.PendingSettlements(ctx, revision.OwnerID, state.GuildBoundaryGuildID, state.GuildBoundarySeq)
+	if err != nil {
+		return nil, guild.SettlementBatch{}, err
+	}
+	before := replaySettlementState{stockUnits: state.StockUnits, consumedStockUnits: state.ConsumedStockUnits,
+		consumedWindowUnits: state.GuildConsumedWindow, boundaryGuildID: state.GuildBoundaryGuildID, boundarySeq: state.GuildBoundarySeq}
+	if err := guild.ApplySettlements(state, batch, stockCap); err != nil {
+		return nil, guild.SettlementBatch{}, err
+	}
+	defer before.restore(state)
+	if request.InvalidDetail != "" || s.contributions == nil || request.Kind == IntentBuyRouteHint {
+		return nil, batch, nil
+	}
+	contributions, err := s.contributions.Contributions(ctx, state, catalog, revision)
+	if err != nil {
+		return nil, guild.SettlementBatch{}, err
+	}
+	return contributions, batch, nil
 }
 
 func ValidateRouteCatalogResources(catalog *economy.Catalog, routeCatalog *routes.Catalog) error {

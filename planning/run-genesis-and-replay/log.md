@@ -644,3 +644,27 @@ NOT invented into balance/). **Two HIGHs block the next landing; both verified f
   not bind hook-emitted events to the command intent while Go did. The shared `bindEventIntent`
   path now enforces the Go rule for ordinary and terminal transitions, and `kernel/VERSION` moves
   to 0.2.1 in the same semantic commit under KV-1.
+
+## 2026-08-01 — independent review of L7b/corpus and remediation
+
+The independent pass approved the L7b projector/category math and the 51-entry sequential claims,
+but blocked archival on four verified contract failures:
+
+1. **HIGH:** the kernel-affecting registry omitted the client Commons/Faction/Guild/Prestige kernels
+   and server Commons/multiplier packages.
+2. **HIGH:** the history guard interpreted old commits through the current registry, permitted path
+   removal to erase coverage, and treated a cosmetic VERSION edit as a bump. The remediation uses
+   every commit's own append-only registry and compares parsed parent/child versions. An adversarial
+   temporary-Git fixture also exposed and fixed a leading-whitespace bug in porcelain parsing that
+   had hidden the first modified path.
+3. **HIGH:** the sequential Guild fixture proved only decoder acceptance; the settlement was ignored
+   by both replay engines and lacked debit/credit semantics. Replay-input v2 now records one
+   `(guild_id, base_seq, ordered settlements)` batch, the live engine resolves it before contribution
+   reads, and Go/TS apply the authoritative debit/credit/watermark transition with rejection rollback.
+4. **MEDIUM:** TypeScript hashed category bytes without validating them against the pinned route gate
+   set. Its loader now enforces the same closed Phase-0 rows, fact namespaces/prefixes, predicate union,
+   and exact route gate set as Go; a correctly re-hashed malformed artifact is rejected in-suite.
+
+The semantic repair bumps the shared kernel to 0.3.0 and replay-inputs to v2. The regenerated shared
+fixture proves a non-zero Guild debit and credit mutate the sequential state identically in Go and
+TypeScript rather than merely surviving decode.

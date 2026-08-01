@@ -49,8 +49,10 @@ export interface ReplayLogEntry {
 }
 
 interface ReplayCommand { intent_id: string; company_stream_id: string; founder_id: string; revision: number; run_seq: number; run_log_seq: number }
-interface ReplayAccrual { contributions: ReplayContribution[]; commons_weight_ppm: number | null; guild_settlement_batch: { guild_id: string; boundary_seq: number; units: number }[]; route_context_version: number }
-interface ReplayWire { v: 1; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; resolved: Record<string, unknown> }
+interface ReplayGuildSettlement { boundary_seq: number; debit_units: number; credit_units: number }
+interface ReplayGuildSettlementBatch { guild_id: string; base_seq: number; settlements: ReplayGuildSettlement[] }
+interface ReplayAccrual { contributions: ReplayContribution[]; commons_weight_ppm: number | null; guild_settlement_batch: ReplayGuildSettlementBatch; route_context_version: number }
+interface ReplayWire { v: 2; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; resolved: Record<string, unknown> }
 interface NetworkSlot { readonly slot: string; readonly carried_ref: string }
 interface FounderCarry {
   founder_revision: number; founder_constants_hash: string; reputation_level: number; route_knowledge_balance: number;
@@ -63,11 +65,53 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const computed = await constantsHashArtifacts(artifacts);
   if (computed !== constantsHash) throw new SyntaxError("replay artifact label mismatch");
   const economy = parseCatalog(parseJSON(artifacts.economy)); const routes = parseRoutesCatalog(parseJSON(artifacts.routes));
+  validateCategoryCatalog(parseJSON(artifacts.categories), routes.gates.map((gate) => gate.gateId));
   const commons = parseCommonsCatalog(parseJSON(artifacts.commons)); const prestige = parsePrestigePolicy(parseJSON(artifacts.prestige));
   const factions = parseFactionCatalog(parseJSON(artifacts.factions), commons.minimumTithePpm, commons.defaultTithePpm, commons.maximumTithePpm);
   const guilds = parseGuildCatalog(parseJSON(artifacts.guilds));
   return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds });
 }
+
+function validateCategoryCatalog(source: unknown, routeGateIds: readonly string[]): void {
+  const root = exactObject(source, ["schema_version", "full_gate_set", "fact_sets", "categories"], "category catalog");
+  if (root.schema_version !== 1) throw new SyntaxError("invalid category schema");
+  const gates = sortedUniqueCategoryMechanical(array(root.full_gate_set, "full gate set"));
+  if (!same(gates, [...routeGateIds].sort(byteCompare))) throw new SyntaxError("category gate set differs from routes");
+  const rawSets = exactObject(root.fact_sets, ["completion_set", "forbidden_set"], "category fact sets");
+  const completion = sortedFactSet(rawSets.completion_set, false); const forbidden = sortedFactSet(rawSets.forbidden_set, true);
+  if (!same(forbidden, ["darkpattern.", "externality."])) throw new SyntaxError("invalid forbidden fact set");
+  const sets = new Set(["completion_set", "forbidden_set"]);
+  const rows = new Map<string, { timer: string; predicate: CategoryPredicate }>();
+  for (const item of array(root.categories, "categories")) {
+    const row = exactObject(item, ["id", "name_key", "timer", "predicate"], "category");
+    const id = mechanicalString(row.id); const nameKey = mechanicalString(row.name_key); const timer = string(row.timer);
+    if (rows.has(id) || nameKey !== `category.${id}` || !["rta", "attended", "none"].includes(timer)) throw new SyntaxError("invalid category row");
+    rows.set(id, { timer, predicate: parseCategoryPredicate(row.predicate, sets, 0) });
+  }
+  if (!same([...rows.keys()].sort(byteCompare), ["any_percent", "ethical_percent", "hundred_percent", "low_percent", "valuation"])) throw new SyntaxError("invalid canonical categories");
+  const any = rows.get("any_percent")!; const ethical = rows.get("ethical_percent")!; const hundred = rows.get("hundred_percent")!;
+  const low = rows.get("low_percent")!; const valuation = rows.get("valuation")!;
+  if (completion.length !== 0 || any.timer !== "rta" || any.predicate.kind !== "any" || ethical.timer !== "attended" || ethical.predicate.kind !== "facts_disjoint" || ethical.predicate.setRef !== "forbidden_set" ||
+      hundred.timer !== "rta" || hundred.predicate.kind !== "all_of" || hundred.predicate.all?.length !== 2 || hundred.predicate.all[0]?.kind !== "all_gates" || hundred.predicate.all[1]?.kind !== "facts_superset" || hundred.predicate.all[1]?.setRef !== "completion_set" ||
+      low.timer !== "rta" || low.predicate.kind !== "count_at_most" || low.predicate.field !== "generators_purchased_total" || low.predicate.literal !== 40 || valuation.timer !== "none" || valuation.predicate.kind !== "any") {
+    throw new SyntaxError("invalid canonical category shapes");
+  }
+}
+
+interface CategoryPredicate { kind: string; setRef?: string; field?: string; literal?: number; all?: CategoryPredicate[] }
+function parseCategoryPredicate(source: unknown, sets: ReadonlySet<string>, depth: number): CategoryPredicate {
+  if (depth > 4) throw new SyntaxError("category predicate depth");
+  if (!isRecord(source) || typeof source.kind !== "string") throw new SyntaxError("invalid category predicate");
+  const kind = source.kind;
+  if (kind === "any" || kind === "all_gates") { onlyKeys(source, ["kind"], "category predicate"); return { kind }; }
+  if (kind === "facts_superset" || kind === "facts_disjoint") { onlyKeys(source, ["kind", "set_ref"], "category predicate"); const setRef = string(source.set_ref); if (!sets.has(setRef)) throw new SyntaxError("unknown category fact set"); return { kind, setRef }; }
+  if (kind === "count_at_most") { onlyKeys(source, ["kind", "field", "literal"], "category predicate"); if (source.field !== "generators_purchased_total") throw new SyntaxError("invalid category count field"); return { kind, field: source.field, literal: safeInteger(source.literal, 0, MAX_EXACT_INTEGER) }; }
+  if (kind === "all_of") { onlyKeys(source, ["kind", "all"], "category predicate"); const all = array(source.all, "category children"); if (all.length < 2 || all.length > 8) throw new SyntaxError("invalid category children"); return { kind, all: all.map((child) => parseCategoryPredicate(child, sets, depth + 1)) }; }
+  throw new SyntaxError("invalid category predicate kind");
+}
+
+function sortedUniqueCategoryMechanical(source: unknown[]): string[] { let last = ""; return source.map((item) => { const value = mechanicalString(item); if (byteCompare(value, last) <= 0) throw new SyntaxError("values must be sorted and unique"); last = value; return value; }); }
+function sortedFactSet(source: unknown, allowPrefixes: boolean): string[] { let last = ""; return array(source, "fact set").map((item) => { const value = string(item); const prefix = value.endsWith("."); const exact = prefix ? value.slice(0, -1) : value; const namespace = exact.split(".")[0]; if (byteCompare(value, last) <= 0 || prefix && !allowPrefixes || !mechanical.test(exact) || !["darkpattern", "exit", "externality"].includes(namespace ?? "")) throw new SyntaxError("invalid fact set"); last = value; return value; }); }
 
 export function withNextReplayCatalogBundle(current: ReplayCatalogBundle, next: ReplayCatalogBundle): ReplayCatalogBundle {
   return Object.freeze({ ...current, next });
@@ -199,21 +243,24 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   if (kind === "cross_gate" && request.kind === "cross_gate") { onlyKeys(resolved, ["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry"], "cross gate inputs"); accrual = parseAccrual(resolved.accrual, catalogs); declined = safeInteger(resolved.declined_exit_offer_count ?? 0, 0, MAX_EXACT_INTEGER); founderCarry = resolved.founder_carry === undefined || resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs.constantsHash); }
   else { if (kind !== "accrual") throw new RangeError("resolved union mismatch"); onlyKeys(resolved, ["kind", "intent_kind", "accrual"], "accrual inputs"); accrual = parseAccrual(resolved.accrual, catalogs); }
   if (state.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
+  const settlementBefore = applyGuildSettlements(state, accrual.guild_settlement_batch, catalogs.factions.stockCap);
+  const rejectSettlement = (category: string, detail: string): LoggedTransition => { restoreGuildSettlement(state, settlementBefore); return rejected(state, request.intent_id, revision, category, detail); };
   const preflight = preflightRejection(state, catalogs, request, wire.evaluated_at_ms);
-  if (preflight !== null) return rejected(state, request.intent_id, revision, preflight[0], preflight[1]);
+  if (preflight !== null) return rejectSettlement(preflight[0], preflight[1]);
+  try {
   const evaluation = evaluate(state, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, accrual.contributions);
   const events = runHooks(state, catalogs, wire.command, evaluation, accrual);
   const invariants: ReplayInvariant[] = [];
   let appliedCount = 0;
   switch (request.kind) {
-    case "buy_generator": { const result = buyGenerator(state, catalogs.economy, request, invariants); if (result.rejection) return rejected(state, request.intent_id, revision, result.rejection[0], result.rejection[1]); appliedCount = result.count; events.push(event("generator_purchased", request.intent_id, { generator_id: request.generator_id, count: appliedCount, cost_resource_id: request.costResource, cost: request.cost })); break; }
-    case "perform_manual_batch": { const result = manualBatch(state, catalogs.economy, request, wire.evaluated_at_ms); if (result.rejection) return rejected(state, request.intent_id, revision, result.rejection[0], result.rejection[1]); appliedCount = result.count; break; }
-    case "cross_gate": { const result = crossGate(state, catalogs.routes, request, wire.command); if (result.rejection) return rejected(state, request.intent_id, revision, result.rejection[0], result.rejection[1]); events.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); if (request.route_id !== null) events.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); appliedCount = 1; break; }
+    case "buy_generator": { const result = buyGenerator(state, catalogs.economy, request, invariants); if (result.rejection) return rejectSettlement(result.rejection[0], result.rejection[1]); appliedCount = result.count; events.push(event("generator_purchased", request.intent_id, { generator_id: request.generator_id, count: appliedCount, cost_resource_id: request.costResource, cost: request.cost })); break; }
+    case "perform_manual_batch": { const result = manualBatch(state, catalogs.economy, request, wire.evaluated_at_ms); if (result.rejection) return rejectSettlement(result.rejection[0], result.rejection[1]); appliedCount = result.count; break; }
+    case "cross_gate": { const result = crossGate(state, catalogs.routes, request, wire.command); if (result.rejection) return rejectSettlement(result.rejection[0], result.rejection[1]); events.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); if (request.route_id !== null) events.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); appliedCount = 1; break; }
     case "sign_compact": state.compactMember = true; state.compactTithePpm = request.tithe_ppm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, request.tithe_ppm, false, true))); appliedCount = 1; break;
     case "leave_compact": { const prior = state.compactTithePpm; state.compactMember = false; state.compactTithePpm = 0; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_left", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, prior, true, false))); appliedCount = 1; break; }
     case "incorporate": { const member = catalogs.factions.byId.get(request.faction_id)!; state.factionId = member.id; state.factionStockResource = member.produces; state.incorporatedAtMs = state.evaluatedThroughMs; events.push(event("incorporated", request.intent_id, { compact_auto_signed: member.compact !== null, faction_id: member.id, founder_id: wire.command.founder_id, incorporated_at_ms: state.incorporatedAtMs, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq }, stock_resource: member.produces })); if (member.compact) { if (state.compactMember) { const prior = state.compactTithePpm; state.compactTithePpm = Math.max(prior, member.compact.tithePpm); events.push(event("compact_tithe_raised", request.intent_id, { founder_id: wire.command.founder_id, new_tithe_ppm: state.compactTithePpm, prior_tithe_ppm: prior, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); } else { state.compactMember = true; state.compactTithePpm = member.compact.tithePpm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, member.compact.tithePpm, false, true))); } } appliedCount = 1; break; }
     case "decline_exit_offer": state.offerState = null; events.push(event("exit_offer_declined", request.intent_id, { offer_id: request.offer_id, run_seq: state.runSeq })); appliedCount = 1; break;
-    default: return rejected(state, request.intent_id, revision, "invalid", request.kind);
+    default: return rejectSettlement("invalid", request.kind);
   }
   for (const report of invariants) {
     if (report.kind === "residual_abort") continue;
@@ -221,6 +268,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   }
   await afterPrestigeTransition(state, catalogs.prestige, request, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
   return applied(state, request.intent_id, revision + 1, appliedCount, before, events, invariants);
+  } catch (error) { restoreGuildSettlement(state, settlementBefore); throw error; }
 }
 
 export async function applyLoggedExit(company: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedExitTransition> {
@@ -244,6 +292,9 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   let prefix: ReplayEvent[] = [];
   let exitType: string;
   let terms: ExitTerms;
+  const settlementBefore = applyGuildSettlements(company, accrual.guild_settlement_batch, catalogs.factions.stockCap);
+  const rejectSettlement = (category: string, detail: string): LoggedExitTransition => { restoreGuildSettlement(company, settlementBefore); return rejectedExit(company, founder, request.intent_id, revision, category, detail); };
+  try {
 
   if (request.kind === "cross_gate") {
     const preflight = preflightRejection(company, catalogs, request, wire.evaluated_at_ms);
@@ -251,20 +302,20 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
     const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, accrual.contributions);
     prefix = runHooks(company, catalogs, wire.command, evaluation, accrual);
     const result = crossGate(company, catalogs.routes, request, wire.command);
-    if (result.rejection) return rejectedExit(company, founder, request.intent_id, revision, result.rejection[0], result.rejection[1]);
+    if (result.rejection) return rejectSettlement(result.rejection[0], result.rejection[1]);
     prefix.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: company.runSeq } }));
     if (request.route_id !== null) prefix.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: company.runSeq } }));
     if (attendedMS(company, wire.evaluated_at_ms) < 900_000 || founder.exit_history_count !== 0) throw new RangeError("invalid scripted exit state");
     exitType = "scripted_first";
     terms = computeExitTerms(company, founder, catalogs.prestige, exitType);
   } else {
-    if (request.kind === "file_ipo") return rejectedExit(company, founder, request.intent_id, revision, "not_eligible", "ipo_chain");
-    if (request.kind === "wind_down" && company.tier < 1) return rejectedExit(company, founder, request.intent_id, revision, "not_eligible", "tier");
+    if (request.kind === "file_ipo") return rejectSettlement("not_eligible", "ipo_chain");
+    if (request.kind === "wind_down" && company.tier < 1) return rejectSettlement("not_eligible", "tier");
     exitType = request.kind === "wind_down" && founder.exit_history_count === 0 ? "scripted_first" : "collapse";
     let promised: { payout_preview: ExitTerms; market_modifier_ppm: number } | null = null;
     if (request.kind === "accept_exit_offer") {
-      if (!company.offerState || company.offerState.offerId !== request.offer_id) return rejectedExit(company, founder, request.intent_id, revision, "not_eligible", "exit_offer");
-      if (company.offerState.expiresAtMs <= wire.evaluated_at_ms) return rejectedExit(company, founder, request.intent_id, revision, "offer_expired", request.offer_id);
+      if (!company.offerState || company.offerState.offerId !== request.offer_id) return rejectSettlement("not_eligible", "exit_offer");
+      if (company.offerState.expiresAtMs <= wire.evaluated_at_ms) return rejectSettlement("offer_expired", request.offer_id);
       if (canonicalJSONString(company.offerState.terms) !== canonicalJSONString(selectedTerms)) throw new RangeError("selected offer terms mismatch");
       promised = decodeStoredOfferTerms(selectedTerms);
       exitType = company.offerState.exitType;
@@ -276,6 +327,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   }
   if (resolved.selected_exit_type !== exitType) throw new RangeError("selected exit type mismatch");
   return finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, next);
+  } catch (error) { restoreGuildSettlement(company, settlementBefore); throw error; }
 }
 
 type Intent = Record<string, any> & { intent_id: string; kind: string; expected_revision: number; invalid?: string; cost?: string; costResource?: string };
@@ -508,7 +560,7 @@ function sortedUniqueMechanical(source: unknown[]): string[] {
   return source.map((item) => { const value = mechanicalString(item); if (byteCompare(value, last) <= 0) throw new SyntaxError("values must be sorted and unique"); last = value; return value; });
 }
 
-function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 1 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: 1, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
+function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 2 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: 2, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
 function parseAccrual(source: unknown, catalogs: ReplayCatalogBundle): ReplayAccrual {
   const raw = objectWithOnlyKeys(source, ["contributions", "commons_weight_ppm", "guild_settlement_batch", "route_context_version"], "accrual");
   const commonsWeight = raw.commons_weight_ppm ?? null;
@@ -526,16 +578,39 @@ function parseAccrual(source: unknown, catalogs: ReplayCatalogBundle): ReplayAcc
     lastContribution = key;
     return { slot: value.slot as MultiplierSlot, source_id: value.source_id, target: value.target, factor };
   });
-  let lastSettlement = "";
-  const settlements = array(raw.guild_settlement_batch, "settlements").map((item) => {
-    const value = objectWithOnlyKeys(item, ["guild_id", "boundary_seq", "units"], "settlement");
-    const settlement = { guild_id: uuidV7String(value.guild_id), boundary_seq: safeInteger(value.boundary_seq, 1, MAX_EXACT_INTEGER), units: safeInteger(value.units ?? 0, 0, MAX_EXACT_INTEGER) };
-    const key = `${settlement.guild_id}\0${settlement.boundary_seq.toString().padStart(16, "0")}`;
-    if (lastSettlement !== "" && byteCompare(key, lastSettlement) <= 0) throw new SyntaxError("settlements must be sorted and unique");
-    lastSettlement = key;
-    return settlement;
+  const rawBatch = objectWithOnlyKeys(raw.guild_settlement_batch, ["guild_id", "base_seq", "settlements"], "settlement batch");
+  const guildId = string(rawBatch.guild_id); const baseSeq = safeInteger(rawBatch.base_seq, 0, MAX_EXACT_INTEGER);
+  if (guildId !== "") uuidV7String(guildId);
+  let lastSettlement = baseSeq;
+  const settlements = array(rawBatch.settlements, "settlements").map((item) => {
+    const value = objectWithOnlyKeys(item, ["boundary_seq", "debit_units", "credit_units"], "settlement");
+    const settlement = { boundary_seq: safeInteger(value.boundary_seq, 1, MAX_EXACT_INTEGER), debit_units: safeInteger(value.debit_units, 0, MAX_EXACT_INTEGER), credit_units: safeInteger(value.credit_units, 0, MAX_EXACT_INTEGER) };
+    if (settlement.boundary_seq <= lastSettlement) throw new SyntaxError("settlements must be sorted and unique");
+    lastSettlement = settlement.boundary_seq; return settlement;
   });
-  return { contributions, commons_weight_ppm: commonsWeight as number | null, guild_settlement_batch: settlements, route_context_version: routeContextVersion as number };
+  if (guildId === "" && (baseSeq !== 0 || settlements.length !== 0)) throw new SyntaxError("invalid empty settlement batch");
+  return { contributions, commons_weight_ppm: commonsWeight as number | null, guild_settlement_batch: { guild_id: guildId, base_seq: baseSeq, settlements }, route_context_version: routeContextVersion as number };
+}
+
+interface GuildSettlementState { stockUnits: number; consumedStockUnits: number; guildConsumedWindow: number; guildBoundaryGuildId: string; guildBoundarySeq: number }
+function applyGuildSettlements(state: ReplayState, batch: ReplayGuildSettlementBatch, stockCap: number): GuildSettlementState {
+  const before = { stockUnits: state.stockUnits, consumedStockUnits: state.consumedStockUnits, guildConsumedWindow: state.guildConsumedWindow, guildBoundaryGuildId: state.guildBoundaryGuildId, guildBoundarySeq: state.guildBoundarySeq };
+  if (batch.guild_id === "") return before;
+  if (state.guildBoundaryGuildId !== batch.guild_id) {
+    if (state.guildBoundaryGuildId === "") { if (batch.base_seq !== state.guildBoundarySeq) throw new RangeError("guild settlement base mismatch"); }
+    else if (batch.settlements.length !== 0) throw new RangeError("guild settlement switch carries results");
+    state.guildBoundaryGuildId = batch.guild_id; state.guildBoundarySeq = batch.base_seq; state.guildConsumedWindow = 0;
+  } else if (batch.base_seq !== state.guildBoundarySeq) throw new RangeError("guild settlement base mismatch");
+  for (const settlement of batch.settlements) {
+    if (settlement.boundary_seq <= state.guildBoundarySeq || settlement.debit_units > state.stockUnits || settlement.credit_units > stockCap - state.consumedStockUnits) throw new RangeError("invalid guild settlement");
+    state.stockUnits -= settlement.debit_units; state.consumedStockUnits += settlement.credit_units;
+    state.guildConsumedWindow = settlement.credit_units; state.guildBoundarySeq = settlement.boundary_seq;
+  }
+  return before;
+}
+function restoreGuildSettlement(state: ReplayState, before: GuildSettlementState): void {
+  state.stockUnits = before.stockUnits; state.consumedStockUnits = before.consumedStockUnits; state.guildConsumedWindow = before.guildConsumedWindow;
+  state.guildBoundaryGuildId = before.guildBoundaryGuildId; state.guildBoundarySeq = before.guildBoundarySeq;
 }
 
 function parseFounderCarry(source: unknown, constantsHash: string): FounderCarry {

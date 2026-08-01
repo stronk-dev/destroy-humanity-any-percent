@@ -424,14 +424,14 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 			now = now.Add(48 * time.Hour)
 			mode = ModeOffline
 		} else {
-			now = now.Add(time.Second)
+			now = now.Add(5 * time.Second)
 		}
 		payload := fmt.Sprintf(`{"kind":"perform_manual_batch","expected_revision":%d,"action_id":"manual.click","count":1,"window_ms":1000}`, revision)
 		if index < len(ordinary) {
 			payload = fmt.Sprintf(ordinary[index], revision)
 		}
 		if index == 6 {
-			payload = fmt.Sprintf(`{"kind":"decline_exit_offer","expected_revision":%d,"offer_id":"%s"}`, revision, prestigecore.OfferID(founderID, 1, 3, 0, now.Add(-time.Second)))
+			payload = fmt.Sprintf(`{"kind":"decline_exit_offer","expected_revision":%d,"offer_id":"%s"}`, revision, state.OfferState.OfferID)
 		}
 		if index == 7 {
 			payload = fmt.Sprintf(`{"kind":"cross_gate","expected_revision":%d,"gate_id":"gate.t4_to_t5","route_id":"route.ipo_sequence_break"}`, revision)
@@ -454,8 +454,9 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 		if err != nil {
 			t.Fatal(err)
 		}
-		if index == 8 {
-			inputs = withReplaySettlement(t, inputs, replayGuildSettlement{GuildID: "01987777-3000-7000-8000-000000000001", BoundarySeq: 1, Units: 7})
+		if index == 20 {
+			inputs = withReplaySettlement(t, inputs, replayGuildSettlementBatch{GuildID: "01987777-3000-7000-8000-000000000001", BaseSeq: 0,
+				Settlements: []replayGuildSettlement{{BoundarySeq: 1, DebitUnits: 1, CreditUnits: 7}}})
 		}
 		transition, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
 		if err != nil || transition.Outcome != save.IntentApplied {
@@ -467,12 +468,15 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 		if index == 7 && !hasEventKind(transition.Events, save.EventRouteExecuted) {
 			t.Fatal("full run discounted route crossing omitted route_executed")
 		}
-		if index == 8 {
+		if index == 20 {
 			parsed, parseErr := parseReplayInputs(inputs)
 			var resolved replayAccrualResolved
-			if parseErr != nil || decodeReplayStrict(parsed.Resolved, &resolved) != nil || len(resolved.Accrual.GuildSettlementBatch) != 1 ||
-				resolved.Accrual.GuildSettlementBatch[0].GuildID != "01987777-3000-7000-8000-000000000001" ||
-				resolved.Accrual.GuildSettlementBatch[0].BoundarySeq != 1 || resolved.Accrual.GuildSettlementBatch[0].Units != 7 {
+			decodeErr := decodeReplayStrict(parsed.Resolved, &resolved)
+			batch := resolved.Accrual.GuildSettlementBatch
+			if parseErr != nil || decodeErr != nil || batch.GuildID != "01987777-3000-7000-8000-000000000001" ||
+				batch.BaseSeq != 0 || len(batch.Settlements) != 1 || batch.Settlements[0].BoundarySeq != 1 ||
+				batch.Settlements[0].DebitUnits != 1 || batch.Settlements[0].CreditUnits != 7 || state.GuildBoundarySeq != 1 ||
+				state.GuildConsumedWindow != 7 || state.ConsumedStockUnits != 7 {
 				t.Fatalf("full run guild settlement batch missing or changed: %+v", resolved.Accrual.GuildSettlementBatch)
 			}
 		}
@@ -516,7 +520,7 @@ func hasEventKind(events []save.EventWrite, kind save.EventKind) bool {
 	return false
 }
 
-func withReplaySettlement(t *testing.T, inputs json.RawMessage, settlement replayGuildSettlement) json.RawMessage {
+func withReplaySettlement(t *testing.T, inputs json.RawMessage, settlement replayGuildSettlementBatch) json.RawMessage {
 	t.Helper()
 	var wire map[string]json.RawMessage
 	if err := json.Unmarshal(inputs, &wire); err != nil {
@@ -530,7 +534,7 @@ func withReplaySettlement(t *testing.T, inputs json.RawMessage, settlement repla
 	if err := json.Unmarshal(resolved["accrual"], &accrual); err != nil {
 		t.Fatal(err)
 	}
-	batch, err := json.Marshal([]replayGuildSettlement{settlement})
+	batch, err := json.Marshal(settlement)
 	if err != nil {
 		t.Fatal(err)
 	}

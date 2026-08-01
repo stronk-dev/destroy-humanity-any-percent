@@ -96,6 +96,7 @@ verify-client-boundary:
 
 verify-kernel-version:
 	node client/tools/verify-kernel-version.mjs
+	node client/tools/verify-kernel-version-fixtures.mjs
 
 verify-combat-boundary:
 	node client/tools/verify-combat-boundaries.mjs

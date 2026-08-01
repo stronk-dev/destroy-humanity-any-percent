@@ -168,7 +168,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	metrics := fakeInvariantMetrics{}
-	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}), WithEventProjector(commonsProjector))
+	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}), WithGuildSettlements(emptyGuildSettlements{}), WithEventProjector(commonsProjector))
 	if err != nil {
 		t.Fatal(err)
 	}

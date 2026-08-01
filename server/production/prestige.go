@@ -260,13 +260,6 @@ func rejectedExitDecision(request IntentRequest, revision int64, category, detai
 	return save.ExitDecision{Outcome: save.IntentRejected, Receipt: marshalRejection(request.IntentID, revision, category, detail)}
 }
 
-func (s *Service) exitContributions(ctx context.Context, state *save.State, revision save.Revision) ([]multiplier.Contribution, error) {
-	if s.contributions == nil {
-		return nil, nil
-	}
-	return s.contributions.Contributions(ctx, state, s.mustCatalog(revision.ConstantsHash), revision)
-}
-
 func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand, mode EvaluationMode, now time.Time, executedRoutes []string) (save.ExitDecision, json.RawMessage, error) {
 	if err := requireFounderCatalogCoherence(founderRevision, companyRevision); err != nil {
 		return save.ExitDecision{}, nil, err
@@ -283,7 +276,7 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 		return save.ExitDecision{}, nil, fmt.Errorf("%w: next replay catalog bundle unavailable", ErrInvalidIntent)
 	}
 	current.Next = &next
-	contributions, err := s.exitContributions(ctx, company, companyRevision)
+	contributions, settlements, err := s.resolveReplayAccrual(ctx, company, companyRevision, s.mustCatalog(companyRevision.ConstantsHash), current.Faction.StockCap, request)
 	if err != nil {
 		return save.ExitDecision{}, nil, err
 	}
@@ -309,7 +302,8 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 		selectedType = "unresolved"
 	}
 	build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind, Contributions: contributions,
-		RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true,
+		GuildSettlementBatch: settlements,
+		RouteContextVersion:  current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true,
 		ExecutedRouteIDs: executedRoutes, SelectedExitType: selectedType, SelectedTerms: selectedTerms, NextConstantsHash: s.currentConstantsHash}
 	if company.CompactMember {
 		weight, weightErr := s.resolveCommonsReplayWeight(companyRevision.OwnerID)

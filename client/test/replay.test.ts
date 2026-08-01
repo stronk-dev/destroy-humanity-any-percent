@@ -89,6 +89,11 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 
     const relabeled = `sha256:${"a".repeat(64)}`;
     await expect(loadReplayCatalogBundle(relabeled, fixture.artifacts)).rejects.toThrow(/label mismatch/);
+
+		const malformedCategories = JSON.parse(fixture.artifacts.categories) as Record<string, unknown>;
+		malformedCategories.full_gate_set = [];
+		const malformed = { ...fixture.artifacts, categories: JSON.stringify(malformedCategories) };
+		await expect(loadReplayCatalogBundle(await artifactHash(malformed), malformed)).rejects.toThrow(/gate set differs from routes/);
   });
 
   it.each(fixture.cases)("replays $name to the Go receipt, events, and state", async (testCase) => {
@@ -197,3 +202,17 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     await expect(applyLogged(founderState, canonicalJSONString(founderCase.canonical_payload), bundle, founderReplay)).rejects.toThrow(/founder catalog mismatch/);
   });
 });
+
+async function artifactHash(artifacts: ReplayArtifacts): Promise<string> {
+	const encoder = new TextEncoder(); const chunks: Uint8Array[] = [];
+	for (const name of Object.keys(artifacts).sort() as (keyof ReplayArtifacts)[]) {
+		const nameBytes = encoder.encode(name); const data = encoder.encode(artifacts[name]);
+		chunks.push(frame(nameBytes.length), nameBytes, frame(data.length), data);
+	}
+	const input = new Uint8Array(chunks.reduce((sum, value) => sum + value.length, 0)); let offset = 0;
+	for (const chunk of chunks) { input.set(chunk, offset); offset += chunk.length; }
+	const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", input));
+	return `sha256:${[...digest].map((value) => value.toString(16).padStart(2, "0")).join("")}`;
+}
+
+function frame(value: number): Uint8Array { const result = new Uint8Array(8); new DataView(result.buffer).setBigUint64(0, BigInt(value)); return result; }

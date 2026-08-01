@@ -1,8 +1,10 @@
 package production
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -19,6 +21,44 @@ import (
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
+
+type emptyGuildSettlements struct{}
+
+func (emptyGuildSettlements) PendingSettlements(context.Context, string, string, int64) (guild.SettlementBatch, error) {
+	return guild.SettlementBatch{}, nil
+}
+
+type fixedGuildSettlements struct{ batch guild.SettlementBatch }
+
+func (resolver fixedGuildSettlements) PendingSettlements(context.Context, string, string, int64) (guild.SettlementBatch, error) {
+	return resolver.batch, nil
+}
+
+type settlementObservingContributions struct{ called bool }
+
+func (provider *settlementObservingContributions) Contributions(_ context.Context, state *save.State, _ *economy.Catalog, _ save.Revision) ([]multiplier.Contribution, error) {
+	provider.called = true
+	if state.StockUnits != 7 || state.ConsumedStockUnits != 7 || state.GuildConsumedWindow != 7 || state.GuildBoundarySeq != 1 {
+		return nil, fmt.Errorf("contribution saw pre-settlement state stock=%d consumed=%d window=%d seq=%d", state.StockUnits, state.ConsumedStockUnits, state.GuildConsumedWindow, state.GuildBoundarySeq)
+	}
+	return []multiplier.Contribution{}, nil
+}
+
+func TestLiveReplayAccrualFreezesGuildSettlementBeforeContributions(t *testing.T) {
+	guildID := "01985555-7100-7000-8000-000000000001"
+	provider := &settlementObservingContributions{}
+	service := &Service{contributions: provider, guildSettlements: fixedGuildSettlements{batch: guild.SettlementBatch{GuildID: guildID, BaseSeq: 0,
+		Settlements: []guild.Settlement{{GuildID: guildID, BoundarySeq: 1, DebitUnits: 3, CreditUnits: 7}}}}}
+	state := &save.State{StockUnits: 10}
+	request := IntentRequest{Kind: IntentPerformManualBatch}
+	contributions, batch, err := service.resolveReplayAccrual(context.Background(), state, save.Revision{OwnerID: "01985555-7100-4000-8000-000000000003"}, &economy.Catalog{}, 100, request)
+	if err != nil || !provider.called || len(contributions) != 0 || batch.GuildID != guildID || len(batch.Settlements) != 1 {
+		t.Fatalf("contributions=%v batch=%+v called=%t err=%v", contributions, batch, provider.called, err)
+	}
+	if state.StockUnits != 10 || state.ConsumedStockUnits != 0 || state.GuildConsumedWindow != 0 || state.GuildBoundaryGuildID != "" || state.GuildBoundarySeq != 0 {
+		t.Fatalf("live prebuild leaked settlement mutation: %+v", state)
+	}
+}
 
 func loadReplayTestBundle(t *testing.T, hash string, artifacts map[string][]byte) CatalogBundle {
 	t.Helper()
@@ -77,7 +117,7 @@ func TestReplayInputsAreClosedCanonicalInputs(t *testing.T) {
 	var resolved replayAccrualResolved
 	if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil || len(resolved.Accrual.Contributions) != 2 ||
 		resolved.Accrual.Contributions[0].SourceID != "source.a" || resolved.Accrual.Contributions[1].SourceID != "source.z" ||
-		resolved.Accrual.GuildSettlementBatch == nil || resolved.Accrual.CommonsWeightPPM == nil || *resolved.Accrual.CommonsWeightPPM != weight {
+		resolved.Accrual.GuildSettlementBatch.Settlements == nil || resolved.Accrual.CommonsWeightPPM == nil || *resolved.Accrual.CommonsWeightPPM != weight {
 		t.Fatalf("resolved=%+v err=%v", resolved, err)
 	}
 
@@ -97,21 +137,21 @@ func TestReplayInputsAreClosedCanonicalInputs(t *testing.T) {
 
 func TestReplaySettlementBatchIsRepresentableAndOrdered(t *testing.T) {
 	valid := replayAccrual{Contributions: []replayContribution{}, CommonsWeightPPM: nil, RouteContextVersion: 1,
-		GuildSettlementBatch: []replayGuildSettlement{
-			{GuildID: "01985555-7100-7000-8000-000000000001", BoundarySeq: 7, Units: 0},
-			{GuildID: "01985555-7100-7000-8000-000000000001", BoundarySeq: 8, Units: 42},
-		}}
+		GuildSettlementBatch: replayGuildSettlementBatch{GuildID: "01985555-7100-7000-8000-000000000001", BaseSeq: 6, Settlements: []replayGuildSettlement{
+			{BoundarySeq: 7, DebitUnits: 0, CreditUnits: 0},
+			{BoundarySeq: 8, DebitUnits: 21, CreditUnits: 42},
+		}}}
 	if _, err := contributionsFromReplay(valid); err != nil {
 		t.Fatalf("well-formed non-empty settlement batch rejected: %v", err)
 	}
 	unsorted := valid
-	unsorted.GuildSettlementBatch = append([]replayGuildSettlement(nil), valid.GuildSettlementBatch...)
-	unsorted.GuildSettlementBatch[0], unsorted.GuildSettlementBatch[1] = unsorted.GuildSettlementBatch[1], unsorted.GuildSettlementBatch[0]
+	unsorted.GuildSettlementBatch.Settlements = append([]replayGuildSettlement(nil), valid.GuildSettlementBatch.Settlements...)
+	unsorted.GuildSettlementBatch.Settlements[0], unsorted.GuildSettlementBatch.Settlements[1] = unsorted.GuildSettlementBatch.Settlements[1], unsorted.GuildSettlementBatch.Settlements[0]
 	if _, err := contributionsFromReplay(unsorted); !errors.Is(err, ErrInvalidReplayInputs) {
 		t.Fatalf("out-of-order settlement batch error=%v", err)
 	}
 	invalid := valid
-	invalid.GuildSettlementBatch = []replayGuildSettlement{{GuildID: "not-a-guild", BoundarySeq: 1, Units: -1}}
+	invalid.GuildSettlementBatch = replayGuildSettlementBatch{GuildID: "not-a-guild", Settlements: []replayGuildSettlement{{BoundarySeq: 1, DebitUnits: -1}}}
 	if _, err := contributionsFromReplay(invalid); !errors.Is(err, ErrInvalidReplayInputs) {
 		t.Fatalf("invalid settlement batch error=%v", err)
 	}

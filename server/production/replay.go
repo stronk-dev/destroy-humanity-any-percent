@@ -109,16 +109,22 @@ type replayContribution struct {
 }
 
 type replayGuildSettlement struct {
-	GuildID     string `json:"guild_id"`
-	BoundarySeq int64  `json:"boundary_seq"`
-	Units       int64  `json:"units"`
+	BoundarySeq int64 `json:"boundary_seq"`
+	DebitUnits  int64 `json:"debit_units"`
+	CreditUnits int64 `json:"credit_units"`
+}
+
+type replayGuildSettlementBatch struct {
+	GuildID     string                  `json:"guild_id"`
+	BaseSeq     int64                   `json:"base_seq"`
+	Settlements []replayGuildSettlement `json:"settlements"`
 }
 
 type replayAccrual struct {
-	Contributions        []replayContribution    `json:"contributions"`
-	CommonsWeightPPM     *int64                  `json:"commons_weight_ppm"`
-	GuildSettlementBatch []replayGuildSettlement `json:"guild_settlement_batch"`
-	RouteContextVersion  int                     `json:"route_context_version"`
+	Contributions        []replayContribution       `json:"contributions"`
+	CommonsWeightPPM     *int64                     `json:"commons_weight_ppm"`
+	GuildSettlementBatch replayGuildSettlementBatch `json:"guild_settlement_batch"`
+	RouteContextVersion  int                        `json:"route_context_version"`
 }
 
 type replayFounderCarry struct {
@@ -226,6 +232,15 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	if err != nil || accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
 		return LoggedTransition{}, fmt.Errorf("%w: accrual inputs", ErrInvalidReplayInputs)
 	}
+	settlementBefore, err := applyReplayGuildSettlements(state, accrual.GuildSettlementBatch, catalogs.Faction.StockCap)
+	if err != nil {
+		return LoggedTransition{}, fmt.Errorf("%w: guild settlement inputs", ErrInvalidReplayInputs)
+	}
+	defer func() {
+		if resultErr != nil || result.Outcome != save.IntentApplied {
+			settlementBefore.restore(state)
+		}
+	}()
 	if state.CompactMember != (accrual.CommonsWeightPPM != nil) {
 		return LoggedTransition{}, fmt.Errorf("%w: commons weight presence", ErrInvalidReplayInputs)
 	}
@@ -285,6 +300,15 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash || !sortedUniqueMechanical(resolved.ExecutedRouteIDs) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal frozen inputs", ErrInvalidReplayInputs)
 	}
+	settlementBefore, err := applyReplayGuildSettlements(company, resolved.Accrual.GuildSettlementBatch, catalogs.Faction.StockCap)
+	if err != nil {
+		return LoggedExitTransition{}, fmt.Errorf("%w: terminal guild settlement inputs", ErrInvalidReplayInputs)
+	}
+	defer func() {
+		if resultErr != nil || result.Decision.Outcome != save.IntentApplied {
+			settlementBefore.restore(company)
+		}
+	}()
 	revision := save.Revision{StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
 		Number: wire.Command.Revision, ConstantsHash: catalogs.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
 	founder := stateFromFounderCarry(resolved.FounderCarry)
@@ -409,18 +433,24 @@ func closedReplayAccrualHook(catalogs CatalogBundle, commonsWeightPPM *int64) Ac
 }
 
 func contributionsFromReplay(accrual replayAccrual) ([]multiplier.Contribution, error) {
-	if accrual.Contributions == nil || accrual.GuildSettlementBatch == nil || accrual.RouteContextVersion < 0 {
+	if accrual.Contributions == nil || accrual.GuildSettlementBatch.Settlements == nil || accrual.RouteContextVersion < 0 {
 		return nil, ErrInvalidReplayInputs
 	}
-	lastSettlement := ""
-	for index, settlement := range accrual.GuildSettlementBatch {
-		key := settlement.GuildID + "\x00" + fmt.Sprintf("%016d", settlement.BoundarySeq)
-		if !intentUUIDV7Pattern.MatchString(settlement.GuildID) || settlement.BoundarySeq < 1 ||
-			settlement.BoundarySeq > decimal.MaxExactInteger || settlement.Units < 0 || settlement.Units > decimal.MaxExactInteger ||
-			index > 0 && key <= lastSettlement {
+	batch := accrual.GuildSettlementBatch
+	if batch.GuildID == "" {
+		if batch.BaseSeq != 0 || len(batch.Settlements) != 0 {
 			return nil, ErrInvalidReplayInputs
 		}
-		lastSettlement = key
+	} else if !intentUUIDV7Pattern.MatchString(batch.GuildID) || batch.BaseSeq < 0 || batch.BaseSeq > decimal.MaxExactInteger {
+		return nil, ErrInvalidReplayInputs
+	}
+	lastSettlement := batch.BaseSeq
+	for _, settlement := range batch.Settlements {
+		if settlement.BoundarySeq <= lastSettlement || settlement.BoundarySeq > decimal.MaxExactInteger || settlement.DebitUnits < 0 ||
+			settlement.DebitUnits > decimal.MaxExactInteger || settlement.CreditUnits < 0 || settlement.CreditUnits > decimal.MaxExactInteger {
+			return nil, ErrInvalidReplayInputs
+		}
+		lastSettlement = settlement.BoundarySeq
 	}
 	result := make([]multiplier.Contribution, len(accrual.Contributions))
 	lastKey := ""
@@ -435,6 +465,39 @@ func contributionsFromReplay(accrual replayAccrual) ([]multiplier.Contribution, 
 		result[index] = multiplier.Contribution{Slot: item.Slot, SourceID: item.SourceID, Target: item.Target, Factor: factor}
 	}
 	return result, nil
+}
+
+type replaySettlementState struct {
+	stockUnits          int64
+	consumedStockUnits  int64
+	consumedWindowUnits int64
+	boundaryGuildID     string
+	boundarySeq         int64
+}
+
+func applyReplayGuildSettlements(state *save.State, encoded replayGuildSettlementBatch, stockCap int64) (replaySettlementState, error) {
+	if state == nil {
+		return replaySettlementState{}, ErrInvalidReplayInputs
+	}
+	before := replaySettlementState{stockUnits: state.StockUnits, consumedStockUnits: state.ConsumedStockUnits,
+		consumedWindowUnits: state.GuildConsumedWindow, boundaryGuildID: state.GuildBoundaryGuildID, boundarySeq: state.GuildBoundarySeq}
+	batch := guild.SettlementBatch{GuildID: encoded.GuildID, BaseSeq: encoded.BaseSeq, Settlements: make([]guild.Settlement, len(encoded.Settlements))}
+	for index, settlement := range encoded.Settlements {
+		batch.Settlements[index] = guild.Settlement{GuildID: encoded.GuildID, BoundarySeq: settlement.BoundarySeq,
+			DebitUnits: settlement.DebitUnits, CreditUnits: settlement.CreditUnits}
+	}
+	if err := guild.ApplySettlements(state, batch, stockCap); err != nil {
+		return replaySettlementState{}, err
+	}
+	return before, nil
+}
+
+func (before replaySettlementState) restore(state *save.State) {
+	state.StockUnits = before.stockUnits
+	state.ConsumedStockUnits = before.consumedStockUnits
+	state.GuildConsumedWindow = before.consumedWindowUnits
+	state.GuildBoundaryGuildID = before.boundaryGuildID
+	state.GuildBoundarySeq = before.boundarySeq
 }
 
 func validFounderCarry(carry replayFounderCarry) bool {
@@ -520,6 +583,7 @@ type replayBuild struct {
 	IntentKind             string
 	Contributions          []multiplier.Contribution
 	CommonsWeightPPM       *int64
+	GuildSettlementBatch   guild.SettlementBatch
 	RouteContextVersion    int
 	DeclinedExitOfferCount int64
 	FounderCarry           *replayFounderCarry
@@ -540,7 +604,7 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 	if input.Mode != ModeOnline && input.Mode != ModeOffline {
 		return nil, ErrInvalidReplayInputs
 	}
-	accrual, err := makeReplayAccrual(input.Contributions, input.CommonsWeightPPM, input.RouteContextVersion)
+	accrual, err := makeReplayAccrual(input.Contributions, input.CommonsWeightPPM, input.GuildSettlementBatch, input.RouteContextVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -583,12 +647,18 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 	return wire, nil
 }
 
-func makeReplayAccrual(contributions []multiplier.Contribution, weight *int64, routeContextVersion int) (replayAccrual, error) {
+func makeReplayAccrual(contributions []multiplier.Contribution, weight *int64, settlements guild.SettlementBatch, routeContextVersion int) (replayAccrual, error) {
 	if routeContextVersion < 0 || weight != nil && (*weight < 0 || *weight > 1_000_000) {
 		return replayAccrual{}, ErrInvalidReplayInputs
 	}
 	result := replayAccrual{Contributions: make([]replayContribution, len(contributions)), CommonsWeightPPM: weight,
-		GuildSettlementBatch: []replayGuildSettlement{}, RouteContextVersion: routeContextVersion}
+		GuildSettlementBatch: replayGuildSettlementBatch{GuildID: settlements.GuildID, BaseSeq: settlements.BaseSeq, Settlements: make([]replayGuildSettlement, len(settlements.Settlements))}, RouteContextVersion: routeContextVersion}
+	for index, settlement := range settlements.Settlements {
+		if settlement.GuildID != settlements.GuildID {
+			return replayAccrual{}, ErrInvalidReplayInputs
+		}
+		result.GuildSettlementBatch.Settlements[index] = replayGuildSettlement{BoundarySeq: settlement.BoundarySeq, DebitUnits: settlement.DebitUnits, CreditUnits: settlement.CreditUnits}
+	}
 	for index, contribution := range contributions {
 		if !multiplier.ValidSlot(contribution.Slot) || contribution.SourceID == "" || contribution.Target == "" ||
 			!contribution.Factor.IsStateValue() || !contribution.Factor.Gt(decimal.Zero) {
@@ -605,6 +675,9 @@ func makeReplayAccrual(contributions []multiplier.Contribution, weight *int64, r
 		}
 		return result.Contributions[left].Target < result.Contributions[right].Target
 	})
+	if _, err := contributionsFromReplay(result); err != nil {
+		return replayAccrual{}, err
+	}
 	return result, nil
 }
 

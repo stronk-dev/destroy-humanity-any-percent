@@ -333,3 +333,12 @@ reopen-attack test when convenient.
   sub-unit values under a naïve exponent-first order. Migration 00039 adds an indexed zero-order
   component, and the integration board proves `1.25e15, 1.25e15, 9.99e14, 9e-1, 0` ranks
   `1,1,3,4,5` with keyset pagination intact.
+
+## 2026-08-01 — L7b independent review follow-up
+
+The category evaluator/projector remained approved. The review found one cross-runtime loader gap:
+Go validated pinned category bytes against the route gate set while TypeScript only included those
+bytes in the constants hash. The TS replay catalog loader now parses the closed predicate union,
+canonical Phase-0 shapes, fact-set namespaces/prefixes, and requires `full_gate_set` to equal the
+pinned routes artifact. A malformed category artifact with a recomputed valid hash is rejected, so
+hash correctness can no longer disguise invalid category semantics.

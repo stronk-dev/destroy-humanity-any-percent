@@ -17,9 +17,9 @@ func TestPhase0StockWriterClosure(t *testing.T) {
 	}
 	serverRoot := filepath.Dir(workingDirectory)
 	allowed := map[string]map[string]bool{
-		"StockUnits":         {"faction/hook.go": true, "guild/clearing_store.go": true},
+		"StockUnits":         {"faction/hook.go": true, "guild/clearing_store.go": true, "production/replay.go": true},
 		"StockProgressMS":    {"faction/hook.go": true},
-		"ConsumedStockUnits": {"guild/clearing_store.go": true},
+		"ConsumedStockUnits": {"guild/clearing_store.go": true, "production/replay.go": true},
 	}
 	found := map[string]bool{}
 	err = filepath.WalkDir(serverRoot, func(path string, entry os.DirEntry, walkErr error) error {
