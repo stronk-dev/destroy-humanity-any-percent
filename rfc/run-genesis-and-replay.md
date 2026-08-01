@@ -60,6 +60,17 @@ shipped player validator is the same kernel function over the same fixtures (L4 
 `run_log_archive` compaction happens at mark time (verified runs), completing L1's retention
 story.
 
+Queue failure semantics are closed: a claim carries an expiring UUID token, the worker locks and
+revalidates that token before the idempotent-by-run projector executes, and projection plus mark
+share one transaction. Transient database/cursor/projector errors retry and enter an operational
+poison ledger with an `InvariantSink` report at five failed attempts; they never synthesize one of
+the six replay verdicts. Only deterministic immutable evidence produces a verdict dead letter.
+Pinned engine/version skew defers without spending an attempt; `engine_mismatch` means exactly an
+immutable `run_version_drift` fact. Event reads are restricted to the run's Company/Founder stream
+pair, `rows.Err()` is mandatory after every scan, Company runs project in run-sequence order, and
+each logged Exit owns its resolved next-catalog bundle (there is no run-wide mutable `Next` slot).
+Verified/dead queue records and both dead-letter ledgers are immutable.
+
 ### R4 — Determinism obligations this surfaces
 
 Replay equality holds only if the transition is a pure function of `(state, canonical payload,

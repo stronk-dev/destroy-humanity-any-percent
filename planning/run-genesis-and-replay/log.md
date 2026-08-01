@@ -426,3 +426,95 @@ Exit commits enqueue the ended run transactionally. The queue uses SKIP LOCKED c
 lease, requires a projector before a run can be marked verified, and dead-letters every non-
 verified verdict. Category projection remains an explicit unchecked plan item because the closed
 L7 category catalog does not yet exist; the queue seam does not invent one.
+
+## 2026-08-01 — independent review: 42bc8a3 (verifier soundness round) — APPROVED
+
+Direct diff review by the reviewer; all six verdict findings verified closed in source:
+
+1. F2 both halves: exit rows are routed by the resolved-union DISCRIMINATOR (`kind=="exit"`),
+   not the caller's Terminal flag, and `terminal = outcome == applied` — rejected exits replay
+   through the exit arm and the run continues; a run ending in a rejected exit is `log_gap`
+   (incomplete), never `verified`.
+2. F1: the combined fixture (afford_fallback invariant + offer expiry in ONE intent) exists with
+   Go's exact event order — `generator_purchased, invariant_reported, exit_offer_expired` —
+   asserted cross-runtime.
+3. Reviewer findings closed exactly: `ErrReplayClockViolation` sentinel + `errors.Is` in Go, a
+   typed `ReplayClockViolation` class in TS (no string matching anywhere); `canonicalJSONEqual`
+   returns (bytes, ok) with a trailing-value check — undecodable bytes now fail closed.
+4. R2.3's letter: `command.run_log_seq` cross-checked against entry sequence → `log_gap`.
+5. The tampered-row memory bomb bounded (`ExitHistoryCount ≤ MaxExactInteger`).
+
+a3854f3 (verification queue) under separate adversarial review; verdict follows.
+
+## 2026-08-01 — independent review: a3854f3 (verification queue) — NOT APPROVED
+
+Adversarial review held against the receipt relay's remediated discipline; the four worst findings
+re-verified first-hand by the reviewer (repository.go read directly; the package contains ONE file
+and ZERO tests). The transactional skeleton is right (same-tx enqueue with the exit commit,
+SKIP LOCKED claims with crash leases, NULL→log_gap lane, DB-derived drift closing F9, projection
+and mark in one transaction, immutable dead letters). **The failure semantics are not — the queue
+inverts the one discipline the relay rounds taught us, and it must not be composed until this
+closes:**
+
+1. **CRITICAL — transient DB failures become immutable wrong verdicts**: any artifacts/scan error
+   maps to `(ReplayConstantsMismatch, nil)` — a connection blip during the catalog read
+   permanently dead-letters a valid run (dead rows unclaimable, re-enqueue a PK no-op). The relay's
+   deterministic-vs-transient split (failBatch's boolean) is the required shape: transient errors
+   RETURN AN ERROR (release the claim, retry under lease); only deterministic evidence yields a
+   verdict.
+2. **CRITICAL — events() silently truncates on iteration error** (no rows.Err() after the loop):
+   a mid-scan failure yields a shorter event array → state_divergence → immutable dead letter.
+3. **HIGH — the events query is unscoped by stream** (`WHERE intent_id=$1`): intent ids are
+   client-supplied and only per-stream unique — an adversary reusing a victim's intent_id poisons
+   the victim's verification into a permanent dead letter. The codebase's own exit-replay query
+   scopes by stream pair (exit.go:381); the reader must scope to the run's founder+company streams.
+4. **HIGH — verdicts depend on deploy timing**: `engine != kernel.Version` dead-letters every
+   queued run after any version bump. Ruling: a binary that cannot replay a run's pinned engine
+   DEFERS the run (available_at pushed, attempts not spent) — `engine_mismatch` is ONLY the
+   run_version_drift verdict (L2b's actual meaning). Verification is a projection of immutable
+   evidence; wall-clock deploy state is not evidence.
+5. **HIGH — no claim token / RowsAffected check**: a lease-expired worker double-projects (its tx
+   still commits ProjectVerifiedRun after matching 0 rows on the mark), and can produce
+   verified+dead-lettered simultaneously. The relay's token-guarded mark/release is the required
+   pattern; the Projector contract must also state idempotency-by-run explicitly.
+6. **MEDIUM batch:** attempts counted but unbounded with no failure cap, no terminal lane for
+   deterministic PROJECTION poison, and no InvariantSink despite R3 requiring it verbatim; single
+   `bundle.Next` slot is last-write-wins across multiple exit rows (a rejected exit's
+   next-hash from a pre-mint epoch poisons replay of its own row — keep per-entry Next);
+   `verification_queue`'s verified-verdict rows are mutable (house style: immutability trigger on
+   the authoritative record); C6's legacy lane is production-dead code (no backfill) — fine, but
+   then the lane needs its test via fixture, not via unreachable production paths.
+7. LOW: global claim order allows same-company runs to project out of order (per-stream head
+   claims, the relay shape, before a projector exists).
+
+**Process finding (named, third instance of the class): plan.md flipped C6 and F9 to [x] in a
+commit that ships ZERO tests for the flipped items or the package containing them.** Findings 1–5
+would all have surfaced under the integration-test discipline every adjacent package follows.
+New rule, effective now: **a plan checkbox may flip only in a commit that carries the test
+exercising the claimed behavior** — same footing as the review-before-archive convention.
+
+**42bc8a3 loosenings adjudicated (the scope check's three flags):** all three are the RULED
+Go-parity alignments from the previous verdict — (a) the dropped re-canonicalization echo check is
+finding F5's fix (JS round-trip broke honest Go-tolerated literals); (b) `count: null` coercion is
+F4's fix (Go's nil-map → `count.mode` detail); (c) invariant reordering is F1's fix (Go's append
+site). Approved as intended; commit messages must name their findings next time.
+
+## 2026-08-01 — verification-queue remediation implementation
+
+- Rebuilt the worker around token ownership: UUID claim tokens are checked under `FOR UPDATE`
+  before any projector runs, and the projector plus terminal mark commit together. Claims are
+  per-Company heads, so later runs cannot project around an unfinished earlier run.
+- Split immutable deterministic verdict dead letters from operational poison. Transient database,
+  cursor, and projector failures retry; the fifth failure (including a fifth-attempt worker crash)
+  enters a separate immutable poison ledger and emits `verification_poison_dead_letter` through a
+  mandatory `InvariantSink`. No operational failure is labeled with a gameplay verdict.
+- Pinned-kernel mismatch now defers for five minutes and refunds the claim attempt. Only immutable
+  `run_version_drift` evidence produces `engine_mismatch`.
+- Scoped event reads to the run's Company/Founder stream pair, checked both `rows.Err()` paths, and
+  made next-catalog selection per log entry rather than a run-wide last-write-wins slot.
+- Added migration 00034 for claim-token pairing, poison evidence, and terminal queue immutability.
+  The real-Postgres suite covers stale-token rejection, terminal immutability, transient retry and
+  capped poison, fifth-attempt crash recovery, version deferral, deterministic catalog evidence,
+  legacy NULL→`log_gap`, DB-derived drift, the cross-stream intent-ID collision attack, and forced
+  cursor failure. The production suite contains the two-rejected-Exit/two-next-catalog regression.
+- Green gates: focused Go packages and the root real-Postgres integration target.

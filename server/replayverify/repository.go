@@ -8,83 +8,285 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
+	"time"
+	"unicode/utf8"
 
 	"cloud-clicker/server/kernel"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/replaycatalog"
 )
 
-var uuidPattern = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
+var (
+	uuidPattern                 = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
+	ErrVerificationDeferred     = errors.New("pinned replay engine is unavailable")
+	ErrVerificationClaimLost    = errors.New("verification claim lost")
+	errDeterministicCatalogData = errors.New("deterministic catalog evidence is invalid")
+	errDeterministicReplayData  = errors.New("deterministic replay evidence is invalid")
+)
 
-type Repository struct{ db *sql.DB }
+const (
+	verificationFailureLimit = 5
+	verificationLease        = 5 * time.Minute
+	verificationBackoff      = 5 * time.Second
+	versionBackoff           = 5 * time.Minute
+)
 
+type VerificationInvariant struct {
+	Kind     string
+	StreamID string
+	RunSeq   int64
+	Attempts int
+	Detail   string
+}
+
+type InvariantSink interface {
+	ReportVerificationInvariant(VerificationInvariant)
+}
+
+type Repository struct {
+	db   *sql.DB
+	sink InvariantSink
+	// fault is an integration-test seam for failures that database/sql cannot
+	// deterministically inject between a successful query and rows.Err.
+	fault func(string) error
+}
+
+// Projector implementations must be idempotent by (company_stream_id,
+// run_seq). The queue also holds and token-checks its claim row in the same
+// transaction, but idempotency remains the projector's recovery contract.
 type Projector interface {
 	ProjectVerifiedRun(context.Context, *sql.Tx, string, int64) error
 }
 
-func NewRepository(db *sql.DB) (*Repository, error) {
-	if db == nil {
-		return nil, errors.New("replay verifier requires database")
-	}
-	return &Repository{db: db}, nil
+type claim struct {
+	StreamID string
+	RunSeq   int64
+	Token    string
+	Attempts int
 }
 
-// ProcessNext claims one ended run with a five-minute crash lease. A verified
-// run is projected and marked in one transaction; every other verdict is
-// dead-lettered immutably. Projection is mandatory so no unprojected run can
-// be marked verified.
+func NewRepository(db *sql.DB, sink InvariantSink) (*Repository, error) {
+	if db == nil || sink == nil {
+		return nil, errors.New("replay verifier requires database and invariant sink")
+	}
+	return &Repository{db: db, sink: sink}, nil
+}
+
+// ProcessNext claims one per-company head run with a crash lease. A verified
+// run is projected and marked in one token-owned transaction. Deterministic
+// replay evidence is dead-lettered immediately; transient operational errors
+// retry and eventually enter the separate poison lane without inventing a
+// gameplay verdict.
 func (repository *Repository) ProcessNext(ctx context.Context, projector Projector) (bool, error) {
 	if repository == nil || projector == nil {
 		return false, errors.New("verification projector required")
 	}
-	var streamID string
-	var runSeq int64
-	err := repository.db.QueryRowContext(ctx, `
-		WITH candidate AS (
-			SELECT company_stream_id,run_seq FROM verification_queue
-			WHERE (status='pending' AND available_at<=now()) OR (status='claimed' AND claimed_at<now()-interval '5 minutes')
-			ORDER BY available_at,company_stream_id,run_seq FOR UPDATE SKIP LOCKED LIMIT 1
-		)
-		UPDATE verification_queue q SET status='claimed',claimed_at=now(),attempts=attempts+1
-		FROM candidate c WHERE q.company_stream_id=c.company_stream_id AND q.run_seq=c.run_seq
-		RETURNING q.company_stream_id,q.run_seq`).Scan(&streamID, &runSeq)
+	poisoned, err := repository.poisonExpiredClaim(ctx)
+	if err != nil || poisoned {
+		return poisoned, err
+	}
+	claimed, err := repository.claimNext(ctx)
 	if errors.Is(err, sql.ErrNoRows) {
 		return false, nil
 	}
 	if err != nil {
 		return false, err
 	}
-	verdict, verifyErr := repository.VerifyStoredRun(ctx, streamID, runSeq)
-	if verifyErr != nil {
-		_, _ = repository.db.ExecContext(ctx, `UPDATE verification_queue SET status='pending',claimed_at=NULL,available_at=now()+interval '5 seconds',last_error=$3 WHERE company_stream_id=$1 AND run_seq=$2 AND status='claimed'`, streamID, runSeq, verifyErr.Error())
-		return true, verifyErr
+
+	verdict, verifyErr := repository.VerifyStoredRun(ctx, claimed.StreamID, claimed.RunSeq)
+	if errors.Is(verifyErr, ErrVerificationDeferred) {
+		return true, repository.deferVersion(ctx, claimed)
 	}
+	if verifyErr != nil {
+		return true, repository.failTransient(ctx, claimed, verifyErr)
+	}
+
 	tx, err := repository.db.BeginTx(ctx, nil)
 	if err != nil {
-		return true, err
+		return true, repository.failTransient(ctx, claimed, err)
 	}
 	defer tx.Rollback()
+	if err := ownClaim(ctx, tx, claimed); err != nil {
+		return true, err
+	}
 	if verdict == production.ReplayVerified {
-		if err := projector.ProjectVerifiedRun(ctx, tx, streamID, runSeq); err != nil {
+		if err := projector.ProjectVerifiedRun(ctx, tx, claimed.StreamID, claimed.RunSeq); err != nil {
+			_ = tx.Rollback()
+			return true, repository.failTransient(ctx, claimed, err)
+		}
+		if err := markVerified(ctx, tx, claimed); err != nil {
 			return true, err
 		}
-		if _, err := tx.ExecContext(ctx, `UPDATE verification_queue SET status='verified',verdict='verified',completed_at=now(),claimed_at=NULL,last_error=NULL WHERE company_stream_id=$1 AND run_seq=$2 AND status='claimed'`, streamID, runSeq); err != nil {
-			return true, err
-		}
-	} else {
-		detail := "replay verification returned " + string(verdict)
-		if _, err := tx.ExecContext(ctx, `INSERT INTO verification_dead_letters(company_stream_id,run_seq,verdict,detail) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING`, streamID, runSeq, verdict, detail); err != nil {
-			return true, err
-		}
-		if _, err := tx.ExecContext(ctx, `UPDATE verification_queue SET status='dead',verdict=$3,completed_at=now(),claimed_at=NULL,last_error=$4 WHERE company_stream_id=$1 AND run_seq=$2 AND status='claimed'`, streamID, runSeq, verdict, detail); err != nil {
-			return true, err
-		}
+	} else if err := markDeterministicDead(ctx, tx, claimed, verdict); err != nil {
+		return true, err
 	}
 	return true, tx.Commit()
 }
 
-// VerifyStoredRun maps legacy NULL inputs to log_gap and derives engine drift
-// from immutable database evidence rather than caller input.
+func (repository *Repository) claimNext(ctx context.Context) (claim, error) {
+	var result claim
+	err := repository.db.QueryRowContext(ctx, `
+		WITH candidate AS (
+			SELECT q.company_stream_id,q.run_seq
+			FROM verification_queue q
+			WHERE (((q.status='pending' AND q.available_at<=clock_timestamp()) OR
+			         (q.status='claimed' AND q.claimed_at<clock_timestamp()-$1::interval)))
+			  AND q.attempts < $2
+			  AND NOT EXISTS (
+				SELECT 1 FROM verification_queue earlier
+				WHERE earlier.company_stream_id=q.company_stream_id
+				  AND earlier.run_seq<q.run_seq
+				  AND earlier.status IN ('pending','claimed')
+			  )
+			ORDER BY q.available_at,q.company_stream_id,q.run_seq
+			FOR UPDATE SKIP LOCKED LIMIT 1
+		)
+		UPDATE verification_queue q
+		SET status='claimed',claimed_at=clock_timestamp(),claim_token=gen_random_uuid(),attempts=attempts+1
+		FROM candidate c
+		WHERE q.company_stream_id=c.company_stream_id AND q.run_seq=c.run_seq
+		RETURNING q.company_stream_id,q.run_seq,q.claim_token,q.attempts`,
+		intervalLiteral(verificationLease), verificationFailureLimit).
+		Scan(&result.StreamID, &result.RunSeq, &result.Token, &result.Attempts)
+	return result, err
+}
+
+func (repository *Repository) poisonExpiredClaim(ctx context.Context) (bool, error) {
+	tx, err := repository.db.BeginTx(ctx, nil)
+	if err != nil {
+		return false, err
+	}
+	defer tx.Rollback()
+	var report VerificationInvariant
+	var detail sql.NullString
+	err = tx.QueryRowContext(ctx, `SELECT company_stream_id,run_seq,attempts,last_error
+		FROM verification_queue
+		WHERE attempts >= $1 AND (
+			(status='pending' AND available_at<=clock_timestamp()) OR
+			(status='claimed' AND claimed_at<clock_timestamp()-$2::interval)
+		)
+		ORDER BY available_at,company_stream_id,run_seq
+		FOR UPDATE SKIP LOCKED LIMIT 1`, verificationFailureLimit, intervalLiteral(verificationLease)).
+		Scan(&report.StreamID, &report.RunSeq, &report.Attempts, &detail)
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	report.Kind = "verification_poison_dead_letter"
+	report.Detail = "verification claim expired at failure limit"
+	if detail.Valid && strings.TrimSpace(detail.String) != "" {
+		report.Detail = boundedDetail(errors.New(detail.String))
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO verification_poison_dead_letters(company_stream_id,run_seq,attempts,detail)
+		VALUES($1,$2,$3,$4)`, report.StreamID, report.RunSeq, report.Attempts, report.Detail); err != nil {
+		return false, err
+	}
+	result, err := tx.ExecContext(ctx, `UPDATE verification_queue
+		SET status='dead',verdict=NULL,completed_at=clock_timestamp(),claimed_at=NULL,claim_token=NULL,last_error=$3
+		WHERE company_stream_id=$1 AND run_seq=$2 AND status IN ('pending','claimed')`, report.StreamID, report.RunSeq, report.Detail)
+	if err = requireOne(result, err); err != nil {
+		return false, err
+	}
+	if err := tx.Commit(); err != nil {
+		return false, err
+	}
+	repository.sink.ReportVerificationInvariant(report)
+	return true, nil
+}
+
+func ownClaim(ctx context.Context, tx *sql.Tx, claimed claim) error {
+	var owned bool
+	err := tx.QueryRowContext(ctx, `SELECT true FROM verification_queue
+		WHERE company_stream_id=$1 AND run_seq=$2 AND status='claimed' AND claim_token=$3
+		FOR UPDATE`, claimed.StreamID, claimed.RunSeq, claimed.Token).Scan(&owned)
+	if errors.Is(err, sql.ErrNoRows) {
+		return ErrVerificationClaimLost
+	}
+	return err
+}
+
+func markVerified(ctx context.Context, tx *sql.Tx, claimed claim) error {
+	result, err := tx.ExecContext(ctx, `UPDATE verification_queue
+		SET status='verified',verdict='verified',completed_at=clock_timestamp(),claimed_at=NULL,claim_token=NULL,last_error=NULL
+		WHERE company_stream_id=$1 AND run_seq=$2 AND status='claimed' AND claim_token=$3`,
+		claimed.StreamID, claimed.RunSeq, claimed.Token)
+	return requireOne(result, err)
+}
+
+func markDeterministicDead(ctx context.Context, tx *sql.Tx, claimed claim, verdict production.ReplayVerdict) error {
+	if verdict == production.ReplayVerified || !knownNonVerifiedVerdict(verdict) {
+		return errors.New("invalid deterministic replay verdict")
+	}
+	detail := "replay verification returned " + string(verdict)
+	if _, err := tx.ExecContext(ctx, `INSERT INTO verification_dead_letters(company_stream_id,run_seq,verdict,detail)
+		VALUES($1,$2,$3,$4)`, claimed.StreamID, claimed.RunSeq, verdict, detail); err != nil {
+		return err
+	}
+	result, err := tx.ExecContext(ctx, `UPDATE verification_queue
+		SET status='dead',verdict=$4,completed_at=clock_timestamp(),claimed_at=NULL,claim_token=NULL,last_error=$5
+		WHERE company_stream_id=$1 AND run_seq=$2 AND status='claimed' AND claim_token=$3`,
+		claimed.StreamID, claimed.RunSeq, claimed.Token, verdict, detail)
+	return requireOne(result, err)
+}
+
+func (repository *Repository) deferVersion(ctx context.Context, claimed claim) error {
+	result, err := repository.db.ExecContext(ctx, `UPDATE verification_queue
+		SET status='pending',attempts=GREATEST(attempts-1,0),available_at=clock_timestamp()+$4::interval,
+		    claimed_at=NULL,claim_token=NULL,last_error=$5
+		WHERE company_stream_id=$1 AND run_seq=$2 AND status='claimed' AND claim_token=$3`,
+		claimed.StreamID, claimed.RunSeq, claimed.Token, intervalLiteral(versionBackoff), ErrVerificationDeferred.Error())
+	return requireOne(result, err)
+}
+
+func (repository *Repository) failTransient(ctx context.Context, claimed claim, cause error) error {
+	detail := boundedDetail(cause)
+	tx, err := repository.db.BeginTx(ctx, nil)
+	if err != nil {
+		return errors.Join(cause, err)
+	}
+	defer tx.Rollback()
+	if err := ownClaim(ctx, tx, claimed); err != nil {
+		return errors.Join(cause, err)
+	}
+	if claimed.Attempts < verificationFailureLimit {
+		result, updateErr := tx.ExecContext(ctx, `UPDATE verification_queue
+			SET status='pending',available_at=clock_timestamp()+$4::interval,
+			    claimed_at=NULL,claim_token=NULL,last_error=$5
+			WHERE company_stream_id=$1 AND run_seq=$2 AND status='claimed' AND claim_token=$3`,
+			claimed.StreamID, claimed.RunSeq, claimed.Token, intervalLiteral(verificationBackoff), detail)
+		if updateErr = requireOne(result, updateErr); updateErr != nil {
+			return errors.Join(cause, updateErr)
+		}
+		if commitErr := tx.Commit(); commitErr != nil {
+			return errors.Join(cause, commitErr)
+		}
+		return cause
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO verification_poison_dead_letters(company_stream_id,run_seq,attempts,detail)
+		VALUES($1,$2,$3,$4)`, claimed.StreamID, claimed.RunSeq, claimed.Attempts, detail); err != nil {
+		return errors.Join(cause, err)
+	}
+	result, err := tx.ExecContext(ctx, `UPDATE verification_queue
+		SET status='dead',verdict=NULL,completed_at=clock_timestamp(),claimed_at=NULL,claim_token=NULL,last_error=$4
+		WHERE company_stream_id=$1 AND run_seq=$2 AND status='claimed' AND claim_token=$3`,
+		claimed.StreamID, claimed.RunSeq, claimed.Token, detail)
+	if err = requireOne(result, err); err != nil {
+		return errors.Join(cause, err)
+	}
+	if err := tx.Commit(); err != nil {
+		return errors.Join(cause, err)
+	}
+	repository.sink.ReportVerificationInvariant(VerificationInvariant{Kind: "verification_poison_dead_letter",
+		StreamID: claimed.StreamID, RunSeq: claimed.RunSeq, Attempts: claimed.Attempts, Detail: detail})
+	return cause
+}
+
+// VerifyStoredRun maps legacy NULL inputs to log_gap and derives every verdict
+// from immutable database evidence. Operational failures are returned as
+// errors; they never become permanent verdicts.
 func (repository *Repository) VerifyStoredRun(ctx context.Context, streamID string, runSeq int64) (production.ReplayVerdict, error) {
 	if repository == nil || !uuidPattern.MatchString(streamID) || runSeq < 1 {
 		return production.ReplayStateDivergence, errors.New("invalid run")
@@ -92,7 +294,9 @@ func (repository *Repository) VerifyStoredRun(ctx context.Context, streamID stri
 	var hash, engine string
 	var genesis []byte
 	var version int
-	if err := repository.db.QueryRowContext(ctx, `SELECT p.constants_hash,p.engine_version,g.state,g.version FROM run_epochs p JOIN run_genesis g USING(company_stream_id,run_seq) WHERE p.company_stream_id=$1 AND p.run_seq=$2`, streamID, runSeq).Scan(&hash, &engine, &genesis, &version); errors.Is(err, sql.ErrNoRows) {
+	if err := repository.db.QueryRowContext(ctx, `SELECT p.constants_hash,p.engine_version,g.state,g.version
+		FROM run_epochs p JOIN run_genesis g USING(company_stream_id,run_seq)
+		WHERE p.company_stream_id=$1 AND p.run_seq=$2`, streamID, runSeq).Scan(&hash, &engine, &genesis, &version); errors.Is(err, sql.ErrNoRows) {
 		return production.ReplayLogGap, nil
 	} else if err != nil {
 		return production.ReplayStateDivergence, err
@@ -101,15 +305,48 @@ func (repository *Repository) VerifyStoredRun(ctx context.Context, streamID stri
 	if err := repository.db.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM run_version_drift WHERE company_stream_id=$1 AND run_seq=$2)`, streamID, runSeq).Scan(&drift); err != nil {
 		return production.ReplayStateDivergence, err
 	}
-	artifacts, err := repository.artifacts(ctx, hash)
-	if err != nil {
+	if drift {
+		return production.ReplayEngineMismatch, nil
+	}
+	if engine != kernel.Version {
+		return production.ReplayStateDivergence, ErrVerificationDeferred
+	}
+	var legacyGap bool
+	if err := repository.db.QueryRowContext(ctx, `SELECT EXISTS(
+		SELECT 1 FROM run_log WHERE company_stream_id=$1 AND run_seq=$2 AND replay_inputs IS NULL
+	)`, streamID, runSeq).Scan(&legacyGap); err != nil {
+		return production.ReplayStateDivergence, err
+	}
+	if legacyGap {
+		return production.ReplayLogGap, nil
+	}
+
+	bundles := map[string]production.CatalogBundle{}
+	loadBundle := func(constantsHash string) (production.CatalogBundle, error) {
+		if bundle, ok := bundles[constantsHash]; ok {
+			return bundle, nil
+		}
+		artifacts, err := repository.artifacts(ctx, constantsHash)
+		if err != nil {
+			return production.CatalogBundle{}, err
+		}
+		bundle, err := replaycatalog.Load(constantsHash, artifacts)
+		if err != nil {
+			return production.CatalogBundle{}, fmt.Errorf("%w: %v", errDeterministicCatalogData, err)
+		}
+		bundles[constantsHash] = bundle
+		return bundle, nil
+	}
+	bundle, err := loadBundle(hash)
+	if errors.Is(err, errDeterministicCatalogData) {
 		return production.ReplayConstantsMismatch, nil
 	}
-	bundle, err := replaycatalog.Load(hash, artifacts)
 	if err != nil {
-		return production.ReplayConstantsMismatch, nil
+		return production.ReplayStateDivergence, err
 	}
-	rows, err := repository.db.QueryContext(ctx, `SELECT seq,canonical_payload,replay_inputs::text,receipt::text FROM run_log WHERE company_stream_id=$1 AND run_seq=$2 ORDER BY seq`, streamID, runSeq)
+
+	rows, err := repository.db.QueryContext(ctx, `SELECT seq,canonical_payload,replay_inputs::text,receipt::text
+		FROM run_log WHERE company_stream_id=$1 AND run_seq=$2 ORDER BY seq`, streamID, runSeq)
 	if err != nil {
 		return production.ReplayStateDivergence, err
 	}
@@ -135,34 +372,42 @@ func (repository *Repository) VerifyStoredRun(ctx context.Context, streamID stri
 				NextConstantsHash string `json:"next_constants_hash"`
 			} `json:"resolved"`
 		}
-		if json.Unmarshal(entry.ReplayInputs, &envelope) != nil {
+		if json.Unmarshal(entry.ReplayInputs, &envelope) != nil || !uuidPattern.MatchString(envelope.Command.IntentID) {
 			return production.ReplayStateDivergence, nil
 		}
 		entry.Terminal = envelope.Resolved.Kind == "exit"
-		entry.EventsJSON, err = repository.events(ctx, envelope.Command.IntentID)
+		entry.EventsJSON, err = repository.events(ctx, streamID, envelope.Command.IntentID)
+		if errors.Is(err, errDeterministicReplayData) {
+			return production.ReplayStateDivergence, nil
+		}
 		if err != nil {
 			return production.ReplayStateDivergence, err
 		}
 		if entry.Terminal && envelope.Resolved.NextConstantsHash != "" && envelope.Resolved.NextConstantsHash != hash {
-			nextArtifacts, loadErr := repository.artifacts(ctx, envelope.Resolved.NextConstantsHash)
-			if loadErr != nil {
+			next, loadErr := loadBundle(envelope.Resolved.NextConstantsHash)
+			if errors.Is(loadErr, errDeterministicCatalogData) {
 				return production.ReplayConstantsMismatch, nil
 			}
-			next, loadErr := replaycatalog.Load(envelope.Resolved.NextConstantsHash, nextArtifacts)
 			if loadErr != nil {
-				return production.ReplayConstantsMismatch, nil
+				return production.ReplayStateDivergence, loadErr
 			}
-			bundle.Next = &next
+			entry.NextCatalog = &next
 		}
 		entries = append(entries, entry)
 	}
 	if err := rows.Err(); err != nil {
 		return production.ReplayStateDivergence, err
 	}
-	return production.VerifyReplayRun(genesis, version, bundle, entries, hash, drift || engine != kernel.Version), nil
+	if err := repository.runFault("run_log_rows"); err != nil {
+		return production.ReplayStateDivergence, err
+	}
+	return production.VerifyReplayRun(genesis, version, bundle, entries, hash, false), nil
 }
 
 func (repository *Repository) artifacts(ctx context.Context, hash string) (map[string][]byte, error) {
+	if err := repository.runFault("catalog_query"); err != nil {
+		return nil, err
+	}
 	rows, err := repository.db.QueryContext(ctx, `SELECT artifact_name,bytes FROM catalog_artifacts WHERE constants_hash=$1`, hash)
 	if err != nil {
 		return nil, err
@@ -177,14 +422,30 @@ func (repository *Repository) artifacts(ctx context.Context, hash string) (map[s
 		}
 		result[name] = bytes.Clone(data)
 	}
-	if len(result) != 6 {
-		return nil, fmt.Errorf("incomplete artifact bundle")
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
-	return result, rows.Err()
+	if err := repository.runFault("catalog_rows"); err != nil {
+		return nil, err
+	}
+	if len(result) != 6 {
+		return nil, fmt.Errorf("%w: incomplete artifact bundle", errDeterministicCatalogData)
+	}
+	return result, nil
 }
 
-func (repository *Repository) events(ctx context.Context, intentID string) ([]byte, error) {
-	rows, err := repository.db.QueryContext(ctx, `SELECT kind,schema_version,intent_id,payload::text FROM events WHERE intent_id=$1 ORDER BY event_seq`, intentID)
+func (repository *Repository) events(ctx context.Context, companyStreamID, intentID string) ([]byte, error) {
+	rows, err := repository.db.QueryContext(ctx, `
+		SELECT e.kind,e.schema_version,e.intent_id,e.payload::text
+		FROM events e
+		JOIN save_streams company ON company.id=$1 AND company.owner_kind='founder' AND company.scope='company'
+		WHERE e.intent_id=$2 AND (
+			e.stream_id=company.id OR e.stream_id IN (
+				SELECT founder.id FROM save_streams founder
+				WHERE founder.owner_kind='founder' AND founder.scope='founder' AND founder.owner_id=company.owner_id
+			)
+		)
+		ORDER BY e.event_seq`, companyStreamID, intentID)
 	if err != nil {
 		return nil, err
 	}
@@ -200,9 +461,62 @@ func (repository *Repository) events(ctx context.Context, intentID string) ([]by
 		decoder.UseNumber()
 		var payload any
 		if decoder.Decode(&payload) != nil {
-			return nil, fmt.Errorf("invalid event payload")
+			return nil, fmt.Errorf("%w: invalid event payload", errDeterministicReplayData)
 		}
 		values = append(values, map[string]any{"kind": kind, "schema_version": schema, "intent_id": id, "payload": payload})
 	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	if err := repository.runFault("event_rows"); err != nil {
+		return nil, err
+	}
 	return json.Marshal(values)
+}
+
+func (repository *Repository) runFault(step string) error {
+	if repository.fault == nil {
+		return nil
+	}
+	return repository.fault(step)
+}
+
+func knownNonVerifiedVerdict(verdict production.ReplayVerdict) bool {
+	switch verdict {
+	case production.ReplayLogGap, production.ReplayStateDivergence, production.ReplayConstantsMismatch,
+		production.ReplayClockViolation, production.ReplayEngineMismatch:
+		return true
+	default:
+		return false
+	}
+}
+
+func requireOne(result sql.Result, err error) error {
+	if err != nil {
+		return err
+	}
+	changed, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if changed != 1 {
+		return ErrVerificationClaimLost
+	}
+	return nil
+}
+
+func boundedDetail(err error) string {
+	detail := strings.TrimSpace(err.Error())
+	if detail == "" || !utf8.ValidString(detail) {
+		detail = "verification operation failed"
+	}
+	runes := []rune(detail)
+	if len(runes) > 512 {
+		detail = string(runes[:512])
+	}
+	return detail
+}
+
+func intervalLiteral(duration time.Duration) string {
+	return fmt.Sprintf("%d milliseconds", duration.Milliseconds())
 }

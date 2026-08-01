@@ -86,6 +86,10 @@ useful batches instead of asking for permission one invocation at a time:
 - non-destructive Git bookkeeping (`git status`, `git diff`, `git add`, and intentional
   intermediate `git commit`s).
 
+A plan checkbox (`[x]` in planning/*/plan.md) may flip only in a commit that carries the test
+exercising the claimed behavior — a flipped box with no test is a review finding of the same
+severity as an unreviewed archive.
+
 History rewriting (rebase/amend of committed work) is permitted for exactly one purpose: correcting
 a protocol-violating commit subject (`BALANCE-CHANGE:`/`CONSTANTS-IDENTITY:` classes) — and only
 while no review verdict references the affected hashes and nothing has been pushed. Once a

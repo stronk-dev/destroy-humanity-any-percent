@@ -84,6 +84,15 @@ Compact join/leave, incorporation, a gate-generated offer, decline, a long trans
 and terminal Exit—must verify identically in both runtimes. The same corpus mutates one dimension
 at a time to assert every failure verdict.
 
+Ended runs enter `verification_queue` in the Exit transaction. Workers claim only the oldest
+unfinished run per Company, using expiring UUID claim tokens; projection and the token-checked
+terminal mark share one transaction. A kernel that does not match the pinned version defers the
+row without spending an attempt. Database/scan failures retry and, after five attempts, enter a
+separate immutable operational-poison ledger plus `InvariantSink` report—they never masquerade as
+one of the six replay verdicts. Only deterministic stored evidence creates a verdict dead letter.
+Event replay is scoped to the run's Company/Founder stream pair, and each Exit log row resolves its
+own next-catalog bundle. Verified and dead queue records are immutable.
+
 At Exit, the ended run retains its original pin. Run N+1 is assembled under the server's current
 catalog hash and pinned to the epoch current in that same transaction. A real-Postgres fixture
 mints changed artifact bytes between start and Exit and asserts both hashes, epochs, revisions,
@@ -121,5 +130,6 @@ when the persisted input is replayed from the pre-command state. The TypeScript 
 loads the same six-artifact bundle and reproduces ordinary transitions plus wind-down, stored-offer,
 and scripted cross-gate terminal transitions. The shared Go-authored corpus compares receipts,
 event bytes/order, final Company state, Founder-derived output, and next-run snapshots. Immutable
-genesis storage is also live. The sequential ≥50-intent verifier/failure corpus, queue projection,
-and archive compaction remain the unimplemented portion of the active Run Genesis RFC.
+genesis storage is also live. Queue claiming and failure handling are live; the literal L7 category
+catalog, its verified-run projector, terminal-fact comparison, and archive compaction remain the
+unimplemented portion of the active Run Genesis RFC.

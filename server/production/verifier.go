@@ -29,6 +29,10 @@ type ReplayLogEntry struct {
 	ReceiptJSON      []byte
 	EventsJSON       []byte
 	Terminal         bool
+	// NextCatalog belongs to this log entry. A run may contain rejected Exit
+	// attempts on either side of an epoch change, so a run-wide mutable Next
+	// slot cannot reproduce the catalog resolved for each attempt.
+	NextCatalog *CatalogBundle
 }
 
 // VerifyReplayRun replays one immutable Company run through the same owned
@@ -64,7 +68,9 @@ func VerifyReplayRun(genesis []byte, version int, catalogs CatalogBundle, entrie
 			return ReplayStateDivergence
 		}
 		if discriminator.Kind == "exit" {
-			transition, transitionErr := ApplyLoggedExit(state, entry.CanonicalPayload, catalogs, entry.ReplayInputs)
+			entryCatalogs := catalogs
+			entryCatalogs.Next = entry.NextCatalog
+			transition, transitionErr := ApplyLoggedExit(state, entry.CanonicalPayload, entryCatalogs, entry.ReplayInputs)
 			if transitionErr != nil {
 				return replayErrorVerdict(transitionErr)
 			}

@@ -256,6 +256,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 
 func makeRejectedExitFixture(t *testing.T, catalogs CatalogBundle, constantsHash string, now time.Time) crossRuntimeFullRun {
 	t.Helper()
+	assertPerEntryNextCatalog(t, catalogs, constantsHash, now)
 	state := replayFixtureState(t, catalogs.Economy, now)
 	state.Tier = 0
 	genesis, err := save.EncodeState(state)
@@ -319,6 +320,68 @@ func makeRejectedExitFixture(t *testing.T, catalogs CatalogBundle, constantsHash
 		t.Fatalf("rejected exit clock verdict=%s", verdict)
 	}
 	return full
+}
+
+func assertPerEntryNextCatalog(t *testing.T, catalogs CatalogBundle, constantsHash string, now time.Time) {
+	t.Helper()
+	alternate := func(suffix byte) CatalogBundle {
+		artifacts := make(map[string][]byte, len(catalogs.Artifacts))
+		for name, data := range catalogs.Artifacts {
+			artifacts[name] = append([]byte(nil), data...)
+		}
+		// JSON whitespace changes immutable artifact identity while preserving the
+		// already-loaded policy objects used by this boundary test.
+		artifacts["economy"] = append(artifacts["economy"], '\n', ' ', suffix)
+		hash, err := save.ConstantsHashArtifacts(artifacts)
+		if err != nil {
+			t.Fatal(err)
+		}
+		result := catalogs
+		result.ConstantsHash, result.Artifacts, result.Next = hash, artifacts, nil
+		return result
+	}
+	nextA, nextB := alternate(' '), alternate('\t')
+	state := replayFixtureState(t, catalogs.Economy, now)
+	state.Tier = 0
+	genesis := mustEncodeState(t, state)
+	entries := make([]ReplayLogEntry, 0, 2)
+	for index, next := range []CatalogBundle{nextA, nextB} {
+		intentID := fmt.Sprintf("01987779-000%d-7000-8000-%012d", index+1, index+1)
+		request, err := parseLoggedIntent([]byte(`{"kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`), intentID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		command := save.ReplayCommand{IntentID: intentID, CompanyStreamID: "01987779-1000-7000-8000-000000000001",
+			FounderID: "01987779-2000-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: int64(index + 1)}
+		carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}}
+		inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(time.Duration(index) * time.Second),
+			IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true,
+			ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: next.ConstantsHash})
+		if err != nil {
+			t.Fatal(err)
+		}
+		executionCatalogs := catalogs
+		executionCatalogs.Next = &next
+		transition, err := ApplyLoggedExit(state, request.CanonicalPayload, executionCatalogs, inputs)
+		if err != nil || transition.Decision.Outcome != save.IntentRejected {
+			t.Fatalf("per-entry exit %d outcome=%s err=%v", index, transition.Decision.Outcome, err)
+		}
+		entryNext := next
+		entries = append(entries, ReplayLogEntry{Sequence: int64(index + 1), CanonicalPayload: request.CanonicalPayload,
+			ReplayInputs: inputs, ReceiptJSON: []byte(canonicalFixtureJSON(t, transition.Decision.Receipt)), EventsJSON: []byte(`[]`),
+			Terminal: true, NextCatalog: &entryNext})
+	}
+	// A run-wide slot deliberately points at the last row. The first row must
+	// still resolve its own bundle; prior last-write-wins behavior failed here.
+	catalogs.Next = &nextB
+	if verdict := VerifyReplayRun(genesis, save.CurrentVersion, catalogs, entries, constantsHash, false); verdict != ReplayLogGap {
+		t.Fatalf("per-entry next-catalog verdict=%s", verdict)
+	}
+	wrong := append([]ReplayLogEntry(nil), entries...)
+	wrong[0].NextCatalog = &nextB
+	if verdict := VerifyReplayRun(genesis, save.CurrentVersion, catalogs, wrong, constantsHash, false); verdict != ReplayStateDivergence {
+		t.Fatalf("wrong per-entry next-catalog verdict=%s", verdict)
+	}
 }
 
 func mustEncodeState(t *testing.T, state *save.State) json.RawMessage {
