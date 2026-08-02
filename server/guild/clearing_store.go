@@ -15,6 +15,12 @@ import (
 	"cloud-clicker/server/save"
 )
 
+// ErrClearingSnapshotChanged is retryable: guild membership changed after a
+// clearing worker read its candidate snapshot but before it acquired the guild
+// lock. The worker must rebuild from committed membership instead of treating
+// normal join/leave traffic as corruption.
+var ErrClearingSnapshotChanged = errors.Join(ErrInvalidExchange, errors.New("guild clearing snapshot changed"))
+
 type Settlement struct {
 	GuildID     string
 	BoundarySeq int64
@@ -95,7 +101,7 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 	}
 	sort.Strings(memberAccounts)
 	if !slices.Equal(activeAccounts, memberAccounts) {
-		return ErrInvalidExchange
+		return ErrClearingSnapshotChanged
 	}
 	var last sql.NullInt64
 	if err := tx.QueryRowContext(ctx, `SELECT max(boundary_seq) FROM guild_clearing_results WHERE guild_id=$1`, guildID).Scan(&last); err != nil {

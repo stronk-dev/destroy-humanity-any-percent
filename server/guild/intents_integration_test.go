@@ -3,6 +3,7 @@ package guild
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -188,8 +189,8 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 
 	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), []MemberStock{
 		{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10},
-	}, 100); err == nil {
-		t.Fatal("clearing accepted a partial active-member snapshot")
+	}, 100); !errors.Is(err, ErrClearingSnapshotChanged) {
+		t.Fatalf("partial active-member snapshot error=%v", err)
 	}
 	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), []MemberStock{
 		{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10},

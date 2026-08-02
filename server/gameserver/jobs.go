@@ -24,9 +24,6 @@ func (job *PeriodicJob) Run(ctx context.Context) error {
 	if job == nil || job.run == nil || job.interval <= 0 {
 		return ErrInvalidJob
 	}
-	if err := job.run(ctx); err != nil {
-		return err
-	}
 	ticker := time.NewTicker(job.interval)
 	defer ticker.Stop()
 	for {
@@ -39,4 +36,11 @@ func (job *PeriodicJob) Run(ctx context.Context) error {
 			}
 		}
 	}
+}
+
+func (job *PeriodicJob) Prime(ctx context.Context) error {
+	if job == nil || job.run == nil || job.interval <= 0 {
+		return ErrInvalidJob
+	}
+	return job.run(ctx)
 }

@@ -57,3 +57,37 @@ drains to non-readiness. The complete containerized integration suite and focuse
 passed. A second composed test seeds only the not-yet-shipped T0→T2 content state, then proves the
 actual Production play→Exit→background verification→archive→`any_percent` board path. Canonical
 account, Guild, transport, README, and gameserver docs describe the shipped graph.
+
+## 2026-08-02 — designated review of GC3 landing
+
+Review by: Darwin (independent reviewer). Recorded by: Codex.
+
+Exact reviewed range: `007f1f6..e01e3ec`. Verdict: not archivable. The real settlement wiring,
+epoch/catalog startup order, Account/Guild authorization, Match denial, session-family GC locking,
+world schema, kernel version, formula artifact, and diff hygiene held. Six blockers were found:
+the clearing query permanently starved Guilds after its first 64; version-1 saves were restored
+without their migration timestamp; historical saves were interpreted with the current Faction
+catalog/cap; readiness preceded an initial worker/world/relay acknowledgement; Drain waited on jobs
+while intent admission remained open; and normal membership churn killed the entire worker set.
+The review also identified a missing `owner_kind='founder'` join constraint, missing lifecycle-error
+ownership, and acceptance-proof debt around attached ticks, Commons authorization, and command
+shutdown selection.
+
+## 2026-08-02 — GC3 review remediation implemented
+
+Review by: Codex implementer self-review. Recorded by: Codex.
+
+Clearing now keyset-pages every active Guild, resolves each save's pinned Economy and Faction
+catalog, supplies the revision `created_at` as the v1 migration baseline, and constrains the stream
+identity completely. Membership changes have a typed retry path; three consecutive changes defer
+only that Guild until the next scheduled pass. Different pinned stock caps within one Guild fail
+closed under an explicit `DESIGN-GAP` because no cap-changing epoch migration policy exists.
+
+Readiness now waits for one successful pass from every job plus an initial relay flush. Runtime job
+errors and unexpected clean exits lower readiness and reach `cmd/gameserver`; parent cancellation
+also cannot leave readiness stale. Drain broadcasts and closes admission before waiting on jobs.
+The Postgres fixture now proves Commons cohort authorization, >1-page clearing, a v1 historical
+member with a distinct pinned Faction cap, and the first real Compact settlement event. A second
+fixture proves the attached clearing and session-GC jobs run through the startup barrier, while
+unit tests cover scheduled callbacks and command stop selection. The Guild retry semantic is a
+kernel-affecting change and is recorded by version `0.3.4`.

@@ -75,19 +75,71 @@ type fakeRelay struct {
 }
 
 type fakeJob struct {
-	started chan struct{}
-	stopped chan struct{}
-	err     error
+	started           chan struct{}
+	stopped           chan struct{}
+	primeErr          error
+	runErr            error
+	returnImmediately bool
+}
+
+func (job *fakeJob) Prime(context.Context) error {
+	close(job.started)
+	return job.primeErr
 }
 
 func (job *fakeJob) Run(ctx context.Context) error {
-	close(job.started)
-	if job.err != nil {
-		return job.err
+	if job.runErr != nil {
+		return job.runErr
+	}
+	if job.returnImmediately {
+		return nil
 	}
 	<-ctx.Done()
 	close(job.stopped)
 	return nil
+}
+
+func TestUnexpectedCleanJobExitIsSurfaced(t *testing.T) {
+	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
+	server, err := New(fakeDatabase{}, http.NotFoundHandler(), realtime, &fakeRelay{}, syncedEpochs(), testConstantsHash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	job := &fakeJob{started: make(chan struct{}), stopped: make(chan struct{}), returnImmediately: true}
+	if err := server.AttachJobs(job); err != nil {
+		t.Fatal(err)
+	}
+	if err := server.Start(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case err := <-server.Failures():
+		if !errors.Is(err, ErrBackgroundJobStopped) {
+			t.Fatalf("failure=%v", err)
+		}
+	case <-time.After(time.Second):
+		t.Fatal("clean worker exit was not surfaced")
+	}
+}
+
+func TestParentCancellationClearsReadiness(t *testing.T) {
+	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
+	server, err := New(fakeDatabase{}, http.NotFoundHandler(), realtime, &fakeRelay{}, syncedEpochs(), testConstantsHash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	if err := server.Start(ctx); err != nil {
+		t.Fatal(err)
+	}
+	cancel()
+	deadline := time.Now().Add(time.Second)
+	for server.ready.Load() && time.Now().Before(deadline) {
+		time.Sleep(time.Millisecond)
+	}
+	if server.ready.Load() {
+		t.Fatal("readiness remained true after parent cancellation")
+	}
 }
 
 func (relay *fakeRelay) Flush(context.Context) (int, error) {
@@ -201,6 +253,46 @@ func TestDrainBroadcastFailureStillClosesSockets(t *testing.T) {
 	}
 }
 
+func TestDrainClosesAdmissionBeforeWaitingForSlowJob(t *testing.T) {
+	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: 20 * time.Millisecond}
+	server, err := New(fakeDatabase{}, http.NotFoundHandler(), realtime, &fakeRelay{}, syncedEpochs(), testConstantsHash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	job := &blockingStopJob{started: make(chan struct{}), release: make(chan struct{})}
+	if err := server.AttachJobs(job); err != nil {
+		t.Fatal(err)
+	}
+	if err := server.Start(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	drained := make(chan error, 1)
+	go func() { drained <- server.Drain(context.Background(), time.Now().UTC()) }()
+	<-realtime.broadcasted
+	rejected := httptest.NewRecorder()
+	server.Handler().ServeHTTP(rejected, httptest.NewRequest(http.MethodPost, "/api/v1/intents", nil))
+	if rejected.Code != http.StatusServiceUnavailable {
+		t.Fatalf("admission remained open while job stopped: %d", rejected.Code)
+	}
+	if err := <-drained; !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatalf("drain err=%v", err)
+	}
+	close(job.release)
+}
+
+type blockingStopJob struct {
+	started chan struct{}
+	release chan struct{}
+}
+
+func (job *blockingStopJob) Prime(context.Context) error { return nil }
+func (job *blockingStopJob) Run(ctx context.Context) error {
+	close(job.started)
+	<-ctx.Done()
+	<-job.release
+	return nil
+}
+
 func TestReadinessCannotRiseAfterDrainStarts(t *testing.T) {
 	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
 	server, _ := New(fakeDatabase{}, http.NotFoundHandler(), realtime, &fakeRelay{}, syncedEpochs(), testConstantsHash)
@@ -278,7 +370,8 @@ func TestFailedJobCannotBeHiddenByHealthyRelay(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	job := &fakeJob{started: make(chan struct{}), stopped: make(chan struct{}), err: errors.New("worker failed")}
+	workerErr := errors.New("worker failed")
+	job := &fakeJob{started: make(chan struct{}), stopped: make(chan struct{}), runErr: workerErr}
 	if err := server.AttachJobs(job); err != nil {
 		t.Fatal(err)
 	}
@@ -286,11 +379,42 @@ func TestFailedJobCannotBeHiddenByHealthyRelay(t *testing.T) {
 		t.Fatal(err)
 	}
 	<-job.started
-	time.Sleep(50 * time.Millisecond)
+	select {
+	case err := <-server.Failures():
+		if !errors.Is(err, workerErr) {
+			t.Fatalf("failure=%v", err)
+		}
+	case <-time.After(time.Second):
+		t.Fatal("worker failure was not surfaced")
+	}
 	ready := httptest.NewRecorder()
 	server.Handler().ServeHTTP(ready, httptest.NewRequest(http.MethodGet, "/readyz", nil))
 	if ready.Code != http.StatusServiceUnavailable {
 		t.Fatalf("failed job was masked by relay readiness: %d", ready.Code)
+	}
+}
+
+func TestStartWaitsForJobPrimeAndFailsClosed(t *testing.T) {
+	realtime := &fakeRealtime{broadcasted: make(chan struct{}), timeout: time.Second}
+	server, err := New(fakeDatabase{}, http.NotFoundHandler(), realtime, &fakeRelay{}, syncedEpochs(), testConstantsHash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	primeErr := errors.New("initial world sample unavailable")
+	job := &fakeJob{started: make(chan struct{}), stopped: make(chan struct{}), primeErr: primeErr}
+	if err := server.AttachJobs(job); err != nil {
+		t.Fatal(err)
+	}
+	if err := server.Start(context.Background()); !errors.Is(err, primeErr) {
+		t.Fatalf("start err=%v", err)
+	}
+	ready := httptest.NewRecorder()
+	server.Handler().ServeHTTP(ready, httptest.NewRequest(http.MethodGet, "/readyz", nil))
+	if ready.Code != http.StatusServiceUnavailable {
+		t.Fatalf("ready=%d", ready.Code)
+	}
+	if events := realtime.snapshot(); len(events) != 2 || events[0] != "run" || events[1] != "shutdown" {
+		t.Fatalf("lifecycle events=%v", events)
 	}
 }
 

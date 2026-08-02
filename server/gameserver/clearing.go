@@ -16,100 +16,169 @@ var ErrClearingDriver = errors.New("invalid guild clearing driver")
 type ClearingDriver struct {
 	db       *sql.DB
 	service  *guild.Service
-	catalogs save.CatalogResolver
-	factions *faction.Catalog
+	catalogs clearingCatalogs
 	clock    func() time.Time
 	limit    int
 }
 
-func NewClearingDriver(db *sql.DB, service *guild.Service, catalogs save.CatalogResolver, factions *faction.Catalog, clock func() time.Time) (*ClearingDriver, error) {
-	if db == nil || service == nil || catalogs == nil || factions == nil {
+type clearingCatalogs interface {
+	save.CatalogResolver
+	ResolveFaction(string) (*faction.Catalog, bool)
+}
+
+func NewClearingDriver(db *sql.DB, service *guild.Service, catalogs clearingCatalogs, clock func() time.Time) (*ClearingDriver, error) {
+	if db == nil || service == nil || catalogs == nil {
 		return nil, ErrClearingDriver
 	}
 	if clock == nil {
 		clock = time.Now
 	}
-	return &ClearingDriver{db: db, service: service, catalogs: catalogs, factions: factions, clock: clock, limit: 64}, nil
+	return &ClearingDriver{db: db, service: service, catalogs: catalogs, clock: clock, limit: 64}, nil
 }
 
 func (driver *ClearingDriver) Tick(ctx context.Context) (int, error) {
-	rows, err := driver.db.QueryContext(ctx, `SELECT guild_id FROM guilds WHERE disbanded_at IS NULL ORDER BY guild_id LIMIT $1`, driver.limit)
-	if err != nil {
-		return 0, err
-	}
-	var guildIDs []string
-	for rows.Next() {
-		var id string
-		if err := rows.Scan(&id); err != nil {
-			rows.Close()
-			return 0, err
-		}
-		guildIDs = append(guildIDs, id)
-	}
-	if err := rows.Close(); err != nil {
-		return 0, err
-	}
 	committed := 0
-	for _, guildID := range guildIDs {
-		members, err := driver.members(ctx, guildID)
+	lastGuildID := "00000000-0000-0000-0000-000000000000"
+	for {
+		guildIDs, err := driver.guildPage(ctx, lastGuildID)
 		if err != nil {
 			return committed, err
 		}
-		var previous sql.NullInt64
-		if err := driver.db.QueryRowContext(ctx, `SELECT max(boundary_seq) FROM guild_clearing_results WHERE guild_id=$1`, guildID).Scan(&previous); err != nil {
-			return committed, err
+		for _, guildID := range guildIDs {
+			changed, err := retryClearingSnapshot(ctx, func() error { return driver.commitGuild(ctx, guildID) })
+			if err != nil {
+				return committed, err
+			}
+			if changed {
+				committed++
+			}
 		}
-		boundary := int64(1)
-		if previous.Valid {
-			boundary = previous.Int64 + 1
+		if len(guildIDs) < driver.limit {
+			return committed, nil
 		}
-		if err := driver.service.CommitClearingBoundary(ctx, guildID, boundary, save.CanonicalServerTime(driver.clock()), members, driver.factions.StockCap); err != nil {
-			return committed, err
-		}
-		committed++
+		lastGuildID = guildIDs[len(guildIDs)-1]
 	}
-	return committed, nil
 }
 
-func (driver *ClearingDriver) members(ctx context.Context, guildID string) ([]guild.MemberStock, error) {
-	rows, err := driver.db.QueryContext(ctx, `
-		SELECT member.account_id,revision.version,revision.constants_hash,revision.state::text
-		FROM guild_members member
-		JOIN account_founders founder ON founder.account_id=member.account_id AND founder.archived_at IS NULL
-		JOIN save_streams stream ON stream.owner_id=founder.founder_id AND stream.scope='company' AND stream.archived_at IS NULL
-		JOIN LATERAL (SELECT version,constants_hash,state FROM save_revisions WHERE stream_id=stream.id ORDER BY revision DESC LIMIT 1) revision ON true
-		WHERE member.guild_id=$1 AND member.left_at IS NULL
-		ORDER BY member.account_id`, guildID)
+func (driver *ClearingDriver) commitGuild(ctx context.Context, guildID string) error {
+	members, stockCap, err := driver.members(ctx, guildID)
+	if err != nil {
+		return err
+	}
+	var previous sql.NullInt64
+	if err := driver.db.QueryRowContext(ctx, `SELECT max(boundary_seq) FROM guild_clearing_results WHERE guild_id=$1`, guildID).Scan(&previous); err != nil {
+		return err
+	}
+	boundary := int64(1)
+	if previous.Valid {
+		boundary = previous.Int64 + 1
+	}
+	return driver.service.CommitClearingBoundary(ctx, guildID, boundary, save.CanonicalServerTime(driver.clock()), members, stockCap)
+}
+
+func retryClearingSnapshot(ctx context.Context, commit func() error) (bool, error) {
+	for attempt := 0; attempt < 3; attempt++ {
+		if err := commit(); err != nil {
+			if errors.Is(err, guild.ErrClearingSnapshotChanged) {
+				if err := ctx.Err(); err != nil {
+					return false, err
+				}
+				continue
+			}
+			return false, err
+		}
+		return true, nil
+	}
+	// Ordinary membership churn is not a worker failure. The next scheduled
+	// tick rebuilds the snapshot from the then-current membership.
+	return false, nil
+}
+
+func (driver *ClearingDriver) guildPage(ctx context.Context, after string) ([]string, error) {
+	rows, err := driver.db.QueryContext(ctx, `SELECT guild_id FROM guilds WHERE disbanded_at IS NULL AND guild_id>$1 ORDER BY guild_id LIMIT $2`, after, driver.limit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
+	var guildIDs []string
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		guildIDs = append(guildIDs, id)
+	}
+	return guildIDs, rows.Err()
+}
+
+func (driver *ClearingDriver) members(ctx context.Context, guildID string) ([]guild.MemberStock, int64, error) {
+	rows, err := driver.db.QueryContext(ctx, `
+		SELECT member.account_id,revision.version,revision.constants_hash,revision.state::text,revision.created_at
+		FROM guild_members member
+		JOIN account_founders founder ON founder.account_id=member.account_id AND founder.archived_at IS NULL
+		JOIN save_streams stream ON stream.owner_kind='founder' AND stream.owner_id=founder.founder_id AND stream.scope='company' AND stream.archived_at IS NULL
+		JOIN LATERAL (SELECT version,constants_hash,state,created_at FROM save_revisions WHERE stream_id=stream.id ORDER BY revision DESC LIMIT 1) revision ON true
+		WHERE member.guild_id=$1 AND member.left_at IS NULL
+		ORDER BY member.account_id`, guildID)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
 	var result []guild.MemberStock
+	var stockCap int64
 	for rows.Next() {
 		var accountID, constantsHash string
 		var version int
 		var encoded []byte
-		if err := rows.Scan(&accountID, &version, &constantsHash, &encoded); err != nil {
-			return nil, err
+		var createdAt time.Time
+		if err := rows.Scan(&accountID, &version, &constantsHash, &encoded, &createdAt); err != nil {
+			return nil, 0, err
 		}
 		economyCatalog, ok := driver.catalogs.Resolve(constantsHash)
 		if !ok {
-			return nil, ErrClearingDriver
+			return nil, 0, ErrClearingDriver
 		}
-		state, err := save.RestoreState(encoded, version, economyCatalog, "company", time.Time{})
+		factionCatalog, ok := driver.catalogs.ResolveFaction(constantsHash)
+		if !ok {
+			return nil, 0, ErrClearingDriver
+		}
+		stockCap, err = mergePinnedStockCap(stockCap, factionCatalog.StockCap)
 		if err != nil {
-			return nil, err
+			return nil, 0, err
+		}
+		state, err := save.RestoreState(encoded, version, economyCatalog, "company", createdAt)
+		if err != nil {
+			return nil, 0, err
 		}
 		member := guild.MemberStock{AccountID: accountID}
 		if state.FactionID != "" {
-			definition, ok := driver.factions.Faction(state.FactionID)
+			definition, ok := factionCatalog.Faction(state.FactionID)
 			if !ok {
-				return nil, ErrClearingDriver
+				return nil, 0, ErrClearingDriver
 			}
 			member.Produces, member.Consumes = definition.Produces, definition.Consumes
 			member.AvailableUnits, member.ReceivedUnits = state.StockUnits, state.ConsumedStockUnits
 		}
 		result = append(result, member)
 	}
-	return result, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, 0, err
+	}
+	if len(result) == 0 || stockCap <= 0 {
+		return nil, 0, ErrClearingDriver
+	}
+	return result, stockCap, nil
+}
+
+func mergePinnedStockCap(current, candidate int64) (int64, error) {
+	if candidate <= 0 {
+		return 0, ErrClearingDriver
+	}
+	if current == 0 || current == candidate {
+		return candidate, nil
+	}
+	// DESIGN-GAP: cross-epoch clearing cannot choose one cap when active
+	// members' pinned faction catalogs disagree. Fail closed until an RFC
+	// defines the migration/exchange policy for a stock-cap change.
+	return 0, ErrClearingDriver
 }

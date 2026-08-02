@@ -292,7 +292,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 		return nil, err
 	}
 	boardProjector := leaderboard.NewQueueProjector()
-	clearing, err := NewClearingDriver(config.DB, guildService, catalogs, current.Faction, config.Clock)
+	clearing, err := NewClearingDriver(config.DB, guildService, catalogs, config.Clock)
 	if err != nil {
 		return nil, err
 	}

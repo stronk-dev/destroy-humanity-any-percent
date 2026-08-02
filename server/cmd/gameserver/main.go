@@ -61,16 +61,23 @@ func run(logger *slog.Logger) error {
 	httpServer := &http.Server{Addr: address, Handler: composition.Server.Handler(), ReadHeaderTimeout: 5 * time.Second}
 	serveErr := make(chan error, 1)
 	go func() { serveErr <- httpServer.ListenAndServe() }()
-	select {
-	case <-ctx.Done():
-	case err := <-serveErr:
-		if !errors.Is(err, http.ErrServerClosed) {
-			return err
-		}
-	}
+	listenerErr, runtimeErr := waitForStop(ctx, serveErr, composition.Server.Failures())
 	drainCtx, cancel := context.WithTimeout(context.Background(), composition.Node.DrainTimeout())
 	defer cancel()
 	drainErr := composition.Server.Drain(drainCtx, time.Now().UTC())
 	shutdownErr := httpServer.Shutdown(drainCtx)
-	return errors.Join(drainErr, shutdownErr)
+	return errors.Join(listenerErr, runtimeErr, drainErr, shutdownErr)
+}
+
+func waitForStop(ctx context.Context, serveErr, runtimeFailures <-chan error) (error, error) {
+	var listenerErr, runtimeErr error
+	select {
+	case <-ctx.Done():
+	case err := <-serveErr:
+		if !errors.Is(err, http.ErrServerClosed) {
+			listenerErr = err
+		}
+	case runtimeErr = <-runtimeFailures:
+	}
+	return listenerErr, runtimeErr
 }

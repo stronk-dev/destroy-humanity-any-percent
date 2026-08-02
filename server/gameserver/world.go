@@ -67,6 +67,10 @@ func (aggregator *WorldAggregator) Run(ctx context.Context) error {
 	}
 }
 
+func (aggregator *WorldAggregator) Prime(ctx context.Context) error {
+	return aggregator.PublishOnce(ctx)
+}
+
 func (aggregator *WorldAggregator) PublishOnce(ctx context.Context) error {
 	if aggregator == nil {
 		return ErrWorldAggregator

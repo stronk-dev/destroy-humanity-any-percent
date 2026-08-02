@@ -18,7 +18,7 @@ import (
 	"cloud-clicker/server/account"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
-	"cloud-clicker/server/production"
+	"cloud-clicker/server/faction"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/transport"
 
@@ -163,23 +163,30 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if firstEnvelope.Revision != 2 || firstEnvelope.Kind != "receipt" {
 		t.Fatalf("first player envelope=%+v", firstEnvelope)
 	}
-	companyAfterPlay, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
+	signCompact := `{"intent_id":"01985555-1112-7111-8111-111111111112","kind":"sign_compact","expected_revision":2,"tithe_ppm":100000}`
+	signResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, signCompact)
+	if signResponse.StatusCode != http.StatusOK {
+		t.Fatalf("compact status=%d body=%s", signResponse.StatusCode, responseBody(signResponse))
+	}
+	_ = responseBody(signResponse)
+	signKinds := map[string]bool{}
+	for len(signKinds) < 2 {
+		envelope := readEnvelope(t, player, "player:"+founder.ID)
+		if envelope.Revision != 3 {
+			t.Fatalf("compact player revision=%d", envelope.Revision)
+		}
+		signKinds[envelope.Kind] = true
+	}
+	if !signKinds["event"] || !signKinds["receipt"] {
+		t.Fatalf("compact player message kinds=%v", signKinds)
+	}
+	cohortID, err := composition.Commons.FounderCohort(ctx, founder.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
-	eventPayload, _ := json.Marshal(map[string]any{
-		"founder_id":         founder.ID,
-		"run_id":             map[string]any{"company_stream_id": companyAfterPlay.StreamID, "run_seq": 1},
-		"progress_delta_ppm": 0,
-		"xp_delta":           0,
-	})
-	if _, err := db.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,constants_hash,payload) VALUES($1,2,1,'guild_activity_evaluated',$2,$3)`,
-		companyAfterPlay.StreamID, companyAfterPlay.ConstantsHash, eventPayload); err != nil {
-		t.Fatal(err)
-	}
-	eventEnvelope := readEnvelope(t, player, "player:"+founder.ID)
-	if eventEnvelope.Revision != 2 || eventEnvelope.Kind != "event" {
-		t.Fatalf("player event envelope=%+v", eventEnvelope)
+	writeWS(t, player, map[string]any{"id": 3, "subscribe": map[string]any{"channel": "cohort:" + cohortID}})
+	if reply := readWSID(t, player, 3); reply.Error != nil || reply.Subscribe == nil {
+		t.Fatalf("Commons resolver did not authorize member: %+v", reply)
 	}
 
 	guildResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/guild/intents", tokens.AccessToken,
@@ -191,35 +198,109 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		GuildID string `json:"guild_id"`
 	}
 	decodeCompositionResponse(t, guildResponse, &guildReceipt)
-	writeWS(t, player, map[string]any{"id": 3, "subscribe": map[string]any{"channel": "guild:" + guildReceipt.GuildID}})
-	if reply := readWSID(t, player, 3); reply.Error != nil || reply.Subscribe == nil {
+	writeWS(t, player, map[string]any{"id": 4, "subscribe": map[string]any{"channel": "guild:" + guildReceipt.GuildID}})
+	if reply := readWSID(t, player, 4); reply.Error != nil || reply.Subscribe == nil {
 		t.Fatalf("guild resolver did not authorize member: %+v", reply)
 	}
-	writeWS(t, player, map[string]any{"id": 4, "subscribe": map[string]any{"channel": "match:018f0000-0000-7000-8000-000000000499"}})
-	if reply := readWSID(t, player, 4); reply.Error == nil || reply.Error.Code != 103 {
+	writeWS(t, player, map[string]any{"id": 5, "subscribe": map[string]any{"channel": "match:018f0000-0000-7000-8000-000000000499"}})
+	if reply := readWSID(t, player, 5); reply.Error == nil || reply.Error.Code != 103 {
 		t.Fatalf("unowned match resolver did not fail closed: %+v", reply)
+	}
+	secondCreatedResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/account", "", `{}`)
+	if secondCreatedResponse.StatusCode != http.StatusCreated {
+		t.Fatalf("second account status=%d body=%s", secondCreatedResponse.StatusCode, responseBody(secondCreatedResponse))
+	}
+	var secondCreated account.CreatedAccount
+	decodeCompositionResponse(t, secondCreatedResponse, &secondCreated)
+	secondSessionResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
+		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, secondCreated.AccountID, secondCreated.RecoveryCode))
+	if secondSessionResponse.StatusCode != http.StatusOK {
+		t.Fatalf("second session status=%d body=%s", secondSessionResponse.StatusCode, responseBody(secondSessionResponse))
+	}
+	var secondTokens account.TokenPair
+	decodeCompositionResponse(t, secondSessionResponse, &secondTokens)
+	secondGuildResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/guild/intents", secondTokens.AccessToken,
+		`{"intent_id":"018f0000-0000-7000-8000-000000000402","kind":"create_guild","expected_revision":1,"name":"Small Systems Two","join_policy":"open"}`)
+	if secondGuildResponse.StatusCode != http.StatusOK {
+		t.Fatalf("second guild status=%d body=%s", secondGuildResponse.StatusCode, responseBody(secondGuildResponse))
+	}
+	var secondGuildReceipt struct {
+		GuildID string `json:"guild_id"`
+	}
+	decodeCompositionResponse(t, secondGuildResponse, &secondGuildReceipt)
+	legacyCompany, err := composition.Accounts.ActiveCompanyState(ctx, secondCreated.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	currentBundle, ok := composition.Catalogs.bundle(composition.CurrentHash)
+	if !ok {
+		t.Fatal("current replay bundle unavailable")
+	}
+	factionBytes, err := os.ReadFile(filepath.Join(filepathRoot(t), "balance/factions/phase0.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	factionBytes = bytes.Replace(factionBytes, []byte(`"stock_cap": 100000`), []byte(`"stock_cap": 100001`), 1)
+	commonsCatalog, ok := composition.Catalogs.ResolveCommons(composition.CurrentHash)
+	if !ok {
+		t.Fatal("Commons tithe band unavailable")
+	}
+	historicalFaction, err := faction.LoadCatalog(factionBytes, faction.CompactTitheBand{
+		MinimumPPM: commonsCatalog.MinimumTithePPM, DefaultPPM: commonsCatalog.DefaultTithePPM, MaximumPPM: commonsCatalog.MaximumTithePPM,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	historicalBundle := currentBundle
+	historicalBundle.Artifacts = make(map[string][]byte, len(currentBundle.Artifacts))
+	for name, artifact := range currentBundle.Artifacts {
+		historicalBundle.Artifacts[name] = append([]byte(nil), artifact...)
+	}
+	historicalBundle.Artifacts["factions"] = append([]byte(nil), factionBytes...)
+	historicalHash, err := save.ConstantsHashArtifacts(historicalBundle.Artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	historicalBundle.ConstantsHash = historicalHash
+	historicalBundle.Faction = historicalFaction
+	composition.Catalogs.replay[historicalHash] = historicalBundle
+	if _, err := db.ExecContext(ctx, `UPDATE save_revisions SET version=1,state='{"balances":{"company.cash":"0"}}'::jsonb,constants_hash=$3 WHERE stream_id=$1 AND revision=$2`,
+		legacyCompany.StreamID, legacyCompany.Revision, historicalHash); err != nil {
+		t.Fatal(err)
+	}
+	if _, stockCap, err := composition.Clearing.members(ctx, secondGuildReceipt.GuildID); err != nil || stockCap != historicalFaction.StockCap {
+		t.Fatalf("historical v1 clearing cap=%d want=%d err=%v", stockCap, historicalFaction.StockCap, err)
 	}
 
 	before, err := composition.Guilds.PendingSettlements(ctx, founder.ID, "", 0)
 	if err != nil || before.GuildID != guildReceipt.GuildID || before.BaseSeq != 0 || len(before.Settlements) != 0 {
 		t.Fatalf("pre-clearing batch=%+v err=%v", before, err)
 	}
-	if count, err := composition.Clearing.Tick(ctx); err != nil || count != 1 {
-		t.Fatalf("clearing count=%d err=%v", count, err)
+	composition.Clearing.limit = 1
+	if count, err := composition.Clearing.Tick(ctx); err != nil || count != 2 {
+		t.Fatalf("clearing count=%d with paginated v1 member err=%v", count, err)
 	}
 	after, err := composition.Guilds.PendingSettlements(ctx, founder.ID, "", 0)
 	if err != nil || after.GuildID != guildReceipt.GuildID || len(after.Settlements) != 1 || after.Settlements[0].BoundarySeq != 1 {
 		t.Fatalf("post-clearing batch=%+v err=%v", after, err)
 	}
-	secondIntent := `{"intent_id":"01985555-1112-7111-8111-111111111112","kind":"perform_manual_batch","expected_revision":2,"action_id":"manual.click","count":1,"window_ms":1}`
+	clock.Set(clock.Time().Add(time.Second))
+	secondIntent := `{"intent_id":"01985555-1113-7111-8111-111111111113","kind":"perform_manual_batch","expected_revision":3,"action_id":"manual.click","count":1,"window_ms":1}`
 	secondResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, secondIntent)
 	if secondResponse.StatusCode != http.StatusOK {
 		t.Fatalf("post-clearing intent status=%d body=%s", secondResponse.StatusCode, responseBody(secondResponse))
 	}
 	_ = responseBody(secondResponse)
-	secondEnvelope := readEnvelope(t, player, "player:"+founder.ID)
-	if secondEnvelope.Revision != 3 || secondEnvelope.Kind != "receipt" {
-		t.Fatalf("post-clearing player envelope=%+v", secondEnvelope)
+	postClearingKinds := map[string]bool{}
+	for !postClearingKinds["receipt"] {
+		envelope := readEnvelope(t, player, "player:"+founder.ID)
+		if envelope.Revision != 4 {
+			t.Fatalf("post-clearing player revision=%d", envelope.Revision)
+		}
+		postClearingKinds[envelope.Kind] = true
+	}
+	if !postClearingKinds["event"] {
+		t.Fatalf("first Compact accrual event missing: %v", postClearingKinds)
 	}
 	state, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
 	if err != nil {
@@ -235,7 +316,7 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 
 	clock.Set(clock.Time().Add(31 * 24 * time.Hour))
 	collected, err := composition.Accounts.PruneExpiredSessions(ctx, clock.Time(), 1_000)
-	if err != nil || collected.RefreshTokens != 1 || collected.AccessTokens != 1 || collected.Families != 1 {
+	if err != nil || collected.RefreshTokens != 2 || collected.AccessTokens != 2 || collected.Families != 2 {
 		t.Fatalf("session GC=%+v err=%v", collected, err)
 	}
 
@@ -247,6 +328,83 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		t.Fatal(err)
 	}
 	waitHTTPStatus(t, httpServer.Client(), httpServer.URL+"/readyz", http.StatusServiceUnavailable)
+}
+
+func TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = db.Close() })
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	const cleanDatabase = `TRUNCATE accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE`
+	if _, err := db.ExecContext(ctx, cleanDatabase); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if _, err := db.ExecContext(context.Background(), cleanDatabase); err != nil {
+			t.Errorf("clean startup-prime database: %v", err)
+		}
+	})
+
+	now := time.Date(2026, 8, 2, 13, 0, 0, 0, time.UTC)
+	clock := &mutableClock{now: now}
+	composition, err := Compose(ctx, CompositionConfig{
+		DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000303",
+		ActivityBracket: "activity.standard", Clock: clock.Time,
+		SigningKeys: account.SigningKeys{CurrentID: "composition-prime", Current: bytes.Repeat([]byte{0x63}, 32)},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	httpServer := httptest.NewServer(composition.Server.Handler())
+	defer httpServer.Close()
+	createdResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/account", "", `{}`)
+	var created account.CreatedAccount
+	decodeCompositionResponse(t, createdResponse, &created)
+	sessionResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
+		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
+	var tokens account.TokenPair
+	decodeCompositionResponse(t, sessionResponse, &tokens)
+	guildResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/guild/intents", tokens.AccessToken,
+		`{"intent_id":"018f0000-0000-7000-8000-000000000403","kind":"create_guild","expected_revision":1,"name":"Prime Systems","join_policy":"open"}`)
+	if guildResponse.StatusCode != http.StatusOK {
+		t.Fatalf("guild status=%d body=%s", guildResponse.StatusCode, responseBody(guildResponse))
+	}
+	_ = responseBody(guildResponse)
+	var beforeClearings int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM guild_clearing_results`).Scan(&beforeClearings); err != nil || beforeClearings != 0 {
+		t.Fatalf("clearings before start=%d err=%v", beforeClearings, err)
+	}
+
+	clock.Set(now.Add(31 * 24 * time.Hour))
+	serverContext, cancelServer := context.WithCancel(ctx)
+	defer cancelServer()
+	if err := composition.Server.Start(serverContext); err != nil {
+		t.Fatal(err)
+	}
+	var clearings, sessions, accessTokens, families int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM guild_clearing_results`).Scan(&clearings); err != nil || clearings != 1 {
+		t.Fatalf("attached clearing prime count=%d err=%v", clearings, err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM sessions),(SELECT count(*) FROM access_tokens),(SELECT count(*) FROM session_families)`).Scan(&sessions, &accessTokens, &families); err != nil {
+		t.Fatal(err)
+	}
+	if sessions != 0 || accessTokens != 0 || families != 0 {
+		t.Fatalf("attached session GC left sessions=%d access=%d families=%d", sessions, accessTokens, families)
+	}
+	drainContext, cancelDrain := context.WithTimeout(context.Background(), time.Second)
+	defer cancelDrain()
+	if err := composition.Server.Drain(drainContext, clock.Time()); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
@@ -287,10 +445,31 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	if err := composition.Server.Start(serverContext); err != nil {
 		t.Fatal(err)
 	}
+	httpServer := httptest.NewServer(composition.Server.Handler())
+	defer httpServer.Close()
+	createdResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/account", "", `{}`)
+	if createdResponse.StatusCode != http.StatusCreated {
+		t.Fatalf("account create status=%d body=%s", createdResponse.StatusCode, responseBody(createdResponse))
+	}
+	var created account.CreatedAccount
+	decodeCompositionResponse(t, createdResponse, &created)
+	sessionResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
+		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
+	if sessionResponse.StatusCode != http.StatusOK {
+		t.Fatalf("session status=%d body=%s", sessionResponse.StatusCode, responseBody(sessionResponse))
+	}
+	var tokens account.TokenPair
+	decodeCompositionResponse(t, sessionResponse, &tokens)
 
-	accountID := "018f0000-0000-4000-8000-000000000501"
 	founderID := "018f0000-0000-4000-8000-000000000502"
-	if _, err := db.ExecContext(ctx, `INSERT INTO accounts(account_id,recovery_hash,created_at) VALUES($1,'composition fixture',$2)`, accountID, now); err != nil {
+	initialFounder, err := composition.Accounts.ActiveFounder(ctx, created.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE account_founders SET archived_at=$2 WHERE account_id=$1 AND archived_at IS NULL`, created.AccountID, now); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE save_streams SET archived_at=$2 WHERE owner_kind='founder' AND owner_id=$1 AND archived_at IS NULL`, initialFounder.ID, now); err != nil {
 		t.Fatal(err)
 	}
 	catalog, ok := composition.Catalogs.Resolve(composition.CurrentHash)
@@ -312,21 +491,25 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id,created_at) VALUES($1,$2,$3)`, accountID, founderID, now); err != nil {
+	if _, err := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id,created_at) VALUES($1,$2,$3)`, created.AccountID, founderID, now); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, founderID, 1, companyRevision.ConstantsHash); err != nil {
 		t.Fatal(err)
 	}
 
-	manual := []byte(`{"intent_id":"01985555-5001-7000-8000-000000000501","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`)
-	if result, err := composition.Production.Handle(ctx, companyRevision.StreamID, production.ModeOnline, now, manual); err != nil || result.Replay {
-		t.Fatalf("manual result=%+v err=%v", result, err)
+	manual := `{"intent_id":"01985555-5001-7000-8000-000000000501","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`
+	manualResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, manual)
+	if manualResponse.StatusCode != http.StatusOK {
+		t.Fatalf("manual status=%d body=%s", manualResponse.StatusCode, responseBody(manualResponse))
 	}
-	exit := []byte(`{"intent_id":"01985555-5002-7000-8000-000000000502","kind":"wind_down","expected_revision":2,"expected_founder_revision":1}`)
-	if result, err := composition.Production.Handle(ctx, companyRevision.StreamID, production.ModeOnline, now.Add(time.Second), exit); err != nil || result.Replay {
-		t.Fatalf("exit result=%+v err=%v", result, err)
+	_ = responseBody(manualResponse)
+	exit := `{"intent_id":"01985555-5002-7000-8000-000000000502","kind":"wind_down","expected_revision":2,"expected_founder_revision":1}`
+	exitResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, exit)
+	if exitResponse.StatusCode != http.StatusOK {
+		t.Fatalf("exit status=%d body=%s", exitResponse.StatusCode, responseBody(exitResponse))
 	}
+	_ = responseBody(exitResponse)
 
 	deadline := time.Now().Add(3 * time.Second)
 	for time.Now().Before(deadline) {

@@ -13,7 +13,10 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var ErrInvalidServer = errors.New("invalid gameserver")
+var (
+	ErrInvalidServer        = errors.New("invalid gameserver")
+	ErrBackgroundJobStopped = errors.New("gameserver background job stopped unexpectedly")
+)
 
 type Database interface {
 	PingContext(context.Context) error
@@ -37,6 +40,7 @@ type EpochSynchronizer interface {
 }
 
 type BackgroundJob interface {
+	Prime(context.Context) error
 	Run(context.Context) error
 }
 
@@ -57,6 +61,8 @@ type Server struct {
 	jobs          []BackgroundJob
 	jobsCancel    context.CancelFunc
 	jobsDone      chan struct{}
+	failures      chan error
+	failureOnce   sync.Once
 	startOnce     sync.Once
 	startErr      error
 }
@@ -65,7 +71,7 @@ func New(database Database, api http.Handler, realtime Realtime, relay PlayerRel
 	if database == nil || api == nil || realtime == nil || relay == nil || epochs == nil || !validConstantsHash(constantsHash) {
 		return nil, ErrInvalidServer
 	}
-	return &Server{database: database, api: api, realtime: realtime, relay: relay, epochs: epochs, constantsHash: constantsHash, gate: newIntentGate(), relayDone: make(chan struct{}), jobsDone: make(chan struct{})}, nil
+	return &Server{database: database, api: api, realtime: realtime, relay: relay, epochs: epochs, constantsHash: constantsHash, gate: newIntentGate(), relayDone: make(chan struct{}), jobsDone: make(chan struct{}), failures: make(chan error, 1)}, nil
 }
 
 func (server *Server) AttachJobs(jobs ...BackgroundJob) error {
@@ -107,14 +113,31 @@ func (server *Server) Start(ctx context.Context) error {
 			close(server.jobsDone)
 			return
 		}
+		if err := server.startJobs(ctx); err != nil {
+			server.startErr = errors.Join(err, server.realtime.Shutdown(ctx))
+			server.ready.Store(false)
+			close(server.relayDone)
+			return
+		}
+		if _, err := server.relay.Flush(ctx); err != nil {
+			server.startErr = errors.Join(err, server.stopJobs(ctx), server.realtime.Shutdown(ctx))
+			server.ready.Store(false)
+			close(server.relayDone)
+			return
+		}
 		var relayContext context.Context
 		relayContext, server.relayCancel = context.WithCancel(ctx)
-		server.startJobs(ctx)
 		server.markReadyIfRunning()
 		go server.runRelay(relayContext)
+		go func() {
+			<-ctx.Done()
+			server.ready.Store(false)
+		}()
 	})
 	return server.startErr
 }
+
+func (server *Server) Failures() <-chan error { return server.failures }
 
 func (server *Server) Handler() http.Handler {
 	router := chi.NewRouter()
@@ -135,9 +158,9 @@ func (server *Server) Drain(ctx context.Context, now time.Time) error {
 	server.stateMu.Unlock()
 	drainContext, cancel := context.WithTimeout(ctx, server.realtime.DrainTimeout())
 	defer cancel()
-	jobsErr := server.stopJobs(drainContext)
 	if err := server.realtime.BroadcastDrain(server.constantsHash, now.UTC()); err != nil {
 		server.gate.beginDrain()
+		jobsErr := server.stopJobs(drainContext)
 		server.stopRelay()
 		server.realtime.CloseForDrain()
 		return errors.Join(jobsErr, err, server.realtime.Shutdown(drainContext))
@@ -146,10 +169,12 @@ func (server *Server) Drain(ctx context.Context, now time.Time) error {
 	select {
 	case <-zero:
 	case <-drainContext.Done():
+		jobsErr := server.stopJobs(drainContext)
 		server.stopRelay()
 		server.realtime.CloseForDrain()
 		return errors.Join(jobsErr, drainContext.Err(), server.realtime.Shutdown(drainContext))
 	}
+	jobsErr := server.stopJobs(drainContext)
 	for {
 		count, err := server.relay.Flush(drainContext)
 		if err != nil {
@@ -174,19 +199,32 @@ func (server *Server) Drain(ctx context.Context, now time.Time) error {
 	return errors.Join(jobsErr, server.realtime.Shutdown(drainContext))
 }
 
-func (server *Server) startJobs(parent context.Context) {
+func (server *Server) startJobs(parent context.Context) error {
 	ctx, cancel := context.WithCancel(parent)
 	server.jobsCancel = cancel
 	server.jobsHealthy.Store(true)
+	for _, job := range server.jobs {
+		if err := job.Prime(ctx); err != nil {
+			server.jobsHealthy.Store(false)
+			cancel()
+			close(server.jobsDone)
+			return err
+		}
+	}
 	var wait sync.WaitGroup
 	wait.Add(len(server.jobs))
 	for _, job := range server.jobs {
 		go func(job BackgroundJob) {
 			defer wait.Done()
-			if err := job.Run(ctx); err != nil && ctx.Err() == nil {
+			err := job.Run(ctx)
+			if ctx.Err() == nil {
+				if err == nil {
+					err = ErrBackgroundJobStopped
+				}
 				server.jobsHealthy.Store(false)
 				server.ready.Store(false)
 				cancel()
+				server.reportFailure(err)
 			}
 		}(job)
 	}
@@ -194,6 +232,14 @@ func (server *Server) startJobs(parent context.Context) {
 		wait.Wait()
 		close(server.jobsDone)
 	}()
+	return nil
+}
+
+func (server *Server) reportFailure(err error) {
+	if err == nil {
+		return
+	}
+	server.failureOnce.Do(func() { server.failures <- err })
 }
 
 func (server *Server) stopJobs(ctx context.Context) error {
@@ -220,9 +266,15 @@ func (server *Server) runRelay(ctx context.Context) {
 	ticker := time.NewTicker(25 * time.Millisecond)
 	defer ticker.Stop()
 	for {
+		select {
+		case <-ctx.Done():
+			server.ready.Store(false)
+			return
+		default:
+		}
 		if _, err := server.relay.Flush(ctx); err != nil && ctx.Err() == nil {
 			server.ready.Store(false)
-		} else if err == nil {
+		} else if err == nil && ctx.Err() == nil {
 			server.markReadyIfRunning()
 		}
 		select {

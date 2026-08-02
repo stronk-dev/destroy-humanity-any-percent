@@ -100,11 +100,27 @@ func (repository *Repository) PruneExpiredSessions(ctx context.Context, before t
 		return result.RowsAffected()
 	}
 	var result SessionGCResult
-	result.RefreshTokens, err = remove(`DELETE FROM sessions WHERE token_hash IN (SELECT token_hash FROM sessions WHERE expires_at<=$1 ORDER BY expires_at,token_hash LIMIT $2 FOR UPDATE SKIP LOCKED)`)
+	result.RefreshTokens, err = remove(`WITH locked_families AS MATERIALIZED (
+		SELECT candidate.family_id FROM session_families candidate
+		WHERE EXISTS(SELECT 1 FROM sessions token WHERE token.family_id=candidate.family_id AND token.expires_at<=$1)
+		ORDER BY candidate.family_id LIMIT $2 FOR UPDATE OF candidate SKIP LOCKED
+	), expired AS MATERIALIZED (
+		SELECT token.token_hash FROM sessions token JOIN locked_families family USING(family_id)
+		WHERE token.expires_at<=$1 ORDER BY token.expires_at,token.token_hash LIMIT $2 FOR UPDATE OF token SKIP LOCKED
+	)
+	DELETE FROM sessions token WHERE token.token_hash IN (SELECT token_hash FROM expired)`)
 	if err != nil {
 		return SessionGCResult{}, err
 	}
-	result.AccessTokens, err = remove(`DELETE FROM access_tokens WHERE jti IN (SELECT jti FROM access_tokens WHERE expires_at<=$1 ORDER BY expires_at,jti LIMIT $2 FOR UPDATE SKIP LOCKED)`)
+	result.AccessTokens, err = remove(`WITH locked_families AS MATERIALIZED (
+		SELECT candidate.family_id FROM session_families candidate
+		WHERE EXISTS(SELECT 1 FROM access_tokens token WHERE token.family_id=candidate.family_id AND token.expires_at<=$1)
+		ORDER BY candidate.family_id LIMIT $2 FOR UPDATE OF candidate SKIP LOCKED
+	), expired AS MATERIALIZED (
+		SELECT token.jti FROM access_tokens token JOIN locked_families family USING(family_id)
+		WHERE token.expires_at<=$1 ORDER BY token.expires_at,token.jti LIMIT $2 FOR UPDATE OF token SKIP LOCKED
+	)
+	DELETE FROM access_tokens token WHERE token.jti IN (SELECT jti FROM expired)`)
 	if err != nil {
 		return SessionGCResult{}, err
 	}
