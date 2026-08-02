@@ -53,6 +53,7 @@ type Server struct {
 	constantsHash string
 	gate          *intentGate
 	stateMu       sync.Mutex
+	running       bool
 	ready         atomic.Bool
 	draining      atomic.Bool
 	jobsHealthy   atomic.Bool
@@ -127,12 +128,18 @@ func (server *Server) Start(ctx context.Context) error {
 		}
 		var relayContext context.Context
 		relayContext, server.relayCancel = context.WithCancel(ctx)
-		server.markReadyIfRunning()
-		go server.runRelay(relayContext)
 		go func() {
 			<-ctx.Done()
+			server.stateMu.Lock()
+			server.running = false
 			server.ready.Store(false)
+			server.stateMu.Unlock()
 		}()
+		server.stateMu.Lock()
+		server.running = ctx.Err() == nil
+		server.stateMu.Unlock()
+		server.markReadyIfRunning()
+		go server.runRelay(relayContext)
 	})
 	return server.startErr
 }
@@ -153,6 +160,7 @@ func (server *Server) Drain(ctx context.Context, now time.Time) error {
 		return ErrInvalidServer
 	}
 	server.stateMu.Lock()
+	server.running = false
 	server.draining.Store(true)
 	server.ready.Store(false)
 	server.stateMu.Unlock()
@@ -221,8 +229,10 @@ func (server *Server) startJobs(parent context.Context) error {
 				if err == nil {
 					err = ErrBackgroundJobStopped
 				}
+				server.stateMu.Lock()
 				server.jobsHealthy.Store(false)
 				server.ready.Store(false)
+				server.stateMu.Unlock()
 				cancel()
 				server.reportFailure(err)
 			}
@@ -288,7 +298,7 @@ func (server *Server) runRelay(ctx context.Context) {
 func (server *Server) markReadyIfRunning() {
 	server.stateMu.Lock()
 	defer server.stateMu.Unlock()
-	if server.jobsHealthy.Load() && !server.draining.Load() && !server.gate.isDraining() {
+	if server.running && server.jobsHealthy.Load() && !server.draining.Load() && !server.gate.isDraining() {
 		server.ready.Store(true)
 	}
 }

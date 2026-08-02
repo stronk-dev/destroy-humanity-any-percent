@@ -66,6 +66,9 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 	defer tx.Rollback()
 	var revision int64
 	if err := tx.QueryRowContext(ctx, `SELECT revision FROM guilds WHERE guild_id=$1 AND disbanded_at IS NULL FOR UPDATE`, guildID).Scan(&revision); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrClearingSnapshotChanged
+		}
 		return err
 	}
 	var committedHash string

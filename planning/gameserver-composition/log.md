@@ -91,3 +91,23 @@ member with a distinct pinned Faction cap, and the first real Compact settlement
 fixture proves the attached clearing and session-GC jobs run through the startup barrier, while
 unit tests cover scheduled callbacks and command stop selection. The Guild retry semantic is a
 kernel-affecting change and is recorded by version `0.3.4`.
+
+## 2026-08-02 — designated remediation re-review, first pass
+
+Review by: Darwin (independent reviewer). Recorded by: Codex.
+
+Exact reviewed range in progress: `e01e3ec..fed44f1`. Two remaining blockers were demonstrated.
+A 500-run stress test made `/readyz` return 204 after a fatal worker exit because the failure path
+and `markReadyIfRunning` did not serialize their health transition. The disband retry handled an
+empty member read, but not a Guild disappearing after that read and before the commit-side lock.
+
+## 2026-08-02 — remediation re-review blockers closed
+
+Review by: Codex implementer self-review. Recorded by: Codex.
+
+Worker failure, parent shutdown, drain, and readiness recovery now share the server state lock; the
+reviewer's exact 500-run stress command is green. A Guild that disbands between snapshot and
+commit returns the same typed membership-change sentinel and is deferred without killing sibling
+workers, with a real-Postgres regression staged after a valid member snapshot. Because this changes
+the guarded Guild boundary semantic, kernel version `0.3.5` records it. Awaiting the designated
+reviewer's final verdict over the extended remediation range.

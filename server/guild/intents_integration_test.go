@@ -283,6 +283,13 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	if err := db.QueryRowContext(ctx, `SELECT account_id,account_ref FROM guild_presence_outbox WHERE guild_id=$1 AND kind='left' ORDER BY outbox_id DESC LIMIT 1`, deletionGuilds[2]).Scan(&presenceAccountID, &presenceRef); err != nil || presenceAccountID != nil || presenceRef != deletionAccount {
 		t.Fatalf("deletion presence account=%v ref=%q err=%v", presenceAccountID, presenceRef, err)
 	}
+
+	if _, err := db.ExecContext(ctx, `UPDATE guilds SET disbanded_at=$2 WHERE guild_id=$1`, guildID, now.Add(20*time.Minute)); err != nil {
+		t.Fatal(err)
+	}
+	if err := service.CommitClearingBoundary(ctx, guildID, 2, now.Add(21*time.Minute), []MemberStock{{AccountID: joinedAccount}}, 100); !errors.Is(err, ErrClearingSnapshotChanged) {
+		t.Fatalf("disbanded-after-snapshot clearing error=%v", err)
+	}
 }
 
 func TestGuildActivityEvaluationDenominatorIntegration(t *testing.T) {
