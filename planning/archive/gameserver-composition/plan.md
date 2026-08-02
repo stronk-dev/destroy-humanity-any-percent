@@ -15,6 +15,6 @@
 6. [x] Prove the composed binary against real Postgres, including the F4 settlement seam, world
    snapshots, real socket relay, worker ticks, and session GC.
 7. [x] Update canonical docs and pass the repository verification gates.
-8. [ ] Record implementer self-review and obtain a designated independent review before archival.
+8. [x] Record implementer self-review and obtain a designated independent review before archival.
 
 Checkboxes flip only in the same commit as their proof, per `AGENTS.md`.

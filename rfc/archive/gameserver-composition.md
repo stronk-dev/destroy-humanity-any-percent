@@ -1,11 +1,11 @@
 # RFC: Gameserver Composition — the two missing owner contracts
 
-- **Status:** implementing
+- **Status:** implemented
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-02
 - **Design refs:** `docs/commons.md` (Health weights, sampling), `docs/transport.md`, transport RFC T6 (composition + deny-closed resolver ruling), L5c (epoch seed sync before readiness)
 - **Depends on:** everything implemented — this RFC exists to close the last two contracts blocking `cmd/gameserver`
-- **Planning:** `planning/gameserver-composition/`
+- **Planning:** `planning/archive/gameserver-composition/`
 
 ## Summary
 
@@ -116,3 +116,6 @@ rule.
 - 2026-08-02: GC3a added after independent review demonstrated account-scoped clearing results
   could be reapplied after Exit/New Founder and repeated boundaries could over-reserve offline
   stock. Result identity, outstanding reservations, and lifecycle baselines are now normative.
+- 2026-08-02: implemented and archived after designated independent review approved the exact
+  remediation range through `be0449d`; canonical behavior lives in `docs/gameserver.md` and
+  `docs/guilds.md`.

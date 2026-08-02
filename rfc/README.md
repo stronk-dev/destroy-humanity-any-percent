@@ -18,7 +18,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
-| [Gameserver Composition](gameserver-composition.md) | implementing | Account / Transport / Leaderboards / Commons / Guilds |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 
@@ -28,6 +27,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 
 | RFC | Status | Canonical docs |
 |---|---|---|
+| [Gameserver Composition](archive/gameserver-composition.md) | implemented | [Gameserver composition](../docs/gameserver.md), [Guilds](../docs/guilds.md) |
 | [Run Genesis & Replay](archive/run-genesis-and-replay.md) | implemented | [Leaderboards & epochs](../docs/leaderboards-and-epochs.md) |
 | [RFC-0001: The Numeric Core](archive/0001-numeric-core.md) | implemented | [Numeric core](../docs/numeric-core.md) |
 | [Numeric Core Boundary Hardening](archive/numeric-core-boundary-hardening.md) | implemented | [Numeric core](../docs/numeric-core.md) |
@@ -63,7 +63,8 @@ Remaining Phase-0 contracts (not yet drafted): T0–T1 playable content
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics
 (Leaderboards owns board binding) · doctrine intents (must define doctrine-pick ordering before
 same-boundary doctrine routes can ship). Later named work: Compute Credit spend · deployment and
-draining.
+draining · an outcome-sensitive near-cap Guild reserved-credit regression before either a nonzero
+stock-consumption modifier or multi-worker clearing topology ships.
 
 ### Deferred decisions register
 

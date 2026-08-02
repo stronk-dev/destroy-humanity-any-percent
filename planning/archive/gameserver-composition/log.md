@@ -137,3 +137,27 @@ forward no-effects baseline and cannot claim prior-identity rows. The Go/TypeScr
 shared sequential fixture, direct unit tests, and composed real-Postgres fixture cover the lifecycle
 rules. Kernel `0.3.6` records the changed deterministic transition. Awaiting designated review of
 the remediation commit range.
+
+## 2026-08-02 — designated settlement remediation review and archival
+
+Review by: Darwin (independent reviewer). Recorded by: Codex.
+
+Exact reviewed range: `450badc..be0449d` (with the cumulative GC3 seam checked through
+`e01e3ec..be0449d`). Verdict: approved; no archival blocker. Exact Founder/Company/run ownership
+closes cross-lifecycle application, and the authoritative member snapshot subtracts every
+committed-but-unapplied debit and adds every committed-but-unapplied credit for that identity.
+The composed Postgres fixture proves three serial boundaries cannot reserve more than the
+producer owns, Exit carries the watermark in both kernels, and New Founder advances through a
+no-effects baseline without claiming old rows. Migration 00044, kernel 0.3.6, formula artifact,
+and replay corpus are current.
+
+The reviewer ran focused Go packages under the race detector, the real-Postgres integration
+suite, client typecheck/build with 6,494 executed tests, replay/kernel/formula guards, and
+`git diff --check`; all passed. Codex's complete post-commit `make verify` additionally passed
+19,491 browser tests and the deterministic harness. One non-blocking debt remains: add an
+outcome-sensitive near-cap reserved-credit fixture before enabling a nonzero stock-consumption
+modifier or a broader clearing-worker topology. The current Phase-0 modifier is zero and the
+single composed scheduler is serial.
+
+Gameserver Composition is implemented. The active RFC and planning record rotate to their
+archives; `docs/gameserver.md` and `docs/guilds.md` are canonical.
