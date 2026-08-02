@@ -8,6 +8,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | RFC | Status | Parent |
 |---|---|---|
 | [RFC-0000: The RFC Process](0000-rfc-process.md) | accepted | — |
+| [Balance Harness Dispatch Integrity](balance-harness-dispatch-integrity.md) | draft | Balance Harness Foundation |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | blocked-on-owner (faction+guild drafts now exist — unblocks when they accept) | Commons Compact |
@@ -59,7 +60,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Faction & Incorporation](archive/faction-incorporation.md) | implemented | [Factions](../docs/factions.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Guild Model](archive/guild-model.md) | implemented | [Guilds](../docs/guilds.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 
-Remaining Phase-0 contracts (not yet drafted): T0–T1 playable content
+Remaining Phase-0 contracts (not yet drafted): Layer-1 events engine · doctrine intents · Compute Credit spend · game-UI screens · deployment
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics
 (Leaderboards owns board binding) · doctrine intents (must define doctrine-pick ordering before
 same-boundary doctrine routes can ship). Later named work: Compute Credit spend · deployment and
