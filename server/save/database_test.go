@@ -6,7 +6,10 @@ import (
 	"database/sql"
 	"os"
 	"testing"
+	"testing/fstest"
 	"time"
+
+	"github.com/pressly/goose/v3"
 )
 
 func TestPlayerOutboxIdentityMigrationDownRemainsStreamScoped(t *testing.T) {
@@ -54,17 +57,13 @@ func TestCommonsSampleRunBackfillDropsPredatingSampleIdentityIntegration(t *test
 		t.Fatal(err)
 	}
 	defer db.Close()
-	tx, err := db.BeginTx(ctx, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer tx.Rollback()
-	if _, err := tx.ExecContext(ctx, `CREATE TEMP TABLE company_compact_memberships(
+	db.SetMaxOpenConns(1)
+	if _, err := db.ExecContext(ctx, `CREATE TEMP TABLE company_compact_memberships(
 			company_stream_id uuid PRIMARY KEY, run_seq bigint NOT NULL, updated_at timestamptz NOT NULL
 		)`); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := tx.ExecContext(ctx, `CREATE TEMP TABLE commons_member_samples(
+	if _, err := db.ExecContext(ctx, `CREATE TEMP TABLE commons_member_samples(
 			company_stream_id uuid PRIMARY KEY, run_seq bigint NOT NULL CHECK(run_seq>0), updated_at timestamptz NOT NULL
 		)`); err != nil {
 		t.Fatal(err)
@@ -72,11 +71,11 @@ func TestCommonsSampleRunBackfillDropsPredatingSampleIdentityIntegration(t *test
 	membershipAt := time.Date(2026, 8, 2, 12, 0, 0, 0, time.UTC)
 	const staleStream = "018f0000-0000-7000-8000-000000000045"
 	const currentStream = "018f0000-0000-7000-8000-000000000046"
-	if _, err := tx.ExecContext(ctx, `INSERT INTO company_compact_memberships(company_stream_id,run_seq,updated_at) VALUES($1,2,$3),($2,2,$3)`,
+	if _, err := db.ExecContext(ctx, `INSERT INTO company_compact_memberships(company_stream_id,run_seq,updated_at) VALUES($1,2,$3),($2,2,$3)`,
 		staleStream, currentStream, membershipAt); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO commons_member_samples(company_stream_id,run_seq,updated_at) VALUES($1,2,$3::timestamptz-interval '1 second'),($2,2,$3::timestamptz+interval '1 second')`,
+	if _, err := db.ExecContext(ctx, `INSERT INTO commons_member_samples(company_stream_id,run_seq,updated_at) VALUES($1,2,$3::timestamptz-interval '1 second'),($2,2,$3::timestamptz+interval '1 second')`,
 		staleStream, currentStream, membershipAt); err != nil {
 		t.Fatal(err)
 	}
@@ -84,22 +83,76 @@ func TestCommonsSampleRunBackfillDropsPredatingSampleIdentityIntegration(t *test
 	if err != nil {
 		t.Fatal(err)
 	}
-	up := bytes.Split(migration, []byte("-- +goose Down"))[0]
-	if _, err := tx.ExecContext(ctx, string(up)); err != nil {
+	provider, err := goose.NewProvider(goose.DialectPostgres, db, fstest.MapFS{
+		"00001_commons_sample_run_backfill.sql": {Data: migration},
+	}, goose.WithDisableVersioning(true))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := provider.ApplyVersion(ctx, 1, true); err != nil {
 		t.Fatal(err)
 	}
 	var stale, current sql.NullInt64
-	if err := tx.QueryRowContext(ctx, `SELECT run_seq FROM commons_member_samples WHERE company_stream_id=$1`, staleStream).Scan(&stale); err != nil {
+	if err := db.QueryRowContext(ctx, `SELECT run_seq FROM commons_member_samples WHERE company_stream_id=$1`, staleStream).Scan(&stale); err != nil {
 		t.Fatal(err)
 	}
-	if err := tx.QueryRowContext(ctx, `SELECT run_seq FROM commons_member_samples WHERE company_stream_id=$1`, currentStream).Scan(&current); err != nil {
+	if err := db.QueryRowContext(ctx, `SELECT run_seq FROM commons_member_samples WHERE company_stream_id=$1`, currentStream).Scan(&current); err != nil {
 		t.Fatal(err)
 	}
 	if stale.Valid || !current.Valid || current.Int64 != 2 {
 		t.Fatalf("backfill stale=%v current=%v", stale, current)
 	}
-	down := bytes.Split(migration, []byte("-- +goose Down"))[1]
-	if _, err := tx.ExecContext(ctx, string(down)); err == nil {
-		t.Fatal("rollback relabeled an intentionally invalidated stale sample")
+	if _, err := provider.ApplyVersion(ctx, 1, false); err == nil {
+		t.Fatal("Goose rollback relabeled an intentionally invalidated stale sample")
+	}
+}
+
+func TestGuildClearingMembershipIdentityRollbackFailsClosedIntegration(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	db.SetMaxOpenConns(1)
+	if _, err := db.ExecContext(ctx, `CREATE TEMP TABLE guild_members(membership_id uuid PRIMARY KEY)`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `CREATE TEMP TABLE guild_clearing_results(
+		guild_id uuid NOT NULL,
+		boundary_seq bigint NOT NULL,
+		founder_id uuid,
+		company_stream_id uuid,
+		run_seq bigint
+	)`); err != nil {
+		t.Fatal(err)
+	}
+	migration, err := embeddedMigrations.ReadFile("migrations/00046_guild_clearing_membership_identity.sql")
+	if err != nil {
+		t.Fatal(err)
+	}
+	provider, err := goose.NewProvider(goose.DialectPostgres, db, fstest.MapFS{
+		"00001_guild_clearing_membership_identity.sql": {Data: migration},
+	}, goose.WithDisableVersioning(true))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := provider.ApplyVersion(ctx, 1, true); err != nil {
+		t.Fatal(err)
+	}
+	const membershipID = "018f0000-0000-4000-8000-000000000046"
+	if _, err := db.ExecContext(ctx, `INSERT INTO guild_members(membership_id) VALUES($1)`, membershipID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO guild_clearing_results(guild_id,boundary_seq,founder_id,company_stream_id,run_seq,membership_id)
+		VALUES('018f0000-0000-7000-8000-000000000046',1,'018f0000-0000-4000-8000-000000000047','018f0000-0000-4000-8000-000000000048',1,$1)`, membershipID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := provider.ApplyVersion(ctx, 1, false); err == nil {
+		t.Fatal("Goose rollback discarded attributed Guild membership identity")
 	}
 }

@@ -11,5 +11,14 @@ CREATE INDEX guild_clearing_results_membership_pending
 -- leave/rejoin from a boundary committed in the same millisecond.
 
 -- +goose Down
+-- +goose StatementBegin
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM guild_clearing_results WHERE membership_id IS NOT NULL) THEN
+        RAISE EXCEPTION 'cannot discard attributed Guild clearing membership identity';
+    END IF;
+END $$;
+-- +goose StatementEnd
+
 DROP INDEX guild_clearing_results_membership_pending;
 ALTER TABLE guild_clearing_results DROP COLUMN membership_id;

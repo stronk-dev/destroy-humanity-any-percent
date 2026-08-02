@@ -265,3 +265,13 @@ range.
 The focused Go packages, complete real-Postgres `Integration` target, formula regeneration/drift
 check, deterministic balance harness, 6,494 client tests, 19,491 browser tests, schema guards,
 typecheck, and build all passed through the standard root Make targets at kernel `0.3.8`.
+
+During designated re-review Darwin identified that direct SQL execution did not prove Goose could
+parse migration 00045's procedural Down guard, and that 00046's ordinary Down would discard known
+membership-period ownership after the first attributed boundary. Both Down paths now use explicit
+Goose statement boundaries and fail closed when rollback would destroy identity. Two isolated
+real-Postgres fixtures drive the actual Goose provider in both directions: Up must apply, and Down
+must refuse after the respective identity-bearing row exists.
+The same-millisecond Guild fixture also submits the abandoned M1 snapshot after M2 is active and
+asserts the commit-side `(account_id,membership_id)` lock comparison returns the retryable
+membership-churn sentinel; the validation is now both implemented and directly proven.

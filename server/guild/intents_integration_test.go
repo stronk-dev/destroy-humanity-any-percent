@@ -262,6 +262,14 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	if currentMembershipID == abandonedMembershipID {
 		t.Fatal("rejoin reused immutable membership identity")
 	}
+	staleMembershipSnapshot := []ClearingMember{
+		member(MemberStock{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10}, founderID, companyStreamID),
+		member(MemberStock{AccountID: joinedAccount, Produces: "carbon", Consumes: "libraries", AvailableUnits: 10}, joinedFounderID, joinedStreamID),
+	}
+	staleMembershipSnapshot[1].MembershipID = abandonedMembershipID
+	if err := service.CommitClearingBoundary(ctx, guildID, 2, sameMillisecond, staleMembershipSnapshot, 100); !errors.Is(err, ErrClearingSnapshotChanged) {
+		t.Fatalf("stale membership-period snapshot commit error=%v", err)
+	}
 	rejoinedPending, err := service.PendingSettlements(ctx, joinedFounderID, "", 0)
 	if err != nil || len(rejoinedPending.Settlements) != 0 || rejoinedPending.BaseSeq != 1 {
 		t.Fatalf("same-ms rejoin claimed abandoned settlement: %+v err=%v", rejoinedPending, err)

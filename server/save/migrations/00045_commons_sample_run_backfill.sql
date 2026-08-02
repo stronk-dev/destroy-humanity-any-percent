@@ -11,11 +11,13 @@ WHERE membership.company_stream_id=sample.company_stream_id
   AND sample.updated_at<membership.updated_at;
 
 -- +goose Down
+-- +goose StatementBegin
 DO $$
 BEGIN
     IF EXISTS (SELECT 1 FROM commons_member_samples WHERE run_seq IS NULL) THEN
         RAISE EXCEPTION 'cannot restore non-null Commons sample run labels after stale backfill invalidation';
     END IF;
 END $$;
+-- +goose StatementEnd
 
 ALTER TABLE commons_member_samples ALTER COLUMN run_seq SET NOT NULL;
