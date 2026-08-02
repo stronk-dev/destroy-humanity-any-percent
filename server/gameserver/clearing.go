@@ -125,6 +125,7 @@ func (driver *ClearingDriver) members(ctx context.Context, guildID string) ([]gu
 			WHERE result.guild_id=member.guild_id AND result.account_id=member.account_id
 			  AND result.founder_id=founder.founder_id AND result.company_stream_id=stream.id
 			  AND result.run_seq=COALESCE(NULLIF(revision.state->>'run_seq','')::bigint,1)
+			  AND result.committed_at>=member.joined_at
 			  AND result.boundary_seq>CASE
 				WHEN COALESCE(revision.state->>'guild_boundary_guild_id','')=member.guild_id::text
 				THEN COALESCE(NULLIF(revision.state->>'guild_boundary_seq','')::bigint,0)

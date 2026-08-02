@@ -161,3 +161,71 @@ single composed scheduler is serial.
 
 Gameserver Composition is implemented. The active RFC and planning record rotate to their
 archives; `docs/gameserver.md` and `docs/guilds.md` are canonical.
+
+## 2026-08-02 — designated independent review of the FULL span (547e6ac..70b5747)
+
+Review by: the project's designated Claude reviewer. Recorded by: same.
+
+**Verdict: substantively sound; the archive KEEPS — with one procedural correction recorded and
+four findings queued.** Independent verification: all 59 files diffed, every AC path traced,
+full real-Postgres suite re-run green, guards executed at HEAD. GC1's live=entry-formula holds
+BY CONSTRUCTION (the sampled event echoes the resolver); GC2 is byte-exact in both runtimes with
+the monotonic soak and zero-value honesty enforced; the F4 seam is REAL at last
+(WithGuildSettlements(guildService), no stub in non-test code, empty-vs-batch proven composed);
+all six drivers attached; deny-closed match resolver socket-proven; drain order per T6; kernel
+0.3.2→0.3.6 bumps all justified (0.3.5 the thinnest, over-bumping is the safe direction);
+migrations appended, never edited; every checkbox flip carries its test; the archival entry cites
+its verdict and range per the provenance rule.
+
+**The procedural correction (F1):** the cited review ranges union to 007f1f6..be0449d — the GC1
+(637b0d5) and GC2 (007f1f6) diffs fall OUTSIDE every recorded independent range and carried
+self-review only. This review found two latent defects in exactly that uncovered slice —
+coverage gaps find bugs, every time. The archival gate rule gains the corollary: **the cited
+ranges must UNION to the full span being archived.**
+
+Findings queued (none archival-blocking under the project severity bar):
+
+1. **MEDIUM — migration 00043's backfill can stamp a PRIOR run's sample as current-run
+   authoritative** (sample rows persist across Exit; backfill labels them with the current
+   membership's run_seq — a re-signed member's first accrual would use the stale weight).
+   Unpublished repo, no real databases — fix by follow-up migration (null out backfilled
+   run_seq where the sample predates the membership's signed_at) BEFORE any real history
+   migrates.
+2. **LOW→ruling — member-with-absent-projection is a SERVER inconsistency**: reclassify from
+   invalid_intent (400, client-fault) to ErrInvalidEngineState → internal_invariant, matching
+   docs/commons.md's existing claim; the crash-window liveness gap (client must retry the SAME
+   intent id to self-heal) gets one documented sentence.
+3. **LOW→ruling — world_rev is per-process-lifetime**: documented as such in docs/transport.md +
+   gameserver.md ("clients must not compare world rev across reconnects"); a persisted counter
+   is deliberately NOT required while history is latest-only and single-node.
+4. **LOW→ruling — same-guild rejoin strands unclaimable reservations**: ruled — the clearing
+   tick RELEASES reservations whose committed_at precedes the member's current joined_at
+   (deterministic, under-allocation-safe, bounded by Exit anyway); regression: leave/rejoin/tick
+   fixture asserting released stock.
+5. Recorded: the F8 mixed-cap DESIGN-GAP's whole-server blast radius (accepted fail-closed,
+   carried); F6 cross-statement sampling skew (acceptable under the schema's no-cross-field-
+   consistency promise); F7's composed-fixture accounting (honest in docs; cmd main() stays
+   unit-covered — acceptable, noted).
+
+## 2026-08-02 — full-span review findings implemented
+
+Review by: Codex implementer self-review. Recorded by: Codex.
+
+The four queued findings from the designated full-span review are fixed forward without changing
+the archived RFC. Migration 00045 makes `commons_member_samples.run_seq` nullable and clears only
+labels whose sample predates the current membership's `updated_at`; a transaction-isolated real
+Postgres test applies the migration body to stale and current samples and distinguishes both.
+The live and Exit Commons paths now share one required-weight resolver, and an absent projection
+for a save-declared member is `ErrInvalidEngineState`/`internal_invariant`, never client fault.
+Canonical Commons docs name the same-intent retry that replays the committed event after a
+projection crash window.
+
+Clearing reservations now require `committed_at >= current joined_at`. The composed integration
+fixture creates outstanding producer debits, leaves and rejoins the same Guild, proves the full
+stock is available, then commits the next clearing tick. World revision is documented in both
+transport and gameserver truth as monotonic only within one process lifetime. `AGENTS.md` now
+requires archival review ranges to union to the full implementation span. Kernel `0.3.7` records
+the server-owned replay-input/error semantic change.
+
+Focused Go packages and the complete real-Postgres integration suite passed. Awaiting the full
+repository gates and designated independent review of the exact follow-up commit range.

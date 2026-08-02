@@ -405,15 +405,9 @@ func (s *Service) Handle(
 				directContributions = contributions
 			}
 			if state.CompactMember {
-				if s.commonsWeights == nil {
-					return save.IntentDecision{}, nil, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
-				}
-				weight, ok, weightErr := s.commonsWeights.CompactWeightPPM(ctx, revision.StreamID, revision.OwnerID, revision.ConstantsHash)
+				weight, weightErr := s.resolveCommonsReplayWeight(ctx, revision.StreamID, revision.OwnerID, revision.ConstantsHash)
 				if weightErr != nil {
-					return save.IntentDecision{}, nil, fmt.Errorf("%w: commons participation resolver: %v", ErrInvalidEngineState, weightErr)
-				}
-				if !ok || weight < 0 || weight > 1_000_000 {
-					return save.IntentDecision{}, nil, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
+					return save.IntentDecision{}, nil, weightErr
 				}
 				build.CommonsWeightPPM = &weight
 			}
@@ -515,7 +509,7 @@ func (s *Service) resolveCommonsReplayWeight(ctx context.Context, streamID, foun
 		return 0, fmt.Errorf("%w: commons participation resolver: %v", ErrInvalidEngineState, err)
 	}
 	if !ok || weight < 0 || weight > 1_000_000 {
-		return 0, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidIntent)
+		return 0, fmt.Errorf("%w: commons replay input unavailable", ErrInvalidEngineState)
 	}
 	return weight, nil
 }

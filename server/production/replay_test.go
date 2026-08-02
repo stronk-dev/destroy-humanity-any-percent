@@ -34,6 +34,20 @@ func (resolver fixedGuildSettlements) PendingSettlements(context.Context, string
 	return resolver.batch, nil
 }
 
+type absentCommonsWeight struct{}
+
+func (absentCommonsWeight) CompactWeightPPM(context.Context, string, string, string) (int64, bool, error) {
+	return 0, false, nil
+}
+
+func TestAbsentProjectedCommonsMemberIsInternalInvariant(t *testing.T) {
+	service := &Service{commonsWeights: absentCommonsWeight{}}
+	_, err := service.resolveCommonsReplayWeight(context.Background(), "stream", "founder", "hash")
+	if !errors.Is(err, ErrInvalidEngineState) || errors.Is(err, ErrInvalidIntent) {
+		t.Fatalf("absent projection error=%v", err)
+	}
+}
+
 type settlementObservingContributions struct{ called bool }
 
 func (provider *settlementObservingContributions) Contributions(_ context.Context, state *save.State, _ *economy.Catalog, _ save.Revision) ([]multiplier.Contribution, error) {

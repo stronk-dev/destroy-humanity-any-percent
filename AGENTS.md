@@ -72,7 +72,8 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
   agent that actually inspected the diff) and `Recorded by:` (when someone else transcribed or
   summarized it). A recorder may not relabel a delegated or self-review as the project's
   designated independent review. An archival gate cites the exact verdict entry and reviewed
-  commit range it consumed.
+  commit range it consumed. Those cited ranges must union to the full implementation span being
+  archived; uncovered edge commits remain unreviewed even when later dependent commits passed.
 
 - **Language/tooling:** Go code passes `gofmt` + `go vet`; TS is strict-mode; tests accompany every non-trivial change. The golden-vector suite and (once it exists) the balance-harness pacing targets are acceptance gates.
 - **Small, reviewable changes.** One system per PR/commit. Reference the design doc section your change implements in the commit message (e.g. `economy: implement generator cost curve (design/02 §2.1)`).

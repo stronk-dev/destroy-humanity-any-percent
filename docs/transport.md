@@ -113,6 +113,9 @@ authenticated in-memory WebSocket connections on one node at 10 Hz. Every subscr
 a strictly increasing subsequence ending at the final world revision; skipped intermediate gauges
 are valid under drop-stale, while any wrong channel/kind, duplicate/regressing revision, missing
 final state, or click-shaped publication fails the soak.
+`world_rev` is a process-lifetime ordering key, not persisted world history. It may restart when the
+gameserver restarts, so reconnecting clients treat the recovered latest snapshot as a new baseline
+and never compare its revision with the prior connection.
 Drain courtesy messages deliberately bypass recoverable history because their revision is zero.
 The gameserver broadcasts first, then closes intent admission; every exit branch—including a failed
 broadcast—closes sockets and shuts down under the same bounded context.

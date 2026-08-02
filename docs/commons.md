@@ -81,6 +81,9 @@ sample it computes `floor(tithe_ppm × 1,000,000 / default_tithe_ppm)`, bounded 
 normalized catalog tithe band and the ppm ceiling. Sample rows carry `run_seq`, so a previous
 run's weight cannot seed a fresh membership. Resolver failures abort as `internal_invariant`;
 absence is valid only for a non-member.
+If the save commit wins but its membership projection is temporarily absent, the first response is
+that same server-owned invariant; retrying the identical intent ID after projection recovery
+replays the committed event and self-heals without applying the intent twice.
 
 The first member accrual uses the declared neutral NPC Health when no projection exists. Later
 intents consume the latest projected effective Health and contribute exactly one

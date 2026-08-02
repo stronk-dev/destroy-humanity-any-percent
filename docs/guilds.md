@@ -71,7 +71,9 @@ results are deliberately unclaimable. Each company applies its own debit/credit 
 using save v12's `(guild_id,boundary_seq)` watermark; projection never locks more than one company.
 Before a later boundary is committed, its snapshot subtracts exact-run debits and includes credits
 that are committed but not yet applied, so repeated ticks cannot reserve one offline company's
-stock or headroom twice. An Exit carries the watermark into the next run on the same stream. New
+stock or headroom twice. Reservations committed before the account's current `joined_at` do not
+reduce a same-Guild rejoin's snapshot; the abandoned membership period releases them
+deterministically. An Exit carries the watermark into the next run on the same stream. New
 Founder starts a different stream and advances through a no-effects lifecycle baseline, so prior
 Founder results can never cross into it. A legacy v11 bare sequence binds to the account's current
 guild. On a later guild change, the watermark moves directly to that guild's latest committed

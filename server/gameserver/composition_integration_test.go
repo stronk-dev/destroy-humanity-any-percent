@@ -284,6 +284,10 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		t.Fatalf("third member join status=%d body=%s", thirdJoinResponse.StatusCode, responseBody(thirdJoinResponse))
 	}
 	_ = responseBody(thirdJoinResponse)
+	thirdFounder, err := composition.Accounts.ActiveFounder(ctx, thirdCreated.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
 	companyBeforeClearing, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
 	if err != nil {
 		t.Fatal(err)
@@ -296,9 +300,8 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
-	loadedCompany.State.FactionID = "bootstrapper"
+	loadedCompany.State.FactionID = "vc_funded"
 	loadedCompany.State.IncorporatedAt = clock.Time()
-	loadedCompany.State.StockUnits = 10
 	if _, err := testStore.Write(ctx, loadedCompany.Revision.StreamID, loadedCompany.Revision.Number, loadedCompany.Revision.ConstantsHash,
 		loadedCompany.State, save.WriteContext{Cause: "gameserver.outstanding-reservation.integration"}); err != nil {
 		t.Fatal(err)
@@ -311,8 +314,9 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
-	loadedThird.State.FactionID = "vc_funded"
+	loadedThird.State.FactionID = "bootstrapper"
 	loadedThird.State.IncorporatedAt = clock.Time()
+	loadedThird.State.StockUnits = 10
 	if _, err := testStore.Write(ctx, loadedThird.Revision.StreamID, loadedThird.Revision.Number, loadedThird.Revision.ConstantsHash,
 		loadedThird.State, save.WriteContext{Cause: "gameserver.outstanding-reservation.integration"}); err != nil {
 		t.Fatal(err)
@@ -329,12 +333,16 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		}
 	}
 	after, err := composition.Guilds.PendingSettlements(ctx, founder.ID, "", 0)
+	if err != nil || after.GuildID != guildReceipt.GuildID || len(after.Settlements) != 3 {
+		t.Fatalf("post-clearing consumer batch=%+v err=%v", after, err)
+	}
+	afterProducer, err := composition.Guilds.PendingSettlements(ctx, thirdFounder.ID, "", 0)
 	reservedDebit := int64(0)
-	for _, settlement := range after.Settlements {
+	for _, settlement := range afterProducer.Settlements {
 		reservedDebit += settlement.DebitUnits
 	}
-	if err != nil || after.GuildID != guildReceipt.GuildID || len(after.Settlements) != 3 || reservedDebit <= 0 || reservedDebit > 10 {
-		t.Fatalf("post-clearing batch=%+v err=%v", after, err)
+	if err != nil || afterProducer.GuildID != guildReceipt.GuildID || len(afterProducer.Settlements) != 3 || reservedDebit <= 0 || reservedDebit > 10 {
+		t.Fatalf("post-clearing producer batch=%+v err=%v", afterProducer, err)
 	}
 	clock.Set(clock.Time().Add(time.Second))
 	secondIntent := `{"intent_id":"01985555-1113-7111-8111-111111111113","kind":"perform_manual_batch","expected_revision":4,"action_id":"manual.click","count":1,"window_ms":1}`
@@ -365,11 +373,51 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err := json.Unmarshal(state.State, &persisted); err != nil || persisted.GuildID == nil || *persisted.GuildID != guildReceipt.GuildID || persisted.Boundary != 3 {
 		t.Fatalf("settlement watermark=%+v state=%s err=%v", persisted, state.State, err)
 	}
-	if _, err := db.ExecContext(ctx, `INSERT INTO guild_clearing_results(guild_id,boundary_seq,account_id,debit_units,credit_units,allocations,committed_at,snapshot_hash,founder_id,company_stream_id,run_seq)
-		VALUES($1,4,$2,1,0,'[]'::jsonb,$3,$4,$5,$6,1)`, guildReceipt.GuildID, created.AccountID, clock.Time(),
-		"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", founder.ID, state.StreamID); err != nil {
+	latestThird, err := testStore.LoadLatest(ctx, thirdCompany.StreamID)
+	if err != nil {
 		t.Fatal(err)
 	}
+	latestThird.State.StockUnits = 5
+	if _, err := testStore.Write(ctx, latestThird.Revision.StreamID, latestThird.Revision.Number, latestThird.Revision.ConstantsHash,
+		latestThird.State, save.WriteContext{Cause: "gameserver.rejoin-reservation.integration"}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO guild_clearing_results(guild_id,boundary_seq,account_id,debit_units,credit_units,allocations,committed_at,snapshot_hash,founder_id,company_stream_id,run_seq)
+		VALUES($1,4,$2,1,0,'[]'::jsonb,$3,$4,$5,$6,1)`, guildReceipt.GuildID, thirdCreated.AccountID, clock.Time(),
+		"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", thirdFounder.ID, thirdCompany.StreamID); err != nil {
+		t.Fatal(err)
+	}
+	clock.Set(clock.Time().Add(time.Second))
+	thirdLeaveResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/guild/intents", thirdTokens.AccessToken,
+		`{"intent_id":"018f0000-0000-7000-8000-000000000405","kind":"leave_guild","expected_revision":2}`)
+	if thirdLeaveResponse.StatusCode != http.StatusOK {
+		t.Fatalf("third member leave status=%d body=%s", thirdLeaveResponse.StatusCode, responseBody(thirdLeaveResponse))
+	}
+	_ = responseBody(thirdLeaveResponse)
+	clock.Set(clock.Time().Add(time.Second))
+	thirdRejoinResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/guild/intents", thirdTokens.AccessToken,
+		fmt.Sprintf(`{"intent_id":"018f0000-0000-7000-8000-000000000406","kind":"join_guild","expected_revision":3,"guild_id":%q}`, guildReceipt.GuildID))
+	if thirdRejoinResponse.StatusCode != http.StatusOK {
+		t.Fatalf("third member rejoin status=%d body=%s", thirdRejoinResponse.StatusCode, responseBody(thirdRejoinResponse))
+	}
+	_ = responseBody(thirdRejoinResponse)
+	rejoinedMembers, _, err := composition.Clearing.members(ctx, guildReceipt.GuildID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	released := false
+	for _, member := range rejoinedMembers {
+		if member.Stock.AccountID == thirdCreated.AccountID {
+			released = member.Stock.AvailableUnits == 5
+		}
+	}
+	if !released {
+		t.Fatalf("rejoined producer retained pre-join reservations: %+v", rejoinedMembers)
+	}
+	if count, err := composition.Clearing.Tick(ctx); err != nil || count != 2 {
+		t.Fatalf("post-rejoin clearing count=%d err=%v", count, err)
+	}
+	clock.Set(clock.Time().Add(time.Second))
 	newFounderResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/founder", tokens.AccessToken, `{}`)
 	if newFounderResponse.StatusCode != http.StatusCreated {
 		t.Fatalf("New Founder status=%d body=%s", newFounderResponse.StatusCode, responseBody(newFounderResponse))
@@ -393,7 +441,7 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := json.Unmarshal(newState.State, &persisted); err != nil || persisted.GuildID == nil || *persisted.GuildID != guildReceipt.GuildID || persisted.Boundary != 4 {
+	if err := json.Unmarshal(newState.State, &persisted); err != nil || persisted.GuildID == nil || *persisted.GuildID != guildReceipt.GuildID || persisted.Boundary != 5 {
 		t.Fatalf("new-Founder settlement baseline=%+v state=%s err=%v", persisted, newState.State, err)
 	}
 

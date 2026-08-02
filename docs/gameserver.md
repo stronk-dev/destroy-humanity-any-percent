@@ -52,8 +52,9 @@ relay/queue work run as owned jobs and are stopped before socket drain.
 
 The world aggregator samples existing projection tables at the transport catalog's 4 Hz cadence.
 It owns `world_rev`, publishes only closed integer version-1 snapshots, and increments the revision
-only after publication succeeds. Planet and milestone fields remain their declared zero values
-until those systems ship.
+only after publication succeeds. The counter is monotonic only for one gameserver process
+lifetime; it restarts with the process, and clients must not compare world revisions across a
+reconnect. Planet and milestone fields remain their declared zero values until those systems ship.
 
 ## Shutdown and proof
 
