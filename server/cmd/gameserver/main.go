@@ -43,7 +43,7 @@ func run(logger *slog.Logger) error {
 	if address == "" {
 		address = ":8080"
 	}
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	ctx, stop := shutdownContext(context.Background())
 	defer stop()
 	db, err := save.OpenPostgres(ctx, databaseURL)
 	if err != nil {
@@ -67,6 +67,10 @@ func run(logger *slog.Logger) error {
 	drainErr := composition.Server.Drain(drainCtx, time.Now().UTC())
 	shutdownErr := httpServer.Shutdown(drainCtx)
 	return errors.Join(listenerErr, runtimeErr, drainErr, shutdownErr)
+}
+
+func shutdownContext(parent context.Context) (context.Context, context.CancelFunc) {
+	return signal.NotifyContext(parent, syscall.SIGINT, syscall.SIGTERM)
 }
 
 func waitForStop(ctx context.Context, serveErr, runtimeFailures <-chan error) (error, error) {

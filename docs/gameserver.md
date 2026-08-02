@@ -67,9 +67,9 @@ authenticated WebSocket, observes a world snapshot, authorizes Guild but denies 
 authorizes both Guild and Commons cohort channels while Match remains denied, commits and consumes
 a real clearing settlement, restores a version-1 member at its authoritative revision timestamp,
 and drains to non-readiness. A separate startup-barrier fixture proves the attached clearing and
-session-GC jobs themselves perform their prime passes, including pagination beyond the first
-Guild. `make test-save-integration` runs these inside the repository's standard Postgres test
-topology.
+session-GC jobs themselves perform their prime passes; the socket/settlement fixture independently
+proves pagination beyond the first Guild. `make test-save-integration` runs these inside the
+repository's standard Postgres test topology.
 The same composed graph also runs a progressed fixture through authoritative play and Exit, the
 background shared-kernel verifier, immutable archive, and `any_percent` board projection. The
 fixture seeds only the otherwise-unshipped T0→T2 content progression; every transition from the

@@ -50,3 +50,12 @@ func TestClearingRequiresOnePinnedStockCapPerBoundary(t *testing.T) {
 		t.Fatalf("mixed cap=%d err=%v", cap, err)
 	}
 }
+
+func TestClearingEmptyMembershipIsRetryable(t *testing.T) {
+	committed, err := retryClearingSnapshot(context.Background(), func() error {
+		return guild.ErrClearingSnapshotChanged
+	})
+	if err != nil || committed {
+		t.Fatalf("committed=%t err=%v", committed, err)
+	}
+}

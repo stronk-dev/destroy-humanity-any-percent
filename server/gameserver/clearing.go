@@ -165,7 +165,7 @@ func (driver *ClearingDriver) members(ctx context.Context, guildID string) ([]gu
 		return nil, 0, err
 	}
 	if len(result) == 0 || stockCap <= 0 {
-		return nil, 0, ErrClearingDriver
+		return nil, 0, guild.ErrClearingSnapshotChanged
 	}
 	return result, stockCap, nil
 }

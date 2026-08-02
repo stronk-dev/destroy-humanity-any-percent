@@ -4,9 +4,28 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"os"
+	"syscall"
 	"testing"
 	"time"
 )
+
+func TestShutdownContextReceivesSIGTERM(t *testing.T) {
+	ctx, stop := shutdownContext(context.Background())
+	defer stop()
+	process, err := os.FindProcess(os.Getpid())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := process.Signal(syscall.SIGTERM); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case <-ctx.Done():
+	case <-time.After(time.Second):
+		t.Fatal("SIGTERM did not cancel gameserver context")
+	}
+}
 
 func TestWaitForStopOwnsSignalListenerAndWorkerLifecycles(t *testing.T) {
 	t.Run("signal context", func(t *testing.T) {
