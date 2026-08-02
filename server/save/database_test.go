@@ -43,7 +43,7 @@ func TestHistoricalEventMigrationDownIsDataPreserving(t *testing.T) {
 	}
 }
 
-func TestCommonsSampleRunBackfillDropsPredatingSampleIdentity(t *testing.T) {
+func TestCommonsSampleRunBackfillDropsPredatingSampleIdentityIntegration(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL not set")
@@ -59,11 +59,12 @@ func TestCommonsSampleRunBackfillDropsPredatingSampleIdentity(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer tx.Rollback()
-	if _, err := tx.ExecContext(ctx, `
-		CREATE TEMP TABLE company_compact_memberships(
+	if _, err := tx.ExecContext(ctx, `CREATE TEMP TABLE company_compact_memberships(
 			company_stream_id uuid PRIMARY KEY, run_seq bigint NOT NULL, updated_at timestamptz NOT NULL
-		);
-		CREATE TEMP TABLE commons_member_samples(
+		)`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.ExecContext(ctx, `CREATE TEMP TABLE commons_member_samples(
 			company_stream_id uuid PRIMARY KEY, run_seq bigint NOT NULL CHECK(run_seq>0), updated_at timestamptz NOT NULL
 		)`); err != nil {
 		t.Fatal(err)
@@ -71,9 +72,11 @@ func TestCommonsSampleRunBackfillDropsPredatingSampleIdentity(t *testing.T) {
 	membershipAt := time.Date(2026, 8, 2, 12, 0, 0, 0, time.UTC)
 	const staleStream = "018f0000-0000-7000-8000-000000000045"
 	const currentStream = "018f0000-0000-7000-8000-000000000046"
-	if _, err := tx.ExecContext(ctx, `
-		INSERT INTO company_compact_memberships(company_stream_id,run_seq,updated_at) VALUES($1,2,$3),($2,2,$3);
-		INSERT INTO commons_member_samples(company_stream_id,run_seq,updated_at) VALUES($1,2,$3-interval '1 second'),($2,2,$3+interval '1 second')`,
+	if _, err := tx.ExecContext(ctx, `INSERT INTO company_compact_memberships(company_stream_id,run_seq,updated_at) VALUES($1,2,$3),($2,2,$3)`,
+		staleStream, currentStream, membershipAt); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO commons_member_samples(company_stream_id,run_seq,updated_at) VALUES($1,2,$3::timestamptz-interval '1 second'),($2,2,$3::timestamptz+interval '1 second')`,
 		staleStream, currentStream, membershipAt); err != nil {
 		t.Fatal(err)
 	}
@@ -94,5 +97,9 @@ func TestCommonsSampleRunBackfillDropsPredatingSampleIdentity(t *testing.T) {
 	}
 	if stale.Valid || !current.Valid || current.Int64 != 2 {
 		t.Fatalf("backfill stale=%v current=%v", stale, current)
+	}
+	down := bytes.Split(migration, []byte("-- +goose Down"))[1]
+	if _, err := tx.ExecContext(ctx, string(down)); err == nil {
+		t.Fatal("rollback relabeled an intentionally invalidated stale sample")
 	}
 }

@@ -382,19 +382,24 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		latestThird.State, save.WriteContext{Cause: "gameserver.rejoin-reservation.integration"}); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `INSERT INTO guild_clearing_results(guild_id,boundary_seq,account_id,debit_units,credit_units,allocations,committed_at,snapshot_hash,founder_id,company_stream_id,run_seq)
-		VALUES($1,4,$2,1,0,'[]'::jsonb,$3,$4,$5,$6,1)`, guildReceipt.GuildID, thirdCreated.AccountID, clock.Time(),
-		"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", thirdFounder.ID, thirdCompany.StreamID); err != nil {
+	var abandonedMembershipID string
+	if err := db.QueryRowContext(ctx, `SELECT membership_id FROM guild_members WHERE guild_id=$1 AND account_id=$2 AND left_at IS NULL`, guildReceipt.GuildID, thirdCreated.AccountID).Scan(&abandonedMembershipID); err != nil {
 		t.Fatal(err)
 	}
-	clock.Set(clock.Time().Add(time.Second))
+	if _, err := db.ExecContext(ctx, `INSERT INTO guild_clearing_results(guild_id,boundary_seq,account_id,debit_units,credit_units,allocations,committed_at,snapshot_hash,founder_id,company_stream_id,run_seq,membership_id)
+		VALUES($1,4,$2,1,0,'[]'::jsonb,$3,$4,$5,$6,1,$7)`, guildReceipt.GuildID, thirdCreated.AccountID, clock.Time(),
+		"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", thirdFounder.ID, thirdCompany.StreamID, abandonedMembershipID); err != nil {
+		t.Fatal(err)
+	}
+	// Commit, leave, and rejoin deliberately share one canonical millisecond.
+	// Membership identity, not timestamp ordering, must release the abandoned
+	// period's reservation.
 	thirdLeaveResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/guild/intents", thirdTokens.AccessToken,
 		`{"intent_id":"018f0000-0000-7000-8000-000000000405","kind":"leave_guild","expected_revision":2}`)
 	if thirdLeaveResponse.StatusCode != http.StatusOK {
 		t.Fatalf("third member leave status=%d body=%s", thirdLeaveResponse.StatusCode, responseBody(thirdLeaveResponse))
 	}
 	_ = responseBody(thirdLeaveResponse)
-	clock.Set(clock.Time().Add(time.Second))
 	thirdRejoinResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/guild/intents", thirdTokens.AccessToken,
 		fmt.Sprintf(`{"intent_id":"018f0000-0000-7000-8000-000000000406","kind":"join_guild","expected_revision":3,"guild_id":%q}`, guildReceipt.GuildID))
 	if thirdRejoinResponse.StatusCode != http.StatusOK {

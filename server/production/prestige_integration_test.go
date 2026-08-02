@@ -3,6 +3,7 @@ package production
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -81,7 +82,8 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}), WithGuildSettlements(emptyGuildSettlements{}))
+	projectionFailure := &failNextProjection{}
+	service, err := NewService(store, resolver, nil, nil, nil, WithRouteCatalogs(resolver), WithRouteProjector(prestigeNoopProjector{}), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(integrationWeight(1_000_000)), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}), WithGuildSettlements(emptyGuildSettlements{}), WithEventProjector(projectionFailure))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -102,8 +104,13 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 			t.Fatal(err)
 		}
 		request := []byte(`{"intent_id":"01985555-1001-7000-8000-000000000001","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`)
+		projectionFailure.fail = true
 		result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, request)
-		if err != nil || result.Replay {
+		if !errors.Is(err, ErrInvalidEngineState) {
+			t.Fatalf("post-commit Exit projection error=%v", err)
+		}
+		result, err = service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, request)
+		if err != nil || !result.Replay {
 			t.Fatalf("result=%+v err=%v", result, err)
 		}
 		var receipt struct {

@@ -155,7 +155,10 @@ company events remain authoritative.
 
 Commons migrations add membership/cohort/sample/Health projections, once-per-Founder recruitment,
 and the closed Commons event family. These rows are rebuildable from immutable company events;
-save v6 remains the authority for current company membership and Solidarity.
+save v6 remains the authority for current company membership and Solidarity. Migration 00045
+invalidates stale pre-membership sample labels and refuses a rollback that would invent their lost
+run identity. Guild clearing results similarly leave legacy ownership nullable: migration 00046
+adds immutable membership-period identity without guessing it from millisecond timestamps.
 
 `Store.ApplyIntent` locks the stream before replay/revision decisions. Applied state, next revision,
 events, and receipt commit together. A deterministic terminal rejection stores only its receipt;

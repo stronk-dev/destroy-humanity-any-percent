@@ -66,14 +66,15 @@ counterparty at the lower rate and credits the founder's consumed-stock counter.
 Committed boundaries are idempotent rows keyed by guild and sequence. A SHA-256 identity over the
 ordered member-stock-and-run-identity snapshot and stock cap makes an exact retry a no-op and
 rejects reuse of the same sequence for different inputs before current-membership validation.
-Each result is bound to its exact `(account, Founder, Company stream, run)`; unattributed legacy
-results are deliberately unclaimable. Each company applies its own debit/credit slice exactly once
+Each result is bound to its exact `(account, Guild membership period, Founder, Company stream,
+run)`; unattributed legacy results are deliberately unclaimable. Each company applies its own debit/credit slice exactly once
 using save v12's `(guild_id,boundary_seq)` watermark; projection never locks more than one company.
 Before a later boundary is committed, its snapshot subtracts exact-run debits and includes credits
 that are committed but not yet applied, so repeated ticks cannot reserve one offline company's
-stock or headroom twice. Reservations committed before the account's current `joined_at` do not
-reduce a same-Guild rejoin's snapshot; the abandoned membership period releases them
-deterministically. An Exit carries the watermark into the next run on the same stream. New
+stock or headroom twice. Only reservations carrying the current immutable `membership_id` reduce
+a snapshot or enter settlement inputs. A same-Guild rejoin therefore releases the abandoned
+membership period even when boundary commit, leave, and rejoin share one canonical millisecond;
+timestamps are never treated as membership identity. An Exit carries the watermark into the next run on the same stream. New
 Founder starts a different stream and advances through a no-effects lifecycle baseline, so prior
 Founder results can never cross into it. A legacy v11 bare sequence binds to the account's current
 guild. On a later guild change, the watermark moves directly to that guild's latest committed

@@ -197,8 +197,23 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 
 	joinedFounderID := "018f0000-0000-7000-8000-000000000202"
 	joinedStreamID := "018f0000-0000-7000-8000-000000000302"
+	if _, err := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id,created_at) VALUES($1,$2,$3)`, joinedAccount, joinedFounderID, now); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO save_streams(id,owner_kind,owner_id,scope,created_at) VALUES($1,'founder',$2,'company',$3)`, joinedStreamID, joinedFounderID, now); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash,created_at) VALUES($1,1,13,'{"run_seq":1}'::jsonb,$2,$3)`,
+		joinedStreamID, "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", now); err != nil {
+		t.Fatal(err)
+	}
 	member := func(stock MemberStock, founder, stream string) ClearingMember {
-		return ClearingMember{Stock: stock, FounderID: founder, CompanyStreamID: stream, RunSeq: 1}
+		t.Helper()
+		var membershipID string
+		if err := db.QueryRowContext(ctx, `SELECT membership_id FROM guild_members WHERE guild_id=$1 AND account_id=$2 AND left_at IS NULL`, guildID, stock.AccountID).Scan(&membershipID); err != nil {
+			t.Fatal(err)
+		}
+		return ClearingMember{Stock: stock, MembershipID: membershipID, FounderID: founder, CompanyStreamID: stream, RunSeq: 1}
 	}
 	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), []ClearingMember{
 		member(MemberStock{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10}, founderID, companyStreamID),
@@ -225,6 +240,31 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	pending, err := service.PendingSettlements(ctx, founderID, "", 0)
 	if err != nil || len(pending.Settlements) != 1 || pending.Settlements[0].DebitUnits != 5 || pending.Settlements[0].CreditUnits != 5 {
 		t.Fatalf("pending=%+v err=%v", pending, err)
+	}
+	var abandonedMembershipID string
+	if err := db.QueryRowContext(ctx, `SELECT membership_id FROM guild_members WHERE guild_id=$1 AND account_id=$2 AND left_at IS NULL`, guildID, joinedAccount).Scan(&abandonedMembershipID); err != nil {
+		t.Fatal(err)
+	}
+	sameMillisecond := now.Add(time.Minute)
+	service.clock = func() time.Time { return sameMillisecond }
+	leftAgain, err := service.Handle(ctx, joinedAccount, []byte(guildIntent("018f0000-0000-7000-8000-000000000112", "leave_guild", 4, "")))
+	if err != nil || receiptOutcome(t, leftAgain.Receipt) != "applied" {
+		t.Fatalf("same-ms leave=%s err=%v", leftAgain.Receipt, err)
+	}
+	rejoinedAgain, err := service.Handle(ctx, joinedAccount, []byte(guildIntent("018f0000-0000-7000-8000-000000000113", "join_guild", 5, `,"guild_id":"`+guildID+`"`)))
+	if err != nil || receiptOutcome(t, rejoinedAgain.Receipt) != "applied" {
+		t.Fatalf("same-ms rejoin=%s err=%v", rejoinedAgain.Receipt, err)
+	}
+	var currentMembershipID string
+	if err := db.QueryRowContext(ctx, `SELECT membership_id FROM guild_members WHERE guild_id=$1 AND account_id=$2 AND left_at IS NULL`, guildID, joinedAccount).Scan(&currentMembershipID); err != nil {
+		t.Fatal(err)
+	}
+	if currentMembershipID == abandonedMembershipID {
+		t.Fatal("rejoin reused immutable membership identity")
+	}
+	rejoinedPending, err := service.PendingSettlements(ctx, joinedFounderID, "", 0)
+	if err != nil || len(rejoinedPending.Settlements) != 0 || rejoinedPending.BaseSeq != 1 {
+		t.Fatalf("same-ms rejoin claimed abandoned settlement: %+v err=%v", rejoinedPending, err)
 	}
 
 	tx, err := db.BeginTx(ctx, nil)

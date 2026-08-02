@@ -229,3 +229,39 @@ the server-owned replay-input/error semantic change.
 
 Focused Go packages and the complete real-Postgres integration suite passed. Awaiting the full
 repository gates and designated independent review of the exact follow-up commit range.
+
+## 2026-08-02 — designated review of full-span finding remediation
+
+Review by: Darwin (independent reviewer). Recorded by: Codex.
+
+Exact reviewed range: `70b5747..65a0371`. Verdict: not approved; three MEDIUM findings block
+closure and one LOW weakens the local proof. Ordinary and Exit post-commit projector failures were
+returned raw instead of the public `internal_invariant` classification. Migration 00045's Down
+path recreated the stale sample attribution that Up invalidated. Reservation ownership used
+inclusive millisecond timestamps, which cannot distinguish an abandoned membership from a rejoin
+at the same canonical instant. The migration proof's test name also omitted `Integration`, so the
+standard local real-Postgres target skipped it. World-revision documentation, the full-span-union
+rule, migration Up behavior, and source-of-truth kernel parity were approved.
+
+## 2026-08-02 — designated-review blockers remediated
+
+Review by: Codex implementer self-review. Recorded by: Codex.
+
+Both post-commit projection paths now use one wrapper that classifies projector failure as
+`ErrInvalidEngineState`; ordinary and Exit integration fixtures prove that the first response is
+server-owned and a same-intent retry replays successfully. Migration 00045 now fails closed on
+rollback when invalidated rows exist, its real-Postgres proof is selected by the standard
+`Integration` target, and the fixture asserts both Up and the refusing Down path.
+
+Timestamp ownership is removed rather than patched. Migration 00046 gives every new clearing
+result the immutable Guild `membership_id` captured in its snapshot. Commit-side validation locks
+and compares account-plus-membership identities, reservation and settlement reads require the
+exact membership/Founder/Company/run tuple, and legacy unattributed rows remain unclaimable. One
+real-Postgres fixture makes boundary commit, leave, and rejoin share the exact same millisecond and
+proves both reservation release and settlement exclusion. Kernel `0.3.8` records these server and
+replay-input semantics. Awaiting the full standard gates and designated review of the extended
+range.
+
+The focused Go packages, complete real-Postgres `Integration` target, formula regeneration/drift
+check, deterministic balance harness, 6,494 client tests, 19,491 browser tests, schema guards,
+typecheck, and build all passed through the standard root Make targets at kernel `0.3.8`.

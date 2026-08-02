@@ -363,10 +363,8 @@ func (s *Service) exitErrorReceipt(ctx context.Context, streamID string, request
 }
 
 func (s *Service) finishExitResult(ctx context.Context, result save.IntentResult) (HandleResult, error) {
-	for _, projector := range s.projectors {
-		if err := projector.Project(ctx, result.Events); err != nil {
-			return HandleResult{}, err
-		}
+	if err := s.projectCommittedEvents(ctx, result.Events); err != nil {
+		return HandleResult{}, err
 	}
 	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
 }

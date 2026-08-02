@@ -34,6 +34,18 @@ func (value integrationWeight) CompactWeightPPM(context.Context, string, string,
 	return int64(value), true, nil
 }
 
+type failNextProjection struct {
+	fail bool
+}
+
+func (projector *failNextProjection) Project(context.Context, []save.EventRecord) error {
+	if projector.fail {
+		projector.fail = false
+		return errors.New("injected post-commit projection failure")
+	}
+	return nil
+}
+
 type integrationCatalogs struct {
 	economy  map[string]*economy.Catalog
 	routes   map[string]*routes.Catalog
@@ -170,7 +182,8 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	metrics := fakeInvariantMetrics{}
-	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(commonsProjector), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}), WithGuildSettlements(emptyGuildSettlements{}), WithEventProjector(commonsProjector))
+	projectionFailure := &failNextProjection{}
+	service, err := NewService(store, resolver, commonsProvider, metrics, nil, WithRouteCatalogs(resolver), WithRouteProjector(projector), WithCompactPolicies(commonsCatalogs), WithProgressionRuntime(resolver), WithCurrentConstantsHash(hash), WithCommonsWeightResolver(commonsProjector), WithReplayCatalogs(ReplayCatalogSet{hash: replayBundle}), WithGuildSettlements(emptyGuildSettlements{}), WithEventProjector(projectionFailure), WithEventProjector(commonsProjector))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -347,8 +360,13 @@ func TestIntentServiceIntegration(t *testing.T) {
 		t.Fatalf("incorporate replay=%+v err=%v", incorporateReplay, err)
 	}
 	sign := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-bbbbbbbbbbbb","kind":"sign_compact","expected_revision":7,"tithe_ppm":100000}`)
+	projectionFailure.fail = true
 	signed, err := service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(2*time.Second), sign)
-	if err != nil || signed.Replay {
+	if !errors.Is(err, ErrInvalidEngineState) {
+		t.Fatalf("post-commit sign projection error=%v", err)
+	}
+	signed, err = service.Handle(ctx, revision.StreamID, ModeOnline, cursor.Add(2*time.Second), sign)
+	if err != nil || !signed.Replay {
 		t.Fatalf("sign=%s replay=%v err=%v", signed.Receipt, signed.Replay, err)
 	}
 	memberManual := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-cccccccccccc","kind":"perform_manual_batch","expected_revision":8,"action_id":"manual.click","count":1,"window_ms":3600000}`)

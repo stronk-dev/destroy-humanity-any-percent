@@ -113,7 +113,7 @@ func (driver *ClearingDriver) guildPage(ctx context.Context, after string) ([]st
 
 func (driver *ClearingDriver) members(ctx context.Context, guildID string) ([]guild.ClearingMember, int64, error) {
 	rows, err := driver.db.QueryContext(ctx, `
-		SELECT member.account_id,founder.founder_id,stream.id,revision.version,revision.constants_hash,revision.state::text,revision.created_at,
+		SELECT member.account_id,member.membership_id,founder.founder_id,stream.id,revision.version,revision.constants_hash,revision.state::text,revision.created_at,
 		       COALESCE(reserved.debit_units,0),COALESCE(reserved.credit_units,0)
 		FROM guild_members member
 		JOIN account_founders founder ON founder.account_id=member.account_id AND founder.archived_at IS NULL
@@ -125,7 +125,7 @@ func (driver *ClearingDriver) members(ctx context.Context, guildID string) ([]gu
 			WHERE result.guild_id=member.guild_id AND result.account_id=member.account_id
 			  AND result.founder_id=founder.founder_id AND result.company_stream_id=stream.id
 			  AND result.run_seq=COALESCE(NULLIF(revision.state->>'run_seq','')::bigint,1)
-			  AND result.committed_at>=member.joined_at
+			  AND result.membership_id=member.membership_id
 			  AND result.boundary_seq>CASE
 				WHEN COALESCE(revision.state->>'guild_boundary_guild_id','')=member.guild_id::text
 				THEN COALESCE(NULLIF(revision.state->>'guild_boundary_seq','')::bigint,0)
@@ -140,12 +140,12 @@ func (driver *ClearingDriver) members(ctx context.Context, guildID string) ([]gu
 	var result []guild.ClearingMember
 	var stockCap int64
 	for rows.Next() {
-		var accountID, founderID, companyStreamID, constantsHash string
+		var accountID, membershipID, founderID, companyStreamID, constantsHash string
 		var version int
 		var encoded []byte
 		var createdAt time.Time
 		var reservedDebit, reservedCredit int64
-		if err := rows.Scan(&accountID, &founderID, &companyStreamID, &version, &constantsHash, &encoded, &createdAt, &reservedDebit, &reservedCredit); err != nil {
+		if err := rows.Scan(&accountID, &membershipID, &founderID, &companyStreamID, &version, &constantsHash, &encoded, &createdAt, &reservedDebit, &reservedCredit); err != nil {
 			return nil, 0, err
 		}
 		economyCatalog, ok := driver.catalogs.Resolve(constantsHash)
@@ -177,7 +177,7 @@ func (driver *ClearingDriver) members(ctx context.Context, guildID string) ([]gu
 			member.AvailableUnits = state.StockUnits - reservedDebit
 			member.ReceivedUnits = state.ConsumedStockUnits + reservedCredit
 		}
-		result = append(result, guild.ClearingMember{Stock: member, FounderID: founderID, CompanyStreamID: companyStreamID, RunSeq: state.RunSeq})
+		result = append(result, guild.ClearingMember{Stock: member, MembershipID: membershipID, FounderID: founderID, CompanyStreamID: companyStreamID, RunSeq: state.RunSeq})
 	}
 	if err := rows.Err(); err != nil {
 		return nil, 0, err

@@ -11,10 +11,11 @@ WHERE membership.company_stream_id=sample.company_stream_id
   AND sample.updated_at<membership.updated_at;
 
 -- +goose Down
-UPDATE commons_member_samples sample
-SET run_seq=membership.run_seq
-FROM company_compact_memberships membership
-WHERE membership.company_stream_id=sample.company_stream_id
-  AND sample.run_seq IS NULL;
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM commons_member_samples WHERE run_seq IS NULL) THEN
+        RAISE EXCEPTION 'cannot restore non-null Commons sample run labels after stale backfill invalidation';
+    END IF;
+END $$;
 
 ALTER TABLE commons_member_samples ALTER COLUMN run_seq SET NOT NULL;

@@ -491,13 +491,20 @@ func (s *Service) Handle(
 			return HandleResult{}, err
 		}
 	}
-	for _, projector := range s.projectors {
-		if err := projector.Project(ctx, result.Events); err != nil {
-			return HandleResult{}, err
-		}
+	if err := s.projectCommittedEvents(ctx, result.Events); err != nil {
+		return HandleResult{}, err
 	}
 	s.recordCommittedInvariants(result, collector.reports)
 	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
+}
+
+func (s *Service) projectCommittedEvents(ctx context.Context, events []save.EventRecord) error {
+	for _, projector := range s.projectors {
+		if err := projector.Project(ctx, events); err != nil {
+			return fmt.Errorf("%w: event projection: %v", ErrInvalidEngineState, err)
+		}
+	}
+	return nil
 }
 
 func (s *Service) resolveCommonsReplayWeight(ctx context.Context, streamID, founderID, constantsHash string) (int64, error) {
