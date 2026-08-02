@@ -275,3 +275,15 @@ must refuse after the respective identity-bearing row exists.
 The same-millisecond Guild fixture also submits the abandoned M1 snapshot after M2 is active and
 asserts the commit-side `(account_id,membership_id)` lock comparison returns the retryable
 membership-churn sentinel; the validation is now both implemented and directly proven.
+
+## 2026-08-02 — designated final remediation review
+
+Review by: Darwin (independent reviewer). Recorded by: Codex.
+
+Exact remediation range: `865362c..800213c`. Cumulative closure range:
+`70b5747..800213c`. Verdict: approved with no findings. Both migration Down guards use Goose
+statement blocks and fail closed; isolated real-Postgres tests exercise the actual Goose provider
+in both directions; migration 00046 refuses to discard attributed clearing ownership; and the
+same-millisecond M1-to-M2 fixture proves a stale M1 snapshot cannot commit. The reviewer reran the
+complete standard real-Postgres integration target successfully. The archived Gameserver
+Composition implementation and all full-span follow-up findings are closed.
