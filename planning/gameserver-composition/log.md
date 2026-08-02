@@ -111,3 +111,29 @@ commit returns the same typed membership-change sentinel and is deferred without
 workers, with a real-Postgres regression staged after a valid member snapshot. Because this changes
 the guarded Guild boundary semantic, kernel version `0.3.5` records it. Awaiting the designated
 reviewer's final verdict over the extended remediation range.
+
+## 2026-08-02 — designated remediation re-review, settlement findings
+
+Review by: Darwin (independent reviewer). Recorded by: Codex.
+
+Exact reviewed range: `e01e3ec..450badc`. Verdict: not archivable. Every blocker from the original
+GC3 review was verified closed, including readiness serialization, disband churn, startup/drain,
+historical catalog resolution, pagination, and the composed acceptance proofs. Two settlement
+identity seams remained: clearing results were account-keyed while faction stock and watermarks are
+run-scoped, allowing an Exit or New Founder to reapply an earlier run's result; and later clearing
+snapshots ignored committed-but-unapplied results, allowing repeated scheduler ticks to reserve the
+same offline stock until application failed. Both findings are systemic and block archival.
+
+## 2026-08-02 — settlement identity remediation implemented
+
+Review by: Codex implementer self-review. Recorded by: Codex.
+
+New clearing results bind the authoritative snapshot's Founder, Company stream, and run alongside
+the account. Pending lookup requires exact identity; legacy unattributed results stay unclaimable.
+The driver's single member query nets exact-run committed-but-unapplied debits and credits before
+the pure clearing kernel runs, preventing repeated boundaries from over-reserving stock or
+headroom. Exit carries the Guild watermark across the same stream; New Founder establishes a
+forward no-effects baseline and cannot claim prior-identity rows. The Go/TypeScript replay boundary,
+shared sequential fixture, direct unit tests, and composed real-Postgres fixture cover the lifecycle
+rules. Kernel `0.3.6` records the changed deterministic transition. Awaiting designated review of
+the remediation commit range.

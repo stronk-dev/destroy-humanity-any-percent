@@ -74,3 +74,25 @@ func TestApplySettlementsSwitchesGuildForward(t *testing.T) {
 		t.Fatalf("applied state=%+v", state)
 	}
 }
+
+func TestApplySettlementsSeedsFreshLifecycleForward(t *testing.T) {
+	guildID := "018f0000-0000-7000-8000-000000000013"
+	state := &save.State{StockUnits: 20}
+	if err := ApplySettlements(state, SettlementBatch{GuildID: guildID, BaseSeq: 12}, 100); err != nil {
+		t.Fatal(err)
+	}
+	if state.GuildBoundaryGuildID != guildID || state.GuildBoundarySeq != 12 {
+		t.Fatalf("seeded state=%+v", state)
+	}
+	if err := ApplySettlements(state, SettlementBatch{GuildID: guildID, BaseSeq: 12, Settlements: []Settlement{{GuildID: guildID, BoundarySeq: 13, DebitUnits: 2, CreditUnits: 1}}}, 100); err != nil {
+		t.Fatal(err)
+	}
+	if state.GuildBoundarySeq != 13 || state.StockUnits != 18 || state.ConsumedStockUnits != 1 {
+		t.Fatalf("applied state=%+v", state)
+	}
+
+	unsafe := &save.State{StockUnits: 20}
+	if err := ApplySettlements(unsafe, SettlementBatch{GuildID: guildID, BaseSeq: 12, Settlements: []Settlement{{GuildID: guildID, BoundarySeq: 13, DebitUnits: 2}}}, 100); err == nil {
+		t.Fatal("fresh lifecycle accepted settlements before its forward baseline")
+	}
+}

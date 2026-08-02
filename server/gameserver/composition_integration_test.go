@@ -271,21 +271,73 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if _, stockCap, err := composition.Clearing.members(ctx, secondGuildReceipt.GuildID); err != nil || stockCap != historicalFaction.StockCap {
 		t.Fatalf("historical v1 clearing cap=%d want=%d err=%v", stockCap, historicalFaction.StockCap, err)
 	}
+	thirdCreatedResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/account", "", `{}`)
+	var thirdCreated account.CreatedAccount
+	decodeCompositionResponse(t, thirdCreatedResponse, &thirdCreated)
+	thirdSessionResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
+		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, thirdCreated.AccountID, thirdCreated.RecoveryCode))
+	var thirdTokens account.TokenPair
+	decodeCompositionResponse(t, thirdSessionResponse, &thirdTokens)
+	thirdJoinResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/guild/intents", thirdTokens.AccessToken,
+		fmt.Sprintf(`{"intent_id":"018f0000-0000-7000-8000-000000000404","kind":"join_guild","expected_revision":1,"guild_id":%q}`, guildReceipt.GuildID))
+	if thirdJoinResponse.StatusCode != http.StatusOK {
+		t.Fatalf("third member join status=%d body=%s", thirdJoinResponse.StatusCode, responseBody(thirdJoinResponse))
+	}
+	_ = responseBody(thirdJoinResponse)
+	companyBeforeClearing, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	testStore, err := save.NewStore(db, composition.Catalogs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	loadedCompany, err := testStore.LoadLatest(ctx, companyBeforeClearing.StreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	loadedCompany.State.FactionID = "bootstrapper"
+	loadedCompany.State.IncorporatedAt = clock.Time()
+	loadedCompany.State.StockUnits = 10
+	if _, err := testStore.Write(ctx, loadedCompany.Revision.StreamID, loadedCompany.Revision.Number, loadedCompany.Revision.ConstantsHash,
+		loadedCompany.State, save.WriteContext{Cause: "gameserver.outstanding-reservation.integration"}); err != nil {
+		t.Fatal(err)
+	}
+	thirdCompany, err := composition.Accounts.ActiveCompanyState(ctx, thirdCreated.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	loadedThird, err := testStore.LoadLatest(ctx, thirdCompany.StreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	loadedThird.State.FactionID = "vc_funded"
+	loadedThird.State.IncorporatedAt = clock.Time()
+	if _, err := testStore.Write(ctx, loadedThird.Revision.StreamID, loadedThird.Revision.Number, loadedThird.Revision.ConstantsHash,
+		loadedThird.State, save.WriteContext{Cause: "gameserver.outstanding-reservation.integration"}); err != nil {
+		t.Fatal(err)
+	}
 
 	before, err := composition.Guilds.PendingSettlements(ctx, founder.ID, "", 0)
 	if err != nil || before.GuildID != guildReceipt.GuildID || before.BaseSeq != 0 || len(before.Settlements) != 0 {
 		t.Fatalf("pre-clearing batch=%+v err=%v", before, err)
 	}
 	composition.Clearing.limit = 1
-	if count, err := composition.Clearing.Tick(ctx); err != nil || count != 2 {
-		t.Fatalf("clearing count=%d with paginated v1 member err=%v", count, err)
+	for boundary := 1; boundary <= 3; boundary++ {
+		if count, err := composition.Clearing.Tick(ctx); err != nil || count != 2 {
+			t.Fatalf("clearing boundary=%d count=%d with paginated v1 member err=%v", boundary, count, err)
+		}
 	}
 	after, err := composition.Guilds.PendingSettlements(ctx, founder.ID, "", 0)
-	if err != nil || after.GuildID != guildReceipt.GuildID || len(after.Settlements) != 1 || after.Settlements[0].BoundarySeq != 1 {
+	reservedDebit := int64(0)
+	for _, settlement := range after.Settlements {
+		reservedDebit += settlement.DebitUnits
+	}
+	if err != nil || after.GuildID != guildReceipt.GuildID || len(after.Settlements) != 3 || reservedDebit <= 0 || reservedDebit > 10 {
 		t.Fatalf("post-clearing batch=%+v err=%v", after, err)
 	}
 	clock.Set(clock.Time().Add(time.Second))
-	secondIntent := `{"intent_id":"01985555-1113-7111-8111-111111111113","kind":"perform_manual_batch","expected_revision":3,"action_id":"manual.click","count":1,"window_ms":1}`
+	secondIntent := `{"intent_id":"01985555-1113-7111-8111-111111111113","kind":"perform_manual_batch","expected_revision":4,"action_id":"manual.click","count":1,"window_ms":1}`
 	secondResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, secondIntent)
 	if secondResponse.StatusCode != http.StatusOK {
 		t.Fatalf("post-clearing intent status=%d body=%s", secondResponse.StatusCode, responseBody(secondResponse))
@@ -294,7 +346,7 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	postClearingKinds := map[string]bool{}
 	for !postClearingKinds["receipt"] {
 		envelope := readEnvelope(t, player, "player:"+founder.ID)
-		if envelope.Revision != 4 {
+		if envelope.Revision != 5 {
 			t.Fatalf("post-clearing player revision=%d", envelope.Revision)
 		}
 		postClearingKinds[envelope.Kind] = true
@@ -310,13 +362,44 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		GuildID  *string `json:"guild_boundary_guild_id"`
 		Boundary int64   `json:"guild_boundary_seq"`
 	}
-	if err := json.Unmarshal(state.State, &persisted); err != nil || persisted.GuildID == nil || *persisted.GuildID != guildReceipt.GuildID || persisted.Boundary != 1 {
+	if err := json.Unmarshal(state.State, &persisted); err != nil || persisted.GuildID == nil || *persisted.GuildID != guildReceipt.GuildID || persisted.Boundary != 3 {
 		t.Fatalf("settlement watermark=%+v state=%s err=%v", persisted, state.State, err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO guild_clearing_results(guild_id,boundary_seq,account_id,debit_units,credit_units,allocations,committed_at,snapshot_hash,founder_id,company_stream_id,run_seq)
+		VALUES($1,4,$2,1,0,'[]'::jsonb,$3,$4,$5,$6,1)`, guildReceipt.GuildID, created.AccountID, clock.Time(),
+		"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", founder.ID, state.StreamID); err != nil {
+		t.Fatal(err)
+	}
+	newFounderResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/founder", tokens.AccessToken, `{}`)
+	if newFounderResponse.StatusCode != http.StatusCreated {
+		t.Fatalf("New Founder status=%d body=%s", newFounderResponse.StatusCode, responseBody(newFounderResponse))
+	}
+	_ = responseBody(newFounderResponse)
+	newSessionResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
+		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
+	var newTokens account.TokenPair
+	decodeCompositionResponse(t, newSessionResponse, &newTokens)
+	newFounder, err := composition.Accounts.ActiveFounder(ctx, created.AccountID)
+	if err != nil || newFounder.ID == founder.ID {
+		t.Fatalf("new founder=%+v err=%v", newFounder, err)
+	}
+	newRunIntent := `{"intent_id":"01985555-1114-7111-8111-111111111114","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`
+	newRunResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", newTokens.AccessToken, newRunIntent)
+	if newRunResponse.StatusCode != http.StatusOK {
+		t.Fatalf("new-Founder intent replayed prior debit: status=%d body=%s", newRunResponse.StatusCode, responseBody(newRunResponse))
+	}
+	_ = responseBody(newRunResponse)
+	newState, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(newState.State, &persisted); err != nil || persisted.GuildID == nil || *persisted.GuildID != guildReceipt.GuildID || persisted.Boundary != 4 {
+		t.Fatalf("new-Founder settlement baseline=%+v state=%s err=%v", persisted, newState.State, err)
 	}
 
 	clock.Set(clock.Time().Add(31 * 24 * time.Hour))
 	collected, err := composition.Accounts.PruneExpiredSessions(ctx, clock.Time(), 1_000)
-	if err != nil || collected.RefreshTokens != 2 || collected.AccessTokens != 2 || collected.Families != 2 {
+	if err != nil || collected.RefreshTokens != 4 || collected.AccessTokens != 4 || collected.Families != 4 {
 		t.Fatalf("session GC=%+v err=%v", collected, err)
 	}
 

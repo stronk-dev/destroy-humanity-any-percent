@@ -236,7 +236,8 @@ func NewRunState(catalog *economy.Catalog, priorCompany, founder *save.State, no
 		GatesCrossed: map[string]bool{}, RunSeq: priorCompany.RunSeq + 1, DoctrinesByTransition: map[string]string{},
 		LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{"trust.regulators.standing": int(reseed), "trust.regulators.grievance": int(100 - reseed)},
 		RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{},
-		LifetimeValue: decimal.Zero, RunStartedAt: now, OfflineSpans: []save.OfflineSpan{}, CollapsedOfflineMS: 0, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
+		LifetimeValue: decimal.Zero, RunStartedAt: now, OfflineSpans: []save.OfflineSpan{}, CollapsedOfflineMS: 0, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{},
+		GuildBoundaryGuildID: priorCompany.GuildBoundaryGuildID, GuildBoundarySeq: priorCompany.GuildBoundarySeq}
 	return state, nil
 }
 

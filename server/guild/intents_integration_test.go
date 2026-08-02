@@ -165,7 +165,15 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	}
 
 	founderID := "018f0000-0000-7000-8000-000000000201"
+	companyStreamID := "018f0000-0000-7000-8000-000000000301"
 	if _, err := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id,created_at) VALUES($1,$2,$3)`, accounts[0], founderID, now); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO save_streams(id,owner_kind,owner_id,scope,created_at) VALUES($1,'founder',$2,'company',$3)`, companyStreamID, founderID, now); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash,created_at) VALUES($1,1,13,'{"run_seq":1}'::jsonb,$2,$3)`,
+		companyStreamID, "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", now); err != nil {
 		t.Fatal(err)
 	}
 	projector, err := NewProjector(db, integrationWindow{})
@@ -176,7 +184,7 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	event := save.EventRecord{EventID: eventID, StreamID: "018f0000-0000-7000-8000-000000000301", OwnerID: founderID,
+	event := save.EventRecord{EventID: eventID, StreamID: companyStreamID, OwnerID: founderID,
 		Revision: 2, Kind: save.EventGuildTitheAccrued, IntentID: "018f0000-0000-7000-8000-000000000302", ConstantsHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", OccurredAt: now,
 		Payload: json.RawMessage(`{"founder_id":"` + founderID + `","run_id":{"company_stream_id":"018f0000-0000-7000-8000-000000000301","run_seq":1},"progress_delta_ppm":500000,"xp_delta":10}`)}
 	if err := projector.Project(ctx, []save.EventRecord{event, event}); err != nil {
@@ -187,25 +195,30 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 		t.Fatalf("guild xp=%d err=%v", guildXP, err)
 	}
 
-	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), []MemberStock{
-		{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10},
+	joinedFounderID := "018f0000-0000-7000-8000-000000000202"
+	joinedStreamID := "018f0000-0000-7000-8000-000000000302"
+	member := func(stock MemberStock, founder, stream string) ClearingMember {
+		return ClearingMember{Stock: stock, FounderID: founder, CompanyStreamID: stream, RunSeq: 1}
+	}
+	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), []ClearingMember{
+		member(MemberStock{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10}, founderID, companyStreamID),
 	}, 100); !errors.Is(err, ErrClearingSnapshotChanged) {
 		t.Fatalf("partial active-member snapshot error=%v", err)
 	}
-	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), []MemberStock{
-		{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10},
-		{AccountID: joinedAccount, Produces: "carbon", Consumes: "libraries", AvailableUnits: 10},
+	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), []ClearingMember{
+		member(MemberStock{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10}, founderID, companyStreamID),
+		member(MemberStock{AccountID: joinedAccount, Produces: "carbon", Consumes: "libraries", AvailableUnits: 10}, joinedFounderID, joinedStreamID),
 	}, 100); err != nil {
 		t.Fatal(err)
 	}
-	committedSnapshot := []MemberStock{
-		{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10},
-		{AccountID: joinedAccount, Produces: "carbon", Consumes: "libraries", AvailableUnits: 10},
+	committedSnapshot := []ClearingMember{
+		member(MemberStock{AccountID: accounts[0], Produces: "libraries", Consumes: "carbon", AvailableUnits: 10}, founderID, companyStreamID),
+		member(MemberStock{AccountID: joinedAccount, Produces: "carbon", Consumes: "libraries", AvailableUnits: 10}, joinedFounderID, joinedStreamID),
 	}
 	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), committedSnapshot, 100); err != nil {
 		t.Fatalf("identical clearing retry: %v", err)
 	}
-	committedSnapshot[0].AvailableUnits++
+	committedSnapshot[0].Stock.AvailableUnits++
 	if err := service.CommitClearingBoundary(ctx, guildID, 1, now.Add(time.Minute), committedSnapshot, 100); err == nil {
 		t.Fatal("different snapshot reused a committed boundary sequence")
 	}
@@ -287,7 +300,9 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `UPDATE guilds SET disbanded_at=$2 WHERE guild_id=$1`, guildID, now.Add(20*time.Minute)); err != nil {
 		t.Fatal(err)
 	}
-	if err := service.CommitClearingBoundary(ctx, guildID, 2, now.Add(21*time.Minute), []MemberStock{{AccountID: joinedAccount}}, 100); !errors.Is(err, ErrClearingSnapshotChanged) {
+	if err := service.CommitClearingBoundary(ctx, guildID, 2, now.Add(21*time.Minute), []ClearingMember{
+		member(MemberStock{AccountID: joinedAccount}, joinedFounderID, joinedStreamID),
+	}, 100); !errors.Is(err, ErrClearingSnapshotChanged) {
 		t.Fatalf("disbanded-after-snapshot clearing error=%v", err)
 	}
 }

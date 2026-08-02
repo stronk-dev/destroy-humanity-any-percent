@@ -34,11 +34,28 @@ type SettlementBatch struct {
 	Settlements []Settlement
 }
 
-func (service *Service) CommitClearingBoundary(ctx context.Context, guildID string, boundarySeq int64, committedAt time.Time, members []MemberStock, stockCap int64) error {
+type ClearingMember struct {
+	Stock           MemberStock
+	FounderID       string
+	CompanyStreamID string
+	RunSeq          int64
+}
+
+func (service *Service) CommitClearingBoundary(ctx context.Context, guildID string, boundarySeq int64, committedAt time.Time, members []ClearingMember, stockCap int64) error {
 	if service == nil || !uuidV7Pattern.MatchString(guildID) || boundarySeq <= 0 || boundarySeq > decimal.MaxExactInteger || committedAt.IsZero() {
 		return ErrInvalidExchange
 	}
-	states, clearings, err := Clear(service.catalog, members, stockCap)
+	stocks := make([]MemberStock, len(members))
+	identityByAccount := make(map[string]ClearingMember, len(members))
+	for index, member := range members {
+		if !uuidPattern.MatchString(member.Stock.AccountID) || !uuidPattern.MatchString(member.FounderID) || !uuidPattern.MatchString(member.CompanyStreamID) ||
+			member.RunSeq <= 0 || member.RunSeq > decimal.MaxExactInteger || identityByAccount[member.Stock.AccountID].Stock.AccountID != "" {
+			return ErrInvalidExchange
+		}
+		stocks[index] = member.Stock
+		identityByAccount[member.Stock.AccountID] = member
+	}
+	states, clearings, err := Clear(service.catalog, stocks, stockCap)
 	if err != nil {
 		return err
 	}
@@ -48,8 +65,8 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 	}
 	byAccount := make(map[string]Settlement, len(states))
 	allocations := make(map[string][]Allocation, len(states))
-	before := make(map[string]MemberStock, len(members))
-	for _, member := range members {
+	before := make(map[string]MemberStock, len(stocks))
+	for _, member := range stocks {
 		before[member.AccountID] = member
 	}
 	for _, state := range states {
@@ -98,9 +115,9 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 	if err := rows.Close(); err != nil {
 		return err
 	}
-	memberAccounts := make([]string, len(members))
-	for index := range members {
-		memberAccounts[index] = members[index].AccountID
+	memberAccounts := make([]string, len(stocks))
+	for index := range stocks {
+		memberAccounts[index] = stocks[index].AccountID
 	}
 	sort.Strings(memberAccounts)
 	if !slices.Equal(activeAccounts, memberAccounts) {
@@ -118,11 +135,14 @@ func (service *Service) CommitClearingBoundary(ctx context.Context, guildID stri
 	}
 	for _, state := range states {
 		settlement := byAccount[state.AccountID]
+		identity := identityByAccount[state.AccountID]
 		encoded, _ := json.Marshal(allocations[state.AccountID])
 		if allocations[state.AccountID] == nil {
 			encoded = []byte("[]")
 		}
-		if _, err := tx.ExecContext(ctx, `INSERT INTO guild_clearing_results(guild_id,boundary_seq,account_id,debit_units,credit_units,allocations,committed_at,snapshot_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`, guildID, boundarySeq, state.AccountID, settlement.DebitUnits, settlement.CreditUnits, encoded, committedAt.UTC(), snapshotHash); err != nil {
+		if _, err := tx.ExecContext(ctx, `INSERT INTO guild_clearing_results(guild_id,boundary_seq,account_id,debit_units,credit_units,allocations,committed_at,snapshot_hash,founder_id,company_stream_id,run_seq) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+			guildID, boundarySeq, state.AccountID, settlement.DebitUnits, settlement.CreditUnits, encoded, committedAt.UTC(), snapshotHash,
+			identity.FounderID, identity.CompanyStreamID, identity.RunSeq); err != nil {
 			return err
 		}
 	}
@@ -143,33 +163,57 @@ func (service *Service) PendingSettlements(ctx context.Context, founderID, water
 	if service == nil || !uuidPattern.MatchString(founderID) || watermarkGuildID != "" && !uuidV7Pattern.MatchString(watermarkGuildID) || afterSeq < 0 {
 		return SettlementBatch{}, ErrInvalidExchange
 	}
-	var guildID, accountID string
-	var joinedAt time.Time
-	err := service.db.QueryRowContext(ctx, `SELECT member.guild_id,founder.account_id,member.joined_at FROM account_founders founder
+	var guildID, accountID, companyStreamID string
+	var runSeq int64
+	var joinedAt, founderCreatedAt time.Time
+	err := service.db.QueryRowContext(ctx, `SELECT member.guild_id,founder.account_id,member.joined_at,founder.created_at,stream.id,
+		COALESCE(NULLIF(revision.state->>'run_seq','')::bigint,1)
+		FROM account_founders founder
 		JOIN guild_members member ON member.account_id=founder.account_id AND member.left_at IS NULL
-		WHERE founder.founder_id=$1`, founderID).Scan(&guildID, &accountID, &joinedAt)
+		JOIN save_streams stream ON stream.owner_kind='founder' AND stream.owner_id=founder.founder_id AND stream.scope='company' AND stream.archived_at IS NULL
+		JOIN LATERAL (SELECT state FROM save_revisions WHERE stream_id=stream.id ORDER BY revision DESC LIMIT 1) revision ON true
+		WHERE founder.founder_id=$1 AND founder.archived_at IS NULL`, founderID).Scan(&guildID, &accountID, &joinedAt, &founderCreatedAt, &companyStreamID, &runSeq)
 	if errors.Is(err, sql.ErrNoRows) {
 		return SettlementBatch{}, nil
 	}
 	if err != nil {
 		return SettlementBatch{}, err
 	}
-	var latest sql.NullInt64
-	if err := service.db.QueryRowContext(ctx, `SELECT max(boundary_seq) FROM guild_clearing_results WHERE guild_id=$1`, guildID).Scan(&latest); err != nil {
+	eligibleFrom := joinedAt
+	newFounderReset := founderCreatedAt.After(joinedAt)
+	if newFounderReset {
+		eligibleFrom = founderCreatedAt
+	}
+	comparison := "<"
+	if newFounderReset {
+		// Equal millisecond timestamps are excluded at a New-Founder boundary:
+		// archived and fresh Founders never share settlement effects.
+		comparison = "<="
+	}
+	var reset sql.NullInt64
+	if err := service.db.QueryRowContext(ctx, `SELECT max(boundary_seq) FROM guild_clearing_results WHERE guild_id=$1 AND committed_at `+comparison+` $2`, guildID, eligibleFrom).Scan(&reset); err != nil {
 		return SettlementBatch{}, err
 	}
-	latestSeq := int64(0)
-	if latest.Valid {
-		latestSeq = latest.Int64
+	resetSeq := int64(0)
+	if reset.Valid {
+		resetSeq = reset.Int64
 	}
-	if watermarkGuildID != "" && watermarkGuildID != guildID {
-		return SettlementBatch{GuildID: guildID, BaseSeq: latestSeq}, nil
+	if watermarkGuildID != guildID && (watermarkGuildID != "" || resetSeq != 0) {
+		return SettlementBatch{GuildID: guildID, BaseSeq: resetSeq}, nil
 	}
 	baseSeq := afterSeq
+	if watermarkGuildID == "" {
+		baseSeq = resetSeq
+	}
+	eligibleComparison := ">="
+	if newFounderReset {
+		eligibleComparison = ">"
+	}
 	rows, err := service.db.QueryContext(ctx, `SELECT boundary_seq,debit_units,credit_units
 		FROM guild_clearing_results
-		WHERE guild_id=$1 AND account_id=$2 AND boundary_seq>$3 AND committed_at>=$4
-		ORDER BY boundary_seq`, guildID, accountID, afterSeq, joinedAt)
+		WHERE guild_id=$1 AND account_id=$2 AND boundary_seq>$3 AND committed_at `+eligibleComparison+` $4
+		  AND founder_id=$5 AND company_stream_id=$6 AND run_seq=$7
+		ORDER BY boundary_seq`, guildID, accountID, baseSeq, eligibleFrom, founderID, companyStreamID, runSeq)
 	if err != nil {
 		return SettlementBatch{}, err
 	}
@@ -204,7 +248,7 @@ func ApplySettlements(state *save.State, batch SettlementBatch, stockCap int64) 
 	}
 	if state.GuildBoundaryGuildID != batch.GuildID {
 		if state.GuildBoundaryGuildID == "" {
-			if batch.BaseSeq != state.GuildBoundarySeq {
+			if batch.BaseSeq < state.GuildBoundarySeq || batch.BaseSeq > state.GuildBoundarySeq && len(batch.Settlements) != 0 {
 				return ErrInvalidExchange
 			}
 		} else if len(batch.Settlements) != 0 {
@@ -228,12 +272,12 @@ func ApplySettlements(state *save.State, batch SettlementBatch, stockCap int64) 
 	return nil
 }
 
-func clearingSnapshotHash(members []MemberStock, stockCap int64) (string, error) {
-	ordered := append([]MemberStock(nil), members...)
-	sort.Slice(ordered, func(left, right int) bool { return ordered[left].AccountID < ordered[right].AccountID })
+func clearingSnapshotHash(members []ClearingMember, stockCap int64) (string, error) {
+	ordered := append([]ClearingMember(nil), members...)
+	sort.Slice(ordered, func(left, right int) bool { return ordered[left].Stock.AccountID < ordered[right].Stock.AccountID })
 	encoded, err := json.Marshal(struct {
-		StockCap int64         `json:"stock_cap"`
-		Members  []MemberStock `json:"members"`
+		StockCap int64            `json:"stock_cap"`
+		Members  []ClearingMember `json:"members"`
 	}{StockCap: stockCap, Members: ordered})
 	if err != nil {
 		return "", ErrInvalidExchange

@@ -72,6 +72,26 @@ node with Account/Commons/**Guild** memberships (guild resolver replaces deny-cl
 stays deny-closed) → world aggregator (GC2) → readiness. Drain per T6. Every seam already has
 its contract; this RFC's AC list is the composition proof.
 
+#### GC3a — clearing reservations and run identity
+
+Guild membership is account-scoped, but faction stock and the settlement watermark are Company-run
+state. Every newly committed clearing result therefore carries the exact
+`(account_id, founder_id, company_stream_id, run_seq)` identity from the authoritative snapshot.
+Only results matching all four fields may enter that run's `replay_inputs`; legacy rows without
+the identity remain explicitly unclaimable because their owner cannot be reconstructed safely.
+
+Before committing a later boundary, the clearing driver subtracts every committed-but-unapplied
+debit and adds every committed-but-unapplied credit for that exact run identity. Repeated scheduler
+ticks therefore reserve only remaining stock/headroom; they cannot allocate the same units again
+while a player is offline.
+
+An elective Exit carries the Guild watermark into the next run because clearing sequences are
+Guild-global and the same Founder/Company stream continues. New Founder creates a different
+Founder and Company stream: prior-identity results never apply, and the first settlement lookup
+advances the empty save to a no-effects lifecycle baseline before later exact-identity results can
+apply. This is the existing "Founders never interact" boundary made executable, not a new exchange
+rule.
+
 ## Acceptance criteria
 
 1. GC1: a signer's first accrual after `sign_compact` resolves the entry weight (golden vector
@@ -93,3 +113,6 @@ its contract; this RFC's AC list is the composition proof.
   GC3 assembles.
 - 2026-08-02: accepted for implementation by owner assignment; GC1-GC3 are normative.
 - 2026-08-02: GC1-GC3 implemented; awaiting the designated independent diff review before archival.
+- 2026-08-02: GC3a added after independent review demonstrated account-scoped clearing results
+  could be reapplied after Exit/New Founder and repeated boundaries could over-reserve offline
+  stock. Result identity, outstanding reservations, and lifecycle baselines are now normative.

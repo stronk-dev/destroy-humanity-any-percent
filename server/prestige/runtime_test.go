@@ -52,7 +52,8 @@ func TestLifetimeOfflineAndNewRunDeterminism(t *testing.T) {
 	company := &save.State{Ledger: companyLedger, GeneratorCounts: map[string]int64{"generator.beige_tower": 0}, EvaluatedThrough: now,
 		ManualTokenRefilledAt: now, GatesCrossed: map[string]bool{}, RunSeq: 4, DoctrinesByTransition: map[string]string{}, LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{},
 		CompactSamples: []save.CompactSample{}, LifetimeValue: decimal.New(5, 2), RunStartedAt: now.Add(-time.Hour), OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{},
-		FactionID: "open_source", IncorporatedAt: now.Add(-30 * time.Minute), StockUnits: 50, StockProgressMS: 12_000, ConsumedStockUnits: 4}
+		FactionID: "open_source", IncorporatedAt: now.Add(-30 * time.Minute), StockUnits: 50, StockProgressMS: 12_000, ConsumedStockUnits: 4,
+		GuildBoundaryGuildID: "018f0000-0000-7000-8000-000000000099", GuildBoundarySeq: 37, GuildConsumedWindow: 4}
 	founder := &save.State{Ledger: founderLedger, GeneratorCounts: map[string]int64{}, EvaluatedThrough: now, ManualTokenRefilledAt: now,
 		GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{}, LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{},
 		CompactSamples: []save.CompactSample{}, LifetimeValue: decimal.Zero, OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}, Notoriety: 20}
@@ -82,6 +83,9 @@ func TestLifetimeOfflineAndNewRunDeterminism(t *testing.T) {
 	}
 	if first.FactionID != "" || !first.IncorporatedAt.IsZero() || first.StockUnits != 0 || first.StockProgressMS != 0 || first.ConsumedStockUnits != 0 {
 		t.Fatalf("faction state survived run reset: %+v", first)
+	}
+	if first.GuildBoundaryGuildID != company.GuildBoundaryGuildID || first.GuildBoundarySeq != 37 || first.GuildConsumedWindow != 0 {
+		t.Fatalf("guild watermark did not carry forward: %+v", first)
 	}
 }
 

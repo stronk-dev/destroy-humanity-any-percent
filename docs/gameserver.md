@@ -34,8 +34,10 @@ also requires Postgres, a matching epoch, a running realtime node, and healthy b
 
 The composed Production service uses the real Guild `PendingSettlements` implementation. A
 clearing driver reads active members' authoritative Company saves, commits content-addressed Guild
-boundaries, and the next player intent applies each member's exact slice through the replay-input
-contract. The driver pages through every active Guild, retries snapshots invalidated by ordinary
+boundaries bound to each member's exact Founder, Company stream, and run, and the next player
+intent applies that identity's exact slice through the replay-input contract. Later snapshots net
+out committed-but-unapplied reservations, so scheduler ticks cannot allocate offline stock twice.
+The driver pages through every active Guild, retries snapshots invalidated by ordinary
 join/leave races, and restores historical saves with their revision timestamp and pinned Economy
 and Faction catalogs. All active members of one boundary must resolve the same pinned stock cap;
 a future cap-changing epoch is an explicit design gap and fails closed until its migration policy
@@ -65,7 +67,8 @@ The real-Postgres composition integration test boots this exact graph, creates a
 account and session, submits authoritative play, receives receipt and event envelopes over an
 authenticated WebSocket, observes a world snapshot, authorizes Guild but denies Match channels,
 authorizes both Guild and Commons cohort channels while Match remains denied, commits and consumes
-a real clearing settlement, restores a version-1 member at its authoritative revision timestamp,
+three reserved clearing boundaries without over-allocation, proves a New Founder cannot inherit an
+old settlement, restores a version-1 member at its authoritative revision timestamp,
 and drains to non-readiness. A separate startup-barrier fixture proves the attached clearing and
 session-GC jobs themselves perform their prime passes; the socket/settlement fixture independently
 proves pagination beyond the first Guild. `make test-save-integration` runs these inside the
