@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "limits": {
+    "max_text_utf8_bytes": 4096,
+    "max_text_lines": 16
+  },
+  "statistic_detector": {
+    "currency_tokens": ["$", "EUR", "GBP", "JPY", "USD", "£", "¥", "€"],
+    "unit_tokens": [
+      "GB",
+      "KB",
+      "MB",
+      "TB",
+      "byte",
+      "bytes",
+      "day",
+      "days",
+      "hour",
+      "hours",
+      "millisecond",
+      "milliseconds",
+      "minute",
+      "minutes",
+      "month",
+      "months",
+      "ppm",
+      "second",
+      "seconds",
+      "week",
+      "weeks",
+      "year",
+      "years"
+    ],
+    "historical_year_min": 1900,
+    "historical_year_max": 2100
+  }
+}

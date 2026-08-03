@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "references": [
+    {
+      "key": "compact.recruitment.mid_t3",
+      "source_file": "server/commonsprojection/projector.go"
+    },
+    {
+      "key": "route.registry_first_reordered",
+      "source_file": "server/routeprojection/projector.go"
+    }
+  ]
+}

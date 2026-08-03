@@ -1,9 +1,9 @@
 import generatedCatalog from "./generated/catalog.json";
 
 import { parseCanonical } from "../numeric";
-import { COPY_HASH, type CopyKey, type CopyParamsByKey } from "./generated/types";
+import { COPY_HASH, COPY_MAX_TEXT_LINES, COPY_MAX_TEXT_UTF8_BYTES, type CopyKey, type CopyParamsByKey } from "./generated/types";
 
-export { COPY_HASH, COPY_KEYS, type CopyKey, type CopyParamsByKey } from "./generated/types";
+export { COPY_HASH, COPY_KEYS, COPY_MAX_TEXT_LINES, COPY_MAX_TEXT_UTF8_BYTES, type CopyKey, type CopyParamsByKey } from "./generated/types";
 
 export type CopyEra = "era_1995" | "era_2000";
 export type CopyTone = "corporate" | "diegetic" | "lore_card" | "achievement";
@@ -62,7 +62,7 @@ function exactObject(value: unknown, keys: readonly string[], label: string): Re
 }
 
 function plainText(value: unknown, label: string): string {
-  if (typeof value !== "string" || value !== value.normalize("NFC") || new TextEncoder().encode(value).length > 4096 || value.split("\n").length > 16) {
+  if (typeof value !== "string" || value !== value.normalize("NFC") || new TextEncoder().encode(value).length > COPY_MAX_TEXT_UTF8_BYTES || value.split("\n").length > COPY_MAX_TEXT_LINES) {
     syntax(`${label} is not bounded NFC text`);
   }
   if (/[^\P{Cc}\n]/u.test(value) || /<\/?[a-z][^>]*>/iu.test(value) || /!?\[[^\]]+\]\([^)]+\)/u.test(value)) syntax(`${label} must be plain text`);
@@ -120,7 +120,7 @@ function parseEntry(value: unknown, label: string): CopyEntry {
   return Object.freeze({ key: row.key, text, params: Object.freeze(params), eraVariants, provenance: Object.freeze([...(row.provenance as string[])]), tone: row.tone as CopyTone });
 }
 
-export function loadCopyCatalog(bytes: string | Uint8Array, expectedHash?: string): CopyCatalog {
+export function loadCopyCatalog(bytes: string | Uint8Array): CopyCatalog {
   const source = typeof bytes === "string" ? bytes : new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   let value: unknown;
   try { value = JSON.parse(source); } catch (error) { syntax(`copy catalog is invalid JSON: ${String(error)}`); }
@@ -128,8 +128,17 @@ export function loadCopyCatalog(bytes: string | Uint8Array, expectedHash?: strin
   if (root.schema_version !== 1 || !Array.isArray(root.entries) || root.entries.length === 0) syntax("copy catalog must be non-empty schema version 1");
   const entries = root.entries.map((entry, index) => parseEntry(entry, `copy catalog.entries[${index}]`));
   if (entries.some((entry, index) => index > 0 && entries[index - 1].key >= entry.key)) syntax("copy catalog keys must be byte-sorted and unique");
-  if (expectedHash !== undefined && expectedHash !== COPY_HASH) syntax(`copy hash mismatch: expected ${expectedHash}, application has ${COPY_HASH}`);
   return Object.freeze({ schemaVersion: 1, copyHash: COPY_HASH, entries: Object.freeze(entries), byKey: new Map(entries.map((entry) => [entry.key, entry])) });
+}
+
+export async function hashCopyCatalog(bytes: string | Uint8Array): Promise<string> {
+  const encoded: Uint8Array<ArrayBuffer> = typeof bytes === "string" ? new TextEncoder().encode(bytes) : new Uint8Array(bytes);
+  const digest = await crypto.subtle.digest("SHA-256", encoded);
+  return `sha256:${[...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, "0")).join("")}`;
+}
+
+export async function verifyCopyCatalogHash(bytes: string | Uint8Array, expectedHash: string): Promise<boolean> {
+  return await hashCopyCatalog(bytes) === expectedHash;
 }
 
 function render(template: string, entry: CopyEntry, params: Readonly<Record<string, unknown>>): string {
@@ -176,7 +185,7 @@ export function resolveCopy(catalog: CopyCatalog, key: string, params: Readonly<
 }
 
 const generatedBytes = `${JSON.stringify(generatedCatalog, null, 2)}\n`;
-export const applicationCopyCatalog = loadCopyCatalog(generatedBytes, COPY_HASH);
+export const applicationCopyCatalog = loadCopyCatalog(generatedBytes);
 
 export function t<K extends CopyKey>(key: K, params: CopyParamsByKey[K], era?: CopyEra, options?: ResolveCopyOptions): string {
   return resolveCopy(applicationCopyCatalog, key, params, era, options);

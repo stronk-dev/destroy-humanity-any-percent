@@ -25,3 +25,15 @@
   and protected-term removal.
 - Root-only verification: `make copy-generate` green; `make copy-check` green; `make typecheck`
   green; `make test-client` green (6,506 passed, 3 skipped; 1 test file skipped).
+
+## 2026-08-03 — self-review hardening and canonical docs
+
+- Replaced the initially checked-in code-key list with an explicit producer-site registry and a
+  generated code-reference manifest. Generation requires each key to occur exactly once in its
+  declared Go producer; the pipeline does not infer references by property-name grep.
+- Moved text bounds and statistic detector tokens/year range into strict declared configuration;
+  the generated runtime constants and build-time lint now share that authority.
+- Added browser-standard SHA-256 verification for copy bytes and a mutation-discriminating test.
+- Published `docs/copy-pipeline.md`, including the safety gates' deliberately limited claims.
+- Re-ran normal root targets after hardening: `make copy-check`, `make typecheck`, and
+  `make test-client` green (6,507 passed, 3 skipped; 1 test file skipped).

@@ -25,16 +25,33 @@ const generatedCatalogPath = path.join(repositoryRoot, "client/src/copy/generate
 const generatedTypesPath = path.join(repositoryRoot, "client/src/copy/generated/types.ts");
 const generatedHashPath = path.join(repositoryRoot, "client/src/copy/generated/copy-hash.txt");
 const generatedOrphansPath = path.join(repositoryRoot, "copy/generated/orphans.v1.json");
+const generatedCodeReferencesPath = path.join(repositoryRoot, "copy/generated/code-references.v1.json");
 
 export const generatedPaths = Object.freeze([
   generatedCatalogPath,
   generatedTypesPath,
   generatedHashPath,
   generatedOrphansPath,
+  generatedCodeReferencesPath,
 ]);
 
 function fail(label, message) {
   throw new SyntaxError(`${label}: ${message}`);
+}
+
+let cachedConfig;
+
+function copyConfig() {
+  if (cachedConfig) return cachedConfig;
+  const root = exactObject(readJSON(path.join(repositoryRoot, "copy/config.v1.json")), ["limits", "schema_version", "statistic_detector"], "copy/config.v1.json");
+  const limits = exactObject(root.limits, ["max_text_lines", "max_text_utf8_bytes"], "copy/config.v1.json.limits");
+  const detector = exactObject(root.statistic_detector, ["currency_tokens", "historical_year_max", "historical_year_min", "unit_tokens"], "copy/config.v1.json.statistic_detector");
+  if (root.schema_version !== 1 || !Number.isSafeInteger(limits.max_text_utf8_bytes) || limits.max_text_utf8_bytes < 1 || !Number.isSafeInteger(limits.max_text_lines) || limits.max_text_lines < 1) fail("copy/config.v1.json", "has invalid limits");
+  sortedUnique(detector.currency_tokens, "copy/config.v1.json.statistic_detector.currency_tokens");
+  sortedUnique(detector.unit_tokens, "copy/config.v1.json.statistic_detector.unit_tokens");
+  if (!Number.isSafeInteger(detector.historical_year_min) || !Number.isSafeInteger(detector.historical_year_max) || detector.historical_year_min < 1000 || detector.historical_year_max > 9999 || detector.historical_year_min > detector.historical_year_max) fail("copy/config.v1.json", "has an invalid historical-year range");
+  cachedConfig = Object.freeze({ limits: Object.freeze({ maxTextBytes: limits.max_text_utf8_bytes, maxTextLines: limits.max_text_lines }), detector: Object.freeze({ currencyTokens: Object.freeze([...detector.currency_tokens]), unitTokens: Object.freeze([...detector.unit_tokens]), historicalYearMin: detector.historical_year_min, historicalYearMax: detector.historical_year_max }) });
+  return cachedConfig;
 }
 
 function exactObject(value, keys, label) {
@@ -56,7 +73,8 @@ function sortedUnique(values, label) {
   return values;
 }
 
-function normalizedString(value, label, { maxBytes = 4096, maxLines = 16 } = {}) {
+function normalizedString(value, label) {
+  const { maxTextBytes: maxBytes, maxTextLines: maxLines } = copyConfig().limits;
   if (typeof value !== "string") fail(label, "must be a string");
   if (value !== value.normalize("NFC")) fail(label, "must be NFC-normalized");
   if (Buffer.byteLength(value, "utf8") > maxBytes) fail(label, `exceeds ${maxBytes} UTF-8 bytes`);
@@ -265,7 +283,12 @@ function withoutPlaceholders(text) {
 
 export function containsStatistic(text) {
   const literal = withoutPlaceholders(text);
-  return /(?:\d+(?:\.\d+)?\s*%|[$€£¥]\s*\d|\d+(?:\.\d+)?\s*(?:USD|EUR|GBP|JPY|ppm|milliseconds?|seconds?|minutes?|hours?|days?|weeks?|months?|years?|bytes?|KB|MB|GB|TB)\b|\b(?:19\d{2}|20\d{2}|2100)\b)/u.test(literal);
+  const { currencyTokens, unitTokens, historicalYearMin, historicalYearMax } = copyConfig().detector;
+  const escaped = (value) => value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+  const currencies = currencyTokens.map(escaped).join("|");
+  const units = unitTokens.map(escaped).join("|");
+  if (new RegExp(`(?:\\d+(?:\\.\\d+)?\\s*%|(?:${currencies})\\s*\\d|\\d+(?:\\.\\d+)?\\s*(?:${currencies}|${units})\\b)`, "u").test(literal)) return true;
+  return (literal.match(/\b\d{4}\b/gu) ?? []).some((value) => Number(value) >= historicalYearMin && Number(value) <= historicalYearMax);
 }
 
 export function validateCopySafety(entries, claims, denylist) {
@@ -372,12 +395,27 @@ export function validateReferences(value, copyKeys, codeReferences) {
   return referenced;
 }
 
-function validateCodeReferences(value) {
-  const root = exactObject(value, ["keys", "schema_version"], "copy/code-references.v1.json");
-  if (root.schema_version !== 1) fail("copy/code-references.v1.json", "must be schema version 1");
-  sortedUnique(root.keys, "copy/code-references.v1.json.keys");
-  if (root.keys.some((key) => !mechanicalID.test(key))) fail("copy/code-references.v1.json.keys", "contains a non-mechanical key");
-  return root.keys;
+function codeReferencesFromSites() {
+  const label = "copy/code-reference-sites.v1.json";
+  const root = exactObject(readJSON(path.join(repositoryRoot, label)), ["references", "schema_version"], label);
+  if (root.schema_version !== 1 || !Array.isArray(root.references)) fail(label, "must be schema version 1");
+  const keys = [];
+  let previous = "";
+  for (let index = 0; index < root.references.length; index += 1) {
+    const rowLabel = `${label}.references[${index}]`;
+    const row = exactObject(root.references[index], ["key", "source_file"], rowLabel);
+    if (typeof row.key !== "string" || !mechanicalID.test(row.key) || row.key <= previous) fail(rowLabel, "keys must be byte-sorted unique mechanical IDs");
+    if (typeof row.source_file !== "string" || !/^server\/[a-z0-9_/-]+\.go$/u.test(row.source_file)) fail(`${rowLabel}.source_file`, "must name an explicit Go producer site");
+    const filename = path.resolve(repositoryRoot, row.source_file);
+    if (!filename.startsWith(`${path.join(repositoryRoot, "server")}${path.sep}`) || !existsSync(filename)) fail(`${rowLabel}.source_file`, "does not resolve under server");
+    const source = readFileSync(filename, "utf8");
+    const literal = JSON.stringify(row.key);
+    const occurrences = source.split(literal).length - 1;
+    if (occurrences !== 1) fail(rowLabel, `key must occur exactly once at its declared producer site (found ${occurrences})`);
+    previous = row.key;
+    keys.push(row.key);
+  }
+  return keys;
 }
 
 export function buildCopyArtifact() {
@@ -402,13 +440,13 @@ export function buildCopyArtifact() {
   const denylist = validateDenylist(readFileSync(path.join(repositoryRoot, "moderation/copy-denylist.txt"), "utf8"));
   validateCopySafety(entries, claims, denylist);
   const copyKeys = new Set(entries.map((entry) => entry.key));
-  const codeReferences = validateCodeReferences(readJSON(path.join(repositoryRoot, "copy/code-references.v1.json")));
+  const codeReferences = codeReferencesFromSites();
   const referenced = validateReferences(readJSON(path.join(repositoryRoot, "copy/references.v1.json")), copyKeys, codeReferences);
   const artifact = { schema_version: 1, entries };
   const bytes = `${JSON.stringify(artifact, null, 2)}\n`;
   const copyHash = `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
   const orphans = entries.map((entry) => entry.key).filter((key) => !referenced.has(key));
-  return { artifact, bytes, copyHash, orphans };
+  return { artifact, bytes, copyHash, orphans, codeReferences };
 }
 
 function tsType(type) {
@@ -417,9 +455,12 @@ function tsType(type) {
 }
 
 export function generatedTypes(entries, copyHash) {
+  const config = copyConfig();
   const lines = [
     "// Generated by `make copy-generate`; do not edit.",
     `export const COPY_HASH = ${JSON.stringify(copyHash)} as const;`,
+    `export const COPY_MAX_TEXT_UTF8_BYTES = ${config.limits.maxTextBytes} as const;`,
+    `export const COPY_MAX_TEXT_LINES = ${config.limits.maxTextLines} as const;`,
     "",
     "export interface CopyParamsByKey {",
   ];
@@ -440,6 +481,7 @@ export function generatedOutputs() {
     [generatedTypesPath, generatedTypes(built.artifact.entries, built.copyHash)],
     [generatedHashPath, `${built.copyHash}\n`],
     [generatedOrphansPath, `${JSON.stringify({ schema_version: 1, keys: built.orphans }, null, 2)}\n`],
+    [generatedCodeReferencesPath, `${JSON.stringify({ schema_version: 1, keys: built.codeReferences }, null, 2)}\n`],
   ]);
 }
 

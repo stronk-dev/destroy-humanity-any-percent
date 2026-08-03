@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { loadCopyCatalog, resolveCopy } from "../src/copy";
+import generatedCatalog from "../src/copy/generated/catalog.json";
+import { COPY_HASH, loadCopyCatalog, resolveCopy, verifyCopyCatalogHash } from "../src/copy";
 
 function catalog(entry: Record<string, unknown>): string {
   return `${JSON.stringify({ schema_version: 1, entries: [entry] })}\n`;
@@ -19,6 +20,12 @@ const base = {
 };
 
 describe("copy catalog", () => {
+  it("binds the generated artifact to its independent copy hash", async () => {
+    const bytes = `${JSON.stringify(generatedCatalog, null, 2)}\n`;
+    await expect(verifyCopyCatalogHash(bytes, COPY_HASH)).resolves.toBe(true);
+    await expect(verifyCopyCatalogHash(bytes.replace("Any%", "Other%"), COPY_HASH)).resolves.toBe(false);
+  });
+
   it("round-trips typed params, literal braces, era overrides, and fallback", () => {
     const loaded = loadCopyCatalog(catalog(base));
     expect(resolveCopy(loaded, "test.message", { amount: "1.25e6", count: 2 })).toBe("Balance: 1.25e6 {audited} after 2 days");

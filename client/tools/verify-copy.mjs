@@ -50,7 +50,7 @@ expectFailure("missing statistic provenance fixture", () => validateCopySafety([
 expectFailure("known-name copy fixture", () => validateCopySafety([{ ...safetyEntry, text: "Habbo", provenance: [] }], claims, terms), /known red-list term habbo/);
 
 const references = JSON.parse(readFileSync(path.join(repositoryRoot, "copy/references.v1.json"), "utf8"));
-const codeReferences = JSON.parse(readFileSync(path.join(repositoryRoot, "copy/code-references.v1.json"), "utf8")).keys;
+const codeReferences = built.codeReferences;
 const keys = new Set(built.artifact.entries.map((entry) => entry.key));
 const missing = new Set(keys);
 missing.delete("category.any_percent");
