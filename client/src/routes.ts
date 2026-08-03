@@ -175,8 +175,8 @@ function adjacentBoundaryStart(value: string, prefix: "gate" | "transition"): nu
 }
 
 export function parseRoutePredicate(source: unknown): readonly RouteCondition[] {
-  const values = Array.isArray(source) ? source : [source];
-  if (values.length === 0) throw new SyntaxError("predicate must not be empty");
+  if (!Array.isArray(source) || source.length === 0) throw new SyntaxError("predicate must be a non-empty array");
+  const values = source;
   return Object.freeze(values.map((value, index) => parseCondition(value, index)));
 }
 

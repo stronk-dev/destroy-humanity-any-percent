@@ -90,24 +90,32 @@ type NamedCount struct {
 	Count int64  `json:"count"`
 }
 
+type RoleActivationCount struct {
+	GeneratorID string                    `json:"generator_id"`
+	Kind        economy.GeneratorRoleKind `json:"kind"`
+	TargetID    string                    `json:"target_id"`
+	Count       int64                     `json:"count"`
+}
+
 type ResourceAmount struct {
 	ResourceID string `json:"resource_id"`
 	Amount     string `json:"amount"`
 }
 
 type RunReport struct {
-	Key                  RunKey           `json:"key"`
-	Outcome              string           `json:"outcome"`
-	FinalVirtualMS       int64            `json:"final_virtual_ms"`
-	FinalStateHash       string           `json:"final_state_hash"`
-	Milestones           []TimedMilestone `json:"milestones"`
-	Applied              []NamedCount     `json:"applied"`
-	Rejected             []NamedCount     `json:"rejected"`
-	SourceTotals         []ResourceAmount `json:"source_totals"`
-	SinkTotals           []ResourceAmount `json:"sink_totals"`
-	FinalBalances        []ResourceAmount `json:"final_balances"`
-	MaximumProgressGapMS int64            `json:"maximum_progress_gap_ms"`
-	InvariantFailures    []string         `json:"invariant_failures"`
+	Key                  RunKey                `json:"key"`
+	Outcome              string                `json:"outcome"`
+	FinalVirtualMS       int64                 `json:"final_virtual_ms"`
+	FinalStateHash       string                `json:"final_state_hash"`
+	Milestones           []TimedMilestone      `json:"milestones"`
+	Applied              []NamedCount          `json:"applied"`
+	Rejected             []NamedCount          `json:"rejected"`
+	RoleActivations      []RoleActivationCount `json:"role_activations,omitempty"`
+	SourceTotals         []ResourceAmount      `json:"source_totals"`
+	SinkTotals           []ResourceAmount      `json:"sink_totals"`
+	FinalBalances        []ResourceAmount      `json:"final_balances"`
+	MaximumProgressGapMS int64                 `json:"maximum_progress_gap_ms"`
+	InvariantFailures    []string              `json:"invariant_failures"`
 }
 
 type AggregateValue struct {
@@ -314,6 +322,7 @@ func (suite *Suite) run(spec RunSpec, seed uint64) RunReport {
 	uuids := NewUUIDStream(seed)
 	milestones := make(map[string]*int64)
 	applied, rejected := map[string]int64{}, map[string]int64{}
+	roleActivations := map[string]RoleActivationCount{}
 	sources, sinks := map[string][]decimal.Decimal{}, map[string][]decimal.Decimal{}
 	times := actionTimes(spec.PolicyID, spec.HorizonMS)
 	if times == nil || (spec.PolicyID == "casual.phase0" && spec.PolicyVersion != 1) ||
@@ -345,15 +354,22 @@ func (suite *Suite) run(spec RunSpec, seed uint64) RunReport {
 		}
 		beforeBalances := state.Ledger.Snapshot()
 		beforeRevision := revision
-		decision, err := production.SimulateTransition(request, candidate, suite.Catalog, save.Revision{Number: revision,
+		simulation, err := production.SimulateTransition(request, candidate, suite.Catalog, production.SimulationDependencies{Routes: suite.RoutesCatalog}, save.Revision{Number: revision,
 			ConstantsHash: suite.ConstantsHash}, mode, now, nil, nil, production.AblationMask{})
 		if err != nil {
 			return failed(report, err)
 		}
+		decision := simulation.Decision
 		if decision.Outcome == save.IntentApplied {
 			state = candidate
 			revision++
 			applied[kind]++
+			for _, activation := range simulation.RoleActivations {
+				key := activation.GeneratorID + "\x00" + string(activation.Kind) + "\x00" + activation.TargetID
+				entry := roleActivations[key]
+				entry.GeneratorID, entry.Kind, entry.TargetID, entry.Count = activation.GeneratorID, activation.Kind, activation.TargetID, entry.Count+1
+				roleActivations[key] = entry
+			}
 			if revision != beforeRevision+1 {
 				report.InvariantFailures = append(report.InvariantFailures, "revision_monotone")
 				break
@@ -382,6 +398,7 @@ func (suite *Suite) run(spec RunSpec, seed uint64) RunReport {
 	report.Milestones = milestoneReport(suite.Scenario.Milestones, milestones, &report.InvariantFailures)
 	report.Applied = namedCounts(applied)
 	report.Rejected = namedCounts(rejected)
+	report.RoleActivations = sortedRoleActivations(roleActivations)
 	report.SourceTotals = resourceTotals(sources)
 	report.SinkTotals = resourceTotals(sinks)
 	report.FinalBalances = balancesReport(state.Ledger.Snapshot())
@@ -802,6 +819,19 @@ func namedCounts(source map[string]int64) []NamedCount {
 	result := make([]NamedCount, 0, len(ids))
 	for _, id := range ids {
 		result = append(result, NamedCount{ID: id, Count: source[id]})
+	}
+	return result
+}
+
+func sortedRoleActivations(source map[string]RoleActivationCount) []RoleActivationCount {
+	keys := make([]string, 0, len(source))
+	for key := range source {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	result := make([]RoleActivationCount, 0, len(keys))
+	for _, key := range keys {
+		result = append(result, source[key])
 	}
 	return result
 }

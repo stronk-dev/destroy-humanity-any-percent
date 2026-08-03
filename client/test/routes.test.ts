@@ -47,7 +47,8 @@ describe("routes catalog and predicate parity", () => {
   });
 
   it.each(fixture.vectors)("evaluates $name", (vector) => {
-    expect(evaluatePredicate(parseRoutePredicate(vector.condition), context(vector.context))).toBe(vector.expected);
+    const predicate = Array.isArray(vector.condition) ? vector.condition : [vector.condition];
+    expect(evaluatePredicate(parseRoutePredicate(predicate), context(vector.context))).toBe(vector.expected);
   });
 
   it("rejects a single-run-reachable catalog and unavailable active context", () => {
@@ -72,6 +73,6 @@ describe("routes catalog and predicate parity", () => {
   });
 
   it("rejects unknown predicate fields", () => {
-    expect(() => parseRoutePredicate({ kind: "structure_is", structure_id: "structure.nonprofit", surprise: true })).toThrow(/fields/);
+    expect(() => parseRoutePredicate([{ kind: "structure_is", structure_id: "structure.nonprofit", surprise: true }])).toThrow(/fields/);
   });
 });

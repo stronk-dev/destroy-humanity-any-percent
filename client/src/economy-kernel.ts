@@ -671,7 +671,7 @@ export function validateCatalogGateReferences(catalog: EconomyCatalog, gateIds: 
   for (const upgrade of catalog.upgrades) {
     if (upgrade.window.fromGate !== null && !known.has(upgrade.window.fromGate) || upgrade.window.toGate !== null && !known.has(upgrade.window.toGate)) throw new SyntaxError(`upgrade ${upgrade.id} references unknown availability gate`);
     for (const condition of upgrade.requires) {
-      if ((condition.kind === "resource_at_least" || condition.kind === "resource_at_most") && !catalog.resource(condition.resourceId)) throw new SyntaxError(`upgrade ${upgrade.id} references unknown resource`);
+      if ((condition.kind === "resource_at_least" || condition.kind === "resource_at_most") && catalog.resource(condition.resourceId)?.scope !== "company") throw new SyntaxError(`upgrade ${upgrade.id} references non-company resource`);
     }
   }
 }

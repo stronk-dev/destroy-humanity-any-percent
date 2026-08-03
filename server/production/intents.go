@@ -617,6 +617,12 @@ func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *e
 
 func transitionWithSimulationPolicy(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, compactBand *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, sink InvariantSink, hook AccrualHook, policy *simulationPolicy) (save.IntentDecision, error) {
 	service := Service{simulation: policy}
+	if request.Kind == IntentBuyGenerator && policy.removesGenerator(request.GeneratorID) {
+		return rejectedDecision(request, revision.Number, "unknown_id", request.GeneratorID)
+	}
+	if request.Kind == IntentBuyUpgrade && policy.removesUpgrade(request.UpgradeID) {
+		return rejectedDecision(request, revision.Number, "unknown_id", request.UpgradeID)
+	}
 	if request.Kind == IntentPerformManualBatch && policy.removesAction(request.ActionID) {
 		return rejectedDecision(request, revision.Number, "unknown_id", request.ActionID)
 	}

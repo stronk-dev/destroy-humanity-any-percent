@@ -68,6 +68,13 @@ func TestPurchasableCatalogV4RejectsUnboundRolesAndTopology(t *testing.T) {
 		"upgrade-effect-duplicates-pool": func(root map[string]any) {
 			root["upgrades"].([]any)[0].(map[string]any)["effects"].([]any)[0].(map[string]any)["source_id"] = "pool.operations"
 		},
+		"scalar-upgrade-requires": func(root map[string]any) {
+			upgrade := root["upgrades"].([]any)[0].(map[string]any)
+			upgrade["requires"] = upgrade["requires"].([]any)[0]
+		},
+		"empty-upgrade-requires": func(root map[string]any) {
+			root["upgrades"].([]any)[0].(map[string]any)["requires"] = []any{}
+		},
 	}
 	for name, mutate := range cases {
 		t.Run(name, func(t *testing.T) {
@@ -84,6 +91,29 @@ func TestPurchasableCatalogV4RejectsUnboundRolesAndTopology(t *testing.T) {
 				t.Fatal("invalid foundation catalog was accepted")
 			}
 		})
+	}
+}
+
+func TestUpgradeResourcePredicatesRequireCompanyScope(t *testing.T) {
+	var root map[string]any
+	if err := json.Unmarshal(foundationCatalogBytes(t), &root); err != nil {
+		t.Fatal(err)
+	}
+	root["resources"] = append(root["resources"].([]any), map[string]any{
+		"id": "founder.clout", "scope": "founder", "numeric_kind": "decimal", "initial": "0", "minimum": "0", "hardcap": nil,
+	})
+	condition := root["upgrades"].([]any)[0].(map[string]any)["requires"].([]any)[0].(map[string]any)
+	condition["resource_id"] = "founder.clout"
+	data, err := json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := catalog.ValidateGateReferences([]string{"gate.t0_to_t1"}); err == nil {
+		t.Fatal("non-company upgrade predicate was accepted")
 	}
 }
 

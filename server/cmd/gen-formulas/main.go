@@ -112,6 +112,7 @@ type authorityKind int
 
 const (
 	authorityFunction authorityKind = iota
+	authorityMethod
 	authorityValue
 )
 
@@ -124,10 +125,12 @@ type authoritySpec struct {
 
 var formulaAuthorities = []authoritySpec{
 	{label: "production.ratesWithProvisionedAndPolicy", path: "production/engine.go", kind: authorityFunction, symbol: "ratesWithProvisionedAndPolicy"},
+	{label: "production.accrueContent", path: "production/engine.go", kind: authorityFunction, symbol: "accrueContent"},
 	{label: "production.contentContributionsWithPolicy", path: "production/content.go", kind: authorityFunction, symbol: "contentContributionsWithPolicy"},
 	{label: "production.countPPMFactor", path: "production/content.go", kind: authorityFunction, symbol: "countPPMFactor"},
 	{label: "production.synergyFactor", path: "production/content.go", kind: authorityFunction, symbol: "synergyFactor"},
 	{label: "production.materializeProvisionBoundaryWithPolicy", path: "production/content.go", kind: authorityFunction, symbol: "materializeProvisionBoundaryWithPolicy"},
+	{label: "faction.AccrualHook.AfterAccrual", path: "faction/hook.go", kind: authorityMethod, symbol: "AfterAccrual"},
 	{label: "multiplier.Order", path: "multiplier/contribution.go", kind: authorityValue, symbol: "Order"},
 	{label: "multiplier.OrderedSourceIDs", path: "multiplier/contribution.go", kind: authorityFunction, symbol: "OrderedSourceIDs"},
 	{label: "commons.EnclosureIndex", path: "commons/formula.go", kind: authorityFunction, symbol: "EnclosureIndex"},
@@ -324,6 +327,11 @@ func canonicalAuthority(source []byte, authority authoritySpec) ([]byte, error) 
 		case authorityFunction:
 			function, ok := declaration.(*ast.FuncDecl)
 			if ok && function.Recv == nil && function.Name.Name == authority.symbol {
+				matches = append(matches, function)
+			}
+		case authorityMethod:
+			function, ok := declaration.(*ast.FuncDecl)
+			if ok && function.Recv != nil && function.Name.Name == authority.symbol {
 				matches = append(matches, function)
 			}
 		case authorityValue:

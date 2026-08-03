@@ -225,6 +225,20 @@ async function main() {
     }
   }
 
+  const foundationShape = await readJSON(path.join(repositoryDirectory, "testdata", "economy-foundation-v4.json"));
+  const phase0Shape = await readJSON(production[0]);
+  const schemaParityCases = [
+    ["scalar upgrade requires", (value) => { value.upgrades[0].requires = value.upgrades[0].requires[0]; }, foundationShape],
+    ["empty upgrade requires", (value) => { value.upgrades[0].requires = []; }, foundationShape],
+    ["v3 root with upgrades", (value) => { value.upgrades = []; }, phase0Shape],
+    ["v3 generator with roles", (value) => { value.generator_classes[0].roles = []; }, phase0Shape],
+  ];
+  for (const [name, mutate, source] of schemaParityCases) {
+    const candidate = structuredClone(source);
+    mutate(candidate);
+    if (validate(candidate)) throw new Error(`economy schema accepted ${name}`);
+  }
+
   await verifyResourceLogSource();
 
   const companyResourceIDs = new Set();

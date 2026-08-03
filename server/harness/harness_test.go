@@ -10,8 +10,20 @@ import (
 	"sync/atomic"
 	"testing"
 
+	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
 )
+
+func TestRoleActivationCountsAreCanonicalAndComplete(t *testing.T) {
+	counts := map[string]RoleActivationCount{
+		"generator.low\x00stock_rate\x00faction.stock": {GeneratorID: "generator.low", Kind: economy.RoleStockRate, TargetID: "faction.stock", Count: 3},
+		"generator.high\x00provision\x00generator.low": {GeneratorID: "generator.high", Kind: economy.RoleProvision, TargetID: "generator.low", Count: 2},
+	}
+	got := sortedRoleActivations(counts)
+	if len(got) != 2 || got[0].GeneratorID != "generator.high" || got[0].Count != 2 || got[1].GeneratorID != "generator.low" || got[1].Count != 3 {
+		t.Fatalf("role activation counts=%+v", got)
+	}
+}
 
 func TestSuiteConstantsHashUsesEpochManifest(t *testing.T) {
 	root := filepath.Join("..", "..")

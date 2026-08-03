@@ -73,6 +73,9 @@ func contentContributionsWithPolicy(state *save.State, catalog *economy.Catalog,
 				if !exists {
 					return nil, ErrInvalidEngineState
 				}
+				if count > 0 {
+					policy.candidate(RoleActivation{GeneratorID: source.ID, Kind: economy.RoleSynergyFeed, TargetID: pool.ID})
+				}
 			case economy.SynergyUpgrade:
 				if state.UpgradesOwned[source.ID] && !policy.masksUpgrade(source.ID) {
 					count = 1
@@ -203,6 +206,9 @@ func materializeProvisionBoundaryWithPolicy(catalog *economy.Catalog, purchased,
 			return ErrInvalidEngineState
 		}
 		sourceTotal := new(big.Int).Add(big.NewInt(sourcePurchased), big.NewInt(sourceProvisioned))
+		if sourceTotal.Sign() > 0 {
+			policy.activate(RoleActivation{GeneratorID: source.ID, Kind: economy.RoleProvision, TargetID: source.Provision.GeneratorID})
+		}
 		numerator := new(big.Int).Mul(sourceTotal, big.NewInt(source.Provision.RatePPM))
 		numerator.Add(numerator, big.NewInt(priorRemainder))
 		quotient, remainder := new(big.Int), new(big.Int)

@@ -9,9 +9,19 @@ import (
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/faction"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
+
+const foundationConstantsHash = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+type foundationCatchupPolicies map[string]int64
+
+func (policies foundationCatchupPolicies) ResolveCatchupCeilingMS(hash string) (int64, bool) {
+	value, ok := policies[hash]
+	return value, ok
+}
 
 func foundationCatalog(t *testing.T) *economy.Catalog {
 	t.Helper()
@@ -52,6 +62,33 @@ func foundationRoutes(t *testing.T) *routes.Catalog {
 		t.Fatal(err)
 	}
 	return catalog
+}
+
+func foundationFactionCatalog(t *testing.T) *faction.Catalog {
+	t.Helper()
+	data, err := os.ReadFile("../../balance/factions/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := faction.LoadCatalog(data, faction.CompactTitheBand{MinimumPPM: 50_000, DefaultPPM: 100_000, MaximumPPM: 150_000})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return catalog
+}
+
+func rejectionDetail(t *testing.T, decision save.IntentDecision) (string, string) {
+	t.Helper()
+	var receipt struct {
+		Rejection struct {
+			Category string `json:"category"`
+			Detail   string `json:"detail"`
+		} `json:"rejection"`
+	}
+	if err := json.Unmarshal(decision.Receipt, &receipt); err != nil {
+		t.Fatal(err)
+	}
+	return receipt.Rejection.Category, receipt.Rejection.Detail
 }
 
 func TestContentContributionsUsePurchasedCountsAndRawSourceOrder(t *testing.T) {
@@ -219,6 +256,49 @@ func TestBuyUpgradeAppliesCostOwnershipAndTypedEvent(t *testing.T) {
 	}
 }
 
+func TestBuyUpgradeEligibilityUsesPostAccrualStateAndTypedRejections(t *testing.T) {
+	catalog := foundationCatalog(t)
+	routeCatalog := foundationRoutes(t)
+	started := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
+	request := IntentRequest{IntentID: "01986666-0206-7000-8000-000000000206", Kind: IntentBuyUpgrade, ExpectedRevision: 1, UpgradeID: "upgrade.click"}
+	revision := save.Revision{Number: 1}
+
+	requires := foundationState(t, catalog, started)
+	decision, err := TransitionWithPolicies(request, requires, catalog, routeCatalog, nil, nil, revision, ModeOnline, started, nil, nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	category, detail := rejectionDetail(t, decision)
+	if decision.Outcome != save.IntentRejected || category != "not_eligible" || detail != "requires" {
+		t.Fatalf("requires decision=%+v category=%s detail=%s", decision, category, detail)
+	}
+
+	window := foundationState(t, catalog, started)
+	if _, err := window.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: decimal.FromString("1e3")}}}); err != nil {
+		t.Fatal(err)
+	}
+	window.GatesCrossed["gate.t0_to_t1"] = true
+	decision, err = TransitionWithPolicies(request, window, catalog, routeCatalog, nil, nil, revision, ModeOnline, started, nil, nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	category, detail = rejectionDetail(t, decision)
+	if decision.Outcome != save.IntentRejected || category != "not_eligible" || detail != "window" {
+		t.Fatalf("window decision=%+v category=%s detail=%s", decision, category, detail)
+	}
+
+	accrued := foundationState(t, catalog, started)
+	accrued.GeneratorCounts["generator.high"] = 1
+	decision, err = TransitionWithPolicies(request, accrued, catalog, routeCatalog, nil, nil, revision, ModeOnline, started.Add(10*time.Second), nil, nil, nil)
+	if err != nil || decision.Outcome != save.IntentApplied || !accrued.UpgradesOwned["upgrade.click"] {
+		t.Fatalf("post-accrual decision=%+v owned=%v err=%v", decision, accrued.UpgradesOwned, err)
+	}
+	balance, _ := accrued.Ledger.Balance("company.cash")
+	if !balance.Eq(decimal.Zero) {
+		t.Fatalf("post-accrual balance=%s", balance)
+	}
+}
+
 func TestManualOutputRoleUsesPurchasedCountOnly(t *testing.T) {
 	catalog := foundationCatalog(t)
 	now := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
@@ -257,13 +337,119 @@ func TestSimulationMaskNullsWholeGeneratorOutputWithoutChangingOwnership(t *test
 	state.GeneratorCounts["generator.low"] = 10
 	state.ManualTokenMilli = 50_000
 	request := IntentRequest{IntentID: "01986666-0202-7000-8000-000000000202", Kind: IntentPerformManualBatch, ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1}
-	decision, err := SimulateTransition(request, state, catalog, save.Revision{Number: 1}, ModeOnline, now, nil, nil, AblationMask{GeneratorIDs: []string{"generator.low"}})
-	if err != nil || decision.Outcome != save.IntentApplied {
-		t.Fatalf("decision=%+v err=%v", decision, err)
+	result, err := SimulateTransition(request, state, catalog, SimulationDependencies{Routes: foundationRoutes(t)}, save.Revision{Number: 1}, ModeOnline, now, nil, nil, AblationMask{GeneratorIDs: []string{"generator.low"}})
+	if err != nil || result.Decision.Outcome != save.IntentApplied {
+		t.Fatalf("decision=%+v err=%v", result.Decision, err)
 	}
 	balance, _ := state.Ledger.Balance("company.cash")
 	if balance.String() != "1e0" || state.GeneratorCounts["generator.low"] != 10 {
 		t.Fatalf("balance=%s counts=%v", balance, state.GeneratorCounts)
+	}
+}
+
+func TestSimulationUpgradeEffectMaskPreservesPurchaseAndNullsOutput(t *testing.T) {
+	catalog := foundationCatalog(t)
+	dependencies := SimulationDependencies{Routes: foundationRoutes(t)}
+	now := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
+	state := foundationState(t, catalog, now)
+	if _, err := state.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: decimal.FromString("1e3")}}}); err != nil {
+		t.Fatal(err)
+	}
+	buy := IntentRequest{IntentID: "01986666-0207-7000-8000-000000000207", Kind: IntentBuyUpgrade, ExpectedRevision: 1, UpgradeID: "upgrade.click"}
+	mask := AblationMask{UpgradeIDs: []string{"upgrade.click"}}
+	result, err := SimulateTransition(buy, state, catalog, dependencies, save.Revision{Number: 1}, ModeOnline, now, nil, nil, mask)
+	if err != nil || result.Decision.Outcome != save.IntentApplied || !state.UpgradesOwned["upgrade.click"] {
+		t.Fatalf("buy result=%+v owned=%v err=%v", result, state.UpgradesOwned, err)
+	}
+	state.ManualTokenMilli = 50_000
+	manual := IntentRequest{IntentID: "01986666-0208-7000-8000-000000000208", Kind: IntentPerformManualBatch, ExpectedRevision: 2, ActionID: "manual.click", Count: 1, WindowMS: 1}
+	result, err = SimulateTransition(manual, state, catalog, dependencies, save.Revision{Number: 2}, ModeOnline, now, nil, nil, mask)
+	if err != nil || result.Decision.Outcome != save.IntentApplied {
+		t.Fatalf("manual result=%+v err=%v", result, err)
+	}
+	balance, _ := state.Ledger.Balance("company.cash")
+	if balance.String() != "9.01e2" {
+		t.Fatalf("masked upgrade balance=%s", balance)
+	}
+}
+
+func TestSimulationActionRemovalRejectsEveryOwnedActionBeforeAccrual(t *testing.T) {
+	catalog := foundationCatalog(t)
+	dependencies := SimulationDependencies{Routes: foundationRoutes(t)}
+	started := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
+	tests := []struct {
+		name    string
+		request IntentRequest
+		mask    AblationMask
+		detail  string
+	}{
+		{name: "generator", request: IntentRequest{IntentID: "01986666-0209-7000-8000-000000000209", Kind: IntentBuyGenerator, ExpectedRevision: 1, GeneratorID: "generator.low", Count: 1, CountMode: "exact"}, mask: AblationMask{RemovedGeneratorIDs: []string{"generator.low"}}, detail: "generator.low"},
+		{name: "upgrade", request: IntentRequest{IntentID: "01986666-0210-7000-8000-000000000210", Kind: IntentBuyUpgrade, ExpectedRevision: 1, UpgradeID: "upgrade.click"}, mask: AblationMask{RemovedUpgradeIDs: []string{"upgrade.click"}}, detail: "upgrade.click"},
+		{name: "manual", request: IntentRequest{IntentID: "01986666-0211-7000-8000-000000000211", Kind: IntentPerformManualBatch, ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1}, mask: AblationMask{RemovedActionIDs: []string{"manual.click"}}, detail: "manual.click"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			state := foundationState(t, catalog, started)
+			state.GeneratorCounts["generator.low"] = 10
+			state.ManualTokenMilli = 50_000
+			if _, err := state.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: decimal.FromString("1e3")}}}); err != nil {
+				t.Fatal(err)
+			}
+			result, err := SimulateTransition(test.request, state, catalog, dependencies, save.Revision{Number: 1}, ModeOnline, started.Add(time.Minute), nil, nil, test.mask)
+			if err != nil {
+				t.Fatal(err)
+			}
+			category, detail := rejectionDetail(t, result.Decision)
+			if result.Decision.Outcome != save.IntentRejected || category != "unknown_id" || detail != test.detail || !state.EvaluatedThrough.Equal(started) {
+				t.Fatalf("result=%+v category=%s detail=%s evaluated=%s", result, category, detail, state.EvaluatedThrough)
+			}
+		})
+	}
+}
+
+func TestSimulationStockRateActivationRequiresNonNeutralRealHook(t *testing.T) {
+	catalog := foundationCatalog(t)
+	factionCatalog := foundationFactionCatalog(t)
+	hook := faction.AccrualHook{
+		Catalogs: faction.CatalogSet{foundationConstantsHash: factionCatalog},
+		Policies: foundationCatchupPolicies{foundationConstantsHash: 120_000},
+	}
+	dependencies := SimulationDependencies{Routes: foundationRoutes(t), Hook: hook}
+	started := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
+	request := IntentRequest{IntentID: "01986666-0212-7000-8000-000000000212", Kind: IntentPerformManualBatch, ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1}
+
+	state := foundationState(t, catalog, started)
+	state.FactionID = "bootstrapper"
+	state.GeneratorCounts["generator.low"] = 10
+	state.ManualTokenMilli = 50_000
+	result, err := SimulateTransition(request, state, catalog, dependencies, save.Revision{Number: 1, ConstantsHash: foundationConstantsHash}, ModeOnline, started.Add(time.Minute), nil, nil, AblationMask{})
+	if err != nil || result.Decision.Outcome != save.IntentApplied {
+		t.Fatalf("result=%+v err=%v", result, err)
+	}
+	want := RoleActivation{GeneratorID: "generator.low", Kind: economy.RoleStockRate, TargetID: "faction.stock"}
+	found := false
+	for _, activation := range result.RoleActivations {
+		found = found || activation == want
+	}
+	if !found || state.StockUnits != 1 || state.StockProgressMS != 1_200 {
+		t.Fatalf("activations=%+v stock=%d progress=%d", result.RoleActivations, state.StockUnits, state.StockProgressMS)
+	}
+
+	masked := foundationState(t, catalog, started)
+	masked.FactionID = "bootstrapper"
+	masked.GeneratorCounts["generator.low"] = 10
+	masked.ManualTokenMilli = 50_000
+	result, err = SimulateTransition(request, masked, catalog, dependencies, save.Revision{Number: 1, ConstantsHash: foundationConstantsHash}, ModeOnline, started.Add(time.Minute), nil, nil, AblationMask{GeneratorIDs: []string{"generator.low"}})
+	if err != nil || result.Decision.Outcome != save.IntentApplied {
+		t.Fatalf("masked result=%+v err=%v", result, err)
+	}
+	for _, activation := range result.RoleActivations {
+		if activation == want {
+			t.Fatalf("masked stock role activated: %+v", result.RoleActivations)
+		}
+	}
+	if masked.StockUnits != 1 || masked.StockProgressMS != 0 {
+		t.Fatalf("masked stock=%d progress=%d", masked.StockUnits, masked.StockProgressMS)
 	}
 }
 
@@ -274,9 +460,10 @@ func TestSimulationMaskNullsProvisionEdgeAndRemovedActionRejectsBeforeAccrual(t 
 	state.GeneratorCounts["generator.high"] = 2
 	state.ManualTokenMilli = 50_000
 	request := IntentRequest{IntentID: "01986666-0203-7000-8000-000000000203", Kind: IntentPerformManualBatch, ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1}
-	decision, err := SimulateTransition(request, state, catalog, save.Revision{Number: 1}, ModeOnline, started.Add(180*time.Second), nil, nil, AblationMask{GeneratorIDs: []string{"generator.high"}})
-	if err != nil || decision.Outcome != save.IntentApplied || state.GeneratorProvisioned["generator.low"] != 0 {
-		t.Fatalf("decision=%+v provisioned=%v err=%v", decision, state.GeneratorProvisioned, err)
+	dependencies := SimulationDependencies{Routes: foundationRoutes(t)}
+	result, err := SimulateTransition(request, state, catalog, dependencies, save.Revision{Number: 1}, ModeOnline, started.Add(180*time.Second), nil, nil, AblationMask{GeneratorIDs: []string{"generator.high"}})
+	if err != nil || result.Decision.Outcome != save.IntentApplied || state.GeneratorProvisioned["generator.low"] != 0 {
+		t.Fatalf("decision=%+v provisioned=%v err=%v", result.Decision, state.GeneratorProvisioned, err)
 	}
 	balance, _ := state.Ledger.Balance("company.cash")
 	if balance.String() != "1e0" {
@@ -286,9 +473,9 @@ func TestSimulationMaskNullsProvisionEdgeAndRemovedActionRejectsBeforeAccrual(t 
 	rejectedState := foundationState(t, catalog, started)
 	rejectedState.GeneratorCounts["generator.low"] = 10
 	rejectedState.ManualTokenMilli = 50_000
-	rejected, err := SimulateTransition(request, rejectedState, catalog, save.Revision{Number: 1}, ModeOnline, started.Add(time.Minute), nil, nil, AblationMask{RemovedActionIDs: []string{"manual.click"}})
-	if err != nil || rejected.Outcome != save.IntentRejected || !rejectedState.EvaluatedThrough.Equal(started) {
-		t.Fatalf("rejected=%+v evaluated=%s err=%v", rejected, rejectedState.EvaluatedThrough, err)
+	rejected, err := SimulateTransition(request, rejectedState, catalog, dependencies, save.Revision{Number: 1}, ModeOnline, started.Add(time.Minute), nil, nil, AblationMask{RemovedActionIDs: []string{"manual.click"}})
+	if err != nil || rejected.Decision.Outcome != save.IntentRejected || !rejectedState.EvaluatedThrough.Equal(started) {
+		t.Fatalf("rejected=%+v evaluated=%s err=%v", rejected.Decision, rejectedState.EvaluatedThrough, err)
 	}
 }
 
@@ -309,9 +496,9 @@ func TestSimulationMaskAppliesAcrossDeclineOfferEvaluation(t *testing.T) {
 		ExpectedRevision: 1,
 		OfferID:          state.OfferState.OfferID,
 	}
-	decision, err := SimulateTransition(request, state, catalog, save.Revision{Number: 1}, ModeOnline, started.Add(time.Second), nil, nil, AblationMask{GeneratorIDs: []string{"generator.low"}})
-	if err != nil || decision.Outcome != save.IntentApplied || state.OfferState != nil {
-		t.Fatalf("decision=%+v offer=%+v err=%v", decision, state.OfferState, err)
+	result, err := SimulateTransition(request, state, catalog, SimulationDependencies{Routes: foundationRoutes(t)}, save.Revision{Number: 1}, ModeOnline, started.Add(time.Second), nil, nil, AblationMask{GeneratorIDs: []string{"generator.low"}})
+	if err != nil || result.Decision.Outcome != save.IntentApplied || state.OfferState != nil {
+		t.Fatalf("decision=%+v offer=%+v err=%v", result.Decision, state.OfferState, err)
 	}
 	balance, _ := state.Ledger.Balance("company.cash")
 	if !balance.Eq(decimal.Zero) {

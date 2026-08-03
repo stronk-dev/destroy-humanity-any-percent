@@ -756,8 +756,9 @@ func (c *Catalog) ValidateGateReferences(gateIDs []string) error {
 		}
 		for _, condition := range upgrade.Requires {
 			if condition.Kind == routes.ConditionResourceAtLeast || condition.Kind == routes.ConditionResourceAtMost {
-				if _, exists := c.resourceByID[condition.ResourceID]; !exists {
-					return fmt.Errorf("%w: upgrade %q references unknown resource %q", ErrInvalidCatalog, upgrade.ID, condition.ResourceID)
+				resource, exists := c.resourceByID[condition.ResourceID]
+				if !exists || resource.Scope != ScopeCompany {
+					return fmt.Errorf("%w: upgrade %q references non-company resource %q", ErrInvalidCatalog, upgrade.ID, condition.ResourceID)
 				}
 			}
 		}

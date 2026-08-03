@@ -62,6 +62,26 @@ func TestSourceFingerprintTracksExecutableAuthoritiesOnly(t *testing.T) {
 		t.Fatal("executable rate change did not alter fingerprint")
 	}
 
+	sources["production/engine.go"] = bytes.Replace(originalEngine,
+		[]byte("nextBoundary += tickMS"), []byte("nextBoundary += tickMS + 1"), 1)
+	boundaryChanged, err := sourceFingerprintFrom(read)
+	if err != nil || boundaryChanged == baseline {
+		t.Fatalf("provision boundary change was not fingerprinted: got %s baseline %s err=%v", boundaryChanged, baseline, err)
+	}
+	sources["production/engine.go"] = originalEngine
+
+	originalFaction := append([]byte(nil), sources["faction/hook.go"]...)
+	sources["faction/hook.go"] = bytes.Replace(originalFaction,
+		[]byte("factorPPM.Add(factorPPM"), []byte("factorPPM.Sub(factorPPM"), 1)
+	if bytes.Equal(sources["faction/hook.go"], originalFaction) {
+		t.Fatal("stock-rate mutation fixture did not modify AfterAccrual")
+	}
+	stockChanged, err := sourceFingerprintFrom(read)
+	if err != nil || stockChanged == baseline {
+		t.Fatalf("stock-rate change was not fingerprinted: got %s baseline %s err=%v", stockChanged, baseline, err)
+	}
+	sources["faction/hook.go"] = originalFaction
+
 	sources["production/engine.go"] = []byte(strings.ReplaceAll(string(originalEngine), "func ratesWithProvisionedAndPolicy(", "func renamedRatesWithProvisionedAndPolicy("))
 	if _, err := sourceFingerprintFrom(read); err == nil {
 		t.Fatal("missing authority did not fail closed")

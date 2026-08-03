@@ -116,6 +116,23 @@ describe("shared economy catalog", () => {
     expect(() => validateCatalogGateReferences(catalog, ["gate.other"])).toThrow(SyntaxError);
   });
 
+  it("requires the shared non-empty predicate array grammar", () => {
+    const scalar = structuredClone(foundationV4Json) as Record<string, any>;
+    scalar.upgrades[0].requires = scalar.upgrades[0].requires[0];
+    expect(() => parseCatalog(scalar)).toThrow(/non-empty array/);
+    const empty = structuredClone(foundationV4Json) as Record<string, any>;
+    empty.upgrades[0].requires = [];
+    expect(() => parseCatalog(empty)).toThrow(/non-empty array/);
+  });
+
+  it("rejects upgrade predicates outside Company scope", () => {
+    const authored = structuredClone(foundationV4Json) as Record<string, any>;
+    authored.resources.push({ id: "founder.clout", scope: "founder", numeric_kind: "decimal", initial: "0", minimum: "0", hardcap: null });
+    authored.upgrades[0].requires[0].resource_id = "founder.clout";
+    const catalog = parseCatalog(authored);
+    expect(() => validateCatalogGateReferences(catalog, ["gate.t0_to_t1"])).toThrow(/non-company resource/);
+  });
+
   it.each(fixture.multiplier_catalog_cases)("validates multiplier case $name", (vector) => {
     const parse = () => parseCatalog(mutateMultiplierCatalog(vector.name));
     if (vector.expect_valid) expect(parse).not.toThrow();

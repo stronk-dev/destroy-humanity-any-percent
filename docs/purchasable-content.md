@@ -61,18 +61,22 @@ executable Go authorities that produce them.
 
 ## Simulation boundary
 
-The balance harness has one simulation-only entrypoint accepting a closed mask of generator,
-upgrade, and removed-action ids. A generator mask nulls base production, ladder effects, pool
-feeds, manual factors, and outgoing provisioning while preserving ownership and costs. An upgrade
-mask nulls its contribution bundle. A removed action rejects before accrual. The authoritative and
-replay entrypoints have no mask parameter, catalog field, save field, or replay-input field; a Go
-source guard permits the simulation entrypoint only from the harness and tests.
+The balance harness has one simulation-only entrypoint accepting separate closed effect masks and
+action-removal sets for generators, upgrades, and manual actions. A generator effect mask nulls
+base production, ladder effects, pool feeds, manual factors, stock-rate effects, and outgoing
+provisioning while preserving ownership and costs. An upgrade effect mask nulls its contribution
+bundle. Action removal makes the matching purchase or manual action reject as unknown before
+accrual. Simulation receives the same route catalog and accrual hook as the route under test, and
+reports a typed role activation only when an applied transition executes a non-neutral role result.
+The authoritative and replay entrypoints have no mask parameter, catalog field, save field, or
+replay-input field; a Go source guard permits the simulation entrypoint only from the harness and
+tests.
 
 ## Verification
 
 The shared schema-v4 fixture is `testdata/economy-foundation-v4.json`. Go and TypeScript restore
 the same save-v14 state and replay Go-authored upgrade, manual-role, provision-grid, and combined
 content transitions byte-for-byte. Additional Go tests cover partition invariance, next-bucket
-production, cap saturation, purchased-only ladders, simulation isolation, exact linear/log factors,
-and deterministic two-pool ordering. The live schema-v3 balance artifact and pacing baselines do
-not change until a separately governed content mint.
+production, cap saturation, purchased-only ladders, simulation isolation, real-hook stock-rate
+activation, exact linear/log factors, and deterministic two-pool ordering. The live schema-v3
+balance artifact and pacing baselines do not change until a separately governed content mint.
