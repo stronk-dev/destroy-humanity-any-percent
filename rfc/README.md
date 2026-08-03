@@ -11,6 +11,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Balance Harness Dispatch Integrity](balance-harness-dispatch-integrity.md) | withdrawn — premise refuted | Balance Harness Foundation |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
+| [Purchasable Content Foundation](purchasable-content-foundation.md) | implementing | Economy Kernel / Production / Run Genesis |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | blocked-on-owner (faction+guild drafts now exist — unblocks when they accept) | Commons Compact |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | implementing | — |
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
