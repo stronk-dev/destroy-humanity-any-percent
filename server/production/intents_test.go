@@ -182,6 +182,10 @@ func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	if _, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"buy_generator","expected_revision":1} {}`)); err == nil {
 		t.Fatal("trailing JSON value was accepted")
 	}
+	upgrade, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"buy_upgrade","expected_revision":1,"upgrade_id":"upgrade.click"}`))
+	if err != nil || upgrade.InvalidDetail != "" || upgrade.UpgradeID != "upgrade.click" {
+		t.Fatalf("upgrade=%+v err=%v", upgrade, err)
+	}
 	cross, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`))
 	if err != nil || cross.InvalidDetail != "" || cross.GateID != "gate.t2_to_t3" || cross.RouteID != "" {
 		t.Fatalf("cross=%+v err=%v", cross, err)

@@ -35,6 +35,7 @@ var (
 
 const (
 	IntentBuyGenerator       = "buy_generator"
+	IntentBuyUpgrade         = "buy_upgrade"
 	IntentPerformManualBatch = "perform_manual_batch"
 	IntentCrossGate          = "cross_gate"
 	IntentBuyRouteHint       = "buy_route_hint"
@@ -261,6 +262,7 @@ type IntentRequest struct {
 	CanonicalPayload        []byte
 	InvalidDetail           string
 	GeneratorID             string
+	UpgradeID               string
 	CountMode               string
 	Count                   int64
 	ActionID                string
@@ -412,8 +414,8 @@ func (s *Service) Handle(
 				build.CommonsWeightPPM = &weight
 			}
 			var routeCatalog *routes.Catalog
-			if request.Kind == IntentCrossGate || request.Kind == IntentBuyRouteHint {
-				if s.routeCatalogs == nil || s.routeProjector == nil {
+			if request.Kind == IntentCrossGate || request.Kind == IntentBuyRouteHint || request.Kind == IntentBuyUpgrade {
+				if s.routeCatalogs == nil {
 					return save.IntentDecision{}, nil, fmt.Errorf("%w: route runtime unavailable", ErrInvalidIntent)
 				}
 				var ok bool
@@ -426,6 +428,9 @@ func (s *Service) Handle(
 					return save.IntentDecision{}, nil, err
 				}
 				if request.Kind == IntentBuyRouteHint {
+					if s.routeProjector == nil {
+						return save.IntentDecision{}, nil, fmt.Errorf("%w: route projector unavailable", ErrInvalidIntent)
+					}
 					if err := s.routeProjector.RepairFounder(ctx, revision.OwnerID, state); err != nil {
 						return save.IntentDecision{}, nil, err
 					}
@@ -610,6 +615,8 @@ func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *e
 	switch request.Kind {
 	case IntentBuyGenerator:
 		return service.buyGenerator(request, state, catalog, revision, mode, now, contributions, sink, hook)
+	case IntentBuyUpgrade:
+		return service.buyUpgrade(request, state, catalog, routeCatalog, revision, mode, now, contributions, hook)
 	case IntentPerformManualBatch:
 		return service.performManualBatch(request, state, catalog, revision, mode, now, contributions, hook)
 	case IntentCrossGate:
@@ -627,6 +634,56 @@ func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *e
 	default:
 		return rejectedDecision(request, revision.Number, "invalid", request.Kind)
 	}
+}
+
+func (s *Service) buyUpgrade(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || routeCatalog == nil || state.UpgradesOwned == nil {
+		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	upgrade, exists := catalog.Upgrade(request.UpgradeID)
+	if !exists {
+		return rejectedDecision(request, revision.Number, "unknown_id", request.UpgradeID)
+	}
+	if state.UpgradesOwned[request.UpgradeID] {
+		return rejectedDecision(request, revision.Number, "not_eligible", "owned")
+	}
+	before := state.Ledger.Snapshot()
+	result, err := Evaluate(state, catalog, now, mode, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	events, err := runAccrualHook(hook, request.IntentID, state, catalog, revision, result, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	if upgrade.Window.FromGate != "" && !state.GatesCrossed[upgrade.Window.FromGate] || upgrade.Window.ToGate != "" && state.GatesCrossed[upgrade.Window.ToGate] {
+		return rejectedDecision(request, revision.Number, "not_eligible", "window")
+	}
+	context, err := routeContext(state, routeCatalog.ContextVersion())
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	eligible, err := routes.EvaluatePredicate(upgrade.Requires, context)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	if !eligible {
+		return rejectedDecision(request, revision.Number, "not_eligible", "requires")
+	}
+	balance, exists := state.Ledger.Balance(upgrade.Cost.ResourceID)
+	if !exists {
+		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	if balance.Lt(upgrade.Cost.Amount) {
+		return rejectedDecision(request, revision.Number, "unaffordable", request.UpgradeID)
+	}
+	if _, err := state.Ledger.Apply(economy.Transaction{Entries: []economy.Entry{{ResourceID: upgrade.Cost.ResourceID, Delta: upgrade.Cost.Amount.Neg()}}}); err != nil {
+		return save.IntentDecision{}, err
+	}
+	state.UpgradesOwned[request.UpgradeID] = true
+	payload, _ := json.Marshal(map[string]any{"upgrade_id": request.UpgradeID, "cost_resource_id": upgrade.Cost.ResourceID, "cost": upgrade.Cost.Amount.String()})
+	events = append(events, save.EventWrite{Kind: save.EventUpgradePurchased, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
+	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
 }
 
 func (s *Service) signCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
@@ -1000,7 +1057,11 @@ func (s *Service) performManualBatch(
 	}
 	state.ManualTokenMilli -= applied * 1000
 	if applied > 0 {
-		amount := action.Output.AmountPerAction.Mul(decimal.FromFloat64(float64(applied)))
+		factor, err := contributionFactorForTarget(catalog, request.ActionID, contributions)
+		if err != nil {
+			return save.IntentDecision{}, err
+		}
+		amount := action.Output.AmountPerAction.Mul(decimal.FromFloat64(float64(applied))).Mul(factor)
 		if _, err := state.Ledger.Apply(economy.Transaction{Entries: []economy.Entry{{
 			ResourceID: action.Output.ResourceID, Delta: amount,
 		}}}); err != nil {
@@ -1156,6 +1217,10 @@ func wireSnapshot(state *save.State) map[string]any {
 	return map[string]any{
 		"balances": state.Ledger.Snapshot(), "generators": state.GeneratorCounts,
 		"generators_purchased_total": state.GeneratorPurchasedTotal,
+		"upgrades_owned":             sortedBoolKeys(state.UpgradesOwned),
+		"generators_provisioned":     state.GeneratorProvisioned,
+		"provision_remainders_ppm":   state.ProvisionRemaindersPPM,
+		"stock_rate_remainder_ppm":   state.StockRateRemainderPPM,
 		"evaluated_through":          state.EvaluatedThrough.UTC().Format(time.RFC3339Nano),
 		"compute_credit_ms":          state.ComputeCreditMS, "manual_token_milli": state.ManualTokenMilli,
 		"manual_token_refilled_at": state.ManualTokenRefilledAt.UTC().Format(time.RFC3339Nano),
@@ -1334,6 +1399,14 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 			}
 		} else {
 			request.InvalidDetail = "count.mode"
+		}
+	case IntentBuyUpgrade:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "upgrade_id") {
+			request.InvalidDetail = "buy_upgrade.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["upgrade_id"], &request.UpgradeID); err != nil || !intentIDPattern.MatchString(request.UpgradeID) {
+			request.InvalidDetail = "upgrade_id"
 		}
 	case IntentPerformManualBatch:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "action_id", "count", "window_ms") {

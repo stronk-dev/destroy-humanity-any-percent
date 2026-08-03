@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"cloud-clicker/server/decimal"
@@ -635,6 +636,27 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		catalog.synergyPools = append(catalog.synergyPools, definition)
 		catalog.synergyByID[definition.ID] = definition
 	}
+	for _, generator := range catalog.generators {
+		for _, rung := range generator.Ladder {
+			declaration := MultiplierSourceDefinition{ID: LadderSourceID(generator.ID, rung.PurchasedAt), Slot: SlotMilestones, Target: generator.ID, Provider: generator.ID}
+			if _, duplicate := catalog.multiplierByID[declaration.ID]; duplicate {
+				return nil, catalogError("generator_classes", fmt.Errorf("duplicate ladder contribution source %q", declaration.ID))
+			}
+			catalog.multipliers = append(catalog.multipliers, declaration)
+			catalog.multiplierByID[declaration.ID] = declaration
+		}
+		for _, role := range generator.Roles {
+			if role.Kind != RoleManualOutput {
+				continue
+			}
+			declaration := MultiplierSourceDefinition{ID: ManualRoleSourceID(generator.ID, role.ActionID), Slot: SlotUpgrades, Target: role.ActionID, Provider: generator.ID}
+			if _, duplicate := catalog.multiplierByID[declaration.ID]; duplicate {
+				return nil, catalogError("generator_classes", fmt.Errorf("duplicate manual role contribution source %q", declaration.ID))
+			}
+			catalog.multipliers = append(catalog.multipliers, declaration)
+			catalog.multiplierByID[declaration.ID] = declaration
+		}
+	}
 	if err := catalog.validateGeneratorContent(); err != nil {
 		return nil, catalogError("generator_classes", err)
 	}
@@ -709,6 +731,14 @@ func (c *Catalog) SynergyPools() []SynergyPoolDefinition {
 }
 
 func (c *Catalog) ProvisionTickMS() int64 { return c.provisionTickMS }
+
+func LadderSourceID(generatorID string, purchasedAt int64) string {
+	return generatorID + ".ladder.purchased_" + strconv.FormatInt(purchasedAt, 10)
+}
+
+func ManualRoleSourceID(generatorID, actionID string) string {
+	return generatorID + ".role.manual_output." + actionID
+}
 
 func (c *Catalog) ValidateGateReferences(gateIDs []string) error {
 	known := make(map[string]bool, len(gateIDs))
@@ -906,8 +936,8 @@ func parseGenerator(source rawGeneratorClass, schemaVersion int) (GeneratorClass
 	}
 	prior := int64(0)
 	for index, sourceRung := range source.Ladder {
-		if sourceRung.PurchasedAt <= prior || sourceRung.PurchasedAt > decimal.MaxExactInteger || sourceRung.MultiplierPPM <= 0 || sourceRung.MultiplierPPM > decimal.MaxExactInteger {
-			return GeneratorClassDefinition{}, fmt.Errorf("ladder[%d] requires increasing purchased_at and positive safe multiplier_ppm", index)
+		if sourceRung.PurchasedAt <= prior || sourceRung.PurchasedAt > decimal.MaxExactInteger || sourceRung.MultiplierPPM <= 0 || sourceRung.MultiplierPPM == 1_000_000 || sourceRung.MultiplierPPM > decimal.MaxExactInteger {
+			return GeneratorClassDefinition{}, fmt.Errorf("ladder[%d] requires increasing purchased_at and positive, non-neutral safe multiplier_ppm", index)
 		}
 		definition.Ladder = append(definition.Ladder, LadderRung{PurchasedAt: sourceRung.PurchasedAt, MultiplierPPM: sourceRung.MultiplierPPM})
 		prior = sourceRung.PurchasedAt

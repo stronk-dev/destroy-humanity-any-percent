@@ -1,7 +1,7 @@
 import Decimal from "break_infinity.js";
 
 import { enclosureIndex, parseCommonsCatalog, type CommonsCatalog } from "./commons";
-import { parseCatalog, subProgressValue, validateCatalogGateReferences, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
+import { ladderSourceId, manualRoleSourceId, parseCatalog, subProgressValue, validateCatalogGateReferences, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
 import { parseFactionCatalog, type FactionCatalog } from "./faction";
 import { parseGuildCatalog, type GuildCatalog } from "./guild";
 import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
@@ -270,15 +270,18 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   const rejectState = (category: string, detail: string): LoggedTransition => { restoreReplaySnapshot(state, stateBefore); return rejected(state, request.intent_id, revision, category, detail); };
   try {
   applyGuildSettlements(state, accrual.guild_settlement_batch, catalogs.factions.stockCap);
+  const contributions = assembleContributions(state, catalogs.economy, accrual.contributions);
+  const effectiveAccrual = { ...accrual, contributions };
   const preflight = preflightRejection(state, catalogs, request, wire.evaluated_at_ms);
   if (preflight !== null) return rejectState(preflight[0], preflight[1]);
-  const evaluation = evaluate(state, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, accrual.contributions);
-  const events = runHooks(state, catalogs, wire.command, evaluation, accrual);
+  const evaluation = evaluate(state, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
+  const events = runHooks(state, catalogs, wire.command, evaluation, effectiveAccrual);
   const invariants: ReplayInvariant[] = [];
   let appliedCount = 0;
   switch (request.kind) {
     case "buy_generator": { const result = buyGenerator(state, catalogs.economy, request, invariants); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); appliedCount = result.count; events.push(event("generator_purchased", request.intent_id, { generator_id: request.generator_id, count: appliedCount, cost_resource_id: request.costResource, cost: request.cost })); break; }
-    case "perform_manual_batch": { const result = manualBatch(state, catalogs.economy, request, wire.evaluated_at_ms); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); appliedCount = result.count; break; }
+    case "buy_upgrade": { const result = buyUpgrade(state, catalogs.economy, catalogs.routes, request); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); events.push(event("upgrade_purchased", request.intent_id, { upgrade_id: request.upgrade_id, cost_resource_id: request.costResource, cost: request.cost })); appliedCount = 1; break; }
+    case "perform_manual_batch": { const result = manualBatch(state, catalogs.economy, request, wire.evaluated_at_ms, contributions); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); appliedCount = result.count; break; }
     case "cross_gate": { const result = crossGate(state, catalogs.routes, request, wire.command); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); events.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); if (request.route_id !== null) events.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); appliedCount = 1; break; }
     case "sign_compact": state.compactMember = true; state.compactTithePpm = request.tithe_ppm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, request.tithe_ppm, false, true))); appliedCount = 1; break;
     case "leave_compact": { const prior = state.compactTithePpm; state.compactMember = false; state.compactTithePpm = 0; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_left", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, prior, true, false))); appliedCount = 1; break; }
@@ -291,7 +294,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
     events.push(event("invariant_reported", request.intent_id, { detail: report.detail, invariant_kind: report.kind }));
   }
   await afterPrestigeTransition(state, catalogs.prestige, request, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
-  return applied(state, request.intent_id, revision + 1, appliedCount, before, events, invariants);
+  return applied(state, catalogs.economy, request.intent_id, revision + 1, appliedCount, before, events, invariants);
   } catch (error) { restoreReplaySnapshot(state, stateBefore); throw error; }
 }
 
@@ -320,12 +323,14 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const rejectState = (category: string, detail: string): LoggedExitTransition => { restoreReplaySnapshot(company, companyBefore); return rejectedExit(company, founder, request.intent_id, revision, category, detail); };
   try {
   applyGuildSettlements(company, accrual.guild_settlement_batch, catalogs.factions.stockCap);
+  const contributions = assembleContributions(company, catalogs.economy, accrual.contributions);
+  const effectiveAccrual = { ...accrual, contributions };
 
   if (request.kind === "cross_gate") {
     const preflight = preflightRejection(company, catalogs, request, wire.evaluated_at_ms);
     if (preflight !== null) return rejectState(preflight[0], preflight[1]);
-    const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, accrual.contributions);
-    prefix = runHooks(company, catalogs, wire.command, evaluation, accrual);
+    const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
+    prefix = runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual);
     const result = crossGate(company, catalogs.routes, request, wire.command);
     if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]);
     prefix.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: company.runSeq } }));
@@ -345,8 +350,8 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
       promised = decodeStoredOfferTerms(selectedTerms);
       exitType = company.offerState.exitType;
     } else if (request.kind !== "wind_down") throw new RangeError("non-terminal intent at terminal boundary");
-    const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, accrual.contributions);
-    prefix = runHooks(company, catalogs, wire.command, evaluation, accrual);
+    const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
+    prefix = runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual);
     terms = computeExitTerms(company, founder, catalogs.prestige, exitType);
     if (promised) terms = promiseTerms(promised.payout_preview, applyTermsModifier(terms, promised.market_modifier_ppm));
   }
@@ -373,6 +378,11 @@ function preflightRejection(state: ReplayState, catalogs: ReplayCatalogBundle, r
     case "buy_generator": {
       const generator = catalogs.economy.generatorClass(request.generator_id);
       return generator?.production ? null : ["unknown_id", request.generator_id];
+    }
+    case "buy_upgrade": {
+      const upgrade = catalogs.economy.upgrades.find((value) => value.id === request.upgrade_id);
+      if (!upgrade) return ["unknown_id", request.upgrade_id];
+      return state.upgradesOwned.has(request.upgrade_id) ? ["not_eligible", "owned"] : null;
     }
     case "perform_manual_batch":
       return catalogs.economy.manualActions.some((value) => value.id === request.action_id) ? null : ["unknown_id", request.action_id];
@@ -401,19 +411,79 @@ function preflightRejection(state: ReplayState, catalogs: ReplayCatalogBundle, r
   }
 }
 
+function assembleContributions(state: ReplayState, catalog: EconomyCatalog, external: readonly ReplayContribution[]): ReplayContribution[] {
+  const combined = [...external, ...contentContributions(state, catalog)].sort((a, b) => byteCompare(contributionKey(a), contributionKey(b)));
+  validateContributionSet(catalog, combined);
+  return combined;
+}
+
+function contentContributions(state: ReplayState, catalog: EconomyCatalog): ReplayContribution[] {
+  const result: ReplayContribution[] = [];
+  for (const upgrade of catalog.upgrades) if (state.upgradesOwned.has(upgrade.id)) for (const effect of upgrade.effects) result.push({ slot: effect.slot, source_id: effect.sourceId, target: effect.target, factor: effect.factor });
+  for (const generator of catalog.generatorClasses) {
+    const purchased = state.generators[generator.id]; if (!Number.isSafeInteger(purchased) || purchased! < 0) throw new RangeError("invalid purchased generator count");
+    for (const rung of generator.ladder) { if (purchased! < rung.purchasedAt) break; result.push({ slot: "milestones", source_id: ladderSourceId(generator.id, rung.purchasedAt), target: generator.id, factor: canonicalString(quantize(new Decimal(rung.multiplierPpm).div(1_000_000))) }); }
+    for (const role of generator.roles) if (role.kind === "manual_output" && purchased! > 0) result.push({ slot: "upgrades", source_id: manualRoleSourceId(generator.id, role.actionId), target: role.actionId, factor: countPpmFactor(purchased!, role.perPurchasedPpm) });
+  }
+  for (const pool of catalog.synergyPools) {
+    let total = 0n;
+    for (const source of pool.sources) { const count = source.kind === "generator" ? state.generators[source.id] : state.upgradesOwned.has(source.id) ? 1 : 0; if (!Number.isSafeInteger(count) || count! < 0) throw new RangeError("invalid synergy source count"); total += BigInt(count!) * BigInt(source.perCountPpm); }
+    if (total === 0n) continue;
+    const declaration = catalog.multiplierSources.find((value) => value.id === pool.id); if (!declaration) throw new RangeError("missing synergy declaration");
+    result.push({ slot: pool.slot, source_id: pool.id, target: declaration.target, factor: synergyFactor(pool.curve, total) });
+  }
+  return result.sort((a, b) => byteCompare(contributionKey(a), contributionKey(b)));
+}
+
+function countPpmFactor(count: number, perCountPpm: number): string { return canonicalString(quantize(new Decimal((BigInt(count) * BigInt(perCountPpm)).toString()).div(1_000_000).add(1))); }
+function synergyFactor(curve: "linear" | "log", totalPpm: bigint): string { const base = new Decimal(totalPpm.toString()).div(1_000_000).add(1); return canonicalString(quantize(curve === "linear" ? base : new Decimal(base.log10()).add(1))); }
+function contributionKey(value: ReplayContribution): string { return `${value.slot}\0${value.source_id}\0${value.target}`; }
+function validateContributionSet(catalog: EconomyCatalog, values: readonly ReplayContribution[]): void { const declared = new Map(catalog.multiplierSources.map((value) => [value.id, value])); const seen = new Set<string>(); for (const value of values) { const source = declared.get(value.source_id); const factor = parseCanonical(value.factor); if (!source || source.slot !== value.slot || source.target !== value.target || seen.has(value.source_id) || !isStateValue(factor) || !factor.gt(0)) throw new RangeError("invalid multiplier contribution"); seen.add(value.source_id); } }
+function contributionFactorForTarget(catalog: EconomyCatalog, target: string, values: readonly ReplayContribution[]): Decimal { validateContributionSet(catalog, values); let factor = new Decimal(1); for (const slot of MULTIPLIER_SLOT_ORDER) for (const value of values.filter((item) => item.slot === slot && item.target === target).sort((a, b) => byteCompare(a.source_id, b.source_id))) factor = factor.mul(parseCanonical(value.factor)); const result = quantize(factor); if (!isStateValue(result) || !result.gt(0)) throw new RangeError("invalid target contribution factor"); return result; }
+
 function evaluate(state: ReplayState, catalog: EconomyCatalog, nowMs: number, mode: "online" | "offline", contributions: readonly ReplayContribution[]): Evaluation {
   if (nowMs < state.evaluatedThroughMs) throw new ReplayClockViolation(); if (nowMs === state.evaluatedThroughMs) return { changes: [], elapsedMs: 0, productionMs: 0, bankedMs: 0, progressDeltaPpm: 0 };
   const elapsedMs = nowMs - state.evaluatedThroughMs; let productionMs = elapsedMs; let efficiency = new Decimal(1); let bankedMs = 0; const beforeProgress = progressPpm(catalog, state);
   if (mode === "offline") { const policy = catalog.offlinePolicy!; efficiency = parseCanonical(policy.efficiency); productionMs = Math.min(productionMs, policy.accrualCapMs); bankedMs = Number((BigInt(elapsedMs - productionMs) * BigInt(policy.bankRatioNumerator)) / BigInt(policy.bankRatioDenominator)); bankedMs = Math.min(bankedMs, policy.bankCapMs - state.computeCreditMs); }
-  const rates = productionRates(catalog, state.generators, contributions); const entries = [...rates.entries()].sort(([a], [b]) => byteCompare(a, b)).map(([resource, values]) => ({ resource, delta: quantize(sumDeterministic(values).mul(productionMs).div(1000).mul(efficiency)) })).filter((entry) => !entry.delta.eq(0));
-  const changes = applyLedger(state, catalog, entries, true); state.computeCreditMs += bankedMs; state.evaluatedThroughMs = nowMs; return { changes, elapsedMs, productionMs, bankedMs, progressDeltaPpm: Math.max(0, progressPpm(catalog, state) - beforeProgress) };
+  const accrued = accrueContent(state, catalog, productionMs, efficiency, contributions);
+  const changes = applyLedger(state, catalog, accrued.entries, true); state.computeCreditMs += bankedMs; state.generatorsProvisioned = accrued.provisioned; state.provisionRemaindersPpm = accrued.remainders; state.evaluatedThroughMs = nowMs; return { changes, elapsedMs, productionMs, bankedMs, progressDeltaPpm: Math.max(0, progressPpm(catalog, state) - beforeProgress) };
 }
 
-function productionRates(catalog: EconomyCatalog, counts: Record<string, number>, contributions: readonly ReplayContribution[]): Map<string, Decimal[]> {
+function accrueContent(state: ReplayState, catalog: EconomyCatalog, productionMs: number, efficiency: Decimal, contributions: readonly ReplayContribution[]): { entries: { resource: string; delta: Decimal }[]; provisioned: Record<string, number>; remainders: Record<string, number> } {
+  const provisioned = { ...state.generatorsProvisioned }; const remainders = { ...state.provisionRemaindersPpm }; const deltas = new Map<string, Decimal[]>();
+  const accrueSegment = (segmentMs: number): void => {
+    if (segmentMs <= 0) return;
+    const rates = productionRates(catalog, state.generators, provisioned, contributions);
+    for (const [resource, values] of rates) { const delta = quantize(sumDeterministic(values).mul(segmentMs).div(1000).mul(efficiency)); if (delta.eq(0)) continue; const prior = deltas.get(resource) ?? []; prior.push(delta); deltas.set(resource, prior); }
+  };
+  if (catalog.provisionTickMs === 0 || productionMs === 0) accrueSegment(productionMs);
+  else {
+    if (state.runStartedAtMs <= 0 || state.evaluatedThroughMs < state.runStartedAtMs || Math.floor(productionMs / catalog.provisionTickMs) > Math.floor(catalog.offlinePolicy!.accrualCapMs / catalog.provisionTickMs) + 1) throw new RangeError("invalid provision bucket horizon");
+    let cursorMs = state.evaluatedThroughMs; const endMs = cursorMs + productionMs; let nextBoundary = state.runStartedAtMs + (Math.floor((cursorMs - state.runStartedAtMs) / catalog.provisionTickMs) + 1) * catalog.provisionTickMs;
+    if (!Number.isSafeInteger(endMs) || !Number.isSafeInteger(nextBoundary)) throw new RangeError("provision bucket exceeds exact domain");
+    while (cursorMs < endMs) { const segmentEnd = Math.min(endMs, nextBoundary); accrueSegment(segmentEnd - cursorMs); cursorMs = segmentEnd; if (cursorMs === nextBoundary) { materializeProvisionBoundary(catalog, state.generators, provisioned, remainders); nextBoundary += catalog.provisionTickMs; } }
+  }
+  const entries = [...deltas.entries()].sort(([a], [b]) => byteCompare(a, b)).map(([resource, values]) => ({ resource, delta: quantize(sumDeterministic(values)) })).filter((entry) => !entry.delta.eq(0));
+  return { entries, provisioned, remainders };
+}
+
+function materializeProvisionBoundary(catalog: EconomyCatalog, purchased: Record<string, number>, provisioned: Record<string, number>, remainders: Record<string, number>): void {
+  const staged: Record<string, number> = {}; const stagedRemainders: Record<string, number> = {};
+  for (const source of catalog.generatorClasses) {
+    if (!source.provision) continue;
+    const target = catalog.generatorClass(source.provision.generatorId); const sourcePurchased = purchased[source.id]; const sourceProvisioned = provisioned[source.id]; const priorRemainder = remainders[source.provision.generatorId]; const currentTarget = provisioned[source.provision.generatorId];
+    if (!target?.provisionedHardcap || !Number.isSafeInteger(sourcePurchased) || sourcePurchased! < 0 || !Number.isSafeInteger(sourceProvisioned) || sourceProvisioned! < 0 || !Number.isSafeInteger(priorRemainder) || priorRemainder! < 0 || priorRemainder! >= 1_000_000 || !Number.isSafeInteger(currentTarget) || currentTarget! < 0) throw new RangeError("invalid provision state");
+    const numerator = (BigInt(sourcePurchased!) + BigInt(sourceProvisioned!)) * BigInt(source.provision.ratePpm) + BigInt(priorRemainder!); const quotient = numerator / 1_000_000n; const remainder = numerator % 1_000_000n; const headroom = BigInt(target.provisionedHardcap.count - currentTarget!);
+    staged[source.provision.generatorId] = Number(quotient > headroom ? headroom : quotient); stagedRemainders[source.provision.generatorId] = Number(remainder);
+  }
+  for (const target of Object.keys(stagedRemainders)) { remainders[target] = stagedRemainders[target]!; provisioned[target] = provisioned[target]! + staged[target]!; }
+}
+
+function productionRates(catalog: EconomyCatalog, counts: Record<string, number>, provisioned: Record<string, number>, contributions: readonly ReplayContribution[]): Map<string, Decimal[]> {
   const declared = new Map(catalog.multiplierSources.map((value) => [value.id, value])); const bySource = new Map<string, ReplayContribution>();
   for (const contribution of contributions) { const source = declared.get(contribution.source_id); if (!source || source.slot !== contribution.slot || source.target !== contribution.target || bySource.has(contribution.source_id)) throw new RangeError("invalid multiplier contribution"); bySource.set(contribution.source_id, contribution); }
   const result = new Map<string, Decimal[]>();
-  for (const generator of catalog.generatorClasses.filter((value) => value.production !== null)) { const count = counts[generator.id]; if (!Number.isSafeInteger(count) || count! < 0) throw new RangeError("invalid generator count"); if (count === 0) continue; let rate = parseCanonical(generator.production!.baseRate).mul(count!); for (const slot of MULTIPLIER_SLOT_ORDER) { const sources = [...bySource.values()].filter((value) => value.slot === slot && (value.target === "all" || value.target === generator.id)).sort((a, b) => byteCompare(a.source_id, b.source_id)); for (const source of sources) rate = rate.mul(parseCanonical(source.factor)); } const values = result.get(generator.production!.resourceId) ?? []; values.push(rate); result.set(generator.production!.resourceId, values); }
+  for (const generator of catalog.generatorClasses.filter((value) => value.production !== null)) { const count = counts[generator.id]; const generated = provisioned[generator.id]; if (!Number.isSafeInteger(count) || count! < 0 || !Number.isSafeInteger(generated) || generated! < 0) throw new RangeError("invalid generator count"); if (count === 0 && generated === 0) continue; let rate = parseCanonical(generator.production!.baseRate).mul(new Decimal((BigInt(count!) + BigInt(generated!)).toString())); for (const slot of MULTIPLIER_SLOT_ORDER) { const sources = [...bySource.values()].filter((value) => value.slot === slot && (value.target === "all" || value.target === generator.id)).sort((a, b) => byteCompare(a.source_id, b.source_id)); for (const source of sources) rate = rate.mul(parseCanonical(source.factor)); } const values = result.get(generator.production!.resourceId) ?? []; values.push(rate); result.set(generator.production!.resourceId, values); }
   return result;
 }
 
@@ -445,7 +515,7 @@ function runHooks(state: ReplayState, catalogs: ReplayCatalogBundle, command: Re
   for (const change of result.changes) if (change.resource_id === catalogs.prestige.valueResourceId) state.lifetimeValue = canonicalString(quantize(parseCanonical(state.lifetimeValue).add(parseCanonical(change.delta))));
   recordOfflineSpan(state, state.evaluatedThroughMs - result.elapsedMs, state.evaluatedThroughMs, catalogs.prestige.catchupCeilingMs);
   const events: ReplayEvent[] = [];
-  if (state.factionId !== "" && result.elapsedMs <= catalogs.prestige.catchupCeilingMs) { const total = state.stockProgressMs + result.elapsedMs; let earned = Math.floor(total / catalogs.factions.stockIntervalMs); state.stockProgressMs = total % catalogs.factions.stockIntervalMs; const before = state.stockUnits; earned = Math.min(earned, catalogs.factions.stockCap - state.stockUnits); state.stockUnits += earned; if (before !== catalogs.factions.stockCap && state.stockUnits === catalogs.factions.stockCap) events.push(event("faction_stock_saturated", "", { faction_id: state.factionId, stock_cap: catalogs.factions.stockCap, stock_resource: state.factionStockResource })); }
+  if (state.factionId !== "" && result.elapsedMs <= catalogs.prestige.catchupCeilingMs) { let factorPpm = 1_000_000n; for (const generator of catalogs.economy.generatorClasses) { const purchased = state.generators[generator.id]; if (!Number.isSafeInteger(purchased) || purchased! < 0) throw new RangeError("invalid stock-rate generator count"); for (const role of generator.roles) if (role.kind === "stock_rate") factorPpm += BigInt(purchased!) * BigInt(role.perPurchasedPpm); } const numerator = BigInt(result.elapsedMs) * factorPpm + BigInt(state.stockRateRemainderPpm); const scaledMs = numerator / 1_000_000n; state.stockRateRemainderPpm = Number(numerator % 1_000_000n); if (scaledMs > BigInt(MAX_EXACT_INTEGER - state.stockProgressMs)) throw new RangeError("stock-rate accumulator overflow"); const total = state.stockProgressMs + Number(scaledMs); let earned = Math.floor(total / catalogs.factions.stockIntervalMs); state.stockProgressMs = total % catalogs.factions.stockIntervalMs; const before = state.stockUnits; earned = Math.min(earned, catalogs.factions.stockCap - state.stockUnits); state.stockUnits += earned; if (before !== catalogs.factions.stockCap && state.stockUnits === catalogs.factions.stockCap) events.push(event("faction_stock_saturated", "", { faction_id: state.factionId, stock_cap: catalogs.factions.stockCap, stock_resource: state.factionStockResource })); }
   if (accrual.contributions.some((value) => value.source_id === "guild.stock_consumption")) { const numerator = BigInt(result.progressDeltaPpm) * BigInt(catalogs.guilds.guildTithePpm) + BigInt(state.guildTitheCarryPpm); const xp = Number(numerator / 1_000_000n); state.guildTitheCarryPpm = Number(numerator % 1_000_000n); events.push(event(xp === 0 ? "guild_activity_evaluated" : "guild_tithe_accrued", "", { founder_id: command.founder_id, progress_delta_ppm: result.progressDeltaPpm, run_id: { company_stream_id: command.company_stream_id, run_seq: state.runSeq }, xp_delta: xp })); }
   if (state.compactMember && result.productionMs > 0) { if (accrual.commons_weight_ppm === null) throw new RangeError("missing commons weight"); const enclosure = enclosureIndex(catalogs.commons, accrual.contributions.map((value) => ({ sourceId: value.source_id, slot: value.slot, factor: value.factor }))); const compliance = compliancePpm(state.compactTithePpm, catalogs.commons.defaultTithePpm, enclosure); appendCompactSamples(state, state.evaluatedThroughMs - result.productionMs, state.evaluatedThroughMs, compliance, catalogs.commons.solidarityWindowMs); let capacity = new Decimal(0); for (const change of result.changes) capacity = capacity.add(parseCanonical(change.delta).mul(state.compactTithePpm).div(1_000_000)); events.push(event("compact_sampled", "", { capacity: canonicalString(quantize(capacity)), compliance_ppm: compliance, enclosure, founder_id: command.founder_id, run_id: { company_stream_id: command.company_stream_id, run_seq: state.runSeq }, sampled_ms: result.productionMs, solidarity_ppm: state.compactSolidarityPpm, weight_ppm: accrual.commons_weight_ppm })); }
   return events;
@@ -468,7 +538,16 @@ function buyGenerator(state: ReplayState, catalog: EconomyCatalog, request: Inte
   }
   applyLedger(state, catalog, [{ resource: generator.price.resourceId, delta: cost.neg() }], false); state.generators[generator.id] = owned + count; state.generatorPurchasedTotal += count; request.cost = canonicalString(cost); request.costResource = generator.price.resourceId; return { count };
 }
-function manualBatch(state: ReplayState, catalog: EconomyCatalog, request: Intent, nowMs: number): { count: number; rejection?: [string, string] } { const action = catalog.manualActions.find((value) => value.id === request.action_id)!; const policy = catalog.manualPolicy!; if (nowMs > state.manualTokenRefilledAtMs) { const elapsed = nowMs - state.manualTokenRefilledAtMs; state.manualTokenMilli = Math.min(policy.bucketCapMilli, state.manualTokenMilli + elapsed * policy.refillMilliPerMs); state.manualTokenRefilledAtMs = nowMs; } const applied = Math.min(request.count, Math.floor(state.manualTokenMilli / 1000)); state.manualTokenMilli -= applied * 1000; if (applied > 0) { try { applyLedger(state, catalog, [{ resource: action.output.resourceId, delta: parseCanonical(action.output.amountPerAction).mul(applied) }], false); } catch (error) { if (error instanceof LedgerError && error.code === "above_hardcap") return { count: 0, rejection: ["cap_exceeded", request.action_id] }; throw error; } } return { count: applied }; }
+function buyUpgrade(state: ReplayState, catalog: EconomyCatalog, routes: RoutesCatalog, request: Intent): { rejection?: [string, string] } {
+  const upgrade = catalog.upgrades.find((value) => value.id === request.upgrade_id)!;
+  if (upgrade.window.fromGate !== null && !state.gatesCrossed[upgrade.window.fromGate] || upgrade.window.toGate !== null && state.gatesCrossed[upgrade.window.toGate]) return { rejection: ["not_eligible", "window"] };
+  const context: RouteContext = { contextVersion: routes.contextVersion, resources: state.balances, doctrinesByTransition: state.doctrinesByTransition, structureId: state.structureId, ledgerFactKinds: state.ledgerFactKinds, meterBands: state.meterBands, regionTraits: state.regionTraits };
+  if (!evaluatePredicate(upgrade.requires, context)) return { rejection: ["not_eligible", "requires"] };
+  const balance = parseCanonical(state.balances[upgrade.cost.resourceId]!); const cost = parseCanonical(upgrade.cost.amount);
+  if (balance.lt(cost)) return { rejection: ["unaffordable", request.upgrade_id] };
+  applyLedger(state, catalog, [{ resource: upgrade.cost.resourceId, delta: cost.neg() }], false); state.upgradesOwned.add(upgrade.id); request.cost = upgrade.cost.amount; request.costResource = upgrade.cost.resourceId; return {};
+}
+function manualBatch(state: ReplayState, catalog: EconomyCatalog, request: Intent, nowMs: number, contributions: readonly ReplayContribution[]): { count: number; rejection?: [string, string] } { const action = catalog.manualActions.find((value) => value.id === request.action_id)!; const policy = catalog.manualPolicy!; if (nowMs > state.manualTokenRefilledAtMs) { const elapsed = nowMs - state.manualTokenRefilledAtMs; state.manualTokenMilli = Math.min(policy.bucketCapMilli, state.manualTokenMilli + elapsed * policy.refillMilliPerMs); state.manualTokenRefilledAtMs = nowMs; } const applied = Math.min(request.count, Math.floor(state.manualTokenMilli / 1000)); state.manualTokenMilli -= applied * 1000; if (applied > 0) { try { const factor = contributionFactorForTarget(catalog, request.action_id, contributions); applyLedger(state, catalog, [{ resource: action.output.resourceId, delta: parseCanonical(action.output.amountPerAction).mul(applied).mul(factor) }], false); } catch (error) { if (error instanceof LedgerError && error.code === "above_hardcap") return { count: 0, rejection: ["cap_exceeded", request.action_id] }; throw error; } } return { count: applied }; }
 function crossGate(state: ReplayState, routes: RoutesCatalog, request: Intent, command: ReplayCommand): { rejection?: [string, string] } { const gate = routes.gate(request.gate_id); if (!gate) return { rejection: ["unknown_id", request.gate_id] }; if (state.gatesCrossed[request.gate_id]) return { rejection: ["gate_already_crossed", request.gate_id] }; let requirements = gate.requirement; if (request.route_id !== null) { const route = routes.route(request.route_id); if (!route) return { rejection: ["unknown_id", request.route_id] }; const context: RouteContext = { contextVersion: routes.contextVersion, resources: state.balances, doctrinesByTransition: state.doctrinesByTransition, structureId: state.structureId, ledgerFactKinds: state.ledgerFactKinds, meterBands: state.meterBands, regionTraits: state.regionTraits }; if (!route.active || route.requiresContextVersion > context.contextVersion || !evaluatePredicate(route.predicate, context)) return { rejection: ["route_predicate_unmet", request.route_id] }; requirements = discountedRequirements(gate, route); }
   for (const requirement of requirements) if (parseCanonical(state.balances[requirement.resourceId]!).lt(parseCanonical(requirement.amount))) return { rejection: ["requirement_not_met", requirement.resourceId] }; for (const requirement of requirements) state.balances[requirement.resourceId] = canonicalString(quantize(parseCanonical(state.balances[requirement.resourceId]!).sub(parseCanonical(requirement.amount)))); state.gatesCrossed[request.gate_id] = true; const match = /^gate\.t([0-9]+)_to_t([0-9]+)$/.exec(request.gate_id); const from = Number(match?.[1]); const to = Number(match?.[2]); if (!match || !Number.isSafeInteger(from) || !Number.isSafeInteger(to) || to !== from + 1 || to > 9) throw new RangeError("gate tier mismatch"); state.tier = Math.max(state.tier, to); void command; return {}; }
 
@@ -574,7 +653,7 @@ function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId:
   const founderEvent = event("founder_advanced", intentId, { exit_type: exitType, founder_id: command.founder_id, occurred_at_ms: nowMs, reputation_delta: terms.reputation_delta, route_knowledge: terms.route_knowledge, run_id: runID });
   const endedEvent = event("run_ended", intentId, { assisted: { advisor: founder.advisor_mode, commons: company.compactMember }, attended_ms: attended, ended_at_ms: nowMs, executed_routes: executedRoutes, exit_type: exitType, faction: company.factionId || null, founder_id: command.founder_id, gates_crossed: Object.keys(company.gatesCrossed).filter((gate) => company.gatesCrossed[gate]).sort(byteCompare), generators_purchased_total: company.generatorPurchasedTotal, ledger_fact_kinds: [...company.ledgerFactKinds].sort(byteCompare), lifetime_value: company.lifetimeValue, payout: terms, pre_timer: company.runPreTimer, rta_ms: nowMs - company.runStartedAtMs, run_id: runID, started_at_ms: company.runStartedAtMs, terminal_seq: command.run_log_seq, tier: company.tier }, 2);
   const startedEvent = event("run_started", intentId, { assisted: { advisor: founder.advisor_mode, commons: false }, founder_id: command.founder_id, run_id: { company_stream_id: command.company_stream_id, run_seq: newCompany.runSeq }, started_at_ms: nowMs });
-  const receipt = { applied_count: 1, evaluated_at: rfc3339(nowMs), founder_revision: founder.founder_revision + 1, intent_id: intentId, new_revision: command.revision + 2, outcome: "applied", receipt: { changes: [] }, snapshot: wireSnapshot(newCompany) };
+  const receipt = { applied_count: 1, evaluated_at: rfc3339(nowMs), founder_revision: founder.founder_revision + 1, intent_id: intentId, new_revision: command.revision + 2, outcome: "applied", receipt: { changes: [] }, snapshot: wireSnapshot(newCompany, next.economy) };
   return { founder, finalCompany: company, newCompany, outcome: "applied", receipt, founderEvents: [founderEvent], companyEndedEvents: [...prefix, endedEvent], companyStartedEvents: [startedEvent] };
 }
 
@@ -687,6 +766,10 @@ function parseIntent(payload: string, intentId: string): Intent {
       } else base.invalid = "count.mode";
       return base;
     }
+    case "buy_upgrade":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "upgrade_id"])) { base.invalid = "buy_upgrade.fields"; return base; }
+      if (!isMechanical(raw.upgrade_id)) base.invalid = "upgrade_id"; else base.upgrade_id = raw.upgrade_id;
+      return base;
     case "perform_manual_batch":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "action_id", "count", "window_ms"])) { base.invalid = "perform_manual_batch.fields"; return base; }
       if (!isMechanical(raw.action_id)) base.invalid = "action_id"; else base.action_id = raw.action_id;
@@ -735,7 +818,7 @@ function parseIntent(payload: string, intentId: string): Intent {
   }
 }
 
-function applied(state: ReplayState, intentId: string, revision: number, count: number, before: Record<string, string>, events: ReplayEvent[], invariants: ReplayInvariant[]): LoggedTransition { bindEventIntent(events, intentId); const changes = Object.keys(before).sort(byteCompare).flatMap((resource) => before[resource] === state.balances[resource] ? [] : [{ resource_id: resource, before: before[resource]!, delta: canonicalString(quantize(parseCanonical(state.balances[resource]!).sub(parseCanonical(before[resource]!)))), after: state.balances[resource]! }]); return { state, outcome: "applied", receipt: { applied_count: count, evaluated_at: rfc3339(state.evaluatedThroughMs), intent_id: intentId, new_revision: revision, outcome: "applied", receipt: { changes }, snapshot: wireSnapshot(state) }, events, invariants }; }
+function applied(state: ReplayState, catalog: EconomyCatalog, intentId: string, revision: number, count: number, before: Record<string, string>, events: ReplayEvent[], invariants: ReplayInvariant[]): LoggedTransition { bindEventIntent(events, intentId); const changes = Object.keys(before).sort(byteCompare).flatMap((resource) => before[resource] === state.balances[resource] ? [] : [{ resource_id: resource, before: before[resource]!, delta: canonicalString(quantize(parseCanonical(state.balances[resource]!).sub(parseCanonical(before[resource]!)))), after: state.balances[resource]! }]); return { state, outcome: "applied", receipt: { applied_count: count, evaluated_at: rfc3339(state.evaluatedThroughMs), intent_id: intentId, new_revision: revision, outcome: "applied", receipt: { changes }, snapshot: wireSnapshot(state, catalog) }, events, invariants }; }
 function bindEventIntent(events: ReplayEvent[], intentId: string): void { for (const value of events) { if (value.intent_id !== "" && value.intent_id !== intentId) throw new RangeError("event intent mismatch"); (value as { intent_id: string }).intent_id = intentId; } }
 function rejected(state: ReplayState, intentId: string, revision: number, category: string, detail: string): LoggedTransition { return { state, outcome: "rejected", receipt: { current_revision: revision, intent_id: intentId, outcome: "rejected", rejection: { category, detail } }, events: [], invariants: [] }; }
 function event(kind: string, intentId: string, payload: unknown, schemaVersion = 1): ReplayEvent { return { kind, schema_version: schemaVersion, intent_id: intentId, payload }; }
@@ -746,7 +829,7 @@ function recordOfflineSpan(state: ReplayState, fromMs: number, toMs: number, cei
 function compliancePpm(tithe: number, defaultTithe: number, enclosure: string): number { if (defaultTithe <= 0) return 0; const titheRatio = Decimal.min(1, new Decimal(tithe).div(defaultTithe)); const clean = new Decimal(1).sub(parseCanonical(enclosure)); return Math.max(0, Math.min(1_000_000, Math.floor(titheRatio.mul(clean).mul(1_000_000).toNumber()))); }
 function appendCompactSamples(state: ReplayState, start: number, end: number, compliance: number, windowMs: number): void { while (start < end) { const hour = Math.floor(start / 3_600_000) * 3_600_000; const boundary = Math.min(end, hour + 3_600_000); const covered = boundary - start; const last = state.compactSamples.at(-1); if (last?.hourStartMs === hour) { const numerator = BigInt(last.compliancePpm) * BigInt(last.coveredMs) + BigInt(compliance) * BigInt(covered); last.coveredMs += covered; last.compliancePpm = Number(numerator / BigInt(last.coveredMs)); } else state.compactSamples.push({ hourStartMs: hour, compliancePpm: compliance, coveredMs: covered }); start = boundary; } const cutoff = Math.floor((end - windowMs) / 3_600_000) * 3_600_000; state.compactSamples = state.compactSamples.filter((value) => value.hourStartMs >= cutoff); const numerator = state.compactSamples.reduce((sum, value) => sum + BigInt(value.compliancePpm) * BigInt(value.coveredMs), 0n); state.compactSolidarityPpm = Math.max(0, Math.min(1_000_000, Number(numerator / BigInt(windowMs)))); }
 
-function wireSnapshot(state: ReplayState): unknown { return { balances: sortedRecord(state.balances), collapsed_offline_ms: state.collapsedOfflineMs, compact_member: state.compactMember, compact_solidarity_ppm: state.compactSolidarityPpm, compact_tithe_ppm: state.compactTithePpm, compute_credit_ms: state.computeCreditMs, consumed_stock_units: state.consumedStockUnits, doctrines_by_transition: sortedRecord(state.doctrinesByTransition), evaluated_through: rfc3339(state.evaluatedThroughMs), faction_id: state.factionId || null, gates_crossed: sortedRecord(state.gatesCrossed), generators: sortedRecord(state.generators), generators_purchased_total: state.generatorPurchasedTotal, guild_boundary_guild_id: state.guildBoundaryGuildId || null, guild_boundary_seq: state.guildBoundarySeq, guild_consumed_window_units: state.guildConsumedWindow, guild_tithe_carry_ppm: state.guildTitheCarryPpm, hints_unlocked: [...state.hintsUnlocked].sort(byteCompare), incorporated_at_ms: state.incorporatedAtMs, ledger_fact_kinds: [...state.ledgerFactKinds].sort(byteCompare), lifetime_value: state.lifetimeValue, manual_token_milli: state.manualTokenMilli, manual_token_refilled_at: rfc3339(state.manualTokenRefilledAtMs), meter_bands: sortedRecord(state.meterBands), offer_state: state.offerState ? { expires_at_ms: state.offerState.expiresAtMs, exit_type: state.offerState.exitType, offer_id: state.offerState.offerId, spawned_at_ms: state.offerState.spawnedAtMs, terms_json: state.offerState.terms } : null, offline_spans: state.offlineSpans.map((value) => ({ from_ms: value.fromMs, to_ms: value.toMs })), region_traits: [...state.regionTraits].sort(byteCompare), route_knowledge_balance: state.routeKnowledgeBalance, run_pre_timer: state.runPreTimer, run_seq: state.runSeq, run_started_at_ms: state.runStartedAtMs, stock_progress_ms: state.stockProgressMs, stock_resource: state.factionStockResource || null, stock_units: state.stockUnits, structure_id: state.structureId, tier: state.tier }; }
+function wireSnapshot(state: ReplayState, catalog: EconomyCatalog): unknown { void catalog; return { balances: sortedRecord(state.balances), collapsed_offline_ms: state.collapsedOfflineMs, compact_member: state.compactMember, compact_solidarity_ppm: state.compactSolidarityPpm, compact_tithe_ppm: state.compactTithePpm, compute_credit_ms: state.computeCreditMs, consumed_stock_units: state.consumedStockUnits, doctrines_by_transition: sortedRecord(state.doctrinesByTransition), evaluated_through: rfc3339(state.evaluatedThroughMs), faction_id: state.factionId || null, gates_crossed: sortedRecord(state.gatesCrossed), generators: sortedRecord(state.generators), generators_provisioned: sortedRecord(state.generatorsProvisioned), generators_purchased_total: state.generatorPurchasedTotal, guild_boundary_guild_id: state.guildBoundaryGuildId || null, guild_boundary_seq: state.guildBoundarySeq, guild_consumed_window_units: state.guildConsumedWindow, guild_tithe_carry_ppm: state.guildTitheCarryPpm, hints_unlocked: [...state.hintsUnlocked].sort(byteCompare), incorporated_at_ms: state.incorporatedAtMs, ledger_fact_kinds: [...state.ledgerFactKinds].sort(byteCompare), lifetime_value: state.lifetimeValue, manual_token_milli: state.manualTokenMilli, manual_token_refilled_at: rfc3339(state.manualTokenRefilledAtMs), meter_bands: sortedRecord(state.meterBands), offer_state: state.offerState ? { expires_at_ms: state.offerState.expiresAtMs, exit_type: state.offerState.exitType, offer_id: state.offerState.offerId, spawned_at_ms: state.offerState.spawnedAtMs, terms_json: state.offerState.terms } : null, offline_spans: state.offlineSpans.map((value) => ({ from_ms: value.fromMs, to_ms: value.toMs })), provision_remainders_ppm: sortedRecord(state.provisionRemaindersPpm), region_traits: [...state.regionTraits].sort(byteCompare), route_knowledge_balance: state.routeKnowledgeBalance, run_pre_timer: state.runPreTimer, run_seq: state.runSeq, run_started_at_ms: state.runStartedAtMs, stock_progress_ms: state.stockProgressMs, stock_rate_remainder_ppm: state.stockRateRemainderPpm, stock_resource: state.factionStockResource || null, stock_units: state.stockUnits, structure_id: state.structureId, tier: state.tier, upgrades_owned: [...state.upgradesOwned].sort(byteCompare) }; }
 export function canonicalJSONString(value: unknown): string { if (value === null || typeof value !== "object") return JSON.stringify(value); if (Array.isArray(value)) return `[${value.map(canonicalJSONString).join(",")}]`; const object = value as Record<string, unknown>; return `{${Object.keys(object).sort(byteCompare).map((key) => `${JSON.stringify(key)}:${canonicalJSONString(object[key])}`).join(",")}}`; }
 
 async function constantsHashArtifacts(artifacts: ReplayArtifacts): Promise<string> { const encoder = new TextEncoder(); const chunks: Uint8Array[] = []; for (const name of Object.keys(artifacts).sort(byteCompare) as (keyof ReplayArtifacts)[]) { const nameBytes = encoder.encode(name); const data = encoder.encode(artifacts[name]); chunks.push(frame(nameBytes.length), nameBytes, frame(data.length), data); } const total = chunks.reduce((sum, value) => sum + value.length, 0); const input = new Uint8Array(total); let offset = 0; for (const chunk of chunks) { input.set(chunk, offset); offset += chunk.length; } const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", input)); return `sha256:${[...digest].map((value) => value.toString(16).padStart(2, "0")).join("")}`; }

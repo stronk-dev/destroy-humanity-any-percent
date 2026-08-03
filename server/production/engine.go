@@ -80,30 +80,17 @@ func Evaluate(
 		}
 	}
 
-	rates, err := Rates(catalog, state.GeneratorCounts, contributions)
+	entries, provisioned, remainders, err := accrueContent(state, catalog, productionMS, efficiency, contributions)
 	if err != nil {
 		return EvaluationResult{}, err
-	}
-	resourceIDs := make([]string, 0, len(rates))
-	for resourceID := range rates {
-		resourceIDs = append(resourceIDs, resourceID)
-	}
-	sort.Strings(resourceIDs)
-	entries := make([]economy.Entry, 0, len(resourceIDs))
-	for _, resourceID := range resourceIDs {
-		delta, err := AccrueConstant(rates[resourceID], productionMS, efficiency)
-		if err != nil {
-			return EvaluationResult{}, fmt.Errorf("%w: accrue %s: %v", ErrInvalidEngineState, resourceID, err)
-		}
-		if !delta.Eq(decimal.Zero) {
-			entries = append(entries, economy.Entry{ResourceID: resourceID, Delta: delta})
-		}
 	}
 	receipt, err := state.Ledger.ApplyAccrual(economy.Transaction{Entries: entries})
 	if err != nil {
 		return EvaluationResult{}, fmt.Errorf("%w: ledger commit: %v", ErrInvalidEngineState, err)
 	}
 	state.ComputeCreditMS += banked
+	state.GeneratorProvisioned = provisioned
+	state.ProvisionRemaindersPPM = remainders
 	state.EvaluatedThrough = effectiveNow
 	afterProgressPPM, err := tierProgressPPM(catalog, state)
 	if err != nil {
@@ -117,6 +104,83 @@ func Evaluate(
 		Receipt: receipt, ElapsedMS: elapsedMS, ProductionMS: productionMS, BankedCreditMS: banked,
 		ProgressDeltaPPM: progressDeltaPPM,
 	}, nil
+}
+
+func accrueContent(state *save.State, catalog *economy.Catalog, productionMS int64, efficiency decimal.Decimal, contributions []multiplier.Contribution) ([]economy.Entry, map[string]int64, map[string]int64, error) {
+	provisioned := cloneInt64Counts(state.GeneratorProvisioned)
+	remainders := cloneInt64Counts(state.ProvisionRemaindersPPM)
+	if provisioned == nil {
+		provisioned = make(map[string]int64, len(state.GeneratorCounts))
+		for id := range state.GeneratorCounts {
+			provisioned[id] = 0
+		}
+	}
+	if remainders == nil {
+		remainders = map[string]int64{}
+	}
+	deltas := map[string][]decimal.Decimal{}
+	accrueSegment := func(segmentMS int64) error {
+		if segmentMS <= 0 {
+			return nil
+		}
+		rates, err := ratesWithProvisioned(catalog, state.GeneratorCounts, provisioned, contributions)
+		if err != nil {
+			return err
+		}
+		for resourceID, values := range rates {
+			delta, err := AccrueConstant(values, segmentMS, efficiency)
+			if err != nil {
+				return fmt.Errorf("%w: accrue %s: %v", ErrInvalidEngineState, resourceID, err)
+			}
+			if !delta.Eq(decimal.Zero) {
+				deltas[resourceID] = append(deltas[resourceID], delta)
+			}
+		}
+		return nil
+	}
+	tickMS := catalog.ProvisionTickMS()
+	if tickMS == 0 || productionMS == 0 {
+		if err := accrueSegment(productionMS); err != nil {
+			return nil, nil, nil, err
+		}
+	} else {
+		if state.RunStartedAt.IsZero() || state.EvaluatedThrough.Before(state.RunStartedAt) || productionMS/tickMS > catalog.OfflinePolicy().AccrualCapMS/tickMS+1 {
+			return nil, nil, nil, fmt.Errorf("%w: invalid provision bucket horizon", ErrInvalidEngineState)
+		}
+		cursorMS := state.EvaluatedThrough.UnixMilli()
+		endMS := cursorMS + productionMS
+		runStartMS := state.RunStartedAt.UnixMilli()
+		nextBoundary := runStartMS + ((cursorMS-runStartMS)/tickMS+1)*tickMS
+		for cursorMS < endMS {
+			segmentEnd := endMS
+			if nextBoundary < segmentEnd {
+				segmentEnd = nextBoundary
+			}
+			if err := accrueSegment(segmentEnd - cursorMS); err != nil {
+				return nil, nil, nil, err
+			}
+			cursorMS = segmentEnd
+			if cursorMS == nextBoundary {
+				if err := materializeProvisionBoundary(catalog, state.GeneratorCounts, provisioned, remainders); err != nil {
+					return nil, nil, nil, err
+				}
+				nextBoundary += tickMS
+			}
+		}
+	}
+	resourceIDs := make([]string, 0, len(deltas))
+	for resourceID := range deltas {
+		resourceIDs = append(resourceIDs, resourceID)
+	}
+	sort.Strings(resourceIDs)
+	entries := make([]economy.Entry, 0, len(resourceIDs))
+	for _, resourceID := range resourceIDs {
+		delta := decimal.SumDeterministic(deltas[resourceID]).Quantize(decimal.CanonicalSignificantDigits)
+		if !delta.Eq(decimal.Zero) {
+			entries = append(entries, economy.Entry{ResourceID: resourceID, Delta: delta})
+		}
+	}
+	return entries, provisioned, remainders, nil
 }
 
 func tierProgressPPM(catalog *economy.Catalog, state *save.State) (int64, error) {
@@ -139,7 +203,11 @@ func Rates(
 	counts map[string]int64,
 	contributions []multiplier.Contribution,
 ) (map[string][]decimal.Decimal, error) {
-	if catalog == nil || counts == nil {
+	return ratesWithProvisioned(catalog, counts, nil, contributions)
+}
+
+func validateContributions(catalog *economy.Catalog, contributions []multiplier.Contribution) (map[string]multiplier.Contribution, error) {
+	if catalog == nil {
 		return nil, ErrInvalidEngineState
 	}
 	bySource := make(map[string]multiplier.Contribution, len(contributions))
@@ -154,9 +222,20 @@ func Rates(
 		}
 		bySource[contribution.SourceID] = contribution
 	}
+	return bySource, nil
+}
+
+func ratesWithProvisioned(catalog *economy.Catalog, counts, provisioned map[string]int64, contributions []multiplier.Contribution) (map[string][]decimal.Decimal, error) {
+	if catalog == nil || counts == nil {
+		return nil, ErrInvalidEngineState
+	}
+	bySource, err := validateContributions(catalog, contributions)
+	if err != nil {
+		return nil, err
+	}
 
 	generators := catalog.GeneratorClassesForScope(economy.ScopeCompany)
-	if len(counts) != len(generators) {
+	if len(counts) != len(generators) || provisioned != nil && len(provisioned) != len(generators) {
 		return nil, fmt.Errorf("%w: generator count set does not match catalog", ErrInvalidEngineState)
 	}
 	rates := make(map[string][]decimal.Decimal)
@@ -165,10 +244,19 @@ func Rates(
 		if !exists || count < 0 || count > decimal.MaxExactInteger || generator.Production == nil {
 			return nil, fmt.Errorf("%w: invalid generator count %q", ErrInvalidEngineState, generator.ID)
 		}
-		if count == 0 {
+		generated := int64(0)
+		if provisioned != nil {
+			var generatedExists bool
+			generated, generatedExists = provisioned[generator.ID]
+			if !generatedExists || generated < 0 || generated > decimal.MaxExactInteger {
+				return nil, fmt.Errorf("%w: invalid provisioned generator count %q", ErrInvalidEngineState, generator.ID)
+			}
+		}
+		if count == 0 && generated == 0 {
 			continue
 		}
-		rate := generator.Production.BaseRate.Mul(decimal.FromFloat64(float64(count)))
+		total := new(big.Int).Add(big.NewInt(count), big.NewInt(generated))
+		rate := generator.Production.BaseRate.Mul(decimal.FromString(total.String()))
 		for _, slot := range multiplier.Order {
 			sources := make([]string, 0)
 			for sourceID, contribution := range bySource {

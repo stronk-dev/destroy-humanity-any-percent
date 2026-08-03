@@ -6,6 +6,7 @@ import (
 
 	"cloud-clicker/server/accrualhook"
 	"cloud-clicker/server/commons"
+	"cloud-clicker/server/economy"
 	"cloud-clicker/server/save"
 )
 
@@ -16,6 +17,19 @@ type testCatchupPolicies map[string]int64
 func (policies testCatchupPolicies) ResolveCatchupCeilingMS(hash string) (int64, bool) {
 	value, ok := policies[hash]
 	return value, ok
+}
+
+func purchasableEconomyCatalog(t *testing.T) *economy.Catalog {
+	t.Helper()
+	data, err := os.ReadFile("../../testdata/economy-foundation-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return catalog
 }
 
 func productionCatalog(t *testing.T) *Catalog {
@@ -77,5 +91,19 @@ func TestStockAccrualSaturatesOnceAndCarriesRemainder(t *testing.T) {
 	events, err = hook.AfterAccrual(state, nil, revision, accrualhook.Result{ElapsedMS: 1}, nil)
 	if err != nil || len(events) != 0 || state.StockUnits != catalog.StockCap || state.StockProgressMS != 2 {
 		t.Fatalf("second events=%v stock=%d remainder=%d err=%v", events, state.StockUnits, state.StockProgressMS, err)
+	}
+}
+
+func TestStockRateRoleUsesPurchasedCountAndExactPPMRemainder(t *testing.T) {
+	catalog := productionCatalog(t)
+	economyCatalog := purchasableEconomyCatalog(t)
+	hook := AccrualHook{Catalogs: CatalogSet{testHash: catalog}, Policies: testCatchupPolicies{testHash: 120_000}}
+	state := &save.State{FactionID: "bootstrapper", GeneratorCounts: map[string]int64{"generator.high": 0, "generator.low": 10}, GeneratorProvisioned: map[string]int64{"generator.high": 0, "generator.low": 999}}
+	revision := save.Revision{ConstantsHash: testHash}
+	if events, err := hook.AfterAccrual(state, economyCatalog, revision, accrualhook.Result{ElapsedMS: 60_000}, nil); err != nil || len(events) != 0 {
+		t.Fatalf("events=%v err=%v", events, err)
+	}
+	if state.StockUnits != 1 || state.StockProgressMS != 1_200 || state.StockRateRemainderPPM != 0 {
+		t.Fatalf("stock=%d progress=%d ppm-remainder=%d", state.StockUnits, state.StockProgressMS, state.StockRateRemainderPPM)
 	}
 }

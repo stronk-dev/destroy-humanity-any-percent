@@ -244,6 +244,10 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	if err := applyReplayGuildSettlements(state, accrual.GuildSettlementBatch, catalogs.Faction.StockCap); err != nil {
 		return LoggedTransition{}, fmt.Errorf("%w: guild settlement inputs", ErrInvalidReplayInputs)
 	}
+	contributions, err = assembleContributions(state, catalogs.Economy, contributions)
+	if err != nil {
+		return LoggedTransition{}, err
+	}
 	if state.CompactMember != (accrual.CommonsWeightPPM != nil) {
 		return LoggedTransition{}, fmt.Errorf("%w: commons weight presence", ErrInvalidReplayInputs)
 	}
@@ -317,6 +321,10 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	}
 	if err := applyReplayGuildSettlements(company, resolved.Accrual.GuildSettlementBatch, catalogs.Faction.StockCap); err != nil {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal guild settlement inputs", ErrInvalidReplayInputs)
+	}
+	contributions, err = assembleContributions(company, catalogs.Economy, contributions)
+	if err != nil {
+		return LoggedExitTransition{}, err
 	}
 	revision := save.Revision{StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
 		Number: wire.Command.Revision, ConstantsHash: catalogs.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}

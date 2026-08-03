@@ -32,6 +32,7 @@ type EventKind string
 
 const (
 	EventGeneratorPurchased        EventKind = "generator_purchased"
+	EventUpgradePurchased          EventKind = "upgrade_purchased"
 	EventInvariantReported         EventKind = "invariant_reported"
 	EventCompensation              EventKind = "compensation"
 	EventGateCrossed               EventKind = "gate_crossed"
@@ -417,6 +418,18 @@ func validateEventPayload(event EventWrite) error {
 		}
 		if value, err := decimal.ParseCanonical(payload.Cost); err != nil || value.Lt(decimal.Zero) {
 			return fmt.Errorf("%w: invalid generator_purchased cost", ErrInvalidStream)
+		}
+	case EventUpgradePurchased:
+		var payload struct {
+			UpgradeID      string `json:"upgrade_id"`
+			CostResourceID string `json:"cost_resource_id"`
+			Cost           string `json:"cost"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !mechanicalIDPattern.MatchString(payload.UpgradeID) || !mechanicalIDPattern.MatchString(payload.CostResourceID) {
+			return fmt.Errorf("%w: invalid upgrade_purchased payload", ErrInvalidStream)
+		}
+		if value, err := decimal.ParseCanonical(payload.Cost); err != nil || !value.Gt(decimal.Zero) {
+			return fmt.Errorf("%w: invalid upgrade_purchased cost", ErrInvalidStream)
 		}
 	case EventInvariantReported:
 		var payload struct {

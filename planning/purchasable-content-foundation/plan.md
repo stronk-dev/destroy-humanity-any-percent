@@ -8,9 +8,9 @@
    pools, strict cross-reference validation, and Go loader tests.
 2. [ ] Land save v14: owned upgrades, provisioned counts, per-edge provision remainders, stock-rate
    remainder, migration corpus, canonical wire closure, and reset/import/genesis coverage.
-3. [ ] Implement state-derived contributions, upgrade purchase, manual targets, stock-rate roles,
+3. [x] Implement state-derived contributions, upgrade purchase, manual targets, stock-rate roles,
    fixed-grid provision accrual, events/receipts, and Go replay parity.
-4. [ ] Port catalog/save/transition behavior to TypeScript and extend the shared sequential replay
+4. [x] Port catalog/save/transition behavior to TypeScript and extend the shared sequential replay
    corpus with byte-identical state, receipt, and event expectations.
 5. [ ] Add the simulation-only ablation entrypoint and import/source guard; integrate the harness
    without adding mask state to authoritative bundles or replay inputs.

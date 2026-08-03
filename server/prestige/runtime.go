@@ -224,14 +224,21 @@ func NewRunState(catalog *economy.Catalog, priorCompany, founder *save.State, no
 		return nil, err
 	}
 	counts := make(map[string]int64)
+	provisioned := make(map[string]int64)
+	provisionRemainders := make(map[string]int64)
 	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
 		counts[generator.ID] = 0
+		provisioned[generator.ID] = 0
+		if generator.Provision != nil {
+			provisionRemainders[generator.Provision.GeneratorID] = 0
+		}
 	}
 	reseed, err := MoralReseed(founder.Notoriety)
 	if err != nil {
 		return nil, err
 	}
-	state := &save.State{Ledger: ledger, GeneratorCounts: counts, EvaluatedThrough: now,
+	state := &save.State{Ledger: ledger, GeneratorCounts: counts, UpgradesOwned: map[string]bool{}, GeneratorProvisioned: provisioned,
+		ProvisionRemaindersPPM: provisionRemainders, EvaluatedThrough: now,
 		ManualTokenMilli: catalog.ManualPolicy().BucketCapMilli, ManualTokenRefilledAt: now,
 		GatesCrossed: map[string]bool{}, RunSeq: priorCompany.RunSeq + 1, DoctrinesByTransition: map[string]string{},
 		LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{"trust.regulators.standing": int(reseed), "trust.regulators.grievance": int(100 - reseed)},

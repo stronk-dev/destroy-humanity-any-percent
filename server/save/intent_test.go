@@ -40,6 +40,23 @@ func TestValidateIntentDecisionEventRegistry(t *testing.T) {
 	}
 }
 
+func TestValidateUpgradePurchasedEventPayload(t *testing.T) {
+	valid := EventWrite{Kind: EventUpgradePurchased, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"upgrade_id":"upgrade.click","cost_resource_id":"company.cash","cost":"1e2"}`)}
+	if err := validateEventPayload(valid); err != nil {
+		t.Fatal(err)
+	}
+	invalid := []json.RawMessage{
+		json.RawMessage(`{"upgrade_id":"upgrade.click","cost_resource_id":"company.cash","cost":"0"}`),
+		json.RawMessage(`{"upgrade_id":"upgrade.click","cost_resource_id":"company.cash","cost":"1e2","extra":true}`),
+	}
+	for _, payload := range invalid {
+		valid.Payload = payload
+		if err := validateEventPayload(valid); !errors.Is(err, ErrInvalidStream) {
+			t.Fatalf("payload=%s error=%v", payload, err)
+		}
+	}
+}
+
 func TestValidateRouteEventPayloads(t *testing.T) {
 	run := `{"company_stream_id":"11111111-1111-4111-8111-111111111111","run_seq":1}`
 	events := []EventWrite{

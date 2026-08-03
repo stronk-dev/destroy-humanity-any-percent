@@ -132,7 +132,8 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(canonicalJSONString(transition.receipt)).toBe(special.case.receipt_json);
     expect(canonicalJSONString(transition.events)).toBe(special.case.events_json);
     expect(canonicalJSONString(encodeReplayStateV14(transition.state))).toBe(special.case.post_state_json);
-    expect(transition.invariants).toEqual([{ kind: "afford_fallback", intent_id: "01986666-0201-7000-8000-000000000201", detail: "generator.beige_tower" }]);
+    if (special.case.name === "buy-generator-max-fallback-invariant") expect(transition.invariants).toEqual([{ kind: "afford_fallback", intent_id: "01986666-0201-7000-8000-000000000201", detail: "generator.beige_tower" }]);
+    else expect(transition.invariants).toEqual([]);
   });
 
   it.each(fixture.terminal_cases)("replays terminal '$name' to the Go receipt, events, and next run", async (testCase) => {

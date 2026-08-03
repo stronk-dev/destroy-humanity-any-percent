@@ -3,6 +3,7 @@ package faction
 import (
 	"encoding/json"
 	"errors"
+	"math/big"
 
 	"cloud-clicker/server/accrualhook"
 	"cloud-clicker/server/decimal"
@@ -26,7 +27,7 @@ type AccrualHook struct {
 	Policies CatchupPolicyResolver
 }
 
-func (hook AccrualHook) AfterAccrual(state *save.State, _ *economy.Catalog, revision save.Revision, result accrualhook.Result, _ []multiplier.Contribution) ([]save.EventWrite, error) {
+func (hook AccrualHook) AfterAccrual(state *save.State, economyCatalog *economy.Catalog, revision save.Revision, result accrualhook.Result, _ []multiplier.Contribution) ([]save.EventWrite, error) {
 	if state == nil || hook.Catalogs == nil || hook.Policies == nil || result.ElapsedMS <= 0 {
 		return nil, ErrInvalidStockState
 	}
@@ -51,10 +52,34 @@ func (hook AccrualHook) AfterAccrual(state *save.State, _ *economy.Catalog, revi
 	if result.ElapsedMS > catchupCeilingMS {
 		return nil, nil
 	}
-	if result.ElapsedMS > decimal.MaxExactInteger-state.StockProgressMS {
+	factorPPM := big.NewInt(1_000_000)
+	var generators []economy.GeneratorClassDefinition
+	if economyCatalog != nil {
+		generators = economyCatalog.GeneratorClassesForScope(economy.ScopeCompany)
+	}
+	for _, generator := range generators {
+		count, exists := state.GeneratorCounts[generator.ID]
+		if !exists || count < 0 || count > decimal.MaxExactInteger {
+			return nil, ErrInvalidStockState
+		}
+		for _, role := range generator.Roles {
+			if role.Kind == economy.RoleStockRate {
+				factorPPM.Add(factorPPM, new(big.Int).Mul(big.NewInt(count), big.NewInt(role.PerPurchasedPPM)))
+			}
+		}
+	}
+	if state.StockRateRemainderPPM < 0 || state.StockRateRemainderPPM >= 1_000_000 {
 		return nil, ErrInvalidStockState
 	}
-	total := state.StockProgressMS + result.ElapsedMS
+	numerator := new(big.Int).Mul(big.NewInt(result.ElapsedMS), factorPPM)
+	numerator.Add(numerator, big.NewInt(state.StockRateRemainderPPM))
+	scaledMS, remainder := new(big.Int), new(big.Int)
+	scaledMS.QuoRem(numerator, big.NewInt(1_000_000), remainder)
+	if !scaledMS.IsInt64() || scaledMS.Int64() > decimal.MaxExactInteger-state.StockProgressMS {
+		return nil, ErrInvalidStockState
+	}
+	state.StockRateRemainderPPM = remainder.Int64()
+	total := state.StockProgressMS + scaledMS.Int64()
 	earned := total / catalog.StockIntervalMS
 	state.StockProgressMS = total % catalog.StockIntervalMS
 	if earned == 0 || state.StockUnits == catalog.StockCap {

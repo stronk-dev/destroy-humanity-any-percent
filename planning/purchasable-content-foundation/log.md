@@ -199,3 +199,27 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
 - Proof run: `make test-go GO_PACKAGES='./save ./economy ./routes ./production ./replaycatalog'`,
   `make typecheck`, `make test-client`, and `make replay-fixture-check` are green (6,496 client
   tests passed, 3 skipped).
+
+## 2026-08-03 — authoritative mechanics and cross-runtime landing
+
+- Added state-derived contribution assembly inside both Go replay boundaries: owned-upgrade
+  bundles, cumulative purchased-only ladders, manual-output roles, and purchased-only linear/log
+  synergy pools combine once with frozen external contributions and pass the existing source
+  validator/order.
+- Implemented `buy_upgrade`, typed ownership/window/predicate/unaffordable rejections, strict
+  ledger purchase, and the closed `upgrade_purchased` event across the Go parser, event registry,
+  and append-only database CHECK migration.
+- Implemented absolute `run_started_at` provisioning buckets with overflow-safe integer ppm,
+  simultaneous staged commits, carried remainders, next-bucket production, and accrual-only cap
+  saturation. Production reads purchased+provisioned; costs, ladders, pools, manual roles, and
+  stock-rate roles read purchased only.
+- Ported the same mechanics to TypeScript and added four Go-authored schema-v4 replay cases for
+  upgrade purchase, manual role output, fixed-grid provisioning, and combined ladder/pool/upgrade
+  execution. Existing fixtures now construct the complete v14 state used by restored production
+  saves and new prestige runs.
+- Self-review correction: `buy_upgrade` initially inherited the Route Registry projection
+  dependency from route hints. It now requires only the immutable Routes catalog; only the
+  founder-scope hint path requires the projector.
+- Proof run: `make test-go GO_PACKAGES='./production ./economy ./faction ./prestige ./save'`,
+  `make typecheck`, `make test-client` (6,500 passed, 3 skipped), and
+  `make replay-fixture-check` are green.

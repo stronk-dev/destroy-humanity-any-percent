@@ -253,7 +253,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		makeAcceptedOfferFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
 		makeScriptedGateFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
 	}
-	result.Additional = []crossRuntimeBundleCase{makeFallbackInvariantFixture(t, bundleBytes.Artifacts, baseNow)}
+	result.Additional = append([]crossRuntimeBundleCase{makeFallbackInvariantFixture(t, bundleBytes.Artifacts, baseNow)}, makeFoundationFixtures(t, bundleBytes.Artifacts, baseNow)...)
 	result.FullRun = makeFullRunFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	result.RejectedExit = makeRejectedExitFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	return result
@@ -749,6 +749,79 @@ func makeFallbackInvariantFixture(t *testing.T, source map[string][]byte, now ti
 	}}
 }
 
+func makeFoundationFixtures(t *testing.T, source map[string][]byte, now time.Time) []crossRuntimeBundleCase {
+	t.Helper()
+	artifacts := make(map[string][]byte, len(source))
+	for name, data := range source {
+		artifacts[name] = bytes.Clone(data)
+	}
+	economyBytes, err := os.ReadFile("../../testdata/economy-foundation-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var economyArtifact map[string]any
+	if err := json.Unmarshal(economyBytes, &economyArtifact); err != nil {
+		t.Fatal(err)
+	}
+	economyArtifact["upgrades"].([]any)[0].(map[string]any)["window"].(map[string]any)["to_gate"] = "gate.t2_to_t3"
+	artifacts["economy"], err = json.Marshal(economyArtifact)
+	if err != nil {
+		t.Fatal(err)
+	}
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs := loadReplayTestBundle(t, hash, artifacts)
+	fixtureArtifacts := make(map[string]string, len(artifacts))
+	for name, data := range artifacts {
+		fixtureArtifacts[name] = string(data)
+	}
+	definitions := []struct {
+		name      string
+		payload   string
+		advance   time.Duration
+		configure func(*save.State)
+	}{
+		{name: "foundation-buy-upgrade", payload: `{"intent_id":"01986666-0301-7000-8000-000000000301","kind":"buy_upgrade","expected_revision":1,"upgrade_id":"upgrade.click"}`, configure: func(state *save.State) { setCash(t, state, "1e3") }},
+		{name: "foundation-manual-role", payload: `{"intent_id":"01986666-0302-7000-8000-000000000302","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`, configure: func(state *save.State) { state.GeneratorCounts["generator.low"] = 10 }},
+		{name: "foundation-provision-grid", payload: `{"intent_id":"01986666-0303-7000-8000-000000000303","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`, advance: 180 * time.Second, configure: func(state *save.State) { state.GeneratorCounts["generator.high"] = 2 }},
+		{name: "foundation-combined-content", payload: `{"intent_id":"01986666-0304-7000-8000-000000000304","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`, advance: time.Second, configure: func(state *save.State) {
+			state.GeneratorCounts["generator.low"] = 10
+			state.UpgradesOwned["upgrade.click"] = true
+		}},
+	}
+	result := make([]crossRuntimeBundleCase, 0, len(definitions))
+	for index, definition := range definitions {
+		state := replayFixtureState(t, catalogs.Economy, now)
+		if definition.configure != nil {
+			definition.configure(state)
+		}
+		preState := mustEncodeState(t, state)
+		request, err := ParseIntent([]byte(definition.payload))
+		if err != nil {
+			t.Fatal(err)
+		}
+		command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1300-7000-8000-000000000001", FounderID: "01986666-2300-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: int64(index + 1)}
+		inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(definition.advance), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
+		if err != nil {
+			t.Fatal(err)
+		}
+		transition, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
+		if err != nil {
+			t.Fatalf("%s: %v", definition.name, err)
+		}
+		postState := mustEncodeState(t, state)
+		events := fixtureEvents(transition.Events)
+		result = append(result, crossRuntimeBundleCase{ConstantsHash: hash, Artifacts: fixtureArtifacts, Case: crossRuntimeFixtureCase{
+			Name: definition.name, PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+			Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: postState,
+			ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, postState),
+		}})
+	}
+	return result
+}
+
 func makeTerminalFixtureCase(t *testing.T, catalogs CatalogBundle, constantsHash string, now time.Time) crossRuntimeTerminalCase {
 	t.Helper()
 	company := replayFixtureState(t, catalogs.Economy, now.Add(-20*time.Minute))
@@ -924,7 +997,18 @@ func replayFixtureState(t *testing.T, catalog *economy.Catalog, now time.Time) *
 	if err != nil {
 		t.Fatal(err)
 	}
-	return &save.State{Ledger: ledger, GeneratorCounts: map[string]int64{"generator.beige_tower": 0}, EvaluatedThrough: now,
+	counts := map[string]int64{}
+	provisioned := map[string]int64{}
+	remainders := map[string]int64{}
+	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
+		counts[generator.ID] = 0
+		provisioned[generator.ID] = 0
+		if generator.Provision != nil {
+			remainders[generator.Provision.GeneratorID] = 0
+		}
+	}
+	return &save.State{Ledger: ledger, GeneratorCounts: counts, UpgradesOwned: map[string]bool{},
+		GeneratorProvisioned: provisioned, ProvisionRemaindersPPM: remainders, EvaluatedThrough: now,
 		ManualTokenMilli: 50_000, ManualTokenRefilledAt: now, GatesCrossed: map[string]bool{}, RunSeq: 1,
 		DoctrinesByTransition: map[string]string{}, LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{}, RegionTraits: map[string]bool{},
 		HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{}, LifetimeValue: decimal.Zero, RunStartedAt: now,

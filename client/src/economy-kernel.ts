@@ -325,8 +325,26 @@ export function parseCatalog(source: unknown): EconomyCatalog {
     if (!declaration || declaration.slot !== pool.slot || declaration.provider !== pool.id) throw new SyntaxError(`synergy pool ${pool.id} must map to one matching multiplier source`);
   }
   validateGeneratorContent(generatorClasses, synergyPools, manualActions);
+  for (const generator of generatorClasses) {
+    for (const rung of generator.ladder) {
+      const id = ladderSourceId(generator.id, rung.purchasedAt);
+      if (multiplierIds.has(id)) throw new SyntaxError(`duplicate ladder contribution source ${id}`);
+      multiplierIds.add(id);
+      allMultiplierSources.push(Object.freeze({ id, slot: "milestones", target: generator.id, provider: generator.id }));
+    }
+    for (const role of generator.roles) {
+      if (role.kind !== "manual_output") continue;
+      const id = manualRoleSourceId(generator.id, role.actionId);
+      if (multiplierIds.has(id)) throw new SyntaxError(`duplicate manual role contribution source ${id}`);
+      multiplierIds.add(id);
+      allMultiplierSources.push(Object.freeze({ id, slot: "upgrades", target: role.actionId, provider: generator.id }));
+    }
+  }
   return new EconomyCatalog(resources, generatorClasses, upgrades, synergyPools, provisionTickMs, manualActions, allMultiplierSources, progressCoordinates, manualPolicy, offlinePolicy);
 }
+
+export function ladderSourceId(generatorId: string, purchasedAt: number): string { return `${generatorId}.ladder.purchased_${purchasedAt}`; }
+export function manualRoleSourceId(generatorId: string, actionId: string): string { return `${generatorId}.role.manual_output.${actionId}`; }
 
 export function bulkCost(price: PriceDefinition, owned: number, count: number): Decimal {
   validateCount(owned, "owned");
@@ -551,6 +569,7 @@ function parseGeneratorClass(
     const raw = exactObject(source, ["purchased_at", "multiplier_ppm"], `${path}.ladder[${rungIndex}]`);
     const purchasedAt = parsePositiveSafeInteger(raw.purchased_at, `${path}.ladder[${rungIndex}].purchased_at`);
     const multiplierPpm = parsePositiveSafeInteger(raw.multiplier_ppm, `${path}.ladder[${rungIndex}].multiplier_ppm`);
+    if (multiplierPpm === 1_000_000) throw new Error(`${path}.ladder[${rungIndex}].multiplier_ppm must be non-neutral`);
     if (purchasedAt <= prior) throw new SyntaxError(`${path}.ladder thresholds must increase`);
     prior = purchasedAt;
     return Object.freeze({ purchasedAt, multiplierPpm });
