@@ -5,17 +5,20 @@ import "testing"
 func TestVerifySourceRequiresLiveJSONFieldBinding(t *testing.T) {
 	item := binding{GoFunction: "emit", JSONField: "reason_key", Key: "reason.example", SourceFile: "server/example.go"}
 	valid := []byte(`package fixture
-func emit() { _ = map[string]any{"reason_key": "reason.example"} }
+func emit() { _, _ = json.Marshal(map[string]any{"reason_key": "reason.example"}) }
 `)
 	if err := verifySource("fixture.go", valid, item); err != nil {
 		t.Fatal(err)
 	}
 	invalid := []byte(`package fixture
 // "reason.example"
-func emit() { _ = map[string]any{"other": "reason.example"} }
+func emit() {
+  if false { _, _ = json.Marshal(map[string]any{"reason_key": "reason.example"}) }
+  _, _ = json.Marshal(map[string]any{"other": "reason.example"})
+}
 `)
 	if err := verifySource("fixture.go", invalid, item); err == nil {
-		t.Fatal("comment/dead-field literal satisfied a producer binding")
+		t.Fatal("comment/dead serialized literal satisfied a producer binding")
 	}
 }
 

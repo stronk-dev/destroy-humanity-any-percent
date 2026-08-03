@@ -80,7 +80,7 @@ function normalizedString(value, label) {
   if (Buffer.byteLength(value, "utf8") > maxBytes) fail(label, `exceeds ${maxBytes} UTF-8 bytes`);
   if (value.split("\n").length > maxLines) fail(label, `exceeds ${maxLines} lines`);
   if (/[^\P{Cc}\n]/u.test(value)) fail(label, "contains a control character");
-  if (/<\/?[a-z][^>]*>/iu.test(value) || /<!--|-->|!?\[[^\]]+\]\([^)]+\)|[`*_~]|^(?:\s{0,3}(?:#{1,6}|>|[-+]|\d+\.)\s|\s{0,3}(?:---+|===+)\s*$)/mu.test(value)) {
+  if (/<\/?[a-z][^>]*>/iu.test(value) || /<!--|-->|[`*_~\[\]|\\]|^(?: {4}\S|\s{0,3}(?:#{1,6}|>|[-+]|\d+[.)])\s|\s{0,3}(?:---+|===+)\s*$)/mu.test(value)) {
     fail(label, "must be plain text, not HTML or Markdown");
   }
   return value;
@@ -532,6 +532,10 @@ function historyFileExists(commit, filename) {
   }
 }
 
+export function historyPathEverExisted(commit, filename) {
+  return git("log", "--format=%H", commit, "--", filename) !== "";
+}
+
 export function verifyAppendOnlyHistory() {
   if (git("rev-parse", "--is-shallow-repository") === "true") throw new Error("copy governance history guard requires complete Git history");
   const protectedFiles = ["moderation/copy-denylist.txt", "copy/provenance.v1.json"];
@@ -547,7 +551,7 @@ export function verifyAppendOnlyHistory() {
         if (filename.endsWith("copy-denylist.txt")) {
           const before = validateDenylistRecords(git("show", `${parent}:${filename}`), `${parent}:${filename}`, { resolveSources: false });
           const after = validateDenylistRecords(git("show", `${commit}:${filename}`), `${commit}:${filename}`, { resolveSources: false });
-          assertDenylistRecordsStable(before, after, `commit ${commit}`, (record) => !historyFileExists(parent, record.source_file));
+          assertDenylistRecordsStable(before, after, `commit ${commit}`, (record) => !historyPathEverExisted(parent, record.source_file));
         } else {
           const before = parseHistoricalJSON(parent, filename).claims;
           assertVerifiedClaimsStable(before, parseHistoricalJSON(commit, filename).claims, `commit ${commit}`);
@@ -558,7 +562,7 @@ export function verifyAppendOnlyHistory() {
   if (historyFileExists("HEAD", "moderation/copy-denylist.txt")) {
     const before = validateDenylistRecords(git("show", "HEAD:moderation/copy-denylist.txt"), "HEAD denylist", { resolveSources: false });
     const after = validateDenylistRecords(readFileSync(path.join(repositoryRoot, "moderation/copy-denylist.txt"), "utf8"), "worktree denylist");
-    assertDenylistRecordsStable(before, after, "worktree", (record) => !historyFileExists("HEAD", record.source_file));
+    assertDenylistRecordsStable(before, after, "worktree", (record) => !historyPathEverExisted("HEAD", record.source_file));
   }
   if (historyFileExists("HEAD", "copy/provenance.v1.json")) {
     const before = parseHistoricalJSON("HEAD", "copy/provenance.v1.json").claims;

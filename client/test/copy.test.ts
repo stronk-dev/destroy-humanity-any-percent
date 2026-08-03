@@ -56,7 +56,7 @@ describe("copy catalog", () => {
     expect(() => loadCopyCatalog(catalog({ ...base, extra: true }))).toThrow(/exact keys/);
     expect(() => loadCopyCatalog(catalog({ ...base, text: "Wrong {field}" }))).toThrow(/placeholders differ/);
     expect(() => loadCopyCatalog(catalog({ ...base, text: "<b>{amount}</b> {count}" }))).toThrow(/plain text/);
-    for (const text of ["**{amount}** {count}", "`{amount}` {count}", "# {amount} {count}", "<!-- {amount} --> {count}"]) {
+    for (const text of ["**{amount}** {count}", "`{amount}` {count}", "# {amount} {count}", "<!-- {amount} --> {count}", "1) {amount} {count}", "    {amount} {count}", "[{amount}][source] {count}", "| {amount} | {count} |"]) {
       expect(() => loadCopyCatalog(catalog({ ...base, text }))).toThrow(/plain text/);
     }
   });

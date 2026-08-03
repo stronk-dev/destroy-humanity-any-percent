@@ -14,8 +14,9 @@ than English text.
   The verifier proves each registered path exists in that artifact's schema before walking the
   current artifact.
 - `copy/code-reference-sites.v1.json` names explicit Go producer sites for code-owned reason keys.
-  A Go AST gate verifies that the key is the value of the declared JSON field inside the declared
-  producer function (comments and unrelated/dead literals do not qualify), then generation emits
+  A Go AST gate verifies that the key is the value of the declared JSON field in a reachable,
+  direct `json.Marshal(map literal)` call inside the declared producer function (comments,
+  unused maps, and compile-time-false branches do not qualify), then generation emits
   `copy/generated/code-references.v1.json`; code references are not discovered by a repository
   property-name search.
 - `copy/provenance.v1.json` is the stable claim registry. A verified claim resolves to exactly one
@@ -69,6 +70,10 @@ The known-name lint checks case-folded NFC tokens and separator/punctuation bypa
 the maintained red list; it is not a general trademark, defamation, or editorial-safety proof.
 Independent full-range review remains the human assurance record. No self-asserted
 `legal_reviewed` boolean exists.
+
+Denylist terms and their legal-section citations are history-protected together. The sole repair
+exception is for a cited path that never existed anywhere in reachable Git history; deleting a
+previously valid source cannot reopen that exception.
 
 ## Adding copy-bearing content
 

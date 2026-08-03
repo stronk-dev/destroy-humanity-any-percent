@@ -72,6 +72,65 @@ func literalString(expression ast.Expr) (string, bool) {
 	return value, err == nil
 }
 
+func isBooleanIdentifier(expression ast.Expr, name string) bool {
+	identifier, ok := expression.(*ast.Ident)
+	return ok && identifier.Name == name
+}
+
+func isSerializedBinding(call *ast.CallExpr, item binding) bool {
+	selector, ok := call.Fun.(*ast.SelectorExpr)
+	if !ok || selector.Sel.Name != "Marshal" || len(call.Args) != 1 {
+		return false
+	}
+	packageName, ok := selector.X.(*ast.Ident)
+	if !ok || packageName.Name != "json" {
+		return false
+	}
+	literal, ok := call.Args[0].(*ast.CompositeLit)
+	if !ok {
+		return false
+	}
+	for _, element := range literal.Elts {
+		pair, ok := element.(*ast.KeyValueExpr)
+		if !ok {
+			continue
+		}
+		field, fieldOK := literalString(pair.Key)
+		value, valueOK := literalString(pair.Value)
+		if fieldOK && valueOK && field == item.JSONField && value == item.Key {
+			return true
+		}
+	}
+	return false
+}
+
+func serializedBindings(root ast.Node, item binding) int {
+	matches := 0
+	var inspect func(ast.Node)
+	inspect = func(node ast.Node) {
+		ast.Inspect(node, func(child ast.Node) bool {
+			if statement, ok := child.(*ast.IfStmt); ok {
+				if isBooleanIdentifier(statement.Cond, "false") {
+					if statement.Else != nil {
+						inspect(statement.Else)
+					}
+					return false
+				}
+				if isBooleanIdentifier(statement.Cond, "true") {
+					inspect(statement.Body)
+					return false
+				}
+			}
+			if call, ok := child.(*ast.CallExpr); ok && isSerializedBinding(call, item) {
+				matches++
+			}
+			return true
+		})
+	}
+	inspect(root)
+	return matches
+}
+
 func verifySource(filename string, source []byte, item binding) error {
 	parsed, err := parser.ParseFile(token.NewFileSet(), filename, source, 0)
 	if err != nil {
@@ -84,21 +143,10 @@ func verifySource(filename string, source []byte, item binding) error {
 			continue
 		}
 		functions++
-		ast.Inspect(function.Body, func(node ast.Node) bool {
-			pair, ok := node.(*ast.KeyValueExpr)
-			if !ok {
-				return true
-			}
-			field, fieldOK := literalString(pair.Key)
-			value, valueOK := literalString(pair.Value)
-			if fieldOK && valueOK && field == item.JSONField && value == item.Key {
-				matches++
-			}
-			return true
-		})
+		matches += serializedBindings(function.Body, item)
 	}
 	if functions != 1 || matches != 1 {
-		return fmt.Errorf("%w: %s requires exactly one %s[%q]=%q binding; functions=%d matches=%d", errInvalidRegistry, filename, item.GoFunction, item.JSONField, item.Key, functions, matches)
+		return fmt.Errorf("%w: %s requires exactly one json.Marshal payload in %s with [%q]=%q; functions=%d matches=%d", errInvalidRegistry, filename, item.GoFunction, item.JSONField, item.Key, functions, matches)
 	}
 	return nil
 }

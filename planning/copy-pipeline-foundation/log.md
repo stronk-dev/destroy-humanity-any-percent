@@ -87,3 +87,31 @@ full implementation range; remediation follows in one independently re-reviewed 
   governance/schema checks; and 19,530 browser assertions.
 - The remediation requires a new independent verdict. The original not-approved verdict remains
   authoritative for `261eafa..b0cedab` and is not relabeled or overwritten.
+
+## 2026-08-03 — independent remediation review by Darwin (`44b4369^..2f7c9bd`)
+
+Decision: not approved for archival. Five original findings were verified closed. Three remaining
+contract gaps were demonstrated:
+
+- the invalid-citation repair exception checked only immediate-parent absence, so deleting a once-
+  valid source in one commit could reopen citation retargeting in the next;
+- the AST gate rejected comments/wrong fields but still counted an unused matching map or a map in
+  `if false`;
+- valid CommonMark `1)` lists and four-space indented code still passed the claimed plain-text
+  grammar.
+
+The second authored rejection remains in the append-only record. A second remediation batch is
+required before another archive verdict.
+
+## 2026-08-03 — second remediation implemented
+
+- Citation repair now requires that the invalid path never existed anywhere in reachable history,
+  with live-history fixtures for both the valid tracked path and the originally uncommitted path.
+- The Go AST gate now accepts only a matching field/key inside a reachable direct
+  `json.Marshal(map literal)` call in the declared function; a compile-time-false serialized map
+  plus a real wrong-field payload is the negative fixture.
+- The shared build/runtime plain-text grammar now rejects `1)` lists, four-space code blocks,
+  reference-link/table delimiters, and backslash escapes in addition to the earlier Markdown/HTML
+  cases.
+- Normal root targets `make copy-check`, `make typecheck`, `make test-client`, and `make test-go`
+  pass after the second remediation (6,507 client assertions; every server package green).
