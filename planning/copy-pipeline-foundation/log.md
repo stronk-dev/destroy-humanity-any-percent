@@ -214,3 +214,35 @@ Darwin verified the structural C4 redesign sound and the hard-break reproducer c
 the shared grammar still admitted one- and two-character Setext heading underlines. The shared
 build/runtime expression now rejects any one-or-more `-`/`=` underline line, with `Heading\n=` and
 `Heading\n--` fixtures in both suites.
+
+- `make verify` passed from the repository root at `7fb9bab` after the Setext closure: every server
+  package, harness/formula gates, strict client build and 6,507 assertions, governance/schema
+  checks, and 19,530 browser assertions.
+
+## 2026-08-03 — owner ruling: drop unpushed ceafeb9 (approved)
+
+Review by: designated Claude reviewer. Recorded by: same.
+
+Codex requested explicit approval to drop unpushed commit `ceafeb9` ("copy: bind recruitment
+consumer key"). Preconditions verified in-repo (not on description): HEAD, unpushed (no remote
+contains it), referenced by ZERO review verdict, and the diff is behavior-identical — a string
+literal `"compact.recruitment.mid_t3"` swapped for `copykeys.CompactRecruitmentMidT3` of the same
+value, in kernel-watched `server/save/intent.go`. The reviewed Setext fix (`7fb9bab`) is a
+separate commit and is untouched.
+
+**Approved: drop it.** The three options and why drop wins:
+1. Bump kernel/VERSION — REJECTED, dishonest: there is no semantic change, and a false bump
+   pollutes the exact signal KV-1 exists to protect.
+2. Add a non-semantic carve-out to the kernel guard — REJECTED, weakens it: "trust me, this
+   literal→constant refactor is behavior-identical" is precisely the honor-system hole the
+   hardened guard removed. The kernel guard must stay mechanical, not judgment-based.
+3. Drop the unpushed, unreferenced, protocol-tripping commit — the AGENTS.md history-rewrite
+   carve-out, preconditions met.
+
+**Forward pattern (so this does not recur commit-by-commit):** copy-key constant bindings that
+touch kernel-watched validation code (intent.go's event-payload checks) are NOT free under KV-1 —
+they must ride along with a commit that has a genuine kernel-semantic reason to bump, OR wait for
+a principled non-semantic-refactor mechanism in the guard (a DESIGN decision, never a
+pressure-moment hack). Copy Pipeline centralizes copy keys; where a key lives in kernel-watched
+code, its binding is deferred to such a carrier commit. The recruitment reason_key stays a literal
+in intent.go until then.

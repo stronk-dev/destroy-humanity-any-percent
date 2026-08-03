@@ -98,7 +98,9 @@ exercising the claimed behavior — a flipped box with no test is a review findi
 severity as an unreviewed archive.
 
 History rewriting (rebase/amend of committed work) is permitted for exactly one purpose: correcting
-a protocol-violating commit subject (`BALANCE-CHANGE:`/`CONSTANTS-IDENTITY:` classes) — and only
+a protocol-violating commit — a wrong subject (`BALANCE-CHANGE:`/`CONSTANTS-IDENTITY:`
+classes), OR an unpushed commit that forces a false version signal (a behavior-identical change to
+a kernel-watched file, which can neither honestly bump nor pass the guard) — and only
 while no review verdict references the affected hashes and nothing has been pushed. Once a
 planning-log verdict cites a hash, that history is append-only; a wrong-subject commit discovered
 after that point gets a follow-up correction commit and a planning-log ruling, never a rewrite.
