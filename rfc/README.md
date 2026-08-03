@@ -22,6 +22,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [UI Foundation](ui-foundation.md) | draft — C1–C8 awaiting owner rulings | Client Shell / Transport / Copy Pipeline contract |
 | [API Foundation](api-foundation.md) | draft — C1–C10 awaiting owner rulings | Account API / Transport / Gameserver Composition |
 | [Copy Pipeline Foundation](copy-pipeline-foundation.md) | draft — C1–C10 awaiting owner rulings | Client/tooling foundations; unblocks UI Foundation |
+| [Meters Foundation](meters-foundation.md) | draft — C1–C12 awaiting owner rulings | Production / Run Genesis; unblocks Clout and Pet Care |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 
