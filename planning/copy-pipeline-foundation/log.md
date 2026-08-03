@@ -79,3 +79,11 @@ full implementation range; remediation follows in one independently re-reviewed 
   lists, rules, links, tags, and HTML comments, with runtime fixtures.
 - Normal root checks after the batch: `make copy-generate`, `make copy-check`, `make typecheck`, and
   `make test-client` green (6,507 passed, 3 skipped; 1 test file skipped).
+
+## 2026-08-03 — remediation full gate
+
+- `make verify` passed at `44b4369`: all server tests including the new Go AST and deployment
+  identity packages; formula and harness gates; production client build; 6,507 client tests;
+  governance/schema checks; and 19,530 browser assertions.
+- The remediation requires a new independent verdict. The original not-approved verdict remains
+  authoritative for `261eafa..b0cedab` and is not relabeled or overwritten.
