@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"cloud-clicker/server/economy"
 )
 
 func TestSourceFingerprintTracksExecutableAuthoritiesOnly(t *testing.T) {
@@ -40,7 +42,7 @@ func TestSourceFingerprintTracksExecutableAuthoritiesOnly(t *testing.T) {
 	if err != nil || commentOnly != baseline {
 		t.Fatalf("comment changed fingerprint: got %s want %s err=%v", commentOnly, baseline, err)
 	}
-	sources["production/engine.go"] = bytes.Replace(originalEngine, []byte("func Rates("), []byte("func  Rates ("), 1)
+	sources["production/engine.go"] = bytes.Replace(originalEngine, []byte("func ratesWithProvisionedAndPolicy("), []byte("func  ratesWithProvisionedAndPolicy ("), 1)
 	formatOnly, err := sourceFingerprintFrom(read)
 	if err != nil || formatOnly != baseline {
 		t.Fatalf("formatting changed fingerprint: got %s want %s err=%v", formatOnly, baseline, err)
@@ -60,9 +62,24 @@ func TestSourceFingerprintTracksExecutableAuthoritiesOnly(t *testing.T) {
 		t.Fatal("executable rate change did not alter fingerprint")
 	}
 
-	sources["production/engine.go"] = []byte(strings.ReplaceAll(string(originalEngine), "func Rates(", "func RenamedRates("))
+	sources["production/engine.go"] = []byte(strings.ReplaceAll(string(originalEngine), "func ratesWithProvisionedAndPolicy(", "func renamedRatesWithProvisionedAndPolicy("))
 	if _, err := sourceFingerprintFrom(read); err == nil {
 		t.Fatal("missing authority did not fail closed")
+	}
+}
+
+func TestPurchasableArtifactPublishesCatalogCompositionAndCapReasons(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "..", "testdata", "economy-foundation-v4.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifact := contentFormulaFor(catalog)
+	if artifact.ProvisionTickMS != 60_000 || len(artifact.ProvisionedHardcaps) != 1 || artifact.ProvisionedHardcaps[0].ReasonKey != "generator.low.provisioned_cap" || len(artifact.SynergyPools) != 1 || artifact.SynergyPools[0].ID != "pool.operations" || len(artifact.SynergyPools[0].Sources) != 2 {
+		t.Fatalf("purchasable artifact=%+v", artifact)
 	}
 }
 

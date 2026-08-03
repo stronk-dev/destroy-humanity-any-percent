@@ -482,7 +482,7 @@ func TestInvariantSinkEventsAndOutcomeReporting(t *testing.T) {
 	catalog := phase0Catalog(t)
 	state := engineState(t, catalog, "1e2", 0)
 	request := IntentRequest{IntentID: intentID, Kind: IntentBuyGenerator}
-	decision, err := appliedDecision(request, state, 2, 1, state.Ledger.Snapshot(), nil, []InvariantReport{
+	decision, err := appliedDecision(request, state, catalog, 2, 1, state.Ledger.Snapshot(), nil, []InvariantReport{
 		{Kind: InvariantAffordFallback, IntentID: intentID, Detail: "generator.example"},
 	})
 	if err != nil {
@@ -499,7 +499,7 @@ func TestInvariantSinkEventsAndOutcomeReporting(t *testing.T) {
 		payload.Kind != string(InvariantAffordFallback) || payload.Detail != "generator.example" {
 		t.Fatalf("payload = %+v err=%v", payload, err)
 	}
-	if _, err := appliedDecision(request, state, 2, 1, state.Ledger.Snapshot(), nil, []InvariantReport{
+	if _, err := appliedDecision(request, state, catalog, 2, 1, state.Ledger.Snapshot(), nil, []InvariantReport{
 		{Kind: InvariantAffordFallback, IntentID: "018f6b7c-9abc-7def-8abc-999999999999", Detail: "generator.example"},
 	}); err != ErrInvalidEngineState {
 		t.Fatalf("mismatched report error = %v", err)

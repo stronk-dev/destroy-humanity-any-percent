@@ -36,7 +36,7 @@ func (s *Service) declineExitOffer(request IntentRequest, state *save.State, cat
 		return rejectedDecision(request, revision.Number, "offer_expired", request.OfferID)
 	}
 	before := state.Ledger.Snapshot()
-	result, err := Evaluate(state, catalog, now, mode, contributions)
+	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
@@ -47,10 +47,10 @@ func (s *Service) declineExitOffer(request IntentRequest, state *save.State, cat
 	payload, _ := json.Marshal(map[string]any{"offer_id": request.OfferID, "run_seq": state.RunSeq})
 	state.OfferState = nil
 	events = append(events, save.EventWrite{Kind: save.EventExitOfferDeclined, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
-	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
+	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
 }
 
-func afterPrestigeTransitionResolved(policy *prestigecore.Policy, request IntentRequest, state *save.State, revision save.Revision, now time.Time, decision *save.IntentDecision, founder *save.State, declinedOffers int64) error {
+func afterPrestigeTransitionResolved(policy *prestigecore.Policy, catalog *economy.Catalog, request IntentRequest, state *save.State, revision save.Revision, now time.Time, decision *save.IntentDecision, founder *save.State, declinedOffers int64) error {
 	if state == nil || decision == nil {
 		return ErrInvalidEngineState
 	}
@@ -65,7 +65,7 @@ func afterPrestigeTransitionResolved(policy *prestigecore.Policy, request Intent
 			return ErrInvalidEngineState
 		}
 		if len(founder.ExitHistory) == 0 {
-			return refreshAppliedSnapshot(decision, state)
+			return refreshAppliedSnapshot(decision, state, catalog)
 		}
 		if state.Tier < 0 || state.Tier >= int64(len(policy.SpawnGatePPM)) {
 			return ErrInvalidEngineState
@@ -86,15 +86,15 @@ func afterPrestigeTransitionResolved(policy *prestigecore.Policy, request Intent
 			decision.Events = append(decision.Events, save.EventWrite{Kind: save.EventExitOfferSpawned, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
 		}
 	}
-	return refreshAppliedSnapshot(decision, state)
+	return refreshAppliedSnapshot(decision, state, catalog)
 }
 
-func refreshAppliedSnapshot(decision *save.IntentDecision, state *save.State) error {
+func refreshAppliedSnapshot(decision *save.IntentDecision, state *save.State, catalog *economy.Catalog) error {
 	var receipt map[string]json.RawMessage
 	if err := json.Unmarshal(decision.Receipt, &receipt); err != nil {
 		return err
 	}
-	snapshot, err := json.Marshal(wireSnapshot(state))
+	snapshot, err := json.Marshal(wireSnapshot(state, catalog))
 	if err != nil {
 		return err
 	}
@@ -235,7 +235,7 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 		"assisted": assisted, "faction": factionID})
 	startedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": newCompany.RunSeq}, "started_at_ms": now.UnixMilli(), "assisted": map[string]bool{"commons": false, "advisor": founder.AdvisorMode}})
 	advancedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType, "reputation_delta": terms.ReputationDelta, "route_knowledge": terms.RouteKnowledge, "occurred_at_ms": now.UnixMilli()})
-	receipt, _ := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": "applied", "applied_count": 1, "receipt": map[string]any{"changes": []any{}}, "new_revision": companyRevision.Number + 2, "founder_revision": founderRevision.Number + 1, "evaluated_at": now.Format(time.RFC3339Nano), "snapshot": wireSnapshot(newCompany)})
+	receipt, _ := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": "applied", "applied_count": 1, "receipt": map[string]any{"changes": []any{}}, "new_revision": companyRevision.Number + 2, "founder_revision": founderRevision.Number + 1, "evaluated_at": now.Format(time.RFC3339Nano), "snapshot": wireSnapshot(newCompany, nextCatalog)})
 	endedEvents := append([]save.EventWrite(nil), endedPrefix...)
 	endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventRunEnded, SchemaVersion: 2, IntentID: request.IntentID, Payload: endedPayload})
 	return save.ExitDecision{Outcome: save.IntentApplied, Receipt: receipt, FinalCompanyState: company, NewCompanyState: newCompany, NewConstantsHash: nextConstantsHash,

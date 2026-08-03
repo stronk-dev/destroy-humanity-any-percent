@@ -695,7 +695,7 @@ func (s *Service) buyUpgrade(request IntentRequest, state *save.State, catalog *
 	state.UpgradesOwned[request.UpgradeID] = true
 	payload, _ := json.Marshal(map[string]any{"upgrade_id": request.UpgradeID, "cost_resource_id": upgrade.Cost.ResourceID, "cost": upgrade.Cost.Amount.String()})
 	events = append(events, save.EventWrite{Kind: save.EventUpgradePurchased, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
-	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
+	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
 }
 
 func (s *Service) signCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
@@ -721,7 +721,7 @@ func (s *Service) signCompact(request IntentRequest, state *save.State, catalog 
 	state.CompactSolidarityPPM, state.CompactSamples = 0, []save.CompactSample{}
 	payload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": request.TithePPM, "prior_member": false, "new_member": true})
 	events = append(events, save.EventWrite{Kind: save.EventCompactSigned, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
-	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
+	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
 }
 
 func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
@@ -757,7 +757,7 @@ func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog
 	state.CompactSamples = []save.CompactSample{}
 	payload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": priorTithe, "prior_member": true, "new_member": false})
 	events = append(events, save.EventWrite{Kind: save.EventCompactLeft, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
-	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
+	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
 }
 
 func (s *Service) incorporate(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
@@ -811,7 +811,7 @@ func (s *Service) incorporate(request IntentRequest, state *save.State, catalog 
 			events = append(events, save.EventWrite{Kind: save.EventCompactSigned, SchemaVersion: 1, IntentID: request.IntentID, Payload: compactPayload})
 		}
 	}
-	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
+	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
 }
 
 func runAccrualHook(hook AccrualHook, intentID string, state *save.State, catalog *economy.Catalog, revision save.Revision, result EvaluationResult, contributions []multiplier.Contribution) ([]save.EventWrite, error) {
@@ -918,7 +918,7 @@ func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *e
 	if request.RouteID != "" {
 		events = append(events, routeExecutedEvent(request, revision, state.RunSeq))
 	}
-	return appliedDecision(request, state, revision.Number+1, 1, before, events, nil)
+	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
 }
 
 func routeContext(state *save.State, version int) (routes.Context, error) {
@@ -953,7 +953,7 @@ func (s *Service) buyRouteHint(request IntentRequest, state *save.State, routeCa
 	}
 	state.HintsUnlocked[request.RouteID] = true
 	payload, _ := json.Marshal(map[string]any{"route_id": request.RouteID, "cost": cost})
-	return appliedDecision(request, state, revision.Number+1, 1, state.Ledger.Snapshot(), []save.EventWrite{{Kind: save.EventRouteHintPurchased, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload}}, nil)
+	return appliedDecision(request, state, nil, revision.Number+1, 1, state.Ledger.Snapshot(), []save.EventWrite{{Kind: save.EventRouteHintPurchased, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload}}, nil)
 }
 
 func (s *Service) buyGenerator(
@@ -1034,7 +1034,7 @@ func (s *Service) buyGenerator(
 	state.GeneratorCounts[request.GeneratorID] = owned + count
 	state.GeneratorPurchasedTotal += count
 	accrualEvents = append(accrualEvents, generatorPurchasedEvent(request, generator.Price.ResourceID, count, cost))
-	return appliedDecision(request, state, revision.Number+1, count, before, accrualEvents, collectorReports(sink))
+	return appliedDecision(request, state, catalog, revision.Number+1, count, before, accrualEvents, collectorReports(sink))
 }
 
 func (s *Service) performManualBatch(
@@ -1083,7 +1083,7 @@ func (s *Service) performManualBatch(
 			return save.IntentDecision{}, err
 		}
 	}
-	return appliedDecision(request, state, revision.Number+1, applied, before, events, nil)
+	return appliedDecision(request, state, catalog, revision.Number+1, applied, before, events, nil)
 }
 
 func refillManualTokens(state *save.State, policy economy.ManualPolicy, now time.Time) {
@@ -1109,6 +1109,7 @@ func refillManualTokens(state *save.State, policy economy.ManualPolicy, now time
 func appliedDecision(
 	request IntentRequest,
 	state *save.State,
+	catalog *economy.Catalog,
 	newRevision int64,
 	appliedCount int64,
 	before map[string]string,
@@ -1138,7 +1139,7 @@ func appliedDecision(
 		"intent_id": request.IntentID, "outcome": "applied", "applied_count": appliedCount,
 		"receipt":      map[string]any{"changes": changes},
 		"new_revision": newRevision, "evaluated_at": state.EvaluatedThrough.UTC().Format(time.RFC3339Nano),
-		"snapshot": wireSnapshot(state),
+		"snapshot": wireSnapshot(state, catalog),
 	}
 	encoded, err := json.Marshal(receipt)
 	if err != nil {
@@ -1225,13 +1226,14 @@ func wireChanges(before, after map[string]string) ([]map[string]string, error) {
 	return changes, nil
 }
 
-func wireSnapshot(state *save.State) map[string]any {
+func wireSnapshot(state *save.State, catalog *economy.Catalog) map[string]any {
 	return map[string]any{
 		"balances": state.Ledger.Snapshot(), "generators": state.GeneratorCounts,
 		"generators_purchased_total": state.GeneratorPurchasedTotal,
 		"upgrades_owned":             sortedBoolKeys(state.UpgradesOwned),
 		"generators_provisioned":     state.GeneratorProvisioned,
 		"provision_remainders_ppm":   state.ProvisionRemaindersPPM,
+		"provisioned_hardcaps":       wireProvisionedHardcaps(catalog),
 		"stock_rate_remainder_ppm":   state.StockRateRemainderPPM,
 		"evaluated_through":          state.EvaluatedThrough.UTC().Format(time.RFC3339Nano),
 		"compute_credit_ms":          state.ComputeCreditMS, "manual_token_milli": state.ManualTokenMilli,
@@ -1254,6 +1256,19 @@ func wireSnapshot(state *save.State) map[string]any {
 		"guild_boundary_guild_id":     nullableString(state.GuildBoundaryGuildID),
 		"guild_consumed_window_units": state.GuildConsumedWindow,
 	}
+}
+
+func wireProvisionedHardcaps(catalog *economy.Catalog) map[string]map[string]any {
+	result := map[string]map[string]any{}
+	if catalog == nil {
+		return result
+	}
+	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
+		if generator.ProvisionedHardcap != nil {
+			result[generator.ID] = map[string]any{"count": generator.ProvisionedHardcap.Count, "reason_key": generator.ProvisionedHardcap.ReasonKey}
+		}
+	}
+	return result
 }
 
 func nullableString(value string) any {

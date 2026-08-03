@@ -8,20 +8,21 @@ in client intent data.
 ## Catalog and multiplier boundary
 
 Catalog schema v3 adds manual actions, declared multiplier sources, T0–T3 progress coordinates,
-manual-token policy, and offline/Compute Credit policy. The shipped Phase-0 artifact is
+manual-token policy, and offline/Compute Credit policy. Schema v4 adds the purchasable-content
+definitions described in [Purchasable content](purchasable-content.md). The shipped Phase-0 artifact is
 [`balance/catalogs/phase0.json`](../balance/catalogs/phase0.json). Historical v1/v2 catalogs remain
 loadable for old `constants_hash` saves but cannot acquire v3 semantics silently.
 
 The reviewed rate formula and slot order are published in
 [`generated/production-formulas.json`](generated/production-formulas.json). Its SHA-256
-`source_fingerprint` is generated from normalized, comment-free Go AST for the live `Rates`
-function, multiplier ordering, and Commons formula/aggregate/smoothing authorities. The tool does not pretend to
+`source_fingerprint` is generated from normalized, comment-free Go AST for the live production,
+purchasable-content, multiplier-ordering, and Commons formula authorities. The tool does not pretend to
 infer algebra from arbitrary Go; it binds this human-readable formula to the exact executable
 authorities that were reviewed. In prose:
 
 ```text
 rate(resource) = sum over generators (
-  exact_owned_count × base_rate × product(multiplier contributions)
+  (purchased_count + provisioned_count) × base_rate × product(multiplier contributions)
 )
 ```
 
@@ -62,9 +63,11 @@ RFC.
 
 ## Intent API
 
-The implemented command surface contains exactly eleven intents:
+The implemented command surface contains exactly twelve intents:
 
 - `buy_generator`: exact positive safe-integer count or verified `max`;
+- `buy_upgrade`: one mechanical upgrade id; the server derives price, eligibility, ownership,
+  and permanent contribution effects from the pinned catalog;
 - `perform_manual_batch`: positive safe-integer count and `window_ms` (audit/UX only; it grants no
   authority).
 - `cross_gate`: mechanical gate id plus nullable route id; the server evaluates standard or route
@@ -120,7 +123,7 @@ Event registry v1 additionally contains `compact_signed`, `compact_tithe_raised`
 `compact_recruitment_offered`; see [Commons](commons.md).
 Faction incorporation adds `incorporated` and `faction_stock_saturated`; both are strict v1 event
 payloads committed on the same revision as their state change.
-Purchases emit exactly one event; manual batches emit none. Events retain stream/revision and
+Generator and upgrade purchases emit exactly one typed event; manual batches emit none. Events retain stream/revision and
 `constants_hash` identity even after old snapshot rows are pruned, but retention does not guarantee
 that an old snapshot remains queryable. History has no update/delete API; corrections are later
 compensation events.

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://destroy-humanity-any-percent.invalid/schema/economy-v3.json",
+  "$id": "https://destroy-humanity-any-percent.invalid/schema/economy-v4.json",
   "title": "Cloud Clicker economy catalog",
   "type": "object",
   "additionalProperties": false,
@@ -15,7 +15,7 @@
     "offline_policy"
   ],
   "properties": {
-    "schema_version": { "const": 3 },
+    "schema_version": { "enum": [3, 4] },
     "resources": { "type": "array", "items": { "$ref": "#/$defs/resource" } },
     "generator_classes": { "type": "array", "items": { "$ref": "#/$defs/generator_class" } },
     "manual_actions": { "type": "array", "items": { "$ref": "#/$defs/manual_action" } },
@@ -27,8 +27,28 @@
       "items": { "$ref": "#/$defs/progress_coordinate" }
     },
     "manual_policy": { "$ref": "#/$defs/manual_policy" },
-    "offline_policy": { "$ref": "#/$defs/offline_policy" }
+    "offline_policy": { "$ref": "#/$defs/offline_policy" },
+    "upgrades": { "type": "array", "items": { "$ref": "#/$defs/upgrade" } },
+    "synergy_pools": { "type": "array", "items": { "$ref": "#/$defs/synergy_pool" } },
+    "provision_tick_ms": { "$ref": "#/$defs/positive_safe_integer" }
   },
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": 4 } }, "required": ["schema_version"] },
+      "then": {
+        "required": ["upgrades", "synergy_pools", "provision_tick_ms"],
+        "properties": {
+          "upgrades": {},
+          "synergy_pools": {},
+          "provision_tick_ms": {},
+          "generator_classes": {
+            "type": "array",
+            "items": { "allOf": [{ "$ref": "#/$defs/generator_class" }, { "type": "object", "required": ["tier", "category", "ladder", "roles"], "properties": { "tier": {}, "category": {}, "ladder": {}, "roles": {} } }] }
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "id": {
       "type": "string",
@@ -124,9 +144,99 @@
       "required": ["id", "price", "production"],
       "properties": {
         "id": { "$ref": "#/$defs/id" },
+        "tier": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "category": { "$ref": "#/$defs/id" },
         "price": { "$ref": "#/$defs/price" },
-        "production": { "$ref": "#/$defs/production" }
+        "production": { "$ref": "#/$defs/production" },
+        "provisions": { "$ref": "#/$defs/provision" },
+        "provisioned_hardcap": { "$ref": "#/$defs/provisioned_hardcap" },
+        "ladder": { "type": "array", "items": { "$ref": "#/$defs/ladder_rung" } },
+        "roles": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/generator_role" } }
       }
+    },
+    "provision": {
+      "type": "object", "additionalProperties": false, "required": ["generator_id", "rate_ppm"],
+      "properties": { "generator_id": { "$ref": "#/$defs/id" }, "rate_ppm": { "$ref": "#/$defs/positive_safe_integer" } }
+    },
+    "provisioned_hardcap": {
+      "type": "object", "additionalProperties": false, "required": ["count", "reason_key"],
+      "properties": { "count": { "$ref": "#/$defs/positive_safe_integer" }, "reason_key": { "$ref": "#/$defs/id" } }
+    },
+    "ladder_rung": {
+      "type": "object", "additionalProperties": false, "required": ["purchased_at", "multiplier_ppm"],
+      "properties": { "purchased_at": { "$ref": "#/$defs/positive_safe_integer" }, "multiplier_ppm": { "$ref": "#/$defs/positive_safe_integer" } }
+    },
+    "generator_role": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["kind", "generator_id"], "properties": { "kind": { "const": "provision" }, "generator_id": { "$ref": "#/$defs/id" } } },
+        { "type": "object", "additionalProperties": false, "required": ["kind", "pool_id"], "properties": { "kind": { "const": "synergy_feed" }, "pool_id": { "$ref": "#/$defs/id" } } },
+        { "type": "object", "additionalProperties": false, "required": ["kind", "action_id", "per_purchased_ppm"], "properties": { "kind": { "const": "manual_output" }, "action_id": { "$ref": "#/$defs/id" }, "per_purchased_ppm": { "$ref": "#/$defs/positive_safe_integer" } } },
+        { "type": "object", "additionalProperties": false, "required": ["kind", "per_purchased_ppm"], "properties": { "kind": { "const": "stock_rate" }, "per_purchased_ppm": { "$ref": "#/$defs/positive_safe_integer" } } }
+      ]
+    },
+    "upgrade": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "cost", "window", "requires", "effects", "roles", "copy_key"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "cost": { "type": "object", "additionalProperties": false, "required": ["resource", "amount"], "properties": { "resource": { "$ref": "#/$defs/id" }, "amount": { "$ref": "#/$defs/positive_decimal" } } },
+        "window": { "type": "object", "additionalProperties": false, "required": ["from_gate", "to_gate"], "properties": { "from_gate": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/id" }] }, "to_gate": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/id" }] } } },
+        "requires": { "type": "array", "items": { "$ref": "#/$defs/condition" } },
+        "effects": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/upgrade_effect" } },
+        "roles": { "type": "array", "items": { "enum": ["provision", "synergy_feed", "manual_output", "stock_rate"] } },
+        "copy_key": { "$ref": "#/$defs/id" }
+      }
+    },
+    "upgrade_effect": {
+      "type": "object", "additionalProperties": false, "required": ["source_id", "slot", "target", "factor"],
+      "properties": { "source_id": { "$ref": "#/$defs/id" }, "slot": { "const": "upgrades" }, "target": { "$ref": "#/$defs/id" }, "factor": { "$ref": "#/$defs/positive_decimal" } }
+    },
+    "synergy_pool": {
+      "type": "object", "additionalProperties": false, "required": ["id", "sources", "slot", "curve"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/synergy_source" } },
+        "slot": { "enum": ["upgrades", "milestones", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige"] },
+        "curve": { "enum": ["linear", "log"] }
+      }
+    },
+    "synergy_source": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "id_or_class", "per_count_ppm"],
+      "properties": { "kind": { "enum": ["generator", "upgrade"] }, "id_or_class": { "$ref": "#/$defs/id" }, "per_count_ppm": { "$ref": "#/$defs/positive_safe_integer" } }
+    },
+    "condition": {
+      "oneOf": [
+        { "$ref": "#/$defs/resource_condition" },
+        { "$ref": "#/$defs/meter_condition" },
+        { "$ref": "#/$defs/doctrine_condition" },
+        { "$ref": "#/$defs/structure_condition" },
+        { "$ref": "#/$defs/fact_condition" },
+        { "$ref": "#/$defs/trait_condition" }
+      ]
+    },
+    "resource_condition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "resource_id", "value"],
+      "properties": { "kind": { "enum": ["resource_at_least", "resource_at_most"] }, "resource_id": { "$ref": "#/$defs/id" }, "value": { "$ref": "#/$defs/decimal" } }
+    },
+    "meter_condition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "meter_id", "min", "max"],
+      "properties": { "kind": { "const": "meter_band" }, "meter_id": { "$ref": "#/$defs/id" }, "min": { "type": "integer", "minimum": 0, "maximum": 100 }, "max": { "type": "integer", "minimum": 0, "maximum": 100 } }
+    },
+    "doctrine_condition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "transition", "doctrine_id"],
+      "properties": { "kind": { "enum": ["doctrine_is", "doctrine_is_not"] }, "transition": { "$ref": "#/$defs/id" }, "doctrine_id": { "$ref": "#/$defs/id" } }
+    },
+    "structure_condition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "structure_id"],
+      "properties": { "kind": { "const": "structure_is" }, "structure_id": { "$ref": "#/$defs/id" } }
+    },
+    "fact_condition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "fact_kind"],
+      "properties": { "kind": { "const": "ledger_fact_present" }, "fact_kind": { "$ref": "#/$defs/id" } }
+    },
+    "trait_condition": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "trait_id"],
+      "properties": { "kind": { "const": "region_trait" }, "trait_id": { "$ref": "#/$defs/id" } }
     },
     "manual_action": {
       "type": "object",

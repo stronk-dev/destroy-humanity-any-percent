@@ -259,7 +259,7 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 		return LoggedTransition{}, err
 	}
 	if decision.Outcome == save.IntentApplied {
-		if err := afterPrestigeTransitionResolved(catalogs.Prestige, request, state, revision, now, &decision, founder, declined); err != nil {
+		if err := afterPrestigeTransitionResolved(catalogs.Prestige, catalogs.Economy, request, state, revision, now, &decision, founder, declined); err != nil {
 			return LoggedTransition{}, err
 		}
 	}

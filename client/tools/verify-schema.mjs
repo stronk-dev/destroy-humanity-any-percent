@@ -194,6 +194,7 @@ async function main() {
 
   const production = await jsonFiles(path.join(balanceDirectory, "catalogs"));
   const positive = await jsonFiles(path.join(balanceDirectory, "testdata", "valid"));
+  positive.push(path.join(repositoryDirectory, "testdata", "economy-foundation-v4.json"));
   const negative = await jsonFiles(path.join(balanceDirectory, "testdata", "invalid"));
 
   if (positive.length === 0 || negative.length === 0) {

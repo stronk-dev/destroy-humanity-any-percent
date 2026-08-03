@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"cloud-clicker/server/commons"
+	"cloud-clicker/server/economy"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/multiplier"
 )
@@ -27,6 +28,39 @@ type formulaArtifact struct {
 	SourceFingerprint   string            `json:"source_fingerprint"`
 	Commons             commonsFormula    `json:"commons"`
 	Guild               guildFormula      `json:"guild"`
+	PurchasableContent  contentFormula    `json:"purchasable_content"`
+}
+
+type contentFormula struct {
+	Provisioning        string               `json:"provisioning"`
+	ManualOutput        string               `json:"manual_output"`
+	StockRate           string               `json:"stock_rate"`
+	SynergyLinear       string               `json:"synergy_linear"`
+	SynergyLog          string               `json:"synergy_log"`
+	Ladders             string               `json:"ladders"`
+	ProvisionTickMS     int64                `json:"provision_tick_ms"`
+	ProvisionedHardcaps []contentHardcap     `json:"provisioned_hardcaps"`
+	SynergyPools        []contentSynergyPool `json:"synergy_pools"`
+}
+
+type contentHardcap struct {
+	GeneratorID string `json:"generator_id"`
+	Count       int64  `json:"count"`
+	ReasonKey   string `json:"reason_key"`
+}
+
+type contentSynergyPool struct {
+	ID      string                 `json:"id"`
+	Curve   economy.SynergyCurve   `json:"curve"`
+	Slot    multiplier.Slot        `json:"slot"`
+	Target  string                 `json:"target"`
+	Sources []contentSynergySource `json:"sources"`
+}
+
+type contentSynergySource struct {
+	Kind        economy.SynergySourceKind `json:"kind"`
+	ID          string                    `json:"id_or_class"`
+	PerCountPPM int64                     `json:"per_count_ppm"`
 }
 
 type guildFormula struct {
@@ -89,7 +123,11 @@ type authoritySpec struct {
 }
 
 var formulaAuthorities = []authoritySpec{
-	{label: "production.Rates", path: "production/engine.go", kind: authorityFunction, symbol: "Rates"},
+	{label: "production.ratesWithProvisionedAndPolicy", path: "production/engine.go", kind: authorityFunction, symbol: "ratesWithProvisionedAndPolicy"},
+	{label: "production.contentContributionsWithPolicy", path: "production/content.go", kind: authorityFunction, symbol: "contentContributionsWithPolicy"},
+	{label: "production.countPPMFactor", path: "production/content.go", kind: authorityFunction, symbol: "countPPMFactor"},
+	{label: "production.synergyFactor", path: "production/content.go", kind: authorityFunction, symbol: "synergyFactor"},
+	{label: "production.materializeProvisionBoundaryWithPolicy", path: "production/content.go", kind: authorityFunction, symbol: "materializeProvisionBoundaryWithPolicy"},
 	{label: "multiplier.Order", path: "multiplier/contribution.go", kind: authorityValue, symbol: "Order"},
 	{label: "multiplier.OrderedSourceIDs", path: "multiplier/contribution.go", kind: authorityFunction, symbol: "OrderedSourceIDs"},
 	{label: "commons.EnclosureIndex", path: "commons/formula.go", kind: authorityFunction, symbol: "EnclosureIndex"},
@@ -134,9 +172,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	economyBytes, err := os.ReadFile(filepath.Join(root, "..", "balance", "catalogs", "phase0.json"))
+	if err != nil {
+		panic(err)
+	}
+	economyCatalog, err := economy.LoadCatalog(economyBytes)
+	if err != nil {
+		panic(err)
+	}
 	artifact := formulaArtifact{
-		SchemaVersion:       5,
-		ProductionRate:      "sum_generators(count * base_rate * product(multiplier_slots))",
+		SchemaVersion:       6,
+		ProductionRate:      "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
 		MultiplierSlotOrder: append([]multiplier.Slot(nil), multiplier.Order[:]...),
 		WithinSlotOrder:     multiplier.WithinSlotOrder,
 		SourceFingerprint:   fingerprint,
@@ -180,6 +226,7 @@ func main() {
 			StockIntakeCap: guildCatalog.StockIntakeCap, ConsumptionBonusPPMPerUnit: guildCatalog.ConsumptionBonusPPMPerUnit,
 			ClearingIntervalMS: guildCatalog.ClearingIntervalMS,
 		},
+		PurchasableContent: contentFormulaFor(economyCatalog),
 	}
 	data, err := json.MarshalIndent(artifact, "", "  ")
 	if err != nil {
@@ -189,6 +236,36 @@ func main() {
 	if err := os.WriteFile(*output, data, 0o644); err != nil {
 		panic(err)
 	}
+}
+
+func contentFormulaFor(catalog *economy.Catalog) contentFormula {
+	result := contentFormula{
+		Provisioning:        "at each run-aligned tick: staged = floor(((purchased + provisioned) * rate_ppm + remainder_ppm) / 1000000); persist modulus; saturate at declared cap; new units produce next bucket",
+		ManualOutput:        "1 + purchased_count * per_purchased_ppm / 1000000",
+		StockRate:           "scaled_ms = floor((elapsed_ms * (1000000 + sum(purchased_count * per_purchased_ppm)) + remainder_ppm) / 1000000); persist modulus",
+		SynergyLinear:       "1 + sum_ppm / 1000000",
+		SynergyLog:          "1 + log10(1 + sum_ppm / 1000000)",
+		Ladders:             "product(reached purchased-only rung multiplier_ppm / 1000000) in raw-byte source order",
+		ProvisionedHardcaps: []contentHardcap{}, SynergyPools: []contentSynergyPool{},
+	}
+	if catalog == nil {
+		return result
+	}
+	result.ProvisionTickMS = catalog.ProvisionTickMS()
+	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
+		if generator.ProvisionedHardcap != nil {
+			result.ProvisionedHardcaps = append(result.ProvisionedHardcaps, contentHardcap{GeneratorID: generator.ID, Count: generator.ProvisionedHardcap.Count, ReasonKey: generator.ProvisionedHardcap.ReasonKey})
+		}
+	}
+	for _, pool := range catalog.SynergyPools() {
+		declaration, _ := catalog.MultiplierSource(pool.ID)
+		published := contentSynergyPool{ID: pool.ID, Curve: pool.Curve, Slot: pool.Slot, Target: declaration.Target, Sources: []contentSynergySource{}}
+		for _, source := range pool.Sources {
+			published.Sources = append(published.Sources, contentSynergySource{Kind: source.Kind, ID: source.ID, PerCountPPM: source.PerCountPPM})
+		}
+		result.SynergyPools = append(result.SynergyPools, published)
+	}
+	return result
 }
 
 func moduleRoot() (string, error) {

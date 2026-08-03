@@ -86,6 +86,52 @@ func TestContentContributionsUsePurchasedCountsAndRawSourceOrder(t *testing.T) {
 	}
 }
 
+func TestTwoSynergyPoolsComposeInRawSourceOrder(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/economy-foundation-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var authored map[string]any
+	if err := json.Unmarshal(data, &authored); err != nil {
+		t.Fatal(err)
+	}
+	generators := authored["generator_classes"].([]any)
+	high := generators[1].(map[string]any)
+	high["roles"] = append(high["roles"].([]any), map[string]any{"kind": "synergy_feed", "pool_id": "pool.scale"})
+	authored["synergy_pools"] = append(authored["synergy_pools"].([]any), map[string]any{
+		"id": "pool.scale", "slot": "upgrades", "curve": "log",
+		"sources": []any{map[string]any{"kind": "generator", "id_or_class": "generator.high", "per_count_ppm": float64(1_000_000)}},
+	})
+	authored["multiplier_sources"] = append(authored["multiplier_sources"].([]any), map[string]any{
+		"id": "pool.scale", "slot": "upgrades", "target": "generator.high", "provider": "pool.scale",
+	})
+	encoded, err := json.Marshal(authored)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(encoded)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := foundationState(t, catalog, time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC))
+	state.GeneratorCounts["generator.low"] = 10
+	state.GeneratorCounts["generator.high"] = 5
+	contributions, err := contentContributions(state, catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var pools []string
+	for _, contribution := range contributions {
+		if contribution.SourceID == "pool.operations" || contribution.SourceID == "pool.scale" {
+			pools = append(pools, contribution.SourceID+"="+contribution.Factor.String())
+		}
+	}
+	want := []string{"pool.operations=1.01e0", "pool.scale=1.77815125038e0"}
+	if len(pools) != len(want) || pools[0] != want[0] || pools[1] != want[1] {
+		t.Fatalf("pool composition=%v want=%v", pools, want)
+	}
+}
+
 func TestProvisionBucketsArePartitionInvariantAndNewUnitsProduceNextBucket(t *testing.T) {
 	catalog := foundationCatalog(t)
 	started := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
@@ -243,6 +289,33 @@ func TestSimulationMaskNullsProvisionEdgeAndRemovedActionRejectsBeforeAccrual(t 
 	rejected, err := SimulateTransition(request, rejectedState, catalog, save.Revision{Number: 1}, ModeOnline, started.Add(time.Minute), nil, nil, AblationMask{RemovedActionIDs: []string{"manual.click"}})
 	if err != nil || rejected.Outcome != save.IntentRejected || !rejectedState.EvaluatedThrough.Equal(started) {
 		t.Fatalf("rejected=%+v evaluated=%s err=%v", rejected, rejectedState.EvaluatedThrough, err)
+	}
+}
+
+func TestSimulationMaskAppliesAcrossDeclineOfferEvaluation(t *testing.T) {
+	catalog := foundationCatalog(t)
+	started := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
+	state := foundationState(t, catalog, started)
+	state.GeneratorCounts["generator.low"] = 1
+	state.OfferState = &save.ExitOfferState{
+		OfferID:   "01986666-0204-7000-8000-000000000204",
+		ExitType:  "collapse",
+		SpawnedAt: started,
+		ExpiresAt: started.Add(time.Hour),
+	}
+	request := IntentRequest{
+		IntentID:         "01986666-0205-7000-8000-000000000205",
+		Kind:             IntentDeclineExitOffer,
+		ExpectedRevision: 1,
+		OfferID:          state.OfferState.OfferID,
+	}
+	decision, err := SimulateTransition(request, state, catalog, save.Revision{Number: 1}, ModeOnline, started.Add(time.Second), nil, nil, AblationMask{GeneratorIDs: []string{"generator.low"}})
+	if err != nil || decision.Outcome != save.IntentApplied || state.OfferState != nil {
+		t.Fatalf("decision=%+v offer=%+v err=%v", decision, state.OfferState, err)
+	}
+	balance, _ := state.Ledger.Balance("company.cash")
+	if !balance.Eq(decimal.Zero) {
+		t.Fatalf("masked decline accrued cash=%s", balance)
 	}
 }
 

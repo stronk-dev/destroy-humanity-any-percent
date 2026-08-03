@@ -281,8 +281,8 @@ func TestApplyLoggedReplaysByteIdenticalTransition(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	firstState, _ := json.Marshal(wireSnapshot(first.State))
-	secondState, _ := json.Marshal(wireSnapshot(second.State))
+	firstState, _ := json.Marshal(wireSnapshot(first.State, catalogs.Economy))
+	secondState, _ := json.Marshal(wireSnapshot(second.State, catalogs.Economy))
 	firstEvents, _ := json.Marshal(first.Events)
 	secondEvents, _ := json.Marshal(second.Events)
 	if first.Outcome != save.IntentApplied || string(first.Receipt) != string(second.Receipt) || string(firstState) != string(secondState) || string(firstEvents) != string(secondEvents) {

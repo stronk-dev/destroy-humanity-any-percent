@@ -9,8 +9,9 @@ balance data, purchases, multiplier declarations, and lazy time integration.
 
 The authoring schema is [`balance/economy.schema.json`](../balance/economy.schema.json). Runtime
 validation is performed independently by `economy.LoadCatalog` on the server and `parseCatalog`
-on the client. Current authoring uses version 3; both runtimes retain version-1 and version-2
-loading for historical catalog hashes. The complete canonical example is
+on the client. The loaders support version 4's purchasable-content definitions; the active Phase-0
+artifact remains version 3 until its content epoch is minted. Both runtimes retain version-1 and
+version-2 loading for historical catalog hashes. The complete active catalog is
 [`balance/catalogs/phase0.json`](../balance/catalogs/phase0.json); this excerpt shows its root shape:
 
 ```json
@@ -55,9 +56,11 @@ The shipped Phase-0 values are provisional balance data identified by the exact 
 
 Catalog rules:
 
-- Versions 2 and 3 require generator production metadata. Version 1 remains readable but its
+- Versions 2–4 require generator production metadata. Version 1 remains readable but its
   generators are explicitly not production-capable. Version 3 additionally requires production
-  policies, actions, multiplier declarations, and progress coordinates.
+  policies, actions, multiplier declarations, and progress coordinates. Version 4 adds typed
+  generator roles, upgrades, provisioning edges and caps, milestone ladders, and synergy pools;
+  see [Purchasable content](purchasable-content.md).
 - IDs are lowercase mechanical identifiers, optionally dot-namespaced. Flavor and visible text
   stay in later data/localization files.
 - Resource scopes are `company`, `founder`, `world`, and `guild`.
@@ -194,7 +197,8 @@ and WebKit suites.
 ## Deliberate deferrals
 
 Idempotency storage, production/time integration, offline progress, multiplier slots, purchases,
-manual actions, and shipped Phase-0 balance now exist; see [Production engine](production-engine.md).
+manual actions, and the purchasable-content execution foundation now exist; see
+[Production engine](production-engine.md) and [Purchasable content](purchasable-content.md).
 The kernel still does not own cross-scope coordination, WebSocket publication, client
 interpolation, cap tooltips, leaderboard ordering, Compute Credit spending, or the large balance
 harness. Each remains owned by a later bounded RFC.

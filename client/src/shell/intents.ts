@@ -1,6 +1,7 @@
 interface IntentEnvelope { readonly intentId: string; readonly expectedRevision: number }
 export type AuthoritativeIntent =
   | (IntentEnvelope & { readonly kind: "buy_generator"; readonly generatorId: string; readonly count: { readonly mode: "exact"; readonly value: number } | { readonly mode: "max" } })
+  | (IntentEnvelope & { readonly kind: "buy_upgrade"; readonly upgradeId: string })
   | (IntentEnvelope & { readonly kind: "perform_manual_batch"; readonly actionId: string; readonly count: number; readonly windowMs: number })
   | (IntentEnvelope & { readonly kind: "cross_gate"; readonly gateId: string; readonly routeId: string | null })
   | (IntentEnvelope & { readonly kind: "buy_route_hint"; readonly routeId: string })
@@ -30,6 +31,9 @@ function validateIntent(intent: AuthoritativeIntent): void {
     if (intent.count.mode === "exact" && (!Number.isSafeInteger(intent.count.value) || intent.count.value <= 0)) throw new SyntaxError("invalid exact generator count");
     if (intent.count.mode !== "exact" && intent.count.mode !== "max") throw new SyntaxError("invalid generator count mode");
     return;
+  }
+  if (intent.kind === "buy_upgrade") {
+    requireExactKeys(intent, ["intentId", "kind", "expectedRevision", "upgradeId"]); requireId(intent.upgradeId); return;
   }
   if (intent.kind === "perform_manual_batch") {
     requireExactKeys(intent, ["intentId", "kind", "expectedRevision", "actionId", "count", "windowMs"]); requireId(intent.actionId); requirePositiveInteger(intent.count); requirePositiveInteger(intent.windowMs); return;

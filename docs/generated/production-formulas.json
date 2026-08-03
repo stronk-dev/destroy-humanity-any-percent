@@ -1,6 +1,6 @@
 {
-  "schema_version": 5,
-  "production_rate": "sum_generators(count * base_rate * product(multiplier_slots))",
+  "schema_version": 6,
+  "production_rate": "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
   "multiplier_slot_order": [
     "upgrades",
     "milestones",
@@ -12,7 +12,7 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "de7dd8083063199443ef23d5ced778b780230a7ca0e619253deeb8b1bd670cae",
+  "source_fingerprint": "59717f0da0cce6a9dcf17e734afca8a735158006734e4885d0b76f75ae5b0e80",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
@@ -55,5 +55,16 @@
     "stock_intake_cap": 120,
     "consumption_bonus_ppm_per_unit": 0,
     "clearing_interval_ms": 300000
+  },
+  "purchasable_content": {
+    "provisioning": "at each run-aligned tick: staged = floor(((purchased + provisioned) * rate_ppm + remainder_ppm) / 1000000); persist modulus; saturate at declared cap; new units produce next bucket",
+    "manual_output": "1 + purchased_count * per_purchased_ppm / 1000000",
+    "stock_rate": "scaled_ms = floor((elapsed_ms * (1000000 + sum(purchased_count * per_purchased_ppm)) + remainder_ppm) / 1000000); persist modulus",
+    "synergy_linear": "1 + sum_ppm / 1000000",
+    "synergy_log": "1 + log10(1 + sum_ppm / 1000000)",
+    "ladders": "product(reached purchased-only rung multiplier_ppm / 1000000) in raw-byte source order",
+    "provision_tick_ms": 0,
+    "provisioned_hardcaps": [],
+    "synergy_pools": []
   }
 }

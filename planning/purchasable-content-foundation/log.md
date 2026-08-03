@@ -241,3 +241,31 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
   commits omitted their required in-commit kernel bumps. No implementation review cites those
   hashes and nothing is pushed; the history gate remains intentionally red until the pre-review
   autosquash repair makes the three semantic landings `0.3.9`, `0.3.10`, and `0.3.11`.
+
+## 2026-08-03 — closure surface and canonical artifacts
+
+- Added schema-v4 JSON Schema coverage, the client `buy_upgrade` dispatcher arm, exact
+  provisioned-cap/reason snapshots in both replay kernels, and generated formula schema v6. The
+  formula artifact now fingerprints the executable purchased+provisioned rate, contribution,
+  provisioning, multiplier-order, and Commons authorities and exports the ruled provisioning,
+  manual, stock, ladder, and linear/log pool formulas.
+- Audited every non-test evaluation site after introducing the simulation policy. Exit-offer
+  decline was the one bypass: it now uses the policy-aware evaluator, with a regression proving a
+  masked producer accrues nothing on that intent. Authoritative replay remains mask-free.
+- Added the acceptance criterion's two-pool fixture. It loader-validates a second logarithmic pool
+  and proves raw-byte pool order plus exact factors (`1.01e0`, `1.77815125038e0`). The shared
+  Go-authored replay fixture continues to prove schema-v4 state, receipt, and event byte parity in
+  TypeScript, now including the complete provisioned hardcap/reason map.
+- Added canonical `docs/purchasable-content.md` and reconciled the economy/production docs without
+  claiming a live content epoch: the engine supports schema v4 while the active Phase-0 balance
+  artifact remains schema v3. Therefore this Foundation changes executable capability and kernel
+  version but does **not** mint balance data; the T0–T1 content RFC owns that later mint.
+- Proofs in this landing: strict schema-v4 fixture validation, save-v14 and cross-runtime replay
+  corpus, client dispatcher exact-key tests, two-pool ordering, cap snapshot parity, and the
+  policy-aware decline regression. `make typecheck`, `make test-client` (6,500 passed, 3 skipped),
+  `make verify-schema`, and `make replay-fixture-check` are green. Formula generation is
+  deterministic; `formulas-check` is expected to compare clean after this generated artifact is
+  committed.
+- Kernel `0.3.12` covers this final receipt/snapshot semantic change. Before independent review,
+  the two earlier fixup commits must be autosquashed so every semantic commit carries its own
+  version bump and the history-walking KV-1 gate can pass without exception.

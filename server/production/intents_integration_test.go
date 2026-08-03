@@ -280,7 +280,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 	}
 	invariantResult, err := store.ApplyIntent(ctx, revision.StreamID, 4, invariantIntentID, invariantRequestHash,
 		func(state *save.State, current save.Revision) (save.IntentDecision, error) {
-			return appliedDecision(IntentRequest{IntentID: invariantIntentID}, state, current.Number+1, 0,
+			return appliedDecision(IntentRequest{IntentID: invariantIntentID}, state, catalog, current.Number+1, 0,
 				state.Ledger.Snapshot(), nil, []InvariantReport{invariantReport})
 		})
 	if err != nil || invariantResult.Replay {
