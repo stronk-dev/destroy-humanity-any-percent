@@ -317,3 +317,28 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
   arithmetic, pool vectors, client/snapshot/event surfaces, kernel `0.3.9`–`0.3.12` history,
   artifact-only rebaseline, and both integration-fixture corrections. No implementation files were
   edited by the reviewer.
+
+## 2026-08-03 — independent-review remediation implementation
+
+- Commit `274b6ba` closes all seven findings without widening the RFC's mechanics:
+  - simulation receives the real Routes catalog and optional real accrual hook; `buy_upgrade`
+    simulation and non-neutral `stock_rate` activation are proved with executable fixtures;
+  - effect masking and action removal are separate for generators and upgrades, with every removed
+    purchase/manual action rejected before accrual while ownership/cost remains under effect masks;
+  - role activations are typed, canonical, and reported by the harness only for applied transitions
+    whose provision, synergy, manual-output, or stock-rate mechanic executed non-neutrally;
+  - Go, TypeScript, and JSON Schema now share the non-empty predicate-array grammar, schema v3
+    refuses v4-only fields, and upgrade resource predicates are Company-scoped in both runtimes;
+  - the generated formula fingerprint now covers both provision-boundary execution and
+    `faction.AccrualHook.AfterAccrual`, with mutation tests proving either change moves the digest;
+  - named tests cover `not_eligible/window`, `not_eligible/requires`, and post-accrual eligibility.
+- Kernel `0.3.13` records the shared loader/simulation semantic correction. Generated formula
+  source identity changed; the balance/catalog inputs and pacing baselines did not.
+- Verification evidence after commit:
+  - all Go packages and vet passed; focused remediation packages passed independently;
+  - TypeScript/Svelte checks, production client build, 6,502 client tests, shared schema validation,
+    formula drift/generation, kernel-history guards, and the deterministic balance harness passed;
+  - the browser suite passed all 19,515 tests. The first in-sandbox invocation was denied permission
+    to bind its temporary IPv6 localhost port; the standard browser target itself passed unchanged.
+- This is remediation evidence, not the independent archival verdict. The exact remediation span is
+  `274b6ba^..274b6ba` and returns to Darwin for the required follow-up review.
