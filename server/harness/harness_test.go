@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"testing"
 
 	"cloud-clicker/server/epochseed"
@@ -72,6 +74,64 @@ func TestSmallRunIsByteDeterministic(t *testing.T) {
 	right, _ := CanonicalJSON(second)
 	if string(left) != string(right) || first.Outcome != "completed" {
 		t.Fatalf("determinism/outcome mismatch\n%s\n%s", left, right)
+	}
+}
+
+func TestRunTaskDispatchExecutesEveryCompleteKeyExactlyOnce(t *testing.T) {
+	const workerCount = 4
+	const taskCount = 17
+	suite := Suite{Scenario: Scenario{ID: "scenario.dispatch", Version: 3},
+		ScenarioHash: "sha256:scenario", ConstantsHash: "sha256:constants"}
+	tasks := make([]runTask, taskCount)
+	for index := range tasks {
+		spec := RunSpec{PolicyID: "policy.dispatch", PolicyVersion: 2, HorizonMS: 1}
+		seed := uint64(index + 100)
+		tasks[index] = runTask{spec: spec, seed: seed, key: suite.runKey(spec, seed)}
+	}
+
+	started := make(chan struct{}, workerCount)
+	release := make(chan struct{})
+	go func() {
+		for range workerCount {
+			<-started
+		}
+		close(release)
+	}()
+	var arrived atomic.Int64
+	counts := make(map[RunKey]int, taskCount)
+	var countsMu sync.Mutex
+	reports, err := dispatchRunTasks(tasks, workerCount, func(task runTask) RunReport {
+		if arrived.Add(1) <= workerCount {
+			started <- struct{}{}
+			<-release
+		}
+		countsMu.Lock()
+		counts[task.key]++
+		countsMu.Unlock()
+		return RunReport{Key: task.key}
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(reports) != taskCount || len(counts) != taskCount {
+		t.Fatalf("reports=%d distinct executions=%d want=%d", len(reports), len(counts), taskCount)
+	}
+	for _, task := range tasks {
+		if counts[task.key] != 1 {
+			t.Fatalf("run key %+v executions=%d want=1", task.key, counts[task.key])
+		}
+	}
+}
+
+func TestRunTaskDispatchRejectsMismatchedResultKey(t *testing.T) {
+	key := RunKey{HarnessSchemaVersion: 1, ScenarioID: "scenario.dispatch", ScenarioVersion: 1,
+		ScenarioHash: "sha256:scenario", PolicyID: "policy.dispatch", PolicyVersion: 1,
+		Seed: "0", ConstantsHash: "sha256:constants"}
+	_, err := dispatchRunTasks([]runTask{{key: key}}, 1, func(runTask) RunReport {
+		return RunReport{Key: RunKey{}}
+	})
+	if err == nil || !strings.Contains(err.Error(), "mismatched run key") {
+		t.Fatalf("mismatched result key error=%v", err)
 	}
 }
 

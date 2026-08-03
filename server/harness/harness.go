@@ -152,6 +152,12 @@ type Suite struct {
 	ConstantsHash       string
 }
 
+type runTask struct {
+	spec RunSpec
+	seed uint64
+	key  RunKey
+}
+
 func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
 	scenarioBytes, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(scenarioPath)))
 	if err != nil {
@@ -226,24 +232,36 @@ func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
 }
 
 func (suite *Suite) RunAll() ([]RunReport, AggregateReport, error) {
-	type task struct {
-		spec RunSpec
-		seed uint64
-	}
-	var tasks []task
+	var tasks []runTask
 	for _, spec := range suite.Scenario.Runs {
 		start, err := strconv.ParseUint(spec.SeedStart, 10, 64)
 		if err != nil || spec.SeedCount < 1 || spec.HorizonMS < 1 || uint64(spec.SeedCount-1) > ^uint64(0)-start {
 			return nil, AggregateReport{}, errors.New("invalid run specification")
 		}
 		for offset := 0; offset < spec.SeedCount; offset++ {
-			tasks = append(tasks, task{spec: spec, seed: start + uint64(offset)})
+			seed := start + uint64(offset)
+			tasks = append(tasks, runTask{spec: spec, seed: seed, key: suite.runKey(spec, seed)})
 		}
+	}
+	reports, err := dispatchRunTasks(tasks, 4, func(task runTask) RunReport {
+		return suite.run(task.spec, task.seed)
+	})
+	if err != nil {
+		return nil, AggregateReport{}, err
+	}
+	sort.Slice(reports, func(left, right int) bool { return lessKey(reports[left].Key, reports[right].Key) })
+	aggregate := suite.aggregate(reports)
+	return reports, aggregate, nil
+}
+
+func dispatchRunTasks(tasks []runTask, workerLimit int, execute func(runTask) RunReport) ([]RunReport, error) {
+	if len(tasks) == 0 || workerLimit < 1 || execute == nil {
+		return nil, errors.New("invalid harness task dispatch")
 	}
 	reports := make([]RunReport, len(tasks))
 	var wait sync.WaitGroup
 	work := make(chan int)
-	workers := 4
+	workers := workerLimit
 	if len(tasks) < workers {
 		workers = len(tasks)
 	}
@@ -252,7 +270,7 @@ func (suite *Suite) RunAll() ([]RunReport, AggregateReport, error) {
 		go func() {
 			defer wait.Done()
 			for index := range work {
-				reports[index] = suite.run(tasks[index].spec, tasks[index].seed)
+				reports[index] = execute(tasks[index])
 			}
 		}()
 	}
@@ -261,15 +279,16 @@ func (suite *Suite) RunAll() ([]RunReport, AggregateReport, error) {
 	}
 	close(work)
 	wait.Wait()
-	sort.Slice(reports, func(left, right int) bool { return lessKey(reports[left].Key, reports[right].Key) })
-	aggregate := suite.aggregate(reports)
-	return reports, aggregate, nil
+	for index := range tasks {
+		if reports[index].Key != tasks[index].key {
+			return nil, fmt.Errorf("harness task %d returned mismatched run key", index)
+		}
+	}
+	return reports, nil
 }
 
 func (suite *Suite) run(spec RunSpec, seed uint64) RunReport {
-	key := RunKey{HarnessSchemaVersion: 1, ScenarioID: suite.Scenario.ID, ScenarioVersion: suite.Scenario.Version,
-		ScenarioHash: suite.ScenarioHash, PolicyID: spec.PolicyID, PolicyVersion: spec.PolicyVersion,
-		Seed: strconv.FormatUint(seed, 10), ConstantsHash: suite.ConstantsHash}
+	key := suite.runKey(spec, seed)
 	report := RunReport{Key: key, Outcome: "completed", FinalVirtualMS: spec.HorizonMS, InvariantFailures: []string{}}
 	ledger, err := economy.NewLedger(suite.Catalog, economy.ScopeCompany)
 	if err != nil {
@@ -369,6 +388,12 @@ func (suite *Suite) run(spec RunSpec, seed uint64) RunReport {
 		report.Outcome = "failed"
 	}
 	return report
+}
+
+func (suite *Suite) runKey(spec RunSpec, seed uint64) RunKey {
+	return RunKey{HarnessSchemaVersion: 1, ScenarioID: suite.Scenario.ID, ScenarioVersion: suite.Scenario.Version,
+		ScenarioHash: suite.ScenarioHash, PolicyID: spec.PolicyID, PolicyVersion: spec.PolicyVersion,
+		Seed: strconv.FormatUint(seed, 10), ConstantsHash: suite.ConstantsHash}
 }
 
 func (suite *Suite) intentBytes(policy string, state *save.State, revision int64, now time.Time, random *SplitMix64, uuids *UUIDStream) ([]byte, string, error) {
