@@ -23,6 +23,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [API Foundation](api-foundation.md) | accepted architecture — C11–C17 awaiting owner rulings | Account API / Transport / Gameserver Composition |
 | [Copy Pipeline Foundation](copy-pipeline-foundation.md) | draft — C1–C10 awaiting owner rulings | Client/tooling foundations; unblocks UI Foundation |
 | [Meters Foundation](meters-foundation.md) | draft — C1–C12 awaiting owner rulings | Production / Run Genesis; unblocks Clout and Pet Care |
+| [Clout & Achievements Foundation](clout-and-achievements-foundation.md) | draft — C1–C10 awaiting owner rulings | Meters / Production / Run Genesis |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 
