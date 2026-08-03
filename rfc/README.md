@@ -20,7 +20,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 | [UI Foundation](ui-foundation.md) | draft — C1–C8 awaiting owner rulings | Client Shell / Transport / Copy Pipeline contract |
-| [API Foundation](api-foundation.md) | draft — C1–C10 awaiting owner rulings | Account API / Transport / Gameserver Composition |
+| [API Foundation](api-foundation.md) | accepted architecture — C11–C17 awaiting owner rulings | Account API / Transport / Gameserver Composition |
 | [Copy Pipeline Foundation](copy-pipeline-foundation.md) | draft — C1–C10 awaiting owner rulings | Client/tooling foundations; unblocks UI Foundation |
 | [Meters Foundation](meters-foundation.md) | draft — C1–C12 awaiting owner rulings | Production / Run Genesis; unblocks Clout and Pet Care |
 

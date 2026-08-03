@@ -1,6 +1,6 @@
 # RFC: API Foundation (versioning, schemas, the public read surface)
 
-- **Status:** draft
+- **Status:** accepted architecture; C11–C17 block implementation
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/06` (chi REST, closed surfaces), `design/05` (published formulas — the transparency law), the fan-tooling stance (`design/05 §Neopets adoptions`: "a documented read-API stance so the JellyNeo-equivalent builds WITH us from day one")
@@ -82,6 +82,187 @@ for the day v2 exists.
   yes, stricter: it's the one surface THIRD PARTIES build on).
 - Display-name/identity policy for boards — the profile RFC owns it; until then boards expose
   the existing founder public id only.
+
+## Owner rulings on C1–C10 (2026-08-03)
+
+**C1 — accepted: a closed Go operation registry is the single source.** Each operation owns
+method, path template, stability surface, auth mode, named request/success DTO(s), typed
+error/status set; the chi router mounts FROM the registry; OpenAPI + TS types generate from the
+same rows; startup rejects duplicate method/path or operation IDs; existing handlers adapt behind
+registered operations (no reflection over bodies, no hand-written OpenAPI). Generator + registry
+version pinned, output byte-canonical.
+
+**C2 — accepted: both `/api/v1/` and `/api/public/v1/` are additive-only for v1's lifetime**, with
+the exact comparison algorithm as proposed (allow new operations / new optional response props /
+response-enum widening; reject removal, method/path change, prop removal/rename, optional→required,
+type/format change, constraint narrowing, status removal, new required request prop; **request
+enums do NOT grow inside v1** — generated exhaustive clients would silently break). Exceptions are
+`/v2`, never a bypass tag.
+
+**C3 — accepted, keys corrected:** `GET catalogs/{constants_hash}` (not epoch — an epoch holds
+multiple hashes); boards keyed by the full tuple `boards/{category}/{variables}/{epoch}/{mandate}`
+with the ranking-key family implicit in the category; Route Registry and epoch rows get declared
+public DTOs generated from their operation rows.
+
+**C4 — accepted: the verification endpoints must be DEREFERENCEABLE for the transparency loop to
+be real** — `/api/public/v1/runs/{stream}/{seq}/genesis`, `/replay-log`, `/verdict` return the
+immutable genesis, ordered replay inputs/receipts/events, and verdict. **This is compatible with
+the privacy assertion because a VERIFIED run is already public record** (it's on a board); the
+privacy test asserts only that UNVERIFIED/private founder state is never reachable. Imported and
+drifted runs (never boardable) are not exposed.
+
+**C5 — accepted: formula artifacts become epoch artifacts.** The generated formula document joins
+`catalog_artifacts` keyed by constants hash at mint (an eighth artifact — the schema-v4/content
+mint is the natural place), so `GET catalogs/{hash}` serves historically-exact formulas. Until a
+mint carries it, the public endpoint serves the current-epoch formula document with its hash
+labeled.
+
+**C6 — accepted: cache/limiter literals fixed.** `max-age` per class (catalogs/epochs: 3600;
+boards: 60; verification: immutable → 31536000; registry: 300), ETag = the served bytes' hash,
+`/api/public/v1/` gets its own per-IP limiter instance (config literals in `balance/api/phase0.json`)
+sharing the trusted-proxy parsing already ruled for the account limiter — extracted to a shared
+middleware, not duplicated.
+
+**C7 — accepted: two distinct shapes, documented as such.** Intent REJECTIONS are persisted 200
+responses carrying the receipt envelope (application outcomes); HTTP/router/auth/limiter/server
+failures are top-level `{category, detail}` errors. The OpenAPI doc models them as different
+response types per operation; A4 is corrected to stop conflating them.
+
+**C8 — accepted: one opaque signed cursor.** `{key_fields, tamper_mac}` base64url, MAC'd with a
+deployment secret so a forged cursor rejects; per-operation the key_fields differ (time/count/
+magnitude boards, registry, epoch) but the envelope and tamper handling are shared. Keyset only,
+no offsets (the house rule).
+
+**C9 — accepted, AC4 corrected:** there is no hand-written client HTTP layer to delete; AC4
+becomes "the generated TS client is the ONLY HTTP-calling code; a lint forbids raw `fetch` to
+`/api/` outside `client/src/api/generated/`."
+
+**C10 — accepted: composition and privacy are structural** — the public router mounts only
+registry operations flagged `public: true` (a field, loader-checked), and the privacy integration
+test enumerates every public operation against a seeded private founder proving no private field
+leaks (not a spot check — the full registry).
+
+## Closure blockers after owner rulings (Codex re-review, 2026-08-03)
+
+C1–C10 settle the architecture. The accepted text still cannot be implemented as a stable public
+wire contract until the following details are ruled and reconciled into A1–A4. These are bounded
+closures, not a redesign.
+
+### C11 — The pre-mint formula fallback violates C4/C5
+
+Serving the current formula document under a constants hash whose `catalog_artifacts` do not
+contain those bytes is neither historical nor dereferenceable. It also makes a supposedly
+immutable catalog response change after deployment while retaining the same resource identity and
+ETag premise.
+
+**Proposed contract:** remove the fallback. API Foundation itself performs the protocol-compliant
+artifact-set-growth mint that adds `formulas` before enabling `GET catalogs/{constants_hash}`.
+Generate canonical bytes under `balance/generated/production-formulas.json` (the epoch seed only
+admits `balance/` paths), make the docs copy derive from the same generation, and register the
+artifact through the single epoch authority. A requested accepted hash missing `formulas` returns
+typed `not_available/historical_formulas`—never current bytes mislabeled as history. The API can
+therefore ship before T0–T1 and does not inherit its F1 gate.
+
+### C12 — The public DTOs remain undeclared
+
+C3 says DTOs “get declared” but does not declare them. Epoch changelog representation, catalog
+artifact encoding/order, board filters/items/ranking-key union, Route Registry fields, null rules,
+limits, and unknown-ID behavior are all permanent additive-only API decisions.
+
+**Proposed contract:** add literal v1 DTO tables to A3:
+
+- `CatalogBundle {constants_hash, artifacts:[{name,sha256,json}]}` sorted by name; artifacts must
+  be valid JSON and are embedded as JSON values, not base64. Unknown/unaccepted hash → 404
+  `unknown_id/constants_hash`.
+- `EpochPage {items:[{epoch_id,name,started_at,ended_at,changelog_ref,changelog_markdown,
+  accepted_hashes}],next_cursor}` ordered newest-first; timestamps are UTC RFC3339 milliseconds,
+  hashes byte-sorted.
+- `BoardPage {category_id,variables,epoch_id,mandate_level,ranking_kind,
+  items:[{run_id,founder_id,rank,key,verified_at,world_first}],next_cursor}` where `key` is the
+  closed union `{kind:"time_ms"|"count",value:int64}` or
+  `{kind:"magnitude",exponent:int64,quantized_mantissa:int64}`.
+- `RoutePage` exposes only permanent/public registry facts: route ID, public name, first-executor
+  founder ID (nullable after anonymization), credited-at, naming status/deadline, and adoption
+  count; no moderation notes or account identity. Define its exact DB source and ordering.
+
+All list limits default 50, range 1..100. Empty lists are `[]`; optional values are explicit null,
+never omitted. The owner may alter fields, but implementation cannot invent them.
+
+### C13 — Board path/filter encoding is not canonical
+
+`boards/{category}/{variables}/{epoch}/{mandate}` puts structured JSON in a path but supplies no
+encoding. Variables include nullable faction plus booleans, and a cursor must be bound to the full
+normalized query. Category determines ranking kind only after loading its pinned catalog.
+
+**Proposed contract:** `variables` is unpadded base64url of canonical exact-key JSON
+`{"advisor":bool,"commons":bool,"faction":string|null,"glitched":bool}` with keys in that byte
+order. Decode is size-bounded and re-encode-equal; noncanonical input is
+`invalid/variables`. Epoch and mandate are strict base-10 integers without signs/leading zeros.
+The category must exist in the **requested epoch/hash category artifact**, and its timer selects the
+repository method/ranking union. The normalized filter hash used by C8 covers decoded variables,
+category, epoch, mandate, and limit.
+
+### C14 — Public replay evidence has no byte/content contract
+
+The three endpoints name concepts but not response bytes. `run_log_archive` is gzip JSON, genesis
+is JSONB text, events live separately, and a third-party verifier needs a manifest binding them to
+the engine and constants bundle. Returning convenient re-encoded objects could invalidate the
+claimed immutable evidence hash.
+
+**Proposed contract:** expose a small manifest at `/verdict` containing run ID, verdict, engine
+version, constants hash, genesis URL+SHA256, replay-log URL+SHA256, and catalog URL. `/genesis`
+returns the exact canonical genesis bytes captured by the run-genesis contract as
+`application/json`. `/replay-log` returns the exact immutable archive bytes as
+`application/gzip` with its stored SHA256; it includes ordered replay inputs, receipts, and events
+per the archive encoding already documented. All three authorize only when at least one
+`verified_runs` row exists for the run; queue status alone is insufficient. Nonboardable/private
+runs are indistinguishable from unknown (404). ETags equal the quoted stored content hashes.
+
+### C15 — Signed cursor cryptography and lifecycle are unspecified
+
+“MAC'd with a deployment secret” leaves canonical bytes, algorithm, secret length, filter binding,
+key rotation, and error behavior undefined. A restart with a new ephemeral secret would invalidate
+every cursor; accepting attacker-controlled key fields before MAC validation risks parser abuse.
+
+**Proposed contract:** envelope is unpadded base64url canonical JSON
+`{v:1,kid,op,filter_sha256,key,mac}` with `mac = base64url(HMAC-SHA256(secret,
+canonical_json_without_mac))`. Secrets are deployment configuration, minimum 32 bytes; one current
+`kid` signs and a bounded keyring verifies during rotation. Decode caps the token at 2048 bytes,
+checks exact keys/types and known `kid`, verifies MAC in constant time, then parses operation key
+fields. Operation/filter mismatch returns 400 `invalid/cursor`; cursors have no time expiry and
+key rotation keeps old verification keys for at least the maximum declared cache lifetime.
+`CompositionConfig` receives the keyring explicitly; startup fails closed if absent.
+
+### C16 — Cache/limiter/request-ID middleware is only half-ruled
+
+C6 provides max-age literals but not `immutable`, conditional requests, whether 304 spends rate,
+API-config identity, or request-ID behavior from original A4/C7. `balance/api/phase0.json` would be
+mistaken for simulation balance unless its ownership is explicit.
+
+**Proposed contract:** operational API policy lives at `config/api/phase0.json`, not in the epoch
+artifact set, with strict schema and literals for public burst/per-minute/max entries, proxy hops,
+cache ages, and cursor key IDs (secrets remain environment-only). Limiting and request-ID assignment
+run before conditional-GET handling, so 304 spends one token. Strong ETag is SHA256 of exact served
+bytes; matching `If-None-Match` returns 304 with ETag, Cache-Control, and request ID but no body.
+Verification evidence uses `public,max-age=31536000,immutable`; other classes use the ruled ages
+without `immutable`. `X-Request-ID` follows the original proposed UUID/lowercase bounded validation,
+is generated UUIDv7 when invalid/missing, echoed on every response, and logged—not added to JSON.
+
+### C17 — Registry generation still needs a type-schema authority
+
+An operation row referencing a Go DTO does not itself define required/optional fields, integer
+bounds, formats, exact objects, unions, or TS names. Reflection over arbitrary structs loses
+semantic bounds; handwritten schemas beside structs recreate two authorities. Existing handlers
+also return anonymous structs/raw receipts and must be migrated without changing behavior.
+
+**Proposed contract:** named DTOs carry one closed repository-owned schema descriptor through Go
+types implementing `APISchema() Schema`; operation registration accepts only such types. The same
+descriptor validates runtime response fixtures, generates OpenAPI and TS, and compatibility-checks
+pins. Descriptors are code (not a second JSON artifact), use a closed union of object/array/string/
+integer/boolean/null/ref/oneOf with bounds/formats, and reject unsupported maps/interfaces. Raw
+`IntentReceipt` is one named exact schema supplied by its owning package. A registry conformance
+test invokes every operation with seeded success/error paths and verifies emitted JSON against its
+descriptor, preventing declared-schema/handler drift.
 
 ## Acceptance blockers (Codex review, 2026-08-03)
 
@@ -233,7 +414,10 @@ a write transaction or exposes an operator mutation path.
 
 ## Changelog
 
-- 2026-08-03: created (draft) — versioning law, generated schemas, the public read surface;
-  the fan-tooling stance from the enclave research made structural.
+- 2026-08-03: created (draft) — versioning law, generated schemas, the public read surface.
+- 2026-08-03: C1–C10 ruled — operation-registry single source, additive-only both namespaces with the exact compat algorithm, dereferenceable verification endpoints (verified runs are public record), formula artifacts become epoch artifacts, signed opaque cursors, structural public/private split. Accepted.
+- 2026-08-03: Codex closure re-review recorded C11–C17. Implementation remains blocked until the
+  public DTOs, evidence bytes, cursor lifecycle, middleware semantics, and formula mint are ruled
+  and reconciled into A1–A4.
 - 2026-08-03: Codex acceptance review recorded C1–C10; implementation remains blocked pending
   owner rulings and reconciliation into one executable contract.
