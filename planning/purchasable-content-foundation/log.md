@@ -269,3 +269,17 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
 - Kernel `0.3.12` covers this final receipt/snapshot semantic change. Before independent review,
   the two earlier fixup commits must be autosquashed so every semantic commit carries its own
   version bump and the history-walking KV-1 gate can pass without exception.
+
+## 2026-08-03 — pre-review history and harness closure
+
+- Autosquashed the two explicit Foundation `fixup!` commits before review and before publication.
+  The rewritten implementation span is `fc920b5..02a8bd7`: catalog/save carries kernel `0.3.9`,
+  authoritative mechanics carries `0.3.10`, the simulation boundary carries `0.3.11`, and the
+  final snapshot/parser/formula surface carries `0.3.12`. The unrelated dirty worktree was
+  autostashed and restored. `make verify-kernel-version` now passes the full history walk and its
+  adversarial fixtures without an exception or weakened rule.
+- The first full repository verification found only a golden seed state-hash delta. Regeneration
+  changed no milestone, timing, source, sink, balance, or pacing-baseline value: save v14's new
+  zero-valued state fields changed the final encoded-state identity for the two canonical runs.
+  Commit `2266611` is the required artifact-only `BALANCE-CHANGE:` rebaseline; it contains exactly
+  the two state-hash replacements and no input, code, or pacing change.
