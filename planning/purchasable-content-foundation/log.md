@@ -429,3 +429,15 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
   Nil authoritative policy, kernel `0.3.15`, replay bytes, formula drift, and harness baseline were
   verified clean. The reviewer confirms the implementation-range union through `7df4d7b` is complete,
   excluding only explicitly recorder-only planning commits. No files were edited by the reviewer.
+
+## 2026-08-03 — zero-efficiency activation remediation
+
+- Commit `e67ccc0` closes the last demonstrated C13 seam. `accrueContent` enables production-role
+  observation only while a positive catalog efficiency reaches `ratesWithProvisionedAndPolicy`;
+  effect masking and authoritative nil-policy rate calculation are unchanged.
+- A schema-v4 catalog fixture sets the legal offline efficiency to exact zero, drives an otherwise
+  active synergy pool through an offline transition, and asserts no role activation. The ordinary
+  positive and all prior causal fixtures remain green.
+- Kernel `0.3.16` records the guarded simulation observation. Focused Go, replay fixture, formula
+  drift, kernel history, and deterministic `make harness-check` pass via standard root targets.
+- Exact final independent re-review span: `e67ccc0^..e67ccc0`.
