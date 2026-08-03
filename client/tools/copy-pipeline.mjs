@@ -82,7 +82,7 @@ export function validatePlainCopyText(value, label = "copy text") {
   if (Buffer.byteLength(value, "utf8") > maxBytes) fail(label, `exceeds ${maxBytes} UTF-8 bytes`);
   if (value.split("\n").length > maxLines) fail(label, `exceeds ${maxLines} lines`);
   if (/[^\P{Cc}\n]/u.test(value)) fail(label, "contains a control character");
-  if (/[<`*_~\[\]|\\]|-->| {2,}$|^ {4}|^\s{0,3}(?:#{1,6}(?:\s|$)|>|[-+]\s|\d+[.)](?:\s|$))|^\s{0,3}(?:-\s*){3,}$|^\s{0,3}===+\s*$/mu.test(value)) {
+  if (/[<`*_~\[\]|\\]|-->| {2,}$|^ {4}|^\s{0,3}(?:#{1,6}(?:\s|$)|>|[-+]\s|\d+[.)](?:\s|$))|^\s{0,3}[-=]+\s*$/mu.test(value)) {
     fail(label, "must be plain text, not HTML or Markdown");
   }
   return value;

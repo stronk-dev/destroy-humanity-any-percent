@@ -63,7 +63,7 @@ function plainText(value: unknown, label: string): string {
   if (typeof value !== "string" || value !== value.normalize("NFC") || new TextEncoder().encode(value).length > COPY_MAX_TEXT_UTF8_BYTES || value.split("\n").length > COPY_MAX_TEXT_LINES) {
     syntax(`${label} is not bounded NFC text`);
   }
-  if (/[^\P{Cc}\n]/u.test(value) || /[<`*_~\[\]|\\]|-->| {2,}$|^ {4}|^\s{0,3}(?:#{1,6}(?:\s|$)|>|[-+]\s|\d+[.)](?:\s|$))|^\s{0,3}(?:-\s*){3,}$|^\s{0,3}===+\s*$/mu.test(value)) syntax(`${label} must be plain text`);
+  if (/[^\P{Cc}\n]/u.test(value) || /[<`*_~\[\]|\\]|-->| {2,}$|^ {4}|^\s{0,3}(?:#{1,6}(?:\s|$)|>|[-+]\s|\d+[.)](?:\s|$))|^\s{0,3}[-=]+\s*$/mu.test(value)) syntax(`${label} must be plain text`);
   return value;
 }
 

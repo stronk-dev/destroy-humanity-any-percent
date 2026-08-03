@@ -207,3 +207,10 @@ blocked archival.
   19,530 browser assertions.
 - The next independent verdict must review the deliberate assurance reduction as well as the
   implementation: no archived documentation may retain the withdrawn AST proof.
+
+## 2026-08-03 — fourth-review markup closure
+
+Darwin verified the structural C4 redesign sound and the hard-break reproducer closed, then found
+the shared grammar still admitted one- and two-character Setext heading underlines. The shared
+build/runtime expression now rejects any one-or-more `-`/`=` underline line, with `Heading\n=` and
+`Heading\n--` fixtures in both suites.
