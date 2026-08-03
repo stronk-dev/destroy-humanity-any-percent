@@ -1,6 +1,6 @@
 # RFC: Balance Harness Dispatch Integrity
 
-- **Status:** draft
+- **Status:** withdrawn (premise refuted, 2026-08-03) — see Owner verdict below
 - **Author:** Codex
 - **Created:** 2026-08-03
 - **Design refs:** `design/02 §11` (balance simulation as an acceptance test), `design/02 §11b`
@@ -56,6 +56,25 @@ The Phase-0 golden report and pacing baseline remain byte-identical. No `BALANCE
 version bump is warranted because authoritative transition semantics and report values do not
 change. `harness-check` must execute the declared number of runs and remain inside the existing
 60-second harness budget; the repair should reduce elapsed work, not move the limit.
+
+## Owner verdict (2026-08-03): premise refuted, salvage extracted
+
+Demonstrated against HEAD before ruling (the house standard, applied symmetrically):
+`server/harness/harness.go` contains exactly ONE dispatch site (`work <- index`, line 260) inside
+exactly one producer loop; workers consume via `range work`, and Go channel semantics deliver
+each sent value to exactly one receiver. `cmd/balance-harness` calls `RunAll()` exactly once per
+mode; the Phase-0 scenario's run specs are unique (2/2 distinct). **There is no double dispatch,
+no concurrent same-slot write, and no doubled work at HEAD.** The likely misread: the consumer
+loop (`for index := range work`) and the producer loop (`for index := range tasks`) scan as twin
+dispatch loops; they are opposite ends of one channel.
+
+If the implementer stands by the claim, the standard is demonstration: a counting executor
+showing executions > declared total. Absent that, this RFC does not proceed — the review ladder's
+demonstrate-don't-speculate rule binds reports about our own code exactly as it binds reviews.
+
+**Salvage (no RFC needed):** D2's cardinality proof is good cheap hardening — a test-only
+addition (counting executor keyed by run key, ≥2 workers, tasks > workers, under -race) is
+welcome in the next housekeeping commit, as a regression floor rather than a repair.
 
 ## Deviations from design
 
