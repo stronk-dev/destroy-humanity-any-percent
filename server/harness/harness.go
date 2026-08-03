@@ -295,11 +295,20 @@ func (suite *Suite) run(spec RunSpec, seed uint64) RunReport {
 		return failed(report, err)
 	}
 	counts := make(map[string]int64)
+	provisioned := make(map[string]int64)
+	remainders := make(map[string]int64)
 	for _, generator := range suite.Catalog.GeneratorClassesForScope(economy.ScopeCompany) {
 		counts[generator.ID] = 0
+		provisioned[generator.ID] = 0
+		if generator.Provision != nil {
+			remainders[generator.Provision.GeneratorID] = 0
+		}
 	}
-	state := &save.State{Ledger: ledger, GeneratorCounts: counts, EvaluatedThrough: Epoch,
-		ManualTokenMilli: suite.Catalog.ManualPolicy().BucketCapMilli, ManualTokenRefilledAt: Epoch}
+	state := &save.State{Ledger: ledger, GeneratorCounts: counts, UpgradesOwned: map[string]bool{}, GeneratorProvisioned: provisioned,
+		ProvisionRemaindersPPM: remainders, EvaluatedThrough: Epoch, RunStartedAt: Epoch, RunSeq: 1,
+		ManualTokenMilli: suite.Catalog.ManualPolicy().BucketCapMilli, ManualTokenRefilledAt: Epoch,
+		GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{}, LedgerFactKinds: map[string]bool{},
+		MeterBands: map[string]int{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{}}
 	revision := int64(1)
 	random := NewSplitMix64(seed)
 	uuids := NewUUIDStream(seed)
@@ -336,8 +345,8 @@ func (suite *Suite) run(spec RunSpec, seed uint64) RunReport {
 		}
 		beforeBalances := state.Ledger.Snapshot()
 		beforeRevision := revision
-		decision, err := production.Transition(request, candidate, suite.Catalog, save.Revision{Number: revision,
-			ConstantsHash: suite.ConstantsHash}, mode, now, nil, nil)
+		decision, err := production.SimulateTransition(request, candidate, suite.Catalog, save.Revision{Number: revision,
+			ConstantsHash: suite.ConstantsHash}, mode, now, nil, nil, production.AblationMask{})
 		if err != nil {
 			return failed(report, err)
 		}

@@ -14,12 +14,16 @@ import (
 var ppmDenominator = decimal.FromFloat64(1_000_000)
 
 func contentContributions(state *save.State, catalog *economy.Catalog) ([]multiplier.Contribution, error) {
+	return contentContributionsWithPolicy(state, catalog, nil)
+}
+
+func contentContributionsWithPolicy(state *save.State, catalog *economy.Catalog, policy *simulationPolicy) ([]multiplier.Contribution, error) {
 	if state == nil || catalog == nil || state.GeneratorCounts == nil {
 		return nil, ErrInvalidEngineState
 	}
 	result := make([]multiplier.Contribution, 0)
 	for _, upgrade := range catalog.Upgrades() {
-		if !state.UpgradesOwned[upgrade.ID] {
+		if !state.UpgradesOwned[upgrade.ID] || policy.masksUpgrade(upgrade.ID) {
 			continue
 		}
 		for _, effect := range upgrade.Effects {
@@ -30,6 +34,9 @@ func contentContributions(state *save.State, catalog *economy.Catalog) ([]multip
 		purchased, exists := state.GeneratorCounts[generator.ID]
 		if !exists || purchased < 0 || purchased > decimal.MaxExactInteger {
 			return nil, ErrInvalidEngineState
+		}
+		if policy.masksGenerator(generator.ID) {
+			continue
 		}
 		for _, rung := range generator.Ladder {
 			if purchased < rung.PurchasedAt {
@@ -58,13 +65,16 @@ func contentContributions(state *save.State, catalog *economy.Catalog) ([]multip
 			var count int64
 			switch source.Kind {
 			case economy.SynergyGenerator:
+				if policy.masksGenerator(source.ID) {
+					continue
+				}
 				var exists bool
 				count, exists = state.GeneratorCounts[source.ID]
 				if !exists {
 					return nil, ErrInvalidEngineState
 				}
 			case economy.SynergyUpgrade:
-				if state.UpgradesOwned[source.ID] {
+				if state.UpgradesOwned[source.ID] && !policy.masksUpgrade(source.ID) {
 					count = 1
 				}
 			default:
@@ -91,7 +101,11 @@ func contentContributions(state *save.State, catalog *economy.Catalog) ([]multip
 }
 
 func assembleContributions(state *save.State, catalog *economy.Catalog, external []multiplier.Contribution) ([]multiplier.Contribution, error) {
-	derived, err := contentContributions(state, catalog)
+	return assembleContributionsWithPolicy(state, catalog, external, nil)
+}
+
+func assembleContributionsWithPolicy(state *save.State, catalog *economy.Catalog, external []multiplier.Contribution, policy *simulationPolicy) ([]multiplier.Contribution, error) {
+	derived, err := contentContributionsWithPolicy(state, catalog, policy)
 	if err != nil {
 		return nil, err
 	}
@@ -165,6 +179,10 @@ func contributionFactorForTarget(catalog *economy.Catalog, target string, contri
 }
 
 func materializeProvisionBoundary(catalog *economy.Catalog, purchased, provisioned, remainders map[string]int64) error {
+	return materializeProvisionBoundaryWithPolicy(catalog, purchased, provisioned, remainders, nil)
+}
+
+func materializeProvisionBoundaryWithPolicy(catalog *economy.Catalog, purchased, provisioned, remainders map[string]int64, policy *simulationPolicy) error {
 	if catalog == nil || purchased == nil || provisioned == nil || remainders == nil {
 		return ErrInvalidEngineState
 	}
@@ -172,7 +190,7 @@ func materializeProvisionBoundary(catalog *economy.Catalog, purchased, provision
 	stagedRemainders := make(map[string]int64)
 	denominator := big.NewInt(1_000_000)
 	for _, source := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
-		if source.Provision == nil {
+		if source.Provision == nil || policy.masksGenerator(source.ID) {
 			continue
 		}
 		target, exists := catalog.GeneratorClass(source.Provision.GeneratorID)

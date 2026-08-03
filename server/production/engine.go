@@ -37,6 +37,10 @@ func Evaluate(
 	mode EvaluationMode,
 	contributions []multiplier.Contribution,
 ) (EvaluationResult, error) {
+	return evaluateWithSimulationPolicy(state, catalog, now, mode, contributions, nil)
+}
+
+func evaluateWithSimulationPolicy(state *save.State, catalog *economy.Catalog, now time.Time, mode EvaluationMode, contributions []multiplier.Contribution, policy *simulationPolicy) (EvaluationResult, error) {
 	if state == nil || state.Ledger == nil || catalog == nil || state.Ledger.Scope() != economy.ScopeCompany ||
 		(mode != ModeOnline && mode != ModeOffline) {
 		return EvaluationResult{}, ErrInvalidEngineState
@@ -80,7 +84,7 @@ func Evaluate(
 		}
 	}
 
-	entries, provisioned, remainders, err := accrueContent(state, catalog, productionMS, efficiency, contributions)
+	entries, provisioned, remainders, err := accrueContent(state, catalog, productionMS, efficiency, contributions, policy)
 	if err != nil {
 		return EvaluationResult{}, err
 	}
@@ -106,7 +110,7 @@ func Evaluate(
 	}, nil
 }
 
-func accrueContent(state *save.State, catalog *economy.Catalog, productionMS int64, efficiency decimal.Decimal, contributions []multiplier.Contribution) ([]economy.Entry, map[string]int64, map[string]int64, error) {
+func accrueContent(state *save.State, catalog *economy.Catalog, productionMS int64, efficiency decimal.Decimal, contributions []multiplier.Contribution, policy *simulationPolicy) ([]economy.Entry, map[string]int64, map[string]int64, error) {
 	provisioned := cloneInt64Counts(state.GeneratorProvisioned)
 	remainders := cloneInt64Counts(state.ProvisionRemaindersPPM)
 	if provisioned == nil {
@@ -123,7 +127,7 @@ func accrueContent(state *save.State, catalog *economy.Catalog, productionMS int
 		if segmentMS <= 0 {
 			return nil
 		}
-		rates, err := ratesWithProvisioned(catalog, state.GeneratorCounts, provisioned, contributions)
+		rates, err := ratesWithProvisionedAndPolicy(catalog, state.GeneratorCounts, provisioned, contributions, policy)
 		if err != nil {
 			return err
 		}
@@ -161,7 +165,7 @@ func accrueContent(state *save.State, catalog *economy.Catalog, productionMS int
 			}
 			cursorMS = segmentEnd
 			if cursorMS == nextBoundary {
-				if err := materializeProvisionBoundary(catalog, state.GeneratorCounts, provisioned, remainders); err != nil {
+				if err := materializeProvisionBoundaryWithPolicy(catalog, state.GeneratorCounts, provisioned, remainders, policy); err != nil {
 					return nil, nil, nil, err
 				}
 				nextBoundary += tickMS
@@ -203,7 +207,7 @@ func Rates(
 	counts map[string]int64,
 	contributions []multiplier.Contribution,
 ) (map[string][]decimal.Decimal, error) {
-	return ratesWithProvisioned(catalog, counts, nil, contributions)
+	return ratesWithProvisionedAndPolicy(catalog, counts, nil, contributions, nil)
 }
 
 func validateContributions(catalog *economy.Catalog, contributions []multiplier.Contribution) (map[string]multiplier.Contribution, error) {
@@ -225,7 +229,7 @@ func validateContributions(catalog *economy.Catalog, contributions []multiplier.
 	return bySource, nil
 }
 
-func ratesWithProvisioned(catalog *economy.Catalog, counts, provisioned map[string]int64, contributions []multiplier.Contribution) (map[string][]decimal.Decimal, error) {
+func ratesWithProvisionedAndPolicy(catalog *economy.Catalog, counts, provisioned map[string]int64, contributions []multiplier.Contribution, policy *simulationPolicy) (map[string][]decimal.Decimal, error) {
 	if catalog == nil || counts == nil {
 		return nil, ErrInvalidEngineState
 	}
@@ -253,6 +257,9 @@ func ratesWithProvisioned(catalog *economy.Catalog, counts, provisioned map[stri
 			}
 		}
 		if count == 0 && generated == 0 {
+			continue
+		}
+		if policy.masksGenerator(generator.ID) {
 			continue
 		}
 		total := new(big.Int).Add(big.NewInt(count), big.NewInt(generated))

@@ -12,7 +12,7 @@
    fixed-grid provision accrual, events/receipts, and Go replay parity.
 4. [x] Port catalog/save/transition behavior to TypeScript and extend the shared sequential replay
    corpus with byte-identical state, receipt, and event expectations.
-5. [ ] Add the simulation-only ablation entrypoint and import/source guard; integrate the harness
+5. [x] Add the simulation-only ablation entrypoint and import/source guard; integrate the harness
    without adding mask state to authoritative bundles or replay inputs.
 6. [ ] Close transport/client/schema/event registries, formula generation, KV-1, epoch mint,
    canonical docs, and full repository verification.

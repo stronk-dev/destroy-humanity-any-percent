@@ -2,6 +2,7 @@ package production
 
 import (
 	"encoding/json"
+	"math/big"
 	"os"
 	"testing"
 	"time"
@@ -200,5 +201,58 @@ func TestManualOutputRoleUsesPurchasedCountOnly(t *testing.T) {
 	balance, _ := state.Ledger.Balance("company.cash")
 	if balance.String() != "1.01e0" {
 		t.Fatalf("manual output=%s", balance)
+	}
+}
+
+func TestSimulationMaskNullsWholeGeneratorOutputWithoutChangingOwnership(t *testing.T) {
+	catalog := foundationCatalog(t)
+	now := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
+	state := foundationState(t, catalog, now)
+	state.GeneratorCounts["generator.low"] = 10
+	state.ManualTokenMilli = 50_000
+	request := IntentRequest{IntentID: "01986666-0202-7000-8000-000000000202", Kind: IntentPerformManualBatch, ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1}
+	decision, err := SimulateTransition(request, state, catalog, save.Revision{Number: 1}, ModeOnline, now, nil, nil, AblationMask{GeneratorIDs: []string{"generator.low"}})
+	if err != nil || decision.Outcome != save.IntentApplied {
+		t.Fatalf("decision=%+v err=%v", decision, err)
+	}
+	balance, _ := state.Ledger.Balance("company.cash")
+	if balance.String() != "1e0" || state.GeneratorCounts["generator.low"] != 10 {
+		t.Fatalf("balance=%s counts=%v", balance, state.GeneratorCounts)
+	}
+}
+
+func TestSimulationMaskNullsProvisionEdgeAndRemovedActionRejectsBeforeAccrual(t *testing.T) {
+	catalog := foundationCatalog(t)
+	started := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
+	state := foundationState(t, catalog, started)
+	state.GeneratorCounts["generator.high"] = 2
+	state.ManualTokenMilli = 50_000
+	request := IntentRequest{IntentID: "01986666-0203-7000-8000-000000000203", Kind: IntentPerformManualBatch, ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1}
+	decision, err := SimulateTransition(request, state, catalog, save.Revision{Number: 1}, ModeOnline, started.Add(180*time.Second), nil, nil, AblationMask{GeneratorIDs: []string{"generator.high"}})
+	if err != nil || decision.Outcome != save.IntentApplied || state.GeneratorProvisioned["generator.low"] != 0 {
+		t.Fatalf("decision=%+v provisioned=%v err=%v", decision, state.GeneratorProvisioned, err)
+	}
+	balance, _ := state.Ledger.Balance("company.cash")
+	if balance.String() != "1e0" {
+		t.Fatalf("masked provision output=%s", balance)
+	}
+
+	rejectedState := foundationState(t, catalog, started)
+	rejectedState.GeneratorCounts["generator.low"] = 10
+	rejectedState.ManualTokenMilli = 50_000
+	rejected, err := SimulateTransition(request, rejectedState, catalog, save.Revision{Number: 1}, ModeOnline, started.Add(time.Minute), nil, nil, AblationMask{RemovedActionIDs: []string{"manual.click"}})
+	if err != nil || rejected.Outcome != save.IntentRejected || !rejectedState.EvaluatedThrough.Equal(started) {
+		t.Fatalf("rejected=%+v evaluated=%s err=%v", rejected, rejectedState.EvaluatedThrough, err)
+	}
+}
+
+func TestSynergyCurveGoldenFactors(t *testing.T) {
+	linear, err := synergyFactor(economy.SynergyLinear, big.NewInt(12_000))
+	if err != nil || linear.String() != "1.012e0" {
+		t.Fatalf("linear=%s err=%v", linear, err)
+	}
+	logarithmic, err := synergyFactor(economy.SynergyLog, big.NewInt(12_000))
+	if err != nil || logarithmic.String() != "1.0051805125e0" {
+		t.Fatalf("log=%s err=%v", logarithmic, err)
 	}
 }

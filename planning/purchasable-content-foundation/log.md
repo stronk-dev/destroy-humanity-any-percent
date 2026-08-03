@@ -223,3 +223,21 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
 - Proof run: `make test-go GO_PACKAGES='./production ./economy ./faction ./prestige ./save'`,
   `make typecheck`, `make test-client` (6,500 passed, 3 skipped), and
   `make replay-fixture-check` are green.
+
+## 2026-08-03 — simulation-only ablation boundary
+
+- Added the closed `AblationMask` and one simulation entrypoint used by the balance harness. The
+  authoritative `Transition`/`ApplyLogged` paths still have no mask-shaped parameter, catalog
+  field, save state, or replay input.
+- Generator masks null base production, ladders, manual-role factors, pool feeds, and outgoing
+  provisioning while preserving units and costs. Upgrade masks null their contribution bundles;
+  removed actions reject `unknown_id` before accrual.
+- Added a Go-AST repository guard with seeded positive/decoy self-tests: non-test calls to the
+  simulation entrypoint are permitted only from `server/harness`. Masked generator, provision
+  edge, and removed-action fixtures prove the ruled semantics and rollback boundary.
+- Added exact linear/log synergy-factor golden assertions. Proof run:
+  `make test-go GO_PACKAGES='./production ./harness'` is green.
+- KV-1 correction is staged as autosquash fixups because the two preceding unreviewed Foundation
+  commits omitted their required in-commit kernel bumps. No implementation review cites those
+  hashes and nothing is pushed; the history gate remains intentionally red until the pre-review
+  autosquash repair makes the three semantic landings `0.3.9`, `0.3.10`, and `0.3.11`.

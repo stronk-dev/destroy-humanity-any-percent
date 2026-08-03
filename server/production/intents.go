@@ -246,6 +246,7 @@ type Service struct {
 	guildCatalogs        guild.CatalogResolver
 	guildSettlements     GuildSettlementResolver
 	prestigePolicies     PrestigePolicyResolver
+	simulation           *simulationPolicy
 	currentConstantsHash string
 }
 
@@ -611,7 +612,14 @@ func TransitionWithRoutes(
 }
 
 func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, compactBand *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, sink InvariantSink, hook AccrualHook) (save.IntentDecision, error) {
-	service := Service{}
+	return transitionWithSimulationPolicy(request, state, catalog, routeCatalog, compactBand, factionCatalog, revision, mode, now, contributions, sink, hook, nil)
+}
+
+func transitionWithSimulationPolicy(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, compactBand *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, sink InvariantSink, hook AccrualHook, policy *simulationPolicy) (save.IntentDecision, error) {
+	service := Service{simulation: policy}
+	if request.Kind == IntentPerformManualBatch && policy.removesAction(request.ActionID) {
+		return rejectedDecision(request, revision.Number, "unknown_id", request.ActionID)
+	}
 	switch request.Kind {
 	case IntentBuyGenerator:
 		return service.buyGenerator(request, state, catalog, revision, mode, now, contributions, sink, hook)
@@ -636,6 +644,10 @@ func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *e
 	}
 }
 
+func (s *Service) evaluate(state *save.State, catalog *economy.Catalog, now time.Time, mode EvaluationMode, contributions []multiplier.Contribution) (EvaluationResult, error) {
+	return evaluateWithSimulationPolicy(state, catalog, now, mode, contributions, s.simulation)
+}
+
 func (s *Service) buyUpgrade(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
 	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || routeCatalog == nil || state.UpgradesOwned == nil {
 		return save.IntentDecision{}, ErrInvalidEngineState
@@ -648,7 +660,7 @@ func (s *Service) buyUpgrade(request IntentRequest, state *save.State, catalog *
 		return rejectedDecision(request, revision.Number, "not_eligible", "owned")
 	}
 	before := state.Ledger.Snapshot()
-	result, err := Evaluate(state, catalog, now, mode, contributions)
+	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
@@ -697,7 +709,7 @@ func (s *Service) signCompact(request IntentRequest, state *save.State, catalog 
 		return rejectedDecision(request, revision.Number, "invalid", "tithe_ppm")
 	}
 	before := state.Ledger.Snapshot()
-	result, err := Evaluate(state, catalog, now, mode, contributions)
+	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
@@ -732,7 +744,7 @@ func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog
 		return rejectedDecision(request, revision.Number, "not_member", "compact")
 	}
 	before := state.Ledger.Snapshot()
-	result, err := Evaluate(state, catalog, now, mode, contributions)
+	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
@@ -768,7 +780,7 @@ func (s *Service) incorporate(request IntentRequest, state *save.State, catalog 
 		}
 	}
 	before := state.Ledger.Snapshot()
-	result, err := Evaluate(state, catalog, now, mode, contributions)
+	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
@@ -860,7 +872,7 @@ func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *e
 		}
 	}
 	before := state.Ledger.Snapshot()
-	result, err := Evaluate(state, catalog, now, mode, contributions)
+	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
@@ -964,7 +976,7 @@ func (s *Service) buyGenerator(
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
 	before := state.Ledger.Snapshot()
-	result, err := Evaluate(state, catalog, now, mode, contributions)
+	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
@@ -1040,7 +1052,7 @@ func (s *Service) performManualBatch(
 		return rejectedDecision(request, revision.Number, "unknown_id", request.ActionID)
 	}
 	before := state.Ledger.Snapshot()
-	result, err := Evaluate(state, catalog, now, mode, contributions)
+	result, err := s.evaluate(state, catalog, now, mode, contributions)
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
