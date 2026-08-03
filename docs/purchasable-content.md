@@ -69,7 +69,8 @@ bundle. Action removal makes the matching purchase or manual action reject as un
 accrual. Simulation receives the same route catalog and accrual hook as the route under test, and
 reports a typed role activation only when an applied transition executes a non-neutral role result.
 Provision requires at least one materialized unit; synergy activates at the exact rate-application
-site when its declared contribution reaches a nonzero, unmasked generator (including `all`);
+site when its declared contribution reaches a nonzero, unmasked generator under positive effective
+accrual efficiency (including `all`);
 stock-rate compares the real hook result with the same transition after masking that one role's
 generator. Post-intent ownership, terminal-boundary units, or elapsed time alone never record
 activation.

@@ -127,7 +127,9 @@ func accrueContent(state *save.State, catalog *economy.Catalog, productionMS int
 		if segmentMS <= 0 {
 			return nil
 		}
+		policy.setProductionObservation(efficiency.Gt(decimal.Zero))
 		rates, err := ratesWithProvisionedAndPolicy(catalog, state.GeneratorCounts, provisioned, contributions, policy)
+		policy.setProductionObservation(false)
 		if err != nil {
 			return err
 		}

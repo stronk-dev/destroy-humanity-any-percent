@@ -598,6 +598,19 @@ func TestSimulationSynergyActivationOccursAtRateApplication(t *testing.T) {
 	if err != nil || result.Decision.Outcome != save.IntentApplied || !hasRoleActivation(result.RoleActivations, want) {
 		t.Fatalf("all target result=%+v err=%v", result, err)
 	}
+
+	zeroEfficiencyCatalog := foundationCatalogWithMutation(t, func(authored map[string]any) {
+		authored["offline_policy"].(map[string]any)["efficiency"] = "0"
+	})
+	zeroEfficiencyState := foundationState(t, zeroEfficiencyCatalog, started)
+	zeroEfficiencyState.GeneratorCounts["generator.low"] = 1
+	zeroEfficiencyState.ManualTokenMilli = 50_000
+	manual.IntentID = "01986666-0225-7000-8000-000000000225"
+	zeroEfficiencyWant := RoleActivation{GeneratorID: "generator.low", Kind: economy.RoleSynergyFeed, TargetID: "pool.operations"}
+	result, err = SimulateTransition(manual, zeroEfficiencyState, zeroEfficiencyCatalog, dependencies, save.Revision{Number: 1}, ModeOffline, started.Add(time.Second), nil, nil, AblationMask{})
+	if err != nil || result.Decision.Outcome != save.IntentApplied || hasRoleActivation(result.RoleActivations, zeroEfficiencyWant) {
+		t.Fatalf("zero-efficiency result=%+v err=%v", result, err)
+	}
 }
 
 func TestSimulationStockRateActivationRequiresNonNeutralRealHook(t *testing.T) {

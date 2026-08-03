@@ -54,6 +54,7 @@ type simulationPolicy struct {
 	removedGenerators map[string]bool
 	removedUpgrades   map[string]bool
 	removedActions    map[string]bool
+	observeProduction bool
 	active            map[string]RoleActivation
 	candidates        map[string]RoleActivation
 }
@@ -157,13 +158,19 @@ func (policy *simulationPolicy) candidate(value RoleActivation) {
 }
 
 func (policy *simulationPolicy) activateSynergySource(sourceID string) {
-	if policy == nil {
+	if policy == nil || !policy.observeProduction {
 		return
 	}
 	for key, value := range policy.candidates {
 		if value.Kind == economy.RoleSynergyFeed && value.TargetID == sourceID {
 			policy.active[key] = value
 		}
+	}
+}
+
+func (policy *simulationPolicy) setProductionObservation(enabled bool) {
+	if policy != nil {
+		policy.observeProduction = enabled
 	}
 }
 
