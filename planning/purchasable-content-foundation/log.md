@@ -414,3 +414,18 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
   byte-unchanged. Focused Go, full client verification (6,502 tests), replay fixture, formula drift,
   kernel history, and deterministic `make harness-check` pass through standard root targets.
 - Exact independent re-review span: `7df4d7b^..7df4d7b`.
+
+## 2026-08-03 — independent rate-site synergy review
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Reviewed range:** `7df4d7b^..7df4d7b` (`e5bdf46` excluded as recorder-only evidence).
+- **Verdict:** not approved for archival. All four named causal seams and the prior
+  zero-target/undeclared/positive cases hold, but legal offline efficiency `0` exposes one remaining
+  HIGH: the raw rate site records the pool before `AccrueConstant` reduces effective production to
+  exactly zero.
+- Required correction: suppress production-role observation when effective efficiency is zero (or
+  carry evidence through accrual). Add the discriminating schema-v4 zero-efficiency offline fixture.
+  Nil authoritative policy, kernel `0.3.15`, replay bytes, formula drift, and harness baseline were
+  verified clean. The reviewer confirms the implementation-range union through `7df4d7b` is complete,
+  excluding only explicitly recorder-only planning commits. No files were edited by the reviewer.
