@@ -342,3 +342,24 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
     to bind its temporary IPv6 localhost port; the standard browser target itself passed unchanged.
 - This is remediation evidence, not the independent archival verdict. The exact remediation span is
   `274b6ba^..274b6ba` and returns to Darwin for the required follow-up review.
+
+## 2026-08-03 — independent remediation review
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Reviewed range:** `274b6ba^..274b6ba` (`85661fd` excluded as recorder-only evidence).
+- **Verdict:** not approved for archival. Six prior findings are closed; one HIGH C13 blocker
+  remains because role activations are not yet restricted to demonstrated non-neutral execution:
+  - provision records from positive source ownership before quotient/headroom, including zero-unit
+    and capped boundaries;
+  - synergy promotes ownership candidates on any cursor advance without requiring the declared
+    role or proving its production/manual target was exercised;
+  - stock-rate compares aggregate before/after state instead of a role-masked counterfactual, so
+    base progress can falsely credit a role whose exact interval delta was neutral at the cap.
+- Required correction: record per-role output deltas only — materialized provision units, declared
+  synergy roles whose nonzero target executes, and stock state that differs from the same hook with
+  that role's generator masked. The correction returns for another narrow independent review.
+- Verified closed in `274b6ba`: real simulation dependencies, effect-mask/action-removal semantics,
+  three-way validator parity, Company-only predicates, formula fingerprint coverage, AC1 rejection
+  and ordering tests, and kernel `0.3.13` classification. The focused Go/client/schema/formula/
+  kernel/replay/harness gates were green. No files were edited by the reviewer.
