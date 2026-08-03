@@ -246,3 +246,14 @@ a principled non-semantic-refactor mechanism in the guard (a DESIGN decision, ne
 pressure-moment hack). Copy Pipeline centralizes copy keys; where a key lives in kernel-watched
 code, its binding is deferred to such a carrier commit. The recruitment reason_key stays a literal
 in intent.go until then.
+
+## 2026-08-03 — rewritten-history verification
+
+- The owner-approved reset removed `ceafeb9`; `7fb9bab` remains the Setext closure, and
+  `server/save/intent.go` is byte-identical to its pre-cleanup state.
+- `make verify-kernel-version` and `make copy-check` passed immediately after the rewrite.
+- `make verify` passed from the repository root at `113a033`: every server package, formula and
+  harness gates, TypeScript/Svelte checks, production client build, 6,507 client assertions,
+  history/boundary/copy/schema checks, and 19,530 browser assertions.
+- The final independent verdict must cite the rewritten contiguous union and must not cite the
+  dropped hash as part of the archive range.
