@@ -125,3 +125,39 @@ required before another archive verdict.
   build; 6,507 client assertions; governance/schema guards; and 19,530 browser assertions.
 - The second remediation now requires an independent verdict covering `6d0b309` and the preceding
   rejected ranges. Neither earlier rejection is relabeled or treated as approval.
+
+## 2026-08-03 — independent second-remediation review
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **New range:** `6d0b309^..637a9eb`
+- **Combined implementation/remediation span:** `261eafa..637a9eb`
+- **Decision:** not approved for archival.
+
+The citation-history finding is closed: the correction exception now searches every commit
+reachable from the parent, and Darwin's delete-then-retarget repository probe failed as required.
+Two MEDIUM findings remain:
+
+- the producer-site AST proof still accepts discarded marshal output and scans constant-dead or
+  never-invoked nested code, so it does not yet prove the registered payload reaches the producer's
+  authoritative database call;
+- the shared text rule still accepts five-space CommonMark code, no-space blockquotes, empty ATX
+  headings, HTML declarations, and XML processing instructions.
+
+Darwin independently passed `make copy-check`, the focused normal root targets, and `make verify`
+(6,507 client and 19,530 browser assertions). Green gates do not override the demonstrated false
+assurances. A third remediation and independent verdict are required.
+
+## 2026-08-03 — third remediation implemented
+
+- Replaced general recursive AST scanning with one deliberately narrow authoritative producer
+  form: a top-level marshal assignment to a non-discarded variable, followed without reassignment
+  by exactly one database sink in a standard checked-error `if` initializer. Discarded output,
+  nested function literals, constant-dead blocks, unchecked sinks, and shadowed payloads are
+  discriminating negative fixtures.
+- Closed the shared text grammar over arbitrary four-or-more-space indentation, no-space
+  blockquotes, empty headings, HTML declarations, and XML processing instructions. The same new
+  cases run through both the build validator and the TypeScript runtime loader.
+- Focused normal root checks pass: `make copy-check`,
+  `make test-go GO_PACKAGES='./cmd/verify-copy-sites ./cmd/gen-content-manifest'`, and
+  `make test-client` (6,507 assertions).

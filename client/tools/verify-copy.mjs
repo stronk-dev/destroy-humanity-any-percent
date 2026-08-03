@@ -13,6 +13,7 @@ import {
   repositoryRoot,
   validateDenylist,
   validateCopySafety,
+  validatePlainCopyText,
   validateProvenanceRegistry,
   validateReferences,
   verifyAppendOnlyHistory,
@@ -54,6 +55,9 @@ for (const fixture of ["{amount}%", "version twelve", "company.cash", "NOTUSD12"
 const safetyEntry = { key: "fixture.statistic", text: "Adoption reached 12%", params: [], era_variants: null, provenance: [], tone: "corporate" };
 expectFailure("missing statistic provenance fixture", () => validateCopySafety([safetyEntry], claims, terms), /requires verified provenance/);
 expectFailure("known-name copy fixture", () => validateCopySafety([{ ...safetyEntry, text: "Habbo", provenance: [] }], claims, terms), /known red-list term habbo/);
+for (const fixture of ["     indented code", ">quoted", "#", "<!DOCTYPE html>", "<?xml version=\"1.0\"?>"]) {
+  expectFailure("plain-text build fixture", () => validatePlainCopyText(fixture), /plain text/);
+}
 
 const references = JSON.parse(readFileSync(path.join(repositoryRoot, "copy/references.v1.json"), "utf8"));
 const codeReferences = built.codeReferences;

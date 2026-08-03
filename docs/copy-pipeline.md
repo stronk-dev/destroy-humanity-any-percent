@@ -14,9 +14,10 @@ than English text.
   The verifier proves each registered path exists in that artifact's schema before walking the
   current artifact.
 - `copy/code-reference-sites.v1.json` names explicit Go producer sites for code-owned reason keys.
-  A Go AST gate verifies that the key is the value of the declared JSON field in a reachable,
-  direct `json.Marshal(map literal)` call inside the declared producer function (comments,
-  unused maps, and compile-time-false branches do not qualify), then generation emits
+  A Go AST gate accepts one canonical producer form: a top-level direct
+  `json.Marshal(map literal)` assignment whose non-discarded payload is used exactly once by a
+  later checked `ExecContext`/`QueryRowContext` statement in the declared function. Nested/dead,
+  unused, and discarded serializations do not qualify. Generation then emits
   `copy/generated/code-references.v1.json`; code references are not discovered by a repository
   property-name search.
 - `copy/provenance.v1.json` is the stable claim registry. A verified claim resolves to exactly one

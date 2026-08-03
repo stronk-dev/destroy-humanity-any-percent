@@ -72,23 +72,30 @@ func literalString(expression ast.Expr) (string, bool) {
 	return value, err == nil
 }
 
-func isBooleanIdentifier(expression ast.Expr, name string) bool {
-	identifier, ok := expression.(*ast.Ident)
-	return ok && identifier.Name == name
-}
-
-func isSerializedBinding(call *ast.CallExpr, item binding) bool {
+func serializedBindingVariable(statement ast.Stmt, item binding) (string, bool) {
+	assignment, ok := statement.(*ast.AssignStmt)
+	if !ok || len(assignment.Lhs) < 1 || len(assignment.Rhs) != 1 {
+		return "", false
+	}
+	variable, ok := assignment.Lhs[0].(*ast.Ident)
+	if !ok || variable.Name == "_" {
+		return "", false
+	}
+	call, ok := assignment.Rhs[0].(*ast.CallExpr)
+	if !ok {
+		return "", false
+	}
 	selector, ok := call.Fun.(*ast.SelectorExpr)
 	if !ok || selector.Sel.Name != "Marshal" || len(call.Args) != 1 {
-		return false
+		return "", false
 	}
 	packageName, ok := selector.X.(*ast.Ident)
 	if !ok || packageName.Name != "json" {
-		return false
+		return "", false
 	}
 	literal, ok := call.Args[0].(*ast.CompositeLit)
 	if !ok {
-		return false
+		return "", false
 	}
 	for _, element := range literal.Elts {
 		pair, ok := element.(*ast.KeyValueExpr)
@@ -98,36 +105,96 @@ func isSerializedBinding(call *ast.CallExpr, item binding) bool {
 		field, fieldOK := literalString(pair.Key)
 		value, valueOK := literalString(pair.Value)
 		if fieldOK && valueOK && field == item.JSONField && value == item.Key {
-			return true
+			return variable.Name, true
 		}
 	}
-	return false
+	return "", false
 }
 
-func serializedBindings(root ast.Node, item binding) int {
-	matches := 0
-	var inspect func(ast.Node)
-	inspect = func(node ast.Node) {
-		ast.Inspect(node, func(child ast.Node) bool {
-			if statement, ok := child.(*ast.IfStmt); ok {
-				if isBooleanIdentifier(statement.Cond, "false") {
-					if statement.Else != nil {
-						inspect(statement.Else)
-					}
-					return false
-				}
-				if isBooleanIdentifier(statement.Cond, "true") {
-					inspect(statement.Body)
-					return false
-				}
-			}
-			if call, ok := child.(*ast.CallExpr); ok && isSerializedBinding(call, item) {
-				matches++
-			}
-			return true
-		})
+func authoritativeSinkUses(statement ast.Stmt, variable string) int {
+	conditional, ok := statement.(*ast.IfStmt)
+	if !ok || conditional.Init == nil {
+		return 0
 	}
-	inspect(root)
+	assignment, ok := conditional.Init.(*ast.AssignStmt)
+	if !ok || len(assignment.Lhs) < 1 {
+		return 0
+	}
+	errorVariable, ok := assignment.Lhs[len(assignment.Lhs)-1].(*ast.Ident)
+	if !ok || errorVariable.Name == "_" {
+		return 0
+	}
+	condition, ok := conditional.Cond.(*ast.BinaryExpr)
+	if !ok || condition.Op != token.NEQ {
+		return 0
+	}
+	left, leftOK := condition.X.(*ast.Ident)
+	right, rightOK := condition.Y.(*ast.Ident)
+	if !leftOK || !rightOK || left.Name != errorVariable.Name || right.Name != "nil" {
+		return 0
+	}
+	uses := 0
+	ast.Inspect(conditional.Init, func(node ast.Node) bool {
+		call, ok := node.(*ast.CallExpr)
+		if !ok {
+			return true
+		}
+		selector, ok := call.Fun.(*ast.SelectorExpr)
+		if !ok || (selector.Sel.Name != "ExecContext" && selector.Sel.Name != "QueryRowContext") {
+			return true
+		}
+		for _, argument := range call.Args {
+			identifier, ok := argument.(*ast.Ident)
+			if ok && identifier.Name == variable {
+				uses++
+			}
+		}
+		return true
+	})
+	return uses
+}
+
+func assignsIdentifier(statement ast.Stmt, name string) bool {
+	assigned := false
+	ast.Inspect(statement, func(node ast.Node) bool {
+		assignment, ok := node.(*ast.AssignStmt)
+		if !ok {
+			return true
+		}
+		for _, expression := range assignment.Lhs {
+			identifier, ok := expression.(*ast.Ident)
+			if ok && identifier.Name == name {
+				assigned = true
+			}
+		}
+		return !assigned
+	})
+	return assigned
+}
+
+func serializedBindings(body *ast.BlockStmt, item binding) int {
+	matches := 0
+	for index, statement := range body.List {
+		variable, ok := serializedBindingVariable(statement, item)
+		if !ok {
+			continue
+		}
+		sinkUses := 0
+		for _, later := range body.List[index+1:] {
+			uses := authoritativeSinkUses(later, variable)
+			if uses > 0 {
+				sinkUses += uses
+				continue
+			}
+			if assignsIdentifier(later, variable) {
+				sinkUses = 0
+				break
+			}
+		}
+		if sinkUses == 1 {
+			matches++
+		}
+	}
 	return matches
 }
 
@@ -146,7 +213,7 @@ func verifySource(filename string, source []byte, item binding) error {
 		matches += serializedBindings(function.Body, item)
 	}
 	if functions != 1 || matches != 1 {
-		return fmt.Errorf("%w: %s requires exactly one json.Marshal payload in %s with [%q]=%q; functions=%d matches=%d", errInvalidRegistry, filename, item.GoFunction, item.JSONField, item.Key, functions, matches)
+		return fmt.Errorf("%w: %s requires exactly one top-level json.Marshal payload in %s with [%q]=%q used once by a checked database sink; functions=%d matches=%d", errInvalidRegistry, filename, item.GoFunction, item.JSONField, item.Key, functions, matches)
 	}
 	return nil
 }

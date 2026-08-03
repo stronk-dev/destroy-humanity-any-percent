@@ -5,7 +5,10 @@ import "testing"
 func TestVerifySourceRequiresLiveJSONFieldBinding(t *testing.T) {
 	item := binding{GoFunction: "emit", JSONField: "reason_key", Key: "reason.example", SourceFile: "server/example.go"}
 	valid := []byte(`package fixture
-func emit() { _, _ = json.Marshal(map[string]any{"reason_key": "reason.example"}) }
+func emit() {
+  payload, _ := json.Marshal(map[string]any{"reason_key": "reason.example"})
+  if _, err := tx.ExecContext(ctx, "INSERT", payload); err != nil { return }
+}
 `)
 	if err := verifySource("fixture.go", valid, item); err != nil {
 		t.Fatal(err)
@@ -13,12 +16,55 @@ func emit() { _, _ = json.Marshal(map[string]any{"reason_key": "reason.example"}
 	invalid := []byte(`package fixture
 // "reason.example"
 func emit() {
-  if false { _, _ = json.Marshal(map[string]any{"reason_key": "reason.example"}) }
-  _, _ = json.Marshal(map[string]any{"other": "reason.example"})
+  if 1 == 2 {
+    payload, _ := json.Marshal(map[string]any{"reason_key": "reason.example"})
+    if _, err := tx.ExecContext(ctx, "INSERT", payload); err != nil { return }
+  }
+  discarded, _ := json.Marshal(map[string]any{"reason_key": "reason.example"})
+  _ = discarded
+  payload, _ := json.Marshal(map[string]any{"other": "reason.example"})
+  if _, err := tx.ExecContext(ctx, "INSERT", payload); err != nil { return }
 }
 `)
 	if err := verifySource("fixture.go", invalid, item); err == nil {
-		t.Fatal("comment/dead serialized literal satisfied a producer binding")
+		t.Fatal("dead, discarded, or wrong-field serialization satisfied a producer binding")
+	}
+}
+
+func TestVerifySourceRejectsNeverInvokedFunctionLiteral(t *testing.T) {
+	item := binding{GoFunction: "emit", JSONField: "reason_key", Key: "reason.example", SourceFile: "server/example.go"}
+	invalid := []byte(`package fixture
+func emit() {
+  unused := func() {
+    payload, _ := json.Marshal(map[string]any{"reason_key": "reason.example"})
+    if _, err := tx.ExecContext(ctx, "INSERT", payload); err != nil { return }
+  }
+  _ = unused
+}
+`)
+	if err := verifySource("fixture.go", invalid, item); err == nil {
+		t.Fatal("never-invoked nested producer satisfied a binding")
+	}
+}
+
+func TestVerifySourceRejectsUncheckedOrShadowedSink(t *testing.T) {
+	item := binding{GoFunction: "emit", JSONField: "reason_key", Key: "reason.example", SourceFile: "server/example.go"}
+	for _, invalid := range []string{
+		`package fixture
+func emit() {
+  payload, _ := json.Marshal(map[string]any{"reason_key": "reason.example"})
+  if _, err := tx.ExecContext(ctx, "INSERT", payload); false { _ = err }
+}`,
+		`package fixture
+func emit() {
+  payload, _ := json.Marshal(map[string]any{"reason_key": "reason.example"})
+  payload = []byte("wrong")
+  if _, err := tx.ExecContext(ctx, "INSERT", payload); err != nil { return }
+}`,
+	} {
+		if err := verifySource("fixture.go", []byte(invalid), item); err == nil {
+			t.Fatal("unchecked or shadowed payload sink satisfied a binding")
+		}
 	}
 }
 

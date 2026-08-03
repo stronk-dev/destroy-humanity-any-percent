@@ -73,14 +73,14 @@ function sortedUnique(values, label) {
   return values;
 }
 
-function normalizedString(value, label) {
+export function validatePlainCopyText(value, label = "copy text") {
   const { maxTextBytes: maxBytes, maxTextLines: maxLines } = copyConfig().limits;
   if (typeof value !== "string") fail(label, "must be a string");
   if (value !== value.normalize("NFC")) fail(label, "must be NFC-normalized");
   if (Buffer.byteLength(value, "utf8") > maxBytes) fail(label, `exceeds ${maxBytes} UTF-8 bytes`);
   if (value.split("\n").length > maxLines) fail(label, `exceeds ${maxLines} lines`);
   if (/[^\P{Cc}\n]/u.test(value)) fail(label, "contains a control character");
-  if (/<\/?[a-z][^>]*>/iu.test(value) || /<!--|-->|[`*_~\[\]|\\]|^(?: {4}\S|\s{0,3}(?:#{1,6}|>|[-+]|\d+[.)])\s|\s{0,3}(?:---+|===+)\s*$)/mu.test(value)) {
+  if (/[<`*_~\[\]|\\]|-->|^ {4}|^\s{0,3}(?:#{1,6}(?:\s|$)|>|[-+]\s|\d+[.)](?:\s|$))|^\s{0,3}(?:-\s*){3,}$|^\s{0,3}===+\s*$/mu.test(value)) {
     fail(label, "must be plain text, not HTML or Markdown");
   }
   return value;
@@ -128,7 +128,7 @@ function validateEntry(value, label) {
     if (index > 0 && names[index - 1] >= item.name) fail(`${label}.params`, "must be byte-sorted and unique by name");
     names.push(item.name);
   }
-  row.text = normalizedString(row.text, `${label}.text`);
+  row.text = validatePlainCopyText(row.text, `${label}.text`);
   validateTextParams(row.text, names, `${label}.text`);
   if (row.era_variants !== null) {
     if (typeof row.era_variants !== "object" || Array.isArray(row.era_variants)) fail(`${label}.era_variants`, "must be null or an object");
@@ -136,7 +136,7 @@ function validateEntry(value, label) {
     if (variantKeys.length === 0 || variantKeys.some((era) => !eras.has(era))) fail(`${label}.era_variants`, "contains an unknown or empty era set");
     if (variantKeys.some((era, index) => index > 0 && variantKeys[index - 1] >= era)) fail(`${label}.era_variants`, "keys must be byte-sorted");
     for (const era of variantKeys) {
-      row.era_variants[era] = normalizedString(row.era_variants[era], `${label}.era_variants.${era}`);
+      row.era_variants[era] = validatePlainCopyText(row.era_variants[era], `${label}.era_variants.${era}`);
       validateTextParams(row.era_variants[era], names, `${label}.era_variants.${era}`);
     }
   }
