@@ -2,7 +2,7 @@
 
 - **RFC:** `rfc/purchasable-content-foundation.md`
 - **Assignee:** Codex
-- **Status:** implementing
+- **Status:** implemented
 
 1. [x] Land economy schema v4: typed upgrades, roles, provision edges/caps, ladders, synergy
    pools, strict cross-reference validation, and Go loader tests.
@@ -16,7 +16,7 @@
    without adding mask state to authoritative bundles or replay inputs.
 6. [x] Close transport/client/schema/event registries, formula generation, KV-1, epoch classification,
    canonical docs, and full repository verification.
-7. [ ] Obtain an independent full-span review, remediate all findings, then archive the RFC and
+7. [x] Obtain an independent full-span review, remediate all findings, then archive the RFC and
    planning record with exact range-union provenance.
 
 Acceptance checkboxes flip only in commits containing the corresponding proof, per `AGENTS.md`.

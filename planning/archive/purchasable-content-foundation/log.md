@@ -441,3 +441,18 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
 - Kernel `0.3.16` records the guarded simulation observation. Focused Go, replay fixture, formula
   drift, kernel history, and deterministic `make harness-check` pass via standard root targets.
 - Exact final independent re-review span: `e67ccc0^..e67ccc0`.
+
+## 2026-08-03 — final independent review and archival gate
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Reviewed range:** `e67ccc0^..e67ccc0` (`44d204e` excluded as recorder-only evidence).
+- **Verdict:** APPROVED for Foundation archival, no findings. Zero-efficiency suppression, positive
+  causal activation, all prior provision/synergy/stock fixtures, observation-flag lifecycle, nil
+  authoritative policy, kernel `0.3.16`, replay bytes, formula drift, client tests, and harness
+  baseline were independently verified green.
+- Complete implementation review union:
+  `c380fe0^..4fc1dce` ∪ `274b6ba^..274b6ba` ∪ `e7c4263^..e7c4263` ∪
+  `7df4d7b^..7df4d7b` ∪ `e67ccc0^..e67ccc0`. This is equivalent to the implementation span
+  through `e67ccc0` with explicitly labeled recorder-only planning commits excluded. The original
+  planning evidence inside the first exact range was reviewed.
