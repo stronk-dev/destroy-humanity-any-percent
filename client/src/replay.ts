@@ -1,7 +1,7 @@
 import Decimal from "break_infinity.js";
 
 import { enclosureIndex, parseCommonsCatalog, type CommonsCatalog } from "./commons";
-import { parseCatalog, subProgressValue, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
+import { parseCatalog, subProgressValue, validateCatalogGateReferences, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
 import { parseFactionCatalog, type FactionCatalog } from "./faction";
 import { parseGuildCatalog, type GuildCatalog } from "./guild";
 import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
@@ -24,7 +24,9 @@ export interface ReplayEvent { readonly kind: string; readonly schema_version: n
 export interface ReplayChange { readonly resource_id: string; readonly before: string; readonly delta: string; readonly after: string }
 export interface ReplayInvariant { readonly kind: "afford_fallback" | "residual_clamp" | "residual_abort"; readonly intent_id: string; readonly detail: string }
 export interface ReplayState {
-  balances: Record<string, string>; generators: Record<string, number>; generatorPurchasedTotal: number; evaluatedThroughMs: number; computeCreditMs: number;
+  balances: Record<string, string>; generators: Record<string, number>; generatorPurchasedTotal: number;
+  upgradesOwned: Set<string>; generatorsProvisioned: Record<string, number>; provisionRemaindersPpm: Record<string, number>; stockRateRemainderPpm: number;
+  evaluatedThroughMs: number; computeCreditMs: number;
   manualTokenMilli: number; manualTokenRefilledAtMs: number; gatesCrossed: Record<string, boolean>; runSeq: number;
   doctrinesByTransition: Record<string, string>; structureId: string; ledgerFactKinds: Set<string>; meterBands: Record<string, number>;
   regionTraits: Set<string>; routeKnowledgeBalance: number; hintsUnlocked: Set<string>; compactMember: boolean; compactTithePpm: number;
@@ -65,7 +67,9 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const computed = await constantsHashArtifacts(artifacts);
   if (computed !== constantsHash) throw new SyntaxError("replay artifact label mismatch");
   const economy = parseCatalog(parseJSON(artifacts.economy)); const routes = parseRoutesCatalog(parseJSON(artifacts.routes));
-  validateCategoryCatalog(parseJSON(artifacts.categories), routes.gates.map((gate) => gate.gateId));
+  const gateIds = routes.gates.map((gate) => gate.gateId);
+  validateCategoryCatalog(parseJSON(artifacts.categories), gateIds);
+  validateCatalogGateReferences(economy, gateIds);
   const commons = parseCommonsCatalog(parseJSON(artifacts.commons)); const prestige = parsePrestigePolicy(parseJSON(artifacts.prestige));
   const factions = parseFactionCatalog(parseJSON(artifacts.factions), commons.minimumTithePpm, commons.defaultTithePpm, commons.maximumTithePpm);
   const guilds = parseGuildCatalog(parseJSON(artifacts.guilds));
@@ -135,7 +139,7 @@ export async function verifyReplayRunDetailed(
   if (identity.engineMismatch) return { verdict: "engine_mismatch", finalState: null };
   if (identity.constantsHash !== catalogs.constantsHash) return { verdict: "constants_mismatch", finalState: null };
   let state: ReplayState;
-  try { state = restoreReplayState(genesis, identity.genesisVersion ?? 13, catalogs.economy); }
+  try { state = restoreReplayState(genesis, identity.genesisVersion ?? 14, catalogs.economy); }
   catch { return { verdict: "constants_mismatch", finalState: null }; }
   let terminal = false;
   for (let index = 0; index < entries.length; index++) {
@@ -172,13 +176,30 @@ export function restoreReplayState(source: unknown, version: number, catalog: Ec
       purchased += count;
     }
     source = { ...source, generators_purchased_total: purchased };
-  } else if (version !== 13) throw new SyntaxError("unsupported replay save version");
-  const raw = exactObject(source, ["balances", "generators", "generators_purchased_total", "evaluated_through", "compute_credit_ms", "manual_token_milli", "manual_token_refilled_at", "gates_crossed", "run_seq", "doctrines_by_transition", "structure_id", "ledger_fact_kinds", "meter_bands", "region_traits", "route_knowledge_balance", "hints_unlocked", "compact_member", "compact_tithe_ppm", "compact_solidarity_ppm", "compact_solidarity_samples", "tier", "lifetime_value", "offer_state", "run_started_at_ms", "reputation_level", "reputation_unlock_ppm", "network_slots", "clout_lifetime", "soul", "age_ms", "notoriety", "advisor_mode", "exit_history", "run_pre_timer", "offline_spans", "collapsed_offline_ms", "faction_id", "incorporated_at_ms", "stock_units", "stock_progress_ms", "consumed_stock_units", "guild_tithe_carry_ppm", "guild_boundary_seq", "guild_consumed_window_units", "guild_boundary_guild_id"], "save v13");
+  } else if (version !== 13 && version !== 14) throw new SyntaxError("unsupported replay save version");
+  if (version < 14) {
+    if (!isRecord(source)) throw new SyntaxError("invalid legacy replay save");
+    const generators = integerRecord(source.generators, 0, MAX_EXACT_INTEGER, "generators");
+    const provisionRemainders = Object.fromEntries(catalog.generatorClasses.filter((value) => value.provision !== null).map((value) => [value.provision!.generatorId, 0]));
+    source = { ...source, upgrades_owned: [], generators_provisioned: Object.fromEntries(Object.keys(generators).map((id) => [id, 0])), provision_remainders_ppm: provisionRemainders, stock_rate_remainder_ppm: 0 };
+  }
+  const raw = exactObject(source, ["balances", "generators", "generators_purchased_total", "upgrades_owned", "generators_provisioned", "provision_remainders_ppm", "stock_rate_remainder_ppm", "evaluated_through", "compute_credit_ms", "manual_token_milli", "manual_token_refilled_at", "gates_crossed", "run_seq", "doctrines_by_transition", "structure_id", "ledger_fact_kinds", "meter_bands", "region_traits", "route_knowledge_balance", "hints_unlocked", "compact_member", "compact_tithe_ppm", "compact_solidarity_ppm", "compact_solidarity_samples", "tier", "lifetime_value", "offer_state", "run_started_at_ms", "reputation_level", "reputation_unlock_ppm", "network_slots", "clout_lifetime", "soul", "age_ms", "notoriety", "advisor_mode", "exit_history", "run_pre_timer", "offline_spans", "collapsed_offline_ms", "faction_id", "incorporated_at_ms", "stock_units", "stock_progress_ms", "consumed_stock_units", "guild_tithe_carry_ppm", "guild_boundary_seq", "guild_consumed_window_units", "guild_boundary_guild_id"], "save v14");
   const balances = stringRecord(raw.balances, "balances"); const expectedResources = catalog.resources.filter((value) => value.scope === "company").map((value) => value.id).sort(byteCompare);
   if (!same(Object.keys(balances).sort(byteCompare), expectedResources)) throw new SyntaxError("company balance set differs from catalog");
   for (const definition of catalog.resources.filter((value) => value.scope === "company")) validateBalance(balances[definition.id]!, definition.minimum, definition.hardcap?.amount);
   const generators = integerRecord(raw.generators, 0, MAX_EXACT_INTEGER, "generators"); const expectedGenerators = catalog.generatorClasses.filter((value) => value.production !== null).map((value) => value.id).sort(byteCompare);
   if (!same(Object.keys(generators).sort(byteCompare), expectedGenerators)) throw new SyntaxError("generator set differs from catalog");
+  const upgradesOwned = mechanicalSet(raw.upgrades_owned);
+  for (const id of upgradesOwned) if (!catalog.upgrade(id)) throw new SyntaxError(`unknown owned upgrade ${id}`);
+  const generatorsProvisioned = integerRecord(raw.generators_provisioned, 0, MAX_EXACT_INTEGER, "generators_provisioned");
+  if (!same(Object.keys(generatorsProvisioned).sort(byteCompare), expectedGenerators)) throw new SyntaxError("provisioned generator set differs from catalog");
+  for (const generator of catalog.generatorClasses.filter((value) => value.production !== null)) {
+    const count = generatorsProvisioned[generator.id]!;
+    if (generator.provisionedHardcap === null ? count !== 0 : count > generator.provisionedHardcap.count) throw new SyntaxError(`provisioned generator ${generator.id} exceeds its catalog cap`);
+  }
+  const expectedRemainders = catalog.generatorClasses.filter((value) => value.provision !== null).map((value) => value.provision!.generatorId).sort(byteCompare);
+  const provisionRemaindersPpm = integerRecord(raw.provision_remainders_ppm, 0, 999_999, "provision_remainders_ppm");
+  if (!same(Object.keys(provisionRemaindersPpm).sort(byteCompare), expectedRemainders)) throw new SyntaxError("provision remainder set differs from catalog");
   const evaluatedThroughMs = cursor(raw.evaluated_through, "evaluated_through"); const manualTokenRefilledAtMs = cursor(raw.manual_token_refilled_at, "manual_token_refilled_at");
   if (manualTokenRefilledAtMs > evaluatedThroughMs) throw new SyntaxError("manual cursor exceeds evaluation cursor");
   const compactSamples = array(raw.compact_solidarity_samples, "compact samples").map((item) => { const value = exactObject(item, ["hour_start", "compliance_ppm", "covered_ms"], "compact sample"); return { hourStartMs: cursor(value.hour_start, "hour_start"), compliancePpm: safeInteger(value.compliance_ppm, 0, 1_000_000), coveredMs: safeInteger(value.covered_ms, 1, 3_600_000) }; });
@@ -186,7 +207,7 @@ export function restoreReplayState(source: unknown, version: number, catalog: Ec
   let offerState: ReplayState["offerState"] = null;
   if (raw.offer_state !== null) { const value = exactObject(raw.offer_state, ["offer_id", "exit_type", "terms_json", "spawned_at_ms", "expires_at_ms"], "offer state"); if (typeof value.offer_id !== "string" || !uuidV7.test(value.offer_id) || typeof value.exit_type !== "string") throw new SyntaxError("invalid offer"); offerState = { offerId: value.offer_id, exitType: value.exit_type, terms: value.terms_json, spawnedAtMs: safeInteger(value.spawned_at_ms, 1, MAX_EXACT_INTEGER), expiresAtMs: safeInteger(value.expires_at_ms, 1, MAX_EXACT_INTEGER) }; }
   const factionId = nullableMechanical(raw.faction_id); const incorporatedAtMs = raw.incorporated_at_ms === null ? null : safeInteger(raw.incorporated_at_ms, 1, MAX_EXACT_INTEGER);
-  const state: ReplayState = { balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), evaluatedThroughMs, computeCreditMs: safeInteger(raw.compute_credit_ms, 0, MAX_EXACT_INTEGER), manualTokenMilli: safeInteger(raw.manual_token_milli, 0, MAX_EXACT_INTEGER), manualTokenRefilledAtMs,
+  const state: ReplayState = { balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm, stockRateRemainderPpm: safeInteger(raw.stock_rate_remainder_ppm, 0, 999_999), evaluatedThroughMs, computeCreditMs: safeInteger(raw.compute_credit_ms, 0, MAX_EXACT_INTEGER), manualTokenMilli: safeInteger(raw.manual_token_milli, 0, MAX_EXACT_INTEGER), manualTokenRefilledAtMs,
     gatesCrossed: booleanRecord(raw.gates_crossed), runSeq: safeInteger(raw.run_seq, 1, MAX_EXACT_INTEGER), doctrinesByTransition: mechanicalRecord(raw.doctrines_by_transition), structureId: nullableMechanical(raw.structure_id, false),
     ledgerFactKinds: mechanicalSet(raw.ledger_fact_kinds), meterBands: integerRecord(raw.meter_bands, 0, 100, "meter_bands"), regionTraits: mechanicalSet(raw.region_traits), routeKnowledgeBalance: safeInteger(raw.route_knowledge_balance, 0, MAX_EXACT_INTEGER), hintsUnlocked: mechanicalSet(raw.hints_unlocked),
     compactMember: boolean(raw.compact_member), compactTithePpm: safeInteger(raw.compact_tithe_ppm, 0, 1_000_000), compactSolidarityPpm: safeInteger(raw.compact_solidarity_ppm, 0, 1_000_000), compactSamples,
@@ -212,8 +233,10 @@ export function restoreReplayState(source: unknown, version: number, catalog: Ec
   return state;
 }
 
-export function encodeReplayStateV13(state: ReplayState): unknown {
-  return { balances: sortedRecord(state.balances), generators: sortedRecord(state.generators), generators_purchased_total: state.generatorPurchasedTotal, evaluated_through: rfc3339(state.evaluatedThroughMs),
+export function encodeReplayStateV14(state: ReplayState): unknown {
+  return { balances: sortedRecord(state.balances), generators: sortedRecord(state.generators), generators_purchased_total: state.generatorPurchasedTotal,
+    upgrades_owned: [...state.upgradesOwned].sort(byteCompare), generators_provisioned: sortedRecord(state.generatorsProvisioned), provision_remainders_ppm: sortedRecord(state.provisionRemaindersPpm), stock_rate_remainder_ppm: state.stockRateRemainderPpm,
+    evaluated_through: rfc3339(state.evaluatedThroughMs),
     compute_credit_ms: state.computeCreditMs, manual_token_milli: state.manualTokenMilli, manual_token_refilled_at: rfc3339(state.manualTokenRefilledAtMs),
     gates_crossed: sortedRecord(state.gatesCrossed), run_seq: state.runSeq, doctrines_by_transition: sortedRecord(state.doctrinesByTransition), structure_id: state.structureId,
     ledger_fact_kinds: [...state.ledgerFactKinds].sort(byteCompare), meter_bands: sortedRecord(state.meterBands), region_traits: [...state.regionTraits].sort(byteCompare),
@@ -333,7 +356,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
 }
 
 function cloneReplayState(state: ReplayState, catalog: EconomyCatalog): ReplayState {
-  const cloned = restoreReplayState(encodeReplayStateV13(state), 13, catalog);
+  const cloned = restoreReplayState(encodeReplayStateV14(state), 14, catalog);
   cloned.factionStockResource = state.factionStockResource;
   return cloned;
 }
@@ -560,7 +583,7 @@ function newRunState(catalog: EconomyCatalog, prior: ReplayState, founder: Found
   const balances = Object.fromEntries(catalog.resources.filter((value) => value.scope === "company").map((value) => [value.id, value.minimum]));
   const generators = Object.fromEntries(catalog.generatorClasses.filter((value) => value.production !== null).map((value) => [value.id, 0]));
   const reseed = founder.notoriety >= 100 ? 55 : Math.max(55, Math.min(90, 90 - Math.floor(founder.notoriety * 35 / 100)));
-  return { balances, generators, generatorPurchasedTotal: 0, evaluatedThroughMs: nowMs, computeCreditMs: 0, manualTokenMilli: catalog.manualPolicy!.bucketCapMilli, manualTokenRefilledAtMs: nowMs, gatesCrossed: {}, runSeq: prior.runSeq + 1, doctrinesByTransition: {}, structureId: "", ledgerFactKinds: new Set(), meterBands: { "trust.regulators.standing": reseed, "trust.regulators.grievance": 100 - reseed }, regionTraits: new Set(), routeKnowledgeBalance: 0, hintsUnlocked: new Set(), compactMember: false, compactTithePpm: 0, compactSolidarityPpm: 0, compactSamples: [], tier: 0, lifetimeValue: "0", offerState: null, runStartedAtMs: nowMs, runPreTimer: false, offlineSpans: [], collapsedOfflineMs: 0, factionId: "", incorporatedAtMs: null, factionStockResource: "", stockUnits: 0, stockProgressMs: 0, consumedStockUnits: 0, guildTitheCarryPpm: 0, guildBoundaryGuildId: prior.guildBoundaryGuildId, guildBoundarySeq: prior.guildBoundarySeq, guildConsumedWindow: 0 };
+  return { balances, generators, generatorPurchasedTotal: 0, upgradesOwned: new Set(), generatorsProvisioned: Object.fromEntries(Object.keys(generators).map((id) => [id, 0])), provisionRemaindersPpm: Object.fromEntries(catalog.generatorClasses.filter((value) => value.provision !== null).map((value) => [value.provision!.generatorId, 0])), stockRateRemainderPpm: 0, evaluatedThroughMs: nowMs, computeCreditMs: 0, manualTokenMilli: catalog.manualPolicy!.bucketCapMilli, manualTokenRefilledAtMs: nowMs, gatesCrossed: {}, runSeq: prior.runSeq + 1, doctrinesByTransition: {}, structureId: "", ledgerFactKinds: new Set(), meterBands: { "trust.regulators.standing": reseed, "trust.regulators.grievance": 100 - reseed }, regionTraits: new Set(), routeKnowledgeBalance: 0, hintsUnlocked: new Set(), compactMember: false, compactTithePpm: 0, compactSolidarityPpm: 0, compactSamples: [], tier: 0, lifetimeValue: "0", offerState: null, runStartedAtMs: nowMs, runPreTimer: false, offlineSpans: [], collapsedOfflineMs: 0, factionId: "", incorporatedAtMs: null, factionStockResource: "", stockUnits: 0, stockProgressMs: 0, consumedStockUnits: 0, guildTitheCarryPpm: 0, guildBoundaryGuildId: prior.guildBoundaryGuildId, guildBoundarySeq: prior.guildBoundarySeq, guildConsumedWindow: 0 };
 }
 
 function rejectedExit(company: ReplayState, founder: FounderCarry, intentId: string, revision: number, category: string, detail: string): LoggedExitTransition {

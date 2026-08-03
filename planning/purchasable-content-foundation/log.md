@@ -183,3 +183,19 @@ The cap reason is exported in the authoritative snapshot/formula artifact, and t
 when a provisioned counter is frozen.
 
 C12-C14 must be reconciled in the RFC before the catalog/save implementation batch begins.
+
+## 2026-08-03 — catalog and save-v14 foundation landing
+
+- Implemented economy schema v4 loaders in Go and TypeScript for typed generator roles,
+  provision topology/caps, staggered ladders, upgrades, and synergy pools. Both runtimes consume
+  `testdata/economy-foundation-v4.json`; bundle loading cross-validates upgrade gate and resource
+  references against the pinned Routes catalog.
+- Added save v14's closed wire state (`upgrades_owned`, complete provisioned-count and per-edge
+  remainder maps, and the stock-rate remainder), with strict current-version presence checks,
+  catalog cap/identity validation, and v13 zero-state migration in both runtimes.
+- Regenerated the shared ApplyLogged fixture at save v14. This is an encoding-only replay delta;
+  authoritative behavior and the live schema-v3 Phase-0 economy artifact remain unchanged until
+  the RFC's governed schema-v4 mint.
+- Proof run: `make test-go GO_PACKAGES='./save ./economy ./routes ./production ./replaycatalog'`,
+  `make typecheck`, `make test-client`, and `make replay-fixture-check` are green (6,496 client
+  tests passed, 3 skipped).

@@ -88,6 +88,14 @@ func loadReplayTestBundle(t *testing.T, hash string, artifacts map[string][]byte
 	if err != nil {
 		t.Fatal(err)
 	}
+	gates := routeCatalog.Gates()
+	gateIDs := make([]string, len(gates))
+	for index, gate := range gates {
+		gateIDs[index] = gate.ID
+	}
+	if err := economyCatalog.ValidateGateReferences(gateIDs); err != nil {
+		t.Fatal(err)
+	}
 	commonsCatalog, err := commons.LoadCatalog(artifacts["commons"])
 	if err != nil {
 		t.Fatal(err)

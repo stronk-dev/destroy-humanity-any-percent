@@ -76,6 +76,19 @@ func stateCatalog(t *testing.T) *economy.Catalog {
 	return catalog
 }
 
+func foundationStateCatalog(t *testing.T) *economy.Catalog {
+	t.Helper()
+	data, err := os.ReadFile("../../testdata/economy-foundation-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return catalog
+}
+
 func testState(t *testing.T) *State {
 	t.Helper()
 	ledger, err := economy.RestoreLedger(stateCatalog(t), economy.ScopeCompany, map[string]string{
@@ -149,6 +162,84 @@ func TestStateV10RoundTrip(t *testing.T) {
 	}
 }
 
+func TestStateV14PurchasableContentRoundTripAndClosure(t *testing.T) {
+	catalog := foundationStateCatalog(t)
+	ledger, err := economy.RestoreLedger(catalog, economy.ScopeCompany, map[string]string{"company.cash": "1e4"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := testState(t)
+	state.Ledger = ledger
+	state.GeneratorCounts = map[string]int64{"generator.high": 3, "generator.low": 7}
+	state.GeneratorPurchasedTotal = 10
+	state.UpgradesOwned = map[string]bool{"upgrade.click": true}
+	state.GeneratorProvisioned = map[string]int64{"generator.high": 0, "generator.low": 11}
+	state.ProvisionRemaindersPPM = map[string]int64{"generator.low": 987_654}
+	state.StockRateRemainderPPM = 123_456
+	state.FactionID = "open_source"
+	state.IncorporatedAt = testCursor.Add(-time.Minute)
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err := RestoreState(encoded, CurrentVersion, catalog, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !restored.UpgradesOwned["upgrade.click"] || restored.GeneratorProvisioned["generator.low"] != 11 || restored.ProvisionRemaindersPPM["generator.low"] != 987_654 || restored.StockRateRemainderPPM != 123_456 {
+		t.Fatalf("restored foundation state = %+v", restored)
+	}
+	var legacy map[string]any
+	if err := json.Unmarshal(encoded, &legacy); err != nil {
+		t.Fatal(err)
+	}
+	for _, field := range []string{"upgrades_owned", "generators_provisioned", "provision_remainders_ppm", "stock_rate_remainder_ppm"} {
+		delete(legacy, field)
+	}
+	v13, err := json.Marshal(legacy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	migrated, err := RestoreState(v13, 13, catalog, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(migrated.UpgradesOwned) != 0 || migrated.GeneratorProvisioned["generator.low"] != 0 || migrated.ProvisionRemaindersPPM["generator.low"] != 0 || migrated.StockRateRemainderPPM != 0 {
+		t.Fatalf("v13 migration = %+v", migrated)
+	}
+
+	for _, field := range []string{"upgrades_owned", "generators_provisioned", "provision_remainders_ppm", "stock_rate_remainder_ppm"} {
+		t.Run("missing-"+field, func(t *testing.T) {
+			var object map[string]any
+			if err := json.Unmarshal(encoded, &object); err != nil {
+				t.Fatal(err)
+			}
+			delete(object, field)
+			malformed, err := json.Marshal(object)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := RestoreState(malformed, CurrentVersion, catalog, economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+				t.Fatalf("missing %s error=%v", field, err)
+			}
+		})
+	}
+
+	var object map[string]any
+	if err := json.Unmarshal(encoded, &object); err != nil {
+		t.Fatal(err)
+	}
+	object["upgrades_owned"] = []any{"upgrade.unknown"}
+	object["generators_provisioned"].(map[string]any)["generator.low"] = float64(decimal.MaxExactInteger)
+	malformed, err := json.Marshal(object)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := RestoreState(malformed, CurrentVersion, catalog, economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("unknown upgrade/cap overflow error=%v", err)
+	}
+}
+
 func TestStateV8MigratesCollapsedOfflineAccumulator(t *testing.T) {
 	state := testState(t)
 	state.Tier = 2
@@ -172,6 +263,10 @@ func TestStateV8MigratesCollapsedOfflineAccumulator(t *testing.T) {
 	delete(previous, "guild_consumed_window_units")
 	delete(previous, "guild_boundary_guild_id")
 	delete(previous, "generators_purchased_total")
+	delete(previous, "upgrades_owned")
+	delete(previous, "generators_provisioned")
+	delete(previous, "provision_remainders_ppm")
+	delete(previous, "stock_rate_remainder_ppm")
 	v8, err := json.Marshal(previous)
 	if err != nil {
 		t.Fatal(err)
@@ -218,6 +313,10 @@ func TestGuildWatermarkV12PairAndLegacyMigration(t *testing.T) {
 	}
 	delete(previous, "guild_boundary_guild_id")
 	delete(previous, "generators_purchased_total")
+	delete(previous, "upgrades_owned")
+	delete(previous, "generators_provisioned")
+	delete(previous, "provision_remainders_ppm")
+	delete(previous, "stock_rate_remainder_ppm")
 	v11, err := json.Marshal(previous)
 	if err != nil {
 		t.Fatal(err)
@@ -332,6 +431,14 @@ func TestSaveMigrationCorpus(t *testing.T) {
 				purchased += value.(float64)
 			}
 			want.(map[string]any)["generators_purchased_total"] = purchased
+			want.(map[string]any)["upgrades_owned"] = []any{}
+			provisioned := map[string]any{}
+			for id := range want.(map[string]any)["generators"].(map[string]any) {
+				provisioned[id] = float64(0)
+			}
+			want.(map[string]any)["generators_provisioned"] = provisioned
+			want.(map[string]any)["provision_remainders_ppm"] = map[string]any{}
+			want.(map[string]any)["stock_rate_remainder_ppm"] = float64(0)
 			if !equalJSON(got, want) {
 				t.Fatalf("migrated JSON = %s, want %s", encoded, vector.ExpectV5)
 			}

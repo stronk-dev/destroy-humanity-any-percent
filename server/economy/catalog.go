@@ -12,9 +12,10 @@ import (
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/routes"
 )
 
-const CatalogSchemaVersion = 3
+const CatalogSchemaVersion = 4
 
 var (
 	ErrInvalidCatalog        = errors.New("invalid economy catalog")
@@ -91,9 +92,101 @@ type PriceDefinition struct {
 }
 
 type GeneratorClassDefinition struct {
-	ID         string
-	Price      PriceDefinition
-	Production *ProductionDefinition
+	ID                 string
+	Tier               int
+	Category           string
+	Price              PriceDefinition
+	Production         *ProductionDefinition
+	Provision          *ProvisionDefinition
+	ProvisionedHardcap *ProvisionedHardcap
+	Ladder             []LadderRung
+	Roles              []GeneratorRole
+}
+
+type ProvisionDefinition struct {
+	GeneratorID string
+	RatePPM     int64
+}
+
+type ProvisionedHardcap struct {
+	Count     int64
+	ReasonKey string
+}
+
+type LadderRung struct {
+	PurchasedAt   int64
+	MultiplierPPM int64
+}
+
+type GeneratorRoleKind string
+
+const (
+	RoleProvision    GeneratorRoleKind = "provision"
+	RoleSynergyFeed  GeneratorRoleKind = "synergy_feed"
+	RoleManualOutput GeneratorRoleKind = "manual_output"
+	RoleStockRate    GeneratorRoleKind = "stock_rate"
+)
+
+type GeneratorRole struct {
+	Kind            GeneratorRoleKind
+	GeneratorID     string
+	PoolID          string
+	ActionID        string
+	PerPurchasedPPM int64
+}
+
+type AvailabilityWindow struct {
+	FromGate string
+	ToGate   string
+}
+
+type UpgradeEffect struct {
+	SourceID string
+	Slot     MultiplierSlot
+	Target   string
+	Factor   decimal.Decimal
+}
+
+type UpgradeDefinition struct {
+	ID       string
+	Cost     UpgradeCost
+	Window   AvailabilityWindow
+	Requires []routes.Condition
+	Effects  []UpgradeEffect
+	Roles    []string
+	CopyKey  string
+}
+
+type UpgradeCost struct {
+	ResourceID string
+	Amount     decimal.Decimal
+}
+
+type SynergyCurve string
+
+const (
+	SynergyLinear SynergyCurve = "linear"
+	SynergyLog    SynergyCurve = "log"
+)
+
+type SynergySourceKind string
+
+const (
+	SynergyGenerator SynergySourceKind = "generator"
+	SynergyUpgrade   SynergySourceKind = "upgrade"
+)
+
+type SynergySource struct {
+	Kind        SynergySourceKind
+	ID          string
+	PerCountPPM int64
+}
+
+type SynergyPoolDefinition struct {
+	ID      string
+	Sources []SynergySource
+	Slot    MultiplierSlot
+	Curve   SynergyCurve
 }
 
 type ProductionDefinition struct {
@@ -153,24 +246,32 @@ type OfflinePolicy struct {
 }
 
 type Catalog struct {
-	resources      []ResourceDefinition
-	resourceByID   map[string]ResourceDefinition
-	generators     []GeneratorClassDefinition
-	generatorByID  map[string]GeneratorClassDefinition
-	manualActions  []ManualActionDefinition
-	manualByID     map[string]ManualActionDefinition
-	multipliers    []MultiplierSourceDefinition
-	multiplierByID map[string]MultiplierSourceDefinition
-	progress       []ProgressCoordinateDefinition
-	progressByTier map[int]ProgressCoordinateDefinition
-	manualPolicy   ManualPolicy
-	offlinePolicy  OfflinePolicy
+	resources       []ResourceDefinition
+	resourceByID    map[string]ResourceDefinition
+	generators      []GeneratorClassDefinition
+	generatorByID   map[string]GeneratorClassDefinition
+	upgrades        []UpgradeDefinition
+	upgradeByID     map[string]UpgradeDefinition
+	synergyPools    []SynergyPoolDefinition
+	synergyByID     map[string]SynergyPoolDefinition
+	manualActions   []ManualActionDefinition
+	manualByID      map[string]ManualActionDefinition
+	multipliers     []MultiplierSourceDefinition
+	multiplierByID  map[string]MultiplierSourceDefinition
+	progress        []ProgressCoordinateDefinition
+	progressByTier  map[int]ProgressCoordinateDefinition
+	manualPolicy    ManualPolicy
+	offlinePolicy   OfflinePolicy
+	provisionTickMS int64
 }
 
 type rawCatalog struct {
 	SchemaVersion       int                     `json:"schema_version"`
 	Resources           []rawResource           `json:"resources"`
 	GeneratorClasses    []rawGeneratorClass     `json:"generator_classes"`
+	Upgrades            []rawUpgrade            `json:"upgrades"`
+	SynergyPools        []rawSynergyPool        `json:"synergy_pools"`
+	ProvisionTickMS     int64                   `json:"provision_tick_ms"`
 	ManualActions       []rawManualAction       `json:"manual_actions"`
 	MultiplierSources   []rawMultiplierSource   `json:"multiplier_sources"`
 	ProgressCoordinates []rawProgressCoordinate `json:"progress_coordinates"`
@@ -193,9 +294,78 @@ type rawHardcap struct {
 }
 
 type rawGeneratorClass struct {
-	ID         string         `json:"id"`
-	Price      rawPrice       `json:"price"`
-	Production *rawProduction `json:"production"`
+	ID                 string                 `json:"id"`
+	Tier               *int                   `json:"tier"`
+	Category           *string                `json:"category"`
+	Price              rawPrice               `json:"price"`
+	Production         *rawProduction         `json:"production"`
+	Provisions         *rawProvision          `json:"provisions"`
+	ProvisionedHardcap *rawProvisionedHardcap `json:"provisioned_hardcap"`
+	Ladder             []rawLadderRung        `json:"ladder"`
+	Roles              []rawGeneratorRole     `json:"roles"`
+}
+
+type rawProvision struct {
+	GeneratorID string `json:"generator_id"`
+	RatePPM     int64  `json:"rate_ppm"`
+}
+
+type rawProvisionedHardcap struct {
+	Count     int64  `json:"count"`
+	ReasonKey string `json:"reason_key"`
+}
+
+type rawLadderRung struct {
+	PurchasedAt   int64 `json:"purchased_at"`
+	MultiplierPPM int64 `json:"multiplier_ppm"`
+}
+
+type rawGeneratorRole struct {
+	Kind            string  `json:"kind"`
+	GeneratorID     *string `json:"generator_id"`
+	PoolID          *string `json:"pool_id"`
+	ActionID        *string `json:"action_id"`
+	PerPurchasedPPM *int64  `json:"per_purchased_ppm"`
+}
+
+type rawUpgrade struct {
+	ID       string             `json:"id"`
+	Cost     rawUpgradeCost     `json:"cost"`
+	Window   rawWindow          `json:"window"`
+	Requires json.RawMessage    `json:"requires"`
+	Effects  []rawUpgradeEffect `json:"effects"`
+	Roles    []string           `json:"roles"`
+	CopyKey  string             `json:"copy_key"`
+}
+
+type rawUpgradeCost struct {
+	ResourceID string `json:"resource"`
+	Amount     string `json:"amount"`
+}
+
+type rawWindow struct {
+	FromGate json.RawMessage `json:"from_gate"`
+	ToGate   json.RawMessage `json:"to_gate"`
+}
+
+type rawUpgradeEffect struct {
+	SourceID string `json:"source_id"`
+	Slot     string `json:"slot"`
+	Target   string `json:"target"`
+	Factor   string `json:"factor"`
+}
+
+type rawSynergyPool struct {
+	ID      string             `json:"id"`
+	Sources []rawSynergySource `json:"sources"`
+	Slot    string             `json:"slot"`
+	Curve   string             `json:"curve"`
+}
+
+type rawSynergySource struct {
+	Kind        string `json:"kind"`
+	ID          string `json:"id_or_class"`
+	PerCountPPM int64  `json:"per_count_ppm"`
 }
 
 type rawProduction struct {
@@ -286,6 +456,10 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		resourceByID:   make(map[string]ResourceDefinition, len(raw.Resources)),
 		generators:     make([]GeneratorClassDefinition, 0, len(raw.GeneratorClasses)),
 		generatorByID:  make(map[string]GeneratorClassDefinition, len(raw.GeneratorClasses)),
+		upgrades:       make([]UpgradeDefinition, 0, len(raw.Upgrades)),
+		upgradeByID:    make(map[string]UpgradeDefinition, len(raw.Upgrades)),
+		synergyPools:   make([]SynergyPoolDefinition, 0, len(raw.SynergyPools)),
+		synergyByID:    make(map[string]SynergyPoolDefinition, len(raw.SynergyPools)),
 		manualActions:  make([]ManualActionDefinition, 0, len(raw.ManualActions)),
 		manualByID:     make(map[string]ManualActionDefinition, len(raw.ManualActions)),
 		multipliers:    make([]MultiplierSourceDefinition, 0, len(raw.MultiplierSources)),
@@ -332,7 +506,8 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	}
 
 	if raw.SchemaVersion < 3 {
-		if raw.ManualActions != nil || raw.MultiplierSources != nil || raw.ProgressCoordinates != nil || raw.ManualPolicy != nil || raw.OfflinePolicy != nil {
+		if raw.ManualActions != nil || raw.MultiplierSources != nil || raw.ProgressCoordinates != nil || raw.ManualPolicy != nil || raw.OfflinePolicy != nil ||
+			raw.Upgrades != nil || raw.SynergyPools != nil || raw.ProvisionTickMS != 0 {
 			return nil, catalogError("schema_version", errors.New("catalog versions 1 and 2 forbid production-engine fields"))
 		}
 		return catalog, nil
@@ -409,6 +584,61 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	catalog.manualPolicy = manualPolicy
 	catalog.offlinePolicy = offlinePolicy
 
+	if raw.SchemaVersion == 3 {
+		if raw.Upgrades != nil || raw.SynergyPools != nil || raw.ProvisionTickMS != 0 {
+			return nil, catalogError("schema_version", errors.New("catalog version 3 forbids purchasable-content fields"))
+		}
+		return catalog, nil
+	}
+	if raw.Upgrades == nil || raw.SynergyPools == nil || raw.ProvisionTickMS <= 0 || raw.ProvisionTickMS > decimal.MaxExactInteger {
+		return nil, catalogError("purchasable_content", errors.New("upgrades, synergy_pools, and a positive safe provision_tick_ms are required"))
+	}
+	catalog.provisionTickMS = raw.ProvisionTickMS
+
+	for index, source := range raw.Upgrades {
+		definition, err := parseUpgrade(source, catalog.resourceByID)
+		if err != nil {
+			return nil, catalogError(fmt.Sprintf("upgrades[%d]", index), err)
+		}
+		if _, duplicate := catalog.upgradeByID[definition.ID]; duplicate {
+			return nil, catalogError("upgrades", fmt.Errorf("duplicate id %q", definition.ID))
+		}
+		for _, effect := range definition.Effects {
+			if _, duplicate := catalog.multiplierByID[effect.SourceID]; duplicate {
+				return nil, catalogError("upgrades", fmt.Errorf("duplicate contribution source %q", effect.SourceID))
+			}
+			if _, generator := catalog.generatorByID[effect.Target]; !generator {
+				if _, manual := catalog.manualByID[effect.Target]; !manual {
+					return nil, catalogError("upgrades", fmt.Errorf("%q effect references unknown target %q", definition.ID, effect.Target))
+				}
+			}
+			declaration := MultiplierSourceDefinition{ID: effect.SourceID, Slot: effect.Slot, Target: effect.Target, Provider: definition.ID}
+			catalog.multipliers = append(catalog.multipliers, declaration)
+			catalog.multiplierByID[declaration.ID] = declaration
+		}
+		catalog.upgrades = append(catalog.upgrades, definition)
+		catalog.upgradeByID[definition.ID] = definition
+	}
+
+	for index, source := range raw.SynergyPools {
+		definition, err := parseSynergyPool(source, catalog.generatorByID, catalog.upgradeByID)
+		if err != nil {
+			return nil, catalogError(fmt.Sprintf("synergy_pools[%d]", index), err)
+		}
+		if _, duplicate := catalog.synergyByID[definition.ID]; duplicate {
+			return nil, catalogError("synergy_pools", fmt.Errorf("duplicate id %q", definition.ID))
+		}
+		declaration, declared := catalog.multiplierByID[definition.ID]
+		if !declared || declaration.Slot != definition.Slot || declaration.Provider != definition.ID {
+			return nil, catalogError("synergy_pools", fmt.Errorf("%q must map to one matching multiplier source", definition.ID))
+		}
+		catalog.synergyPools = append(catalog.synergyPools, definition)
+		catalog.synergyByID[definition.ID] = definition
+	}
+	if err := catalog.validateGeneratorContent(); err != nil {
+		return nil, catalogError("generator_classes", err)
+	}
+
 	return catalog, nil
 }
 
@@ -450,6 +680,59 @@ func (c *Catalog) GeneratorClassesForScope(scope Scope) []GeneratorClassDefiniti
 		}
 	}
 	return definitions
+}
+
+func (c *Catalog) Upgrade(id string) (UpgradeDefinition, bool) {
+	definition, ok := c.upgradeByID[id]
+	return cloneUpgrade(definition), ok
+}
+
+func (c *Catalog) Upgrades() []UpgradeDefinition {
+	definitions := make([]UpgradeDefinition, len(c.upgrades))
+	for index, definition := range c.upgrades {
+		definitions[index] = cloneUpgrade(definition)
+	}
+	return definitions
+}
+
+func (c *Catalog) SynergyPool(id string) (SynergyPoolDefinition, bool) {
+	definition, ok := c.synergyByID[id]
+	return cloneSynergyPool(definition), ok
+}
+
+func (c *Catalog) SynergyPools() []SynergyPoolDefinition {
+	definitions := make([]SynergyPoolDefinition, len(c.synergyPools))
+	for index, definition := range c.synergyPools {
+		definitions[index] = cloneSynergyPool(definition)
+	}
+	return definitions
+}
+
+func (c *Catalog) ProvisionTickMS() int64 { return c.provisionTickMS }
+
+func (c *Catalog) ValidateGateReferences(gateIDs []string) error {
+	known := make(map[string]bool, len(gateIDs))
+	for _, id := range gateIDs {
+		if !validID(id) || known[id] {
+			return fmt.Errorf("%w: invalid or duplicate route gate id %q", ErrInvalidCatalog, id)
+		}
+		known[id] = true
+	}
+	for _, upgrade := range c.upgrades {
+		for _, id := range []string{upgrade.Window.FromGate, upgrade.Window.ToGate} {
+			if id != "" && !known[id] {
+				return fmt.Errorf("%w: upgrade %q references unknown gate %q", ErrInvalidCatalog, upgrade.ID, id)
+			}
+		}
+		for _, condition := range upgrade.Requires {
+			if condition.Kind == routes.ConditionResourceAtLeast || condition.Kind == routes.ConditionResourceAtMost {
+				if _, exists := c.resourceByID[condition.ResourceID]; !exists {
+					return fmt.Errorf("%w: upgrade %q references unknown resource %q", ErrInvalidCatalog, upgrade.ID, condition.ResourceID)
+				}
+			}
+		}
+	}
+	return nil
 }
 
 func (c *Catalog) ManualAction(id string) (ManualActionDefinition, bool) {
@@ -598,7 +881,239 @@ func parseGenerator(source rawGeneratorClass, schemaVersion int) (GeneratorClass
 		return GeneratorClassDefinition{}, errors.New("production base_rate must be a positive canonical decimal")
 	}
 	definition.Production = &ProductionDefinition{ResourceID: source.Production.ResourceID, BaseRate: baseRate}
+	if schemaVersion < 4 {
+		if source.Tier != nil || source.Category != nil || source.Provisions != nil || source.ProvisionedHardcap != nil || source.Ladder != nil || source.Roles != nil {
+			return GeneratorClassDefinition{}, errors.New("catalog versions before 4 forbid purchasable-content fields")
+		}
+		return definition, nil
+	}
+	if source.Tier == nil || *source.Tier < 0 || *source.Tier > 3 || source.Category == nil || !validID(*source.Category) ||
+		source.Ladder == nil || len(source.Roles) == 0 {
+		return GeneratorClassDefinition{}, errors.New("tier, category, ladder, and at least one role are required")
+	}
+	definition.Tier, definition.Category = *source.Tier, *source.Category
+	if source.Provisions != nil {
+		if !validID(source.Provisions.GeneratorID) || source.Provisions.RatePPM <= 0 || source.Provisions.RatePPM > decimal.MaxExactInteger {
+			return GeneratorClassDefinition{}, errors.New("provisions require a target id and positive safe rate_ppm")
+		}
+		definition.Provision = &ProvisionDefinition{GeneratorID: source.Provisions.GeneratorID, RatePPM: source.Provisions.RatePPM}
+	}
+	if source.ProvisionedHardcap != nil {
+		if source.ProvisionedHardcap.Count <= 0 || source.ProvisionedHardcap.Count > decimal.MaxExactInteger || !validID(source.ProvisionedHardcap.ReasonKey) {
+			return GeneratorClassDefinition{}, errors.New("provisioned_hardcap requires a positive safe count and reason_key")
+		}
+		definition.ProvisionedHardcap = &ProvisionedHardcap{Count: source.ProvisionedHardcap.Count, ReasonKey: source.ProvisionedHardcap.ReasonKey}
+	}
+	prior := int64(0)
+	for index, sourceRung := range source.Ladder {
+		if sourceRung.PurchasedAt <= prior || sourceRung.PurchasedAt > decimal.MaxExactInteger || sourceRung.MultiplierPPM <= 0 || sourceRung.MultiplierPPM > decimal.MaxExactInteger {
+			return GeneratorClassDefinition{}, fmt.Errorf("ladder[%d] requires increasing purchased_at and positive safe multiplier_ppm", index)
+		}
+		definition.Ladder = append(definition.Ladder, LadderRung{PurchasedAt: sourceRung.PurchasedAt, MultiplierPPM: sourceRung.MultiplierPPM})
+		prior = sourceRung.PurchasedAt
+	}
+	seenRoles := map[string]bool{}
+	for index, sourceRole := range source.Roles {
+		role, key, err := parseGeneratorRole(sourceRole)
+		if err != nil || seenRoles[key] {
+			if err == nil {
+				err = errors.New("duplicate role kind/target")
+			}
+			return GeneratorClassDefinition{}, fmt.Errorf("roles[%d]: %v", index, err)
+		}
+		seenRoles[key] = true
+		definition.Roles = append(definition.Roles, role)
+	}
 	return definition, nil
+}
+
+func parseGeneratorRole(source rawGeneratorRole) (GeneratorRole, string, error) {
+	role := GeneratorRole{Kind: GeneratorRoleKind(source.Kind)}
+	switch role.Kind {
+	case RoleProvision:
+		if source.GeneratorID == nil || !validID(*source.GeneratorID) || source.PoolID != nil || source.ActionID != nil || source.PerPurchasedPPM != nil {
+			return GeneratorRole{}, "", errors.New("provision requires exactly generator_id")
+		}
+		role.GeneratorID = *source.GeneratorID
+		return role, string(role.Kind) + ":" + role.GeneratorID, nil
+	case RoleSynergyFeed:
+		if source.PoolID == nil || !validID(*source.PoolID) || source.GeneratorID != nil || source.ActionID != nil || source.PerPurchasedPPM != nil {
+			return GeneratorRole{}, "", errors.New("synergy_feed requires exactly pool_id")
+		}
+		role.PoolID = *source.PoolID
+		return role, string(role.Kind) + ":" + role.PoolID, nil
+	case RoleManualOutput:
+		if source.ActionID == nil || !validID(*source.ActionID) || source.PerPurchasedPPM == nil || *source.PerPurchasedPPM <= 0 || *source.PerPurchasedPPM > decimal.MaxExactInteger ||
+			source.GeneratorID != nil || source.PoolID != nil {
+			return GeneratorRole{}, "", errors.New("manual_output requires exactly action_id and positive safe per_purchased_ppm")
+		}
+		role.ActionID, role.PerPurchasedPPM = *source.ActionID, *source.PerPurchasedPPM
+		return role, string(role.Kind) + ":" + role.ActionID, nil
+	case RoleStockRate:
+		if source.PerPurchasedPPM == nil || *source.PerPurchasedPPM <= 0 || *source.PerPurchasedPPM > decimal.MaxExactInteger ||
+			source.GeneratorID != nil || source.PoolID != nil || source.ActionID != nil {
+			return GeneratorRole{}, "", errors.New("stock_rate requires exactly positive safe per_purchased_ppm")
+		}
+		role.PerPurchasedPPM = *source.PerPurchasedPPM
+		return role, string(role.Kind), nil
+	default:
+		return GeneratorRole{}, "", fmt.Errorf("unsupported role kind %q", source.Kind)
+	}
+}
+
+func parseUpgrade(source rawUpgrade, resources map[string]ResourceDefinition) (UpgradeDefinition, error) {
+	if !validID(source.ID) || !validID(source.Cost.ResourceID) || !validID(source.CopyKey) || len(source.Effects) == 0 || source.Roles == nil {
+		return UpgradeDefinition{}, errors.New("id, cost resource, copy_key, effects, and roles are required")
+	}
+	resource, exists := resources[source.Cost.ResourceID]
+	if !exists || resource.Scope != ScopeCompany {
+		return UpgradeDefinition{}, errors.New("cost must reference a company resource")
+	}
+	amount, err := parseCatalogDecimal(source.Cost.Amount)
+	if err != nil || !amount.Gt(decimal.Zero) {
+		return UpgradeDefinition{}, errors.New("cost amount must be a positive canonical Decimal")
+	}
+	window, err := parseWindow(source.Window)
+	if err != nil {
+		return UpgradeDefinition{}, err
+	}
+	requires, err := routes.ParseConditions(source.Requires)
+	if err != nil {
+		return UpgradeDefinition{}, fmt.Errorf("requires: %v", err)
+	}
+	definition := UpgradeDefinition{ID: source.ID, Cost: UpgradeCost{ResourceID: source.Cost.ResourceID, Amount: amount}, Window: window, Requires: requires, CopyKey: source.CopyKey}
+	seenEffects := map[string]bool{}
+	for index, sourceEffect := range source.Effects {
+		if !validID(sourceEffect.SourceID) || !validID(sourceEffect.Target) || sourceEffect.Slot != string(SlotUpgrades) || seenEffects[sourceEffect.SourceID] {
+			return UpgradeDefinition{}, fmt.Errorf("effects[%d] requires a unique source_id, upgrades slot, and mechanical target", index)
+		}
+		factor, err := parseCatalogDecimal(sourceEffect.Factor)
+		if err != nil || !factor.Gt(decimal.Zero) {
+			return UpgradeDefinition{}, fmt.Errorf("effects[%d] factor must be a positive canonical Decimal", index)
+		}
+		seenEffects[sourceEffect.SourceID] = true
+		definition.Effects = append(definition.Effects, UpgradeEffect{SourceID: sourceEffect.SourceID, Slot: SlotUpgrades, Target: sourceEffect.Target, Factor: factor})
+	}
+	seenRoles := map[string]bool{}
+	for index, role := range source.Roles {
+		kind := GeneratorRoleKind(role)
+		if !validRoleKind(kind) || seenRoles[role] {
+			return UpgradeDefinition{}, fmt.Errorf("roles[%d] is invalid or duplicate", index)
+		}
+		seenRoles[role] = true
+		definition.Roles = append(definition.Roles, role)
+	}
+	return definition, nil
+}
+
+func parseWindow(source rawWindow) (AvailabilityWindow, error) {
+	from, err := nullableMechanicalID(source.FromGate)
+	if err != nil {
+		return AvailabilityWindow{}, fmt.Errorf("window from_gate: %v", err)
+	}
+	to, err := nullableMechanicalID(source.ToGate)
+	if err != nil {
+		return AvailabilityWindow{}, fmt.Errorf("window to_gate: %v", err)
+	}
+	return AvailabilityWindow{FromGate: from, ToGate: to}, nil
+}
+
+func nullableMechanicalID(data json.RawMessage) (string, error) {
+	if data == nil {
+		return "", errors.New("field is required")
+	}
+	if strings.TrimSpace(string(data)) == "null" {
+		return "", nil
+	}
+	var value string
+	if err := json.Unmarshal(data, &value); err != nil || !validID(value) {
+		return "", errors.New("must be null or a mechanical id")
+	}
+	return value, nil
+}
+
+func validRoleKind(kind GeneratorRoleKind) bool {
+	return kind == RoleProvision || kind == RoleSynergyFeed || kind == RoleManualOutput || kind == RoleStockRate
+}
+
+func parseSynergyPool(source rawSynergyPool, generators map[string]GeneratorClassDefinition, upgrades map[string]UpgradeDefinition) (SynergyPoolDefinition, error) {
+	definition := SynergyPoolDefinition{ID: source.ID, Slot: MultiplierSlot(source.Slot), Curve: SynergyCurve(source.Curve)}
+	if !validID(definition.ID) || !validMultiplierSlot(definition.Slot) || (definition.Curve != SynergyLinear && definition.Curve != SynergyLog) || len(source.Sources) == 0 {
+		return SynergyPoolDefinition{}, errors.New("id, non-empty sources, valid slot, and linear|log curve are required")
+	}
+	seen := map[string]bool{}
+	for index, item := range source.Sources {
+		entry := SynergySource{Kind: SynergySourceKind(item.Kind), ID: item.ID, PerCountPPM: item.PerCountPPM}
+		key := string(entry.Kind) + ":" + entry.ID
+		if !validID(entry.ID) || entry.PerCountPPM <= 0 || entry.PerCountPPM > decimal.MaxExactInteger || seen[key] {
+			return SynergyPoolDefinition{}, fmt.Errorf("sources[%d] is invalid or duplicate", index)
+		}
+		switch entry.Kind {
+		case SynergyGenerator:
+			if _, exists := generators[entry.ID]; !exists {
+				return SynergyPoolDefinition{}, fmt.Errorf("sources[%d] references unknown generator", index)
+			}
+		case SynergyUpgrade:
+			if _, exists := upgrades[entry.ID]; !exists {
+				return SynergyPoolDefinition{}, fmt.Errorf("sources[%d] references unknown upgrade", index)
+			}
+		default:
+			return SynergyPoolDefinition{}, fmt.Errorf("sources[%d] has unsupported kind", index)
+		}
+		seen[key] = true
+		definition.Sources = append(definition.Sources, entry)
+	}
+	return definition, nil
+}
+
+func (c *Catalog) validateGeneratorContent() error {
+	providerByTarget := map[string]string{}
+	for _, generator := range c.generators {
+		if generator.Provision == nil {
+			continue
+		}
+		target, exists := c.generatorByID[generator.Provision.GeneratorID]
+		if !exists || generator.Tier != target.Tier+1 || target.ProvisionedHardcap == nil {
+			return fmt.Errorf("%q provision edge must target a capped generator exactly one tier down", generator.ID)
+		}
+		if prior := providerByTarget[target.ID]; prior != "" {
+			return fmt.Errorf("provision target %q has multiple providers %q and %q", target.ID, prior, generator.ID)
+		}
+		providerByTarget[target.ID] = generator.ID
+	}
+	for index := range c.generators {
+		generator := c.generators[index]
+		for _, role := range generator.Roles {
+			switch role.Kind {
+			case RoleProvision:
+				if generator.Provision == nil || generator.Provision.GeneratorID != role.GeneratorID {
+					return fmt.Errorf("%q provision role does not match its edge", generator.ID)
+				}
+			case RoleSynergyFeed:
+				pool, exists := c.synergyByID[role.PoolID]
+				if !exists || !poolHasGenerator(pool, generator.ID) {
+					return fmt.Errorf("%q synergy_feed role does not match pool %q", generator.ID, role.PoolID)
+				}
+			case RoleManualOutput:
+				if _, exists := c.manualByID[role.ActionID]; !exists {
+					return fmt.Errorf("%q manual_output role references unknown action %q", generator.ID, role.ActionID)
+				}
+			case RoleStockRate:
+			default:
+				return fmt.Errorf("%q has unsupported role %q", generator.ID, role.Kind)
+			}
+		}
+	}
+	return nil
+}
+
+func poolHasGenerator(pool SynergyPoolDefinition, id string) bool {
+	for _, source := range pool.Sources {
+		if source.Kind == SynergyGenerator && source.ID == id {
+			return true
+		}
+	}
+	return false
 }
 
 func parseManualAction(source rawManualAction) (ManualActionDefinition, error) {
@@ -803,6 +1318,28 @@ func cloneGenerator(definition GeneratorClassDefinition) GeneratorClassDefinitio
 		production := *definition.Production
 		definition.Production = &production
 	}
+	if definition.Provision != nil {
+		provision := *definition.Provision
+		definition.Provision = &provision
+	}
+	if definition.ProvisionedHardcap != nil {
+		hardcap := *definition.ProvisionedHardcap
+		definition.ProvisionedHardcap = &hardcap
+	}
+	definition.Ladder = append([]LadderRung(nil), definition.Ladder...)
+	definition.Roles = append([]GeneratorRole(nil), definition.Roles...)
+	return definition
+}
+
+func cloneUpgrade(definition UpgradeDefinition) UpgradeDefinition {
+	definition.Requires = append([]routes.Condition(nil), definition.Requires...)
+	definition.Effects = append([]UpgradeEffect(nil), definition.Effects...)
+	definition.Roles = append([]string(nil), definition.Roles...)
+	return definition
+}
+
+func cloneSynergyPool(definition SynergyPoolDefinition) SynergyPoolDefinition {
+	definition.Sources = append([]SynergySource(nil), definition.Sources...)
 	return definition
 }
 

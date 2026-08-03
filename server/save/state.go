@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	CurrentVersion           = 13
+	CurrentVersion           = 14
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
 )
@@ -30,6 +30,10 @@ type State struct {
 	Ledger                  *economy.Ledger
 	GeneratorCounts         map[string]int64
 	GeneratorPurchasedTotal int64
+	UpgradesOwned           map[string]bool
+	GeneratorProvisioned    map[string]int64
+	ProvisionRemaindersPPM  map[string]int64
+	StockRateRemainderPPM   int64
 	EvaluatedThrough        time.Time
 	ComputeCreditMS         int64
 	ManualTokenMilli        int64
@@ -207,6 +211,14 @@ type stateV13 struct {
 	GeneratorPurchasedTotal *int64 `json:"generators_purchased_total"`
 }
 
+type stateV14 struct {
+	stateV13
+	UpgradesOwned          []string         `json:"upgrades_owned"`
+	GeneratorsProvisioned  map[string]int64 `json:"generators_provisioned"`
+	ProvisionRemaindersPPM map[string]int64 `json:"provision_remainders_ppm"`
+	StockRateRemainderPPM  *int64           `json:"stock_rate_remainder_ppm"`
+}
+
 type rawExitOfferState struct {
 	OfferID     string          `json:"offer_id"`
 	ExitType    string          `json:"exit_type"`
@@ -288,6 +300,18 @@ func EncodeState(state *State) ([]byte, error) {
 		return nil, fmt.Errorf("%w: production integers exceed the exact domain", ErrInvalidState)
 	}
 	normalized := *state
+	if normalized.UpgradesOwned == nil {
+		normalized.UpgradesOwned = map[string]bool{}
+	}
+	if normalized.GeneratorProvisioned == nil {
+		normalized.GeneratorProvisioned = zeroCountsLike(normalized.GeneratorCounts)
+	}
+	if normalized.ProvisionRemaindersPPM == nil {
+		normalized.ProvisionRemaindersPPM = map[string]int64{}
+	}
+	if err := validatePurchasableWireState(&normalized); err != nil {
+		return nil, err
+	}
 	if normalized.Ledger.Scope() == economy.ScopeCompany && normalized.RunSeq == 0 {
 		normalized.RunSeq = 1
 	}
@@ -318,7 +342,7 @@ func EncodeState(state *State) ([]byte, error) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
 	purchasedTotal := normalized.GeneratorPurchasedTotal
-	encoded, err := json.Marshal(stateV13{stateV12: stateV12{stateV11: stateV11{stateV10: stateV10{stateV9: stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
+	encoded, err := json.Marshal(stateV14{stateV13: stateV13{stateV12: stateV12{stateV11: stateV11{stateV10: stateV10{stateV9: stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
 		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: cloneBoolMap(normalized.GatesCrossed), RunSeq: normalized.RunSeq,
@@ -339,7 +363,9 @@ func EncodeState(state *State) ([]byte, error) {
 		StockUnits: normalized.StockUnits, StockProgressMS: normalized.StockProgressMS, ConsumedStockUnits: normalized.ConsumedStockUnits},
 		GuildTitheCarryPPM: normalized.GuildTitheCarryPPM, GuildBoundarySeq: normalized.GuildBoundarySeq,
 		GuildConsumedWindow: normalized.GuildConsumedWindow}, GuildBoundaryGuildID: optionalString(normalized.GuildBoundaryGuildID)},
-		GeneratorPurchasedTotal: &purchasedTotal})
+		GeneratorPurchasedTotal: &purchasedTotal}, UpgradesOwned: sortedTrueKeys(normalized.UpgradesOwned),
+		GeneratorsProvisioned: cloneInt64Map(normalized.GeneratorProvisioned), ProvisionRemaindersPPM: cloneInt64Map(normalized.ProvisionRemaindersPPM),
+		StockRateRemainderPPM: &normalized.StockRateRemainderPPM})
 	if err != nil {
 		return nil, fmt.Errorf("%w: encode: %v", ErrInvalidState, err)
 	}
@@ -357,7 +383,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
 	}
 
-	var source stateV13
+	var source stateV14
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -422,6 +448,10 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &source.stateV12); err != nil {
 			return nil, err
 		}
+	} else if version == 13 {
+		if err := decodeState(data, &source.stateV13); err != nil {
+			return nil, err
+		}
 	} else if err := decodeState(data, &source); err != nil {
 		return nil, err
 	}
@@ -473,6 +503,27 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	} else if source.GeneratorPurchasedTotal == nil {
 		return nil, fmt.Errorf("%w: generators_purchased_total is required", ErrInvalidState)
 	}
+	if version < 14 {
+		source.UpgradesOwned = []string{}
+		source.GeneratorsProvisioned = zeroGeneratorCounts(catalog, scope)
+		source.ProvisionRemaindersPPM = zeroProvisionRemainders(catalog, scope)
+		zero := int64(0)
+		source.StockRateRemainderPPM = &zero
+	} else if source.UpgradesOwned == nil || source.GeneratorsProvisioned == nil || source.ProvisionRemaindersPPM == nil || source.StockRateRemainderPPM == nil {
+		return nil, fmt.Errorf("%w: purchasable-content collections are required", ErrInvalidState)
+	}
+	ownedUpgrades, err := validateOwnedUpgrades(catalog, scope, source.UpgradesOwned)
+	if err != nil {
+		return nil, err
+	}
+	provisioned, err := validateProvisionedCounts(catalog, scope, source.GeneratorsProvisioned)
+	if err != nil {
+		return nil, err
+	}
+	remainders, err := validateProvisionRemainders(catalog, scope, source.ProvisionRemaindersPPM)
+	if err != nil {
+		return nil, err
+	}
 	cursor, err := restoreCursor(source.EvaluatedThrough, version)
 	if err != nil {
 		return nil, err
@@ -506,7 +557,9 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	}
 	state := &State{
 		Ledger: ledger, GeneratorCounts: counts, GeneratorPurchasedTotal: *source.GeneratorPurchasedTotal, EvaluatedThrough: cursor,
-		ComputeCreditMS: source.ComputeCreditMS, ManualTokenMilli: source.ManualTokenMilli,
+		UpgradesOwned: ownedUpgrades, GeneratorProvisioned: provisioned, ProvisionRemaindersPPM: remainders,
+		StockRateRemainderPPM: *source.StockRateRemainderPPM,
+		ComputeCreditMS:       source.ComputeCreditMS, ManualTokenMilli: source.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: source.GatesCrossed, RunSeq: source.RunSeq,
 		DoctrinesByTransition: source.DoctrinesByTransition, StructureID: source.StructureID,
 		LedgerFactKinds: ledgerFacts, MeterBands: source.MeterBands,
@@ -587,17 +640,18 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 func validateFactionState(state *State, scope economy.Scope) error {
 	if state.StockUnits < 0 || state.StockUnits > decimal.MaxExactInteger ||
 		state.StockProgressMS < 0 || state.StockProgressMS > decimal.MaxExactInteger ||
-		state.ConsumedStockUnits < 0 || state.ConsumedStockUnits > decimal.MaxExactInteger {
+		state.ConsumedStockUnits < 0 || state.ConsumedStockUnits > decimal.MaxExactInteger ||
+		state.StockRateRemainderPPM < 0 || state.StockRateRemainderPPM >= 1_000_000 {
 		return fmt.Errorf("%w: faction stock values outside their exact domains", ErrInvalidState)
 	}
 	if scope != economy.ScopeCompany {
-		if state.FactionID != "" || !state.IncorporatedAt.IsZero() || state.StockUnits != 0 || state.StockProgressMS != 0 || state.ConsumedStockUnits != 0 {
+		if state.FactionID != "" || !state.IncorporatedAt.IsZero() || state.StockUnits != 0 || state.StockProgressMS != 0 || state.ConsumedStockUnits != 0 || state.StockRateRemainderPPM != 0 {
 			return fmt.Errorf("%w: company faction state leaked outside company scope", ErrInvalidState)
 		}
 		return nil
 	}
 	if state.FactionID == "" {
-		if !state.IncorporatedAt.IsZero() || state.StockUnits != 0 || state.StockProgressMS != 0 || state.ConsumedStockUnits != 0 {
+		if !state.IncorporatedAt.IsZero() || state.StockUnits != 0 || state.StockProgressMS != 0 || state.ConsumedStockUnits != 0 || state.StockRateRemainderPPM != 0 {
 			return fmt.Errorf("%w: stock state exists before incorporation", ErrInvalidState)
 		}
 		return nil
@@ -961,6 +1015,45 @@ func cloneIntMap(source map[string]int) map[string]int {
 	return result
 }
 
+func cloneInt64Map(source map[string]int64) map[string]int64 {
+	result := make(map[string]int64, len(source))
+	for key, value := range source {
+		result[key] = value
+	}
+	return result
+}
+
+func zeroCountsLike(source map[string]int64) map[string]int64 {
+	result := make(map[string]int64, len(source))
+	for key := range source {
+		result[key] = 0
+	}
+	return result
+}
+
+func validatePurchasableWireState(state *State) error {
+	if state.StockRateRemainderPPM < 0 || state.StockRateRemainderPPM >= 1_000_000 || len(state.GeneratorProvisioned) != len(state.GeneratorCounts) {
+		return fmt.Errorf("%w: invalid purchasable-content state", ErrInvalidState)
+	}
+	for id, present := range state.UpgradesOwned {
+		if !present || !stateMechanicalIDPattern.MatchString(id) {
+			return fmt.Errorf("%w: invalid owned upgrade %q", ErrInvalidState, id)
+		}
+	}
+	for id := range state.GeneratorCounts {
+		value, exists := state.GeneratorProvisioned[id]
+		if !exists || value < 0 || value > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid provisioned count for %q", ErrInvalidState, id)
+		}
+	}
+	for id, value := range state.ProvisionRemaindersPPM {
+		if !stateMechanicalIDPattern.MatchString(id) || value < 0 || value >= 1_000_000 {
+			return fmt.Errorf("%w: invalid provision remainder for %q", ErrInvalidState, id)
+		}
+	}
+	return nil
+}
+
 func validateProductionState(catalog *economy.Catalog, scope economy.Scope, creditMS, tokenMilli int64) error {
 	if creditMS < 0 || creditMS > decimal.MaxExactInteger || tokenMilli < 0 || tokenMilli > decimal.MaxExactInteger {
 		return fmt.Errorf("%w: production integers exceed the exact domain", ErrInvalidState)
@@ -1014,6 +1107,64 @@ func zeroGeneratorCounts(catalog *economy.Catalog, scope economy.Scope) map[stri
 		counts[definition.ID] = 0
 	}
 	return counts
+}
+
+func validateOwnedUpgrades(catalog *economy.Catalog, scope economy.Scope, source []string) (map[string]bool, error) {
+	owned, err := uniqueMechanicalKeys(source, "upgrades_owned")
+	if err != nil {
+		return nil, err
+	}
+	if scope != economy.ScopeCompany && len(owned) != 0 {
+		return nil, fmt.Errorf("%w: upgrades are company-scoped", ErrInvalidState)
+	}
+	for id := range owned {
+		if _, exists := catalog.Upgrade(id); !exists {
+			return nil, fmt.Errorf("%w: unknown owned upgrade %q", ErrInvalidState, id)
+		}
+	}
+	return owned, nil
+}
+
+func validateProvisionedCounts(catalog *economy.Catalog, scope economy.Scope, source map[string]int64) (map[string]int64, error) {
+	expected := catalog.GeneratorClassesForScope(scope)
+	if len(source) != len(expected) {
+		return nil, fmt.Errorf("%w: generators_provisioned contain %d entries, want %d", ErrInvalidState, len(source), len(expected))
+	}
+	result := make(map[string]int64, len(expected))
+	for _, definition := range expected {
+		count, exists := source[definition.ID]
+		if !exists || count < 0 || count > decimal.MaxExactInteger || definition.ProvisionedHardcap == nil && count != 0 ||
+			definition.ProvisionedHardcap != nil && count > definition.ProvisionedHardcap.Count {
+			return nil, fmt.Errorf("%w: invalid provisioned count for %q", ErrInvalidState, definition.ID)
+		}
+		result[definition.ID] = count
+	}
+	return result, nil
+}
+
+func zeroProvisionRemainders(catalog *economy.Catalog, scope economy.Scope) map[string]int64 {
+	result := map[string]int64{}
+	for _, definition := range catalog.GeneratorClassesForScope(scope) {
+		if definition.Provision != nil {
+			result[definition.Provision.GeneratorID] = 0
+		}
+	}
+	return result
+}
+
+func validateProvisionRemainders(catalog *economy.Catalog, scope economy.Scope, source map[string]int64) (map[string]int64, error) {
+	expected := zeroProvisionRemainders(catalog, scope)
+	if len(source) != len(expected) {
+		return nil, fmt.Errorf("%w: provision_remainders_ppm contain %d entries, want %d", ErrInvalidState, len(source), len(expected))
+	}
+	for id := range expected {
+		value, exists := source[id]
+		if !exists || value < 0 || value >= 1_000_000 {
+			return nil, fmt.Errorf("%w: invalid provision remainder for %q", ErrInvalidState, id)
+		}
+		expected[id] = value
+	}
+	return expected, nil
 }
 
 // CanonicalServerTime returns the only timestamp representation permitted for

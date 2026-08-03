@@ -1,0 +1,98 @@
+{
+  "schema_version": 4,
+  "resources": [
+    {
+      "id": "company.cash",
+      "scope": "company",
+      "numeric_kind": "decimal",
+      "initial": "0",
+      "minimum": "0",
+      "hardcap": {
+        "amount": "1e1000",
+        "reason_key": "resource.company_cash.cap.test"
+      }
+    }
+  ],
+  "generator_classes": [
+    {
+      "id": "generator.low",
+      "tier": 0,
+      "category": "category.hardware",
+      "price": {
+        "resource_id": "company.cash",
+        "base": "1e1",
+        "curve": { "kind": "geometric", "ratio": "1.1e0" }
+      },
+      "production": { "resource_id": "company.cash", "base_rate": "1e0" },
+      "provisioned_hardcap": {
+        "count": 9007199254740991,
+        "reason_key": "generator.low.provisioned_cap"
+      },
+      "ladder": [{ "purchased_at": 10, "multiplier_ppm": 2000000 }],
+      "roles": [
+        { "kind": "synergy_feed", "pool_id": "pool.operations" },
+        { "kind": "manual_output", "action_id": "manual.click", "per_purchased_ppm": 1000 },
+        { "kind": "stock_rate", "per_purchased_ppm": 2000 }
+      ]
+    },
+    {
+      "id": "generator.high",
+      "tier": 1,
+      "category": "category.hardware",
+      "price": {
+        "resource_id": "company.cash",
+        "base": "1e3",
+        "curve": { "kind": "geometric", "ratio": "1.2e0" }
+      },
+      "production": { "resource_id": "company.cash", "base_rate": "1e1" },
+      "provisions": { "generator_id": "generator.low", "rate_ppm": 500000 },
+      "ladder": [],
+      "roles": [{ "kind": "provision", "generator_id": "generator.low" }]
+    }
+  ],
+  "upgrades": [
+    {
+      "id": "upgrade.click",
+      "cost": { "resource": "company.cash", "amount": "1e2" },
+      "window": { "from_gate": null, "to_gate": "gate.t0_to_t1" },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "1e1" }],
+      "effects": [{ "source_id": "upgrade.click.factor", "slot": "upgrades", "target": "manual.click", "factor": "2e0" }],
+      "roles": [],
+      "copy_key": "upgrade.click.copy"
+    }
+  ],
+  "synergy_pools": [
+    {
+      "id": "pool.operations",
+      "sources": [
+        { "kind": "generator", "id_or_class": "generator.low", "per_count_ppm": 1000 },
+        { "kind": "upgrade", "id_or_class": "upgrade.click", "per_count_ppm": 2000 }
+      ],
+      "slot": "upgrades",
+      "curve": "linear"
+    }
+  ],
+  "provision_tick_ms": 60000,
+  "manual_actions": [
+    { "id": "manual.click", "output": { "resource_id": "company.cash", "amount_per_action": "1e0" } }
+  ],
+  "multiplier_sources": [
+    { "id": "pool.operations", "slot": "upgrades", "target": "generator.low", "provider": "pool.operations" }
+  ],
+  "progress_coordinates": [
+    { "tier": 0, "kind": "resource_log", "resource": "company.cash", "target": "1e3" },
+    { "tier": 1, "kind": "count_fraction", "count": "generators.total_owned", "required": 10 },
+    { "tier": 2, "kind": "resource_log", "resource": "company.cash", "target": "1e6" },
+    { "tier": 3, "kind": "resource_log", "resource": "company.cash", "target": "1e9" }
+  ],
+  "manual_policy": { "refill_milli_per_ms": 25, "bucket_cap_milli": 50000 },
+  "offline_policy": {
+    "efficiency": "9e-1",
+    "accrual_cap_ms": 86400000,
+    "bank_ratio_numerator": 1,
+    "bank_ratio_denominator": 2,
+    "bank_cap_ms": 259200000,
+    "burst_speed": "2e0",
+    "burst_max_duration_ms": 14400000
+  }
+}

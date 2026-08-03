@@ -97,6 +97,9 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		gateIDs[index] = gate.ID
 	}
 	sort.Strings(gateIDs)
+	if err := economyCatalog.ValidateGateReferences(gateIDs); err != nil {
+		return production.CatalogBundle{}, err
+	}
 	if _, err := leaderboard.LoadCategoryCatalog(artifacts["categories"], gateIDs); err != nil {
 		return production.CatalogBundle{}, err
 	}

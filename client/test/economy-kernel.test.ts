@@ -3,10 +3,12 @@ import { describe, expect, it } from "vitest";
 import phase0Json from "../../balance/catalogs/phase0.json";
 import fixtureJson from "../../testdata/economy-kernel.json";
 import engineFixtureJson from "../../testdata/production-engine.json";
+import foundationV4Json from "../../testdata/economy-foundation-v4.json";
 import {
   canonicalBulkCost,
   parseCatalog,
   subProgressValue,
+  validateCatalogGateReferences,
   type EconomyCatalog,
 } from "../src/economy-kernel";
 import { canonicalString } from "../src/numeric";
@@ -101,6 +103,17 @@ describe("shared economy catalog", () => {
       bankRatioDenominator: 2,
       bankCapMs: 259_200_000,
     });
+  });
+
+  it("loads and cross-validates the shared purchasable-content v4 catalog", () => {
+    const catalog = parseCatalog(foundationV4Json);
+    expect(catalog.provisionTickMs).toBe(60_000);
+    expect(catalog.generatorClass("generator.high")?.provision).toEqual({ generatorId: "generator.low", ratePpm: 500_000 });
+    expect(catalog.generatorClass("generator.low")?.roles).toHaveLength(3);
+    expect(catalog.upgrade("upgrade.click")?.effects[0]).toEqual({ sourceId: "upgrade.click.factor", slot: "upgrades", target: "manual.click", factor: "2e0" });
+    expect(catalog.synergyPool("pool.operations")?.curve).toBe("linear");
+    expect(() => validateCatalogGateReferences(catalog, ["gate.t0_to_t1"])).not.toThrow();
+    expect(() => validateCatalogGateReferences(catalog, ["gate.other"])).toThrow(SyntaxError);
   });
 
   it.each(fixture.multiplier_catalog_cases)("validates multiplier case $name", (vector) => {
@@ -227,7 +240,7 @@ function mutateCatalog(source: Record<string, unknown>, name: string): unknown {
 
   switch (name) {
     case "unsupported-version":
-      root.schema_version = 4;
+      root.schema_version = 5;
       break;
     case "missing-root-field":
       delete root.resources;

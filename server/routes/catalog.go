@@ -161,6 +161,27 @@ type rawEffect struct {
 	Fraction *string `json:"fraction"`
 }
 
+// ParseConditions decodes the shared closed predicate union for catalog owners
+// that need the same state predicate language without copying its grammar.
+func ParseConditions(data []byte) ([]Condition, error) {
+	var source []rawCondition
+	if err := decodeStrict(data, &source); err != nil || len(source) == 0 {
+		if err == nil {
+			err = errors.New("at least one condition is required")
+		}
+		return nil, fmt.Errorf("%w: predicate: %v", ErrInvalidCatalog, err)
+	}
+	conditions := make([]Condition, 0, len(source))
+	for index, item := range source {
+		condition, err := parseCondition(item)
+		if err != nil {
+			return nil, fmt.Errorf("%w: predicate[%d]: %v", ErrInvalidCatalog, index, err)
+		}
+		conditions = append(conditions, condition)
+	}
+	return conditions, nil
+}
+
 func LoadCatalog(data []byte) (*Catalog, error) {
 	var raw rawCatalog
 	if err := decodeStrict(data, &raw); err != nil {
