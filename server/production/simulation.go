@@ -106,16 +106,12 @@ func SimulateTransition(request IntentRequest, state *save.State, catalog *econo
 	if err != nil {
 		return SimulationResult{}, err
 	}
-	beforeEvaluated := state.EvaluatedThrough
 	decision, err := transitionWithSimulationPolicy(request, state, catalog, dependencies.Routes, dependencies.CompactBand, dependencies.Factions, revision, mode, now, contributions, sink, simulationHook(dependencies.Hook, policy), policy)
 	if err != nil {
 		return SimulationResult{}, err
 	}
 	if decision.Outcome != save.IntentApplied {
 		return SimulationResult{Decision: decision, RoleActivations: []RoleActivation{}}, nil
-	}
-	if state.EvaluatedThrough.After(beforeEvaluated) {
-		policy.promoteProductionCandidates(state, catalog)
 	}
 	if request.Kind == IntentPerformManualBatch && appliedCountFromDecision(decision) > 0 {
 		policy.activateManualRoles(state, catalog, request.ActionID)
@@ -160,26 +156,12 @@ func (policy *simulationPolicy) candidate(value RoleActivation) {
 	policy.candidates[roleActivationKey(value)] = value
 }
 
-func (policy *simulationPolicy) promoteProductionCandidates(state *save.State, catalog *economy.Catalog) {
-	if policy == nil || state == nil || catalog == nil {
+func (policy *simulationPolicy) activateSynergySource(sourceID string) {
+	if policy == nil {
 		return
 	}
 	for key, value := range policy.candidates {
-		pool, ok := catalog.SynergyPool(value.TargetID)
-		if !ok {
-			continue
-		}
-		source, ok := catalog.MultiplierSource(pool.ID)
-		if !ok {
-			continue
-		}
-		target, ok := catalog.GeneratorClass(source.Target)
-		if !ok || target.Production == nil {
-			continue
-		}
-		purchased, purchasedOK := state.GeneratorCounts[target.ID]
-		provisioned, provisionedOK := state.GeneratorProvisioned[target.ID]
-		if purchasedOK && provisionedOK && purchased+provisioned > 0 {
+		if value.Kind == economy.RoleSynergyFeed && value.TargetID == sourceID {
 			policy.active[key] = value
 		}
 	}

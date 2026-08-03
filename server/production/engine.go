@@ -273,6 +273,7 @@ func ratesWithProvisionedAndPolicy(catalog *economy.Catalog, counts, provisioned
 			}
 			for _, sourceID := range multiplier.OrderedSourceIDs(sources) {
 				rate = rate.Mul(bySource[sourceID].Factor)
+				policy.activateSynergySource(sourceID)
 			}
 		}
 		if !rate.IsStateValue() || rate.Lt(decimal.Zero) {

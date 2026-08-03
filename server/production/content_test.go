@@ -58,6 +58,27 @@ func foundationCatalogWithMutation(t *testing.T, mutate func(map[string]any)) *e
 	return catalog
 }
 
+func foundationHighSynergyCatalog(t *testing.T, target string) *economy.Catalog {
+	t.Helper()
+	return foundationCatalogWithMutation(t, func(authored map[string]any) {
+		generators := authored["generator_classes"].([]any)
+		low := generators[0].(map[string]any)
+		filtered := make([]any, 0)
+		for _, value := range low["roles"].([]any) {
+			if value.(map[string]any)["kind"] != "synergy_feed" {
+				filtered = append(filtered, value)
+			}
+		}
+		low["roles"] = filtered
+		high := generators[1].(map[string]any)
+		high["roles"] = append(high["roles"].([]any), map[string]any{"kind": "synergy_feed", "pool_id": "pool.operations"})
+		pool := authored["synergy_pools"].([]any)[0].(map[string]any)
+		pool["sources"] = []any{map[string]any{"kind": "generator", "id_or_class": "generator.high", "per_count_ppm": float64(1000)}}
+		declaration := authored["multiplier_sources"].([]any)[0].(map[string]any)
+		declaration["target"] = target
+	})
+}
+
 func foundationState(t *testing.T, catalog *economy.Catalog, now time.Time) *save.State {
 	t.Helper()
 	ledger, err := economy.NewLedger(catalog, economy.ScopeCompany)
@@ -532,6 +553,50 @@ func TestSimulationSynergyActivationRequiresDeclaredExercisedTarget(t *testing.T
 	active, err := SimulateTransition(request, activeState, activeCatalog, SimulationDependencies{Routes: foundationRoutes(t)}, save.Revision{Number: 1}, ModeOnline, started.Add(time.Second), nil, nil, AblationMask{})
 	if err != nil || active.Decision.Outcome != save.IntentApplied || !hasRoleActivation(active.RoleActivations, undeclaredWant) {
 		t.Fatalf("exercised synergy role=%+v err=%v", active, err)
+	}
+}
+
+func TestSimulationSynergyActivationOccursAtRateApplication(t *testing.T) {
+	started := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
+	targeted := foundationHighSynergyCatalog(t, "generator.low")
+	dependencies := SimulationDependencies{Routes: foundationRoutes(t)}
+	want := RoleActivation{GeneratorID: "generator.high", Kind: economy.RoleSynergyFeed, TargetID: "pool.operations"}
+
+	masked := foundationState(t, targeted, started)
+	masked.GeneratorCounts["generator.high"] = 1
+	masked.GeneratorCounts["generator.low"] = 1
+	masked.ManualTokenMilli = 50_000
+	manual := IntentRequest{IntentID: "01986666-0221-7000-8000-000000000221", Kind: IntentPerformManualBatch, ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1}
+	result, err := SimulateTransition(manual, masked, targeted, dependencies, save.Revision{Number: 1}, ModeOnline, started.Add(time.Second), nil, nil, AblationMask{GeneratorIDs: []string{"generator.low"}})
+	if err != nil || result.Decision.Outcome != save.IntentApplied || hasRoleActivation(result.RoleActivations, want) {
+		t.Fatalf("masked target result=%+v err=%v", result, err)
+	}
+
+	boughtAfter := foundationState(t, targeted, started)
+	boughtAfter.GeneratorCounts["generator.high"] = 1
+	buy := IntentRequest{IntentID: "01986666-0222-7000-8000-000000000222", Kind: IntentBuyGenerator, ExpectedRevision: 1, GeneratorID: "generator.low", CountMode: "exact", Count: 1}
+	result, err = SimulateTransition(buy, boughtAfter, targeted, dependencies, save.Revision{Number: 1}, ModeOnline, started.Add(time.Second), nil, nil, AblationMask{})
+	if err != nil || result.Decision.Outcome != save.IntentApplied || boughtAfter.GeneratorCounts["generator.low"] != 1 || hasRoleActivation(result.RoleActivations, want) {
+		t.Fatalf("bought-after result=%+v counts=%v err=%v", result, boughtAfter.GeneratorCounts, err)
+	}
+
+	terminalProvision := foundationState(t, targeted, started)
+	terminalProvision.GeneratorCounts["generator.high"] = 2
+	terminalProvision.ManualTokenMilli = 50_000
+	manual.IntentID = "01986666-0223-7000-8000-000000000223"
+	result, err = SimulateTransition(manual, terminalProvision, targeted, dependencies, save.Revision{Number: 1}, ModeOnline, started.Add(time.Minute), nil, nil, AblationMask{})
+	if err != nil || result.Decision.Outcome != save.IntentApplied || terminalProvision.GeneratorProvisioned["generator.low"] != 1 || hasRoleActivation(result.RoleActivations, want) {
+		t.Fatalf("terminal provision result=%+v provisioned=%v err=%v", result, terminalProvision.GeneratorProvisioned, err)
+	}
+
+	allCatalog := foundationHighSynergyCatalog(t, "all")
+	allState := foundationState(t, allCatalog, started)
+	allState.GeneratorCounts["generator.high"] = 1
+	allState.ManualTokenMilli = 50_000
+	manual.IntentID = "01986666-0224-7000-8000-000000000224"
+	result, err = SimulateTransition(manual, allState, allCatalog, dependencies, save.Revision{Number: 1}, ModeOnline, started.Add(time.Second), nil, nil, AblationMask{})
+	if err != nil || result.Decision.Outcome != save.IntentApplied || !hasRoleActivation(result.RoleActivations, want) {
+		t.Fatalf("all target result=%+v err=%v", result, err)
 	}
 }
 
