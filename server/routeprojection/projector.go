@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
@@ -243,7 +244,7 @@ func (p *Projector) compensateRegistryGrant(ctx context.Context, tx *sql.Tx, exe
 	}
 	payload, err := json.Marshal(map[string]any{
 		"compensates_event_id": grant.EventID,
-		"reason_key":           "route.registry_first_reordered",
+		"reason_key":           copykeys.RouteRegistryFirstReordered,
 	})
 	if err != nil {
 		return err

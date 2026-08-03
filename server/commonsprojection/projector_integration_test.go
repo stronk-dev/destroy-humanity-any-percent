@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/commons"
+	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/save"
 )
 
@@ -92,6 +93,13 @@ func TestProjectorIntegrationConcurrentAssignmentReplayAndLeave(t *testing.T) {
 	offered, err := projector.OfferRecruitment(ctx, recruitStream, recruitFounder, 1, hash, time.Date(2026, 7, 29, 13, 0, 0, 0, time.UTC))
 	if err != nil || !offered {
 		t.Fatalf("offered=%v err=%v", offered, err)
+	}
+	var recruitmentReason string
+	if err := db.QueryRowContext(ctx, `SELECT payload->>'reason_key' FROM events WHERE stream_id=$1 AND kind='compact_recruitment_offered'`, recruitStream).Scan(&recruitmentReason); err != nil {
+		t.Fatal(err)
+	}
+	if recruitmentReason != copykeys.CompactRecruitmentMidT3 {
+		t.Fatalf("recruitment reason=%q want=%q", recruitmentReason, copykeys.CompactRecruitmentMidT3)
 	}
 	offered, err = projector.OfferRecruitment(ctx, recruitStream, recruitFounder, 1, hash, time.Date(2026, 7, 29, 13, 1, 0, 0, time.UTC))
 	if err != nil || offered {

@@ -14,12 +14,12 @@ than English text.
   The verifier proves each registered path exists in that artifact's schema before walking the
   current artifact.
 - `copy/code-reference-sites.v1.json` names explicit Go producer sites for code-owned reason keys.
-  A Go AST gate accepts one canonical producer form: a top-level direct
-  `json.Marshal(map literal)` assignment whose non-discarded payload is used exactly once by a
-  later checked `ExecContext`/`QueryRowContext` statement in the declared function. Nested/dead,
-  unused, and discarded serializations do not qualify. Generation then emits
-  `copy/generated/code-references.v1.json`; code references are not discovered by a repository
-  property-name search.
+  Generation emits `copy/generated/code-references.v1.json` and compiler-checked constants in
+  `server/copykeys/generated.go`; the declared production sites use those constants, and their
+  real Postgres integration tests assert the emitted event payloads. The source/function/field
+  values are review locators, not a claim that a build script can prove arbitrary Go data flow.
+  The gate proves registry grammar, generated drift, and copy completeness; it does not discover
+  references by repository grep or pretend to replace runtime tests and diff review.
 - `copy/provenance.v1.json` is the stable claim registry. A verified claim resolves to exactly one
   heading under `design/research/` and has at least one HTTPS source URL.
 - `moderation/copy-denylist.txt` is the append-only known-red-name list. Each normalized term has

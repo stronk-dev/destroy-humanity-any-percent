@@ -169,3 +169,30 @@ assurances. A third remediation and independent verdict are required.
   assertions; history/boundary/copy/schema guards; and 19,530 browser assertions.
 - A new independent verdict must cover `6c1dfaf` plus this gate record and union with every earlier
   implementation/remediation range before archival.
+
+## 2026-08-03 — independent third-remediation review
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **New range:** `6c1dfaf^..b3efdce`
+- **Full contiguous implementation/remediation union:** `261eafa..b3efdce`
+- **Decision:** not approved for archival.
+
+The prior named markup cases and the narrow AST fixtures were closed, but two MEDIUM findings
+remained. A syntactically checked dummy database call could satisfy the AST proof while a later
+authoritative event insert carried different bytes; indexed mutation, `copy`, and fake receivers
+were further counterexamples. The shared text grammar also admitted CommonMark's two-trailing-space
+hard line break. Darwin passed the focused root targets and `make verify`; the false assurance still
+blocked archival.
+
+## 2026-08-03 — fourth remediation: structural producer authority
+
+- Withdrew the unsound general data-flow claim and deleted the bespoke AST command. C4 requires a
+  declared generated code-key manifest, not a home-grown Go verifier. The checked registry now
+  generates compiler-checked Go constants; the two production sites use those constants; and real
+  Postgres integration tests assert the emitted payload field at each site.
+- Canonical docs now state the honest boundary: build gates prove registry grammar, generated
+  drift, and copy completeness; integration tests and range review prove runtime use. Source,
+  function, and field entries remain precise review locators.
+- The build and runtime text validators now reject two-or-more trailing spaces at line end, with a
+  shared hard-break reproducer.

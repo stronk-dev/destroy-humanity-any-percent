@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/commons"
+	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/save"
 )
@@ -651,7 +652,7 @@ func (p *Projector) OfferRecruitment(ctx context.Context, streamID, founderID st
 		}
 		return false, nil
 	}
-	payload, _ := json.Marshal(map[string]any{"founder_id": founderID, "reason_key": "compact.recruitment.mid_t3"})
+	payload, _ := json.Marshal(map[string]any{"founder_id": founderID, "reason_key": copykeys.CompactRecruitmentMidT3})
 	var eventID string
 	if err := tx.QueryRowContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,occurred_at,payload) VALUES($1,$2,1,'compact_recruitment_offered',NULL,$3,$4,$5) RETURNING event_id`, streamID, revision, constantsHash, occurredAt, payload).Scan(&eventID); err != nil {
 		return false, err

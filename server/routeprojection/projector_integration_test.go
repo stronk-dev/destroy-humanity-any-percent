@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
@@ -95,7 +96,7 @@ func TestProjectorIntegrationConvergesAcrossDeliveryOrder(t *testing.T) {
 	assertKnowledgeState(t, ctx, db, founderB, 0, 25)
 
 	var compensations, activeRegistryGrants int64
-	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM events WHERE kind='compensation' AND payload->>'reason_key'='route.registry_first_reordered'`).Scan(&compensations); err != nil {
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM events WHERE kind='compensation' AND payload->>'reason_key'=$1`, copykeys.RouteRegistryFirstReordered).Scan(&compensations); err != nil {
 		t.Fatal(err)
 	}
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM events awarded WHERE awarded.kind='route_knowledge_granted' AND awarded.payload->>'source'='registry_first' AND NOT EXISTS (SELECT 1 FROM events compensation WHERE compensation.kind='compensation' AND compensation.payload->>'compensates_event_id'=awarded.event_id::text)`).Scan(&activeRegistryGrants); err != nil {
