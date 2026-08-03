@@ -294,3 +294,26 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
   and keeps all subsequent advancement deterministic. Neither correction changes runtime code.
   A clean `make test-save-integration` rerun passes every Docker-backed Postgres package, including
   gameserver real sockets, production migration/Exit, replay verification, save, and transport.
+
+## 2026-08-03 — independent full-span review
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Reviewed range:** `c380fe0^..4fc1dce` (full ten-commit implementation span; range union is
+  complete).
+- **Verdict:** not approved for archival. Seven findings accepted for one remediation round:
+  1. HIGH: simulation supplies no Routes catalog, so every `buy_upgrade` simulation fails internal.
+  2. HIGH: simulation supplies no accrual hook and records no non-neutral `stock_rate` activation.
+  3. HIGH: Go, TypeScript, and JSON Schema disagree on scalar/empty `requires` and schema-v3
+     documents carrying schema-v4 fields.
+  4. MEDIUM: `action_removal` can remove manual actions but not generator/upgrade purchases.
+  5. MEDIUM: upgrade resource predicates accept non-Company resources that the runtime context can
+     never satisfy.
+  6. MEDIUM: the published stock-rate formula omits `faction.AccrualHook.AfterAccrual` from its
+     executable source fingerprint.
+  7. MEDIUM: AC1's window/requires rejection types and accrue-before-eligibility order lack tests,
+     making plan step 3's evidence incomplete.
+- Verified clean by the reviewer: save-v14 lifecycle paths, deterministic contribution/provision
+  arithmetic, pool vectors, client/snapshot/event surfaces, kernel `0.3.9`–`0.3.12` history,
+  artifact-only rebaseline, and both integration-fixture corrections. No implementation files were
+  edited by the reviewer.
