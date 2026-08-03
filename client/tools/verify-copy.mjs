@@ -3,6 +3,7 @@ import path from "node:path";
 
 import {
   assertDenylistExtension,
+  assertDenylistRecordsStable,
   assertVerifiedClaimsStable,
   buildCopyArtifact,
   containsStatistic,
@@ -36,13 +37,15 @@ if (deniedTerm("H.a-b_b/o", terms) !== "habbo" || deniedTerm("Club—Penguin", t
 }
 if (deniedTerm("habitable office", terms) !== null) throw new Error("denylist word-boundary near-miss was rejected");
 expectFailure("denylist removal history fixture", () => assertDenylistExtension(["habbo", "neopets"], ["habbo"], "fixture"), /removes copy denylist terms: neopets/);
+const citationFixture = { term: "habbo", source_file: "design/research/social-spaces.md", source_anchor: "6-legal-safe-vs-fictionalize" };
+expectFailure("denylist citation-retarget history fixture", () => assertDenylistRecordsStable([citationFixture], [{ ...citationFixture, source_anchor: "1-the-canon-deconstructed" }], "fixture"), /retargets protected copy denylist citation/);
 const verifiedFixture = { claim_id: "fixture.verified", source_file: "design/research/speedrun-governance.md", source_anchor: "31-the-taxonomy-and-how-it-proliferates", status: "verified", source_urls: ["https://example.invalid/source"] };
 expectFailure("verified provenance mutation history fixture", () => assertVerifiedClaimsStable([verifiedFixture], [{ ...verifiedFixture, source_anchor: "changed" }], "fixture"), /mutates or removes verified provenance claim/);
 
-for (const fixture of ["100%", "$12", "12 EUR", "12 ppm", "12 days", "1995"]) {
+for (const fixture of ["100%", "$12", "12$", "12€", "12 EUR", "12 ppm", "12 days", "1995"]) {
   if (!containsStatistic(fixture)) throw new Error(`statistic detector missed ${fixture}`);
 }
-for (const fixture of ["{amount}%", "version twelve", "company.cash"]) {
+for (const fixture of ["{amount}%", "version twelve", "company.cash", "NOTUSD12", "12USDsuffix"]) {
   if (containsStatistic(fixture)) throw new Error(`statistic detector overmatched ${fixture}`);
 }
 const safetyEntry = { key: "fixture.statistic", text: "Adoption reached 12%", params: [], era_variants: null, provenance: [], tone: "corporate" };

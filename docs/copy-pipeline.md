@@ -14,7 +14,8 @@ than English text.
   The verifier proves each registered path exists in that artifact's schema before walking the
   current artifact.
 - `copy/code-reference-sites.v1.json` names explicit Go producer sites for code-owned reason keys.
-  Generation verifies one exact occurrence at each declared site and emits
+  A Go AST gate verifies that the key is the value of the declared JSON field inside the declared
+  producer function (comments and unrelated/dead literals do not qualify), then generation emits
   `copy/generated/code-references.v1.json`; code references are not discovered by a repository
   property-name search.
 - `copy/provenance.v1.json` is the stable claim registry. A verified claim resolves to exactly one
@@ -25,7 +26,8 @@ than English text.
   independent `copy_hash`, the code-reference manifest, and the deterministic orphan report.
 
 The `copy_hash` identifies English copy independently from the simulation `constants_hash`.
-Changing punctuation does not segment a leaderboard. Deploy manifests can pin both identities;
+Changing punctuation does not segment a leaderboard. The generated
+`deployment/content-manifest.v1.json` pins both current identities and `copy-check` recomputes both;
 events, receipts, and saves continue storing mechanical keys.
 
 ## Runtime contract
@@ -44,14 +46,19 @@ Text is plain text. Svelte owns DOM escaping after resolution. Placeholders use 
 verbatim so this layer never invents numeric notation.
 
 Missing/extra/wrongly typed params and unknown keys throw in development and tests. Production
-returns the loud mechanical key and emits a `copy_resolution_failed` invariant through the caller's
-reporter. There is no network fetch or ambient mutable catalog.
+requires an invariant reporter, returns the loud mechanical key, and emits exactly one
+`copy_resolution_failed` invariant through it. Omitting the production sink is a configuration
+error, never a silent fallback. Loaded fixture catalogs carry no application hash label; callers
+verify bytes explicitly, while the generated singleton's identity is `COPY_HASH`. There is no
+network fetch or ambient mutable catalog.
 
 ## Gates and their honest limits
 
 `make copy-check` validates source grammar, generated drift, schema-backed completeness, explicit
-code sites, provenance, known-red terms, protected history, detector fixtures, and the orphan
-report. It fails closed on shallow Git history; the existing client CI job checks out full history.
+code sites, provenance, known-red terms, protected history, deployment identity, detector fixtures,
+and the orphan report. Research sources must be Git-tracked, so an untracked local dossier cannot
+make a clean-checkout gate appear green. It fails closed on shallow Git history; the existing client
+CI job checks out full history.
 
 The statistic detector intentionally catches only literal numbers adjacent to `%`, configured
 currency/unit tokens, and configured historical years. Runtime placeholders are ignored. A caught

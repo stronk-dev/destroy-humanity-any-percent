@@ -2,10 +2,14 @@
   "schema_version": 1,
   "references": [
     {
+      "go_function": "OfferRecruitment",
+      "json_field": "reason_key",
       "key": "compact.recruitment.mid_t3",
       "source_file": "server/commonsprojection/projector.go"
     },
     {
+      "go_function": "compensateRegistryGrant",
+      "json_field": "reason_key",
       "key": "route.registry_first_reordered",
       "source_file": "server/routeprojection/projector.go"
     }

@@ -80,7 +80,7 @@ function normalizedString(value, label) {
   if (Buffer.byteLength(value, "utf8") > maxBytes) fail(label, `exceeds ${maxBytes} UTF-8 bytes`);
   if (value.split("\n").length > maxLines) fail(label, `exceeds ${maxLines} lines`);
   if (/[^\P{Cc}\n]/u.test(value)) fail(label, "contains a control character");
-  if (/<\/?[a-z][^>]*>/iu.test(value) || /!?\[[^\]]+\]\([^)]+\)/u.test(value)) {
+  if (/<\/?[a-z][^>]*>/iu.test(value) || /<!--|-->|!?\[[^\]]+\]\([^)]+\)|[`*_~]|^(?:\s{0,3}(?:#{1,6}|>|[-+]|\d+\.)\s|\s{0,3}(?:---+|===+)\s*$)/mu.test(value)) {
     fail(label, "must be plain text, not HTML or Markdown");
   }
   return value;
@@ -189,6 +189,11 @@ function resolveResearchAnchor(sourceFile, sourceAnchor, label) {
   if (!filename.startsWith(`${path.join(repositoryRoot, "design/research")}${path.sep}`) || !existsSync(filename)) {
     fail(`${label}.source_file`, "does not resolve under design/research");
   }
+  try {
+    execFileSync("git", ["ls-files", "--error-unmatch", "--", sourceFile], { cwd: repositoryRoot, stdio: "ignore" });
+  } catch {
+    fail(`${label}.source_file`, "must be tracked in Git (untracked research cannot satisfy a shipping gate)");
+  }
   const count = markdownAnchors(readFileSync(filename, "utf8")).filter((anchor) => anchor === sourceAnchor).length;
   if (count !== 1) fail(`${label}.source_anchor`, `must resolve exactly once (found ${count})`);
 }
@@ -217,8 +222,8 @@ export function normalizedTokens(value) {
   return value.normalize("NFC").toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
 }
 
-export function validateDenylist(bytes, label = "moderation/copy-denylist.txt") {
-  const terms = [];
+export function validateDenylistRecords(bytes, label = "moderation/copy-denylist.txt", { resolveSources = true } = {}) {
+  const records = [];
   let source = null;
   for (const [offset, raw] of bytes.split("\n").entries()) {
     const line = raw.trim();
@@ -232,13 +237,18 @@ export function validateDenylist(bytes, label = "moderation/copy-denylist.txt") 
     const normalized = normalizedTokens(line).join(" ");
     if (line !== normalized || normalized === "") fail(lineLabel, "term must be case-folded NFC tokens separated by one space");
     if (!source) fail(lineLabel, "requires an immediately preceding research source comment");
-    resolveResearchAnchor(source.file, source.anchor, lineLabel);
-    if (terms.length > 0 && terms.at(-1) >= normalized) fail(label, "terms must be byte-sorted and unique");
-    terms.push(normalized);
+    if (!source.anchor.includes("legal")) fail(lineLabel, "source anchor must name a legal matrix or legal-safety section");
+    if (resolveSources) resolveResearchAnchor(source.file, source.anchor, lineLabel);
+    if (records.length > 0 && records.at(-1).term >= normalized) fail(label, "terms must be byte-sorted and unique");
+    records.push(Object.freeze({ term: normalized, source_file: source.file, source_anchor: source.anchor }));
     source = null;
   }
-  if (terms.length === 0) fail(label, "must contain at least one term");
-  return terms;
+  if (records.length === 0) fail(label, "must contain at least one term");
+  return records;
+}
+
+export function validateDenylist(bytes, label = "moderation/copy-denylist.txt") {
+  return validateDenylistRecords(bytes, label).map((record) => record.term);
 }
 
 export function deniedTerm(text, terms) {
@@ -287,7 +297,7 @@ export function containsStatistic(text) {
   const escaped = (value) => value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
   const currencies = currencyTokens.map(escaped).join("|");
   const units = unitTokens.map(escaped).join("|");
-  if (new RegExp(`(?:\\d+(?:\\.\\d+)?\\s*%|(?:${currencies})\\s*\\d|\\d+(?:\\.\\d+)?\\s*(?:${currencies}|${units})\\b)`, "u").test(literal)) return true;
+  if (new RegExp(`(?:\\d+(?:\\.\\d+)?\\s*%|(?<![\\p{L}\\p{N}_])(?:${currencies})\\s*\\d|\\d+(?:\\.\\d+)?\\s*(?:${currencies}|${units})(?![\\p{L}\\p{N}_]))`, "u").test(literal)) return true;
   return (literal.match(/\b\d{4}\b/gu) ?? []).some((value) => Number(value) >= historicalYearMin && Number(value) <= historicalYearMax);
 }
 
@@ -403,15 +413,12 @@ function codeReferencesFromSites() {
   let previous = "";
   for (let index = 0; index < root.references.length; index += 1) {
     const rowLabel = `${label}.references[${index}]`;
-    const row = exactObject(root.references[index], ["key", "source_file"], rowLabel);
+    const row = exactObject(root.references[index], ["go_function", "json_field", "key", "source_file"], rowLabel);
     if (typeof row.key !== "string" || !mechanicalID.test(row.key) || row.key <= previous) fail(rowLabel, "keys must be byte-sorted unique mechanical IDs");
     if (typeof row.source_file !== "string" || !/^server\/[a-z0-9_/-]+\.go$/u.test(row.source_file)) fail(`${rowLabel}.source_file`, "must name an explicit Go producer site");
+    if (typeof row.go_function !== "string" || !/^[A-Za-z][A-Za-z0-9]*$/u.test(row.go_function) || typeof row.json_field !== "string" || !paramName.test(row.json_field)) fail(rowLabel, "has an invalid Go function or JSON field binding");
     const filename = path.resolve(repositoryRoot, row.source_file);
     if (!filename.startsWith(`${path.join(repositoryRoot, "server")}${path.sep}`) || !existsSync(filename)) fail(`${rowLabel}.source_file`, "does not resolve under server");
-    const source = readFileSync(filename, "utf8");
-    const literal = JSON.stringify(row.key);
-    const occurrences = source.split(literal).length - 1;
-    if (occurrences !== 1) fail(rowLabel, `key must occur exactly once at its declared producer site (found ${occurrences})`);
     previous = row.key;
     keys.push(row.key);
   }
@@ -494,6 +501,17 @@ export function assertDenylistExtension(before, after, label) {
   if (removed.length > 0) throw new Error(`${label} removes copy denylist terms: ${removed.join(", ")}`);
 }
 
+export function assertDenylistRecordsStable(before, afterRows, label, canCorrectInvalidSource = () => false) {
+  const after = new Map(afterRows.map((record) => [record.term, record]));
+  for (const record of before) {
+    const next = after.get(record.term);
+    if (!next) throw new Error(`${label} removes copy denylist terms: ${record.term}`);
+    if ((next.source_file !== record.source_file || next.source_anchor !== record.source_anchor) && !canCorrectInvalidSource(record)) {
+      throw new Error(`${label} retargets protected copy denylist citation for ${record.term}`);
+    }
+  }
+}
+
 export function assertVerifiedClaimsStable(before, afterRows, label) {
   const after = new Map(afterRows.map((claim) => [claim.claim_id, claim]));
   for (const claim of before.filter((row) => row.status === "verified")) {
@@ -527,9 +545,9 @@ export function verifyAppendOnlyHistory() {
       for (const parent of parents) {
         if (!historyFileExists(parent, filename)) continue;
         if (filename.endsWith("copy-denylist.txt")) {
-          const before = validateDenylist(git("show", `${parent}:${filename}`), `${parent}:${filename}`);
-          const after = validateDenylist(git("show", `${commit}:${filename}`), `${commit}:${filename}`);
-          assertDenylistExtension(before, after, `commit ${commit}`);
+          const before = validateDenylistRecords(git("show", `${parent}:${filename}`), `${parent}:${filename}`, { resolveSources: false });
+          const after = validateDenylistRecords(git("show", `${commit}:${filename}`), `${commit}:${filename}`, { resolveSources: false });
+          assertDenylistRecordsStable(before, after, `commit ${commit}`, (record) => !historyFileExists(parent, record.source_file));
         } else {
           const before = parseHistoricalJSON(parent, filename).claims;
           assertVerifiedClaimsStable(before, parseHistoricalJSON(commit, filename).claims, `commit ${commit}`);
@@ -538,9 +556,9 @@ export function verifyAppendOnlyHistory() {
     }
   }
   if (historyFileExists("HEAD", "moderation/copy-denylist.txt")) {
-    const before = validateDenylist(git("show", "HEAD:moderation/copy-denylist.txt"), "HEAD denylist");
-    const after = validateDenylist(readFileSync(path.join(repositoryRoot, "moderation/copy-denylist.txt"), "utf8"), "worktree denylist");
-    assertDenylistExtension(before, after, "worktree");
+    const before = validateDenylistRecords(git("show", "HEAD:moderation/copy-denylist.txt"), "HEAD denylist", { resolveSources: false });
+    const after = validateDenylistRecords(readFileSync(path.join(repositoryRoot, "moderation/copy-denylist.txt"), "utf8"), "worktree denylist");
+    assertDenylistRecordsStable(before, after, "worktree", (record) => !historyFileExists("HEAD", record.source_file));
   }
   if (historyFileExists("HEAD", "copy/provenance.v1.json")) {
     const before = parseHistoricalJSON("HEAD", "copy/provenance.v1.json").claims;

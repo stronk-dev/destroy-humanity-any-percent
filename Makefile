@@ -77,10 +77,14 @@ epoch-hash:
 	cd server && go run ./cmd/balance-harness -mode=epoch-hash -root=..
 
 copy-generate:
+	cd server && go run ./cmd/verify-copy-sites -root=..
 	node client/tools/generate-copy.mjs
+	cd server && go run ./cmd/gen-content-manifest -root=.. -output=deployment/content-manifest.v1.json
 
 copy-check:
 	node client/tools/verify-copy.mjs
+	cd server && go run ./cmd/verify-copy-sites -root=..
+	cd server && go run ./cmd/gen-content-manifest -root=.. -output=deployment/content-manifest.v1.json -check
 
 vet:
 	cd server && go vet $(GO_PACKAGES)

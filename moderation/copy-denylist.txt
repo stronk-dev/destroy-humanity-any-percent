@@ -1,8 +1,8 @@
-# source: design/research/wc3-custom-ecosystem.md#6-steal-satirize-legal-matrix
+# source: design/research/lane-pusher-design.md#9-legal-safe-vs-fictionalise
 blizzard
 # source: design/research/social-spaces.md#6-legal-safe-vs-fictionalize
 club penguin
 # source: design/research/social-spaces.md#6-legal-safe-vs-fictionalize
 habbo
-# source: design/research/neopets-systems.md#9-legal-safefictionalize-matrix
+# source: design/research/social-spaces.md#6-legal-safe-vs-fictionalize
 neopets

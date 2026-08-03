@@ -24,6 +24,8 @@ describe("copy catalog", () => {
     const bytes = `${JSON.stringify(generatedCatalog, null, 2)}\n`;
     await expect(verifyCopyCatalogHash(bytes, COPY_HASH)).resolves.toBe(true);
     await expect(verifyCopyCatalogHash(bytes.replace("Any%", "Other%"), COPY_HASH)).resolves.toBe(false);
+    const unrelated = loadCopyCatalog(catalog(base));
+    expect("copyHash" in unrelated).toBe(false);
   });
 
   it("round-trips typed params, literal braces, era overrides, and fallback", () => {
@@ -47,11 +49,15 @@ describe("copy catalog", () => {
     const report = vi.fn();
     expect(resolveCopy(loaded, "missing.key", {}, undefined, { mode: "production", reportInvariant: report })).toBe("missing.key");
     expect(report).toHaveBeenCalledOnce();
+    expect(() => resolveCopy(loaded, "missing.key", {}, undefined, { mode: "production" } as never)).toThrow(/requires an invariant reporter/);
   });
 
   it("rejects grammar drift before resolution", () => {
     expect(() => loadCopyCatalog(catalog({ ...base, extra: true }))).toThrow(/exact keys/);
     expect(() => loadCopyCatalog(catalog({ ...base, text: "Wrong {field}" }))).toThrow(/placeholders differ/);
     expect(() => loadCopyCatalog(catalog({ ...base, text: "<b>{amount}</b> {count}" }))).toThrow(/plain text/);
+    for (const text of ["**{amount}** {count}", "`{amount}` {count}", "# {amount} {count}", "<!-- {amount} --> {count}"]) {
+      expect(() => loadCopyCatalog(catalog({ ...base, text }))).toThrow(/plain text/);
+    }
   });
 });

@@ -25,7 +25,6 @@ export interface CopyEntry {
 
 export interface CopyCatalog {
   readonly schemaVersion: 1;
-  readonly copyHash: string;
   readonly entries: readonly CopyEntry[];
   readonly byKey: ReadonlyMap<string, CopyEntry>;
 }
@@ -36,10 +35,9 @@ export interface CopyInvariant {
   readonly detail: string;
 }
 
-export interface ResolveCopyOptions {
-  readonly mode?: "development" | "production";
-  readonly reportInvariant?: (invariant: CopyInvariant) => void;
-}
+export type ResolveCopyOptions =
+  | { readonly mode?: "development"; readonly reportInvariant?: (invariant: CopyInvariant) => void }
+  | { readonly mode: "production"; readonly reportInvariant: (invariant: CopyInvariant) => void };
 
 const mechanicalID = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 const paramName = /^[a-z][a-z0-9_]*$/;
@@ -65,7 +63,7 @@ function plainText(value: unknown, label: string): string {
   if (typeof value !== "string" || value !== value.normalize("NFC") || new TextEncoder().encode(value).length > COPY_MAX_TEXT_UTF8_BYTES || value.split("\n").length > COPY_MAX_TEXT_LINES) {
     syntax(`${label} is not bounded NFC text`);
   }
-  if (/[^\P{Cc}\n]/u.test(value) || /<\/?[a-z][^>]*>/iu.test(value) || /!?\[[^\]]+\]\([^)]+\)/u.test(value)) syntax(`${label} must be plain text`);
+  if (/[^\P{Cc}\n]/u.test(value) || /<\/?[a-z][^>]*>/iu.test(value) || /<!--|-->|!?\[[^\]]+\]\([^)]+\)|[`*_~]|^(?:\s{0,3}(?:#{1,6}|>|[-+]|\d+\.)\s|\s{0,3}(?:---+|===+)\s*$)/mu.test(value)) syntax(`${label} must be plain text`);
   return value;
 }
 
@@ -128,7 +126,7 @@ export function loadCopyCatalog(bytes: string | Uint8Array): CopyCatalog {
   if (root.schema_version !== 1 || !Array.isArray(root.entries) || root.entries.length === 0) syntax("copy catalog must be non-empty schema version 1");
   const entries = root.entries.map((entry, index) => parseEntry(entry, `copy catalog.entries[${index}]`));
   if (entries.some((entry, index) => index > 0 && entries[index - 1].key >= entry.key)) syntax("copy catalog keys must be byte-sorted and unique");
-  return Object.freeze({ schemaVersion: 1, copyHash: COPY_HASH, entries: Object.freeze(entries), byKey: new Map(entries.map((entry) => [entry.key, entry])) });
+  return Object.freeze({ schemaVersion: 1, entries: Object.freeze(entries), byKey: new Map(entries.map((entry) => [entry.key, entry])) });
 }
 
 export async function hashCopyCatalog(bytes: string | Uint8Array): Promise<string> {
@@ -179,7 +177,8 @@ export function resolveCopy(catalog: CopyCatalog, key: string, params: Readonly<
     return render(era ? entry.eraVariants?.[era] ?? entry.text : entry.text, entry, params);
   } catch (error) {
     if ((options.mode ?? "development") !== "production") throw error;
-    options.reportInvariant?.({ kind: "copy_resolution_failed", key, detail: error instanceof Error ? error.message : String(error) });
+    if (typeof options.reportInvariant !== "function") throw new Error("production copy resolution requires an invariant reporter", { cause: error });
+    options.reportInvariant({ kind: "copy_resolution_failed", key, detail: error instanceof Error ? error.message : String(error) });
     return key;
   }
 }

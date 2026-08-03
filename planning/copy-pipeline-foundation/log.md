@@ -45,3 +45,37 @@
   kernel-history, combat, copy, and schema guards; and 19,530 browser assertions.
 - No custom environment, cache wrapper, or package-directory command was used. This is the normal
   repository-root verification surface required by `AGENTS.md`.
+
+## 2026-08-03 — independent review by Darwin (`261eafa..b0cedab`)
+
+Decision: not approved for archival. Seven findings were demonstrated:
+
+- HIGH: clean-checkout failure because two denylist citations existed only as untracked owner
+  research files, contaminating the recorded local green gate.
+- HIGH: arbitrary valid catalog bytes were mislabeled with the generated application `COPY_HASH`.
+- HIGH: suffix-symbol currencies such as `12€` and `12$` bypassed statistic provenance.
+- MEDIUM: production fallback could omit its invariant sink.
+- MEDIUM: denylist terms were append-only but their legal citations could be retargeted.
+- MEDIUM: code-site verification counted comment/dead string literals rather than Go syntax.
+- MEDIUM: the plain-text grammar rejected links/tags but still admitted other Markdown constructs.
+
+The RFC remains implementing. The complete authored verdict was delivered by Darwin against the
+full implementation range; remediation follows in one independently re-reviewed batch.
+
+## 2026-08-03 — review remediation implemented
+
+- Retargeted the same append-only denylist terms to tracked legal matrices; all research/provenance
+  dependencies must now be Git-tracked. The history guard protects the full term+citation pair and
+  permits a citation correction only when the cited file was absent from the parent commit—the
+  exact invalid-introduction case—then seals the corrected citation.
+- Removed `copyHash` from arbitrary loaded catalogs. Byte identity is explicit through
+  `hashCopyCatalog`/`verifyCopyCatalogHash`; a generated deployment manifest now pins the current
+  recomputed `constants_hash` and `copy_hash` together.
+- Fixed bidirectional currency adjacency and added suffix-symbol/near-miss fixtures.
+- Made the invariant reporter mandatory in production at both the type and runtime boundary.
+- Replaced raw-literal site counting with a Go AST verifier bound to source file, function, JSON
+  field, and key; comment/wrong-field fixtures fail.
+- Closed the source/runtime plain-text grammar over Markdown emphasis, code, headings, blockquotes,
+  lists, rules, links, tags, and HTML comments, with runtime fixtures.
+- Normal root checks after the batch: `make copy-generate`, `make copy-check`, `make typecheck`, and
+  `make test-client` green (6,507 passed, 3 skipped; 1 test file skipped).
