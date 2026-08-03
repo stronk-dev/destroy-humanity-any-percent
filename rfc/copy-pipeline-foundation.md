@@ -1,11 +1,12 @@
 # RFC: Copy Pipeline Foundation
 
-- **Status:** draft
+- **Status:** implementing (C1–C10 ruled)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/08` (the flavor bible — voice rules, era presentation, the tonal law), `design/11` (UX writing, first-session), the research-provenance conventions (`design/research/README.md`)
 - **Research:** the whole flavor corpus; `gaming-enshittification.md §6` + `societal-satire.md` (voice), all `[V]/[M]` provenance discipline
-- **Depends on:** UI Foundation (draft — UF3 consumes this artifact); the content RFCs author copy AGAINST this pipeline
+- **Depends on:** implemented client/tooling foundations only (C1 ruling)
+- **Unblocks:** UI Foundation (UF3 consumes this artifact), all content RFCs' copy
 - **Owner ruling honored:** breadth-first — the copy SYSTEM (keys, artifact, lints), not the copy.
 - **Planning:** `planning/copy-pipeline-foundation/` (once implementing)
 
@@ -20,8 +21,9 @@ rule. Content RFCs declare `copy_key` fields; this pipeline resolves, validates,
 
 ### CP1 — The copy catalog artifact
 
-`copy/*.json`: `{key, text, params: [{name, type}], era_variants: {era: text}|null,
-provenance: [research-file#claim]|null, legal_reviewed: bool}`. Keys are namespaced
+`copy/*.json` source files are strict `{schema_version:1,entries:[...]}` documents. Each entry is
+exact-key `{key,text,params,era_variants,provenance,tone}`; `legal_reviewed` is deliberately absent
+because an unauthenticated boolean proves nothing. Keys are namespaced
 (`desk.buy.tooltip`, `event.garage_plaque.title`). Text uses typed placeholder syntax for params.
 Era variants override the base per era (UF1's `era_1995`/`era_2000`); resolution is
 `key@era → key` fallback. The catalog is a build artifact (like the formula document), diffable,
@@ -29,11 +31,10 @@ reviewable.
 
 ### CP2 — The completeness gate
 
-Every catalog-declared `copy_key` field across ALL content catalogs (upgrades, generators,
-events, achievements, minigames, meters…) must resolve to a catalog key; a missing key fails CI
-naming the field and the catalog. A copy key with no referencing content field is dead copy,
-flagged (not failed — copy can precede its content). This is the mechanical version of "no
-literal strings in components" extended to no-orphan-keys across the content graph.
+`copy/references.v1.json` is the authority for copy-bearing catalog paths. The completeness gate
+walks only those registered JSON-pointer patterns against the epoch-seed artifact map. Every
+referenced key must resolve; a miss fails naming `artifact:path:key`. Unreferenced copy is emitted
+to a deterministic warning report because copy may legitimately precede its content.
 
 ### CP3 — The legal lint (the tonal law, mechanical)
 
@@ -42,9 +43,11 @@ literal strings in components" extended to no-orphan-keys across the content gra
   real living individuals in a mocking frame…). A 🔴 term in shipped copy fails CI. The denylist
   is `moderation/copy-denylist.txt`, sourced from the research files' legal-axis tables,
   extend-only.
-- **Provenance enforcement:** any string the linter detects as a statistic (number + unit
-  patterns, or an explicit `provenance` field) MUST carry a `provenance` pointer to a research
-  file's `[V]` claim; a statistic with `[M]`/`[P]`/absent provenance fails CI (the
+- **Provenance enforcement:** the deliberately narrow detector covers literal numbers adjacent
+  to `%`, configured currency/unit tokens, and historical four-digit years. Placeholders are
+  ignored. A detected literal or explicit provenance declaration MUST resolve through
+  `copy/provenance.v1.json` to a `verified` claim with a unique research anchor and HTTPS source;
+  plausible/model/absent provenance fails shipping (the
   verify-before-shipping law made a gate). This is the single most important safety mechanism in
   the copy system — it makes "anything on a verify-before-shipping list is flagged, not shipped"
   impossible to violate by accident.
@@ -57,6 +60,50 @@ and the lore-card carve-out (sourced population-level statistics allowed as no-j
 2026-07-28 owner decision) is a `tone: lore_card` flag the provenance lint requires `[V]` on but
 the voice review knows carries no joke.
 
+## Owner rulings on C1–C10 (2026-08-03)
+
+- **C1 — accepted:** dependency direction corrected (Copy Pipeline → UI, not reverse); the real
+  `client/src/copy/` boundary lands here, UI consumes it (no UI stub).
+- **C2 — accepted:** strict artifact grammar as proposed — source files `{schema_version:1,
+  entries:[exact-key rows]}`, globally-unique mechanical-ID keys, `tone` closed union
+  `corporate|diegetic|lore_card|achievement`, era keys exactly `era_1995|era_2000` byte-sorted,
+  NFC UTF-8, byte-deterministic generated `client/src/copy/generated/catalog.json` + TS types.
+- **C3 — accepted:** params `string|integer|canonical_decimal`; plain text only (no HTML/Markdown);
+  `{name}` placeholders with `{{`/`}}` literals; exact-param runtime contract (missing/extra/type
+  throws in dev, returns key + invariant report in prod); `canonical_decimal` inserted verbatim
+  (`<Amount>` owns notation); Svelte escapes after resolution.
+- **C4 — accepted:** a checked-in strict `copy/references.v1.json` registry names every JSON path
+  that is a copy reference (incl. `name_key`, `incorporation_copy_key`, `reason_key`) — the
+  completeness gate walks the registry, never property-name matching.
+- **C5 — accepted:** the existing catalogs' already-required copy fields (name_key etc.) are the
+  first registry rows; their copy lands with this foundation so nothing ships key-less.
+- **C6 — accepted, THE load-bearing ruling: a machine-readable `copy/provenance.v1.json`
+  registry.** Rows `{claim_id, source_file, source_anchor, status, source_urls}`; `status ∈
+  verified|plausible|model`; **verified requires ≥1 HTTPS URL and a resolving unique anchor under
+  `design/research/`**; copy rows carry sorted-unique `provenance:[claim_id]`; **shipping accepts
+  ONLY verified claims** (plausible/model representable for draft fixtures, fail the production
+  gate); verified-row source changes are append/supersede, never in-place relabel. The gate proves
+  registry CONSISTENCY, honestly not re-doing the research — that's the right, non-overclaiming
+  boundary. (This replaces my `research-file#claim` grep, which Codex correctly showed can't prove
+  identity.)
+- **C7 — accepted:** the statistic detector is deliberately NARROW and honest — number adjacent to
+  `%`/currency/closed-unit-token, or a four-digit year in the historical range; placeholders
+  ignored (runtime mechanics); voluntary provenance allowed; **no production suppression flag** (a
+  detected statistic without verified provenance fails, period). Under-detection is accepted and
+  stated; the gate never pretends to catch every factual claim — voice review remains the human
+  backstop.
+- **C8 — accepted:** the denylist contract is the proposed case-folded NFC, separator-collapsed,
+  Unicode-token matcher over an append-only, byte-sorted file. Every entry cites a research legal
+  matrix; the full-history guard fails closed on shallow clones. It enforces known red-list terms,
+  not general legal safety.
+- **C9 — accepted:** `legal_reviewed` is removed. Independent commit-range review is the human
+  assurance record; any future attestation must bind reviewer identity to a content hash.
+- **C10 — accepted:** copy has a content-addressed `copy_hash` separate from `constants_hash`.
+  Mechanical keys stay in receipts/events. The framework-independent client package owns
+  `loadCopyCatalog`, `resolveCopy`, generated key/param types, and the singleton artifact. Root
+  `copy-generate`/`copy-check` targets enforce generation, completeness, provenance, denylist
+  history, and fixtures; CI runs the check with full Git history.
+
 ## Acceptance criteria
 
 1. Catalog round-trip; era-fallback resolution; typed-param validation (wrong param type fails).
@@ -67,11 +114,10 @@ the voice review knows carries no joke.
    passes; a `tone: lore_card` requires `[V]`.
 5. UF3 integration: the UI's `t()` resolves against this artifact (the interface UF3 stubbed).
 
-## Acceptance blockers (Codex review, 2026-08-03)
+## Resolved acceptance review record (Codex, 2026-08-03)
 
-The direction is correct, but this draft is not executable and is not yet accepted. The two
-headline safety gates currently claim more than the repository metadata can prove. The following
-closures include proposed contracts so the owner can rule them directly.
+The original draft was not executable. C1-C10 below record the gaps and proposals the owner
+subsequently adopted above. They are retained as decision history, not open blockers.
 
 ### C1 — Status and dependency direction contradict the ruled queue
 
@@ -228,7 +274,9 @@ The package has no Svelte dependency so UI consumes it without owning it.
 
 ## Changelog
 
-- 2026-08-03: created (draft) — the copy system; the two satire-safety design laws made
-  mechanical gates.
-- 2026-08-03: Codex acceptance review recorded C1–C10. Implementation is blocked pending owner
-  rulings and reconciliation into one executable contract.
+- 2026-08-03: created (draft) — the copy system.
+- 2026-08-03: C1–C10 ruled — dependency direction fixed; strict artifact/param grammar;
+  reference/provenance registries; verified-only shipping; narrow statistic detector; normalized
+  append-only denylist; unauthenticated review flag removed; separate copy identity and root CI
+  gates. Accepted for implementation.
+- 2026-08-03: Codex acceptance review recorded C1–C10; owner adopted all ten contracts.

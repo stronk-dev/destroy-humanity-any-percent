@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "references": [
+    {
+      "artifact_name": "categories",
+      "json_pointer_pattern": "/categories/*/name_key",
+      "field_kind": "name_key"
+    },
+    {
+      "artifact_name": "economy",
+      "json_pointer_pattern": "/generator_classes/*/provisioned_hardcap/reason_key",
+      "field_kind": "reason_key"
+    },
+    {
+      "artifact_name": "economy",
+      "json_pointer_pattern": "/resources/*/hardcap/reason_key",
+      "field_kind": "reason_key"
+    },
+    {
+      "artifact_name": "economy",
+      "json_pointer_pattern": "/upgrades/*/copy_key",
+      "field_kind": "copy_key"
+    },
+    {
+      "artifact_name": "factions",
+      "json_pointer_pattern": "/factions/*/incorporation_copy_key",
+      "field_kind": "copy_key"
+    }
+  ]
+}

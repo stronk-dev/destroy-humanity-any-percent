@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "key": "category.any_percent",
+      "text": "Any%",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "category.ethical_percent",
+      "text": "Ethical%",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "category.hundred_percent",
+      "text": "100%",
+      "params": [],
+      "era_variants": null,
+      "provenance": ["speedrun.category_taxonomy"],
+      "tone": "corporate"
+    },
+    {
+      "key": "category.low_percent",
+      "text": "Low%",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "category.valuation",
+      "text": "Valuation",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "compact.recruitment.mid_t3",
+      "text": "Mutual Aid Compact recruitment",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "incorporate.bootstrapper",
+      "text": "Bootstrapper",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "incorporate.enterprise",
+      "text": "Enterprise",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "incorporate.open_source",
+      "text": "Open Source",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "incorporate.vc_funded",
+      "text": "VC-Funded",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "resource.company_cash.cap.phase0",
+      "text": "Company cash is capped.",
+      "params": [],
+      "era_variants": {
+        "era_1995": "Company cash is capped.",
+        "era_2000": "Company cash is capped."
+      },
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "route.registry_first_reordered",
+      "text": "Route Registry first-executor credit corrected",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    }
+  ]
+}

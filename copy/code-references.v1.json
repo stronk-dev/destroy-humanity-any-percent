@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "keys": [
+    "compact.recruitment.mid_t3",
+    "route.registry_first_reordered"
+  ]
+}

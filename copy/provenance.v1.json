@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "claims": [
+    {
+      "claim_id": "speedrun.category_taxonomy",
+      "source_file": "design/research/speedrun-governance.md",
+      "source_anchor": "31-the-taxonomy-and-how-it-proliferates",
+      "status": "verified",
+      "source_urls": [
+        "https://en.wikipedia.org/wiki/Speedrun"
+      ]
+    }
+  ]
+}
