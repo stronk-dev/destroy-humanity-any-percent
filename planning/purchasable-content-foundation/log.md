@@ -131,3 +131,55 @@ for the schema-v4 content change and whether it is a mint or hotfix.
 Implementation remains blocked until C1-C11 are answered in the RFC. No mechanics were inferred
 or coded during this review.
 
+## 2026-08-03 — accepted-ruling reconciliation check
+
+- **Review by:** Codex
+- **Recorded by:** Codex
+- **Reviewed surface:** owner-ruling delta in the uncommitted RFC after C1-C11.
+- **Verdict:** C1-C11's architectural rulings are accepted; C12-C14 are narrow executable-text
+  blockers. Implementation did not start because the stated role law still cannot be validated.
+
+### C12 — Remove ruling contradictions from the normative text
+
+The RFC still has `Status: draft`; AC4 still requires the loader to reject a roleless upgrade,
+contradicting C4's optional upgrade roles; and both Open Questions repeat choices C4 already
+settled (capacity is deferred, manual targets are included). Set the accepted lifecycle state,
+change AC4 to generator classes only, remove the resolved questions, and make the P1 effect fields
+match the ruled Decimal-only union (`factor`, never `factor|ppm`).
+
+### C13 — Role bindings and executed-mechanic proofs
+
+The four ruled role names are still bare labels. `provision` and `synergy_feed` can be proven from
+the existing edge/pool rows, but `manual_output` and `stock_rate` have no catalog binding or
+formula. The existing faction hook accrues one unit per interval regardless of generator state,
+so merely labeling a generator `stock_rate` would remain a self-confirming role declaration.
+
+**Proposal:** generator `roles` are typed objects, not strings:
+
+- `{kind:"provision", generator_id}` must exactly match that class's provision edge;
+- `{kind:"synergy_feed", pool_id}` must exactly match a generator source in that pool;
+- `{kind:"manual_output", action_id, per_purchased_ppm}` emits manual factor
+  `1 + purchased_count*per_purchased_ppm/1e6`, quantized once, through the `upgrades` slot;
+- `{kind:"stock_rate", per_purchased_ppm}` scales faction stock progress by the same factor,
+  using exact integer-ppm multiplication with a persisted remainder. Purchased counts only feed
+  both roles. Duplicate `(kind,target)` bindings reject. The loader proves every role object has
+  its corresponding executable declaration; the harness records activation only when the bound
+  mechanic produces a non-neutral result.
+
+If a different stock/manual formula is intended, it must replace this proposal explicitly; field
+names alone are not the missing contract.
+
+### C14 — Provision hardcap and bucket wire shape
+
+C5 requires a declared per-class hardcap/reason and C6 requires per-edge remainders, but neither
+has an exact catalog/save shape. **Proposal:** every provision target generator declares
+`provisioned_hardcap:{count:int64,reason_key:string}`; save v14 adds
+`generators_provisioned:{id:int64}` and `provision_remainders_ppm:{target_id:int64}` with complete
+catalog key sets, including zeros. At each absolute tick, all edges read the pre-boundary total
+counts, compute `numerator = source_total*rate_ppm + prior_remainder` in overflow-safe integer
+arithmetic, stage `floor(numerator/1e6)`, retain `numerator mod 1e6`, then commit all staged target
+increments simultaneously with accrual-only saturation. New units affect the following bucket.
+The cap reason is exported in the authoritative snapshot/formula artifact, and the client uses it
+when a provisioned counter is frozen.
+
+C12-C14 must be reconciled in the RFC before the catalog/save implementation batch begins.
