@@ -283,3 +283,14 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
   zero-valued state fields changed the final encoded-state identity for the two canonical runs.
   Commit `2266611` is the required artifact-only `BALANCE-CHANGE:` rebaseline; it contains exactly
   the two state-hash replacements and no input, code, or pacing change.
+- Final `make verify` is green: Go vet and all Go tests; deterministic formula and harness gates;
+  strict TypeScript/Svelte checks; production client build; 6,500 Vitest unit tests (3 skipped);
+  kernel/schema/source-boundary guards; and 19,509 browser tests.
+- The real-Postgres target caught two stale tests while verifying migration `00047`. The prestige
+  v6 migration test constructed its legacy JSON by downgrading current state but failed to delete
+  the four new v14 fields; commit `48243cf` makes it a genuine v6 payload. The composed WebSocket
+  test used a fixed 2026-08-02 application clock, while Centrifuge validates credential expiry
+  against the process wall clock; commit `11260e6` anchors that injected clock to the current day
+  and keeps all subsequent advancement deterministic. Neither correction changes runtime code.
+  A clean `make test-save-integration` rerun passes every Docker-backed Postgres package, including
+  gameserver real sockets, production migration/Exit, replay verification, save, and transport.
