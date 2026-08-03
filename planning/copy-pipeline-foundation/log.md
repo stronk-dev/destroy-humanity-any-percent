@@ -115,3 +115,13 @@ required before another archive verdict.
   cases.
 - Normal root targets `make copy-check`, `make typecheck`, `make test-client`, and `make test-go`
   pass after the second remediation (6,507 client assertions; every server package green).
+
+## 2026-08-03 — second-remediation full gate
+
+- `make copy-check` passed from the repository root after commit `6d0b309`, including the live Git
+  history fixtures, Go AST producer-site verification, and deployment manifest identity check.
+- `make verify` passed from the repository root at `6d0b309`: Go vet and all server packages;
+  generated-formula drift and balance harness; TypeScript/Svelte checks; the production client
+  build; 6,507 client assertions; governance/schema guards; and 19,530 browser assertions.
+- The second remediation now requires an independent verdict covering `6d0b309` and the preceding
+  rejected ranges. Neither earlier rejection is relabeled or treated as approval.
