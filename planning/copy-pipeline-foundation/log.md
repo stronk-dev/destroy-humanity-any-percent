@@ -37,3 +37,11 @@
 - Published `docs/copy-pipeline.md`, including the safety gates' deliberately limited claims.
 - Re-ran normal root targets after hardening: `make copy-check`, `make typecheck`, and
   `make test-client` green (6,507 passed, 3 skipped; 1 test file skipped).
+
+## 2026-08-03 — full local gate
+
+- `make verify` passed at `665bd61`: Go vet; all server packages; formula drift; Commons and full
+  balance harness; TypeScript/Svelte checks; production client build; 6,507 client tests; shell,
+  kernel-history, combat, copy, and schema guards; and 19,530 browser assertions.
+- No custom environment, cache wrapper, or package-directory command was used. This is the normal
+  repository-root verification surface required by `AGENTS.md`.
