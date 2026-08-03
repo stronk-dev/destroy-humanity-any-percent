@@ -92,7 +92,11 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		}
 	})
 
-	clock := &mutableClock{now: time.Date(2026, 8, 2, 12, 0, 0, 0, time.UTC)}
+	// Centrifuge validates Credentials.ExpireAt against the process wall clock.
+	// Keep the injected application clock deterministic within the test while
+	// anchoring it to the day the test runs, so this real-socket proof cannot
+	// expire merely because its authored calendar date has passed.
+	clock := &mutableClock{now: time.Now().UTC().Truncate(time.Second)}
 	composition, err := Compose(ctx, CompositionConfig{
 		DB:              db,
 		RepositoryRoot:  filepathRoot(t),
