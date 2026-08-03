@@ -161,3 +161,11 @@ assurances. A third remediation and independent verdict are required.
 - Focused normal root checks pass: `make copy-check`,
   `make test-go GO_PACKAGES='./cmd/verify-copy-sites ./cmd/gen-content-manifest'`, and
   `make test-client` (6,507 assertions).
+
+## 2026-08-03 — third-remediation full gate
+
+- `make verify` passed from the repository root at `6c1dfaf`: Go vet and every server package;
+  formula and harness gates; TypeScript/Svelte checks; production client build; 6,507 client
+  assertions; history/boundary/copy/schema guards; and 19,530 browser assertions.
+- A new independent verdict must cover `6c1dfaf` plus this gate record and union with every earlier
+  implementation/remediation range before archival.
