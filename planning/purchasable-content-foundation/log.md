@@ -363,3 +363,22 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
   three-way validator parity, Company-only predicates, formula fingerprint coverage, AC1 rejection
   and ordering tests, and kernel `0.3.13` classification. The focused Go/client/schema/formula/
   kernel/replay/harness gates were green. No files were edited by the reviewer.
+
+## 2026-08-03 — causal role-activation remediation
+
+- Commit `e7c4263` closes the remaining C13 HIGH with output-derived evidence:
+  - provision activates only when the boundary materializes at least one unit after headroom; the
+    first remainder-only boundary and an already-capped target have named negative fixtures;
+  - synergy candidates require a matching declared `synergy_feed` role, and production promotion
+    requires the declared pool's generator target to have a nonzero purchased+provisioned count;
+    zero-target, undeclared-role, and positive exercised-target fixtures discriminate the rule;
+  - stock-rate runs the real hook once, then restores the exact pre-hook save and reruns it with each
+    role generator masked. Only a differing stock units/progress/ppm-remainder tuple activates that
+    role. The cap + whole-extra-interval reproducer now stays inactive while the ordinary non-neutral
+    role still activates.
+- Kernel `0.3.14` records the simulation semantic correction under KV-1. Authoritative replay bytes
+  remain unchanged; formula source identity updates because the generated authority covers the
+  provision function, while catalog and pacing artifacts remain unchanged.
+- Standard root verification is green: focused Go packages, full client verification (6,502 tests),
+  shared schema, replay fixture, formula drift, kernel-history guards, and deterministic
+  `make harness-check`. Exact review span: `e7c4263^..e7c4263`.
