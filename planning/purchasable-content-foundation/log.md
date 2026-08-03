@@ -382,3 +382,20 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
 - Standard root verification is green: focused Go packages, full client verification (6,502 tests),
   shared schema, replay fixture, formula drift, kernel-history guards, and deterministic
   `make harness-check`. Exact review span: `e7c4263^..e7c4263`.
+
+## 2026-08-03 — independent causal-activation review
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Reviewed range:** `e7c4263^..e7c4263` (`fe8ad0b` excluded as recorder-only evidence).
+- **Verdict:** not approved for archival. Provision's post-headroom materialization proof and
+  stock-rate's exact per-role counterfactual are approved; synergy still reads post-intent counts
+  instead of observing contribution execution inside accrual.
+- Remaining HIGH reproduces when: an elapsed purchase changes the target from zero to nonzero only
+  after accrual; an effect mask preserves target ownership while nulling its rate; a terminal
+  provision boundary creates next-bucket-only units; or a legal `all` production target has no
+  single generator lookup. The existing zero/undeclared/ordinary fixtures do not cover those seams.
+- Required correction: record synergy execution at the production-rate application point, requiring
+  a nonzero unmasked rate, with named fixtures for zero-before/bought-after, masked target,
+  terminal-boundary provisioning, and `all`. Kernel `0.3.14`, replay stability, formula drift, and
+  the provision/stock corrections were verified green. No files were edited by the reviewer.
