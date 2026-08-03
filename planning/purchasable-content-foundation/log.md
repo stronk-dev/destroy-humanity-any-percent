@@ -399,3 +399,18 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
   a nonzero unmasked rate, with named fixtures for zero-before/bought-after, masked target,
   terminal-boundary provisioning, and `all`. Kernel `0.3.14`, replay stability, formula drift, and
   the provision/stock corrections were verified green. No files were edited by the reviewer.
+
+## 2026-08-03 — rate-site synergy remediation
+
+- Commit `7df4d7b` deletes post-intent ownership inference. A declared synergy candidate activates
+  only inside `ratesWithProvisionedAndPolicy`, after the engine has selected a nonzero unmasked
+  generator and at the exact ordered-source multiplication for that pool. This naturally supports
+  `all` and preserves next-bucket provision semantics.
+- Four named regressions prove the former false-positive/missing-credit seams: effect-masked target;
+  zero during accrual then bought by the intent; provisioned at the terminal boundary; and legal
+  `all` applied to a live rate. The prior zero-target, undeclared-role, and ordinary positive cases
+  remain green.
+- Kernel `0.3.15` records the rate-site simulation observation under KV-1. Authoritative replay is
+  byte-unchanged. Focused Go, full client verification (6,502 tests), replay fixture, formula drift,
+  kernel history, and deterministic `make harness-check` pass through standard root targets.
+- Exact independent re-review span: `7df4d7b^..7df4d7b`.
