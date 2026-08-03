@@ -196,3 +196,14 @@ blocked archival.
   function, and field entries remain precise review locators.
 - The build and runtime text validators now reject two-or-more trailing spaces at line end, with a
   shared hard-break reproducer.
+
+## 2026-08-03 — structural-remediation verification
+
+- `make copy-check`, focused Go/client targets, and `make test-save-integration` passed. The latter
+  exercised both registered producer sites against real Postgres and asserted their stored event
+  payload keys through the generated constants.
+- `make verify` passed from the repository root at `7c9cadc`: every server package, formula and
+  harness gate, strict client checks/build, 6,507 client assertions, governance/schema guards, and
+  19,530 browser assertions.
+- The next independent verdict must review the deliberate assurance reduction as well as the
+  implementation: no archived documentation may retain the withdrawn AST proof.
