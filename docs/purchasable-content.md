@@ -68,6 +68,9 @@ provisioning while preserving ownership and costs. An upgrade effect mask nulls 
 bundle. Action removal makes the matching purchase or manual action reject as unknown before
 accrual. Simulation receives the same route catalog and accrual hook as the route under test, and
 reports a typed role activation only when an applied transition executes a non-neutral role result.
+Provision requires at least one materialized unit, synergy requires its declared role plus an
+exercised nonzero target, and stock-rate compares the real hook result with the same transition
+after masking that one role's generator. Ownership or elapsed time alone never records activation.
 The authoritative and replay entrypoints have no mask parameter, catalog field, save field, or
 replay-input field; a Go source guard permits the simulation entrypoint only from the harness and
 tests.

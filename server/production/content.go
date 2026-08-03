@@ -73,7 +73,8 @@ func contentContributionsWithPolicy(state *save.State, catalog *economy.Catalog,
 				if !exists {
 					return nil, ErrInvalidEngineState
 				}
-				if count > 0 {
+				generator, declared := catalog.GeneratorClass(source.ID)
+				if count > 0 && declared && generatorDeclaresRole(generator, economy.RoleSynergyFeed, pool.ID) {
 					policy.candidate(RoleActivation{GeneratorID: source.ID, Kind: economy.RoleSynergyFeed, TargetID: pool.ID})
 				}
 			case economy.SynergyUpgrade:
@@ -206,9 +207,6 @@ func materializeProvisionBoundaryWithPolicy(catalog *economy.Catalog, purchased,
 			return ErrInvalidEngineState
 		}
 		sourceTotal := new(big.Int).Add(big.NewInt(sourcePurchased), big.NewInt(sourceProvisioned))
-		if sourceTotal.Sign() > 0 {
-			policy.activate(RoleActivation{GeneratorID: source.ID, Kind: economy.RoleProvision, TargetID: source.Provision.GeneratorID})
-		}
 		numerator := new(big.Int).Mul(sourceTotal, big.NewInt(source.Provision.RatePPM))
 		numerator.Add(numerator, big.NewInt(priorRemainder))
 		quotient, remainder := new(big.Int), new(big.Int)
@@ -225,12 +223,34 @@ func materializeProvisionBoundaryWithPolicy(catalog *economy.Catalog, purchased,
 		} else {
 			staged[source.Provision.GeneratorID] = quotient.Int64()
 		}
+		if staged[source.Provision.GeneratorID] > 0 && generatorDeclaresRole(source, economy.RoleProvision, source.Provision.GeneratorID) {
+			policy.activate(RoleActivation{GeneratorID: source.ID, Kind: economy.RoleProvision, TargetID: source.Provision.GeneratorID})
+		}
 	}
 	for targetID, remainder := range stagedRemainders {
 		remainders[targetID] = remainder
 		provisioned[targetID] += staged[targetID]
 	}
 	return nil
+}
+
+func generatorDeclaresRole(generator economy.GeneratorClassDefinition, kind economy.GeneratorRoleKind, targetID string) bool {
+	for _, role := range generator.Roles {
+		if role.Kind != kind {
+			continue
+		}
+		switch kind {
+		case economy.RoleProvision:
+			return role.GeneratorID == targetID
+		case economy.RoleSynergyFeed:
+			return role.PoolID == targetID
+		case economy.RoleManualOutput:
+			return role.ActionID == targetID
+		case economy.RoleStockRate:
+			return targetID == "faction.stock"
+		}
+	}
+	return false
 }
 
 func cloneInt64Counts(source map[string]int64) map[string]int64 {

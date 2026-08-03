@@ -36,6 +36,28 @@ func foundationCatalog(t *testing.T) *economy.Catalog {
 	return catalog
 }
 
+func foundationCatalogWithMutation(t *testing.T, mutate func(map[string]any)) *economy.Catalog {
+	t.Helper()
+	data, err := os.ReadFile("../../testdata/economy-foundation-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var authored map[string]any
+	if err := json.Unmarshal(data, &authored); err != nil {
+		t.Fatal(err)
+	}
+	mutate(authored)
+	encoded, err := json.Marshal(authored)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := economy.LoadCatalog(encoded)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return catalog
+}
+
 func foundationState(t *testing.T, catalog *economy.Catalog, now time.Time) *save.State {
 	t.Helper()
 	ledger, err := economy.NewLedger(catalog, economy.ScopeCompany)
@@ -89,6 +111,15 @@ func rejectionDetail(t *testing.T, decision save.IntentDecision) (string, string
 		t.Fatal(err)
 	}
 	return receipt.Rejection.Category, receipt.Rejection.Detail
+}
+
+func hasRoleActivation(values []RoleActivation, want RoleActivation) bool {
+	for _, value := range values {
+		if value == want {
+			return true
+		}
+	}
+	return false
 }
 
 func TestContentContributionsUsePurchasedCountsAndRawSourceOrder(t *testing.T) {
@@ -407,6 +438,103 @@ func TestSimulationActionRemovalRejectsEveryOwnedActionBeforeAccrual(t *testing.
 	}
 }
 
+func TestSimulationProvisionActivationRequiresMaterializedUnits(t *testing.T) {
+	catalog := foundationCatalog(t)
+	dependencies := SimulationDependencies{Routes: foundationRoutes(t)}
+	started := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
+	state := foundationState(t, catalog, started)
+	state.GeneratorCounts["generator.high"] = 1
+	state.ManualTokenMilli = 50_000
+	want := RoleActivation{GeneratorID: "generator.high", Kind: economy.RoleProvision, TargetID: "generator.low"}
+	request := IntentRequest{IntentID: "01986666-0213-7000-8000-000000000213", Kind: IntentPerformManualBatch, ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1}
+
+	first, err := SimulateTransition(request, state, catalog, dependencies, save.Revision{Number: 1}, ModeOnline, started.Add(time.Minute), nil, nil, AblationMask{})
+	if err != nil || first.Decision.Outcome != save.IntentApplied || state.ProvisionRemaindersPPM["generator.low"] != 500_000 {
+		t.Fatalf("first=%+v remainder=%v err=%v", first, state.ProvisionRemaindersPPM, err)
+	}
+	if hasRoleActivation(first.RoleActivations, want) {
+		t.Fatalf("zero-unit boundary activated provision: %+v", first.RoleActivations)
+	}
+
+	request.IntentID = "01986666-0214-7000-8000-000000000214"
+	request.ExpectedRevision = 2
+	second, err := SimulateTransition(request, state, catalog, dependencies, save.Revision{Number: 2}, ModeOnline, started.Add(2*time.Minute), nil, nil, AblationMask{})
+	if err != nil || second.Decision.Outcome != save.IntentApplied || state.GeneratorProvisioned["generator.low"] != 1 || !hasRoleActivation(second.RoleActivations, want) {
+		t.Fatalf("second=%+v provisioned=%v err=%v", second, state.GeneratorProvisioned, err)
+	}
+
+	state.GeneratorProvisioned["generator.low"] = 9_007_199_254_740_991
+	request.IntentID = "01986666-0215-7000-8000-000000000215"
+	request.ExpectedRevision = 3
+	capped, err := SimulateTransition(request, state, catalog, dependencies, save.Revision{Number: 3}, ModeOnline, started.Add(3*time.Minute), nil, nil, AblationMask{})
+	if err != nil || capped.Decision.Outcome != save.IntentApplied {
+		t.Fatalf("capped=%+v err=%v", capped, err)
+	}
+	if hasRoleActivation(capped.RoleActivations, want) {
+		t.Fatalf("capped boundary activated provision: %+v", capped.RoleActivations)
+	}
+}
+
+func TestSimulationSynergyActivationRequiresDeclaredExercisedTarget(t *testing.T) {
+	started := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
+	want := RoleActivation{GeneratorID: "generator.high", Kind: economy.RoleSynergyFeed, TargetID: "pool.operations"}
+	request := IntentRequest{IntentID: "01986666-0216-7000-8000-000000000216", Kind: IntentPerformManualBatch, ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1}
+
+	zeroTargetCatalog := foundationCatalogWithMutation(t, func(authored map[string]any) {
+		generators := authored["generator_classes"].([]any)
+		low := generators[0].(map[string]any)
+		filtered := make([]any, 0)
+		for _, value := range low["roles"].([]any) {
+			if value.(map[string]any)["kind"] != "synergy_feed" {
+				filtered = append(filtered, value)
+			}
+		}
+		low["roles"] = filtered
+		high := generators[1].(map[string]any)
+		high["roles"] = append(high["roles"].([]any), map[string]any{"kind": "synergy_feed", "pool_id": "pool.operations"})
+		pool := authored["synergy_pools"].([]any)[0].(map[string]any)
+		pool["sources"] = []any{map[string]any{"kind": "generator", "id_or_class": "generator.high", "per_count_ppm": float64(1000)}}
+	})
+	state := foundationState(t, zeroTargetCatalog, started)
+	state.GeneratorCounts["generator.high"] = 1
+	state.ManualTokenMilli = 50_000
+	result, err := SimulateTransition(request, state, zeroTargetCatalog, SimulationDependencies{Routes: foundationRoutes(t)}, save.Revision{Number: 1}, ModeOnline, started.Add(time.Second), nil, nil, AblationMask{})
+	if err != nil || result.Decision.Outcome != save.IntentApplied {
+		t.Fatalf("zero target result=%+v err=%v", result, err)
+	}
+	if hasRoleActivation(result.RoleActivations, want) {
+		t.Fatalf("zero-count target activated synergy: %+v", result.RoleActivations)
+	}
+
+	undeclaredCatalog := foundationCatalogWithMutation(t, func(authored map[string]any) {
+		low := authored["generator_classes"].([]any)[0].(map[string]any)
+		filtered := make([]any, 0)
+		for _, value := range low["roles"].([]any) {
+			if value.(map[string]any)["kind"] != "synergy_feed" {
+				filtered = append(filtered, value)
+			}
+		}
+		low["roles"] = filtered
+	})
+	undeclaredState := foundationState(t, undeclaredCatalog, started)
+	undeclaredState.GeneratorCounts["generator.low"] = 1
+	undeclaredState.ManualTokenMilli = 50_000
+	undeclared, err := SimulateTransition(request, undeclaredState, undeclaredCatalog, SimulationDependencies{Routes: foundationRoutes(t)}, save.Revision{Number: 1}, ModeOnline, started.Add(time.Second), nil, nil, AblationMask{})
+	undeclaredWant := RoleActivation{GeneratorID: "generator.low", Kind: economy.RoleSynergyFeed, TargetID: "pool.operations"}
+	if err != nil || undeclared.Decision.Outcome != save.IntentApplied || hasRoleActivation(undeclared.RoleActivations, undeclaredWant) {
+		t.Fatalf("undeclared synergy role=%+v err=%v", undeclared, err)
+	}
+
+	activeCatalog := foundationCatalog(t)
+	activeState := foundationState(t, activeCatalog, started)
+	activeState.GeneratorCounts["generator.low"] = 1
+	activeState.ManualTokenMilli = 50_000
+	active, err := SimulateTransition(request, activeState, activeCatalog, SimulationDependencies{Routes: foundationRoutes(t)}, save.Revision{Number: 1}, ModeOnline, started.Add(time.Second), nil, nil, AblationMask{})
+	if err != nil || active.Decision.Outcome != save.IntentApplied || !hasRoleActivation(active.RoleActivations, undeclaredWant) {
+		t.Fatalf("exercised synergy role=%+v err=%v", active, err)
+	}
+}
+
 func TestSimulationStockRateActivationRequiresNonNeutralRealHook(t *testing.T) {
 	catalog := foundationCatalog(t)
 	factionCatalog := foundationFactionCatalog(t)
@@ -420,6 +548,7 @@ func TestSimulationStockRateActivationRequiresNonNeutralRealHook(t *testing.T) {
 
 	state := foundationState(t, catalog, started)
 	state.FactionID = "bootstrapper"
+	state.IncorporatedAt = started
 	state.GeneratorCounts["generator.low"] = 10
 	state.ManualTokenMilli = 50_000
 	result, err := SimulateTransition(request, state, catalog, dependencies, save.Revision{Number: 1, ConstantsHash: foundationConstantsHash}, ModeOnline, started.Add(time.Minute), nil, nil, AblationMask{})
@@ -427,16 +556,13 @@ func TestSimulationStockRateActivationRequiresNonNeutralRealHook(t *testing.T) {
 		t.Fatalf("result=%+v err=%v", result, err)
 	}
 	want := RoleActivation{GeneratorID: "generator.low", Kind: economy.RoleStockRate, TargetID: "faction.stock"}
-	found := false
-	for _, activation := range result.RoleActivations {
-		found = found || activation == want
-	}
-	if !found || state.StockUnits != 1 || state.StockProgressMS != 1_200 {
+	if !hasRoleActivation(result.RoleActivations, want) || state.StockUnits != 1 || state.StockProgressMS != 1_200 {
 		t.Fatalf("activations=%+v stock=%d progress=%d", result.RoleActivations, state.StockUnits, state.StockProgressMS)
 	}
 
 	masked := foundationState(t, catalog, started)
 	masked.FactionID = "bootstrapper"
+	masked.IncorporatedAt = started
 	masked.GeneratorCounts["generator.low"] = 10
 	masked.ManualTokenMilli = 50_000
 	result, err = SimulateTransition(request, masked, catalog, dependencies, save.Revision{Number: 1, ConstantsHash: foundationConstantsHash}, ModeOnline, started.Add(time.Minute), nil, nil, AblationMask{GeneratorIDs: []string{"generator.low"}})
@@ -450,6 +576,32 @@ func TestSimulationStockRateActivationRequiresNonNeutralRealHook(t *testing.T) {
 	}
 	if masked.StockUnits != 1 || masked.StockProgressMS != 0 {
 		t.Fatalf("masked stock=%d progress=%d", masked.StockUnits, masked.StockProgressMS)
+	}
+}
+
+func TestSimulationStockRateActivationUsesPerRoleCounterfactual(t *testing.T) {
+	catalog := foundationCatalog(t)
+	factionCatalog := foundationFactionCatalog(t)
+	hook := faction.AccrualHook{
+		Catalogs: faction.CatalogSet{foundationConstantsHash: factionCatalog},
+		Policies: foundationCatchupPolicies{foundationConstantsHash: 120_000},
+	}
+	started := time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC)
+	state := foundationState(t, catalog, started)
+	state.FactionID = "bootstrapper"
+	state.IncorporatedAt = started
+	state.StockUnits = factionCatalog.StockCap
+	state.StockProgressMS = 30_000
+	state.GeneratorCounts["generator.low"] = 1_000
+	state.ManualTokenMilli = 50_000
+	request := IntentRequest{IntentID: "01986666-0220-7000-8000-000000000220", Kind: IntentPerformManualBatch, ExpectedRevision: 1, ActionID: "manual.click", Count: 1, WindowMS: 1}
+	result, err := SimulateTransition(request, state, catalog, SimulationDependencies{Routes: foundationRoutes(t), Hook: hook}, save.Revision{Number: 1, ConstantsHash: foundationConstantsHash}, ModeOnline, started.Add(30*time.Second), nil, nil, AblationMask{})
+	if err != nil || result.Decision.Outcome != save.IntentApplied || state.StockProgressMS != 0 {
+		t.Fatalf("result=%+v stock progress=%d err=%v", result, state.StockProgressMS, err)
+	}
+	want := RoleActivation{GeneratorID: "generator.low", Kind: economy.RoleStockRate, TargetID: "faction.stock"}
+	if hasRoleActivation(result.RoleActivations, want) {
+		t.Fatalf("counterfactually neutral stock role activated: %+v", result.RoleActivations)
 	}
 }
 

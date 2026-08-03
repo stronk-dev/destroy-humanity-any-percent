@@ -115,7 +115,7 @@ func SimulateTransition(request IntentRequest, state *save.State, catalog *econo
 		return SimulationResult{Decision: decision, RoleActivations: []RoleActivation{}}, nil
 	}
 	if state.EvaluatedThrough.After(beforeEvaluated) {
-		policy.promoteCandidates()
+		policy.promoteProductionCandidates(state, catalog)
 	}
 	if request.Kind == IntentPerformManualBatch && appliedCountFromDecision(decision) > 0 {
 		policy.activateManualRoles(state, catalog, request.ActionID)
@@ -160,12 +160,28 @@ func (policy *simulationPolicy) candidate(value RoleActivation) {
 	policy.candidates[roleActivationKey(value)] = value
 }
 
-func (policy *simulationPolicy) promoteCandidates() {
-	if policy == nil {
+func (policy *simulationPolicy) promoteProductionCandidates(state *save.State, catalog *economy.Catalog) {
+	if policy == nil || state == nil || catalog == nil {
 		return
 	}
 	for key, value := range policy.candidates {
-		policy.active[key] = value
+		pool, ok := catalog.SynergyPool(value.TargetID)
+		if !ok {
+			continue
+		}
+		source, ok := catalog.MultiplierSource(pool.ID)
+		if !ok {
+			continue
+		}
+		target, ok := catalog.GeneratorClass(source.Target)
+		if !ok || target.Production == nil {
+			continue
+		}
+		purchased, purchasedOK := state.GeneratorCounts[target.ID]
+		provisioned, provisionedOK := state.GeneratorProvisioned[target.ID]
+		if purchasedOK && provisionedOK && purchased+provisioned > 0 {
+			policy.active[key] = value
+		}
 	}
 }
 
@@ -233,30 +249,55 @@ func simulationHook(inner AccrualHook, policy *simulationPolicy) AccrualHook {
 }
 
 func (hook simulationAccrualHook) AfterAccrual(state *save.State, catalog *economy.Catalog, revision save.Revision, result accrualhook.Result, contributions []multiplier.Contribution) ([]save.EventWrite, error) {
-	original := map[string]int64{}
-	for id := range hook.policy.generators {
-		original[id] = state.GeneratorCounts[id]
-		state.GeneratorCounts[id] = 0
+	if state == nil || catalog == nil {
+		return nil, ErrInvalidEngineState
 	}
-	defer func() {
-		for id, count := range original {
-			state.GeneratorCounts[id] = count
-		}
-	}()
-	beforeUnits, beforeProgress, beforeRemainder := state.StockUnits, state.StockProgressMS, state.StockRateRemainderPPM
-	events, err := hook.inner.AfterAccrual(state, catalog, revision, result, contributions)
-	if err != nil || state.StockUnits == beforeUnits && state.StockProgressMS == beforeProgress && state.StockRateRemainderPPM == beforeRemainder {
+	encoded, err := save.EncodeState(state)
+	if err != nil {
+		return nil, err
+	}
+	events, err := runSimulationHookWithMasks(hook.inner, state, catalog, revision, result, contributions, hook.policy.generators)
+	if err != nil {
 		return events, err
 	}
 	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
-		if hook.policy.masksGenerator(generator.ID) || state.GeneratorCounts[generator.ID] <= 0 {
+		if hook.policy.masksGenerator(generator.ID) || state.GeneratorCounts[generator.ID] <= 0 ||
+			!generatorDeclaresRole(generator, economy.RoleStockRate, "faction.stock") {
 			continue
 		}
-		for _, role := range generator.Roles {
-			if role.Kind == economy.RoleStockRate {
-				hook.policy.activate(RoleActivation{GeneratorID: generator.ID, Kind: role.Kind, TargetID: "faction.stock"})
-			}
+		counterfactual, restoreErr := save.RestoreState(encoded, save.CurrentVersion, catalog, economy.ScopeCompany, time.Time{})
+		if restoreErr != nil {
+			return nil, restoreErr
+		}
+		masks := make(map[string]bool, len(hook.policy.generators)+1)
+		for id := range hook.policy.generators {
+			masks[id] = true
+		}
+		masks[generator.ID] = true
+		if _, counterfactualErr := runSimulationHookWithMasks(hook.inner, counterfactual, catalog, revision, result, contributions, masks); counterfactualErr != nil {
+			return nil, counterfactualErr
+		}
+		if stockStateDiffers(state, counterfactual) {
+			hook.policy.activate(RoleActivation{GeneratorID: generator.ID, Kind: economy.RoleStockRate, TargetID: "faction.stock"})
 		}
 	}
 	return events, nil
+}
+
+func runSimulationHookWithMasks(hook AccrualHook, state *save.State, catalog *economy.Catalog, revision save.Revision, result accrualhook.Result, contributions []multiplier.Contribution, masks map[string]bool) ([]save.EventWrite, error) {
+	original := make(map[string]int64, len(masks))
+	for id := range masks {
+		original[id] = state.GeneratorCounts[id]
+		state.GeneratorCounts[id] = 0
+	}
+	events, err := hook.AfterAccrual(state, catalog, revision, result, contributions)
+	for id, count := range original {
+		state.GeneratorCounts[id] = count
+	}
+	return events, err
+}
+
+func stockStateDiffers(left, right *save.State) bool {
+	return left.StockUnits != right.StockUnits || left.StockProgressMS != right.StockProgressMS ||
+		left.StockRateRemainderPPM != right.StockRateRemainderPPM
 }
