@@ -9,6 +9,7 @@ import (
 	"io"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 	"unicode/utf8"
 )
@@ -93,7 +94,7 @@ func NewRepository(db *sql.DB) (*Repository, error) {
 	return &Repository{db: db}, nil
 }
 
-func (repository *Repository) Create(ctx context.Context, input CreateSession) (Session, error) {
+func (repository *Repository) create(ctx context.Context, input CreateSession) (Session, error) {
 	if repository == nil || !validCreate(input) {
 		return Session{}, ErrInvalidSession
 	}
@@ -137,7 +138,7 @@ func (repository *Repository) Load(ctx context.Context, founderID, sessionID str
 
 // Claim serializes a server-side play or resolution command. The founder row
 // is locked before the session row; this is the C13 account/session lock order.
-func (repository *Repository) Claim(ctx context.Context, founderID, sessionID string) (Session, error) {
+func (repository *Repository) claim(ctx context.Context, founderID, sessionID string) (Session, error) {
 	if repository == nil || !uuidPattern.MatchString(founderID) || !uuidV7Pattern.MatchString(sessionID) {
 		return Session{}, ErrInvalidSession
 	}
@@ -171,7 +172,7 @@ func (repository *Repository) Claim(ctx context.Context, founderID, sessionID st
 	return claimed, nil
 }
 
-func (repository *Repository) CompletePlay(ctx context.Context, founderID, sessionID, claimToken string, state json.RawMessage) (Session, error) {
+func (repository *Repository) completePlay(ctx context.Context, founderID, sessionID, claimToken string, state json.RawMessage) (Session, error) {
 	if repository == nil || !uuidPattern.MatchString(founderID) || !uuidV7Pattern.MatchString(sessionID) ||
 		!uuidPattern.MatchString(claimToken) || !validJSONObject(state) {
 		return Session{}, ErrInvalidSession
@@ -198,13 +199,41 @@ func (repository *Repository) CompletePlay(ctx context.Context, founderID, sessi
 	return updated, nil
 }
 
+func (repository *Repository) releaseClaim(ctx context.Context, founderID, sessionID, claimToken string) error {
+	if repository == nil || !uuidPattern.MatchString(founderID) || !uuidV7Pattern.MatchString(sessionID) ||
+		!uuidPattern.MatchString(claimToken) {
+		return ErrInvalidSession
+	}
+	tx, err := repository.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	if err := lockFounder(ctx, tx, founderID); err != nil {
+		return err
+	}
+	result, err := tx.ExecContext(ctx, releaseClaimSQL, sessionID, founderID, claimToken)
+	if err != nil {
+		return err
+	}
+	if affected, rowsErr := result.RowsAffected(); rowsErr != nil {
+		return rowsErr
+	} else if affected != 1 {
+		return ErrClaimLost
+	}
+	return tx.Commit()
+}
+
 // ResolveTx is the session half of C17's company-then-session transaction. The
 // caller owns and has already locked the Company stream.
-func ResolveTx(ctx context.Context, tx *sql.Tx, sessionID, claimToken string, result json.RawMessage) (Session, error) {
-	if tx == nil || !uuidV7Pattern.MatchString(sessionID) || !uuidPattern.MatchString(claimToken) || !validJSONObject(result) {
+func resolveTx(ctx context.Context, tx *sql.Tx, identity resolutionIdentity, state, result json.RawMessage) (Session, error) {
+	if tx == nil || !validResolutionIdentity(identity) ||
+		!validJSONObject(state) || !validJSONObject(result) {
 		return Session{}, ErrInvalidSession
 	}
-	resolved, err := scanSession(tx.QueryRowContext(ctx, resolveSessionSQL, sessionID, claimToken, string(result)))
+	resolved, err := scanSession(tx.QueryRowContext(ctx, resolveSessionSQL, identity.sessionID, identity.claimToken,
+		string(state), string(result), identity.founderID, identity.companyStreamID, identity.runSeq,
+		identity.engineRef, identity.engineVersion, identity.constantsHash))
 	if errors.Is(err, sql.ErrNoRows) {
 		return Session{}, ErrClaimLost
 	}
@@ -243,8 +272,68 @@ func canonicalJSONObject(value []byte) (json.RawMessage, bool) {
 	if !errors.Is(decoder.Decode(&trailing), io.EOF) {
 		return nil, false
 	}
-	encoded, err := json.Marshal(object)
+	normalized, ok := normalizeJSONValue(object)
+	if !ok {
+		return nil, false
+	}
+	encoded, err := json.Marshal(normalized)
 	return encoded, err == nil
+}
+
+func normalizeJSONValue(value any) (any, bool) {
+	switch typed := value.(type) {
+	case nil, bool, string:
+		return typed, true
+	case json.Number:
+		if strings.ContainsAny(typed.String(), ".eE") {
+			return nil, false
+		}
+		integer, err := strconv.ParseInt(typed.String(), 10, 64)
+		if err != nil || integer < -9_007_199_254_740_991 || integer > 9_007_199_254_740_991 {
+			return nil, false
+		}
+		return integer, true
+	case []any:
+		result := make([]any, len(typed))
+		for index, child := range typed {
+			normalized, ok := normalizeJSONValue(child)
+			if !ok {
+				return nil, false
+			}
+			result[index] = normalized
+		}
+		return result, true
+	case map[string]any:
+		result := make(map[string]any, len(typed))
+		for key, child := range typed {
+			normalized, ok := normalizeJSONValue(child)
+			if !ok {
+				return nil, false
+			}
+			result[key] = normalized
+		}
+		return result, true
+	default:
+		return nil, false
+	}
+}
+
+type resolutionIdentity struct {
+	sessionID       string
+	founderID       string
+	companyStreamID string
+	runSeq          int64
+	engineRef       string
+	engineVersion   string
+	constantsHash   string
+	claimToken      string
+}
+
+func validResolutionIdentity(value resolutionIdentity) bool {
+	return uuidV7Pattern.MatchString(value.sessionID) && uuidPattern.MatchString(value.founderID) &&
+		uuidPattern.MatchString(value.companyStreamID) && value.runSeq > 0 && value.runSeq <= 9_007_199_254_740_991 &&
+		mechanicalPattern.MatchString(value.engineRef) && versionPattern.MatchString(value.engineVersion) &&
+		hashPattern.MatchString(value.constantsHash) && uuidPattern.MatchString(value.claimToken)
 }
 
 func lockFounder(ctx context.Context, tx *sql.Tx, founderID string) error {
@@ -274,9 +363,12 @@ const statusSQL = "SELECT status FROM minigame_sessions WHERE session_id=$1 AND 
 const completePlaySQL = "UPDATE minigame_sessions SET state=$4,status='active',revision=revision+1,claim_token=NULL," +
 	"claimed_at=NULL,updated_at=clock_timestamp() WHERE session_id=$1 AND founder_id=$2 AND status='claimed' " +
 	"AND claim_token=$3 RETURNING " + sessionColumns
-const resolveSessionSQL = "UPDATE minigame_sessions SET result=$3,status='resolved',revision=revision+1," +
+const releaseClaimSQL = "UPDATE minigame_sessions SET status='active',claim_token=NULL,claimed_at=NULL," +
+	"updated_at=clock_timestamp() WHERE session_id=$1 AND founder_id=$2 AND status='claimed' AND claim_token=$3"
+const resolveSessionSQL = "UPDATE minigame_sessions SET state=$3,result=$4,status='resolved',revision=revision+1," +
 	"claim_token=NULL,claimed_at=NULL,updated_at=clock_timestamp(),resolved_at=clock_timestamp() " +
-	"WHERE session_id=$1 AND status='claimed' AND claim_token=$2 RETURNING " + sessionColumns
+	"WHERE session_id=$1 AND status='claimed' AND claim_token=$2 AND founder_id=$5 AND company_stream_id=$6 " +
+	"AND run_seq=$7 AND engine_ref=$8 AND engine_version=$9 AND constants_hash=$10 RETURNING " + sessionColumns
 const lockFounderSQL = "SELECT true FROM account_founders WHERE founder_id=$1 AND archived_at IS NULL FOR UPDATE"
 
 type rowScanner interface {

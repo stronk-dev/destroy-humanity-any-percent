@@ -26,3 +26,37 @@
   replacement, token loss, immutable genesis, resolve rollback, and terminal immutability.
 - Canonical docs describe only these shipped boundaries. Production catalog rows, faucet math,
   payout composition, combat adapter, and the epoch mint remain explicitly open.
+
+## 2026-08-04 — independent rejection of first session/tenant landing (`151cddc^..151cddc`)
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Decision:** not approved; two HIGHs and four MEDIUMs require remediation.
+- HIGH: a rejected/divergent tenant command had no no-op claim release, stranding the row for the
+  five-minute recovery lease. HIGH: exported `ResolveTx` accepted any canonical object and could
+  permanently store a result that never passed the tenant's result schema.
+- MEDIUM band: schema-reference strings had no invoked validators; the resolve function could not
+  prove Company lock/identity; database constraints did not bind Founder→stream or hash→run and
+  allowed claim-arm state mutation; the JSON canonicalizer preserved `1|1.0|1e0` aliases.
+- What held: concurrent/stale claim CAS, rollback atomicity, frozen named genesis fields, terminal
+  update immutability, defensive clones, closed errors/modes, and the absence of invented balance
+  data. The reviewer inspected committed blobs and excluded the in-progress remediation.
+
+## 2026-08-04 — session/tenant remediation
+
+- Added token-owned no-op release and a composed Service path: stale/rejected commands release
+  without a fake revision; applied commands advance once; terminal commands retain an opaque
+  certification for the payout transaction. Migration 00050 was already exercised locally, so
+  subsequent constraint hardening landed forward-only as 00051 rather than rewriting it.
+- Resolution is now a Service method over an externally unforgeable certification. It revalidates
+  typed result shape and the tenant-owned result schema, recomputes exact bytes, locks the certified
+  Founder-owned Company/run/hash, and predicates the session write on the same complete identity.
+- Tenant descriptors now have executable command/snapshot/result validators invoked around every
+  pure engine call. The canonical-wrong-schema snapshot and result cases fail, rather than relying
+  on schema-reference labels or whitespace rejection.
+- The database now has composite Founder→stream and hash→run constraints plus arm-specific trigger
+  checks preventing claim-time state/result mutation. Canonical JSON rejects every non-safe-integer
+  numeric spelling, including decimal/exponent aliases, before JSONB normalization.
+- Real-Postgres coverage exercises release after stale/rejected commands, identity constraints,
+  claim-arm mutation, forged result bytes, cross-Company resolution, and full fixture
+  create→play→certify→resolve. Independent follow-up review remains required.

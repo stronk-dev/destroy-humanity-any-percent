@@ -36,6 +36,12 @@ func TestCreateSessionValidation(t *testing.T) {
 		"duplicate input": func(value *CreateSession) {
 			value.ScalingInputs = json.RawMessage(`{"era":1,"era":2,"trust_ppm":500000}`)
 		},
+		"decimal alias": func(value *CreateSession) {
+			value.ScalingInputs = json.RawMessage(`{"era":1.0,"trust_ppm":500000}`)
+		},
+		"exponent alias": func(value *CreateSession) {
+			value.ScalingInputs = json.RawMessage(`{"era":1e0,"trust_ppm":500000}`)
+		},
 		"flavor id": func(value *CreateSession) { value.MinigameID = "Shipping Wars" },
 	}
 	for name, mutate := range tests {
@@ -57,7 +63,7 @@ func TestSessionClaimIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	ctx := context.Background()
-	created, err := repository.Create(ctx, testCreateSession())
+	created, err := repository.create(ctx, testCreateSession())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -67,6 +73,23 @@ func TestSessionClaimIntegration(t *testing.T) {
 	}
 	if _, err := db.ExecContext(ctx, "UPDATE minigame_sessions SET scaling_inputs='{}' WHERE session_id=$1", testSessionID); err == nil {
 		t.Fatal("frozen scaling inputs were mutable")
+	}
+	otherAccount := "018f0000-0000-4000-8000-000000000111"
+	otherFounder := "018f0000-0000-4000-8000-000000000112"
+	if _, err := db.ExecContext(ctx, "INSERT INTO accounts(account_id,recovery_hash) VALUES($1,'test')", otherAccount); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, "INSERT INTO account_founders(account_id,founder_id) VALUES($1,$2)", otherAccount, otherFounder); err != nil {
+		t.Fatal(err)
+	}
+	cloneSQL := "INSERT INTO minigame_sessions(session_id,minigame_id,founder_id,company_stream_id,run_seq,engine_ref,engine_version,constants_hash,scaling_inputs,seed,mode,genesis,state) " +
+		"SELECT $1,minigame_id,$2,company_stream_id,run_seq,engine_ref,engine_version,$3,scaling_inputs,seed,mode,genesis,state FROM minigame_sessions WHERE session_id=$4"
+	if _, err := db.ExecContext(ctx, cloneSQL, "018f0000-0000-7000-8000-000000000113", otherFounder, testHash, testSessionID); err == nil {
+		t.Fatal("database accepted a Founder who does not own the Company stream")
+	}
+	otherHash := "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+	if _, err := db.ExecContext(ctx, cloneSQL, "018f0000-0000-7000-8000-000000000114", testFounderID, otherHash, testSessionID); err == nil {
+		t.Fatal("database accepted a constants hash not pinned to the run")
 	}
 
 	start := make(chan struct{})
@@ -78,7 +101,7 @@ func TestSessionClaimIntegration(t *testing.T) {
 		go func() {
 			defer group.Done()
 			<-start
-			result, claimErr := repository.Claim(ctx, testFounderID, testSessionID)
+			result, claimErr := repository.claim(ctx, testFounderID, testSessionID)
 			results <- result
 			errorsFound <- claimErr
 		}()
@@ -104,25 +127,28 @@ func TestSessionClaimIntegration(t *testing.T) {
 	if winner.Status != StatusClaimed || winner.Revision != 1 || winner.ClaimedAt == nil || busy != 1 {
 		t.Fatalf("winner=%+v busy=%d", winner, busy)
 	}
+	if _, err := db.ExecContext(ctx, "UPDATE minigame_sessions SET state='{\"turn\":99}' WHERE session_id=$1", testSessionID); err == nil {
+		t.Fatal("claim transition mutated state without a revision")
+	}
 	if _, err := db.ExecContext(ctx, "UPDATE minigame_sessions SET claimed_at=clock_timestamp()-interval '6 minutes' WHERE session_id=$1 AND claim_token=$2", testSessionID, winner.ClaimToken); err != nil {
 		t.Fatal(err)
 	}
-	reclaimed, err := repository.Claim(ctx, testFounderID, testSessionID)
+	reclaimed, err := repository.claim(ctx, testFounderID, testSessionID)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if reclaimed.ClaimToken == winner.ClaimToken || reclaimed.Revision != winner.Revision {
 		t.Fatalf("stale claim was not safely replaced: old=%+v new=%+v", winner, reclaimed)
 	}
-	if _, err := repository.CompletePlay(ctx, testFounderID, testSessionID, winner.ClaimToken, json.RawMessage(`{"turn":1}`)); !errors.Is(err, ErrClaimLost) {
+	if _, err := repository.completePlay(ctx, testFounderID, testSessionID, winner.ClaimToken, json.RawMessage(`{"turn":1}`)); !errors.Is(err, ErrClaimLost) {
 		t.Fatalf("replaced-token error=%v", err)
 	}
 	winner = reclaimed
-	if _, err := repository.CompletePlay(ctx, testFounderID, testSessionID,
+	if _, err := repository.completePlay(ctx, testFounderID, testSessionID,
 		"018f0000-0000-4000-8000-000000000999", json.RawMessage(`{"turn":1}`)); !errors.Is(err, ErrClaimLost) {
 		t.Fatalf("wrong-token error=%v", err)
 	}
-	played, err := repository.CompletePlay(ctx, testFounderID, testSessionID, winner.ClaimToken, json.RawMessage(`{"turn":1}`))
+	played, err := repository.completePlay(ctx, testFounderID, testSessionID, winner.ClaimToken, json.RawMessage(`{"turn":1}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -130,7 +156,7 @@ func TestSessionClaimIntegration(t *testing.T) {
 		t.Fatalf("played=%+v", played)
 	}
 
-	claimed, err := repository.Claim(ctx, testFounderID, testSessionID)
+	claimed, err := repository.claim(ctx, testFounderID, testSessionID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -138,7 +164,9 @@ func TestSessionClaimIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := ResolveTx(ctx, rollbackTx, testSessionID, claimed.ClaimToken,
+	identity := resolutionIdentity{sessionID: testSessionID, founderID: testFounderID, companyStreamID: testStreamID,
+		runSeq: 1, engineRef: "combat.duel", engineVersion: "1.0.0", constantsHash: testHash, claimToken: claimed.ClaimToken}
+	if _, err := resolveTx(ctx, rollbackTx, identity, json.RawMessage(`{"turn":2}`),
 		json.RawMessage(`{"outcome":"complete","rating_delta":null,"score_facts":[]}`)); err != nil {
 		_ = rollbackTx.Rollback()
 		t.Fatal(err)
@@ -157,7 +185,7 @@ func TestSessionClaimIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	resolved, err := ResolveTx(ctx, tx, testSessionID, claimed.ClaimToken,
+	resolved, err := resolveTx(ctx, tx, identity, json.RawMessage(`{"turn":2}`),
 		json.RawMessage(`{"outcome":"complete","rating_delta":null,"score_facts":[]}`))
 	if err != nil {
 		_ = tx.Rollback()
@@ -169,11 +197,108 @@ func TestSessionClaimIntegration(t *testing.T) {
 	if resolved.Status != StatusResolved || resolved.Revision != 3 || resolved.ResolvedAt == nil {
 		t.Fatalf("resolved=%+v", resolved)
 	}
-	if _, err := repository.Claim(ctx, testFounderID, testSessionID); !errors.Is(err, ErrSessionGone) {
+	if _, err := repository.claim(ctx, testFounderID, testSessionID); !errors.Is(err, ErrSessionGone) {
 		t.Fatalf("resolved claim error=%v", err)
 	}
 	if _, err := db.ExecContext(ctx, "UPDATE minigame_sessions SET state='{}' WHERE session_id=$1", testSessionID); err == nil {
 		t.Fatal("resolved session was mutable")
+	}
+}
+
+func TestServiceIntegration(t *testing.T) {
+	db := minigameIntegrationDB(t)
+	seedMinigameRun(t, db)
+	repository, err := NewRepository(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	tenants, err := NewTenantRegistry(fixtureTenant{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	service, err := NewService(repository, tenants)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx := context.Background()
+	started, err := service.Start(ctx, StartRequest{
+		SessionID: testSessionID, MinigameID: "combat.duel", FounderID: testFounderID,
+		CompanyStreamID: testStreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
+		ConstantsHash: testHash, ScalingInputs: map[string]int64{"era": 1, "trust_ppm": 500_000},
+		Seed: "8", Mode: ModeSolo,
+	})
+	if err != nil || started.Revision != 1 || !jsonObjectEqual(started.State, []byte(`{"done":false,"total":1}`)) {
+		t.Fatalf("start=%+v err=%v", started, err)
+	}
+	if _, err := service.Play(ctx, PlayRequest{FounderID: testFounderID, SessionID: testSessionID,
+		ExpectedRevision: 2, Command: json.RawMessage(`{"add":4,"finish":false}`)}); err != ErrSessionRevision {
+		t.Fatalf("stale revision error=%v", err)
+	}
+	afterStale, err := repository.Load(ctx, testFounderID, testSessionID)
+	if err != nil || afterStale.Status != StatusActive || afterStale.Revision != 1 {
+		t.Fatalf("stale release=%+v err=%v", afterStale, err)
+	}
+	if _, err := service.Play(ctx, PlayRequest{FounderID: testFounderID, SessionID: testSessionID,
+		ExpectedRevision: 1, Command: json.RawMessage(`{"add":4,"finish":false,"score":99}`)}); !errors.Is(err, ErrTenantRejected) {
+		t.Fatalf("schema rejection error=%v", err)
+	}
+	played, err := service.Play(ctx, PlayRequest{FounderID: testFounderID, SessionID: testSessionID,
+		ExpectedRevision: 1, Command: json.RawMessage(`{"add":4,"finish":false}`)})
+	if err != nil || played.Resolution != nil || played.Session.Revision != 2 ||
+		!jsonObjectEqual(played.Session.State, []byte(`{"done":false,"total":5}`)) {
+		t.Fatalf("play=%+v err=%v", played, err)
+	}
+	terminal, err := service.Play(ctx, PlayRequest{FounderID: testFounderID, SessionID: testSessionID,
+		ExpectedRevision: 2, Command: json.RawMessage(`{"add":2,"finish":true}`)})
+	if err != nil || terminal.Resolution == nil || terminal.Resolution.Result() == nil || terminal.Session.Status != StatusClaimed ||
+		!jsonObjectEqual(terminal.Session.State, []byte(`{"done":true,"total":7}`)) {
+		t.Fatalf("terminal=%+v err=%v", terminal, err)
+	}
+	storedClaim, err := repository.Load(ctx, testFounderID, testSessionID)
+	if err != nil || storedClaim.Status != StatusClaimed || !jsonObjectEqual(storedClaim.State, []byte(`{"done":false,"total":5}`)) {
+		t.Fatalf("pre-resolve store=%+v err=%v", storedClaim, err)
+	}
+	forged := *terminal.Resolution
+	forged.bytes = json.RawMessage(`{"garbage":true}`)
+	forgedTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := service.ResolveTx(ctx, forgedTx, &forged); !errors.Is(err, ErrInvalidSession) {
+		_ = forgedTx.Rollback()
+		t.Fatalf("forged result error=%v", err)
+	}
+	if err := forgedTx.Rollback(); err != nil {
+		t.Fatal(err)
+	}
+	crossCompany := *terminal.Resolution
+	crossCompany.identity.companyStreamID = "018f0000-0000-4000-8000-000000000119"
+	crossTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := service.ResolveTx(ctx, crossTx, &crossCompany); !errors.Is(err, ErrInvalidSession) {
+		_ = crossTx.Rollback()
+		t.Fatalf("cross-company result error=%v", err)
+	}
+	if err := crossTx.Rollback(); err != nil {
+		t.Fatal(err)
+	}
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resolved, err := service.ResolveTx(ctx, tx, terminal.Resolution)
+	if err != nil {
+		_ = tx.Rollback()
+		t.Fatal(err)
+	}
+	if err := tx.Commit(); err != nil {
+		t.Fatal(err)
+	}
+	if resolved.Status != StatusResolved || resolved.Revision != 3 ||
+		!jsonObjectEqual(resolved.State, []byte(`{"done":true,"total":7}`)) {
+		t.Fatalf("resolved=%+v", resolved)
 	}
 }
 

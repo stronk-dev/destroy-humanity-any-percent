@@ -9,6 +9,7 @@ import (
 
 type fixtureTenant struct {
 	invalidOutput bool
+	invalidResult bool
 	unknownError  bool
 }
 
@@ -29,6 +30,32 @@ func (tenant fixtureTenant) Descriptor() Descriptor {
 		Modes: []Mode{ModeSolo, ModeAsyncSnapshot}, ErrorTaxonomy: []string{"invalid_command"},
 		Destinations: map[string]DestinationClass{"era": DestinationPresentation, "trust_ppm": DestinationBreadth},
 	}
+}
+
+func (tenant fixtureTenant) ValidateCommand(data json.RawMessage) error {
+	var command fixtureCommand
+	if strictDecodeFixture(data, &command) != nil {
+		return &Rejection{Code: "invalid_command", Detail: "command schema mismatch"}
+	}
+	return nil
+}
+
+func (tenant fixtureTenant) ValidateSnapshot(data json.RawMessage) error {
+	var snapshot fixtureSnapshot
+	if strictDecodeFixture(data, &snapshot) != nil {
+		return ErrInvalidTenant
+	}
+	return nil
+}
+
+func (tenant fixtureTenant) ValidateResult(result *Result) error {
+	if result == nil {
+		return nil
+	}
+	if result.Outcome != "complete" || result.RatingDelta != nil || len(result.ScoreFacts) != 1 || result.ScoreFacts[0].Kind != "score.total" {
+		return ErrInvalidTenant
+	}
+	return nil
 }
 
 func (tenant fixtureTenant) Create(input CreateInput) (json.RawMessage, error) {
@@ -54,9 +81,12 @@ func (tenant fixtureTenant) Apply(input ApplyInput) (ApplyOutput, error) {
 	output := ApplyOutput{Snapshot: encoded}
 	if command.Finish {
 		output.Result = &Result{Outcome: "complete", ScoreFacts: []ScoreFact{{Kind: "score.total", Value: snapshot.Total}}}
+		if tenant.invalidResult {
+			output.Result.ScoreFacts[0].Kind = "score.wrong"
+		}
 	}
 	if tenant.invalidOutput {
-		output.Snapshot = json.RawMessage("{ \"done\":false,\"total\":0}")
+		output.Snapshot = json.RawMessage("{\"bogus\":true}")
 	}
 	return output, nil
 }
@@ -143,6 +173,14 @@ func TestTenantRegistryFailsClosed(t *testing.T) {
 	if _, err := unknownErrorRegistry.Apply("fixture.counter", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: validSnapshot,
 		Command: json.RawMessage("{\"add\":1,\"finish\":false}"), ScalingInputs: scaling}); !errors.Is(err, ErrTenantDivergence) {
 		t.Fatalf("undeclared rejection error=%v", err)
+	}
+	invalidResultRegistry, err := NewTenantRegistry(fixtureTenant{invalidResult: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := invalidResultRegistry.Apply("fixture.counter", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: validSnapshot,
+		Command: json.RawMessage("{\"add\":1,\"finish\":true}"), ScalingInputs: scaling}); !errors.Is(err, ErrTenantDivergence) {
+		t.Fatalf("wrong-schema result error=%v", err)
 	}
 }
 

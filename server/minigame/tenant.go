@@ -55,8 +55,8 @@ type ScoreFact struct {
 
 type Result struct {
 	Outcome     string      `json:"outcome"`
-	ScoreFacts  []ScoreFact `json:"score_facts"`
 	RatingDelta *int64      `json:"rating_delta"`
+	ScoreFacts  []ScoreFact `json:"score_facts"`
 }
 
 type ApplyOutput struct {
@@ -83,6 +83,9 @@ func (rejection *Rejection) Unwrap() error { return ErrTenantRejected }
 // this interface; the platform derives it from a validated Result.
 type Tenant interface {
 	Descriptor() Descriptor
+	ValidateCommand(json.RawMessage) error
+	ValidateSnapshot(json.RawMessage) error
+	ValidateResult(*Result) error
 	Create(CreateInput) (json.RawMessage, error)
 	Apply(ApplyInput) (ApplyOutput, error)
 }
@@ -128,6 +131,17 @@ func (registry *TenantRegistry) Descriptor(engineRef string) (Descriptor, bool) 
 	return cloneDescriptor(registered.descriptor), true
 }
 
+func (registry *TenantRegistry) validateCertifiedResult(engineRef string, result *Result) error {
+	if registry == nil || !validResult(result) {
+		return ErrTenantDivergence
+	}
+	registered, ok := registry.byEngine[engineRef]
+	if !ok || registered.engine.ValidateResult(result) != nil {
+		return ErrTenantDivergence
+	}
+	return nil
+}
+
 func (registry *TenantRegistry) Create(engineRef string, input CreateInput) (json.RawMessage, error) {
 	tenant, descriptor, err := registry.resolve(engineRef, input.Mode)
 	if err != nil {
@@ -141,7 +155,7 @@ func (registry *TenantRegistry) Create(engineRef string, input CreateInput) (jso
 		return nil, err
 	}
 	canonical, ok := canonicalJSONObject(snapshot)
-	if !ok || !bytes.Equal(canonical, snapshot) {
+	if !ok || !bytes.Equal(canonical, snapshot) || tenant.ValidateSnapshot(canonical) != nil {
 		return nil, ErrTenantDivergence
 	}
 	return canonical, nil
@@ -158,6 +172,12 @@ func (registry *TenantRegistry) Apply(engineRef string, input ApplyInput) (Apply
 		!bytes.Equal(canonicalCommand, input.Command) || !validScalingInputs(input.ScalingInputs, descriptor.Destinations) {
 		return ApplyOutput{}, ErrInvalidTenant
 	}
+	if tenant.ValidateSnapshot(canonicalSnapshot) != nil {
+		return ApplyOutput{}, ErrTenantDivergence
+	}
+	if commandErr := tenant.ValidateCommand(canonicalCommand); commandErr != nil {
+		return ApplyOutput{}, validateTenantError(commandErr, descriptor)
+	}
 	input.Snapshot = bytes.Clone(canonicalSnapshot)
 	input.Command = bytes.Clone(canonicalCommand)
 	input.ScalingInputs = cloneScaling(input.ScalingInputs)
@@ -166,7 +186,8 @@ func (registry *TenantRegistry) Apply(engineRef string, input ApplyInput) (Apply
 		return ApplyOutput{}, err
 	}
 	canonicalOutput, ok := canonicalJSONObject(output.Snapshot)
-	if !ok || !bytes.Equal(canonicalOutput, output.Snapshot) || !validResult(output.Result) {
+	if !ok || !bytes.Equal(canonicalOutput, output.Snapshot) || tenant.ValidateSnapshot(canonicalOutput) != nil ||
+		registry.validateCertifiedResult(descriptor.EngineRef, output.Result) != nil {
 		return ApplyOutput{}, ErrTenantDivergence
 	}
 	output.Snapshot = canonicalOutput

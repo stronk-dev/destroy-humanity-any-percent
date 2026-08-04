@@ -18,10 +18,12 @@ claim it; a crashed claim can be replaced after the same five-minute lease used 
 verification. A completed play advances the revision exactly once and returns the row to active.
 A resolved result advances once, clears the claim, records its completion time, and is immutable.
 
-Resolution exposes a transaction-bound write rather than a public client command. Its caller must
-already own the Company-stream lock, then token-locks the session and records the certified result
-inside the same transaction. Rolling that transaction back leaves the claim and session state
-unchanged, preserving the seam required for the later server-authored payout transition.
+Resolution exposes a transaction-bound service write rather than a public client command. A
+terminal play returns an opaque certification whose identity and result fields cannot be populated
+outside the platform package. Resolution locks that exact Founder-owned Company/run/hash first,
+then token-locks the matching session and records the terminal snapshot plus tenant-validated
+result inside the same transaction. Rolling that transaction back leaves the claim and session
+state unchanged, preserving the seam required for the later server-authored payout transition.
 
 ## Tenant boundary
 
@@ -35,8 +37,10 @@ Tenant creation and transitions are pure calls. Their only inputs are mode, seed
 canonical snapshot/command JSON, and a defensive copy of the frozen exact-integer scaling map.
 They cannot emit economy deltas. A terminal result is limited to a mechanical outcome, sorted
 typed integer score facts, and an optional exact-integer rating delta; payout remains platform
-owned. Noncanonical snapshots, undeclared rejection codes, malformed results, and unknown modes
-fail closed as tenant divergence.
+owned. Descriptor schema references are backed by tenant validators invoked before and after every
+call. Noncanonical or wrong-schema snapshots, undeclared rejection codes, malformed results, and
+unknown modes fail closed as rejection or tenant divergence. JSON numbers have one accepted
+grammar: exact safe integers only; decimal/exponent aliases are rejected before the JSONB seam.
 
 The current conformance tenant is test-only. The combat duel adapter will register when its engine
 RFC supplies an implemented transition surface; the deferred lane engine is not fabricated by the
