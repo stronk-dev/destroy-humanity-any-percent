@@ -1,6 +1,6 @@
 # RFC: Minigame Platform Foundation
 
-- **Status:** accepted architecture (C1–C11 ruled; C12–C18 block implementation)
+- **Status:** accepted — C1–C18 ruled; normative body reconciled; implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/03` (the minigame suite, clocks, economy hooks, AI-fallback law), `design/03 §12b` (the tier→minigame scaling seam + Fairness Law), `design/05 §4` (PvP table, punch-down multiplier)
@@ -21,13 +21,16 @@ reward payout into the real economy, and a registry. Combat's C5 already prototy
 
 ### MP1 — Session/match lifecycle (closed state machine)
 
-A minigame session is `{session_id, minigame_id, founder, scaling_inputs (frozen), seed,
-mode: solo|async_snapshot|live_pvp, state, result|null}`. Lifecycle: create (server-resolves
-scaling inputs, freezes them, seeds from the save stream — the combat C5 pattern) → play (the
-minigame's own engine, a platform tenant) → resolve (server-authoritative: solo/snapshot resolve
-by replay like combat; live PvP via the match actors on the transport layer) → payout (MP4). No
-minigame reads live company state mid-session; the seam is always the frozen integer inputs
-(replay-safe by the RA rule, exactly as combat proved).
+A minigame session is a **Postgres row** (C13's `minigame_sessions` — the verification-queue table
+discipline: claim-token + RowsAffected, server-advanced only) — `{session_id, minigame_id,
+founder, company_stream_id, run_seq, scaling_inputs (frozen), seed, mode: solo|async_snapshot,
+state, result|null}`. **`live_pvp` is a reserved enum arm, NOT shipped (C8)** — Phase-A modes are
+`solo` and `async_snapshot` only, the two combat proves replayable. Lifecycle: create (server
+resolves scaling inputs, freezes them, seeds from the save stream — the combat C5 pattern) → play
+(the tenant engine advances the session via server-validated play commands) → **resolve
+(server-authoritative, replay-verified like combat — solo/snapshot both)** → payout (MP4, a
+server-authored transition). No minigame reads live company state mid-session; the seam is always
+the frozen integer inputs (replay-safe by the RA rule, exactly as combat proved).
 
 ### MP2 — The scaling-seam contract (§12b as code)
 
@@ -52,18 +55,24 @@ non-ranked rate (anti-farm — the researched universal).
 
 ### MP4 — Reward payout & the AI-fallback law
 
-Resolve → payout hook (per ruling C1/C6 — NO Clout, server-certified not client-claimed): tier-scaled economy-resource credit (governed by MP3), rating
-updates (real Elo, no rubber-band — the combat-bots contract), season facts. **Every minigame
-declares its AI fallback** (the design law): solo-by-design, bot backfill, or NPC-partner — a
-minigame with no fallback is a load error (the whole game must be playable at zero other players
-online). Payouts are intents (evented, replay-logged) — a minigame result enters the economy
-through the same closed intent surface as everything else, never a side channel.
+Resolve → payout (rulings C1/C6/C17). **NO Clout** (Feed/Social owns Clout's mint). **The payout
+is NOT a client intent** — a minigame result is a SERVER-CERTIFIED outcome: the server resolves
+the session (replay-verified), then commits, in ONE Postgres transaction, the session row
+(status=resolved, claim-token-guarded) AND a **server-authored Company-stream transition** —
+`resolve_minigame_session` (server-only, never client-submitted) — that credits a tier-scaled
+economy resource (governed by MP3) plus typed rating/season facts (real Elo, no rubber-band).
+Evented and replay-logged like every transition; the certified result is the recorded fact
+(replay never re-runs the minigame at verification). The client submits PLAY commands to the
+session and NEVER a score. **Every minigame declares its AI fallback** (closed union, C18:
+`solo|bot|npc_partner`) — a fallback-less minigame is a load error; the whole game is playable at
+zero other players online.
 
 ### MP5 — The registry
 
 `balance/minigames/*.json`: `{minigame_id, engine_ref, clock: turn|realtime|wallclock|async,
-scaling_inputs[], payout, fallback, unlock_condition_ref, era_skins}`. The two combat engines
-register as the first tenants (their existing catalogs become platform-conformant); the board
+scaling_inputs[], payout, fallback, unlock_condition_ref}` (era_skins REMOVED per C9 — one token
+theme per era, never per-feature). `unlock_condition_ref` uses the closed shell-fact grammar
+(UI C5). The combat DUEL engine registers as tenant #1 (their existing catalogs become platform-conformant); the board
 games, Market, and arcade toys are later content on this registry. `unlock_condition_ref` gates
 by catalog fact (staggered across the tier arc — the CC hour-5-40-sag fix); the platform never
 invents unlock logic.
@@ -117,11 +126,53 @@ invents unlock logic.
   (a minigames artifact, mint like the others); session genesis + results join the verifier where
   they affect verification; the DB migration + cross-runtime corpus are named in the closure batch.
 
+## Owner rulings on C12–C18 (2026-08-04)
+
+- **C12 — accepted, body reconciled:** the normative text above is corrected to match the C1–C11
+  rulings (live_pvp arm reserved-not-shipped, era_skins removed, duel engine only as tenant #1).
+  My rulings appended without fixing the body — corrected now.
+- **C13 — session persistence: reuse the verification-queue table discipline exactly.**
+  `minigame_sessions(session_id PK, minigame_id, founder_id, company_stream_id, run_seq,
+  scaling_inputs jsonb, seed, mode, status, claim_token, state jsonb, result jsonb|null,
+  created_at, resolved_at)`; server-advanced only; concurrency + double-resolve prevented by
+  claim-token + RowsAffected (the queue's proven pattern); lock order founder-then-session;
+  expiry/retention as the queue's. No new invention — the pattern is shipped.
+- **C14 — tenant descriptor:** a closed `(command_schema, snapshot_schema, result_schema,
+  engine_version, error_taxonomy)` per engine_ref; the result union is `{outcome, score_facts,
+  rating_delta|null}` (NO free-form payout — C1); the combat duel adapter and the fixture tenant
+  both implement it, conformance-tested against one boundary. Exact byte envelopes are the tenant's
+  (combat already has them); the PLATFORM contract is the descriptor shape.
+- **C15 — scaling loader-provable:** each scaling row maps its destination to exactly one class
+  `power|breadth|presentation`; **the Fairness Law is the loader rule `ranked ∧ power → reject`**;
+  bounds/formulas per row are BALANCE DATA (harness-tuned, formula-artifact-exported) — the
+  SCHEMA is ruled here, the numbers are not invented.
+- **C16 — faucet clock:** attended-grid origin = `run_started_at` (the provision-grid precedent —
+  one absolute origin, persisted cursor per session), floor-division ppm conversion, **saturation
+  distinguished from the configured cap** (the cap forfeits with a reason key; numeric overflow
+  saturates — two different events); bot-reduction literal + reset order are catalog data.
+- **C17 — server-authored payout transaction:** the resolve transaction commits, in ONE Postgres
+  tx: the session row (status=resolved, claim-token-guarded) AND a server-authored Company-stream
+  transition (the payout — a credit + rating facts, evented + replay-logged), same multi-write
+  discipline as Exit; the internal command is `resolve_minigame_session` (server-only, never a
+  client intent — C6); lock order company-then-session. Replay reads the certified result from the
+  log, never re-runs the minigame at verification (the result IS the recorded fact).
+- **C18 — fallback/offline_quality:** fallback union exact-keys `{kind: solo|bot|npc_partner,
+  bot_ref?, rate_reduction_ppm?}`; `offline_quality` = `{grade_ppm, last_session_at}` on session
+  state, decaying on the attended grid toward a **neutral floor (catalog literal, never zero)**
+  via a fixed-grid formula (the provision-grid partition-invariance applies); the automation
+  destination is the associated tenant's offline output. Grade SOURCE (score→grade curve),
+  decay rate, and floor value are BALANCE DATA — the state/transition shape is ruled, the numbers
+  deferred.
+
+The through-line of C13–C18: **structure ruled precisely by reusing shipped patterns (queue table,
+provision grid, Exit multi-write); balance NUMBERS deferred to harness-tuned catalog data** — the
+platform is executable without inventing a single balance value.
+
 ## Acceptance criteria
 
-1. Session lifecycle: create→play→resolve→payout for a fixture minigame (a trivial platform
-   tenant, not a real game) against the composed gameserver; scaling inputs frozen at create,
-   unread thereafter (replay-safe proof).
+1. Session lifecycle: create→play→resolve→payout for a fixture tenant against the composed
+   gameserver, in `solo` and `async_snapshot` modes ONLY (live_pvp deferred, C8); scaling inputs
+   frozen at create, unread thereafter (replay-safe proof).
 2. Fairness Law: loader rejects a scaling input wired to a ranked power stat; `breadth` scaling
    into ranked play passes; `offline_quality` charges/decays per the grade ladder.
 3. Faucet governor: the daily cap forfeits excess (reason-keyed); a bot match pays the reduced
@@ -130,8 +181,7 @@ invents unlock logic.
    replay-logged; no side-channel write exists (grep-proven).
 5. Fallback law: loader rejects a fallback-less minigame; the fixture tenant's solo path completes
    at zero connected peers.
-6. Registry: the combat duel + lane engines register as conformant tenants without engine changes
-   (adapter only).
+6. Registry: the combat DUEL engine registers as a conformant tenant via adapter (the lane engine follows when implemented — not claimed ready, C9).
 
 ## Post-ruling implementation blockers (Codex review, 2026-08-04)
 
@@ -383,6 +433,7 @@ compliant balance mint before any production tenant or payout is enabled.
 ## Changelog
 
 - 2026-08-03: created (draft) — the platform.
+- 2026-08-04: C12–C18 ruled — body reconciled to the C1–C11 rulings; session table = verification-queue pattern, payout = Exit-style multi-write server transition, faucet = provision-grid clock, offline_quality decays to neutral floor; all STRUCTURE ruled by reusing shipped patterns, all NUMBERS deferred to balance data.
 - 2026-08-04: C1–C11 ruled — Clout payout faucet removed (my error, caught), DB-authoritative sessions with queue-style idempotency, server-certified (not client-claimed) payout, live_pvp deferred (solo+async only ship), era_skins removed (UI law), offline_quality decays to neutral floor not zero, epoch/verifier identity named. Accepted, scope narrowed.
 - 2026-08-04: Codex acceptance review found C1–C11. The draft is not implementable yet: Clout
   ownership contradicts the ruled single faucet, and session, tenant, scaling, payout, fallback,

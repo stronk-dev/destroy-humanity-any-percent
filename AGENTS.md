@@ -68,6 +68,12 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
   spot-check; the review it then got found a latent cap-lowering policy gap the spot-check
   missed.)
 
+- **Rulings reconcile the body, not just append.** When an RFC's rulings block resolves a blocker
+  that contradicts the specification body, the SAME edit must fix the body text — a normative
+  section left contradicting its own accepted ruling blocks implementation and reads as an
+  unresolved conflict. A status line may claim "body reconciled" only when no normative section
+  contradicts a ruling (blocker-record text quoting the original defect is exempt and expected).
+
 - **Review provenance is explicit.** Every verdict entry names both `Review by:` (the person or
   agent that actually inspected the diff) and `Recorded by:` (when someone else transcribed or
   summarized it). A recorder may not relabel a delegated or self-review as the project's
