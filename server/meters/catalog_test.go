@@ -86,6 +86,15 @@ func TestLoadCatalogRejectsShapeAndSemanticDrift(t *testing.T) {
 		"zero input": func(root map[string]any) {
 			root["meters"].([]any)[0].(map[string]any)["inputs"] = []any{map[string]any{"kind": "ledger_fact", "fact_kind": "externality.emitted", "delta": 0}}
 		},
+		"missing zero initial": func(root map[string]any) {
+			delete(root["meters"].([]any)[0].(map[string]any), "initial_value")
+		},
+		"missing zero band floor": func(root map[string]any) {
+			delete(root["meters"].([]any)[0].(map[string]any)["bands"].([]any)[0].(map[string]any), "floor_value")
+		},
+		"wrong union empty field": func(root map[string]any) {
+			root["meters"].([]any)[0].(map[string]any)["inputs"].([]any)[0].(map[string]any)["slot"] = ""
+		},
 		"unknown field": func(root map[string]any) {
 			root["meters"].([]any)[0].(map[string]any)["spendable"] = false
 		},

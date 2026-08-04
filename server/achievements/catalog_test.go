@@ -7,12 +7,13 @@ import (
 
 func testRegistry() Registry {
 	return Registry{
-		CopyKeys:       map[string]bool{"achievement.first_gate": true, "achievement.possession_warning": true},
-		GeneratorIDs:   map[string]bool{"generator.clickfarm": true},
-		EventKinds:     map[string]bool{"gate_crossed": true, "generator_purchased": true},
-		ResourceIDs:    map[string]bool{"company.cash": true},
-		RunCounters:    map[string]bool{"generators_purchased_total": true, "tier": true},
-		CareerCounters: map[string]bool{"age_ms": true, "notoriety": true},
+		CopyKeys:          map[string]bool{"achievement.first_gate": true, "achievement.possession_warning": true},
+		GeneratorIDs:      map[string]bool{"generator.clickfarm": true},
+		EventKinds:        map[string]bool{"gate_crossed": true, "generator_purchased": true},
+		ResourceIDs:       map[string]bool{"company.cash": true},
+		RunCounters:       map[string]bool{"generators_purchased_total": true, "tier": true},
+		CareerCounters:    map[string]bool{"age_ms": true, "notoriety": true},
+		ProvenanceSources: map[string][]string{"fact:gate.tier_1": {"gate_crossed"}},
 	}
 }
 
@@ -72,10 +73,19 @@ func TestLoadCatalogRejectsProofAndRegistryDrift(t *testing.T) {
 		"provenance possession": func(root map[string]any) {
 			root["achievements"].([]any)[1].(map[string]any)["proof"] = map[string]any{"kind": "provenance", "event_kinds": []string{"generator_purchased"}}
 		},
+		"unrelated provenance": func(root map[string]any) {
+			root["achievements"].([]any)[0].(map[string]any)["proof"] = map[string]any{"kind": "provenance", "event_kinds": []string{"generator_purchased"}}
+		},
 		"unknown copy": func(root map[string]any) {
 			root["achievements"].([]any)[0].(map[string]any)["copy_key"] = "missing.copy"
 		},
 		"unknown field": func(root map[string]any) { root["achievements"].([]any)[0].(map[string]any)["clout_grant_ppm"] = 4 },
+		"wrong condition null field": func(root map[string]any) {
+			root["achievements"].([]any)[0].(map[string]any)["condition"].(map[string]any)["minimum"] = nil
+		},
+		"wrong proof empty field": func(root map[string]any) {
+			root["achievements"].([]any)[0].(map[string]any)["proof"].(map[string]any)["event_kind"] = ""
+		},
 		"career ownership": func(root map[string]any) {
 			root["achievements"].([]any)[1].(map[string]any)["condition_scope"] = "career"
 		},
@@ -86,6 +96,11 @@ func TestLoadCatalogRejectsProofAndRegistryDrift(t *testing.T) {
 				t.Fatal("invalid catalog accepted")
 			}
 		})
+	}
+	invalidRegistry := testRegistry()
+	invalidRegistry.EventKinds["INVALID EVENT"] = true
+	if _, err := LoadCatalog(validCatalogBytes(t), invalidRegistry); err == nil {
+		t.Fatal("non-mechanical registry key accepted")
 	}
 }
 

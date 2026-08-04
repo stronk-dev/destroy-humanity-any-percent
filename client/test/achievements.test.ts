@@ -10,6 +10,7 @@ const registry: AchievementRegistry = {
   resourceIds: new Set(["company.cash"]),
   runCounters: new Set(["generators_purchased_total", "tier"]),
   careerCounters: new Set(["age_ms", "notoriety"]),
+  provenanceSources: new Map([["fact:gate.tier_1", ["gate_crossed"]]]),
 };
 
 function validCatalog(): Record<string, unknown> {
@@ -37,6 +38,7 @@ describe("achievement catalog", () => {
       (value) => { value.achievements[1].proof = { kind: "provenance", event_kinds: ["generator_purchased"] }; },
       (value) => { value.achievements[0].clout_grant_ppm = 4; },
       (value) => { value.achievements[1].condition_scope = "career"; },
+      (value) => { value.achievements[0].proof.event_kinds = ["generator_purchased"]; },
     ];
     for (const mutate of cases) { const value = validCatalog(); mutate(value); expect(() => loadAchievementCatalog(JSON.stringify(value), registry)).toThrow(); }
   });

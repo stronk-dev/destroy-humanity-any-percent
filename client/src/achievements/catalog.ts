@@ -38,6 +38,7 @@ export interface AchievementRegistry {
   readonly resourceIds: ReadonlySet<string>;
   readonly runCounters: ReadonlySet<string>;
   readonly careerCounters: ReadonlySet<string>;
+  readonly provenanceSources: ReadonlyMap<string, readonly string[]>;
 }
 
 const mechanicalId = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
@@ -45,6 +46,7 @@ const maximumConditionDepth = 4;
 const maximumConditionNodes = 64;
 
 export function loadAchievementCatalog(bytes: string | Uint8Array, registry: AchievementRegistry): AchievementCatalog {
+  validateRegistry(registry);
   const source = typeof bytes === "string" ? bytes : new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   let parsed: unknown;
   try { parsed = JSON.parse(source); } catch (error) { syntax(`achievement catalog is invalid JSON: ${String(error)}`); }
@@ -107,6 +109,11 @@ function parseProof(value: unknown, scope: AchievementScope, condition: Achievem
     if (!Array.isArray(row.event_kinds) || row.event_kinds.length === 0 || containsKind(condition, "owns_generator_at_least")) syntax("provenance proof is incompatible");
     const eventKinds = row.event_kinds.map((item) => identifier(item, "provenance.event_kinds"));
     if (eventKinds.some((item, index) => !registry.eventKinds.has(item) || index > 0 && eventKinds[index - 1]! >= item)) syntax("provenance event kinds are invalid");
+    const declared = new Set(eventKinds);
+    for (const source of provenanceSourceKeys(condition, scope)) {
+      const required = registry.provenanceSources.get(source);
+      if (!required || required.length === 0 || required.some((eventKind) => !declared.has(eventKind))) syntax("provenance proof does not derive its condition");
+    }
     return Object.freeze({ kind, eventKinds: Object.freeze(eventKinds) });
   }
   if (kind === "burn") {
@@ -129,6 +136,32 @@ function parseProof(value: unknown, scope: AchievementScope, condition: Achievem
 
 function containsKind(condition: AchievementCondition, kind: AchievementCondition["kind"]): boolean {
   return condition.kind === kind || condition.kind === "all_of" && condition.conditions.some((child) => containsKind(child, kind));
+}
+
+function provenanceSourceKeys(condition: AchievementCondition, scope: AchievementScope): readonly string[] {
+  switch (condition.kind) {
+    case "fact_present": return [`fact:${condition.factKind}`];
+    case "counter_at_least": return [`counter:${scope}:${condition.counter}`];
+    case "exit_count_at_least": return ["exit_count"];
+    case "owns_generator_at_least": return [];
+    case "all_of": return condition.conditions.flatMap((child) => provenanceSourceKeys(child, scope)).sort();
+  }
+}
+
+function validateRegistry(registry: AchievementRegistry): void {
+  for (const values of [registry.copyKeys, registry.generatorIds, registry.eventKinds, registry.resourceIds, registry.runCounters, registry.careerCounters]) {
+    for (const value of values) identifier(value, "achievement registry key");
+  }
+  for (const [source, kinds] of registry.provenanceSources) {
+    if (!validProvenanceSource(source) || kinds.length === 0 || kinds.some((kind, index) => !registry.eventKinds.has(kind) || !mechanicalId.test(kind) || index > 0 && kinds[index - 1]! >= kind)) syntax("achievement provenance source registry is invalid");
+  }
+}
+
+function validProvenanceSource(value: string): boolean {
+  if (value === "exit_count") return true;
+  const parts = value.split(":");
+  if (parts.length === 2 && parts[0] === "fact") return mechanicalId.test(parts[1]!);
+  return parts.length === 3 && parts[0] === "counter" && (parts[1] === "run" || parts[1] === "career") && mechanicalId.test(parts[2]!);
 }
 
 function exactObject(value: unknown, keys: readonly string[], label: string): Record<string, unknown> {

@@ -10,6 +10,7 @@ import (
 	"io"
 	"regexp"
 	"sort"
+	"strings"
 
 	"cloud-clicker/server/decimal"
 )
@@ -78,12 +79,13 @@ type Definition struct {
 }
 
 type Registry struct {
-	CopyKeys       map[string]bool
-	GeneratorIDs   map[string]bool
-	EventKinds     map[string]bool
-	ResourceIDs    map[string]bool
-	RunCounters    map[string]bool
-	CareerCounters map[string]bool
+	CopyKeys          map[string]bool
+	GeneratorIDs      map[string]bool
+	EventKinds        map[string]bool
+	ResourceIDs       map[string]bool
+	RunCounters       map[string]bool
+	CareerCounters    map[string]bool
+	ProvenanceSources map[string][]string
 }
 
 type Catalog struct {
@@ -164,6 +166,16 @@ func parseCondition(data []byte, scope ConditionScope, registry Registry, depth 
 	if json.Unmarshal(data, &discriminator) != nil {
 		return Condition{}, 0, ErrInvalidCatalog
 	}
+	expectedKeys := map[ConditionKind][]string{
+		ConditionFactPresent:          {"fact_kind", "kind"},
+		ConditionCounterAtLeast:       {"counter", "kind", "minimum"},
+		ConditionExitCountAtLeast:     {"count", "kind"},
+		ConditionOwnsGeneratorAtLeast: {"count", "generator_id", "kind"},
+		ConditionAllOf:                {"conditions", "kind"},
+	}[discriminator.Kind]
+	if expectedKeys == nil || !hasExactKeys(data, expectedKeys) {
+		return Condition{}, 0, ErrInvalidCatalog
+	}
 	var raw rawCondition
 	if err := decodeStrict(data, &raw); err != nil {
 		return Condition{}, 0, err
@@ -213,6 +225,20 @@ func parseCondition(data []byte, scope ConditionScope, registry Registry, depth 
 }
 
 func parseProof(data []byte, scope ConditionScope, condition Condition, registry Registry) (Proof, error) {
+	var discriminator struct {
+		Kind ProofKind `json:"kind"`
+	}
+	if json.Unmarshal(data, &discriminator) != nil {
+		return Proof{}, ErrInvalidCatalog
+	}
+	expectedKeys := map[ProofKind][]string{
+		ProofProvenance: {"event_kinds", "kind"},
+		ProofBurn:       {"event_kind", "kind", "minimum", "resource_id"},
+		ProofPossession: {"justification_copy_key", "kind"},
+	}[discriminator.Kind]
+	if expectedKeys == nil || !hasExactKeys(data, expectedKeys) {
+		return Proof{}, ErrInvalidCatalog
+	}
 	var raw rawProof
 	if err := decodeStrict(data, &raw); err != nil {
 		return Proof{}, err
@@ -228,6 +254,21 @@ func parseProof(data []byte, scope ConditionScope, condition Condition, registry
 				return Proof{}, ErrInvalidCatalog
 			}
 			last = kind
+		}
+		declared := make(map[string]bool, len(raw.EventKinds))
+		for _, kind := range raw.EventKinds {
+			declared[kind] = true
+		}
+		for _, source := range provenanceSourceKeys(condition, scope) {
+			required := registry.ProvenanceSources[source]
+			if len(required) == 0 {
+				return Proof{}, ErrInvalidCatalog
+			}
+			for _, kind := range required {
+				if !declared[kind] {
+					return Proof{}, ErrInvalidCatalog
+				}
+			}
 		}
 		return Proof{Kind: raw.Kind, EventKinds: append([]string(nil), raw.EventKinds...)}, nil
 	case ProofBurn:
@@ -285,7 +326,60 @@ func containsKind(condition Condition, kind ConditionKind) bool {
 }
 
 func validRegistry(registry Registry) bool {
-	return registry.CopyKeys != nil && registry.GeneratorIDs != nil && registry.EventKinds != nil && registry.ResourceIDs != nil && registry.RunCounters != nil && registry.CareerCounters != nil
+	if registry.CopyKeys == nil || registry.GeneratorIDs == nil || registry.EventKinds == nil || registry.ResourceIDs == nil || registry.RunCounters == nil || registry.CareerCounters == nil || registry.ProvenanceSources == nil {
+		return false
+	}
+	for _, values := range []map[string]bool{registry.CopyKeys, registry.GeneratorIDs, registry.EventKinds, registry.ResourceIDs, registry.RunCounters, registry.CareerCounters} {
+		for key, present := range values {
+			if !present || !mechanicalID.MatchString(key) {
+				return false
+			}
+		}
+	}
+	for source, kinds := range registry.ProvenanceSources {
+		if !validProvenanceSourceKey(source) || len(kinds) == 0 {
+			return false
+		}
+		last := ""
+		for _, kind := range kinds {
+			if kind <= last || !registry.EventKinds[kind] {
+				return false
+			}
+			last = kind
+		}
+	}
+	return true
+}
+
+func provenanceSourceKeys(condition Condition, scope ConditionScope) []string {
+	switch condition.Kind {
+	case ConditionFactPresent:
+		return []string{"fact:" + condition.FactKind}
+	case ConditionCounterAtLeast:
+		return []string{"counter:" + string(scope) + ":" + condition.Counter}
+	case ConditionExitCountAtLeast:
+		return []string{"exit_count"}
+	case ConditionAllOf:
+		result := []string{}
+		for _, child := range condition.Children {
+			result = append(result, provenanceSourceKeys(child, scope)...)
+		}
+		sort.Strings(result)
+		return result
+	default:
+		return nil
+	}
+}
+
+func validProvenanceSourceKey(value string) bool {
+	if value == "exit_count" {
+		return true
+	}
+	parts := strings.Split(value, ":")
+	if len(parts) == 2 && parts[0] == "fact" {
+		return mechanicalID.MatchString(parts[1])
+	}
+	return len(parts) == 3 && parts[0] == "counter" && (parts[1] == string(ScopeRun) || parts[1] == string(ScopeCareer)) && mechanicalID.MatchString(parts[2])
 }
 
 func decodeStrict(data []byte, target any) error {
@@ -299,6 +393,19 @@ func decodeStrict(data []byte, target any) error {
 		return ErrInvalidCatalog
 	}
 	return nil
+}
+
+func hasExactKeys(data []byte, expected []string) bool {
+	var object map[string]json.RawMessage
+	if json.Unmarshal(data, &object) != nil || len(object) != len(expected) {
+		return false
+	}
+	for _, key := range expected {
+		if _, ok := object[key]; !ok {
+			return false
+		}
+	}
+	return true
 }
 
 func cloneDefinition(source Definition) Definition {

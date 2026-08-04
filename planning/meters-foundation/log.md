@@ -93,3 +93,15 @@ What held:
 - No production meter artifact was added to `balance/epochs/phase0.json`. The missing literal
   bands/initials/rates/bindings, save v15, `ApplyLogged` binding, events, replay identity, formulas,
   relevance report, and archive remain explicitly carried work; none was treated as implemented.
+
+## 2026-08-04 — remediation after independent review
+
+- Replaced the Node-only corpus file read with a typed JSON-module import; the mandatory root
+  TypeScript/Svelte gate now genuinely passes with zero diagnostics.
+- Made every zero-capable required Go meter field presence-aware and every input arm exact-key,
+  closing the Go-vs-TypeScript/schema acceptance gap for omitted initials/floors/reseed/decay and
+  wrong-arm empty/null fields. Added discriminating negative cases.
+- Made the package boundary walk nested source directories recursively.
+- Corrected the earlier green claim by evidence rather than editing history: `make verify` exits 0
+  after all server packages, harness, TypeScript, client build, 6,515 client assertions, schema and
+  boundary gates, and 19,554 browser assertions.

@@ -26,9 +26,14 @@ for (const fixture of [
 }
 assertBoundary('import "cloud-clicker/server/decimal"', "neutral fixture");
 
-for (const entry of readdirSync(directory, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name))) {
-  if (!entry.isFile() || !entry.name.endsWith(".go") || entry.name.endsWith("_test.go")) continue;
-  assertBoundary(readFileSync(path.join(directory, entry.name), "utf8"), `server/achievements/${entry.name}`);
+function scan(current) {
+  for (const entry of readdirSync(current, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name))) {
+    const filename = path.join(current, entry.name);
+    if (entry.isDirectory()) { scan(filename); continue; }
+    if (!entry.isFile() || !entry.name.endsWith(".go") || entry.name.endsWith("_test.go")) continue;
+    assertBoundary(readFileSync(filename, "utf8"), path.relative(root, filename));
+  }
 }
+scan(directory);
 
 console.log("achievements package boundary ok");

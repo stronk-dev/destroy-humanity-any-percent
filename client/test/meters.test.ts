@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
+import meterTransitionCorpus from "../../balance/testdata/meters-transition-v1.json";
 
 import { loadMeterCatalog, REQUIRED_METER_IDS, validateMeterResourceSeparation } from "../src/meters/catalog";
 import { advanceMeters, contributionKey, MILLIS_PER_HOUR, newMeterState, validateMeterState } from "../src/meters/transition";
@@ -66,7 +66,7 @@ describe("meter transition", () => {
   });
 
   it("matches the shared Go/TypeScript transition corpus", () => {
-    const corpus = JSON.parse(readFileSync(new URL("../../balance/testdata/meters-transition-v1.json", import.meta.url), "utf8")) as {
+    const corpus = meterTransitionCorpus as {
       version: number;
       cases: Array<{
         name: string;

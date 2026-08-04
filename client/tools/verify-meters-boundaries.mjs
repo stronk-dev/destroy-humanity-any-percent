@@ -22,9 +22,14 @@ for (const fixture of [
 }
 assertBoundary('import "cloud-clicker/server/multiplier"', "neutral fixture");
 
-for (const entry of readdirSync(metersDirectory, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name))) {
-  if (!entry.isFile() || !entry.name.endsWith(".go") || entry.name.endsWith("_test.go")) continue;
-  assertBoundary(readFileSync(path.join(metersDirectory, entry.name), "utf8"), `server/meters/${entry.name}`);
+function scan(directory) {
+  for (const entry of readdirSync(directory, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name))) {
+    const filename = path.join(directory, entry.name);
+    if (entry.isDirectory()) { scan(filename); continue; }
+    if (!entry.isFile() || !entry.name.endsWith(".go") || entry.name.endsWith("_test.go")) continue;
+    assertBoundary(readFileSync(filename, "utf8"), path.relative(root, filename));
+  }
 }
+scan(metersDirectory);
 
 console.log("meters package boundary ok");

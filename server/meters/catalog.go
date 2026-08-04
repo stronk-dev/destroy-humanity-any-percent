@@ -88,27 +88,27 @@ type rawCatalog struct {
 }
 
 type rawTrustReseed struct {
-	BaseValue            int   `json:"base_value"`
-	NotorietyNumerator   int64 `json:"notoriety_numerator"`
-	NotorietyDenominator int64 `json:"notoriety_denominator"`
-	FloorValue           int   `json:"floor_value"`
-	CeilingValue         int   `json:"ceiling_value"`
+	BaseValue            *int   `json:"base_value"`
+	NotorietyNumerator   *int64 `json:"notoriety_numerator"`
+	NotorietyDenominator *int64 `json:"notoriety_denominator"`
+	FloorValue           *int   `json:"floor_value"`
+	CeilingValue         *int   `json:"ceiling_value"`
 }
 
 type rawMeter struct {
-	ID           string     `json:"id"`
-	Scope        string     `json:"scope"`
-	MinValue     int        `json:"min_value"`
-	MaxValue     int        `json:"max_value"`
-	InitialValue int        `json:"initial_value"`
-	Bands        []rawBand  `json:"bands"`
-	Inputs       []rawInput `json:"inputs"`
-	Decay        *rawDecay  `json:"decay"`
+	ID           string            `json:"id"`
+	Scope        string            `json:"scope"`
+	MinValue     *int              `json:"min_value"`
+	MaxValue     *int              `json:"max_value"`
+	InitialValue *int              `json:"initial_value"`
+	Bands        []rawBand         `json:"bands"`
+	Inputs       []json.RawMessage `json:"inputs"`
+	Decay        *rawDecay         `json:"decay"`
 }
 
 type rawBand struct {
 	ID         string `json:"id"`
-	FloorValue int    `json:"floor_value"`
+	FloorValue *int   `json:"floor_value"`
 }
 
 type rawInput struct {
@@ -121,8 +121,8 @@ type rawInput struct {
 }
 
 type rawDecay struct {
-	TowardValue int `json:"toward_value"`
-	RatePerHour int `json:"rate_per_attended_hour"`
+	TowardValue *int `json:"toward_value"`
+	RatePerHour *int `json:"rate_per_attended_hour"`
 }
 
 func LoadCatalog(data []byte) (*Catalog, error) {
@@ -141,28 +141,28 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	}
 	catalog := &Catalog{
 		TrustReseed: TrustReseed{
-			BaseValue: raw.TrustReseed.BaseValue, NotorietyNumerator: raw.TrustReseed.NotorietyNumerator,
-			NotorietyDenominator: raw.TrustReseed.NotorietyDenominator, FloorValue: raw.TrustReseed.FloorValue,
-			CeilingValue: raw.TrustReseed.CeilingValue,
+			BaseValue: *raw.TrustReseed.BaseValue, NotorietyNumerator: *raw.TrustReseed.NotorietyNumerator,
+			NotorietyDenominator: *raw.TrustReseed.NotorietyDenominator, FloorValue: *raw.TrustReseed.FloorValue,
+			CeilingValue: *raw.TrustReseed.CeilingValue,
 		},
 		Meters: make([]Meter, 0, len(raw.Meters)), byID: map[string]Meter{},
 	}
 	for index, source := range raw.Meters {
-		if source.ID != requiredMeterIDs[index] || source.Scope != "company" || source.MinValue != MinimumValue ||
-			source.MaxValue != MaximumValue || source.InitialValue < MinimumValue || source.InitialValue > MaximumValue ||
+		if source.ID != requiredMeterIDs[index] || source.Scope != "company" || source.MinValue == nil || *source.MinValue != MinimumValue ||
+			source.MaxValue == nil || *source.MaxValue != MaximumValue || source.InitialValue == nil || *source.InitialValue < MinimumValue || *source.InitialValue > MaximumValue ||
 			len(source.Bands) == 0 || source.Inputs == nil || catalog.byID[source.ID].ID != "" {
 			return nil, fmt.Errorf("%w: meters[%d]", ErrInvalidCatalog, index)
 		}
-		meter := Meter{ID: source.ID, InitialValue: source.InitialValue, Bands: make([]Band, 0, len(source.Bands)), Inputs: make([]Input, 0, len(source.Inputs))}
+		meter := Meter{ID: source.ID, InitialValue: *source.InitialValue, Bands: make([]Band, 0, len(source.Bands)), Inputs: make([]Input, 0, len(source.Inputs))}
 		previousFloor := -1
 		seenBands := map[string]bool{}
 		for bandIndex, band := range source.Bands {
-			if !idPattern.MatchString(band.ID) || seenBands[band.ID] || band.FloorValue < MinimumValue || band.FloorValue > MaximumValue ||
-				band.FloorValue <= previousFloor || bandIndex == 0 && band.FloorValue != MinimumValue {
+			if !idPattern.MatchString(band.ID) || seenBands[band.ID] || band.FloorValue == nil || *band.FloorValue < MinimumValue || *band.FloorValue > MaximumValue ||
+				*band.FloorValue <= previousFloor || bandIndex == 0 && *band.FloorValue != MinimumValue {
 				return nil, fmt.Errorf("%w: meters[%d].bands[%d]", ErrInvalidCatalog, index, bandIndex)
 			}
-			seenBands[band.ID], previousFloor = true, band.FloorValue
-			meter.Bands = append(meter.Bands, Band{ID: band.ID, FloorValue: band.FloorValue})
+			seenBands[band.ID], previousFloor = true, *band.FloorValue
+			meter.Bands = append(meter.Bands, Band{ID: band.ID, FloorValue: *band.FloorValue})
 		}
 		seenInputs := map[string]bool{}
 		for inputIndex, sourceInput := range source.Inputs {
@@ -174,10 +174,10 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 			meter.Inputs = append(meter.Inputs, input)
 		}
 		if source.Decay != nil {
-			if source.Decay.TowardValue < MinimumValue || source.Decay.TowardValue > MaximumValue || source.Decay.RatePerHour < 1 || source.Decay.RatePerHour > MaximumValue {
+			if source.Decay.TowardValue == nil || source.Decay.RatePerHour == nil || *source.Decay.TowardValue < MinimumValue || *source.Decay.TowardValue > MaximumValue || *source.Decay.RatePerHour < 1 || *source.Decay.RatePerHour > MaximumValue {
 				return nil, fmt.Errorf("%w: meters[%d].decay", ErrInvalidCatalog, index)
 			}
-			meter.Decay = &Decay{TowardValue: source.Decay.TowardValue, RatePerHour: source.Decay.RatePerHour}
+			meter.Decay = &Decay{TowardValue: *source.Decay.TowardValue, RatePerHour: *source.Decay.RatePerHour}
 		}
 		catalog.byID[meter.ID] = meter
 		catalog.Meters = append(catalog.Meters, meter)
@@ -186,12 +186,30 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 }
 
 func validReseed(value rawTrustReseed) bool {
-	return value.BaseValue >= MinimumValue && value.BaseValue <= MaximumValue && value.NotorietyNumerator >= 0 &&
-		value.NotorietyDenominator > 0 && value.FloorValue >= MinimumValue && value.FloorValue <= value.CeilingValue &&
-		value.CeilingValue <= MaximumValue && value.BaseValue >= value.FloorValue && value.BaseValue <= value.CeilingValue
+	return value.BaseValue != nil && value.NotorietyNumerator != nil && value.NotorietyDenominator != nil && value.FloorValue != nil && value.CeilingValue != nil &&
+		*value.BaseValue >= MinimumValue && *value.BaseValue <= MaximumValue && *value.NotorietyNumerator >= 0 &&
+		*value.NotorietyDenominator > 0 && *value.FloorValue >= MinimumValue && *value.FloorValue <= *value.CeilingValue &&
+		*value.CeilingValue <= MaximumValue && *value.BaseValue >= *value.FloorValue && *value.BaseValue <= *value.CeilingValue
 }
 
-func parseInput(source rawInput) (Input, string, error) {
+func parseInput(data []byte) (Input, string, error) {
+	var discriminator struct {
+		Kind InputKind `json:"kind"`
+	}
+	if json.Unmarshal(data, &discriminator) != nil {
+		return Input{}, "", ErrInvalidCatalog
+	}
+	expected := map[InputKind][]string{
+		InputLedgerFact:       {"delta", "fact_kind", "kind"},
+		InputContributionSlot: {"delta_per_attended_hour", "kind", "slot", "source_id"},
+	}[discriminator.Kind]
+	if expected == nil || !hasExactJSONKeys(data, expected) {
+		return Input{}, "", ErrInvalidCatalog
+	}
+	var source rawInput
+	if err := decodeCatalogStrict(data, &source); err != nil {
+		return Input{}, "", ErrInvalidCatalog
+	}
 	switch source.Kind {
 	case InputLedgerFact:
 		if !idPattern.MatchString(source.FactKind) || source.Slot != "" || source.SourceID != "" || source.Delta == nil ||
@@ -210,6 +228,32 @@ func parseInput(source rawInput) (Input, string, error) {
 	default:
 		return Input{}, "", ErrInvalidCatalog
 	}
+}
+
+func hasExactJSONKeys(data []byte, expected []string) bool {
+	var object map[string]json.RawMessage
+	if json.Unmarshal(data, &object) != nil || len(object) != len(expected) {
+		return false
+	}
+	for _, key := range expected {
+		if _, ok := object[key]; !ok {
+			return false
+		}
+	}
+	return true
+}
+
+func decodeCatalogStrict(data []byte, target any) error {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(target); err != nil {
+		return err
+	}
+	var trailing any
+	if err := decoder.Decode(&trailing); err != io.EOF {
+		return ErrInvalidCatalog
+	}
+	return nil
 }
 
 func (catalog *Catalog) Meter(id string) (Meter, bool) {

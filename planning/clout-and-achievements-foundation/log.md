@@ -80,3 +80,16 @@ What held:
 - No achievement artifact was added to the epoch seed. Literal production achievements/copy,
   save v16, live/replay evaluation and ordered events, Exit settlement, relevance observation,
   epoch identity, and archival remain explicitly pending and were not over-credited by this review.
+
+## 2026-08-04 — remediation after independent review
+
+- Added exact-key checks for every Go condition/proof union arm and mechanical validation for all
+  composition-registry keys, closing the Go-vs-TypeScript/schema acceptance divergence. Seeded
+  null/empty wrong-arm fields now reject.
+- Added typed provenance-source metadata. Every fact/counter/exit-count condition maps to sorted
+  immutable event kinds; a provenance proof must include every event required to derive every
+  predicate leaf. An unrelated registered event can no longer certify an achievement.
+- Made the source boundary recursive. The future sole-Clout-owner registry remains honestly
+  downstream rather than overclaimed by this foundation.
+- Corrected the inherited false green claim: the Node-only Meters test import is gone and the
+  complete root `make verify` exits 0 (6,515 client and 19,554 browser assertions).
