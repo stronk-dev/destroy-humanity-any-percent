@@ -35,3 +35,17 @@ balance-data rows; foundational engine work proceeds.
 `make verify` passed at `8f5263a`: Go vet and every server package; formulas and balance harness;
 strict TypeScript/Svelte checks; production client build; 6,509 client assertions; kernel/copy/
 schema/package-boundary gates; and 19,536 browser assertions.
+
+## 2026-08-03 — deterministic transition kernel
+
+- Added matching Go and TypeScript state authorities with exact complete value, decay-remainder,
+  and input-remainder key sets.
+- The pure transition advances decay first, then causal facts and active contribution sources,
+  clamps once, clears decay phase at its target, and emits only a prior-to-final band change.
+- Added one shared JSON corpus consumed by both runtimes. It discriminates split attended time,
+  negative rate input, ledger-fact band crossing, linear decay, stale target phase, and hard-bound
+  saturation.
+- Focused Go, client, and TypeScript type-check gates pass using the normal repository toolchain.
+- Save v15 and `ApplyLogged` binding remain intentionally uncommitted until the meter catalog can
+  be part of the pinned artifact bundle; accepting an optional/unhashed runtime catalog would
+  violate replay identity rather than make progress.

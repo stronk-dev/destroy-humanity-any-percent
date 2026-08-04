@@ -6,6 +6,8 @@ RFC: `rfc/meters-foundation.md`
 - [x] Land strict meter schema/loaders and discriminating test catalogs in Go and TypeScript.
 - [ ] Land save v15 maps, migration corpus, canonical wire closure, and reset assembly.
 - [ ] Implement exact attended-time decay and the closed causal input union inside `ApplyLogged`.
+  - [x] Land the pure Go/TypeScript transition kernel and shared parity corpus.
+  - [ ] Bind the kernel to run-pinned catalogs at the live/replay boundary.
 - [ ] Add band events, transport/schema registries, formula output, replay bundle identity, and
   cross-runtime sequential fixtures.
 - [ ] Mint the production meter artifact after owner-supplied literal band/initial/rate/input data.

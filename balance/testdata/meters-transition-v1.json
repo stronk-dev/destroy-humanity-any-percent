@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "partitioned_negative_rate",
+      "initial_value": 50,
+      "initial_decay_remainder": 0,
+      "initial_input_remainder": 0,
+      "steps": [
+        {
+          "attended_ms": 1234567,
+          "new_fact_kinds": [],
+          "active_contributions": ["upgrades\u0000generator.example"]
+        },
+        {
+          "attended_ms": 2365433,
+          "new_fact_kinds": [],
+          "active_contributions": ["upgrades\u0000generator.example"]
+        }
+      ],
+      "expected_value": 48,
+      "expected_decay_remainder": 0,
+      "expected_input_remainder": 0,
+      "expected_changes": []
+    },
+    {
+      "name": "fact_crosses_band",
+      "initial_value": 69,
+      "initial_decay_remainder": 0,
+      "initial_input_remainder": 0,
+      "steps": [
+        {
+          "attended_ms": 0,
+          "new_fact_kinds": ["externality.emitted"],
+          "active_contributions": []
+        }
+      ],
+      "expected_value": 72,
+      "expected_decay_remainder": 0,
+      "expected_input_remainder": 0,
+      "expected_changes": [
+        {
+          "meter_id": "doom.probability",
+          "from_band": "low",
+          "to_band": "high",
+          "direction": "up",
+          "value_before": 69,
+          "value_after": 72
+        }
+      ]
+    },
+    {
+      "name": "decay_moves_toward_target",
+      "initial_value": 45,
+      "initial_decay_remainder": 0,
+      "initial_input_remainder": 0,
+      "steps": [
+        {
+          "attended_ms": 5400000,
+          "new_fact_kinds": [],
+          "active_contributions": []
+        }
+      ],
+      "expected_value": 48,
+      "expected_decay_remainder": 0,
+      "expected_input_remainder": 0,
+      "expected_changes": []
+    },
+    {
+      "name": "target_clears_stale_decay_phase",
+      "initial_value": 50,
+      "initial_decay_remainder": 42,
+      "initial_input_remainder": 0,
+      "steps": [
+        {
+          "attended_ms": 0,
+          "new_fact_kinds": [],
+          "active_contributions": []
+        }
+      ],
+      "expected_value": 50,
+      "expected_decay_remainder": 0,
+      "expected_input_remainder": 0,
+      "expected_changes": []
+    },
+    {
+      "name": "fact_saturates_at_hard_bound",
+      "initial_value": 99,
+      "initial_decay_remainder": 0,
+      "initial_input_remainder": 0,
+      "steps": [
+        {
+          "attended_ms": 0,
+          "new_fact_kinds": ["externality.emitted"],
+          "active_contributions": []
+        }
+      ],
+      "expected_value": 100,
+      "expected_decay_remainder": 0,
+      "expected_input_remainder": 0,
+      "expected_changes": []
+    }
+  ]
+}

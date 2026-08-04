@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 
 import { loadMeterCatalog, REQUIRED_METER_IDS, validateMeterResourceSeparation } from "../src/meters/catalog";
+import { advanceMeters, contributionKey, MILLIS_PER_HOUR, newMeterState, validateMeterState } from "../src/meters/transition";
 
 function validCatalog(): Record<string, unknown> {
   return {
@@ -43,5 +45,93 @@ describe("meter catalog", () => {
       const catalog = validCatalog(); mutate(catalog);
       expect(() => loadMeterCatalog(JSON.stringify(catalog))).toThrow();
     }
+  });
+});
+
+describe("meter transition", () => {
+  it("is partition-invariant and offline-stable", () => {
+    const catalog = loadMeterCatalog(JSON.stringify(validCatalog()));
+    const whole = newMeterState(catalog);
+    const split = newMeterState(catalog);
+    const active = new Set([contributionKey("upgrades", "generator.example")]);
+    advanceMeters(catalog, whole, { attendedMs: MILLIS_PER_HOUR, newFactKinds: new Set(), activeContributions: active });
+    for (const attendedMs of [1_234_567, MILLIS_PER_HOUR - 1_234_567]) {
+      advanceMeters(catalog, split, { attendedMs, newFactKinds: new Set(), activeContributions: active });
+    }
+    expect(whole).toEqual(split);
+    const offline = newMeterState(catalog);
+    const before = structuredClone(offline);
+    advanceMeters(catalog, offline, { attendedMs: 0, newFactKinds: new Set(), activeContributions: active });
+    expect(offline).toEqual(before);
+  });
+
+  it("matches the shared Go/TypeScript transition corpus", () => {
+    const corpus = JSON.parse(readFileSync(new URL("../../balance/testdata/meters-transition-v1.json", import.meta.url), "utf8")) as {
+      version: number;
+      cases: Array<{
+        name: string;
+        initial_value: number;
+        initial_decay_remainder: number;
+        initial_input_remainder: number;
+        steps: Array<{ attended_ms: number; new_fact_kinds: string[]; active_contributions: string[] }>;
+        expected_value: number;
+        expected_decay_remainder: number;
+        expected_input_remainder: number;
+        expected_changes: Array<Record<string, unknown>>;
+      }>;
+    };
+    expect(corpus.version).toBe(1);
+    const catalog = loadMeterCatalog(JSON.stringify(validCatalog()));
+    for (const vector of corpus.cases) {
+      const state = newMeterState(catalog);
+      state.values["doom.probability"] = vector.initial_value;
+      state.decayRemainders["doom.probability"] = vector.initial_decay_remainder;
+      state.inputRemainders["doom.probability:1"] = vector.initial_input_remainder;
+      const changes = vector.steps.flatMap((step) => advanceMeters(catalog, state, {
+        attendedMs: step.attended_ms,
+        newFactKinds: new Set(step.new_fact_kinds),
+        activeContributions: new Set(step.active_contributions),
+      }));
+      expect({
+        value: state.values["doom.probability"],
+        decay: state.decayRemainders["doom.probability"],
+        input: state.inputRemainders["doom.probability:1"],
+        changes: changes.map((change) => ({
+          meter_id: change.meterId,
+          from_band: change.fromBand,
+          to_band: change.toBand,
+          direction: change.direction,
+          value_before: change.valueBefore,
+          value_after: change.valueAfter,
+        })),
+      }).toEqual({
+        value: vector.expected_value,
+        decay: vector.expected_decay_remainder,
+        input: vector.expected_input_remainder,
+        changes: vector.expected_changes,
+      });
+    }
+  });
+
+  it("aggregates causal inputs and emits only the final band transition", () => {
+    const catalog = loadMeterCatalog(JSON.stringify(validCatalog()));
+    const state = newMeterState(catalog);
+    state.values["doom.probability"] = 69;
+    const changes = advanceMeters(catalog, state, { attendedMs: 0, newFactKinds: new Set(["externality.emitted"]), activeContributions: new Set() });
+    expect(state.values["doom.probability"]).toBe(72);
+    expect(changes).toEqual([{ meterId: "doom.probability", fromBand: "low", toBand: "high", direction: "up", valueBefore: 69, valueAfter: 72 }]);
+  });
+
+  it("clears stale decay phase at the target and rejects inexact maps", () => {
+    const catalog = loadMeterCatalog(JSON.stringify(validCatalog()));
+    const state = newMeterState(catalog);
+    state.decayRemainders["doom.probability"] = 42;
+    advanceMeters(catalog, state, { attendedMs: 0, newFactKinds: new Set(), activeContributions: new Set() });
+    expect(state.decayRemainders["doom.probability"]).toBe(0);
+    delete state.values["trust.users.standing"];
+    expect(() => validateMeterState(catalog, state)).toThrow(/invalid meter state/);
+    const extra = newMeterState(catalog);
+    extra.inputRemainders["extra:0"] = 0;
+    expect(() => validateMeterState(catalog, extra)).toThrow(/invalid meter state/);
   });
 });
