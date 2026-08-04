@@ -141,6 +141,26 @@ corpus proves old-run replay through Exit, atomic v14→v16 new-run assembly, de
 and rejection when either artifact is missing. If retroactive achievements are desired, owner must
 define the immutable historical event/counter scan and artifact source for every old hash.
 
+## Owner ruling on the activation boundary (Achievements C11, 2026-08-04) — ACCEPTED, generalized
+
+Accepted as proposed, and lifted to a **reusable law** because every save-version foundation
+hits it: **new-mechanic activation is NEW-RUN-BOUND at the first epoch whose PINNED catalog
+carries the mechanic's artifact.** A run pinned to a pre-artifact epoch finishes under its pinned
+save semantics and executes NO hook for the new mechanic (no retroactive gain — the same shape as
+L2b version-drift and P6a pre-timer runs). The first Exit into an epoch containing the artifact(s)
+assembles the new save version's complete state IN THE NEW-RUN TRANSACTION from that pinned
+artifact (Standing axes from the Notoriety reseed, everything else from catalog initials);
+subsequent ordinary writes then require the pinned artifact. Replay reads the run's PINNED
+artifact bytes, never deploy-current — so activation never depends on deploy timing.
+
+**Meters v15 and Achievements v16 activate ATOMICALLY** at the first Exit into an epoch containing
+BOTH `meters` and `achievements` artifacts — one new-run transaction assembles v15 meter state +
+empty/derived v16 achievement state together; no run is ever v15-with-meters-but-v14-achievements.
+The migration corpus proves: old-run replay through Exit, atomic v14→v16 new-run assembly,
+derived-score closure, and no retroactive earning.
+
+This law is now the template for Pet Care and every subsequent save-version mechanic.
+
 ## Acceptance blockers (Codex review, 2026-08-03)
 
 The draft cannot be accepted because its two central mechanics reverse binding `design/02 §6`
