@@ -457,3 +457,13 @@ loadable. This is an input-ownership closure, not a new achievement mechanic. Ke
   display text (`1000000000`) rather than canonical wire text (`1e9`).
 - TypeScript now rejects run/lifetime ownership overlap before Exit union, matching Go and CA4.
   Kernel version is `0.3.24`; root unit/browser suites and real-Postgres integration pass.
+
+## 2026-08-04 — independent remediation verdict
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Range:** `25b7d4d..dd073b7`
+- **Decision:** **approved, no findings.** The reviewer independently reproduced the masked-burn
+  case cross-runtime, verified TS lifetime-overlap rejection, and audited ordinary rejection,
+  terminal cross-gate, rollback, and replay paths. `ActionDebits` is transient, recomputed by both
+  kernels, and has no save/wire/storage consumer. Literal production definitions and mint remain.

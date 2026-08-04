@@ -598,3 +598,13 @@ three findings.
   unchanged in Go and TypeScript.
 - Kernel version advances to `0.3.24`; generated formulas publish the attended-ledger boundary.
   Root unit/browser suites and the real-Postgres integration target pass before commit.
+
+## 2026-08-04 — independent remediation verdict
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Range:** `25b7d4d..dd073b7`
+- **Decision:** **approved, no findings.** The reviewer independently verified the 5,001 ms and
+  25-hour online-envelope cases against the canonical offline ledger, direct fact/contribution
+  causality, rollback behavior, shared Go/TS corpus, formula drift, kernel history, and Postgres.
+  The hook landing is clear; literal production balance rows and their epoch mint remain pending.
