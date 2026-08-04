@@ -87,3 +87,15 @@
   rather than a poison state.
 - `make test-go GO_PACKAGES='./minigame'`, `make vet GO_PACKAGES='./minigame'`, and the normal root
   `make test-save-integration` pass. Independent follow-up review remains required.
+
+## 2026-08-04 — independent approval of exact-version remediation (`a5c16c5^..a5c16c5`)
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Decision:** approved; no findings.
+- Exact-pair dispatch rejects a v1 session against a v2-only registry before tenant execution.
+  Both nonterminal and terminal regressions prove the row remains active at revision 1 with its
+  original state and no claim token; continuing through the original v1 service proves the defer
+  path does not poison the session.
+- The reviewer independently passed the minigame test, vet, Postgres integration, and exact-range
+  diff-check targets at commit `a5c16c5`.

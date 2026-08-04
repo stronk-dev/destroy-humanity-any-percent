@@ -10,7 +10,7 @@ RFC: `rfc/minigame-platform-foundation.md`
     inputs against real Postgres.
 - [x] Land the closed tenant descriptor/registry boundary.
   - [x] Conformance-test a deterministic fixture tenant.
-  - [ ] Obtain independent approval of the claim-release, certified-result, schema-validation,
+  - [x] Obtain independent approval of the claim-release, certified-result, schema-validation,
     identity-constraint, and canonical-integer remediation round.
   - [ ] Register the combat duel adapter only when its implemented engine surface satisfies the
     same boundary; do not invent the deferred lane engine.
