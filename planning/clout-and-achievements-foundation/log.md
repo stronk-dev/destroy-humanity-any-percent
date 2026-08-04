@@ -137,3 +137,39 @@ credited.
   sole-Clout-writer registry.
 - Verification: focused Go tests, both boundary tools, and TypeScript/Svelte checks pass. A fresh
   repository-root `make verify` exits 0 with 6,517 client assertions and 19,560 browser assertions.
+
+## 2026-08-04 — independent second-remediation review (`75e3efd..19e78ab`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **behaviorally approved for continued Achievements work; not final review closure.**
+  The shared cases and real dependency graph close the runtime behavior findings, while two MEDIUM
+  test/tooling gaps remain before content mint or archival.
+
+Closure verified:
+
+- Both suites consume the new case registry and agree on the valid baseline plus unknown-field,
+  wrong-condition-arm, unrelated-provenance, and invalid-scope rejections. The source-level exact-
+  arm, mechanical-identifier, and provenance-source semantics reviewed in the prior round remain
+  aligned.
+- The live boundary now checks `go list -deps ./achievements` and rejects economy, production, or
+  save anywhere in the actual dependency closure. The future sole-Clout-writer/source registry is
+  still explicitly downstream rather than falsely claimed here.
+- The same independently reproduced full-root `make verify` and exact-range diff checks above pass.
+
+Residual findings:
+
+1. **MEDIUM — shared mutation recipes still sit on separate Go/TypeScript baseline builders, and
+   identifier parity remains unasserted in TypeScript.** A malformed registry key is tested only in
+   Go; the shared corpus cannot express registry mutations. Put the literal baseline and registry
+   mutations/bytes under the shared fixture so a baseline or identifier-grammar drift cannot stay
+   green in one runtime.
+2. **MEDIUM — the “transitive fixture” is a synthetic dependency-name array, not a Go package
+   graph.** It does not exercise `go list`, helper-mediated imports, or command failure. Add a real
+   temporary-module/package graph fixture, and stop overriding the Makefile's approved repository-
+   local cache with `/tmp/cloud-clicker-boundary-go-cache`, which conflicts with the explicit
+   AGENTS.md routine-command rule.
+
+Current production code remains Clout-free and neutral. Owner-authored achievement/copy content,
+the future sole-Clout owner, save v16, runtime/replay/Exit/relevance integration, epoch mint, and
+archive remain honestly pending.

@@ -155,3 +155,42 @@ honest blockers.
   dependency fixture. The gate now verifies the package graph rather than only source text.
 - Verification: focused Go tests, both boundary tools, and TypeScript/Svelte checks pass. A fresh
   repository-root `make verify` exits 0 with 6,517 client assertions and 19,560 browser assertions.
+
+## 2026-08-04 — independent second-remediation review (`75e3efd..19e78ab`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **behaviorally approved for continued Meters work; not final review closure.** Both
+  previously open catalog semantics are fixed and the real dependency graph is now checked. Two
+  MEDIUM proof/tooling findings remain before artifact mint or archival.
+
+Closure verified:
+
+- Required nullable `decay` is now a `json.RawMessage`: absence has length zero and rejects, while
+  canonical/whitespace-surrounded JSON `null` remains the sole no-decay representation. The shared
+  mutation case is consumed by both runtime suites.
+- Go now enforces the same `9007199254740991` ceiling on both reseed numerator and denominator as
+  TypeScript and JSON Schema; the over-bound denominator case rejects in both suites.
+- The live boundary runs `go list -deps ./meters` and rejects forbidden economy/production packages
+  anywhere in the actual dependency closure. This closes the transitive behavior defect.
+- A fresh repository-root `make verify` independently completed with exit 0: all Go packages/vet,
+  formula and harness checks, zero TypeScript/Svelte diagnostics, client build, 6,517 client tests,
+  schema/content/boundary gates, and 19,560 browser tests. Exact-range `git diff --check` passed.
+
+Residual findings:
+
+1. **MEDIUM — the parity corpus does not own the candidate bytes.** The checked-in file contains
+   only mutation recipes; Go and TypeScript apply them to separately hand-written `validCatalog`
+   builders. Those baselines can drift while every shared case stays green, so this is not yet one
+   loader corpus in the golden-vector sense. Move the literal valid catalog into the shared fixture
+   (or store complete bytes per case) and have both suites mutate/load that same object.
+2. **MEDIUM — the claimed transitive fixture is not a dependency-graph fixture and violates the
+   routine-command convention.** `assertDependencies(["cloud-clicker/server/economy"], ...)` tests
+   only the final string filter, not `go list`, graph traversal, or a helper-mediated import. The
+   live graph check is correct, but add a temporary-module/package graph fixture like the hardened
+   history gates use. Also remove the hard-coded `/tmp/cloud-clicker-boundary-go-cache`: AGENTS.md
+   explicitly requires the root Make target's exported repository-local `GOCACHE` and forbids
+   task-specific cache directories.
+
+No production meter artifact was minted. Owner-authored literal balance rows plus the existing
+save/live-replay/events/formulas/relevance work remain honest blockers.
