@@ -45,6 +45,19 @@ export function newMeterState(catalog: MeterCatalog): MeterState {
   return state;
 }
 
+export function newRunMeterState(catalog: MeterCatalog, notoriety: number): MeterState {
+  if (!integerInRange(notoriety, 0, Number.MAX_SAFE_INTEGER)) invalidState();
+  const state = newMeterState(catalog);
+  const reseed = catalog.trustReseed;
+  const reduction = BigInt(notoriety) * BigInt(reseed.notorietyNumerator) / BigInt(reseed.notorietyDenominator);
+  const raw = BigInt(reseed.baseValue) - reduction;
+  const standing = Number(raw < BigInt(reseed.floorValue) ? BigInt(reseed.floorValue) : raw > BigInt(reseed.ceilingValue) ? BigInt(reseed.ceilingValue) : raw);
+  for (const meter of catalog.meters) {
+    if (meter.id.startsWith("trust.") && meter.id.endsWith(".standing")) state.values[meter.id] = standing;
+  }
+  return state;
+}
+
 export function validateMeterState(catalog: MeterCatalog, state: MeterState): void {
   const expectedValues = catalog.meters.map((meter) => meter.id).sort();
   if (!sameStrings(Object.keys(state.values).sort(), expectedValues) || !sameStrings(Object.keys(state.decayRemainders).sort(), expectedValues)) invalidState();

@@ -373,6 +373,42 @@ func TestFoundationReplayCarryAndClonePreserveV16State(t *testing.T) {
 	}
 }
 
+func TestReplayEnvelopeVersionFollowsPinnedFoundationActivation(t *testing.T) {
+	now := time.Date(2026, 8, 4, 14, 0, 0, 0, time.UTC)
+	legacy, active := foundationTestBundles(t)
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0500-7000-8000-000000000501","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1500-7000-8000-000000000001", FounderID: "01986666-2500-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: legacy.Routes.ContextVersion()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var envelope map[string]any
+	if err := json.Unmarshal(inputs, &envelope); err != nil {
+		t.Fatal(err)
+	}
+	envelope["v"] = 2
+	v2, _ := json.Marshal(envelope)
+	legacyState := replayFixtureState(t, legacy.Economy, now)
+	if _, err := ApplyLogged(legacyState, request.CanonicalPayload, legacy, v2); err != nil {
+		t.Fatalf("historical v2 replay rejected: %v", err)
+	}
+	activeState := replayFixtureState(t, active.Economy, now)
+	activeState.WireVersion = save.LatestSupportedVersion
+	meterState, err := meters.NewRunState(active.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	activeState.MeterBands = nil
+	activeState.MeterValues, activeState.MeterDecayRemainders, activeState.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	activeState.AchievementsEarnedRun = map[string]bool{}
+	if _, err := ApplyLogged(activeState, request.CanonicalPayload, active, v2); !errors.Is(err, ErrInvalidReplayInputs) {
+		t.Fatalf("active foundations accepted replay v2: %v", err)
+	}
+}
+
 func TestFounderCarryVersionBoundaryKeepsLegacyV2Replayable(t *testing.T) {
 	legacy := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: "sha256:" + strings.Repeat("a", 64),
 		NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}}

@@ -3,3 +3,5 @@ package copykeys
 
 const CompactRecruitmentMidT3 = "compact.recruitment.mid_t3"
 const RouteRegistryFirstReordered = "route.registry_first_reordered"
+
+func All() []string { return []string{"category.any_percent", "category.ethical_percent", "category.hundred_percent", "category.low_percent", "category.valuation", "compact.recruitment.mid_t3", "incorporate.bootstrapper", "incorporate.enterprise", "incorporate.open_source", "incorporate.vc_funded", "resource.company_cash.cap.phase0", "route.registry_first_reordered"} }

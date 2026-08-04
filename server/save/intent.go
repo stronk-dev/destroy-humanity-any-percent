@@ -59,6 +59,20 @@ const (
 	EventGuildActivityEvaluated    EventKind = "guild_activity_evaluated"
 )
 
+// AllEventKinds is the closed structural authority consumed by catalog
+// validators. It grows only with the event registry and is never balance data.
+var AllEventKinds = [...]EventKind{
+	EventCompactCascadeStarted, EventCompactHealthBandChanged, EventCompactLeft,
+	EventCompactRecovered, EventCompactRecruitmentOffered, EventCompactSampled,
+	EventCompactSigned, EventCompactTitheRaised, EventCompensation,
+	EventExitOfferDeclined, EventExitOfferExpired, EventExitOfferSpawned,
+	EventFactionStockSaturated, EventFounderAdvanced, EventGateCrossed,
+	EventGeneratorPurchased, EventGuildActivityEvaluated, EventGuildTitheAccrued,
+	EventIncorporated, EventInvariantReported, EventRouteExecuted,
+	EventRouteHintPurchased, EventRouteKnowledgeGranted, EventRunEnded,
+	EventRunStarted, EventUpgradePurchased,
+}
+
 type EventWrite struct {
 	Kind          EventKind
 	SchemaVersion int

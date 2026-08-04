@@ -194,6 +194,9 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	if err != nil {
 		return LoggedTransition{}, fmt.Errorf("%w: decode envelope: %v", ErrInvalidReplayInputs, err)
 	}
+	if catalogs.foundationsActive() && wire.Version != save.ReplayInputsVersion {
+		return LoggedTransition{}, fmt.Errorf("%w: active foundations require replay inputs v%d", ErrInvalidReplayInputs, save.ReplayInputsVersion)
+	}
 	request, err := parseLoggedIntent(canonicalPayload, wire.Command.IntentID)
 	if err != nil || request.IntentID != wire.Command.IntentID || request.ExpectedRevision != wire.Command.Revision ||
 		wire.Command.RunSeq != state.RunSeq || !bytes.Equal(request.CanonicalPayload, canonicalPayload) {
@@ -296,6 +299,9 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	wire, err := parseReplayInputs(replayInputs)
 	if err != nil {
 		return LoggedExitTransition{}, fmt.Errorf("%w: decode envelope: %v", ErrInvalidReplayInputs, err)
+	}
+	if catalogs.foundationsActive() && wire.Version != save.ReplayInputsVersion {
+		return LoggedExitTransition{}, fmt.Errorf("%w: active foundations require replay inputs v%d", ErrInvalidReplayInputs, save.ReplayInputsVersion)
 	}
 	request, err := parseLoggedIntent(canonicalPayload, wire.Command.IntentID)
 	if err != nil || request.ExpectedRevision != wire.Command.Revision || wire.Command.RunSeq != company.RunSeq || !bytes.Equal(request.CanonicalPayload, canonicalPayload) {

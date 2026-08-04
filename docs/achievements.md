@@ -18,7 +18,16 @@ Proof rows are closed:
 - possession requires a generator-ownership predicate and an explicit justification copy key.
 
 Go and TypeScript loaders enforce the same shape and registry bindings. Both runtimes expose pure
-condition evaluation, lifetime/run latching, and score derivation. A package gate prevents the
-foundation from importing ledger spending, production/persistence owners, or lifetime-Clout
-symbols. Production content, save v16, Exit settlement, and the shared live/replay hook remain the
-next implementation batches.
+condition evaluation, lifetime/run latching, and score derivation. Save v16 persists run IDs/score
+on Company and lifetime IDs/score on Founder. Exit settles the run set exactly once, re-derives the
+lifetime score under the next pinned catalog, and resets the new run.
+
+Replay-inputs v3 freezes the Founder lifetime set and score. Active runs require v3 globally;
+historical seven-artifact runs retain v2 compatibility. Both replay loaders accept only the exact
+legacy seven-artifact bundle or the paired nine-artifact bundle containing both Meters and
+Achievements. The shared Go-authored corpus covers non-empty carry, unknown-ID and score-mismatch
+rejection, active-state preservation, active Exit, and a next-catalog score-grant retune.
+
+A package gate prevents the foundation from importing ledger spending, production/persistence
+owners, or lifetime-Clout symbols. Production achievement content, ordered earning events, and
+the live achievement-evaluation hook remain pending; no artifact has been minted.

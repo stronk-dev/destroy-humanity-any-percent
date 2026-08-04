@@ -16,6 +16,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/guild"
+	"cloud-clicker/server/meters"
 	"cloud-clicker/server/multiplier"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/save"
@@ -30,8 +31,17 @@ type crossRuntimeFixture struct {
 	Cases         []crossRuntimeFixtureCase  `json:"cases"`
 	TerminalCases []crossRuntimeTerminalCase `json:"terminal_cases"`
 	Additional    []crossRuntimeBundleCase   `json:"additional_bundles"`
+	ActiveExit    crossRuntimeActiveExit     `json:"active_foundation_exit"`
 	FullRun       crossRuntimeFullRun        `json:"full_run"`
 	RejectedExit  crossRuntimeFullRun        `json:"rejected_exit_run"`
+}
+
+type crossRuntimeActiveExit struct {
+	ConstantsHash     string                   `json:"constants_hash"`
+	Artifacts         map[string]string        `json:"artifacts"`
+	NextConstantsHash string                   `json:"next_constants_hash"`
+	NextArtifacts     map[string]string        `json:"next_artifacts"`
+	Case              crossRuntimeTerminalCase `json:"case"`
 }
 
 type crossRuntimeFullRun struct {
@@ -254,9 +264,98 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		makeScriptedGateFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
 	}
 	result.Additional = append([]crossRuntimeBundleCase{makeFallbackInvariantFixture(t, bundleBytes.Artifacts, baseNow)}, makeFoundationFixtures(t, bundleBytes.Artifacts, baseNow)...)
+	result.Additional = append(result.Additional, makeActiveFoundationReplayFixture(t, baseNow))
+	result.ActiveExit = makeActiveFoundationExitFixture(t, baseNow)
 	result.FullRun = makeFullRunFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	result.RejectedExit = makeRejectedExitFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	return result
+}
+
+func makeActiveFoundationExitFixture(t *testing.T, now time.Time) crossRuntimeActiveExit {
+	t.Helper()
+	_, current := foundationTestBundles(t)
+	next := retunedAchievementBundle(t, current, current.Achievements.Definitions[0].ScoreGrant+1)
+	current.Next = &next
+	company := replayFixtureState(t, current.Economy, now.Add(-20*time.Minute))
+	company.WireVersion = save.LatestSupportedVersion
+	meterState, err := meters.NewRunState(current.Meters, 17)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company.MeterBands = nil
+	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	company.AchievementsEarnedRun = map[string]bool{}
+	company.Tier = 3
+	company.LifetimeValue = decimal.New(27, 12)
+	terms := json.RawMessage(`{"market_modifier_ppm":1100000,"payout_preview":{"reputation_delta":5,"network_slot_unlocks":[],"route_knowledge":0,"clout_reach_note":"clout.reach.preserved"}}`)
+	company.OfferState = &save.ExitOfferState{OfferID: "01986666-0600-7000-8000-000000000600", ExitType: "acquisition", TermsJSON: terms, SpawnedAt: now.Add(-time.Minute), ExpiresAt: now.Add(time.Minute)}
+	preState := mustEncodeState(t, company)
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0600-7000-8000-000000000601","kind":"accept_exit_offer","expected_revision":1,"expected_founder_revision":2,"offer_id":"01986666-0600-7000-8000-000000000600"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	definition := current.Achievements.Definitions[0]
+	carry := replayFounderCarry{FounderRevision: 2, FounderConstantsHash: current.ConstantsHash, ReputationLevel: 1, Notoriety: 17, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1,
+		AchievementsEarnedLifetime: []string{definition.ID}, AchievementScoreLifetime: definition.ScoreGrant}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1600-7000-8000-000000000001", FounderID: "01986666-2600-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "acquisition", SelectedTerms: terms, NextConstantsHash: next.ConstantsHash})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result := executeTerminalFixture(t, "active-foundation-exit", current, company, preState, request, inputs, carry)
+	return crossRuntimeActiveExit{ConstantsHash: current.ConstantsHash, Artifacts: stringArtifacts(current.Artifacts), NextConstantsHash: next.ConstantsHash, NextArtifacts: stringArtifacts(next.Artifacts), Case: result}
+}
+
+func stringArtifacts(source map[string][]byte) map[string]string {
+	result := make(map[string]string, len(source))
+	for name, data := range source {
+		result[name] = string(data)
+	}
+	return result
+}
+
+func makeActiveFoundationReplayFixture(t *testing.T, now time.Time) crossRuntimeBundleCase {
+	t.Helper()
+	_, catalogs := foundationTestBundles(t)
+	state := replayFixtureState(t, catalogs.Economy, now)
+	state.WireVersion = save.LatestSupportedVersion
+	meterState, err := meters.NewRunState(catalogs.Meters, 17)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.MeterBands = nil
+	state.MeterValues, state.MeterDecayRemainders, state.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	state.AchievementsEarnedRun = map[string]bool{}
+	state.Tier = 2
+	setCash(t, state, "1e10")
+	preState := mustEncodeState(t, state)
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0400-7000-8000-000000000401","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	definition := catalogs.Achievements.Definitions[0]
+	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1,
+		AchievementsEarnedLifetime: []string{definition.ID}, AchievementScoreLifetime: definition.ScoreGrant}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1400-7000-8000-000000000001", FounderID: "01986666-2400-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry})
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	postState := mustEncodeState(t, state)
+	artifacts := make(map[string]string, len(catalogs.Artifacts))
+	for name, data := range catalogs.Artifacts {
+		artifacts[name] = string(data)
+	}
+	events := fixtureEvents(transition.Events)
+	return crossRuntimeBundleCase{ConstantsHash: catalogs.ConstantsHash, Artifacts: artifacts, Case: crossRuntimeFixtureCase{
+		Name: "active-foundation-carry", PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+		Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: postState,
+		ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, postState),
+	}}
 }
 
 func makeRejectedExitFixture(t *testing.T, catalogs CatalogBundle, constantsHash string, now time.Time) crossRuntimeFullRun {

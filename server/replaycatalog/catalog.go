@@ -7,12 +7,14 @@ import (
 	"database/sql"
 	"sort"
 
+	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/leaderboard"
+	"cloud-clicker/server/meters"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/routes"
@@ -58,7 +60,7 @@ func LoadDatabase(ctx context.Context, db *sql.DB) (production.ReplayCatalogSet,
 }
 
 func Load(constantsHash string, artifacts map[string][]byte) (production.CatalogBundle, error) {
-	if constantsHash == "" || len(artifacts) != 7 {
+	if constantsHash == "" || (len(artifacts) != 7 && len(artifacts) != 9) {
 		return production.CatalogBundle{}, production.ErrInvalidReplayInputs
 	}
 	computed, err := save.ConstantsHashArtifacts(artifacts)
@@ -107,7 +109,19 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 	for name, data := range artifacts {
 		frozen[name] = append([]byte(nil), data...)
 	}
-	return production.CatalogBundle{ConstantsHash: constantsHash, Artifacts: frozen, Economy: economyCatalog, Routes: routeCatalog,
+	bundle := production.CatalogBundle{ConstantsHash: constantsHash, Artifacts: frozen, Economy: economyCatalog, Routes: routeCatalog,
 		Commons: commonsbinding.ReplayPolicy{Catalog: commonsCatalog}, Prestige: prestigePolicy,
-		Faction: factionCatalog, Guild: guildCatalog}, nil
+		Faction: factionCatalog, Guild: guildCatalog}
+	if len(artifacts) == 9 {
+		meterCatalog, meterErr := meters.LoadCatalog(artifacts["meters"])
+		if meterErr != nil {
+			return production.CatalogBundle{}, meterErr
+		}
+		achievementCatalog, achievementErr := achievements.LoadCatalog(artifacts["achievements"], production.FoundationAchievementRegistry(economyCatalog))
+		if achievementErr != nil {
+			return production.CatalogBundle{}, achievementErr
+		}
+		bundle.Meters, bundle.Achievements = meterCatalog, achievementCatalog
+	}
+	return bundle, nil
 }

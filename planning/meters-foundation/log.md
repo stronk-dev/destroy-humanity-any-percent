@@ -498,3 +498,29 @@ three findings.
 - Replay clone now restores `VersionForState(state)`, retaining v14 or v16 rather than silently
   forcing the legacy version. Direct fixtures cover active carry reconstruction/output, v16 clone,
   and v2/v3 activation rejection boundaries. Kernel version is `0.3.19`.
+
+## 2026-08-04 — independent replay-carry review (`0ecb479^..0ecb479`)
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Decision:** **not approved.** Go v16 carry reconstruction, output application, cloning,
+  rollback, score-retune settlement, and kernel `0.3.19` held. Three gaps blocked the landing:
+  TypeScript still loaded only seven artifacts and could not validate active state/carry; ordinary
+  active transitions accepted replay-inputs v2 because the version guard lived only in carry
+  parsing; and the regenerated corpus had neither an active/non-empty carry nor a historical v2
+  end-to-end case.
+
+## 2026-08-04 — active replay parity remediation
+
+- Both runtime loaders now admit exactly seven legacy artifacts or the paired nine-artifact set.
+  Meter and achievement bytes load under the pinned constants hash; one-sided activation fails.
+- Replay-inputs v2 is rejected at both transition boundaries whenever foundations are active,
+  while a full historical v2 transition remains in both suites.
+- TypeScript now restores, clones, encodes, validates, routes with, and resets v16 meter and run
+  achievement state. Active Founder carry IDs and score derive from the pinned achievement
+  catalog, matching Go.
+- The Go-authored shared corpus now includes an ordinary active transition with non-empty lifetime
+  carry and an active Exit into a retuned next achievement catalog. Unknown IDs, score mismatch,
+  v2 activation, and byte-level state/event/receipt divergence are discriminating failures.
+- Structural registry authorities come from pinned economy IDs plus generated Copy keys and the
+  closed event registry; kernel version advances to `0.3.20`.

@@ -24,3 +24,11 @@ Go and TypeScript loaders enforce the same closed eleven-ID set, input shapes, n
 unique source bindings, and band ordering. `balance/meters.schema.json` is wired into the root
 schema gate with discriminating pre-mint fixtures. Literal production floors, initials, rates, and
 bindings remain balance data that must be supplied before the epoch artifact is minted.
+
+Save v16 activates Meters and Achievements together only on a new-run boundary whose pinned epoch
+contains both artifacts. Active Company state carries complete meter value and remainder maps;
+legacy runs keep the v14 placeholder bands and never read deploy-current catalogs. Go and
+TypeScript replay loaders validate the paired artifact identity, exact state maps, Notoriety
+reseed, active route context, and byte-identical preservation across ordinary and terminal
+transitions. The live meter transition/event hook remains pending until the production artifact
+and its literal balance rows are minted.

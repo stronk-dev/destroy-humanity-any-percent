@@ -487,7 +487,7 @@ function goConstantName(key) {
   return key.split(/[._]/u).map((part) => part[0].toUpperCase() + part.slice(1)).join("");
 }
 
-export function generatedGoKeys(keys) {
+export function generatedGoKeys(keys, allKeys = keys) {
   const names = keys.map(goConstantName);
   if (new Set(names).size !== names.length) fail("copy code references", "generated Go constant names collide");
   return [
@@ -495,6 +495,8 @@ export function generatedGoKeys(keys) {
     "package copykeys",
     "",
     ...keys.map((key, index) => `const ${names[index]} = ${JSON.stringify(key)}`),
+    "",
+    `func All() []string { return []string{${allKeys.map((key) => JSON.stringify(key)).join(", ")}} }`,
     "",
   ].join("\n");
 }
@@ -507,7 +509,7 @@ export function generatedOutputs() {
     [generatedHashPath, `${built.copyHash}\n`],
     [generatedOrphansPath, `${JSON.stringify({ schema_version: 1, keys: built.orphans }, null, 2)}\n`],
     [generatedCodeReferencesPath, `${JSON.stringify({ schema_version: 1, keys: built.codeReferences }, null, 2)}\n`],
-    [generatedGoKeysPath, generatedGoKeys(built.codeReferences)],
+    [generatedGoKeysPath, generatedGoKeys(built.codeReferences, built.artifact.entries.map((entry) => entry.key))],
   ]);
 }
 

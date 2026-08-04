@@ -386,3 +386,13 @@ The separate uncommitted production/meters work was excluded from both source re
 - Founder reconstruction validates the frozen set/score against the run-pinned catalog, and the
   live output copier now persists the replayed v16 fields. The shared Go/TypeScript fixture and
   explicit version-boundary tests cover the contract; no achievement evaluation/content is claimed.
+
+## 2026-08-04 — replay-carry parity remediation
+
+- Darwin's independent `0ecb479^..0ecb479` review rejected the first carry landing because the
+  client verifier had no active nine-artifact state model, active ordinary v2 remained accepted,
+  and the shared fixture proved neither active carry nor historical v2 compatibility.
+- The remediation implements the complete paired artifact/state boundary in both runtimes and
+  adds Go-authored active ordinary and Exit fixtures. A non-empty lifetime set/score is validated
+  against the pinned catalog, retained through ordinary replay, and re-derived under a retuned
+  next catalog at Exit. Literal production content and earning evaluation remain unclaimed.

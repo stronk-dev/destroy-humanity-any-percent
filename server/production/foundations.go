@@ -3,10 +3,44 @@ package production
 import (
 	"fmt"
 
+	"cloud-clicker/server/achievements"
+	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/save"
 )
+
+// FoundationAchievementRegistry composes catalog-bound IDs from the pinned
+// economy artifact and structural authorities from the versioned kernel.
+func FoundationAchievementRegistry(catalog *economy.Catalog) achievements.Registry {
+	registry := achievements.Registry{
+		CopyKeys: map[string]bool{}, GeneratorIDs: map[string]bool{}, EventKinds: map[string]bool{}, ResourceIDs: map[string]bool{},
+		RunCounters:    map[string]bool{"generators_purchased_total": true, "tier": true},
+		CareerCounters: map[string]bool{"age_ms": true, "notoriety": true},
+		ProvenanceSources: map[string][]string{
+			"counter:run:generators_purchased_total": {string(save.EventGeneratorPurchased)},
+			"counter:run:tier":                       {string(save.EventGateCrossed)},
+			"counter:career:age_ms":                  {string(save.EventFounderAdvanced)},
+			"counter:career:notoriety":               {string(save.EventFounderAdvanced)},
+			"exit_count":                             {string(save.EventFounderAdvanced), string(save.EventRunEnded)},
+		},
+	}
+	for _, key := range copykeys.All() {
+		registry.CopyKeys[key] = true
+	}
+	for _, kind := range save.AllEventKinds {
+		registry.EventKinds[string(kind)] = true
+	}
+	if catalog != nil {
+		for _, definition := range catalog.GeneratorClasses() {
+			registry.GeneratorIDs[definition.ID] = true
+		}
+		for _, definition := range catalog.Resources() {
+			registry.ResourceIDs[definition.ID] = true
+		}
+	}
+	return registry
+}
 
 func (bundle CatalogBundle) foundationsActive() bool {
 	return bundle.Meters != nil && bundle.Achievements != nil

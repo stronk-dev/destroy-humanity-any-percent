@@ -5,11 +5,13 @@ import {
   applyLogged,
   applyLoggedExit,
   canonicalJSONString,
+  encodeReplayState,
   encodeReplayStateV14,
   loadReplayCatalogBundle,
   restoreReplayState,
   verifyReplayRun,
   verifyReplayRunDetailed,
+  withNextReplayCatalogBundle,
   type ReplayArtifacts,
 } from "../src/replay";
 
@@ -81,6 +83,9 @@ const fixture = fixtureJSON as {
       readonly receipt_json: string; readonly events_json: string; readonly terminal: boolean;
     }[];
   };
+  readonly active_foundation_exit: {
+    readonly constants_hash: string; readonly artifacts: ReplayArtifacts; readonly next_constants_hash: string; readonly next_artifacts: ReplayArtifacts; readonly case: TerminalFixtureCase;
+  };
 };
 
 describe("TypeScript ApplyLogged cross-runtime fixture", () => {
@@ -125,15 +130,65 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 
   it.each(fixture.additional_bundles)("replays an additional Go-authored catalog bundle", async (special) => {
     const bundle = await loadReplayCatalogBundle(special.constants_hash, special.artifacts);
-    const state = restoreReplayState(special.case.pre_state, 14, bundle.economy);
+    const active = Object.hasOwn(special.case.pre_state as object, "meter_values");
+    const state = restoreReplayState(special.case.pre_state, active ? 16 : 14, bundle.economy, active ? { meters: bundle.meters!, achievements: bundle.achievements! } : undefined);
     const transition = await applyLogged(state, canonicalJSONString(special.case.canonical_payload), bundle, special.case.replay_inputs);
 
     expect(transition.outcome).toBe(special.case.outcome);
     expect(canonicalJSONString(transition.receipt)).toBe(special.case.receipt_json);
     expect(canonicalJSONString(transition.events)).toBe(special.case.events_json);
-    expect(canonicalJSONString(encodeReplayStateV14(transition.state))).toBe(special.case.post_state_json);
+    expect(canonicalJSONString(encodeReplayState(transition.state))).toBe(special.case.post_state_json);
     if (special.case.name === "buy-generator-max-fallback-invariant") expect(transition.invariants).toEqual([{ kind: "afford_fallback", intent_id: "01986666-0201-7000-8000-000000000201", detail: "generator.beige_tower" }]);
     else expect(transition.invariants).toEqual([]);
+  });
+
+  it("keeps historical v2 replayable and rejects v2 globally once foundations are active", async () => {
+    const legacy = await loadReplayCatalogBundle(fixture.constants_hash, fixture.artifacts);
+    const legacyCase = fixture.cases.find((value) => value.name === "manual-online")!;
+    const legacyInputs = structuredClone(legacyCase.replay_inputs) as Record<string, unknown>;
+    legacyInputs.v = 2;
+    const legacyState = restoreReplayState(legacyCase.pre_state, 14, legacy.economy);
+    await expect(applyLogged(legacyState, canonicalJSONString(legacyCase.canonical_payload), legacy, legacyInputs)).resolves.toMatchObject({ outcome: legacyCase.outcome });
+
+    const activeCase = fixture.additional_bundles.find((value) => value.case.name === "active-foundation-carry")!;
+    const active = await loadReplayCatalogBundle(activeCase.constants_hash, activeCase.artifacts);
+    const activeInputs = structuredClone(activeCase.case.replay_inputs) as Record<string, unknown>;
+    activeInputs.v = 2;
+    const activeState = restoreReplayState(activeCase.case.pre_state, 16, active.economy, { meters: active.meters!, achievements: active.achievements! });
+    await expect(applyLogged(activeState, canonicalJSONString(activeCase.case.canonical_payload), active, activeInputs)).rejects.toThrow(/invalid replay envelope/);
+  });
+
+  it("derives active Founder carry identity and score from the pinned achievement artifact", async () => {
+    const activeCase = fixture.additional_bundles.find((value) => value.case.name === "active-foundation-carry")!;
+    const bundle = await loadReplayCatalogBundle(activeCase.constants_hash, activeCase.artifacts);
+    const state = () => restoreReplayState(activeCase.case.pre_state, 16, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements! });
+    for (const mutate of [
+      (carry: Record<string, any>) => { carry.achievements_earned_lifetime = ["achievement.unknown"]; },
+      (carry: Record<string, any>) => { carry.achievement_score_lifetime += 1; },
+    ]) {
+      const replay = structuredClone(activeCase.case.replay_inputs) as Record<string, any>;
+      mutate(replay.resolved.founder_carry);
+      await expect(applyLogged(state(), canonicalJSONString(activeCase.case.canonical_payload), bundle, replay)).rejects.toThrow();
+    }
+  });
+
+  it("replays active foundation Exit and next-catalog score retune byte-for-byte", async () => {
+    const fixtureExit = fixture.active_foundation_exit;
+    const current = await loadReplayCatalogBundle(fixtureExit.constants_hash, fixtureExit.artifacts);
+    const next = await loadReplayCatalogBundle(fixtureExit.next_constants_hash, fixtureExit.next_artifacts);
+    const bundle = withNextReplayCatalogBundle(current, next);
+    const testCase = fixtureExit.case;
+    const state = restoreReplayState(testCase.pre_state, 16, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements! });
+    const transition = await applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+    expect(transition.outcome).toBe("applied");
+    expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+    expect(canonicalJSONString(transition.founder)).toBe(testCase.founder_output_json);
+    expect(canonicalJSONString(encodeReplayState(transition.finalCompany))).toBe(testCase.final_company_json);
+    expect(canonicalJSONString(encodeReplayState(transition.newCompany!))).toBe(testCase.new_company_json);
+    expect(canonicalJSONString(transition.founderEvents)).toBe(testCase.founder_events_json);
+    expect(canonicalJSONString(transition.companyEndedEvents)).toBe(testCase.company_ended_events_json);
+    expect(canonicalJSONString(transition.companyStartedEvents)).toBe(testCase.company_started_events_json);
+    expect(transition.founder.achievement_score_lifetime).toBe(5);
   });
 
   it.each(fixture.terminal_cases)("replays terminal '$name' to the Go receipt, events, and next run", async (testCase) => {

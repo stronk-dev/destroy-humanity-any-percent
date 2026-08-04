@@ -55,16 +55,8 @@ func foundationTestBundles(t *testing.T) (CatalogBundle, CatalogBundle) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	achievementBytes, err := os.ReadFile("../../balance/testdata/achievements-catalog-parity-v1.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	var achievementEnvelope achievementParityFixture
-	if json.Unmarshal(achievementBytes, &achievementEnvelope) != nil {
-		t.Fatal("decode achievement fixture")
-	}
-	registry := foundationAchievementRegistry(achievementEnvelope)
-	achievementCatalog, err := achievements.LoadCatalog(achievementEnvelope.Baseline, registry)
+	achievementArtifact := []byte(`{"schema_version":1,"achievements":[{"id":"achievement.first_gate","condition_scope":"run","condition":{"kind":"counter_at_least","counter":"tier","minimum":1},"proof":{"kind":"provenance","event_kinds":["gate_crossed"]},"score_grant":4,"copy_key":"category.any_percent"}]}`)
+	achievementCatalog, err := achievements.LoadCatalog(achievementArtifact, FoundationAchievementRegistry(legacy.Economy))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -73,7 +65,7 @@ func foundationTestBundles(t *testing.T) (CatalogBundle, CatalogBundle) {
 		artifacts[name] = append([]byte(nil), data...)
 	}
 	artifacts["meters"] = append([]byte(nil), meterEnvelope.Baseline...)
-	artifacts["achievements"] = append([]byte(nil), achievementEnvelope.Baseline...)
+	artifacts["achievements"] = append([]byte(nil), achievementArtifact...)
 	hash, err := save.ConstantsHashArtifacts(artifacts)
 	if err != nil {
 		t.Fatal(err)
@@ -88,16 +80,8 @@ func foundationTestBundles(t *testing.T) (CatalogBundle, CatalogBundle) {
 
 func retunedAchievementBundle(t *testing.T, active CatalogBundle, scoreGrant int64) CatalogBundle {
 	t.Helper()
-	fixtureBytes, err := os.ReadFile("../../balance/testdata/achievements-catalog-parity-v1.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-	var fixture achievementParityFixture
-	if err := json.Unmarshal(fixtureBytes, &fixture); err != nil {
-		t.Fatal(err)
-	}
 	var raw map[string]any
-	if err := json.Unmarshal(fixture.Baseline, &raw); err != nil {
+	if err := json.Unmarshal(active.Artifacts["achievements"], &raw); err != nil {
 		t.Fatal(err)
 	}
 	rows := raw["achievements"].([]any)
@@ -106,7 +90,7 @@ func retunedAchievementBundle(t *testing.T, active CatalogBundle, scoreGrant int
 	if err != nil {
 		t.Fatal(err)
 	}
-	catalog, err := achievements.LoadCatalog(artifact, foundationAchievementRegistry(fixture))
+	catalog, err := achievements.LoadCatalog(artifact, FoundationAchievementRegistry(active.Economy))
 	if err != nil {
 		t.Fatal(err)
 	}
