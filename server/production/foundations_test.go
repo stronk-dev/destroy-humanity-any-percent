@@ -25,6 +25,15 @@ type achievementParityFixture struct {
 	} `json:"registry"`
 }
 
+func foundationAchievementRegistry(fixture achievementParityFixture) achievements.Registry {
+	return achievements.Registry{
+		CopyKeys: toFoundationSet(fixture.Registry.CopyKeys), GeneratorIDs: toFoundationSet(fixture.Registry.GeneratorIDs),
+		EventKinds: toFoundationSet(fixture.Registry.EventKinds), ResourceIDs: toFoundationSet(fixture.Registry.ResourceIDs),
+		RunCounters: toFoundationSet(fixture.Registry.RunCounters), CareerCounters: toFoundationSet(fixture.Registry.CareerCounters),
+		ProvenanceSources: fixture.Registry.ProvenanceSources,
+	}
+}
+
 func foundationTestBundles(t *testing.T) (CatalogBundle, CatalogBundle) {
 	t.Helper()
 	seed, err := epochseed.Load("../..")
@@ -54,12 +63,7 @@ func foundationTestBundles(t *testing.T) (CatalogBundle, CatalogBundle) {
 	if json.Unmarshal(achievementBytes, &achievementEnvelope) != nil {
 		t.Fatal("decode achievement fixture")
 	}
-	registry := achievements.Registry{
-		CopyKeys: toFoundationSet(achievementEnvelope.Registry.CopyKeys), GeneratorIDs: toFoundationSet(achievementEnvelope.Registry.GeneratorIDs),
-		EventKinds: toFoundationSet(achievementEnvelope.Registry.EventKinds), ResourceIDs: toFoundationSet(achievementEnvelope.Registry.ResourceIDs),
-		RunCounters: toFoundationSet(achievementEnvelope.Registry.RunCounters), CareerCounters: toFoundationSet(achievementEnvelope.Registry.CareerCounters),
-		ProvenanceSources: achievementEnvelope.Registry.ProvenanceSources,
-	}
+	registry := foundationAchievementRegistry(achievementEnvelope)
 	achievementCatalog, err := achievements.LoadCatalog(achievementEnvelope.Baseline, registry)
 	if err != nil {
 		t.Fatal(err)
@@ -80,6 +84,46 @@ func foundationTestBundles(t *testing.T) (CatalogBundle, CatalogBundle) {
 		t.Fatal("foundation bundle is not internally valid")
 	}
 	return legacy, active
+}
+
+func retunedAchievementBundle(t *testing.T, active CatalogBundle, scoreGrant int64) CatalogBundle {
+	t.Helper()
+	fixtureBytes, err := os.ReadFile("../../balance/testdata/achievements-catalog-parity-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture achievementParityFixture
+	if err := json.Unmarshal(fixtureBytes, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	var raw map[string]any
+	if err := json.Unmarshal(fixture.Baseline, &raw); err != nil {
+		t.Fatal(err)
+	}
+	rows := raw["achievements"].([]any)
+	rows[0].(map[string]any)["score_grant"] = scoreGrant
+	artifact, err := json.Marshal(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := achievements.LoadCatalog(artifact, foundationAchievementRegistry(fixture))
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts := make(map[string][]byte, len(active.Artifacts))
+	for name, data := range active.Artifacts {
+		artifacts[name] = append([]byte(nil), data...)
+	}
+	artifacts["achievements"] = artifact
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	active.Artifacts, active.ConstantsHash, active.Achievements = artifacts, hash, catalog
+	if !active.valid(hash) {
+		t.Fatal("retuned foundation bundle is not internally valid")
+	}
+	return active
 }
 
 func toFoundationSet(values []string) map[string]bool {
@@ -154,6 +198,30 @@ func TestFoundationExitSettlesAndDerivesAchievementScore(t *testing.T) {
 	company.AchievementScoreRun++
 	if err := active.ValidateFoundationState(company); err == nil {
 		t.Fatal("non-derived run score was accepted")
+	}
+}
+
+func TestFoundationExitRederivesLifetimeScoreUnderNextCatalog(t *testing.T) {
+	legacy, active := foundationTestBundles(t)
+	founder := foundationScopeState(t, legacy.Economy, economy.ScopeFounder)
+	oldCompany := foundationScopeState(t, legacy.Economy, economy.ScopeCompany)
+	company := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	if err := settleAndActivateFoundations(legacy, active, founder, oldCompany, company); err != nil {
+		t.Fatal(err)
+	}
+	definition := active.Achievements.Definitions[0]
+	company.AchievementsEarnedRun[definition.ID] = true
+	company.AchievementScoreRun = definition.ScoreGrant
+	next := retunedAchievementBundle(t, active, definition.ScoreGrant+1)
+	nextCompany := foundationScopeState(t, next.Economy, economy.ScopeCompany)
+	if err := settleAndActivateFoundations(active, next, founder, company, nextCompany); err != nil {
+		t.Fatalf("honest Exit across score retune failed: %v", err)
+	}
+	if founder.AchievementScoreLifetime != definition.ScoreGrant+1 {
+		t.Fatalf("lifetime score = %d, want next-catalog grant %d", founder.AchievementScoreLifetime, definition.ScoreGrant+1)
+	}
+	if err := next.ValidateFoundationState(founder); err != nil {
+		t.Fatalf("next-catalog Founder state rejected: %v", err)
 	}
 }
 

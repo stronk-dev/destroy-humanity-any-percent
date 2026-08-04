@@ -67,7 +67,10 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 			}
 			founder.AchievementsEarnedLifetime[id] = true
 		}
-		score, err := current.Achievements.Score(founder.AchievementsEarnedLifetime)
+		// Founder is persisted under the next run's constants hash. Re-derive the
+		// complete lifetime score with that pinned catalog so a balance retune
+		// cannot make an otherwise honest Exit fail next-catalog validation.
+		score, err := next.Achievements.Score(founder.AchievementsEarnedLifetime)
 		if err != nil {
 			return err
 		}

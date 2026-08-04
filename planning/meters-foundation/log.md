@@ -417,3 +417,37 @@ Independent evidence includes exact-range diff checking, an uncached full `./sav
 case-folded-key reproducers, and a scratch real-Postgres audit of Create/Write/Intent/Exit/genesis.
 The public epoch-pin path rejected v15 and left zero run pins after rollback. Scratch tests were
 deleted. Concurrent uncommitted production/meters work remained out of scope and is not credited.
+
+## 2026-08-04 — independent paired-activation review (`f070596^..f070596`)
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Decision:** **not approved; two HIGH seams and one MEDIUM guard-integrity defect block the
+  paired activation landing.**
+
+1. Active→active Exit derives Founder lifetime score with the ending run's achievement catalog,
+   then persists and validates it under the next catalog. A legal `score_grant` retune therefore
+   bricks the Exit.
+2. `server/meters/`, `server/achievements/`, and their TypeScript peers are absent from the kernel
+   affecting-path registry, so semantic edits pass without a version bump.
+3. History-correction keys cannot be removed, but an existing entry's reason, version, and review
+   log can be mutated. Review binding checks only that an arbitrary path exists.
+
+Held under review: paired artifact activation/downgrade rejection, non-retroactive legacy Exit,
+overflow-safe Notoriety reseeding, v16 route-context authority, duplicate achievement rejection,
+and the shared live/replay Exit boundary. Root verification is green but did not discriminate the
+three findings.
+
+## 2026-08-04 — paired-activation integrity remediation
+
+- Founder lifetime score is now re-derived from the next pinned achievement catalog—the catalog
+  under whose constants hash Founder is persisted. A discriminating fixture retunes one grant and
+  proves an honest active→active Exit remains valid with the next-catalog score.
+- The kernel registry now includes both Go and TypeScript meter/achievement package trees. Kernel
+  version advances to `0.3.18`; future semantic edits in any of those packages require a bump.
+- Existing correction entries are field-immutable in committed history and the worktree. Each
+  correction must target a reachable guarded commit that actually missed its bump, and its review
+  log must contain a labeled review/decision section for that exact abbreviated-or-full commit
+  range—not merely exist.
+- Adversarial fixtures now reject correction mutation and unrelated-log rebinding, retain removal
+  and shallow-history rejection, and assert all four newly active package paths remain registered.

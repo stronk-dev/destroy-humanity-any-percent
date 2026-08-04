@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,6 +13,11 @@ const versionFiles = (root, version) => {
   write(root, "server/kernel/version.go", `package kernel\nconst Version = "${version}"\n`);
   write(root, "client/src/kernel/version.ts", `export const KERNEL_VERSION = "${version}";\n`);
 };
+
+const productionGuard = JSON.parse(readFileSync(path.join(sourceRoot, "kernel/affecting-paths.json"), "utf8"));
+for (const required of ["client/src/achievements/", "client/src/meters/", "server/achievements/", "server/meters/"]) {
+  if (!productionGuard.paths.includes(required)) throw new Error(`kernel registry omits active mechanic package ${required}`);
+}
 
 const root = mkdtempSync(path.join(tmpdir(), "cloud-clicker-kernel-guard-"));
 try {
@@ -31,10 +36,28 @@ try {
   try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { historicalFailed = true; }
   if (!historicalFailed) throw new Error("kernel guard accepted an uncorrected historical miss");
   const offending = run(root, "git", ["rev-parse", "HEAD"]).trim();
-  write(root, "planning/kernel-fix/log.md", "# Independent review record for fixture\n");
+  write(root, "planning/kernel-fix/log.md", `# Fixture review ledger\n\n## Independent review (\`${offending.slice(0, 7)}^..${offending.slice(0, 7)}\`)\n\n- **Review by:** Fixture Reviewer\n- **Decision:** not approved until the missed bump is corrected.\n`);
   write(root, "kernel/history-corrections.json", `${JSON.stringify({ schema_version: 1, corrections: [{ offending_commit: offending, corrected_in_version: "0.1.2", reason: "Reviewed fixture violation corrected without rewriting cited history.", review_log: "planning/kernel-fix/log.md" }] }, null, 2)}\n`);
   versionFiles(root, "0.1.2"); commit(root, "kernel: fix forward reviewed history");
   run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+
+  const acceptedCorrection = JSON.parse(readFileSync(path.join(root, "kernel/history-corrections.json"), "utf8"));
+  acceptedCorrection.corrections[0].reason = "Mutated history correction should never be accepted by the append-only guard.";
+  write(root, "kernel/history-corrections.json", `${JSON.stringify(acceptedCorrection, null, 2)}\n`);
+  let correctionMutationFailed = false;
+  try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { correctionMutationFailed = true; }
+  if (!correctionMutationFailed) throw new Error("kernel guard accepted correction mutation");
+  run(root, "git", ["restore", "kernel/history-corrections.json"]);
+
+  write(root, "planning/unrelated/log.md", "# Existing but unrelated log\n");
+  const reboundCorrection = JSON.parse(readFileSync(path.join(root, "kernel/history-corrections.json"), "utf8"));
+  reboundCorrection.corrections[0].review_log = "planning/unrelated/log.md";
+  write(root, "kernel/history-corrections.json", `${JSON.stringify(reboundCorrection, null, 2)}\n`);
+  let correctionRebindFailed = false;
+  try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { correctionRebindFailed = true; }
+  if (!correctionRebindFailed) throw new Error("kernel guard accepted correction review-log rebinding");
+  run(root, "git", ["restore", "kernel/history-corrections.json"]);
+  rmSync(path.join(root, "planning/unrelated"), { recursive: true, force: true });
 
   write(root, "kernel/history-corrections.json", `${JSON.stringify({ schema_version: 1, corrections: [] }, null, 2)}\n`);
   let correctionRemovalFailed = false;

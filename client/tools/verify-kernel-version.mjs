@@ -50,6 +50,8 @@ const validateCorrections = (value, label) => {
 const emptyCorrections = () => new Map();
 const parseCorrections = (data, label) => validateCorrections(JSON.parse(data), label);
 const readCorrectionsFile = (filename, label) => existsSync(filename) ? parseCorrections(readFileSync(filename, "utf8"), label) : emptyCorrections();
+const sameCorrection = (left, right) => left.offending_commit === right.offending_commit &&
+  left.corrected_in_version === right.corrected_in_version && left.reason === right.reason && left.review_log === right.review_log;
 const affecting = (filename, paths) => !filename.endsWith("_test.go") && paths.some((entry) => entry.endsWith("/") ? filename.startsWith(entry) : filename === entry);
 const versionTuple = (value, label) => {
   const match = value.match(/^0\.([0-9]+)\.([0-9]+)$/);
@@ -82,6 +84,38 @@ const guardIntroduction = git("log", "--diff-filter=A", "--format=%H", "--", "ke
 const correctionsAt = (ref, label) => {
   try { return parseCorrections(git("show", `${ref}:${correctionsPath}`), label); } catch { return emptyCorrections(); }
 };
+const reviewRecordsCorrection = (correction) => {
+  const filename = path.join(repositoryRoot, correction.review_log);
+  if (!existsSync(filename)) return false;
+  const content = readFileSync(filename, "utf8");
+  const ranges = /\(`([0-9a-f]{7,40})\^\.\.([0-9a-f]{7,40})`\)/g;
+  for (const match of content.matchAll(ranges)) {
+    if (!correction.offending_commit.startsWith(match[1]) || !correction.offending_commit.startsWith(match[2])) continue;
+    const heading = content.lastIndexOf("\n## ", match.index);
+    const sectionStart = heading < 0 ? 0 : heading + 1;
+    const nextHeading = content.indexOf("\n## ", match.index + match[0].length);
+    const section = content.slice(sectionStart, nextHeading < 0 ? content.length : nextHeading);
+    if (section.includes("**Review by:**") && section.includes("**Decision:**")) return true;
+  }
+  return false;
+};
+const correctionTargetsMissedBump = (correction) => {
+  let parents;
+  try { parents = git("rev-list", "--parents", "-n", "1", correction.offending_commit).split(" ").slice(1); } catch { return false; }
+  return parents.length > 0 && parents.some((parent) => {
+    const files = git("diff", "--name-only", parent, correction.offending_commit).split("\n").filter(Boolean);
+    if (!files.some((filename) => affecting(filename, guard.paths))) return false;
+    const before = git("show", `${parent}:kernel/VERSION`).trim();
+    const after = git("show", `${correction.offending_commit}:kernel/VERSION`).trim();
+    const left = versionTuple(before, `correction target ${correction.offending_commit} parent`);
+    const right = versionTuple(after, `correction target ${correction.offending_commit}`);
+    return !files.includes("kernel/VERSION") || !tupleGreater(right, left);
+  });
+};
+for (const correction of worktreeCorrections.values()) {
+  if (!reviewRecordsCorrection(correction)) throw new Error(`history correction ${correction.offending_commit} is not bound to its independent review range`);
+  if (!correctionTargetsMissedBump(correction)) throw new Error(`history correction ${correction.offending_commit} does not identify an actual guarded version miss`);
+}
 if (guardIntroduction) {
   const descendants = git("rev-list", "--reverse", `${guardIntroduction}..HEAD`).split("\n").filter(Boolean);
   const commits = [guardIntroduction, ...descendants];
@@ -97,7 +131,11 @@ if (guardIntroduction) {
       const after = git("show", `${commit}:kernel/VERSION`).trim();
       const parentCorrections = correctionsAt(parent, `parent corrections of ${commit}`);
       const childCorrections = correctionsAt(commit, `corrections at ${commit}`);
-      for (const correctedCommit of parentCorrections.keys()) if (!childCorrections.has(correctedCommit)) throw new Error(`commit ${commit} removes kernel history correction ${correctedCommit}`);
+      for (const [correctedCommit, parentCorrection] of parentCorrections) {
+        const childCorrection = childCorrections.get(correctedCommit);
+        if (childCorrection === undefined) throw new Error(`commit ${commit} removes kernel history correction ${correctedCommit}`);
+        if (!sameCorrection(parentCorrection, childCorrection)) throw new Error(`commit ${commit} mutates kernel history correction ${correctedCommit}`);
+      }
       const correctionAdditions = [...childCorrections.entries()].filter(([correctedCommit]) => !parentCorrections.has(correctedCommit));
       if (correctionAdditions.length !== 0 && (!files.includes(correctionsPath) || !files.includes("kernel/VERSION") || correctionAdditions.some(([, entry]) => entry.corrected_in_version !== after))) {
         throw new Error(`commit ${commit} adds history corrections without its correcting VERSION bump`);
@@ -115,7 +153,11 @@ const headGuard = parseGuard(git("show", `HEAD:${guardPath}`), "HEAD");
 const removedFromWorktree = headGuard.paths.filter((entry) => !guard.paths.includes(entry));
 if (removedFromWorktree.length !== 0) throw new Error(`worktree removes kernel-affecting paths: ${removedFromWorktree.join(", ")}`);
 const headCorrections = correctionsAt("HEAD", "HEAD");
-for (const commit of headCorrections.keys()) if (!worktreeCorrections.has(commit)) throw new Error(`worktree removes kernel history correction ${commit}`);
+for (const [commit, headCorrection] of headCorrections) {
+  const worktreeCorrection = worktreeCorrections.get(commit);
+  if (worktreeCorrection === undefined) throw new Error(`worktree removes kernel history correction ${commit}`);
+  if (!sameCorrection(headCorrection, worktreeCorrection)) throw new Error(`worktree mutates kernel history correction ${commit}`);
+}
 const additions = [...worktreeCorrections.entries()].filter(([commit]) => !headCorrections.has(commit));
 if (additions.length !== 0 && (!worktreeFiles.includes(correctionsPath) || !worktreeFiles.includes("kernel/VERSION") || additions.some(([, entry]) => entry.corrected_in_version !== source))) {
   throw new Error("new kernel history corrections require the correcting VERSION bump in the same commit");

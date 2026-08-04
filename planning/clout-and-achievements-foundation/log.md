@@ -367,3 +367,13 @@ so the failure leaves no partial run identity.
 Evidence: exact-range `git diff --check`, an uncached full `./save` unit run, four case-folded-key
 reproducers, and the all-surface Postgres reproducer pass. Scratch tests were removed after the run.
 The separate uncommitted production/meters work was excluded from both source review and evidence.
+
+## 2026-08-04 — paired-activation review and remediation
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Decision on `f070596^..f070596`:** **not approved.** A score-grant retune proved that deriving
+  Founder lifetime score with the ending run's catalog contradicts persistence under the next hash.
+- The remediation derives the complete Founder lifetime score with the next pinned achievement
+  catalog and adds a direct active→active retune fixture. The meter planning log owns the two kernel
+  guard findings and their `0.3.18` fix-forward evidence.
