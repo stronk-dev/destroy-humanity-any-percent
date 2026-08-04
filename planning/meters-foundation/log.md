@@ -29,3 +29,9 @@ balance-data rows; foundational engine work proceeds.
 - `make test-go GO_PACKAGES='./meters'`, `make typecheck`, `make test-client` (6,509 assertions),
   `make verify-schema`, and `make verify-meters-boundary` pass from the repository root.
 - No production meter artifact was invented. Schema verification labels its fixture `pre-mint`.
+
+## 2026-08-03 — catalog-foundation full gate
+
+`make verify` passed at `8f5263a`: Go vet and every server package; formulas and balance harness;
+strict TypeScript/Svelte checks; production client build; 6,509 client assertions; kernel/copy/
+schema/package-boundary gates; and 19,536 browser assertions.
