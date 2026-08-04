@@ -4,7 +4,7 @@ RFC: `rfc/meters-foundation.md`
 
 - [x] Reconcile owner-approved C1–C12 into one implementable Company-scope contract.
 - [x] Land strict meter schema/loaders and discriminating test catalogs in Go and TypeScript.
-- [ ] Land save v15 maps, migration corpus, canonical wire closure, and reset assembly.
+- [x] Land save v15 maps, migration corpus, canonical wire closure, and reset assembly.
 - [ ] Implement exact attended-time decay and the closed causal input union inside `ApplyLogged`.
   - [x] Land the pure Go/TypeScript transition kernel and shared parity corpus.
   - [ ] Bind the kernel to run-pinned catalogs at the live/replay boundary.

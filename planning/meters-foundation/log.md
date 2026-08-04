@@ -472,3 +472,15 @@ three findings.
   full offending hash on both sides of the reviewed range. Prefix text alone is no longer proof.
 - The adversarial fixture creates an unversioned semantic commit on a side branch, deletes the
   branch, attempts a syntactically valid correction plus real bump, and requires rejection.
+
+## 2026-08-04 — independent correction-reachability review (`53bbc91^..53bbc91`)
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Decision:** **approved.** The remaining `bcc021d` MEDIUM is closed: correction targets must be
+  ancestors of HEAD, dangling-side-branch corrections fail, and abbreviated review tokens must
+  resolve uniquely to the exact full target. Existing legitimate corrections and every prior
+  mutation/rebinding/removal/shallow fixture remain green.
+- The independent range union `f070596^..f070596` + `bcc021d^..bcc021d` +
+  `53bbc91^..53bbc91` covers the complete paired-activation landing and both remediation commits.
+  Every finding from that union is now closed; the Go activation/settlement landing may proceed.
