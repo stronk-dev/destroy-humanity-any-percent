@@ -3,13 +3,13 @@
 RFC: `rfc/minigame-platform-foundation.md`
 
 - [x] Acceptance-review the draft and reconcile owner rulings C1–C18 into the normative body.
-- [ ] Land the Postgres-authoritative session lifecycle and claim-token repository boundary.
-  - [ ] Append the `minigame_sessions` migration with closed modes/statuses and immutable frozen
+- [x] Land the Postgres-authoritative session lifecycle and claim-token repository boundary.
+  - [x] Append the `minigame_sessions` migration with closed modes/statuses and immutable frozen
     genesis fields.
-  - [ ] Prove concurrent claims, token-owned writes, terminal immutability, and frozen scaling
+  - [x] Prove concurrent claims, token-owned writes, terminal immutability, and frozen scaling
     inputs against real Postgres.
-- [ ] Land the closed tenant descriptor/registry boundary.
-  - [ ] Conformance-test a deterministic fixture tenant.
+- [x] Land the closed tenant descriptor/registry boundary.
+  - [x] Conformance-test a deterministic fixture tenant.
   - [ ] Register the combat duel adapter only when its implemented engine surface satisfies the
     same boundary; do not invent the deferred lane engine.
 - [ ] Land scaling-source validation, the ranked-power prohibition, fallback rows, and formula

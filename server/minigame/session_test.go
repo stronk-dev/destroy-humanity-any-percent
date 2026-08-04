@@ -1,0 +1,258 @@
+package minigame
+
+import (
+	"context"
+	"database/sql"
+	"encoding/json"
+	"errors"
+	"os"
+	"sync"
+	"testing"
+
+	"cloud-clicker/server/save"
+)
+
+const (
+	testAccountID = "018f0000-0000-4000-8000-000000000101"
+	testFounderID = "018f0000-0000-4000-8000-000000000102"
+	testStreamID  = "018f0000-0000-4000-8000-000000000103"
+	testSessionID = "018f0000-0000-7000-8000-000000000104"
+	testHash      = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+)
+
+func TestCreateSessionValidation(t *testing.T) {
+	valid := testCreateSession()
+	if !validCreate(valid) {
+		t.Fatal("valid session rejected")
+	}
+	tests := map[string]func(*CreateSession){
+		"non-v7 session":     func(value *CreateSession) { value.SessionID = testFounderID },
+		"live pvp":           func(value *CreateSession) { value.Mode = "live_pvp" },
+		"leading-zero seed":  func(value *CreateSession) { value.Seed = "01" },
+		"overflow seed":      func(value *CreateSession) { value.Seed = "18446744073709551616" },
+		"array inputs":       func(value *CreateSession) { value.ScalingInputs = json.RawMessage("[]") },
+		"array genesis":      func(value *CreateSession) { value.Genesis = json.RawMessage("[]") },
+		"noncanonical input": func(value *CreateSession) { value.ScalingInputs = json.RawMessage(`{ "era":1,"trust_ppm":500000}`) },
+		"duplicate input": func(value *CreateSession) {
+			value.ScalingInputs = json.RawMessage(`{"era":1,"era":2,"trust_ppm":500000}`)
+		},
+		"flavor id": func(value *CreateSession) { value.MinigameID = "Shipping Wars" },
+	}
+	for name, mutate := range tests {
+		t.Run(name, func(t *testing.T) {
+			value := valid
+			mutate(&value)
+			if validCreate(value) {
+				t.Fatal("invalid session accepted")
+			}
+		})
+	}
+}
+
+func TestSessionClaimIntegration(t *testing.T) {
+	db := minigameIntegrationDB(t)
+	seedMinigameRun(t, db)
+	repository, err := NewRepository(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx := context.Background()
+	created, err := repository.Create(ctx, testCreateSession())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if created.Status != StatusActive || created.Revision != 1 || !jsonObjectEqual(created.State, []byte(`{"turn":0}`)) ||
+		!jsonObjectEqual(created.ScalingInputs, []byte(`{"era":1,"trust_ppm":500000}`)) {
+		t.Fatalf("created=%+v", created)
+	}
+	if _, err := db.ExecContext(ctx, "UPDATE minigame_sessions SET scaling_inputs='{}' WHERE session_id=$1", testSessionID); err == nil {
+		t.Fatal("frozen scaling inputs were mutable")
+	}
+
+	start := make(chan struct{})
+	results := make(chan Session, 2)
+	errorsFound := make(chan error, 2)
+	var group sync.WaitGroup
+	for range 2 {
+		group.Add(1)
+		go func() {
+			defer group.Done()
+			<-start
+			result, claimErr := repository.Claim(ctx, testFounderID, testSessionID)
+			results <- result
+			errorsFound <- claimErr
+		}()
+	}
+	close(start)
+	group.Wait()
+	close(results)
+	close(errorsFound)
+	var winner Session
+	busy := 0
+	for result := range results {
+		if result.ClaimToken != "" {
+			winner = result
+		}
+	}
+	for claimErr := range errorsFound {
+		if errors.Is(claimErr, ErrSessionBusy) {
+			busy++
+		} else if claimErr != nil {
+			t.Fatal(claimErr)
+		}
+	}
+	if winner.Status != StatusClaimed || winner.Revision != 1 || winner.ClaimedAt == nil || busy != 1 {
+		t.Fatalf("winner=%+v busy=%d", winner, busy)
+	}
+	if _, err := db.ExecContext(ctx, "UPDATE minigame_sessions SET claimed_at=clock_timestamp()-interval '6 minutes' WHERE session_id=$1 AND claim_token=$2", testSessionID, winner.ClaimToken); err != nil {
+		t.Fatal(err)
+	}
+	reclaimed, err := repository.Claim(ctx, testFounderID, testSessionID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if reclaimed.ClaimToken == winner.ClaimToken || reclaimed.Revision != winner.Revision {
+		t.Fatalf("stale claim was not safely replaced: old=%+v new=%+v", winner, reclaimed)
+	}
+	if _, err := repository.CompletePlay(ctx, testFounderID, testSessionID, winner.ClaimToken, json.RawMessage(`{"turn":1}`)); !errors.Is(err, ErrClaimLost) {
+		t.Fatalf("replaced-token error=%v", err)
+	}
+	winner = reclaimed
+	if _, err := repository.CompletePlay(ctx, testFounderID, testSessionID,
+		"018f0000-0000-4000-8000-000000000999", json.RawMessage(`{"turn":1}`)); !errors.Is(err, ErrClaimLost) {
+		t.Fatalf("wrong-token error=%v", err)
+	}
+	played, err := repository.CompletePlay(ctx, testFounderID, testSessionID, winner.ClaimToken, json.RawMessage(`{"turn":1}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if played.Status != StatusActive || played.Revision != 2 || played.ClaimToken != "" || !jsonObjectEqual(played.State, []byte(`{"turn":1}`)) {
+		t.Fatalf("played=%+v", played)
+	}
+
+	claimed, err := repository.Claim(ctx, testFounderID, testSessionID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rollbackTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := ResolveTx(ctx, rollbackTx, testSessionID, claimed.ClaimToken,
+		json.RawMessage(`{"outcome":"complete","rating_delta":null,"score_facts":[]}`)); err != nil {
+		_ = rollbackTx.Rollback()
+		t.Fatal(err)
+	}
+	if err := rollbackTx.Rollback(); err != nil {
+		t.Fatal(err)
+	}
+	afterRollback, err := repository.Load(ctx, testFounderID, testSessionID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if afterRollback.Status != StatusClaimed || afterRollback.Revision != 2 || afterRollback.ClaimToken != claimed.ClaimToken || afterRollback.Result != nil {
+		t.Fatalf("resolve rollback leaked=%+v", afterRollback)
+	}
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resolved, err := ResolveTx(ctx, tx, testSessionID, claimed.ClaimToken,
+		json.RawMessage(`{"outcome":"complete","rating_delta":null,"score_facts":[]}`))
+	if err != nil {
+		_ = tx.Rollback()
+		t.Fatal(err)
+	}
+	if err := tx.Commit(); err != nil {
+		t.Fatal(err)
+	}
+	if resolved.Status != StatusResolved || resolved.Revision != 3 || resolved.ResolvedAt == nil {
+		t.Fatalf("resolved=%+v", resolved)
+	}
+	if _, err := repository.Claim(ctx, testFounderID, testSessionID); !errors.Is(err, ErrSessionGone) {
+		t.Fatalf("resolved claim error=%v", err)
+	}
+	if _, err := db.ExecContext(ctx, "UPDATE minigame_sessions SET state='{}' WHERE session_id=$1", testSessionID); err == nil {
+		t.Fatal("resolved session was mutable")
+	}
+}
+
+func testCreateSession() CreateSession {
+	return CreateSession{
+		SessionID: testSessionID, MinigameID: "combat.duel", FounderID: testFounderID,
+		CompanyStreamID: testStreamID, RunSeq: 1, EngineRef: "combat.duel", EngineVersion: "1.0.0",
+		ConstantsHash: testHash, ScalingInputs: json.RawMessage(`{"era":1,"trust_ppm":500000}`),
+		Seed: "18446744073709551615", Mode: ModeSolo, Genesis: json.RawMessage(`{"turn":0}`),
+	}
+}
+
+func jsonObjectEqual(left, right []byte) bool {
+	var leftValue, rightValue map[string]any
+	return json.Unmarshal(left, &leftValue) == nil && json.Unmarshal(right, &rightValue) == nil &&
+		len(leftValue) == len(rightValue) && string(mustJSON(leftValue)) == string(mustJSON(rightValue))
+}
+
+func mustJSON(value any) []byte {
+	encoded, _ := json.Marshal(value)
+	return encoded
+}
+
+func minigameIntegrationDB(t *testing.T) *sql.DB {
+	t.Helper()
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	db, err := save.OpenPostgres(context.Background(), databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = db.Close() })
+	if err := save.Migrate(context.Background(), db); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec("TRUNCATE accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE"); err != nil {
+		t.Fatal(err)
+	}
+	return db
+}
+
+func seedMinigameRun(t *testing.T, db *sql.DB) {
+	t.Helper()
+	ctx := context.Background()
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tx.Rollback()
+	statements := []struct {
+		query string
+		args  []any
+	}{
+		{"INSERT INTO accounts(account_id,recovery_hash) VALUES($1,'test')", []any{testAccountID}},
+		{"INSERT INTO account_founders(account_id,founder_id) VALUES($1,$2)", []any{testAccountID, testFounderID}},
+		{"INSERT INTO save_streams(id,owner_kind,owner_id,scope) VALUES($1,'founder',$2,'company')", []any{testStreamID, testFounderID}},
+		{"INSERT INTO catalog_sets(constants_hash) VALUES($1)", []any{testHash}},
+	}
+	for _, statement := range statements {
+		if _, err := tx.ExecContext(ctx, statement.query, statement.args...); err != nil {
+			t.Fatal(err)
+		}
+	}
+	var epochID int64
+	if err := tx.QueryRowContext(ctx, "INSERT INTO epochs(name,started_at,changelog_ref) VALUES('minigame test',clock_timestamp(),'changelog/epoch-1.md') RETURNING epoch_id").Scan(&epochID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.ExecContext(ctx, "INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)", epochID, testHash); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.ExecContext(ctx, "INSERT INTO run_epochs(company_stream_id,run_seq,epoch_id,constants_hash,engine_version,build_vcs_hash,seed) VALUES($1,1,$2,$3,'0.3.24','test','1')", testStreamID, epochID, testHash); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tx.ExecContext(ctx, "INSERT INTO run_genesis(company_stream_id,run_seq,state,version,constants_hash) VALUES($1,1,'{}',16,$2)", testStreamID, testHash); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.Commit(); err != nil {
+		t.Fatal(err)
+	}
+}
