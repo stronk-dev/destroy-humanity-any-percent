@@ -231,3 +231,48 @@ changed pending the Meter C13/Achievements C11 owner ruling.
   state at its old version and the new genesis at the version chosen by new-run assembly.
 - Unit closure plus the full root `make test` are green. Catalog-derived score validation, atomic
   activation/settlement, and runtime evaluation remain explicitly pending the next landings.
+
+## 2026-08-04 — independent activation-codec review (`d7bb1da^..d7bb1da`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **not approved; the codec does not yet enforce C11's backward-compatible, scoped,
+  atomic activation boundary.**
+
+Findings, ordered:
+
+1. **HIGH — restored v1–v13 players cannot make another applied intent or Exit.** Restore retains
+   the historical `WireVersion`, but `VersionForState` converts every value below 14 to 14. The new
+   ordinary-intent/generic-write/final-Exit comparisons then reject the state against its stored
+   revision version. Historical saves previously migrated to current bytes on write; C11's
+   pre-foundation rule cannot turn that supported migration chain into a permanent account brick.
+2. **HIGH — the save transaction permits partial Founder/Company activation.** Only Company
+   versions are checked. Founder can independently advance to v16 while the new Company remains
+   v14, or remain v14 while the new Company advances to v16, and both revisions are inserted in the
+   same successful Exit. C11 requires the Founder lifetime state and Company run state to activate
+   as one ruled tuple; the storage authority must reject every other combination.
+3. **HIGH — `RestoreState` never invokes `validateFoundationState`.** Consequently a v16 Company
+   restores with non-empty Founder lifetime ownership/score, a Founder can restore Company run
+   ownership or meter state, and negative/out-of-exact-domain scores load. Encode-time validation
+   does not protect immutable historical/imported bytes; decoder scope and domain checks are
+   mandatory.
+4. **MEDIUM — the sorted-unique achievement wire grammar is only unique.**
+   `uniqueMechanicalKeys` rejects malformed and duplicate IDs but never compares adjacent byte
+   order, so `['achievement.z','achievement.a']` restores and is silently reordered on encode.
+   CA2 requires sorted-unique sets and canonical state bytes.
+5. **MEDIUM — v15 silently drops prematurely activated achievements.** The validator's inactive
+   check uses `version < 15`; its v15 branch returns before checking run/lifetime achievement sets
+   or scores. Encoding a v15 state containing an earned ID and score succeeds while omitting both,
+   rather than exposing the illegal pre-v16 activation.
+6. **MEDIUM — strict v16 decoding still accepts superseded `meter_bands`.** The promoted v14 field
+   remains known through the embedded wire structs, so v16 accepts old and new meter authorities
+   together and canonical re-encoding silently drops the old one.
+
+Proof review: focused reproducers for legacy version mapping, cross-scope lifetime ownership,
+unsorted IDs, v15 achievement loss, and the superseded meter field all failed against the commit
+and were then deleted. The clean `./save` suite passes but has no Founder v16, scope-leak,
+sorted-order, ordinary-write/Exit-transition, mixed-version, or legacy-write fixture; its new tests
+cover only Company happy-path round trip and two missing required fields. Exact-range diff checking
+passes. Root `make test` is presently blocked by unrelated concurrent next-landing edits in
+`server/production/replay.go`; that compile failure is not attributed to `d7bb1da`, while focused
+save verification is green.

@@ -256,3 +256,51 @@ or artifact identity was changed pending the owner ruling.
   passes (all Go packages, 6,517 client assertions, 19,560 browser assertions).
 - Reset assembly and catalog-complete key/derived-score validation remain in the next landing; no
   production artifact or current run was activated by this commit.
+
+## 2026-08-04 — independent activation-codec review (`d7bb1da^..d7bb1da`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **not approved; version preservation, decoder closure, and atomic activation are not
+  yet enforced by the save authority.** The v15/v16 happy-path shape is present, but the seams named
+  by C13 fail under legacy, cross-scope, and mixed-version inputs.
+
+Findings, ordered:
+
+1. **HIGH — every restored v1–v13 stream is bricked by the new version-preservation checks.**
+   `RestoreState` correctly records the historical revision in `WireVersion`, but
+   `VersionForState` maps every value below 14 to `CurrentVersion` 14. Applied ordinary intents then
+   fail `VersionForState(state) != revision.Version`, generic writes fail the same comparison, and
+   Exit rejects the final Company state before persistence. The old migration path intentionally
+   rewrote legacy saves as current-v14 bytes; the new guard blocks that transition without adding a
+   replacement. Preserve only the new-run activation boundary while retaining one explicit
+   legacy→v14 migration authority, with applied-intent and Exit fixtures from at least v1/v13.
+2. **HIGH — v14→v16 activation is not atomic across Founder and Company.** Exit checks the terminal
+   and new Company versions but never compares the mutated Founder version to either its loaded
+   revision or the new Company. A mutator can commit v16 Founder with v14 new Company, or v14
+   Founder with v16 new Company; both contradict C13/C11's “one transaction, never partial” law.
+   Enforce the allowed tuple over loaded Founder, terminal Company, new Founder, and new Company in
+   the save transaction itself, not only in the future assembler.
+3. **HIGH — restore bypasses the new foundation scope/domain validator.** `EncodeStateVersion`
+   calls `validateFoundationState`; `RestoreState` returns after the older route/compact/prestige/
+   faction/guild validators and never calls it. A v16 Company payload with non-empty Founder
+   lifetime achievements and score restores successfully; so do cross-scope meter maps and
+   negative/out-of-domain achievement scores. The canonical decoder therefore does not enforce the
+   scope claims in this commit.
+4. **MEDIUM — v15/v16 accepts the removed `meter_bands` field.** Because `stateV15` embeds
+   `stateV14`, strict JSON decoding still recognizes the promoted field. A v15 payload containing
+   all three new maps plus `meter_bands` restores successfully, and its next encode silently drops
+   the superseded member. Add an explicit absence check (and v16 coverage), not only an encoder test.
+5. **MEDIUM — v15 can carry achievement state in memory and silently discard it.** The foundation
+   validator rejects achievements only when `version < 15`, then returns early for v15; setting a
+   run achievement/score on a v15 state produces a successful v15 encoding with those values
+   omitted. The atomic law requires any achievement state below v16 to fail closed.
+
+Proof review: all five focused adversarial reproducers failed against the commit exactly as above
+and were removed after the run. The unchanged `./save` suite passes, demonstrating the coverage
+gap: the commit adds only a Company v16 round trip, one v15 missing-field case, and one v16
+missing-score case; no Store/Intent/Exit version-transition, Founder, legacy-write, mixed-version,
+superseded-field decode, or cross-scope fixture exists. Exact-range `git diff --check` passes. A
+fresh root `make test` could not be attributed to this commit because concurrent uncommitted
+next-landing edits currently make `server/production/replay.go` fail compilation; focused save
+verification is green and the failure is outside `d7bb1da`.
