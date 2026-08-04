@@ -11,6 +11,7 @@ import (
 	"io"
 	"regexp"
 	"sort"
+	"strings"
 	"time"
 
 	"cloud-clicker/server/decimal"
@@ -321,6 +322,10 @@ func migratedWriteVersion(version int) int {
 	return version
 }
 
+func writableStateVersion(version int) bool {
+	return version == CurrentVersion || version == LatestSupportedVersion
+}
+
 func EncodeState(state *State) ([]byte, error) {
 	return EncodeStateVersion(state, VersionForState(state))
 }
@@ -463,8 +468,10 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := json.Unmarshal(data, &keys); err != nil {
 			return nil, fmt.Errorf("%w: decode: %v", ErrInvalidState, err)
 		}
-		if _, superseded := keys["meter_bands"]; superseded {
-			return nil, fmt.Errorf("%w: superseded meter_bands in v%d", ErrInvalidState, version)
+		for key := range keys {
+			if strings.EqualFold(key, "meter_bands") {
+				return nil, fmt.Errorf("%w: superseded meter_bands in v%d", ErrInvalidState, version)
+			}
 		}
 	}
 

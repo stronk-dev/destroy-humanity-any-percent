@@ -24,7 +24,7 @@ type RunGenesis struct {
 // state in one caller-owned transaction. The exact bytes must also be the
 // first persisted revision for that run.
 func PinRunWithGenesisTx(ctx context.Context, tx *sql.Tx, companyStreamID, founderID string, runSeq int64, constantsHash string, version int, state []byte) (int64, error) {
-	if version < 1 || len(state) == 0 {
+	if version < 1 || version == 15 || version > LatestSupportedVersion || len(state) == 0 {
 		return 0, ErrInvalidState
 	}
 	epochID, err := PinRunToCurrentEpochTx(ctx, tx, companyStreamID, founderID, runSeq, constantsHash)
@@ -38,7 +38,7 @@ func PinRunWithGenesisTx(ctx context.Context, tx *sql.Tx, companyStreamID, found
 }
 
 func InsertRunGenesisTx(ctx context.Context, tx *sql.Tx, genesis RunGenesis) error {
-	if tx == nil || !uuidPattern.MatchString(genesis.CompanyStreamID) || genesis.RunSeq < 1 || genesis.RunSeq > decimal.MaxExactInteger || genesis.Version < 1 || len(genesis.State) == 0 || !hashPattern.MatchString(genesis.ConstantsHash) {
+	if tx == nil || !uuidPattern.MatchString(genesis.CompanyStreamID) || genesis.RunSeq < 1 || genesis.RunSeq > decimal.MaxExactInteger || genesis.Version < 1 || genesis.Version == 15 || genesis.Version > LatestSupportedVersion || len(genesis.State) == 0 || !hashPattern.MatchString(genesis.ConstantsHash) {
 		return ErrInvalidState
 	}
 	var pinnedHash string

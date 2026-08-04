@@ -369,12 +369,15 @@ func (s *Store) validatedState(hash string, scope economy.Scope, state *State) (
 	if !ok {
 		return nil, fmt.Errorf("%w: unknown catalog %s", ErrInvalidState, hash)
 	}
+	version := VersionForState(state)
+	if !writableStateVersion(version) {
+		return nil, fmt.Errorf("%w: save version %d is decode-only", ErrInvalidState, version)
+	}
 	if validator, ok := s.catalogs.(StatePolicyValidator); ok {
 		if err := validator.ValidateState(hash, state); err != nil {
 			return nil, fmt.Errorf("%w: catalog state policy: %v", ErrInvalidState, err)
 		}
 	}
-	version := VersionForState(state)
 	encoded, err := EncodeStateVersion(state, version)
 	if err != nil {
 		return nil, err

@@ -290,6 +290,14 @@ save verification is green.
 - Focused save tests plus `make test-save-integration` pass. No runtime/catalog activation work is
   credited until this remediation receives an independent full-range approval.
 
+## 2026-08-04 — second activation-codec remediation
+
+- The v15 migration codec cannot become a standalone persisted run: Store, Exit, and genesis
+  authorities allow active versions 14 or 16 only. V16 remains the sole atomic activation target.
+- Superseded `meter_bands` rejection follows `encoding/json`'s case-insensitive matching, closing
+  the uppercase alias that the independent review demonstrated.
+- Focused save verification passes; dependent runtime work remains uncredited pending review.
+
 ## 2026-08-04 — independent activation-codec remediation review (`c356d87^..c356d87`)
 
 - **Review by:** Darwin

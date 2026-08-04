@@ -317,6 +317,22 @@ func TestStateV15AndV16CollectionsFailClosed(t *testing.T) {
 	}
 }
 
+func TestV15CodecIsDecodeOnlyAtPersistenceBoundary(t *testing.T) {
+	state := testState(t)
+	state.WireVersion = 15
+	state.MeterValues = map[string]int{}
+	state.MeterDecayRemainders = map[string]int64{}
+	state.MeterInputRemainders = map[string]int64{}
+	if _, err := EncodeStateVersion(state, 15); err != nil {
+		t.Fatalf("v15 migration codec unavailable: %v", err)
+	}
+	hash := ConstantsHash([]byte(stateCatalogJSON))
+	store := &Store{catalogs: catalogMap{hash: stateCatalog(t)}}
+	if _, err := store.validatedState(hash, economy.ScopeCompany, state); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("persistence accepted standalone v15: %v", err)
+	}
+}
+
 func TestRestoreV16RejectsSupersededCrossScopeAndUnsortedState(t *testing.T) {
 	state := testState(t)
 	state.WireVersion = 16
@@ -338,6 +354,7 @@ func TestRestoreV16RejectsSupersededCrossScopeAndUnsortedState(t *testing.T) {
 		mutate func(map[string]any)
 	}{
 		{name: "superseded meter bands", mutate: func(value map[string]any) { value["meter_bands"] = map[string]any{} }},
+		{name: "case folded superseded meter bands", mutate: func(value map[string]any) { value["METER_BANDS"] = map[string]any{} }},
 		{name: "founder ownership in company", mutate: func(value map[string]any) {
 			value["achievements_earned_lifetime"] = []any{"achievement.a"}
 			value["achievement_score_lifetime"] = float64(1)

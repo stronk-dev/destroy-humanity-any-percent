@@ -28,6 +28,7 @@ func TestExitVersionActivationIsAtomicAndLegacyMigrates(t *testing.T) {
 		{name: "founder activates without company", founderRevision: 14, companyRevision: 14, founder: v16Founder, final: legacyFinal, next: legacyNext},
 		{name: "terminal version changes", founderRevision: 14, companyRevision: 14, founder: v16Founder, final: v16Next, next: v16Next},
 		{name: "preexisting tuple mismatch", founderRevision: 16, companyRevision: 14, founder: v16Founder, final: legacyFinal, next: v16Next},
+		{name: "standalone v15 tuple", founderRevision: 15, companyRevision: 15, founder: &State{WireVersion: 15}, final: &State{WireVersion: 15}, next: &State{WireVersion: 15}},
 	}
 	for _, item := range tests {
 		t.Run(item.name, func(t *testing.T) {

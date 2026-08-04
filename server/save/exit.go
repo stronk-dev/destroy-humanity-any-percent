@@ -332,6 +332,10 @@ func validateExitVersionTransition(founderRevision, companyRevision Revision, fo
 	}
 	currentFounderVersion, currentCompanyVersion := migratedWriteVersion(founderRevision.Version), migratedWriteVersion(companyRevision.Version)
 	founderVersion, finalVersion, nextVersion := VersionForState(founder), VersionForState(finalCompany), VersionForState(newCompany)
+	if !writableStateVersion(currentFounderVersion) || !writableStateVersion(currentCompanyVersion) || !writableStateVersion(founderVersion) ||
+		!writableStateVersion(finalVersion) || !writableStateVersion(nextVersion) {
+		return fmt.Errorf("%w: save v15 is decode-only and cannot identify a run", ErrInvalidState)
+	}
 	if currentFounderVersion != currentCompanyVersion {
 		return fmt.Errorf("%w: founder/company save versions disagree before Exit", ErrInvalidState)
 	}

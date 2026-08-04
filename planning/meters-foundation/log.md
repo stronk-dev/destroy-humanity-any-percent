@@ -320,6 +320,15 @@ verification is green and the failure is outside `d7bb1da`.
 - Focused `go test ./save` and the normal root `make test-save-integration` pass. The dependent
   catalog/runtime landing remains uncommitted pending independent approval of this remediation.
 
+## 2026-08-04 — second activation-codec remediation
+
+- Superseded-field rejection now compares JSON keys case-insensitively, matching `encoding/json`'s
+  own tag behavior; `METER_BANDS` and every casing variant fail before v15/v16 decode.
+- V15 remains a supported migration/decode shape but is structurally decode-only. Store
+  validation, Exit tuple validation, and run-genesis insertion accept persisted active versions
+  14 or 16, never 15. Tests cover both the codec/persistence distinction and a full v15 Exit tuple.
+- Focused save verification is green; this narrow follow-up awaits its own exact-range review.
+
 ## 2026-08-04 — independent activation-codec remediation review (`c356d87^..c356d87`)
 
 - **Review by:** Darwin
