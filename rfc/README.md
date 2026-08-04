@@ -19,8 +19,8 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
-| [UI Foundation](ui-foundation.md) | draft — C1–C8 awaiting owner rulings | Client Shell / Transport / Copy Pipeline contract |
-| [API Foundation](api-foundation.md) | accepted architecture — C11–C17 awaiting owner rulings | Account API / Transport / Gameserver Composition |
+| [UI Foundation](ui-foundation.md) | accepted architecture — C9–C11 implementation blockers | Client Shell / Transport / Copy Pipeline |
+| [API Foundation](api-foundation.md) | implementing — C1–C17 ruled | Account API / Transport / Gameserver Composition |
 | [Meters Foundation](meters-foundation.md) | implementing — C1–C12 ruled | Production / Run Genesis / Purchasable Content; unblocks Achievements and Pet Care |
 | [Achievements Foundation](clout-and-achievements-foundation.md) | implementing — C1–C10 ruled | Meters / Copy Pipeline / Production / Run Genesis |
 

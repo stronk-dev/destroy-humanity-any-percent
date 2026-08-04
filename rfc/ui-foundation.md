@@ -1,11 +1,11 @@
 # RFC: UI Foundation (primitives, not screens)
 
-- **Status:** draft
+- **Status:** accepted architecture (C1–C8 ruled; C9–C11 block implementation)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/06` (Svelte 5 runes, DOM-first, per-tab `$derived`, 10 Hz formatting), `design/08` (era presentation: the UI itself ages through gaming eras — the load-bearing satire surface), `design/11` (voice, first-session), `design/03 §9` (arcade era-skins)
 - **Research:** `tech-stack.md §2`, `browser-rendering.md`, `flash-era-arcade.md` (era texture)
-- **Depends on:** Client Shell (implemented), Transport wire v2 (implemented)
+- **Depends on:** Client Shell, Transport wire v2, Copy Pipeline (implemented)
 - **Owner ruling honored:** breadth-first — this RFC ships ZERO screens; it ships the system every future screen is made of, so screens never rebuild when foundations shift.
 - **Planning:** `planning/ui-foundation/` (once implementing)
 
@@ -19,21 +19,36 @@ navigation shell, and the wire-only component law. Build them once, content-free
 
 ### UF1 — The era-theming system (the satire's rendering layer)
 
-A closed theme contract: design tokens (type scale, spacing, color roles, border/chrome style,
-motion budget) resolved through an `era` context — `era_1995` (system-font, beveled, honest) →
-`era_2006` (glossy web 2.0) → onward per design/08's era table. Components consume TOKENS ONLY
+**RULED (C1, C2): Phase-A ships `era_1995` and `era_2000`** (Tiers 0–1 per design/08 §2's Web-1.0
+assignment — my `era_2006`/glossy was wrong, corrected). A closed theme contract lives in
+`ui/themes.schema.json` + one JSON artifact per era, root `{schema_version:1, era, color, type,
+space, border, chrome, motion}`, every child a closed enumerated key set shared by all eras,
+every value a per-key-domain-validated CSS token string; the loader rejects missing/extra keys.
+Tokens install as `--cc-*` custom properties on one `data-era` shell root; components reference
+only those. The literal-style lint covers component style blocks + inline style attrs, permits
+layout literals and named-property geometry, rejects literal colors/fonts/shadows/radii/durations.
+Era switch changes only `data-era` + token values; DOM unchanged. Components consume TOKENS ONLY
 (a lint boundary forbids literal colors/fonts in components); an era switch restyles the world
 without touching a component. Era assignment is driven by game state (tier) later; Phase-0
 foundation ships the contract + two eras + the switch mechanism proven by test.
 
 ### UF2 — Number & notation rendering
 
-One `<Amount>` primitive wrapping `@antimatter-dimensions/notations`: canonical-string in,
-formatted out; 10 Hz update throttling internal to the primitive; cap states render the
-`reason_key` explanation slot (the never-frozen-number law becomes a component contract).
-Golden rendering vectors (canonical string → DOM text) so notation changes are reviewable diffs.
+**RULED (C3):** `<Amount>` pins the `@antimatter-dimensions/notations` **Standard** notation class
+at a pinned package version, precision/threshold as RFC literals; props exactly `{value:
+canonical string, cap?: {amount: canonical string, reason_key: CopyKey}}`; parse via the numeric
+boundary, locale-independent; first value + changed cap render synchronously, ordinary changes
+coalesce on one shared 100 ms scheduler, unmount cancels; the cap explanation is RESOLVED COPY,
+never the raw key. Golden vectors cover zero, notation thresholds, exponent boundaries, rounding
+carry, capped-at-cap, and sub-visible ongoing production.
 
 ### UF3 — Copy resolution
+
+**RULED (C4): Copy Pipeline Foundation is a hard dependency.** UF3 consumes its implemented
+`copy_catalog` interface — `t(key, typed_params, era)` with the per-entry
+`era_variants[era]` → base-text fallback, missing-key loud-in-dev + CI completeness gate, and
+provenance verified by the Copy Pipeline. There is no second `key@era` grammar.
+
 
 `t(copy_key, params)` resolving from the copy catalog (the content-pipeline artifact): missing
 key renders the key itself loudly in dev, fails CI via a completeness check against catalog-
@@ -51,7 +66,16 @@ REFERENCES to catalog facts (evaluated from shell state) — the UI never invent
 
 ### UF5 — The component law + harness
 
-Wire-only inputs (decoded envelopes, shell state, copy keys) enforced by import-boundary lint;
+**RULED (C6): "wire-only" means DATA inputs, not all inputs.** Components legitimately take:
+event callbacks, local view state, a11y labels/ARIA, token custom-property references, and copy
+keys. The law forbids exactly: reading transport internals, computing authoritative game values
+client-side, and string literals for player-facing copy or theme values. The existing
+`App.svelte` Phase-0 screen copy migrates to copy keys as part of this RFC (recorded, not a
+surprise). **RULED (C5): surface unlocks reference shell-state facts** (crossed gates, tier,
+membership — the same fact vocabulary the shell already holds), evaluated by the shell, never
+UI-invented logic; the `ShellTab` union grows to the registered surface set.
+
+Wire-only DATA inputs (decoded envelopes, shell state, copy keys) enforced by import-boundary lint;
 a component harness (Storybook-equivalent or a bespoke fixture page — implementer's choice)
 rendering every primitive against golden fixtures per era, wired into the browser-test suite.
 Accessibility baseline: keyboard operability and reduced-motion at the PRIMITIVE level so every
@@ -72,8 +96,42 @@ future screen inherits it.
 ## Open questions
 
 - Third+ era token sets — content work on the UF1 contract, arrives with tiers.
-- The exact copy-catalog artifact format — owned by the Copy Pipeline foundation RFC (next in
-  the program); UF3 consumes its interface.
+- Exact C9–C11 literals below; Copy Pipeline itself is implemented and no longer open.
+
+## Post-ruling implementation blockers (Codex review, 2026-08-03)
+
+### C9 — The closed theme shape still has no keys or era values
+
+C2 says every theme child has an enumerated shared key set, but neither the ruling nor normative
+text enumerates a single key. The two required era artifacts also have no literal values. A loader,
+CSS variable generator, governed lint, and DOM fixture cannot agree on a contract that has no
+tokens.
+
+**Proposed contract:** owner supplies or accepts one exact token matrix for `color`, `type`,
+`space`, `border`, `chrome`, and `motion`, including the literal `era_1995` and `era_2000` values.
+Code maps each leaf to `--cc-{group}-{key}` and rejects every other leaf. Layout-only custom
+properties live in a separately named allowlist and are never theme tokens.
+
+### C10 — Amount's claimed pinned formatter has no pin or options
+
+C3 requires a pinned `@antimatter-dimensions/notations` Standard class, literal precision and
+threshold, and sign behavior, but supplies none of the version or literals. The package is not in
+the lockfile. Golden vectors would bless an implementation choice rather than test a contract.
+
+**Proposed contract:** name the exact package version, Standard constructor/options, significant
+digits/places, standard-to-scientific threshold, and whether negative canonical values are valid
+Amount props. Pin them in this RFC and lockfile; record expected strings for the mandatory vectors
+before component implementation.
+
+### C11 — The accessibility engine is still unnamed
+
+C7 says “one pinned accessibility engine” but does not select one or a version. That decision
+changes dependencies, browser setup, violation taxonomy, and the meaning of serious/critical.
+
+**Proposed contract:** select `axe-core` (or name the alternative) at an exact version, invoke it
+inside the existing Vitest-browser fixture route with WCAG 2.2 AA tags, and define the allowed
+impact set as zero `serious|critical` violations. Keyboard/focus/name/motion assertions remain
+separate and mandatory.
 
 ## Acceptance blockers (Codex review, 2026-08-03)
 
@@ -178,6 +236,12 @@ violations against WCAG 2.2 AA; separately assert keyboard reachability/activati
 semantic names, and that `prefers-reduced-motion: reduce` reduces every nonessential token duration
 to zero. The browser suite remains the single CI entrypoint.
 
+**RULED (C7): accepted as proposed** — Vite fixture route inside the existing client + the
+existing Vitest-browser suite (NO Storybook — no new build surface); one pinned a11y engine,
+fail on serious/critical WCAG 2.2 AA, plus the four explicit assertions (keyboard reach/activate,
+visible focus, semantic names, reduced-motion → zero nonessential duration). The browser suite
+stays the single CI entrypoint.
+
 ### C8 — Ownership and dependency order must be reconciled
 
 The RFC says it ships zero screens, but it necessarily replaces the existing shell screen scaffold
@@ -189,8 +253,17 @@ the migration of `App.svelte` to a content-free fixture host; it owns no playabl
 Declare Copy Pipeline according to the C4 ruling, then order UI Foundation → T0–T1/Game UI. Name
 the exact file/package boundary exported to those successors.
 
+**RULED (C8): accepted** — this RFC owns primitives, the surface host, the governed lint
+boundaries, and the `App.svelte` → content-free fixture-host migration; it owns ZERO playable
+screen layouts (those are Game-UI/T0–T1 content on the exported types). Dependency order:
+**Copy Pipeline → UI Foundation → {Game UI, T0–T1}**. The exported boundary is
+`client/src/ui/` (primitives + surface registry + theme/copy resolution), the ONLY module
+Game-UI/T0–T1 import from.
+
 ## Changelog
 
 - 2026-08-03: created (draft) — the breadth-first UI foundation; zero screens by owner ruling.
-- 2026-08-03: Codex acceptance review recorded C1–C8; implementation remains blocked pending
-  owner rulings and reconciliation into one executable contract.
+- 2026-08-03: C7–C8 ruled — Vite fixture route + Vitest-browser (no Storybook), pinned a11y engine failing on serious/critical WCAG 2.2 AA + keyboard/focus/reduced-motion assertions; UI Foundation owns the App.svelte→fixture-host migration and exports the primitive/surface types to Game-UI/T0–T1, ordered after Copy Pipeline. Fully accepted.
+- 2026-08-03: C1–C6 ruled — era_1995/era_2000 (design/08-correct), schema'd token contract, pinned Standard notation, Copy Pipeline dependency named, wire-only clarified to data-inputs, unlocks reference shell facts. Accepted.
+- 2026-08-03: C1–C8 reconciled. Codex follow-up found C9–C11: the “closed/pinned” theme,
+  formatter, and accessibility contracts omit their actual token/value/version literals.

@@ -1,13 +1,13 @@
 # RFC: API Foundation (versioning, schemas, the public read surface)
 
-- **Status:** accepted architecture; C11–C17 block implementation
+- **Status:** accepted (C1–C17 ruled; implementing)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/06` (chi REST, closed surfaces), `design/05` (published formulas — the transparency law), the fan-tooling stance (`design/05 §Neopets adoptions`: "a documented read-API stance so the JellyNeo-equivalent builds WITH us from day one")
 - **Research:** `neopets-social-history.md §5` (the shadow-infrastructure lesson), `wc3-custom-ecosystem.md §3` (community-built platform gaps), `speedrun-governance.md` (validator transparency)
 - **Depends on:** Account API + Transport + Gameserver Composition (implemented)
 - **Owner ruling honored:** breadth-first — this is the contract every future endpoint lands on, so the API never reshapes under consumers.
-- **Planning:** `planning/api-foundation/` (once implementing)
+- **Planning:** `planning/api-foundation/`
 
 ## Summary
 
@@ -62,6 +62,70 @@ request-ID header echo for support, standardized pagination envelope (keyset cur
 only pagination — already the house pattern), and a documented deprecation-header mechanism
 for the day v2 exists.
 
+### A5 — One operation and schema authority
+
+A closed Go operation registry owns operation ID, method, path, stability surface, auth mode,
+public flag, named request/success descriptors, and typed error/status alternatives. The router,
+OpenAPI 3.1, generated TypeScript, compatibility pins, and runtime fixture validation consume
+those rows. Schema descriptors are explicit Go values over the closed C17 union; reflection over
+handler structs and handwritten OpenAPI fragments are forbidden. Startup rejects invalid schemas,
+duplicate IDs, and duplicate method/path pairs.
+
+### A6 — Public v1 DTOs and normalized board query
+
+C12's DTO rows are the literal proposed contracts: catalog artifacts embed sorted named JSON;
+epochs include ordered accepted hashes and changelog bytes; board items use the closed time/count/
+magnitude key union; Route Registry exposes public credit/naming/adoption fields only; optional
+values are explicit null and empty lists are `[]`. List limit defaults to 50 and is bounded 1..100.
+Boards use `GET boards/{category}?variables=&epoch=&mandate=&cursor=`. Variables decode from the
+canonical exact object `{advisor:0|1,commons:0|1,faction:string|null,glitched:0|1}` and every cursor
+is bound to the complete normalized filter.
+
+### A7 — Signed keyset cursor
+
+Cursor bytes are `base64url(canonical_json(key_fields) || HMAC-SHA256)`. Authenticated key fields
+are exact `{v:1,op,filter_sha256,key}`. The token is size-bounded; the codec verifies its MAC
+against the current+previous deployment keys before parsing any JSON, then exact-decodes and
+re-encodes the key fields. Secrets are stable deployment configuration and at least 32 bytes. Bad
+MAC, malformed canonical bytes, unknown operation, or filter mismatch maps to
+`invalid/cursor`. Cursors do not expire; key rotation retains the prior verifier through the
+maximum cache lifetime.
+
+### A8 — Public operational middleware
+
+Strict `balance/api/phase0.json` is operational API configuration, loaded only by the API policy
+owner and excluded from simulation artifacts. Request ID and trusted-client-IP resolution are
+shared middleware. Conditional 304 is evaluated before the public limiter and therefore spends no
+rate token per C16; it still echoes request ID, ETag, and Cache-Control. Strong ETag is SHA256 of
+served bytes. Verification responses add `immutable`; other response classes use C6's literal
+ages. Deployment secrets never enter JSON configuration or epoch identity.
+
+## Endpoint-layer design gaps found during implementation
+
+### C18 — Heterogeneous embedded artifact JSON conflicts with exact DTO schemas
+
+C12 says `CatalogBundle.artifacts[].json` embeds arbitrary catalog JSON. C17 simultaneously
+forbids unsupported maps/interfaces and requires exact descriptor validation. A single open-JSON
+field cannot satisfy both, and silently adding an `any` schema arm would puncture the public DTO
+law.
+
+**Proposed contract:** `CatalogArtifact` is a discriminated `oneOf` keyed by literal artifact
+`name`; each artifact owner exports its exact schema descriptor, and artifact-set growth adds a
+response-union arm (allowed response widening under C2) in the same RFC/mint. Common fields remain
+`{name,sha256,json}`. Do not add a free-form JSON/map descriptor.
+
+### C19 — Raw verification bodies need an operation response descriptor
+
+C14 requires exact `application/json` genesis bytes and `application/gzip` replay archive bytes,
+while C17 currently describes every success as a named JSON DTO. Forcing raw bytes through a JSON
+schema would re-encode the evidence or lie in OpenAPI.
+
+**Proposed contract:** an operation response is the closed union
+`schema {status,content_type:"application/json",schema_ref}` or
+`raw {status,content_type:"application/json"|"application/gzip",content_hash_header}`. Raw handlers
+write repository bytes without decoding; generation documents binary/string format and the
+conformance test hashes exact bytes. No generic media type is accepted.
+
 ## Acceptance criteria
 
 1. Schema generation: `make api-schema` regenerates `docs/generated/api.json`; CI drift gate;
@@ -78,8 +142,7 @@ for the day v2 exists.
 
 ## Open questions
 
-- Public API stability tier (is `/api/public/v1/` under the same additive-only law? recommend
-  yes, stricter: it's the one surface THIRD PARTIES build on).
+- Both namespaces are additive-only for v1's lifetime per C2; this is no longer open.
 - Display-name/identity policy for boards — the profile RFC owns it; until then boards expose
   the existing founder public id only.
 
@@ -264,6 +327,41 @@ integer/boolean/null/ref/oneOf with bounds/formats, and reject unsupported maps/
 test invokes every operation with seeded success/error paths and verifies emitted JSON against its
 descriptor, preventing declared-schema/handler drift.
 
+## Owner rulings on C11–C17 (2026-08-03)
+
+- **C11 — accepted, the fallback removed:** no pre-mint formula fallback. `GET catalogs/{hash}`
+  serves ONLY hashes whose `catalog_artifacts` actually contain the bytes; a hash without a stored
+  formula artifact 404s for the formula sub-resource. The formula artifact becomes an epoch
+  artifact at the schema-v4 mint (C5) — until then the endpoint honestly has no historical
+  formulas to serve, and says so. No same-identity mutable response.
+- **C12 — accepted:** the public DTOs are DECLARED as generated schema descriptors from the
+  operation registry (C17's authority) — epoch changelog, catalog-artifact encoding/order, the
+  board filter/item/ranking-key union, Route Registry fields, null rules, limits, and unknown-ID
+  behavior are each pinned in the registry row's DTO and compat-tested. (This RFC's implementation
+  batch enumerates them; the grammar is C17's.)
+- **C13 — accepted:** boards use a NORMALIZED query, not JSON-in-path — `GET boards/{category}?
+  variables={canonical-encoded}&epoch=&mandate=&cursor=`; the canonical variable encoding
+  (sorted keys, explicit-null faction, booleans as 0/1) is declared and the cursor binds to the
+  full normalized query (C15's MAC covers it). Ranking kind resolves from the category's pinned
+  catalog after load.
+- **C14 — accepted:** the verification endpoints return the RAW immutable bytes with a manifest —
+  `run_log_archive` gzip-JSON as-stored, genesis JSONB text as-stored, events as-stored, plus a
+  `manifest` binding them to engine version + constants hash + verdict. A third party re-runs the
+  shipped validator on exactly those bytes (no convenient re-encoding that could invalidate replay).
+- **C15 — accepted:** cursor = `base64url(canonical_json(key_fields) ‖ HMAC-SHA256)`; the MAC
+  secret is a DEPLOYMENT secret (32+ bytes, DP5 config, stable across restarts — NOT ephemeral, so
+  cursors survive deploys), two-key rotation like the JWT keys; MAC validated BEFORE any key_field
+  is parsed (no attacker-controlled parse); a bad MAC is a typed `invalid_cursor` rejection.
+- **C16 — accepted:** `immutable` on the verification responses (they are), conditional requests
+  supported, a **304 does NOT spend the rate budget**, `balance/api/phase0.json` is explicitly API
+  config (a header comment + a distinct loader, never the balance harness's), request-ID echo per
+  A4/C7.
+- **C17 — accepted, the single authority resolved:** operation DTOs are declared as **explicit
+  schema descriptors in Go** (a small typed schema-DSL, NOT reflection over arbitrary structs and
+  NOT handwritten-JSON-beside-structs) — one authority generating both the OpenAPI schema and the
+  TS types with bounds/formats/unions/exact-objects intact. The registry row references its
+  descriptor; startup validates descriptor↔handler shape.
+
 ## Acceptance blockers (Codex review, 2026-08-03)
 
 The platform direction is correct, but the draft does not yet define a reproducible HTTP surface.
@@ -415,9 +513,9 @@ a write transaction or exposes an operator mutation path.
 ## Changelog
 
 - 2026-08-03: created (draft) — versioning law, generated schemas, the public read surface.
+- 2026-08-03: C11–C17 ruled — no pre-mint formula fallback, normalized board queries, raw-bytes-plus-manifest verification evidence, HMAC cursors with a stable deployment secret validated-before-parse, explicit Go schema-descriptor DSL as the single generation authority. Fully accepted.
 - 2026-08-03: C1–C10 ruled — operation-registry single source, additive-only both namespaces with the exact compat algorithm, dereferenceable verification endpoints (verified runs are public record), formula artifacts become epoch artifacts, signed opaque cursors, structural public/private split. Accepted.
-- 2026-08-03: Codex closure re-review recorded C11–C17. Implementation remains blocked until the
-  public DTOs, evidence bytes, cursor lifecycle, middleware semantics, and formula mint are ruled
-  and reconciled into A1–A4.
-- 2026-08-03: Codex acceptance review recorded C1–C10; implementation remains blocked pending
-  owner rulings and reconciliation into one executable contract.
+- 2026-08-03: C1–C17 reconciled into A1–A8; implementation unblocked. Historical blocker sections
+  remain as the review record, not active status.
+- 2026-08-03: schema/cursor implementation found C18–C19 at the endpoint layer: embedded artifact
+  JSON needs owner-schema union arms, and raw evidence needs a declared raw-response arm.
