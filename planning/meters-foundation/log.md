@@ -484,3 +484,17 @@ three findings.
 - The independent range union `f070596^..f070596` + `bcc021d^..bcc021d` +
   `53bbc91^..53bbc91` covers the complete paired-activation landing and both remediation commits.
   Every finding from that union is now closed; the Go activation/settlement landing may proceed.
+
+## 2026-08-04 — replay-inputs v3 Founder carry
+
+- While binding the reviewed activation seam to live replay, the v16 path exposed two mechanical
+  omissions: Company replay cloning restored every encoded state as v14, and terminal Founder carry
+  omitted the lifetime achievement state that Exit must settle and persist.
+- Replay-inputs v3 adds sorted lifetime achievement IDs plus their derived score. The Go live path
+  freezes them, reconstructs a catalog-valid v16 Founder, and copies the replayed v16 result back to
+  the transaction-owned Founder. Historical v2 remains accepted only for pre-foundation catalogs.
+- TypeScript accepts both envelope versions and exactly validates the v3 carry fields. The shared
+  Go-authored corpus was regenerated through the normal root target and is green in both runtimes.
+- Replay clone now restores `VersionForState(state)`, retaining v14 or v16 rather than silently
+  forcing the legacy version. Direct fixtures cover active carry reconstruction/output, v16 clone,
+  and v2/v3 activation rejection boundaries. Kernel version is `0.3.19`.

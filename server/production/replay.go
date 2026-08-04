@@ -140,16 +140,18 @@ type replayAccrual struct {
 }
 
 type replayFounderCarry struct {
-	FounderRevision       int64              `json:"founder_revision"`
-	FounderConstantsHash  string             `json:"founder_constants_hash"`
-	ReputationLevel       int64              `json:"reputation_level"`
-	RouteKnowledgeBalance int64              `json:"route_knowledge_balance"`
-	AgeMS                 int64              `json:"age_ms"`
-	Notoriety             int64              `json:"notoriety"`
-	AdvisorMode           bool               `json:"advisor_mode"`
-	NetworkSlots          []save.NetworkSlot `json:"network_slots"`
-	LedgerFactKinds       []string           `json:"ledger_fact_kinds"`
-	ExitHistoryCount      int                `json:"exit_history_count"`
+	FounderRevision            int64              `json:"founder_revision"`
+	FounderConstantsHash       string             `json:"founder_constants_hash"`
+	ReputationLevel            int64              `json:"reputation_level"`
+	RouteKnowledgeBalance      int64              `json:"route_knowledge_balance"`
+	AgeMS                      int64              `json:"age_ms"`
+	Notoriety                  int64              `json:"notoriety"`
+	AdvisorMode                bool               `json:"advisor_mode"`
+	NetworkSlots               []save.NetworkSlot `json:"network_slots"`
+	LedgerFactKinds            []string           `json:"ledger_fact_kinds"`
+	ExitHistoryCount           int                `json:"exit_history_count"`
+	AchievementsEarnedLifetime []string           `json:"achievements_earned_lifetime"`
+	AchievementScoreLifetime   int64              `json:"achievement_score_lifetime"`
 }
 
 type replayInputsWire struct {
@@ -237,10 +239,13 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 		}
 		accrual, declined = resolved.Accrual, resolved.DeclinedExitOfferCount
 		if resolved.FounderCarry != nil {
-			if !validFounderCarry(*resolved.FounderCarry) || resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash {
+			if !validFounderCarry(*resolved.FounderCarry, wire.Version, catalogs.foundationsActive()) || resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash {
 				return LoggedTransition{}, fmt.Errorf("%w: founder carry", ErrInvalidReplayInputs)
 			}
-			founder = stateFromFounderCarry(*resolved.FounderCarry)
+			founder, err = stateFromFounderCarry(*resolved.FounderCarry, catalogs)
+			if err != nil {
+				return LoggedTransition{}, fmt.Errorf("%w: founder carry state", ErrInvalidReplayInputs)
+			}
 		}
 	} else {
 		var resolved replayAccrualResolved
@@ -327,7 +332,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	if err != nil || resolved.Accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal accrual inputs", ErrInvalidReplayInputs)
 	}
-	if company.CompactMember != (resolved.Accrual.CommonsWeightPPM != nil) || !validFounderCarry(resolved.FounderCarry) ||
+	if company.CompactMember != (resolved.Accrual.CommonsWeightPPM != nil) || !validFounderCarry(resolved.FounderCarry, wire.Version, catalogs.foundationsActive()) ||
 		resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash || !sortedUniqueMechanical(resolved.ExecutedRouteIDs) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal frozen inputs", ErrInvalidReplayInputs)
 	}
@@ -340,7 +345,10 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	}
 	revision := save.Revision{StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
 		Number: wire.Command.Revision, ConstantsHash: catalogs.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
-	founder := stateFromFounderCarry(resolved.FounderCarry)
+	founder, err := stateFromFounderCarry(resolved.FounderCarry, catalogs)
+	if err != nil {
+		return LoggedExitTransition{}, fmt.Errorf("%w: founder carry state", ErrInvalidReplayInputs)
+	}
 	hook := closedReplayAccrualHook(catalogs, resolved.Accrual.CommonsWeightPPM)
 	var prefix []save.EventWrite
 	var exitType string
@@ -536,7 +544,7 @@ func cloneReplayState(state *save.State, catalog *economy.Catalog) (*save.State,
 	if err != nil {
 		return nil, err
 	}
-	cloned, err := save.RestoreState(encoded, save.CurrentVersion, catalog, economy.ScopeCompany, time.Time{})
+	cloned, err := save.RestoreState(encoded, save.VersionForState(state), catalog, economy.ScopeCompany, time.Time{})
 	if err != nil {
 		return nil, err
 	}
@@ -544,13 +552,16 @@ func cloneReplayState(state *save.State, catalog *economy.Catalog) (*save.State,
 	return cloned, nil
 }
 
-func validFounderCarry(carry replayFounderCarry) bool {
+func validFounderCarry(carry replayFounderCarry, wireVersion int, foundationsActive bool) bool {
 	if carry.FounderRevision < 1 || carry.FounderRevision > decimal.MaxExactInteger ||
 		len(carry.FounderConstantsHash) != len("sha256:")+64 || !strings.HasPrefix(carry.FounderConstantsHash, "sha256:") ||
 		carry.ReputationLevel < 0 || carry.ReputationLevel > decimal.MaxExactInteger ||
 		carry.RouteKnowledgeBalance < 0 || carry.RouteKnowledgeBalance > decimal.MaxExactInteger ||
 		carry.AgeMS < 0 || carry.AgeMS > decimal.MaxExactInteger || carry.Notoriety < 0 ||
-		carry.Notoriety > decimal.MaxExactInteger || carry.ExitHistoryCount < 0 || int64(carry.ExitHistoryCount) > decimal.MaxExactInteger || carry.NetworkSlots == nil || carry.LedgerFactKinds == nil {
+		carry.Notoriety > decimal.MaxExactInteger || carry.ExitHistoryCount < 0 || int64(carry.ExitHistoryCount) > decimal.MaxExactInteger ||
+		carry.AchievementScoreLifetime < 0 || carry.AchievementScoreLifetime > decimal.MaxExactInteger || carry.NetworkSlots == nil ||
+		carry.LedgerFactKinds == nil || wireVersion == 2 && (foundationsActive || len(carry.AchievementsEarnedLifetime) != 0 || carry.AchievementScoreLifetime != 0) ||
+		wireVersion >= 3 && carry.AchievementsEarnedLifetime == nil {
 		return false
 	}
 	last := ""
@@ -567,7 +578,10 @@ func validFounderCarry(carry replayFounderCarry) bool {
 		}
 		last = slot.Slot
 	}
-	return true
+	if carry.AchievementsEarnedLifetime == nil {
+		return wireVersion == 2 && !foundationsActive && carry.AchievementScoreLifetime == 0
+	}
+	return sortedUniqueMechanical(carry.AchievementsEarnedLifetime) && (foundationsActive || len(carry.AchievementsEarnedLifetime) == 0 && carry.AchievementScoreLifetime == 0)
 }
 
 func sortedUniqueMechanical(values []string) bool {
@@ -584,15 +598,35 @@ func sortedUniqueMechanical(values []string) bool {
 	return true
 }
 
-func stateFromFounderCarry(carry replayFounderCarry) *save.State {
+func stateFromFounderCarry(carry replayFounderCarry, catalogs CatalogBundle) (*save.State, error) {
 	facts := make(map[string]bool, len(carry.LedgerFactKinds))
 	for _, fact := range carry.LedgerFactKinds {
 		facts[fact] = true
 	}
+	ledger, err := economy.NewLedger(catalogs.Economy, economy.ScopeFounder)
+	if err != nil {
+		return nil, err
+	}
 	history := make([]save.ExitRecord, carry.ExitHistoryCount)
-	return &save.State{ReputationLevel: carry.ReputationLevel, RouteKnowledgeBalance: carry.RouteKnowledgeBalance,
+	state := &save.State{Ledger: ledger, ReputationLevel: carry.ReputationLevel, RouteKnowledgeBalance: carry.RouteKnowledgeBalance,
 		AgeMS: carry.AgeMS, Notoriety: carry.Notoriety, AdvisorMode: carry.AdvisorMode,
 		NetworkSlots: append([]save.NetworkSlot(nil), carry.NetworkSlots...), LedgerFactKinds: facts, ExitHistory: history}
+	if !catalogs.foundationsActive() {
+		if len(carry.AchievementsEarnedLifetime) != 0 || carry.AchievementScoreLifetime != 0 {
+			return nil, ErrInvalidReplayInputs
+		}
+		return state, nil
+	}
+	state.WireVersion = save.LatestSupportedVersion
+	state.AchievementsEarnedLifetime = make(map[string]bool, len(carry.AchievementsEarnedLifetime))
+	for _, id := range carry.AchievementsEarnedLifetime {
+		state.AchievementsEarnedLifetime[id] = true
+	}
+	state.AchievementScoreLifetime = carry.AchievementScoreLifetime
+	if err := catalogs.ValidateFoundationState(state); err != nil {
+		return nil, err
+	}
+	return state, nil
 }
 
 type replayAccrualResolved struct {
@@ -663,13 +697,14 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 			routes = []string{}
 		}
 		sort.Strings(routes)
+		carry := normalizedFounderCarry(*input.FounderCarry)
 		resolved, err = json.Marshal(replayExitResolved{Kind: "exit", IntentKind: input.IntentKind, Accrual: accrual,
-			FounderCarry: *input.FounderCarry, ExecutedRouteIDs: routes, SelectedExitType: input.SelectedExitType,
+			FounderCarry: carry, ExecutedRouteIDs: routes, SelectedExitType: input.SelectedExitType,
 			SelectedTerms: append(json.RawMessage(nil), input.SelectedTerms...), NextConstantsHash: input.NextConstantsHash})
 	case input.IntentKind == IntentCrossGate:
 		var carry *replayFounderCarry
 		if input.FounderCarry != nil {
-			value := *input.FounderCarry
+			value := normalizedFounderCarry(*input.FounderCarry)
 			carry = &value
 		}
 		resolved, err = json.Marshal(replayCrossGateResolved{Kind: "cross_gate", IntentKind: input.IntentKind, Accrual: accrual,
@@ -689,6 +724,13 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 		return nil, err
 	}
 	return wire, nil
+}
+
+func normalizedFounderCarry(carry replayFounderCarry) replayFounderCarry {
+	if carry.AchievementsEarnedLifetime == nil {
+		carry.AchievementsEarnedLifetime = []string{}
+	}
+	return carry
 }
 
 func makeReplayAccrual(contributions []multiplier.Contribution, weight *int64, settlements guild.SettlementBatch, routeContextVersion int) (replayAccrual, error) {
@@ -738,14 +780,19 @@ func founderCarry(state *save.State) replayFounderCarry {
 		slots = []save.NetworkSlot{}
 	}
 	sort.Slice(slots, func(left, right int) bool { return slots[left].Slot < slots[right].Slot })
+	earned := sortedBoolKeys(state.AchievementsEarnedLifetime)
+	if earned == nil {
+		earned = []string{}
+	}
 	return replayFounderCarry{ReputationLevel: state.ReputationLevel, RouteKnowledgeBalance: state.RouteKnowledgeBalance,
 		AgeMS: state.AgeMS, Notoriety: state.Notoriety, AdvisorMode: state.AdvisorMode, NetworkSlots: slots,
-		LedgerFactKinds: facts, ExitHistoryCount: len(state.ExitHistory)}
+		LedgerFactKinds: facts, ExitHistoryCount: len(state.ExitHistory), AchievementsEarnedLifetime: earned,
+		AchievementScoreLifetime: state.AchievementScoreLifetime}
 }
 
 func parseReplayInputs(data []byte) (replayInputsWire, error) {
 	var wire replayInputsWire
-	if err := decodeReplayStrict(data, &wire); err != nil || wire.Version != save.ReplayInputsVersion ||
+	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != save.ReplayInputsVersion) ||
 		(wire.EvaluationMode != ModeOnline && wire.EvaluationMode != ModeOffline) || wire.EvaluatedAtMS <= 0 {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}

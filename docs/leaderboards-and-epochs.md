@@ -168,7 +168,9 @@ partial deletion.
 The Go live service now executes through the shared `ApplyLogged` transition and compares cleanly
 when the persisted input is replayed from the pre-command state. The TypeScript verification kernel
 loads the same seven-artifact bundle and reproduces ordinary transitions plus wind-down, stored-offer,
-and scripted cross-gate terminal transitions. The shared Go-authored corpus compares receipts,
+and scripted cross-gate terminal transitions. Replay-inputs v3 carries Founder lifetime-achievement
+state needed for deterministic v16 settlement; v2 remains accepted only for historical
+pre-foundation evidence. The shared Go-authored corpus compares receipts,
 event bytes/order, final Company state, Founder-derived output, and next-run snapshots. Immutable
 genesis storage, queue failure handling, the L7 evaluator/projector, terminal-state comparison, and
 archive compaction are live. The production category file is an epoch-owned constants artifact;

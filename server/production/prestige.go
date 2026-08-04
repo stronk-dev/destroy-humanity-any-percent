@@ -345,6 +345,9 @@ func applyFounderReplayOutput(target, replayed *save.State) error {
 	target.NetworkSlots = append([]save.NetworkSlot(nil), replayed.NetworkSlots...)
 	target.LedgerFactKinds = cloneBools(replayed.LedgerFactKinds)
 	target.ExitHistory = append(target.ExitHistory, replayed.ExitHistory[len(replayed.ExitHistory)-1])
+	target.WireVersion = replayed.WireVersion
+	target.AchievementsEarnedLifetime = cloneBools(replayed.AchievementsEarnedLifetime)
+	target.AchievementScoreLifetime = replayed.AchievementScoreLifetime
 	return nil
 }
 

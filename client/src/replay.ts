@@ -54,11 +54,12 @@ interface ReplayCommand { intent_id: string; company_stream_id: string; founder_
 interface ReplayGuildSettlement { boundary_seq: number; debit_units: number; credit_units: number }
 interface ReplayGuildSettlementBatch { guild_id: string; base_seq: number; settlements: ReplayGuildSettlement[] }
 interface ReplayAccrual { contributions: ReplayContribution[]; commons_weight_ppm: number | null; guild_settlement_batch: ReplayGuildSettlementBatch; route_context_version: number }
-interface ReplayWire { v: 2; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; resolved: Record<string, unknown> }
+interface ReplayWire { v: 2 | 3; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; resolved: Record<string, unknown> }
 interface NetworkSlot { readonly slot: string; readonly carried_ref: string }
 interface FounderCarry {
   founder_revision: number; founder_constants_hash: string; reputation_level: number; route_knowledge_balance: number;
   age_ms: number; notoriety: number; advisor_mode: boolean; network_slots: NetworkSlot[]; ledger_fact_kinds: string[]; exit_history_count: number;
+  achievements_earned_lifetime: string[]; achievement_score_lifetime: number;
 }
 interface ExitTerms { reputation_delta: number; network_slot_unlocks: NetworkSlot[]; route_knowledge: number; clout_reach_note: string }
 
@@ -264,7 +265,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   if (wire.evaluated_at_ms < state.evaluatedThroughMs) throw new ReplayClockViolation();
   const resolved = wire.resolved; const kind = string(resolved.kind); if (string(resolved.intent_kind) !== request.kind) throw new RangeError("resolved intent mismatch");
   let accrual: ReplayAccrual; let founderCarry: FounderCarry | null = null; let declined = 0;
-  if (kind === "cross_gate" && request.kind === "cross_gate") { onlyKeys(resolved, ["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry"], "cross gate inputs"); accrual = parseAccrual(resolved.accrual, catalogs); declined = safeInteger(resolved.declined_exit_offer_count ?? 0, 0, MAX_EXACT_INTEGER); founderCarry = resolved.founder_carry === undefined || resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs.constantsHash); }
+  if (kind === "cross_gate" && request.kind === "cross_gate") { onlyKeys(resolved, ["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry"], "cross gate inputs"); accrual = parseAccrual(resolved.accrual, catalogs); declined = safeInteger(resolved.declined_exit_offer_count ?? 0, 0, MAX_EXACT_INTEGER); founderCarry = resolved.founder_carry === undefined || resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs.constantsHash, wire.v); }
   else { if (kind !== "accrual") throw new RangeError("resolved union mismatch"); onlyKeys(resolved, ["kind", "intent_kind", "accrual"], "accrual inputs"); accrual = parseAccrual(resolved.accrual, catalogs); }
   if (state.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
   const rejectState = (category: string, detail: string): LoggedTransition => { restoreReplaySnapshot(state, stateBefore); return rejected(state, request.intent_id, revision, category, detail); };
@@ -311,7 +312,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   if (!next || next.constantsHash !== nextHash) throw new RangeError("next catalog bundle mismatch");
   const accrual = parseAccrual(resolved.accrual, catalogs);
   if (company.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
-  const founder = parseFounderCarry(resolved.founder_carry, catalogs.constantsHash);
+  const founder = parseFounderCarry(resolved.founder_carry, catalogs.constantsHash, wire.v);
   const executedRoutes = sortedUniqueMechanical(array(resolved.executed_route_ids, "executed route ids"));
   deriveFactionStockResource(company, catalogs.factions);
   const companyBefore = cloneReplayState(company, catalogs.economy);
@@ -674,7 +675,7 @@ function sortedUniqueMechanical(source: unknown[]): string[] {
   return source.map((item) => { const value = mechanicalString(item); if (byteCompare(value, last) <= 0) throw new SyntaxError("values must be sorted and unique"); last = value; return value; });
 }
 
-function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 2 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: 2, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
+function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 2 && root.v !== 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: root.v, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
 function parseAccrual(source: unknown, catalogs: ReplayCatalogBundle): ReplayAccrual {
   const raw = objectWithOnlyKeys(source, ["contributions", "commons_weight_ppm", "guild_settlement_batch", "route_context_version"], "accrual");
   const commonsWeight = raw.commons_weight_ppm ?? null;
@@ -720,8 +721,9 @@ function applyGuildSettlements(state: ReplayState, batch: ReplayGuildSettlementB
   }
 }
 
-function parseFounderCarry(source: unknown, constantsHash: string): FounderCarry {
-  const carry = { ...objectWithOnlyKeys(source, ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"], "founder carry") };
+function parseFounderCarry(source: unknown, constantsHash: string, wireVersion: 2 | 3): FounderCarry {
+  const legacyKeys = ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"];
+  const carry = { ...objectWithOnlyKeys(source, wireVersion >= 3 ? [...legacyKeys, "achievements_earned_lifetime", "achievement_score_lifetime"] : legacyKeys, "founder carry") };
   safeInteger(carry.founder_revision, 1, MAX_EXACT_INTEGER);
   if (carry.founder_constants_hash !== constantsHash) throw new RangeError("founder catalog mismatch");
   carry.reputation_level = safeInteger(carry.reputation_level ?? 0, 0, MAX_EXACT_INTEGER);
@@ -730,6 +732,8 @@ function parseFounderCarry(source: unknown, constantsHash: string): FounderCarry
   carry.notoriety = safeInteger(carry.notoriety ?? 0, 0, MAX_EXACT_INTEGER);
   carry.advisor_mode = carry.advisor_mode ?? false; boolean(carry.advisor_mode);
   carry.exit_history_count = safeInteger(carry.exit_history_count ?? 0, 0, MAX_EXACT_INTEGER);
+  carry.achievements_earned_lifetime = wireVersion >= 3 ? sortedUniqueMechanical(array(carry.achievements_earned_lifetime, "lifetime achievements")) : [];
+  carry.achievement_score_lifetime = wireVersion >= 3 ? safeInteger(carry.achievement_score_lifetime, 0, MAX_EXACT_INTEGER) : 0;
   let lastFact = "";
   for (const item of array(carry.ledger_fact_kinds, "founder facts")) {
     const fact = string(item);

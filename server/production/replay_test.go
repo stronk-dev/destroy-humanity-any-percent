@@ -16,6 +16,7 @@ import (
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
+	"cloud-clicker/server/meters"
 	"cloud-clicker/server/multiplier"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
@@ -320,5 +321,68 @@ func TestTerminalReplayInputsFreezeFounderCarry(t *testing.T) {
 	if err := decodeReplayStrict(wire.Resolved, &terminal); err != nil || terminal.FounderCarry.ReputationLevel != 17 ||
 		terminal.ExecutedRouteIDs[0] != "route.a" || terminal.ExecutedRouteIDs[1] != "route.z" {
 		t.Fatalf("terminal=%+v err=%v", terminal, err)
+	}
+}
+
+func TestFoundationReplayCarryAndClonePreserveV16State(t *testing.T) {
+	_, active := foundationTestBundles(t)
+	founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+	founder.WireVersion = save.LatestSupportedVersion
+	founder.AchievementsEarnedLifetime = map[string]bool{active.Achievements.Definitions[0].ID: true}
+	founder.AchievementScoreLifetime = active.Achievements.Definitions[0].ScoreGrant
+	founder.LedgerFactKinds = map[string]bool{}
+	founder.NetworkSlots = []save.NetworkSlot{}
+	founder.ExitHistory = []save.ExitRecord{}
+	carry := founderCarry(founder)
+	carry.FounderRevision = 1
+	carry.FounderConstantsHash = active.ConstantsHash
+	if !validFounderCarry(carry, save.ReplayInputsVersion, true) {
+		t.Fatal("valid v16 Founder carry rejected")
+	}
+	restored, err := stateFromFounderCarry(carry, active)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if save.VersionForState(restored) != save.LatestSupportedVersion ||
+		!restored.AchievementsEarnedLifetime[active.Achievements.Definitions[0].ID] ||
+		restored.AchievementScoreLifetime != active.Achievements.Definitions[0].ScoreGrant {
+		t.Fatalf("restored Founder=%+v", restored)
+	}
+	restored.ExitHistory = append(restored.ExitHistory, save.ExitRecord{ExitType: "collapse"})
+	target := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+	target.ExitHistory = []save.ExitRecord{}
+	if err := applyFounderReplayOutput(target, restored); err != nil {
+		t.Fatal(err)
+	}
+	if save.VersionForState(target) != save.LatestSupportedVersion ||
+		!target.AchievementsEarnedLifetime[active.Achievements.Definitions[0].ID] ||
+		target.AchievementScoreLifetime != active.Achievements.Definitions[0].ScoreGrant {
+		t.Fatalf("live Founder output dropped v16 state: %+v", target)
+	}
+
+	company := replayFixtureState(t, active.Economy, time.Date(2026, 8, 4, 12, 0, 0, 0, time.UTC))
+	company.WireVersion = save.LatestSupportedVersion
+	meterState := meters.NewState(active.Meters)
+	company.MeterValues = meterState.Values
+	company.MeterDecayRemainders = meterState.DecayRemainders
+	company.MeterInputRemainders = meterState.InputRemainders
+	company.AchievementsEarnedRun = map[string]bool{}
+	cloned, err := cloneReplayState(company, active.Economy)
+	if err != nil || save.VersionForState(cloned) != save.LatestSupportedVersion {
+		t.Fatalf("v16 clone version=%d err=%v", save.VersionForState(cloned), err)
+	}
+}
+
+func TestFounderCarryVersionBoundaryKeepsLegacyV2Replayable(t *testing.T) {
+	legacy := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: "sha256:" + strings.Repeat("a", 64),
+		NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}}
+	if !validFounderCarry(legacy, 2, false) {
+		t.Fatal("legacy replay-inputs v2 Founder carry rejected")
+	}
+	if validFounderCarry(legacy, 2, true) {
+		t.Fatal("active foundation run accepted legacy replay-inputs v2 Founder carry")
+	}
+	if validFounderCarry(legacy, save.ReplayInputsVersion, false) {
+		t.Fatal("replay-inputs v3 accepted missing lifetime achievement fields")
 	}
 }

@@ -377,3 +377,12 @@ The separate uncommitted production/meters work was excluded from both source re
 - The remediation derives the complete Founder lifetime score with the next pinned achievement
   catalog and adds a direct active→active retune fixture. The meter planning log owns the two kernel
   guard findings and their `0.3.18` fix-forward evidence.
+
+## 2026-08-04 — lifetime achievement replay carry
+
+- Replay-inputs v3 freezes `achievements_earned_lifetime` and `achievement_score_lifetime` in the
+  terminal Founder carry. Active runs reject historical v2 evidence rather than inventing lifetime
+  state; pre-foundation histories remain v2-replayable.
+- Founder reconstruction validates the frozen set/score against the run-pinned catalog, and the
+  live output copier now persists the replayed v16 fields. The shared Go/TypeScript fixture and
+  explicit version-boundary tests cover the contract; no achievement evaluation/content is claimed.

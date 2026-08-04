@@ -980,7 +980,9 @@ func replayFounderOutput(state *save.State, carry replayFounderCarry) any {
 	return map[string]any{"founder_revision": carry.FounderRevision, "founder_constants_hash": carry.FounderConstantsHash,
 		"reputation_level": state.ReputationLevel, "route_knowledge_balance": state.RouteKnowledgeBalance, "age_ms": state.AgeMS,
 		"notoriety": state.Notoriety, "advisor_mode": state.AdvisorMode, "network_slots": state.NetworkSlots,
-		"ledger_fact_kinds": facts, "exit_history_count": len(state.ExitHistory)}
+		"ledger_fact_kinds": facts, "exit_history_count": len(state.ExitHistory),
+		"achievements_earned_lifetime": sortedBoolKeys(state.AchievementsEarnedLifetime),
+		"achievement_score_lifetime":   state.AchievementScoreLifetime}
 }
 
 func fixtureEvents(events []save.EventWrite) []fixtureEvent {
