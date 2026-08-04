@@ -177,8 +177,10 @@ platform is executable without inventing a single balance value.
    into ranked play passes; `offline_quality` charges/decays per the grade ladder.
 3. Faucet governor: the daily cap forfeits excess (reason-keyed); a bot match pays the reduced
    rate; per-epoch re-tune follows BALANCE-CHANGE.
-4. Payout-as-intent: a resolved result enters the economy through the intent surface, evented and
-   replay-logged; no side-channel write exists (grep-proven).
+4. Server-authored payout: a resolved result enters the economy through the internal
+   `resolve_minigame_session` transition in the claim-token-owned resolve transaction, evented and
+   replay-logged; the public intent decoder cannot construct it and no side-channel write exists
+   (grep-proven).
 5. Fallback law: loader rejects a fallback-less minigame; the fixture tenant's solo path completes
    at zero connected peers.
 6. Registry: the combat DUEL engine registers as a conformant tenant via adapter (the lane engine follows when implemented — not claimed ready, C9).
