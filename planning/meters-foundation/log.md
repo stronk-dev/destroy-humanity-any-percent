@@ -329,6 +329,38 @@ verification is green and the failure is outside `d7bb1da`.
   14 or 16, never 15. Tests cover both the codec/persistence distinction and a full v15 Exit tuple.
 - Focused save verification is green; this narrow follow-up awaits its own exact-range review.
 
+## 2026-08-04 — Go new-run activation and reset assembly
+
+- Replay catalog bundles now recognize exactly the legacy seven-artifact shape or the paired
+  nine-artifact shape containing both `meters` and `achievements`; one-sided activation fails.
+- Added the shared exact Notoriety reseed assembly. It uses overflow-safe integer arithmetic,
+  applies the result to all five Standing axes, and leaves every Grievance/p(doom) value at its
+  catalog literal. Extreme-domain and non-retroactive legacy-placeholder fixtures are included.
+- Exit resolves both current and next pinned bundles. Pre-foundation runs stay v14 through their
+  final state; the new Company and Founder become v16 together only when the next bundle contains
+  both artifacts. Active mechanics cannot disappear in a later epoch.
+- Catalog-derived state policy validates complete meter maps and derived achievement scores before
+  persistence. V16 gate predicates read `meter_values`, never the removed placeholder map.
+- Tests cover atomic activation, exact reset, artifact pairing/downgrade rejection, achievement
+  settlement/reset, derived-score tampering, and route-context authority. Full root `make test`
+  passes (all Go packages, 6,517 client assertions, 19,560 browser assertions).
+- The TypeScript save/replay port, live meter hook, achievement evaluation/events/receipt evidence,
+  and nine-artifact database loader remain subsequent landings; no content artifact was minted.
+
+## 2026-08-04 — append-only kernel-history correction
+
+- The root verifier exposed that reviewed commits `d7bb1da`, `c356d87`, and `9d3764f` changed
+  kernel-watched save semantics without carrying their kernel version bump. Their hashes are already
+  cited by independent verdicts, so the review ledger forbids rewriting them.
+- Added `kernel/history-corrections.json` as an immutable fix-forward record and corrected all three
+  misses in kernel version `0.3.17`, the same commit that lands the paired activation semantics.
+- The history guard accepts a correction only when the offending full hash is named, the correcting
+  version is newer, its planning review log exists, and the correction first appears beside the
+  exact real `kernel/VERSION` bump it declares. Existing corrections cannot be removed.
+- Adversarial Git fixtures prove an uncorrected historical miss fails, the reviewed correction plus
+  bump passes, and later correction removal fails. Worktree semantic changes still require their own
+  bump; a correction cannot excuse current uncommitted work.
+
 ## 2026-08-04 — independent activation-codec remediation review (`c356d87^..c356d87`)
 
 - **Review by:** Darwin

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -73,6 +74,34 @@ func TestValidateStateRequiresCompleteExactMaps(t *testing.T) {
 	state.InputRemainders["extra:0"] = 0
 	if err := ValidateState(catalog, state); err == nil {
 		t.Fatal("extra input remainder accepted")
+	}
+}
+
+func TestNewRunStateReseedsEveryStandingAxisOnly(t *testing.T) {
+	catalog := testCatalog(t)
+	state, err := NewRunState(catalog, 100)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, meter := range catalog.Meters {
+		got := state.Values[meter.ID]
+		if strings.HasSuffix(meter.ID, ".standing") {
+			if got != 55 {
+				t.Fatalf("%s = %d, want reseed 55", meter.ID, got)
+			}
+		} else if got != meter.InitialValue {
+			t.Fatalf("%s = %d, want literal initial %d", meter.ID, got, meter.InitialValue)
+		}
+	}
+	maxed, err := NewRunState(catalog, maximumExactInteger)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if maxed.Values["trust.users.standing"] != catalog.TrustReseed.FloorValue {
+		t.Fatalf("overflow-safe reseed = %d", maxed.Values["trust.users.standing"])
+	}
+	if _, err := NewRunState(catalog, -1); err == nil {
+		t.Fatal("negative notoriety accepted")
 	}
 }
 

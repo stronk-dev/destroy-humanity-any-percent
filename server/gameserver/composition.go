@@ -97,7 +97,10 @@ func (catalogs *runtimeCatalogs) ValidateState(hash string, state *save.State) e
 	if !ok {
 		return ErrComposition
 	}
-	return bundle.Faction.ValidateState(state)
+	if err := bundle.Faction.ValidateState(state); err != nil {
+		return err
+	}
+	return bundle.ValidateFoundationState(state)
 }
 func (catalogs *runtimeCatalogs) ResolveReplayCatalogs(hash string) (production.CatalogBundle, bool) {
 	return catalogs.bundle(hash)

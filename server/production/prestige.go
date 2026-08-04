@@ -180,14 +180,18 @@ func (s *Service) handleScriptedCrossGateExit(ctx context.Context, streamID stri
 }
 
 func (s *Service) finishExit(request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, now time.Time, exitType string, terms prestigecore.Terms, endedPrefix []save.EventWrite, executedRoutes []string) (save.ExitDecision, error) {
-	nextCatalog := s.mustCatalog(s.currentConstantsHash)
-	if nextCatalog == nil {
+	if s.replayCatalogs == nil {
 		return save.ExitDecision{}, ErrInvalidEngineState
 	}
-	return finishExitResolved(request, founder, founderRevision, company, companyRevision, now, exitType, terms, endedPrefix, executedRoutes, nextCatalog, s.currentConstantsHash)
+	current, currentOK := s.replayCatalogs.ResolveReplayCatalogs(companyRevision.ConstantsHash)
+	next, nextOK := s.replayCatalogs.ResolveReplayCatalogs(s.currentConstantsHash)
+	if !currentOK || !nextOK {
+		return save.ExitDecision{}, ErrInvalidEngineState
+	}
+	return finishExitResolved(request, founder, founderRevision, company, companyRevision, now, exitType, terms, endedPrefix, executedRoutes, current, next)
 }
 
-func finishExitResolved(request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, now time.Time, exitType string, terms prestigecore.Terms, endedPrefix []save.EventWrite, executedRoutes []string, nextCatalog *economy.Catalog, nextConstantsHash string) (save.ExitDecision, error) {
+func finishExitResolved(request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, now time.Time, exitType string, terms prestigecore.Terms, endedPrefix []save.EventWrite, executedRoutes []string, currentBundle, nextBundle CatalogBundle) (save.ExitDecision, error) {
 	now = save.CanonicalServerTime(now)
 	attended, err := prestigecore.AttendedMS(company, now)
 	if err != nil {
@@ -213,11 +217,14 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 	}
 	founder.NetworkSlots = mergeNetworkSlots(founder.NetworkSlots, terms.NetworkSlotUnlocks)
 	founder.ExitHistory = append(founder.ExitHistory, save.ExitRecord{RunID: company.RunSeq, ExitType: exitType, OccurredAt: now, ReputationDelta: terms.ReputationDelta})
-	if nextCatalog == nil || nextConstantsHash == "" {
+	if !currentBundle.valid(companyRevision.ConstantsHash) || !nextBundle.valid(nextBundle.ConstantsHash) {
 		return save.ExitDecision{}, ErrInvalidEngineState
 	}
-	newCompany, err := prestigecore.NewRunState(nextCatalog, company, founder, now)
+	newCompany, err := prestigecore.NewRunState(nextBundle.Economy, company, founder, now)
 	if err != nil {
+		return save.ExitDecision{}, err
+	}
+	if err := settleAndActivateFoundations(currentBundle, nextBundle, founder, company, newCompany); err != nil {
 		return save.ExitDecision{}, err
 	}
 	runID := map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": company.RunSeq}
@@ -235,10 +242,10 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 		"assisted": assisted, "faction": factionID})
 	startedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": newCompany.RunSeq}, "started_at_ms": now.UnixMilli(), "assisted": map[string]bool{"commons": false, "advisor": founder.AdvisorMode}})
 	advancedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType, "reputation_delta": terms.ReputationDelta, "route_knowledge": terms.RouteKnowledge, "occurred_at_ms": now.UnixMilli()})
-	receipt, _ := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": "applied", "applied_count": 1, "receipt": map[string]any{"changes": []any{}}, "new_revision": companyRevision.Number + 2, "founder_revision": founderRevision.Number + 1, "evaluated_at": now.Format(time.RFC3339Nano), "snapshot": wireSnapshot(newCompany, nextCatalog)})
+	receipt, _ := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": "applied", "applied_count": 1, "receipt": map[string]any{"changes": []any{}}, "new_revision": companyRevision.Number + 2, "founder_revision": founderRevision.Number + 1, "evaluated_at": now.Format(time.RFC3339Nano), "snapshot": wireSnapshot(newCompany, nextBundle.Economy)})
 	endedEvents := append([]save.EventWrite(nil), endedPrefix...)
 	endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventRunEnded, SchemaVersion: 2, IntentID: request.IntentID, Payload: endedPayload})
-	return save.ExitDecision{Outcome: save.IntentApplied, Receipt: receipt, FinalCompanyState: company, NewCompanyState: newCompany, NewConstantsHash: nextConstantsHash,
+	return save.ExitDecision{Outcome: save.IntentApplied, Receipt: receipt, FinalCompanyState: company, NewCompanyState: newCompany, NewConstantsHash: nextBundle.ConstantsHash,
 		FounderEvents:      []save.EventWrite{{Kind: save.EventFounderAdvanced, SchemaVersion: 1, IntentID: request.IntentID, Payload: advancedPayload}},
 		CompanyEndedEvents: endedEvents, CompanyStartedEvents: []save.EventWrite{{Kind: save.EventRunStarted, SchemaVersion: 1, IntentID: request.IntentID, Payload: startedPayload}}}, nil
 }

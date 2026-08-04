@@ -298,6 +298,21 @@ save verification is green.
   the uppercase alias that the independent review demonstrated.
 - Focused save verification passes; dependent runtime work remains uncredited pending review.
 
+## 2026-08-04 — Go new-run activation and Exit settlement boundary
+
+- The paired-artifact bundle is the sole activation authority. A pre-foundation run earns nothing
+  retroactively; its Exit creates an empty v16 Company run set and empty v16 Founder lifetime set.
+- On later active Exits, Company run IDs union into Founder lifetime ownership under the existing
+  transaction, lifetime score is re-derived from the current run-pinned catalog, and the next run
+  starts empty/zero. Artifact removal, one-sided bundles, overlap with an already-owned lifetime
+  ID, and score tampering fail closed.
+- Gameserver state policy now checks derived achievement score/ID closure for every v16 write.
+  Full root `make test` passes. Event emission, receipt settlement evidence, live/TS evaluation,
+  database artifact loading, and the production content mint remain explicitly pending.
+- The landing carries kernel version `0.3.17` and the append-only correction record for the three
+  already-reviewed save codec commits whose semantic version bumps were missed; the meters planning
+  log owns the detailed correction protocol and adversarial fixture evidence.
+
 ## 2026-08-04 — independent activation-codec remediation review (`c356d87^..c356d87`)
 
 - **Review by:** Darwin

@@ -26,6 +26,22 @@ try {
   write(root, "client/src/replay.ts", "export const replay = 2;\n"); versionFiles(root, "0.1.1"); commit(root, "kernel: bump replay");
   run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
 
+  write(root, "client/src/replay.ts", "export const replay = 21;\n"); commit(root, "test: reviewed semantic miss");
+  let historicalFailed = false;
+  try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { historicalFailed = true; }
+  if (!historicalFailed) throw new Error("kernel guard accepted an uncorrected historical miss");
+  const offending = run(root, "git", ["rev-parse", "HEAD"]).trim();
+  write(root, "planning/kernel-fix/log.md", "# Independent review record for fixture\n");
+  write(root, "kernel/history-corrections.json", `${JSON.stringify({ schema_version: 1, corrections: [{ offending_commit: offending, corrected_in_version: "0.1.2", reason: "Reviewed fixture violation corrected without rewriting cited history.", review_log: "planning/kernel-fix/log.md" }] }, null, 2)}\n`);
+  versionFiles(root, "0.1.2"); commit(root, "kernel: fix forward reviewed history");
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+
+  write(root, "kernel/history-corrections.json", `${JSON.stringify({ schema_version: 1, corrections: [] }, null, 2)}\n`);
+  let correctionRemovalFailed = false;
+  try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { correctionRemovalFailed = true; }
+  if (!correctionRemovalFailed) throw new Error("kernel guard accepted correction removal");
+  run(root, "git", ["restore", "kernel/history-corrections.json"]);
+
   const shallow = path.join(root, "shallow-clone");
   run(root, "git", ["clone", "--depth", "1", `file://${root}`, shallow]);
   let shallowFailed = false;

@@ -3,6 +3,8 @@ package meters
 import (
 	"errors"
 	"fmt"
+	"math/big"
+	"strings"
 )
 
 const (
@@ -56,6 +58,35 @@ func NewState(catalog *Catalog) State {
 		}
 	}
 	return state
+}
+
+// NewRunState applies the catalog-owned Notoriety reseed to every Trust
+// Standing axis while leaving Grievance and pressure meters at their literal
+// initials. It is the sole new-run assembly rule used by live Exit and replay.
+func NewRunState(catalog *Catalog, notoriety int64) (State, error) {
+	if catalog == nil || notoriety < 0 || notoriety > maximumExactInteger {
+		return State{}, ErrInvalidState
+	}
+	state := NewState(catalog)
+	product := new(big.Int).Mul(big.NewInt(notoriety), big.NewInt(catalog.TrustReseed.NotorietyNumerator))
+	product.Quo(product, big.NewInt(catalog.TrustReseed.NotorietyDenominator))
+	value := new(big.Int).Sub(big.NewInt(int64(catalog.TrustReseed.BaseValue)), product)
+	floor, ceiling := big.NewInt(int64(catalog.TrustReseed.FloorValue)), big.NewInt(int64(catalog.TrustReseed.CeilingValue))
+	if value.Cmp(floor) < 0 {
+		value.Set(floor)
+	} else if value.Cmp(ceiling) > 0 {
+		value.Set(ceiling)
+	}
+	standing := int(value.Int64())
+	for _, meter := range catalog.Meters {
+		if strings.HasPrefix(meter.ID, "trust.") && strings.HasSuffix(meter.ID, ".standing") {
+			state.Values[meter.ID] = standing
+		}
+	}
+	if err := ValidateState(catalog, state); err != nil {
+		return State{}, err
+	}
+	return state, nil
 }
 
 func ValidateState(catalog *Catalog, state State) error {

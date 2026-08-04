@@ -936,7 +936,11 @@ func routeContext(state *save.State, version int) (routes.Context, error) {
 		}
 		resources[id] = value
 	}
-	return routes.Context{ContextVersion: version, Resources: resources, DoctrinesByTransition: cloneStrings(state.DoctrinesByTransition), StructureID: state.StructureID, LedgerFactKinds: cloneBools(state.LedgerFactKinds), MeterBands: cloneInts(state.MeterBands), RegionTraits: cloneBools(state.RegionTraits)}, nil
+	meters := state.MeterBands
+	if save.VersionForState(state) >= 16 {
+		meters = state.MeterValues
+	}
+	return routes.Context{ContextVersion: version, Resources: resources, DoctrinesByTransition: cloneStrings(state.DoctrinesByTransition), StructureID: state.StructureID, LedgerFactKinds: cloneBools(state.LedgerFactKinds), MeterBands: cloneInts(meters), RegionTraits: cloneBools(state.RegionTraits)}, nil
 }
 
 func (s *Service) buyRouteHint(request IntentRequest, state *save.State, routeCatalog *routes.Catalog, revision save.Revision) (save.IntentDecision, error) {

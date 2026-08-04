@@ -11,10 +11,12 @@ import (
 	"time"
 
 	"cloud-clicker/server/accrualhook"
+	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
+	"cloud-clicker/server/meters"
 	"cloud-clicker/server/multiplier"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
@@ -32,6 +34,8 @@ type CatalogBundle struct {
 	Prestige      *prestigecore.Policy
 	Faction       *faction.Catalog
 	Guild         *guild.Catalog
+	Meters        *meters.Catalog
+	Achievements  *achievements.Catalog
 	Next          *CatalogBundle
 }
 
@@ -88,7 +92,12 @@ func (set ReplayCatalogSet) ResolveFaction(constantsHash string) (*faction.Catal
 }
 
 func (bundle CatalogBundle) valid(constantsHash string) bool {
-	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != 7 || bundle.Economy == nil ||
+	withFoundations := bundle.Meters != nil || bundle.Achievements != nil
+	expectedArtifacts := 7
+	if withFoundations {
+		expectedArtifacts = 9
+	}
+	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != expectedArtifacts || bundle.Economy == nil ||
 		bundle.Routes == nil || bundle.Commons == nil || bundle.Prestige == nil || bundle.Faction == nil || bundle.Guild == nil {
 		return false
 	}
@@ -96,6 +105,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		if len(bundle.Artifacts[name]) == 0 {
 			return false
 		}
+	}
+	if withFoundations && (bundle.Meters == nil || bundle.Achievements == nil || len(bundle.Artifacts["meters"]) == 0 || len(bundle.Artifacts["achievements"]) == 0) {
+		return false
 	}
 	computed, err := save.ConstantsHashArtifacts(bundle.Artifacts)
 	return err == nil && computed == constantsHash
@@ -401,7 +413,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	founderRevision := save.Revision{StreamID: "", OwnerID: wire.Command.FounderID, Number: resolved.FounderCarry.FounderRevision,
 		ConstantsHash: catalogs.ConstantsHash}
 	decision, err := finishExitResolved(request, founder, founderRevision, company, revision, now, exitType, terms, prefix,
-		resolved.ExecutedRouteIDs, next.Economy, resolved.NextConstantsHash)
+		resolved.ExecutedRouteIDs, catalogs, *next)
 	if err != nil {
 		return LoggedExitTransition{}, err
 	}
