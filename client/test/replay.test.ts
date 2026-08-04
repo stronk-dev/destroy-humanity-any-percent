@@ -139,6 +139,7 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(canonicalJSONString(transition.events)).toBe(special.case.events_json);
     expect(canonicalJSONString(encodeReplayState(transition.state))).toBe(special.case.post_state_json);
     if (special.case.name === "buy-generator-max-fallback-invariant") expect(transition.invariants).toEqual([{ kind: "afford_fallback", intent_id: "01986666-0201-7000-8000-000000000201", detail: "generator.beige_tower" }]);
+    else if (special.case.name === "active-foundation-carry") expect(transition.events.map((value) => value.kind)).toEqual(["meter_band_changed.v1", "achievement_earned.v1"]);
     else expect(transition.invariants).toEqual([]);
   });
 
@@ -156,6 +157,12 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     activeInputs.v = 2;
     const activeState = restoreReplayState(activeCase.case.pre_state, 16, active.economy, { meters: active.meters!, achievements: active.achievements! });
     await expect(applyLogged(activeState, canonicalJSONString(activeCase.case.canonical_payload), active, activeInputs)).rejects.toThrow(/invalid replay envelope/);
+
+    const missingCarry = structuredClone(activeCase.case.replay_inputs) as Record<string, any>;
+    delete missingCarry.resolved.founder_carry;
+    await expect(applyLogged(restoreReplayState(activeCase.case.pre_state, 16, active.economy, { meters: active.meters!, achievements: active.achievements! }), canonicalJSONString(activeCase.case.canonical_payload), active, missingCarry)).rejects.toThrow(/missing active Founder carry/);
+    missingCarry.v = 3;
+    await expect(applyLogged(restoreReplayState(activeCase.case.pre_state, 16, active.economy, { meters: active.meters!, achievements: active.achievements! }), canonicalJSONString(activeCase.case.canonical_payload), active, missingCarry)).resolves.toMatchObject({ outcome: "applied" });
 
     const activation = fixture.active_foundation_exit;
     const next = await loadReplayCatalogBundle(activation.constants_hash, activation.artifacts);
@@ -200,7 +207,8 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(canonicalJSONString(transition.founderEvents)).toBe(testCase.founder_events_json);
     expect(canonicalJSONString(transition.companyEndedEvents)).toBe(testCase.company_ended_events_json);
     expect(canonicalJSONString(transition.companyStartedEvents)).toBe(testCase.company_started_events_json);
-    expect(transition.founder.achievement_score_lifetime).toBe(5);
+    expect(transition.founder.achievement_score_lifetime).toBe(11);
+    expect(transition.companyEndedEvents.some((value) => value.kind === "achievement_earned.v1")).toBe(true);
   });
 
   it.each(fixture.terminal_cases)("replays terminal '$name' to the Go receipt, events, and next run", async (testCase) => {

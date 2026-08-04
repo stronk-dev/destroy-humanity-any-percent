@@ -1256,7 +1256,7 @@ func wireChanges(before, after map[string]string) ([]map[string]string, error) {
 }
 
 func wireSnapshot(state *save.State, catalog *economy.Catalog) map[string]any {
-	return map[string]any{
+	snapshot := map[string]any{
 		"balances": state.Ledger.Snapshot(), "generators": state.GeneratorCounts,
 		"generators_purchased_total": state.GeneratorPurchasedTotal,
 		"upgrades_owned":             sortedBoolKeys(state.UpgradesOwned),
@@ -1269,8 +1269,8 @@ func wireSnapshot(state *save.State, catalog *economy.Catalog) map[string]any {
 		"manual_token_refilled_at": state.ManualTokenRefilledAt.UTC().Format(time.RFC3339Nano),
 		"gates_crossed":            state.GatesCrossed, "run_seq": state.RunSeq,
 		"doctrines_by_transition": state.DoctrinesByTransition, "structure_id": state.StructureID,
-		"ledger_fact_kinds": sortedBoolKeys(state.LedgerFactKinds), "meter_bands": state.MeterBands,
-		"region_traits": sortedBoolKeys(state.RegionTraits), "route_knowledge_balance": state.RouteKnowledgeBalance,
+		"ledger_fact_kinds": sortedBoolKeys(state.LedgerFactKinds),
+		"region_traits":     sortedBoolKeys(state.RegionTraits), "route_knowledge_balance": state.RouteKnowledgeBalance,
 		"hints_unlocked": sortedBoolKeys(state.HintsUnlocked),
 		"compact_member": state.CompactMember, "compact_tithe_ppm": state.CompactTithePPM,
 		"compact_solidarity_ppm": state.CompactSolidarityPPM,
@@ -1285,6 +1285,16 @@ func wireSnapshot(state *save.State, catalog *economy.Catalog) map[string]any {
 		"guild_boundary_guild_id":     nullableString(state.GuildBoundaryGuildID),
 		"guild_consumed_window_units": state.GuildConsumedWindow,
 	}
+	if save.VersionForState(state) == 16 {
+		snapshot["meter_values"] = state.MeterValues
+		snapshot["meter_decay_remainders"] = state.MeterDecayRemainders
+		snapshot["meter_input_remainders"] = state.MeterInputRemainders
+		snapshot["achievements_earned_run"] = sortedBoolKeys(state.AchievementsEarnedRun)
+		snapshot["achievement_score_run"] = state.AchievementScoreRun
+	} else {
+		snapshot["meter_bands"] = state.MeterBands
+	}
+	return snapshot
 }
 
 func wireProvisionedHardcaps(catalog *economy.Catalog) map[string]map[string]any {

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"testing"
+	"time"
 
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/economy"
@@ -55,7 +56,7 @@ func foundationTestBundles(t *testing.T) (CatalogBundle, CatalogBundle) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	achievementArtifact := []byte(`{"schema_version":1,"achievements":[{"id":"achievement.first_gate","condition_scope":"run","condition":{"kind":"counter_at_least","counter":"tier","minimum":1},"proof":{"kind":"provenance","event_kinds":["gate_crossed"]},"score_grant":4,"copy_key":"category.any_percent"}]}`)
+	achievementArtifact := []byte(`{"schema_version":1,"achievements":[{"id":"achievement.first_gate","condition_scope":"run","condition":{"kind":"counter_at_least","counter":"tier","minimum":1},"proof":{"kind":"provenance","event_kinds":["gate_crossed"]},"score_grant":4,"copy_key":"category.any_percent"},{"id":"achievement.old_hand","condition_scope":"career","condition":{"kind":"exit_count_at_least","count":1},"proof":{"kind":"provenance","event_kinds":["founder_advanced","run_ended"]},"score_grant":6,"copy_key":"category.any_percent"}]}`)
 	achievementCatalog, err := achievements.LoadCatalog(achievementArtifact, FoundationAchievementRegistry(legacy.Economy))
 	if err != nil {
 		t.Fatal(err)
@@ -224,5 +225,115 @@ func TestFoundationArtifactPairAndDowngradeFailClosed(t *testing.T) {
 	}
 	if err := settleAndActivateFoundations(active, legacy, founder, company, foundationScopeState(t, legacy.Economy, economy.ScopeCompany)); err == nil {
 		t.Fatal("foundation artifact downgrade was accepted")
+	}
+}
+
+func TestFoundationTransitionOrdersMetersBeforeAchievementsAndLatches(t *testing.T) {
+	_, active := foundationTestBundles(t)
+	now := time.Date(2026, 8, 4, 15, 0, 0, 0, time.UTC)
+	state := replayFixtureState(t, active.Economy, now.Add(-time.Hour))
+	state.WireVersion = save.LatestSupportedVersion
+	meterState, err := meters.NewRunState(active.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.MeterBands = nil
+	state.MeterValues, state.MeterDecayRemainders, state.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	state.MeterValues["doom.probability"] = 71
+	state.AchievementsEarnedRun = map[string]bool{}
+	state.Tier = 1
+	before, err := cloneReplayState(state, active.Economy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.EvaluatedThrough = now
+	founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+	founder.WireVersion = save.LatestSupportedVersion
+	founder.AchievementsEarnedLifetime = map[string]bool{}
+	events := []save.EventWrite{}
+	request := IntentRequest{IntentID: "01986666-0600-7000-8000-000000000601"}
+	revision := save.Revision{StreamID: "01986666-1600-7000-8000-000000000001", OwnerID: "01986666-2600-7000-8000-000000000001"}
+	if err := applyFoundationTransition(active, before, state, founder, revision, request, ModeOnline, now, nil, false, &events); err != nil {
+		t.Fatal(err)
+	}
+	if len(events) != 2 || events[0].Kind != save.EventMeterBandChanged || events[1].Kind != save.EventAchievementEarned {
+		t.Fatalf("foundation event order=%+v", events)
+	}
+	if state.MeterValues["doom.probability"] != 69 || !state.AchievementsEarnedRun["achievement.first_gate"] || state.AchievementScoreRun != 4 {
+		t.Fatalf("foundation state meter=%d earned=%v score=%d", state.MeterValues["doom.probability"], state.AchievementsEarnedRun, state.AchievementScoreRun)
+	}
+	before, err = cloneReplayState(state, active.Economy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	events = nil
+	if err := applyFoundationTransition(active, before, state, founder, revision, request, ModeOnline, now, nil, false, &events); err != nil {
+		t.Fatal(err)
+	}
+	if len(events) != 0 || state.AchievementScoreRun != 4 {
+		t.Fatalf("latched transition events=%+v score=%d", events, state.AchievementScoreRun)
+	}
+}
+
+func TestFoundationTransitionBurnProofRequiresSameBatchDebit(t *testing.T) {
+	_, active := foundationTestBundles(t)
+	artifact := []byte(`{"schema_version":1,"achievements":[{"id":"achievement.burn","condition_scope":"run","condition":{"kind":"counter_at_least","counter":"tier","minimum":1},"proof":{"kind":"burn","event_kind":"gate_crossed","resource_id":"company.cash","minimum":"1e1"},"score_grant":3,"copy_key":"category.any_percent"}]}`)
+	catalog, err := achievements.LoadCatalog(artifact, FoundationAchievementRegistry(active.Economy))
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts := make(map[string][]byte, len(active.Artifacts))
+	for name, data := range active.Artifacts {
+		artifacts[name] = append([]byte(nil), data...)
+	}
+	artifacts["achievements"] = artifact
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	active.Artifacts, active.ConstantsHash, active.Achievements = artifacts, hash, catalog
+	now := time.Date(2026, 8, 4, 16, 0, 0, 0, time.UTC)
+	makeState := func() (*save.State, *save.State, *save.State) {
+		state := replayFixtureState(t, active.Economy, now)
+		state.WireVersion = save.LatestSupportedVersion
+		meterState := meters.NewState(active.Meters)
+		state.MeterBands = nil
+		state.MeterValues, state.MeterDecayRemainders, state.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+		state.AchievementsEarnedRun = map[string]bool{}
+		state.Tier = 1
+		setCash(t, state, "1e2")
+		before, cloneErr := cloneReplayState(state, active.Economy)
+		if cloneErr != nil {
+			t.Fatal(cloneErr)
+		}
+		founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+		founder.WireVersion = save.LatestSupportedVersion
+		founder.AchievementsEarnedLifetime = map[string]bool{}
+		return before, state, founder
+	}
+	request := IntentRequest{IntentID: "01986666-0600-7000-8000-000000000602"}
+	revision := save.Revision{StreamID: "01986666-1600-7000-8000-000000000002", OwnerID: "01986666-2600-7000-8000-000000000002"}
+	for _, testCase := range []struct {
+		name       string
+		debit      bool
+		withEvent  bool
+		wantEarned bool
+	}{{"complete-proof", true, true, true}, {"missing-debit", false, true, false}, {"missing-event", true, false, false}} {
+		t.Run(testCase.name, func(t *testing.T) {
+			before, state, founder := makeState()
+			if testCase.debit {
+				setCash(t, state, "9e1")
+			}
+			events := []save.EventWrite{}
+			if testCase.withEvent {
+				events = append(events, save.EventWrite{Kind: save.EventGateCrossed, IntentID: request.IntentID})
+			}
+			if err := applyFoundationTransition(active, before, state, founder, revision, request, ModeOnline, now, nil, false, &events); err != nil {
+				t.Fatal(err)
+			}
+			if state.AchievementsEarnedRun["achievement.burn"] != testCase.wantEarned {
+				t.Fatalf("earned=%v events=%+v", state.AchievementsEarnedRun, events)
+			}
+		})
 	}
 }

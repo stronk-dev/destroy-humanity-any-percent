@@ -57,6 +57,8 @@ const (
 	EventFactionStockSaturated     EventKind = "faction_stock_saturated"
 	EventGuildTitheAccrued         EventKind = "guild_tithe_accrued"
 	EventGuildActivityEvaluated    EventKind = "guild_activity_evaluated"
+	EventMeterBandChanged          EventKind = "meter_band_changed.v1"
+	EventAchievementEarned         EventKind = "achievement_earned.v1"
 )
 
 // AllEventKinds is the closed structural authority consumed by catalog
@@ -70,7 +72,8 @@ var AllEventKinds = [...]EventKind{
 	EventGeneratorPurchased, EventGuildActivityEvaluated, EventGuildTitheAccrued,
 	EventIncorporated, EventInvariantReported, EventRouteExecuted,
 	EventRouteHintPurchased, EventRouteKnowledgeGranted, EventRunEnded,
-	EventRunStarted, EventUpgradePurchased,
+	EventRunStarted, EventUpgradePurchased, EventMeterBandChanged,
+	EventAchievementEarned,
 }
 
 type EventWrite struct {
@@ -448,6 +451,36 @@ func validateEventPayload(event EventWrite) error {
 		}
 		if value, err := decimal.ParseCanonical(payload.Cost); err != nil || !value.Gt(decimal.Zero) {
 			return fmt.Errorf("%w: invalid upgrade_purchased cost", ErrInvalidStream)
+		}
+	case EventMeterBandChanged:
+		var payload struct {
+			RunID       routeRunID `json:"run_id"`
+			MeterID     string     `json:"meter_id"`
+			FromBand    string     `json:"from_band"`
+			ToBand      string     `json:"to_band"`
+			Direction   string     `json:"direction"`
+			ValueBefore int        `json:"value_before"`
+			ValueAfter  int        `json:"value_after"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !validRouteRunID(payload.RunID) ||
+			!mechanicalIDPattern.MatchString(payload.MeterID) || !mechanicalIDPattern.MatchString(payload.FromBand) ||
+			!mechanicalIDPattern.MatchString(payload.ToBand) || payload.FromBand == payload.ToBand ||
+			(payload.Direction != "up" && payload.Direction != "down") || payload.ValueBefore < 0 || payload.ValueBefore > 100 ||
+			payload.ValueAfter < 0 || payload.ValueAfter > 100 || payload.Direction == "up" && payload.ValueAfter <= payload.ValueBefore ||
+			payload.Direction == "down" && payload.ValueAfter >= payload.ValueBefore {
+			return fmt.Errorf("%w: invalid meter_band_changed.v1 payload", ErrInvalidStream)
+		}
+	case EventAchievementEarned:
+		var payload struct {
+			RunID          routeRunID `json:"run_id"`
+			AchievementID  string     `json:"achievement_id"`
+			ConditionScope string     `json:"condition_scope"`
+			ScoreGrant     int64      `json:"score_grant"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !validRouteRunID(payload.RunID) ||
+			!mechanicalIDPattern.MatchString(payload.AchievementID) || (payload.ConditionScope != "run" && payload.ConditionScope != "career") ||
+			payload.ScoreGrant < 1 || payload.ScoreGrant > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid achievement_earned.v1 payload", ErrInvalidStream)
 		}
 	case EventInvariantReported:
 		var payload struct {

@@ -294,6 +294,17 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 		if err := afterPrestigeTransitionResolved(catalogs.Prestige, catalogs.Economy, request, state, revision, now, &decision, founder, declined); err != nil {
 			return LoggedTransition{}, err
 		}
+		if catalogs.foundationsActive() && wire.Version >= 4 {
+			if err := validateFoundationHookInputs(catalogs, state, founder); err != nil {
+				return LoggedTransition{}, err
+			}
+			if err := applyFoundationTransition(catalogs, stateBefore, state, founder, revision, request, wire.EvaluationMode, now, contributions, false, &decision.Events); err != nil {
+				return LoggedTransition{}, err
+			}
+			if err := refreshAppliedSnapshot(&decision, state, catalogs.Economy); err != nil {
+				return LoggedTransition{}, err
+			}
+		}
 	}
 	return LoggedTransition{State: state, Outcome: decision.Outcome, Receipt: decision.Receipt, Events: decision.Events}, nil
 }
@@ -438,6 +449,14 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 			return LoggedExitTransition{}, err
 		}
 		return LoggedExitTransition{}, fmt.Errorf("%w: selected exit type", ErrInvalidReplayInputs)
+	}
+	if catalogs.foundationsActive() && wire.Version >= 4 {
+		if err := validateFoundationHookInputs(catalogs, company, founder); err != nil {
+			return LoggedExitTransition{}, err
+		}
+		if err := applyFoundationTransition(catalogs, companyBefore, company, founder, revision, request, wire.EvaluationMode, now, contributions, true, &prefix); err != nil {
+			return LoggedExitTransition{}, err
+		}
 	}
 	founderRevision := save.Revision{StreamID: "", OwnerID: wire.Command.FounderID, Number: resolved.FounderCarry.FounderRevision,
 		ConstantsHash: catalogs.ConstantsHash}

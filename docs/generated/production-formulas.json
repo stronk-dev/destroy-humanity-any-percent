@@ -1,5 +1,5 @@
 {
-  "schema_version": 6,
+  "schema_version": 7,
   "production_rate": "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
   "multiplier_slot_order": [
     "upgrades",
@@ -12,7 +12,7 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "515dd59f3880d7c083a2ab11951d643c227eddbab91c4b00fcc7ce05d3730823",
+  "source_fingerprint": "1858e859ebb5ebd9aadf3b6a73c6ccca1ca63d1e3bc550a962b7aee4b5e6ab3c",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
@@ -66,5 +66,13 @@
     "provision_tick_ms": 0,
     "provisioned_hardcaps": [],
     "synergy_pools": []
+  },
+  "meters": {
+    "hook_order": "decay, then newly emitted ledger facts, then active non-neutral contribution inputs; clamp once; derive one prior-to-final band event; achievements evaluate after meters",
+    "attended_step": "whole = floor((rate_per_attended_hour * attended_ms + remainder) / 3600000); remainder = modulus; offline attended_ms = 0",
+    "decay": "move linearly toward declared target by whole attended steps; clear remainder on target saturation",
+    "ledger_fact_input": "apply declared delta once when fact_kind enters the committed Company fact set in this transition",
+    "contribution_input": "integrate declared delta_per_attended_hour only while (slot, source_id) is committed and non-neutral",
+    "band_events": "derive bands from numeric values; emit at most one meter_band_changed.v1 per changed meter in meter_id byte order"
   }
 }

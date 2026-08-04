@@ -1,14 +1,14 @@
 import Decimal from "break_infinity.js";
 
 import { loadAchievementCatalog, type AchievementCatalog, type AchievementRegistry } from "./achievements/catalog";
-import { achievementScore } from "./achievements/evaluate";
+import { achievementScore, newlyEarned, type AchievementObservation } from "./achievements/evaluate";
 import { enclosureIndex, parseCommonsCatalog, type CommonsCatalog } from "./commons";
 import { COPY_KEYS } from "./copy";
 import { ladderSourceId, manualRoleSourceId, parseCatalog, subProgressValue, validateCatalogGateReferences, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
 import { parseFactionCatalog, type FactionCatalog } from "./faction";
 import { parseGuildCatalog, type GuildCatalog } from "./guild";
 import { loadMeterCatalog, validateMeterResourceSeparation, type MeterCatalog } from "./meters/catalog";
-import { newRunMeterState, validateMeterState } from "./meters/transition";
+import { advanceMeters, contributionKey as meterContributionKey, newRunMeterState, validateMeterState } from "./meters/transition";
 import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
 import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
 import { discountedRequirements, evaluatePredicate, parseRoutesCatalog, type RouteContext, type RoutesCatalog } from "./routes";
@@ -94,9 +94,10 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
 }
 
 const REPLAY_EVENT_KINDS = Object.freeze([
+	"achievement_earned.v1",
   "compact_cascade_started", "compact_health_band_changed", "compact_left", "compact_recovered", "compact_recruitment_offered", "compact_sampled", "compact_signed", "compact_tithe_raised", "compensation",
   "exit_offer_declined", "exit_offer_expired", "exit_offer_spawned", "faction_stock_saturated", "founder_advanced", "gate_crossed", "generator_purchased", "guild_activity_evaluated", "guild_tithe_accrued",
-  "incorporated", "invariant_reported", "route_executed", "route_hint_purchased", "route_knowledge_granted", "run_ended", "run_started", "upgrade_purchased",
+  "incorporated", "invariant_reported", "meter_band_changed.v1", "route_executed", "route_hint_purchased", "route_knowledge_granted", "run_ended", "run_started", "upgrade_purchased",
 ] as const);
 
 function foundationAchievementRegistry(catalog: EconomyCatalog): AchievementRegistry {
@@ -364,6 +365,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
     events.push(event("invariant_reported", request.intent_id, { detail: report.detail, invariant_kind: report.kind }));
   }
   await afterPrestigeTransition(state, catalogs.prestige, request, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
+  if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, stateBefore, state, founderCarry!, wire.command, request, wire.evaluation_mode, wire.evaluated_at_ms, contributions, false, events);
   return applied(state, catalogs.economy, request.intent_id, revision + 1, appliedCount, before, events, invariants);
   } catch (error) { restoreReplaySnapshot(state, stateBefore); throw error; }
 }
@@ -427,6 +429,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
     if (promised) terms = promiseTerms(promised.payout_preview, applyTermsModifier(terms, promised.market_modifier_ppm));
   }
   if (resolved.selected_exit_type !== exitType) throw new RangeError("selected exit type mismatch");
+  if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, companyBefore, company, founder, wire.command, request, wire.evaluation_mode, wire.evaluated_at_ms, contributions, true, prefix);
   return finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, next);
   } catch (error) { restoreReplaySnapshot(company, companyBefore); throw error; }
 }
@@ -590,6 +593,41 @@ function runHooks(state: ReplayState, catalogs: ReplayCatalogBundle, command: Re
   if (accrual.contributions.some((value) => value.source_id === "guild.stock_consumption")) { const numerator = BigInt(result.progressDeltaPpm) * BigInt(catalogs.guilds.guildTithePpm) + BigInt(state.guildTitheCarryPpm); const xp = Number(numerator / 1_000_000n); state.guildTitheCarryPpm = Number(numerator % 1_000_000n); events.push(event(xp === 0 ? "guild_activity_evaluated" : "guild_tithe_accrued", "", { founder_id: command.founder_id, progress_delta_ppm: result.progressDeltaPpm, run_id: { company_stream_id: command.company_stream_id, run_seq: state.runSeq }, xp_delta: xp })); }
   if (state.compactMember && result.productionMs > 0) { if (accrual.commons_weight_ppm === null) throw new RangeError("missing commons weight"); const enclosure = enclosureIndex(catalogs.commons, accrual.contributions.map((value) => ({ sourceId: value.source_id, slot: value.slot, factor: value.factor }))); const compliance = compliancePpm(state.compactTithePpm, catalogs.commons.defaultTithePpm, enclosure); appendCompactSamples(state, state.evaluatedThroughMs - result.productionMs, state.evaluatedThroughMs, compliance, catalogs.commons.solidarityWindowMs); let capacity = new Decimal(0); for (const change of result.changes) capacity = capacity.add(parseCanonical(change.delta).mul(state.compactTithePpm).div(1_000_000)); events.push(event("compact_sampled", "", { capacity: canonicalString(quantize(capacity)), compliance_ppm: compliance, enclosure, founder_id: command.founder_id, run_id: { company_stream_id: command.company_stream_id, run_seq: state.runSeq }, sampled_ms: result.productionMs, solidarity_ppm: state.compactSolidarityPpm, weight_ppm: accrual.commons_weight_ppm })); }
   return events;
+}
+
+function applyFoundationTransition(catalogs: ReplayCatalogBundle, before: ReplayState, state: ReplayState, founder: FounderCarry, command: ReplayCommand, request: Intent, mode: "online" | "offline", nowMs: number, contributions: readonly ReplayContribution[], terminal: boolean, events: ReplayEvent[]): void {
+  if (!foundationsActive(catalogs) || state.wireVersion !== 16) throw new RangeError("invalid foundation hook inputs");
+  const attendedMs = mode === "online" ? state.evaluatedThroughMs - before.evaluatedThroughMs : 0;
+  if (!Number.isSafeInteger(attendedMs) || attendedMs < 0 || attendedMs > 86_400_000) throw new RangeError("invalid foundation attended time");
+  const newFacts = new Set([...state.ledgerFactKinds].filter((fact) => !before.ledgerFactKinds.has(fact)));
+  const activeContributions = new Set(contributions.filter((value) => !parseCanonical(value.factor).eq(1)).map((value) => meterContributionKey(value.slot, value.source_id)));
+  const changes = advanceMeters(catalogs.meters, { values: state.meterValues, decayRemainders: state.meterDecayRemainders, inputRemainders: state.meterInputRemainders }, { attendedMs, newFactKinds: newFacts, activeContributions });
+  const runId = { company_stream_id: command.company_stream_id, run_seq: state.runSeq };
+  for (const change of changes) events.push(event("meter_band_changed.v1", request.intent_id, { run_id: runId, meter_id: change.meterId, from_band: change.fromBand, to_band: change.toBand, direction: change.direction, value_before: change.valueBefore, value_after: change.valueAfter }));
+
+  const run: AchievementObservation = { facts: state.ledgerFactKinds, counters: { generators_purchased_total: state.generatorPurchasedTotal, tier: state.tier }, exitCount: 0, generators: state.generators };
+  const careerFacts = new Set(founder.ledger_fact_kinds);
+  let ageMs = founder.age_ms; let exitCount = founder.exit_history_count;
+  if (terminal) {
+    const attended = attendedMS(state, nowMs);
+    if (ageMs > MAX_EXACT_INTEGER - attended) throw new RangeError("Founder age overflow");
+    ageMs += attended; exitCount++;
+    for (const fact of state.ledgerFactKinds) careerFacts.add(fact);
+  }
+  const career: AchievementObservation = { facts: careerFacts, counters: { age_ms: ageMs, notoriety: founder.notoriety }, exitCount, generators: {} };
+  const earned = newlyEarned(catalogs.achievements, state.achievementsEarnedRun, new Set(founder.achievements_earned_lifetime), run, career)
+    .filter((definition) => achievementProofSatisfied(definition, before, state, events));
+  for (const definition of earned) state.achievementsEarnedRun.add(definition.id);
+  state.achievementScoreRun = achievementScore(catalogs.achievements, state.achievementsEarnedRun);
+  for (const definition of earned) events.push(event("achievement_earned.v1", request.intent_id, { run_id: runId, achievement_id: definition.id, condition_scope: definition.conditionScope, score_grant: definition.scoreGrant }));
+}
+
+function achievementProofSatisfied(definition: AchievementCatalog["definitions"][number], before: ReplayState, after: ReplayState, events: readonly ReplayEvent[]): boolean {
+  const proof = definition.proof;
+  if (proof.kind !== "burn") return true;
+  if (!events.some((value) => value.kind === proof.eventKind)) return false;
+  const prior = before.balances[proof.resourceId]; const current = after.balances[proof.resourceId];
+  return prior !== undefined && current !== undefined && parseCanonical(prior).sub(parseCanonical(current)).gte(parseCanonical(proof.minimum));
 }
 
 function buyGenerator(state: ReplayState, catalog: EconomyCatalog, request: Intent, invariants: ReplayInvariant[]): { count: number; rejection?: [string, string] } {
@@ -920,7 +958,12 @@ function recordOfflineSpan(state: ReplayState, fromMs: number, toMs: number, cei
 function compliancePpm(tithe: number, defaultTithe: number, enclosure: string): number { if (defaultTithe <= 0) return 0; const titheRatio = Decimal.min(1, new Decimal(tithe).div(defaultTithe)); const clean = new Decimal(1).sub(parseCanonical(enclosure)); return Math.max(0, Math.min(1_000_000, Math.floor(titheRatio.mul(clean).mul(1_000_000).toNumber()))); }
 function appendCompactSamples(state: ReplayState, start: number, end: number, compliance: number, windowMs: number): void { while (start < end) { const hour = Math.floor(start / 3_600_000) * 3_600_000; const boundary = Math.min(end, hour + 3_600_000); const covered = boundary - start; const last = state.compactSamples.at(-1); if (last?.hourStartMs === hour) { const numerator = BigInt(last.compliancePpm) * BigInt(last.coveredMs) + BigInt(compliance) * BigInt(covered); last.coveredMs += covered; last.compliancePpm = Number(numerator / BigInt(last.coveredMs)); } else state.compactSamples.push({ hourStartMs: hour, compliancePpm: compliance, coveredMs: covered }); start = boundary; } const cutoff = Math.floor((end - windowMs) / 3_600_000) * 3_600_000; state.compactSamples = state.compactSamples.filter((value) => value.hourStartMs >= cutoff); const numerator = state.compactSamples.reduce((sum, value) => sum + BigInt(value.compliancePpm) * BigInt(value.coveredMs), 0n); state.compactSolidarityPpm = Math.max(0, Math.min(1_000_000, Number(numerator / BigInt(windowMs)))); }
 
-function wireSnapshot(state: ReplayState, catalog: EconomyCatalog): unknown { return { balances: sortedRecord(state.balances), collapsed_offline_ms: state.collapsedOfflineMs, compact_member: state.compactMember, compact_solidarity_ppm: state.compactSolidarityPpm, compact_tithe_ppm: state.compactTithePpm, compute_credit_ms: state.computeCreditMs, consumed_stock_units: state.consumedStockUnits, doctrines_by_transition: sortedRecord(state.doctrinesByTransition), evaluated_through: rfc3339(state.evaluatedThroughMs), faction_id: state.factionId || null, gates_crossed: sortedRecord(state.gatesCrossed), generators: sortedRecord(state.generators), generators_provisioned: sortedRecord(state.generatorsProvisioned), generators_purchased_total: state.generatorPurchasedTotal, guild_boundary_guild_id: state.guildBoundaryGuildId || null, guild_boundary_seq: state.guildBoundarySeq, guild_consumed_window_units: state.guildConsumedWindow, guild_tithe_carry_ppm: state.guildTitheCarryPpm, hints_unlocked: [...state.hintsUnlocked].sort(byteCompare), incorporated_at_ms: state.incorporatedAtMs, ledger_fact_kinds: [...state.ledgerFactKinds].sort(byteCompare), lifetime_value: state.lifetimeValue, manual_token_milli: state.manualTokenMilli, manual_token_refilled_at: rfc3339(state.manualTokenRefilledAtMs), meter_bands: state.wireVersion === 16 ? null : sortedRecord(state.meterBands), offer_state: state.offerState ? { expires_at_ms: state.offerState.expiresAtMs, exit_type: state.offerState.exitType, offer_id: state.offerState.offerId, spawned_at_ms: state.offerState.spawnedAtMs, terms_json: state.offerState.terms } : null, offline_spans: state.offlineSpans.map((value) => ({ from_ms: value.fromMs, to_ms: value.toMs })), provision_remainders_ppm: sortedRecord(state.provisionRemaindersPpm), provisioned_hardcaps: provisionedHardcaps(catalog), region_traits: [...state.regionTraits].sort(byteCompare), route_knowledge_balance: state.routeKnowledgeBalance, run_pre_timer: state.runPreTimer, run_seq: state.runSeq, run_started_at_ms: state.runStartedAtMs, stock_progress_ms: state.stockProgressMs, stock_rate_remainder_ppm: state.stockRateRemainderPpm, stock_resource: state.factionStockResource || null, stock_units: state.stockUnits, structure_id: state.structureId, tier: state.tier, upgrades_owned: [...state.upgradesOwned].sort(byteCompare) }; }
+function wireSnapshot(state: ReplayState, catalog: EconomyCatalog): unknown {
+  const snapshot: Record<string, unknown> = { balances: sortedRecord(state.balances), collapsed_offline_ms: state.collapsedOfflineMs, compact_member: state.compactMember, compact_solidarity_ppm: state.compactSolidarityPpm, compact_tithe_ppm: state.compactTithePpm, compute_credit_ms: state.computeCreditMs, consumed_stock_units: state.consumedStockUnits, doctrines_by_transition: sortedRecord(state.doctrinesByTransition), evaluated_through: rfc3339(state.evaluatedThroughMs), faction_id: state.factionId || null, gates_crossed: sortedRecord(state.gatesCrossed), generators: sortedRecord(state.generators), generators_provisioned: sortedRecord(state.generatorsProvisioned), generators_purchased_total: state.generatorPurchasedTotal, guild_boundary_guild_id: state.guildBoundaryGuildId || null, guild_boundary_seq: state.guildBoundarySeq, guild_consumed_window_units: state.guildConsumedWindow, guild_tithe_carry_ppm: state.guildTitheCarryPpm, hints_unlocked: [...state.hintsUnlocked].sort(byteCompare), incorporated_at_ms: state.incorporatedAtMs, ledger_fact_kinds: [...state.ledgerFactKinds].sort(byteCompare), lifetime_value: state.lifetimeValue, manual_token_milli: state.manualTokenMilli, manual_token_refilled_at: rfc3339(state.manualTokenRefilledAtMs), offer_state: state.offerState ? { expires_at_ms: state.offerState.expiresAtMs, exit_type: state.offerState.exitType, offer_id: state.offerState.offerId, spawned_at_ms: state.offerState.spawnedAtMs, terms_json: state.offerState.terms } : null, offline_spans: state.offlineSpans.map((value) => ({ from_ms: value.fromMs, to_ms: value.toMs })), provision_remainders_ppm: sortedRecord(state.provisionRemaindersPpm), provisioned_hardcaps: provisionedHardcaps(catalog), region_traits: [...state.regionTraits].sort(byteCompare), route_knowledge_balance: state.routeKnowledgeBalance, run_pre_timer: state.runPreTimer, run_seq: state.runSeq, run_started_at_ms: state.runStartedAtMs, stock_progress_ms: state.stockProgressMs, stock_rate_remainder_ppm: state.stockRateRemainderPpm, stock_resource: state.factionStockResource || null, stock_units: state.stockUnits, structure_id: state.structureId, tier: state.tier, upgrades_owned: [...state.upgradesOwned].sort(byteCompare) };
+  if (state.wireVersion === 16) Object.assign(snapshot, { meter_values: sortedRecord(state.meterValues), meter_decay_remainders: sortedRecord(state.meterDecayRemainders), meter_input_remainders: sortedRecord(state.meterInputRemainders), achievements_earned_run: [...state.achievementsEarnedRun].sort(byteCompare), achievement_score_run: state.achievementScoreRun });
+  else snapshot.meter_bands = sortedRecord(state.meterBands);
+  return snapshot;
+}
 function provisionedHardcaps(catalog: EconomyCatalog): Record<string, { count: number; reason_key: string }> { return Object.fromEntries(catalog.generatorClasses.filter((value) => value.provisionedHardcap !== null).sort((a, b) => byteCompare(a.id, b.id)).map((value) => [value.id, { count: value.provisionedHardcap!.count, reason_key: value.provisionedHardcap!.reasonKey }])); }
 export function canonicalJSONString(value: unknown): string { if (value === null || typeof value !== "object") return JSON.stringify(value); if (Array.isArray(value)) return `[${value.map(canonicalJSONString).join(",")}]`; const object = value as Record<string, unknown>; return `{${Object.keys(object).sort(byteCompare).map((key) => `${JSON.stringify(key)}:${canonicalJSONString(object[key])}`).join(",")}}`; }
 

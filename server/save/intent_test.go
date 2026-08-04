@@ -57,6 +57,26 @@ func TestValidateUpgradePurchasedEventPayload(t *testing.T) {
 	}
 }
 
+func TestValidateFoundationEventPayloads(t *testing.T) {
+	run := `{"company_stream_id":"11111111-1111-4111-8111-111111111111","run_seq":1}`
+	valid := []EventWrite{
+		{Kind: EventMeterBandChanged, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"run_id":` + run + `,"meter_id":"doom.probability","from_band":"low","to_band":"high","direction":"up","value_before":69,"value_after":71}`)},
+		{Kind: EventAchievementEarned, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"run_id":` + run + `,"achievement_id":"achievement.first_gate","condition_scope":"run","score_grant":4}`)},
+	}
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: valid}, testIntentID); err != nil {
+		t.Fatal(err)
+	}
+	invalid := []EventWrite{
+		{Kind: EventMeterBandChanged, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"run_id":` + run + `,"meter_id":"doom.probability","from_band":"low","to_band":"high","direction":"down","value_before":69,"value_after":71}`)},
+		{Kind: EventAchievementEarned, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"run_id":` + run + `,"achievement_id":"achievement.first_gate","condition_scope":"founder","score_grant":4}`)},
+	}
+	for _, event := range invalid {
+		if err := validateEventPayload(event); !errors.Is(err, ErrInvalidStream) {
+			t.Fatalf("invalid event %s: %v", event.Kind, err)
+		}
+	}
+}
+
 func TestValidateRouteEventPayloads(t *testing.T) {
 	run := `{"company_stream_id":"11111111-1111-4111-8111-111111111111","run_seq":1}`
 	events := []EventWrite{

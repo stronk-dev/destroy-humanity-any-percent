@@ -1,7 +1,8 @@
 # Meters
 
-The implemented Meters foundation provides the strict catalog boundary and a pure deterministic
-transition kernel in Go and TypeScript; no production meter artifact has been minted yet.
+The implemented Meters foundation provides the strict catalog boundary and a deterministic
+transition hook in the shared Go/TypeScript replay kernels; no production meter artifact has been
+minted yet.
 
 Phase A recognizes exactly eleven run-scoped Company values in the integer range 0–100: Standing
 and Grievance for users, employees, regulators, press, and investors, plus `doom.probability`.
@@ -29,6 +30,8 @@ Save v16 activates Meters and Achievements together only on a new-run boundary w
 contains both artifacts. Active Company state carries complete meter value and remainder maps;
 legacy runs keep the v14 placeholder bands and never read deploy-current catalogs. Go and
 TypeScript replay loaders validate the paired artifact identity, exact state maps, Notoriety
-reseed, active route context, and byte-identical preservation across ordinary and terminal
-transitions. The live meter transition/event hook remains pending until the production artifact
-and its literal balance rows are minted.
+reseed, active route context, and byte-identical ordinary and terminal transitions. Active v4
+commands execute decay and causal inputs after the existing production hooks, emit exact
+`meter_band_changed.v1` events in meter-ID order, and expose authoritative meter state in receipts.
+The formula artifact publishes the transition order and carried arithmetic. Historical v3 rows
+retain their pre-hook semantics. Literal balance rows and the production epoch mint remain pending.

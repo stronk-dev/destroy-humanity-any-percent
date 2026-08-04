@@ -557,3 +557,21 @@ three findings.
 - Kernel version advances to `0.3.22`; the shared Go-authored replay corpus was regenerated and
   normal root Go/client suites pass. The meter and achievement transition hooks remain the next
   semantic landing.
+
+## 2026-08-04 — live/replay Meters and Achievements hook
+
+- Added the post-action foundation hook to both replay kernels. Current active v4 transitions run
+  Meters after the existing production/accrual chain and Achievements after Meters; rejected,
+  offline-attended, historical v3, and pre-foundation transitions do not gain new semantics.
+- Meter context is derived solely from committed state changes and frozen contributions: newly
+  entered ledger facts, non-neutral `(slot,source_id)` bindings, and online attended milliseconds.
+  Exact `meter_band_changed.v1` events carry prior/final values and bands in catalog byte order.
+- The Go-authored active corpus now crosses a decay band and earns an achievement in one ordinary
+  command; TypeScript asserts the exact Meter→Achievement order and byte-identical receipt/state.
+- Receipt snapshots now expose v16 meter/achievement authorities instead of the superseded
+  `meter_bands` placeholder. Migration `00048` admits both new event kinds at the SQL boundary.
+- The generated formula artifact advances to schema v7 and fingerprints the transition authority,
+  carried arithmetic, causal input rules, and hook order. Kernel version is `0.3.23`.
+- Verification at the landing boundary used only repository-root targets: `make test`,
+  `make test-save-integration`, and the focused Go/client suites all pass. The integration run
+  exercised the append-only migration against real Postgres.

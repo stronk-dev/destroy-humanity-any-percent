@@ -17,6 +17,7 @@ import (
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/guild"
+	"cloud-clicker/server/meters"
 	"cloud-clicker/server/multiplier"
 )
 
@@ -29,6 +30,16 @@ type formulaArtifact struct {
 	Commons             commonsFormula    `json:"commons"`
 	Guild               guildFormula      `json:"guild"`
 	PurchasableContent  contentFormula    `json:"purchasable_content"`
+	Meters              meterFormula      `json:"meters"`
+}
+
+type meterFormula struct {
+	HookOrder         string `json:"hook_order"`
+	AttendedStep      string `json:"attended_step"`
+	Decay             string `json:"decay"`
+	LedgerFactInput   string `json:"ledger_fact_input"`
+	ContributionInput string `json:"contribution_input"`
+	BandEvents        string `json:"band_events"`
 }
 
 type contentFormula struct {
@@ -130,6 +141,7 @@ var formulaAuthorities = []authoritySpec{
 	{label: "production.countPPMFactor", path: "production/content.go", kind: authorityFunction, symbol: "countPPMFactor"},
 	{label: "production.synergyFactor", path: "production/content.go", kind: authorityFunction, symbol: "synergyFactor"},
 	{label: "production.materializeProvisionBoundaryWithPolicy", path: "production/content.go", kind: authorityFunction, symbol: "materializeProvisionBoundaryWithPolicy"},
+	{label: "production.applyFoundationTransition", path: "production/foundation_transition.go", kind: authorityFunction, symbol: "applyFoundationTransition"},
 	{label: "faction.AccrualHook.AfterAccrual", path: "faction/hook.go", kind: authorityMethod, symbol: "AfterAccrual"},
 	{label: "multiplier.Order", path: "multiplier/contribution.go", kind: authorityValue, symbol: "Order"},
 	{label: "multiplier.OrderedSourceIDs", path: "multiplier/contribution.go", kind: authorityFunction, symbol: "OrderedSourceIDs"},
@@ -142,6 +154,8 @@ var formulaAuthorities = []authoritySpec{
 	{label: "guild.HealthPPM", path: "guild/projector.go", kind: authorityFunction, symbol: "HealthPPM"},
 	{label: "guild.Clear", path: "guild/exchange.go", kind: authorityFunction, symbol: "Clear"},
 	{label: "guild.ApplySettlements", path: "guild/clearing_store.go", kind: authorityFunction, symbol: "ApplySettlements"},
+	{label: "meters.Advance", path: "meters/transition.go", kind: authorityFunction, symbol: "Advance"},
+	{label: "meters.wholeSteps", path: "meters/transition.go", kind: authorityFunction, symbol: "wholeSteps"},
 }
 
 func main() {
@@ -184,7 +198,7 @@ func main() {
 		panic(err)
 	}
 	artifact := formulaArtifact{
-		SchemaVersion:       6,
+		SchemaVersion:       7,
 		ProductionRate:      "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
 		MultiplierSlotOrder: append([]multiplier.Slot(nil), multiplier.Order[:]...),
 		WithinSlotOrder:     multiplier.WithinSlotOrder,
@@ -230,6 +244,14 @@ func main() {
 			ClearingIntervalMS: guildCatalog.ClearingIntervalMS,
 		},
 		PurchasableContent: contentFormulaFor(economyCatalog),
+		Meters: meterFormula{
+			HookOrder:         "decay, then newly emitted ledger facts, then active non-neutral contribution inputs; clamp once; derive one prior-to-final band event; achievements evaluate after meters",
+			AttendedStep:      fmt.Sprintf("whole = floor((rate_per_attended_hour * attended_ms + remainder) / %d); remainder = modulus; offline attended_ms = 0", meters.MillisPerHour),
+			Decay:             "move linearly toward declared target by whole attended steps; clear remainder on target saturation",
+			LedgerFactInput:   "apply declared delta once when fact_kind enters the committed Company fact set in this transition",
+			ContributionInput: "integrate declared delta_per_attended_hour only while (slot, source_id) is committed and non-neutral",
+			BandEvents:        "derive bands from numeric values; emit at most one meter_band_changed.v1 per changed meter in meter_id byte order",
+		},
 	}
 	data, err := json.MarshalIndent(artifact, "", "  ")
 	if err != nil {

@@ -416,3 +416,20 @@ age, notoriety, facts, and exit count to every active-run resolved input. Curren
 v4; historical active v3 rows retain their pinned behavior and pre-foundation v2 rows remain
 loadable. This is an input-ownership closure, not a new achievement mechanic. Kernel version is
 `0.3.22`; normal root Go/client suites and the regenerated shared replay corpus pass.
+
+## 2026-08-04 — deterministic earning hook and proof enforcement
+
+- Active replay-inputs v4 now evaluate achievements once after the complete applied transition,
+  after Meters, from one run/career snapshot. Definitions stage simultaneously in byte order;
+  lifetime latches suppress repeats; terminal observations include the settling run's attended
+  age, facts, and Exit count before atomic Founder settlement.
+- Burn proofs are executable rather than labels: the declared event must exist in the same batch
+  and the declared resource must have a debit at least equal to the canonical minimum. Dedicated
+  tests discriminate missing-event and missing-debit cases.
+- `achievement_earned.v1` is exact-key validated in persistence and admitted by migration `00048`.
+  The shared Go-authored ordinary/terminal corpus proves earning, event order, lifetime settlement,
+  and next-catalog score retuning in TypeScript. Active v16 receipts now include the run earned set
+  and derived score. Kernel version advances to `0.3.23`.
+- Verification at the landing boundary used only repository-root targets: `make test` and
+  `make test-save-integration` pass, alongside the focused Go/client suites. The implementation
+  remains unarchived until an independent review covers the exact committed range.

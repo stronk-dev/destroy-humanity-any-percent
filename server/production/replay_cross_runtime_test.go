@@ -317,7 +317,7 @@ func stringArtifacts(source map[string][]byte) map[string]string {
 func makeActiveFoundationReplayFixture(t *testing.T, now time.Time) crossRuntimeBundleCase {
 	t.Helper()
 	_, catalogs := foundationTestBundles(t)
-	state := replayFixtureState(t, catalogs.Economy, now)
+	state := replayFixtureState(t, catalogs.Economy, now.Add(-time.Hour))
 	state.WireVersion = save.LatestSupportedVersion
 	meterState, err := meters.NewRunState(catalogs.Meters, 17)
 	if err != nil {
@@ -325,15 +325,15 @@ func makeActiveFoundationReplayFixture(t *testing.T, now time.Time) crossRuntime
 	}
 	state.MeterBands = nil
 	state.MeterValues, state.MeterDecayRemainders, state.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	state.MeterValues["doom.probability"] = 71
 	state.AchievementsEarnedRun = map[string]bool{}
-	state.Tier = 2
-	setCash(t, state, "1e10")
+	state.Tier = 1
 	preState := mustEncodeState(t, state)
-	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0400-7000-8000-000000000401","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`))
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0400-7000-8000-000000000401","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`))
 	if err != nil {
 		t.Fatal(err)
 	}
-	definition := catalogs.Achievements.Definitions[0]
+	definition := catalogs.Achievements.Definitions[1]
 	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1,
 		AchievementsEarnedLifetime: []string{definition.ID}, AchievementScoreLifetime: definition.ScoreGrant}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1400-7000-8000-000000000001", FounderID: "01986666-2400-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
