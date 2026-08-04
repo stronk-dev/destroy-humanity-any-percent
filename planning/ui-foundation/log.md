@@ -31,3 +31,11 @@ does not expose a second contradictory implementation path.
 What held: the status, plan, and log correctly block all implementation on the missing theme token
 matrix/era values, notation package version/options/golden strings, and accessibility engine/version.
 No dependency or presentation choice was invented in this range.
+
+## 2026-08-04 — ruled-text reconciliation
+
+Removed the four stale normative paths identified by independent review: the withdrawn
+`key@era_2006` grammar, `era_skins`/untyped unlock references, the Storybook option, and the
+unobservable `$derived` acceptance assertion. UF3–UF5 and AC4 now state only the C1–C8 rulings.
+C9–C11 remain the sole implementation blockers; no presentation literal or dependency choice was
+invented while reconciling existing decisions.

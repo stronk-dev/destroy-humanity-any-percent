@@ -50,19 +50,15 @@ carry, capped-at-cap, and sub-visible ongoing production.
 provenance verified by the Copy Pipeline. There is no second `key@era` grammar.
 
 
-`t(copy_key, params)` resolving from the copy catalog (the content-pipeline artifact): missing
-key renders the key itself loudly in dev, fails CI via a completeness check against catalog-
-declared `copy_key` fields; params are typed; era-variant copy supported (`key@era_2006`
-fallback chain). Zero string literals in components — lint-enforced, same pattern as the
-combat/wire boundaries. Statistics carry provenance tags the lint verifies against research
-files' verify-lists (design law made mechanical).
-
 ### UF4 — Navigation & surface shell
 
-A closed surface registry (`{surface_id, mount, era_skins, unlock_condition_ref}`): tabs/panels
-register; the shell owns routing, per-tab `$derived` subscription binding (the tech-stack rule
-becomes infrastructure instead of discipline), and lazy mount/unmount. Unlock conditions are
-REFERENCES to catalog facts (evaluated from shell state) — the UI never invents gating logic.
+A closed surface registry row is `{surface_id, mount_id, unlock:{kind:"always"}|
+{kind:"fact_equals",fact_id,value}}`. Unlocks reference committed shell-state facts only;
+unknown facts reject against the authoritative snapshot manifest. Rows order bytewise by
+`surface_id`; duplicate IDs and mounts reject. The shell owns routing and exactly one active
+surface subscription handle, disposing it before lazily mounting the next surface. Inactive
+surfaces are unmounted and receive zero callbacks. Theme tokens style every surface; there is no
+per-surface `era_skins` path.
 
 ### UF5 — The component law + harness
 
@@ -76,8 +72,9 @@ membership — the same fact vocabulary the shell already holds), evaluated by t
 UI-invented logic; the `ShellTab` union grows to the registered surface set.
 
 Wire-only DATA inputs (decoded envelopes, shell state, copy keys) enforced by import-boundary lint;
-a component harness (Storybook-equivalent or a bespoke fixture page — implementer's choice)
-rendering every primitive against golden fixtures per era, wired into the browser-test suite.
+a repository-owned Vite fixture route renders every primitive against golden fixtures per era in
+the existing Vitest-browser/Playwright suite. Storybook and any second UI build surface are
+forbidden.
 Accessibility baseline: keyboard operability and reduced-motion at the PRIMITIVE level so every
 future screen inherits it.
 
@@ -89,8 +86,8 @@ future screen inherits it.
    proven (≤10 updates/s under a 20 Hz feed).
 3. Copy: missing-key CI failure; era-fallback chain test; provenance-tag lint fails a seeded
    unverified statistic.
-4. Surface registry: register/unlock/mount lifecycle test; per-tab subscription binding proven
-   (background tab's `$derived` count = 0).
+4. Surface registry: register/unlock/mount lifecycle test; source subscribe/unsubscribe counts and
+   zero inactive callbacks prove that background surfaces do not retain subscriptions.
 5. Harness runs in CI as part of the browser suite; a11y baseline asserted on every primitive.
 
 ## Open questions
