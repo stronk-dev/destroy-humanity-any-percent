@@ -1,89 +1,134 @@
-# RFC: Meters Foundation (Trust · Externality · Soul · p(doom))
+# RFC: Meters Foundation (Trust · p(doom))
 
-- **Status:** draft
+- **Status:** accepted (C1–C12 ruled; implementing)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/02 §7` (moral axis — not spendable; Trust 5 constituencies + Externality ledger), `design/02 §8` (Soul, the personal ledger), `design/09 §2` (pressure meters, EU4 disaster model), `design/10` (Ethical% consumes the moral stack)
 - **Research:** `events-playstyles.md §1` (pressure-meter architecture — visible forecastable bars driven by the player's own choices), `morality-systems.md`, `billionaires-decay.md` (Trust as a resource that only spends, never buys)
-- **Depends on:** Production + Run Genesis (implemented — meters mutate inside `ApplyLogged`); Events L1 (drafted — Layer-2 meters ARE recurring hidden events on the same evaluator)
+- **Depends on:** Production + Run Genesis + Purchasable Content (implemented — meters mutate inside `ApplyLogged` after Purchasable Content)
 - **Owner ruling honored:** breadth-first foundation — the meter MECHANICS, not the events or endings that consume them.
 - **Planning:** `planning/meters-foundation/` (once implementing)
 
 ## Summary
 
-`MeterBands` exists as a save-state map with no mechanics. This RFC gives it laws: the closed
-meter registry, the not-spendable invariant enforced in code, band transitions as evented facts,
-and the two scopes (Company-run moral axis, Founder-persistent Soul). The moral axis is the
-structural spine of Ethical% and every ending — it must be a real quantity before content leans
-on it.
+`MeterBands` exists as a save-state map with no mechanics. This RFC replaces that misleading field
+with a closed Company-meter registry, a structural not-spendable boundary, and deterministic band
+transitions. Founder Soul remains the existing separate read-only carry value; addressed
+Externality remains a ledger owned by World Layer. The moral axis must be a real quantity before
+content leans on it, without collapsing those deliberately different systems back into scalars.
 
 ## Specification
 
 ### M1 — The meter registry (closed catalog family)
 
-`balance/meters/*.json`: `{id, scope: company|founder, min_ppm, max_ppm, bands: [{id, floor_ppm}],
-inputs: [closed contribution union], decay: {toward_ppm, rate_ppm_per_attended_hour}|null,
-spendable: false}`. Phase-0 meters: the five **Trust** constituencies (users, employees,
-regulators, investors, public — Company scope, `design/02 §7`), the **Externality** ledger
-(Company, accumulates — never decays, the point), **Soul** (Founder scope, persists across Exit,
-the §8 personal ledger), **p(doom)** (Company pressure meter). Values are ppm integers; bands are
-the legible forecastable state (EU4 model).
+`balance/meters/*.json` is strict schema v1. Each row is exact-key
+`{id,scope:"company",min_value:0,max_value:100,initial_value,bands,inputs,decay}`. Phase A requires
+exactly eleven rows: ten independent Trust axes
+`trust.{users|employees|regulators|press|investors}.{standing|grievance}` plus
+`doom.probability`. Bands are byte-sorted unique `{id,floor_value}` rows beginning at zero;
+numeric values—not band IDs—are the sole persisted authority. Externality and Soul are forbidden
+as meter IDs. The production artifact supplies literal floors/initials as balance data.
 
 ### M2 — The not-spendable invariant (enforced, not documented)
 
-**No intent may debit a meter as payment.** Meters move ONLY via declared `inputs` — production
-stack side-effects, ledger-fact emissions, event-option effects, choice consequences — computed
-inside `ApplyLogged` from committed state. The loader rejects any catalog wiring a meter as a
-`cost` resource; a lint/loader assertion forbids meter IDs in the ledger's spendable set. This is
-the moral axis's defining property: you can act to change your Trust, never *pay* with it
-(`billionaires-decay.md`'s Institutional Trust — "can't be bought, only spent" — made
-structural).
+**No intent may debit a meter as ledger payment.** Meter IDs and economy resource IDs are disjoint
+registries validated at catalog composition; cost targets accept economy resources only. The
+meters package cannot import ledger spend APIs. Meters move only through the declared input union:
+`ledger_fact {fact_kind,delta}` applies once to a newly emitted fact, and
+`contribution_slot {slot,source_id,delta_per_attended_hour}` integrates only while that committed
+contribution is non-neutral. Rows carry no decorative `spendable:false` flag. A declared input may
+decrease a value; that consequence is not a purchase.
 
 ### M3 — Band transitions as facts
 
-Crossing a band floor emits `meter_band_changed {meter_id, from_band, to_band, direction}` (event
-kind, registry-registered) — the hook for pressure-meter events (Layer 2: a meter entering its
-`crisis` band IS the trigger of a hidden recurring event, per Events L1's E3 note), for
-Ethical%'s `facts_disjoint` predicate (a forbidden band entered = a ledger fact), and for UI
-dials. Band state is save-persisted (`MeterBands`, already present — this RFC populates it with
-meaning). All transitions replay-deterministic (inputs are state-derived; nothing new in
-replay_inputs).
+After the complete meter transition, meters emit at most one byte-ordered
+`meter_band_changed.v1` event each:
+`{run_id,meter_id,from_band,to_band,direction,value_before,value_after}`. A multi-band jump reports
+the prior and final derived bands, not every intermediate floor. Band changes are presentation and
+trigger events only; they never create moral ledger facts. Ethical% remains gated by dated
+`darkpattern.*`/`externality.*` acts. All values and bands resolve from the run-pinned catalog.
 
 ### M4 — Decay & the attended clock
 
-Trust constituencies decay toward a neutral band on attended time (the reseed formula
-`clamp(90−0.35·Notoriety,55,90)` already ruled for the Founder-side reseed — this is the live
-Company decay); Externality NEVER decays (accumulation is the satire); Soul decays only via
-declared drains (crunch, Faustian contracts — `design/08` beats), recovers only via
-touch-grass activities (design/02 §8), both as declared inputs. Decay uses the same
-attended/offline split as everything else — meters move on attended time; an idle founder's Trust
-doesn't rot while they're away.
+Decay and rate inputs use exact carried integer arithmetic on attended time. For rate `r`, elapsed
+attended milliseconds `dt`, and prior remainder `q`, `numerator=r*dt+q`, whole steps are
+`floor(numerator/3_600_000)`, and the remainder is the exact modulo. Decay moves linearly toward
+its declared target and clears its remainder when the target saturates; input remainders are keyed
+by `(meter_id,input_index)`. Hook order is decay first, then newly caused ledger facts, then active
+contribution inputs; final values clamp to `[0,100]`, then band events emit by meter ID. Offline
+mode supplies `dt=0`, so Trust does not rot while the founder is away. Externality and Soul are
+not mutated by this hook.
 
 ### M5 — Scope & reset
 
-Company-scope meters reset with the run (D6 assembly); the moral reseed (`10 §5`) sets the new
-run's starting Trust from Founder Notoriety — already implemented in the Exit transaction; this
-RFC declares the meter-init side. Soul persists (Founder scope). Save-version bump adds the
-per-meter ppm fields + remainders; corpus fixtures both scopes.
+Save v15 replaces `meter_bands` with complete-key `meter_values`, `meter_decay_remainders`, and
+`meter_input_remainders` maps. Legacy percent values migrate exactly; missing/extra keys reject
+after v15. New-run assembly resolves the new run's pinned meter artifact. Every Standing axis uses
+the published clamped Notoriety reseed; every Grievance axis and p(doom) use literal catalog
+initials. Founder Soul survives untouched. The assembly function is shared by live Exit and replay.
+
+## Owner rulings on C1–C12 (2026-08-03)
+
+- **C1 — accepted, my Trust shape was wrong:** ten Company Trust IDs
+  `trust.{users|employees|regulators|press|investors}.{standing|grievance}`, each unsigned
+  independent value; `trust.public.*` rejected; the full ten-row set required. (design/02 §7 is
+  binding; my five-single-bar `public` model is withdrawn.)
+- **C2 — accepted, Externality is a LEDGER not a meter (I wrongly restored it):** removed from
+  the meter catalog/save/decay/band entirely; the `externality.*` ledger-fact namespace is
+  registered as an INPUT source only; World Layer owns addressed Externality records. AC3 →
+  "no meter decay mutates an `externality.*` ledger fact."
+- **C3 — accepted, the cross-scope ruling:** `FounderState.Soul` (existing int64) stays the sole
+  Soul authority — no duplication into meter maps. Phase-A meter inputs may OBSERVE Soul (Pet
+  Care reads it through the carry seam) but **an ordinary Company transaction cannot mutate a
+  Founder-scope meter** (ApplyLogged commits the Company stream only). Soul-changing verbs need a
+  successor owning a two-stream write OR a Company `pending_soul_delta` settled atomically at Exit
+  (the exit transaction is already multi-stream). **This RFC removes Soul drain/recover** (and
+  AC4's Soul half); Soul is read-only here. This makes Meters Foundation Company-scope-only in
+  practice — cleaner.
+- **C4 — accepted:** `doom.probability` is one Company-scope pressure meter; World Layer may
+  publish a separate aggregate, never reusing the field.
+- **C5 — accepted:** meter values stay in the implemented `[0,100]` integer domain (NOT ppm — my
+  ppm was gratuitous and would have forced a route-context-version migration); the field is
+  renamed to store numeric meter values, not band IDs, with the save migration named.
+- **C6 — accepted, scope-corrected:** the input union ships ONLY the arms whose mechanics exist
+  at Phase A — production-side-effect and ledger-fact inputs (Events L1's event-effect arm is
+  added WHEN Events L1 lands, not inferred now). Each arm is a typed row with target/sign/formula/
+  source-uniqueness, causal like the Purchasable-Foundation activation rule.
+- **C7 — accepted:** decay is fixed-grid partition-invariant on the attended clock, exactly the
+  provision-grid pattern (aligned absolute buckets, `advance(a+b)==advance(advance(a),b)`).
+- **C8 — accepted:** band events are presentation/trigger output only, never moral acts; one prior
+  → final event per meter, with numeric state as the only persisted authority.
+- **C9 — accepted:** the catalog owns complete initial values and the published Notoriety reseed;
+  new-run assembly resolves the new run's pinned artifact and is shared by live/replay.
+- **C10 — accepted:** ablation removes only causally masked inputs; independent decay remains. The
+  Trust↔Soul correlation gate is registered as content-blocked Relevance work, not falsely claimed
+  green before Soul-changing content exists.
+- **C11 — accepted:** meters is a strict schema-v1 epoch artifact added by a protocol-compliant
+  mint; replay bundles carry immutable bytes; hook order appends Meters after Purchasable Content;
+  formulas and the sequential Go/TS corpus grow in the same semantic landing.
+- **C12 — accepted:** not-spendable is structural registry/package separation, not a duplicate
+  spendable flag or handwritten spendable set.
 
 ## Acceptance criteria
 
-1. Registry round-trip; loader rejects a meter wired as a cost resource (the not-spendable law,
-   seeded-violation test).
-2. Meter mutation through a declared input is byte-parity Go/TS inside `ApplyLogged`; a masked/
-   ablated run leaves meters untouched (they're state-derived, not input).
-3. Band transitions emit the event with correct direction; a fixture crosses up and down;
-   Externality accumulation never decreases across a decay interval.
-4. Decay: Trust decays toward neutral on attended time only (offline-span fixture proves no
-   rot-while-away); Soul drain/recover through declared inputs.
-5. Reset: Company meters reinit from the moral reseed at Exit; Soul survives; save migration +
-   corpus both scopes.
+1. Registry round-trip and exact eleven-row set; composition rejects meter/resource ID collision
+   and meter cost targets; package-boundary fixture prevents ledger-spend imports.
+2. Both declared input arms and decay are byte-identical Go/TS inside `ApplyLogged`, partition-
+   invariant, saturating, and offline-stable. Ablation removes causal masked inputs only.
+3. Up/down/multi-band transitions emit one correctly ordered event and no moral fact; unchanged
+   bands emit nothing. Externality facts and Founder Soul remain byte-untouched.
+4. Save-v15 migration has complete-key corpus coverage; live/replay new-run assembly initializes
+   all eleven values from the new pinned artifact and preserves Soul.
+5. Meter bytes join epoch identity/replay bundles; formula artifacts publish decay/input order;
+   kernel version and shared sequential corpus cover input, decay, reset, and offline cases.
+6. Relevance registers the Trust↔Soul correlation report as explicitly content-blocked until real
+   Soul-changing content and an owner-ruled bound exist.
 
 ## Open questions
 
-- Exact Phase-0 band counts and floors per meter — balance data, harness-gated.
-- Whether p(doom) is Company or World scope (recommend Company for Phase 0; World-aggregate
-  p(doom) is a World Layer foundation concern).
+- Exact Phase-A band IDs/floors, Trust grievance initials, p(doom) initial, decay targets/rates,
+  and seed input bindings remain literal balance data required before the epoch mint. The engine,
+  schema, save, replay, and fixture work may land first against discriminating test catalogs.
 
 ## Acceptance blockers (Codex review, 2026-08-03)
 
@@ -258,6 +303,8 @@ intent can use a meter as ledger payment; declared meter-transition inputs may d
 ## Changelog
 
 - 2026-08-03: created (draft) — the moral-axis mechanics; not-spendable enforced in code.
-- 2026-08-03: Codex acceptance review recorded C1–C12. Implementation is blocked pending owner
-  rulings and reconciliation with the two-axis Trust model, Externality ledger, and Founder Soul
-  transaction boundary.
+- 2026-08-03: Codex acceptance review recorded C1–C12; all proposed closures were owner-approved.
+  The normative body was reconciled to the two-axis Trust model, addressed Externality ledger,
+  read-only Founder Soul seam, percent value domain, causal input union, deterministic decay,
+  band-event boundary, epoch/replay ownership, and structural not-spendable rule. Literal Phase-A
+  balance rows remain a named pre-mint content gap; implementation is otherwise unblocked.
