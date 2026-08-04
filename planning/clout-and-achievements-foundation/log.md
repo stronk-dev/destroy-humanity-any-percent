@@ -93,3 +93,36 @@ What held:
   downstream rather than overclaimed by this foundation.
 - Corrected the inherited false green claim: the Node-only Meters test import is gone and the
   complete root `make verify` exits 0 (6,515 client and 19,554 browser assertions).
+
+## 2026-08-04 — independent remediation follow-up (`bf979b4..87f542d`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **not approved yet; all prior HIGHs are closed, but the package-boundary MEDIUM and
+  parity-test debt remain.** The catalog/proof implementation itself is clear to continue into its
+  next state/runtime batch once the shared Meters gate is repaired.
+
+Finding closure:
+
+1. **Prior HIGH 1 closed.** The inherited TypeScript defect is removed, and the complete fresh
+   root `make verify` evidence above was reproduced independently with exit 0.
+2. **Prior HIGH 2 closed in behavior.** Go now performs exact-key checks before decoding every
+   condition/proof arm, and validates every registry-backed identifier; source comparison against
+   TypeScript confirms the same arm keys and mechanical identifier grammar. Wrong-arm null/empty
+   and invalid-registry tests cover the Go fix. The requested shared invalid loader corpus did not
+   land, and TypeScript has no matching wrong-arm/identifier cases, so retain that as **MEDIUM test
+   debt** before artifact mint rather than claiming cross-runtime rejection is structurally locked.
+3. **Prior HIGH 3 closed.** Both runtimes now derive typed source keys for every provenance-eligible
+   fact/counter/exit-count leaf and require the proof's sorted registered event set to contain every
+   event declared by that source. Unmapped and unrelated-event proofs fail; Go and TypeScript each
+   carry the discriminating unrelated-event test.
+4. **Prior MEDIUM 4 remains partially open.** Recursive directory walking closes a nested-file
+   direct-import bypass, but the text scan still cannot see a forbidden dependency through an
+   imported helper outside `server/achievements`, and no traversal fixture proves recursion. It
+   also correctly does not pretend to enforce the future sole-Clout-writer registry. Add an import-
+   graph/AST dependency fixture or narrow the fail-closed build-graph language before approval.
+
+Current code remains Clout-free and production-neutral. The sole-Clout owner/source registry,
+owner-authored achievement/copy content, save v16, live/replay evaluation, Exit settlement,
+relevance integration, epoch mint, and archive are still explicitly pending rather than silently
+credited.

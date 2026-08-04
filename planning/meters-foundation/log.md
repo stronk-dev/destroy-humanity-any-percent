@@ -105,3 +105,39 @@ What held:
 - Corrected the earlier green claim by evidence rather than editing history: `make verify` exits 0
   after all server packages, harness, TypeScript, client build, 6,515 client assertions, schema and
   boundary gates, and 19,554 browser assertions.
+
+## 2026-08-04 — independent remediation follow-up (`bf979b4..87f542d`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **not approved; one prior HIGH and the boundary MEDIUM remain open.** The mandatory
+  root gate is genuinely green now, and most field/union presence defects are fixed, but the log's
+  claim that the cross-runtime catalog gap is closed is broader than the implementation.
+
+Finding closure:
+
+1. **Prior HIGH 1 closed.** The Node-only corpus read became a typed JSON-module import. A fresh
+   repository-root `make verify` completed with exit 0: Go vet/all packages, formula and harness
+   gates, zero TypeScript/Svelte diagnostics, production build, 6,515 client assertions, schema/
+   boundary/content gates, and 19,554 browser assertions.
+2. **Prior HIGH 2 remains open.** Presence pointers correctly close omitted zero-valued reseed,
+   initial, band-floor, and decay-child fields; exact-key input decoding closes wrong-arm null/empty
+   fields. Two named cases remain divergent, however:
+   - `rawMeter.Decay *rawDecay` still maps both an omitted required `decay` key and explicit JSON
+     `null` to nil, and no meter-level key-presence check exists. Go accepts omission; TypeScript's
+     exact object and JSON Schema reject it.
+   - `validReseed` still has no `decimal.MaxExactInteger`/`9007199254740991` upper bound for its
+     `int64` numerator and denominator. Go accepts larger integers that TypeScript/schema reject.
+   The negative tests cover neither case, and the shared valid+invalid loader corpus requested by
+   the prior verdict did not land. Fix both remaining semantics and add the parity corpus before
+   binding the catalog to a pinned run.
+3. **Prior MEDIUM 3 only partially closed.** The source scan now walks nested directories, so the
+   original immediate-directory bypass is gone. It is still not an import-graph gate: `meters` can
+   import an out-of-tree helper which imports economy/production, and neither scanned source text
+   contains the forbidden path. No nested or transitive fixture exercises the recursion. Backstop
+   the recursive scan with `go list -deps`/AST dependency inspection and a real transitive fixture,
+   or narrow the docs/log claim from package dependency to direct source imports.
+
+The transition kernel remains approved on valid catalogs. No meter artifact was minted; literal
+owner balance rows and all previously listed save/runtime/replay/formula/relevance work remain
+honest blockers.
