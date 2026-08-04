@@ -693,6 +693,7 @@ func (s *Service) buyUpgrade(request IntentRequest, state *save.State, catalog *
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
+	postAccrual := state.Ledger.Snapshot()
 	if upgrade.Window.FromGate != "" && !state.GatesCrossed[upgrade.Window.FromGate] || upgrade.Window.ToGate != "" && state.GatesCrossed[upgrade.Window.ToGate] {
 		return rejectedDecision(request, revision.Number, "not_eligible", "window")
 	}
@@ -720,7 +721,7 @@ func (s *Service) buyUpgrade(request IntentRequest, state *save.State, catalog *
 	state.UpgradesOwned[request.UpgradeID] = true
 	payload, _ := json.Marshal(map[string]any{"upgrade_id": request.UpgradeID, "cost_resource_id": upgrade.Cost.ResourceID, "cost": upgrade.Cost.Amount.String()})
 	events = append(events, save.EventWrite{Kind: save.EventUpgradePurchased, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
-	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
+	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
 func (s *Service) signCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
@@ -742,11 +743,12 @@ func (s *Service) signCompact(request IntentRequest, state *save.State, catalog 
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
+	postAccrual := state.Ledger.Snapshot()
 	state.CompactMember, state.CompactTithePPM = true, request.TithePPM
 	state.CompactSolidarityPPM, state.CompactSamples = 0, []save.CompactSample{}
 	payload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": request.TithePPM, "prior_member": false, "new_member": true})
 	events = append(events, save.EventWrite{Kind: save.EventCompactSigned, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
-	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
+	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
 func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
@@ -777,12 +779,13 @@ func (s *Service) leaveCompact(request IntentRequest, state *save.State, catalog
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
+	postAccrual := state.Ledger.Snapshot()
 	priorTithe := state.CompactTithePPM
 	state.CompactMember, state.CompactTithePPM, state.CompactSolidarityPPM = false, 0, 0
 	state.CompactSamples = []save.CompactSample{}
 	payload, _ := json.Marshal(map[string]any{"founder_id": revision.OwnerID, "run_id": map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq}, "tithe_ppm": priorTithe, "prior_member": true, "new_member": false})
 	events = append(events, save.EventWrite{Kind: save.EventCompactLeft, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
-	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
+	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
 func (s *Service) incorporate(request IntentRequest, state *save.State, catalog *economy.Catalog, band *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
@@ -813,6 +816,7 @@ func (s *Service) incorporate(request IntentRequest, state *save.State, catalog 
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
+	postAccrual := state.Ledger.Snapshot()
 	state.FactionID = chosen.ID
 	state.FactionStockResource = chosen.Produces
 	state.IncorporatedAt = state.EvaluatedThrough
@@ -836,7 +840,7 @@ func (s *Service) incorporate(request IntentRequest, state *save.State, catalog 
 			events = append(events, save.EventWrite{Kind: save.EventCompactSigned, SchemaVersion: 1, IntentID: request.IntentID, Payload: compactPayload})
 		}
 	}
-	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
+	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
 func runAccrualHook(hook AccrualHook, intentID string, state *save.State, catalog *economy.Catalog, revision save.Revision, result EvaluationResult, contributions []multiplier.Contribution) ([]save.EventWrite, error) {
@@ -905,6 +909,7 @@ func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *e
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
+	postAccrual := state.Ledger.Snapshot()
 	context, err := routeContext(state, routeCatalog.ContextVersion())
 	if err != nil {
 		return save.IntentDecision{}, err
@@ -943,7 +948,7 @@ func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *e
 	if request.RouteID != "" {
 		events = append(events, routeExecutedEvent(request, revision, state.RunSeq))
 	}
-	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
+	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
 func routeContext(state *save.State, version int) (routes.Context, error) {
@@ -1013,6 +1018,7 @@ func (s *Service) buyGenerator(
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
+	postAccrual := state.Ledger.Snapshot()
 	cash, exists := state.Ledger.Balance(generator.Price.ResourceID)
 	if !exists {
 		return save.IntentDecision{}, ErrInvalidEngineState
@@ -1063,7 +1069,7 @@ func (s *Service) buyGenerator(
 	state.GeneratorCounts[request.GeneratorID] = owned + count
 	state.GeneratorPurchasedTotal += count
 	accrualEvents = append(accrualEvents, generatorPurchasedEvent(request, generator.Price.ResourceID, count, cost))
-	return appliedDecision(request, state, catalog, revision.Number+1, count, before, accrualEvents, collectorReports(sink))
+	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, count, before, postAccrual, accrualEvents, collectorReports(sink))
 }
 
 func (s *Service) performManualBatch(
@@ -1089,6 +1095,7 @@ func (s *Service) performManualBatch(
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
+	postAccrual := state.Ledger.Snapshot()
 	policy := catalog.ManualPolicy()
 	refillManualTokens(state, policy, now)
 	applied := request.Count
@@ -1112,7 +1119,7 @@ func (s *Service) performManualBatch(
 			return save.IntentDecision{}, err
 		}
 	}
-	return appliedDecision(request, state, catalog, revision.Number+1, applied, before, events, nil)
+	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, applied, before, postAccrual, events, nil)
 }
 
 func refillManualTokens(state *save.State, policy economy.ManualPolicy, now time.Time) {
@@ -1175,6 +1182,51 @@ func appliedDecision(
 		return save.IntentDecision{}, err
 	}
 	return save.IntentDecision{Outcome: save.IntentApplied, Receipt: encoded, Events: events}, nil
+}
+
+func appliedDecisionWithActionDebits(
+	request IntentRequest,
+	state *save.State,
+	catalog *economy.Catalog,
+	newRevision int64,
+	appliedCount int64,
+	before map[string]string,
+	postAccrual map[string]string,
+	events []save.EventWrite,
+	reports []InvariantReport,
+) (save.IntentDecision, error) {
+	decision, err := appliedDecision(request, state, catalog, newRevision, appliedCount, before, events, reports)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	debits, err := actionDebits(postAccrual, state.Ledger.Snapshot())
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	decision.ActionDebits = debits
+	return decision, nil
+}
+
+func actionDebits(postAccrual, after map[string]string) (map[string]string, error) {
+	if postAccrual == nil || after == nil || len(postAccrual) != len(after) {
+		return nil, ErrInvalidEngineState
+	}
+	debits := map[string]string{}
+	for resourceID, beforeRaw := range postAccrual {
+		afterRaw, ok := after[resourceID]
+		if !ok {
+			return nil, ErrInvalidEngineState
+		}
+		beforeValue, beforeErr := decimal.ParseCanonical(beforeRaw)
+		afterValue, afterErr := decimal.ParseCanonical(afterRaw)
+		if beforeErr != nil || afterErr != nil {
+			return nil, ErrInvalidEngineState
+		}
+		if beforeValue.Gt(afterValue) {
+			debits[resourceID] = beforeValue.Sub(afterValue).Quantize(decimal.CanonicalSignificantDigits).String()
+		}
+	}
+	return debits, nil
 }
 
 func rejectedDecision(request IntentRequest, currentRevision int64, category, detail string) (save.IntentDecision, error) {

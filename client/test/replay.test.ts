@@ -139,7 +139,7 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(canonicalJSONString(transition.events)).toBe(special.case.events_json);
     expect(canonicalJSONString(encodeReplayState(transition.state))).toBe(special.case.post_state_json);
     if (special.case.name === "buy-generator-max-fallback-invariant") expect(transition.invariants).toEqual([{ kind: "afford_fallback", intent_id: "01986666-0201-7000-8000-000000000201", detail: "generator.beige_tower" }]);
-    else if (special.case.name === "active-foundation-carry") expect(transition.events.map((value) => value.kind)).toEqual(["meter_band_changed.v1", "achievement_earned.v1"]);
+    else if (special.case.name.startsWith("active-foundation-offline-")) expect(transition.events.map((value) => value.kind)).toEqual(["achievement_earned.v1"]);
     else expect(transition.invariants).toEqual([]);
   });
 
@@ -151,7 +151,7 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     const legacyState = restoreReplayState(legacyCase.pre_state, 14, legacy.economy);
     await expect(applyLogged(legacyState, canonicalJSONString(legacyCase.canonical_payload), legacy, legacyInputs)).resolves.toMatchObject({ outcome: legacyCase.outcome });
 
-    const activeCase = fixture.additional_bundles.find((value) => value.case.name === "active-foundation-carry")!;
+    const activeCase = fixture.additional_bundles.find((value) => value.case.name === "active-foundation-offline-5001ms")!;
     const active = await loadReplayCatalogBundle(activeCase.constants_hash, activeCase.artifacts);
     const activeInputs = structuredClone(activeCase.case.replay_inputs) as Record<string, unknown>;
     activeInputs.v = 2;
@@ -178,7 +178,7 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
   });
 
   it("derives active Founder carry identity and score from the pinned achievement artifact", async () => {
-    const activeCase = fixture.additional_bundles.find((value) => value.case.name === "active-foundation-carry")!;
+    const activeCase = fixture.additional_bundles.find((value) => value.case.name === "active-foundation-offline-5001ms")!;
     const bundle = await loadReplayCatalogBundle(activeCase.constants_hash, activeCase.artifacts);
     const state = () => restoreReplayState(activeCase.case.pre_state, 16, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements! });
     for (const mutate of [
@@ -209,6 +209,18 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(canonicalJSONString(transition.companyStartedEvents)).toBe(testCase.company_started_events_json);
     expect(transition.founder.achievement_score_lifetime).toBe(11);
     expect(transition.companyEndedEvents.some((value) => value.kind === "achievement_earned.v1")).toBe(true);
+  });
+
+  it("rejects an active Exit whose run set overlaps Founder lifetime ownership", async () => {
+    const fixtureExit = fixture.active_foundation_exit;
+    const current = await loadReplayCatalogBundle(fixtureExit.constants_hash, fixtureExit.artifacts);
+    const next = await loadReplayCatalogBundle(fixtureExit.next_constants_hash, fixtureExit.next_artifacts);
+    const bundle = withNextReplayCatalogBundle(current, next);
+    const preState = structuredClone(fixtureExit.case.pre_state) as Record<string, any>;
+    preState.achievements_earned_run = ["achievement.first_gate"];
+    preState.achievement_score_run = 4;
+    const state = restoreReplayState(preState, 16, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements! });
+    await expect(applyLoggedExit(state, canonicalJSONString(fixtureExit.case.canonical_payload), bundle, fixtureExit.case.replay_inputs)).rejects.toThrow(/already owned for life/);
   });
 
   it.each(fixture.terminal_cases)("replays terminal '$name' to the Go receipt, events, and next run", async (testCase) => {

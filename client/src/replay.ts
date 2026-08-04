@@ -347,6 +347,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   if (preflight !== null) return rejectState(preflight[0], preflight[1]);
   const evaluation = evaluate(state, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
   const events = runHooks(state, catalogs, wire.command, evaluation, effectiveAccrual);
+  const postAccrualBalances = { ...state.balances };
   const invariants: ReplayInvariant[] = [];
   let appliedCount = 0;
   switch (request.kind) {
@@ -364,8 +365,9 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
     if (report.kind === "residual_abort") continue;
     events.push(event("invariant_reported", request.intent_id, { detail: report.detail, invariant_kind: report.kind }));
   }
+  const actionDebits = resourceDebits(postAccrualBalances, state.balances);
   await afterPrestigeTransition(state, catalogs.prestige, request, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
-  if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, stateBefore, state, founderCarry!, wire.command, request, wire.evaluation_mode, wire.evaluated_at_ms, contributions, false, events);
+  if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, stateBefore, state, founderCarry!, wire.command, request, wire.evaluated_at_ms, contributions, actionDebits, false, events);
   return applied(state, catalogs.economy, request.intent_id, revision + 1, appliedCount, before, events, invariants);
   } catch (error) { restoreReplaySnapshot(state, stateBefore); throw error; }
 }
@@ -391,6 +393,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const revision = wire.command.revision;
   if (wire.evaluated_at_ms < company.evaluatedThroughMs) throw new ReplayClockViolation();
   let prefix: ReplayEvent[] = [];
+  let actionDebits: Record<string, string> = {};
   let exitType: string;
   let terms: ExitTerms;
   const rejectState = (category: string, detail: string): LoggedExitTransition => { restoreReplaySnapshot(company, companyBefore); return rejectedExit(company, founder, request.intent_id, revision, category, detail); };
@@ -404,10 +407,12 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
     if (preflight !== null) return rejectState(preflight[0], preflight[1]);
     const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
     prefix = runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual);
+    const postAccrualBalances = { ...company.balances };
     const result = crossGate(company, catalogs.routes, request, wire.command);
     if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]);
     prefix.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: company.runSeq } }));
     if (request.route_id !== null) prefix.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: company.runSeq } }));
+    actionDebits = resourceDebits(postAccrualBalances, company.balances);
     if (attendedMS(company, wire.evaluated_at_ms) < 900_000 || founder.exit_history_count !== 0) throw new RangeError("invalid scripted exit state");
     exitType = "scripted_first";
     terms = computeExitTerms(company, founder, catalogs.prestige, exitType);
@@ -429,7 +434,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
     if (promised) terms = promiseTerms(promised.payout_preview, applyTermsModifier(terms, promised.market_modifier_ppm));
   }
   if (resolved.selected_exit_type !== exitType) throw new RangeError("selected exit type mismatch");
-  if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, companyBefore, company, founder, wire.command, request, wire.evaluation_mode, wire.evaluated_at_ms, contributions, true, prefix);
+  if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, companyBefore, company, founder, wire.command, request, wire.evaluated_at_ms, contributions, actionDebits, true, prefix);
   return finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, next);
   } catch (error) { restoreReplaySnapshot(company, companyBefore); throw error; }
 }
@@ -595,9 +600,9 @@ function runHooks(state: ReplayState, catalogs: ReplayCatalogBundle, command: Re
   return events;
 }
 
-function applyFoundationTransition(catalogs: ReplayCatalogBundle, before: ReplayState, state: ReplayState, founder: FounderCarry, command: ReplayCommand, request: Intent, mode: "online" | "offline", nowMs: number, contributions: readonly ReplayContribution[], terminal: boolean, events: ReplayEvent[]): void {
+function applyFoundationTransition(catalogs: ReplayCatalogBundle, before: ReplayState, state: ReplayState, founder: FounderCarry, command: ReplayCommand, request: Intent, nowMs: number, contributions: readonly ReplayContribution[], actionDebits: Readonly<Record<string, string>>, terminal: boolean, events: ReplayEvent[]): void {
   if (!foundationsActive(catalogs) || state.wireVersion !== 16) throw new RangeError("invalid foundation hook inputs");
-  const attendedMs = mode === "online" ? state.evaluatedThroughMs - before.evaluatedThroughMs : 0;
+  const attendedMs = attendedMS(state, state.evaluatedThroughMs) - attendedMS(before, before.evaluatedThroughMs);
   if (!Number.isSafeInteger(attendedMs) || attendedMs < 0 || attendedMs > 86_400_000) throw new RangeError("invalid foundation attended time");
   const newFacts = new Set([...state.ledgerFactKinds].filter((fact) => !before.ledgerFactKinds.has(fact)));
   const activeContributions = new Set(contributions.filter((value) => !parseCanonical(value.factor).eq(1)).map((value) => meterContributionKey(value.slot, value.source_id)));
@@ -616,18 +621,30 @@ function applyFoundationTransition(catalogs: ReplayCatalogBundle, before: Replay
   }
   const career: AchievementObservation = { facts: careerFacts, counters: { age_ms: ageMs, notoriety: founder.notoriety }, exitCount, generators: {} };
   const earned = newlyEarned(catalogs.achievements, state.achievementsEarnedRun, new Set(founder.achievements_earned_lifetime), run, career)
-    .filter((definition) => achievementProofSatisfied(definition, before, state, events));
+    .filter((definition) => achievementProofSatisfied(definition, actionDebits, events));
   for (const definition of earned) state.achievementsEarnedRun.add(definition.id);
   state.achievementScoreRun = achievementScore(catalogs.achievements, state.achievementsEarnedRun);
   for (const definition of earned) events.push(event("achievement_earned.v1", request.intent_id, { run_id: runId, achievement_id: definition.id, condition_scope: definition.conditionScope, score_grant: definition.scoreGrant }));
 }
 
-function achievementProofSatisfied(definition: AchievementCatalog["definitions"][number], before: ReplayState, after: ReplayState, events: readonly ReplayEvent[]): boolean {
+function achievementProofSatisfied(definition: AchievementCatalog["definitions"][number], actionDebits: Readonly<Record<string, string>>, events: readonly ReplayEvent[]): boolean {
   const proof = definition.proof;
   if (proof.kind !== "burn") return true;
   if (!events.some((value) => value.kind === proof.eventKind)) return false;
-  const prior = before.balances[proof.resourceId]; const current = after.balances[proof.resourceId];
-  return prior !== undefined && current !== undefined && parseCanonical(prior).sub(parseCanonical(current)).gte(parseCanonical(proof.minimum));
+  const debit = actionDebits[proof.resourceId];
+  return debit !== undefined && parseCanonical(debit).gte(parseCanonical(proof.minimum));
+}
+
+function resourceDebits(postAccrual: Readonly<Record<string, string>>, after: Readonly<Record<string, string>>): Record<string, string> {
+  if (Object.keys(postAccrual).length !== Object.keys(after).length) throw new RangeError("action debit key mismatch");
+  const debits: Record<string, string> = {};
+  for (const [resourceId, beforeRaw] of Object.entries(postAccrual)) {
+    const afterRaw = after[resourceId];
+    if (afterRaw === undefined) throw new RangeError("action debit key mismatch");
+    const beforeValue = parseCanonical(beforeRaw); const afterValue = parseCanonical(afterRaw);
+    if (beforeValue.gt(afterValue)) debits[resourceId] = canonicalString(quantize(beforeValue.sub(afterValue)));
+  }
+  return debits;
 }
 
 function buyGenerator(state: ReplayState, catalog: EconomyCatalog, request: Intent, invariants: ReplayInvariant[]): { count: number; rejection?: [string, string] } {
@@ -760,6 +777,8 @@ function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId:
   const currentActive = company.wireVersion === 16;
   if (currentActive) {
     if (!foundationsActive(next)) throw new RangeError("foundation mechanics cannot disappear between epochs");
+    const lifetime = new Set(founder.achievements_earned_lifetime);
+    for (const achievementId of company.achievementsEarnedRun) if (lifetime.has(achievementId)) throw new RangeError("run achievement already owned for life");
     founder.achievements_earned_lifetime = [...new Set([...founder.achievements_earned_lifetime, ...company.achievementsEarnedRun])].sort(byteCompare);
     founder.achievement_score_lifetime = achievementScore(next.achievements, new Set(founder.achievements_earned_lifetime));
   } else if (foundationsActive(next)) {

@@ -18,8 +18,11 @@ The transition kernel validates complete state maps, advances decay first, then 
 caused ledger facts and active contribution sources, clamps the final value, and derives at most
 one prior-to-final band change per meter. Decay and rate inputs preserve their exact millisecond
 remainders, are invariant to splitting an interval across evaluations, and receive zero elapsed
-time offline. A shared cross-runtime corpus covers partitioning, band changes, target-phase reset,
-and saturation.
+time offline. The production hook derives each step from the delta of the canonical attended-time
+ledger before and after the transition; the HTTP transport's `online` evaluation mode is not an
+attendance claim. Shared cross-runtime cases prove that gaps of 5,001 ms and 25 hours are recorded
+as offline, leave Meters stable, and still advance the authoritative stream. The corpus also covers
+partitioning, band changes, target-phase reset, and saturation.
 
 Go and TypeScript loaders enforce the same closed eleven-ID set, input shapes, numeric bounds,
 unique source bindings, and band ordering. `balance/meters.schema.json` is wired into the root

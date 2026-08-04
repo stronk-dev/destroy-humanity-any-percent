@@ -16,16 +16,21 @@ import (
 // applyFoundationTransition owns the post-action part of the closed replay
 // hook chain. V3 evidence predates executable foundation hooks and remains
 // replayable under its pinned semantics; every current active command is v4.
-func applyFoundationTransition(bundle CatalogBundle, before, state, founder *save.State, revision save.Revision, request IntentRequest, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, terminal bool, events *[]save.EventWrite) error {
+func applyFoundationTransition(bundle CatalogBundle, before, state, founder *save.State, revision save.Revision, request IntentRequest, now time.Time, contributions []multiplier.Contribution, actionDebits map[string]string, terminal bool, events *[]save.EventWrite) error {
 	if !bundle.foundationsActive() || before == nil || state == nil || founder == nil || events == nil {
 		return ErrInvalidEngineState
 	}
-	attendedMS := int64(0)
-	if mode == ModeOnline {
-		attendedMS = state.EvaluatedThrough.Sub(before.EvaluatedThrough).Milliseconds()
-		if attendedMS < 0 || attendedMS > meters.MaximumAttendedStep {
-			return ErrInvalidEngineState
-		}
+	attendedBefore, err := prestigecore.AttendedMS(before, before.EvaluatedThrough)
+	if err != nil {
+		return ErrInvalidEngineState
+	}
+	attendedAfter, err := prestigecore.AttendedMS(state, state.EvaluatedThrough)
+	if err != nil || attendedAfter < attendedBefore {
+		return ErrInvalidEngineState
+	}
+	attendedMS := attendedAfter - attendedBefore
+	if attendedMS > meters.MaximumAttendedStep {
+		return ErrInvalidEngineState
 	}
 	newFacts := map[string]bool{}
 	for fact, present := range state.LedgerFactKinds {
@@ -60,7 +65,7 @@ func applyFoundationTransition(bundle CatalogBundle, before, state, founder *sav
 	}
 	staged := make([]achievements.Definition, 0, len(newlyEarned))
 	for _, definition := range newlyEarned {
-		if achievementProofSatisfied(definition, before, state, *events) {
+		if achievementProofSatisfied(definition, actionDebits, *events) {
 			staged = append(staged, definition)
 		}
 	}
@@ -111,7 +116,7 @@ func achievementObservations(company, founder *save.State, terminal bool, now ti
 	return run, career, nil
 }
 
-func achievementProofSatisfied(definition achievements.Definition, before, after *save.State, events []save.EventWrite) bool {
+func achievementProofSatisfied(definition achievements.Definition, actionDebits map[string]string, events []save.EventWrite) bool {
 	if definition.Proof.Kind != achievements.ProofBurn {
 		return true
 	}
@@ -122,16 +127,16 @@ func achievementProofSatisfied(definition achievements.Definition, before, after
 			break
 		}
 	}
-	if !matchedEvent || before == nil || after == nil || before.Ledger == nil || after.Ledger == nil {
+	if !matchedEvent || actionDebits == nil {
 		return false
 	}
-	prior, priorOK := before.Ledger.Balance(definition.Proof.ResourceID)
-	current, currentOK := after.Ledger.Balance(definition.Proof.ResourceID)
+	debitRaw, ok := actionDebits[definition.Proof.ResourceID]
 	minimum, err := decimal.ParseCanonical(definition.Proof.Minimum)
-	if !priorOK || !currentOK || err != nil {
+	debit, debitErr := decimal.ParseCanonical(debitRaw)
+	if !ok || err != nil || debitErr != nil {
 		return false
 	}
-	return prior.Sub(current).Gte(minimum)
+	return debit.Gte(minimum)
 }
 
 func validateFoundationHookInputs(bundle CatalogBundle, state, founder *save.State) error {

@@ -7,9 +7,12 @@ import (
 	"time"
 
 	"cloud-clicker/server/achievements"
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/meters"
+	"cloud-clicker/server/multiplier"
+	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/save"
 )
 
@@ -253,7 +256,7 @@ func TestFoundationTransitionOrdersMetersBeforeAchievementsAndLatches(t *testing
 	events := []save.EventWrite{}
 	request := IntentRequest{IntentID: "01986666-0600-7000-8000-000000000601"}
 	revision := save.Revision{StreamID: "01986666-1600-7000-8000-000000000001", OwnerID: "01986666-2600-7000-8000-000000000001"}
-	if err := applyFoundationTransition(active, before, state, founder, revision, request, ModeOnline, now, nil, false, &events); err != nil {
+	if err := applyFoundationTransition(active, before, state, founder, revision, request, now, nil, map[string]string{}, false, &events); err != nil {
 		t.Fatal(err)
 	}
 	if len(events) != 2 || events[0].Kind != save.EventMeterBandChanged || events[1].Kind != save.EventAchievementEarned {
@@ -267,7 +270,7 @@ func TestFoundationTransitionOrdersMetersBeforeAchievementsAndLatches(t *testing
 		t.Fatal(err)
 	}
 	events = nil
-	if err := applyFoundationTransition(active, before, state, founder, revision, request, ModeOnline, now, nil, false, &events); err != nil {
+	if err := applyFoundationTransition(active, before, state, founder, revision, request, now, nil, map[string]string{}, false, &events); err != nil {
 		t.Fatal(err)
 	}
 	if len(events) != 0 || state.AchievementScoreRun != 4 {
@@ -321,19 +324,120 @@ func TestFoundationTransitionBurnProofRequiresSameBatchDebit(t *testing.T) {
 	}{{"complete-proof", true, true, true}, {"missing-debit", false, true, false}, {"missing-event", true, false, false}} {
 		t.Run(testCase.name, func(t *testing.T) {
 			before, state, founder := makeState()
+			actionDebits := map[string]string{}
 			if testCase.debit {
-				setCash(t, state, "9e1")
+				actionDebits["company.cash"] = "1e1"
 			}
 			events := []save.EventWrite{}
 			if testCase.withEvent {
 				events = append(events, save.EventWrite{Kind: save.EventGateCrossed, IntentID: request.IntentID})
 			}
-			if err := applyFoundationTransition(active, before, state, founder, revision, request, ModeOnline, now, nil, false, &events); err != nil {
+			if err := applyFoundationTransition(active, before, state, founder, revision, request, now, nil, actionDebits, false, &events); err != nil {
 				t.Fatal(err)
 			}
 			if state.AchievementsEarnedRun["achievement.burn"] != testCase.wantEarned {
 				t.Fatalf("earned=%v events=%+v", state.AchievementsEarnedRun, events)
 			}
 		})
+	}
+}
+
+func TestActionDebitsSeparateAccrualFromTheActionSink(t *testing.T) {
+	debits, err := actionDebits(map[string]string{"company.cash": "2e2"}, map[string]string{"company.cash": "1.9e2"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if debits["company.cash"] != "1e1" {
+		t.Fatalf("action debit = %q, want 1e1", debits["company.cash"])
+	}
+}
+
+func TestFoundationTransitionUsesTheCanonicalOfflineLedger(t *testing.T) {
+	_, active := foundationTestBundles(t)
+	for _, duration := range []time.Duration{5001 * time.Millisecond, 25 * time.Hour} {
+		t.Run(duration.String(), func(t *testing.T) {
+			now := time.Date(2026, 8, 4, 17, 0, 0, 0, time.UTC)
+			before := replayFixtureState(t, active.Economy, now.Add(-duration))
+			before.WireVersion = save.LatestSupportedVersion
+			meterState, err := meters.NewRunState(active.Meters, 0)
+			if err != nil {
+				t.Fatal(err)
+			}
+			before.MeterBands = nil
+			before.MeterValues, before.MeterDecayRemainders, before.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+			before.MeterValues["doom.probability"] = 71
+			before.AchievementsEarnedRun = map[string]bool{}
+			state, err := cloneReplayState(before, active.Economy)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state.EvaluatedThrough = now
+			if err := prestigecore.RecordOfflineSpan(state, before.EvaluatedThrough, now, 5000); err != nil {
+				t.Fatal(err)
+			}
+			founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+			founder.WireVersion = save.LatestSupportedVersion
+			founder.AchievementsEarnedLifetime = map[string]bool{}
+			events := []save.EventWrite{}
+			request := IntentRequest{IntentID: "01986666-0600-7000-8000-000000000603"}
+			revision := save.Revision{StreamID: "01986666-1600-7000-8000-000000000003", OwnerID: "01986666-2600-7000-8000-000000000003"}
+			if err := applyFoundationTransition(active, before, state, founder, revision, request, now, nil, map[string]string{}, false, &events); err != nil {
+				t.Fatal(err)
+			}
+			if state.MeterValues["doom.probability"] != 71 || len(events) != 0 {
+				t.Fatalf("offline return changed meter=%d events=%+v", state.MeterValues["doom.probability"], events)
+			}
+		})
+	}
+}
+
+func TestFoundationTransitionDerivesFactAndContributionInputs(t *testing.T) {
+	_, active := foundationTestBundles(t)
+	now := time.Date(2026, 8, 4, 18, 0, 0, 0, time.UTC)
+	makeState := func(start time.Time) (*save.State, *save.State, *save.State) {
+		before := replayFixtureState(t, active.Economy, start)
+		before.WireVersion = save.LatestSupportedVersion
+		meterState, err := meters.NewRunState(active.Meters, 0)
+		if err != nil {
+			t.Fatal(err)
+		}
+		before.MeterBands = nil
+		before.MeterValues, before.MeterDecayRemainders, before.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+		before.AchievementsEarnedRun = map[string]bool{}
+		state, err := cloneReplayState(before, active.Economy)
+		if err != nil {
+			t.Fatal(err)
+		}
+		founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+		founder.WireVersion = save.LatestSupportedVersion
+		founder.AchievementsEarnedLifetime = map[string]bool{}
+		return before, state, founder
+	}
+	request := IntentRequest{IntentID: "01986666-0600-7000-8000-000000000604"}
+	revision := save.Revision{StreamID: "01986666-1600-7000-8000-000000000004", OwnerID: "01986666-2600-7000-8000-000000000004"}
+
+	before, state, founder := makeState(now)
+	before.MeterValues["doom.probability"], state.MeterValues["doom.probability"] = 67, 67
+	state.LedgerFactKinds["externality.emitted"] = true
+	events := []save.EventWrite{}
+	if err := applyFoundationTransition(active, before, state, founder, revision, request, now, nil, map[string]string{}, false, &events); err != nil {
+		t.Fatal(err)
+	}
+	if state.MeterValues["doom.probability"] != 70 || len(events) != 1 || events[0].Kind != save.EventMeterBandChanged {
+		t.Fatalf("fact input meter=%d events=%+v", state.MeterValues["doom.probability"], events)
+	}
+
+	before, state, founder = makeState(now.Add(-4 * time.Second))
+	before.MeterValues["doom.probability"], state.MeterValues["doom.probability"] = 70, 70
+	before.MeterInputRemainders[meters.InputRemainderKey("doom.probability", 1)] = 3_596_000
+	state.MeterInputRemainders[meters.InputRemainderKey("doom.probability", 1)] = 3_596_000
+	state.EvaluatedThrough = now
+	events = nil
+	contributions := []multiplier.Contribution{{Slot: multiplier.SlotUpgrades, SourceID: "generator.example", Target: "all", Factor: decimal.New(2, 0)}}
+	if err := applyFoundationTransition(active, before, state, founder, revision, request, now, contributions, map[string]string{}, false, &events); err != nil {
+		t.Fatal(err)
+	}
+	if state.MeterValues["doom.probability"] != 69 || len(events) != 1 || events[0].Kind != save.EventMeterBandChanged {
+		t.Fatalf("contribution input meter=%d events=%+v", state.MeterValues["doom.probability"], events)
 	}
 }

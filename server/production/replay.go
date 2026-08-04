@@ -298,7 +298,7 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 			if err := validateFoundationHookInputs(catalogs, state, founder); err != nil {
 				return LoggedTransition{}, err
 			}
-			if err := applyFoundationTransition(catalogs, stateBefore, state, founder, revision, request, wire.EvaluationMode, now, contributions, false, &decision.Events); err != nil {
+			if err := applyFoundationTransition(catalogs, stateBefore, state, founder, revision, request, now, contributions, decision.ActionDebits, false, &decision.Events); err != nil {
 				return LoggedTransition{}, err
 			}
 			if err := refreshAppliedSnapshot(&decision, state, catalogs.Economy); err != nil {
@@ -383,6 +383,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	}
 	hook := closedReplayAccrualHook(catalogs, resolved.Accrual.CommonsWeightPPM)
 	var prefix []save.EventWrite
+	var actionDebits map[string]string
 	var exitType string
 	var terms prestigecore.Terms
 	if request.Kind == IntentCrossGate {
@@ -394,6 +395,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		if transition.Outcome == save.IntentRejected {
 			return LoggedExitTransition{Founder: founder, Company: company, Decision: save.ExitDecision{Outcome: save.IntentRejected, Receipt: transition.Receipt}}, nil
 		}
+		actionDebits = transition.ActionDebits
 		attended, attendedErr := prestigecore.AttendedMS(company, save.CanonicalServerTime(now))
 		if attendedErr != nil || attended < 900_000 || len(founder.ExitHistory) != 0 {
 			return LoggedExitTransition{}, ErrInvalidEngineState
@@ -454,7 +456,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		if err := validateFoundationHookInputs(catalogs, company, founder); err != nil {
 			return LoggedExitTransition{}, err
 		}
-		if err := applyFoundationTransition(catalogs, companyBefore, company, founder, revision, request, wire.EvaluationMode, now, contributions, true, &prefix); err != nil {
+		if err := applyFoundationTransition(catalogs, companyBefore, company, founder, revision, request, now, contributions, actionDebits, true, &prefix); err != nil {
 			return LoggedExitTransition{}, err
 		}
 	}

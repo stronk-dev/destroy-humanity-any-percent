@@ -1,4 +1,4 @@
-import { parseCanonical } from "../numeric";
+import { canonicalString, parseCanonical } from "../numeric";
 
 export const ACHIEVEMENT_CATALOG_SCHEMA_VERSION = 1 as const;
 export const MAX_EXACT_INTEGER = 9_007_199_254_740_991 as const;
@@ -123,7 +123,7 @@ function parseProof(value: unknown, scope: AchievementScope, condition: Achievem
     if (scope !== "run" || !registry.eventKinds.has(eventKind) || !registry.resourceIds.has(resourceId) || typeof row.minimum !== "string") syntax("burn proof is incompatible");
     const minimum = parseCanonical(row.minimum);
     if (!minimum.gt(0)) syntax("burn minimum must be positive");
-    return Object.freeze({ kind, eventKind, resourceId, minimum: minimum.toString() });
+    return Object.freeze({ kind, eventKind, resourceId, minimum: canonicalString(minimum) });
   }
   if (kind === "possession") {
     const row = exactObject(value, ["kind", "justification_copy_key"], "possession proof");

@@ -44,10 +44,11 @@ func (s *Service) declineExitOffer(request IntentRequest, state *save.State, cat
 	if err != nil {
 		return save.IntentDecision{}, err
 	}
+	postAccrual := state.Ledger.Snapshot()
 	payload, _ := json.Marshal(map[string]any{"offer_id": request.OfferID, "run_seq": state.RunSeq})
 	state.OfferState = nil
 	events = append(events, save.EventWrite{Kind: save.EventExitOfferDeclined, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
-	return appliedDecision(request, state, catalog, revision.Number+1, 1, before, events, nil)
+	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
 func afterPrestigeTransitionResolved(policy *prestigecore.Policy, catalog *economy.Catalog, request IntentRequest, state *save.State, revision save.Revision, now time.Time, decision *save.IntentDecision, founder *save.State, declinedOffers int64) error {

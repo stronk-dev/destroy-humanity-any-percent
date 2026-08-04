@@ -575,3 +575,26 @@ three findings.
 - Verification at the landing boundary used only repository-root targets: `make test`,
   `make test-save-integration`, and the focused Go/client suites all pass. The integration run
   exercised the append-only migration against real Postgres.
+
+## 2026-08-04 — independent hook review rejected the first landing
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Range:** `9a400f1^..25b7d4d` (a superset of the two implementation commits)
+- **Decision:** **not approved.** The transport supplies `ModeOnline` for ordinary HTTP intents,
+  but the prestige hook classifies gaps above the pinned catch-up ceiling as offline. The new hook
+  incorrectly treated the full online-mode cursor delta as attended time: 5,001 ms moved Meters,
+  and a gap above 24 hours rolled back forever. The shared one-hour fixture encoded the defect.
+- **Remediation:** derive the Meter step from the canonical attended-time ledger delta before/after
+  the transition, not evaluation mode. Cross-runtime 5,001 ms and 25-hour returns plus direct fact
+  and contribution input tests become required evidence before re-review.
+
+## 2026-08-04 — offline-attendance remediation implemented
+
+- The hook now subtracts canonical attended totals computed from the same offline-span ledger that
+  Prestige owns. Evaluation mode is no longer consulted as an attendance oracle.
+- Go unit coverage proves both causal input arms. The Go-authored shared corpus now includes online
+  transport envelopes after 5,001 ms and 25 hours; both advance successfully while Meter state is
+  unchanged in Go and TypeScript.
+- Kernel version advances to `0.3.24`; generated formulas publish the attended-ledger boundary.
+  Root unit/browser suites and the real-Postgres integration target pass before commit.

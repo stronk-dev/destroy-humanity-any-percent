@@ -246,7 +246,7 @@ func main() {
 		PurchasableContent: contentFormulaFor(economyCatalog),
 		Meters: meterFormula{
 			HookOrder:         "decay, then newly emitted ledger facts, then active non-neutral contribution inputs; clamp once; derive one prior-to-final band event; achievements evaluate after meters",
-			AttendedStep:      fmt.Sprintf("whole = floor((rate_per_attended_hour * attended_ms + remainder) / %d); remainder = modulus; offline attended_ms = 0", meters.MillisPerHour),
+			AttendedStep:      fmt.Sprintf("attended_ms = attended_total(after) - attended_total(before), using the canonical offline-span ledger; whole = floor((rate_per_attended_hour * attended_ms + remainder) / %d); remainder = modulus", meters.MillisPerHour),
 			Decay:             "move linearly toward declared target by whole attended steps; clear remainder on target saturation",
 			LedgerFactInput:   "apply declared delta once when fact_kind enters the committed Company fact set in this transition",
 			ContributionInput: "integrate declared delta_per_attended_hour only while (slot, source_id) is committed and non-neutral",

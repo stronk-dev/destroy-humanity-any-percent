@@ -433,3 +433,27 @@ loadable. This is an input-ownership closure, not a new achievement mechanic. Ke
 - Verification at the landing boundary used only repository-root targets: `make test` and
   `make test-save-integration` pass, alongside the focused Go/client suites. The implementation
   remains unarchived until an independent review covers the exact committed range.
+
+## 2026-08-04 — independent hook review rejected the first landing
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Range:** `9a400f1^..25b7d4d` (a superset of the two implementation commits)
+- **Decision:** **not approved.** Burn proof used whole-transition net balance movement, so normal
+  idle accrual could hide an honest sink. TypeScript also unioned a run-owned ID already present in
+  Founder lifetime while Go correctly failed closed. Both are demonstrated cross-boundary defects,
+  and the integration claims did not cover either causal seam.
+- **Remediation:** transition output now carries action-only debit evidence measured from the
+  post-accrual boundary; replay recomputes it and never persists it. Both kernels consume that
+  evidence for burn proof. TypeScript mirrors Go's lifetime-overlap rejection. The reviewer cases
+  become focused and shared-corpus regressions before re-review.
+
+## 2026-08-04 — action-debit and lifetime-latch remediation implemented
+
+- Applied transitions derive a non-wire action-debit trace from the post-accrual ledger boundary;
+  burn proof consumes that trace rather than whole-transition net movement. A shared Go-authored
+  case accrues `1e9` cash and burns `1e9` in the same gate action, then earns identically in TS.
+- The discriminating case exposed and fixed a second TS defect: the burn loader stored Decimal.js
+  display text (`1000000000`) rather than canonical wire text (`1e9`).
+- TypeScript now rejects run/lifetime ownership overlap before Exit union, matching Go and CA4.
+  Kernel version is `0.3.24`; root unit/browser suites and real-Postgres integration pass.

@@ -12,7 +12,7 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "1858e859ebb5ebd9aadf3b6a73c6ccca1ca63d1e3bc550a962b7aee4b5e6ab3c",
+  "source_fingerprint": "c648a30ac713d56acfc214caa5fbd0ede2af45cfa706817a4e1421d05bae8e2b",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
@@ -69,7 +69,7 @@
   },
   "meters": {
     "hook_order": "decay, then newly emitted ledger facts, then active non-neutral contribution inputs; clamp once; derive one prior-to-final band event; achievements evaluate after meters",
-    "attended_step": "whole = floor((rate_per_attended_hour * attended_ms + remainder) / 3600000); remainder = modulus; offline attended_ms = 0",
+    "attended_step": "attended_ms = attended_total(after) - attended_total(before), using the canonical offline-span ledger; whole = floor((rate_per_attended_hour * attended_ms + remainder) / 3600000); remainder = modulus",
     "decay": "move linearly toward declared target by whole attended steps; clear remainder on target saturation",
     "ledger_fact_input": "apply declared delta once when fact_kind enters the committed Company fact set in this transition",
     "contribution_input": "integrate declared delta_per_attended_hour only while (slot, source_id) is committed and non-neutral",

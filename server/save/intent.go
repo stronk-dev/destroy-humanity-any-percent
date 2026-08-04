@@ -99,6 +99,10 @@ type IntentDecision struct {
 	Outcome IntentOutcome
 	Receipt json.RawMessage
 	Events  []EventWrite
+	// ActionDebits is deterministic transition evidence used by in-process
+	// post-action hooks. It is deliberately not a wire or persistence surface:
+	// replay recomputes it from the same transition authority.
+	ActionDebits map[string]string
 }
 
 type IntentMutation func(state *State, revision Revision) (IntentDecision, error)

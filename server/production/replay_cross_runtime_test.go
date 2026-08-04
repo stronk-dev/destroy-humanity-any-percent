@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
@@ -264,7 +265,11 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		makeScriptedGateFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
 	}
 	result.Additional = append([]crossRuntimeBundleCase{makeFallbackInvariantFixture(t, bundleBytes.Artifacts, baseNow)}, makeFoundationFixtures(t, bundleBytes.Artifacts, baseNow)...)
-	result.Additional = append(result.Additional, makeActiveFoundationReplayFixture(t, baseNow))
+	result.Additional = append(result.Additional,
+		makeActiveFoundationReplayFixture(t, baseNow, 5001*time.Millisecond, "active-foundation-offline-5001ms"),
+		makeActiveFoundationReplayFixture(t, baseNow, 25*time.Hour, "active-foundation-offline-25h"),
+		makeActiveFoundationBurnReplayFixture(t, baseNow),
+	)
 	result.ActiveExit = makeActiveFoundationExitFixture(t, baseNow)
 	result.FullRun = makeFullRunFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	result.RejectedExit = makeRejectedExitFixture(t, catalogs, bundleBytes.Hash, baseNow)
@@ -314,10 +319,10 @@ func stringArtifacts(source map[string][]byte) map[string]string {
 	return result
 }
 
-func makeActiveFoundationReplayFixture(t *testing.T, now time.Time) crossRuntimeBundleCase {
+func makeActiveFoundationReplayFixture(t *testing.T, now time.Time, gap time.Duration, name string) crossRuntimeBundleCase {
 	t.Helper()
 	_, catalogs := foundationTestBundles(t)
-	state := replayFixtureState(t, catalogs.Economy, now.Add(-time.Hour))
+	state := replayFixtureState(t, catalogs.Economy, now.Add(-gap))
 	state.WireVersion = save.LatestSupportedVersion
 	meterState, err := meters.NewRunState(catalogs.Meters, 17)
 	if err != nil {
@@ -352,7 +357,67 @@ func makeActiveFoundationReplayFixture(t *testing.T, now time.Time) crossRuntime
 	}
 	events := fixtureEvents(transition.Events)
 	return crossRuntimeBundleCase{ConstantsHash: catalogs.ConstantsHash, Artifacts: artifacts, Case: crossRuntimeFixtureCase{
-		Name: "active-foundation-carry", PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+		Name: name, PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+		Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: postState,
+		ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, postState),
+	}}
+}
+
+func makeActiveFoundationBurnReplayFixture(t *testing.T, now time.Time) crossRuntimeBundleCase {
+	t.Helper()
+	_, catalogs := foundationTestBundles(t)
+	artifact := []byte(`{"schema_version":1,"achievements":[{"id":"achievement.gate_burn","condition_scope":"run","condition":{"kind":"counter_at_least","counter":"tier","minimum":3},"proof":{"kind":"burn","event_kind":"gate_crossed","resource_id":"company.cash","minimum":"1e9"},"score_grant":3,"copy_key":"category.any_percent"}]}`)
+	catalog, err := achievements.LoadCatalog(artifact, FoundationAchievementRegistry(catalogs.Economy))
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts := make(map[string][]byte, len(catalogs.Artifacts))
+	for name, data := range catalogs.Artifacts {
+		artifacts[name] = append([]byte(nil), data...)
+	}
+	artifacts["achievements"] = artifact
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs.Artifacts, catalogs.ConstantsHash, catalogs.Achievements = artifacts, hash, catalog
+	if !catalogs.valid(hash) {
+		t.Fatal("burn-proof bundle is not internally valid")
+	}
+	state := replayFixtureState(t, catalogs.Economy, now.Add(-time.Second))
+	state.WireVersion = save.LatestSupportedVersion
+	meterState, err := meters.NewRunState(catalogs.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.MeterBands = nil
+	state.MeterValues, state.MeterDecayRemainders, state.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	state.AchievementsEarnedRun = map[string]bool{}
+	state.Tier = 2
+	state.GeneratorCounts["generator.beige_tower"] = 1_000_000_000
+	setCash(t, state, "1e9")
+	preState := mustEncodeState(t, state)
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0400-7000-8000-000000000402","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, AchievementsEarnedLifetime: []string{}}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1400-7000-8000-000000000002", FounderID: "01986666-2400-7000-8000-000000000002", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry})
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !state.AchievementsEarnedRun["achievement.gate_burn"] {
+		t.Fatal("action-only debit did not satisfy burn proof")
+	}
+	postState := mustEncodeState(t, state)
+	events := fixtureEvents(transition.Events)
+	return crossRuntimeBundleCase{ConstantsHash: catalogs.ConstantsHash, Artifacts: stringArtifacts(catalogs.Artifacts), Case: crossRuntimeFixtureCase{
+		Name: "active-foundation-burn-after-accrual", PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
 		Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: postState,
 		ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, postState),
 	}}
