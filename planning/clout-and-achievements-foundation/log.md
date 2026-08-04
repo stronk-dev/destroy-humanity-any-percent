@@ -210,3 +210,12 @@ executes the real graph fixture, the shared catalog/registry corpus, and both ru
 exits 0 with 6,517 client and 19,560 browser assertions. The future sole-Clout owner, content mint,
 save/live/replay/Exit/relevance integration, and archival remain honestly pending; none is credited
 by this tooling verdict.
+
+## 2026-08-04 — save-v16 activation DESIGN-GAP
+
+Save/runtime tracing confirmed that Achievements cannot activate independently of Meters: v16
+follows meter v15, and current runs are pinned to epochs with neither artifact. Evaluating or
+deriving score from a deploy-current achievement catalog would make replay timing-dependent.
+C11 proposes atomic new-run activation of both artifacts/state versions, with no retroactive
+earning for pre-foundation runs. No save version, hook, Exit settlement, or artifact identity was
+changed pending the Meter C13/Achievements C11 owner ruling.

@@ -123,6 +123,24 @@ RFC is restructured, not patched:
   against discriminating fixtures; the artifact mint waits for owner-authored content.
 - Social Clout mint/decay and the PR-Intern run-local multiplier belong to their successor RFCs.
 
+### C11 — Save v16 and live evaluation depend on unresolved meter/save activation
+
+The implementation plan treats literal achievement rows as mint-only debt, but v16 follows meter
+save v15 and derives run/lifetime scores from the run-pinned achievement artifact. Current runs are
+v14 and pinned to epochs containing neither `meters` nor `achievements`. There is no deterministic
+way to write complete v16 state or evaluate achievements during those runs without reading
+deploy-current artifacts. Meter C13 also leaves the v14→v15 activation boundary owner-gated, so
+v16 cannot activate independently without skipping or redefining the save chain.
+
+**Proposed contract:** use the same new-run activation boundary as Meter C13. Pre-foundation runs
+remain on their pinned save semantics and execute neither Meters nor Achievements. Exit into the
+first epoch containing both artifacts assembles complete v15 meter state and empty/derived v16
+achievement state in one new-run transaction; subsequent ordinary writes require both pinned
+artifacts. No achievement is retroactively earned from pre-activation history. The migration
+corpus proves old-run replay through Exit, atomic v14→v16 new-run assembly, derived-score closure,
+and rejection when either artifact is missing. If retroactive achievements are desired, owner must
+define the immutable historical event/counter scan and artifact source for every old hash.
+
 ## Acceptance blockers (Codex review, 2026-08-03)
 
 The draft cannot be accepted because its two central mechanics reverse binding `design/02 §6`
@@ -273,3 +291,6 @@ observation fixture/registry now and names report activation as a downstream dep
 - 2026-08-03: owner reconciled C1–C10; implementation unblocked. Stale Clout-era summary,
   specification, acceptance criteria, open questions, and blocked changelog were replaced before
   implementation.
+- 2026-08-04: C11 records the save-v16 activation dependency: current v14 runs have neither the
+  meter nor achievement artifact, so live state must activate at a ruled new-run boundary rather
+  than from deploy-current catalogs.

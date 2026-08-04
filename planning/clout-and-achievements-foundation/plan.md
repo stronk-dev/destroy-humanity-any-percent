@@ -14,3 +14,7 @@ RFC: `rfc/clout-and-achievements-foundation.md`
 
 Carried content dependency: literal production achievement rows are owner-authored T0–T1 content;
 the strict engine uses discriminating fixtures and does not invent achievements.
+
+Activation dependency: C11 records that save v16/live evaluation cannot precede Meter C13 or the
+meter+achievement artifact mint. Current v14 runs have neither pinned artifact; activation must be
+new-run-bound or receive a different owner-ruled historical migration source.
