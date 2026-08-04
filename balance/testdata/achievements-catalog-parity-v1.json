@@ -1,38 +1,41 @@
 {
   "version": 1,
+  "baseline": {
+    "schema_version": 1,
+    "achievements": [
+      {
+        "id": "achievement.first_gate",
+        "condition_scope": "run",
+        "condition": { "kind": "fact_present", "fact_kind": "gate.tier_1" },
+        "proof": { "kind": "provenance", "event_kinds": ["gate_crossed"] },
+        "score_grant": 4,
+        "copy_key": "achievement.first_gate"
+      },
+      {
+        "id": "achievement.generator_hoard",
+        "condition_scope": "run",
+        "condition": { "kind": "owns_generator_at_least", "generator_id": "generator.clickfarm", "count": 300 },
+        "proof": { "kind": "possession", "justification_copy_key": "achievement.possession_warning" },
+        "score_grant": 8,
+        "copy_key": "achievement.first_gate"
+      }
+    ]
+  },
+  "registry": {
+    "copy_keys": ["achievement.first_gate", "achievement.possession_warning"],
+    "generator_ids": ["generator.clickfarm"],
+    "event_kinds": ["gate_crossed", "generator_purchased"],
+    "resource_ids": ["company.cash"],
+    "run_counters": ["generators_purchased_total", "tier"],
+    "career_counters": ["age_ms", "notoriety"],
+    "provenance_sources": { "fact:gate.tier_1": ["gate_crossed"] }
+  },
   "cases": [
-    {
-      "name": "valid baseline",
-      "valid": true,
-      "operations": []
-    },
-    {
-      "name": "unknown achievement field",
-      "valid": false,
-      "operations": [
-        { "op": "set", "path": ["achievements", 0, "clout_grant_ppm"], "value": 4 }
-      ]
-    },
-    {
-      "name": "wrong condition union field",
-      "valid": false,
-      "operations": [
-        { "op": "set", "path": ["achievements", 0, "condition", "minimum"], "value": null }
-      ]
-    },
-    {
-      "name": "unrelated provenance",
-      "valid": false,
-      "operations": [
-        { "op": "set", "path": ["achievements", 0, "proof", "event_kinds"], "value": ["generator_purchased"] }
-      ]
-    },
-    {
-      "name": "career ownership condition",
-      "valid": false,
-      "operations": [
-        { "op": "set", "path": ["achievements", 1, "condition_scope"], "value": "career" }
-      ]
-    }
+    { "name": "valid baseline", "target": "catalog", "valid": true, "operations": [] },
+    { "name": "unknown achievement field", "target": "catalog", "valid": false, "operations": [{ "op": "set", "path": ["achievements", 0, "clout_grant_ppm"], "value": 4 }] },
+    { "name": "wrong condition union field", "target": "catalog", "valid": false, "operations": [{ "op": "set", "path": ["achievements", 0, "condition", "minimum"], "value": null }] },
+    { "name": "unrelated provenance", "target": "catalog", "valid": false, "operations": [{ "op": "set", "path": ["achievements", 0, "proof", "event_kinds"], "value": ["generator_purchased"] }] },
+    { "name": "career ownership condition", "target": "catalog", "valid": false, "operations": [{ "op": "set", "path": ["achievements", 1, "condition_scope"], "value": "career" }] },
+    { "name": "malformed registry identifier", "target": "registry", "valid": false, "operations": [{ "op": "set", "path": ["event_kinds", 0], "value": "INVALID EVENT" }] }
   ]
 }

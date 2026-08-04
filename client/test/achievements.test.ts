@@ -31,6 +31,18 @@ function applyParityOperation(root: any, operation: { op: string; path: Array<st
   else throw new Error(`invalid parity operation ${operation.op}`);
 }
 
+function parityRegistry(value: typeof achievementCatalogParityCorpus.registry): AchievementRegistry {
+  return {
+    copyKeys: new Set(value.copy_keys),
+    generatorIds: new Set(value.generator_ids),
+    eventKinds: new Set(value.event_kinds),
+    resourceIds: new Set(value.resource_ids),
+    runCounters: new Set(value.run_counters),
+    careerCounters: new Set(value.career_counters),
+    provenanceSources: new Map(Object.entries(value.provenance_sources)),
+  };
+}
+
 describe("achievement catalog", () => {
   it("loads the closed proof union, evaluates byte order, and derives score", () => {
     const catalog = loadAchievementCatalog(JSON.stringify(validCatalog()), registry);
@@ -57,9 +69,11 @@ describe("achievement catalog", () => {
   it("matches the shared Go/TypeScript catalog parity corpus", () => {
     expect(achievementCatalogParityCorpus.version).toBe(1);
     for (const vector of achievementCatalogParityCorpus.cases) {
-      const catalog = validCatalog();
-      for (const operation of vector.operations) applyParityOperation(catalog, operation);
-      const load = () => loadAchievementCatalog(JSON.stringify(catalog), registry);
+      const catalog = structuredClone(achievementCatalogParityCorpus.baseline);
+      const registryValue = structuredClone(achievementCatalogParityCorpus.registry);
+      const target = vector.target === "catalog" ? catalog : registryValue;
+      for (const operation of vector.operations) applyParityOperation(target, operation);
+      const load = () => loadAchievementCatalog(JSON.stringify(catalog), parityRegistry(registryValue));
       if (vector.valid) expect(load, vector.name).not.toThrow();
       else expect(load, vector.name).toThrow();
     }

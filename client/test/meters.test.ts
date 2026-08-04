@@ -61,7 +61,7 @@ describe("meter catalog", () => {
   it("matches the shared Go/TypeScript catalog parity corpus", () => {
     expect(meterCatalogParityCorpus.version).toBe(1);
     for (const vector of meterCatalogParityCorpus.cases) {
-      const catalog = validCatalog();
+      const catalog = structuredClone(meterCatalogParityCorpus.baseline);
       for (const operation of vector.operations) applyParityOperation(catalog, operation);
       const load = () => loadMeterCatalog(JSON.stringify(catalog));
       if (vector.valid) expect(load, vector.name).not.toThrow();

@@ -194,3 +194,16 @@ Residual findings:
 
 No production meter artifact was minted. Owner-authored literal balance rows plus the existing
 save/live-replay/events/formulas/relevance work remain honest blockers.
+
+## 2026-08-04 — parity/tooling closure after second review
+
+- The shared parity artifact now owns the complete valid meter catalog baseline as well as its
+  invalid mutations. Go and TypeScript load cloned bytes/data from that one baseline; separately
+  constructed fixtures can no longer drift while the parity test stays green.
+- Replaced the synthetic dependency list with a real two-package fixture graph whose helper
+  imports the forbidden economy owner. The boundary tool proves `go list -deps` rejects that
+  actual graph before checking the production package.
+- Boundary subprocesses inherit Make's repository-local `GOCACHE`, falling back to
+  `.cache/go-build` for direct tool invocation; no `/tmp` cache override remains.
+- Focused meter/achievement/fixture Go tests, both boundary tools, and TypeScript/Svelte checks
+  pass.

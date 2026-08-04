@@ -7,9 +7,12 @@ import (
 )
 
 type catalogParityCorpus struct {
-	Version int `json:"version"`
-	Cases   []struct {
+	Version  int             `json:"version"`
+	Baseline json.RawMessage `json:"baseline"`
+	Registry json.RawMessage `json:"registry"`
+	Cases    []struct {
 		Name       string `json:"name"`
+		Target     string `json:"target"`
 		Valid      bool   `json:"valid"`
 		Operations []struct {
 			Op    string `json:"op"`
@@ -17,6 +20,16 @@ type catalogParityCorpus struct {
 			Value any    `json:"value"`
 		} `json:"operations"`
 	} `json:"cases"`
+}
+
+type parityRegistry struct {
+	CopyKeys          []string            `json:"copy_keys"`
+	GeneratorIDs      []string            `json:"generator_ids"`
+	EventKinds        []string            `json:"event_kinds"`
+	ResourceIDs       []string            `json:"resource_ids"`
+	RunCounters       []string            `json:"run_counters"`
+	CareerCounters    []string            `json:"career_counters"`
+	ProvenanceSources map[string][]string `json:"provenance_sources"`
 }
 
 func testRegistry() Registry {
@@ -129,22 +142,59 @@ func TestLoadCatalogMatchesSharedParityCorpus(t *testing.T) {
 	}
 	for _, vector := range corpus.Cases {
 		t.Run(vector.Name, func(t *testing.T) {
-			var root any
-			if err := json.Unmarshal(validCatalogBytes(t), &root); err != nil {
+			var catalogRoot, registryRoot any
+			if err := json.Unmarshal(corpus.Baseline, &catalogRoot); err != nil {
 				t.Fatal(err)
 			}
-			for _, operation := range vector.Operations {
-				applyCatalogParityOperation(t, root, operation.Op, operation.Path, operation.Value)
+			if err := json.Unmarshal(corpus.Registry, &registryRoot); err != nil {
+				t.Fatal(err)
 			}
-			candidate, err := json.Marshal(root)
+			target := catalogRoot
+			if vector.Target == "registry" {
+				target = registryRoot
+			} else if vector.Target != "catalog" {
+				t.Fatalf("invalid parity target %q", vector.Target)
+			}
+			for _, operation := range vector.Operations {
+				applyCatalogParityOperation(t, target, operation.Op, operation.Path, operation.Value)
+			}
+			candidate, err := json.Marshal(catalogRoot)
 			if err != nil {
 				t.Fatal(err)
 			}
-			_, loadErr := LoadCatalog(candidate, testRegistry())
+			registryBytes, err := json.Marshal(registryRoot)
+			if err != nil {
+				t.Fatal(err)
+			}
+			_, loadErr := LoadCatalog(candidate, decodeParityRegistry(t, registryBytes))
 			if (loadErr == nil) != vector.Valid {
 				t.Fatalf("valid=%v loadErr=%v", vector.Valid, loadErr)
 			}
 		})
+	}
+}
+
+func decodeParityRegistry(t *testing.T, data []byte) Registry {
+	t.Helper()
+	var source parityRegistry
+	if err := json.Unmarshal(data, &source); err != nil {
+		t.Fatal(err)
+	}
+	toSet := func(values []string) map[string]bool {
+		result := make(map[string]bool, len(values))
+		for _, value := range values {
+			result[value] = true
+		}
+		return result
+	}
+	return Registry{
+		CopyKeys:          toSet(source.CopyKeys),
+		GeneratorIDs:      toSet(source.GeneratorIDs),
+		EventKinds:        toSet(source.EventKinds),
+		ResourceIDs:       toSet(source.ResourceIDs),
+		RunCounters:       toSet(source.RunCounters),
+		CareerCounters:    toSet(source.CareerCounters),
+		ProvenanceSources: source.ProvenanceSources,
 	}
 }
 

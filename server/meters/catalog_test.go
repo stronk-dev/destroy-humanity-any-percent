@@ -7,8 +7,9 @@ import (
 )
 
 type catalogParityCorpus struct {
-	Version int `json:"version"`
-	Cases   []struct {
+	Version  int             `json:"version"`
+	Baseline json.RawMessage `json:"baseline"`
+	Cases    []struct {
 		Name       string `json:"name"`
 		Valid      bool   `json:"valid"`
 		Operations []struct {
@@ -143,7 +144,7 @@ func TestLoadCatalogMatchesSharedParityCorpus(t *testing.T) {
 	for _, vector := range corpus.Cases {
 		t.Run(vector.Name, func(t *testing.T) {
 			var root any
-			if err := json.Unmarshal(validCatalogBytes(t), &root); err != nil {
+			if err := json.Unmarshal(corpus.Baseline, &root); err != nil {
 				t.Fatal(err)
 			}
 			for _, operation := range vector.Operations {

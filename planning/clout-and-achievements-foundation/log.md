@@ -173,3 +173,16 @@ Residual findings:
 Current production code remains Clout-free and neutral. Owner-authored achievement/copy content,
 the future sole-Clout owner, save v16, runtime/replay/Exit/relevance integration, epoch mint, and
 archive remain honestly pending.
+
+## 2026-08-04 — parity/tooling closure after second review
+
+- The shared parity artifact now owns the complete valid achievement catalog and registry
+  baselines as well as catalog/registry mutations. Both runtimes consume them, including the
+  previously Go-only malformed registry-identifier rejection.
+- Replaced the synthetic dependency list with a real two-package fixture graph whose helper
+  imports the forbidden save owner. The boundary tool proves `go list -deps` rejects that actual
+  graph before checking the production package.
+- Boundary subprocesses inherit Make's repository-local `GOCACHE`, falling back to
+  `.cache/go-build` for direct tool invocation; no `/tmp` cache override remains.
+- Focused meter/achievement/fixture Go tests, both boundary tools, and TypeScript/Svelte checks
+  pass.

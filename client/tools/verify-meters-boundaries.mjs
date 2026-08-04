@@ -37,10 +37,12 @@ function assertDependencies(dependencies, label) {
   const forbidden = dependencies.filter((value) => /^cloud-clicker\/server\/(?:economy|production)(?:\/|$)/u.test(value));
   if (forbidden.length > 0) throw new Error(`${label}: forbidden transitive dependencies: ${forbidden.join(", ")}`);
 }
+const goEnvironment = { ...process.env, GOCACHE: process.env.GOCACHE ?? path.join(root, ".cache", "go-build") };
+const fixtureDependencies = execFileSync("go", ["list", "-deps", "./internal/boundaryfixtures/metersroot"], { cwd: path.join(root, "server"), encoding: "utf8", env: goEnvironment }).trim().split("\n");
 let fixtureRejected = false;
-try { assertDependencies(["cloud-clicker/server/economy"], "transitive fixture"); } catch { fixtureRejected = true; }
+try { assertDependencies(fixtureDependencies, "transitive fixture"); } catch { fixtureRejected = true; }
 if (!fixtureRejected) throw new Error("meters transitive dependency fixture unexpectedly passed");
-const dependencies = execFileSync("go", ["list", "-deps", "./meters"], { cwd: path.join(root, "server"), encoding: "utf8", env: { ...process.env, GOCACHE: "/tmp/cloud-clicker-boundary-go-cache" } }).trim().split("\n");
+const dependencies = execFileSync("go", ["list", "-deps", "./meters"], { cwd: path.join(root, "server"), encoding: "utf8", env: goEnvironment }).trim().split("\n");
 assertDependencies(dependencies, "server/meters");
 
 console.log("meters package boundary ok");
