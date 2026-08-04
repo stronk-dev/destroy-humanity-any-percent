@@ -367,3 +367,21 @@ Independent evidence: all original discriminating reproducers pass; both new rep
 described and were deleted after execution. Exact-range `git diff --check`, an uncached focused
 `./save` run, and the targeted real-Postgres legacy-intent integration test pass. The separate
 uncommitted production/meters next landing was neither reviewed nor used as evidence.
+
+## 2026-08-04 — independent second activation-codec remediation review (`9d3764f^..9d3764f`)
+
+- **Review by:** Codex
+- **Recorded by:** Codex
+- **Decision:** **approved; the case-fold bypass and standalone-v15 persistence seam are closed.**
+
+The raw v15/v16 key scan now follows the case-folding behavior of `encoding/json`; exact lowercase,
+uppercase, title-case, and mixed-case `meter_bands` spellings all reach the superseded-field error.
+V15 remains usable as an explicit migration codec but is decode-only at active persistence
+boundaries. The common Store validation closes Create, generic Write, and applied Intent; the Exit
+tuple guard closes continuation; and both genesis entry points reject v15 before it can identify a
+run.
+
+Independent evidence includes exact-range diff checking, an uncached full `./save` unit run, four
+case-folded-key reproducers, and a scratch real-Postgres audit of Create/Write/Intent/Exit/genesis.
+The public epoch-pin path rejected v15 and left zero run pins after rollback. Scratch tests were
+deleted. Concurrent uncommitted production/meters work remained out of scope and is not credited.

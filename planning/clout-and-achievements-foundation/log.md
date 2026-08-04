@@ -333,3 +333,22 @@ All original scratch reproducers now pass; the case-variant field and standalone
 reproducers fail as described and were removed. Exact-range checking, an uncached focused `./save`
 suite, and the isolated real-Postgres legacy-intent fixture pass. Concurrent uncommitted
 production/meters work remains outside this review and is not credited.
+
+## 2026-08-04 — independent second activation-codec remediation review (`9d3764f^..9d3764f`)
+
+- **Review by:** Codex
+- **Recorded by:** Codex
+- **Decision:** **approved; both remaining MEDIUM findings are closed and the activation codec is
+  clear for its dependent landing.**
+
+Exact-range review verified that `strings.EqualFold` rejects `meter_bands`, `METER_BANDS`,
+`Meter_Bands`, and mixed-case spellings before v15/v16 decoding. The v15 codec remains available
+for migration coverage, while the shared Store encoder admits only active v14/v16 state. A scratch
+real-Postgres reproducer exercised every persistence surface: Create, generic Write, applied Intent,
+the complete Exit tuple, both genesis transaction entry points, and the public epoch-pin/genesis
+path all reject v15. The public pinning rejection also rolls back the preliminary `run_epochs` row,
+so the failure leaves no partial run identity.
+
+Evidence: exact-range `git diff --check`, an uncached full `./save` unit run, four case-folded-key
+reproducers, and the all-surface Postgres reproducer pass. Scratch tests were removed after the run.
+The separate uncommitted production/meters work was excluded from both source review and evidence.
