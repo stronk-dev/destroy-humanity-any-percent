@@ -41,6 +41,25 @@ try {
   versionFiles(root, "0.1.2"); commit(root, "kernel: fix forward reviewed history");
   run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
 
+  const mainAfterCorrection = run(root, "git", ["branch", "--show-current"]).trim();
+  run(root, "git", ["switch", "-c", "dangling-correction"]);
+  write(root, "client/src/replay.ts", "export const replay = 22;\n");
+  commit(root, "test: unreachable semantic miss");
+  const dangling = run(root, "git", ["rev-parse", "HEAD"]).trim();
+  run(root, "git", ["switch", mainAfterCorrection]);
+  run(root, "git", ["branch", "-D", "dangling-correction"]);
+  write(root, "planning/dangling/log.md", `# Fixture review ledger\n\n## Independent review (\`${dangling.slice(0, 7)}^..${dangling.slice(0, 7)}\`)\n\n- **Review by:** Fixture Reviewer\n- **Decision:** dangling history must not enter the correction register.\n`);
+  const danglingCorrection = JSON.parse(readFileSync(path.join(root, "kernel/history-corrections.json"), "utf8"));
+  danglingCorrection.corrections.push({ offending_commit: dangling, corrected_in_version: "0.1.3", reason: "A deleted side-branch semantic miss must not qualify as reachable project history.", review_log: "planning/dangling/log.md" });
+  danglingCorrection.corrections.sort((left, right) => left.offending_commit.localeCompare(right.offending_commit));
+  write(root, "kernel/history-corrections.json", `${JSON.stringify(danglingCorrection, null, 2)}\n`);
+  versionFiles(root, "0.1.3");
+  let danglingCorrectionFailed = false;
+  try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { danglingCorrectionFailed = true; }
+  if (!danglingCorrectionFailed) throw new Error("kernel guard accepted a correction outside reachable HEAD history");
+  run(root, "git", ["restore", "."]);
+  rmSync(path.join(root, "planning/dangling"), { recursive: true, force: true });
+
   const acceptedCorrection = JSON.parse(readFileSync(path.join(root, "kernel/history-corrections.json"), "utf8"));
   acceptedCorrection.corrections[0].reason = "Mutated history correction should never be accepted by the append-only guard.";
   write(root, "kernel/history-corrections.json", `${JSON.stringify(acceptedCorrection, null, 2)}\n`);

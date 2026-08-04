@@ -90,7 +90,13 @@ const reviewRecordsCorrection = (correction) => {
   const content = readFileSync(filename, "utf8");
   const ranges = /\(`([0-9a-f]{7,40})\^\.\.([0-9a-f]{7,40})`\)/g;
   for (const match of content.matchAll(ranges)) {
-    if (!correction.offending_commit.startsWith(match[1]) || !correction.offending_commit.startsWith(match[2])) continue;
+    let left;
+    let right;
+    try {
+      left = git("rev-parse", "--verify", `${match[1]}^{commit}`);
+      right = git("rev-parse", "--verify", `${match[2]}^{commit}`);
+    } catch { continue; }
+    if (left !== correction.offending_commit || right !== correction.offending_commit) continue;
     const heading = content.lastIndexOf("\n## ", match.index);
     const sectionStart = heading < 0 ? 0 : heading + 1;
     const nextHeading = content.indexOf("\n## ", match.index + match[0].length);
@@ -101,7 +107,10 @@ const reviewRecordsCorrection = (correction) => {
 };
 const correctionTargetsMissedBump = (correction) => {
   let parents;
-  try { parents = git("rev-list", "--parents", "-n", "1", correction.offending_commit).split(" ").slice(1); } catch { return false; }
+  try {
+    git("merge-base", "--is-ancestor", correction.offending_commit, "HEAD");
+    parents = git("rev-list", "--parents", "-n", "1", correction.offending_commit).split(" ").slice(1);
+  } catch { return false; }
   return parents.length > 0 && parents.some((parent) => {
     const files = git("diff", "--name-only", parent, correction.offending_commit).split("\n").filter(Boolean);
     if (!files.some((filename) => affecting(filename, guard.paths))) return false;

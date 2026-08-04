@@ -451,3 +451,24 @@ three findings.
   range—not merely exist.
 - Adversarial fixtures now reject correction mutation and unrelated-log rebinding, retain removal
   and shallow-history rejection, and assert all four newly active package paths remain registered.
+
+## 2026-08-04 — independent activation-integrity remediation review (`bcc021d^..bcc021d`)
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Decision:** **not approved; the original three findings close, but one MEDIUM correction-target
+  reachability seam remains.**
+- A deleted side-branch commit can satisfy the full-hash, guarded-miss, labeled-review, and real-bump
+  checks even though it is not project history reachable from HEAD. The review directly reproduced
+  an accepted correction for such a dangling commit.
+- Score-retune Exit, all four runtime path registrations, correction field immutability, review-log
+  binding, removal, and shallow-history rejection held under the independent pass.
+
+## 2026-08-04 — correction reachability remediation
+
+- Every correction target must now satisfy `merge-base --is-ancestor <target> HEAD`; a commit object
+  surviving only in reflog/object storage cannot enter the project correction ledger.
+- Abbreviated hashes in review headings are resolved by Git and must uniquely resolve to the exact
+  full offending hash on both sides of the reviewed range. Prefix text alone is no longer proof.
+- The adversarial fixture creates an unversioned semantic commit on a side branch, deletes the
+  branch, attempts a syntactically valid correction plus real bump, and requires rejection.
