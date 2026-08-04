@@ -1,85 +1,127 @@
-# RFC: Clout & Achievements Foundation
+# RFC: Achievements Foundation (Clout deferred — see C1/C2 rulings)
 
-- **Status:** draft
+- **Status:** accepted (C1–C10 ruled; SCOPE NARROWED to Achievements; implementing)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/02 §6` (Clout — the achievement/influence axis; milk-equivalent + attention-economy play; feeds the multiplicative CloutStack), `design/02 §2c.3` + `§6b` (the Neopets possession/burn/provenance law + the Gaia one-mint law), `design/08` (influencer-culture satire)
 - **Research:** `neopets-systems.md §5` (achievements-as-currency, the avatar-lending credit market — the possession-check hazard), `gaia-hyperinflation.md §4a` (posting-as-faucet, the single-mint discipline), `cookie-clicker.md` (achievements→milk→kittens, the highest-leverage idea)
-- **Depends on:** Production + Run Genesis (implemented — achievements evaluate inside `ApplyLogged`; Clout is Founder state); Meters Foundation (draft — shares the band/registry pattern)
+- **Depends on:** Production + Run Genesis + Copy Pipeline (implemented); Meters Foundation
+  (implementing — shares the strict registry pattern; Phase-A predicates do not yet consume meters)
 - **Owner ruling honored:** breadth-first — the mint/decay/check MECHANICS and the achievement engine, not the individual achievements (those are content).
-- **Planning:** `planning/clout-and-achievements-foundation/` (once implementing)
+- **Planning:** `planning/clout-and-achievements-foundation/`
 
 ## Summary
 
-Two coupled foundations the economy already assumes and neither exists: **achievements-as-currency**
-(the milk/kittens loop — the design's stated highest-leverage mechanic) and **Clout** (the
-Founder-persistent influence axis they feed). Both carry hard-won laws from the enclave research —
-the one-mint discipline (Gaia) and the possession-check hazard (Neopets) — that must be structural
-from day one or the satirical economy becomes the thing it satirizes.
+This foundation implements achievements-as-score: permanent earned IDs and their exact,
+non-spendable `achievement_score`. It deliberately does **not** own Clout. Clout's only mint is
+future social activity, and lifetime Clout never enters production. The foundation preserves the
+possession-check warning from Neopets and exports a neutral, typed observation seam for the future
+run-local PR-Intern multiplier and Relevance Harness.
 
 ## Specification
 
 ### CA1 — The achievement engine (closed catalog family)
 
-`balance/achievements/*.json`: `{id, condition: closed predicate over committed facts (the routes
-condition union + lifetime counters + meter bands + exit history), check: burn|provenance|
-possession, clout_grant_ppm, scope: run|founder, copy_key}`. Achievements evaluate at accrual
-boundaries inside `ApplyLogged` (state-derived, replay-deterministic, nothing new in
-replay_inputs); earning emits `achievement_earned` (registry kind); the earned set is Founder
-state (permanent — the milk model: they never un-earn), sorted unique.
+`balance/achievements/*.json` is strict schema v1. Rows are
+`{id,condition_scope,condition,proof,score_grant,copy_key}`. `condition_scope` is `run|career` and
+describes what the predicate may observe, never reset ownership. `condition` is the bounded closed
+union from C6: `fact_present`, `counter_at_least`, `exit_count_at_least`,
+`owns_generator_at_least`, or `all_of`. `proof` is exactly one of `provenance`, `burn`, or
+`possession`; the loader enforces structural predicate/proof compatibility. `score_grant` is a
+positive exact-safe integer balance literal. `copy_key` resolves through the implemented Copy
+Pipeline before a production catalog may ship.
+
+Achievements evaluate after the complete applied nonterminal transition and at the terminal
+pre-settlement boundary. Rejected intents never evaluate. Definitions evaluate in byte order
+against one pre-achievement snapshot; newly earned IDs commit simultaneously and emit
+`achievement_earned.v1` in ID order. The Company run set latches immediately. Founder lifetime
+ownership settles atomically at Exit, so achievements never mutate Founder scope during an
+ordinary Company intent.
 
 - **The check discipline (the Neopets law, ruling C4/§2c.3 made code):** every achievement
-  declares how its condition is verified. `burn` = the condition consumed something unfakeable
+  declares how its condition is verified. `burn` = the earning transition consumed something unfakeable
   (the Kadoatery proof-of-burn — default for prestige achievements). `provenance` = derived from
   the immutable run log / event history (unforgeable by construction). `possession` = checks
   current holdings, and **requires an explicit `possession_justification` catalog field** because
   possession will be rented (the ALP credit-market lesson); the loader rejects a bare
   `possession` check. Phase-0 default: `provenance` (the run log is right there).
 
-### CA2 — Clout: the single-mint axis (the Gaia law made code)
+### CA2 — Achievement score and the neutral provider seam
 
-Clout is Founder-persistent ppm. **It has exactly ONE mint: achievement grants** (Phase 0 —
-attention-economy play adds mints LATER, each an RFC, each reviewed against this law). The loader/
-lint asserts no other source writes Clout; a second faucet is a review-blocking defect by
-construction (`design/02 §6b`: "any product that emits Clout is a second faucet the sinks weren't
-sized for"). Clout feeds the multiplicative **CloutStack** (design/02 §6): a production-stack slot
-whose factor = a declared curve over total Clout (`1 + f(clout_ppm)`, the kitten-multiplier shape,
-quantize-once). Clout **persists across Exit** and is **not spendable** (it's an influence
-*level*, not a currency — the meter not-spendable pattern; reach/PR surfaces read it, nothing
-debits it).
+`achievement_score` is an exact non-negative integer derived from the catalog grants of the
+earned-ID set. It is not an economy resource, has no debit API, and never aliases `clout_lifetime`.
+Save v16 persists Company `achievements_earned_run`/`achievement_score_run` and Founder
+`achievements_earned_lifetime`/`achievement_score_lifetime`, with sorted-unique sets and derived-
+score validation. The future PR-Intern owner may consume the typed run observation, but this
+foundation registers no production contribution and therefore ships neutral.
 
-### CA3 — Decay policy (ruled: none at Phase 0)
+### CA3 — Founder settlement and reset
 
-Clout does not decay in Phase 0 (achievements are permanent, so their Clout is permanent — the
-milk model). If attention-economy play later adds *earned* Clout that should fade, that mint
-declares its own decay; the achievement mint never decays. This is stated so a future decay
-addition is a deliberate per-mint choice, not a global retrofit.
+The Company run set accumulates newly earned IDs. `ApplyExitTransaction` unions them into the
+Founder lifetime set under the existing founder→company lock order, derives the lifetime score
+from the pinned achievement catalog, records the settled IDs and score in the Exit receipt for
+replay, and starts the next Company run with an empty run set/zero run score. The union is
+idempotent by achievement ID. New Founder starts empty and deliberately inherits nothing.
 
 ### CA4 — Anti-gaming (the satire must not self-Goodhart)
 
-Achievement conditions are evaluated once and latch (earned-set membership); a condition that
-oscillates cannot farm repeated grants. Clout grants are idempotent by achievement id in the
-earned set. The relevance harness (drafted) treats achievements as purchasable-adjacent: an
-achievement no persona ever earns is dead content flagged like any other.
+Achievement conditions latch by lifetime ID; an oscillating condition cannot farm repeated
+grants. The run set may not contain an ID already present in Founder carry. The Relevance Harness
+receives typed earned observations; activation of its dead-achievement report remains downstream.
+
+### CA5 — Identity, replay, and ownership boundaries
+
+`achievements` is a strict epoch artifact. Production definitions require verified copy keys;
+test fixtures may use a validated local copy registry. The artifact joins constants identity and
+replay bundles in the mint that introduces content. Hook order is Purchasable Content → Meters →
+Achievements → future Events. Achievement code does not import the future Clout transition owner,
+and closed reward/effect registries expose neither Clout nor achievement score as a generic grant.
+
+## Owner rulings on C1–C10 (2026-08-03) — TWO BINDING-LAW REVERSALS CORRECTED
+
+Codex caught this RFC contradicting two binding design/02 §6 laws. Both catches are correct; the
+RFC is restructured, not patched:
+
+- **C1 — accepted: Clout's ONE mint is SOCIAL ACTIVITY, not achievements** (design/02 §6b, binding
+  — I reversed it). Achievements mint a separate permanent non-spendable **`achievement_score`**
+  (the true milk-equivalent). **Clout is removed from this RFC entirely** — the Feed/Social
+  foundation owns Clout's single mint + decay. This RFC becomes **Achievements Foundation**.
+- **C2 — accepted: lifetime Clout never enters production** (design/02 §6 carry rule, binding — my
+  lifetime CloutStack recreated the exact snowball the carry rule removed). Removed. The milk-loop
+  multiplier, IF kept, is a **run-local** contribution requiring owned PR-Intern content + current-
+  run achievement score; no such content exists, so **this foundation ships the typed provider
+  seam + vectors only, NEUTRAL in production**. Founder `clout_lifetime` stays reach-only, never
+  imported into multiplier/production.
+- **C3 — accepted:** `achievement_score` is a new non-negative int64 Founder field (not ppm, not
+  the existing `CloutLifetime`); the earned-set is a new sorted-unique Founder field; both named
+  in the save migration.
+- **C4–C10 — accepted as proposed** (the check-discipline predicate grammar, the latch/idempotency
+  proof, the run-vs-founder scope of the earned set, the achievement_score save shape, the
+  relevance-harness dead-achievement hook, and the Company/Founder transaction boundary — earned-set
+  and achievement_score are Founder-scope, so per Meters-C3 they accumulate as a Company pending
+  delta settled at Exit OR the achievement engine writes founder scope only via the exit path;
+  ruled: **achievement earning accumulates on Company state and the earned-set/score flush to the
+  Founder stream at Exit**, the same multi-stream discipline, so ordinary intents stay Company-only).
 
 ## Acceptance criteria
 
-1. Achievement engine: condition eval inside `ApplyLogged` byte-parity Go/TS; earning latches
-   (re-crossing the condition grants nothing); `achievement_earned` evented; earned-set persists
-   across Exit.
+1. Achievement engine: condition evaluation inside `ApplyLogged` is byte-identical Go/TS; earning
+   latches, simultaneous IDs order by byte value, oscillation grants nothing, and
+   `achievement_earned.v1` uses the exact registered payload.
 2. Check law: loader rejects a bare `possession` check; a `provenance` achievement is verifiable
    from the run log alone (fixture); a `burn` achievement's condition consumed the declared sink.
-3. Clout single-mint: the lint/loader fails a seeded second Clout source; CloutStack factor
-   golden vectors; Clout survives Exit and cannot be debited (seeded cost-wiring rejected).
-4. Anti-gaming: an oscillating condition farms zero repeat grants; idempotent by id.
-5. Save migration (Clout + earned-set fields) with corpus; relevance report flags a seeded
-   never-earned achievement.
+3. Achievement score is structurally non-spendable and disjoint from economy resources; the
+   foundation has no Clout writer/import and its production contribution seam is neutral.
+4. Exit settlement unions IDs exactly once, records the settled result for replay, resets run
+   state, and preserves Founder lifetime state across later Exits.
+5. Save-v16 Company/Founder migration corpus, artifact/replay identity, sequential Go/TS fixtures,
+   and the typed downstream Relevance observation registry all pass.
 
 ## Open questions
 
-- The CloutStack curve `f` — balance data, harness-tuned; must stay legible (formula artifact).
-- Attention-economy Clout mints (posting, viral moments, podcast circuit — `design/02 §6`,
-  `design/08`) — each a successor RFC binding to CA2's single-mint law with its own decay.
+- Literal production achievement definitions and grants are content data. The foundation may land
+  against discriminating fixtures; the artifact mint waits for owner-authored content.
+- Social Clout mint/decay and the PR-Intern run-local multiplier belong to their successor RFCs.
 
 ## Acceptance blockers (Codex review, 2026-08-03)
 
@@ -226,8 +268,8 @@ observation fixture/registry now and names report activation as a downstream dep
 
 ## Changelog
 
-- 2026-08-03: created (draft) — achievements-as-currency + Clout, with the one-mint and
-  possession-check laws structural from the first line.
-- 2026-08-03: Codex acceptance review recorded C1–C10. Implementation is blocked pending owner
-  reconciliation of the Gaia single-mint law, lifetime-Clout carry rule, and Founder settlement
-  boundary.
+- 2026-08-03: created (draft) — achievements-as-currency + Clout.
+- 2026-08-03: C1–C10 ruled — TWO binding-law reversals corrected: Clout's sole mint is social activity (deferred to Feed/Social, removed here) and lifetime Clout never enters production (CloutStack removed). Renamed Achievements Foundation; ships achievement_score + a neutral run-local provider seam; earned-set/score flush at Exit. Accepted.
+- 2026-08-03: owner reconciled C1–C10; implementation unblocked. Stale Clout-era summary,
+  specification, acceptance criteria, open questions, and blocked changelog were replaced before
+  implementation.

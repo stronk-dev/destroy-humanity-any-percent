@@ -208,6 +208,30 @@ function meterSchemaFixture() {
   };
 }
 
+function achievementSchemaFixture() {
+  return {
+    schema_version: 1,
+    achievements: [
+      {
+        id: "achievement.first_gate",
+        condition_scope: "run",
+        condition: { kind: "fact_present", fact_kind: "gate.tier_1" },
+        proof: { kind: "provenance", event_kinds: ["gate_crossed"] },
+        score_grant: 4,
+        copy_key: "achievement.first_gate",
+      },
+      {
+        id: "achievement.generator_hoard",
+        condition_scope: "run",
+        condition: { kind: "owns_generator_at_least", generator_id: "generator.clickfarm", count: 300 },
+        proof: { kind: "possession", justification_copy_key: "achievement.possession_warning" },
+        score_grant: 8,
+        copy_key: "achievement.first_gate",
+      },
+    ],
+  };
+}
+
 async function main() {
   const schema = await readJSON(schemaPath);
   const ajv = new Ajv2020({ allErrors: true, strict: true });
@@ -274,6 +298,20 @@ async function main() {
     const candidate = structuredClone(meterFixture);
     mutate(candidate);
     if (validateMeters(candidate)) throw new Error("meter schema accepted a seeded invalid fixture");
+  }
+
+  const achievementsSchema = await readJSON(path.join(balanceDirectory, "achievements.schema.json"));
+  const validateAchievements = ajv.compile(achievementsSchema);
+  const achievementFixture = achievementSchemaFixture();
+  if (!validateAchievements(achievementFixture)) throw new Error(`achievement schema rejected valid fixture: ${validationErrors(validateAchievements)}`);
+  for (const mutate of [
+    (value) => { value.achievements[0].clout_grant_ppm = 4; },
+    (value) => { delete value.achievements[1].proof.justification_copy_key; },
+    (value) => { value.achievements[0].score_grant = 0; },
+  ]) {
+    const candidate = structuredClone(achievementFixture);
+    mutate(candidate);
+    if (validateAchievements(candidate)) throw new Error("achievement schema accepted a seeded invalid fixture");
   }
 
   const companyResourceIDs = new Set();
@@ -422,7 +460,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + meters(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s)`,
   );
 }
 

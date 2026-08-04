@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cloud Clicker achievement catalog v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "achievements"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "achievements": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/achievement" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$" },
+    "exact_integer": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "fact_present": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "fact_kind"],
+      "properties": { "kind": { "const": "fact_present" }, "fact_kind": { "$ref": "#/$defs/id" } }
+    },
+    "counter_at_least": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "counter", "minimum"],
+      "properties": {
+        "kind": { "const": "counter_at_least" },
+        "counter": { "$ref": "#/$defs/id" },
+        "minimum": { "$ref": "#/$defs/exact_integer" }
+      }
+    },
+    "exit_count_at_least": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "count"],
+      "properties": {
+        "kind": { "const": "exit_count_at_least" },
+        "count": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }
+      }
+    },
+    "owns_generator_at_least": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "generator_id", "count"],
+      "properties": {
+        "kind": { "const": "owns_generator_at_least" },
+        "generator_id": { "$ref": "#/$defs/id" },
+        "count": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }
+      }
+    },
+    "all_of": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "conditions"],
+      "properties": {
+        "kind": { "const": "all_of" },
+        "conditions": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 16,
+          "items": { "$ref": "#/$defs/condition" }
+        }
+      }
+    },
+    "condition": {
+      "oneOf": [
+        { "$ref": "#/$defs/fact_present" },
+        { "$ref": "#/$defs/counter_at_least" },
+        { "$ref": "#/$defs/exit_count_at_least" },
+        { "$ref": "#/$defs/owns_generator_at_least" },
+        { "$ref": "#/$defs/all_of" }
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "event_kinds"],
+      "properties": {
+        "kind": { "const": "provenance" },
+        "event_kinds": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/id" } }
+      }
+    },
+    "burn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "event_kind", "resource_id", "minimum"],
+      "properties": {
+        "kind": { "const": "burn" },
+        "event_kind": { "$ref": "#/$defs/id" },
+        "resource_id": { "$ref": "#/$defs/id" },
+        "minimum": { "type": "string", "pattern": "^(?:[1-9](?:\\.[0-9]+)?|[1-9][0-9]*(?:\\.[0-9]+)?)(?:e[+-]?[0-9]+)?$" }
+      }
+    },
+    "possession": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "justification_copy_key"],
+      "properties": {
+        "kind": { "const": "possession" },
+        "justification_copy_key": { "$ref": "#/$defs/id" }
+      }
+    },
+    "proof": {
+      "oneOf": [
+        { "$ref": "#/$defs/provenance" },
+        { "$ref": "#/$defs/burn" },
+        { "$ref": "#/$defs/possession" }
+      ]
+    },
+    "achievement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "condition_scope", "condition", "proof", "score_grant", "copy_key"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "condition_scope": { "enum": ["run", "career"] },
+        "condition": { "$ref": "#/$defs/condition" },
+        "proof": { "$ref": "#/$defs/proof" },
+        "score_grant": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "copy_key": { "$ref": "#/$defs/id" }
+      }
+    }
+  }
+}

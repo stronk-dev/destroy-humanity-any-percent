@@ -22,7 +22,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [UI Foundation](ui-foundation.md) | draft — C1–C8 awaiting owner rulings | Client Shell / Transport / Copy Pipeline contract |
 | [API Foundation](api-foundation.md) | accepted architecture — C11–C17 awaiting owner rulings | Account API / Transport / Gameserver Composition |
 | [Meters Foundation](meters-foundation.md) | implementing — C1–C12 ruled | Production / Run Genesis / Purchasable Content; unblocks Achievements and Pet Care |
-| [Clout & Achievements Foundation](clout-and-achievements-foundation.md) | draft — C1–C10 awaiting owner rulings | Meters / Production / Run Genesis |
+| [Achievements Foundation](clout-and-achievements-foundation.md) | implementing — C1–C10 ruled | Meters / Copy Pipeline / Production / Run Genesis |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 
