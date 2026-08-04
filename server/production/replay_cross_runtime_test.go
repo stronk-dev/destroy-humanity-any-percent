@@ -268,6 +268,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	result.Additional = append(result.Additional,
 		makeActiveFoundationReplayFixture(t, baseNow, 5001*time.Millisecond, "active-foundation-offline-5001ms"),
 		makeActiveFoundationReplayFixture(t, baseNow, 25*time.Hour, "active-foundation-offline-25h"),
+		makeActiveFoundationBandReplayFixture(t, baseNow),
 		makeActiveFoundationBurnReplayFixture(t, baseNow),
 	)
 	result.ActiveExit = makeActiveFoundationExitFixture(t, baseNow)
@@ -358,6 +359,50 @@ func makeActiveFoundationReplayFixture(t *testing.T, now time.Time, gap time.Dur
 	events := fixtureEvents(transition.Events)
 	return crossRuntimeBundleCase{ConstantsHash: catalogs.ConstantsHash, Artifacts: artifacts, Case: crossRuntimeFixtureCase{
 		Name: name, PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+		Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: postState,
+		ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, postState),
+	}}
+}
+
+func makeActiveFoundationBandReplayFixture(t *testing.T, now time.Time) crossRuntimeBundleCase {
+	t.Helper()
+	_, catalogs := foundationTestBundles(t)
+	state := replayFixtureState(t, catalogs.Economy, now.Add(-4*time.Second))
+	state.WireVersion = save.LatestSupportedVersion
+	meterState, err := meters.NewRunState(catalogs.Meters, 17)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.MeterBands = nil
+	state.MeterValues, state.MeterDecayRemainders, state.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	state.MeterValues["doom.probability"] = 70
+	state.MeterDecayRemainders["doom.probability"] = 3_596_000
+	state.AchievementsEarnedRun = map[string]bool{}
+	state.Tier = 1
+	preState := mustEncodeState(t, state)
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0400-7000-8000-000000000403","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	definition := catalogs.Achievements.Definitions[1]
+	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1,
+		AchievementsEarnedLifetime: []string{definition.ID}, AchievementScoreLifetime: definition.ScoreGrant}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1400-7000-8000-000000000003", FounderID: "01986666-2400-7000-8000-000000000003", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry})
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(transition.Events) != 2 || transition.Events[0].Kind != save.EventMeterBandChanged || transition.Events[1].Kind != save.EventAchievementEarned {
+		t.Fatalf("foundation event order=%+v", transition.Events)
+	}
+	postState := mustEncodeState(t, state)
+	events := fixtureEvents(transition.Events)
+	return crossRuntimeBundleCase{ConstantsHash: catalogs.ConstantsHash, Artifacts: stringArtifacts(catalogs.Artifacts), Case: crossRuntimeFixtureCase{
+		Name: "active-foundation-band-crossing", PreState: preState, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
 		Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: postState,
 		ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, postState),
 	}}

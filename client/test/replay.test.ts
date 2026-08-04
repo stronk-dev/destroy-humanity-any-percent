@@ -140,6 +140,7 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(canonicalJSONString(encodeReplayState(transition.state))).toBe(special.case.post_state_json);
     if (special.case.name === "buy-generator-max-fallback-invariant") expect(transition.invariants).toEqual([{ kind: "afford_fallback", intent_id: "01986666-0201-7000-8000-000000000201", detail: "generator.beige_tower" }]);
     else if (special.case.name.startsWith("active-foundation-offline-")) expect(transition.events.map((value) => value.kind)).toEqual(["achievement_earned.v1"]);
+    else if (special.case.name === "active-foundation-band-crossing") expect(transition.events.map((value) => value.kind)).toEqual(["meter_band_changed.v1", "achievement_earned.v1"]);
     else expect(transition.invariants).toEqual([]);
   });
 

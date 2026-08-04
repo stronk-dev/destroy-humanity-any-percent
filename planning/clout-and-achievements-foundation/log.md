@@ -467,3 +467,53 @@ loadable. This is an input-ownership closure, not a new achievement mechanic. Ke
   case cross-runtime, verified TS lifetime-overlap rejection, and audited ordinary rejection,
   terminal cross-gate, rollback, and replay paths. `ActionDebits` is transient, recomputed by both
   kernels, and has no save/wire/storage consumer. Literal production definitions and mint remain.
+
+## 2026-08-04 — designated reviewer verdict (full span 2f0343e..dd073b7) — APPROVE, one coverage finding
+
+Review by: the project's designated Claude reviewer. Recorded by: same. (Darwin's entries were the
+delegated review; this is the designated pass, verifying against source.)
+
+**Approved with one minor finding.** Every binding-law correction independently confirmed at HEAD:
+- **Activation-boundary law:** `CatalogBundle.valid()` forces 9 expected artifacts when either
+  meter/achievement is present and requires BOTH non-nil — a half-activated (v15-meters-only) run
+  cannot exist; foundationsActive() needs both; Exit sets founder+company WireVersion=16 atomically;
+  genesis rejects v15; replay resolves from the run's PINNED hash so no deploy-timing dependence,
+  no retroactive earning. Exactly the ruled shape.
+- **Meters:** Trust = TEN bars (5×{standing,grievance}+doom), trust.public.* unloadable; Externality
+  is NOT a meter (input fact-kind only); Soul stays Founder int64 READ-ONLY (Company-scope Soul
+  rejected; the hook never writes it); values [0,100] int not ppm; decay fixed-grid remainder-carried.
+- **Achievements:** achievement_score separate from Clout; Clout ABSENT from all foundation code
+  (grep-confirmed); bare possession rejected, burn requires run-scope + registered sink + positive
+  minimum, provenance covers every source leaf; earned-set latches; flush Exit-only.
+- **replay-inputs v4:** freezes Founder career carry on active commands (career predicates read
+  immutable state); closed union {2,3,4} discriminated by version; historical v3/v2 readable
+  without executing a hook that didn't exist in their window.
+- **dd073b7 fixes all correct:** offline-return brick fixed by deriving attendedMS from the
+  canonical attended ledger delta (not the online cursor — the old code blew the >24h guard and
+  rolled back forever); burn causality now consumes an ACTION-ONLY post-accrual debit trace so idle
+  accrual can't mask an honest sink (the self-confirming-role hole closed the same way Purchasable
+  Foundation's was); TS Exit-overlap dedup + canonical-text burn minimum aligned to Go.
+
+**Finding (LOW–MEDIUM, coverage not correctness): the end-to-end `meter_band_changed.v1`
+cross-runtime case regressed to ZERO at HEAD.** 25b7d4d's corpus crossed a decay band + earned an
+achievement in one command (2 band events); dd073b7 regenerated the corpus for the attendance/burn
+fix and DROPPED the band-crossing case (2→0). The band ARITHMETIC stays cross-runtime proven
+(meters-transition-v1.json) and the Go/TS payload envelopes match field-for-field by inspection —
+but no end-to-end gate now exercises the `meter_band_changed.v1` event envelope or the
+Meter→Achievement emission order. A future TS-envelope or ordering divergence would slip.
+**Fix: restore a band-crossing case to the shared apply-logged-v1.json corpus.** Not
+archival-blocking; it's a re-proof of already-correct code.
+
+**Range-union caveats recorded:** (a) e1aeb8a (replay v4) never got an isolated clean verdict —
+only reviewed inside the REJECTED superset, its correctness riding the approved end-state; (b) the
+final "approved, no findings" Darwin verdict reviewed the exact range that dropped the band case
+and missed it — a real blind spot. Both are why the designated pass exists: it caught the coverage
+regression the delegated approval didn't.
+
+## 2026-08-04 — designated-review coverage finding closed
+
+- The restored shared case combines a Meter band crossing and an Achievement earn in one applied
+  transition. Go fixes the event order at the production boundary; TypeScript asserts the exact
+  Meter→Achievement sequence and byte-identical event envelopes.
+- Focused root replay and client suites pass; production content and the epoch mint remain the
+  only open foundation work.
