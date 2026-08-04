@@ -126,6 +126,19 @@ schema would re-encode the evidence or lie in OpenAPI.
 write repository bytes without decoding; generation documents binary/string format and the
 conformance test hashes exact bytes. No generic media type is accepted.
 
+### C20 — The operational limiter/request-ID config still has no literals
+
+C6/C16 say burst, per-minute refill, max entries, proxy hops, cursor key IDs, and bounded request-ID
+validation are literal config, but only cache ages are actually enumerated. Implementing
+`balance/api/phase0.json` would require inventing the production abuse budget and trusted-proxy
+boundary.
+
+**Proposed contract:** owner supplies the exact Phase-0 values for `burst`, `refill_per_minute`,
+`max_ip_entries`, `trusted_proxy_hops`, current/previous cursor key IDs, and the accepted request-ID
+grammar/maximum bytes. The loader then requires the complete exact object and startup separately
+resolves both named cursor secrets from deployment configuration. Cache ages remain the already
+ruled 3600/60/31536000/300 seconds; secrets never appear in the file.
+
 ## Acceptance criteria
 
 1. Schema generation: `make api-schema` regenerates `docs/generated/api.json`; CI drift gate;
@@ -519,3 +532,5 @@ a write transaction or exposes an operator mutation path.
   remain as the review record, not active status.
 - 2026-08-03: schema/cursor implementation found C18–C19 at the endpoint layer: embedded artifact
   JSON needs owner-schema union arms, and raw evidence needs a declared raw-response arm.
+- 2026-08-03: C20 records the still-absent operational limiter/proxy/request-ID literals; middleware
+  does not invent production security policy.

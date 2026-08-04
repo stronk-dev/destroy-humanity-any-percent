@@ -25,3 +25,9 @@ unavailability until the future artifact-growth mint.
   after independent review proved the prior typecheck claim false.
 - C18/C19 retain exactness instead of weakening the DSL: heterogeneous artifact JSON needs
   per-owner discriminated schemas, and immutable gzip/raw evidence needs a raw response descriptor.
+
+## 2026-08-03 — operational-policy gap retained
+
+Source review confirmed C6/C16 enumerate cache ages but not the limiter capacity/refill, maximum IP
+entries, trusted-proxy hops, cursor key IDs, or exact accepted request-ID grammar/bound. C20 carries
+those owner/security literals. No production abuse-control value was improvised in middleware.
