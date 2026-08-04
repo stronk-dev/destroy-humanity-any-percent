@@ -130,6 +130,28 @@ initials. Founder Soul survives untouched. The assembly function is shared by li
   and seed input bindings remain literal balance data required before the epoch mint. The engine,
   schema, save, replay, and fixture work may land first against discriminating test catalogs.
 
+### C13 — Save v15 cannot activate before the meter artifact exists
+
+Implementation reached a dependency the plan's “mint-only” content blocker understated. V15 maps
+must have the complete meter-catalog key set, reset/migration needs the pinned artifact, and replay
+must identify those bytes. Every current run is pinned to an epoch with no `meters` artifact;
+upgrading its next ordinary write to v15 would either reject an incomplete map or initialize axes
+from an unpinned/current catalog. The legacy `meter_bands` placeholder may contain zero, two, or
+arbitrary mechanically valid keys, and this RFC never defines how absent axes migrate. Filling them
+with guessed initials would invent the owner-gated balance rows and make old-run replay depend on
+deploy timing.
+
+**Proposed contract:** meter activation is new-run-bound, like other immutable run identity.
+Pre-meter runs remain save v14 and execute no meter hook through their terminal transition. The
+first run whose pinned epoch contains `meters` is assembled directly as v15 from that artifact:
+all Standing axes use the published Notoriety reseed; Grievance and p(doom) use catalog initials;
+the legacy `meter_bands` placeholder is deliberately not imported into authoritative v15 state.
+Thereafter v15 complete-key validation is mandatory. The migration corpus proves (a) a pre-meter
+v14 run remains byte/replay-stable through ordinary intents, (b) Exit starts a complete v15 run
+under the new hash, and (c) no v15 state can load without its exact pinned meter artifact. If
+legacy placeholder values must instead survive, owner must define an immutable artifact source for
+every old constants hash and the missing-axis rule before implementation.
+
 ## Acceptance blockers (Codex review, 2026-08-03)
 
 The existing save seam is real, but the draft conflicts with binding design and does not define
@@ -308,3 +330,5 @@ intent can use a meter as ledger payment; declared meter-transition inputs may d
   read-only Founder Soul seam, percent value domain, causal input union, deterministic decay,
   band-event boundary, epoch/replay ownership, and structural not-spendable rule. Literal Phase-A
   balance rows remain a named pre-mint content gap; implementation is otherwise unblocked.
+- 2026-08-04: C13 records the save-v15 activation gap: pre-meter runs have no pinned meter artifact
+  and cannot be upgraded deterministically. Proposed new-run-only activation awaits owner ruling.

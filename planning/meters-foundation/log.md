@@ -230,3 +230,13 @@ Independent exact-range diff checking and a fresh repository-root `make verify` 
 executes the real graph fixture and shared Go/TypeScript corpus and exits 0 with 6,517 client and
 19,560 browser assertions. Production meter content/runtime work remains pending exactly as
 previously recorded; this verdict credits only the tooling closure.
+
+## 2026-08-04 — save-v15 activation DESIGN-GAP
+
+Pre-implementation tracing showed that current v14 runs are pinned to seven-artifact epochs with
+no meter bytes, while v15 requires a complete key set resolved from exactly those pinned bytes.
+The legacy `meter_bands` placeholder is neither complete nor backed by immutable balance rows.
+Activating CurrentVersion=15 before the content mint would therefore brick current saves or use a
+deploy-current catalog during replay. C13 proposes new-run-only activation: old runs remain v14
+through Exit; the first meter-bearing run assembles v15 directly. No save version, production hook,
+or artifact identity was changed pending the owner ruling.

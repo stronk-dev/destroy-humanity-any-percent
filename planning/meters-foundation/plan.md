@@ -16,3 +16,8 @@ RFC: `rfc/meters-foundation.md`
 
 Carried acceptance debt: the literal production balance rows are a DESIGN-GAP and block only the
 epoch mint/final archive, not schema, state, engine, or parity implementation.
+
+Activation blocker found during save-v15 implementation: C13 in the RFC. Complete-key v15 state
+cannot be written for a run pinned to an epoch without a meter artifact. Save activation/live hook
+binding wait for the owner to rule new-run-only activation versus a legacy-value preservation
+source. Pure catalog/transition work remains valid and independently approved.
