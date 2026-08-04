@@ -25,7 +25,7 @@ content leans on it, without collapsing those deliberately different systems bac
 `{id,scope:"company",min_value:0,max_value:100,initial_value,bands,inputs,decay}`. Phase A requires
 exactly eleven rows: ten independent Trust axes
 `trust.{users|employees|regulators|press|investors}.{standing|grievance}` plus
-`doom.probability`. Bands are byte-sorted unique `{id,floor_value}` rows beginning at zero;
+`doom.probability`. Bands are unique `{id,floor_value}` rows strictly sorted by floor, beginning at zero;
 numeric values—not band IDs—are the sole persisted authority. Externality and Soul are forbidden
 as meter IDs. The production artifact supplies literal floors/initials as balance data.
 

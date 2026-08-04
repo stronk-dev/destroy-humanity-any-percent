@@ -187,6 +187,27 @@ function harnessSemanticErrors(scenario) {
   return errors;
 }
 
+function meterSchemaFixture() {
+  const ids = [
+    "doom.probability",
+    "trust.employees.grievance", "trust.employees.standing",
+    "trust.investors.grievance", "trust.investors.standing",
+    "trust.press.grievance", "trust.press.standing",
+    "trust.regulators.grievance", "trust.regulators.standing",
+    "trust.users.grievance", "trust.users.standing",
+  ];
+  return {
+    schema_version: 1,
+    trust_reseed: { base_value: 90, notoriety_numerator: 35, notoriety_denominator: 100, floor_value: 55, ceiling_value: 90 },
+    meters: ids.map((id, index) => ({
+      id, scope: "company", min_value: 0, max_value: 100, initial_value: 50,
+      bands: [{ id: "low", floor_value: 0 }, { id: "high", floor_value: 70 }],
+      inputs: index === 0 ? [{ kind: "ledger_fact", fact_kind: "externality.emitted", delta: 3 }] : [],
+      decay: { toward_value: 50, rate_per_attended_hour: 2 },
+    })),
+  };
+}
+
 async function main() {
   const schema = await readJSON(schemaPath);
   const ajv = new Ajv2020({ allErrors: true, strict: true });
@@ -240,6 +261,20 @@ async function main() {
   }
 
   await verifyResourceLogSource();
+
+  const metersSchema = await readJSON(path.join(balanceDirectory, "meters.schema.json"));
+  const validateMeters = ajv.compile(metersSchema);
+  const meterFixture = meterSchemaFixture();
+  if (!validateMeters(meterFixture)) throw new Error(`meter schema rejected valid fixture: ${validationErrors(validateMeters)}`);
+  for (const mutate of [
+    (value) => { value.meters[0].spendable = false; },
+    (value) => { value.meters[0].inputs[0].delta = 0; },
+    (value) => { value.meters[0].scope = "founder"; },
+  ]) {
+    const candidate = structuredClone(meterFixture);
+    mutate(candidate);
+    if (validateMeters(candidate)) throw new Error("meter schema accepted a seeded invalid fixture");
+  }
 
   const companyResourceIDs = new Set();
   for (const filename of production) {
@@ -387,7 +422,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + meters(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s)`,
   );
 }
 
