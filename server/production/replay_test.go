@@ -407,6 +407,33 @@ func TestReplayEnvelopeVersionFollowsPinnedFoundationActivation(t *testing.T) {
 	if _, err := ApplyLogged(activeState, request.CanonicalPayload, active, v2); !errors.Is(err, ErrInvalidReplayInputs) {
 		t.Fatalf("active foundations accepted replay v2: %v", err)
 	}
+
+	legacy.Next = &active
+	company := replayFixtureState(t, legacy.Economy, now.Add(-20*time.Minute))
+	company.Tier = 1
+	exitRequest, err := ParseIntent([]byte(`{"intent_id":"01986666-0500-7000-8000-000000000502","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	exitCommand := save.ReplayCommand{IntentID: exitRequest.IntentID, CompanyStreamID: command.CompanyStreamID, FounderID: command.FounderID, Revision: 1, RunSeq: 1, RunLogSeq: 2}
+	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: legacy.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}}
+	activationInputs, err := buildReplayInputs(replayBuild{Command: exitCommand, Mode: ModeOnline, Now: now, IntentKind: exitRequest.Kind, RouteContextVersion: legacy.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: active.ConstantsHash})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var activationEnvelope map[string]any
+	if err := json.Unmarshal(activationInputs, &activationEnvelope); err != nil {
+		t.Fatal(err)
+	}
+	activationEnvelope["v"] = 2
+	resolved := activationEnvelope["resolved"].(map[string]any)
+	frozen := resolved["founder_carry"].(map[string]any)
+	delete(frozen, "achievements_earned_lifetime")
+	delete(frozen, "achievement_score_lifetime")
+	activationV2, _ := json.Marshal(activationEnvelope)
+	if _, err := ApplyLoggedExit(company, exitRequest.CanonicalPayload, legacy, activationV2); !errors.Is(err, ErrInvalidReplayInputs) {
+		t.Fatalf("legacy-to-active Exit accepted replay v2: %v", err)
+	}
 }
 
 func TestFounderCarryVersionBoundaryKeepsLegacyV2Replayable(t *testing.T) {

@@ -378,6 +378,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const nextHash = string(resolved.next_constants_hash);
   const next = nextHash === catalogs.constantsHash ? catalogs : catalogs.next;
   if (!next || next.constantsHash !== nextHash) throw new RangeError("next catalog bundle mismatch");
+  if (foundationsActive(next) && wire.v !== 3) throw new SyntaxError("foundation activation requires replay inputs v3");
   const accrual = parseAccrual(resolved.accrual, catalogs);
   if (company.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
   const founder = parseFounderCarry(resolved.founder_carry, catalogs, wire.v);

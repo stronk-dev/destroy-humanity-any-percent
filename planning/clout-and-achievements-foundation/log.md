@@ -396,3 +396,5 @@ The separate uncommitted production/meters work was excluded from both source re
   adds Go-authored active ordinary and Exit fixtures. A non-empty lifetime set/score is validated
   against the pinned catalog, retained through ordinary replay, and re-derived under a retuned
   next catalog at Exit. Literal production content and earning evaluation remain unclaimed.
+- A follow-up closes the activation edge itself: legacy→active Exit also requires replay-inputs
+  v3, so changing only a valid activation envelope to v2 fails in both runtimes.

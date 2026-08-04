@@ -524,3 +524,11 @@ three findings.
   v2 activation, and byte-level state/event/receipt divergence are discriminating failures.
 - Structural registry authorities come from pinned economy IDs plus generated Copy keys and the
   closed event registry; kernel version advances to `0.3.20`.
+
+## 2026-08-04 — activation-Exit envelope closure
+
+- Self-review found that checking only the current bundle left a legacy→active Exit able to accept
+  v2 evidence even though the transition creates v16 state. Both kernels now require v3 when
+  either the ending run is active or the next pinned bundle activates foundations.
+- Discriminating Go and TypeScript fixtures mutate a valid activation Exit to v2, remove the v3
+  carry fields, and require rejection before settlement. Kernel version advances to `0.3.21`.

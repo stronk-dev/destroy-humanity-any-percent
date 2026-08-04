@@ -156,6 +156,18 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     activeInputs.v = 2;
     const activeState = restoreReplayState(activeCase.case.pre_state, 16, active.economy, { meters: active.meters!, achievements: active.achievements! });
     await expect(applyLogged(activeState, canonicalJSONString(activeCase.case.canonical_payload), active, activeInputs)).rejects.toThrow(/invalid replay envelope/);
+
+    const activation = fixture.active_foundation_exit;
+    const next = await loadReplayCatalogBundle(activation.constants_hash, activation.artifacts);
+    const activatingBundle = withNextReplayCatalogBundle(legacy, next);
+    const terminal = fixture.terminal_cases.find((value) => value.name === "wind-down-scripted-first")!;
+    const activatingInputs = structuredClone(terminal.replay_inputs) as Record<string, any>;
+    activatingInputs.v = 2;
+    activatingInputs.resolved.next_constants_hash = next.constantsHash;
+    delete activatingInputs.resolved.founder_carry.achievements_earned_lifetime;
+    delete activatingInputs.resolved.founder_carry.achievement_score_lifetime;
+    const activatingState = restoreReplayState(terminal.pre_state, 14, legacy.economy);
+    await expect(applyLoggedExit(activatingState, canonicalJSONString(terminal.canonical_payload), activatingBundle, activatingInputs)).rejects.toThrow(/activation requires replay inputs v3/);
   });
 
   it("derives active Founder carry identity and score from the pinned achievement artifact", async () => {

@@ -318,6 +318,9 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	if next == nil || !next.valid(resolved.NextConstantsHash) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: next catalog bundle", ErrInvalidReplayInputs)
 	}
+	if next.foundationsActive() && wire.Version != save.ReplayInputsVersion {
+		return LoggedExitTransition{}, fmt.Errorf("%w: foundation activation requires replay inputs v%d", ErrInvalidReplayInputs, save.ReplayInputsVersion)
+	}
 	now := time.UnixMilli(wire.EvaluatedAtMS).UTC()
 	if now.Before(company.EvaluatedThrough) {
 		return LoggedExitTransition{}, ErrReplayClockViolation
