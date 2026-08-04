@@ -230,6 +230,28 @@ func TestServiceIntegration(t *testing.T) {
 	if err != nil || started.Revision != 1 || !jsonObjectEqual(started.State, []byte(`{"done":false,"total":1}`)) {
 		t.Fatalf("start=%+v err=%v", started, err)
 	}
+	v2Tenants, err := NewTenantRegistry(fixtureTenant{version: "2.0.0"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	v2Service, err := NewService(repository, v2Tenants)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, command := range []json.RawMessage{
+		json.RawMessage(`{"add":1,"finish":false}`),
+		json.RawMessage(`{"add":1,"finish":true}`),
+	} {
+		if _, err := v2Service.Play(ctx, PlayRequest{FounderID: testFounderID, SessionID: testSessionID,
+			ExpectedRevision: 1, Command: command}); !errors.Is(err, ErrTenantVersion) {
+			t.Fatalf("version-drift command=%s error=%v", command, err)
+		}
+		afterVersionDrift, loadErr := repository.Load(ctx, testFounderID, testSessionID)
+		if loadErr != nil || afterVersionDrift.Status != StatusActive || afterVersionDrift.Revision != 1 ||
+			afterVersionDrift.ClaimToken != "" || !jsonObjectEqual(afterVersionDrift.State, started.State) {
+			t.Fatalf("version-drift mutated session=%+v err=%v", afterVersionDrift, loadErr)
+		}
+	}
 	if _, err := service.Play(ctx, PlayRequest{FounderID: testFounderID, SessionID: testSessionID,
 		ExpectedRevision: 2, Command: json.RawMessage(`{"add":4,"finish":false}`)}); err != ErrSessionRevision {
 		t.Fatalf("stale revision error=%v", err)

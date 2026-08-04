@@ -31,7 +31,9 @@ A tenant registers one immutable descriptor: engine/version identity, command/sn
 schema references, shipped modes, a sorted closed rejection taxonomy, and a complete map of frozen
 scaling inputs to `power`, `breadth`, or `presentation` destinations. The registry rejects duplicate
 engines, duplicate modes/errors, `live_pvp`, unknown destination classes, and incomplete scaling
-maps.
+maps. Creation, play, and terminal-result validation dispatch by the exact frozen
+`(engine_ref, engine_version)` pair. If a deployment no longer carries that version, the session
+defers unchanged; a newer engine under the same reference cannot execute it under the old label.
 
 Tenant creation and transitions are pure calls. Their only inputs are mode, seed or revision,
 canonical snapshot/command JSON, and a defensive copy of the frozen exact-integer scaling map.

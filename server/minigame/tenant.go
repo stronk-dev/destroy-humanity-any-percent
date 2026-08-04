@@ -12,6 +12,7 @@ var (
 	ErrInvalidTenant    = errors.New("invalid minigame tenant")
 	ErrTenantRejected   = errors.New("minigame command rejected")
 	ErrUnknownTenant    = errors.New("unknown minigame tenant")
+	ErrTenantVersion    = errors.New("minigame tenant version unavailable")
 	ErrTenantDivergence = errors.New("minigame tenant returned invalid output")
 )
 
@@ -131,19 +132,19 @@ func (registry *TenantRegistry) Descriptor(engineRef string) (Descriptor, bool) 
 	return cloneDescriptor(registered.descriptor), true
 }
 
-func (registry *TenantRegistry) validateCertifiedResult(engineRef string, result *Result) error {
+func (registry *TenantRegistry) validateCertifiedResult(engineRef, engineVersion string, result *Result) error {
 	if registry == nil || !validResult(result) {
 		return ErrTenantDivergence
 	}
 	registered, ok := registry.byEngine[engineRef]
-	if !ok || registered.engine.ValidateResult(result) != nil {
+	if !ok || registered.descriptor.EngineVersion != engineVersion || registered.engine.ValidateResult(result) != nil {
 		return ErrTenantDivergence
 	}
 	return nil
 }
 
-func (registry *TenantRegistry) Create(engineRef string, input CreateInput) (json.RawMessage, error) {
-	tenant, descriptor, err := registry.resolve(engineRef, input.Mode)
+func (registry *TenantRegistry) Create(engineRef, engineVersion string, input CreateInput) (json.RawMessage, error) {
+	tenant, descriptor, err := registry.resolve(engineRef, engineVersion, input.Mode)
 	if err != nil {
 		return nil, err
 	}
@@ -161,8 +162,8 @@ func (registry *TenantRegistry) Create(engineRef string, input CreateInput) (jso
 	return canonical, nil
 }
 
-func (registry *TenantRegistry) Apply(engineRef string, input ApplyInput) (ApplyOutput, error) {
-	tenant, descriptor, err := registry.resolve(engineRef, input.Mode)
+func (registry *TenantRegistry) Apply(engineRef, engineVersion string, input ApplyInput) (ApplyOutput, error) {
+	tenant, descriptor, err := registry.resolve(engineRef, engineVersion, input.Mode)
 	if err != nil {
 		return ApplyOutput{}, err
 	}
@@ -187,7 +188,7 @@ func (registry *TenantRegistry) Apply(engineRef string, input ApplyInput) (Apply
 	}
 	canonicalOutput, ok := canonicalJSONObject(output.Snapshot)
 	if !ok || !bytes.Equal(canonicalOutput, output.Snapshot) || tenant.ValidateSnapshot(canonicalOutput) != nil ||
-		registry.validateCertifiedResult(descriptor.EngineRef, output.Result) != nil {
+		registry.validateCertifiedResult(descriptor.EngineRef, descriptor.EngineVersion, output.Result) != nil {
 		return ApplyOutput{}, ErrTenantDivergence
 	}
 	output.Snapshot = canonicalOutput
@@ -195,13 +196,16 @@ func (registry *TenantRegistry) Apply(engineRef string, input ApplyInput) (Apply
 	return output, nil
 }
 
-func (registry *TenantRegistry) resolve(engineRef string, mode Mode) (Tenant, Descriptor, error) {
+func (registry *TenantRegistry) resolve(engineRef, engineVersion string, mode Mode) (Tenant, Descriptor, error) {
 	if registry == nil || !mechanicalPattern.MatchString(engineRef) {
 		return nil, Descriptor{}, ErrUnknownTenant
 	}
 	registered, ok := registry.byEngine[engineRef]
 	if !ok {
 		return nil, Descriptor{}, ErrUnknownTenant
+	}
+	if registered.descriptor.EngineVersion != engineVersion {
+		return nil, Descriptor{}, ErrTenantVersion
 	}
 	for _, allowed := range registered.descriptor.Modes {
 		if mode == allowed {

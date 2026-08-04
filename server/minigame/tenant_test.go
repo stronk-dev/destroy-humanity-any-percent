@@ -8,6 +8,7 @@ import (
 )
 
 type fixtureTenant struct {
+	version       string
 	invalidOutput bool
 	invalidResult bool
 	unknownError  bool
@@ -24,8 +25,12 @@ type fixtureCommand struct {
 }
 
 func (tenant fixtureTenant) Descriptor() Descriptor {
+	version := tenant.version
+	if version == "" {
+		version = "1.0.0"
+	}
 	return Descriptor{
-		EngineRef: "fixture.counter", EngineVersion: "1.0.0", CommandSchema: "fixture.command.v1",
+		EngineRef: "fixture.counter", EngineVersion: version, CommandSchema: "fixture.command.v1",
 		SnapshotSchema: "fixture.snapshot.v1", ResultSchema: "fixture.result.v1",
 		Modes: []Mode{ModeSolo, ModeAsyncSnapshot}, ErrorTaxonomy: []string{"invalid_command"},
 		Destinations: map[string]DestinationClass{"era": DestinationPresentation, "trust_ppm": DestinationBreadth},
@@ -107,16 +112,16 @@ func TestTenantRegistryConformance(t *testing.T) {
 	}
 
 	scaling := map[string]int64{"era": 1, "trust_ppm": 500_000}
-	snapshot, err := registry.Create("fixture.counter", CreateInput{Mode: ModeSolo, Seed: 8, ScalingInputs: scaling})
+	snapshot, err := registry.Create("fixture.counter", "1.0.0", CreateInput{Mode: ModeSolo, Seed: 8, ScalingInputs: scaling})
 	if err != nil || !bytes.Equal(snapshot, []byte("{\"done\":false,\"total\":1}")) {
 		t.Fatalf("create snapshot=%s err=%v", snapshot, err)
 	}
-	output, err := registry.Apply("fixture.counter", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: snapshot,
+	output, err := registry.Apply("fixture.counter", "1.0.0", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: snapshot,
 		Command: json.RawMessage("{\"add\":4,\"finish\":false}"), ScalingInputs: scaling})
 	if err != nil || !bytes.Equal(output.Snapshot, []byte("{\"done\":false,\"total\":5}")) || output.Result != nil {
 		t.Fatalf("play output=%+v err=%v", output, err)
 	}
-	output, err = registry.Apply("fixture.counter", ApplyInput{Mode: ModeSolo, Revision: 2, Snapshot: output.Snapshot,
+	output, err = registry.Apply("fixture.counter", "1.0.0", ApplyInput{Mode: ModeSolo, Revision: 2, Snapshot: output.Snapshot,
 		Command: json.RawMessage("{\"add\":2,\"finish\":true}"), ScalingInputs: scaling})
 	if err != nil || !bytes.Equal(output.Snapshot, []byte("{\"done\":true,\"total\":7}")) || output.Result == nil ||
 		output.Result.Outcome != "complete" || len(output.Result.ScoreFacts) != 1 || output.Result.ScoreFacts[0].Value != 7 {
@@ -148,12 +153,12 @@ func TestTenantRegistryFailsClosed(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			if _, err := registry.Apply("fixture.counter", test.input); err == nil {
+			if _, err := registry.Apply("fixture.counter", "1.0.0", test.input); err == nil {
 				t.Fatal("invalid boundary input accepted")
 			}
 		})
 	}
-	if _, err := registry.Apply("fixture.counter", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: validSnapshot,
+	if _, err := registry.Apply("fixture.counter", "1.0.0", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: validSnapshot,
 		Command: json.RawMessage("{\"add\":1,\"finish\":false,\"score\":99}"), ScalingInputs: scaling}); !errors.Is(err, ErrTenantRejected) {
 		t.Fatalf("tenant schema rejection error=%v", err)
 	}
@@ -162,7 +167,7 @@ func TestTenantRegistryFailsClosed(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := badOutputRegistry.Apply("fixture.counter", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: validSnapshot,
+	if _, err := badOutputRegistry.Apply("fixture.counter", "1.0.0", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: validSnapshot,
 		Command: json.RawMessage("{\"add\":1,\"finish\":false}"), ScalingInputs: scaling}); !errors.Is(err, ErrTenantDivergence) {
 		t.Fatalf("noncanonical output error=%v", err)
 	}
@@ -170,7 +175,7 @@ func TestTenantRegistryFailsClosed(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := unknownErrorRegistry.Apply("fixture.counter", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: validSnapshot,
+	if _, err := unknownErrorRegistry.Apply("fixture.counter", "1.0.0", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: validSnapshot,
 		Command: json.RawMessage("{\"add\":1,\"finish\":false}"), ScalingInputs: scaling}); !errors.Is(err, ErrTenantDivergence) {
 		t.Fatalf("undeclared rejection error=%v", err)
 	}
@@ -178,7 +183,7 @@ func TestTenantRegistryFailsClosed(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := invalidResultRegistry.Apply("fixture.counter", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: validSnapshot,
+	if _, err := invalidResultRegistry.Apply("fixture.counter", "1.0.0", ApplyInput{Mode: ModeSolo, Revision: 1, Snapshot: validSnapshot,
 		Command: json.RawMessage("{\"add\":1,\"finish\":true}"), ScalingInputs: scaling}); !errors.Is(err, ErrTenantDivergence) {
 		t.Fatalf("wrong-schema result error=%v", err)
 	}

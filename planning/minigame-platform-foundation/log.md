@@ -60,3 +60,30 @@
 - Real-Postgres coverage exercises release after stale/rejected commands, identity constraints,
   claim-arm mutation, forged result bytes, cross-Company resolution, and full fixture
   create→play→certify→resolve. Independent follow-up review remains required.
+
+## 2026-08-04 — independent review of remediation (`47bee53^..47bee53`)
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Decision:** not approved; the original two HIGHs and four MEDIUMs are closed, but one new HIGH
+  remains.
+- A session froze `engine_version`, but `Play` selected tenant code using only `engine_ref`. After a
+  deployment replaced v1 with v2 under the same reference, an old v1 session could execute v2 code
+  while retaining a false v1 identity. The required remediation is exact-pair dispatch and
+  regressions proving both nonterminal and terminal v1 commands defer unchanged under a v2-only
+  registry.
+- The reviewer independently passed the normal minigame test, vet, integration, and diff-check
+  targets at exact commit `47bee53`.
+
+## 2026-08-04 — exact engine-version remediation
+
+- Tenant creation, play, and terminal-result validation now bind the frozen
+  `(engine_ref, engine_version)` pair. An unavailable historical version returns the typed
+  `ErrTenantVersion`; it is never replaced by whatever implementation currently owns the same
+  reference.
+- The real-Postgres service fixture starts under v1, swaps to a v2-only registry, and proves both a
+  nonterminal and terminal command fail without changing revision, state, status, or claim token.
+  The original v1 service then continues the same session, proving the rejection is a clean defer
+  rather than a poison state.
+- `make test-go GO_PACKAGES='./minigame'`, `make vet GO_PACKAGES='./minigame'`, and the normal root
+  `make test-save-integration` pass. Independent follow-up review remains required.

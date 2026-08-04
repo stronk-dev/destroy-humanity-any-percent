@@ -78,7 +78,7 @@ func (service *Service) Start(ctx context.Context, request StartRequest) (Sessio
 	if err != nil || request.Seed != "0" && request.Seed[0] == '0' {
 		return Session{}, ErrInvalidSession
 	}
-	genesis, err := service.tenants.Create(request.EngineRef, CreateInput{
+	genesis, err := service.tenants.Create(request.EngineRef, request.EngineVersion, CreateInput{
 		Mode: request.Mode, Seed: seed, ScalingInputs: request.ScalingInputs,
 	})
 	if err != nil {
@@ -123,7 +123,7 @@ func (service *Service) Play(ctx context.Context, request PlayRequest) (decision
 	if !ok {
 		return PlayDecision{}, ErrTenantDivergence
 	}
-	output, err := service.tenants.Apply(claimed.EngineRef, ApplyInput{
+	output, err := service.tenants.Apply(claimed.EngineRef, claimed.EngineVersion, ApplyInput{
 		Mode: claimed.Mode, Revision: claimed.Revision, Snapshot: claimed.State,
 		Command: request.Command, ScalingInputs: scaling,
 	})
@@ -161,7 +161,7 @@ func (service *Service) Play(ctx context.Context, request PlayRequest) (decision
 func (service *Service) ResolveTx(ctx context.Context, tx *sql.Tx, resolution *CertifiedResolution) (Session, error) {
 	if service == nil || tx == nil || resolution == nil || !validResolutionIdentity(resolution.identity) ||
 		!validJSONObject(resolution.state) || !validJSONObject(resolution.bytes) ||
-		service.tenants.validateCertifiedResult(resolution.identity.engineRef, resolution.result) != nil {
+		service.tenants.validateCertifiedResult(resolution.identity.engineRef, resolution.identity.engineVersion, resolution.result) != nil {
 		return Session{}, ErrInvalidSession
 	}
 	canonicalResult, err := json.Marshal(resolution.result)
