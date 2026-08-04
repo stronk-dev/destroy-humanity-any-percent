@@ -319,3 +319,42 @@ verification is green and the failure is outside `d7bb1da`.
   fields, Company/Founder leakage, negative scores, unsorted IDs, and silent v15 loss.
 - Focused `go test ./save` and the normal root `make test-save-integration` pass. The dependent
   catalog/runtime landing remains uncommitted pending independent approval of this remediation.
+
+## 2026-08-04 — independent activation-codec remediation review (`c356d87^..c356d87`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **not approved yet; all findings from the `d7bb1da` verdict close, but two new
+  MEDIUM strictness/activation seams remain.**
+
+Closure verified:
+
+- Legacy revisions now restore with v14 as their explicit writable target. Applied Intent and
+  generic Write compare against the migrated target rather than the historical row, and the real
+  Postgres `TestStoreIntegrationRevisionLifecycle` independently passes with a v1 revision
+  committing its next applied intent as v14.
+- `validateExitVersionTransition` checks the loaded Founder/Company pair, terminal Company, mutated
+  Founder, and new Company before persistence. Legacy pairs converge on v14; terminal mutation,
+  preexisting mismatch, and either one-sided v16 transition reject; the atomic v14→v16 tuple passes.
+- Restore now invokes the same foundation scope/domain validator as encode. The prior cross-scope
+  lifetime state, negative score, unsorted earned-set, exact `meter_bands`, and v15-achievement-loss
+  reproducers all reject. Sorted IDs use byte order and v15 fails closed on any achievement state.
+
+New findings:
+
+1. **MEDIUM — the superseded-field rejection is still case-insensitive-decoder bypassable.** The
+   raw-key precheck rejects only exact lowercase `meter_bands`, while Go's `encoding/json` matches
+   tagged fields case-insensitively. A v16 payload with `METER_BANDS` therefore passes the precheck,
+   populates the promoted v14 field, and restores successfully. Enforce the v15/v16 root key set
+   exactly (or reject every case-folded spelling of the superseded member); retain this reproducer.
+2. **MEDIUM — the storage authority still admits the forbidden standalone v15 state.** C13 says no
+   run is ever v15-with-meters-but-without-v16 achievements, but a loaded Founder-v15/Company-v15
+   tuple continuing to v15 returns nil from `validateExitVersionTransition`, and generic
+   `CreateStream` accepts `WireVersion=15`. V14→v15 Exit is correctly blocked, but the invariant is
+   not closed at stream creation or when a preexisting v15 tuple is encountered. V15 may remain a
+   codec/migration shape; persisted active run versions must be v14 or v16 only.
+
+Independent evidence: all original discriminating reproducers pass; both new reproducers fail as
+described and were deleted after execution. Exact-range `git diff --check`, an uncached focused
+`./save` run, and the targeted real-Postgres legacy-intent integration test pass. The separate
+uncommitted production/meters next landing was neither reviewed nor used as evidence.

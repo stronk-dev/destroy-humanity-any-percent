@@ -289,3 +289,39 @@ save verification is green.
   v15 state; encode and restore now fail closed in the same directions.
 - Focused save tests plus `make test-save-integration` pass. No runtime/catalog activation work is
   credited until this remediation receives an independent full-range approval.
+
+## 2026-08-04 — independent activation-codec remediation review (`c356d87^..c356d87`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **not approved yet; the six prior defects are remediated, with two new MEDIUM
+  structural gaps blocking final activation-codec approval.**
+
+Closure verified:
+
+- The legacy write target is explicitly v14, so v1–v13 no longer collide with ordinary-write or
+  Exit preservation. A targeted real-Postgres run proves a restored v1 stream commits an applied
+  intent as v14.
+- Exit now validates the complete version tuple. Both one-sided v16 activations, a changed terminal
+  version, and an already-mixed loaded tuple reject, while legacy→v14 and atomic v14→v16 pass.
+- Decoder scope/domain validation is live: Company/Founder ownership leakage, meter leakage,
+  negative/unsafe scores, unsorted or duplicate IDs, exact superseded `meter_bands`, and achievement
+  state below v16 fail. Encode and Restore agree on the original discriminating cases.
+
+New findings:
+
+1. **MEDIUM — v15/v16 decoding is not exact-key for the superseded field.** The remediation scans a
+   raw map only for lowercase `meter_bands`, but `encoding/json` subsequently matches
+   `METER_BANDS` to the tagged promoted member by case folding. The case-variant payload restores
+   and would be silently normalized away on encode. Close the exact-key boundary rather than
+   relying on `DisallowUnknownFields` for tagged-name spelling.
+2. **MEDIUM — the atomic law still permits an active v15-only run.** The tuple validator accepts
+   loaded Founder-v15/Company-v15 continuing as v15, and `CreateStream` can persist a v15 state.
+   C11 permits v15 as the embedded codec step but states that activation jumps atomically from v14
+   to v16 and no v15-only run exists. Reject v15 at active stream creation/continuation while
+   preserving offline codec coverage.
+
+All original scratch reproducers now pass; the case-variant field and standalone-v15 tuple
+reproducers fail as described and were removed. Exact-range checking, an uncached focused `./save`
+suite, and the isolated real-Postgres legacy-intent fixture pass. Concurrent uncommitted
+production/meters work remains outside this review and is not credited.
