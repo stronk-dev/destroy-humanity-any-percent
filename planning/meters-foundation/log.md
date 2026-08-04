@@ -532,3 +532,14 @@ three findings.
   either the ending run is active or the next pinned bundle activates foundations.
 - Discriminating Go and TypeScript fixtures mutate a valid activation Exit to v2, remove the v3
   carry fields, and require rejection before settlement. Kernel version advances to `0.3.21`.
+
+## 2026-08-04 — independent active replay parity verdict
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Range union:** `3fa1150^..3fa1150` + `712a3b1^..712a3b1`
+- **Decision:** **approved.** The reviewer independently found the legacy→active v2 seam in the
+  first commit and verified the follow-up closes it in both kernels. Exact seven-or-nine artifact
+  loading, hash recomputation, active ordinary/terminal v3 enforcement, complete v16 state, pinned
+  Founder carry, next-catalog score retune, structural registry parity, historical v2 execution,
+  and the Go-authored active fixtures all held. No remaining findings.

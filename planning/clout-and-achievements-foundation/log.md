@@ -398,3 +398,12 @@ The separate uncommitted production/meters work was excluded from both source re
   next catalog at Exit. Literal production content and earning evaluation remain unclaimed.
 - A follow-up closes the activation edge itself: legacy→active Exit also requires replay-inputs
   v3, so changing only a valid activation envelope to v2 fails in both runtimes.
+
+## 2026-08-04 — independent active replay parity verdict
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Range union:** `3fa1150^..3fa1150` + `712a3b1^..712a3b1`
+- **Decision:** **approved.** Active non-empty carry, exact ID/score derivation, v16 preservation,
+  active Exit settlement under a retuned next catalog, paired artifact identity, and the complete
+  v2/v3 boundary were independently re-run and held. No remaining findings.
