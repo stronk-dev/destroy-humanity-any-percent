@@ -280,6 +280,83 @@ offline production below 90%.
 - Whether the arcade (design/03 §9) toys need full sessions or a lightweight score-send-only path
   (recommend: lightweight — a Snake high score doesn't need match state).
 
+## Post-foundation implementation blockers (Codex, 2026-08-04)
+
+The independently approved session/tenant boundary implements the portions whose shapes are
+literal. The remaining slices cannot yet be implemented without choosing mechanics that C15–C18
+call exact but do not enumerate. These blockers supersede no ruling; they identify the missing
+last-mile contracts revealed by applying those rulings to the shipped production/replay surfaces.
+
+### C19 — The scaling-source union still has no wire shape or executable formula
+
+C4 names five source concepts (`literal`, tier, purchased-generator count, Founder carry counter,
+attended-quality grade), while C15 says the source union, field names, bounds, formulas,
+composition, and taint propagation are exact. No normative section supplies those row keys or
+formulas. A loader cannot distinguish a valid source row from an invented one, resolve it from the
+shipped save owners, or export its formula artifact.
+
+**Proposed contract:** enumerate each source arm as an exact-key JSON object, including its state
+owner/path, integer transform (offset, multiplier/denominator, rounding, clamp), allowed range, and
+whether tier-taint propagates through it. Enumerate the composition row and duplicate rule. Keep
+all numeric literals catalog-owned, but make the formula grammar normative. The loader rejects any
+ranked row whose transitive source graph is tier-tainted and ends at a `power` destination.
+
+### C20 — Replay is required, but session commands are not persisted
+
+C11 requires replay of every minigame command and byte comparison of snapshots/results. C13's
+normative table stores only the mutable session head; it has no append-only command rows, command
+IDs, committed sequence, or immutable result history. The current pure transition is replayable,
+but there is no authoritative input corpus from which a verifier could replay it.
+
+**Proposed contract:** add an immutable `minigame_session_log` keyed by `(session_id, revision)`
+with canonical command bytes, exact engine identity, pre/post snapshot bytes or hashes, terminal
+result bytes, and commit timestamp. The same transaction that advances/resolves the head appends
+exactly one row; rejected commands do not append. Declare whether the genesis row is revision 0 or
+stored only on the session, and make verifier verdicts/defer semantics reuse the run verifier's
+typed taxonomy rather than an error string.
+
+### C21 — The server-authored payout transition still has no production contract
+
+C17 names `resolve_minigame_session`, but does not enumerate its canonical payload, replay inputs,
+receipt, event kinds/payloads, rating/season fact destination, or the production method that owns
+the Company-stream commit. The existing `ApplyLogged` boundary accepts only the closed public
+intent union. Implementing this now would either add a hidden side write or invent a new replay
+schema.
+
+**Proposed contract:** specify exact-key internal command, replay-input, receipt, and event
+envelopes; add a named server-only `ApplyLoggedMinigameResult` (or explicitly widen `ApplyLogged`)
+that consumes only the certified result plus pinned policy bytes and returns the ordinary
+state/receipt/events triple. Name the rating/season state owner. One repository method locks
+Company then session and commits save revision, run log, events, faucet counter, and terminal
+session mark with fault injection after every write.
+
+### C22 — The attended-window authority and faucet counter are still ambiguous
+
+C5 says attended-time absolute-grid day boundaries; C16 says origin `run_started_at` and a
+persisted cursor per session. Neither identifies whether the quota resets on Exit, which persisted
+Founder/Company value determines the current window, the counter row/key, or the exact order of
+bot reduction, ppm conversion, per-send cap, window cap, remainder, and numeric saturation. These
+choices change payout and replay.
+
+**Proposed contract:** name one monotonic persisted attended-time authority and its reset scope;
+define `window_index`, counter/session-idempotency keys, the complete checked-integer operation
+order, remainder ownership, and both configured-cap and overflow receipts/reason keys. The policy
+row supplies literals only after that structural formula is fixed.
+
+### C23 — Fallback and offline-quality rows are called exact but remain partial
+
+C18 gives optional `bot_ref` and reduction fields but omits the bot policy/version, NPC profile and
+control-boundary keys required by C7. It also names offline-quality state without the score-to-grade
+mapping, persisted owner, exact decay operation/remainder, or automation destination. A strict
+loader cannot accept or reject an arm consistently from this text.
+
+**Proposed contract:** enumerate exact-key `solo`, `bot`, and `npc_partner` arms and the exact-key
+offline-quality policy row. Bot/NPC identity and deterministic policy version enter session
+genesis. Offline quality names its persisted owner, score fact source, fixed-grid decay equation,
+remainder, neutral floor/cap, and registered automation slot. Until these rows are owner-ruled, the
+production loader accepts no fallback/offline-quality policy and therefore enables no production
+minigame artifact.
+
 ## Acceptance blockers (Codex review, 2026-08-04)
 
 The platform boundary is necessary, but the draft is not executable yet. In particular, its reward

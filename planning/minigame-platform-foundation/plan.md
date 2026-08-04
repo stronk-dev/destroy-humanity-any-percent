@@ -25,3 +25,7 @@ RFC: `rfc/minigame-platform-foundation.md`
 Carried acceptance debt: production registry/faucet/offline-quality numbers are balance data and
 remain a DESIGN-GAP until supplied by the owner/harness. The persistence and tenant boundaries use
 only structural contracts already ruled in C13–C18.
+
+Implementation blockers C19–C23: exact scaling-source rows, immutable session command history,
+the production payout envelope, attended-window/counter arithmetic, and complete fallback/
+offline-quality rows require owner rulings before the remaining platform slices can be written.

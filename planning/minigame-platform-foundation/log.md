@@ -99,3 +99,15 @@
   path does not poison the session.
 - The reviewer independently passed the minigame test, vet, Postgres integration, and exact-range
   diff-check targets at commit `a5c16c5`.
+
+## 2026-08-04 — remaining implementation-contract review
+
+- The approved session/tenant slice reaches the last fully literal boundary. Applying C15–C18 to
+  the shipped save, replay, and production APIs exposed five DESIGN-GAPs rather than balance-value
+  gaps: no exact scaling formula grammar, no immutable command history for C11 replay, no internal
+  production transition envelope, no single attended-window/counter definition, and incomplete
+  fallback/offline-quality row shapes.
+- Filed C19–C23 with proposed contracts in the RFC. No production artifact, payout side write,
+  replay schema, or bot/offline mechanic will be improvised while those contracts are unresolved.
+- The independently approved Postgres session lifecycle and pure tenant registry remain usable
+  foundations; this bounce does not reopen them.
