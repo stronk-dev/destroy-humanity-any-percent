@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "valid baseline",
+      "valid": true,
+      "operations": []
+    },
+    {
+      "name": "unknown achievement field",
+      "valid": false,
+      "operations": [
+        { "op": "set", "path": ["achievements", 0, "clout_grant_ppm"], "value": 4 }
+      ]
+    },
+    {
+      "name": "wrong condition union field",
+      "valid": false,
+      "operations": [
+        { "op": "set", "path": ["achievements", 0, "condition", "minimum"], "value": null }
+      ]
+    },
+    {
+      "name": "unrelated provenance",
+      "valid": false,
+      "operations": [
+        { "op": "set", "path": ["achievements", 0, "proof", "event_kinds"], "value": ["generator_purchased"] }
+      ]
+    },
+    {
+      "name": "career ownership condition",
+      "valid": false,
+      "operations": [
+        { "op": "set", "path": ["achievements", 1, "condition_scope"], "value": "career" }
+      ]
+    }
+  ]
+}

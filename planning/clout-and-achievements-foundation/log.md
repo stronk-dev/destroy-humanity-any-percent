@@ -126,3 +126,14 @@ Current code remains Clout-free and production-neutral. The sole-Clout owner/sou
 owner-authored achievement/copy content, save v16, live/replay evaluation, Exit settlement,
 relevance integration, epoch mint, and archive are still explicitly pending rather than silently
 credited.
+
+## 2026-08-04 — second remediation after independent follow-up
+
+- Added `achievements-catalog-parity-v1.json`, consumed by both Go and TypeScript. The shared
+  baseline and invalid mutations lock exact object/union shapes, unrelated-provenance rejection,
+  and scope restrictions in both loaders.
+- Backstopped the recursive source scan with `go list -deps` and a seeded forbidden-transitive-
+  dependency fixture, closing the remaining build-graph bypass without claiming the future
+  sole-Clout-writer registry.
+- Verification: focused Go tests, both boundary tools, and TypeScript/Svelte checks pass. A fresh
+  repository-root `make verify` exits 0 with 6,517 client assertions and 19,560 browser assertions.

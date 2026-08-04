@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "valid baseline",
+      "valid": true,
+      "operations": []
+    },
+    {
+      "name": "missing nullable decay",
+      "valid": false,
+      "operations": [
+        { "op": "delete", "path": ["meters", 0, "decay"] }
+      ]
+    },
+    {
+      "name": "reseed denominator above shared exact range",
+      "valid": false,
+      "operations": [
+        { "op": "set", "path": ["trust_reseed", "notoriety_denominator"], "value": 9007199254740992 }
+      ]
+    },
+    {
+      "name": "missing zero initial value",
+      "valid": false,
+      "operations": [
+        { "op": "delete", "path": ["meters", 0, "initial_value"] }
+      ]
+    },
+    {
+      "name": "wrong input union field",
+      "valid": false,
+      "operations": [
+        { "op": "set", "path": ["meters", 0, "inputs", 0, "slot"], "value": "" }
+      ]
+    },
+    {
+      "name": "unknown meter field",
+      "valid": false,
+      "operations": [
+        { "op": "set", "path": ["meters", 0, "spendable"], "value": false }
+      ]
+    }
+  ]
+}

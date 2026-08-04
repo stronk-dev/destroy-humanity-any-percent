@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import meterCatalogParityCorpus from "../../balance/testdata/meters-catalog-parity-v1.json";
 import meterTransitionCorpus from "../../balance/testdata/meters-transition-v1.json";
 
 import { loadMeterCatalog, REQUIRED_METER_IDS, validateMeterResourceSeparation } from "../src/meters/catalog";
@@ -18,6 +19,16 @@ function validCatalog(): Record<string, unknown> {
       decay: { toward_value: 50, rate_per_attended_hour: 2 },
     })),
   };
+}
+
+function applyParityOperation(root: any, operation: { op: string; path: Array<string | number>; value?: unknown }): void {
+  let current = root;
+  for (const component of operation.path.slice(0, -1)) current = current[component];
+  const last = operation.path.at(-1);
+  if (last === undefined) throw new Error("empty parity operation path");
+  if (operation.op === "delete") delete current[last];
+  else if (operation.op === "set") current[last] = operation.value;
+  else throw new Error(`invalid parity operation ${operation.op}`);
 }
 
 describe("meter catalog", () => {
@@ -44,6 +55,17 @@ describe("meter catalog", () => {
     for (const mutate of cases) {
       const catalog = validCatalog(); mutate(catalog);
       expect(() => loadMeterCatalog(JSON.stringify(catalog))).toThrow();
+    }
+  });
+
+  it("matches the shared Go/TypeScript catalog parity corpus", () => {
+    expect(meterCatalogParityCorpus.version).toBe(1);
+    for (const vector of meterCatalogParityCorpus.cases) {
+      const catalog = validCatalog();
+      for (const operation of vector.operations) applyParityOperation(catalog, operation);
+      const load = () => loadMeterCatalog(JSON.stringify(catalog));
+      if (vector.valid) expect(load, vector.name).not.toThrow();
+      else expect(load, vector.name).toThrow();
     }
   });
 });

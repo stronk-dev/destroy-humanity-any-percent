@@ -141,3 +141,17 @@ Finding closure:
 The transition kernel remains approved on valid catalogs. No meter artifact was minted; literal
 owner balance rows and all previously listed save/runtime/replay/formula/relevance work remain
 honest blockers.
+
+## 2026-08-04 — second remediation after independent follow-up
+
+- Made the required nullable `decay` key presence-aware in Go while preserving explicit JSON
+  `null` as the sole no-decay value.
+- Applied the shared `9007199254740991` exact-integer ceiling to Go reseed numerator and
+  denominator validation, matching TypeScript and the schema.
+- Added `meters-catalog-parity-v1.json`, consumed by both Go and TypeScript. Its baseline and
+  invalid mutations lock required-nullable presence, exact-integer bounds, zero-field presence,
+  union exactness, and unknown-field rejection across runtimes.
+- Backstopped the recursive source scan with `go list -deps` and a seeded forbidden-transitive-
+  dependency fixture. The gate now verifies the package graph rather than only source text.
+- Verification: focused Go tests, both boundary tools, and TypeScript/Svelte checks pass. A fresh
+  repository-root `make verify` exits 0 with 6,517 client assertions and 19,560 browser assertions.

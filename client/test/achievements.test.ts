@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import achievementCatalogParityCorpus from "../../balance/testdata/achievements-catalog-parity-v1.json";
 
 import { loadAchievementCatalog, type AchievementRegistry } from "../src/achievements/catalog";
 import { achievementScore, newlyEarned } from "../src/achievements/evaluate";
@@ -18,6 +19,16 @@ function validCatalog(): Record<string, unknown> {
     { id: "achievement.first_gate", condition_scope: "run", condition: { kind: "fact_present", fact_kind: "gate.tier_1" }, proof: { kind: "provenance", event_kinds: ["gate_crossed"] }, score_grant: 4, copy_key: "achievement.first_gate" },
     { id: "achievement.generator_hoard", condition_scope: "run", condition: { kind: "owns_generator_at_least", generator_id: "generator.clickfarm", count: 300 }, proof: { kind: "possession", justification_copy_key: "achievement.possession_warning" }, score_grant: 8, copy_key: "achievement.first_gate" },
   ] };
+}
+
+function applyParityOperation(root: any, operation: { op: string; path: Array<string | number>; value?: unknown }): void {
+  let current = root;
+  for (const component of operation.path.slice(0, -1)) current = current[component];
+  const last = operation.path.at(-1);
+  if (last === undefined) throw new Error("empty parity operation path");
+  if (operation.op === "delete") delete current[last];
+  else if (operation.op === "set") current[last] = operation.value;
+  else throw new Error(`invalid parity operation ${operation.op}`);
 }
 
 describe("achievement catalog", () => {
@@ -41,5 +52,16 @@ describe("achievement catalog", () => {
       (value) => { value.achievements[0].proof.event_kinds = ["generator_purchased"]; },
     ];
     for (const mutate of cases) { const value = validCatalog(); mutate(value); expect(() => loadAchievementCatalog(JSON.stringify(value), registry)).toThrow(); }
+  });
+
+  it("matches the shared Go/TypeScript catalog parity corpus", () => {
+    expect(achievementCatalogParityCorpus.version).toBe(1);
+    for (const vector of achievementCatalogParityCorpus.cases) {
+      const catalog = validCatalog();
+      for (const operation of vector.operations) applyParityOperation(catalog, operation);
+      const load = () => loadAchievementCatalog(JSON.stringify(catalog), registry);
+      if (vector.valid) expect(load, vector.name).not.toThrow();
+      else expect(load, vector.name).toThrow();
+    }
   });
 });

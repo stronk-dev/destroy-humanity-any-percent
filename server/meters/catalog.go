@@ -18,6 +18,7 @@ const (
 	CatalogSchemaVersion = 1
 	MinimumValue         = 0
 	MaximumValue         = 100
+	maximumExactInteger  = int64(9_007_199_254_740_991)
 )
 
 var (
@@ -103,7 +104,7 @@ type rawMeter struct {
 	InitialValue *int              `json:"initial_value"`
 	Bands        []rawBand         `json:"bands"`
 	Inputs       []json.RawMessage `json:"inputs"`
-	Decay        *rawDecay         `json:"decay"`
+	Decay        json.RawMessage   `json:"decay"`
 }
 
 type rawBand struct {
@@ -150,7 +151,7 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	for index, source := range raw.Meters {
 		if source.ID != requiredMeterIDs[index] || source.Scope != "company" || source.MinValue == nil || *source.MinValue != MinimumValue ||
 			source.MaxValue == nil || *source.MaxValue != MaximumValue || source.InitialValue == nil || *source.InitialValue < MinimumValue || *source.InitialValue > MaximumValue ||
-			len(source.Bands) == 0 || source.Inputs == nil || catalog.byID[source.ID].ID != "" {
+			len(source.Bands) == 0 || source.Inputs == nil || len(source.Decay) == 0 || catalog.byID[source.ID].ID != "" {
 			return nil, fmt.Errorf("%w: meters[%d]", ErrInvalidCatalog, index)
 		}
 		meter := Meter{ID: source.ID, InitialValue: *source.InitialValue, Bands: make([]Band, 0, len(source.Bands)), Inputs: make([]Input, 0, len(source.Inputs))}
@@ -173,11 +174,12 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 			seenInputs[uniqueness] = true
 			meter.Inputs = append(meter.Inputs, input)
 		}
-		if source.Decay != nil {
-			if source.Decay.TowardValue == nil || source.Decay.RatePerHour == nil || *source.Decay.TowardValue < MinimumValue || *source.Decay.TowardValue > MaximumValue || *source.Decay.RatePerHour < 1 || *source.Decay.RatePerHour > MaximumValue {
+		if !bytes.Equal(bytes.TrimSpace(source.Decay), []byte("null")) {
+			var decay rawDecay
+			if decodeCatalogStrict(source.Decay, &decay) != nil || decay.TowardValue == nil || decay.RatePerHour == nil || *decay.TowardValue < MinimumValue || *decay.TowardValue > MaximumValue || *decay.RatePerHour < 1 || *decay.RatePerHour > MaximumValue {
 				return nil, fmt.Errorf("%w: meters[%d].decay", ErrInvalidCatalog, index)
 			}
-			meter.Decay = &Decay{TowardValue: *source.Decay.TowardValue, RatePerHour: *source.Decay.RatePerHour}
+			meter.Decay = &Decay{TowardValue: *decay.TowardValue, RatePerHour: *decay.RatePerHour}
 		}
 		catalog.byID[meter.ID] = meter
 		catalog.Meters = append(catalog.Meters, meter)
@@ -187,8 +189,8 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 
 func validReseed(value rawTrustReseed) bool {
 	return value.BaseValue != nil && value.NotorietyNumerator != nil && value.NotorietyDenominator != nil && value.FloorValue != nil && value.CeilingValue != nil &&
-		*value.BaseValue >= MinimumValue && *value.BaseValue <= MaximumValue && *value.NotorietyNumerator >= 0 &&
-		*value.NotorietyDenominator > 0 && *value.FloorValue >= MinimumValue && *value.FloorValue <= *value.CeilingValue &&
+		*value.BaseValue >= MinimumValue && *value.BaseValue <= MaximumValue && *value.NotorietyNumerator >= 0 && *value.NotorietyNumerator <= maximumExactInteger &&
+		*value.NotorietyDenominator > 0 && *value.NotorietyDenominator <= maximumExactInteger && *value.FloorValue >= MinimumValue && *value.FloorValue <= *value.CeilingValue &&
 		*value.CeilingValue <= MaximumValue && *value.BaseValue >= *value.FloorValue && *value.BaseValue <= *value.CeilingValue
 }
 

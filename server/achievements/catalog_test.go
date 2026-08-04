@@ -2,8 +2,22 @@ package achievements
 
 import (
 	"encoding/json"
+	"os"
 	"testing"
 )
+
+type catalogParityCorpus struct {
+	Version int `json:"version"`
+	Cases   []struct {
+		Name       string `json:"name"`
+		Valid      bool   `json:"valid"`
+		Operations []struct {
+			Op    string `json:"op"`
+			Path  []any  `json:"path"`
+			Value any    `json:"value"`
+		} `json:"operations"`
+	} `json:"cases"`
+}
 
 func testRegistry() Registry {
 	return Registry{
@@ -101,6 +115,74 @@ func TestLoadCatalogRejectsProofAndRegistryDrift(t *testing.T) {
 	invalidRegistry.EventKinds["INVALID EVENT"] = true
 	if _, err := LoadCatalog(validCatalogBytes(t), invalidRegistry); err == nil {
 		t.Fatal("non-mechanical registry key accepted")
+	}
+}
+
+func TestLoadCatalogMatchesSharedParityCorpus(t *testing.T) {
+	data, err := os.ReadFile("../../balance/testdata/achievements-catalog-parity-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var corpus catalogParityCorpus
+	if err := json.Unmarshal(data, &corpus); err != nil || corpus.Version != 1 || len(corpus.Cases) == 0 {
+		t.Fatalf("invalid parity corpus: version=%d cases=%d err=%v", corpus.Version, len(corpus.Cases), err)
+	}
+	for _, vector := range corpus.Cases {
+		t.Run(vector.Name, func(t *testing.T) {
+			var root any
+			if err := json.Unmarshal(validCatalogBytes(t), &root); err != nil {
+				t.Fatal(err)
+			}
+			for _, operation := range vector.Operations {
+				applyCatalogParityOperation(t, root, operation.Op, operation.Path, operation.Value)
+			}
+			candidate, err := json.Marshal(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			_, loadErr := LoadCatalog(candidate, testRegistry())
+			if (loadErr == nil) != vector.Valid {
+				t.Fatalf("valid=%v loadErr=%v", vector.Valid, loadErr)
+			}
+		})
+	}
+}
+
+func applyCatalogParityOperation(t *testing.T, root any, operation string, path []any, value any) {
+	t.Helper()
+	if len(path) == 0 {
+		t.Fatal("empty parity operation path")
+	}
+	current := root
+	for _, component := range path[:len(path)-1] {
+		switch typed := component.(type) {
+		case string:
+			current = current.(map[string]any)[typed]
+		case float64:
+			current = current.([]any)[int(typed)]
+		default:
+			t.Fatalf("invalid parity path component %T", component)
+		}
+	}
+	last := path[len(path)-1]
+	switch typed := last.(type) {
+	case string:
+		object := current.(map[string]any)
+		switch operation {
+		case "delete":
+			delete(object, typed)
+		case "set":
+			object[typed] = value
+		default:
+			t.Fatalf("invalid parity operation %q", operation)
+		}
+	case float64:
+		if operation != "set" {
+			t.Fatalf("operation %q is invalid for array path", operation)
+		}
+		current.([]any)[int(typed)] = value
+	default:
+		t.Fatalf("invalid final parity path component %T", last)
 	}
 }
 
