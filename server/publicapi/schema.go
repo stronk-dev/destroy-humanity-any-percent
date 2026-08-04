@@ -17,6 +17,8 @@ import (
 
 var ErrInvalidSchema = errors.New("invalid API schema")
 
+const maximumRuntimeSchemaDepth = 64
+
 type SchemaKind string
 
 const (
@@ -77,11 +79,41 @@ func ValidateSchemaDefinitions(definitions []NamedSchema) (map[string]*Schema, e
 	if err := validateReferenceGraph(sources); err != nil {
 		return nil, err
 	}
+	for name, schema := range sources {
+		if err := validateExpandedSchemaDepth(schema, sources, 0); err != nil {
+			return nil, fmt.Errorf("%w: %s: expanded depth", ErrInvalidSchema, name)
+		}
+	}
 	result := make(map[string]*Schema, len(sources))
 	for name, schema := range sources {
 		result[name] = cloneSchema(schema)
 	}
 	return result, nil
+}
+
+func validateExpandedSchemaDepth(schema *Schema, definitions map[string]*Schema, depth int) error {
+	if schema == nil || depth > maximumRuntimeSchemaDepth {
+		return ErrInvalidSchema
+	}
+	if schema.Kind == SchemaRef {
+		return validateExpandedSchemaDepth(definitions[schema.Ref], definitions, depth+1)
+	}
+	for _, field := range schema.Fields {
+		if err := validateExpandedSchemaDepth(field.Schema, definitions, depth+1); err != nil {
+			return err
+		}
+	}
+	if schema.Items != nil {
+		if err := validateExpandedSchemaDepth(schema.Items, definitions, depth+1); err != nil {
+			return err
+		}
+	}
+	for _, alternate := range schema.Alternates {
+		if err := validateExpandedSchemaDepth(alternate, definitions, depth+1); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func validateReferenceGraph(definitions map[string]*Schema) error {
@@ -242,7 +274,7 @@ func ValidateJSON(schemaName string, data []byte, definitions map[string]*Schema
 }
 
 func validateValue(schema *Schema, value any, definitions map[string]*Schema, depth int) error {
-	if schema == nil || depth > 64 {
+	if schema == nil || depth > maximumRuntimeSchemaDepth {
 		return ErrInvalidSchema
 	}
 	switch schema.Kind {

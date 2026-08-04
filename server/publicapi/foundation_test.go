@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -79,6 +80,21 @@ func TestSchemaRegistryRejectsReferenceCycles(t *testing.T) {
 				t.Fatalf("cycle accepted: %v", err)
 			}
 		})
+	}
+}
+
+func TestSchemaRegistryRejectsAcyclicGraphBeyondRuntimeDepth(t *testing.T) {
+	schemas := make([]NamedSchema, 66)
+	for index := range schemas {
+		name := fmt.Sprintf("S%02d", index)
+		schema := &Schema{Kind: SchemaString}
+		if index < len(schemas)-1 {
+			schema = &Schema{Kind: SchemaRef, Ref: fmt.Sprintf("S%02d", index+1)}
+		}
+		schemas[index] = NamedSchema{Name: name, Schema: schema}
+	}
+	if _, err := ValidateSchemaDefinitions(schemas); !errors.Is(err, ErrInvalidSchema) {
+		t.Fatalf("runtime-unusable schema chain accepted: %v", err)
 	}
 }
 

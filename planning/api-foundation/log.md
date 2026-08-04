@@ -111,3 +111,10 @@ those owner/security literals. No production abuse-control value was improvised 
   mandate, and limit. Every dimension has a discriminating hash-binding fixture.
 - Focused `./publicapi` tests pass. C18–C20 remain honest endpoint/owner blockers; no handler,
   middleware, raw-body descriptor, or security literal was improvised.
+
+## 2026-08-04 — expanded schema-depth closure
+
+Independent review found that an acyclic named-reference chain could pass construction yet exceed
+the runtime validator's defensive depth bound. Registry construction now walks the fully expanded
+reference graph with the same limit before cloning it. The reviewer's 66-definition reproducer is
+a permanent negative fixture, so startup cannot bless a schema runtime validation must reject.
