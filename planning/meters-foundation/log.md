@@ -304,3 +304,18 @@ superseded-field decode, or cross-scope fixture exists. Exact-range `git diff --
 fresh root `make test` could not be attributed to this commit because concurrent uncommitted
 next-landing edits currently make `server/production/replay.go` fail compilation; focused save
 verification is green and the failure is outside `d7bb1da`.
+
+## 2026-08-04 — activation-codec remediation after independent rejection
+
+- Restored the existing legacy migration authority explicitly: revisions v1–v13 restore with v14
+  as their next writable version, and Store/Intent/Exit compare against that migrated target rather
+  than the historical row version. A real Postgres applied-intent fixture now proves v1→v14.
+- Exit validates the complete loaded-Founder/loaded-Company/final-Company/new-Founder/new-Company
+  version tuple. Preexisting mixed tuples, terminal version changes, and either one-sided v16
+  activation all fail before persistence; the atomic v14→v16 tuple and legacy→v14 Exit pass.
+- Restore now runs the same foundation scope/domain validator as encode, explicitly rejects
+  `meter_bands` at v15/v16, and v15 refuses any prematurely present achievement state.
+- Achievement arrays are byte-sorted as well as unique. New negative fixtures cover superseded
+  fields, Company/Founder leakage, negative scores, unsorted IDs, and silent v15 loss.
+- Focused `go test ./save` and the normal root `make test-save-integration` pass. The dependent
+  catalog/runtime landing remains uncommitted pending independent approval of this remediation.

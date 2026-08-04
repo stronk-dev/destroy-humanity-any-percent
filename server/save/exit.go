@@ -203,11 +203,8 @@ func (s *Store) applyExitTransaction(
 		}
 		return IntentResult{Outcome: IntentRejected, Receipt: cloneRaw(decision.Receipt)}, nil
 	}
-	if VersionForState(decision.FinalCompanyState) != companyRevision.Version {
-		return IntentResult{}, fmt.Errorf("%w: terminal company state changed save version", ErrInvalidState)
-	}
-	if nextVersion := VersionForState(decision.NewCompanyState); nextVersion != companyRevision.Version && nextVersion != LatestSupportedVersion {
-		return IntentResult{}, fmt.Errorf("%w: invalid new-run save version transition", ErrInvalidState)
+	if err := validateExitVersionTransition(founderRevision, companyRevision, founder, decision.FinalCompanyState, decision.NewCompanyState); err != nil {
+		return IntentResult{}, err
 	}
 
 	transitionHash := decision.NewConstantsHash
@@ -327,6 +324,28 @@ func (s *Store) applyExitTransaction(
 		return IntentResult{}, err
 	}
 	return IntentResult{Outcome: IntentApplied, Receipt: cloneRaw(decision.Receipt), Events: recorded}, nil
+}
+
+func validateExitVersionTransition(founderRevision, companyRevision Revision, founder, finalCompany, newCompany *State) error {
+	if founder == nil || finalCompany == nil || newCompany == nil {
+		return fmt.Errorf("%w: missing Exit state", ErrInvalidState)
+	}
+	currentFounderVersion, currentCompanyVersion := migratedWriteVersion(founderRevision.Version), migratedWriteVersion(companyRevision.Version)
+	founderVersion, finalVersion, nextVersion := VersionForState(founder), VersionForState(finalCompany), VersionForState(newCompany)
+	if currentFounderVersion != currentCompanyVersion {
+		return fmt.Errorf("%w: founder/company save versions disagree before Exit", ErrInvalidState)
+	}
+	if finalVersion != currentCompanyVersion {
+		return fmt.Errorf("%w: terminal company state changed save version", ErrInvalidState)
+	}
+	if nextVersion != currentCompanyVersion && nextVersion != LatestSupportedVersion {
+		return fmt.Errorf("%w: invalid new-run save version transition", ErrInvalidState)
+	}
+	if (nextVersion == LatestSupportedVersion && founderVersion != LatestSupportedVersion) ||
+		(nextVersion != LatestSupportedVersion && founderVersion != currentFounderVersion) {
+		return fmt.Errorf("%w: founder/company mechanic activation must be atomic", ErrInvalidState)
+	}
+	return nil
 }
 
 func (s *Store) loadExitState(ctx context.Context, tx *sql.Tx, streamID, ownerID string, scope economy.Scope) (*State, Revision, string, error) {

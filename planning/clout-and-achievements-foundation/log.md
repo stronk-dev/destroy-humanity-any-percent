@@ -276,3 +276,16 @@ cover only Company happy-path round trip and two missing required fields. Exact-
 passes. Root `make test` is presently blocked by unrelated concurrent next-landing edits in
 `server/production/replay.go`; that compile failure is not attributed to `d7bb1da`, while focused
 save verification is green.
+
+## 2026-08-04 — activation-codec remediation after independent rejection
+
+- Legacy revisions retain the supported v1–v13→v14 write migration instead of being bricked by
+  the new activation guard; the behavior is proven through an applied intent against real
+  Postgres.
+- The save transaction now owns the atomic Founder/Company activation tuple and rejects both
+  one-sided v16 combinations, mixed loaded tuples, and terminal-version mutation.
+- Decode invokes foundation scope/domain validation. It rejects cross-scope earned state,
+  negative/unsafe scores, unsorted earned arrays, superseded `meter_bands`, and achievements in a
+  v15 state; encode and restore now fail closed in the same directions.
+- Focused save tests plus `make test-save-integration` pass. No runtime/catalog activation work is
+  credited until this remediation receives an independent full-range approval.

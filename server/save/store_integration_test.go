@@ -305,4 +305,15 @@ func TestStoreIntegrationRevisionLifecycle(t *testing.T) {
 		!legacy.State.EvaluatedThrough.Equal(testCursor.Truncate(time.Microsecond)) {
 		t.Fatalf("legacy migration state = %+v", legacy.State)
 	}
+	legacyIntentID := "01985555-0100-7000-8000-000000000001"
+	legacyResult, err := store.ApplyIntent(ctx, legacyStreamID, 1, legacyIntentID, "sha256:"+strings.Repeat("7", 64), func(*State, Revision) (IntentDecision, error) {
+		return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`)}, nil
+	})
+	if err != nil || legacyResult.Outcome != IntentApplied {
+		t.Fatalf("legacy applied intent outcome=%s err=%v", legacyResult.Outcome, err)
+	}
+	var migratedVersion int
+	if err := db.QueryRowContext(ctx, `SELECT version FROM save_revisions WHERE stream_id=$1 AND revision=2`, legacyStreamID).Scan(&migratedVersion); err != nil || migratedVersion != CurrentVersion {
+		t.Fatalf("legacy migrated version=%d err=%v", migratedVersion, err)
+	}
 }

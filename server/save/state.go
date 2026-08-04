@@ -314,6 +314,13 @@ func VersionForState(state *State) int {
 	return CurrentVersion
 }
 
+func migratedWriteVersion(version int) int {
+	if version < CurrentVersion {
+		return CurrentVersion
+	}
+	return version
+}
+
 func EncodeState(state *State) ([]byte, error) {
 	return EncodeStateVersion(state, VersionForState(state))
 }
@@ -450,6 +457,15 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	}
 	if catalog == nil {
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
+	}
+	if version >= 15 {
+		var keys map[string]json.RawMessage
+		if err := json.Unmarshal(data, &keys); err != nil {
+			return nil, fmt.Errorf("%w: decode: %v", ErrInvalidState, err)
+		}
+		if _, superseded := keys["meter_bands"]; superseded {
+			return nil, fmt.Errorf("%w: superseded meter_bands in v%d", ErrInvalidState, version)
+		}
 	}
 
 	var source stateV16
@@ -639,7 +655,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, err
 	}
 	state := &State{
-		WireVersion: version,
+		WireVersion: migratedWriteVersion(version),
 		Ledger:      ledger, GeneratorCounts: counts, GeneratorPurchasedTotal: *source.GeneratorPurchasedTotal, EvaluatedThrough: cursor,
 		UpgradesOwned: ownedUpgrades, GeneratorProvisioned: provisioned, ProvisionRemaindersPPM: remainders,
 		StockRateRemainderPPM: *source.StockRateRemainderPPM,
@@ -663,11 +679,11 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		GuildConsumedWindow: source.GuildConsumedWindow,
 	}
 	if version >= 16 {
-		state.AchievementsEarnedRun, err = uniqueMechanicalKeys(source.AchievementsEarnedRun, "achievements_earned_run")
+		state.AchievementsEarnedRun, err = sortedUniqueMechanicalKeys(source.AchievementsEarnedRun, "achievements_earned_run")
 		if err != nil {
 			return nil, err
 		}
-		state.AchievementsEarnedLifetime, err = uniqueMechanicalKeys(source.AchievementsEarnedLifetime, "achievements_earned_lifetime")
+		state.AchievementsEarnedLifetime, err = sortedUniqueMechanicalKeys(source.AchievementsEarnedLifetime, "achievements_earned_lifetime")
 		if err != nil {
 			return nil, err
 		}
@@ -731,6 +747,9 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if err := validateGuildState(state, scope, version < 12); err != nil {
 		return nil, err
 	}
+	if err := validateFoundationState(state, version, scope); err != nil {
+		return nil, err
+	}
 	return state, nil
 }
 
@@ -750,6 +769,9 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 		return fmt.Errorf("%w: company meter state leaked outside company scope", ErrInvalidState)
 	}
 	if version < 16 {
+		if len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 {
+			return fmt.Errorf("%w: achievement state present before v16", ErrInvalidState)
+		}
 		return nil
 	}
 	if state.AchievementScoreRun < 0 || state.AchievementScoreRun > decimal.MaxExactInteger || state.AchievementScoreLifetime < 0 || state.AchievementScoreLifetime > decimal.MaxExactInteger {
@@ -1123,6 +1145,15 @@ func uniqueMechanicalKeys(keys []string, label string) (map[string]bool, error) 
 		result[key] = true
 	}
 	return result, nil
+}
+
+func sortedUniqueMechanicalKeys(keys []string, label string) (map[string]bool, error) {
+	for index := 1; index < len(keys); index++ {
+		if keys[index] <= keys[index-1] {
+			return nil, fmt.Errorf("%w: %s must be byte-sorted and unique", ErrInvalidState, label)
+		}
+	}
+	return uniqueMechanicalKeys(keys, label)
 }
 
 func cloneBoolMap(source map[string]bool) map[string]bool {

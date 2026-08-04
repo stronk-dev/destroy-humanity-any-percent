@@ -308,6 +308,72 @@ func TestStateV15AndV16CollectionsFailClosed(t *testing.T) {
 	if _, err := RestoreState(missing, 16, stateCatalog(t), economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
 		t.Fatalf("v16 missing achievement_score_run error = %v", err)
 	}
+
+	state.WireVersion = 15
+	state.AchievementsEarnedRun = map[string]bool{"achievement.too_early": true}
+	state.AchievementScoreRun = 1
+	if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v15 silently discarded achievement state: %v", err)
+	}
+}
+
+func TestRestoreV16RejectsSupersededCrossScopeAndUnsortedState(t *testing.T) {
+	state := testState(t)
+	state.WireVersion = 16
+	state.MeterValues = map[string]int{}
+	state.MeterDecayRemainders = map[string]int64{}
+	state.MeterInputRemainders = map[string]int64{}
+	state.AchievementsEarnedRun = map[string]bool{"achievement.a": true, "achievement.b": true}
+	state.AchievementScoreRun = 2
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var baseline map[string]any
+	if json.Unmarshal(encoded, &baseline) != nil {
+		t.Fatal("decode baseline")
+	}
+	tests := []struct {
+		name   string
+		mutate func(map[string]any)
+	}{
+		{name: "superseded meter bands", mutate: func(value map[string]any) { value["meter_bands"] = map[string]any{} }},
+		{name: "founder ownership in company", mutate: func(value map[string]any) {
+			value["achievements_earned_lifetime"] = []any{"achievement.a"}
+			value["achievement_score_lifetime"] = float64(1)
+		}},
+		{name: "negative run score", mutate: func(value map[string]any) { value["achievement_score_run"] = float64(-1) }},
+		{name: "unsorted run IDs", mutate: func(value map[string]any) {
+			value["achievements_earned_run"] = []any{"achievement.b", "achievement.a"}
+		}},
+	}
+	for _, item := range tests {
+		t.Run(item.name, func(t *testing.T) {
+			candidate := make(map[string]any, len(baseline))
+			for key, value := range baseline {
+				candidate[key] = value
+			}
+			item.mutate(candidate)
+			data, _ := json.Marshal(candidate)
+			if _, err := RestoreState(data, 16, stateCatalog(t), economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+				t.Fatalf("error = %v", err)
+			}
+		})
+	}
+}
+
+func TestLegacyRestoreTargetsCurrentWritableVersion(t *testing.T) {
+	legacy := []byte(`{"balances":{"company.cash":"1e0"}}`)
+	state, err := RestoreState(legacy, 1, stateCatalog(t), economy.ScopeCompany, testCursor)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if VersionForState(state) != CurrentVersion {
+		t.Fatalf("legacy writable version=%d want=%d", VersionForState(state), CurrentVersion)
+	}
+	if _, err := EncodeState(state); err != nil {
+		t.Fatalf("legacy state could not migrate on write: %v", err)
+	}
 }
 
 func TestStateV8MigratesCollapsedOfflineAccumulator(t *testing.T) {

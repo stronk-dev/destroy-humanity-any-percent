@@ -282,7 +282,7 @@ func (s *Store) applyIntent(
 		}
 		return IntentResult{Outcome: decision.Outcome, Receipt: cloneRaw(decision.Receipt)}, nil
 	}
-	if VersionForState(state) != revision.Version {
+	if VersionForState(state) != migratedWriteVersion(revision.Version) {
 		return IntentResult{}, fmt.Errorf("%w: ordinary intent cannot change save version", ErrInvalidState)
 	}
 

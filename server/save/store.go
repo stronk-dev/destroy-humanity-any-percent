@@ -184,7 +184,7 @@ func (s *Store) WriteInTransaction(ctx context.Context, tx *sql.Tx, streamID str
 		return Revision{}, fmt.Errorf("%w: got %d, current %d", ErrConflict, expectedRevision, latest)
 	}
 	version := VersionForState(state)
-	if version != latestVersion {
+	if version != migratedWriteVersion(latestVersion) {
 		return Revision{}, fmt.Errorf("%w: ordinary write cannot change save version %d to %d", ErrInvalidState, latestVersion, version)
 	}
 	revision := Revision{StreamID: streamID, Number: latest + 1, Version: version, ConstantsHash: constantsHash}
