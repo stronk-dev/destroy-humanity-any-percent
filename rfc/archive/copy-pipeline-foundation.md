@@ -1,6 +1,6 @@
 # RFC: Copy Pipeline Foundation
 
-- **Status:** implementing (C1–C10 ruled)
+- **Status:** implemented
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/08` (the flavor bible — voice rules, era presentation, the tonal law), `design/11` (UX writing, first-session), the research-provenance conventions (`design/research/README.md`)
@@ -8,7 +8,7 @@
 - **Depends on:** implemented client/tooling foundations only (C1 ruling)
 - **Unblocks:** UI Foundation (UF3 consumes this artifact), all content RFCs' copy
 - **Owner ruling honored:** breadth-first — the copy SYSTEM (keys, artifact, lints), not the copy.
-- **Planning:** `planning/copy-pipeline-foundation/` (once implementing)
+- **Planning:** `planning/archive/copy-pipeline-foundation/`
 
 ## Summary
 

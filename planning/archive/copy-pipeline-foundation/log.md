@@ -257,3 +257,18 @@ in intent.go until then.
   history/boundary/copy/schema checks, and 19,530 browser assertions.
 - The final independent verdict must cite the rewritten contiguous union and must not cite the
   dropped hash as part of the archive range.
+
+## 2026-08-03 — final independent archive verdict
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Exact contiguous archive range:** `261eafa..5eb53e3`
+- **Decision:** approved for archival; no findings.
+
+Darwin verified the dropped hash is absent from branch history and consumed by no accepted verdict;
+the Setext and complete accumulated markup corpus; the structural C4 registry/generated-constant/
+Postgres-test boundary; the absence of stale AST assurances; and restoration of the kernel-watched
+save file. Independent `make verify-kernel-version`, `make copy-check`, `make verify`,
+`make test-save-integration`, and range `git diff --check` all passed. The range union covers every
+implementation, remediation, rewrite-ruling, and verification-record commit before this mechanical
+archive rotation.

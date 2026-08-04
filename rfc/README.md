@@ -21,7 +21,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 | [UI Foundation](ui-foundation.md) | draft — C1–C8 awaiting owner rulings | Client Shell / Transport / Copy Pipeline contract |
 | [API Foundation](api-foundation.md) | accepted architecture — C11–C17 awaiting owner rulings | Account API / Transport / Gameserver Composition |
-| [Copy Pipeline Foundation](copy-pipeline-foundation.md) | draft — C1–C10 awaiting owner rulings | Client/tooling foundations; unblocks UI Foundation |
 | [Meters Foundation](meters-foundation.md) | draft — C1–C12 awaiting owner rulings | Production / Run Genesis; unblocks Clout and Pet Care |
 | [Clout & Achievements Foundation](clout-and-achievements-foundation.md) | draft — C1–C10 awaiting owner rulings | Meters / Production / Run Genesis |
 
@@ -33,6 +32,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 
 | RFC | Status | Canonical docs |
 |---|---|---|
+| [Copy Pipeline Foundation](archive/copy-pipeline-foundation.md) | implemented | [Copy pipeline](../docs/copy-pipeline.md) |
 | [Purchasable Content Foundation](archive/purchasable-content-foundation.md) | implemented | [Purchasable content](../docs/purchasable-content.md), [Production engine](../docs/production-engine.md), [Economy kernel](../docs/economy-kernel.md) |
 | [Gameserver Composition](archive/gameserver-composition.md) | implemented | [Gameserver composition](../docs/gameserver.md), [Guilds](../docs/guilds.md) |
 | [Run Genesis & Replay](archive/run-genesis-and-replay.md) | implemented | [Leaderboards & epochs](../docs/leaderboards-and-epochs.md) |

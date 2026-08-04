@@ -7,6 +7,7 @@ RFC: `rfc/copy-pipeline-foundation.md`
 - [x] Land the framework-independent client loader/resolver with exact typed parameters, era fallback, and invariant behavior.
 - [x] Land completeness, provenance, known-name, append-only history, and generated-drift gates with discriminating fixtures.
 - [x] Wire root Make targets and CI, publish canonical implementation docs, and run the normal verification ladder.
-- [ ] Obtain an independent full-range adversarial review, remediate findings, then archive RFC and planning record.
+- [x] Obtain an independent full-range adversarial review, remediate findings, then archive RFC and planning record.
 
-Carried acceptance debt: none. The independent archive review remains open until a reviewer cites the complete implementation commit range.
+Carried acceptance debt: none. Darwin approved the exact contiguous archive range
+`261eafa..5eb53e3`; the archive rotation consumes that verdict.
