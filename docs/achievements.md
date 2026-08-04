@@ -22,8 +22,9 @@ condition evaluation, lifetime/run latching, and score derivation. Save v16 pers
 on Company and lifetime IDs/score on Founder. Exit settles the run set exactly once, re-derives the
 lifetime score under the next pinned catalog, and resets the new run.
 
-Replay-inputs v3 freezes the Founder lifetime set and score. Active runs require v3 globally;
-historical seven-artifact runs retain v2 compatibility. Both replay loaders accept only the exact
+Replay-inputs v4 freezes the Founder lifetime set and score on every active-run command, so career
+conditions never read mutable Founder state during replay. Historical active v3 rows remain
+replayable under their pinned semantics, and seven-artifact runs retain v2 compatibility. Both replay loaders accept only the exact
 legacy seven-artifact bundle or the paired nine-artifact bundle containing both Meters and
 Achievements. The shared Go-authored corpus covers non-empty carry, unknown-ID and score-mismatch
 rejection, active-state preservation, active Exit, and a next-catalog score-grant retune.

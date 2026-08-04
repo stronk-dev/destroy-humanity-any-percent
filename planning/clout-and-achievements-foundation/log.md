@@ -407,3 +407,12 @@ The separate uncommitted production/meters work was excluded from both source re
 - **Decision:** **approved.** Active non-empty carry, exact ID/score derivation, v16 preservation,
   active Exit settlement under a retuned next catalog, paired artifact identity, and the complete
   v2/v3 boundary were independently re-run and held. No remaining findings.
+
+## 2026-08-04 — replay-inputs v4 freezes career observations
+
+Career predicates must inspect immutable Founder carry on every applied transition, not only on
+gate or Exit commands. Replay-inputs v4 adds the catalog-coherent lifetime achievement set/score,
+age, notoriety, facts, and exit count to every active-run resolved input. Current writes require
+v4; historical active v3 rows retain their pinned behavior and pre-foundation v2 rows remain
+loadable. This is an input-ownership closure, not a new achievement mechanic. Kernel version is
+`0.3.22`; normal root Go/client suites and the regenerated shared replay corpus pass.

@@ -194,8 +194,8 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	if err != nil {
 		return LoggedTransition{}, fmt.Errorf("%w: decode envelope: %v", ErrInvalidReplayInputs, err)
 	}
-	if catalogs.foundationsActive() && wire.Version != save.ReplayInputsVersion {
-		return LoggedTransition{}, fmt.Errorf("%w: active foundations require replay inputs v%d", ErrInvalidReplayInputs, save.ReplayInputsVersion)
+	if catalogs.foundationsActive() && wire.Version < 3 {
+		return LoggedTransition{}, fmt.Errorf("%w: active foundations require replay inputs v3+", ErrInvalidReplayInputs)
 	}
 	request, err := parseLoggedIntent(canonicalPayload, wire.Command.IntentID)
 	if err != nil || request.IntentID != wire.Command.IntentID || request.ExpectedRevision != wire.Command.Revision ||
@@ -256,6 +256,18 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 			return LoggedTransition{}, fmt.Errorf("%w: accrual resolved union", ErrInvalidReplayInputs)
 		}
 		accrual = resolved.Accrual
+		if resolved.FounderCarry != nil {
+			if !validFounderCarry(*resolved.FounderCarry, wire.Version, catalogs.foundationsActive()) || resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash {
+				return LoggedTransition{}, fmt.Errorf("%w: founder carry", ErrInvalidReplayInputs)
+			}
+			founder, err = stateFromFounderCarry(*resolved.FounderCarry, catalogs)
+			if err != nil {
+				return LoggedTransition{}, fmt.Errorf("%w: founder carry state", ErrInvalidReplayInputs)
+			}
+		}
+	}
+	if catalogs.foundationsActive() && wire.Version >= 4 && founder == nil {
+		return LoggedTransition{}, fmt.Errorf("%w: active foundation founder carry", ErrInvalidReplayInputs)
 	}
 	contributions, err := contributionsFromReplay(accrual)
 	if err != nil || accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
@@ -300,8 +312,8 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	if err != nil {
 		return LoggedExitTransition{}, fmt.Errorf("%w: decode envelope: %v", ErrInvalidReplayInputs, err)
 	}
-	if catalogs.foundationsActive() && wire.Version != save.ReplayInputsVersion {
-		return LoggedExitTransition{}, fmt.Errorf("%w: active foundations require replay inputs v%d", ErrInvalidReplayInputs, save.ReplayInputsVersion)
+	if catalogs.foundationsActive() && wire.Version < 3 {
+		return LoggedExitTransition{}, fmt.Errorf("%w: active foundations require replay inputs v3+", ErrInvalidReplayInputs)
 	}
 	request, err := parseLoggedIntent(canonicalPayload, wire.Command.IntentID)
 	if err != nil || request.ExpectedRevision != wire.Command.Revision || wire.Command.RunSeq != company.RunSeq || !bytes.Equal(request.CanonicalPayload, canonicalPayload) {
@@ -318,8 +330,8 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	if next == nil || !next.valid(resolved.NextConstantsHash) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: next catalog bundle", ErrInvalidReplayInputs)
 	}
-	if next.foundationsActive() && wire.Version != save.ReplayInputsVersion {
-		return LoggedExitTransition{}, fmt.Errorf("%w: foundation activation requires replay inputs v%d", ErrInvalidReplayInputs, save.ReplayInputsVersion)
+	if next.foundationsActive() && wire.Version < 3 {
+		return LoggedExitTransition{}, fmt.Errorf("%w: foundation activation requires replay inputs v3+", ErrInvalidReplayInputs)
 	}
 	now := time.UnixMilli(wire.EvaluatedAtMS).UTC()
 	if now.Before(company.EvaluatedThrough) {
@@ -639,9 +651,10 @@ func stateFromFounderCarry(carry replayFounderCarry, catalogs CatalogBundle) (*s
 }
 
 type replayAccrualResolved struct {
-	Kind       string        `json:"kind"`
-	IntentKind string        `json:"intent_kind"`
-	Accrual    replayAccrual `json:"accrual"`
+	Kind         string              `json:"kind"`
+	IntentKind   string              `json:"intent_kind"`
+	Accrual      replayAccrual       `json:"accrual"`
+	FounderCarry *replayFounderCarry `json:"founder_carry,omitempty"`
 }
 
 type replayCrossGateResolved struct {
@@ -719,7 +732,12 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 		resolved, err = json.Marshal(replayCrossGateResolved{Kind: "cross_gate", IntentKind: input.IntentKind, Accrual: accrual,
 			DeclinedExitOfferCount: input.DeclinedExitOfferCount, FounderCarry: carry})
 	default:
-		resolved, err = json.Marshal(replayAccrualResolved{Kind: "accrual", IntentKind: input.IntentKind, Accrual: accrual})
+		var carry *replayFounderCarry
+		if input.FounderCarry != nil {
+			value := normalizedFounderCarry(*input.FounderCarry)
+			carry = &value
+		}
+		resolved, err = json.Marshal(replayAccrualResolved{Kind: "accrual", IntentKind: input.IntentKind, Accrual: accrual, FounderCarry: carry})
 	}
 	if err != nil {
 		return nil, err
@@ -801,7 +819,7 @@ func founderCarry(state *save.State) replayFounderCarry {
 
 func parseReplayInputs(data []byte) (replayInputsWire, error) {
 	var wire replayInputsWire
-	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != save.ReplayInputsVersion) ||
+	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != save.ReplayInputsVersion) ||
 		(wire.EvaluationMode != ModeOnline && wire.EvaluationMode != ModeOffline) || wire.EvaluatedAtMS <= 0 {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}

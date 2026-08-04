@@ -407,6 +407,39 @@ func TestReplayEnvelopeVersionFollowsPinnedFoundationActivation(t *testing.T) {
 	if _, err := ApplyLogged(activeState, request.CanonicalPayload, active, v2); !errors.Is(err, ErrInvalidReplayInputs) {
 		t.Fatalf("active foundations accepted replay v2: %v", err)
 	}
+	activeCarry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: active.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, AchievementsEarnedLifetime: []string{}}
+	activeInputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+		RouteContextVersion: active.Routes.ContextVersion(), FounderCarry: &activeCarry})
+	if err != nil {
+		t.Fatal(err)
+	}
+	activeState = replayFixtureState(t, active.Economy, now)
+	activeState.WireVersion = save.LatestSupportedVersion
+	activeState.MeterBands = nil
+	activeState.MeterValues, activeState.MeterDecayRemainders, activeState.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	activeState.AchievementsEarnedRun = map[string]bool{}
+	if _, err := ApplyLogged(activeState, request.CanonicalPayload, active, activeInputs); err != nil {
+		t.Fatalf("active replay v4 with frozen Founder carry rejected: %v", err)
+	}
+	var missingCarry map[string]any
+	if err := json.Unmarshal(activeInputs, &missingCarry); err != nil {
+		t.Fatal(err)
+	}
+	delete(missingCarry["resolved"].(map[string]any), "founder_carry")
+	missingCarryBytes, _ := json.Marshal(missingCarry)
+	activeState = replayFixtureState(t, active.Economy, now)
+	activeState.WireVersion = save.LatestSupportedVersion
+	activeState.MeterBands = nil
+	activeState.MeterValues, activeState.MeterDecayRemainders, activeState.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	activeState.AchievementsEarnedRun = map[string]bool{}
+	if _, err := ApplyLogged(activeState, request.CanonicalPayload, active, missingCarryBytes); !errors.Is(err, ErrInvalidReplayInputs) {
+		t.Fatalf("active replay v4 accepted missing Founder carry: %v", err)
+	}
+	missingCarry["v"] = float64(3)
+	historicalV3, _ := json.Marshal(missingCarry)
+	if _, err := ApplyLogged(activeState, request.CanonicalPayload, active, historicalV3); err != nil {
+		t.Fatalf("historical active replay v3 rejected: %v", err)
+	}
 
 	legacy.Next = &active
 	company := replayFixtureState(t, legacy.Economy, now.Add(-20*time.Minute))

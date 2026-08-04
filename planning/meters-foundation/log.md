@@ -543,3 +543,17 @@ three findings.
   loading, hash recomputation, active ordinary/terminal v3 enforcement, complete v16 state, pinned
   Founder carry, next-catalog score retune, structural registry parity, historical v2 execution,
   and the Go-authored active fixtures all held. No remaining findings.
+
+## 2026-08-04 — active-command Founder carry boundary
+
+- Tracing the live hook seam exposed the immutable input required by career-scoped achievement
+  predicates: replay inputs previously froze Founder state only for gate and terminal commands.
+- Replay-inputs v4 now freezes the same catalog-coherent Founder carry on every active-run
+  command. Active v4 evidence without that carry fails closed; historical active v3 evidence and
+  pre-foundation v2 evidence remain readable under their pinned semantics.
+- The live service resolves the Company pin before deciding whether the carry is required and
+  rechecks Founder/Company catalog coherence inside the logged transition. This closes the
+  mutable-Founder-read seam without widening `ApplyLogged` beyond its four owned arguments.
+- Kernel version advances to `0.3.22`; the shared Go-authored replay corpus was regenerated and
+  normal root Go/client suites pass. The meter and achievement transition hooks remain the next
+  semantic landing.

@@ -348,19 +348,38 @@ func (s *Service) Handle(
 	}
 	var prestigeFounder *save.Loaded
 	var declinedOffers int64
-	if request.Kind == IntentCrossGate && s.prestigePolicies != nil {
+	var company *save.Loaded
+	if request.Kind == IntentCrossGate || s.replayCatalogs != nil {
+		loaded, err := s.store.LoadLatest(ctx, streamID)
+		if err != nil {
+			return HandleResult{}, err
+		}
+		company = &loaded
+	}
+	needsFounderCarry := request.Kind == IntentCrossGate && s.prestigePolicies != nil
+	if company != nil && s.replayCatalogs != nil {
+		if bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(company.Revision.ConstantsHash); ok && bundle.foundationsActive() {
+			needsFounderCarry = true
+		}
+	}
+	if needsFounderCarry {
 		loaded, err := s.store.LoadSiblingLatest(ctx, streamID, economy.ScopeFounder)
 		if err != nil {
 			return HandleResult{}, err
 		}
 		prestigeFounder = &loaded
-		company, err := s.store.LoadLatest(ctx, streamID)
-		if err != nil {
-			return HandleResult{}, err
+		if company == nil {
+			loadedCompany, loadErr := s.store.LoadLatest(ctx, streamID)
+			if loadErr != nil {
+				return HandleResult{}, loadErr
+			}
+			company = &loadedCompany
 		}
 		if err := requireFounderCatalogCoherence(prestigeFounder.Revision, company.Revision); err != nil {
 			return HandleResult{}, err
 		}
+	}
+	if request.Kind == IntentCrossGate && s.prestigePolicies != nil {
 		declinedOffers, err = s.store.CountRunEvents(ctx, streamID, save.EventExitOfferDeclined, company.State.RunSeq)
 		if err != nil {
 			return HandleResult{}, err

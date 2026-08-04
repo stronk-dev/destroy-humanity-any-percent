@@ -156,9 +156,11 @@ run-log sequence); production owns the closed resolved-input union. Decimal cont
 canonical strings and are sorted before persistence. Evaluation mode/time, Commons participation
 weight, explicit ordered Guild settlement batches (currently produced empty until the scheduler is
 composed), Route context version, offer inputs, and terminal Founder carry/route/next-hash inputs
-are frozen rather than re-read from mutable projections. Replay-inputs v3 extends terminal Founder
-carry with the sorted lifetime-achievement IDs and derived score required by active v16 runs;
-historical v2 inputs remain replayable only for pre-foundation runs. Non-empty settlement batches already have
+are frozen rather than re-read from mutable projections. Replay-inputs v3 extended Founder carry
+with the sorted lifetime-achievement IDs and derived score required by active v16 runs; v4 carries
+that immutable Founder view on every active-run command so career predicates are deterministic.
+Historical v2 inputs remain replayable only for pre-foundation runs and v3 remains readable for
+its pinned active semantics. Non-empty settlement batches already have
 closed UUID/safe-integer/order validation, so composition does not require a replay schema change.
 
 Rows written before replay-input migration deliberately retain SQL NULL and will become `log_gap`
