@@ -33,12 +33,13 @@ type Operation struct {
 	Auth      AuthMode
 	Public    bool
 	Request   string
+	CursorKey string
 	Responses map[int]string
 }
 
 type Registry struct {
-	Schemas    map[string]*Schema
-	Operations []Operation
+	schemas    map[string]*Schema
+	operations []Operation
 	byID       map[string]Operation
 }
 
@@ -49,10 +50,10 @@ func NewRegistry(schemas []NamedSchema, operations []Operation) (*Registry, erro
 	if err != nil {
 		return nil, err
 	}
-	result := &Registry{Schemas: definitions, Operations: append([]Operation(nil), operations...), byID: map[string]Operation{}}
+	result := &Registry{schemas: definitions, operations: append([]Operation(nil), operations...), byID: map[string]Operation{}}
 	lastID := ""
 	seenRoutes := map[string]bool{}
-	for index, operation := range result.Operations {
+	for index, operation := range result.operations {
 		if !operationIDPattern.MatchString(operation.ID) || operation.ID <= lastID || !validMethod(operation.Method) ||
 			!validOperationPath(operation.Path, operation.Surface) || (operation.Auth != AuthNone && operation.Auth != AuthAccessToken) ||
 			operation.Public != (operation.Surface == SurfacePublicV1) || operation.Public && operation.Auth != AuthNone || len(operation.Responses) == 0 {
@@ -60,6 +61,9 @@ func NewRegistry(schemas []NamedSchema, operations []Operation) (*Registry, erro
 		}
 		if operation.Request != "" && definitions[operation.Request] == nil {
 			return nil, fmt.Errorf("%w: request schema", ErrInvalidOperation)
+		}
+		if operation.CursorKey != "" && (definitions[operation.CursorKey] == nil || definitions[operation.CursorKey].Kind != SchemaObject) {
+			return nil, fmt.Errorf("%w: cursor key schema", ErrInvalidOperation)
 		}
 		for status, schema := range operation.Responses {
 			if status < 100 || status > 599 || definitions[schema] == nil {
@@ -72,7 +76,7 @@ func NewRegistry(schemas []NamedSchema, operations []Operation) (*Registry, erro
 		}
 		seenRoutes[key] = true
 		operation.Responses = cloneResponses(operation.Responses)
-		result.Operations[index], result.byID[operation.ID], lastID = operation, operation, operation.ID
+		result.operations[index], result.byID[operation.ID], lastID = operation, operation, operation.ID
 	}
 	return result, nil
 }
@@ -86,6 +90,42 @@ func (registry *Registry) Operation(id string) (Operation, bool) {
 	return operation, ok
 }
 
+func (registry *Registry) Operations() []Operation {
+	if registry == nil {
+		return nil
+	}
+	result := make([]Operation, len(registry.operations))
+	for index, operation := range registry.operations {
+		operation.Responses = cloneResponses(operation.Responses)
+		result[index] = operation
+	}
+	return result
+}
+
+func (registry *Registry) Schemas() []NamedSchema {
+	if registry == nil {
+		return nil
+	}
+	names := make([]string, 0, len(registry.schemas))
+	for name := range registry.schemas {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	result := make([]NamedSchema, len(names))
+	for index, name := range names {
+		result[index] = NamedSchema{Name: name, Schema: cloneSchema(registry.schemas[name])}
+	}
+	return result
+}
+
+func (registry *Registry) cursorSchema(operationID string) (string, bool) {
+	if registry == nil {
+		return "", false
+	}
+	operation, ok := registry.byID[operationID]
+	return operation.CursorKey, ok && operation.CursorKey != ""
+}
+
 func (registry *Registry) ValidateResponse(operationID string, status int, data []byte) error {
 	operation, ok := registry.byID[operationID]
 	if !ok {
@@ -95,7 +135,7 @@ func (registry *Registry) ValidateResponse(operationID string, status int, data 
 	if schema == "" {
 		return ErrInvalidOperation
 	}
-	return ValidateJSON(schema, data, registry.Schemas)
+	return ValidateJSON(schema, data, registry.schemas)
 }
 
 func validMethod(method string) bool {

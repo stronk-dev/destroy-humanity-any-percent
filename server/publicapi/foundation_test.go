@@ -3,6 +3,7 @@ package publicapi
 import (
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"strings"
 	"testing"
@@ -25,16 +26,31 @@ func testSchemas() []NamedSchema {
 			{Name: "name", Schema: &Schema{Kind: SchemaString}, Required: true},
 			{Name: "started_at", Schema: &Schema{Kind: SchemaString, Format: "date-time-ms"}, Required: true},
 		}}},
+		{Name: "TimeKey", Schema: &Schema{Kind: SchemaObject, Fields: []Field{
+			{Name: "run_id", Schema: &Schema{Kind: SchemaString}, Required: true},
+			{Name: "time_ms", Schema: &Schema{Kind: SchemaInteger, Minimum: integerPointer(0)}, Required: true},
+		}}},
 	}
 }
 
-func TestSchemaRegistryIsClosedAndValidatesRuntimeBytes(t *testing.T) {
-	registry, err := NewRegistry(testSchemas(), []Operation{
+func testOperations() []Operation {
+	return []Operation{
+		{ID: "get_board", Method: "GET", Path: "/api/public/v1/boards/{category}", Surface: SurfacePublicV1, Auth: AuthNone, Public: true, CursorKey: "TimeKey", Responses: map[int]string{200: "EpochPage", 400: "APIError"}},
 		{ID: "get_epochs", Method: "GET", Path: "/api/public/v1/epochs", Surface: SurfacePublicV1, Auth: AuthNone, Public: true, Responses: map[int]string{200: "EpochPage", 400: "APIError"}},
-	})
+	}
+}
+
+func testRegistry(t *testing.T) *Registry {
+	t.Helper()
+	registry, err := NewRegistry(testSchemas(), testOperations())
 	if err != nil {
 		t.Fatal(err)
 	}
+	return registry
+}
+
+func TestSchemaRegistryIsClosedAndValidatesRuntimeBytes(t *testing.T) {
+	registry := testRegistry(t)
 	valid := []byte(`{"items":[{"epoch_id":1,"name":"Phase 0","started_at":"2026-08-03T12:34:56.789Z"}],"next_cursor":null}`)
 	if err := registry.ValidateResponse("get_epochs", 200, valid); err != nil {
 		t.Fatal(err)
@@ -46,6 +62,60 @@ func TestSchemaRegistryIsClosedAndValidatesRuntimeBytes(t *testing.T) {
 	} {
 		if err := registry.ValidateResponse("get_epochs", 200, invalid); err == nil {
 			t.Fatalf("invalid response accepted: %s", invalid)
+		}
+	}
+}
+
+func TestSchemaRegistryRejectsReferenceCycles(t *testing.T) {
+	for name, schemas := range map[string][]NamedSchema{
+		"direct": {{Name: "Loop", Schema: &Schema{Kind: SchemaRef, Ref: "Loop"}}},
+		"indirect": {
+			{Name: "First", Schema: &Schema{Kind: SchemaObject, Fields: []Field{{Name: "next", Schema: &Schema{Kind: SchemaRef, Ref: "Second"}, Required: true}}}},
+			{Name: "Second", Schema: &Schema{Kind: SchemaArray, Items: &Schema{Kind: SchemaRef, Ref: "First"}}},
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			if _, err := ValidateSchemaDefinitions(schemas); !errors.Is(err, ErrInvalidSchema) {
+				t.Fatalf("cycle accepted: %v", err)
+			}
+		})
+	}
+}
+
+func TestRegistryOwnsImmutableSchemaAndOperationSnapshots(t *testing.T) {
+	schemas := testSchemas()
+	operations := testOperations()
+	registry, err := NewRegistry(schemas, operations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	schemas[2].Schema.Fields[0].Name = "corrupted"
+	operations[1].Responses[200] = "APIError"
+	schemaSnapshot := registry.Schemas()
+	schemaSnapshot[2].Schema.Fields[0].Name = "also_corrupted"
+	operationSnapshot := registry.Operations()
+	operationSnapshot[1].Responses[200] = "APIError"
+	valid := []byte(`{"items":[{"epoch_id":1,"name":"Phase 0","started_at":"2026-08-03T12:34:56.789Z"}],"next_cursor":null}`)
+	if err := registry.ValidateResponse("get_epochs", 200, valid); err != nil {
+		t.Fatalf("registry changed after external mutation: %v", err)
+	}
+}
+
+func TestCanonicalDecimalFormatUsesNumericCoreGrammar(t *testing.T) {
+	definitions, err := ValidateSchemaDefinitions([]NamedSchema{{Name: "Decimal", Schema: &Schema{Kind: SchemaString, Format: "canonical-decimal"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, value := range []string{"0", "1e0", "-1e0", "1.23456789012e4000000000000000"} {
+		encoded, _ := json.Marshal(value)
+		if err := ValidateJSON("Decimal", encoded, definitions); err != nil {
+			t.Fatalf("valid canonical decimal %q rejected: %v", value, err)
+		}
+	}
+	for _, value := range []string{"10e0", "1.0e0", "1e+1", "1e9000000000000000", "-0"} {
+		encoded, _ := json.Marshal(value)
+		if err := ValidateJSON("Decimal", encoded, definitions); err == nil {
+			t.Fatalf("noncanonical decimal %q accepted", value)
 		}
 	}
 }
@@ -69,7 +139,7 @@ type timeKey struct {
 func TestCursorValidatesMACBeforeParsingAndBindsQuery(t *testing.T) {
 	current := []byte("0123456789abcdef0123456789abcdef")
 	previous := []byte("abcdef0123456789abcdef0123456789")
-	codec, err := NewCursorCodec(current, previous)
+	codec, err := NewCursorCodec(current, previous, testRegistry(t))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -84,6 +154,21 @@ func TestCursorValidatesMACBeforeParsingAndBindsQuery(t *testing.T) {
 	}
 	if err := codec.Decode(token, "get_epochs", filter, &decoded); !errors.Is(err, ErrInvalidCursor) {
 		t.Fatal("cross-operation cursor accepted")
+	}
+	if _, err := codec.Encode("unknown_operation", filter, timeKey{RunID: "run-9", TimeMS: 1234}); !errors.Is(err, ErrInvalidCursor) {
+		t.Fatal("unknown operation accepted")
+	}
+	if _, err := codec.Encode("get_epochs", filter, timeKey{RunID: "run-9", TimeMS: 1234}); !errors.Is(err, ErrInvalidCursor) {
+		t.Fatal("non-paginated operation accepted")
+	}
+	if _, err := codec.Encode("get_board", filter, map[string]any{"run_id": "run-9"}); !errors.Is(err, ErrInvalidCursor) {
+		t.Fatal("missing cursor key field accepted")
+	}
+	var incomplete struct {
+		RunID string `json:"run_id"`
+	}
+	if err := codec.Decode(token, "get_board", filter, &incomplete); !errors.Is(err, ErrInvalidCursor) {
+		t.Fatal("cursor key target that cannot exact-reencode was accepted")
 	}
 	if err := codec.Decode(token, "get_board", strings.Repeat("b", 64), &decoded); !errors.Is(err, ErrInvalidCursor) {
 		t.Fatal("cross-filter cursor accepted")
@@ -103,8 +188,9 @@ func TestCursorValidatesMACBeforeParsingAndBindsQuery(t *testing.T) {
 func TestCursorKeyRotationAndCanonicalBoardVariables(t *testing.T) {
 	oldKey := []byte("old-0123456789abcdef0123456789ab")
 	newKey := []byte("new-0123456789abcdef0123456789ab")
-	oldCodec, _ := NewCursorCodec(oldKey, nil)
-	rotated, _ := NewCursorCodec(newKey, oldKey)
+	registry := testRegistry(t)
+	oldCodec, _ := NewCursorCodec(oldKey, nil, registry)
+	rotated, _ := NewCursorCodec(newKey, oldKey, registry)
 	filter := strings.Repeat("c", 64)
 	token, err := oldCodec.Encode("get_board", filter, timeKey{RunID: "run-1", TimeMS: 1})
 	if err != nil {
@@ -130,5 +216,33 @@ func TestCursorKeyRotationAndCanonicalBoardVariables(t *testing.T) {
 	}
 	if _, err := DecodeBoardVariables(encoded + "="); !errors.Is(err, ErrInvalidCursor) {
 		t.Fatal("padded variables accepted")
+	}
+}
+
+func TestBoardFilterHashHasOneCanonicalAuthority(t *testing.T) {
+	faction := "open_source"
+	base := BoardFilter{Category: "any_percent", Variables: BoardVariables{Advisor: 1, Commons: 0, Faction: &faction, Glitched: 1}, EpochID: 7, MandateLevel: 3, Limit: 50}
+	encoded, err := EncodeBoardFilter(base)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(encoded) != `{"category":"any_percent","epoch":7,"limit":50,"mandate":3,"variables":{"advisor":1,"commons":0,"faction":"open_source","glitched":1}}` {
+		t.Fatalf("unexpected canonical filter: %s", encoded)
+	}
+	digest, err := BoardFilterSHA256(base)
+	if err != nil || !filterHashPattern.MatchString(digest) {
+		t.Fatalf("digest=%q err=%v", digest, err)
+	}
+	mutations := []BoardFilter{base, base, base, base, base}
+	mutations[0].Category = "ethical_percent"
+	mutations[1].EpochID++
+	mutations[2].Limit++
+	mutations[3].MandateLevel++
+	mutations[4].Variables.Commons = 1
+	for _, mutation := range mutations {
+		other, err := BoardFilterSHA256(mutation)
+		if err != nil || other == digest {
+			t.Fatalf("filter dimension was not bound: %+v digest=%q err=%v", mutation, other, err)
+		}
 	}
 }

@@ -11,6 +11,8 @@ import (
 	"sort"
 	"strconv"
 	"time"
+
+	"cloud-clicker/server/decimal"
 )
 
 var ErrInvalidSchema = errors.New("invalid API schema")
@@ -59,20 +61,104 @@ var (
 )
 
 func ValidateSchemaDefinitions(definitions []NamedSchema) (map[string]*Schema, error) {
-	result := make(map[string]*Schema, len(definitions))
+	sources := make(map[string]*Schema, len(definitions))
 	last := ""
 	for _, definition := range definitions {
 		if !schemaNamePattern.MatchString(definition.Name) || definition.Name <= last || definition.Schema == nil {
 			return nil, ErrInvalidSchema
 		}
-		result[definition.Name], last = definition.Schema, definition.Name
+		sources[definition.Name], last = definition.Schema, definition.Name
 	}
 	for _, definition := range definitions {
-		if err := validateSchema(definition.Schema, result, 0); err != nil {
+		if err := validateSchema(definition.Schema, sources, 0); err != nil {
 			return nil, fmt.Errorf("%w: %s: %v", ErrInvalidSchema, definition.Name, err)
 		}
 	}
+	if err := validateReferenceGraph(sources); err != nil {
+		return nil, err
+	}
+	result := make(map[string]*Schema, len(sources))
+	for name, schema := range sources {
+		result[name] = cloneSchema(schema)
+	}
 	return result, nil
+}
+
+func validateReferenceGraph(definitions map[string]*Schema) error {
+	edges := make(map[string][]string, len(definitions))
+	for name, schema := range definitions {
+		seen := map[string]bool{}
+		collectSchemaRefs(schema, seen)
+		for target := range seen {
+			edges[name] = append(edges[name], target)
+		}
+		sort.Strings(edges[name])
+	}
+	state := map[string]uint8{}
+	var visit func(string) error
+	visit = func(name string) error {
+		if state[name] == 1 {
+			return fmt.Errorf("%w: reference cycle at %s", ErrInvalidSchema, name)
+		}
+		if state[name] == 2 {
+			return nil
+		}
+		state[name] = 1
+		for _, target := range edges[name] {
+			if err := visit(target); err != nil {
+				return err
+			}
+		}
+		state[name] = 2
+		return nil
+	}
+	for name := range definitions {
+		if err := visit(name); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func collectSchemaRefs(schema *Schema, result map[string]bool) {
+	if schema.Kind == SchemaRef {
+		result[schema.Ref] = true
+		return
+	}
+	for _, field := range schema.Fields {
+		collectSchemaRefs(field.Schema, result)
+	}
+	if schema.Items != nil {
+		collectSchemaRefs(schema.Items, result)
+	}
+	for _, alternate := range schema.Alternates {
+		collectSchemaRefs(alternate, result)
+	}
+}
+
+func cloneSchema(source *Schema) *Schema {
+	if source == nil {
+		return nil
+	}
+	result := &Schema{Kind: source.Kind, Enum: append([]string(nil), source.Enum...), Format: source.Format, Ref: source.Ref}
+	if source.Minimum != nil {
+		value := *source.Minimum
+		result.Minimum = &value
+	}
+	if source.Maximum != nil {
+		value := *source.Maximum
+		result.Maximum = &value
+	}
+	result.Fields = make([]Field, len(source.Fields))
+	for index, field := range source.Fields {
+		result.Fields[index] = Field{Name: field.Name, Required: field.Required, Schema: cloneSchema(field.Schema)}
+	}
+	result.Items = cloneSchema(source.Items)
+	result.Alternates = make([]*Schema, len(source.Alternates))
+	for index, alternate := range source.Alternates {
+		result.Alternates[index] = cloneSchema(alternate)
+	}
+	return result
 }
 
 func validateSchema(schema *Schema, definitions map[string]*Schema, depth int) error {
@@ -149,13 +235,16 @@ func ValidateJSON(schemaName string, data []byte, definitions map[string]*Schema
 	if err := decoder.Decode(&trailing); err != io.EOF {
 		return fmt.Errorf("%w: trailing JSON", ErrInvalidSchema)
 	}
-	if err := validateValue(schema, value, definitions); err != nil {
+	if err := validateValue(schema, value, definitions, 0); err != nil {
 		return fmt.Errorf("%w: value: %v", ErrInvalidSchema, err)
 	}
 	return nil
 }
 
-func validateValue(schema *Schema, value any, definitions map[string]*Schema) error {
+func validateValue(schema *Schema, value any, definitions map[string]*Schema, depth int) error {
+	if schema == nil || depth > 64 {
+		return ErrInvalidSchema
+	}
 	switch schema.Kind {
 	case SchemaObject:
 		object, ok := value.(map[string]any)
@@ -170,7 +259,7 @@ func validateValue(schema *Schema, value any, definitions map[string]*Schema) er
 				}
 				continue
 			}
-			if err := validateValue(field.Schema, item, definitions); err != nil {
+			if err := validateValue(field.Schema, item, definitions, depth+1); err != nil {
 				return err
 			}
 		}
@@ -186,7 +275,7 @@ func validateValue(schema *Schema, value any, definitions map[string]*Schema) er
 			return ErrInvalidSchema
 		}
 		for _, item := range array {
-			if err := validateValue(schema.Items, item, definitions); err != nil {
+			if err := validateValue(schema.Items, item, definitions, depth+1); err != nil {
 				return err
 			}
 		}
@@ -213,11 +302,11 @@ func validateValue(schema *Schema, value any, definitions map[string]*Schema) er
 			return ErrInvalidSchema
 		}
 	case SchemaRef:
-		return validateValue(definitions[schema.Ref], value, definitions)
+		return validateValue(definitions[schema.Ref], value, definitions, depth+1)
 	case SchemaOneOf:
 		matches := 0
 		for _, alternate := range schema.Alternates {
-			if validateValue(alternate, value, definitions) == nil {
+			if validateValue(alternate, value, definitions, depth+1) == nil {
 				matches++
 			}
 		}
@@ -251,13 +340,12 @@ func matchesFormat(format, value string) bool {
 		parsed, err := time.Parse("2006-01-02T15:04:05.000Z", value)
 		return err == nil && parsed.UTC().Format("2006-01-02T15:04:05.000Z") == value
 	case "canonical-decimal":
-		return canonicalDecimalPattern.MatchString(value)
+		_, err := decimal.ParseCanonical(value)
+		return err == nil
 	default:
 		return false
 	}
 }
-
-var canonicalDecimalPattern = regexp.MustCompile(`^(?:0|[1-9][0-9]*(?:\.[0-9]+)?)(?:e[+-]?[0-9]+)?$`)
 
 func sortedContains(values []string, target string) bool {
 	index := sort.SearchStrings(values, target)

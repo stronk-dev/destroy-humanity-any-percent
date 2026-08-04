@@ -21,6 +21,7 @@ var ErrInvalidCursor = errors.New("invalid cursor")
 type CursorCodec struct {
 	current  []byte
 	previous []byte
+	registry *Registry
 }
 
 type cursorFields struct {
@@ -32,19 +33,20 @@ type cursorFields struct {
 
 var filterHashPattern = regexp.MustCompile(`^[0-9a-f]{64}$`)
 
-func NewCursorCodec(current, previous []byte) (*CursorCodec, error) {
-	if len(current) < 32 || len(previous) != 0 && len(previous) < 32 || len(previous) != 0 && bytes.Equal(current, previous) {
+func NewCursorCodec(current, previous []byte, registry *Registry) (*CursorCodec, error) {
+	if len(current) < 32 || len(previous) != 0 && len(previous) < 32 || len(previous) != 0 && bytes.Equal(current, previous) || registry == nil {
 		return nil, ErrInvalidCursor
 	}
-	return &CursorCodec{current: append([]byte(nil), current...), previous: append([]byte(nil), previous...)}, nil
+	return &CursorCodec{current: append([]byte(nil), current...), previous: append([]byte(nil), previous...), registry: registry}, nil
 }
 
 func (codec *CursorCodec) Encode(operation, filterSHA256 string, key any) (string, error) {
-	if codec == nil || !operationIDPattern.MatchString(operation) || !filterHashPattern.MatchString(filterSHA256) || key == nil {
+	keySchema, known := codec.cursorKeySchema(operation)
+	if codec == nil || !known || !filterHashPattern.MatchString(filterSHA256) || key == nil {
 		return "", ErrInvalidCursor
 	}
 	keyBytes, err := json.Marshal(key)
-	if err != nil || !canonicalJSON(keyBytes) {
+	if err != nil || !canonicalJSON(keyBytes) || ValidateJSON(keySchema, keyBytes, codec.registry.schemas) != nil {
 		return "", ErrInvalidCursor
 	}
 	payload, err := json.Marshal(cursorFields{Version: 1, Operation: operation, FilterSHA256: filterSHA256, Key: keyBytes})
@@ -57,7 +59,8 @@ func (codec *CursorCodec) Encode(operation, filterSHA256 string, key any) (strin
 }
 
 func (codec *CursorCodec) Decode(token, operation, filterSHA256 string, keyTarget any) error {
-	if codec == nil || len(token) == 0 || len(token) > maximumCursorEncoded || !operationIDPattern.MatchString(operation) || !filterHashPattern.MatchString(filterSHA256) || keyTarget == nil {
+	keySchema, known := codec.cursorKeySchema(operation)
+	if codec == nil || !known || len(token) == 0 || len(token) > maximumCursorEncoded || !filterHashPattern.MatchString(filterSHA256) || keyTarget == nil {
 		return ErrInvalidCursor
 	}
 	raw, err := base64.RawURLEncoding.DecodeString(token)
@@ -72,13 +75,24 @@ func (codec *CursorCodec) Decode(token, operation, filterSHA256 string, keyTarge
 	if !canonicalJSON(payload) {
 		return ErrInvalidCursor
 	}
-	if err := decodeCursorStrict(payload, &fields); err != nil || fields.Version != 1 || fields.Operation != operation || fields.FilterSHA256 != filterSHA256 || !canonicalJSON(fields.Key) {
+	if err := decodeCursorStrict(payload, &fields); err != nil || fields.Version != 1 || fields.Operation != operation || fields.FilterSHA256 != filterSHA256 || !canonicalJSON(fields.Key) || ValidateJSON(keySchema, fields.Key, codec.registry.schemas) != nil {
 		return ErrInvalidCursor
 	}
 	if err := decodeCursorStrict(fields.Key, keyTarget); err != nil {
 		return ErrInvalidCursor
 	}
+	reencoded, err := json.Marshal(keyTarget)
+	if err != nil || !bytes.Equal(reencoded, fields.Key) {
+		return ErrInvalidCursor
+	}
 	return nil
+}
+
+func (codec *CursorCodec) cursorKeySchema(operation string) (string, bool) {
+	if codec == nil || !operationIDPattern.MatchString(operation) {
+		return "", false
+	}
+	return codec.registry.cursorSchema(operation)
 }
 
 func (codec *CursorCodec) validMAC(payload, signature []byte) bool {

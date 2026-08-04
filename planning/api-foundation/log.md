@@ -94,3 +94,20 @@ What held:
 Source review confirmed C6/C16 enumerate cache ages but not the limiter capacity/refill, maximum IP
 entries, trusted-proxy hops, cursor key IDs, or exact accepted request-ID grammar/bound. C20 carries
 those owner/security literals. No production abuse-control value was improvised in middleware.
+
+## 2026-08-04 — schema and cursor authority remediation
+
+- Cursor codecs now require the validated operation registry. Each paginated operation names one
+  exact object schema for its key; unknown and non-paginated operations reject, raw key bytes must
+  validate against that schema, and the decoded target must re-encode byte-exactly.
+- Named schema reference graphs reject direct and indirect cycles before startup. Runtime
+  validation retains a defensive depth bound.
+- Registry construction deep-clones schemas and operation response maps into private storage.
+  Enumeration APIs return defensive snapshots, so caller or generator mutation cannot change the
+  runtime authority after validation.
+- The `canonical-decimal` format delegates to `decimal.ParseCanonical`; the API no longer carries
+  an incompatible second big-number grammar.
+- Added the single normalized board-filter encoder/hash authority over category, variables, epoch,
+  mandate, and limit. Every dimension has a discriminating hash-binding fixture.
+- Focused `./publicapi` tests pass. C18–C20 remain honest endpoint/owner blockers; no handler,
+  middleware, raw-body descriptor, or security literal was improvised.
