@@ -1,11 +1,11 @@
 # RFC: Minigame Platform Foundation
 
-- **Status:** draft
+- **Status:** accepted architecture (C1–C11 ruled; C12–C18 block implementation)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/03` (the minigame suite, clocks, economy hooks, AI-fallback law), `design/03 §12b` (the tier→minigame scaling seam + Fairness Law), `design/05 §4` (PvP table, punch-down multiplier)
 - **Research:** `neopets-systems.md §4` (the portal faucet model: N-sends × per-game cap × conversion ratio, monthly re-tune), `kol-puzzle-pirates.md §B` (minigame-as-labor, offline-output quality grades), `creature-battler.md` / `lane-pusher-design.md` (the combat instances)
-- **Depends on:** Production + Run Genesis + Transport + Gameserver Composition (implemented); Combat Shared Kernel (implemented — the first two platform tenants are the duel/lane engines); Account/Clout (Clout foundation — reward payouts)
+- **Depends on:** Production + Run Genesis + Transport + Gameserver Composition (implemented); Combat Shared Kernel (implemented — the duel engine is tenant #1). **NOT Clout** (removed per C1).
 - **Owner ruling honored:** breadth-first — the PLATFORM every minigame is content on: session lifecycle, the scaling seam as code, the faucet governor, reward hooks, the registry. No individual minigame.
 - **Planning:** `planning/minigame-platform-foundation/` (once implementing)
 
@@ -52,7 +52,7 @@ non-ranked rate (anti-farm — the researched universal).
 
 ### MP4 — Reward payout & the AI-fallback law
 
-Resolve → payout hook: Clout (achievement/rating), tier-scaled cash (governed by MP3), rating
+Resolve → payout hook (per ruling C1/C6 — NO Clout, server-certified not client-claimed): tier-scaled economy-resource credit (governed by MP3), rating
 updates (real Elo, no rubber-band — the combat-bots contract), season facts. **Every minigame
 declares its AI fallback** (the design law): solo-by-design, bot backfill, or NPC-partner — a
 minigame with no fallback is a load error (the whole game must be playable at zero other players
@@ -67,6 +67,55 @@ register as the first tenants (their existing catalogs become platform-conforman
 games, Market, and arcade toys are later content on this registry. `unlock_condition_ref` gates
 by catalog fact (staggered across the tier arc — the CC hour-5-40-sag fix); the platform never
 invents unlock logic.
+
+## Owner rulings on C1–C11 (2026-08-04)
+
+- **C1 — accepted, and this one is on me:** MP4 reintroduced the exact Clout-as-payout faucet I
+  ruled OUT of Achievements an hour earlier. **Clout removed from payout and dependencies.**
+  Phase-A payout arms are only owners that exist at implementation: an economy-resource credit
+  (catalog resource ID) and typed rating/season facts (non-resource state). Feed/Social may add a
+  social-activity Clout arm by successor RFC through the closed reward union; the generic platform
+  never mints a free-form resource/effect.
+- **C2 — accepted, the session is DB-authoritative:** sessions are Postgres rows
+  (`minigame_sessions`), server-advanced only; concurrency and double-pay prevented by the SAME
+  claim-token + RowsAffected discipline the verification queue uses; resolve/payout is one
+  transaction keyed by session id (idempotent). No in-memory actor is authoritative for
+  async/snapshot modes.
+- **C3 — accepted:** `engine_ref` binds to a closed tenant interface — a typed
+  `(command, snapshot, result)` descriptor + engine-version identity + deterministic error
+  taxonomy; the combat duel adapter and a fixture tenant both implement it and are conformance-
+  tested against the same boundary; an engine reading ambient state or returning an unvalidated
+  payout is a load/contract error.
+- **C4 — accepted:** scaling axes become typed rows (source field, integer range, composition
+  order, ranked-power binding) so the Fairness Law is loader-PROVABLE, not asserted.
+- **C5 — accepted:** faucet uses **attended-time day boundaries on the absolute grid** (not
+  wall-clock — the provision-grid precedent kills the timezone/deploy ambiguity), integer-ppm
+  conversion with declared rounding + overflow saturation, cap consumption persisted per session
+  (a resolve retry can't double-spend — same idempotency), bot reduction a catalog literal.
+- **C6 — accepted, the sharpest correction:** payout is NOT a client intent. A minigame result is
+  a SERVER-CERTIFIED outcome: the server resolves the session (replay-verified for solo/snapshot,
+  like combat), then the payout enters the economy through a **server-authored** transition inside
+  the resolve transaction — evented and replay-logged, but never a client-submitted
+  `claim_payout`. The client submits PLAY commands to the session; it never submits a score.
+- **C7 — accepted:** fallback is a closed union with exact fields (solo: no peer; bot: catalog
+  bot identity + reduced non-ranked rate literal + replay via the deterministic bot policy;
+  npc_partner: the virtual-guild pattern). Bot results replay like any tenant result.
+- **C8 — accepted, SCOPE RULING: `live_pvp` is DEFERRED out of this foundation.** Phase-A ships
+  `solo` and `async_snapshot` ONLY (the modes combat already proves replayable). The `live_pvp`
+  mode boundary is DECLARED (the enum arm reserved) but unimplemented; the PvP-service RFC owns
+  disconnect/reconnect/authoritative-clock/finalization. AC1 drops to the two shipped modes. This
+  keeps the platform honest — it ships what's replay-provable now.
+- **C9 — accepted:** `unlock_condition_ref` reuses the closed shell-fact grammar (UI C5); **`era_skins`
+  REMOVED** (UI Foundation: one token theme per era, never per-feature skins — my `era_skins` was
+  a UI-law violation). AC6 corrected: the combat duel engine registers as tenant #1 via adapter;
+  the lane engine follows when implemented (not claimed ready).
+- **C10 — accepted, and the labor hazard ruled:** `offline_quality` is stored session state (a
+  ppm grade + last-session timestamp), a deterministic decay transition on the attended grid; **it
+  decays toward a NEUTRAL floor, never zero** (the ruling that keeps an optional minigame from
+  becoming mandatory labor — a lapsed player's automated output degrades to baseline, never below).
+- **C11 — accepted:** the registry + tenant schemas + fallback/faucet policy join epoch identity
+  (a minigames artifact, mint like the others); session genesis + results join the verifier where
+  they affect verification; the DB migration + cross-runtime corpus are named in the closure batch.
 
 ## Acceptance criteria
 
@@ -83,6 +132,94 @@ invents unlock logic.
    at zero connected peers.
 6. Registry: the combat duel + lane engines register as conformant tenants without engine changes
    (adapter only).
+
+## Post-ruling implementation blockers (Codex review, 2026-08-04)
+
+C1–C11 settle the architecture and remove the Clout/UI/live-PvP contradictions. They do not yet
+provide several exact schemas and arithmetic choices their own proposed contracts require. The
+following are the narrow remaining contracts needed before code can have one correct shape.
+
+### C12 — The normative body still contradicts three rulings
+
+MP1 still declares `mode: solo|async_snapshot|live_pvp`; MP5 still requires
+`unlock_condition_ref` and `era_skins`; AC6 still requires both combat engines. C8 reserves but
+rejects live PvP, C9 replaces the unlock grammar/removes skins, and the lane engine is unimplemented.
+
+**Proposed contract:** reconcile decision sites: Phase-A mode is exactly `solo|async_snapshot`
+(the wire reserves no accepted `live_pvp` value until its owner RFC); registry unlock is exactly
+the UI `always|fact_equals` union; remove `era_skins`; AC6 requires the fixture tenant and duel
+adapter only, with lane registration moved to the lane RFC.
+
+### C13 — Session persistence still has no executable row/command contract
+
+C2 names Postgres, claim tokens, and one transaction but not the row keys/columns, transition
+commands, revision/hash semantics, allowed concurrency, expiry, retention, or lock order.
+
+**Proposed contract:** define `minigame_sessions` exactly with UUIDv7 session/command IDs,
+account/founder ownership, minigame/mode, engine/constants identity, genesis/snapshot/result bytes,
+status, revision, attended cursor, claim token/lease, paid revision, and created/updated/expiry
+timestamps. Define exact create/play/abandon/resolve server commands and the closed rejection
+taxonomy. Reuse canonical SHA256 idempotency over `(session_id,command_id,payload)`. Declare the
+maximum active sessions per founder/mode, lease duration, expiry/retention literals, and lock order
+relative to founder/company save streams.
+
+### C14 — Tenant descriptors and transition results remain nouns
+
+C3 accepts typed descriptors but supplies no exact descriptor rows, byte envelopes, result/event
+union, engine registry interface, or error categories.
+
+**Proposed contract:** enumerate the descriptor JSON and Go interface literally: schema versions,
+maximum byte sizes, command/snapshot/result schema references, engine version, allowed modes and
+event kinds; transition input/output envelopes with exact keys; and the deterministic rejection
+union. State whether snapshot/result bytes are canonical JSON or opaque bytes plus content type.
+The fixture tenant's literal schemas/vectors become the conformance oracle.
+
+### C15 — Scaling is still not loader-provable
+
+C4 says typed rows exist but neither lists their exact union nor maps destinations to
+`power|breadth|presentation`. “Bounded exact integer” has no bounds/formulas.
+
+**Proposed contract:** provide the exact source union and field names for the Phase-A arms accepted
+in C4, per-arm integer range/formula, composition order, destination descriptor, duplicate rule,
+and the literal fixture tenant destination registry. Define taint propagation: any tier-derived
+source reaching a ranked `power` destination through any composition path rejects.
+
+### C16 — The attended-day faucet clock and arithmetic are ambiguous
+
+An “absolute grid” over attended time needs an origin and persisted cursor. C5 also says declared
+rounding/overflow saturation without choosing the rounding or distinguishing a configured payout
+cap from numeric overflow. Bot reduction and counter reset order remain open.
+
+**Proposed contract:** identify one monotonically persisted Founder attended-time total and define
+window index/origin exactly; if no such authority exists, add it with its save owner/migration.
+Spell the checked integer formula and rounding (`floor` or carried remainder), numeric-overflow
+behavior (reject/invariant—never silently saturate), order of bot multiplier/conversion/per-send/
+window caps, and the exact counter/session idempotency row. Catalog values remain balance data, but
+all required keys/ranges and reason-key flow are normative.
+
+### C17 — Server-authored payout has no production transaction envelope
+
+C6 correctly forbids client score claims but does not define the internal command, Company stream
+event/receipt payload, replay-input row, or how a minigame DB transaction atomically commits a save
+stream revision. “Inside resolve transaction” is not a lock/order/API contract.
+
+**Proposed contract:** provide exact `apply_minigame_result` internal payload/resolved-input/
+receipt/event schemas; declare session→founder→company lock order (or the existing canonical order
+if different); identify the one repository method owning session resolution + run-log/save/events
++ payout-counter commit; and require fault injection after every write. Replay re-derives the
+governed credit from immutable genesis/result/policy bytes and compares receipt/events bytewise.
+
+### C18 — Fallback and offline-quality rows still lack literals/formulas
+
+C7 calls the union exact without enumerating its keys. C10 names a ppm grade/timestamp and neutral
+floor but no grade source, grid origin, decay formula/remainder, floor/cap, reset/scope, or
+automation destination. These choices change state and replay.
+
+**Proposed contract:** enumerate exact `solo|bot|npc_partner` rows, bot profile/version/policy,
+ranked eligibility and payout fields, and the Phase-A fixture values. Either defer
+`offline_quality` at loader level, or provide its complete catalog/state/transition contract and
+one named neutral automation slot; prove no-play converges to neutral and never reduces canonical
+offline production below 90%.
 
 ## Open questions
 
@@ -245,8 +382,10 @@ compliant balance mint before any production tenant or payout is enabled.
 
 ## Changelog
 
-- 2026-08-03: created (draft) — the platform; combat engines are its first tenants; the §12b seam
-  and the Neopets faucet governor made structural.
+- 2026-08-03: created (draft) — the platform.
+- 2026-08-04: C1–C11 ruled — Clout payout faucet removed (my error, caught), DB-authoritative sessions with queue-style idempotency, server-certified (not client-claimed) payout, live_pvp deferred (solo+async only ship), era_skins removed (UI law), offline_quality decays to neutral floor not zero, epoch/verifier identity named. Accepted, scope narrowed.
 - 2026-08-04: Codex acceptance review found C1–C11. The draft is not implementable yet: Clout
   ownership contradicts the ruled single faucet, and session, tenant, scaling, payout, fallback,
   live-PvP, unlock, offline-quality, and replay contracts require owner rulings.
+- 2026-08-04: post-ruling implementation pass found C12–C18: design ownership is settled, but the
+  active body and exact persistence/wire/arithmetic contracts still need reconciliation/literals.
