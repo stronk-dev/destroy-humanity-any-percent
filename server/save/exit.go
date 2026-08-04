@@ -203,6 +203,12 @@ func (s *Store) applyExitTransaction(
 		}
 		return IntentResult{Outcome: IntentRejected, Receipt: cloneRaw(decision.Receipt)}, nil
 	}
+	if VersionForState(decision.FinalCompanyState) != companyRevision.Version {
+		return IntentResult{}, fmt.Errorf("%w: terminal company state changed save version", ErrInvalidState)
+	}
+	if nextVersion := VersionForState(decision.NewCompanyState); nextVersion != companyRevision.Version && nextVersion != LatestSupportedVersion {
+		return IntentResult{}, fmt.Errorf("%w: invalid new-run save version transition", ErrInvalidState)
+	}
 
 	transitionHash := decision.NewConstantsHash
 	founderEncoded, err := s.validatedState(transitionHash, economy.ScopeFounder, founder)
@@ -219,8 +225,11 @@ func (s *Store) applyExitTransaction(
 	}
 
 	recorded := make([]EventRecord, 0, len(decision.FounderEvents)+len(decision.CompanyEndedEvents)+len(decision.CompanyStartedEvents))
+	founderVersion := VersionForState(founder)
+	finalCompanyVersion := VersionForState(decision.FinalCompanyState)
+	newCompanyVersion := VersionForState(decision.NewCompanyState)
 	founderNext := founderRevision.Number + 1
-	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`, founderStreamID, founderNext, CurrentVersion, founderEncoded, transitionHash); err != nil {
+	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`, founderStreamID, founderNext, founderVersion, founderEncoded, transitionHash); err != nil {
 		return IntentResult{}, err
 	}
 	if err := runExitFault(fault, "founder_revision"); err != nil {
@@ -236,7 +245,7 @@ func (s *Store) applyExitTransaction(
 	}
 
 	companyFinal := companyRevision.Number + 1
-	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`, companyStreamID, companyFinal, CurrentVersion, finalEncoded, companyHash); err != nil {
+	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`, companyStreamID, companyFinal, finalCompanyVersion, finalEncoded, companyHash); err != nil {
 		return IntentResult{}, err
 	}
 	if err := runExitFault(fault, "company_final_revision"); err != nil {
@@ -253,7 +262,7 @@ func (s *Store) applyExitTransaction(
 
 	companyNext := companyRevision.Number + 2
 	var persistedNewState []byte
-	if err := tx.QueryRowContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5) RETURNING state::text`, companyStreamID, companyNext, CurrentVersion, newEncoded, transitionHash).Scan(&persistedNewState); err != nil {
+	if err := tx.QueryRowContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5) RETURNING state::text`, companyStreamID, companyNext, newCompanyVersion, newEncoded, transitionHash).Scan(&persistedNewState); err != nil {
 		return IntentResult{}, err
 	}
 	if err := runExitFault(fault, "company_started_revision"); err != nil {
@@ -271,7 +280,7 @@ func (s *Store) applyExitTransaction(
 		if err := runExitFault(fault, "run_epoch"); err != nil {
 			return IntentResult{}, err
 		}
-		if err := InsertRunGenesisTx(ctx, tx, RunGenesis{CompanyStreamID: companyStreamID, RunSeq: decision.NewCompanyState.RunSeq, State: persistedNewState, Version: CurrentVersion, ConstantsHash: transitionHash}); err != nil {
+		if err := InsertRunGenesisTx(ctx, tx, RunGenesis{CompanyStreamID: companyStreamID, RunSeq: decision.NewCompanyState.RunSeq, State: persistedNewState, Version: newCompanyVersion, ConstantsHash: transitionHash}); err != nil {
 			return IntentResult{}, err
 		}
 		if err := runExitFault(fault, "run_genesis"); err != nil {

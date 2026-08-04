@@ -240,6 +240,76 @@ func TestStateV14PurchasableContentRoundTripAndClosure(t *testing.T) {
 	}
 }
 
+func TestStateV16FoundationRoundTripAndVersionAuthority(t *testing.T) {
+	state := testState(t)
+	state.WireVersion = 16
+	state.MeterValues = map[string]int{"doom.probability": 17, "trust.users.standing": 63}
+	state.MeterDecayRemainders = map[string]int64{"doom.probability": 42, "trust.users.standing": 0}
+	state.MeterInputRemainders = map[string]int64{"trust.users.standing:0": 99}
+	state.AchievementsEarnedRun = map[string]bool{"achievement.first": true}
+	state.AchievementScoreRun = 7
+
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var object map[string]json.RawMessage
+	if err := json.Unmarshal(encoded, &object); err != nil {
+		t.Fatal(err)
+	}
+	if _, present := object["meter_bands"]; present {
+		t.Fatal("v16 retained the superseded meter_bands field")
+	}
+	restored, err := RestoreState(encoded, 16, stateCatalog(t), economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if VersionForState(restored) != 16 || restored.MeterValues["doom.probability"] != 17 ||
+		restored.MeterDecayRemainders["doom.probability"] != 42 || restored.MeterInputRemainders["trust.users.standing:0"] != 99 ||
+		!restored.AchievementsEarnedRun["achievement.first"] || restored.AchievementScoreRun != 7 {
+		t.Fatalf("restored foundation state = %+v", restored)
+	}
+	if _, err := EncodeStateVersion(restored, 14); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v16 mechanics downgraded to v14: %v", err)
+	}
+}
+
+func TestStateV15AndV16CollectionsFailClosed(t *testing.T) {
+	state := testState(t)
+	state.WireVersion = 15
+	state.MeterValues = map[string]int{}
+	state.MeterDecayRemainders = map[string]int64{}
+	state.MeterInputRemainders = map[string]int64{}
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var object map[string]json.RawMessage
+	if err := json.Unmarshal(encoded, &object); err != nil {
+		t.Fatal(err)
+	}
+	delete(object, "meter_values")
+	missing, _ := json.Marshal(object)
+	if _, err := RestoreState(missing, 15, stateCatalog(t), economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v15 missing meter_values error = %v", err)
+	}
+
+	state.WireVersion = 16
+	state.AchievementsEarnedRun = map[string]bool{}
+	encoded, err = EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(encoded, &object); err != nil {
+		t.Fatal(err)
+	}
+	delete(object, "achievement_score_run")
+	missing, _ = json.Marshal(object)
+	if _, err := RestoreState(missing, 16, stateCatalog(t), economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v16 missing achievement_score_run error = %v", err)
+	}
+}
+
 func TestStateV8MigratesCollapsedOfflineAccumulator(t *testing.T) {
 	state := testState(t)
 	state.Tier = 2
@@ -532,7 +602,7 @@ func TestRestoreRejectsProductionPolicyViolations(t *testing.T) {
 }
 
 func TestRestoreRejectsFutureVersion(t *testing.T) {
-	_, err := RestoreState([]byte(`{}`), CurrentVersion+1, stateCatalog(t), economy.ScopeCompany, time.Time{})
+	_, err := RestoreState([]byte(`{}`), LatestSupportedVersion+1, stateCatalog(t), economy.ScopeCompany, time.Time{})
 	if !errors.Is(err, ErrInvalidState) {
 		t.Fatalf("error = %v", err)
 	}

@@ -282,15 +282,19 @@ func (s *Store) applyIntent(
 		}
 		return IntentResult{Outcome: decision.Outcome, Receipt: cloneRaw(decision.Receipt)}, nil
 	}
+	if VersionForState(state) != revision.Version {
+		return IntentResult{}, fmt.Errorf("%w: ordinary intent cannot change save version", ErrInvalidState)
+	}
 
 	encodedState, err := s.validatedState(revision.ConstantsHash, scope, state)
 	if err != nil {
 		return IntentResult{}, err
 	}
 	newRevision := revision.Number + 1
+	version := VersionForState(state)
 	if _, err := tx.ExecContext(ctx, `
 		INSERT INTO save_revisions (stream_id,revision,version,state,constants_hash)
-		VALUES ($1,$2,$3,$4,$5)`, streamID, newRevision, CurrentVersion, encodedState, revision.ConstantsHash); err != nil {
+		VALUES ($1,$2,$3,$4,$5)`, streamID, newRevision, version, encodedState, revision.ConstantsHash); err != nil {
 		return IntentResult{}, err
 	}
 	recordedEvents := make([]EventRecord, 0, len(decision.Events))

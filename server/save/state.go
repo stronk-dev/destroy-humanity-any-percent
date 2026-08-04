@@ -19,6 +19,7 @@ import (
 
 const (
 	CurrentVersion           = 14
+	LatestSupportedVersion   = 16
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
 )
@@ -27,55 +28,67 @@ var ErrInvalidState = errors.New("invalid saved state")
 var stateMechanicalIDPattern = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
 
 type State struct {
-	Ledger                  *economy.Ledger
-	GeneratorCounts         map[string]int64
-	GeneratorPurchasedTotal int64
-	UpgradesOwned           map[string]bool
-	GeneratorProvisioned    map[string]int64
-	ProvisionRemaindersPPM  map[string]int64
-	StockRateRemainderPPM   int64
-	EvaluatedThrough        time.Time
-	ComputeCreditMS         int64
-	ManualTokenMilli        int64
-	ManualTokenRefilledAt   time.Time
-	GatesCrossed            map[string]bool
-	RunSeq                  int64
-	DoctrinesByTransition   map[string]string
-	StructureID             string
-	LedgerFactKinds         map[string]bool
-	MeterBands              map[string]int
-	RegionTraits            map[string]bool
-	RouteKnowledgeBalance   int64
-	HintsUnlocked           map[string]bool
-	CompactMember           bool
-	CompactTithePPM         int64
-	CompactSolidarityPPM    int64
-	CompactSamples          []CompactSample
-	Tier                    int64
-	LifetimeValue           decimal.Decimal
-	OfferState              *ExitOfferState
-	RunStartedAt            time.Time
-	RunPreTimer             bool
-	OfflineSpans            []OfflineSpan
-	CollapsedOfflineMS      int64
-	ReputationLevel         int64
-	ReputationUnlockPPM     int64
-	NetworkSlots            []NetworkSlot
-	CloutLifetime           int64
-	Soul                    int64
-	AgeMS                   int64
-	Notoriety               int64
-	AdvisorMode             bool
-	ExitHistory             []ExitRecord
-	FactionID               string
-	IncorporatedAt          time.Time
-	StockUnits              int64
-	StockProgressMS         int64
-	ConsumedStockUnits      int64
-	GuildTitheCarryPPM      int64
-	GuildBoundaryGuildID    string
-	GuildBoundarySeq        int64
-	GuildConsumedWindow     int64
+	// WireVersion is runtime metadata, not persisted inside the state payload.
+	// Zero means CurrentVersion for newly constructed legacy/current-production
+	// states. Restored states retain the revision version so ordinary writes can
+	// never activate a new mechanic mid-run.
+	WireVersion                int
+	Ledger                     *economy.Ledger
+	GeneratorCounts            map[string]int64
+	GeneratorPurchasedTotal    int64
+	UpgradesOwned              map[string]bool
+	GeneratorProvisioned       map[string]int64
+	ProvisionRemaindersPPM     map[string]int64
+	StockRateRemainderPPM      int64
+	EvaluatedThrough           time.Time
+	ComputeCreditMS            int64
+	ManualTokenMilli           int64
+	ManualTokenRefilledAt      time.Time
+	GatesCrossed               map[string]bool
+	RunSeq                     int64
+	DoctrinesByTransition      map[string]string
+	StructureID                string
+	LedgerFactKinds            map[string]bool
+	MeterBands                 map[string]int
+	MeterValues                map[string]int
+	MeterDecayRemainders       map[string]int64
+	MeterInputRemainders       map[string]int64
+	AchievementsEarnedRun      map[string]bool
+	AchievementScoreRun        int64
+	AchievementsEarnedLifetime map[string]bool
+	AchievementScoreLifetime   int64
+	RegionTraits               map[string]bool
+	RouteKnowledgeBalance      int64
+	HintsUnlocked              map[string]bool
+	CompactMember              bool
+	CompactTithePPM            int64
+	CompactSolidarityPPM       int64
+	CompactSamples             []CompactSample
+	Tier                       int64
+	LifetimeValue              decimal.Decimal
+	OfferState                 *ExitOfferState
+	RunStartedAt               time.Time
+	RunPreTimer                bool
+	OfflineSpans               []OfflineSpan
+	CollapsedOfflineMS         int64
+	ReputationLevel            int64
+	ReputationUnlockPPM        int64
+	NetworkSlots               []NetworkSlot
+	CloutLifetime              int64
+	Soul                       int64
+	AgeMS                      int64
+	Notoriety                  int64
+	AdvisorMode                bool
+	ExitHistory                []ExitRecord
+	FactionID                  string
+	IncorporatedAt             time.Time
+	StockUnits                 int64
+	StockProgressMS            int64
+	ConsumedStockUnits         int64
+	GuildTitheCarryPPM         int64
+	GuildBoundaryGuildID       string
+	GuildBoundarySeq           int64
+	GuildConsumedWindow        int64
 	// FactionStockResource is derived from FactionID and the pinned catalog at
 	// runtime. It is intentionally not persisted as a second source of truth.
 	FactionStockResource string
@@ -219,6 +232,21 @@ type stateV14 struct {
 	StockRateRemainderPPM  *int64           `json:"stock_rate_remainder_ppm"`
 }
 
+type stateV15 struct {
+	stateV14
+	MeterValues          map[string]int   `json:"meter_values"`
+	MeterDecayRemainders map[string]int64 `json:"meter_decay_remainders"`
+	MeterInputRemainders map[string]int64 `json:"meter_input_remainders"`
+}
+
+type stateV16 struct {
+	stateV15
+	AchievementsEarnedRun      []string `json:"achievements_earned_run"`
+	AchievementScoreRun        *int64   `json:"achievement_score_run"`
+	AchievementsEarnedLifetime []string `json:"achievements_earned_lifetime"`
+	AchievementScoreLifetime   *int64   `json:"achievement_score_lifetime"`
+}
+
 type rawExitOfferState struct {
 	OfferID     string          `json:"offer_id"`
 	ExitType    string          `json:"exit_type"`
@@ -279,7 +307,18 @@ func ConstantsHashArtifacts(artifacts map[string][]byte) (string, error) {
 	return "sha256:" + hex.EncodeToString(hash.Sum(nil)), nil
 }
 
+func VersionForState(state *State) int {
+	if state != nil && state.WireVersion >= CurrentVersion {
+		return state.WireVersion
+	}
+	return CurrentVersion
+}
+
 func EncodeState(state *State) ([]byte, error) {
+	return EncodeStateVersion(state, VersionForState(state))
+}
+
+func EncodeStateVersion(state *State, version int) ([]byte, error) {
 	if state == nil || state.Ledger == nil {
 		return nil, fmt.Errorf("%w: nil state or ledger", ErrInvalidState)
 	}
@@ -330,6 +369,12 @@ func EncodeState(state *State) ([]byte, error) {
 	if err := validateGuildState(&normalized, normalized.Ledger.Scope(), false); err != nil {
 		return nil, err
 	}
+	if version < 1 || version > LatestSupportedVersion || version != CurrentVersion && version != 15 && version != 16 {
+		return nil, fmt.Errorf("%w: unsupported encode version %d", ErrInvalidState, version)
+	}
+	if err := validateFoundationState(&normalized, version, normalized.Ledger.Scope()); err != nil {
+		return nil, err
+	}
 	cursor, err := formatCursor(state.EvaluatedThrough)
 	if err != nil {
 		return nil, err
@@ -342,7 +387,7 @@ func EncodeState(state *State) ([]byte, error) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
 	purchasedTotal := normalized.GeneratorPurchasedTotal
-	encoded, err := json.Marshal(stateV14{stateV13: stateV13{stateV12: stateV12{stateV11: stateV11{stateV10: stateV10{stateV9: stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
+	base := stateV14{stateV13: stateV13{stateV12: stateV12{stateV11: stateV11{stateV10: stateV10{stateV9: stateV9{stateV8: stateV8{stateV7: stateV7{stateV6: stateV6{stateV5: stateV5{
 		Balances: state.Ledger.Snapshot(), Generators: state.GeneratorCounts, EvaluatedThrough: cursor,
 		ComputeCreditMS: state.ComputeCreditMS, ManualTokenMilli: state.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: cloneBoolMap(normalized.GatesCrossed), RunSeq: normalized.RunSeq,
@@ -365,16 +410,40 @@ func EncodeState(state *State) ([]byte, error) {
 		GuildConsumedWindow: normalized.GuildConsumedWindow}, GuildBoundaryGuildID: optionalString(normalized.GuildBoundaryGuildID)},
 		GeneratorPurchasedTotal: &purchasedTotal}, UpgradesOwned: sortedTrueKeys(normalized.UpgradesOwned),
 		GeneratorsProvisioned: cloneInt64Map(normalized.GeneratorProvisioned), ProvisionRemaindersPPM: cloneInt64Map(normalized.ProvisionRemaindersPPM),
-		StockRateRemainderPPM: &normalized.StockRateRemainderPPM})
+		StockRateRemainderPPM: &normalized.StockRateRemainderPPM}
+	var wire any = base
+	if version >= 15 {
+		v15 := stateV15{stateV14: base, MeterValues: cloneIntMap(normalized.MeterValues),
+			MeterDecayRemainders: cloneInt64Map(normalized.MeterDecayRemainders), MeterInputRemainders: cloneInt64Map(normalized.MeterInputRemainders)}
+		wire = v15
+		if version >= 16 {
+			runScore, lifetimeScore := normalized.AchievementScoreRun, normalized.AchievementScoreLifetime
+			wire = stateV16{stateV15: v15, AchievementsEarnedRun: sortedTrueKeys(normalized.AchievementsEarnedRun),
+				AchievementScoreRun: &runScore, AchievementsEarnedLifetime: sortedTrueKeys(normalized.AchievementsEarnedLifetime),
+				AchievementScoreLifetime: &lifetimeScore}
+		}
+	}
+	encoded, err := json.Marshal(wire)
 	if err != nil {
 		return nil, fmt.Errorf("%w: encode: %v", ErrInvalidState, err)
+	}
+	if version >= 15 {
+		var object map[string]json.RawMessage
+		if err := json.Unmarshal(encoded, &object); err != nil {
+			return nil, fmt.Errorf("%w: encode foundation state: %v", ErrInvalidState, err)
+		}
+		delete(object, "meter_bands")
+		encoded, err = json.Marshal(object)
+		if err != nil {
+			return nil, fmt.Errorf("%w: encode foundation state: %v", ErrInvalidState, err)
+		}
 	}
 	return encoded, nil
 }
 
 func RestoreState(data []byte, version int, catalog *economy.Catalog, scope economy.Scope, migrationBaseline time.Time) (*State, error) {
-	if version > CurrentVersion {
-		return nil, fmt.Errorf("%w: save version %d is newer than supported version %d", ErrInvalidState, version, CurrentVersion)
+	if version > LatestSupportedVersion {
+		return nil, fmt.Errorf("%w: save version %d is newer than supported version %d", ErrInvalidState, version, LatestSupportedVersion)
 	}
 	if version < 1 {
 		return nil, fmt.Errorf("%w: unsupported save version %d", ErrInvalidState, version)
@@ -383,7 +452,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, fmt.Errorf("%w: nil catalog", ErrInvalidState)
 	}
 
-	var source stateV14
+	var source stateV16
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -393,7 +462,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err != nil {
 			return nil, fmt.Errorf("%w: version-1 migration baseline: %v", ErrInvalidState, err)
 		}
-		source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
+		source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
 			Balances: legacy.Balances, Generators: zeroGeneratorCounts(catalog, scope), EvaluatedThrough: cursor,
 		}
 	} else if version == 2 {
@@ -401,13 +470,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
+		source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
 	} else if version < 5 {
 		var previous stateV4
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
+		source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
 			Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough,
 			ComputeCreditMS: previous.ComputeCreditMS, ManualTokenMilli: previous.ManualTokenMilli,
 			ManualTokenRefilledAt: previous.ManualTokenRefilledAt,
@@ -417,39 +486,47 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = previous
+		source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = previous
 	} else if version == 6 {
 		var previous stateV6
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6 = previous
+		source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6 = previous
 	} else if version == 7 {
-		if err := decodeState(data, &source.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7); err != nil {
+		if err := decodeState(data, &source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7); err != nil {
 			return nil, err
 		}
 	} else if version == 8 {
-		if err := decodeState(data, &source.stateV12.stateV11.stateV10.stateV9.stateV8); err != nil {
+		if err := decodeState(data, &source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8); err != nil {
 			return nil, err
 		}
 	} else if version == 9 {
-		if err := decodeState(data, &source.stateV12.stateV11.stateV10.stateV9); err != nil {
+		if err := decodeState(data, &source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9); err != nil {
 			return nil, err
 		}
 	} else if version == 10 {
-		if err := decodeState(data, &source.stateV12.stateV11.stateV10); err != nil {
+		if err := decodeState(data, &source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10); err != nil {
 			return nil, err
 		}
 	} else if version == 11 {
-		if err := decodeState(data, &source.stateV12.stateV11); err != nil {
+		if err := decodeState(data, &source.stateV15.stateV14.stateV13.stateV12.stateV11); err != nil {
 			return nil, err
 		}
 	} else if version == 12 {
-		if err := decodeState(data, &source.stateV12); err != nil {
+		if err := decodeState(data, &source.stateV15.stateV14.stateV13.stateV12); err != nil {
 			return nil, err
 		}
 	} else if version == 13 {
-		if err := decodeState(data, &source.stateV13); err != nil {
+		if err := decodeState(data, &source.stateV15.stateV14.stateV13); err != nil {
+			return nil, err
+		}
+	} else if version == 14 {
+		if err := decodeState(data, &source.stateV15.stateV14); err != nil {
+			return nil, err
+		}
+	} else if version == 15 {
+		if err := decodeState(data, &source.stateV15); err != nil {
 			return nil, err
 		}
 	} else if err := decodeState(data, &source); err != nil {
@@ -512,6 +589,12 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	} else if source.UpgradesOwned == nil || source.GeneratorsProvisioned == nil || source.ProvisionRemaindersPPM == nil || source.StockRateRemainderPPM == nil {
 		return nil, fmt.Errorf("%w: purchasable-content collections are required", ErrInvalidState)
 	}
+	if version >= 15 && (source.MeterValues == nil || source.MeterDecayRemainders == nil || source.MeterInputRemainders == nil) {
+		return nil, fmt.Errorf("%w: meter state collections are required", ErrInvalidState)
+	}
+	if version >= 16 && (source.AchievementsEarnedRun == nil || source.AchievementScoreRun == nil || source.AchievementsEarnedLifetime == nil || source.AchievementScoreLifetime == nil) {
+		return nil, fmt.Errorf("%w: achievement state collections are required", ErrInvalidState)
+	}
 	ownedUpgrades, err := validateOwnedUpgrades(catalog, scope, source.UpgradesOwned)
 	if err != nil {
 		return nil, err
@@ -556,14 +639,17 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, err
 	}
 	state := &State{
-		Ledger: ledger, GeneratorCounts: counts, GeneratorPurchasedTotal: *source.GeneratorPurchasedTotal, EvaluatedThrough: cursor,
+		WireVersion: version,
+		Ledger:      ledger, GeneratorCounts: counts, GeneratorPurchasedTotal: *source.GeneratorPurchasedTotal, EvaluatedThrough: cursor,
 		UpgradesOwned: ownedUpgrades, GeneratorProvisioned: provisioned, ProvisionRemaindersPPM: remainders,
 		StockRateRemainderPPM: *source.StockRateRemainderPPM,
 		ComputeCreditMS:       source.ComputeCreditMS, ManualTokenMilli: source.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: source.GatesCrossed, RunSeq: source.RunSeq,
 		DoctrinesByTransition: source.DoctrinesByTransition, StructureID: source.StructureID,
 		LedgerFactKinds: ledgerFacts, MeterBands: source.MeterBands,
-		RegionTraits: regionTraits, RouteKnowledgeBalance: source.RouteKnowledgeBalance,
+		MeterValues: cloneIntMap(source.MeterValues), MeterDecayRemainders: cloneInt64Map(source.MeterDecayRemainders),
+		MeterInputRemainders: cloneInt64Map(source.MeterInputRemainders),
+		RegionTraits:         regionTraits, RouteKnowledgeBalance: source.RouteKnowledgeBalance,
 		HintsUnlocked: hints,
 		CompactMember: source.CompactMember, CompactTithePPM: source.CompactTithePPM,
 		CompactSolidarityPPM: source.CompactSolidarityPPM,
@@ -575,6 +661,17 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		ConsumedStockUnits: source.ConsumedStockUnits,
 		GuildTitheCarryPPM: source.GuildTitheCarryPPM, GuildBoundarySeq: source.GuildBoundarySeq,
 		GuildConsumedWindow: source.GuildConsumedWindow,
+	}
+	if version >= 16 {
+		state.AchievementsEarnedRun, err = uniqueMechanicalKeys(source.AchievementsEarnedRun, "achievements_earned_run")
+		if err != nil {
+			return nil, err
+		}
+		state.AchievementsEarnedLifetime, err = uniqueMechanicalKeys(source.AchievementsEarnedLifetime, "achievements_earned_lifetime")
+		if err != nil {
+			return nil, err
+		}
+		state.AchievementScoreRun, state.AchievementScoreLifetime = *source.AchievementScoreRun, *source.AchievementScoreLifetime
 	}
 	if source.GuildBoundaryGuildID != nil {
 		state.GuildBoundaryGuildID = *source.GuildBoundaryGuildID
@@ -635,6 +732,41 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		return nil, err
 	}
 	return state, nil
+}
+
+func validateFoundationState(state *State, version int, scope economy.Scope) error {
+	if version < 15 {
+		if len(state.MeterValues) != 0 || len(state.MeterDecayRemainders) != 0 || len(state.MeterInputRemainders) != 0 ||
+			len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 {
+			return fmt.Errorf("%w: inactive foundation state present before v15", ErrInvalidState)
+		}
+		return nil
+	}
+	if scope == economy.ScopeCompany {
+		if state.MeterValues == nil || state.MeterDecayRemainders == nil || state.MeterInputRemainders == nil {
+			return fmt.Errorf("%w: company meter state is required", ErrInvalidState)
+		}
+	} else if len(state.MeterValues) != 0 || len(state.MeterDecayRemainders) != 0 || len(state.MeterInputRemainders) != 0 {
+		return fmt.Errorf("%w: company meter state leaked outside company scope", ErrInvalidState)
+	}
+	if version < 16 {
+		return nil
+	}
+	if state.AchievementScoreRun < 0 || state.AchievementScoreRun > decimal.MaxExactInteger || state.AchievementScoreLifetime < 0 || state.AchievementScoreLifetime > decimal.MaxExactInteger {
+		return fmt.Errorf("%w: achievement score outside exact domain", ErrInvalidState)
+	}
+	if scope == economy.ScopeCompany {
+		if state.AchievementsEarnedRun == nil || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 {
+			return fmt.Errorf("%w: invalid company achievement ownership", ErrInvalidState)
+		}
+	} else if scope == economy.ScopeFounder {
+		if state.AchievementsEarnedLifetime == nil || len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 {
+			return fmt.Errorf("%w: invalid founder achievement ownership", ErrInvalidState)
+		}
+	} else if len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 {
+		return fmt.Errorf("%w: achievement state leaked outside founder scopes", ErrInvalidState)
+	}
+	return nil
 }
 
 func validateFactionState(state *State, scope economy.Scope) error {

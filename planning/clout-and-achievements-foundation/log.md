@@ -219,3 +219,15 @@ deriving score from a deploy-current achievement catalog would make replay timin
 C11 proposes atomic new-run activation of both artifacts/state versions, with no retroactive
 earning for pre-foundation runs. No save version, hook, Exit settlement, or artifact identity was
 changed pending the Meter C13/Achievements C11 owner ruling.
+
+## 2026-08-04 — version-aware v15/v16 save codec landing
+
+- Added v16 Company run and Founder lifetime earned sets/scores to the canonical save codec while
+  leaving production emission at v14 until a new run is pinned to both artifacts.
+- Persisted scope is structural: Company states cannot carry lifetime ownership; Founder states
+  cannot carry run ownership; non-Founder scopes cannot carry either. Scores remain exact-safe,
+  non-negative integers, and every collection/score field is presence-required at v16.
+- Ordinary writes cannot change a loaded revision's wire version. Exit records the old terminal
+  state at its old version and the new genesis at the version chosen by new-run assembly.
+- Unit closure plus the full root `make test` are green. Catalog-derived score validation, atomic
+  activation/settlement, and runtime evaluation remain explicitly pending the next landings.

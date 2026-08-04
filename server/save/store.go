@@ -115,11 +115,12 @@ func (s *Store) CreateStream(ctx context.Context, key StreamKey, constantsHash s
 	if err != nil {
 		return Revision{}, fmt.Errorf("create save stream: %w", err)
 	}
-	revision.Number, revision.Version, revision.ConstantsHash = 1, CurrentVersion, constantsHash
+	version := VersionForState(state)
+	revision.Number, revision.Version, revision.ConstantsHash = 1, version, constantsHash
 	err = tx.QueryRowContext(ctx, `
 		INSERT INTO save_revisions (stream_id, revision, version, state, constants_hash)
 		VALUES ($1, 1, $2, $3, $4) RETURNING created_at`,
-		revision.StreamID, CurrentVersion, encodedState, constantsHash).Scan(&revision.CreatedAt)
+		revision.StreamID, version, encodedState, constantsHash).Scan(&revision.CreatedAt)
 	if err != nil {
 		return Revision{}, fmt.Errorf("create save revision: %w", err)
 	}
@@ -175,14 +176,19 @@ func (s *Store) WriteInTransaction(ctx context.Context, tx *sql.Tx, streamID str
 		return Revision{}, err
 	}
 	var latest int64
-	if err := tx.QueryRowContext(ctx, `SELECT max(revision) FROM save_revisions WHERE stream_id=$1`, streamID).Scan(&latest); err != nil {
+	var latestVersion int
+	if err := tx.QueryRowContext(ctx, `SELECT revision,version FROM save_revisions WHERE stream_id=$1 ORDER BY revision DESC LIMIT 1`, streamID).Scan(&latest, &latestVersion); err != nil {
 		return Revision{}, err
 	}
 	if latest != expectedRevision {
 		return Revision{}, fmt.Errorf("%w: got %d, current %d", ErrConflict, expectedRevision, latest)
 	}
-	revision := Revision{StreamID: streamID, Number: latest + 1, Version: CurrentVersion, ConstantsHash: constantsHash}
-	err = tx.QueryRowContext(ctx, `INSERT INTO save_revisions (stream_id,revision,version,state,constants_hash) VALUES ($1,$2,$3,$4,$5) RETURNING created_at`, streamID, revision.Number, CurrentVersion, encodedState, constantsHash).Scan(&revision.CreatedAt)
+	version := VersionForState(state)
+	if version != latestVersion {
+		return Revision{}, fmt.Errorf("%w: ordinary write cannot change save version %d to %d", ErrInvalidState, latestVersion, version)
+	}
+	revision := Revision{StreamID: streamID, Number: latest + 1, Version: version, ConstantsHash: constantsHash}
+	err = tx.QueryRowContext(ctx, `INSERT INTO save_revisions (stream_id,revision,version,state,constants_hash) VALUES ($1,$2,$3,$4,$5) RETURNING created_at`, streamID, revision.Number, version, encodedState, constantsHash).Scan(&revision.CreatedAt)
 	if err != nil {
 		return Revision{}, err
 	}
@@ -368,11 +374,12 @@ func (s *Store) validatedState(hash string, scope economy.Scope, state *State) (
 			return nil, fmt.Errorf("%w: catalog state policy: %v", ErrInvalidState, err)
 		}
 	}
-	encoded, err := EncodeState(state)
+	version := VersionForState(state)
+	encoded, err := EncodeStateVersion(state, version)
 	if err != nil {
 		return nil, err
 	}
-	if _, err := RestoreState(encoded, CurrentVersion, catalog, scope, time.Time{}); err != nil {
+	if _, err := RestoreState(encoded, version, catalog, scope, time.Time{}); err != nil {
 		return nil, err
 	}
 	return encoded, nil

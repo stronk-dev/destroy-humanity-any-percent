@@ -240,3 +240,19 @@ Activating CurrentVersion=15 before the content mint would therefore brick curre
 deploy-current catalog during replay. C13 proposes new-run-only activation: old runs remain v14
 through Exit; the first meter-bearing run assembles v15 directly. No save version, production hook,
 or artifact identity was changed pending the owner ruling.
+
+## 2026-08-04 — version-aware v15/v16 save codec landing
+
+- Implemented v15 meter maps and v16 run/lifetime achievement fields without changing the
+  production-emitted version (`CurrentVersion` remains 14; supported decoding extends to 16).
+- Save state now retains its revision wire version as runtime metadata. Ordinary store and intent
+  writes must preserve that version; only the Exit new-run state may advance to v16. The terminal
+  old-run revision is explicitly required to remain on its pinned version.
+- V15 removes the superseded `meter_bands` member and requires all three meter collections. V16
+  requires both earned collections and both score fields, enforces scope separation, and rejects
+  downgrade attempts that would discard active mechanics.
+- The new-run genesis records the actual new-state version instead of a process-global constant.
+  Unit coverage proves v16 round-trip/closure and missing-field rejection; full root `make test`
+  passes (all Go packages, 6,517 client assertions, 19,560 browser assertions).
+- Reset assembly and catalog-complete key/derived-score validation remain in the next landing; no
+  production artifact or current run was activated by this commit.
