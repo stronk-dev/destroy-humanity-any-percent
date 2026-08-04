@@ -49,3 +49,47 @@ schema/package-boundary gates; and 19,536 browser assertions.
 - Save v15 and `ApplyLogged` binding remain intentionally uncommitted until the meter catalog can
   be part of the pinned artifact bundle; accepting an optional/unhashed runtime catalog would
   violate replay identity rather than make progress.
+
+## 2026-08-04 — independent foundation review (`568a5ec^..61b6392`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **not approved; remediation required before the next Meters landing.** The valid-
+  catalog transition arithmetic itself is approved, but the range leaves one mandatory gate red
+  and does not yet have one cross-runtime strict catalog authority.
+
+Findings, ordered:
+
+1. **HIGH — HEAD is red and the transition log's green type-check claim is false.** From the
+   repository root, `make typecheck` fails at `client/test/meters.test.ts:2` because the test imports
+   `node:fs` while the client has no available Node type declaration (`tsconfig.json` names only
+   `vitest/globals`, and `@types/node` is not a direct dev dependency). This also makes
+   `make verify` deterministically fail. The import arrived in `61b6392`; its log says the focused
+   type-check gate passed. Fix the dependency/type surface and record the real green command.
+2. **HIGH — Go accepts meter catalogs that TypeScript and JSON Schema reject.** The Go raw structs
+   cannot distinguish an omitted required field from a valid zero/nil value. Concrete accepted-Go /
+   rejected-TS cases include an omitted meter `decay` key (decoded as the allowed nil decay), an
+   omitted zero-valued reseed/band field, and wrong-union fields supplied as `null` or `""`.
+   Independently, `validReseed` places no exact-safe upper bound on its `int64` numerator or
+   denominator, while TypeScript and schema cap them at `9007199254740991`. A server-loaded pinned
+   artifact can therefore be un-loadable by the client. Make exact keys/presence and exact-safe
+   bounds identical in both loaders, and add one shared valid+invalid loader corpus consumed by Go
+   and TypeScript so schema-only rejection cannot mask this class again.
+3. **MEDIUM — the advertised fail-closed package boundary is only a one-directory text scan.**
+   `verify-meters-boundaries.mjs` reads only immediate non-test `.go` files under `server/meters`.
+   A nested package can import a forbidden owner and then be imported by `meters`, so the gate can
+   pass with a transitive economy/production dependency. Replace or backstop it with a recursive
+   import-graph/AST check and a nested/transitive negative fixture.
+
+What held:
+
+- The strict JSON Schema, valid-catalog Go/TS loaders, exact eleven-ID registry, resource collision
+  check, input-source uniqueness, and current source imports match the narrowed RFC.
+- The Go and TypeScript transition kernels agree on the shared corpus; decay-first ordering,
+  carried attended-time arithmetic, inactive/offline behavior, saturation, complete state maps,
+  and prior-to-final band emission were verified in source. `make test-go
+  GO_PACKAGES='./meters ./achievements'`, `make test-client`, `make build-client`, `make vet`,
+  `make verify-schema`, both boundary targets, and both exact-range `git diff --check` runs passed.
+- No production meter artifact was added to `balance/epochs/phase0.json`. The missing literal
+  bands/initials/rates/bindings, save v15, `ApplyLogged` binding, events, replay identity, formulas,
+  relevance report, and archive remain explicitly carried work; none was treated as implemented.
