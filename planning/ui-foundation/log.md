@@ -39,3 +39,22 @@ Removed the four stale normative paths identified by independent review: the wit
 unobservable `$derived` acceptance assertion. UF3–UF5 and AC4 now state only the C1–C8 rulings.
 C9–C11 remain the sole implementation blockers; no presentation literal or dependency choice was
 invented while reconciling existing decisions.
+
+## 2026-08-04 — independent ruled-text reconciliation review (`402ba20..85cbea6`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **approved as a specification-only reconciliation; implementation remains correctly
+  blocked on C9–C11.**
+
+UF3 now has only the Copy Pipeline's typed `t(key, params, era)` plus `era_variants` fallback; the
+withdrawn `key@era_2006` grammar is absent from the active decision site. UF4 owns the ruled closed
+surface/unlock row, byte ordering, one observable subscription handle, and token-only styling with
+no `era_skins` implementation path. UF5 requires the repository-owned Vite fixture in the existing
+browser suite and expressly forbids Storybook. AC4 asserts observable subscribe/unsubscribe and
+inactive-callback behavior rather than compiler-internal `$derived` counts.
+
+C9's literal token matrix/era values, C10's notation package pin/options/golden strings, and C11's
+accessibility engine/version remain explicit unchecked plan items and the RFC status still blocks
+implementation. No presentation constant, dependency, or playable screen was invented in this
+range. Exact-range diff checking and the fresh root `make verify` both pass.

@@ -207,3 +207,26 @@ save/live-replay/events/formulas/relevance work remain honest blockers.
   `.cache/go-build` for direct tool invocation; no `/tmp` cache override remains.
 - Focused meter/achievement/fixture Go tests, both boundary tools, and TypeScript/Svelte checks
   pass.
+
+## 2026-08-04 — independent parity/tooling closure review (`3734f8b^..3734f8b`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **approved; both residual proof/tooling findings are closed.**
+
+The checked-in parity artifact now owns the complete literal valid meter catalog. Go unmarshals
+that baseline afresh for every case and TypeScript `structuredClone`s the same imported object, so
+neither runtime's older local valid-catalog builder participates in the parity test and mutations
+cannot leak between cases.
+
+The transitive negative fixture is a real Go graph: `metersroot` imports `metershelper`, which
+imports the forbidden economy owner. The live boundary invokes `go list -deps` for that root and
+feeds the result through the same `assertDependencies` function used for `./meters`; a synthetic
+package-name list is no longer the proof. Both subprocesses inherit Make's exported repository-local
+`GOCACHE`, with ignored `.cache/go-build` only as the direct-invocation fallback; this scope contains
+no `/tmp` cache override.
+
+Independent exact-range diff checking and a fresh repository-root `make verify` pass. The gate
+executes the real graph fixture and shared Go/TypeScript corpus and exits 0 with 6,517 client and
+19,560 browser assertions. Production meter content/runtime work remains pending exactly as
+previously recorded; this verdict credits only the tooling closure.

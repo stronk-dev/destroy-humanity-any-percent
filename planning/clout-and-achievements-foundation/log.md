@@ -186,3 +186,27 @@ archive remain honestly pending.
   `.cache/go-build` for direct tool invocation; no `/tmp` cache override remains.
 - Focused meter/achievement/fixture Go tests, both boundary tools, and TypeScript/Svelte checks
   pass.
+
+## 2026-08-04 — independent parity/tooling closure review (`3734f8b^..3734f8b`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **approved; both residual proof/tooling findings are closed.**
+
+The checked-in parity artifact owns the complete literal valid achievement catalog and registry.
+Go unmarshals both afresh per case and TypeScript clones both from the same imported artifact before
+mutation. The registry-targeted `INVALID EVENT` case is therefore exercised by both loaders and
+proves their mechanical-identifier rejection from one shared vector; the former Go-only proof and
+separate hand-built baselines are no longer in the parity path.
+
+The transitive negative fixture is a real Go graph: `achievementsroot` imports
+`achievementshelper`, which imports the forbidden save owner. The live boundary invokes
+`go list -deps` for that root and passes its actual dependency closure to the same filter used for
+`./achievements`. Both subprocesses inherit Make's repository-local `GOCACHE`, with ignored
+`.cache/go-build` only as a direct-invocation fallback and no `/tmp` override in this scope.
+
+Independent exact-range diff checking and a fresh repository-root `make verify` pass. The gate
+executes the real graph fixture, the shared catalog/registry corpus, and both runtime suites and
+exits 0 with 6,517 client and 19,560 browser assertions. The future sole-Clout owner, content mint,
+save/live/replay/Exit/relevance integration, and archival remain honestly pending; none is credited
+by this tooling verdict.

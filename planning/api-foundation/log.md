@@ -118,3 +118,42 @@ Independent review found that an acyclic named-reference chain could pass constr
 the runtime validator's defensive depth bound. Registry construction now walks the fully expanded
 reference graph with the same limit before cloning it. The reviewer's 66-definition reproducer is
 a permanent negative fixture, so startup cannot bless a schema runtime validation must reject.
+
+## 2026-08-04 — independent schema/cursor remediation review (`402ba20..85cbea6` + `8697883^..8697883`)
+
+- **Review by:** Darwin
+- **Recorded by:** Darwin
+- **Decision:** **approved for this implementation stage.** The five prior findings close, and the
+  one new MEDIUM found during this review was fixed and re-reviewed in `8697883` before verdict.
+
+Closure verified:
+
+- Cursor construction is registry-bound. Paginated operations own one exact object key schema;
+  unknown and non-paginated operation IDs reject on encode and decode; key bytes validate against
+  that schema and typed decode must marshal back byte-identically. Operation response maps and the
+  full nested schema graph are privately cloned, and all enumeration APIs return defensive clones.
+- Direct and indirect named-reference cycles reject at construction. Inline pointer cycles also
+  reject through the construction depth bound, while runtime validation retains a fail-closed
+  recursion bound. `canonical-decimal` delegates directly to `decimal.ParseCanonical`, including
+  signed values and the numeric core's exponent boundary.
+- `EncodeBoardFilter`/`BoardFilterSHA256` are the single exact authority over category, decoded
+  variables (including explicit-null faction), epoch, mandate, and limit; discriminating fixtures
+  bind every dimension. C18–C20 remain accurately open and no endpoint surface is credited.
+
+Finding found and closed in-range:
+
+1. **MEDIUM (closed by `8697883`) — construction accepted acyclic schemas that runtime validation
+   could never accept.** A sorted 66-definition chain `S00 -> S01 -> ... -> S65`, with `S65` a
+   string schema, passed `ValidateSchemaDefinitions`; validating the otherwise-valid JSON string
+   `"ok"` at `S00` then deterministically returned `ErrInvalidSchema` because `validateValue`
+   rejected depth 65. The cycle defense was fail-closed, but construction and runtime disagreed
+   about the accepted graph domain. The follow-up introduces one `maximumRuntimeSchemaDepth` used
+   by both paths, walks the fully expanded inline/reference graph at construction, and retains the
+   exact 66-definition reproducer as a negative fixture. Mixed inline/reference paths traverse the
+   same edge increments in both checks, so there is no second depth interpretation.
+
+Independent verification: exact-range `git diff --check`, an uncached focused `./publicapi` test
+after `8697883`, the adversarial chain reproducer above, and a fresh repository-root `make verify`.
+The full gate exits 0 with 6,517 client assertions and 19,560 browser assertions. C18–C20 and the
+later endpoint/generation/composition work remain the only recorded API blockers; approval here is
+for the implemented schema/cursor foundation, not those unbuilt surfaces.
