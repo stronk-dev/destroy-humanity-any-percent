@@ -65,6 +65,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Phase-0 Pacing Observation Coverage](archive/phase0-pacing-observation-coverage.md) | implemented | [Balance harness](../docs/balance-harness.md) |
 | [Faction & Incorporation](archive/faction-incorporation.md) | implemented | [Factions](../docs/factions.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Guild Model](archive/guild-model.md) | implemented | [Guilds](../docs/guilds.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
+| [Doctrine & Compute Credit](archive/doctrine-and-compute-credit.md) | implemented | [Doctrine and Compute Credit](../docs/doctrine-and-compute-credit.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md), [Routes](../docs/routes.md) |
 
 Remaining Phase-0 contracts (not yet drafted): Layer-1 events engine · doctrine intents · Compute Credit spend · game-UI screens · deployment
 (Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics

@@ -9,11 +9,10 @@ RFC: `rfc/doctrine-and-compute-credit.md`
 - [x] Implement the ruled Compute Credit burst lifecycle in Go and TS.
 - [x] Add exact wire/event/replay fixtures and persistence migrations required by the rulings.
 - [x] Run normal root verification from the repository root.
-- [ ] Obtain both required full-range review gates.
+- [x] Obtain both required full-range review gates.
 - [x] Update canonical docs to match the implemented pre-mint behavior.
-- [ ] Archive only after all acceptance criteria and review ranges close.
+- [x] Archive only after all acceptance criteria and review ranges close.
 
-Current status: implementation and canonical docs are complete and the normal root gate is green.
-The production doctrine artifact and v17 activation remain deliberately unminted until the owner
-supplies T3-to-T4 content and the paired Meters/Achievements production artifacts. Independent
-full-range review remains open; this job is not archival-eligible yet.
+Final status: implemented, independently reviewed across the full range, and archived. The
+production doctrine artifact and v17 activation remain deliberately unminted until the owner
+supplies T3-to-T4 content and the paired Meters/Achievements production artifacts.

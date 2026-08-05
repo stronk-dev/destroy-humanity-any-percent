@@ -164,3 +164,53 @@ reviewed range rather than carried forward.
 
 No production artifact, epoch mint, archive, push, or deployment occurred. The implementation is
 ready for the required independent full-range reviews; this self-review does not satisfy them.
+
+## 2026-08-06 — designated verdict: Doctrine implementation (2262eab..6423acd) — APPROVE for archival
+
+Review by: the designated Claude reviewer (independent adversarial gate). Recorded by: same.
+Mandatory archival gate (rule c). Range-union COMPLETE: commits between the prior reviewed HEAD
+06bf0f3 and 2262eab are RFC/planning only (no code); code span ends at 5e279bd, 6423acd is docs-only;
+no prior independent verdict cites this range (Codex's self-review explicitly "does not satisfy the
+independent review"). This pass IS the independent full-range review.
+
+**No correctness defects. Independently re-verified (not trusting the green claim):** make test-go
+green; make typecheck 0 errors/278 files (re-run per the standing warning); make test-client 6566
+passed; vet clean; verify-schema ok (reports doctrines pre-mint); verify-kernel-version ok 0.3.59;
+Postgres save-integration green (migration-63 round-trip).
+
+- D7 burst arithmetic CORRECT: boostedWall=min(remaining,elapsed), bonus bounded by the
+  accrual_cap_ms-capped productionMS (wall past cap expires burst, no bonus), consumed both modes;
+  reject-not-clamp, no stacking; (burst_speed-1) bonus folded into ONE quantize via shared
+  accrueBoostedConstant (base path arithmetically identical to AccrueConstant); partition-invariance
+  holds across provision segments; Go/TS byte-parity via the shared doctrine_run corpus (the
+  divide-order difference is provably parity-safe — /1000 is an exact power-of-10 shift; burst_speed=2
+  => bonusFactor 1.0 exact).
+- D9 v17 CORRECT: companyStateV17 = v16 + compute_burst_remaining_ms only; valid() rejects
+  doctrines-without-foundations (all three required); Founder-v17 independent axis, rejects burst,
+  cross-decode fails (test); Exit floor forbids regression/disappearance; **production doctrines
+  artifact NOT minted** (phase0.json clean).
+- Migration 63 append-only, v16->v17 round-trips, missing/negative/over-cap rejected. D8 catalog+gate
+  and D10 wire byte-grammar match the rulings exactly, byte-parity both runtimes. Self-caught fix
+  5e279bd complete (90s one-shot-vs-split provision-boundary regression + offline-cap sibling).
+- Kernel 0.3.56->0.3.59, one bump per semantic commit, test/docs commits don't bump; KV-1 covers
+  server/doctrine + client/src/doctrines.ts.
+
+Minor non-blocking (recorded, no action): (1) migration 277b43b's colliding 00062 was RENAMED to
+00063 (byte-identical body, unpushed/unapplied — Goose can't enumerate duplicate sequences, so a
+rename is the only viable fix; body untouched, within the append-only spirit); (2) the doctrine
+JSON-schema regex is coarse on adjacency but the Go/TS loaders enforce to==from+1; (3) SimulateTransition
+passes nil doctrineCatalog so the balance harness doesn't exercise doctrine gating (fine — unminted).
+
+**Verdict: APPROVE for archival. Doctrine & Compute Credit is the first Wave-A RFC fully through the
+pipeline (designed -> ruled D1-D10 -> implemented -> independently reviewed). Archival-ELIGIBLE;
+archival itself (status implemented + move to rfc/archive/ + docs canonical) is owner-gated.**
+
+## 2026-08-06 — archival rotation
+
+Review by: Codex (mechanical archival audit). Recorded by: Codex.
+
+Consumed the designated independent verdict above for range `2262eab..6423acd`. Canonical behavior
+already lives in `docs/doctrine-and-compute-credit.md`, `docs/production-engine.md`,
+`docs/save-layer.md`, and `docs/routes.md`. Status changed to implemented; the RFC and this planning
+record moved to their archives. No production doctrine artifact, epoch mint, push, deployment, or
+publication occurred.

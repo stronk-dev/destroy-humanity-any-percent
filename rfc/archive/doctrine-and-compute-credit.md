@@ -1,8 +1,8 @@
 # RFC: Doctrine Intents & Compute Credit Spend
 
-- **Status:** accepted — D1-D10 ruled (burst arithmetic, Phase-0 fixture row + unminted production
-  artifact, Company v14→v17 linear activation, exact wire); implementing. Company v17 (burst) mints
-  only in a `meters`+`achievements`+`doctrines` epoch; Active-Play sequences at Company v18.
+- **Status:** implemented — mechanism, save/replay boundary, canonical docs, and full-range
+  independent review complete. The production artifact remains deliberately unminted; Company v17
+  activates only in a future `meters`+`achievements`+`doctrines` epoch.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/10 §doctrine` (doctrine trees — Age-Up branching, one building type nothing else gets, combos with faction), `design/02 §9` (Compute Credits — banked offline time as chosen-moment acceleration; the banker playstyle), `design/09 §doctrine events`
