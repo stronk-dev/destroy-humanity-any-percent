@@ -134,3 +134,15 @@
   The normal minigame test/vet targets and root `make test-save-integration` pass.
 - This closes C20's persistence/replay slice. Payout/faucet composition remains a separate checked
   item and no production balance data was introduced.
+
+## 2026-08-05 — independent approval of C20 (`2517a51^..2517a51`)
+
+- **Review by:** Darwin
+- **Recorded by:** Codex
+- **Decision:** approved; no findings.
+- The reviewer verified atomic append/head updates, exact contiguous sequence/revision identity,
+  replay from stored genesis through frozen engine/scaling identity, byte comparisons before the
+  terminal write, same-version drift rollback, and forward-only migration/retention behavior.
+- Exact-range diff, minigame test/vet, and real-Postgres minigame integration passed. A shared-DB
+  all-package attempt encountered unrelated stale epoch/save state; focused production and repeated
+  minigame Postgres reruns passed, and no failure touched the reviewed range.
