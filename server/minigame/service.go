@@ -50,11 +50,40 @@ type CertifiedResolution struct {
 	bytes    json.RawMessage
 }
 
+type CertifiedResolutionView struct {
+	SessionID       string
+	MinigameID      string
+	FounderID       string
+	CompanyStreamID string
+	RunSeq          int64
+	EngineRef       string
+	EngineVersion   string
+	ConstantsHash   string
+	Result          *Result
+	ResultBytes     json.RawMessage
+}
+
+type PreparedResolution struct {
+	Session Session
+	Faucet  FaucetApplication
+}
+
 func (resolution *CertifiedResolution) Result() *Result {
 	if resolution == nil {
 		return nil
 	}
 	return cloneResult(resolution.result)
+}
+
+func (resolution *CertifiedResolution) View() (CertifiedResolutionView, error) {
+	if resolution == nil || !validResolutionIdentity(resolution.identity) || !validJSONObject(resolution.bytes) {
+		return CertifiedResolutionView{}, ErrInvalidSession
+	}
+	return CertifiedResolutionView{SessionID: resolution.identity.sessionID, MinigameID: resolution.identity.minigameID, FounderID: resolution.identity.founderID,
+		CompanyStreamID: resolution.identity.companyStreamID, RunSeq: resolution.identity.runSeq,
+		EngineRef: resolution.identity.engineRef, EngineVersion: resolution.identity.engineVersion,
+		ConstantsHash: resolution.identity.constantsHash, Result: cloneResult(resolution.result),
+		ResultBytes: bytes.Clone(resolution.bytes)}, nil
 }
 
 func NewService(repository *Repository, tenants *TenantRegistry) (*Service, error) {
@@ -138,7 +167,7 @@ func (service *Service) Play(ctx context.Context, request PlayRequest) (decision
 		}
 		claimed.State = output.Snapshot
 		decision = PlayDecision{Session: claimed, Resolution: &CertifiedResolution{
-			identity: resolutionIdentity{sessionID: claimed.SessionID, founderID: claimed.FounderID,
+			identity: resolutionIdentity{sessionID: claimed.SessionID, minigameID: claimed.MinigameID, founderID: claimed.FounderID,
 				companyStreamID: claimed.CompanyStreamID, runSeq: claimed.RunSeq, engineRef: claimed.EngineRef,
 				engineVersion: claimed.EngineVersion, constantsHash: claimed.ConstantsHash, claimToken: claimed.ClaimToken},
 			command: bytes.Clone(request.Command), state: output.Snapshot,
@@ -156,33 +185,69 @@ func (service *Service) Play(ctx context.Context, request PlayRequest) (decision
 	return PlayDecision{Session: updated}, nil
 }
 
-// ResolveTx locks the certified result's Company stream before its session,
-// then writes the terminal snapshot/result through the unexported repository
-// boundary. A caller cannot construct a non-empty certification outside this
-// package or resolve it in a different Company's transaction.
-func (service *Service) ResolveTx(ctx context.Context, tx *sql.Tx, resolution *CertifiedResolution) (Session, error) {
+// PrepareResolutionTx verifies the claimed session by replaying its immutable
+// command log and applies its pinned faucet row. The caller owns the global
+// Founder→Company lock order and must either finalize in the same transaction
+// or roll the transaction back.
+func (service *Service) PrepareResolutionTx(ctx context.Context, tx *sql.Tx, resolution *CertifiedResolution,
+	definition Definition, founderAttendedMS int64,
+) (PreparedResolution, error) {
 	if service == nil || tx == nil || resolution == nil || !validResolutionIdentity(resolution.identity) ||
 		!validJSONObject(resolution.command) || !validJSONObject(resolution.state) || !validJSONObject(resolution.bytes) ||
 		service.tenants.validateCertifiedResult(resolution.identity.engineRef, resolution.identity.engineVersion, resolution.result) != nil {
-		return Session{}, ErrInvalidSession
+		return PreparedResolution{}, ErrInvalidSession
 	}
 	canonicalResult, err := json.Marshal(resolution.result)
 	if err != nil || !bytes.Equal(canonicalResult, resolution.bytes) {
-		return Session{}, ErrInvalidSession
+		return PreparedResolution{}, ErrInvalidSession
 	}
-	var ownsRun bool
-	err = tx.QueryRowContext(ctx, lockResolutionCompanySQL, resolution.identity.companyStreamID,
-		resolution.identity.founderID, resolution.identity.runSeq, resolution.identity.constantsHash).Scan(&ownsRun)
-	if errors.Is(err, sql.ErrNoRows) {
-		return Session{}, ErrInvalidSession
-	}
-	if err != nil {
-		return Session{}, err
+	if definition.MinigameID == "" || definition.EngineRef != resolution.identity.engineRef ||
+		definition.EngineVersion != resolution.identity.engineVersion {
+		return PreparedResolution{}, ErrInvalidSession
 	}
 	if err := service.validateReplayTx(ctx, tx, resolution); err != nil {
-		return Session{}, err
+		return PreparedResolution{}, err
 	}
-	return resolveTx(ctx, tx, resolution.identity, resolution.command, resolution.state, resolution.bytes)
+	score, err := SelectPayoutScore(resolution.result, definition.Payout)
+	if err != nil {
+		return PreparedResolution{}, err
+	}
+	faucet, err := applyFaucetWindowTx(ctx, tx, resolution.identity.founderID, definition.MinigameID,
+		founderAttendedMS, definition.Payout, score, definition.Fallback.RateReductionPPM)
+	if err != nil {
+		return PreparedResolution{}, err
+	}
+	session, _, err := loadClaimedReplay(ctx, tx, resolution.identity)
+	if err != nil {
+		return PreparedResolution{}, err
+	}
+	return PreparedResolution{Session: session, Faucet: faucet}, nil
+}
+
+func (service *Service) validateCertifiedTx(ctx context.Context, tx *sql.Tx, resolution *CertifiedResolution) error {
+	if service == nil || tx == nil || resolution == nil || !validResolutionIdentity(resolution.identity) ||
+		!validJSONObject(resolution.command) || !validJSONObject(resolution.state) || !validJSONObject(resolution.bytes) ||
+		service.tenants.validateCertifiedResult(resolution.identity.engineRef, resolution.identity.engineVersion, resolution.result) != nil {
+		return ErrInvalidSession
+	}
+	canonical, err := json.Marshal(resolution.result)
+	if err != nil || !bytes.Equal(canonical, resolution.bytes) {
+		return ErrInvalidSession
+	}
+	return service.validateReplayTx(ctx, tx, resolution)
+}
+
+// FinalizeResolutionTx is callable only after PrepareResolutionTx in the same
+// transaction. The write-once receipt tuple makes the session terminal state
+// a durable idempotency receipt rather than a process-local outcome.
+func (service *Service) FinalizeResolutionTx(ctx context.Context, tx *sql.Tx, resolution *CertifiedResolution,
+	receipt json.RawMessage, companyRevision, founderRevision int64,
+) (Session, error) {
+	if service == nil || tx == nil || resolution == nil {
+		return Session{}, ErrInvalidSession
+	}
+	return resolveTx(ctx, tx, resolution.identity, resolution.command, resolution.state, resolution.bytes,
+		receipt, companyRevision, founderRevision)
 }
 
 func (service *Service) validateReplayTx(ctx context.Context, tx *sql.Tx, resolution *CertifiedResolution) error {
@@ -241,7 +306,3 @@ func decodeScalingInputs(data []byte) (map[string]int64, bool) {
 	}
 	return result, true
 }
-
-const lockResolutionCompanySQL = "SELECT true FROM save_streams s JOIN run_epochs r " +
-	"ON r.company_stream_id=s.id AND r.run_seq=$3 WHERE s.id=$1 AND s.owner_kind='founder' " +
-	"AND s.owner_id=$2 AND s.scope='company' AND s.archived_at IS NULL AND r.constants_hash=$4 FOR UPDATE OF s"

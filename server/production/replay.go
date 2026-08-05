@@ -232,6 +232,9 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	if catalogs.foundationsActive() && wire.Version < 3 {
 		return LoggedTransition{}, fmt.Errorf("%w: active foundations require replay inputs v3+", ErrInvalidReplayInputs)
 	}
+	if isMinigameResolutionPayload(canonicalPayload) {
+		return applyCompanyMinigameResolution(state, canonicalPayload, catalogs, wire)
+	}
 	request, err := parseLoggedIntent(canonicalPayload, wire.Command.IntentID)
 	if err != nil || request.IntentID != wire.Command.IntentID || request.ExpectedRevision != wire.Command.Revision ||
 		wire.Command.RunSeq != state.RunSeq || !bytes.Equal(request.CanonicalPayload, canonicalPayload) {

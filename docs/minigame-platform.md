@@ -1,8 +1,8 @@
 # Minigame Platform
 
-The implemented foundation currently owns two boundaries: durable minigame sessions and pure
-tenant engines. Production payout, faucet policy, registry balance rows, and gameserver routes are
-not yet composed and are not claimed here.
+The implemented foundation owns durable sessions, pure tenant engines, immutable pinned policy,
+and the server-authored resolution transaction. No public intent accepts a score or result: a
+tenant certifies the result, and the platform resolves its payout and Founder effects.
 
 ## Authoritative sessions
 
@@ -16,14 +16,17 @@ Active sessions begin at revision 1. A server-side play or resolve command claim
 database-generated UUID token after locking Founder then session. Concurrent workers cannot both
 claim it; a crashed claim can be replaced after the same five-minute lease used by replay
 verification. A completed play advances the revision exactly once and returns the row to active.
-A resolved result advances once, clears the claim, records its completion time, and is immutable.
+A resolved result advances once, clears the claim, records its completion time, the exact terminal
+receipt, and the committed Company and Founder revisions, and is immutable.
 
 Resolution exposes a transaction-bound service write rather than a public client command. A
 terminal play returns an opaque certification whose identity and result fields cannot be populated
-outside the platform package. Resolution locks that exact Founder-owned Company/run/hash first,
-then token-locks the matching session and records the terminal snapshot plus tenant-validated
-result inside the same transaction. Rolling that transaction back leaves the claim and session
-state unchanged, preserving the seam required for the later server-authored payout transition.
+outside the platform package. The coordinator locks Founder then Company, verifies the session's
+claim and immutable command history, advances the attended-day faucet, applies the Company payout,
+updates Founder rating and offline quality, finalizes the session, and appends both save revisions,
+events, and replay logs in one transaction. Fault injection covers every write boundary. A retry is
+answered from the durable session-ID idempotency receipt without executing the tenant or faucet
+again.
 
 ## Tenant boundary
 
@@ -99,11 +102,13 @@ decay_remainder_ppm}`. This slice validates that wire and the score-to-grade sel
 attended-grid decay transition and production policy literals remain disabled until the Founder
 version/artifact activation seam is composed.
 
-The activation seam is now structural: the pinned `minigames` artifact closes sorted minigame-ID
-and rating-season domains, and its presence derives Founder save v17 while Company remains v16.
+The activation seam is now structural: the pinned `minigames` artifact contains every immutable
+definition row (engine identity, modes, result facts, scaling, payout, fallback, offline-quality,
+rating, and unlock policy), closes sorted minigame-ID and rating-season domains, and its presence
+derives Founder save v17 while Company remains v16.
 Founder v17 stores exact current rating rows (`elo`, `season_member`, `games_counted`) and exact
 offline-quality watermark rows. The artifact and maps are biconditional in both replay runtimes.
-The production artifact remains empty until a separately reviewed balance mint supplies content.
+The checked fixture exercises the full grammar without minting a production balance artifact.
 
 ## Payout policy and conversion kernel
 
@@ -127,7 +132,15 @@ applies the per-send cap only while `quota_used < sends_per_day`, and increments
 admitted send. Converted units beyond either configured limit are returned as forfeited with the
 declared cap reason. A new attended day starts a new zeroed row; no wall clock participates.
 
-The window mutation is transaction-owned and intentionally not exported. Its caller must already
-own the session claim in the same transaction; the token-owned terminal session update is the
-exactly-once authority. Rolling the transaction back removes both a newly inserted window and its
-arithmetic. Full Company+Founder+session composition remains the next slice.
+The window mutation is transaction-owned and intentionally not exported. Its caller owns the
+Founder→Company locks and the session claim in the same transaction; the token-owned terminal
+session update is the exactly-once authority. Rolling the transaction back removes the window,
+payout, rating/quality changes, both log arms, both events, and all save revisions.
+
+The Company replay arm independently recomputes the certified-result hash, selected score, faucet
+conversion, configured forfeit, and saturating Decimal credit from the pinned policy. The Founder
+arm independently recomputes attended-grid quality decay followed by grade replacement and applies
+the engine-certified rating delta with exact checked arithmetic and catalog bounds. Both Go and
+TypeScript replay the same shared fixture to byte-identical receipts, event order, and post-state;
+the two immutable logs bind the same certified-result hash and are joined by a deferrable relational
+source coordinate.

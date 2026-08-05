@@ -18,6 +18,7 @@ import (
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/meters"
+	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
@@ -43,6 +44,10 @@ type crossRuntimeFixture struct {
 	PetFounderHash  string                     `json:"pet_founder_constants_hash"`
 	PetFounderFiles map[string]string          `json:"pet_founder_artifacts"`
 	PetFounderCases []crossRuntimeFounderCase  `json:"pet_founder_cases"`
+	MinigameHash    string                     `json:"minigame_constants_hash"`
+	MinigameFiles   map[string]string          `json:"minigame_artifacts"`
+	MinigameCompany crossRuntimeFixtureCase    `json:"minigame_company_case"`
+	MinigameFounder crossRuntimeFounderCase    `json:"minigame_founder_case"`
 }
 
 type crossRuntimeFounderCase struct {
@@ -327,7 +332,92 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	result.RejectedExit = makeRejectedExitFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	result.FounderHash, result.FounderFiles, result.FounderCases, result.FounderRun = makeFounderReplayFixture(t, baseNow)
 	result.PetFounderHash, result.PetFounderFiles, result.PetFounderCases = makePetFounderReplayFixture(t, baseNow)
+	result.MinigameHash, result.MinigameFiles, result.MinigameCompany, result.MinigameFounder = makeMinigameResolutionReplayFixture(t, baseNow)
 	return result
+}
+
+func makeMinigameResolutionReplayFixture(t *testing.T, now time.Time) (string, map[string]string, crossRuntimeFixtureCase, crossRuntimeFounderCase) {
+	t.Helper()
+	_, active := foundationTestBundles(t)
+	artifact, err := os.ReadFile("../../testdata/minigame/catalog-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts := cloneArtifactMap(active.Artifacts)
+	artifacts["minigames"] = artifact
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs := active
+	catalogs.ConstantsHash, catalogs.Artifacts = hash, artifacts
+	catalogs.Minigames, err = minigame.LoadCatalog(artifact)
+	if err != nil || !catalogs.valid(hash) {
+		t.Fatalf("load minigame replay bundle: %v", err)
+	}
+	result := minigame.Result{Outcome: "completed", RatingDelta: int64Pointer(25), ScoreFacts: []minigame.ScoreFact{{Kind: "score.total", Value: 400}}}
+	resultBytes, _ := json.Marshal(result)
+	payload, _ := json.Marshal(minigameResolutionPayload{Kind: minigameResolutionKind, SessionID: "01986666-0900-7000-8000-000000000901", Result: resultBytes})
+	payload, _ = normalizeReplayJSON(payload)
+	definition, _ := catalogs.Minigames.Definition("fixture.counter")
+	attendance := FounderAttendanceSample{CompanyStreamID: "01986666-1900-7000-8000-000000000901", RunSeq: 1, CompanyRevision: 1,
+		CompanyConstantsHash: hash, CompletedAttendedMS: 0, CurrentRunPartialAttendedMS: 60_000, EffectiveFounderAttendedMS: 60_000}
+	oldRating := save.MinigameRatingState{Elo: 1000, SeasonMember: "ranked", GamesCounted: 0}
+	newRating := save.MinigameRatingState{Elo: 1025, SeasonMember: "ranked", GamesCounted: 1}
+	oldQuality := save.MinigameOfflineQualityState{GradePPM: 500_000, LastFounderAttendedMS: 0, DecayRemainderPPM: 0}
+	newQuality := save.MinigameOfflineQualityState{GradePPM: 750_000, LastFounderAttendedMS: 60_000, DecayRemainderPPM: 0}
+	rating := minigameRatingChangeReceipt{Rated: true, OldElo: 1000, NewElo: 1025, SeasonMember: "ranked", GamesBefore: 0, GamesAfter: 1}
+	quality := minigameQualityChangeReceipt{Old: oldQuality, New: newQuality}
+	certifiedHash := certifiedResultHash(resultBytes)
+	faucet := minigameFaucetWire{AttendedDay: 0, QuotaBefore: 0, QuotaAfter: 1, RemainderBeforePPM: 0,
+		RemainderAfterPPM: 0, ReducedScore: 400, ConvertedUnits: 50, CreditedUnits: 50}
+	companyResolved := minigameCompanyResolved{Kind: minigameResolutionKind, SessionID: "01986666-0900-7000-8000-000000000901",
+		MinigameID: "fixture.counter", CertifiedResultHash: certifiedHash, PayoutPolicy: definition.Payout, SelectedScore: 400,
+		Faucet: faucet, CreditedDelta: "5e1", FounderLog: minigameLogCoordinate{StreamID: "01986666-2900-7000-8000-000000000901", Revision: 2, Sequence: 1},
+		CompanyRevision: 2, FounderRevision: 2, RatingChange: rating, QualityChange: quality}
+	companyCommand := save.ReplayCommand{IntentID: "01986666-0900-7000-8000-000000000901", CompanyStreamID: attendance.CompanyStreamID,
+		FounderID: "01986666-3900-7000-8000-000000000901", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	companyInputs, _ := json.Marshal(replayInputsWire{Version: save.ReplayInputsVersion, Command: companyCommand, EvaluatedAtMS: now.UnixMilli(), EvaluationMode: ModeOnline, Resolved: mustJSON(companyResolved)})
+	company := replayFixtureState(t, catalogs.Economy, now)
+	company.WireVersion = 16
+	company.MeterBands = nil
+	meterState, err := meters.NewRunState(catalogs.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	company.AchievementsEarnedRun = map[string]bool{}
+	companyPre := mustEncodeState(t, company)
+	companyTransition, err := applyCompanyMinigameResolution(company, payload, catalogs, replayInputsWire{Version: save.ReplayInputsVersion,
+		Command: companyCommand, EvaluatedAtMS: now.UnixMilli(), EvaluationMode: ModeOnline, Resolved: mustJSON(companyResolved)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	companyPost := mustEncodeState(t, company)
+	companyEvents := fixtureEvents(companyTransition.Events)
+	companyCase := crossRuntimeFixtureCase{Name: "minigame-resolution-company", PreState: companyPre, CanonicalPayload: payload, ReplayInputs: companyInputs,
+		Outcome: string(companyTransition.Outcome), Receipt: companyTransition.Receipt, Events: companyEvents, PostState: companyPost,
+		ReceiptJSON: canonicalFixtureJSON(t, companyTransition.Receipt), EventsJSON: canonicalFixtureValue(t, companyEvents), PostStateJSON: canonicalFixtureJSON(t, companyPost)}
+	founder := replayFounderFixtureState(t, catalogs, now)
+	founder.MinigameRatings["fixture.counter"] = oldRating
+	founder.MinigameOfflineQuality["fixture.counter"] = oldQuality
+	founderPre := mustEncodeState(t, founder)
+	founderCommand := save.FounderReplayCommand{IntentID: companyCommand.IntentID, FounderStreamID: companyResolved.FounderLog.StreamID,
+		FounderID: companyCommand.FounderID, Revision: 1, FounderLogSeq: 1, ServerTSMS: now.UnixMilli()}
+	founderResolved := minigameFounderResolved{Kind: minigameResolutionKind, SessionID: companyCommand.IntentID, MinigameID: "fixture.counter",
+		CertifiedResultHash: certifiedHash, RatingBefore: oldRating, RatingAfter: newRating, QualityBefore: oldQuality, QualityAfter: newQuality, Attendance: attendance}
+	founderInputs, _ := save.MarshalFounderReplayInputs(founderCommand, founderResolved)
+	founderTransition, err := applyFounderMinigameResolution(founder, payload, catalogs, founderReplayInputsWire{Version: 1, Command: founderCommand, EvaluatedAtMS: now.UnixMilli(), Resolved: mustJSON(founderResolved)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	founderPost := mustEncodeState(t, founder)
+	founderEvents := fixtureEvents(founderTransition.Events)
+	founderCase := crossRuntimeFounderCase{Name: "minigame-resolution-founder", StateVersion: 17, PreState: founderPre, CanonicalPayload: payload,
+		ReplayInputs: founderInputs, Outcome: string(founderTransition.Outcome), Receipt: founderTransition.Receipt, Events: founderEvents, PostState: founderPost,
+		ResultConstantsHash: founderTransition.ResultConstantsHash, ReceiptJSON: canonicalFixtureJSON(t, founderTransition.Receipt),
+		EventsJSON: canonicalFixtureValue(t, founderEvents), PostStateJSON: canonicalFixtureJSON(t, founderPost)}
+	return hash, stringArtifacts(artifacts), companyCase, founderCase
 }
 
 func makeFounderReplayFixture(t *testing.T, now time.Time) (string, map[string]string, []crossRuntimeFounderCase, crossRuntimeFounderRun) {

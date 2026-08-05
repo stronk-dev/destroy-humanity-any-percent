@@ -14,7 +14,7 @@ RFC: `rfc/minigame-platform-foundation.md`
     identity-constraint, and canonical-integer remediation round.
   - [ ] Register the combat duel adapter only when its implemented engine surface satisfies the
     same boundary; do not invent the deferred lane engine.
-- [ ] Land scaling-source validation, the ranked-power prohibition, fallback rows, and formula
+- [x] Land scaling-source validation, the ranked-power prohibition, fallback rows, and formula
   artifact output without production balance literals.
   - [x] Implement C28's exact one-row transform grammar, exact integer resolver, ranked-power
     rejection, and generated formula contract with focused tests.
@@ -22,9 +22,9 @@ RFC: `rfc/minigame-platform-foundation.md`
     reduction bounds, and published formula contract.
   - [x] Implement C34's exact offline-quality row, score-to-grade selector, replay-state validator,
     and generated formula contract without production balance literals.
-  - [ ] Compose attended-grid offline-quality decay after the Founder-axis artifact activation
+  - [x] Compose attended-grid offline-quality decay after the Founder-axis artifact activation
     seam lands; thresholds and decay values remain deferred balance literals.
-- [ ] Land server-certified resolve/payout, faucet accounting, replay identity, and fault tests.
+- [x] Land server-certified resolve/payout, faucet accounting, replay identity, and fault tests.
   - [x] Persist immutable applied-command rows and replay them from genesis before terminal
     resolution.
   - [x] Implement C30's exact payout-policy loader and exact carried-ppm conversion kernel without
@@ -33,7 +33,7 @@ RFC: `rfc/minigame-platform-foundation.md`
     missing/negative fact tests.
   - [x] Append C33's cross-run attended-day window and prove carried conversion, send/per-send
     caps, new-day reset, database bounds, and transaction rollback against Postgres.
-  - [ ] Compose Company payout, Founder rating, token-owned session resolution, and the window in
+  - [x] Compose Company payout, Founder rating, token-owned session resolution, and the window in
     one Founder→Company→session transaction.
 - [ ] Compose the platform into the gameserver and prove solo/async-snapshot lifecycle ACs.
 - [ ] Mint the production artifact only after owner/harness-supplied balance rows.

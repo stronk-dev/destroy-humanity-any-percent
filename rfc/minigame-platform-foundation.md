@@ -1,6 +1,6 @@
 # RFC: Minigame Platform Foundation
 
-- **Status:** accepted — C1–C18 ruled; normative body reconciled; implementing
+- **Status:** accepted — C1–C40 ruled; normative body reconciled; implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/03` (the minigame suite, clocks, economy hooks, AI-fallback law), `design/03 §12b` (the tier→minigame scaling seam + Fairness Law), `design/05 §4` (PvP table, punch-down multiplier)
@@ -418,7 +418,9 @@ not a new hazard.
     `{elo, season_member, games_counted}`. `elo` is a safe integer; `season_member` is a member of
     the closed `rating_season` enum (the "season-fact union" — enum MEMBERS are wire grammar, the
     member catalog is deferred); `games_counted` is a safe integer for provisional logic. Starting
-    elo, K-factor, and the provisional threshold are BALANCE data, not ruled here.
+    elo and the provisional threshold are BALANCE data, not ruled here. (K-factor is NOT a platform
+    datum — reconciled by C40: the platform applies a certified `rating_delta`; any K lives inside
+    the engine's versioned certified-result calculation.)
   - `minigame_offline_quality`: map keyed by declared `minigame_id` → the C34 state row
     `{grade_ppm, last_founder_attended_ms, decay_remainder_ppm}` (already ruled; watermark clock,
     never wall time).
@@ -969,3 +971,62 @@ multi-grid decay, and same-sample retry.
   live-PvP, unlock, offline-quality, and replay contracts require owner rulings.
 - 2026-08-04: post-ruling implementation pass found C12–C18: design ownership is settled, but the
   active body and exact persistence/wire/arithmetic contracts still need reconciliation/literals.
+
+## Owner rulings on C37-C40 (2026-08-05) — the server-certified resolve composer
+
+All four proposed contracts are ACCEPTED. They honor the hash-pinned-artifact / no-deploy-current
+law, the Exit-style multi-stream coordinator pattern, the determinism spine, and the
+server-certified (not client-claimed) payout rule. Notes ratify the load-bearing points.
+
+- **C37 — accepted; the artifact must carry ALL policy bytes, not an activation index.** Replace the
+  pre-mint v1 artifact with exact `{schema_version, rating_seasons, minigames}`, each sorted row
+  exact `{minigame_id, engine_ref, engine_version, modes, result_score_fact_ids, scaling, payout,
+  fallback, offline_quality, rating_policy, unlock_condition}` embedding the already-ruled closed
+  sub-objects. **No policy reference resolves outside these bytes; `CatalogBundle.Minigames` is the
+  SOLE live/replay policy resolver** — an in-process PayoutPolicy would execute deploy-current policy
+  while replay resolved only IDs, the exact divergence the hash-pinned-artifact law forbids (and the
+  same partial-catalog hazard F1 closed on the pet side). `minigame_ids` is DERIVED from the rows,
+  never stored twice (no second authority). Empty `minigames` stays the valid pre-content artifact;
+  Go+TS load one shared fixture.
+- **C38 — accepted; the coordinator mirrors Exit, and the lock order is ratified.** Add
+  `save.Store.ApplyMinigameResolutionTransaction`, the narrow multi-stream coordinator analogous to
+  the Exit coordinator: it owns the stream locks, revisions/log sequences, events/outboxes/retention,
+  and one transaction callback finalizing the already-claimed session + faucet window. **Canonical
+  lock order is Founder-then-Company, project-wide and deadlock-safe — this coordinator MUST conform
+  to that single global order** (the faucet-window double-lock and every multi-stream path use it).
+  Session ID is the idempotency key AND internal intent ID. A NEW append-only migration adds exact
+  `resolution_receipt jsonb` + `resolution_company_revision` + `resolution_founder_revision` to the
+  terminal session row: null before resolution, immutable/non-null after (write-once). A retry of a
+  resolved session returns those bytes without re-running a tenant or consuming quota. Fault
+  injection after every write must prove all-or-none across both revisions, both logs/events, the
+  window, the terminal session, and the receipt.
+- **C39 — accepted; both logs bind the same certified_result_hash (cross-stream integrity).** One
+  canonical internal payload `{kind:"resolve_minigame_session", session_id, result}` with
+  `intent_id = session_id`; both the Company and Founder logs bind the SAME `certified_result_hash`
+  so the two streams are provably one resolution. The Company resolved arm records the exact payout
+  policy identity, selected score, complete faucet before/after, the **credited Decimal delta as its
+  canonical string** (wire-format-is-strings law), and the Founder-log coordinate — so `ApplyLogged`
+  reproduces the credit byte-for-byte. The Founder `minigame_resolution.v1` arm uses C36's exact
+  `{session_id, certified_result_hash, old_elo, new_elo, season_member}` fact + old/new
+  offline-quality state + the frozen Founder-attendance sample. Register exact `minigame_resolved.v1`
+  and `minigame_rating_changed.v1` in the closed event registry; both runtimes compare receipt/event
+  bytes and order in one sequential fixture.
+- **C40 — accepted; certified `rating_delta` is authoritative, K-factor moves into the engine.** The
+  server-certified tenant `rating_delta` is authoritative for Phase A: the platform checked-adds it
+  to old Elo, saturates only at catalog floor/ceiling, increments `games_counted` once. `null` means
+  unrated — Elo/count unchanged, but the Founder resolution AND quality update still commit.
+  **The platform K-factor is REMOVED from this RFC; K is an engine-internal detail inside the
+  versioned certified-result calculation — this RECONCILES C36's K-factor mention (the platform does
+  not own an Elo update rate; it applies a certified delta).** Offline quality integrates decay from
+  the stored watermark to the frozen sample with the SAME partition-invariant primitive as pet C18
+  (`numerator = elapsed_ms * decay_ppm_per_grid + remainder`, `decay = floor(numerator /
+  decay_grid_ms)`, `remainder = numerator mod decay_grid_ms`, saturating at the neutral floor), THEN
+  replaces the decayed grade with the current certified score's catalog grade and zeroes the
+  remainder at the sample watermark (decay-then-replace, not max/compose). Shared boundary vectors
+  cover null, negative delta, Elo floor/ceiling, sub-grid carry, multi-grid decay, and same-sample
+  retry. **Pet C18, minigame C40, and the faucet carry share ONE tested partition-invariant helper /
+  byte-identical vectors** so the grid arithmetic is provably identical across all three.
+
+**These four complete the resolve composer contract. Activation stays New-Founder-forward under the
+pinned minigames artifact; production resolution remains disabled until a protocol-compliant mint,
+and nothing here self-authorizes archival.**

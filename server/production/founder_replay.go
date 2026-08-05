@@ -40,6 +40,9 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 	if err != nil {
 		return FounderLoggedTransition{}, err
 	}
+	if isMinigameResolutionPayload(canonicalPayload) {
+		return applyFounderMinigameResolution(state, canonicalPayload, catalogs, wire)
+	}
 	request, err := parseLoggedIntent(canonicalPayload, wire.Command.IntentID)
 	if err != nil || !bytes.Equal(request.CanonicalPayload, canonicalPayload) {
 		return FounderLoggedTransition{}, fmt.Errorf("%w: Founder canonical command", ErrInvalidReplayInputs)

@@ -168,10 +168,10 @@ func TestSessionClaimIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	identity := resolutionIdentity{sessionID: testSessionID, founderID: testFounderID, companyStreamID: testStreamID,
+	identity := resolutionIdentity{sessionID: testSessionID, minigameID: "combat.duel", founderID: testFounderID, companyStreamID: testStreamID,
 		runSeq: 1, engineRef: "combat.duel", engineVersion: "1.0.0", constantsHash: testHash, claimToken: claimed.ClaimToken}
 	if _, err := resolveTx(ctx, rollbackTx, identity, json.RawMessage(`{"advance":1}`), json.RawMessage(`{"turn":2}`),
-		json.RawMessage(`{"outcome":"complete","rating_delta":null,"score_facts":[]}`)); err != nil {
+		json.RawMessage(`{"outcome":"complete","rating_delta":null,"score_facts":[]}`), json.RawMessage(`{"outcome":"applied"}`), 2, 2); err != nil {
 		_ = rollbackTx.Rollback()
 		t.Fatal(err)
 	}
@@ -190,7 +190,7 @@ func TestSessionClaimIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	resolved, err := resolveTx(ctx, tx, identity, json.RawMessage(`{"advance":1}`), json.RawMessage(`{"turn":2}`),
-		json.RawMessage(`{"outcome":"complete","rating_delta":null,"score_facts":[]}`))
+		json.RawMessage(`{"outcome":"complete","rating_delta":null,"score_facts":[]}`), json.RawMessage(`{"outcome":"applied"}`), 2, 2)
 	if err != nil {
 		_ = tx.Rollback()
 		t.Fatal(err)
@@ -309,7 +309,7 @@ func TestServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := driftService.ResolveTx(ctx, driftTx, terminal.Resolution); !errors.Is(err, ErrTenantDivergence) {
+	if err := driftService.validateCertifiedTx(ctx, driftTx, terminal.Resolution); !errors.Is(err, ErrTenantDivergence) {
 		_ = driftTx.Rollback()
 		t.Fatalf("same-version engine drift error=%v", err)
 	}
@@ -327,7 +327,7 @@ func TestServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := service.ResolveTx(ctx, forgedTx, &forged); !errors.Is(err, ErrInvalidSession) {
+	if err := service.validateCertifiedTx(ctx, forgedTx, &forged); !errors.Is(err, ErrInvalidSession) {
 		_ = forgedTx.Rollback()
 		t.Fatalf("forged result error=%v", err)
 	}
@@ -340,7 +340,7 @@ func TestServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := service.ResolveTx(ctx, crossTx, &crossCompany); !errors.Is(err, ErrInvalidSession) {
+	if err := service.validateCertifiedTx(ctx, crossTx, &crossCompany); !errors.Is(err, ErrClaimLost) {
 		_ = crossTx.Rollback()
 		t.Fatalf("cross-company result error=%v", err)
 	}
@@ -351,7 +351,12 @@ func TestServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	resolved, err := service.ResolveTx(ctx, tx, terminal.Resolution)
+	if err := service.validateCertifiedTx(ctx, tx, terminal.Resolution); err != nil {
+		_ = tx.Rollback()
+		t.Fatal(err)
+	}
+	resolved, err := resolveTx(ctx, tx, terminal.Resolution.identity, terminal.Resolution.command,
+		terminal.Resolution.state, terminal.Resolution.bytes, json.RawMessage(`{"outcome":"applied"}`), 2, 2)
 	if err != nil {
 		_ = tx.Rollback()
 		t.Fatal(err)

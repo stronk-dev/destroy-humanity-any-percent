@@ -12,6 +12,7 @@ import { advanceMeters, contributionKey as meterContributionKey, newRunMeterStat
 import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
 import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
 import { parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
+import { applyFounderMinigameResolution, type CertifiedMinigameResult, type MinigameRatingState } from "./minigame/resolution";
 import { parsePetCatalog, type PetCatalog } from "./pet/catalog";
 import { parsePetCareStates, validatePetCareStatesForCatalog, type PetCareState } from "./pet/state";
 import { applyPetCareTransition, careStatus } from "./pet/transition";
@@ -139,6 +140,7 @@ const REPLAY_EVENT_KINDS = Object.freeze([
   "exit_offer_declined", "exit_offer_expired", "exit_offer_spawned", "faction_stock_saturated", "founder_advanced", "gate_crossed", "generator_purchased", "guild_activity_evaluated", "guild_tithe_accrued",
 	"incorporated", "invariant_reported", "meter_band_changed.v1", "route_executed", "route_hint_purchased", "route_knowledge_granted", "run_ended", "run_started", "upgrade_purchased",
 	"pet_care_applied.v1", "pet_status_changed.v1",
+	"minigame_rating_changed.v1", "minigame_resolved.v1",
 ] as const);
 
 function foundationAchievementRegistry(catalog: EconomyCatalog): AchievementRegistry {
@@ -454,13 +456,15 @@ export function encodeFounderReplayState(state: FounderReplayState): unknown {
   return active;
 }
 
-export function applyFounderLogged(state: FounderReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): FounderLoggedTransition {
+export async function applyFounderLogged(state: FounderReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<FounderLoggedTransition> {
   if (!hashPattern.test(catalogs.constantsHash)) throw new SyntaxError("invalid Founder catalog bundle");
-  const wire = parseFounderReplayWire(replayInputs); const request = parseIntent(canonicalPayload, wire.command.intent_id);
+  const wire = parseFounderReplayWire(replayInputs);
   const before = restoreFounderReplayState(encodeFounderReplayState(state), state.wireVersion, catalogs);
   const rollback = (): void => { Object.assign(state, before); };
   try {
     const kind = string(wire.resolved.kind);
+    if (kind === "resolve_minigame_session") return await applyFounderMinigameLogged(state, canonicalPayload, catalogs, wire);
+    const request = parseIntent(canonicalPayload, wire.command.intent_id);
     if (kind === "invalid") {
       onlyKeys(wire.resolved, ["kind", "detail"], "invalid Founder inputs");
       if (request.invalid === undefined || string(wire.resolved.detail) !== request.invalid) throw new RangeError("invalid Founder arm mismatch");
@@ -519,9 +523,9 @@ export function applyFounderLogged(state: FounderReplayState, canonicalPayload: 
   } catch (error) { rollback(); throw error; }
 }
 
-export function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18, genesisHash: string,
+export async function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18, genesisHash: string,
   founderStreamId: string, founderId: string, entries: readonly FounderReplayLogEntry[], head: FounderReplayHead,
-  bundles: readonly ReplayCatalogBundle[]): ReplayVerdict {
+  bundles: readonly ReplayCatalogBundle[]): Promise<ReplayVerdict> {
   const catalogs = new Map(bundles.map((value) => [value.constantsHash, value]));
   if (entries.length === 0 || !uuid.test(founderStreamId) || !uuid.test(founderId)) return "log_gap";
   let bundle = catalogs.get(genesisHash); if (!bundle) return "constants_mismatch";
@@ -547,7 +551,7 @@ export function verifyFounderReplayHistory(genesis: unknown, genesisRevision: nu
         const next = catalogs.get(string(wire.resolved.result_constants_hash)); if (!next) return "constants_mismatch";
         executionBundle = withNextReplayCatalogBundle(bundle, next);
       }
-      const transition = applyFounderLogged(state, entry.canonicalPayload, executionBundle, entry.replayInputs);
+      const transition = await applyFounderLogged(state, entry.canonicalPayload, executionBundle, entry.replayInputs);
       if (canonicalJSONString(transition.receipt) !== entry.receiptJSON || canonicalJSONString(transition.events) !== entry.eventsJSON) return "state_divergence";
       if (transition.outcome === "applied") { if (entry.appliedRevision !== revision + 1) return "log_gap"; revision++; }
       else if (entry.appliedRevision !== null) return "log_gap";
@@ -585,8 +589,103 @@ export function validateFounderAttendanceSample(state: FounderReplayState, actua
   return effective;
 }
 
+interface MinigameResolutionPayload { readonly kind: "resolve_minigame_session"; readonly session_id: string; readonly result: CertifiedMinigameResult }
+
+async function parseMinigameResolutionPayload(canonicalPayload: string, intentId: string): Promise<MinigameResolutionPayload & { readonly resultHash: string }> {
+  const parsed = JSON.parse(canonicalPayload) as unknown;
+  if (canonicalJSONString(parsed) !== canonicalPayload) throw new SyntaxError("minigame payload is not canonical");
+  const root = exactObject(parsed, ["kind", "session_id", "result"], "minigame resolution payload");
+  if (root.kind !== "resolve_minigame_session" || uuidV7String(root.session_id) !== intentId) throw new RangeError("minigame command mismatch");
+  const resultRaw = exactObject(root.result, ["outcome", "rating_delta", "score_facts"], "certified minigame result");
+  const result: CertifiedMinigameResult = { outcome: mechanicalString(resultRaw.outcome), rating_delta: resultRaw.rating_delta === null ? null : safeInteger(resultRaw.rating_delta, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER),
+    score_facts: array(resultRaw.score_facts, "certified score facts").map((item) => { const row = exactObject(item, ["kind", "value"], "certified score fact"); return { kind: mechanicalString(row.kind), value: safeInteger(row.value, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER) }; }) };
+  const resultHash = await sha256Canonical(root.result);
+  return { kind: "resolve_minigame_session", session_id: intentId, result, resultHash };
+}
+
+async function applyCompanyMinigameLogged(state: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, wire: ReplayWire): Promise<LoggedTransition> {
+  if (!catalogs.minigames) throw new RangeError("missing pinned minigame policy");
+  const payload = await parseMinigameResolutionPayload(canonicalPayload, wire.command.intent_id);
+  const resolved = exactObject(wire.resolved, ["kind", "session_id", "minigame_id", "certified_result_hash", "payout_policy", "selected_score", "faucet", "credited_delta", "founder_log", "company_revision", "founder_revision", "rating_change", "quality_change"], "company minigame resolution");
+  if (resolved.kind !== "resolve_minigame_session" || resolved.session_id !== payload.session_id || resolved.certified_result_hash !== payload.resultHash) throw new RangeError("certified result mismatch");
+  const minigameId = mechanicalString(resolved.minigame_id); const definition = catalogs.minigames.minigames.find((row) => row.minigame_id === minigameId);
+  if (!definition || canonicalJSONString(definition.payout) !== canonicalJSONString(resolved.payout_policy)) throw new RangeError("pinned payout mismatch");
+  const payout = exactObject(definition.payout, ["credited_resource_id", "sends_per_day", "per_send_cap", "conversion_ppm", "payout_score_fact_id", "cap_reason_key"], "payout policy");
+  const selectedScore = uniqueCertifiedScore(payload.result, string(payout.payout_score_fact_id));
+  if (safeInteger(resolved.selected_score, 0, MAX_EXACT_INTEGER) !== selectedScore) throw new RangeError("payout score mismatch");
+  const faucet = parseMinigameFaucet(resolved.faucet);
+  validateMinigameFaucet(faucet, definition.fallback, payout, selectedScore);
+  const companyRevision = safeInteger(resolved.company_revision, 2, MAX_EXACT_INTEGER); const founderRevision = safeInteger(resolved.founder_revision, 2, MAX_EXACT_INTEGER);
+  const founderLog = exactObject(resolved.founder_log, ["stream_id", "revision", "sequence"], "Founder log coordinate");
+  if (companyRevision !== wire.command.revision + 1 || uuidString(founderLog.stream_id) === "" || safeInteger(founderLog.revision, 2, MAX_EXACT_INTEGER) !== founderRevision || safeInteger(founderLog.sequence, 1, MAX_EXACT_INTEGER) < 1) throw new RangeError("resolution coordinate mismatch");
+  const ratingChange = parseRatingChange(resolved.rating_change); const qualityChange = parseQualityChange(resolved.quality_change);
+  const creditedDelta = canonical(resolved.credited_delta); if (parseCanonical(creditedDelta).lt(0)) throw new RangeError("negative payout");
+  const changes = applyLedger(state, catalogs.economy, [{ resource: string(payout.credited_resource_id), delta: parseCanonical(creditedDelta) }], true);
+  if (changes.length !== 1 || changes[0]!.delta !== creditedDelta) throw new RangeError("payout ledger divergence");
+  const receipt = { intent_id: payload.session_id, outcome: "applied", session_id: payload.session_id, minigame_id: minigameId,
+    certified_result_hash: payload.resultHash, company_revision: companyRevision, founder_revision: founderRevision,
+    credited_resource_id: string(payout.credited_resource_id), credited_delta: creditedDelta,
+    configured_cap_forfeit_units: faucet.forfeited_units, cap_reason_key: faucet.cap_reason_key,
+    rating_change: ratingChange, quality_change: qualityChange };
+  const eventValue = event("minigame_resolved.v1", payload.session_id, { session_id: payload.session_id, minigame_id: minigameId,
+    certified_result_hash: payload.resultHash, credited_resource_id: string(payout.credited_resource_id), credited_delta: creditedDelta,
+    configured_cap_forfeit_units: faucet.forfeited_units, cap_reason_key: faucet.cap_reason_key, founder_revision: founderRevision });
+  return { state, outcome: "applied", receipt, events: [eventValue], invariants: [] };
+}
+
+async function applyFounderMinigameLogged(state: FounderReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, wire: FounderReplayWire): Promise<FounderLoggedTransition> {
+  if (!catalogs.minigames || state.wireVersion < 17) throw new RangeError("missing Founder minigame state");
+  const payload = await parseMinigameResolutionPayload(canonicalPayload, wire.command.intent_id);
+  const resolved = exactObject(wire.resolved, ["kind", "session_id", "minigame_id", "certified_result_hash", "rating_before", "rating_after", "quality_before", "quality_after", "attendance"], "Founder minigame resolution");
+  if (resolved.kind !== "resolve_minigame_session" || resolved.session_id !== payload.session_id || resolved.certified_result_hash !== payload.resultHash) throw new RangeError("Founder certified result mismatch");
+  const minigameId = mechanicalString(resolved.minigame_id); const definition = catalogs.minigames.minigames.find((row) => row.minigame_id === minigameId);
+  const beforeRating = parseMinigameRating(resolved.rating_before); const afterRating = parseMinigameRating(resolved.rating_after);
+  const beforeQuality = parseMinigameQuality(resolved.quality_before); const afterQuality = parseMinigameQuality(resolved.quality_after);
+  const currentRating = state.minigameRatings[minigameId]; const currentQuality = state.minigameOfflineQuality[minigameId];
+  if (!definition || canonicalJSONString(currentRating) !== canonicalJSONString(beforeRating) || canonicalJSONString(currentQuality) !== canonicalJSONString(beforeQuality)) throw new RangeError("Founder minigame state mismatch");
+  const attendance = parseFounderAttendanceSample(resolved.attendance);
+  if (attendance.companyConstantsHash !== catalogs.constantsHash) throw new RangeError("Founder minigame catalog mismatch");
+  const attended = validateFounderAttendanceSample(state, wire.command.revision, wire.command.revision, attendance);
+  const transition = applyFounderMinigameResolution(beforeRating, beforeQuality, payload.result, definition.rating_policy, definition.offline_quality, attended);
+  if (canonicalJSONString(transition.rating_after) !== canonicalJSONString(afterRating) || canonicalJSONString(transition.quality_after) !== canonicalJSONString(afterQuality)) throw new RangeError("Founder minigame arithmetic mismatch");
+  state.minigameRatings[minigameId] = afterRating; state.minigameOfflineQuality[minigameId] = afterQuality;
+  const ratingChange = { rated: payload.result.rating_delta !== null, old_elo: beforeRating.elo, new_elo: afterRating.elo,
+    season_member: afterRating.season_member, games_before: beforeRating.games_counted, games_after: afterRating.games_counted };
+  const qualityChange = { old: beforeQuality, new: afterQuality };
+  const receipt = { intent_id: payload.session_id, outcome: "applied", founder_revision: wire.command.revision + 1,
+    session_id: payload.session_id, certified_result_hash: payload.resultHash, rating_change: ratingChange, quality_change: qualityChange };
+  const eventValue = event("minigame_rating_changed.v1", payload.session_id, { session_id: payload.session_id, minigame_id: minigameId,
+    certified_result_hash: payload.resultHash, old_elo: beforeRating.elo, new_elo: afterRating.elo, season_member: afterRating.season_member,
+    old_quality: beforeQuality, new_quality: afterQuality });
+  return { state, outcome: "applied", receipt, events: [eventValue], resultConstantsHash: catalogs.constantsHash };
+}
+
+interface MinigameFaucetReplay { attended_day: number; quota_before: number; quota_after: number; remainder_before_ppm: number; remainder_after_ppm: number; reduced_score: number; converted_units: number; credited_units: number; forfeited_units: number; cap_reason_key: string }
+function parseMinigameFaucet(source: unknown): MinigameFaucetReplay { const row = exactObject(source, ["attended_day", "quota_before", "quota_after", "remainder_before_ppm", "remainder_after_ppm", "reduced_score", "converted_units", "credited_units", "forfeited_units", "cap_reason_key"], "minigame faucet"); return {
+  attended_day: safeInteger(row.attended_day, 0, MAX_EXACT_INTEGER), quota_before: safeInteger(row.quota_before, 0, MAX_EXACT_INTEGER), quota_after: safeInteger(row.quota_after, 0, MAX_EXACT_INTEGER),
+  remainder_before_ppm: safeInteger(row.remainder_before_ppm, 0, 999_999), remainder_after_ppm: safeInteger(row.remainder_after_ppm, 0, 999_999),
+  reduced_score: safeInteger(row.reduced_score, 0, MAX_EXACT_INTEGER), converted_units: safeInteger(row.converted_units, 0, MAX_EXACT_INTEGER),
+  credited_units: safeInteger(row.credited_units, 0, MAX_EXACT_INTEGER), forfeited_units: safeInteger(row.forfeited_units, 0, MAX_EXACT_INTEGER), cap_reason_key: string(row.cap_reason_key) }; }
+function validateMinigameFaucet(value: MinigameFaucetReplay, fallbackSource: unknown, payout: Record<string, unknown>, score: number): void {
+  const fallback = fallbackSource as Record<string, unknown>; const reduction = fallback.kind === "solo" ? 0 : safeInteger(fallback.rate_reduction_ppm, 0, 1_000_000);
+  const reduced = integratePPM(score, 1_000_000 - reduction, 0); const converted = integratePPM(reduced.whole, safeInteger(payout.conversion_ppm, 0, 1_000_000), value.remainder_before_ppm);
+  const canCredit = value.quota_before < safeInteger(payout.sends_per_day, 0, MAX_EXACT_INTEGER); const expectedCredit = canCredit ? Math.min(converted.whole, safeInteger(payout.per_send_cap, 0, MAX_EXACT_INTEGER)) : 0;
+  const expectedForfeit = converted.whole - expectedCredit; const expectedReason = expectedForfeit > 0 ? string(payout.cap_reason_key) : "";
+  if (value.reduced_score !== reduced.whole || value.converted_units !== converted.whole || value.remainder_after_ppm !== converted.remainder || value.credited_units !== expectedCredit ||
+      value.forfeited_units !== expectedForfeit || value.converted_units !== value.credited_units + value.forfeited_units || value.quota_after !== value.quota_before + (canCredit ? 1 : 0) || value.cap_reason_key !== expectedReason) throw new RangeError("faucet replay mismatch");
+}
+function integratePPM(value: number, ppm: number, remainder: number): { whole: number; remainder: number } { const total = BigInt(value) * BigInt(ppm) + BigInt(remainder); const whole = total / 1_000_000n; const rest = total % 1_000_000n; if (whole > BigInt(MAX_EXACT_INTEGER)) throw new RangeError("minigame conversion overflow"); return { whole: Number(whole), remainder: Number(rest) }; }
+function uniqueCertifiedScore(result: CertifiedMinigameResult, kind: string): number { const rows = result.score_facts.filter((row) => row.kind === kind); if (rows.length !== 1 || rows[0]!.value < 0) throw new RangeError("invalid payout score"); return rows[0]!.value; }
+function parseMinigameRating(source: unknown): MinigameRatingState { const row = exactObject(source, ["elo", "season_member", "games_counted"], "minigame rating"); return { elo: safeInteger(row.elo, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER), season_member: mechanicalString(row.season_member), games_counted: safeInteger(row.games_counted, 0, MAX_EXACT_INTEGER) }; }
+function parseMinigameQuality(source: unknown): { grade_ppm: number; last_founder_attended_ms: number; decay_remainder_ppm: number } { const row = exactObject(source, ["grade_ppm", "last_founder_attended_ms", "decay_remainder_ppm"], "minigame quality"); return { grade_ppm: safeInteger(row.grade_ppm, 0, 1_000_000), last_founder_attended_ms: safeInteger(row.last_founder_attended_ms, 0, MAX_EXACT_INTEGER), decay_remainder_ppm: safeInteger(row.decay_remainder_ppm, 0, 999_999) }; }
+function parseRatingChange(source: unknown): unknown { const row = exactObject(source, ["rated", "old_elo", "new_elo", "season_member", "games_before", "games_after"], "rating change"); return { rated: boolean(row.rated), old_elo: safeInteger(row.old_elo, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER), new_elo: safeInteger(row.new_elo, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER), season_member: mechanicalString(row.season_member), games_before: safeInteger(row.games_before, 0, MAX_EXACT_INTEGER), games_after: safeInteger(row.games_after, 0, MAX_EXACT_INTEGER) }; }
+function parseQualityChange(source: unknown): unknown { const row = exactObject(source, ["old", "new"], "quality change"); return { old: parseMinigameQuality(row.old), new: parseMinigameQuality(row.new) }; }
+async function sha256Canonical(value: unknown): Promise<string> { const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(canonicalJSONString(value)))); return `sha256:${[...digest].map((part) => part.toString(16).padStart(2, "0")).join("")}`; }
+
 export async function applyLogged(state: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedTransition> {
-  const wire = parseReplayWire(replayInputs, state, catalogs); const request = parseIntent(canonicalPayload, wire.command.intent_id);
+  const wire = parseReplayWire(replayInputs, state, catalogs);
+  if (wire.resolved.kind === "resolve_minigame_session") return applyCompanyMinigameLogged(state, canonicalPayload, catalogs, wire);
+  const request = parseIntent(canonicalPayload, wire.command.intent_id);
   if (request.expected_revision !== wire.command.revision || wire.command.run_seq !== state.runSeq) throw new RangeError("command/state mismatch");
   if (request.kind === "buy_route_hint") throw new RangeError("founder-scope intent is not replayable");
   deriveFactionStockResource(state, catalogs.factions);

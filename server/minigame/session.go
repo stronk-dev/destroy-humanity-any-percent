@@ -60,27 +60,30 @@ type CreateSession struct {
 }
 
 type Session struct {
-	SessionID       string
-	MinigameID      string
-	FounderID       string
-	CompanyStreamID string
-	RunSeq          int64
-	EngineRef       string
-	EngineVersion   string
-	ConstantsHash   string
-	ScalingInputs   json.RawMessage
-	Seed            string
-	Mode            Mode
-	Status          Status
-	Revision        int64
-	Genesis         json.RawMessage
-	State           json.RawMessage
-	Result          json.RawMessage
-	ClaimToken      string
-	ClaimedAt       *time.Time
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	ResolvedAt      *time.Time
+	SessionID                 string
+	MinigameID                string
+	FounderID                 string
+	CompanyStreamID           string
+	RunSeq                    int64
+	EngineRef                 string
+	EngineVersion             string
+	ConstantsHash             string
+	ScalingInputs             json.RawMessage
+	Seed                      string
+	Mode                      Mode
+	Status                    Status
+	Revision                  int64
+	Genesis                   json.RawMessage
+	State                     json.RawMessage
+	Result                    json.RawMessage
+	ClaimToken                string
+	ClaimedAt                 *time.Time
+	CreatedAt                 time.Time
+	UpdatedAt                 time.Time
+	ResolvedAt                *time.Time
+	ResolutionReceipt         json.RawMessage
+	ResolutionCompanyRevision *int64
+	ResolutionFounderRevision *int64
 }
 
 type sessionCommand struct {
@@ -236,9 +239,12 @@ func (repository *Repository) releaseClaim(ctx context.Context, founderID, sessi
 
 // ResolveTx is the session half of C17's company-then-session transaction. The
 // caller owns and has already locked the Company stream.
-func resolveTx(ctx context.Context, tx *sql.Tx, identity resolutionIdentity, command, state, result json.RawMessage) (Session, error) {
+func resolveTx(ctx context.Context, tx *sql.Tx, identity resolutionIdentity, command, state, result,
+	receipt json.RawMessage, companyRevision, founderRevision int64,
+) (Session, error) {
 	if tx == nil || !validResolutionIdentity(identity) ||
-		!validJSONObject(command) || !validJSONObject(state) || !validJSONObject(result) {
+		!validJSONObject(command) || !validJSONObject(state) || !validJSONObject(result) || !validJSONObject(receipt) ||
+		companyRevision < 1 || companyRevision > 9_007_199_254_740_991 || founderRevision < 1 || founderRevision > 9_007_199_254_740_991 {
 		return Session{}, ErrInvalidSession
 	}
 	if err := appendSessionCommand(ctx, tx, identity.sessionID, identity.founderID, identity.claimToken, command, identity); err != nil {
@@ -246,7 +252,7 @@ func resolveTx(ctx context.Context, tx *sql.Tx, identity resolutionIdentity, com
 	}
 	resolved, err := scanSession(tx.QueryRowContext(ctx, resolveSessionSQL, identity.sessionID, identity.claimToken,
 		string(state), string(result), identity.founderID, identity.companyStreamID, identity.runSeq,
-		identity.engineRef, identity.engineVersion, identity.constantsHash))
+		identity.engineRef, identity.engineVersion, identity.constantsHash, string(receipt), companyRevision, founderRevision))
 	if errors.Is(err, sql.ErrNoRows) {
 		return Session{}, ErrClaimLost
 	}
@@ -391,6 +397,7 @@ func normalizeJSONValue(value any) (any, bool) {
 
 type resolutionIdentity struct {
 	sessionID       string
+	minigameID      string
 	founderID       string
 	companyStreamID string
 	runSeq          int64
@@ -401,7 +408,7 @@ type resolutionIdentity struct {
 }
 
 func validResolutionIdentity(value resolutionIdentity) bool {
-	return uuidV7Pattern.MatchString(value.sessionID) && uuidPattern.MatchString(value.founderID) &&
+	return uuidV7Pattern.MatchString(value.sessionID) && mechanicalPattern.MatchString(value.minigameID) && uuidPattern.MatchString(value.founderID) &&
 		uuidPattern.MatchString(value.companyStreamID) && value.runSeq > 0 && value.runSeq <= 9_007_199_254_740_991 &&
 		mechanicalPattern.MatchString(value.engineRef) && versionPattern.MatchString(value.engineVersion) &&
 		hashPattern.MatchString(value.constantsHash) && uuidPattern.MatchString(value.claimToken)
@@ -418,7 +425,8 @@ func lockFounder(ctx context.Context, tx *sql.Tx, founderID string) error {
 
 const sessionColumns = "session_id,minigame_id,founder_id,company_stream_id,run_seq,engine_ref," +
 	"engine_version,constants_hash,scaling_inputs::text,seed,mode,status,revision,genesis::text,state::text," +
-	"COALESCE(result::text,''),COALESCE(claim_token::text,''),claimed_at,created_at,updated_at,resolved_at"
+	"COALESCE(result::text,''),COALESCE(claim_token::text,''),claimed_at,created_at,updated_at,resolved_at," +
+	"COALESCE(resolution_receipt::text,''),resolution_company_revision,resolution_founder_revision"
 
 const ownsRunSQL = "SELECT true FROM save_streams s JOIN run_epochs r ON r.company_stream_id=s.id AND r.run_seq=$3 " +
 	"WHERE s.id=$1 AND s.owner_kind='founder' AND s.owner_id=$2 AND s.scope='company' AND s.archived_at IS NULL " +
@@ -437,7 +445,8 @@ const completePlaySQL = "UPDATE minigame_sessions SET state=$4,status='active',r
 const releaseClaimSQL = "UPDATE minigame_sessions SET status='active',claim_token=NULL,claimed_at=NULL," +
 	"updated_at=clock_timestamp() WHERE session_id=$1 AND founder_id=$2 AND status='claimed' AND claim_token=$3"
 const resolveSessionSQL = "UPDATE minigame_sessions SET state=$3,result=$4,status='resolved',revision=revision+1," +
-	"claim_token=NULL,claimed_at=NULL,updated_at=clock_timestamp(),resolved_at=clock_timestamp() " +
+	"claim_token=NULL,claimed_at=NULL,updated_at=clock_timestamp(),resolved_at=clock_timestamp()," +
+	"resolution_receipt=$11,resolution_company_revision=$12,resolution_founder_revision=$13 " +
 	"WHERE session_id=$1 AND status='claimed' AND claim_token=$2 AND founder_id=$5 AND company_stream_id=$6 " +
 	"AND run_seq=$7 AND engine_ref=$8 AND engine_version=$9 AND constants_hash=$10 RETURNING " + sessionColumns
 const appendPlayCommandSQL = "INSERT INTO minigame_session_commands(session_id,seq,command,applied_revision,server_ts_ms) " +
@@ -461,12 +470,14 @@ type rowScanner interface {
 
 func scanSession(row rowScanner) (Session, error) {
 	var result Session
-	var scaling, genesis, state, resolved string
+	var scaling, genesis, state, resolved, resolutionReceipt string
 	var claimedAt, resolvedAt sql.NullTime
+	var companyRevision, founderRevision sql.NullInt64
 	err := row.Scan(&result.SessionID, &result.MinigameID, &result.FounderID, &result.CompanyStreamID,
 		&result.RunSeq, &result.EngineRef, &result.EngineVersion, &result.ConstantsHash, &scaling,
 		&result.Seed, &result.Mode, &result.Status, &result.Revision, &genesis, &state, &resolved,
-		&result.ClaimToken, &claimedAt, &result.CreatedAt, &result.UpdatedAt, &resolvedAt)
+		&result.ClaimToken, &claimedAt, &result.CreatedAt, &result.UpdatedAt, &resolvedAt,
+		&resolutionReceipt, &companyRevision, &founderRevision)
 	if err != nil {
 		return Session{}, err
 	}
@@ -475,6 +486,17 @@ func scanSession(row rowScanner) (Session, error) {
 	result.State, _ = canonicalJSONObject([]byte(state))
 	if resolved != "" {
 		result.Result, _ = canonicalJSONObject([]byte(resolved))
+	}
+	if resolutionReceipt != "" {
+		result.ResolutionReceipt, _ = canonicalJSONObject([]byte(resolutionReceipt))
+	}
+	if companyRevision.Valid {
+		value := companyRevision.Int64
+		result.ResolutionCompanyRevision = &value
+	}
+	if founderRevision.Valid {
+		value := founderRevision.Int64
+		result.ResolutionFounderRevision = &value
 	}
 	if claimedAt.Valid {
 		value := claimedAt.Time

@@ -24,7 +24,7 @@
         ]
       },
       "payout": {
-        "credited_resource_id": "resource.compute",
+        "credited_resource_id": "company.cash",
         "sends_per_day": 5,
         "per_send_cap": 250,
         "conversion_ppm": 125000,

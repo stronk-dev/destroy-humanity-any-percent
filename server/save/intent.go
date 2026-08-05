@@ -62,6 +62,8 @@ const (
 	EventAchievementEarned         EventKind = "achievement_earned.v1"
 	EventPetCareApplied            EventKind = "pet_care_applied.v1"
 	EventPetStatusChanged          EventKind = "pet_status_changed.v1"
+	EventMinigameResolved          EventKind = "minigame_resolved.v1"
+	EventMinigameRatingChanged     EventKind = "minigame_rating_changed.v1"
 )
 
 // AllEventKinds is the closed structural authority consumed by catalog
@@ -78,6 +80,7 @@ var AllEventKinds = [...]EventKind{
 	EventRunStarted, EventUpgradePurchased, EventMeterBandChanged,
 	EventAchievementEarned,
 	EventPetCareApplied, EventPetStatusChanged,
+	EventMinigameResolved, EventMinigameRatingChanged,
 }
 
 type EventWrite struct {
@@ -598,6 +601,47 @@ func validateEventPayload(event EventWrite) error {
 			payload.FromStatusBand == payload.ToStatusBand {
 			return fmt.Errorf("%w: invalid pet_status_changed.v1 payload", ErrInvalidStream)
 		}
+	case EventMinigameResolved:
+		var payload struct {
+			SessionID                 string `json:"session_id"`
+			MinigameID                string `json:"minigame_id"`
+			CertifiedResultHash       string `json:"certified_result_hash"`
+			CreditedResourceID        string `json:"credited_resource_id"`
+			CreditedDelta             string `json:"credited_delta"`
+			ConfiguredCapForfeitUnits int64  `json:"configured_cap_forfeit_units"`
+			CapReasonKey              string `json:"cap_reason_key"`
+			FounderRevision           int64  `json:"founder_revision"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidV7Pattern.MatchString(payload.SessionID) ||
+			!mechanicalIDPattern.MatchString(payload.MinigameID) || !hashPattern.MatchString(payload.CertifiedResultHash) ||
+			!mechanicalIDPattern.MatchString(payload.CreditedResourceID) || payload.ConfiguredCapForfeitUnits < 0 ||
+			payload.ConfiguredCapForfeitUnits > decimal.MaxExactInteger || payload.FounderRevision < 1 ||
+			payload.FounderRevision > decimal.MaxExactInteger || payload.ConfiguredCapForfeitUnits == 0 && payload.CapReasonKey != "" ||
+			payload.ConfiguredCapForfeitUnits > 0 && !mechanicalIDPattern.MatchString(payload.CapReasonKey) {
+			return fmt.Errorf("%w: invalid minigame_resolved.v1 payload", ErrInvalidStream)
+		}
+		if value, err := decimal.ParseCanonical(payload.CreditedDelta); err != nil || value.Lt(decimal.Zero) {
+			return fmt.Errorf("%w: invalid minigame credited delta", ErrInvalidStream)
+		}
+	case EventMinigameRatingChanged:
+		var payload struct {
+			SessionID           string                      `json:"session_id"`
+			MinigameID          string                      `json:"minigame_id"`
+			CertifiedResultHash string                      `json:"certified_result_hash"`
+			OldElo              int64                       `json:"old_elo"`
+			NewElo              int64                       `json:"new_elo"`
+			SeasonMember        string                      `json:"season_member"`
+			OldQuality          MinigameOfflineQualityState `json:"old_quality"`
+			NewQuality          MinigameOfflineQualityState `json:"new_quality"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidV7Pattern.MatchString(payload.SessionID) ||
+			!mechanicalIDPattern.MatchString(payload.MinigameID) || !hashPattern.MatchString(payload.CertifiedResultHash) ||
+			payload.OldElo < -decimal.MaxExactInteger || payload.OldElo > decimal.MaxExactInteger ||
+			payload.NewElo < -decimal.MaxExactInteger || payload.NewElo > decimal.MaxExactInteger ||
+			!mechanicalIDPattern.MatchString(payload.SeasonMember) || !validMinigameQualityEvent(payload.OldQuality) ||
+			!validMinigameQualityEvent(payload.NewQuality) {
+			return fmt.Errorf("%w: invalid minigame_rating_changed.v1 payload", ErrInvalidStream)
+		}
 	case EventInvariantReported:
 		var payload struct {
 			InvariantKind string `json:"invariant_kind"`
@@ -837,6 +881,11 @@ func validateEventPayload(event EventWrite) error {
 		return fmt.Errorf("%w: unknown event kind %q", ErrInvalidStream, event.Kind)
 	}
 	return nil
+}
+
+func validMinigameQualityEvent(value MinigameOfflineQualityState) bool {
+	return value.GradePPM >= 0 && value.GradePPM <= 1_000_000 && value.LastFounderAttendedMS >= 0 &&
+		value.LastFounderAttendedMS <= decimal.MaxExactInteger && value.DecayRemainderPPM >= 0 && value.DecayRemainderPPM < 1_000_000
 }
 
 type eventPrestigeTerms struct {

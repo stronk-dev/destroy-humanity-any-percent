@@ -583,3 +583,41 @@ Acceptance review by: Codex. Recorded by: Codex.
 
 Implementation remains active, not blocked globally. The resolve composer is specifically blocked
 on owner rulings C37-C40; independent pet work is separately tracked under Pet C18-C21.
+
+## 2026-08-05 — C37-C40 ruled: the server-certified resolve composer (all accepted)
+- C37: the pinned minigames artifact carries ALL policy bytes (payout/fallback/scaling/offline_quality/
+  rating) per row; CatalogBundle.Minigames is the SOLE live/replay resolver (no deploy-current policy);
+  minigame_ids derived from rows.
+- C38: add save.Store.ApplyMinigameResolutionTransaction (Exit-style multi-stream coordinator);
+  canonical lock order Founder-then-Company (deadlock-safe, project-wide); session_id idempotency;
+  new append-only migration adds write-once resolution_receipt + both revisions; retry returns bytes;
+  fault-injection all-or-none.
+- C39: both logs bind the same certified_result_hash; Company arm records credited Decimal delta as
+  canonical string (wire=strings); Founder arm = C36 fact + offline-quality + attendance sample;
+  minigame_resolved.v1 + minigame_rating_changed.v1 registered.
+- C40: certified rating_delta authoritative (checked-add, saturate at floor/ceiling, +1 games_counted;
+  null=unrated but resolution+quality still commit); platform K-factor REMOVED -> engine-internal
+  (reconciles C36 body @ line 421); offline quality = partition-invariant decay THEN replace grade
+  (shared primitive with pet C18 + faucet carry).
+Codex unblocked to implement the resolve composer.
+
+## 2026-08-05 — C37-C40 resolve composer implementation
+
+Implemented by: Codex. Review status: awaiting the mandatory designated independent adversarial
+pass; this entry does not authorize archival.
+
+- C37 replaces the activation-only minigames index with the exact schema-v2 immutable definition
+  catalog. Go and TypeScript derive IDs from full rows and reject missing, extra, duplicate, or
+  cross-reference-invalid policy bytes.
+- C40's pure Go/TypeScript transition uses the engine-certified rating delta, checked exact integer
+  clamping, and the shared fixed-grid helper for decay-before-grade-replacement. Six shared boundary
+  vectors cover rated, unrated, floor/ceiling, remainder, and maximum-exact arithmetic.
+- C38-C39 add the Founder→Company store coordinator, durable session receipt tuple, exact event
+  registry and DB constraints, relational two-log source link, and independent Company/Founder
+  replay arms. A Go-authored shared fixture proves byte-identical TypeScript receipts, event order,
+  and post-state for both arms.
+- The composed real-Postgres test certifies a tenant result, commits session/faucet/Company/Founder/
+  both logs/both events atomically, proves byte-identical idempotent retry, and injects rollback at
+  every persistence boundary including first-Founder-genesis.
+- Kernel version is 0.3.55. No production artifact was minted, no RFC was archived, and nothing was
+  pushed.
