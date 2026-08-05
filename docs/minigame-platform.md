@@ -85,10 +85,18 @@ session genesis, and reductions are integer ppm in `[0, 1_000_000]`. Missing, mi
 or extra fields fail load. This grammar is published and source-fingerprinted with the scaling
 contract.
 
-The offline-quality policy is not yet implemented. Its ruled outer row still names a
-`grade_curve` without defining the curve row's exact keys, so implementing it now would invent
-wire grammar. No production fallback or automation row is enabled while that contract remains
-open.
+The offline-quality policy has an exact structural loader but no production balance row. Its
+grade curve consists only of `{score_threshold, grade_ppm}` rows in strictly ascending score
+order with nondecreasing grades. Scores use the last threshold they meet; values below the first
+threshold use the declared neutral floor, which must equal the curve's lowest grade. The outer
+row also binds one declared score fact and one tenant-registered automation destination. Unknown
+keys, undeclared identities, ambiguous JSON, invalid ppm domains, and noncanonical curves fail
+load.
+
+The replay-owned state shape is `{grade_ppm, last_founder_attended_ms,
+decay_remainder_ppm}`. This slice validates that wire and the score-to-grade selection only; the
+attended-grid decay transition and production policy literals remain disabled until the Founder
+version/artifact activation seam is composed.
 
 ## Payout policy and conversion kernel
 

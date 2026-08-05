@@ -1,5 +1,5 @@
 {
-  "schema_version": 12,
+  "schema_version": 13,
   "production_rate": "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
   "multiplier_slot_order": [
     "upgrades",
@@ -12,7 +12,7 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "57ae8bb12a052e4358aecc5c468831d76a533f472df7c96b3ccda379bf8d5ba2",
+  "source_fingerprint": "cdc78c4fea17375d7df3c90dfacf393b9d4abc4af4e413497244610a4c949bc4",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
@@ -90,6 +90,8 @@
       "npc_partner"
     ],
     "fallback_rule": "every policy is one exact-key arm; bot_ref/npc_profile identity and semantic version are frozen; rate_reduction_ppm is within [0,1000000]",
+    "offline_grade_grammar": "grade_curve rows are exact {score_threshold,grade_ppm}; score thresholds strictly ascend, grades never descend, and the lowest grade equals neutral_floor_ppm",
+    "offline_grade_rule": "scores use the grade at the greatest threshold they meet; scores below the first threshold use neutral_floor_ppm",
     "payout_grammar": "exact keys: credited_resource_id, sends_per_day, per_send_cap, conversion_ppm, payout_score_fact_id, cap_reason_key; resource, score fact, and copy key must exist in their owning declarations",
     "payout_order": [
       "select the one nonnegative certified payout_score_fact_id",

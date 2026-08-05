@@ -364,6 +364,19 @@ artifacts and both maps. The version transition, replay artifact biconditional, 
 Exit rules use the same reusable mechanism as Pet C16. Production resolution remains disabled
 until one owner ruling fixes that ordering; no code assigns competing mechanics the same version.
 
+## Owner rulings on C34-C35 (2026-08-05)
+
+- **C34 - accepted:** the grade-curve row is exact-key `{score_threshold, grade_ppm}` (the
+  threshold is a SCORE, the output is a grade - C31's ellipsis resolved), ascending by
+  score_threshold, closed set; scores at/above a row's threshold take its grade, floor below;
+  the neutral floor is the lowest grade. Threshold/grade NUMBERS are balance data; the row shape
+  is wire grammar. Decay stays on the Founder-attended watermark (C31).
+- **C35 - the SAME seam as Pet C16, ruled there: the Founder save version is an independent axis.**
+  `minigame_ratings` activates on the FOUNDER version axis under the minigame artifact (pinned),
+  written through ApplyFounderLogged in the resolve multi-stream transaction (C25/C29); Exit
+  validates the Founder version against its pinned-epoch floor independently of the Company
+  version - no ad-hoc field, no deploy-current schema. See Pet C16 for the full ruling.
+
 ## Acceptance criteria
 
 1. Session lifecycle: create→play→resolve→payout for a fixture tenant against the composed

@@ -315,3 +315,49 @@ delegated reviewer, not just the archival gate), or (b) the designated adversari
 MANDATORY gate before any foundation batch is archival-eligible, not an after-the-fact catch. The
 pattern is benign so far only because the designated pass has caught every gap — but it means the
 delegated approvals are not currently load-bearing.
+
+## 2026-08-05 — designated reviewer verdict: payout/faucet/pet-state round (75b0a87..58118e9) — APPROVE (code)
+
+Review by: the designated Claude reviewer. Recorded by: same. Review of record — no prior verdict
+covered this range (6th consecutive batch; see the standing process escalation).
+
+**Code APPROVED — no correctness defects, verified at source:**
+- **Faucet window (C33), the concurrency-critical one:** minigame_faucet_window carries BOTH
+  quota_used AND conversion_remainder_ppm keyed (founder_id, minigame_id, attended_day); DOUBLE
+  serialization (FOR UPDATE on account_founders THEN on the window row); both orders traced -
+  quota 0->1->2 never double-spends, and carry is order-independent by the modular recurrence
+  (rem = (s1+s2)*c mod 1e6 either way), matching one combined ConvertPayout. The 9eaf71e
+  two-goroutine real-Postgres race proves it. Carry survives cross-session (on the window, not
+  session state) and resets cross-day. HONEST deferral: claim-token exactly-once resolve is NOT
+  yet proven (applyFaucetWindowTx alone isn't idempotent) - the token-guarded composer is [ ].
+- **Payout facts (C32):** payout_score_fact_id + cap_reason_key validated fail-closed against
+  declared sets; forfeit reason distinct from numeric saturation.
+- **Pet state replay-ownership (C14), the architectural one:** grep confirms NO separate mutable
+  pet_care_state table; state is Founder-save jsonb; MOOD IS DERIVED (a stored mood field is
+  rejected both runtimes); complete stat/remainder maps, Trust bounds, queue hardcap 8, exact
+  cursors, strict keys, nested-dup rejection, deep-clone decode (no leaked mutable authority).
+- Kernel 0.3.38->0.3.41 one-bump-per-behavior-commit, test/docs commits correctly don't bump;
+  KV-1 covers the new paths; formula authorities added.
+- C15/C16/C34/C35 genuinely deferred (plan boxes [ ]).
+
+Non-blocking: F1 (TS pet validator can't catch nested-dup/trailing-byte since it takes parsed
+JSON - Go is the server-authoritative ingest gate, honestly scoped; add a TS raw-string entry or
+a doc note if the client ever becomes a validation authority); F2 (payout_score_fact_id declared
+set is test-injected until the tenant result_schema binding lands with the resolve composer);
+F3 (over-quota churns remainder harmlessly - resets at day roll).
+
+**Verdict: sound. C15/C16/C34/C35 ruled this turn (incl. the independent Founder-version-axis
+reconciliation). Proceed.**
+
+## 2026-08-05 — C34 exact offline-quality grammar
+
+- Implemented the exact outer policy and `{score_threshold, grade_ppm}` curve row with strict,
+  recursively duplicate-safe decoding. Score facts and automation destinations must exist in
+  their owning declarations; score thresholds strictly ascend, grades never descend, and the
+  neutral floor is the curve's lowest grade.
+- Implemented only the ruled pure selection boundary: a score takes the greatest threshold it
+  meets and falls back to the neutral floor below the first row. Added the exact replay-owned
+  `{grade_ppm,last_founder_attended_ms,decay_remainder_ppm}` state validator.
+- Published and source-fingerprinted the grammar and selection rule. No production row, decay
+  literal, rating mutation, or Founder save activation was introduced; those remain behind C35's
+  independent-axis/pinned-artifact composition.

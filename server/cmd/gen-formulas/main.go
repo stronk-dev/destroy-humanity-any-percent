@@ -36,15 +36,17 @@ type formulaArtifact struct {
 }
 
 type minigameFormula struct {
-	Grammar        string   `json:"grammar"`
-	OperationOrder []string `json:"operation_order"`
-	Rounding       string   `json:"rounding"`
-	FairnessGate   string   `json:"fairness_gate"`
-	FallbackArms   []string `json:"fallback_arms"`
-	FallbackRule   string   `json:"fallback_rule"`
-	PayoutGrammar  string   `json:"payout_grammar"`
-	PayoutOrder    []string `json:"payout_order"`
-	PayoutMath     string   `json:"payout_math"`
+	Grammar             string   `json:"grammar"`
+	OperationOrder      []string `json:"operation_order"`
+	Rounding            string   `json:"rounding"`
+	FairnessGate        string   `json:"fairness_gate"`
+	FallbackArms        []string `json:"fallback_arms"`
+	FallbackRule        string   `json:"fallback_rule"`
+	OfflineGradeGrammar string   `json:"offline_grade_grammar"`
+	OfflineGradeRule    string   `json:"offline_grade_rule"`
+	PayoutGrammar       string   `json:"payout_grammar"`
+	PayoutOrder         []string `json:"payout_order"`
+	PayoutMath          string   `json:"payout_math"`
 }
 
 type meterFormula struct {
@@ -175,6 +177,8 @@ var formulaAuthorities = []authoritySpec{
 	{label: "minigame.floorBigInt", path: "minigame/scaling.go", kind: authorityFunction, symbol: "floorBigInt"},
 	{label: "minigame.LoadFallbackPolicy", path: "minigame/fallback.go", kind: authorityFunction, symbol: "LoadFallbackPolicy"},
 	{label: "minigame.uniqueJSONKeys", path: "minigame/fallback.go", kind: authorityFunction, symbol: "uniqueJSONKeys"},
+	{label: "minigame.LoadOfflineQualityPolicy", path: "minigame/offline_quality.go", kind: authorityFunction, symbol: "LoadOfflineQualityPolicy"},
+	{label: "minigame.OfflineGradeForScore", path: "minigame/offline_quality.go", kind: authorityFunction, symbol: "OfflineGradeForScore"},
 	{label: "minigame.LoadPayoutPolicy", path: "minigame/payout.go", kind: authorityFunction, symbol: "LoadPayoutPolicy"},
 	{label: "minigame.SelectPayoutScore", path: "minigame/payout.go", kind: authorityFunction, symbol: "SelectPayoutScore"},
 	{label: "minigame.ConvertPayout", path: "minigame/payout.go", kind: authorityFunction, symbol: "ConvertPayout"},
@@ -221,7 +225,7 @@ func main() {
 		panic(err)
 	}
 	artifact := formulaArtifact{
-		SchemaVersion:       12,
+		SchemaVersion:       13,
 		ProductionRate:      "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
 		MultiplierSlotOrder: append([]multiplier.Slot(nil), multiplier.Order[:]...),
 		WithinSlotOrder:     multiplier.WithinSlotOrder,
@@ -276,15 +280,17 @@ func main() {
 			BandEvents:        "derive bands from numeric values; emit at most one meter_band_changed.v1 per changed meter in meter_id byte order",
 		},
 		MinigameScaling: minigameFormula{
-			Grammar:        "one exact-key row per unique destination: destination, destination_class, source_kind, source_ref, op, operand, clamp_min, clamp_max",
-			OperationOrder: []string{"resolve_source", "apply_" + string(minigame.ScalingIdentity) + "|" + string(minigame.ScalingAdd) + "|" + string(minigame.ScalingMul) + "|" + string(minigame.ScalingFloorDiv), "clamp"},
-			Rounding:       "floordiv uses mathematical floor, including negative non-integral quotients",
-			FairnessGate:   "ranked && destination_class == power rejects the catalog",
-			FallbackArms:   []string{string(minigame.FallbackSolo), string(minigame.FallbackBot), string(minigame.FallbackNPCPartner)},
-			FallbackRule:   "every policy is one exact-key arm; bot_ref/npc_profile identity and semantic version are frozen; rate_reduction_ppm is within [0,1000000]",
-			PayoutGrammar:  "exact keys: credited_resource_id, sends_per_day, per_send_cap, conversion_ppm, payout_score_fact_id, cap_reason_key; resource, score fact, and copy key must exist in their owning declarations",
-			PayoutOrder:    []string{"select the one nonnegative certified payout_score_fact_id", "floor(score * (1000000 - rate_reduction_ppm) / 1000000)", "floor((reduced_score * conversion_ppm + prior_remainder_ppm) / 1000000)", "persist modulo remainder on Founder/minigame/attended-day window", "apply per_send_cap when quota_used < sends_per_day", "increment quota_used for each admitted send"},
-			PayoutMath:     "exact integer intermediates; legal exact-domain inputs cannot overflow the converted output",
+			Grammar:             "one exact-key row per unique destination: destination, destination_class, source_kind, source_ref, op, operand, clamp_min, clamp_max",
+			OperationOrder:      []string{"resolve_source", "apply_" + string(minigame.ScalingIdentity) + "|" + string(minigame.ScalingAdd) + "|" + string(minigame.ScalingMul) + "|" + string(minigame.ScalingFloorDiv), "clamp"},
+			Rounding:            "floordiv uses mathematical floor, including negative non-integral quotients",
+			FairnessGate:        "ranked && destination_class == power rejects the catalog",
+			FallbackArms:        []string{string(minigame.FallbackSolo), string(minigame.FallbackBot), string(minigame.FallbackNPCPartner)},
+			FallbackRule:        "every policy is one exact-key arm; bot_ref/npc_profile identity and semantic version are frozen; rate_reduction_ppm is within [0,1000000]",
+			OfflineGradeGrammar: "grade_curve rows are exact {score_threshold,grade_ppm}; score thresholds strictly ascend, grades never descend, and the lowest grade equals neutral_floor_ppm",
+			OfflineGradeRule:    "scores use the grade at the greatest threshold they meet; scores below the first threshold use neutral_floor_ppm",
+			PayoutGrammar:       "exact keys: credited_resource_id, sends_per_day, per_send_cap, conversion_ppm, payout_score_fact_id, cap_reason_key; resource, score fact, and copy key must exist in their owning declarations",
+			PayoutOrder:         []string{"select the one nonnegative certified payout_score_fact_id", "floor(score * (1000000 - rate_reduction_ppm) / 1000000)", "floor((reduced_score * conversion_ppm + prior_remainder_ppm) / 1000000)", "persist modulo remainder on Founder/minigame/attended-day window", "apply per_send_cap when quota_used < sends_per_day", "increment quota_used for each admitted send"},
+			PayoutMath:          "exact integer intermediates; legal exact-domain inputs cannot overflow the converted output",
 		},
 	}
 	data, err := json.MarshalIndent(artifact, "", "  ")

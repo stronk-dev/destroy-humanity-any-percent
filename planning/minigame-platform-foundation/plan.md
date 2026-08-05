@@ -20,8 +20,10 @@ RFC: `rfc/minigame-platform-foundation.md`
     rejection, and generated formula contract with focused tests.
   - [x] Implement C27's exact `solo|bot|npc_partner` fallback arms, identity/version validation,
     reduction bounds, and published formula contract.
-  - [ ] Implement offline quality after the exact nested `grade_curve` row keys are owner-ruled;
-    thresholds and decay values remain deferred balance literals.
+  - [x] Implement C34's exact offline-quality row, score-to-grade selector, replay-state validator,
+    and generated formula contract without production balance literals.
+  - [ ] Compose attended-grid offline-quality decay after the Founder-axis artifact activation
+    seam lands; thresholds and decay values remain deferred balance literals.
 - [ ] Land server-certified resolve/payout, faucet accounting, replay identity, and fault tests.
   - [x] Persist immutable applied-command rows and replay them from genesis before terminal
     resolution.
