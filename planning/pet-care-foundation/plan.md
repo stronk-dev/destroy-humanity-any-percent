@@ -27,3 +27,7 @@ Post-C12a status: the literal enums, queue bound, and PRNG label are implemented
 Founder-state serialization remain blocked because C3/C11 name their contents without enumerating
 the exact action/decay rows, care-state keys, remainder maps, cooldown representation, behavior
 queue entry shape, or bond-graph wire.
+
+Post-C14 status: ownership and the top-level state keys are ruled. C15 carries the two nested row
+families whose exact keys are still absent; C16 carries the pinned-artifact/Founder-only version
+transition required to activate that state without advancing or bricking Company saves.

@@ -280,6 +280,20 @@ recursive strict decode, overflow-safe payout, and cross-runtime pet grammar all
   rollback of a newly inserted window, and rejection of an invalid remainder. No wall time or
   production balance row participates.
 
+## 2026-08-05 — remaining composition contracts C34-C35
+
+- Rechecked C31 against a strict decoder: `{threshold_grade_ppm,...}` is not an executable row and
+  leaves score-vs-grade threshold semantics ambiguous. Filed C34 with the earlier proposal's
+  literal `{score_at_least,grade_ppm}` grammar and attended-state keys.
+- Rechecked C29/C25 against the save/Exit implementation. Founder and Company revisions already
+  carry separate version columns, but the application layer intentionally keeps their foundation
+  activation paired and the Founder wire has no rating map. Filed C35 as the Minigame consumer of
+  Pet C16's reusable Founder-only activation seam rather than inventing a second mutable table or
+  assigning a version ad hoc.
+- The existing C32/C33 implementation remains green under the full root gate. No partial resolve
+  transaction was added: session terminal state, Company credit, Founder rating, and faucet carry
+  must commit together or not at all.
+
 ## PROCESS ESCALATION — the delegated-review coverage gap is now systemic (5 consecutive batches)
 
 For five batches running the delegated (Darwin) approvals have stopped short of the substantive

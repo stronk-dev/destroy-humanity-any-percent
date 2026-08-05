@@ -62,3 +62,8 @@ duplicate rules before the loader can distinguish valid data from an invented sc
 
 Post-C30 implementation gaps were ruled as C31-C33. C32's score/copy ownership is implemented;
 C33's cross-run window and C31's still-incomplete curve wire remain open.
+
+Post-C33 status: the payout selector and window authority are implemented. C34 narrows C31's
+ellipsis to one proposed exact grade-curve row; C35 carries the Founder-only version/artifact seam
+shared by rating, offline-quality, and Pet C16. The atomic resolve composer stays blocked until
+that state can be replay-owned without version collision.

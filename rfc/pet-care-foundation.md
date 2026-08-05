@@ -244,6 +244,60 @@ behavior state `idle|care_response|active|resting`; behavior event
 care-rejection detail set as the proposal lists. The per-member THRESHOLDS (what stat value is
 'low', decay rate to a band) remain balance data. C12's 'members deferred' clause is withdrawn.
 
+## Owner rulings on C13-C14 (2026-08-05)
+
+- **C13 - accepted:** the fixture catalog rows are closed-key - decay rows, action rows (stat
+  target + delta), trust/mood threshold rows, behavior-candidate rows - each exact-key with
+  simultaneous-update grouping and uniqueness declared; the fixture loader validates the schema,
+  the THRESHOLD/DELTA numbers are balance data. No decorative field survives.
+- **C14 - the state-shape contradiction between my C1 and C11, resolved toward replay-owned:** I
+  ruled pet state both as a separate mutable `pet_care_state` table (C11) AND as ApplyFounderLogged/
+  Founder-replay-owned (C1) - a second mutable table beside Founder state would leave replay
+  covering only half the transition. Ruling: **pet care state lives IN the Founder save state (the
+  Founder stream's state jsonb), mutated ONLY through ApplyFounderLogged**, so Founder replay
+  covers it entirely - NOT a separate mutable table. `pet_records` (immutable identity) stays a
+  table; the MUTABLE care state (stats + trust + remainder/cooldown/queue/bond, named JSON keys) is
+  Founder-state fields. **Mood is DERIVED (C12), never stored** - the C11 'mood stored' phrasing is
+  withdrawn. This is the same discipline as every replay-owned surface: no second mutable authority
+  beside the state the transition boundary owns.
+
+## Implementation blockers C15-C16 (Codex, 2026-08-05)
+
+C13-C14 settle catalog/state ownership, but applying them to the strict loader and the existing
+per-stream revision version exposes two remaining literal contracts. Neither is a balance value.
+
+### C15 — Two C13 row families still have no exact keys
+
+C13 names an "exact threshold row" and an "exact candidate row" but does not enumerate either
+object. In particular it does not state the mood threshold field/order or the behavior row's
+from-state/event/duration field names. A loader would still invent which bytes are valid.
+
+**Proposed contract:** mood rows are exact
+`{mood,min_average_stat_ppm}` in ascending threshold order, contain every C12a mood exactly once,
+start at zero, and have strictly increasing thresholds. Behavior rows are exact
+`{temperament,from_state,event,behavior_id,weight,duration_grids_min,duration_grids_max}`; the
+key `(temperament,from_state,event,behavior_id)` is unique, rows sort by that byte tuple, weight is
+positive, and `1 <= duration_grids_min <= duration_grids_max`. Temperaments are exactly the six
+combat values. These are schema/order rules only; all threshold, weight, and duration literals
+remain fixture/balance data.
+
+### C16 — Pet activation needs a pinned artifact and a Founder-only version transition
+
+The database already versions each stream revision independently, but Exit currently rejects any
+Founder/Company version mismatch and the replay artifact bundle has no pet artifact arm. C14's
+"next Founder wire version" therefore cannot activate: writing `pets` would either advance the
+Company wire too or make the next Exit fail, while accepting pet IDs/actions without pinned pet
+bytes would make replay deployment-dependent.
+
+**Proposed contract:** version 17 is Founder-only and adds the exact C14 `pets` map; Company saves
+remain at their pinned Company version. Exit preserves the current Founder version independently
+of the terminal/new Company versions, except that the already-shipped paired Meters/Achievements
+v16 activation remains atomic when crossing from pre-v16. The replay artifact bundle gains an
+optional `pets` artifact whose presence is biconditional with Founder v17. That artifact owns the
+C13 catalog bytes and is included in constants identity before any v17 Founder is created. Go and
+TypeScript reject Company v17, Founder v17 without the artifact, and pet artifacts with a pre-v17
+Founder; mixed Founder-v17/Company-v14-or-v16 Exit and Founder replay are required fixtures.
+
 ## Acceptance blockers (Codex review, 2026-08-04)
 
 The design direction is coherent, but the draft cannot yet be accepted without inventing a new

@@ -332,6 +332,38 @@ production fallback/offline automation.
   and retry is exactly-once because the session's contribution to the window is idempotent. C30's
   'session-state remainder' is withdrawn; the window row owns both.
 
+## Implementation blockers C34-C35 (Codex, 2026-08-05)
+
+The declared score/copy ownership and cross-run faucet window are implemented. The two remaining
+composition gaps are exact wire/activation issues, not balance literals.
+
+### C34 — C31 still does not enumerate its claimed fixed grade-curve row
+
+C31 replaces wall time with the correct Founder-attended watermark, but its literal
+`{threshold_grade_ppm, ...}` contains an ellipsis and does not say whether the threshold is a
+score or a grade. That contradicts the "fixed shape" claim and cannot drive an exact loader.
+
+**Proposed correction:** retain C31's outer state and attended clock, and adopt the earlier exact
+curve row `{score_at_least,grade_ppm}`. Rows are nonempty, byte-order-stable in ascending
+`score_at_least`, begin at zero, use strictly increasing score thresholds and nondecreasing grades,
+and every grade is within `[neutral_floor_ppm,1_000_000]`. The persisted state is exact
+`{grade_ppm,last_founder_attended_ms,decay_remainder_ppm}`. Numeric literals remain balance data.
+
+### C35 — Founder rating shares Pet C16's unresolved version/artifact seam
+
+C29 places `minigame_ratings` in the Founder save and requires the multi-stream resolution to write
+it through the Founder replay boundary. The existing Founder wire has no ratings field, and Exit
+still requires Founder/Company version equality. Adding the map ad hoc would either make replay
+ignore it or activate it under a deploy-current schema.
+
+**Proposed contract:** the first Founder version that carries Minigame state adds exact
+`minigame_ratings` and `minigame_offline_quality` maps together and is activated only when the
+pinned artifact bundle contains `minigames`. If Pet C16 owns Founder v17 first, this is its next
+Founder-only version; otherwise it may share v17 only if one epoch atomically carries both exact
+artifacts and both maps. The version transition, replay artifact biconditional, and mixed-version
+Exit rules use the same reusable mechanism as Pet C16. Production resolution remains disabled
+until one owner ruling fixes that ordering; no code assigns competing mechanics the same version.
+
 ## Acceptance criteria
 
 1. Session lifecycle: create→play→resolve→payout for a fixture tenant against the composed
