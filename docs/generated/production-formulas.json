@@ -12,7 +12,7 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "cdc78c4fea17375d7df3c90dfacf393b9d4abc4af4e413497244610a4c949bc4",
+  "source_fingerprint": "4cccf1adef09d3173b62809a4a20047e267bd0c45c9099e1ddb0b502c67cdad6",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
