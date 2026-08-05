@@ -38,6 +38,7 @@ type crossRuntimeFixture struct {
 	FounderHash   string                     `json:"founder_constants_hash"`
 	FounderFiles  map[string]string          `json:"founder_artifacts"`
 	FounderCases  []crossRuntimeFounderCase  `json:"founder_cases"`
+	FounderRun    crossRuntimeFounderRun     `json:"founder_run"`
 }
 
 type crossRuntimeFounderCase struct {
@@ -54,6 +55,33 @@ type crossRuntimeFounderCase struct {
 	ReceiptJSON         string          `json:"receipt_json"`
 	EventsJSON          string          `json:"events_json"`
 	PostStateJSON       string          `json:"post_state_json"`
+}
+
+type crossRuntimeFounderRun struct {
+	FounderStreamID string                        `json:"founder_stream_id"`
+	FounderID       string                        `json:"founder_id"`
+	GenesisRevision int64                         `json:"genesis_revision"`
+	GenesisVersion  int                           `json:"genesis_version"`
+	GenesisHash     string                        `json:"genesis_constants_hash"`
+	Genesis         json.RawMessage               `json:"genesis"`
+	Entries         []crossRuntimeFounderRunEntry `json:"entries"`
+	HeadRevision    int64                         `json:"head_revision"`
+	HeadVersion     int                           `json:"head_version"`
+	HeadHash        string                        `json:"head_constants_hash"`
+	HeadState       json.RawMessage               `json:"head_state"`
+}
+
+type crossRuntimeFounderRunEntry struct {
+	Sequence         int64                  `json:"seq"`
+	IntentID         string                 `json:"intent_id"`
+	ConstantsHash    string                 `json:"constants_hash"`
+	CanonicalPayload json.RawMessage        `json:"canonical_payload"`
+	ReplayInputs     json.RawMessage        `json:"replay_inputs"`
+	ReceiptJSON      string                 `json:"receipt_json"`
+	EventsJSON       string                 `json:"events_json"`
+	AppliedRevision  *int64                 `json:"applied_revision"`
+	ServerTSMS       int64                  `json:"server_ts_ms"`
+	Source           *save.FounderLogSource `json:"source"`
 }
 
 type crossRuntimeActiveExit struct {
@@ -293,11 +321,11 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	result.ActiveExit = makeActiveFoundationExitFixture(t, baseNow)
 	result.FullRun = makeFullRunFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	result.RejectedExit = makeRejectedExitFixture(t, catalogs, bundleBytes.Hash, baseNow)
-	result.FounderHash, result.FounderFiles, result.FounderCases = makeFounderReplayFixture(t, baseNow)
+	result.FounderHash, result.FounderFiles, result.FounderCases, result.FounderRun = makeFounderReplayFixture(t, baseNow)
 	return result
 }
 
-func makeFounderReplayFixture(t *testing.T, now time.Time) (string, map[string]string, []crossRuntimeFounderCase) {
+func makeFounderReplayFixture(t *testing.T, now time.Time) (string, map[string]string, []crossRuntimeFounderCase, crossRuntimeFounderRun) {
 	t.Helper()
 	_, catalogs := foundationTestBundles(t)
 	definitions := []struct {
@@ -350,7 +378,74 @@ func makeFounderReplayFixture(t *testing.T, now time.Time) (string, map[string]s
 			Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: post, ResultConstantsHash: transition.ResultConstantsHash,
 			ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, post)})
 	}
-	return catalogs.ConstantsHash, stringArtifacts(catalogs.Artifacts), cases
+	return catalogs.ConstantsHash, stringArtifacts(catalogs.Artifacts), cases, makeFounderFullRunFixture(t, catalogs, now)
+}
+
+func makeFounderFullRunFixture(t *testing.T, catalogs CatalogBundle, now time.Time) crossRuntimeFounderRun {
+	t.Helper()
+	const streamID = "01986666-2800-7000-8000-000000000001"
+	const founderID = "01986666-3800-7000-8000-000000000001"
+	state := replayFounderFixtureState(t, catalogs, now)
+	state.RouteKnowledgeBalance = 125
+	genesis := mustEncodeState(t, state)
+	history := save.FounderHistory{FounderStreamID: streamID, FounderID: founderID,
+		Genesis: save.FounderGenesis{FounderStreamID: streamID, Revision: 1, State: genesis, Version: save.VersionForState(state), ConstantsHash: catalogs.ConstantsHash}, Entries: []save.FounderHistoryEntry{}}
+	result := crossRuntimeFounderRun{FounderStreamID: streamID, FounderID: founderID, GenesisRevision: 1,
+		GenesisVersion: save.VersionForState(state), GenesisHash: catalogs.ConstantsHash, Genesis: genesis, Entries: []crossRuntimeFounderRunEntry{}}
+	definitions := []struct {
+		payload  string
+		resolved func(*save.State) any
+		source   *save.FounderLogSource
+	}{
+		{payload: `{"intent_id":"01986666-0800-7000-8000-000000000801","kind":"buy_route_hint","expected_revision":1,"route_id":"route.ipo_sequence_break"}`,
+			resolved: func(state *save.State) any {
+				return founderRouteHintResolved{Kind: string(IntentBuyRouteHint), RouteContextVersion: catalogs.Routes.ContextVersion(), RouteKnowledgeBalance: state.RouteKnowledgeBalance}
+			}},
+		{payload: `{"intent_id":"01986666-0800-7000-8000-000000000802","kind":"wind_down","expected_revision":1,"expected_founder_revision":2}`,
+			resolved: func(state *save.State) any {
+				return founderExitResolvedWire{Kind: founderExitResolvedKind, Outcome: string(save.IntentRejected), CompanyStreamID: "01986666-1800-7000-8000-000000000001", RunSeq: 1, RunLogSeq: 2, ResultConstantsHash: catalogs.ConstantsHash, AgeMSBefore: state.AgeMS, AgeMSAfter: state.AgeMS, AddedNetworkSlots: []save.NetworkSlot{}, AddedLedgerFactKinds: []string{}, AddedLifetimeAchievements: []string{}, ResultFounderWireVersion: save.VersionForState(state), Rejection: &founderAuditRejection{Category: "not_eligible", Detail: "tier"}}
+			},
+			source: &save.FounderLogSource{CompanyStreamID: "01986666-1800-7000-8000-000000000001", RunSeq: 1, RunLogSeq: 2}},
+		{payload: `{"intent_id":"01986666-0800-7000-8000-000000000803","kind":"wind_down","expected_revision":1,"expected_founder_revision":2}`,
+			resolved: func(state *save.State) any {
+				return founderExitResolvedWire{Kind: founderExitResolvedKind, Outcome: string(save.IntentApplied), CompanyStreamID: "01986666-1800-7000-8000-000000000001", RunSeq: 1, RunLogSeq: 3, ResultConstantsHash: catalogs.ConstantsHash, ReputationDelta: 2, RouteKnowledgeDelta: 5, AttendedMS: 900_000, AgeMSBefore: state.AgeMS, AgeMSAfter: state.AgeMS + 900_000, AddedNetworkSlots: []save.NetworkSlot{}, AddedLedgerFactKinds: []string{"exit.collapse"}, AddedLifetimeAchievements: []string{}, ExitRecord: &founderExitRecordWire{RunID: 1, ExitType: "collapse", OccurredAtMS: now.Add(3 * time.Second).UnixMilli(), ReputationDelta: 2}, ResultFounderWireVersion: save.VersionForState(state)}
+			},
+			source: &save.FounderLogSource{CompanyStreamID: "01986666-1800-7000-8000-000000000001", RunSeq: 1, RunLogSeq: 3}},
+	}
+	revision := int64(1)
+	for index, definition := range definitions {
+		request, err := ParseIntent([]byte(definition.payload))
+		if err != nil {
+			t.Fatal(err)
+		}
+		command := save.FounderReplayCommand{IntentID: request.IntentID, FounderStreamID: streamID, FounderID: founderID, Revision: revision, FounderLogSeq: int64(index + 1), ServerTSMS: now.Add(time.Duration(index+1) * time.Second).UnixMilli()}
+		inputs, err := save.MarshalFounderReplayInputs(command, definition.resolved(state))
+		if err != nil {
+			t.Fatal(err)
+		}
+		transition, err := ApplyFounderLogged(state, request.CanonicalPayload, catalogs, inputs)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var applied *int64
+		if transition.Outcome == save.IntentApplied {
+			revision++
+			value := revision
+			applied = &value
+		}
+		events := fixtureEvents(transition.Events)
+		history.Entries = append(history.Entries, save.FounderHistoryEntry{Sequence: int64(index + 1), IntentID: request.IntentID, ConstantsHash: catalogs.ConstantsHash,
+			CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs, Receipt: transition.Receipt, AppliedRevision: applied, ServerTSMS: command.ServerTSMS, Source: definition.source, Events: transition.Events})
+		result.Entries = append(result.Entries, crossRuntimeFounderRunEntry{Sequence: int64(index + 1), IntentID: request.IntentID, ConstantsHash: catalogs.ConstantsHash,
+			CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs, ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), AppliedRevision: applied, ServerTSMS: command.ServerTSMS, Source: definition.source})
+	}
+	head := mustEncodeState(t, state)
+	history.HeadRevision, history.HeadVersion, history.HeadConstants, history.HeadState = revision, save.VersionForState(state), catalogs.ConstantsHash, head
+	if verdict := VerifyFounderHistory(history, ReplayCatalogSet{catalogs.ConstantsHash: catalogs}); verdict != ReplayVerified {
+		t.Fatalf("Founder full-run verdict=%s", verdict)
+	}
+	result.HeadRevision, result.HeadVersion, result.HeadHash, result.HeadState = revision, save.VersionForState(state), catalogs.ConstantsHash, head
+	return result
 }
 
 func replayFounderFixtureState(t *testing.T, catalogs CatalogBundle, now time.Time) *save.State {

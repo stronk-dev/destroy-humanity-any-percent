@@ -65,6 +65,12 @@ export interface FounderLoggedTransition {
   readonly state: FounderReplayState; readonly outcome: "applied" | "rejected"; readonly receipt: unknown;
   readonly events: readonly ReplayEvent[]; readonly resultConstantsHash: string;
 }
+export interface FounderReplayLogEntry {
+  readonly seq: number; readonly intentId: string; readonly constantsHash: string; readonly canonicalPayload: string;
+  readonly replayInputs: unknown; readonly receiptJSON: string; readonly eventsJSON: string; readonly appliedRevision: number | null;
+  readonly serverTSMS: number; readonly source: null | { readonly companyStreamId: string; readonly runSeq: number; readonly runLogSeq: number };
+}
+export interface FounderReplayHead { readonly revision: number; readonly version: 14 | 15 | 16; readonly constantsHash: string; readonly state: unknown }
 export type ReplayVerdict = "verified" | "log_gap" | "state_divergence" | "constants_mismatch" | "clock_violation" | "engine_mismatch";
 export interface ReplayVerificationResult { readonly verdict: ReplayVerdict; readonly finalState: ReplayState | null }
 export class ReplayClockViolation extends RangeError { constructor() { super("replay clock violation"); } }
@@ -440,6 +446,40 @@ export function applyFounderLogged(state: FounderReplayState, canonicalPayload: 
     if (kind === "exit.v1") return applyFounderExit(state, request, wire, catalogs.constantsHash);
     throw new RangeError("unknown Founder replay arm");
   } catch (error) { rollback(); throw error; }
+}
+
+export function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16, genesisHash: string,
+  founderStreamId: string, founderId: string, entries: readonly FounderReplayLogEntry[], head: FounderReplayHead,
+  bundles: readonly ReplayCatalogBundle[]): ReplayVerdict {
+  const catalogs = new Map(bundles.map((value) => [value.constantsHash, value]));
+  if (entries.length === 0 || !uuid.test(founderStreamId) || !uuid.test(founderId)) return "log_gap";
+  let bundle = catalogs.get(genesisHash); if (!bundle) return "constants_mismatch";
+  let state: FounderReplayState;
+  try { state = restoreFounderReplayState(genesis, genesisVersion, bundle); } catch { return "state_divergence"; }
+  let revision: number;
+  try { revision = safeInteger(genesisRevision, 1, MAX_EXACT_INTEGER); } catch { return "log_gap"; }
+  let hash = genesisHash;
+  for (let index = 0; index < entries.length; index++) {
+    const entry = entries[index]!;
+    if (entry.seq !== index + 1 || entry.constantsHash !== hash) return "log_gap";
+    bundle = catalogs.get(hash)!; if (!bundle) return "constants_mismatch";
+    try {
+      const wire = parseFounderReplayWire(entry.replayInputs);
+      if (wire.command.intent_id !== entry.intentId || wire.command.founder_stream_id !== founderStreamId || wire.command.founder_id !== founderId || wire.command.revision !== revision || wire.command.founder_log_seq !== entry.seq || wire.command.server_ts_ms !== entry.serverTSMS) return "log_gap";
+      const exitArm = wire.resolved.kind === "exit.v1";
+      if (exitArm !== (entry.source !== null)) return "state_divergence";
+      if (entry.source) {
+        if (wire.resolved.company_stream_id !== entry.source.companyStreamId || wire.resolved.run_seq !== entry.source.runSeq || wire.resolved.run_log_seq !== entry.source.runLogSeq) return "state_divergence";
+      }
+      const transition = applyFounderLogged(state, entry.canonicalPayload, bundle, entry.replayInputs);
+      if (canonicalJSONString(transition.receipt) !== entry.receiptJSON || canonicalJSONString(transition.events) !== entry.eventsJSON) return "state_divergence";
+      if (transition.outcome === "applied") { if (entry.appliedRevision !== revision + 1) return "log_gap"; revision++; }
+      else if (entry.appliedRevision !== null) return "log_gap";
+      hash = transition.resultConstantsHash;
+    } catch { return "state_divergence"; }
+  }
+  if (revision !== head.revision || hash !== head.constantsHash || state.wireVersion !== head.version || canonicalJSONString(encodeFounderReplayState(state)) !== canonicalJSONString(head.state)) return "state_divergence";
+  return "verified";
 }
 
 export async function applyLogged(state: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedTransition> {

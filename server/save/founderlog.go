@@ -31,9 +31,9 @@ type founderReplayInputsEnvelope struct {
 }
 
 type FounderLogSource struct {
-	CompanyStreamID string
-	RunSeq          int64
-	RunLogSeq       int64
+	CompanyStreamID string `json:"company_stream_id"`
+	RunSeq          int64  `json:"run_seq"`
+	RunLogSeq       int64  `json:"run_log_seq"`
 }
 
 func MarshalFounderReplayInputs(command FounderReplayCommand, resolved any) (json.RawMessage, error) {

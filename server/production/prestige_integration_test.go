@@ -177,6 +177,28 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		if err != nil || founderGenesis.Revision != 1 || founderGenesis.ConstantsHash != hash {
 			t.Fatalf("Founder Exit genesis=%+v err=%v", founderGenesis, err)
 		}
+		founderHistory, err := store.LoadFounderHistory(ctx, founderRevision.StreamID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if verdict := VerifyFounderHistory(founderHistory, ReplayCatalogSet{hash: replayBundle}); verdict != ReplayVerified {
+			t.Fatalf("persisted Founder history verdict=%s history=%+v", verdict, founderHistory)
+		}
+		poisoned := founderHistory
+		poisoned.Entries = append([]save.FounderHistoryEntry(nil), founderHistory.Entries...)
+		poisoned.Entries[0].Events = []save.EventWrite{}
+		if verdict := VerifyFounderHistory(poisoned, ReplayCatalogSet{hash: replayBundle}); verdict != ReplayStateDivergence {
+			t.Fatalf("Founder event poison verdict=%s", verdict)
+		}
+		gap := founderHistory
+		gap.Entries = append([]save.FounderHistoryEntry(nil), founderHistory.Entries...)
+		gap.Entries[0].Sequence = 2
+		if verdict := VerifyFounderHistory(gap, ReplayCatalogSet{hash: replayBundle}); verdict != ReplayLogGap {
+			t.Fatalf("Founder sequence gap verdict=%s", verdict)
+		}
+		if verdict := VerifyFounderHistory(founderHistory, ReplayCatalogSet{}); verdict != ReplayConstantsMismatch {
+			t.Fatalf("Founder missing-artifact verdict=%s", verdict)
+		}
 		terminalBundle := replayBundle
 		terminalBundle.Next = &terminalBundle
 		replayed, err := ApplyLoggedExit(companyBefore.State, loggedPayload, terminalBundle, replayInputs)

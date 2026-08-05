@@ -68,3 +68,18 @@ Append-only. A fresh agent must be able to resume from this file and the accepte
   and all client tests are green. Kernel advances to `0.3.30` for the shared transition semantics.
 - Persisted genesis-to-head verification remains the next slice; the plan checkbox stays open until
   that loader/verifier and its real-Postgres proof land.
+
+## 2026-08-05 — career-long Founder verification implemented
+
+- `save.Store.LoadFounderHistory` takes one repeatable-read snapshot of immutable genesis, every
+  Founder-log row, Founder-scoped events, and the authoritative head. It validates JSON and the
+  all-or-none relational Exit coordinates without reading Company state.
+- Go and TypeScript now replay a complete three-command career (ordinary applied command, rejected
+  Exit, applied Exit), enforce sequence/revision/hash transitions, and compare final state, every
+  audit receipt, and ordered Founder events. Missing pinned artifacts never fall back to the
+  deploy-current epoch.
+- The real-Postgres elective-Exit fixture loads and verifies the committed history, then proves
+  event tampering, a sequence gap, and an unavailable artifact set receive distinct fail-closed
+  verdicts. The Go-authored cross-runtime corpus carries the same full career.
+- The Founder replay plan item flips with these tests. Kernel advances to `0.3.31`; the next slice
+  is the race-safe, offline-aware effective-attendance resolver.

@@ -43,6 +43,14 @@ state, receipt, ordered events, and result constants hash. The production path a
 transition before committing an Exit, so a live/replay semantic split fails the authoritative
 transaction rather than entering the immutable log.
 
+`save.Store.LoadFounderHistory` reads genesis, immutable commands, Founder-scoped events, and the
+authoritative head in one repeatable-read transaction. Both Go and TypeScript replay each row from
+genesis, require contiguous log and revision coordinates, resolve the row's input hash without a
+deploy-current fallback, enforce the relational Exit source coordinates, and compare the final
+state to the saved head. Missing artifacts report `constants_mismatch`; sequence/revision gaps
+report `log_gap`; malformed inputs or differing state, receipt, or ordered events report
+`state_divergence`.
+
 The feature package still owns its closed canonical command, resolved-input, receipt, event, and
 state-transition unions. The persistence layer validates the shared envelope and transaction; it
 does not invent feature mechanics.

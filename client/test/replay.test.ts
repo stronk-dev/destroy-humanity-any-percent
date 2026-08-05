@@ -14,6 +14,7 @@ import {
   restoreReplayState,
   verifyReplayRun,
   verifyReplayRunDetailed,
+  verifyFounderReplayHistory,
   withNextReplayCatalogBundle,
   type ReplayArtifacts,
 } from "../src/replay";
@@ -97,6 +98,16 @@ const fixture = fixtureJSON as {
   readonly founder_constants_hash: string;
   readonly founder_artifacts: ReplayArtifacts;
   readonly founder_cases: readonly FounderFixtureCase[];
+  readonly founder_run: {
+    readonly founder_stream_id: string; readonly founder_id: string; readonly genesis_revision: number; readonly genesis_version: 14 | 15 | 16;
+    readonly genesis_constants_hash: string; readonly genesis: unknown; readonly head_revision: number; readonly head_version: 14 | 15 | 16;
+    readonly head_constants_hash: string; readonly head_state: unknown;
+    readonly entries: readonly {
+      readonly seq: number; readonly intent_id: string; readonly constants_hash: string; readonly canonical_payload: Record<string, unknown>;
+      readonly replay_inputs: unknown; readonly receipt_json: string; readonly events_json: string; readonly applied_revision: number | null;
+      readonly server_ts_ms: number; readonly source: null | { readonly company_stream_id: string; readonly run_seq: number; readonly run_log_seq: number };
+    }[];
+  };
 };
 
 describe("TypeScript ApplyLogged cross-runtime fixture", () => {
@@ -110,6 +121,21 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
     expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
     expect(canonicalJSONString(encodeFounderReplayState(transition.state))).toBe(testCase.post_state_json);
+  });
+
+  it("verifies the Go-authored Founder career from genesis without Company state", async () => {
+    const bundle = await loadReplayCatalogBundle(fixture.founder_constants_hash, fixture.founder_artifacts);
+    const run = fixture.founder_run;
+    const entries = run.entries.map((entry) => ({ seq: entry.seq, intentId: entry.intent_id, constantsHash: entry.constants_hash,
+      canonicalPayload: canonicalJSONString(entry.canonical_payload), replayInputs: entry.replay_inputs, receiptJSON: entry.receipt_json, eventsJSON: entry.events_json,
+      appliedRevision: entry.applied_revision, serverTSMS: entry.server_ts_ms, source: entry.source === null ? null : { companyStreamId: entry.source.company_stream_id, runSeq: entry.source.run_seq, runLogSeq: entry.source.run_log_seq } }));
+    const head = { revision: run.head_revision, version: run.head_version, constantsHash: run.head_constants_hash, state: run.head_state };
+    expect(verifyFounderReplayHistory(run.genesis, run.genesis_revision, run.genesis_version, run.genesis_constants_hash, run.founder_stream_id, run.founder_id, entries, head, [bundle])).toBe("verified");
+
+    const poisoned = structuredClone(entries); poisoned[2]!.eventsJSON = "[]";
+    expect(verifyFounderReplayHistory(run.genesis, run.genesis_revision, run.genesis_version, run.genesis_constants_hash, run.founder_stream_id, run.founder_id, poisoned, head, [bundle])).toBe("state_divergence");
+    const gap = structuredClone(entries); gap[1]!.seq = 7;
+    expect(verifyFounderReplayHistory(run.genesis, run.genesis_revision, run.genesis_version, run.genesis_constants_hash, run.founder_stream_id, run.founder_id, gap, head, [bundle])).toBe("log_gap");
   });
 
   it("migrates save v13 to the closed v14 purchasable-content shape", async () => {
