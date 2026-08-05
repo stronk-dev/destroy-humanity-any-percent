@@ -189,3 +189,15 @@ immutability untested though the same trigger covers it — add the one-line neg
 
 **Verdict: proceed with Exit-as-founder-log against the B1-B3 rulings; the genesis foundation is
 solid.**
+
+## 2026-08-05 — C12a cross-runtime Pet grammar
+
+- Implemented the owner-ruled Phase-A stat IDs, status bands, moods, behavior states/events, care
+  rejection details, queue hardcap, and PRNG label in isolated Go and TypeScript modules.
+- One shared fixture asserts literal member order and queue boundaries in both suites. Go returns
+  defensive vocabulary copies so a caller cannot mutate protocol authority at runtime.
+- Added canonical docs scoped honestly to the grammar; no pet identity, state, action, decay,
+  threshold, species, or temperament row is claimed or synthesized.
+- `DESIGN-GAP:` C3/C11 still do not enumerate the exact pet catalog and Founder-state wire keys,
+  including action/decay rows, remainder and cooldown maps, behavior queue entries, and the bond
+  graph. Those mechanics remain blocked rather than inferred from prose.

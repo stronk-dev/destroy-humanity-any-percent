@@ -1,2 +1,2 @@
 // Generated from kernel/VERSION. The parity test fails closed on drift.
-export const KERNEL_VERSION = "0.3.35" as const;
+export const KERNEL_VERSION = "0.3.36" as const;

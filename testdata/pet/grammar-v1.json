@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "stat_ids": ["hunger", "energy", "cleanliness", "affection"],
+  "status_bands": ["floor", "low", "normal", "high"],
+  "moods": ["withdrawn", "restless", "neutral", "engaged"],
+  "behavior_states": ["idle", "care_response", "active", "resting"],
+  "behavior_events": ["grid_tick", "care_applied", "care_rejected"],
+  "care_rejection_details": ["cooldown", "ineligible", "saturated", "unknown_pet", "unknown_action"],
+  "behavior_queue_hardcap": 8,
+  "behavior_prng_label": "pet.behavior.v1",
+  "valid_queue_lengths": [0, 1, 7, 8],
+  "invalid_queue_lengths": [-1, 9, 9007199254740991]
+}
