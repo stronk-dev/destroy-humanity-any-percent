@@ -124,6 +124,76 @@ The through-line: **C1's Founder mutation boundary is the real deliverable** - a
 architectural addition the whole Founder layer has needed; the rest is structure-ruled/
 numbers-deferred as usual.
 
+## Implementation blockers C9-C12 (Codex, 2026-08-05)
+
+The persistence envelope can be implemented without pet mechanics, and that slice has landed.
+Applying the ruled text to the existing Exit/save topology exposes four remaining structural gaps.
+These are not balance literals: choosing any of them in code would change replay, attendance, save
+activation, or the visible state machine.
+
+### C9 — Founder replay needs segment/genesis semantics across Exit
+
+`founder_log` records Founder commands, but Exit also mutates the Founder stream outside
+`ApplyFounderLogged`; retained save revisions are pruned. A single career-long replay therefore
+has neither a durable genesis nor a complete command history. Logging only care commands would
+false-diverge after the first Exit, while replaying all Exits would contradict the existing
+cross-run-Founder-verification non-goal.
+
+**Proposed contract:** replay immutable Founder *segments*. A forward migration adds an immutable
+segment row containing exact pre-command Founder state bytes/version/hash and binds each
+`founder_log` row to a segment. The Store lazily opens a new segment whenever the current Founder
+revision is not the last applied revision of the open segment (Exit and any other owned
+multi-stream mutation therefore form a boundary). Within a segment, applied revisions are
+contiguous; rejected rows retain the current revision. Verification replays only the segment,
+byte-compares receipts/events/order, and compares its terminal state to the next segment genesis
+or current head. It never claims to verify the external Exit transition. Migration 00054 is
+already applied locally, so this lands forward-only.
+
+### C10 — A server timestamp is not an attended-time authority
+
+C4 says the Founder cursor is server-stamped per command and offline spans contribute zero. Two
+timestamps alone cannot satisfy both: elapsed wall time counts offline gaps, while counting only
+the command instant advances by zero. No persisted Founder attendance source exists today.
+
+**Proposed contract:** gameserver authentication/presence owns one persisted, monotonic Founder
+attendance accumulator. Overlapping authenticated connections count elapsed time once; periods
+with no active connection add zero. Presence updates lock only that accumulator. A Founder command
+samples it after locking the Founder stream, records `{attended_before_ms, attended_after_ms}` in
+resolved inputs, and advances the Founder save cursor exactly to the sampled total. Exit samples
+the same authority rather than deriving a second clock. The lock graph has no reverse edge from
+presence into save streams, and fixtures prove reconnect/offline, overlapping sessions,
+partition-invariance, and an Exit between two care commands.
+
+### C11 — Founder pet persistence and activation still have no exact wire
+
+C2/C8 name `pet_records`, mutable care state, an “own” Founder save version, and New-Founder
+activation, but do not define the table keys, save JSON, version number, or how the current shared
+`VersionForState`/Exit transition permits a Founder-only version while Company remains on its
+existing version. There is no safe loader or migration target yet.
+
+**Proposed contract:** append immutable relational identity
+`pet_records(pet_id,founder_id,species_id,temperament,created_at,catalog_hash)` and one closed
+Founder-save pet map keyed by `pet_id`, with complete four-stat/remainder/cooldown/trust/FSM key
+sets. Introduce the next Founder wire version without advancing Company state; refactor version
+selection/Exit validation to accept that declared Founder/Company version pair. Starter creation
+inserts identity plus initial Founder state in the New-Founder transaction only when the pinned
+epoch contains the pet artifact. Pre-artifact founders synthesize nothing; later acquisition is a
+successor contract. The exact JSON and migration corpus land before any production species row.
+
+### C12 — Mood/FSM/status unions remain names, not closed contracts
+
+C5-C7 say “closed” but enumerate no mood values, behavior states/events, queue hardcap, status
+bands, or eligibility details. A Go/TS port cannot be byte-identical from prose.
+
+**Proposed contract:** mechanically close Phase-A to four stat bands
+`floor|low|normal|high`, derived mood `withdrawn|restless|neutral|engaged`, behavior states
+`idle|care_response|active|resting`, and transition events `grid_tick|care_applied|care_rejected`.
+The persisted queue hardcap is 8; candidates sort by mechanical behavior ID; PRNG label is
+`pet.behavior.v1` with draws ordered candidate-index then duration. Persist current state,
+entered-at attended cursor, bounded queued behavior IDs/due cursors, and PRNG cursor; mood remains
+derived. Care rejection details are `cooldown|ineligible|saturated|unknown_pet|unknown_action`.
+Balance rows own thresholds, durations, deltas, and candidate weights.
+
 ## Acceptance blockers (Codex review, 2026-08-04)
 
 The design direction is coherent, but the draft cannot yet be accepted without inventing a new

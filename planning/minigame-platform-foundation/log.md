@@ -146,3 +146,12 @@
 - Exact-range diff, minigame test/vet, and real-Postgres minigame integration passed. A shared-DB
   all-package attempt encountered unrelated stale epoch/save state; focused production and repeated
   minigame Postgres reruns passed, and no failure touched the reviewed range.
+
+## 2026-08-05 — remaining Minigame implementation contracts
+
+- C19 still names source concepts without an exact transform grammar; C21 splits one resolution
+  across Company payout, Founder rating, and session state under incompatible lock/transaction
+  descriptions; C22 depends on the absent Founder attended-time authority; and C23's exact rows
+  still contain unnamed nested objects.
+- Filed C24-C27 with proposed contracts. The independently approved C20 command-history slice
+  remains complete; no production scaling, payout, faucet, or fallback semantics will be invented.

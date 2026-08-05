@@ -201,6 +201,69 @@ Same discipline as C12-C18: structure ruled by reusing shipped patterns, balance
   are BALANCE DATA; the state shape (grade_ppm + last_session_at, fixed-grid decay to neutral
   floor) is ruled.
 
+## Implementation blockers C24-C27 (Codex, 2026-08-05)
+
+C20's immutable session history is implemented and independently approved. The remaining code
+reaches four contracts that the C19-C23 summary still names without an executable wire or atomic
+owner boundary.
+
+### C24 — C19 does not yet enumerate the transform grammar
+
+The ruling names five source kinds and “integer bounds” but supplies no arm keys, operation order,
+rounding, clamp, duplicate rule, or closed Founder counter paths. A loader still cannot distinguish
+a valid scaling program from an invented one.
+
+**Proposed contract:** every destination row is exact-key `{id,class,source}` with unique `id` and
+`class=power|breadth|presentation`. `literal` source is `{kind,value}`. The other four arms add
+their single closed field (`tier`; `generator_id`; `founder_counter`; or `minigame_id`) plus
+`{offset,multiplier,denominator,min,max}`. Evaluation is checked exact-integer
+`floor((source+offset)*multiplier/denominator)` followed by clamp; denominator is positive and
+bounds/order are loader-validated. `founder_counter` is a closed catalog enum, not a JSON path.
+Ranked destinations reject `class=power` when any source is `tier`; duplicate destination IDs
+reject. The formula generator renders this exact program. Numeric operands and the allowed
+Founder-counter rows remain owner/harness catalog data.
+
+### C25 — Company payout plus Founder rating has no one-transaction boundary
+
+C17 rules Company→session locking, C13 says Founder→session, the project-wide order is
+Founder→Company, and C21 sends rating through `ApplyFounderLogged`. Calling that exported method
+inside the resolve transaction would nest transactions; calling it afterward permits paid-without-
+rating or rating-without-paid crashes.
+
+**Proposed contract:** one repository operation `ApplyMinigameResolutionTransaction` locks
+Founder, Company, then session. It runs two pure owned transitions under that transaction: the
+server-authored Company credit/result transition and the Founder rating transition. It appends the
+Company run log, Founder log, events, both revisions, faucet row, receipt, and token-owned session
+terminal mark atomically, keyed idempotently by session ID. Neither exported Store method is
+nested. Replay inputs on both sides reference the same immutable certified-result bytes/hash.
+Fault injection follows every write, and retry returns the one committed receipt.
+
+### C26 — The faucet clock depends on the unresolved Founder attendance authority
+
+C22 correctly moves quota across runs, but `founder_attended_ms` is not implemented and a server
+timestamp cannot distinguish attended from offline time. The payout counter cannot be replay-safe
+until Pet C10 (or a successor shared attendance RFC) owns that clock.
+
+**Proposed contract:** reuse the single persisted Founder attendance accumulator ruled at Pet C10.
+The resolution transaction freezes its sampled total, derives `window_index=floor(total/day_ms)`,
+and updates one `(founder_id,minigame_id,window_index)` row idempotently by session ID. Operation
+order is bot reduction → ppm conversion with persisted remainder → per-session cap → remaining
+window cap; configured-cap forfeiture and numeric saturation remain distinct typed outcomes.
+
+### C27 — Fallback/offline-quality “exact rows” still contain unnamed objects
+
+`npc_profile?`, the score-grade curve, remainder, and automation destination have no exact keys or
+closed identity/version rule. A strict loader still has no valid production row to accept.
+
+**Proposed contract:** close the arms as `{kind:"solo"}`;
+`{kind:"bot",bot_ref:{policy_id,version},rate_reduction_ppm}`; and
+`{kind:"npc_partner",npc_profile:{profile_id,version},rate_reduction_ppm}`. The offline policy is
+exact-key `{score_fact,grade_curve,decay_grid_ms,decay_ppm_per_grid,neutral_floor_ppm,
+automation_destination}`; curve thresholds are strictly increasing and grades nondecreasing,
+decay carries an integer remainder, and the destination must be registered by the tenant. All
+literals are balance data. Until those rows exist in a minted artifact, the loader enables no
+production fallback/offline automation.
+
 ## Acceptance criteria
 
 1. Session lifecycle: create→play→resolve→payout for a fixture tenant against the composed

@@ -31,3 +31,9 @@ only structural contracts already ruled in C13–C18.
 Implementation blockers C19–C23: exact scaling-source rows, immutable session command history,
 the production payout envelope, attended-window/counter arithmetic, and complete fallback/
 offline-quality rows require owner rulings before the remaining platform slices can be written.
+
+Post-ruling implementation blockers C24-C27: the transform grammar is still not exact-key, the
+Company+Founder+session resolution has conflicting transaction/lock ownership, its faucet depends
+on the absent Founder attendance authority, and fallback/offline rows still contain unnamed
+objects. C20's command-history slice is complete; the remaining platform is blocked on these
+structural rulings rather than balance literals.

@@ -15,3 +15,7 @@ RFC: `rfc/pet-care-foundation.md`
 
 Carried content dependency: starter species/temperament and all care/decay/trust/FSM numeric rows
 are balance/content data. Structural boundaries and discriminating fixtures land first.
+
+Blocked implementation contracts carried explicitly: C9 Founder replay segmentation, C10
+attended-time authority, C11 Founder-only persistence/activation wire, and C12 closed mood/FSM/
+status unions. The implemented persistence envelope remains valid independently of those rulings.

@@ -52,3 +52,12 @@
   receipt scope/revisions, concurrent same-revision commands, a failure after the log insert that
   rolls back every write, and an archive-first/direct-insert race. Kernel semantics advance to
   0.3.26. Independent remediation review remains required.
+
+## 2026-08-05 — remaining Pet implementation contracts
+
+- Applying the boundary to a real pet transition exposed four gaps not resolved by C1-C8: replay
+  needs segment genesis around externally-owned Exit mutations; wall-clock stamps cannot supply
+  attended time; the Founder-only save/table/activation wire is unnamed; and the allegedly closed
+  mood/FSM/status unions have no literal members.
+- Filed C9-C12 with proposed executable contracts. No pet numeric balance row is requested; these
+  are replay, persistence, time-authority, and wire-shape decisions that code must not invent.
