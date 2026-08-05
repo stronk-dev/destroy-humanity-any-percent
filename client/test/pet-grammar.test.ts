@@ -30,4 +30,11 @@ describe("pet wire grammar", () => {
     for (const length of fixture.invalid_queue_lengths) expect(validPetBehaviorQueueLength(length), `${length}`).toBe(false);
     expect(validPetBehaviorQueueLength(1.5)).toBe(false);
   });
+
+  it("does not expose mutable protocol authority", () => {
+    for (const values of [PET_STAT_IDS, PET_STATUS_BANDS, PET_MOODS, PET_BEHAVIOR_STATES, PET_BEHAVIOR_EVENTS, PET_CARE_REJECTION_DETAILS]) {
+      expect(Object.isFrozen(values)).toBe(true);
+      expect(() => (values as unknown as string[]).push("invented")).toThrow();
+    }
+  });
 });

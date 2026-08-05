@@ -1,9 +1,9 @@
-export const PET_STAT_IDS = ["hunger", "energy", "cleanliness", "affection"] as const;
-export const PET_STATUS_BANDS = ["floor", "low", "normal", "high"] as const;
-export const PET_MOODS = ["withdrawn", "restless", "neutral", "engaged"] as const;
-export const PET_BEHAVIOR_STATES = ["idle", "care_response", "active", "resting"] as const;
-export const PET_BEHAVIOR_EVENTS = ["grid_tick", "care_applied", "care_rejected"] as const;
-export const PET_CARE_REJECTION_DETAILS = ["cooldown", "ineligible", "saturated", "unknown_pet", "unknown_action"] as const;
+export const PET_STAT_IDS = Object.freeze(["hunger", "energy", "cleanliness", "affection"] as const);
+export const PET_STATUS_BANDS = Object.freeze(["floor", "low", "normal", "high"] as const);
+export const PET_MOODS = Object.freeze(["withdrawn", "restless", "neutral", "engaged"] as const);
+export const PET_BEHAVIOR_STATES = Object.freeze(["idle", "care_response", "active", "resting"] as const);
+export const PET_BEHAVIOR_EVENTS = Object.freeze(["grid_tick", "care_applied", "care_rejected"] as const);
+export const PET_CARE_REJECTION_DETAILS = Object.freeze(["cooldown", "ineligible", "saturated", "unknown_pet", "unknown_action"] as const);
 
 export type PetStatID = typeof PET_STAT_IDS[number];
 export type PetStatusBand = typeof PET_STATUS_BANDS[number];

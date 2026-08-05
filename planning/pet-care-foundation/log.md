@@ -209,3 +209,10 @@ solid.**
 - Filed one replay-owned Founder pet-state proposal that resolves the mutable-table/snapshot and
   stored/derived-mood contradictions. Immutable identity stays relational; mutable mechanics stay
   inside the Founder transition boundary; writable bonds remain deferred.
+
+## 2026-08-05 — protocol authority hardening
+
+- Self-review confirmed Go vocabulary accessors return defensive copies, then found the
+  TypeScript `as const` arrays were compile-time readonly but still mutable at runtime through a
+  cast. Froze every exported array and added a mutation regression so protocol vocabulary cannot
+  drift inside a running client.
