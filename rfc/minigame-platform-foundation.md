@@ -286,6 +286,30 @@ production fallback/offline automation.
   automation destination named (the tenant's offline output); the score->grade curve, remainder,
   and floor value are balance data. Every object has a closed identity/version rule.
 
+## Owner rulings on C28-C30 (2026-08-05)
+
+- **C28 - accepted: the transform grammar is one closed ROW (not a graph).** Each scaling row is
+  exact-key `{destination, destination_class, source_kind, source_ref, op, operand, clamp_min,
+  clamp_max}`; `op` is a closed union (identity|add|mul|floordiv) applied in the fixed order
+  source->op(operand)->clamp; floor rounding, negative-safe; composition is ONE row per
+  destination (no graph - a destination fed twice is a load error). The Fairness Law stays
+  `ranked AND destination_class=power -> reject`. Loader distinguishes valid from invented by the
+  closed grammar; operands/bounds are balance data.
+- **C29 - accepted: Founder rating is a Founder-scope mechanic written through ApplyFounderLogged**
+  (the boundary exists exactly for this). Persisted: a Founder-scope `minigame_ratings` map
+  keyed by minigame_id (int Elo, initial 1000, floor 400 - the combat-bots contract's numbers as
+  balance data), plus a season-fact union. The resolve multi-stream transaction (C25) writes the
+  Company payout revision AND the Founder rating revision in one tx, Founder-then-Company; the
+  rating write is a new closed ApplyFounderLogged resolved-input arm `minigame_resolved` with its
+  own receipt + `minigame_rating_changed.v1` event. No invented Founder state - it's the Founder
+  boundary doing what it's for.
+- **C30 - accepted: the faucet payout row is exact-key** `{credited_resource_id, sends_per_day,
+  per_send_cap, conversion_ppm}`; the carried conversion remainder is a persisted session-state
+  field (`conversion_remainder_ppm`, floor-div with carry - the provision-grid pattern); session
+  idempotency is the claim-token + `(session_id)` PK the verification queue uses. The credited
+  resource is a declared catalog resource ID (never free-form). The locked transaction is now
+  writable/replayable from named columns.
+
 ## Acceptance criteria
 
 1. Session lifecycle: create→play→resolve→payout for a fixture tenant against the composed

@@ -21,6 +21,7 @@
     "server/guild/",
     "server/leaderboard/categories.go",
     "server/meters/",
+    "server/minigame/",
     "server/multiplier/",
     "server/prestige/",
     "server/production/",

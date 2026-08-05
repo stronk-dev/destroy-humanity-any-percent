@@ -16,6 +16,10 @@ RFC: `rfc/minigame-platform-foundation.md`
     same boundary; do not invent the deferred lane engine.
 - [ ] Land scaling-source validation, the ranked-power prohibition, fallback rows, and formula
   artifact output without production balance literals.
+  - [x] Implement C28's exact one-row transform grammar, exact integer resolver, ranked-power
+    rejection, and generated formula contract with focused tests.
+  - [ ] Implement the exact fallback and offline-quality policy rows without inventing their
+    deferred balance literals.
 - [ ] Land server-certified resolve/payout, faucet accounting, replay identity, and fault tests.
   - [x] Persist immutable applied-command rows and replay them from genesis before terminal
     resolution.

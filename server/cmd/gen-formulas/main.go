@@ -18,6 +18,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/meters"
+	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/multiplier"
 )
 
@@ -31,6 +32,14 @@ type formulaArtifact struct {
 	Guild               guildFormula      `json:"guild"`
 	PurchasableContent  contentFormula    `json:"purchasable_content"`
 	Meters              meterFormula      `json:"meters"`
+	MinigameScaling     minigameFormula   `json:"minigame_scaling"`
+}
+
+type minigameFormula struct {
+	Grammar        string   `json:"grammar"`
+	OperationOrder []string `json:"operation_order"`
+	Rounding       string   `json:"rounding"`
+	FairnessGate   string   `json:"fairness_gate"`
 }
 
 type meterFormula struct {
@@ -156,6 +165,9 @@ var formulaAuthorities = []authoritySpec{
 	{label: "guild.ApplySettlements", path: "guild/clearing_store.go", kind: authorityFunction, symbol: "ApplySettlements"},
 	{label: "meters.Advance", path: "meters/transition.go", kind: authorityFunction, symbol: "Advance"},
 	{label: "meters.wholeSteps", path: "meters/transition.go", kind: authorityFunction, symbol: "wholeSteps"},
+	{label: "minigame.LoadScalingPolicy", path: "minigame/scaling.go", kind: authorityFunction, symbol: "LoadScalingPolicy"},
+	{label: "minigame.ScalingPolicy.Resolve", path: "minigame/scaling.go", kind: authorityMethod, symbol: "Resolve"},
+	{label: "minigame.floorBigInt", path: "minigame/scaling.go", kind: authorityFunction, symbol: "floorBigInt"},
 }
 
 func main() {
@@ -198,7 +210,7 @@ func main() {
 		panic(err)
 	}
 	artifact := formulaArtifact{
-		SchemaVersion:       7,
+		SchemaVersion:       8,
 		ProductionRate:      "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
 		MultiplierSlotOrder: append([]multiplier.Slot(nil), multiplier.Order[:]...),
 		WithinSlotOrder:     multiplier.WithinSlotOrder,
@@ -251,6 +263,12 @@ func main() {
 			LedgerFactInput:   "apply declared delta once when fact_kind enters the committed Company fact set in this transition",
 			ContributionInput: "integrate declared delta_per_attended_hour only while (slot, source_id) is committed and non-neutral",
 			BandEvents:        "derive bands from numeric values; emit at most one meter_band_changed.v1 per changed meter in meter_id byte order",
+		},
+		MinigameScaling: minigameFormula{
+			Grammar:        "one exact-key row per unique destination: destination, destination_class, source_kind, source_ref, op, operand, clamp_min, clamp_max",
+			OperationOrder: []string{"resolve_source", "apply_" + string(minigame.ScalingIdentity) + "|" + string(minigame.ScalingAdd) + "|" + string(minigame.ScalingMul) + "|" + string(minigame.ScalingFloorDiv), "clamp"},
+			Rounding:       "floordiv uses mathematical floor, including negative non-integral quotients",
+			FairnessGate:   "ranked && destination_class == power rejects the catalog",
 		},
 	}
 	data, err := json.MarshalIndent(artifact, "", "  ")

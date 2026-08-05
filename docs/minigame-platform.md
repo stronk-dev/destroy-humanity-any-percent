@@ -55,3 +55,22 @@ history therefore fails closed before any payout can commit.
 The current conformance tenant is test-only. The combat duel adapter will register when its engine
 RFC supplies an implemented transition surface; the deferred lane engine is not fabricated by the
 platform.
+
+## Scaling policy grammar
+
+The platform can load and resolve structural scaling policies without enabling a production
+minigame catalog. A policy contains one exact-key row per destination:
+`destination`, `destination_class`, `source_kind`, `source_ref`, `op`, `operand`, `clamp_min`, and
+`clamp_max`. Destination classes are `power`, `breadth`, or `presentation`; source kinds are
+`literal`, `tier`, `purchased_generator_count`, `founder_carry_counter`, or
+`attended_quality_grade`; operations are `identity`, `add`, `mul`, or `floordiv`.
+
+Resolution reads the source, applies the one declared integer operation, then clamps to the
+declared range. Intermediate arithmetic is exact and unbounded; `floordiv` uses mathematical floor
+for negative values as well as positive ones. The final values must fit the numeric core's exact
+integer domain. Duplicate destinations, unknown keys or source paths, malformed integer literals,
+and ranked policies with a `power` destination fail catalog load. The generated formula artifact
+publishes this grammar and operation order and fingerprints the loader and resolver source.
+
+No production policy rows or balance values ship in this foundation slice. Those rows join the
+minigames epoch artifact only after harness tuning and an owner-approved balance mint.

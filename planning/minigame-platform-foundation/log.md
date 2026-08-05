@@ -167,3 +167,15 @@
 - Filed C28-C30 with executable proposals. The independently approved session history remains
   intact. Production payout stays blocked rather than inventing a wire or a second attendance
   source.
+
+## 2026-08-05 — C28 scaling grammar and exact resolver
+
+- Implemented the owner-ruled exact-key scaling row and closed source/operation unions. The loader
+  rejects unknown keys, duplicate destinations, unknown Founder carry paths, noncanonical integer
+  literals, invalid bounds or operands, and every ranked `power` destination.
+- Resolution uses exact integer intermediates before clamp and mathematical floor division for
+  negative values. Focused tests cover all five source arms, every operation class, negative floor,
+  a product beyond `int64` before clamp, and the loader's fail-closed cases.
+- The published formula artifact now fingerprints the scaling loader/resolver and states the exact
+  grammar, operation order, rounding rule, and Fairness Law. No production catalog row or balance
+  literal was introduced; fallback/offline-quality rows remain open in the parent checklist.
