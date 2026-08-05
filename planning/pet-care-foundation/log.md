@@ -440,3 +440,8 @@ Implemented by: Codex.
 
 Self-review remediation `3085d4d`: pre-v17 codecs now reject rather than silently discard
 nonempty minigame/pet maps. The regression and kernel 0.3.47 are in the independent-review range.
+
+Cross-stream remediation `00420ae`: Founder Exit replay now activates empty v17/v18 schema maps
+from the hash-matched next bundle before validating the result state. The Founder verifier resolves
+that bundle without deploy-current fallback, and v18 replay is proven after a v17 head. Kernel
+0.3.48; included in the independent-review range.

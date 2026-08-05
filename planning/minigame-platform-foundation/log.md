@@ -469,3 +469,10 @@ Implemented by: Codex.
 Self-review remediation `3085d4d`: the first landing let v14/v15 encode calls silently discard
 nonempty v17/v18 maps. Both legacy branches now reject Founder feature state, with a regression;
 kernel 0.3.47. This is part of the range awaiting independent review.
+
+Cross-stream remediation `00420ae`: the live Exit settlement could produce v17/v18, but the
+Founder replay arm previously copied only the result version. ApplyFounderLogged now derives the
+schema activation from the immutable next bundle, Founder-history verification resolves that exact
+bundle by result hash, and partial Company-transition Founder carry remains explicitly v16 without
+pretending to contain the Founder-only maps. Direct v16->v17->v18 replay and v17 Company-hook
+fixtures close both seams; kernel 0.3.48.
