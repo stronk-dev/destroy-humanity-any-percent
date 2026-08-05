@@ -195,7 +195,7 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     const state = restoreFounderReplayState(source, 17, bundle);
     expect(state.wireVersion).toBe(17);
     expect(state.minigameRatings).toEqual({});
-    expect(() => restoreReplayState(source, 17, bundle.economy, bundle)).toThrow();
+    expect(() => restoreReplayState(source, 17, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements! })).toThrow();
   });
 
   it.each(fixture.cases)("replays $name to the Go receipt, events, and state", async (testCase) => {
