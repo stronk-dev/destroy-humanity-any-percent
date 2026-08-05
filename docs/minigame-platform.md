@@ -106,5 +106,13 @@ remainder. It uses exact integer intermediates, so the product at the maximum le
 overflow native arithmetic or change the remainder. The formula artifact publishes and
 fingerprints both the loader and this operation order.
 
-The multi-stream payout transaction is not yet composed. The ruled cross-run window table and
-atomic transaction still need their migration/repository implementation.
+Cross-run quota and carry live on one `minigame_faucet_window` row keyed by Founder, minigame, and
+Founder-attended day. Under the Founder lock, conversion updates that row's modulo remainder,
+applies the per-send cap only while `quota_used < sends_per_day`, and increments quota once for an
+admitted send. Converted units beyond either configured limit are returned as forfeited with the
+declared cap reason. A new attended day starts a new zeroed row; no wall clock participates.
+
+The window mutation is transaction-owned and intentionally not exported. Its caller must already
+own the session claim in the same transaction; the token-owned terminal session update is the
+exactly-once authority. Rolling the transaction back removes both a newly inserted window and its
+arithmetic. Full Company+Founder+session composition remains the next slice.

@@ -269,6 +269,17 @@ recursive strict decode, overflow-safe payout, and cross-runtime pet grammar all
 - Updated the generated formula contract and canonical docs. C33 window persistence remains the
   next transaction slice; no production payout row was minted.
 
+## 2026-08-05 — C33 cross-run faucet window
+
+- Appended migration 00058 with the one owner-ruled authority keyed by Founder, minigame, and
+  Founder-attended day. Quota and conversion carry share the row; bounds are database-enforced.
+- Added an unexported transaction kernel that takes the Founder lock, resolves exact conversion,
+  persists its remainder, applies per-send/daily-send caps, and returns credited/forfeited amounts
+  plus the declared reason key. The future session claim remains the idempotency authority.
+- Real-Postgres coverage proves carry across sessions, quota and per-send caps, attended-day reset,
+  rollback of a newly inserted window, and rejection of an invalid remainder. No wall time or
+  production balance row participates.
+
 ## PROCESS ESCALATION — the delegated-review coverage gap is now systemic (5 consecutive batches)
 
 For five batches running the delegated (Darwin) approvals have stopped short of the substantive

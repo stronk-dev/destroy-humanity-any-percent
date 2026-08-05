@@ -29,7 +29,10 @@ RFC: `rfc/minigame-platform-foundation.md`
     enabling a production faucet.
   - [x] Implement C32's declared certified-score selector and cap-copy validation with fail-closed
     missing/negative fact tests.
-  - [ ] Compose C33 cap/window accounting and the multi-stream transaction.
+  - [x] Append C33's cross-run attended-day window and prove carried conversion, send/per-send
+    caps, new-day reset, database bounds, and transaction rollback against Postgres.
+  - [ ] Compose Company payout, Founder rating, token-owned session resolution, and the window in
+    one Founder→Company→session transaction.
 - [ ] Compose the platform into the gameserver and prove solo/async-snapshot lifecycle ACs.
 - [ ] Mint the production artifact only after owner/harness-supplied balance rows.
 - [ ] Update canonical docs, pass normal repository-root verification, obtain independent

@@ -1,5 +1,5 @@
 {
-  "schema_version": 11,
+  "schema_version": 12,
   "production_rate": "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
   "multiplier_slot_order": [
     "upgrades",
@@ -12,7 +12,7 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "9ffb633a6c2c956bb49ea271c5200ca57e58ec7f417299fe2254cd04b0d7c384",
+  "source_fingerprint": "57ae8bb12a052e4358aecc5c468831d76a533f472df7c96b3ccda379bf8d5ba2",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
@@ -95,7 +95,9 @@
       "select the one nonnegative certified payout_score_fact_id",
       "floor(score * (1000000 - rate_reduction_ppm) / 1000000)",
       "floor((reduced_score * conversion_ppm + prior_remainder_ppm) / 1000000)",
-      "persist modulo remainder"
+      "persist modulo remainder on Founder/minigame/attended-day window",
+      "apply per_send_cap when quota_used \u003c sends_per_day",
+      "increment quota_used for each admitted send"
     ],
     "payout_math": "exact integer intermediates; legal exact-domain inputs cannot overflow the converted output"
   }
