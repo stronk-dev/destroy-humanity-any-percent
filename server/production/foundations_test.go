@@ -11,7 +11,9 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/meters"
+	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/save"
 )
@@ -80,6 +82,73 @@ func foundationTestBundles(t *testing.T) (CatalogBundle, CatalogBundle) {
 		t.Fatal("foundation bundle is not internally valid")
 	}
 	return legacy, active
+}
+
+func founderFeatureBundles(t *testing.T, active CatalogBundle) (CatalogBundle, CatalogBundle) {
+	t.Helper()
+	minigameBytes := []byte(`{"schema_version":1,"minigame_ids":[],"rating_seasons":[]}`)
+	minigameCatalog, err := minigame.LoadCatalog(minigameBytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	withMinigames := active
+	withMinigames.Artifacts = cloneArtifactMap(active.Artifacts)
+	withMinigames.Artifacts["minigames"] = minigameBytes
+	withMinigames.ConstantsHash, err = save.ConstantsHashArtifacts(withMinigames.Artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	withMinigames.Minigames = minigameCatalog
+	petBytes := []byte(`{"schema_version":1,"stat_policy":{"grid_ms":60000,"stats":[{"stat_id":"hunger","initial_ppm":800000,"floor_ppm":100000,"decay_ppm_per_grid":1000},{"stat_id":"energy","initial_ppm":800000,"floor_ppm":100000,"decay_ppm_per_grid":1000},{"stat_id":"cleanliness","initial_ppm":800000,"floor_ppm":100000,"decay_ppm_per_grid":1000},{"stat_id":"affection","initial_ppm":800000,"floor_ppm":100000,"decay_ppm_per_grid":1000}],"diminishing_threshold_ppm":700000,"diminishing_factor_ppm":500000},"actions":[],"trust_policy":{"initial_ppm":500000,"neutral_ppm":500000,"floor_ppm":100000,"cap_ppm":1000000,"gain_ppm_per_effective_action":1000,"decay_ppm_per_grid":100},"mood_policy":[{"mood_member":"withdrawn","floor_ppm":0},{"mood_member":"restless","floor_ppm":250000},{"mood_member":"neutral","floor_ppm":500000},{"mood_member":"engaged","floor_ppm":750000}],"behavior_policy":[]}`)
+	petCatalog, err := pet.LoadCatalog(petBytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	withPets := withMinigames
+	withPets.Artifacts = cloneArtifactMap(withMinigames.Artifacts)
+	withPets.Artifacts["pets"] = petBytes
+	withPets.ConstantsHash, err = save.ConstantsHashArtifacts(withPets.Artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	withPets.Pets = petCatalog
+	if !withMinigames.valid(withMinigames.ConstantsHash) || !withPets.valid(withPets.ConstantsHash) {
+		t.Fatal("Founder feature bundles invalid")
+	}
+	return withMinigames, withPets
+}
+
+func cloneArtifactMap(source map[string][]byte) map[string][]byte {
+	result := make(map[string][]byte, len(source)+1)
+	for key, value := range source {
+		result[key] = append([]byte(nil), value...)
+	}
+	return result
+}
+
+func TestFounderFeatureVersionsAreReachableWithoutChangingCompanyAxis(t *testing.T) {
+	legacy, active := foundationTestBundles(t)
+	minigames, pets := founderFeatureBundles(t, active)
+	founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+	company := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	firstCompany := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	if err := settleAndActivateFoundations(legacy, active, founder, company, firstCompany); err != nil {
+		t.Fatal(err)
+	}
+	secondCompany := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	if err := settleAndActivateFoundations(active, minigames, founder, firstCompany, secondCompany); err != nil {
+		t.Fatal(err)
+	}
+	if save.VersionForState(founder) != 17 || save.VersionForState(secondCompany) != 16 {
+		t.Fatalf("mixed axes founder=%d company=%d", save.VersionForState(founder), save.VersionForState(secondCompany))
+	}
+	thirdCompany := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	if err := settleAndActivateFoundations(minigames, pets, founder, secondCompany, thirdCompany); err != nil {
+		t.Fatal(err)
+	}
+	if save.VersionForState(founder) != 18 || save.VersionForState(thirdCompany) != 16 || founder.Pets == nil {
+		t.Fatalf("v18 axes/state founder=%d company=%d pets=%v", save.VersionForState(founder), save.VersionForState(thirdCompany), founder.Pets)
+	}
 }
 
 func retunedAchievementBundle(t *testing.T, active CatalogBundle, scoreGrant int64) CatalogBundle {

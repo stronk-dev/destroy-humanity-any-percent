@@ -17,7 +17,9 @@ import (
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/meters"
+	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
@@ -36,6 +38,8 @@ type CatalogBundle struct {
 	Guild         *guild.Catalog
 	Meters        *meters.Catalog
 	Achievements  *achievements.Catalog
+	Minigames     *minigame.Catalog
+	Pets          *pet.Catalog
 	Next          *CatalogBundle
 }
 
@@ -93,9 +97,17 @@ func (set ReplayCatalogSet) ResolveFaction(constantsHash string) (*faction.Catal
 
 func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withFoundations := bundle.Meters != nil || bundle.Achievements != nil
+	withMinigames := bundle.Minigames != nil
+	withPets := bundle.Pets != nil
 	expectedArtifacts := 7
 	if withFoundations {
 		expectedArtifacts = 9
+	}
+	if withMinigames {
+		expectedArtifacts = 10
+	}
+	if withPets {
+		expectedArtifacts = 11
 	}
 	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != expectedArtifacts || bundle.Economy == nil ||
 		bundle.Routes == nil || bundle.Commons == nil || bundle.Prestige == nil || bundle.Faction == nil || bundle.Guild == nil {
@@ -109,6 +121,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	if withFoundations && (bundle.Meters == nil || bundle.Achievements == nil || len(bundle.Artifacts["meters"]) == 0 || len(bundle.Artifacts["achievements"]) == 0) {
 		return false
 	}
+	if withMinigames && (!withFoundations || len(bundle.Artifacts["minigames"]) == 0) || withPets && (!withMinigames || len(bundle.Artifacts["pets"]) == 0) {
+		return false
+	}
 	computed, err := save.ConstantsHashArtifacts(bundle.Artifacts)
 	return err == nil && computed == constantsHash
 }
@@ -117,6 +132,12 @@ func (bundle CatalogBundle) versionFloors() (founder, company int) {
 	founder, company = save.CurrentVersion, save.CurrentVersion
 	if bundle.foundationsActive() {
 		founder, company = 16, 16
+	}
+	if bundle.Minigames != nil {
+		founder = 17
+	}
+	if bundle.Pets != nil {
+		founder = 18
 	}
 	return founder, company
 }

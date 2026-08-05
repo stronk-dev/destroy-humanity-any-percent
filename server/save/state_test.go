@@ -10,6 +10,7 @@ import (
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/pet"
 )
 
 const stateCatalogJSON = `{
@@ -271,6 +272,42 @@ func TestStateV16FoundationRoundTripAndVersionAuthority(t *testing.T) {
 	}
 	if _, err := EncodeStateVersion(restored, 14); !errors.Is(err, ErrInvalidState) {
 		t.Fatalf("v16 mechanics downgraded to v14: %v", err)
+	}
+}
+
+func TestFounderV17AndV18RoundTripWhileCompanyRejectsThem(t *testing.T) {
+	catalog := stateCatalog(t)
+	ledger, err := economy.NewLedger(catalog, economy.ScopeFounder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := &State{WireVersion: 17, Ledger: ledger, GeneratorCounts: map[string]int64{}, GeneratorProvisioned: map[string]int64{},
+		ProvisionRemaindersPPM: map[string]int64{}, UpgradesOwned: map[string]bool{}, EvaluatedThrough: testCursor,
+		ManualTokenRefilledAt: testCursor, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{},
+		LedgerFactKinds: map[string]bool{}, MeterValues: map[string]int{}, MeterDecayRemainders: map[string]int64{}, MeterInputRemainders: map[string]int64{},
+		AchievementsEarnedRun: map[string]bool{}, AchievementsEarnedLifetime: map[string]bool{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{},
+		CompactSamples: []CompactSample{}, OfflineSpans: []OfflineSpan{}, NetworkSlots: []NetworkSlot{}, ExitHistory: []ExitRecord{},
+		MinigameRatings: map[string]MinigameRatingState{}, MinigameOfflineQuality: map[string]MinigameOfflineQualityState{}}
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err := RestoreState(encoded, 17, catalog, economy.ScopeFounder, time.Time{})
+	if err != nil || restored.MinigameRatings == nil || restored.MinigameOfflineQuality == nil {
+		t.Fatalf("v17 restore=%+v err=%v", restored, err)
+	}
+	if _, err := RestoreState(encoded, 17, catalog, economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("Company accepted v17: %v", err)
+	}
+	state.WireVersion = 18
+	state.Pets = map[string]pet.CareState{}
+	encoded, err = EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err = RestoreState(encoded, 18, catalog, economy.ScopeFounder, time.Time{})
+	if err != nil || restored.Pets == nil {
+		t.Fatalf("v18 restore=%+v err=%v", restored, err)
 	}
 }
 

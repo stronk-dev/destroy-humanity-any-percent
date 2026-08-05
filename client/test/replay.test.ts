@@ -187,6 +187,17 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		await expect(loadReplayCatalogBundle(await artifactHash(malformed), malformed)).rejects.toThrow(/gate set differs from routes/);
   });
 
+  it("derives Founder v17 from minigames while Company remains capped at v16", async () => {
+    const activeCase = fixture.additional_bundles.find((value) => value.case.name === "active-foundation-offline-5001ms")!;
+    const artifacts: ReplayArtifacts = { ...activeCase.artifacts, minigames: JSON.stringify({ schema_version: 1, minigame_ids: [], rating_seasons: [] }) };
+    const bundle = await loadReplayCatalogBundle(await artifactHash(artifacts), artifacts);
+    const source = { ...(fixture.founder_run.head_state as Record<string, unknown>), minigame_ratings: {}, minigame_offline_quality: {} };
+    const state = restoreFounderReplayState(source, 17, bundle);
+    expect(state.wireVersion).toBe(17);
+    expect(state.minigameRatings).toEqual({});
+    expect(() => restoreReplayState(source, 17, bundle.economy, bundle)).toThrow();
+  });
+
   it.each(fixture.cases)("replays $name to the Go receipt, events, and state", async (testCase) => {
     const bundle = await loadReplayCatalogBundle(fixture.constants_hash, fixture.artifacts);
     const state = restoreReplayState(testCase.pre_state, 14, bundle.economy);

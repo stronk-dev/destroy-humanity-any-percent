@@ -25,7 +25,7 @@ type FounderGenesis struct {
 func InsertFounderGenesisTx(ctx context.Context, tx *sql.Tx, genesis FounderGenesis) error {
 	if tx == nil || !uuidPattern.MatchString(genesis.FounderStreamID) || genesis.Revision < 1 ||
 		genesis.Revision > decimal.MaxExactInteger || genesis.Version < 1 || genesis.Version == 15 ||
-		genesis.Version > LatestSupportedVersion || len(genesis.State) == 0 ||
+		genesis.Version > LatestFounderVersion || len(genesis.State) == 0 ||
 		!hashPattern.MatchString(genesis.ConstantsHash) {
 		return ErrInvalidState
 	}

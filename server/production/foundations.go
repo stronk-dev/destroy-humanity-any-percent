@@ -7,6 +7,8 @@ import (
 	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/meters"
+	"cloud-clicker/server/minigame"
+	"cloud-clicker/server/pet"
 	"cloud-clicker/server/save"
 )
 
@@ -58,8 +60,13 @@ func (bundle CatalogBundle) ValidateFoundationState(state *save.State) error {
 		}
 		return nil
 	}
-	if save.VersionForState(state) != 16 {
-		return fmt.Errorf("%w: pinned foundations require save v16", ErrInvalidEngineState)
+	founderFloor, companyFloor := bundle.versionFloors()
+	wantVersion := companyFloor
+	if state.Ledger.Scope() == economy.ScopeFounder {
+		wantVersion = founderFloor
+	}
+	if save.VersionForState(state) != wantVersion {
+		return fmt.Errorf("%w: pinned artifact/save version mismatch", ErrInvalidEngineState)
 	}
 	switch state.Ledger.Scope() {
 	case economy.ScopeCompany:
@@ -76,6 +83,39 @@ func (bundle CatalogBundle) ValidateFoundationState(state *save.State) error {
 		if err != nil || score != state.AchievementScoreLifetime {
 			return fmt.Errorf("%w: lifetime achievement score does not derive from earned IDs", ErrInvalidEngineState)
 		}
+		if err := validateFounderMinigameState(bundle.Minigames, state); err != nil {
+			return err
+		}
+		if bundle.Pets == nil {
+			if len(state.Pets) != 0 {
+				return fmt.Errorf("%w: pets without pinned artifact", ErrInvalidEngineState)
+			}
+		} else if pet.ValidateCareStates(state.Pets, bundle.Pets.StateDeclarations()) != nil {
+			return fmt.Errorf("%w: invalid pinned pet state", ErrInvalidEngineState)
+		}
+	}
+	return nil
+}
+
+func validateFounderMinigameState(catalog *minigame.Catalog, state *save.State) error {
+	if catalog == nil {
+		if len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 {
+			return fmt.Errorf("%w: minigames without pinned artifact", ErrInvalidEngineState)
+		}
+		return nil
+	}
+	ids := catalog.MinigameIDs()
+	if len(state.MinigameRatings) != len(ids) || len(state.MinigameOfflineQuality) != len(ids) {
+		return fmt.Errorf("%w: minigame state key set", ErrInvalidEngineState)
+	}
+	for _, id := range ids {
+		rating, ok := state.MinigameRatings[id]
+		quality, qualityOK := state.MinigameOfflineQuality[id]
+		if !ok || !qualityOK || !catalog.HasRatingSeason(rating.SeasonMember) || minigame.ValidateOfflineQualityState(minigame.OfflineQualityState{
+			GradePPM: quality.GradePPM, LastFounderAttendedMS: quality.LastFounderAttendedMS, DecayRemainderPPM: quality.DecayRemainderPPM,
+		}) != nil {
+			return fmt.Errorf("%w: invalid pinned minigame state", ErrInvalidEngineState)
+		}
 	}
 	return nil
 }
@@ -86,7 +126,8 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 	}
 	currentActive, nextActive := current.foundationsActive(), next.foundationsActive()
 	if currentActive {
-		if !nextActive || save.VersionForState(founder) != 16 || save.VersionForState(company) != 16 {
+		currentFounderFloor, currentCompanyFloor := current.versionFloors()
+		if !nextActive || save.VersionForState(founder) != currentFounderFloor || save.VersionForState(company) != currentCompanyFloor {
 			return fmt.Errorf("%w: foundation mechanics cannot disappear between epochs", ErrInvalidEngineState)
 		}
 		if err := current.ValidateFoundationState(founder); err != nil {
@@ -122,12 +163,22 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 		founder.AchievementsEarnedLifetime = map[string]bool{}
 		founder.AchievementScoreLifetime = 0
 	}
-	founder.WireVersion = 16
+	nextFounderFloor, nextCompanyFloor := next.versionFloors()
+	if next.Minigames != nil && current.Minigames == nil {
+		founder.MinigameRatings = map[string]save.MinigameRatingState{}
+		founder.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{}
+		// Content rows activate only with a later mint. An empty activation
+		// artifact therefore produces complete empty maps without inventing Elo.
+	}
+	if next.Pets != nil && current.Pets == nil {
+		founder.Pets = map[string]pet.CareState{}
+	}
+	founder.WireVersion = nextFounderFloor
 	newMeters, err := meters.NewRunState(next.Meters, founder.Notoriety)
 	if err != nil {
 		return err
 	}
-	newCompany.WireVersion = 16
+	newCompany.WireVersion = nextCompanyFloor
 	newCompany.MeterBands = nil
 	newCompany.MeterValues = newMeters.Values
 	newCompany.MeterDecayRemainders = newMeters.DecayRemainders

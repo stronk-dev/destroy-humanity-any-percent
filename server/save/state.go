@@ -16,11 +16,14 @@ import (
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/pet"
 )
 
 const (
 	CurrentVersion           = 14
 	LatestSupportedVersion   = 16
+	LatestFounderVersion     = 18
+	LatestCompanyVersion     = LatestSupportedVersion
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
 )
@@ -58,6 +61,9 @@ type State struct {
 	AchievementScoreRun        int64
 	AchievementsEarnedLifetime map[string]bool
 	AchievementScoreLifetime   int64
+	MinigameRatings            map[string]MinigameRatingState
+	MinigameOfflineQuality     map[string]MinigameOfflineQualityState
+	Pets                       map[string]pet.CareState
 	RegionTraits               map[string]bool
 	RouteKnowledgeBalance      int64
 	HintsUnlocked              map[string]bool
@@ -248,6 +254,29 @@ type stateV16 struct {
 	AchievementScoreLifetime   *int64   `json:"achievement_score_lifetime"`
 }
 
+type MinigameRatingState struct {
+	Elo          int64  `json:"elo"`
+	SeasonMember string `json:"season_member"`
+	GamesCounted int64  `json:"games_counted"`
+}
+
+type MinigameOfflineQualityState struct {
+	GradePPM              int64 `json:"grade_ppm"`
+	LastFounderAttendedMS int64 `json:"last_founder_attended_ms"`
+	DecayRemainderPPM     int64 `json:"decay_remainder_ppm"`
+}
+
+type stateV17 struct {
+	stateV16
+	MinigameRatings        map[string]MinigameRatingState         `json:"minigame_ratings"`
+	MinigameOfflineQuality map[string]MinigameOfflineQualityState `json:"minigame_offline_quality"`
+}
+
+type stateV18 struct {
+	stateV17
+	Pets map[string]pet.CareState `json:"pets"`
+}
+
 type rawExitOfferState struct {
 	OfferID     string          `json:"offer_id"`
 	ExitType    string          `json:"exit_type"`
@@ -323,7 +352,7 @@ func migratedWriteVersion(version int) int {
 }
 
 func writableStateVersion(version int) bool {
-	return version == CurrentVersion || version == LatestSupportedVersion
+	return version == CurrentVersion || version >= 16 && version <= LatestFounderVersion
 }
 
 func EncodeState(state *State) ([]byte, error) {
@@ -381,7 +410,11 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 	if err := validateGuildState(&normalized, normalized.Ledger.Scope(), false); err != nil {
 		return nil, err
 	}
-	if version < 1 || version > LatestSupportedVersion || version != CurrentVersion && version != 15 && version != 16 {
+	maximum := LatestCompanyVersion
+	if normalized.Ledger.Scope() == economy.ScopeFounder {
+		maximum = LatestFounderVersion
+	}
+	if version < 1 || version > maximum || version != CurrentVersion && version != 15 && version != 16 && version != 17 && version != 18 {
 		return nil, fmt.Errorf("%w: unsupported encode version %d", ErrInvalidState, version)
 	}
 	if err := validateFoundationState(&normalized, version, normalized.Ledger.Scope()); err != nil {
@@ -430,9 +463,18 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 		wire = v15
 		if version >= 16 {
 			runScore, lifetimeScore := normalized.AchievementScoreRun, normalized.AchievementScoreLifetime
-			wire = stateV16{stateV15: v15, AchievementsEarnedRun: sortedTrueKeys(normalized.AchievementsEarnedRun),
+			v16 := stateV16{stateV15: v15, AchievementsEarnedRun: sortedTrueKeys(normalized.AchievementsEarnedRun),
 				AchievementScoreRun: &runScore, AchievementsEarnedLifetime: sortedTrueKeys(normalized.AchievementsEarnedLifetime),
 				AchievementScoreLifetime: &lifetimeScore}
+			wire = v16
+			if version >= 17 {
+				v17 := stateV17{stateV16: v16, MinigameRatings: cloneMinigameRatings(normalized.MinigameRatings),
+					MinigameOfflineQuality: cloneMinigameOfflineQuality(normalized.MinigameOfflineQuality)}
+				wire = v17
+				if version >= 18 {
+					wire = stateV18{stateV17: v17, Pets: clonePetStates(normalized.Pets)}
+				}
+			}
 		}
 	}
 	encoded, err := json.Marshal(wire)
@@ -454,8 +496,12 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 }
 
 func RestoreState(data []byte, version int, catalog *economy.Catalog, scope economy.Scope, migrationBaseline time.Time) (*State, error) {
-	if version > LatestSupportedVersion {
-		return nil, fmt.Errorf("%w: save version %d is newer than supported version %d", ErrInvalidState, version, LatestSupportedVersion)
+	maximum := LatestCompanyVersion
+	if scope == economy.ScopeFounder {
+		maximum = LatestFounderVersion
+	}
+	if version > maximum {
+		return nil, fmt.Errorf("%w: save version %d is newer than supported version %d", ErrInvalidState, version, maximum)
 	}
 	if version < 1 {
 		return nil, fmt.Errorf("%w: unsupported save version %d", ErrInvalidState, version)
@@ -475,7 +521,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		}
 	}
 
-	var source stateV16
+	var source stateV18
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -485,7 +531,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err != nil {
 			return nil, fmt.Errorf("%w: version-1 migration baseline: %v", ErrInvalidState, err)
 		}
-		source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
+		source.stateV17.stateV16.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
 			Balances: legacy.Balances, Generators: zeroGeneratorCounts(catalog, scope), EvaluatedThrough: cursor,
 		}
 	} else if version == 2 {
@@ -493,13 +539,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
+		source.stateV17.stateV16.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough}
 	} else if version < 5 {
 		var previous stateV4
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
+		source.stateV17.stateV16.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = stateV5{
 			Balances: previous.Balances, Generators: previous.Generators, EvaluatedThrough: previous.EvaluatedThrough,
 			ComputeCreditMS: previous.ComputeCreditMS, ManualTokenMilli: previous.ManualTokenMilli,
 			ManualTokenRefilledAt: previous.ManualTokenRefilledAt,
@@ -509,13 +555,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = previous
+		source.stateV17.stateV16.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6.stateV5 = previous
 	} else if version == 6 {
 		var previous stateV6
 		if err := decodeState(data, &previous); err != nil {
 			return nil, err
 		}
-		source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6 = previous
+		source.stateV17.stateV16.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7.stateV6 = previous
 	} else if version == 7 {
 		if err := decodeState(data, &source.stateV15.stateV14.stateV13.stateV12.stateV11.stateV10.stateV9.stateV8.stateV7); err != nil {
 			return nil, err
@@ -618,6 +664,12 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if version >= 16 && (source.AchievementsEarnedRun == nil || source.AchievementScoreRun == nil || source.AchievementsEarnedLifetime == nil || source.AchievementScoreLifetime == nil) {
 		return nil, fmt.Errorf("%w: achievement state collections are required", ErrInvalidState)
 	}
+	if version >= 17 && (source.MinigameRatings == nil || source.MinigameOfflineQuality == nil) {
+		return nil, fmt.Errorf("%w: minigame Founder collections are required", ErrInvalidState)
+	}
+	if version >= 18 && source.Pets == nil {
+		return nil, fmt.Errorf("%w: pet Founder collection is required", ErrInvalidState)
+	}
 	ownedUpgrades, err := validateOwnedUpgrades(catalog, scope, source.UpgradesOwned)
 	if err != nil {
 		return nil, err
@@ -696,6 +748,13 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		}
 		state.AchievementScoreRun, state.AchievementScoreLifetime = *source.AchievementScoreRun, *source.AchievementScoreLifetime
 	}
+	if version >= 17 {
+		state.MinigameRatings = cloneMinigameRatings(source.MinigameRatings)
+		state.MinigameOfflineQuality = cloneMinigameOfflineQuality(source.MinigameOfflineQuality)
+	}
+	if version >= 18 {
+		state.Pets = clonePetStates(source.Pets)
+	}
 	if source.GuildBoundaryGuildID != nil {
 		state.GuildBoundaryGuildID = *source.GuildBoundaryGuildID
 	}
@@ -761,6 +820,9 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 }
 
 func validateFoundationState(state *State, version int, scope economy.Scope) error {
+	if scope == economy.ScopeCompany && version > LatestCompanyVersion {
+		return fmt.Errorf("%w: Company scope rejects Founder-only save v%d", ErrInvalidState, version)
+	}
 	if version < 15 {
 		if len(state.MeterValues) != 0 || len(state.MeterDecayRemainders) != 0 || len(state.MeterInputRemainders) != 0 ||
 			len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 {
@@ -795,7 +857,106 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	} else if len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 {
 		return fmt.Errorf("%w: achievement state leaked outside founder scopes", ErrInvalidState)
 	}
+	if version < 17 {
+		if len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
+			return fmt.Errorf("%w: Founder mechanics present before v17", ErrInvalidState)
+		}
+		return nil
+	}
+	if scope != economy.ScopeFounder || state.MinigameRatings == nil || state.MinigameOfflineQuality == nil {
+		return fmt.Errorf("%w: minigame state requires Founder v17+", ErrInvalidState)
+	}
+	for id, rating := range state.MinigameRatings {
+		if !stateMechanicalIDPattern.MatchString(id) || rating.Elo < -decimal.MaxExactInteger || rating.Elo > decimal.MaxExactInteger ||
+			!stateMechanicalIDPattern.MatchString(rating.SeasonMember) || rating.GamesCounted < 0 || rating.GamesCounted > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid minigame rating state", ErrInvalidState)
+		}
+	}
+	for id, quality := range state.MinigameOfflineQuality {
+		if !stateMechanicalIDPattern.MatchString(id) || quality.GradePPM < 0 || quality.GradePPM > 1_000_000 ||
+			quality.LastFounderAttendedMS < 0 || quality.LastFounderAttendedMS > decimal.MaxExactInteger ||
+			quality.DecayRemainderPPM < 0 || quality.DecayRemainderPPM >= 1_000_000 {
+			return fmt.Errorf("%w: invalid minigame offline-quality state", ErrInvalidState)
+		}
+	}
+	if version < 18 {
+		if len(state.Pets) != 0 {
+			return fmt.Errorf("%w: pet state present before v18", ErrInvalidState)
+		}
+		return nil
+	}
+	if state.Pets == nil || validatePetStateShape(state.Pets) != nil {
+		return fmt.Errorf("%w: invalid pet state", ErrInvalidState)
+	}
 	return nil
+}
+
+func validatePetStateShape(states map[string]pet.CareState) error {
+	actions, behaviors := map[string]bool{}, map[string]bool{}
+	for _, state := range states {
+		for id := range state.CooldownUntilAttendedMS {
+			actions[id] = true
+		}
+		for _, entry := range state.BehaviorQueue {
+			behaviors[entry.BehaviorID] = true
+		}
+	}
+	return pet.ValidateCareStates(states, pet.StateDeclarations{ActionIDs: sortedBoolKeys(actions), BehaviorIDs: sortedBoolKeys(behaviors)})
+}
+
+func sortedBoolKeys(values map[string]bool) []string {
+	result := make([]string, 0, len(values))
+	for key := range values {
+		result = append(result, key)
+	}
+	sort.Strings(result)
+	return result
+}
+
+func cloneMinigameRatings(values map[string]MinigameRatingState) map[string]MinigameRatingState {
+	if values == nil {
+		return nil
+	}
+	result := make(map[string]MinigameRatingState, len(values))
+	for key, value := range values {
+		result[key] = value
+	}
+	return result
+}
+
+func cloneMinigameOfflineQuality(values map[string]MinigameOfflineQualityState) map[string]MinigameOfflineQualityState {
+	if values == nil {
+		return nil
+	}
+	result := make(map[string]MinigameOfflineQualityState, len(values))
+	for key, value := range values {
+		result[key] = value
+	}
+	return result
+}
+
+func clonePetStates(values map[string]pet.CareState) map[string]pet.CareState {
+	if values == nil {
+		return nil
+	}
+	encoded, err := json.Marshal(values)
+	if err != nil {
+		return nil
+	}
+	actions, behaviors := map[string]bool{}, map[string]bool{}
+	for _, state := range values {
+		for id := range state.CooldownUntilAttendedMS {
+			actions[id] = true
+		}
+		for _, entry := range state.BehaviorQueue {
+			behaviors[entry.BehaviorID] = true
+		}
+	}
+	decoded, err := pet.DecodeCareStates(encoded, pet.StateDeclarations{ActionIDs: sortedBoolKeys(actions), BehaviorIDs: sortedBoolKeys(behaviors)})
+	if err != nil {
+		return nil
+	}
+	return decoded
 }
 
 func validateFactionState(state *State, scope economy.Scope) error {

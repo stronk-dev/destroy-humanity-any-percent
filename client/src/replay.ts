@@ -11,6 +11,9 @@ import { loadMeterCatalog, validateMeterResourceSeparation, type MeterCatalog } 
 import { advanceMeters, contributionKey as meterContributionKey, newRunMeterState, validateMeterState } from "./meters/transition";
 import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize, sumDeterministic } from "./numeric";
 import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
+import { parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
+import { parsePetCatalog, type PetCatalog } from "./pet/catalog";
+import { parsePetCareStates, type PetCareState } from "./pet/state";
 import { discountedRequirements, evaluatePredicate, parseRoutesCatalog, type RouteContext, type RoutesCatalog } from "./routes";
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -18,11 +21,11 @@ const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]
 const hashPattern = /^sha256:[0-9a-f]{64}$/;
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 
-export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly meters?: string; readonly achievements?: string }
+export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly meters?: string; readonly achievements?: string; readonly minigames?: string; readonly pets?: string }
 export interface ReplayCatalogBundle {
   readonly constantsHash: string; readonly artifacts: ReplayArtifacts; readonly economy: EconomyCatalog; readonly routes: RoutesCatalog;
   readonly commons: CommonsCatalog; readonly prestige: PrestigePolicy; readonly factions: FactionCatalog; readonly guilds: GuildCatalog;
-  readonly meters?: MeterCatalog; readonly achievements?: AchievementCatalog;
+  readonly meters?: MeterCatalog; readonly achievements?: AchievementCatalog; readonly minigames?: MinigameCatalog; readonly pets?: PetCatalog;
   readonly next?: ReplayCatalogBundle;
 }
 export interface ReplayContribution { readonly slot: MultiplierSlot; readonly source_id: string; readonly target: string; readonly factor: string }
@@ -52,7 +55,7 @@ export interface LoggedExitTransition {
   readonly founderEvents: readonly ReplayEvent[]; readonly companyEndedEvents: readonly ReplayEvent[]; readonly companyStartedEvents: readonly ReplayEvent[];
 }
 export interface FounderReplayState {
-  wireVersion: 14 | 15 | 16;
+  wireVersion: 14 | 15 | 16 | 17 | 18;
   balances: Record<string, string>; generators: Record<string, number>; generatorPurchasedTotal: number;
   upgradesOwned: Set<string>; generatorsProvisioned: Record<string, number>; provisionRemaindersPpm: Record<string, number>;
   stockRateRemainderPpm: number; evaluatedThroughMs: number; computeCreditMs: number; manualTokenMilli: number;
@@ -60,6 +63,9 @@ export interface FounderReplayState {
   ledgerFactKinds: Set<string>; reputationLevel: number; networkSlots: NetworkSlot[]; cloutLifetime: number; soul: number;
   ageMs: number; notoriety: number; advisorMode: boolean; exitHistory: FounderExitRecord[];
   achievementsEarnedLifetime: Set<string>; achievementScoreLifetime: number;
+  minigameRatings: Record<string, { elo: number; season_member: string; games_counted: number }>;
+  minigameOfflineQuality: Record<string, { grade_ppm: number; last_founder_attended_ms: number; decay_remainder_ppm: number }>;
+  pets: Record<string, PetCareState>;
 }
 export interface FounderLoggedTransition {
   readonly state: FounderReplayState; readonly outcome: "applied" | "rejected"; readonly receipt: unknown;
@@ -70,7 +76,7 @@ export interface FounderReplayLogEntry {
   readonly replayInputs: unknown; readonly receiptJSON: string; readonly eventsJSON: string; readonly appliedRevision: number | null;
   readonly serverTSMS: number; readonly source: null | { readonly companyStreamId: string; readonly runSeq: number; readonly runLogSeq: number };
 }
-export interface FounderReplayHead { readonly revision: number; readonly version: 14 | 15 | 16; readonly constantsHash: string; readonly state: unknown }
+export interface FounderReplayHead { readonly revision: number; readonly version: 14 | 15 | 16 | 17 | 18; readonly constantsHash: string; readonly state: unknown }
 export interface FounderAttendanceSample {
   readonly companyStreamId: string; readonly runSeq: number; readonly companyRevision: number; readonly companyConstantsHash: string;
   readonly completedAttendedMs: number; readonly currentRunPartialAttendedMs: number; readonly effectiveFounderAttendedMs: number;
@@ -103,7 +109,9 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const names = Object.keys(artifacts).sort(byteCompare).join("\0");
   const legacy = "categories\0commons\0economy\0factions\0guilds\0prestige\0routes";
   const active = "achievements\0categories\0commons\0economy\0factions\0guilds\0meters\0prestige\0routes";
-  if (!hashPattern.test(constantsHash) || names !== legacy && names !== active) throw new SyntaxError("invalid replay artifact set");
+  const minigamesActive = `${active}\0minigames`.split("\0").sort(byteCompare).join("\0");
+  const petsActive = `${minigamesActive}\0pets`.split("\0").sort(byteCompare).join("\0");
+  if (!hashPattern.test(constantsHash) || ![legacy, active, minigamesActive, petsActive].includes(names)) throw new SyntaxError("invalid replay artifact set");
   const computed = await constantsHashArtifacts(artifacts);
   if (computed !== constantsHash) throw new SyntaxError("replay artifact label mismatch");
   const economy = parseCatalog(parseJSON(artifacts.economy)); const routes = parseRoutesCatalog(parseJSON(artifacts.routes));
@@ -117,7 +125,11 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const meters = loadMeterCatalog(artifacts.meters!);
   validateMeterResourceSeparation(meters, economy.resources.map((value) => value.id));
   const achievements = loadAchievementCatalog(artifacts.achievements!, foundationAchievementRegistry(economy));
-  return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements });
+  if (names === active) return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements });
+  const minigames = parseMinigameCatalog(parseJSON(artifacts.minigames!));
+  if (names === minigamesActive) return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, minigames });
+  const pets = parsePetCatalog(parseJSON(artifacts.pets!));
+  return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, minigames, pets });
 }
 
 const REPLAY_EVENT_KINDS = Object.freeze([
@@ -235,6 +247,8 @@ export async function verifyReplayRunDetailed(
 
 const saveV14Keys = ["balances", "generators", "generators_purchased_total", "upgrades_owned", "generators_provisioned", "provision_remainders_ppm", "stock_rate_remainder_ppm", "evaluated_through", "compute_credit_ms", "manual_token_milli", "manual_token_refilled_at", "gates_crossed", "run_seq", "doctrines_by_transition", "structure_id", "ledger_fact_kinds", "meter_bands", "region_traits", "route_knowledge_balance", "hints_unlocked", "compact_member", "compact_tithe_ppm", "compact_solidarity_ppm", "compact_solidarity_samples", "tier", "lifetime_value", "offer_state", "run_started_at_ms", "reputation_level", "reputation_unlock_ppm", "network_slots", "clout_lifetime", "soul", "age_ms", "notoriety", "advisor_mode", "exit_history", "run_pre_timer", "offline_spans", "collapsed_offline_ms", "faction_id", "incorporated_at_ms", "stock_units", "stock_progress_ms", "consumed_stock_units", "guild_tithe_carry_ppm", "guild_boundary_seq", "guild_consumed_window_units", "guild_boundary_guild_id"] as const;
 const foundationSaveKeys = ["meter_values", "meter_decay_remainders", "meter_input_remainders", "achievements_earned_run", "achievement_score_run", "achievements_earned_lifetime", "achievement_score_lifetime"] as const;
+const founderMinigameSaveKeys = ["minigame_ratings", "minigame_offline_quality"] as const;
+const founderPetSaveKeys = ["pets"] as const;
 
 export function restoreReplayState(source: unknown, version: number, catalog: EconomyCatalog, foundationCatalogs?: { readonly meters: MeterCatalog; readonly achievements: AchievementCatalog }): ReplayState {
   const requestedVersion = version;
@@ -353,11 +367,11 @@ export function encodeReplayState(state: ReplayState): unknown {
 export function restoreFounderReplayState(source: unknown, version: number, catalogs: ReplayCatalogBundle): FounderReplayState {
   const requestedVersion = version;
   let foundationRaw: Record<string, unknown> | null = null;
-  if (version === 15 || version === 16) {
-    const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys.slice(0, version === 15 ? 3 : foundationSaveKeys.length)];
+  if (version >= 15 && version <= 18) {
+    const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys.slice(0, version === 15 ? 3 : foundationSaveKeys.length), ...(version >= 17 ? founderMinigameSaveKeys : []), ...(version >= 18 ? founderPetSaveKeys : [])];
     foundationRaw = exactObject(source, activeKeys, "Founder save v16");
     source = { ...foundationRaw, meter_bands: {} };
-    for (const key of foundationSaveKeys) delete (source as Record<string, unknown>)[key];
+    for (const key of [...foundationSaveKeys, ...founderMinigameSaveKeys, ...founderPetSaveKeys]) delete (source as Record<string, unknown>)[key];
     version = 14;
   }
   if (version !== 14) throw new SyntaxError("unsupported Founder replay save version");
@@ -387,20 +401,32 @@ export function restoreFounderReplayState(source: unknown, version: number, cata
   if (safeInteger(raw.guild_tithe_carry_ppm, 0, 999_999) !== 0 || safeInteger(raw.guild_boundary_seq, 0, MAX_EXACT_INTEGER) !== 0 || safeInteger(raw.guild_consumed_window_units, 0, MAX_EXACT_INTEGER) !== 0 || raw.guild_boundary_guild_id !== null) throw new SyntaxError("Company guild state leaked into Founder scope");
   const networkSlots = parseFounderNetworkSlots(raw.network_slots);
   const exitHistory = parseFounderExitHistory(raw.exit_history);
-  const earnedLifetime = requestedVersion === 16 ? new Set(sortedUniqueMechanical(array(foundationRaw!.achievements_earned_lifetime, "Founder lifetime achievements"))) : new Set<string>();
-  const lifetimeScore = requestedVersion === 16 ? safeInteger(foundationRaw!.achievement_score_lifetime, 0, MAX_EXACT_INTEGER) : 0;
+  const earnedLifetime = requestedVersion >= 16 ? new Set(sortedUniqueMechanical(array(foundationRaw!.achievements_earned_lifetime, "Founder lifetime achievements"))) : new Set<string>();
+  const lifetimeScore = requestedVersion >= 16 ? safeInteger(foundationRaw!.achievement_score_lifetime, 0, MAX_EXACT_INTEGER) : 0;
   if (requestedVersion >= 15) {
     if (!catalogs.meters || Object.keys(integerRecord(foundationRaw!.meter_values, 0, 100, "Founder meter values")).length !== 0 || Object.keys(integerRecord(foundationRaw!.meter_decay_remainders, 0, 3_599_999, "Founder meter decay")).length !== 0 || Object.keys(plainIntegerRecord(foundationRaw!.meter_input_remainders, 0, 3_599_999, "Founder meter inputs")).length !== 0) throw new SyntaxError("invalid Founder meter state");
   }
-  if (requestedVersion === 16) {
+  if (requestedVersion >= 16) {
     if (!catalogs.achievements || array(foundationRaw!.achievements_earned_run, "Founder run achievements").length !== 0 || safeInteger(foundationRaw!.achievement_score_run, 0, MAX_EXACT_INTEGER) !== 0 || achievementScore(catalogs.achievements, earnedLifetime) !== lifetimeScore) throw new SyntaxError("invalid active Founder achievement state");
   }
-  return { wireVersion: requestedVersion as 14 | 15 | 16, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm,
+  let minigameRatings: FounderReplayState["minigameRatings"] = {}, minigameOfflineQuality: FounderReplayState["minigameOfflineQuality"] = {}, pets: Record<string, PetCareState> = {};
+  if (requestedVersion >= 17) {
+    if (!catalogs.minigames) throw new SyntaxError("Founder v17 requires minigames artifact");
+    const ratingsRaw = exactRecord(foundationRaw!.minigame_ratings, catalogs.minigames.minigameIds, "minigame ratings");
+    const qualityRaw = exactRecord(foundationRaw!.minigame_offline_quality, catalogs.minigames.minigameIds, "minigame offline quality");
+    minigameRatings = Object.fromEntries(catalogs.minigames.minigameIds.map((id) => { const row = exactObject(ratingsRaw[id], ["elo", "season_member", "games_counted"], "minigame rating"); const season = mechanicalString(row.season_member); if (!catalogs.minigames!.ratingSeasons.includes(season)) throw new SyntaxError("unknown rating season"); return [id, { elo: safeInteger(row.elo, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER), season_member: season, games_counted: safeInteger(row.games_counted, 0, MAX_EXACT_INTEGER) }]; }));
+    minigameOfflineQuality = Object.fromEntries(catalogs.minigames.minigameIds.map((id) => { const row = exactObject(qualityRaw[id], ["grade_ppm", "last_founder_attended_ms", "decay_remainder_ppm"], "minigame offline quality"); return [id, { grade_ppm: safeInteger(row.grade_ppm, 0, 1_000_000), last_founder_attended_ms: safeInteger(row.last_founder_attended_ms, 0, MAX_EXACT_INTEGER), decay_remainder_ppm: safeInteger(row.decay_remainder_ppm, 0, 999_999) }]; }));
+  } else if (catalogs.minigames) throw new SyntaxError("minigames artifact requires Founder v17+");
+  if (requestedVersion >= 18) {
+    if (!catalogs.pets) throw new SyntaxError("Founder v18 requires pets artifact");
+    pets = parsePetCareStates(foundationRaw!.pets, { action_ids: catalogs.pets.actions.map((row) => row.action_id), behavior_ids: ["active", "care_response", "idle", "resting"] });
+  } else if (catalogs.pets) throw new SyntaxError("pets artifact requires Founder v18");
+  return { wireVersion: requestedVersion as 14 | 15 | 16 | 17 | 18, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm,
     stockRateRemainderPpm: 0, evaluatedThroughMs, computeCreditMs: 0, manualTokenMilli: 0, manualTokenRefilledAtMs,
     routeKnowledgeBalance: safeInteger(raw.route_knowledge_balance, 0, MAX_EXACT_INTEGER), hintsUnlocked: mechanicalSet(raw.hints_unlocked), ledgerFactKinds: mechanicalSet(raw.ledger_fact_kinds),
     reputationLevel: safeInteger(raw.reputation_level, 0, MAX_EXACT_INTEGER), networkSlots, cloutLifetime: safeInteger(raw.clout_lifetime, 0, MAX_EXACT_INTEGER), soul: safeInteger(raw.soul, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER),
     ageMs: safeInteger(raw.age_ms, 0, MAX_EXACT_INTEGER), notoriety: safeInteger(raw.notoriety, 0, MAX_EXACT_INTEGER), advisorMode: boolean(raw.advisor_mode), exitHistory,
-    achievementsEarnedLifetime: earnedLifetime, achievementScoreLifetime: lifetimeScore };
+    achievementsEarnedLifetime: earnedLifetime, achievementScoreLifetime: lifetimeScore, minigameRatings, minigameOfflineQuality, pets };
 }
 
 export function encodeFounderReplayState(state: FounderReplayState): unknown {
@@ -418,8 +444,11 @@ export function encodeFounderReplayState(state: FounderReplayState): unknown {
   if (state.wireVersion === 14) return base;
   delete base.meter_bands;
   if (state.wireVersion === 15) return { ...base, meter_values: {}, meter_decay_remainders: {}, meter_input_remainders: {} };
-  return { ...base, meter_values: {}, meter_decay_remainders: {}, meter_input_remainders: {}, achievements_earned_run: [], achievement_score_run: 0,
+  const active: Record<string, unknown> = { ...base, meter_values: {}, meter_decay_remainders: {}, meter_input_remainders: {}, achievements_earned_run: [], achievement_score_run: 0,
     achievements_earned_lifetime: [...state.achievementsEarnedLifetime].sort(byteCompare), achievement_score_lifetime: state.achievementScoreLifetime };
+  if (state.wireVersion >= 17) Object.assign(active, { minigame_ratings: sortedRecord(state.minigameRatings), minigame_offline_quality: sortedRecord(state.minigameOfflineQuality) });
+  if (state.wireVersion >= 18) Object.assign(active, { pets: sortedRecord(state.pets) });
+  return active;
 }
 
 export function applyFounderLogged(state: FounderReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): FounderLoggedTransition {
@@ -1260,6 +1289,7 @@ function isNonNegativeSafeInteger(value: unknown): value is number { return type
 function objectWithOnlyKeys(source: unknown, keys: readonly string[], label: string): Record<string, unknown> { if (!isRecord(source)) throw new SyntaxError(`${label} must be an object`); onlyKeys(source, keys, label); return source; }
 function onlyKeys(value: Record<string, unknown>, keys: readonly string[], label: string): void { const allowed = new Set(keys); if (Object.keys(value).some((key) => !allowed.has(key))) throw new SyntaxError(`${label} has unknown fields`); }
 function exactObject(source: unknown, keys: readonly string[], label: string): Record<string, unknown> { if (typeof source !== "object" || source === null || Array.isArray(source)) throw new SyntaxError(`${label} must be an object`); const value = source as Record<string, unknown>; exactKeys(value, keys, label); return value; }
+function exactRecord(source: unknown, keys: readonly string[], label: string): Record<string, unknown> { const value = exactObject(source, keys, label); return value; }
 function exactKeys(value: Record<string, unknown>, keys: readonly string[], label: string): void { if (!same(Object.keys(value).sort(byteCompare), [...keys].sort(byteCompare))) throw new SyntaxError(`${label} fields are not exact`); }
 function array(value: unknown, label: string): unknown[] { if (!Array.isArray(value)) throw new SyntaxError(`${label} must be an array`); return value; }
 function string(value: unknown): string { if (typeof value !== "string") throw new SyntaxError("expected string"); return value; }

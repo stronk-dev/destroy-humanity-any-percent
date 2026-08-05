@@ -15,6 +15,8 @@ import (
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/leaderboard"
 	"cloud-clicker/server/meters"
+	"cloud-clicker/server/minigame"
+	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/routes"
@@ -60,7 +62,7 @@ func LoadDatabase(ctx context.Context, db *sql.DB) (production.ReplayCatalogSet,
 }
 
 func Load(constantsHash string, artifacts map[string][]byte) (production.CatalogBundle, error) {
-	if constantsHash == "" || (len(artifacts) != 7 && len(artifacts) != 9) {
+	if constantsHash == "" || (len(artifacts) != 7 && len(artifacts) != 9 && len(artifacts) != 10 && len(artifacts) != 11) {
 		return production.CatalogBundle{}, production.ErrInvalidReplayInputs
 	}
 	computed, err := save.ConstantsHashArtifacts(artifacts)
@@ -112,7 +114,7 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 	bundle := production.CatalogBundle{ConstantsHash: constantsHash, Artifacts: frozen, Economy: economyCatalog, Routes: routeCatalog,
 		Commons: commonsbinding.ReplayPolicy{Catalog: commonsCatalog}, Prestige: prestigePolicy,
 		Faction: factionCatalog, Guild: guildCatalog}
-	if len(artifacts) == 9 {
+	if len(artifacts) >= 9 {
 		meterCatalog, meterErr := meters.LoadCatalog(artifacts["meters"])
 		if meterErr != nil {
 			return production.CatalogBundle{}, meterErr
@@ -122,6 +124,20 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 			return production.CatalogBundle{}, achievementErr
 		}
 		bundle.Meters, bundle.Achievements = meterCatalog, achievementCatalog
+	}
+	if len(artifacts) >= 10 {
+		minigameCatalog, minigameErr := minigame.LoadCatalog(artifacts["minigames"])
+		if minigameErr != nil {
+			return production.CatalogBundle{}, minigameErr
+		}
+		bundle.Minigames = minigameCatalog
+	}
+	if len(artifacts) == 11 {
+		petCatalog, petErr := pet.LoadCatalog(artifacts["pets"])
+		if petErr != nil {
+			return production.CatalogBundle{}, petErr
+		}
+		bundle.Pets = petCatalog
 	}
 	return bundle, nil
 }

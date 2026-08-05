@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import fixture from "../../testdata/pet/catalog-grammar-v1.json";
-import { parsePetCatalogGrammar } from "../src/pet/catalog";
+import { parsePetCatalog, parsePetCatalogGrammar } from "../src/pet/catalog";
 
 describe("pet catalog grammar", () => {
   it("loads the shared exact-key fixture", () => {
@@ -21,5 +21,19 @@ describe("pet catalog grammar", () => {
       { ...base, extra: true },
     ];
     for (const value of cases) expect(() => parsePetCatalogGrammar(value)).toThrow();
+  });
+});
+
+describe("complete pet artifact", () => {
+  it("loads the full C17 policy union", () => {
+    const catalog = parsePetCatalog({ schema_version: 1,
+      stat_policy: { grid_ms: 60_000, stats: [
+        { stat_id: "hunger", initial_ppm: 800_000, floor_ppm: 100_000, decay_ppm_per_grid: 1_000 },
+        { stat_id: "energy", initial_ppm: 800_000, floor_ppm: 100_000, decay_ppm_per_grid: 1_000 },
+        { stat_id: "cleanliness", initial_ppm: 800_000, floor_ppm: 100_000, decay_ppm_per_grid: 1_000 },
+        { stat_id: "affection", initial_ppm: 800_000, floor_ppm: 100_000, decay_ppm_per_grid: 1_000 }], diminishing_threshold_ppm: 700_000, diminishing_factor_ppm: 500_000 },
+      actions: [], trust_policy: { initial_ppm: 500_000, neutral_ppm: 500_000, floor_ppm: 100_000, cap_ppm: 1_000_000, gain_ppm_per_effective_action: 1_000, decay_ppm_per_grid: 100 },
+      mood_policy: [{ mood_member: "withdrawn", floor_ppm: 0 }, { mood_member: "restless", floor_ppm: 250_000 }, { mood_member: "neutral", floor_ppm: 500_000 }, { mood_member: "engaged", floor_ppm: 750_000 }], behavior_policy: [] });
+    expect(catalog.stat_policy.stats).toHaveLength(4);
   });
 });

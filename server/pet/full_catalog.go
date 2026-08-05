@@ -1,0 +1,127 @@
+package pet
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"io"
+	"sort"
+)
+
+var ErrInvalidCatalog = errors.New("invalid pet catalog")
+
+type StatPolicyRow struct {
+	StatID          StatID `json:"stat_id"`
+	InitialPPM      int64  `json:"initial_ppm"`
+	FloorPPM        int64  `json:"floor_ppm"`
+	DecayPPMPerGrid int64  `json:"decay_ppm_per_grid"`
+}
+
+type StatPolicy struct {
+	GridMS                  int64           `json:"grid_ms"`
+	Stats                   []StatPolicyRow `json:"stats"`
+	DiminishingThresholdPPM int64           `json:"diminishing_threshold_ppm"`
+	DiminishingFactorPPM    int64           `json:"diminishing_factor_ppm"`
+}
+
+type ActionPolicy struct {
+	ActionID           string `json:"action_id"`
+	StatID             StatID `json:"stat_id"`
+	DeltaPPM           int64  `json:"delta_ppm"`
+	CooldownAttendedMS int64  `json:"cooldown_attended_ms"`
+	MinEligiblePPM     int64  `json:"min_eligible_ppm"`
+}
+
+type TrustPolicy struct {
+	InitialPPM                int64 `json:"initial_ppm"`
+	NeutralPPM                int64 `json:"neutral_ppm"`
+	FloorPPM                  int64 `json:"floor_ppm"`
+	CapPPM                    int64 `json:"cap_ppm"`
+	GainPPMPerEffectiveAction int64 `json:"gain_ppm_per_effective_action"`
+	DecayPPMPerGrid           int64 `json:"decay_ppm_per_grid"`
+}
+
+type Catalog struct {
+	SchemaVersion  int                 `json:"schema_version"`
+	StatPolicy     StatPolicy          `json:"stat_policy"`
+	Actions        []ActionPolicy      `json:"actions"`
+	TrustPolicy    TrustPolicy         `json:"trust_policy"`
+	MoodPolicy     []MoodThreshold     `json:"mood_policy"`
+	BehaviorPolicy []BehaviorCandidate `json:"behavior_policy"`
+}
+
+func LoadCatalog(data []byte) (*Catalog, error) {
+	if !uniqueStateJSONKeys(data) {
+		return nil, ErrInvalidCatalog
+	}
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	var catalog Catalog
+	if decoder.Decode(&catalog) != nil || catalog.SchemaVersion != 1 {
+		return nil, ErrInvalidCatalog
+	}
+	var trailing any
+	if !errors.Is(decoder.Decode(&trailing), io.EOF) || validateFullCatalog(&catalog) != nil {
+		return nil, ErrInvalidCatalog
+	}
+	return &catalog, nil
+}
+
+func validateFullCatalog(catalog *Catalog) error {
+	if catalog == nil || catalog.StatPolicy.GridMS < 1 || !exactNonnegative(catalog.StatPolicy.GridMS) ||
+		len(catalog.StatPolicy.Stats) != len(statIDs) || catalog.StatPolicy.DiminishingThresholdPPM < 0 ||
+		catalog.StatPolicy.DiminishingThresholdPPM > 1_000_000 || catalog.StatPolicy.DiminishingFactorPPM < 0 || catalog.StatPolicy.DiminishingFactorPPM > 1_000_000 ||
+		catalog.Actions == nil || len(catalog.MoodPolicy) != len(moods) || catalog.BehaviorPolicy == nil {
+		return ErrInvalidCatalog
+	}
+	seenStats := map[StatID]bool{}
+	for _, row := range catalog.StatPolicy.Stats {
+		if !ValidStatID(row.StatID) || seenStats[row.StatID] || row.InitialPPM < row.FloorPPM || row.InitialPPM > 1_000_000 ||
+			row.FloorPPM < 0 || row.DecayPPMPerGrid < 0 || row.DecayPPMPerGrid > 1_000_000 {
+			return ErrInvalidCatalog
+		}
+		seenStats[row.StatID] = true
+	}
+	lastAction := ""
+	for _, row := range catalog.Actions {
+		if !mechanicalIDPattern.MatchString(row.ActionID) || row.ActionID <= lastAction || !ValidStatID(row.StatID) || row.DeltaPPM < 0 ||
+			row.DeltaPPM > 1_000_000 || !exactNonnegative(row.CooldownAttendedMS) || row.MinEligiblePPM < 0 || row.MinEligiblePPM > 1_000_000 {
+			return ErrInvalidCatalog
+		}
+		lastAction = row.ActionID
+	}
+	trust := catalog.TrustPolicy
+	if trust.FloorPPM < 0 || trust.FloorPPM > trust.NeutralPPM || trust.NeutralPPM > trust.InitialPPM || trust.InitialPPM > trust.CapPPM || trust.CapPPM > 1_000_000 ||
+		trust.GainPPMPerEffectiveAction < 0 || trust.GainPPMPerEffectiveAction > 1_000_000 || trust.DecayPPMPerGrid < 0 || trust.DecayPPMPerGrid > 1_000_000 {
+		return ErrInvalidCatalog
+	}
+	grammar := CatalogGrammar{MoodThresholds: catalog.MoodPolicy, BehaviorCandidates: catalog.BehaviorPolicy}
+	if validateCatalogGrammar(grammar) != nil {
+		return ErrInvalidCatalog
+	}
+	seenTransitions := map[[2]string]bool{}
+	for _, row := range catalog.BehaviorPolicy {
+		key := [2]string{string(row.FromState), string(row.Event)}
+		if seenTransitions[key] {
+			return ErrInvalidCatalog
+		}
+		seenTransitions[key] = true
+	}
+	return nil
+}
+
+func (catalog *Catalog) StateDeclarations() StateDeclarations {
+	if catalog == nil {
+		return StateDeclarations{}
+	}
+	actions := make([]string, len(catalog.Actions))
+	for index, row := range catalog.Actions {
+		actions[index] = row.ActionID
+	}
+	behaviors := make([]string, len(behaviorStates))
+	for index, value := range behaviorStates {
+		behaviors[index] = string(value)
+	}
+	sort.Strings(behaviors)
+	return StateDeclarations{ActionIDs: actions, BehaviorIDs: behaviors}
+}
