@@ -361,6 +361,15 @@ reconciliation). Proceed.**
   independent validator is ready; assigning the artifact/version and embedding both rating and
   offline-quality maps remains an owner/epoch decision before the multi-stream resolve composer.
 
+## 2026-08-05 — C34 cross-runtime parity follow-up
+
+- Added the TypeScript strict policy/state parser and pure score selector. Go and TypeScript now
+  consume one shared fixture containing the exact policy, replay-owned state, and every threshold
+  boundary case; both reject noncanonical curves and extra keys.
+- Registered the new client minigame kernel path in strict lexical order and advanced the shared
+  kernel version. This is still structural fixture data only; it does not enable offline decay or
+  a production automation destination.
+
 ## 2026-08-05 — C34 exact offline-quality grammar
 
 - Implemented the exact outer policy and `{score_threshold, grade_ppm}` curve row with strict,

@@ -1,0 +1,32 @@
+{
+  "declarations": {
+    "score_fact_ids": ["score.total"],
+    "automation_destinations": ["automation.compute"]
+  },
+  "policy": {
+    "score_fact": "score.total",
+    "grade_curve": [
+      { "score_threshold": 100, "grade_ppm": 400000 },
+      { "score_threshold": 500, "grade_ppm": 700000 },
+      { "score_threshold": 1000, "grade_ppm": 1000000 }
+    ],
+    "decay_grid_ms": 60000,
+    "decay_ppm_per_grid": 25000,
+    "neutral_floor_ppm": 400000,
+    "automation_destination": "automation.compute"
+  },
+  "state": {
+    "grade_ppm": 700000,
+    "last_founder_attended_ms": 1234,
+    "decay_remainder_ppm": 999999
+  },
+  "grade_cases": [
+    { "score": 0, "grade_ppm": 400000 },
+    { "score": 99, "grade_ppm": 400000 },
+    { "score": 100, "grade_ppm": 400000 },
+    { "score": 499, "grade_ppm": 400000 },
+    { "score": 500, "grade_ppm": 700000 },
+    { "score": 999, "grade_ppm": 700000 },
+    { "score": 1000, "grade_ppm": 1000000 }
+  ]
+}

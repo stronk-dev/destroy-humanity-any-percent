@@ -91,7 +91,8 @@ order with nondecreasing grades. Scores use the last threshold they meet; values
 threshold use the declared neutral floor, which must equal the curve's lowest grade. The outer
 row also binds one declared score fact and one tenant-registered automation destination. Unknown
 keys, undeclared identities, ambiguous JSON, invalid ppm domains, and noncanonical curves fail
-load.
+load. Go and TypeScript consume one shared policy/state/threshold fixture and select identical
+grades at every boundary.
 
 The replay-owned state shape is `{grade_ppm, last_founder_attended_ms,
 decay_remainder_ppm}`. This slice validates that wire and the score-to-grade selection only; the

@@ -7,6 +7,7 @@
     "client/src/faction.ts",
     "client/src/guild.ts",
     "client/src/meters/",
+    "client/src/minigame/",
     "client/src/numeric.ts",
     "client/src/pet/",
     "client/src/prestige.ts",

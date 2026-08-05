@@ -1,7 +1,9 @@
 package minigame
 
 import (
+	"encoding/json"
 	"errors"
+	"os"
 	"testing"
 )
 
@@ -10,20 +12,33 @@ var offlineQualityDeclarations = OfflineQualityDeclarations{
 	AutomationDestinations: map[string]struct{}{"automation.compute": {}},
 }
 
-const validOfflinePolicy = `{"score_fact":"score.total","grade_curve":[{"score_threshold":100,"grade_ppm":400000},{"score_threshold":500,"grade_ppm":700000},{"score_threshold":1000,"grade_ppm":1000000}],"decay_grid_ms":60000,"decay_ppm_per_grid":25000,"neutral_floor_ppm":400000,"automation_destination":"automation.compute"}`
-
 func TestLoadOfflineQualityPolicyAndSelectGrade(t *testing.T) {
-	policy, err := LoadOfflineQualityPolicy([]byte(validOfflinePolicy), offlineQualityDeclarations)
+	data, err := os.ReadFile("../../testdata/minigame/offline-quality-v1.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, item := range []struct{ score, want int64 }{{0, 400000}, {99, 400000}, {100, 400000}, {499, 400000}, {500, 700000}, {999, 700000}, {1000, 1000000}} {
-		got, gradeErr := OfflineGradeForScore(policy, item.score)
-		if gradeErr != nil || got != item.want {
-			t.Fatalf("score %d grade=%d err=%v want=%d", item.score, got, gradeErr, item.want)
+	var fixture struct {
+		Policy     json.RawMessage     `json:"policy"`
+		State      OfflineQualityState `json:"state"`
+		GradeCases []struct {
+			Score    int64 `json:"score"`
+			GradePPM int64 `json:"grade_ppm"`
+		} `json:"grade_cases"`
+	}
+	if err := json.Unmarshal(data, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	policy, err := LoadOfflineQualityPolicy(fixture.Policy, offlineQualityDeclarations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, item := range fixture.GradeCases {
+		got, gradeErr := OfflineGradeForScore(policy, item.Score)
+		if gradeErr != nil || got != item.GradePPM {
+			t.Fatalf("score %d grade=%d err=%v want=%d", item.Score, got, gradeErr, item.GradePPM)
 		}
 	}
-	if err := ValidateOfflineQualityState(OfflineQualityState{GradePPM: 700000, LastFounderAttendedMS: 1234, DecayRemainderPPM: 999999}); err != nil {
+	if err := ValidateOfflineQualityState(fixture.State); err != nil {
 		t.Fatal(err)
 	}
 }
