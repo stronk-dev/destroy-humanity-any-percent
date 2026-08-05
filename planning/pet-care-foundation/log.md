@@ -341,6 +341,16 @@ reconciliation). Proceed.**
   number is minted from partial fixture data. That owner-gated content/artifact step remains before
   the C14 pet map can enter the Founder save.
 
+## 2026-08-05 — C17 ordering/artifact bounce and verification handoff
+
+- Filed C17 after proving the scalar Founder version cannot encode two optional mechanics in
+  arbitrary activation order. Proposed the existing queue order (`minigames=v17`, `pets=v18`) or
+  an explicit feature-vector successor; no version or partial artifact was silently assigned.
+- Normal root gates are green for commits `dc635f7..4c56865`: focused Go/TypeScript suites,
+  typecheck, kernel full-history guard, formula drift, harness drift, client build/boundaries,
+  schema/copy checks, browser suite, and the repository Postgres integration target. No push or
+  balance mint occurred.
+
 ## 2026-08-05 — C15 exact pet catalog row families
 
 - Implemented strict Go and TypeScript loaders for the two owner-ruled row families against one

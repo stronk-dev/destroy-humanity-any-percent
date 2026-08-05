@@ -74,3 +74,7 @@ Post-C35 infrastructure status: Exit's version-tuple validator now accepts indep
 pinned-bundle-derived Founder and Company floors. The production `minigames` artifact and exact
 Founder rating/quality maps still need an owner-assigned version and complete artifact row; the
 platform does not infer either from the structural fixture loaders.
+
+Blocked implementation contract carried explicitly: C36 must enumerate the Founder rating row,
+season-fact wire, enclosing map, and its ordered version/artifact biconditional before the atomic
+resolve composer can write it replay-safely.

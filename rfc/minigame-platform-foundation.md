@@ -377,6 +377,22 @@ until one owner ruling fixes that ordering; no code assigns competing mechanics 
   validates the Founder version against its pinned-epoch floor independently of the Company
   version - no ad-hoc field, no deploy-current schema. See Pet C16 for the full ruling.
 
+## Implementation blocker C36 (Codex, 2026-08-05)
+
+C35 now has its independent-axis Exit validator, but no exact Founder save object exists for the
+two minigame maps. C29 says an integer Elo map plus a season-fact union without enumerating the
+rating row, season identity, fact members, or fact object keys. C34 closes the offline-quality
+state itself, not the enclosing map or its biconditional with the `minigames` artifact. Assigning
+v17/v18 also collides with Pet C17's ordering question on the same scalar Founder axis.
+
+**Proposed contract:** if the owner adopts the queue order, Founder v17 adds exact
+`minigame_ratings` and `minigame_offline_quality` maps keyed by declared minigame ID, and the
+`minigames` artifact is biconditional with v17+. Enumerate the exact rating row and closed season-
+fact wire, then make replaycatalog Go/TypeScript accept base-nine plus this one named artifact and
+derive Founder floor 17 from its presence. Pet state follows at v18. No production catalog row or
+balance literal need ship with the schema implementation; activation remains New-Founder-forward
+under a later protocol-compliant mint.
+
 ## Acceptance criteria
 
 1. Session lifecycle: create→play→resolve→payout for a fixture tenant against the composed

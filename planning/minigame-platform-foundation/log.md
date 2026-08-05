@@ -370,6 +370,16 @@ reconciliation). Proceed.**
   kernel version. This is still structural fixture data only; it does not enable offline decay or
   a production automation destination.
 
+## 2026-08-05 — C36 rating/artifact bounce and verification handoff
+
+- Filed C36 for the exact Founder rating row, season-fact wire, enclosing map, and its ordered
+  `minigames` artifact/version biconditional. The already-implemented C34 policy/state fixture is
+  not mislabeled as the full production artifact.
+- Normal repository-root gates are green for the four implementation commits through `4c56865`,
+  including Go/TypeScript parity, the full-history kernel guard at 0.3.45, formula and harness
+  drift, build/typecheck, boundary/schema/copy checks, browser tests, and Postgres integration.
+  No external publication or balance mint occurred.
+
 ## 2026-08-05 — C34 exact offline-quality grammar
 
 - Implemented the exact outer policy and `{score_threshold, grade_ppm}` curve row with strict,

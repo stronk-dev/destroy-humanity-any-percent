@@ -39,3 +39,7 @@ Post-C16 infrastructure status: Exit now validates independently supplied Founde
 and accepts mixed-axis tuples without relaxing monotonicity or the decode-only v15 ban. Assigning
 the first pet/minigame Founder versions and accepting their artifact bytes remains owner/mint
 work; no code labels the partial fixture grammar as a production pet artifact.
+
+Blocked implementation contract carried explicitly: C17 must order pet/minigame activation on
+the scalar Founder axis (or replace it with a feature vector) and enumerate the complete pet
+artifact wire before the C14 map can be persisted.

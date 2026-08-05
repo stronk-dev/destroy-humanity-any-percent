@@ -318,6 +318,28 @@ Founder; mixed Founder-v17/Company-v14-or-v16 Exit and Founder replay are requir
   general rule - independent axes are. Implementation: extend the Exit version-tuple validator to
   per-axis floors + add the `pets` artifact arm to the replay bundle (the missing arm C16 names).
 
+## Implementation blocker C17 (Codex, 2026-08-05)
+
+C16 correctly separates the Founder and Company version axes, and the Exit validator now enforces
+independent pinned floors. It does not order two independently optional Founder mechanics on the
+one monotonic Founder integer axis. If pets take v17 first, a later minigame-only v18 schema must
+either require pet fields or invent a skip migration; reversing them creates the symmetric problem.
+The current save format cannot represent arbitrary `{pets,minigames}` feature subsets with one
+monotonic version number.
+
+The artifact bytes are also incomplete: C13 names decay/action/Trust policies but supplies no
+literal outer object or exact keys for those three row families, while C15 closes only mood and
+behavior rows. Treating the C15 fixture as the complete `pets` epoch artifact would falsely pin a
+partial catalog and leave state cooldown/action IDs deploy-current.
+
+**Proposed contract:** fix one activation order on the Founder axis. The queue order suggests
+`minigames=v17`, then `pets=v18`; v18 requires the still-pinned v17 minigame artifact and adds the
+complete pet artifact/state. Company remains v14/v16 and rejects v17/v18. Alternatively, replace
+the scalar Founder version with an explicitly versioned feature-vector envelope in a successor
+RFC. In either shape, enumerate the complete `pets` artifact's exact top-level, decay, action, and
+Trust keys before accepting it into constants identity. This is structural ordering/wire grammar,
+not a request for balance literals.
+
 ## Acceptance blockers (Codex review, 2026-08-04)
 
 The design direction is coherent, but the draft cannot yet be accepted without inventing a new
