@@ -881,6 +881,83 @@ remainder_before_ppm,remainder_after_ppm)` is the retry authority. The session m
 remainder in its receipt/result but is not the carry owner. Lock order remains Founder → Company →
 session → window; all rows and both stream revisions commit together.
 
+## Implementation blockers C37-C40 (Codex, 2026-08-05)
+
+The Founder v17/v18 activation chain and the C17 pet-catalog parity remediation are independently
+approved. The next requested slice is the server-certified resolve composer. A source walk reaches
+four remaining executable-contract gaps; none can be filled from a balance literal alone.
+
+### C37 — The pinned minigames artifact is only an activation index
+
+`minigame.LoadCatalog` currently accepts only `{schema_version,minigame_ids,rating_seasons}`.
+C11 requires the registry plus payout, fallback, scaling, offline-quality, and rating policy to be
+hash-pinned, but the replay bundle has no bytes for those policies. A composer supplied an
+in-process `PayoutPolicy` would therefore execute deploy-current policy while replay resolves only
+the ID/season artifact.
+
+**Proposed contract:** before any resolve path is enabled, replace the pre-mint v1 artifact with
+one exact `{schema_version,rating_seasons,minigames}` object. Each sorted minigame row is exact
+`{minigame_id,engine_ref,engine_version,modes,result_score_fact_ids,scaling,payout,fallback,
+offline_quality,rating_policy,unlock_condition}` and embeds the already-ruled closed sub-objects;
+no policy reference resolves outside these bytes. `minigame_ids` is derived from the rows rather
+than stored twice. Empty `minigames` remains the valid pre-content artifact. Go and TypeScript load
+the same shared fixture, and `CatalogBundle.Minigames` is the sole live/replay policy resolver.
+
+### C38 — Atomic resolution has no retry receipt or persistence-owned coordinator
+
+C25 requires Founder → Company → session → faucet-window locking and says a retry returns the one
+committed receipt. The session table stores only the certified tenant result, not the payout/rating
+receipt, and the current `minigame.Service.ResolveTx` owns only Company/session validation. Neither
+package can compose both save streams without duplicating private save-store writes or nesting an
+exported transaction.
+
+**Proposed contract:** add `save.Store.ApplyMinigameResolutionTransaction`, the narrow multi-stream
+coordinator analogous to Exit. It owns Founder then Company stream locks, revisions/log sequences,
+events/outboxes/retention, and one transaction callback that finalizes the already-claimed session
+and faucet window. Session ID is the idempotency key and internal intent ID. A migration adds exact
+`resolution_receipt jsonb` plus `resolution_company_revision` and `resolution_founder_revision` to
+the terminal session row; all are null before resolution and immutable/non-null afterward. A retry
+of a resolved session returns those bytes without re-running a tenant or consuming quota. Fault
+injection after every write proves all-or-none across both revisions, both logs/events, window,
+terminal session, and receipt.
+
+### C39 — The two replay arms and visible event/receipt bytes are not closed
+
+C21 names `resolve_minigame_session`, `minigame_resolution.v1`, and two event kinds, but does not
+enumerate the Company resolved-input arm, Company replay input, terminal receipt, resource event,
+or rating event payload. `ApplyLogged` consequently cannot reproduce the credit, and
+`ApplyFounderLogged` has no minigame arm to reproduce v17 rating/offline-quality state.
+
+**Proposed contract:** close one canonical internal payload
+`{kind:"resolve_minigame_session",session_id,result}` with `intent_id=session_id`. Both logs bind
+the same `certified_result_hash`. The Company resolved arm records the exact payout policy identity,
+selected score, complete faucet before/after application, credited Decimal delta, and Founder-log
+coordinate. The Founder `minigame_resolution.v1` arm uses C36's exact
+`{session_id,certified_result_hash,old_elo,new_elo,season_member}` fact plus old/new offline-quality
+state and the frozen Founder-attendance sample. The shared terminal receipt names both committed
+revisions, credit, configured-cap forfeit/reason, rating change, and quality change. Register exact
+`minigame_resolved.v1` and `minigame_rating_changed.v1` payloads in the closed event registry; both
+runtimes compare receipt/event bytes and order in one sequential fixture.
+
+### C40 — Rating and offline-quality mutation arithmetic is still ambiguous
+
+The certified result carries `rating_delta`, while C36 still names a catalog K-factor; no rule says
+which is authoritative, how floor/ceiling and provisional counts apply, or what `null` means.
+Offline quality persists a decay remainder but C31/C34 never give the remainder equation or say
+whether a new result decays-then-replaces, takes max, or composes with the old grade.
+
+**Proposed contract:** make the server-certified tenant `rating_delta` authoritative for Phase A;
+the platform checked-adds it to old Elo, saturates only at catalog floor/ceiling, and increments
+`games_counted` once. `null` means unrated: Elo/count are unchanged but the Founder resolution and
+quality update still commit. Remove platform K-factor from this RFC (an engine may use it inside
+its versioned certified-result calculation). For offline quality, first integrate decay from the
+stored attended watermark to the frozen sample with
+`numerator=elapsed_ms*decay_ppm_per_grid+remainder`, `decay=floor(numerator/decay_grid_ms)`, and
+`remainder=numerator mod decay_grid_ms`, saturating at the neutral floor; then replace the decayed
+grade with the current certified score's catalog grade and zero the remainder at the sample
+watermark. Shared boundary vectors cover `null`, negative delta, Elo floor/ceiling, sub-grid carry,
+multi-grid decay, and same-sample retry.
+
 ## Changelog
 
 - 2026-08-03: created (draft) — the platform.

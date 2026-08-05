@@ -510,3 +510,48 @@ Implemented by: Codex.
 
 This closes the demonstrated defect but does not self-authorize archival. The remediation and this
 record require the follow-up independent full-span review.
+
+## 2026-08-05 — designated reviewer verdict: F1 remediation (9e958b1..965fd4a) — APPROVE, F1 CLOSED
+
+Review by: the designated Claude reviewer. Recorded by: same. Review of record — no prior verdict
+cites this range (9e958b1 is the exact prior-verdict endpoint and an ancestor of 965fd4a; range =
+{24d55b0, 965fd4a}; range-union chain unbroken).
+
+**F1 CLOSED — verified at source.** server/pet/full_catalog.go now enforces exact key PRESENCE
+(hasRawKeys: len==expected AND every key present — catches missing AND extra) at all 7 nesting
+levels: root (6 keys), stat_policy (grid_ms + stats + both diminishing keys), stat rows, action
+rows, trust_policy (6 keys), mood rows, behavior rows. No level relies on DisallowUnknownFields
+alone. Every key set is byte-identical to the TS exactObject sets in client/src/pet/catalog.ts —
+Go/TS wire parity restored, closing the law-#3 / C17 "missing rows fail load" gap. Go (./pet) and
+TS (pet-catalog.test.ts, incl. the full C17 union) both green; both runtimes now accept/reject the
+same set. Kernel 0.3.48->0.3.49 single lockstep bump (24d55b0); 965fd4a planning-log only, no bump;
+KV-1 covers server/pet/ + client/src/pet/; verify-kernel-version ok at 0.3.49.
+
+Non-blocking M1 (test quality, optional): 6 of 7 omission tests are strictly discriminating (remove
+the presence check -> load wrongly accepted). The 7th (behavior-row duration_grid_ticks) is NOT
+discriminating because duration<1 is independently rejected by validateCatalogGrammar; the whole
+behavior row is transitively backstopped by grammar validation. The presence check is still correct
+and needed for structural TS parity — just lacks its own discriminating regression guard. If
+tightening later, add an EXTRA-behavior-key rejection case. Does not block.
+
+**Verdict: F1 closed, round approved. The pet-catalog contract's fail-closed acceptance criterion
+is now met; the pet artifact contract is unblocked for archival on that axis.**
+
+## 2026-08-05 — care-transition acceptance pass: C18-C21
+
+Acceptance review by: Codex. Recorded by: Codex.
+
+- Verified the v18 state has no per-pet attended evaluation watermark. The existing Founder
+  `age_ms` plus a live partial is a total sample, not the prior pet cursor; applying two commands
+  would therefore count the first interval twice. Filed C18 with a partition-invariant equation
+  and stale-sample check instead of aliasing the behavior-entered timestamp.
+- Filed C19 because the comparison direction and operation order for eligibility/diminishing/
+  saturation are not normative; those choices change both Trust and receipts.
+- Filed C20 because mood thresholds name no input scalar and the deterministic FSM has no elapsed
+  tick/queue ordering or bounded large-interval algorithm. The pre-mint PRNG cursor also cannot be
+  honestly consumed after C17 removed weighted choice.
+- Filed C21 with the exact Founder intent, replay resolved arm, receipt, event, and server-owned
+  active-Company resolution so a client can never select attendance context.
+
+The catalog/state grammar remains approved. Care-transition consumers wait for C18-C21 rather than
+improvising mechanics inside `ApplyFounderLogged`.

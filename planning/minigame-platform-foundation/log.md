@@ -537,3 +537,49 @@ Implemented by: Codex.
 
 This shared-chain note records the fix; independent full-span review remains required before either
 foundation treats the remediation as archival evidence.
+
+## 2026-08-05 — designated reviewer verdict: F1 remediation (9e958b1..965fd4a) — APPROVE, F1 CLOSED
+
+Review by: the designated Claude reviewer. Recorded by: same. Review of record — no prior verdict
+cites this range (9e958b1 is the exact prior-verdict endpoint and an ancestor of 965fd4a; range =
+{24d55b0, 965fd4a}; range-union chain unbroken).
+
+**F1 CLOSED — verified at source.** server/pet/full_catalog.go now enforces exact key PRESENCE
+(hasRawKeys: len==expected AND every key present — catches missing AND extra) at all 7 nesting
+levels: root (6 keys), stat_policy (grid_ms + stats + both diminishing keys), stat rows, action
+rows, trust_policy (6 keys), mood rows, behavior rows. No level relies on DisallowUnknownFields
+alone. Every key set is byte-identical to the TS exactObject sets in client/src/pet/catalog.ts —
+Go/TS wire parity restored, closing the law-#3 / C17 "missing rows fail load" gap. Go (./pet) and
+TS (pet-catalog.test.ts, incl. the full C17 union) both green; both runtimes now accept/reject the
+same set. Kernel 0.3.48->0.3.49 single lockstep bump (24d55b0); 965fd4a planning-log only, no bump;
+KV-1 covers server/pet/ + client/src/pet/; verify-kernel-version ok at 0.3.49.
+
+Non-blocking M1 (test quality, optional): 6 of 7 omission tests are strictly discriminating (remove
+the presence check -> load wrongly accepted). The 7th (behavior-row duration_grid_ticks) is NOT
+discriminating because duration<1 is independently rejected by validateCatalogGrammar; the whole
+behavior row is transitively backstopped by grammar validation. The presence check is still correct
+and needed for structural TS parity — just lacks its own discriminating regression guard. If
+tightening later, add an EXTRA-behavior-key rejection case. Does not block.
+
+**Verdict: F1 closed, round approved. The pet-catalog contract's fail-closed acceptance criterion
+is now met; the pet artifact contract is unblocked for archival on that axis.**
+
+## 2026-08-05 — resolve-composer acceptance pass: C37-C40
+
+Acceptance review by: Codex. Recorded by: Codex.
+
+- Confirmed F1's approved range ends at `965fd4a`; the requested resolve-composer work is the next
+  unreviewed implementation boundary.
+- Filed C37 after tracing the replay bundle: the pinned minigames artifact contains only IDs and
+  rating seasons, so none of the payout/fallback/offline/rating policies required by C11 can be
+  recovered from immutable bytes. Injecting them into the live composer would be deploy-current
+  replay drift.
+- Filed C38-C39 because the terminal session has no durable payout receipt, the save and minigame
+  packages expose no non-nesting multi-stream coordinator, and neither Company nor Founder replay
+  has the exact resolved arm/event bytes needed to reproduce a resolution.
+- Filed C40 because `rating_delta` versus the still-mentioned K-factor and the offline-quality
+  remainder/update order each admit multiple valid-looking results. The proposed arithmetic is
+  explicit and fixture-testable; no balance numbers are chosen.
+
+Implementation remains active, not blocked globally. The resolve composer is specifically blocked
+on owner rulings C37-C40; independent pet work is separately tracked under Pet C18-C21.

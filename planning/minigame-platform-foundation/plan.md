@@ -82,3 +82,9 @@ resolve composer can write it replay-safely.
 Post-C36 status: [x] Founder v17, the exact rating/offline-quality maps, pinned minigames artifact,
 Go/TypeScript replay derivation, and reachable Founder-v17/Company-v16 Exit path are implemented
 without production rows or a balance mint. The server-certified resolve composer remains next.
+
+Post-F1 acceptance pass: the resolve composer is blocked on C37-C40. The current pinned artifact
+contains only activation IDs/seasons, not the policies replay must execute; the terminal session
+has no durable retry receipt; Company/Founder replay arms and events are not exact; and rating/
+offline-quality arithmetic remains ambiguous. No deploy-current resolver or transaction-local
+wire will be improvised.

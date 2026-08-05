@@ -47,3 +47,9 @@ artifact wire before the C14 map can be persisted.
 Post-C17 status: [x] the scalar v17→v18 chain, complete pet-artifact loader in both runtimes,
 replay-owned v18 map, artifact biconditional, and reachable mixed Founder/Company version path are
 implemented. Production pet rows and care transitions remain deferred balance/content work.
+
+Post-F1 acceptance pass: care-transition consumers are blocked on C18-C21. v18 lacks the per-pet
+attended evaluation watermark required to prevent repeated decay; the ruled remainder fields have
+no equation; care eligibility/diminishing order and mood/FSM scheduling are not exact; and the
+Founder command/replay/event envelopes remain unnamed. The proposals are filed in the RFC rather
+than inferred in code.

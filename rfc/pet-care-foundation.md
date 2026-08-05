@@ -524,6 +524,86 @@ is derived and not persisted. Writable bonds defer to their cross-Founder succes
 ships in this state version. The next Founder wire version activates this map only with a pinned
 pet artifact.
 
+## Implementation blockers C18-C21 (Codex, 2026-08-05)
+
+The complete v18 artifact/state grammar and F1 exact-key remediation are independently approved.
+The requested care-transition consumer still reaches four mechanical gaps. Implementing through
+them would make decay evaluation-frequency-dependent or invent visible pet behavior.
+
+### C18 — Pet state has no attended evaluation watermark and its remainders have no equation
+
+`CareState` stores decay remainders and a behavior-entered cursor, but no last care-evaluation
+cursor. Two commands in one run therefore cannot know which part of the frozen Founder-attendance
+sample was already applied: recomputing from completed `age_ms` double-decays the first interval,
+while treating `behavior_entered_at_attended_ms` as the watermark changes its ruled meaning. C13
+also gives integer `decay_ppm_per_grid` values but never defines how the `*_remainder_ppm` fields
+participate.
+
+**Proposed contract:** amend pre-mint Founder v18 state with exact
+`evaluated_through_attended_ms` per pet. Each resolved care input records the complete A1-A5
+Founder-attendance sample plus that stored before-cursor; ApplyFounderLogged requires
+`before == state.evaluated_through` and advances exactly to the sample total. Define stat/trust
+integration as
+`numerator=elapsed_ms*decay_ppm_per_grid+remainder`,
+`decay=floor(numerator/grid_ms)`, `remainder=numerator mod grid_ms`, with checked wide-integer
+intermediates. Stats saturate at their catalog floors; Trust above neutral decays toward neutral
+and never crosses it. Remainder validation becomes `< grid_ms` under the pinned pet catalog. This
+gives `advance(a+b)==advance(advance(a),b)` for every split and makes retry/stale-sample behavior
+fail closed.
+
+### C19 — Care eligibility and diminishing returns do not define one result
+
+C3/C13 name `min_eligible_ppm`, a diminishing threshold/factor, cooldown, saturation, and
+"over-care wastes," but do not state the comparison direction, operation order, or whether a
+partially effective action applies. Different reasonable ports produce different Trust gains and
+receipts.
+
+**Proposed contract:** an action is eligible when the target stat is at least
+`min_eligible_ppm`; catalogs must keep every recovery action eligible at its stat floor (the
+no-death law). Resolve decay first, then cooldown/eligibility. If the target is at/above the
+diminishing threshold, compute
+`effective=floor(delta_ppm*diminishing_factor_ppm/1_000_000)`, otherwise use the full delta;
+`applied=min(effective,1_000_000-current)`. Zero applied rejects as `saturated`; positive partials
+apply and the unapplied tail is visible waste. Only a positive applied amount starts cooldown and
+earns one `gain_ppm_per_effective_action` Trust grant, capped by Trust policy.
+
+### C20 — Mood/status input and deterministic FSM scheduling are unspecified
+
+Mood thresholds do not name the scalar they threshold. The deterministic behavior rows removed
+weighted randomness, but state still carries a PRNG cursor and queue of `behavior_id`s while rows
+contain only destination states. No rule orders elapsed grid ticks, due queue entries, and the
+care event, or bounds a long attended interval without iterating every tick.
+
+**Proposed contract:** derive the care scalar as the minimum of the four current stat ppm values;
+the greatest mood threshold not above it wins. Map the four ordered moods one-to-one onto public
+status bands `floor|low|normal|high`; snapshots expose only that band and eligible action IDs.
+Treat each behavior row's `to_state` as the queued mechanical behavior ID. On transition, drain
+due entries in `(due_attended_ms,behavior_id)` order, then apply the current command event; a
+matching row replaces any pending entry for the same destination and inserts its absolute due
+cursor, sorted, under hardcap 8. `grid_tick` is generated only for crossed absolute grid
+boundaries. The implementation must use deterministic cycle skipping over `(state,queue)` for
+large intervals; iteration proportional to total attended grids is forbidden. Because C17 removed
+weighted choice, `behavior_prng_cursor` is fixed at zero in v18 and should be removed in a later
+wire version rather than fake-used.
+
+### C21 — The live Founder command and replay/event envelopes are not exact
+
+PC2 says `care_action {pet,action}` but does not enumerate the authoritative intent fields,
+resolved attendance arm, receipt, events, or how the server locates the active Company used by the
+attendance sample. Adding an ad-hoc Company ID would let the client select clock context.
+
+**Proposed contract:** add Founder intent exact wire
+`{intent_id,kind:"care_action",expected_revision,pet_id,action_id}`. The server resolves the sole
+active Company sibling; the client supplies no Company/run coordinate. The Founder replay resolved
+arm is exact `{kind:"care_action",attendance,pet_attended_before_ms}`; canonical payload owns the
+pet/action IDs and the pinned artifact owns policy. Receipt is exact
+`{intent_id,outcome,founder_revision,pet_id,action_id,stat_id,before_ppm,applied_ppm,after_ppm,
+trust_before_ppm,trust_after_ppm,mood,status_band,next_eligible_attended_ms}`. Register
+`pet_care_applied.v1` and `pet_status_changed.v1`; the latter emits only when the derived public
+band changes. Unknown pet/action uses `unknown_id`; cooldown/ineligible/saturated use the existing
+`not_eligible` category plus C12a's detail member. Go/TypeScript shared vectors compare state,
+receipt, and ordered event bytes.
+
 ## Changelog
 
 - 2026-08-04: Codex acceptance review found C1–C8. Founder care cannot mutate inside the
