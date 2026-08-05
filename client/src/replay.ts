@@ -14,6 +14,7 @@ import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
 import { parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
 import { parsePetCatalog, type PetCatalog } from "./pet/catalog";
 import { parsePetCareStates, validatePetCareStatesForCatalog, type PetCareState } from "./pet/state";
+import { applyPetCareTransition, careStatus } from "./pet/transition";
 import { discountedRequirements, evaluatePredicate, parseRoutesCatalog, type RouteContext, type RoutesCatalog } from "./routes";
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -136,7 +137,8 @@ const REPLAY_EVENT_KINDS = Object.freeze([
 	"achievement_earned.v1",
   "compact_cascade_started", "compact_health_band_changed", "compact_left", "compact_recovered", "compact_recruitment_offered", "compact_sampled", "compact_signed", "compact_tithe_raised", "compensation",
   "exit_offer_declined", "exit_offer_expired", "exit_offer_spawned", "faction_stock_saturated", "founder_advanced", "gate_crossed", "generator_purchased", "guild_activity_evaluated", "guild_tithe_accrued",
-  "incorporated", "invariant_reported", "meter_band_changed.v1", "route_executed", "route_hint_purchased", "route_knowledge_granted", "run_ended", "run_started", "upgrade_purchased",
+	"incorporated", "invariant_reported", "meter_band_changed.v1", "route_executed", "route_hint_purchased", "route_knowledge_granted", "run_ended", "run_started", "upgrade_purchased",
+	"pet_care_applied.v1", "pet_status_changed.v1",
 ] as const);
 
 function foundationAchievementRegistry(catalog: EconomyCatalog): AchievementRegistry {
@@ -476,6 +478,41 @@ export function applyFounderLogged(state: FounderReplayState, canonicalPayload: 
       const eventValue = event("route_hint_purchased", request.intent_id, { route_id: routeId, cost: catalogs.routes.knowledge.hintCost });
       const receipt = { applied_count: 1, evaluated_at: rfc3339(state.evaluatedThroughMs), intent_id: request.intent_id, new_revision: wire.command.revision + 1, outcome: "applied", receipt: { changes: [] }, snapshot: founderWireSnapshot(state) };
       return { state, outcome: "applied", receipt, events: [eventValue], resultConstantsHash: catalogs.constantsHash };
+    }
+    if (kind === "care_action") {
+      exactKeys(wire.resolved, ["kind", "attendance", "pet_attended_before_ms"], "pet care inputs");
+      if (request.kind !== "care_action" || request.invalid !== undefined || request.expected_revision !== wire.command.revision || !catalogs.pets) throw new RangeError("pet care command mismatch");
+      const petId = uuidV7String(request.pet_id); const actionId = mechanicalString(request.action_id);
+      const sample = parseFounderAttendanceSample(wire.resolved.attendance);
+      if (sample.companyConstantsHash !== catalogs.constantsHash) throw new RangeError("pet care catalog context mismatch");
+      const attended = validateFounderAttendanceSample(state, wire.command.revision, request.expected_revision, sample);
+      const beforeCursor = safeInteger(wire.resolved.pet_attended_before_ms, 0, MAX_EXACT_INTEGER);
+      const care = state.pets[petId];
+      if (care === undefined) {
+        if (beforeCursor !== 0) throw new RangeError("unknown pet has a care cursor");
+        return founderRejected(state, request.intent_id, wire.command.revision, "unknown_id", "unknown_pet", catalogs.constantsHash, rollback);
+      }
+      if (care.evaluated_through_attended_ms !== beforeCursor) throw new RangeError("stale pet care cursor");
+      const priorBand = careStatus(care, catalogs.pets).status_band;
+      const careResult = applyPetCareTransition(care, catalogs.pets, { action_id: actionId, attended_before_ms: beforeCursor, attended_after_ms: attended });
+      if (!careResult.applied) {
+        const category = careResult.rejection_detail === "unknown_action" ? "unknown_id" : "not_eligible";
+        return founderRejected(state, request.intent_id, wire.command.revision, category, careResult.rejection_detail, catalogs.constantsHash, rollback);
+      }
+      state.pets[petId] = careResult.state;
+      const receipt = { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1,
+        pet_id: petId, action_id: actionId, stat_id: careResult.stat_id, before_ppm: careResult.before_ppm,
+        applied_ppm: careResult.applied_ppm, after_ppm: careResult.after_ppm, trust_before_ppm: careResult.trust_before_ppm,
+        trust_after_ppm: careResult.trust_after_ppm, mood: careResult.mood, status_band: careResult.status_band,
+        next_eligible_attended_ms: careResult.next_eligible_attended_ms };
+      const events = [event("pet_care_applied.v1", request.intent_id, { pet_id: petId, action_id: actionId,
+        stat_id: careResult.stat_id, before_ppm: careResult.before_ppm, applied_ppm: careResult.applied_ppm,
+        after_ppm: careResult.after_ppm, trust_before_ppm: careResult.trust_before_ppm,
+        trust_after_ppm: careResult.trust_after_ppm, mood: careResult.mood, status_band: careResult.status_band,
+        next_eligible_attended_ms: careResult.next_eligible_attended_ms })];
+      if (careResult.status_changed) events.push(event("pet_status_changed.v1", request.intent_id,
+        { pet_id: petId, from_status_band: priorBand, to_status_band: careResult.status_band }));
+      return { state, outcome: "applied", receipt, events, resultConstantsHash: catalogs.constantsHash };
     }
     if (kind === "exit.v1") return applyFounderExit(state, request, wire, catalogs);
     throw new RangeError("unknown Founder replay arm");
@@ -1241,6 +1278,11 @@ function parseIntent(payload: string, intentId: string): Intent {
     case "buy_route_hint":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "route_id"])) { base.invalid = "buy_route_hint.fields"; return base; }
       if (!isMechanical(raw.route_id)) base.invalid = "route_id"; else base.route_id = raw.route_id;
+      return base;
+    case "care_action":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "pet_id", "action_id"])) { base.invalid = "care_action.fields"; return base; }
+      if (!isUUIDV7(raw.pet_id)) base.invalid = "pet_id"; else base.pet_id = raw.pet_id;
+      if (!isMechanical(raw.action_id)) base.invalid = "action_id"; else base.action_id = raw.action_id;
       return base;
     case "sign_compact":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "tithe_ppm"])) { base.invalid = "sign_compact.fields"; return base; }

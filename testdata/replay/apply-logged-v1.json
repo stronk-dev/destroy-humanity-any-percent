@@ -14662,5 +14662,267 @@
       "tier": 0,
       "upgrades_owned": []
     }
-  }
+  },
+  "pet_founder_constants_hash": "sha256:aafd8196034f9c97690ebca9eb4796e57f2a278a2f2b7640641fbf6950f8b520",
+  "pet_founder_artifacts": {
+    "achievements": "{\"schema_version\":1,\"achievements\":[{\"id\":\"achievement.first_gate\",\"condition_scope\":\"run\",\"condition\":{\"kind\":\"counter_at_least\",\"counter\":\"tier\",\"minimum\":1},\"proof\":{\"kind\":\"provenance\",\"event_kinds\":[\"gate_crossed\"]},\"score_grant\":4,\"copy_key\":\"category.any_percent\"},{\"id\":\"achievement.old_hand\",\"condition_scope\":\"career\",\"condition\":{\"kind\":\"exit_count_at_least\",\"count\":1},\"proof\":{\"kind\":\"provenance\",\"event_kinds\":[\"founder_advanced\",\"run_ended\"]},\"score_grant\":6,\"copy_key\":\"category.any_percent\"}]}",
+    "categories": "{\n  \"schema_version\": 1,\n  \"full_gate_set\": [\"gate.t2_to_t3\", \"gate.t4_to_t5\", \"gate.t7_to_t8\"],\n  \"fact_sets\": {\n    \"completion_set\": [],\n    \"forbidden_set\": [\"darkpattern.\", \"externality.\"]\n  },\n  \"categories\": [\n    {\n      \"id\": \"any_percent\",\n      \"name_key\": \"category.any_percent\",\n      \"timer\": \"rta\",\n      \"predicate\": { \"kind\": \"any\" }\n    },\n    {\n      \"id\": \"hundred_percent\",\n      \"name_key\": \"category.hundred_percent\",\n      \"timer\": \"rta\",\n      \"predicate\": {\n        \"kind\": \"all_of\",\n        \"all\": [\n          { \"kind\": \"all_gates\" },\n          { \"kind\": \"facts_superset\", \"set_ref\": \"completion_set\" }\n        ]\n      }\n    },\n    {\n      \"id\": \"ethical_percent\",\n      \"name_key\": \"category.ethical_percent\",\n      \"timer\": \"attended\",\n      \"predicate\": { \"kind\": \"facts_disjoint\", \"set_ref\": \"forbidden_set\" }\n    },\n    {\n      \"id\": \"low_percent\",\n      \"name_key\": \"category.low_percent\",\n      \"timer\": \"rta\",\n      \"predicate\": {\n        \"kind\": \"count_at_most\",\n        \"field\": \"generators_purchased_total\",\n        \"literal\": 40\n      }\n    },\n    {\n      \"id\": \"valuation\",\n      \"name_key\": \"category.valuation\",\n      \"timer\": \"none\",\n      \"predicate\": { \"kind\": \"any\" }\n    }\n  ]\n}\n",
+    "commons": "{\n  \"schema_version\": 1,\n  \"source_weights\": [],\n  \"default_tithe_ppm\": 100000,\n  \"minimum_tithe_ppm\": 50000,\n  \"maximum_tithe_ppm\": 150000,\n  \"guild_health_weight_ppm\": 500000,\n  \"cohort_health_weight_ppm\": 300000,\n  \"server_health_weight_ppm\": 200000,\n  \"collective_weight_ppm\": 600000,\n  \"collective_exponent_ppm\": 1500000,\n  \"collapse_health_ppm\": 350000,\n  \"healthy_health_ppm\": 800000,\n  \"maximum_bonus\": \"5e0\",\n  \"health_recovery_ppm_per_hour\": 100000,\n  \"health_decay_ppm_per_hour\": 40000,\n  \"solidarity_window_ms\": 2592000000,\n  \"cohort_target_size\": 150,\n  \"cohort_merge_floor\": 40,\n  \"npc_population_floor\": 40,\n  \"npc_weight_ppm\": 500000,\n  \"npc_compliance_ppm\": 750000,\n  \"population_tolerance_ppm\": 100\n}\n",
+    "economy": "{\n  \"schema_version\": 3,\n  \"resources\": [\n    {\n      \"id\": \"company.cash\",\n      \"scope\": \"company\",\n      \"numeric_kind\": \"decimal\",\n      \"initial\": \"0\",\n      \"minimum\": \"0\",\n      \"hardcap\": {\n        \"amount\": \"1e1000\",\n        \"reason_key\": \"resource.company_cash.cap.phase0\"\n      }\n    }\n  ],\n  \"generator_classes\": [\n    {\n      \"id\": \"generator.beige_tower\",\n      \"price\": {\n        \"resource_id\": \"company.cash\",\n        \"base\": \"1e1\",\n        \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.13e0\" }\n      },\n      \"production\": {\n        \"resource_id\": \"company.cash\",\n        \"base_rate\": \"1e0\"\n      }\n    }\n  ],\n  \"manual_actions\": [\n    {\n      \"id\": \"manual.click\",\n      \"output\": { \"resource_id\": \"company.cash\", \"amount_per_action\": \"1e0\" }\n    }\n  ],\n  \"multiplier_sources\": [\n    {\n      \"id\": \"commons.member\",\n      \"slot\": \"commons\",\n      \"target\": \"all\",\n      \"provider\": \"commons\"\n    },\n    {\n      \"id\": \"guild.stock_consumption\",\n      \"slot\": \"faction\",\n      \"target\": \"all\",\n      \"provider\": \"faction\"\n    }\n  ],\n  \"progress_coordinates\": [\n    { \"tier\": 0, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e3\" },\n    {\n      \"tier\": 1,\n      \"kind\": \"composite\",\n      \"terms\": [\n        { \"weight\": \"5e-1\", \"kind\": \"count_fraction\", \"count\": \"generators.total_owned\", \"required\": 25 },\n        { \"weight\": \"5e-1\", \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e6\" }\n      ]\n    },\n    { \"tier\": 2, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e9\" },\n    { \"tier\": 3, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e12\" }\n  ],\n  \"manual_policy\": { \"refill_milli_per_ms\": 25, \"bucket_cap_milli\": 50000 },\n  \"offline_policy\": {\n    \"efficiency\": \"9e-1\",\n    \"accrual_cap_ms\": 86400000,\n    \"bank_ratio_numerator\": 1,\n    \"bank_ratio_denominator\": 2,\n    \"bank_cap_ms\": 259200000,\n    \"burst_speed\": \"2e0\",\n    \"burst_max_duration_ms\": 14400000\n  }\n}\n",
+    "factions": "{\n  \"schema_version\": 1,\n  \"stock_cap\": 100000,\n  \"stock_interval_ms\": 60000,\n  \"factions\": [\n    {\n      \"id\": \"bootstrapper\",\n      \"produces\": \"revenue\",\n      \"consumes\": \"compliance\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.bootstrapper\"\n    },\n    {\n      \"id\": \"vc_funded\",\n      \"produces\": \"hype\",\n      \"consumes\": \"revenue\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.vc_funded\"\n    },\n    {\n      \"id\": \"open_source\",\n      \"produces\": \"libraries\",\n      \"consumes\": \"hype\",\n      \"compact\": { \"auto_sign\": true, \"tithe_ppm\": 130000 },\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.open_source\"\n    },\n    {\n      \"id\": \"enterprise\",\n      \"produces\": \"compliance\",\n      \"consumes\": \"libraries\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.enterprise\"\n    }\n  ]\n}\n",
+    "guilds": "{\n  \"schema_version\": 1,\n  \"guild_tithe_ppm\": 20000,\n  \"clearing_rate_ppm\": 500000,\n  \"npc_exchange_ppm\": 250000,\n  \"stock_intake_cap\": 120,\n  \"consumption_bonus_ppm_per_unit\": 0,\n  \"max_members\": 50,\n  \"min_members\": 2,\n  \"grace_days\": 7,\n  \"guild_xp_target_per_founder\": 250000,\n  \"clearing_interval_ms\": 300000\n}\n",
+    "meters": "{\n    \"schema_version\": 1,\n    \"trust_reseed\": {\n      \"base_value\": 90,\n      \"notoriety_numerator\": 35,\n      \"notoriety_denominator\": 100,\n      \"floor_value\": 55,\n      \"ceiling_value\": 90\n    },\n    \"meters\": [\n      {\n        \"id\": \"doom.probability\",\n        \"scope\": \"company\",\n        \"min_value\": 0,\n        \"max_value\": 100,\n        \"initial_value\": 50,\n        \"bands\": [{ \"id\": \"low\", \"floor_value\": 0 }, { \"id\": \"high\", \"floor_value\": 70 }],\n        \"inputs\": [\n          { \"kind\": \"ledger_fact\", \"fact_kind\": \"externality.emitted\", \"delta\": 3 },\n          { \"kind\": \"contribution_slot\", \"slot\": \"upgrades\", \"source_id\": \"generator.example\", \"delta_per_attended_hour\": -2 }\n        ],\n        \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n      },\n      { \"id\": \"trust.employees.grievance\", \"scope\": \"company\", \"min_value\": 0, \"max_value\": 100, \"initial_value\": 50, \"bands\": [{ \"id\": \"low\", \"floor_value\": 0 }, { \"id\": \"high\", \"floor_value\": 70 }], \"inputs\": [], \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 } },\n      { \"id\": \"trust.employees.standing\", \"scope\": \"company\", \"min_value\": 0, \"max_value\": 100, \"initial_value\": 50, \"bands\": [{ \"id\": \"low\", \"floor_value\": 0 }, { \"id\": \"high\", \"floor_value\": 70 }], \"inputs\": [], \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 } },\n      { \"id\": \"trust.investors.grievance\", \"scope\": \"company\", \"min_value\": 0, \"max_value\": 100, \"initial_value\": 50, \"bands\": [{ \"id\": \"low\", \"floor_value\": 0 }, { \"id\": \"high\", \"floor_value\": 70 }], \"inputs\": [], \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 } },\n      { \"id\": \"trust.investors.standing\", \"scope\": \"company\", \"min_value\": 0, \"max_value\": 100, \"initial_value\": 50, \"bands\": [{ \"id\": \"low\", \"floor_value\": 0 }, { \"id\": \"high\", \"floor_value\": 70 }], \"inputs\": [], \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 } },\n      { \"id\": \"trust.press.grievance\", \"scope\": \"company\", \"min_value\": 0, \"max_value\": 100, \"initial_value\": 50, \"bands\": [{ \"id\": \"low\", \"floor_value\": 0 }, { \"id\": \"high\", \"floor_value\": 70 }], \"inputs\": [], \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 } },\n      { \"id\": \"trust.press.standing\", \"scope\": \"company\", \"min_value\": 0, \"max_value\": 100, \"initial_value\": 50, \"bands\": [{ \"id\": \"low\", \"floor_value\": 0 }, { \"id\": \"high\", \"floor_value\": 70 }], \"inputs\": [], \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 } },\n      { \"id\": \"trust.regulators.grievance\", \"scope\": \"company\", \"min_value\": 0, \"max_value\": 100, \"initial_value\": 50, \"bands\": [{ \"id\": \"low\", \"floor_value\": 0 }, { \"id\": \"high\", \"floor_value\": 70 }], \"inputs\": [], \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 } },\n      { \"id\": \"trust.regulators.standing\", \"scope\": \"company\", \"min_value\": 0, \"max_value\": 100, \"initial_value\": 50, \"bands\": [{ \"id\": \"low\", \"floor_value\": 0 }, { \"id\": \"high\", \"floor_value\": 70 }], \"inputs\": [], \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 } },\n      { \"id\": \"trust.users.grievance\", \"scope\": \"company\", \"min_value\": 0, \"max_value\": 100, \"initial_value\": 50, \"bands\": [{ \"id\": \"low\", \"floor_value\": 0 }, { \"id\": \"high\", \"floor_value\": 70 }], \"inputs\": [], \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 } },\n      { \"id\": \"trust.users.standing\", \"scope\": \"company\", \"min_value\": 0, \"max_value\": 100, \"initial_value\": 50, \"bands\": [{ \"id\": \"low\", \"floor_value\": 0 }, { \"id\": \"high\", \"floor_value\": 70 }], \"inputs\": [], \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 } }\n    ]\n  }",
+    "minigames": "{\"schema_version\":1,\"minigame_ids\":[],\"rating_seasons\":[]}",
+    "pets": "{\"schema_version\":1,\"stat_policy\":{\"grid_ms\":60000,\"stats\":[{\"stat_id\":\"hunger\",\"initial_ppm\":800000,\"floor_ppm\":100000,\"decay_ppm_per_grid\":1000},{\"stat_id\":\"energy\",\"initial_ppm\":800000,\"floor_ppm\":100000,\"decay_ppm_per_grid\":1000},{\"stat_id\":\"cleanliness\",\"initial_ppm\":800000,\"floor_ppm\":100000,\"decay_ppm_per_grid\":1000},{\"stat_id\":\"affection\",\"initial_ppm\":800000,\"floor_ppm\":100000,\"decay_ppm_per_grid\":1000}],\"diminishing_threshold_ppm\":700000,\"diminishing_factor_ppm\":500000},\"actions\":[{\"action_id\":\"care.feed\",\"stat_id\":\"hunger\",\"delta_ppm\":100000,\"cooldown_attended_ms\":60000,\"min_eligible_ppm\":100000}],\"trust_policy\":{\"initial_ppm\":500000,\"neutral_ppm\":500000,\"floor_ppm\":100000,\"cap_ppm\":1000000,\"gain_ppm_per_effective_action\":1000,\"decay_ppm_per_grid\":100},\"mood_policy\":[{\"mood_member\":\"withdrawn\",\"floor_ppm\":0},{\"mood_member\":\"restless\",\"floor_ppm\":250000},{\"mood_member\":\"neutral\",\"floor_ppm\":500000},{\"mood_member\":\"engaged\",\"floor_ppm\":750000}],\"behavior_policy\":[]}",
+    "prestige": "{\n  \"schema_version\": 1,\n  \"value_resource_id\": \"company.cash\",\n  \"threshold\": \"1e12\",\n  \"exit_modifiers_ppm\": {\n    \"acquihire\": 900000,\n    \"acquisition\": 1000000,\n    \"ipo\": 1250000,\n    \"collapse\": 750000,\n    \"scripted_first\": 1000000\n  },\n  \"collapse_route_knowledge\": 25,\n  \"catchup_ceiling_ms\": 5000,\n  \"offer_duration_ms\": 900000,\n  \"decline_drift_ppm\": 50000,\n  \"spawn_gate_ppm\": [0, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1000000],\n  \"advisor_per_run_ppm\": 20000,\n  \"advisor_cap_ppm\": 500000\n}\n",
+    "routes": "{\n  \"schema_version\": 1,\n  \"context_version\": 1,\n  \"depletion_distinct_routes_required\": 5,\n  \"knowledge\": {\n    \"registry_first_bonus\": 100,\n    \"founder_first_grant\": 25,\n    \"repeat_grant\": 5,\n    \"hint_cost\": 50\n  },\n  \"gates\": [\n    {\n      \"gate_id\": \"gate.t2_to_t3\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e9\" }],\n      \"routes\": []\n    },\n    {\n      \"gate_id\": \"gate.t4_to_t5\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e15\" }],\n      \"routes\": [\n        {\n          \"route_id\": \"route.regulatory_capture\",\n          \"house_name\": \"Regulatory Capture Skip\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.ethical\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.ethical\" },\n            { \"kind\": \"meter_band\", \"meter_id\": \"trust.regulators.standing\", \"min\": 70, \"max\": 100 },\n            { \"kind\": \"meter_band\", \"meter_id\": \"trust.regulators.grievance\", \"min\": 0, \"max\": 20 }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"4e-1\" }\n        },\n        {\n          \"route_id\": \"route.ipo_sequence_break\",\n          \"house_name\": \"IPO Sequence Break\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.capture\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.capture\" },\n            { \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"4e8\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"4e-1\" }\n        },\n        {\n          \"route_id\": \"route.acquihire_out_of_bounds\",\n          \"house_name\": \"Acquihire Out-of-Bounds\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.capture\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.capture\" },\n            { \"kind\": \"ledger_fact_present\", \"fact_kind\": \"exit.acquihire\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"5e-1\" }\n        },\n        {\n          \"route_id\": \"route.non_road_engine_clip\",\n          \"house_name\": \"Non-Road Engine Clip\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.corporation\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.corporation\" },\n            { \"kind\": \"region_trait\", \"trait_id\": \"trait.non_road\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"6e-1\" }\n        },\n        {\n          \"route_id\": \"route.nonprofit_wrapper_zip\",\n          \"house_name\": \"Nonprofit Wrapper Zip\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.nonprofit\",\n          \"predicate\": [{ \"kind\": \"structure_is\", \"structure_id\": \"structure.nonprofit\" }],\n          \"effect\": { \"kind\": \"substitute\" }\n        },\n        {\n          \"route_id\": \"route.offset_warp\",\n          \"house_name\": \"Offset Warp\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.nonprofit\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.nonprofit\" },\n            { \"kind\": \"meter_band\", \"meter_id\": \"planet.offset_coverage\", \"min\": 90, \"max\": 100 }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"2e-1\" }\n        }\n      ]\n    },\n    {\n      \"gate_id\": \"gate.t7_to_t8\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e24\" }],\n      \"routes\": [\n        {\n          \"route_id\": \"route.sovereign_ai_early_warp\",\n          \"house_name\": \"Sovereign AI Early Warp\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.corporation\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.corporation\" },\n            { \"kind\": \"region_trait\", \"trait_id\": \"trait.sovereign_compute\" }\n          ],\n          \"effect\": { \"kind\": \"substitute\" }\n        }\n      ]\n    }\n  ]\n}\n"
+  },
+  "pet_founder_cases": [
+    {
+      "name": "care-action-applied",
+      "state_version": 18,
+      "pre_state": {
+        "achievement_score_lifetime": 0,
+        "achievement_score_run": 0,
+        "achievements_earned_lifetime": [],
+        "achievements_earned_run": [],
+        "advisor_mode": false,
+        "age_ms": 0,
+        "balances": {},
+        "clout_lifetime": 0,
+        "collapsed_offline_ms": 0,
+        "compact_member": false,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "compact_tithe_ppm": 0,
+        "compute_credit_ms": 0,
+        "consumed_stock_units": 0,
+        "doctrines_by_transition": {},
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "exit_history": [],
+        "faction_id": null,
+        "gates_crossed": {},
+        "generators": {},
+        "generators_provisioned": {},
+        "generators_purchased_total": 0,
+        "guild_boundary_guild_id": null,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "hints_unlocked": [],
+        "incorporated_at_ms": null,
+        "ledger_fact_kinds": [],
+        "lifetime_value": "0",
+        "manual_token_milli": 0,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "meter_decay_remainders": {},
+        "meter_input_remainders": {},
+        "meter_values": {},
+        "minigame_offline_quality": {},
+        "minigame_ratings": {},
+        "network_slots": [],
+        "notoriety": 0,
+        "offer_state": null,
+        "offline_spans": [],
+        "pets": {
+          "01986666-7700-7000-8000-000000000001": {
+            "stats_ppm": {
+              "affection": 800000,
+              "cleanliness": 800000,
+              "energy": 800000,
+              "hunger": 600000
+            },
+            "stat_decay_remainders_ppm": {
+              "affection": 0,
+              "cleanliness": 0,
+              "energy": 0,
+              "hunger": 0
+            },
+            "cooldown_until_attended_ms": {
+              "care.feed": 0
+            },
+            "trust_ppm": 500000,
+            "trust_decay_remainder_ppm": 0,
+            "evaluated_through_attended_ms": 0,
+            "behavior_state": "idle",
+            "behavior_entered_at_attended_ms": 0,
+            "behavior_queue": [],
+            "behavior_prng_cursor": 0
+          }
+        },
+        "provision_remainders_ppm": {},
+        "region_traits": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "route_knowledge_balance": 0,
+        "run_pre_timer": false,
+        "run_seq": 0,
+        "run_started_at_ms": 0,
+        "soul": 0,
+        "stock_progress_ms": 0,
+        "stock_rate_remainder_ppm": 0,
+        "stock_units": 0,
+        "structure_id": "",
+        "tier": 0,
+        "upgrades_owned": []
+      },
+      "canonical_payload": {
+        "action_id": "care.feed",
+        "expected_revision": 1,
+        "kind": "care_action",
+        "pet_id": "01986666-7700-7000-8000-000000000001"
+      },
+      "replay_inputs": {
+        "command": {
+          "intent_id": "01986666-0700-7000-8000-000000000705",
+          "founder_stream_id": "01986666-2700-7000-8000-000000000005",
+          "founder_id": "01986666-3700-7000-8000-000000000005",
+          "revision": 1,
+          "founder_log_seq": 1,
+          "server_ts_ms": 1785571200000
+        },
+        "evaluated_at_ms": 1785571200000,
+        "resolved": {
+          "kind": "care_action",
+          "attendance": {
+            "company_stream_id": "01986666-1700-7000-8000-000000000705",
+            "run_seq": 1,
+            "company_revision": 1,
+            "company_constants_hash": "sha256:aafd8196034f9c97690ebca9eb4796e57f2a278a2f2b7640641fbf6950f8b520",
+            "completed_attended_ms": 0,
+            "current_run_partial_attended_ms": 120000,
+            "effective_founder_attended_ms": 120000
+          },
+          "pet_attended_before_ms": 0
+        },
+        "v": 1
+      },
+      "outcome": "applied",
+      "receipt": {
+        "intent_id": "01986666-0700-7000-8000-000000000705",
+        "outcome": "applied",
+        "founder_revision": 2,
+        "pet_id": "01986666-7700-7000-8000-000000000001",
+        "action_id": "care.feed",
+        "stat_id": "hunger",
+        "before_ppm": 598000,
+        "applied_ppm": 100000,
+        "after_ppm": 698000,
+        "trust_before_ppm": 500000,
+        "trust_after_ppm": 501000,
+        "mood": "neutral",
+        "status_band": "normal",
+        "next_eligible_attended_ms": 180000
+      },
+      "events": [
+        {
+          "kind": "pet_care_applied.v1",
+          "schema_version": 1,
+          "intent_id": "01986666-0700-7000-8000-000000000705",
+          "payload": {
+            "action_id": "care.feed",
+            "after_ppm": 698000,
+            "applied_ppm": 100000,
+            "before_ppm": 598000,
+            "mood": "neutral",
+            "next_eligible_attended_ms": 180000,
+            "pet_id": "01986666-7700-7000-8000-000000000001",
+            "stat_id": "hunger",
+            "status_band": "normal",
+            "trust_after_ppm": 501000,
+            "trust_before_ppm": 500000
+          }
+        }
+      ],
+      "post_state": {
+        "achievement_score_lifetime": 0,
+        "achievement_score_run": 0,
+        "achievements_earned_lifetime": [],
+        "achievements_earned_run": [],
+        "advisor_mode": false,
+        "age_ms": 0,
+        "balances": {},
+        "clout_lifetime": 0,
+        "collapsed_offline_ms": 0,
+        "compact_member": false,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "compact_tithe_ppm": 0,
+        "compute_credit_ms": 0,
+        "consumed_stock_units": 0,
+        "doctrines_by_transition": {},
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "exit_history": [],
+        "faction_id": null,
+        "gates_crossed": {},
+        "generators": {},
+        "generators_provisioned": {},
+        "generators_purchased_total": 0,
+        "guild_boundary_guild_id": null,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "hints_unlocked": [],
+        "incorporated_at_ms": null,
+        "ledger_fact_kinds": [],
+        "lifetime_value": "0",
+        "manual_token_milli": 0,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "meter_decay_remainders": {},
+        "meter_input_remainders": {},
+        "meter_values": {},
+        "minigame_offline_quality": {},
+        "minigame_ratings": {},
+        "network_slots": [],
+        "notoriety": 0,
+        "offer_state": null,
+        "offline_spans": [],
+        "pets": {
+          "01986666-7700-7000-8000-000000000001": {
+            "stats_ppm": {
+              "affection": 798000,
+              "cleanliness": 798000,
+              "energy": 798000,
+              "hunger": 698000
+            },
+            "stat_decay_remainders_ppm": {
+              "affection": 0,
+              "cleanliness": 0,
+              "energy": 0,
+              "hunger": 0
+            },
+            "cooldown_until_attended_ms": {
+              "care.feed": 180000
+            },
+            "trust_ppm": 501000,
+            "trust_decay_remainder_ppm": 0,
+            "evaluated_through_attended_ms": 120000,
+            "behavior_state": "idle",
+            "behavior_entered_at_attended_ms": 0,
+            "behavior_queue": [],
+            "behavior_prng_cursor": 0
+          }
+        },
+        "provision_remainders_ppm": {},
+        "region_traits": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "route_knowledge_balance": 0,
+        "run_pre_timer": false,
+        "run_seq": 0,
+        "run_started_at_ms": 0,
+        "soul": 0,
+        "stock_progress_ms": 0,
+        "stock_rate_remainder_ppm": 0,
+        "stock_units": 0,
+        "structure_id": "",
+        "tier": 0,
+        "upgrades_owned": []
+      },
+      "result_constants_hash": "sha256:aafd8196034f9c97690ebca9eb4796e57f2a278a2f2b7640641fbf6950f8b520",
+      "receipt_json": "{\"action_id\":\"care.feed\",\"after_ppm\":698000,\"applied_ppm\":100000,\"before_ppm\":598000,\"founder_revision\":2,\"intent_id\":\"01986666-0700-7000-8000-000000000705\",\"mood\":\"neutral\",\"next_eligible_attended_ms\":180000,\"outcome\":\"applied\",\"pet_id\":\"01986666-7700-7000-8000-000000000001\",\"stat_id\":\"hunger\",\"status_band\":\"normal\",\"trust_after_ppm\":501000,\"trust_before_ppm\":500000}",
+      "events_json": "[{\"intent_id\":\"01986666-0700-7000-8000-000000000705\",\"kind\":\"pet_care_applied.v1\",\"payload\":{\"action_id\":\"care.feed\",\"after_ppm\":698000,\"applied_ppm\":100000,\"before_ppm\":598000,\"mood\":\"neutral\",\"next_eligible_attended_ms\":180000,\"pet_id\":\"01986666-7700-7000-8000-000000000001\",\"stat_id\":\"hunger\",\"status_band\":\"normal\",\"trust_after_ppm\":501000,\"trust_before_ppm\":500000},\"schema_version\":1}]",
+      "post_state_json": "{\"achievement_score_lifetime\":0,\"achievement_score_run\":0,\"achievements_earned_lifetime\":[],\"achievements_earned_run\":[],\"advisor_mode\":false,\"age_ms\":0,\"balances\":{},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"exit_history\":[],\"faction_id\":null,\"gates_crossed\":{},\"generators\":{},\"generators_provisioned\":{},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":0,\"manual_token_refilled_at\":\"2026-08-01T08:00:00Z\",\"meter_decay_remainders\":{},\"meter_input_remainders\":{},\"meter_values\":{},\"minigame_offline_quality\":{},\"minigame_ratings\":{},\"network_slots\":[],\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[],\"pets\":{\"01986666-7700-7000-8000-000000000001\":{\"behavior_entered_at_attended_ms\":0,\"behavior_prng_cursor\":0,\"behavior_queue\":[],\"behavior_state\":\"idle\",\"cooldown_until_attended_ms\":{\"care.feed\":180000},\"evaluated_through_attended_ms\":120000,\"stat_decay_remainders_ppm\":{\"affection\":0,\"cleanliness\":0,\"energy\":0,\"hunger\":0},\"stats_ppm\":{\"affection\":798000,\"cleanliness\":798000,\"energy\":798000,\"hunger\":698000},\"trust_decay_remainder_ppm\":0,\"trust_ppm\":501000}},\"provision_remainders_ppm\":{},\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":0,\"run_started_at_ms\":0,\"soul\":0,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_units\":0,\"structure_id\":\"\",\"tier\":0,\"upgrades_owned\":[]}"
+    }
+  ]
 }

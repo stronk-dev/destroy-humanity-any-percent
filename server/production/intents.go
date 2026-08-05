@@ -21,6 +21,7 @@ import (
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
@@ -46,6 +47,7 @@ const (
 	IntentWindDown           = "wind_down"
 	IntentFileIPO            = "file_ipo"
 	IntentIncorporate        = "incorporate"
+	IntentCareAction         = "care_action"
 )
 
 type PrestigePolicyResolver interface {
@@ -274,6 +276,7 @@ type IntentRequest struct {
 	ExpectedFounderRevision int64
 	OfferID                 string
 	FactionID               string
+	PetID                   string
 }
 
 type CompactTitheBand struct {
@@ -348,6 +351,9 @@ func (s *Service) Handle(
 	}
 	if request.Kind == IntentBuyRouteHint {
 		return s.handleFounderRouteHint(ctx, streamID, mode, request)
+	}
+	if request.Kind == IntentCareAction {
+		return s.handleFounderCare(ctx, streamID, now, request)
 	}
 	var prestigeFounder *save.Loaded
 	var declinedOffers int64
@@ -537,6 +543,29 @@ type founderInvalidResolved struct {
 	Detail string `json:"detail"`
 }
 
+type founderCareResolved struct {
+	Kind                string                  `json:"kind"`
+	Attendance          FounderAttendanceSample `json:"attendance"`
+	PetAttendedBeforeMS int64                   `json:"pet_attended_before_ms"`
+}
+
+type founderCareReceipt struct {
+	IntentID               string         `json:"intent_id"`
+	Outcome                string         `json:"outcome"`
+	FounderRevision        int64          `json:"founder_revision"`
+	PetID                  string         `json:"pet_id"`
+	ActionID               string         `json:"action_id"`
+	StatID                 pet.StatID     `json:"stat_id"`
+	BeforePPM              int64          `json:"before_ppm"`
+	AppliedPPM             int64          `json:"applied_ppm"`
+	AfterPPM               int64          `json:"after_ppm"`
+	TrustBeforePPM         int64          `json:"trust_before_ppm"`
+	TrustAfterPPM          int64          `json:"trust_after_ppm"`
+	Mood                   pet.Mood       `json:"mood"`
+	StatusBand             pet.StatusBand `json:"status_band"`
+	NextEligibleAttendedMS int64          `json:"next_eligible_attended_ms"`
+}
+
 func marshalFounderReplayInputs(command save.FounderReplayCommand, resolved any) (json.RawMessage, error) {
 	return save.MarshalFounderReplayInputs(command, resolved)
 }
@@ -614,6 +643,75 @@ func (s *Service) handleFounderRouteHint(ctx context.Context, streamID string, _
 		return HandleResult{}, err
 	}
 	s.recordCommittedInvariants(result, collector.reports)
+	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
+}
+
+func (s *Service) handleFounderCare(ctx context.Context, companyStreamID string, now time.Time, request IntentRequest) (HandleResult, error) {
+	if s.replayCatalogs == nil {
+		return HandleResult{}, fmt.Errorf("%w: Founder replay runtime unavailable", ErrInvalidIntent)
+	}
+	founder, err := s.store.LoadSiblingLatest(ctx, companyStreamID, economy.ScopeFounder)
+	if err != nil {
+		return HandleResult{}, err
+	}
+	attendance, err := s.ResolveFounderAttendance(ctx, founder.Revision.StreamID, companyStreamID, now)
+	if err != nil {
+		return HandleResult{}, err
+	}
+	result, err := s.store.ApplyFounderLogged(ctx, founder.Revision.StreamID, request.ExpectedRevision,
+		request.IntentID, request.RequestHash, request.CanonicalPayload,
+		func(state *save.State, revision save.Revision, command save.FounderReplayCommand) (save.IntentDecision, json.RawMessage, error) {
+			bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(revision.ConstantsHash)
+			if !ok {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
+			}
+			if request.InvalidDetail != "" {
+				replayInputs, marshalErr := marshalFounderReplayInputs(command,
+					founderInvalidResolved{Kind: "invalid", Detail: request.InvalidDetail})
+				if marshalErr != nil {
+					return save.IntentDecision{}, nil, marshalErr
+				}
+				transition, transitionErr := ApplyFounderLogged(state, request.CanonicalPayload, bundle, replayInputs)
+				return save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt,
+					Events: transition.Events}, replayInputs, transitionErr
+			}
+			if bundle.Pets == nil || attendance.CompanyConstantsHash != revision.ConstantsHash {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: pet catalog/clock context unavailable", ErrInvalidIntent)
+			}
+			before := int64(0)
+			if state.Pets != nil {
+				if care, exists := state.Pets[request.PetID]; exists {
+					before = care.EvaluatedThroughAttendedMS
+				}
+			}
+			replayInputs, marshalErr := marshalFounderReplayInputs(command, founderCareResolved{
+				Kind: IntentCareAction, Attendance: attendance, PetAttendedBeforeMS: before,
+			})
+			if marshalErr != nil {
+				return save.IntentDecision{}, nil, marshalErr
+			}
+			transition, transitionErr := ApplyFounderLogged(state, request.CanonicalPayload, bundle, replayInputs)
+			return save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt,
+				Events: transition.Events}, replayInputs, transitionErr
+		})
+	if err != nil {
+		var conflict *save.RevisionConflict
+		switch {
+		case errors.As(err, &conflict):
+			return HandleResult{Receipt: marshalRejection(request.IntentID, conflict.Current, "revision_conflict", "expected_revision")}, nil
+		case errors.Is(err, save.ErrIdempotencyConflict):
+			current := request.ExpectedRevision
+			if loaded, loadErr := s.store.LoadLatest(ctx, founder.Revision.StreamID); loadErr == nil {
+				current = loaded.Revision.Number
+			}
+			return HandleResult{Receipt: marshalRejection(request.IntentID, current, "idempotency_conflict", request.IntentID)}, nil
+		default:
+			return HandleResult{}, err
+		}
+	}
+	if err := s.projectCommittedEvents(ctx, result.Events); err != nil {
+		return HandleResult{}, err
+	}
 	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
 }
 
@@ -1654,6 +1752,17 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 		}
 		if err := json.Unmarshal(root["route_id"], &request.RouteID); err != nil || !intentIDPattern.MatchString(request.RouteID) {
 			request.InvalidDetail = "route_id"
+		}
+	case IntentCareAction:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "pet_id", "action_id") {
+			request.InvalidDetail = "care_action.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["pet_id"], &request.PetID); err != nil || !intentUUIDV7Pattern.MatchString(request.PetID) {
+			request.InvalidDetail = "pet_id"
+		}
+		if err := json.Unmarshal(root["action_id"], &request.ActionID); err != nil || !intentIDPattern.MatchString(request.ActionID) {
+			request.InvalidDetail = "action_id"
 		}
 	case IntentSignCompact:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "tithe_ppm") {

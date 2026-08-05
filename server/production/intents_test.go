@@ -194,6 +194,10 @@ func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	if err != nil || hint.InvalidDetail != "" || hint.RouteID != "route.nonprofit_wrapper_zip" {
 		t.Fatalf("hint=%+v err=%v", hint, err)
 	}
+	care, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"care_action","expected_revision":2,"pet_id":"018f6b7c-9abc-7def-8abc-0123456789ac","action_id":"care.feed"}`))
+	if err != nil || care.InvalidDetail != "" || care.PetID == "" || care.ActionID != "care.feed" {
+		t.Fatalf("care=%+v err=%v", care, err)
+	}
 	sign, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"sign_compact","expected_revision":1,"tithe_ppm":100000}`))
 	if err != nil || sign.InvalidDetail != "" || sign.TithePPM != 100_000 {
 		t.Fatalf("sign=%+v err=%v", sign, err)

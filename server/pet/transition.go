@@ -313,7 +313,9 @@ func drainDue(state *CareState, through int64) error {
 		state.BehaviorState, state.BehaviorEnteredAtAttendedMS = candidate, entry.DueAttendedMS
 		index++
 	}
-	state.BehaviorQueue = append([]BehaviorQueueEntry(nil), state.BehaviorQueue[index:]...)
+	remaining := make([]BehaviorQueueEntry, len(state.BehaviorQueue)-index)
+	copy(remaining, state.BehaviorQueue[index:])
+	state.BehaviorQueue = remaining
 	return nil
 }
 

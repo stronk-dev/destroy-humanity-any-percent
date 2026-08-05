@@ -300,13 +300,18 @@ func TestFounderV17AndV18RoundTripWhileCompanyRejectsThem(t *testing.T) {
 		t.Fatalf("Company accepted v17: %v", err)
 	}
 	state.WireVersion = 18
-	state.Pets = map[string]pet.CareState{}
+	state.Pets = map[string]pet.CareState{"018f6b7c-9abc-7def-8abc-0123456789ac": {
+		StatsPPM:                map[pet.StatID]int64{pet.StatHunger: 600_000, pet.StatEnergy: 700_000, pet.StatCleanliness: 800_000, pet.StatAffection: 900_000},
+		StatDecayRemaindersPPM:  map[pet.StatID]int64{pet.StatHunger: 0, pet.StatEnergy: 0, pet.StatCleanliness: 0, pet.StatAffection: 0},
+		CooldownUntilAttendedMS: map[string]int64{"care.feed": 0}, TrustPPM: 500_000,
+		BehaviorState: pet.BehaviorIdle, BehaviorQueue: []pet.BehaviorQueueEntry{},
+	}}
 	encoded, err = EncodeState(state)
 	if err != nil {
 		t.Fatal(err)
 	}
 	restored, err = RestoreState(encoded, 18, catalog, economy.ScopeFounder, time.Time{})
-	if err != nil || restored.Pets == nil {
+	if err != nil || restored.Pets == nil || restored.Pets["018f6b7c-9abc-7def-8abc-0123456789ac"].BehaviorQueue == nil {
 		t.Fatalf("v18 restore=%+v err=%v", restored, err)
 	}
 	state.MinigameRatings["combat.duel"] = MinigameRatingState{Elo: 1000, SeasonMember: "preseason"}

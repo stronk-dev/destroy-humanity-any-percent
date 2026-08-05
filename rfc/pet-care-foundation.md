@@ -1,6 +1,6 @@
 # RFC: Pet Care Foundation
 
-- **Status:** accepted (C1-C8 ruled; introduces the Founder mutation boundary; implementing)
+- **Status:** accepted (C1-C21 ruled; introduces the Founder mutation boundary; implementing)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/04 §1` (the tamagotchi layer — 4-stat decay, care actions + diminishing returns, personality behavior FSM, trust/mood two-tier, bonds), `design/04 §Neopets adoptions` (no-death canon, public-awkwardness-not-loss), `design/03 §10` / combat C5 (the pet is the On-Call Leader — the seam awaits its two integers)
@@ -611,3 +611,58 @@ receipt, and ordered event bytes.
   behavior FSM, projection privacy, and Founder replay/activation require executable contracts.
 - 2026-08-03: created (draft) — the cattery port.
 - 2026-08-04: C1-C8 ruled — introduces ApplyFounderLogged (the reusable Founder mutation boundary; I repeated the Meters-C3 Company-scope error), fixed stat IDs, Founder attended cursor, closed trust/mood/FSM contracts, no-death projection. Accepted.
+
+## Owner rulings on C18-C21 (2026-08-05) — the care-transition composer
+
+All four proposed contracts are ACCEPTED. They honor the determinism spine, the no-death law, the
+closed-form/no-per-tick law, and the server-authoritative boundary; the notes below ratify the
+load-bearing points and add cross-cutting consistency.
+
+- **C18 — accepted.** Add exact `evaluated_through_attended_ms` per pet; each resolved care input
+  records the A1-A5 attendance sample + the stored before-cursor; ApplyFounderLogged requires
+  `before == state.evaluated_through` and advances to the sample total. The integration is the
+  project's **provision-grid partition-invariant primitive**: `numerator = elapsed_ms *
+  decay_ppm_per_grid + remainder`, `decay = floor(numerator / grid_ms)`, `remainder = numerator mod
+  grid_ms`, checked wide intermediates, `remainder < grid_ms` validated under the pinned catalog.
+  This is the SAME primitive minigame C40 uses for offline-quality decay and the faucet window uses
+  for conversion carry — **the three must share one tested helper (or byte-identical vectors) so
+  `advance(a+b) == advance(advance(a),b)` holds identically everywhere.** The watermark is the
+  no-double-decay guard and makes stale/retry samples fail closed. Stats saturate at catalog floors;
+  Trust decays toward neutral and never crosses it (monotone bound).
+- **C19 — accepted, and the no-death carve-out is load-bearing.** Eligible when target stat >=
+  `min_eligible_ppm`; **catalogs MUST keep every recovery action eligible at its stat floor** — a
+  floored stat that couldn't be recovered would violate the no-death law. Resolve decay FIRST, then
+  cooldown/eligibility (evaluate current state before gating). At/above the diminishing threshold:
+  `effective = floor(delta_ppm * diminishing_factor_ppm / 1_000_000)`, else full delta;
+  `applied = min(effective, 1_000_000 - current)`. Zero applied rejects `saturated`; positive
+  partials apply with the unapplied tail as visible waste; only a positive applied amount starts
+  cooldown and earns one `gain_ppm_per_effective_action` Trust grant capped by policy. Numbers are
+  balance data; the order-of-operations and comparison direction are hereby ruled.
+- **C20 — accepted, and cycle-skipping is the no-per-tick law.** Care scalar = the MIN of the four
+  current stat ppm (worst-neglected need dominates mood — the thematically correct aggregator);
+  the greatest mood threshold not above it wins; the four ordered moods map one-to-one onto public
+  bands `floor|low|normal|high`; snapshots expose ONLY the band + eligible action IDs (projection
+  privacy). Behavior `to_state` is the queued mechanical behavior ID; on transition drain due
+  entries in `(due_attended_ms, behavior_id)` order, then apply the command event; a matching row
+  replaces any pending entry for the same destination, inserting its absolute due cursor sorted
+  under hardcap 8. `grid_tick` emits only for crossed absolute grid boundaries. **The implementation
+  MUST use deterministic cycle-skipping over `(state,queue)` for large intervals — iteration
+  proportional to attended grids is forbidden (the closed-form/never-a-tick-loop binding law).**
+  `behavior_prng_cursor` is fixed at zero in v18 (C17 removed weighted choice) and is removed in a
+  NAMED later Founder wire version — never fake-used; a vestigial mutable field is a replay-ownership
+  hazard, so its removal is a tracked successor, not left to rot.
+- **C21 — accepted, and the clock-context rule is security-critical.** Founder intent wire
+  `{intent_id, kind:"care_action", expected_revision, pet_id, action_id}`. **The server resolves the
+  sole active Company sibling; the client supplies NO Company/run coordinate** — an ad-hoc Company ID
+  would let the client select its clock context, which is forbidden (server-authoritative clock).
+  Resolved arm `{kind:"care_action", attendance, pet_attended_before_ms}`; canonical payload owns the
+  pet/action IDs, the pinned artifact owns policy. Receipt is the exact enumerated set; register
+  `pet_care_applied.v1` and `pet_status_changed.v1` (the latter emits only when the derived public
+  band changes — privacy projection). Unknown pet/action → `unknown_id`; cooldown/ineligible/
+  saturated → `not_eligible` + the C12a detail member. Go/TS shared vectors compare state, receipt,
+  and ordered event bytes. Structure ruled; numbers deferred.
+
+**These four complete the C1-ruled ApplyFounderLogged care-transition. Activation stays
+New-Founder-forward under the pinned pet artifact; nothing here self-authorizes archival, and
+pet-care AC3 (combat C5 cross-verification) remains OPEN until combat's obedience table consumes the
+seam.**

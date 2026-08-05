@@ -1,8 +1,8 @@
 # Pet Care
 
-The implemented Pet Care slice currently owns only the cross-runtime wire grammar. Pet identity,
-Founder persistence, care/decay arithmetic, trust changes, mood derivation, behavior transitions,
-public status projection, and production species remain unimplemented and are not claimed here.
+The implemented Pet Care foundation owns the cross-runtime wire grammar, replay-owned Founder v18
+state, the pure care transition, and the server-authoritative `care_action` command. Production pet
+identity/species rows and combat consumption remain unimplemented and are not claimed here.
 
 ## Closed Phase-A vocabulary
 
@@ -40,3 +40,30 @@ closed union of stat-grid, action, Trust, mood-threshold, and deterministic beha
 policies; pinning the earlier mood/behavior fixture alone is rejected. v18 requires the v17
 minigames artifact to remain pinned, while Company remains v14/v16. Mood stays derived and is
 never persisted. Numeric policy rows remain fixture/balance data and no production pet is enabled.
+
+## Care transition and authoritative intent
+
+Go and TypeScript execute the same pinned-catalog transition. A care command first advances decay
+on the Founder attended-time grid, preserving an exact remainder and rejecting stale per-pet
+watermarks. Stats stop at their declared floors and Trust moves monotonically toward neutral.
+Eligibility, diminishing returns, cooldowns, positive-only Trust grants, mood derivation, and the
+bounded deterministic behavior FSM then run in the RFC-defined order. Large behavior intervals use
+cycle skipping; there is no per-grid server tick loop.
+
+The client sends only `{intent_id,kind:"care_action",expected_revision,pet_id,action_id}`. The
+server selects the active Company sibling and freezes its attendance sample into the immutable
+Founder log; the client cannot choose a clock context. Applied commands emit
+`pet_care_applied.v1` and, only when the public band changes, `pet_status_changed.v1`. The exact
+receipt and ordered events are compared against one shared Go-authored replay vector in the
+TypeScript suite. Rejected commands use `unknown_id` for missing pets/actions and `not_eligible`
+for cooldown, eligibility, or saturation failures.
+
+The fixed-grid integration helper is shared with the minigame faucet and future offline-quality
+decay, so interval partitioning cannot change the result. Empty behavior queues remain canonical
+arrays across save cloning and persistence; they are never normalized to `null`.
+
+## Combat input seam
+
+The foundation exports the exact-safe pair `{pet_trust_ppm,soul}` as a pure Go/TypeScript producer.
+It does not yet bind a combat engine or close combat C5; that closes only when a combat-owned
+Obedience table consumes the pair.

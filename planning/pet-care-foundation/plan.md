@@ -5,7 +5,7 @@ RFC: `rfc/pet-care-foundation.md`
 - [x] Acceptance-review the draft and reconcile owner rulings C1-C8 into the normative body.
 - [ ] Implement the reusable Founder-scoped persistence/replay boundary.
   - [x] Append immutable Founder command-log storage and typed replay command envelopes.
-  - [ ] Add the pure `ApplyFounderLogged` transition and byte-parity replay fixtures.
+  - [x] Add the pure `ApplyFounderLogged` transition and byte-parity replay fixtures.
 - [ ] Implement strict fixture-only pet catalog/state schemas without production balance rows.
   - [x] Land C12a's literal stat/status/mood/behavior/event/rejection grammar, queue hardcap, and
     PRNG label with one shared Go/TypeScript parity fixture.
@@ -13,7 +13,7 @@ RFC: `rfc/pet-care-foundation.md`
     one shared fixture, without production balance rows.
   - [x] Embed the already-ruled pet state in Founder v18 under the complete pinned artifact and
     independent Founder version axis.
-- [ ] Implement attended-grid care, trust, mood, and bounded behavior FSM kernels in Go and TS.
+- [x] Implement attended-grid care, trust, mood, and bounded behavior FSM kernels in Go and TS.
 - [ ] Add Founder activation/persistence, public status projection, and combat-input seam.
   - [x] Export the fixture-only replay-owned `{pet_trust_ppm, soul}` combat input boundary with
     shared Go/TypeScript vectors; combat remains the sole owner of Obedience formulas.

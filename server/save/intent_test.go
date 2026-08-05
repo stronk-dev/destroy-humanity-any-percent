@@ -40,6 +40,22 @@ func TestValidateIntentDecisionEventRegistry(t *testing.T) {
 	}
 }
 
+func TestValidatePetCareEventRegistry(t *testing.T) {
+	decision := IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`), Events: []EventWrite{
+		{Kind: EventPetCareApplied, SchemaVersion: 1, IntentID: testIntentID,
+			Payload: json.RawMessage(`{"pet_id":"018f6b7c-9abc-7def-8abc-0123456789ac","action_id":"care.feed","stat_id":"hunger","before_ppm":600000,"applied_ppm":50000,"after_ppm":650000,"trust_before_ppm":500000,"trust_after_ppm":501000,"mood":"neutral","status_band":"normal","next_eligible_attended_ms":180000}`)},
+		{Kind: EventPetStatusChanged, SchemaVersion: 1, IntentID: testIntentID,
+			Payload: json.RawMessage(`{"pet_id":"018f6b7c-9abc-7def-8abc-0123456789ac","from_status_band":"low","to_status_band":"normal"}`)},
+	}}
+	if err := validateIntentDecision(decision, testIntentID); err != nil {
+		t.Fatal(err)
+	}
+	decision.Events[0].Payload = json.RawMessage(`{"pet_id":"018f6b7c-9abc-7def-8abc-0123456789ac","action_id":"care.feed","stat_id":"hunger","before_ppm":600000,"applied_ppm":50000,"after_ppm":640000,"trust_before_ppm":500000,"trust_after_ppm":501000,"mood":"neutral","status_band":"normal","next_eligible_attended_ms":180000}`)
+	if err := validateIntentDecision(decision, testIntentID); err == nil {
+		t.Fatal("inconsistent pet care event was accepted")
+	}
+}
+
 func TestValidateUpgradePurchasedEventPayload(t *testing.T) {
 	valid := EventWrite{Kind: EventUpgradePurchased, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"upgrade_id":"upgrade.click","cost_resource_id":"company.cash","cost":"1e2"}`)}
 	if err := validateEventPayload(valid); err != nil {

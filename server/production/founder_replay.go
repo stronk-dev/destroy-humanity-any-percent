@@ -93,6 +93,8 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		}
 		return FounderLoggedTransition{State: state, Outcome: decision.Outcome, Receipt: decision.Receipt,
 			Events: decision.Events, ResultConstantsHash: catalogs.ConstantsHash}, nil
+	case IntentCareAction:
+		return applyFounderCareResolved(state, request, revision, catalogs, wire.Resolved)
 	case founderExitResolvedKind:
 		if request.Kind != IntentCrossGate && request.ExpectedFounderRevision != wire.Command.Revision {
 			return FounderLoggedTransition{}, fmt.Errorf("%w: Exit Founder revision", ErrInvalidReplayInputs)
@@ -105,6 +107,86 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 	default:
 		return FounderLoggedTransition{}, fmt.Errorf("%w: unknown Founder resolved arm", ErrInvalidReplayInputs)
 	}
+}
+
+func applyFounderCareResolved(state *save.State, request IntentRequest, revision save.Revision, catalogs CatalogBundle,
+	resolvedJSON json.RawMessage) (FounderLoggedTransition, error) {
+	if request.Kind != IntentCareAction || request.ExpectedRevision != revision.Number || request.InvalidDetail != "" ||
+		catalogs.Pets == nil || state.Pets == nil {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: care Founder command", ErrInvalidReplayInputs)
+	}
+	var resolved founderCareResolved
+	if err := decodeReplayStrict(resolvedJSON, &resolved); err != nil || resolved.Kind != IntentCareAction ||
+		resolved.PetAttendedBeforeMS < 0 || resolved.PetAttendedBeforeMS > decimal.MaxExactInteger ||
+		resolved.Attendance.CompanyConstantsHash != catalogs.ConstantsHash ||
+		ValidateFounderAttendanceSample(state, revision.Number, request.ExpectedRevision, resolved.Attendance) != nil {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: care Founder inputs", ErrInvalidReplayInputs)
+	}
+	care, exists := state.Pets[request.PetID]
+	if !exists {
+		decision, err := rejectedDecision(request, revision.Number, "unknown_id", "unknown_pet")
+		return founderDecisionTransition(state, decision, catalogs.ConstantsHash, err)
+	}
+	if care.EvaluatedThroughAttendedMS != resolved.PetAttendedBeforeMS {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: stale care cursor", ErrInvalidReplayInputs)
+	}
+	priorBand, _, err := pet.CareStatus(care, catalogs.Pets)
+	if err != nil {
+		return FounderLoggedTransition{}, err
+	}
+	careResult, err := pet.ApplyCareTransition(care, catalogs.Pets, pet.CareTransitionInput{
+		ActionID: request.ActionID, AttendedBeforeMS: resolved.PetAttendedBeforeMS,
+		AttendedAfterMS: resolved.Attendance.EffectiveFounderAttendedMS,
+	})
+	if err != nil {
+		return FounderLoggedTransition{}, err
+	}
+	if !careResult.Applied {
+		category := "not_eligible"
+		if careResult.RejectionDetail == pet.RejectionUnknownAction {
+			category = "unknown_id"
+		}
+		decision, err := rejectedDecision(request, revision.Number, category, string(careResult.RejectionDetail))
+		return founderDecisionTransition(state, decision, catalogs.ConstantsHash, err)
+	}
+	state.Pets[request.PetID] = careResult.State
+	receipt, err := json.Marshal(founderCareReceipt{
+		IntentID: request.IntentID, Outcome: string(save.IntentApplied), FounderRevision: revision.Number + 1,
+		PetID: request.PetID, ActionID: request.ActionID, StatID: careResult.StatID,
+		BeforePPM: careResult.BeforePPM, AppliedPPM: careResult.AppliedPPM, AfterPPM: careResult.AfterPPM,
+		TrustBeforePPM: careResult.TrustBeforePPM, TrustAfterPPM: careResult.TrustAfterPPM,
+		Mood: careResult.Mood, StatusBand: careResult.StatusBand,
+		NextEligibleAttendedMS: careResult.NextEligibleAttendedMS,
+	})
+	if err != nil {
+		return FounderLoggedTransition{}, err
+	}
+	payload, _ := json.Marshal(map[string]any{
+		"pet_id": request.PetID, "action_id": request.ActionID, "stat_id": careResult.StatID,
+		"before_ppm": careResult.BeforePPM, "applied_ppm": careResult.AppliedPPM,
+		"after_ppm": careResult.AfterPPM, "trust_before_ppm": careResult.TrustBeforePPM,
+		"trust_after_ppm": careResult.TrustAfterPPM, "mood": careResult.Mood,
+		"status_band": careResult.StatusBand, "next_eligible_attended_ms": careResult.NextEligibleAttendedMS,
+	})
+	events := []save.EventWrite{{Kind: save.EventPetCareApplied, SchemaVersion: 1,
+		IntentID: request.IntentID, Payload: payload}}
+	if careResult.StatusChanged {
+		statusPayload, _ := json.Marshal(map[string]any{
+			"pet_id": request.PetID, "from_status_band": priorBand, "to_status_band": careResult.StatusBand,
+		})
+		events = append(events, save.EventWrite{Kind: save.EventPetStatusChanged, SchemaVersion: 1,
+			IntentID: request.IntentID, Payload: statusPayload})
+	}
+	return FounderLoggedTransition{State: state, Outcome: save.IntentApplied, Receipt: receipt,
+		Events: events, ResultConstantsHash: catalogs.ConstantsHash}, nil
+}
+
+func founderDecisionTransition(state *save.State, decision save.IntentDecision, hash string, err error) (FounderLoggedTransition, error) {
+	if err != nil {
+		return FounderLoggedTransition{}, err
+	}
+	return FounderLoggedTransition{State: state, Outcome: decision.Outcome, Receipt: decision.Receipt,
+		Events: decision.Events, ResultConstantsHash: hash}, nil
 }
 
 func cloneFounderReplayState(state *save.State, catalog *economy.Catalog) (*save.State, error) {

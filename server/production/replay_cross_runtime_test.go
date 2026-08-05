@@ -19,6 +19,7 @@ import (
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/multiplier"
+	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/save"
 )
@@ -26,19 +27,22 @@ import (
 var updateReplayFixture = flag.Bool("update-replay-fixture", false, "rewrite the shared ApplyLogged fixture")
 
 type crossRuntimeFixture struct {
-	Version       int                        `json:"version"`
-	ConstantsHash string                     `json:"constants_hash"`
-	Artifacts     map[string]string          `json:"artifacts"`
-	Cases         []crossRuntimeFixtureCase  `json:"cases"`
-	TerminalCases []crossRuntimeTerminalCase `json:"terminal_cases"`
-	Additional    []crossRuntimeBundleCase   `json:"additional_bundles"`
-	ActiveExit    crossRuntimeActiveExit     `json:"active_foundation_exit"`
-	FullRun       crossRuntimeFullRun        `json:"full_run"`
-	RejectedExit  crossRuntimeFullRun        `json:"rejected_exit_run"`
-	FounderHash   string                     `json:"founder_constants_hash"`
-	FounderFiles  map[string]string          `json:"founder_artifacts"`
-	FounderCases  []crossRuntimeFounderCase  `json:"founder_cases"`
-	FounderRun    crossRuntimeFounderRun     `json:"founder_run"`
+	Version         int                        `json:"version"`
+	ConstantsHash   string                     `json:"constants_hash"`
+	Artifacts       map[string]string          `json:"artifacts"`
+	Cases           []crossRuntimeFixtureCase  `json:"cases"`
+	TerminalCases   []crossRuntimeTerminalCase `json:"terminal_cases"`
+	Additional      []crossRuntimeBundleCase   `json:"additional_bundles"`
+	ActiveExit      crossRuntimeActiveExit     `json:"active_foundation_exit"`
+	FullRun         crossRuntimeFullRun        `json:"full_run"`
+	RejectedExit    crossRuntimeFullRun        `json:"rejected_exit_run"`
+	FounderHash     string                     `json:"founder_constants_hash"`
+	FounderFiles    map[string]string          `json:"founder_artifacts"`
+	FounderCases    []crossRuntimeFounderCase  `json:"founder_cases"`
+	FounderRun      crossRuntimeFounderRun     `json:"founder_run"`
+	PetFounderHash  string                     `json:"pet_founder_constants_hash"`
+	PetFounderFiles map[string]string          `json:"pet_founder_artifacts"`
+	PetFounderCases []crossRuntimeFounderCase  `json:"pet_founder_cases"`
 }
 
 type crossRuntimeFounderCase struct {
@@ -322,6 +326,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	result.FullRun = makeFullRunFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	result.RejectedExit = makeRejectedExitFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	result.FounderHash, result.FounderFiles, result.FounderCases, result.FounderRun = makeFounderReplayFixture(t, baseNow)
+	result.PetFounderHash, result.PetFounderFiles, result.PetFounderCases = makePetFounderReplayFixture(t, baseNow)
 	return result
 }
 
@@ -381,6 +386,45 @@ func makeFounderReplayFixture(t *testing.T, now time.Time) (string, map[string]s
 	return catalogs.ConstantsHash, stringArtifacts(catalogs.Artifacts), cases, makeFounderFullRunFixture(t, catalogs, now)
 }
 
+func makePetFounderReplayFixture(t *testing.T, now time.Time) (string, map[string]string, []crossRuntimeFounderCase) {
+	t.Helper()
+	_, active := foundationTestBundles(t)
+	_, catalogs := founderFeatureBundles(t, active)
+	state := replayFounderFixtureState(t, catalogs, now)
+	const petID = "01986666-7700-7000-8000-000000000001"
+	state.Pets[petID] = pet.CareState{
+		StatsPPM:                map[pet.StatID]int64{pet.StatHunger: 600_000, pet.StatEnergy: 800_000, pet.StatCleanliness: 800_000, pet.StatAffection: 800_000},
+		StatDecayRemaindersPPM:  map[pet.StatID]int64{pet.StatHunger: 0, pet.StatEnergy: 0, pet.StatCleanliness: 0, pet.StatAffection: 0},
+		CooldownUntilAttendedMS: map[string]int64{"care.feed": 0}, TrustPPM: 500_000,
+		BehaviorState: pet.BehaviorIdle, BehaviorQueue: []pet.BehaviorQueueEntry{},
+	}
+	pre := mustEncodeState(t, state)
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0700-7000-8000-000000000705","kind":"care_action","expected_revision":1,"pet_id":"01986666-7700-7000-8000-000000000001","action_id":"care.feed"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := save.FounderReplayCommand{IntentID: request.IntentID, FounderStreamID: "01986666-2700-7000-8000-000000000005",
+		FounderID: "01986666-3700-7000-8000-000000000005", Revision: 1, FounderLogSeq: 1, ServerTSMS: now.UnixMilli()}
+	inputs, err := save.MarshalFounderReplayInputs(command, founderCareResolved{Kind: IntentCareAction, PetAttendedBeforeMS: 0,
+		Attendance: FounderAttendanceSample{CompanyStreamID: "01986666-1700-7000-8000-000000000705", RunSeq: 1,
+			CompanyRevision: 1, CompanyConstantsHash: catalogs.ConstantsHash, CompletedAttendedMS: 0,
+			CurrentRunPartialAttendedMS: 120_000, EffectiveFounderAttendedMS: 120_000}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyFounderLogged(state, request.CanonicalPayload, catalogs, inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	post := mustEncodeState(t, state)
+	events := fixtureEvents(transition.Events)
+	return catalogs.ConstantsHash, stringArtifacts(catalogs.Artifacts), []crossRuntimeFounderCase{{Name: "care-action-applied",
+		StateVersion: 18, PreState: pre, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+		Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: post,
+		ResultConstantsHash: transition.ResultConstantsHash, ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt),
+		EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, post)}}
+}
+
 func makeFounderFullRunFixture(t *testing.T, catalogs CatalogBundle, now time.Time) crossRuntimeFounderRun {
 	t.Helper()
 	const streamID = "01986666-2800-7000-8000-000000000001"
@@ -425,7 +469,7 @@ func makeFounderFullRunFixture(t *testing.T, catalogs CatalogBundle, now time.Ti
 		}
 		transition, err := ApplyFounderLogged(state, request.CanonicalPayload, catalogs, inputs)
 		if err != nil {
-			t.Fatal(err)
+			t.Fatalf("Founder full run step %d: %v", index, err)
 		}
 		var applied *int64
 		if transition.Outcome == save.IntentApplied {
@@ -461,11 +505,24 @@ func replayFounderFixtureState(t *testing.T, catalogs CatalogBundle, now time.Ti
 			remainders[generator.Provision.GeneratorID] = 0
 		}
 	}
-	return &save.State{WireVersion: save.LatestSupportedVersion, Ledger: ledger, GeneratorCounts: counts, UpgradesOwned: map[string]bool{}, GeneratorProvisioned: provisioned,
+	state := &save.State{WireVersion: save.LatestSupportedVersion, Ledger: ledger, GeneratorCounts: counts, UpgradesOwned: map[string]bool{}, GeneratorProvisioned: provisioned,
 		ProvisionRemaindersPPM: remainders, EvaluatedThrough: now, ManualTokenRefilledAt: now, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{},
 		LedgerFactKinds: map[string]bool{}, MeterValues: map[string]int{}, MeterDecayRemainders: map[string]int64{}, MeterInputRemainders: map[string]int64{}, AchievementsEarnedRun: map[string]bool{},
 		AchievementsEarnedLifetime: map[string]bool{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{}, LifetimeValue: decimal.Zero,
 		OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
+	if catalogs.Minigames != nil {
+		state.WireVersion = 17
+		state.MinigameRatings = map[string]save.MinigameRatingState{}
+		state.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{}
+	}
+	if catalogs.Pets != nil {
+		state.WireVersion = 18
+		state.Pets = map[string]pet.CareState{}
+	}
+	if _, err := save.EncodeState(state); err != nil {
+		t.Fatalf("Founder fixture base state: %v", err)
+	}
+	return state
 }
 
 func makeActiveFoundationExitFixture(t *testing.T, now time.Time) crossRuntimeActiveExit {
@@ -824,7 +881,7 @@ func mustEncodeState(t *testing.T, state *save.State) json.RawMessage {
 	t.Helper()
 	encoded, err := save.EncodeState(state)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("encode state version=%d pets=%d: %v", save.VersionForState(state), len(state.Pets), err)
 	}
 	return encoded
 }

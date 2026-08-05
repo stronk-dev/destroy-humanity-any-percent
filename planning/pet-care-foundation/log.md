@@ -577,3 +577,82 @@ This landing does not self-authorize archival. The next independent review must 
 post-F1 span `965fd4a..HEAD`, including the acceptance-contract commit `83236cf`, implementation
 `30a354b`, and this record. Care-transition and resolve-composer work remain blocked on C18-C21 and
 C37-C40 respectively.
+
+## 2026-08-05 — designated verdict: Pet Care -> combat input seam (965fd4a..8d1cc5d) — APPROVE (pure seam)
+
+Review by: the designated Claude reviewer. Recorded by: same. This IS the archival gate under the
+newly-locked rule (c) (designated pass mandatory). Range = {83236cf contract RFC text, 30a354b impl,
+8d1cc5d planning record}; 965fd4a is the exact prior-verdict endpoint and an ancestor of 8d1cc5d —
+range-union chain unbroken, no prior verdict cites this range.
+
+**APPROVED — the pure {pet_trust_ppm, soul} seam, verified at source:**
+- PURE/deterministic: server/pet/combat_inputs.go + client/src/pet/combat-inputs.ts range-validate
+  then construct; grep found no time/rand/Now/Date/Math.random/global mutation. Same in -> same out.
+- BYTE-PARITY on ONE shared vector: testdata/pet/combat-inputs-v1.json (5 cases) consumed by both
+  suites; edges agree (trust 0/500000/1000000 valid, 1000001 rejected; soul 0/+-9007199254740991
+  valid, 2^53 rejected); Go maxExactInteger == TS MAX_SAFE_INTEGER exactly.
+- soul READ, not minted: input parameter echoed through untouched, no producer/write.
+- Scope honest: touches only the two seam files + kernel trio; no C18-C21/C37-C40 persistence/
+  ordering/retry; 83236cf is rfc/+planning/ only (files those contracts as text). Nothing half-built.
+- Kernel 0.3.49->0.3.50 single lockstep bump; planning commit no-bump; KV-1 covers server/pet/ +
+  client/src/pet/. Go+TS suites green, verify-kernel-version ok.
+
+**Two LOW notes (recorded, not blocking):**
+- F-A (process): the plan.md [x] flip landed in the planning-only commit 8d1cc5d, whose predecessor
+  30a354b carries the exercising test. The CLAUDE.md checkbox rule reads strictly as high-severity,
+  but the test demonstrably exists in the SAME reviewed range, the sub-box is honestly "fixture-only",
+  and there is prior approved precedent (28aeb43). Recorded LOW. -> Codifying the impl+record
+  two-commit pattern in AGENTS.md so this stops surfacing as a finding.
+- F-B (framing): the commit subject "bind ... to combat" and pet-care AC3 ("produced (trust_ppm,soul)
+  drive a duel's Obedience per the combat C5 vectors, cross-verified") are NOT satisfied — combat's
+  Obedience/Soul tables + duel engine are unimplemented, no combat code imports the seam. It is a
+  standalone PURE PRODUCER, not "bound". Honestly scoped in the record (AC3 parent box stays
+  unchecked; "does not self-authorize archival"). Subject-line overstatement, not a code defect.
+  **AC3 remains OPEN — archival must NOT later claim "combat C5 closed" on the strength of this batch;
+  it closes only when combat's obedience table lands and consumes this output.**
+
+**Verdict: APPROVE (pure seam). Archives nothing. Care-transition (C18-C21) and resolve-composer
+(C37-C40) remain legitimately blocked on their filed contracts — the next rulings in the queue.**
+
+## 2026-08-05 — C18-C21 ruled: the care-transition composer (all accepted)
+- C18: exact `evaluated_through_attended_ms` watermark + the provision-grid partition-invariant
+  decay primitive (numerator=elapsed*rate+remainder; floor/mod by grid); watermark = no-double-decay
+  guard, stale/retry fail-closed. MUST share one tested helper with minigame C40 + faucet carry so
+  advance(a+b)==advance(advance(a),b) holds identically.
+- C19: eligibility (>= min_eligible_ppm; recovery actions MUST stay eligible at floor = no-death),
+  decay-first-then-gate, integer diminishing math, positive-applied-only cooldown+Trust grant.
+- C20: care scalar = MIN of 4 stats; moods->public bands (privacy); deterministic cycle-skipping
+  (no per-tick iteration = the closed-form law); behavior_prng_cursor fixed 0, removed in a named
+  later wire version (not fake-used).
+- C21: Founder intent wire; SERVER resolves the sole active Company (client supplies no clock
+  coordinate = server-authoritative clock); exact receipt + pet_care_applied.v1/pet_status_changed.v1
+  (band-change only). Structure ruled, numbers deferred. AC3 (combat cross-verify) stays OPEN.
+Codex unblocked to implement the care-transition composer.
+
+## 2026-08-05 — care-transition composer implementation
+
+Implemented by: Codex.
+
+- Added the exact `care_action` parser and live Founder handler. The handler accepts the active
+  Company stream selected by the server, resolves the A1-A5 attendance tuple itself, and persists
+  the frozen tuple plus the prior per-pet cursor in the immutable Founder log.
+- Added the C18-C20 pure transition in Go and TypeScript: shared wide fixed-grid integration,
+  decay-first ordering, floor saturation, Trust-to-neutral decay, exact diminishing returns,
+  positive-only cooldown/Trust grants, worst-stat mood derivation, and bounded deterministic FSM
+  cycle skipping.
+- Registered and exact-key validated `pet_care_applied.v1` and `pet_status_changed.v1`; migration
+  `00059` extends the database event registry without editing applied history.
+- The shared ApplyFounderLogged fixture now carries a v18 pet bundle and compares exact state,
+  receipt, and ordered event bytes across Go/TypeScript. A real-Postgres test proves the client
+  cannot choose the Company clock context, the Founder revision/log/event commit atomically, and an
+  idempotent retry returns the original receipt.
+- Adversarial fixture construction exposed two save-shape defects: empty behavior queues became
+  JSON `null`, and generic Founder cloning omitted the current behavior state from its declaration
+  set. Both now preserve canonical non-null arrays and have a non-empty v18 save round-trip test.
+- Kernel semantics advance `0.3.51 -> 0.3.52`. No production pet row, balance epoch, combat
+  consumer, archive, push, or deployment is included.
+
+Normal root verification for this landing: focused Go packages green, TypeScript typecheck green,
+6,555 client assertions green, the shared replay fixture regenerated and checked, and the declared
+Postgres integration target green. The designated independent adversarial review remains required
+before archival.

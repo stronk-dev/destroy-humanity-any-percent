@@ -12,6 +12,7 @@ import (
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/pet"
 )
 
 var ErrIdempotencyConflict = errors.New("idempotency key reused with a different request")
@@ -59,6 +60,8 @@ const (
 	EventGuildActivityEvaluated    EventKind = "guild_activity_evaluated"
 	EventMeterBandChanged          EventKind = "meter_band_changed.v1"
 	EventAchievementEarned         EventKind = "achievement_earned.v1"
+	EventPetCareApplied            EventKind = "pet_care_applied.v1"
+	EventPetStatusChanged          EventKind = "pet_status_changed.v1"
 )
 
 // AllEventKinds is the closed structural authority consumed by catalog
@@ -74,6 +77,7 @@ var AllEventKinds = [...]EventKind{
 	EventRouteHintPurchased, EventRouteKnowledgeGranted, EventRunEnded,
 	EventRunStarted, EventUpgradePurchased, EventMeterBandChanged,
 	EventAchievementEarned,
+	EventPetCareApplied, EventPetStatusChanged,
 }
 
 type EventWrite struct {
@@ -558,6 +562,41 @@ func validateEventPayload(event EventWrite) error {
 			!mechanicalIDPattern.MatchString(payload.AchievementID) || (payload.ConditionScope != "run" && payload.ConditionScope != "career") ||
 			payload.ScoreGrant < 1 || payload.ScoreGrant > decimal.MaxExactInteger {
 			return fmt.Errorf("%w: invalid achievement_earned.v1 payload", ErrInvalidStream)
+		}
+	case EventPetCareApplied:
+		var payload struct {
+			PetID                  string         `json:"pet_id"`
+			ActionID               string         `json:"action_id"`
+			StatID                 pet.StatID     `json:"stat_id"`
+			BeforePPM              int64          `json:"before_ppm"`
+			AppliedPPM             int64          `json:"applied_ppm"`
+			AfterPPM               int64          `json:"after_ppm"`
+			TrustBeforePPM         int64          `json:"trust_before_ppm"`
+			TrustAfterPPM          int64          `json:"trust_after_ppm"`
+			Mood                   pet.Mood       `json:"mood"`
+			StatusBand             pet.StatusBand `json:"status_band"`
+			NextEligibleAttendedMS int64          `json:"next_eligible_attended_ms"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.PetID) ||
+			!mechanicalIDPattern.MatchString(payload.ActionID) || !pet.ValidStatID(payload.StatID) ||
+			payload.BeforePPM < 0 || payload.BeforePPM > 1_000_000 || payload.AppliedPPM < 1 ||
+			payload.AppliedPPM > 1_000_000-payload.BeforePPM || payload.AfterPPM != payload.BeforePPM+payload.AppliedPPM ||
+			payload.TrustBeforePPM < 0 || payload.TrustBeforePPM > 1_000_000 ||
+			payload.TrustAfterPPM < payload.TrustBeforePPM || payload.TrustAfterPPM > 1_000_000 ||
+			!pet.ValidMood(payload.Mood) || !pet.ValidStatusBand(payload.StatusBand) ||
+			payload.NextEligibleAttendedMS < 0 || payload.NextEligibleAttendedMS > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid pet_care_applied.v1 payload", ErrInvalidStream)
+		}
+	case EventPetStatusChanged:
+		var payload struct {
+			PetID          string         `json:"pet_id"`
+			FromStatusBand pet.StatusBand `json:"from_status_band"`
+			ToStatusBand   pet.StatusBand `json:"to_status_band"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.PetID) ||
+			!pet.ValidStatusBand(payload.FromStatusBand) || !pet.ValidStatusBand(payload.ToStatusBand) ||
+			payload.FromStatusBand == payload.ToStatusBand {
+			return fmt.Errorf("%w: invalid pet_status_changed.v1 payload", ErrInvalidStream)
 		}
 	case EventInvariantReported:
 		var payload struct {

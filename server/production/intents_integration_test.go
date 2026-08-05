@@ -17,6 +17,8 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/faction"
+	"cloud-clicker/server/meters"
+	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routeprojection"
 	"cloud-clicker/server/routes"
@@ -27,6 +29,102 @@ type integrationAssignment struct{ serverID string }
 
 func (value integrationAssignment) ResolveAssignment(string) (commonsprojection.AssignmentContext, bool) {
 	return commonsprojection.AssignmentContext{ServerID: value.serverID, ActivityBracket: "activity.standard"}, true
+}
+
+func TestCareActionResolvesActiveCompanyClockAndPersistsFounderReplay(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,events,intent_records,save_revisions,save_streams CASCADE`); err != nil {
+		t.Fatal(err)
+	}
+	_, active := foundationTestBundles(t)
+	_, bundle := founderFeatureBundles(t, active)
+	seedProductionEpoch(t, db, bundle.ConstantsHash, bundle.Artifacts)
+	resolver := integrationCatalogs{
+		economy:  map[string]*economy.Catalog{bundle.ConstantsHash: bundle.Economy},
+		routes:   map[string]*routes.Catalog{bundle.ConstantsHash: bundle.Routes},
+		prestige: map[string]*prestigecore.Policy{bundle.ConstantsHash: bundle.Prestige},
+		factions: map[string]*faction.Catalog{bundle.ConstantsHash: bundle.Faction},
+	}
+	store, err := save.NewStore(db, resolver, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cursor := time.Date(2026, 8, 5, 12, 0, 0, 0, time.UTC)
+	company := replayFixtureState(t, bundle.Economy, cursor)
+	meterState, err := meters.NewRunState(bundle.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company.WireVersion, company.MeterBands = 16, nil
+	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	company.AchievementsEarnedRun = map[string]bool{}
+	company.RunStartedAt = cursor
+	const ownerID = "01986666-9900-7000-8000-000000000001"
+	companyRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: ownerID, Scope: economy.ScopeCompany},
+		bundle.ConstantsHash, company, save.WriteContext{Cause: "pet.care.integration"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, ownerID, 1, bundle.ConstantsHash); err != nil {
+		t.Fatal(err)
+	}
+	founder := replayFounderFixtureState(t, bundle, cursor)
+	const petID = "01986666-9900-7000-8000-000000000002"
+	founder.Pets[petID] = pet.CareState{
+		StatsPPM:                map[pet.StatID]int64{pet.StatHunger: 600_000, pet.StatEnergy: 800_000, pet.StatCleanliness: 800_000, pet.StatAffection: 800_000},
+		StatDecayRemaindersPPM:  map[pet.StatID]int64{pet.StatHunger: 0, pet.StatEnergy: 0, pet.StatCleanliness: 0, pet.StatAffection: 0},
+		CooldownUntilAttendedMS: map[string]int64{"care.feed": 0}, TrustPPM: 500_000,
+		BehaviorState: pet.BehaviorIdle, BehaviorQueue: []pet.BehaviorQueueEntry{},
+	}
+	founderRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: ownerID, Scope: economy.ScopeFounder},
+		bundle.ConstantsHash, founder, save.WriteContext{Cause: "pet.care.integration"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	service, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver),
+		WithCurrentConstantsHash(bundle.ConstantsHash), WithReplayCatalogs(ReplayCatalogSet{bundle.ConstantsHash: bundle}),
+		WithGuildSettlements(emptyGuildSettlements{}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := []byte(`{"intent_id":"01986666-9900-7000-8000-000000000003","kind":"care_action","expected_revision":1,"pet_id":"01986666-9900-7000-8000-000000000002","action_id":"care.feed"}`)
+	result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, cursor.Add(time.Second), body)
+	if err != nil || result.Replay || !strings.Contains(string(result.Receipt), `"outcome":"applied"`) ||
+		!strings.Contains(string(result.Receipt), `"founder_revision":2`) {
+		t.Fatalf("care result=%s replay=%v err=%v", result.Receipt, result.Replay, err)
+	}
+	replayed, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, cursor.Add(time.Second), body)
+	if err != nil || !replayed.Replay || string(replayed.Receipt) != string(result.Receipt) {
+		t.Fatalf("care replay=%s replay=%v err=%v", replayed.Receipt, replayed.Replay, err)
+	}
+	loaded, err := store.LoadLatest(ctx, founderRevision.StreamID)
+	if err != nil || loaded.Revision.Number != 2 || loaded.State.Pets[petID].EvaluatedThroughAttendedMS != 1_000 {
+		t.Fatalf("Founder care revision=%d state=%+v err=%v", loaded.Revision.Number, loaded.State.Pets[petID], err)
+	}
+	var logKind, loggedCompany string
+	var appliedRevision int64
+	if err := db.QueryRowContext(ctx, `SELECT replay_inputs->'resolved'->>'kind',replay_inputs->'resolved'->'attendance'->>'company_stream_id',applied_revision
+		FROM founder_log WHERE founder_stream_id=$1 AND intent_id=$2`, founderRevision.StreamID,
+		"01986666-9900-7000-8000-000000000003").Scan(&logKind, &loggedCompany, &appliedRevision); err != nil ||
+		logKind != IntentCareAction || loggedCompany != companyRevision.StreamID || appliedRevision != 2 {
+		t.Fatalf("care log kind=%q company=%q revision=%d err=%v", logKind, loggedCompany, appliedRevision, err)
+	}
+	var eventCount int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM events WHERE stream_id=$1 AND kind='pet_care_applied.v1'`, founderRevision.StreamID).Scan(&eventCount); err != nil || eventCount != 1 {
+		t.Fatalf("pet care events=%d err=%v", eventCount, err)
+	}
 }
 
 type integrationWeight int64

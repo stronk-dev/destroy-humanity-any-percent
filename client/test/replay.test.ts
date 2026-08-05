@@ -60,7 +60,7 @@ interface TerminalFixtureCase {
 }
 
 interface FounderFixtureCase extends FixtureCase {
-  readonly state_version: 14 | 15 | 16;
+	readonly state_version: 14 | 15 | 16 | 17 | 18;
   readonly result_constants_hash: string;
 }
 
@@ -102,10 +102,13 @@ const fixture = fixtureJSON as {
   readonly founder_constants_hash: string;
   readonly founder_artifacts: ReplayArtifacts;
   readonly founder_cases: readonly FounderFixtureCase[];
-  readonly founder_run: {
-    readonly founder_stream_id: string; readonly founder_id: string; readonly genesis_revision: number; readonly genesis_version: 14 | 15 | 16;
+	readonly pet_founder_constants_hash: string;
+	readonly pet_founder_artifacts: ReplayArtifacts;
+	readonly pet_founder_cases: readonly FounderFixtureCase[];
+	readonly founder_run: {
+		readonly founder_stream_id: string; readonly founder_id: string; readonly genesis_revision: number; readonly genesis_version: 14 | 15 | 16 | 17 | 18;
     readonly genesis_constants_hash: string; readonly genesis: unknown; readonly head_revision: number; readonly head_version: 14 | 15 | 16;
-    readonly head_constants_hash: string; readonly head_state: unknown;
+		readonly head_constants_hash: string; readonly head_state: unknown;
     readonly entries: readonly {
       readonly seq: number; readonly intent_id: string; readonly constants_hash: string; readonly canonical_payload: Record<string, unknown>;
       readonly replay_inputs: unknown; readonly receipt_json: string; readonly events_json: string; readonly applied_revision: number | null;
@@ -143,6 +146,18 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
     expect(canonicalJSONString(encodeFounderReplayState(transition.state))).toBe(testCase.post_state_json);
   });
+
+	it.each(fixture.pet_founder_cases)("replays pet Founder $name to the Go receipt, events, and state", async (testCase) => {
+		const bundle = await loadReplayCatalogBundle(fixture.pet_founder_constants_hash, fixture.pet_founder_artifacts);
+		const state = restoreFounderReplayState(testCase.pre_state, testCase.state_version, bundle);
+		const transition = applyFounderLogged(state, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+
+		expect(transition.outcome).toBe(testCase.outcome);
+		expect(transition.resultConstantsHash).toBe(testCase.result_constants_hash);
+		expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+		expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
+		expect(canonicalJSONString(encodeFounderReplayState(transition.state))).toBe(testCase.post_state_json);
+	});
 
   it("verifies the Go-authored Founder career from genesis without Company state", async () => {
     const bundle = await loadReplayCatalogBundle(fixture.founder_constants_hash, fixture.founder_artifacts);

@@ -898,6 +898,7 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 func validatePetStateShape(states map[string]pet.CareState) error {
 	actions, behaviors := map[string]bool{}, map[string]bool{}
 	for _, state := range states {
+		behaviors[string(state.BehaviorState)] = true
 		for id := range state.CooldownUntilAttendedMS {
 			actions[id] = true
 		}
@@ -949,6 +950,7 @@ func clonePetStates(values map[string]pet.CareState) map[string]pet.CareState {
 	}
 	actions, behaviors := map[string]bool{}, map[string]bool{}
 	for _, state := range values {
+		behaviors[string(state.BehaviorState)] = true
 		for id := range state.CooldownUntilAttendedMS {
 			actions[id] = true
 		}

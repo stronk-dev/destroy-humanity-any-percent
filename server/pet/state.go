@@ -200,7 +200,8 @@ func cloneCareStates(states map[string]CareState) map[string]CareState {
 		for key, value := range state.CooldownUntilAttendedMS {
 			cloned.CooldownUntilAttendedMS[key] = value
 		}
-		cloned.BehaviorQueue = append([]BehaviorQueueEntry(nil), state.BehaviorQueue...)
+		cloned.BehaviorQueue = make([]BehaviorQueueEntry, len(state.BehaviorQueue))
+		copy(cloned.BehaviorQueue, state.BehaviorQueue)
 		result[petID] = cloned
 	}
 	return result
