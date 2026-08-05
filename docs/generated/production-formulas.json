@@ -1,5 +1,5 @@
 {
-  "schema_version": 9,
+  "schema_version": 10,
   "production_rate": "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
   "multiplier_slot_order": [
     "upgrades",
@@ -12,7 +12,7 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "1b579284cf04354666b8f9084296b34448ff742f8596a4583bf3d8e5ffdafc67",
+  "source_fingerprint": "294dc98ada8be382d32decc681cb554c3a95335f61555207a2b51a7dee1ce951",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
@@ -89,6 +89,13 @@
       "bot",
       "npc_partner"
     ],
-    "fallback_rule": "every policy is one exact-key arm; bot_ref/npc_profile identity and semantic version are frozen; rate_reduction_ppm is within [0,1000000]"
+    "fallback_rule": "every policy is one exact-key arm; bot_ref/npc_profile identity and semantic version are frozen; rate_reduction_ppm is within [0,1000000]",
+    "payout_grammar": "exact keys: credited_resource_id, sends_per_day, per_send_cap, conversion_ppm; credited_resource_id must exist in the owning catalog",
+    "payout_order": [
+      "floor(score * (1000000 - rate_reduction_ppm) / 1000000)",
+      "floor((reduced_score * conversion_ppm + prior_remainder_ppm) / 1000000)",
+      "persist modulo remainder"
+    ],
+    "payout_math": "exact integer intermediates; legal exact-domain inputs cannot overflow the converted output"
   }
 }

@@ -25,6 +25,10 @@ RFC: `rfc/minigame-platform-foundation.md`
 - [ ] Land server-certified resolve/payout, faucet accounting, replay identity, and fault tests.
   - [x] Persist immutable applied-command rows and replay them from genesis before terminal
     resolution.
+  - [x] Implement C30's exact payout-policy loader and exact carried-ppm conversion kernel without
+    enabling a production faucet.
+  - [ ] Compose cap/window accounting and the multi-stream transaction after the remaining score-
+    source, reason-key, and window-row wire contracts are owner-ruled.
 - [ ] Compose the platform into the gameserver and prove solo/async-snapshot lifecycle ACs.
 - [ ] Mint the production artifact only after owner/harness-supplied balance rows.
 - [ ] Update canonical docs, pass normal repository-root verification, obtain independent
@@ -51,3 +55,8 @@ faucet policy/idempotency schema. No payout or production catalog row lands befo
 Post-C27 implementation gap: the fallback arms are exact and implemented, but the offline policy's
 `grade_curve` is still only a noun. The RFC must enumerate that nested row's keys and ordering/
 duplicate rules before the loader can distinguish valid data from an invented schema.
+
+Post-C30 implementation gaps: the policy row and conversion arithmetic are exact, but the RFC does
+not select the certified result's payout score fact, name the configured-cap reason key, or give
+the cross-run attended-window row's exact columns. Those contracts block persistence/composition;
+they are not balance literals and must not be chosen by the implementation.

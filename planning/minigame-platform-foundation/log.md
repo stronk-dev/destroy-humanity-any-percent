@@ -192,3 +192,16 @@
   `grade_curve` row keys, ordering, or duplicate rule. No wire shape or production value was
   improvised; that sub-slice remains explicitly open while the independently useful fallback
   grammar lands.
+
+## 2026-08-05 — C30 payout policy and exact conversion kernel
+
+- Implemented the exact four-key payout row with declared-resource validation and exact-domain
+  bounds. Unknown resources, old/extra keys, noninteger values, and invalid ppm fail load.
+- Implemented fallback reduction followed by carried-ppm conversion using exact integer
+  intermediates. Tests prove operation order, modulo carry across sequential sends, invalid-state
+  rejection, and the maximum exact score whose intermediate product exceeds `int64`.
+- Published and source-fingerprinted the payout grammar and formula. No cap/window write or
+  production faucet is enabled.
+- `DESIGN-GAP:` payout composition still needs the certified score-fact selector, configured-cap
+  reason key, and exact attended-window persistence row. C30 does not provide those fields, so the
+  transaction cannot be made byte-replayable without a narrow owner ruling.
