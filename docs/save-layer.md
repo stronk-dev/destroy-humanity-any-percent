@@ -22,7 +22,8 @@ stale scalar subquery under PostgreSQL READ COMMITTED.
 
 ## State format
 
-Version 12 is strict JSON. It contains the economy, production, Routes, Commons, Prestige, Faction, and Guild fields
+The base Company schema is strict v14 JSON, with separately activated v15-v17 overlays. It contains
+the economy, production, Routes, Commons, Prestige, Faction, Guild, and purchasable-content fields
 described by their owning canonical docs; unknown or missing required fields remain invalid. A
 representative prefix is:
 
@@ -76,6 +77,13 @@ a millisecond—is the shared constructor. Encoding rejects non-UTC or sub-milli
 rather than silently rewriting it. New company streams require both cursors to start at the same
 canonical instant. These fields are company-scoped; another save scope cannot smuggle
 production-policy state.
+
+Company v17 adds required `compute_burst_remaining_ms`, another non-negative exact safe integer.
+It is valid only for Company scope, cannot exceed the pinned economy artifact's declared burst
+duration cap on restore, and is absent from Founder v17 (whose independent schema owns minigames).
+The codec is implemented but production remains at the earlier Company schema: v17 activates only
+at Exit into a new epoch carrying `meters`, `achievements`, and `doctrines` together. No production
+doctrine artifact has been minted yet.
 
 Route state is scope-checked. Company streams own crossed gates, a positive exact `run_seq`, and
 the committed predicate context (doctrines, structure, ledger facts, meter bands, region traits).
@@ -153,6 +161,11 @@ artifact; v18 adds the replay-owned `pets` map and requires both `minigames` and
 tuple from the pinned bundle (Founder 17 or 18, Company 16), so no client or deployment setting
 chooses a version. No production content is activated merely by supporting these codecs.
 
+The Company scalar chain is independently v14, then the paired foundation overlays through v16,
+then doctrine/Compute-burst v17. A pinned doctrine bundle cannot skip the lower Meters and
+Achievements artifacts. New runs initialize the burst remainder to zero; terminal Exit state also
+records zero so an in-run burst cannot cross the run boundary.
+
 ## Intent and event transaction
 
 `intent_records` keys normalized receipts by `(stream_id,intent_id)` with a SHA-256 canonical
@@ -205,5 +218,5 @@ tests skip database integration when the variable is absent; `make test-save-int
 immediately if it is absent.
 
 Archiving is read-only and reversible by future account policy; the persistence API exposes no
-hard delete. New-Founder gameplay, save cadence, event consumers, Compute Credit spending, and
-leaderboard Balance Epoch policy remain separate RFC responsibilities.
+hard delete. New-Founder gameplay, save cadence, event consumers, and leaderboard Balance Epoch
+policy remain separate RFC responsibilities.

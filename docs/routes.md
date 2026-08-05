@@ -24,6 +24,13 @@ refer to a future doctrine fail both runtime loaders and schema semantics. The t
 seeds are therefore attached to the later `gate.t4_to_t5`, while `gate.t2_to_t3` has only its
 standard requirement.
 
+When present, the hash-pinned `doctrines` schema-v1 artifact is the choice authority. Each sorted
+row binds one adjacent transition to its source tier, exact gate, and sorted branching doctrine
+IDs. Both runtime bundle loaders require every doctrine predicate and doctrine exclusion value in
+Routes to resolve to that artifact, and every doctrine row's gate to exist in Routes. The artifact
+is deliberately pre-mint: tests use the ruled T3-to-T4 fixture row, but production does not claim a
+T3-to-T4 gate or doctrine content yet.
+
 The closed predicate union is:
 
 - `resource_at_least` and `resource_at_most`, against canonical committed Decimal balances;
@@ -55,6 +62,11 @@ transition it:
 4. debits every required resource atomically through the company ledger;
 5. records `gates_crossed[gate_id]` in save v5;
 6. emits one `gate_crossed`, and for a route path one `route_executed`, on the new revision.
+
+If the exact active gate/tier boundary has a doctrine row, crossing first requires a committed
+choice. `pick_doctrine` is legal only at that row's source tier, before the gate, and once per
+transition. This gives same-boundary ordering one server-authoritative sequence: commit the choice,
+then cross; an unpicked crossing rejects `not_eligible/doctrine_required`.
 
 A discount debits `Quantize12(requirement × fraction)`. A substitute debits nothing: satisfying
 its predicate is the price. Typed terminal rejections are `gate_already_crossed`,

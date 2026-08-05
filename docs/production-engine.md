@@ -58,12 +58,19 @@ difference and, when positive, set their cursor directly to `effective_now`; the
 separately floored duration back to a phase-bearing baseline. Calls within one millisecond and
 clock rollback grant nothing. The caller's fractional current-millisecond remainder remains
 naturally available to a later call, but it is never persisted as an independent cursor phase.
-Compute Credits are integer time state, never a Decimal currency. Spending them belongs to a later
-RFC.
+Compute Credits are integer time state, never a Decimal currency. A manual
+`spend_compute_credit` command debits a positive exact `amount_ms` and starts a one-for-one wall-
+time production burst. While active, each fixed-grid production segment integrates its ordinary
+rate plus a bonus at `(burst_speed - 1)` before one state quantization. Online and offline elapsed
+time both consume the persisted remaining duration; offline production and burst bonus stay inside
+the ordinary 24-hour accrual cap, while later wall time may expire the burst without producing.
+Active bursts never stack or clamp: an already-active burst, insufficient credit, or an amount over
+`burst_max_duration_ms` is a typed rejection. Exit clears the in-run burst but retains unspent
+Compute Credit.
 
 ## Intent API
 
-The implemented command surface contains exactly twelve intents:
+The replay-owned Company command surface includes:
 
 - `buy_generator`: exact positive safe-integer count or verified `max`;
 - `buy_upgrade`: one mechanical upgrade id; the server derives price, eligibility, ownership,
@@ -72,6 +79,11 @@ The implemented command surface contains exactly twelve intents:
   authority).
 - `cross_gate`: mechanical gate id plus nullable route id; the server evaluates standard or route
   requirements and commits gate state and events atomically.
+- `pick_doctrine`: writes one catalog-declared choice at its exact tier transition before that
+  transition's gate can be crossed. A new command cannot replace an existing choice.
+- `spend_compute_credit`: manually activates the pinned economy catalog's acceleration burst; the
+  request carries an exact duration and the sole Phase-A target `accelerate`, never a result or
+  production delta.
 - `buy_route_hint`: Founder-scope purchase of permanent predicate disclosure with projected Route
   Knowledge; it never affects evaluation.
 - `sign_compact`: company-scope membership at an exact catalog-bounded tithe.
@@ -123,6 +135,9 @@ Event registry v1 additionally contains `compact_signed`, `compact_tithe_raised`
 `compact_recruitment_offered`; see [Commons](commons.md).
 Faction incorporation adds `incorporated` and `faction_stock_saturated`; both are strict v1 event
 payloads committed on the same revision as their state change.
+Doctrine choice and Compute Credit spending add strict `doctrine_picked` and
+`compute_credit_spent` events. The latter records the exact debit/duration plus the pinned canonical
+burst speed used by replay.
 Generator and upgrade purchases emit exactly one typed event; manual batches emit none. Events retain stream/revision and
 `constants_hash` identity even after old snapshot rows are pruned, but retention does not guarantee
 that an old snapshot remains queryable. History has no update/delete API; corrections are later
@@ -185,8 +200,10 @@ audit concern, but every Founder-derived value in the Exit receipt and next Comp
 computed from the frozen carry view. The live service rejects mixed Founder/Company catalog hashes
 before freezing that carry, and `ApplyLogged` independently asserts its recorded
 `founder_constants_hash` against the bundle. The bundle likewise recomputes its constants identity
-from the exact seven artifact byte strings; a caller cannot relabel parsed catalogs under another
-hash. Company services cannot be constructed without the Prestige/faction runtime.
+from every exact named artifact byte string; a caller cannot relabel parsed catalogs under another
+hash. The optional `doctrines` artifact is legal only beside Meters and Achievements, and its
+transition/gate/choice references are checked against Routes in both runtimes. Company services
+cannot be constructed without the Prestige/faction runtime.
 
 Faction stock-resource identity is derived inside `ApplyLogged` from the restored faction ID and
 the pinned faction artifact. It is not an ambient live-service repair, so restored revisions and

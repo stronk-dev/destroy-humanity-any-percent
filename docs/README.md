@@ -16,6 +16,8 @@ Implemented systems:
   online/offline policy, exact manual-action clamp, idempotent intents, events, and progress.
 - [Gate predicates and Route Registry](routes.md) — closed cross-runtime predicates, alternate
   gate costs, Depletion proof, first-executor naming, Route Knowledge, and idempotent projections.
+- [Doctrine choice and Compute Credit](doctrine-and-compute-credit.md) — pinned transition choices,
+  gate ordering, manual acceleration bursts, Company-v17 activation, and replay parity.
 - [Commons Compact](commons.md) — membership, source-derived Enclosure, Health/Capacity,
   persistent cohorts, AI fallback, production multiplier, dispatches, and population invariance.
 - [Client shell](client-shell.md) — Svelte DOM routes, authoritative stream boundary, Worker

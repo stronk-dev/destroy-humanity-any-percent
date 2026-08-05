@@ -109,3 +109,33 @@ files all pass.
 - Kernel semantics advanced to 0.3.58. Focused root evidence: `make test-go
   GO_PACKAGES='./save ./production ./replaycatalog'`, `pnpm --dir client typecheck`, and
   `pnpm --dir client test -- replay.test.ts` pass.
+
+## 2026-08-05 — Doctrine intents and Compute Credit burst implementation
+
+- Commit `277b43b` adds both exact intent grammars to the Go/TypeScript replay boundary, strict
+  `doctrine_picked` and `compute_credit_spent` payload validation, and the Postgres event-kind
+  expansion. Doctrine choice is write-once at the declared source tier and blocks its exact gate
+  until committed.
+- Compute Credit spending is manual-only and exact: `amount_ms` is the debit and duration; active,
+  insufficient, and over-cap requests reject without clamping. Evaluation consumes wall duration
+  online or offline and integrates base plus `(burst_speed-1)` bonus inside each fixed provision
+  segment before one explicit quantization boundary. Offline bonus stops at the ordinary accrual
+  cap while later wall time may expire the burst. Exit clears the active remainder.
+- The Go-authored shared replay artifact now contains one sequential eleven-command doctrine/burst
+  run consumed by TypeScript. It covers the unpicked gate, applied and duplicate choice, activation,
+  active/balance/duration rejection, partial and exhausted consumption, malformed input, and the
+  final legal gate. Regeneration exposed and fixed a fixture-bundle seam: the fixture's added gate
+  also had to join the pinned category gate set before the TypeScript loader would accept it.
+- The first arithmetic draft quantized ordinary and bonus deltas separately. Pre-commit diff review
+  tightened this to the ruled single bucket boundary in both runtimes; the shared final-state bytes
+  now pin that corrected equation.
+- Postgres initially rejected the migration set because the already-committed Founder link owned
+  sequence 62. Commit `1b80275` renames the new, never-applied Doctrine migration to 63 with its SQL
+  body byte-identical. A later SQL migration could not repair a duplicate that Goose refuses to
+  enumerate. The full disposable-Postgres suite then passed.
+
+Focused evidence from the repository root: `make test-go GO_PACKAGES='./production ./save
+./doctrine ./replaycatalog'`, `make test-client` (6,566 passed, 3 skipped), `make typecheck`,
+`make verify-schema`, `make verify-kernel-version` (0.3.59), and `make test-save-integration` all
+pass. Canonical docs were updated in the following record commit; no production doctrine artifact,
+epoch mint, archival, push, or deployment occurred.
