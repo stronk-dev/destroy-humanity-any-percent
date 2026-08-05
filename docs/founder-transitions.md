@@ -22,6 +22,19 @@ the database boundary. Each row pins the constants hash and server timestamp use
 inputs. Pet Care is the first consumer; Soul verbs, Founder ratings, and other Founder mechanics
 must reuse this boundary rather than adding side writes or extending the Company transition.
 
+The first Founder-log activation atomically pins `founder_genesis` to the exact raw bytes, version,
+hash, and revision loaded before that command. A deferred database constraint makes a Founder-log
+row uncommittable without this immutable genesis; migration backfill fails rather than fabricating
+a starting point whose retained revision is gone.
+
+Logged Exits also append a Founder row. Its `constants_hash` is always the pre-command Founder
+bundle, while the closed `exit.v1` resolved arm names the result bundle and the exact Founder facts
+advanced by Exit. The row carries a Founder-only audit receipt; the existing Company receipt and
+client outbox remain unchanged. Three nullable source coordinates are present exactly for
+`exit.v1` and form a deferrable foreign key to the immutable Company run-log command authored in
+the same transaction. Verified-run compaction retains that one referenced witness row after the
+full run has been archived, preserving the relational proof without retaining the whole live log.
+
 The feature package still owns its closed canonical command, resolved-input, receipt, event, and
 state-transition unions. The persistence layer validates the shared envelope and transaction; it
 does not invent feature mechanics.

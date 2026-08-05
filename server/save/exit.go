@@ -11,14 +11,16 @@ import (
 )
 
 type ExitDecision struct {
-	Outcome              IntentOutcome
-	Receipt              json.RawMessage
-	FinalCompanyState    *State
-	NewCompanyState      *State
-	NewConstantsHash     string
-	FounderEvents        []EventWrite
-	CompanyEndedEvents   []EventWrite
-	CompanyStartedEvents []EventWrite
+	Outcome               IntentOutcome
+	Receipt               json.RawMessage
+	FinalCompanyState     *State
+	NewCompanyState       *State
+	NewConstantsHash      string
+	FounderEvents         []EventWrite
+	CompanyEndedEvents    []EventWrite
+	CompanyStartedEvents  []EventWrite
+	FounderReplayResolved json.RawMessage
+	FounderAuditReceipt   json.RawMessage
 }
 
 type ExitMutation func(founder *State, founderRevision Revision, company *State, companyRevision Revision) (ExitDecision, error)
@@ -132,11 +134,11 @@ func (s *Store) applyExitTransaction(
 		return IntentResult{}, err
 	}
 
-	founder, founderRevision, _, err := s.loadExitState(ctx, tx, founderStreamID, ownerID, economy.ScopeFounder)
+	founder, founderRevision, _, founderStateBytes, err := s.loadExitState(ctx, tx, founderStreamID, ownerID, economy.ScopeFounder)
 	if err != nil {
 		return IntentResult{}, err
 	}
-	company, companyRevision, companyHash, err := s.loadExitState(ctx, tx, companyStreamID, ownerID, economy.ScopeCompany)
+	company, companyRevision, companyHash, _, err := s.loadExitState(ctx, tx, companyStreamID, ownerID, economy.ScopeCompany)
 	if err != nil {
 		return IntentResult{}, err
 	}
@@ -148,6 +150,8 @@ func (s *Store) applyExitTransaction(
 	}
 	var runLogSequence int64
 	var command ReplayCommand
+	var founderLogSequence int64
+	var founderCommand FounderReplayCommand
 	if len(canonicalPayload) != 0 {
 		if err := requireRunEpochTx(ctx, tx, companyStreamID, company.RunSeq, companyHash); err != nil {
 			return IntentResult{}, err
@@ -160,6 +164,27 @@ func (s *Store) applyExitTransaction(
 		command = ReplayCommand{
 			IntentID: intentID, CompanyStreamID: companyStreamID, FounderID: ownerID,
 			Revision: companyRevision.Number, RunSeq: company.RunSeq, RunLogSeq: runLogSequence,
+		}
+		founderLogSequence, err = nextFounderLogSequence(ctx, tx, founderStreamID)
+		if err != nil {
+			return IntentResult{}, err
+		}
+		serverTSMS, timestampErr := founderServerTimestamp(ctx, tx)
+		if timestampErr != nil {
+			return IntentResult{}, timestampErr
+		}
+		founderCommand = FounderReplayCommand{IntentID: intentID, FounderStreamID: founderStreamID,
+			FounderID: ownerID, Revision: founderRevision.Number, FounderLogSeq: founderLogSequence,
+			ServerTSMS: serverTSMS}
+		if founderLogSequence == 1 {
+			if err := InsertFounderGenesisTx(ctx, tx, FounderGenesis{FounderStreamID: founderStreamID,
+				Revision: founderRevision.Number, State: founderStateBytes, Version: founderRevision.Version,
+				ConstantsHash: founderRevision.ConstantsHash}); err != nil {
+				return IntentResult{}, err
+			}
+			if err := runExitFault(fault, "founder_genesis"); err != nil {
+				return IntentResult{}, err
+			}
 		}
 	}
 
@@ -179,6 +204,20 @@ func (s *Store) applyExitTransaction(
 			return IntentResult{}, err
 		}
 	}
+	if founderLogSequence != 0 {
+		founderReplayInputs, marshalErr := MarshalFounderReplayInputs(founderCommand, decision.FounderReplayResolved)
+		if marshalErr != nil {
+			return IntentResult{}, marshalErr
+		}
+		decision.FounderReplayResolved, err = ValidateFounderReplayInputs(founderReplayInputs, founderCommand)
+		if err != nil {
+			return IntentResult{}, err
+		}
+		decision.FounderAuditReceipt, err = normalizeJSON(decision.FounderAuditReceipt)
+		if err != nil || !jsonObject(decision.FounderAuditReceipt) {
+			return IntentResult{}, ErrInvalidStream
+		}
+	}
 	if err := validateExitDecision(decision, intentID); err != nil {
 		return IntentResult{}, err
 	}
@@ -189,6 +228,16 @@ func (s *Store) applyExitTransaction(
 	if decision.Outcome == IntentRejected {
 		if runLogSequence != 0 {
 			if err := insertRunLog(ctx, tx, companyStreamID, company.RunSeq, runLogSequence, intentID, canonicalPayload, replayInputs, decision.Receipt, nil); err != nil {
+				return IntentResult{}, err
+			}
+		}
+		if founderLogSequence != 0 {
+			source := &FounderLogSource{CompanyStreamID: companyStreamID, RunSeq: company.RunSeq, RunLogSeq: runLogSequence}
+			if err := insertFounderLog(ctx, tx, founderCommand, founderRevision.ConstantsHash, canonicalPayload,
+				decision.FounderReplayResolved, decision.FounderAuditReceipt, nil, source); err != nil {
+				return IntentResult{}, err
+			}
+			if err := runExitFault(fault, "founder_log"); err != nil {
 				return IntentResult{}, err
 			}
 		}
@@ -297,6 +346,14 @@ func (s *Store) applyExitTransaction(
 			ON CONFLICT DO NOTHING`, companyStreamID, company.RunSeq); err != nil {
 			return IntentResult{}, err
 		}
+		source := &FounderLogSource{CompanyStreamID: companyStreamID, RunSeq: company.RunSeq, RunLogSeq: runLogSequence}
+		if err := insertFounderLog(ctx, tx, founderCommand, founderRevision.ConstantsHash, canonicalPayload,
+			decision.FounderReplayResolved, decision.FounderAuditReceipt, &founderNext, source); err != nil {
+			return IntentResult{}, err
+		}
+		if err := runExitFault(fault, "founder_log"); err != nil {
+			return IntentResult{}, err
+		}
 	}
 	if err := runExitFault(fault, "run_log"); err != nil {
 		return IntentResult{}, err
@@ -352,19 +409,19 @@ func validateExitVersionTransition(founderRevision, companyRevision Revision, fo
 	return nil
 }
 
-func (s *Store) loadExitState(ctx context.Context, tx *sql.Tx, streamID, ownerID string, scope economy.Scope) (*State, Revision, string, error) {
+func (s *Store) loadExitState(ctx context.Context, tx *sql.Tx, streamID, ownerID string, scope economy.Scope) (*State, Revision, string, []byte, error) {
 	var revision Revision
 	var data []byte
 	if err := tx.QueryRowContext(ctx, `SELECT revision,version,constants_hash,created_at,state FROM save_revisions WHERE stream_id=$1 ORDER BY revision DESC LIMIT 1`, streamID).Scan(&revision.Number, &revision.Version, &revision.ConstantsHash, &revision.CreatedAt, &data); err != nil {
-		return nil, Revision{}, "", err
+		return nil, Revision{}, "", nil, err
 	}
 	revision.StreamID, revision.OwnerID = streamID, ownerID
 	catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
 	if !ok {
-		return nil, Revision{}, "", fmt.Errorf("%w: unknown catalog", ErrInvalidState)
+		return nil, Revision{}, "", nil, fmt.Errorf("%w: unknown catalog", ErrInvalidState)
 	}
 	state, err := RestoreState(data, revision.Version, catalog, scope, revision.CreatedAt)
-	return state, revision, revision.ConstantsHash, err
+	return state, revision, revision.ConstantsHash, data, err
 }
 
 func validateExitDecision(decision ExitDecision, intentID string) error {

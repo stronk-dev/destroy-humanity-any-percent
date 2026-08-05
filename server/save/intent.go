@@ -351,7 +351,7 @@ func (s *Store) applyIntent(
 		}
 		if founderLogSequence != 0 {
 			if err := insertFounderLog(ctx, tx, founderCommand, revision.ConstantsHash, canonicalPayload,
-				replayInputs, decision.Receipt, nil); err != nil {
+				replayInputs, decision.Receipt, nil, nil); err != nil {
 				return IntentResult{}, err
 			}
 		}
@@ -413,7 +413,7 @@ func (s *Store) applyIntent(
 	}
 	if founderLogSequence != 0 {
 		if err := insertFounderLog(ctx, tx, founderCommand, revision.ConstantsHash, canonicalPayload,
-			replayInputs, decision.Receipt, &newRevision); err != nil {
+			replayInputs, decision.Receipt, &newRevision, nil); err != nil {
 			return IntentResult{}, err
 		}
 	}

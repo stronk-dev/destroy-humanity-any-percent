@@ -658,6 +658,16 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 		statusErr := db.QueryRowContext(ctx, `SELECT status FROM verification_queue WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&status)
 		boardErr := db.QueryRowContext(ctx, `SELECT count(*) FROM verified_runs WHERE run_id=$1 AND category_id='any_percent'`, companyRevision.StreamID+":1").Scan(&boardRows)
 		if statusErr == nil && boardErr == nil && status == "verified" && boardRows == 1 {
+			var retainedExitWitness int
+			if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log log
+				WHERE log.company_stream_id=$1 AND log.run_seq=1 AND EXISTS (
+					SELECT 1 FROM founder_log founder
+					WHERE founder.source_company_stream_id=log.company_stream_id
+					  AND founder.source_run_seq=log.run_seq
+					  AND founder.source_run_log_seq=log.seq
+				)`, companyRevision.StreamID).Scan(&retainedExitWitness); err != nil || retainedExitWitness != 1 {
+				t.Fatalf("retained Founder Exit witness=%d err=%v", retainedExitWitness, err)
+			}
 			drainContext, cancelDrain := context.WithTimeout(context.Background(), 2*time.Second)
 			defer cancelDrain()
 			if err := composition.Server.Drain(drainContext, now.Add(2*time.Second)); err != nil {

@@ -153,6 +153,30 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		if err := decodeReplayStrict(parsedInputs.Resolved, &terminal); err != nil || terminal.Kind != "exit" || terminal.SelectedExitType != "scripted_first" || terminal.NextConstantsHash != hash || len(terminal.ExecutedRouteIDs) != 1 {
 			t.Fatalf("terminal replay inputs=%s err=%v", replayInputs, err)
 		}
+		var founderLogSeq, sourceRunSeq, sourceLogSeq int64
+		var sourceStream, founderInputHash, founderKind string
+		var founderAudit []byte
+		if err := db.QueryRowContext(ctx, `SELECT seq,source_company_stream_id,source_run_seq,
+			source_run_log_seq,constants_hash,replay_inputs->'resolved'->>'kind',receipt
+			FROM founder_log WHERE founder_stream_id=$1 AND intent_id=$2`, founderRevision.StreamID,
+			parsedInputs.Command.IntentID).Scan(&founderLogSeq, &sourceStream, &sourceRunSeq, &sourceLogSeq,
+			&founderInputHash, &founderKind, &founderAudit); err != nil || founderLogSeq != 1 ||
+			sourceStream != companyRevision.StreamID || sourceRunSeq != 1 || sourceLogSeq != sequence ||
+			founderInputHash != hash || founderKind != founderExitResolvedKind {
+			t.Fatalf("Founder Exit log seq=%d source=%s/%d/%d hash=%q kind=%q audit=%s err=%v",
+				founderLogSeq, sourceStream, sourceRunSeq, sourceLogSeq, founderInputHash, founderKind,
+				founderAudit, err)
+		}
+		var audit founderExitAuditReceipt
+		if err := json.Unmarshal(founderAudit, &audit); err != nil || audit.Outcome != "applied" ||
+			audit.FounderRevision == nil || *audit.FounderRevision != 2 ||
+			audit.ResultConstantsHash != hash {
+			t.Fatalf("Founder Exit audit=%+v raw=%s err=%v", audit, founderAudit, err)
+		}
+		founderGenesis, err := store.LoadFounderGenesis(ctx, founderRevision.StreamID)
+		if err != nil || founderGenesis.Revision != 1 || founderGenesis.ConstantsHash != hash {
+			t.Fatalf("Founder Exit genesis=%+v err=%v", founderGenesis, err)
+		}
 		terminalBundle := replayBundle
 		terminalBundle.Next = &terminalBundle
 		replayed, err := ApplyLoggedExit(companyBefore.State, loggedPayload, terminalBundle, replayInputs)

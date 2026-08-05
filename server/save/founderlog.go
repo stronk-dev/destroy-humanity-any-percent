@@ -30,6 +30,17 @@ type founderReplayInputsEnvelope struct {
 	Resolved      json.RawMessage      `json:"resolved"`
 }
 
+type FounderLogSource struct {
+	CompanyStreamID string
+	RunSeq          int64
+	RunLogSeq       int64
+}
+
+func MarshalFounderReplayInputs(command FounderReplayCommand, resolved any) (json.RawMessage, error) {
+	return json.Marshal(map[string]any{"v": FounderReplayInputsVersion, "command": command,
+		"evaluated_at_ms": command.ServerTSMS, "resolved": resolved})
+}
+
 // ValidateFounderReplayInputs owns the reusable Founder envelope. Feature
 // packages remain responsible for the exact closed union under resolved.
 func ValidateFounderReplayInputs(data []byte, expected FounderReplayCommand) (json.RawMessage, error) {
@@ -85,7 +96,7 @@ func nextFounderLogSequence(ctx context.Context, tx *sql.Tx, founderStreamID str
 }
 
 func insertFounderLog(ctx context.Context, tx *sql.Tx, command FounderReplayCommand, constantsHash string,
-	canonicalPayload, replayInputs, receipt []byte, appliedRevision *int64,
+	canonicalPayload, replayInputs, receipt []byte, appliedRevision *int64, source *FounderLogSource,
 ) error {
 	if !uuidPattern.MatchString(command.FounderStreamID) || !uuidPattern.MatchString(command.FounderID) ||
 		!uuidV7Pattern.MatchString(command.IntentID) || command.Revision < 1 || command.FounderLogSeq < 1 ||
@@ -100,11 +111,21 @@ func insertFounderLog(ctx context.Context, tx *sql.Tx, command FounderReplayComm
 		}
 		revision = *appliedRevision
 	}
+	var sourceStream, sourceRun, sourceSequence any
+	if source != nil {
+		if !uuidPattern.MatchString(source.CompanyStreamID) || source.RunSeq < 1 ||
+			source.RunSeq > decimal.MaxExactInteger || source.RunLogSeq < 1 ||
+			source.RunLogSeq > decimal.MaxExactInteger {
+			return ErrInvalidStream
+		}
+		sourceStream, sourceRun, sourceSequence = source.CompanyStreamID, source.RunSeq, source.RunLogSeq
+	}
 	result, err := tx.ExecContext(ctx, `
 		INSERT INTO founder_log(founder_stream_id,seq,intent_id,canonical_payload,replay_inputs,receipt,
-			applied_revision,constants_hash,server_ts_ms)
-		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`, command.FounderStreamID, command.FounderLogSeq,
-		command.IntentID, canonicalPayload, replayInputs, receipt, revision, constantsHash, command.ServerTSMS)
+			applied_revision,constants_hash,server_ts_ms,source_company_stream_id,source_run_seq,source_run_log_seq)
+		VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`, command.FounderStreamID, command.FounderLogSeq,
+		command.IntentID, canonicalPayload, replayInputs, receipt, revision, constantsHash,
+		command.ServerTSMS, sourceStream, sourceRun, sourceSequence)
 	if err != nil {
 		return err
 	}

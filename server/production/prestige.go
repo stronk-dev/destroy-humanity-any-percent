@@ -328,6 +328,12 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 	if err != nil {
 		return save.ExitDecision{}, nil, err
 	}
+	founderResolved, founderReceipt, err := buildFounderExitAudit(command, founderRevision, founder, transition.Founder, transition.Decision)
+	if err != nil {
+		return save.ExitDecision{}, nil, err
+	}
+	transition.Decision.FounderReplayResolved = founderResolved
+	transition.Decision.FounderAuditReceipt = founderReceipt
 	if transition.Decision.Outcome == save.IntentApplied {
 		if err := applyFounderReplayOutput(founder, transition.Founder); err != nil {
 			return save.ExitDecision{}, nil, err

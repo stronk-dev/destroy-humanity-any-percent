@@ -36,3 +36,21 @@ Append-only. A fresh agent must be able to resume from this file and the accepte
   input/output constants-hash meaning and the Go/TypeScript replay surface.
 - Exit logging/replay pauses at this exact wire decision. Immutable Founder genesis remains
   complete, tested, and independently reviewable.
+
+## 2026-08-05 — Exit-as-Founder-log persistence implemented
+
+- Migration 00057 adds the B2 source coordinates, a deferrable composite FK to the exact Company
+  run-log command, the exit-kind/source biconditional, and the review-requested Founder-genesis
+  revision FK.
+- Applied and rejected logged Exits now create a Founder command under the existing
+  Founder→Company locks, lazily pin genesis, and append a linked Founder row in the same
+  transaction. The Company client receipt is unchanged; `founder_log.receipt` contains only the
+  B1 audit receipt and is not enqueued a second time.
+- `exit.v1` freezes the accepted Founder facts and B3 input/output hash split. The production path
+  derives those facts from the shared terminal transition before copying the Founder result.
+- The new FK exposed a real archive seam: verified-run compaction deleted the referenced terminal
+  command, causing a deferred commit failure that left the queue claim stranded. Compaction now
+  retains only Founder-referenced witness rows, and commit errors use the existing transient retry
+  path. The composed Postgres exit→verify→board fixture proves the retained witness and is green.
+- Fault coverage includes `founder_genesis` and `founder_log` boundaries, both-or-none rollback,
+  genesis UPDATE/DELETE rejection, and relational source coordinates. Kernel is `0.3.29`.

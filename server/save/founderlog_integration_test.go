@@ -90,6 +90,9 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `UPDATE founder_genesis SET version=version+1 WHERE founder_stream_id=$1`, founderRevision.StreamID); err == nil {
 		t.Fatal("Founder genesis was mutable")
 	}
+	if _, err := db.ExecContext(ctx, `DELETE FROM founder_genesis WHERE founder_stream_id=$1`, founderRevision.StreamID); err == nil {
+		t.Fatal("Founder genesis was deletable")
+	}
 	loaded, err := store.LoadLatest(ctx, founderRevision.StreamID)
 	if err != nil || loaded.Revision.Number != 2 || loaded.State.Soul != 1 {
 		t.Fatalf("loaded revision=%+v soul=%d err=%v", loaded.Revision, loaded.State.Soul, err)

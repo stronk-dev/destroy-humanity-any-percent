@@ -82,7 +82,7 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	loggedPayload := []byte(`{"expected_founder_revision":1,"expected_revision":1,"kind":"wind_down"}`)
 	loggedDigest := sha256.Sum256(loggedPayload)
 	loggedHash := "sha256:" + hex.EncodeToString(loggedDigest[:])
-	for index, failStep := range []string{"run_epoch", "run_genesis", "run_log"} {
+	for index, failStep := range []string{"founder_genesis", "run_epoch", "run_genesis", "run_log", "founder_log"} {
 		loggedIntentID := fmt.Sprintf("01985555-009%d-7000-8000-00000000000%d", index, index)
 		_, err = store.ApplyExitTransactionLogged(ctx, companyRevision.StreamID, 1, 1, loggedIntentID, loggedHash, loggedPayload,
 			loggedExitTestMutation(t, ownerID, companyRevision.StreamID, loggedIntentID, hash, now), func(step string) error {
@@ -100,6 +100,13 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 		}
 		if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_genesis WHERE company_stream_id=$1 AND run_seq=2`, companyRevision.StreamID).Scan(&runTwoGenesis); err != nil || runTwoGenesis != 0 {
 			t.Fatalf("%s rollback genesis=%d err=%v", failStep, runTwoGenesis, err)
+		}
+		var founderGenesis, founderLogs int
+		if err := db.QueryRowContext(ctx, `SELECT count(*) FROM founder_genesis WHERE founder_stream_id=$1`, founderRevision.StreamID).Scan(&founderGenesis); err != nil || founderGenesis != 0 {
+			t.Fatalf("%s rollback Founder genesis=%d err=%v", failStep, founderGenesis, err)
+		}
+		if err := db.QueryRowContext(ctx, `SELECT count(*) FROM founder_log WHERE founder_stream_id=$1`, founderRevision.StreamID).Scan(&founderLogs); err != nil || founderLogs != 0 {
+			t.Fatalf("%s rollback Founder log=%d err=%v", failStep, founderLogs, err)
 		}
 	}
 	var loggedRows, outboxRows int
@@ -257,6 +264,12 @@ func loggedExitTestMutation(t *testing.T, ownerID, companyStreamID, intentID, ha
 	base := exitTestMutation(ownerID, companyStreamID, intentID, hash, now)
 	return func(founder *State, founderRevision Revision, company *State, companyRevision Revision, command ReplayCommand) (ExitDecision, json.RawMessage, error) {
 		decision, err := base(founder, founderRevision, company, companyRevision)
+		decision.FounderReplayResolved, _ = json.Marshal(map[string]any{"kind": "exit.v1",
+			"company_stream_id": command.CompanyStreamID, "run_seq": command.RunSeq,
+			"run_log_seq": command.RunLogSeq, "result_constants_hash": hash})
+		decision.FounderAuditReceipt, _ = json.Marshal(map[string]any{"intent_id": command.IntentID,
+			"outcome": "applied", "founder_revision": founderRevision.Number + 1,
+			"result_constants_hash": hash})
 		return decision, testReplayInputs(t, command, now), err
 	}
 }

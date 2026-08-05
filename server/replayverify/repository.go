@@ -133,7 +133,10 @@ func (repository *Repository) ProcessNext(ctx context.Context, projector Project
 	} else if err := markDeterministicDead(ctx, tx, claimed, verdict); err != nil {
 		return true, err
 	}
-	return true, tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return true, repository.failTransient(ctx, claimed, err)
+	}
+	return true, nil
 }
 
 type runArchive struct {
@@ -183,12 +186,18 @@ func archiveVerifiedRun(ctx context.Context, tx *sql.Tx, streamID string, runSeq
 	runID := streamID + ":" + fmt.Sprintf("%d", runSeq)
 	var existingHash string
 	if err := tx.QueryRowContext(ctx, `SELECT sha256 FROM run_log_archive WHERE run_id=$1`, runID).Scan(&existingHash); err == nil {
-		var liveRows int64
-		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND run_seq=$2`, streamID, runSeq).Scan(&liveRows); err != nil {
+		var unreferencedRows int64
+		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM run_log log
+			WHERE log.company_stream_id=$1 AND log.run_seq=$2 AND NOT EXISTS (
+				SELECT 1 FROM founder_log founder
+				WHERE founder.source_company_stream_id=log.company_stream_id
+				  AND founder.source_run_seq=log.run_seq
+				  AND founder.source_run_log_seq=log.seq
+			)`, streamID, runSeq).Scan(&unreferencedRows); err != nil {
 			return err
 		}
-		if liveRows != 0 {
-			return errors.New("archive exists while active run log remains")
+		if unreferencedRows != 0 {
+			return errors.New("archive exists while unreferenced active run log remains")
 		}
 		return nil
 	} else if !errors.Is(err, sql.ErrNoRows) {
@@ -268,12 +277,28 @@ func archiveVerifiedRun(ctx context.Context, tx *sql.Tx, streamID string, runSeq
 		VALUES($1,$2,$3,$4,'gzip+json.v1',$5,$6)`, runID, streamID, runSeq, terminalSeq, encoded.Bytes(), sha); err != nil {
 		return err
 	}
-	result, err := tx.ExecContext(ctx, `DELETE FROM run_log WHERE company_stream_id=$1 AND run_seq=$2`, streamID, runSeq)
+	var retained int64
+	if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM run_log log
+		WHERE log.company_stream_id=$1 AND log.run_seq=$2 AND EXISTS (
+			SELECT 1 FROM founder_log founder
+			WHERE founder.source_company_stream_id=log.company_stream_id
+			  AND founder.source_run_seq=log.run_seq
+			  AND founder.source_run_log_seq=log.seq
+		)`, streamID, runSeq).Scan(&retained); err != nil {
+		return err
+	}
+	result, err := tx.ExecContext(ctx, `DELETE FROM run_log log WHERE log.company_stream_id=$1 AND log.run_seq=$2
+		AND NOT EXISTS (
+			SELECT 1 FROM founder_log founder
+			WHERE founder.source_company_stream_id=log.company_stream_id
+			  AND founder.source_run_seq=log.run_seq
+			  AND founder.source_run_log_seq=log.seq
+		)`, streamID, runSeq)
 	if err != nil {
 		return err
 	}
 	deleted, err := result.RowsAffected()
-	if err != nil || deleted != int64(len(archive.Entries)) {
+	if err != nil || deleted != int64(len(archive.Entries))-retained {
 		return errors.Join(err, errors.New("run-log compaction count mismatch"))
 	}
 	return nil
