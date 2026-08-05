@@ -1,7 +1,8 @@
 # RFC: Doctrine Intents & Compute Credit Spend
 
-- **Status:** accepted in principle; implementation blocked on D7-D10 (the D1-D6 rulings leave
-  burst arithmetic, seed/gate data, activation sequencing, and the exact wire grammar unresolved).
+- **Status:** accepted — D1-D10 ruled (burst arithmetic, Phase-0 fixture row + unminted production
+  artifact, Company v14→v17 linear activation, exact wire); implementing. Company v17 (burst) mints
+  only in a `meters`+`achievements`+`doctrines` epoch; Active-Play sequences at Company v18.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/10 §doctrine` (doctrine trees — Age-Up branching, one building type nothing else gets, combos with faction), `design/02 §9` (Compute Credits — banked offline time as chosen-moment acceleration; the banker playstyle), `design/09 §doctrine events`
@@ -73,11 +74,18 @@ save-derived; `now`/attendance already flow through the existing resolved arm).
 1. Doctrine pick: once-per-transition, mutually-exclusive within transition, catalog-validated,
    writes `DoctrinesByTransition`; a route gated on an unpicked doctrine rejects; pick-ordering
    (`gateTier ≥ doctrine tier`) loader-validated — closing the routes RFC's deferred item.
-2. Compute Credit spend: debits exactly, cannot go negative (typed rejection), acceleration
-   applies the warped interval byte-parity Go/TS; per-spend cap enforced; a warp exceeding the
-   online horizon is handled per the F1 precondition (no brick).
-3. Legibility: the wire snapshot exposes the credit balance + auto-spend policy; auto-spend as a
-   founder setting round-trips.
+2. Compute Credit spend (D7): `amount_ms` debits exactly (cannot go negative — typed rejection) and
+   is the 1:1 boosted duration; rejects (never clamps) over-cap / insufficient-balance / burst-active;
+   the bonus segment at `(burst_speed−1)` accrues byte-parity Go/TS through the shared provision-grid,
+   quantized once with base accrual; Exit resets remaining to zero; a burst crossing a provision
+   boundary and the offline `accrual_cap_ms` are fixture-covered (no brick, no bonus past the cap).
+3. Legibility (D5/D10): the authoritative snapshot exposes the credit balance (`compute_credit_ms`)
+   and remaining manual burst duration (`compute_burst_remaining_ms`); NO auto-spend policy exists
+   (deferred to a successor settings RFC).
+5. Activation (D9): Company v14 → v17 at Exit only in an epoch carrying `meters` + `achievements` +
+   `doctrines`; `versionFloors` requires all three; v17 keys = v16 keys + `compute_burst_remaining_ms`;
+   the `doctrines` production artifact stays unminted until the T3→T4 gate+rows exist (fixture row for
+   tests).
 4. Both intents evented + replay-logged; sequential corpus rows in both kernels.
 
 ## Open questions
@@ -307,3 +315,51 @@ Semantic failures use existing category `unknown_id` for unknown catalog IDs and
 with closed details `tier`, `gate_crossed`, `doctrine_already_picked`, `doctrine_required`,
 `compute_credit_balance`, `burst_duration`, or `burst_active`. Replace AC3 with: “the authoritative
 snapshot exposes credit balance and remaining manual burst duration; no auto-spend policy exists.”
+
+## Owner rulings on D7-D10 (2026-08-05) — the immutable mechanics D1-D6 left open
+
+All four proposed contracts ACCEPTED (Codex's detailed shapes are sound and deterministic).
+
+- **D7 — accepted (the exact burst equation).** `amount_ms` is BOTH the credit debit AND the boosted
+  wall duration, 1:1. REJECT (never clamp/waste) when `amount_ms > burst_max_duration_ms`, balance
+  too small, or a burst is already active (NO stacking — one active burst). Persist only
+  `compute_burst_remaining_ms`; `burst_speed` (> 1, required) resolves from the run-pinned economy
+  artifact. Evaluation: `boosted_wall_ms = min(elapsed_ms, remaining_ms)`, consumed in online AND
+  offline. Base accrual unchanged; a SECOND bonus segment accrues the boosted portion at factor
+  `(burst_speed − 1)` through the SAME provision-boundary segmentation + deterministic Decimal sum,
+  quantized ONCE with the ordinary accrual (partition-invariant, reuses fixedgrid). Offline bounded
+  by `accrual_cap_ms` — wall beyond the cap may expire the burst but yields no bonus. Exit writes zero
+  remaining; next run starts at zero. Partition + 25h-return fixtures cover a burst crossing a
+  provision boundary and the offline cap.
+- **D8 — accepted (Phase-0 data).** Ship the `doctrines` schema + cross-artifact validator now; keep
+  the PRODUCTION artifact UNMINTED until the T3→T4 content owner supplies the real `gate.t3_to_t4` +
+  literal row (Phase-0 deliberately lacks that gate — temporal-validity moved those routes to
+  `gate.t4_to_t5`). Test with the shared fixture row `transition.t3_to_t4 / source_tier 3 /
+  gate.t3_to_t4 / [doctrine.capture, doctrine.ethical]`. When active, `cross_gate` requires the pick
+  ONLY for the exact declared gate and ONLY when Company tier == `source_tier`; any other tier is the
+  gate-sequence owner's rejection (resolves the out-of-order-crossing ambiguity).
+- **D9 — accepted (the linear activation path; resolves the cross-RFC save-version coordination).**
+  Implement the Company-v17 codec + doctrine activation now, DON'T mint/activate. A doctrine-bearing
+  production epoch MUST also contain the paired `meters` + `achievements` artifacts; it activates
+  Company v14 → v17 at Exit, and `versionFloors` requires ALL THREE artifacts and forbids
+  disappearance (the linear scalar chain: v15 meters → v16 achievements → v17 doctrines). Company-v17
+  keys = v16 Company keys + `compute_burst_remaining_ms`. Founder-v17 (minigames, a DIFFERENT axis)
+  keeps its schema and rejects burst state — wire keys are scope-explicit.
+  **Active-Play Buff Windows therefore sequences at Company v18** (this settles the D4-flagged
+  coordination; I will carry v18 into the A-blocker rulings). The linear model stands — Doctrine
+  cannot activate before Meters/Achievements; a non-linear Company feature-version model is not
+  adopted.
+- **D10 — accepted (the exact wire); AC2/AC3 reconciled.** Requests
+  `{intent_id,kind:"pick_doctrine",expected_revision,transition_id,doctrine_id}` and
+  `{intent_id,kind:"spend_compute_credit",expected_revision,amount_ms,target:"accelerate"}`; existing
+  generic applied receipt; snapshot adds `compute_credit_ms` + `compute_burst_remaining_ms` (NO
+  auto-spend field). Event payloads: `doctrine_picked {founder_id,run_id:{company_stream_id,run_seq},
+  transition_id,doctrine_id}`; `compute_credit_spent {founder_id,run_id,amount_ms,target,
+  burst_duration_ms,burst_speed}`. Malformed details `<kind>.fields|transition_id|doctrine_id|
+  amount_ms|target`; semantic `unknown_id` (unknown catalog ID) and `not_eligible` with closed
+  details `tier|gate_crossed|doctrine_already_picked|doctrine_required|compute_credit_balance|
+  burst_duration|burst_active`. AC3 replaced (below); AC2 reconciled to the burst model.
+
+Structure + arithmetic + wire now fully ruled. Content still deferred: the production `doctrines`
+mint (T3→T4 gate + rows), doctrine effects, Compute-Credit auto-spend, spend targets beyond
+`accelerate`.

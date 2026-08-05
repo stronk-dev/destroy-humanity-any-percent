@@ -54,3 +54,24 @@ sound, but four executable gaps remain and are filed in the RFC with proposed co
 No implementation commit was started. This is the required DESIGN-GAP bounce: choosing any of
 these in Go first would make the TypeScript verifier and immutable replay history follow an
 implementation accident rather than an owner-ratified contract.
+
+## 2026-08-05 — owner rulings on the second-round blockers D7-D10 (all accepted)
+The D1-D6 rulings chose direction but left immutable mechanics open; Codex bounced D7-D10 with exact
+proposed contracts. All accepted:
+- D7: burst equation — amount_ms is the credit debit AND 1:1 boosted duration; reject (no clamp) on
+  over-cap/low-balance/burst-active (no stacking); persist compute_burst_remaining_ms; burst_speed>1
+  from the pinned economy artifact; bonus = a second segment at (burst_speed-1) through the shared
+  fixedgrid, quantized once; offline bounded by accrual_cap_ms; Exit resets to zero; partition +
+  25h-return fixtures.
+- D8: ship schema+validator + a FIXTURE doctrine row (transition.t3_to_t4/source_tier 3/gate.t3_to_t4/
+  [capture,ethical]); production doctrines artifact UNMINTED until the T3->T4 content owner supplies
+  the real gate+rows; cross_gate requires the pick only at the declared gate when tier==source_tier.
+- D9: Company v14->v17 linear activation at Exit, ONLY in a meters+achievements+doctrines epoch;
+  versionFloors requires all three; v17 keys = v16 keys + compute_burst_remaining_ms; codec built now,
+  NOT minted. **Active-Play sequences at Company v18** — settles the cross-RFC coordination; I carry
+  v18 into the A-blocker rulings.
+- D10: exact request/event/snapshot/rejection grammar enumerated; AC3 replaced (no auto-spend);
+  AC2 reconciled to the burst model.
+Lesson carried forward: for "owner-ruling-required" blockers, provide the FULL contract in one pass
+(not just the direction) to avoid a second bounce — the remaining Wave-A RFCs get exact rulings.
+Status -> accepted; D1-D10 ruled; implementing. Body/README reconciled.
