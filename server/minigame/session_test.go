@@ -1,6 +1,7 @@
 package minigame
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -140,15 +141,18 @@ func TestSessionClaimIntegration(t *testing.T) {
 	if reclaimed.ClaimToken == winner.ClaimToken || reclaimed.Revision != winner.Revision {
 		t.Fatalf("stale claim was not safely replaced: old=%+v new=%+v", winner, reclaimed)
 	}
-	if _, err := repository.completePlay(ctx, testFounderID, testSessionID, winner.ClaimToken, json.RawMessage(`{"turn":1}`)); !errors.Is(err, ErrClaimLost) {
+	if _, err := repository.completePlay(ctx, testFounderID, testSessionID, winner.ClaimToken,
+		json.RawMessage(`{"advance":1}`), json.RawMessage(`{"turn":1}`)); !errors.Is(err, ErrClaimLost) {
 		t.Fatalf("replaced-token error=%v", err)
 	}
 	winner = reclaimed
 	if _, err := repository.completePlay(ctx, testFounderID, testSessionID,
-		"018f0000-0000-4000-8000-000000000999", json.RawMessage(`{"turn":1}`)); !errors.Is(err, ErrClaimLost) {
+		"018f0000-0000-4000-8000-000000000999", json.RawMessage(`{"advance":1}`),
+		json.RawMessage(`{"turn":1}`)); !errors.Is(err, ErrClaimLost) {
 		t.Fatalf("wrong-token error=%v", err)
 	}
-	played, err := repository.completePlay(ctx, testFounderID, testSessionID, winner.ClaimToken, json.RawMessage(`{"turn":1}`))
+	played, err := repository.completePlay(ctx, testFounderID, testSessionID, winner.ClaimToken,
+		json.RawMessage(`{"advance":1}`), json.RawMessage(`{"turn":1}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -166,7 +170,7 @@ func TestSessionClaimIntegration(t *testing.T) {
 	}
 	identity := resolutionIdentity{sessionID: testSessionID, founderID: testFounderID, companyStreamID: testStreamID,
 		runSeq: 1, engineRef: "combat.duel", engineVersion: "1.0.0", constantsHash: testHash, claimToken: claimed.ClaimToken}
-	if _, err := resolveTx(ctx, rollbackTx, identity, json.RawMessage(`{"turn":2}`),
+	if _, err := resolveTx(ctx, rollbackTx, identity, json.RawMessage(`{"advance":1}`), json.RawMessage(`{"turn":2}`),
 		json.RawMessage(`{"outcome":"complete","rating_delta":null,"score_facts":[]}`)); err != nil {
 		_ = rollbackTx.Rollback()
 		t.Fatal(err)
@@ -185,7 +189,7 @@ func TestSessionClaimIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	resolved, err := resolveTx(ctx, tx, identity, json.RawMessage(`{"turn":2}`),
+	resolved, err := resolveTx(ctx, tx, identity, json.RawMessage(`{"advance":1}`), json.RawMessage(`{"turn":2}`),
 		json.RawMessage(`{"outcome":"complete","rating_delta":null,"score_facts":[]}`))
 	if err != nil {
 		_ = tx.Rollback()
@@ -202,6 +206,19 @@ func TestSessionClaimIntegration(t *testing.T) {
 	}
 	if _, err := db.ExecContext(ctx, "UPDATE minigame_sessions SET state='{}' WHERE session_id=$1", testSessionID); err == nil {
 		t.Fatal("resolved session was mutable")
+	}
+	if _, err := db.ExecContext(ctx, "UPDATE minigame_session_commands SET command='{}' WHERE session_id=$1", testSessionID); err == nil {
+		t.Fatal("session command log was mutable")
+	}
+	if _, err := db.ExecContext(ctx, "DELETE FROM minigame_session_commands WHERE session_id=$1", testSessionID); err == nil {
+		t.Fatal("session command log was deletable")
+	}
+	if _, err := db.ExecContext(ctx, "DELETE FROM minigame_sessions WHERE session_id=$1", testSessionID); err != nil {
+		t.Fatalf("parent retention cascade failed: %v", err)
+	}
+	var retainedCommands int
+	if err := db.QueryRowContext(ctx, "SELECT count(*) FROM minigame_session_commands WHERE session_id=$1", testSessionID).Scan(&retainedCommands); err != nil || retainedCommands != 0 {
+		t.Fatalf("parent cascade retained commands=%d err=%v", retainedCommands, err)
 	}
 }
 
@@ -280,6 +297,30 @@ func TestServiceIntegration(t *testing.T) {
 	if err != nil || storedClaim.Status != StatusClaimed || !jsonObjectEqual(storedClaim.State, []byte(`{"done":false,"total":5}`)) {
 		t.Fatalf("pre-resolve store=%+v err=%v", storedClaim, err)
 	}
+	driftTenants, err := NewTenantRegistry(fixtureTenant{bias: 1})
+	if err != nil {
+		t.Fatal(err)
+	}
+	driftService, err := NewService(repository, driftTenants)
+	if err != nil {
+		t.Fatal(err)
+	}
+	driftTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := driftService.ResolveTx(ctx, driftTx, terminal.Resolution); !errors.Is(err, ErrTenantDivergence) {
+		_ = driftTx.Rollback()
+		t.Fatalf("same-version engine drift error=%v", err)
+	}
+	if err := driftTx.Rollback(); err != nil {
+		t.Fatal(err)
+	}
+	afterDrift, err := repository.Load(ctx, testFounderID, testSessionID)
+	if err != nil || afterDrift.Status != StatusClaimed || afterDrift.Revision != 2 ||
+		!jsonObjectEqual(afterDrift.State, storedClaim.State) {
+		t.Fatalf("engine drift mutated session=%+v err=%v", afterDrift, err)
+	}
 	forged := *terminal.Resolution
 	forged.bytes = json.RawMessage(`{"garbage":true}`)
 	forgedTx, err := db.BeginTx(ctx, nil)
@@ -321,6 +362,26 @@ func TestServiceIntegration(t *testing.T) {
 	if resolved.Status != StatusResolved || resolved.Revision != 3 ||
 		!jsonObjectEqual(resolved.State, []byte(`{"done":true,"total":7}`)) {
 		t.Fatalf("resolved=%+v", resolved)
+	}
+	rows, err := db.QueryContext(ctx, "SELECT seq,command,applied_revision FROM minigame_session_commands WHERE session_id=$1 ORDER BY seq", testSessionID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer rows.Close()
+	wantCommands := []string{`{"add":4,"finish":false}`, `{"add":2,"finish":true}`}
+	for index, want := range wantCommands {
+		if !rows.Next() {
+			t.Fatalf("missing command row %d", index+1)
+		}
+		var sequence, appliedRevision int64
+		var command []byte
+		if err := rows.Scan(&sequence, &command, &appliedRevision); err != nil || sequence != int64(index+1) ||
+			appliedRevision != int64(index+2) || !bytes.Equal(command, []byte(want)) {
+			t.Fatalf("command row=%d/%s/%d err=%v", sequence, command, appliedRevision, err)
+		}
+	}
+	if rows.Next() || rows.Err() != nil {
+		t.Fatalf("unexpected command rows err=%v", rows.Err())
 	}
 }
 

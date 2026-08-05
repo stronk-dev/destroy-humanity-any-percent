@@ -44,6 +44,14 @@ call. Noncanonical or wrong-schema snapshots, undeclared rejection codes, malfor
 unknown modes fail closed as rejection or tenant divergence. JSON numbers have one accepted
 grammar: exact safe integers only; decimal/exponent aliases are rejected before the JSONB seam.
 
+Every applied play appends its canonical command to `minigame_session_commands` in the same
+transaction as the session-head revision. Rows are immutable; they may disappear only with their
+parent session's retention cascade. Terminal resolution locks the certified session, replays the
+complete ordered command log from genesis through the exact frozen engine version, byte-compares
+the pre-terminal snapshot and terminal snapshot/result, then appends the terminal command and
+resolves the head in the payout transaction. A same-version engine change that alters an honest
+history therefore fails closed before any payout can commit.
+
 The current conformance tenant is test-only. The combat duel adapter will register when its engine
 RFC supplies an implemented transition surface; the deferred lane engine is not fabricated by the
 platform.

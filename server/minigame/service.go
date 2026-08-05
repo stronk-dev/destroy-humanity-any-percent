@@ -44,6 +44,7 @@ type PlayDecision struct {
 
 type CertifiedResolution struct {
 	identity resolutionIdentity
+	command  json.RawMessage
 	state    json.RawMessage
 	result   *Result
 	bytes    json.RawMessage
@@ -140,13 +141,14 @@ func (service *Service) Play(ctx context.Context, request PlayRequest) (decision
 			identity: resolutionIdentity{sessionID: claimed.SessionID, founderID: claimed.FounderID,
 				companyStreamID: claimed.CompanyStreamID, runSeq: claimed.RunSeq, engineRef: claimed.EngineRef,
 				engineVersion: claimed.EngineVersion, constantsHash: claimed.ConstantsHash, claimToken: claimed.ClaimToken},
-			state: output.Snapshot, result: cloneResult(output.Result), bytes: resultBytes,
+			command: bytes.Clone(request.Command), state: output.Snapshot,
+			result: cloneResult(output.Result), bytes: resultBytes,
 		}}
 		release = false
 		return decision, nil
 	}
 	updated, err := service.repository.completePlay(ctx, request.FounderID, request.SessionID,
-		claimed.ClaimToken, output.Snapshot)
+		claimed.ClaimToken, request.Command, output.Snapshot)
 	if err != nil {
 		return PlayDecision{}, err
 	}
@@ -160,7 +162,7 @@ func (service *Service) Play(ctx context.Context, request PlayRequest) (decision
 // package or resolve it in a different Company's transaction.
 func (service *Service) ResolveTx(ctx context.Context, tx *sql.Tx, resolution *CertifiedResolution) (Session, error) {
 	if service == nil || tx == nil || resolution == nil || !validResolutionIdentity(resolution.identity) ||
-		!validJSONObject(resolution.state) || !validJSONObject(resolution.bytes) ||
+		!validJSONObject(resolution.command) || !validJSONObject(resolution.state) || !validJSONObject(resolution.bytes) ||
 		service.tenants.validateCertifiedResult(resolution.identity.engineRef, resolution.identity.engineVersion, resolution.result) != nil {
 		return Session{}, ErrInvalidSession
 	}
@@ -177,7 +179,49 @@ func (service *Service) ResolveTx(ctx context.Context, tx *sql.Tx, resolution *C
 	if err != nil {
 		return Session{}, err
 	}
-	return resolveTx(ctx, tx, resolution.identity, resolution.state, resolution.bytes)
+	if err := service.validateReplayTx(ctx, tx, resolution); err != nil {
+		return Session{}, err
+	}
+	return resolveTx(ctx, tx, resolution.identity, resolution.command, resolution.state, resolution.bytes)
+}
+
+func (service *Service) validateReplayTx(ctx context.Context, tx *sql.Tx, resolution *CertifiedResolution) error {
+	session, commands, err := loadClaimedReplay(ctx, tx, resolution.identity)
+	if err != nil {
+		return err
+	}
+	scaling, ok := decodeScalingInputs(session.ScalingInputs)
+	if !ok {
+		return ErrTenantDivergence
+	}
+	snapshot := bytes.Clone(session.Genesis)
+	revision := int64(1)
+	for _, command := range commands {
+		output, applyErr := service.tenants.Apply(session.EngineRef, session.EngineVersion, ApplyInput{
+			Mode: session.Mode, Revision: revision, Snapshot: snapshot,
+			Command: command.Command, ScalingInputs: scaling,
+		})
+		if applyErr != nil || output.Result != nil {
+			return ErrTenantDivergence
+		}
+		snapshot, revision = output.Snapshot, revision+1
+	}
+	if revision != session.Revision || !bytes.Equal(snapshot, session.State) {
+		return ErrTenantDivergence
+	}
+	output, err := service.tenants.Apply(session.EngineRef, session.EngineVersion, ApplyInput{
+		Mode: session.Mode, Revision: revision, Snapshot: snapshot,
+		Command: resolution.command, ScalingInputs: scaling,
+	})
+	if err != nil || output.Result == nil || !bytes.Equal(output.Snapshot, resolution.state) ||
+		service.tenants.validateCertifiedResult(session.EngineRef, session.EngineVersion, output.Result) != nil {
+		return ErrTenantDivergence
+	}
+	encoded, err := json.Marshal(output.Result)
+	if err != nil || !bytes.Equal(encoded, resolution.bytes) {
+		return ErrTenantDivergence
+	}
+	return nil
 }
 
 func decodeScalingInputs(data []byte) (map[string]int64, bool) {

@@ -17,6 +17,8 @@ RFC: `rfc/minigame-platform-foundation.md`
 - [ ] Land scaling-source validation, the ranked-power prohibition, fallback rows, and formula
   artifact output without production balance literals.
 - [ ] Land server-certified resolve/payout, faucet accounting, replay identity, and fault tests.
+  - [x] Persist immutable applied-command rows and replay them from genesis before terminal
+    resolution.
 - [ ] Compose the platform into the gameserver and prove solo/async-snapshot lifecycle ACs.
 - [ ] Mint the production artifact only after owner/harness-supplied balance rows.
 - [ ] Update canonical docs, pass normal repository-root verification, obtain independent

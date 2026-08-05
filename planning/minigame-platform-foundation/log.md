@@ -119,3 +119,18 @@
   families. C22 explicitly corrects the earlier run-start origin: quota never resets on Exit.
 - Reconciled that correction at C16's normative decision site. Implementation resumes with the
   command log and replay proof, which require no production balance literals.
+
+## 2026-08-05 — immutable session command history and terminal replay
+
+- Appended migrations 00052-00053. Every applied nonterminal or terminal command is recorded under
+  `(session_id, seq)` in the same transaction as its resulting session revision, with canonical
+  command bytes and a server timestamp. Direct update/delete is rejected; parent-session retention
+  may cascade, so account deletion is not bricked by an immutable child trigger.
+- Terminal resolution now locks the exact claimed session, replays all committed commands from
+  genesis through the frozen engine/version and scaling inputs, compares the pre-terminal state,
+  then re-executes and byte-compares the pending terminal snapshot/result before any write.
+- Real-Postgres coverage proves command order/revision identity, rollback, direct immutability,
+  parent cascade, and a same-version code-drift attack that leaves the claimed session unchanged.
+  The normal minigame test/vet targets and root `make test-save-integration` pass.
+- This closes C20's persistence/replay slice. Payout/faucet composition remains a separate checked
+  item and no production balance data was introduced.

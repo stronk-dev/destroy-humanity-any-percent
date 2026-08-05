@@ -83,6 +83,13 @@ type Session struct {
 	ResolvedAt      *time.Time
 }
 
+type sessionCommand struct {
+	Sequence        int64
+	Command         json.RawMessage
+	AppliedRevision int64
+	ServerTSMS      int64
+}
+
 type Repository struct {
 	db *sql.DB
 }
@@ -172,9 +179,9 @@ func (repository *Repository) claim(ctx context.Context, founderID, sessionID st
 	return claimed, nil
 }
 
-func (repository *Repository) completePlay(ctx context.Context, founderID, sessionID, claimToken string, state json.RawMessage) (Session, error) {
+func (repository *Repository) completePlay(ctx context.Context, founderID, sessionID, claimToken string, command, state json.RawMessage) (Session, error) {
 	if repository == nil || !uuidPattern.MatchString(founderID) || !uuidV7Pattern.MatchString(sessionID) ||
-		!uuidPattern.MatchString(claimToken) || !validJSONObject(state) {
+		!uuidPattern.MatchString(claimToken) || !validJSONObject(command) || !validJSONObject(state) {
 		return Session{}, ErrInvalidSession
 	}
 	tx, err := repository.db.BeginTx(ctx, nil)
@@ -183,6 +190,9 @@ func (repository *Repository) completePlay(ctx context.Context, founderID, sessi
 	}
 	defer tx.Rollback()
 	if err := lockFounder(ctx, tx, founderID); err != nil {
+		return Session{}, err
+	}
+	if err := appendSessionCommand(ctx, tx, sessionID, founderID, claimToken, command, resolutionIdentity{}); err != nil {
 		return Session{}, err
 	}
 	row := tx.QueryRowContext(ctx, completePlaySQL, sessionID, founderID, claimToken, string(state))
@@ -226,10 +236,13 @@ func (repository *Repository) releaseClaim(ctx context.Context, founderID, sessi
 
 // ResolveTx is the session half of C17's company-then-session transaction. The
 // caller owns and has already locked the Company stream.
-func resolveTx(ctx context.Context, tx *sql.Tx, identity resolutionIdentity, state, result json.RawMessage) (Session, error) {
+func resolveTx(ctx context.Context, tx *sql.Tx, identity resolutionIdentity, command, state, result json.RawMessage) (Session, error) {
 	if tx == nil || !validResolutionIdentity(identity) ||
-		!validJSONObject(state) || !validJSONObject(result) {
+		!validJSONObject(command) || !validJSONObject(state) || !validJSONObject(result) {
 		return Session{}, ErrInvalidSession
+	}
+	if err := appendSessionCommand(ctx, tx, identity.sessionID, identity.founderID, identity.claimToken, command, identity); err != nil {
+		return Session{}, err
 	}
 	resolved, err := scanSession(tx.QueryRowContext(ctx, resolveSessionSQL, identity.sessionID, identity.claimToken,
 		string(state), string(result), identity.founderID, identity.companyStreamID, identity.runSeq,
@@ -238,6 +251,64 @@ func resolveTx(ctx context.Context, tx *sql.Tx, identity resolutionIdentity, sta
 		return Session{}, ErrClaimLost
 	}
 	return resolved, err
+}
+
+func appendSessionCommand(ctx context.Context, tx *sql.Tx, sessionID, founderID, claimToken string, command json.RawMessage, identity resolutionIdentity) error {
+	query := appendPlayCommandSQL
+	args := []any{sessionID, founderID, claimToken, []byte(command)}
+	if identity.sessionID != "" {
+		query = appendResolvedCommandSQL
+		args = append(args, identity.companyStreamID, identity.runSeq, identity.engineRef, identity.engineVersion, identity.constantsHash)
+	}
+	var sequence int64
+	if err := tx.QueryRowContext(ctx, query, args...).Scan(&sequence); errors.Is(err, sql.ErrNoRows) {
+		return ErrClaimLost
+	} else if err != nil {
+		return err
+	}
+	return nil
+}
+
+func loadClaimedReplay(ctx context.Context, tx *sql.Tx, identity resolutionIdentity) (Session, []sessionCommand, error) {
+	if tx == nil || !validResolutionIdentity(identity) {
+		return Session{}, nil, ErrInvalidSession
+	}
+	session, err := scanSession(tx.QueryRowContext(ctx, loadClaimedReplaySQL, identity.sessionID, identity.founderID,
+		identity.companyStreamID, identity.runSeq, identity.engineRef, identity.engineVersion, identity.constantsHash,
+		identity.claimToken))
+	if errors.Is(err, sql.ErrNoRows) {
+		return Session{}, nil, ErrClaimLost
+	}
+	if err != nil {
+		return Session{}, nil, err
+	}
+	rows, err := tx.QueryContext(ctx, loadSessionCommandsSQL, identity.sessionID)
+	if err != nil {
+		return Session{}, nil, err
+	}
+	defer rows.Close()
+	commands := make([]sessionCommand, 0, session.Revision-1)
+	for rows.Next() {
+		var command sessionCommand
+		var raw []byte
+		if err := rows.Scan(&command.Sequence, &raw, &command.AppliedRevision, &command.ServerTSMS); err != nil {
+			return Session{}, nil, err
+		}
+		canonical, ok := canonicalJSONObject(raw)
+		if !ok || !bytes.Equal(canonical, raw) || command.Sequence != int64(len(commands)+1) ||
+			command.AppliedRevision != command.Sequence+1 || command.ServerTSMS < 1 {
+			return Session{}, nil, ErrTenantDivergence
+		}
+		command.Command = canonical
+		commands = append(commands, command)
+	}
+	if err := rows.Err(); err != nil {
+		return Session{}, nil, err
+	}
+	if int64(len(commands)) != session.Revision-1 {
+		return Session{}, nil, ErrTenantDivergence
+	}
+	return session, commands, nil
 }
 
 func validCreate(input CreateSession) bool {
@@ -369,6 +440,19 @@ const resolveSessionSQL = "UPDATE minigame_sessions SET state=$3,result=$4,statu
 	"claim_token=NULL,claimed_at=NULL,updated_at=clock_timestamp(),resolved_at=clock_timestamp() " +
 	"WHERE session_id=$1 AND status='claimed' AND claim_token=$2 AND founder_id=$5 AND company_stream_id=$6 " +
 	"AND run_seq=$7 AND engine_ref=$8 AND engine_version=$9 AND constants_hash=$10 RETURNING " + sessionColumns
+const appendPlayCommandSQL = "INSERT INTO minigame_session_commands(session_id,seq,command,applied_revision,server_ts_ms) " +
+	"SELECT session_id,revision,$4,revision+1,floor(extract(epoch FROM clock_timestamp())*1000)::bigint " +
+	"FROM minigame_sessions WHERE session_id=$1 AND founder_id=$2 AND status='claimed' AND claim_token=$3 " +
+	"RETURNING seq"
+const appendResolvedCommandSQL = "INSERT INTO minigame_session_commands(session_id,seq,command,applied_revision,server_ts_ms) " +
+	"SELECT session_id,revision,$4,revision+1,floor(extract(epoch FROM clock_timestamp())*1000)::bigint " +
+	"FROM minigame_sessions WHERE session_id=$1 AND founder_id=$2 AND status='claimed' AND claim_token=$3 " +
+	"AND company_stream_id=$5 AND run_seq=$6 AND engine_ref=$7 AND engine_version=$8 AND constants_hash=$9 RETURNING seq"
+const loadClaimedReplaySQL = "SELECT " + sessionColumns + " FROM minigame_sessions WHERE session_id=$1 AND founder_id=$2 " +
+	"AND company_stream_id=$3 AND run_seq=$4 AND engine_ref=$5 AND engine_version=$6 AND constants_hash=$7 " +
+	"AND status='claimed' AND claim_token=$8 FOR UPDATE"
+const loadSessionCommandsSQL = "SELECT seq,command,applied_revision,server_ts_ms FROM minigame_session_commands " +
+	"WHERE session_id=$1 ORDER BY seq"
 const lockFounderSQL = "SELECT true FROM account_founders WHERE founder_id=$1 AND archived_at IS NULL FOR UPDATE"
 
 type rowScanner interface {

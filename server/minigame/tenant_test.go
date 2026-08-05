@@ -9,6 +9,7 @@ import (
 
 type fixtureTenant struct {
 	version       string
+	bias          int64
 	invalidOutput bool
 	invalidResult bool
 	unknownError  bool
@@ -80,7 +81,7 @@ func (tenant fixtureTenant) Apply(input ApplyInput) (ApplyOutput, error) {
 		command.Add < 0 || snapshot.Done {
 		return ApplyOutput{}, &Rejection{Code: "invalid_command", Detail: "illegal fixture command"}
 	}
-	snapshot.Total += command.Add
+	snapshot.Total += command.Add + tenant.bias
 	snapshot.Done = command.Finish
 	encoded, _ := json.Marshal(map[string]any{"done": snapshot.Done, "total": snapshot.Total})
 	output := ApplyOutput{Snapshot: encoded}
