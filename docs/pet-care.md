@@ -18,3 +18,16 @@ member and the queue boundary. These names are protocol grammar, not balance dat
 
 Thresholds, durations, candidate weights, stat deltas, species, and temperaments remain catalog
 content. No production pet row is synthesized from the protocol vocabulary.
+
+## Replay-owned mutable state
+
+The isolated state validator now fixes the C14 mutable JSON keys without activating a Founder save
+version. Each pet has complete four-stat ppm and decay-remainder maps, declared-action cooldown
+cursors, persistent Trust and its remainder, current behavior state/entry cursor, a queue of
+declared behaviors bounded to eight entries, and the behavior PRNG cursor. Mood is derived and is
+rejected if stored; writable bonds remain absent. Go and TypeScript consume one shared state
+fixture and enforce the same exact domains.
+
+This state is not yet embedded into the Founder save. The strict fixture-catalog rows and pinned
+pet-artifact/Founder-only version transition remain C15-C16 contracts, so no deploy-current catalog
+or half-replayable state is accepted.

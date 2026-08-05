@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "declarations": {
+    "action_ids": ["care.feed", "care.play"],
+    "behavior_ids": ["behavior.nap", "behavior.pounce"]
+  },
+  "pets": {
+    "01986666-7000-7000-8000-000000000001": {
+      "stats_ppm": {
+        "hunger": 800000,
+        "energy": 700000,
+        "cleanliness": 600000,
+        "affection": 900000
+      },
+      "stat_decay_remainders_ppm": {
+        "hunger": 1,
+        "energy": 2,
+        "cleanliness": 3,
+        "affection": 4
+      },
+      "cooldown_until_attended_ms": {
+        "care.feed": 12000
+      },
+      "trust_ppm": 850000,
+      "trust_decay_remainder_ppm": 17,
+      "behavior_state": "active",
+      "behavior_entered_at_attended_ms": 9000,
+      "behavior_queue": [
+        {"behavior_id": "behavior.nap", "due_attended_ms": 15000},
+        {"behavior_id": "behavior.pounce", "due_attended_ms": 22000}
+      ],
+      "behavior_prng_cursor": 6
+    }
+  }
+}

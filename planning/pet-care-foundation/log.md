@@ -277,3 +277,17 @@ delegated approvals are not currently load-bearing.
 - Filed C16 for the shared activation seam: Founder-only v17, pinned pet artifact identity, mixed
   Founder/Company Exit semantics, and Go/TypeScript replay parity. No pet content or deploy-current
   catalog fallback was introduced.
+
+## 2026-08-05 — C14 pure replay-owned state boundary
+
+- Implemented the exact C14 mutable-state object in isolated Go and TypeScript modules without
+  activating a Founder save version. Both validators require complete four-stat value/remainder
+  maps, declared action cooldowns, Trust/remainder bounds, the closed behavior-state union,
+  declared bounded queue entries, and exact attended/PRNG cursors. Mood is rejected as stored data.
+- One shared fixture fixes every JSON key and representative value across runtimes. Adversarial
+  tests reject missing stats, unknown action/behavior IDs, oversized queues, invalid remainders,
+  stored mood, duplicate declarations, unknown fields, and nested duplicate JSON keys on the Go
+  raw-byte boundary.
+- Kernel semantics advance to 0.3.41. C15 still owns the two missing fixture-catalog row shapes;
+  C16 still owns pinned artifact identity and Founder-only save activation. No production pet,
+  balance literal, or second mutable authority was introduced.
