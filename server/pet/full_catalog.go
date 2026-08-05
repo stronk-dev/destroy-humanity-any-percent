@@ -51,7 +51,7 @@ type Catalog struct {
 }
 
 func LoadCatalog(data []byte) (*Catalog, error) {
-	if !uniqueStateJSONKeys(data) {
+	if !uniqueStateJSONKeys(data) || !exactFullCatalogKeys(data) {
 		return nil, ErrInvalidCatalog
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
@@ -65,6 +65,27 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 		return nil, ErrInvalidCatalog
 	}
 	return &catalog, nil
+}
+
+func exactFullCatalogKeys(data []byte) bool {
+	var root map[string]json.RawMessage
+	if json.Unmarshal(data, &root) != nil || !hasRawKeys(root, []string{
+		"schema_version", "stat_policy", "actions", "trust_policy", "mood_policy", "behavior_policy",
+	}) {
+		return false
+	}
+	var statPolicy, trustPolicy map[string]json.RawMessage
+	if json.Unmarshal(root["stat_policy"], &statPolicy) != nil || !hasRawKeys(statPolicy, []string{
+		"grid_ms", "stats", "diminishing_threshold_ppm", "diminishing_factor_ppm",
+	}) || json.Unmarshal(root["trust_policy"], &trustPolicy) != nil || !hasRawKeys(trustPolicy, []string{
+		"initial_ppm", "neutral_ppm", "floor_ppm", "cap_ppm", "gain_ppm_per_effective_action", "decay_ppm_per_grid",
+	}) {
+		return false
+	}
+	return exactCatalogRows(statPolicy["stats"], []string{"stat_id", "initial_ppm", "floor_ppm", "decay_ppm_per_grid"}) &&
+		exactCatalogRows(root["actions"], []string{"action_id", "stat_id", "delta_ppm", "cooldown_attended_ms", "min_eligible_ppm"}) &&
+		exactCatalogRows(root["mood_policy"], []string{"mood_member", "floor_ppm"}) &&
+		exactCatalogRows(root["behavior_policy"], []string{"from_state", "event", "to_state", "duration_grid_ticks"})
 }
 
 func validateFullCatalog(catalog *Catalog) error {

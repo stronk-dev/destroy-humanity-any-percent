@@ -5,7 +5,7 @@ import "runtime/debug"
 // Version is generated from the repository's kernel/VERSION source of truth.
 // TestVersionSourceOfTruth is the fail-closed drift gate until code generation
 // is wired into the build command.
-const Version = "0.3.48"
+const Version = "0.3.49"
 
 func VCSRevision() string {
 	info, ok := debug.ReadBuildInfo()
