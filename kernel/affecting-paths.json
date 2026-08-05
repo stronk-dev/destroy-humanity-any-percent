@@ -27,6 +27,7 @@
     "server/replaycatalog/",
     "server/routes/",
     "server/save/exit.go",
+    "server/save/foundergenesis.go",
     "server/save/founderlog.go",
     "server/save/genesis.go",
     "server/save/intent.go",

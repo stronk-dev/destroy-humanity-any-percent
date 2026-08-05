@@ -29,12 +29,15 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 	if err := Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `TRUNCATE events,intent_records,founder_log,save_revisions,save_streams CASCADE`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE events,intent_records,founder_log,founder_genesis,save_revisions,save_streams CASCADE`); err != nil {
 		t.Fatal(err)
 	}
 
 	catalog := stateCatalog(t)
 	hash := ConstantsHash([]byte(stateCatalogJSON))
+	if _, err := db.ExecContext(ctx, `INSERT INTO catalog_sets(constants_hash) VALUES($1) ON CONFLICT DO NOTHING`, hash); err != nil {
+		t.Fatal(err)
+	}
 	store, err := NewStore(db, catalogMap{hash: catalog}, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -74,6 +77,18 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 		})
 	if err != nil || result.Outcome != IntentApplied || result.Replay {
 		t.Fatalf("applied result=%+v err=%v", result, err)
+	}
+	genesis, err := store.LoadFounderGenesis(ctx, founderRevision.StreamID)
+	if err != nil || genesis.Revision != 1 || genesis.Version != founderRevision.Version || genesis.ConstantsHash != hash {
+		t.Fatalf("Founder genesis=%+v err=%v", genesis, err)
+	}
+	var firstRevision []byte
+	if err := db.QueryRowContext(ctx, `SELECT state::text FROM save_revisions WHERE stream_id=$1 AND revision=1`,
+		founderRevision.StreamID).Scan(&firstRevision); err != nil || string(genesis.State) != string(firstRevision) {
+		t.Fatalf("Founder genesis differs from first command revision err=%v", err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE founder_genesis SET version=version+1 WHERE founder_stream_id=$1`, founderRevision.StreamID); err == nil {
+		t.Fatal("Founder genesis was mutable")
 	}
 	loaded, err := store.LoadLatest(ctx, founderRevision.StreamID)
 	if err != nil || loaded.Revision.Number != 2 || loaded.State.Soul != 1 {
@@ -162,6 +177,20 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 		replay_inputs,receipt,constants_hash,server_ts_ms) VALUES($1,1,$2,'{}','{}','{}',$3,1)`,
 		companyRevision.StreamID, "01990000-0005-7000-8000-000000000101", hash); err == nil {
 		t.Fatal("Company stream accepted a Founder log row")
+	}
+	genesislessOwner := "01990000-0000-7000-8000-000000000102"
+	genesisless, err := store.CreateStream(ctx, StreamKey{OwnerKind: OwnerFounder, OwnerID: genesislessOwner,
+		Scope: economy.ScopeFounder}, hash, exitTestState(t, catalog, economy.ScopeFounder, now, 0), WriteContext{Cause: "founder_genesis_guard_test"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO founder_log(founder_stream_id,seq,intent_id,canonical_payload,
+		replay_inputs,receipt,constants_hash,server_ts_ms) VALUES($1,1,$2,'{}',$3,'{}',$4,1)`,
+		genesisless.StreamID, "01990000-0005-7000-8000-000000000102",
+		testFounderReplayInputs(t, FounderReplayCommand{IntentID: "01990000-0005-7000-8000-000000000102",
+			FounderStreamID: genesisless.StreamID, FounderID: genesislessOwner, Revision: 1,
+			FounderLogSeq: 1, ServerTSMS: 1}, "fixture_genesisless"), hash); err == nil {
+		t.Fatal("Founder log committed without immutable genesis")
 	}
 
 	var outboxRows int

@@ -303,6 +303,13 @@ func (s *Store) applyIntent(
 		founderCommand = FounderReplayCommand{IntentID: intentID, FounderStreamID: streamID,
 			FounderID: ownerID, Revision: revision.Number, FounderLogSeq: founderLogSequence,
 			ServerTSMS: serverTSMS}
+		if founderLogSequence == 1 {
+			if err := InsertFounderGenesisTx(ctx, tx, FounderGenesis{FounderStreamID: streamID,
+				Revision: revision.Number, State: stateBytes, Version: revision.Version,
+				ConstantsHash: revision.ConstantsHash}); err != nil {
+				return IntentResult{}, err
+			}
+		}
 	}
 	var decision IntentDecision
 	var replayInputs json.RawMessage
