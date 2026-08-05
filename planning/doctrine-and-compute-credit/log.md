@@ -94,3 +94,18 @@ Status -> accepted; D1-D10 ruled; implementing. Body/README reconciled.
 Focused evidence from repository root: `make test-go GO_PACKAGES='./doctrine ./replaycatalog
 ./production'`, `make verify-schema`, `pnpm --dir client typecheck`, and the doctrine/replay Vitest
 files all pass.
+
+## 2026-08-05 — Company save v17 burst state
+
+- Added the scope-specific Company-v17 envelope: v16 foundation fields plus the required exact
+  integer `compute_burst_remaining_ms`. Founder v17 remains the minigame envelope; the two scopes
+  cannot decode or encode each other's fields.
+- Preserved `LatestSupportedVersion=16` as the historical foundation alias used by existing tests
+  and Founder carry. `LatestCompanyVersion=17` is the new Company-axis authority; genesis accepts
+  it independently from the Founder-v18 ceiling.
+- Go and TypeScript reject missing burst state, state above the pinned economy duration cap on
+  restore, burst state before v17, and Company/Founder feature leakage. New-run activation derives
+  v17 only from a pinned doctrines artifact and initializes the remaining duration to zero.
+- Kernel semantics advanced to 0.3.58. Focused root evidence: `make test-go
+  GO_PACKAGES='./save ./production ./replaycatalog'`, `pnpm --dir client typecheck`, and
+  `pnpm --dir client test -- replay.test.ts` pass.

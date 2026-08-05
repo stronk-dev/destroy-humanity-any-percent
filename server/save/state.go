@@ -23,7 +23,7 @@ const (
 	CurrentVersion           = 14
 	LatestSupportedVersion   = 16
 	LatestFounderVersion     = 18
-	LatestCompanyVersion     = LatestSupportedVersion
+	LatestCompanyVersion     = 17
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
 )
@@ -46,6 +46,7 @@ type State struct {
 	StockRateRemainderPPM      int64
 	EvaluatedThrough           time.Time
 	ComputeCreditMS            int64
+	ComputeBurstRemainingMS    int64
 	ManualTokenMilli           int64
 	ManualTokenRefilledAt      time.Time
 	GatesCrossed               map[string]bool
@@ -272,6 +273,11 @@ type stateV17 struct {
 	MinigameOfflineQuality map[string]MinigameOfflineQualityState `json:"minigame_offline_quality"`
 }
 
+type companyStateV17 struct {
+	stateV16
+	ComputeBurstRemainingMS *int64 `json:"compute_burst_remaining_ms"`
+}
+
 type stateV18 struct {
 	stateV17
 	Pets map[string]pet.CareState `json:"pets"`
@@ -375,6 +381,7 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 		return nil, fmt.Errorf("%w: generator purchase total exceeds the exact domain", ErrInvalidState)
 	}
 	if state.ComputeCreditMS < 0 || state.ComputeCreditMS > decimal.MaxExactInteger ||
+		state.ComputeBurstRemainingMS < 0 || state.ComputeBurstRemainingMS > decimal.MaxExactInteger ||
 		state.ManualTokenMilli < 0 || state.ManualTokenMilli > decimal.MaxExactInteger ||
 		state.RouteKnowledgeBalance < 0 || state.RouteKnowledgeBalance > decimal.MaxExactInteger {
 		return nil, fmt.Errorf("%w: production integers exceed the exact domain", ErrInvalidState)
@@ -468,11 +475,16 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 				AchievementScoreLifetime: &lifetimeScore}
 			wire = v16
 			if version >= 17 {
-				v17 := stateV17{stateV16: v16, MinigameRatings: cloneMinigameRatings(normalized.MinigameRatings),
-					MinigameOfflineQuality: cloneMinigameOfflineQuality(normalized.MinigameOfflineQuality)}
-				wire = v17
-				if version >= 18 {
-					wire = stateV18{stateV17: v17, Pets: clonePetStates(normalized.Pets)}
+				if normalized.Ledger.Scope() == economy.ScopeCompany {
+					remaining := normalized.ComputeBurstRemainingMS
+					wire = companyStateV17{stateV16: v16, ComputeBurstRemainingMS: &remaining}
+				} else {
+					v17 := stateV17{stateV16: v16, MinigameRatings: cloneMinigameRatings(normalized.MinigameRatings),
+						MinigameOfflineQuality: cloneMinigameOfflineQuality(normalized.MinigameOfflineQuality)}
+					wire = v17
+					if version >= 18 {
+						wire = stateV18{stateV17: v17, Pets: clonePetStates(normalized.Pets)}
+					}
 				}
 			}
 		}
@@ -522,6 +534,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	}
 
 	var source stateV18
+	var computeBurstRemainingMS int64
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -598,6 +611,16 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		if err := decodeState(data, &source.stateV15); err != nil {
 			return nil, err
 		}
+	} else if version == 17 && scope == economy.ScopeCompany {
+		var company companyStateV17
+		if err := decodeState(data, &company); err != nil {
+			return nil, err
+		}
+		if company.ComputeBurstRemainingMS == nil {
+			return nil, fmt.Errorf("%w: compute_burst_remaining_ms is required", ErrInvalidState)
+		}
+		source.stateV17.stateV16 = company.stateV16
+		computeBurstRemainingMS = *company.ComputeBurstRemainingMS
 	} else if err := decodeState(data, &source); err != nil {
 		return nil, err
 	}
@@ -664,10 +687,10 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if version >= 16 && (source.AchievementsEarnedRun == nil || source.AchievementScoreRun == nil || source.AchievementsEarnedLifetime == nil || source.AchievementScoreLifetime == nil) {
 		return nil, fmt.Errorf("%w: achievement state collections are required", ErrInvalidState)
 	}
-	if version >= 17 && (source.MinigameRatings == nil || source.MinigameOfflineQuality == nil) {
+	if scope == economy.ScopeFounder && version >= 17 && (source.MinigameRatings == nil || source.MinigameOfflineQuality == nil) {
 		return nil, fmt.Errorf("%w: minigame Founder collections are required", ErrInvalidState)
 	}
-	if version >= 18 && source.Pets == nil {
+	if scope == economy.ScopeFounder && version >= 18 && source.Pets == nil {
 		return nil, fmt.Errorf("%w: pet Founder collection is required", ErrInvalidState)
 	}
 	ownedUpgrades, err := validateOwnedUpgrades(catalog, scope, source.UpgradesOwned)
@@ -698,7 +721,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if refilledAt.After(cursor) {
 		return nil, fmt.Errorf("%w: manual_token_refilled_at exceeds evaluated_through", ErrInvalidState)
 	}
-	if err := validateProductionState(catalog, scope, source.ComputeCreditMS, source.ManualTokenMilli); err != nil {
+	if err := validateProductionState(catalog, scope, source.ComputeCreditMS, computeBurstRemainingMS, source.ManualTokenMilli); err != nil {
 		return nil, err
 	}
 	ledgerFacts, err := uniqueMechanicalKeys(source.LedgerFactKinds, "ledger_fact_kinds")
@@ -718,7 +741,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		Ledger:      ledger, GeneratorCounts: counts, GeneratorPurchasedTotal: *source.GeneratorPurchasedTotal, EvaluatedThrough: cursor,
 		UpgradesOwned: ownedUpgrades, GeneratorProvisioned: provisioned, ProvisionRemaindersPPM: remainders,
 		StockRateRemainderPPM: *source.StockRateRemainderPPM,
-		ComputeCreditMS:       source.ComputeCreditMS, ManualTokenMilli: source.ManualTokenMilli,
+		ComputeCreditMS:       source.ComputeCreditMS, ComputeBurstRemainingMS: computeBurstRemainingMS, ManualTokenMilli: source.ManualTokenMilli,
 		ManualTokenRefilledAt: refilledAt, GatesCrossed: source.GatesCrossed, RunSeq: source.RunSeq,
 		DoctrinesByTransition: source.DoctrinesByTransition, StructureID: source.StructureID,
 		LedgerFactKinds: ledgerFacts, MeterBands: source.MeterBands,
@@ -748,11 +771,11 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		}
 		state.AchievementScoreRun, state.AchievementScoreLifetime = *source.AchievementScoreRun, *source.AchievementScoreLifetime
 	}
-	if version >= 17 {
+	if scope == economy.ScopeFounder && version >= 17 {
 		state.MinigameRatings = cloneMinigameRatings(source.MinigameRatings)
 		state.MinigameOfflineQuality = cloneMinigameOfflineQuality(source.MinigameOfflineQuality)
 	}
-	if version >= 18 {
+	if scope == economy.ScopeFounder && version >= 18 {
 		state.Pets = clonePetStates(source.Pets)
 	}
 	if source.GuildBoundaryGuildID != nil {
@@ -826,7 +849,7 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	if version < 15 {
 		if len(state.MeterValues) != 0 || len(state.MeterDecayRemainders) != 0 || len(state.MeterInputRemainders) != 0 ||
 			len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 ||
-			len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
+			state.ComputeBurstRemainingMS != 0 || len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
 			return fmt.Errorf("%w: inactive foundation state present before v15", ErrInvalidState)
 		}
 		return nil
@@ -862,10 +885,19 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 		return fmt.Errorf("%w: achievement state leaked outside founder scopes", ErrInvalidState)
 	}
 	if version < 17 {
-		if len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
+		if state.ComputeBurstRemainingMS != 0 || len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
 			return fmt.Errorf("%w: Founder mechanics present before v17", ErrInvalidState)
 		}
 		return nil
+	}
+	if scope == economy.ScopeCompany {
+		if len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
+			return fmt.Errorf("%w: Founder mechanics leaked into Company v17", ErrInvalidState)
+		}
+		return nil
+	}
+	if state.ComputeBurstRemainingMS != 0 {
+		return fmt.Errorf("%w: Company compute burst leaked outside Company scope", ErrInvalidState)
 	}
 	if scope != economy.ScopeFounder || state.MinigameRatings == nil || state.MinigameOfflineQuality == nil {
 		return fmt.Errorf("%w: minigame state requires Founder v17+", ErrInvalidState)
@@ -1391,12 +1423,12 @@ func validatePurchasableWireState(state *State) error {
 	return nil
 }
 
-func validateProductionState(catalog *economy.Catalog, scope economy.Scope, creditMS, tokenMilli int64) error {
-	if creditMS < 0 || creditMS > decimal.MaxExactInteger || tokenMilli < 0 || tokenMilli > decimal.MaxExactInteger {
+func validateProductionState(catalog *economy.Catalog, scope economy.Scope, creditMS, burstRemainingMS, tokenMilli int64) error {
+	if creditMS < 0 || creditMS > decimal.MaxExactInteger || burstRemainingMS < 0 || burstRemainingMS > decimal.MaxExactInteger || tokenMilli < 0 || tokenMilli > decimal.MaxExactInteger {
 		return fmt.Errorf("%w: production integers exceed the exact domain", ErrInvalidState)
 	}
 	if scope != economy.ScopeCompany {
-		if creditMS != 0 || tokenMilli != 0 {
+		if creditMS != 0 || burstRemainingMS != 0 || tokenMilli != 0 {
 			return fmt.Errorf("%w: production state is company-scoped", ErrInvalidState)
 		}
 		return nil
@@ -1404,6 +1436,9 @@ func validateProductionState(catalog *economy.Catalog, scope economy.Scope, cred
 	offlinePolicy, manualPolicy := catalog.OfflinePolicy(), catalog.ManualPolicy()
 	if offlinePolicy.BankCapMS == 0 && creditMS != 0 || offlinePolicy.BankCapMS > 0 && creditMS > offlinePolicy.BankCapMS {
 		return fmt.Errorf("%w: compute_credit_ms exceeds catalog cap", ErrInvalidState)
+	}
+	if offlinePolicy.BurstMaxDurationMS == 0 && burstRemainingMS != 0 || offlinePolicy.BurstMaxDurationMS > 0 && burstRemainingMS > offlinePolicy.BurstMaxDurationMS {
+		return fmt.Errorf("%w: compute_burst_remaining_ms exceeds catalog cap", ErrInvalidState)
 	}
 	if manualPolicy.BucketCapMilli == 0 && tokenMilli != 0 || manualPolicy.BucketCapMilli > 0 && tokenMilli > manualPolicy.BucketCapMilli {
 		return fmt.Errorf("%w: manual_token_milli exceeds catalog cap", ErrInvalidState)

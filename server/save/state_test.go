@@ -275,6 +275,44 @@ func TestStateV16FoundationRoundTripAndVersionAuthority(t *testing.T) {
 	}
 }
 
+func TestCompanyV17ComputeBurstRoundTripAndExactEnvelope(t *testing.T) {
+	state := testState(t)
+	state.WireVersion = 17
+	state.MeterValues = map[string]int{"doom.probability": 17, "trust.users.standing": 63}
+	state.MeterDecayRemainders = map[string]int64{"doom.probability": 42, "trust.users.standing": 0}
+	state.MeterInputRemainders = map[string]int64{"trust.users.standing:0": 99}
+	state.AchievementsEarnedRun = map[string]bool{"achievement.first": true}
+	state.AchievementScoreRun = 7
+	state.ComputeBurstRemainingMS = 12_345
+
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var object map[string]json.RawMessage
+	if err := json.Unmarshal(encoded, &object); err != nil {
+		t.Fatal(err)
+	}
+	if _, present := object["compute_burst_remaining_ms"]; !present {
+		t.Fatal("Company v17 omitted compute_burst_remaining_ms")
+	}
+	if _, present := object["minigame_ratings"]; present {
+		t.Fatal("Company v17 leaked Founder minigame state")
+	}
+	restored, err := RestoreState(encoded, 17, stateCatalog(t), economy.ScopeCompany, time.Time{})
+	if err != nil || VersionForState(restored) != 17 || restored.ComputeBurstRemainingMS != 12_345 {
+		t.Fatalf("restored Company v17=%+v err=%v", restored, err)
+	}
+	delete(object, "compute_burst_remaining_ms")
+	missing, err := json.Marshal(object)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := RestoreState(missing, 17, stateCatalog(t), economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("Company v17 accepted missing burst field: %v", err)
+	}
+}
+
 func TestFounderV17AndV18RoundTripWhileCompanyRejectsThem(t *testing.T) {
 	catalog := stateCatalog(t)
 	ledger, err := economy.NewLedger(catalog, economy.ScopeFounder)
