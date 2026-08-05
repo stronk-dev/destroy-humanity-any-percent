@@ -133,3 +133,23 @@ land (Pet C7/C8); the 7620311 transient bisect-break is intermediate-only.
 
 **Verdict: the boundary is sound and the buy_route_hint migration is clean. Founder-replay
 verification is correctly deferred (Pet C9). Proceed.**
+
+## 2026-08-05 — owner ruling: APPROVE rewrite of 80456c1 (my error)
+
+Approved: rewrite unpushed `80456c1` to place `server/save/founderlog.go` in strict lexical
+position (before `genesis.go`), replay `4005f00` on top. Preconditions verified in-repo:
+unpushed (no remote contains it), referenced by NO verdict hash (my prior verdict referenced the
+CHANGE — "add founderlog.go" — never the commit `80456c1`, which Codex created after), and
+protocol-violating with NO forward remedy — `verify-kernel-version.mjs`'s `validateGuard` enforces
+strict ascending sort (`paths[i-1] >= entry → throw`) at EVERY historical commit, and the
+`history-corrections.json` mechanism forgives only missing-version-bumps (`assertBump`), never a
+malformed/unsorted registry. So a forward correction cannot help; the rewrite is the only fix.
+
+**This is my mistake.** Last turn I fixed a real KV-1 coverage gap (founderlog.go absent from the
+registry) but did the insert POSITIONALLY (after runlog.go, next to its analog) instead of in the
+registry's required strict lexical order (founderlog < genesis < runlog). I didn't check
+`validateGuard`'s own sort invariant before editing its data. The working tree is already
+corrected (founderlog.go now precedes genesis.go); the rebase carries that correct state into the
+commit. **Lesson recorded: editing kernel-guarded config (`affecting-paths.json`) means respecting
+the guard's structural invariants — strict lexical sort, append-only-per-commit — not just adding
+the right path.** Direct edits to guard data get a `validateGuard`-style sanity check before commit.
