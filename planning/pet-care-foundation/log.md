@@ -61,3 +61,23 @@
   mood/FSM/status unions have no literal members.
 - Filed C9-C12 with proposed executable contracts. No pet numeric balance row is requested; these
   are replay, persistence, time-authority, and wire-shape decisions that code must not invent.
+
+## 2026-08-05 — independent remediation review (`cd60175^..cd60175`)
+
+- **Review by:** independent Codex subagent `/root/l7b_independent_review`
+- **Recorded by:** Codex
+- **Decision:** not approved; one new MEDIUM in the migrated production consumer.
+- Every original HIGH/MEDIUM finding closed. The reviewer verified legacy-bypass refusal,
+  Founder-scoped event/receipt rows, forward-only archive serialization, same-revision command
+  serialization, post-log rollback, route-hint migration inputs, and kernel 0.3.26.
+- New MEDIUM: `buy_route_hint` requests carrying unknown/invalid fields entered the new Founder
+  handler but skipped Company `ApplyLogged`'s deterministic invalid arm; a known route could still
+  be purchased. The fix must log a closed invalid resolved variant before projector/catalog reads.
+
+## 2026-08-05 — invalid-Founder-command remediation
+
+- The Founder route-hint handler now emits a deterministic rejected decision with resolved
+  `{kind:"invalid",detail}` before any catalog or projection read. Its Postgres fixture proves an
+  extra-field request remains at revision 1, unlocks nothing, records a rejected Founder-log row,
+  then allows the canonical command to apply at the same expected revision.
+- Kernel semantics advance to 0.3.27. Independent follow-up review remains required.

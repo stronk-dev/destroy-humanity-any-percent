@@ -532,11 +532,30 @@ type founderRouteHintResolved struct {
 	RouteKnowledgeBalance int64  `json:"route_knowledge_balance"`
 }
 
+type founderInvalidResolved struct {
+	Kind   string `json:"kind"`
+	Detail string `json:"detail"`
+}
+
+func marshalFounderReplayInputs(command save.FounderReplayCommand, resolved any) (json.RawMessage, error) {
+	return json.Marshal(map[string]any{"v": save.FounderReplayInputsVersion, "command": command,
+		"evaluated_at_ms": command.ServerTSMS, "resolved": resolved})
+}
+
 func (s *Service) handleFounderRouteHint(ctx context.Context, streamID string, mode EvaluationMode, request IntentRequest) (HandleResult, error) {
 	collector := &invariantCollector{}
 	result, err := s.store.ApplyFounderLogged(ctx, streamID, request.ExpectedRevision, request.IntentID,
 		request.RequestHash, request.CanonicalPayload,
 		func(state *save.State, revision save.Revision, command save.FounderReplayCommand) (save.IntentDecision, json.RawMessage, error) {
+			if request.InvalidDetail != "" {
+				decision, decisionErr := rejectedDecision(request, revision.Number, "invalid", request.InvalidDetail)
+				if decisionErr != nil {
+					return save.IntentDecision{}, nil, decisionErr
+				}
+				replayInputs, marshalErr := marshalFounderReplayInputs(command,
+					founderInvalidResolved{Kind: "invalid", Detail: request.InvalidDetail})
+				return decision, replayInputs, marshalErr
+			}
 			if s.replayCatalogs == nil || s.routeCatalogs == nil || s.routeProjector == nil {
 				return save.IntentDecision{}, nil, fmt.Errorf("%w: Founder route runtime unavailable", ErrInvalidIntent)
 			}
@@ -565,8 +584,7 @@ func (s *Service) handleFounderRouteHint(ctx context.Context, streamID string, m
 			}
 			resolved := founderRouteHintResolved{Kind: string(IntentBuyRouteHint),
 				RouteContextVersion: routeCatalog.ContextVersion(), RouteKnowledgeBalance: resolvedBalance}
-			replayInputs, marshalErr := json.Marshal(map[string]any{"v": save.FounderReplayInputsVersion,
-				"command": command, "evaluated_at_ms": command.ServerTSMS, "resolved": resolved})
+			replayInputs, marshalErr := marshalFounderReplayInputs(command, resolved)
 			return decision, replayInputs, marshalErr
 		})
 	if err != nil {

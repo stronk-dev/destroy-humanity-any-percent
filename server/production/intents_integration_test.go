@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -421,6 +422,30 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err := db.QueryRowContext(ctx, `SELECT tithe_ppm,projected_revision FROM company_compact_memberships WHERE company_stream_id=$1`, existingRevision.StreamID).Scan(&projectedTithe, &projectedRevision); err != nil || projectedTithe != 130_000 || projectedRevision != 3 {
 		t.Fatalf("continued membership tithe=%d revision=%d err=%v", projectedTithe, projectedRevision, err)
 	}
+	invalidHintID := "018f6b7c-9abc-7def-8abc-abababababab"
+	invalidHint := []byte(`{"intent_id":"` + invalidHintID + `","kind":"buy_route_hint","expected_revision":1,"route_id":"route.nonprofit_wrapper_zip","extra":true}`)
+	invalidHintResult, err := service.Handle(ctx, founderRevision.StreamID, ModeOnline, cursor.Add(time.Second), invalidHint)
+	if err != nil || invalidHintResult.Replay || !strings.Contains(string(invalidHintResult.Receipt),
+		`"category":"invalid","detail":"buy_route_hint.fields"`) {
+		t.Fatalf("invalid hint=%s replay=%v err=%v", invalidHintResult.Receipt, invalidHintResult.Replay, err)
+	}
+	unchangedFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
+	if err != nil || unchangedFounder.Revision.Number != 1 || unchangedFounder.State.HintsUnlocked["route.nonprofit_wrapper_zip"] {
+		t.Fatalf("invalid hint mutated revision=%d hints=%v err=%v", unchangedFounder.Revision.Number,
+			unchangedFounder.State.HintsUnlocked, err)
+	}
+	var invalidHintSeq int64
+	var invalidHintApplied *int64
+	var invalidHintKind, invalidHintDetail string
+	if err := db.QueryRowContext(ctx, `SELECT seq,applied_revision,replay_inputs->'resolved'->>'kind',
+		replay_inputs->'resolved'->>'detail' FROM founder_log WHERE founder_stream_id=$1 AND intent_id=$2`,
+		founderRevision.StreamID, invalidHintID).Scan(&invalidHintSeq, &invalidHintApplied, &invalidHintKind,
+		&invalidHintDetail); err != nil || invalidHintSeq != 1 || invalidHintApplied != nil ||
+		invalidHintKind != "invalid" || invalidHintDetail != "buy_route_hint.fields" {
+		t.Fatalf("invalid hint log seq=%d applied=%v kind=%q detail=%q err=%v", invalidHintSeq,
+			invalidHintApplied, invalidHintKind, invalidHintDetail, err)
+	}
+
 	hint := []byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-aaaaaaaaaaaa","kind":"buy_route_hint","expected_revision":1,"route_id":"route.nonprofit_wrapper_zip"}`)
 	hintResult, err := service.Handle(ctx, founderRevision.StreamID, ModeOnline, cursor.Add(time.Second), hint)
 	if err != nil || hintResult.Replay {
@@ -445,7 +470,7 @@ func TestIntentServiceIntegration(t *testing.T) {
 		replay_inputs->'resolved'->>'kind',(replay_inputs->'resolved'->>'route_knowledge_balance')::bigint
 		FROM founder_log WHERE founder_stream_id=$1 AND intent_id=$2`, founderRevision.StreamID,
 		"018f6b7c-9abc-7def-8abc-aaaaaaaaaaaa").Scan(&hintLogSeq, &hintAppliedRevision,
-		&resolvedHintKind, &resolvedHintBalance); err != nil || hintLogSeq != 1 || hintAppliedRevision != 2 ||
+		&resolvedHintKind, &resolvedHintBalance); err != nil || hintLogSeq != 2 || hintAppliedRevision != 2 ||
 		resolvedHintKind != string(IntentBuyRouteHint) || resolvedHintBalance != 125 {
 		t.Fatalf("hint Founder log seq=%d revision=%d kind=%q balance=%d err=%v",
 			hintLogSeq, hintAppliedRevision, resolvedHintKind, resolvedHintBalance, err)
