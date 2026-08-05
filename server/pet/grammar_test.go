@@ -55,3 +55,16 @@ func TestGrammarRejectsUnknownMembers(t *testing.T) {
 		t.Fatal("invented pet grammar member accepted")
 	}
 }
+
+func TestGrammarAccessorsDoNotExposeMutableAuthority(t *testing.T) {
+	stats := StatIDs()
+	stats[0] = "invented"
+	if got := StatIDs()[0]; got != StatHunger {
+		t.Fatalf("stat authority mutated through accessor: %q", got)
+	}
+	details := CareRejectionDetails()
+	details[len(details)-1] = "invented"
+	if got := CareRejectionDetails()[len(details)-1]; got != RejectionUnknownAction {
+		t.Fatalf("rejection authority mutated through accessor: %q", got)
+	}
+}
