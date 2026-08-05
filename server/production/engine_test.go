@@ -157,6 +157,26 @@ func TestComputeBurstIsPartitionInvariantAndOfflineCapBounded(t *testing.T) {
 		t.Fatalf("partitioned cash=%s one-shot=%s remaining=%d", got, want, partitioned.ComputeBurstRemainingMS)
 	}
 
+	provisionCatalog := foundationCatalog(t)
+	provisionOneShot := foundationState(t, provisionCatalog, engineCursor)
+	provisionOneShot.WireVersion, provisionOneShot.ComputeBurstRemainingMS = 17, 90_000
+	provisionOneShot.GeneratorCounts["generator.high"], provisionOneShot.GeneratorPurchasedTotal = 2, 2
+	if _, err := Evaluate(provisionOneShot, provisionCatalog, engineCursor.Add(90*time.Second), ModeOnline, nil); err != nil {
+		t.Fatal(err)
+	}
+	provisionSplit := foundationState(t, provisionCatalog, engineCursor)
+	provisionSplit.WireVersion, provisionSplit.ComputeBurstRemainingMS = 17, 90_000
+	provisionSplit.GeneratorCounts["generator.high"], provisionSplit.GeneratorPurchasedTotal = 2, 2
+	if _, err := Evaluate(provisionSplit, provisionCatalog, engineCursor.Add(30*time.Second), ModeOnline, nil); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Evaluate(provisionSplit, provisionCatalog, engineCursor.Add(90*time.Second), ModeOnline, nil); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := provisionSplit.Ledger.Snapshot()["company.cash"], provisionOneShot.Ledger.Snapshot()["company.cash"]; got != want || got != "3.66e3" || provisionSplit.GeneratorProvisioned["generator.low"] != 1 || provisionSplit.ComputeBurstRemainingMS != 0 {
+		t.Fatalf("provision-boundary cash=%s one-shot=%s provisioned=%v remaining=%d", got, want, provisionSplit.GeneratorProvisioned, provisionSplit.ComputeBurstRemainingMS)
+	}
+
 	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
 	if err != nil {
 		t.Fatal(err)
