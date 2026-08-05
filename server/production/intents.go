@@ -346,6 +346,9 @@ func (s *Service) Handle(
 			return s.handleScriptedCrossGateExit(ctx, streamID, mode, now, request, founderRevision)
 		}
 	}
+	if request.Kind == IntentBuyRouteHint {
+		return s.handleFounderRouteHint(ctx, streamID, mode, request)
+	}
 	var prestigeFounder *save.Loaded
 	var declinedOffers int64
 	var company *save.Loaded
@@ -499,6 +502,72 @@ func (s *Service) Handle(
 			}
 			decision = save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt, Events: transition.Events}
 			return decision, replayInputs, nil
+		})
+	if err != nil {
+		s.recordAbortedInvariants(collector.reports)
+		var conflict *save.RevisionConflict
+		switch {
+		case errors.As(err, &conflict):
+			return HandleResult{Receipt: marshalRejection(request.IntentID, conflict.Current, "revision_conflict", "expected_revision")}, nil
+		case errors.Is(err, save.ErrIdempotencyConflict):
+			current := request.ExpectedRevision
+			if loaded, loadErr := s.store.LoadLatest(ctx, streamID); loadErr == nil {
+				current = loaded.Revision.Number
+			}
+			return HandleResult{Receipt: marshalRejection(request.IntentID, current, "idempotency_conflict", request.IntentID)}, nil
+		default:
+			return HandleResult{}, err
+		}
+	}
+	if err := s.projectCommittedEvents(ctx, result.Events); err != nil {
+		return HandleResult{}, err
+	}
+	s.recordCommittedInvariants(result, collector.reports)
+	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
+}
+
+type founderRouteHintResolved struct {
+	Kind                  string `json:"kind"`
+	RouteContextVersion   int    `json:"route_context_version"`
+	RouteKnowledgeBalance int64  `json:"route_knowledge_balance"`
+}
+
+func (s *Service) handleFounderRouteHint(ctx context.Context, streamID string, mode EvaluationMode, request IntentRequest) (HandleResult, error) {
+	collector := &invariantCollector{}
+	result, err := s.store.ApplyFounderLogged(ctx, streamID, request.ExpectedRevision, request.IntentID,
+		request.RequestHash, request.CanonicalPayload,
+		func(state *save.State, revision save.Revision, command save.FounderReplayCommand) (save.IntentDecision, json.RawMessage, error) {
+			if s.replayCatalogs == nil || s.routeCatalogs == nil || s.routeProjector == nil {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: Founder route runtime unavailable", ErrInvalidIntent)
+			}
+			if _, ok := s.replayCatalogs.ResolveReplayCatalogs(revision.ConstantsHash); !ok {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
+			}
+			catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
+			if !ok {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown catalog %s", ErrInvalidIntent, revision.ConstantsHash)
+			}
+			routeCatalog, ok := s.routeCatalogs.ResolveRoutes(revision.ConstantsHash)
+			if !ok {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown routes catalog %s", ErrInvalidIntent, revision.ConstantsHash)
+			}
+			if err := ValidateRouteCatalogResources(catalog, routeCatalog); err != nil {
+				return save.IntentDecision{}, nil, err
+			}
+			if err := s.routeProjector.RepairFounder(ctx, revision.OwnerID, state); err != nil {
+				return save.IntentDecision{}, nil, err
+			}
+			resolvedBalance := state.RouteKnowledgeBalance
+			decision, transitionErr := TransitionWithPolicies(request, state, catalog, routeCatalog, nil, nil,
+				revision, mode, time.UnixMilli(command.ServerTSMS).UTC(), nil, collector, nil)
+			if transitionErr != nil {
+				return save.IntentDecision{}, nil, transitionErr
+			}
+			resolved := founderRouteHintResolved{Kind: string(IntentBuyRouteHint),
+				RouteContextVersion: routeCatalog.ContextVersion(), RouteKnowledgeBalance: resolvedBalance}
+			replayInputs, marshalErr := json.Marshal(map[string]any{"v": save.FounderReplayInputsVersion,
+				"command": command, "evaluated_at_ms": command.ServerTSMS, "resolved": resolved})
+			return decision, replayInputs, marshalErr
 		})
 	if err != nil {
 		s.recordAbortedInvariants(collector.reports)

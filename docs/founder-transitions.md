@@ -25,3 +25,9 @@ must reuse this boundary rather than adding side writes or extending the Company
 The feature package still owns its closed canonical command, resolved-input, receipt, event, and
 state-transition unions. The persistence layer validates the shared envelope and transaction; it
 does not invent feature mechanics.
+
+Legacy unlogged `Store.ApplyIntent` calls are rejected for Founder streams, so the boundary cannot
+be bypassed by an older feature surface. The existing `buy_route_hint` Founder command is the first
+production consumer: its immutable resolved inputs freeze the repaired Route Knowledge balance and
+route-context version before the purchase. Founder event and receipt outbox rows retain Founder
+scope and the exact applied or rejected revision.

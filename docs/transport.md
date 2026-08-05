@@ -66,7 +66,7 @@ zero progress. Planet and milestone values are deliberately zero/null until thos
 The gameserver aggregator samples at the catalog's 4 Hz cadence and advances its revision only
 after the snapshot is accepted by the publisher.
 
-Every Founder/Company event and every Company intent receipt enters one durable
+Every Founder/Company event and every Company or Founder intent receipt enters one durable
 `transport_player_outbox` in the transaction that commits it. A database trigger owns event
 insertion for every event writer; intent and Exit transactions insert their exact normalized
 receipts. An Exit therefore produces one transaction-ordered Founder sequence spanning its Founder

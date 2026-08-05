@@ -439,6 +439,17 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil || !hintReplay.Replay || string(hintReplay.Receipt) != string(hintResult.Receipt) {
 		t.Fatalf("hint replay=%+v err=%v", hintReplay, err)
 	}
+	var hintLogSeq, hintAppliedRevision, resolvedHintBalance int64
+	var resolvedHintKind string
+	if err := db.QueryRowContext(ctx, `SELECT seq,applied_revision,
+		replay_inputs->'resolved'->>'kind',(replay_inputs->'resolved'->>'route_knowledge_balance')::bigint
+		FROM founder_log WHERE founder_stream_id=$1 AND intent_id=$2`, founderRevision.StreamID,
+		"018f6b7c-9abc-7def-8abc-aaaaaaaaaaaa").Scan(&hintLogSeq, &hintAppliedRevision,
+		&resolvedHintKind, &resolvedHintBalance); err != nil || hintLogSeq != 1 || hintAppliedRevision != 2 ||
+		resolvedHintKind != string(IntentBuyRouteHint) || resolvedHintBalance != 125 {
+		t.Fatalf("hint Founder log seq=%d revision=%d kind=%q balance=%d err=%v",
+			hintLogSeq, hintAppliedRevision, resolvedHintKind, resolvedHintBalance, err)
+	}
 
 	var revisions, events, intents, invariantEvents int
 	if err := db.QueryRowContext(ctx, `

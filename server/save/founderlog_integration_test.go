@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -59,7 +61,15 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 	result, err := store.ApplyFounderLogged(ctx, founderRevision.StreamID, 1, intentID, requestHash, payload,
 		func(state *State, _ Revision, command FounderReplayCommand) (IntentDecision, json.RawMessage, error) {
 			state.Soul++
-			return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied","soul":1}`)},
+			advancedPayload, marshalErr := json.Marshal(map[string]any{"founder_id": ownerID,
+				"run_id":    map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": 1},
+				"exit_type": "collapse", "reputation_delta": 0, "route_knowledge": 0,
+				"occurred_at_ms": command.ServerTSMS})
+			if marshalErr != nil {
+				return IntentDecision{}, nil, marshalErr
+			}
+			return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied","soul":1}`),
+					Events: []EventWrite{{Kind: EventFounderAdvanced, SchemaVersion: 1, IntentID: command.IntentID, Payload: advancedPayload}}},
 				testFounderReplayInputs(t, command, "fixture_founder_action"), nil
 		})
 	if err != nil || result.Outcome != IntentApplied || result.Replay {
@@ -106,6 +116,16 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 		}); !errors.Is(err, ErrInvalidStream) || called {
 		t.Fatalf("Company stream reached Founder mutation called=%v err=%v", called, err)
 	}
+	called = false
+	if _, err := store.ApplyIntent(ctx, founderRevision.StreamID, 2,
+		"01990000-0004-7000-8000-000000000101", requestHash,
+		func(state *State, _ Revision) (IntentDecision, error) {
+			called = true
+			state.Soul++
+			return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`)}, nil
+		}); !errors.Is(err, ErrInvalidStream) || called {
+		t.Fatalf("legacy intent bypass called=%v err=%v", called, err)
+	}
 
 	rows, err := db.QueryContext(ctx, `SELECT seq,intent_id,applied_revision,constants_hash FROM founder_log
 		WHERE founder_stream_id=$1 ORDER BY seq`, founderRevision.StreamID)
@@ -140,17 +160,153 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 	}
 	if _, err := db.ExecContext(ctx, `INSERT INTO founder_log(founder_stream_id,seq,intent_id,canonical_payload,
 		replay_inputs,receipt,constants_hash,server_ts_ms) VALUES($1,1,$2,'{}','{}','{}',$3,1)`,
-		companyRevision.StreamID, "01990000-0004-7000-8000-000000000101", hash); err == nil {
+		companyRevision.StreamID, "01990000-0005-7000-8000-000000000101", hash); err == nil {
 		t.Fatal("Company stream accepted a Founder log row")
+	}
+
+	var outboxRows int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM transport_player_outbox
+		WHERE stream_id=$1 AND scope='founder' AND revision=2`, founderRevision.StreamID).Scan(&outboxRows); err != nil || outboxRows != 3 {
+		t.Fatalf("Founder outbox rows=%d err=%v", outboxRows, err)
+	}
+	var eventRows, receiptRows int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FILTER (WHERE message_kind='event'),
+		count(*) FILTER (WHERE message_kind='receipt') FROM transport_player_outbox WHERE stream_id=$1`,
+		founderRevision.StreamID).Scan(&eventRows, &receiptRows); err != nil || eventRows != 1 || receiptRows != 2 {
+		t.Fatalf("Founder outbox event=%d receipt=%d err=%v", eventRows, receiptRows, err)
+	}
+
+	var concurrentCallbacks atomic.Int64
+	type concurrentResult struct {
+		result IntentResult
+		err    error
+	}
+	results := make(chan concurrentResult, 2)
+	for index, concurrentID := range []string{
+		"01990000-0006-7000-8000-000000000101",
+		"01990000-0007-7000-8000-000000000101",
+	} {
+		concurrentPayload := []byte(`{"kind":"fixture_founder_concurrent_` + string(rune('a'+index)) + `"}`)
+		concurrentDigest := sha256.Sum256(concurrentPayload)
+		go func(id, hash string, body []byte) {
+			value, applyErr := store.ApplyFounderLogged(ctx, founderRevision.StreamID, 2, id, hash, body,
+				func(state *State, _ Revision, command FounderReplayCommand) (IntentDecision, json.RawMessage, error) {
+					concurrentCallbacks.Add(1)
+					state.Soul++
+					replayInputs, marshalErr := founderReplayInputs(command, "fixture_founder_concurrent")
+					if marshalErr != nil {
+						return IntentDecision{}, nil, marshalErr
+					}
+					return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`)},
+						replayInputs, nil
+				})
+			results <- concurrentResult{result: value, err: applyErr}
+		}(concurrentID, "sha256:"+hex.EncodeToString(concurrentDigest[:]), concurrentPayload)
+	}
+	applied, conflicted := 0, 0
+	for range 2 {
+		concurrent := <-results
+		if concurrent.err == nil && concurrent.result.Outcome == IntentApplied {
+			applied++
+		} else {
+			var conflict *RevisionConflict
+			if errors.As(concurrent.err, &conflict) {
+				conflicted++
+			} else {
+				t.Fatalf("concurrent Founder result=%+v err=%v", concurrent.result, concurrent.err)
+			}
+		}
+	}
+	if applied != 1 || conflicted != 1 || concurrentCallbacks.Load() != 1 {
+		t.Fatalf("concurrent applied=%d conflicted=%d callbacks=%d", applied, conflicted, concurrentCallbacks.Load())
+	}
+
+	rollbackPayload := []byte(`{"kind":"fixture_founder_rollback"}`)
+	rollbackDigest := sha256.Sum256(rollbackPayload)
+	rollbackID := "01990000-0008-7000-8000-000000000101"
+	oversizedReceipt := json.RawMessage(`{"outcome":"applied","padding":"` + strings.Repeat("x", MaxPlayerOutboxBytes) + `"}`)
+	if _, err := store.ApplyFounderLogged(ctx, founderRevision.StreamID, 3, rollbackID,
+		"sha256:"+hex.EncodeToString(rollbackDigest[:]), rollbackPayload,
+		func(state *State, _ Revision, command FounderReplayCommand) (IntentDecision, json.RawMessage, error) {
+			state.Soul++
+			return IntentDecision{Outcome: IntentApplied, Receipt: oversizedReceipt},
+				testFounderReplayInputs(t, command, "fixture_founder_rollback"), nil
+		}); !errors.Is(err, ErrInvalidStream) {
+		t.Fatalf("post-log rollback err=%v", err)
+	}
+	loaded, err = store.LoadLatest(ctx, founderRevision.StreamID)
+	if err != nil || loaded.Revision.Number != 3 || loaded.State.Soul != 2 {
+		t.Fatalf("rollback state revision=%d soul=%d err=%v", loaded.Revision.Number, loaded.State.Soul, err)
+	}
+	var rollbackRows int
+	if err := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM founder_log WHERE intent_id=$1) +
+		(SELECT count(*) FROM intent_records WHERE intent_id=$1) +
+		(SELECT count(*) FROM transport_player_outbox WHERE source_id=$1)`, rollbackID).Scan(&rollbackRows); err != nil || rollbackRows != 0 {
+		t.Fatalf("post-log rollback rows=%d err=%v", rollbackRows, err)
+	}
+
+	archiveTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer archiveTx.Rollback()
+	if _, err := archiveTx.ExecContext(ctx, `UPDATE save_streams SET archived_at=clock_timestamp() WHERE id=$1`, founderRevision.StreamID); err != nil {
+		t.Fatal(err)
+	}
+	insertConn, err := db.Conn(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer insertConn.Close()
+	var insertPID int
+	if err := insertConn.QueryRowContext(ctx, `SELECT pg_backend_pid()`).Scan(&insertPID); err != nil {
+		t.Fatal(err)
+	}
+	archiveRaceID := "01990000-0009-7000-8000-000000000101"
+	insertResult := make(chan error, 1)
+	go func() {
+		_, insertErr := insertConn.ExecContext(ctx, `INSERT INTO founder_log(founder_stream_id,seq,intent_id,
+			canonical_payload,replay_inputs,receipt,constants_hash,server_ts_ms)
+			VALUES($1,4,$2,'{}','{}','{}',$3,1)`, founderRevision.StreamID, archiveRaceID, hash)
+		insertResult <- insertErr
+	}()
+	blocked := false
+	deadline := time.Now().Add(2 * time.Second)
+	for time.Now().Before(deadline) {
+		if err := db.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM pg_stat_activity
+			WHERE pid=$1 AND wait_event_type='Lock')`, insertPID).Scan(&blocked); err != nil {
+			t.Fatal(err)
+		}
+		if blocked {
+			break
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	if !blocked {
+		t.Fatal("Founder log insert did not lock behind archival")
+	}
+	if err := archiveTx.Commit(); err != nil {
+		t.Fatal(err)
+	}
+	if err := <-insertResult; err == nil {
+		t.Fatal("Founder log insert committed after concurrent archival")
+	}
+	var archiveRaceRows int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM founder_log WHERE intent_id=$1`, archiveRaceID).Scan(&archiveRaceRows); err != nil || archiveRaceRows != 0 {
+		t.Fatalf("archive race rows=%d err=%v", archiveRaceRows, err)
 	}
 }
 
 func testFounderReplayInputs(t *testing.T, command FounderReplayCommand, kind string) json.RawMessage {
 	t.Helper()
-	encoded, err := json.Marshal(map[string]any{"v": FounderReplayInputsVersion, "command": command,
-		"evaluated_at_ms": command.ServerTSMS, "resolved": map[string]any{"kind": kind}})
+	encoded, err := founderReplayInputs(command, kind)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return encoded
+}
+
+func founderReplayInputs(command FounderReplayCommand, kind string) (json.RawMessage, error) {
+	return json.Marshal(map[string]any{"v": FounderReplayInputsVersion, "command": command,
+		"evaluated_at_ms": command.ServerTSMS, "resolved": map[string]any{"kind": kind}})
 }

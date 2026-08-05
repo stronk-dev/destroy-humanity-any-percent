@@ -215,7 +215,8 @@ func (s *Store) applyIntent(
 	if archivedAt.Valid {
 		return IntentResult{}, ErrArchived
 	}
-	if loggedMutate != nil && scope != economy.ScopeCompany || founderLoggedMutate != nil && scope != economy.ScopeFounder {
+	if mutate != nil && scope == economy.ScopeFounder || loggedMutate != nil && scope != economy.ScopeCompany ||
+		founderLoggedMutate != nil && scope != economy.ScopeFounder {
 		return IntentResult{}, ErrInvalidStream
 	}
 
@@ -353,7 +354,7 @@ func (s *Store) applyIntent(
 			return IntentResult{}, err
 		}
 		if scope == economy.ScopeCompany || scope == economy.ScopeFounder {
-			if err := insertReceiptOutbox(ctx, tx, ownerID, streamID, intentID, revision.Number, revision.ConstantsHash, decision.Receipt); err != nil {
+			if err := insertReceiptOutbox(ctx, tx, ownerID, streamID, intentID, scope, revision.Number, revision.ConstantsHash, decision.Receipt); err != nil {
 				return IntentResult{}, err
 			}
 		}
@@ -415,7 +416,7 @@ func (s *Store) applyIntent(
 		return IntentResult{}, err
 	}
 	if scope == economy.ScopeCompany || scope == economy.ScopeFounder {
-		if err := insertReceiptOutbox(ctx, tx, ownerID, streamID, intentID, newRevision, revision.ConstantsHash, decision.Receipt); err != nil {
+		if err := insertReceiptOutbox(ctx, tx, ownerID, streamID, intentID, scope, newRevision, revision.ConstantsHash, decision.Receipt); err != nil {
 			return IntentResult{}, err
 		}
 	}

@@ -171,6 +171,11 @@ retries do not. Founder-career commands are outside the Company run log. An Exit
 sequence before building `run_ended`, making the event's `terminal_seq` a transaction-local
 completeness proof.
 
+Founder-career mutations use the separate `ApplyFounderLogged` boundary and immutable
+`founder_log`; the legacy unlogged intent surface refuses Founder streams. Route-hint purchases are
+the first migrated consumer and freeze their repaired Founder Route Knowledge balance plus route
+context in the Founder replay envelope rather than depending on a mutable projection during replay.
+
 All replayable Company commands execute through `ApplyLogged`; the live service is a producer and
 consumer of the same object rather than a separate oracle. The boundary receives Company state,
 intent-less canonical payload, one seven-artifact catalog bundle, and replay inputs, then returns the

@@ -122,7 +122,7 @@ func TestPlayerOutboxOrderingDeadLetterAndSizeIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := insertReceiptOutbox(ctx, tx, founderA, streamA.StreamID, "01985555-1004-7000-8000-000000000004", 3, hash, oversize); !errors.Is(err, ErrInvalidStream) {
+	if err := insertReceiptOutbox(ctx, tx, founderA, streamA.StreamID, "01985555-1004-7000-8000-000000000004", economy.ScopeCompany, 3, hash, oversize); !errors.Is(err, ErrInvalidStream) {
 		t.Fatalf("application size guard err=%v", err)
 	}
 	_ = tx.Rollback()
@@ -172,7 +172,7 @@ func TestPlayerOutboxOrderingDeadLetterAndSizeIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := insertReceiptOutbox(ctx, tx, founderA, streamA.StreamID, "01985555-1006-7000-8000-000000000006", 3, hash, canonical); !errors.Is(err, ErrInvalidStream) {
+	if err := insertReceiptOutbox(ctx, tx, founderA, streamA.StreamID, "01985555-1006-7000-8000-000000000006", economy.ScopeCompany, 3, hash, canonical); !errors.Is(err, ErrInvalidStream) {
 		t.Fatalf("jsonb text size guard err=%v", err)
 	}
 	_ = tx.Rollback()

@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
+
+	"cloud-clicker/server/economy"
 )
 
 type PlayerOutboxItem struct {
@@ -29,17 +31,18 @@ type PlayerOutboxItem struct {
 
 const MaxPlayerOutboxBytes = 60 * 1024
 
-func insertReceiptOutbox(ctx context.Context, tx *sql.Tx, founderID, companyStreamID, intentID string, revision int64, constantsHash string, receipt json.RawMessage) error {
-	if tx == nil || !uuidPattern.MatchString(founderID) || !uuidPattern.MatchString(companyStreamID) || !uuidV7Pattern.MatchString(intentID) ||
+func insertReceiptOutbox(ctx context.Context, tx *sql.Tx, founderID, streamID, intentID string, scope economy.Scope, revision int64, constantsHash string, receipt json.RawMessage) error {
+	if tx == nil || !uuidPattern.MatchString(founderID) || !uuidPattern.MatchString(streamID) || !uuidV7Pattern.MatchString(intentID) ||
+		(scope != economy.ScopeCompany && scope != economy.ScopeFounder) ||
 		revision < 1 || !hashPattern.MatchString(constantsHash) || len(receipt) == 0 || len(receipt) > MaxPlayerOutboxBytes {
 		return ErrInvalidStream
 	}
 	var insertedID int64
 	err := tx.QueryRowContext(ctx, `
 		INSERT INTO transport_player_outbox(founder_id,stream_id,message_kind,source_id,scope,revision,constants_hash,payload)
-		SELECT $1,$2,'receipt',$3,'company',$4,$5,$6
-		WHERE octet_length($6::jsonb::text) <= $7
-		RETURNING outbox_id`, founderID, companyStreamID, intentID, revision, constantsHash, receipt, MaxPlayerOutboxBytes).Scan(&insertedID)
+		SELECT $1,$2,'receipt',$3,$4,$5,$6,$7
+		WHERE octet_length($7::jsonb::text) <= $8
+		RETURNING outbox_id`, founderID, streamID, intentID, scope, revision, constantsHash, receipt, MaxPlayerOutboxBytes).Scan(&insertedID)
 	if errors.Is(err, sql.ErrNoRows) {
 		return ErrInvalidStream
 	}
