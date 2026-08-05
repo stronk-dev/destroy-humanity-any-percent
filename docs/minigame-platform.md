@@ -74,3 +74,18 @@ publishes this grammar and operation order and fingerprints the loader and resol
 
 No production policy rows or balance values ship in this foundation slice. Those rows join the
 minigames epoch artifact only after harness tuning and an owner-approved balance mint.
+
+## Fallback policy grammar
+
+Every enabled minigame must load exactly one fallback arm. `solo` has only its discriminator.
+`bot` carries an exact `{policy_id, version}` identity plus `rate_reduction_ppm`;
+`npc_partner` carries an exact `{profile_id, version}` identity plus the same reduction field.
+Policy/profile IDs use mechanical identifiers, versions are semantic-version identities frozen in
+session genesis, and reductions are integer ppm in `[0, 1_000_000]`. Missing, mixed-arm, unknown,
+or extra fields fail load. This grammar is published and source-fingerprinted with the scaling
+contract.
+
+The offline-quality policy is not yet implemented. Its ruled outer row still names a
+`grade_curve` without defining the curve row's exact keys, so implementing it now would invent
+wire grammar. No production fallback or automation row is enabled while that contract remains
+open.

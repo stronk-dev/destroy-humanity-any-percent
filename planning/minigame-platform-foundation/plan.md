@@ -18,8 +18,10 @@ RFC: `rfc/minigame-platform-foundation.md`
   artifact output without production balance literals.
   - [x] Implement C28's exact one-row transform grammar, exact integer resolver, ranked-power
     rejection, and generated formula contract with focused tests.
-  - [ ] Implement the exact fallback and offline-quality policy rows without inventing their
-    deferred balance literals.
+  - [x] Implement C27's exact `solo|bot|npc_partner` fallback arms, identity/version validation,
+    reduction bounds, and published formula contract.
+  - [ ] Implement offline quality after the exact nested `grade_curve` row keys are owner-ruled;
+    thresholds and decay values remain deferred balance literals.
 - [ ] Land server-certified resolve/payout, faucet accounting, replay identity, and fault tests.
   - [x] Persist immutable applied-command rows and replay them from genesis before terminal
     resolution.
@@ -45,3 +47,7 @@ structural rulings rather than balance literals.
 Founder Attendance now closes C26's clock dependency. C28-C30 carry the remaining literal
 contracts: the actual transform key/operation grammar, Founder rating persistence/replay, and the
 faucet policy/idempotency schema. No payout or production catalog row lands before those rulings.
+
+Post-C27 implementation gap: the fallback arms are exact and implemented, but the offline policy's
+`grade_curve` is still only a noun. The RFC must enumerate that nested row's keys and ordering/
+duplicate rules before the loader can distinguish valid data from an invented schema.

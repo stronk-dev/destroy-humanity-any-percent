@@ -1,5 +1,5 @@
 {
-  "schema_version": 8,
+  "schema_version": 9,
   "production_rate": "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
   "multiplier_slot_order": [
     "upgrades",
@@ -12,7 +12,7 @@
     "prestige"
   ],
   "within_slot_order": "source_id_raw_byte_ascending",
-  "source_fingerprint": "30b68e39e300a9d6f5fda29f202bae0795c4414e1bf2dfa006b812dc0ea2d8f0",
+  "source_fingerprint": "1b579284cf04354666b8f9084296b34448ff742f8596a4583bf3d8e5ffdafc67",
   "commons": {
     "enclosure": "clamp(1 - product(clean weighted factors) / product(all weighted factors), 0, 1)",
     "compliance": "clamp(tithe_ppm / target_tithe_ppm, 0, 1) * (1 - enclosure)",
@@ -83,6 +83,12 @@
       "clamp"
     ],
     "rounding": "floordiv uses mathematical floor, including negative non-integral quotients",
-    "fairness_gate": "ranked \u0026\u0026 destination_class == power rejects the catalog"
+    "fairness_gate": "ranked \u0026\u0026 destination_class == power rejects the catalog",
+    "fallback_arms": [
+      "solo",
+      "bot",
+      "npc_partner"
+    ],
+    "fallback_rule": "every policy is one exact-key arm; bot_ref/npc_profile identity and semantic version are frozen; rate_reduction_ppm is within [0,1000000]"
   }
 }

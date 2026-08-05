@@ -179,3 +179,16 @@
 - The published formula artifact now fingerprints the scaling loader/resolver and states the exact
   grammar, operation order, rounding rule, and Fairness Law. No production catalog row or balance
   literal was introduced; fallback/offline-quality rows remain open in the parent checklist.
+
+## 2026-08-05 — C27 fallback grammar; offline curve gap isolated
+
+- Implemented all three exact fallback arms: solo carries no peer fields; bot freezes a mechanical
+  policy identity/version and reduction; NPC partner freezes the corresponding profile
+  identity/version and reduction. The strict loader rejects mixed arms, unknown/extra keys,
+  malformed identities/versions, and reductions outside the ppm domain.
+- Added focused tests for every accepted arm and the discriminating fail-closed cases. The formula
+  artifact now fingerprints the loader and publishes the closed arm order and validation rule.
+- `DESIGN-GAP:` the ruled offline-quality outer row still does not enumerate the nested
+  `grade_curve` row keys, ordering, or duplicate rule. No wire shape or production value was
+  improvised; that sub-slice remains explicitly open while the independently useful fallback
+  grammar lands.

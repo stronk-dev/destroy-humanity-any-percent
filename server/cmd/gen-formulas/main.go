@@ -40,6 +40,8 @@ type minigameFormula struct {
 	OperationOrder []string `json:"operation_order"`
 	Rounding       string   `json:"rounding"`
 	FairnessGate   string   `json:"fairness_gate"`
+	FallbackArms   []string `json:"fallback_arms"`
+	FallbackRule   string   `json:"fallback_rule"`
 }
 
 type meterFormula struct {
@@ -168,6 +170,7 @@ var formulaAuthorities = []authoritySpec{
 	{label: "minigame.LoadScalingPolicy", path: "minigame/scaling.go", kind: authorityFunction, symbol: "LoadScalingPolicy"},
 	{label: "minigame.ScalingPolicy.Resolve", path: "minigame/scaling.go", kind: authorityMethod, symbol: "Resolve"},
 	{label: "minigame.floorBigInt", path: "minigame/scaling.go", kind: authorityFunction, symbol: "floorBigInt"},
+	{label: "minigame.LoadFallbackPolicy", path: "minigame/fallback.go", kind: authorityFunction, symbol: "LoadFallbackPolicy"},
 }
 
 func main() {
@@ -210,7 +213,7 @@ func main() {
 		panic(err)
 	}
 	artifact := formulaArtifact{
-		SchemaVersion:       8,
+		SchemaVersion:       9,
 		ProductionRate:      "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
 		MultiplierSlotOrder: append([]multiplier.Slot(nil), multiplier.Order[:]...),
 		WithinSlotOrder:     multiplier.WithinSlotOrder,
@@ -269,6 +272,8 @@ func main() {
 			OperationOrder: []string{"resolve_source", "apply_" + string(minigame.ScalingIdentity) + "|" + string(minigame.ScalingAdd) + "|" + string(minigame.ScalingMul) + "|" + string(minigame.ScalingFloorDiv), "clamp"},
 			Rounding:       "floordiv uses mathematical floor, including negative non-integral quotients",
 			FairnessGate:   "ranked && destination_class == power rejects the catalog",
+			FallbackArms:   []string{string(minigame.FallbackSolo), string(minigame.FallbackBot), string(minigame.FallbackNPCPartner)},
+			FallbackRule:   "every policy is one exact-key arm; bot_ref/npc_profile identity and semantic version are frozen; rate_reduction_ppm is within [0,1000000]",
 		},
 	}
 	data, err := json.MarshalIndent(artifact, "", "  ")
