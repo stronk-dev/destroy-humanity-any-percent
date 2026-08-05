@@ -25,3 +25,14 @@ Append-only. A fresh agent must be able to resume from this file and the accepte
 - The real-Postgres fixture proves byte identity, immutability, and rejection of a direct
   genesis-less log insert. Root save integration is green.
 - Kernel registry grows with `server/save/foundergenesis.go`; semantic version is `0.3.28`.
+
+## 2026-08-05 — Exit-log/replay wire bounced (B1-B3)
+
+- The archived Run Genesis contract explicitly kept cross-run Founder verification a non-goal
+  because Exit's client receipt contains a next-Company snapshot. A4 reverses that decision but
+  does not define a reproducible Founder-only receipt.
+- B1 proposes one scope-local audit receipt plus a closed `exit.v1` fact arm; B2 makes the Company
+  run-log identity a deferrable relational link rather than an unchecked JSON claim; B3 fixes the
+  input/output constants-hash meaning and the Go/TypeScript replay surface.
+- Exit logging/replay pauses at this exact wire decision. Immutable Founder genesis remains
+  complete, tested, and independently reviewable.

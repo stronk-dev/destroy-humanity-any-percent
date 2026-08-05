@@ -193,6 +193,62 @@ only in the same transaction as their effect, never during resolution, and must 
 `0 <= cursor <= effective_founder_attended_ms`. Shared Go/TS vectors cover zero, boundary carry,
 run transition, stale resolution, and overflow rejection.
 
+## Implementation blockers after A4 genesis landing (Codex, 2026-08-05)
+
+Migration 00056 and `6e51318` complete the immutable Founder-genesis half of A4. Implementing the
+Exit row and verifier exposes a narrower wire decision that the old Run Genesis RFC deliberately
+left out: the existing Exit receipt contains a next-Company snapshot, so a Founder-only replay
+cannot reproduce it without violating A4's no-Company-scan rule. Embedding that receipt as a
+resolved oracle would make comparison meaningless.
+
+### B1 — Exit needs an exact Founder-log receipt and fact union
+
+Ordinary Founder commands store their scope-local deterministic receipt in `founder_log`. Exit's
+client receipt is Company-scoped and contains `new_revision` plus the complete next-run Company
+snapshot. A Founder verifier cannot generate those bytes from Founder state and Founder facts.
+The RFC also says “exact Founder-relevant Exit facts” without naming their closed wire.
+
+**Proposed contract:** the Company `intent_records`/outbox/run-log receipt remains unchanged. The
+Exit row in `founder_log` stores a separate audit-only Founder receipt:
+`{intent_id,outcome,founder_revision,result_constants_hash}` when applied, or
+`{intent_id,outcome,current_revision,rejection:{category,detail}}` when rejected. Its resolved arm
+is `exit.v1` with exact keys: immutable Company command identity; result constants hash; reputation,
+Route Knowledge, attended-time, and achievement-score deltas; sorted added network slots, ledger
+facts, and lifetime-achievement IDs; the exact appended Exit record; and resulting Founder wire
+version. Rejected rows require the neutral/empty fact shape. The Founder transition derives its
+receipt and `founder_advanced` event from that arm and byte-compares both; the client never receives
+a duplicate Founder audit receipt for the same Exit.
+
+### B2 — “Company run-log identity” must be relational, not an unchecked JSON claim
+
+Putting `{company_stream_id,run_seq,run_log_seq}` only inside `replay_inputs` does not prove the
+referenced command exists. Both rows are authored in the same Exit transaction, so the database can
+enforce the relationship without introducing a read during replay.
+
+**Proposed contract:** a forward migration adds nullable
+`(source_company_stream_id,source_run_seq,source_run_log_seq)` columns to `founder_log`, a unique key
+on the equivalent `run_log` coordinates, and a deferrable composite foreign key. The three columns
+are all-null for ordinary Founder commands and all-present only for the `exit.v1` resolved arm; a
+trigger enforces the biconditional. Exit inserts both linked rows in its existing transaction, so a
+fault at either insertion commits neither. Founder replay consumes the already-joined identity from
+the Founder row but never scans Company state or events.
+
+### B3 — Hash transition and verifier surface need one declared meaning
+
+An ordinary Founder row starts and ends under one constants hash. Exit starts under the old Founder
+hash and may activate a new epoch/save version. `founder_log.constants_hash` has one column, and no
+current Go/TypeScript Founder verifier or row-loading contract says whether that column identifies
+the input or output bundle.
+
+**Proposed contract:** `founder_log.constants_hash` always identifies the input/pre-command bundle;
+`exit.v1.result_constants_hash` identifies the applied output bundle (equal to input on rejection).
+`applied_revision` identifies the resulting Founder revision. Founder replay restores genesis under
+its hash, requires each row's input hash to equal the replay state's current hash, applies the closed
+`buy_route_hint.v1|exit.v1` union through the same Go transition used live, then advances to the
+result hash/version only on an applied Exit. It byte-compares state, scope-local audit receipt, and
+ordered Founder events in Go and TypeScript. Unknown arms, hash gaps, sequence gaps, or unavailable
+artifacts fail closed with typed verdicts; no deploy-current catalog is read.
+
 ## Changelog
 
 - 2026-08-05: created (draft) — the shared Founder attendance clock; unblocks Pet C10 + Minigame
@@ -200,3 +256,6 @@ run transition, stale resolution, and overflow rejection.
 - 2026-08-05: Codex acceptance review found five blockers: reuse the existing `age_ms` authority,
   make the frozen partial race-safe against Exit, specify offline-aware resolution, land Founder
   genesis/Exit logging first, and close exact bounds/cursor semantics. Status remains draft.
+- 2026-08-05: immutable Founder genesis landed. B1-B3 bounce the exact scope-local Exit receipt,
+  relational Company-log link, and pre/post-hash verifier semantics required to reverse the older
+  cross-run-Founder non-goal without embedding Company state or a self-confirming oracle.
