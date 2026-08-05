@@ -445,3 +445,68 @@ Cross-stream remediation `00420ae`: Founder Exit replay now activates empty v17/
 from the hash-matched next bundle before validating the result state. The Founder verifier resolves
 that bundle without deploy-current fallback, and v18 replay is proven after a v17 head. Kernel
 0.3.48; included in the independent-review range.
+
+## 2026-08-05 — designated reviewer verdict: Founder v17/v18 chain (0c3707f..9e958b1) — APPROVE architecture; ONE required fix (F1 MEDIUM)
+
+Review by: the designated Claude reviewer. Recorded by: same. Review of record — no prior verdict
+cites any hash in 0c3707f..9e958b1 (8th consecutive batch; 0c3707f is the exact prior-verdict
+endpoint and an ancestor of 9e958b1 — range-union chain unbroken, no gap).
+
+**The three highest-risk invariants are SOUND (verified at source):**
+- **Activation-boundary non-retroactivity:** version bumps occur ONLY at run boundaries
+  (settleAndActivateFoundations for Company; applyFounderExitResolved->activateFounderFeatureState
+  for Founder), each deriving the target from the pinned NEXT bundle's versionFloors() keyed on
+  artifact presence (hash-verified), never deploy-current. An existing v16 founder is NOT
+  retroactively activated; a client-supplied log claim cannot raise the floor
+  (ResultFounderWireVersion == resultCatalogs.versionFloors()). Shipped epoch pins only base-7 —
+  nothing auto-activates in production.
+- **Self-caught seams COMPLETE:** legacy codec widened stateV16->stateV18 (all fields round-trip);
+  encode fail-closed added at the single EncodeStateVersion chokepoint (v14/v15/v16 reject nonempty
+  founder maps); TestFounderV17AndV18RoundTrip proves legacy->v17->v18 + Company rejection.
+  Partial-carry uses the v16 projection (validateFounderCarryFoundationState), carries no version/
+  feature maps. No sibling drop path found.
+- **Mixed-axis end-to-end (prior F1 action item CLOSED):** real settleAndActivateFoundations and
+  applyFounderExitResolved derivers reach Founder 17/18 while Company stays 16 — versionFloors()
+  actually emits founder!=company, not a hand-fed tuple.
+
+Also correct: ratings live in Founder save jsonb (no side table, no fact duplication); pet state
+replay-owned, mood derived; Company rejects v17/v18 at 3 layers; biconditionals minigames<=>17,
+pets<=>(18 & minigames present); downgrade/zero-floor fail closed; kernel .45->.48 lockstep
+one-per-code-commit, KV-1 covers all touched paths in strict lexical order.
+
+**REQUIRED FIX — F1 (MEDIUM), server/pet/full_catalog.go:54 — a C17 acceptance gap:**
+pet.LoadCatalog uses only uniqueStateJSONKeys + DisallowUnknownFields; it never asserts top-level
+key PRESENCE (unlike server/minigame/catalog.go:28 which calls hasExactJSONKeys). Result: a pets
+artifact MISSING trust_policy loads successfully (all-zero TrustPolicy satisfies
+floor<=neutral<=initial<=cap), and a stat_policy missing the diminishing_threshold_ppm/
+diminishing_factor_ppm keys loads (Go defaults them to 0). The TS parser (parsePetCatalog,
+exactObject over 6 keys) REJECTS both. Proven by probe against server/pet. This is a Go/TS
+wire-parity break (law #3) on a hash-pinned artifact -> cross-runtime replay divergence, and it
+directly violates C17's "unknown/duplicate/MISSING rows fail load." LATENT this round (no pets
+fixture ships; the epoch pins no pets artifact; fully-populated fixtures mask it), so NOT a
+production hazard yet — but it must be fixed BEFORE any pets fixture is authored, because that is
+the moment it becomes a live replay-divergence bug. Fix is small and well-scoped: give
+pet.LoadCatalog an explicit hasExactJSONKeys top-level check + nested exact-key checks mirroring the
+minigame loader and the TS exactObject, plus a missing-key rejection test. Routed to Codex.
+
+**Verdict: architecture sound; F1 is a required, non-optional fix (C17 fail-closed acceptance
+criterion), but it is LATENT and small, so it does not block continued implementation — it blocks
+ARCHIVAL of the pet artifact contract and MUST land before a pets fixture. Recommend Codex fix F1
+in the next batch alongside (or before) the resolve composer / pet-care transition consumers.**
+
+## 2026-08-05 — F1 required-key parity remediation
+
+Implemented by: Codex.
+
+- Commit `24d55b0` makes the Go pet catalog loader require the same closed key sets as the
+  TypeScript parser at every C17 layer: the root object, stat policy, stat rows, action rows, Trust
+  policy, mood rows, and behavior rows. Missing fields can no longer decode as valid Go zero values.
+- `TestLoadFullCatalogRejectsMissingKeysAtEveryLayer` removes one required key from each structural
+  family and proves every incomplete artifact fails closed. Unknown and duplicate-key rejection
+  remain enforced by the existing decoder and recursive duplicate-key gate.
+- The watched semantic fix bumps the shared kernel version `0.3.48 -> 0.3.49`. Normal root-level
+  `make verify` is green, including 6,549 client tests and 19,656 browser assertions. No artifact
+  was minted and nothing was pushed.
+
+This closes the demonstrated defect but does not self-authorize archival. The remediation and this
+record require the follow-up independent full-span review.
