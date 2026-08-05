@@ -92,18 +92,19 @@ open.
 
 ## Payout policy and conversion kernel
 
-The structural payout row has exactly four keys: `credited_resource_id`, `sends_per_day`,
-`per_send_cap`, and `conversion_ppm`. Loading requires the resource ID to exist in the owning
-catalog; it cannot create a free-form currency. Count and cap values stay in the exact-integer
-domain and conversion is integer ppm.
+The structural payout row has exactly six keys: `credited_resource_id`, `sends_per_day`,
+`per_send_cap`, `conversion_ppm`, `payout_score_fact_id`, and `cap_reason_key`. Loading requires
+the resource, typed score fact, and visible copy key to exist in their owning declarations; the
+policy cannot create a free-form currency, select an arbitrary result value, or invent cap copy.
+Count and cap values stay in the exact-integer domain and conversion is integer ppm.
 
-The pure conversion kernel first applies the fallback reduction with floor rounding, then applies
+Payout first selects exactly the declared, nonnegative fact from the certified tenant result;
+missing, malformed, or negative facts fail before writes. The pure conversion kernel then applies
+the fallback reduction with floor rounding, followed by
 the conversion ratio with the prior `conversion_remainder_ppm`, and returns the next modulo
 remainder. It uses exact integer intermediates, so the product at the maximum legal score cannot
 overflow native arithmetic or change the remainder. The formula artifact publishes and
 fingerprints both the loader and this operation order.
 
-The multi-stream payout transaction is not yet composed. The accepted row does not name which
-typed score fact feeds the conversion, the visible configured-cap reason key, or the exact
-cross-run window-row columns. Those are wire/persistence contracts rather than balance numbers;
-the platform will not infer them from a tenant result.
+The multi-stream payout transaction is not yet composed. The ruled cross-run window table and
+atomic transaction still need their migration/repository implementation.

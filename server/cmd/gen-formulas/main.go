@@ -176,6 +176,7 @@ var formulaAuthorities = []authoritySpec{
 	{label: "minigame.LoadFallbackPolicy", path: "minigame/fallback.go", kind: authorityFunction, symbol: "LoadFallbackPolicy"},
 	{label: "minigame.uniqueJSONKeys", path: "minigame/fallback.go", kind: authorityFunction, symbol: "uniqueJSONKeys"},
 	{label: "minigame.LoadPayoutPolicy", path: "minigame/payout.go", kind: authorityFunction, symbol: "LoadPayoutPolicy"},
+	{label: "minigame.SelectPayoutScore", path: "minigame/payout.go", kind: authorityFunction, symbol: "SelectPayoutScore"},
 	{label: "minigame.ConvertPayout", path: "minigame/payout.go", kind: authorityFunction, symbol: "ConvertPayout"},
 }
 
@@ -219,7 +220,7 @@ func main() {
 		panic(err)
 	}
 	artifact := formulaArtifact{
-		SchemaVersion:       10,
+		SchemaVersion:       11,
 		ProductionRate:      "sum_generators((purchased_count + provisioned_count) * base_rate * product(multiplier_slots))",
 		MultiplierSlotOrder: append([]multiplier.Slot(nil), multiplier.Order[:]...),
 		WithinSlotOrder:     multiplier.WithinSlotOrder,
@@ -280,8 +281,8 @@ func main() {
 			FairnessGate:   "ranked && destination_class == power rejects the catalog",
 			FallbackArms:   []string{string(minigame.FallbackSolo), string(minigame.FallbackBot), string(minigame.FallbackNPCPartner)},
 			FallbackRule:   "every policy is one exact-key arm; bot_ref/npc_profile identity and semantic version are frozen; rate_reduction_ppm is within [0,1000000]",
-			PayoutGrammar:  "exact keys: credited_resource_id, sends_per_day, per_send_cap, conversion_ppm; credited_resource_id must exist in the owning catalog",
-			PayoutOrder:    []string{"floor(score * (1000000 - rate_reduction_ppm) / 1000000)", "floor((reduced_score * conversion_ppm + prior_remainder_ppm) / 1000000)", "persist modulo remainder"},
+			PayoutGrammar:  "exact keys: credited_resource_id, sends_per_day, per_send_cap, conversion_ppm, payout_score_fact_id, cap_reason_key; resource, score fact, and copy key must exist in their owning declarations",
+			PayoutOrder:    []string{"select the one nonnegative certified payout_score_fact_id", "floor(score * (1000000 - rate_reduction_ppm) / 1000000)", "floor((reduced_score * conversion_ppm + prior_remainder_ppm) / 1000000)", "persist modulo remainder"},
 			PayoutMath:     "exact integer intermediates; legal exact-domain inputs cannot overflow the converted output",
 		},
 	}

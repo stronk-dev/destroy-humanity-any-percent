@@ -310,6 +310,28 @@ production fallback/offline automation.
   resource is a declared catalog resource ID (never free-form). The locked transaction is now
   writable/replayable from named columns.
 
+## Owner rulings on C31-C33 (2026-08-05)
+
+- **C31 - accepted, wall timestamp corrected to attended watermark:** C18's `last_session_at`
+  (wall time) contradicts the accepted attended-grid decay clock. Ruling: offline_quality state is
+  `{grade_ppm, last_founder_attended_ms}` - the decay watermark is the FOUNDER ATTENDED cursor
+  (Founder Attendance A1), never a wall timestamp, so replay derives decay deterministically. The
+  grade curve is a closed row `{threshold_grade_ppm, ...}` with a fixed SHAPE (the enum/order is
+  wire grammar); the threshold VALUES are balance data. Decay to the neutral floor, fixed-grid.
+- **C32 - accepted, payout names its inputs:** a tenant result is a sorted typed score-fact array,
+  so the payout row declares WHICH fact feeds it - add `payout_score_fact_id` (a declared fact ID
+  from the tenant descriptor's result schema, C14) and `cap_reason_key` (a copy key for the
+  forfeit path, distinct from numeric saturation). Neither is chosen in code - both are declared
+  protocol/content the loader validates against the tenant's result union.
+- **C33 - the carry-owner contradiction between my C22 and C30, resolved toward C22's cross-run
+  row:** a session-local remainder cannot carry across sessions. Ruling: BOTH the conversion
+  remainder AND the daily quota counter live on ONE cross-run row
+  `minigame_faucet_window(founder_id, minigame_id, attended_day, quota_used, conversion_remainder_ppm)`
+  keyed on the Founder-attended day; the resolve transaction updates that window row atomically
+  (claim-token-guarded for idempotency) - carry persists cross-session because it's on the window,
+  and retry is exactly-once because the session's contribution to the window is idempotent. C30's
+  'session-state remainder' is withdrawn; the window row owns both.
+
 ## Acceptance criteria
 
 1. Session lifecycle: create→play→resolve→payout for a fixture tenant against the composed

@@ -222,3 +222,61 @@
   loaders, including nested identity objects; every ambiguity now fails before typed decode.
 - Added regression rows for duplicate scaling operations, fallback discriminators/identity keys,
   and payout caps. The formula fingerprint covers the new authority.
+
+## 2026-08-05 — designated reviewer verdict: Minigame+Pet foundation round (95a3e35..75b0a87) — APPROVE (code)
+
+Review by: the project's designated Claude reviewer. Recorded by: same. **This IS the review of
+record** — the review found (F1 HIGH governance) that NO prior verdict covered this 8-commit
+round; the delegated approvals stopped at the Founder-genesis batch, entirely before 95a3e35.
+That is the FIFTH consecutive batch where the designated pass is the actual coverage. Filing this
+verdict clears the archival-eligibility block (F1) for the code that passes.
+
+**Code APPROVED — no correctness defects, verified at source:**
+- Scaling grammar (C28): exact-key row loader (DisallowUnknownFields + trailing-EOF + recursive
+  uniqueJSONKeys), closed op union, duplicate-destination load error, correct negative floor
+  (-5 floordiv 2 = -3 tested), big.Int math with MaxExactInteger bounds. **The Fairness Law is
+  genuinely loader-PROVABLE and tested** (seeded ranked+power fixture fails) — caveat F2: `ranked`
+  is a caller parameter until the registry composition binds it, honestly documented.
+- Payout (C30): big.Int overflow-safe by construction (converted ≤ reduced ≤ score ≤ Max), proven
+  at the boundary; credited resource must be a declared catalog ID; remainder carry partition-
+  invariant; server-authoritative so no TS conversion needed.
+- Fallback (C23/C27): three arms exact-key, bot_ref/npc_profile = mechanical id + semver,
+  mixed/unknown/extra all rejected+tested.
+- **Recursive duplicate-JSON-key rejection is real** (recurses objects AND arrays, nested-dup
+  tested) and applied across all three loaders; pre-existing wire uses canonical-bytes equality
+  which also catches nested dups — no loader accepts ambiguous keys.
+- Pet vocabulary (C12/C12a): Go/TS enum members byte-identical against a shared fixture, queue
+  hardcap 8, PRNG label pet.behavior.v1; 'runtime-frozen' = Object.freeze (TS) + unexported arrays
+  with defensive-copy accessors (Go) guarding the shared protocol-authority slice.
+- Kernel 0.3.32→0.3.38 one-bump-per-semantic-commit (F4: 0.3.38 is an over-bump for an
+  Object.freeze no-wire change — harmless, forced by the watched path); KV-1 registry adds the new
+  minigame/pet paths in strict lexical order; formula artifact schema 7→10 exports the grammar.
+- Honesty confirmed: C31/C32/C33 + Pet C13/C14 are genuinely DESIGN-GAP-deferred, none half-claimed.
+
+Non-blocking, queue with the composition: F2 (bind `ranked` to the registry when it composes),
+F3 (sends_per_day/per_send_cap validated-but-unused + cap-forfeit reason key — lands with C32),
+F4 (over-bump, informational).
+
+**Verdict: the round is sound. C31-C33 + Pet C13-C14 are now ruled (this turn); the Fairness Law,
+recursive strict decode, overflow-safe payout, and cross-runtime pet grammar all hold. Proceed.**
+
+## 2026-08-05 — C32 declared payout inputs
+
+- Extended the exact payout policy with `payout_score_fact_id` and `cap_reason_key`; loading now
+  requires the resource, result fact, and copy key to exist in their owning declarations.
+- Added a pure certified-result selector. It accepts exactly the named nonnegative sorted fact and
+  rejects missing, malformed, or negative payout input before conversion or persistence.
+- Updated the generated formula contract and canonical docs. C33 window persistence remains the
+  next transaction slice; no production payout row was minted.
+
+## PROCESS ESCALATION — the delegated-review coverage gap is now systemic (5 consecutive batches)
+
+For five batches running the delegated (Darwin) approvals have stopped short of the substantive
+commit, leaving the actual implementation unreviewed until the designated pass. This is no longer
+an incident — it's a structural gap in how the delegated review scopes its range. **Recommend to
+Marco:** either (a) the delegated review must cite a range whose union covers the FULL
+implementation span it claims to approve (the existing range-union rule, actually enforced on the
+delegated reviewer, not just the archival gate), or (b) the designated adversarial pass is made a
+MANDATORY gate before any foundation batch is archival-eligible, not an after-the-fact catch. The
+pattern is benign so far only because the designated pass has caught every gap — but it means the
+delegated approvals are not currently load-bearing.
