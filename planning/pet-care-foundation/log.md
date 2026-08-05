@@ -81,3 +81,14 @@
   extra-field request remains at revision 1, unlocks nothing, records a rejected Founder-log row,
   then allows the canonical command to apply at the same expected revision.
 - Kernel semantics advance to 0.3.27. Independent follow-up review remains required.
+
+## 2026-08-05 — independent approval of invalid-command remediation (`17faed3^..17faed3`)
+
+- **Review by:** independent Codex subagent `/root/l7b_independent_review`
+- **Recorded by:** Codex
+- **Decision:** approved; no findings.
+- The reviewer verified the invalid arm executes before any catalog/projector access, persists the
+  closed resolved variant, creates no revision/event or state mutation, preserves terminal
+  idempotency, and leaves the same expected revision available to the canonical command.
+- Independent production/save tests, vet, kernel-history verification, root Postgres integration,
+  and exact-range diff check passed. Full root `make verify` also passes at kernel 0.3.27.
