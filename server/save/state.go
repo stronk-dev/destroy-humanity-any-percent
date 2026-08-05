@@ -825,7 +825,8 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	}
 	if version < 15 {
 		if len(state.MeterValues) != 0 || len(state.MeterDecayRemainders) != 0 || len(state.MeterInputRemainders) != 0 ||
-			len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 {
+			len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 ||
+			len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
 			return fmt.Errorf("%w: inactive foundation state present before v15", ErrInvalidState)
 		}
 		return nil
@@ -840,6 +841,9 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	if version < 16 {
 		if len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 {
 			return fmt.Errorf("%w: achievement state present before v16", ErrInvalidState)
+		}
+		if len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
+			return fmt.Errorf("%w: Founder mechanics present before v17", ErrInvalidState)
 		}
 		return nil
 	}

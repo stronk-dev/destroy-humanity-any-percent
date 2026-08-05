@@ -309,6 +309,16 @@ func TestFounderV17AndV18RoundTripWhileCompanyRejectsThem(t *testing.T) {
 	if err != nil || restored.Pets == nil {
 		t.Fatalf("v18 restore=%+v err=%v", restored, err)
 	}
+	state.MinigameRatings["combat.duel"] = MinigameRatingState{Elo: 1000, SeasonMember: "preseason"}
+	state.MinigameOfflineQuality["combat.duel"] = MinigameOfflineQualityState{GradePPM: 500_000}
+	state.WireVersion = 14
+	if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v14 silently discarded Founder feature state: %v", err)
+	}
+	state.WireVersion = 15
+	if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v15 silently discarded Founder feature state: %v", err)
+	}
 }
 
 func TestStateV15AndV16CollectionsFailClosed(t *testing.T) {
