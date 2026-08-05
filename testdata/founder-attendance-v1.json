@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "zero",
+      "founder_age_ms": 0,
+      "actual_founder_revision": 1,
+      "expected_founder_revision": 1,
+      "sample": {
+        "company_stream_id": "01986666-9000-7000-8000-000000000001",
+        "run_seq": 1,
+        "company_revision": 1,
+        "company_constants_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "completed_attended_ms": 0,
+        "current_run_partial_attended_ms": 0,
+        "effective_founder_attended_ms": 0
+      },
+      "valid": true
+    },
+    {
+      "name": "boundary_carry",
+      "founder_age_ms": 9007199254740986,
+      "actual_founder_revision": 7,
+      "expected_founder_revision": 7,
+      "sample": {
+        "company_stream_id": "01986666-9000-7000-8000-000000000002",
+        "run_seq": 4,
+        "company_revision": 12,
+        "company_constants_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "completed_attended_ms": 9007199254740986,
+        "current_run_partial_attended_ms": 5,
+        "effective_founder_attended_ms": 9007199254740991
+      },
+      "valid": true
+    },
+    {
+      "name": "before_run_transition",
+      "founder_age_ms": 100,
+      "actual_founder_revision": 8,
+      "expected_founder_revision": 8,
+      "sample": {
+        "company_stream_id": "01986666-9000-7000-8000-000000000003",
+        "run_seq": 9,
+        "company_revision": 20,
+        "company_constants_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "completed_attended_ms": 100,
+        "current_run_partial_attended_ms": 50,
+        "effective_founder_attended_ms": 150
+      },
+      "valid": true
+    },
+    {
+      "name": "after_run_transition",
+      "founder_age_ms": 150,
+      "actual_founder_revision": 9,
+      "expected_founder_revision": 9,
+      "sample": {
+        "company_stream_id": "01986666-9000-7000-8000-000000000003",
+        "run_seq": 10,
+        "company_revision": 22,
+        "company_constants_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "completed_attended_ms": 150,
+        "current_run_partial_attended_ms": 0,
+        "effective_founder_attended_ms": 150
+      },
+      "valid": true
+    },
+    {
+      "name": "stale_completed_base",
+      "founder_age_ms": 150,
+      "actual_founder_revision": 9,
+      "expected_founder_revision": 9,
+      "sample": {
+        "company_stream_id": "01986666-9000-7000-8000-000000000003",
+        "run_seq": 9,
+        "company_revision": 20,
+        "company_constants_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "completed_attended_ms": 100,
+        "current_run_partial_attended_ms": 50,
+        "effective_founder_attended_ms": 150
+      },
+      "valid": false
+    },
+    {
+      "name": "stale_founder_revision",
+      "founder_age_ms": 100,
+      "actual_founder_revision": 9,
+      "expected_founder_revision": 8,
+      "sample": {
+        "company_stream_id": "01986666-9000-7000-8000-000000000004",
+        "run_seq": 2,
+        "company_revision": 5,
+        "company_constants_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "completed_attended_ms": 100,
+        "current_run_partial_attended_ms": 1,
+        "effective_founder_attended_ms": 101
+      },
+      "valid": false
+    },
+    {
+      "name": "overflow",
+      "founder_age_ms": 9007199254740991,
+      "actual_founder_revision": 2,
+      "expected_founder_revision": 2,
+      "sample": {
+        "company_stream_id": "01986666-9000-7000-8000-000000000005",
+        "run_seq": 1,
+        "company_revision": 3,
+        "company_constants_hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "completed_attended_ms": 9007199254740991,
+        "current_run_partial_attended_ms": 1,
+        "effective_founder_attended_ms": 9007199254740991
+      },
+      "valid": false
+    }
+  ]
+}

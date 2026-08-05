@@ -1,4 +1,5 @@
 import fixtureJSON from "../../testdata/replay/apply-logged-v1.json";
+import attendanceFixtureJSON from "../../testdata/founder-attendance-v1.json";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -6,15 +7,18 @@ import {
   applyLogged,
   applyLoggedExit,
   canonicalJSONString,
+  completedFounderAttendedMS,
   encodeFounderReplayState,
   encodeReplayState,
   encodeReplayStateV14,
   loadReplayCatalogBundle,
+  parseFounderAttendanceSample,
   restoreFounderReplayState,
   restoreReplayState,
   verifyReplayRun,
   verifyReplayRunDetailed,
   verifyFounderReplayHistory,
+  validateFounderAttendanceSample,
   withNextReplayCatalogBundle,
   type ReplayArtifacts,
 } from "../src/replay";
@@ -110,7 +114,24 @@ const fixture = fixtureJSON as {
   };
 };
 
+const attendanceFixture = attendanceFixtureJSON as {
+  readonly version: number;
+  readonly cases: readonly {
+    readonly name: string; readonly founder_age_ms: number; readonly actual_founder_revision: number; readonly expected_founder_revision: number;
+    readonly sample: unknown; readonly valid: boolean;
+  }[];
+};
+
 describe("TypeScript ApplyLogged cross-runtime fixture", () => {
+  it.each(attendanceFixture.cases)("validates shared Founder attendance vector $name", async (testCase) => {
+    const bundle = await loadReplayCatalogBundle(fixture.founder_constants_hash, fixture.founder_artifacts);
+    const state = restoreFounderReplayState({ ...(fixture.founder_run.genesis as Record<string, unknown>), age_ms: testCase.founder_age_ms }, fixture.founder_run.genesis_version, bundle);
+    expect(completedFounderAttendedMS(state)).toBe(testCase.founder_age_ms);
+    const validate = () => validateFounderAttendanceSample(state, testCase.actual_founder_revision, testCase.expected_founder_revision, parseFounderAttendanceSample(testCase.sample));
+    if (testCase.valid) expect(validate()).toBe((testCase.sample as { effective_founder_attended_ms: number }).effective_founder_attended_ms);
+    else expect(validate).toThrow();
+  });
+
   it.each(fixture.founder_cases)("replays Founder $name to the Go receipt, events, and state", async (testCase) => {
     const bundle = await loadReplayCatalogBundle(fixture.founder_constants_hash, fixture.founder_artifacts);
     const state = restoreFounderReplayState(testCase.pre_state, testCase.state_version, bundle);

@@ -83,3 +83,22 @@ Append-only. A fresh agent must be able to resume from this file and the accepte
   verdicts. The Go-authored cross-runtime corpus carries the same full career.
 - The Founder replay plan item flips with these tests. Kernel advances to `0.3.31`; the next slice
   is the race-safe, offline-aware effective-attendance resolver.
+
+## 2026-08-05 — shared attendance resolver and parity boundary implemented
+
+- `ResolveFounderAttendance` now freezes the complete A2 tuple from the exact active Founder and
+  Company streams. It reads Founder first, resolves the run's pinned bundle, classifies any
+  unresolved gap on a clone using the pinned `catchup_ceiling_ms`, and computes the total partial
+  with the existing prestige Attended-Time implementation. The clone is never persisted.
+- `CompletedFounderAttendedMS`, `EffectiveFounderAttendedMS`, and
+  `ValidateFounderAttendanceSample` make `age_ms` the only completed-run authority, reject exact-
+  integer overflow, and fail stale when Exit advanced the Founder base or revision. TypeScript
+  implements the same parsing and validation surface.
+- Shared vectors cover zero, the MaxExactInteger boundary, equal effective time across a run
+  transition, stale base/revision, and overflow. Unit coverage proves sub-ceiling reconnect time
+  remains attended, a 25-hour dormant gap contributes zero, and deploy-current relabeling cannot
+  replace the pinned bundle.
+- The real-Postgres two-order fixture proves a pre-Exit accepted sample and an Exit-winning stale
+  sample both converge to the same effective attendance, with the next run starting at partial
+  zero. The resolver plan item flips with its proof; consumer-owned pet/faucet fixtures and the
+  remaining rollback/retention coverage stay explicitly open. Kernel advances to `0.3.32`.

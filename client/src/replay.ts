@@ -71,6 +71,10 @@ export interface FounderReplayLogEntry {
   readonly serverTSMS: number; readonly source: null | { readonly companyStreamId: string; readonly runSeq: number; readonly runLogSeq: number };
 }
 export interface FounderReplayHead { readonly revision: number; readonly version: 14 | 15 | 16; readonly constantsHash: string; readonly state: unknown }
+export interface FounderAttendanceSample {
+  readonly companyStreamId: string; readonly runSeq: number; readonly companyRevision: number; readonly companyConstantsHash: string;
+  readonly completedAttendedMs: number; readonly currentRunPartialAttendedMs: number; readonly effectiveFounderAttendedMs: number;
+}
 export type ReplayVerdict = "verified" | "log_gap" | "state_divergence" | "constants_mismatch" | "clock_violation" | "engine_mismatch";
 export interface ReplayVerificationResult { readonly verdict: ReplayVerdict; readonly finalState: ReplayState | null }
 export class ReplayClockViolation extends RangeError { constructor() { super("replay clock violation"); } }
@@ -480,6 +484,33 @@ export function verifyFounderReplayHistory(genesis: unknown, genesisRevision: nu
   }
   if (revision !== head.revision || hash !== head.constantsHash || state.wireVersion !== head.version || canonicalJSONString(encodeFounderReplayState(state)) !== canonicalJSONString(head.state)) return "state_divergence";
   return "verified";
+}
+
+export function completedFounderAttendedMS(state: FounderReplayState): number {
+  return safeInteger(state.ageMs, 0, MAX_EXACT_INTEGER);
+}
+
+export function effectiveFounderAttendedMS(completed: number, partial: number): number {
+  const base = safeInteger(completed, 0, MAX_EXACT_INTEGER); const current = safeInteger(partial, 0, MAX_EXACT_INTEGER);
+  if (current > MAX_EXACT_INTEGER - base) throw new RangeError("Founder attendance overflow");
+  return base + current;
+}
+
+export function parseFounderAttendanceSample(value: unknown): FounderAttendanceSample {
+  const raw = exactObject(value, ["company_stream_id", "run_seq", "company_revision", "company_constants_hash", "completed_attended_ms", "current_run_partial_attended_ms", "effective_founder_attended_ms"], "Founder attendance sample");
+  const companyStreamId = string(raw.company_stream_id); const companyConstantsHash = string(raw.company_constants_hash);
+  if (!uuid.test(companyStreamId) || !/^sha256:[0-9a-f]{64}$/.test(companyConstantsHash)) throw new SyntaxError("invalid Founder attendance identity");
+  return { companyStreamId, runSeq: safeInteger(raw.run_seq, 1, MAX_EXACT_INTEGER), companyRevision: safeInteger(raw.company_revision, 1, MAX_EXACT_INTEGER), companyConstantsHash,
+    completedAttendedMs: safeInteger(raw.completed_attended_ms, 0, MAX_EXACT_INTEGER), currentRunPartialAttendedMs: safeInteger(raw.current_run_partial_attended_ms, 0, MAX_EXACT_INTEGER),
+    effectiveFounderAttendedMs: safeInteger(raw.effective_founder_attended_ms, 0, MAX_EXACT_INTEGER) };
+}
+
+export function validateFounderAttendanceSample(state: FounderReplayState, actualFounderRevision: number, expectedFounderRevision: number, sample: FounderAttendanceSample): number {
+  const actual = safeInteger(actualFounderRevision, 1, MAX_EXACT_INTEGER); const expected = safeInteger(expectedFounderRevision, 1, MAX_EXACT_INTEGER);
+  if (actual !== expected || sample.completedAttendedMs !== completedFounderAttendedMS(state)) throw new RangeError("stale Founder attendance sample");
+  const effective = effectiveFounderAttendedMS(sample.completedAttendedMs, sample.currentRunPartialAttendedMs);
+  if (effective !== sample.effectiveFounderAttendedMs) throw new RangeError("invalid Founder attendance total");
+  return effective;
 }
 
 export async function applyLogged(state: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedTransition> {

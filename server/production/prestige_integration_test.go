@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -508,6 +509,49 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		var preTimer bool
 		if err := db.QueryRowContext(ctx, `SELECT (payload->>'pre_timer')::boolean FROM events WHERE stream_id=$1 AND kind='run_ended'`, companyRevision.StreamID).Scan(&preTimer); err != nil || !preTimer {
 			t.Fatalf("pre-timer event=%v err=%v", preTimer, err)
+		}
+	})
+
+	t.Run("Founder attendance sample remains monotonic across both Exit orders", func(t *testing.T) {
+		for index, validateBeforeExit := range []bool{true, false} {
+			name := "exit_wins"
+			if validateBeforeExit {
+				name = "founder_command_wins"
+			}
+			t.Run(name, func(t *testing.T) {
+				owner := []string{"01985555-7000-7000-8000-000000000001", "01985555-7000-7000-8000-000000000002"}[index]
+				founderRevision, companyRevision := createPrestigeStreams(t, ctx, store, catalog, currentHash, owner, now, now.Add(-10*time.Minute), now, "0", decimal.New(8, 12), 1)
+				if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, owner, 1, currentHash); err != nil {
+					t.Fatal(err)
+				}
+				sample, err := currentService.ResolveFounderAttendance(ctx, founderRevision.StreamID, companyRevision.StreamID, now)
+				if err != nil || sample.CurrentRunPartialAttendedMS != 600_000 || sample.CompletedAttendedMS != 0 {
+					t.Fatalf("initial sample=%+v err=%v", sample, err)
+				}
+				if validateBeforeExit {
+					founder, loadErr := store.LoadLatest(ctx, founderRevision.StreamID)
+					if loadErr != nil || ValidateFounderAttendanceSample(founder.State, founder.Revision.Number, founderRevision.Number, sample) != nil {
+						t.Fatalf("command-first validation founder=%+v load=%v", founder, loadErr)
+					}
+				}
+				intentID := []string{"01985555-7001-7000-8000-000000000001", "01985555-7001-7000-8000-000000000002"}[index]
+				request := []byte(fmt.Sprintf(`{"intent_id":"%s","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`, intentID))
+				if _, err := currentService.Handle(ctx, companyRevision.StreamID, ModeOnline, now, request); err != nil {
+					t.Fatal(err)
+				}
+				founder, err := store.LoadLatest(ctx, founderRevision.StreamID)
+				if err != nil || founder.State.AgeMS != sample.EffectiveFounderAttendedMS {
+					t.Fatalf("post-Exit founder=%+v sample=%+v err=%v", founder.State, sample, err)
+				}
+				if !validateBeforeExit && !errors.Is(ValidateFounderAttendanceSample(founder.State, founder.Revision.Number, founderRevision.Number, sample), ErrFounderAttendanceStale) {
+					t.Fatal("Exit-winning schedule accepted the stale pre-Exit sample")
+				}
+				next, err := currentService.ResolveFounderAttendance(ctx, founderRevision.StreamID, companyRevision.StreamID, now)
+				if err != nil || next.CompletedAttendedMS != sample.EffectiveFounderAttendedMS || next.CurrentRunPartialAttendedMS != 0 ||
+					next.EffectiveFounderAttendedMS != sample.EffectiveFounderAttendedMS || next.RunSeq != 2 {
+					t.Fatalf("post-Exit sample=%+v err=%v", next, err)
+				}
+			})
 		}
 	})
 }

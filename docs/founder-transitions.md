@@ -51,6 +51,15 @@ state to the saved head. Missing artifacts report `constants_mismatch`; sequence
 report `log_gap`; malformed inputs or differing state, receipt, or ordered events report
 `state_divergence`.
 
+Founder attendance has one persisted authority: Founder `age_ms`, the exact sum of completed-run
+Attended Time. `production.ResolveFounderAttendance` freezes the active Company stream identity,
+run and revision, pinned constants hash, completed `age_ms`, current-run attended partial, and
+their checked sum. It reads Founder before Company, classifies an unresolved Company gap against
+the pinned prestige catch-up ceiling on a non-persisted clone, and rejects missing or ambiguous
+contexts. A Founder-locked consumer must call `ValidateFounderAttendanceSample`; a concurrent Exit
+changes the Founder revision and `age_ms`, making the old sample stale rather than double-counting
+the completed run. No second Founder attendance cursor exists.
+
 The feature package still owns its closed canonical command, resolved-input, receipt, event, and
 state-transition unions. The persistence layer validates the shared envelope and transaction; it
 does not invent feature mechanics.
