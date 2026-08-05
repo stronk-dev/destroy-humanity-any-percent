@@ -294,6 +294,16 @@ recursive strict decode, overflow-safe payout, and cross-runtime pet grammar all
   transaction was added: session terminal state, Company credit, Founder rating, and faucet carry
   must commit together or not at all.
 
+## 2026-08-05 — C33 concurrent-window proof
+
+- Added a real-Postgres two-transaction regression for different sessions resolving concurrently
+  into the same Founder/minigame/attended-day window. The Founder lock serializes both calls; the
+  observed quota transitions are exactly `0→1` and `1→2`, and the stored carried remainder equals
+  one combined exact conversion regardless of winner order.
+- The normal root `make test-save-integration` target passes across the complete Postgres suite.
+  This is test-only hardening of the already-shipped C33 authority; no payout semantics or version
+  signal changed.
+
 ## PROCESS ESCALATION — the delegated-review coverage gap is now systemic (5 consecutive batches)
 
 For five batches running the delegated (Darwin) approvals have stopped short of the substantive

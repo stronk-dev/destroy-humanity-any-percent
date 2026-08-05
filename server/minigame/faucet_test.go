@@ -2,6 +2,8 @@ package minigame
 
 import (
 	"context"
+	"sort"
+	"sync"
 	"testing"
 )
 
@@ -74,5 +76,69 @@ func TestFaucetWindowIntegrationRollsBackAtomically(t *testing.T) {
 	}
 	if _, err := db.ExecContext(ctx, `INSERT INTO minigame_faucet_window(founder_id,minigame_id,attended_day,quota_used,conversion_remainder_ppm) VALUES($1,'fixture.counter',0,0,1000000)`, testFounderID); err == nil {
 		t.Fatal("database accepted an invalid carried remainder")
+	}
+}
+
+func TestFaucetWindowIntegrationSerializesConcurrentSessions(t *testing.T) {
+	db := minigameIntegrationDB(t)
+	seedMinigameRun(t, db)
+	ctx := context.Background()
+	policy := PayoutPolicy{CreditedResourceID: "resource.compute", SendsPerDay: 2, PerSendCap: 10,
+		ConversionPPM: 333333, PayoutScoreFactID: "score.total", CapReasonKey: "minigame.payout.cap"}
+
+	start := make(chan struct{})
+	results := make(chan FaucetApplication, 2)
+	errs := make(chan error, 2)
+	var ready sync.WaitGroup
+	ready.Add(2)
+	for _, score := range []int64{1, 2} {
+		go func(score int64) {
+			ready.Done()
+			<-start
+			tx, err := db.BeginTx(ctx, nil)
+			if err != nil {
+				errs <- err
+				return
+			}
+			result, err := applyFaucetWindowTx(ctx, tx, testFounderID, "fixture.counter", 0, policy, score, 0)
+			if err == nil {
+				err = tx.Commit()
+			} else {
+				_ = tx.Rollback()
+			}
+			if err != nil {
+				errs <- err
+				return
+			}
+			results <- result
+		}(score)
+	}
+	ready.Wait()
+	close(start)
+
+	applications := make([]FaucetApplication, 0, 2)
+	for range 2 {
+		select {
+		case err := <-errs:
+			t.Fatal(err)
+		case result := <-results:
+			applications = append(applications, result)
+		}
+	}
+	sort.Slice(applications, func(i, j int) bool { return applications[i].QuotaBefore < applications[j].QuotaBefore })
+	if len(applications) != 2 || applications[0].QuotaBefore != 0 || applications[0].QuotaAfter != 1 ||
+		applications[1].QuotaBefore != 1 || applications[1].QuotaAfter != 2 {
+		t.Fatalf("applications=%+v", applications)
+	}
+
+	var quota, remainder int64
+	if err := db.QueryRowContext(ctx, `SELECT quota_used,conversion_remainder_ppm
+		FROM minigame_faucet_window WHERE founder_id=$1 AND minigame_id='fixture.counter' AND attended_day=0`,
+		testFounderID).Scan(&quota, &remainder); err != nil {
+		t.Fatal(err)
+	}
+	combined, err := ConvertPayout(3, 0, policy.ConversionPPM, 0)
+	if err != nil || quota != 2 || remainder != combined.ConversionRemainderPPM {
+		t.Fatalf("quota=%d remainder=%d combined=%+v err=%v", quota, remainder, combined, err)
 	}
 }
