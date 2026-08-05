@@ -99,6 +99,12 @@ decay_remainder_ppm}`. This slice validates that wire and the score-to-grade sel
 attended-grid decay transition and production policy literals remain disabled until the Founder
 version/artifact activation seam is composed.
 
+The activation seam is now structural: the pinned `minigames` artifact closes sorted minigame-ID
+and rating-season domains, and its presence derives Founder save v17 while Company remains v16.
+Founder v17 stores exact current rating rows (`elo`, `season_member`, `games_counted`) and exact
+offline-quality watermark rows. The artifact and maps are biconditional in both replay runtimes.
+The production artifact remains empty until a separately reviewed balance mint supplies content.
+
 ## Payout policy and conversion kernel
 
 The structural payout row has exactly six keys: `credited_resource_id`, `sends_per_day`,

@@ -35,6 +35,8 @@ declared behaviors bounded to eight entries, and the behavior PRNG cursor. Mood 
 rejected if stored; writable bonds remain absent. Go and TypeScript consume one shared state
 fixture and enforce the same exact domains.
 
-This state is not yet embedded into the Founder save. The pinned pet-artifact/Founder-only version
-transition remains the C16 contract, so no deploy-current catalog or half-replayable state is
-accepted.
+This state is embedded into replay-owned Founder save v18. The pinned pet artifact is the complete
+closed union of stat-grid, action, Trust, mood-threshold, and deterministic behavior-transition
+policies; pinning the earlier mood/behavior fixture alone is rejected. v18 requires the v17
+minigames artifact to remain pinned, while Company remains v14/v16. Mood stays derived and is
+never persisted. Numeric policy rows remain fixture/balance data and no production pet is enabled.

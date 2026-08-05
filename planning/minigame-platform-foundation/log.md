@@ -392,3 +392,76 @@ reconciliation). Proceed.**
 - Published and source-fingerprinted the grammar and selection rule. No production row, decay
   literal, rating mutation, or Founder save activation was introduced; those remain behind C35's
   independent-axis/pinned-artifact composition.
+
+## 2026-08-05 — C36/C17 ruled: Founder version stays a SCALAR chain (feature-vector deferred)
+
+The scalar-vs-feature-vector fork (the one owner decision blocking the Founder save object) is
+decided: SCALAR monotonic chain, fixed total order minigames=v17 then pets=v18; v18 requires v17's
+artifact pinned. Same discipline as the Company axis (save at N carries the union of all fields <=N;
+unpinned mechanics hold empty/default state; activation is always artifact-gated). Keeps Exit/replay
+LINEAR instead of 2^K feature-subset combinatorics. Feature-vector envelope is a named-successor-RFC
+escape hatch, reached only if an epoch ever needs a higher Founder mechanic without a lower one.
+
+- v17 (minigames) Founder-save maps: minigame_ratings{elo,season_member,games_counted} +
+  minigame_offline_quality{grade_ppm,last_founder_attended_ms,decay_remainder_ppm}; ratings live IN
+  the save (not a side table — resolves C29's fork toward the save, replay-owned discipline);
+  resolution facts stay in the minigame_resolution.v1 log arm; minigames artifact <=> floor>=17.
+- v18 (pets): pet-state map added; complete `pets` artifact = C13 top-level union
+  {schema_version,stat_policy,actions,trust_policy,mood_policy,behavior_policy}, with C15's mood +
+  DETERMINISTIC behavior rows SUPERSEDING C13's mood/temperament sketch. pets artifact <=> floor>=18.
+- Structure ruled, numbers deferred. Closes the "C15 fixture = partial catalog" hazard C17 named.
+
+## Review governance: Codex independently recommends (c). Still MARCO'S call — not adopted.
+Both agents now recommend (c) [delegated range-union coverage + retain designated archival gate].
+Strong concurrence, but the rule change is the owner's; the designated pass continues meanwhile
+(which is what (b) would formalize). Escalation remains open on Marco's desk.
+
+## 2026-08-05 — designated reviewer verdict: version-floor/grammar round (dc635f7..0c3707f) — APPROVE (code)
+
+Review by: the designated Claude reviewer. Recorded by: same. Review of record — no prior verdict
+covered dc635f7..0c3707f (7th consecutive batch; standing governance escalation still open).
+
+**Code APPROVED — no correctness defects. The critical item verified sound at source:**
+- **Independent version floors (3a3cae5) — the one place a soundness hole could hide:** the old
+  equality gate (founderVersion==companyVersion + atomic coupling) is REPLACED by per-axis
+  lower-bound + no-regress checks in exit.go validateExitVersionTransition. It does NOT admit an
+  invalid tuple: downgrades blocked by explicit regress checks; an artifact-not-pinned version is
+  caught by the EXACT upper bound downstream in the SAME Exit transaction (validatedState ->
+  ValidateFoundationState: v16 iff foundations pinned, >=15 unpinned rejected); floors are
+  pinned-epoch-derived (exitVersionFloors reads each bundle's foundationsActive, server-computed in
+  prestige.go, never client-supplied); zero/missing floors fail closed (writableStateVersion(0)
+  => decode-only reject). Lower bound in the validator + exact upper bound in the pinning = sound.
+- Offline-quality grammar (C34): greatest-met-threshold grade, neutral floor = lowest, ascending
+  thresholds, watermark-only clock (no wall time); grammar/wire-parity only, decay compute not yet
+  built (consistent stage). Pet mood/behavior catalog (C15): exact-key rows over closed enums,
+  ascending full mood set, deterministic behavior candidates, queue hardcap 8, shared byte-identical
+  fixture. Grade-boundary parity: shared fixture at/just-below/floor/max, Go+TS green.
+- Kernel 0.3.41->0.3.45: 4 semantic bumps one-per-code-commit in lockstep; docs commit 0c3707f
+  correctly no-bump; KV-1 registry covers all touched semantic paths (adds client/src/minigame/).
+- Deferral honesty genuine: versionFloors() emits only 14/16 — no v17/v18 secretly shipped; C15
+  fixture correctly NOT pinned as the complete pets artifact.
+
+Non-blocking (2 LOW): F1 — the "mixed-axis Exit regression" test feeds a {Founder:16,Company:14}
+floor tuple that production CANNOT currently emit (versionFloors returns founder==company today);
+the validator is correctly built axis-independent AHEAD of the v17/v18 feature, so the test proves
+the arithmetic, not a reachable mixed run. ACTION for the v17/v18 implementation (now unblocked by
+the C36/C17 scalar ruling): add the END-TO-END reachable mixed-run test (minigames=v17 while
+Company=14/16) so the "mixed-axis" box is backed by a reachable scenario, not just a unit-domain
+input. F2 — TS parsers receive already-JSON.parse'd objects so cannot see physical duplicate keys;
+raw-dup-key rejection is server-side only (matches every repo parser; server is the wire gatekeeper).
+
+**Verdict: sound. Round approved. C36/C17 ruled this turn unblock the v17/v18 scalar schema.**
+
+## 2026-08-05 — Founder v17 implementation landing
+
+Implemented by: Codex.
+
+- Added the exact pinned minigames activation artifact in Go/TypeScript, closing sorted minigame-ID
+  and rating-season domains without shipping a production row or balance literal.
+- Added Founder v17 exact rating/offline-quality maps, canonical encode/restore, catalog-derived
+  key/season validation, and the artifact biconditional. Company rejects v17/v18.
+- Extended replay catalog identity from the paired nine-artifact foundation set to the ordered
+  ten-artifact minigames set. A production Exit transition now proves the reachable mixed tuple
+  Founder v17 / Company v16, closing designated-review finding F1.
+- Kernel bumped 0.3.45 -> 0.3.46 for the save/replay grammar change. Normal root test/typecheck
+  targets are green; no content mint and no push occurred.

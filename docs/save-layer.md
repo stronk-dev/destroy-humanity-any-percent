@@ -146,6 +146,13 @@ Founder-equals-Company rule. Future Founder-only mechanics must first register t
 artifact and declared Founder floor; an unregistered artifact cannot raise a version by convention
 or deploy-current inference.
 
+Founder-only schemas continue on a scalar chain independent of Company: v17 adds the exact
+`minigame_ratings` and `minigame_offline_quality` maps and requires the pinned `minigames`
+artifact; v18 adds the replay-owned `pets` map and requires both `minigames` and the complete
+`pets` artifact. Company remains v14/v16 and rejects v17/v18. Exit derives the reachable mixed
+tuple from the pinned bundle (Founder 17 or 18, Company 16), so no client or deployment setting
+chooses a version. No production content is activated merely by supporting these codecs.
+
 ## Intent and event transaction
 
 `intent_records` keys normalized receipts by `(stream_id,intent_id)` with a SHA-256 canonical

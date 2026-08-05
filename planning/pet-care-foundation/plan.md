@@ -11,7 +11,7 @@ RFC: `rfc/pet-care-foundation.md`
     PRNG label with one shared Go/TypeScript parity fixture.
   - [x] Land C15's exact mood-threshold and behavior-candidate rows in Go and TypeScript against
     one shared fixture, without production balance rows.
-  - [ ] Embed the already-ruled pet state in the Founder wire under C16's pinned artifact and
+  - [x] Embed the already-ruled pet state in Founder v18 under the complete pinned artifact and
     independent Founder version axis.
 - [ ] Implement attended-grid care, trust, mood, and bounded behavior FSM kernels in Go and TS.
 - [ ] Add Founder activation/persistence, public status projection, and combat-input seam.
@@ -43,3 +43,7 @@ work; no code labels the partial fixture grammar as a production pet artifact.
 Blocked implementation contract carried explicitly: C17 must order pet/minigame activation on
 the scalar Founder axis (or replace it with a feature vector) and enumerate the complete pet
 artifact wire before the C14 map can be persisted.
+
+Post-C17 status: [x] the scalar v17→v18 chain, complete pet-artifact loader in both runtimes,
+replay-owned v18 map, artifact biconditional, and reachable mixed Founder/Company version path are
+implemented. Production pet rows and care transitions remain deferred balance/content work.

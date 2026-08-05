@@ -340,6 +340,38 @@ RFC. In either shape, enumerate the complete `pets` artifact's exact top-level, 
 Trust keys before accepting it into constants identity. This is structural ordering/wire grammar,
 not a request for balance literals.
 
+## Owner ruling on C17 (2026-08-05)
+
+**Accepted with the scalar-chain decision made in Minigame C36 (read there for the axis reasoning):
+`minigames` = Founder v17, `pets` = Founder v18; v18 requires the v17 `minigames` artifact still
+pinned. The feature-vector envelope is deferred to a named successor RFC, to be reached only if a
+future epoch needs a higher Founder mechanic without a lower one — YAGNI until then.**
+
+**The complete `pets` epoch artifact is the FULL union below — pinning the C15 fixture alone would
+falsely pin a partial catalog (the exact hazard this blocker names), so C15 is a subset, not the
+artifact.** The artifact's exact top-level is C13's `{schema_version, stat_policy, actions,
+trust_policy, mood_policy, behavior_policy}`, with every row family closed:
+
+- `stat_policy`: absolute `grid_ms`, one exact `{stat_id, initial_ppm, floor_ppm,
+  decay_ppm_per_grid}` row per fixed stat, plus the diminishing threshold/factor ppm (C13).
+- `actions`: unique exact `{action_id, stat_id, delta_ppm, cooldown_attended_ms, min_eligible_ppm}`
+  rows (C13). Cooldown is on the attended watermark, never wall time.
+- `trust_policy`: exact keys `{initial_ppm, neutral_ppm, floor_ppm, cap_ppm,
+  gain_ppm_per_effective_action, decay_ppm_per_grid}` (C13).
+- `mood_policy`: C15's exact mood rows `{mood_member, floor_ppm}`, ascending, full closed set —
+  **this SUPERSEDES C13's mood sketch.**
+- `behavior_policy`: C15's exact DETERMINISTIC transition rows `{from_state, event, to_state,
+  duration_grid_ticks}` over the closed C12 state/event enums — **this SUPERSEDES C13's weighted
+  temperament/candidate sketch.** The behavior FSM is deterministic (from_state + event → to_state),
+  not weighted-random; that is the replay-determinism-consistent choice and it is final. If
+  temperament ever needs to qualify a transition, it enters as a `from_state` qualifier or a future
+  ruling — it is NOT invented now, and its absence is correct-by-omission, not a gap.
+
+All numbers in these rows are fixture/balance data; the KEYS, enum members, and top-level are wire
+grammar and are hereby pinned. Unknown/duplicate/missing rows fail load (C13). No field is
+deploy-current. Pet state itself remains the Founder-save-owned jsonb (C14), added at v18; mood is
+DERIVED from `mood_policy`, never stored (C14/C15).
+
 ## Acceptance blockers (Codex review, 2026-08-04)
 
 The design direction is coherent, but the draft cannot yet be accepted without inventing a new

@@ -78,3 +78,7 @@ platform does not infer either from the structural fixture loaders.
 Blocked implementation contract carried explicitly: C36 must enumerate the Founder rating row,
 season-fact wire, enclosing map, and its ordered version/artifact biconditional before the atomic
 resolve composer can write it replay-safely.
+
+Post-C36 status: [x] Founder v17, the exact rating/offline-quality maps, pinned minigames artifact,
+Go/TypeScript replay derivation, and reachable Founder-v17/Company-v16 Exit path are implemented
+without production rows or a balance mint. The server-certified resolve composer remains next.

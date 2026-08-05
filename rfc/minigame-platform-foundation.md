@@ -393,6 +393,53 @@ derive Founder floor 17 from its presence. Pet state follows at v18. No producti
 balance literal need ship with the schema implementation; activation remains New-Founder-forward
 under a later protocol-compliant mint.
 
+## Owner ruling on C36 (2026-08-05)
+
+**The scalar-vs-feature-vector fork is decided: the Founder version stays a SCALAR monotonic
+chain, with a fixed total activation order. Rejecting the feature-vector envelope for now.** The
+reasoning is the same discipline the Company axis already runs on: a save at version N carries the
+UNION of every field introduced at versions ≤ N, and a mechanic whose artifact is not pinned in the
+epoch simply holds empty/default state. Activation is *always* artifact-gated (the activation-
+boundary law), independent of the version number — so the version's only job is to describe the
+save-schema shape. A scalar keeps replay/verification LINEAR (handle version N by knowing 1..N); a
+feature vector makes it combinatorial (2^K feature subsets to reason about at Exit). The only cost
+of the scalar is that a higher-versioned Founder mechanic drags in the empty maps of the lower ones
+— which is exactly the near-free cost the Company save already pays for its own inactive mechanics,
+not a new hazard.
+
+- **Order: `minigames` = Founder v17, `pets` = Founder v18** (Codex's queue order — no reason to
+  invert; minigames is the platform pet battles later consume). Company stays on its own axis
+  (v14/v16) and rejects v17/v18; the two axes never compare for equality (C35/C16).
+- **v17 Founder-save additions (exact, in the Founder save jsonb — NOT a side table; ratings live
+  in the replay-owned save exactly as pet state does, C14 — a second mutable ratings authority
+  beside the Founder save is forbidden, which resolves C29's open table-vs-save fork toward the
+  save):**
+  - `minigame_ratings`: map keyed by declared `minigame_id` → exact-key row
+    `{elo, season_member, games_counted}`. `elo` is a safe integer; `season_member` is a member of
+    the closed `rating_season` enum (the "season-fact union" — enum MEMBERS are wire grammar, the
+    member catalog is deferred); `games_counted` is a safe integer for provisional logic. Starting
+    elo, K-factor, and the provisional threshold are BALANCE data, not ruled here.
+  - `minigame_offline_quality`: map keyed by declared `minigame_id` → the C34 state row
+    `{grade_ppm, last_founder_attended_ms, decay_remainder_ppm}` (already ruled; watermark clock,
+    never wall time).
+  - The append-only resolution fact stays in the Founder log arm `minigame_resolution.v1` (C29),
+    NOT the save: exact keys `{session_id, certified_result_hash, old_elo, new_elo, season_member}`,
+    season facts sorted; the receipt/event are exact projections of that arm. The save holds current
+    rating; the log holds the fact history — no duplication.
+  - **Biconditional:** the `minigames` artifact is pinned in the epoch ⟺ Founder floor ≥ 17.
+    replaycatalog (Go + TS) accepts base-nine plus this one named artifact and derives floor 17 from
+    its presence.
+- **v18 Founder-save additions:** the pet state map (C14, already save-owned). v18 REQUIRES the
+  v17 `minigames` artifact still pinned (the linear chain) AND adds the complete `pets` artifact
+  (enumerated in Pet C17's ruling). `pets` artifact pinned ⟺ Founder floor ≥ 18.
+- **Escape hatch, not foreclosed:** if a future epoch ever needs a higher Founder mechanic WITHOUT
+  a lower one, or needs to sunset a Founder mechanic, THAT is when the feature-vector envelope earns
+  its complexity — in a named successor RFC. Until such a need is concrete, the scalar chain is the
+  ruling and the feature vector is YAGNI.
+- Structure ruled (keys, enum members, biconditional, chain order); numbers deferred (elo/K/
+  provisional/season catalog). Activation remains New-Founder-forward under a protocol-compliant
+  mint; no production row ships with the schema.
+
 ## Acceptance criteria
 
 1. Session lifecycle: create→play→resolve→payout for a fixture tenant against the composed
