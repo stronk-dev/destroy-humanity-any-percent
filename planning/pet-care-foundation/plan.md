@@ -4,7 +4,7 @@ RFC: `rfc/pet-care-foundation.md`
 
 - [x] Acceptance-review the draft and reconcile owner rulings C1-C8 into the normative body.
 - [ ] Implement the reusable Founder-scoped persistence/replay boundary.
-  - [ ] Append immutable Founder command-log storage and typed replay command envelopes.
+  - [x] Append immutable Founder command-log storage and typed replay command envelopes.
   - [ ] Add the pure `ApplyFounderLogged` transition and byte-parity replay fixtures.
 - [ ] Implement strict fixture-only pet catalog/state schemas without production balance rows.
 - [ ] Implement attended-grid care, trust, mood, and bounded behavior FSM kernels in Go and TS.

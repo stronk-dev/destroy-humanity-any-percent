@@ -113,6 +113,11 @@ type IntentMutation func(state *State, revision Revision) (IntentDecision, error
 // the canonical player payload and computed receipt.
 type LoggedIntentMutation func(state *State, revision Revision, command ReplayCommand) (IntentDecision, json.RawMessage, error)
 
+// FounderLoggedIntentMutation is the Founder-scope mirror. It receives no
+// Company/run coordinates and must return the feature-owned resolved-input
+// object inside the persistence-owned Founder replay envelope.
+type FounderLoggedIntentMutation func(state *State, revision Revision, command FounderReplayCommand) (IntentDecision, json.RawMessage, error)
+
 type IntentResult struct {
 	Outcome IntentOutcome
 	Receipt json.RawMessage
@@ -139,7 +144,7 @@ func (s *Store) ApplyIntent(
 	requestHash string,
 	mutate IntentMutation,
 ) (IntentResult, error) {
-	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, nil, mutate, nil)
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, nil, mutate, nil, nil)
 }
 
 func (s *Store) ApplyIntentLogged(
@@ -154,7 +159,22 @@ func (s *Store) ApplyIntentLogged(
 	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
 		return IntentResult{}, err
 	}
-	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, nil, mutate)
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, nil, mutate, nil)
+}
+
+func (s *Store) ApplyFounderLogged(
+	ctx context.Context,
+	streamID string,
+	expectedRevision int64,
+	intentID string,
+	requestHash string,
+	canonicalPayload []byte,
+	mutate FounderLoggedIntentMutation,
+) (IntentResult, error) {
+	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
+		return IntentResult{}, err
+	}
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, nil, nil, mutate)
 }
 
 func (s *Store) applyIntent(
@@ -166,9 +186,16 @@ func (s *Store) applyIntent(
 	canonicalPayload []byte,
 	mutate IntentMutation,
 	loggedMutate LoggedIntentMutation,
+	founderLoggedMutate FounderLoggedIntentMutation,
 ) (IntentResult, error) {
+	mutationCount := 0
+	for _, present := range []bool{mutate != nil, loggedMutate != nil, founderLoggedMutate != nil} {
+		if present {
+			mutationCount++
+		}
+	}
 	if !uuidPattern.MatchString(streamID) || expectedRevision < 1 || !uuidV7Pattern.MatchString(intentID) ||
-		!hashPattern.MatchString(requestHash) || mutate == nil == (loggedMutate == nil) {
+		!hashPattern.MatchString(requestHash) || mutationCount != 1 {
 		return IntentResult{}, ErrInvalidStream
 	}
 	tx, err := s.db.BeginTx(ctx, nil)
@@ -187,6 +214,9 @@ func (s *Store) applyIntent(
 	}
 	if archivedAt.Valid {
 		return IntentResult{}, ErrArchived
+	}
+	if loggedMutate != nil && scope != economy.ScopeCompany || founderLoggedMutate != nil && scope != economy.ScopeFounder {
+		return IntentResult{}, ErrInvalidStream
 	}
 
 	var recordedHash string
@@ -258,10 +288,27 @@ func (s *Store) applyIntent(
 			Revision: revision.Number, RunSeq: state.RunSeq, RunLogSeq: runLogSequence,
 		}
 	}
+	var founderLogSequence int64
+	var founderCommand FounderReplayCommand
+	if scope == economy.ScopeFounder && founderLoggedMutate != nil {
+		founderLogSequence, err = nextFounderLogSequence(ctx, tx, streamID)
+		if err != nil {
+			return IntentResult{}, err
+		}
+		serverTSMS, timestampErr := founderServerTimestamp(ctx, tx)
+		if timestampErr != nil {
+			return IntentResult{}, timestampErr
+		}
+		founderCommand = FounderReplayCommand{IntentID: intentID, FounderStreamID: streamID,
+			FounderID: ownerID, Revision: revision.Number, FounderLogSeq: founderLogSequence,
+			ServerTSMS: serverTSMS}
+	}
 	var decision IntentDecision
 	var replayInputs json.RawMessage
 	if loggedMutate != nil {
 		decision, replayInputs, err = loggedMutate(state, revision, command)
+	} else if founderLoggedMutate != nil {
+		decision, replayInputs, err = founderLoggedMutate(state, revision, founderCommand)
 	} else {
 		decision, err = mutate(state, revision)
 	}
@@ -270,6 +317,12 @@ func (s *Store) applyIntent(
 	}
 	if runLogSequence != 0 {
 		replayInputs, err = ValidateReplayInputs(replayInputs, command)
+		if err != nil {
+			return IntentResult{}, err
+		}
+	}
+	if founderLogSequence != 0 {
+		replayInputs, err = ValidateFounderReplayInputs(replayInputs, founderCommand)
 		if err != nil {
 			return IntentResult{}, err
 		}
@@ -288,12 +341,18 @@ func (s *Store) applyIntent(
 				return IntentResult{}, err
 			}
 		}
+		if founderLogSequence != 0 {
+			if err := insertFounderLog(ctx, tx, founderCommand, revision.ConstantsHash, canonicalPayload,
+				replayInputs, decision.Receipt, nil); err != nil {
+				return IntentResult{}, err
+			}
+		}
 		if _, err := tx.ExecContext(ctx, `
 			INSERT INTO intent_records (stream_id,intent_id,request_hash,outcome,receipt)
 			VALUES ($1,$2,$3,$4,$5)`, streamID, intentID, requestHash, decision.Outcome, decision.Receipt); err != nil {
 			return IntentResult{}, err
 		}
-		if scope == economy.ScopeCompany {
+		if scope == economy.ScopeCompany || scope == economy.ScopeFounder {
 			if err := insertReceiptOutbox(ctx, tx, ownerID, streamID, intentID, revision.Number, revision.ConstantsHash, decision.Receipt); err != nil {
 				return IntentResult{}, err
 			}
@@ -344,12 +403,18 @@ func (s *Store) applyIntent(
 			return IntentResult{}, err
 		}
 	}
+	if founderLogSequence != 0 {
+		if err := insertFounderLog(ctx, tx, founderCommand, revision.ConstantsHash, canonicalPayload,
+			replayInputs, decision.Receipt, &newRevision); err != nil {
+			return IntentResult{}, err
+		}
+	}
 	if _, err := tx.ExecContext(ctx, `
 		INSERT INTO intent_records (stream_id,intent_id,request_hash,outcome,receipt)
 		VALUES ($1,$2,$3,$4,$5)`, streamID, intentID, requestHash, decision.Outcome, decision.Receipt); err != nil {
 		return IntentResult{}, err
 	}
-	if scope == economy.ScopeCompany {
+	if scope == economy.ScopeCompany || scope == economy.ScopeFounder {
 		if err := insertReceiptOutbox(ctx, tx, ownerID, streamID, intentID, newRevision, revision.ConstantsHash, decision.Receipt); err != nil {
 			return IntentResult{}, err
 		}
