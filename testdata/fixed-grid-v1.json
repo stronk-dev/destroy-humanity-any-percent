@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "cases": [
+    { "name": "zero", "units": 0, "rate": 17, "remainder": 0, "divisor": 1000, "valid": true, "whole": "0", "next_remainder": 0 },
+    { "name": "sub-grid-carry", "units": 2, "rate": 333333, "remainder": 1, "divisor": 1000000, "valid": true, "whole": "0", "next_remainder": 666667 },
+    { "name": "multi-grid", "units": 5001, "rate": 200, "remainder": 999, "divisor": 1000, "valid": true, "whole": "1001", "next_remainder": 199 },
+    { "name": "wide-intermediate", "units": 9007199254740991, "rate": 9007199254740991, "remainder": 0, "divisor": 1, "valid": true, "whole": "81129638414606663681390495662081", "next_remainder": 0 },
+    { "name": "remainder-at-divisor", "units": 1, "rate": 1, "remainder": 10, "divisor": 10, "valid": false, "whole": "", "next_remainder": 0 },
+    { "name": "negative-units", "units": -1, "rate": 1, "remainder": 0, "divisor": 10, "valid": false, "whole": "", "next_remainder": 0 },
+    { "name": "zero-divisor", "units": 1, "rate": 1, "remainder": 0, "divisor": 0, "valid": false, "whole": "", "next_remainder": 0 }
+  ]
+}

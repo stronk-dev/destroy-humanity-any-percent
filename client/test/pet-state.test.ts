@@ -28,8 +28,14 @@ describe("pet replay-owned state", () => {
     ((unknownBehavior[id]!.behavior_queue as Record<string, unknown>[])[0]!).behavior_id = "behavior.unknown";
     cases.push(unknownBehavior);
     const badRemainder = structuredClone(base);
-    badRemainder[id]!.trust_decay_remainder_ppm = 1_000_000;
+    badRemainder[id]!.trust_decay_remainder_ppm = 9_007_199_254_740_992;
     cases.push(badRemainder);
+    const badCursor = structuredClone(base);
+    badCursor[id]!.behavior_prng_cursor = 1;
+    cases.push(badCursor);
+    const badQueueOrder = structuredClone(base);
+    badQueueOrder[id]!.behavior_queue = [{ behavior_id: "behavior.pounce", due_attended_ms: 2 }, { behavior_id: "behavior.nap", due_attended_ms: 1 }];
+    cases.push(badQueueOrder);
     const longQueue = structuredClone(base);
     longQueue[id]!.behavior_queue = Array.from({ length: 9 }, () => ({ behavior_id: "behavior.nap", due_attended_ms: 0 }));
     cases.push(longQueue);

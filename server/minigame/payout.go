@@ -3,9 +3,9 @@ package minigame
 import (
 	"encoding/json"
 	"errors"
-	"math/big"
 
 	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/fixedgrid"
 )
 
 var ErrInvalidPayoutPolicy = errors.New("invalid minigame payout policy")
@@ -82,15 +82,17 @@ func ConvertPayout(score, rateReductionPPM, conversionPPM, priorRemainderPPM int
 		conversionPPM < 0 || conversionPPM > payoutPPM || priorRemainderPPM < 0 || priorRemainderPPM >= payoutPPM {
 		return PayoutConversion{}, ErrInvalidPayoutPolicy
 	}
-	reducedNumerator := new(big.Int).Mul(big.NewInt(score), big.NewInt(payoutPPM-rateReductionPPM))
-	reduced := new(big.Int).Quo(reducedNumerator, big.NewInt(payoutPPM))
-	conversionNumerator := new(big.Int).Mul(reduced, big.NewInt(conversionPPM))
-	conversionNumerator.Add(conversionNumerator, big.NewInt(priorRemainderPPM))
-	converted, remainder := new(big.Int), new(big.Int)
-	converted.QuoRem(conversionNumerator, big.NewInt(payoutPPM), remainder)
+	reduced, err := fixedgrid.Integrate(score, payoutPPM-rateReductionPPM, 0, payoutPPM)
+	if err != nil || !reduced.Whole.IsInt64() {
+		return PayoutConversion{}, ErrInvalidPayoutPolicy
+	}
+	converted, err := fixedgrid.Integrate(reduced.Whole.Int64(), conversionPPM, priorRemainderPPM, payoutPPM)
+	if err != nil || !converted.Whole.IsInt64() {
+		return PayoutConversion{}, ErrInvalidPayoutPolicy
+	}
 	return PayoutConversion{
-		ReducedScore: reduced.Int64(), ConvertedUnits: converted.Int64(),
-		ConversionRemainderPPM: remainder.Int64(),
+		ReducedScore: reduced.Whole.Int64(), ConvertedUnits: converted.Whole.Int64(),
+		ConversionRemainderPPM: converted.Remainder,
 	}, nil
 }
 

@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "catalog": {
+    "schema_version": 1,
+    "stat_policy": {
+      "grid_ms": 1000,
+      "stats": [
+        { "stat_id": "hunger", "initial_ppm": 800000, "floor_ppm": 100000, "decay_ppm_per_grid": 100 },
+        { "stat_id": "energy", "initial_ppm": 700000, "floor_ppm": 100000, "decay_ppm_per_grid": 200 },
+        { "stat_id": "cleanliness", "initial_ppm": 600000, "floor_ppm": 100000, "decay_ppm_per_grid": 300 },
+        { "stat_id": "affection", "initial_ppm": 900000, "floor_ppm": 100000, "decay_ppm_per_grid": 400 }
+      ],
+      "diminishing_threshold_ppm": 700000,
+      "diminishing_factor_ppm": 500000
+    },
+    "actions": [
+      { "action_id": "care.clean", "stat_id": "cleanliness", "delta_ppm": 500000, "cooldown_attended_ms": 2000, "min_eligible_ppm": 100000 },
+      { "action_id": "care.feed", "stat_id": "hunger", "delta_ppm": 100000, "cooldown_attended_ms": 5000, "min_eligible_ppm": 100000 }
+    ],
+    "trust_policy": { "initial_ppm": 850000, "neutral_ppm": 500000, "floor_ppm": 100000, "cap_ppm": 1000000, "gain_ppm_per_effective_action": 1000, "decay_ppm_per_grid": 50 },
+    "mood_policy": [
+      { "mood_member": "withdrawn", "floor_ppm": 0 },
+      { "mood_member": "restless", "floor_ppm": 250000 },
+      { "mood_member": "neutral", "floor_ppm": 500000 },
+      { "mood_member": "engaged", "floor_ppm": 750000 }
+    ],
+    "behavior_policy": [
+      { "from_state": "idle", "event": "grid_tick", "to_state": "active", "duration_grid_ticks": 2 },
+      { "from_state": "idle", "event": "care_applied", "to_state": "care_response", "duration_grid_ticks": 1 },
+      { "from_state": "idle", "event": "care_rejected", "to_state": "resting", "duration_grid_ticks": 1 },
+      { "from_state": "care_response", "event": "grid_tick", "to_state": "idle", "duration_grid_ticks": 1 },
+      { "from_state": "resting", "event": "grid_tick", "to_state": "idle", "duration_grid_ticks": 1 }
+    ]
+  },
+  "cases": [
+    {
+      "name": "decay-diminishing-cooldown-and-fsm",
+      "state": {
+        "stats_ppm": { "hunger": 800000, "energy": 700000, "cleanliness": 600000, "affection": 900000 },
+        "stat_decay_remainders_ppm": { "hunger": 0, "energy": 0, "cleanliness": 0, "affection": 0 },
+        "cooldown_until_attended_ms": {},
+        "trust_ppm": 850000,
+        "trust_decay_remainder_ppm": 0,
+        "evaluated_through_attended_ms": 0,
+        "behavior_state": "idle",
+        "behavior_entered_at_attended_ms": 0,
+        "behavior_queue": [],
+        "behavior_prng_cursor": 0
+      },
+      "input": { "action_id": "care.feed", "attended_before_ms": 0, "attended_after_ms": 2500 },
+      "expected": {
+        "state": {
+          "stats_ppm": { "hunger": 849750, "energy": 699500, "cleanliness": 599250, "affection": 899000 },
+          "stat_decay_remainders_ppm": { "hunger": 0, "energy": 0, "cleanliness": 0, "affection": 0 },
+          "cooldown_until_attended_ms": { "care.feed": 7500 },
+          "trust_ppm": 850875,
+          "trust_decay_remainder_ppm": 0,
+          "evaluated_through_attended_ms": 2500,
+          "behavior_state": "idle",
+          "behavior_entered_at_attended_ms": 0,
+          "behavior_queue": [
+            { "behavior_id": "care_response", "due_attended_ms": 3500 },
+            { "behavior_id": "active", "due_attended_ms": 4000 }
+          ],
+          "behavior_prng_cursor": 0
+        },
+        "applied": true,
+        "rejection_detail": "",
+        "stat_id": "hunger",
+        "before_ppm": 799750,
+        "applied_ppm": 50000,
+        "after_ppm": 849750,
+        "trust_before_ppm": 849875,
+        "trust_after_ppm": 850875,
+        "mood": "neutral",
+        "status_band": "normal",
+        "status_changed": false,
+        "next_eligible_attended_ms": 7500,
+        "eligible_action_ids": ["care.clean"]
+      }
+    },
+    {
+      "name": "cycle-skip-large-attended-interval",
+      "state": {
+        "stats_ppm": { "hunger": 800000, "energy": 700000, "cleanliness": 600000, "affection": 900000 },
+        "stat_decay_remainders_ppm": { "hunger": 0, "energy": 0, "cleanliness": 0, "affection": 0 },
+        "cooldown_until_attended_ms": {},
+        "trust_ppm": 850000,
+        "trust_decay_remainder_ppm": 0,
+        "evaluated_through_attended_ms": 0,
+        "behavior_state": "idle",
+        "behavior_entered_at_attended_ms": 0,
+        "behavior_queue": [],
+        "behavior_prng_cursor": 0
+      },
+      "input": { "action_id": "care.feed", "attended_before_ms": 0, "attended_after_ms": 1000000000000 },
+      "expected": {
+        "state": {
+          "stats_ppm": { "hunger": 200000, "energy": 100000, "cleanliness": 100000, "affection": 100000 },
+          "stat_decay_remainders_ppm": { "hunger": 0, "energy": 0, "cleanliness": 0, "affection": 0 },
+          "cooldown_until_attended_ms": { "care.feed": 1000000005000 },
+          "trust_ppm": 501000,
+          "trust_decay_remainder_ppm": 0,
+          "evaluated_through_attended_ms": 1000000000000,
+          "behavior_state": "idle",
+          "behavior_entered_at_attended_ms": 0,
+          "behavior_queue": [
+            { "behavior_id": "care_response", "due_attended_ms": 1000000001000 },
+            { "behavior_id": "active", "due_attended_ms": 1000000002000 }
+          ],
+          "behavior_prng_cursor": 0
+        },
+        "applied": true,
+        "rejection_detail": "",
+        "stat_id": "hunger",
+        "before_ppm": 100000,
+        "applied_ppm": 100000,
+        "after_ppm": 200000,
+        "trust_before_ppm": 500000,
+        "trust_after_ppm": 501000,
+        "mood": "withdrawn",
+        "status_band": "floor",
+        "status_changed": true,
+        "next_eligible_attended_ms": 1000000005000,
+        "eligible_action_ids": ["care.clean"]
+      }
+    }
+  ]
+}

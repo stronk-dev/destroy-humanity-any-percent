@@ -38,7 +38,7 @@ export function parsePetCatalog(source: unknown): PetCatalog {
   const stats = stat.stats.map((item) => { const row = exactObject(item, ["stat_id", "initial_ppm", "floor_ppm", "decay_ppm_per_grid"], "stat row"); if (typeof row.stat_id !== "string" || !PET_STAT_IDS.includes(row.stat_id as PetStatID) || seenStats.has(row.stat_id as PetStatID)) throw new SyntaxError("invalid stat row"); const floor = safeInteger(row.floor_ppm, 0, 1_000_000); const initial = safeInteger(row.initial_ppm, floor, 1_000_000); seenStats.add(row.stat_id as PetStatID); return { stat_id: row.stat_id as PetStatID, initial_ppm: initial, floor_ppm: floor, decay_ppm_per_grid: safeInteger(row.decay_ppm_per_grid, 0, 1_000_000) }; });
   if (!Array.isArray(root.actions)) throw new SyntaxError("invalid pet actions");
   let priorAction = "";
-  const actions = root.actions.map((item) => { const row = exactObject(item, ["action_id", "stat_id", "delta_ppm", "cooldown_attended_ms", "min_eligible_ppm"], "pet action"); if (typeof row.action_id !== "string" || !mechanical.test(row.action_id) || byteCompare(priorAction, row.action_id) >= 0 || typeof row.stat_id !== "string" || !PET_STAT_IDS.includes(row.stat_id as PetStatID)) throw new SyntaxError("invalid pet action"); priorAction = row.action_id; return { action_id: row.action_id, stat_id: row.stat_id as PetStatID, delta_ppm: safeInteger(row.delta_ppm, 0, 1_000_000), cooldown_attended_ms: safeInteger(row.cooldown_attended_ms, 0, MAX_EXACT_INTEGER), min_eligible_ppm: safeInteger(row.min_eligible_ppm, 0, 1_000_000) }; });
+  const actions = root.actions.map((item) => { const row = exactObject(item, ["action_id", "stat_id", "delta_ppm", "cooldown_attended_ms", "min_eligible_ppm"], "pet action"); if (typeof row.action_id !== "string" || !mechanical.test(row.action_id) || byteCompare(priorAction, row.action_id) >= 0 || typeof row.stat_id !== "string" || !PET_STAT_IDS.includes(row.stat_id as PetStatID)) throw new SyntaxError("invalid pet action"); priorAction = row.action_id; const statRow = stats.find((candidate) => candidate.stat_id === row.stat_id)!; return { action_id: row.action_id, stat_id: row.stat_id as PetStatID, delta_ppm: safeInteger(row.delta_ppm, 1, 1_000_000), cooldown_attended_ms: safeInteger(row.cooldown_attended_ms, 0, MAX_EXACT_INTEGER), min_eligible_ppm: safeInteger(row.min_eligible_ppm, 0, statRow.floor_ppm) }; });
   const trust = exactObject(root.trust_policy, ["initial_ppm", "neutral_ppm", "floor_ppm", "cap_ppm", "gain_ppm_per_effective_action", "decay_ppm_per_grid"], "trust policy");
   const floor = safeInteger(trust.floor_ppm, 0, 1_000_000), neutral = safeInteger(trust.neutral_ppm, floor, 1_000_000), initial = safeInteger(trust.initial_ppm, neutral, 1_000_000), cap = safeInteger(trust.cap_ppm, initial, 1_000_000);
   const grammar = parsePetCatalogGrammar({ mood_thresholds: root.mood_policy, behavior_candidates: root.behavior_policy });
@@ -59,7 +59,7 @@ export function parsePetCatalogGrammar(source: unknown): PetCatalogGrammar {
       throw new SyntaxError("invalid mood member");
     }
     const floor = safeInteger(row.floor_ppm, 0, 1_000_000);
-    if (floor <= priorFloor) throw new SyntaxError("mood floors must ascend");
+    if (seenMoods.size === 0 && floor !== 0 || floor <= priorFloor) throw new SyntaxError("mood floors must ascend from zero");
     priorFloor = floor;
     seenMoods.add(row.mood_member as PetMood);
     return { mood_member: row.mood_member as PetMood, floor_ppm: floor };

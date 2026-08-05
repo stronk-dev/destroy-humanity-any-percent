@@ -13,7 +13,7 @@ import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quant
 import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
 import { parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
 import { parsePetCatalog, type PetCatalog } from "./pet/catalog";
-import { parsePetCareStates, type PetCareState } from "./pet/state";
+import { parsePetCareStates, validatePetCareStatesForCatalog, type PetCareState } from "./pet/state";
 import { discountedRequirements, evaluatePredicate, parseRoutesCatalog, type RouteContext, type RoutesCatalog } from "./routes";
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -420,6 +420,7 @@ export function restoreFounderReplayState(source: unknown, version: number, cata
   if (requestedVersion >= 18) {
     if (!catalogs.pets) throw new SyntaxError("Founder v18 requires pets artifact");
     pets = parsePetCareStates(foundationRaw!.pets, { action_ids: catalogs.pets.actions.map((row) => row.action_id), behavior_ids: ["active", "care_response", "idle", "resting"] });
+    validatePetCareStatesForCatalog(pets, catalogs.pets);
   } else if (catalogs.pets) throw new SyntaxError("pets artifact requires Founder v18");
   return { wireVersion: requestedVersion as 14 | 15 | 16 | 17 | 18, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm,
     stockRateRemainderPpm: 0, evaluatedThroughMs, computeCreditMs: 0, manualTokenMilli: 0, manualTokenRefilledAtMs,

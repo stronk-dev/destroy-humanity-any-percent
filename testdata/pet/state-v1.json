@@ -23,13 +23,14 @@
       },
       "trust_ppm": 850000,
       "trust_decay_remainder_ppm": 17,
+      "evaluated_through_attended_ms": 123456,
       "behavior_state": "active",
       "behavior_entered_at_attended_ms": 9000,
       "behavior_queue": [
         {"behavior_id": "behavior.nap", "due_attended_ms": 15000},
         {"behavior_id": "behavior.pounce", "due_attended_ms": 22000}
       ],
-      "behavior_prng_cursor": 6
+      "behavior_prng_cursor": 0
     }
   }
 }

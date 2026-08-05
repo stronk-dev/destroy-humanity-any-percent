@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import fixture from "../../testdata/pet/catalog-grammar-v1.json";
 import { parsePetCatalog, parsePetCatalogGrammar } from "../src/pet/catalog";
+import { PET_STAT_IDS } from "../src/pet/grammar";
 
 describe("pet catalog grammar", () => {
   it("loads the shared exact-key fixture", () => {
@@ -15,6 +16,7 @@ describe("pet catalog grammar", () => {
       { ...base, mood_thresholds: base.mood_thresholds.slice(0, 3) },
       { ...base, mood_thresholds: base.mood_thresholds.map((row: any, index: number) => index === 1 ? { ...row, mood_member: "withdrawn" } : row) },
       { ...base, mood_thresholds: base.mood_thresholds.map((row: any, index: number) => index === 2 ? { ...row, floor_ppm: 1 } : row) },
+      { ...base, mood_thresholds: base.mood_thresholds.map((row: any, index: number) => index === 0 ? { ...row, floor_ppm: 1 } : row) },
       { ...base, behavior_candidates: [{ ...base.behavior_candidates[0], event: "offline_tick" }] },
       { ...base, behavior_candidates: [{ ...base.behavior_candidates[0], duration_grid_ticks: 0 }] },
       { ...base, behavior_candidates: [base.behavior_candidates[0], { ...base.behavior_candidates[0], duration_grid_ticks: 2 }] },
@@ -35,5 +37,14 @@ describe("complete pet artifact", () => {
       actions: [], trust_policy: { initial_ppm: 500_000, neutral_ppm: 500_000, floor_ppm: 100_000, cap_ppm: 1_000_000, gain_ppm_per_effective_action: 1_000, decay_ppm_per_grid: 100 },
       mood_policy: [{ mood_member: "withdrawn", floor_ppm: 0 }, { mood_member: "restless", floor_ppm: 250_000 }, { mood_member: "neutral", floor_ppm: 500_000 }, { mood_member: "engaged", floor_ppm: 750_000 }], behavior_policy: [] });
     expect(catalog.stat_policy.stats).toHaveLength(4);
+  });
+
+  it("keeps every recovery action eligible at the declared floor", () => {
+    const base = { schema_version: 1,
+      stat_policy: { grid_ms: 60_000, stats: PET_STAT_IDS.map((stat_id) => ({ stat_id, initial_ppm: 800_000, floor_ppm: 100_000, decay_ppm_per_grid: 1_000 })), diminishing_threshold_ppm: 700_000, diminishing_factor_ppm: 500_000 },
+      actions: [{ action_id: "care.feed", stat_id: "hunger", delta_ppm: 1, cooldown_attended_ms: 0, min_eligible_ppm: 100_001 }],
+      trust_policy: { initial_ppm: 500_000, neutral_ppm: 500_000, floor_ppm: 100_000, cap_ppm: 1_000_000, gain_ppm_per_effective_action: 1_000, decay_ppm_per_grid: 100 },
+      mood_policy: [{ mood_member: "withdrawn", floor_ppm: 0 }, { mood_member: "restless", floor_ppm: 250_000 }, { mood_member: "neutral", floor_ppm: 500_000 }, { mood_member: "engaged", floor_ppm: 750_000 }], behavior_policy: [] };
+    expect(() => parsePetCatalog(base)).toThrow();
   });
 });

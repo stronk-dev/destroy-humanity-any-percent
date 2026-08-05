@@ -90,7 +90,7 @@ func (bundle CatalogBundle) ValidateFoundationState(state *save.State) error {
 			if len(state.Pets) != 0 {
 				return fmt.Errorf("%w: pets without pinned artifact", ErrInvalidEngineState)
 			}
-		} else if pet.ValidateCareStates(state.Pets, bundle.Pets.StateDeclarations()) != nil {
+		} else if pet.ValidateCareStatesForCatalog(state.Pets, bundle.Pets) != nil {
 			return fmt.Errorf("%w: invalid pinned pet state", ErrInvalidEngineState)
 		}
 	}

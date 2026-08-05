@@ -68,3 +68,32 @@ func TestLoadFullCatalogRejectsMissingKeysAtEveryLayer(t *testing.T) {
 		})
 	}
 }
+
+func TestLoadFullCatalogEnforcesNoDeathAndTotalMoodProjection(t *testing.T) {
+	var baseline map[string]any
+	if err := json.Unmarshal([]byte(fullCatalogFixture), &baseline); err != nil {
+		t.Fatal(err)
+	}
+	for _, testCase := range []struct {
+		name   string
+		mutate func(map[string]any)
+	}{
+		{"recovery unavailable at floor", func(value map[string]any) {
+			value["actions"].([]any)[0].(map[string]any)["min_eligible_ppm"] = float64(100001)
+		}},
+		{"mood projection has no zero floor", func(value map[string]any) {
+			value["mood_policy"].([]any)[0].(map[string]any)["floor_ppm"] = float64(1)
+		}},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			encoded, _ := json.Marshal(baseline)
+			var value map[string]any
+			_ = json.Unmarshal(encoded, &value)
+			testCase.mutate(value)
+			candidate, _ := json.Marshal(value)
+			if _, err := LoadCatalog(candidate); err == nil {
+				t.Fatal("invalid policy accepted")
+			}
+		})
+	}
+}

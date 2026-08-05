@@ -96,17 +96,20 @@ func validateFullCatalog(catalog *Catalog) error {
 		return ErrInvalidCatalog
 	}
 	seenStats := map[StatID]bool{}
+	statFloors := map[StatID]int64{}
 	for _, row := range catalog.StatPolicy.Stats {
 		if !ValidStatID(row.StatID) || seenStats[row.StatID] || row.InitialPPM < row.FloorPPM || row.InitialPPM > 1_000_000 ||
 			row.FloorPPM < 0 || row.DecayPPMPerGrid < 0 || row.DecayPPMPerGrid > 1_000_000 {
 			return ErrInvalidCatalog
 		}
 		seenStats[row.StatID] = true
+		statFloors[row.StatID] = row.FloorPPM
 	}
 	lastAction := ""
 	for _, row := range catalog.Actions {
-		if !mechanicalIDPattern.MatchString(row.ActionID) || row.ActionID <= lastAction || !ValidStatID(row.StatID) || row.DeltaPPM < 0 ||
-			row.DeltaPPM > 1_000_000 || !exactNonnegative(row.CooldownAttendedMS) || row.MinEligiblePPM < 0 || row.MinEligiblePPM > 1_000_000 {
+		if !mechanicalIDPattern.MatchString(row.ActionID) || row.ActionID <= lastAction || !ValidStatID(row.StatID) || row.DeltaPPM < 1 ||
+			row.DeltaPPM > 1_000_000 || !exactNonnegative(row.CooldownAttendedMS) || row.MinEligiblePPM < 0 ||
+			row.MinEligiblePPM > statFloors[row.StatID] {
 			return ErrInvalidCatalog
 		}
 		lastAction = row.ActionID

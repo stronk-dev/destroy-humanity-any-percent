@@ -1,4 +1,5 @@
 import { MAX_EXACT_INTEGER } from "../numeric";
+import type { PetCatalog } from "./catalog";
 import { PET_BEHAVIOR_QUEUE_HARDCAP, PET_BEHAVIOR_STATES, PET_STAT_IDS, type PetBehaviorState, type PetStatID } from "./grammar";
 
 const petID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -15,6 +16,7 @@ export interface PetCareState {
   readonly cooldown_until_attended_ms: Record<string, number>;
   readonly trust_ppm: number;
   readonly trust_decay_remainder_ppm: number;
+  readonly evaluated_through_attended_ms: number;
   readonly behavior_state: PetBehaviorState;
   readonly behavior_entered_at_attended_ms: number;
   readonly behavior_queue: readonly PetBehaviorQueueEntry[];
@@ -27,7 +29,7 @@ export interface PetStateDeclarations {
 }
 
 const careStateKeys = ["stats_ppm", "stat_decay_remainders_ppm", "cooldown_until_attended_ms", "trust_ppm",
-  "trust_decay_remainder_ppm", "behavior_state", "behavior_entered_at_attended_ms", "behavior_queue", "behavior_prng_cursor"] as const;
+  "trust_decay_remainder_ppm", "evaluated_through_attended_ms", "behavior_state", "behavior_entered_at_attended_ms", "behavior_queue", "behavior_prng_cursor"] as const;
 
 export function parsePetCareStates(source: unknown, declarations: PetStateDeclarations): Record<string, PetCareState> {
   const actions = declaredIDs(declarations.action_ids, "action");
@@ -38,7 +40,7 @@ export function parsePetCareStates(source: unknown, declarations: PetStateDeclar
     if (!petID.test(id)) throw new SyntaxError("invalid pet id");
     const raw = exactObject(rawStates[id], careStateKeys, "pet state");
     const stats = statRecord(raw.stats_ppm, 1_000_000, "stats_ppm");
-    const remainders = statRecord(raw.stat_decay_remainders_ppm, 999_999, "stat_decay_remainders_ppm");
+    const remainders = statRecord(raw.stat_decay_remainders_ppm, MAX_EXACT_INTEGER, "stat_decay_remainders_ppm");
     const cooldownRaw = record(raw.cooldown_until_attended_ms, "cooldowns");
     const cooldowns: Record<string, number> = {};
     for (const actionID of Object.keys(cooldownRaw).sort(byteCompare)) {
@@ -52,19 +54,36 @@ export function parsePetCareStates(source: unknown, declarations: PetStateDeclar
       return { behavior_id: value.behavior_id, due_attended_ms: safeInteger(value.due_attended_ms, 0, MAX_EXACT_INTEGER) };
     });
     if (typeof raw.behavior_state !== "string" || !PET_BEHAVIOR_STATES.includes(raw.behavior_state as PetBehaviorState)) throw new SyntaxError("invalid behavior state");
+    if (new Set(queue.map((entry) => entry.behavior_id)).size !== queue.length) throw new SyntaxError("duplicate queued pet behavior");
+    for (let index = 1; index < queue.length; index++) {
+      const prior = queue[index - 1]!, current = queue[index]!;
+      if (prior.due_attended_ms > current.due_attended_ms || prior.due_attended_ms === current.due_attended_ms && byteCompare(prior.behavior_id, current.behavior_id) >= 0) throw new SyntaxError("noncanonical behavior queue");
+    }
+    const evaluatedThrough = safeInteger(raw.evaluated_through_attended_ms, 0, MAX_EXACT_INTEGER);
+    const behaviorEnteredAt = safeInteger(raw.behavior_entered_at_attended_ms, 0, evaluatedThrough);
     result[id] = {
       stats_ppm: stats,
       stat_decay_remainders_ppm: remainders,
       cooldown_until_attended_ms: cooldowns,
       trust_ppm: safeInteger(raw.trust_ppm, 0, 1_000_000),
-      trust_decay_remainder_ppm: safeInteger(raw.trust_decay_remainder_ppm, 0, 999_999),
+      trust_decay_remainder_ppm: safeInteger(raw.trust_decay_remainder_ppm, 0, MAX_EXACT_INTEGER),
+      evaluated_through_attended_ms: evaluatedThrough,
       behavior_state: raw.behavior_state as PetBehaviorState,
-      behavior_entered_at_attended_ms: safeInteger(raw.behavior_entered_at_attended_ms, 0, MAX_EXACT_INTEGER),
+      behavior_entered_at_attended_ms: behaviorEnteredAt,
       behavior_queue: queue,
-      behavior_prng_cursor: safeInteger(raw.behavior_prng_cursor, 0, MAX_EXACT_INTEGER),
+      behavior_prng_cursor: safeInteger(raw.behavior_prng_cursor, 0, 0),
     };
   }
   return result;
+}
+
+export function validatePetCareStatesForCatalog(states: Readonly<Record<string, PetCareState>>, catalog: PetCatalog): void {
+  for (const state of Object.values(states)) {
+    if (state.trust_decay_remainder_ppm >= catalog.stat_policy.grid_ms ||
+      PET_STAT_IDS.some((id) => state.stat_decay_remainders_ppm[id] >= catalog.stat_policy.grid_ms)) {
+      throw new SyntaxError("pet decay remainder exceeds pinned grid");
+    }
+  }
 }
 
 function declaredIDs(values: readonly string[], label: string): ReadonlySet<string> {

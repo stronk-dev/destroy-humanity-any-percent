@@ -24,7 +24,8 @@ func TestCareStateMatchesSharedFixture(t *testing.T) {
 	}
 	state := states["01986666-7000-7000-8000-000000000001"]
 	if state.StatsPPM[StatHunger] != 800000 || state.TrustPPM != 850000 ||
-		state.BehaviorState != BehaviorActive || len(state.BehaviorQueue) != 2 || state.BehaviorPRNGCursor != 6 {
+		state.BehaviorState != BehaviorActive || len(state.BehaviorQueue) != 2 || state.BehaviorPRNGCursor != 0 ||
+		state.EvaluatedThroughAttendedMS != 123456 {
 		t.Fatalf("state=%+v", state)
 	}
 	state.StatsPPM[StatHunger] = 0
@@ -56,9 +57,19 @@ func TestCareStateRejectsUnruledOrIncompleteState(t *testing.T) {
 	cases["unknown behavior"] = unknownBehavior
 	badRemainder := cloneCareStates(map[string]CareState{petID: valid})
 	badRemainderState := badRemainder[petID]
-	badRemainderState.TrustDecayRemainderPPM = 1_000_000
+	badRemainderState.TrustDecayRemainderPPM = maxExactInteger + 1
 	badRemainder[petID] = badRemainderState
 	cases["bad remainder"] = badRemainder
+	badCursor := cloneCareStates(map[string]CareState{petID: valid})
+	badCursorState := badCursor[petID]
+	badCursorState.BehaviorPRNGCursor = 1
+	badCursor[petID] = badCursorState
+	cases["vestigial prng cursor moved"] = badCursor
+	badQueueOrder := cloneCareStates(map[string]CareState{petID: valid})
+	badQueueState := badQueueOrder[petID]
+	badQueueState.BehaviorQueue = []BehaviorQueueEntry{{BehaviorID: "behavior.nap", DueAttendedMS: 2}, {BehaviorID: "behavior.nap", DueAttendedMS: 1}}
+	badQueueOrder[petID] = badQueueState
+	cases["noncanonical queue"] = badQueueOrder
 	longQueue := cloneCareStates(map[string]CareState{petID: valid})
 	longQueueState := longQueue[petID]
 	longQueueState.BehaviorQueue = make([]BehaviorQueueEntry, 9)
@@ -93,6 +104,21 @@ func TestCareStateRejectsUnruledOrIncompleteState(t *testing.T) {
 		ActionIDs: fixture.Declarations.ActionIDs, BehaviorIDs: fixture.Declarations.BehaviorIDs,
 	}); err == nil {
 		t.Fatal("missing scalar pet state key accepted")
+	}
+}
+
+func TestCareStateRemainderIsPinnedGridBound(t *testing.T) {
+	catalog, err := LoadCatalog([]byte(fullCatalogFixture))
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := CareState{
+		StatsPPM:                map[StatID]int64{StatHunger: 1, StatEnergy: 1, StatCleanliness: 1, StatAffection: 1},
+		StatDecayRemaindersPPM:  map[StatID]int64{StatHunger: catalog.StatPolicy.GridMS, StatEnergy: 0, StatCleanliness: 0, StatAffection: 0},
+		CooldownUntilAttendedMS: map[string]int64{}, TrustPPM: 1, BehaviorState: BehaviorIdle, BehaviorQueue: []BehaviorQueueEntry{},
+	}
+	if ValidateCareStatesForCatalog(map[string]CareState{"01986666-7000-7000-8000-000000000001": state}, catalog) == nil {
+		t.Fatal("remainder at pinned grid accepted")
 	}
 }
 

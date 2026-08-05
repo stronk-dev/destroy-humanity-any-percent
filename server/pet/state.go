@@ -27,6 +27,7 @@ type CareState struct {
 	CooldownUntilAttendedMS     map[string]int64     `json:"cooldown_until_attended_ms"`
 	TrustPPM                    int64                `json:"trust_ppm"`
 	TrustDecayRemainderPPM      int64                `json:"trust_decay_remainder_ppm"`
+	EvaluatedThroughAttendedMS  int64                `json:"evaluated_through_attended_ms"`
 	BehaviorState               BehaviorState        `json:"behavior_state"`
 	BehaviorEnteredAtAttendedMS int64                `json:"behavior_entered_at_attended_ms"`
 	BehaviorQueue               []BehaviorQueueEntry `json:"behavior_queue"`
@@ -61,7 +62,7 @@ func exactCareStateKeys(data []byte) bool {
 		return false
 	}
 	stateKeys := []string{"stats_ppm", "stat_decay_remainders_ppm", "cooldown_until_attended_ms", "trust_ppm",
-		"trust_decay_remainder_ppm", "behavior_state", "behavior_entered_at_attended_ms", "behavior_queue", "behavior_prng_cursor"}
+		"trust_decay_remainder_ppm", "evaluated_through_attended_ms", "behavior_state", "behavior_entered_at_attended_ms", "behavior_queue", "behavior_prng_cursor"}
 	for _, encoded := range states {
 		var state map[string]json.RawMessage
 		if json.Unmarshal(encoded, &state) != nil || !hasRawKeys(state, stateKeys) {
@@ -104,11 +105,12 @@ func ValidateCareStates(states map[string]CareState, declarations StateDeclarati
 	}
 	for petID, state := range states {
 		if !petIDPattern.MatchString(petID) || !completeStatMap(state.StatsPPM, 1_000_000) ||
-			!completeStatMap(state.StatDecayRemaindersPPM, 999_999) ||
+			!completeStatMap(state.StatDecayRemaindersPPM, maxExactInteger) ||
 			state.TrustPPM < 0 || state.TrustPPM > 1_000_000 ||
-			state.TrustDecayRemainderPPM < 0 || state.TrustDecayRemainderPPM >= 1_000_000 ||
+			!exactNonnegative(state.TrustDecayRemainderPPM) || !exactNonnegative(state.EvaluatedThroughAttendedMS) ||
 			!ValidBehaviorState(state.BehaviorState) || !exactNonnegative(state.BehaviorEnteredAtAttendedMS) ||
-			!exactNonnegative(state.BehaviorPRNGCursor) || !ValidBehaviorQueueLength(len(state.BehaviorQueue)) {
+			state.BehaviorEnteredAtAttendedMS > state.EvaluatedThroughAttendedMS || state.BehaviorPRNGCursor != 0 ||
+			!ValidBehaviorQueueLength(len(state.BehaviorQueue)) {
 			return ErrInvalidCareState
 		}
 		if state.CooldownUntilAttendedMS == nil || state.BehaviorQueue == nil {
@@ -119,8 +121,39 @@ func ValidateCareStates(states map[string]CareState, declarations StateDeclarati
 				return ErrInvalidCareState
 			}
 		}
-		for _, entry := range state.BehaviorQueue {
+		seenQueuedBehaviors := map[string]bool{}
+		for index, entry := range state.BehaviorQueue {
 			if _, exists := behaviors[entry.BehaviorID]; !exists || !exactNonnegative(entry.DueAttendedMS) {
+				return ErrInvalidCareState
+			}
+			if seenQueuedBehaviors[entry.BehaviorID] {
+				return ErrInvalidCareState
+			}
+			seenQueuedBehaviors[entry.BehaviorID] = true
+			if index > 0 {
+				prior := state.BehaviorQueue[index-1]
+				if prior.DueAttendedMS > entry.DueAttendedMS ||
+					prior.DueAttendedMS == entry.DueAttendedMS && prior.BehaviorID >= entry.BehaviorID {
+					return ErrInvalidCareState
+				}
+			}
+		}
+	}
+	return nil
+}
+
+// ValidateCareStatesForCatalog closes the remainder domain that the generic
+// v18 codec cannot know without the pinned artifact.
+func ValidateCareStatesForCatalog(states map[string]CareState, catalog *Catalog) error {
+	if catalog == nil || ValidateCareStates(states, catalog.StateDeclarations()) != nil {
+		return ErrInvalidCareState
+	}
+	for _, state := range states {
+		if state.TrustDecayRemainderPPM >= catalog.StatPolicy.GridMS {
+			return ErrInvalidCareState
+		}
+		for _, remainder := range state.StatDecayRemaindersPPM {
+			if remainder >= catalog.StatPolicy.GridMS {
 				return ErrInvalidCareState
 			}
 		}

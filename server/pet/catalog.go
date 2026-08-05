@@ -73,7 +73,7 @@ func validateCatalogGrammar(grammar CatalogGrammar) error {
 	seenMoods := make(map[Mood]struct{}, len(moods))
 	for index, row := range grammar.MoodThresholds {
 		if !ValidMood(row.MoodMember) || row.FloorPPM < 0 || row.FloorPPM > 1_000_000 ||
-			index > 0 && row.FloorPPM <= grammar.MoodThresholds[index-1].FloorPPM {
+			index == 0 && row.FloorPPM != 0 || index > 0 && row.FloorPPM <= grammar.MoodThresholds[index-1].FloorPPM {
 			return ErrInvalidCatalogGrammar
 		}
 		if _, duplicate := seenMoods[row.MoodMember]; duplicate {
