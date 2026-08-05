@@ -139,3 +139,28 @@ Focused evidence from the repository root: `make test-go GO_PACKAGES='./producti
 `make verify-schema`, `make verify-kernel-version` (0.3.59), and `make test-save-integration` all
 pass. Canonical docs were updated in the following record commit; no production doctrine artifact,
 epoch mint, archival, push, or deployment occurred.
+
+## 2026-08-05 — full root verification and Codex full-span self-review
+
+Review by: Codex (self-review; not an independent archival gate). Recorded by: Codex.
+
+Reviewed range: `2262eab..5e279bd`.
+
+- Added a direct terminal-transition regression proving Exit clears the active burst in both the
+  ending Company state and its new-run state (`345b913`).
+- The first full `make verify` correctly failed because the generated production-formula artifact
+  still carried its pre-burst source fingerprint. The generator changed only that fingerprint; no
+  formula or balance literal changed. Commit `3c9b818` records the generated artifact.
+- Full-span self-review found one acceptance-coverage gap after the green gate: burst replay parity
+  and fixed-grid provisioning were each tested, but no case combined a burst with a real provision
+  boundary. Commit `5e279bd` adds a 90-second one-shot-versus-split regression across the absolute
+  60-second grid and pins identical cash, provisioned units, and exhausted burst state.
+- Re-ran the complete root `make verify` at `5e279bd`: green across Go vet/tests, deterministic
+  harness checks, TypeScript/Svelte typecheck, production build, 6,566 client tests, 19,707 browser
+  tests, formula/schema/boundary generation checks, and kernel-history fixtures.
+
+No correctness finding remains from the self-review. Its one coverage finding was fixed inside the
+reviewed range rather than carried forward.
+
+No production artifact, epoch mint, archive, push, or deployment occurred. The implementation is
+ready for the required independent full-range reviews; this self-review does not satisfy them.
