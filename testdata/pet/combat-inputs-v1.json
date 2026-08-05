@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "neutral-care-zero-soul",
+      "pet_trust_ppm": 500000,
+      "soul": 0,
+      "valid": true,
+      "expected": { "pet_trust_ppm": 500000, "soul": 0 }
+    },
+    {
+      "name": "full-trust-positive-soul-boundary",
+      "pet_trust_ppm": 1000000,
+      "soul": 9007199254740991,
+      "valid": true,
+      "expected": { "pet_trust_ppm": 1000000, "soul": 9007199254740991 }
+    },
+    {
+      "name": "floor-trust-negative-soul-boundary",
+      "pet_trust_ppm": 0,
+      "soul": -9007199254740991,
+      "valid": true,
+      "expected": { "pet_trust_ppm": 0, "soul": -9007199254740991 }
+    },
+    {
+      "name": "trust-over-cap",
+      "pet_trust_ppm": 1000001,
+      "soul": 0,
+      "valid": false,
+      "expected": null
+    },
+    {
+      "name": "soul-outside-exact-domain",
+      "pet_trust_ppm": 500000,
+      "soul": 9007199254740992,
+      "valid": false,
+      "expected": null
+    }
+  ]
+}
