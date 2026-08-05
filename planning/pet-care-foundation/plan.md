@@ -15,6 +15,8 @@ RFC: `rfc/pet-care-foundation.md`
     independent Founder version axis.
 - [ ] Implement attended-grid care, trust, mood, and bounded behavior FSM kernels in Go and TS.
 - [ ] Add Founder activation/persistence, public status projection, and combat-input seam.
+  - [x] Export the fixture-only replay-owned `{pet_trust_ppm, soul}` combat input boundary with
+    shared Go/TypeScript vectors; combat remains the sole owner of Obedience formulas.
 - [ ] Mint production pet content only after owner/harness-supplied catalog rows.
 - [ ] Pass normal root gates, obtain full-range independent review, publish canonical docs, and
   archive.
@@ -53,3 +55,7 @@ attended evaluation watermark required to prevent repeated decay; the ruled rema
 no equation; care eligibility/diminishing order and mood/FSM scheduling are not exact; and the
 Founder command/replay/event envelopes remain unnamed. The proposals are filed in the RFC rather
 than inferred in code.
+
+Post-C5 seam status: the pure pet-to-combat boundary is implemented independently of the blocked
+care transition. It exports only exact-safe `pet_trust_ppm` and `soul`; no combat formula, live
+duel, production pet row, or balance mint is claimed.

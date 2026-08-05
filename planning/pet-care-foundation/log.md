@@ -555,3 +555,25 @@ Acceptance review by: Codex. Recorded by: Codex.
 
 The catalog/state grammar remains approved. Care-transition consumers wait for C18-C21 rather than
 improvising mechanics inside `ApplyFounderLogged`.
+
+## 2026-08-05 — fixture-only pet-to-combat input seam
+
+Implemented by: Codex.
+
+- Commit `30a354b` implements C5's pure `{pet_trust_ppm, soul}` boundary in Go and TypeScript.
+  Trust is read from replay-owned pet state, Soul remains Founder-owned, and both values are
+  validated inside their exact-safe integer domains. The seam deliberately contains no Obedience
+  or duel formula; those remain combat-catalog concerns.
+- `testdata/pet/combat-inputs-v1.json` is one shared cross-runtime corpus covering neutral input,
+  both exact-integer Soul boundaries, Trust overflow, and unsafe Soul rejection.
+- The watched semantic addition bumps kernel `0.3.49 -> 0.3.50`. Standard root verification is
+  green: Go vet/tests, formula and harness drift gates, schema/boundary/history checks, client
+  build/type checks, 6,550 client assertions, and 19,659 browser assertions. The sandbox initially
+  denied the browser runner's loopback bind; the unchanged root `make test-browser` target passed
+  outside that restriction.
+- No production pet catalog was authored, no balance epoch was minted, and nothing was pushed.
+
+This landing does not self-authorize archival. The next independent review must cover the complete
+post-F1 span `965fd4a..HEAD`, including the acceptance-contract commit `83236cf`, implementation
+`30a354b`, and this record. Care-transition and resolve-composer work remain blocked on C18-C21 and
+C37-C40 respectively.
