@@ -437,3 +437,6 @@ Implemented by: Codex.
   while every new Company run remains v16. Numeric/content rows remain unminted balance data.
 - Kernel bumped 0.3.45 -> 0.3.46 with the shared save/replay change. Normal root gates are green;
   no content mint and no push occurred.
+
+Self-review remediation `3085d4d`: pre-v17 codecs now reject rather than silently discard
+nonempty minigame/pet maps. The regression and kernel 0.3.47 are in the independent-review range.

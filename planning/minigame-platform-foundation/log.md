@@ -465,3 +465,7 @@ Implemented by: Codex.
   Founder v17 / Company v16, closing designated-review finding F1.
 - Kernel bumped 0.3.45 -> 0.3.46 for the save/replay grammar change. Normal root test/typecheck
   targets are green; no content mint and no push occurred.
+
+Self-review remediation `3085d4d`: the first landing let v14/v15 encode calls silently discard
+nonempty v17/v18 maps. Both legacy branches now reject Founder feature state, with a regression;
+kernel 0.3.47. This is part of the range awaiting independent review.
