@@ -303,6 +303,58 @@ production fallback/offline automation.
    at zero connected peers.
 6. Registry: the combat DUEL engine registers as a conformant tenant via adapter (the lane engine follows when implemented — not claimed ready, C9).
 
+## Implementation blockers after Founder Attendance landed (Codex, 2026-08-05)
+
+Founder Attendance `5c3f4c3` closes C26's clock dependency, but applying the remaining rulings to
+the production/save boundaries exposes three narrower executable-contract gaps. None is a balance
+literal; each changes the wire, persistence, or replay grammar.
+
+### C28 — C24 calls the transform grammar closed without enumerating it
+
+C24 accepts per-source exact-key arms and a fixed integer operation order, but neither C19 nor C24
+lists those key sets, the operation union, negative rounding, or whether composition is one row or
+a graph. A loader still cannot distinguish the intended grammar from an invented one.
+
+**Proposed contract:** one row is
+`{destination,destination_class,ranked,source,transform}`. Close `source` to
+`{kind:"literal",value}`, `{kind:"tier"}`,
+`{kind:"purchased_generator_count",generator_id}`,
+`{kind:"founder_carry_counter",path}`, or
+`{kind:"attended_quality_grade",minigame_id}`. Close `transform` to
+`{offset,multiplier,denominator,clamp_min,clamp_max}` with positive denominator and mathematical
+floor, applied exactly source → add offset → multiply → floor-divide → clamp. Destination IDs are
+unique; Phase A has no transform graph. Tier taint is the source kind and rejects
+`ranked && destination_class=="power"`. The owner may amend these names, but code needs one literal
+grammar.
+
+### C29 — Founder rating is named but has no state or replay schema
+
+C21/C25 require a Founder rating transition in the atomic resolve transaction. No RFC names its
+persisted fields, initial value/bounds, season-fact union, Founder save/table owner, resolved-input
+arm, receipt, or event payload. Implementing it would invent Founder state and a new
+`ApplyFounderLogged` arm.
+
+**Proposed contract:** store ratings in a dedicated Founder-owned table keyed by
+`(founder_id,minigame_id,season_id)`, with exact safe-integer rating and an append-only rating fact
+row keyed by session. The Founder log receives a closed `minigame_resolution.v1` arm containing
+the session ID, certified-result hash, old/new rating, and sorted season facts; its receipt/event
+are exact projections of that arm. If rating should instead live in the Founder save, that requires
+a Founder-axis save activation contract and must be stated explicitly.
+
+### C30 — The faucet policy and idempotency row remain structurally incomplete
+
+MP3 names sends/cap/conversion but not the credited resource; C5/C22 require a carried conversion
+remainder and session idempotency without naming their columns. The locked transaction cannot be
+written or replayed from the current prose.
+
+**Proposed contract:** payout rows add exact keys
+`{resource_id,attended_window_ms,sends_per_window,per_send_cap,conversion_ppm}`. Persist
+`minigame_faucet_windows(founder_id,minigame_id,window_index,sends_used,credited_total,
+conversion_remainder_ppm)` plus an immutable `(session_id)` application row carrying input score,
+credited amount, forfeited amount/reason, and post-remainder. The session application row is the
+idempotency authority; all integer bounds are `[0,MaxExactInteger]`. Bot/NPC reduction remains in
+the already-ruled fallback row and runs before conversion.
+
 ## Post-ruling implementation blockers (Codex review, 2026-08-04)
 
 C1–C11 settle the architecture and remove the Clout/UI/live-PvP contradictions. They do not yet

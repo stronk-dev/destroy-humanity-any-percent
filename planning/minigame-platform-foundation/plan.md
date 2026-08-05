@@ -37,3 +37,7 @@ Company+Founder+session resolution has conflicting transaction/lock ownership, i
 on the absent Founder attendance authority, and fallback/offline rows still contain unnamed
 objects. C20's command-history slice is complete; the remaining platform is blocked on these
 structural rulings rather than balance literals.
+
+Founder Attendance now closes C26's clock dependency. C28-C30 carry the remaining literal
+contracts: the actual transform key/operation grammar, Founder rating persistence/replay, and the
+faucet policy/idempotency schema. No payout or production catalog row lands before those rulings.

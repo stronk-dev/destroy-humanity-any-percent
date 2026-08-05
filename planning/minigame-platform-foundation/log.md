@@ -155,3 +155,15 @@
   still contain unnamed nested objects.
 - Filed C24-C27 with proposed contracts. The independently approved C20 command-history slice
   remains complete; no production scaling, payout, faucet, or fallback semantics will be invented.
+
+## 2026-08-05 — Founder clock unblocked; remaining wire gaps narrowed
+
+- Founder Attendance landed in `5c3f4c3` with pinned-catalog offline classification, shared Go/TS
+  bounds vectors, and a real-Postgres two-order Exit proof. C26 no longer blocks on an absent clock.
+- Reapplying C24-C27 to the now-real clock exposed three remaining non-balance gaps: C24 never
+  enumerated its claimed exact transform keys/operation union; Founder rating has no persisted or
+  replay schema; and the faucet policy/counter omits its resource ID, remainder columns, and
+  session-idempotency record.
+- Filed C28-C30 with executable proposals. The independently approved session history remains
+  intact. Production payout stays blocked rather than inventing a wire or a second attendance
+  source.
