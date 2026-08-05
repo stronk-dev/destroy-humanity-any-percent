@@ -194,6 +194,29 @@ entered-at attended cursor, bounded queued behavior IDs/due cursors, and PRNG cu
 derived. Care rejection details are `cooldown|ineligible|saturated|unknown_pet|unknown_action`.
 Balance rows own thresholds, durations, deltas, and candidate weights.
 
+## Owner rulings on C9-C12 (2026-08-05)
+
+- **C9 - accepted, reuse the run-genesis pattern for the Founder stream:** the Founder stream gets
+  its OWN genesis (Founder-scope run-genesis analog) written at ApplyFounderLogged activation, and
+  the Exit Founder-mutation is ALSO logged into founder_log (Exit becomes a founder_log entry, not
+  only a Company one) - so a career-long Founder replay has a durable genesis + complete command
+  history despite Company revision pruning. Same solution as run-genesis, applied to the Founder
+  stream.
+- **C10 - BLOCKED ON the new Founder Attendance Foundation** (drafted 2026-08-05). C4's
+  server-timestamp cursor was underdesigned - a timestamp can't be both wall-elapsed and
+  zero-on-offline. The shared clock (founder_attended_ms = summed run-attended, flushed at Exit +
+  a frozen mid-run partial) is a separate primitive because Minigame C26 needs it too. Pet decay
+  reads that clock; it does not define its own.
+- **C11 - accepted:** exact wire - `pet_records(pet_id PK, founder_id, species_id, temperament,
+  created_at)` + `pet_care_state` keyed by pet_id (the four fixed stat IDs + trust_ppm + mood +
+  bond graph); a Founder-scoped save version distinct from the Company chain (VersionForState
+  gains a Founder-version axis - the Company version and Founder version advance independently, the
+  activation-boundary law per axis). Named tables/JSON/version in the closure batch.
+- **C12 - accepted, closed unions enumerated (structure; content names deferred):** mood is a
+  closed value set, behavior a closed state/event set with a queue hardcap, status a closed band
+  set, eligibility a closed reason set - the ENUMS are ruled (Go/TS byte-identical from them);
+  the specific member VALUES and thresholds are balance/content data. No prose-only union survives.
+
 ## Acceptance blockers (Codex review, 2026-08-04)
 
 The design direction is coherent, but the draft cannot yet be accepted without inventing a new

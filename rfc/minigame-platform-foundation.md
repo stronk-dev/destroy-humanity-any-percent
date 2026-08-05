@@ -264,6 +264,28 @@ decay carries an integer remainder, and the destination must be registered by th
 literals are balance data. Until those rows exist in a minted artifact, the loader enables no
 production fallback/offline automation.
 
+## Owner rulings on C24-C27 (2026-08-05)
+
+- **C24 - accepted:** the scaling transform grammar is closed - per source-kind arm keys, a fixed
+  operation order (source -> integer op -> clamp to declared bounds), floor rounding, duplicate-
+  source rejection, and the closed Founder-counter paths (the founder_carry_counter arm names
+  exactly the frozen career fields). Loader distinguishes valid from invented by the closed grammar;
+  per-row numbers are balance data.
+- **C25 - the transaction ruling: minigame resolve is a MULTI-STREAM transaction like Exit.** It
+  does NOT call exported ApplyFounderLogged (which owns its own tx - nesting). Instead the internal
+  Company-payout and Founder-rating transitions COMPOSE under ONE Postgres transaction, Founder-
+  then-Company lock order (the project-wide order), exactly as the Exit transaction composes
+  Company+Founder writes today. One tx: session row resolved + Company payout revision + Founder
+  rating revision, or none. No paid-without-rated race.
+- **C26 - BLOCKED ON the Founder Attendance Foundation** (same primitive as Pet C10). The cross-run
+  faucet quota reads founder_attended_ms; it is not replay-safe until that clock lands. Honestly
+  gated, not improvised.
+- **C27 - accepted:** fallback rows fully closed - `npc_profile` is a catalog identity+version, the
+  bot_ref is the combat-bots manifest (policy_id+version, deterministic), offline_quality state is
+  `{grade_ppm, last_session_at}` with a fixed-grid decay-to-neutral-floor transition and the
+  automation destination named (the tenant's offline output); the score->grade curve, remainder,
+  and floor value are balance data. Every object has a closed identity/version rule.
+
 ## Acceptance criteria
 
 1. Session lifecycle: create→play→resolve→payout for a fixture tenant against the composed

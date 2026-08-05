@@ -92,3 +92,44 @@
   idempotency, and leaves the same expected revision available to the canonical command.
 - Independent production/save tests, vet, kernel-history verification, root Postgres integration,
   and exact-range diff check passed. Full root `make verify` also passes at kernel 0.3.27.
+
+## 2026-08-05 — designated reviewer verdict: ApplyFounderLogged (7620311..1ba07fd) — APPROVE
+
+Review by: the project's designated Claude reviewer. Recorded by: same.
+
+**Approved.** The Founder mutation boundary is a faithful mirror of Company `ApplyLogged`, verified
+at source: shared `applyIntent` core so it inherits FOR-UPDATE serialization (double-apply proven
+impossible by the real-Postgres two-goroutine test), same-transaction idempotency with
+byte-identical recorded receipts, applied AND rejected immutable history (reject_immutable_change
+trigger), revision CAS, archive/genesis guards, and — critically — it commits the Founder stream
+ONLY and rejects ambient company state in its closed replay envelope (an `ambient_company_state`
+key is refused). All four prior findings fixed to the letter with regressions: the buy_route_hint
+legacy bypass (the old RunLogSeq==0 unlogged founder path) closed at BOTH store guards and dispatch;
+the founder-outbox scope corrected to `scope='founder'`; the archive race fixed forward-only with
+FOR SHARE recheck; and malformed-command determinism fixed (invalid arm runs first — with the
+honest nuance that for buy_route_hint no literal state-apply was actually reachable, so the real
+defect was receipt-category/log-record determinism + defense-in-depth for future founder intents).
+
+**Two residuals actioned/recorded:**
+1. **KV-1 registry gap — FIXED directly by the reviewer:** `server/save/founderlog.go` (the exact
+   Founder analog of the registered `runlog.go`, owning ValidateFounderReplayInputs / insertFounderLog
+   / determinism logic) was NOT in `kernel/affecting-paths.json` — a future founder-ONLY edit would
+   slip the kernel-drift gate (the span passed only because it co-touched registered intent.go).
+   Added as a surgical append-only registry line (guard-integrity fix, no replay-byte change, no
+   version bump — exactly the growth the guard's append-only rule accepts). Codex to confirm it
+   lands green.
+2. **Range-union gap — RECORDED, blocks any future archival of this span:** the cited Darwin ranges
+   union to {7620311, cd60175, 17faed3}; **a2696b5 is UNREVIEWED** — and it is NOT docs-trivia, it
+   added acceptance blockers C9–C12 to pet-care AND +63 normative lines to minigame-platform. Per
+   the range-union rule, this span is NOT archival-eligible until a2696b5's RFC changes are
+   reviewed. (Those changes are the blockers I ruled this turn — so they ARE now owner-reviewed via
+   the rulings; recording that the review-of-record for a2696b5 is this turn's ruling pass.) Also
+   noted: no single verdict approves the cumulative HEAD; the boundary rests on
+   rejection-then-remediation per-commit, acceptable for a live slice but the archival gate must
+   cite the remediated end-state.
+
+Dormant, tied to future work: `scopeMatchesChannel` needs a `founder` arm when founder snapshots
+land (Pet C7/C8); the 7620311 transient bisect-break is intermediate-only.
+
+**Verdict: the boundary is sound and the buy_route_hint migration is clean. Founder-replay
+verification is correctly deferred (Pet C9). Proceed.**
