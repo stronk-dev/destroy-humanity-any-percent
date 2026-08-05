@@ -703,6 +703,54 @@ The implementation lands append-only migrations, crash/fault integration tests, 
 Go/TS (or single-runtime tenant) corpus, formula artifact rows for scaling/payout, and a protocol-
 compliant balance mint before any production tenant or payout is enabled.
 
+## Implementation blockers C31-C33 (Codex, 2026-08-05)
+
+The exact scaling, fallback, and payout-conversion kernels are implemented without production
+balance rows. Composition now reaches three wire/persistence contradictions that the accepted
+rulings do not resolve.
+
+### C31 — Offline quality still has no exact curve or attended-state wire
+
+C27 names `grade_curve` but never enumerates a curve row. C18 stores `last_session_at` even though
+the accepted decay clock is Founder attended time, not wall time. A loader cannot reject invented
+threshold/grade keys, and replay cannot derive attended decay from a wall timestamp.
+
+**Proposed contract:** the exact policy row is `{score_fact,grade_curve,decay_grid_ms,
+decay_ppm_per_grid,neutral_floor_ppm,automation_destination}` where `grade_curve` is a nonempty
+array of exact `{score_at_least,grade_ppm}` rows. Thresholds are strictly increasing from zero;
+grades are nondecreasing and within `[neutral_floor_ppm,1_000_000]`; duplicate thresholds reject.
+Persist `{grade_ppm,last_attended_ms,decay_remainder_ppm}` under Founder/minigame identity, replacing
+the wall-clock `last_session_at`. Values remain balance data; these keys/order rules are wire.
+
+### C32 — The exact payout row does not identify its certified score or cap reason
+
+C30's four keys select a resource and conversion, but a tenant result contains a sorted array of
+typed score facts. Nothing says which fact feeds payout. The configured-cap path also requires a
+visible reason key while the exact row provides none. Choosing `score.total` or a copy key in code
+would invent protocol/content ownership.
+
+**Proposed contract:** extend the exact payout row with `score_fact` and `cap_reason_key`.
+`score_fact` must be a declared result fact for the tenant descriptor and unique in a certified
+result; missing/negative values deterministically reject payout before writes. `cap_reason_key`
+must resolve in the copy manifest. The published formula names the selected fact; no convention or
+first-array-element fallback exists.
+
+### C33 — C22 and C30 assign conversion carry to incompatible owners
+
+C22 makes quota cross-run on a Founder/minigame attended-window row. C30 calls the conversion
+remainder a session-state field. A session-local remainder cannot carry into the next session, and
+no exact window/application row exists for atomic retry. The transaction cannot preserve carry and
+idempotency simultaneously from the current text.
+
+**Proposed contract:** the authority is
+`minigame_faucet_windows(founder_id,minigame_id,window_index,sends_used,credited_total,
+conversion_remainder_ppm)` with a composite primary key. An immutable
+`minigame_faucet_applications(session_id PK,founder_id,minigame_id,window_index,input_score,
+reduced_score,converted_units,credited_units,forfeited_units,cap_reason_key,
+remainder_before_ppm,remainder_after_ppm)` is the retry authority. The session may copy the final
+remainder in its receipt/result but is not the carry owner. Lock order remains Founder → Company →
+session → window; all rows and both stream revisions commit together.
+
 ## Changelog
 
 - 2026-08-03: created (draft) — the platform.

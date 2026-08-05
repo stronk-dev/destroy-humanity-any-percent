@@ -201,3 +201,11 @@ solid.**
 - `DESIGN-GAP:` C3/C11 still do not enumerate the exact pet catalog and Founder-state wire keys,
   including action/decay rows, remainder and cooldown maps, behavior queue entries, and the bond
   graph. Those mechanics remain blocked rather than inferred from prose.
+
+## 2026-08-05 — remaining Pet wire bounce C13-C14
+
+- Filed an exact fixture-catalog proposal for stat decay, actions, trust, mood thresholds, and
+  behavior candidates; all numeric values remain balance data.
+- Filed one replay-owned Founder pet-state proposal that resolves the mutable-table/snapshot and
+  stored/derived-mood contradictions. Immutable identity stays relational; mutable mechanics stay
+  inside the Founder transition boundary; writable bonds remain deferred.

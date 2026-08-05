@@ -232,6 +232,18 @@ PRNG label `pet.behavior.v1`; and care rejection details
 stat deltas remain balance/content data. Pet Care remains blocked on this textual correction and
 Founder Attendance A1-A5, not on any invented mechanic.
 
+## Owner ruling on C12a (2026-08-05) — adopt the enum literals (my C12 contradiction fixed)
+
+C12a is right: I said the unions were 'enumerated' then deferred their MEMBER VALUES - but enum
+members are WIRE GRAMMAR (a byte-identical Go/TS port needs them), NOT balance data. The
+structure/numbers line runs BETWEEN the enum (structure) and the thresholds attached to each
+member (balance) - I drew it one level too high. **Ruling: the Phase-A enum members are
+normative:** status band `floor|low|normal|high`; mood `withdrawn|restless|neutral|engaged`;
+behavior state `idle|care_response|active|resting`; behavior event
+`grid_tick|care_applied|care_rejected`; behavior queue hardcap `8`; PRNG label `pet.behavior.v1`;
+care-rejection detail set as the proposal lists. The per-member THRESHOLDS (what stat value is
+'low', decay rate to a band) remain balance data. C12's 'members deferred' clause is withdrawn.
+
 ## Acceptance blockers (Codex review, 2026-08-04)
 
 The design direction is coherent, but the draft cannot yet be accepted without inventing a new
@@ -345,6 +357,44 @@ activation law: old founders/runs do not synthesize pet state from deploy-curren
 production starter creation begins only at the first epoch carrying the pet artifact. Supply
 Go/TS canonical-state and transition vectors for decay, care, trust, FSM, Exit handoff, and
 no-death saturation before implementation status changes to accepted.
+
+## Implementation blockers C13-C14 (Codex, 2026-08-05)
+
+C12a's literal cross-runtime vocabulary is implemented. The next code boundary exposes two exact
+wire gaps rather than missing balance values.
+
+### C13 — C3 does not enumerate the fixture catalog rows it calls closed
+
+The RFC names decay, actions, trust, mood thresholds, and behavior candidates, but does not give
+their exact keys, simultaneous-update grouping, or uniqueness rules. A fixture-only loader would
+still have to invent its schema, so tests could not distinguish content from decorative fields.
+
+**Proposed contract:** a v1 pet-mechanics catalog has exact top-level keys
+`{schema_version,stat_policy,actions,trust_policy,mood_policy,behavior_policy}`. `stat_policy`
+contains the absolute `grid_ms`, one exact `{stat_id,initial_ppm,floor_ppm,
+decay_ppm_per_grid}` row for each fixed stat, and the diminishing threshold/factor ppm. Actions are
+unique exact `{action_id,stat_id,delta_ppm,cooldown_attended_ms,min_eligible_ppm}` rows. Trust owns
+`{initial_ppm,neutral_ppm,floor_ppm,cap_ppm,gain_ppm_per_effective_action,decay_ppm_per_grid}`.
+Mood owns one exact threshold row per C12a mood. Behavior owns exact candidate rows keyed by
+temperament/state/event with mechanical behavior ID, positive weight, and duration-grid bounds.
+All numbers are fixture/balance data; unknown/duplicate/missing rows fail load.
+
+### C14 — C11 conflicts on the authoritative Pet state shape
+
+C11 names a mutable `pet_care_state` table while C1 requires `ApplyFounderLogged` and Founder replay
+to own the mutation. It also says mood is stored, while C12 makes mood derived, and never names
+remainder/cooldown/queue/bond JSON keys. Writing a second mutable table beside Founder state would
+make replay cover only half the transition.
+
+**Proposed contract:** `pet_records` is immutable relational identity only. Mutable state lives in
+the Founder snapshot under an exact `pets` map keyed by pet ID: `{stats_ppm,
+stat_decay_remainders_ppm,cooldown_until_attended_ms,trust_ppm,trust_decay_remainder_ppm,
+behavior_state,behavior_entered_at_attended_ms,behavior_queue,behavior_prng_cursor}`.
+`stats_ppm` and decay remainders have the complete four-stat key set; cooldowns use declared action
+IDs; each queue entry is exact `{behavior_id,due_attended_ms}` and the queue obeys hardcap 8. Mood
+is derived and not persisted. Writable bonds defer to their cross-Founder successor; no bond graph
+ships in this state version. The next Founder wire version activates this map only with a pinned
+pet artifact.
 
 ## Changelog
 

@@ -205,3 +205,12 @@
 - `DESIGN-GAP:` payout composition still needs the certified score-fact selector, configured-cap
   reason key, and exact attended-window persistence row. C30 does not provide those fields, so the
   transaction cannot be made byte-replayable without a narrow owner ruling.
+
+## 2026-08-05 — remaining composition bounce C31-C33
+
+- Filed executable contracts for the offline grade-curve/attended-state wire, explicit certified
+  payout score plus cap reason, and one cross-run faucet-window authority with an immutable
+  per-session application record.
+- The proposals preserve the shipped exact kernels and Founder→Company→session lock order. No
+  balance value or production artifact is requested; implementation continues when the owner
+  rules the wire ownership.
