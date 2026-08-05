@@ -27,6 +27,7 @@ func TestPayoutPolicyRejectsUnknownResourceAndInventedGrammar(t *testing.T) {
 		"negative sends":   `{"credited_resource_id":"resource.compute","sends_per_day":-1,"per_send_cap":250,"conversion_ppm":125000}`,
 		"conversion high":  `{"credited_resource_id":"resource.compute","sends_per_day":5,"per_send_cap":250,"conversion_ppm":1000001}`,
 		"noninteger":       `{"credited_resource_id":"resource.compute","sends_per_day":5.0,"per_send_cap":250,"conversion_ppm":125000}`,
+		"duplicate cap":    `{"credited_resource_id":"resource.compute","sends_per_day":5,"per_send_cap":250,"per_send_cap":500,"conversion_ppm":125000}`,
 	}
 	for name, raw := range cases {
 		t.Run(name, func(t *testing.T) {

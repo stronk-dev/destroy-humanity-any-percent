@@ -46,12 +46,13 @@ func TestScalingPolicyRejectsRankedPowerAndInventedGrammar(t *testing.T) {
 		t.Fatalf("ranked power err=%v", err)
 	}
 	cases := map[string]string{
-		"unknown key":        `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"tier","source_ref":"tier","op":"identity","operand":0,"clamp_min":0,"clamp_max":9,"formula":"tier"}]}`,
-		"duplicate target":   `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"tier","source_ref":"tier","op":"identity","operand":0,"clamp_min":0,"clamp_max":9},{"destination":"x","destination_class":"presentation","source_kind":"literal","source_ref":"1","op":"identity","operand":0,"clamp_min":0,"clamp_max":9}]}`,
-		"bad literal":        `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"literal","source_ref":"01","op":"identity","operand":0,"clamp_min":0,"clamp_max":9}]}`,
-		"identity operand":   `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"tier","source_ref":"tier","op":"identity","operand":1,"clamp_min":0,"clamp_max":9}]}`,
-		"negative divisor":   `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"tier","source_ref":"tier","op":"floordiv","operand":-2,"clamp_min":0,"clamp_max":9}]}`,
-		"unknown carry path": `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"founder_carry_counter","source_ref":"soul","op":"identity","operand":0,"clamp_min":0,"clamp_max":9}]}`,
+		"unknown key":         `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"tier","source_ref":"tier","op":"identity","operand":0,"clamp_min":0,"clamp_max":9,"formula":"tier"}]}`,
+		"duplicate target":    `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"tier","source_ref":"tier","op":"identity","operand":0,"clamp_min":0,"clamp_max":9},{"destination":"x","destination_class":"presentation","source_kind":"literal","source_ref":"1","op":"identity","operand":0,"clamp_min":0,"clamp_max":9}]}`,
+		"bad literal":         `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"literal","source_ref":"01","op":"identity","operand":0,"clamp_min":0,"clamp_max":9}]}`,
+		"identity operand":    `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"tier","source_ref":"tier","op":"identity","operand":1,"clamp_min":0,"clamp_max":9}]}`,
+		"negative divisor":    `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"tier","source_ref":"tier","op":"floordiv","operand":-2,"clamp_min":0,"clamp_max":9}]}`,
+		"unknown carry path":  `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"founder_carry_counter","source_ref":"soul","op":"identity","operand":0,"clamp_min":0,"clamp_max":9}]}`,
+		"duplicate operation": `{"schema_version":1,"scaling_inputs":[{"destination":"x","destination_class":"breadth","source_kind":"tier","source_ref":"tier","op":"add","op":"mul","operand":1,"clamp_min":0,"clamp_max":9}]}`,
 	}
 	for name, raw := range cases {
 		t.Run(name, func(t *testing.T) {

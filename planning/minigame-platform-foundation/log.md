@@ -214,3 +214,11 @@
 - The proposals preserve the shipped exact kernels and Founder→Company→session lock order. No
   balance value or production artifact is requested; implementation continues when the owner
   rules the wire ownership.
+
+## 2026-08-05 — exact-key adversarial hardening
+
+- Self-review found that `encoding/json` accepts duplicate object keys even with unknown-field
+  rejection. Added one recursive duplicate-key guard shared by scaling, fallback, and payout
+  loaders, including nested identity objects; every ambiguity now fails before typed decode.
+- Added regression rows for duplicate scaling operations, fallback discriminators/identity keys,
+  and payout caps. The formula fingerprint covers the new authority.

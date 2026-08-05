@@ -59,7 +59,7 @@ type npcIdentityWire struct {
 func LoadFallbackPolicy(data []byte) (FallbackPolicy, error) {
 	var raw map[string]json.RawMessage
 	var kind FallbackKind
-	if json.Unmarshal(data, &raw) != nil || raw == nil || json.Unmarshal(raw["kind"], &kind) != nil {
+	if !uniqueJSONKeys(data) || json.Unmarshal(data, &raw) != nil || raw == nil || json.Unmarshal(raw["kind"], &kind) != nil {
 		return FallbackPolicy{}, ErrInvalidFallbackPolicy
 	}
 	switch kind {
@@ -123,6 +123,9 @@ func hasExactJSONKeys(data []byte, expected ...string) bool {
 }
 
 func decodeExact(data []byte, destination any) error {
+	if !uniqueJSONKeys(data) {
+		return ErrInvalidFallbackPolicy
+	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(destination); err != nil {
@@ -133,4 +136,54 @@ func decodeExact(data []byte, destination any) error {
 		return ErrInvalidFallbackPolicy
 	}
 	return nil
+}
+
+func uniqueJSONKeys(data []byte) bool {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	var readValue func() bool
+	readValue = func() bool {
+		token, err := decoder.Token()
+		if err != nil {
+			return false
+		}
+		delimiter, compound := token.(json.Delim)
+		if !compound {
+			return true
+		}
+		switch delimiter {
+		case '{':
+			seen := map[string]struct{}{}
+			for decoder.More() {
+				keyToken, keyErr := decoder.Token()
+				key, ok := keyToken.(string)
+				if keyErr != nil || !ok {
+					return false
+				}
+				if _, duplicate := seen[key]; duplicate {
+					return false
+				}
+				seen[key] = struct{}{}
+				if !readValue() {
+					return false
+				}
+			}
+			end, endErr := decoder.Token()
+			return endErr == nil && end == json.Delim('}')
+		case '[':
+			for decoder.More() {
+				if !readValue() {
+					return false
+				}
+			}
+			end, endErr := decoder.Token()
+			return endErr == nil && end == json.Delim(']')
+		default:
+			return false
+		}
+	}
+	if !readValue() {
+		return false
+	}
+	var trailing any
+	return errors.Is(decoder.Decode(&trailing), io.EOF)
 }

@@ -76,6 +76,9 @@ var founderCarryScalingPaths = map[string]bool{
 // the owning minigame declaration; passing it here makes the Fairness Law
 // enforceable without storing that policy twice in every row.
 func LoadScalingPolicy(data []byte, ranked bool) (*ScalingPolicy, error) {
+	if !uniqueJSONKeys(data) {
+		return nil, ErrInvalidScalingPolicy
+	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
 	var wire scalingPolicyWire

@@ -174,6 +174,7 @@ var formulaAuthorities = []authoritySpec{
 	{label: "minigame.ScalingPolicy.Resolve", path: "minigame/scaling.go", kind: authorityMethod, symbol: "Resolve"},
 	{label: "minigame.floorBigInt", path: "minigame/scaling.go", kind: authorityFunction, symbol: "floorBigInt"},
 	{label: "minigame.LoadFallbackPolicy", path: "minigame/fallback.go", kind: authorityFunction, symbol: "LoadFallbackPolicy"},
+	{label: "minigame.uniqueJSONKeys", path: "minigame/fallback.go", kind: authorityFunction, symbol: "uniqueJSONKeys"},
 	{label: "minigame.LoadPayoutPolicy", path: "minigame/payout.go", kind: authorityFunction, symbol: "LoadPayoutPolicy"},
 	{label: "minigame.ConvertPayout", path: "minigame/payout.go", kind: authorityFunction, symbol: "ConvertPayout"},
 }

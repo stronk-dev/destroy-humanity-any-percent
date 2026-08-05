@@ -37,6 +37,8 @@ func TestFallbackPolicyRejectsInventedOrIncompleteRows(t *testing.T) {
 		"npc bad profile":    `{"kind":"npc_partner","npc_profile":{"profile_id":"Bad Profile","version":"1.0.0"},"rate_reduction_ppm":1}`,
 		"negative rate":      `{"kind":"bot","bot_ref":{"policy_id":"combat.basic","version":"1.0.0"},"rate_reduction_ppm":-1}`,
 		"rate overflow":      `{"kind":"bot","bot_ref":{"policy_id":"combat.basic","version":"1.0.0"},"rate_reduction_ppm":1000001}`,
+		"duplicate kind":     `{"kind":"solo","kind":"bot"}`,
+		"nested duplicate":   `{"kind":"bot","bot_ref":{"policy_id":"combat.basic","policy_id":"combat.other","version":"1.0.0"},"rate_reduction_ppm":1}`,
 		"trailing value":     `{"kind":"solo"} {}`,
 	}
 	for name, raw := range cases {
