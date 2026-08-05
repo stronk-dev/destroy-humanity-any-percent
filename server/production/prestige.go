@@ -247,6 +247,7 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 	endedEvents := append([]save.EventWrite(nil), endedPrefix...)
 	endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventRunEnded, SchemaVersion: 2, IntentID: request.IntentID, Payload: endedPayload})
 	return save.ExitDecision{Outcome: save.IntentApplied, Receipt: receipt, FinalCompanyState: company, NewCompanyState: newCompany, NewConstantsHash: nextBundle.ConstantsHash,
+		VersionFloors:      exitVersionFloors(currentBundle, nextBundle),
 		FounderEvents:      []save.EventWrite{{Kind: save.EventFounderAdvanced, SchemaVersion: 1, IntentID: request.IntentID, Payload: advancedPayload}},
 		CompanyEndedEvents: endedEvents, CompanyStartedEvents: []save.EventWrite{{Kind: save.EventRunStarted, SchemaVersion: 1, IntentID: request.IntentID, Payload: startedPayload}}}, nil
 }

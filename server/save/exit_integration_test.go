@@ -251,6 +251,7 @@ func exitTestMutation(ownerID, companyStreamID, intentID, hash string, now time.
 		advanced, _ := json.Marshal(map[string]any{"founder_id": ownerID, "run_id": runID, "exit_type": "collapse", "reputation_delta": 2, "route_knowledge": 25, "occurred_at_ms": now.UnixMilli()})
 		declined, _ := json.Marshal(map[string]any{"offer_id": "01985555-0011-7000-8000-000000000011", "run_seq": company.RunSeq})
 		return ExitDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`), FinalCompanyState: company, NewCompanyState: newCompany, NewConstantsHash: hash,
+			VersionFloors: ExitVersionFloors{CurrentFounder: CurrentVersion, CurrentCompany: CurrentVersion, NextFounder: CurrentVersion, NextCompany: CurrentVersion},
 			FounderEvents: []EventWrite{{Kind: EventFounderAdvanced, SchemaVersion: 1, IntentID: intentID, Payload: advanced}},
 			CompanyEndedEvents: []EventWrite{
 				{Kind: EventExitOfferDeclined, SchemaVersion: 1, IntentID: intentID, Payload: declined},

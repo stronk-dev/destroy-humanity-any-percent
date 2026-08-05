@@ -34,3 +34,8 @@ queue entry shape, or bond-graph wire.
 Post-C14 status: ownership and the top-level state keys are ruled. C15 carries the two nested row
 families whose exact keys are still absent; C16 carries the pinned-artifact/Founder-only version
 transition required to activate that state without advancing or bricking Company saves.
+
+Post-C16 infrastructure status: Exit now validates independently supplied Founder/Company floors
+and accepts mixed-axis tuples without relaxing monotonicity or the decode-only v15 ban. Assigning
+the first pet/minigame Founder versions and accepting their artifact bytes remains owner/mint
+work; no code labels the partial fixture grammar as a production pet artifact.

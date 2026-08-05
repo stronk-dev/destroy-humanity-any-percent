@@ -349,6 +349,18 @@ F3 (over-quota churns remainder harmlessly - resets at day roll).
 **Verdict: sound. C15/C16/C34/C35 ruled this turn (incl. the independent Founder-version-axis
 reconciliation). Proceed.**
 
+## 2026-08-05 — C35 independent save-version axes, infrastructure slice
+
+- The shared C16/C35 Exit seam now receives current/next Founder and Company floors separately.
+  It allows a Founder axis to be ahead of Company while preserving per-axis monotonicity, current
+  pinned floors, terminal Company immutability, and the v15 decode-only prohibition.
+- The existing Meters/Achievements bundle continues to derive paired v16 floors. No minigame
+  artifact or rating map is activated from deploy-current code.
+- `DESIGN-GAP:` the ruling deliberately declines to assign whether pets or minigames own the first
+  post-v16 Founder version, and no complete production `minigames` artifact is minted. The
+  independent validator is ready; assigning the artifact/version and embedding both rating and
+  offline-quality maps remains an owner/epoch decision before the multi-stream resolve composer.
+
 ## 2026-08-05 — C34 exact offline-quality grammar
 
 - Implemented the exact outer policy and `{score_threshold, grade_ppm}` curve row with strict,

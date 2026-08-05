@@ -113,6 +113,20 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	return err == nil && computed == constantsHash
 }
 
+func (bundle CatalogBundle) versionFloors() (founder, company int) {
+	founder, company = save.CurrentVersion, save.CurrentVersion
+	if bundle.foundationsActive() {
+		founder, company = 16, 16
+	}
+	return founder, company
+}
+
+func exitVersionFloors(current, next CatalogBundle) save.ExitVersionFloors {
+	currentFounder, currentCompany := current.versionFloors()
+	nextFounder, nextCompany := next.versionFloors()
+	return save.ExitVersionFloors{CurrentFounder: currentFounder, CurrentCompany: currentCompany, NextFounder: nextFounder, NextCompany: nextCompany}
+}
+
 type replayContribution struct {
 	Slot     multiplier.Slot `json:"slot"`
 	SourceID string          `json:"source_id"`

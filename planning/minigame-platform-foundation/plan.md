@@ -69,3 +69,8 @@ Post-C33 status: the payout selector and window authority are implemented. C34 n
 ellipsis to one proposed exact grade-curve row; C35 carries the Founder-only version/artifact seam
 shared by rating, offline-quality, and Pet C16. The atomic resolve composer stays blocked until
 that state can be replay-owned without version collision.
+
+Post-C35 infrastructure status: Exit's version-tuple validator now accepts independent,
+pinned-bundle-derived Founder and Company floors. The production `minigames` artifact and exact
+Founder rating/quality maps still need an owner-assigned version and complete artifact row; the
+platform does not infer either from the structural fixture loaders.

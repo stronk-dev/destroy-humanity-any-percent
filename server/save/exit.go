@@ -21,6 +21,17 @@ type ExitDecision struct {
 	CompanyStartedEvents  []EventWrite
 	FounderReplayResolved json.RawMessage
 	FounderAuditReceipt   json.RawMessage
+	VersionFloors         ExitVersionFloors
+}
+
+// ExitVersionFloors are derived from the current and next pinned artifact
+// bundles. Founder and Company revisions are independent axes: each must meet
+// its own floor, and neither axis may regress.
+type ExitVersionFloors struct {
+	CurrentFounder int
+	CurrentCompany int
+	NextFounder    int
+	NextCompany    int
 }
 
 type ExitMutation func(founder *State, founderRevision Revision, company *State, companyRevision Revision) (ExitDecision, error)
@@ -252,7 +263,7 @@ func (s *Store) applyExitTransaction(
 		}
 		return IntentResult{Outcome: IntentRejected, Receipt: cloneRaw(decision.Receipt)}, nil
 	}
-	if err := validateExitVersionTransition(founderRevision, companyRevision, founder, decision.FinalCompanyState, decision.NewCompanyState); err != nil {
+	if err := validateExitVersionTransition(founderRevision, companyRevision, founder, decision.FinalCompanyState, decision.NewCompanyState, decision.VersionFloors); err != nil {
 		return IntentResult{}, err
 	}
 
@@ -383,28 +394,28 @@ func (s *Store) applyExitTransaction(
 	return IntentResult{Outcome: IntentApplied, Receipt: cloneRaw(decision.Receipt), Events: recorded}, nil
 }
 
-func validateExitVersionTransition(founderRevision, companyRevision Revision, founder, finalCompany, newCompany *State) error {
+func validateExitVersionTransition(founderRevision, companyRevision Revision, founder, finalCompany, newCompany *State, floors ExitVersionFloors) error {
 	if founder == nil || finalCompany == nil || newCompany == nil {
 		return fmt.Errorf("%w: missing Exit state", ErrInvalidState)
 	}
 	currentFounderVersion, currentCompanyVersion := migratedWriteVersion(founderRevision.Version), migratedWriteVersion(companyRevision.Version)
 	founderVersion, finalVersion, nextVersion := VersionForState(founder), VersionForState(finalCompany), VersionForState(newCompany)
 	if !writableStateVersion(currentFounderVersion) || !writableStateVersion(currentCompanyVersion) || !writableStateVersion(founderVersion) ||
-		!writableStateVersion(finalVersion) || !writableStateVersion(nextVersion) {
+		!writableStateVersion(finalVersion) || !writableStateVersion(nextVersion) || !writableStateVersion(floors.CurrentFounder) ||
+		!writableStateVersion(floors.CurrentCompany) || !writableStateVersion(floors.NextFounder) || !writableStateVersion(floors.NextCompany) {
 		return fmt.Errorf("%w: save v15 is decode-only and cannot identify a run", ErrInvalidState)
 	}
-	if currentFounderVersion != currentCompanyVersion {
-		return fmt.Errorf("%w: founder/company save versions disagree before Exit", ErrInvalidState)
+	if currentFounderVersion < floors.CurrentFounder || currentCompanyVersion < floors.CurrentCompany {
+		return fmt.Errorf("%w: current save version is below its pinned artifact floor", ErrInvalidState)
 	}
 	if finalVersion != currentCompanyVersion {
 		return fmt.Errorf("%w: terminal company state changed save version", ErrInvalidState)
 	}
-	if nextVersion != currentCompanyVersion && nextVersion != LatestSupportedVersion {
-		return fmt.Errorf("%w: invalid new-run save version transition", ErrInvalidState)
+	if founderVersion < currentFounderVersion || founderVersion < floors.NextFounder {
+		return fmt.Errorf("%w: Founder save version regressed or missed its next pinned floor", ErrInvalidState)
 	}
-	if (nextVersion == LatestSupportedVersion && founderVersion != LatestSupportedVersion) ||
-		(nextVersion != LatestSupportedVersion && founderVersion != currentFounderVersion) {
-		return fmt.Errorf("%w: founder/company mechanic activation must be atomic", ErrInvalidState)
+	if nextVersion < currentCompanyVersion || nextVersion < floors.NextCompany {
+		return fmt.Errorf("%w: Company save version regressed or missed its next pinned floor", ErrInvalidState)
 	}
 	return nil
 }

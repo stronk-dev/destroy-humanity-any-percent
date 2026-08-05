@@ -325,6 +325,22 @@ F3 (over-quota churns remainder harmlessly - resets at day roll).
 **Verdict: sound. C15/C16/C34/C35 ruled this turn (incl. the independent Founder-version-axis
 reconciliation). Proceed.**
 
+## 2026-08-05 — C16 independent save-version axes, infrastructure slice
+
+- Replaced Exit's historical `Founder version == Company version` rule with four explicit floors:
+  current Founder/Company and next Founder/Company, each derived from its pinned bundle. The
+  terminal Company state cannot change version; resulting Founder and next Company versions must
+  meet their own floors and cannot regress.
+- Existing paired v16 Meters/Achievements activation supplies `16/16` floors as a special case.
+  Unit coverage proves legacy migration, paired activation, and a mixed Founder-v16/Company-v14
+  tuple; it also rejects a missing floor, decode-only v15, terminal changes, and either axis
+  missing its declared next floor.
+- `DESIGN-GAP:` C16 names a complete `pets` epoch artifact, but the implemented C15 artifact slice
+  contains only mood/behavior grammar and C13 still supplies no complete production species,
+  action, decay, or Trust catalog bytes. No artifact set, constants identity, or Founder version
+  number is minted from partial fixture data. That owner-gated content/artifact step remains before
+  the C14 pet map can enter the Founder save.
+
 ## 2026-08-05 — C15 exact pet catalog row families
 
 - Implemented strict Go and TypeScript loaders for the two owner-ruled row families against one

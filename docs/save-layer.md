@@ -136,6 +136,16 @@ read the wall clock implicitly. Its `corpus_version` is metadata, not a save ver
 baseline manifest makes required case names and the exact case count a server-test gate, so an
 addition or removal requires an explicit reviewed baseline ratchet.
 
+Founder and Company save versions are independent axes. Exit validates the terminal Company state
+against the current Company revision, then checks the resulting Founder and next-run Company
+versions separately against floors derived from the current and next pinned artifact bundles.
+Neither axis may regress, and decode-only v15 cannot identify a writable stream. The existing
+Meters/Company plus Achievements/Founder v16 activation remains paired because those two artifacts
+entered one epoch together; the validator no longer treats that historical pairing as a universal
+Founder-equals-Company rule. Future Founder-only mechanics must first register their pinned
+artifact and declared Founder floor; an unregistered artifact cannot raise a version by convention
+or deploy-current inference.
+
 ## Intent and event transaction
 
 `intent_records` keys normalized receipts by `(stream_id,intent_id)` with a SHA-256 canonical
