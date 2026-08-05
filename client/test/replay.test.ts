@@ -165,8 +165,10 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 
 	it("replays one certified minigame resolution across both Go/TS log arms", async () => {
 		const bundle = await loadReplayCatalogBundle(fixture.minigame_constants_hash, fixture.minigame_artifacts);
+		if (!bundle.meters || !bundle.achievements) throw new Error("minigame replay fixture lacks foundation catalogs");
+		const foundationCatalogs = { meters: bundle.meters, achievements: bundle.achievements };
 		const companyCase = fixture.minigame_company_case;
-		const company = restoreReplayState(companyCase.pre_state, 16, bundle.economy, bundle);
+		const company = restoreReplayState(companyCase.pre_state, 16, bundle.economy, foundationCatalogs);
 		const companyTransition = await applyLogged(company, canonicalJSONString(companyCase.canonical_payload), bundle, companyCase.replay_inputs);
 		expect(canonicalJSONString(companyTransition.receipt)).toBe(companyCase.receipt_json);
 		expect(canonicalJSONString(companyTransition.events)).toBe(companyCase.events_json);

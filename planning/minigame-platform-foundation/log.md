@@ -621,3 +621,71 @@ pass; this entry does not authorize archival.
   every persistence boundary including first-Founder-genesis.
 - Kernel version is 0.3.56 after the post-commit Founder-history discriminator fix. No production artifact was minted, no RFC was archived, and nothing was
   pushed.
+
+## 2026-08-05 — designated review remediation: TypeScript gate
+
+The designated care-composer review approved the care and resolve logic but found `TS2345` in the
+new shared replay test: an optionally-typed `ReplayCatalogBundle` was passed where the v16 restore
+boundary requires proven meters and achievements catalogs. The fixture now fails closed when those
+artifacts are absent and passes an explicitly narrowed foundation view.
+
+`make verify` already declares `verify-client -> typecheck`; no Makefile dependency was missing.
+Codex's earlier green report was therefore incorrect: the tool output observed during that run ended
+after the server/harness portion, and Codex treated that partial output as successful completion
+instead of separately confirming the client gate. The remediation is accepted only after an
+explicit root `make typecheck` followed by the complete root `make verify` exit status. No kernel
+bump is needed because this changes only a test's static narrowing, not runtime semantics.
+
+## 2026-08-05 — designated verdict: resolve composer (b1cbbf1..2cfd4e1) — APPROVE (code)
+
+Review by: the designated Claude reviewer. Recorded by: same. Mandatory archival gate (rule c) for
+the four resolve commits {549cedd, 6b4b561, 11ae7bb, 2cfd4e1}. b1cbbf1 is the care->resolve boundary
+and an ancestor of 2cfd4e1; no prior verdict cites these four hashes — range-union complete, no gap.
+Implementation does NOT self-archive (RFC still `implementing`).
+
+**Two catastrophic-risk invariants CLOSED, verified at source with real-Postgres:**
+- **C38 atomic all-or-none:** ONE BeginTx wraps both stream revisions, both logs, both event sets,
+  run/founder logs, intent record, receipt outbox, retention, session-terminal + faucet-window. Lock
+  order Founder-then-Company (ratified global order; no Company-first path exists). Fault injection
+  iterates EVERY write boundary (10 + founder_genesis) and asserts nothing partially commits
+  (both revisions unchanged, session still `claimed`, result nil). Real-Postgres, green.
+- **Idempotent retry / no double payout:** intent-record read AFTER both FOR UPDATE locks (the
+  serialization point); a hit returns recorded receipt bytes without mutate — no tenant re-run, no
+  re-credit, no faucet re-consume; hash divergence -> ErrIdempotencyConflict; write-once receipt
+  enforced by migration 00060 trigger; concurrent resolves serialize, exactly one credits; retry
+  receipt byte-identical (test).
+
+**Also verified:**
+- 2cfd4e1 self-caught fix COMPLETE: VerifyFounderHistory wrongly treated non-null `source` as
+  exit-only, but minigame Founder entries carry a source coordinate -> any career with a resolution
+  failed verify. Fix generalizes `linked := exit||minigame`, gates the source cross-check to
+  exit-only, both runtimes parity; sibling paths hold (independent per-feature watermarks: pet cursor
+  vs minigame quality — no cross-contamination).
+- C37: CatalogBundle.Minigames sole resolver, no deploy-current PayoutPolicy (grep-clean); ids
+  derived; shared catalog-v2.json.
+- C39: both logs bind same certified_result_hash; credited_delta as canonical Decimal STRING (no
+  float encoding); byte-parity fixture apply-logged-v1.json both runtimes.
+- **C40 + the SHARED primitive (the subtle-drift risk I flagged) CLOSED:** `fixedgrid.Integrate` is
+  literally the ONE primitive used by pet C18, minigame C40, AND the faucet carry;
+  Integrate(a+b)==Integrate(a).Integrate(b) tested. Not three drifting copies — one helper. Rating
+  checked-add (big.Int), saturate floor/ceiling, +1 count, null=unrated-but-quality-commits; offline
+  quality decay-then-replace-then-zero-remainder; 6 boundary vectors byte-identical both runtimes.
+- Kernel 0.3.56 lockstep; migrations 00060/00061/00062 append-only (00062 supersedes the exit-only
+  founder-log source constraint via a NEW migration, not in-place); checkbox flips landed in 11ae7bb
+  with its exercising tests.
+
+Non-blocking F1 (INFORMATIONAL): the minigame Founder arm's source coordinate is not cross-checked
+during Founder history replay (weaker binding than the exit arm) — but not a defect: source does not
+feed state reproduction (rating+quality+receipt+events all byte-verified), both runtimes skip it
+identically, the write-time link is asserted, and the company-side coordinate is validated in
+applyCompanyMinigameResolution. Flagged in the RFC for any future arm that routes state through source.
+
+**Verdict: APPROVE (code). No blocking defects. The resolve composer is sound.**
+
+## 2026-08-05 — REQUIRED FIX on the resolve composer (found post-verdict by the care review + confirmed)
+`pnpm typecheck` FAILS at HEAD 2cfd4e1: test/replay.test.ts(169,81) TS2345 — restoreReplayState gets a
+ReplayCatalogBundle (optional meters/achievements) where non-optional {meters,achievements} is
+required. Introduced by this resolve range; vitest passed because it does not typecheck. The
+persistence/replay LOGIC verdict (APPROVE code) stands, but this typecheck error is a REQUIRED fix
+before this RFC archives. Routed to Codex. Lesson: the review + verify gate must include
+`pnpm typecheck`, not only vitest.
