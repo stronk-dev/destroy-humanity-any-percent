@@ -689,3 +689,12 @@ required. Introduced by this resolve range; vitest passed because it does not ty
 persistence/replay LOGIC verdict (APPROVE code) stands, but this typecheck error is a REQUIRED fix
 before this RFC archives. Routed to Codex. Lesson: the review + verify gate must include
 `pnpm typecheck`, not only vitest.
+
+## 2026-08-05 — TS2345 remediation landed
+
+Implemented by: Codex in `06bf0f3`. The shared replay fixture now proves the optional catalog
+members before passing the narrowed `{meters, achievements}` view to the v16 restore boundary.
+Explicit root `make typecheck` exited 0, then the complete root `make verify` process exited 0 after
+6,563 unit tests and 19,698 browser assertions. The Makefile already included typechecking; only
+Codex's earlier interpretation of partial tool output was wrong. This closes the required build
+fix, subject to the normal independent review of `2cfd4e1..06bf0f3`; nothing is archived here.
