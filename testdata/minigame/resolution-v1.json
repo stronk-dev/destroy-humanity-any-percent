@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "name": "unrated-still-updates-quality",
+      "rating": {"elo": 1000, "season_member": "ranked", "games_counted": 2},
+      "quality": {"grade_ppm": 750000, "last_founder_attended_ms": 0, "decay_remainder_ppm": 0},
+      "result": {"outcome": "complete", "score_facts": [{"kind": "score.total", "value": 0}], "rating_delta": null},
+      "founder_attended_ms": 30000,
+      "expected_rating": {"elo": 1000, "season_member": "ranked", "games_counted": 2},
+      "expected_quality": {"grade_ppm": 500000, "last_founder_attended_ms": 30000, "decay_remainder_ppm": 0}
+    },
+    {
+      "name": "negative-delta-saturates-at-floor",
+      "rating": {"elo": 1000, "season_member": "ranked", "games_counted": 2},
+      "quality": {"grade_ppm": 800000, "last_founder_attended_ms": 0, "decay_remainder_ppm": 1},
+      "result": {"outcome": "complete", "score_facts": [{"kind": "score.total", "value": 100}], "rating_delta": -2000},
+      "founder_attended_ms": 60001,
+      "expected_rating": {"elo": 0, "season_member": "ranked", "games_counted": 3},
+      "expected_quality": {"grade_ppm": 750000, "last_founder_attended_ms": 60001, "decay_remainder_ppm": 0}
+    },
+    {
+      "name": "positive-delta-saturates-at-ceiling",
+      "rating": {"elo": 2500, "season_member": "ranked", "games_counted": 9},
+      "quality": {"grade_ppm": 500000, "last_founder_attended_ms": 0, "decay_remainder_ppm": 0},
+      "result": {"outcome": "complete", "score_facts": [{"kind": "score.total", "value": 100}], "rating_delta": 1000},
+      "founder_attended_ms": 0,
+      "expected_rating": {"elo": 3000, "season_member": "ranked", "games_counted": 10},
+      "expected_quality": {"grade_ppm": 750000, "last_founder_attended_ms": 0, "decay_remainder_ppm": 0}
+    },
+    {
+      "name": "sub-grid-decay-carry-is-reset-by-result",
+      "rating": {"elo": 1000, "season_member": "ranked", "games_counted": 0},
+      "quality": {"grade_ppm": 600000, "last_founder_attended_ms": 4, "decay_remainder_ppm": 17},
+      "result": {"outcome": "complete", "score_facts": [{"kind": "score.total", "value": 0}], "rating_delta": 0},
+      "founder_attended_ms": 5,
+      "expected_rating": {"elo": 1000, "season_member": "ranked", "games_counted": 1},
+      "expected_quality": {"grade_ppm": 500000, "last_founder_attended_ms": 5, "decay_remainder_ppm": 0}
+    },
+    {
+      "name": "multi-grid-decay-then-replace",
+      "rating": {"elo": 1000, "season_member": "ranked", "games_counted": 4},
+      "quality": {"grade_ppm": 900000, "last_founder_attended_ms": 1, "decay_remainder_ppm": 59999},
+      "result": {"outcome": "complete", "score_facts": [{"kind": "score.total", "value": 100}], "rating_delta": 5},
+      "founder_attended_ms": 600001,
+      "expected_rating": {"elo": 1005, "season_member": "ranked", "games_counted": 5},
+      "expected_quality": {"grade_ppm": 750000, "last_founder_attended_ms": 600001, "decay_remainder_ppm": 0}
+    },
+    {
+      "name": "same-sample-retry-is-byte-identical",
+      "rating": {"elo": 1000, "season_member": "ranked", "games_counted": 4},
+      "quality": {"grade_ppm": 900000, "last_founder_attended_ms": 1, "decay_remainder_ppm": 59999},
+      "result": {"outcome": "complete", "score_facts": [{"kind": "score.total", "value": 100}], "rating_delta": 5},
+      "founder_attended_ms": 600001,
+      "expected_rating": {"elo": 1005, "season_member": "ranked", "games_counted": 5},
+      "expected_quality": {"grade_ppm": 750000, "last_founder_attended_ms": 600001, "decay_remainder_ppm": 0}
+    }
+  ]
+}
