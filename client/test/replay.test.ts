@@ -89,6 +89,20 @@ const fixture = fixtureJSON as {
     }[];
     readonly final_state_json: string;
   };
+  readonly doctrine_run: {
+    readonly constants_hash: string;
+    readonly artifacts: ReplayArtifacts;
+    readonly genesis: unknown;
+    readonly entries: readonly {
+      readonly seq: number;
+      readonly canonical_payload: Record<string, unknown>;
+      readonly replay_inputs: unknown;
+      readonly receipt_json: string;
+      readonly events_json: string;
+      readonly terminal: boolean;
+    }[];
+    readonly final_state_json: string;
+  };
   readonly rejected_exit_run: {
     readonly genesis: unknown;
     readonly entries: readonly {
@@ -190,6 +204,19 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 			{ revision: 2, version: 17, constantsHash: fixture.minigame_constants_hash, state: founderCase.post_state }, [bundle])).resolves.toBe("verified");
 	});
 
+  it("replays the sequential doctrine and Compute Credit corpus", async () => {
+    const run = fixture.doctrine_run;
+    const bundle = await loadReplayCatalogBundle(run.constants_hash, run.artifacts);
+    if (!bundle.meters || !bundle.achievements || !bundle.doctrines) throw new Error("doctrine fixture lacks its pinned catalogs");
+    const state = restoreReplayState(run.genesis, 17, bundle.economy, { meters: bundle.meters, achievements: bundle.achievements, doctrines: bundle.doctrines });
+    for (const entry of run.entries) {
+      const transition = await applyLogged(state, canonicalJSONString(entry.canonical_payload), bundle, entry.replay_inputs);
+      expect(canonicalJSONString(transition.receipt), `receipt seq ${entry.seq}`).toBe(entry.receipt_json);
+      expect(canonicalJSONString(transition.events), `events seq ${entry.seq}`).toBe(entry.events_json);
+    }
+    expect(canonicalJSONString(encodeReplayState(state))).toBe(run.final_state_json);
+  });
+
   it("verifies the Go-authored Founder career from genesis without Company state", async () => {
     const bundle = await loadReplayCatalogBundle(fixture.founder_constants_hash, fixture.founder_artifacts);
     const run = fixture.founder_run;
@@ -244,7 +271,7 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     const catalogs = { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: {} as never };
     expect(() => restoreReplayState(source, 17, bundle.economy, catalogs)).toThrow();
 
-    const companySource = { ...(activeCase.case.pre_state as Record<string, unknown>), compute_burst_remaining_ms: 12_345 };
+    const companySource: Record<string, unknown> = { ...(activeCase.case.pre_state as Record<string, unknown>), compute_burst_remaining_ms: 12_345 };
     const company = restoreReplayState(companySource, 17, bundle.economy, catalogs);
     expect(company.wireVersion).toBe(17);
     expect(company.computeBurstRemainingMs).toBe(12_345);
@@ -267,7 +294,8 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
   it.each(fixture.additional_bundles)("replays an additional Go-authored catalog bundle", async (special) => {
     const bundle = await loadReplayCatalogBundle(special.constants_hash, special.artifacts);
     const active = Object.hasOwn(special.case.pre_state as object, "meter_values");
-    const state = restoreReplayState(special.case.pre_state, active ? 16 : 14, bundle.economy, active ? { meters: bundle.meters!, achievements: bundle.achievements! } : undefined);
+    const version = Object.hasOwn(special.case.pre_state as object, "compute_burst_remaining_ms") ? 17 : active ? 16 : 14;
+    const state = restoreReplayState(special.case.pre_state, version, bundle.economy, active ? { meters: bundle.meters!, achievements: bundle.achievements! } : undefined);
     const transition = await applyLogged(state, canonicalJSONString(special.case.canonical_payload), bundle, special.case.replay_inputs);
 
     expect(transition.outcome).toBe(special.case.outcome);

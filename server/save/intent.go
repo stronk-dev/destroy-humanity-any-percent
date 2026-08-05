@@ -64,6 +64,8 @@ const (
 	EventPetStatusChanged          EventKind = "pet_status_changed.v1"
 	EventMinigameResolved          EventKind = "minigame_resolved.v1"
 	EventMinigameRatingChanged     EventKind = "minigame_rating_changed.v1"
+	EventDoctrinePicked            EventKind = "doctrine_picked"
+	EventComputeCreditSpent        EventKind = "compute_credit_spent"
 )
 
 // AllEventKinds is the closed structural authority consumed by catalog
@@ -72,6 +74,7 @@ var AllEventKinds = [...]EventKind{
 	EventCompactCascadeStarted, EventCompactHealthBandChanged, EventCompactLeft,
 	EventCompactRecovered, EventCompactRecruitmentOffered, EventCompactSampled,
 	EventCompactSigned, EventCompactTitheRaised, EventCompensation,
+	EventComputeCreditSpent, EventDoctrinePicked,
 	EventExitOfferDeclined, EventExitOfferExpired, EventExitOfferSpawned,
 	EventFactionStockSaturated, EventFounderAdvanced, EventGateCrossed,
 	EventGeneratorPurchased, EventGuildActivityEvaluated, EventGuildTitheAccrued,
@@ -535,6 +538,35 @@ func validateEventPayload(event EventWrite) error {
 		}
 		if value, err := decimal.ParseCanonical(payload.Cost); err != nil || !value.Gt(decimal.Zero) {
 			return fmt.Errorf("%w: invalid upgrade_purchased cost", ErrInvalidStream)
+		}
+	case EventDoctrinePicked:
+		var payload struct {
+			FounderID    string     `json:"founder_id"`
+			RunID        routeRunID `json:"run_id"`
+			TransitionID string     `json:"transition_id"`
+			DoctrineID   string     `json:"doctrine_id"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidPattern.MatchString(payload.FounderID) ||
+			!validRouteRunID(payload.RunID) || !mechanicalIDPattern.MatchString(payload.TransitionID) || !mechanicalIDPattern.MatchString(payload.DoctrineID) {
+			return fmt.Errorf("%w: invalid doctrine_picked payload", ErrInvalidStream)
+		}
+	case EventComputeCreditSpent:
+		var payload struct {
+			FounderID       string     `json:"founder_id"`
+			RunID           routeRunID `json:"run_id"`
+			AmountMS        int64      `json:"amount_ms"`
+			Target          string     `json:"target"`
+			BurstDurationMS int64      `json:"burst_duration_ms"`
+			BurstSpeed      string     `json:"burst_speed"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil {
+			return fmt.Errorf("%w: invalid compute_credit_spent payload", ErrInvalidStream)
+		}
+		speed, speedErr := decimal.ParseCanonical(payload.BurstSpeed)
+		if !uuidPattern.MatchString(payload.FounderID) || !validRouteRunID(payload.RunID) ||
+			payload.AmountMS < 1 || payload.AmountMS > decimal.MaxExactInteger || payload.BurstDurationMS != payload.AmountMS ||
+			payload.Target != "accelerate" || speedErr != nil || !speed.Gt(decimal.One) {
+			return fmt.Errorf("%w: invalid compute_credit_spent payload", ErrInvalidStream)
 		}
 	case EventMeterBandChanged:
 		var payload struct {

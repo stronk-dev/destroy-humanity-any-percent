@@ -135,6 +135,56 @@ func TestEvaluateOfflineCapsProductionAndBanksExcess(t *testing.T) {
 	}
 }
 
+func TestComputeBurstIsPartitionInvariantAndOfflineCapBounded(t *testing.T) {
+	catalog := phase0Catalog(t)
+	oneShot := engineState(t, catalog, "0", 1)
+	oneShot.WireVersion, oneShot.ComputeBurstRemainingMS = 17, 1_500
+	if _, err := Evaluate(oneShot, catalog, engineCursor.Add(1500*time.Millisecond), ModeOnline, nil); err != nil {
+		t.Fatal(err)
+	}
+	partitioned := engineState(t, catalog, "0", 1)
+	partitioned.WireVersion, partitioned.ComputeBurstRemainingMS = 17, 1_500
+	if _, err := Evaluate(partitioned, catalog, engineCursor.Add(500*time.Millisecond), ModeOnline, nil); err != nil {
+		t.Fatal(err)
+	}
+	if partitioned.ComputeBurstRemainingMS != 1_000 {
+		t.Fatalf("partial burst remaining=%d", partitioned.ComputeBurstRemainingMS)
+	}
+	if _, err := Evaluate(partitioned, catalog, engineCursor.Add(1500*time.Millisecond), ModeOnline, nil); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := partitioned.Ledger.Snapshot()["company.cash"], oneShot.Ledger.Snapshot()["company.cash"]; got != want || got != "3e0" || partitioned.ComputeBurstRemainingMS != 0 {
+		t.Fatalf("partitioned cash=%s one-shot=%s remaining=%d", got, want, partitioned.ComputeBurstRemainingMS)
+	}
+
+	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(data, &root); err != nil {
+		t.Fatal(err)
+	}
+	root["offline_policy"].(map[string]any)["burst_max_duration_ms"] = float64(90_000_000)
+	data, err = json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	offlineCatalog, err := economy.LoadCatalog(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	offline := engineState(t, offlineCatalog, "0", 1)
+	offline.WireVersion, offline.ComputeBurstRemainingMS = 17, 90_000_000
+	result, err := Evaluate(offline, offlineCatalog, engineCursor.Add(25*time.Hour), ModeOffline, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.ProductionMS != 86_400_000 || offline.ComputeBurstRemainingMS != 0 || offline.Ledger.Snapshot()["company.cash"] != "1.5552e5" {
+		t.Fatalf("offline burst result=%+v cash=%s remaining=%d", result, offline.Ledger.Snapshot()["company.cash"], offline.ComputeBurstRemainingMS)
+	}
+}
+
 func TestEvaluateOfflineCreditAndResourceHardcaps(t *testing.T) {
 	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
 	if err != nil {

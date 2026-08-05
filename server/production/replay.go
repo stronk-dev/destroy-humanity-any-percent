@@ -338,8 +338,8 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	}
 	hook := closedReplayAccrualHook(catalogs, accrual.CommonsWeightPPM)
 	band := &CompactTitheBand{MinimumPPM: catalogs.Commons.MinimumTithePPM(), MaximumPPM: catalogs.Commons.MaximumTithePPM()}
-	decision, err := TransitionWithPolicies(request, state, catalogs.Economy, catalogs.Routes, band, catalogs.Faction,
-		revision, wire.EvaluationMode, now, contributions, collector, hook)
+	decision, err := transitionWithSimulationPolicy(request, state, catalogs.Economy, catalogs.Routes, catalogs.Doctrines, band, catalogs.Faction,
+		revision, wire.EvaluationMode, now, contributions, collector, hook, nil)
 	if err != nil {
 		return LoggedTransition{}, err
 	}
@@ -440,8 +440,8 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	var exitType string
 	var terms prestigecore.Terms
 	if request.Kind == IntentCrossGate {
-		transition, transitionErr := TransitionWithPolicies(request, company, catalogs.Economy, catalogs.Routes, nil, nil,
-			revision, wire.EvaluationMode, now, contributions, collector, hook)
+		transition, transitionErr := transitionWithSimulationPolicy(request, company, catalogs.Economy, catalogs.Routes, catalogs.Doctrines, nil, nil,
+			revision, wire.EvaluationMode, now, contributions, collector, hook, nil)
 		if transitionErr != nil {
 			return LoggedExitTransition{}, transitionErr
 		}

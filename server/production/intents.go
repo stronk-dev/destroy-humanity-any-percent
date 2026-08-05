@@ -17,6 +17,7 @@ import (
 
 	"cloud-clicker/server/accrualhook"
 	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
@@ -48,6 +49,8 @@ const (
 	IntentFileIPO            = "file_ipo"
 	IntentIncorporate        = "incorporate"
 	IntentCareAction         = "care_action"
+	IntentPickDoctrine       = "pick_doctrine"
+	IntentSpendComputeCredit = "spend_compute_credit"
 )
 
 type PrestigePolicyResolver interface {
@@ -277,6 +280,10 @@ type IntentRequest struct {
 	OfferID                 string
 	FactionID               string
 	PetID                   string
+	TransitionID            string
+	DoctrineID              string
+	AmountMS                int64
+	Target                  string
 }
 
 type CompactTitheBand struct {
@@ -823,10 +830,10 @@ func TransitionWithRoutes(
 }
 
 func TransitionWithPolicies(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, compactBand *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, sink InvariantSink, hook AccrualHook) (save.IntentDecision, error) {
-	return transitionWithSimulationPolicy(request, state, catalog, routeCatalog, compactBand, factionCatalog, revision, mode, now, contributions, sink, hook, nil)
+	return transitionWithSimulationPolicy(request, state, catalog, routeCatalog, nil, compactBand, factionCatalog, revision, mode, now, contributions, sink, hook, nil)
 }
 
-func transitionWithSimulationPolicy(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, compactBand *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, sink InvariantSink, hook AccrualHook, policy *simulationPolicy) (save.IntentDecision, error) {
+func transitionWithSimulationPolicy(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, doctrineCatalog *doctrine.Catalog, compactBand *CompactTitheBand, factionCatalog *faction.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, sink InvariantSink, hook AccrualHook, policy *simulationPolicy) (save.IntentDecision, error) {
 	service := Service{simulation: policy}
 	if request.Kind == IntentBuyGenerator && policy.removesGenerator(request.GeneratorID) {
 		return rejectedDecision(request, revision.Number, "unknown_id", request.GeneratorID)
@@ -845,7 +852,11 @@ func transitionWithSimulationPolicy(request IntentRequest, state *save.State, ca
 	case IntentPerformManualBatch:
 		return service.performManualBatch(request, state, catalog, revision, mode, now, contributions, hook)
 	case IntentCrossGate:
-		return service.crossGate(request, state, catalog, routeCatalog, revision, mode, now, contributions, hook)
+		return service.crossGate(request, state, catalog, routeCatalog, doctrineCatalog, revision, mode, now, contributions, hook)
+	case IntentPickDoctrine:
+		return service.pickDoctrine(request, state, catalog, doctrineCatalog, revision, mode, now, contributions, hook)
+	case IntentSpendComputeCredit:
+		return service.spendComputeCredit(request, state, catalog, doctrineCatalog, revision, mode, now, contributions, hook)
 	case IntentBuyRouteHint:
 		return service.buyRouteHint(request, state, routeCatalog, revision)
 	case IntentSignCompact:
@@ -1076,7 +1087,7 @@ func (chain accrualHookChain) AfterAccrual(state *save.State, catalog *economy.C
 	return events, nil
 }
 
-func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *economy.Catalog, routeCatalog *routes.Catalog, doctrineCatalog *doctrine.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
 	if routeCatalog == nil || state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || revision.OwnerID == "" || state.RunSeq < 1 {
 		return save.IntentDecision{}, ErrInvalidEngineState
 	}
@@ -1086,6 +1097,13 @@ func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *e
 	}
 	if state.GatesCrossed[request.GateID] {
 		return rejectedDecision(request, revision.Number, "gate_already_crossed", request.GateID)
+	}
+	if doctrineCatalog != nil {
+		for _, transition := range doctrineCatalog.Transitions() {
+			if transition.GateID == request.GateID && transition.SourceTier == state.Tier && state.DoctrinesByTransition[transition.ID] == "" {
+				return rejectedDecision(request, revision.Number, "not_eligible", "doctrine_required")
+			}
+		}
 	}
 	if request.RouteID != "" {
 		if _, exists := routeCatalog.Route(request.RouteID); !exists {
@@ -1140,6 +1158,90 @@ func (s *Service) crossGate(request IntentRequest, state *save.State, catalog *e
 	if request.RouteID != "" {
 		events = append(events, routeExecutedEvent(request, revision, state.RunSeq))
 	}
+	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
+}
+
+func (s *Service) pickDoctrine(request IntentRequest, state *save.State, catalog *economy.Catalog, doctrineCatalog *doctrine.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || doctrineCatalog == nil ||
+		save.VersionForState(state) < 17 || revision.OwnerID == "" || revision.StreamID == "" || state.RunSeq < 1 {
+		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	transition, exists := doctrineCatalog.Transition(request.TransitionID)
+	if !exists {
+		return rejectedDecision(request, revision.Number, "unknown_id", request.TransitionID)
+	}
+	if !doctrineCatalog.Allows(request.TransitionID, request.DoctrineID) {
+		return rejectedDecision(request, revision.Number, "unknown_id", request.DoctrineID)
+	}
+	if state.Tier != transition.SourceTier {
+		return rejectedDecision(request, revision.Number, "not_eligible", "tier")
+	}
+	if state.GatesCrossed[transition.GateID] {
+		return rejectedDecision(request, revision.Number, "not_eligible", "gate_crossed")
+	}
+	if state.DoctrinesByTransition[request.TransitionID] != "" {
+		return rejectedDecision(request, revision.Number, "not_eligible", "doctrine_already_picked")
+	}
+	before := state.Ledger.Snapshot()
+	result, err := s.evaluate(state, catalog, now, mode, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	events, err := runAccrualHook(hook, request.IntentID, state, catalog, revision, result, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	postAccrual := state.Ledger.Snapshot()
+	if state.DoctrinesByTransition == nil {
+		state.DoctrinesByTransition = map[string]string{}
+	}
+	state.DoctrinesByTransition[request.TransitionID] = request.DoctrineID
+	payload, _ := json.Marshal(map[string]any{
+		"founder_id":    revision.OwnerID,
+		"run_id":        map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq},
+		"transition_id": request.TransitionID, "doctrine_id": request.DoctrineID,
+	})
+	events = append(events, save.EventWrite{Kind: save.EventDoctrinePicked, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
+	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
+}
+
+func (s *Service) spendComputeCredit(request IntentRequest, state *save.State, catalog *economy.Catalog, doctrineCatalog *doctrine.Catalog, revision save.Revision, mode EvaluationMode, now time.Time, contributions []multiplier.Contribution, hook AccrualHook) (save.IntentDecision, error) {
+	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || doctrineCatalog == nil ||
+		save.VersionForState(state) < 17 || revision.OwnerID == "" || revision.StreamID == "" || state.RunSeq < 1 {
+		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	policy := catalog.OfflinePolicy()
+	if !policy.BurstSpeed.Gt(decimal.One) || policy.BurstMaxDurationMS <= 0 {
+		return save.IntentDecision{}, ErrInvalidEngineState
+	}
+	if request.AmountMS > policy.BurstMaxDurationMS {
+		return rejectedDecision(request, revision.Number, "not_eligible", "burst_duration")
+	}
+	before := state.Ledger.Snapshot()
+	result, err := s.evaluate(state, catalog, now, mode, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	events, err := runAccrualHook(hook, request.IntentID, state, catalog, revision, result, contributions)
+	if err != nil {
+		return save.IntentDecision{}, err
+	}
+	postAccrual := state.Ledger.Snapshot()
+	if state.ComputeBurstRemainingMS != 0 {
+		return rejectedDecision(request, revision.Number, "not_eligible", "burst_active")
+	}
+	if state.ComputeCreditMS < request.AmountMS {
+		return rejectedDecision(request, revision.Number, "not_eligible", "compute_credit_balance")
+	}
+	state.ComputeCreditMS -= request.AmountMS
+	state.ComputeBurstRemainingMS = request.AmountMS
+	payload, _ := json.Marshal(map[string]any{
+		"founder_id": revision.OwnerID,
+		"run_id":     map[string]any{"company_stream_id": revision.StreamID, "run_seq": state.RunSeq},
+		"amount_ms":  request.AmountMS, "target": request.Target,
+		"burst_duration_ms": request.AmountMS, "burst_speed": policy.BurstSpeed.String(),
+	})
+	events = append(events, save.EventWrite{Kind: save.EventComputeCreditSpent, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
 	return appliedDecisionWithActionDebits(request, state, catalog, revision.Number+1, 1, before, postAccrual, events, nil)
 }
 
@@ -1529,7 +1631,7 @@ func wireSnapshot(state *save.State, catalog *economy.Catalog) map[string]any {
 		"guild_boundary_guild_id":     nullableString(state.GuildBoundaryGuildID),
 		"guild_consumed_window_units": state.GuildConsumedWindow,
 	}
-	if save.VersionForState(state) == 16 {
+	if save.VersionForState(state) >= 16 {
 		snapshot["meter_values"] = state.MeterValues
 		snapshot["meter_decay_remainders"] = state.MeterDecayRemainders
 		snapshot["meter_input_remainders"] = state.MeterInputRemainders
@@ -1537,6 +1639,9 @@ func wireSnapshot(state *save.State, catalog *economy.Catalog) map[string]any {
 		snapshot["achievement_score_run"] = state.AchievementScoreRun
 	} else {
 		snapshot["meter_bands"] = state.MeterBands
+	}
+	if save.VersionForState(state) >= 17 {
+		snapshot["compute_burst_remaining_ms"] = state.ComputeBurstRemainingMS
 	}
 	return snapshot
 }
@@ -1744,6 +1849,28 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 			if err := json.Unmarshal(root["route_id"], &request.RouteID); err != nil || !intentIDPattern.MatchString(request.RouteID) {
 				request.InvalidDetail = "route_id"
 			}
+		}
+	case IntentPickDoctrine:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "transition_id", "doctrine_id") {
+			request.InvalidDetail = "pick_doctrine.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["transition_id"], &request.TransitionID); err != nil || !intentIDPattern.MatchString(request.TransitionID) {
+			request.InvalidDetail = "transition_id"
+		}
+		if err := json.Unmarshal(root["doctrine_id"], &request.DoctrineID); err != nil || !intentIDPattern.MatchString(request.DoctrineID) {
+			request.InvalidDetail = "doctrine_id"
+		}
+	case IntentSpendComputeCredit:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "amount_ms", "target") {
+			request.InvalidDetail = "spend_compute_credit.fields"
+			return request, nil
+		}
+		if !parsePositiveSafeInt(root["amount_ms"], &request.AmountMS) {
+			request.InvalidDetail = "amount_ms"
+		}
+		if err := json.Unmarshal(root["target"], &request.Target); err != nil || request.Target != "accelerate" {
+			request.InvalidDetail = "target"
 		}
 	case IntentBuyRouteHint:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "route_id") {

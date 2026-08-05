@@ -221,6 +221,7 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 	if !currentBundle.valid(companyRevision.ConstantsHash) || !nextBundle.valid(nextBundle.ConstantsHash) {
 		return save.ExitDecision{}, ErrInvalidEngineState
 	}
+	company.ComputeBurstRemainingMS = 0
 	newCompany, err := prestigecore.NewRunState(nextBundle.Economy, company, founder, now)
 	if err != nil {
 		return save.ExitDecision{}, err

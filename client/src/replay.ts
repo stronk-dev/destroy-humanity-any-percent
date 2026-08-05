@@ -139,6 +139,7 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
 const REPLAY_EVENT_KINDS = Object.freeze([
 	"achievement_earned.v1",
   "compact_cascade_started", "compact_health_band_changed", "compact_left", "compact_recovered", "compact_recruitment_offered", "compact_sampled", "compact_signed", "compact_tithe_raised", "compensation",
+	"compute_credit_spent", "doctrine_picked",
   "exit_offer_declined", "exit_offer_expired", "exit_offer_spawned", "faction_stock_saturated", "founder_advanced", "gate_crossed", "generator_purchased", "guild_activity_evaluated", "guild_tithe_accrued",
 	"incorporated", "invariant_reported", "meter_band_changed.v1", "route_executed", "route_hint_purchased", "route_knowledge_granted", "run_ended", "run_started", "upgrade_purchased",
 	"pet_care_applied.v1", "pet_status_changed.v1",
@@ -731,6 +732,8 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
     case "buy_upgrade": { const result = buyUpgrade(state, catalogs.economy, catalogs.routes, request); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); events.push(event("upgrade_purchased", request.intent_id, { upgrade_id: request.upgrade_id, cost_resource_id: request.costResource, cost: request.cost })); appliedCount = 1; break; }
     case "perform_manual_batch": { const result = manualBatch(state, catalogs.economy, request, wire.evaluated_at_ms, contributions); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); appliedCount = result.count; break; }
     case "cross_gate": { const result = crossGate(state, catalogs.routes, request, wire.command); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); events.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); if (request.route_id !== null) events.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); appliedCount = 1; break; }
+    case "pick_doctrine": state.doctrinesByTransition[request.transition_id] = request.doctrine_id; events.push(event("doctrine_picked", request.intent_id, { founder_id: wire.command.founder_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq }, transition_id: request.transition_id, doctrine_id: request.doctrine_id })); appliedCount = 1; break;
+    case "spend_compute_credit": { if (state.computeBurstRemainingMs !== 0) return rejectState("not_eligible", "burst_active"); if (state.computeCreditMs < request.amount_ms) return rejectState("not_eligible", "compute_credit_balance"); const speed = catalogs.economy.offlinePolicy!.burstSpeed; if (!parseCanonical(speed).gt(1)) throw new RangeError("invalid burst speed"); state.computeCreditMs -= request.amount_ms; state.computeBurstRemainingMs = request.amount_ms; events.push(event("compute_credit_spent", request.intent_id, { founder_id: wire.command.founder_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq }, amount_ms: request.amount_ms, target: request.target, burst_duration_ms: request.amount_ms, burst_speed: speed })); appliedCount = 1; break; }
     case "sign_compact": state.compactMember = true; state.compactTithePpm = request.tithe_ppm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, request.tithe_ppm, false, true))); appliedCount = 1; break;
     case "leave_compact": { const prior = state.compactTithePpm; state.compactMember = false; state.compactTithePpm = 0; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_left", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, prior, true, false))); appliedCount = 1; break; }
     case "incorporate": { const member = catalogs.factions.byId.get(request.faction_id)!; state.factionId = member.id; state.factionStockResource = member.produces; state.incorporatedAtMs = state.evaluatedThroughMs; events.push(event("incorporated", request.intent_id, { compact_auto_signed: member.compact !== null, faction_id: member.id, founder_id: wire.command.founder_id, incorporated_at_ms: state.incorporatedAtMs, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq }, stock_resource: member.produces })); if (member.compact) { if (state.compactMember) { const prior = state.compactTithePpm; state.compactTithePpm = Math.max(prior, member.compact.tithePpm); events.push(event("compact_tithe_raised", request.intent_id, { founder_id: wire.command.founder_id, new_tithe_ppm: state.compactTithePpm, prior_tithe_ppm: prior, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); } else { state.compactMember = true; state.compactTithePpm = member.compact.tithePpm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, member.compact.tithePpm, false, true))); } } appliedCount = 1; break; }
@@ -845,7 +848,11 @@ function preflightRejection(state: ReplayState, catalogs: ReplayCatalogBundle, r
       if (!catalogs.routes.gate(request.gate_id)) return ["unknown_id", request.gate_id];
       if (state.gatesCrossed[request.gate_id]) return ["gate_already_crossed", request.gate_id];
       if (request.route_id !== null && !catalogs.routes.route(request.route_id)) return ["unknown_id", request.route_id];
+      if (catalogs.doctrines?.transitions.some((value) => value.gateId === request.gate_id && value.sourceTier === state.tier && !state.doctrinesByTransition[value.transitionId])) return ["not_eligible", "doctrine_required"];
       return null;
+    case "pick_doctrine": { const transition = catalogs.doctrines?.transition(request.transition_id); if (!transition) return ["unknown_id", request.transition_id]; if (!catalogs.doctrines!.allows(request.transition_id, request.doctrine_id)) return ["unknown_id", request.doctrine_id]; if (state.tier !== transition.sourceTier) return ["not_eligible", "tier"]; if (state.gatesCrossed[transition.gateId]) return ["not_eligible", "gate_crossed"]; return state.doctrinesByTransition[request.transition_id] ? ["not_eligible", "doctrine_already_picked"] : null; }
+    case "spend_compute_credit":
+      return request.amount_ms > catalogs.economy.offlinePolicy!.burstMaxDurationMs ? ["not_eligible", "burst_duration"] : null;
     case "sign_compact":
       if (state.compactMember) return ["already_member", "compact"];
       return request.tithe_ppm < catalogs.commons.minimumTithePpm || request.tithe_ppm > catalogs.commons.maximumTithePpm ? ["invalid", "tithe_ppm"] : null;
@@ -899,17 +906,24 @@ function contributionFactorForTarget(catalog: EconomyCatalog, target: string, va
 function evaluate(state: ReplayState, catalog: EconomyCatalog, nowMs: number, mode: "online" | "offline", contributions: readonly ReplayContribution[]): Evaluation {
   if (nowMs < state.evaluatedThroughMs) throw new ReplayClockViolation(); if (nowMs === state.evaluatedThroughMs) return { changes: [], elapsedMs: 0, productionMs: 0, bankedMs: 0, progressDeltaPpm: 0 };
   const elapsedMs = nowMs - state.evaluatedThroughMs; let productionMs = elapsedMs; let efficiency = new Decimal(1); let bankedMs = 0; const beforeProgress = progressPpm(catalog, state);
+  if (state.computeBurstRemainingMs < 0 || state.computeBurstRemainingMs > 0 && state.wireVersion < 17) throw new RangeError("invalid compute burst state");
   if (mode === "offline") { const policy = catalog.offlinePolicy!; efficiency = parseCanonical(policy.efficiency); productionMs = Math.min(productionMs, policy.accrualCapMs); bankedMs = Number((BigInt(elapsedMs - productionMs) * BigInt(policy.bankRatioNumerator)) / BigInt(policy.bankRatioDenominator)); bankedMs = Math.min(bankedMs, policy.bankCapMs - state.computeCreditMs); }
-  const accrued = accrueContent(state, catalog, productionMs, efficiency, contributions);
-  const changes = applyLedger(state, catalog, accrued.entries, true); state.computeCreditMs += bankedMs; state.generatorsProvisioned = accrued.provisioned; state.provisionRemaindersPpm = accrued.remainders; state.evaluatedThroughMs = nowMs; return { changes, elapsedMs, productionMs, bankedMs, progressDeltaPpm: Math.max(0, progressPpm(catalog, state) - beforeProgress) };
+  const boostedWallMs = Math.min(elapsedMs, state.computeBurstRemainingMs); const boostedProductionMs = Math.min(productionMs, boostedWallMs);
+  const bonusFactor = boostedProductionMs === 0 ? new Decimal(0) : parseCanonical(catalog.offlinePolicy!.burstSpeed).sub(1);
+  if (boostedProductionMs > 0 && (!isStateValue(bonusFactor) || !bonusFactor.gt(0))) throw new RangeError("invalid compute burst speed");
+  const accrued = accrueContent(state, catalog, productionMs, boostedProductionMs, efficiency, bonusFactor, contributions);
+  const changes = applyLedger(state, catalog, accrued.entries, true); state.computeCreditMs += bankedMs; state.computeBurstRemainingMs -= boostedWallMs; state.generatorsProvisioned = accrued.provisioned; state.provisionRemaindersPpm = accrued.remainders; state.evaluatedThroughMs = nowMs; return { changes, elapsedMs, productionMs, bankedMs, progressDeltaPpm: Math.max(0, progressPpm(catalog, state) - beforeProgress) };
 }
 
-function accrueContent(state: ReplayState, catalog: EconomyCatalog, productionMs: number, efficiency: Decimal, contributions: readonly ReplayContribution[]): { entries: { resource: string; delta: Decimal }[]; provisioned: Record<string, number>; remainders: Record<string, number> } {
+function accrueContent(state: ReplayState, catalog: EconomyCatalog, productionMs: number, boostedProductionMs: number, efficiency: Decimal, bonusFactor: Decimal, contributions: readonly ReplayContribution[]): { entries: { resource: string; delta: Decimal }[]; provisioned: Record<string, number>; remainders: Record<string, number> } {
   const provisioned = { ...state.generatorsProvisioned }; const remainders = { ...state.provisionRemaindersPpm }; const deltas = new Map<string, Decimal[]>();
+  let remainingBoostedMs = boostedProductionMs;
   const accrueSegment = (segmentMs: number): void => {
     if (segmentMs <= 0) return;
     const rates = productionRates(catalog, state.generators, provisioned, contributions);
-    for (const [resource, values] of rates) { const delta = quantize(sumDeterministic(values).mul(segmentMs).div(1000).mul(efficiency)); if (delta.eq(0)) continue; const prior = deltas.get(resource) ?? []; prior.push(delta); deltas.set(resource, prior); }
+    const bonusMs = Math.min(segmentMs, remainingBoostedMs);
+    for (const [resource, values] of rates) { const prior = deltas.get(resource) ?? []; const rate = sumDeterministic(values); const effectiveSeconds = new Decimal(segmentMs).add(new Decimal(bonusMs).mul(bonusFactor)).div(1000); const delta = quantize(rate.mul(effectiveSeconds).mul(efficiency)); if (!delta.eq(0)) prior.push(delta); if (prior.length > 0) deltas.set(resource, prior); }
+    remainingBoostedMs -= bonusMs;
   };
   if (catalog.provisionTickMs === 0 || productionMs === 0) accrueSegment(productionMs);
   else {
@@ -1149,6 +1163,7 @@ function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId:
   for (const slot of terms.network_slot_unlocks) slots.set(slot.slot, slot);
   founder.network_slots = [...slots.values()].sort((left, right) => byteCompare(left.slot, right.slot));
   founder.exit_history_count++;
+  company.computeBurstRemainingMs = 0;
   bindEventIntent(prefix, intentId);
   const currentActive = company.wireVersion >= 16;
   if (currentActive) {
@@ -1389,6 +1404,16 @@ function parseIntent(payload: string, intentId: string): Intent {
       else if (!isMechanical(raw.route_id)) base.invalid = "route_id";
       else base.route_id = raw.route_id;
       return base;
+    case "pick_doctrine":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "transition_id", "doctrine_id"])) { base.invalid = "pick_doctrine.fields"; return base; }
+      if (!isMechanical(raw.transition_id)) base.invalid = "transition_id"; else base.transition_id = raw.transition_id;
+      if (!isMechanical(raw.doctrine_id)) base.invalid = "doctrine_id"; else base.doctrine_id = raw.doctrine_id;
+      return base;
+    case "spend_compute_credit":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "amount_ms", "target"])) { base.invalid = "spend_compute_credit.fields"; return base; }
+      if (!isPositiveSafeInteger(raw.amount_ms)) base.invalid = "amount_ms"; else base.amount_ms = raw.amount_ms;
+      if (raw.target !== "accelerate") base.invalid = "target"; else base.target = raw.target;
+      return base;
     case "buy_route_hint":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "route_id"])) { base.invalid = "buy_route_hint.fields"; return base; }
       if (!isMechanical(raw.route_id)) base.invalid = "route_id"; else base.route_id = raw.route_id;
@@ -1443,8 +1468,8 @@ function appendCompactSamples(state: ReplayState, start: number, end: number, co
 function wireSnapshot(state: ReplayState, catalog: EconomyCatalog): unknown {
   const snapshot: Record<string, unknown> = { balances: sortedRecord(state.balances), collapsed_offline_ms: state.collapsedOfflineMs, compact_member: state.compactMember, compact_solidarity_ppm: state.compactSolidarityPpm, compact_tithe_ppm: state.compactTithePpm, compute_credit_ms: state.computeCreditMs, consumed_stock_units: state.consumedStockUnits, doctrines_by_transition: sortedRecord(state.doctrinesByTransition), evaluated_through: rfc3339(state.evaluatedThroughMs), faction_id: state.factionId || null, gates_crossed: sortedRecord(state.gatesCrossed), generators: sortedRecord(state.generators), generators_provisioned: sortedRecord(state.generatorsProvisioned), generators_purchased_total: state.generatorPurchasedTotal, guild_boundary_guild_id: state.guildBoundaryGuildId || null, guild_boundary_seq: state.guildBoundarySeq, guild_consumed_window_units: state.guildConsumedWindow, guild_tithe_carry_ppm: state.guildTitheCarryPpm, hints_unlocked: [...state.hintsUnlocked].sort(byteCompare), incorporated_at_ms: state.incorporatedAtMs, ledger_fact_kinds: [...state.ledgerFactKinds].sort(byteCompare), lifetime_value: state.lifetimeValue, manual_token_milli: state.manualTokenMilli, manual_token_refilled_at: rfc3339(state.manualTokenRefilledAtMs), offer_state: state.offerState ? { expires_at_ms: state.offerState.expiresAtMs, exit_type: state.offerState.exitType, offer_id: state.offerState.offerId, spawned_at_ms: state.offerState.spawnedAtMs, terms_json: state.offerState.terms } : null, offline_spans: state.offlineSpans.map((value) => ({ from_ms: value.fromMs, to_ms: value.toMs })), provision_remainders_ppm: sortedRecord(state.provisionRemaindersPpm), provisioned_hardcaps: provisionedHardcaps(catalog), region_traits: [...state.regionTraits].sort(byteCompare), route_knowledge_balance: state.routeKnowledgeBalance, run_pre_timer: state.runPreTimer, run_seq: state.runSeq, run_started_at_ms: state.runStartedAtMs, stock_progress_ms: state.stockProgressMs, stock_rate_remainder_ppm: state.stockRateRemainderPpm, stock_resource: state.factionStockResource || null, stock_units: state.stockUnits, structure_id: state.structureId, tier: state.tier, upgrades_owned: [...state.upgradesOwned].sort(byteCompare) };
   if (state.wireVersion >= 16) Object.assign(snapshot, { meter_values: sortedRecord(state.meterValues), meter_decay_remainders: sortedRecord(state.meterDecayRemainders), meter_input_remainders: sortedRecord(state.meterInputRemainders), achievements_earned_run: [...state.achievementsEarnedRun].sort(byteCompare), achievement_score_run: state.achievementScoreRun });
-  if (state.wireVersion >= 17) snapshot.compute_burst_remaining_ms = state.computeBurstRemainingMs;
   else snapshot.meter_bands = sortedRecord(state.meterBands);
+  if (state.wireVersion >= 17) snapshot.compute_burst_remaining_ms = state.computeBurstRemainingMs;
   return snapshot;
 }
 function provisionedHardcaps(catalog: EconomyCatalog): Record<string, { count: number; reason_key: string }> { return Object.fromEntries(catalog.generatorClasses.filter((value) => value.provisionedHardcap !== null).sort((a, b) => byteCompare(a.id, b.id)).map((value) => [value.id, { count: value.provisionedHardcap!.count, reason_key: value.provisionedHardcap!.reasonKey }])); }

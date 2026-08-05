@@ -107,7 +107,7 @@ func SimulateTransition(request IntentRequest, state *save.State, catalog *econo
 	if err != nil {
 		return SimulationResult{}, err
 	}
-	decision, err := transitionWithSimulationPolicy(request, state, catalog, dependencies.Routes, dependencies.CompactBand, dependencies.Factions, revision, mode, now, contributions, sink, simulationHook(dependencies.Hook, policy), policy)
+	decision, err := transitionWithSimulationPolicy(request, state, catalog, dependencies.Routes, nil, dependencies.CompactBand, dependencies.Factions, revision, mode, now, contributions, sink, simulationHook(dependencies.Hook, policy), policy)
 	if err != nil {
 		return SimulationResult{}, err
 	}

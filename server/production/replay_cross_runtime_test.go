@@ -14,6 +14,7 @@ import (
 
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/guild"
@@ -22,6 +23,7 @@ import (
 	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
+	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
 
@@ -36,6 +38,7 @@ type crossRuntimeFixture struct {
 	Additional      []crossRuntimeBundleCase   `json:"additional_bundles"`
 	ActiveExit      crossRuntimeActiveExit     `json:"active_foundation_exit"`
 	FullRun         crossRuntimeFullRun        `json:"full_run"`
+	DoctrineRun     crossRuntimeFullRun        `json:"doctrine_run"`
 	RejectedExit    crossRuntimeFullRun        `json:"rejected_exit_run"`
 	FounderHash     string                     `json:"founder_constants_hash"`
 	FounderFiles    map[string]string          `json:"founder_artifacts"`
@@ -329,11 +332,114 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	)
 	result.ActiveExit = makeActiveFoundationExitFixture(t, baseNow)
 	result.FullRun = makeFullRunFixture(t, catalogs, bundleBytes.Hash, baseNow)
+	result.DoctrineRun = makeDoctrineReplayRunFixture(t, baseNow)
 	result.RejectedExit = makeRejectedExitFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	result.FounderHash, result.FounderFiles, result.FounderCases, result.FounderRun = makeFounderReplayFixture(t, baseNow)
 	result.PetFounderHash, result.PetFounderFiles, result.PetFounderCases = makePetFounderReplayFixture(t, baseNow)
 	result.MinigameHash, result.MinigameFiles, result.MinigameCompany, result.MinigameFounder = makeMinigameResolutionReplayFixture(t, baseNow)
 	return result
+}
+
+func makeDoctrineReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFullRun {
+	t.Helper()
+	_, catalogs := foundationTestBundles(t)
+	artifacts := cloneArtifactMap(catalogs.Artifacts)
+	var routeRoot map[string]any
+	if err := json.Unmarshal(artifacts["routes"], &routeRoot); err != nil {
+		t.Fatal(err)
+	}
+	gates := routeRoot["gates"].([]any)
+	doctrineGate := map[string]any{"gate_id": "gate.t3_to_t4", "requirement": []any{map[string]any{"resource_id": "company.cash", "amount": "1e12"}}, "routes": []any{}}
+	routeRoot["gates"] = append(append(append([]any{}, gates[:1]...), doctrineGate), gates[1:]...)
+	routeArtifact, err := json.Marshal(routeRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var categoryRoot map[string]any
+	if err := json.Unmarshal(artifacts["categories"], &categoryRoot); err != nil {
+		t.Fatal(err)
+	}
+	categoryGates := categoryRoot["full_gate_set"].([]any)
+	categoryRoot["full_gate_set"] = append(append(append([]any{}, categoryGates[:1]...), "gate.t3_to_t4"), categoryGates[1:]...)
+	categoryArtifact, err := json.Marshal(categoryRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	doctrineArtifact := []byte(`{"schema_version":1,"transitions":[{"transition_id":"transition.t3_to_t4","source_tier":3,"gate_id":"gate.t3_to_t4","doctrine_ids":["doctrine.capture","doctrine.ethical"]}]}`)
+	routeCatalog, err := routes.LoadCatalog(routeArtifact)
+	if err != nil {
+		t.Fatal(err)
+	}
+	doctrineCatalog, err := doctrine.LoadCatalog(doctrineArtifact)
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts["categories"], artifacts["routes"], artifacts["doctrines"] = categoryArtifact, routeArtifact, doctrineArtifact
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs.Artifacts, catalogs.ConstantsHash, catalogs.Routes, catalogs.Doctrines = artifacts, hash, routeCatalog, doctrineCatalog
+	if !catalogs.valid(hash) {
+		t.Fatal("doctrine fixture bundle is not internally valid")
+	}
+	state := replayFixtureState(t, catalogs.Economy, now)
+	state.WireVersion, state.Tier, state.ComputeCreditMS = 17, 3, 5_000
+	state.GeneratorCounts["generator.beige_tower"] = 1
+	setCash(t, state, "1e13")
+	meterState, err := meters.NewRunState(catalogs.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.MeterBands = nil
+	state.MeterValues, state.MeterDecayRemainders, state.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	state.AchievementsEarnedRun = map[string]bool{}
+	genesis := mustEncodeState(t, state)
+	definitions := []struct {
+		payload string
+		at      time.Duration
+	}{
+		{payload: `{"intent_id":"01986666-0a01-7000-8000-000000000001","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t3_to_t4","route_id":null}`},
+		{payload: `{"intent_id":"01986666-0a02-7000-8000-000000000002","kind":"pick_doctrine","expected_revision":1,"transition_id":"transition.t3_to_t4","doctrine_id":"doctrine.capture"}`},
+		{payload: `{"intent_id":"01986666-0a03-7000-8000-000000000003","kind":"pick_doctrine","expected_revision":2,"transition_id":"transition.t3_to_t4","doctrine_id":"doctrine.ethical"}`},
+		{payload: `{"intent_id":"01986666-0a04-7000-8000-000000000004","kind":"spend_compute_credit","expected_revision":2,"amount_ms":1500,"target":"accelerate"}`},
+		{payload: `{"intent_id":"01986666-0a05-7000-8000-000000000005","kind":"spend_compute_credit","expected_revision":3,"amount_ms":1000,"target":"accelerate"}`},
+		{payload: `{"intent_id":"01986666-0a06-7000-8000-000000000006","kind":"perform_manual_batch","expected_revision":3,"action_id":"manual.click","count":1,"window_ms":1}`, at: 500 * time.Millisecond},
+		{payload: `{"intent_id":"01986666-0a07-7000-8000-000000000007","kind":"perform_manual_batch","expected_revision":4,"action_id":"manual.click","count":1,"window_ms":1}`, at: 1500 * time.Millisecond},
+		{payload: `{"intent_id":"01986666-0a08-7000-8000-000000000008","kind":"spend_compute_credit","expected_revision":5,"amount_ms":4000,"target":"accelerate"}`, at: 1500 * time.Millisecond},
+		{payload: `{"intent_id":"01986666-0a09-7000-8000-000000000009","kind":"spend_compute_credit","expected_revision":5,"amount_ms":14400001,"target":"accelerate"}`, at: 1500 * time.Millisecond},
+		{payload: `{"intent_id":"01986666-0a10-7000-8000-000000000010","kind":"spend_compute_credit","expected_revision":5,"amount_ms":0,"target":"accelerate"}`, at: 1500 * time.Millisecond},
+		{payload: `{"intent_id":"01986666-0a11-7000-8000-000000000011","kind":"cross_gate","expected_revision":5,"gate_id":"gate.t3_to_t4","route_id":null}`, at: 1500 * time.Millisecond},
+	}
+	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: hash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, AchievementsEarnedLifetime: []string{}}
+	revision := int64(1)
+	entries := make([]crossRuntimeFullRunEntry, 0, len(definitions))
+	for index, definition := range definitions {
+		request, parseErr := ParseIntent([]byte(definition.payload))
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		if request.ExpectedRevision != revision {
+			t.Fatalf("doctrine fixture expected revision=%d live=%d", request.ExpectedRevision, revision)
+		}
+		command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1a00-7000-8000-000000000001", FounderID: "01986666-2a00-7000-8000-000000000001", Revision: revision, RunSeq: 1, RunLogSeq: int64(index + 1)}
+		inputs, inputErr := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(definition.at), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry})
+		if inputErr != nil {
+			t.Fatal(inputErr)
+		}
+		transition, transitionErr := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
+		if transitionErr != nil {
+			t.Fatalf("doctrine fixture row %d: %v", index+1, transitionErr)
+		}
+		if transition.Outcome == save.IntentApplied {
+			revision++
+		}
+		events := fixtureEvents(transition.Events)
+		entries = append(entries, crossRuntimeFullRunEntry{Seq: int64(index + 1), CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+			ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events)})
+	}
+	finalState := mustEncodeState(t, state)
+	return crossRuntimeFullRun{ConstantsHash: hash, Artifacts: stringArtifacts(artifacts), Genesis: genesis, Entries: entries, FinalStateJSON: canonicalFixtureJSON(t, finalState)}
 }
 
 func makeMinigameResolutionReplayFixture(t *testing.T, now time.Time) (string, map[string]string, crossRuntimeFixtureCase, crossRuntimeFounderCase) {

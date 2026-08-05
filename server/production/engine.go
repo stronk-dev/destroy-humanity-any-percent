@@ -56,6 +56,9 @@ func evaluateWithSimulationPolicy(state *save.State, catalog *economy.Catalog, n
 	if elapsedMS > decimal.MaxExactInteger {
 		return EvaluationResult{}, fmt.Errorf("%w: elapsed time exceeds exact integer domain", ErrInvalidEngineState)
 	}
+	if state.ComputeBurstRemainingMS < 0 || state.ComputeBurstRemainingMS > 0 && save.VersionForState(state) < 17 {
+		return EvaluationResult{}, fmt.Errorf("%w: invalid compute burst state", ErrInvalidEngineState)
+	}
 	beforeProgressPPM, err := tierProgressPPM(catalog, state)
 	if err != nil {
 		return EvaluationResult{}, err
@@ -84,7 +87,23 @@ func evaluateWithSimulationPolicy(state *save.State, catalog *economy.Catalog, n
 		}
 	}
 
-	entries, provisioned, remainders, err := accrueContent(state, catalog, productionMS, efficiency, contributions, policy)
+	boostedWallMS := state.ComputeBurstRemainingMS
+	if boostedWallMS > elapsedMS {
+		boostedWallMS = elapsedMS
+	}
+	boostedProductionMS := boostedWallMS
+	if boostedProductionMS > productionMS {
+		boostedProductionMS = productionMS
+	}
+	bonusFactor := decimal.Zero
+	if boostedProductionMS > 0 {
+		bonusFactor = catalog.OfflinePolicy().BurstSpeed.Sub(decimal.One)
+		if !bonusFactor.IsStateValue() || !bonusFactor.Gt(decimal.Zero) {
+			return EvaluationResult{}, fmt.Errorf("%w: invalid compute burst speed", ErrInvalidEngineState)
+		}
+	}
+
+	entries, provisioned, remainders, err := accrueContent(state, catalog, productionMS, boostedProductionMS, efficiency, bonusFactor, contributions, policy)
 	if err != nil {
 		return EvaluationResult{}, err
 	}
@@ -93,6 +112,7 @@ func evaluateWithSimulationPolicy(state *save.State, catalog *economy.Catalog, n
 		return EvaluationResult{}, fmt.Errorf("%w: ledger commit: %v", ErrInvalidEngineState, err)
 	}
 	state.ComputeCreditMS += banked
+	state.ComputeBurstRemainingMS -= boostedWallMS
 	state.GeneratorProvisioned = provisioned
 	state.ProvisionRemaindersPPM = remainders
 	state.EvaluatedThrough = effectiveNow
@@ -110,7 +130,7 @@ func evaluateWithSimulationPolicy(state *save.State, catalog *economy.Catalog, n
 	}, nil
 }
 
-func accrueContent(state *save.State, catalog *economy.Catalog, productionMS int64, efficiency decimal.Decimal, contributions []multiplier.Contribution, policy *simulationPolicy) ([]economy.Entry, map[string]int64, map[string]int64, error) {
+func accrueContent(state *save.State, catalog *economy.Catalog, productionMS, boostedProductionMS int64, efficiency, bonusFactor decimal.Decimal, contributions []multiplier.Contribution, policy *simulationPolicy) ([]economy.Entry, map[string]int64, map[string]int64, error) {
 	provisioned := cloneInt64Counts(state.GeneratorProvisioned)
 	remainders := cloneInt64Counts(state.ProvisionRemaindersPPM)
 	if provisioned == nil {
@@ -123,6 +143,7 @@ func accrueContent(state *save.State, catalog *economy.Catalog, productionMS int
 		remainders = map[string]int64{}
 	}
 	deltas := map[string][]decimal.Decimal{}
+	remainingBoostedMS := boostedProductionMS
 	accrueSegment := func(segmentMS int64) error {
 		if segmentMS <= 0 {
 			return nil
@@ -134,13 +155,22 @@ func accrueContent(state *save.State, catalog *economy.Catalog, productionMS int
 			return err
 		}
 		for resourceID, values := range rates {
-			delta, err := AccrueConstant(values, segmentMS, efficiency)
+			bonusMS := segmentMS
+			if bonusMS > remainingBoostedMS {
+				bonusMS = remainingBoostedMS
+			}
+			delta, err := accrueBoostedConstant(values, segmentMS, bonusMS, efficiency, bonusFactor)
 			if err != nil {
 				return fmt.Errorf("%w: accrue %s: %v", ErrInvalidEngineState, resourceID, err)
 			}
 			if !delta.Eq(decimal.Zero) {
 				deltas[resourceID] = append(deltas[resourceID], delta)
 			}
+		}
+		if remainingBoostedMS > segmentMS {
+			remainingBoostedMS -= segmentMS
+		} else {
+			remainingBoostedMS = 0
 		}
 		return nil
 	}
@@ -187,6 +217,32 @@ func accrueContent(state *save.State, catalog *economy.Catalog, productionMS int
 		}
 	}
 	return entries, provisioned, remainders, nil
+}
+
+// accrueBoostedConstant integrates the ordinary and burst portions of one
+// fixed-grid segment before the single explicit state quantization boundary.
+func accrueBoostedConstant(rates []decimal.Decimal, elapsedMS, boostedMS int64, efficiency, bonusFactor decimal.Decimal) (decimal.Decimal, error) {
+	if elapsedMS < 0 || boostedMS < 0 || boostedMS > elapsedMS ||
+		!efficiency.IsStateValue() || efficiency.Lt(decimal.Zero) ||
+		!bonusFactor.IsStateValue() || bonusFactor.Lt(decimal.Zero) {
+		return decimal.NaN, ErrInvalidAccrual
+	}
+	for _, rate := range rates {
+		if !rate.IsStateValue() || rate.Lt(decimal.Zero) {
+			return decimal.NaN, ErrInvalidAccrual
+		}
+	}
+	totalRate := decimal.SumDeterministic(rates)
+	if !totalRate.IsStateValue() {
+		return decimal.NaN, ErrInvalidAccrual
+	}
+	baseSeconds := decimal.FromFloat64(float64(elapsedMS)).Div(decimal.FromFloat64(1000))
+	bonusSeconds := decimal.FromFloat64(float64(boostedMS)).Div(decimal.FromFloat64(1000))
+	delta := totalRate.Mul(baseSeconds.Add(bonusSeconds.Mul(bonusFactor))).Mul(efficiency).Quantize(decimal.CanonicalSignificantDigits)
+	if !delta.IsStateValue() {
+		return decimal.NaN, ErrInvalidAccrual
+	}
+	return delta, nil
 }
 
 func tierProgressPPM(catalog *economy.Catalog, state *save.State) (int64, error) {

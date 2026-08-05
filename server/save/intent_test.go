@@ -93,6 +93,21 @@ func TestValidateFoundationEventPayloads(t *testing.T) {
 	}
 }
 
+func TestValidateDoctrineAndComputeCreditEventPayloads(t *testing.T) {
+	run := `{"company_stream_id":"11111111-1111-4111-8111-111111111111","run_seq":1}`
+	events := []EventWrite{
+		{Kind: EventDoctrinePicked, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"founder_id":"22222222-2222-4222-8222-222222222222","run_id":` + run + `,"transition_id":"transition.t3_to_t4","doctrine_id":"doctrine.capture"}`)},
+		{Kind: EventComputeCreditSpent, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"founder_id":"22222222-2222-4222-8222-222222222222","run_id":` + run + `,"amount_ms":1500,"target":"accelerate","burst_duration_ms":1500,"burst_speed":"2e0"}`)},
+	}
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: events}, testIntentID); err != nil {
+		t.Fatal(err)
+	}
+	events[1].Payload = json.RawMessage(`{"founder_id":"22222222-2222-4222-8222-222222222222","run_id":` + run + `,"amount_ms":1500,"target":"accelerate","burst_duration_ms":1499,"burst_speed":"2e0"}`)
+	if err := validateEventPayload(events[1]); !errors.Is(err, ErrInvalidStream) {
+		t.Fatalf("mismatched burst duration error=%v", err)
+	}
+}
+
 func TestValidateRouteEventPayloads(t *testing.T) {
 	run := `{"company_stream_id":"11111111-1111-4111-8111-111111111111","run_seq":1}`
 	events := []EventWrite{
