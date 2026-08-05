@@ -177,6 +177,15 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		expect(canonicalJSONString(founderTransition.receipt)).toBe(founderCase.receipt_json);
 		expect(canonicalJSONString(founderTransition.events)).toBe(founderCase.events_json);
 		expect(canonicalJSONString(encodeFounderReplayState(founderTransition.state))).toBe(founderCase.post_state_json);
+		const founderWire = founderCase.replay_inputs as { command: { intent_id: string; founder_stream_id: string; founder_id: string; server_ts_ms: number } };
+		const companyWire = companyCase.replay_inputs as { command: { company_stream_id: string; run_seq: number; run_log_seq: number } };
+		await expect(verifyFounderReplayHistory(founderCase.pre_state, 1, 17, fixture.minigame_constants_hash,
+			founderWire.command.founder_stream_id, founderWire.command.founder_id, [{ seq: 1, intentId: founderWire.command.intent_id,
+			constantsHash: fixture.minigame_constants_hash, canonicalPayload: canonicalJSONString(founderCase.canonical_payload),
+			replayInputs: founderCase.replay_inputs, receiptJSON: founderCase.receipt_json, eventsJSON: founderCase.events_json,
+			appliedRevision: 2, serverTSMS: founderWire.command.server_ts_ms, source: { companyStreamId: companyWire.command.company_stream_id,
+				runSeq: companyWire.command.run_seq, runLogSeq: companyWire.command.run_log_seq } }],
+			{ revision: 2, version: 17, constantsHash: fixture.minigame_constants_hash, state: founderCase.post_state }, [bundle])).resolves.toBe("verified");
 	});
 
   it("verifies the Go-authored Founder career from genesis without Company state", async () => {

@@ -45,10 +45,14 @@ func VerifyFounderHistory(history save.FounderHistory, catalogs ReplayCatalogRes
 		var kind struct {
 			Kind string `json:"kind"`
 		}
-		if json.Unmarshal(wire.Resolved, &kind) != nil || (kind.Kind == founderExitResolvedKind) != (entry.Source != nil) {
+		if json.Unmarshal(wire.Resolved, &kind) != nil {
 			return ReplayStateDivergence
 		}
-		if entry.Source != nil {
+		linked := kind.Kind == founderExitResolvedKind || kind.Kind == minigameResolutionKind
+		if linked != (entry.Source != nil) {
+			return ReplayStateDivergence
+		}
+		if entry.Source != nil && kind.Kind == founderExitResolvedKind {
 			var facts founderExitResolvedWire
 			if decodeReplayStrict(wire.Resolved, &facts) != nil || facts.CompanyStreamID != entry.Source.CompanyStreamID ||
 				facts.RunSeq != entry.Source.RunSeq || facts.RunLogSeq != entry.Source.RunLogSeq {

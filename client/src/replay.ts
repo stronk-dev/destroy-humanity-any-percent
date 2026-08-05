@@ -541,10 +541,10 @@ export async function verifyFounderReplayHistory(genesis: unknown, genesisRevisi
     try {
       const wire = parseFounderReplayWire(entry.replayInputs);
       if (wire.command.intent_id !== entry.intentId || wire.command.founder_stream_id !== founderStreamId || wire.command.founder_id !== founderId || wire.command.revision !== revision || wire.command.founder_log_seq !== entry.seq || wire.command.server_ts_ms !== entry.serverTSMS) return "log_gap";
-      const exitArm = wire.resolved.kind === "exit.v1";
-      if (exitArm !== (entry.source !== null)) return "state_divergence";
+      const exitArm = wire.resolved.kind === "exit.v1"; const minigameArm = wire.resolved.kind === "resolve_minigame_session";
+      if ((exitArm || minigameArm) !== (entry.source !== null)) return "state_divergence";
       if (entry.source) {
-        if (wire.resolved.company_stream_id !== entry.source.companyStreamId || wire.resolved.run_seq !== entry.source.runSeq || wire.resolved.run_log_seq !== entry.source.runLogSeq) return "state_divergence";
+        if (exitArm && (wire.resolved.company_stream_id !== entry.source.companyStreamId || wire.resolved.run_seq !== entry.source.runSeq || wire.resolved.run_log_seq !== entry.source.runLogSeq)) return "state_divergence";
       }
       let executionBundle = bundle;
       if (exitArm && wire.resolved.result_constants_hash !== hash) {

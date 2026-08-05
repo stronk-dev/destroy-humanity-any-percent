@@ -619,5 +619,5 @@ pass; this entry does not authorize archival.
 - The composed real-Postgres test certifies a tenant result, commits session/faucet/Company/Founder/
   both logs/both events atomically, proves byte-identical idempotent retry, and injects rollback at
   every persistence boundary including first-Founder-genesis.
-- Kernel version is 0.3.55. No production artifact was minted, no RFC was archived, and nothing was
+- Kernel version is 0.3.56 after the post-commit Founder-history discriminator fix. No production artifact was minted, no RFC was archived, and nothing was
   pushed.

@@ -215,6 +215,10 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 		t.Fatalf("company=%d cash=%s founder=%d rating=%+v quality=%+v", loadedCompany.Revision.Number, cash, loadedFounder.Revision.Number,
 			loadedFounder.State.MinigameRatings["fixture.counter"], loadedFounder.State.MinigameOfflineQuality["fixture.counter"])
 	}
+	founderHistory, err := store.LoadFounderHistory(ctx, founderRevision.StreamID)
+	if err != nil || VerifyFounderHistory(founderHistory, ReplayCatalogSet{bundle.ConstantsHash: bundle}) != ReplayVerified {
+		t.Fatalf("Founder minigame history did not verify: %v", err)
+	}
 	var companyLogs, founderLogs, resolutionEvents, quota int
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND (convert_from(canonical_payload,'UTF8')::jsonb)->>'kind'='resolve_minigame_session'`, companyRevision.StreamID).Scan(&companyLogs); err != nil {
 		t.Fatal(err)
