@@ -153,3 +153,39 @@ corrected (founderlog.go now precedes genesis.go); the rebase carries that corre
 commit. **Lesson recorded: editing kernel-guarded config (`affecting-paths.json`) means respecting
 the guard's structural invariants — strict lexical sort, append-only-per-commit — not just adding
 the right path.** Direct edits to guard data get a `validateGuard`-style sanity check before commit.
+
+## 2026-08-05 — designated reviewer verdict: Founder genesis batch (70d2d4a..7af623c) — APPROVE
+
+Review by: the project's designated Claude reviewer. Recorded by: same. **This is the review of
+record for the batch** — the prior ApplyFounderLogged approval covered 7620311..1ba07fd, and
+1ba07fd is the PARENT of this batch's base; F2 (range-union) correctly flagged the batch was
+otherwise unreviewed. Now covered.
+
+**Approved — sound and complete for what it claims (the immutable-Founder-genesis HALF of A4).**
+No correctness defects. Verified independently at source:
+- **The poisoned-history repair (70d2d4a) is clean AND proven over the WHOLE rewritten span** —
+  the reviewer RAN the guard (exit 0, non-shallow so the full guardIntroduction..HEAD walk),
+  which means every commit in the rewrite has a sorted registry and a satisfied bump rule.
+  founderlog.go is in strict lexical order at every descendant; the subsequent commits replayed
+  intact. Repairing a fail-closed guard correctly (no NEW unsorted/unbumped commit anywhere in
+  history) was the thing that most needed independent proof — confirmed.
+- **Genesis mirrors run-genesis faithfully:** byte-identical pre-command Founder state via the raw
+  jsonb bytes (the `state::text` equivalent, NOT a Go re-encode); genesis + first founder_log in
+  one transaction; the deferrable AFTER-INSERT constraint binds seq=1 to the genesis revision so a
+  founder command CANNOT run without genesis; ON CONFLICT + FOR SHARE recheck + the seq-1 PK force
+  exactly one concurrent-first winner; immutable (UPDATE rejected, tested); fail-closed backfill
+  RAISEs if a pruned revision made genesis unrecoverable (never fabricates history); Founder-only
+  (no Company read). Kernel 0.3.28 justified, both new paths registered.
+- **B1-B3 honesty confirmed:** grep proves Exit writes no founder_log/genesis — Exit-as-founder-log
+  is honestly deferred behind the B1-B3 rulings, genesis claims only its half.
+
+Findings (none blocking): **F1 LOW — no real-Postgres fault-injection test for the founder
+both-or-none property** (run-genesis has runExitFault; applyIntent has no fault hook). The property
+holds structurally (single-tx rollback + the genesis-less deferred-constraint rejection IS tested —
+the stronger guarantee), but add the fault-injection parity test when the Exit-founder-log slice
+lands (it'll need the hook anyway). F3 INFO — an available `(founder_stream_id, revision) →
+save_revisions` FK is unused hardening (parity with run-genesis, not a regression); DELETE-
+immutability untested though the same trigger covers it — add the one-line negative.
+
+**Verdict: proceed with Exit-as-founder-log against the B1-B3 rulings; the genesis foundation is
+solid.**

@@ -249,10 +249,36 @@ result hash/version only on an applied Exit. It byte-compares state, scope-local
 ordered Founder events in Go and TypeScript. Unknown arms, hash gaps, sequence gaps, or unavailable
 artifacts fail closed with typed verdicts; no deploy-current catalog is read.
 
+## Owner rulings on B1-B3 (2026-08-05)
+
+- **B1 - accepted:** the Company intent_records/outbox/run-log receipt is UNCHANGED (Exit's
+  Company-scoped receipt stays the Company boundary's). The Exit row in `founder_log` stores a
+  SEPARATE audit-only Founder receipt over Founder facts only - a closed `exit.v1` union
+  (founder-relevant Exit facts: attended_ms advanced, age_ms before/after, any Founder-scope state
+  the Exit touched) that a Founder verifier CAN regenerate from Founder state alone. The two
+  receipts are distinct by design - Company replay verifies the Company receipt, Founder replay
+  verifies the Founder audit receipt; neither pretends to generate the other's bytes.
+- **B2 - accepted, relational not JSON-claim:** a forward migration adds nullable
+  `(source_company_stream_id, source_run_seq, source_run_log_seq)` columns to `founder_log`, a
+  unique key on the equivalent `run_log` coordinates, and a DEFERRABLE composite FK - so the
+  referenced Company command provably exists, enforced by the database in the SAME Exit
+  transaction that authors both rows (no cross-stream read during replay - the DB proves the link
+  at write time). The columns are non-null exactly for Exit rows, null for ordinary Founder
+  commands (a CHECK ties presence to the exit kind).
+- **B3 - accepted, one declared meaning:** `founder_log.constants_hash` ALWAYS identifies the
+  INPUT/pre-command bundle (uniform with ordinary rows); `exit.v1.result_constants_hash` identifies
+  the APPLIED OUTPUT bundle (equal to input on rejection, differs when Exit activates a new epoch/
+  save version - the activation-boundary law's crossing). The Founder verifier reads input-hash
+  from the column, output-hash from the exit fact; no column overload.
+
+These are the Exit-as-Founder-log wire contracts; with them the A4 Founder-replay slice is fully
+specified. Exit-as-founder_log-command implementation proceeds after this ruling.
+
 ## Changelog
 
 - 2026-08-05: created (draft) — the shared Founder attendance clock; unblocks Pet C10 + Minigame
   C26; defined as summed run-attended flushed at Exit + a frozen mid-run partial (replay-safe).
+- 2026-08-05: B1-B3 ruled — separate audit-only Founder Exit receipt (exit.v1), relational deferrable-FK Company-log link, input-hash-in-column/output-hash-in-fact. Exit-logging unblocked.
 - 2026-08-05: Codex acceptance review found five blockers: reuse the existing `age_ms` authority,
   make the frozen partial race-safe against Exit, specify offline-aware resolution, land Founder
   genesis/Exit logging first, and close exact bounds/cursor semantics. Status remains draft.
