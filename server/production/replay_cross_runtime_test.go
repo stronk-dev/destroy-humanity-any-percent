@@ -35,6 +35,25 @@ type crossRuntimeFixture struct {
 	ActiveExit    crossRuntimeActiveExit     `json:"active_foundation_exit"`
 	FullRun       crossRuntimeFullRun        `json:"full_run"`
 	RejectedExit  crossRuntimeFullRun        `json:"rejected_exit_run"`
+	FounderHash   string                     `json:"founder_constants_hash"`
+	FounderFiles  map[string]string          `json:"founder_artifacts"`
+	FounderCases  []crossRuntimeFounderCase  `json:"founder_cases"`
+}
+
+type crossRuntimeFounderCase struct {
+	Name                string          `json:"name"`
+	StateVersion        int             `json:"state_version"`
+	PreState            json.RawMessage `json:"pre_state"`
+	CanonicalPayload    json.RawMessage `json:"canonical_payload"`
+	ReplayInputs        json.RawMessage `json:"replay_inputs"`
+	Outcome             string          `json:"outcome"`
+	Receipt             json.RawMessage `json:"receipt"`
+	Events              []fixtureEvent  `json:"events"`
+	PostState           json.RawMessage `json:"post_state"`
+	ResultConstantsHash string          `json:"result_constants_hash"`
+	ReceiptJSON         string          `json:"receipt_json"`
+	EventsJSON          string          `json:"events_json"`
+	PostStateJSON       string          `json:"post_state_json"`
 }
 
 type crossRuntimeActiveExit struct {
@@ -274,7 +293,84 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	result.ActiveExit = makeActiveFoundationExitFixture(t, baseNow)
 	result.FullRun = makeFullRunFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	result.RejectedExit = makeRejectedExitFixture(t, catalogs, bundleBytes.Hash, baseNow)
+	result.FounderHash, result.FounderFiles, result.FounderCases = makeFounderReplayFixture(t, baseNow)
 	return result
+}
+
+func makeFounderReplayFixture(t *testing.T, now time.Time) (string, map[string]string, []crossRuntimeFounderCase) {
+	t.Helper()
+	_, catalogs := foundationTestBundles(t)
+	definitions := []struct {
+		name      string
+		payload   string
+		configure func(*save.State)
+		resolved  func(*save.State) any
+	}{
+		{name: "invalid-route-hint", payload: `{"intent_id":"01986666-0700-7000-8000-000000000701","kind":"buy_route_hint","expected_revision":1,"route_id":"INVALID"}`,
+			resolved: func(*save.State) any { return founderInvalidResolved{Kind: "invalid", Detail: "route_id"} }},
+		{name: "route-hint-applied", payload: `{"intent_id":"01986666-0700-7000-8000-000000000702","kind":"buy_route_hint","expected_revision":1,"route_id":"route.ipo_sequence_break"}`,
+			configure: func(state *save.State) { state.RouteKnowledgeBalance = 125 },
+			resolved: func(state *save.State) any {
+				return founderRouteHintResolved{Kind: string(IntentBuyRouteHint), RouteContextVersion: catalogs.Routes.ContextVersion(), RouteKnowledgeBalance: state.RouteKnowledgeBalance}
+			}},
+		{name: "exit-rejected", payload: `{"intent_id":"01986666-0700-7000-8000-000000000703","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`,
+			configure: func(state *save.State) { state.AgeMS = 100 },
+			resolved: func(state *save.State) any {
+				return founderExitResolvedWire{Kind: founderExitResolvedKind, Outcome: string(save.IntentRejected), CompanyStreamID: "01986666-1700-7000-8000-000000000703", RunSeq: 1, RunLogSeq: 3, ResultConstantsHash: catalogs.ConstantsHash, AgeMSBefore: state.AgeMS, AgeMSAfter: state.AgeMS, AddedNetworkSlots: []save.NetworkSlot{}, AddedLedgerFactKinds: []string{}, AddedLifetimeAchievements: []string{}, ResultFounderWireVersion: save.VersionForState(state), Rejection: &founderAuditRejection{Category: "not_eligible", Detail: "tier"}}
+			}},
+		{name: "exit-applied", payload: `{"intent_id":"01986666-0700-7000-8000-000000000704","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`,
+			configure: func(state *save.State) { state.RouteKnowledgeBalance, state.AgeMS = 75, 100 },
+			resolved: func(state *save.State) any {
+				return founderExitResolvedWire{Kind: founderExitResolvedKind, Outcome: string(save.IntentApplied), CompanyStreamID: "01986666-1700-7000-8000-000000000704", RunSeq: 1, RunLogSeq: 4, ResultConstantsHash: catalogs.ConstantsHash, ReputationDelta: 3, RouteKnowledgeDelta: 5, AttendedMS: 600_000, AgeMSBefore: state.AgeMS, AgeMSAfter: state.AgeMS + 600_000, AddedNetworkSlots: []save.NetworkSlot{{Slot: "network.board", CarriedRef: "contact.board"}}, AddedLedgerFactKinds: []string{"exit.collapse"}, AddedLifetimeAchievements: []string{}, ExitRecord: &founderExitRecordWire{RunID: 1, ExitType: "collapse", OccurredAtMS: now.UnixMilli(), ReputationDelta: 3}, ResultFounderWireVersion: save.VersionForState(state)}
+			}},
+	}
+	cases := make([]crossRuntimeFounderCase, 0, len(definitions))
+	for index, definition := range definitions {
+		state := replayFounderFixtureState(t, catalogs, now)
+		if definition.configure != nil {
+			definition.configure(state)
+		}
+		pre := mustEncodeState(t, state)
+		request, err := ParseIntent([]byte(definition.payload))
+		if err != nil {
+			t.Fatalf("%s parse: %v", definition.name, err)
+		}
+		command := save.FounderReplayCommand{IntentID: request.IntentID, FounderStreamID: "01986666-2700-7000-8000-000000000001", FounderID: "01986666-3700-7000-8000-000000000001", Revision: request.ExpectedRevision, FounderLogSeq: int64(index + 1), ServerTSMS: now.Add(time.Duration(index) * time.Second).UnixMilli()}
+		inputs, err := save.MarshalFounderReplayInputs(command, definition.resolved(state))
+		if err != nil {
+			t.Fatalf("%s inputs: %v", definition.name, err)
+		}
+		transition, err := ApplyFounderLogged(state, request.CanonicalPayload, catalogs, inputs)
+		if err != nil {
+			t.Fatalf("%s transition: %v", definition.name, err)
+		}
+		post := mustEncodeState(t, state)
+		events := fixtureEvents(transition.Events)
+		cases = append(cases, crossRuntimeFounderCase{Name: definition.name, StateVersion: save.VersionForState(state), PreState: pre, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+			Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events, PostState: post, ResultConstantsHash: transition.ResultConstantsHash,
+			ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, post)})
+	}
+	return catalogs.ConstantsHash, stringArtifacts(catalogs.Artifacts), cases
+}
+
+func replayFounderFixtureState(t *testing.T, catalogs CatalogBundle, now time.Time) *save.State {
+	t.Helper()
+	ledger, err := economy.NewLedger(catalogs.Economy, economy.ScopeFounder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	counts, provisioned, remainders := map[string]int64{}, map[string]int64{}, map[string]int64{}
+	for _, generator := range catalogs.Economy.GeneratorClassesForScope(economy.ScopeFounder) {
+		counts[generator.ID], provisioned[generator.ID] = 0, 0
+		if generator.Provision != nil {
+			remainders[generator.Provision.GeneratorID] = 0
+		}
+	}
+	return &save.State{WireVersion: save.LatestSupportedVersion, Ledger: ledger, GeneratorCounts: counts, UpgradesOwned: map[string]bool{}, GeneratorProvisioned: provisioned,
+		ProvisionRemaindersPPM: remainders, EvaluatedThrough: now, ManualTokenRefilledAt: now, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{},
+		LedgerFactKinds: map[string]bool{}, MeterValues: map[string]int{}, MeterDecayRemainders: map[string]int64{}, MeterInputRemainders: map[string]int64{}, AchievementsEarnedRun: map[string]bool{},
+		AchievementsEarnedLifetime: map[string]bool{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{}, LifetimeValue: decimal.Zero,
+		OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
 }
 
 func makeActiveFoundationExitFixture(t *testing.T, now time.Time) crossRuntimeActiveExit {

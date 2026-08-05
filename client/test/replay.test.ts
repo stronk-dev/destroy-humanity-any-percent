@@ -2,12 +2,15 @@ import fixtureJSON from "../../testdata/replay/apply-logged-v1.json";
 import { describe, expect, it } from "vitest";
 
 import {
+  applyFounderLogged,
   applyLogged,
   applyLoggedExit,
   canonicalJSONString,
+  encodeFounderReplayState,
   encodeReplayState,
   encodeReplayStateV14,
   loadReplayCatalogBundle,
+  restoreFounderReplayState,
   restoreReplayState,
   verifyReplayRun,
   verifyReplayRunDetailed,
@@ -51,6 +54,11 @@ interface TerminalFixtureCase {
   readonly company_started_events_json: string;
 }
 
+interface FounderFixtureCase extends FixtureCase {
+  readonly state_version: 14 | 15 | 16;
+  readonly result_constants_hash: string;
+}
+
 const fixture = fixtureJSON as {
   readonly version: number;
   readonly constants_hash: string;
@@ -86,9 +94,24 @@ const fixture = fixtureJSON as {
   readonly active_foundation_exit: {
     readonly constants_hash: string; readonly artifacts: ReplayArtifacts; readonly next_constants_hash: string; readonly next_artifacts: ReplayArtifacts; readonly case: TerminalFixtureCase;
   };
+  readonly founder_constants_hash: string;
+  readonly founder_artifacts: ReplayArtifacts;
+  readonly founder_cases: readonly FounderFixtureCase[];
 };
 
 describe("TypeScript ApplyLogged cross-runtime fixture", () => {
+  it.each(fixture.founder_cases)("replays Founder $name to the Go receipt, events, and state", async (testCase) => {
+    const bundle = await loadReplayCatalogBundle(fixture.founder_constants_hash, fixture.founder_artifacts);
+    const state = restoreFounderReplayState(testCase.pre_state, testCase.state_version, bundle);
+    const transition = applyFounderLogged(state, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+
+    expect(transition.outcome).toBe(testCase.outcome);
+    expect(transition.resultConstantsHash).toBe(testCase.result_constants_hash);
+    expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+    expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
+    expect(canonicalJSONString(encodeFounderReplayState(transition.state))).toBe(testCase.post_state_json);
+  });
+
   it("migrates save v13 to the closed v14 purchasable-content shape", async () => {
     const bundle = await loadReplayCatalogBundle(fixture.constants_hash, fixture.artifacts);
     const current = structuredClone(fixture.cases[0]!.pre_state) as Record<string, unknown>;

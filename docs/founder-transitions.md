@@ -35,6 +35,14 @@ client outbox remain unchanged. Three nullable source coordinates are present ex
 the same transaction. Verified-run compaction retains that one referenced witness row after the
 full run has been archived, preserving the relational proof without retaining the whole live log.
 
+`production.ApplyFounderLogged` is the single projection-free transition used by the live Founder
+path and by replay. Its closed Phase-A union is `invalid | buy_route_hint | exit.v1`; the Exit arm
+updates only Founder-owned facts and generates a separate `founder_advanced` event and audit
+receipt. The TypeScript port consumes the same Go-authored corpus and byte-compares the resulting
+state, receipt, ordered events, and result constants hash. The production path also runs the same
+transition before committing an Exit, so a live/replay semantic split fails the authoritative
+transaction rather than entering the immutable log.
+
 The feature package still owns its closed canonical command, resolved-input, receipt, event, and
 state-transition unions. The persistence layer validates the shared envelope and transaction; it
 does not invent feature mechanics.

@@ -538,29 +538,33 @@ type founderInvalidResolved struct {
 }
 
 func marshalFounderReplayInputs(command save.FounderReplayCommand, resolved any) (json.RawMessage, error) {
-	return json.Marshal(map[string]any{"v": save.FounderReplayInputsVersion, "command": command,
-		"evaluated_at_ms": command.ServerTSMS, "resolved": resolved})
+	return save.MarshalFounderReplayInputs(command, resolved)
 }
 
-func (s *Service) handleFounderRouteHint(ctx context.Context, streamID string, mode EvaluationMode, request IntentRequest) (HandleResult, error) {
+func (s *Service) handleFounderRouteHint(ctx context.Context, streamID string, _ EvaluationMode, request IntentRequest) (HandleResult, error) {
 	collector := &invariantCollector{}
 	result, err := s.store.ApplyFounderLogged(ctx, streamID, request.ExpectedRevision, request.IntentID,
 		request.RequestHash, request.CanonicalPayload,
 		func(state *save.State, revision save.Revision, command save.FounderReplayCommand) (save.IntentDecision, json.RawMessage, error) {
+			if s.replayCatalogs == nil {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: Founder replay runtime unavailable", ErrInvalidIntent)
+			}
+			bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(revision.ConstantsHash)
+			if !ok {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
+			}
 			if request.InvalidDetail != "" {
-				decision, decisionErr := rejectedDecision(request, revision.Number, "invalid", request.InvalidDetail)
-				if decisionErr != nil {
-					return save.IntentDecision{}, nil, decisionErr
-				}
 				replayInputs, marshalErr := marshalFounderReplayInputs(command,
 					founderInvalidResolved{Kind: "invalid", Detail: request.InvalidDetail})
-				return decision, replayInputs, marshalErr
+				if marshalErr != nil {
+					return save.IntentDecision{}, nil, marshalErr
+				}
+				transition, transitionErr := ApplyFounderLogged(state, request.CanonicalPayload, bundle, replayInputs)
+				return save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt,
+					Events: transition.Events}, replayInputs, transitionErr
 			}
-			if s.replayCatalogs == nil || s.routeCatalogs == nil || s.routeProjector == nil {
+			if s.routeCatalogs == nil || s.routeProjector == nil {
 				return save.IntentDecision{}, nil, fmt.Errorf("%w: Founder route runtime unavailable", ErrInvalidIntent)
-			}
-			if _, ok := s.replayCatalogs.ResolveReplayCatalogs(revision.ConstantsHash); !ok {
-				return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
 			}
 			catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
 			if !ok {
@@ -577,15 +581,18 @@ func (s *Service) handleFounderRouteHint(ctx context.Context, streamID string, m
 				return save.IntentDecision{}, nil, err
 			}
 			resolvedBalance := state.RouteKnowledgeBalance
-			decision, transitionErr := TransitionWithPolicies(request, state, catalog, routeCatalog, nil, nil,
-				revision, mode, time.UnixMilli(command.ServerTSMS).UTC(), nil, collector, nil)
-			if transitionErr != nil {
-				return save.IntentDecision{}, nil, transitionErr
-			}
 			resolved := founderRouteHintResolved{Kind: string(IntentBuyRouteHint),
 				RouteContextVersion: routeCatalog.ContextVersion(), RouteKnowledgeBalance: resolvedBalance}
 			replayInputs, marshalErr := marshalFounderReplayInputs(command, resolved)
-			return decision, replayInputs, marshalErr
+			if marshalErr != nil {
+				return save.IntentDecision{}, nil, marshalErr
+			}
+			transition, transitionErr := ApplyFounderLogged(state, request.CanonicalPayload, bundle, replayInputs)
+			if transitionErr != nil {
+				return save.IntentDecision{}, nil, transitionErr
+			}
+			return save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt,
+				Events: transition.Events}, replayInputs, nil
 		})
 	if err != nil {
 		s.recordAbortedInvariants(collector.reports)

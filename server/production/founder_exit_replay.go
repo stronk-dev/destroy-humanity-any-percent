@@ -21,6 +21,7 @@ type founderExitRecordWire struct {
 
 type founderExitResolvedWire struct {
 	Kind                      string                 `json:"kind"`
+	Outcome                   string                 `json:"outcome"`
 	CompanyStreamID           string                 `json:"company_stream_id"`
 	RunSeq                    int64                  `json:"run_seq"`
 	RunLogSeq                 int64                  `json:"run_log_seq"`
@@ -36,6 +37,7 @@ type founderExitResolvedWire struct {
 	AddedLifetimeAchievements []string               `json:"added_lifetime_achievements"`
 	ExitRecord                *founderExitRecordWire `json:"exit_record"`
 	ResultFounderWireVersion  int                    `json:"result_founder_wire_version"`
+	Rejection                 *founderAuditRejection `json:"rejection"`
 }
 
 type founderAuditRejection struct {
@@ -59,6 +61,7 @@ func buildFounderExitAudit(command save.ReplayCommand, founderRevision save.Revi
 	resultHash := founderRevision.ConstantsHash
 	facts := founderExitResolvedWire{Kind: founderExitResolvedKind, CompanyStreamID: command.CompanyStreamID,
 		RunSeq: command.RunSeq, RunLogSeq: command.RunLogSeq, ResultConstantsHash: resultHash,
+		Outcome:     string(decision.Outcome),
 		AgeMSBefore: before.AgeMS, AgeMSAfter: before.AgeMS, AddedNetworkSlots: []save.NetworkSlot{},
 		AddedLedgerFactKinds: []string{}, AddedLifetimeAchievements: []string{},
 		ResultFounderWireVersion: save.VersionForState(before)}
@@ -70,6 +73,7 @@ func buildFounderExitAudit(command save.ReplayCommand, founderRevision save.Revi
 		}
 		current := founderRevision.Number
 		receipt.CurrentRevision, receipt.Rejection = &current, &founderAuditRejection{Category: category, Detail: detail}
+		facts.Rejection = &founderAuditRejection{Category: category, Detail: detail}
 	} else if decision.Outcome == save.IntentApplied {
 		if decision.NewConstantsHash == "" || len(after.ExitHistory) != len(before.ExitHistory)+1 ||
 			after.ReputationLevel < before.ReputationLevel || after.RouteKnowledgeBalance < before.RouteKnowledgeBalance ||
@@ -104,6 +108,73 @@ func buildFounderExitAudit(command save.ReplayCommand, founderRevision save.Revi
 	}
 	auditReceipt, err := json.Marshal(receipt)
 	return resolved, auditReceipt, err
+}
+
+func verifyFounderExitLiveParity(command save.ReplayCommand, founderRevision save.Revision, request IntentRequest,
+	before, wantAfter *save.State, decision save.ExitDecision, resolvedJSON, receiptJSON json.RawMessage,
+	catalogs CatalogBundle,
+) error {
+	var resolved founderExitResolvedWire
+	if err := decodeReplayStrict(resolvedJSON, &resolved); err != nil {
+		return err
+	}
+	working, err := cloneFounderReplayState(before, catalogs.Economy)
+	if err != nil {
+		return err
+	}
+	founderCommand := save.FounderReplayCommand{IntentID: command.IntentID,
+		FounderStreamID: founderRevision.StreamID, FounderID: founderRevision.OwnerID,
+		Revision: founderRevision.Number, FounderLogSeq: 1, ServerTSMS: 1}
+	replayed, err := applyFounderExitResolved(working, founderCommand, request, founderRevision.ConstantsHash, resolved)
+	if err != nil || replayed.Outcome != decision.Outcome || !jsonSemanticallyEqual(replayed.Receipt, receiptJSON) ||
+		len(replayed.Events) != len(decision.FounderEvents) {
+		return fmt.Errorf("%w: live Founder Exit parity", ErrInvalidEngineState)
+	}
+	if decision.Outcome == save.IntentApplied {
+		wantState, cloneErr := cloneFounderReplayState(before, catalogs.Economy)
+		if cloneErr != nil || applyFounderReplayOutput(wantState, wantAfter) != nil {
+			return fmt.Errorf("%w: live Founder Exit expected state", ErrInvalidEngineState)
+		}
+		got, gotErr := save.EncodeState(replayed.State)
+		want, wantErr := save.EncodeState(wantState)
+		if gotErr != nil || wantErr != nil || !bytes.Equal(got, want) {
+			return fmt.Errorf("%w: live Founder Exit state parity at %s (got=%v want=%v)", ErrInvalidEngineState,
+				firstStateDifference(got, want), gotErr, wantErr)
+		}
+	}
+	for index := range replayed.Events {
+		if replayed.Events[index].Kind != decision.FounderEvents[index].Kind ||
+			replayed.Events[index].SchemaVersion != decision.FounderEvents[index].SchemaVersion ||
+			replayed.Events[index].IntentID != decision.FounderEvents[index].IntentID ||
+			!jsonSemanticallyEqual(replayed.Events[index].Payload, decision.FounderEvents[index].Payload) {
+			return fmt.Errorf("%w: live Founder Exit event parity", ErrInvalidEngineState)
+		}
+	}
+	return nil
+}
+
+func firstStateDifference(left, right []byte) string {
+	var leftFields, rightFields map[string]json.RawMessage
+	if json.Unmarshal(left, &leftFields) != nil || json.Unmarshal(right, &rightFields) != nil {
+		return "invalid_json"
+	}
+	keys := make([]string, 0, len(leftFields)+len(rightFields))
+	seen := map[string]bool{}
+	for key := range leftFields {
+		seen[key], keys = true, append(keys, key)
+	}
+	for key := range rightFields {
+		if !seen[key] {
+			keys = append(keys, key)
+		}
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		if !bytes.Equal(leftFields[key], rightFields[key]) {
+			return key
+		}
+	}
+	return "encoding"
 }
 
 func rejectionFromReceipt(data json.RawMessage, intentID string) (string, string, error) {

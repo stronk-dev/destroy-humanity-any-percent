@@ -54,3 +54,17 @@ Append-only. A fresh agent must be able to resume from this file and the accepte
   path. The composed Postgres exit→verify→board fixture proves the retained witness and is green.
 - Fault coverage includes `founder_genesis` and `founder_log` boundaries, both-or-none rollback,
   genesis UPDATE/DELETE rejection, and relational source coordinates. Kernel is `0.3.29`.
+
+## 2026-08-05 — shared Founder transition implemented
+
+- Live `buy_route_hint` and Exit now execute through the projection-free `ApplyFounderLogged`
+  boundary; Exit byte-compares the replayed Founder state, audit receipt, and ordered events before
+  the multi-stream transaction can commit.
+- TypeScript owns a strict Founder-state codec and the same closed
+  `invalid | buy_route_hint | exit.v1` transition. A Go-authored shared corpus covers malformed
+  commands, an applied route hint, a rejected Exit, and an applied Exit with attendance, facts,
+  network slots, and its `founder_advanced` event.
+- Both runtimes assert canonical state, receipt, ordered-event, and result-hash identity. Focused Go
+  and all client tests are green. Kernel advances to `0.3.30` for the shared transition semantics.
+- Persisted genesis-to-head verification remains the next slice; the plan checkbox stays open until
+  that loader/verifier and its real-Postgres proof land.
