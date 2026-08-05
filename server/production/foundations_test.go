@@ -142,12 +142,43 @@ func TestFounderFeatureVersionsAreReachableWithoutChangingCompanyAxis(t *testing
 	if save.VersionForState(founder) != 17 || save.VersionForState(secondCompany) != 16 {
 		t.Fatalf("mixed axes founder=%d company=%d", save.VersionForState(founder), save.VersionForState(secondCompany))
 	}
+	partialCarry := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+	partialCarry.WireVersion, partialCarry.AchievementsEarnedLifetime = 16, map[string]bool{}
+	if err := validateFoundationHookInputs(minigames, secondCompany, partialCarry); err != nil {
+		t.Fatalf("v17 bundle rejected partial Company-transition carry: %v", err)
+	}
 	thirdCompany := foundationScopeState(t, active.Economy, economy.ScopeCompany)
 	if err := settleAndActivateFoundations(minigames, pets, founder, secondCompany, thirdCompany); err != nil {
 		t.Fatal(err)
 	}
 	if save.VersionForState(founder) != 18 || save.VersionForState(thirdCompany) != 16 || founder.Pets == nil {
 		t.Fatalf("v18 axes/state founder=%d company=%d pets=%v", save.VersionForState(founder), save.VersionForState(thirdCompany), founder.Pets)
+	}
+}
+
+func TestFounderExitReplayActivatesV17AndV18FromPinnedNextBundle(t *testing.T) {
+	legacy, active := foundationTestBundles(t)
+	minigames, pets := founderFeatureBundles(t, active)
+	founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+	company := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	newCompany := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	if err := settleAndActivateFoundations(legacy, active, founder, company, newCompany); err != nil {
+		t.Fatal(err)
+	}
+	command := save.FounderReplayCommand{IntentID: "01986666-1900-7000-8000-000000000001", FounderStreamID: "01986666-1900-7000-8000-000000000002", FounderID: "01986666-1900-7000-8000-000000000003", Revision: 1, FounderLogSeq: 1, ServerTSMS: 1}
+	active.Next = &minigames
+	resolved := founderExitResolvedWire{Kind: founderExitResolvedKind, Outcome: string(save.IntentApplied), CompanyStreamID: "01986666-1900-7000-8000-000000000004", RunSeq: 1, RunLogSeq: 1, ResultConstantsHash: minigames.ConstantsHash, AgeMSBefore: founder.AgeMS, AgeMSAfter: founder.AgeMS, AddedNetworkSlots: []save.NetworkSlot{}, AddedLedgerFactKinds: []string{}, AddedLifetimeAchievements: []string{}, ExitRecord: &founderExitRecordWire{RunID: 1, ExitType: "collapse", OccurredAtMS: 1}, ResultFounderWireVersion: 17}
+	transition, err := applyFounderExitResolved(founder, command, IntentRequest{}, active, resolved)
+	if err != nil || save.VersionForState(transition.State) != 17 || transition.State.MinigameRatings == nil {
+		t.Fatalf("v17 replay transition=%+v err=%v", transition.State, err)
+	}
+	minigames.Next = &pets
+	command.Revision, command.FounderLogSeq, command.IntentID = 2, 2, "01986666-1900-7000-8000-000000000005"
+	resolved.RunSeq, resolved.RunLogSeq, resolved.ResultConstantsHash, resolved.ResultFounderWireVersion = 2, 2, pets.ConstantsHash, 18
+	resolved.ExitRecord = &founderExitRecordWire{RunID: 2, ExitType: "collapse", OccurredAtMS: 2}
+	transition, err = applyFounderExitResolved(founder, command, IntentRequest{}, minigames, resolved)
+	if err != nil || save.VersionForState(transition.State) != 18 || transition.State.Pets == nil {
+		t.Fatalf("v18 replay transition=%+v err=%v", transition.State, err)
 	}
 }
 

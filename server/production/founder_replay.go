@@ -11,6 +11,7 @@ import (
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/pet"
 	"cloud-clicker/server/save"
 )
 
@@ -100,7 +101,7 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 		if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil {
 			return FounderLoggedTransition{}, fmt.Errorf("%w: Exit Founder facts", ErrInvalidReplayInputs)
 		}
-		return applyFounderExitResolved(state, wire.Command, request, catalogs.ConstantsHash, resolved)
+		return applyFounderExitResolved(state, wire.Command, request, catalogs, resolved)
 	default:
 		return FounderLoggedTransition{}, fmt.Errorf("%w: unknown Founder resolved arm", ErrInvalidReplayInputs)
 	}
@@ -114,7 +115,8 @@ func cloneFounderReplayState(state *save.State, catalog *economy.Catalog) (*save
 	return save.RestoreState(encoded, save.VersionForState(state), catalog, economy.ScopeFounder, time.Time{})
 }
 
-func applyFounderExitResolved(state *save.State, command save.FounderReplayCommand, request IntentRequest, inputHash string, resolved founderExitResolvedWire) (FounderLoggedTransition, error) {
+func applyFounderExitResolved(state *save.State, command save.FounderReplayCommand, request IntentRequest, catalogs CatalogBundle, resolved founderExitResolvedWire) (FounderLoggedTransition, error) {
+	inputHash := catalogs.ConstantsHash
 	if resolved.Kind != founderExitResolvedKind || resolved.CompanyStreamID == "" || resolved.RunSeq < 1 ||
 		resolved.RunLogSeq < 1 || resolved.AgeMSBefore != state.AgeMS || resolved.AgeMSAfter < resolved.AgeMSBefore ||
 		resolved.AttendedMS != resolved.AgeMSAfter-resolved.AgeMSBefore || resolved.AgeMSAfter > decimal.MaxExactInteger ||
@@ -165,7 +167,21 @@ func applyFounderExitResolved(state *save.State, command save.FounderReplayComma
 	state.ExitHistory = append(state.ExitHistory, save.ExitRecord{RunID: resolved.ExitRecord.RunID,
 		ExitType: resolved.ExitRecord.ExitType, OccurredAt: time.UnixMilli(resolved.ExitRecord.OccurredAtMS).UTC(),
 		ReputationDelta: resolved.ExitRecord.ReputationDelta})
+	resultCatalogs := catalogs
+	if resolved.ResultConstantsHash != inputHash {
+		if catalogs.Next == nil || !catalogs.Next.valid(resolved.ResultConstantsHash) {
+			return FounderLoggedTransition{}, ErrInvalidReplayInputs
+		}
+		resultCatalogs = *catalogs.Next
+	}
+	wantFounderVersion, _ := resultCatalogs.versionFloors()
+	if resolved.ResultFounderWireVersion != wantFounderVersion || activateFounderFeatureState(state, resultCatalogs, resolved.ResultFounderWireVersion) != nil {
+		return FounderLoggedTransition{}, ErrInvalidReplayInputs
+	}
 	state.WireVersion = resolved.ResultFounderWireVersion
+	if err := resultCatalogs.ValidateFoundationState(state); err != nil {
+		return FounderLoggedTransition{}, err
+	}
 	next := command.Revision + 1
 	receipt, _ := json.Marshal(founderExitAuditReceipt{IntentID: command.IntentID, Outcome: resolved.Outcome,
 		FounderRevision: &next, ResultConstantsHash: resolved.ResultConstantsHash})
@@ -177,6 +193,27 @@ func applyFounderExitResolved(state *save.State, command save.FounderReplayComma
 		IntentID: command.IntentID, Payload: eventPayload}}
 	return FounderLoggedTransition{State: state, Outcome: save.IntentApplied, Receipt: receipt,
 		Events: events, ResultConstantsHash: resolved.ResultConstantsHash}, nil
+}
+
+func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resultVersion int) error {
+	current := save.VersionForState(state)
+	if resultVersion < current {
+		return ErrInvalidReplayInputs
+	}
+	if resultVersion >= 17 && current < 17 {
+		if catalogs.Minigames == nil || len(catalogs.Minigames.MinigameIDs()) != 0 {
+			return ErrInvalidReplayInputs
+		}
+		state.MinigameRatings = map[string]save.MinigameRatingState{}
+		state.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{}
+	}
+	if resultVersion >= 18 && current < 18 {
+		if catalogs.Pets == nil {
+			return ErrInvalidReplayInputs
+		}
+		state.Pets = map[string]pet.CareState{}
+	}
+	return nil
 }
 
 func parseFounderReplayInputs(data []byte) (founderReplayInputsWire, error) {

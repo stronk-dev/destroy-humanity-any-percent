@@ -476,12 +476,12 @@ export function applyFounderLogged(state: FounderReplayState, canonicalPayload: 
       const receipt = { applied_count: 1, evaluated_at: rfc3339(state.evaluatedThroughMs), intent_id: request.intent_id, new_revision: wire.command.revision + 1, outcome: "applied", receipt: { changes: [] }, snapshot: founderWireSnapshot(state) };
       return { state, outcome: "applied", receipt, events: [eventValue], resultConstantsHash: catalogs.constantsHash };
     }
-    if (kind === "exit.v1") return applyFounderExit(state, request, wire, catalogs.constantsHash);
+    if (kind === "exit.v1") return applyFounderExit(state, request, wire, catalogs);
     throw new RangeError("unknown Founder replay arm");
   } catch (error) { rollback(); throw error; }
 }
 
-export function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16, genesisHash: string,
+export function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18, genesisHash: string,
   founderStreamId: string, founderId: string, entries: readonly FounderReplayLogEntry[], head: FounderReplayHead,
   bundles: readonly ReplayCatalogBundle[]): ReplayVerdict {
   const catalogs = new Map(bundles.map((value) => [value.constantsHash, value]));
@@ -504,7 +504,12 @@ export function verifyFounderReplayHistory(genesis: unknown, genesisRevision: nu
       if (entry.source) {
         if (wire.resolved.company_stream_id !== entry.source.companyStreamId || wire.resolved.run_seq !== entry.source.runSeq || wire.resolved.run_log_seq !== entry.source.runLogSeq) return "state_divergence";
       }
-      const transition = applyFounderLogged(state, entry.canonicalPayload, bundle, entry.replayInputs);
+      let executionBundle = bundle;
+      if (exitArm && wire.resolved.result_constants_hash !== hash) {
+        const next = catalogs.get(string(wire.resolved.result_constants_hash)); if (!next) return "constants_mismatch";
+        executionBundle = withNextReplayCatalogBundle(bundle, next);
+      }
+      const transition = applyFounderLogged(state, entry.canonicalPayload, executionBundle, entry.replayInputs);
       if (canonicalJSONString(transition.receipt) !== entry.receiptJSON || canonicalJSONString(transition.events) !== entry.eventsJSON) return "state_divergence";
       if (transition.outcome === "applied") { if (entry.appliedRevision !== revision + 1) return "log_gap"; revision++; }
       else if (entry.appliedRevision !== null) return "log_gap";
@@ -1069,12 +1074,13 @@ function founderWireSnapshot(state: FounderReplayState): unknown {
     manual_token_refilled_at: rfc3339(state.manualTokenRefilledAtMs), offer_state: null, offline_spans: [], provision_remainders_ppm: sortedRecord(state.provisionRemaindersPpm),
     provisioned_hardcaps: {}, region_traits: [], route_knowledge_balance: state.routeKnowledgeBalance, run_pre_timer: false, run_seq: 0, run_started_at_ms: 0,
     stock_progress_ms: 0, stock_rate_remainder_ppm: 0, stock_resource: null, stock_units: 0, structure_id: "", tier: 0, upgrades_owned: [...state.upgradesOwned].sort(byteCompare) };
-  if (state.wireVersion === 16) Object.assign(snapshot, { meter_values: {}, meter_decay_remainders: {}, meter_input_remainders: {}, achievements_earned_run: [], achievement_score_run: 0 });
+  if (state.wireVersion >= 16) Object.assign(snapshot, { meter_values: {}, meter_decay_remainders: {}, meter_input_remainders: {}, achievements_earned_run: [], achievement_score_run: 0 });
   else snapshot.meter_bands = {};
   return snapshot;
 }
 
-function applyFounderExit(state: FounderReplayState, request: Intent, wire: FounderReplayWire, inputHash: string): FounderLoggedTransition {
+function applyFounderExit(state: FounderReplayState, request: Intent, wire: FounderReplayWire, catalogs: ReplayCatalogBundle): FounderLoggedTransition {
+	const inputHash = catalogs.constantsHash;
   const keys = ["kind", "outcome", "company_stream_id", "run_seq", "run_log_seq", "result_constants_hash", "reputation_delta", "route_knowledge_delta", "attended_ms", "age_ms_before", "age_ms_after", "achievement_score_delta", "added_network_slots", "added_ledger_fact_kinds", "added_lifetime_achievements", "exit_record", "result_founder_wire_version", "rejection"];
   const raw = exactObject(wire.resolved, keys, "Founder Exit inputs");
   if (request.kind !== "cross_gate" && request.expected_founder_revision !== wire.command.revision) throw new RangeError("Founder Exit revision mismatch");
@@ -1082,8 +1088,8 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
   const resultHash = string(raw.result_constants_hash); if (!hashPattern.test(resultHash)) throw new SyntaxError("invalid Founder result hash");
   const ageBefore = safeInteger(raw.age_ms_before, 0, MAX_EXACT_INTEGER); const ageAfter = safeInteger(raw.age_ms_after, 0, MAX_EXACT_INTEGER); const attended = safeInteger(raw.attended_ms, 0, MAX_EXACT_INTEGER);
   if (ageBefore !== state.ageMs || ageAfter < ageBefore || attended !== ageAfter - ageBefore) throw new RangeError("invalid Founder attendance facts");
-  const resultVersion = safeInteger(raw.result_founder_wire_version, 1, 16);
-  if (resultVersion !== 14 && resultVersion !== 15 && resultVersion !== 16) throw new RangeError("unsupported Founder result version");
+  const resultVersion = safeInteger(raw.result_founder_wire_version, 1, 18);
+  if (![14, 15, 16, 17, 18].includes(resultVersion)) throw new RangeError("unsupported Founder result version");
   const outcome = string(raw.outcome);
   if (outcome === "rejected") {
     const rejection = exactObject(raw.rejection, ["category", "detail"], "Founder Exit rejection"); const category = string(rejection.category); const detail = string(rejection.detail);
@@ -1099,7 +1105,18 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
   state.reputationLevel += reputationDelta; state.routeKnowledgeBalance += routeDelta; state.ageMs = ageAfter; state.achievementScoreLifetime += achievementDelta;
   const slotMap = new Map(state.networkSlots.map((value) => [value.slot, value])); for (const slot of addedSlots) slotMap.set(slot.slot, slot); state.networkSlots = [...slotMap.values()].sort((a, b) => byteCompare(a.slot, b.slot));
   for (const fact of addedFacts) state.ledgerFactKinds.add(fact); for (const id of addedAchievements) state.achievementsEarnedLifetime.add(id);
-  state.exitHistory.push(exit); state.wireVersion = resultVersion;
+  state.exitHistory.push(exit);
+  const resultCatalogs = resultHash === inputHash ? catalogs : catalogs.next;
+  if (!resultCatalogs || resultCatalogs.constantsHash !== resultHash || resultVersion < state.wireVersion) throw new RangeError("missing Founder result catalogs");
+  if (resultVersion >= 17 && state.wireVersion < 17) {
+    if (!resultCatalogs.minigames || resultCatalogs.minigames.minigameIds.length !== 0) throw new RangeError("unsupported minigame activation content");
+    state.minigameRatings = {}; state.minigameOfflineQuality = {};
+  }
+  if (resultVersion >= 18 && state.wireVersion < 18) {
+    if (!resultCatalogs.pets) throw new RangeError("missing pet activation artifact"); state.pets = {};
+  }
+  state.wireVersion = resultVersion as 14 | 15 | 16 | 17 | 18;
+  Object.assign(state, restoreFounderReplayState(encodeFounderReplayState(state), resultVersion, resultCatalogs));
   const receipt = { intent_id: wire.command.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, result_constants_hash: resultHash };
   const founderEvent = event("founder_advanced", wire.command.intent_id, { founder_id: wire.command.founder_id, run_id: { company_stream_id: companyStreamId, run_seq: runSeq }, exit_type: exit.exit_type, reputation_delta: reputationDelta, route_knowledge: routeDelta, occurred_at_ms: exit.occurred_at_ms });
   return { state, outcome: "applied", receipt, events: [founderEvent], resultConstantsHash: resultHash };

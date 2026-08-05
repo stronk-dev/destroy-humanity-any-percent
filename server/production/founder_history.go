@@ -54,6 +54,13 @@ func VerifyFounderHistory(history save.FounderHistory, catalogs ReplayCatalogRes
 				facts.RunSeq != entry.Source.RunSeq || facts.RunLogSeq != entry.Source.RunLogSeq {
 				return ReplayStateDivergence
 			}
+			if facts.ResultConstantsHash != currentHash {
+				next, nextOK := catalogs.ResolveReplayCatalogs(facts.ResultConstantsHash)
+				if !nextOK || !next.valid(facts.ResultConstantsHash) {
+					return ReplayConstantsMismatch
+				}
+				bundle.Next = &next
+			}
 		}
 		transition, err := ApplyFounderLogged(state, entry.CanonicalPayload, bundle, entry.ReplayInputs)
 		if err != nil || !jsonSemanticallyEqual(transition.Receipt, entry.Receipt) ||

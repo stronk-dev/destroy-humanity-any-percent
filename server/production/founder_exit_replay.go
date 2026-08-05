@@ -125,7 +125,7 @@ func verifyFounderExitLiveParity(command save.ReplayCommand, founderRevision sav
 	founderCommand := save.FounderReplayCommand{IntentID: command.IntentID,
 		FounderStreamID: founderRevision.StreamID, FounderID: founderRevision.OwnerID,
 		Revision: founderRevision.Number, FounderLogSeq: 1, ServerTSMS: 1}
-	replayed, err := applyFounderExitResolved(working, founderCommand, request, founderRevision.ConstantsHash, resolved)
+	replayed, err := applyFounderExitResolved(working, founderCommand, request, catalogs, resolved)
 	if err != nil || replayed.Outcome != decision.Outcome || !jsonSemanticallyEqual(replayed.Receipt, receiptJSON) ||
 		len(replayed.Events) != len(decision.FounderEvents) {
 		return fmt.Errorf("%w: live Founder Exit parity", ErrInvalidEngineState)

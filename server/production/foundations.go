@@ -120,6 +120,17 @@ func validateFounderMinigameState(catalog *minigame.Catalog, state *save.State) 
 	return nil
 }
 
+func validateFounderCarryFoundationState(bundle CatalogBundle, state *save.State) error {
+	if !bundle.foundationsActive() || state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeFounder || save.VersionForState(state) != 16 {
+		return fmt.Errorf("%w: invalid partial Founder carry", ErrInvalidReplayInputs)
+	}
+	score, err := bundle.Achievements.Score(state.AchievementsEarnedLifetime)
+	if err != nil || score != state.AchievementScoreLifetime {
+		return fmt.Errorf("%w: invalid Founder carry achievement score", ErrInvalidReplayInputs)
+	}
+	return nil
+}
+
 func settleAndActivateFoundations(current, next CatalogBundle, founder, company, newCompany *save.State) error {
 	if founder == nil || company == nil || newCompany == nil {
 		return ErrInvalidEngineState

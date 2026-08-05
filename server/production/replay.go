@@ -700,7 +700,10 @@ func stateFromFounderCarry(carry replayFounderCarry, catalogs CatalogBundle) (*s
 		state.AchievementsEarnedLifetime[id] = true
 	}
 	state.AchievementScoreLifetime = carry.AchievementScoreLifetime
-	if err := catalogs.ValidateFoundationState(state); err != nil {
+	// Founder carry is a deliberately partial Company-transition input. Validate
+	// only the foundation fields it carries; Founder-only minigame/pet maps are
+	// owned by ApplyFounderLogged and are not duplicated into Company replay.
+	if err := validateFounderCarryFoundationState(catalogs, state); err != nil {
 		return nil, err
 	}
 	return state, nil
