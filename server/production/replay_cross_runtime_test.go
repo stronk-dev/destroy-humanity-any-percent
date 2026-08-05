@@ -342,47 +342,8 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 
 func makeDoctrineReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFullRun {
 	t.Helper()
-	_, catalogs := foundationTestBundles(t)
-	artifacts := cloneArtifactMap(catalogs.Artifacts)
-	var routeRoot map[string]any
-	if err := json.Unmarshal(artifacts["routes"], &routeRoot); err != nil {
-		t.Fatal(err)
-	}
-	gates := routeRoot["gates"].([]any)
-	doctrineGate := map[string]any{"gate_id": "gate.t3_to_t4", "requirement": []any{map[string]any{"resource_id": "company.cash", "amount": "1e12"}}, "routes": []any{}}
-	routeRoot["gates"] = append(append(append([]any{}, gates[:1]...), doctrineGate), gates[1:]...)
-	routeArtifact, err := json.Marshal(routeRoot)
-	if err != nil {
-		t.Fatal(err)
-	}
-	var categoryRoot map[string]any
-	if err := json.Unmarshal(artifacts["categories"], &categoryRoot); err != nil {
-		t.Fatal(err)
-	}
-	categoryGates := categoryRoot["full_gate_set"].([]any)
-	categoryRoot["full_gate_set"] = append(append(append([]any{}, categoryGates[:1]...), "gate.t3_to_t4"), categoryGates[1:]...)
-	categoryArtifact, err := json.Marshal(categoryRoot)
-	if err != nil {
-		t.Fatal(err)
-	}
-	doctrineArtifact := []byte(`{"schema_version":1,"transitions":[{"transition_id":"transition.t3_to_t4","source_tier":3,"gate_id":"gate.t3_to_t4","doctrine_ids":["doctrine.capture","doctrine.ethical"]}]}`)
-	routeCatalog, err := routes.LoadCatalog(routeArtifact)
-	if err != nil {
-		t.Fatal(err)
-	}
-	doctrineCatalog, err := doctrine.LoadCatalog(doctrineArtifact)
-	if err != nil {
-		t.Fatal(err)
-	}
-	artifacts["categories"], artifacts["routes"], artifacts["doctrines"] = categoryArtifact, routeArtifact, doctrineArtifact
-	hash, err := save.ConstantsHashArtifacts(artifacts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	catalogs.Artifacts, catalogs.ConstantsHash, catalogs.Routes, catalogs.Doctrines = artifacts, hash, routeCatalog, doctrineCatalog
-	if !catalogs.valid(hash) {
-		t.Fatal("doctrine fixture bundle is not internally valid")
-	}
+	catalogs := doctrineReplayBundle(t)
+	artifacts, hash := catalogs.Artifacts, catalogs.ConstantsHash
 	state := replayFixtureState(t, catalogs.Economy, now)
 	state.WireVersion, state.Tier, state.ComputeCreditMS = 17, 3, 5_000
 	state.GeneratorCounts["generator.beige_tower"] = 1
@@ -440,6 +401,79 @@ func makeDoctrineReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFullR
 	}
 	finalState := mustEncodeState(t, state)
 	return crossRuntimeFullRun{ConstantsHash: hash, Artifacts: stringArtifacts(artifacts), Genesis: genesis, Entries: entries, FinalStateJSON: canonicalFixtureJSON(t, finalState)}
+}
+
+func doctrineReplayBundle(t *testing.T) CatalogBundle {
+	t.Helper()
+	_, catalogs := foundationTestBundles(t)
+	artifacts := cloneArtifactMap(catalogs.Artifacts)
+	var routeRoot map[string]any
+	if err := json.Unmarshal(artifacts["routes"], &routeRoot); err != nil {
+		t.Fatal(err)
+	}
+	gates := routeRoot["gates"].([]any)
+	doctrineGate := map[string]any{"gate_id": "gate.t3_to_t4", "requirement": []any{map[string]any{"resource_id": "company.cash", "amount": "1e12"}}, "routes": []any{}}
+	routeRoot["gates"] = append(append(append([]any{}, gates[:1]...), doctrineGate), gates[1:]...)
+	routeArtifact, err := json.Marshal(routeRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var categoryRoot map[string]any
+	if err := json.Unmarshal(artifacts["categories"], &categoryRoot); err != nil {
+		t.Fatal(err)
+	}
+	categoryGates := categoryRoot["full_gate_set"].([]any)
+	categoryRoot["full_gate_set"] = append(append(append([]any{}, categoryGates[:1]...), "gate.t3_to_t4"), categoryGates[1:]...)
+	categoryArtifact, err := json.Marshal(categoryRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	doctrineArtifact := []byte(`{"schema_version":1,"transitions":[{"transition_id":"transition.t3_to_t4","source_tier":3,"gate_id":"gate.t3_to_t4","doctrine_ids":["doctrine.capture","doctrine.ethical"]}]}`)
+	routeCatalog, err := routes.LoadCatalog(routeArtifact)
+	if err != nil {
+		t.Fatal(err)
+	}
+	doctrineCatalog, err := doctrine.LoadCatalog(doctrineArtifact)
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts["categories"], artifacts["routes"], artifacts["doctrines"] = categoryArtifact, routeArtifact, doctrineArtifact
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs.Artifacts, catalogs.ConstantsHash, catalogs.Routes, catalogs.Doctrines = artifacts, hash, routeCatalog, doctrineCatalog
+	if !catalogs.valid(hash) {
+		t.Fatal("doctrine fixture bundle is not internally valid")
+	}
+	return catalogs
+}
+
+func TestExitResetsComputeBurst(t *testing.T) {
+	legacy, _ := foundationTestBundles(t)
+	catalogs := doctrineReplayBundle(t)
+	startedAt := time.Date(2026, 8, 5, 12, 0, 0, 0, time.UTC)
+	founder := foundationScopeState(t, legacy.Economy, economy.ScopeFounder)
+	company := foundationScopeState(t, legacy.Economy, economy.ScopeCompany)
+	company.RunSeq = 1
+	activated, err := prestigecore.NewRunState(catalogs.Economy, company, founder, startedAt)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := settleAndActivateFoundations(legacy, catalogs, founder, company, activated); err != nil {
+		t.Fatal(err)
+	}
+	activated.ComputeBurstRemainingMS = 60_000
+	founderRevision := save.Revision{StreamID: "01986666-2a00-7000-8000-000000000010", OwnerID: "01986666-2a00-7000-8000-000000000011", Number: 1, ConstantsHash: catalogs.ConstantsHash}
+	companyRevision := save.Revision{StreamID: "01986666-1a00-7000-8000-000000000010", OwnerID: founderRevision.OwnerID, Number: 1, ConstantsHash: catalogs.ConstantsHash}
+	decision, err := finishExitResolved(IntentRequest{IntentID: "01986666-0a12-7000-8000-000000000012"}, founder, founderRevision, activated, companyRevision,
+		startedAt.Add(time.Second), "collapse", prestigecore.Terms{}, nil, []string{}, catalogs, catalogs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if activated.ComputeBurstRemainingMS != 0 || decision.NewCompanyState.ComputeBurstRemainingMS != 0 {
+		t.Fatalf("Exit retained compute burst: terminal=%d new_run=%d", activated.ComputeBurstRemainingMS, decision.NewCompanyState.ComputeBurstRemainingMS)
+	}
 }
 
 func makeMinigameResolutionReplayFixture(t *testing.T, now time.Time) (string, map[string]string, crossRuntimeFixtureCase, crossRuntimeFounderCase) {
