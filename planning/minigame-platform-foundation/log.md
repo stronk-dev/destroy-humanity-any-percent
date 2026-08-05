@@ -111,3 +111,11 @@
   replay schema, or bot/offline mechanic will be improvised while those contracts are unresolved.
 - The independently approved Postgres session lifecycle and pure tenant registry remain usable
   foundations; this bounce does not reopen them.
+
+## 2026-08-05 — owner rulings C19-C23
+
+- Owner accepted the closed scaling-source union, append-only session command log, internal
+  resolve boundary, cross-run Founder-attended faucet cursor, and fallback/offline-quality row
+  families. C22 explicitly corrects the earlier run-start origin: quota never resets on Exit.
+- Reconciled that correction at C16's normative decision site. Implementation resumes with the
+  command log and replay proof, which require no production balance literals.

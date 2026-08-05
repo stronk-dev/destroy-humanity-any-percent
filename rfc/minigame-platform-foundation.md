@@ -146,8 +146,8 @@ invents unlock logic.
   `power|breadth|presentation`; **the Fairness Law is the loader rule `ranked ∧ power → reject`**;
   bounds/formulas per row are BALANCE DATA (harness-tuned, formula-artifact-exported) — the
   SCHEMA is ruled here, the numbers are not invented.
-- **C16 — faucet clock:** attended-grid origin = `run_started_at` (the provision-grid precedent —
-  one absolute origin, persisted cursor per session), floor-division ppm conversion, **saturation
+- **C16 — faucet clock (amended by C22):** attended-grid origin = the persistent Founder attended
+  cursor (the quota spans runs and never resets on Exit), floor-division ppm conversion, **saturation
   distinguished from the configured cap** (the cap forfeits with a reason key; numeric overflow
   saturates — two different events); bot-reduction literal + reset order are catalog data.
 - **C17 — server-authored payout transaction:** the resolve transaction commits, in ONE Postgres
@@ -167,6 +167,39 @@ invents unlock logic.
 The through-line of C13–C18: **structure ruled precisely by reusing shipped patterns (queue table,
 provision grid, Exit multi-write); balance NUMBERS deferred to harness-tuned catalog data** — the
 platform is executable without inventing a single balance value.
+
+## Owner rulings on C19-C23 (2026-08-05)
+
+Same discipline as C12-C18: structure ruled by reusing shipped patterns, balance numbers deferred.
+
+- **C19 - accepted:** the scaling-source union is closed with exact wire rows -
+  `literal|tier|purchased_generator_count|founder_carry_counter|attended_quality_grade`, each a
+  typed row with source field + integer bounds + the power|breadth|presentation destination class;
+  the Fairness Law loader rule is `ranked AND power -> reject`. Per-row formulas/bounds are BALANCE
+  DATA; the union and destination grammar are ruled here.
+- **C20 - accepted, the replay requirement forces append-only command rows:** `minigame_sessions`
+  (mutable head, C13) is joined by `minigame_session_commands` (append-only, `(session_id, seq)` PK,
+  canonical command bytes + server-stamp) - the run_log pattern applied to sessions. Resolve
+  replays the command log through the tenant engine and byte-compares snapshot/result, exactly as
+  the run verifier replays the run log. Solo/async both.
+- **C21 - accepted:** `resolve_minigame_session` canonical payload = `{session_id, result}`;
+  replay inputs = the frozen scaling_inputs + seed + command log (all already persisted, nothing
+  new in the Company replay_inputs union - the payout transition reads the CERTIFIED result);
+  receipt = the credit + rating facts; event kinds `minigame_resolved.v1` (+ the credit is an
+  ordinary resource event); rating/season facts land on Founder-scoped rating state via the
+  Founder boundary (Pet Care C1's `ApplyFounderLogged` - ratings are Founder-persistent, not run
+  state); the production method is server-only, never a client intent.
+- **C22 - accepted:** the faucet quota counter is SESSION-scoped persisted on the founder's
+  daily-window row keyed by the attended-grid day. **Origin is the Founder attended cursor**
+  (Pet Care C4), since sends-per-day spans runs; quota does NOT reset on
+  Exit, it resets on the attended-grid day boundary); the persisted cursor is the founder daily
+  window. This corrects C16's run_started_at origin to the Founder attended cursor for the
+  cross-run faucet.
+- **C23 - accepted:** fallback rows exact - `{kind, bot_ref?(policy_id+version), npc_profile?,
+  rate_reduction_ppm?}`; bot identity is the combat-bots contract's manifest (policy_id+version,
+  deterministic replay); the score-to-grade curve + decay rate + neutral floor for offline_quality
+  are BALANCE DATA; the state shape (grade_ppm + last_session_at, fixed-grid decay to neutral
+  floor) is ruled.
 
 ## Acceptance criteria
 
@@ -512,6 +545,7 @@ compliant balance mint before any production tenant or payout is enabled.
 ## Changelog
 
 - 2026-08-03: created (draft) — the platform.
+- 2026-08-05: C19-C23 ruled - closed scaling-source union, append-only session command log (run_log pattern), resolve payload/events, Founder-attended-cursor faucet quota, exact fallback rows. All structure ruled, numbers deferred.
 - 2026-08-04: C12–C18 ruled — body reconciled to the C1–C11 rulings; session table = verification-queue pattern, payout = Exit-style multi-write server transition, faucet = provision-grid clock, offline_quality decays to neutral floor; all STRUCTURE ruled by reusing shipped patterns, all NUMBERS deferred to balance data.
 - 2026-08-04: C1–C11 ruled — Clout payout faucet removed (my error, caught), DB-authoritative sessions with queue-style idempotency, server-certified (not client-claimed) payout, live_pvp deferred (solo+async only ship), era_skins removed (UI law), offline_quality decays to neutral floor not zero, epoch/verifier identity named. Accepted, scope narrowed.
 - 2026-08-04: Codex acceptance review found C1–C11. The draft is not implementable yet: Clout

@@ -1,11 +1,11 @@
 # RFC: Pet Care Foundation
 
-- **Status:** draft
+- **Status:** accepted (C1-C8 ruled; introduces the Founder mutation boundary; implementing)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/04 §1` (the tamagotchi layer — 4-stat decay, care actions + diminishing returns, personality behavior FSM, trust/mood two-tier, bonds), `design/04 §Neopets adoptions` (no-death canon, public-awkwardness-not-loss), `design/03 §10` / combat C5 (the pet is the On-Call Leader — the seam awaits its two integers)
 - **Research:** `cattery-reusables.md` (the port source: decay + care + FSM + CSS-sprite tech), `neopets-systems.md §3` (no-death, care barely punishes), `creature-battler.md §8.3` (care→options-not-stats)
-- **Depends on:** Save + Production + Run Genesis (implemented — pet state is Founder-scoped, care actions are intents inside `ApplyLogged`); Combat Shared Kernel (implemented — this RFC produces the `(trust_ppm, soul)` integers combat's C5 already consumes)
+- **Depends on:** Save + Run Genesis (implemented); Combat Shared Kernel (implemented). **NOT the Company `ApplyLogged` path — C1: this RFC introduces the Founder mutation boundary.**
 - **Owner ruling honored:** breadth-first — the care/trust/mood/FSM MECHANICS, not pets' content (species, cosmetics, the battle content).
 - **Planning:** `planning/pet-care-foundation/` (once implementing)
 
@@ -13,7 +13,7 @@
 
 The cattery port, made deterministic and server-authoritative. Care stats with diminishing-return
 actions, the two-tier trust/mood model, the personality behavior FSM, and bonds — all as
-Founder-scoped state mutated by care intents inside the replay boundary. Critically: this RFC
+Founder-scoped state mutated by care intents through `ApplyFounderLogged`. Critically: this RFC
 CLOSES combat's C5 fixture-only boundary by producing the real `(trust_ppm, soul)` inputs the duel
 and lane engines consume.
 
@@ -21,7 +21,7 @@ and lane engines consume.
 
 ### PC1 — Care stats & the no-death law
 
-Four stats per pet (the cattery four: hunger/energy/cleanliness/affection — final names content),
+Four mechanically fixed stats per pet (`hunger`, `energy`, `cleanliness`, `affection`),
 each ppm, decaying on ATTENDED time toward a low band (the attended clock, like everything).
 **No-death (the Neopets canon, ruled):** a fully-neglected stat floors and STAYS floored — the pet
 never dies, never leaves; neglect costs the pet's public status display (guild-visible), the FSM
@@ -34,8 +34,9 @@ Care actions are intents (`care_action {pet, action}` — C1, evented, replay-lo
 stat, with the cattery diminishing-returns curve: effectiveness scales down as the stat rises
 (`>90% → 0.5×`, the researched shape), so over-care wastes — care buys OPTIONS and TEMPO, never a
 higher ceiling (the hardcap decision: every pet of an identity shares the stat ceiling). Actions
-cost attended time / manual tokens, never a spendable meter. Diminishing-return math is
-integer-ppm, byte-parity both runtimes.
+spend no Company resource, attended time, manual token, or meter. Catalog cooldowns and
+diminishing returns are their only scarcity. Diminishing-return math is integer-ppm, byte-parity
+in both runtimes.
 
 ### PC3 — Trust & mood (two-tier, the combat seam)
 
@@ -82,6 +83,46 @@ screens.
   foundation assumes one starter pet exists.
 - Pet battles' full content (rosters, seasons) — the combat engines own the mechanics; this
   produces their care inputs only.
+
+## Owner rulings on C1-C8 (2026-08-04) - introduces the FOUNDER MUTATION BOUNDARY
+
+- **C1 - accepted, and I repeated the Meters-C3 mistake:** I wrote Founder-scoped care as mutating
+  inside Company `ApplyLogged`, which commits the Company stream only. **Ruling: this RFC
+  introduces `ApplyFounderLogged` - the Founder-scoped mirror of the Company transition boundary,
+  the project's FIRST Founder-scoped intent surface.** Same discipline as Company: canonical
+  command, resolved-input closed union, receipt, event envelopes, idempotency, immutable Founder
+  run-log rows, and a Founder-replay path owning pet state INDEPENDENTLY of run replay. Care
+  commands lock+commit the Founder stream ONLY, read no live Company state, spend no Company
+  resource/token. Company-needing actions are declared multi-stream successors (none in Phase A).
+  This boundary is REUSABLE - every future Founder-scoped mechanic (Meters-C3 Soul verbs,
+  live-writing achievement surfaces) uses it instead of the Exit-only multi-stream path.
+- **C2 - accepted:** stat IDs FIXED as hunger|energy|cleanliness|affection; immutable pet_records
+  (pet_id, founder_id, species_id, temperament, created_at) + mutable care state keyed by pet_id;
+  fixture starter for tests; production starter creation activates only under a pinned pet catalog,
+  atomically with New Founder (activation-boundary law applies) - no invented species/temperament.
+- **C3 - accepted:** care/decay STRUCTURE ruled (fixed-grid decay on the attended clock - the
+  provision-grid partition-invariance; per-action stat deltas; the >90%->0.5x diminishing curve as
+  integer-ppm; closed cooldown/eligibility grammar); exact rate/floor/deltas are BALANCE DATA.
+- **C4 - accepted, the Founder attended cursor:** the Founder stream carries its OWN
+  founder_attended_ms cursor, server-stamped per Founder command (mirroring the Company attended
+  derivation); pet decay uses that cursor's delta, so Founder replay is independent of run replay
+  (C1's requirement). Offline spans contribute zero.
+- **C5 - accepted:** Trust/Mood/combat-output become closed stored fields - trust_ppm (persistent,
+  the combat C5 input), mood (session, reset rule declared), integer-ppm gain/decay; the
+  (trust_ppm, soul) output cross-verified against the combat C5 golden vectors (soul READ from
+  Meters via the carry seam, never written here per Meters C3).
+- **C6 - accepted:** the FSM gets a closed transition contract - states, events, queue bounds,
+  timing, PRNG label + draw order (save-seeded stream, replay-safe), persisted-vs-transient split;
+  behavior stays display/flavor, never authoritative economy.
+- **C7 - accepted:** no-death visibility is a declared projection - guild-visible pet STATUS is a
+  read model (not raw Founder-save exposure), care-option greying returns a typed eligibility
+  reason (reason-key pattern); only the public status projection is guild-visible.
+- **C8 - accepted:** pet data is a Founder-scoped save version (its own migration, NOT the Company
+  chain); named tables/JSON, schema version, Founder-replay corpus, activation-boundary law.
+
+The through-line: **C1's Founder mutation boundary is the real deliverable** - a reusable
+architectural addition the whole Founder layer has needed; the rest is structure-ruled/
+numbers-deferred as usual.
 
 ## Acceptance blockers (Codex review, 2026-08-04)
 
@@ -202,5 +243,5 @@ no-death saturation before implementation status changes to accepted.
 - 2026-08-04: Codex acceptance review found C1–C8. Founder care cannot mutate inside the
   Company-only `ApplyLogged` boundary; pet identity, care/time arithmetic, trust/combat output,
   behavior FSM, projection privacy, and Founder replay/activation require executable contracts.
-- 2026-08-03: created (draft) — the cattery port deterministic + server-authoritative; closes
-  combat C5's fixture-only `(trust_ppm, soul)` boundary with real output.
+- 2026-08-03: created (draft) — the cattery port.
+- 2026-08-04: C1-C8 ruled — introduces ApplyFounderLogged (the reusable Founder mutation boundary; I repeated the Meters-C3 Company-scope error), fixed stat IDs, Founder attended cursor, closed trust/mood/FSM contracts, no-death projection. Accepted.
