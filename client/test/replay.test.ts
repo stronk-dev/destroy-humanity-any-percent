@@ -204,7 +204,7 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 
   it("derives Founder v17 from minigames while Company remains capped at v16", async () => {
     const activeCase = fixture.additional_bundles.find((value) => value.case.name === "active-foundation-offline-5001ms")!;
-    const artifacts: ReplayArtifacts = { ...activeCase.artifacts, minigames: JSON.stringify({ schema_version: 1, minigame_ids: [], rating_seasons: [] }) };
+    const artifacts: ReplayArtifacts = { ...activeCase.artifacts, minigames: JSON.stringify({ schema_version: 2, rating_seasons: [], minigames: [] }) };
     const bundle = await loadReplayCatalogBundle(await artifactHash(artifacts), artifacts);
     const source = { ...(fixture.founder_run.head_state as Record<string, unknown>), minigame_ratings: {}, minigame_offline_quality: {} };
     const state = restoreFounderReplayState(source, 17, bundle);

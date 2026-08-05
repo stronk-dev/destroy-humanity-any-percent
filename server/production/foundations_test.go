@@ -86,7 +86,7 @@ func foundationTestBundles(t *testing.T) (CatalogBundle, CatalogBundle) {
 
 func founderFeatureBundles(t *testing.T, active CatalogBundle) (CatalogBundle, CatalogBundle) {
 	t.Helper()
-	minigameBytes := []byte(`{"schema_version":1,"minigame_ids":[],"rating_seasons":[]}`)
+	minigameBytes := []byte(`{"schema_version":2,"rating_seasons":[],"minigames":[]}`)
 	minigameCatalog, err := minigame.LoadCatalog(minigameBytes)
 	if err != nil {
 		t.Fatal(err)
