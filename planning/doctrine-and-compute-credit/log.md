@@ -75,3 +75,22 @@ proposed contracts. All accepted:
 Lesson carried forward: for "owner-ruling-required" blockers, provide the FULL contract in one pass
 (not just the direction) to avoid a second bounce — the remaining Wave-A RFCs get exact rulings.
 Status -> accepted; D1-D10 ruled; implementing. Body/README reconciled.
+
+## 2026-08-05 — doctrine artifact and activation-boundary landing
+
+- Added the strict schema-v1 doctrine-choice catalog in Go and TypeScript with one shared parity
+  corpus containing the ruled T3-to-T4 fixture row. The loader enforces adjacent transition/gate
+  identity, source-tier equality, sorted unique branching choices, and exact JSON keys.
+- Added cross-artifact validation: every doctrine-bearing route predicate resolves to the pinned
+  doctrine catalog, and every doctrine choice names a gate present in the pinned routes catalog.
+- Replay bundles now admit `doctrines` only above the paired Meters/Achievements artifacts. The
+  optional doctrine axis composes independently with Founder-only minigame/pet artifacts, and
+  derives Company floor v17 without changing the Founder floor.
+- No production doctrine artifact or epoch was added. D8/D9 remain honored: the mechanism and
+  codec surface ship pre-mint; T3-to-T4 content owns activation.
+- Kernel semantics advanced to 0.3.57 and the new Go/TypeScript doctrine authorities joined the
+  fail-closed watched-path registry in lexical order.
+
+Focused evidence from repository root: `make test-go GO_PACKAGES='./doctrine ./replaycatalog
+./production'`, `make verify-schema`, `pnpm --dir client typecheck`, and the doctrine/replay Vitest
+files all pass.

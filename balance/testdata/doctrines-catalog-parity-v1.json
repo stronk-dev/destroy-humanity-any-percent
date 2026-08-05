@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "baseline": {
+    "schema_version": 1,
+    "transitions": [
+      {
+        "transition_id": "transition.t3_to_t4",
+        "source_tier": 3,
+        "gate_id": "gate.t3_to_t4",
+        "doctrine_ids": ["doctrine.capture", "doctrine.ethical"]
+      }
+    ]
+  },
+  "cases": [
+    { "name": "baseline", "valid": true, "operations": [] },
+    { "name": "missing transitions", "valid": false, "operations": [{ "op": "delete", "path": ["transitions"] }] },
+    { "name": "wrong source tier", "valid": false, "operations": [{ "op": "set", "path": ["transitions", 0, "source_tier"], "value": 2 }] },
+    { "name": "wrong gate tier", "valid": false, "operations": [{ "op": "set", "path": ["transitions", 0, "gate_id"], "value": "gate.t4_to_t5" }] },
+    { "name": "one doctrine is not a branch", "valid": false, "operations": [{ "op": "set", "path": ["transitions", 0, "doctrine_ids"], "value": ["doctrine.capture"] }] },
+    { "name": "unsorted doctrines", "valid": false, "operations": [{ "op": "set", "path": ["transitions", 0, "doctrine_ids"], "value": ["doctrine.ethical", "doctrine.capture"] }] },
+    { "name": "unknown field", "valid": false, "operations": [{ "op": "set", "path": ["transitions", 0, "effects"], "value": [] }] }
+  ]
+}

@@ -3,6 +3,7 @@
   "paths": [
     "client/src/achievements/",
     "client/src/commons.ts",
+    "client/src/doctrines.ts",
     "client/src/economy-kernel.ts",
     "client/src/faction.ts",
     "client/src/fixed-grid.ts",
@@ -19,6 +20,7 @@
     "server/commons/",
     "server/commonsbinding/",
     "server/decimal/",
+    "server/doctrine/",
     "server/economy/",
     "server/faction/",
     "server/fixedgrid/",

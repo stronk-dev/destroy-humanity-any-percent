@@ -10,6 +10,7 @@ import (
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/commonsbinding"
+	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
@@ -62,7 +63,7 @@ func LoadDatabase(ctx context.Context, db *sql.DB) (production.ReplayCatalogSet,
 }
 
 func Load(constantsHash string, artifacts map[string][]byte) (production.CatalogBundle, error) {
-	if constantsHash == "" || (len(artifacts) != 7 && len(artifacts) != 9 && len(artifacts) != 10 && len(artifacts) != 11) {
+	if constantsHash == "" || !validArtifactNames(artifacts) {
 		return production.CatalogBundle{}, production.ErrInvalidReplayInputs
 	}
 	computed, err := save.ConstantsHashArtifacts(artifacts)
@@ -114,7 +115,7 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 	bundle := production.CatalogBundle{ConstantsHash: constantsHash, Artifacts: frozen, Economy: economyCatalog, Routes: routeCatalog,
 		Commons: commonsbinding.ReplayPolicy{Catalog: commonsCatalog}, Prestige: prestigePolicy,
 		Faction: factionCatalog, Guild: guildCatalog}
-	if len(artifacts) >= 9 {
+	if _, active := artifacts["meters"]; active {
 		meterCatalog, meterErr := meters.LoadCatalog(artifacts["meters"])
 		if meterErr != nil {
 			return production.CatalogBundle{}, meterErr
@@ -125,19 +126,70 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.Meters, bundle.Achievements = meterCatalog, achievementCatalog
 	}
-	if len(artifacts) >= 10 {
-		minigameCatalog, minigameErr := minigame.LoadCatalog(artifacts["minigames"])
+	if doctrineBytes, active := artifacts["doctrines"]; active {
+		doctrineCatalog, doctrineErr := doctrine.LoadCatalog(doctrineBytes)
+		if doctrineErr != nil {
+			return production.CatalogBundle{}, doctrineErr
+		}
+		if doctrineErr := doctrineCatalog.ValidateRoutes(routeCatalog); doctrineErr != nil {
+			return production.CatalogBundle{}, doctrineErr
+		}
+		bundle.Doctrines = doctrineCatalog
+	}
+	if minigameBytes, active := artifacts["minigames"]; active {
+		minigameCatalog, minigameErr := minigame.LoadCatalog(minigameBytes)
 		if minigameErr != nil {
 			return production.CatalogBundle{}, minigameErr
 		}
 		bundle.Minigames = minigameCatalog
 	}
-	if len(artifacts) == 11 {
-		petCatalog, petErr := pet.LoadCatalog(artifacts["pets"])
+	if petBytes, active := artifacts["pets"]; active {
+		petCatalog, petErr := pet.LoadCatalog(petBytes)
 		if petErr != nil {
 			return production.CatalogBundle{}, petErr
 		}
 		bundle.Pets = petCatalog
 	}
 	return bundle, nil
+}
+
+func validArtifactNames(artifacts map[string][]byte) bool {
+	base := [...]string{"categories", "commons", "economy", "factions", "guilds", "prestige", "routes"}
+	allowed := make(map[string]bool, len(base)+5)
+	for _, name := range base {
+		allowed[name] = true
+		if len(artifacts[name]) == 0 {
+			return false
+		}
+	}
+	for _, name := range [...]string{"achievements", "doctrines", "meters", "minigames", "pets"} {
+		allowed[name] = true
+	}
+	for name, data := range artifacts {
+		if !allowed[name] || len(data) == 0 {
+			return false
+		}
+	}
+	_, meters := artifacts["meters"]
+	_, achievements := artifacts["achievements"]
+	_, doctrines := artifacts["doctrines"]
+	_, minigames := artifacts["minigames"]
+	_, pets := artifacts["pets"]
+	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames {
+		return false
+	}
+	want := len(base)
+	if meters {
+		want += 2
+	}
+	if doctrines {
+		want++
+	}
+	if minigames {
+		want++
+	}
+	if pets {
+		want++
+	}
+	return len(artifacts) == want
 }

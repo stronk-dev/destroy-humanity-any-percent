@@ -13,6 +13,7 @@ import (
 	"cloud-clicker/server/accrualhook"
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
@@ -36,6 +37,7 @@ type CatalogBundle struct {
 	Prestige      *prestigecore.Policy
 	Faction       *faction.Catalog
 	Guild         *guild.Catalog
+	Doctrines     *doctrine.Catalog
 	Meters        *meters.Catalog
 	Achievements  *achievements.Catalog
 	Minigames     *minigame.Catalog
@@ -97,17 +99,21 @@ func (set ReplayCatalogSet) ResolveFaction(constantsHash string) (*faction.Catal
 
 func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withFoundations := bundle.Meters != nil || bundle.Achievements != nil
+	withDoctrines := bundle.Doctrines != nil
 	withMinigames := bundle.Minigames != nil
 	withPets := bundle.Pets != nil
 	expectedArtifacts := 7
 	if withFoundations {
 		expectedArtifacts = 9
 	}
+	if withDoctrines {
+		expectedArtifacts++
+	}
 	if withMinigames {
-		expectedArtifacts = 10
+		expectedArtifacts++
 	}
 	if withPets {
-		expectedArtifacts = 11
+		expectedArtifacts++
 	}
 	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != expectedArtifacts || bundle.Economy == nil ||
 		bundle.Routes == nil || bundle.Commons == nil || bundle.Prestige == nil || bundle.Faction == nil || bundle.Guild == nil {
@@ -121,6 +127,12 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	if withFoundations && (bundle.Meters == nil || bundle.Achievements == nil || len(bundle.Artifacts["meters"]) == 0 || len(bundle.Artifacts["achievements"]) == 0) {
 		return false
 	}
+	if withDoctrines && (!withFoundations || len(bundle.Artifacts["doctrines"]) == 0) {
+		return false
+	}
+	if withDoctrines && bundle.Doctrines.ValidateRoutes(bundle.Routes) != nil {
+		return false
+	}
 	if withMinigames && (!withFoundations || len(bundle.Artifacts["minigames"]) == 0) || withPets && (!withMinigames || len(bundle.Artifacts["pets"]) == 0) {
 		return false
 	}
@@ -132,6 +144,9 @@ func (bundle CatalogBundle) versionFloors() (founder, company int) {
 	founder, company = save.CurrentVersion, save.CurrentVersion
 	if bundle.foundationsActive() {
 		founder, company = 16, 16
+	}
+	if bundle.Doctrines != nil {
+		company = 17
 	}
 	if bundle.Minigames != nil {
 		founder = 17

@@ -4,6 +4,7 @@ import { loadAchievementCatalog, type AchievementCatalog, type AchievementRegist
 import { achievementScore, newlyEarned, type AchievementObservation } from "./achievements/evaluate";
 import { enclosureIndex, parseCommonsCatalog, type CommonsCatalog } from "./commons";
 import { COPY_KEYS } from "./copy";
+import { loadDoctrineCatalog, validateDoctrineRoutes, type DoctrineCatalog } from "./doctrines";
 import { ladderSourceId, manualRoleSourceId, parseCatalog, subProgressValue, validateCatalogGateReferences, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
 import { parseFactionCatalog, type FactionCatalog } from "./faction";
 import { parseGuildCatalog, type GuildCatalog } from "./guild";
@@ -23,11 +24,11 @@ const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]
 const hashPattern = /^sha256:[0-9a-f]{64}$/;
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 
-export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly meters?: string; readonly achievements?: string; readonly minigames?: string; readonly pets?: string }
+export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly meters?: string; readonly achievements?: string; readonly doctrines?: string; readonly minigames?: string; readonly pets?: string }
 export interface ReplayCatalogBundle {
   readonly constantsHash: string; readonly artifacts: ReplayArtifacts; readonly economy: EconomyCatalog; readonly routes: RoutesCatalog;
   readonly commons: CommonsCatalog; readonly prestige: PrestigePolicy; readonly factions: FactionCatalog; readonly guilds: GuildCatalog;
-  readonly meters?: MeterCatalog; readonly achievements?: AchievementCatalog; readonly minigames?: MinigameCatalog; readonly pets?: PetCatalog;
+  readonly meters?: MeterCatalog; readonly achievements?: AchievementCatalog; readonly doctrines?: DoctrineCatalog; readonly minigames?: MinigameCatalog; readonly pets?: PetCatalog;
   readonly next?: ReplayCatalogBundle;
 }
 export interface ReplayContribution { readonly slot: MultiplierSlot; readonly source_id: string; readonly target: string; readonly factor: string }
@@ -108,12 +109,13 @@ interface FounderCarry {
 interface ExitTerms { reputation_delta: number; network_slot_unlocks: NetworkSlot[]; route_knowledge: number; clout_reach_note: string }
 
 export async function loadReplayCatalogBundle(constantsHash: string, artifacts: ReplayArtifacts): Promise<ReplayCatalogBundle> {
-  const names = Object.keys(artifacts).sort(byteCompare).join("\0");
-  const legacy = "categories\0commons\0economy\0factions\0guilds\0prestige\0routes";
-  const active = "achievements\0categories\0commons\0economy\0factions\0guilds\0meters\0prestige\0routes";
-  const minigamesActive = `${active}\0minigames`.split("\0").sort(byteCompare).join("\0");
-  const petsActive = `${minigamesActive}\0pets`.split("\0").sort(byteCompare).join("\0");
-  if (!hashPattern.test(constantsHash) || ![legacy, active, minigamesActive, petsActive].includes(names)) throw new SyntaxError("invalid replay artifact set");
+  const names = Object.keys(artifacts).sort(byteCompare);
+  const required = ["categories", "commons", "economy", "factions", "guilds", "prestige", "routes"];
+  const allowed = new Set([...required, "achievements", "doctrines", "meters", "minigames", "pets"]);
+  const foundations = artifacts.meters !== undefined || artifacts.achievements !== undefined;
+  if (!hashPattern.test(constantsHash) || names.some((name) => !allowed.has(name)) || required.some((name) => !names.includes(name)) ||
+      (artifacts.meters === undefined) !== (artifacts.achievements === undefined) || artifacts.doctrines !== undefined && !foundations ||
+      artifacts.minigames !== undefined && !foundations || artifacts.pets !== undefined && artifacts.minigames === undefined) throw new SyntaxError("invalid replay artifact set");
   const computed = await constantsHashArtifacts(artifacts);
   if (computed !== constantsHash) throw new SyntaxError("replay artifact label mismatch");
   const economy = parseCatalog(parseJSON(artifacts.economy)); const routes = parseRoutesCatalog(parseJSON(artifacts.routes));
@@ -123,15 +125,15 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const commons = parseCommonsCatalog(parseJSON(artifacts.commons)); const prestige = parsePrestigePolicy(parseJSON(artifacts.prestige));
   const factions = parseFactionCatalog(parseJSON(artifacts.factions), commons.minimumTithePpm, commons.defaultTithePpm, commons.maximumTithePpm);
   const guilds = parseGuildCatalog(parseJSON(artifacts.guilds));
-  if (names === legacy) return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds });
+  if (!foundations) return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds });
   const meters = loadMeterCatalog(artifacts.meters!);
   validateMeterResourceSeparation(meters, economy.resources.map((value) => value.id));
   const achievements = loadAchievementCatalog(artifacts.achievements!, foundationAchievementRegistry(economy));
-  if (names === active) return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements });
-  const minigames = parseMinigameCatalog(parseJSON(artifacts.minigames!));
-  if (names === minigamesActive) return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, minigames });
-  const pets = parsePetCatalog(parseJSON(artifacts.pets!));
-  return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, minigames, pets });
+  const doctrines = artifacts.doctrines === undefined ? undefined : loadDoctrineCatalog(artifacts.doctrines);
+  if (doctrines) validateDoctrineRoutes(doctrines, routes);
+  const minigames = artifacts.minigames === undefined ? undefined : parseMinigameCatalog(parseJSON(artifacts.minigames));
+  const pets = artifacts.pets === undefined ? undefined : parsePetCatalog(parseJSON(artifacts.pets));
+  return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, doctrines, minigames, pets });
 }
 
 const REPLAY_EVENT_KINDS = Object.freeze([

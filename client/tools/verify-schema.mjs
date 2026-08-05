@@ -232,6 +232,18 @@ function achievementSchemaFixture() {
   };
 }
 
+function doctrineSchemaFixture() {
+  return {
+    schema_version: 1,
+    transitions: [{
+      transition_id: "transition.t3_to_t4",
+      source_tier: 3,
+      gate_id: "gate.t3_to_t4",
+      doctrine_ids: ["doctrine.capture", "doctrine.ethical"],
+    }],
+  };
+}
+
 async function main() {
   const schema = await readJSON(schemaPath);
   const ajv = new Ajv2020({ allErrors: true, strict: true });
@@ -312,6 +324,20 @@ async function main() {
     const candidate = structuredClone(achievementFixture);
     mutate(candidate);
     if (validateAchievements(candidate)) throw new Error("achievement schema accepted a seeded invalid fixture");
+  }
+
+  const doctrinesSchema = await readJSON(path.join(balanceDirectory, "doctrines.schema.json"));
+  const validateDoctrines = ajv.compile(doctrinesSchema);
+  const doctrineFixture = doctrineSchemaFixture();
+  if (!validateDoctrines(doctrineFixture)) throw new Error(`doctrine schema rejected valid fixture: ${validationErrors(validateDoctrines)}`);
+  for (const mutate of [
+    (value) => { value.transitions[0].source_tier = 9; },
+    (value) => { value.transitions[0].doctrine_ids = ["doctrine.capture"]; },
+    (value) => { value.transitions[0].effects = []; },
+  ]) {
+    const candidate = structuredClone(doctrineFixture);
+    mutate(candidate);
+    if (validateDoctrines(candidate)) throw new Error("doctrine schema accepted a seeded invalid fixture");
   }
 
   const companyResourceIDs = new Set();
@@ -460,7 +486,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + doctrines(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s)`,
   );
 }
 
