@@ -67,7 +67,95 @@ partition-invariance). Adding a consumer adds no new attendance source — one c
    reader introduces no second source.
 5. Migration adds the cursor to Founder save; corpus; the Exit advance is byte-parity Go/TS.
 
+## Acceptance blockers (Codex review, 2026-08-05)
+
+The shared-clock direction is correct, but the draft is not yet safe to implement. The existing
+engine already persists completed-run attended time, and the mid-run snapshot crosses the same
+Founder/Company lock seam as Exit. The contracts below close those facts rather than adding a
+second clock or relying on timing.
+
+### A1 — `age_ms` already is the completed Founder-attendance authority
+
+`finishExitResolved` already computes `prestigecore.AttendedMS(company, now)` and adds it to
+`founder.AgeMS`; the canonical wire field is `age_ms`, and achievements already consume it as a
+career counter. Adding a separately persisted `founder_attended_ms` cursor would make two fields
+claim authority over the same sum, with no invariant capable of repairing drift after one write
+path misses the other. AC5's proposed migration therefore creates risk without adding state.
+
+**Proposed contract:** retain `age_ms` as the one persisted sum of completed-run attended time and
+formally declare that meaning here. Go and TypeScript expose a mechanically named
+`completedFounderAttendedMS` accessor/projection; `age_ms` remains the compatibility wire name and
+achievement counter. `founder_attended_ms` means the effective sampled value
+`age_ms + current_run_partial_attended_ms`, never a second stored Founder field. AC1 and AC5 become
+semantic/parity coverage of the existing field rather than a migration that duplicates it.
+
+### A2 — A mid-run snapshot can race Exit and count one run twice
+
+Computing a Company partial before entering `ApplyFounderLogged` is not sufficient. Exit may lock
+and advance the Founder between that read and the Founder command's lock; combining the newly
+advanced `age_ms` with the stale partial then counts the completed run twice. Conversely, reading
+Company after locking Founder would create an ambient cross-stream read inside the Founder
+boundary and risks reversing the declared Founder→Company lock order.
+
+**Proposed contract:** resolution freezes the tuple
+`{company_stream_id, run_seq, company_revision, company_constants_hash,
+completed_attended_ms, current_run_partial_attended_ms, effective_founder_attended_ms}` before the
+Founder transition. `ApplyFounderLogged` locks Founder and accepts the tuple only when its persisted
+`age_ms == completed_attended_ms` and the request's expected Founder revision still matches. A
+concurrent Exit produces the ordinary typed stale-revision result; the service then re-resolves the
+tuple against the next run before retry. The transition never reads Company state. A two-order
+real-Postgres fixture (Founder command wins / Exit wins) proves the interval is counted exactly
+once in both schedules.
+
+### A3 — The partial's offline-aware derivation is not specified
+
+`AttendedMS(company, now)` only subtracts spans already recorded in the Company state. When `now`
+is later than `evaluated_through`, the unresolved gap must first be classified with the pinned
+prestige `catchup_ceiling_ms`; otherwise a week-long dormant gap becomes attended merely because a
+pet command was the first request back. FA3 currently assumes this classification has happened.
+
+**Proposed contract:** the resolver loads the authenticated session's exact Company stream and
+pinned catalog bundle, clones the Company state, canonicalizes database/server time, applies
+`RecordOfflineSpan(clone, evaluated_through, now, pinned_catchup_ceiling_ms)`, and then computes
+`AttendedMS(clone, now)`. It does not persist the clone. No active Company run resolves a partial of
+zero; missing, ambiguous, stale-run, or unresolved-catalog contexts fail closed with typed internal
+errors. Fixtures cover a sub-ceiling reconnect, a 25-hour return, an Exit race, and replay under a
+new deploy-current epoch while the run remains pinned to its old epoch.
+
+### A4 — Founder replay/genesis is a prerequisite, not an implemented dependency
+
+The dependency line says ApplyFounderLogged is implemented, but Pet C9 correctly records the
+remaining work: Founder genesis does not yet exist and Exit's Founder mutation is not yet a
+`founder_log` entry. Attendance-consuming Founder commands cannot claim career-long replay until
+that history is complete; revision pruning would otherwise remove the only starting state.
+
+**Proposed contract:** this RFC depends on the Pet-C9 Founder replay slice landing first, or owns it
+as its first implementation batch. That slice defines one immutable Founder genesis row created in
+the same transaction as the first Founder-log activation, plus an Exit Founder-log command whose
+resolved input contains the immutable Company `run_log` identity and the exact Founder-relevant
+Exit facts. Exit appends the Founder row in the existing multi-stream transaction. Founder replay
+starts from genesis and compares state, receipt, and ordered Founder events through both ordinary
+Founder commands and Exits; no Company stream is scanned during replay.
+
+### A5 — Bounds, monotonicity, and consumer cursor semantics are implicit
+
+The sum is an exact integer but the draft supplies no overflow rule, no definition for the partial
+across a run boundary, and no rule preventing consumers from persisting a cursor ahead of the
+effective clock. Those omissions would let Go and TypeScript disagree at the numeric boundary or
+let a failed transition burn future attended time.
+
+**Proposed contract:** every component is an integer in `[0, MaxExactInteger]`; addition rejects
+overflow before mutation. The partial is the total attended-so-far for the named current run, not
+a delta since the previous Founder command. The effective value is monotonic across commands and
+across Exit (`old age + final partial == new age + zero next-run partial`). Consumer cursors advance
+only in the same transaction as their effect, never during resolution, and must satisfy
+`0 <= cursor <= effective_founder_attended_ms`. Shared Go/TS vectors cover zero, boundary carry,
+run transition, stale resolution, and overflow rejection.
+
 ## Changelog
 
 - 2026-08-05: created (draft) — the shared Founder attendance clock; unblocks Pet C10 + Minigame
   C26; defined as summed run-attended flushed at Exit + a frozen mid-run partial (replay-safe).
+- 2026-08-05: Codex acceptance review found five blockers: reuse the existing `age_ms` authority,
+  make the frozen partial race-safe against Exit, specify offline-aware resolution, land Founder
+  genesis/Exit logging first, and close exact bounds/cursor semantics. Status remains draft.

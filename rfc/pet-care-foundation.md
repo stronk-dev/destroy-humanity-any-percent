@@ -217,6 +217,21 @@ Balance rows own thresholds, durations, deltas, and candidate weights.
   set, eligibility a closed reason set - the ENUMS are ruled (Go/TS byte-identical from them);
   the specific member VALUES and thresholds are balance/content data. No prose-only union survives.
 
+### C12a — The ruling still defers the enum members it says are closed
+
+C12's first sentence says the Go/TypeScript unions are enumerated, but its second sentence defers
+the member values. Those values are the wire grammar; they cannot be balance data and a port cannot
+derive byte-identical enums from categories alone. The concrete C12 proposal immediately above
+already supplies the missing Phase-A members.
+
+**Proposed correction:** adopt the proposal's literals as normative mechanics:
+`floor|low|normal|high`; `withdrawn|restless|neutral|engaged`;
+`idle|care_response|active|resting`; `grid_tick|care_applied|care_rejected`; queue hardcap `8`;
+PRNG label `pet.behavior.v1`; and care rejection details
+`cooldown|ineligible|saturated|unknown_pet|unknown_action`. Thresholds, durations, weights, and
+stat deltas remain balance/content data. Pet Care remains blocked on this textual correction and
+Founder Attendance A1-A5, not on any invented mechanic.
+
 ## Acceptance blockers (Codex review, 2026-08-04)
 
 The design direction is coherent, but the draft cannot yet be accepted without inventing a new
