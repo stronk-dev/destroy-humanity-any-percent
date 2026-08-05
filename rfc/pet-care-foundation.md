@@ -298,6 +298,26 @@ C13 catalog bytes and is included in constants identity before any v17 Founder i
 TypeScript reject Company v17, Founder v17 without the artifact, and pet artifacts with a pre-v17
 Founder; mixed Founder-v17/Company-v14-or-v16 Exit and Founder replay are required fixtures.
 
+## Owner rulings on C15-C16 (2026-08-05)
+
+- **C15 - accepted:** the two row families are exact-key. Mood threshold rows
+  `{mood_member, floor_ppm}` (the closed mood enum from C12, ascending floors, full set required);
+  behavior candidate rows `{from_state, event, to_state, duration_grid_ticks}` over the closed
+  behavior state/event enums (C12), with the queue-hardcap-8 bound. The threshold/duration NUMBERS
+  are balance data; the field names + enum members are wire grammar. No invented bytes.
+- **C16 + Minigame C35 - the SAME seam, ruled together: the Founder save version is an INDEPENDENT
+  AXIS from the Company version** (this makes concrete the per-axis activation-boundary law already
+  ruled at Pet C11). Exit's current 'Founder version == Company version' equality check is RELAXED
+  to 'each version >= its pinned-epoch activation floor, validated independently' - the two axes
+  advance separately. Founder-scope mechanics (pet state v-next, minigame_ratings) activate on the
+  FOUNDER axis under their own PINNED artifacts (a `pets` epoch artifact; ratings ride the minigame
+  artifact), New-Founder-forward or at the first Founder command under a pinned catalog - NEVER
+  forcing a Company version bump. Replay reads the pinned pet/rating bytes from the run's pinned
+  hash, never deploy-current (activation-boundary law). The Meters(Company)/Achievements(Founder)
+  atomic co-activation stays a valid SPECIAL case (both artifacts in one epoch); it is not the
+  general rule - independent axes are. Implementation: extend the Exit version-tuple validator to
+  per-axis floors + add the `pets` artifact arm to the replay bundle (the missing arm C16 names).
+
 ## Acceptance blockers (Codex review, 2026-08-04)
 
 The design direction is coherent, but the draft cannot yet be accepted without inventing a new

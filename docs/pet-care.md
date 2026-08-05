@@ -19,6 +19,13 @@ member and the queue boundary. These names are protocol grammar, not balance dat
 Thresholds, durations, candidate weights, stat deltas, species, and temperaments remain catalog
 content. No production pet row is synthesized from the protocol vocabulary.
 
+The two Phase-A catalog row families now have exact cross-runtime grammar. Mood thresholds are
+`{mood_member, floor_ppm}` rows containing every closed mood exactly once with strictly ascending
+ppm floors. Behavior candidates are `{from_state, event, to_state, duration_grid_ticks}` rows over
+the closed behavior state/event unions, with positive exact tick durations and no duplicate
+transition tuple. The persisted behavior queue remains hardcapped at eight; thresholds and
+durations in the shared fixture are test data, not production balance data.
+
 ## Replay-owned mutable state
 
 The isolated state validator now fixes the C14 mutable JSON keys without activating a Founder save
@@ -28,6 +35,6 @@ declared behaviors bounded to eight entries, and the behavior PRNG cursor. Mood 
 rejected if stored; writable bonds remain absent. Go and TypeScript consume one shared state
 fixture and enforce the same exact domains.
 
-This state is not yet embedded into the Founder save. The strict fixture-catalog rows and pinned
-pet-artifact/Founder-only version transition remain C15-C16 contracts, so no deploy-current catalog
-or half-replayable state is accepted.
+This state is not yet embedded into the Founder save. The pinned pet-artifact/Founder-only version
+transition remains the C16 contract, so no deploy-current catalog or half-replayable state is
+accepted.

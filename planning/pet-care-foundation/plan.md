@@ -9,7 +9,10 @@ RFC: `rfc/pet-care-foundation.md`
 - [ ] Implement strict fixture-only pet catalog/state schemas without production balance rows.
   - [x] Land C12a's literal stat/status/mood/behavior/event/rejection grammar, queue hardcap, and
     PRNG label with one shared Go/TypeScript parity fixture.
-  - [ ] Land the exact pet catalog and Founder-state wire after their complete key sets are ruled.
+  - [x] Land C15's exact mood-threshold and behavior-candidate rows in Go and TypeScript against
+    one shared fixture, without production balance rows.
+  - [ ] Embed the already-ruled pet state in the Founder wire under C16's pinned artifact and
+    independent Founder version axis.
 - [ ] Implement attended-grid care, trust, mood, and bounded behavior FSM kernels in Go and TS.
 - [ ] Add Founder activation/persistence, public status projection, and combat-input seam.
 - [ ] Mint production pet content only after owner/harness-supplied catalog rows.

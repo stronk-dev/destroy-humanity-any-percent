@@ -1,0 +1,13 @@
+{
+  "mood_thresholds": [
+    { "mood_member": "withdrawn", "floor_ppm": 0 },
+    { "mood_member": "restless", "floor_ppm": 250000 },
+    { "mood_member": "neutral", "floor_ppm": 500000 },
+    { "mood_member": "engaged", "floor_ppm": 750000 }
+  ],
+  "behavior_candidates": [
+    { "from_state": "idle", "event": "grid_tick", "to_state": "resting", "duration_grid_ticks": 1 },
+    { "from_state": "idle", "event": "care_applied", "to_state": "active", "duration_grid_ticks": 2 },
+    { "from_state": "active", "event": "grid_tick", "to_state": "idle", "duration_grid_ticks": 1 }
+  ]
+}
