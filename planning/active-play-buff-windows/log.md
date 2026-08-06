@@ -201,3 +201,43 @@ Final handoff verification: `make verify` PASS (including Go vet/tests, TypeScri
 6,578 client tests, formula drift, guard fixtures, and harness check); `make test-save-integration`
 PASS through the declared Docker/Postgres target. Ready for the cross-party designated re-review;
 not self-approved and not archived.
+
+## 2026-08-06 — designated cross-party RE-REVIEW verdict: remediation 1f5a2f8^..16eb935 — NOT APPROVED
+
+- **Review by:** the designated Claude re-reviewer (independent; all gates re-run incl. explicit
+  typecheck, isolated-worktree Go suite at 16eb935, real-Postgres probes). **Recorded by:** same.
+
+**BLOCKING:**
+- **RR-1 (HIGH, a NEW regression from the F5 fix): schema-v2 active-play events violate the live DB
+  constraint.** active_play.go now emits opportunity_claimed.v1/buff_started.v1 with SchemaVersion:2
+  unconditionally; the Go validator was widened but migration 00035's events_schema_version_check
+  (only run_ended may be v2) was NOT extended — probe-confirmed: both v2 inserts rejected (23514).
+  Any buff-granting claim against the real database fails its event write inside the intent
+  transaction → the feature bricks in production. Integration suite green ONLY because it has zero
+  active-play coverage. Fix: a NEW append-only migration extending the constraint + integration
+  coverage that actually writes active-play events.
+- **RR-2 (HIGH): F3 only half-closed — spawn-then-SELF-miss is Go-replayable but TS-unreplayable.**
+  The loader rule blocks two-pending chains, not a fresh spawn whose own lifetime elapses within the
+  same catch-up (reachable with the shipped corpus catalog: lifetime 3000 < ceiling 5000).
+  Probe-confirmed: Go generates+replays; TS throws "active missed mismatch". Fix: TS support for this
+  order + a shared fixture row, OR a structural loader rule (lifetime_ms > catchup_ceiling_ms) in
+  BOTH runtimes (which invalidates the current corpus catalog and forces retune).
+- **RR-3 (MEDIUM, blocking under F2's own terms): the SHARED corpus never exceeds the cap.** The
+  `owned=100` edit landed in the WRONG builder (makeDoctrineReplayRunFixture — a run with no
+  active-play arm); the active-play fixture's cross-target product is 7×1.1=7.7 vs cap 10 — the TS
+  clamp-bite path (incl. the mantissa-ULP fallback) is executed by NO shared test, and Go↔TS byte
+  parity of clamped factors is unproven. The remediation log's "corpus replays the same cross-target
+  saturation in TypeScript" is factually wrong — correct that record with the fix.
+- **RR-4 (MEDIUM, with archival):** no fixture row anywhere carries a non-null combo reason key
+  (falls out of RR-3's fix).
+
+Verified-correct: the F2 clamp MECHANISM (all-group consumes headroom first; engine probe ≤ cap),
+the ruled miss→successor-spawn compound (corpus entry 11, byte-compared), the five F4 Lucky vectors
+(genuine, incl. a true ledger cap hit), F6 leak check + test, F7 range correction, kernel 0.3.69
+lockstep (RR-5 INFO: the bump correctly rides the semantic commit; the split generated-constants
+sync is a precedent deviation only), and the 16eb935 RFC reconciliation.
+
+**Range-union:** prior verdict `32e5a63^..d3b18ef` + 45944ca; this re-review `1f5a2f8^..16eb935`;
+gap commits are docs or separately-tracked guard code (ebb081f — Codex's KRM thread). The eventual
+archival must cite BOTH ranges plus the range closing RR-1..RR-4. **Active-Play archival remains
+BLOCKED.**
