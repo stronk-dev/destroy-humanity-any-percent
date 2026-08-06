@@ -262,3 +262,13 @@ the test fixtures instead of weakening it. A second full root `make verify` then
 exit 0: all Go tests and vet, harness/history guards, TypeScript/Svelte typecheck, 6,568 client unit
 tests, schema/copy/boundary checks, and 19,713 browser assertions passed. Designated independent
 review is still required before archival.
+
+During that designated review, Darwin found that the first F6 remediation shared only mutation
+names and expected outcomes, not the mutation payloads, and demonstrated two parser hazards:
+`1.0000000000000000000000001` rounded to an accepted integer in TypeScript while Go rejected it,
+and an enormous exponent could make Go perform unbounded exact-rational work. `dc092cb` replaces
+the corpus with declarative path/operation/value patches consumed by both runtimes, makes the
+TypeScript loader validate raw JSON integer lexemes before `JSON.parse`, and bounds Go lexical and
+exponent work before exact parsing. Shared vectors now cover accepted integral decimals, the
+IEEE-754 rounding reproducer, and the hostile exponent. The designated review endpoint is extended
+through that commit; the interrupted concurrent review run is not evidence.
