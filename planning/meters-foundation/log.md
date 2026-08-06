@@ -718,3 +718,30 @@ Both cross-party findings closed:
 - A1-F1 (MEDIUM): both denylist escape call sites now require source_file.startsWith("design/research/")
   before the unpublication escape; discriminating fixture added (absent non-research source rejected).
 make verify exit 0; make copy-check exit 0; kernel guard + adversarial fixtures green at 0.3.68.
+
+## 2026-08-06 — cross-party re-review of guard remediation (`ebb081f^..ebb081f`)
+
+- **Review by:** Codex (cross-party designated review).
+- **Recorded by:** Codex.
+- **Decision:** **not approved overall** — A1-F1 is closed; KRM-F1 retains one blocking collapse path.
+
+**A1-F1 — CLOSED.** Both denylist-history call sites now restrict the unpublication escape to the
+machine-validated `design/research/*.md` source grammar, and the non-research omission fixture is
+discriminating. `make copy-check` passes.
+
+**KRM-F1b (HIGH) — a dead correction can collapse into an already-existing live correction.**
+`excusedRemapPairs(beforeCorrections, afterCorrections)` checks that the mapped live target exists in
+the child, but not that it is absent from the parent (that is, that it is actually the required
+*added* target). Given parent corrections `{deadOld, liveExisting}`, child `{liveExisting}`, and an
+approved-map row `deadOld -> liveExisting` with matching immutable metadata, the removal is excused,
+there are zero additions to inspect, and the guard accepts the two-to-one collapse. `usedNew` only
+prevents two missing old entries inside one call from choosing the same target; it does not reserve a
+target already present in `beforeCorrections`. `loadApprovedRemaps` also does not reject duplicate
+new targets across map rows, so the manifest does not close this path independently.
+
+**Required closure:** a remap target must be newly added (`!beforeCorrections.has(newHash)`), and the
+loaded map set must reject duplicate old or new hashes across all tracked `.map` files. Add a fixture
+with one dead old correction mapped onto a matching pre-existing live correction; it must fail. The
+current intended unpublication remaps and A1 amendment are otherwise sound. `make
+verify-kernel-version` and its existing fixtures pass, demonstrating that the missing adversarial case
+is not covered rather than disproving it.

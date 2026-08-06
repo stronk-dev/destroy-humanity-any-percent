@@ -15,7 +15,7 @@ RFC: `rfc/active-play-buff-windows.md`
   mandatory cross-party re-review over that full span and the remediation range before writing
   canonical docs and archive only if that verdict approves the full range.
 
-Current state: implementation and self-checks are complete. `make verify` is green (6,577 client
-tests plus 19,740 browser assertions), and the fresh-Postgres `make test-save-integration` target is
-green with migration 00066. This is ready for the mandatory cross-party designated review; it is not
-approved or archival-eligible yet.
+Current state: the designated review's F2–F7 remediation is implemented and self-checks are complete.
+`make verify` is green (6,578 client tests plus the browser suite), and the fresh-Postgres
+`make test-save-integration` target is green with migration 00066. This is ready for the mandatory
+cross-party designated re-review; it is not approved or archival-eligible yet.

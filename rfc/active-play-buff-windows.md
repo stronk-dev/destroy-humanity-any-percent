@@ -87,7 +87,9 @@ is **DERIVED from the pinned artifact, never stored** (so save and catalog can't
 active iff `attended_now < expires_attended_ms` — **closed-form, evaluated on read, never ticked** (all
 coordinates are Company ATTENDED ms, A2, so absence never expires a buff). Multiple active buffs
 multiply in raw-byte instance order, quantized at the existing contribution boundary; the **event-buff
-slot product is then clamped to `combo_cap`** — a visible HARDCAP + `reason_key` (never a softcap) —
+slot product is then clamped to `combo_cap`** — including the effective per-generator product of an
+`all` production frenzy and generator-specific building specials — a visible HARDCAP + `reason_key`
+(never a softcap) —
 BEFORE the remaining production slots. Contributions register in `event_buffs` with exact source IDs;
 each effect declares which targets it affects. Expired rows are filtered from the math immediately and
 removed/evented by the next lazy transition. Server-owned throughout; the client renders, never decides.
@@ -578,3 +580,14 @@ All accepted (Codex's proposed contracts are executable and sound). Owner-call: 
 
 A9-A16 fully ruled. AB1-AB5 refined (not contradicted); the compound-transition inconsistency with
 Fiscal is resolved (both ROLLBACK). Numbers stay data.
+
+### Designated-review amendments F2–F7 (2026-08-06)
+
+The effective `event_buffs` product for a generator is the product of active `all` contributions and
+that generator's specific contributions; `combo_cap` limits that combined product. The shared `all`
+product consumes cap headroom before generator-specific products. A buff claim that first saturates
+the product carries nullable `cap_reason_key` in its typed receipt and in schema-v2
+`opportunity_claimed.v1` / `buff_started.v1` payloads (required exactly when the clamp bites); schema
+v1 remains valid for existing rows. Schedule replay permits and verifies the ruled compound transition
+where one applied command records a miss and the successor spawn. A13's five named Lucky boundary
+vectors are shared Go/TS fixtures, not prose-only acceptance debt.

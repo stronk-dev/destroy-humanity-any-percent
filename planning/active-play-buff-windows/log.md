@@ -171,3 +171,33 @@ Codex re-review).
 
 **Archival BLOCKED until F2/F3/F4 are fixed with fixtures and F5/F6/F7 land; the archival commit must
 cite this verdict's extended range `32e5a63^..d3b18ef` + 45944ca + the remediation range.**
+
+## 2026-08-06 — F2–F7 remediation (`1f5a2f8..9294280`), ready for designated re-review
+
+- **Implemented by:** Codex.
+- **Decision:** implementation complete; self-checks do not authorize archival.
+
+F2 now caps the effective per-generator event-buff product: the shared `all` product consumes
+headroom before building-specific groups, with a conservative one-ULP clamp probe in both runtimes.
+The discriminating fixture is production frenzy ×7 plus a 100-owned building special against cap 10;
+the sequential Go-authored corpus replays the same cross-target saturation in TypeScript.
+
+F3's sequential corpus now contains one applied command that both expires a missed opportunity and
+spawns its successor. TypeScript reconstructs the post-miss coordinate from the expired coordinate +
+the logged sampled interval before verifying the spawn, matching Go's transition order.
+
+F4 adds the five shared Lucky vectors (`zero-zero`, `epsilon-only`, `one-ulp-below-cap`, `at-cap`,
+`overflow-scale`) consumed by Go and TypeScript. F5 surfaces `cap.active_combo` through the typed
+claim receipt and schema-v2 claim/buff-start event payloads; v1 rows remain accepted. F6 rejects all
+active-play state outside Company scope. F7 corrects the plan to the designated verdict's full
+`32e5a63^..d3b18ef` range. Kernel semantics advance in lockstep to 0.3.69.
+
+Checks completed before handoff: `make test-go`, `make typecheck`, `make test-client`, and
+`make replay-fixture-check` all pass. Full `make verify` and the Postgres integration gate follow in
+the final handoff commit. Active-Play remains unarchived and requires the cross-party designated
+re-review over the original extended range plus this remediation range.
+
+Final handoff verification: `make verify` PASS (including Go vet/tests, TypeScript typecheck,
+6,578 client tests, formula drift, guard fixtures, and harness check); `make test-save-integration`
+PASS through the declared Docker/Postgres target. Ready for the cross-party designated re-review;
+not self-approved and not archived.
