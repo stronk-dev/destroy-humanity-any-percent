@@ -25,6 +25,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Achievements Foundation](clout-and-achievements-foundation.md) | implementing — C1–C10 ruled | Meters / Copy Pipeline / Production / Run Genesis |
 | [Fiscal Quarters Foundation](fiscal-quarters-foundation.md) | accepted — implementation blocked on F9–F15 (Founder v19) | Save / Run Genesis / Founder Attendance |
 | [Active-Play Buff Windows](active-play-buff-windows.md) | accepted — implementation blocked on A9–A16 (Company v18) | Production / Save / Numeric Core |
+| [Soul Foundation](soul-foundation.md) | accepted — implementation blocked on SB10–SB16 + Fiscal F9–F15 (Founder v20) | Save / Run Genesis / Founder Attendance / Pet Care |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 
