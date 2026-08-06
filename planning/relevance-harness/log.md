@@ -67,3 +67,68 @@ The owner may instead explicitly narrow the first relevance release to generator
 only, defer upgrades/roles/chains, and weaken the T0-T1 acceptance criteria. That is a material
 design choice, not an implementation default.
 
+## 2026-08-05 — Codex acceptance review: blocked (R1-R8)
+
+Review by: Codex. Recorded by: Codex.
+
+Verified at HEAD: Purchasable Content Foundation is implemented; `SimulateTransition` owns the
+closed effect-mask/action-removal seam; typed role activations are emitted only for executed
+non-neutral mechanics; and the base harness already supplies deterministic run identity, dispatch,
+reports, and balance-change guarding. The earlier foundation blocker is therefore stale as claimed.
+
+The draft still cannot produce one canonical report or gate verdict. R1-R8 cover the reference
+policy, beam oracle, seed/delta reduction, group-vs-individual contradiction, tier attribution,
+missing relevance metadata, exact report/budget wire, and the generic-vs-real-content acceptance
+split. The review also confirms that the current production Phase-0 catalog remains schema v3 and
+cannot honestly be called the first relevance baseline. No implementation started pending rulings.
+
+## 2026-08-05 — owner rulings on acceptance blockers R1-R8 (all resolved)
+- R1: reference_greedy = event-driven clone-and-simulate to the next horizon; rank
+  (payback, earliest_benefit_time, raw_byte_id) w/ sentinels; resolves "indirect effects" via real
+  simulation, not instantaneous delta_rate.
+- R2 (owner): beam oracle — node=sim-state digest, expand R1 candidates + wait-edge, score=time to
+  terminal milestone, Pareto pruning, dedup, width 8; greedy_gap_ppm=floor((greedy-beam)*1e6/beam);
+  fixture oracle first, production check gated on T0-1's primary milestone; 50000 ppm is data.
+- R3: pair each ablation to one baseline key; delta_t=ablated-baseline; conservative seed reducer
+  (p05/worst); 4 reached/unreached rules; ANY over personas post-reduction. Stale "16 milestones"
+  reconciled -> "every milestone the scenario declares".
+- R4 (owner): pass if individual LOO OR one declared group's delta passes (label group_supported);
+  trap floor stays INDIVIDUAL. AC2 corrected in body.
+- R5 (owner): rename "shares" -> "counterfactual tier contribution" = group-ablation delta, NOT
+  required to sum to 100%; {from_gate,to_gate}=[from inclusive,to exclusive); nearest-passing
+  diagnostic defined. Body reconciled.
+- R6 (owner): a hash-pinned `relevance_policy` artifact keyed by purchasable ID
+  {window,epsilon,trap_exempt+justification,group_ids} — NOT economy-catalog grammar. Body V2
+  reconciled (window is a policy-artifact field, not a catalog field).
+- R7: enumerate report envelope/rows, no maps/floats, run identity += ablation_mode/target, raw-byte
+  sort, exact preflight cardinality (baseline+effect-mask+action-removal+group+reference+beam),
+  fail-before-dispatch on budget; dup/missing + cardinality fixtures.
+- R8: implement+archive the generic solver/report/gate vs a test-only schema-v4 fixture; T0-1 mint
+  adds the first production relevance policy/scenario+golden report AND makes harness-check fail
+  closed if an active schema-v4+ catalog lacks them; schema-v3 is NOT a real baseline.
+Status -> accepted; implementing. Body/README reconciled.
+
+## 2026-08-06 — implementation acceptance recheck: blocked (R9-R15)
+
+Review by: Codex. Recorded by: Codex.
+
+Re-read the ruled RFC against `server/harness/harness.go`, the v1 scenario/report schemas, and
+`production.SimulateTransition`. The ablation and typed-role seams are real, but R1's
+earliest-affordable search and R2's wait edge have no authoritative transition: the only simulation
+entrypoint applies an intent. Seven residual blockers are filed in the RFC with proposed contracts:
+
+- R9: V5 finite-unreached vs R3 `+infinity` contradicts R7's no-float wire; reducer still has two
+  legal choices.
+- R10: no harness-only advance boundary and no exact payback quantity/rounding for indirect or
+  multi-resource effects.
+- R11: beam score/rollout/termination and internal-work bound remain non-unique.
+- R12: the hash-pinned relevance-policy artifact has no exact grammar or group authority.
+- R13: the report envelope and ordered row families were never actually enumerated.
+- R14: the promised exact run-budget formula is absent.
+- R15: current milestones cannot bind gate windows; trap/role evidence and the T0-T1 fail-closed
+  registry are not mechanically owned.
+
+No code was started. Implementing past these gaps would invent a new production advance boundary,
+immutable golden bytes, and balance-gate arithmetic. Proposed contracts reuse the existing harness
+discipline, add a guarded `SimulateAdvance` sibling, and narrow the first greedy/beam oracle to a
+single-resource fixture unless the owner supplies a multi-resource conversion.
