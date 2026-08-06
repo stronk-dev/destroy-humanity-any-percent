@@ -41,10 +41,21 @@ type Repository struct {
 	clock         Clock
 	random        io.Reader
 	deletion      AccountDeletionParticipant
+	initializer   FounderInitializer
 }
 
 type AccountDeletionParticipant interface {
 	PrepareAccountDeletion(context.Context, *sql.Tx, string, time.Time) error
+}
+
+type FounderInitializer interface {
+	InitializeNewFounder(constantsHash string, now time.Time, founder, company *save.State) ([]save.FrozenContribution, error)
+}
+
+type initialFounderStates struct {
+	Encoded map[economy.Scope][]byte
+	Version map[economy.Scope]int
+	Frozen  []save.FrozenContribution
 }
 
 type CreatedAccount struct {
@@ -171,6 +182,14 @@ func (repository *Repository) AttachAccountDeletionParticipant(participant Accou
 	return nil
 }
 
+func (repository *Repository) AttachFounderInitializer(initializer FounderInitializer) error {
+	if repository == nil || initializer == nil || repository.initializer != nil {
+		return ErrInvalidRequest
+	}
+	repository.initializer = initializer
+	return nil
+}
+
 func (repository *Repository) CreateAccount(ctx context.Context) (CreatedAccount, error) {
 	now := save.CanonicalServerTime(repository.clock())
 	accountID, err := newUUIDv7(now, repository.random)
@@ -189,7 +208,7 @@ func (repository *Repository) CreateAccount(ctx context.Context) (CreatedAccount
 	if err != nil {
 		return CreatedAccount{}, err
 	}
-	states, err := repository.initialStates(now)
+	states, err := repository.initialStates(now, nil)
 	if err != nil {
 		return CreatedAccount{}, err
 	}
@@ -379,7 +398,7 @@ func (repository *Repository) NewFounder(ctx context.Context, accountID string) 
 	if err != nil {
 		return Founder{}, err
 	}
-	states, err := repository.initialStates(now)
+	states, err := repository.initialStates(now, nil)
 	if err != nil {
 		return Founder{}, err
 	}
@@ -469,15 +488,10 @@ func (repository *Repository) ImportFounder(ctx context.Context, accountID, cons
 	if err != nil {
 		return Founder{}, ErrInvalidRequest
 	}
-	normalizedBytes, err = save.EncodeState(normalized)
-	if err != nil {
-		return Founder{}, ErrInvalidRequest
-	}
-	states, err := repository.initialStates(now)
+	states, err := repository.initialStates(now, normalized)
 	if err != nil {
 		return Founder{}, err
 	}
-	states[economy.ScopeCompany] = normalizedBytes
 	importedFounderID, err := newUUIDv7(now, repository.random)
 	if err != nil {
 		return Founder{}, err
@@ -603,16 +617,16 @@ func (repository *Repository) issueTokenPair(ctx context.Context, tx *sql.Tx, ac
 	return TokenPair{AccessToken: accessToken, RefreshToken: refreshToken}, nil
 }
 
-func (repository *Repository) initialStates(now time.Time) (map[economy.Scope][]byte, error) {
+func (repository *Repository) initialStates(now time.Time, companyOverride *save.State) (initialFounderStates, error) {
 	catalog, ok := repository.catalogs.Resolve(repository.constantsHash)
 	if !ok {
-		return nil, ErrInvalidRequest
+		return initialFounderStates{}, ErrInvalidRequest
 	}
-	result := make(map[economy.Scope][]byte, 2)
+	states := make(map[economy.Scope]*save.State, 2)
 	for _, scope := range []economy.Scope{economy.ScopeCompany, economy.ScopeFounder} {
 		ledger, err := economy.NewLedger(catalog, scope)
 		if err != nil {
-			return nil, err
+			return initialFounderStates{}, err
 		}
 		counts := make(map[string]int64)
 		for _, generator := range catalog.GeneratorClassesForScope(scope) {
@@ -629,30 +643,50 @@ func (repository *Repository) initialStates(now time.Time) (map[economy.Scope][]
 			state.RunStartedAt = now
 			state.ManualTokenMilli = catalog.ManualPolicy().BucketCapMilli
 		}
-		encoded, err := save.EncodeState(state)
+		states[scope] = state
+	}
+	if companyOverride != nil {
+		states[economy.ScopeCompany] = companyOverride
+	}
+	var frozen []save.FrozenContribution
+	var err error
+	if repository.initializer != nil {
+		frozen, err = repository.initializer.InitializeNewFounder(repository.constantsHash, now,
+			states[economy.ScopeFounder], states[economy.ScopeCompany])
 		if err != nil {
-			return nil, err
+			return initialFounderStates{}, err
 		}
-		if _, err := save.RestoreState(encoded, save.CurrentVersion, catalog, scope, time.Time{}); err != nil {
-			return nil, err
+	}
+	result := initialFounderStates{Encoded: make(map[economy.Scope][]byte, 2), Version: make(map[economy.Scope]int, 2), Frozen: frozen}
+	for _, scope := range []economy.Scope{economy.ScopeCompany, economy.ScopeFounder} {
+		version := save.VersionForState(states[scope])
+		encoded, err := save.EncodeStateVersion(states[scope], version)
+		if err != nil {
+			return initialFounderStates{}, err
 		}
-		result[scope] = encoded
+		if _, err := save.RestoreState(encoded, version, catalog, scope, time.Time{}); err != nil {
+			return initialFounderStates{}, err
+		}
+		result.Encoded[scope], result.Version[scope] = encoded, version
 	}
 	return result, nil
 }
 
-func insertFounderStreams(ctx context.Context, tx *sql.Tx, founderID, constantsHash string, states map[economy.Scope][]byte) error {
+func insertFounderStreams(ctx context.Context, tx *sql.Tx, founderID, constantsHash string, states initialFounderStates) error {
 	for _, scope := range []economy.Scope{economy.ScopeCompany, economy.ScopeFounder} {
 		var streamID string
 		if err := tx.QueryRowContext(ctx, `INSERT INTO save_streams(owner_kind,owner_id,scope) VALUES('founder',$1,$2) RETURNING id`, founderID, scope).Scan(&streamID); err != nil {
 			return err
 		}
 		var persistedState []byte
-		if err := tx.QueryRowContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,1,$2,$3,$4) RETURNING state::text`, streamID, save.CurrentVersion, states[scope], constantsHash).Scan(&persistedState); err != nil {
+		if err := tx.QueryRowContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,1,$2,$3,$4) RETURNING state::text`, streamID, states.Version[scope], states.Encoded[scope], constantsHash).Scan(&persistedState); err != nil {
 			return err
 		}
 		if scope == economy.ScopeCompany {
-			if _, err := save.PinRunWithGenesisTx(ctx, tx, streamID, founderID, 1, constantsHash, save.CurrentVersion, persistedState); err != nil {
+			if _, err := save.PinRunWithGenesisTx(ctx, tx, streamID, founderID, 1, constantsHash, states.Version[scope], persistedState); err != nil {
+				return err
+			}
+			if err := save.InsertRunFrozenContributionsTx(ctx, tx, streamID, 1, states.Frozen); err != nil {
 				return err
 			}
 		}

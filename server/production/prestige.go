@@ -247,10 +247,15 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 	receipt, _ := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": "applied", "applied_count": 1, "receipt": map[string]any{"changes": []any{}}, "new_revision": companyRevision.Number + 2, "founder_revision": founderRevision.Number + 1, "evaluated_at": now.Format(time.RFC3339Nano), "snapshot": wireSnapshot(newCompany, nextBundle.Economy)})
 	endedEvents := append([]save.EventWrite(nil), endedPrefix...)
 	endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventRunEnded, SchemaVersion: 2, IntentID: request.IntentID, Payload: endedPayload})
+	frozen, err := FrozenFiscalContributions(nextBundle.Fiscal, founder)
+	if err != nil {
+		return save.ExitDecision{}, err
+	}
 	return save.ExitDecision{Outcome: save.IntentApplied, Receipt: receipt, FinalCompanyState: company, NewCompanyState: newCompany, NewConstantsHash: nextBundle.ConstantsHash,
-		VersionFloors:      exitVersionFloors(currentBundle, nextBundle),
-		FounderEvents:      []save.EventWrite{{Kind: save.EventFounderAdvanced, SchemaVersion: 1, IntentID: request.IntentID, Payload: advancedPayload}},
-		CompanyEndedEvents: endedEvents, CompanyStartedEvents: []save.EventWrite{{Kind: save.EventRunStarted, SchemaVersion: 1, IntentID: request.IntentID, Payload: startedPayload}}}, nil
+		NewRunFrozenContributions: frozen,
+		VersionFloors:             exitVersionFloors(currentBundle, nextBundle),
+		FounderEvents:             []save.EventWrite{{Kind: save.EventFounderAdvanced, SchemaVersion: 1, IntentID: request.IntentID, Payload: advancedPayload}},
+		CompanyEndedEvents:        endedEvents, CompanyStartedEvents: []save.EventWrite{{Kind: save.EventRunStarted, SchemaVersion: 1, IntentID: request.IntentID, Payload: startedPayload}}}, nil
 }
 
 func (s *Service) executedRoutesAt(ctx context.Context, streamID string, expectedRevision int64) ([]string, error) {

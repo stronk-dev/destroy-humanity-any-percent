@@ -242,6 +242,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 		return nil, err
 	}
 	providers := production.CombinedContributionProviders{
+		production.FrozenContributionProvider{DB: config.DB},
 		commonsbinding.Provider{Catalogs: catalogs.commons, Snapshots: commonsProjector},
 		faction.StockConsumptionProvider{Catalogs: catalogs, Members: guildService},
 	}
@@ -257,6 +258,9 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	}
 	accounts, err := account.NewRepository(config.DB, catalogs, seed.Hash, config.SigningKeys, config.Clock, config.Random)
 	if err != nil {
+		return nil, err
+	}
+	if err := accounts.AttachFounderInitializer(production.FounderInitializer{Catalogs: catalogs}); err != nil {
 		return nil, err
 	}
 	if err := accounts.AttachAccountDeletionParticipant(guildService); err != nil {

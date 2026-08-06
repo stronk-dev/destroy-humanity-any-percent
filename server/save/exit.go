@@ -11,17 +11,18 @@ import (
 )
 
 type ExitDecision struct {
-	Outcome               IntentOutcome
-	Receipt               json.RawMessage
-	FinalCompanyState     *State
-	NewCompanyState       *State
-	NewConstantsHash      string
-	FounderEvents         []EventWrite
-	CompanyEndedEvents    []EventWrite
-	CompanyStartedEvents  []EventWrite
-	FounderReplayResolved json.RawMessage
-	FounderAuditReceipt   json.RawMessage
-	VersionFloors         ExitVersionFloors
+	Outcome                   IntentOutcome
+	Receipt                   json.RawMessage
+	FinalCompanyState         *State
+	NewCompanyState           *State
+	NewConstantsHash          string
+	FounderEvents             []EventWrite
+	CompanyEndedEvents        []EventWrite
+	CompanyStartedEvents      []EventWrite
+	FounderReplayResolved     json.RawMessage
+	FounderAuditReceipt       json.RawMessage
+	VersionFloors             ExitVersionFloors
+	NewRunFrozenContributions []FrozenContribution
 }
 
 // ExitVersionFloors are derived from the current and next pinned artifact
@@ -340,6 +341,13 @@ func (s *Store) applyExitTransaction(
 		if err := InsertRunGenesisTx(ctx, tx, RunGenesis{CompanyStreamID: companyStreamID, RunSeq: decision.NewCompanyState.RunSeq, State: persistedNewState, Version: newCompanyVersion, ConstantsHash: transitionHash}); err != nil {
 			return IntentResult{}, err
 		}
+		if err := InsertRunFrozenContributionsTx(ctx, tx, companyStreamID, decision.NewCompanyState.RunSeq,
+			decision.NewRunFrozenContributions); err != nil {
+			return IntentResult{}, err
+		}
+		if err := runExitFault(fault, "run_frozen_contributions"); err != nil {
+			return IntentResult{}, err
+		}
 		if err := runExitFault(fault, "run_genesis"); err != nil {
 			return IntentResult{}, err
 		}
@@ -447,7 +455,7 @@ func validateExitDecision(decision ExitDecision, intentID string) error {
 		if decision.FinalCompanyState == nil || decision.NewCompanyState == nil || !hashPattern.MatchString(decision.NewConstantsHash) || len(decision.CompanyEndedEvents) == 0 || len(decision.CompanyStartedEvents) == 0 {
 			return ErrInvalidStream
 		}
-	} else if decision.FinalCompanyState != nil || decision.NewCompanyState != nil || decision.NewConstantsHash != "" {
+	} else if decision.FinalCompanyState != nil || decision.NewCompanyState != nil || decision.NewConstantsHash != "" || decision.NewRunFrozenContributions != nil {
 		return ErrInvalidStream
 	}
 	return nil
