@@ -37,7 +37,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [T0–T1 Playable Content](t0-t1-playable-content.md) | draft | Production / Purchasable Content / Copy Pipeline |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
-**Coverage map:** `planning/coverage-map/` — the validated research→design→RFC→impl tracker and the
+**Coverage map:** `planning/coverage-map/` (internal, unpublished) — the validated research→design→RFC→impl tracker and the
 dependency-ordered gap backlog for the still-uncontracted (design-only) systems.
 
 ## Archive

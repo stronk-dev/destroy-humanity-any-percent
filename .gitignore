@@ -23,3 +23,10 @@ server/coverage/
 
 # Local runtime output
 *.log
+
+# Internal working material — local-only, never published (decided 2026-08-06;
+# see design/research/README.md). History-filtered before first push.
+design/research/
+design/BACKLOG.md
+planning/coverage-map/
+planning/codex-fixes-2026-07-30.md

@@ -90,7 +90,7 @@ Agents: read [`AGENTS.md`](AGENTS.md).
 
 ## Research corpus
 
-Nine research reports ground every design decision — game-design teardowns (Cookie Clicker, the idle genre, Paradox/GW2/Helldivers event systems, Realm Grinder factions), tech-stack research, and the satire source material (25 years of game monetization, tech/societal challenges, billionaires & post-WW2 decay, conspiracy culture & media canonization). See [`design/research/`](design/research/).
+An extensive internal research corpus grounds every design decision — game-design teardowns, tech-stack research, and the satire source material (25 years of game monetization, tech/societal challenges, and internet culture). **`design/research/` is internal analysis and is not published**; design docs cite those files for provenance, so research references in this repo are intentionally unresolved links.
 
 ## Principles (short form)
 
