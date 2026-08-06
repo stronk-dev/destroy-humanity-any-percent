@@ -1,6 +1,7 @@
 package minigame
 
 import (
+	"encoding/json"
 	"os"
 	"testing"
 )
@@ -19,6 +20,32 @@ func TestLoadCatalogClosesPinnedPolicySurface(t *testing.T) {
 	}
 	if _, found := catalog.Definition("invented"); found {
 		t.Fatal("resolved an undeclared minigame")
+	}
+}
+
+func TestLoadCatalogV3RequiresSoulGateWithoutReinterpretingV2(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/minigame/catalog-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root map[string]any
+	if err := json.Unmarshal(data, &root); err != nil {
+		t.Fatal(err)
+	}
+	root["schema_version"] = float64(3)
+	root["minigames"].([]any)[0].(map[string]any)["soul_gate"] = "human_hobby"
+	v3, _ := json.Marshal(root)
+	catalog, err := LoadCatalog(v3)
+	if err != nil || !catalog.SchemaSupportsSoul() {
+		t.Fatalf("v3 Soul catalog=%#v err=%v", catalog, err)
+	}
+	delete(root["minigames"].([]any)[0].(map[string]any), "soul_gate")
+	missing, _ := json.Marshal(root)
+	if _, err := LoadCatalog(missing); err == nil {
+		t.Fatal("v3 accepted missing soul_gate")
+	}
+	if _, err := LoadCatalog(data); err != nil {
+		t.Fatalf("historical v2 no longer decodes: %v", err)
 	}
 }
 

@@ -11,7 +11,7 @@ import (
 func fiscalReplayState(t *testing.T, bundle CatalogBundle, opened int64) *save.State {
 	t.Helper()
 	state := replayFounderFixtureState(t, bundle, time.UnixMilli(opened).UTC())
-	if err := activateFounderFeatureState(state, bundle, 19, opened); err != nil {
+	if err := activateFounderFeatureState(state, bundle, 19, opened, nil); err != nil {
 		t.Fatal(err)
 	}
 	state.WireVersion = 19

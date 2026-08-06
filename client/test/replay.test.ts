@@ -351,6 +351,40 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		expect(() => restoreFounderReplayState(missing, 19, bundle)).toThrow();
   });
 
+	it("activates Founder v20 only under exact Soul and bumped consumer artifacts", async () => {
+		const artifacts = structuredClone(fixture.pet_founder_artifacts) as unknown as Record<string, string>;
+		const economy = JSON.parse(artifacts.economy!) as any;
+		economy.multiplier_sources.push(
+			{ id: "fiscal.generator.beige_tower", slot: "prestige", target: "generator.beige_tower", provider: "fiscal" },
+			{ id: "fiscal.hoard", slot: "prestige", target: "all", provider: "fiscal" },
+		);
+		artifacts.economy = JSON.stringify(economy);
+		artifacts.fiscal = JSON.stringify((await import("../../balance/testdata/fiscal-foundation-v1.json")).default.baseline);
+		const minigames = JSON.parse(artifacts.minigames!) as any; minigames.schema_version = 3;
+		for (const row of minigames.minigames) row.soul_gate = "human_hobby";
+		artifacts.minigames = JSON.stringify(minigames);
+		const pets = JSON.parse(artifacts.pets!) as any; pets.schema_version = 2;
+		for (const row of pets.actions) row.soul_gate = "ordinary";
+		artifacts.pets = JSON.stringify(pets);
+		artifacts.soul = JSON.stringify({ schema_version: 1, policy: { soul_floor: 0, soul_initial: 100, soul_max: 100 }, bands: [
+			{ band_member: "near_zero", min_inclusive: 0, max_inclusive: 9, human_content_locked: true, reason_key: "category.low_percent" },
+			{ band_member: "hollow", min_inclusive: 10, max_inclusive: 39, human_content_locked: false, reason_key: "category.ethical_percent" },
+			{ band_member: "dimming", min_inclusive: 40, max_inclusive: 74, human_content_locked: false, reason_key: "category.hundred_percent" },
+			{ band_member: "whole", min_inclusive: 75, max_inclusive: 100, human_content_locked: false, reason_key: "category.any_percent" },
+		], debit_sources: [], recovery_activities: [], ending_policy: { whole_variant: "earnest_ascension", depleted_variant: "training_data" } });
+		const bundle = await loadReplayCatalogBundle(await artifactHash(artifacts as unknown as ReplayArtifacts), artifacts as unknown as ReplayArtifacts);
+		const source = { ...(fixture.pet_founder_cases[0]!.pre_state as Record<string, unknown>), fiscal_credit: 0,
+			fiscal_period_opened_wall_ms: 1_786_000_000_000, fiscal_period_seq: 0,
+			fiscal_generator_levels: { "generator.beige_tower": 0 }, fiscal_unlocks: [], soul: 73,
+			soul_exhausted_source_ids: [] };
+		const state = restoreFounderReplayState(source, 20, bundle);
+		expect(state.soul).toBe(73); expect(state.soulExhaustedSourceIds.size).toBe(0);
+		expect(encodeFounderReplayState(state)).toMatchObject({ soul: 73, soul_exhausted_source_ids: [] });
+		const missing: Record<string, unknown> = { ...source }; delete missing.soul_exhausted_source_ids;
+		expect(() => restoreFounderReplayState(missing, 20, bundle)).toThrow();
+		expect(() => restoreFounderReplayState(source, 19, { ...bundle, soul: undefined })).toThrow(/fields are not exact|inactive Soul/);
+	});
+
   it.each(fixture.cases)("replays $name to the Go receipt, events, and state", async (testCase) => {
     const bundle = await loadReplayCatalogBundle(fixture.constants_hash, fixture.artifacts);
     const state = restoreReplayState(testCase.pre_state, 14, bundle.economy);

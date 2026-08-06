@@ -450,6 +450,52 @@ func TestFounderV19FiscalRoundTripAndExactEnvelope(t *testing.T) {
 	}
 }
 
+func TestFounderV20SoulEligibilityRoundTripAndExactEnvelope(t *testing.T) {
+	catalog := stateCatalog(t)
+	ledger, err := economy.NewLedger(catalog, economy.ScopeFounder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := &State{WireVersion: 20, Ledger: ledger, GeneratorCounts: map[string]int64{}, GeneratorProvisioned: map[string]int64{},
+		ProvisionRemaindersPPM: map[string]int64{}, UpgradesOwned: map[string]bool{}, EvaluatedThrough: testCursor,
+		ManualTokenRefilledAt: testCursor, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{},
+		LedgerFactKinds: map[string]bool{}, MeterValues: map[string]int{}, MeterDecayRemainders: map[string]int64{}, MeterInputRemainders: map[string]int64{},
+		AchievementsEarnedRun: map[string]bool{}, AchievementsEarnedLifetime: map[string]bool{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{},
+		CompactSamples: []CompactSample{}, OfflineSpans: []OfflineSpan{}, NetworkSlots: []NetworkSlot{}, ExitHistory: []ExitRecord{},
+		MinigameRatings: map[string]MinigameRatingState{}, MinigameOfflineQuality: map[string]MinigameOfflineQualityState{}, Pets: map[string]pet.CareState{},
+		FiscalPeriodOpenedWallMS: 1_786_000_000_000, FiscalGeneratorLevels: map[string]int64{}, FiscalUnlocks: map[string]bool{},
+		Soul: 73, SoulExhaustedSourceIDs: []string{"soul.source.alpha", "soul.source.beta"}}
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err := RestoreState(encoded, 20, catalog, economy.ScopeFounder, time.Time{})
+	if err != nil || restored.Soul != 73 || strings.Join(restored.SoulExhaustedSourceIDs, ",") != "soul.source.alpha,soul.source.beta" {
+		t.Fatalf("v20 restore=%+v err=%v", restored, err)
+	}
+	var object map[string]json.RawMessage
+	if err := json.Unmarshal(encoded, &object); err != nil {
+		t.Fatal(err)
+	}
+	delete(object, "soul_exhausted_source_ids")
+	missing, _ := json.Marshal(object)
+	if _, err := RestoreState(missing, 20, catalog, economy.ScopeFounder, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("Founder v20 accepted missing exhausted-source set: %v", err)
+	}
+	state.WireVersion = 19
+	if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v19 silently discarded active Soul state: %v", err)
+	}
+	state.WireVersion = 20
+	state.SoulExhaustedSourceIDs = []string{"soul.source.beta", "soul.source.alpha"}
+	if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v20 accepted unsorted Soul eligibility: %v", err)
+	}
+	if _, err := RestoreState(encoded, 20, catalog, economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("Company accepted Founder v20: %v", err)
+	}
+}
+
 func TestStateV15AndV16CollectionsFailClosed(t *testing.T) {
 	state := testState(t)
 	state.WireVersion = 15

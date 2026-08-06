@@ -99,6 +99,30 @@ func (bundle CatalogBundle) ValidateFoundationState(state *save.State) error {
 		if err := validateFounderFiscalState(bundle.Fiscal, state); err != nil {
 			return err
 		}
+		if err := validateFounderSoulState(bundle, state); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func validateFounderSoulState(bundle CatalogBundle, state *save.State) error {
+	if bundle.Soul == nil {
+		if state.Soul != 0 || state.SoulExhaustedSourceIDs != nil {
+			return fmt.Errorf("%w: Soul state without pinned artifact", ErrInvalidEngineState)
+		}
+		return nil
+	}
+	if state.Soul < bundle.Soul.Policy.Floor || state.Soul > bundle.Soul.Policy.Max || state.SoulExhaustedSourceIDs == nil {
+		return fmt.Errorf("%w: Soul value outside pinned policy", ErrInvalidEngineState)
+	}
+	previous := ""
+	for _, id := range state.SoulExhaustedSourceIDs {
+		source, ok := bundle.Soul.DebitSource(id)
+		if !ok || !source.MayExhaust || id <= previous {
+			return fmt.Errorf("%w: invalid Soul exhausted-source set", ErrInvalidEngineState)
+		}
+		previous = id
 	}
 	return nil
 }
@@ -224,6 +248,10 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 			founder.FiscalGeneratorLevels[row.GeneratorID] = 0
 		}
 		founder.FiscalUnlocks = map[string]bool{}
+	}
+	if next.Soul != nil && current.Soul == nil {
+		founder.Soul = next.Soul.Policy.Initial
+		founder.SoulExhaustedSourceIDs = []string{}
 	}
 	founder.WireVersion = nextFounderFloor
 	newMeters, err := meters.NewRunState(next.Meters, founder.Notoriety)

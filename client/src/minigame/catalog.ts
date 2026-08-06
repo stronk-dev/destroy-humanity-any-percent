@@ -24,9 +24,11 @@ export interface MinigameDefinition {
   readonly offline_quality: OfflineQualityPolicy;
   readonly rating_policy: MinigameRatingPolicy;
   readonly unlock_condition: Readonly<Record<string, unknown>>;
+	readonly soul_gate: "" | "human_hobby" | "unrelated";
 }
 
 export interface MinigameCatalog {
+	readonly schemaVersion: 2 | 3;
   readonly minigameIds: readonly string[];
   readonly ratingSeasons: readonly string[];
   readonly minigames: readonly MinigameDefinition[];
@@ -34,21 +36,24 @@ export interface MinigameCatalog {
 
 export function parseMinigameCatalog(source: unknown): MinigameCatalog {
   const root = exactObject(source, ["schema_version", "rating_seasons", "minigames"], "minigame catalog");
-  if (root.schema_version !== 2) throw new SyntaxError("invalid minigame catalog version");
+	if (root.schema_version !== 2 && root.schema_version !== 3) throw new SyntaxError("invalid minigame catalog version");
+	const schemaVersion = root.schema_version;
   const ratingSeasons = sortedMechanical(root.rating_seasons, "rating seasons");
   if (!Array.isArray(root.minigames)) throw new SyntaxError("minigames must be an array");
   let prior = "";
   const minigames = root.minigames.map((raw) => {
-    const row = parseDefinition(raw, ratingSeasons);
+		const row = parseDefinition(raw, ratingSeasons, schemaVersion);
     if (prior !== "" && byteCompare(prior, row.minigame_id) >= 0) throw new SyntaxError("minigames are not byte sorted");
     prior = row.minigame_id;
     return row;
   });
-  return Object.freeze({ minigameIds: Object.freeze(minigames.map((row) => row.minigame_id)), ratingSeasons, minigames: Object.freeze(minigames) });
+	return Object.freeze({ schemaVersion, minigameIds: Object.freeze(minigames.map((row) => row.minigame_id)), ratingSeasons, minigames: Object.freeze(minigames) });
 }
 
-function parseDefinition(source: unknown, ratingSeasons: readonly string[]): MinigameDefinition {
-  const row = exactObject(source, ["minigame_id", "engine_ref", "engine_version", "modes", "result_score_fact_ids", "scaling", "payout", "fallback", "offline_quality", "rating_policy", "unlock_condition"], "minigame");
+function parseDefinition(source: unknown, ratingSeasons: readonly string[], schemaVersion: 2 | 3): MinigameDefinition {
+	const keys = ["minigame_id", "engine_ref", "engine_version", "modes", "result_score_fact_ids", "scaling", "payout", "fallback", "offline_quality", "rating_policy", "unlock_condition"];
+	if (schemaVersion === 3) keys.push("soul_gate");
+	const row = exactObject(source, keys, "minigame");
   const minigameId = mechanicalString(row.minigame_id, "minigame id");
   const engineRef = mechanicalString(row.engine_ref, "engine ref");
   if (typeof row.engine_version !== "string" || !version.test(row.engine_version)) throw new SyntaxError("invalid engine version");
@@ -65,9 +70,14 @@ function parseDefinition(source: unknown, ratingSeasons: readonly string[]): Min
   });
   const rating = parseRating(row.rating_policy, ratingSeasons);
   const unlock = parseUnlock(row.unlock_condition);
+	const soulGate = schemaVersion === 2 ? "" : row.soul_gate === "human_hobby" || row.soul_gate === "unrelated" ? row.soul_gate : (() => { throw new SyntaxError("invalid minigame Soul gate"); })();
   return Object.freeze({ minigame_id: minigameId, engine_ref: engineRef, engine_version: row.engine_version,
     modes: Object.freeze([...modes]), result_score_fact_ids: factIds, scaling, payout, fallback,
-    offline_quality: quality, rating_policy: rating, unlock_condition: unlock });
+		offline_quality: quality, rating_policy: rating, unlock_condition: unlock, soul_gate: soulGate });
+}
+
+export function minigameCatalogSupportsSoul(catalog: MinigameCatalog): boolean {
+	return catalog.schemaVersion === 3 && catalog.minigames.every((row) => row.soul_gate === "human_hobby" || row.soul_gate === "unrelated");
 }
 
 function parseScaling(source: unknown): Readonly<Record<string, unknown>> {

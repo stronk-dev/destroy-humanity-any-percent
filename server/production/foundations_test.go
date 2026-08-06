@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/achievements"
+	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
@@ -17,6 +18,7 @@ import (
 	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/save"
+	"cloud-clicker/server/soul"
 )
 
 type achievementParityFixture struct {
@@ -164,6 +166,54 @@ func fiscalFeatureBundle(t *testing.T, pets CatalogBundle) CatalogBundle {
 	return result
 }
 
+func soulFeatureBundle(t *testing.T, fiscalBundle CatalogBundle) CatalogBundle {
+	t.Helper()
+	result := fiscalBundle
+	result.Artifacts = cloneArtifactMap(fiscalBundle.Artifacts)
+	var minigameRoot map[string]any
+	if err := json.Unmarshal(result.Artifacts["minigames"], &minigameRoot); err != nil {
+		t.Fatal(err)
+	}
+	minigameRoot["schema_version"] = float64(3)
+	result.Artifacts["minigames"], _ = json.Marshal(minigameRoot)
+	minigameCatalog, err := minigame.LoadCatalog(result.Artifacts["minigames"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	var petRoot map[string]any
+	if err := json.Unmarshal(result.Artifacts["pets"], &petRoot); err != nil {
+		t.Fatal(err)
+	}
+	petRoot["schema_version"] = float64(2)
+	for _, row := range petRoot["actions"].([]any) {
+		row.(map[string]any)["soul_gate"] = "ordinary"
+	}
+	result.Artifacts["pets"], _ = json.Marshal(petRoot)
+	petCatalog, err := pet.LoadCatalog(result.Artifacts["pets"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	soulBytes := []byte(`{"schema_version":1,"policy":{"soul_floor":0,"soul_initial":100,"soul_max":100},"bands":[{"band_member":"near_zero","min_inclusive":0,"max_inclusive":9,"human_content_locked":true,"reason_key":"category.low_percent"},{"band_member":"hollow","min_inclusive":10,"max_inclusive":39,"human_content_locked":false,"reason_key":"category.ethical_percent"},{"band_member":"dimming","min_inclusive":40,"max_inclusive":74,"human_content_locked":false,"reason_key":"category.hundred_percent"},{"band_member":"whole","min_inclusive":75,"max_inclusive":100,"human_content_locked":false,"reason_key":"category.any_percent"}],"debit_sources":[],"recovery_activities":[],"ending_policy":{"whole_variant":"earnest_ascension","depleted_variant":"training_data"}}`)
+	keys := map[string]struct{}{}
+	for _, key := range copykeys.All() {
+		keys[key] = struct{}{}
+	}
+	soulCatalog, err := soul.LoadCatalog(soulBytes, soul.Declarations{CopyKeys: keys, EpochSeeded: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result.Artifacts["soul"] = soulBytes
+	result.ConstantsHash, err = save.ConstantsHashArtifacts(result.Artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result.Minigames, result.Pets, result.Soul = minigameCatalog, petCatalog, soulCatalog
+	if !result.valid(result.ConstantsHash) {
+		t.Fatal("Soul feature bundle invalid")
+	}
+	return result
+}
+
 func cloneArtifactMap(source map[string][]byte) map[string][]byte {
 	result := make(map[string][]byte, len(source)+1)
 	for key, value := range source {
@@ -228,6 +278,46 @@ func TestFiscalV19ActivatesAtRunBoundaryWithIndependentCompanyAxis(t *testing.T)
 	if save.VersionForState(founder) != 19 || save.VersionForState(fourth) != 16 || founder.FiscalPeriodOpenedWallMS != 1_786_000_000_000 ||
 		founder.FiscalGeneratorLevels["generator.beige_tower"] != 0 || founder.FiscalUnlocks == nil {
 		t.Fatalf("v19 activation founder=%+v company_version=%d", founder, save.VersionForState(fourth))
+	}
+}
+
+func TestSoulV20ActivatesFromPinnedArtifactWithExactEvidence(t *testing.T) {
+	legacy, active := foundationTestBundles(t)
+	minigames, pets := founderFeatureBundles(t, active)
+	fiscalBundle := fiscalFeatureBundle(t, pets)
+	soulBundle := soulFeatureBundle(t, fiscalBundle)
+	founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+	company := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	steps := []struct{ current, next CatalogBundle }{{legacy, active}, {active, minigames}, {minigames, pets}, {pets, fiscalBundle}}
+	for index, step := range steps {
+		nextCompany := foundationScopeState(t, step.next.Economy, economy.ScopeCompany)
+		nextCompany.RunStartedAt = time.UnixMilli(1_786_000_000_000 + int64(index)).UTC()
+		if err := settleAndActivateFoundations(step.current, step.next, founder, company, nextCompany); err != nil {
+			t.Fatal(err)
+		}
+		company = nextCompany
+	}
+	nextCompany := foundationScopeState(t, soulBundle.Economy, economy.ScopeCompany)
+	nextCompany.RunStartedAt = time.UnixMilli(1_786_000_000_100).UTC()
+	if err := settleAndActivateFoundations(fiscalBundle, soulBundle, founder, company, nextCompany); err != nil {
+		t.Fatal(err)
+	}
+	if save.VersionForState(founder) != 20 || save.VersionForState(nextCompany) != 16 || founder.Soul != 100 || founder.SoulExhaustedSourceIDs == nil {
+		t.Fatalf("v20 activation founder=%+v company=%d", founder, save.VersionForState(nextCompany))
+	}
+	before := *founder
+	before.WireVersion, before.Soul, before.SoulExhaustedSourceIDs = 19, 0, nil
+	command := save.FounderReplayCommand{IntentID: "01986666-2000-7000-8000-000000000001", FounderStreamID: "01986666-2000-7000-8000-000000000002", FounderID: "01986666-2000-7000-8000-000000000003", Revision: 1, FounderLogSeq: 1, ServerTSMS: 1_786_000_000_100}
+	fiscalBundle.Next = &soulBundle
+	resolved := founderExitResolvedWire{Kind: founderExitResolvedKind, Outcome: string(save.IntentApplied), CompanyStreamID: "01986666-2000-7000-8000-000000000004", RunSeq: 1, RunLogSeq: 1, ResultConstantsHash: soulBundle.ConstantsHash, AgeMSBefore: before.AgeMS, AgeMSAfter: before.AgeMS, AddedNetworkSlots: []save.NetworkSlot{}, AddedLedgerFactKinds: []string{}, AddedLifetimeAchievements: []string{}, ExitRecord: &founderExitRecordWire{RunID: 1, ExitType: "collapse", OccurredAtMS: 1}, ResultFounderWireVersion: 20, NextSoul: &nextSoulWire{SoulInitial: 100, BandMember: "whole"}}
+	transition, err := applyFounderExitResolved(&before, command, IntentRequest{}, fiscalBundle, resolved)
+	if err != nil || transition.State.Soul != 100 || save.VersionForState(transition.State) != 20 {
+		t.Fatalf("v20 replay transition=%+v err=%v", transition.State, err)
+	}
+	before.WireVersion, before.Soul, before.SoulExhaustedSourceIDs = 19, 0, nil
+	resolved.NextSoul.BandMember = "dimming"
+	if _, err := applyFounderExitResolved(&before, command, IntentRequest{}, fiscalBundle, resolved); err == nil {
+		t.Fatal("relabeled Soul activation evidence accepted")
 	}
 }
 

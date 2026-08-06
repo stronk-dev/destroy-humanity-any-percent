@@ -38,12 +38,14 @@ type Definition struct {
 	OfflineQuality     OfflineQualityPolicy
 	Rating             RatingPolicy
 	Unlock             UnlockCondition
+	SoulGate           string
 }
 
 // Catalog is the complete immutable policy surface owned by the pinned
 // minigames artifact. There is deliberately no second, process-local policy
 // registry: live resolution and replay both resolve Definition rows here.
 type Catalog struct {
+	schemaVersion int
 	definitions   []Definition
 	ratingSeasons []string
 }
@@ -66,6 +68,7 @@ type definitionWire struct {
 	OfflineQuality     json.RawMessage `json:"offline_quality"`
 	RatingPolicy       json.RawMessage `json:"rating_policy"`
 	UnlockCondition    json.RawMessage `json:"unlock_condition"`
+	SoulGate           string          `json:"soul_gate"`
 }
 
 func LoadCatalog(data []byte) (*Catalog, error) {
@@ -75,17 +78,17 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
 	var wire catalogWire
-	if decoder.Decode(&wire) != nil || wire.SchemaVersion != 2 {
+	if decoder.Decode(&wire) != nil || wire.SchemaVersion != 2 && wire.SchemaVersion != 3 {
 		return nil, ErrInvalidCatalog
 	}
 	var trailing any
 	if !errors.Is(decoder.Decode(&trailing), io.EOF) || !sortedMechanical(wire.RatingSeasons) || wire.Minigames == nil {
 		return nil, ErrInvalidCatalog
 	}
-	catalog := &Catalog{definitions: make([]Definition, len(wire.Minigames)), ratingSeasons: append([]string(nil), wire.RatingSeasons...)}
+	catalog := &Catalog{schemaVersion: wire.SchemaVersion, definitions: make([]Definition, len(wire.Minigames)), ratingSeasons: append([]string(nil), wire.RatingSeasons...)}
 	priorID := ""
 	for index, raw := range wire.Minigames {
-		definition, err := loadDefinition(raw, catalog.ratingSeasons)
+		definition, err := loadDefinition(raw, catalog.ratingSeasons, wire.SchemaVersion)
 		if err != nil || index > 0 && priorID >= definition.MinigameID {
 			return nil, ErrInvalidCatalog
 		}
@@ -95,15 +98,20 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	return catalog, nil
 }
 
-func loadDefinition(data []byte, ratingSeasons []string) (Definition, error) {
-	if !hasExactJSONKeys(data, "engine_ref", "engine_version", "fallback", "minigame_id", "modes",
-		"offline_quality", "payout", "rating_policy", "result_score_fact_ids", "scaling", "unlock_condition") {
+func loadDefinition(data []byte, ratingSeasons []string, schemaVersion int) (Definition, error) {
+	keys := []string{"engine_ref", "engine_version", "fallback", "minigame_id", "modes",
+		"offline_quality", "payout", "rating_policy", "result_score_fact_ids", "scaling", "unlock_condition"}
+	if schemaVersion >= 3 {
+		keys = append(keys, "soul_gate")
+	}
+	if !hasExactJSONKeys(data, keys...) {
 		return Definition{}, ErrInvalidCatalog
 	}
 	var wire definitionWire
 	if decodeExact(data, &wire) != nil || !mechanicalPattern.MatchString(wire.MinigameID) ||
 		!mechanicalPattern.MatchString(wire.EngineRef) || !versionPattern.MatchString(wire.EngineVersion) ||
-		!sortedModes(wire.Modes) || !sortedMechanical(wire.ResultScoreFactIDs) {
+		!sortedModes(wire.Modes) || !sortedMechanical(wire.ResultScoreFactIDs) ||
+		schemaVersion == 2 && wire.SoulGate != "" || schemaVersion == 3 && wire.SoulGate != "human_hobby" && wire.SoulGate != "unrelated" {
 		return Definition{}, ErrInvalidCatalog
 	}
 	scaling, err := LoadScalingPolicy(wire.Scaling, true)
@@ -152,7 +160,19 @@ func loadDefinition(data []byte, ratingSeasons []string) (Definition, error) {
 	}
 	return Definition{MinigameID: wire.MinigameID, EngineRef: wire.EngineRef, EngineVersion: wire.EngineVersion,
 		Modes: append([]Mode(nil), wire.Modes...), ResultScoreFactIDs: append([]string(nil), wire.ResultScoreFactIDs...),
-		Scaling: scaling, Payout: payout, Fallback: fallback, OfflineQuality: quality, Rating: rating, Unlock: unlock}, nil
+		Scaling: scaling, Payout: payout, Fallback: fallback, OfflineQuality: quality, Rating: rating, Unlock: unlock, SoulGate: wire.SoulGate}, nil
+}
+
+func (catalog *Catalog) SchemaSupportsSoul() bool {
+	if catalog == nil || catalog.schemaVersion != 3 {
+		return false
+	}
+	for _, definition := range catalog.definitions {
+		if definition.SoulGate != "human_hobby" && definition.SoulGate != "unrelated" {
+			return false
+		}
+	}
+	return true
 }
 
 func loadRatingPolicy(data []byte, seasons []string) (RatingPolicy, error) {

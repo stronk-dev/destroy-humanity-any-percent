@@ -18,6 +18,39 @@ func TestLoadFullCatalogClosesEveryPolicyFamily(t *testing.T) {
 	}
 }
 
+func TestLoadFullCatalogV2RequiresEverySoulGateMember(t *testing.T) {
+	var root map[string]any
+	if err := json.Unmarshal([]byte(fullCatalogFixture), &root); err != nil {
+		t.Fatal(err)
+	}
+	root["schema_version"] = float64(2)
+	base := root["actions"].([]any)[0].(map[string]any)
+	actions := make([]any, 0, 3)
+	for index, gate := range []string{"essential", "ordinary", "recovery"} {
+		row := make(map[string]any, len(base)+1)
+		for key, value := range base {
+			row[key] = value
+		}
+		row["action_id"] = "care.action_" + string(rune('a'+index))
+		row["soul_gate"] = gate
+		actions = append(actions, row)
+	}
+	root["actions"] = actions
+	v2, _ := json.Marshal(root)
+	catalog, err := LoadCatalog(v2)
+	if err != nil || !catalog.SchemaSupportsSoul() {
+		t.Fatalf("v2 Soul catalog=%#v err=%v", catalog, err)
+	}
+	delete(actions[0].(map[string]any), "soul_gate")
+	missing, _ := json.Marshal(root)
+	if _, err := LoadCatalog(missing); err == nil {
+		t.Fatal("v2 accepted missing soul_gate")
+	}
+	if _, err := LoadCatalog([]byte(fullCatalogFixture)); err != nil {
+		t.Fatalf("historical v1 no longer decodes: %v", err)
+	}
+}
+
 func TestLoadFullCatalogRejectsMissingKeysAtEveryLayer(t *testing.T) {
 	var baseline map[string]any
 	if err := json.Unmarshal([]byte(fullCatalogFixture), &baseline); err != nil {

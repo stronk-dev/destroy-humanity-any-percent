@@ -26,6 +26,7 @@ import (
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
+	"cloud-clicker/server/soul"
 )
 
 var ErrInvalidReplayInputs = errors.New("invalid replay inputs")
@@ -45,6 +46,7 @@ type CatalogBundle struct {
 	Minigames     *minigame.Catalog
 	Pets          *pet.Catalog
 	Fiscal        *fiscal.Catalog
+	Soul          *soul.Catalog
 	Opportunities *activeplay.Catalog
 	Next          *CatalogBundle
 }
@@ -107,6 +109,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withMinigames := bundle.Minigames != nil
 	withPets := bundle.Pets != nil
 	withFiscal := bundle.Fiscal != nil
+	withSoul := bundle.Soul != nil
 	withOpportunities := bundle.Opportunities != nil
 	expectedArtifacts := 7
 	if withFoundations {
@@ -122,6 +125,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		expectedArtifacts++
 	}
 	if withFiscal {
+		expectedArtifacts++
+	}
+	if withSoul {
 		expectedArtifacts++
 	}
 	if withOpportunities {
@@ -147,6 +153,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	}
 	if withMinigames && (!withFoundations || len(bundle.Artifacts["minigames"]) == 0) || withPets && (!withMinigames || len(bundle.Artifacts["pets"]) == 0) ||
 		withFiscal && (!withPets || len(bundle.Artifacts["fiscal"]) == 0) ||
+		withSoul && (!withFiscal || len(bundle.Artifacts["soul"]) == 0 || !bundle.Minigames.SchemaSupportsSoul() || !bundle.Pets.SchemaSupportsSoul()) ||
 		withOpportunities && (!withDoctrines || len(bundle.Artifacts["opportunities"]) == 0) {
 		return false
 	}
@@ -174,6 +181,9 @@ func (bundle CatalogBundle) versionFloors() (founder, company int) {
 	}
 	if bundle.Fiscal != nil {
 		founder = 19
+	}
+	if bundle.Soul != nil {
+		founder = 20
 	}
 	if bundle.Opportunities != nil {
 		company = 18

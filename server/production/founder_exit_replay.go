@@ -38,6 +38,12 @@ type founderExitResolvedWire struct {
 	ExitRecord                *founderExitRecordWire `json:"exit_record"`
 	ResultFounderWireVersion  int                    `json:"result_founder_wire_version"`
 	Rejection                 *founderAuditRejection `json:"rejection"`
+	NextSoul                  *nextSoulWire          `json:"next_soul,omitempty"`
+}
+
+type nextSoulWire struct {
+	SoulInitial int64  `json:"soul_initial"`
+	BandMember  string `json:"band_member"`
 }
 
 type founderAuditRejection struct {
@@ -54,7 +60,7 @@ type founderExitAuditReceipt struct {
 	Rejection           *founderAuditRejection `json:"rejection,omitempty"`
 }
 
-func buildFounderExitAudit(command save.ReplayCommand, founderRevision save.Revision, before, after *save.State, decision save.ExitDecision) (json.RawMessage, json.RawMessage, error) {
+func buildFounderExitAudit(command save.ReplayCommand, founderRevision save.Revision, before, after *save.State, decision save.ExitDecision, catalogs CatalogBundle) (json.RawMessage, json.RawMessage, error) {
 	if before == nil || after == nil || command.CompanyStreamID == "" || command.RunSeq < 1 || command.RunLogSeq < 1 {
 		return nil, nil, ErrInvalidEngineState
 	}
@@ -93,6 +99,23 @@ func buildFounderExitAudit(command save.ReplayCommand, founderRevision save.Revi
 		facts.ExitRecord = &founderExitRecordWire{RunID: last.RunID, ExitType: last.ExitType,
 			OccurredAtMS: last.OccurredAt.UnixMilli(), ReputationDelta: last.ReputationDelta}
 		facts.ResultFounderWireVersion = save.VersionForState(after)
+		if save.VersionForState(before) < 20 && facts.ResultFounderWireVersion >= 20 {
+			resultCatalogs := catalogs
+			if decision.NewConstantsHash != catalogs.ConstantsHash {
+				if catalogs.Next == nil || catalogs.Next.ConstantsHash != decision.NewConstantsHash {
+					return nil, nil, ErrInvalidEngineState
+				}
+				resultCatalogs = *catalogs.Next
+			}
+			if resultCatalogs.Soul == nil {
+				return nil, nil, ErrInvalidEngineState
+			}
+			band, ok := resultCatalogs.Soul.BandFor(after.Soul)
+			if !ok || after.Soul != resultCatalogs.Soul.Policy.Initial {
+				return nil, nil, ErrInvalidEngineState
+			}
+			facts.NextSoul = &nextSoulWire{SoulInitial: after.Soul, BandMember: string(band.Member)}
+		}
 		next := founderRevision.Number + 1
 		receipt.FounderRevision, receipt.ResultConstantsHash = &next, decision.NewConstantsHash
 	} else {

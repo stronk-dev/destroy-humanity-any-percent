@@ -30,6 +30,7 @@ type ActionPolicy struct {
 	DeltaPPM           int64  `json:"delta_ppm"`
 	CooldownAttendedMS int64  `json:"cooldown_attended_ms"`
 	MinEligiblePPM     int64  `json:"min_eligible_ppm"`
+	SoulGate           string `json:"soul_gate"`
 }
 
 type TrustPolicy struct {
@@ -51,13 +52,13 @@ type Catalog struct {
 }
 
 func LoadCatalog(data []byte) (*Catalog, error) {
-	if !uniqueStateJSONKeys(data) || !exactFullCatalogKeys(data) {
+	if !uniqueStateJSONKeys(data) {
 		return nil, ErrInvalidCatalog
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
 	var catalog Catalog
-	if decoder.Decode(&catalog) != nil || catalog.SchemaVersion != 1 {
+	if decoder.Decode(&catalog) != nil || catalog.SchemaVersion != 1 && catalog.SchemaVersion != 2 || !exactFullCatalogKeys(data, catalog.SchemaVersion) {
 		return nil, ErrInvalidCatalog
 	}
 	var trailing any
@@ -67,7 +68,7 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 	return &catalog, nil
 }
 
-func exactFullCatalogKeys(data []byte) bool {
+func exactFullCatalogKeys(data []byte, schemaVersion int) bool {
 	var root map[string]json.RawMessage
 	if json.Unmarshal(data, &root) != nil || !hasRawKeys(root, []string{
 		"schema_version", "stat_policy", "actions", "trust_policy", "mood_policy", "behavior_policy",
@@ -82,8 +83,12 @@ func exactFullCatalogKeys(data []byte) bool {
 	}) {
 		return false
 	}
+	actionKeys := []string{"action_id", "stat_id", "delta_ppm", "cooldown_attended_ms", "min_eligible_ppm"}
+	if schemaVersion >= 2 {
+		actionKeys = append(actionKeys, "soul_gate")
+	}
 	return exactCatalogRows(statPolicy["stats"], []string{"stat_id", "initial_ppm", "floor_ppm", "decay_ppm_per_grid"}) &&
-		exactCatalogRows(root["actions"], []string{"action_id", "stat_id", "delta_ppm", "cooldown_attended_ms", "min_eligible_ppm"}) &&
+		exactCatalogRows(root["actions"], actionKeys) &&
 		exactCatalogRows(root["mood_policy"], []string{"mood_member", "floor_ppm"}) &&
 		exactCatalogRows(root["behavior_policy"], []string{"from_state", "event", "to_state", "duration_grid_ticks"})
 }
@@ -109,7 +114,7 @@ func validateFullCatalog(catalog *Catalog) error {
 	for _, row := range catalog.Actions {
 		if !mechanicalIDPattern.MatchString(row.ActionID) || row.ActionID <= lastAction || !ValidStatID(row.StatID) || row.DeltaPPM < 1 ||
 			row.DeltaPPM > 1_000_000 || !exactNonnegative(row.CooldownAttendedMS) || row.MinEligiblePPM < 0 ||
-			row.MinEligiblePPM > statFloors[row.StatID] {
+			row.MinEligiblePPM > statFloors[row.StatID] || catalog.SchemaVersion == 1 && row.SoulGate != "" || catalog.SchemaVersion == 2 && !validSoulGate(row.SoulGate) {
 			return ErrInvalidCatalog
 		}
 		lastAction = row.ActionID
@@ -132,6 +137,22 @@ func validateFullCatalog(catalog *Catalog) error {
 		seenTransitions[key] = true
 	}
 	return nil
+}
+
+func validSoulGate(value string) bool {
+	return value == "essential" || value == "recovery" || value == "ordinary"
+}
+
+func (catalog *Catalog) SchemaSupportsSoul() bool {
+	if catalog == nil || catalog.SchemaVersion < 2 {
+		return false
+	}
+	for _, row := range catalog.Actions {
+		if !validSoulGate(row.SoulGate) {
+			return false
+		}
+	}
+	return true
 }
 
 func (catalog *Catalog) StateDeclarations() StateDeclarations {

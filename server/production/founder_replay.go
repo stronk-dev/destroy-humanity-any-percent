@@ -496,7 +496,7 @@ func applyFounderExitResolved(state *save.State, command save.FounderReplayComma
 			resolved.ReputationDelta != 0 || resolved.RouteKnowledgeDelta != 0 || resolved.AttendedMS != 0 ||
 			resolved.AchievementScoreDelta != 0 || len(resolved.AddedNetworkSlots) != 0 ||
 			len(resolved.AddedLedgerFactKinds) != 0 || len(resolved.AddedLifetimeAchievements) != 0 ||
-			resolved.ExitRecord != nil || resolved.ResultFounderWireVersion != save.VersionForState(state) {
+			resolved.ExitRecord != nil || resolved.ResultFounderWireVersion != save.VersionForState(state) || resolved.NextSoul != nil {
 			return FounderLoggedTransition{}, ErrInvalidReplayInputs
 		}
 		current := command.Revision
@@ -543,7 +543,7 @@ func applyFounderExitResolved(state *save.State, command save.FounderReplayComma
 		resultCatalogs = *catalogs.Next
 	}
 	wantFounderVersion, _ := resultCatalogs.versionFloors()
-	if resolved.ResultFounderWireVersion != wantFounderVersion || activateFounderFeatureState(state, resultCatalogs, resolved.ResultFounderWireVersion, command.ServerTSMS) != nil {
+	if resolved.ResultFounderWireVersion != wantFounderVersion || activateFounderFeatureState(state, resultCatalogs, resolved.ResultFounderWireVersion, command.ServerTSMS, resolved.NextSoul) != nil {
 		return FounderLoggedTransition{}, ErrInvalidReplayInputs
 	}
 	state.WireVersion = resolved.ResultFounderWireVersion
@@ -563,7 +563,7 @@ func applyFounderExitResolved(state *save.State, command save.FounderReplayComma
 		Events: events, ResultConstantsHash: resolved.ResultConstantsHash}, nil
 }
 
-func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resultVersion int, serverTSMS int64) error {
+func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resultVersion int, serverTSMS int64, nextSoul *nextSoulWire) error {
 	current := save.VersionForState(state)
 	if resultVersion < current {
 		return ErrInvalidReplayInputs
@@ -591,6 +591,18 @@ func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resu
 			state.FiscalGeneratorLevels[row.GeneratorID] = 0
 		}
 		state.FiscalUnlocks = map[string]bool{}
+	}
+	if resultVersion >= 20 && current < 20 {
+		if catalogs.Soul == nil || nextSoul == nil || nextSoul.SoulInitial != catalogs.Soul.Policy.Initial {
+			return ErrInvalidReplayInputs
+		}
+		band, ok := catalogs.Soul.BandFor(nextSoul.SoulInitial)
+		if !ok || nextSoul.BandMember != string(band.Member) {
+			return ErrInvalidReplayInputs
+		}
+		state.Soul, state.SoulExhaustedSourceIDs = nextSoul.SoulInitial, []string{}
+	} else if nextSoul != nil {
+		return ErrInvalidReplayInputs
 	}
 	return nil
 }

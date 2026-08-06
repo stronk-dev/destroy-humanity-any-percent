@@ -10,6 +10,7 @@ import (
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/commonsbinding"
+	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
@@ -23,6 +24,7 @@ import (
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
+	"cloud-clicker/server/soul"
 )
 
 func LoadDatabase(ctx context.Context, db *sql.DB) (production.ReplayCatalogSet, error) {
@@ -158,19 +160,30 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.Fiscal = fiscalCatalog
 	}
+	if soulBytes, active := artifacts["soul"]; active {
+		keys := make(map[string]struct{})
+		for _, key := range copykeys.All() {
+			keys[key] = struct{}{}
+		}
+		soulCatalog, soulErr := soul.LoadCatalog(soulBytes, soul.Declarations{CopyKeys: keys, EpochSeeded: true})
+		if soulErr != nil {
+			return production.CatalogBundle{}, soulErr
+		}
+		bundle.Soul = soulCatalog
+	}
 	return bundle, nil
 }
 
 func validArtifactNames(artifacts map[string][]byte) bool {
 	base := [...]string{"categories", "commons", "economy", "factions", "guilds", "prestige", "routes"}
-	allowed := make(map[string]bool, len(base)+6)
+	allowed := make(map[string]bool, len(base)+7)
 	for _, name := range base {
 		allowed[name] = true
 		if len(artifacts[name]) == 0 {
 			return false
 		}
 	}
-	for _, name := range [...]string{"achievements", "doctrines", "fiscal", "meters", "minigames", "pets"} {
+	for _, name := range [...]string{"achievements", "doctrines", "fiscal", "meters", "minigames", "pets", "soul"} {
 		allowed[name] = true
 	}
 	for name, data := range artifacts {
@@ -184,7 +197,8 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	_, minigames := artifacts["minigames"]
 	_, pets := artifacts["pets"]
 	_, fiscalActive := artifacts["fiscal"]
-	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets {
+	_, soulActive := artifacts["soul"]
+	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets || soulActive && !fiscalActive {
 		return false
 	}
 	want := len(base)
@@ -201,6 +215,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 		want++
 	}
 	if fiscalActive {
+		want++
+	}
+	if soulActive {
 		want++
 	}
 	return len(artifacts) == want
