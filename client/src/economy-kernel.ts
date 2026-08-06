@@ -287,7 +287,7 @@ export function parseCatalog(source: unknown): EconomyCatalog {
   }
   const manualActions = root.manual_actions.map((value, index) => parseManualAction(value, index, resourceById));
   ensureUnique(manualActions, "manual action");
-  const multiplierSources = root.multiplier_sources.map((value, index) => parseMultiplierSource(value, index, generatorClasses));
+  const multiplierSources = root.multiplier_sources.map((value, index) => parseMultiplierSource(value, index, generatorClasses, manualActions));
   ensureUnique(multiplierSources, "multiplier source");
   for (const slot of ["commons", "trust"] as const) {
     if (multiplierSources.filter((definition) => definition.slot === slot).length > 1) {
@@ -698,6 +698,7 @@ function parseMultiplierSource(
   source: unknown,
   index: number,
   generators: readonly GeneratorClassDefinition[],
+  manualActions: readonly ManualActionDefinition[],
 ): MultiplierSourceDefinition {
   const path = `catalog.multiplier_sources[${index}]`;
   const value = exactObject(source, ["id", "slot", "target", "provider"], path);
@@ -706,8 +707,8 @@ function parseMultiplierSource(
     throw new SyntaxError(`${path}.slot is unsupported`);
   }
   const target = value.target === "all" ? "all" : parseId(value.target, `${path}.target`);
-  if (target !== "all" && !generators.some((generator) => generator.id === target)) {
-    throw new SyntaxError(`${path}.target references an unknown generator`);
+  if (target !== "all" && !generators.some((generator) => generator.id === target) && !manualActions.some((action) => action.id === target)) {
+    throw new SyntaxError(`${path}.target references an unknown generator or manual action`);
   }
   const provider = parseId(value.provider, `${path}.provider`);
   return Object.freeze({ id, slot: value.slot as MultiplierSlot, target, provider });

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cloud Clicker opportunities catalog v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "schedule_policy", "effects", "combo_policy"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "schedule_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sampler_version", "substream_label", "minimum_interval_ms", "scale_ms", "lifetime_ms", "max_due_transitions"],
+      "properties": {
+        "sampler_version": { "const": "gamma6_exp.v1" }, "substream_label": { "const": "active_play.spawn.v1" },
+        "minimum_interval_ms": { "$ref": "#/$defs/positive" }, "scale_ms": { "$ref": "#/$defs/positive" },
+        "lifetime_ms": { "$ref": "#/$defs/positive" }, "max_due_transitions": { "$ref": "#/$defs/positive" }
+      }
+    },
+    "effects": { "type": "array", "minItems": 1, "items": { "oneOf": [
+      { "$ref": "#/$defs/production" }, { "$ref": "#/$defs/click" }, { "$ref": "#/$defs/building" }, { "$ref": "#/$defs/lucky" }
+    ] } },
+    "combo_policy": { "type": "object", "additionalProperties": false, "required": ["combo_cap", "hardcap_reason_key"], "properties": { "combo_cap": { "$ref": "#/$defs/decimal" }, "hardcap_reason_key": { "$ref": "#/$defs/id" } } }
+  },
+  "$defs": {
+    "positive": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "ppm": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$" },
+    "decimal": { "type": "string", "pattern": "^(?:0|-?[1-9](?:\\.\\d{0,10}[1-9])?e(?:0|-?[1-9]\\d*))$" },
+    "positive_decimal": { "type": "string", "pattern": "^[1-9](?:\\.\\d{0,10}[1-9])?e(?:0|-?[1-9]\\d*)$" },
+    "base": { "type": "object", "required": ["effect_row_id", "kind", "weight"], "properties": { "effect_row_id": { "$ref": "#/$defs/id" }, "kind": { "type": "string" }, "weight": { "$ref": "#/$defs/positive" } } },
+    "production": { "allOf": [{ "$ref": "#/$defs/base" }, { "type": "object", "additionalProperties": false, "required": ["effect_row_id", "kind", "weight", "factor", "duration_ms", "targets"], "properties": { "effect_row_id": { "$ref": "#/$defs/id" }, "kind": { "const": "production_frenzy" }, "weight": { "$ref": "#/$defs/positive" }, "factor": { "$ref": "#/$defs/positive_decimal" }, "duration_ms": { "$ref": "#/$defs/positive" }, "targets": { "const": ["generator_production"] } } }] },
+    "click": { "allOf": [{ "$ref": "#/$defs/base" }, { "type": "object", "additionalProperties": false, "required": ["effect_row_id", "kind", "weight", "factor", "duration_ms", "action_ids"], "properties": { "effect_row_id": { "$ref": "#/$defs/id" }, "kind": { "const": "click_frenzy" }, "weight": { "$ref": "#/$defs/positive" }, "factor": { "$ref": "#/$defs/positive_decimal" }, "duration_ms": { "$ref": "#/$defs/positive" }, "action_ids": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/id" } } } }] },
+    "building": { "allOf": [{ "$ref": "#/$defs/base" }, { "type": "object", "additionalProperties": false, "required": ["effect_row_id", "kind", "weight", "per_owned_ppm", "duration_ms", "eligible_generator_ids"], "properties": { "effect_row_id": { "$ref": "#/$defs/id" }, "kind": { "const": "building_special" }, "weight": { "$ref": "#/$defs/positive" }, "per_owned_ppm": { "$ref": "#/$defs/ppm" }, "duration_ms": { "$ref": "#/$defs/positive" }, "eligible_generator_ids": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/id" } } } }] },
+    "lucky": { "allOf": [{ "$ref": "#/$defs/base" }, { "type": "object", "additionalProperties": false, "required": ["effect_row_id", "kind", "weight", "lucky_bank_frac", "lucky_rate_cap", "epsilon", "resource_id", "hardcap_reason_key"], "properties": { "effect_row_id": { "$ref": "#/$defs/id" }, "kind": { "const": "lucky_payout" }, "weight": { "$ref": "#/$defs/positive" }, "lucky_bank_frac": { "$ref": "#/$defs/positive_decimal" }, "lucky_rate_cap": { "$ref": "#/$defs/positive_decimal" }, "epsilon": { "$ref": "#/$defs/decimal" }, "resource_id": { "$ref": "#/$defs/id" }, "hardcap_reason_key": { "$ref": "#/$defs/id" } } }] }
+  }
+}

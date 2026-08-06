@@ -354,6 +354,20 @@ async function main() {
     if (validateFiscal(candidate)) throw new Error("fiscal schema accepted a seeded invalid fixture");
   }
 
+  const opportunitiesSchema = await readJSON(path.join(balanceDirectory, "opportunities.schema.json"));
+  const validateOpportunities = ajv.compile(opportunitiesSchema);
+  const opportunitiesFixture = await readJSON(path.join(balanceDirectory, "testdata", "active-play-foundation-v1.json"));
+  if (!validateOpportunities(opportunitiesFixture.baseline)) throw new Error(`opportunities schema rejected valid fixture: ${validationErrors(validateOpportunities)}`);
+  for (const mutate of [
+    (value) => { delete value.schedule_policy.scale_ms; },
+    (value) => { value.effects[0].per_owned_ppm = 0; },
+    (value) => { value.effects[1].kind = "instant_payout"; },
+  ]) {
+    const candidate = structuredClone(opportunitiesFixture.baseline);
+    mutate(candidate);
+    if (validateOpportunities(candidate)) throw new Error("opportunities schema accepted a seeded invalid fixture");
+  }
+
   const companyResourceIDs = new Set();
   for (const filename of production) {
     const catalog = await readJSON(filename);
@@ -540,7 +554,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + doctrines(pre-mint) + fiscal(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness + relevance, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s), ${relevanceRegistry.entries.length} relevance scenario(s)`,
+    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + doctrines(pre-mint) + fiscal(pre-mint) + opportunities(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness + relevance, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s), ${relevanceRegistry.entries.length} relevance scenario(s)`,
   );
 }
 

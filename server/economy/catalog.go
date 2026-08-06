@@ -543,7 +543,9 @@ func LoadCatalog(data []byte) (*Catalog, error) {
 			return nil, catalogError("multiplier_sources", fmt.Errorf("duplicate id %q", definition.ID))
 		}
 		if definition.Target != "all" {
-			if _, exists := catalog.generatorByID[definition.Target]; !exists {
+			_, generatorExists := catalog.generatorByID[definition.Target]
+			_, manualExists := catalog.manualByID[definition.Target]
+			if !generatorExists && !manualExists {
 				return nil, catalogError("multiplier_sources", fmt.Errorf("%q references unknown target %q", definition.ID, definition.Target))
 			}
 		}

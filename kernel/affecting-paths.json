@@ -2,6 +2,7 @@
   "schema_version": 1,
   "paths": [
     "client/src/achievements/",
+    "client/src/active-play.ts",
     "client/src/commons.ts",
     "client/src/doctrines.ts",
     "client/src/economy-kernel.ts",
@@ -18,6 +19,7 @@
     "client/src/routes.ts",
     "server/accrualhook/",
     "server/achievements/",
+    "server/activeplay/",
     "server/commons/",
     "server/commonsbinding/",
     "server/decimal/",
