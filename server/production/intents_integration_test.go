@@ -127,6 +127,101 @@ func TestCareActionResolvesActiveCompanyClockAndPersistsFounderReplay(t *testing
 	}
 }
 
+func TestActivePlayBuffClaimPersistsSchemaV2Events(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,events,intent_records,save_revisions,save_streams CASCADE`); err != nil {
+		t.Fatal(err)
+	}
+	bundle := activePlayReplayBundle(t)
+	seedProductionEpoch(t, db, bundle.ConstantsHash, bundle.Artifacts)
+	resolver := integrationCatalogs{
+		economy:  map[string]*economy.Catalog{bundle.ConstantsHash: bundle.Economy},
+		routes:   map[string]*routes.Catalog{bundle.ConstantsHash: bundle.Routes},
+		prestige: map[string]*prestigecore.Policy{bundle.ConstantsHash: bundle.Prestige},
+		factions: map[string]*faction.Catalog{bundle.ConstantsHash: bundle.Faction},
+	}
+	store, err := save.NewStore(db, resolver, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cursor := time.Date(2026, 8, 6, 20, 0, 0, 0, time.UTC)
+	company := replayFixtureState(t, bundle.Economy, cursor)
+	company.WireVersion, company.Tier = 18, 3
+	company.GeneratorCounts["generator.beige_tower"] = 100
+	meterState, err := meters.NewRunState(bundle.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company.MeterBands = nil
+	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	company.AchievementsEarnedRun, company.ActiveBuffs = map[string]bool{}, []save.ActiveBuff{}
+	const founderID = "01986666-a900-7000-8000-000000000001"
+	spawn, err := bundle.Opportunities.Spawn(founderID, 1, 0, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company.OpportunitySpawnSeq = 1
+	company.PendingOpportunity = &save.PendingOpportunity{OpportunityID: spawn.OpportunityID, SpawnedAttendedMS: spawn.SpawnedAttendedMS,
+		ExpiresAttendedMS: spawn.ExpiresAttendedMS, EffectRowID: "active.production"}
+	companyRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeCompany},
+		bundle.ConstantsHash, company, save.WriteContext{Cause: "active-play.integration"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, founderID, 1, bundle.ConstantsHash); err != nil {
+		t.Fatal(err)
+	}
+	founder := replayFounderFixtureState(t, bundle, cursor)
+	if _, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeFounder},
+		bundle.ConstantsHash, founder, save.WriteContext{Cause: "active-play.integration-founder"}); err != nil {
+		t.Fatal(err)
+	}
+	service, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver),
+		WithCurrentConstantsHash(bundle.ConstantsHash), WithReplayCatalogs(ReplayCatalogSet{bundle.ConstantsHash: bundle}),
+		WithGuildSettlements(emptyGuildSettlements{}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := []byte(`{"intent_id":"01986666-a900-7000-8000-000000000002","kind":"claim_opportunity","expected_revision":1,"opportunity_id":"` + spawn.OpportunityID + `"}`)
+	result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, cursor.Add(time.Duration(spawn.SpawnedAttendedMS)*time.Millisecond), body)
+	if err != nil || !strings.Contains(string(result.Receipt), `"outcome":"applied"`) {
+		t.Fatalf("active claim receipt=%s err=%v", result.Receipt, err)
+	}
+	rows, err := db.QueryContext(ctx, `SELECT kind,schema_version FROM events WHERE stream_id=$1 AND intent_id=$2 ORDER BY event_id`,
+		companyRevision.StreamID, "01986666-a900-7000-8000-000000000002")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer rows.Close()
+	versions := map[string]int{}
+	for rows.Next() {
+		var kind string
+		var version int
+		if err := rows.Scan(&kind, &version); err != nil {
+			t.Fatal(err)
+		}
+		versions[kind] = version
+	}
+	if err := rows.Err(); err != nil {
+		t.Fatal(err)
+	}
+	if versions[string(save.EventOpportunityClaimed)] != 2 || versions[string(save.EventBuffStarted)] != 2 {
+		t.Fatalf("active event schema versions=%v", versions)
+	}
+}
+
 type integrationWeight int64
 
 func (value integrationWeight) CompactWeightPPM(context.Context, string, string, string) (int64, bool, error) {

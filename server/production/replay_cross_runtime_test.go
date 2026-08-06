@@ -351,7 +351,7 @@ func makeDoctrineReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFullR
 	artifacts, hash := catalogs.Artifacts, catalogs.ConstantsHash
 	state := replayFixtureState(t, catalogs.Economy, now)
 	state.WireVersion, state.Tier, state.ComputeCreditMS = 17, 3, 5_000
-	state.GeneratorCounts["generator.beige_tower"] = 100
+	state.GeneratorCounts["generator.beige_tower"] = 1
 	setCash(t, state, "1e13")
 	meterState, err := meters.NewRunState(catalogs.Meters, 0)
 	if err != nil {
@@ -459,7 +459,7 @@ func makeActivePlayReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFul
 	catalogs := activePlayReplayBundle(t)
 	state := replayFixtureState(t, catalogs.Economy, now)
 	state.WireVersion, state.Tier, state.ComputeCreditMS = 18, 3, 5_000
-	state.GeneratorCounts["generator.beige_tower"] = 1
+	state.GeneratorCounts["generator.beige_tower"] = 100
 	setCash(t, state, "9.99999999999e999")
 	meterState, err := meters.NewRunState(catalogs.Meters, 0)
 	if err != nil {
@@ -544,6 +544,10 @@ func makeActivePlayReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFul
 	if claim(state.PendingOpportunity.OpportunityID, secondAt) != save.IntentApplied || len(state.ActiveBuffs) != 2 {
 		t.Fatal("overlapping production buffs were not recorded")
 	}
+	if !strings.Contains(entries[len(entries)-1].ReceiptJSON, `"cap_reason_key":"cap.active_combo"`) ||
+		!strings.Contains(entries[len(entries)-1].EventsJSON, `"hardcap_reason_key":"cap.active_combo"`) {
+		t.Fatal("cross-target saturation did not surface its combo hardcap reason")
+	}
 	if manual(secondAt.Add(time.Millisecond)) != save.IntentApplied {
 		t.Fatal("overlapping buff command did not apply")
 	}
@@ -578,6 +582,21 @@ func makeActivePlayReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFul
 	compoundOutcome := manual(compoundAt)
 	if compoundOutcome != save.IntentApplied || state.PendingOpportunity == nil || state.PendingOpportunity.OpportunityID != nextAfterMiss.OpportunityID {
 		t.Fatalf("next applied command did not persist compound miss+spawn: outcome=%s pending=%+v expected=%+v", compoundOutcome, state.PendingOpportunity, nextAfterMiss)
+	}
+	if claim(state.PendingOpportunity.OpportunityID, compoundAt) != save.IntentApplied || state.PendingOpportunity != nil {
+		t.Fatal("compound successor claim did not schedule the self-miss fixture")
+	}
+	untilNext := state.NextOpportunityAttendedMS - nextAfterMiss.SpawnedAttendedMS
+	if untilNext <= 0 {
+		t.Fatal("invalid self-miss fixture interval")
+	}
+	preSpawnAt := compoundAt.Add(time.Duration(untilNext-1) * time.Millisecond)
+	if manual(preSpawnAt) != save.IntentApplied || state.PendingOpportunity != nil {
+		t.Fatal("pre-spawn command materialized the self-miss opportunity early")
+	}
+	selfMissAt := preSpawnAt.Add(time.Duration(catalogs.Opportunities.Schedule.LifetimeMS+1) * time.Millisecond)
+	if manual(selfMissAt) != save.IntentApplied || state.PendingOpportunity != nil || state.NextOpportunityAttendedMS <= 0 {
+		t.Fatal("spawn-then-self-miss compound transition did not persist")
 	}
 	finalState := mustEncodeState(t, state)
 	return crossRuntimeFullRun{ConstantsHash: hash, Artifacts: stringArtifacts(catalogs.Artifacts), Genesis: genesis, Entries: entries,
@@ -647,9 +666,10 @@ func activePlayFixtureFounder(t *testing.T, catalog *activeplay.Catalog) string 
 		third, e2 := catalog.Spawn(founderID, 1, 2, second.SpawnedAttendedMS)
 		fourth, e3 := catalog.Spawn(founderID, 1, 3, third.SpawnedAttendedMS)
 		fifth, e4 := catalog.Spawn(founderID, 1, 4, fourth.ExpiresAttendedMS)
-		if e0 == nil && e1 == nil && e2 == nil && e3 == nil && e4 == nil && first.EffectRowID == "active.production" && second.EffectRowID == "active.building" &&
+		sixth, e5 := catalog.Spawn(founderID, 1, 5, fifth.SpawnedAttendedMS)
+		if e0 == nil && e1 == nil && e2 == nil && e3 == nil && e4 == nil && e5 == nil && first.EffectRowID == "active.production" && second.EffectRowID == "active.building" &&
 			third.EffectRowID == "active.lucky" && fourth.EffectRowID == "active.click" && first.SampledIntervalMS <= 5_000 && second.SampledIntervalMS < 5_000 &&
-			third.SampledIntervalMS <= 5_000 && fourth.SampledIntervalMS <= 5_000 && fifth.SampledIntervalMS < 5_000 {
+			third.SampledIntervalMS <= 5_000 && fourth.SampledIntervalMS <= 5_000 && fifth.SampledIntervalMS < 5_000 && sixth.SampledIntervalMS < 5_000 {
 			return founderID
 		}
 	}
