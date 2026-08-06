@@ -131,18 +131,31 @@ const commitIsLiveAncestor = (commit) => {
 };
 const loadApprovedRemaps = () => {
   const remaps = new Map();
+  const seenNew = new Set();
   const dir = path.join(repositoryRoot, "planning/history-rewrites");
   if (!existsSync(dir)) return remaps;
   for (const entry of readdirSync(dir)) {
     if (!entry.endsWith(".map")) continue;
     for (const line of readFileSync(path.join(dir, entry), "utf8").split("\n")) {
       const match = /^([0-9a-f]{40}) -> ([0-9a-f]{40})$/.exec(line.trim());
-      if (match) remaps.set(match[1], match[2]);
+      if (!match) continue;
+      // KRM-F1b: the approved manifest must itself be an injection — duplicate old or new hashes
+      // across all tracked map files are rejected (a chain A->B then B->C across rewrites is fine;
+      // two olds onto one new, or one old twice, is not).
+      if (remaps.has(match[1])) throw new Error(`approved rewrite map has duplicate old hash ${match[1]}`);
+      if (seenNew.has(match[2])) throw new Error(`approved rewrite map has duplicate new hash ${match[2]}`);
+      remaps.set(match[1], match[2]);
+      seenNew.add(match[2]);
     }
   }
   return remaps;
 };
 const approvedRemaps = loadApprovedRemaps();
+// A remap target is acceptable when it is live NOW, or when a later approved rewrite maps it onward
+// to a hash that is (a chain A->B->C across successive rewrites; historical walk transitions cite
+// intermediate targets that later rewrites killed).
+const remapTargetReachesLive = (hash, depth = 0) =>
+  depth < 64 && (commitIsLiveAncestor(hash) || (approvedRemaps.has(hash) && remapTargetReachesLive(approvedRemaps.get(hash), depth + 1)));
 const excusedRemapPairs = (beforeCorrections, afterCorrections) => {
   const pairs = new Map();
   const usedNew = new Set();
@@ -151,8 +164,11 @@ const excusedRemapPairs = (beforeCorrections, afterCorrections) => {
     if (commitIsLiveAncestor(oldHash)) continue;
     const newHash = approvedRemaps.get(oldHash);
     if (newHash === undefined || usedNew.has(newHash)) continue;
+    // KRM-F1b: the remap target must be NEWLY ADDED — a dead correction may never collapse onto a
+    // correction that already existed before the comparison.
+    if (beforeCorrections.has(newHash)) continue;
     const replacement = afterCorrections.get(newHash);
-    if (replacement === undefined || !commitIsLiveAncestor(newHash)) continue;
+    if (replacement === undefined || !remapTargetReachesLive(newHash)) continue;
     if (replacement.reason !== entry.reason || replacement.review_log !== entry.review_log ||
         replacement.corrected_in_version !== entry.corrected_in_version) continue;
     pairs.set(oldHash, newHash);

@@ -94,8 +94,34 @@ try {
   run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
   commit(root, "kernel: remap corrections after approved rewrite");
   run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
-  const offendingRemapped = firstNew;
-  void offendingRemapped;
+
+  // KRM-F1b fixture: a dead correction must NOT collapse onto a matching PRE-EXISTING live
+  // correction. Partial rewrite from twin-miss-two onward kills twinNewTwo while its metadata-twin
+  // twinNewOne stays live; a map row dead->liveExisting with a worktree that simply drops the dead
+  // entry must be rejected.
+  execFileSync("git", ["filter-branch", "-f", "--msg-filter", "sed s/^/second-/", "--", `${twinNewTwo}^..HEAD`], { cwd: root, encoding: "utf8", stdio: "pipe", env: { ...process.env, FILTER_BRANCH_SQUELCH_WARNING: "1" } });
+  const twinSecondNew = subjectHash("second-fixture-test: twin miss two");
+  write(root, "planning/history-rewrites/fixture-second.map", `${twinNewTwo} -> ${twinNewOne}\n`);
+  const collapseState = JSON.parse(readFileSync(path.join(root, "kernel/history-corrections.json"), "utf8"));
+  collapseState.corrections = collapseState.corrections.filter((entry) => entry.offending_commit !== twinNewTwo);
+  write(root, "kernel/history-corrections.json", `${JSON.stringify(collapseState, null, 2)}\n`);
+  let liveCollapseFailed = false;
+  try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { liveCollapseFailed = true; }
+  if (!liveCollapseFailed) throw new Error("kernel guard accepted a dead-onto-live correction collapse");
+  run(root, "git", ["restore", "kernel/history-corrections.json"]);
+  // Approved-manifest injectivity: duplicate old hashes across map files must be rejected outright.
+  write(root, "planning/history-rewrites/fixture-second.map", `${twinNewTwo} -> ${twinSecondNew}\n${twinNewTwo} -> ${firstNew}\n`);
+  let duplicateMapFailed = false;
+  try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { duplicateMapFailed = true; }
+  if (!duplicateMapFailed) throw new Error("kernel guard accepted a duplicate approved-map hash");
+  // Legitimate chained remap restores a green committed state for the remaining fixtures.
+  write(root, "planning/history-rewrites/fixture-second.map", `${twinNewTwo} -> ${twinSecondNew}\n`);
+  const chainLog = readFileSync(path.join(root, "planning/kernel-fix/log.md"), "utf8");
+  write(root, "planning/kernel-fix/log.md", chainLog + reviewSection(twinSecondNew, "twin two chained remap"));
+  remapEntries({ [twinNewTwo]: twinSecondNew });
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+  commit(root, "kernel: chained remap after second approved rewrite");
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
 
   const mainAfterCorrection = run(root, "git", ["branch", "--show-current"]).trim();
   run(root, "git", ["switch", "-c", "dangling-correction"]);

@@ -745,3 +745,14 @@ with one dead old correction mapped onto a matching pre-existing live correction
 current intended unpublication remaps and A1 amendment are otherwise sound. `make
 verify-kernel-version` and its existing fixtures pass, demonstrating that the missing adversarial case
 is not covered rather than disproving it.
+
+## 2026-08-06 — KRM-F1b remediation (Claude), ready for Codex re-review
+The dead-onto-live collapse is closed: excusedRemapPairs now requires the remap target to be NEWLY
+ADDED (`!beforeCorrections.has(newHash)`), and loadApprovedRemaps rejects duplicate old OR new hashes
+across all tracked map files (chains old==some-new remain legal). The required fixture is in: a
+partial second rewrite kills one twin while its metadata-twin stays live; mapping dead->liveExisting
+with the dead entry dropped is REJECTED. Also added: manifest duplicate-hash rejection fixture, and a
+legitimate CHAINED remap (A->B->C across successive rewrites) with the new
+`remapTargetReachesLive` chain rule — surfaced by the fixture itself: historical walk transitions cite
+intermediate targets that later rewrites killed, which must stay excusable iff the manifest maps them
+onward to a live hash. make verify exit 0; guard + adversarial fixtures green.
