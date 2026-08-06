@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "baseline": {
+    "schema_version": 1,
+    "clock_policy": { "early_ms": 100, "guaranteed_ms": 200, "auto_ms": 300, "early_success_ppm": 500000 },
+    "credit_policy": { "credit_per_period": 3, "hardcap": 1000, "hardcap_reason_key": "cap.fiscal_credit" },
+    "hoard_policy": { "ppm_per_credit": 10000, "cap_credits": 100, "slot": "prestige", "source_id": "fiscal.hoard", "target": "all" },
+    "generator_level_rows": [
+      { "generator_id": "generator.beige_tower", "ppm_per_level": 10000, "level_hardcap": 100, "hardcap_reason_key": "cap.fiscal_level.beige_tower", "slot": "prestige", "source_id": "fiscal.generator.beige_tower" }
+    ],
+    "unlock_rows": [
+      { "unlock_id": "unlock.arcade", "cost": 5 }
+    ]
+  },
+  "invalid_mutations": [
+    { "name": "missing_clock_key", "op": "delete", "path": ["clock_policy", "auto_ms"] },
+    { "name": "unknown_root_key", "op": "set", "path": ["extra"], "value": true },
+    { "name": "clock_order", "op": "set", "path": ["clock_policy", "guaranteed_ms"], "value": 99 },
+    { "name": "credit_exceeds_cap", "op": "set", "path": ["credit_policy", "credit_per_period"], "value": 1001 },
+    { "name": "wrong_hoard_source", "op": "set", "path": ["hoard_policy", "source_id"], "value": "commons.member" },
+    { "name": "wrong_generator_target_declaration", "op": "set", "path": ["generator_level_rows", 0, "source_id"], "value": "fiscal.hoard" },
+    { "name": "unknown_generator", "op": "set", "path": ["generator_level_rows", 0, "generator_id"], "value": "generator.unknown" },
+    { "name": "zero_level_cap", "op": "set", "path": ["generator_level_rows", 0, "level_hardcap"], "value": 0 },
+    { "name": "zero_unlock_cost", "op": "set", "path": ["unlock_rows", 0, "cost"], "value": 0 }
+  ],
+  "factor_vectors": [
+    { "kind": "hoard", "count": 0, "expected": "1e0" },
+    { "kind": "hoard", "count": 7, "expected": "1.07e0" },
+    { "kind": "hoard", "count": 101, "expected": "2e0" },
+    { "kind": "generator", "count": 3, "expected": "1.03e0" }
+  ],
+  "cost_vectors": [
+    { "current": 0, "levels": 1, "expected": 1 },
+    { "current": 2, "levels": 3, "expected": 12 },
+    { "current": 99, "levels": 1, "expected": 100 }
+  ],
+  "rng_vectors": [
+    { "founder_id": "01985555-0000-7000-8000-000000000001", "sequence": 0, "expected": 429428 },
+    { "founder_id": "01985555-0000-7000-8000-000000000001", "sequence": 1, "expected": 833855 },
+    { "founder_id": "founder.high-sequence", "sequence": 9007199254740991, "expected": 451497 }
+  ]
+}

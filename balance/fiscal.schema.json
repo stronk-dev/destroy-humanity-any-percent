@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cloud Clicker fiscal catalog v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "clock_policy", "credit_policy", "hoard_policy", "generator_level_rows", "unlock_rows"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "clock_policy": { "$ref": "#/$defs/clock" },
+    "credit_policy": { "$ref": "#/$defs/credit" },
+    "hoard_policy": { "$ref": "#/$defs/hoard" },
+    "generator_level_rows": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/generator" } },
+    "unlock_rows": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/unlock" } }
+  },
+  "$defs": {
+    "safe": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "positive": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "ppm": { "type": "integer", "minimum": 0, "maximum": 1000000 },
+    "positive_ppm": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$" },
+    "slot": { "enum": ["upgrades", "milestones", "faction", "doctrine", "commons", "trust", "event_buffs", "prestige"] },
+    "clock": {
+      "type": "object", "additionalProperties": false,
+      "required": ["early_ms", "guaranteed_ms", "auto_ms", "early_success_ppm"],
+      "properties": { "early_ms": { "$ref": "#/$defs/positive" }, "guaranteed_ms": { "$ref": "#/$defs/positive" }, "auto_ms": { "$ref": "#/$defs/positive" }, "early_success_ppm": { "$ref": "#/$defs/ppm" } }
+    },
+    "credit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["credit_per_period", "hardcap", "hardcap_reason_key"],
+      "properties": { "credit_per_period": { "$ref": "#/$defs/positive" }, "hardcap": { "$ref": "#/$defs/positive" }, "hardcap_reason_key": { "$ref": "#/$defs/id" } }
+    },
+    "hoard": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ppm_per_credit", "cap_credits", "slot", "source_id", "target"],
+      "properties": { "ppm_per_credit": { "$ref": "#/$defs/positive_ppm" }, "cap_credits": { "$ref": "#/$defs/positive" }, "slot": { "$ref": "#/$defs/slot" }, "source_id": { "$ref": "#/$defs/id" }, "target": { "const": "all" } }
+    },
+    "generator": {
+      "type": "object", "additionalProperties": false,
+      "required": ["generator_id", "ppm_per_level", "level_hardcap", "hardcap_reason_key", "slot", "source_id"],
+      "properties": { "generator_id": { "$ref": "#/$defs/id" }, "ppm_per_level": { "$ref": "#/$defs/positive_ppm" }, "level_hardcap": { "$ref": "#/$defs/positive" }, "hardcap_reason_key": { "$ref": "#/$defs/id" }, "slot": { "$ref": "#/$defs/slot" }, "source_id": { "$ref": "#/$defs/id" } }
+    },
+    "unlock": {
+      "type": "object", "additionalProperties": false,
+      "required": ["unlock_id", "cost"],
+      "properties": { "unlock_id": { "$ref": "#/$defs/id" }, "cost": { "$ref": "#/$defs/positive" } }
+    }
+  }
+}

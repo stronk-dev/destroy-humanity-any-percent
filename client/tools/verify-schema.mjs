@@ -340,6 +340,20 @@ async function main() {
     if (validateDoctrines(candidate)) throw new Error("doctrine schema accepted a seeded invalid fixture");
   }
 
+  const fiscalSchema = await readJSON(path.join(balanceDirectory, "fiscal.schema.json"));
+  const validateFiscal = ajv.compile(fiscalSchema);
+  const fiscalFixture = await readJSON(path.join(balanceDirectory, "testdata", "fiscal-foundation-v1.json"));
+  if (!validateFiscal(fiscalFixture.baseline)) throw new Error(`fiscal schema rejected valid fixture: ${validationErrors(validateFiscal)}`);
+  for (const mutate of [
+    (value) => { delete value.clock_policy.auto_ms; },
+    (value) => { value.hoard_policy.target = "generator.beige_tower"; },
+    (value) => { value.generator_level_rows[0].ppm_per_level = 0; },
+  ]) {
+    const candidate = structuredClone(fiscalFixture.baseline);
+    mutate(candidate);
+    if (validateFiscal(candidate)) throw new Error("fiscal schema accepted a seeded invalid fixture");
+  }
+
   const companyResourceIDs = new Set();
   for (const filename of production) {
     const catalog = await readJSON(filename);
@@ -526,7 +540,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + doctrines(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness + relevance, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s), ${relevanceRegistry.entries.length} relevance scenario(s)`,
+    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + doctrines(pre-mint) + fiscal(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness + relevance, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s), ${relevanceRegistry.entries.length} relevance scenario(s)`,
   );
 }
 
