@@ -272,3 +272,28 @@ save file. Independent `make verify-kernel-version`, `make copy-check`, `make ve
 `make test-save-integration`, and range `git diff --check` all passed. The range union covers every
 implementation, remediation, rewrite-ruling, and verification-record commit before this mechanical
 archive rotation.
+
+## 2026-08-06 — cross-party review of Amendment A1 (`3d8eb3a^..3d8eb3a`)
+
+- **Review by:** Codex (cross-party designated review)
+- **Recorded by:** Codex
+- **Decision:** **not approved; one guard-contract finding.**
+
+The verified-provenance path implements Amendment A1 narrowly: only `source_file` and
+`source_anchor` can change, the old source must start with `design/research/`, and the old source
+must be absent from the compared tree. The static validator also proves the replacement source and
+anchor exist. The current migration to `provenance-extracts.md` is valid, and `make copy-check`
+passes.
+
+**A1-F1 (MEDIUM — guard is broader than its contract for denylist citations):**
+`assertDenylistRecordsStable` receives only `!historyFileExists(...)` at both the history and
+worktree call sites. Unlike `assertVerifiedClaimsStable`, it never requires the old source to be a
+`design/research/` path. A denylist citation whose old source disappears from any tracked location
+therefore receives the unpublication retarget escape, despite Amendment A1 limiting it to withdrawn
+research sources. The current four retargets are legitimate; the reusable guard semantics are not
+as narrow as the RFC claims.
+
+**Required closure:** require both `record.source_file.startsWith("design/research/")` and source
+absence before permitting a denylist retarget, and add a discriminating fixture proving an absent
+non-research source cannot use the escape. Re-run `make copy-check` and the normal root verification
+gate before re-review.

@@ -681,3 +681,29 @@ mechanical remap, not a re-review).
 **Review by:** the original independent reviews cited in the sections above (remap recorded by the
 designated Claude reviewer).
 **Decision:** unchanged — the three history corrections stand under the remapped hashes.
+
+## 2026-08-06 — cross-party review of history-remap guard (`32c9a8e^..32c9a8e`)
+
+- **Review by:** Codex (cross-party designated review)
+- **Recorded by:** Codex
+- **Decision:** **not approved; one blocking guard-soundness finding.**
+
+The three committed target replacements match the owner-approved map in
+`planning/history-rewrites/2026-08-06-unpublication-filter.map`, their post-filter targets are live,
+and the current full-history kernel gate passes. The defect is in the reusable remap affordance, not
+in those three intended mappings.
+
+**KRM-F1 (HIGH — remaps are neither mapped nor one-to-one):** `remapTwinExists` identifies a twin
+only by `(reason, review_log, corrected_in_version)`. Two existing corrections intentionally share
+that exact triple. During a later rewrite, one live replacement can therefore excuse the removal of
+both non-live entries, while the single addition is also classified as a remap. The guard accepts a
+many-to-one collapse and loses an independently reviewed correction. It also never binds a
+replacement to the tracked owner-approved old→new map; merely making an old target non-live is
+enough to enter the escape.
+
+**Required closure:** validate remaps as a bijection: every removed target maps to exactly one unique
+added target and vice versa, all immutable correction fields match, and each old→new pair is present
+in the tracked approved rewrite map (or an equivalently reviewed dedicated remap manifest). Add
+adversarial fixtures proving (1) two identical-metadata old entries cannot collapse into one new
+entry and (2) an unmapped non-live target cannot be replaced. Re-run the full-history kernel gate
+before re-review.
