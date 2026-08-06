@@ -253,3 +253,12 @@ tests, then receive a new designated review; the passed test suite does not over
 Focused Go, all client unit tests, TypeScript/Svelte typecheck, schema verification, and
 `make harness-check` are green. A full root verification and a new exact-range designated review
 remain required; this implementation record does not authorize archival.
+
+## 2026-08-06 — remediation verification
+
+The first full `make verify` correctly failed because the epoch-guard's synthetic repositories
+predated the now-required registry. The production guard remained fail-closed; `4ac3f3d` repaired
+the test fixtures instead of weakening it. A second full root `make verify` then completed with
+exit 0: all Go tests and vet, harness/history guards, TypeScript/Svelte typecheck, 6,568 client unit
+tests, schema/copy/boundary checks, and 19,713 browser assertions passed. Designated independent
+review is still required before archival.
