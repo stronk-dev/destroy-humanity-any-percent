@@ -24,14 +24,14 @@ The garden equivalent — **crossbreeding discovery game on wall-clock ticks**.
 - Grid of racks/planters (2×2 → 6×6 with building levels). You "plant" **server strains / software cultivars** (fictional distro-species: `Slackware Bonsai`, `Kube Vine`, `Legacy Perl Bramble`…). Mature units seed adjacent slots; ~30 species discovered via adjacency crossbreeding with sub-1% per-tick mutation odds; seeds permanent once harvested (Pokédex energy).
 - Soils → **substrate choices** (Bare Metal = baseline; Containerized = fast ticks, −25% effect; Mainframe = slow, +25%; Chaos Monkey = ×3 mutation, reduced effect).
 - Payloads touch the main economy: strains grant uptime buffs, golden-opportunity frequency, daemon spawn rate, Clout drops, one-shot cash harvests.
-- **Sacrifice ritual:** delete the full collection for a permanent bonus + Confidence (CC's Seedless-to-nay).
+- **Sacrifice ritual:** delete the full collection for a permanent bonus + Confidence (the sacrifice-for-permanence pattern).
 - **AI fallback:** none needed (solo). **MMO hook:** rare strains are tradeable gifts; a community seed-census feeds a collection milestone.
 
 ## 2. Advisory Board (Tier 3, host: HQ)
 
-The pantheon equivalent — **loadout with drawbacks + swap friction**.
+**Loadout with drawbacks + swap friction** (the advisor-loadout pattern).
 
-- Three seats: **Boardroom (diamond) > Backchannel (ruby) > Group Chat (jade)**. Slot advisor archetypes, each with an upside *and a drawback* (the CC rule: no free spirits): e.g. `The Growth Guy` (+click power, Trust drain), `The Ascetic CTO` (+idle rate, unslots if you click a golden opportunity), `The Fixer` (sell-off combo enabler — Godzamok's role), `The Oscillator` (a Cyclius-style ±15% sine on 3/12/24 h real-time cycles you can time combos to), `The Safety Hire` (−p(doom), −speed).
+- Three seats in descending influence: **Boardroom > Backchannel > Group Chat** (seat strength scales the advisor's effect). Slot advisor archetypes, each with an upside *and a drawback* (house rule: no free advisors): e.g. `The Growth Guy` (+click power, Trust drain), `The Ascetic CTO` (+idle rate, unslots if you click a golden opportunity), `The Fixer` (sell-off combo enabler), `The Oscillator` (a ±15% sine on 3/12/24 h real-time cycles you can time combos to), `The Safety Hire` (−p(doom), −speed).
 - **Swap budget:** 3 banked swaps, regen 16 h / 4 h / 1 h; Caramelized-quarter refills. Loadout changes are decisions, not menus.
 - **No universal optimal setup** is a design requirement — verified per patch in the balance harness.
 - **AI fallback:** none needed (solo).
@@ -48,8 +48,8 @@ The grimoire equivalent — **regenerating pool + push-your-luck**.
 
 The stock-market equivalent, **rate-denominated and persistent**.
 
-- `$1 = 1 second of your highest unbuffed rate this run` — the CC trick kept verbatim: buy low, *raise your own rate*, sell — printing money off your own growth is the intended aha.
-- Goods = fictional sector indices (GPUs, RAM, Compliance, Attention, Water futures — the satire writes itself). Resting-value drift + momentum + six market modes (CC's model).
+- `$1 = 1 second of your highest unbuffed rate this run` — the rate-indexed pricing trick: buy low, *raise your own rate*, sell — printing money off your own growth is the intended aha.
+- Goods = fictional sector indices (GPUs, RAM, Compliance, Attention, Water futures — the satire writes itself). Resting-value drift + momentum + six market modes.
 - **Loans** for combo windows (+50–100% rate, penalty after).
 - **Persists across Exits** (holdings survive; the fiction: your personal brokerage, not the company's).
 - **MMO hook:** prices are *server-global* and lightly influenced by aggregate player trading + world events (a Situation like "Chip Shortage" moves the GPU index for everyone). Insider-satire events fire when you trade ahead of your own announcements (Trust drain).

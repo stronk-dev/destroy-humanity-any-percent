@@ -59,13 +59,13 @@ Long personal arcs (CK3 story-cycle analogue): each run carries 1–2 **story cy
 
 ## 3. Layer 2 — pressure meters
 
-EU4 disasters, reskinned. Visible, forecastable bars with contributing factors listed in the UI; the disaster is always a **consequence of an optimization the player chose** — this is where the satire bites.
+Pressure meters, in the EU4 disaster lineage. Visible, forecastable bars with contributing factors listed in the UI; the disaster is always a **consequence of an optimization the player chose** — this is where the satire bites.
 
 Launch set:
 
 | Meter | Fed by | Fires | While active | Ends |
 |---|---|---|---|---|
-| **Public Outrage** | moderation cuts, engagement optimization, scandals, Externality reveals | **The Raid** (the QAnon-raids-your-datacenter chain: RSVP counter 2,140,000 → 151 show up; someone "self-investigates" the lobby) | hiring +25%, ad revenue −15% | PR staffing + 90 quiet days |
+| **Public Outrage** | moderation cuts, engagement optimization, scandals, Externality reveals | **The Raid** (the QAnon-raids-your-datacenter chain: RSVP counter 2,140,000 → 151 show up; someone demands a guided tour of the server room) | hiring +25%, ad revenue −15% | PR staffing + 90 quiet days |
 | **Conspiracy Pressure** | growth, secrecy purchases (barges!), outrage spillover | theory-spawn events (5G/microchips/lizard tier scales with tier); mast-arson; Waymo-coning | ticker floods, small Press-Standing drain (`02 §7` constituencies) | monetize it (Gargoyle Pivot), make it true (late-game), or wait it out — **fighting it raises it** (suppression/debunking/silence all feed belief; published rule) |
 | **Board Pressure** (VC faction) | missed milestones, idle runway burn | board coup event chain | equity squeeze | hit growth targets |
 | **Regulatory Heat** | dark-pattern stages, egress fees, lobbying failures | inquiry → hearing ("Senator, We Run Ads") → consent decree | compliance tax | settlements, Clout-gated lobbying |

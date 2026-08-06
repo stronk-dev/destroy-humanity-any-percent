@@ -57,24 +57,24 @@ Three layers, one renderer, one state reducer.
 
 ## 3. Layer B — Adoption spread: the player as pathogen **[v1.0]**
 
-The Plague Inc chassis, inverted into satire: **you are the pathogen; regulation is the cure race.** The design law it contributes: **power costs visibility, and visibility funds the countdown that kills you.**
+An inverted epidemic-sim: **you are the pathogen; regulation is the cure race.** The design law it contributes: **power costs visibility, and visibility funds the countdown that kills you.**
 
-**Currency — Buzz.** Spatially-anchored bubbles on the map: **orange** = adoption events · **red** = harm events (*bigger payouts — outrage is engagement*) · **blue** = regulatory progress (popping *delays* it). Passive accrual ∝ Users × Disruption. Cost inflation +1 per shipped feature, with a **`Refactor`** archetype existing to defeat the inflation curve. **Deprecate** = the devolve verb (early game: deprecate everything to stay under detection).
+**Currency — Buzz.** Spatially-anchored bubbles on the map: **orange** = adoption events · **red** = harm events (*bigger payouts — outrage is engagement*) · **blue** = regulatory progress (popping *delays* it). Passive accrual ∝ Users × Disruption. Cost inflation +1 per shipped feature, with a **`Refactor`** archetype existing to defeat the inflation curve. **Deprecate** = the retraction verb (early game: deprecate everything to stay under detection).
 
 **Three trees** (full tables in the research file):
 - **Distribution** — grows adoption, never raises scrutiny. Each vector biases a region attribute (`Free Tier`→poor, `Mobile App`→urban, `Enterprise Sales`→rich, `API`→hubs, `Government Contract`→state-heavy, `Preinstall/OEM`→rural). **Vector choice is geography choice.**
 - **Capabilities** — the risky tree (adoption/disruption/harm tuples). **The outliers make the builds:** `It's Actually Really Good` (huge adoption, zero harm) · `Silent Data Retention` (harm with zero visible disruption) · `Legally Novel Business Model` (pure regulatory stall) · `Automated Replacement of Labour` (**displaced workers spread the product**) · `Recursive Self-Improvement` (the finisher).
 - **Hardening** — counters mirroring specific world defenses: `Compliance Theatre`, `Localisation`, `Data Residency`, **`Regulatory Capture`** (raises the funding the bar needs — buy early), **`Corporate Restructure`** (rolls the bar backwards — panic button at 50–75%), plus active abilities (`Acquire Local Competitor`, `Grey-Market Distribution`) for entering closed markets.
 
-**Three bars:** **Adoption** (pure good) · **Disruption** (raises income, detection, *and* regulatory funding — but makes regulation harder to finish; deliberately ambiguous) · **Harm** (raises income; **destroys regulatory capacity in regions it wrecks — you can outrun regulators by breaking the state that funds them**; but shrinks users and permanently slams markets). **The too-harmful-too-early trap is preserved exactly.**
+**Three bars:** **Adoption** (pure good) · **Disruption** (raises income, detection, *and* regulatory funding — but makes regulation harder to finish; deliberately ambiguous) · **Harm** (raises income; **destroys regulatory capacity in regions it wrecks — you can outrun regulators by breaking the state that funds them**; but shrinks users and permanently slams markets). **Too-harmful-too-early is a designed trap: early harm ends runs before they begin.**
 
-**Regions (~40–60):** population · connectivity (app-store / cloud-region / trade-bloc — our airports/seaports/borders) · wealth · **Regulatory Capacity** (funds the bar) · digital literacy · **Sovereignty Strictness** · **Global Importance** · Labour Exposure. **The EU is our Greenland** (high capacity, closes first); plus a locked authoritarian market and a one-gate sovereign-cloud holdout.
+**Regions (~40–60):** population · connectivity (app-store / cloud-region / trade-bloc) · wealth · **Regulatory Capacity** (funds the bar) · digital literacy · **Sovereignty Strictness** · **Global Importance** · Labour Exposure. **The EU closes first** (highest regulatory capacity — the hardest market to keep); plus a locked authoritarian market and a one-gate sovereign-cloud holdout.
 
 **The regulation race:** one monotonic global bar, two phases (Legislation → Enforcement), **alarm beats at 25/50/75/95/100%** each with a headline and a distinct sound. Accelerators: disruption, wealthy adoption, a **"Patient Zero" investigation** (+10%), unpopped blue bubbles. **At 100%: shutdown / forced divestiture / model seizure = a run-ending defeat.**
 
 **The pushback ladder** — every counter names the specific thing you bought (`Free Tier`→antitrust probe; `API`→scraping injunction; `Social Embed`→age-gating; cloud presence→**data-residency law: market permanently closed**; harm thresholds→retraining→UBI pilot→general strike→national firewall). **Closures are permanent and uncounterable except by active abilities** — the mechanic that generates regret, and regret generates replays.
 
-**The act-break line** (our "no more healthy people left in the world"): a single unmissable full-screen message —
+**The act-break line**: a single unmissable full-screen message —
 
 > **"Everyone on Earth uses your product."**
 

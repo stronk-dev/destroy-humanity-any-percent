@@ -1,6 +1,6 @@
 # The Pet Layer
 
-> Tamagotchi + pokemon battles + base building + hat collecting + free lootboxes — all the meme-y, usually-microtransaction-shaped content, deliberately free. Mechanically: **the cattery systems, lifted nearly wholesale** (`research/cattery-reusables.md`), given a tech-satire skin and wired into the Soul axis. The pet layer lives on the **founder** scope: it survives every Exit. The company dies; the cat does not.
+> Tamagotchi + pokemon battles + base building + hat collecting + free lootboxes — all the meme-y, usually-microtransaction-shaped content, deliberately free. Mechanically: **a direct descendant of the cattery systems, our own prior project** (`research/cattery-reusables.md`), given a tech-satire skin and wired into the Soul axis. The pet layer lives on the **founder** scope: it survives every Exit. The company dies; the cat does not.
 
 ## 1. The pet
 
@@ -23,7 +23,7 @@
 
 - **Every pet reaches the same hardcapped stat ceiling** (design law 5, applied honestly — decided 2026-07-28 per `research/creature-battler.md §3.4`: in a 1v1 duel a 2.1% stat edge is a ~99.6% win rate, so any care→stat mapping wide enough to feel meaningful is a binary win condition). **Care buys options, consistency, and tempo, never raw stats:**
   - **Trust → Obedience:** slopes smoothly (~50%→30% disobedience across Trust 1.00→0.80) — a neglected pet ignores orders at the worst moment; a loved one is *reliable*, not stronger.
-  - **Care quality → insurance & luck** (the Pokémon-Amie template): crit-rate doubling, survive-at-1-HP procs, faster stamina recovery.
+  - **Care quality → insurance & luck** (in the Pokémon-Amie lineage): crit-rate doubling, survive-at-1-HP procs, faster stamina recovery.
   - **Soul drain is legible in combat**: as founder Soul empties, Obedience degrades *regardless of care* — the pet looks at you before ignoring the command. Play it straight.
   - A well-loved elder cat is still a monster — through options and reliability, which is the emotionally correct version anyway.
 - **Moveset** by personality + learned tricks (taught via play minigames): `Pounce`, `Zoomies` (priority), `Loaf` (defense up), `Knead` (heal), `Hairball` (debuff), `Headbonk`. Type-triangle lite: Playful > Lazy > Sassy > Playful (a rotating weakness — the Clicker Heroes daily-rotation trick appears in tournament seasons).

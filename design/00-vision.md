@@ -34,9 +34,9 @@ You start as a sole proprietor in the last good year of the internet. You own yo
 6. **Free forever, honest forever.** No microtransactions, no ads, no FOMO with real costs. Parodied dark patterns are always curtain-pulled. Data collection is minimal and disclosed (we are not building the thing we mock).
 7. **Server-authoritative, transparently.** Production is computed server-side from closed forms; community-event formulas are *published* (the Helldivers lesson: opacity, not mechanics, caused the backlash).
 
-## What we steal, from whom
+## Lineage
 
-| Source | The steal |
+| Source | What we build on |
 |---|---|
 | Cookie Clicker | Achievements-as-currency, the Lucky bank formula, buff multiplicativity, sugar-lump-style real-time gate, wrinkler-style disguised buffs, one-toggle-two-games |
 | Universal Paperclips | Paradigm shift per act; the silent moral escalation; an actual ending |

@@ -36,7 +36,7 @@ price(n) = base × r^n
   launch commitment; the balance harness selects shipped values per class.
 - At 1.13, price doubles every ~5.7 purchases. This baseline is slightly gentler than Cookie
   Clicker because our multiplier stack is thinner early (we stagger systems across tiers).
-- Generator ladder steps ~×12 cost / ~×6.5 output between generator types (CC's proven cadence), with deliberate cadence breaks at tier boundaries (the last generator of each tier is a gated splurge).
+- Generator ladder steps ~×12 cost / ~×6.5 output between generator types (the genre's proven cadence), with deliberate cadence breaks at tier boundaries (the last generator of each tier is a gated splurge).
 - **Milestone multipliers at 25 / 50 / 100 / 150 / 200… owned** (Math of Idle Games) so old generators never die; Cursor-style exception generators (one per tier scales per-other-building, a different curve in the same slot).
 - Implement geometric-series bulk-buy and max-affordable inverse in the Decimal type from day one:
   `bulk(k,n) = base·r^k·(r^n−1)/(r−1)`; `maxAffordable = ⌊log_r(cash·(r−1)/(base·r^k) + 1)⌋`.
@@ -60,8 +60,8 @@ Hard rule: **hardcaps, never softcaps.** Any cap is a visible number with a tool
 
 ### 2.3 Active play: buff windows and the bank formula
 
-- **Golden opportunities** (our golden cookies): spawn on Cookie Clicker's shaped distribution (t⁵·exp — suppresses instant re-spawns and long tails), base 300–900 s, upgradeable toward ~120 s. Effects mirror the proven set: Frenzy-type (×7 production, ~77 s), Click-Frenzy-type (×777 per click, ~13 s), Building-Special-type (+10%/owned of one generator, 30 s), instant payouts.
-- **The Lucky formula, kept verbatim:** `payout = min(0.15 × bank, 900 × rate) + ε` → creates the 6,000×rate bank-management target and hoard-vs-spend tension.
+- **Golden opportunities**: spawn on a shaped t⁵·exp interval distribution (suppresses instant re-spawns and cuts long tails — the anti-variance choice), base 300–900 s, upgradeable toward ~120 s. Effect set: frenzy (×7 production, ~77 s), click-frenzy (×777 per click, ~13 s), building-special (+10%/owned of one generator, 30 s), instant payouts.
+- **The bank-management payout formula** (golden-cookie lineage): `payout = min(0.15 × bank, 900 × rate) + ε` → creates the 6,000×rate bank-management target and hoard-vs-spend tension.
 - **Buffs multiply.** Combo ceiling target: ~10⁵–10⁶× rate for ~15 s windows with full setup (loans + spell-equivalent + faction tools). Active play is a separate skill discipline, not a nerf target.
 - **Clicking is designed, not left to autoclickers:** click batches are rate-validated server-side (~20/s clamp, silent); above the clamp, *timing* not rate is the skill (combo windows, buff sequencing). An in-game "macro bench" (unlocked at AGI tier as policies) makes automation an explicit, sanctioned progression instead of an external cheat.
 - **Wrinkler equivalent:** daemon processes (Tier 3+) attach to tenants, each draining 5% of visible rate; popping returns ×1.1 of drained total — quadratic patience bonus, net ×6 at 10 daemons. Idle build's crown jewel, gated behind the enshittification slider (the "make it worse for a multiplier" opt-in).
@@ -132,11 +132,11 @@ Summarized here; full design in `05-mmo.md`:
 
 ## 5. Fiscal Quarters (the CpS-immune clock)
 
-The sugar-lump equivalent, diegetic:
+The real-time meta-currency (sugar-lump lineage), diegetic:
 
-- An **Earnings Call** ripens every 24 real hours (harvest window mechanics mirror sugar lumps: harvestable early at 20 h with a 50% "missed estimates" fail chance; guaranteed at 23 h; auto-reports at 24 h).
-- Yields **Investor Confidence**: spent on building levels (+1% that generator per level, level N costs N), minigame unlocks (staggered across tiers), and special quarter types (Golden Quarter doubles banked cash capped at 24 h of rate; Caramelized-equivalent refills pantheon-style swap cooldowns).
-- **Sugar Baking equivalent:** +1% production per unspent Confidence, cap 100 — hoard-vs-spend at the meta level.
+- An **Earnings Call** ripens every 24 real hours (harvest windows: harvestable early at 20 h with a 50% "missed estimates" fail chance; guaranteed at 23 h; auto-reports at 24 h).
+- Yields **Investor Confidence**: spent on building levels (+1% that generator per level, level N costs N), minigame unlocks (staggered across tiers), and special quarter types (Golden Quarter doubles banked cash capped at 24 h of rate; a cooldown-refill quarter type resets loadout-swap cooldowns).
+- **Hoard bonus:** +1% production per unspent Confidence, cap 100 — hoard-vs-spend at the meta level.
 - **Immune to production rate by design.** No amount of output accelerates the clock. This is the long-tail pacing device and it is never for sale.
 
 ## 6. Clout (achievements + influence)
@@ -159,10 +159,11 @@ decay — for a DECADE without breaking. What broke it was an uncapped second fa
 gold generators) added on top of sinks sized for the social mint, with inflation detected by
 players within 30 minutes. **Law: Clout has exactly ONE mint (social activity through the
 declared decay curve). Nothing — no product, no event, no reward table — emits Clout outside
-it.** Any proposal that does is a second faucet by definition and dies in review. Their whole
-collapse (executives selling printers while running sink-events as theater, ToS bans on
-criticism, the int64 cap raise, the 10M:1 redenomination that took 9 years because legacy
-currency was left circulating) is banked as the satire arc it deserves to be.
+it.** Any proposal that does is a second faucet by definition and dies in review. The whole
+collapse arc (community-documented reports of insider currency-generator sales alongside
+sink-events run as theater, ToS bans on criticism, the int64 cap raise, the 10M:1 redenomination
+that took 9 years because legacy currency was left circulating) is banked as the satire arc it
+deserves to be.
 
 ## 7. The moral axis (not spendable)
 
