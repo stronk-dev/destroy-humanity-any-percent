@@ -28,6 +28,9 @@ func TestRelevanceRunBudgetAndReachedEncoding(t *testing.T) {
 	if value, err := ceilDecimalRatio(decimal.New(11, 0), decimal.New(2, 0)); err != nil || value != 6 {
 		t.Fatalf("ceil ratio=%d err=%v", value, err)
 	}
+	if value, err := ceilDecimalRatio(decimal.Zero, decimal.New(2, 0)); err != nil || value != 0 {
+		t.Fatalf("zero ratio=%d err=%v", value, err)
+	}
 }
 
 func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {

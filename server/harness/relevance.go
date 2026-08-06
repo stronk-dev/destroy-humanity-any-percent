@@ -560,9 +560,12 @@ func ceilDecimalRatio(numerator, denominator decimal.Decimal) (int64, error) {
 
 func decimalCoefficient(value decimal.Decimal) (*big.Rat, int64) {
 	canonical := value.String()
-	parts := bytes.Split([]byte(canonical), []byte("e"))
+	parts := bytes.SplitN([]byte(canonical), []byte("e"), 2)
 	coefficient := new(big.Rat)
 	coefficient.SetString(string(parts[0]))
+	if len(parts) == 1 {
+		return coefficient, 0
+	}
 	exponent, _ := strconv.ParseInt(string(parts[1]), 10, 64)
 	return coefficient, exponent
 }
