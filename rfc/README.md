@@ -30,7 +30,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
-| [Fiscal Quarters Foundation](fiscal-quarters-foundation.md) | accepted — implementation blocked on F9–F15 (Founder v19) | Save / Run Genesis / Founder Attendance |
 | [Active-Play Buff Windows](active-play-buff-windows.md) | accepted — implementation blocked on A9–A16 (Company v18) | Production / Save / Numeric Core |
 | [Soul Foundation](soul-foundation.md) | accepted — implementation blocked on SB10–SB16 + Fiscal F9–F15 (Founder v20) | Save / Run Genesis / Founder Attendance / Pet Care |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
@@ -81,6 +80,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Guild Model](archive/guild-model.md) | implemented | [Guilds](../docs/guilds.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Doctrine & Compute Credit](archive/doctrine-and-compute-credit.md) | implemented | [Doctrine and Compute Credit](../docs/doctrine-and-compute-credit.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md), [Routes](../docs/routes.md) |
 | [Relevance Harness](archive/relevance-harness.md) | implemented | [Balance harness](../docs/balance-harness.md), [Production engine](../docs/production-engine.md) |
+| [Fiscal Quarters Foundation](archive/fiscal-quarters-foundation.md) | implemented | [Fiscal Quarters](../docs/fiscal-quarters.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 
 **Phase-0 contract status (reconciled 2026-08-05 against the coverage-map sweep):** the contracts
 previously listed here as "not yet drafted" — Layer-1 events engine, doctrine intents, Compute

@@ -1,8 +1,8 @@
 # RFC: Fiscal Quarters Foundation (the wall-clock meta-currency)
 
-- **Status:** accepted — F1-F15 ruled (exact artifact rows, runidentity/Substream seed, the compound
-  Founder-command wrapper, `run_frozen_contributions` storage with NO Company bump, v19 save shape,
-  byte-enumerated wire, Prestige-offer scope split); implementing. Founder v19.
+- **Status:** implemented — Founder-v19 state, strict optional catalog, deterministic harvest/spend
+  transitions, and immutable per-run contributions shipped and independently reviewed. The
+  production `fiscal` artifact remains deliberately unminted.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
 - **Design refs:** `design/02 §5` (Fiscal Quarters — the rate-immune clock: the Earnings Call ripens on

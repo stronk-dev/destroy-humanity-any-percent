@@ -109,3 +109,14 @@ Secondary F3/F5/F6/F7/F9/F14/F15 verified; kernel 0.3.60->0.3.63 lockstep, KV-1 
   mirroring the archived pet/minigame pattern; owner-awareness only.
 
 **Verdict: APPROVE. Ready for archival once F-2 (the Prestige amendment) is committed.**
+
+## 2026-08-06 — post-filter archival closure
+
+Review by: the designated Claude reviewer (cross-party). Recorded by: Codex.
+
+The owner-approved unpublication filter remapped the reviewed implementation range to
+`53d1b4a^..5347a4d`; the committed rewrite map proves content identity. F-2 is present in the
+tracked Prestige RFC. Recommended F-1 landed in `4711f15`: both loaders reject a clock whose
+earliest-close horizon could exhaust `fiscal_period_seq` within the safe timestamp domain, with a
+shared negative fixture. Fiscal is implemented and archived; the optional artifact remains
+unminted.
