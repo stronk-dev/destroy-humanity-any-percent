@@ -18,6 +18,8 @@ Implemented systems:
   gate costs, Depletion proof, first-executor naming, Route Knowledge, and idempotent projections.
 - [Doctrine choice and Compute Credit](doctrine-and-compute-credit.md) — pinned transition choices,
   gate ordering, manual acceleration bursts, Company-v17 activation, and replay parity.
+- [Fiscal Quarters](fiscal-quarters.md) — Founder-v19 wall-clock periods, deterministic harvest and
+  spend transitions, and immutable per-run production contributions.
 - [Commons Compact](commons.md) — membership, source-derived Enclosure, Health/Capacity,
   persistent cohorts, AI fallback, production multiplier, dispatches, and population invariance.
 - [Client shell](client-shell.md) — Svelte DOM routes, authoritative stream boundary, Worker
