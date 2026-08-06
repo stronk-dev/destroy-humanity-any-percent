@@ -272,3 +272,10 @@ TypeScript loader validate raw JSON integer lexemes before `JSON.parse`, and bou
 exponent work before exact parsing. Shared vectors now cover accepted integral decimals, the
 IEEE-754 rounding reproducer, and the hostile exponent. The designated review endpoint is extended
 through that commit; the interrupted concurrent review run is not evidence.
+
+The same review then demonstrated a HIGH `CONSTANTS-IDENTITY:` bypass: dynamic relevance report
+paths were subject/history-governed, but semantic identity comparison still covered only the pacing
+baseline and seed golden. `bbde308` extends identity validation across the historical registry
+union. Inactive fixture reports must remain byte-identical; active reports may change only
+`constants_hash` to the expected full epoch-bundle hash. Repository tests prove both the rejected
+inactive behavior rewrite and the permitted active hash-only repair.
