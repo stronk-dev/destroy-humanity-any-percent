@@ -38,6 +38,9 @@ function applyMutation(test: MutationCase): string {
   } else if (test.operation === "swap") {
     if (!Array.isArray(parent) || test.swap_index === null) throw new Error(`invalid swap ${test.id}`);
     [parent[index as number], parent[test.swap_index]] = [parent[test.swap_index], parent[index as number]];
+  } else if (test.operation === "copy") {
+    if (!Array.isArray(parent) || test.swap_index === null) throw new Error(`invalid copy ${test.id}`);
+    parent[test.swap_index] = structuredClone(parent[index as number]);
   } else if (test.operation === "replace" || test.operation === "replace_number") {
     if (test.value_json === null) throw new Error(`missing replacement ${test.id}`);
     const replacement = test.operation === "replace_number" ? `__RAW_RELEVANCE_NUMBER_${test.id}__` : JSON.parse(test.value_json) as unknown;

@@ -121,6 +121,16 @@ func applyRelevanceMutation(t *testing.T, data []byte, operation string, path []
 			t.Fatal("swap index is invalid")
 		}
 		rows[index], rows[*swapIndex] = rows[*swapIndex], rows[index]
+	case "copy":
+		rows, ok := parent.([]any)
+		if !ok || swapIndex == nil {
+			t.Fatal("copy mutation is invalid")
+		}
+		index, err := strconv.Atoi(last)
+		if err != nil || index < 0 || index >= len(rows) || *swapIndex < 0 || *swapIndex >= len(rows) {
+			t.Fatal("copy index is invalid")
+		}
+		rows[*swapIndex] = rows[index]
 	default:
 		t.Fatalf("unknown mutation operation %q", operation)
 	}

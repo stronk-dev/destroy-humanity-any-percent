@@ -3,9 +3,11 @@
   "cases": [
     { "id": "missing_item_epsilon", "operation": "delete", "path": ["items", "0", "epsilon_ms"], "value_json": null, "swap_index": null, "accepted": false },
     { "id": "unsorted_items", "operation": "swap", "path": ["items", "0"], "value_json": null, "swap_index": 1, "accepted": false },
+    { "id": "duplicate_item", "operation": "copy", "path": ["items", "0"], "value_json": null, "swap_index": 1, "accepted": false },
     { "id": "dangling_group", "operation": "replace", "path": ["items", "0", "group_ids"], "value_json": "[\"group.missing\"]", "swap_index": null, "accepted": false },
     { "id": "exemption_mismatch", "operation": "replace", "path": ["items", "2", "trap_exempt"], "value_json": "false", "swap_index": null, "accepted": false },
     { "id": "incomplete_derived_group", "operation": "replace", "path": ["groups", "0", "member_ids"], "value_json": "[\"generator.high\"]", "swap_index": null, "accepted": false },
+    { "id": "duplicate_group", "operation": "copy", "path": ["groups", "0"], "value_json": null, "swap_index": 1, "accepted": false },
     { "id": "unknown_gate", "operation": "replace", "path": ["items", "0", "availability_window", "from_gate"], "value_json": "\"gate.unknown\"", "swap_index": null, "accepted": false },
     { "id": "integral_decimal_epsilon", "operation": "replace_number", "path": ["items", "0", "epsilon_ms"], "value_json": "1000.0", "swap_index": null, "accepted": true },
     { "id": "integral_decimal_schema", "operation": "replace_number", "path": ["schema_version"], "value_json": "1.0", "swap_index": null, "accepted": true },
