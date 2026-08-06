@@ -31,13 +31,33 @@ func main() {
 	if err != nil {
 		fail(err)
 	}
-	relevanceSuite, err := harness.LoadRelevanceSuite(*root, "testdata/harness/relevance/scenario-v1.json")
+	registry, err := harness.LoadRelevanceRegistry(*root)
 	if err != nil {
 		fail(err)
 	}
-	relevance, err := relevanceSuite.RunRelevance()
-	if err != nil {
-		fail(err)
+	type relevanceResult struct {
+		entry  harness.RelevanceRegistryEntry
+		report harness.RelevanceReport
+		bytes  []byte
+	}
+	relevanceResults := make([]relevanceResult, 0, len(registry))
+	for _, entry := range registry {
+		relevanceSuite, loadErr := harness.LoadRelevanceSuite(*root, entry.Scenario)
+		if loadErr != nil {
+			fail(loadErr)
+		}
+		if relevanceSuite.Scenario.Catalog != entry.EconomyCatalog || relevanceSuite.Scenario.Policy != entry.RelevancePolicy {
+			fail(fmt.Errorf("relevance registry/scenario artifact mismatch for %q", entry.Scenario))
+		}
+		relevance, runErr := relevanceSuite.RunRelevance()
+		if runErr != nil {
+			fail(runErr)
+		}
+		relevanceBytes, encodeErr := harness.CanonicalJSON(relevance)
+		if encodeErr != nil {
+			fail(encodeErr)
+		}
+		relevanceResults = append(relevanceResults, relevanceResult{entry: entry, report: relevance, bytes: relevanceBytes})
 	}
 	golden := harness.GoldenReport{SchemaVersion: 1}
 	for _, report := range runs {
@@ -48,10 +68,8 @@ func main() {
 	goldenBytes, _ := harness.CanonicalJSON(golden)
 	aggregateBytes, _ := harness.CanonicalJSON(aggregate)
 	suiteBytes, _ := harness.CanonicalJSON(harness.SuiteReport{SchemaVersion: 1, Runs: runs, Aggregate: aggregate})
-	relevanceBytes, _ := harness.CanonicalJSON(relevance)
 	goldenPath := filepath.Join(*root, "testdata/harness/golden-seed.json")
 	baselinePath := filepath.Join(*root, "testdata/harness/pacing-baseline.json")
-	relevancePath := filepath.Join(*root, "testdata/harness/relevance/golden-report-v1.json")
 	switch *mode {
 	case "update":
 		if err := os.WriteFile(goldenPath, goldenBytes, 0o644); err != nil {
@@ -60,8 +78,10 @@ func main() {
 		if err := os.WriteFile(baselinePath, aggregateBytes, 0o644); err != nil {
 			fail(err)
 		}
-		if err := os.WriteFile(relevancePath, relevanceBytes, 0o644); err != nil {
-			fail(err)
+		for _, result := range relevanceResults {
+			if err := os.WriteFile(filepath.Join(*root, filepath.FromSlash(result.entry.GoldenReport)), result.bytes, 0o644); err != nil {
+				fail(err)
+			}
 		}
 	case "run":
 		if *output == "" {
@@ -88,10 +108,6 @@ func main() {
 		if err != nil {
 			fail(err)
 		}
-		wantRelevance, err := os.ReadFile(relevancePath)
-		if err != nil {
-			fail(err)
-		}
 		var baseline harness.AggregateReport
 		if err := json.Unmarshal(wantBaseline, &baseline); err != nil {
 			fail(err)
@@ -103,8 +119,17 @@ func main() {
 		if string(wantGolden) != string(goldenBytes) {
 			fail(fmt.Errorf("golden seed drift; run make harness-update and review"))
 		}
-		if string(wantRelevance) != string(relevanceBytes) {
-			fail(fmt.Errorf("relevance golden drift; run make harness-update and review"))
+		for _, result := range relevanceResults {
+			wantRelevance, readErr := os.ReadFile(filepath.Join(*root, filepath.FromSlash(result.entry.GoldenReport)))
+			if readErr != nil {
+				fail(readErr)
+			}
+			if string(wantRelevance) != string(result.bytes) {
+				fail(fmt.Errorf("relevance golden drift for %q; run make harness-update and review", result.entry.Scenario))
+			}
+			if gateErr := harness.ValidateActiveRelevanceReport(result.entry, result.report); gateErr != nil {
+				fail(gateErr)
+			}
 		}
 		if aggregate.ScenarioHash != baseline.ScenarioHash || aggregate.ConstantsHash != baseline.ConstantsHash {
 			fail(fmt.Errorf("baseline hashes do not match scenario/catalog"))

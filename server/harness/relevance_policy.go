@@ -19,6 +19,7 @@ const RelevancePolicySchemaVersion = 1
 const relevanceMaxSafeInteger = int64(9_007_199_254_740_991)
 
 var relevanceIDPattern = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
+var relevanceHashPattern = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
 
 type RelevanceWindow struct {
 	FromGate string  `json:"from_gate"`

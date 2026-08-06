@@ -14,18 +14,25 @@
     {
       "id": "generator.beta", "tier": 1, "category": "category.fixture",
       "price": { "resource_id": "company.cash", "base": "2e1", "curve": { "kind": "geometric", "ratio": "1.1e0" } },
-      "production": { "resource_id": "company.cash", "base_rate": "4e0" },
+      "production": { "resource_id": "company.cash", "base_rate": "1.8e1" },
       "provisions": { "generator_id": "generator.alpha", "rate_ppm": 100000 },
       "ladder": [], "roles": [{ "kind": "provision", "generator_id": "generator.alpha" }]
     }
   ],
   "upgrades": [
     {
-      "id": "upgrade.alpha", "cost": { "resource": "company.cash", "amount": "5e1" },
+      "id": "upgrade.alpha", "cost": { "resource": "company.cash", "amount": "9e2" },
       "window": { "from_gate": null, "to_gate": null },
-      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "5e1" }],
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "9e2" }],
       "effects": [{ "source_id": "upgrade.alpha.factor", "slot": "upgrades", "target": "generator.alpha", "factor": "2e0" }],
       "roles": [], "copy_key": "upgrade.alpha.copy"
+    },
+    {
+      "id": "upgrade.dead", "cost": { "resource": "company.cash", "amount": "1e6" },
+      "window": { "from_gate": null, "to_gate": null },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "1e6" }],
+      "effects": [{ "source_id": "upgrade.dead.factor", "slot": "upgrades", "target": "generator.alpha", "factor": "1.01e0" }],
+      "roles": [], "copy_key": "upgrade.dead.copy"
     }
   ],
   "synergy_pools": [],

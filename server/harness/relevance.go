@@ -272,6 +272,9 @@ func ComputeRelevanceRunBudget(nonReferenceSeeds, referenceSeeds, items, groups 
 		}
 		return left * right, nil
 	}
+	if nonReferenceSeeds > relevanceMaxSafeInteger-referenceSeeds || items > relevanceMaxSafeInteger-1-groups {
+		return 0, errors.New("relevance run budget overflow")
+	}
 	base, err := checkedMul(nonReferenceSeeds+referenceSeeds, 1+items+groups)
 	if err != nil {
 		return 0, err
@@ -309,39 +312,92 @@ func MakeRelevanceDelta(milestoneID string, baseline, ablated *int64, horizonMS 
 
 func ValidateRelevanceReport(report RelevanceReport) error {
 	if report.SchemaVersion != RelevanceReportSchemaVersion || !relevanceIDPattern.MatchString(report.ScenarioID) ||
-		len(report.ScenarioHash) != 71 || len(report.ConstantsHash) != 71 || len(report.RelevancePolicyHash) != 71 ||
+		!relevanceHashPattern.MatchString(report.ScenarioHash) || !relevanceHashPattern.MatchString(report.ConstantsHash) || !relevanceHashPattern.MatchString(report.RelevancePolicyHash) ||
 		report.Items == nil || report.Groups == nil || report.TierContributions == nil || report.RoleActivations == nil || report.Failures == nil ||
-		report.RunBudget.DeclaredRuns < 1 || report.RunBudget.DeclaredRuns != report.RunBudget.ExecutedRuns ||
-		report.RunBudget.DeclaredTransitions != report.RunBudget.ExecutedTransitions {
+		!relevanceSafePositive(report.RunBudget.DeclaredRuns) || report.RunBudget.DeclaredRuns != report.RunBudget.ExecutedRuns ||
+		!relevanceSafe(report.RunBudget.DeclaredTransitions) || report.RunBudget.DeclaredTransitions != report.RunBudget.ExecutedTransitions {
 		return errors.New("invalid relevance report envelope")
+	}
+	if report.GreedyOracle != nil {
+		oracle := report.GreedyOracle
+		gap, err := relevanceGapPPM(oracle.GreedyMS, oracle.BeamMS)
+		if err != nil || !relevanceIDPattern.MatchString(oracle.MilestoneID) || !relevanceSafePositive(oracle.GreedyMS) ||
+			!relevanceSafePositive(oracle.BeamMS) || gap != oracle.GapPPM || !relevanceSafe(oracle.MaximumPPM) ||
+			oracle.Passed != (oracle.GapPPM <= oracle.MaximumPPM) {
+			return errors.New("invalid relevance greedy oracle")
+		}
 	}
 	prior := ""
 	for _, item := range report.Items {
 		if !relevanceIDPattern.MatchString(item.PurchasableID) || prior != "" && prior >= item.PurchasableID || item.IndividualDeltas == nil ||
 			item.ActionRemovalDeltas == nil || item.Support != "individual" && item.Support != "group_supported" && item.Support != "failed" ||
-			item.SupportingGroupID != nil != (item.Support == "group_supported") {
+			item.SupportingGroupID != nil != (item.Support == "group_supported") || !relevanceIDPattern.MatchString(item.AvailabilityWindow.FromGate) ||
+			item.AvailabilityWindow.ToGate != nil && !relevanceIDPattern.MatchString(*item.AvailabilityWindow.ToGate) || !relevanceSafePositive(item.EpsilonMS) ||
+			!relevanceSafe(item.BaselinePurchaseCount) || !relevanceSafe(item.NearestPassingEpsilonMS) ||
+			item.RelevancePassed != (item.Support != "failed") || item.TrapPassed != (item.BaselinePurchaseCount > 0 || item.TrapExempt) ||
+			item.TrapExempt != (item.JustificationKey != nil) || item.JustificationKey != nil && !relevanceIDPattern.MatchString(*item.JustificationKey) {
 			return fmt.Errorf("invalid relevance item report %q", item.PurchasableID)
 		}
 		for _, rows := range [][]RelevanceDelta{item.IndividualDeltas, item.ActionRemovalDeltas} {
+			if len(rows) == 0 {
+				return fmt.Errorf("empty relevance delta family for %q", item.PurchasableID)
+			}
+			priorMilestone := ""
 			for _, row := range rows {
+				if priorMilestone != "" && priorMilestone >= row.MilestoneID {
+					return errors.New("relevance deltas must be sorted unique")
+				}
 				if err := validateRelevanceDelta(row); err != nil {
 					return err
 				}
+				priorMilestone = row.MilestoneID
 			}
 		}
 		prior = item.PurchasableID
 	}
 	prior = ""
 	for _, group := range report.Groups {
-		if !relevanceIDPattern.MatchString(group.GroupID) || prior != "" && prior >= group.GroupID || group.Deltas == nil {
+		if !relevanceIDPattern.MatchString(group.GroupID) || prior != "" && prior >= group.GroupID || len(group.Deltas) == 0 ||
+			group.Axis != "tier" && group.Axis != "category" && group.Axis != "declared" {
 			return fmt.Errorf("invalid relevance group report %q", group.GroupID)
 		}
+		priorMilestone := ""
 		for _, row := range group.Deltas {
+			if priorMilestone != "" && priorMilestone >= row.MilestoneID {
+				return errors.New("relevance group deltas must be sorted unique")
+			}
 			if err := validateRelevanceDelta(row); err != nil {
 				return err
 			}
+			priorMilestone = row.MilestoneID
 		}
 		prior = group.GroupID
+	}
+	prior = ""
+	for _, tier := range report.TierContributions {
+		if !relevanceIDPattern.MatchString(tier.GroupID) || prior != "" && prior >= tier.GroupID || len(tier.Deltas) == 0 {
+			return fmt.Errorf("invalid relevance tier contribution %q", tier.GroupID)
+		}
+		priorMilestone := ""
+		for _, row := range tier.Deltas {
+			if priorMilestone != "" && priorMilestone >= row.MilestoneID {
+				return errors.New("relevance tier deltas must be sorted unique")
+			}
+			if err := validateRelevanceDelta(row); err != nil {
+				return err
+			}
+			priorMilestone = row.MilestoneID
+		}
+		prior = tier.GroupID
+	}
+	prior = ""
+	for _, role := range report.RoleActivations {
+		key := role.GeneratorID + "\x00" + string(role.Kind) + "\x00" + role.TargetID
+		if !relevanceIDPattern.MatchString(role.GeneratorID) || !relevanceIDPattern.MatchString(role.TargetID) ||
+			!validRelevanceRoleKind(role.Kind) || !relevanceSafePositive(role.Count) || prior != "" && prior >= key {
+			return errors.New("invalid or unsorted relevance role activation")
+		}
+		prior = key
 	}
 	for index, failure := range report.Failures {
 		if failure == "" || index > 0 && report.Failures[index-1] >= failure {
@@ -369,7 +425,41 @@ func validateRelevanceDelta(row RelevanceDelta) error {
 	if !valid {
 		return errors.New("invalid relevance delta union")
 	}
+	if row.Status == "both_reached" && *row.DeltaMS != *row.AblatedMS-*row.BaselineMS {
+		return errors.New("relevance delta does not reconcile")
+	}
+	for _, value := range []*int64{row.BaselineMS, row.AblatedMS} {
+		if value != nil && !relevanceSafe(*value) {
+			return errors.New("relevance delta time outside safe integer domain")
+		}
+	}
+	if row.DeltaMS != nil && (*row.DeltaMS < -relevanceMaxSafeInteger || *row.DeltaMS > relevanceMaxSafeInteger) {
+		return errors.New("relevance delta outside safe integer domain")
+	}
 	return nil
+}
+
+func relevanceSafe(value int64) bool { return value >= 0 && value <= relevanceMaxSafeInteger }
+
+func relevanceSafePositive(value int64) bool { return value > 0 && value <= relevanceMaxSafeInteger }
+
+func validRelevanceRoleKind(kind economy.GeneratorRoleKind) bool {
+	return kind == economy.RoleProvision || kind == economy.RoleSynergyFeed || kind == economy.RoleManualOutput || kind == economy.RoleStockRate
+}
+
+func relevanceGapPPM(greedyMS, beamMS int64) (int64, error) {
+	if !relevanceSafePositive(greedyMS) || !relevanceSafePositive(beamMS) {
+		return 0, errors.New("invalid relevance oracle time")
+	}
+	if greedyMS <= beamMS {
+		return 0, nil
+	}
+	numerator := new(big.Int).Mul(big.NewInt(greedyMS-beamMS), big.NewInt(1_000_000))
+	value := new(big.Int).Quo(numerator, big.NewInt(beamMS))
+	if !value.IsInt64() || !relevanceSafe(value.Int64()) {
+		return 0, errors.New("relevance oracle gap outside safe integer domain")
+	}
+	return value.Int64(), nil
 }
 
 func reduceRelevanceDeltas(rows []RelevanceDelta, reducer string) (RelevanceDelta, error) {

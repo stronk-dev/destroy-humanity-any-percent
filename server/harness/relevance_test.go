@@ -43,13 +43,27 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	if !reflect.DeepEqual(firstBytes, secondBytes) {
 		t.Fatal("relevance report is not byte deterministic")
 	}
-	if first.RunBudget.DeclaredRuns != 12 || first.RunBudget.ExecutedRuns != 12 ||
-		first.RunBudget.DeclaredTransitions != first.RunBudget.ExecutedTransitions || len(first.Items) != 3 || len(first.Groups) != 4 {
+	if first.RunBudget.DeclaredRuns != 14 || first.RunBudget.ExecutedRuns != 14 ||
+		first.RunBudget.DeclaredTransitions != first.RunBudget.ExecutedTransitions || len(first.Items) != 4 || len(first.Groups) != 4 {
 		t.Fatalf("report cardinality=%+v items=%d groups=%d", first.RunBudget, len(first.Items), len(first.Groups))
 	}
+	if first.GreedyOracle == nil || !first.GreedyOracle.Passed {
+		t.Fatalf("greedy oracle=%+v", first.GreedyOracle)
+	}
 	joined := strings.Join(first.Failures, ",")
-	if !strings.Contains(joined, "role_floor:generator.alpha") {
-		t.Fatalf("fixture did not discriminate roleless generator: %v", first.Failures)
+	for _, expected := range []string{"relevance_floor:upgrade.dead", "role_floor:generator.alpha", "trap_floor:generator.alpha"} {
+		if !strings.Contains(joined, expected) {
+			t.Fatalf("fixture did not discriminate %q: %v", expected, first.Failures)
+		}
+	}
+	var supported bool
+	for _, item := range first.Items {
+		if item.PurchasableID == "upgrade.alpha" && item.Support == "group_supported" && item.RelevancePassed {
+			supported = true
+		}
+	}
+	if !supported {
+		t.Fatalf("fixture did not demonstrate group-supported substitute: %+v", first.Items)
 	}
 	if err := ValidateRelevanceReport(first); err != nil {
 		t.Fatal(err)
@@ -73,6 +87,33 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	if err := ValidateRelevanceReport(invalid); err == nil {
 		t.Fatal("report accepted an illegal delta null union")
 	}
+	invalid = first
+	invalid.TierContributions = append([]RelevanceTierContribution(nil), first.TierContributions...)
+	invalid.TierContributions[0], invalid.TierContributions[1] = invalid.TierContributions[1], invalid.TierContributions[0]
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("report accepted unsorted tier contributions")
+	}
+	invalid = first
+	invalid.RoleActivations = append([]RoleActivationCount(nil), first.RoleActivations...)
+	invalid.RoleActivations = append(invalid.RoleActivations, invalid.RoleActivations[0])
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("report accepted duplicate role activations")
+	}
+	invalid = first
+	invalid.GreedyOracle = &RelevanceGreedyOracle{MilestoneID: first.GreedyOracle.MilestoneID,
+		GreedyMS: first.GreedyOracle.GreedyMS, BeamMS: first.GreedyOracle.BeamMS, GapPPM: first.GreedyOracle.GapPPM + 1,
+		MaximumPPM: first.GreedyOracle.MaximumPPM, Passed: first.GreedyOracle.Passed}
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("report accepted a non-reconciling greedy gap")
+	}
+	invalid = first
+	invalid.Items = append([]RelevanceItemReport(nil), first.Items...)
+	invalid.Items[0].IndividualDeltas = append([]RelevanceDelta(nil), first.Items[0].IndividualDeltas...)
+	badDelta := *invalid.Items[0].IndividualDeltas[0].DeltaMS + 1
+	invalid.Items[0].IndividualDeltas[0].DeltaMS = &badDelta
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("report accepted a non-reconciling delta")
+	}
 }
 
 func TestRelevanceFailsBeforeDispatchWhenRunBudgetIsTooSmall(t *testing.T) {
@@ -87,7 +128,19 @@ func TestRelevanceFailsBeforeDispatchWhenRunBudgetIsTooSmall(t *testing.T) {
 }
 
 func TestRelevanceRegistryIsFailClosedForActiveCatalogs(t *testing.T) {
-	if err := ValidateRelevanceRegistry("../.."); err != nil {
+	entries, err := LoadRelevanceRegistry("../..")
+	if err != nil {
 		t.Fatal(err)
+	}
+	if len(entries) != 1 || entries[0].Active {
+		t.Fatalf("fixture registry entries=%+v", entries)
+	}
+	report := RelevanceReport{Failures: []string{"relevance_floor:upgrade.dead"}}
+	if err := ValidateActiveRelevanceReport(entries[0], report); err != nil {
+		t.Fatalf("inactive fixture unexpectedly gated: %v", err)
+	}
+	entries[0].Active = true
+	if err := ValidateActiveRelevanceReport(entries[0], report); err == nil || !strings.Contains(err.Error(), "relevance_floor:upgrade.dead") {
+		t.Fatalf("active fixture failed open: %v", err)
 	}
 }

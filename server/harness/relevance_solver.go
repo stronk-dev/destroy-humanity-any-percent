@@ -66,7 +66,9 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	baselinePurchases := map[string]int64{}
 	baselineRoles := map[string]RoleActivationCount{}
 	executedRuns := int64(0)
-	var firstReference *relevanceRunResult
+	type oraclePair struct{ greedy, beam *int64 }
+	oraclePairs := []oraclePair{}
+	baselineUnreached := false
 	for _, spec := range suite.Scenario.Runs {
 		start, _ := parseSeed(spec.SeedStart)
 		for offset := int64(0); offset < spec.SeedCount; offset++ {
@@ -77,9 +79,8 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			executedRuns++
 			_ = start + uint64(offset) // Seed remains part of the matrix even while the fixture transition is deterministic.
 			if spec.Reference {
-				if firstReference == nil {
-					copy := baseline
-					firstReference = &copy
+				if baseline.MilestoneMS == nil {
+					baselineUnreached = true
 				}
 				for id, count := range baseline.Purchases {
 					baselinePurchases[id] += count
@@ -115,12 +116,20 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 				groupPairs[group.GroupID] = append(groupPairs[group.GroupID], paired{baseline.MilestoneMS, masked.MilestoneMS})
 			}
 			if spec.Reference {
+				beam, beamErr := suite.runBeam(counter)
+				if beamErr != nil {
+					return RelevanceReport{}, beamErr
+				}
+				oraclePairs = append(oraclePairs, oraclePair{greedy: cloneInt64(baseline.MilestoneMS), beam: cloneInt64(beam)})
 				executedRuns++ // one beam invocation is one R14 run, regardless of internal transitions.
 			}
 		}
 	}
-	if executedRuns != declaredRuns || firstReference == nil {
+	if executedRuns != declaredRuns || len(oraclePairs) == 0 {
 		return RelevanceReport{}, errors.New("relevance run cardinality mismatch")
+	}
+	if baselineUnreached {
+		report.Failures = append(report.Failures, "baseline_unreached:"+suite.Scenario.Milestone.ID)
 	}
 	groupReduced := map[string]RelevanceDelta{}
 	for _, group := range suite.Policy.Groups {
@@ -173,11 +182,14 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 				}
 			}
 		}
-		nearest := item.EpsilonMS
-		if individual.DeltaMS != nil {
-			nearest -= *individual.DeltaMS
-			if nearest < 0 {
-				nearest = 0
+		nearest := int64(0)
+		if !relevancePassed {
+			nearest = item.EpsilonMS
+			if individual.DeltaMS != nil {
+				nearest -= *individual.DeltaMS
+				if nearest < 0 {
+					nearest = 0
+				}
 			}
 		}
 		trapPassed := baselinePurchases[item.PurchasableID] > 0 || item.TrapExempt
@@ -205,21 +217,29 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			report.Failures = append(report.Failures, "role_floor:"+generator.ID)
 		}
 	}
-	beamMS, beamErr := suite.runBeam(counter)
-	if beamErr != nil {
-		return RelevanceReport{}, beamErr
+	var selected *RelevanceGreedyOracle
+	for _, pair := range oraclePairs {
+		if pair.greedy == nil || pair.beam == nil {
+			selected = nil
+			break
+		}
+		gap := int64(0)
+		gap, gapErr := relevanceGapPPM(*pair.greedy, *pair.beam)
+		if gapErr != nil {
+			return RelevanceReport{}, gapErr
+		}
+		candidate := &RelevanceGreedyOracle{MilestoneID: suite.Scenario.Milestone.ID,
+			GreedyMS: *pair.greedy, BeamMS: *pair.beam, GapPPM: gap, MaximumPPM: suite.Scenario.GreedyGapMaximumPPM,
+			Passed: gap <= suite.Scenario.GreedyGapMaximumPPM}
+		if selected == nil || candidate.GapPPM > selected.GapPPM {
+			selected = candidate
+		}
 	}
-	if firstReference.MilestoneMS == nil || beamMS == nil {
+	if selected == nil {
 		report.Failures = append(report.Failures, "greedy_oracle:milestone_unreached")
 	} else {
-		gap := int64(0)
-		if *firstReference.MilestoneMS > *beamMS {
-			gap = (*firstReference.MilestoneMS - *beamMS) * 1_000_000 / maxInt64(*beamMS, 1)
-		}
-		passed := gap <= suite.Scenario.GreedyGapMaximumPPM
-		report.GreedyOracle = &RelevanceGreedyOracle{MilestoneID: suite.Scenario.Milestone.ID,
-			GreedyMS: *firstReference.MilestoneMS, BeamMS: *beamMS, GapPPM: gap, MaximumPPM: suite.Scenario.GreedyGapMaximumPPM, Passed: passed}
-		if !passed {
+		report.GreedyOracle = selected
+		if !selected.Passed {
 			report.Failures = append(report.Failures, "greedy_oracle:gap")
 		}
 	}
@@ -238,13 +258,40 @@ func (suite *RelevanceSuite) preflightTransitionCeiling(runs, referenceSeeds int
 	for span := suite.Scenario.HorizonMS; span > 1; span = (span + 1) / 2 {
 		binarySteps++
 	}
-	perDecision := items*(binarySteps+4) + 1
-	perRun := suite.Scenario.MaxDecisions * perDecision
-	beam := referenceSeeds * suite.Scenario.MaxDecisions * suite.Scenario.BeamWidth * (items + 1) * (perRun + perDecision)
-	if perRun <= 0 || runs > relevanceMaxSafeInteger/perRun || beam < 0 || runs*perRun > relevanceMaxSafeInteger-beam {
+	checkedMul := func(values ...int64) (int64, error) {
+		result := int64(1)
+		for _, value := range values {
+			if value < 0 || value != 0 && result > relevanceMaxSafeInteger/value {
+				return 0, errors.New("relevance transition preflight overflow")
+			}
+			result *= value
+		}
+		return result, nil
+	}
+	// Per candidate: one affordability lower bound, two marginal-output lower
+	// bounds, the purchase, and conservative endpoint probes.
+	perCandidate, err := checkedMul(items, 3*binarySteps+6)
+	if err != nil || perCandidate >= relevanceMaxSafeInteger {
 		return 0, errors.New("relevance transition preflight overflow")
 	}
-	return runs*perRun + beam, nil
+	perDecision := perCandidate + 1
+	perRun, err := checkedMul(suite.Scenario.MaxDecisions, perDecision)
+	if err != nil {
+		return 0, err
+	}
+	beamPerSeed, err := checkedMul(suite.Scenario.MaxDecisions, suite.Scenario.BeamWidth, items+1, perRun+perDecision)
+	if err != nil {
+		return 0, err
+	}
+	beam, err := checkedMul(referenceSeeds, beamPerSeed)
+	if err != nil {
+		return 0, err
+	}
+	runWork, err := checkedMul(runs, perRun)
+	if err != nil || runWork > relevanceMaxSafeInteger-beam {
+		return 0, errors.New("relevance transition preflight overflow")
+	}
+	return runWork + beam, nil
 }
 
 func (suite *RelevanceSuite) runReference(mask production.AblationMask, counter *relevanceCounter) (relevanceRunResult, error) {
@@ -367,32 +414,53 @@ func (suite *RelevanceSuite) rankCandidate(state *save.State, revision, nowMS, h
 		return relevanceCandidate{}, false, err
 	}
 	activations = append(activations, simulation.RoleActivations...)
-	baseAtHorizon, err := cloneState(suite.Catalog, baseAtBuy)
+	grossAt := func(atMS int64) (decimal.Decimal, error) {
+		baseline, cloneErr := cloneState(suite.Catalog, baseAtBuy)
+		if cloneErr != nil {
+			return decimal.NaN, cloneErr
+		}
+		candidate, cloneErr := cloneState(suite.Catalog, candidateAtBuy)
+		if cloneErr != nil {
+			return decimal.NaN, cloneErr
+		}
+		if atMS > earliest {
+			if _, advanceErr := suite.advance(baseline, revision, atMS, mask, counter); advanceErr != nil {
+				return decimal.NaN, advanceErr
+			}
+			if _, advanceErr := suite.advance(candidate, revision+1, atMS, mask, counter); advanceErr != nil {
+				return decimal.NaN, advanceErr
+			}
+		}
+		baseBalance, _ := baseline.Ledger.Balance(resourceID)
+		candidateBalance, _ := candidate.Ledger.Balance(resourceID)
+		return candidateBalance.Add(cost).Sub(baseBalance), nil
+	}
+	gross, err := grossAt(horizonMS)
 	if err != nil {
 		return relevanceCandidate{}, false, err
 	}
-	candidateAtHorizon, err := cloneState(suite.Catalog, candidateAtBuy)
-	if err != nil {
-		return relevanceCandidate{}, false, err
-	}
-	if _, err := suite.advance(baseAtHorizon, revision, horizonMS, mask, counter); err != nil {
-		return relevanceCandidate{}, false, err
-	}
-	if _, err := suite.advance(candidateAtHorizon, revision+1, horizonMS, mask, counter); err != nil {
-		return relevanceCandidate{}, false, err
-	}
-	baseBalance, _ := baseAtHorizon.Ledger.Balance(resourceID)
-	candidateBalance, _ := candidateAtHorizon.Ledger.Balance(resourceID)
-	gross := candidateBalance.Add(cost).Sub(baseBalance)
 	if !gross.Gt(decimal.Zero) {
 		return relevanceCandidate{}, false, nil
+	}
+	positiveLow, positiveHigh := earliest, horizonMS
+	for positiveLow < positiveHigh {
+		middle := positiveLow + (positiveHigh-positiveLow)/2
+		value, valueErr := grossAt(middle)
+		if valueErr != nil {
+			return relevanceCandidate{}, false, valueErr
+		}
+		if value.Gt(decimal.Zero) {
+			positiveHigh = middle
+		} else {
+			positiveLow = middle + 1
+		}
 	}
 	duration := horizonMS - earliest
 	value, err := ceilDecimalRatio(cost.Mul(decimal.FromFloat64(float64(duration))), gross)
 	if err != nil || value > relevanceMaxSafeInteger-(earliest-nowMS) {
 		return relevanceCandidate{}, false, err
 	}
-	return relevanceCandidate{ID: id, PaybackMS: earliest - nowMS + value, EarliestPositiveDeltaMS: horizonMS,
+	return relevanceCandidate{ID: id, PaybackMS: earliest - nowMS + value, EarliestPositiveDeltaMS: positiveLow,
 		AtMS: earliest, State: candidateAtBuy, Revision: revision + 1, RoleActivations: activations}, true, nil
 }
 
@@ -569,13 +637,6 @@ func stateDigest(state *save.State) (string, error) {
 	return hex.EncodeToString(digest[:]), nil
 }
 
-func maxInt64(left, right int64) int64 {
-	if left > right {
-		return left
-	}
-	return right
-}
-
 // runBeam performs the ruled width-eight search. Each child is scored by a
 // deterministic greedy rollout; equal-state nodes deduplicate on state hash +
 // virtual time, with raw-byte paths as the final ordering key.
@@ -626,6 +687,21 @@ func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) 
 			children = append(children, node{state: waitState, revision: current.revision, atMS: next, path: current.path + "/~wait"})
 		}
 		dedup := map[string]node{}
+		pruned := make([]node, 0, len(children))
+		for index := range children {
+			dominated := false
+			for other := range children {
+				if index != other && children[index].atMS == children[other].atMS &&
+					relevanceStateDominates(children[other].state, children[index].state, suite.Catalog) {
+					dominated = true
+					break
+				}
+			}
+			if !dominated {
+				pruned = append(pruned, children[index])
+			}
+		}
+		children = pruned
 		for index := range children {
 			child := &children[index]
 			rolloutState, cloneErr := cloneState(suite.Catalog, child.state)
@@ -671,6 +747,53 @@ func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) 
 		}
 	}
 	return best, nil
+}
+
+// relevanceStateDominates implements R11's componentwise relation at an equal
+// virtual time. A strict improvement is required; otherwise equal states are
+// left to the canonical digest deduplicator. Provisioned counts and carried
+// remainders are included because they affect future production even though
+// the public dominance description abbreviates them as milestone progress.
+func relevanceStateDominates(left, right *save.State, catalog *economy.Catalog) bool {
+	strict := false
+	for _, resource := range catalog.Resources() {
+		leftValue, leftOK := left.Ledger.Balance(resource.ID)
+		rightValue, rightOK := right.Ledger.Balance(resource.ID)
+		if leftOK != rightOK || leftOK && leftValue.Lt(rightValue) {
+			return false
+		}
+		if leftOK && leftValue.Gt(rightValue) {
+			strict = true
+		}
+	}
+	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
+		if left.GeneratorCounts[generator.ID] < right.GeneratorCounts[generator.ID] ||
+			left.GeneratorProvisioned[generator.ID] < right.GeneratorProvisioned[generator.ID] {
+			return false
+		}
+		if left.GeneratorCounts[generator.ID] > right.GeneratorCounts[generator.ID] ||
+			left.GeneratorProvisioned[generator.ID] > right.GeneratorProvisioned[generator.ID] {
+			strict = true
+		}
+	}
+	for _, upgrade := range catalog.Upgrades() {
+		if right.UpgradesOwned[upgrade.ID] && !left.UpgradesOwned[upgrade.ID] {
+			return false
+		}
+		if left.UpgradesOwned[upgrade.ID] && !right.UpgradesOwned[upgrade.ID] {
+			strict = true
+		}
+	}
+	for key, rightValue := range right.ProvisionRemaindersPPM {
+		leftValue := left.ProvisionRemaindersPPM[key]
+		if leftValue < rightValue {
+			return false
+		}
+		if leftValue > rightValue {
+			strict = true
+		}
+	}
+	return strict
 }
 
 func (suite *RelevanceSuite) runReferenceFrom(state *save.State, revision, nowMS int64, counter *relevanceCounter) (relevanceRunResult, error) {
