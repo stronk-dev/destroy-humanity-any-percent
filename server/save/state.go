@@ -1002,6 +1002,9 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	if state.ComputeBurstRemainingMS != 0 {
 		return fmt.Errorf("%w: Company compute burst leaked outside Company scope", ErrInvalidState)
 	}
+	if activePlayStatePresent(state) {
+		return fmt.Errorf("%w: Company active-play state leaked outside Company scope", ErrInvalidState)
+	}
 	if scope != economy.ScopeFounder || state.MinigameRatings == nil || state.MinigameOfflineQuality == nil {
 		return fmt.Errorf("%w: minigame state requires Founder v17+", ErrInvalidState)
 	}

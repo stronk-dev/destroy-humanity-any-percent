@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/activeplay"
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/save"
@@ -123,6 +124,33 @@ func TestActivePlayDynamicContributionUsesStaticDeclarationAndComboCap(t *testin
 	}
 }
 
+func TestActivePlayComboCapCoversAllAndGeneratorSpecificTargets(t *testing.T) {
+	economyCatalog, catalog := activePlayTestCatalog(t)
+	catalog.Combo.Cap = decimal.FromFloat64(10)
+	target := "generator.beige_tower"
+	state := &save.State{GeneratorCounts: map[string]int64{target: 100}, ActiveBuffs: []save.ActiveBuff{
+		{BuffInstanceID: "01985555-0000-7000-8000-000000000001", EffectRowID: "active.production", ExpiresAttendedMS: 100},
+		{BuffInstanceID: "01985555-0000-7000-8000-000000000002", EffectRowID: "active.building", SelectedTarget: &target, ExpiresAttendedMS: 100},
+	}}
+	values, saturated, err := activePlayContributionsWithClamp(state, catalog, 50)
+	if err != nil || !saturated {
+		t.Fatalf("values=%+v saturated=%v err=%v", values, saturated, err)
+	}
+	if _, err := validateContributions(economyCatalog, values); err != nil {
+		t.Fatal(err)
+	}
+	product := decimal.One
+	for _, value := range values {
+		if value.Target == "all" || value.Target == target {
+			product = product.Mul(value.Factor)
+		}
+	}
+	product = product.Quantize(decimal.CanonicalSignificantDigits)
+	if product.Gt(catalog.Combo.Cap) {
+		t.Fatalf("cross-target slot product %s > %s", product, catalog.Combo.Cap)
+	}
+}
+
 func TestActivePlayBundleCapsSchedulerToRepresentableOnlineHorizon(t *testing.T) {
 	bundle := activePlayReplayBundle(t)
 	policy := *bundle.Prestige
@@ -130,5 +158,42 @@ func TestActivePlayBundleCapsSchedulerToRepresentableOnlineHorizon(t *testing.T)
 	bundle.Prestige = &policy
 	if bundle.valid(bundle.ConstantsHash) {
 		t.Fatal("bundle accepted an online horizon that can cross two pending-opportunity expiries")
+	}
+}
+
+func TestActivePlayLuckyBoundaryVectors(t *testing.T) {
+	fixture, err := os.ReadFile("../../balance/testdata/active-play-foundation-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root struct {
+		Vectors []struct {
+			Name      string `json:"name"`
+			Bank      string `json:"bank"`
+			Rate      string `json:"rate"`
+			Fraction  string `json:"fraction"`
+			RateCap   string `json:"rate_cap"`
+			Epsilon   string `json:"epsilon"`
+			Requested string `json:"requested"`
+		} `json:"lucky_vectors"`
+	}
+	if err := json.Unmarshal(fixture, &root); err != nil || len(root.Vectors) != 5 {
+		t.Fatalf("vectors=%d err=%v", len(root.Vectors), err)
+	}
+	for _, vector := range root.Vectors {
+		t.Run(vector.Name, func(t *testing.T) {
+			values := make([]decimal.Decimal, 0, 5)
+			for _, encoded := range []string{vector.Bank, vector.Rate, vector.Fraction, vector.RateCap, vector.Epsilon} {
+				value, parseErr := decimal.ParseCanonical(encoded)
+				if parseErr != nil {
+					t.Fatal(parseErr)
+				}
+				values = append(values, value)
+			}
+			got, evaluateErr := luckyPayoutRequested(values[0], values[1], values[2], values[3], values[4])
+			if evaluateErr != nil || got.String() != vector.Requested {
+				t.Fatalf("got=%s want=%s err=%v", got, vector.Requested, evaluateErr)
+			}
+		})
 	}
 }

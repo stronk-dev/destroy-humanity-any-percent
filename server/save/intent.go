@@ -518,6 +518,9 @@ func validEventSchemaVersion(event EventWrite) bool {
 	if event.Kind == EventRunEnded {
 		return event.SchemaVersion == 2
 	}
+	if event.Kind == EventOpportunityClaimed || event.Kind == EventBuffStarted {
+		return event.SchemaVersion == 1 || event.SchemaVersion == 2
+	}
 	return event.SchemaVersion == 1
 }
 
@@ -554,10 +557,12 @@ func validateEventPayload(event EventWrite) error {
 			SelectedTarget      *string `json:"selected_target"`
 			ActivatedAttendedMS int64   `json:"activated_attended_ms"`
 			ExpiresAttendedMS   int64   `json:"expires_attended_ms"`
+			HardcapReasonKey    *string `json:"hardcap_reason_key,omitempty"`
 		}
 		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidV7Pattern.MatchString(payload.BuffInstanceID) ||
 			!mechanicalIDPattern.MatchString(payload.EffectRowID) || payload.SelectedTarget != nil && !mechanicalIDPattern.MatchString(*payload.SelectedTarget) ||
-			payload.ActivatedAttendedMS < 0 || payload.ExpiresAttendedMS <= payload.ActivatedAttendedMS || payload.ExpiresAttendedMS > decimal.MaxExactInteger {
+			payload.ActivatedAttendedMS < 0 || payload.ExpiresAttendedMS <= payload.ActivatedAttendedMS || payload.ExpiresAttendedMS > decimal.MaxExactInteger ||
+			event.SchemaVersion == 1 && payload.HardcapReasonKey != nil || event.SchemaVersion == 2 && payload.HardcapReasonKey != nil && !mechanicalIDPattern.MatchString(*payload.HardcapReasonKey) {
 			return fmt.Errorf("%w: invalid buff_started.v1 payload", ErrInvalidStream)
 		}
 	case EventOpportunityClaimed:
@@ -571,10 +576,13 @@ func validateEventPayload(event EventWrite) error {
 		if !uuidV7Pattern.MatchString(opportunityID) || !mechanicalIDPattern.MatchString(effectRowID) {
 			return fmt.Errorf("%w: invalid opportunity_claimed.v1 identity", ErrInvalidStream)
 		}
-		if len(payload) == 4 && hasExactRawKeys(payload, "opportunity_id", "effect_row_id", "selected_target", "buff_instance_id") {
+		if (len(payload) == 4 && event.SchemaVersion == 1 && hasExactRawKeys(payload, "opportunity_id", "effect_row_id", "selected_target", "buff_instance_id")) ||
+			(len(payload) == 5 && event.SchemaVersion == 2 && hasExactRawKeys(payload, "opportunity_id", "effect_row_id", "selected_target", "buff_instance_id", "cap_reason_key")) {
 			var buffID string
+			var reason *string
 			_ = json.Unmarshal(payload["buff_instance_id"], &buffID)
-			if _, ok := payload["selected_target"]; !ok || !uuidV7Pattern.MatchString(buffID) {
+			_ = json.Unmarshal(payload["cap_reason_key"], &reason)
+			if _, ok := payload["selected_target"]; !ok || !uuidV7Pattern.MatchString(buffID) || reason != nil && !mechanicalIDPattern.MatchString(*reason) {
 				return fmt.Errorf("%w: invalid opportunity_claimed.v1 buff", ErrInvalidStream)
 			}
 		} else if len(payload) == 7 && hasExactRawKeys(payload, "opportunity_id", "effect_row_id", "selected_target", "requested_delta", "actual_credited_delta", "saturated", "cap_reason_key") {

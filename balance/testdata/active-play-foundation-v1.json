@@ -21,5 +21,12 @@
   "spawn_vectors": [
     { "founder_id": "01985555-0000-7000-8000-000000000001", "run_seq": 1, "sequence": 0, "from_attended_ms": 0 },
     { "founder_id": "01985555-0000-7000-8000-000000000001", "run_seq": 2, "sequence": 4, "from_attended_ms": 9007199250000000 }
+  ],
+  "lucky_vectors": [
+    { "name": "zero-zero", "bank": "0", "rate": "0", "fraction": "1.5e-1", "rate_cap": "9e2", "epsilon": "0", "requested": "0" },
+    { "name": "epsilon-only", "bank": "0", "rate": "0", "fraction": "1.5e-1", "rate_cap": "9e2", "epsilon": "1.3e1", "requested": "1.3e1" },
+    { "name": "one-ulp-below-cap", "bank": "5.99999999999e3", "rate": "1e0", "fraction": "1.5e-1", "rate_cap": "9e2", "epsilon": "0", "requested": "8.99999999998e2" },
+    { "name": "at-cap", "bank": "6e3", "rate": "1e0", "fraction": "1.5e-1", "rate_cap": "9e2", "epsilon": "0", "requested": "9e2" },
+    { "name": "overflow-scale", "bank": "9e8999999999999995", "rate": "9e8999999999999995", "fraction": "1.5e-1", "rate_cap": "9e2", "epsilon": "1.3e1", "requested": "1.35e8999999999999995" }
   ]
 }

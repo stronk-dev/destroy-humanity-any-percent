@@ -2,7 +2,7 @@ import Decimal from "break_infinity.js";
 
 import type { EconomyCatalog } from "./economy-kernel";
 import { substream } from "./combat/rng";
-import { isStateValue, MAX_EXACT_INTEGER, parseCanonical } from "./numeric";
+import { canonicalString, isStateValue, MAX_EXACT_INTEGER, parseCanonical, quantize } from "./numeric";
 
 export const ACTIVE_PLAY_SCHEMA_VERSION = 1;
 export const ACTIVE_PLAY_SAMPLER_VERSION = "gamma6_exp.v1";
@@ -82,6 +82,12 @@ export function activePlayBuffId(baseSeed: bigint, sequence: number, attendedMs:
 
 export function activePlayOpportunityId(baseSeed: bigint, sequence: number, attendedMs: number): string {
 	return activePlayDeterministicId(baseSeed, sequence, attendedMs, ACTIVE_PLAY_OPPORTUNITY_ID_SUBSTREAM);
+}
+
+export function activePlayLuckyRequested(bank: string, rate: string, fraction: string, rateCap: string, epsilon: string): string {
+  const bankTerm=quantize(parseCanonical(fraction).mul(parseCanonical(bank)));
+  const rateTerm=quantize(parseCanonical(rateCap).mul(parseCanonical(rate)));
+  return canonicalString(quantize(Decimal.min(bankTerm,rateTerm).add(parseCanonical(epsilon))));
 }
 
 function activePlayDeterministicId(baseSeed: bigint, sequence: number, attendedMs: number, label: string): string {

@@ -241,8 +241,13 @@ func activePlayScheduleEvents(evidence activePlayScheduleEvidence) []save.EventW
 }
 
 func activePlayContributions(state *save.State, catalog *activeplay.Catalog, attendedNow int64) ([]multiplier.Contribution, error) {
+	result, _, err := activePlayContributionsWithClamp(state, catalog, attendedNow)
+	return result, err
+}
+
+func activePlayContributionsWithClamp(state *save.State, catalog *activeplay.Catalog, attendedNow int64) ([]multiplier.Contribution, bool, error) {
 	if state == nil || catalog == nil || attendedNow < 0 {
-		return nil, ErrInvalidEngineState
+		return nil, false, ErrInvalidEngineState
 	}
 	result := make([]multiplier.Contribution, 0)
 	for _, buff := range state.ActiveBuffs {
@@ -251,7 +256,7 @@ func activePlayContributions(state *save.State, catalog *activeplay.Catalog, att
 		}
 		effect, ok := catalog.Effect(buff.EffectRowID)
 		if !ok {
-			return nil, ErrInvalidEngineState
+			return nil, false, ErrInvalidEngineState
 		}
 		source := "active_play." + effect.ID + "." + buff.BuffInstanceID
 		switch effect.Kind {
@@ -263,23 +268,24 @@ func activePlayContributions(state *save.State, catalog *activeplay.Catalog, att
 			}
 		case "building_special":
 			if buff.SelectedTarget == nil {
-				return nil, ErrInvalidEngineState
+				return nil, false, ErrInvalidEngineState
 			}
 			owned, ok := state.GeneratorCounts[*buff.SelectedTarget]
 			if !ok || owned < 0 {
-				return nil, ErrInvalidEngineState
+				return nil, false, ErrInvalidEngineState
 			}
 			factor, err := countPPMFactor(owned, effect.PerOwnedPPM)
 			if err != nil {
-				return nil, err
+				return nil, false, err
 			}
 			result = append(result, multiplier.Contribution{Slot: multiplier.SlotEventBuffs, SourceID: source, Target: *buff.SelectedTarget, Factor: factor})
 		default:
-			return nil, ErrInvalidEngineState
+			return nil, false, ErrInvalidEngineState
 		}
 	}
 	sort.Slice(result, func(i, j int) bool { return contributionKey(result[i]) < contributionKey(result[j]) })
-	return clampActiveContributionProducts(result, catalog.Combo.Cap), nil
+	result, saturated := clampActiveContributionProducts(result, catalog)
+	return result, saturated, nil
 }
 
 func resolveActiveClaimEvidence(state *save.State, catalogs CatalogBundle, revision save.Revision, request IntentRequest,
@@ -367,6 +373,7 @@ func applyClaimOpportunity(request IntentRequest, state *save.State, catalogs Ca
 	claim.NextOpportunityAttendedMS = next.SpawnedAttendedMS
 	claimPayload := map[string]any{"opportunity_id": pending.OpportunityID, "effect_row_id": pending.EffectRowID,
 		"selected_target": pending.SelectedGeneratorID}
+	claimSchemaVersion := 1
 	var effectEvents []save.EventWrite
 	switch effect.Kind {
 	case "production_frenzy", "click_frenzy", "building_special":
@@ -378,9 +385,19 @@ func applyClaimOpportunity(request IntentRequest, state *save.State, catalogs Ca
 		state.ActiveBuffs = append(state.ActiveBuffs, buff)
 		sort.Slice(state.ActiveBuffs, func(i, j int) bool { return state.ActiveBuffs[i].BuffInstanceID < state.ActiveBuffs[j].BuffInstanceID })
 		claimPayload["buff_instance_id"] = buffID
+		claimSchemaVersion = 2
+		_, comboSaturated, contributionErr := activePlayContributionsWithClamp(state, catalogs.Opportunities, attendedNow)
+		if contributionErr != nil {
+			return save.IntentDecision{}, contributionErr
+		}
+		if comboSaturated {
+			claim.CapReasonKey = stringPointer(catalogs.Opportunities.Combo.HardcapReasonKey)
+		}
+		claimPayload["cap_reason_key"] = claim.CapReasonKey
 		payload, _ := json.Marshal(map[string]any{"buff_instance_id": buffID, "effect_row_id": effect.ID, "selected_target": target,
-			"activated_attended_ms": attendedNow, "expires_attended_ms": buff.ExpiresAttendedMS})
-		effectEvents = append(effectEvents, save.EventWrite{Kind: save.EventBuffStarted, SchemaVersion: 1, IntentID: request.IntentID, Payload: payload})
+			"activated_attended_ms": attendedNow, "expires_attended_ms": buff.ExpiresAttendedMS,
+			"hardcap_reason_key": claim.CapReasonKey})
+		effectEvents = append(effectEvents, save.EventWrite{Kind: save.EventBuffStarted, SchemaVersion: 2, IntentID: request.IntentID, Payload: payload})
 	case "lucky_payout":
 		bank, exists := state.Ledger.Balance(effect.ResourceID)
 		if !exists {
@@ -391,13 +408,10 @@ func applyClaimOpportunity(request IntentRequest, state *save.State, catalogs Ca
 			return save.IntentDecision{}, rateErr
 		}
 		rate := decimal.SumDeterministic(rates[effect.ResourceID])
-		bankTerm := effect.LuckyBankFrac.Mul(bank).Quantize(decimal.CanonicalSignificantDigits)
-		rateTerm := effect.LuckyRateCap.Mul(rate).Quantize(decimal.CanonicalSignificantDigits)
-		minimum := bankTerm
-		if rateTerm.Lt(minimum) {
-			minimum = rateTerm
+		requested, requestErr := luckyPayoutRequested(bank, rate, effect.LuckyBankFrac, effect.LuckyRateCap, effect.Epsilon)
+		if requestErr != nil {
+			return save.IntentDecision{}, requestErr
 		}
-		requested := minimum.Add(effect.Epsilon).Quantize(decimal.CanonicalSignificantDigits)
 		receipt, applyErr := state.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{ResourceID: effect.ResourceID, Delta: requested}}})
 		if applyErr != nil {
 			return save.IntentDecision{}, applyErr
@@ -426,7 +440,7 @@ func applyClaimOpportunity(request IntentRequest, state *save.State, catalogs Ca
 		return save.IntentDecision{}, ErrInvalidReplayInputs
 	}
 	claimEncoded, _ := json.Marshal(claimPayload)
-	events = append(events, save.EventWrite{Kind: save.EventOpportunityClaimed, SchemaVersion: 1, IntentID: request.IntentID, Payload: claimEncoded})
+	events = append(events, save.EventWrite{Kind: save.EventOpportunityClaimed, SchemaVersion: claimSchemaVersion, IntentID: request.IntentID, Payload: claimEncoded})
 	events = append(events, effectEvents...)
 	decision, err := appliedDecisionWithActionDebits(request, state, catalogs.Economy, revision.Number+1, 1, before, postAccrual, events, nil)
 	if err != nil {
@@ -434,6 +448,20 @@ func applyClaimOpportunity(request IntentRequest, state *save.State, catalogs Ca
 	}
 	decision.Receipt, err = addOpportunityReceipt(decision.Receipt, claim)
 	return decision, err
+}
+
+func luckyPayoutRequested(bank, rate, fraction, rateCap, epsilon decimal.Decimal) (decimal.Decimal, error) {
+	bankTerm := fraction.Mul(bank).Quantize(decimal.CanonicalSignificantDigits)
+	rateTerm := rateCap.Mul(rate).Quantize(decimal.CanonicalSignificantDigits)
+	minimum := bankTerm
+	if rateTerm.Lt(minimum) {
+		minimum = rateTerm
+	}
+	requested := minimum.Add(epsilon).Quantize(decimal.CanonicalSignificantDigits)
+	if !requested.IsStateValue() || requested.Lt(decimal.Zero) {
+		return decimal.NaN, ErrInvalidEngineState
+	}
+	return requested, nil
 }
 
 func addOpportunityReceipt(receipt json.RawMessage, claim activePlayClaimEvidence) (json.RawMessage, error) {
@@ -469,29 +497,66 @@ func cloneStringPointer(value *string) *string {
 func stringPointer(value string) *string { result := value; return &result }
 func boolPointer(value bool) *bool       { result := value; return &result }
 
-func clampActiveContributionProducts(values []multiplier.Contribution, cap decimal.Decimal) []multiplier.Contribution {
+func clampActiveContributionProducts(values []multiplier.Contribution, catalog *activeplay.Catalog) ([]multiplier.Contribution, bool) {
 	result := append([]multiplier.Contribution(nil), values...)
 	byTarget := map[string][]int{}
 	for index := range result {
 		byTarget[result[index].Target] = append(byTarget[result[index].Target], index)
 	}
-	for _, indexes := range byTarget {
-		product := decimal.One
-		for _, index := range indexes {
-			candidate := product.Mul(result[index].Factor).Quantize(decimal.CanonicalSignificantDigits)
-			if candidate.Gt(cap) {
-				result[index].Factor = cap.Div(product).Quantize(decimal.CanonicalSignificantDigits)
-				for _, later := range indexes {
-					if later > index {
-						result[later].Factor = decimal.One
-					}
-				}
-				break
-			}
-			product = candidate
+	allProduct, saturated := clampActiveContributionGroup(result, byTarget["all"], catalog.Combo.Cap)
+	targets := make([]string, 0, len(byTarget))
+	for target := range byTarget {
+		if target != "all" {
+			targets = append(targets, target)
 		}
 	}
-	return result
+	sort.Strings(targets)
+	for _, target := range targets {
+		limit := catalog.Combo.Cap
+		if activeTargetCombinesWithAll(result, byTarget[target], catalog) {
+			limit = safeActiveCapFactor(catalog.Combo.Cap, allProduct)
+		}
+		_, hit := clampActiveContributionGroup(result, byTarget[target], limit)
+		saturated = saturated || hit
+	}
+	return result, saturated
+}
+
+func activeTargetCombinesWithAll(values []multiplier.Contribution, indexes []int, catalog *activeplay.Catalog) bool {
+	for _, index := range indexes {
+		declaration := activeDeclarationID(values[index].SourceID, values[index].Target)
+		if effect, ok := catalog.Effect(declaration); ok && effect.Kind == "building_special" {
+			return true
+		}
+	}
+	return false
+}
+
+func clampActiveContributionGroup(values []multiplier.Contribution, indexes []int, cap decimal.Decimal) (decimal.Decimal, bool) {
+	product := decimal.One
+	for at, index := range indexes {
+		candidate := product.Mul(values[index].Factor).Quantize(decimal.CanonicalSignificantDigits)
+		if candidate.Gt(cap) {
+			values[index].Factor = safeActiveCapFactor(cap, product)
+			for _, later := range indexes[at+1:] {
+				values[later].Factor = decimal.One
+			}
+			return product.Mul(values[index].Factor).Quantize(decimal.CanonicalSignificantDigits), true
+		}
+		product = candidate
+	}
+	return product, false
+}
+
+func safeActiveCapFactor(cap, product decimal.Decimal) decimal.Decimal {
+	nominal := cap.Div(product).Quantize(decimal.CanonicalSignificantDigits)
+	for _, offset := range []float64{0, -1, -2} {
+		candidate := decimal.New(nominal.Mantissa()+offset*1e-11, nominal.Exponent()).Quantize(decimal.CanonicalSignificantDigits)
+		if candidate.IsStateValue() && candidate.Gt(decimal.Zero) && product.Mul(candidate).Quantize(decimal.CanonicalSignificantDigits).Lte(cap) {
+			return candidate
+		}
+	}
+	return decimal.One
 }
 
 func activeDeclarationID(sourceID, target string) string {

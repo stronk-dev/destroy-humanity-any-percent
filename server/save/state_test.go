@@ -377,6 +377,11 @@ func TestFounderV17AndV18RoundTripWhileCompanyRejectsThem(t *testing.T) {
 		CooldownUntilAttendedMS: map[string]int64{"care.feed": 0}, TrustPPM: 500_000,
 		BehaviorState: pet.BehaviorIdle, BehaviorQueue: []pet.BehaviorQueueEntry{},
 	}}
+	state.ActiveBuffs = []ActiveBuff{}
+	if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("Founder v18 accepted Company active-play state: %v", err)
+	}
+	state.ActiveBuffs = nil
 	encoded, err = EncodeState(state)
 	if err != nil {
 		t.Fatal(err)

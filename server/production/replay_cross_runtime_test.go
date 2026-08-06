@@ -351,7 +351,7 @@ func makeDoctrineReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFullR
 	artifacts, hash := catalogs.Artifacts, catalogs.ConstantsHash
 	state := replayFixtureState(t, catalogs.Economy, now)
 	state.WireVersion, state.Tier, state.ComputeCreditMS = 17, 3, 5_000
-	state.GeneratorCounts["generator.beige_tower"] = 1
+	state.GeneratorCounts["generator.beige_tower"] = 100
 	setCash(t, state, "1e13")
 	meterState, err := meters.NewRunState(catalogs.Meters, 0)
 	if err != nil {
@@ -538,8 +538,8 @@ func makeActivePlayReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFul
 		t.Fatal("first production opportunity was not claimed")
 	}
 	secondAt := started.Add(time.Duration(state.NextOpportunityAttendedMS) * time.Millisecond)
-	if manual(secondAt) != save.IntentApplied || state.PendingOpportunity == nil || state.PendingOpportunity.EffectRowID != "active.production" {
-		t.Fatal("second production opportunity did not materialize")
+	if manual(secondAt) != save.IntentApplied || state.PendingOpportunity == nil || state.PendingOpportunity.EffectRowID != "active.building" {
+		t.Fatal("building-special opportunity did not materialize")
 	}
 	if claim(state.PendingOpportunity.OpportunityID, secondAt) != save.IntentApplied || len(state.ActiveBuffs) != 2 {
 		t.Fatal("overlapping production buffs were not recorded")
@@ -564,11 +564,20 @@ func makeActivePlayReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFul
 		t.Fatal("offline wall gap advanced the attended scheduler")
 	}
 	expiryAt := offlineReturn.Add(time.Duration(catalogs.Opportunities.Schedule.LifetimeMS) * time.Millisecond)
+	if manual(expiryAt.Add(-time.Millisecond)) != save.IntentApplied || state.PendingOpportunity == nil || state.PendingOpportunity.OpportunityID != missedID {
+		t.Fatal("pre-expiry command did not preserve the pending opportunity")
+	}
 	if claim(missedID, expiryAt) != save.IntentRejected || state.PendingOpportunity == nil || state.PendingOpportunity.OpportunityID != missedID {
 		t.Fatal("expired claim did not reject and roll back scheduler cleanup")
 	}
-	if manual(expiryAt) != save.IntentApplied || state.PendingOpportunity != nil {
-		t.Fatal("next applied command did not persist missed-opportunity cleanup")
+	nextAfterMiss, err := catalogs.Opportunities.Spawn(founderID, state.RunSeq, state.OpportunitySpawnSeq, state.PendingOpportunity.ExpiresAttendedMS)
+	if err != nil {
+		t.Fatal(err)
+	}
+	compoundAt := expiryAt.Add(time.Duration(nextAfterMiss.SampledIntervalMS) * time.Millisecond)
+	compoundOutcome := manual(compoundAt)
+	if compoundOutcome != save.IntentApplied || state.PendingOpportunity == nil || state.PendingOpportunity.OpportunityID != nextAfterMiss.OpportunityID {
+		t.Fatalf("next applied command did not persist compound miss+spawn: outcome=%s pending=%+v expected=%+v", compoundOutcome, state.PendingOpportunity, nextAfterMiss)
 	}
 	finalState := mustEncodeState(t, state)
 	return crossRuntimeFullRun{ConstantsHash: hash, Artifacts: stringArtifacts(catalogs.Artifacts), Genesis: genesis, Entries: entries,
@@ -637,9 +646,10 @@ func activePlayFixtureFounder(t *testing.T, catalog *activeplay.Catalog) string 
 		second, e1 := catalog.Spawn(founderID, 1, 1, first.SpawnedAttendedMS)
 		third, e2 := catalog.Spawn(founderID, 1, 2, second.SpawnedAttendedMS)
 		fourth, e3 := catalog.Spawn(founderID, 1, 3, third.SpawnedAttendedMS)
-		if e0 == nil && e1 == nil && e2 == nil && e3 == nil && first.EffectRowID == "active.production" && second.EffectRowID == "active.production" &&
+		fifth, e4 := catalog.Spawn(founderID, 1, 4, fourth.ExpiresAttendedMS)
+		if e0 == nil && e1 == nil && e2 == nil && e3 == nil && e4 == nil && first.EffectRowID == "active.production" && second.EffectRowID == "active.building" &&
 			third.EffectRowID == "active.lucky" && fourth.EffectRowID == "active.click" && first.SampledIntervalMS <= 5_000 && second.SampledIntervalMS < 5_000 &&
-			third.SampledIntervalMS <= 5_000 && fourth.SampledIntervalMS <= 5_000 {
+			third.SampledIntervalMS <= 5_000 && fourth.SampledIntervalMS <= 5_000 && fifth.SampledIntervalMS < 5_000 {
 			return founderID
 		}
 	}
