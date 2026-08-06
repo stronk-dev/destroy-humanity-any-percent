@@ -279,3 +279,30 @@ baseline and seed golden. `bbde308` extends identity validation across the histo
 union. Inactive fixture reports must remain byte-identical; active reports may change only
 `constants_hash` to the expected full epoch-bundle hash. Repository tests prove both the rejected
 inactive behavior rewrite and the permitted active hash-only repair.
+
+## 2026-08-06 — remediation self-review: approved
+
+- **Review by:** Codex
+- **Recorded by:** Codex
+- **Reviewed range:** inclusive union `eb98f5c^..9c17003`.
+- **Verdict:** approved. The implementation closes all seven original findings plus the three
+  seams found during remediation review: actual shared mutation payloads, bounded/raw exact numeric
+  parsing, duplicate-row vectors, historical-registry retention, and relevance-report
+  `CONSTANTS-IDENTITY:` semantics. Full root `make verify` passed at the endpoint. This self-review
+  is the required first filter; it does not substitute for the designated gate.
+
+## 2026-08-06 — designated independent adversarial review: approved
+
+- **Review by:** Darwin (`/root/l7b_independent_review`)
+- **Recorded by:** Codex
+- **Reviewed range:** inclusive union `eb98f5c^..9c17003`.
+- **Verdict:** approved with no remaining findings. Darwin independently re-ran full
+  `make verify` at the committed endpoint and verified window enforcement, allocation-safe
+  preflight, alias-resistant simulation boundaries, active and historical registry governance,
+  exact Go/TypeScript numeric grammar and shared mutation vectors, trap-justification evidence,
+  and relevance-report identity protection. The first browser attempt was sandbox-blocked from
+  binding localhost; the identical suite passed with the standing approved test authority.
+
+The self-review and designated ranges each cover the full remediation span, and the earlier
+designated review covers the original implementation span. With canonical docs current and the
+test-only-v4 versus future-production-mint boundary preserved, the RFC is archival-eligible.

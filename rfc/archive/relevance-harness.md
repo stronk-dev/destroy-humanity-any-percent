@@ -1,9 +1,7 @@
 # RFC: Relevance Harness
 
-- **Status:** accepted — R1-R15 ruled (greedy/beam arithmetic incl. the `SimulateAdvance` wait seam,
-  finite reached/unreached encoding, `relevance_policy` + report schemas, exact run/transition
-  budgets, window/gate binding + evidence ownership); implementing. Archives against a test-only
-  schema-v4 fixture; T0-T1 owns the production relevance baseline.
+- **Status:** implemented. Archived against a test-only schema-v4 fixture; T0–T1 owns the first
+  production relevance policy, scenario, golden report, and epoch mint.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-01
 - **Design refs:** `design/02 §11b` (tier-relevance doctrine — this RFC is its enforcement half)

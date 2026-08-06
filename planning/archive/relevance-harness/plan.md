@@ -10,8 +10,9 @@ RFC: `rfc/relevance-harness.md`
 - [x] Wire the fail-closed relevance gate and its BALANCE-CHANGE artifact discipline.
 - [x] Prove the generic layer with a discriminating test-only content fixture.
 - [x] Carry the first production scenario/baseline gate explicitly to the T0-T1 content mint.
-- [ ] Run normal root verification and obtain both mandatory full-range reviews before archival.
+- [x] Run normal root verification and obtain both mandatory full-range reviews before archival.
 
-Current work: implement the now-ruled R1-R15 contract. The production wait seam, solver, canonical
-policy/report bytes, budget preflight, and fixture gate must land together before any production
-schema-v4 catalog can opt in.
+Completed: the R1–R15 generic harness is implemented against its discriminating test-only schema-v4
+fixture, all review findings are remediated, root verification is green, and both mandatory review
+gates cover the full implementation/remediation spans. T0–T1 still owns the first production
+scenario, policy, golden report, and epoch mint.
