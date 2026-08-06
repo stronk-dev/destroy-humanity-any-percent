@@ -1,6 +1,6 @@
 # RFC: Soul Foundation (the personal ledger)
 
-- **Status:** accepted — SB1-SB16 ruled (exact artifact, soul_exhausted_source_ids eligibility, the
+- **Status:** accepted direction; implementation blocked on SB17-SB23 — SB1-SB16 ruled (artifact shape, soul_exhausted_source_ids eligibility, the
   ApplyDebit component, touch-grass `soul_recovery_sessions` with NO Company bump, human-content
   classification, v20 activation+wire). Implementation DEPENDENCY-BLOCKED on Fiscal v19 being
   implemented; the pure catalog/band layer may land earlier.
@@ -569,3 +569,119 @@ All accepted (Codex's proposed contracts are sound). Owner-calls: SB11, SB13.
 SB10-SB16 fully ruled. S1-S6 refined (not contradicted). Soul implementation remains DEPENDENCY-BLOCKED
 on Fiscal v19 being implemented; the pure catalog/band/`HumanContentLocked` layer may land earlier.
 - 2026-08-06: non-normative reference cleanup for publication; no spec change.
+
+## Implementation acceptance recheck (2026-08-06) — blocked SB17-SB23
+
+Fiscal v19 is now implemented and archived, so the upstream dependency is closed. Re-reading the
+normative body against the shipped Founder replay, save-v19 codec, session coordinators, and artifact
+loaders exposes seven byte-level contracts that SB10-SB16 explicitly require but do not enumerate.
+SB16 itself ends with “Enumerate the exact start/cancel/resolve + owner-debit resolved/receipt/event
+objects”; no later section supplies those objects. Implementing past these gaps would choose public
+commands, persistence semantics, and wire bytes in code.
+
+### SB17 — The “exact” artifact still has open enum members and registry rules
+
+SB10 enumerates root/row keys, but not the closed `owner_kind` members, the closed ending-variant IDs,
+whether production `debit_sources` / `recovery_activities` may be empty, or the exact copy-key registry
+passed to both loaders. Those choices affect accepted bytes and whether an empty pre-content artifact
+can activate v20.
+
+**Proposed contract:** enumerate the literal owner and ending unions; allow empty source/activity arrays
+for the production pre-content artifact while requiring the non-epoch fixture to contain at least one
+of each; pass the tracked verified-copy-key registry to Go and the generated `COPY_KEYS` set to TS;
+every `curtain_copy_key`, band `reason_key`, activity `reason_key`, and ending copy key (if present) must
+resolve there. State whether ending-policy values are enum IDs or copy keys—never overload one field as
+both.
+
+### SB18 — `ApplyDebit` names fields but not callable errors or exact output/event bytes
+
+SB12 supplies a useful result shape and event order, but it does not enumerate `owner_kind` mismatch,
+unknown source, reused exhaust source, missing eligibility, and unaffordable errors in the closed
+taxonomy. Nor does it give exact keys/null rules for the three Soul events. The first owner cannot
+integrate the component without inventing externally visible receipt/event bytes.
+
+**Proposed contract:** keep `ApplyDebit` store-free and return typed errors mapped by the owner to the
+existing categories: `unknown_id/source_id`, `not_eligible/soul_owner`,
+`not_eligible/soul_source_consumed`, `not_eligible/soul_eligibility`, and `unaffordable/soul`. Define
+exact payloads: `soul_price_paid.v1 {source_id,owner_kind,eligibility_ref,soul_before,debit,soul_after,
+band_before,band_after,curtain_copy_key}`, `soul_band_changed.v1 {soul_before,soul_after,band_before,
+band_after,reason_key}`, and `soul_depleted.v1 {source_id,owner_kind,eligibility_ref,soul_before,
+soul_after,occurred_at_ms}`. All Soul amounts are safe integers; no nullable fields.
+
+### SB19 — The recovery session has no exact persistence or command surface
+
+SB13-SB14 require a Postgres lifecycle but do not name the command kinds, session ID source, table
+columns/status union, idempotency key, claim-token lease, or terminal receipts. “Patterned on
+minigames” is not a schema: minigames have score certification and payout rows that recovery does not.
+
+**Proposed contract:** name three server endpoints/commands (`start_soul_recovery`,
+`cancel_soul_recovery`, `resolve_soul_recovery`) which are coordinator commands and never Company or
+Founder `ApplyLogged` intent kinds. Persist a UUIDv7 session with founder/company/run coordinates,
+activity ID, start Founder-attended coordinate, required duration, status
+`active|claimed|resolved|cancelled`, claim token/lease, request hashes, terminal receipt, and created/
+updated timestamps. A partial unique index enforces one `active|claimed` session per Founder. Literal
+retry returns the stored terminal receipt; mismatched reuse rejects `idempotency_conflict`.
+
+### SB20 — The zero-output suppression segment is not an ApplyLogged contract
+
+The RFC says the segment is frozen into “the affected Company command's replay_inputs,” while ordinary
+Company commands reject during an active session. It never defines which command consumes the segment,
+its exact coordinates, or how the production evaluator advances time without minting base accrual,
+provisioning, faction stock, meters, achievements, or other accrual hooks. Merely setting
+`evaluated_through` would skip hook watermarks and can replay differently.
+
+**Proposed contract:** only the recovery resolve coordinator writes one server-authored Company log arm
+`resolve_soul_recovery.v1`; its resolved input carries
+`suppression {from_evaluated_ms,to_evaluated_ms,founder_attended_start_ms,
+founder_attended_end_ms,session_id}` plus the normal frozen catalogs/identity. A dedicated
+`ApplySuppressedLogged` boundary, shared by live and replay, advances every time/watermark state exactly
+as normal evaluation but asserts zero ledger delta, zero provision/faction/guild output, and no
+production-derived meter/achievement observations. Cancel writes the same boundary through its cancel
+coordinate and grants no Soul. No ordinary client intent can submit this arm.
+
+### SB21 — Founder v20 activation evidence and codec bytes are incomplete
+
+SB16 says v20 “appends only” eligibility/activity-owned state, while SB13 places activity state in SQL.
+The actual save therefore appears to append only `soul_exhausted_source_ids`, but this is not stated as
+the exact v20 extension. Exit/New-Founder activation names `{soul_initial,band_member}` without saying
+which existing Exit resolved object owns it, whether `band_member` is evidence or derived, or how replay
+rejects a relabeled artifact.
+
+**Proposed contract:** Founder v20 extends v19 with exactly one key,
+`soul_exhausted_source_ids: []`, raw-byte sorted/unique. The existing `soul` key becomes bounded by the
+pinned artifact. The Exit resolved arm gains `next_soul {soul_initial,band_member}` iff the next bundle
+contains Soul; replay recomputes both from exact artifact bytes and rejects disagreement. New Founder
+uses the same initializer without fabricating an Exit. Pre-v20 requires `soul==0` and no exhausted set;
+Company codecs continue to reject Founder versions 19/20.
+
+### SB22 — Pet/minigame gating additions are not backward-compatible byte contracts
+
+SB15 requires new mandatory `soul_gate` fields in two independently pinned artifacts, but does not say
+whether their schema versions bump, how pre-Soul artifacts decode, or which exact pet actions are
+`essential|recovery|ordinary`. Adding required fields in place would reinterpret immutable historical
+bytes; defaulting them would create a deploy-current fallback.
+
+**Proposed contract:** bump both artifact schema versions. Historical versions retain their old grammar
+and are valid only in bundles without Soul. New minigame rows require `soul_gate:
+human_hobby|unrelated`; new pet action rows require `soul_gate:essential|recovery|ordinary`; a bundle
+containing Soul requires only the new schemas. The fixture enumerates at least one row of every member.
+The composed resolver receives Founder revision + pinned constants hash and fails closed on hash drift;
+no package reads deploy-current Soul policy.
+
+### SB23 — Recovery/activation logs and atomic ordering are not enumerated
+
+The RFC names three Soul events but not start/cancel/session events, the two replay-log arms, or their
+order relative to the zero-output Company transition and Founder recovery. Without an exact order,
+live and career replay can both be locally correct and still compare different event arrays.
+
+**Proposed contract:** register `soul_recovery_started.v1`, `soul_recovery_cancelled.v1`, and
+`soul_recovered.v1` with exact session/activity/coordinate/before-after keys. Start commits session +
+started event only. Cancel commits Company suppressed-log row first, then Founder audit row/event, then
+terminal session receipt. Resolve locks Founder then Company, claims the session, appends Company
+suppressed-log row, applies Founder saturation, appends `soul_recovered.v1` then optional
+`soul_band_changed.v1`, and stores the terminal receipt—all in one transaction. Fault injection at
+every boundary must leave either all rows or none.
+
+Until SB17-SB23 are ruled and reconciled into S1-S6, the pure package's broad direction is clear but
+the artifact bytes, v20 codec activation, public coordinator, and cross-stream replay cannot be
+implemented without inventing mechanics. No Soul code or artifact was added in this recheck.

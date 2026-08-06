@@ -76,3 +76,18 @@ rail absent, and make the real production opportunity cost auditable. No Soul co
 - SB16: Founder v20 retains soul key, revalidates [floor,max], appends eligibility/activity state;
   biconditional floor 20 (needs fiscal+minigames+pets); dependency-blocked on Fiscal v19 impl.
 Status -> accepted; SB1-SB16 ruled; impl dependency-blocked on Fiscal v19.
+
+## 2026-08-06 — Codex post-Fiscal implementation recheck: blocked (SB17-SB23)
+
+Review by: Codex. Recorded by: Codex.
+
+Fiscal v19 is now implemented, reviewed, and archived, so the named dependency is closed. Re-read the
+full Soul RFC against the v19 Founder codec, Exit resolved arms, minigame session coordinator,
+`ApplyLogged` accrual path, event registry, and the current pet/minigame artifact grammars.
+
+Seven executable contracts remain absent: literal artifact enum/registry rules; debit errors and event
+bytes; recovery-session schema/commands; the zero-output Company replay boundary; exact v20 extension
+and activation evidence; versioned pet/minigame gating bytes; and the cross-stream event/log order.
+SB16 explicitly asks a future edit to enumerate several of these and the SB10-SB16 ruling section does
+not do so. Implementing now would invent public API and transactional semantics. SB17-SB23 are filed
+with concrete proposals; no Soul code or data was introduced.
