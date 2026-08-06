@@ -23,7 +23,7 @@ const (
 	CurrentVersion           = 14
 	LatestSupportedVersion   = 16
 	LatestFounderVersion     = 19
-	LatestCompanyVersion     = 17
+	LatestCompanyVersion     = 18
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
 )
@@ -47,6 +47,10 @@ type State struct {
 	EvaluatedThrough           time.Time
 	ComputeCreditMS            int64
 	ComputeBurstRemainingMS    int64
+	OpportunitySpawnSeq        int64
+	NextOpportunityAttendedMS  int64
+	PendingOpportunity         *PendingOpportunity
+	ActiveBuffs                []ActiveBuff
 	ManualTokenMilli           int64
 	ManualTokenRefilledAt      time.Time
 	GatesCrossed               map[string]bool
@@ -124,6 +128,22 @@ type ExitOfferState struct {
 type OfflineSpan struct {
 	From time.Time
 	To   time.Time
+}
+
+type PendingOpportunity struct {
+	OpportunityID       string  `json:"opportunity_id"`
+	SpawnedAttendedMS   int64   `json:"spawned_attended_ms"`
+	ExpiresAttendedMS   int64   `json:"expires_attended_ms"`
+	EffectRowID         string  `json:"effect_row_id"`
+	SelectedGeneratorID *string `json:"selected_generator_id"`
+}
+
+type ActiveBuff struct {
+	BuffInstanceID      string  `json:"buff_instance_id"`
+	EffectRowID         string  `json:"effect_row_id"`
+	SelectedTarget      *string `json:"selected_target"`
+	ActivatedAttendedMS int64   `json:"activated_attended_ms"`
+	ExpiresAttendedMS   int64   `json:"expires_attended_ms"`
 }
 
 type NetworkSlot struct {
@@ -281,6 +301,14 @@ type stateV17 struct {
 type companyStateV17 struct {
 	stateV16
 	ComputeBurstRemainingMS *int64 `json:"compute_burst_remaining_ms"`
+}
+
+type companyStateV18 struct {
+	companyStateV17
+	OpportunitySpawnSeq       *int64              `json:"opportunity_spawn_seq"`
+	NextOpportunityAttendedMS *int64              `json:"next_opportunity_attended_ms"`
+	PendingOpportunity        *PendingOpportunity `json:"pending_opportunity"`
+	ActiveBuffs               []ActiveBuff        `json:"active_buffs"`
 }
 
 type stateV18 struct {
@@ -491,7 +519,13 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 			if version >= 17 {
 				if normalized.Ledger.Scope() == economy.ScopeCompany {
 					remaining := normalized.ComputeBurstRemainingMS
-					wire = companyStateV17{stateV16: v16, ComputeBurstRemainingMS: &remaining}
+					company := companyStateV17{stateV16: v16, ComputeBurstRemainingMS: &remaining}
+					wire = company
+					if version >= 18 {
+						sequence, next := normalized.OpportunitySpawnSeq, normalized.NextOpportunityAttendedMS
+						wire = companyStateV18{companyStateV17: company, OpportunitySpawnSeq: &sequence, NextOpportunityAttendedMS: &next,
+							PendingOpportunity: clonePendingOpportunity(normalized.PendingOpportunity), ActiveBuffs: cloneActiveBuffs(normalized.ActiveBuffs)}
+					}
 				} else {
 					v17 := stateV17{stateV16: v16, MinigameRatings: cloneMinigameRatings(normalized.MinigameRatings),
 						MinigameOfflineQuality: cloneMinigameOfflineQuality(normalized.MinigameOfflineQuality)}
@@ -557,6 +591,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	var source stateV18
 	var fiscalSource *stateV19
 	var computeBurstRemainingMS int64
+	var activeCompany *companyStateV18
 	if version == 1 {
 		var legacy stateV1
 		if err := decodeState(data, &legacy); err != nil {
@@ -643,6 +678,17 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		}
 		source.stateV17.stateV16 = company.stateV16
 		computeBurstRemainingMS = *company.ComputeBurstRemainingMS
+	} else if version == 18 && scope == economy.ScopeCompany {
+		var company companyStateV18
+		if err := decodeState(data, &company); err != nil {
+			return nil, err
+		}
+		if company.ComputeBurstRemainingMS == nil || company.OpportunitySpawnSeq == nil || company.NextOpportunityAttendedMS == nil || company.ActiveBuffs == nil {
+			return nil, fmt.Errorf("%w: active-play Company state is required (burst=%t sequence=%t next=%t buffs=%t)", ErrInvalidState,
+				company.ComputeBurstRemainingMS != nil, company.OpportunitySpawnSeq != nil, company.NextOpportunityAttendedMS != nil, company.ActiveBuffs != nil)
+		}
+		source.stateV17.stateV16 = company.stateV16
+		computeBurstRemainingMS, activeCompany = *company.ComputeBurstRemainingMS, &company
 	} else if version == 19 && scope == economy.ScopeFounder {
 		var fiscal stateV19
 		if err := decodeState(data, &fiscal); err != nil {
@@ -792,6 +838,12 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		GuildTitheCarryPPM: source.GuildTitheCarryPPM, GuildBoundarySeq: source.GuildBoundarySeq,
 		GuildConsumedWindow: source.GuildConsumedWindow,
 	}
+	if scope == economy.ScopeCompany && version >= 18 {
+		state.OpportunitySpawnSeq = *activeCompany.OpportunitySpawnSeq
+		state.NextOpportunityAttendedMS = *activeCompany.NextOpportunityAttendedMS
+		state.PendingOpportunity = clonePendingOpportunity(activeCompany.PendingOpportunity)
+		state.ActiveBuffs = cloneActiveBuffs(activeCompany.ActiveBuffs)
+	}
 	if version >= 16 {
 		state.AchievementsEarnedRun, err = sortedUniqueMechanicalKeys(source.AchievementsEarnedRun, "achievements_earned_run")
 		if err != nil {
@@ -891,7 +943,7 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	if version < 15 {
 		if len(state.MeterValues) != 0 || len(state.MeterDecayRemainders) != 0 || len(state.MeterInputRemainders) != 0 ||
 			len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 ||
-			state.ComputeBurstRemainingMS != 0 || len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 || fiscalStatePresent(state) {
+			state.ComputeBurstRemainingMS != 0 || activePlayStatePresent(state) || len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 || fiscalStatePresent(state) {
 			return fmt.Errorf("%w: inactive foundation state present before v15", ErrInvalidState)
 		}
 		return nil
@@ -927,7 +979,7 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 		return fmt.Errorf("%w: achievement state leaked outside founder scopes", ErrInvalidState)
 	}
 	if version < 17 {
-		if state.ComputeBurstRemainingMS != 0 || len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 || fiscalStatePresent(state) {
+		if state.ComputeBurstRemainingMS != 0 || activePlayStatePresent(state) || len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 || fiscalStatePresent(state) {
 			return fmt.Errorf("%w: Founder mechanics present before v17", ErrInvalidState)
 		}
 		return nil
@@ -935,6 +987,15 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	if scope == economy.ScopeCompany {
 		if len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
 			return fmt.Errorf("%w: Founder mechanics leaked into Company v17", ErrInvalidState)
+		}
+		if version < 18 {
+			if activePlayStatePresent(state) {
+				return fmt.Errorf("%w: active-play state present before Company v18", ErrInvalidState)
+			}
+			return nil
+		}
+		if err := validateActivePlayState(state); err != nil {
+			return err
 		}
 		return nil
 	}
@@ -989,6 +1050,62 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 		}
 	}
 	return nil
+}
+
+func activePlayStatePresent(state *State) bool {
+	return state.OpportunitySpawnSeq != 0 || state.NextOpportunityAttendedMS != 0 || state.PendingOpportunity != nil || state.ActiveBuffs != nil
+}
+
+func validateActivePlayState(state *State) error {
+	if state.OpportunitySpawnSeq < 0 || state.OpportunitySpawnSeq > decimal.MaxExactInteger || state.NextOpportunityAttendedMS < 0 ||
+		state.NextOpportunityAttendedMS > decimal.MaxExactInteger || state.ActiveBuffs == nil {
+		return fmt.Errorf("%w: invalid active-play scheduler", ErrInvalidState)
+	}
+	if value := state.PendingOpportunity; value != nil {
+		if !intentUUIDV7StatePattern.MatchString(value.OpportunityID) || !stateMechanicalIDPattern.MatchString(value.EffectRowID) ||
+			value.SpawnedAttendedMS < 0 || value.ExpiresAttendedMS <= value.SpawnedAttendedMS || value.ExpiresAttendedMS > decimal.MaxExactInteger ||
+			value.SelectedGeneratorID != nil && !stateMechanicalIDPattern.MatchString(*value.SelectedGeneratorID) {
+			return fmt.Errorf("%w: invalid pending opportunity", ErrInvalidState)
+		}
+	}
+	previous := ""
+	for _, value := range state.ActiveBuffs {
+		if !intentUUIDV7StatePattern.MatchString(value.BuffInstanceID) || value.BuffInstanceID <= previous || !stateMechanicalIDPattern.MatchString(value.EffectRowID) ||
+			value.ActivatedAttendedMS < 0 || value.ExpiresAttendedMS <= value.ActivatedAttendedMS || value.ExpiresAttendedMS > decimal.MaxExactInteger ||
+			value.SelectedTarget != nil && !stateMechanicalIDPattern.MatchString(*value.SelectedTarget) {
+			return fmt.Errorf("%w: invalid active buff", ErrInvalidState)
+		}
+		previous = value.BuffInstanceID
+	}
+	return nil
+}
+
+var intentUUIDV7StatePattern = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
+
+func clonePendingOpportunity(value *PendingOpportunity) *PendingOpportunity {
+	if value == nil {
+		return nil
+	}
+	result := *value
+	if value.SelectedGeneratorID != nil {
+		selected := *value.SelectedGeneratorID
+		result.SelectedGeneratorID = &selected
+	}
+	return &result
+}
+func cloneActiveBuffs(values []ActiveBuff) []ActiveBuff {
+	if values == nil {
+		return nil
+	}
+	result := make([]ActiveBuff, len(values))
+	copy(result, values)
+	for index := range result {
+		if values[index].SelectedTarget != nil {
+			target := *values[index].SelectedTarget
+			result[index].SelectedTarget = &target
+		}
+	}
+	return result
 }
 
 func fiscalStatePresent(state *State) bool {

@@ -313,6 +313,39 @@ func TestCompanyV17ComputeBurstRoundTripAndExactEnvelope(t *testing.T) {
 	}
 }
 
+func TestCompanyV18ActivePlayRoundTrip(t *testing.T) {
+	state := testState(t)
+	state.WireVersion = 18
+	state.MeterValues = map[string]int{}
+	state.MeterDecayRemainders = map[string]int64{}
+	state.MeterInputRemainders = map[string]int64{}
+	state.AchievementsEarnedRun = map[string]bool{}
+	state.AchievementsEarnedLifetime = map[string]bool{}
+	state.OpportunitySpawnSeq = 2
+	state.NextOpportunityAttendedMS = 5000
+	state.ActiveBuffs = []ActiveBuff{}
+	selected := "generator.beige_tower"
+	state.PendingOpportunity = &PendingOpportunity{OpportunityID: "01985555-0000-7000-8000-000000000001", SpawnedAttendedMS: 2000, ExpiresAttendedMS: 4000, EffectRowID: "active.building", SelectedGeneratorID: &selected}
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err := RestoreState(encoded, 18, stateCatalog(t), economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if VersionForState(restored) != 18 || restored.OpportunitySpawnSeq != 2 || restored.NextOpportunityAttendedMS != 5000 || restored.PendingOpportunity == nil || *restored.PendingOpportunity.SelectedGeneratorID != selected || restored.ActiveBuffs == nil {
+		t.Fatalf("v18=%+v", restored)
+	}
+	var object map[string]json.RawMessage
+	_ = json.Unmarshal(encoded, &object)
+	delete(object, "active_buffs")
+	missing, _ := json.Marshal(object)
+	if _, err := RestoreState(missing, 18, stateCatalog(t), economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("missing active_buffs accepted: %v", err)
+	}
+}
+
 func TestFounderV17AndV18RoundTripWhileCompanyRejectsThem(t *testing.T) {
 	catalog := stateCatalog(t)
 	ledger, err := economy.NewLedger(catalog, economy.ScopeFounder)
