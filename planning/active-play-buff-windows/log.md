@@ -121,3 +121,53 @@ Verification (full outputs read to completion):
 
 Handoff: implemented and all self-checks green; ready for cross-party designated review and archival
 decision. Codex does not certify that gate and has not archived this RFC.
+
+## 2026-08-06 — designated cross-party verdict: Active-Play implementation — NOT APPROVED (3 blocking)
+
+- **Review by:** the designated Claude reviewer (independent, isolated worktree at d3b18ef; all gates
+  re-run: make verify exit 0, typecheck explicit, Postgres integration exit 0).
+- **Recorded by:** same.
+- **Range correction (F1 cure):** the handoff's declared range `8557638..d3b18ef` OMITTED two
+  Active-Play code commits (`32e5a63` catalog/scheduler, `2baab9a` v18 envelope) that no verdict had
+  ever cited. The reviewer audited them in full; **this verdict covers `32e5a63^..d3b18ef` plus
+  45944ca (docs)** — the archival gate must cite THIS extended range. The handoff's range statement
+  is hereby corrected.
+
+**BLOCKING (code fixes + discriminating fixtures required):**
+- **F2 (HIGH) — combo hardcap breached across targets.** `clampActiveContributionProducts` clamps per
+  target-group only, but the engine composes `all`-target and generator-specific event_buffs into one
+  slot product: frenzy(all ×7) × building_special(clamped ×10) = ×70 against combo_cap 10 —
+  probe-confirmed, both runtimes share the defect. A6/A12 require the SLOT PRODUCT clamped. Fix +
+  a cross-target combo vector (the existing tests were vacuous at cap 1e4).
+- **F3 (HIGH) — cross-runtime replay divergence on compound miss+spawn.** Go generates and Go-replays
+  a single command carrying a miss AND a spawn; TS `applyActiveSchedule` cannot replay either
+  compound form (sentinel-0 `after_next` skips the spawn branch → "unexpected active spawn").
+  Probe-confirmed with the shipped fixture bundle: legal artifact + ordinary play persists a run log
+  TS rejects. Fix TS compound replay + a compound miss+spawn fixture row in BOTH runtimes.
+- **F4 (MEDIUM, ruled REQUIRED — not re-ruled away):** the A13 boundary vectors (zero/zero,
+  epsilon-only, one-ulp-below-cap, at-cap, overflow-scale) must actually exist; the single fixture
+  lucky row is quantization absorption, not an at-cap vector.
+
+**Required with archival:**
+- **F5 (MEDIUM, owner ruling): the combo-cap reason key MUST surface.** A6's "visible hardcap +
+  reason key" stands — when the clamp bites, the receipt/event carries `hardcap_reason_key` (the
+  fiscal pattern). Parsed-but-never-used does not satisfy a visibility law.
+- **F6 (LOW):** add the Founder-scope active-play leak check in validateFoundationState (mirror the
+  compute-burst check). Hygiene.
+- **F7 (LOW):** plan-box flips in 45944ca are legal under the refined same-range rule, but box 1's
+  claimed span must be corrected to the F1 extended range.
+
+**Owner ruling on INFO-1 (spawn_seq semantics):** the implemented behavior — `spawn_seq` increments
+once per SPAWN, with the post-miss reschedule reusing the already-advanced sequence — is ACCEPTED and
+now canonical: every opportunity consumes a unique substream, both runtimes agree byte-exactly, and
+the evidence checks it. A10's "incl. a missed opportunity" wording is amended accordingly (body
+reconciled in the RFC).
+
+Verified-correct: A3/A10 seed+logged-schedule pattern, A2/A11 attended coords + full rollback,
+A12/A13 contribution ownership + Lucky arithmetic (modulo F2/F4/F5), A16 activation/Exit/migration
+00066, A14/A15 wire + 11-row byte-compared fixture, A1 no click_batch, kernel 0.3.64→0.3.68 lockstep,
+45944ca honestly labeled a self-check. INFO-2: the guard findings are remediated in ebb081f (awaiting
+Codex re-review).
+
+**Archival BLOCKED until F2/F3/F4 are fixed with fixtures and F5/F6/F7 land; the archival commit must
+cite this verdict's extended range `32e5a63^..d3b18ef` + 45944ca + the remediation range.**

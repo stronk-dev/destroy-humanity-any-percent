@@ -409,7 +409,7 @@ TS. After that draw, use `Bound(total_weight)` for effect and, only for `buildin
 `Bound(total_generator_weight)` in that order; both runtimes recompute those integer selections and
 reject logged disagreement. Derive UUIDv7-compatible opportunity/buff IDs from a separate named
 substream plus the attended spawn/activation coordinate, with collision/domain vectors. Increment
-`spawn_seq` exactly once per schedule advance, including a missed opportunity.
+`spawn_seq` exactly once per SPAWN; a post-miss reschedule reuses the already-advanced sequence (INFO-1 ruling 2026-08-06: every opportunity consumes a unique substream, byte-agreed both runtimes).
 
 ### A11 — Lazy scheduler mutation beside a rejected command is not representable
 
@@ -534,8 +534,7 @@ All accepted (Codex's proposed contracts are executable and sound). Owner-call: 
   trusted logged input for TS. Then `Bound(total_weight)` for effect, and only for `building_special`
   `Bound(total_generator_weight)`, in that order; both runtimes recompute the integer selections and
   reject logged disagreement. UUIDv7-compatible opportunity/buff IDs from a separate named substream +
-  the attended coordinate (collision/domain vectors). `spawn_seq++` once per advance (incl. a missed
-  opportunity). (Consistent with the Fiscal F10 framing.)
+  the attended coordinate (collision/domain vectors). `spawn_seq` increments once per SPAWN; the post-miss reschedule reuses the already-advanced sequence (INFO-1 ruling 2026-08-06). (Consistent with the Fiscal F10 framing.)
 - **A11 — RULED: ROLLBACK (and Fiscal F11 revised to match — one consistent model).** Lazy
   spawn/expiry is part of the ordinary command and ROLLS BACK with any semantic rejection; expired rows
   are still ignored immediately by all math, and the next APPLIED command persists cleanup/events. This
