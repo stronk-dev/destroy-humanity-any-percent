@@ -1,0 +1,43 @@
+{
+  "schema_version": 4,
+  "resources": [
+    { "id": "company.cash", "scope": "company", "numeric_kind": "decimal", "initial": "1e2", "minimum": "0", "hardcap": { "amount": "1e12", "reason_key": "resource.cash.cap.fixture" } }
+  ],
+  "generator_classes": [
+    {
+      "id": "generator.alpha", "tier": 0, "category": "category.fixture",
+      "price": { "resource_id": "company.cash", "base": "1e1", "curve": { "kind": "geometric", "ratio": "1.1e0" } },
+      "production": { "resource_id": "company.cash", "base_rate": "2e0" },
+      "provisioned_hardcap": { "count": 9007199254740991, "reason_key": "generator.alpha.provisioned_cap" },
+      "ladder": [], "roles": [{ "kind": "manual_output", "action_id": "manual.click", "per_purchased_ppm": 1000 }]
+    },
+    {
+      "id": "generator.beta", "tier": 1, "category": "category.fixture",
+      "price": { "resource_id": "company.cash", "base": "2e1", "curve": { "kind": "geometric", "ratio": "1.1e0" } },
+      "production": { "resource_id": "company.cash", "base_rate": "4e0" },
+      "provisions": { "generator_id": "generator.alpha", "rate_ppm": 100000 },
+      "ladder": [], "roles": [{ "kind": "provision", "generator_id": "generator.alpha" }]
+    }
+  ],
+  "upgrades": [
+    {
+      "id": "upgrade.alpha", "cost": { "resource": "company.cash", "amount": "5e1" },
+      "window": { "from_gate": null, "to_gate": null },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "5e1" }],
+      "effects": [{ "source_id": "upgrade.alpha.factor", "slot": "upgrades", "target": "generator.alpha", "factor": "2e0" }],
+      "roles": [], "copy_key": "upgrade.alpha.copy"
+    }
+  ],
+  "synergy_pools": [],
+  "provision_tick_ms": 1000,
+  "manual_actions": [{ "id": "manual.click", "output": { "resource_id": "company.cash", "amount_per_action": "1e0" } }],
+  "multiplier_sources": [],
+  "progress_coordinates": [
+    { "tier": 0, "kind": "resource_log", "resource": "company.cash", "target": "1e3" },
+    { "tier": 1, "kind": "count_fraction", "count": "generators.total_owned", "required": 10 },
+    { "tier": 2, "kind": "resource_log", "resource": "company.cash", "target": "1e6" },
+    { "tier": 3, "kind": "resource_log", "resource": "company.cash", "target": "1e9" }
+  ],
+  "manual_policy": { "refill_milli_per_ms": 25, "bucket_cap_milli": 50000 },
+  "offline_policy": { "efficiency": "1e0", "accrual_cap_ms": 86400000, "bank_ratio_numerator": 1, "bank_ratio_denominator": 2, "bank_cap_ms": 259200000, "burst_speed": "2e0", "burst_max_duration_ms": 14400000 }
+}
