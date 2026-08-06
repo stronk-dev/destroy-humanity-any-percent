@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "scenario_id": "scenario.relevance_fixture",
+  "scenario_hash": "sha256:931120bef8c16ec411be7bf023480b78f87a5b4937454fcadabdcf3c7239719b",
+  "constants_hash": "sha256:6a51af9b09becc3031fd9512a363d708af79a25f7ef5ca9b006a28e7ee5f002d",
+  "relevance_policy_hash": "sha256:89e7029ce3869871b74a3612e32403b3fd479bdee4be0eae105f05609f5abefe",
+  "run_budget": {
+    "declared_runs": 14,
+    "executed_runs": 14,
+    "declared_transitions": 166244,
+    "executed_transitions": 166244
+  },
+  "greedy_oracle": {
+    "milestone_id": "milestone.cash_target",
+    "greedy_ms": 7055,
+    "beam_ms": 6869,
+    "gap_ppm": 27078,
+    "maximum_ppm": 50000,
+    "passed": true
+  },
+  "items": [
+    {
+      "purchasable_id": "generator.alpha",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t1_to_t2"
+      },
+      "epsilon_ms": 1,
+      "trap_exempt": false,
+      "justification_key": null,
+      "baseline_purchase_count": 0,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 7231,
+          "delta_ms": 176
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 7055,
+          "delta_ms": 0
+        }
+      ],
+      "support": "individual",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 0,
+      "relevance_passed": true,
+      "trap_passed": false
+    },
+    {
+      "purchasable_id": "generator.beta",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t1_to_t2"
+      },
+      "epsilon_ms": 1,
+      "trap_exempt": false,
+      "justification_key": null,
+      "baseline_purchase_count": 11,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 50427,
+          "delta_ms": 43372
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 50427,
+          "delta_ms": 43372
+        }
+      ],
+      "support": "individual",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 0,
+      "relevance_passed": true,
+      "trap_passed": true
+    },
+    {
+      "purchasable_id": "upgrade.alpha",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t1_to_t2"
+      },
+      "epsilon_ms": 1,
+      "trap_exempt": true,
+      "justification_key": "relevance.intentional_trap",
+      "baseline_purchase_count": 0,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 7055,
+          "delta_ms": 0
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 7055,
+          "delta_ms": 0
+        }
+      ],
+      "support": "group_supported",
+      "supporting_group_id": "group.substitutes",
+      "nearest_passing_epsilon_ms": 0,
+      "relevance_passed": true,
+      "trap_passed": true
+    },
+    {
+      "purchasable_id": "upgrade.dead",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t1_to_t2"
+      },
+      "epsilon_ms": 1,
+      "trap_exempt": true,
+      "justification_key": "relevance.dead_fixture",
+      "baseline_purchase_count": 0,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 7055,
+          "delta_ms": 0
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 7055,
+          "delta_ms": 0
+        }
+      ],
+      "support": "failed",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 1,
+      "relevance_passed": false,
+      "trap_passed": true
+    }
+  ],
+  "groups": [
+    {
+      "group_id": "group.category_fixture",
+      "axis": "category",
+      "deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "ablated_unreached",
+          "baseline_ms": 7055,
+          "ablated_ms": null,
+          "delta_ms": 112945
+        }
+      ],
+      "passed": true
+    },
+    {
+      "group_id": "group.substitutes",
+      "axis": "declared",
+      "deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 7231,
+          "delta_ms": 176
+        }
+      ],
+      "passed": true
+    },
+    {
+      "group_id": "group.tier_0",
+      "axis": "tier",
+      "deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 7231,
+          "delta_ms": 176
+        }
+      ],
+      "passed": true
+    },
+    {
+      "group_id": "group.tier_1",
+      "axis": "tier",
+      "deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 50427,
+          "delta_ms": 43372
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "tier_contributions": [
+    {
+      "group_id": "group.tier_0",
+      "deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 7231,
+          "delta_ms": 176
+        }
+      ]
+    },
+    {
+      "group_id": "group.tier_1",
+      "deltas": [
+        {
+          "milestone_id": "milestone.cash_target",
+          "status": "both_reached",
+          "baseline_ms": 7055,
+          "ablated_ms": 50427,
+          "delta_ms": 43372
+        }
+      ]
+    }
+  ],
+  "role_activations": [
+    {
+      "generator_id": "generator.beta",
+      "kind": "provision",
+      "target_id": "generator.alpha",
+      "count": 2
+    }
+  ],
+  "failures": [
+    "relevance_floor:upgrade.dead",
+    "role_floor:generator.alpha",
+    "trap_floor:generator.alpha"
+  ]
+}
