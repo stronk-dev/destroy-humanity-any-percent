@@ -31,7 +31,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
 | [Active-Play Buff Windows](active-play-buff-windows.md) | accepted — implementation blocked on A9–A16 (Company v18) | Production / Save / Numeric Core |
-| [Soul Foundation](soul-foundation.md) | accepted — implementation blocked on SB10–SB16 + Fiscal F9–F15 (Founder v20) | Save / Run Genesis / Founder Attendance / Pet Care |
+| [Soul Foundation](soul-foundation.md) | accepted — SB1–SB23 ruled; implementable (Founder v20) | Save / Run Genesis / Founder Attendance / Pet Care |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
 | [T0–T1 Playable Content](t0-t1-playable-content.md) | draft | Production / Purchasable Content / Copy Pipeline |
 

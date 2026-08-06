@@ -91,3 +91,13 @@ and activation evidence; versioned pet/minigame gating bytes; and the cross-stre
 SB16 explicitly asks a future edit to enumerate several of these and the SB10-SB16 ruling section does
 not do so. Implementing now would invent public API and transactional semantics. SB17-SB23 are filed
 with concrete proposals; no Soul code or data was introduced.
+
+## 2026-08-06 — owner rulings on SB17-SB23 (all accepted)
+Artifact enums + copy-key registry (SB17, ending values are enum IDs never copy keys); ApplyDebit
+typed errors + 3 exact event payloads (SB18); the 3 coordinator commands + UUIDv7 session row +
+partial-unique active-session index (SB19); ApplySuppressedLogged — the shared zero-output boundary
+that advances every watermark while asserting zero output (SB20); Founder v20 = v19 + exactly
+soul_exhausted_source_ids, next_soul Exit arm recomputed-from-bytes (SB21); soul_gate via artifact
+schema BUMPS, historical schemas valid only in Soul-less bundles (SB22); start/cancel/resolve event
+ordering + Founder-then-Company single-transaction atomicity w/ fault injection (SB23).
+Status -> SB1-SB23 complete; Soul implementable (Fiscal v19 archived).

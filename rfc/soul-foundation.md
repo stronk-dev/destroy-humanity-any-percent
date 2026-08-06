@@ -685,3 +685,51 @@ every boundary must leave either all rows or none.
 Until SB17-SB23 are ruled and reconciled into S1-S6, the pure package's broad direction is clear but
 the artifact bytes, v20 codec activation, public coordinator, and cross-stream replay cannot be
 implemented without inventing mechanics. No Soul code or artifact was added in this recheck.
+
+## Owner rulings on SB17-SB23 (2026-08-06) — the executable wire/persistence layer
+
+All seven accepted (Codex's proposed contracts are sound and pattern-consistent). Ratifications:
+
+- **SB17 — accepted.** Enumerate the literal `owner_kind` and ending-variant unions; production
+  `debit_sources`/`recovery_activities` MAY be empty (the pre-content artifact activates v20), while
+  the non-epoch fixture must contain ≥1 of each; Go gets the tracked verified-copy-key registry, TS
+  the generated `COPY_KEYS` set; every curtain/band/activity/ending copy key must resolve there.
+  **Ending-policy values are enum IDs, never copy keys — one field is never overloaded as both.**
+- **SB18 — accepted.** `ApplyDebit` stays store-free with typed errors mapped to the existing closed
+  taxonomy (`unknown_id/source_id`, `not_eligible/soul_owner|soul_source_consumed|soul_eligibility`,
+  `unaffordable/soul`); the three Soul event payloads exactly as proposed (`soul_price_paid.v1`,
+  `soul_band_changed.v1`, `soul_depleted.v1`); all amounts safe integers, no nullable fields.
+- **SB19 — accepted.** Three COORDINATOR commands (`start_soul_recovery`, `cancel_soul_recovery`,
+  `resolve_soul_recovery`) — never Company/Founder ApplyLogged intent kinds. UUIDv7 session row with
+  the enumerated columns, status `active|claimed|resolved|cancelled`, claim token/lease, request
+  hashes, terminal receipt; a partial unique index enforces one `active|claimed` session per Founder;
+  literal retry returns the stored receipt; mismatched reuse rejects `idempotency_conflict`.
+- **SB20 — accepted; `ApplySuppressedLogged` is the new shared boundary.** Only the resolve
+  coordinator writes the server-authored Company arm `resolve_soul_recovery.v1` with the exact
+  `suppression {from_evaluated_ms, to_evaluated_ms, founder_attended_start_ms,
+  founder_attended_end_ms, session_id}` + frozen catalogs/identity. `ApplySuppressedLogged` (shared
+  live/replay) advances EVERY time/watermark exactly as normal evaluation while asserting zero ledger
+  delta, zero provision/faction/guild output, and no production-derived meter/achievement
+  observations — merely setting `evaluated_through` (skipping hook watermarks) is forbidden. Cancel
+  writes the same boundary at the cancel coordinate, grants no Soul. No client intent can submit
+  this arm.
+- **SB21 — accepted (minimal v20).** Founder v20 extends v19 with EXACTLY ONE key:
+  `soul_exhausted_source_ids: []` (raw-byte sorted/unique); the existing `soul` key becomes
+  artifact-bounded. The Exit resolved arm gains `next_soul {soul_initial, band_member}` iff the next
+  bundle contains Soul; replay recomputes BOTH from exact artifact bytes and rejects disagreement;
+  New Founder uses the same initializer without a fabricated Exit. Pre-v20: `soul==0`, no exhausted
+  set; Company codecs reject Founder 19/20.
+- **SB22 — accepted (schema bumps, no in-place reinterpretation).** Both the minigame and pet
+  artifacts bump schema versions for `soul_gate`; historical schemas stay valid ONLY in bundles
+  without Soul; a Soul-bearing bundle requires the new schemas (no deploy-current defaulting). The
+  fixture enumerates ≥1 row of every gate member; the composed resolver takes Founder revision +
+  pinned constants hash and fails closed on drift.
+- **SB23 — accepted (event/log ordering + atomicity).** Register `soul_recovery_started.v1`,
+  `soul_recovery_cancelled.v1`, `soul_recovered.v1` with the exact keys. Start = session + started
+  event only. Cancel = Company suppressed-log row → Founder audit row/event → terminal receipt.
+  Resolve = lock Founder-then-Company (the ratified order), claim, Company suppressed-log row,
+  Founder saturation, `soul_recovered.v1` then optional `soul_band_changed.v1`, terminal receipt —
+  ONE transaction; fault injection at every boundary proves all-or-none.
+
+SB1-SB23 complete. Implementation remains dependency-blocked on Fiscal v19 (implemented + archived ✓)
+— i.e. now unblocked EXCEPT for the ordinary queue; the pure catalog/band layer may land first.
