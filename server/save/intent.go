@@ -68,6 +68,11 @@ const (
 	EventComputeCreditSpent        EventKind = "compute_credit_spent"
 	EventFiscalPeriodHarvested     EventKind = "fiscal_period_harvested.v1"
 	EventFiscalCreditSpent         EventKind = "fiscal_credit_spent.v1"
+	EventOpportunitySpawned        EventKind = "opportunity_spawned.v1"
+	EventOpportunityExpired        EventKind = "opportunity_expired.v1"
+	EventOpportunityClaimed        EventKind = "opportunity_claimed.v1"
+	EventBuffStarted               EventKind = "buff_started.v1"
+	EventBuffExpired               EventKind = "buff_expired.v1"
 )
 
 // AllEventKinds is the closed structural authority consumed by catalog
@@ -87,6 +92,8 @@ var AllEventKinds = [...]EventKind{
 	EventAchievementEarned,
 	EventPetCareApplied, EventPetStatusChanged,
 	EventMinigameResolved, EventMinigameRatingChanged,
+	EventOpportunitySpawned, EventOpportunityExpired, EventOpportunityClaimed,
+	EventBuffStarted, EventBuffExpired,
 }
 
 type EventWrite struct {
@@ -516,6 +523,77 @@ func validEventSchemaVersion(event EventWrite) bool {
 
 func validateEventPayload(event EventWrite) error {
 	switch event.Kind {
+	case EventOpportunitySpawned:
+		var payload struct {
+			OpportunityID       string  `json:"opportunity_id"`
+			SpawnedAttendedMS   int64   `json:"spawned_attended_ms"`
+			ExpiresAttendedMS   int64   `json:"expires_attended_ms"`
+			EffectRowID         string  `json:"effect_row_id"`
+			SelectedGeneratorID *string `json:"selected_generator_id"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidV7Pattern.MatchString(payload.OpportunityID) ||
+			payload.SpawnedAttendedMS < 0 || payload.ExpiresAttendedMS <= payload.SpawnedAttendedMS || payload.ExpiresAttendedMS > decimal.MaxExactInteger ||
+			!mechanicalIDPattern.MatchString(payload.EffectRowID) || payload.SelectedGeneratorID != nil && !mechanicalIDPattern.MatchString(*payload.SelectedGeneratorID) {
+			return fmt.Errorf("%w: invalid opportunity_spawned.v1 payload", ErrInvalidStream)
+		}
+	case EventOpportunityExpired, EventBuffExpired:
+		var payload struct {
+			OpportunityID  string `json:"opportunity_id,omitempty"`
+			BuffInstanceID string `json:"buff_instance_id,omitempty"`
+			AttendedMS     int64  `json:"attended_ms"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || payload.AttendedMS < 0 || payload.AttendedMS > decimal.MaxExactInteger ||
+			event.Kind == EventOpportunityExpired && (!uuidV7Pattern.MatchString(payload.OpportunityID) || payload.BuffInstanceID != "") ||
+			event.Kind == EventBuffExpired && (!uuidV7Pattern.MatchString(payload.BuffInstanceID) || payload.OpportunityID != "") {
+			return fmt.Errorf("%w: invalid active-play expiry payload", ErrInvalidStream)
+		}
+	case EventBuffStarted:
+		var payload struct {
+			BuffInstanceID      string  `json:"buff_instance_id"`
+			EffectRowID         string  `json:"effect_row_id"`
+			SelectedTarget      *string `json:"selected_target"`
+			ActivatedAttendedMS int64   `json:"activated_attended_ms"`
+			ExpiresAttendedMS   int64   `json:"expires_attended_ms"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidV7Pattern.MatchString(payload.BuffInstanceID) ||
+			!mechanicalIDPattern.MatchString(payload.EffectRowID) || payload.SelectedTarget != nil && !mechanicalIDPattern.MatchString(*payload.SelectedTarget) ||
+			payload.ActivatedAttendedMS < 0 || payload.ExpiresAttendedMS <= payload.ActivatedAttendedMS || payload.ExpiresAttendedMS > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid buff_started.v1 payload", ErrInvalidStream)
+		}
+	case EventOpportunityClaimed:
+		var payload map[string]json.RawMessage
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil {
+			return fmt.Errorf("%w: invalid opportunity_claimed.v1 payload", ErrInvalidStream)
+		}
+		var opportunityID, effectRowID string
+		_ = json.Unmarshal(payload["opportunity_id"], &opportunityID)
+		_ = json.Unmarshal(payload["effect_row_id"], &effectRowID)
+		if !uuidV7Pattern.MatchString(opportunityID) || !mechanicalIDPattern.MatchString(effectRowID) {
+			return fmt.Errorf("%w: invalid opportunity_claimed.v1 identity", ErrInvalidStream)
+		}
+		if len(payload) == 4 && hasExactRawKeys(payload, "opportunity_id", "effect_row_id", "selected_target", "buff_instance_id") {
+			var buffID string
+			_ = json.Unmarshal(payload["buff_instance_id"], &buffID)
+			if _, ok := payload["selected_target"]; !ok || !uuidV7Pattern.MatchString(buffID) {
+				return fmt.Errorf("%w: invalid opportunity_claimed.v1 buff", ErrInvalidStream)
+			}
+		} else if len(payload) == 7 && hasExactRawKeys(payload, "opportunity_id", "effect_row_id", "selected_target", "requested_delta", "actual_credited_delta", "saturated", "cap_reason_key") {
+			var requested, actual string
+			var saturated bool
+			var reason *string
+			_ = json.Unmarshal(payload["requested_delta"], &requested)
+			_ = json.Unmarshal(payload["actual_credited_delta"], &actual)
+			_ = json.Unmarshal(payload["saturated"], &saturated)
+			_ = json.Unmarshal(payload["cap_reason_key"], &reason)
+			requestedValue, e1 := decimal.ParseCanonical(requested)
+			actualValue, e2 := decimal.ParseCanonical(actual)
+			if _, ok := payload["selected_target"]; !ok || e1 != nil || e2 != nil || requestedValue.Lt(decimal.Zero) || actualValue.Lt(decimal.Zero) || actualValue.Gt(requestedValue) ||
+				saturated != !actualValue.Eq(requestedValue) || saturated && (reason == nil || !mechanicalIDPattern.MatchString(*reason)) || !saturated && reason != nil {
+				return fmt.Errorf("%w: invalid opportunity_claimed.v1 lucky", ErrInvalidStream)
+			}
+		} else {
+			return fmt.Errorf("%w: invalid opportunity_claimed.v1 union", ErrInvalidStream)
+		}
 	case EventGeneratorPurchased:
 		var payload struct {
 			GeneratorID    string `json:"generator_id"`
@@ -1005,6 +1083,18 @@ func validateEventPayload(event EventWrite) error {
 		return fmt.Errorf("%w: unknown event kind %q", ErrInvalidStream, event.Kind)
 	}
 	return nil
+}
+
+func hasExactRawKeys(value map[string]json.RawMessage, keys ...string) bool {
+	if len(value) != len(keys) {
+		return false
+	}
+	for _, key := range keys {
+		if _, ok := value[key]; !ok {
+			return false
+		}
+	}
+	return true
 }
 
 func validMinigameQualityEvent(value MinigameOfflineQualityState) bool {

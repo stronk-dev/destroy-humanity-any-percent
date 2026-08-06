@@ -49,8 +49,8 @@ func TestSourceFingerprintTracksExecutableAuthoritiesOnly(t *testing.T) {
 	}
 
 	sources["production/engine.go"] = bytes.Replace(originalEngine,
-		[]byte("rate = rate.Mul(bySource[sourceID].Factor)"),
-		[]byte("rate = rate.Add(bySource[sourceID].Factor)"), 1)
+		[]byte("rate = rate.Mul(bySource[identity].Factor)"),
+		[]byte("rate = rate.Add(bySource[identity].Factor)"), 1)
 	if bytes.Equal(sources["production/engine.go"], originalEngine) {
 		t.Fatal("executable mutation fixture did not modify Rates")
 	}

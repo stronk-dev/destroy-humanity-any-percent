@@ -1,7 +1,7 @@
 import Decimal from "break_infinity.js";
 
 import { loadAchievementCatalog, type AchievementCatalog, type AchievementRegistry } from "./achievements/catalog";
-import { loadActivePlayCatalog, type ActivePlayCatalog } from "./active-play";
+import { activePlayBuffId, activePlayOpportunityId, loadActivePlayCatalog, selectActivePlayEffect, type ActivePlayCatalog, type ActivePlayEffect } from "./active-play";
 import { achievementScore, newlyEarned, type AchievementObservation } from "./achievements/evaluate";
 import { enclosureIndex, parseCommonsCatalog, type CommonsCatalog } from "./commons";
 import { COPY_KEYS } from "./copy";
@@ -106,7 +106,10 @@ interface FounderExitRecord { readonly run_id: number; readonly exit_type: strin
 interface ReplayGuildSettlement { boundary_seq: number; debit_units: number; credit_units: number }
 interface ReplayGuildSettlementBatch { guild_id: string; base_seq: number; settlements: ReplayGuildSettlement[] }
 interface ReplayAccrual { contributions: ReplayContribution[]; commons_weight_ppm: number | null; guild_settlement_batch: ReplayGuildSettlementBatch; route_context_version: number }
-interface ReplayWire { v: 2 | 3 | 4; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; resolved: Record<string, unknown> }
+interface ActiveSpawnEvidence { sequence:number; sampled_interval_ms:number; effect_draw:string; generator_draw:string|null; effect_row_id:string; selected_generator_id:string|null; opportunity_id:string; spawned_attended_ms:number; expires_attended_ms:number }
+interface ActiveClaimEvidence { opportunity_id:string; effect_row_id:string; selected_target:string|null; buff_instance_id:string|null; requested_delta:string|null; actual_credited_delta:string|null; saturated:boolean|null; cap_reason_key:string|null; next_sampled_interval_ms:number; next_opportunity_attended_ms:number }
+interface ActiveScheduleEvidence { attended_now_ms:number; before_sequence:number; before_next_opportunity_attended_ms:number; after_sequence:number; after_next_opportunity_attended_ms:number; expired_buffs:{buff_instance_id:string}[]; missed_opportunity_id:string|null; spawned:ActiveSpawnEvidence|null; claim:ActiveClaimEvidence|null }
+interface ReplayWire { v: 2 | 3 | 4 | 5; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; resolved: Record<string, unknown> }
 interface NetworkSlot { readonly slot: string; readonly carried_ref: string }
 interface FounderCarry {
   founder_revision: number; founder_constants_hash: string; reputation_level: number; route_knowledge_balance: number;
@@ -143,6 +146,7 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const pets = artifacts.pets === undefined ? undefined : parsePetCatalog(parseJSON(artifacts.pets));
   const fiscal = artifacts.fiscal === undefined ? undefined : loadFiscalCatalog(parseJSON(artifacts.fiscal), economy);
   const opportunities = artifacts.opportunities === undefined ? undefined : loadActivePlayCatalog(parseJSON(artifacts.opportunities), economy);
+  if (opportunities && opportunities.schedule.minimumIntervalMs + opportunities.schedule.lifetimeMs <= prestige.catchupCeilingMs) throw new SyntaxError("opportunity schedule exceeds one pending transition per online horizon");
   return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, doctrines, minigames, pets, fiscal, opportunities });
 }
 
@@ -836,23 +840,27 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   if (request.invalid !== undefined) return rejected(state, request.intent_id, revision, "invalid", request.invalid);
   if (wire.evaluated_at_ms < state.evaluatedThroughMs) throw new ReplayClockViolation();
   const resolved = wire.resolved; const kind = string(resolved.kind); if (string(resolved.intent_kind) !== request.kind) throw new RangeError("resolved intent mismatch");
-  let accrual: ReplayAccrual; let founderCarry: FounderCarry | null = null; let declined = 0;
-  if (kind === "cross_gate" && request.kind === "cross_gate") { onlyKeys(resolved, ["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry"], "cross gate inputs"); accrual = parseAccrual(resolved.accrual, catalogs); declined = safeInteger(resolved.declined_exit_offer_count ?? 0, 0, MAX_EXACT_INTEGER); founderCarry = resolved.founder_carry === undefined || resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs, wire.v); }
-  else { if (kind !== "accrual") throw new RangeError("resolved union mismatch"); const hasCarry = "founder_carry" in resolved; onlyKeys(resolved, hasCarry ? ["kind", "intent_kind", "accrual", "founder_carry"] : ["kind", "intent_kind", "accrual"], "accrual inputs"); accrual = parseAccrual(resolved.accrual, catalogs); founderCarry = !hasCarry || resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs, wire.v); }
+  let accrual: ReplayAccrual; let founderCarry: FounderCarry | null = null; let declined = 0; const hasActive="active_play" in resolved; const activeEvidence=hasActive?parseActiveSchedule(resolved.active_play):null;
+  if (kind === "cross_gate" && request.kind === "cross_gate") { onlyKeys(resolved, hasActive?["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry","active_play"]:["kind", "intent_kind", "accrual", "declined_exit_offer_count", "founder_carry"], "cross gate inputs"); accrual = parseAccrual(resolved.accrual, catalogs); declined = safeInteger(resolved.declined_exit_offer_count ?? 0, 0, MAX_EXACT_INTEGER); founderCarry = resolved.founder_carry === undefined || resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs, wire.v); }
+  else { if (kind !== "accrual") throw new RangeError("resolved union mismatch"); const hasCarry = "founder_carry" in resolved; const keys=["kind","intent_kind","accrual",...(hasCarry?["founder_carry"]:[]),...(hasActive?["active_play"]:[])]; onlyKeys(resolved,keys,"accrual inputs"); accrual = parseAccrual(resolved.accrual, catalogs); founderCarry = !hasCarry || resolved.founder_carry === null ? null : parseFounderCarry(resolved.founder_carry, catalogs, wire.v); }
   if (foundationsActive(catalogs) && wire.v >= 4 && founderCarry === null) throw new RangeError("missing active Founder carry");
+  if((state.wireVersion===18)!==(activeEvidence!==null)||state.wireVersion===18&&wire.v<5)throw new RangeError("active-play resolved presence");
   if (state.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
   const rejectState = (category: string, detail: string): LoggedTransition => { restoreReplaySnapshot(state, stateBefore); return rejected(state, request.intent_id, revision, category, detail); };
   try {
+  const activeEvents=activeEvidence===null?[]:await applyActiveSchedule(state,catalogs,wire.command,wire.evaluated_at_ms,activeEvidence);
   applyGuildSettlements(state, accrual.guild_settlement_batch, catalogs.factions.stockCap);
-  const contributions = assembleContributions(state, catalogs.economy, accrual.contributions);
+  const activeValues=activeEvidence===null?[]:activeContributions(state,catalogs.opportunities!,activeEvidence.attended_now_ms);
+  const contributions = assembleContributions(state, catalogs.economy, [...accrual.contributions,...activeValues]);
   const effectiveAccrual = { ...accrual, contributions };
   const preflight = preflightRejection(state, catalogs, request, wire.evaluated_at_ms);
   if (preflight !== null) return rejectState(preflight[0], preflight[1]);
   const evaluation = evaluate(state, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
-  const events = runHooks(state, catalogs, wire.command, evaluation, effectiveAccrual);
+  const events = [...activeEvents,...runHooks(state, catalogs, wire.command, evaluation, effectiveAccrual)];
   const postAccrualBalances = { ...state.balances };
   const invariants: ReplayInvariant[] = [];
   let appliedCount = 0;
+  let opportunityResult:ActiveClaimEvidence|null=null;
   switch (request.kind) {
     case "buy_generator": { const result = buyGenerator(state, catalogs.economy, request, invariants); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); appliedCount = result.count; events.push(event("generator_purchased", request.intent_id, { generator_id: request.generator_id, count: appliedCount, cost_resource_id: request.costResource, cost: request.cost })); break; }
     case "buy_upgrade": { const result = buyUpgrade(state, catalogs.economy, catalogs.routes, request); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); events.push(event("upgrade_purchased", request.intent_id, { upgrade_id: request.upgrade_id, cost_resource_id: request.costResource, cost: request.cost })); appliedCount = 1; break; }
@@ -860,6 +868,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
     case "cross_gate": { const result = crossGate(state, catalogs.routes, request, wire.command); if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]); events.push(event("gate_crossed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); if (request.route_id !== null) events.push(event("route_executed", request.intent_id, { founder_id: wire.command.founder_id, gate_id: request.gate_id, route_id: request.route_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); appliedCount = 1; break; }
     case "pick_doctrine": state.doctrinesByTransition[request.transition_id] = request.doctrine_id; events.push(event("doctrine_picked", request.intent_id, { founder_id: wire.command.founder_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq }, transition_id: request.transition_id, doctrine_id: request.doctrine_id })); appliedCount = 1; break;
     case "spend_compute_credit": { if (state.computeBurstRemainingMs !== 0) return rejectState("not_eligible", "burst_active"); if (state.computeCreditMs < request.amount_ms) return rejectState("not_eligible", "compute_credit_balance"); const speed = catalogs.economy.offlinePolicy!.burstSpeed; if (!parseCanonical(speed).gt(1)) throw new RangeError("invalid burst speed"); state.computeCreditMs -= request.amount_ms; state.computeBurstRemainingMs = request.amount_ms; events.push(event("compute_credit_spent", request.intent_id, { founder_id: wire.command.founder_id, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq }, amount_ms: request.amount_ms, target: request.target, burst_duration_ms: request.amount_ms, burst_speed: speed })); appliedCount = 1; break; }
+    case "claim_opportunity": { if(activeEvidence===null)throw new RangeError("missing active schedule evidence");const result=await claimOpportunity(state,catalogs,wire.command,request,activeEvidence,contributions);if(result.rejection)return rejectState(result.rejection[0],result.rejection[1]);events.push(...result.events);opportunityResult=result.claim!;appliedCount=1;break; }
     case "sign_compact": state.compactMember = true; state.compactTithePpm = request.tithe_ppm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, request.tithe_ppm, false, true))); appliedCount = 1; break;
     case "leave_compact": { const prior = state.compactTithePpm; state.compactMember = false; state.compactTithePpm = 0; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_left", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, prior, true, false))); appliedCount = 1; break; }
     case "incorporate": { const member = catalogs.factions.byId.get(request.faction_id)!; state.factionId = member.id; state.factionStockResource = member.produces; state.incorporatedAtMs = state.evaluatedThroughMs; events.push(event("incorporated", request.intent_id, { compact_auto_signed: member.compact !== null, faction_id: member.id, founder_id: wire.command.founder_id, incorporated_at_ms: state.incorporatedAtMs, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq }, stock_resource: member.produces })); if (member.compact) { if (state.compactMember) { const prior = state.compactTithePpm; state.compactTithePpm = Math.max(prior, member.compact.tithePpm); events.push(event("compact_tithe_raised", request.intent_id, { founder_id: wire.command.founder_id, new_tithe_ppm: state.compactTithePpm, prior_tithe_ppm: prior, run_id: { company_stream_id: wire.command.company_stream_id, run_seq: state.runSeq } })); } else { state.compactMember = true; state.compactTithePpm = member.compact.tithePpm; state.compactSolidarityPpm = 0; state.compactSamples = []; events.push(event("compact_signed", request.intent_id, compactMembershipPayload(wire.command, state.runSeq, member.compact.tithePpm, false, true))); } } appliedCount = 1; break; }
@@ -873,7 +882,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   const actionDebits = resourceDebits(postAccrualBalances, state.balances);
   await afterPrestigeTransition(state, catalogs.prestige, request, wire.command, wire.evaluated_at_ms, founderCarry, declined, events);
   if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, stateBefore, state, founderCarry!, wire.command, request, wire.evaluated_at_ms, contributions, actionDebits, false, events);
-  return applied(state, catalogs.economy, request.intent_id, revision + 1, appliedCount, before, events, invariants);
+  const result=applied(state, catalogs.economy, request.intent_id, revision + 1, appliedCount, before, events, invariants);if(opportunityResult!==null){const receipt=(result.receipt as {receipt:Record<string,unknown>});receipt.receipt.opportunity=opportunityResult;}return result;
   } catch (error) { restoreReplaySnapshot(state, stateBefore); throw error; }
 }
 
@@ -882,12 +891,13 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const request = parseIntent(canonicalPayload, wire.command.intent_id);
   if (request.expected_revision !== wire.command.revision || wire.command.run_seq !== company.runSeq) throw new RangeError("terminal command/state mismatch");
   const resolved = wire.resolved;
-  onlyKeys(resolved, ["kind", "intent_kind", "accrual", "founder_carry", "executed_route_ids", "selected_exit_type", "selected_terms", "next_constants_hash"], "terminal resolved inputs");
+  const hasActive="active_play" in resolved,hasNextActive="next_active_play" in resolved;onlyKeys(resolved, ["kind", "intent_kind", "accrual", "founder_carry", "executed_route_ids", "selected_exit_type", "selected_terms", "next_constants_hash",...(hasActive?["active_play"]:[]),...(hasNextActive?["next_active_play"]:[])], "terminal resolved inputs");
   if (resolved.kind !== "exit" || resolved.intent_kind !== request.kind || typeof resolved.selected_exit_type !== "string" || !hashPattern.test(string(resolved.next_constants_hash))) throw new RangeError("terminal resolved union mismatch");
   const selectedTerms = exactObject(resolved.selected_terms, Object.keys(resolved.selected_terms as object), "selected terms");
   const nextHash = string(resolved.next_constants_hash);
   const next = nextHash === catalogs.constantsHash ? catalogs : catalogs.next;
   if (!next || next.constantsHash !== nextHash) throw new RangeError("next catalog bundle mismatch");
+  const activeEvidence=hasActive?parseActiveSchedule(resolved.active_play):null,nextActive=hasNextActive?parseActiveSpawn(resolved.next_active_play):null;if((company.wireVersion===18)!==(activeEvidence!==null)||company.wireVersion===18&&wire.v<5||(next.opportunities!==undefined)!==(nextActive!==null)||activeEvidence?.claim!==null&&activeEvidence!==null)throw new RangeError("terminal active-play evidence mismatch");
   if (foundationsActive(next) && wire.v < 3) throw new SyntaxError("foundation activation requires replay inputs v3+");
   const accrual = parseAccrual(resolved.accrual, catalogs);
   if (company.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
@@ -903,15 +913,16 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   let terms: ExitTerms;
   const rejectState = (category: string, detail: string): LoggedExitTransition => { restoreReplaySnapshot(company, companyBefore); return rejectedExit(company, founder, request.intent_id, revision, category, detail); };
   try {
+  const activeEvents=activeEvidence===null?[]:await applyActiveSchedule(company,catalogs,wire.command,wire.evaluated_at_ms,activeEvidence);
   applyGuildSettlements(company, accrual.guild_settlement_batch, catalogs.factions.stockCap);
-  const contributions = assembleContributions(company, catalogs.economy, accrual.contributions);
+  const activeValues=activeEvidence===null?[]:activeContributions(company,catalogs.opportunities!,activeEvidence.attended_now_ms);const contributions = assembleContributions(company, catalogs.economy, [...accrual.contributions,...activeValues]);
   const effectiveAccrual = { ...accrual, contributions };
 
   if (request.kind === "cross_gate") {
     const preflight = preflightRejection(company, catalogs, request, wire.evaluated_at_ms);
     if (preflight !== null) return rejectState(preflight[0], preflight[1]);
     const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
-    prefix = runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual);
+    prefix = [...activeEvents,...runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual)];
     const postAccrualBalances = { ...company.balances };
     const result = crossGate(company, catalogs.routes, request, wire.command);
     if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]);
@@ -934,13 +945,13 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
       exitType = company.offerState.exitType;
     } else if (request.kind !== "wind_down") throw new RangeError("non-terminal intent at terminal boundary");
     const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
-    prefix = runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual);
+    prefix = [...activeEvents,...runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual)];
     terms = computeExitTerms(company, founder, catalogs.prestige, exitType);
     if (promised) terms = promiseTerms(promised.payout_preview, applyTermsModifier(terms, promised.market_modifier_ppm));
   }
   if (resolved.selected_exit_type !== exitType) throw new RangeError("selected exit type mismatch");
   if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, companyBefore, company, founder, wire.command, request, wire.evaluated_at_ms, contributions, actionDebits, true, prefix);
-  return finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, next);
+  return await finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, next,nextActive);
   } catch (error) { restoreReplaySnapshot(company, companyBefore); throw error; }
 }
 
@@ -979,6 +990,8 @@ function preflightRejection(state: ReplayState, catalogs: ReplayCatalogBundle, r
     case "pick_doctrine": { const transition = catalogs.doctrines?.transition(request.transition_id); if (!transition) return ["unknown_id", request.transition_id]; if (!catalogs.doctrines!.allows(request.transition_id, request.doctrine_id)) return ["unknown_id", request.doctrine_id]; if (state.tier !== transition.sourceTier) return ["not_eligible", "tier"]; if (state.gatesCrossed[transition.gateId]) return ["not_eligible", "gate_crossed"]; return state.doctrinesByTransition[request.transition_id] ? ["not_eligible", "doctrine_already_picked"] : null; }
     case "spend_compute_credit":
       return request.amount_ms > catalogs.economy.offlinePolicy!.burstMaxDurationMs ? ["not_eligible", "burst_duration"] : null;
+    case "claim_opportunity":
+      return null;
     case "sign_compact":
       if (state.compactMember) return ["already_member", "compact"];
       return request.tithe_ppm < catalogs.commons.minimumTithePpm || request.tithe_ppm > catalogs.commons.maximumTithePpm ? ["invalid", "tithe_ppm"] : null;
@@ -1005,6 +1018,41 @@ function assembleContributions(state: ReplayState, catalog: EconomyCatalog, exte
   return combined;
 }
 
+function parseActiveSchedule(source: unknown): ActiveScheduleEvidence {
+  const raw=exactObject(source,["attended_now_ms","before_sequence","before_next_opportunity_attended_ms","after_sequence","after_next_opportunity_attended_ms","expired_buffs","missed_opportunity_id","spawned","claim"],"active-play resolved");
+  const expired=array(raw.expired_buffs,"expired buffs").map((item)=>{const row=exactObject(item,["buff_instance_id"],"expired buff");return{buff_instance_id:uuidV7String(row.buff_instance_id)};});
+  for(let index=1;index<expired.length;index++)if(byteCompare(expired[index-1]!.buff_instance_id,expired[index]!.buff_instance_id)>=0)throw new SyntaxError("expired buffs not sorted");
+  const spawned=raw.spawned===null?null:parseActiveSpawn(raw.spawned); const claim=raw.claim===null?null:parseActiveClaim(raw.claim);
+  return{attended_now_ms:safeInteger(raw.attended_now_ms,0,MAX_EXACT_INTEGER),before_sequence:safeInteger(raw.before_sequence,0,MAX_EXACT_INTEGER),before_next_opportunity_attended_ms:safeInteger(raw.before_next_opportunity_attended_ms,0,MAX_EXACT_INTEGER),after_sequence:safeInteger(raw.after_sequence,0,MAX_EXACT_INTEGER),after_next_opportunity_attended_ms:safeInteger(raw.after_next_opportunity_attended_ms,0,MAX_EXACT_INTEGER),expired_buffs:expired,missed_opportunity_id:raw.missed_opportunity_id===null?null:uuidV7String(raw.missed_opportunity_id),spawned,claim};
+}
+function parseActiveSpawn(source:unknown):ActiveSpawnEvidence{const row=exactObject(source,["sequence","sampled_interval_ms","effect_draw","generator_draw","effect_row_id","selected_generator_id","opportunity_id","spawned_attended_ms","expires_attended_ms"],"active spawn");return{sequence:safeInteger(row.sequence,0,MAX_EXACT_INTEGER),sampled_interval_ms:safeInteger(row.sampled_interval_ms,1,MAX_EXACT_INTEGER),effect_draw:uint64String(row.effect_draw),generator_draw:row.generator_draw===null?null:uint64String(row.generator_draw),effect_row_id:mechanicalString(row.effect_row_id),selected_generator_id:row.selected_generator_id===null?null:mechanicalString(row.selected_generator_id),opportunity_id:uuidV7String(row.opportunity_id),spawned_attended_ms:safeInteger(row.spawned_attended_ms,0,MAX_EXACT_INTEGER),expires_attended_ms:safeInteger(row.expires_attended_ms,1,MAX_EXACT_INTEGER)};}
+function parseActiveClaim(source:unknown):ActiveClaimEvidence{const row=exactObject(source,["opportunity_id","effect_row_id","selected_target","buff_instance_id","requested_delta","actual_credited_delta","saturated","cap_reason_key","next_sampled_interval_ms","next_opportunity_attended_ms"],"active claim");return{opportunity_id:uuidV7String(row.opportunity_id),effect_row_id:mechanicalString(row.effect_row_id),selected_target:row.selected_target===null?null:mechanicalString(row.selected_target),buff_instance_id:row.buff_instance_id===null?null:uuidV7String(row.buff_instance_id),requested_delta:row.requested_delta===null?null:canonicalDecimalString(row.requested_delta),actual_credited_delta:row.actual_credited_delta===null?null:canonicalDecimalString(row.actual_credited_delta),saturated:row.saturated===null?null:boolean(row.saturated),cap_reason_key:row.cap_reason_key===null?null:mechanicalString(row.cap_reason_key),next_sampled_interval_ms:safeInteger(row.next_sampled_interval_ms,1,MAX_EXACT_INTEGER),next_opportunity_attended_ms:safeInteger(row.next_opportunity_attended_ms,1,MAX_EXACT_INTEGER)};}
+function uint64String(value:unknown):string{const result=string(value);if(!/^(0|[1-9][0-9]*)$/.test(result)){throw new SyntaxError("invalid uint64");}const parsed=BigInt(result);if(parsed<0n||parsed>((1n<<64n)-1n))throw new SyntaxError("invalid uint64");return result;}
+function canonicalDecimalString(value:unknown):string{const result=string(value);parseCanonical(result);return result;}
+
+async function applyActiveSchedule(state:ReplayState,catalogs:ReplayCatalogBundle,command:ReplayCommand,nowMs:number,evidence:ActiveScheduleEvidence):Promise<ReplayEvent[]>{
+  const catalog=catalogs.opportunities;if(state.wireVersion!==18||!catalog||evidence.before_sequence!==state.opportunitySpawnSeq||evidence.before_next_opportunity_attended_ms!==state.nextOpportunityAttendedMs)throw new RangeError("active schedule state mismatch");
+  const clock=cloneReplayState(state,catalogs);if(nowMs>clock.evaluatedThroughMs)recordOfflineSpan(clock,clock.evaluatedThroughMs,nowMs,catalogs.prestige.catchupCeilingMs);const attended=attendedMS(clock,nowMs);if(attended!==evidence.attended_now_ms)throw new RangeError("active attended mismatch");
+  const expired=state.activeBuffs.filter((row)=>row.expiresAttendedMs<=attended).map((row)=>row.buffInstanceId).sort(byteCompare);if(canonicalJSONString(expired)!==canonicalJSONString(evidence.expired_buffs.map((row)=>row.buff_instance_id)))throw new RangeError("active expiry mismatch");state.activeBuffs=state.activeBuffs.filter((row)=>row.expiresAttendedMs>attended);
+  let missed:string|null=null;if(state.pendingOpportunity&&state.pendingOpportunity.expiresAttendedMs<=attended){missed=state.pendingOpportunity.opportunityId;state.pendingOpportunity=null;state.nextOpportunityAttendedMs=evidence.after_next_opportunity_attended_ms;}
+  if(missed!==evidence.missed_opportunity_id)throw new RangeError("active missed mismatch");
+  if(state.pendingOpportunity===null&&state.nextOpportunityAttendedMs>0&&state.nextOpportunityAttendedMs<=attended){const spawn=evidence.spawned;if(!spawn||spawn.sequence!==state.opportunitySpawnSeq||spawn.spawned_attended_ms!==state.nextOpportunityAttendedMs||spawn.expires_attended_ms-spawn.spawned_attended_ms!==catalog.schedule.lifetimeMs)throw new RangeError("active spawn coordinate mismatch");const seed=await founderSeed(command.founder_id,state.runSeq),selection=selectActivePlayEffect(catalog,seed,spawn.sequence);if(selection.effectRowId!==spawn.effect_row_id||selection.effectDraw.toString()!==spawn.effect_draw||(selection.generatorDraw?.toString()??null)!==spawn.generator_draw||selection.selectedGenerator!==spawn.selected_generator_id||activePlayOpportunityId(seed,spawn.sequence,spawn.spawned_attended_ms)!==spawn.opportunity_id)throw new RangeError("active integer draw mismatch");state.pendingOpportunity={opportunityId:spawn.opportunity_id,spawnedAttendedMs:spawn.spawned_attended_ms,expiresAttendedMs:spawn.expires_attended_ms,effectRowId:spawn.effect_row_id,selectedGeneratorId:spawn.selected_generator_id};state.opportunitySpawnSeq++;state.nextOpportunityAttendedMs=0;}else if(evidence.spawned!==null)throw new RangeError("unexpected active spawn");
+  if(state.opportunitySpawnSeq!==evidence.after_sequence||state.nextOpportunityAttendedMs!==evidence.after_next_opportunity_attended_ms)throw new RangeError("active scheduler result mismatch");
+  const events:ReplayEvent[]=[];for(const id of expired)events.push(event("buff_expired.v1","",{buff_instance_id:id,attended_ms:attended}));if(missed)events.push(event("opportunity_expired.v1","",{opportunity_id:missed,attended_ms:attended}));if(evidence.spawned)events.push(event("opportunity_spawned.v1","",{opportunity_id:evidence.spawned.opportunity_id,spawned_attended_ms:evidence.spawned.spawned_attended_ms,expires_attended_ms:evidence.spawned.expires_attended_ms,effect_row_id:evidence.spawned.effect_row_id,selected_generator_id:evidence.spawned.selected_generator_id}));return events;
+}
+
+function activeContributions(state:ReplayState,catalog:ActivePlayCatalog,attended:number):ReplayContribution[]{const result:ReplayContribution[]=[];for(const buff of state.activeBuffs){if(buff.expiresAttendedMs<=attended)continue;const effect=catalog.effects.find((row)=>row.effectRowId===buff.effectRowId);if(!effect)throw new RangeError("unknown active buff");const source=`active_play.${effect.effectRowId}.${buff.buffInstanceId}`;if(effect.kind==="production_frenzy")result.push({slot:"event_buffs",source_id:source,target:"all",factor:effect.factor});else if(effect.kind==="click_frenzy")for(const action of effect.actionIds)result.push({slot:"event_buffs",source_id:source,target:action,factor:effect.factor});else if(effect.kind==="building_special"){if(buff.selectedTarget===null)throw new RangeError("missing active target");const owned=state.generators[buff.selectedTarget];if(!Number.isSafeInteger(owned)||owned!<0)throw new RangeError("invalid active owned count");result.push({slot:"event_buffs",source_id:source,target:buff.selectedTarget,factor:countPpmFactor(owned!,effect.perOwnedPpm)});}else throw new RangeError("instant effect cannot persist");}result.sort((a,b)=>byteCompare(contributionKey(a),contributionKey(b)));return clampActiveContributions(result,parseCanonical(catalog.combo.cap));}
+function clampActiveContributions(values:ReplayContribution[],cap:Decimal):ReplayContribution[]{const result=values.map((row)=>({...row}));const targets=[...new Set(result.map((row)=>row.target))];for(const target of targets){let product=new Decimal(1);const indexes=result.map((row,index)=>row.target===target?index:-1).filter((index)=>index>=0);for(let at=0;at<indexes.length;at++){const index=indexes[at]!,candidate=quantize(product.mul(parseCanonical(result[index]!.factor)));if(candidate.gt(cap)){result[index]={...result[index]!,factor:canonicalString(quantize(cap.div(product)))};for(const later of indexes.slice(at+1))result[later]={...result[later]!,factor:"1e0"};break;}product=candidate;}}return result;}
+
+async function claimOpportunity(state:ReplayState,catalogs:ReplayCatalogBundle,command:ReplayCommand,request:Intent,schedule:ActiveScheduleEvidence,contributions:readonly ReplayContribution[]):Promise<{rejection?:[string,string];claim?:ActiveClaimEvidence;events:ReplayEvent[]}>{
+  const pending=state.pendingOpportunity;if(!pending){if(schedule.missed_opportunity_id===request.opportunity_id)return{rejection:["not_eligible","opportunity_expired"],events:[]};return{rejection:["not_eligible","opportunity_not_pending"],events:[]};}if(pending.opportunityId!==request.opportunity_id)return{rejection:["unknown_id","opportunity_id"],events:[]};if(pending.expiresAttendedMs<=schedule.attended_now_ms)throw new RangeError("expired pending opportunity");
+  const effect=catalogs.opportunities!.effects.find((row)=>row.effectRowId===pending.effectRowId);if(!effect)throw new RangeError("unknown opportunity effect");const expected=schedule.claim;if(expected===null)throw new RangeError("missing applied active claim evidence");const nextCoordinate=schedule.attended_now_ms+expected.next_sampled_interval_ms;if(!Number.isSafeInteger(nextCoordinate)||nextCoordinate!==expected.next_opportunity_attended_ms)throw new RangeError("next opportunity schedule mismatch");state.pendingOpportunity=null;state.nextOpportunityAttendedMs=nextCoordinate;
+  const claim:ActiveClaimEvidence={opportunity_id:pending.opportunityId,effect_row_id:pending.effectRowId,selected_target:pending.selectedGeneratorId,buff_instance_id:null,requested_delta:null,actual_credited_delta:null,saturated:null,cap_reason_key:null,next_sampled_interval_ms:expected.next_sampled_interval_ms,next_opportunity_attended_ms:expected.next_opportunity_attended_ms};const events:ReplayEvent[]=[];let claimPayload:Record<string,unknown>={opportunity_id:pending.opportunityId,effect_row_id:pending.effectRowId,selected_target:pending.selectedGeneratorId};
+  if(effect.kind==="lucky_payout"){const bank=parseCanonical(state.balances[effect.resourceId]!);const rates=productionRates(catalogs.economy,state.generators,state.generatorsProvisioned,contributions);const rate=sumDeterministic(rates.get(effect.resourceId)??[]);const bankTerm=quantize(parseCanonical(effect.luckyBankFrac).mul(bank)),rateTerm=quantize(parseCanonical(effect.luckyRateCap).mul(rate)),requested=quantize(Decimal.min(bankTerm,rateTerm).add(parseCanonical(effect.epsilon)));const changes=applyLedger(state,catalogs.economy,[{resource:effect.resourceId,delta:requested}],true);const actual=changes.find((row)=>row.resource_id===effect.resourceId)?.delta??"0";const saturated=!parseCanonical(actual).eq(requested);claim.requested_delta=canonicalString(requested);claim.actual_credited_delta=actual;claim.saturated=saturated;claim.cap_reason_key=saturated?effect.hardcapReasonKey:null;claimPayload={...claimPayload,requested_delta:claim.requested_delta,actual_credited_delta:actual,saturated,cap_reason_key:claim.cap_reason_key};}
+  else{const buffId=activePlayBuffId(await founderSeed(command.founder_id,state.runSeq),state.opportunitySpawnSeq-1,schedule.attended_now_ms);claim.buff_instance_id=buffId;const selected=effect.kind==="building_special"?pending.selectedGeneratorId:null;if(effect.kind==="building_special"&&selected===null)throw new RangeError("missing building target");const buff={buffInstanceId:buffId,effectRowId:effect.effectRowId,selectedTarget:selected,activatedAttendedMs:schedule.attended_now_ms,expiresAttendedMs:schedule.attended_now_ms+effect.durationMs};state.activeBuffs.push(buff);state.activeBuffs.sort((a,b)=>byteCompare(a.buffInstanceId,b.buffInstanceId));claimPayload={...claimPayload,buff_instance_id:buffId};events.push(event("buff_started.v1",request.intent_id,{buff_instance_id:buffId,effect_row_id:effect.effectRowId,selected_target:selected,activated_attended_ms:buff.activatedAttendedMs,expires_attended_ms:buff.expiresAttendedMs}));}
+  if(canonicalJSONString(claim)!==canonicalJSONString(expected))throw new RangeError("active claim evidence mismatch");events.unshift(event("opportunity_claimed.v1",request.intent_id,claimPayload));return{claim,events};
+}
+
 function contentContributions(state: ReplayState, catalog: EconomyCatalog): ReplayContribution[] {
   const result: ReplayContribution[] = [];
   for (const upgrade of catalog.upgrades) if (state.upgradesOwned.has(upgrade.id)) for (const effect of upgrade.effects) result.push({ slot: effect.slot, source_id: effect.sourceId, target: effect.target, factor: effect.factor });
@@ -1026,7 +1074,8 @@ function contentContributions(state: ReplayState, catalog: EconomyCatalog): Repl
 function countPpmFactor(count: number, perCountPpm: number): string { return canonicalString(quantize(new Decimal((BigInt(count) * BigInt(perCountPpm)).toString()).div(1_000_000).add(1))); }
 function synergyFactor(curve: "linear" | "log", totalPpm: bigint): string { const base = new Decimal(totalPpm.toString()).div(1_000_000).add(1); return canonicalString(quantize(curve === "linear" ? base : new Decimal(base.log10()).add(1))); }
 function contributionKey(value: ReplayContribution): string { return `${value.slot}\0${value.source_id}\0${value.target}`; }
-function validateContributionSet(catalog: EconomyCatalog, values: readonly ReplayContribution[]): void { const declared = new Map(catalog.multiplierSources.map((value) => [value.id, value])); const seen = new Set<string>(); for (const value of values) { const source = declared.get(value.source_id); const factor = parseCanonical(value.factor); if (!source || source.slot !== value.slot || source.target !== value.target || seen.has(value.source_id) || !isStateValue(factor) || !factor.gt(0)) throw new RangeError("invalid multiplier contribution"); seen.add(value.source_id); } }
+function validateContributionSet(catalog: EconomyCatalog, values: readonly ReplayContribution[]): void { const declared = new Map(catalog.multiplierSources.map((value) => [value.id, value])); const seen = new Set<string>(); for (const value of values) { const declarationId=activeDeclarationId(value.source_id);const source=declared.get(declarationId)??(declarationId===value.source_id?undefined:declared.get(`${declarationId}.${value.target}`)); const factor = parseCanonical(value.factor);const identity=`${value.source_id}\0${value.target}`; if (!source || source.slot !== value.slot || source.target !== value.target || declarationId!==value.source_id&&source.provider!=="active_play" || seen.has(identity) || !isStateValue(factor) || !factor.gt(0)) throw new RangeError("invalid multiplier contribution"); seen.add(identity); } }
+function activeDeclarationId(sourceId:string):string{if(!sourceId.startsWith("active_play."))return sourceId;const parts=sourceId.slice("active_play.".length).split(".");const index=parts.findIndex((part)=>part.includes("-"));return index<1?sourceId:parts.slice(0,index).join(".");}
 function contributionFactorForTarget(catalog: EconomyCatalog, target: string, values: readonly ReplayContribution[]): Decimal { validateContributionSet(catalog, values); let factor = new Decimal(1); for (const slot of MULTIPLIER_SLOT_ORDER) for (const value of values.filter((item) => item.slot === slot && item.target === target).sort((a, b) => byteCompare(a.source_id, b.source_id))) factor = factor.mul(parseCanonical(value.factor)); const result = quantize(factor); if (!isStateValue(result) || !result.gt(0)) throw new RangeError("invalid target contribution factor"); return result; }
 
 function evaluate(state: ReplayState, catalog: EconomyCatalog, nowMs: number, mode: "online" | "offline", contributions: readonly ReplayContribution[]): Evaluation {
@@ -1075,8 +1124,8 @@ function materializeProvisionBoundary(catalog: EconomyCatalog, purchased: Record
 }
 
 function productionRates(catalog: EconomyCatalog, counts: Record<string, number>, provisioned: Record<string, number>, contributions: readonly ReplayContribution[]): Map<string, Decimal[]> {
-  const declared = new Map(catalog.multiplierSources.map((value) => [value.id, value])); const bySource = new Map<string, ReplayContribution>();
-  for (const contribution of contributions) { const source = declared.get(contribution.source_id); if (!source || source.slot !== contribution.slot || source.target !== contribution.target || bySource.has(contribution.source_id)) throw new RangeError("invalid multiplier contribution"); bySource.set(contribution.source_id, contribution); }
+  validateContributionSet(catalog,contributions);const bySource = new Map<string, ReplayContribution>();
+  for (const contribution of contributions) { const identity=`${contribution.source_id}\0${contribution.target}`;bySource.set(identity, contribution); }
   const result = new Map<string, Decimal[]>();
   for (const generator of catalog.generatorClasses.filter((value) => value.production !== null)) { const count = counts[generator.id]; const generated = provisioned[generator.id]; if (!Number.isSafeInteger(count) || count! < 0 || !Number.isSafeInteger(generated) || generated! < 0) throw new RangeError("invalid generator count"); if (count === 0 && generated === 0) continue; let rate = parseCanonical(generator.production!.baseRate).mul(new Decimal((BigInt(count!) + BigInt(generated!)).toString())); for (const slot of MULTIPLIER_SLOT_ORDER) { const sources = [...bySource.values()].filter((value) => value.slot === slot && (value.target === "all" || value.target === generator.id)).sort((a, b) => byteCompare(a.source_id, b.source_id)); for (const source of sources) rate = rate.mul(parseCanonical(source.factor)); } const values = result.get(generator.production!.resourceId) ?? []; values.push(rate); result.set(generator.production!.resourceId, values); }
   return result;
@@ -1276,7 +1325,7 @@ function promiseTerms(preview: ExitTerms, current: ExitTerms): ExitTerms {
   return { ...current, reputation_delta: Math.max(preview.reputation_delta, current.reputation_delta), route_knowledge: Math.max(preview.route_knowledge, current.route_knowledge), network_slot_unlocks: [...slots.values()].sort((left, right) => byteCompare(left.slot, right.slot)) };
 }
 
-function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId: string, command: ReplayCommand, nowMs: number, exitType: string, inputTerms: ExitTerms, prefix: ReplayEvent[], executedRoutes: string[], next: ReplayCatalogBundle): LoggedExitTransition {
+async function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId: string, command: ReplayCommand, nowMs: number, exitType: string, inputTerms: ExitTerms, prefix: ReplayEvent[], executedRoutes: string[], next: ReplayCatalogBundle,nextActive:ActiveSpawnEvidence|null): Promise<LoggedExitTransition> {
   const attended = attendedMS(company, nowMs);
   const terms = { ...inputTerms, reputation_delta: Math.min(inputTerms.reputation_delta, MAX_EXACT_INTEGER - founder.reputation_level) };
   if (terms.route_knowledge > MAX_EXACT_INTEGER - founder.route_knowledge_balance || attended > MAX_EXACT_INTEGER - founder.age_ms) throw new RangeError("founder carry overflow");
@@ -1303,6 +1352,7 @@ function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId:
     founder.achievement_score_lifetime = 0;
   }
   const newCompany = newRunState(next, company, founder, nowMs);
+  if(next.opportunities){if(nextActive===null||nextActive.sequence!==0||nextActive.spawned_attended_ms!==nextActive.sampled_interval_ms||nextActive.expires_attended_ms-nextActive.spawned_attended_ms!==next.opportunities.schedule.lifetimeMs)throw new RangeError("missing next active schedule");const seed=await founderSeed(command.founder_id,newCompany.runSeq),selection=selectActivePlayEffect(next.opportunities,seed,0);if(selection.effectRowId!==nextActive.effect_row_id||selection.effectDraw.toString()!==nextActive.effect_draw||(selection.generatorDraw?.toString()??null)!==nextActive.generator_draw||selection.selectedGenerator!==nextActive.selected_generator_id||activePlayOpportunityId(seed,0,nextActive.spawned_attended_ms)!==nextActive.opportunity_id)throw new RangeError("next active selection mismatch");newCompany.nextOpportunityAttendedMs=nextActive.spawned_attended_ms;}else if(nextActive!==null)throw new RangeError("unexpected next active schedule");
   const runID = { company_stream_id: command.company_stream_id, run_seq: company.runSeq };
   const founderEvent = event("founder_advanced", intentId, { exit_type: exitType, founder_id: command.founder_id, occurred_at_ms: nowMs, reputation_delta: terms.reputation_delta, route_knowledge: terms.route_knowledge, run_id: runID });
   const endedEvent = event("run_ended", intentId, { assisted: { advisor: founder.advisor_mode, commons: company.compactMember }, attended_ms: attended, ended_at_ms: nowMs, executed_routes: executedRoutes, exit_type: exitType, faction: company.factionId || null, founder_id: command.founder_id, gates_crossed: Object.keys(company.gatesCrossed).filter((gate) => company.gatesCrossed[gate]).sort(byteCompare), generators_purchased_total: company.generatorPurchasedTotal, ledger_fact_kinds: [...company.ledgerFactKinds].sort(byteCompare), lifetime_value: company.lifetimeValue, payout: terms, pre_timer: company.runPreTimer, rta_ms: nowMs - company.runStartedAtMs, run_id: runID, started_at_ms: company.runStartedAtMs, terminal_seq: command.run_log_seq, tier: company.tier }, 2);
@@ -1331,7 +1381,7 @@ function sortedUniqueMechanical(source: unknown[]): string[] {
   return source.map((item) => { const value = mechanicalString(item); if (byteCompare(value, last) <= 0) throw new SyntaxError("values must be sorted and unique"); last = value; return value; });
 }
 
-function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 2 && root.v !== 3 && root.v !== 4 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: root.v, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
+function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 2 && root.v !== 3 && root.v !== 4 && root.v !== 5 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: root.v as 2|3|4|5, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
 function parseFounderReplayWire(source: unknown): FounderReplayWire {
   const root = exactObject(source, ["v", "command", "evaluated_at_ms", "resolved"], "Founder replay inputs");
   if (root.v !== 1) throw new SyntaxError("invalid Founder replay version");
@@ -1464,7 +1514,7 @@ function applyGuildSettlements(state: ReplayState, batch: ReplayGuildSettlementB
   }
 }
 
-function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4): FounderCarry {
+function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4 | 5): FounderCarry {
   const legacyKeys = ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"];
   const carry = { ...objectWithOnlyKeys(source, wireVersion >= 3 ? [...legacyKeys, "achievements_earned_lifetime", "achievement_score_lifetime"] : legacyKeys, "founder carry") };
   safeInteger(carry.founder_revision, 1, MAX_EXACT_INTEGER);
@@ -1551,6 +1601,10 @@ function parseIntent(payload: string, intentId: string): Intent {
     case "spend_fiscal_credit":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "target"])) { base.invalid = "spend_fiscal_credit.fields"; return base; }
       try { base.target = fiscalTargetWire(parseFiscalTarget(raw.target)); } catch { base.invalid = "target"; }
+      return base;
+    case "claim_opportunity":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "opportunity_id"])) { base.invalid = "claim_opportunity.fields"; return base; }
+      if (!isUUIDV7(raw.opportunity_id)) base.invalid = "opportunity_id"; else base.opportunity_id = raw.opportunity_id;
       return base;
     case "buy_route_hint":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "route_id"])) { base.invalid = "buy_route_hint.fields"; return base; }

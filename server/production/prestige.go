@@ -189,10 +189,18 @@ func (s *Service) finishExit(request IntentRequest, founder *save.State, founder
 	if !currentOK || !nextOK {
 		return save.ExitDecision{}, ErrInvalidEngineState
 	}
-	return finishExitResolved(request, founder, founderRevision, company, companyRevision, now, exitType, terms, endedPrefix, executedRoutes, current, next)
+	var nextActive *activePlaySpawnEvidence
+	if next.Opportunities != nil {
+		spawn, err := next.Opportunities.Spawn(companyRevision.OwnerID, company.RunSeq+1, 0, 0)
+		if err != nil {
+			return save.ExitDecision{}, err
+		}
+		nextActive = spawnEvidence(spawn)
+	}
+	return finishExitResolved(request, founder, founderRevision, company, companyRevision, now, exitType, terms, endedPrefix, executedRoutes, current, next, nextActive)
 }
 
-func finishExitResolved(request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, now time.Time, exitType string, terms prestigecore.Terms, endedPrefix []save.EventWrite, executedRoutes []string, currentBundle, nextBundle CatalogBundle) (save.ExitDecision, error) {
+func finishExitResolved(request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, now time.Time, exitType string, terms prestigecore.Terms, endedPrefix []save.EventWrite, executedRoutes []string, currentBundle, nextBundle CatalogBundle, nextActive *activePlaySpawnEvidence) (save.ExitDecision, error) {
 	now = save.CanonicalServerTime(now)
 	attended, err := prestigecore.AttendedMS(company, now)
 	if err != nil {
@@ -228,6 +236,15 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 	}
 	if err := settleAndActivateFoundations(currentBundle, nextBundle, founder, company, newCompany); err != nil {
 		return save.ExitDecision{}, err
+	}
+	if (nextBundle.Opportunities != nil) != (nextActive != nil) {
+		return save.ExitDecision{}, ErrInvalidEngineState
+	}
+	if nextActive != nil {
+		initialized, initErr := initializeActivePlayState(newCompany, nextBundle.Opportunities, companyRevision.OwnerID)
+		if initErr != nil || !equalSpawnEvidence(*initialized, *nextActive) {
+			return save.ExitDecision{}, ErrInvalidReplayInputs
+		}
 	}
 	runID := map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": company.RunSeq}
 	assisted := map[string]bool{"commons": company.CompactMember, "advisor": founder.AdvisorMode}
@@ -320,6 +337,20 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 		GuildSettlementBatch: settlements,
 		RouteContextVersion:  current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true,
 		ExecutedRouteIDs: executedRoutes, SelectedExitType: selectedType, SelectedTerms: selectedTerms, NextConstantsHash: s.currentConstantsHash}
+	if company.WireVersion == 18 {
+		activeEvidence, activeErr := resolveActivePlaySchedule(company, current.Opportunities, current.Prestige, companyRevision.OwnerID, now)
+		if activeErr != nil {
+			return save.ExitDecision{}, nil, activeErr
+		}
+		build.ActivePlay = &activeEvidence
+	}
+	if next.Opportunities != nil {
+		spawn, spawnErr := next.Opportunities.Spawn(companyRevision.OwnerID, company.RunSeq+1, 0, 0)
+		if spawnErr != nil {
+			return save.ExitDecision{}, nil, spawnErr
+		}
+		build.NextActivePlay = spawnEvidence(spawn)
+	}
 	if company.CompactMember {
 		weight, weightErr := s.resolveCommonsReplayWeight(ctx, companyRevision.StreamID, companyRevision.OwnerID, companyRevision.ConstantsHash)
 		if weightErr != nil {

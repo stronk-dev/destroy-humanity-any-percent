@@ -54,6 +54,7 @@ const (
 	IntentSpendComputeCredit  = "spend_compute_credit"
 	IntentHarvestFiscalPeriod = "harvest_fiscal_period"
 	IntentSpendFiscalCredit   = "spend_fiscal_credit"
+	IntentClaimOpportunity    = "claim_opportunity"
 )
 
 type PrestigePolicyResolver interface {
@@ -288,6 +289,7 @@ type IntentRequest struct {
 	AmountMS                int64
 	Target                  string
 	FiscalTarget            fiscal.SpendTarget
+	OpportunityID           string
 }
 
 type CompactTitheBand struct {
@@ -420,6 +422,13 @@ func (s *Service) Handle(
 			}
 			build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind,
 				DeclinedExitOfferCount: declinedOffers, RouteContextVersion: bundle.Routes.ContextVersion()}
+			if state.WireVersion == 18 {
+				activeEvidence, activeErr := resolveActivePlaySchedule(state, bundle.Opportunities, bundle.Prestige, revision.OwnerID, now)
+				if activeErr != nil {
+					return save.IntentDecision{}, nil, activeErr
+				}
+				build.ActivePlay = &activeEvidence
+			}
 			if prestigeFounder != nil {
 				if err := requireFounderCatalogCoherence(prestigeFounder.Revision, revision); err != nil {
 					return save.IntentDecision{}, nil, err
@@ -506,6 +515,20 @@ func (s *Service) Handle(
 						return save.IntentDecision{}, nil, ErrInvalidEngineState
 					}
 				}
+			}
+			if command.RunLogSeq > 0 && request.Kind == IntentClaimOpportunity {
+				if build.ActivePlay == nil {
+					return save.IntentDecision{}, nil, fmt.Errorf("%w: active-play claim on inactive run", ErrInvalidIntent)
+				}
+				accrual, accrualErr := makeReplayAccrual(build.Contributions, build.CommonsWeightPPM, build.GuildSettlementBatch, build.RouteContextVersion)
+				if accrualErr != nil {
+					return save.IntentDecision{}, nil, accrualErr
+				}
+				claim, claimErr := resolveActiveClaimEvidence(state, bundle, revision, request, mode, now, accrual, *build.ActivePlay)
+				if claimErr != nil {
+					return save.IntentDecision{}, nil, claimErr
+				}
+				build.ActivePlay.Claim = claim
 			}
 			if command.RunLogSeq == 0 {
 				decision, resultErr = TransitionWithPolicies(request, state, catalog, routeCatalog, nil, factionCatalog, revision, mode, now, directContributions, collector, nil)
@@ -1733,6 +1756,12 @@ func wireSnapshot(state *save.State, catalog *economy.Catalog) map[string]any {
 	if save.VersionForState(state) >= 17 {
 		snapshot["compute_burst_remaining_ms"] = state.ComputeBurstRemainingMS
 	}
+	if save.VersionForState(state) >= 18 {
+		snapshot["opportunity_spawn_seq"] = state.OpportunitySpawnSeq
+		snapshot["next_opportunity_attended_ms"] = state.NextOpportunityAttendedMS
+		snapshot["pending_opportunity"] = clonePendingOpportunityRow(state.PendingOpportunity)
+		snapshot["active_buffs"] = cloneActiveBuffRows(state.ActiveBuffs)
+	}
 	return snapshot
 }
 
@@ -2002,6 +2031,14 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 			}
 		default:
 			request.InvalidDetail = "target.kind"
+		}
+	case IntentClaimOpportunity:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "opportunity_id") {
+			request.InvalidDetail = "claim_opportunity.fields"
+			return request, nil
+		}
+		if err := json.Unmarshal(root["opportunity_id"], &request.OpportunityID); err != nil || !intentUUIDV7Pattern.MatchString(request.OpportunityID) {
+			request.InvalidDetail = "opportunity_id"
 		}
 	case IntentBuyRouteHint:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "route_id") {

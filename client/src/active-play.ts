@@ -7,6 +7,8 @@ import { isStateValue, MAX_EXACT_INTEGER, parseCanonical } from "./numeric";
 export const ACTIVE_PLAY_SCHEMA_VERSION = 1;
 export const ACTIVE_PLAY_SAMPLER_VERSION = "gamma6_exp.v1";
 export const ACTIVE_PLAY_SPAWN_SUBSTREAM = "active_play.spawn.v1";
+export const ACTIVE_PLAY_OPPORTUNITY_ID_SUBSTREAM = "active_play.opportunity_id.v1";
+export const ACTIVE_PLAY_BUFF_ID_SUBSTREAM = "active_play.buff_id.v1";
 const idPattern = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 
 export type ActivePlayEffect =
@@ -72,6 +74,24 @@ export function selectActivePlayEffect(catalog: ActivePlayCatalog, baseSeed: big
   for(const row of catalog.effects){if(remaining<BigInt(row.weight)){selected=row;break;}remaining-=BigInt(row.weight);} if(!selected)throw new RangeError("effect draw");
   if(selected.kind!=="building_special")return{effectRowId:selected.effectRowId,effectDraw:draw,generatorDraw:null,selectedGenerator:null};
   const generatorDraw=random.bound(BigInt(selected.eligibleGeneratorIds.length)); return{effectRowId:selected.effectRowId,effectDraw:draw,generatorDraw,selectedGenerator:selected.eligibleGeneratorIds[Number(generatorDraw)]!};
+}
+
+export function activePlayBuffId(baseSeed: bigint, sequence: number, attendedMs: number): string {
+	return activePlayDeterministicId(baseSeed, sequence, attendedMs, ACTIVE_PLAY_BUFF_ID_SUBSTREAM);
+}
+
+export function activePlayOpportunityId(baseSeed: bigint, sequence: number, attendedMs: number): string {
+	return activePlayDeterministicId(baseSeed, sequence, attendedMs, ACTIVE_PLAY_OPPORTUNITY_ID_SUBSTREAM);
+}
+
+function activePlayDeterministicId(baseSeed: bigint, sequence: number, attendedMs: number, label: string): string {
+  if (!Number.isSafeInteger(sequence) || sequence < 0 || !Number.isSafeInteger(attendedMs) || attendedMs < 0) throw new RangeError("invalid buff identity coordinate");
+  const random = substream(baseSeed ^ BigInt(sequence) ^ BigInt(attendedMs), label);
+  const bytes = new Uint8Array(16); let first=random.next(),second=random.next();
+  for(let index=7;index>=0;index--){bytes[index]=Number(first&255n);first>>=8n;} for(let index=15;index>=8;index--){bytes[index]=Number(second&255n);second>>=8n;}
+  let timestamp=BigInt(attendedMs)&((1n<<48n)-1n);for(let index=5;index>=0;index--){bytes[index]=Number(timestamp&255n);timestamp>>=8n;}
+  bytes[6]=(bytes[6]!&0x0f)|0x70;bytes[8]=(bytes[8]!&0x3f)|0x80;const hex=[...bytes].map((value)=>value.toString(16).padStart(2,"0")).join("");
+  return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
 }
 
 function declaration(economy:EconomyCatalog,id:string,target:string):boolean{return economy.multiplierSources.some((row)=>row.id===id&&row.slot==="event_buffs"&&row.target===target&&row.provider==="active_play");}

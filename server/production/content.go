@@ -166,13 +166,13 @@ func contributionFactorForTarget(catalog *economy.Catalog, target string, contri
 	factor := decimal.One
 	for _, slot := range multiplier.Order {
 		sources := make([]string, 0)
-		for sourceID, contribution := range bySource {
+		for identity, contribution := range bySource {
 			if contribution.Slot == slot && contribution.Target == target {
-				sources = append(sources, sourceID)
+				sources = append(sources, identity)
 			}
 		}
-		for _, sourceID := range multiplier.OrderedSourceIDs(sources) {
-			factor = factor.Mul(bySource[sourceID].Factor)
+		for _, identity := range multiplier.OrderedSourceIDs(sources) {
+			factor = factor.Mul(bySource[identity].Factor)
 		}
 	}
 	factor = factor.Quantize(decimal.CanonicalSignificantDigits)

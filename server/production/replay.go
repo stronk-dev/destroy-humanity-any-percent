@@ -150,6 +150,10 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		withOpportunities && (!withDoctrines || len(bundle.Artifacts["opportunities"]) == 0) {
 		return false
 	}
+	if withOpportunities && (bundle.Opportunities.Schedule.MinimumIntervalMS > decimal.MaxExactInteger-bundle.Opportunities.Schedule.LifetimeMS ||
+		bundle.Opportunities.Schedule.MinimumIntervalMS+bundle.Opportunities.Schedule.LifetimeMS <= bundle.Prestige.CatchupCeilingMS) {
+		return false
+	}
 	computed, err := save.ConstantsHashArtifacts(bundle.Artifacts)
 	return err == nil && computed == constantsHash
 }
@@ -308,12 +312,14 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	var accrual replayAccrual
 	var founder *save.State
 	var declined int64
+	var activeEvidence *activePlayScheduleEvidence
 	if request.Kind == IntentCrossGate {
 		var resolved replayCrossGateResolved
 		if err := decodeReplayStrict(wire.Resolved, &resolved); err != nil || resolved.IntentKind != request.Kind {
 			return LoggedTransition{}, fmt.Errorf("%w: cross-gate resolved union", ErrInvalidReplayInputs)
 		}
 		accrual, declined = resolved.Accrual, resolved.DeclinedExitOfferCount
+		activeEvidence = resolved.ActivePlay
 		if resolved.FounderCarry != nil {
 			if !validFounderCarry(*resolved.FounderCarry, wire.Version, catalogs.foundationsActive()) || resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash {
 				return LoggedTransition{}, fmt.Errorf("%w: founder carry", ErrInvalidReplayInputs)
@@ -329,6 +335,7 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 			return LoggedTransition{}, fmt.Errorf("%w: accrual resolved union", ErrInvalidReplayInputs)
 		}
 		accrual = resolved.Accrual
+		activeEvidence = resolved.ActivePlay
 		if resolved.FounderCarry != nil {
 			if !validFounderCarry(*resolved.FounderCarry, wire.Version, catalogs.foundationsActive()) || resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash {
 				return LoggedTransition{}, fmt.Errorf("%w: founder carry", ErrInvalidReplayInputs)
@@ -342,12 +349,32 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	if catalogs.foundationsActive() && wire.Version >= 4 && founder == nil {
 		return LoggedTransition{}, fmt.Errorf("%w: active foundation founder carry", ErrInvalidReplayInputs)
 	}
+	if (state.WireVersion == 18) != (activeEvidence != nil) || state.WireVersion == 18 && wire.Version < 5 {
+		return LoggedTransition{}, fmt.Errorf("%w: active-play resolved presence", ErrInvalidReplayInputs)
+	}
+	var activeEvents []save.EventWrite
+	if activeEvidence != nil {
+		activeEvents, err = applyActivePlaySchedule(state, catalogs.Opportunities, catalogs.Prestige, revision.OwnerID, now, *activeEvidence)
+		if err != nil {
+			return LoggedTransition{}, fmt.Errorf("%w: active-play schedule", ErrInvalidReplayInputs)
+		}
+		for index := range activeEvents {
+			activeEvents[index].IntentID = request.IntentID
+		}
+	}
 	contributions, err := contributionsFromReplay(accrual)
 	if err != nil || accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
 		return LoggedTransition{}, fmt.Errorf("%w: accrual inputs", ErrInvalidReplayInputs)
 	}
 	if err := applyReplayGuildSettlements(state, accrual.GuildSettlementBatch, catalogs.Faction.StockCap); err != nil {
 		return LoggedTransition{}, fmt.Errorf("%w: guild settlement inputs", ErrInvalidReplayInputs)
+	}
+	if state.WireVersion == 18 {
+		activeContributions, activeErr := activePlayContributions(state, catalogs.Opportunities, activeEvidence.AttendedNowMS)
+		if activeErr != nil {
+			return LoggedTransition{}, activeErr
+		}
+		contributions = append(contributions, activeContributions...)
 	}
 	contributions, err = assembleContributions(state, catalogs.Economy, contributions)
 	if err != nil {
@@ -358,12 +385,25 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	}
 	hook := closedReplayAccrualHook(catalogs, accrual.CommonsWeightPPM)
 	band := &CompactTitheBand{MinimumPPM: catalogs.Commons.MinimumTithePPM(), MaximumPPM: catalogs.Commons.MaximumTithePPM()}
-	decision, err := transitionWithSimulationPolicy(request, state, catalogs.Economy, catalogs.Routes, catalogs.Doctrines, band, catalogs.Faction,
-		revision, wire.EvaluationMode, now, contributions, collector, hook, nil)
+	var decision save.IntentDecision
+	if request.Kind == IntentClaimOpportunity {
+		if activeEvidence == nil {
+			return LoggedTransition{}, fmt.Errorf("%w: missing active-play schedule resolution", ErrInvalidReplayInputs)
+		}
+		decision, err = applyClaimOpportunity(request, state, catalogs, revision, wire.EvaluationMode, now, contributions, hook,
+			activeEvidence.AttendedNowMS, activeEvidence.MissedOpportunityID, activeEvidence.Claim, false)
+	} else {
+		if activeEvidence != nil && activeEvidence.Claim != nil {
+			return LoggedTransition{}, fmt.Errorf("%w: unexpected active-play claim resolution", ErrInvalidReplayInputs)
+		}
+		decision, err = transitionWithSimulationPolicy(request, state, catalogs.Economy, catalogs.Routes, catalogs.Doctrines, band, catalogs.Faction,
+			revision, wire.EvaluationMode, now, contributions, collector, hook, nil)
+	}
 	if err != nil {
 		return LoggedTransition{}, err
 	}
 	if decision.Outcome == save.IntentApplied {
+		decision.Events = append(activeEvents, decision.Events...)
 		if err := afterPrestigeTransitionResolved(catalogs.Prestige, catalogs.Economy, request, state, revision, now, &decision, founder, declined); err != nil {
 			return LoggedTransition{}, err
 		}
@@ -433,6 +473,20 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 			*company = *companyBefore
 		}
 	}()
+	if (company.WireVersion == 18) != (resolved.ActivePlay != nil) || company.WireVersion == 18 && wire.Version < 5 ||
+		(next.Opportunities != nil) != (resolved.NextActivePlay != nil) {
+		return LoggedExitTransition{}, fmt.Errorf("%w: terminal active-play evidence", ErrInvalidReplayInputs)
+	}
+	var activeEvents []save.EventWrite
+	if resolved.ActivePlay != nil {
+		activeEvents, err = applyActivePlaySchedule(company, catalogs.Opportunities, catalogs.Prestige, wire.Command.FounderID, now, *resolved.ActivePlay)
+		if err != nil || resolved.ActivePlay.Claim != nil {
+			return LoggedExitTransition{}, fmt.Errorf("%w: terminal active-play schedule", ErrInvalidReplayInputs)
+		}
+		for index := range activeEvents {
+			activeEvents[index].IntentID = request.IntentID
+		}
+	}
 	contributions, err := contributionsFromReplay(resolved.Accrual)
 	if err != nil || resolved.Accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal accrual inputs", ErrInvalidReplayInputs)
@@ -443,6 +497,13 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	}
 	if err := applyReplayGuildSettlements(company, resolved.Accrual.GuildSettlementBatch, catalogs.Faction.StockCap); err != nil {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal guild settlement inputs", ErrInvalidReplayInputs)
+	}
+	if resolved.ActivePlay != nil {
+		activeContributions, activeErr := activePlayContributions(company, catalogs.Opportunities, resolved.ActivePlay.AttendedNowMS)
+		if activeErr != nil {
+			return LoggedExitTransition{}, activeErr
+		}
+		contributions = append(contributions, activeContributions...)
 	}
 	contributions, err = assembleContributions(company, catalogs.Economy, contributions)
 	if err != nil {
@@ -473,7 +534,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		if attendedErr != nil || attended < 900_000 || len(founder.ExitHistory) != 0 {
 			return LoggedExitTransition{}, ErrInvalidEngineState
 		}
-		exitType, prefix = "scripted_first", transition.Events
+		exitType, prefix = "scripted_first", append(activeEvents, transition.Events...)
 		terms, err = prestigecore.ComputeTerms(company, founder, catalogs.Prestige, exitType)
 	} else {
 		if request.Kind == IntentFileIPO {
@@ -512,6 +573,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 			return LoggedExitTransition{}, evaluationErr
 		}
 		prefix, err = runAccrualHook(hook, request.IntentID, company, catalogs.Economy, revision, evaluation, contributions)
+		prefix = append(activeEvents, prefix...)
 		if err == nil {
 			terms, err = prestigecore.ComputeTerms(company, founder, catalogs.Prestige, exitType)
 		}
@@ -536,7 +598,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	founderRevision := save.Revision{StreamID: "", OwnerID: wire.Command.FounderID, Number: resolved.FounderCarry.FounderRevision,
 		ConstantsHash: catalogs.ConstantsHash}
 	decision, err := finishExitResolved(request, founder, founderRevision, company, revision, now, exitType, terms, prefix,
-		resolved.ExecutedRouteIDs, catalogs, *next)
+		resolved.ExecutedRouteIDs, catalogs, *next, resolved.NextActivePlay)
 	if err != nil {
 		return LoggedExitTransition{}, err
 	}
@@ -748,29 +810,33 @@ func stateFromFounderCarry(carry replayFounderCarry, catalogs CatalogBundle) (*s
 }
 
 type replayAccrualResolved struct {
-	Kind         string              `json:"kind"`
-	IntentKind   string              `json:"intent_kind"`
-	Accrual      replayAccrual       `json:"accrual"`
-	FounderCarry *replayFounderCarry `json:"founder_carry,omitempty"`
+	Kind         string                      `json:"kind"`
+	IntentKind   string                      `json:"intent_kind"`
+	Accrual      replayAccrual               `json:"accrual"`
+	FounderCarry *replayFounderCarry         `json:"founder_carry,omitempty"`
+	ActivePlay   *activePlayScheduleEvidence `json:"active_play,omitempty"`
 }
 
 type replayCrossGateResolved struct {
-	Kind                   string              `json:"kind"`
-	IntentKind             string              `json:"intent_kind"`
-	Accrual                replayAccrual       `json:"accrual"`
-	DeclinedExitOfferCount int64               `json:"declined_exit_offer_count"`
-	FounderCarry           *replayFounderCarry `json:"founder_carry"`
+	Kind                   string                      `json:"kind"`
+	IntentKind             string                      `json:"intent_kind"`
+	Accrual                replayAccrual               `json:"accrual"`
+	DeclinedExitOfferCount int64                       `json:"declined_exit_offer_count"`
+	FounderCarry           *replayFounderCarry         `json:"founder_carry"`
+	ActivePlay             *activePlayScheduleEvidence `json:"active_play,omitempty"`
 }
 
 type replayExitResolved struct {
-	Kind              string             `json:"kind"`
-	IntentKind        string             `json:"intent_kind"`
-	Accrual           replayAccrual      `json:"accrual"`
-	FounderCarry      replayFounderCarry `json:"founder_carry"`
-	ExecutedRouteIDs  []string           `json:"executed_route_ids"`
-	SelectedExitType  string             `json:"selected_exit_type"`
-	SelectedTerms     json.RawMessage    `json:"selected_terms"`
-	NextConstantsHash string             `json:"next_constants_hash"`
+	Kind              string                      `json:"kind"`
+	IntentKind        string                      `json:"intent_kind"`
+	Accrual           replayAccrual               `json:"accrual"`
+	FounderCarry      replayFounderCarry          `json:"founder_carry"`
+	ExecutedRouteIDs  []string                    `json:"executed_route_ids"`
+	SelectedExitType  string                      `json:"selected_exit_type"`
+	SelectedTerms     json.RawMessage             `json:"selected_terms"`
+	NextConstantsHash string                      `json:"next_constants_hash"`
+	ActivePlay        *activePlayScheduleEvidence `json:"active_play,omitempty"`
+	NextActivePlay    *activePlaySpawnEvidence    `json:"next_active_play,omitempty"`
 }
 
 type replayBuild struct {
@@ -789,6 +855,8 @@ type replayBuild struct {
 	SelectedExitType       string
 	SelectedTerms          json.RawMessage
 	NextConstantsHash      string
+	ActivePlay             *activePlayScheduleEvidence
+	NextActivePlay         *activePlaySpawnEvidence
 }
 
 func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
@@ -819,7 +887,8 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 		carry := normalizedFounderCarry(*input.FounderCarry)
 		resolved, err = json.Marshal(replayExitResolved{Kind: "exit", IntentKind: input.IntentKind, Accrual: accrual,
 			FounderCarry: carry, ExecutedRouteIDs: routes, SelectedExitType: input.SelectedExitType,
-			SelectedTerms: append(json.RawMessage(nil), input.SelectedTerms...), NextConstantsHash: input.NextConstantsHash})
+			SelectedTerms: append(json.RawMessage(nil), input.SelectedTerms...), NextConstantsHash: input.NextConstantsHash,
+			ActivePlay: input.ActivePlay, NextActivePlay: input.NextActivePlay})
 	case input.IntentKind == IntentCrossGate:
 		var carry *replayFounderCarry
 		if input.FounderCarry != nil {
@@ -827,14 +896,14 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 			carry = &value
 		}
 		resolved, err = json.Marshal(replayCrossGateResolved{Kind: "cross_gate", IntentKind: input.IntentKind, Accrual: accrual,
-			DeclinedExitOfferCount: input.DeclinedExitOfferCount, FounderCarry: carry})
+			DeclinedExitOfferCount: input.DeclinedExitOfferCount, FounderCarry: carry, ActivePlay: input.ActivePlay})
 	default:
 		var carry *replayFounderCarry
 		if input.FounderCarry != nil {
 			value := normalizedFounderCarry(*input.FounderCarry)
 			carry = &value
 		}
-		resolved, err = json.Marshal(replayAccrualResolved{Kind: "accrual", IntentKind: input.IntentKind, Accrual: accrual, FounderCarry: carry})
+		resolved, err = json.Marshal(replayAccrualResolved{Kind: "accrual", IntentKind: input.IntentKind, Accrual: accrual, FounderCarry: carry, ActivePlay: input.ActivePlay})
 	}
 	if err != nil {
 		return nil, err
@@ -916,7 +985,7 @@ func founderCarry(state *save.State) replayFounderCarry {
 
 func parseReplayInputs(data []byte) (replayInputsWire, error) {
 	var wire replayInputsWire
-	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != save.ReplayInputsVersion) ||
+	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != save.ReplayInputsVersion) ||
 		(wire.EvaluationMode != ModeOnline && wire.EvaluationMode != ModeOffline) || wire.EvaluatedAtMS <= 0 {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}

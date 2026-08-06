@@ -103,6 +103,20 @@ const fixture = fixtureJSON as {
     }[];
     readonly final_state_json: string;
   };
+  readonly active_play_run: {
+    readonly constants_hash: string;
+    readonly artifacts: ReplayArtifacts;
+    readonly genesis: unknown;
+    readonly entries: readonly {
+      readonly seq: number;
+      readonly canonical_payload: Record<string, unknown>;
+      readonly replay_inputs: unknown;
+      readonly receipt_json: string;
+      readonly events_json: string;
+      readonly terminal: boolean;
+    }[];
+    readonly final_state_json: string;
+  };
   readonly rejected_exit_run: {
     readonly genesis: unknown;
     readonly entries: readonly {
@@ -111,6 +125,9 @@ const fixture = fixtureJSON as {
     }[];
   };
   readonly active_foundation_exit: {
+    readonly constants_hash: string; readonly artifacts: ReplayArtifacts; readonly next_constants_hash: string; readonly next_artifacts: ReplayArtifacts; readonly case: TerminalFixtureCase;
+  };
+  readonly active_play_exit: {
     readonly constants_hash: string; readonly artifacts: ReplayArtifacts; readonly next_constants_hash: string; readonly next_artifacts: ReplayArtifacts; readonly case: TerminalFixtureCase;
   };
   readonly founder_constants_hash: string;
@@ -215,6 +232,38 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
       expect(canonicalJSONString(transition.events), `events seq ${entry.seq}`).toBe(entry.events_json);
     }
     expect(canonicalJSONString(encodeReplayState(state))).toBe(run.final_state_json);
+  });
+
+  it("replays the sequential Active-Play scheduler, buffs, Lucky payout, and rollback corpus", async () => {
+    const run = fixture.active_play_run;
+    const bundle = await loadReplayCatalogBundle(run.constants_hash, run.artifacts);
+    if (!bundle.meters || !bundle.achievements || !bundle.doctrines || !bundle.opportunities) throw new Error("Active-Play fixture lacks its pinned catalogs");
+    const state = restoreReplayState(run.genesis, 18, bundle.economy, { meters: bundle.meters, achievements: bundle.achievements,
+      doctrines: bundle.doctrines, opportunities: bundle.opportunities });
+    for (const entry of run.entries) {
+      const transition = await applyLogged(state, canonicalJSONString(entry.canonical_payload), bundle, entry.replay_inputs);
+      expect(canonicalJSONString(transition.receipt), `receipt seq ${entry.seq}`).toBe(entry.receipt_json);
+      expect(canonicalJSONString(transition.events), `events seq ${entry.seq}`).toBe(entry.events_json);
+    }
+    expect(canonicalJSONString(encodeReplayState(state))).toBe(run.final_state_json);
+  });
+
+  it("replays Active-Play Exit reset and next-run scheduler initialization", async () => {
+    const fixtureExit = fixture.active_play_exit;
+    const bundle = await loadReplayCatalogBundle(fixtureExit.constants_hash, fixtureExit.artifacts);
+    if (!bundle.meters || !bundle.achievements || !bundle.doctrines || !bundle.opportunities) throw new Error("Active-Play Exit fixture lacks its pinned catalogs");
+    const testCase = fixtureExit.case;
+    const state = restoreReplayState(testCase.pre_state, 18, bundle.economy, { meters: bundle.meters, achievements: bundle.achievements,
+      doctrines: bundle.doctrines, opportunities: bundle.opportunities });
+    const transition = await applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+    expect(transition.outcome).toBe("applied");
+    expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+    expect(canonicalJSONString(encodeReplayState(transition.finalCompany))).toBe(testCase.final_company_json);
+    expect(canonicalJSONString(encodeReplayState(transition.newCompany!))).toBe(testCase.new_company_json);
+    expect(transition.newCompany!.activeBuffs).toEqual([]);
+    expect(transition.newCompany!.pendingOpportunity).toBeNull();
+    expect(transition.newCompany!.opportunitySpawnSeq).toBe(0);
+    expect(transition.newCompany!.nextOpportunityAttendedMs).toBeGreaterThan(0);
   });
 
   it("verifies the Go-authored Founder career from genesis without Company state", async () => {

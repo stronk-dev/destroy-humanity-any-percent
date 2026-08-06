@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/achievements"
+	"cloud-clicker/server/activeplay"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
@@ -37,8 +38,10 @@ type crossRuntimeFixture struct {
 	TerminalCases   []crossRuntimeTerminalCase `json:"terminal_cases"`
 	Additional      []crossRuntimeBundleCase   `json:"additional_bundles"`
 	ActiveExit      crossRuntimeActiveExit     `json:"active_foundation_exit"`
+	ActivePlayExit  crossRuntimeActiveExit     `json:"active_play_exit"`
 	FullRun         crossRuntimeFullRun        `json:"full_run"`
 	DoctrineRun     crossRuntimeFullRun        `json:"doctrine_run"`
+	ActivePlayRun   crossRuntimeFullRun        `json:"active_play_run"`
 	RejectedExit    crossRuntimeFullRun        `json:"rejected_exit_run"`
 	FounderHash     string                     `json:"founder_constants_hash"`
 	FounderFiles    map[string]string          `json:"founder_artifacts"`
@@ -331,8 +334,10 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		makeActiveFoundationBurnReplayFixture(t, baseNow),
 	)
 	result.ActiveExit = makeActiveFoundationExitFixture(t, baseNow)
+	result.ActivePlayExit = makeActivePlayExitFixture(t, baseNow)
 	result.FullRun = makeFullRunFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	result.DoctrineRun = makeDoctrineReplayRunFixture(t, baseNow)
+	result.ActivePlayRun = makeActivePlayReplayRunFixture(t, baseNow)
 	result.RejectedExit = makeRejectedExitFixture(t, catalogs, bundleBytes.Hash, baseNow)
 	result.FounderHash, result.FounderFiles, result.FounderCases, result.FounderRun = makeFounderReplayFixture(t, baseNow)
 	result.PetFounderHash, result.PetFounderFiles, result.PetFounderCases = makePetFounderReplayFixture(t, baseNow)
@@ -449,6 +454,266 @@ func doctrineReplayBundle(t *testing.T) CatalogBundle {
 	return catalogs
 }
 
+func makeActivePlayReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFullRun {
+	t.Helper()
+	catalogs := activePlayReplayBundle(t)
+	state := replayFixtureState(t, catalogs.Economy, now)
+	state.WireVersion, state.Tier, state.ComputeCreditMS = 18, 3, 5_000
+	state.GeneratorCounts["generator.beige_tower"] = 1
+	setCash(t, state, "9.99999999999e999")
+	meterState, err := meters.NewRunState(catalogs.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.MeterBands = nil
+	state.MeterValues, state.MeterDecayRemainders, state.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	state.AchievementsEarnedRun = map[string]bool{}
+	founderID := activePlayFixtureFounder(t, catalogs.Opportunities)
+	initial, err := initializeActivePlayState(state, catalogs.Opportunities, founderID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	genesis := mustEncodeState(t, state)
+	hash := catalogs.ConstantsHash
+	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: hash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, AchievementsEarnedLifetime: []string{}}
+	revision := int64(1)
+	sequence := int64(0)
+	entries := make([]crossRuntimeFullRunEntry, 0, 12)
+	appendCommand := func(kind, fields string, at time.Time) save.IntentOutcome {
+		t.Helper()
+		sequence++
+		intentID := fmt.Sprintf("01987777-%04x-7000-8000-%012x", sequence, sequence)
+		payload := fmt.Sprintf(`{"intent_id":%q,"kind":%q,"expected_revision":%d%s}`, intentID, kind, revision, fields)
+		request, parseErr := ParseIntent([]byte(payload))
+		if parseErr != nil {
+			t.Fatalf("active fixture row %d parse: %v", sequence, parseErr)
+		}
+		command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01987777-1a00-7000-8000-000000000001", FounderID: founderID,
+			Revision: revision, RunSeq: state.RunSeq, RunLogSeq: sequence}
+		activeEvidence, resolveErr := resolveActivePlaySchedule(state, catalogs.Opportunities, catalogs.Prestige, founderID, at)
+		if resolveErr != nil {
+			t.Fatalf("active fixture row %d schedule: %v", sequence, resolveErr)
+		}
+		build := replayBuild{Command: command, Mode: ModeOnline, Now: at, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(),
+			FounderCarry: &carry, ActivePlay: &activeEvidence}
+		if request.Kind == IntentClaimOpportunity {
+			accrual, accrualErr := makeReplayAccrual(nil, nil, guild.SettlementBatch{}, build.RouteContextVersion)
+			if accrualErr != nil {
+				t.Fatal(accrualErr)
+			}
+			claim, claimErr := resolveActiveClaimEvidence(state, catalogs, save.Revision{StreamID: command.CompanyStreamID, OwnerID: founderID,
+				Number: revision, ConstantsHash: hash, RunLogSequence: sequence}, request, ModeOnline, at, accrual, activeEvidence)
+			if claimErr != nil {
+				t.Fatalf("active fixture row %d claim: %v", sequence, claimErr)
+			}
+			build.ActivePlay.Claim = claim
+		}
+		inputs, inputErr := buildReplayInputs(build)
+		if inputErr != nil {
+			t.Fatalf("active fixture row %d inputs: %v", sequence, inputErr)
+		}
+		transition, transitionErr := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
+		if transitionErr != nil {
+			t.Fatalf("active fixture row %d transition: %v", sequence, transitionErr)
+		}
+		if transition.Outcome == save.IntentApplied {
+			revision++
+		}
+		entries = append(entries, crossRuntimeFullRunEntry{Seq: sequence, CanonicalPayload: request.CanonicalPayload, ReplayInputs: inputs,
+			ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, fixtureEvents(transition.Events))})
+		return transition.Outcome
+	}
+	manual := func(at time.Time) save.IntentOutcome {
+		return appendCommand(IntentPerformManualBatch, `,"action_id":"manual.click","count":1,"window_ms":1`, at)
+	}
+	claim := func(id string, at time.Time) save.IntentOutcome {
+		return appendCommand(IntentClaimOpportunity, fmt.Sprintf(`,"opportunity_id":%q`, id), at)
+	}
+	started := now
+	firstAt := started.Add(time.Duration(initial.SpawnedAttendedMS) * time.Millisecond)
+	if manual(firstAt) != save.IntentApplied || state.PendingOpportunity == nil || state.PendingOpportunity.EffectRowID != "active.production" {
+		t.Fatal("first production opportunity did not materialize")
+	}
+	if claim(state.PendingOpportunity.OpportunityID, firstAt) != save.IntentApplied {
+		t.Fatal("first production opportunity was not claimed")
+	}
+	secondAt := started.Add(time.Duration(state.NextOpportunityAttendedMS) * time.Millisecond)
+	if manual(secondAt) != save.IntentApplied || state.PendingOpportunity == nil || state.PendingOpportunity.EffectRowID != "active.production" {
+		t.Fatal("second production opportunity did not materialize")
+	}
+	if claim(state.PendingOpportunity.OpportunityID, secondAt) != save.IntentApplied || len(state.ActiveBuffs) != 2 {
+		t.Fatal("overlapping production buffs were not recorded")
+	}
+	if manual(secondAt.Add(time.Millisecond)) != save.IntentApplied {
+		t.Fatal("overlapping buff command did not apply")
+	}
+	thirdAt := started.Add(time.Duration(state.NextOpportunityAttendedMS) * time.Millisecond)
+	if manual(thirdAt) != save.IntentApplied || state.PendingOpportunity == nil || state.PendingOpportunity.EffectRowID != "active.lucky" {
+		t.Fatal("Lucky opportunity did not materialize")
+	}
+	if claim(state.PendingOpportunity.OpportunityID, thirdAt) != save.IntentApplied {
+		t.Fatal("Lucky opportunity was not claimed")
+	}
+	fourthAt := started.Add(time.Duration(state.NextOpportunityAttendedMS) * time.Millisecond)
+	if manual(fourthAt) != save.IntentApplied || state.PendingOpportunity == nil {
+		t.Fatal("miss candidate did not materialize")
+	}
+	missedID := state.PendingOpportunity.OpportunityID
+	offlineReturn := fourthAt.Add(time.Hour)
+	if manual(offlineReturn) != save.IntentApplied || state.PendingOpportunity == nil || state.PendingOpportunity.OpportunityID != missedID {
+		t.Fatal("offline wall gap advanced the attended scheduler")
+	}
+	expiryAt := offlineReturn.Add(time.Duration(catalogs.Opportunities.Schedule.LifetimeMS) * time.Millisecond)
+	if claim(missedID, expiryAt) != save.IntentRejected || state.PendingOpportunity == nil || state.PendingOpportunity.OpportunityID != missedID {
+		t.Fatal("expired claim did not reject and roll back scheduler cleanup")
+	}
+	if manual(expiryAt) != save.IntentApplied || state.PendingOpportunity != nil {
+		t.Fatal("next applied command did not persist missed-opportunity cleanup")
+	}
+	finalState := mustEncodeState(t, state)
+	return crossRuntimeFullRun{ConstantsHash: hash, Artifacts: stringArtifacts(catalogs.Artifacts), Genesis: genesis, Entries: entries,
+		FinalStateJSON: canonicalFixtureJSON(t, finalState)}
+}
+
+func activePlayReplayBundle(t *testing.T) CatalogBundle {
+	t.Helper()
+	catalogs := doctrineReplayBundle(t)
+	artifacts := cloneArtifactMap(catalogs.Artifacts)
+	var economyRoot map[string]any
+	if err := json.Unmarshal(artifacts["economy"], &economyRoot); err != nil {
+		t.Fatal(err)
+	}
+	sources := economyRoot["multiplier_sources"].([]any)
+	economyRoot["multiplier_sources"] = append(sources,
+		map[string]any{"id": "active.building.generator.beige_tower", "slot": "event_buffs", "target": "generator.beige_tower", "provider": "active_play"},
+		map[string]any{"id": "active.click", "slot": "event_buffs", "target": "manual.click", "provider": "active_play"},
+		map[string]any{"id": "active.production", "slot": "event_buffs", "target": "all", "provider": "active_play"},
+	)
+	economyArtifact, err := json.Marshal(economyRoot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	economyCatalog, err := economy.LoadCatalog(economyArtifact)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fixture, err := os.ReadFile("../../balance/testdata/active-play-foundation-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root struct {
+		Baseline map[string]any `json:"baseline"`
+	}
+	if err := json.Unmarshal(fixture, &root); err != nil {
+		t.Fatal(err)
+	}
+	root.Baseline["combo_policy"].(map[string]any)["combo_cap"] = "1e1"
+	root.Baseline["schedule_policy"].(map[string]any)["minimum_interval_ms"] = float64(2_500)
+	opportunitiesArtifact, err := json.Marshal(root.Baseline)
+	if err != nil {
+		t.Fatal(err)
+	}
+	opportunities, err := activeplay.LoadCatalog(opportunitiesArtifact, economyCatalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts["economy"], artifacts["opportunities"] = economyArtifact, opportunitiesArtifact
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs.Artifacts, catalogs.ConstantsHash, catalogs.Economy, catalogs.Opportunities = artifacts, hash, economyCatalog, opportunities
+	if !catalogs.valid(hash) {
+		t.Fatal("active-play fixture bundle is not internally valid")
+	}
+	return catalogs
+}
+
+func activePlayFixtureFounder(t *testing.T, catalog *activeplay.Catalog) string {
+	t.Helper()
+	for candidate := int64(1); candidate <= 1_000_000; candidate++ {
+		founderID := fmt.Sprintf("01987777-2000-7000-8000-%012d", candidate)
+		first, e0 := catalog.Spawn(founderID, 1, 0, 0)
+		second, e1 := catalog.Spawn(founderID, 1, 1, first.SpawnedAttendedMS)
+		third, e2 := catalog.Spawn(founderID, 1, 2, second.SpawnedAttendedMS)
+		fourth, e3 := catalog.Spawn(founderID, 1, 3, third.SpawnedAttendedMS)
+		if e0 == nil && e1 == nil && e2 == nil && e3 == nil && first.EffectRowID == "active.production" && second.EffectRowID == "active.production" &&
+			third.EffectRowID == "active.lucky" && fourth.EffectRowID == "active.click" && first.SampledIntervalMS <= 5_000 && second.SampledIntervalMS < 5_000 &&
+			third.SampledIntervalMS <= 5_000 && fourth.SampledIntervalMS <= 5_000 {
+			return founderID
+		}
+	}
+	t.Fatal("no bounded Active-Play fixture seed")
+	return ""
+}
+
+func makeActivePlayExitFixture(t *testing.T, now time.Time) crossRuntimeActiveExit {
+	t.Helper()
+	catalogs := activePlayReplayBundle(t)
+	founderID := activePlayFixtureFounder(t, catalogs.Opportunities)
+	company := replayFixtureState(t, catalogs.Economy, now)
+	company.WireVersion, company.Tier = 18, 2
+	company.RunStartedAt = now.Add(-20 * time.Minute)
+	meterState, err := meters.NewRunState(catalogs.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company.MeterBands = nil
+	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	company.AchievementsEarnedRun = map[string]bool{}
+	if _, err := initializeActivePlayState(company, catalogs.Opportunities, founderID); err != nil {
+		t.Fatal(err)
+	}
+	attended := int64((20 * time.Minute) / time.Millisecond)
+	probe, err := catalogs.Opportunities.Spawn(founderID, 1, 0, 0)
+	if err != nil || probe.SampledIntervalMS > attended {
+		t.Fatal("invalid Active-Play Exit fixture interval")
+	}
+	pending, err := catalogs.Opportunities.Spawn(founderID, 1, 0, attended-probe.SampledIntervalMS)
+	if err != nil || pending.SpawnedAttendedMS != attended {
+		t.Fatal("invalid Active-Play Exit fixture pending row")
+	}
+	company.OpportunitySpawnSeq, company.NextOpportunityAttendedMS = 1, 0
+	company.PendingOpportunity = &save.PendingOpportunity{OpportunityID: pending.OpportunityID, SpawnedAttendedMS: pending.SpawnedAttendedMS,
+		ExpiresAttendedMS: pending.ExpiresAttendedMS, EffectRowID: pending.EffectRowID, SelectedGeneratorID: activeNullableString(pending.SelectedGenerator)}
+	company.ActiveBuffs = []save.ActiveBuff{{BuffInstanceID: catalogs.Opportunities.BuffID(founderID, 1, 0, 0), EffectRowID: "active.production",
+		ActivatedAttendedMS: attended - 1_000, ExpiresAttendedMS: attended + 5_000}}
+	company.LifetimeValue = decimal.New(8, 12)
+	setCash(t, company, "1e10")
+	preState := mustEncodeState(t, company)
+	request, err := ParseIntent([]byte(`{"intent_id":"01987777-0300-7000-8000-000000000300","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01987777-1000-7000-8000-000000000001", FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0,
+		AchievementsEarnedLifetime: []string{}}
+	activeEvidence, err := resolveActivePlaySchedule(company, catalogs.Opportunities, catalogs.Prestige, founderID, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	nextSpawn, err := catalogs.Opportunities.Spawn(founderID, 2, 0, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+		RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first",
+		SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: catalogs.ConstantsHash, ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result := executeTerminalFixture(t, "active-play-exit-reset", catalogs, company, preState, request, inputs, carry)
+	var nextWire map[string]any
+	if err := json.Unmarshal(result.NewCompany, &nextWire); err != nil {
+		t.Fatal(err)
+	}
+	if nextWire["pending_opportunity"] != nil || len(nextWire["active_buffs"].([]any)) != 0 || nextWire["opportunity_spawn_seq"] != float64(0) {
+		t.Fatal("Exit did not discard prior Active-Play state")
+	}
+	return crossRuntimeActiveExit{ConstantsHash: catalogs.ConstantsHash, Artifacts: stringArtifacts(catalogs.Artifacts),
+		NextConstantsHash: catalogs.ConstantsHash, NextArtifacts: stringArtifacts(catalogs.Artifacts), Case: result}
+}
+
 func TestExitResetsComputeBurst(t *testing.T) {
 	legacy, _ := foundationTestBundles(t)
 	catalogs := doctrineReplayBundle(t)
@@ -467,7 +732,7 @@ func TestExitResetsComputeBurst(t *testing.T) {
 	founderRevision := save.Revision{StreamID: "01986666-2a00-7000-8000-000000000010", OwnerID: "01986666-2a00-7000-8000-000000000011", Number: 1, ConstantsHash: catalogs.ConstantsHash}
 	companyRevision := save.Revision{StreamID: "01986666-1a00-7000-8000-000000000010", OwnerID: founderRevision.OwnerID, Number: 1, ConstantsHash: catalogs.ConstantsHash}
 	decision, err := finishExitResolved(IntentRequest{IntentID: "01986666-0a12-7000-8000-000000000012"}, founder, founderRevision, activated, companyRevision,
-		startedAt.Add(time.Second), "collapse", prestigecore.Terms{}, nil, []string{}, catalogs, catalogs)
+		startedAt.Add(time.Second), "collapse", prestigecore.Terms{}, nil, []string{}, catalogs, catalogs, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

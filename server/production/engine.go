@@ -274,15 +274,21 @@ func validateContributions(catalog *economy.Catalog, contributions []multiplier.
 	}
 	bySource := make(map[string]multiplier.Contribution, len(contributions))
 	for _, contribution := range contributions {
-		declaration, exists := catalog.MultiplierSource(contribution.SourceID)
+		declarationID := activeDeclarationID(contribution.SourceID, contribution.Target)
+		declaration, exists := catalog.MultiplierSource(declarationID)
+		if !exists && declarationID != contribution.SourceID {
+			declaration, exists = catalog.MultiplierSource(declarationID + "." + contribution.Target)
+		}
 		if !exists || declaration.Slot != contribution.Slot || declaration.Target != contribution.Target ||
+			declarationID != contribution.SourceID && declaration.Provider != "active_play" ||
 			!contribution.Factor.IsStateValue() || !contribution.Factor.Gt(decimal.Zero) {
 			return nil, fmt.Errorf("%w: invalid multiplier contribution %q", ErrInvalidEngineState, contribution.SourceID)
 		}
-		if _, duplicate := bySource[contribution.SourceID]; duplicate {
+		identity := contribution.SourceID + "\x00" + contribution.Target
+		if _, duplicate := bySource[identity]; duplicate {
 			return nil, fmt.Errorf("%w: duplicate multiplier contribution %q", ErrInvalidEngineState, contribution.SourceID)
 		}
-		bySource[contribution.SourceID] = contribution
+		bySource[identity] = contribution
 	}
 	return bySource, nil
 }
@@ -324,14 +330,14 @@ func ratesWithProvisionedAndPolicy(catalog *economy.Catalog, counts, provisioned
 		rate := generator.Production.BaseRate.Mul(decimal.FromString(total.String()))
 		for _, slot := range multiplier.Order {
 			sources := make([]string, 0)
-			for sourceID, contribution := range bySource {
+			for identity, contribution := range bySource {
 				if contribution.Slot == slot && (contribution.Target == "all" || contribution.Target == generator.ID) {
-					sources = append(sources, sourceID)
+					sources = append(sources, identity)
 				}
 			}
-			for _, sourceID := range multiplier.OrderedSourceIDs(sources) {
-				rate = rate.Mul(bySource[sourceID].Factor)
-				policy.activateSynergySource(sourceID)
+			for _, identity := range multiplier.OrderedSourceIDs(sources) {
+				rate = rate.Mul(bySource[identity].Factor)
+				policy.activateSynergySource(bySource[identity].SourceID)
 			}
 		}
 		if !rate.IsStateValue() || rate.Lt(decimal.Zero) {
