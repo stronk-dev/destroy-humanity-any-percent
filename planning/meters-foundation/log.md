@@ -666,3 +666,18 @@ regression the delegated approval didn't.
 - **Decision:** approved, no findings. The reviewer independently verified the real 70/high →
   69/low transition, simultaneous Achievement earn, exact Meter→Achievement order, canonical
   cross-runtime parity, additive corpus diff, and green focused Go/client suites.
+
+## 2026-08-06 — hash-remap addendum for the unpublication history filter
+
+The owner-approved unpublication filter (`planning/history-rewrites/`) rewrote every commit hash.
+The kernel history-correction bindings below re-cite the SAME reviewed commits under their
+post-filter hashes; the original verdict sections above are unchanged (append-only — this is a
+mechanical remap, not a re-review).
+
+- Activation-codec review target (`3030f8724dd405e9fccd5d645811a9f862ffcd1c^..3030f8724dd405e9fccd5d645811a9f862ffcd1c`) — formerly `d7bb1da`.
+- Activation-codec remediation target (`3cf57a34e8523fe9a16312f984ce6067adae131e^..3cf57a34e8523fe9a16312f984ce6067adae131e`) — formerly `c356d87`.
+- Second activation-codec remediation target (`7f87d2a540d0651c0d5e54742cc7d110f6150fca^..7f87d2a540d0651c0d5e54742cc7d110f6150fca`) — formerly `9d3764f`.
+
+**Review by:** the original independent reviews cited in the sections above (remap recorded by the
+designated Claude reviewer).
+**Decision:** unchanged — the three history corrections stand under the remapped hashes.

@@ -2,21 +2,21 @@
   "schema_version": 1,
   "corrections": [
     {
-      "offending_commit": "9d3764fd40e82b21945f1bbaf0264659f087d43d",
-      "corrected_in_version": "0.3.17",
-      "reason": "Reviewed save activation remediation changed guarded persistence semantics before the version bump could land without rewriting cited history.",
-      "review_log": "planning/meters-foundation/log.md"
-    },
-    {
-      "offending_commit": "c356d8792abff5a82033c9d79825caf6003ff9bb",
-      "corrected_in_version": "0.3.17",
-      "reason": "Reviewed save activation remediation changed guarded persistence semantics before the version bump could land without rewriting cited history.",
-      "review_log": "planning/meters-foundation/log.md"
-    },
-    {
-      "offending_commit": "d7bb1da61c2b59ac2d210dee3dd6487cdd4d3d02",
+      "offending_commit": "3030f8724dd405e9fccd5d645811a9f862ffcd1c",
       "corrected_in_version": "0.3.17",
       "reason": "The reviewed version-aware save landing changed guarded persistence encoding; append-only review provenance forbids rewriting it to add the missed bump.",
+      "review_log": "planning/meters-foundation/log.md"
+    },
+    {
+      "offending_commit": "3cf57a34e8523fe9a16312f984ce6067adae131e",
+      "corrected_in_version": "0.3.17",
+      "reason": "Reviewed save activation remediation changed guarded persistence semantics before the version bump could land without rewriting cited history.",
+      "review_log": "planning/meters-foundation/log.md"
+    },
+    {
+      "offending_commit": "7f87d2a540d0651c0d5e54742cc7d110f6150fca",
+      "corrected_in_version": "0.3.17",
+      "reason": "Reviewed save activation remediation changed guarded persistence semantics before the version bump could land without rewriting cited history.",
       "review_log": "planning/meters-foundation/log.md"
     }
   ]
