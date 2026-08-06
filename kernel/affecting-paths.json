@@ -17,6 +17,7 @@
     "client/src/prestige.ts",
     "client/src/replay.ts",
     "client/src/routes.ts",
+    "client/src/soul/",
     "server/accrualhook/",
     "server/achievements/",
     "server/activeplay/",
@@ -45,6 +46,7 @@
     "server/save/genesis.go",
     "server/save/intent.go",
     "server/save/runlog.go",
-    "server/save/state.go"
+    "server/save/state.go",
+    "server/soul/"
   ]
 }
