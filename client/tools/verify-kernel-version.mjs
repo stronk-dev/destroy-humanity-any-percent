@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -121,16 +121,45 @@ const correctionTargetsMissedBump = (correction) => {
     return !files.includes("kernel/VERSION") || !tupleGreater(right, left);
   });
 };
-// History-rewrite remap affordance (2026-08-06): after an owner-approved rewrite, a correction
-// whose target commit is no longer an ancestor of HEAD may be replaced by an otherwise-identical
-// entry (same reason/review_log/corrected_in_version) whose target is live. All other removal or
-// mutation remains forbidden.
+// History-rewrite remap affordance (2026-08-06, KRM-F1 closure): after an owner-approved rewrite,
+// a correction whose target commit is no longer an ancestor of HEAD may be replaced ONLY by the
+// exact old→new pair recorded in the tracked approved rewrite map, one-to-one, with all immutable
+// correction fields identical and the new target live. All other removal or mutation remains
+// forbidden.
 const commitIsLiveAncestor = (commit) => {
   try { git("merge-base", "--is-ancestor", commit, "HEAD"); return true; } catch { return false; }
 };
-const remapTwinExists = (corrections, entry) => [...corrections.values()].some((candidate) =>
-  candidate.reason === entry.reason && candidate.review_log === entry.review_log &&
-  candidate.corrected_in_version === entry.corrected_in_version && commitIsLiveAncestor(candidate.offending_commit));
+const loadApprovedRemaps = () => {
+  const remaps = new Map();
+  const dir = path.join(repositoryRoot, "planning/history-rewrites");
+  if (!existsSync(dir)) return remaps;
+  for (const entry of readdirSync(dir)) {
+    if (!entry.endsWith(".map")) continue;
+    for (const line of readFileSync(path.join(dir, entry), "utf8").split("\n")) {
+      const match = /^([0-9a-f]{40}) -> ([0-9a-f]{40})$/.exec(line.trim());
+      if (match) remaps.set(match[1], match[2]);
+    }
+  }
+  return remaps;
+};
+const approvedRemaps = loadApprovedRemaps();
+const excusedRemapPairs = (beforeCorrections, afterCorrections) => {
+  const pairs = new Map();
+  const usedNew = new Set();
+  for (const [oldHash, entry] of beforeCorrections) {
+    if (afterCorrections.has(oldHash)) continue;
+    if (commitIsLiveAncestor(oldHash)) continue;
+    const newHash = approvedRemaps.get(oldHash);
+    if (newHash === undefined || usedNew.has(newHash)) continue;
+    const replacement = afterCorrections.get(newHash);
+    if (replacement === undefined || !commitIsLiveAncestor(newHash)) continue;
+    if (replacement.reason !== entry.reason || replacement.review_log !== entry.review_log ||
+        replacement.corrected_in_version !== entry.corrected_in_version) continue;
+    pairs.set(oldHash, newHash);
+    usedNew.add(newHash);
+  }
+  return pairs;
+};
 for (const correction of worktreeCorrections.values()) {
   if (!reviewRecordsCorrection(correction)) throw new Error(`history correction ${correction.offending_commit} is not bound to its independent review range`);
   if (!correctionTargetsMissedBump(correction)) throw new Error(`history correction ${correction.offending_commit} does not identify an actual guarded version miss`);
@@ -153,15 +182,14 @@ if (guardIntroduction) {
       for (const [correctedCommit, parentCorrection] of parentCorrections) {
         const childCorrection = childCorrections.get(correctedCommit);
         if (childCorrection === undefined) {
-          if (!commitIsLiveAncestor(correctedCommit) && remapTwinExists(childCorrections, parentCorrection)) continue;
+          if (excusedRemapPairs(parentCorrections, childCorrections).has(correctedCommit)) continue;
           throw new Error(`commit ${commit} removes kernel history correction ${correctedCommit}`);
         }
         if (!sameCorrection(parentCorrection, childCorrection)) throw new Error(`commit ${commit} mutates kernel history correction ${correctedCommit}`);
       }
       const correctionAdditions = [...childCorrections.entries()].filter(([correctedCommit]) => !parentCorrections.has(correctedCommit));
-      const nonRemapCorrectionAdditions = correctionAdditions.filter(([, entry]) => ![...parentCorrections.values()].some((parentEntry) =>
-        !commitIsLiveAncestor(parentEntry.offending_commit) && parentEntry.reason === entry.reason &&
-        parentEntry.review_log === entry.review_log && parentEntry.corrected_in_version === entry.corrected_in_version));
+      const walkExcusedNew = new Set(excusedRemapPairs(parentCorrections, childCorrections).values());
+      const nonRemapCorrectionAdditions = correctionAdditions.filter(([correctedCommit]) => !walkExcusedNew.has(correctedCommit));
       if (nonRemapCorrectionAdditions.length !== 0 && (!files.includes(correctionsPath) || !files.includes("kernel/VERSION") || nonRemapCorrectionAdditions.some(([, entry]) => entry.corrected_in_version !== after))) {
         throw new Error(`commit ${commit} adds history corrections without its correcting VERSION bump`);
       }
@@ -181,15 +209,14 @@ const headCorrections = correctionsAt("HEAD", "HEAD");
 for (const [commit, headCorrection] of headCorrections) {
   const worktreeCorrection = worktreeCorrections.get(commit);
   if (worktreeCorrection === undefined) {
-    if (!commitIsLiveAncestor(commit) && remapTwinExists(worktreeCorrections, headCorrection)) continue;
+    if (excusedRemapPairs(headCorrections, worktreeCorrections).has(commit)) continue;
     throw new Error(`worktree removes kernel history correction ${commit}`);
   }
   if (!sameCorrection(headCorrection, worktreeCorrection)) throw new Error(`worktree mutates kernel history correction ${commit}`);
 }
 const additions = [...worktreeCorrections.entries()].filter(([commit]) => !headCorrections.has(commit));
-const nonRemapAdditions = additions.filter(([, entry]) => ![...headCorrections.values()].some((headEntry) =>
-  !commitIsLiveAncestor(headEntry.offending_commit) && headEntry.reason === entry.reason &&
-  headEntry.review_log === entry.review_log && headEntry.corrected_in_version === entry.corrected_in_version));
+const worktreeExcusedNew = new Set(excusedRemapPairs(headCorrections, worktreeCorrections).values());
+const nonRemapAdditions = additions.filter(([commit]) => !worktreeExcusedNew.has(commit));
 if (nonRemapAdditions.length !== 0 && (!worktreeFiles.includes(correctionsPath) || !worktreeFiles.includes("kernel/VERSION") || nonRemapAdditions.some(([, entry]) => entry.corrected_in_version !== source))) {
   throw new Error("new kernel history corrections require the correcting VERSION bump in the same commit");
 }

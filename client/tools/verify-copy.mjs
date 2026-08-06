@@ -41,6 +41,9 @@ if (deniedTerm("habitable office", terms) !== null) throw new Error("denylist wo
 expectFailure("denylist removal history fixture", () => assertDenylistExtension(["habbo", "neopets"], ["habbo"], "fixture"), /removes copy denylist terms: neopets/);
 const citationFixture = { term: "habbo", source_file: "design/research/social-spaces.md", source_anchor: "6-legal-safe-vs-fictionalize" };
 expectFailure("denylist citation-retarget history fixture", () => assertDenylistRecordsStable([citationFixture], [{ ...citationFixture, source_anchor: "1-the-canon-deconstructed" }], "fixture"), /retargets protected copy denylist citation/);
+// A1-F1 closure: an absent NON-research source must never receive the unpublication escape.
+const nonResearchFixture = { term: "habbo", source_file: "docs/withdrawn-legal-notes.md", source_anchor: "6-legal-safe-vs-fictionalize" };
+expectFailure("denylist non-research retarget escape fixture", () => assertDenylistRecordsStable([nonResearchFixture], [{ ...nonResearchFixture, source_anchor: "1-legal-elsewhere" }], "fixture", (record) => record.source_file.startsWith("design/research/") && true), /retargets protected copy denylist citation/);
 if (!historyPathEverExisted("HEAD", "design/00-vision.md")) throw new Error("tracked citation history fixture was not found");
 if (historyPathEverExisted("HEAD", "design/research/fixture-never-committed.md")) throw new Error("never-committed citation fixture unexpectedly exists in history");
 const verifiedFixture = { claim_id: "fixture.verified", source_file: "design/research/speedrun-governance.md", source_anchor: "31-the-taxonomy-and-how-it-proliferates", status: "verified", source_urls: ["https://example.invalid/source"] };

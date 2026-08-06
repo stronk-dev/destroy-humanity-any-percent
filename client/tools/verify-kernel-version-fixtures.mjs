@@ -41,6 +41,62 @@ try {
   versionFiles(root, "0.1.2"); commit(root, "kernel: fix forward reviewed history");
   run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
 
+  // KRM-F1 adversarial fixtures: correction remaps must be BIJECTIVE and bound to the approved map.
+  const reviewSection = (hash, title) => `\n## Independent review (\`${hash}^..${hash}\`) — ${title}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** not approved until the missed bump is corrected.\n`;
+  write(root, "client/src/replay.ts", "export const replay = 41;\n"); commit(root, "test: twin miss one");
+  const twinOldOne = run(root, "git", ["rev-parse", "HEAD"]).trim();
+  write(root, "client/src/replay.ts", "export const replay = 42;\n"); commit(root, "test: twin miss two");
+  const twinOldTwo = run(root, "git", ["rev-parse", "HEAD"]).trim();
+  const twinLog = readFileSync(path.join(root, "planning/kernel-fix/log.md"), "utf8");
+  write(root, "planning/kernel-fix/log.md", twinLog + reviewSection(twinOldOne, "twin one") + reviewSection(twinOldTwo, "twin two"));
+  const twinReason = "Reviewed twin fixture misses with identical metadata corrected without rewriting cited history.";
+  const twinState = JSON.parse(readFileSync(path.join(root, "kernel/history-corrections.json"), "utf8"));
+  twinState.corrections.push(
+    { offending_commit: twinOldOne, corrected_in_version: "0.1.4", reason: twinReason, review_log: "planning/kernel-fix/log.md" },
+    { offending_commit: twinOldTwo, corrected_in_version: "0.1.4", reason: twinReason, review_log: "planning/kernel-fix/log.md" });
+  twinState.corrections.sort((left, right) => left.offending_commit.localeCompare(right.offending_commit));
+  write(root, "kernel/history-corrections.json", `${JSON.stringify(twinState, null, 2)}\n`);
+  versionFiles(root, "0.1.4"); commit(root, "kernel: fix forward twin misses");
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+
+  execFileSync("git", ["filter-branch", "-f", "--msg-filter", "sed s/^/fixture-/"], { cwd: root, encoding: "utf8", stdio: "pipe", env: { ...process.env, FILTER_BRANCH_SQUELCH_WARNING: "1" } });
+  const subjectHash = (subject) => run(root, "git", ["log", "--format=%H %s"]).split("\n").find((line) => line.endsWith(subject)).split(" ")[0];
+  const firstNew = subjectHash("fixture-test: reviewed semantic miss");
+  const twinNewOne = subjectHash("fixture-test: twin miss one");
+  const twinNewTwo = subjectHash("fixture-test: twin miss two");
+  const remapLog = readFileSync(path.join(root, "planning/kernel-fix/log.md"), "utf8");
+  write(root, "planning/kernel-fix/log.md", remapLog + reviewSection(firstNew, "first remapped") + reviewSection(twinNewOne, "twin one remapped") + reviewSection(twinNewTwo, "twin two remapped"));
+  const remapEntries = (pairs) => {
+    const state = JSON.parse(readFileSync(path.join(root, "kernel/history-corrections.json"), "utf8"));
+    for (const entry of state.corrections) if (pairs[entry.offending_commit]) entry.offending_commit = pairs[entry.offending_commit];
+    state.corrections.sort((left, right) => left.offending_commit.localeCompare(right.offending_commit));
+    const unique = new Map(state.corrections.map((entry) => [entry.offending_commit, entry]));
+    state.corrections = [...unique.values()].sort((left, right) => left.offending_commit.localeCompare(right.offending_commit));
+    write(root, "kernel/history-corrections.json", `${JSON.stringify(state, null, 2)}\n`);
+  };
+  // Fixture 1: two identical-metadata dead corrections must NOT collapse onto one live target.
+  write(root, "planning/history-rewrites/fixture.map", `${offending} -> ${firstNew}\n${twinOldOne} -> ${twinNewOne}\n${twinOldTwo} -> ${twinNewOne}\n`);
+  remapEntries({ [offending]: firstNew, [twinOldOne]: twinNewOne, [twinOldTwo]: twinNewOne });
+  let collapseFailed = false;
+  try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { collapseFailed = true; }
+  if (!collapseFailed) throw new Error("kernel guard accepted a many-to-one correction remap collapse");
+  run(root, "git", ["restore", "kernel/history-corrections.json"]);
+  // Fixture 2: a dead target with NO approved-map entry must not be replaceable.
+  write(root, "planning/history-rewrites/fixture.map", `${offending} -> ${firstNew}\n${twinOldOne} -> ${twinNewOne}\n`);
+  remapEntries({ [offending]: firstNew, [twinOldOne]: twinNewOne, [twinOldTwo]: twinNewTwo });
+  let unmappedFailed = false;
+  try { run(root, "node", ["client/tools/verify-kernel-version.mjs"]); } catch { unmappedFailed = true; }
+  if (!unmappedFailed) throw new Error("kernel guard accepted an unmapped correction remap");
+  run(root, "git", ["restore", "kernel/history-corrections.json"]);
+  // Positive: the complete owner-approved bijection passes, and the committed remap passes the walk.
+  write(root, "planning/history-rewrites/fixture.map", `${offending} -> ${firstNew}\n${twinOldOne} -> ${twinNewOne}\n${twinOldTwo} -> ${twinNewTwo}\n`);
+  remapEntries({ [offending]: firstNew, [twinOldOne]: twinNewOne, [twinOldTwo]: twinNewTwo });
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+  commit(root, "kernel: remap corrections after approved rewrite");
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+  const offendingRemapped = firstNew;
+  void offendingRemapped;
+
   const mainAfterCorrection = run(root, "git", ["branch", "--show-current"]).trim();
   run(root, "git", ["switch", "-c", "dangling-correction"]);
   write(root, "client/src/replay.ts", "export const replay = 22;\n");

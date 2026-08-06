@@ -580,7 +580,7 @@ export function verifyAppendOnlyHistory() {
         if (filename.endsWith("copy-denylist.txt")) {
           const before = validateDenylistRecords(git("show", `${parent}:${filename}`), `${parent}:${filename}`, { resolveSources: false });
           const after = validateDenylistRecords(git("show", `${commit}:${filename}`), `${commit}:${filename}`, { resolveSources: false });
-          assertDenylistRecordsStable(before, after, `commit ${commit}`, (record) => !historyFileExists(parent, record.source_file));
+          assertDenylistRecordsStable(before, after, `commit ${commit}`, (record) => record.source_file.startsWith("design/research/") && !historyFileExists(parent, record.source_file));
         } else {
           const before = parseHistoricalJSON(parent, filename).claims;
           assertVerifiedClaimsStable(before, parseHistoricalJSON(commit, filename).claims, `commit ${commit}`, (claim) => !historyFileExists(parent, claim.source_file));
@@ -591,7 +591,7 @@ export function verifyAppendOnlyHistory() {
   if (historyFileExists("HEAD", "moderation/copy-denylist.txt")) {
     const before = validateDenylistRecords(git("show", "HEAD:moderation/copy-denylist.txt"), "HEAD denylist", { resolveSources: false });
     const after = validateDenylistRecords(readFileSync(path.join(repositoryRoot, "moderation/copy-denylist.txt"), "utf8"), "worktree denylist");
-    assertDenylistRecordsStable(before, after, "worktree", (record) => !historyFileExists("HEAD", record.source_file));
+    assertDenylistRecordsStable(before, after, "worktree", (record) => record.source_file.startsWith("design/research/") && !historyFileExists("HEAD", record.source_file));
   }
   if (historyFileExists("HEAD", "copy/provenance.v1.json")) {
     const before = parseHistoricalJSON("HEAD", "copy/provenance.v1.json").claims;

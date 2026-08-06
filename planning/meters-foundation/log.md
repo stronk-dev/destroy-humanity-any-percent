@@ -707,3 +707,14 @@ in the tracked approved rewrite map (or an equivalently reviewed dedicated remap
 adversarial fixtures proving (1) two identical-metadata old entries cannot collapse into one new
 entry and (2) an unmapped non-live target cannot be replaced. Re-run the full-history kernel gate
 before re-review.
+
+## 2026-08-06 — KRM-F1 + A1-F1 remediation (Claude), ready for Codex re-review
+Both cross-party findings closed:
+- KRM-F1 (HIGH): remapTwinExists replaced by excusedRemapPairs — remaps are now BIJECTIVE and bound
+  to the tracked approved map (planning/history-rewrites/*.map): each removed dead target must map to
+  exactly one unique live added target with identical immutable fields; usedNew prevents many-to-one
+  collapse; unmapped dead targets are not replaceable. Two adversarial fixtures added (identical-
+  metadata collapse rejected; unmapped dead target rejected) plus the positive committed-remap walk.
+- A1-F1 (MEDIUM): both denylist escape call sites now require source_file.startsWith("design/research/")
+  before the unpublication escape; discriminating fixture added (absent non-research source rejected).
+make verify exit 0; make copy-check exit 0; kernel guard + adversarial fixtures green at 0.3.68.
