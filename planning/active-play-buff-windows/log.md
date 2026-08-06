@@ -241,3 +241,38 @@ sync is a precedent deviation only), and the 16eb935 RFC reconciliation.
 gap commits are docs or separately-tracked guard code (ebb081f — Codex's KRM thread). The eventual
 archival must cite BOTH ranges plus the range closing RR-1..RR-4. **Active-Play archival remains
 BLOCKED.**
+
+## 2026-08-06 — RR-1–RR-4 remediation (`45f082d^..45f082d`), ready for round-3 designated review
+
+- **Implemented by:** Codex.
+- **Decision:** implementation complete; no self-approval or archival.
+
+RR-1 is closed by append-only migration `00067_active_play_event_schema_v2.sql`, which extends the
+live `events_schema_version_check` to permit schema 2 exactly for `opportunity_claimed.v1` and
+`buff_started.v1` while preserving run-ended v2 and every other v1-only kind. A real-Postgres service
+integration now claims a production buff through `Store.ApplyIntentLogged` and asserts both committed
+event rows have schema version 2; the prior green integration result had no such coverage.
+
+RR-2 is closed by making the TypeScript scheduler mirror Go's bounded transition loop. The shared
+sequential corpus now carries both legal compound orders: pending miss → successor spawn, and fresh
+spawn → that same opportunity self-misses before the command coordinate. Both replay byte-identically.
+
+RR-3/RR-4 are closed in the correct Active-Play fixture builder: the generator owns 100 units, so
+production frenzy ×7 and building special ×11 exceed cap 10. The shared Go-authored corpus now carries
+the clamped cross-target result and the non-null `cap.active_combo` reason in receipt and schema-v2
+events.
+
+**Correction to the 1f5a2f8 remediation record:** its statement that the sequential corpus replayed
+cross-target saturation in TypeScript was false at that commit; the `100` edit had landed in the
+Doctrine fixture builder, leaving Active-Play at one owned unit (7×1.1=7.7). This round moves the edit
+to the correct builder and adds an explicit generation-time assertion, so the claim becomes true only
+from `45f082d` onward.
+
+Kernel semantics advance in lockstep to 0.3.70. `make typecheck`, `make test-client`, `make
+replay-fixture-check`, `make verify-kernel-version`, and the Docker/Postgres `make
+test-save-integration` gate pass. Ready for cross-party round-3 designated review over `45f082d`;
+Active-Play remains unarchived.
+
+Final round-3 handoff verification: full `make verify` PASS at kernel 0.3.70 after the remediation
+commit, in addition to the fresh Docker/Postgres integration pass above. The designated reviewer
+should consume `45f082d^..45f082d` plus this planning handoff; no completion or archival claim is made.

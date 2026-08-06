@@ -756,3 +756,21 @@ legitimate CHAINED remap (A->B->C across successive rewrites) with the new
 `remapTargetReachesLive` chain rule — surfaced by the fixture itself: historical walk transitions cite
 intermediate targets that later rewrites killed, which must stay excusable iff the manifest maps them
 onward to a live hash. make verify exit 0; guard + adversarial fixtures green.
+
+## 2026-08-06 — cross-party re-review of KRM-F1b closure (`e5396e7^..e5396e7`)
+
+- **Review by:** Codex (cross-party designated review).
+- **Recorded by:** Codex.
+- **Decision:** **approved with one non-blocking fixture gap.**
+
+The blocking collapse is closed at source: a replacement must be absent from the parent correction
+set, every mapped new hash is unique across the loaded manifest, immutable correction fields still
+match, and a chained target must terminate at a live ancestor within the bounded walk. The intended
+unpublication map remains valid, the dead→pre-existing-live attack now fails, and both `make
+verify-kernel-version` and the full `make verify` pass.
+
+**KRM-RR1 (LOW, test quality):** the new “duplicate approved-map hash” fixture writes the *same old*
+hash twice with different targets, so it exercises `remaps.has(old)` but not the independent
+`seenNew.has(new)` branch. The latter is straightforward and correct by inspection, so this does not
+block approval; add a two-distinct-olds→one-new fixture when the guard fixtures next change so the
+injective-target promise has discriminating coverage too.
