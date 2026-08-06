@@ -65,20 +65,25 @@ first positive marginal output. Beam nodes deduplicate by canonical state plus v
 componentwise dominance before the width bound. Both run cardinality and transition work are
 checked before simulation, and every simulation call spends from the transition budget.
 
-The report contains ordered item, group, tier-contribution, role-activation, and failure rows with
+Each policy item's availability window must contain at least one scenario segment, and that segment's
+milestone is the only evidence eligible for the item's verdict. The report contains ordered item,
+group, tier-contribution, role-activation, and failure rows with
 only safe integers, booleans, and canonical hashes. Required baselines that do not reach their
 milestone are named failures; unreachable ablations use the finite horizon-minus-baseline encoding.
 An item passes through its own effect delta or one declared supporting group, while the trap test
 always remains individual. Role evidence comes only from unmasked baseline execution.
 
-`testdata/harness/relevance/registry-v1.json` is the fail-closed scenario authority. The current
+`testdata/harness/relevance/registry-v1.json` is the fail-closed scenario authority. Every registered
+golden is discovered dynamically by the history and TypeScript schema gates. Each trap exemption's
+mechanical justification key must appear in the entry's reviewable changelog. The current
 schema-v4 entry is deliberately a test fixture: it proves a dead upgrade, a deliberate trap
 exemption, a roleless generator, group-supported substitution, and a greedy/beam gap under its
 declared bound. Fixture findings are recorded in its golden report but do not block the production
-gate. When the active epoch first uses an economy schema v4 or later, that exact economy artifact
-must have a registered scenario, policy, and golden report; `harness-check` executes it and fails on
-any relevance finding. The current schema-v3 production catalog is not presented as a relevance
-baseline.
+gate. When the active epoch first uses an economy schema v4 or later, its registry entry must bind
+the exact epoch-owned economy, Routes, and relevance-policy artifacts, use the current epoch
+changelog, and emit the accepted full epoch-bundle constants hash. `harness-check` executes the
+entry and fails on any relevance finding. The current schema-v3 production catalog is not presented
+as a relevance baseline.
 
 ## Commands and drift
 
@@ -95,4 +100,5 @@ artifact. The repository guard scans every reachable baseline revision, not only
 on shallow history, uncommitted artifacts, missing prior inputs, wrong subjects, or any unrelated
 path in the artifact commit. CI fetches complete history so local and hosted enforcement are
 identical. The schema gate rejects unknown scenario fields/kinds and non-string or unsafe seed
-encodings.
+encodings. Go and TypeScript load the same mutation corpus, including semantic JSON integers written
+with a decimal lexical form.

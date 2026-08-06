@@ -237,3 +237,19 @@ Findings reproduced against source:
 What held: complete range union, isolated `BALANCE-CHANGE:` golden commit, deterministic fixture,
 solver arithmetic, and all normal root gates. Remediation must close all seven with discriminating
 tests, then receive a new designated review; the passed test suite does not override this verdict.
+
+## 2026-08-06 — independent-review remediation implemented
+
+- `eb98f5c` closes findings 1–3: item windows now require an in-window milestone, schedule
+  cardinality is computed without allocation before transition-budget rejection, and the source
+  guard detects function-value aliases. Each has a discriminating regression.
+- `773f122` closes findings 4, 5, and 7: active entries bind the epoch-owned economy, Routes, and
+  relevance-policy artifacts, use the accepted epoch-bundle hash and current epoch changelog, and
+  require every trap justification key to have changelog evidence. The Go history guard and
+  TypeScript schema gate discover every registered golden dynamically.
+- `dbaa269` closes finding 6 with one shared Go/TypeScript mutation corpus. Go now accepts semantic
+  JSON integers such as `1.0` exactly when TypeScript does, while retaining the safe-integer bound.
+
+Focused Go, all client unit tests, TypeScript/Svelte typecheck, schema verification, and
+`make harness-check` are green. A full root verification and a new exact-range designated review
+remain required; this implementation record does not authorize archival.
