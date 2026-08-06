@@ -492,19 +492,41 @@ async function main() {
   }
   const relevanceScenarioSchema = await readJSON(path.join(harnessDirectory, "relevance", "scenario.schema.json"));
   const validateRelevanceScenario = ajv.compile(relevanceScenarioSchema);
-  const relevanceScenario = path.join(harnessDirectory, "relevance", "scenario-v1.json");
-  if (!validateRelevanceScenario(await readJSON(relevanceScenario))) {
-    throw new Error(`${path.relative(repositoryDirectory, relevanceScenario)}: ${validationErrors(validateRelevanceScenario)}`);
-  }
   const relevanceReportSchema = await readJSON(path.join(harnessDirectory, "relevance", "report.schema.json"));
   const validateRelevanceReport = ajv.compile(relevanceReportSchema);
-  const relevanceGolden = path.join(harnessDirectory, "relevance", "golden-report-v1.json");
-  if (!validateRelevanceReport(await readJSON(relevanceGolden))) {
-    throw new Error(`${path.relative(repositoryDirectory, relevanceGolden)}: ${validationErrors(validateRelevanceReport)}`);
+  const relevanceRegistryPath = path.join(harnessDirectory, "relevance", "registry-v1.json");
+  const relevanceRegistry = await readJSON(relevanceRegistryPath);
+  if (relevanceRegistry.schema_version !== 1 || !Array.isArray(relevanceRegistry.entries)) {
+    throw new Error(`${path.relative(repositoryDirectory, relevanceRegistryPath)}: invalid relevance registry`);
+  }
+  const relevanceRegistryKeys = ["economy_catalog", "golden_report", "justification_changelog", "relevance_policy", "scenario"];
+  for (const [index, entry] of relevanceRegistry.entries.entries()) {
+    if (entry === null || typeof entry !== "object" || Array.isArray(entry) || JSON.stringify(Object.keys(entry).sort()) !== JSON.stringify(relevanceRegistryKeys)) {
+      throw new Error(`${path.relative(repositoryDirectory, relevanceRegistryPath)}: entry ${index} fields are not exact`);
+    }
+    if (relevanceRegistryKeys.some((key) => typeof entry[key] !== "string" || entry[key].length === 0)) {
+      throw new Error(`${path.relative(repositoryDirectory, relevanceRegistryPath)}: entry ${index} paths are invalid`);
+    }
+    const policyFile = path.join(repositoryDirectory, entry.relevance_policy);
+    const scenarioFile = path.join(repositoryDirectory, entry.scenario);
+    const goldenFile = path.join(repositoryDirectory, entry.golden_report);
+    const scenarioData = await readJSON(scenarioFile);
+    if (!validateRelevance(await readJSON(policyFile))) {
+      throw new Error(`${path.relative(repositoryDirectory, policyFile)}: ${validationErrors(validateRelevance)}`);
+    }
+    if (!validateRelevanceScenario(scenarioData)) {
+      throw new Error(`${path.relative(repositoryDirectory, scenarioFile)}: ${validationErrors(validateRelevanceScenario)}`);
+    }
+    if (scenarioData.catalog !== entry.economy_catalog || scenarioData.relevance_policy !== entry.relevance_policy) {
+      throw new Error(`${path.relative(repositoryDirectory, scenarioFile)}: relevance registry artifact mismatch`);
+    }
+    if (!validateRelevanceReport(await readJSON(goldenFile))) {
+      throw new Error(`${path.relative(repositoryDirectory, goldenFile)}: ${validationErrors(validateRelevanceReport)}`);
+    }
   }
 
   console.log(
-    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + doctrines(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness + relevance, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + doctrines(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness + relevance, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s), ${relevanceRegistry.entries.length} relevance scenario(s)`,
   );
 }
 

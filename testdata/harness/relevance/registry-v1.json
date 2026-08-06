@@ -5,7 +5,8 @@
       "economy_catalog": "testdata/harness/relevance/economy-v4.json",
       "scenario": "testdata/harness/relevance/scenario-v1.json",
       "relevance_policy": "testdata/harness/relevance/fixture-policy-v1.json",
-      "golden_report": "testdata/harness/relevance/golden-report-v1.json"
+      "golden_report": "testdata/harness/relevance/golden-report-v1.json",
+      "justification_changelog": "testdata/harness/relevance/CHANGELOG.md"
     }
   ]
 }

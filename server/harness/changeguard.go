@@ -3,10 +3,14 @@ package harness
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"reflect"
+	"sort"
 	"strings"
 )
 
@@ -16,26 +20,26 @@ const (
 	relevanceGoldenPath = "testdata/harness/relevance/golden-report-v1.json"
 )
 
-var baselineArtifactPaths = map[string]struct{}{
-	baselinePath:        {},
-	goldenPath:          {},
-	relevanceGoldenPath: {},
-}
-
 // ValidateBaselineCommit enforces the separate-commit review protocol for one
 // non-initial baseline revision. inputsBefore contains paths changed after the
 // previous baseline revision and before this artifact commit.
 func ValidateBaselineCommit(commitPaths, inputsBefore []string, subject string) error {
+	governed := map[string]struct{}{baselinePath: {}, goldenPath: {}, relevanceGoldenPath: {}}
+	reports := map[string]struct{}{baselinePath: {}, relevanceGoldenPath: {}}
+	return validateBaselineCommit(commitPaths, inputsBefore, subject, governed, reports)
+}
+
+func validateBaselineCommit(commitPaths, inputsBefore []string, subject string, governed, reports map[string]struct{}) error {
 	baselineChanged := false
 	for _, path := range commitPaths {
 		path = strings.TrimSpace(path)
 		if path == "" {
 			continue
 		}
-		if path == baselinePath || path == relevanceGoldenPath {
+		if _, report := reports[path]; report {
 			baselineChanged = true
 		}
-		if _, allowed := baselineArtifactPaths[path]; !allowed {
+		if _, allowed := governed[path]; !allowed {
 			return fmt.Errorf("baseline artifact commit also changes %s", path)
 		}
 	}
@@ -50,7 +54,7 @@ func ValidateBaselineCommit(commitPaths, inputsBefore []string, subject string) 
 	}
 	for _, path := range inputsBefore {
 		path = strings.TrimSpace(path)
-		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/categories/") || strings.HasPrefix(path, "balance/routes/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "balance/factions/") || strings.HasPrefix(path, "balance/prestige/") || strings.HasPrefix(path, "balance/guilds/") || strings.HasPrefix(path, "testdata/harness/scenarios/") || strings.HasPrefix(path, "testdata/harness/relevance/") {
+		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/categories/") || strings.HasPrefix(path, "balance/routes/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "balance/factions/") || strings.HasPrefix(path, "balance/prestige/") || strings.HasPrefix(path, "balance/guilds/") || strings.HasPrefix(path, "balance/relevance/") || strings.HasPrefix(path, "changelog/") || strings.HasPrefix(path, "testdata/harness/scenarios/") || strings.HasPrefix(path, "testdata/harness/relevance/") {
 			return nil
 		}
 	}
@@ -61,6 +65,16 @@ func ValidateBaselineCommit(commitPaths, inputsBefore []string, subject string) 
 // baseline revision. It intentionally uses no CI-provider metadata, so local
 // and hosted checks enforce the same repository history.
 func ValidateRepositoryBaselineChange(root string) error {
+	relevanceReports, err := registeredRelevanceGoldenPaths(root)
+	if err != nil {
+		return fmt.Errorf("baseline guard cannot load relevance registry: %w", err)
+	}
+	governed := map[string]struct{}{baselinePath: {}, goldenPath: {}}
+	reports := map[string]struct{}{baselinePath: {}}
+	for _, report := range relevanceReports {
+		governed[report] = struct{}{}
+		reports[report] = struct{}{}
+	}
 	shallow, err := gitOutput(root, "rev-parse", "--is-shallow-repository")
 	if err != nil {
 		return fmt.Errorf("baseline guard cannot determine history completeness: %w", err)
@@ -73,7 +87,11 @@ func ValidateRepositoryBaselineChange(root string) error {
 		return fmt.Errorf("baseline guard received ambiguous shallow-repository result %q", shallow)
 	}
 
-	dirty, err := gitOutput(root, "status", "--porcelain", "--untracked-files=all", "--", baselinePath, goldenPath, relevanceGoldenPath)
+	artifactPaths := []string{baselinePath, goldenPath}
+	artifactPaths = append(artifactPaths, relevanceReports...)
+	dirtyArguments := []string{"status", "--porcelain", "--untracked-files=all", "--"}
+	dirtyArguments = append(dirtyArguments, artifactPaths...)
+	dirty, err := gitOutput(root, dirtyArguments...)
 	if err != nil {
 		return fmt.Errorf("baseline guard cannot inspect artifact worktree: %w", err)
 	}
@@ -81,7 +99,9 @@ func ValidateRepositoryBaselineChange(root string) error {
 		return fmt.Errorf("baseline artifacts have uncommitted changes")
 	}
 
-	history, err := gitOutput(root, "log", "--reverse", "--format=%H", "HEAD", "--", baselinePath, relevanceGoldenPath)
+	historyArguments := []string{"log", "--reverse", "--format=%H", "HEAD", "--", baselinePath}
+	historyArguments = append(historyArguments, relevanceReports...)
+	history, err := gitOutput(root, historyArguments...)
 	if err != nil {
 		return fmt.Errorf("baseline guard requires complete baseline history: %w", err)
 	}
@@ -107,7 +127,7 @@ func ValidateRepositoryBaselineChange(root string) error {
 		if err != nil {
 			return fmt.Errorf("baseline guard cannot inspect subject for %s: %w", commit, err)
 		}
-		if err := ValidateBaselineCommit(commitPaths, inputPaths, string(subject)); err != nil {
+		if err := validateBaselineCommit(commitPaths, inputPaths, string(subject), governed, reports); err != nil {
 			return fmt.Errorf("invalid baseline commit %s: %w", commit, err)
 		}
 		if strings.HasPrefix(string(subject), "CONSTANTS-IDENTITY:") {
@@ -117,6 +137,31 @@ func ValidateRepositoryBaselineChange(root string) error {
 		}
 	}
 	return nil
+}
+
+func registeredRelevanceGoldenPaths(root string) ([]string, error) {
+	data, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(relevanceRegistryPath)))
+	if err != nil {
+		return nil, err
+	}
+	var registry struct {
+		SchemaVersion *int                         `json:"schema_version"`
+		Entries       []relevanceRegistryWireEntry `json:"entries"`
+	}
+	if err := decodeRelevanceStrict(data, &registry); err != nil || registry.SchemaVersion == nil || *registry.SchemaVersion != 1 || registry.Entries == nil {
+		return nil, errors.New("invalid relevance scenario registry")
+	}
+	paths := make([]string, 0, len(registry.Entries))
+	seen := map[string]bool{}
+	for index, entry := range registry.Entries {
+		if entry.GoldenReport == nil || filepath.ToSlash(filepath.Clean(*entry.GoldenReport)) != *entry.GoldenReport || seen[*entry.GoldenReport] {
+			return nil, fmt.Errorf("invalid relevance registry golden path at entry %d", index)
+		}
+		seen[*entry.GoldenReport] = true
+		paths = append(paths, *entry.GoldenReport)
+	}
+	sort.Strings(paths)
+	return paths, nil
 }
 
 func validateConstantsIdentityCommit(root, previousBaseline, parent, commit string) error {

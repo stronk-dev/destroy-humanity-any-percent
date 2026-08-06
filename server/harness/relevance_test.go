@@ -1,12 +1,15 @@
 package harness
 
 import (
+	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/production"
 )
 
@@ -228,5 +231,54 @@ func TestRelevanceRegistryIsFailClosedForActiveCatalogs(t *testing.T) {
 	entries[0].Active = true
 	if err := ValidateActiveRelevanceReport(entries[0], report); err == nil || !strings.Contains(err.Error(), "relevance_floor:upgrade.dead") {
 		t.Fatalf("active fixture failed open: %v", err)
+	}
+}
+
+func TestActiveRelevanceAuthorityUsesEpochArtifactsAndAcceptedHash(t *testing.T) {
+	bundle, err := epochseed.Load("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	policyPath := "balance/relevance/phase0.json"
+	bundle.Seed.Artifacts = append(bundle.Seed.Artifacts, epochseed.Artifact{Name: "relevance_policy", Path: policyPath})
+	entry := RelevanceRegistryEntry{Scenario: "scenario.active", RelevancePolicy: policyPath,
+		JustificationChangelog: epochseed.Current(bundle.Seed).ChangelogRef, Active: true}
+	routesPath, _ := epochseed.ArtifactPath(bundle.Seed, "routes")
+	if err := bindActiveRelevanceAuthority(&entry, RelevanceScenario{RoutesCatalog: routesPath}, bundle); err != nil {
+		t.Fatal(err)
+	}
+	if entry.ConstantsHash != bundle.Hash {
+		t.Fatalf("entry hash=%s bundle hash=%s", entry.ConstantsHash, bundle.Hash)
+	}
+	invalid := entry
+	invalid.RelevancePolicy = "balance/relevance/other.json"
+	if err := bindActiveRelevanceAuthority(&invalid, RelevanceScenario{RoutesCatalog: routesPath}, bundle); err == nil {
+		t.Fatal("active policy outside the epoch manifest was accepted")
+	}
+	invalid = entry
+	invalid.JustificationChangelog = "changelog/other.md"
+	if err := bindActiveRelevanceAuthority(&invalid, RelevanceScenario{RoutesCatalog: routesPath}, bundle); err == nil {
+		t.Fatal("active trap evidence outside the current epoch changelog was accepted")
+	}
+}
+
+func TestTrapExemptionsRequireChangelogEvidence(t *testing.T) {
+	root := t.TempDir()
+	path := "changelog/test.md"
+	if err := os.MkdirAll(filepath.Join(root, "changelog"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, path), []byte("- `relevance.present` — evidence\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	present, missing := "relevance.present", "relevance.missing"
+	entry := RelevanceRegistryEntry{JustificationChangelog: path}
+	policy := &RelevancePolicy{Items: []RelevancePolicyItem{{TrapExempt: true, JustificationKey: &present}}}
+	if err := validateTrapJustifications(root, entry, policy); err != nil {
+		t.Fatal(err)
+	}
+	policy.Items[0].JustificationKey = &missing
+	if err := validateTrapJustifications(root, entry, policy); err == nil {
+		t.Fatal("missing trap-exemption evidence was accepted")
 	}
 }

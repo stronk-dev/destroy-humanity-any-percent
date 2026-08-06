@@ -42,12 +42,9 @@ func main() {
 	}
 	relevanceResults := make([]relevanceResult, 0, len(registry))
 	for _, entry := range registry {
-		relevanceSuite, loadErr := harness.LoadRelevanceSuite(*root, entry.Scenario)
+		relevanceSuite, loadErr := harness.LoadRegisteredRelevanceSuite(*root, entry)
 		if loadErr != nil {
 			fail(loadErr)
-		}
-		if relevanceSuite.Scenario.Catalog != entry.EconomyCatalog || relevanceSuite.Scenario.Policy != entry.RelevancePolicy {
-			fail(fmt.Errorf("relevance registry/scenario artifact mismatch for %q", entry.Scenario))
 		}
 		relevance, runErr := relevanceSuite.RunRelevance()
 		if runErr != nil {
