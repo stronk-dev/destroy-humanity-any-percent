@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"os/exec"
 	"path/filepath"
 	"reflect"
@@ -65,7 +64,7 @@ func validateBaselineCommit(commitPaths, inputsBefore []string, subject string, 
 // baseline revision. It intentionally uses no CI-provider metadata, so local
 // and hosted checks enforce the same repository history.
 func ValidateRepositoryBaselineChange(root string) error {
-	relevanceReports, err := registeredRelevanceGoldenPaths(root)
+	relevanceReports, err := repositoryRelevanceGoldenPaths(root)
 	if err != nil {
 		return fmt.Errorf("baseline guard cannot load relevance registry: %w", err)
 	}
@@ -139,11 +138,38 @@ func ValidateRepositoryBaselineChange(root string) error {
 	return nil
 }
 
-func registeredRelevanceGoldenPaths(root string) ([]string, error) {
-	data, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(relevanceRegistryPath)))
+func repositoryRelevanceGoldenPaths(root string) ([]string, error) {
+	history, err := gitOutput(root, "log", "--reverse", "--format=%H", "HEAD", "--", relevanceRegistryPath)
 	if err != nil {
 		return nil, err
 	}
+	commits := strings.Fields(string(history))
+	if len(commits) == 0 {
+		return nil, errors.New("no committed relevance registry")
+	}
+	seen := map[string]bool{}
+	for _, commit := range commits {
+		data, err := gitBlob(root, commit, relevanceRegistryPath)
+		if err != nil {
+			return nil, err
+		}
+		paths, err := registeredRelevanceGoldenPaths(data)
+		if err != nil {
+			return nil, fmt.Errorf("relevance registry at %s: %w", commit, err)
+		}
+		for _, path := range paths {
+			seen[path] = true
+		}
+	}
+	paths := make([]string, 0, len(seen))
+	for path := range seen {
+		paths = append(paths, path)
+	}
+	sort.Strings(paths)
+	return paths, nil
+}
+
+func registeredRelevanceGoldenPaths(data []byte) ([]string, error) {
 	var registry struct {
 		SchemaVersion *int                         `json:"schema_version"`
 		Entries       []relevanceRegistryWireEntry `json:"entries"`

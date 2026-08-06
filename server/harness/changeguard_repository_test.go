@@ -88,6 +88,14 @@ func TestRepositoryGuardDiscoversEveryRegisteredRelevanceGolden(t *testing.T) {
 	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "uncommitted") {
 		t.Fatalf("dynamic dirty relevance golden err=%v", err)
 	}
+	writeGuardFile(t, root, secondGolden, `{"schema_version":1}`)
+	writeGuardCommit(t, root, "harness: retire second relevance scenario", map[string]string{
+		relevanceRegistryPath: `{"schema_version":1,"entries":[{"economy_catalog":"balance/catalogs/phase0.json","scenario":"testdata/harness/relevance/scenario-v1.json","relevance_policy":"testdata/harness/relevance/policy-v1.json","golden_report":"testdata/harness/relevance/golden-report-v1.json","justification_changelog":"testdata/harness/relevance/CHANGELOG.md"}]}`,
+	})
+	writeGuardFile(t, root, secondGolden, `{"dirty":"hidden-after-retirement"}`)
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "uncommitted") {
+		t.Fatalf("historical relevance golden escaped governance: %v", err)
+	}
 }
 
 func TestRepositoryGuardRejectsNoPriorInputAndDirtyArtifacts(t *testing.T) {
