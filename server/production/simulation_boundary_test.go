@@ -24,9 +24,9 @@ func hasSimulationCall(data []byte, filename string) (bool, error) {
 		}
 		switch function := call.Fun.(type) {
 		case *ast.SelectorExpr:
-			found = found || function.Sel.Name == "SimulateTransition"
+			found = found || function.Sel.Name == "SimulateTransition" || function.Sel.Name == "SimulateAdvance"
 		case *ast.Ident:
-			found = found || function.Name == "SimulateTransition"
+			found = found || function.Name == "SimulateTransition" || function.Name == "SimulateAdvance"
 		}
 		return !found
 	})
@@ -41,6 +41,10 @@ func TestSimulationEntrypointCallersAreHarnessOrTests(t *testing.T) {
 	decoy := []byte("package seeded\nconst text = `SimulateTransition()`\n")
 	if found, err := hasSimulationCall(decoy, "decoy.go"); err != nil || found {
 		t.Fatalf("source guard rejects decoy: found=%v err=%v", found, err)
+	}
+	advance := []byte("package seeded\nfunc invalid() { production.SimulateAdvance() }\n")
+	if found, err := hasSimulationCall(advance, "advance.go"); err != nil || !found {
+		t.Fatalf("source guard misses advance call: found=%v err=%v", found, err)
 	}
 
 	serverRoot := ".."

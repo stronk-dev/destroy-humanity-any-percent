@@ -48,6 +48,14 @@ type SimulationResult struct {
 	RoleActivations []RoleActivation
 }
 
+// AdvanceSimulationResult is the action-free counterpart to SimulationResult.
+// Evaluation is returned for harness accounting only; no intent receipt,
+// event envelope, or revision is created by SimulateAdvance.
+type AdvanceSimulationResult struct {
+	Evaluation      EvaluationResult
+	RoleActivations []RoleActivation
+}
+
 type simulationPolicy struct {
 	generators        map[string]bool
 	upgrades          map[string]bool
@@ -119,6 +127,38 @@ func SimulateTransition(request IntentRequest, state *save.State, catalog *econo
 		policy.promoteManualPoolCandidates(catalog, request.ActionID)
 	}
 	return SimulationResult{Decision: decision, RoleActivations: policy.activations()}, nil
+}
+
+// SimulateAdvance advances a cloned harness state without applying an action.
+// It is the sole authoritative wait edge for relevance search and is restricted
+// by the repository source guard to server/harness and tests.
+func SimulateAdvance(state *save.State, catalog *economy.Catalog, dependencies SimulationDependencies, revision save.Revision, mode EvaluationMode, now time.Time, external []multiplier.Contribution, mask AblationMask) (AdvanceSimulationResult, error) {
+	policy, err := simulationPolicyFor(catalog, mask)
+	if err != nil {
+		return AdvanceSimulationResult{}, err
+	}
+	contributions, err := assembleContributionsWithPolicy(state, catalog, external, policy)
+	if err != nil {
+		return AdvanceSimulationResult{}, err
+	}
+	result, err := evaluateWithSimulationPolicy(state, catalog, now, mode, contributions, policy)
+	if err != nil {
+		return AdvanceSimulationResult{}, err
+	}
+	if dependencies.Hook != nil && result.ElapsedMS > 0 {
+		events, hookErr := simulationHook(dependencies.Hook, policy).AfterAccrual(state, catalog, revision,
+			accrualhook.Result{Receipt: result.Receipt, ElapsedMS: result.ElapsedMS, ProductionMS: result.ProductionMS,
+				BankedCreditMS: result.BankedCreditMS, ProgressDeltaPPM: result.ProgressDeltaPPM}, contributions)
+		if hookErr != nil {
+			return AdvanceSimulationResult{}, hookErr
+		}
+		// An action-free edge has no intent/event envelope. A hook may update its
+		// replay-owned state, but any attempted event emission is invalid here.
+		if len(events) != 0 {
+			return AdvanceSimulationResult{}, ErrInvalidEngineState
+		}
+	}
+	return AdvanceSimulationResult{Evaluation: result, RoleActivations: policy.activations()}, nil
 }
 
 func (policy *simulationPolicy) masksGenerator(id string) bool {

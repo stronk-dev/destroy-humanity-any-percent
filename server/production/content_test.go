@@ -143,6 +143,27 @@ func hasRoleActivation(values []RoleActivation, want RoleActivation) bool {
 	return false
 }
 
+func TestSimulateAdvanceUsesMaskedAuthoritativeAccrualWithoutRevisionArtifacts(t *testing.T) {
+	catalog := foundationCatalog(t)
+	started := time.Date(2026, 8, 6, 9, 0, 0, 0, time.UTC)
+	state := foundationState(t, catalog, started)
+	state.GeneratorCounts["generator.low"] = 1
+
+	result, err := SimulateAdvance(state, catalog, SimulationDependencies{Routes: foundationRoutes(t)},
+		save.Revision{Number: 7}, ModeOnline, started.Add(time.Second), nil,
+		AblationMask{GeneratorIDs: []string{"generator.low"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	cash, _ := state.Ledger.Balance("company.cash")
+	if !cash.Eq(decimal.Zero) || !state.EvaluatedThrough.Equal(started.Add(time.Second)) {
+		t.Fatalf("masked advance cash=%s cursor=%s", cash.String(), state.EvaluatedThrough)
+	}
+	if result.Evaluation.ElapsedMS != 1_000 || len(result.RoleActivations) != 0 {
+		t.Fatalf("advance result=%+v", result)
+	}
+}
+
 func TestContentContributionsUsePurchasedCountsAndRawSourceOrder(t *testing.T) {
 	catalog := foundationCatalog(t)
 	state := foundationState(t, catalog, time.Date(2026, 8, 3, 10, 0, 0, 0, time.UTC))
