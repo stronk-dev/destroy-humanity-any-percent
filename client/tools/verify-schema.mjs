@@ -459,6 +459,8 @@ async function main() {
   const reportSchema = await readJSON(path.join(harnessDirectory, "report.schema.json"));
   const validateScenario = ajv.compile(scenarioSchema);
   const validateReport = ajv.compile(reportSchema);
+  const relevanceSchema = await readJSON(path.join(balanceDirectory, "relevance.schema.json"));
+  const validateRelevance = ajv.compile(relevanceSchema);
   const scenarios = await jsonFiles(path.join(harnessDirectory, "scenarios"));
   const invalidScenarios = await jsonFiles(path.join(harnessDirectory, "invalid"));
   if (scenarios.length === 0 || invalidScenarios.length === 0) {
@@ -484,9 +486,13 @@ async function main() {
   if (!validateReport(await readJSON(baseline))) {
     throw new Error(`${path.relative(repositoryDirectory, baseline)}: ${validationErrors(validateReport)}`);
   }
+  const relevancePolicy = path.join(harnessDirectory, "relevance", "policy-v1.json");
+  if (!validateRelevance(await readJSON(relevancePolicy))) {
+    throw new Error(`${path.relative(repositoryDirectory, relevancePolicy)}: ${validationErrors(validateRelevance)}`);
+  }
 
   console.log(
-    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + doctrines(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s)`,
+    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + doctrines(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness + relevance, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s)`,
   );
 }
 

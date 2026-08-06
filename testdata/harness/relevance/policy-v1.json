@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "purchasable_id": "generator.high",
+      "availability_window": { "from_gate": "gate.t2_to_t3", "to_gate": "gate.t4_to_t5" },
+      "epsilon_ms": 1000,
+      "trap_exempt": false,
+      "justification_key": null,
+      "group_ids": ["group.category_hardware", "group.tier_1"]
+    },
+    {
+      "purchasable_id": "generator.low",
+      "availability_window": { "from_gate": "gate.t2_to_t3", "to_gate": "gate.t4_to_t5" },
+      "epsilon_ms": 1000,
+      "trap_exempt": false,
+      "justification_key": null,
+      "group_ids": ["group.category_hardware", "group.substitutes", "group.tier_0"]
+    },
+    {
+      "purchasable_id": "upgrade.click",
+      "availability_window": { "from_gate": "gate.t2_to_t3", "to_gate": "gate.t4_to_t5" },
+      "epsilon_ms": 1000,
+      "trap_exempt": true,
+      "justification_key": "relevance.trap_fixture",
+      "group_ids": ["group.substitutes"]
+    }
+  ],
+  "groups": [
+    {
+      "group_id": "group.category_hardware",
+      "axis": "category",
+      "member_ids": ["generator.high", "generator.low"],
+      "epsilon_ms": 1000
+    },
+    {
+      "group_id": "group.substitutes",
+      "axis": "declared",
+      "member_ids": ["generator.low", "upgrade.click"],
+      "epsilon_ms": 1000
+    },
+    {
+      "group_id": "group.tier_0",
+      "axis": "tier",
+      "member_ids": ["generator.low"],
+      "epsilon_ms": 1000
+    },
+    {
+      "group_id": "group.tier_1",
+      "axis": "tier",
+      "member_ids": ["generator.high"],
+      "epsilon_ms": 1000
+    }
+  ]
+}
