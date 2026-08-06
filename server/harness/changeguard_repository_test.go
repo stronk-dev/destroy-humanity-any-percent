@@ -55,6 +55,19 @@ func TestRepositoryGuardAcceptsSeparateInputAndArtifacts(t *testing.T) {
 	}
 }
 
+func TestRepositoryGuardAcceptsSeparateRelevanceFixtureAndGolden(t *testing.T) {
+	root := newGuardRepository(t)
+	writeGuardCommit(t, root, "harness: add relevance fixture", map[string]string{
+		"testdata/harness/relevance/scenario-v1.json": `{"version":1}`,
+	})
+	writeGuardCommit(t, root, "BALANCE-CHANGE: add relevance golden", map[string]string{
+		relevanceGoldenPath: `{"schema_version":1}`,
+	})
+	if err := ValidateRepositoryBaselineChange(root); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestRepositoryGuardRejectsNoPriorInputAndDirtyArtifacts(t *testing.T) {
 	root := newGuardRepository(t)
 	writeGuardCommit(t, root, "BALANCE-CHANGE: artifact only", map[string]string{

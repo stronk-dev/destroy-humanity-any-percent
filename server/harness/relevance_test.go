@@ -51,6 +51,28 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	if !strings.Contains(joined, "role_floor:generator.alpha") {
 		t.Fatalf("fixture did not discriminate roleless generator: %v", first.Failures)
 	}
+	if err := ValidateRelevanceReport(first); err != nil {
+		t.Fatal(err)
+	}
+	invalid := first
+	invalid.Groups = nil
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("report accepted a missing row family")
+	}
+	invalid = first
+	invalid.Items = append([]RelevanceItemReport(nil), first.Items...)
+	invalid.Items[0], invalid.Items[1] = invalid.Items[1], invalid.Items[0]
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("report accepted unsorted item rows")
+	}
+	invalid = first
+	invalid.Items = append([]RelevanceItemReport(nil), first.Items...)
+	invalid.Items[0].IndividualDeltas = append([]RelevanceDelta(nil), first.Items[0].IndividualDeltas...)
+	invalid.Items[0].IndividualDeltas[0].Status = "both_reached"
+	invalid.Items[0].IndividualDeltas[0].AblatedMS = nil
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("report accepted an illegal delta null union")
+	}
 }
 
 func TestRelevanceFailsBeforeDispatchWhenRunBudgetIsTooSmall(t *testing.T) {
@@ -61,5 +83,11 @@ func TestRelevanceFailsBeforeDispatchWhenRunBudgetIsTooSmall(t *testing.T) {
 	suite.Scenario.RelevanceBudgetMaxRuns = 11
 	if _, err := suite.RunRelevance(); err == nil || !strings.Contains(err.Error(), "run budget") {
 		t.Fatalf("budget error=%v", err)
+	}
+}
+
+func TestRelevanceRegistryIsFailClosedForActiveCatalogs(t *testing.T) {
+	if err := ValidateRelevanceRegistry("../.."); err != nil {
+		t.Fatal(err)
 	}
 }

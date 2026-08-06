@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cloud-clicker.invalid/relevance-scenario.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "id", "catalog", "routes_catalog", "relevance_policy", "runs", "optimization_milestone", "segments", "reducer", "horizon_ms", "decision_horizons_ms", "max_decisions", "beam_width", "greedy_gap_maximum_ppm", "relevance_budget_max_runs", "relevance_budget_max_transitions"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "id": { "$ref": "#/$defs/id" },
+    "catalog": { "type": "string" }, "routes_catalog": { "type": "string" }, "relevance_policy": { "type": "string" },
+    "runs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/run" } },
+    "optimization_milestone": { "$ref": "#/$defs/milestone" },
+    "segments": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/segment" } },
+    "reducer": { "enum": ["p05", "worst"] },
+    "horizon_ms": { "$ref": "#/$defs/positive" },
+    "decision_horizons_ms": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/positive" } },
+    "max_decisions": { "$ref": "#/$defs/positive" }, "beam_width": { "const": 8 },
+    "greedy_gap_maximum_ppm": { "type": "integer", "minimum": 0, "maximum": 1000000 },
+    "relevance_budget_max_runs": { "$ref": "#/$defs/positive" }, "relevance_budget_max_transitions": { "$ref": "#/$defs/positive" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$" },
+    "positive": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+    "run": { "type": "object", "additionalProperties": false, "required": ["policy_id", "seed_start", "seed_count", "reference"], "properties": { "policy_id": { "$ref": "#/$defs/id" }, "seed_start": { "type": "string", "pattern": "^(0|[1-9][0-9]*)$" }, "seed_count": { "$ref": "#/$defs/positive" }, "reference": { "type": "boolean" } } },
+    "milestone": { "type": "object", "additionalProperties": false, "required": ["id", "kind", "resource_id", "amount", "required"], "properties": { "id": { "$ref": "#/$defs/id" }, "kind": { "const": "resource_at_least" }, "resource_id": { "$ref": "#/$defs/id" }, "amount": { "type": "string" }, "required": { "const": true } } },
+    "segment": { "type": "object", "additionalProperties": false, "required": ["milestone_id", "from_gate", "to_gate"], "properties": { "milestone_id": { "$ref": "#/$defs/id" }, "from_gate": { "$ref": "#/$defs/id" }, "to_gate": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] } } }
+  }
+}

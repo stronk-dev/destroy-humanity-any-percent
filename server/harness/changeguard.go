@@ -11,13 +11,15 @@ import (
 )
 
 const (
-	baselinePath = "testdata/harness/pacing-baseline.json"
-	goldenPath   = "testdata/harness/golden-seed.json"
+	baselinePath        = "testdata/harness/pacing-baseline.json"
+	goldenPath          = "testdata/harness/golden-seed.json"
+	relevanceGoldenPath = "testdata/harness/relevance/golden-report-v1.json"
 )
 
 var baselineArtifactPaths = map[string]struct{}{
-	baselinePath: {},
-	goldenPath:   {},
+	baselinePath:        {},
+	goldenPath:          {},
+	relevanceGoldenPath: {},
 }
 
 // ValidateBaselineCommit enforces the separate-commit review protocol for one
@@ -30,7 +32,7 @@ func ValidateBaselineCommit(commitPaths, inputsBefore []string, subject string) 
 		if path == "" {
 			continue
 		}
-		if path == baselinePath {
+		if path == baselinePath || path == relevanceGoldenPath {
 			baselineChanged = true
 		}
 		if _, allowed := baselineArtifactPaths[path]; !allowed {
@@ -38,7 +40,7 @@ func ValidateBaselineCommit(commitPaths, inputsBefore []string, subject string) 
 		}
 	}
 	if !baselineChanged {
-		return fmt.Errorf("baseline artifact commit does not change %s", baselinePath)
+		return fmt.Errorf("baseline artifact commit does not change a governed report")
 	}
 	if !strings.HasPrefix(subject, "BALANCE-CHANGE:") {
 		if strings.HasPrefix(subject, "CONSTANTS-IDENTITY:") {
@@ -48,7 +50,7 @@ func ValidateBaselineCommit(commitPaths, inputsBefore []string, subject string) 
 	}
 	for _, path := range inputsBefore {
 		path = strings.TrimSpace(path)
-		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/categories/") || strings.HasPrefix(path, "balance/routes/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "balance/factions/") || strings.HasPrefix(path, "balance/prestige/") || strings.HasPrefix(path, "balance/guilds/") || strings.HasPrefix(path, "testdata/harness/scenarios/") {
+		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/categories/") || strings.HasPrefix(path, "balance/routes/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "balance/factions/") || strings.HasPrefix(path, "balance/prestige/") || strings.HasPrefix(path, "balance/guilds/") || strings.HasPrefix(path, "testdata/harness/scenarios/") || strings.HasPrefix(path, "testdata/harness/relevance/") {
 			return nil
 		}
 	}
@@ -71,7 +73,7 @@ func ValidateRepositoryBaselineChange(root string) error {
 		return fmt.Errorf("baseline guard received ambiguous shallow-repository result %q", shallow)
 	}
 
-	dirty, err := gitOutput(root, "status", "--porcelain", "--untracked-files=all", "--", baselinePath, goldenPath)
+	dirty, err := gitOutput(root, "status", "--porcelain", "--untracked-files=all", "--", baselinePath, goldenPath, relevanceGoldenPath)
 	if err != nil {
 		return fmt.Errorf("baseline guard cannot inspect artifact worktree: %w", err)
 	}
@@ -79,7 +81,7 @@ func ValidateRepositoryBaselineChange(root string) error {
 		return fmt.Errorf("baseline artifacts have uncommitted changes")
 	}
 
-	history, err := gitOutput(root, "log", "--reverse", "--format=%H", "HEAD", "--", baselinePath)
+	history, err := gitOutput(root, "log", "--reverse", "--format=%H", "HEAD", "--", baselinePath, relevanceGoldenPath)
 	if err != nil {
 		return fmt.Errorf("baseline guard requires complete baseline history: %w", err)
 	}

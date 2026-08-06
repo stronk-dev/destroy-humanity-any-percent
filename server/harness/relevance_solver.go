@@ -226,6 +226,9 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	report.RunBudget = RelevanceRunBudget{DeclaredRuns: declaredRuns, ExecutedRuns: executedRuns,
 		DeclaredTransitions: counter.value, ExecutedTransitions: counter.value}
 	report.Failures = sortedUniqueStrings(report.Failures)
+	if err := ValidateRelevanceReport(report); err != nil {
+		return RelevanceReport{}, err
+	}
 	return report, nil
 }
 
@@ -280,6 +283,14 @@ func (suite *RelevanceSuite) runReference(mask production.AblationMask, counter 
 		state, revision, nowMS = chosen.State, chosen.Revision, chosen.AtMS
 		result.Purchases[chosen.ID]++
 		mergeRoleActivations(result.Roles, chosen.RoleActivations)
+	}
+	if result.MilestoneMS == nil && nowMS < suite.Scenario.HorizonMS {
+		finishedMS, reachedMS, activations, advanceErr := suite.finishToMilestone(state, revision, nowMS, mask, counter)
+		if advanceErr != nil {
+			return relevanceRunResult{}, advanceErr
+		}
+		mergeRoleActivations(result.Roles, activations)
+		nowMS, result.MilestoneMS = finishedMS, reachedMS
 	}
 	if result.MilestoneMS == nil {
 		if reached, reachErr := suite.relevanceMilestoneReached(state); reachErr != nil {
@@ -630,6 +641,10 @@ func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) 
 			child.score = suite.Scenario.HorizonMS + 1
 			if child.reached != nil {
 				child.score = *child.reached
+				if best == nil || *child.reached < *best {
+					copy := *child.reached
+					best = &copy
+				}
 			}
 			digest, digestErr := stateDigest(child.state)
 			if digestErr != nil {
@@ -685,5 +700,55 @@ func (suite *RelevanceSuite) runReferenceFrom(state *save.State, revision, nowMS
 		}
 		state, revision, nowMS = candidates[0].State, candidates[0].Revision, candidates[0].AtMS
 	}
+	if result.MilestoneMS == nil && nowMS < suite.Scenario.HorizonMS {
+		finishedMS, reachedMS, _, err := suite.finishToMilestone(state, revision, nowMS, production.AblationMask{}, counter)
+		if err != nil {
+			return relevanceRunResult{}, err
+		}
+		nowMS, result.MilestoneMS = finishedMS, reachedMS
+	}
 	return result, nil
+}
+
+func (suite *RelevanceSuite) finishToMilestone(state *save.State, revision, nowMS int64, mask production.AblationMask, counter *relevanceCounter) (int64, *int64, []production.RoleActivation, error) {
+	reachedAt := func(atMS int64) (bool, error) {
+		candidate, err := cloneState(suite.Catalog, state)
+		if err != nil {
+			return false, err
+		}
+		if _, err := suite.advance(candidate, revision, atMS, mask, counter); err != nil {
+			return false, err
+		}
+		return suite.relevanceMilestoneReached(candidate)
+	}
+	reached, err := reachedAt(suite.Scenario.HorizonMS)
+	if err != nil {
+		return 0, nil, nil, err
+	}
+	target := suite.Scenario.HorizonMS
+	if reached {
+		low, high := nowMS+1, suite.Scenario.HorizonMS
+		for low < high {
+			middle := low + (high-low)/2
+			at, searchErr := reachedAt(middle)
+			if searchErr != nil {
+				return 0, nil, nil, searchErr
+			}
+			if at {
+				high = middle
+			} else {
+				low = middle + 1
+			}
+		}
+		target = low
+	}
+	advanced, err := suite.advance(state, revision, target, mask, counter)
+	if err != nil {
+		return 0, nil, nil, err
+	}
+	if !reached {
+		return target, nil, advanced.RoleActivations, nil
+	}
+	copy := target
+	return target, &copy, advanced.RoleActivations, nil
 }

@@ -31,6 +31,14 @@ func main() {
 	if err != nil {
 		fail(err)
 	}
+	relevanceSuite, err := harness.LoadRelevanceSuite(*root, "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		fail(err)
+	}
+	relevance, err := relevanceSuite.RunRelevance()
+	if err != nil {
+		fail(err)
+	}
 	golden := harness.GoldenReport{SchemaVersion: 1}
 	for _, report := range runs {
 		if report.Key.Seed == "0" {
@@ -40,14 +48,19 @@ func main() {
 	goldenBytes, _ := harness.CanonicalJSON(golden)
 	aggregateBytes, _ := harness.CanonicalJSON(aggregate)
 	suiteBytes, _ := harness.CanonicalJSON(harness.SuiteReport{SchemaVersion: 1, Runs: runs, Aggregate: aggregate})
+	relevanceBytes, _ := harness.CanonicalJSON(relevance)
 	goldenPath := filepath.Join(*root, "testdata/harness/golden-seed.json")
 	baselinePath := filepath.Join(*root, "testdata/harness/pacing-baseline.json")
+	relevancePath := filepath.Join(*root, "testdata/harness/relevance/golden-report-v1.json")
 	switch *mode {
 	case "update":
 		if err := os.WriteFile(goldenPath, goldenBytes, 0o644); err != nil {
 			fail(err)
 		}
 		if err := os.WriteFile(baselinePath, aggregateBytes, 0o644); err != nil {
+			fail(err)
+		}
+		if err := os.WriteFile(relevancePath, relevanceBytes, 0o644); err != nil {
 			fail(err)
 		}
 	case "run":
@@ -61,6 +74,9 @@ func main() {
 		if err := harness.ValidateRepositoryBaselineChange(*root); err != nil {
 			fail(err)
 		}
+		if err := harness.ValidateRelevanceRegistry(*root); err != nil {
+			fail(err)
+		}
 		if err := harness.ValidateRepositoryEpochChanges(*root); err != nil {
 			fail(err)
 		}
@@ -69,6 +85,10 @@ func main() {
 			fail(err)
 		}
 		wantBaseline, err := os.ReadFile(baselinePath)
+		if err != nil {
+			fail(err)
+		}
+		wantRelevance, err := os.ReadFile(relevancePath)
 		if err != nil {
 			fail(err)
 		}
@@ -82,6 +102,9 @@ func main() {
 		}
 		if string(wantGolden) != string(goldenBytes) {
 			fail(fmt.Errorf("golden seed drift; run make harness-update and review"))
+		}
+		if string(wantRelevance) != string(relevanceBytes) {
+			fail(fmt.Errorf("relevance golden drift; run make harness-update and review"))
 		}
 		if aggregate.ScenarioHash != baseline.ScenarioHash || aggregate.ConstantsHash != baseline.ConstantsHash {
 			fail(fmt.Errorf("baseline hashes do not match scenario/catalog"))

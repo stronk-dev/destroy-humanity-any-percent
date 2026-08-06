@@ -307,6 +307,71 @@ func MakeRelevanceDelta(milestoneID string, baseline, ablated *int64, horizonMS 
 	return result
 }
 
+func ValidateRelevanceReport(report RelevanceReport) error {
+	if report.SchemaVersion != RelevanceReportSchemaVersion || !relevanceIDPattern.MatchString(report.ScenarioID) ||
+		len(report.ScenarioHash) != 71 || len(report.ConstantsHash) != 71 || len(report.RelevancePolicyHash) != 71 ||
+		report.Items == nil || report.Groups == nil || report.TierContributions == nil || report.RoleActivations == nil || report.Failures == nil ||
+		report.RunBudget.DeclaredRuns < 1 || report.RunBudget.DeclaredRuns != report.RunBudget.ExecutedRuns ||
+		report.RunBudget.DeclaredTransitions != report.RunBudget.ExecutedTransitions {
+		return errors.New("invalid relevance report envelope")
+	}
+	prior := ""
+	for _, item := range report.Items {
+		if !relevanceIDPattern.MatchString(item.PurchasableID) || prior != "" && prior >= item.PurchasableID || item.IndividualDeltas == nil ||
+			item.ActionRemovalDeltas == nil || item.Support != "individual" && item.Support != "group_supported" && item.Support != "failed" ||
+			item.SupportingGroupID != nil != (item.Support == "group_supported") {
+			return fmt.Errorf("invalid relevance item report %q", item.PurchasableID)
+		}
+		for _, rows := range [][]RelevanceDelta{item.IndividualDeltas, item.ActionRemovalDeltas} {
+			for _, row := range rows {
+				if err := validateRelevanceDelta(row); err != nil {
+					return err
+				}
+			}
+		}
+		prior = item.PurchasableID
+	}
+	prior = ""
+	for _, group := range report.Groups {
+		if !relevanceIDPattern.MatchString(group.GroupID) || prior != "" && prior >= group.GroupID || group.Deltas == nil {
+			return fmt.Errorf("invalid relevance group report %q", group.GroupID)
+		}
+		for _, row := range group.Deltas {
+			if err := validateRelevanceDelta(row); err != nil {
+				return err
+			}
+		}
+		prior = group.GroupID
+	}
+	for index, failure := range report.Failures {
+		if failure == "" || index > 0 && report.Failures[index-1] >= failure {
+			return errors.New("relevance failures must be sorted unique")
+		}
+	}
+	return nil
+}
+
+func validateRelevanceDelta(row RelevanceDelta) error {
+	if !relevanceIDPattern.MatchString(row.MilestoneID) {
+		return errors.New("invalid relevance delta milestone")
+	}
+	valid := false
+	switch row.Status {
+	case "both_reached":
+		valid = row.BaselineMS != nil && row.AblatedMS != nil && row.DeltaMS != nil
+	case "ablated_unreached":
+		valid = row.BaselineMS != nil && row.AblatedMS == nil && row.DeltaMS != nil
+	case "baseline_unreached":
+		valid = row.BaselineMS == nil && row.AblatedMS != nil && row.DeltaMS == nil
+	case "both_unreached":
+		valid = row.BaselineMS == nil && row.AblatedMS == nil && row.DeltaMS == nil
+	}
+	if !valid {
+		return errors.New("invalid relevance delta union")
+	}
+	return nil
+}
+
 func reduceRelevanceDeltas(rows []RelevanceDelta, reducer string) (RelevanceDelta, error) {
 	if len(rows) == 0 || reducer != "worst" && reducer != "p05" {
 		return RelevanceDelta{}, errors.New("invalid relevance delta reduction")

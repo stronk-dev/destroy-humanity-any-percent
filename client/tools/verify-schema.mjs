@@ -490,6 +490,18 @@ async function main() {
   if (!validateRelevance(await readJSON(relevancePolicy))) {
     throw new Error(`${path.relative(repositoryDirectory, relevancePolicy)}: ${validationErrors(validateRelevance)}`);
   }
+  const relevanceScenarioSchema = await readJSON(path.join(harnessDirectory, "relevance", "scenario.schema.json"));
+  const validateRelevanceScenario = ajv.compile(relevanceScenarioSchema);
+  const relevanceScenario = path.join(harnessDirectory, "relevance", "scenario-v1.json");
+  if (!validateRelevanceScenario(await readJSON(relevanceScenario))) {
+    throw new Error(`${path.relative(repositoryDirectory, relevanceScenario)}: ${validationErrors(validateRelevanceScenario)}`);
+  }
+  const relevanceReportSchema = await readJSON(path.join(harnessDirectory, "relevance", "report.schema.json"));
+  const validateRelevanceReport = ajv.compile(relevanceReportSchema);
+  const relevanceGolden = path.join(harnessDirectory, "relevance", "golden-report-v1.json");
+  if (!validateRelevanceReport(await readJSON(relevanceGolden))) {
+    throw new Error(`${path.relative(repositoryDirectory, relevanceGolden)}: ${validationErrors(validateRelevanceReport)}`);
+  }
 
   console.log(
     `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + doctrines(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness + relevance, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s)`,
