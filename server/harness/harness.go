@@ -483,6 +483,36 @@ func actionTimes(policy string, horizon int64) []int64 {
 	return result
 }
 
+// actionCount mirrors actionTimes without materializing the schedule. Relevance
+// preflight uses it so a hostile but schema-valid horizon is rejected by the
+// configured transition budget before any horizon-sized allocation.
+func actionCount(policy string, horizon int64) (int64, error) {
+	if horizon < 0 {
+		return 0, errors.New("invalid action horizon")
+	}
+	if policy == "chaos.phase0" {
+		return horizon / 300_000, nil
+	}
+	if policy != "casual.phase0" {
+		return 0, fmt.Errorf("unknown policy %q", policy)
+	}
+	count := int64(0)
+	for _, start := range []int64{0, 18_000_000, 39_600_000} {
+		for within := int64(0); within < 480_000; within += 1_000 {
+			first := start + within
+			if first > horizon {
+				continue
+			}
+			occurrences := (horizon-first)/86_400_000 + 1
+			if count > relevanceMaxSafeInteger-occurrences {
+				return 0, errors.New("action schedule cardinality overflow")
+			}
+			count += occurrences
+		}
+	}
+	return count, nil
+}
+
 func casualSession(offset int64) int64 {
 	day, within := offset/86_400_000, offset%86_400_000
 	index := int64(0)

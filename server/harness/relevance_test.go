@@ -129,6 +129,44 @@ func TestRelevanceFailsBeforeDispatchWhenRunBudgetIsTooSmall(t *testing.T) {
 	}
 }
 
+func TestRelevanceWindowsBindEveryItemToAnInWindowMilestone(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := validateRelevanceWindows(suite.Scenario, suite.Policy, suite.Routes); err != nil {
+		t.Fatal(err)
+	}
+	invalid := suite.Scenario
+	invalid.Segments = append([]RelevanceSegment(nil), suite.Scenario.Segments...)
+	invalid.Segments[0].FromGate = "gate.t1_to_t2"
+	if err := validateRelevanceWindows(invalid, suite.Policy, suite.Routes); err == nil || !strings.Contains(err.Error(), "no milestone") {
+		t.Fatalf("out-of-window milestone accepted: %v", err)
+	}
+}
+
+func TestRelevanceScheduleCardinalityIsBoundedBeforeMaterialization(t *testing.T) {
+	for _, policy := range []string{"casual.phase0", "chaos.phase0"} {
+		for _, horizon := range []int64{0, 299_999, 300_000, 86_400_000, 172_800_123} {
+			got, err := actionCount(policy, horizon)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if want := int64(len(actionTimes(policy, horizon))); got != want {
+				t.Fatalf("policy=%s horizon=%d count=%d materialized=%d", policy, horizon, got, want)
+			}
+		}
+	}
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	suite.Scenario.HorizonMS = relevanceMaxSafeInteger
+	if _, err := suite.RunRelevance(); err == nil || !strings.Contains(err.Error(), "transition budget") {
+		t.Fatalf("huge horizon reached schedule materialization: %v", err)
+	}
+}
+
 func TestRelevanceReducesSeedsBeforePersonaAnyAndPrunesDominatedState(t *testing.T) {
 	value := func(input int64) *int64 { return &input }
 	matrix := map[string][]relevancePairedResult{

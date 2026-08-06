@@ -18,15 +18,11 @@ func hasSimulationCall(data []byte, filename string) (bool, error) {
 	}
 	found := false
 	ast.Inspect(file, func(node ast.Node) bool {
-		call, ok := node.(*ast.CallExpr)
-		if !ok {
-			return true
-		}
-		switch function := call.Fun.(type) {
+		switch value := node.(type) {
 		case *ast.SelectorExpr:
-			found = found || function.Sel.Name == "SimulateTransition" || function.Sel.Name == "SimulateAdvance"
+			found = found || value.Sel.Name == "SimulateTransition" || value.Sel.Name == "SimulateAdvance"
 		case *ast.Ident:
-			found = found || function.Name == "SimulateTransition" || function.Name == "SimulateAdvance"
+			found = found || value.Name == "SimulateTransition" || value.Name == "SimulateAdvance"
 		}
 		return !found
 	})
@@ -45,6 +41,10 @@ func TestSimulationEntrypointCallersAreHarnessOrTests(t *testing.T) {
 	advance := []byte("package seeded\nfunc invalid() { production.SimulateAdvance() }\n")
 	if found, err := hasSimulationCall(advance, "advance.go"); err != nil || !found {
 		t.Fatalf("source guard misses advance call: found=%v err=%v", found, err)
+	}
+	alias := []byte("package seeded\nvar advance = production.SimulateAdvance\nfunc invalid() { advance() }\n")
+	if found, err := hasSimulationCall(alias, "alias.go"); err != nil || !found {
+		t.Fatalf("source guard misses function-value alias: found=%v err=%v", found, err)
 	}
 
 	serverRoot := ".."

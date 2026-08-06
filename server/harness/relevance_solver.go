@@ -51,7 +51,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 				return RelevanceReport{}, errors.New("relevance seed cardinality overflow")
 			}
 			nonReferenceSeeds += run.SeedCount
-			actions := int64(len(actionTimes(run.PolicyID, suite.Scenario.HorizonMS)))
+			actions, countErr := actionCount(run.PolicyID, suite.Scenario.HorizonMS)
+			if countErr != nil {
+				return RelevanceReport{}, countErr
+			}
 			factor := int64(1 + len(suite.Policy.Items) + len(suite.Policy.Groups))
 			if actions != 0 && run.SeedCount > relevanceMaxSafeInteger/actions ||
 				actions*run.SeedCount != 0 && factor > relevanceMaxSafeInteger/(actions*run.SeedCount) ||

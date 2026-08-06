@@ -190,6 +190,9 @@ func LoadRelevanceSuite(repositoryRoot, scenarioPath string) (*RelevanceSuite, e
 	if err := validateRelevanceSegments(scenario, routeCatalog); err != nil {
 		return nil, err
 	}
+	if err := validateRelevanceWindows(scenario, policy, routeCatalog); err != nil {
+		return nil, err
+	}
 	constantsHash, err := save.ConstantsHashArtifacts(map[string][]byte{"economy": catalogBytes, "relevance_policy": policyBytes, "routes": routesBytes})
 	if err != nil {
 		return nil, err
@@ -265,6 +268,32 @@ func validateRelevanceSegments(scenario RelevanceScenario, catalog *routes.Catal
 		to, ok := order[*segment.ToGate]
 		if !ok || from >= to {
 			return errors.New("relevance segment has invalid to_gate")
+		}
+	}
+	return nil
+}
+
+func validateRelevanceWindows(scenario RelevanceScenario, policy *RelevancePolicy, catalog *routes.Catalog) error {
+	order := map[string]int{}
+	for index, gate := range catalog.Gates() {
+		order[gate.ID] = index
+	}
+	for _, item := range policy.Items {
+		from := order[item.Availability.FromGate]
+		to := len(order)
+		if item.Availability.ToGate != nil {
+			to = order[*item.Availability.ToGate]
+		}
+		matched := false
+		for _, segment := range scenario.Segments {
+			position := order[segment.FromGate]
+			if position >= from && position < to {
+				matched = true
+				break
+			}
+		}
+		if !matched {
+			return fmt.Errorf("relevance item %q has no milestone in its availability window", item.PurchasableID)
 		}
 	}
 	return nil
