@@ -15,9 +15,43 @@ function clone(): typeof policyFixture {
   return structuredClone(policyFixture);
 }
 
+type MutationCase = (typeof mutationFixture.cases)[number];
+
+function mutationParent(root: unknown, path: readonly string[]): { parent: Record<string, unknown> | unknown[]; key: string } {
+  if (path.length === 0) throw new Error("empty relevance mutation path");
+  let value: unknown = root;
+  for (const component of path.slice(0, -1)) {
+    if (Array.isArray(value)) value = value[Number(component)];
+    else if (value !== null && typeof value === "object") value = (value as Record<string, unknown>)[component];
+    else throw new Error(`invalid relevance mutation path ${path.join(".")}`);
+  }
+  if (!Array.isArray(value) && (value === null || typeof value !== "object")) throw new Error(`invalid relevance mutation parent ${path.join(".")}`);
+  return { parent: value as Record<string, unknown> | unknown[], key: path[path.length - 1] as string };
+}
+
+function applyMutation(test: MutationCase): string {
+  const root = clone() as unknown;
+  const { parent, key } = mutationParent(root, test.path);
+  const index = Array.isArray(parent) ? Number(key) : key;
+  if (test.operation === "delete") {
+    if (Array.isArray(parent)) parent.splice(index as number, 1); else delete parent[index as string];
+  } else if (test.operation === "swap") {
+    if (!Array.isArray(parent) || test.swap_index === null) throw new Error(`invalid swap ${test.id}`);
+    [parent[index as number], parent[test.swap_index]] = [parent[test.swap_index], parent[index as number]];
+  } else if (test.operation === "replace" || test.operation === "replace_number") {
+    if (test.value_json === null) throw new Error(`missing replacement ${test.id}`);
+    const replacement = test.operation === "replace_number" ? `__RAW_RELEVANCE_NUMBER_${test.id}__` : JSON.parse(test.value_json) as unknown;
+    if (Array.isArray(parent)) parent[index as number] = replacement;
+    else parent[index as string] = replacement;
+    const encoded = JSON.stringify(root);
+    return test.operation === "replace_number" ? encoded.replace(`"${replacement}"`, test.value_json) : encoded;
+  } else throw new Error(`unknown relevance mutation ${test.operation}`);
+  return JSON.stringify(root);
+}
+
 describe("relevance policy parity", () => {
   it("loads the shared complete policy", () => {
-    const policy = parseRelevancePolicy(policyFixture, catalog, gates);
+    const policy = parseRelevancePolicy(JSON.stringify(policyFixture), catalog, gates);
     expect(policy.items.map((row) => row.purchasable_id)).toEqual(["generator.high", "generator.low", "upgrade.click"]);
     expect(policy.groups).toHaveLength(4);
   });
@@ -25,22 +59,7 @@ describe("relevance policy parity", () => {
   it("applies the shared Go/TypeScript mutation corpus", () => {
     expect(mutationFixture.schema_version).toBe(1);
     for (const test of mutationFixture.cases) {
-      const value = clone() as unknown as {
-        schema_version: number;
-        items: Array<Record<string, unknown> & { availability_window: Record<string, unknown>; group_ids: string[] }>;
-        groups: Array<Record<string, unknown> & { member_ids: string[] }>;
-      };
-      switch (test.id) {
-        case "missing_item_epsilon": delete value.items[0]!.epsilon_ms; break;
-        case "unsorted_items": [value.items[0], value.items[1]] = [value.items[1]!, value.items[0]!]; break;
-        case "dangling_group": value.items[0]!.group_ids = ["group.missing"]; break;
-        case "exemption_mismatch": value.items[2]!.trap_exempt = false; break;
-        case "incomplete_derived_group": value.groups[0]!.member_ids = ["generator.high"]; break;
-        case "unknown_gate": value.items[0]!.availability_window.from_gate = "gate.unknown"; break;
-        case "integral_decimal_epsilon": value.items[0]!.epsilon_ms = 1000.0; break;
-        case "integral_decimal_schema": value.schema_version = 1.0; break;
-        default: throw new Error(`unknown relevance mutation ${test.id}`);
-      }
+      const value = applyMutation(test);
       if (test.accepted) expect(() => parseRelevancePolicy(value, catalog, gates), test.id).not.toThrow();
       else expect(() => parseRelevancePolicy(value, catalog, gates), test.id).toThrow();
     }

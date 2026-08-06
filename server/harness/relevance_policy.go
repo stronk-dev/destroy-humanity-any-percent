@@ -11,6 +11,8 @@ import (
 	"math/big"
 	"regexp"
 	"sort"
+	"strconv"
+	"strings"
 
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/routes"
@@ -153,7 +155,21 @@ func relevanceSafeInteger(value *json.Number) (int64, error) {
 	if value == nil {
 		return 0, errors.New("missing integer")
 	}
-	rational, ok := new(big.Rat).SetString(value.String())
+	lexical := value.String()
+	if len(lexical) > 64 {
+		return 0, errors.New("integer lexical form is too long")
+	}
+	if exponentAt := strings.IndexAny(lexical, "eE"); exponentAt >= 0 {
+		exponentLexical := lexical[exponentAt+1:]
+		if len(strings.TrimLeft(exponentLexical, "+-")) > 2 {
+			return 0, errors.New("integer exponent is too large")
+		}
+		exponent, err := strconv.Atoi(exponentLexical)
+		if err != nil || exponent < -32 || exponent > 32 {
+			return 0, errors.New("integer exponent is too large")
+		}
+	}
+	rational, ok := new(big.Rat).SetString(lexical)
 	if !ok || !rational.IsInt() || !rational.Num().IsInt64() {
 		return 0, errors.New("expected exact integer")
 	}

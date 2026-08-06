@@ -40,7 +40,14 @@ export interface RelevancePolicy {
   readonly groups: readonly RelevancePolicyGroup[];
 }
 
-export function parseRelevancePolicy(source: unknown, catalog: RelevanceCatalogView, gateIds: readonly string[]): RelevancePolicy {
+export function parseRelevancePolicy(source: string, catalog: RelevanceCatalogView, gateIds: readonly string[]): RelevancePolicy {
+  validateExactPolicyNumbers(source);
+  let parsed: unknown;
+  try { parsed = JSON.parse(source) as unknown; } catch (error) { throw new SyntaxError(`invalid relevance policy JSON: ${String(error)}`); }
+  return parseRelevancePolicyObject(parsed, catalog, gateIds);
+}
+
+function parseRelevancePolicyObject(source: unknown, catalog: RelevanceCatalogView, gateIds: readonly string[]): RelevancePolicy {
   const root = exactObject(source, ["schema_version", "items", "groups"], "relevance policy");
   if (root.schema_version !== 1 || !Array.isArray(root.items) || !Array.isArray(root.groups)) throw new SyntaxError("invalid relevance policy envelope");
   const gates = new Map(gateIds.map((id, index) => [mechanicalString(id, "gate id"), index]));
@@ -93,6 +100,52 @@ export function parseRelevancePolicy(source: unknown, catalog: RelevanceCatalogV
     if (!sameStrings(expected, group.member_ids)) throw new SyntaxError("incomplete derived group");
   }
   return Object.freeze({ schema_version: 1, items: Object.freeze(items), groups: Object.freeze(groups) });
+}
+
+function validateExactPolicyNumbers(source: string): void {
+  let inString = false; let escaped = false;
+  for (let index = 0; index < source.length; index++) {
+    const character = source[index] as string;
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') { inString = true; continue; }
+    if (character !== "-" && (character < "0" || character > "9")) continue;
+    const match = source.slice(index).match(/^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/);
+    if (!match) continue;
+    exactSafeIntegerLexeme(match[0] as string);
+    index += (match[0] as string).length - 1;
+  }
+}
+
+function exactSafeIntegerLexeme(source: string): void {
+  if (source.length > 64) throw new SyntaxError("relevance integer lexical form is too long");
+  const match = source.match(/^(-?)(\d+)(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+  if (!match) throw new SyntaxError("invalid relevance integer");
+  const exponentLexical = match[4] ?? "0";
+  if (exponentLexical.replace(/^[+-]/, "").length > 2) throw new SyntaxError("relevance integer exponent is too large");
+  const exponent = Number(exponentLexical);
+  if (!Number.isInteger(exponent) || exponent < -32 || exponent > 32) throw new SyntaxError("relevance integer exponent is too large");
+  let digits = `${match[2]}${match[3] ?? ""}`;
+  const scale = exponent - (match[3]?.length ?? 0);
+  if (scale < 0) {
+    const fractionalDigits = -scale;
+    if (fractionalDigits > digits.length) {
+      if (/[1-9]/.test(digits)) throw new SyntaxError("relevance number is not an integer");
+      digits = "0";
+    } else {
+      const suffix = digits.slice(digits.length - fractionalDigits);
+      if (/[1-9]/.test(suffix)) throw new SyntaxError("relevance number is not an integer");
+      digits = digits.slice(0, digits.length - fractionalDigits) || "0";
+    }
+  } else {
+    digits += "0".repeat(scale);
+  }
+  const value = BigInt(`${match[1] ?? ""}${digits}`);
+  if (value < 0n || value > BigInt(MAX_EXACT_INTEGER)) throw new SyntaxError("relevance integer is outside the exact range");
 }
 
 function exactObject(source: unknown, keys: readonly string[], label: string): Record<string, unknown> {
