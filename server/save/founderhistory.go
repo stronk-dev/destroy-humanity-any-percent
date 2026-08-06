@@ -110,7 +110,8 @@ func (s *Store) LoadFounderHistory(ctx context.Context, founderStreamID string) 
 		return FounderHistory{}, err
 	}
 	for index := range history.Entries {
-		events, err := loadFounderHistoryEvents(ctx, tx, founderStreamID, history.Entries[index].IntentID)
+		events, err := loadFounderHistoryEvents(ctx, tx, founderStreamID, history.Entries[index].IntentID,
+			history.Entries[index].AppliedRevision)
 		if err != nil {
 			return FounderHistory{}, err
 		}
@@ -127,9 +128,13 @@ func (s *Store) LoadFounderHistory(ctx context.Context, founderStreamID string) 
 	return history, nil
 }
 
-func loadFounderHistoryEvents(ctx context.Context, tx *sql.Tx, streamID, intentID string) ([]EventWrite, error) {
+func loadFounderHistoryEvents(ctx context.Context, tx *sql.Tx, streamID, intentID string, appliedRevision *int64) ([]EventWrite, error) {
+	if appliedRevision == nil {
+		return []EventWrite{}, nil
+	}
 	rows, err := tx.QueryContext(ctx, `SELECT kind,schema_version,intent_id,payload::text
-		FROM events WHERE stream_id=$1 AND intent_id=$2 ORDER BY event_seq,event_id`, streamID, intentID)
+		FROM events WHERE stream_id=$1 AND intent_id=$2 AND revision=$3 ORDER BY event_seq,event_id`,
+		streamID, intentID, *appliedRevision)
 	if err != nil {
 		return nil, err
 	}

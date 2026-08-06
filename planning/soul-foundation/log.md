@@ -101,3 +101,48 @@ soul_exhausted_source_ids, next_soul Exit arm recomputed-from-bytes (SB21); soul
 schema BUMPS, historical schemas valid only in Soul-less bundles (SB22); start/cancel/resolve event
 ordering + Founder-then-Company single-transaction atomicity w/ fault injection (SB23).
 Status -> SB1-SB23 complete; Soul implementable (Fiscal v19 archived).
+
+## 2026-08-06 — implementation round: persistence/replay complete; recovery liveness DESIGN-GAP
+
+Review by: pending cross-party designated review. Recorded by: Codex.
+
+Implemented the strict Soul package and v20 activation, the pure debit component and exact events,
+versioned pet/minigame gates, and the recovery persistence/replay skeleton. The recovery round adds:
+
+- an immutable, claim-tokened `soul_recovery_sessions` lifecycle and one-active-session constraint;
+- race-safe transaction guards for Company commands, Founder care, Exit, and minigame start;
+- the shared Go/TypeScript `ApplySuppressedLogged` zero-output transition;
+- Company-first then Founder-log resolution with one durable terminal receipt;
+- exact event registry/database constraints, v20 migration/corpus, cross-runtime replay fixtures,
+  full Founder-history verification, and real-Postgres fault injection at every persistence boundary.
+
+The real database suite exposed and fixed three seam defects that unit tests did not cover: the
+Founder-log multistream constraint initially excluded the new recovery arm; start and terminal events
+share a session ID and therefore Founder-history event loading must scope by applied revision; and
+retention attempted to delete immutable Founder genesis revision 1 after the sixth Founder command.
+The shared retention helper now preserves the genesis revision in every write/coordinator path.
+
+**DESIGN-GAP — recovery cannot accumulate attended time under the ruled exclusivity model.** SB14 says
+ordinary Company commands reject while recovery is active, early resolve rejects without mutation,
+and recovery eligibility advances by Founder attended time while pausing offline. The shipped
+attendance resolver derives the current-run partial from Company state; that state advances only on a
+successful Company transition, and any unresolved gap above the pinned catch-up ceiling is classified
+offline. With every ordinary transition rejected, no legal writer advances `evaluated_through` or the
+attended partial. A fixture can resolve at exactly the tolerance boundary, but one millisecond later
+the gap becomes offline and the session can never become eligible. That exact-boundary fixture is not
+accepted as proof of a live mechanic.
+
+Required owner contract: name a server-authoritative way to advance recovery attendance while keeping
+production at zero and preserving `rejected = no mutation`—for example, a claim-tokened recovery
+presence/progress command or a composed socket-presence interval written through the suppressed
+boundary. It must specify reconnect/offline classification, idempotency, replay bytes, and whether
+progress commits before terminal resolution. No production `recovery_activities` row may mint until
+that contract lands. Implementation remains active and is not ready for archival.
+
+Verification completed from the repository root: replay fixture regeneration/check, focused Go and
+TypeScript suites, `make test-save-integration` against the declared Postgres service, and the full
+`make verify` gate. The full gate read through completion: Go vet/all packages, balance harness,
+formula and schema drift, kernel history/parity at `0.3.73`, TypeScript/Svelte typecheck, production
+client build, 6,582 unit assertions, and 19,755 browser assertions all passed. This is self-
+verification only; it does not satisfy the cross-party designated review gate and does not authorize
+archival.

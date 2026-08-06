@@ -162,6 +162,8 @@ const REPLAY_EVENT_KINDS = Object.freeze([
 	"incorporated", "invariant_reported", "meter_band_changed.v1", "route_executed", "route_hint_purchased", "route_knowledge_granted", "run_ended", "run_started", "upgrade_purchased",
 	"pet_care_applied.v1", "pet_status_changed.v1",
 	"minigame_rating_changed.v1", "minigame_resolved.v1",
+	"soul_price_paid.v1", "soul_band_changed.v1", "soul_depleted.v1",
+	"soul_recovery_started.v1", "soul_recovery_cancelled.v1", "soul_recovered.v1",
 ] as const);
 
 function foundationAchievementRegistry(catalog: EconomyCatalog): AchievementRegistry {
@@ -590,6 +592,7 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
   try {
     const kind = string(wire.resolved.kind);
     if (kind === "resolve_minigame_session") return finish(await applyFounderMinigameLogged(state, canonicalPayload, catalogs, wire));
+		if (kind === "soul_recovery") return finish(applyFounderSoulRecovery(state, canonicalPayload, catalogs, wire));
     const request = parseIntent(canonicalPayload, wire.command.intent_id);
     if (kind === "invalid") {
       onlyKeys(wire.resolved, ["kind", "detail"], "invalid Founder inputs");
@@ -623,6 +626,12 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
         return finish(founderRejected(state, request.intent_id, wire.command.revision, "unknown_id", "unknown_pet", catalogs.constantsHash, rollback));
       }
       if (care.evaluated_through_attended_ms !== beforeCursor) throw new RangeError("stale pet care cursor");
+			if (catalogs.soul) {
+				const action = catalogs.pets.actions.find((row) => row.action_id === actionId);
+				if (!action) throw new RangeError("unknown pet Soul gate");
+				if (action.soul_gate === "ordinary" && soulBand(catalogs.soul, state.soul).human_content_locked)
+					return finish(founderRejected(state, request.intent_id, wire.command.revision, "not_eligible", "human_content_locked", catalogs.constantsHash, rollback));
+			}
       const priorBand = careStatus(care, catalogs.pets).status_band;
       const careResult = applyPetCareTransition(care, catalogs.pets, { action_id: actionId, attended_before_ms: beforeCursor, attended_after_ms: attended });
       if (!careResult.applied) {
@@ -649,6 +658,39 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
     if (kind === "exit.v1") return finish(applyFounderExit(state, request, wire, catalogs));
     throw new RangeError("unknown Founder replay arm");
   } catch (error) { rollback(); throw error; }
+}
+
+function applyFounderSoulRecovery(state: FounderReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, wire: FounderReplayWire): FounderLoggedTransition {
+	if (!catalogs.soul || state.wireVersion < 20) throw new RangeError("inactive Soul state");
+	const payload = exactObject(parseJSON(canonicalPayload), ["kind", "session_id"], "Soul recovery payload");
+	const action = string(payload.kind);
+	const sessionId = uuidV7String(payload.session_id);
+	if ((action !== "resolve_soul_recovery" && action !== "cancel_soul_recovery") || sessionId !== wire.command.intent_id || canonicalJSONString(payload) !== canonicalPayload) throw new RangeError("Soul recovery command mismatch");
+	const resolved = exactObject(wire.resolved, ["kind", "action", "session_id", "activity_id", "company_stream_id", "run_seq", "founder_attended_start_ms", "founder_attended_end_ms", "recovery_amount", "soul_before", "soul_after", "band_before", "band_after", "reason_key"], "Founder Soul recovery");
+	if (resolved.kind !== "soul_recovery" || resolved.action !== action || uuidV7String(resolved.session_id) !== sessionId) throw new RangeError("Soul recovery resolved mismatch");
+	const activityId = mechanicalString(resolved.activity_id), companyStreamId = uuidString(resolved.company_stream_id);
+	const runSeq = safeInteger(resolved.run_seq, 1, MAX_EXACT_INTEGER), start = safeInteger(resolved.founder_attended_start_ms, 0, MAX_EXACT_INTEGER), end = safeInteger(resolved.founder_attended_end_ms, start, MAX_EXACT_INTEGER);
+	const activity = catalogs.soul.recovery_activities.find((row) => row.activity_id === activityId);
+	if (!activity || resolved.reason_key !== activity.reason_key || resolved.recovery_amount !== activity.recovery_amount) throw new RangeError("Soul recovery activity mismatch");
+	const soulBefore = safeInteger(resolved.soul_before, catalogs.soul.policy.soul_floor, catalogs.soul.policy.soul_max), beforeBand = soulBand(catalogs.soul, soulBefore);
+	if (state.soul !== soulBefore || resolved.band_before !== beforeBand.band_member) throw new RangeError("Soul recovery before mismatch");
+	let soulAfter = soulBefore;
+	if (action === "resolve_soul_recovery") {
+		if (end - start < activity.duration_attended_ms) throw new RangeError("Soul recovery duration");
+		soulAfter = Math.min(catalogs.soul.policy.soul_max, soulBefore + activity.recovery_amount);
+	}
+	const afterBand = soulBand(catalogs.soul, soulAfter);
+	if (safeInteger(resolved.soul_after, catalogs.soul.policy.soul_floor, catalogs.soul.policy.soul_max) !== soulAfter || resolved.band_after !== afterBand.band_member) throw new RangeError("Soul recovery after mismatch");
+	state.soul = soulAfter;
+	const receipt = { intent_id: sessionId, outcome: "applied", founder_revision: wire.command.revision + 1, session_id: sessionId, activity_id: activityId,
+		action, soul_before: soulBefore, soul_after: soulAfter, band_before: beforeBand.band_member, band_after: afterBand.band_member };
+	const payloadBase: Record<string, unknown> = { session_id: sessionId, activity_id: activityId, company_stream_id: companyStreamId, run_seq: runSeq,
+		founder_attended_start_ms: start, founder_attended_end_ms: end, soul_before: soulBefore, soul_after: soulAfter };
+	const events: ReplayEvent[] = action === "resolve_soul_recovery"
+		? [event("soul_recovered.v1", sessionId, { ...payloadBase, recovery_amount: activity.recovery_amount, band_before: beforeBand.band_member, band_after: afterBand.band_member, reason_key: activity.reason_key })]
+		: [event("soul_recovery_cancelled.v1", sessionId, payloadBase)];
+	if (beforeBand.band_member !== afterBand.band_member) events.push(event("soul_band_changed.v1", sessionId, { soul_before: soulBefore, soul_after: soulAfter, band_before: beforeBand.band_member, band_after: afterBand.band_member, reason_key: afterBand.reason_key }));
+	return { state, outcome: "applied", receipt, events, resultConstantsHash: catalogs.constantsHash };
 }
 
 function founderFiscalState(state: FounderReplayState): FiscalState { return { credit: state.fiscalCredit, periodOpenedWallMs: state.fiscalPeriodOpenedWallMs, periodSequence: state.fiscalPeriodSequence, generatorLevels: { ...state.fiscalGeneratorLevels }, unlocks: [...state.fiscalUnlocks].sort(byteCompare) }; }
@@ -688,7 +730,7 @@ function applyFounderFiscalSpend(state: FounderReplayState, request: Intent, wir
   return { state, outcome: "applied", receipt: { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, fiscal_sweep: null, target: wireTarget, resolved_cost: resolvedCost, fiscal_credit_before: creditBefore, fiscal_credit_after: state.fiscalCredit }, events: [event("fiscal_credit_spent.v1", request.intent_id, { target: wireTarget, resolved_cost: resolvedCost, fiscal_credit_before: creditBefore, fiscal_credit_after: state.fiscalCredit })], resultConstantsHash: catalogs.constantsHash };
 }
 
-export async function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18 | 19, genesisHash: string,
+export async function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20, genesisHash: string,
   founderStreamId: string, founderId: string, entries: readonly FounderReplayLogEntry[], head: FounderReplayHead,
   bundles: readonly ReplayCatalogBundle[]): Promise<ReplayVerdict> {
   const catalogs = new Map(bundles.map((value) => [value.constantsHash, value]));
@@ -706,10 +748,11 @@ export async function verifyFounderReplayHistory(genesis: unknown, genesisRevisi
     try {
       const wire = parseFounderReplayWire(entry.replayInputs);
       if (wire.command.intent_id !== entry.intentId || wire.command.founder_stream_id !== founderStreamId || wire.command.founder_id !== founderId || wire.command.revision !== revision || wire.command.founder_log_seq !== entry.seq || wire.command.server_ts_ms !== entry.serverTSMS) return "log_gap";
-      const exitArm = wire.resolved.kind === "exit.v1"; const minigameArm = wire.resolved.kind === "resolve_minigame_session";
-      if ((exitArm || minigameArm) !== (entry.source !== null)) return "state_divergence";
+      const exitArm = wire.resolved.kind === "exit.v1"; const minigameArm = wire.resolved.kind === "resolve_minigame_session"; const soulRecoveryArm = wire.resolved.kind === "soul_recovery";
+      if ((exitArm || minigameArm || soulRecoveryArm) !== (entry.source !== null)) return "state_divergence";
       if (entry.source) {
         if (exitArm && (wire.resolved.company_stream_id !== entry.source.companyStreamId || wire.resolved.run_seq !== entry.source.runSeq || wire.resolved.run_log_seq !== entry.source.runLogSeq)) return "state_divergence";
+        if (soulRecoveryArm && (wire.resolved.company_stream_id !== entry.source.companyStreamId || wire.resolved.run_seq !== entry.source.runSeq)) return "state_divergence";
       }
       let executionBundle = bundle;
       if (exitArm && wire.resolved.result_constants_hash !== hash) {
@@ -849,6 +892,7 @@ async function sha256Canonical(value: unknown): Promise<string> { const digest =
 
 export async function applyLogged(state: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedTransition> {
   const wire = parseReplayWire(replayInputs, state, catalogs);
+	if (wire.resolved.kind === "soul_recovery_suppression") return applySuppressedLogged(state, canonicalPayload, catalogs, wire);
   if (wire.resolved.kind === "resolve_minigame_session") return applyCompanyMinigameLogged(state, canonicalPayload, catalogs, wire);
   const request = parseIntent(canonicalPayload, wire.command.intent_id);
   if (request.expected_revision !== wire.command.revision || wire.command.run_seq !== state.runSeq) throw new RangeError("command/state mismatch");
@@ -903,6 +947,35 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, stateBefore, state, founderCarry!, wire.command, request, wire.evaluated_at_ms, contributions, actionDebits, false, events);
   const result=applied(state, catalogs.economy, request.intent_id, revision + 1, appliedCount, before, events, invariants);if(opportunityResult!==null){const receipt=(result.receipt as {receipt:Record<string,unknown>});receipt.receipt.opportunity=opportunityResult;}return result;
   } catch (error) { restoreReplaySnapshot(state, stateBefore); throw error; }
+}
+
+async function applySuppressedLogged(state: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, wire: ReplayWire): Promise<LoggedTransition> {
+	const payload = exactObject(parseJSON(canonicalPayload), ["kind", "session_id"], "Soul suppression payload");
+	const intentKind = string(payload.kind), sessionId = uuidV7String(payload.session_id);
+	if ((intentKind !== "resolve_soul_recovery" && intentKind !== "cancel_soul_recovery") || sessionId !== wire.command.intent_id || canonicalJSONString(payload) !== canonicalPayload) throw new RangeError("Soul suppression command mismatch");
+	const resolved = exactObject(wire.resolved, ["kind", "intent_kind", "suppression", "accrual", "active_play"], "Soul suppression inputs");
+	if (resolved.kind !== "soul_recovery_suppression" || resolved.intent_kind !== intentKind) throw new RangeError("Soul suppression resolved mismatch");
+	const suppression = exactObject(resolved.suppression, ["from_evaluated_ms", "to_evaluated_ms", "founder_attended_start_ms", "founder_attended_end_ms", "session_id"], "Soul suppression coordinates");
+	const from = safeInteger(suppression.from_evaluated_ms, 1, MAX_EXACT_INTEGER), to = safeInteger(suppression.to_evaluated_ms, from, MAX_EXACT_INTEGER);
+	const attendedStart = safeInteger(suppression.founder_attended_start_ms, 0, MAX_EXACT_INTEGER), attendedEnd = safeInteger(suppression.founder_attended_end_ms, attendedStart, MAX_EXACT_INTEGER);
+	if (from !== state.evaluatedThroughMs || to !== wire.evaluated_at_ms || suppression.session_id !== sessionId || wire.evaluation_mode !== "online" || wire.command.run_seq !== state.runSeq) throw new RangeError("Soul suppression coordinate drift");
+	const accrual = parseAccrual(resolved.accrual, catalogs);
+	if (accrual.guild_settlement_batch.settlements.length !== 0 || state.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("Soul suppression accrual mismatch");
+	const before = cloneReplayState(state, catalogs);
+	const activeEvidence = resolved.active_play === null ? null : parseActiveSchedule(resolved.active_play);
+	if ((state.wireVersion === 18) !== (activeEvidence !== null)) throw new RangeError("Soul suppression active-play evidence");
+	const events = activeEvidence === null ? [] : (await applyActiveSchedule(state, catalogs, wire.command, to, activeEvidence))
+		.map((item) => ({ ...item, intent_id: sessionId }));
+	const evaluation = evaluate(state, catalogs.economy, to, "online", accrual.contributions);
+	runHooks(state, catalogs, wire.command, evaluation, accrual);
+	state.balances = { ...before.balances }; state.generatorsProvisioned = { ...before.generatorsProvisioned }; state.provisionRemaindersPpm = { ...before.provisionRemaindersPpm };
+	state.stockUnits = before.stockUnits; state.stockProgressMs = before.stockProgressMs; state.stockRateRemainderPpm = before.stockRateRemainderPpm; state.consumedStockUnits = before.consumedStockUnits;
+	state.guildTitheCarryPpm = before.guildTitheCarryPpm; state.guildBoundaryGuildId = before.guildBoundaryGuildId; state.guildBoundarySeq = before.guildBoundarySeq; state.guildConsumedWindow = before.guildConsumedWindow;
+	state.meterValues = { ...before.meterValues }; state.meterDecayRemainders = { ...before.meterDecayRemainders }; state.meterInputRemainders = { ...before.meterInputRemainders };
+	state.achievementsEarnedRun = new Set(before.achievementsEarnedRun); state.achievementScoreRun = before.achievementScoreRun; state.lifetimeValue = before.lifetimeValue;
+	if (to > state.manualTokenRefilledAtMs) { const elapsed = to - state.manualTokenRefilledAtMs, policy = catalogs.economy.manualPolicy!; state.manualTokenMilli = Math.min(policy.bucketCapMilli, state.manualTokenMilli + elapsed * policy.refillMilliPerMs); state.manualTokenRefilledAtMs = to; }
+	return { state, outcome: "applied", receipt: { intent_id: sessionId, outcome: "applied", revision: wire.command.revision + 1, session_id: sessionId,
+		from_evaluated_ms: from, to_evaluated_ms: to, suppressed_output: true }, events, invariants: [] };
 }
 
 export async function applyLoggedExit(company: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedExitTransition> {

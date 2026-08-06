@@ -5,7 +5,8 @@ mechanics. It is deliberately separate from Company `production.ApplyLogged`: a 
 cannot read or spend live Company state, and a Company command cannot smuggle a Founder write.
 
 The Store locks one active Founder-scope stream, assigns the next immutable Founder-log sequence,
-and stamps the command with database server time. The callback receives only the restored Founder
+and stamps ordinary commands with database server time. Multi-stream coordinators freeze their
+server-resolved timestamp in the internal request before taking the same locks. The callback receives only the restored Founder
 state, its revision, and this authoritative command envelope. It returns the ordinary typed
 decision plus a feature-owned resolved-input object inside the persistence-owned replay envelope.
 The envelope must repeat the exact command and server timestamp; unknown fields, ambient state,
@@ -19,13 +20,14 @@ for different bytes is rejected. Founder receipts use the normal player outbox.
 
 `founder_log` accepts only active `owner_kind=founder, scope=founder` streams and is immutable at
 the database boundary. Each row pins the constants hash and server timestamp used by its resolved
-inputs. Pet Care is the first consumer; Soul verbs, Founder ratings, and other Founder mechanics
-must reuse this boundary rather than adding side writes or extending the Company transition.
+inputs. Pet Care, Fiscal Quarters, minigame ratings, and Soul recovery all consume this boundary.
+New Founder mechanics must reuse it rather than adding side writes or extending the Company transition.
 
 The first Founder-log activation atomically pins `founder_genesis` to the exact raw bytes, version,
 hash, and revision loaded before that command. A deferred database constraint makes a Founder-log
 row uncommittable without this immutable genesis; migration backfill fails rather than fabricating
-a starting point whose retained revision is gone.
+a starting point whose retained revision is gone. Revision retention always preserves that one
+genesis witness even after the ordinary five-revision window advances.
 
 Logged Exits also append a Founder row. Its `constants_hash` is always the pre-command Founder
 bundle, while the closed `exit.v1` resolved arm names the result bundle and the exact Founder facts
@@ -36,7 +38,8 @@ the same transaction. Verified-run compaction retains that one referenced witnes
 full run has been archived, preserving the relational proof without retaining the whole live log.
 
 `production.ApplyFounderLogged` is the single projection-free transition used by the live Founder
-path and by replay. Its closed Phase-A union is `invalid | buy_route_hint | exit.v1`; the Exit arm
+path and by replay. Its closed Phase-A union includes invalid commands, Route hints, pet care,
+Fiscal commands, minigame resolution, Soul recovery, and Exit; the Exit arm
 updates only Founder-owned facts and generates a separate `founder_advanced` event and audit
 receipt. The TypeScript port consumes the same Go-authored corpus and byte-compares the resulting
 state, receipt, ordered events, and result constants hash. The production path also runs the same
@@ -46,7 +49,7 @@ transaction rather than entering the immutable log.
 `save.Store.LoadFounderHistory` reads genesis, immutable commands, Founder-scoped events, and the
 authoritative head in one repeatable-read transaction. Both Go and TypeScript replay each row from
 genesis, require contiguous log and revision coordinates, resolve the row's input hash without a
-deploy-current fallback, enforce the relational Exit source coordinates, and compare the final
+deploy-current fallback, enforce relational Exit/minigame/Soul source coordinates, and compare the final
 state to the saved head. Missing artifacts report `constants_mismatch`; sequence/revision gaps
 report `log_gap`; malformed inputs or differing state, receipt, or ordered events report
 `state_divergence`.

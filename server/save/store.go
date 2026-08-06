@@ -192,10 +192,23 @@ func (s *Store) WriteInTransaction(ctx context.Context, tx *sql.Tx, streamID str
 	if err != nil {
 		return Revision{}, err
 	}
-	if _, err := tx.ExecContext(ctx, `DELETE FROM save_revisions WHERE stream_id=$1 AND revision <= $2`, streamID, revision.Number-5); err != nil {
+	if err := pruneSaveRevisionsTx(ctx, tx, streamID, revision.Number-5); err != nil {
 		return Revision{}, err
 	}
 	return revision, nil
+}
+
+func pruneSaveRevisionsTx(ctx context.Context, tx *sql.Tx, streamID string, through int64) error {
+	if through < 1 {
+		return nil
+	}
+	_, err := tx.ExecContext(ctx, `DELETE FROM save_revisions revision
+		WHERE revision.stream_id=$1 AND revision.revision <= $2
+		  AND NOT EXISTS (
+			SELECT 1 FROM founder_genesis genesis
+			WHERE genesis.founder_stream_id=revision.stream_id AND genesis.revision=revision.revision
+		  )`, streamID, through)
+	return err
 }
 
 func (s *Store) LoadLatest(ctx context.Context, streamID string) (Loaded, error) {

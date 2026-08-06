@@ -281,6 +281,13 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	if catalogs.foundationsActive() && wire.Version < 3 {
 		return LoggedTransition{}, fmt.Errorf("%w: active foundations require replay inputs v3+", ErrInvalidReplayInputs)
 	}
+	if isSoulRecoveryPayload(canonicalPayload) {
+		suppressed, suppressErr := ApplySuppressedLogged(state, canonicalPayload, catalogs, replayInputs)
+		if suppressErr != nil {
+			return LoggedTransition{}, suppressErr
+		}
+		return LoggedTransition{State: suppressed.State, Outcome: save.IntentApplied, Receipt: suppressed.Receipt, Events: suppressed.Events}, nil
+	}
 	if isMinigameResolutionPayload(canonicalPayload) {
 		return applyCompanyMinigameResolution(state, canonicalPayload, catalogs, wire)
 	}
@@ -1020,6 +1027,12 @@ func parseReplayInputs(data []byte) (replayInputsWire, error) {
 		var value replayExitResolved
 		if err := decodeReplayStrict(wire.Resolved, &value); err != nil || value.IntentKind == "" || value.SelectedExitType == "" ||
 			!jsonObjectValue(value.SelectedTerms) || len(value.NextConstantsHash) != len("sha256:")+64 || !strings.HasPrefix(value.NextConstantsHash, "sha256:") {
+			return replayInputsWire{}, ErrInvalidReplayInputs
+		}
+	case "soul_recovery_suppression":
+		var value soulSuppressionResolved
+		if err := decodeReplayStrict(wire.Resolved, &value); err != nil ||
+			(value.IntentKind != soulRecoveryResolveKind && value.IntentKind != soulRecoveryCancelKind) {
 			return replayInputsWire{}, ErrInvalidReplayInputs
 		}
 	default:

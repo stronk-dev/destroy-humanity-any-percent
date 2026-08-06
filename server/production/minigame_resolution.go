@@ -155,7 +155,7 @@ func (s *Service) ResolveMinigameSession(ctx context.Context, platform *minigame
 	requestHash := "sha256:" + hex.EncodeToString(digest[:])
 	result, err := s.store.ApplyMinigameResolutionTransaction(ctx, save.MinigameResolutionRequest{
 		SessionID: view.SessionID, FounderID: view.FounderID, CompanyStreamID: view.CompanyStreamID,
-		RequestHash: requestHash, CanonicalPayload: payload,
+		RequestHash: requestHash, CanonicalPayload: payload, ServerTSMS: save.CanonicalServerTime(now).UnixMilli(),
 	}, func(ctx context.Context, tx *sql.Tx, founder *save.State, founderRevision save.Revision,
 		company *save.State, companyRevision save.Revision, companyCommand save.ReplayCommand,
 		founderCommand save.FounderReplayCommand, companyNext, founderNext int64,

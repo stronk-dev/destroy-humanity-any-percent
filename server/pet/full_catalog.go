@@ -51,6 +51,10 @@ type Catalog struct {
 	BehaviorPolicy []BehaviorCandidate `json:"behavior_policy"`
 }
 
+func (catalog *Catalog) Action(id string) (ActionPolicy, bool) {
+	return findAction(catalog, id)
+}
+
 func LoadCatalog(data []byte) (*Catalog, error) {
 	if !uniqueStateJSONKeys(data) {
 		return nil, ErrInvalidCatalog

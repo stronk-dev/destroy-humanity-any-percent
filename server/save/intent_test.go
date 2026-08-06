@@ -56,6 +56,32 @@ func TestValidatePetCareEventRegistry(t *testing.T) {
 	}
 }
 
+func TestValidateSoulEventRegistryExactPayloads(t *testing.T) {
+	const session = "018f6b7c-9abc-7def-8abc-0123456789ac"
+	const company = "11111111-1111-4111-8111-111111111111"
+	events := []EventWrite{
+		{Kind: EventSoulPricePaid, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"source_id":"soul.fixture","owner_kind":"fixture","eligibility_ref":"offer.fixture","soul_before":20,"debit":10,"soul_after":10,"band_before":"hollow","band_after":"hollow","curtain_copy_key":"category.valuation"}`)},
+		{Kind: EventSoulBandChanged, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"soul_before":10,"soul_after":9,"band_before":"hollow","band_after":"near_zero","reason_key":"category.low_percent"}`)},
+		{Kind: EventSoulDepleted, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"source_id":"soul.fixture","owner_kind":"fixture","eligibility_ref":"offer.fixture","soul_before":10,"soul_after":0,"occurred_at_ms":1786053600000}`)},
+		{Kind: EventSoulRecoveryStarted, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"session_id":"` + session + `","activity_id":"touch_grass.fixture","company_stream_id":"` + company + `","run_seq":1,"founder_attended_start_ms":100,"required_duration_ms":5000}`)},
+		{Kind: EventSoulRecoveryCancelled, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"session_id":"` + session + `","activity_id":"touch_grass.fixture","company_stream_id":"` + company + `","run_seq":1,"founder_attended_start_ms":100,"founder_attended_end_ms":200,"soul_before":10,"soul_after":10}`)},
+		{Kind: EventSoulRecovered, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"session_id":"` + session + `","activity_id":"touch_grass.fixture","company_stream_id":"` + company + `","run_seq":1,"founder_attended_start_ms":100,"founder_attended_end_ms":5100,"soul_before":10,"soul_after":25,"recovery_amount":15,"band_before":"hollow","band_after":"hollow","reason_key":"category.any_percent"}`)},
+	}
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: events}, testIntentID); err != nil {
+		t.Fatal(err)
+	}
+	invalid := events[4]
+	invalid.Payload = json.RawMessage(`{"session_id":"` + session + `","activity_id":"touch_grass.fixture","company_stream_id":"` + company + `","run_seq":1,"founder_attended_start_ms":100,"founder_attended_end_ms":200,"soul_before":10,"soul_after":10,"recovery_amount":null}`)
+	if err := validateEventPayload(invalid); !errors.Is(err, ErrInvalidStream) {
+		t.Fatalf("cancel payload with recovered-only key accepted: %v", err)
+	}
+	invalid = events[5]
+	invalid.Payload = json.RawMessage(`{"session_id":"` + session + `","activity_id":"touch_grass.fixture","company_stream_id":"` + company + `","run_seq":1,"founder_attended_start_ms":100,"founder_attended_end_ms":5100,"soul_before":10,"soul_after":25,"recovery_amount":15,"band_before":"hollow","band_after":"hollow"}`)
+	if err := validateEventPayload(invalid); !errors.Is(err, ErrInvalidStream) {
+		t.Fatalf("recovered payload missing reason key accepted: %v", err)
+	}
+}
+
 func TestValidateUpgradePurchasedEventPayload(t *testing.T) {
 	valid := EventWrite{Kind: EventUpgradePurchased, SchemaVersion: 1, IntentID: testIntentID, Payload: json.RawMessage(`{"upgrade_id":"upgrade.click","cost_resource_id":"company.cash","cost":"1e2"}`)}
 	if err := validateEventPayload(valid); err != nil {

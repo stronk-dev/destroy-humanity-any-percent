@@ -14,6 +14,7 @@ import (
 	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/pet"
 	"cloud-clicker/server/save"
+	"cloud-clicker/server/soul"
 )
 
 type FounderLoggedTransition struct {
@@ -72,6 +73,9 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 	}()
 	if isMinigameResolutionPayload(canonicalPayload) {
 		return applyFounderMinigameResolution(state, canonicalPayload, catalogs, wire)
+	}
+	if isSoulRecoveryPayload(canonicalPayload) {
+		return applyFounderSoulRecovery(state, canonicalPayload, catalogs, wire)
 	}
 	request, err := parseLoggedIntent(canonicalPayload, wire.Command.IntentID)
 	if err != nil || !bytes.Equal(request.CanonicalPayload, canonicalPayload) {
@@ -135,6 +139,93 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 	default:
 		return FounderLoggedTransition{}, fmt.Errorf("%w: unknown Founder resolved arm", ErrInvalidReplayInputs)
 	}
+}
+
+type founderSoulRecoveryResolved struct {
+	Kind                   string          `json:"kind"`
+	Action                 string          `json:"action"`
+	SessionID              string          `json:"session_id"`
+	ActivityID             string          `json:"activity_id"`
+	CompanyStreamID        string          `json:"company_stream_id"`
+	RunSeq                 int64           `json:"run_seq"`
+	FounderAttendedStartMS int64           `json:"founder_attended_start_ms"`
+	FounderAttendedEndMS   int64           `json:"founder_attended_end_ms"`
+	RecoveryAmount         int64           `json:"recovery_amount"`
+	SoulBefore             int64           `json:"soul_before"`
+	SoulAfter              int64           `json:"soul_after"`
+	BandBefore             soul.BandMember `json:"band_before"`
+	BandAfter              soul.BandMember `json:"band_after"`
+	ReasonKey              string          `json:"reason_key"`
+}
+
+func applyFounderSoulRecovery(state *save.State, canonicalPayload []byte, catalogs CatalogBundle,
+	wire founderReplayInputsWire,
+) (FounderLoggedTransition, error) {
+	if catalogs.Soul == nil || save.VersionForState(state) < 20 {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: inactive Soul state", ErrInvalidReplayInputs)
+	}
+	var payload soulRecoveryPayload
+	var resolved founderSoulRecoveryResolved
+	if decodeReplayStrict(canonicalPayload, &payload) != nil || decodeReplayStrict(wire.Resolved, &resolved) != nil ||
+		resolved.Kind != "soul_recovery" || resolved.Action != payload.Kind || resolved.SessionID != payload.SessionID ||
+		resolved.CompanyStreamID == "" || resolved.RunSeq < 1 ||
+		resolved.FounderAttendedStartMS < 0 || resolved.FounderAttendedEndMS < resolved.FounderAttendedStartMS ||
+		resolved.SoulBefore != state.Soul {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Soul recovery inputs", ErrInvalidReplayInputs)
+	}
+	activity, ok := catalogs.Soul.RecoveryActivity(resolved.ActivityID)
+	if !ok || activity.ReasonKey != resolved.ReasonKey || resolved.RecoveryAmount != activity.RecoveryAmount {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Soul recovery activity", ErrInvalidReplayInputs)
+	}
+	beforeBand, ok := catalogs.Soul.BandFor(state.Soul)
+	if !ok || beforeBand.Member != resolved.BandBefore {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Soul recovery band", ErrInvalidReplayInputs)
+	}
+	soulAfter := state.Soul
+	if payload.Kind == soulRecoveryResolveKind {
+		if resolved.FounderAttendedEndMS-resolved.FounderAttendedStartMS < activity.DurationAttendedMS {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: Soul recovery duration", ErrInvalidReplayInputs)
+		}
+		if activity.RecoveryAmount > catalogs.Soul.Policy.Max-soulAfter {
+			soulAfter = catalogs.Soul.Policy.Max
+		} else {
+			soulAfter += activity.RecoveryAmount
+		}
+	} else if payload.Kind != soulRecoveryCancelKind || resolved.SoulAfter != resolved.SoulBefore {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Soul recovery action", ErrInvalidReplayInputs)
+	}
+	afterBand, ok := catalogs.Soul.BandFor(soulAfter)
+	if !ok || soulAfter != resolved.SoulAfter || afterBand.Member != resolved.BandAfter {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Soul recovery result", ErrInvalidReplayInputs)
+	}
+	state.Soul = soulAfter
+	receipt, _ := json.Marshal(map[string]any{"intent_id": payload.SessionID, "outcome": string(save.IntentApplied),
+		"founder_revision": wire.Command.Revision + 1, "session_id": payload.SessionID, "activity_id": resolved.ActivityID,
+		"action": payload.Kind, "soul_before": resolved.SoulBefore, "soul_after": resolved.SoulAfter,
+		"band_before": resolved.BandBefore, "band_after": resolved.BandAfter})
+	eventPayload := map[string]any{"session_id": resolved.SessionID, "activity_id": resolved.ActivityID,
+		"company_stream_id": resolved.CompanyStreamID, "run_seq": resolved.RunSeq,
+		"founder_attended_start_ms": resolved.FounderAttendedStartMS,
+		"founder_attended_end_ms":   resolved.FounderAttendedEndMS,
+		"soul_before":               resolved.SoulBefore, "soul_after": resolved.SoulAfter}
+	eventKind := save.EventSoulRecoveryCancelled
+	if payload.Kind == soulRecoveryResolveKind {
+		eventKind = save.EventSoulRecovered
+		eventPayload["recovery_amount"] = resolved.RecoveryAmount
+		eventPayload["band_before"] = resolved.BandBefore
+		eventPayload["band_after"] = resolved.BandAfter
+		eventPayload["reason_key"] = resolved.ReasonKey
+	}
+	eventBytes, _ := json.Marshal(eventPayload)
+	events := []save.EventWrite{{Kind: eventKind, SchemaVersion: 1, IntentID: payload.SessionID, Payload: eventBytes}}
+	if resolved.BandBefore != resolved.BandAfter {
+		bandPayload, _ := json.Marshal(map[string]any{"soul_before": resolved.SoulBefore, "soul_after": resolved.SoulAfter,
+			"band_before": resolved.BandBefore, "band_after": resolved.BandAfter, "reason_key": afterBand.ReasonKey})
+		events = append(events, save.EventWrite{Kind: save.EventSoulBandChanged, SchemaVersion: 1,
+			IntentID: payload.SessionID, Payload: bandPayload})
+	}
+	return FounderLoggedTransition{State: state, Outcome: save.IntentApplied, Receipt: receipt,
+		Events: events, ResultConstantsHash: catalogs.ConstantsHash}, nil
 }
 
 type founderFiscalSweepWire struct {
@@ -415,6 +506,17 @@ func applyFounderCareResolved(state *save.State, request IntentRequest, revision
 	}
 	if care.EvaluatedThroughAttendedMS != resolved.PetAttendedBeforeMS {
 		return FounderLoggedTransition{}, fmt.Errorf("%w: stale care cursor", ErrInvalidReplayInputs)
+	}
+	if catalogs.Soul != nil {
+		action, actionOK := catalogs.Pets.Action(request.ActionID)
+		locked, lockErr := catalogs.Soul.HumanContentLocked(state.Soul)
+		if !actionOK || lockErr != nil {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: pet Soul gate", ErrInvalidReplayInputs)
+		}
+		if action.SoulGate == "ordinary" && locked {
+			decision, decisionErr := rejectedDecision(request, revision.Number, "not_eligible", "human_content_locked")
+			return founderDecisionTransition(state, decision, catalogs.ConstantsHash, decisionErr)
+		}
 	}
 	priorBand, _, err := pet.CareStatus(care, catalogs.Pets)
 	if err != nil {

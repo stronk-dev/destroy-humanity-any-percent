@@ -54,6 +54,10 @@ type crossRuntimeFixture struct {
 	MinigameFiles   map[string]string          `json:"minigame_artifacts"`
 	MinigameCompany crossRuntimeFixtureCase    `json:"minigame_company_case"`
 	MinigameFounder crossRuntimeFounderCase    `json:"minigame_founder_case"`
+	SoulHash        string                     `json:"soul_constants_hash"`
+	SoulFiles       map[string]string          `json:"soul_artifacts"`
+	SoulCompany     crossRuntimeFixtureCase    `json:"soul_company_case"`
+	SoulFounder     crossRuntimeFounderCase    `json:"soul_founder_case"`
 }
 
 type crossRuntimeFounderCase struct {
@@ -342,6 +346,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	result.FounderHash, result.FounderFiles, result.FounderCases, result.FounderRun = makeFounderReplayFixture(t, baseNow)
 	result.PetFounderHash, result.PetFounderFiles, result.PetFounderCases = makePetFounderReplayFixture(t, baseNow)
 	result.MinigameHash, result.MinigameFiles, result.MinigameCompany, result.MinigameFounder = makeMinigameResolutionReplayFixture(t, baseNow)
+	result.SoulHash, result.SoulFiles, result.SoulCompany, result.SoulFounder = makeSoulRecoveryReplayFixture(t, baseNow)
 	return result
 }
 
@@ -853,6 +858,84 @@ func makeMinigameResolutionReplayFixture(t *testing.T, now time.Time) (string, m
 		ResultConstantsHash: founderTransition.ResultConstantsHash, ReceiptJSON: canonicalFixtureJSON(t, founderTransition.Receipt),
 		EventsJSON: canonicalFixtureValue(t, founderEvents), PostStateJSON: canonicalFixtureJSON(t, founderPost)}
 	return hash, stringArtifacts(artifacts), companyCase, founderCase
+}
+
+func makeSoulRecoveryReplayFixture(t *testing.T, now time.Time) (string, map[string]string, crossRuntimeFixtureCase, crossRuntimeFounderCase) {
+	t.Helper()
+	catalogs := recoverySoulBundle(t)
+	const sessionID = "01986666-0950-7000-8000-000000000951"
+	const companyStreamID = "01986666-1950-7000-8000-000000000951"
+	const founderStreamID = "01986666-2950-7000-8000-000000000951"
+	const founderID = "01986666-3950-7000-8000-000000000951"
+	payload, _ := json.Marshal(soulRecoveryPayload{Kind: soulRecoveryResolveKind, SessionID: sessionID})
+	company := replayFixtureState(t, catalogs.Economy, now)
+	company.WireVersion = 16
+	company.GeneratorCounts["generator.beige_tower"] = 4
+	company.MeterBands = nil
+	meterState, err := meters.NewRunState(catalogs.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	company.AchievementsEarnedRun = map[string]bool{}
+	companyPre := mustEncodeState(t, company)
+	companyCommand := save.ReplayCommand{IntentID: sessionID, CompanyStreamID: companyStreamID, FounderID: founderID,
+		Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	suppression := soulSuppression{FromEvaluatedMS: now.UnixMilli(), ToEvaluatedMS: now.Add(5 * time.Second).UnixMilli(),
+		FounderAttendedStart: 0, FounderAttendedEnd: 5_000, SessionID: sessionID}
+	companyInputs, err := buildSoulSuppressionInputs(companyCommand, soulRecoveryResolveKind, suppression, nil, nil,
+		catalogs.Routes.ContextVersion(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	companyTransition, err := ApplyLogged(company, payload, catalogs, companyInputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	companyPost := mustEncodeState(t, company)
+	companyEvents := fixtureEvents(companyTransition.Events)
+	companyCase := crossRuntimeFixtureCase{Name: "soul-recovery-company", PreState: companyPre, CanonicalPayload: payload,
+		ReplayInputs: companyInputs, Outcome: string(companyTransition.Outcome), Receipt: companyTransition.Receipt,
+		Events: companyEvents, PostState: companyPost, ReceiptJSON: canonicalFixtureJSON(t, companyTransition.Receipt),
+		EventsJSON: canonicalFixtureValue(t, companyEvents), PostStateJSON: canonicalFixtureJSON(t, companyPost)}
+
+	founder := replayFounderFixtureState(t, catalogs, now)
+	founder.WireVersion = 20
+	founder.FiscalPeriodOpenedWallMS = now.UnixMilli()
+	founder.FiscalGeneratorLevels = make(map[string]int64, len(catalogs.Fiscal.GeneratorLevelRows()))
+	for _, row := range catalogs.Fiscal.GeneratorLevelRows() {
+		founder.FiscalGeneratorLevels[row.GeneratorID] = 0
+	}
+	founder.FiscalUnlocks = map[string]bool{}
+	founder.Soul = 50
+	founder.SoulExhaustedSourceIDs = []string{}
+	founderPre := mustEncodeState(t, founder)
+	activity, _ := catalogs.Soul.RecoveryActivity("touch_grass.fixture")
+	beforeBand, _ := catalogs.Soul.BandFor(50)
+	afterBand, _ := catalogs.Soul.BandFor(65)
+	founderResolved := founderSoulRecoveryResolved{Kind: "soul_recovery", Action: soulRecoveryResolveKind,
+		SessionID: sessionID, ActivityID: activity.ActivityID, CompanyStreamID: companyStreamID, RunSeq: 1,
+		FounderAttendedStartMS: 0, FounderAttendedEndMS: 6_000, RecoveryAmount: activity.RecoveryAmount,
+		SoulBefore: 50, SoulAfter: 65, BandBefore: beforeBand.Member, BandAfter: afterBand.Member,
+		ReasonKey: activity.ReasonKey}
+	founderCommand := save.FounderReplayCommand{IntentID: sessionID, FounderStreamID: founderStreamID,
+		FounderID: founderID, Revision: 1, FounderLogSeq: 1, ServerTSMS: now.Add(5 * time.Second).UnixMilli()}
+	founderInputs, err := save.MarshalFounderReplayInputs(founderCommand, founderResolved)
+	if err != nil {
+		t.Fatal(err)
+	}
+	founderTransition, err := ApplyFounderLogged(founder, payload, catalogs, founderInputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	founderPost := mustEncodeState(t, founder)
+	founderEvents := fixtureEvents(founderTransition.Events)
+	founderCase := crossRuntimeFounderCase{Name: "soul-recovery-founder", StateVersion: 20, PreState: founderPre,
+		CanonicalPayload: payload, ReplayInputs: founderInputs, Outcome: string(founderTransition.Outcome),
+		Receipt: founderTransition.Receipt, Events: founderEvents, PostState: founderPost,
+		ResultConstantsHash: founderTransition.ResultConstantsHash, ReceiptJSON: canonicalFixtureJSON(t, founderTransition.Receipt),
+		EventsJSON: canonicalFixtureValue(t, founderEvents), PostStateJSON: canonicalFixtureJSON(t, founderPost)}
+	return catalogs.ConstantsHash, stringArtifacts(catalogs.Artifacts), companyCase, founderCase
 }
 
 func makeFounderReplayFixture(t *testing.T, now time.Time) (string, map[string]string, []crossRuntimeFounderCase, crossRuntimeFounderRun) {

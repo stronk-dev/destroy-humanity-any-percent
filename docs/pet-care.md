@@ -62,6 +62,12 @@ The fixed-grid integration helper is shared with the minigame faucet and future 
 decay, so interval partitioning cannot change the result. Empty behavior queues remain canonical
 arrays across save cloning and persistence; they are never normalized to `null`.
 
+New-schema action rows also declare `soul_gate: essential|recovery|ordinary`. A bundle may use
+that schema with Soul only when it pins the same Soul artifact; the server resolves the exact
+Founder state and bundle. Near-zero Soul rejects ordinary care but never essential or recovery
+actions. Historical pet artifacts keep their old grammar and remain valid only in Soul-less
+bundles.
+
 ## Combat input seam
 
 The foundation exports the exact-safe pair `{pet_trust_ppm,soul}` as a pure Go/TypeScript producer.

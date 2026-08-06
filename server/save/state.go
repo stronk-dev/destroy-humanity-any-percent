@@ -546,7 +546,7 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 								FiscalUnlocks: sortedTrueKeys(normalized.FiscalUnlocks)}
 							wire = v19
 							if version >= 20 {
-								wire = stateV20{stateV19: v19, SoulExhaustedSourceIDs: append([]string(nil), normalized.SoulExhaustedSourceIDs...)}
+								wire = stateV20{stateV19: v19, SoulExhaustedSourceIDs: append([]string{}, normalized.SoulExhaustedSourceIDs...)}
 							}
 						}
 					}
@@ -1171,7 +1171,7 @@ func sortedUniqueMechanicalSlice(values []string, label string) ([]string, error
 	if !sortedMechanicalSlice(values) {
 		return nil, fmt.Errorf("%w: invalid %s", ErrInvalidState, label)
 	}
-	return append([]string(nil), values...), nil
+	return append([]string{}, values...), nil
 }
 
 func validatePetStateShape(states map[string]pet.CareState) error {

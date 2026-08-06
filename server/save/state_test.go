@@ -494,6 +494,14 @@ func TestFounderV20SoulEligibilityRoundTripAndExactEnvelope(t *testing.T) {
 	if _, err := RestoreState(encoded, 20, catalog, economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
 		t.Fatalf("Company accepted Founder v20: %v", err)
 	}
+	state.SoulExhaustedSourceIDs = []string{}
+	empty, err := EncodeState(state)
+	if err != nil {
+		t.Fatalf("v20 empty eligibility encode: %v", err)
+	}
+	if restored, err := RestoreState(empty, 20, catalog, economy.ScopeFounder, time.Time{}); err != nil || restored.SoulExhaustedSourceIDs == nil {
+		t.Fatalf("v20 empty eligibility round trip state=%+v err=%v", restored, err)
+	}
 }
 
 func TestStateV15AndV16CollectionsFailClosed(t *testing.T) {

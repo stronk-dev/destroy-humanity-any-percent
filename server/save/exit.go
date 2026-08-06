@@ -59,7 +59,7 @@ func (s *Store) ApplyExitTransaction(
 	mutate ExitMutation,
 	fault ExitFaultInjector,
 ) (IntentResult, error) {
-	return s.applyExitTransaction(ctx, companyStreamID, expectedCompanyRevision, expectedFounderRevision, intentID, requestHash, nil, mutate, nil, fault)
+	return s.applyExitTransaction(ctx, companyStreamID, expectedCompanyRevision, expectedFounderRevision, intentID, requestHash, nil, mutate, nil, nil, fault)
 }
 
 func (s *Store) ApplyExitTransactionLogged(
@@ -74,7 +74,27 @@ func (s *Store) ApplyExitTransactionLogged(
 	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
 		return IntentResult{}, err
 	}
-	return s.applyExitTransaction(ctx, companyStreamID, expectedCompanyRevision, expectedFounderRevision, intentID, requestHash, canonicalPayload, nil, mutate, fault)
+	return s.applyExitTransaction(ctx, companyStreamID, expectedCompanyRevision, expectedFounderRevision, intentID, requestHash, canonicalPayload, nil, mutate, nil, fault)
+}
+
+func (s *Store) ApplyExitTransactionLoggedGuarded(
+	ctx context.Context,
+	companyStreamID string,
+	expectedCompanyRevision, expectedFounderRevision int64,
+	intentID, requestHash string,
+	canonicalPayload []byte,
+	guard IntentTransactionGuard,
+	mutate LoggedExitMutation,
+	fault ExitFaultInjector,
+) (IntentResult, error) {
+	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
+		return IntentResult{}, err
+	}
+	if guard == nil {
+		return IntentResult{}, ErrInvalidStream
+	}
+	return s.applyExitTransaction(ctx, companyStreamID, expectedCompanyRevision, expectedFounderRevision,
+		intentID, requestHash, canonicalPayload, nil, mutate, guard, fault)
 }
 
 func (s *Store) applyExitTransaction(
@@ -85,6 +105,7 @@ func (s *Store) applyExitTransaction(
 	canonicalPayload []byte,
 	mutate ExitMutation,
 	loggedMutate LoggedExitMutation,
+	guard IntentTransactionGuard,
 	fault ExitFaultInjector,
 ) (IntentResult, error) {
 	if !uuidPattern.MatchString(companyStreamID) || expectedCompanyRevision < 1 || expectedFounderRevision < 1 ||
@@ -159,6 +180,11 @@ func (s *Store) applyExitTransaction(
 	}
 	if companyRevision.Number != expectedCompanyRevision {
 		return IntentResult{}, &ExitRevisionConflict{Stream: economy.ScopeCompany, Expected: expectedCompanyRevision, Current: companyRevision.Number}
+	}
+	if guard != nil {
+		if err := guard(ctx, tx, ownerID, companyStreamID); err != nil {
+			return IntentResult{}, err
+		}
 	}
 	var runLogSequence int64
 	var command ReplayCommand
@@ -387,10 +413,10 @@ func (s *Store) applyExitTransaction(
 	if err := runExitFault(fault, "intent_record"); err != nil {
 		return IntentResult{}, err
 	}
-	if _, err := tx.ExecContext(ctx, `DELETE FROM save_revisions WHERE stream_id=$1 AND revision <= $2`, founderStreamID, founderNext-5); err != nil {
+	if err := pruneSaveRevisionsTx(ctx, tx, founderStreamID, founderNext-5); err != nil {
 		return IntentResult{}, err
 	}
-	if _, err := tx.ExecContext(ctx, `DELETE FROM save_revisions WHERE stream_id=$1 AND revision <= $2`, companyStreamID, companyNext-5); err != nil {
+	if err := pruneSaveRevisionsTx(ctx, tx, companyStreamID, companyNext-5); err != nil {
 		return IntentResult{}, err
 	}
 	if err := runExitFault(fault, "retention"); err != nil {

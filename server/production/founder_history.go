@@ -48,7 +48,7 @@ func VerifyFounderHistory(history save.FounderHistory, catalogs ReplayCatalogRes
 		if json.Unmarshal(wire.Resolved, &kind) != nil {
 			return ReplayStateDivergence
 		}
-		linked := kind.Kind == founderExitResolvedKind || kind.Kind == minigameResolutionKind
+		linked := kind.Kind == founderExitResolvedKind || kind.Kind == minigameResolutionKind || kind.Kind == "soul_recovery"
 		if linked != (entry.Source != nil) {
 			return ReplayStateDivergence
 		}
@@ -64,6 +64,13 @@ func VerifyFounderHistory(history save.FounderHistory, catalogs ReplayCatalogRes
 					return ReplayConstantsMismatch
 				}
 				bundle.Next = &next
+			}
+		}
+		if entry.Source != nil && kind.Kind == "soul_recovery" {
+			var facts founderSoulRecoveryResolved
+			if decodeReplayStrict(wire.Resolved, &facts) != nil || facts.CompanyStreamID != entry.Source.CompanyStreamID ||
+				facts.RunSeq != entry.Source.RunSeq {
+				return ReplayStateDivergence
 			}
 		}
 		transition, err := ApplyFounderLogged(state, entry.CanonicalPayload, bundle, entry.ReplayInputs)

@@ -59,6 +59,12 @@ The current conformance tenant is test-only. The combat duel adapter will regist
 RFC supplies an implemented transition surface; the deferred lane engine is not fabricated by the
 platform.
 
+New-schema minigame definitions declare `soul_gate: human_hobby|unrelated`. A bundle containing
+Soul requires that schema and the same pinned Soul artifact. The production start boundary resolves
+the Founder revision and pinned constants hash; near-zero Soul rejects human-hobby sessions while
+unrelated sessions remain available. Historical minigame artifacts keep their prior grammar and
+are accepted only in Soul-less bundles.
+
 ## Scaling policy grammar
 
 The platform can load and resolve structural scaling policies without enabling a production

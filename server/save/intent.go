@@ -73,6 +73,12 @@ const (
 	EventOpportunityClaimed        EventKind = "opportunity_claimed.v1"
 	EventBuffStarted               EventKind = "buff_started.v1"
 	EventBuffExpired               EventKind = "buff_expired.v1"
+	EventSoulPricePaid             EventKind = "soul_price_paid.v1"
+	EventSoulBandChanged           EventKind = "soul_band_changed.v1"
+	EventSoulDepleted              EventKind = "soul_depleted.v1"
+	EventSoulRecoveryStarted       EventKind = "soul_recovery_started.v1"
+	EventSoulRecoveryCancelled     EventKind = "soul_recovery_cancelled.v1"
+	EventSoulRecovered             EventKind = "soul_recovered.v1"
 )
 
 // AllEventKinds is the closed structural authority consumed by catalog
@@ -94,6 +100,8 @@ var AllEventKinds = [...]EventKind{
 	EventMinigameResolved, EventMinigameRatingChanged,
 	EventOpportunitySpawned, EventOpportunityExpired, EventOpportunityClaimed,
 	EventBuffStarted, EventBuffExpired,
+	EventSoulPricePaid, EventSoulBandChanged, EventSoulDepleted,
+	EventSoulRecoveryStarted, EventSoulRecoveryCancelled, EventSoulRecovered,
 }
 
 type EventWrite struct {
@@ -138,6 +146,11 @@ type LoggedIntentMutation func(state *State, revision Revision, command ReplayCo
 // object inside the persistence-owned Founder replay envelope.
 type FounderLoggedIntentMutation func(state *State, revision Revision, command FounderReplayCommand) (IntentDecision, json.RawMessage, error)
 
+// IntentTransactionGuard runs after the Store has locked and revision-checked
+// the target stream, but before any new command is evaluated. Literal retries
+// bypass it and return their already-committed receipt.
+type IntentTransactionGuard func(context.Context, *sql.Tx, string, string) error
+
 type IntentResult struct {
 	Outcome IntentOutcome
 	Receipt json.RawMessage
@@ -164,7 +177,7 @@ func (s *Store) ApplyIntent(
 	requestHash string,
 	mutate IntentMutation,
 ) (IntentResult, error) {
-	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, nil, mutate, nil, nil)
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, nil, mutate, nil, nil, nil)
 }
 
 func (s *Store) ApplyIntentLogged(
@@ -179,7 +192,26 @@ func (s *Store) ApplyIntentLogged(
 	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
 		return IntentResult{}, err
 	}
-	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, nil, mutate, nil)
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, nil, mutate, nil, nil)
+}
+
+func (s *Store) ApplyIntentLoggedGuarded(
+	ctx context.Context,
+	streamID string,
+	expectedRevision int64,
+	intentID string,
+	requestHash string,
+	canonicalPayload []byte,
+	guard IntentTransactionGuard,
+	mutate LoggedIntentMutation,
+) (IntentResult, error) {
+	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
+		return IntentResult{}, err
+	}
+	if guard == nil {
+		return IntentResult{}, ErrInvalidStream
+	}
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, nil, mutate, nil, guard)
 }
 
 func (s *Store) ApplyFounderLogged(
@@ -194,7 +226,26 @@ func (s *Store) ApplyFounderLogged(
 	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
 		return IntentResult{}, err
 	}
-	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, nil, nil, mutate)
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, nil, nil, mutate, nil)
+}
+
+func (s *Store) ApplyFounderLoggedGuarded(
+	ctx context.Context,
+	streamID string,
+	expectedRevision int64,
+	intentID string,
+	requestHash string,
+	canonicalPayload []byte,
+	guard IntentTransactionGuard,
+	mutate FounderLoggedIntentMutation,
+) (IntentResult, error) {
+	if err := validateCanonicalPayload(canonicalPayload, requestHash); err != nil {
+		return IntentResult{}, err
+	}
+	if guard == nil {
+		return IntentResult{}, ErrInvalidStream
+	}
+	return s.applyIntent(ctx, streamID, expectedRevision, intentID, requestHash, canonicalPayload, nil, nil, mutate, guard)
 }
 
 func (s *Store) applyIntent(
@@ -207,6 +258,7 @@ func (s *Store) applyIntent(
 	mutate IntentMutation,
 	loggedMutate LoggedIntentMutation,
 	founderLoggedMutate FounderLoggedIntentMutation,
+	guard IntentTransactionGuard,
 ) (IntentResult, error) {
 	mutationCount := 0
 	for _, present := range []bool{mutate != nil, loggedMutate != nil, founderLoggedMutate != nil} {
@@ -284,6 +336,11 @@ func (s *Store) applyIntent(
 	revision.OwnerID = ownerID
 	if revision.Number != expectedRevision {
 		return IntentResult{}, &RevisionConflict{Expected: expectedRevision, Current: revision.Number}
+	}
+	if guard != nil {
+		if err := guard(ctx, tx, ownerID, streamID); err != nil {
+			return IntentResult{}, err
+		}
 	}
 	catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
 	if !ok {
@@ -447,7 +504,7 @@ func (s *Store) applyIntent(
 			return IntentResult{}, err
 		}
 	}
-	if _, err := tx.ExecContext(ctx, `DELETE FROM save_revisions WHERE stream_id=$1 AND revision <= $2`, streamID, newRevision-5); err != nil {
+	if err := pruneSaveRevisionsTx(ctx, tx, streamID, newRevision-5); err != nil {
 		return IntentResult{}, err
 	}
 	if err := tx.Commit(); err != nil {
@@ -1087,10 +1144,121 @@ func validateEventPayload(event EventWrite) error {
 			(event.Kind == EventGuildActivityEvaluated && payload.XPDelta != 0) {
 			return fmt.Errorf("%w: invalid guild_tithe_accrued payload", ErrInvalidStream)
 		}
+	case EventSoulPricePaid:
+		var payload struct {
+			SourceID       string `json:"source_id"`
+			OwnerKind      string `json:"owner_kind"`
+			EligibilityRef string `json:"eligibility_ref"`
+			SoulBefore     int64  `json:"soul_before"`
+			Debit          int64  `json:"debit"`
+			SoulAfter      int64  `json:"soul_after"`
+			BandBefore     string `json:"band_before"`
+			BandAfter      string `json:"band_after"`
+			CurtainCopyKey string `json:"curtain_copy_key"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !mechanicalIDPattern.MatchString(payload.SourceID) ||
+			!validSoulOwner(payload.OwnerKind) || payload.EligibilityRef == "" || payload.SoulBefore < 0 ||
+			payload.SoulBefore > decimal.MaxExactInteger || payload.Debit <= 0 || payload.Debit > payload.SoulBefore ||
+			payload.SoulAfter != payload.SoulBefore-payload.Debit || !validSoulBand(payload.BandBefore) ||
+			!validSoulBand(payload.BandAfter) || !mechanicalIDPattern.MatchString(payload.CurtainCopyKey) {
+			return fmt.Errorf("%w: invalid soul_price_paid payload", ErrInvalidStream)
+		}
+	case EventSoulBandChanged:
+		var payload struct {
+			SoulBefore int64  `json:"soul_before"`
+			SoulAfter  int64  `json:"soul_after"`
+			BandBefore string `json:"band_before"`
+			BandAfter  string `json:"band_after"`
+			ReasonKey  string `json:"reason_key"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || payload.SoulBefore < 0 || payload.SoulBefore > decimal.MaxExactInteger ||
+			payload.SoulAfter < 0 || payload.SoulAfter > decimal.MaxExactInteger || !validSoulBand(payload.BandBefore) ||
+			!validSoulBand(payload.BandAfter) || payload.BandBefore == payload.BandAfter || !mechanicalIDPattern.MatchString(payload.ReasonKey) {
+			return fmt.Errorf("%w: invalid soul_band_changed payload", ErrInvalidStream)
+		}
+	case EventSoulDepleted:
+		var payload struct {
+			SourceID       string `json:"source_id"`
+			OwnerKind      string `json:"owner_kind"`
+			EligibilityRef string `json:"eligibility_ref"`
+			SoulBefore     int64  `json:"soul_before"`
+			SoulAfter      int64  `json:"soul_after"`
+			OccurredAtMS   int64  `json:"occurred_at_ms"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !mechanicalIDPattern.MatchString(payload.SourceID) ||
+			!validSoulOwner(payload.OwnerKind) || payload.EligibilityRef == "" || payload.SoulBefore <= payload.SoulAfter ||
+			payload.SoulAfter < 0 || payload.OccurredAtMS <= 0 || payload.OccurredAtMS > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid soul_depleted payload", ErrInvalidStream)
+		}
+	case EventSoulRecoveryStarted:
+		var keys map[string]json.RawMessage
+		var payload struct {
+			SessionID              string `json:"session_id"`
+			ActivityID             string `json:"activity_id"`
+			CompanyStreamID        string `json:"company_stream_id"`
+			RunSeq                 int64  `json:"run_seq"`
+			FounderAttendedStartMS int64  `json:"founder_attended_start_ms"`
+			RequiredDurationMS     int64  `json:"required_duration_ms"`
+		}
+		if json.Unmarshal(event.Payload, &keys) != nil || !hasExactRawKeys(keys, "session_id", "activity_id", "company_stream_id", "run_seq",
+			"founder_attended_start_ms", "required_duration_ms") || decodeStrictJSON(event.Payload, &payload) != nil || !uuidV7Pattern.MatchString(payload.SessionID) ||
+			!mechanicalIDPattern.MatchString(payload.ActivityID) || !uuidPattern.MatchString(payload.CompanyStreamID) ||
+			payload.RunSeq <= 0 || payload.RunSeq > decimal.MaxExactInteger || payload.FounderAttendedStartMS < 0 ||
+			payload.FounderAttendedStartMS > decimal.MaxExactInteger || payload.RequiredDurationMS <= 0 || payload.RequiredDurationMS > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid soul_recovery_started payload", ErrInvalidStream)
+		}
+	case EventSoulRecoveryCancelled, EventSoulRecovered:
+		var keys map[string]json.RawMessage
+		var payload struct {
+			SessionID              string `json:"session_id"`
+			ActivityID             string `json:"activity_id"`
+			CompanyStreamID        string `json:"company_stream_id"`
+			RunSeq                 int64  `json:"run_seq"`
+			FounderAttendedStartMS int64  `json:"founder_attended_start_ms"`
+			FounderAttendedEndMS   int64  `json:"founder_attended_end_ms"`
+			SoulBefore             int64  `json:"soul_before"`
+			SoulAfter              int64  `json:"soul_after"`
+			RecoveryAmount         *int64 `json:"recovery_amount,omitempty"`
+			BandBefore             string `json:"band_before,omitempty"`
+			BandAfter              string `json:"band_after,omitempty"`
+			ReasonKey              string `json:"reason_key,omitempty"`
+		}
+		if json.Unmarshal(event.Payload, &keys) != nil {
+			return fmt.Errorf("%w: invalid soul recovery payload", ErrInvalidStream)
+		}
+		exact := hasExactRawKeys(keys, "session_id", "activity_id", "company_stream_id", "run_seq",
+			"founder_attended_start_ms", "founder_attended_end_ms", "soul_before", "soul_after")
+		if event.Kind == EventSoulRecovered {
+			exact = hasExactRawKeys(keys, "session_id", "activity_id", "company_stream_id", "run_seq",
+				"founder_attended_start_ms", "founder_attended_end_ms", "soul_before", "soul_after",
+				"recovery_amount", "band_before", "band_after", "reason_key")
+		}
+		invalid := !exact || decodeStrictJSON(event.Payload, &payload) != nil || !uuidV7Pattern.MatchString(payload.SessionID) ||
+			!mechanicalIDPattern.MatchString(payload.ActivityID) || !uuidPattern.MatchString(payload.CompanyStreamID) ||
+			payload.RunSeq <= 0 || payload.RunSeq > decimal.MaxExactInteger || payload.FounderAttendedStartMS < 0 ||
+			payload.FounderAttendedEndMS < payload.FounderAttendedStartMS || payload.SoulBefore < 0 || payload.SoulAfter < payload.SoulBefore
+		if event.Kind == EventSoulRecoveryCancelled {
+			invalid = invalid || payload.SoulAfter != payload.SoulBefore || payload.RecoveryAmount != nil || payload.BandBefore != "" || payload.BandAfter != "" || payload.ReasonKey != ""
+		} else {
+			invalid = invalid || payload.RecoveryAmount == nil || *payload.RecoveryAmount <= 0 ||
+				payload.SoulAfter-payload.SoulBefore > *payload.RecoveryAmount || !validSoulBand(payload.BandBefore) ||
+				!validSoulBand(payload.BandAfter) || !mechanicalIDPattern.MatchString(payload.ReasonKey)
+		}
+		if invalid {
+			return fmt.Errorf("%w: invalid soul recovery payload", ErrInvalidStream)
+		}
 	default:
 		return fmt.Errorf("%w: unknown event kind %q", ErrInvalidStream, event.Kind)
 	}
 	return nil
+}
+
+func validSoulBand(value string) bool {
+	return value == "whole" || value == "dimming" || value == "hollow" || value == "near_zero"
+}
+
+func validSoulOwner(value string) bool {
+	return value == "event" || value == "longevity" || value == "contract" || value == "fixture"
 }
 
 func hasExactRawKeys(value map[string]json.RawMessage, keys ...string) bool {

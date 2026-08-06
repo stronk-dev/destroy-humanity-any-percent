@@ -27,6 +27,7 @@ import (
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
+	"cloud-clicker/server/soul"
 )
 
 var ErrInvalidIntent = errors.New("invalid production intent")
@@ -257,6 +258,17 @@ type Service struct {
 	prestigePolicies     PrestigePolicyResolver
 	simulation           *simulationPolicy
 	currentConstantsHash string
+	soulRecoveries       *soul.RecoveryRepository
+}
+
+func WithSoulRecovery(repository *soul.RecoveryRepository) ServiceOption {
+	return func(service *Service) error {
+		if repository == nil {
+			return ErrInvalidIntent
+		}
+		service.soulRecoveries = repository
+		return nil
+	}
 }
 
 type HandleResult struct {
@@ -350,6 +362,21 @@ func (s *Service) Handle(
 	if err != nil {
 		return HandleResult{}, err
 	}
+	if s.soulRecoveries != nil && request.Kind != IntentBuyRouteHint &&
+		request.Kind != IntentHarvestFiscalPeriod && request.Kind != IntentSpendFiscalCredit {
+		loaded, loadErr := s.store.LoadLatest(ctx, streamID)
+		if loadErr != nil {
+			return HandleResult{}, loadErr
+		}
+		active, activeErr := s.soulRecoveries.HasActive(ctx, loaded.Key.OwnerID)
+		if activeErr != nil {
+			return HandleResult{}, activeErr
+		}
+		if active {
+			return HandleResult{Receipt: marshalRejection(request.IntentID, loaded.Revision.Number,
+				"not_eligible", "exclusive_activity")}, nil
+		}
+	}
 	if request.InvalidDetail == "" && (request.Kind == IntentAcceptExitOffer || request.Kind == IntentWindDown || request.Kind == IntentFileIPO) {
 		return s.handleExit(ctx, streamID, mode, now, request)
 	}
@@ -411,142 +438,153 @@ func (s *Service) Handle(
 		}
 	}
 	collector := &invariantCollector{}
-	result, err := s.store.ApplyIntentLogged(ctx, streamID, request.ExpectedRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
-		func(state *save.State, revision save.Revision, command save.ReplayCommand) (decision save.IntentDecision, replayInputs json.RawMessage, resultErr error) {
-			if s.replayCatalogs == nil {
-				return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
+	companyMutation := func(state *save.State, revision save.Revision, command save.ReplayCommand) (decision save.IntentDecision, replayInputs json.RawMessage, resultErr error) {
+		if s.replayCatalogs == nil {
+			return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
+		}
+		bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(revision.ConstantsHash)
+		if !ok {
+			return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
+		}
+		build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind,
+			DeclinedExitOfferCount: declinedOffers, RouteContextVersion: bundle.Routes.ContextVersion()}
+		if state.WireVersion == 18 {
+			activeEvidence, activeErr := resolveActivePlaySchedule(state, bundle.Opportunities, bundle.Prestige, revision.OwnerID, now)
+			if activeErr != nil {
+				return save.IntentDecision{}, nil, activeErr
 			}
-			bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(revision.ConstantsHash)
+			build.ActivePlay = &activeEvidence
+		}
+		if prestigeFounder != nil {
+			if err := requireFounderCatalogCoherence(prestigeFounder.Revision, revision); err != nil {
+				return save.IntentDecision{}, nil, err
+			}
+			value := founderCarry(prestigeFounder.State)
+			value.FounderRevision = prestigeFounder.Revision.Number
+			value.FounderConstantsHash = prestigeFounder.Revision.ConstantsHash
+			build.FounderCarry = &value
+		}
+		catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
+		if !ok {
+			return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown catalog %s", ErrInvalidIntent, revision.ConstantsHash)
+		}
+		var directContributions []multiplier.Contribution
+		if command.RunLogSeq > 0 {
+			contributions, settlements, err := s.resolveReplayAccrual(ctx, state, revision, catalog, bundle.Faction.StockCap, request)
+			if err != nil {
+				return save.IntentDecision{}, nil, err
+			}
+			build.Contributions = contributions
+			build.GuildSettlementBatch = settlements
+		} else if request.InvalidDetail == "" && s.contributions != nil && request.Kind != IntentBuyRouteHint {
+			contributions, err := s.contributions.Contributions(ctx, state, catalog, revision)
+			if err != nil {
+				return save.IntentDecision{}, nil, err
+			}
+			build.Contributions = contributions
+			directContributions = contributions
+		}
+		if state.CompactMember {
+			weight, weightErr := s.resolveCommonsReplayWeight(ctx, revision.StreamID, revision.OwnerID, revision.ConstantsHash)
+			if weightErr != nil {
+				return save.IntentDecision{}, nil, weightErr
+			}
+			build.CommonsWeightPPM = &weight
+		}
+		var routeCatalog *routes.Catalog
+		if request.Kind == IntentCrossGate || request.Kind == IntentBuyRouteHint || request.Kind == IntentBuyUpgrade {
+			if s.routeCatalogs == nil {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: route runtime unavailable", ErrInvalidIntent)
+			}
+			var ok bool
+			routeCatalog, ok = s.routeCatalogs.ResolveRoutes(revision.ConstantsHash)
 			if !ok {
-				return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown routes catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 			}
-			build := replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind,
-				DeclinedExitOfferCount: declinedOffers, RouteContextVersion: bundle.Routes.ContextVersion()}
-			if state.WireVersion == 18 {
-				activeEvidence, activeErr := resolveActivePlaySchedule(state, bundle.Opportunities, bundle.Prestige, revision.OwnerID, now)
-				if activeErr != nil {
-					return save.IntentDecision{}, nil, activeErr
+			build.RouteContextVersion = routeCatalog.ContextVersion()
+			if err := ValidateRouteCatalogResources(catalog, routeCatalog); err != nil {
+				return save.IntentDecision{}, nil, err
+			}
+			if request.Kind == IntentBuyRouteHint {
+				if s.routeProjector == nil {
+					return save.IntentDecision{}, nil, fmt.Errorf("%w: route projector unavailable", ErrInvalidIntent)
 				}
-				build.ActivePlay = &activeEvidence
-			}
-			if prestigeFounder != nil {
-				if err := requireFounderCatalogCoherence(prestigeFounder.Revision, revision); err != nil {
+				if err := s.routeProjector.RepairFounder(ctx, revision.OwnerID, state); err != nil {
 					return save.IntentDecision{}, nil, err
 				}
-				value := founderCarry(prestigeFounder.State)
-				value.FounderRevision = prestigeFounder.Revision.Number
-				value.FounderConstantsHash = prestigeFounder.Revision.ConstantsHash
-				build.FounderCarry = &value
 			}
-			catalog, ok := s.catalogs.Resolve(revision.ConstantsHash)
+		}
+		if request.Kind == IntentSignCompact || request.Kind == IntentLeaveCompact || request.Kind == IntentIncorporate {
+			if s.compactPolicies == nil {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: compact runtime unavailable", ErrInvalidIntent)
+			}
+			minimum, maximum, ok := s.compactPolicies.CompactTitheBand(revision.ConstantsHash)
 			if !ok {
-				return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown catalog %s", ErrInvalidIntent, revision.ConstantsHash)
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown commons catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 			}
-			var directContributions []multiplier.Contribution
-			if command.RunLogSeq > 0 {
-				contributions, settlements, err := s.resolveReplayAccrual(ctx, state, revision, catalog, bundle.Faction.StockCap, request)
-				if err != nil {
-					return save.IntentDecision{}, nil, err
-				}
-				build.Contributions = contributions
-				build.GuildSettlementBatch = settlements
-			} else if request.InvalidDetail == "" && s.contributions != nil && request.Kind != IntentBuyRouteHint {
-				contributions, err := s.contributions.Contributions(ctx, state, catalog, revision)
-				if err != nil {
-					return save.IntentDecision{}, nil, err
-				}
-				build.Contributions = contributions
-				directContributions = contributions
+			if minimum < 0 || maximum > 1_000_000 || minimum > maximum {
+				return save.IntentDecision{}, nil, ErrInvalidEngineState
 			}
-			if state.CompactMember {
-				weight, weightErr := s.resolveCommonsReplayWeight(ctx, revision.StreamID, revision.OwnerID, revision.ConstantsHash)
-				if weightErr != nil {
-					return save.IntentDecision{}, nil, weightErr
-				}
-				build.CommonsWeightPPM = &weight
+		}
+		var factionCatalog *faction.Catalog
+		if request.Kind == IntentIncorporate || request.Kind == IntentLeaveCompact || state.FactionID != "" {
+			if s.factionCatalogs == nil {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: faction runtime unavailable", ErrInvalidIntent)
 			}
-			var routeCatalog *routes.Catalog
-			if request.Kind == IntentCrossGate || request.Kind == IntentBuyRouteHint || request.Kind == IntentBuyUpgrade {
-				if s.routeCatalogs == nil {
-					return save.IntentDecision{}, nil, fmt.Errorf("%w: route runtime unavailable", ErrInvalidIntent)
-				}
-				var ok bool
-				routeCatalog, ok = s.routeCatalogs.ResolveRoutes(revision.ConstantsHash)
-				if !ok {
-					return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown routes catalog %s", ErrInvalidIntent, revision.ConstantsHash)
-				}
-				build.RouteContextVersion = routeCatalog.ContextVersion()
-				if err := ValidateRouteCatalogResources(catalog, routeCatalog); err != nil {
-					return save.IntentDecision{}, nil, err
-				}
-				if request.Kind == IntentBuyRouteHint {
-					if s.routeProjector == nil {
-						return save.IntentDecision{}, nil, fmt.Errorf("%w: route projector unavailable", ErrInvalidIntent)
-					}
-					if err := s.routeProjector.RepairFounder(ctx, revision.OwnerID, state); err != nil {
-						return save.IntentDecision{}, nil, err
-					}
-				}
+			var ok bool
+			factionCatalog, ok = s.factionCatalogs.ResolveFaction(revision.ConstantsHash)
+			if !ok {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown faction catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 			}
-			if request.Kind == IntentSignCompact || request.Kind == IntentLeaveCompact || request.Kind == IntentIncorporate {
-				if s.compactPolicies == nil {
-					return save.IntentDecision{}, nil, fmt.Errorf("%w: compact runtime unavailable", ErrInvalidIntent)
-				}
-				minimum, maximum, ok := s.compactPolicies.CompactTitheBand(revision.ConstantsHash)
-				if !ok {
-					return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown commons catalog %s", ErrInvalidIntent, revision.ConstantsHash)
-				}
-				if minimum < 0 || maximum > 1_000_000 || minimum > maximum {
+			if state.FactionID != "" {
+				if _, exists := factionCatalog.Faction(state.FactionID); !exists {
 					return save.IntentDecision{}, nil, ErrInvalidEngineState
 				}
 			}
-			var factionCatalog *faction.Catalog
-			if request.Kind == IntentIncorporate || request.Kind == IntentLeaveCompact || state.FactionID != "" {
-				if s.factionCatalogs == nil {
-					return save.IntentDecision{}, nil, fmt.Errorf("%w: faction runtime unavailable", ErrInvalidIntent)
-				}
-				var ok bool
-				factionCatalog, ok = s.factionCatalogs.ResolveFaction(revision.ConstantsHash)
-				if !ok {
-					return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown faction catalog %s", ErrInvalidIntent, revision.ConstantsHash)
-				}
-				if state.FactionID != "" {
-					if _, exists := factionCatalog.Faction(state.FactionID); !exists {
-						return save.IntentDecision{}, nil, ErrInvalidEngineState
-					}
-				}
+		}
+		if command.RunLogSeq > 0 && request.Kind == IntentClaimOpportunity {
+			if build.ActivePlay == nil {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: active-play claim on inactive run", ErrInvalidIntent)
 			}
-			if command.RunLogSeq > 0 && request.Kind == IntentClaimOpportunity {
-				if build.ActivePlay == nil {
-					return save.IntentDecision{}, nil, fmt.Errorf("%w: active-play claim on inactive run", ErrInvalidIntent)
-				}
-				accrual, accrualErr := makeReplayAccrual(build.Contributions, build.CommonsWeightPPM, build.GuildSettlementBatch, build.RouteContextVersion)
-				if accrualErr != nil {
-					return save.IntentDecision{}, nil, accrualErr
-				}
-				claim, claimErr := resolveActiveClaimEvidence(state, bundle, revision, request, mode, now, accrual, *build.ActivePlay)
-				if claimErr != nil {
-					return save.IntentDecision{}, nil, claimErr
-				}
-				build.ActivePlay.Claim = claim
+			accrual, accrualErr := makeReplayAccrual(build.Contributions, build.CommonsWeightPPM, build.GuildSettlementBatch, build.RouteContextVersion)
+			if accrualErr != nil {
+				return save.IntentDecision{}, nil, accrualErr
 			}
-			if command.RunLogSeq == 0 {
-				decision, resultErr = TransitionWithPolicies(request, state, catalog, routeCatalog, nil, factionCatalog, revision, mode, now, directContributions, collector, nil)
-				return decision, nil, resultErr
+			claim, claimErr := resolveActiveClaimEvidence(state, bundle, revision, request, mode, now, accrual, *build.ActivePlay)
+			if claimErr != nil {
+				return save.IntentDecision{}, nil, claimErr
 			}
-			replayInputs, resultErr = buildReplayInputs(build)
-			if resultErr != nil {
-				return save.IntentDecision{}, nil, resultErr
-			}
-			transition, resultErr := ApplyLogged(state, request.CanonicalPayload, bundle, replayInputs)
-			collector.reports = append(collector.reports, transition.Invariants...)
-			if resultErr != nil {
-				return save.IntentDecision{}, nil, resultErr
-			}
-			decision = save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt, Events: transition.Events}
-			return decision, replayInputs, nil
-		})
+			build.ActivePlay.Claim = claim
+		}
+		if command.RunLogSeq == 0 {
+			decision, resultErr = TransitionWithPolicies(request, state, catalog, routeCatalog, nil, factionCatalog, revision, mode, now, directContributions, collector, nil)
+			return decision, nil, resultErr
+		}
+		replayInputs, resultErr = buildReplayInputs(build)
+		if resultErr != nil {
+			return save.IntentDecision{}, nil, resultErr
+		}
+		transition, resultErr := ApplyLogged(state, request.CanonicalPayload, bundle, replayInputs)
+		collector.reports = append(collector.reports, transition.Invariants...)
+		if resultErr != nil {
+			return save.IntentDecision{}, nil, resultErr
+		}
+		decision = save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt, Events: transition.Events}
+		return decision, replayInputs, nil
+	}
+	var result save.IntentResult
+	if s.soulRecoveries != nil {
+		result, err = s.store.ApplyIntentLoggedGuarded(ctx, streamID, request.ExpectedRevision, request.IntentID,
+			request.RequestHash, request.CanonicalPayload, s.soulRecoveries.RequireInactiveTx, companyMutation)
+	} else {
+		result, err = s.store.ApplyIntentLogged(ctx, streamID, request.ExpectedRevision, request.IntentID,
+			request.RequestHash, request.CanonicalPayload, companyMutation)
+	}
 	if err != nil {
+		if errors.Is(err, soul.ErrRecoveryActive) {
+			return HandleResult{Receipt: marshalRejection(request.IntentID, request.ExpectedRevision,
+				"not_eligible", "exclusive_activity")}, nil
+		}
 		s.recordAbortedInvariants(collector.reports)
 		var conflict *save.RevisionConflict
 		switch {
@@ -695,43 +733,53 @@ func (s *Service) handleFounderCare(ctx context.Context, companyStreamID string,
 	if err != nil {
 		return HandleResult{}, err
 	}
-	result, err := s.store.ApplyFounderLogged(ctx, founder.Revision.StreamID, request.ExpectedRevision,
-		request.IntentID, request.RequestHash, request.CanonicalPayload,
-		func(state *save.State, revision save.Revision, command save.FounderReplayCommand) (save.IntentDecision, json.RawMessage, error) {
-			bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(revision.ConstantsHash)
-			if !ok {
-				return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
-			}
-			if request.InvalidDetail != "" {
-				replayInputs, marshalErr := marshalFounderReplayInputs(command,
-					founderInvalidResolved{Kind: "invalid", Detail: request.InvalidDetail})
-				if marshalErr != nil {
-					return save.IntentDecision{}, nil, marshalErr
-				}
-				transition, transitionErr := ApplyFounderLogged(state, request.CanonicalPayload, bundle, replayInputs)
-				return save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt,
-					Events: transition.Events}, replayInputs, transitionErr
-			}
-			if bundle.Pets == nil || attendance.CompanyConstantsHash != revision.ConstantsHash {
-				return save.IntentDecision{}, nil, fmt.Errorf("%w: pet catalog/clock context unavailable", ErrInvalidIntent)
-			}
-			before := int64(0)
-			if state.Pets != nil {
-				if care, exists := state.Pets[request.PetID]; exists {
-					before = care.EvaluatedThroughAttendedMS
-				}
-			}
-			replayInputs, marshalErr := marshalFounderReplayInputs(command, founderCareResolved{
-				Kind: IntentCareAction, Attendance: attendance, PetAttendedBeforeMS: before,
-			})
+	careMutation := func(state *save.State, revision save.Revision, command save.FounderReplayCommand) (save.IntentDecision, json.RawMessage, error) {
+		bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(revision.ConstantsHash)
+		if !ok {
+			return save.IntentDecision{}, nil, fmt.Errorf("%w: replay catalog bundle unavailable", ErrInvalidIntent)
+		}
+		if request.InvalidDetail != "" {
+			replayInputs, marshalErr := marshalFounderReplayInputs(command,
+				founderInvalidResolved{Kind: "invalid", Detail: request.InvalidDetail})
 			if marshalErr != nil {
 				return save.IntentDecision{}, nil, marshalErr
 			}
 			transition, transitionErr := ApplyFounderLogged(state, request.CanonicalPayload, bundle, replayInputs)
 			return save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt,
 				Events: transition.Events}, replayInputs, transitionErr
+		}
+		if bundle.Pets == nil || attendance.CompanyConstantsHash != revision.ConstantsHash {
+			return save.IntentDecision{}, nil, fmt.Errorf("%w: pet catalog/clock context unavailable", ErrInvalidIntent)
+		}
+		before := int64(0)
+		if state.Pets != nil {
+			if care, exists := state.Pets[request.PetID]; exists {
+				before = care.EvaluatedThroughAttendedMS
+			}
+		}
+		replayInputs, marshalErr := marshalFounderReplayInputs(command, founderCareResolved{
+			Kind: IntentCareAction, Attendance: attendance, PetAttendedBeforeMS: before,
 		})
+		if marshalErr != nil {
+			return save.IntentDecision{}, nil, marshalErr
+		}
+		transition, transitionErr := ApplyFounderLogged(state, request.CanonicalPayload, bundle, replayInputs)
+		return save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt,
+			Events: transition.Events}, replayInputs, transitionErr
+	}
+	var result save.IntentResult
+	if s.soulRecoveries != nil {
+		result, err = s.store.ApplyFounderLoggedGuarded(ctx, founder.Revision.StreamID, request.ExpectedRevision,
+			request.IntentID, request.RequestHash, request.CanonicalPayload, s.soulRecoveries.RequireInactiveTx, careMutation)
+	} else {
+		result, err = s.store.ApplyFounderLogged(ctx, founder.Revision.StreamID, request.ExpectedRevision,
+			request.IntentID, request.RequestHash, request.CanonicalPayload, careMutation)
+	}
 	if err != nil {
+		if errors.Is(err, soul.ErrRecoveryActive) {
+			return HandleResult{Receipt: marshalRejection(request.IntentID, request.ExpectedRevision,
+				"not_eligible", "exclusive_activity")}, nil
+		}
 		var conflict *save.RevisionConflict
 		switch {
 		case errors.As(err, &conflict):

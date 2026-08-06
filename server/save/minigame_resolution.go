@@ -34,6 +34,14 @@ type MinigameResolutionRequest struct {
 	CompanyStreamID  string
 	RequestHash      string
 	CanonicalPayload json.RawMessage
+	// ServerTSMS is resolved by the composed server command before the
+	// transaction and becomes the Founder replay timestamp. It is never client
+	// supplied.
+	ServerTSMS int64
+	// CompanyLogFirst is reserved for server-authored suppression commands
+	// whose audit contract requires the Company replay row to precede the
+	// Founder audit row. Minigame resolution retains its established order.
+	CompanyLogFirst bool
 }
 
 // ApplyMinigameResolutionTransaction is the C38 Founder→Company coordinator.
@@ -45,7 +53,8 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 ) (IntentResult, error) {
 	if s == nil || !uuidV7Pattern.MatchString(request.SessionID) || !uuidPattern.MatchString(request.FounderID) ||
 		!uuidPattern.MatchString(request.CompanyStreamID) || !hashPattern.MatchString(request.RequestHash) ||
-		mutate == nil || validateCanonicalPayload(request.CanonicalPayload, request.RequestHash) != nil {
+		request.ServerTSMS <= 0 || request.ServerTSMS > 9007199254740991 || mutate == nil ||
+		validateCanonicalPayload(request.CanonicalPayload, request.RequestHash) != nil {
 		return IntentResult{}, fmt.Errorf("%w: invalid minigame resolution request", ErrInvalidStream)
 	}
 	var founderStreamID string
@@ -119,12 +128,8 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 	if err != nil {
 		return IntentResult{}, err
 	}
-	serverTSMS, err := founderServerTimestamp(ctx, tx)
-	if err != nil {
-		return IntentResult{}, err
-	}
 	founderCommand := FounderReplayCommand{IntentID: request.SessionID, FounderStreamID: founderStreamID,
-		FounderID: request.FounderID, Revision: founderRevision.Number, FounderLogSeq: founderLogSequence, ServerTSMS: serverTSMS}
+		FounderID: request.FounderID, Revision: founderRevision.Number, FounderLogSeq: founderLogSequence, ServerTSMS: request.ServerTSMS}
 	if founderLogSequence == 1 {
 		if err := InsertFounderGenesisTx(ctx, tx, FounderGenesis{FounderStreamID: founderStreamID,
 			Revision: founderRevision.Number, State: founderStateBytes, Version: founderRevision.Version,
@@ -178,6 +183,31 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 	if err != nil {
 		return IntentResult{}, err
 	}
+	recorded := make([]EventRecord, 0, len(decision.FounderEvents)+len(decision.CompanyEvents))
+	if request.CompanyLogFirst {
+		if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`,
+			request.CompanyStreamID, companyNext, VersionForState(company), companyEncoded, companyHash); err != nil {
+			return IntentResult{}, err
+		}
+		if err := runExitFault(fault, "company_revision"); err != nil {
+			return IntentResult{}, err
+		}
+		companyEvents, err := insertExitEvents(ctx, tx, request.CompanyStreamID, request.FounderID, companyNext, companyHash, decision.CompanyEvents)
+		if err != nil {
+			return IntentResult{}, err
+		}
+		recorded = append(recorded, companyEvents...)
+		if err := runExitFault(fault, "company_events"); err != nil {
+			return IntentResult{}, err
+		}
+		if err := insertRunLog(ctx, tx, request.CompanyStreamID, company.RunSeq, runLogSequence, request.SessionID,
+			request.CanonicalPayload, decision.CompanyReplayInputs, decision.Receipt, &companyNext); err != nil {
+			return IntentResult{}, err
+		}
+		if err := runExitFault(fault, "run_log"); err != nil {
+			return IntentResult{}, err
+		}
+	}
 	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`,
 		founderStreamID, founderNext, VersionForState(founder), founderEncoded, founderHash); err != nil {
 		return IntentResult{}, err
@@ -185,7 +215,6 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 	if err := runExitFault(fault, "founder_revision"); err != nil {
 		return IntentResult{}, err
 	}
-	recorded := make([]EventRecord, 0, len(decision.FounderEvents)+len(decision.CompanyEvents))
 	founderEvents, err := insertExitEvents(ctx, tx, founderStreamID, request.FounderID, founderNext, founderHash, decision.FounderEvents)
 	if err != nil {
 		return IntentResult{}, err
@@ -194,27 +223,29 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 	if err := runExitFault(fault, "founder_events"); err != nil {
 		return IntentResult{}, err
 	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`,
-		request.CompanyStreamID, companyNext, VersionForState(company), companyEncoded, companyHash); err != nil {
-		return IntentResult{}, err
-	}
-	if err := runExitFault(fault, "company_revision"); err != nil {
-		return IntentResult{}, err
-	}
-	companyEvents, err := insertExitEvents(ctx, tx, request.CompanyStreamID, request.FounderID, companyNext, companyHash, decision.CompanyEvents)
-	if err != nil {
-		return IntentResult{}, err
-	}
-	recorded = append(recorded, companyEvents...)
-	if err := runExitFault(fault, "company_events"); err != nil {
-		return IntentResult{}, err
-	}
-	if err := insertRunLog(ctx, tx, request.CompanyStreamID, company.RunSeq, runLogSequence, request.SessionID,
-		request.CanonicalPayload, decision.CompanyReplayInputs, decision.Receipt, &companyNext); err != nil {
-		return IntentResult{}, err
-	}
-	if err := runExitFault(fault, "run_log"); err != nil {
-		return IntentResult{}, err
+	if !request.CompanyLogFirst {
+		if _, err := tx.ExecContext(ctx, `INSERT INTO save_revisions(stream_id,revision,version,state,constants_hash) VALUES($1,$2,$3,$4,$5)`,
+			request.CompanyStreamID, companyNext, VersionForState(company), companyEncoded, companyHash); err != nil {
+			return IntentResult{}, err
+		}
+		if err := runExitFault(fault, "company_revision"); err != nil {
+			return IntentResult{}, err
+		}
+		companyEvents, err := insertExitEvents(ctx, tx, request.CompanyStreamID, request.FounderID, companyNext, companyHash, decision.CompanyEvents)
+		if err != nil {
+			return IntentResult{}, err
+		}
+		recorded = append(recorded, companyEvents...)
+		if err := runExitFault(fault, "company_events"); err != nil {
+			return IntentResult{}, err
+		}
+		if err := insertRunLog(ctx, tx, request.CompanyStreamID, company.RunSeq, runLogSequence, request.SessionID,
+			request.CanonicalPayload, decision.CompanyReplayInputs, decision.Receipt, &companyNext); err != nil {
+			return IntentResult{}, err
+		}
+		if err := runExitFault(fault, "run_log"); err != nil {
+			return IntentResult{}, err
+		}
 	}
 	source := &FounderLogSource{CompanyStreamID: request.CompanyStreamID, RunSeq: company.RunSeq, RunLogSeq: runLogSequence}
 	if err := insertFounderLog(ctx, tx, founderCommand, founderHash, request.CanonicalPayload,
@@ -235,10 +266,10 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 	if err := runExitFault(fault, "intent_record"); err != nil {
 		return IntentResult{}, err
 	}
-	if _, err := tx.ExecContext(ctx, `DELETE FROM save_revisions WHERE stream_id=$1 AND revision <= $2`, founderStreamID, founderNext-5); err != nil {
+	if err := pruneSaveRevisionsTx(ctx, tx, founderStreamID, founderNext-5); err != nil {
 		return IntentResult{}, err
 	}
-	if _, err := tx.ExecContext(ctx, `DELETE FROM save_revisions WHERE stream_id=$1 AND revision <= $2`, request.CompanyStreamID, companyNext-5); err != nil {
+	if err := pruneSaveRevisionsTx(ctx, tx, request.CompanyStreamID, companyNext-5); err != nil {
 		return IntentResult{}, err
 	}
 	if err := runExitFault(fault, "retention"); err != nil {

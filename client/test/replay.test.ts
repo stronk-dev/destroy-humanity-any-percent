@@ -60,7 +60,7 @@ interface TerminalFixtureCase {
 }
 
 interface FounderFixtureCase extends FixtureCase {
-	readonly state_version: 14 | 15 | 16 | 17 | 18;
+	readonly state_version: 14 | 15 | 16 | 17 | 18 | 19 | 20;
   readonly result_constants_hash: string;
 }
 
@@ -140,6 +140,10 @@ const fixture = fixtureJSON as {
 	readonly minigame_artifacts: ReplayArtifacts;
 	readonly minigame_company_case: FixtureCase;
 	readonly minigame_founder_case: FounderFixtureCase;
+	readonly soul_constants_hash: string;
+	readonly soul_artifacts: ReplayArtifacts;
+	readonly soul_company_case: FixtureCase;
+	readonly soul_founder_case: FounderFixtureCase;
 	readonly founder_run: {
 		readonly founder_stream_id: string; readonly founder_id: string; readonly genesis_revision: number; readonly genesis_version: 14 | 15 | 16 | 17 | 18;
     readonly genesis_constants_hash: string; readonly genesis: unknown; readonly head_revision: number; readonly head_version: 14 | 15 | 16;
@@ -219,6 +223,33 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 			appliedRevision: 2, serverTSMS: founderWire.command.server_ts_ms, source: { companyStreamId: companyWire.command.company_stream_id,
 				runSeq: companyWire.command.run_seq, runLogSeq: companyWire.command.run_log_seq } }],
 			{ revision: 2, version: 17, constantsHash: fixture.minigame_constants_hash, state: founderCase.post_state }, [bundle])).resolves.toBe("verified");
+	});
+
+	it("replays one Soul recovery across the Company suppression and Founder audit arms", async () => {
+		const bundle = await loadReplayCatalogBundle(fixture.soul_constants_hash, fixture.soul_artifacts);
+		if (!bundle.meters || !bundle.achievements || !bundle.soul) throw new Error("Soul replay fixture lacks pinned catalogs");
+		const companyCase = fixture.soul_company_case;
+		const company = restoreReplayState(companyCase.pre_state, 16, bundle.economy,
+			{ meters: bundle.meters, achievements: bundle.achievements });
+		const companyTransition = await applyLogged(company, canonicalJSONString(companyCase.canonical_payload), bundle, companyCase.replay_inputs);
+		expect(canonicalJSONString(companyTransition.receipt)).toBe(companyCase.receipt_json);
+		expect(canonicalJSONString(companyTransition.events)).toBe(companyCase.events_json);
+		expect(canonicalJSONString(encodeReplayState(companyTransition.state))).toBe(companyCase.post_state_json);
+		const founderCase = fixture.soul_founder_case;
+		const founder = restoreFounderReplayState(founderCase.pre_state, founderCase.state_version, bundle);
+		const founderTransition = await applyFounderLogged(founder, canonicalJSONString(founderCase.canonical_payload), bundle, founderCase.replay_inputs);
+		expect(canonicalJSONString(founderTransition.receipt)).toBe(founderCase.receipt_json);
+		expect(canonicalJSONString(founderTransition.events)).toBe(founderCase.events_json);
+		expect(canonicalJSONString(encodeFounderReplayState(founderTransition.state))).toBe(founderCase.post_state_json);
+		const founderWire = founderCase.replay_inputs as { command: { intent_id: string; founder_stream_id: string; founder_id: string; server_ts_ms: number } };
+		const companyWire = companyCase.replay_inputs as { command: { company_stream_id: string; run_seq: number; run_log_seq: number } };
+		await expect(verifyFounderReplayHistory(founderCase.pre_state, 1, 20, fixture.soul_constants_hash,
+			founderWire.command.founder_stream_id, founderWire.command.founder_id, [{ seq: 1, intentId: founderWire.command.intent_id,
+			constantsHash: fixture.soul_constants_hash, canonicalPayload: canonicalJSONString(founderCase.canonical_payload),
+			replayInputs: founderCase.replay_inputs, receiptJSON: founderCase.receipt_json, eventsJSON: founderCase.events_json,
+			appliedRevision: 2, serverTSMS: founderWire.command.server_ts_ms, source: { companyStreamId: companyWire.command.company_stream_id,
+				runSeq: companyWire.command.run_seq, runLogSeq: companyWire.command.run_log_seq } }],
+			{ revision: 2, version: 20, constantsHash: fixture.soul_constants_hash, state: founderCase.post_state }, [bundle])).resolves.toBe("verified");
 	});
 
   it("replays the sequential doctrine and Compute Credit corpus", async () => {

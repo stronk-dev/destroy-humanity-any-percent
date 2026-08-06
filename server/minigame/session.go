@@ -17,10 +17,11 @@ import (
 const claimLease = 5 * time.Minute
 
 var (
-	ErrInvalidSession = errors.New("invalid minigame session")
-	ErrSessionBusy    = errors.New("minigame session is busy")
-	ErrSessionGone    = errors.New("minigame session is unavailable")
-	ErrClaimLost      = errors.New("minigame session claim lost")
+	ErrInvalidSession    = errors.New("invalid minigame session")
+	ErrSessionBusy       = errors.New("minigame session is busy")
+	ErrSessionGone       = errors.New("minigame session is unavailable")
+	ErrClaimLost         = errors.New("minigame session claim lost")
+	ErrExclusiveActivity = errors.New("another exclusive activity is active")
 
 	uuidPattern       = regexp.MustCompile("^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 	uuidV7Pattern     = regexp.MustCompile("^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
@@ -115,6 +116,14 @@ func (repository *Repository) create(ctx context.Context, input CreateSession) (
 	defer tx.Rollback()
 	if err := lockFounder(ctx, tx, input.FounderID); err != nil {
 		return Session{}, err
+	}
+	var exclusive bool
+	if err := tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM soul_recovery_sessions WHERE founder_id=$1 AND status IN ('active','claimed'))`,
+		input.FounderID).Scan(&exclusive); err != nil {
+		return Session{}, err
+	}
+	if exclusive {
+		return Session{}, ErrExclusiveActivity
 	}
 	var ownsRun bool
 	if err := tx.QueryRowContext(ctx, ownsRunSQL, input.CompanyStreamID, input.FounderID, input.RunSeq, input.ConstantsHash).Scan(&ownsRun); errors.Is(err, sql.ErrNoRows) {

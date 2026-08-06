@@ -27,6 +27,7 @@ import (
 	"cloud-clicker/server/routeprojection"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
+	"cloud-clicker/server/soul"
 	"cloud-clicker/server/transport"
 )
 
@@ -241,6 +242,10 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err != nil {
 		return nil, err
 	}
+	soulRecoveries, err := soul.NewRecoveryRepository(config.DB)
+	if err != nil {
+		return nil, err
+	}
 	providers := production.CombinedContributionProviders{
 		production.FrozenContributionProvider{DB: config.DB},
 		commonsbinding.Provider{Catalogs: catalogs.commons, Snapshots: commonsProjector},
@@ -252,6 +257,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 		production.WithCompactPolicies(catalogs), production.WithCommonsWeightResolver(commonsProjector),
 		production.WithReplayCatalogs(catalogs), production.WithProgressionRuntime(catalogs),
 		production.WithGuildRuntime(catalogs), production.WithGuildSettlements(guildService),
+		production.WithSoulRecovery(soulRecoveries),
 		production.WithCurrentConstantsHash(seed.Hash))
 	if err != nil {
 		return nil, err

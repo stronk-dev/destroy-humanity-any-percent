@@ -63,7 +63,7 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 	intentID := "01990000-0001-7000-8000-000000000101"
 	result, err := store.ApplyFounderLogged(ctx, founderRevision.StreamID, 1, intentID, requestHash, payload,
 		func(state *State, _ Revision, command FounderReplayCommand) (IntentDecision, json.RawMessage, error) {
-			state.Soul++
+			state.AgeMS++
 			advancedPayload, marshalErr := json.Marshal(map[string]any{"founder_id": ownerID,
 				"run_id":    map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": 1},
 				"exit_type": "collapse", "reputation_delta": 0, "route_knowledge": 0,
@@ -71,7 +71,7 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 			if marshalErr != nil {
 				return IntentDecision{}, nil, marshalErr
 			}
-			return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied","soul":1}`),
+			return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied","age_ms":1}`),
 					Events: []EventWrite{{Kind: EventFounderAdvanced, SchemaVersion: 1, IntentID: command.IntentID, Payload: advancedPayload}}},
 				testFounderReplayInputs(t, command, "fixture_founder_action"), nil
 		})
@@ -94,8 +94,8 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 		t.Fatal("Founder genesis was deletable")
 	}
 	loaded, err := store.LoadLatest(ctx, founderRevision.StreamID)
-	if err != nil || loaded.Revision.Number != 2 || loaded.State.Soul != 1 {
-		t.Fatalf("loaded revision=%+v soul=%d err=%v", loaded.Revision, loaded.State.Soul, err)
+	if err != nil || loaded.Revision.Number != 2 || loaded.State.AgeMS != 1 {
+		t.Fatalf("loaded revision=%+v age_ms=%d err=%v", loaded.Revision, loaded.State.AgeMS, err)
 	}
 
 	replayed, err := store.ApplyFounderLogged(ctx, founderRevision.StreamID, 1, intentID, requestHash, payload,
@@ -104,7 +104,7 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 			return IntentDecision{}, nil, nil
 		})
 	if err != nil || !replayed.Replay || replayed.Outcome != IntentApplied ||
-		string(replayed.Receipt) != `{"outcome":"applied","soul":1}` {
+		string(replayed.Receipt) != `{"age_ms":1,"outcome":"applied"}` {
 		t.Fatalf("replayed result=%+v err=%v", replayed, err)
 	}
 
@@ -121,8 +121,8 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 		t.Fatalf("rejected result=%+v err=%v", rejected, err)
 	}
 	loaded, err = store.LoadLatest(ctx, founderRevision.StreamID)
-	if err != nil || loaded.Revision.Number != 2 || loaded.State.Soul != 1 {
-		t.Fatalf("rejection mutated state revision=%+v soul=%d err=%v", loaded.Revision, loaded.State.Soul, err)
+	if err != nil || loaded.Revision.Number != 2 || loaded.State.AgeMS != 1 {
+		t.Fatalf("rejection mutated state revision=%+v age_ms=%d err=%v", loaded.Revision, loaded.State.AgeMS, err)
 	}
 
 	called := false
@@ -139,7 +139,7 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 		"01990000-0004-7000-8000-000000000101", requestHash,
 		func(state *State, _ Revision) (IntentDecision, error) {
 			called = true
-			state.Soul++
+			state.AgeMS++
 			return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`)}, nil
 		}); !errors.Is(err, ErrInvalidStream) || called {
 		t.Fatalf("legacy intent bypass called=%v err=%v", called, err)
@@ -224,7 +224,7 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 			value, applyErr := store.ApplyFounderLogged(ctx, founderRevision.StreamID, 2, id, hash, body,
 				func(state *State, _ Revision, command FounderReplayCommand) (IntentDecision, json.RawMessage, error) {
 					concurrentCallbacks.Add(1)
-					state.Soul++
+					state.AgeMS++
 					replayInputs, marshalErr := founderReplayInputs(command, "fixture_founder_concurrent")
 					if marshalErr != nil {
 						return IntentDecision{}, nil, marshalErr
@@ -260,15 +260,15 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 	if _, err := store.ApplyFounderLogged(ctx, founderRevision.StreamID, 3, rollbackID,
 		"sha256:"+hex.EncodeToString(rollbackDigest[:]), rollbackPayload,
 		func(state *State, _ Revision, command FounderReplayCommand) (IntentDecision, json.RawMessage, error) {
-			state.Soul++
+			state.AgeMS++
 			return IntentDecision{Outcome: IntentApplied, Receipt: oversizedReceipt},
 				testFounderReplayInputs(t, command, "fixture_founder_rollback"), nil
 		}); !errors.Is(err, ErrInvalidStream) {
 		t.Fatalf("post-log rollback err=%v", err)
 	}
 	loaded, err = store.LoadLatest(ctx, founderRevision.StreamID)
-	if err != nil || loaded.Revision.Number != 3 || loaded.State.Soul != 2 {
-		t.Fatalf("rollback state revision=%d soul=%d err=%v", loaded.Revision.Number, loaded.State.Soul, err)
+	if err != nil || loaded.Revision.Number != 3 || loaded.State.AgeMS != 2 {
+		t.Fatalf("rollback state revision=%d age_ms=%d err=%v", loaded.Revision.Number, loaded.State.AgeMS, err)
 	}
 	var rollbackRows int
 	if err := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM founder_log WHERE intent_id=$1) +

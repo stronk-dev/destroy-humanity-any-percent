@@ -14,6 +14,7 @@ import (
 	"cloud-clicker/server/multiplier"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/save"
+	"cloud-clicker/server/soul"
 )
 
 var adjacentGatePattern = regexp.MustCompile(`^gate\.t([0-9]+)_to_t([0-9]+)$`)
@@ -127,11 +128,15 @@ func (s *Service) handleExit(ctx context.Context, streamID string, mode Evaluati
 	if err != nil {
 		return HandleResult{}, err
 	}
-	result, err := s.store.ApplyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, request.ExpectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
+	result, err := s.applyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, request.ExpectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
 		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand) (save.ExitDecision, json.RawMessage, error) {
 			return s.applyLoggedExit(ctx, request, founder, founderRevision, company, companyRevision, command, mode, now, executedRoutes)
-		}, nil)
+		})
 	if err != nil {
+		if errors.Is(err, soul.ErrRecoveryActive) {
+			return HandleResult{Receipt: marshalRejection(request.IntentID, request.ExpectedRevision,
+				"not_eligible", "exclusive_activity")}, nil
+		}
 		return s.exitErrorReceipt(ctx, streamID, request, err)
 	}
 	return s.finishExitResult(ctx, result)
@@ -170,11 +175,15 @@ func (s *Service) handleScriptedCrossGateExit(ctx context.Context, streamID stri
 	if err != nil {
 		return HandleResult{}, err
 	}
-	result, err := s.store.ApplyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, expectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
+	result, err := s.applyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, expectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
 		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand) (save.ExitDecision, json.RawMessage, error) {
 			return s.applyLoggedExit(ctx, request, founder, founderRevision, company, companyRevision, command, mode, now, executedRoutes)
-		}, nil)
+		})
 	if err != nil {
+		if errors.Is(err, soul.ErrRecoveryActive) {
+			return HandleResult{Receipt: marshalRejection(request.IntentID, request.ExpectedRevision,
+				"not_eligible", "exclusive_activity")}, nil
+		}
 		return s.exitErrorReceipt(ctx, streamID, request, err)
 	}
 	return s.finishExitResult(ctx, result)
