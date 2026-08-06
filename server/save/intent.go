@@ -66,6 +66,8 @@ const (
 	EventMinigameRatingChanged     EventKind = "minigame_rating_changed.v1"
 	EventDoctrinePicked            EventKind = "doctrine_picked"
 	EventComputeCreditSpent        EventKind = "compute_credit_spent"
+	EventFiscalPeriodHarvested     EventKind = "fiscal_period_harvested.v1"
+	EventFiscalCreditSpent         EventKind = "fiscal_credit_spent.v1"
 )
 
 // AllEventKinds is the closed structural authority consumed by catalog
@@ -75,6 +77,7 @@ var AllEventKinds = [...]EventKind{
 	EventCompactRecovered, EventCompactRecruitmentOffered, EventCompactSampled,
 	EventCompactSigned, EventCompactTitheRaised, EventCompensation,
 	EventComputeCreditSpent, EventDoctrinePicked,
+	EventFiscalCreditSpent, EventFiscalPeriodHarvested,
 	EventExitOfferDeclined, EventExitOfferExpired, EventExitOfferSpawned,
 	EventFactionStockSaturated, EventFounderAdvanced, EventGateCrossed,
 	EventGeneratorPurchased, EventGuildActivityEvaluated, EventGuildTitheAccrued,
@@ -567,6 +570,95 @@ func validateEventPayload(event EventWrite) error {
 			payload.AmountMS < 1 || payload.AmountMS > decimal.MaxExactInteger || payload.BurstDurationMS != payload.AmountMS ||
 			payload.Target != "accelerate" || speedErr != nil || !speed.Gt(decimal.One) {
 			return fmt.Errorf("%w: invalid compute_credit_spent payload", ErrInvalidStream)
+		}
+	case EventFiscalPeriodHarvested:
+		var header struct {
+			Source string `json:"source"`
+		}
+		if err := json.Unmarshal(event.Payload, &header); err != nil {
+			return fmt.Errorf("%w: invalid fiscal_period_harvested.v1 payload", ErrInvalidStream)
+		}
+		if header.Source == "automatic" {
+			var payload struct {
+				Source           string `json:"source"`
+				Periods          int64  `json:"periods"`
+				CreditBefore     int64  `json:"credit_before"`
+				Credited         int64  `json:"credited"`
+				CreditAfter      int64  `json:"credit_after"`
+				OpenedBeforeMS   int64  `json:"opened_before_ms"`
+				OpenedAfterMS    int64  `json:"opened_after_ms"`
+				SeqBefore        int64  `json:"seq_before"`
+				SeqAfter         int64  `json:"seq_after"`
+				Saturated        bool   `json:"saturated"`
+				HardcapReasonKey string `json:"hardcap_reason_key"`
+			}
+			if err := decodeStrictJSON(event.Payload, &payload); err != nil || payload.Periods < 1 ||
+				payload.CreditBefore < 0 || payload.Credited < 0 || payload.CreditAfter != payload.CreditBefore+payload.Credited ||
+				payload.CreditAfter > decimal.MaxExactInteger || payload.OpenedBeforeMS < 1 ||
+				payload.OpenedAfterMS <= payload.OpenedBeforeMS || payload.OpenedAfterMS > decimal.MaxExactInteger ||
+				payload.SeqBefore < 0 || payload.SeqAfter != payload.SeqBefore+payload.Periods ||
+				payload.SeqAfter > decimal.MaxExactInteger || !mechanicalIDPattern.MatchString(payload.HardcapReasonKey) {
+				return fmt.Errorf("%w: invalid fiscal_period_harvested.v1 payload", ErrInvalidStream)
+			}
+		} else if header.Source == "manual" {
+			var payload struct {
+				Source                   string `json:"source"`
+				Outcome                  string `json:"outcome"`
+				CreditBefore             int64  `json:"credit_before"`
+				CreditAfter              int64  `json:"credit_after"`
+				PeriodOpenedWallMSBefore int64  `json:"period_opened_wall_ms_before"`
+				PeriodOpenedWallMSAfter  int64  `json:"period_opened_wall_ms_after"`
+				SeqBefore                int64  `json:"seq_before"`
+				SeqAfter                 int64  `json:"seq_after"`
+				DrawPPM                  *int64 `json:"draw_ppm"`
+				Saturated                bool   `json:"saturated"`
+			}
+			validOutcome := func(value string) bool {
+				return value == "early_succeeded" || value == "early_failed" || value == "guaranteed"
+			}
+			if err := decodeStrictJSON(event.Payload, &payload); err != nil || !validOutcome(payload.Outcome) ||
+				payload.CreditBefore < 0 || payload.CreditAfter < payload.CreditBefore || payload.CreditAfter > decimal.MaxExactInteger ||
+				payload.PeriodOpenedWallMSBefore < 1 || payload.PeriodOpenedWallMSAfter <= payload.PeriodOpenedWallMSBefore ||
+				payload.PeriodOpenedWallMSAfter > decimal.MaxExactInteger || payload.SeqBefore < 0 ||
+				payload.SeqAfter != payload.SeqBefore+1 || payload.SeqAfter > decimal.MaxExactInteger ||
+				payload.DrawPPM != nil && (*payload.DrawPPM < 0 || *payload.DrawPPM >= 1_000_000) {
+				return fmt.Errorf("%w: invalid fiscal_period_harvested.v1 payload", ErrInvalidStream)
+			}
+		} else {
+			return fmt.Errorf("%w: invalid fiscal_period_harvested.v1 source", ErrInvalidStream)
+		}
+	case EventFiscalCreditSpent:
+		var payload struct {
+			Target             json.RawMessage `json:"target"`
+			ResolvedCost       int64           `json:"resolved_cost"`
+			FiscalCreditBefore int64           `json:"fiscal_credit_before"`
+			FiscalCreditAfter  int64           `json:"fiscal_credit_after"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || payload.ResolvedCost < 1 ||
+			payload.FiscalCreditBefore < payload.ResolvedCost ||
+			payload.FiscalCreditAfter != payload.FiscalCreditBefore-payload.ResolvedCost {
+			return fmt.Errorf("%w: invalid fiscal_credit_spent.v1 payload", ErrInvalidStream)
+		}
+		var target map[string]json.RawMessage
+		if err := decodeStrictJSON(payload.Target, &target); err != nil {
+			return fmt.Errorf("%w: invalid fiscal_credit_spent.v1 target", ErrInvalidStream)
+		}
+		var kind string
+		_ = json.Unmarshal(target["kind"], &kind)
+		valid := false
+		if kind == "generator_level" && len(target) == 3 {
+			var id string
+			var levels int64
+			_ = json.Unmarshal(target["generator_id"], &id)
+			_ = json.Unmarshal(target["levels"], &levels)
+			valid = mechanicalIDPattern.MatchString(id) && levels > 0 && levels <= decimal.MaxExactInteger
+		} else if kind == "unlock" && len(target) == 2 {
+			var id string
+			_ = json.Unmarshal(target["unlock_id"], &id)
+			valid = mechanicalIDPattern.MatchString(id)
+		}
+		if !valid {
+			return fmt.Errorf("%w: invalid fiscal_credit_spent.v1 target", ErrInvalidStream)
 		}
 	case EventMeterBandChanged:
 		var payload struct {

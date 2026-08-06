@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import fixture from "../../balance/testdata/fiscal-foundation-v1.json";
 import phase0 from "../../balance/catalogs/phase0.json";
 import { parseCatalog } from "../src/economy-kernel";
-import { fiscalEarlyHarvestDraw, fiscalGeneratorCost, fiscalGeneratorFactor, fiscalHoardFactor, loadFiscalCatalog } from "../src/fiscal";
+import { fiscalEarlyHarvestDraw, fiscalGeneratorCost, fiscalGeneratorFactor, fiscalHoardFactor, harvestFiscal, loadFiscalCatalog, spendFiscal, sweepFiscal, type FiscalState } from "../src/fiscal";
 
 function economyWithFiscalSources(): ReturnType<typeof parseCatalog> {
   const source = structuredClone(phase0) as any;
@@ -33,5 +33,16 @@ describe("fiscal foundation", () => {
   });
   it("matches exact seed/substream vectors", async () => {
     for (const vector of fixture.rng_vectors) expect(await fiscalEarlyHarvestDraw(vector.founder_id, vector.sequence)).toBe(vector.expected);
+  });
+  it("keeps sweep phase and rolls rejected spend back", async () => {
+    const catalog = loadFiscalCatalog(fixture.baseline, economy);
+    const state: FiscalState = { credit: 998, periodOpenedWallMs: 1_000, periodSequence: 0, generatorLevels: { "generator.beige_tower": 0 }, unlocks: [] };
+    expect(sweepFiscal(catalog, state, 1_901)).toMatchObject({ periods: 3, credited: 2, saturated: true, openedAfterMs: 1_900, sequenceAfter: 3 });
+    expect(state).toMatchObject({ credit: 1_000, periodOpenedWallMs: 1_900, periodSequence: 3 });
+    const rejected: FiscalState = { credit: 0, periodOpenedWallMs: 1_000, periodSequence: 0, generatorLevels: { "generator.beige_tower": 0 }, unlocks: [] };
+    expect(() => spendFiscal(catalog, rejected, 1_300, { kind: "unlock", unlockId: "unlock.arcade" })).toThrow("insufficient fiscal credit");
+    expect(rejected).toEqual({ credit: 0, periodOpenedWallMs: 1_000, periodSequence: 0, generatorLevels: { "generator.beige_tower": 0 }, unlocks: [] });
+    const guaranteed: FiscalState = { credit: 0, periodOpenedWallMs: 1_000, periodSequence: 0, generatorLevels: { "generator.beige_tower": 0 }, unlocks: [] };
+    expect(await harvestFiscal(catalog, guaranteed, "founder.one", 1_200)).toMatchObject({ outcome: "guaranteed", creditAfter: 3, sequenceBefore: 0 });
   });
 });

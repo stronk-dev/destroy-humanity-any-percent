@@ -17,6 +17,22 @@ export interface FiscalCatalog {
   readonly unlockRows: readonly { readonly unlockId: string; readonly cost: number }[];
 }
 
+export interface FiscalState {
+  credit: number;
+  periodOpenedWallMs: number;
+  periodSequence: number;
+  generatorLevels: Record<string, number>;
+  unlocks: string[];
+}
+
+export interface FiscalSweep {
+  readonly periods: number; readonly creditBefore: number; readonly credited: number; readonly creditAfter: number;
+  readonly openedBeforeMs: number; readonly openedAfterMs: number; readonly sequenceBefore: number; readonly sequenceAfter: number;
+  readonly saturated: boolean; readonly hardcapReasonKey: string;
+}
+
+export type FiscalSpendTarget = { readonly kind: "generator_level"; readonly generatorId: string; readonly levels: number } | { readonly kind: "unlock"; readonly unlockId: string };
+
 export function loadFiscalCatalog(source: unknown, economy: EconomyCatalog): FiscalCatalog {
   const root = exactObject(source, ["schema_version", "clock_policy", "credit_policy", "hoard_policy", "generator_level_rows", "unlock_rows"], "fiscal catalog");
   if (root.schema_version !== FISCAL_SCHEMA_VERSION) throw new SyntaxError("invalid fiscal schema version");
@@ -77,6 +93,59 @@ export async function fiscalEarlyHarvestDraw(founderId: string, sequence: number
   const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(founderId)));
   let seed = 0n; for (let index = 0; index < 8; index++) seed = (seed << 8n) | BigInt(digest[index]!);
   return Number(substream(seed ^ BigInt(sequence), FISCAL_EARLY_SUBSTREAM).bound(BigInt(PPM)));
+}
+
+export function sweepFiscal(catalog: FiscalCatalog, state: FiscalState, nowWallMs: number): FiscalSweep | null {
+  validateFiscalState(catalog, state);
+  if (!Number.isSafeInteger(nowWallMs) || nowWallMs < state.periodOpenedWallMs) throw new RangeError("fiscal wall clock regressed");
+  const periods = Math.floor((nowWallMs - state.periodOpenedWallMs) / catalog.clock.autoMs);
+  if (periods === 0) return null;
+  if (periods > MAX_EXACT_INTEGER - state.periodSequence) throw new RangeError("fiscal period sequence overflow");
+  const creditBefore = state.credit, openedBeforeMs = state.periodOpenedWallMs, sequenceBefore = state.periodSequence;
+  const minted = BigInt(periods) * BigInt(catalog.credit.creditPerPeriod), headroom = BigInt(catalog.credit.hardcap - state.credit);
+  const credited = minted > headroom ? headroom : minted;
+  state.credit += Number(credited); state.periodOpenedWallMs += periods * catalog.clock.autoMs; state.periodSequence += periods;
+  return { periods, creditBefore, credited: Number(credited), creditAfter: state.credit, openedBeforeMs, openedAfterMs: state.periodOpenedWallMs,
+    sequenceBefore, sequenceAfter: state.periodSequence, saturated: minted > headroom, hardcapReasonKey: catalog.credit.hardcapReasonKey };
+}
+
+export async function harvestFiscal(catalog: FiscalCatalog, state: FiscalState, founderId: string, nowWallMs: number): Promise<{ sweep: FiscalSweep | null; nowWallMs: number; periodOpenedBeforeWallMs: number; periodsSwept: number; sequenceBefore: number; drawPpm: number | null; outcome: "auto_reported" | "early_succeeded" | "early_failed" | "guaranteed" | "consumed_by_auto"; creditBefore: number; creditAfter: number; saturated: boolean }> {
+  const opened = state.periodOpenedWallMs, sequence = state.periodSequence, credit = state.credit;
+  const sweep = sweepFiscal(catalog, state, nowWallMs);
+  if (sweep) return { sweep, nowWallMs, periodOpenedBeforeWallMs: opened, periodsSwept: sweep.periods, sequenceBefore: sequence, drawPpm: null, outcome: "consumed_by_auto", creditBefore: credit, creditAfter: state.credit, saturated: sweep.saturated };
+  const elapsed = nowWallMs - state.periodOpenedWallMs;
+  if (elapsed < catalog.clock.earlyMs) throw new RangeError("fiscal period not ripe");
+  let drawPpm: number | null = null, outcome: "early_succeeded" | "early_failed" | "guaranteed" = "guaranteed", success = true;
+  if (elapsed < catalog.clock.guaranteedMs) { drawPpm = await fiscalEarlyHarvestDraw(founderId, state.periodSequence); success = drawPpm < catalog.clock.earlySuccessPpm; outcome = success ? "early_succeeded" : "early_failed"; }
+  if (state.periodSequence === MAX_EXACT_INTEGER) throw new RangeError("fiscal period sequence overflow");
+  state.periodOpenedWallMs = nowWallMs; state.periodSequence++;
+  let saturated = false;
+  if (success) { const credited = Math.min(catalog.credit.creditPerPeriod, catalog.credit.hardcap - state.credit); saturated = credited < catalog.credit.creditPerPeriod; state.credit += credited; }
+  return { sweep: null, nowWallMs, periodOpenedBeforeWallMs: opened, periodsSwept: 0, sequenceBefore: sequence, drawPpm, outcome, creditBefore: credit, creditAfter: state.credit, saturated };
+}
+
+export function fiscalResolvedCost(catalog: FiscalCatalog, state: FiscalState, target: FiscalSpendTarget): number {
+  if (target.kind === "generator_level") return fiscalGeneratorCost(catalog, target.generatorId, state.generatorLevels[target.generatorId] ?? -1, target.levels);
+  const row = catalog.unlockRows.find((value) => value.unlockId === target.unlockId); if (!row) throw new RangeError("unknown fiscal target");
+  if (state.unlocks.includes(target.unlockId)) throw new RangeError("fiscal target already unlocked"); return row.cost;
+}
+
+export function spendFiscal(catalog: FiscalCatalog, state: FiscalState, nowWallMs: number, target: FiscalSpendTarget): { sweep: FiscalSweep | null; resolvedCost: number; creditBefore: number; creditAfter: number } {
+  const before: FiscalState = { credit: state.credit, periodOpenedWallMs: state.periodOpenedWallMs, periodSequence: state.periodSequence, generatorLevels: { ...state.generatorLevels }, unlocks: [...state.unlocks] };
+  try {
+    const sweep = sweepFiscal(catalog, state, nowWallMs), resolvedCost = fiscalResolvedCost(catalog, state, target), creditBefore = state.credit;
+    if (state.credit < resolvedCost) throw new RangeError("insufficient fiscal credit"); state.credit -= resolvedCost;
+    if (target.kind === "generator_level") state.generatorLevels[target.generatorId] = state.generatorLevels[target.generatorId]! + target.levels;
+    else state.unlocks = [...state.unlocks, target.unlockId].sort(byteCompare);
+    return { sweep, resolvedCost, creditBefore, creditAfter: state.credit };
+  } catch (error) { Object.assign(state, before); throw error; }
+}
+
+export function validateFiscalState(catalog: FiscalCatalog, state: FiscalState): void {
+  if (!Number.isSafeInteger(state.credit) || state.credit < 0 || state.credit > catalog.credit.hardcap || !Number.isSafeInteger(state.periodOpenedWallMs) || state.periodOpenedWallMs < 0 || !Number.isSafeInteger(state.periodSequence) || state.periodSequence < 0) throw new RangeError("invalid fiscal state");
+  if (Object.keys(state.generatorLevels).length !== catalog.generatorLevelRows.length) throw new RangeError("invalid fiscal level keys");
+  for (const row of catalog.generatorLevelRows) { const level = state.generatorLevels[row.generatorId]; if (!Number.isSafeInteger(level) || level! < 0 || level! > row.levelHardcap) throw new RangeError("invalid fiscal level"); }
+  if ([...state.unlocks].sort(byteCompare).some((value, index, values) => value !== state.unlocks[index] || index > 0 && values[index - 1] === value || !catalog.unlockRows.some((row) => row.unlockId === value))) throw new RangeError("invalid fiscal unlocks");
 }
 
 function ppmFactor(count: number, perCountPpm: number): string {

@@ -198,6 +198,14 @@ func TestParseIntentCanonicalHashAndSemantics(t *testing.T) {
 	if err != nil || care.InvalidDetail != "" || care.PetID == "" || care.ActionID != "care.feed" {
 		t.Fatalf("care=%+v err=%v", care, err)
 	}
+	harvest, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"harvest_fiscal_period","expected_revision":2}`))
+	if err != nil || harvest.InvalidDetail != "" {
+		t.Fatalf("harvest=%+v err=%v", harvest, err)
+	}
+	spend, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"spend_fiscal_credit","expected_revision":2,"target":{"kind":"generator_level","generator_id":"generator.example","levels":3}}`))
+	if err != nil || spend.InvalidDetail != "" || spend.FiscalTarget.Kind != "generator_level" || spend.FiscalTarget.Levels != 3 {
+		t.Fatalf("spend=%+v err=%v", spend, err)
+	}
 	sign, err := ParseIntent([]byte(`{"intent_id":"018f6b7c-9abc-7def-8abc-0123456789ab","kind":"sign_compact","expected_revision":1,"tithe_ppm":100000}`))
 	if err != nil || sign.InvalidDetail != "" || sign.TithePPM != 100_000 {
 		t.Fatalf("sign=%+v err=%v", sign, err)

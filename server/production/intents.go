@@ -20,6 +20,7 @@ import (
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
+	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/pet"
@@ -36,21 +37,23 @@ var (
 )
 
 const (
-	IntentBuyGenerator       = "buy_generator"
-	IntentBuyUpgrade         = "buy_upgrade"
-	IntentPerformManualBatch = "perform_manual_batch"
-	IntentCrossGate          = "cross_gate"
-	IntentBuyRouteHint       = "buy_route_hint"
-	IntentSignCompact        = "sign_compact"
-	IntentLeaveCompact       = "leave_compact"
-	IntentAcceptExitOffer    = "accept_exit_offer"
-	IntentDeclineExitOffer   = "decline_exit_offer"
-	IntentWindDown           = "wind_down"
-	IntentFileIPO            = "file_ipo"
-	IntentIncorporate        = "incorporate"
-	IntentCareAction         = "care_action"
-	IntentPickDoctrine       = "pick_doctrine"
-	IntentSpendComputeCredit = "spend_compute_credit"
+	IntentBuyGenerator        = "buy_generator"
+	IntentBuyUpgrade          = "buy_upgrade"
+	IntentPerformManualBatch  = "perform_manual_batch"
+	IntentCrossGate           = "cross_gate"
+	IntentBuyRouteHint        = "buy_route_hint"
+	IntentSignCompact         = "sign_compact"
+	IntentLeaveCompact        = "leave_compact"
+	IntentAcceptExitOffer     = "accept_exit_offer"
+	IntentDeclineExitOffer    = "decline_exit_offer"
+	IntentWindDown            = "wind_down"
+	IntentFileIPO             = "file_ipo"
+	IntentIncorporate         = "incorporate"
+	IntentCareAction          = "care_action"
+	IntentPickDoctrine        = "pick_doctrine"
+	IntentSpendComputeCredit  = "spend_compute_credit"
+	IntentHarvestFiscalPeriod = "harvest_fiscal_period"
+	IntentSpendFiscalCredit   = "spend_fiscal_credit"
 )
 
 type PrestigePolicyResolver interface {
@@ -284,6 +287,7 @@ type IntentRequest struct {
 	DoctrineID              string
 	AmountMS                int64
 	Target                  string
+	FiscalTarget            fiscal.SpendTarget
 }
 
 type CompactTitheBand struct {
@@ -361,6 +365,9 @@ func (s *Service) Handle(
 	}
 	if request.Kind == IntentCareAction {
 		return s.handleFounderCare(ctx, streamID, now, request)
+	}
+	if request.Kind == IntentHarvestFiscalPeriod || request.Kind == IntentSpendFiscalCredit {
+		return s.handleFounderFiscal(ctx, streamID, request)
 	}
 	var prestigeFounder *save.Loaded
 	var declinedOffers int64
@@ -712,6 +719,89 @@ func (s *Service) handleFounderCare(ctx context.Context, companyStreamID string,
 				current = loaded.Revision.Number
 			}
 			return HandleResult{Receipt: marshalRejection(request.IntentID, current, "idempotency_conflict", request.IntentID)}, nil
+		default:
+			return HandleResult{}, err
+		}
+	}
+	if err := s.projectCommittedEvents(ctx, result.Events); err != nil {
+		return HandleResult{}, err
+	}
+	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
+}
+
+func (s *Service) handleFounderFiscal(ctx context.Context, companyStreamID string, request IntentRequest) (HandleResult, error) {
+	if s.replayCatalogs == nil {
+		return HandleResult{}, fmt.Errorf("%w: Founder replay runtime unavailable", ErrInvalidIntent)
+	}
+	founder, err := s.store.LoadSiblingLatest(ctx, companyStreamID, economy.ScopeFounder)
+	if err != nil {
+		return HandleResult{}, err
+	}
+	result, err := s.store.ApplyFounderLogged(ctx, founder.Revision.StreamID, request.ExpectedRevision,
+		request.IntentID, request.RequestHash, request.CanonicalPayload,
+		func(state *save.State, revision save.Revision, command save.FounderReplayCommand) (save.IntentDecision, json.RawMessage, error) {
+			bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(revision.ConstantsHash)
+			if !ok || bundle.Fiscal == nil || save.VersionForState(state) < 19 {
+				return save.IntentDecision{}, nil, fmt.Errorf("%w: Fiscal catalog unavailable", ErrInvalidIntent)
+			}
+			if request.InvalidDetail != "" {
+				replayInputs, marshalErr := marshalFounderReplayInputs(command,
+					founderInvalidResolved{Kind: "invalid", Detail: request.InvalidDetail})
+				if marshalErr != nil {
+					return save.IntentDecision{}, nil, marshalErr
+				}
+				transition, transitionErr := ApplyFounderLogged(state, request.CanonicalPayload, bundle, replayInputs)
+				return save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt,
+					Events: transition.Events}, replayInputs, transitionErr
+			}
+			var resolved any
+			fiscalState := fiscalStateFromSave(state)
+			switch request.Kind {
+			case IntentHarvestFiscalPeriod:
+				before := fiscalState
+				harvest, harvestErr := bundle.Fiscal.Harvest(&fiscalState, revision.OwnerID, command.ServerTSMS)
+				if errors.Is(harvestErr, fiscal.ErrNotRipe) {
+					resolved = founderFiscalHarvestResolved{Kind: IntentHarvestFiscalPeriod, NowWallMS: command.ServerTSMS,
+						PeriodOpenedWallMSBefore: before.PeriodOpenedWallMS, PeriodsSwept: 0,
+						SeqBefore: before.PeriodSequence, DrawPPM: nil, Outcome: "rejected"}
+				} else if harvestErr != nil {
+					return save.IntentDecision{}, nil, harvestErr
+				} else {
+					resolved = founderFiscalHarvestResolved{Kind: IntentHarvestFiscalPeriod, NowWallMS: command.ServerTSMS,
+						PeriodOpenedWallMSBefore: harvest.PeriodOpenedBeforeWallMS, PeriodsSwept: harvest.PeriodsSwept,
+						SeqBefore: harvest.SequenceBefore, DrawPPM: harvest.DrawPPM, Outcome: string(harvest.Outcome)}
+				}
+			case IntentSpendFiscalCredit:
+				cost, costErr := resolvedFiscalCost(bundle.Fiscal, fiscalState, request.FiscalTarget)
+				if costErr != nil {
+					cost = 0
+				}
+				resolved = founderFiscalSpendResolved{Kind: IntentSpendFiscalCredit,
+					Target: fiscalTargetFromRequest(request), ResolvedCost: cost}
+			default:
+				return save.IntentDecision{}, nil, ErrInvalidIntent
+			}
+			replayInputs, marshalErr := marshalFounderReplayInputs(command, resolved)
+			if marshalErr != nil {
+				return save.IntentDecision{}, nil, marshalErr
+			}
+			transition, transitionErr := ApplyFounderLogged(state, request.CanonicalPayload, bundle, replayInputs)
+			return save.IntentDecision{Outcome: transition.Outcome, Receipt: transition.Receipt,
+				Events: transition.Events}, replayInputs, transitionErr
+		})
+	if err != nil {
+		var conflict *save.RevisionConflict
+		switch {
+		case errors.As(err, &conflict):
+			return HandleResult{Receipt: marshalRejection(request.IntentID, conflict.Current,
+				"revision_conflict", "expected_revision")}, nil
+		case errors.Is(err, save.ErrIdempotencyConflict):
+			current := request.ExpectedRevision
+			if loaded, loadErr := s.store.LoadLatest(ctx, founder.Revision.StreamID); loadErr == nil {
+				current = loaded.Revision.Number
+			}
+			return HandleResult{Receipt: marshalRejection(request.IntentID, current,
+				"idempotency_conflict", request.IntentID)}, nil
 		default:
 			return HandleResult{}, err
 		}
@@ -1871,6 +1961,47 @@ func ParseIntent(data []byte) (IntentRequest, error) {
 		}
 		if err := json.Unmarshal(root["target"], &request.Target); err != nil || request.Target != "accelerate" {
 			request.InvalidDetail = "target"
+		}
+	case IntentHarvestFiscalPeriod:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision") {
+			request.InvalidDetail = "harvest_fiscal_period.fields"
+		}
+	case IntentSpendFiscalCredit:
+		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "target") {
+			request.InvalidDetail = "spend_fiscal_credit.fields"
+			return request, nil
+		}
+		var target map[string]json.RawMessage
+		if err := json.Unmarshal(root["target"], &target); err != nil {
+			request.InvalidDetail = "target"
+			return request, nil
+		}
+		if err := json.Unmarshal(target["kind"], &request.FiscalTarget.Kind); err != nil {
+			request.InvalidDetail = "target.kind"
+			return request, nil
+		}
+		switch request.FiscalTarget.Kind {
+		case "generator_level":
+			if !hasExactKeys(target, "kind", "generator_id", "levels") {
+				request.InvalidDetail = "target.generator_level.fields"
+				return request, nil
+			}
+			if err := json.Unmarshal(target["generator_id"], &request.FiscalTarget.GeneratorID); err != nil || !intentIDPattern.MatchString(request.FiscalTarget.GeneratorID) {
+				request.InvalidDetail = "generator_id"
+			}
+			if !parsePositiveSafeInt(target["levels"], &request.FiscalTarget.Levels) {
+				request.InvalidDetail = "levels"
+			}
+		case "unlock":
+			if !hasExactKeys(target, "kind", "unlock_id") {
+				request.InvalidDetail = "target.unlock.fields"
+				return request, nil
+			}
+			if err := json.Unmarshal(target["unlock_id"], &request.FiscalTarget.UnlockID); err != nil || !intentIDPattern.MatchString(request.FiscalTarget.UnlockID) {
+				request.InvalidDetail = "unlock_id"
+			}
+		default:
+			request.InvalidDetail = "target.kind"
 		}
 	case IntentBuyRouteHint:
 		if !hasExactKeys(root, "intent_id", "kind", "expected_revision", "route_id") {

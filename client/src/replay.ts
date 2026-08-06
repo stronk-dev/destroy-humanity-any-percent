@@ -7,7 +7,7 @@ import { COPY_KEYS } from "./copy";
 import { loadDoctrineCatalog, validateDoctrineRoutes, type DoctrineCatalog } from "./doctrines";
 import { ladderSourceId, manualRoleSourceId, parseCatalog, subProgressValue, validateCatalogGateReferences, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
 import { parseFactionCatalog, type FactionCatalog } from "./faction";
-import { loadFiscalCatalog, type FiscalCatalog } from "./fiscal";
+import { fiscalResolvedCost, harvestFiscal, loadFiscalCatalog, spendFiscal, sweepFiscal, type FiscalCatalog, type FiscalSpendTarget, type FiscalState, type FiscalSweep } from "./fiscal";
 import { parseGuildCatalog, type GuildCatalog } from "./guild";
 import { loadMeterCatalog, validateMeterResourceSeparation, type MeterCatalog } from "./meters/catalog";
 import { advanceMeters, contributionKey as meterContributionKey, newRunMeterState, validateMeterState } from "./meters/transition";
@@ -498,27 +498,39 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
   const wire = parseFounderReplayWire(replayInputs);
   const before = restoreFounderReplayState(encodeFounderReplayState(state), state.wireVersion, catalogs);
   const rollback = (): void => { Object.assign(state, before); };
+  let fiscalSweep: FiscalSweep | null = null;
+  if (catalogs.fiscal) {
+    if (state.wireVersion < 19) throw new RangeError("inactive Fiscal state");
+    const fiscalState = founderFiscalState(state); fiscalSweep = sweepFiscal(catalogs.fiscal, fiscalState, wire.command.server_ts_ms); applyFounderFiscalState(state, fiscalState);
+  }
+  const finish = (transition: FounderLoggedTransition): FounderLoggedTransition => {
+    if (transition.outcome !== "applied") { rollback(); return transition; }
+    if (!fiscalSweep) return transition;
+    const receipt = exactObject(transition.receipt, Object.keys(transition.receipt as Record<string, unknown>), "Founder receipt");
+    const fiscal_sweep = fiscalSweepWire(fiscalSweep);
+    return { ...transition, receipt: { ...receipt, fiscal_sweep }, events: [event("fiscal_period_harvested.v1", wire.command.intent_id, { source: "automatic", ...fiscal_sweep }), ...transition.events] };
+  };
   try {
     const kind = string(wire.resolved.kind);
-    if (kind === "resolve_minigame_session") return await applyFounderMinigameLogged(state, canonicalPayload, catalogs, wire);
+    if (kind === "resolve_minigame_session") return finish(await applyFounderMinigameLogged(state, canonicalPayload, catalogs, wire));
     const request = parseIntent(canonicalPayload, wire.command.intent_id);
     if (kind === "invalid") {
       onlyKeys(wire.resolved, ["kind", "detail"], "invalid Founder inputs");
       if (request.invalid === undefined || string(wire.resolved.detail) !== request.invalid) throw new RangeError("invalid Founder arm mismatch");
-      return founderRejected(state, wire.command.intent_id, wire.command.revision, "invalid", request.invalid, catalogs.constantsHash);
+      return finish(founderRejected(state, wire.command.intent_id, wire.command.revision, "invalid", request.invalid, catalogs.constantsHash));
     }
     if (kind === "buy_route_hint") {
       onlyKeys(wire.resolved, ["kind", "route_context_version", "route_knowledge_balance"], "route hint inputs");
       if (request.kind !== "buy_route_hint" || request.invalid !== undefined || request.expected_revision !== wire.command.revision || safeInteger(wire.resolved.route_context_version, 1, MAX_EXACT_INTEGER) !== catalogs.routes.contextVersion) throw new RangeError("route hint command mismatch");
       state.routeKnowledgeBalance = safeInteger(wire.resolved.route_knowledge_balance, 0, MAX_EXACT_INTEGER);
       const routeId = string(request.route_id); const route = catalogs.routes.route(routeId);
-      if (!route) return founderRejected(state, request.intent_id, wire.command.revision, "unknown_id", routeId, catalogs.constantsHash, rollback);
-      if (state.hintsUnlocked.has(routeId)) return founderRejected(state, request.intent_id, wire.command.revision, "already_unlocked", routeId, catalogs.constantsHash, rollback);
-      if (state.routeKnowledgeBalance < catalogs.routes.knowledge.hintCost) return founderRejected(state, request.intent_id, wire.command.revision, "insufficient_route_knowledge", routeId, catalogs.constantsHash, rollback);
+      if (!route) return finish(founderRejected(state, request.intent_id, wire.command.revision, "unknown_id", routeId, catalogs.constantsHash, rollback));
+      if (state.hintsUnlocked.has(routeId)) return finish(founderRejected(state, request.intent_id, wire.command.revision, "already_unlocked", routeId, catalogs.constantsHash, rollback));
+      if (state.routeKnowledgeBalance < catalogs.routes.knowledge.hintCost) return finish(founderRejected(state, request.intent_id, wire.command.revision, "insufficient_route_knowledge", routeId, catalogs.constantsHash, rollback));
       state.routeKnowledgeBalance -= catalogs.routes.knowledge.hintCost; state.hintsUnlocked.add(routeId);
       const eventValue = event("route_hint_purchased", request.intent_id, { route_id: routeId, cost: catalogs.routes.knowledge.hintCost });
       const receipt = { applied_count: 1, evaluated_at: rfc3339(state.evaluatedThroughMs), intent_id: request.intent_id, new_revision: wire.command.revision + 1, outcome: "applied", receipt: { changes: [] }, snapshot: founderWireSnapshot(state) };
-      return { state, outcome: "applied", receipt, events: [eventValue], resultConstantsHash: catalogs.constantsHash };
+      return finish({ state, outcome: "applied", receipt, events: [eventValue], resultConstantsHash: catalogs.constantsHash });
     }
     if (kind === "care_action") {
       exactKeys(wire.resolved, ["kind", "attendance", "pet_attended_before_ms"], "pet care inputs");
@@ -531,14 +543,14 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
       const care = state.pets[petId];
       if (care === undefined) {
         if (beforeCursor !== 0) throw new RangeError("unknown pet has a care cursor");
-        return founderRejected(state, request.intent_id, wire.command.revision, "unknown_id", "unknown_pet", catalogs.constantsHash, rollback);
+        return finish(founderRejected(state, request.intent_id, wire.command.revision, "unknown_id", "unknown_pet", catalogs.constantsHash, rollback));
       }
       if (care.evaluated_through_attended_ms !== beforeCursor) throw new RangeError("stale pet care cursor");
       const priorBand = careStatus(care, catalogs.pets).status_band;
       const careResult = applyPetCareTransition(care, catalogs.pets, { action_id: actionId, attended_before_ms: beforeCursor, attended_after_ms: attended });
       if (!careResult.applied) {
         const category = careResult.rejection_detail === "unknown_action" ? "unknown_id" : "not_eligible";
-        return founderRejected(state, request.intent_id, wire.command.revision, category, careResult.rejection_detail, catalogs.constantsHash, rollback);
+        return finish(founderRejected(state, request.intent_id, wire.command.revision, category, careResult.rejection_detail, catalogs.constantsHash, rollback));
       }
       state.pets[petId] = careResult.state;
       const receipt = { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1,
@@ -553,11 +565,50 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
         next_eligible_attended_ms: careResult.next_eligible_attended_ms })];
       if (careResult.status_changed) events.push(event("pet_status_changed.v1", request.intent_id,
         { pet_id: petId, from_status_band: priorBand, to_status_band: careResult.status_band }));
-      return { state, outcome: "applied", receipt, events, resultConstantsHash: catalogs.constantsHash };
+      return finish({ state, outcome: "applied", receipt, events, resultConstantsHash: catalogs.constantsHash });
     }
-    if (kind === "exit.v1") return applyFounderExit(state, request, wire, catalogs);
+    if (kind === "harvest_fiscal_period") return finish(await applyFounderFiscalHarvest(state, request, wire, catalogs));
+    if (kind === "spend_fiscal_credit") return finish(applyFounderFiscalSpend(state, request, wire, catalogs));
+    if (kind === "exit.v1") return finish(applyFounderExit(state, request, wire, catalogs));
     throw new RangeError("unknown Founder replay arm");
   } catch (error) { rollback(); throw error; }
+}
+
+function founderFiscalState(state: FounderReplayState): FiscalState { return { credit: state.fiscalCredit, periodOpenedWallMs: state.fiscalPeriodOpenedWallMs, periodSequence: state.fiscalPeriodSequence, generatorLevels: { ...state.fiscalGeneratorLevels }, unlocks: [...state.fiscalUnlocks].sort(byteCompare) }; }
+function applyFounderFiscalState(state: FounderReplayState, value: FiscalState): void { state.fiscalCredit = value.credit; state.fiscalPeriodOpenedWallMs = value.periodOpenedWallMs; state.fiscalPeriodSequence = value.periodSequence; state.fiscalGeneratorLevels = { ...value.generatorLevels }; state.fiscalUnlocks = new Set(value.unlocks); }
+function fiscalSweepWire(value: FiscalSweep): Record<string, unknown> { return { periods: value.periods, credit_before: value.creditBefore, credited: value.credited, credit_after: value.creditAfter, opened_before_ms: value.openedBeforeMs, opened_after_ms: value.openedAfterMs, seq_before: value.sequenceBefore, seq_after: value.sequenceAfter, saturated: value.saturated, hardcap_reason_key: value.hardcapReasonKey }; }
+function parseFiscalTarget(source: unknown): FiscalSpendTarget { if (!isRecord(source)) throw new RangeError("Fiscal target must be an object"); const raw = source; const kind = string(raw.kind); if (kind === "generator_level") { exactKeys(raw, ["kind", "generator_id", "levels"], "Fiscal generator target"); return { kind, generatorId: mechanicalString(raw.generator_id), levels: safeInteger(raw.levels, 1, MAX_EXACT_INTEGER) }; } if (kind === "unlock") { exactKeys(raw, ["kind", "unlock_id"], "Fiscal unlock target"); return { kind, unlockId: mechanicalString(raw.unlock_id) }; } throw new RangeError("unknown Fiscal target"); }
+function fiscalTargetWire(target: FiscalSpendTarget): Record<string, unknown> { return target.kind === "generator_level" ? { kind: target.kind, generator_id: target.generatorId, levels: target.levels } : { kind: target.kind, unlock_id: target.unlockId }; }
+
+async function applyFounderFiscalHarvest(state: FounderReplayState, request: Intent, wire: FounderReplayWire, catalogs: ReplayCatalogBundle): Promise<FounderLoggedTransition> {
+  if (request.kind !== "harvest_fiscal_period" || request.invalid !== undefined || request.expected_revision !== wire.command.revision || !catalogs.fiscal || state.wireVersion < 19) throw new RangeError("Fiscal harvest command mismatch");
+  exactKeys(wire.resolved, ["kind", "now_wall_ms", "period_opened_wall_ms_before", "periods_swept", "seq_before", "draw_ppm", "outcome"], "Fiscal harvest inputs");
+  const now = safeInteger(wire.resolved.now_wall_ms, 1, MAX_EXACT_INTEGER), opened = safeInteger(wire.resolved.period_opened_wall_ms_before, 1, MAX_EXACT_INTEGER), periods = safeInteger(wire.resolved.periods_swept, 0, MAX_EXACT_INTEGER), sequence = safeInteger(wire.resolved.seq_before, 0, MAX_EXACT_INTEGER);
+  const draw = wire.resolved.draw_ppm === null ? null : safeInteger(wire.resolved.draw_ppm, 0, 999_999), outcome = string(wire.resolved.outcome);
+  if (now !== wire.command.server_ts_ms) throw new RangeError("Fiscal harvest timestamp mismatch"); const fiscalState = founderFiscalState(state), creditBefore = fiscalState.credit; let saturated = false;
+  if (outcome === "consumed_by_auto") { if (periods < 1 || draw !== null || fiscalState.periodSequence !== sequence + periods || fiscalState.periodOpenedWallMs !== opened + periods * catalogs.fiscal.clock.autoMs) throw new RangeError("consumed Fiscal harvest mismatch"); }
+  else {
+    let applied: Awaited<ReturnType<typeof harvestFiscal>>;
+    try { applied = await harvestFiscal(catalogs.fiscal, fiscalState, wire.command.founder_id, now); }
+    catch (error) { if (outcome === "rejected" && draw === null && periods === 0 && error instanceof RangeError && error.message === "fiscal period not ripe") return founderRejected(state, request.intent_id, wire.command.revision, "not_eligible", "period_not_ripe", catalogs.constantsHash); throw error; }
+    if (applied.periodOpenedBeforeWallMs !== opened || applied.periodsSwept !== periods || applied.sequenceBefore !== sequence || applied.drawPpm !== draw || applied.outcome !== outcome) throw new RangeError("Fiscal harvest resolution mismatch"); saturated = applied.saturated; applyFounderFiscalState(state, fiscalState);
+  }
+  const receipt = { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, fiscal_sweep: null, source: "manual", fiscal_credit_before: creditBefore, fiscal_credit_after: state.fiscalCredit, period_opened_wall_ms: state.fiscalPeriodOpenedWallMs, periods_swept: periods, seq_before: sequence, seq_after: state.fiscalPeriodSequence, draw_ppm: draw, harvest_outcome: outcome, saturated };
+  const events = outcome === "consumed_by_auto" ? [] : [event("fiscal_period_harvested.v1", request.intent_id, { source: "manual", outcome, credit_before: creditBefore, credit_after: state.fiscalCredit, period_opened_wall_ms_before: opened, period_opened_wall_ms_after: state.fiscalPeriodOpenedWallMs, seq_before: sequence, seq_after: state.fiscalPeriodSequence, draw_ppm: draw, saturated })];
+  return { state, outcome: "applied", receipt, events, resultConstantsHash: catalogs.constantsHash };
+}
+
+function applyFounderFiscalSpend(state: FounderReplayState, request: Intent, wire: FounderReplayWire, catalogs: ReplayCatalogBundle): FounderLoggedTransition {
+  if (request.kind !== "spend_fiscal_credit" || request.invalid !== undefined || request.expected_revision !== wire.command.revision || !catalogs.fiscal || state.wireVersion < 19) throw new RangeError("Fiscal spend command mismatch");
+  exactKeys(wire.resolved, ["kind", "target", "resolved_cost"], "Fiscal spend inputs"); const target = parseFiscalTarget(request.target), resolvedTarget = parseFiscalTarget(wire.resolved.target);
+  if (canonicalJSONString(fiscalTargetWire(target)) !== canonicalJSONString(fiscalTargetWire(resolvedTarget))) throw new RangeError("Fiscal target mismatch");
+  const fiscalState = founderFiscalState(state); let expectedCost = 0; try { expectedCost = fiscalResolvedCost(catalogs.fiscal, fiscalState, target); } catch { expectedCost = 0; }
+  const resolvedCost = safeInteger(wire.resolved.resolved_cost, 0, MAX_EXACT_INTEGER); if (resolvedCost !== expectedCost) throw new RangeError("Fiscal cost mismatch"); const creditBefore = fiscalState.credit;
+  let applied: ReturnType<typeof spendFiscal>;
+  try { applied = spendFiscal(catalogs.fiscal, fiscalState, wire.command.server_ts_ms, target); }
+  catch (error) { const message = error instanceof Error ? error.message : ""; const [category, detail] = message.includes("already unlocked") ? ["not_eligible", "already_unlocked"] : message.includes("insufficient") ? ["unaffordable", "fiscal_credit"] : message.includes("level purchase") ? ["cap_exceeded", target.kind === "generator_level" ? target.generatorId : target.unlockId] : ["unknown_id", target.kind === "generator_level" ? target.generatorId : target.unlockId]; return founderRejected(state, request.intent_id, wire.command.revision, category, detail, catalogs.constantsHash); }
+  if (applied.resolvedCost !== resolvedCost) throw new RangeError("Fiscal spend result mismatch"); applyFounderFiscalState(state, fiscalState); const wireTarget = fiscalTargetWire(target);
+  return { state, outcome: "applied", receipt: { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, fiscal_sweep: null, target: wireTarget, resolved_cost: resolvedCost, fiscal_credit_before: creditBefore, fiscal_credit_after: state.fiscalCredit }, events: [event("fiscal_credit_spent.v1", request.intent_id, { target: wireTarget, resolved_cost: resolvedCost, fiscal_credit_before: creditBefore, fiscal_credit_after: state.fiscalCredit })], resultConstantsHash: catalogs.constantsHash };
 }
 
 export async function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18 | 19, genesisHash: string,
@@ -1439,6 +1490,13 @@ function parseIntent(payload: string, intentId: string): Intent {
       if (!hasExactKeys(raw, ["kind", "expected_revision", "amount_ms", "target"])) { base.invalid = "spend_compute_credit.fields"; return base; }
       if (!isPositiveSafeInteger(raw.amount_ms)) base.invalid = "amount_ms"; else base.amount_ms = raw.amount_ms;
       if (raw.target !== "accelerate") base.invalid = "target"; else base.target = raw.target;
+      return base;
+    case "harvest_fiscal_period":
+      if (!hasExactKeys(raw, ["kind", "expected_revision"])) base.invalid = "harvest_fiscal_period.fields";
+      return base;
+    case "spend_fiscal_credit":
+      if (!hasExactKeys(raw, ["kind", "expected_revision", "target"])) { base.invalid = "spend_fiscal_credit.fields"; return base; }
+      try { base.target = fiscalTargetWire(parseFiscalTarget(raw.target)); } catch { base.invalid = "target"; }
       return base;
     case "buy_route_hint":
       if (!hasExactKeys(raw, ["kind", "expected_revision", "route_id"])) { base.invalid = "buy_route_hint.fields"; return base; }

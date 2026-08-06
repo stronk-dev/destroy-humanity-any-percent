@@ -11,6 +11,7 @@ import (
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/pet"
 	"cloud-clicker/server/save"
 )
@@ -40,6 +41,35 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 	if err != nil {
 		return FounderLoggedTransition{}, err
 	}
+	stateBefore, err := cloneFounderReplayState(state, catalogs.Economy)
+	if err != nil {
+		return FounderLoggedTransition{}, err
+	}
+	var sweep *fiscal.SweepResult
+	if catalogs.Fiscal != nil {
+		if save.VersionForState(state) < 19 {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: inactive Fiscal state", ErrInvalidReplayInputs)
+		}
+		fiscalState := fiscalStateFromSave(state)
+		sweep, err = catalogs.Fiscal.Sweep(&fiscalState, wire.Command.ServerTSMS)
+		if err != nil {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: Fiscal sweep", ErrInvalidReplayInputs)
+		}
+		fiscalStateToSave(state, fiscalState)
+	}
+	defer func() {
+		if resultErr != nil || result.Outcome != save.IntentApplied {
+			*state = *stateBefore
+			return
+		}
+		if sweep != nil {
+			if err := decorateFounderFiscalSweep(&result, wire.Command.IntentID, sweep); err != nil {
+				*state = *stateBefore
+				result = FounderLoggedTransition{}
+				resultErr = err
+			}
+		}
+	}()
 	if isMinigameResolutionPayload(canonicalPayload) {
 		return applyFounderMinigameResolution(state, canonicalPayload, catalogs, wire)
 	}
@@ -47,15 +77,6 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 	if err != nil || !bytes.Equal(request.CanonicalPayload, canonicalPayload) {
 		return FounderLoggedTransition{}, fmt.Errorf("%w: Founder canonical command", ErrInvalidReplayInputs)
 	}
-	stateBefore, err := cloneFounderReplayState(state, catalogs.Economy)
-	if err != nil {
-		return FounderLoggedTransition{}, err
-	}
-	defer func() {
-		if resultErr != nil || result.Outcome != save.IntentApplied {
-			*state = *stateBefore
-		}
-	}()
 	var header struct {
 		Kind string `json:"kind"`
 	}
@@ -98,6 +119,10 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 			Events: decision.Events, ResultConstantsHash: catalogs.ConstantsHash}, nil
 	case IntentCareAction:
 		return applyFounderCareResolved(state, request, revision, catalogs, wire.Resolved)
+	case IntentHarvestFiscalPeriod:
+		return applyFounderFiscalHarvestResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved)
+	case IntentSpendFiscalCredit:
+		return applyFounderFiscalSpendResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved)
 	case founderExitResolvedKind:
 		if request.Kind != IntentCrossGate && request.ExpectedFounderRevision != wire.Command.Revision {
 			return FounderLoggedTransition{}, fmt.Errorf("%w: Exit Founder revision", ErrInvalidReplayInputs)
@@ -110,6 +135,264 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 	default:
 		return FounderLoggedTransition{}, fmt.Errorf("%w: unknown Founder resolved arm", ErrInvalidReplayInputs)
 	}
+}
+
+type founderFiscalSweepWire struct {
+	Periods          int64  `json:"periods"`
+	CreditBefore     int64  `json:"credit_before"`
+	Credited         int64  `json:"credited"`
+	CreditAfter      int64  `json:"credit_after"`
+	OpenedBeforeMS   int64  `json:"opened_before_ms"`
+	OpenedAfterMS    int64  `json:"opened_after_ms"`
+	SeqBefore        int64  `json:"seq_before"`
+	SeqAfter         int64  `json:"seq_after"`
+	Saturated        bool   `json:"saturated"`
+	HardcapReasonKey string `json:"hardcap_reason_key"`
+}
+
+type fiscalTargetWire struct {
+	Kind        string `json:"kind"`
+	GeneratorID string `json:"generator_id,omitempty"`
+	Levels      int64  `json:"levels,omitempty"`
+	UnlockID    string `json:"unlock_id,omitempty"`
+}
+
+type founderFiscalHarvestResolved struct {
+	Kind                     string `json:"kind"`
+	NowWallMS                int64  `json:"now_wall_ms"`
+	PeriodOpenedWallMSBefore int64  `json:"period_opened_wall_ms_before"`
+	PeriodsSwept             int64  `json:"periods_swept"`
+	SeqBefore                int64  `json:"seq_before"`
+	DrawPPM                  *int64 `json:"draw_ppm"`
+	Outcome                  string `json:"outcome"`
+}
+
+type founderFiscalSpendResolved struct {
+	Kind         string           `json:"kind"`
+	Target       fiscalTargetWire `json:"target"`
+	ResolvedCost int64            `json:"resolved_cost"`
+}
+
+func fiscalStateFromSave(state *save.State) fiscal.State {
+	levels := make(map[string]int64, len(state.FiscalGeneratorLevels))
+	for id, level := range state.FiscalGeneratorLevels {
+		levels[id] = level
+	}
+	unlocks := make([]string, 0, len(state.FiscalUnlocks))
+	for id, value := range state.FiscalUnlocks {
+		if value {
+			unlocks = append(unlocks, id)
+		}
+	}
+	sort.Strings(unlocks)
+	return fiscal.State{Credit: state.FiscalCredit, PeriodOpenedWallMS: state.FiscalPeriodOpenedWallMS,
+		PeriodSequence: state.FiscalPeriodSequence, GeneratorLevels: levels, Unlocks: unlocks}
+}
+
+func fiscalStateToSave(state *save.State, value fiscal.State) {
+	state.FiscalCredit = value.Credit
+	state.FiscalPeriodOpenedWallMS = value.PeriodOpenedWallMS
+	state.FiscalPeriodSequence = value.PeriodSequence
+	state.FiscalGeneratorLevels = value.GeneratorLevels
+	state.FiscalUnlocks = make(map[string]bool, len(value.Unlocks))
+	for _, id := range value.Unlocks {
+		state.FiscalUnlocks[id] = true
+	}
+}
+
+func fiscalSweepWire(value *fiscal.SweepResult) founderFiscalSweepWire {
+	return founderFiscalSweepWire{Periods: value.Periods, CreditBefore: value.CreditBefore,
+		Credited: value.Credited, CreditAfter: value.CreditAfter, OpenedBeforeMS: value.OpenedBeforeMS,
+		OpenedAfterMS: value.OpenedAfterMS, SeqBefore: value.SequenceBefore, SeqAfter: value.SequenceAfter,
+		Saturated: value.Saturated, HardcapReasonKey: value.HardcapReasonKey}
+}
+
+func decorateFounderFiscalSweep(result *FounderLoggedTransition, intentID string, sweep *fiscal.SweepResult) error {
+	var receipt map[string]json.RawMessage
+	if err := json.Unmarshal(result.Receipt, &receipt); err != nil || receipt == nil {
+		return fmt.Errorf("%w: Fiscal receipt", ErrInvalidReplayInputs)
+	}
+	currentSweep, hasSweep := receipt["fiscal_sweep"]
+	if hasSweep && string(currentSweep) != "null" {
+		return fmt.Errorf("%w: Fiscal receipt", ErrInvalidReplayInputs)
+	}
+	encodedSweep, err := json.Marshal(fiscalSweepWire(sweep))
+	if err != nil {
+		return err
+	}
+	receipt["fiscal_sweep"] = encodedSweep
+	result.Receipt, err = json.Marshal(receipt)
+	if err != nil {
+		return err
+	}
+	payload, err := json.Marshal(struct {
+		Source string `json:"source"`
+		founderFiscalSweepWire
+	}{Source: "automatic", founderFiscalSweepWire: fiscalSweepWire(sweep)})
+	if err != nil {
+		return err
+	}
+	event := save.EventWrite{Kind: save.EventFiscalPeriodHarvested, SchemaVersion: 1,
+		IntentID: intentID, Payload: payload}
+	result.Events = append([]save.EventWrite{event}, result.Events...)
+	return nil
+}
+
+func applyFounderFiscalHarvestResolved(state *save.State, request IntentRequest, revision save.Revision,
+	catalogs CatalogBundle, commandWallMS int64, resolvedJSON json.RawMessage) (FounderLoggedTransition, error) {
+	if request.Kind != IntentHarvestFiscalPeriod || request.ExpectedRevision != revision.Number ||
+		request.InvalidDetail != "" || catalogs.Fiscal == nil || save.VersionForState(state) < 19 {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Fiscal harvest command", ErrInvalidReplayInputs)
+	}
+	var resolved founderFiscalHarvestResolved
+	if err := decodeReplayStrict(resolvedJSON, &resolved); err != nil || resolved.Kind != IntentHarvestFiscalPeriod ||
+		resolved.NowWallMS != commandWallMS || resolved.NowWallMS < resolved.PeriodOpenedWallMSBefore || resolved.NowWallMS > decimal.MaxExactInteger ||
+		resolved.SeqBefore < 0 || resolved.SeqBefore > decimal.MaxExactInteger || resolved.PeriodsSwept < 0 {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Fiscal harvest inputs", ErrInvalidReplayInputs)
+	}
+	beforeCredit := state.FiscalCredit
+	result := fiscal.HarvestResult{NowWallMS: resolved.NowWallMS, PeriodOpenedBeforeWallMS: resolved.PeriodOpenedWallMSBefore,
+		PeriodsSwept: resolved.PeriodsSwept, SequenceBefore: resolved.SeqBefore, DrawPPM: resolved.DrawPPM,
+		Outcome: fiscal.HarvestOutcome(resolved.Outcome), CreditBefore: beforeCredit, CreditAfter: state.FiscalCredit}
+	if resolved.Outcome == string(fiscal.HarvestConsumedByAuto) {
+		if resolved.PeriodsSwept < 1 || state.FiscalPeriodSequence != resolved.SeqBefore+resolved.PeriodsSwept ||
+			state.FiscalPeriodOpenedWallMS != resolved.PeriodOpenedWallMSBefore+resolved.PeriodsSwept*catalogs.Fiscal.Clock.AutoMS || resolved.DrawPPM != nil {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: consumed Fiscal harvest", ErrInvalidReplayInputs)
+		}
+	} else {
+		fiscalState := fiscalStateFromSave(state)
+		applied, err := catalogs.Fiscal.Harvest(&fiscalState, revision.OwnerID, resolved.NowWallMS)
+		if errors.Is(err, fiscal.ErrNotRipe) && resolved.Outcome == "rejected" && resolved.DrawPPM == nil && resolved.PeriodsSwept == 0 {
+			decision, decisionErr := rejectedDecision(request, revision.Number, "not_eligible", "period_not_ripe")
+			return founderDecisionTransition(state, decision, catalogs.ConstantsHash, decisionErr)
+		}
+		if err != nil || applied.PeriodOpenedBeforeWallMS != resolved.PeriodOpenedWallMSBefore ||
+			applied.SequenceBefore != resolved.SeqBefore || applied.PeriodsSwept != resolved.PeriodsSwept ||
+			!equalInt64Pointer(applied.DrawPPM, resolved.DrawPPM) || string(applied.Outcome) != resolved.Outcome {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: Fiscal harvest resolution", ErrInvalidReplayInputs)
+		}
+		fiscalStateToSave(state, fiscalState)
+		result = applied
+	}
+	receipt, err := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": string(save.IntentApplied),
+		"founder_revision": revision.Number + 1, "fiscal_sweep": nil, "source": "manual",
+		"fiscal_credit_before": result.CreditBefore, "fiscal_credit_after": state.FiscalCredit,
+		"period_opened_wall_ms": state.FiscalPeriodOpenedWallMS, "periods_swept": result.PeriodsSwept,
+		"seq_before": result.SequenceBefore, "seq_after": state.FiscalPeriodSequence, "draw_ppm": result.DrawPPM,
+		"harvest_outcome": result.Outcome, "saturated": result.Saturated})
+	if err != nil {
+		return FounderLoggedTransition{}, err
+	}
+	events := []save.EventWrite{}
+	if result.Outcome != fiscal.HarvestConsumedByAuto {
+		payload, _ := json.Marshal(map[string]any{"source": "manual", "outcome": result.Outcome,
+			"credit_before": result.CreditBefore, "credit_after": state.FiscalCredit,
+			"period_opened_wall_ms_before": result.PeriodOpenedBeforeWallMS,
+			"period_opened_wall_ms_after":  state.FiscalPeriodOpenedWallMS, "seq_before": result.SequenceBefore,
+			"seq_after": state.FiscalPeriodSequence, "draw_ppm": result.DrawPPM, "saturated": result.Saturated})
+		events = append(events, save.EventWrite{Kind: save.EventFiscalPeriodHarvested, SchemaVersion: 1,
+			IntentID: request.IntentID, Payload: payload})
+	}
+	return FounderLoggedTransition{State: state, Outcome: save.IntentApplied, Receipt: receipt, Events: events,
+		ResultConstantsHash: catalogs.ConstantsHash}, nil
+}
+
+func applyFounderFiscalSpendResolved(state *save.State, request IntentRequest, revision save.Revision,
+	catalogs CatalogBundle, nowWallMS int64, resolvedJSON json.RawMessage) (FounderLoggedTransition, error) {
+	if request.Kind != IntentSpendFiscalCredit || request.ExpectedRevision != revision.Number ||
+		request.InvalidDetail != "" || catalogs.Fiscal == nil || save.VersionForState(state) < 19 {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Fiscal spend command", ErrInvalidReplayInputs)
+	}
+	var resolved founderFiscalSpendResolved
+	if err := decodeReplayStrict(resolvedJSON, &resolved); err != nil || resolved.Kind != IntentSpendFiscalCredit ||
+		resolved.Target != fiscalTargetFromRequest(request) || resolved.ResolvedCost < 0 {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Fiscal spend inputs", ErrInvalidReplayInputs)
+	}
+	fiscalState := fiscalStateFromSave(state)
+	expectedCost, costErr := resolvedFiscalCost(catalogs.Fiscal, fiscalState, request.FiscalTarget)
+	if costErr == nil && expectedCost != resolved.ResolvedCost || costErr != nil && resolved.ResolvedCost != 0 {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Fiscal spend cost", ErrInvalidReplayInputs)
+	}
+	before := fiscalState.Credit
+	if nowWallMS < 1 || nowWallMS > decimal.MaxExactInteger {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Fiscal spend timestamp", ErrInvalidReplayInputs)
+	}
+	applied, err := catalogs.Fiscal.Spend(&fiscalState, nowWallMS, request.FiscalTarget)
+	if err != nil {
+		category, detail := "invalid", "fiscal_target"
+		switch {
+		case errors.Is(err, fiscal.ErrUnknownTarget):
+			category, detail = "unknown_id", fiscalTargetID(request.FiscalTarget)
+		case errors.Is(err, fiscal.ErrAlreadyUnlocked):
+			category, detail = "not_eligible", "already_unlocked"
+		case errors.Is(err, fiscal.ErrUnaffordable):
+			category, detail = "unaffordable", "fiscal_credit"
+		case errors.Is(err, fiscal.ErrCapExceeded):
+			category, detail = "cap_exceeded", fiscalTargetID(request.FiscalTarget)
+		default:
+			return FounderLoggedTransition{}, err
+		}
+		decision, decisionErr := rejectedDecision(request, revision.Number, category, detail)
+		return founderDecisionTransition(state, decision, catalogs.ConstantsHash, decisionErr)
+	}
+	if applied.ResolvedCost != resolved.ResolvedCost || applied.Target != request.FiscalTarget {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: Fiscal spend resolution", ErrInvalidReplayInputs)
+	}
+	fiscalStateToSave(state, fiscalState)
+	receipt, err := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": string(save.IntentApplied),
+		"founder_revision": revision.Number + 1, "fiscal_sweep": nil, "target": resolved.Target,
+		"resolved_cost": applied.ResolvedCost, "fiscal_credit_before": before, "fiscal_credit_after": fiscalState.Credit})
+	if err != nil {
+		return FounderLoggedTransition{}, err
+	}
+	payload, _ := json.Marshal(map[string]any{"target": resolved.Target, "resolved_cost": applied.ResolvedCost,
+		"fiscal_credit_before": before, "fiscal_credit_after": fiscalState.Credit})
+	return FounderLoggedTransition{State: state, Outcome: save.IntentApplied, Receipt: receipt,
+		Events: []save.EventWrite{{Kind: save.EventFiscalCreditSpent, SchemaVersion: 1,
+			IntentID: request.IntentID, Payload: payload}}, ResultConstantsHash: catalogs.ConstantsHash}, nil
+}
+
+func resolvedFiscalCost(catalog *fiscal.Catalog, state fiscal.State, target fiscal.SpendTarget) (int64, error) {
+	switch target.Kind {
+	case "generator_level":
+		current, ok := state.GeneratorLevels[target.GeneratorID]
+		if !ok {
+			return 0, fiscal.ErrUnknownTarget
+		}
+		return catalog.GeneratorLevelCost(target.GeneratorID, current, target.Levels)
+	case "unlock":
+		row, ok := catalog.Unlock(target.UnlockID)
+		if !ok {
+			return 0, fiscal.ErrUnknownTarget
+		}
+		if stateUnlockContains(state.Unlocks, target.UnlockID) {
+			return 0, fiscal.ErrAlreadyUnlocked
+		}
+		return row.Cost, nil
+	default:
+		return 0, fiscal.ErrUnknownTarget
+	}
+}
+
+func stateUnlockContains(values []string, target string) bool {
+	index := sort.SearchStrings(values, target)
+	return index < len(values) && values[index] == target
+}
+
+func fiscalTargetID(target fiscal.SpendTarget) string {
+	if target.Kind == "generator_level" {
+		return target.GeneratorID
+	}
+	return target.UnlockID
+}
+
+func fiscalTargetFromRequest(request IntentRequest) fiscalTargetWire {
+	return fiscalTargetWire{Kind: request.FiscalTarget.Kind, GeneratorID: request.FiscalTarget.GeneratorID,
+		Levels: request.FiscalTarget.Levels, UnlockID: request.FiscalTarget.UnlockID}
+}
+
+func equalInt64Pointer(left, right *int64) bool {
+	return left == nil && right == nil || left != nil && right != nil && *left == *right
 }
 
 func applyFounderCareResolved(state *save.State, request IntentRequest, revision save.Revision, catalogs CatalogBundle,
