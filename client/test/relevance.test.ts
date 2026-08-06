@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import economyFixture from "../../testdata/economy-foundation-v4.json";
+import mutationFixture from "../../testdata/harness/relevance/policy-mutations-v1.json";
 import policyFixture from "../../testdata/harness/relevance/policy-v1.json";
 import routesFixture from "../../balance/routes/phase0.json";
 import { parseRelevancePolicy } from "../src/relevance";
@@ -21,11 +22,27 @@ describe("relevance policy parity", () => {
     expect(policy.groups).toHaveLength(4);
   });
 
-  it("rejects the same missing, order, dangling, and biconditional mutations", () => {
-    const missing = clone() as unknown as { items: Array<Record<string, unknown>> }; delete missing.items[0]?.epsilon_ms;
-    const unsorted = clone(); [unsorted.items[0], unsorted.items[1]] = [unsorted.items[1]!, unsorted.items[0]!];
-    const dangling = clone(); dangling.items[0]!.group_ids = ["group.missing"];
-    const mismatch = clone(); mismatch.items[2]!.trap_exempt = false;
-    for (const value of [missing, unsorted, dangling, mismatch]) expect(() => parseRelevancePolicy(value, catalog, gates)).toThrow();
+  it("applies the shared Go/TypeScript mutation corpus", () => {
+    expect(mutationFixture.schema_version).toBe(1);
+    for (const test of mutationFixture.cases) {
+      const value = clone() as unknown as {
+        schema_version: number;
+        items: Array<Record<string, unknown> & { availability_window: Record<string, unknown>; group_ids: string[] }>;
+        groups: Array<Record<string, unknown> & { member_ids: string[] }>;
+      };
+      switch (test.id) {
+        case "missing_item_epsilon": delete value.items[0]!.epsilon_ms; break;
+        case "unsorted_items": [value.items[0], value.items[1]] = [value.items[1]!, value.items[0]!]; break;
+        case "dangling_group": value.items[0]!.group_ids = ["group.missing"]; break;
+        case "exemption_mismatch": value.items[2]!.trap_exempt = false; break;
+        case "incomplete_derived_group": value.groups[0]!.member_ids = ["generator.high"]; break;
+        case "unknown_gate": value.items[0]!.availability_window.from_gate = "gate.unknown"; break;
+        case "integral_decimal_epsilon": value.items[0]!.epsilon_ms = 1000.0; break;
+        case "integral_decimal_schema": value.schema_version = 1.0; break;
+        default: throw new Error(`unknown relevance mutation ${test.id}`);
+      }
+      if (test.accepted) expect(() => parseRelevancePolicy(value, catalog, gates), test.id).not.toThrow();
+      else expect(() => parseRelevancePolicy(value, catalog, gates), test.id).toThrow();
+    }
   });
 });

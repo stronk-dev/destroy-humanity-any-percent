@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "cases": [
+    { "id": "missing_item_epsilon", "accepted": false },
+    { "id": "unsorted_items", "accepted": false },
+    { "id": "dangling_group", "accepted": false },
+    { "id": "exemption_mismatch", "accepted": false },
+    { "id": "incomplete_derived_group", "accepted": false },
+    { "id": "unknown_gate", "accepted": false },
+    { "id": "integral_decimal_epsilon", "accepted": true },
+    { "id": "integral_decimal_schema", "accepted": true }
+  ]
+}

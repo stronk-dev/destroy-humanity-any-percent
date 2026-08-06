@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math/big"
 	"regexp"
 	"sort"
 
@@ -50,7 +51,7 @@ type RelevancePolicy struct {
 }
 
 type rawRelevancePolicy struct {
-	SchemaVersion *int                      `json:"schema_version"`
+	SchemaVersion *json.Number              `json:"schema_version"`
 	Items         []rawRelevancePolicyItem  `json:"items"`
 	Groups        []rawRelevancePolicyGroup `json:"groups"`
 }
@@ -63,17 +64,17 @@ type rawRelevanceWindow struct {
 type rawRelevancePolicyItem struct {
 	PurchasableID    *string             `json:"purchasable_id"`
 	Availability     *rawRelevanceWindow `json:"availability_window"`
-	EpsilonMS        *int64              `json:"epsilon_ms"`
+	EpsilonMS        *json.Number        `json:"epsilon_ms"`
 	TrapExempt       *bool               `json:"trap_exempt"`
 	JustificationKey json.RawMessage     `json:"justification_key"`
 	GroupIDs         []string            `json:"group_ids"`
 }
 
 type rawRelevancePolicyGroup struct {
-	GroupID   *string  `json:"group_id"`
-	Axis      *string  `json:"axis"`
-	MemberIDs []string `json:"member_ids"`
-	EpsilonMS *int64   `json:"epsilon_ms"`
+	GroupID   *string      `json:"group_id"`
+	Axis      *string      `json:"axis"`
+	MemberIDs []string     `json:"member_ids"`
+	EpsilonMS *json.Number `json:"epsilon_ms"`
 }
 
 func LoadRelevancePolicy(data []byte, catalog *economy.Catalog, routeCatalog *routes.Catalog) (*RelevancePolicy, error) {
@@ -84,10 +85,11 @@ func LoadRelevancePolicy(data []byte, catalog *economy.Catalog, routeCatalog *ro
 	if err := decodeRelevanceStrict(data, &raw); err != nil {
 		return nil, fmt.Errorf("relevance policy: %w", err)
 	}
-	if raw.SchemaVersion == nil || *raw.SchemaVersion != RelevancePolicySchemaVersion || raw.Items == nil || raw.Groups == nil {
+	schemaVersion, schemaErr := relevanceSafeInteger(raw.SchemaVersion)
+	if schemaErr != nil || schemaVersion != RelevancePolicySchemaVersion || raw.Items == nil || raw.Groups == nil {
 		return nil, errors.New("relevance policy: missing or unsupported envelope")
 	}
-	policy := &RelevancePolicy{SchemaVersion: *raw.SchemaVersion, Items: make([]RelevancePolicyItem, 0, len(raw.Items)), Groups: make([]RelevancePolicyGroup, 0, len(raw.Groups))}
+	policy := &RelevancePolicy{SchemaVersion: int(schemaVersion), Items: make([]RelevancePolicyItem, 0, len(raw.Items)), Groups: make([]RelevancePolicyGroup, 0, len(raw.Groups))}
 	for index, source := range raw.Items {
 		item, err := parseRelevanceItem(source)
 		if err != nil {
@@ -125,9 +127,13 @@ func parseRelevanceItem(source rawRelevancePolicyItem) (RelevancePolicyItem, err
 	if err != nil {
 		return RelevancePolicyItem{}, fmt.Errorf("justification_key: %w", err)
 	}
+	epsilon, err := relevanceSafeInteger(source.EpsilonMS)
+	if err != nil {
+		return RelevancePolicyItem{}, fmt.Errorf("epsilon_ms: %w", err)
+	}
 	return RelevancePolicyItem{PurchasableID: *source.PurchasableID,
 		Availability: RelevanceWindow{FromGate: *source.Availability.FromGate, ToGate: toGate},
-		EpsilonMS:    *source.EpsilonMS, TrapExempt: *source.TrapExempt, JustificationKey: justification,
+		EpsilonMS:    epsilon, TrapExempt: *source.TrapExempt, JustificationKey: justification,
 		GroupIDs: append([]string(nil), source.GroupIDs...)}, nil
 }
 
@@ -135,8 +141,27 @@ func parseRelevanceGroup(source rawRelevancePolicyGroup) (RelevancePolicyGroup, 
 	if source.GroupID == nil || source.Axis == nil || source.MemberIDs == nil || source.EpsilonMS == nil {
 		return RelevancePolicyGroup{}, errors.New("missing required key")
 	}
+	epsilon, err := relevanceSafeInteger(source.EpsilonMS)
+	if err != nil {
+		return RelevancePolicyGroup{}, fmt.Errorf("epsilon_ms: %w", err)
+	}
 	return RelevancePolicyGroup{GroupID: *source.GroupID, Axis: *source.Axis,
-		MemberIDs: append([]string(nil), source.MemberIDs...), EpsilonMS: *source.EpsilonMS}, nil
+		MemberIDs: append([]string(nil), source.MemberIDs...), EpsilonMS: epsilon}, nil
+}
+
+func relevanceSafeInteger(value *json.Number) (int64, error) {
+	if value == nil {
+		return 0, errors.New("missing integer")
+	}
+	rational, ok := new(big.Rat).SetString(value.String())
+	if !ok || !rational.IsInt() || !rational.Num().IsInt64() {
+		return 0, errors.New("expected exact integer")
+	}
+	result := rational.Num().Int64()
+	if result < 0 || result > relevanceMaxSafeInteger {
+		return 0, errors.New("integer outside exact range")
+	}
+	return result, nil
 }
 
 func validateRelevancePolicy(policy *RelevancePolicy, catalog *economy.Catalog, routeCatalog *routes.Catalog) error {
