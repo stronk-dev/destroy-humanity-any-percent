@@ -12,6 +12,7 @@ import (
 
 	"cloud-clicker/server/accrualhook"
 	"cloud-clicker/server/achievements"
+	"cloud-clicker/server/activeplay"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
@@ -44,6 +45,7 @@ type CatalogBundle struct {
 	Minigames     *minigame.Catalog
 	Pets          *pet.Catalog
 	Fiscal        *fiscal.Catalog
+	Opportunities *activeplay.Catalog
 	Next          *CatalogBundle
 }
 
@@ -105,6 +107,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withMinigames := bundle.Minigames != nil
 	withPets := bundle.Pets != nil
 	withFiscal := bundle.Fiscal != nil
+	withOpportunities := bundle.Opportunities != nil
 	expectedArtifacts := 7
 	if withFoundations {
 		expectedArtifacts = 9
@@ -119,6 +122,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		expectedArtifacts++
 	}
 	if withFiscal {
+		expectedArtifacts++
+	}
+	if withOpportunities {
 		expectedArtifacts++
 	}
 	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != expectedArtifacts || bundle.Economy == nil ||
@@ -140,7 +146,8 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		return false
 	}
 	if withMinigames && (!withFoundations || len(bundle.Artifacts["minigames"]) == 0) || withPets && (!withMinigames || len(bundle.Artifacts["pets"]) == 0) ||
-		withFiscal && (!withPets || len(bundle.Artifacts["fiscal"]) == 0) {
+		withFiscal && (!withPets || len(bundle.Artifacts["fiscal"]) == 0) ||
+		withOpportunities && (!withDoctrines || len(bundle.Artifacts["opportunities"]) == 0) {
 		return false
 	}
 	computed, err := save.ConstantsHashArtifacts(bundle.Artifacts)
@@ -163,6 +170,9 @@ func (bundle CatalogBundle) versionFloors() (founder, company int) {
 	}
 	if bundle.Fiscal != nil {
 		founder = 19
+	}
+	if bundle.Opportunities != nil {
+		company = 18
 	}
 	return founder, company
 }

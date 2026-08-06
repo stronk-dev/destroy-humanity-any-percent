@@ -1,6 +1,7 @@
 import Decimal from "break_infinity.js";
 
 import { loadAchievementCatalog, type AchievementCatalog, type AchievementRegistry } from "./achievements/catalog";
+import { loadActivePlayCatalog, type ActivePlayCatalog } from "./active-play";
 import { achievementScore, newlyEarned, type AchievementObservation } from "./achievements/evaluate";
 import { enclosureIndex, parseCommonsCatalog, type CommonsCatalog } from "./commons";
 import { COPY_KEYS } from "./copy";
@@ -25,22 +26,25 @@ const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]
 const hashPattern = /^sha256:[0-9a-f]{64}$/;
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 
-export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly meters?: string; readonly achievements?: string; readonly doctrines?: string; readonly minigames?: string; readonly pets?: string; readonly fiscal?: string }
+export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly meters?: string; readonly achievements?: string; readonly doctrines?: string; readonly minigames?: string; readonly pets?: string; readonly fiscal?: string; readonly opportunities?: string }
 export interface ReplayCatalogBundle {
   readonly constantsHash: string; readonly artifacts: ReplayArtifacts; readonly economy: EconomyCatalog; readonly routes: RoutesCatalog;
   readonly commons: CommonsCatalog; readonly prestige: PrestigePolicy; readonly factions: FactionCatalog; readonly guilds: GuildCatalog;
-  readonly meters?: MeterCatalog; readonly achievements?: AchievementCatalog; readonly doctrines?: DoctrineCatalog; readonly minigames?: MinigameCatalog; readonly pets?: PetCatalog; readonly fiscal?: FiscalCatalog;
+  readonly meters?: MeterCatalog; readonly achievements?: AchievementCatalog; readonly doctrines?: DoctrineCatalog; readonly minigames?: MinigameCatalog; readonly pets?: PetCatalog; readonly fiscal?: FiscalCatalog; readonly opportunities?: ActivePlayCatalog;
   readonly next?: ReplayCatalogBundle;
 }
 export interface ReplayContribution { readonly slot: MultiplierSlot; readonly source_id: string; readonly target: string; readonly factor: string }
 export interface ReplayEvent { readonly kind: string; readonly schema_version: number; readonly intent_id: string; readonly payload: unknown }
 export interface ReplayChange { readonly resource_id: string; readonly before: string; readonly delta: string; readonly after: string }
 export interface ReplayInvariant { readonly kind: "afford_fallback" | "residual_clamp" | "residual_abort"; readonly intent_id: string; readonly detail: string }
+export interface ReplayPendingOpportunity { opportunityId: string; spawnedAttendedMs: number; expiresAttendedMs: number; effectRowId: string; selectedGeneratorId: string | null }
+export interface ReplayActiveBuff { buffInstanceId: string; effectRowId: string; selectedTarget: string | null; activatedAttendedMs: number; expiresAttendedMs: number }
 export interface ReplayState {
-  wireVersion: 14 | 16 | 17;
+  wireVersion: 14 | 16 | 17 | 18;
   balances: Record<string, string>; generators: Record<string, number>; generatorPurchasedTotal: number;
   upgradesOwned: Set<string>; generatorsProvisioned: Record<string, number>; provisionRemaindersPpm: Record<string, number>; stockRateRemainderPpm: number;
   evaluatedThroughMs: number; computeCreditMs: number; computeBurstRemainingMs: number;
+  opportunitySpawnSeq: number; nextOpportunityAttendedMs: number; pendingOpportunity: ReplayPendingOpportunity | null; activeBuffs: ReplayActiveBuff[];
   manualTokenMilli: number; manualTokenRefilledAtMs: number; gatesCrossed: Record<string, boolean>; runSeq: number;
   doctrinesByTransition: Record<string, string>; structureId: string; ledgerFactKinds: Set<string>; meterBands: Record<string, number>;
   regionTraits: Set<string>; routeKnowledgeBalance: number; hintsUnlocked: Set<string>; compactMember: boolean; compactTithePpm: number;
@@ -114,12 +118,12 @@ interface ExitTerms { reputation_delta: number; network_slot_unlocks: NetworkSlo
 export async function loadReplayCatalogBundle(constantsHash: string, artifacts: ReplayArtifacts): Promise<ReplayCatalogBundle> {
   const names = Object.keys(artifacts).sort(byteCompare);
   const required = ["categories", "commons", "economy", "factions", "guilds", "prestige", "routes"];
-  const allowed = new Set([...required, "achievements", "doctrines", "fiscal", "meters", "minigames", "pets"]);
+  const allowed = new Set([...required, "achievements", "doctrines", "fiscal", "meters", "minigames", "opportunities", "pets"]);
   const foundations = artifacts.meters !== undefined || artifacts.achievements !== undefined;
   if (!hashPattern.test(constantsHash) || names.some((name) => !allowed.has(name)) || required.some((name) => !names.includes(name)) ||
       (artifacts.meters === undefined) !== (artifacts.achievements === undefined) || artifacts.doctrines !== undefined && !foundations ||
       artifacts.minigames !== undefined && !foundations || artifacts.pets !== undefined && artifacts.minigames === undefined ||
-      artifacts.fiscal !== undefined && artifacts.pets === undefined) throw new SyntaxError("invalid replay artifact set");
+      artifacts.fiscal !== undefined && artifacts.pets === undefined || artifacts.opportunities !== undefined && artifacts.doctrines === undefined) throw new SyntaxError("invalid replay artifact set");
   const computed = await constantsHashArtifacts(artifacts);
   if (computed !== constantsHash) throw new SyntaxError("replay artifact label mismatch");
   const economy = parseCatalog(parseJSON(artifacts.economy)); const routes = parseRoutesCatalog(parseJSON(artifacts.routes));
@@ -138,7 +142,8 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const minigames = artifacts.minigames === undefined ? undefined : parseMinigameCatalog(parseJSON(artifacts.minigames));
   const pets = artifacts.pets === undefined ? undefined : parsePetCatalog(parseJSON(artifacts.pets));
   const fiscal = artifacts.fiscal === undefined ? undefined : loadFiscalCatalog(parseJSON(artifacts.fiscal), economy);
-  return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, doctrines, minigames, pets, fiscal });
+  const opportunities = artifacts.opportunities === undefined ? undefined : loadActivePlayCatalog(parseJSON(artifacts.opportunities), economy);
+  return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, doctrines, minigames, pets, fiscal, opportunities });
 }
 
 const REPLAY_EVENT_KINDS = Object.freeze([
@@ -260,18 +265,19 @@ export async function verifyReplayRunDetailed(
 const saveV14Keys = ["balances", "generators", "generators_purchased_total", "upgrades_owned", "generators_provisioned", "provision_remainders_ppm", "stock_rate_remainder_ppm", "evaluated_through", "compute_credit_ms", "manual_token_milli", "manual_token_refilled_at", "gates_crossed", "run_seq", "doctrines_by_transition", "structure_id", "ledger_fact_kinds", "meter_bands", "region_traits", "route_knowledge_balance", "hints_unlocked", "compact_member", "compact_tithe_ppm", "compact_solidarity_ppm", "compact_solidarity_samples", "tier", "lifetime_value", "offer_state", "run_started_at_ms", "reputation_level", "reputation_unlock_ppm", "network_slots", "clout_lifetime", "soul", "age_ms", "notoriety", "advisor_mode", "exit_history", "run_pre_timer", "offline_spans", "collapsed_offline_ms", "faction_id", "incorporated_at_ms", "stock_units", "stock_progress_ms", "consumed_stock_units", "guild_tithe_carry_ppm", "guild_boundary_seq", "guild_consumed_window_units", "guild_boundary_guild_id"] as const;
 const foundationSaveKeys = ["meter_values", "meter_decay_remainders", "meter_input_remainders", "achievements_earned_run", "achievement_score_run", "achievements_earned_lifetime", "achievement_score_lifetime"] as const;
 const companyDoctrineSaveKeys = ["compute_burst_remaining_ms"] as const;
+const companyActivePlaySaveKeys = ["opportunity_spawn_seq", "next_opportunity_attended_ms", "pending_opportunity", "active_buffs"] as const;
 const founderMinigameSaveKeys = ["minigame_ratings", "minigame_offline_quality"] as const;
 const founderPetSaveKeys = ["pets"] as const;
 const founderFiscalSaveKeys = ["fiscal_credit", "fiscal_period_opened_wall_ms", "fiscal_period_seq", "fiscal_generator_levels", "fiscal_unlocks"] as const;
 
-export function restoreReplayState(source: unknown, version: number, catalog: EconomyCatalog, foundationCatalogs?: { readonly meters: MeterCatalog; readonly achievements: AchievementCatalog; readonly doctrines?: DoctrineCatalog }): ReplayState {
+export function restoreReplayState(source: unknown, version: number, catalog: EconomyCatalog, foundationCatalogs?: { readonly meters: MeterCatalog; readonly achievements: AchievementCatalog; readonly doctrines?: DoctrineCatalog; readonly opportunities?: ActivePlayCatalog }): ReplayState {
   const requestedVersion = version;
   let foundationRaw: Record<string, unknown> | null = null;
-  if (version === 16 || version === 17) {
-    const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys, ...(version === 17 ? companyDoctrineSaveKeys : [])];
+  if (version === 16 || version === 17 || version === 18) {
+    const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys, ...(version >= 17 ? companyDoctrineSaveKeys : []), ...(version >= 18 ? companyActivePlaySaveKeys : [])];
     foundationRaw = exactObject(source, activeKeys, `save v${version}`);
     source = { ...foundationRaw, meter_bands: {} };
-    for (const key of [...foundationSaveKeys, ...companyDoctrineSaveKeys]) delete (source as Record<string, unknown>)[key];
+    for (const key of [...foundationSaveKeys, ...companyDoctrineSaveKeys, ...companyActivePlaySaveKeys]) delete (source as Record<string, unknown>)[key];
     version = 14;
   }
   if (version === 12) {
@@ -314,7 +320,7 @@ export function restoreReplayState(source: unknown, version: number, catalog: Ec
   let offerState: ReplayState["offerState"] = null;
   if (raw.offer_state !== null) { const value = exactObject(raw.offer_state, ["offer_id", "exit_type", "terms_json", "spawned_at_ms", "expires_at_ms"], "offer state"); if (typeof value.offer_id !== "string" || !uuidV7.test(value.offer_id) || typeof value.exit_type !== "string") throw new SyntaxError("invalid offer"); offerState = { offerId: value.offer_id, exitType: value.exit_type, terms: value.terms_json, spawnedAtMs: safeInteger(value.spawned_at_ms, 1, MAX_EXACT_INTEGER), expiresAtMs: safeInteger(value.expires_at_ms, 1, MAX_EXACT_INTEGER) }; }
   const factionId = nullableMechanical(raw.faction_id); const incorporatedAtMs = raw.incorporated_at_ms === null ? null : safeInteger(raw.incorporated_at_ms, 1, MAX_EXACT_INTEGER);
-  const state: ReplayState = { wireVersion: requestedVersion === 17 ? 17 : requestedVersion === 16 ? 16 : 14, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm, stockRateRemainderPpm: safeInteger(raw.stock_rate_remainder_ppm, 0, 999_999), evaluatedThroughMs, computeCreditMs: safeInteger(raw.compute_credit_ms, 0, MAX_EXACT_INTEGER), computeBurstRemainingMs: 0, manualTokenMilli: safeInteger(raw.manual_token_milli, 0, MAX_EXACT_INTEGER), manualTokenRefilledAtMs,
+  const state: ReplayState = { wireVersion: requestedVersion === 18 ? 18 : requestedVersion === 17 ? 17 : requestedVersion === 16 ? 16 : 14, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm, stockRateRemainderPpm: safeInteger(raw.stock_rate_remainder_ppm, 0, 999_999), evaluatedThroughMs, computeCreditMs: safeInteger(raw.compute_credit_ms, 0, MAX_EXACT_INTEGER), computeBurstRemainingMs: 0, opportunitySpawnSeq: 0, nextOpportunityAttendedMs: 0, pendingOpportunity: null, activeBuffs: [], manualTokenMilli: safeInteger(raw.manual_token_milli, 0, MAX_EXACT_INTEGER), manualTokenRefilledAtMs,
     gatesCrossed: booleanRecord(raw.gates_crossed), runSeq: safeInteger(raw.run_seq, 1, MAX_EXACT_INTEGER), doctrinesByTransition: mechanicalRecord(raw.doctrines_by_transition), structureId: nullableMechanical(raw.structure_id, false),
     ledgerFactKinds: mechanicalSet(raw.ledger_fact_kinds), meterBands: integerRecord(raw.meter_bands, 0, 100, "meter_bands"), regionTraits: mechanicalSet(raw.region_traits), routeKnowledgeBalance: safeInteger(raw.route_knowledge_balance, 0, MAX_EXACT_INTEGER), hintsUnlocked: mechanicalSet(raw.hints_unlocked),
     compactMember: boolean(raw.compact_member), compactTithePpm: safeInteger(raw.compact_tithe_ppm, 0, 1_000_000), compactSolidarityPpm: safeInteger(raw.compact_solidarity_ppm, 0, 1_000_000), compactSamples,
@@ -338,7 +344,7 @@ export function restoreReplayState(source: unknown, version: number, catalog: Ec
   if (state.factionId === "" && (state.incorporatedAtMs !== null || state.stockUnits !== 0 || state.stockProgressMs !== 0 || state.consumedStockUnits !== 0)) throw new SyntaxError("orphan faction stock state");
   if (state.factionId !== "" && (state.incorporatedAtMs === null || state.incorporatedAtMs > state.evaluatedThroughMs)) throw new SyntaxError("invalid faction incorporation");
   if (state.guildBoundaryGuildId === "" && state.guildBoundarySeq !== 0) throw new SyntaxError("invalid guild watermark");
-  if (requestedVersion === 16 || requestedVersion === 17) {
+  if (requestedVersion === 16 || requestedVersion === 17 || requestedVersion === 18) {
     if (!foundationCatalogs || !foundationRaw) throw new SyntaxError("save v16 requires pinned foundation catalogs");
     state.meterValues = integerRecord(foundationRaw.meter_values, 0, 100, "meter_values");
     state.meterDecayRemainders = integerRecord(foundationRaw.meter_decay_remainders, 0, 3_599_999, "meter_decay_remainders");
@@ -347,9 +353,16 @@ export function restoreReplayState(source: unknown, version: number, catalog: Ec
     state.achievementsEarnedRun = new Set(sortedUniqueMechanical(array(foundationRaw.achievements_earned_run, "run achievements")));
     state.achievementScoreRun = safeInteger(foundationRaw.achievement_score_run, 0, MAX_EXACT_INTEGER);
     if (array(foundationRaw.achievements_earned_lifetime, "company lifetime achievements").length !== 0 || safeInteger(foundationRaw.achievement_score_lifetime, 0, MAX_EXACT_INTEGER) !== 0 || achievementScore(foundationCatalogs.achievements, state.achievementsEarnedRun) !== state.achievementScoreRun) throw new SyntaxError("invalid company achievement state");
-    if (requestedVersion === 17) {
+    if (requestedVersion >= 17) {
       if (!foundationCatalogs.doctrines) throw new SyntaxError("save v17 requires a pinned doctrines catalog");
       state.computeBurstRemainingMs = safeInteger(foundationRaw.compute_burst_remaining_ms, 0, catalog.offlinePolicy?.burstMaxDurationMs ?? 0);
+    }
+    if (requestedVersion >= 18) {
+      if (!foundationCatalogs.opportunities) throw new SyntaxError("save v18 requires a pinned opportunities catalog");
+      state.opportunitySpawnSeq = safeInteger(foundationRaw.opportunity_spawn_seq, 0, MAX_EXACT_INTEGER);
+      state.nextOpportunityAttendedMs = safeInteger(foundationRaw.next_opportunity_attended_ms, 0, MAX_EXACT_INTEGER);
+      state.pendingOpportunity = parseReplayPendingOpportunity(foundationRaw.pending_opportunity, foundationCatalogs.opportunities);
+      state.activeBuffs = parseReplayActiveBuffs(foundationRaw.active_buffs, foundationCatalogs.opportunities);
     }
   }
   return state;
@@ -387,7 +400,48 @@ export function encodeReplayState(state: ReplayState): unknown {
     if (state.computeBurstRemainingMs !== 0) throw new RangeError("inactive compute burst state");
     return active;
   }
-  return { ...active, compute_burst_remaining_ms: state.computeBurstRemainingMs };
+  const doctrinal = { ...active, compute_burst_remaining_ms: state.computeBurstRemainingMs };
+  if (state.wireVersion === 17) {
+    if (state.opportunitySpawnSeq !== 0 || state.nextOpportunityAttendedMs !== 0 || state.pendingOpportunity !== null || state.activeBuffs.length !== 0) throw new RangeError("inactive active-play state");
+    return doctrinal;
+  }
+  return { ...doctrinal, opportunity_spawn_seq: state.opportunitySpawnSeq, next_opportunity_attended_ms: state.nextOpportunityAttendedMs,
+    pending_opportunity: state.pendingOpportunity === null ? null : { opportunity_id: state.pendingOpportunity.opportunityId, spawned_attended_ms: state.pendingOpportunity.spawnedAttendedMs,
+      expires_attended_ms: state.pendingOpportunity.expiresAttendedMs, effect_row_id: state.pendingOpportunity.effectRowId, selected_generator_id: state.pendingOpportunity.selectedGeneratorId },
+    active_buffs: state.activeBuffs.map((value) => ({ buff_instance_id: value.buffInstanceId, effect_row_id: value.effectRowId, selected_target: value.selectedTarget,
+      activated_attended_ms: value.activatedAttendedMs, expires_attended_ms: value.expiresAttendedMs })) };
+}
+
+function activePlayEffect(catalog: ActivePlayCatalog, id: string): ActivePlayCatalog["effects"][number] {
+  const value = catalog.effects.find((row) => row.effectRowId === id);
+  if (!value) throw new SyntaxError(`unknown active-play effect ${id}`);
+  return value;
+}
+
+function parseReplayPendingOpportunity(source: unknown, catalog: ActivePlayCatalog): ReplayPendingOpportunity | null {
+  if (source === null) return null;
+  const raw = exactObject(source, ["opportunity_id", "spawned_attended_ms", "expires_attended_ms", "effect_row_id", "selected_generator_id"], "pending opportunity");
+  const opportunityId = uuidV7String(raw.opportunity_id); const effectRowId = mechanicalString(raw.effect_row_id); const effect = activePlayEffect(catalog, effectRowId);
+  const spawnedAttendedMs = safeInteger(raw.spawned_attended_ms, 0, MAX_EXACT_INTEGER); const expiresAttendedMs = safeInteger(raw.expires_attended_ms, 1, MAX_EXACT_INTEGER);
+  const selectedGeneratorId = raw.selected_generator_id === null ? null : mechanicalString(raw.selected_generator_id);
+  if (expiresAttendedMs <= spawnedAttendedMs || (effect.kind === "building_special") !== (selectedGeneratorId !== null) ||
+      selectedGeneratorId !== null && (effect.kind !== "building_special" || !effect.eligibleGeneratorIds.includes(selectedGeneratorId))) throw new SyntaxError("invalid pending opportunity");
+  return { opportunityId, spawnedAttendedMs, expiresAttendedMs, effectRowId, selectedGeneratorId };
+}
+
+function parseReplayActiveBuffs(source: unknown, catalog: ActivePlayCatalog): ReplayActiveBuff[] {
+  let previous = "";
+  return array(source, "active buffs").map((item) => {
+    const raw = exactObject(item, ["buff_instance_id", "effect_row_id", "selected_target", "activated_attended_ms", "expires_attended_ms"], "active buff");
+    const buffInstanceId = uuidV7String(raw.buff_instance_id); const effectRowId = mechanicalString(raw.effect_row_id); const effect = activePlayEffect(catalog, effectRowId);
+    if (byteCompare(previous, buffInstanceId) >= 0) throw new SyntaxError("active buffs must be byte-sorted"); previous = buffInstanceId;
+    const activatedAttendedMs = safeInteger(raw.activated_attended_ms, 0, MAX_EXACT_INTEGER); const expiresAttendedMs = safeInteger(raw.expires_attended_ms, 1, MAX_EXACT_INTEGER);
+    const selectedTarget = raw.selected_target === null ? null : mechanicalString(raw.selected_target);
+    const expectedTarget = effect.kind === "building_special";
+    if (expiresAttendedMs <= activatedAttendedMs || expectedTarget !== (selectedTarget !== null) || selectedTarget !== null && (!expectedTarget || !effect.eligibleGeneratorIds.includes(selectedTarget))) throw new SyntaxError("invalid active buff");
+    if (effect.kind === "lucky_payout") throw new SyntaxError("lucky payout cannot persist as a buff");
+    return { buffInstanceId, effectRowId, selectedTarget, activatedAttendedMs, expiresAttendedMs };
+  });
 }
 
 export function restoreFounderReplayState(source: unknown, version: number, catalogs: ReplayCatalogBundle): FounderReplayState {
@@ -1265,7 +1319,7 @@ function newRunState(bundle: ReplayCatalogBundle, prior: ReplayState, founder: F
   const active = foundationsActive(bundle);
   const meterState = active ? newRunMeterState(bundle.meters, founder.notoriety) : null;
   const reseed = founder.notoriety >= 100 ? 55 : Math.max(55, Math.min(90, 90 - Math.floor(founder.notoriety * 35 / 100)));
-  return { wireVersion: bundle.doctrines ? 17 : active ? 16 : 14, balances, generators, generatorPurchasedTotal: 0, upgradesOwned: new Set(), generatorsProvisioned: Object.fromEntries(Object.keys(generators).map((id) => [id, 0])), provisionRemaindersPpm: Object.fromEntries(catalog.generatorClasses.filter((value) => value.provision !== null).map((value) => [value.provision!.generatorId, 0])), stockRateRemainderPpm: 0, evaluatedThroughMs: nowMs, computeCreditMs: 0, computeBurstRemainingMs: 0, manualTokenMilli: catalog.manualPolicy!.bucketCapMilli, manualTokenRefilledAtMs: nowMs, gatesCrossed: {}, runSeq: prior.runSeq + 1, doctrinesByTransition: {}, structureId: "", ledgerFactKinds: new Set(), meterBands: active ? {} : { "trust.regulators.standing": reseed, "trust.regulators.grievance": 100 - reseed }, regionTraits: new Set(), routeKnowledgeBalance: 0, hintsUnlocked: new Set(), compactMember: false, compactTithePpm: 0, compactSolidarityPpm: 0, compactSamples: [], tier: 0, lifetimeValue: "0", offerState: null, runStartedAtMs: nowMs, runPreTimer: false, offlineSpans: [], collapsedOfflineMs: 0, factionId: "", incorporatedAtMs: null, factionStockResource: "", stockUnits: 0, stockProgressMs: 0, consumedStockUnits: 0, guildTitheCarryPpm: 0, guildBoundaryGuildId: prior.guildBoundaryGuildId, guildBoundarySeq: prior.guildBoundarySeq, guildConsumedWindow: 0, meterValues: meterState?.values ?? {}, meterDecayRemainders: meterState?.decayRemainders ?? {}, meterInputRemainders: meterState?.inputRemainders ?? {}, achievementsEarnedRun: new Set(), achievementScoreRun: 0 };
+  return { wireVersion: bundle.opportunities ? 18 : bundle.doctrines ? 17 : active ? 16 : 14, balances, generators, generatorPurchasedTotal: 0, upgradesOwned: new Set(), generatorsProvisioned: Object.fromEntries(Object.keys(generators).map((id) => [id, 0])), provisionRemaindersPpm: Object.fromEntries(catalog.generatorClasses.filter((value) => value.provision !== null).map((value) => [value.provision!.generatorId, 0])), stockRateRemainderPpm: 0, evaluatedThroughMs: nowMs, computeCreditMs: 0, computeBurstRemainingMs: 0, opportunitySpawnSeq: 0, nextOpportunityAttendedMs: 0, pendingOpportunity: null, activeBuffs: [], manualTokenMilli: catalog.manualPolicy!.bucketCapMilli, manualTokenRefilledAtMs: nowMs, gatesCrossed: {}, runSeq: prior.runSeq + 1, doctrinesByTransition: {}, structureId: "", ledgerFactKinds: new Set(), meterBands: active ? {} : { "trust.regulators.standing": reseed, "trust.regulators.grievance": 100 - reseed }, regionTraits: new Set(), routeKnowledgeBalance: 0, hintsUnlocked: new Set(), compactMember: false, compactTithePpm: 0, compactSolidarityPpm: 0, compactSamples: [], tier: 0, lifetimeValue: "0", offerState: null, runStartedAtMs: nowMs, runPreTimer: false, offlineSpans: [], collapsedOfflineMs: 0, factionId: "", incorporatedAtMs: null, factionStockResource: "", stockUnits: 0, stockProgressMs: 0, consumedStockUnits: 0, guildTitheCarryPpm: 0, guildBoundaryGuildId: prior.guildBoundaryGuildId, guildBoundarySeq: prior.guildBoundarySeq, guildConsumedWindow: 0, meterValues: meterState?.values ?? {}, meterDecayRemainders: meterState?.decayRemainders ?? {}, meterInputRemainders: meterState?.inputRemainders ?? {}, achievementsEarnedRun: new Set(), achievementScoreRun: 0 };
 }
 
 function rejectedExit(company: ReplayState, founder: FounderCarry, intentId: string, revision: number, category: string, detail: string): LoggedExitTransition {
@@ -1554,6 +1608,11 @@ function wireSnapshot(state: ReplayState, catalog: EconomyCatalog): unknown {
   if (state.wireVersion >= 16) Object.assign(snapshot, { meter_values: sortedRecord(state.meterValues), meter_decay_remainders: sortedRecord(state.meterDecayRemainders), meter_input_remainders: sortedRecord(state.meterInputRemainders), achievements_earned_run: [...state.achievementsEarnedRun].sort(byteCompare), achievement_score_run: state.achievementScoreRun });
   else snapshot.meter_bands = sortedRecord(state.meterBands);
   if (state.wireVersion >= 17) snapshot.compute_burst_remaining_ms = state.computeBurstRemainingMs;
+  if (state.wireVersion >= 18) Object.assign(snapshot, { opportunity_spawn_seq: state.opportunitySpawnSeq, next_opportunity_attended_ms: state.nextOpportunityAttendedMs,
+    pending_opportunity: state.pendingOpportunity === null ? null : { opportunity_id: state.pendingOpportunity.opportunityId, spawned_attended_ms: state.pendingOpportunity.spawnedAttendedMs,
+      expires_attended_ms: state.pendingOpportunity.expiresAttendedMs, effect_row_id: state.pendingOpportunity.effectRowId, selected_generator_id: state.pendingOpportunity.selectedGeneratorId },
+    active_buffs: state.activeBuffs.map((value) => ({ buff_instance_id: value.buffInstanceId, effect_row_id: value.effectRowId, selected_target: value.selectedTarget,
+      activated_attended_ms: value.activatedAttendedMs, expires_attended_ms: value.expiresAttendedMs })) });
   return snapshot;
 }
 function provisionedHardcaps(catalog: EconomyCatalog): Record<string, { count: number; reason_key: string }> { return Object.fromEntries(catalog.generatorClasses.filter((value) => value.provisionedHardcap !== null).sort((a, b) => byteCompare(a.id, b.id)).map((value) => [value.id, { count: value.provisionedHardcap!.count, reason_key: value.provisionedHardcap!.reasonKey }])); }
