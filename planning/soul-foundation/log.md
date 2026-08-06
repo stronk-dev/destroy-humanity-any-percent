@@ -58,3 +58,21 @@ contracts are also open:
 The stale acceptance criteria were reconciled to the already-ruled component/activity/dated-fact
 model. Executable proposals preserve one replay-owned Soul balance, keep the forbidden public debit
 rail absent, and make the real production opportunity cost auditable. No Soul code or data landed.
+
+## 2026-08-06 — owner rulings on the 3rd-round blockers SB10-SB16 (all accepted)
+- SB10: exact soul artifact {policy,bands(partition,only near_zero locked),debit_sources(may_exhaust==
+  single_use),recovery_activities,ending_policy}.
+- SB11 (owner): soul_exhausted_source_ids set in Founder v20 (may_exhaust rows only); reject
+  soul_source_consumed after use.
+- SB12: pure ApplyDebit(...) component; owner txn persists eligibility+benefit atomically; event order
+  benefit->soul_price_paid->[band_changed]->[soul_depleted+LedgerFact]; package-private test entry only.
+- SB13 (owner): touch-grass = soul_recovery_sessions table + suppression segment frozen into replay_inputs
+  => NO Company bump (the Fiscal F12 pattern); exclusive_activity reject; resolve advances evaluated_through;
+  Founder-then-Company lock order (C38).
+- SB14: one active session/founder; attended pauses offline; resolve = zero-output segment + Soul + logs
+  atomic (Founder-then-Company, corrected from SB14's wording); cancel=0 Soul; Exit rejects while active.
+- SB15: minigame artifact soul_gate {human_hobby|unrelated} + pet actions {essential|recovery|ordinary};
+  HumanContentLocked() + band projection; composed resolver; near_zero locks human_hobby+ordinary.
+- SB16: Founder v20 retains soul key, revalidates [floor,max], appends eligibility/activity state;
+  biconditional floor 20 (needs fiscal+minigames+pets); dependency-blocked on Fiscal v19 impl.
+Status -> accepted; SB1-SB16 ruled; impl dependency-blocked on Fiscal v19.

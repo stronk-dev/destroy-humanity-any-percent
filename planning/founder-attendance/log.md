@@ -102,3 +102,47 @@ Append-only. A fresh agent must be able to resume from this file and the accepte
   sample both converge to the same effective attendance, with the next run starting at partial
   zero. The resolver plan item flips with its proof; consumer-owned pet/faucet fixtures and the
   remaining rollback/retention coverage stay explicitly open. Kernel advances to `0.3.32`.
+
+## 2026-08-05 — designated reviewer verdict: Founder Attendance impl (7b1d356..c2be82c) — APPROVE
+
+Review by: the project's designated Claude reviewer. Recorded by: same. Range-union: NO prior
+verdict covered this span (the plan lists independent review as OPEN) — this pass is the review of
+record. That's the FOURTH consecutive batch where the delegated approvals stopped short and the
+designated pass is the actual coverage; recorded as a standing pattern for the archival gate.
+
+**Approved — no blocking defects. A1-A5 + B1-B3 implemented as ruled, verified at source:**
+- **A1:** grep confirms NO persisted founder_attended_ms field anywhere; age_ms is the sole stored
+  authority (finishExitResolved the only additive writer); the effective value is a pure computed
+  accessor. My A1-duplicate error is fully corrected in code.
+- **A2 (the critical item):** ResolveFounderAttendance freezes the 7-tuple; ValidateFounderAttendance
+  Sample rejects with ErrFounderAttendanceStale unless persisted age_ms == completed_attended_ms AND
+  the Founder revision matches. Every interleaving traced: an Exit between resolve and Founder-lock
+  advances age_ms + bumps the revision, so the stale sample FAILS CLOSED — no schedule combines a
+  post-Exit age with a pre-Exit partial; nothing double-counts or loses the interval; the transition
+  reads only Founder state. The real two-order Postgres fixture proves exactly-once in BOTH
+  command-wins and Exit-wins schedules. This was the one place a silent attended-time double-count
+  could have hidden — it can't.
+- **A3:** the resolver clones, RecordOfflineSpan with the run's PINNED catchup_ceiling_ms BEFORE
+  AttendedMS, never persists the clone; the 25h-dormant→zero-attended and first-back hazard are
+  closed; wrong/unresolved bundle fails closed typed.
+- **A4:** the founder verifier + loader read ONLY founder-scoped rows (genesis, founder save_revisions,
+  founder_log, founder events) — grep confirms no run_log / Company-stream read; Exit-as-founder-log
+  now writes the relational-source-coord row for applied AND rejected Exits in the multi-stream tx.
+- **B1/B3:** exit.v1 audit receipt regenerates from Founder state alone (live byte-parity checked);
+  constants_hash column = input always, result_constants_hash fact = output (equal on rejection).
+- **B2:** migration 00057 — nullable source columns, UNIQUE on run_log coords, deferrable composite
+  FK, all-or-none + exit-shape CHECKs; both rows in one Exit tx.
+- **A5:** overflow rejected before mutation in the new code (EffectiveFounderAttendedMS,
+  applyFounderExitResolved); shared Go/TS vectors cover zero/carry/transition/stale/overflow.
+- Kernel 0.3.32, all four new production files under the registered prefix, founderhistory.go added.
+
+Low/non-blocking (queue with the consumers): N1 — the resolver has no LIVE consumer yet (proven at
+fixture level; the "inside a Founder-locked command" placement is contract-by-convention until pet
+decay / faucet wire it); N2 — the pinned-vs-deploy-current ceiling difference is covered only
+indirectly (add the explicit differing-ceiling fixture); N3 — finishExitResolved mutates-then-checks
+age_ms (pre-existing Exit code, harmless: overflow aborts the whole tx); N4 — the exit-shape CHECK
+is SQL-NULL-permissive, backed by app-side validation (defense-in-depth).
+
+**Verdict: the Founder cross-stream chain (ApplyFounderLogged → genesis → Exit-as-founder-log →
+age_ms-sampled race-safe clock) is complete and sound. Proceed to the pet-decay and faucet
+consumers.**

@@ -656,3 +656,47 @@ Normal root verification for this landing: focused Go packages green, TypeScript
 6,555 client assertions green, the shared replay fixture regenerated and checked, and the declared
 Postgres integration target green. The designated independent adversarial review remains required
 before archival.
+
+## 2026-08-05 — designated verdict: care-transition composer (8d1cc5d..b1cbbf1) — APPROVE
+
+Review by: the designated Claude reviewer. Recorded by: same. Mandatory archival gate (rule c) for
+the 3 commits {9ef4e34, 008d1cc, b1cbbf1}. 8d1cc5d is the exact prior-verdict endpoint (the seam
+verdict) and an ancestor of b1cbbf1; no prior verdict cites this range — range-union unbroken.
+(Reviewer re-verified in an ISOLATED WORKTREE at b1cbbf1 because repo HEAD is 2cfd4e1 with a dirty
+tree; the pet path is byte-identical at b1cbbf1, the extra code is additive minigame work.)
+
+**C18-C21 VERIFIED at source (clean b1cbbf1 tree, all gates green):**
+- C20 cycle-skipping (no-per-tick law): advanceBehavior is signature-based cycle detection, bounded
+  independent of span; the 1e12ms (=1e9 grids) shared vector evaluates in bounded work byte-identical
+  Go/TS; grid_tick only at crossed boundaries; queue drain (due,behavior_id) order; hardcap 8;
+  behavior_prng_cursor pinned 0.
+- C18 watermark + primitive: evaluated_through_attended_ms watermark, before==evaluated_through
+  fail-closed (ErrStaleCareTransition); integration on big.Int/BigInt (no overflow); fixedgrid.Integrate
+  is the shared helper (pet + minigame + faucet — one primitive); partition-invariance asserted; Trust
+  monotone toward neutral; stats saturate at floor.
+- C19 no-death carve-out: min_eligible_ppm <= stat floor enforced (recovery stays available at floor);
+  decay-before-gate; integer diminishing; positive-applied-only cooldown+Trust; byte-parity.
+- C21 clock-context security: care intent decodes EXACTLY {intent_id,kind,expected_revision,pet_id,
+  action_id} via hasExactKeys — NO client Company/clock coordinate; server resolves the sole active
+  Company sibling; band-change-only pet_status_changed.v1; projection privacy (band + action IDs only).
+- Kernel 0.3.50->0.3.52 lockstep; KV-1 adds server/fixedgrid/ + client/src/fixed-grid.ts.
+
+Non-blocking: F2 (low) FSM-level partition-invariance not asserted (only decay fields) — no
+correctness risk (care is single-shot from the watermark, no split occurs) but "holds everywhere" is
+only partially FSM-covered; add the FSM split test. F3 (info) the cycle-detection guard fails CLOSED
+with a hard error on an inconsistent entered-at shift — unreachable under the pinned catalog; add a
+guard-path unit test if a richer behavior policy ships.
+
+**Verdict: APPROVE. C18-C21 faithful, no-per-tick/no-double-decay/no-death/server-clock all upheld
+and test-pinned. Archives nothing (AC3 combat cross-verify stays OPEN).**
+
+## 2026-08-05 — CORRECTION to the resolve-composer verdict (b1cbbf1..2cfd4e1): one REQUIRED fix
+The care-composer review, running the FULL gate in a clean worktree, caught what the resolve review
+(vitest-only) missed and I independently CONFIRMED at HEAD 2cfd4e1:
+**`pnpm typecheck` FAILS — test/replay.test.ts(169,81) TS2345:** restoreReplayState receives a
+ReplayCatalogBundle (optional meters/achievements) where a non-optional {meters,achievements} is
+required. Introduced by the resolve range; vitest does not typecheck so it slipped the test run.
+This is a REAL defect in the resolve span, not the care span. The resolve verdict's "APPROVE (code)"
+stands for the persistence/replay LOGIC, but the range carries a **required typecheck fix before the
+minigame RFC archives.** ROUTED to Codex. Process gap: the designated review AND Codex's verify must
+run `pnpm typecheck`, not only vitest — vitest green != types green.

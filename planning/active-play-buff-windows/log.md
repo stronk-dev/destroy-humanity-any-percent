@@ -59,3 +59,21 @@ Executable proposals preserve rejected-intent immutability, derive active contri
 shared transition, and use the existing runidentity/determinism primitives. No Active-Play code or
 balance literals were introduced. Implementation remains blocked pending owner rulings and body
 reconciliation.
+
+## 2026-08-06 — owner rulings on the 3rd-round blockers A9-A16 (all accepted)
+- A9: exact opportunities artifact {schedule_policy, effects tagged-union, combo_policy}; per-effect keys.
+- A10: base=runidentity.Seed(founder,run_seq), Substream(base^spawn_seq,"active_play.spawn.v1"); one Go
+  sampler (interval = trusted logged input for TS); Bound(weight)+Bound(gen_weight); UUIDv7 IDs; spawn_seq++.
+- A11 (owner): ROLLBACK lazy scheduler on rejection (keeps global invariant, no compound receipt) — and
+  Fiscal F11 REVISED to match (both rollback; the wrapper is dropped).
+- A12: internal activePlayContributions() owns event_buffs (not in replay_inputs); production_frenzy->
+  generators only, click_frenzy->declared actions, building_special->logged generator; Lucky rate excludes
+  the pending effect.
+- A13: Lucky = Quantize(min(Quantize(frac*bank),Quantize(cap*rate))+eps); accrual-only ledger returns
+  (delta,saturated), never rejects; claim always consumes; requested+actual+saturated+cap-reason vectors.
+- A14: exact v18 state bytes; A1's manual-token reuse => no clamp-accounting state added.
+- A15: replay-inputs bump w/ active_play arm on every applied command; reuse rejection details; exact
+  5 event payloads registered Go+DB; event ordering fixed.
+- A16: opportunities <=> Company floor 18 (needs meters+achievements+doctrines), forbidden on Founder;
+  codec max->18; activation inits empty + schedule from coord 0; Exit discards + re-inits next run.
+Status -> accepted; A1-A16 ruled; implementing (Company v18). Fiscal F11 alignment recorded.

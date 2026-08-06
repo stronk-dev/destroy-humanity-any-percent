@@ -287,3 +287,21 @@ in both directions; migration 00046 refuses to discard attributed clearing owner
 same-millisecond M1-to-M2 fixture proves a stale M1 snapshot cannot commit. The reviewer reran the
 complete standard real-Postgres integration target successfully. The archived Gameserver
 Composition implementation and all full-span follow-up findings are closed.
+
+## 2026-08-02 — designated independent review: findings round (65a0371..800213c) — APPROVED
+
+Review by: the project's designated Claude reviewer. Recorded by: same.
+
+All four full-span findings verified closed exactly to their rulings: 00045 nulls backfilled
+`run_seq` where the sample predates the membership boundary — so the live resolver falls back to
+entry weight, precisely the ruled fix — with a fail-closed Down that refuses to fabricate labels;
+the member-with-absent-projection path now returns `ErrInvalidEngineState` → `internal_invariant`
+with the recovery sentence documented; clearing reservations bind to immutable membership
+periods (superseding the release-on-rejoin ruling with a stronger shape — period identity makes
+stranding structurally impossible rather than swept); the same-millisecond leave/rejoin and
+stale-snapshot regressions exist and run against real Postgres. Darwin's remediation entry cites
+ranges whose union covers the full span — the new corollary honored on its first outing. One
+labeling nit for the record: the entry header "designated final remediation review" should not
+use "designated" for a Darwin review (the body's honest `Review by:` line is what governs; the
+header word is reserved). No further findings. **Gameserver Composition is closed at every
+level: implementation, remediation, and review ledger.**

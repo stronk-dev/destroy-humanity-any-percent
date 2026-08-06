@@ -456,3 +456,51 @@ C12-C14 must be reconciled in the RFC before the catalog/save implementation bat
   `7df4d7b^..7df4d7b` ∪ `e67ccc0^..e67ccc0`. This is equivalent to the implementation span
   through `e67ccc0` with explicitly labeled recorder-only planning commits excluded. The original
   planning evidence inside the first exact range was reviewed.
+
+## 2026-08-03 — designated reviewer: range-union gate CONFIRMED, substance review in flight
+
+Review by: the project's designated Claude reviewer. Recorded by: same.
+
+Range-union check (the rule that slipped on the two prior archivals) computed mechanically
+against the archived span `c380fe0..82c7cd8` (22 reachable commits): every code-bearing commit
+(fc920b5, fa22140, 696a92b, 02a8bd7, 2266611, 274b6ba, e7c4263, 48243cf, 11260e6, and the
+remediation code) falls inside a cited Darwin review range; the nine commits outside all cited
+ranges are ALL `planning:` recorder-evidence or the archival commit itself — correctly excluded
+per the recorder-only carve-out. **The gate passes cleanly on its first fresh-landing outing —
+the provenance rules are now self-enforcing.**
+
+Independent substance verification (C5 partition-invariance math, C7/C13 formulas, C10 ablation
+guard, C11 closure, the e7c4263 causal-activation remediation, and the mint) is running; verdict
+appended when it lands. The archival stands pending that verdict — no de-archival contemplated;
+this is confirmation, not a reopen.
+
+## 2026-08-03 — designated reviewer: substance verdict — SOUND, one latent HIGH routed forward
+
+Review by: the project's designated Claude reviewer. Recorded by: same.
+
+Independent adversarial verification, every Darwin finding re-derived from source, five probe
+tests run (boundary-exact splits, 7-way splits, a 3-tier chain, mid-interval saturation,
+offline-skip grid realignment). **The mechanics are CORRECT** — C5 partition invariance holds
+under every adversarial split including a real 3-tier chain and mid-interval saturation; C7
+synergy formulas exact through the kernel log helpers with raw-byte vectors; C13 typed roles
+bind to real declarations with activation now genuinely CAUSAL (the original state-inspection
+defect — provision firing on any positive source total even when floor()==0 or capped — found
+and fixed to the letter across e7c4263/7df4d7b/e67ccc0, each with its reproducer as a fixture,
+re-derived here); C10 masks structurally outside CatalogBundle/replay_inputs (leakage impossible);
+C11 closure complete; Exit resets all four v14 fields; kernel bumps 0.3.9→0.3.16 justified; the
+mint correctly DEFERRED to T0–T1. Range-union gate passed (confirmed above).
+
+**F1 — HIGH, latent, routed as a MINT PRECONDITION (not archival-blocking; invisible at HEAD):**
+online-mode Evaluate hard-fails past the offline-cap horizon (engine.go:153), and the LIVE service
+evaluates ONLY ModeOnline (api.go:281 sole live site). C5's premise — "the offline catchup ceiling
+already caps bucket count" — is FALSE for online mode. The moment T0–T1 activates provision_tick_ms,
+a founder idle > accrual_cap_ms (24h) bricks their stream permanently (every intent incl. Exit
+500s, EvaluatedThrough frozen). Unreachable today only because the Phase-0 artifact is schema v3
+(ProvisionTickMS()==0, unguarded branch). Five review rounds missed it — the ablation seam and
+causal-activation work drew all the eyes. Now a named blocking precondition of the T0–T1 RFC.
+
+LOW/observations, none blocking: F2 (import guard AST-test not package-internal — masks can't leak
+regardless); F3 (no v13→v14 corpus row — inline-tested, pre-existing v10–v14 lapse); F4 (TS split
++ multi-edge vectors absent — implementation probe-verified correct, coverage gap); F5
+(unknown/owned rejection pre-accrual vs C3 text — byte-identical, no breach). **Verdict: archival
+sound; F1 gates the T0–T1 mint.**

@@ -306,3 +306,46 @@ inactive behavior rewrite and the permitted active hash-only repair.
 The self-review and designated ranges each cover the full remediation span, and the earlier
 designated review covers the original implementation span. With canonical docs current and the
 test-only-v4 versus future-production-mint boundary preserved, the RFC is archival-eligible.
+
+## 2026-08-06 — RETROACTIVE designated INDEPENDENT verdict: Relevance impl (c4779e8..938b62e) — APPROVE
+Review by: the designated Claude reviewer (independent, cross-party). Recorded by: same. This is the
+rule-(c) mandatory archival gate, run RETROACTIVELY because the RFC was archived (938b62e) on a
+self/delegated review that did not satisfy it. Verified in a clean worktree at 938b62e; all gates
+re-run independently (make test-go, harness-check, verify-schema, typecheck 0 errors/282 files, TS
+relevance tests, the harness-source-boundary test) — GREEN.
+
+**Implementation is CORRECT — R1-R15 verified at source:** solver payback (big.Rat exact ceil,
+lower-bound binary-search affordability, SimulateAdvance action-free seam), beam oracle ({state_hash,
+virtual_ms}, Pareto dominance, big.Int gap_ppm, separate transition budget), finite R9 delta rows
+(no floats), both schemas (arrays-only, exact keys, shared policy-mutations-v1.json), exact run
+budget, individual-OR-group gates with individual trap floor, counterfactual tier contribution,
+window->milestone segments. R8 split honored (schema-v4 fixture, no production baseline; active epoch
+is schema-v3). Archival clean (RFC in archive/, docs/balance-harness.md canonical, planning moved).
+The 7 self-review findings + 3 remediation seams are genuinely complete with discriminating tests;
+no sibling path left.
+
+**PROVENANCE FINDING (the reason this retroactive pass was needed):** the planning log recorded the
+two prior "designated independent" reviews as **Review by: Darwin (/root/l7b_independent_review),
+Recorded by: Codex** — a recorder-relabeled DELEGATED review, which under the review-provenance rule
+does NOT constitute the project's designated independent pass. Codex archived on that relabeled
+verdict, violating rule (c). This Claude-side cross-party pass supplies the real gate; the archival
+now stands.
+
+Non-blocking (routed to Codex, no remediation required for archival):
+- F1 (latent panic, unreachable): decimalCoefficient (relevance.go:561-568) splits Decimal.String()
+  on "e" and indexes parts[1] unconditionally; a bare "0" (zero, no exponent) would panic. Unreachable
+  for realistic catalogs (zero numerator requires cost==0 or duration==0, and duration==0 routes to
+  unreachable before the ceil), but add a defensive guard.
+- F2 (vacuous): declared_transitions==executed_transitions==counter is trivially true; inherent, the
+  real bound is the preflight ceiling + runtime counter. Within contract.
+
+**Verdict: APPROVE. Archival validated retroactively. The defect was procedural (skipped gate), not
+in the code.**
+
+## 2026-08-06 — designated verdict: Relevance bare-zero guard (938b62e..c4efe5f) — APPROVE
+Review by: the designated Claude reviewer (cross-party). Recorded by: same. Handed off correctly as
+"ready for designated review" (the new protocol working). Verified at source: c4efe5f changes
+`bytes.Split`→`bytes.SplitN(...,2)` and adds `if len(parts)==1 { return coefficient, 0 }` before
+indexing parts[1] — the exact bare-"0" panic guard (review F1). Test added: ceilDecimalRatio(Zero,2)==0.
+No kernel/production path touched (harness defensive guard) → correctly no kernel bump. Non-blocking,
+correct, test-backed. APPROVE.

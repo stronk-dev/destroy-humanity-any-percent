@@ -698,3 +698,28 @@ Explicit root `make typecheck` exited 0, then the complete root `make verify` pr
 6,563 unit tests and 19,698 browser assertions. The Makefile already included typechecking; only
 Codex's earlier interpretation of partial tool output was wrong. This closes the required build
 fix, subject to the normal independent review of `2cfd4e1..06bf0f3`; nothing is archived here.
+
+## 2026-08-05 — designated verdict: typecheck remediation (2cfd4e1..06bf0f3) — APPROVE (clears the required fix)
+
+Review by: the designated Claude reviewer (direct diff review — proportionate to a 2-commit
+types-only fix). Recorded by: same. Mandatory archival gate (rule c) for {06bf0f3, 2d0566d}.
+2cfd4e1 is the exact resolve-verdict endpoint and an ancestor of 06bf0f3 — range-union chain
+unbroken, no gap, no prior verdict cites this range.
+
+**The required typecheck fix (F1 from the care review) is CLOSED — verified at source + gate re-run:**
+- 06bf0f3 touches ONLY client/test/replay.test.ts. It adds a runtime guard
+  `if (!bundle.meters || !bundle.achievements) throw ...` that PROVES the optional fields exist, then
+  builds `foundationCatalogs = {meters: bundle.meters, achievements: bundle.achievements}` and passes
+  THAT (not the wide bundle) to restoreReplayState. This is a sound TYPE NARROWING via a real runtime
+  check — NOT a `!` non-null assertion and NOT an `as` cast (both of which would paper over the type).
+  Textbook-correct.
+- No kernel/production code touched → correctly no kernel bump (test-file-only).
+- `pnpm -C client typecheck` re-run independently: 275 files, 0 errors, 0 warnings, exit 0.
+- 2d0566d honestly records the remediation and retracts the earlier false-green report. Root cause
+  (Codex's own disclosure): `make verify` DOES include typecheck; the false green was misreading
+  partial command output as completion — a Codex-side discipline fix, not a gate hole.
+
+**Verdict: APPROVE. The resolve range's one required fix is resolved; both composers are now clear on
+LOGIC (prior verdicts) and TYPES. The minigame RFC's typecheck blocker is lifted. Still open (not by
+this range): pet-care AC3 (combat obedience cross-verify) and the RFCs' own acceptance/archival —
+nothing self-archives here.**
