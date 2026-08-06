@@ -1,9 +1,10 @@
 # RFC: Soul Foundation (the personal ledger)
 
-- **Status:** accepted direction; implementation blocked on SB17-SB23 — SB1-SB16 ruled (artifact shape, soul_exhausted_source_ids eligibility, the
-  ApplyDebit component, touch-grass `soul_recovery_sessions` with NO Company bump, human-content
-  classification, v20 activation+wire). Implementation DEPENDENCY-BLOCKED on Fiscal v19 being
-  implemented; the pure catalog/band layer may land earlier.
+- **Status:** accepted — SB1-SB23 ruled (artifact enums + copy-key registry, ApplyDebit typed
+  errors + exact events, the recovery-session coordinator, the `ApplySuppressedLogged` zero-output
+  boundary, minimal v20 codec + `next_soul` Exit arm, `soul_gate` artifact schema bumps, event
+  ordering + single-transaction atomicity). Fiscal v19 is implemented and archived, so Soul is
+  IMPLEMENTABLE; the pure catalog/band layer may land first.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
 - **Design refs:** `design/02 §8` (Soul — the personal ledger, distinct from the moral Trust axis;
