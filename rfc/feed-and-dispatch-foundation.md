@@ -3,8 +3,7 @@
 - **Status:** draft
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
-- **Design refs:** `design/05 §2` (the live feed, presence, dispatches — curated events, rate-shaped at source), `design/05 §Neopets adoptions` (amplification-gated curation: free on owned surfaces, editorial gate on anything broadcast), the no-free-text law (`design/00`)
-- **Research:** `events-playstyles.md §Ops lessons` (dispatches = highest-ROI narrative device; GW2 stuck-event watchdogs), `neopets-social-history.md §3` (the Neopian Times editorial-UGC model; vote-based → social-capital-market hazard), `social-spaces.md` (moderation model)
+- **Design refs:** `design/05 §2` (the live feed, presence, dispatches — curated events, rate-shaped at source), `design/05` (amplification-gated curation: free on owned surfaces, editorial gate on anything broadcast), the no-free-text law (`design/00`)
 - **Depends on:** Transport (implemented — `feed` channel exists, shallow history N=50); Events + World Layer (drafted — dispatches narrate their outputs)
 - **Owner ruling honored:** breadth-first — the feed/dispatch MECHANICS + the curation gate, not the feed content.
 - **Planning:** `planning/feed-and-dispatch-foundation/` (once implementing)
@@ -33,12 +32,13 @@ per contributor).
 
 The design's UGC template: **free expression on OWNED surfaces, an editorial gate on anything
 BROADCAST.** This RFC ships the BROADCAST side's gate — nothing user-authored reaches `feed`
-without passing a gate, and passing the gate is itself a coveted reward (the Neopian Times model).
+without passing a gate, and passing the gate is itself a coveted reward (editorial selection as
+the prize).
 Phase-0 broadcast surfaces are SERVER-authored only (dispatches); user-authored broadcast (a
 future "your run made the front page" surface) lands behind the gate this establishes. The gate is
 a closed pipeline: submission → automated checks (the copy legal lint, structured-only content) →
-curation queue → published-as-reward. **Vote-based amplification is FORBIDDEN** (the Neopets
-Beauty Contest lesson: vote-based UGC becomes a social-capital market — every amplification
+curation queue → published-as-reward. **Vote-based amplification is FORBIDDEN** (vote-based UGC
+amplification inevitably becomes a social-capital market — every amplification
 decision is server/editorial, never player-vote).
 
 ### FD3 — Presence (aggregate, never per-player firehose)
@@ -49,10 +49,10 @@ shows *curated* activity (a world-first, a milestone), never a raw activity stre
 Room's ambient-population model (design/05 §3) is presence, not feed — this RFC owns the feed;
 presence stays transport's.
 
-### FD4 — The watchdog (the GW2 ops lesson)
+### FD4 — The watchdog
 
-Every dispatch and any future feed-event has a max-lifetime + forced-resolution watchdog (GW2's
-stuck-event bug lesson: every event needs a watchdog). Dispatches expire from history (the shallow
+Every dispatch and any future feed-event has a max-lifetime + forced-resolution watchdog (stuck
+events are a known live-ops bug class: every event needs a watchdog). Dispatches expire from history (the shallow
 N=50 already); situations that stall alarm the ops surface. No feed item can wedge.
 
 ## Acceptance criteria
@@ -71,3 +71,4 @@ N=50 already); situations that stall alarm the ops surface. No feed item can wed
 
 - 2026-08-03: created (draft) — the feed's source + the amplification-gated curation law
   structural; dispatches as the narrative device.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

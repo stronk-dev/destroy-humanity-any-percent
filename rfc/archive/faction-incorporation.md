@@ -49,7 +49,7 @@ land as balance/content on these hooks, tier by tier — this RFC makes them exp
   unincorporated (early exits) — `faction_id: null` is a legal terminal state.
 - Persisted on Company state (next save version): `faction_id string|null`,
   `incorporated_at ms|null`. Resets with the run (D6 assembly: null). **Founder state is
-  untouched** — faction is run identity, per-run switching is content (Realm Grinder model);
+  untouched** — faction is run identity, per-run switching is content;
   meta-progression already lives on the Founder.
 - **Open Source binding:** the `incorporate {open_source}` intent evaluation *also* applies the
   compact signature in the same transaction (the existing `sign_compact` mutation, tithe from
@@ -150,3 +150,4 @@ provisional balance data; changes ride the epoch protocol like every catalog.
 - 2026-07-30: created (draft) — the faction owner contract Commons Onboarding blocker #1 named.
 - 2026-07-30: Codex bounce answered — FA (stocks are int64 save fields, not ledger resources), FB (attended-minute accrual, integer-exact, accrual-only saturation), FC (complete literal catalog; Open Source tithe 130000 ppm inside the commons band).
 - 2026-07-30: complete-diff review APPROVED (see planning log); rulings F2a (signatory incorporation continues membership, tithe max-raised) and FB-1 (ceiling hash-pinned in the prestige catalog) added.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

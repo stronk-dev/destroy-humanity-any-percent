@@ -3,7 +3,6 @@
 - **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Design refs:** `design/05 §6` (derived boards, category model, Route Registry), `design/08 §6` (timer semantics, categories), `design/00` (world records as framing)
-- **Research:** `design/research/speedrun-governance.md` (S1–S39 — the primary source), `design/research/adaptive-balancing.md §8` (Balance Epoch, Board Mandates; **as corrected by** speedrun-governance §5.3)
 - **Depends on:** Production Engine (implemented), Save Layer (implemented — `constants_hash` per
   revision), Gate Predicates (implemented — `route_executed` events feed Glitchless/variables),
   account/session bootstrap, Prestige & Exits (run lifecycle)
@@ -11,7 +10,7 @@
 
 ## Summary
 
-Boards, epochs, and run verification — closing the **last entry in the deferred-decisions register** (ranking keys, from RFC-0002 draft D4). The architecture is the governance research's: **boards are derived from replayed intent logs, never authored**; runs pin to the epoch live at their timer start; ranking keys are exact.
+Boards, epochs, and run verification — closing the **last entry in the deferred-decisions register** (ranking keys, from RFC-0002 draft D4). The architecture law: **boards are derived from replayed intent logs, never authored**; runs pin to the epoch live at their timer start; ranking keys are exact.
 
 ## Specification
 
@@ -27,16 +26,16 @@ A run is `(founder_id, run_id, category, variables, epoch_id, constants_hash, se
 
 - An epoch is minted **deliberately**: `{epoch_id (monotonic), name, started_at, catalog constants_hash set, changelog_ref}`. Minting is a release act tied to a `BALANCE-CHANGE:` (Harness H3) and a public changelog entry — **a silent nerf is structurally impossible** because a balance change without an epoch fails the harness hook, and an epoch without a changelog fails this RFC's validation.
 - **Hotfixes within an epoch** (correctness-only, `BALANCE-CHANGE:` absent) update the epoch's accepted-hash set; per-run `constants_hash` remains the forensic record of exactly what a run played under.
-- **A run pins to the epoch live at its timer start, for its entire duration** (the governance correction — at our cadence essentially all first-ending runs straddle a boundary; the most emotionally significant run in the game must land on a board).
+- **A run pins to the epoch live at its timer start, for its entire duration** (the ruled pin: at our cadence essentially all first-ending runs straddle a boundary; the most emotionally significant run in the game must land on a board).
 - Boards key on `(category, variables, epoch_id, mandate_level)`. Old epochs' boards freeze and remain browsable forever ("patch X and earlier" is a first-class historical object, not an attic).
 
 ### D4 — Categories and variables
 
-Per `05 §6`, consumed here as data: 4 canonical categories (terminal conditions in code) + the player-authored predicate surface (threshold-promoted at ≥ 25 verified runs by ≥ 10 founders — provisional) + Exhibition. Variables: `Glitched` (any `route_executed` this run), **`Assisted`** (commons membership at any point — **structural disconnection**, per the governance spec: Solo and Assisted are different boards, never a computed subtraction), mandate level. The Route Registry's public ledger (Gate Predicates D3) renders alongside boards — routes and records are one surface.
+Per `05 §6`, consumed here as data: 4 canonical categories (terminal conditions in code) + the player-authored predicate surface (threshold-promoted at ≥ 25 verified runs by ≥ 10 founders — provisional) + Exhibition. Variables: `Glitched` (any `route_executed` this run), **`Assisted`** (commons membership at any point — **structural disconnection**: Solo and Assisted are different boards, never a computed subtraction), mandate level. The Route Registry's public ledger (Gate Predicates D3) renders alongside boards — routes and records are one surface.
 
 ### D5 — Board Mandates
 
-The Ascension-style ladder from `adaptive-balancing §8`, consumed as balance data: Mandates 1–20 as additive rule modifiers, each a declared catalog object; `mandate_level` is a board key component. Mandate *content* is design/balance work, out of scope here — this RFC ships the key plumbing and validation.
+An opt-in prestige-difficulty ladder, consumed as balance data: Mandates 1–20 as additive rule modifiers, each a declared catalog object; `mandate_level` is a board key component. Mandate *content* is design/balance work, out of scope here — this RFC ships the key plumbing and validation.
 
 ### D6 — World-first and broadcast hooks
 
@@ -53,10 +52,10 @@ First verified completion per `(category, epoch)` emits a feed/dispatch event (t
 
 ## Open questions
 
-- **G3 (from `wc3-custom-ecosystem.md` §5.6):** threshold promotion (D4's 25-runs/10-founders)
-  needs a flat, enumerable browse tail for unpromoted player categories — the SC2 Arcade
-  sort-order lesson (popularity-sorted-only discovery buries new content and calcifies the top
-  list). Promotion thresholds gate RANKING, never VISIBILITY.
+- **G3:** threshold promotion (D4's 25-runs/10-founders)
+  needs a flat, enumerable browse tail for unpromoted player categories —
+  popularity-sorted-only discovery buries new content and calcifies the top
+  list. Promotion thresholds gate RANKING, never VISIBILITY.
 
 - Promotion thresholds (25/10) and mandate count: provisional, data.
 - Board retention/pagination scale: implementation freedom.
@@ -85,7 +84,7 @@ the seed's artifact list in a fixture and every composer follows without code ed
 
 ### L4 — Player validator delivery
 
-**The validator is the existing TS shared kernel** — no WASM, no second implementation: the golden-vector regime already holds Go and TS byte-identical, and that regime *is* the parity proof. Delivery: the client bundle ships a `verify(runLogArchive, catalogBytes)` entry that replays and emits the same five-cause verdict. Fixtures: every verification cause gets one committed `(log, catalog, verdict)` fixture asserted by **both** suites. The server verdict is authoritative; the shipped validator is the transparency instrument (governance §5.3's requirement), and any Go/TS verdict divergence is by definition a kernel parity bug — InvariantSink severity, not a rules dispute.
+**The validator is the existing TS shared kernel** — no WASM, no second implementation: the golden-vector regime already holds Go and TS byte-identical, and that regime *is* the parity proof. Delivery: the client bundle ships a `verify(runLogArchive, catalogBytes)` entry that replays and emits the same five-cause verdict. Fixtures: every verification cause gets one committed `(log, catalog, verdict)` fixture asserted by **both** suites. The server verdict is authoritative; the shipped validator is the transparency instrument (the published-formulas rule applied to verification), and any Go/TS verdict divergence is by definition a kernel parity bug — InvariantSink severity, not a rules dispute.
 
 ### L5 — Epoch storage and minting
 
@@ -187,3 +186,4 @@ cannot be relabeled identity-only even when the harness does not execute that ar
   transition on epoch rows, rejects all historical rewrites/deletes, and constrains board run IDs
   to canonical Company-stream/run-sequence identity.
 - 2026-07-29: accepted for implementation by `planning/codex-batch-2026-07-29.md`; implementation started immediately behind Prestige so L1 can replace its provisional terminal sequence.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

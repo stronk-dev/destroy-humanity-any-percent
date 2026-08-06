@@ -16,7 +16,7 @@ Everything around the pure engines: bot policies, server-side replay verificatio
 ### B1 — Bots (deterministic, manifest-published)
 
 - **Duel:** expectimax depth 2 over the small action space; personality-flavored policies = published per-temperament weight tables (catalog data). Decision tie-break: lowest action index. All draws on the `"bot_policy"` substream (parent C4) — a bot's whole game is reproducible from the seed.
-- **Lane:** the greedy policy family with **published behaviour-flag manifests**: `{level, flags: {defends_towers, cycles_cheapest, saves_for_combo, uses_spells_reactively, punishes_elixir_leads}}` — each level a catalog row enabling a superset of flags. Tie-break: earliest legal placement, lowest card index, lowest position.
+- **Lane:** the greedy policy family with **published behaviour-flag manifests**: `{level, flags: {defends_towers, cycles_cheapest, saves_for_combo, uses_spells_reactively, punishes_capacity_leads}}` — each level a catalog row enabling a superset of flags. Tie-break: earliest legal placement, lowest card index, lowest position.
 - Bot identity in a replay: `{bot: true, manifest_level, policy_version}` in the battle log header. **Bots never cheat** — same legality path, no hidden state beyond the same snapshot a human attacker would get.
 
 ### B2 — Verification and match records
@@ -53,3 +53,4 @@ All gates run from **committed generator configs**: `harness/combat-gates.json` 
 ## Changelog
 
 - 2026-07-29: created from the four-way split; answers parent-review blockers #6 (bots/snapshots) and #7 (statistical gates); B3 encodes the 2026-07-28 real-ratings decision.
+- 2026-08-06: `punishes_elixir_leads` renamed `punishes_capacity_leads` (lockstep with the lane-engine capacity rename); no spec change.

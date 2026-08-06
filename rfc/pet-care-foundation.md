@@ -3,15 +3,14 @@
 - **Status:** accepted (C1-C21 ruled; introduces the Founder mutation boundary; implementing)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
-- **Design refs:** `design/04 §1` (the tamagotchi layer — 4-stat decay, care actions + diminishing returns, personality behavior FSM, trust/mood two-tier, bonds), `design/04 §Neopets adoptions` (no-death canon, public-awkwardness-not-loss), `design/03 §10` / combat C5 (the pet is the On-Call Leader — the seam awaits its two integers)
-- **Research:** `cattery-reusables.md` (the port source: decay + care + FSM + CSS-sprite tech), `neopets-systems.md §3` (no-death, care barely punishes), `creature-battler.md §8.3` (care→options-not-stats)
+- **Design refs:** `design/04 §1` (the companion layer — 4-stat decay, care actions + diminishing returns, personality behavior FSM, trust/mood two-tier, bonds), `design/04 §adoptions` (the no-death canon: public-awkwardness-not-loss), `design/03 §10` / combat C5 (the pet is the On-Call Leader — the seam awaits its two integers)
 - **Depends on:** Save + Run Genesis (implemented); Combat Shared Kernel (implemented). **NOT the Company `ApplyLogged` path — C1: this RFC introduces the Founder mutation boundary.**
 - **Owner ruling honored:** breadth-first — the care/trust/mood/FSM MECHANICS, not pets' content (species, cosmetics, the battle content).
 - **Planning:** `planning/pet-care-foundation/` (once implementing)
 
 ## Summary
 
-The cattery port, made deterministic and server-authoritative. Care stats with diminishing-return
+The companion-care foundation, deterministic and server-authoritative — a direct descendant of our own prior project's care systems. Care stats with diminishing-return
 actions, the two-tier trust/mood model, the personality behavior FSM, and bonds — all as
 Founder-scoped state mutated by care intents through `ApplyFounderLogged`. Critically: this RFC
 CLOSES combat's C5 fixture-only boundary by producing the real `(trust_ppm, soul)` inputs the duel
@@ -23,16 +22,16 @@ and lane engines consume.
 
 Four mechanically fixed stats per pet (`hunger`, `energy`, `cleanliness`, `affection`),
 each ppm, decaying on ATTENDED time toward a low band (the attended clock, like everything).
-**No-death (the Neopets canon, ruled):** a fully-neglected stat floors and STAYS floored — the pet
+**No-death (ruled):** a fully-neglected stat floors and STAYS floored — the pet
 never dies, never leaves; neglect costs the pet's public status display (guild-visible), the FSM
 mood, and greyed-out care options, never the pet. A dormant founder returns to a living pet
-(the researched retention property).
+(the designed retention property).
 
 ### PC2 — Care actions with diminishing returns
 
 Care actions are intents (`care_action {pet, action}` — C1, evented, replay-logged). Each raises a
-stat, with the cattery diminishing-returns curve: effectiveness scales down as the stat rises
-(`>90% → 0.5×`, the researched shape), so over-care wastes — care buys OPTIONS and TEMPO, never a
+stat, with a diminishing-returns curve: effectiveness scales down as the stat rises
+(`>90% → 0.5×`; the exact grid/curve/action rows are the pinned catalog's balance data, C13/C15), so over-care wastes — care buys OPTIONS and TEMPO, never a
 higher ceiling (the hardcap decision: every pet of an identity shares the stat ceiling). Actions
 spend no Company resource, attended time, manual token, or meter. Catalog cooldowns and
 diminishing returns are their only scarcity. Diminishing-return math is integer-ppm, byte-parity
@@ -40,8 +39,8 @@ in both runtimes.
 
 ### PC3 — Trust & mood (two-tier, the combat seam)
 
-**Trust** (persistent, server, decays slowly toward neutral absent care — the cattery two-day
-decay generalized to attended time) and **Mood** (session, volatile). Trust is the durable
+**Trust** (persistent, server, decays slowly toward neutral absent care — a slow multi-day
+decay shape generalized to attended time) and **Mood** (session, volatile). Trust is the durable
 relationship; mood is the moment. **This is combat's C5 input:** `trust_ppm` (from care quality
 over time) → the Obedience curve (50%→30% across Trust 1.00→0.80, already specced in the combat
 kernel); `soul` (from the Meters foundation) → the leader-ability modulation. This RFC's output is
@@ -50,17 +49,16 @@ exactly the two integers combat froze as fixtures — combat's fixture boundary 
 ### PC4 — The personality behavior FSM
 
 Each pet has a personality (the six Temperaments — shared with combat's type layer, one identity
-system) driving a behavior state machine: activity → behavior-chain queue (the cattery FSM
-ported). Behaviors are DETERMINISTIC given (personality, stats, seed) — drawn from the save-seeded
+system) driving a behavior state machine: activity → behavior-chain queue. Behaviors are DETERMINISTIC given (personality, stats, seed) — drawn from the save-seeded
 stream, replay-safe. Behavior is display + flavor (it drives the pet's visible activity and the
 On-Call Leader's in-match reactions), never authoritative economy. Bonds/affinity between pets are
-a Founder-state graph (the cattery bond system), affecting behavior only.
+a Founder-state graph, affecting behavior only.
 
 ### PC5 — Scope & the CSS-sprite tech
 
 Pets are FOUNDER-scoped (they persist across Exit — a pet is not a company asset; the founder's
-companion). Care state, trust, bonds all persist; save-version bump, corpus fixtures. The
-CSS-recolorable sprite system (cattery tech, `cattery-reusables.md`) is the rendering approach —
+companion). Care state, trust, bonds all persist; save-version bump, corpus fixtures. A
+CSS-custom-property recolorable sprite system is the rendering approach —
 declared here as the pet-visual contract for the UI foundation to consume, not implemented as
 screens.
 
@@ -609,7 +607,8 @@ receipt, and ordered event bytes.
 - 2026-08-04: Codex acceptance review found C1–C8. Founder care cannot mutate inside the
   Company-only `ApplyLogged` boundary; pet identity, care/time arithmetic, trust/combat output,
   behavior FSM, projection privacy, and Founder replay/activation require executable contracts.
-- 2026-08-03: created (draft) — the cattery port.
+- 2026-08-03: created (draft) — the companion-care foundation.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.
 - 2026-08-04: C1-C8 ruled — introduces ApplyFounderLogged (the reusable Founder mutation boundary; I repeated the Meters-C3 Company-scope error), fixed stat IDs, Founder attended cursor, closed trust/mood/FSM contracts, no-death projection. Accepted.
 
 ## Owner rulings on C18-C21 (2026-08-05) — the care-transition composer

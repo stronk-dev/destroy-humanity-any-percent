@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/03` (the minigame suite, clocks, economy hooks, AI-fallback law), `design/03 §12b` (the tier→minigame scaling seam + Fairness Law), `design/05 §4` (PvP table, punch-down multiplier)
-- **Research:** `neopets-systems.md §4` (the portal faucet model: N-sends × per-game cap × conversion ratio, monthly re-tune), `kol-puzzle-pirates.md §B` (minigame-as-labor, offline-output quality grades), `creature-battler.md` / `lane-pusher-design.md` (the combat instances)
 - **Depends on:** Production + Run Genesis + Transport + Gameserver Composition (implemented); Combat Shared Kernel (implemented — the duel engine is tenant #1). **NOT Clout** (removed per C1).
 - **Owner ruling honored:** breadth-first — the PLATFORM every minigame is content on: session lifecycle, the scaling seam as code, the faucet governor, reward hooks, the registry. No individual minigame.
 - **Planning:** `planning/minigame-platform-foundation/` (once implementing)
@@ -13,7 +12,7 @@
 
 Every future minigame — board games, the two combat engines, the Market, the arcade toys, pets'
 battles — needs the same platform: a session/match lifecycle, the §12b scaling-seam contract as
-executable code, the Neopets faucet governor (so a minigame can never become an economy exploit),
+executable code, the faucet governor (so a minigame can never become an economy exploit),
 reward payout into the real economy, and a registry. Combat's C5 already prototyped the seam
 ("the seam is these two integers"); this generalizes it to a platform contract.
 
@@ -40,18 +39,18 @@ minigame in its registry entry, computed server-side at session create, frozen i
 **The Fairness Law is loader-enforced:** a scaling input feeding a RANKED PvP power stat is a load
 error; tier scaling reaches ranked play only as `breadth` (options inside a fixed ceiling — the
 2026-07-28 hardcap decision generalized from pets to all ranked minigames). `offline_quality`
-(the Puzzle Pirates grade) is the active/idle bridge: recent session performance charges the
+(the earned output-quality grade) is the active/idle bridge: recent session performance charges the
 quality tier of the associated automated output, decaying over ~31 days, never zeroed.
 
-### MP3 — The faucet governor (the Neopets shape, mandatory)
+### MP3 — The faucet governor (mandatory)
 
 Every minigame declares `payout: {sends_per_day, per_send_cap, conversion_ppm}` — N score-sends
 per day, each capped, converted at a published ratio. This is the STRUCTURAL guarantee a minigame
 cannot become an infinite faucet (the Cloud-Clicker economy laws' answer to "minigame prints
 currency"): the daily cap is the governor, published per epoch, re-tunable on the epoch cadence
-(the Neopets monthly-25th precedent as our BALANCE-CHANGE cadence). Rewards above the cap are
+(a scheduled re-tune under the BALANCE-CHANGE discipline). Rewards above the cap are
 forfeit (accrual-only, reason-keyed). Bot/AI-fallback matches pay at a declared reduced,
-non-ranked rate (anti-farm — the researched universal).
+non-ranked rate (the anti-farm rule).
 
 ### MP4 — Reward payout & the AI-fallback law
 
@@ -74,8 +73,8 @@ scaling_inputs[], payout, fallback, unlock_condition_ref}` (era_skins REMOVED pe
 theme per era, never per-feature). `unlock_condition_ref` uses the closed shell-fact grammar
 (UI C5). The combat DUEL engine registers as tenant #1 (their existing catalogs become platform-conformant); the board
 games, Market, and arcade toys are later content on this registry. `unlock_condition_ref` gates
-by catalog fact (staggered across the tier arc — the CC hour-5-40-sag fix); the platform never
-invents unlock logic.
+by catalog fact (staggered across the tier arc, so unlocks never cluster early and leave a
+mid-arc content sag); the platform never invents unlock logic.
 
 ## Owner rulings on C1–C11 (2026-08-04)
 
@@ -971,6 +970,7 @@ multi-grid decay, and same-sample retry.
   live-PvP, unlock, offline-quality, and replay contracts require owner rulings.
 - 2026-08-04: post-ruling implementation pass found C12–C18: design ownership is settled, but the
   active body and exact persistence/wire/arithmetic contracts still need reconciliation/literals.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.
 
 ## Owner rulings on C37-C40 (2026-08-05) — the server-certified resolve composer
 

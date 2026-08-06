@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/06 §deploy` (single Go binary, Caddy, docker-compose, Postgres 16), `design/07` (roadmap — shipping cadence = in-fiction events)
-- **Research:** `cicd-deploy.md` (the banked deploy research — hosted GitHub Actions not Komodo, the drain handshake, `§5` the drain sequence the transport RFC already consumes)
 - **Depends on:** Gameserver Composition (implemented — the composed binary with the `Drain(ctx)` seam is what deploys); Transport drain handshake (implemented — the `server_restarting` broadcast); CI Baseline (implementing)
 - **Owner ruling honored:** breadth-first — the deploy MECHANICS + the push that makes every guard structural; Marco-gated for the actual push and any secret/host provisioning.
 - **Planning:** `planning/deployment-foundation/` (once implementing)
@@ -39,7 +38,7 @@ no-ops across it — already law).
 
 ### DP3 — CI/CD (the banked decision)
 
-Hosted GitHub Actions (NOT Komodo — the research verdict), the full `make verify` gate the repo
+Hosted GitHub Actions (NOT Komodo — the ruled decision), the full `make verify` gate the repo
 already has, plus: the balance-harness/epoch guards run on `fetch-depth: 0` (the F1-adjacent CI
 lesson — already fixed), the KV-1 kernel guard, the API drift gate, the copy legal/provenance
 lints, the relevance gate (when it lands). **The push makes these enforce** — a guard that runs
@@ -84,3 +83,4 @@ config-validation startup check fails closed on any missing secret (readiness ga
 
 - 2026-08-03: created (draft) — the deploy pipeline + the push that makes every guard structural;
   the one foundation only the owner can complete.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

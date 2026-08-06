@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-28
 - **Design refs:** `design/04 §2` (pet battles, as re-decided 2026-07-28), `design/03 §10` (the Lane), `design/05 §4` (PvP table)
-- **Research:** `design/research/creature-battler.md §8`, `design/research/lane-pusher-design.md`
 - **Depends on:** RFC-0002 (catalog patterns), Save Layer (implemented), Balance Harness (implemented — SplitMix64)
 - **Children:** `combat-duel-engine.md`, `combat-lane-engine.md`, `combat-bots-and-integration.md`
 - **Planning:** `planning/combat-shared-data/` (once implementing)
@@ -75,3 +74,4 @@ Trust→Obedience (smooth 50%→30% across Trust 1.00→0.80) and Soul modulatio
   and the arithmetic corpus adds a 136.5 half-point case that distinguishes floor from rounding.
 - 2026-07-30: AC2/AC3 vector remediation adds order-sensitive disadvantage+crit, non-identity ATK,
   advantage-rounding, and bounded-draw cases in both runtimes, including a four-rejection sample.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

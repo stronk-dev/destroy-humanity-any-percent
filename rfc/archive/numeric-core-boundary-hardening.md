@@ -3,7 +3,7 @@
 - **Status:** implemented
 - **Author:** Codex, from owner-directed foundation audit
 - **Created:** 2026-07-27
-- **Design refs:** `design/06-tech.md §3` (big numbers), `design/research/numeric-core.md`
+- **Design refs:** `design/06-tech.md §3` (big numbers)
 - **Depends on:** [Archived RFC-0001: Numeric Core](0001-numeric-core.md)
 - **Parent / amends:** [Archived RFC-0001: Numeric Core](0001-numeric-core.md)
 - **Supersedes / superseded by:** —
@@ -140,3 +140,4 @@ validation prevent those diagnostics from becoming gameplay state.
 - 2026-07-27: implemented. Shipped normalized state guards, normalize-before-quantize behavior,
   infinity-sentinel classification, schema-3 coverage metadata, 20 mandatory edge vectors, and
   cross-runtime diagnostic parity; updated canonical docs and archived the work.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

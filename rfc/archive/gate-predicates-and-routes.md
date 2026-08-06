@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude; boundary split per Codex's 2026-07-28 review)
 - **Created:** 2026-07-28
 - **Design refs:** `design/08 §6` (route mechanics, as designed 2026-07-28), `design/02 §3` (Route Knowledge), `design/05 §6` (Registry + category model), `design/11 §4` (the Depletion gate), `design/10 §3b` (Doctrine exclusivity)
-- **Research:** `design/research/speedrun-governance.md §3.5`, `design/research/tile-placement.md` (draft picks as Route Knowledge)
 - **Depends on:** Save Layer (implemented — career ledger lives in Founder scope), Production Engine (implemented — gates consume its evaluated state read-only)
 - **Parent / boundary split from:** `archive/production-engine-and-intents.md`
 - **Planning:** `planning/archive/gate-predicates-and-routes/`
@@ -188,3 +187,4 @@ The gate evaluator never grows analytics.
 - 2026-07-29: cross-runtime predicates, exact executable Depletion proof, save v5 gate/founder
   state, authoritative intents/events, idempotent Registry projections, naming, Route Knowledge,
   canonical docs, and full verification completed; RFC archived.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

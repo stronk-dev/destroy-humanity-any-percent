@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/02 §2` (tiered upgrades, milestone multipliers), `design/02 §11b` (the tier-relevance doctrine — THIS RFC implements its mechanics: role law, chain split, synergy schema, staggered ladders), `design/03 §12b` (scaling-seam consumers)
-- **Research:** `tier-relevance.md` (all five families), `cookie-clicker.md` (tiered-upgrade grammar), `balance-enforcement.md` (the ablation boundary this RFC must expose)
 - **Depends on:** Economy Kernel + Production + Run Genesis (implemented — everything lands inside `ApplyLogged`; kernel bump per KV-1)
 - **Unblocks:** Relevance Harness → T0–T1 Content → Game UI (the corrected Phase-A order)
 - **Planning:** `planning/purchasable-content-foundation/` (once implementing)
@@ -38,13 +37,13 @@ tier-N−1 units at the declared rate during accrual (integer ppm accumulation, 
 the faction-stock arithmetic pattern). Save state splits counts: `generators_purchased` (existing
 counts — pay costs, earn milestones and the per-count multipliers) vs `generators_provisioned`
 (new field — free, priceless, produce only). Production reads the SUM; milestones, ladders, and
-the purchase accumulator read PURCHASED only (the AD split, verbatim from §11b).
+the purchase accumulator read PURCHASED only (the purchased/generated split, verbatim from §11b).
 
 ### P3 — Synergy pools
 
 `synergy_pools` catalog family: `{id, sources: [{kind: generator|upgrade, id_or_class, per_count_ppm}],
 slot, curve: linear|log}` — every declared count feeds named pools; each pool contributes one
-multiplicative row into its slot (pooled-stat coupling, the Synergism architecture). Pool
+multiplicative row into its slot (pooled-stat coupling). Pool
 composition is exported into the generated formula artifacts (the legibility law: renderable, no
 opaque nesting).
 
@@ -52,7 +51,7 @@ opaque nesting).
 
 Per-generator-class `ladder: [{purchased_at, multiplier_ppm}]` (catalog), applied as contribution
 rows when purchased-count crosses each rung — thresholds deliberately staggered across classes
-(Pecorella's rotation; values are balance data the Relevance Harness will tune).
+(values are balance data the Relevance Harness will tune).
 
 ### P5 — The ablation seam (what Relevance consumes)
 
@@ -172,3 +171,4 @@ None. Capacity is deferred and manual targets are included by ruling C4.
 - 2026-08-03: C12–C14 ruled (typed role bindings with formulas accepted; provision wire shapes and simultaneous-commit tick semantics accepted; contradictions reconciled). IMPLEMENTATION UNBLOCKED.
 - 2026-08-03: C1–C11 ruled — fixed-grid partition-invariant chains, role law re-scoped to generator classes with an honest activatable vocabulary, example synergy formulas adopted as Phase-0 contracts, import-guarded simulation entrypoint, schema-v4 mint. Implementation unblocked.
 - 2026-08-03: implemented and independently approved across the complete implementation range; canonical behavior is in `docs/purchasable-content.md`.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

@@ -5,7 +5,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-01
 - **Design refs:** `design/02 §11b` (tier-relevance doctrine — this RFC is its enforcement half)
-- **Research:** `design/research/balance-enforcement.md` (restricted play, Demaine bounds, Riot ANY/ALL, GEEvo), `design/research/tier-relevance.md`
 - **Depends on:** Balance Harness Foundation (implemented), Run Genesis (implemented — `ApplyLogged` is the transition the solver drives), **T0–T1 Playable Content (draft — the first real catalog this instrument measures; implement the harness first, gate on real content immediately after)**
 - **Planning:** `planning/relevance-harness/` (once implementing)
 
@@ -16,14 +15,14 @@ Make "every purchasable stays meaningful" a machine-checked law. Three deliverab
 (per-purchasable counterfactual values, golden artifact), and a **CI relevance gate** (ANY/ALL
 floors that fail a balance change shipping dead content). No shipped precedent exists for the
 gate; the components have academic anchors (restricted play — Jaffe 2012; greedy bound — Demaine
-et al. 2018; segment quantifiers — Riot's live framework).
+et al. 2018; per-segment ANY/ALL quantifiers).
 
 ## Specification
 
 ### V1 — The reference persona
 
 A scripted persona `reference_greedy` driven by **payback period**: at each decision point, buy
-the affordable purchasable minimizing `max(cost − bank, 0)/rate + cost/Δrate` (the Cookie Monster
+the affordable purchasable minimizing `max(cost − bank, 0)/rate + cost/Δrate` (the payback-period
 metric), including indirect effects the harness can see (milestone crossings, synergy-pool
 deltas). Justification: exact optimal buy-ordering is strongly NP-hard in the discrete-tick
 regime; greedy achieves 1+O(1/log M) (Demaine et al., arXiv:1808.07540) — the reference is
@@ -58,7 +57,7 @@ LOO count = |purchasables| × personas × 1 run each; group ablations = |tiers|+
 all deterministic and parallel; a `relevance_budget_max_runs` config fails the build if the
 catalog outgrows the budget (explicit, never silently sampled).
 
-### V3 — The CI gate (the Riot ANY/ALL shape)
+### V3 — The CI gate (the ANY/ALL shape)
 
 For every purchasable p with declared availability window W (catalog field, new, required):
 
@@ -79,7 +78,7 @@ BALANCE-CHANGE and every mint.
 ### V4 — Tuning loop (deliberately manual at Phase 0)
 
 The report is the instrument; automated parameter search (CMA-ES over log-space catalog constants
-with floor-violation penalties — the GEEvo shape, noise-free because we're deterministic) is a
+with floor-violation penalties — noise-free because we're deterministic) is a
 NAMED FOLLOW-UP, not this RFC: the first epochs of relevance data must teach us what the floors
 should be before an optimizer chases them (Goodhart risk is real and the satire game about metric
 gaming should not itself ship a naively metric-gamed economy).
@@ -161,7 +160,7 @@ gap compares. Different reasonable implementations produce different golden rout
 pruning/dedup rule, terminal milestone vector, and integer gap equation. Recommended scope is a
 small-catalog fixture oracle first, with the production per-epoch check enabled only once T0-T1
 declares one primary optimization milestone. The 50,000 ppm value is provisional balance policy,
-not a research-established constant.
+not an empirically established constant.
 
 ### R3 — Run matrix and delta aggregation are unspecified
 
@@ -248,11 +247,12 @@ skip an active content catalog.
 
 ## Changelog
 
-- 2026-08-01: created (draft) from the banked tier-relevance + balance-enforcement research;
+- 2026-08-01: created (draft) from the banked tier-relevance doctrine;
   enforcement half of design/02 §11b.
 - 2026-08-05: Codex acceptance review — Purchasable substrate confirmed, but solver/gate contracts
   blocked on R1-R8; stale milestone and catalog-field claims identified and proposed resolutions
   recorded without inventing policy semantics.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.
 
 ## Owner rulings on R1-R8 (2026-08-05)
 
@@ -278,7 +278,7 @@ recommended shapes. Full contracts, to avoid a re-bounce.
   resources); dedup by state digest keeping the best; width 8 keeps the 8 best-scored non-dominated
   nodes per expansion; tie-break by raw-byte path. `greedy_gap_ppm = ⌊(greedy_time − beam_time) *
   1e6 / beam_time⌋`; gap > `greedy_gap_max_ppm` fails the harness. The `50_000` ppm is PROVISIONAL
-  balance policy (data), not a research constant.
+  balance policy (data), not an established constant.
 - **R3 — accepted; the stale "16 milestones" claim is reconciled.** Every ablation is paired
   one-to-one with the same baseline run key except an explicit mask dimension; `delta_t =
   ablated_time − baseline_time`. The gate seed-reducer is **conservative (`p05` or `worst`, NOT

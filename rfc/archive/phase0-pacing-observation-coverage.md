@@ -3,7 +3,7 @@
 - **Status:** implemented
 - **Author:** Codex
 - **Created:** 2026-07-29
-- **Design refs:** `design/02-economy-balancing.md §11`; `design/research/pacing-science.md §7`
+- **Design refs:** `design/02-economy-balancing.md §11`
 - **Depends on:** Balance Harness Foundation (implemented)
 - **Parent / amends:** `archive/balance-harness-foundation.md`
 - **Supersedes / superseded by:** —
@@ -69,7 +69,7 @@ when their state transitions exist.
 
 ## Deviations from design
 
-The pacing research names full-game personas and milestones. This follow-up deliberately measures
+The full pacing model names full-game personas and milestones. This follow-up deliberately measures
 only implemented mechanics and strengthens regression coverage without fabricating later tiers.
 
 ## Acceptance criteria
@@ -91,3 +91,4 @@ None. Later feature RFCs own new milestones and their target values.
 - 2026-07-29: created and implementation started by owner direction to establish the first real
   pacing baseline after remediation completed.
 - 2026-07-29: independently reviewed and approved; implemented with 16 baseline observations.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

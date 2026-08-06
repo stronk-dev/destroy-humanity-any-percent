@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/11-ux-writing.md` (first-session narrative, voice), `design/08 §speedrun` (run-title bar, splits panel, PB/gold deltas), `design/06` (DOM-first, Svelte 5 runes, `$derived` bound to visible tab only), client-shell docs (reconciliation, `reason_key` caps, activity_ppm never-frozen)
-- **Research:** `tech-stack.md §2` (real incrementals are DOM), `run-narrative-ux.md`
 - **Depends on:** Client Shell (implemented), Transport (implemented), T0–T1 Content (draft — ships together; screens without content are furniture)
 - **Planning:** `planning/game-ui-screens/` (once implementing)
 
@@ -71,3 +70,4 @@ screen-set RFC on the same U2 contract.
 ## Changelog
 
 - 2026-08-03: created (draft) — Phase A screens; ships with T0–T1 content.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

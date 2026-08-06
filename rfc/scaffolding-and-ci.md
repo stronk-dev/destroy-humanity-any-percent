@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude, revised by Codex)
 - **Created:** 2026-07-28
 - **Design refs:** `design/07-roadmap.md` Phase 0, `design/12-content-pipeline.md §7`
-- **Research:** `design/research/cicd-deploy.md` (primary), `design/research/pacing-science.md`, `design/research/adaptive-balancing.md`, `design/research/compliance-2026-refresh.md`
 - **Depends on:** RFC-0001 and RFC-0002 (implemented)
 - **Planning:** `planning/scaffolding-and-ci/` (once implementing)
 
@@ -17,7 +16,7 @@ the gates that exist today, on hosted GitHub Actions, under a strict latency bud
 ## Motivation
 
 The RFC-0001 Go, Node, and browser vector suites already exist but never run remotely. This is the
-cheapest closure of a foundational obligation. The research also corrected an unmeasured premise:
+cheapest closure of a foundational obligation. Measurement also corrected an unmeasured premise:
 the future balance harness fits public-repository hosted Actions, so there is no capacity argument
 for self-hosted runners.
 
@@ -37,10 +36,10 @@ layer (its own RFC); leaderboard integrity and Balance Epoch enforcement (leader
 **NORMATIVE: the repository is public and all CI runs on hosted GitHub Actions.** No Komodo and
 no self-hosted runners. CD topology is outside this RFC.
 
-`cicd-deploy.md §2` verified that Komodo is a CD orchestrator, not a CI replacement, and would add
-MongoDB plus a low-bus-factor dependency to a one-node deployment.
+Komodo is a CD orchestrator, not a CI replacement, and would add MongoDB plus a low-bus-factor
+dependency to a one-node deployment.
 
-Marco selected a public repository on 2026-07-28. The research cost and timing model therefore
+Marco selected a public repository on 2026-07-28. The cost and timing model therefore
 uses public-repository hosted runners: four vCPUs and no billed Actions-minute quota. Repository
 visibility does not substitute for an explicit license.
 
@@ -103,8 +102,8 @@ human-origin claim is true.
 - `design/06-tech.md` anticipated deployment but not the CI substrate the corpus now assumes.
 - Deployment is deferred until a server, websocket lifecycle, client reconnect path, and database
   migrations exist, so its acceptance tests can exercise real behavior.
-- `design/research/README.md`'s “not a free-tier workload” claim was corrected by measurement and
-  does not justify self-hosted hardware.
+- An earlier “not a free-tier workload” assumption was corrected by measurement and does not
+  justify self-hosted hardware.
 
 ## Acceptance criteria
 
@@ -137,3 +136,4 @@ human-origin claim is true.
   assigned them to the nightly tier instead of leaving “mandatory” as a memory-based convention.
 - 2026-07-28: added the scheduled/manual non-blocking numeric-maintenance job with a 30-second fuzz
   budget and deterministic vector-regeneration diff. Hosted execution still awaits the first push.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

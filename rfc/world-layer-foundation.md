@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/02 §1` (World layer — server-scoped, never resets: planet depletion ratchet, community milestones, Influence by contribution rank), `design/05 §a` (global milestones, Elite-Dangerous dual reward axis, throughput telemetry), `design/09 §3` (Layer-3 server events)
-- **Research:** `events-playstyles.md §Contribution accounting` (the Helldivers Galactic Impact Modifier — contribution = raw × normalizer(share of playerbase) × diminishing(player share); paces identically at any CCU; PUBLISH the formula), `societal-satire.md` (the Jevons engine, depletion as the ending's spine)
 - **Depends on:** Gameserver Composition + Transport (implemented — the world aggregator GC2 already publishes world snapshots; this gives them their source systems); Production (implemented — contribution derives from committed production)
 - **Owner ruling honored:** breadth-first — the world MECHANICS (milestone counters, depletion ratchet, the contribution formula), not the specific milestones or the ending content.
 - **Planning:** `planning/world-layer-foundation/` (once implementing)
@@ -27,14 +26,17 @@ any player's Exit or prestige (the §2 §1 law — the World layer is the one th
 Mutated by a server-side aggregator (the GC2 world aggregator, extended) consuming committed
 production events — never by client report. The aggregator is the ONLY writer.
 
-### WL2 — The contribution formula (published, the Helldivers law)
+### WL2 — The contribution formula (published)
 
 A player's contribution to a milestone = `raw_output × normalizer(active_playerbase_share) ×
-diminishing(player_share)` — the Helldivers Galactic Impact Modifier, which **paces identically at
-200 or 200,000 CCU** (the property that makes community milestones work at any population). Ranked
-by PERCENTILE, not absolute (idle output spans orders of magnitude). **The formula is PUBLISHED**
-(the transparency law — Helldivers' backlash was hiding it): it's a generated formula artifact, on
-the public API (A3). Contribution is computed server-side from committed production, banked into
+diminishing(player_share)`. Both functions are **pinned-artifact data tables** (piecewise monotone
+ppm rows over share, exact-key, loader-validated): `normalizer` is monotone-DECREASING in the share
+of the playerbase active — total milestone throughput stays level, so pacing **holds identically at
+200 or 200,000 CCU** (the property that makes community milestones work at any population) — and
+`diminishing` is concave in the individual's share, so no single output dominates a milestone.
+Ranked by PERCENTILE, not absolute (idle output spans orders of magnitude). **The formula and both
+tables are PUBLISHED** (the transparency law: community-math opacity, not mechanics, is what causes
+backlash): a generated formula artifact, on the public API (A3). Contribution is computed server-side from committed production, banked into
 the world contribution ledger per Elite-Dangerous's dual axis: your personal rank-payout AND the
 global tier unlock.
 
@@ -70,7 +72,7 @@ ledger; spend surfaces are later content.
 
 1. World singleton: never-resets across a founder's Exit (fixture: Exit leaves world state
    untouched); aggregator is the sole writer (grep-proven, no client path).
-2. Contribution formula: the Helldivers modifier byte-exact, PUBLISHED as a formula artifact on
+2. Contribution formula: the normalizer/diminishing tables byte-exact, PUBLISHED as a formula artifact on
    the public API; percentile ranking; population-invariance property test (same pacing at 10×
    playerbase with proportional output).
 3. Milestones: dual-axis payout (percentile personal + global unlock); throughput telemetry
@@ -91,3 +93,4 @@ ledger; spend surfaces are later content.
 
 - 2026-08-03: created (draft) — the World layer mechanics; gives GC2's zero-valued snapshot fields
   their source systems; the published-contribution and depletion-ratchet laws structural.
+- 2026-08-06: non-normative reference cleanup for publication; WL2 normalizer/diminishing restated as pinned data tables (no spec change in effect — the tables were always artifact data).

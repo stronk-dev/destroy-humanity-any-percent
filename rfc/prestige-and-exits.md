@@ -3,7 +3,6 @@
 - **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Design refs:** `design/02 §3` (formula, sub-currencies, **Exit offers — designed 2026-07-28**), `design/11 §3–4` (run-end sequence, **scripted first failure, Advisor Mode**), `design/02 §6` (the Clout carry rule), `design/10 §5` (ledger persists, scores reseed)
-- **Research:** `design/research/pacing-science.md` (first-Exit pacing), `design/research/morality-systems.md` (the reseed), `design/research/run-narrative-ux.md §6b` (as adopted)
 - **Depends on:** Production Engine (implemented), Save Layer (implemented — Company/Founder stream
   split is the whole trick), Gate Predicates (implemented — collapse-Exit Route Knowledge bonus),
   T0–T1 playable content, account/session bootstrap
@@ -148,3 +147,4 @@ Account & Session Bootstrap (new draft) supplies founder/session identity; T0–
   offline duration, prestige math is cross-runtime exact and saturating, replay follows committed
   event order, decline drift is run-scoped, tier advancement is monotonic, and the first Wind Down
   remains the scripted curriculum Exit.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

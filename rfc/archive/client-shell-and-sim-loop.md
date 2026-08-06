@@ -3,7 +3,6 @@
 - **Status:** implemented
 - **Author:** Marco (drafted by Claude)
 - **Design refs:** `design/06 §frontend` (Svelte 5, 20 Hz, DOM-first), `design/00` law 5 (visible caps), `design/11 §1–2` (contract screen, FTUE surfaces), `design/13 §2` (offline-return fast-forward)
-- **Research:** `design/research/browser-rendering.md` (workers, wall-clock deltas, tab throttling), `design/research/tech-stack.md §2`, `design/research/adaptive-balancing.md` (the amplitude-lock boundary, client side)
 - **Depends on:** Production Engine (implemented — this consumes its intents, receipts, snapshots, and progress coordinates)
 - **Planning:** `planning/archive/client-shell-and-sim-loop/`
 
@@ -16,7 +15,7 @@ The Svelte 5 shell, the client-side prediction loop, and the display contract. T
 ### D1 — The sim loop
 
 - Game state is a plain TS object outside the framework; the sim is a **fixed-timestep 20 Hz loop driven by wall-clock deltas** (`performance.now()`), catch-up capped at 5 s of simulated time per frame burst — beyond that, the offline path takes over (it is the same closed form; there is no third code path).
-- **The sim runs in a Worker** (browser-rendering research: rAF stops in hidden tabs, Workers don't); the main thread renders from a double-buffered snapshot. `$state`/`$derived` bind only to the visible tab's panels; number formatting throttles to ~10 Hz.
+- **The sim runs in a Worker** (rAF stops in hidden tabs, Workers don't); the main thread renders from a double-buffered snapshot. `$state`/`$derived` bind only to the visible tab's panels; number formatting throttles to ~10 Hz.
 - The client predicts with **the same closed forms and the same catalog** the server evaluates (shared TS kernel, already shipped). Prediction is presentation: **no predicted value ever gates a client action** — affordability greying may predict; the buy intent is always sent and the server always decides.
 
 ### D2 — Reconciliation policy (owned decision, resolved)
@@ -120,7 +119,7 @@ may read validated catalogs, snapshots, receipts, and the existing numeric/produ
 
 ## Deviations from design
 
-None. The worker uses structured-clone snapshots initially; the research's transferable ArrayBuffer
+None. The worker uses structured-clone snapshots initially; a transferable-ArrayBuffer
 optimization remains optional because canonical Decimal strings cannot be represented losslessly as
 binary floats.
 
@@ -134,3 +133,4 @@ binary floats.
   archived. The review's sole routed finding was subsequently disproved by Production C1 and the
   live exact-schema parser, both of which require `window_ms`; the correction is preserved in the
   append-only planning log.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

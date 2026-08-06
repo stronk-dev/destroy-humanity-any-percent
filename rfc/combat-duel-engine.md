@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-29 (split from Combat Data Model per Codex review blocker #1)
 - **Design refs:** `design/04 §2`
-- **Research:** `design/research/creature-battler.md §8`
 - **Depends on:** Combat Shared Data & Arithmetic (parent — C1–C5 are normative here)
 - **Planning:** `planning/combat-duel-engine/` (once implementing)
 
@@ -46,3 +45,4 @@ An async duel runs the same pure function; the opponent's `choice_list` is produ
 ## Changelog
 
 - 2026-07-29: created from the four-way split; answers parent-review blocker #5 (duel half).
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

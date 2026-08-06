@@ -5,9 +5,6 @@
 - **Created:** 2026-07-28
 - **Design refs:** `design/07-roadmap.md` Phase 0 and sequencing principle 1;
   `design/02-economy-balancing.md §2, §3, §11`
-- **Research:** `design/research/pacing-science.md §3 and §7(a–b)`;
-  `design/research/cicd-deploy.md §3`; `design/research/adaptive-balancing.md §3.3,
-  §5.7, §8.4–8.5`
 - **Depends on:** Economy Kernel, Production Engine & Intent API, Geometric Affordability Fast
   Path (implemented); CI Baseline (implementing)
 - **Planning:** `planning/archive/balance-harness-foundation/`
@@ -27,7 +24,7 @@ implemented economy and production docs already name it as their owner. Today th
 `TestIntentPolicyPropertyTwentyFourHoursTwoHundredSeeds`: valuable, but embedded in a unit test,
 limited to 24 hours, without a stable policy contract, report, baseline, or CI drift result.
 
-The research's complete six-persona, six-month harness cannot be shipped honestly against a game
+The design's complete six-persona, six-month harness cannot be shipped honestly against a game
 that has no Exit, tier-transition, event, route, or achievement state yet. This RFC therefore owns
 the reusable runner and the executable T0 production slice. Each future mechanic adds a scenario
 pack in the same RFC that adds the mechanic. The full-game pacing suite emerges by composition,
@@ -112,7 +109,7 @@ The candidate provider initially exposes the implemented `perform_manual_batch` 
 whether and how it enters this provider. A new policy ID/version requires an RFC or an amendment to
 an unimplemented RFC; changing behavior under an existing version is forbidden.
 
-The Speedrunner, Optimizer, Idler, Lapser, and full Casual policies from pacing research are named
+The Speedrunner, Optimizer, Idler, Lapser, and full Casual persona policies are named
 successors, not aliases for the two policies above. They land when Exit/session/catch-up/route
 state gives their distinctions executable meaning.
 
@@ -237,12 +234,12 @@ The harness owns orchestration and measurement, not mechanics or target taste.
 
 ## Deviations from design
 
-- Pacing research proposes six full-game personas and T0–T7 gates in one harness. This foundation
+- The pacing design proposes six full-game personas and T0–T7 gates in one harness. This foundation
   ships two meaningful policies and the implemented T0 slice; policies and far-horizon packs land
   with the mechanics they need. This is a scope split, not a rejection of the six-persona target.
-- The research's far T3/T5 envelopes move from every pull request to `main`, adopting the measured
-  horizon correction in `cicd-deploy.md §3.2`. Near envelopes still block every pull request.
-- Research says a drift over 25% may pass when a PR declares `BALANCE-CHANGE:`. This RFC makes the
+- The far T3/T5 envelopes move from every pull request to `main`, adopting the measured
+  CI-horizon correction. Near envelopes still block every pull request.
+- The design allows a drift over 25% to pass when a PR declares `BALANCE-CHANGE:`. This RFC makes the
   declaration a committed baseline update with a matching catalog/scenario hash, so the same rule
   works locally and does not depend on GitHub metadata.
 
@@ -286,3 +283,4 @@ to the named scenario-pack follow-ups above.
 - 2026-07-29: implementation started after Production Contract Assertions & Integrity archived.
 - 2026-07-29: deterministic transition, policies, reports, schemas, baseline/drift gates, CI wiring,
   cross-architecture golden proof, and canonical docs completed; RFC archived.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

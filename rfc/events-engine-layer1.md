@@ -3,8 +3,7 @@
 - **Status:** draft
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
-- **Design refs:** `design/09 §a` (the Paradox model: trigger DSL, MTTH, options, chains, hidden nodes, pacing locks — the required-primitives list is normative), `design/09 §d` (hot-reloadable data files, one evaluator for all three layers)
-- **Research:** `events-playstyles.md §1` (CK3 on_actions lesson: dispatch via pulses, never free-floating scans; anti-fatigue: conservative frequency, category pacing locks)
+- **Design refs:** `design/09 §a` (the narrative-event model: trigger DSL, MTTH, options, chains, hidden nodes, pacing locks — the required-primitives list is normative), `design/09 §d` (hot-reloadable data files, one evaluator for all three layers)
 - **Depends on:** Production Engine + Run Genesis (implemented — events evaluate INSIDE `ApplyLogged` under the replay-input rule), T0–T1 Content (draft — first event pack ships there)
 - **Planning:** `planning/events-engine-layer1/` (once implementing)
 
@@ -12,7 +11,7 @@
 
 The biggest unbuilt system: the data-driven personal-event evaluator. Design/09 already specifies
 the format; this RFC makes it executable under our determinism laws — which is the one place we
-deliberately DIVERGE from Paradox: **no wall-clock MTTH.** Events evaluate at accrual boundaries
+deliberately DIVERGE from design/09's stated shape: **no wall-clock MTTH.** Events evaluate at accrual boundaries
 inside the replay boundary, with draws from the save-seeded stream, so every event is replayable
 by construction.
 
@@ -26,7 +25,7 @@ immediate[], options[], cooldown_ms, fire_only_once, hidden}` — with:
   flags, meter bands, ledger-fact presence, tier, compact membership, faction). Same closed-
   predicate discipline as routes and categories; grows by RFC. No projection reads, no clocks —
   triggers see only what `ApplyLogged` sees.
-- **MTTH, determinized:** `mtth_ms` with multiplicative modifier list (the Paradox shape), but
+- **MTTH, determinized:** `mtth_ms` with a multiplicative modifier list, but
   evaluated as a **per-accrual-boundary hazard draw from the save-seeded SplitMix64 substream**
   (`"events"` label): P(fire) = 1 − exp(−elapsed_ms/mtth_effective) computed in fixed-point ppm
   (integer, both runtimes — the exp via the kernel's existing log-domain helpers, golden-
@@ -84,3 +83,4 @@ server-authored catalog overlay; nothing here forecloses them.
 
 - 2026-08-03: created (draft) — design/09 §a made executable under the determinism laws;
   MTTH determinized to attended-time hazard draws.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

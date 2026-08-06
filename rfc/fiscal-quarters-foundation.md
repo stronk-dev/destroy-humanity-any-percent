@@ -5,12 +5,9 @@
   byte-enumerated wire, Prestige-offer scope split); implementing. Founder v19.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
-- **Design refs:** `design/02 §5` (Fiscal Quarters — the CpS-immune clock: the Earnings Call ripens on
+- **Design refs:** `design/02 §5` (Fiscal Quarters — the rate-immune clock: the Earnings Call ripens on
   real time, yields Investor Confidence, spent on building levels / minigame unlocks / special
-  quarter types; the "Sugar Baking" hoard bonus; immune to production rate). Cookie-Clicker
-  sugar-lump lineage.
-- **Research:** `design/research/cookie-clicker.md` (sugar lumps: the 24 h real-time CpS-immune
-  currency; harvest-early-miss risk; Sugar Baking hoard bonus — the long-tail pacing device)
+  quarter types; the hoard bonus; immune to production rate).
 - **Depends on:** Save + Run Genesis (implemented), Founder Attendance Foundation (implemented — the
   Founder stream + `ApplyFounderLogged` this rides), the Founder save-version chain (minigames v17 /
   pets v18 — this proposes v19). **NOT the Company `ApplyLogged` path** — this is a Founder-scoped
@@ -21,8 +18,8 @@
 
 ## Summary
 
-The sugar-lump equivalent, made deterministic and server-authoritative: a **real-wall-clock**
-meta-currency (`fiscal_credit`, flavor "Investor Confidence") that matures on a fixed real-time
+The third-clock meta-currency, made deterministic and server-authoritative: a **real-wall-clock**
+currency (`fiscal_credit`, flavor "Investor Confidence") that matures on a fixed real-time
 period (`fiscal_period`, flavor "Earnings Call"), is **immune to production rate and to attended
 time**, and is spent on permanent Founder-side investments. It is the long-tail pacing device — a
 clock nothing in the game can accelerate — so it lives on the **Founder scope** (persists across
@@ -37,12 +34,12 @@ Every other clock in the game is either the Company production clock (closed-for
 but gated by production/offline rules) or the Founder attended clock (advances only while present).
 The design calls for a THIRD clock that is immune to both — a currency you cannot farm faster by
 playing more, whose only input is real time passing. That is the pacing floor that keeps the very
-long tail honest (the sugar-lump role). Getting three things right is the whole job: (1) the clock
+long tail honest. Getting three things right is the whole job: (1) the clock
 must be **closed-form and lazy** — never a server tick loop (binding law); (2) it must be
 **deterministic under replay** despite depending on wall time; (3) its persistence scope must be
 settled, because it reshapes the Founder save axis.
 
-Out of scope (content / later RFCs): the special-period catalog (Golden Quarter, Caramelized-equiv),
+Out of scope (content / later RFCs): the special-period catalog (Golden Quarter and its siblings),
 the exact ripen period / fail chance / hoard cap / building-level costs (all balance data), and any
 spend target beyond the two named here.
 
@@ -58,7 +55,7 @@ production accrual reads `last_evaluated_at`. The clock is **immune to productio
 attended time**: neither output nor presence changes it; only wall time does.
 
 Catalog thresholds (STRUCTURE ruled; the millisecond NUMBERS are balance data) define three windows
-against elapsed wall time, matching the sugar-lump harvest model:
+against elapsed wall time — the harvest-timing model:
 - `early_ms` (design: ~20 h) — harvest is *permitted but risky* from here;
 - `guaranteed_ms` (design: ~23 h) — harvest always succeeds from here;
 - `auto_ms` (design: ~24 h) — if not harvested, the period **auto-reports** (auto-harvest) at the
@@ -74,8 +71,8 @@ rejection on overspend). A matured harvest yields `credit_per_period` (balance d
 one unit family, no other surface emits `fiscal_credit`).
 
 **SCOPE DECISION (the one that reshapes the save axis — see Open Questions):** `fiscal_credit` and
-everything it buys are **Founder-scoped and persist across Exit**, mirroring the sugar-lump lineage
-(lumps and lump-bought building levels persist across ascension). Proposed: this adds **Founder save
+everything it buys are **Founder-scoped and persist across Exit** — both the credit and the
+building levels it buys survive the run reset. Proposed: this adds **Founder save
 version 19** (chain: minigames 17 → pets 18 → `fiscal` 19), the `fiscal` artifact biconditional with
 floor ≥ 19, activating New-Founder-forward — the same scalar-chain discipline ruled for C36. The
 Company axis is untouched.
@@ -124,10 +121,10 @@ catalogs/costs are data):
   generators are Company-scoped and reset, the LEVELS are a Founder-side modifier keyed by
   `generator_id`, re-applied each run — persistence lives on the Founder, effect lands on the run.
 - `unlock {unlock_id}` — the staggered minigame/system unlock sink (a Founder-permanent flag).
-Special-period types (Golden Quarter, Caramelized-equiv) are a **declared successor** target family,
+Special-period types (Golden Quarter and its siblings) are a **declared successor** target family,
 not in Phase A — named so the union is known to be open, their catalog deferred as content.
 
-### FQ5 — The hoard bonus ("Sugar Baking" equivalent)
+### FQ5 — The hoard bonus
 
 A passive production modifier derived from the **unspent** `fiscal_credit` balance:
 `+hoard_ppm_per_credit` per unspent unit, hardcapped at `hoard_cap_credits` unspent (design: +1% per
@@ -157,7 +154,7 @@ and every semantic rejection.
 - **Mechanical naming:** design's flavor names ("Investor Confidence", "Earnings Call", "Golden
   Quarter") become localization keys over mechanical fields (`fiscal_credit`, `fiscal_period`, a
   special-period-type enum) per the naming law — so the satire retunes without a refactor.
-- Nothing else diverges; the ripen/harvest/hoard shapes are `design/02 §5` verbatim, numbers as data.
+- Nothing else diverges; the ripen/harvest/hoard shapes follow `design/02 §5` exactly, numbers as data.
 
 ## Acceptance criteria
 
@@ -181,10 +178,10 @@ and every semantic rejection.
 
 ## Open questions (resolve before `accepted`)
 
-- **Scope: RESOLVED 2026-08-05 → Founder-scoped, save version 19.** Owner ruling, research-backed:
-  CC sugar lumps persist across ascension and drive the months-long tail, while CC's Stock Market —
-  which does NOT persist across prestige — "feels wasted the moment you're on an ascension cadence"
-  (a documented CC failure this avoids). The chain is minigames 17 → pets 18 → `fiscal` 19; the
+- **Scope: RESOLVED 2026-08-05 → Founder-scoped, save version 19.** Owner ruling: a wall-clock
+  meta-currency that persists across the prestige reset is what drives the months-long tail, while a
+  long-tail mechanic that does NOT persist across prestige feels wasted the moment the player is on
+  an Exit cadence (a documented failure mode this scope avoids). The chain is minigames 17 → pets 18 → `fiscal` 19; the
   `fiscal` artifact is biconditional with floor ≥ 19, New-Founder-forward, requires v18 pinned; the
   Company axis rejects v19. No longer an open question.
 - **Early-harvest failure:** does a failed risky harvest open a new period (proposed — real risk) or
@@ -319,6 +316,7 @@ TS, save codec, and artifact-boundary fixtures.
 - 2026-08-05: Codex acceptance review — Founder v19 and lazy closed-form direction confirmed;
   implementation blocked on F1-F8 (catch-up/order, RNG, spend authority, cross-stream effects,
   artifact grammar, caps, wire taxonomy, and activation/rollback).
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.
 
 ## Owner rulings on F1-F8 (2026-08-06)
 

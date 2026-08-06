@@ -6,7 +6,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/10 §doctrine` (doctrine trees — Age-Up branching, one building type nothing else gets, combos with faction), `design/02 §9` (Compute Credits — banked offline time as chosen-moment acceleration; the banker playstyle), `design/09 §doctrine events`
-- **Research:** `events-playstyles.md §Time banking` (Compute Credits as "unused reserved capacity"; legibility warning — loud HUD affordance + optional auto-spend; every playstyle needs an anchor), routes docs (the doctrine-pick ordering the route registry already gates on)
 - **Depends on:** Gate Predicates + Routes (implemented — routes already gate on `DoctrinesByTransition`; doctrine-pick is the missing intent), Production + Run Genesis (implemented — both are intents inside `ApplyLogged`)
 - **Owner ruling honored:** breadth-first — the two named-but-undrafted intent contracts; the doctrine TREES and Compute-Credit spend TARGETS are content.
 - **Planning:** `planning/doctrine-and-compute-credit/` (once implementing)
@@ -187,6 +186,7 @@ chosen semantics truly read solely from the request, pinned bundle, and committe
   routes RFC's ordering item; Compute Credit spend gives banked time its mechanic.
 - 2026-08-05: Codex acceptance review — blocked on D1-D6; proposed contracts recorded without
   implementing doctrine content, burst lifecycle, or settings semantics.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.
 
 ## Owner rulings on D1-D6 (2026-08-05)
 

@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/06` (Svelte 5 runes, DOM-first, per-tab `$derived`, 10 Hz formatting), `design/08` (era presentation: the UI itself ages through gaming eras — the load-bearing satire surface), `design/11` (voice, first-session), `design/03 §9` (arcade era-skins)
-- **Research:** `tech-stack.md §2`, `browser-rendering.md`, `flash-era-arcade.md` (era texture)
 - **Depends on:** Client Shell, Transport wire v2, Copy Pipeline (implemented)
 - **Owner ruling honored:** breadth-first — this RFC ships ZERO screens; it ships the system every future screen is made of, so screens never rebuild when foundations shift.
 - **Planning:** `planning/ui-foundation/` (once implementing)
@@ -264,3 +263,4 @@ Game-UI/T0–T1 import from.
 - 2026-08-03: C1–C6 ruled — era_1995/era_2000 (design/08-correct), schema'd token contract, pinned Standard notation, Copy Pipeline dependency named, wire-only clarified to data-inputs, unlocks reference shell facts. Accepted.
 - 2026-08-03: C1–C8 reconciled. Codex follow-up found C9–C11: the “closed/pinned” theme,
   formatter, and accessibility contracts omit their actual token/value/version literals.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

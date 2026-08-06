@@ -3,7 +3,7 @@
 - **Status:** implemented
 - **Author:** Codex
 - **Created:** 2026-07-28
-- **Design refs:** `design/research/numeric-core.md`
+- **Design refs:** `design/06-tech.md §3` (big numbers)
 - **Depends on:** Numeric Core Boundary Hardening (implemented)
 - **Parent / amends:** `rfc/archive/0001-numeric-core.md`
 - **Supersedes / superseded by:** —
@@ -53,3 +53,4 @@ None.
 - 2026-07-28: created and implementation started after RFC-0002 exposed the invariant violation.
 - 2026-07-28: implemented, verified across Go, Node, Chromium, Firefox, and WebKit, documented,
   and archived.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

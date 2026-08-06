@@ -6,42 +6,39 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
 - **Design refs:** `design/02 §2.3` (active play: golden opportunities on the shaped t⁵·exp spawn, the
-  Lucky-bank formula verbatim, multiplicative buff stacking, the click clamp + timing-is-the-skill,
-  the daemon/wrinkler equivalent gated behind the enshittification slider)
-- **Research:** `design/research/cookie-clicker.md` (golden-cookie shaped spawn distribution, the
-  Lucky formula `min(0.15·bank, 900·CpS)+13`, multiplicative buff combos, wrinklers as
-  quadratic-in-count disguised idle buff); `design/research/rhythm-timing-games.md` (DISPATCHED —
-  the server-validatable timing model for the click-input enhancement)
+  Lucky-bank formula, multiplicative buff stacking, the click clamp + timing-is-the-skill,
+  the daemon idle mechanic gated behind the enshittification slider)
 - **Depends on:** Production + Save + Run Genesis (implemented — buffs/opportunities/clicks are
   Company intents inside `ApplyLogged`); Numeric Core (implemented — Lucky/combo payouts are Decimal)
 - **Owner ruling honored:** breadth-first — the spawn/Lucky/combo/click MECHANICS and wire; the
   spawn cadence, buff magnitudes, and combo ceiling are balance data. Clicking is RETAINED as a
-  timing skill (owner ruling 2026-08-05); the rhythm-timing enhancement is a research-gated successor.
+  timing skill (owner ruling 2026-08-05); the rhythm-timing enhancement is a declared successor.
 - **Planning:** `planning/active-play-buff-windows/` (once implementing)
 
 ## Summary
 
 The active-build skill layer, made server-authoritative and deterministic: **golden opportunities**
 that spawn on a seeded shaped distribution and grant short **multiplicative buff windows**, the
-**Lucky-bank payout formula** kept verbatim (the bank-management meta), and the **click intent** with
+**Lucky-bank payout formula** (the bank-management meta), and the **click intent** with
 its server-side rate clamp (timing, not raw speed, is the skill). Company-scoped, inside `ApplyLogged`,
 activating new-run-forward at a **Company save-version bump to v18** under a pinned
 `opportunities` artifact. This RFC specifies the spawn/payout/combo/click mechanics and wire, not the
-spawn cadence, buff magnitudes, or combo ceiling (all balance data). The **daemon (wrinkler)** idle
+spawn cadence, buff magnitudes, or combo ceiling (all balance data). The **daemon** idle
 mechanic and the **rhythm-timing** click enhancement are declared successors (see §Successors).
 
 ## Motivation
 
 The design wants active play to be a real, separate discipline from idle — a skill ceiling of buff
-sequencing and bank management that active players climb, without an autoclicker arms race (CC's
-documented "autoclicker-shaped hole"). Three things must be right: (1) **server authority** — clients
+sequencing and bank management that active players climb, without an autoclicker arms race (the
+well-documented failure mode where raw click automation, not timing, becomes the winning play).
+Three things must be right: (1) **server authority** — clients
 send click and activation *intents*, never payouts; the server owns the RNG, the clock, and the math;
 (2) **determinism** — spawns are seeded and replayable, buff expiry is closed-form (no tick loop);
 (3) **the clamp** — clicks are rate-validated so that *timing* is the skill, keeping automation out of
 the cheat space and into sanctioned progression later (the AGI-tier macro bench, a successor).
 
-Out of scope (successors / data): the daemon/wrinkler mechanic (gated on the enshittification toggle,
-which does not yet exist), the rhythm-timing click enhancement (research in flight), the AGI-tier
+Out of scope (successors / data): the daemon mechanic (gated on the enshittification toggle,
+which does not yet exist), the rhythm-timing click enhancement (a declared successor), the AGI-tier
 macro bench, and every magnitude/cadence/cap number.
 
 ## Specification
@@ -50,8 +47,8 @@ macro bench, and every magnitude/cadence/cap number.
 
 Opportunities spawn on a schedule the **server computes and LOGS** (A3 — there is no generic run-RNG
 stream): a Company-run SplitMix64 substream `active_play.spawn.v1` (seeded from the run seed, cursor
-`spawn_seq`) feeds a **server-only** t⁵·exp inverse-CDF sampler (`design/02 §2.3`, `cookie-clicker.md`
-— t⁵ suppresses instant re-spawns, exp cuts the long tail); the sampled `next_spawn_attended_ms` is
+`spawn_seq`) feeds a **server-only** t⁵·exp inverse-CDF sampler (`design/02 §2.3` — t⁵ suppresses
+instant re-spawns, exp cuts the long tail); the sampled `next_spawn_attended_ms` is
 LOGGED in the resolved arm and replay READS it (TS never recomputes the float). Spawn cadence numbers
 are balance data. On spawn the server records `{opportunity_id, spawned_attended_ms,
 expires_attended_ms, effect_ref, selected_generator?}` in **Company ATTENDED ms** (A2 — never wall
@@ -61,7 +58,7 @@ one advances the schedule without a queue; an unclaimed opportunity expires with
 
 `effect_ref` selects a member of a **closed effect-type union** — effect + generator selection use
 INTEGER weight tables over the same SplitMix64 substream (byte-identical Go/TS, A3):
-- `production_frenzy` — ×N production for a window (design: Frenzy-type, ~×7 / ~77 s);
+- `production_frenzy` — ×N production for a window (design: ~×7 / ~77 s);
 - `click_frenzy` — ×M per-click value (buffs the existing `perform_manual_batch`, A1) for a short
   window (design: ~×777 / ~13 s);
 - `building_special` — +P%/owned of ONE selected generator (`1 + owned·per_owned_ppm/1e6`, owned =
@@ -70,9 +67,9 @@ INTEGER weight tables over the same SplitMix64 substream (byte-identical Go/TS, 
 (`instant_payout` is REMOVED from v1, A5 — `lucky_payout` covers the instant-cash role; a named
 successor if ever needed, rather than shipping a vague "bounded fraction".)
 
-### AB2 — The Lucky-bank payout (kept verbatim, Decimal-exact)
+### AB2 — The Lucky-bank payout (Decimal-exact)
 
-The `lucky_payout` grant is `min(lucky_bank_frac · bank, lucky_rate_cap · rate) + epsilon`, the CC
+The `lucky_payout` grant is `min(lucky_bank_frac · bank, lucky_rate_cap · rate) + epsilon`, the
 Lucky formula (`design/02 §2.3`: `min(0.15·bank, 900·rate)+ε`). `bank` (current Company cash) and
 `rate` (current production/s) are **Decimal**; the payout is computed Decimal-exact and credited
 through the normal resource path; wire format is **strings** (the big-number law). `lucky_bank_frac`,
@@ -107,8 +104,8 @@ buff state). So above the token clamp, **timing (which clicks land inside which 
 rate, is the skill.**
 
 **The timing-skill enhancement is a successor** (owner ruling 2026-08-05: enrich clicking with
-rhythm/timing mechanics à la Crypt of the NecroDancer / osu!). `rhythm-timing-games.md` resolved the
-server-validatable model: **the 20 Hz sim tick (50 ms) IS the beat grid.** The server judges a coarse
+rhythm/timing mechanics). The server-validatable model is resolved:
+**the 20 Hz sim tick (50 ms) IS the beat grid.** The server judges a coarse
 ±1-tick on-beat layer trusting NO wall-clock (the click already lands inside a known sim tick), and a
 fine sub-tick "Perfect" layer stays cosmetic/solo-only so no unprovable timestamp ever gates farmable
 power. The click clamp (~20/s = one legal click per tick) thus becomes the *instrument*: "click on the
@@ -135,20 +132,20 @@ banks/rates, combo-cap saturation, offline pause, and Exit reset.
 
 ## Successors (declared, not in this foundation)
 
-- **Daemon / wrinkler idle mechanic** (`design/02 §2.3`): daemons attach to tenants (Tier 3+), each
+- **Daemon idle mechanic** (`design/02 §2.3`): daemons attach to tenants (Tier 3+), each
   draining a % of visible rate, popping for ×(>1) of the drained total — quadratic-in-count patience
   bonus (the idle crown jewel). **Gated on the enshittification toggle** (the opt-in
   make-it-worse-for-a-multiplier slider), which is itself an unbuilt design-only mechanic
   (gap-backlog). Deferred until that toggle has a foundation; declared here so the buff-stack knows a
   drain-then-refund buff family is coming.
-- **Rhythm-timing click judgement** (AB4): research-gated on `rhythm-timing-games.md`.
+- **Rhythm-timing click judgement** (AB4): a declared successor built on the resolved beat-grid model.
 - **AGI-tier macro bench:** sanctioned click automation as late-tier progression (`design/02 §2.3`).
 
 ## Deviations from design
 
 - Mechanical naming (`production_frenzy`, `click_frenzy`, `building_special`, `combo_cap`) over the
   flavor; magnitudes/cadence/cap as data (naming + balance-data laws). Nothing else diverges;
-  spawn/Lucky/combo shapes are `design/02 §2.3` verbatim.
+  spawn/Lucky/combo shapes follow `design/02 §2.3` exactly.
 
 ## Acceptance criteria
 
@@ -299,6 +296,7 @@ overlapping buffs, cap saturation, manual clicks, expiry, offline pause, Exit re
 - 2026-08-05: Codex acceptance review — Company v17 availability and attended-only direction
   confirmed; implementation blocked on A1-A8, including the duplicate/insecure click surface and
   the absent deterministic scheduler/RNG/claim contracts.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.
 
 ## Owner rulings on A1-A8 (2026-08-06)
 

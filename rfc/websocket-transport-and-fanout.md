@@ -3,7 +3,6 @@
 - **Status:** implementing
 - **Author:** Marco (drafted by Claude)
 - **Design refs:** `design/06 §backend/fan-out`, `design/05 §2` (presence & feed), `design/00` law 2 (AI fallback — NPC traffic rides the same channels)
-- **Research:** `design/research/tech-stack.md §1` (centrifuge-embedded recommendation, aggregate-then-broadcast, backpressure), `design/research/cicd-deploy.md §5` (the drain handshake)
 - **Depends on:** Production Engine and Client Shell (implemented — receipts/snapshots and the abstract consuming stream are the boundaries)
 - **Planning:** `planning/websocket-transport-and-fanout/` (once implementing)
 
@@ -45,7 +44,7 @@ Payload decimals are canonical strings (a wire payload is a wire payload); `rev`
 
 ### D5 — Limits
 
-Per-connection subscribe caps (config), per-channel publish authz (only server actors publish; clients publish nothing — intents travel the request path, not pub/sub), message size caps, and connection-count metrics feeding the CCU telemetry the impact modifier reads.
+Per-connection subscribe caps (config), per-channel publish authz (only server actors publish; clients publish nothing — intents travel the request path, not pub/sub), message size caps, and connection-count metrics feeding the CCU telemetry the contribution normalizer reads.
 
 ## Acceptance criteria
 
@@ -132,3 +131,4 @@ presentation but cannot veto game history.
 - 2026-08-02: wire v2 ratified by the designated reviewer as the owner contract answering the
   F2/F3 findings (closed `cursor_effect`, kind/effect biconditional, per-scope client cursors,
   oversized-event dead-letter path).
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

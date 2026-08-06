@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-28
 - **Design refs:** `design/02 §2` (production stack, cost curves), `design/02 §10` (the daily clock), `design/06 §idle-math` (closed-form, lazy, server-authoritative), `AGENTS.md` law 7 (offline default)
-- **Research:** `design/research/tech-stack.md §1` (swarmsim closed forms, intent validation), `design/research/pacing-science.md` (progress checker), `design/research/cookie-clicker.md` (multiplier stack order)
 - **Depends on:** RFC-0002 (ledger), Save Layer & Migrations (implemented), Geometric Afford Fast Path (implemented)
 - **Split follow-up:** `production-accrual-math.md` (implemented closed-form numeric primitive)
 - **Split follow-up:** `generator-production-state.md` (implemented catalog output, owned counts, save cursor)
@@ -24,7 +23,7 @@ RFC-0002 deliberately excluded "production sources, multiplier stacks, time inte
 
 ### D1 — Closed-form lazy evaluation
 
-- Per player: use the implemented save cursor `evaluated_through`; on any read/intent, integrate production analytically over `Δt` (swarmsim model) at full intermediate precision, commit through the ledger **once** (RFC-0002 K3 quantization). **Never tick players server-side.**
+- Per player: use the implemented save cursor `evaluated_through`; on any read/intent, integrate production analytically over `Δt` at full intermediate precision, commit through the ledger **once** (RFC-0002 K3 quantization). **Never tick players server-side.**
 - This RFC evaluates continuous production and visible resource hardcaps. Gate/unlock threshold
   crossings remain owned by `gate-predicates-and-routes.md`; the production engine exposes evaluated
   committed state to that package and does not invent a second threshold model here.
@@ -32,9 +31,9 @@ RFC-0002 deliberately excluded "production sources, multiplier stacks, time inte
 
 ### D2 — The production stack (shape is code, values are data)
 
-`rate(resource) = Σ_generators [count × base_rate × Π(multipliers)]` with the multiplier stack in a **documented, fixed order** (the Cookie Clicker lesson: order is observable; publish it). Multiplier sources register into named slots (upgrades, milestones at 25/50/100 owned, faction rules, commons buff, Trust modulation per `02 §7`). All declared in the balance catalog; **no formula strings in data** (RFC-0002 K2 rule extends here). C2 defines the closed union, canonical order, runtime contribution boundary, and catalog declaration.
+`rate(resource) = Σ_generators [count × base_rate × Π(multipliers)]` with the multiplier stack in a **documented, fixed order** (order is observable; publish it). Multiplier sources register into named slots (upgrades, milestones at 25/50/100 owned, faction rules, commons buff, Trust modulation per `02 §7`). All declared in the balance catalog; **no formula strings in data** (RFC-0002 K2 rule extends here). C2 defines the closed union, canonical order, runtime contribution boundary, and catalog declaration.
 
-**The slot boundary (structural, per Codex's review):** multiplier providers emit mechanical contributions into **fixed named slots**. The commons compact populates its slot through the Commons Compact RFC's computed modifier — production consumes the number and knows nothing else. **Route predicates are structurally prohibited from contributing to any production slot** — the Gate Predicates RFC owns them, and its effects touch gates only. Enforce as a compile-time package boundary (the amplitude-lock pattern from `research/adaptive-balancing.md`), not review discipline.
+**The slot boundary (structural, per Codex's review):** multiplier providers emit mechanical contributions into **fixed named slots**. The commons compact populates its slot through the Commons Compact RFC's computed modifier — production consumes the number and knows nothing else. **Route predicates are structurally prohibited from contributing to any production slot** — the Gate Predicates RFC owns them, and its effects touch gates only. Enforce as a compile-time package boundary (the amplitude-lock pattern), not review discipline.
 
 ### D3 — The intent API (contract per Codex's 2026-07-28 review, adopted)
 
@@ -272,3 +271,4 @@ budget. The harness inherits the big version; production ships the small one.
   revision exists to carry an event.
 - 2026-07-28: implemented and archived after Go/TypeScript/schema/formula-drift and Chromium,
   Firefox, WebKit gates passed; real Postgres integration passed separately.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

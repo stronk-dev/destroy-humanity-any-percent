@@ -3,7 +3,6 @@
 - **Status:** implemented
 - **Author:** Marco (drafted by Claude; boundary split per Codex's 2026-07-28 review)
 - **Design refs:** `design/05 §5` (the commons + the front door, as designed 2026-07-28), `design/02 §7` (Trust constituencies; derivation rule), `design/10 §1` (Open Source = heavier participation)
-- **Research:** `design/research/commons-game-theory.md` (the spec), `design/research/morality-systems.md` (solo floor 1.8–2.5×, corrections)
 - **Depends on:** Save Layer (implemented — compact state is stream data), Production Engine (implemented — consumes one named slot)
 - **Parent / boundary split from:** `archive/production-engine-and-intents.md`
 - **Planning:** `planning/archive/commons-compact/`
@@ -18,11 +17,11 @@ The Mutual Aid Compact: membership, the Health/Capacity computation, the Enclosu
 
 - `sign_compact` / `leave_compact` are intents (Production RFC contract: idempotent, evented, revision-tied). This RFC supplies the authoritative membership contract. The incorporation line-item, Open Source auto-sign behavior, and player-facing panel are owned by [Commons Onboarding & Governance](../commons-onboarding-and-governance.md), because no incorporation/faction or client-shell contract exists yet.
 - Membership is company-scoped state (resets at Exit, like the contract it lives in); the founder ledger records signature history as dated facts.
-- Leaving is always allowed, takes effect at the next accrual boundary, and zeroes `sᵢ` (Solidarity rebuilds from scratch on re-signing — the TPP no-exit lesson requires a real exit, the Ostrom lesson prices it).
+- Leaving is always allowed, takes effect at the next accrual boundary, and zeroes `sᵢ` (Solidarity rebuilds from scratch on re-signing — exit from a commons must be real and always available, and re-entry must carry a real price).
 
 ### D2 — Health, Capacity, and the Enclosure index
 
-Per `research/commons-game-theory.md`, normative here:
+Normative here:
 
 - **Enclosure index `dᵢ ∈ [0,1]`** — derived **entirely from the member's own production stack**: the fraction of their multiplier stack (weight-normalized) coming from dark-pattern stages, externality-ledger-generating sources, and route-of-harm slots, evaluated at each accrual boundary. **No reports, no votes, no declared route flags.** The exact slot-weight table is balance data; the formula is published in the generated artifact now and rendered in-game by the successor.
 - **Health** = weighted mean of member compliance `(1 − dᵢ)`. This foundation computes cohort and server scales. Until the guild model lands, every member uses the specified guildless substitution, so `H = 0.8·H_cohort + 0.2·H_server`; the successor wires the full `0.5·H_guild + 0.3·H_cohort + 0.2·H_server` blend.
@@ -73,7 +72,7 @@ owned by the linked successor.
 - The design's account-age-weighted assignment cannot run before account/session bootstrap. The shipped
   resolver boundary accepts a server/activity bracket and makes assignment non-elective and permanent;
   the successor adds age to bracket derivation without changing cohort ownership.
-- The research proposed 24-hour leave and seven-day rejoin cooldowns. The accepted membership contract
+- An earlier proposal had 24-hour leave and seven-day rejoin cooldowns. The accepted membership contract
   intentionally ships immediate exit/re-entry with the full Solidarity reset as its price; adding a
   cooldown later would be a behavior change requiring a follow-up RFC.
 
@@ -168,3 +167,4 @@ from the rate comparison by construction.
   the complete server foundation and neutral production boundary.
 - 2026-07-29: implemented and archived after full Go/Postgres/Node/browser/schema/formula/harness
   verification and a complete normative-claim review.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude, revised by Codex)
 - **Created:** 2026-07-28
 - **Design refs:** `design/06-tech.md §database, §anti-cheat`, `design/02-economy-balancing.md §1`, `design/07-roadmap.md` Phase 0
-- **Research:** `design/research/tech-stack.md §1.7`, Profectus and Antimatter Dimensions source reading, `design/research/adaptive-balancing.md` (Balance Epoch)
 - **Depends on:** RFC-0001 and RFC-0002 (implemented)
 - **Planning:** `planning/save-layer-and-migrations/` (once implementing)
 
@@ -212,3 +211,4 @@ not submit arbitrary JSON.
   `database/sql`, hand-written repository queries, and real Postgres 16 integration tests.
 - 2026-07-28: implemented, verified against Postgres 16 and the complete cross-runtime suite,
   documented, and archived.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

@@ -4,7 +4,6 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/01 §Tier 0–1` (Sole Proprietor 1995 / Garage 2000s, era beats), `design/02 §2, §11` (curves, pacing targets: scripted failure ~15 min, first elective Exit [45,90] min), `design/03` (T0–1 arcade toys free, staggered unlocks), `design/08` (voice rules, era presentation), UX docs (first-session narrative)
-- **Research:** the whole flavor corpus; `pacing-science.md`; `tier-relevance.md` (doctrine applies from the FIRST catalog)
 - **Depends on:** **Purchasable Content Foundation (draft — the upgrade/role/chain/synergy mechanics this content declares; my original "no new engine code" claim was FALSE and is withdrawn)**; Relevance Harness (draft — lands between Foundation and this)
 - **Closes:** the oldest line in `rfc/README.md`'s remaining-contracts list
 - **Planning:** `planning/t0-t1-content/` (once implementing)
@@ -31,7 +30,7 @@ the online horizon** — the fix lands here (or in session-bootstrap) as AC0.
 - **Tier 0 (Sole Proprietor, 1995):** manual action `manual.click` re-skinned ("Reply to a
   Customer"); generators: `beige_tower` (exists — becomes real), `dot_matrix_queue`,
   `answering_machine`, `nephew_intern` (4 generator classes, cost curves in the 1.07–1.12 band
-  per design/02, staggered milestone ladders per §11b). Upgrades: 8–12, each with ≥1 non-CpS
+  per design/02, staggered milestone ladders per §11b). Upgrades: 8–12, each with ≥1 non-production-rate
   role (loader-enforced role law) — capacity on Permits, minigame token yield, stock-rate.
 - **Tier 1 (Garage, 2000s):** `gate.t0_to_t1` gains real requirements; generators:
   `garage_rack`, `crt_wall`, `first_hire`, `beige_tower_v2` (chain-provisioning per the §11b
@@ -54,8 +53,8 @@ existing harness gate now measures REAL content instead of placeholder values �
 
 ### T3 — Copy discipline
 
-Every player-facing string through the flavor bible voice rules; every real-world statistic from
-research files with `[V]` provenance; anything on a verify-before-ship list is flagged, not
+Every player-facing string through the flavor bible voice rules; every real-world statistic
+carries verified provenance in the claim registry; anything not yet verified is flagged, not
 shipped. The copy lands as catalog/copy-system data (the content pipeline design), reviewable
 like any diff.
 
@@ -83,3 +82,4 @@ like any diff.
 ## Changelog
 
 - 2026-08-03: created (draft) — the oldest remaining contract, now the critical path to a game.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

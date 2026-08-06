@@ -3,7 +3,7 @@
 - **Status:** implemented
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-07-30
-- **Design refs:** `design/05 §6`, `design/08 §6` (verification-is-replay, shipped validator), `design/research/speedrun-governance.md`
+- **Design refs:** `design/05 §6`, `design/08 §6` (verification-is-replay, shipped validator)
 - **Depends on:** Leaderboards & Balance Epochs (implementing — run_log, pins, boards), Prestige & Exits (implementing — run lifecycle), Account Bootstrap (implementing — imported exclusion)
 - **Closes:** the "no immutable initial run state" DESIGN-GAP recorded in `docs/leaderboards-and-epochs.md` and `planning/websocket-transport-and-fanout/log.md` — the last blocker before L4's verifier can honestly exist
 - **Planning:** `planning/run-genesis-and-replay/` (once implementing)
@@ -268,3 +268,4 @@ both runtimes; v12 alone backfills it by exact, saturating sum of then-owned gen
 - 2026-07-31: owner ruling — all eight proposals accepted as normative; C5's Founder question ruled (cross-run verification stays a non-goal; the carry view exists for receipt byte-parity); C7 confirmed strong-form; C8 discharges the hook-order LOW.
 - 2026-08-01: KV-1 makes kernel-version bumps structural and pins the replay-genesis floor at v12.
 - 2026-07-31: RA/RB Go landing reviewed — reroute APPROVED; rulings C5a (founder-hash coherence: live fail-closed + carry carries founder_constants_hash asserted in-boundary), C4a (non-empty batches representable), C4b (route_hint arm deleted), RB-1 (prestige runtime required), C3a (bundle hash recomputed over bytes), RB-2 (stock resource derived in-boundary); run_log gains the standard immutability trigger.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

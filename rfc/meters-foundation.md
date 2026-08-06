@@ -3,8 +3,7 @@
 - **Status:** accepted (C1–C12 ruled; implementing)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
-- **Design refs:** `design/02 §7` (moral axis — not spendable; Trust 5 constituencies + Externality ledger), `design/02 §8` (Soul, the personal ledger), `design/09 §2` (pressure meters, EU4 disaster model), `design/10` (Ethical% consumes the moral stack)
-- **Research:** `events-playstyles.md §1` (pressure-meter architecture — visible forecastable bars driven by the player's own choices), `morality-systems.md`, `billionaires-decay.md` (Trust as a resource that only spends, never buys)
+- **Design refs:** `design/02 §7` (moral axis — not spendable; Trust 5 constituencies + Externality ledger), `design/02 §8` (Soul, the personal ledger), `design/09 §2` (pressure meters, forecastable disaster windows), `design/10` (Ethical% consumes the moral stack)
 - **Depends on:** Production + Run Genesis + Purchasable Content (implemented — meters mutate inside `ApplyLogged` after Purchasable Content)
 - **Owner ruling honored:** breadth-first foundation — the meter MECHANICS, not the events or endings that consume them.
 - **Planning:** `planning/meters-foundation/` (once implementing)
@@ -194,8 +193,8 @@ constituency missing either axis.
 ### C2 — Externality is a ledger, not a meter
 
 The draft reintroduces Externality as a Company meter with decay rules. `design/02 §7` explicitly
-demotes it to dated, addressed ledger facts rendered on the world map; the research calls that
-distinction load-bearing. A scalar would erase where the harm landed and recreate the threshold-
+demotes it to dated, addressed ledger facts rendered on the world map; that distinction is
+ruled load-bearing. A scalar would erase where the harm landed and recreate the threshold-
 optimization problem the redesign removed.
 
 **Proposed contract:** remove Externality from the meter catalog, save values, decay, and band
@@ -352,3 +351,4 @@ intent can use a meter as ledger payment; declared meter-transition inputs may d
   balance rows remain a named pre-mint content gap; implementation is otherwise unblocked.
 - 2026-08-04: C13 records the save-v15 activation gap: pre-meter runs have no pinned meter artifact
   and cannot be upgraded deterministically. Proposed new-run-only activation awaits owner ruling.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

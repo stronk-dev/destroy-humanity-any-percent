@@ -6,8 +6,6 @@
 - **Revised:** 2026-07-28
 - **Design refs:** `design/02-economy-balancing.md §1, §2.1–2.2`, `design/00-vision.md`
   (hardcaps), `design/06-tech.md §idle-math`, `design/07-roadmap.md`
-- **Research:** `design/research/economy-kernel.md`, `design/research/numeric-core.md`,
-  `design/research/pacing-science.md`
 - **Depends on:** RFC-0001 and Numeric Core Boundary Hardening (implemented)
 - **Supersedes / superseded by:** —
 - **Planning:** `planning/archive/0002-economy-kernel/`
@@ -167,7 +165,7 @@ There is no global gameplay ceiling. Each resource explicitly declares a hardcap
 systems must justify indefinitely growing uncapped resources during their own RFC review. Numeric
 overflow is always an invariant violation, never an ending or a visible wall.
 
-`1.13` remains the current design and research baseline only. `1.10`, `1.13`, and any other valid
+`1.13` remains the current design baseline only. `1.10`, `1.13`, and any other valid
 ratio are ordinary data values. The balance harness decides shipped values per generator class.
 
 ## Deviations from the previous draft and design
@@ -201,8 +199,9 @@ ratio are ordinary data values. The balance harness decides shipped values per g
 
 - 2026-07-27: created as a draft covering economy constants, ceilings, accrual, presentation, and
   leaderboard policy.
-- 2026-07-28: re-scoped after architecture research to the implementable economy kernel; tuning,
+- 2026-07-28: re-scoped after architecture review to the implementable economy kernel; tuning,
   production, presentation, and ranking concerns deferred; accepted by owner direction to make
   the engine configuration-driven and proceed with implementation.
 - 2026-07-28: implemented, verified across Go, Node, Chromium, Firefox, and WebKit, documented,
   and archived.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

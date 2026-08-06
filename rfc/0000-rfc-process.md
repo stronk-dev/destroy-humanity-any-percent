@@ -9,7 +9,7 @@
 
 | Tier | Directory | What it is | Mutability |
 |---|---|---|---|
-| **Design** | `design/` | Intent and evidence: the game design docs and research corpus. Where ideas come from. | Amended rarely; never the implementation spec |
+| **Design** | `design/` | Intent and evidence: the game design docs. Where ideas come from. | Amended rarely; never the implementation spec |
 | **RFC** | `rfc/` | Active implementation specs. Every system that gets built is specified by one or more RFCs before implementation. | Living until implemented, then frozen and moved to `rfc/archive/` |
 | **Planning** | `planning/` | Per-RFC working documents: the implementation plan and a running log. The durable record of long-running jobs. | Living during implementation; archived on completion |
 | **Docs** | `docs/` | Canonical description of what actually exists — architecture, data formats, runbooks, balancing values as-shipped. | Always current; updated as part of every implementing change |
@@ -71,3 +71,4 @@ On completion:
 - 2026-07-27: amended by owner direction to rotate implemented RFCs into an archive, make
   `docs/` the sole canonical current description, and allow descriptive follow-up RFCs without
   consuming a global number.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

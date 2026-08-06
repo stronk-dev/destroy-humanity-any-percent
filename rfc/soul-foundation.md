@@ -9,9 +9,6 @@
 - **Design refs:** `design/02 §8` (Soul — the personal ledger, distinct from the moral Trust axis;
   drains via Faustian contracts/crunch/longevity, recovers via deliberate touch-grass, gates the
   human content via the pet proxy, the transcendence-at-zero "training data" ending)
-- **Research:** `design/research/soul-mechanic.md` (the meter-vs-currency exploration and the
-  hybrid recommendation; the "symptom beats the number" precedents; the sincerity-law risk of a
-  legible spend→power wallet)
 - **Depends on:** Save + Run Genesis (implemented), Founder Attendance (implemented —
   `ApplyFounderLogged` + the Founder attended cursor), Pet Care Foundation (implementing — the pet
   is Soul's *display proxy*, the greying). The Founder save-version chain (proposes v20, after
@@ -36,8 +33,8 @@ the ending hook — not the drain-source catalog or any threshold/amount (conten
 ## Motivation
 
 The design wants Soul to carry sincere weight (the pet layer is sincere, never a joke) without
-becoming "prestige-currency #2" to min-max — the failure the research names for a pure spendable
-currency. The hybrid resolves it: **the meter presentation gives the sincerity** (you read your Soul
+becoming "prestige-currency #2" to min-max — the failure mode a pure spendable
+currency invites. The hybrid resolves it: **the meter presentation gives the sincerity** (you read your Soul
 in how the pet treats you, not in a number), while **the opt-in clicked debit gives the ownership**
 (you *chose* to sign — that hits harder than an imposed drain). Three things must hold: (1) Soul is
 never rendered as a wallet or spent freely — only debited at declared opt-in moments, each with a
@@ -97,7 +94,7 @@ is content; the lifecycle (start → attended-duration + production-suppression 
 Soul's consequences are **DERIVED** from the ledger value (never stored), on a **graduated** ramp of
 closed bands (STRUCTURE ruled; thresholds are data): `whole → dimming → hollow → near-zero`. The
 band drives:
-- **The pet proxy (the display):** the cattery trust/greying tech renders the band — a whole-Soul
+- **The pet proxy (the display):** the pet-care trust/greying rendering tech renders the band — a whole-Soul
   pet recognizes and greets you; as Soul dims, recognition fades and flavor cools; near-zero, the
   pet's UI greys out. Soul is *shown* here and only here — this is the meter-presentation.
 - **Soft consequences (early bands):** flavor/greying/tooltip changes only — no mechanical lock.
@@ -571,3 +568,4 @@ All accepted (Codex's proposed contracts are sound). Owner-calls: SB11, SB13.
 
 SB10-SB16 fully ruled. S1-S6 refined (not contradicted). Soul implementation remains DEPENDENCY-BLOCKED
 on Fiscal v19 being implemented; the pure catalog/band/`HumanContentLocked` layer may land earlier.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

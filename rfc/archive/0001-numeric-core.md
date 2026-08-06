@@ -10,7 +10,7 @@
 
 ## Summary
 
-The dual big-number implementation the whole game rests on: pinned `break_infinity.js` 2.2.0 on the client, a hand-written `Decimal` in Go on the server, governed by a **server-authoritative numeric contract** (canonical wire strings, state quantization, and category-appropriate test assertions — see `design/research/numeric-core.md`). Includes the geometric-series helpers the economy needs.
+The dual big-number implementation the whole game rests on: pinned `break_infinity.js` 2.2.0 on the client, a hand-written `Decimal` in Go on the server, governed by a **server-authoritative numeric contract** (canonical wire strings, state quantization, and category-appropriate test assertions). Includes the geometric-series helpers the economy needs.
 
 > **Amended 2026-07-27:** the original "bit-for-bit agreeable" requirement was unsound — ECMAScript and Go both specify transcendental functions as implementation-approximated, so exact cross-runtime string equality of raw operations is not achievable (the C# port's own compatibility tests use 1e-13 tolerances). Replaced by the contract below.
 
@@ -32,7 +32,7 @@ type Decimal struct {
 - Operations: `Normalize`, `Quantize`, `Add`, `Sub`, `Mul`, `Div`, `Pow` (Decimal^float64), `Log10`, `Exp`, `Ln`, `Cmp`, `Eq/Lt/Lte/Gt/Gte`, `Neg`, `Abs`, `Max/Min`, `Floor`, `FromFloat64`, `FromString`, `String`.
 - **Semantics: port `break_infinity.js` operation-for-operation as closely as practical — but cross-runtime agreement is governed by the numeric contract below, not by bit-for-bit equality** (which is unachievable: ECMAScript and Go both specify transcendentals as implementation-approximated).
 
-### The numeric contract (normative — from `design/research/numeric-core.md`)
+### The numeric contract (normative)
 
 1. **Discrete vs continuous:** `Decimal` is only for continuous magnitudes (currencies, rates, prices, multipliers). Counts, milestones, sequence numbers, and time units are integers — exact facts, never floats. Cross-runtime counts use Go `int64` / TypeScript `number` and have a technical hardcap of `9,007,199,254,740,991` (`2^53 - 1`, JavaScript's largest exactly representable integer); later system RFCs may set lower visible hardcaps. Integer wire fields at risk of generic JSON-number coercion are strings.
 2. **Representation:** signed normalized float64 coefficient + integer base-10 exponent; interoperable exponent domain `|e| < 9e15` (exactly `[-8,999,999,999,999,999, +8,999,999,999,999,999]`). The library's ±`9e15` normalization/sentinel boundary is deliberately excluded from gameplay state. Tetration/layers are deferred (follow-up RFC if any accepted design approaches the boundary).
@@ -52,7 +52,7 @@ type Decimal struct {
 
 - A Node script (`tools/gen-vectors.mjs`) uses the real pinned `break_infinity.js` package to emit `testdata/decimal-vectors.json`.
 - Coverage: ≥5,000 cases spanning 1e-300…1e300 and the ±9e15 exponent boundaries, zero, negatives, near cancellation, realistic ratios, and a dedicated economy-helper block (r ∈ {1.07, 1.13, 1.15}).
-- **Assertion categories (per the test contract in `design/research/numeric-core.md`):**
+- **Assertion categories (the normative test contract):**
 
 | Category | Assertion |
 |---|---|
@@ -73,8 +73,8 @@ This RFC includes the minimal scaffolding it needs: Go module (`server/`), TS wo
 
 ## Deviations from design
 
-- `design/06-tech.md §3` and its source research assumed bit-for-bit cross-runtime results and a goja oracle. The implementation spike disproved that assumption. This RFC retains the selected Go/client stack and shared vectors but replaces exact raw-result parity with the server-authoritative, category-tested contract above, per `design/research/numeric-core.md`.
-- `design/06-tech.md` originally selected `break_eternity.js`. The second implementation/research pass proved that its layer-1 logarithmic representation progressively spends coefficient precision on the exponent, contradicting this RFC's layer-0 mantissa/exponent contract. Marco approved `break_infinity.js` 2.2.0 instead; its `1e(9e15)` range already covers the full interoperable domain. Tetration and `break_eternity` remain deferred to a future RFC.
+- `design/06-tech.md §3` originally assumed bit-for-bit cross-runtime results and a goja oracle. The implementation spike disproved that assumption. This RFC retains the selected Go/client stack and shared vectors but replaces exact raw-result parity with the server-authoritative, category-tested contract above.
+- `design/06-tech.md` originally selected `break_eternity.js`. A second implementation pass proved that its layer-1 logarithmic representation progressively spends coefficient precision on the exponent, contradicting this RFC's layer-0 mantissa/exponent contract. Marco approved `break_infinity.js` 2.2.0 instead; its `1e(9e15)` range already covers the full interoperable domain. Tetration and `break_eternity` remain deferred to a future RFC.
 
 ## Acceptance criteria
 
@@ -92,8 +92,9 @@ This RFC includes the minimal scaffolding it needs: Go module (`server/`), TS wo
 ## Changelog
 
 - 2026-07-27: created; accepted.
-- 2026-07-27: **amended** per `design/research/numeric-core.md` (Codex implementation spike): removed the unsound bit-for-bit contract; added the numeric contract (12-digit state quantization, canonical wire grammar, discrete/continuous split, non-finite invalidity, verified max-affordable, server authority); replaced goja-oracle claim with category assertions + real browser-engine coverage.
-- 2026-07-27: **amended** after extreme-scale research and owner approval: replaced `break_eternity.js` with pinned `break_infinity.js` 2.2.0 for the layer-0 client. Deferred layered/tetration math remains unchanged.
+- 2026-07-27: **amended** after the Codex implementation spike: removed the unsound bit-for-bit contract; added the numeric contract (12-digit state quantization, canonical wire grammar, discrete/continuous split, non-finite invalidity, verified max-affordable, server authority); replaced goja-oracle claim with category assertions + real browser-engine coverage.
+- 2026-07-27: **amended** after extreme-scale evaluation and owner approval: replaced `break_eternity.js` with pinned `break_infinity.js` 2.2.0 for the layer-0 client. Deferred layered/tetration math remains unchanged.
 - 2026-07-27: implemented. Shipped the pinned client and operation-compatible Go core,
   deterministic 6,278-vector corpus, canonical 12-digit state boundary, verified geometric
   helpers, property/fuzz coverage, and green Node/Chromium/Firefox/WebKit suites.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

@@ -4,7 +4,6 @@
 - **Author:** Marco / Codex
 - **Created:** 2026-07-28
 - **Design refs:** `design/06-tech.md §idle-math`, `design/07-roadmap.md` Phase 0
-- **Research:** `design/research/cicd-deploy.md §3.1c, §9.3`
 - **Depends on:** RFC-0001 and RFC-0002 (implemented)
 - **Parent / amends:** RFC-0002 Economy Kernel
 - **Supersedes / superseded by:** —
@@ -23,8 +22,8 @@ search. This removes a measured harness blocker without coupling the repair to C
 closed-form inverse, local correction, postcondition verification, and bounded-search fallback,
 but has no production caller.
 
-The research measured roughly 20,486 ns/op for the generic economy path and 660 ns/op for the
-standalone Decimal helper (about 31×). Its wider 200-bot harness measurements were 3 min 01 s and
+A benchmark measured roughly 20,486 ns/op for the generic economy path and 660 ns/op for the
+standalone Decimal helper (about 31×). The wider 200-bot harness measurements were 3 min 01 s and
 1.91 s (about 95×); these are different measurement scopes, not interchangeable speedup claims.
 
 ## Specification
@@ -73,3 +72,4 @@ None.
   repository; split from the draft CI baseline because it amends implemented economy behavior.
 - 2026-07-28: implemented, verified in both runtime suites and all browser engines, documented,
   and archived.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

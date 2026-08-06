@@ -3,8 +3,7 @@
 - **Status:** accepted (C1–C17 ruled; implementing)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
-- **Design refs:** `design/06` (chi REST, closed surfaces), `design/05` (published formulas — the transparency law), the fan-tooling stance (`design/05 §Neopets adoptions`: "a documented read-API stance so the JellyNeo-equivalent builds WITH us from day one")
-- **Research:** `neopets-social-history.md §5` (the shadow-infrastructure lesson), `wc3-custom-ecosystem.md §3` (community-built platform gaps), `speedrun-governance.md` (validator transparency)
+- **Design refs:** `design/06` (chi REST, closed surfaces), `design/05` (published formulas — the transparency law), the fan-tooling stance (`design/05`: "a documented read-API stance so community tooling builds WITH us from day one")
 - **Depends on:** Account API + Transport + Gameserver Composition (implemented)
 - **Owner ruling honored:** breadth-first — this is the contract every future endpoint lands on, so the API never reshapes under consumers.
 - **Planning:** `planning/api-foundation/`
@@ -534,3 +533,4 @@ a write transaction or exposes an operator mutation path.
   JSON needs owner-schema union arms, and raw evidence needs a declared raw-response arm.
 - 2026-08-03: C20 records the still-absent operational limiter/proxy/request-ID literals; middleware
   does not invent production security policy.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.

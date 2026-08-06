@@ -3,8 +3,7 @@
 - **Status:** accepted (C1–C10 ruled; SCOPE NARROWED to Achievements; implementing)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
-- **Design refs:** `design/02 §6` (Clout — the achievement/influence axis; milk-equivalent + attention-economy play; feeds the multiplicative CloutStack), `design/02 §2c.3` + `§6b` (the Neopets possession/burn/provenance law + the Gaia one-mint law), `design/08` (influencer-culture satire)
-- **Research:** `neopets-systems.md §5` (achievements-as-currency, the avatar-lending credit market — the possession-check hazard), `gaia-hyperinflation.md §4a` (posting-as-faucet, the single-mint discipline), `cookie-clicker.md` (achievements→milk→kittens, the highest-leverage idea)
+- **Design refs:** `design/02 §6` (Clout — the achievement/influence axis; achievement-score + attention-economy play; feeds the multiplicative CloutStack), `design/02 §2c.3` + `§6b` (the possession/burn/provenance law + the one-mint law), `design/08` (influencer-culture satire)
 - **Depends on:** Production + Run Genesis + Copy Pipeline (implemented); Meters Foundation
   (implementing — shares the strict registry pattern; Phase-A predicates do not yet consume meters)
 - **Owner ruling honored:** breadth-first — the mint/decay/check MECHANICS and the achievement engine, not the individual achievements (those are content).
@@ -15,7 +14,7 @@
 This foundation implements achievements-as-score: permanent earned IDs and their exact,
 non-spendable `achievement_score`. It deliberately does **not** own Clout. Clout's only mint is
 future social activity, and lifetime Clout never enters production. The foundation preserves the
-possession-check warning from Neopets and exports a neutral, typed observation seam for the future
+possession-check discipline and exports a neutral, typed observation seam for the future
 run-local PR-Intern multiplier and Relevance Harness.
 
 ## Specification
@@ -38,13 +37,13 @@ against one pre-achievement snapshot; newly earned IDs commit simultaneously and
 ownership settles atomically at Exit, so achievements never mutate Founder scope during an
 ordinary Company intent.
 
-- **The check discipline (the Neopets law, ruling C4/§2c.3 made code):** every achievement
+- **The check discipline (ruling C4/§2c.3 made code):** every achievement
   declares how its condition is verified. `burn` = the earning transition consumed something unfakeable
-  (the Kadoatery proof-of-burn — default for prestige achievements). `provenance` = derived from
+  (proof-of-burn — default for prestige achievements). `provenance` = derived from
   the immutable run log / event history (unforgeable by construction). `possession` = checks
   current holdings, and **requires an explicit `possession_justification` catalog field** because
-  possession will be rented (the ALP credit-market lesson); the loader rejects a bare
-  `possession` check. Phase-0 default: `provenance` (the run log is right there).
+  possession will be rented (any ownable status marker grows a lending market that fakes
+  possession); the loader rejects a bare `possession` check. Phase-0 default: `provenance` (the run log is right there).
 
 ### CA2 — Achievement score and the neutral provider seam
 
@@ -84,11 +83,11 @@ RFC is restructured, not patched:
 
 - **C1 — accepted: Clout's ONE mint is SOCIAL ACTIVITY, not achievements** (design/02 §6b, binding
   — I reversed it). Achievements mint a separate permanent non-spendable **`achievement_score`**
-  (the true milk-equivalent). **Clout is removed from this RFC entirely** — the Feed/Social
+  (the achievement-count score axis). **Clout is removed from this RFC entirely** — the Feed/Social
   foundation owns Clout's single mint + decay. This RFC becomes **Achievements Foundation**.
 - **C2 — accepted: lifetime Clout never enters production** (design/02 §6 carry rule, binding — my
-  lifetime CloutStack recreated the exact snowball the carry rule removed). Removed. The milk-loop
-  multiplier, IF kept, is a **run-local** contribution requiring owned PR-Intern content + current-
+  lifetime CloutStack recreated the exact snowball the carry rule removed). Removed. The
+  score-driven multiplier loop, IF kept, is a **run-local** contribution requiring owned PR-Intern content + current-
   run achievement score; no such content exists, so **this foundation ships the typed provider
   seam + vectors only, NEUTRAL in production**. Founder `clout_lifetime` stays reach-only, never
   imported into multiplier/production.
@@ -175,9 +174,9 @@ CA2 instead makes achievement grants the sole mint and defers social activity as
 mint. Both cannot be true.
 
 **Proposed contract:** achievements do not mint lifetime Clout. They mint a separate permanent,
-non-spendable `achievement_score` (the milk-equivalent) used only by achievement-owned surfaces.
+non-spendable `achievement_score` used only by achievement-owned surfaces.
 The future Feed/Social RFC owns Clout's one and only mint plus decay. If the owner intends to
-reverse the Gaia ruling, amend `design/02 §6b` explicitly and re-size the downstream sink/decay
+reverse the one-mint ruling, amend `design/02 §6b` explicitly and re-size the downstream sink/decay
 model before acceptance; do not silently redefine “one mint.”
 
 ### C2 — Lifetime Clout is forbidden from the production stack
@@ -187,8 +186,8 @@ this run may key production-shaped PR Intern effects; lifetime Clout buys reach.
 Founder-persistent Clout into a multiplicative CloutStack, recreating the exact prestige snowball
 the carry ruling removed.
 
-**Proposed contract:** remove lifetime CloutStack from this RFC. If achievement score keeps the
-Cookie Clicker milk loop, its multiplier is a separately named **run-local** contribution whose
+**Proposed contract:** remove lifetime CloutStack from this RFC. If achievement score keeps a
+score-driven multiplier loop, its multiplier is a separately named **run-local** contribution whose
 provider requires owned PR-Intern content and current-run achievement score; no such content
 exists yet, so this foundation owns the typed provider seam and vectors only, neutral in production.
 Founder `clout_lifetime` remains reach-only and never imports into `multiplier`/`production`.
@@ -314,3 +313,4 @@ observation fixture/registry now and names report activation as a downstream dep
 - 2026-08-04: C11 records the save-v16 activation dependency: current v14 runs have neither the
   meter nor achievement artifact, so live state must activate at a ruled new-run boundary rather
   than from deploy-current catalogs.
+- 2026-08-06: non-normative reference cleanup for publication; no spec change.
