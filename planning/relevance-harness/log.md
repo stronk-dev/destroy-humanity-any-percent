@@ -158,3 +158,52 @@ executable contracts. All accepted:
   baseline purchase count (action-removal is diagnostic, cannot rescue); role evidence = unmasked
   baseline activations post-reduction; scenario registry checked-in, T0-1 extends fail-closed.
 Status -> accepted; R1-R15 ruled; implementing. Body (R3) reconciled via R9 supersession. README updated.
+
+## 2026-08-06 — implementation landing and Codex full-range self-review
+
+- **Review by:** Codex
+- **Recorded by:** Codex
+- **Reviewed range:** `7340d94..4524f6a` (all implementation commits from the first production
+  seam through the post-baseline persona correction; `7340d94` is the accepted-contract parent).
+- **Verdict:** self-review approved after remediation; designated independent adversarial review is
+  still required before archival.
+
+Implemented the guarded `SimulateAdvance` production seam, exact Go/TypeScript policy grammar,
+reference payback solver, width-eight beam, paired item/group/action-removal runs, ordered report
+grammar, fail-closed scenario registry, active-catalog gate, and the separate
+`BALANCE-CHANGE:` golden artifact. The test-only schema-v4 fixture now discriminates all required
+classes: `upgrade.dead` fails the relevance floor, `generator.alpha` fails the individual trap and
+role floors, `upgrade.alpha` is rescued only as `group_supported`, and the reference/beam gap is
+27,078 ppm against the declared 50,000 ppm maximum.
+
+Self-review found and fixed six defects before requesting the independent gate:
+
+1. `earliest_positive_delta_ms` was hard-coded to the horizon rather than lower-bound searched.
+2. Transition preflight multiplied before checking overflow and undercounted marginal-output probes.
+3. R14 counted one beam per reference seed while the implementation executed only one total.
+4. The beam omitted R11 componentwise Pareto dominance.
+5. The CLI hard-coded the fixture scenario and ignored relevance failures, so a future active
+   schema-v4 catalog would not actually be gated; registry entries are now executed dynamically and
+   active findings fail closed.
+6. Non-reference runs were counted but executed through `reference_greedy`, and seed reduction was
+   pooled across personas. Casual/Chaos now use their real seeded policy adapters; conservative
+   reduction happens inside each persona before the ANY selection, with reference trap counts and
+   role evidence reduced in the same order.
+
+Report validation was also tightened to check every ordered row family, exact hash syntax, tagged
+null unions, delta and greedy-gap reconciliation, safe-integer domains, and support/trap
+biconditionals. The checked-in fixture proves those failures with mutations and proves budget
+overflow, persona reduction, and directional dominance.
+
+Verification at `4524f6a`:
+
+- `make test-go GO_PACKAGES="./harness ./cmd/balance-harness" GO_TEST_FLAGS="-run Relevance -count=1"`
+- `make verify-schema`
+- `make harness-check`
+- `make verify` — Go/vet and all packages green; TypeScript/Svelte typecheck 0 errors; 6,568 client
+  tests green; 19,713 browser assertions green; formula, kernel, schema, copy, and boundary guards
+  green.
+
+No production relevance baseline was invented. The active economy remains schema v3; the T0-T1
+mint owns the first active schema-v4 scenario/policy/golden and is mechanically blocked if it omits
+that registry entry. RFC status remains implementing pending both mandatory full-range reviews.
