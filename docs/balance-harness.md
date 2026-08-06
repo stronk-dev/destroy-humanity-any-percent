@@ -48,16 +48,49 @@ Receipt `before` and `after` values are the exact reconciliation authority. A si
 cancellation; some valid before/after pairs have no representable 12-digit delta. The harness
 therefore checks the complete canonical state chain without weakening numeric precision rules.
 
+## Relevance instrument
+
+The relevance harness measures whether each generator or upgrade has a material effect inside its
+declared progression window. It drives the same production simulation boundary as the service and
+uses a guarded action-free `SimulateAdvance` seam for deterministic waiting; it never copies
+production arithmetic. Its hash-pinned `relevance_policy` artifact owns windows, epsilon floors,
+trap exemptions, and tier/category/declared groups without adding harness metadata to the economy
+catalog.
+
+For every declared run it records an unmasked baseline, per-item effect ablations, and group effect
+ablations. Reference runs additionally record action-removal diagnostics and one width-eight beam
+oracle. The reference policy ranks one-unit generator buys and unowned upgrades by an exact
+single-resource payback calculation, including lower-bound searches for first affordability and
+first positive marginal output. Beam nodes deduplicate by canonical state plus virtual time and use
+componentwise dominance before the width bound. Both run cardinality and transition work are
+checked before simulation, and every simulation call spends from the transition budget.
+
+The report contains ordered item, group, tier-contribution, role-activation, and failure rows with
+only safe integers, booleans, and canonical hashes. Required baselines that do not reach their
+milestone are named failures; unreachable ablations use the finite horizon-minus-baseline encoding.
+An item passes through its own effect delta or one declared supporting group, while the trap test
+always remains individual. Role evidence comes only from unmasked baseline execution.
+
+`testdata/harness/relevance/registry-v1.json` is the fail-closed scenario authority. The current
+schema-v4 entry is deliberately a test fixture: it proves a dead upgrade, a deliberate trap
+exemption, a roleless generator, group-supported substitution, and a greedy/beam gap under its
+declared bound. Fixture findings are recorded in its golden report but do not block the production
+gate. When the active epoch first uses an economy schema v4 or later, that exact economy artifact
+must have a registered scenario, policy, and golden report; `harness-check` executes it and fails on
+any relevance finding. The current schema-v3 production catalog is not presented as a relevance
+baseline.
+
 ## Commands and drift
 
 - `make harness HARNESS_OUTPUT=/absolute/path/report.json` writes the complete canonical run and
   aggregate report.
-- `make harness-check` is read-only and compares the seed-0 golden report plus pacing baseline.
-- `make harness-update` deliberately regenerates both tracked artifacts for review.
+- `make harness-check` is read-only and compares the seed-0 golden report, pacing baseline, and
+  every registered relevance golden report.
+- `make harness-update` deliberately regenerates those tracked artifacts for review.
 
 Drift above 10% warns and above 25% fails using integer cross-multiplication. After the initial
-baseline, economy/Commons catalog or scenario inputs land first. A separate commit whose subject begins
-`BALANCE-CHANGE:` then contains only the generated pacing baseline and optional golden-seed
+baseline, economy/Commons/relevance catalog or scenario inputs land first. A separate commit whose
+subject begins `BALANCE-CHANGE:` then contains only the generated pacing, seed, and/or relevance
 artifact. The repository guard scans every reachable baseline revision, not only HEAD, and fails
 on shallow history, uncommitted artifacts, missing prior inputs, wrong subjects, or any unrelated
 path in the artifact commit. CI fetches complete history so local and hosted enforcement are

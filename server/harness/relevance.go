@@ -146,6 +146,11 @@ type relevanceRunResult struct {
 	FinalVirtualMS int64
 }
 
+type relevancePairedResult struct {
+	baseline *int64
+	ablated  *int64
+}
+
 func LoadRelevanceSuite(repositoryRoot, scenarioPath string) (*RelevanceSuite, error) {
 	scenarioBytes, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(scenarioPath)))
 	if err != nil {
@@ -224,7 +229,8 @@ func validateRelevanceScenario(scenario RelevanceScenario) error {
 		if !relevanceIDPattern.MatchString(run.PolicyID) || run.SeedCount < 1 || run.SeedCount > relevanceMaxSafeInteger {
 			return errors.New("invalid relevance run")
 		}
-		if _, err := strconv.ParseUint(run.SeedStart, 10, 64); err != nil {
+		start, err := strconv.ParseUint(run.SeedStart, 10, 64)
+		if err != nil || uint64(run.SeedCount-1) > ^uint64(0)-start {
 			return errors.New("invalid relevance seed")
 		}
 		if run.Reference {
@@ -232,6 +238,8 @@ func validateRelevanceScenario(scenario RelevanceScenario) error {
 			if run.PolicyID != "reference.greedy" {
 				return errors.New("reference run must use reference.greedy")
 			}
+		} else if run.PolicyID != "casual.phase0" && run.PolicyID != "chaos.phase0" {
+			return errors.New("unknown relevance persona policy")
 		}
 	}
 	if referenceCount != 1 {

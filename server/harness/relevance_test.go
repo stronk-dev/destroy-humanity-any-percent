@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"cloud-clicker/server/decimal"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/production"
 )
 
 func TestRelevanceRunBudgetAndReachedEncoding(t *testing.T) {
@@ -124,6 +126,52 @@ func TestRelevanceFailsBeforeDispatchWhenRunBudgetIsTooSmall(t *testing.T) {
 	suite.Scenario.RelevanceBudgetMaxRuns = 11
 	if _, err := suite.RunRelevance(); err == nil || !strings.Contains(err.Error(), "run budget") {
 		t.Fatalf("budget error=%v", err)
+	}
+}
+
+func TestRelevanceReducesSeedsBeforePersonaAnyAndPrunesDominatedState(t *testing.T) {
+	value := func(input int64) *int64 { return &input }
+	matrix := map[string][]relevancePairedResult{
+		"casual.phase0": {
+			{baseline: value(100), ablated: value(110)},
+			{baseline: value(100), ablated: value(120)},
+		},
+		"reference.greedy": {
+			{baseline: value(100), ablated: value(200)},
+			{baseline: value(100), ablated: value(210)},
+		},
+	}
+	reduced, err := reduceRelevancePairMatrix(matrix, "worst", "milestone.test", 500)
+	if err != nil || reduced.DeltaMS == nil || *reduced.DeltaMS != 100 {
+		t.Fatalf("persona ANY reduction=%+v err=%v", reduced, err)
+	}
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	right, err := suite.newRelevanceState()
+	if err != nil {
+		t.Fatal(err)
+	}
+	left, err := cloneState(suite.Catalog, right)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := left.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: decimal.One}}}); err != nil {
+		t.Fatal(err)
+	}
+	if !relevanceStateDominates(left, right, suite.Catalog) || relevanceStateDominates(right, left, suite.Catalog) {
+		t.Fatal("componentwise resource dominance was not strict and directional")
+	}
+	counter := &relevanceCounter{limit: 10_000}
+	persona, err := suite.runPersona(RelevanceRunSpec{PolicyID: "casual.phase0", SeedStart: "7", SeedCount: 1}, 7,
+		production.AblationMask{}, counter)
+	if err != nil || persona.MilestoneMS == nil || counter.value == 0 {
+		t.Fatalf("casual relevance persona=%+v transitions=%d err=%v", persona, counter.value, err)
+	}
+	suite.Scenario.MaxDecisions = relevanceMaxSafeInteger
+	if _, err := suite.preflightTransitionCeiling(1, 0); err == nil {
+		t.Fatal("transition preflight overflow failed open")
 	}
 }
 
