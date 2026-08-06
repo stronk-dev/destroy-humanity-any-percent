@@ -77,3 +77,47 @@ reconciliation.
 - A16: opportunities <=> Company floor 18 (needs meters+achievements+doctrines), forbidden on Founder;
   codec max->18; activation inits empty + schedule from coord 0; Exit discards + re-inits next run.
 Status -> accepted; A1-A16 ruled; implementing (Company v18). Fiscal F11 alignment recorded.
+
+## 2026-08-06 — Codex implementation handoff: ready for designated review
+
+Review by: Codex (self-check only; does not satisfy the cross-party gate). Recorded by: Codex.
+
+Implementation range: `8557638..d3b18ef` (inclusive payload is the two commits after the parent of
+`8557638`). Post-filter hashes only.
+
+Implemented the complete A9-A16 surface:
+
+- optional hash-pinned `opportunities` artifact and strict Go/TS loaders;
+- Company v18 codec/activation plus replay-inputs v5;
+- attended-time lazy scheduler with server-logged float interval, byte-parity integer draws, and
+  Go/TS-recomputed opportunity/buff UUIDs;
+- rejected-command rollback, including an expired-claim fixture whose scheduler cleanup repeats on
+  the next applied command;
+- state-derived event-buff contributions inside `ApplyLogged`, per-target combo saturation, normal
+  manual-token enforcement, and exact Lucky accrual-only saturation;
+- all five event payloads and the Postgres event-kind migration;
+- Exit reset and next-run schedule initialization.
+
+Self-review found and fixed four seam defects before handoff: rejected claims were initially forced
+to carry impossible applied-resolution evidence; the Go receipt snapshot omitted v18 state; empty
+active-buff slices encoded as null; and the singular missed/spawn wire was not structurally bounded
+against the online horizon. The final bundle validity rule proves `minimum_interval_ms +
+lifetime_ms > catchup_ceiling_ms`, so one command can represent at most one pending expiry followed by
+one new spawn.
+
+The shared sequential fixture covers two overlapping production buffs with combo clamping, a manual
+command under the active set, Lucky saturation at the Company hardcap, buff expiry, an offline wall
+gap that advances no attended coordinate, rejected expired-claim rollback, persisted miss cleanup,
+and byte-identical Go/TS receipts/events/state. A separate terminal fixture proves Exit discards the
+old pending/buff state and deterministically initializes run N+1.
+
+Verification (full outputs read to completion):
+
+- `make verify` — PASS: all Go packages, formula/harness/schema/copy/kernel-history gates, TypeScript
+  typecheck and production build, 6,577 client tests, 19,740 browser assertions;
+- `make test-save-integration` against fresh Postgres 16 — PASS, including save/production/replay
+  integrations with migration 00066;
+- `make replay-fixture-check` — PASS.
+
+Handoff: implemented and all self-checks green; ready for cross-party designated review and archival
+decision. Codex does not certify that gate and has not archived this RFC.
