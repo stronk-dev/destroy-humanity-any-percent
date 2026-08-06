@@ -23,7 +23,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [API Foundation](api-foundation.md) | implementing — C1–C17 ruled | Account API / Transport / Gameserver Composition |
 | [Meters Foundation](meters-foundation.md) | implementing — C1–C12 ruled | Production / Run Genesis / Purchasable Content; unblocks Achievements and Pet Care |
 | [Achievements Foundation](clout-and-achievements-foundation.md) | implementing — C1–C10 ruled | Meters / Copy Pipeline / Production / Run Genesis |
-| [Relevance Harness](relevance-harness.md) | accepted direction — implementation blocked on R9–R15; T0–T1 owns the production baseline | Purchasable Content (archived) / Balance Harness |
+| [Relevance Harness](relevance-harness.md) | accepted — R1–R15 ruled; implementing (archives vs a test-only schema-v4 fixture; T0–T1 owns the production baseline) | Purchasable Content (archived) / Balance Harness |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 

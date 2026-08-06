@@ -1,9 +1,9 @@
 # RFC: Relevance Harness
 
-- **Status:** accepted direction — R1-R8 ruled; implementation recheck blocked on R9-R15 (the
-  authoritative wait seam, exact greedy/beam arithmetic, reached-state encoding, policy/report
-  wire, run budget, and window/gate binding). Archives against a test-only schema-v4 fixture;
-  T0-T1 owns the production relevance baseline.
+- **Status:** accepted — R1-R15 ruled (greedy/beam arithmetic incl. the `SimulateAdvance` wait seam,
+  finite reached/unreached encoding, `relevance_policy` + report schemas, exact run/transition
+  budgets, window/gate binding + evidence ownership); implementing. Archives against a test-only
+  schema-v4 fixture; T0-T1 owns the production relevance baseline.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-01
 - **Design refs:** `design/02 §11b` (tier-relevance doctrine — this RFC is its enforcement half)
@@ -458,3 +458,74 @@ is a `harness-check` error before dispatch.
 Owner rulings must reconcile V1-V5/R1-R8, enumerate the selected wire, and either accept R10's
 single-resource first-fixture narrowing or provide the missing multi-resource conversion. Until
 then the solver/report implementation is blocked; the shipped ablation seam remains unchanged.
+
+## Owner rulings on R9-R15 (2026-08-06) — the exact arithmetic/encoding/schema under R1-R8
+
+All accepted (Codex's proposed contracts are executable and sound). Full contracts, to converge.
+
+- **R9 — accepted; SUPERSEDES my R3 on two points I got wrong.** Every reached/unreached pair is the
+  exact closed row `{status, baseline_ms, ablated_ms, delta_ms}`, status ∈ `both_reached |
+  ablated_unreached | baseline_unreached | both_unreached`. `both_reached` = all three signed ints;
+  `ablated_unreached` = baseline, null ablated, `delta = horizon_ms − baseline_ms` (the FINITE V5
+  rule — my R3's `+∞` was wrong and violated R7's no-floats; **the finite encoding governs**);
+  baseline-unreached = null delta, excluded from that milestone's floor with a NAMED report failure
+  when the milestone is required. Each scenario declares exactly ONE closed reducer (`p05` OR `worst`
+  — my R3's "either" allowed two legal verdicts on identical rows and is corrected); the fixture uses
+  `worst`. (V5 body already carries the finite rule — consistent.)
+- **R10 — accepted (the wait seam + the exact value equation).** Add harness-only
+  `production.SimulateAdvance` beside `SimulateTransition`: advances a clone with NO action (same
+  accrual + hook chain, returns role activations, emits no intent/receipt/revision), source-boundary
+  guarded to `server/harness` + tests. Earliest affordability = the first canonical integer ms in
+  `[now, next_horizon]` whose advanced clone can pay the real one-unit quote, by lower-bound binary
+  search; unreachable → tagged sentinel. Value (first fixture, single-resource): the scenario
+  declares one `resource_at_least` milestone and all candidate prices use that resource; advance
+  baseline + candidate clones to earliest-affordable, buy one on the candidate clone, advance both to
+  the next horizon; `gross_marginal_output = candidate_balance + paid_cost − baseline_balance`
+  (≤ 0 → unreachable); `payback_ms = wait_ms + ceil(paid_cost * (horizon_ms − earliest_ms) /
+  gross_marginal_output)` in exact Decimal with exact-integer ceiling; rank `(payback_ms,
+  earliest_positive_delta_ms, raw_byte_id)`. Multi-resource/objective scoring is a named successor.
+- **R11 — accepted (the bounded beam).** Fixture oracle uses the single R10 milestone. Node identity
+  = `{canonical_state_hash, virtual_ms}` (path is NOT identity — final tie-break only). Expand the
+  raw-byte candidate list + one edge to the next strictly-greater declared decision horizon. Score
+  each child by a deterministic reference-greedy completion to milestone-or-horizon: reached sorts
+  before unreached, then lower completion time, then raw-byte path. Dominance compares equal-
+  virtual-ms nodes componentwise over milestone reached/progress + every canonical resource balance +
+  purchased counts. Scenario declares positive-safe-int `max_decisions` + `beam_width` (fixture 8);
+  stop at the terminal milestone or `max_decisions`. Internal child/rollout sims count against a
+  SEPARATE `relevance_budget_max_transitions` (not the run budget).
+- **R12 — accepted (`relevance_policy` grammar).** Schema v1 root `{schema_version:1, items[], groups[]}`.
+  Items raw-byte sorted, COMPLETE for the generator+upgrade purchasable union, exact keys
+  `{purchasable_id, availability_window:{from_gate, to_gate}, epsilon_ms, trap_exempt,
+  justification_key, group_ids}`; `to_gate` + `justification_key` nullable; **`trap_exempt` iff
+  `justification_key` non-null** (biconditional); `epsilon_ms` positive safe int; `group_ids` sorted
+  unique. Groups raw-byte sorted `{group_id, axis, member_ids, epsilon_ms}`, axis ∈ `tier|category|
+  declared`, members sorted-unique + complete for the derived tier/category when those axes are used,
+  ≤ one group per axis per item. Shared Go/TS mutation vectors for missing/duplicate/unsorted/dangling
+  rows + the exemption biconditional.
+- **R13 — accepted (report schema v1).** Root `{schema_version, scenario_id, scenario_hash,
+  constants_hash, relevance_policy_hash, run_budget, greedy_oracle, items, groups,
+  tier_contributions, role_activations, failures}`; arrays only, no maps/floats. `run_budget =
+  {declared_runs, executed_runs, declared_transitions, executed_transitions}`. `greedy_oracle` null
+  or `{milestone_id, greedy_ms, beam_ms, gap_ppm, maximum_ppm, passed}`. Item rows raw-byte sorted:
+  identity, window, epsilon, trap fields, baseline-purchase count, individual reduced deltas, support
+  `individual|group_supported|failed`, supporting group or null, nearest-passing epsilon, passed
+  booleans. Group/tier delta rows use the R9 tagged row. Role rows reuse `{generator_id, kind,
+  target_id, count}`. Failures = sorted-unique mechanical evidence strings. JSON schema + positive
+  fixture + mutations for every missing family/dup/unsorted/illegal-null/float.
+- **R14 — accepted (exact run budget).** With `E` = seeds across non-reference personas, `R` =
+  reference seeds, `I` = items, `G` = groups: preflight `= (E+R)*(1 + I + G) + R*I +
+  (beam_enabled ? R : 0)` (baseline, effect-mask LOO, group masks, reference-only action-removal, one
+  beam per reference seed). Checked exact integers; fail before dispatch above
+  `relevance_budget_max_runs`. Beam-internal work is bounded by R11's transition budget, never
+  mislabeled a run. The report records declared + executed totals and requires equality.
+- **R15 — accepted (window→milestone + evidence ownership).** Relevance scenarios add a raw-byte-
+  sorted `segments` array `{milestone_id, from_gate, to_gate}`, complete for relevance milestones;
+  loader validates gate IDs/order against Routes with the same inclusive/exclusive window rule. Trap
+  evidence = the reference BASELINE purchase count (the action-removal delta is reported DIAGNOSTIC
+  only and can never rescue a trap). Role evidence = the sum of UNMASKED baseline activations across
+  all declared personas after seed reduction (masked runs never satisfy the role floor). The scenario
+  registry is checked-in; T0-1 extends it fail-closed (R8).
+
+R1-R15 now fully ruled — solver arithmetic, encodings, both artifact schemas, budgets, and evidence
+ownership are executable. Numbers (epsilon/window/thresholds) and the production scenario remain
+data / T0-1 content.

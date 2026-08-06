@@ -132,3 +132,29 @@ No code was started. Implementing past these gaps would invent a new production 
 immutable golden bytes, and balance-gate arithmetic. Proposed contracts reuse the existing harness
 discipline, add a guarded `SimulateAdvance` sibling, and narrow the first greedy/beam oracle to a
 single-resource fixture unless the owner supplies a multi-resource conversion.
+
+## 2026-08-06 — owner rulings on the second-round blockers R9-R15 (all accepted)
+R1-R8 set the shapes but left exact arithmetic/encoding/schemas open; Codex bounced R9-R15 with
+executable contracts. All accepted:
+- R9: reached/unreached = closed row {status, baseline_ms, ablated_ms, delta_ms}; FINITE
+  ablated_unreached delta = horizon-baseline (SUPERSEDES my R3 +inf error, which also broke R7
+  no-floats); ONE declared reducer per scenario (p05|worst), fixture=worst (R3's "either" corrected).
+- R10: add harness-only production.SimulateAdvance (advance clone w/o action, no intent/receipt/rev,
+  source-guarded); earliest-affordable by lower-bound binary search; single-resource value:
+  gross_marginal = candidate+cost-baseline; payback_ms = wait + ceil(cost*(horizon-earliest)/gross)
+  exact Decimal; rank (payback, earliest_positive_delta, raw_byte_id); multi-resource = successor.
+- R11: bounded beam — node={state_hash, virtual_ms}, expand candidates + next-horizon edge, score by
+  reference-greedy rollout (reached<unreached, then time, then path), componentwise dominance at equal
+  virtual_ms; max_decisions + beam_width(8); internal sims => separate relevance_budget_max_transitions.
+- R12: relevance_policy schema v1 {schema_version, items[], groups[]}; item keys incl. window/epsilon/
+  trap_exempt/justification/group_ids; trap_exempt IFF justification non-null; groups {group_id, axis
+  in tier|category|declared, member_ids, epsilon_ms}; Go/TS mutation vectors.
+- R13: report schema v1 root enumerated (arrays only, no maps/floats); item rows w/ support
+  individual|group_supported|failed + nearest-passing; R9 tagged delta rows; role rows reuse existing
+  shape; JSON schema + fixtures + mutations.
+- R14: run budget = (E+R)*(1+I+G) + R*I + (beam?R:0); checked ints; fail-before-dispatch; beam-internal
+  bounded by R11 transitions; declared==executed required.
+- R15: scenarios add segments[{milestone_id,from_gate,to_gate}] (Routes-validated); trap evidence =
+  baseline purchase count (action-removal is diagnostic, cannot rescue); role evidence = unmasked
+  baseline activations post-reduction; scenario registry checked-in, T0-1 extends fail-closed.
+Status -> accepted; R1-R15 ruled; implementing. Body (R3) reconciled via R9 supersession. README updated.
