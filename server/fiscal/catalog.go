@@ -178,7 +178,8 @@ func LoadCatalog(data []byte, economyCatalog *economy.Catalog) (*Catalog, error)
 
 func validClock(clock ClockPolicy) bool {
 	return clock.EarlyMS > 0 && clock.EarlyMS <= clock.GuaranteedMS && clock.GuaranteedMS <= clock.AutoMS &&
-		clock.AutoMS <= decimal.MaxExactInteger && clock.EarlySuccessPPM >= 0 && clock.EarlySuccessPPM <= PPM
+		clock.AutoMS <= decimal.MaxExactInteger && decimal.MaxExactInteger/clock.EarlyMS < decimal.MaxExactInteger &&
+		clock.EarlySuccessPPM >= 0 && clock.EarlySuccessPPM <= PPM
 }
 
 func validDeclaration(catalog *economy.Catalog, sourceID string, slot multiplier.Slot, target string) bool {

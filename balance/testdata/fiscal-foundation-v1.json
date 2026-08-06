@@ -16,6 +16,7 @@
     { "name": "missing_clock_key", "op": "delete", "path": ["clock_policy", "auto_ms"] },
     { "name": "unknown_root_key", "op": "set", "path": ["extra"], "value": true },
     { "name": "clock_order", "op": "set", "path": ["clock_policy", "guaranteed_ms"], "value": 99 },
+    { "name": "sequence_horizon", "op": "set", "path": ["clock_policy", "early_ms"], "value": 1 },
     { "name": "credit_exceeds_cap", "op": "set", "path": ["credit_policy", "credit_per_period"], "value": 1001 },
     { "name": "wrong_hoard_source", "op": "set", "path": ["hoard_policy", "source_id"], "value": "commons.member" },
     { "name": "wrong_generator_target_declaration", "op": "set", "path": ["generator_level_rows", 0, "source_id"], "value": "fiscal.hoard" },

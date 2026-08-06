@@ -39,7 +39,7 @@ export function loadFiscalCatalog(source: unknown, economy: EconomyCatalog): Fis
   const clock = exactObject(root.clock_policy, ["early_ms", "guaranteed_ms", "auto_ms", "early_success_ppm"], "clock_policy");
   const earlyMs = positiveSafe(clock.early_ms); const guaranteedMs = positiveSafe(clock.guaranteed_ms); const autoMs = positiveSafe(clock.auto_ms);
   const earlySuccessPpm = ppm(clock.early_success_ppm, true);
-  if (earlyMs > guaranteedMs || guaranteedMs > autoMs) throw new SyntaxError("fiscal clock thresholds are not ordered");
+  if (earlyMs > guaranteedMs || guaranteedMs > autoMs || Math.floor(MAX_EXACT_INTEGER / earlyMs) >= MAX_EXACT_INTEGER) throw new SyntaxError("fiscal clock thresholds are not ordered or exhaust the sequence horizon");
   const credit = exactObject(root.credit_policy, ["credit_per_period", "hardcap", "hardcap_reason_key"], "credit_policy");
   const creditPerPeriod = positiveSafe(credit.credit_per_period); const hardcap = positiveSafe(credit.hardcap); const hardcapReasonKey = mechanical(credit.hardcap_reason_key);
   if (creditPerPeriod > hardcap) throw new SyntaxError("fiscal mint exceeds hardcap");

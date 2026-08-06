@@ -25,6 +25,10 @@ Founder v19 persists:
 The codec rejects Fiscal state before v19 and incomplete, negative, over-cap, or unknown state at
 v19.
 
+The catalog loader also rejects a ripening horizon capable of exhausting
+`fiscal_period_seq` within the safe wall-timestamp domain. The sequence never saturates because it
+is part of the deterministic early-harvest draw identity.
+
 ## Wall-clock periods
 
 Period ripeness is derived lazily from the server-authored wall timestamp and
