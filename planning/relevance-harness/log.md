@@ -207,3 +207,33 @@ Verification at `4524f6a`:
 No production relevance baseline was invented. The active economy remains schema v3; the T0-T1
 mint owns the first active schema-v4 scenario/policy/golden and is mechanically blocked if it omits
 that registry entry. RFC status remains implementing pending both mandatory full-range reviews.
+
+## 2026-08-06 — designated independent adversarial review: not approved
+
+- **Review by:** `/root/l7b_independent_review`
+- **Recorded by:** Codex
+- **Reviewed range:** inclusive union `7340d94^..74d5a60`.
+- **Verdict:** not approved; do not archive. Focused relevance tests, schema, harness check, and full
+  `make verify` passed, but seven contract gaps remain.
+
+Findings reproduced against source:
+
+1. **HIGH:** item availability windows are validated but do not select the milestone used for the
+   verdict; an out-of-window item can pass against the sole unrelated segment.
+2. **HIGH:** transition preflight calls `actionTimes` to count a schedule, so a legal near-safe-int
+   horizon can exhaust memory before the budget rejects it.
+3. **HIGH:** the simulation boundary guard detects only direct calls and misses a function-value
+   alias of `production.SimulateAdvance`.
+4. **HIGH:** active registry matching binds only the economy path; Routes and relevance policy are
+   not required to be epoch artifacts, and the report uses an invented local three-file hash rather
+   than the epoch bundle hash.
+5. **MEDIUM:** change-history and TypeScript schema gates hard-code the fixture instead of consuming
+   every registry entry.
+6. **MEDIUM:** R12's shared Go/TypeScript mutation corpus is missing; duplicated source mutations
+   already disagree on JSON numeric lexical form (`1.0`).
+7. **MEDIUM:** trap exemption validation proves nullability but does not require its justification
+   key in a reviewable changelog artifact.
+
+What held: complete range union, isolated `BALANCE-CHANGE:` golden commit, deterministic fixture,
+solver arithmetic, and all normal root gates. Remediation must close all seven with discriminating
+tests, then receive a new designated review; the passed test suite does not override this verdict.
