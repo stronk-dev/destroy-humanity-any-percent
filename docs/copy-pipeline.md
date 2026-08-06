@@ -21,9 +21,13 @@ than English text.
   The gate proves registry grammar, generated drift, and copy completeness; it does not discover
   references by repository grep or pretend to replace runtime tests and diff review.
 - `copy/provenance.v1.json` is the stable claim registry. A verified claim resolves to exactly one
-  heading under `design/research/` and has at least one HTTPS source URL.
+  heading under `design/research/` and has at least one HTTPS source URL. **Since Amendment A1
+  (2026-08-06) the tracked provenance source is `design/research/provenance-extracts.md`** — the
+  publishable extracts file (the rest of the research corpus is unpublished/untracked); a verified
+  claim may be retargeted ONLY under the unpublication-migration escape (old source is a
+  `design/research/` path absent from the compared tree; id/status/urls immutable).
 - `moderation/copy-denylist.txt` is the append-only known-red-name list. Each normalized term has
-  an adjacent research legal-matrix reference.
+  an adjacent legal-section reference into the tracked extracts file (same A1 rule).
 - `make copy-generate` writes the byte-sorted client catalog, generated key/param types, the
   independent `copy_hash`, the code-reference manifest, and the deterministic orphan report.
 

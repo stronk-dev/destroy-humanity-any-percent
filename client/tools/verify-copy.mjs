@@ -41,10 +41,12 @@ if (deniedTerm("habitable office", terms) !== null) throw new Error("denylist wo
 expectFailure("denylist removal history fixture", () => assertDenylistExtension(["habbo", "neopets"], ["habbo"], "fixture"), /removes copy denylist terms: neopets/);
 const citationFixture = { term: "habbo", source_file: "design/research/social-spaces.md", source_anchor: "6-legal-safe-vs-fictionalize" };
 expectFailure("denylist citation-retarget history fixture", () => assertDenylistRecordsStable([citationFixture], [{ ...citationFixture, source_anchor: "1-the-canon-deconstructed" }], "fixture"), /retargets protected copy denylist citation/);
-if (!historyPathEverExisted("HEAD", "design/research/social-spaces.md")) throw new Error("tracked citation history fixture was not found");
-if (historyPathEverExisted("HEAD", "design/research/wc3-custom-ecosystem.md")) throw new Error("never-committed citation fixture unexpectedly exists in history");
+if (!historyPathEverExisted("HEAD", "design/00-vision.md")) throw new Error("tracked citation history fixture was not found");
+if (historyPathEverExisted("HEAD", "design/research/fixture-never-committed.md")) throw new Error("never-committed citation fixture unexpectedly exists in history");
 const verifiedFixture = { claim_id: "fixture.verified", source_file: "design/research/speedrun-governance.md", source_anchor: "31-the-taxonomy-and-how-it-proliferates", status: "verified", source_urls: ["https://example.invalid/source"] };
 expectFailure("verified provenance mutation history fixture", () => assertVerifiedClaimsStable([verifiedFixture], [{ ...verifiedFixture, source_anchor: "changed" }], "fixture"), /mutates or removes verified provenance claim/);
+assertVerifiedClaimsStable([verifiedFixture], [{ ...verifiedFixture, source_file: "design/research/provenance-extracts.md", source_anchor: "changed" }], "fixture", () => true);
+expectFailure("verified provenance status-mutation-under-escape fixture", () => assertVerifiedClaimsStable([verifiedFixture], [{ ...verifiedFixture, source_anchor: "changed", status: "attributed" }], "fixture", () => true), /mutates or removes verified provenance claim/);
 
 for (const fixture of ["100%", "$12", "12$", "12€", "12 EUR", "12 ppm", "12 days", "1995"]) {
   if (!containsStatistic(fixture)) throw new Error(`statistic detector missed ${fixture}`);

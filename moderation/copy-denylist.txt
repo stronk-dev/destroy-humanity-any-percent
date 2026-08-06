@@ -1,8 +1,8 @@
-# source: design/research/lane-pusher-design.md#9-legal-safe-vs-fictionalise
+# source: design/research/provenance-extracts.md#legal-denylist-third-party-marks
 blizzard
-# source: design/research/social-spaces.md#6-legal-safe-vs-fictionalize
+# source: design/research/provenance-extracts.md#legal-denylist-third-party-marks
 club penguin
-# source: design/research/social-spaces.md#6-legal-safe-vs-fictionalize
+# source: design/research/provenance-extracts.md#legal-denylist-third-party-marks
 habbo
-# source: design/research/social-spaces.md#6-legal-safe-vs-fictionalize
+# source: design/research/provenance-extracts.md#legal-denylist-third-party-marks
 neopets

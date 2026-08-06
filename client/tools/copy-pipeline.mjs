@@ -533,10 +533,18 @@ export function assertDenylistRecordsStable(before, afterRows, label, canCorrect
   }
 }
 
-export function assertVerifiedClaimsStable(before, afterRows, label) {
+export function assertVerifiedClaimsStable(before, afterRows, label, canRetargetUnpublishedSource = () => false) {
   const after = new Map(afterRows.map((claim) => [claim.claim_id, claim]));
   for (const claim of before.filter((row) => row.status === "verified")) {
-    if (JSON.stringify(after.get(claim.claim_id)) !== JSON.stringify(claim)) throw new Error(`${label} mutates or removes verified provenance claim ${claim.claim_id}`);
+    const next = after.get(claim.claim_id);
+    if (JSON.stringify(next) === JSON.stringify(claim)) continue;
+    // Amendment A1 (2026-08-06): the research-unpublication migration. A verified claim may be
+    // RETARGETED (source_file/source_anchor only; id/status/urls immutable) iff its old source is an
+    // unpublished design/research path absent from the compared commit's tree.
+    const retargetOnly = next !== undefined
+      && JSON.stringify({ ...next, source_file: claim.source_file, source_anchor: claim.source_anchor }) === JSON.stringify(claim);
+    if (retargetOnly && claim.source_file.startsWith("design/research/") && canRetargetUnpublishedSource(claim)) continue;
+    throw new Error(`${label} mutates or removes verified provenance claim ${claim.claim_id}`);
   }
 }
 
@@ -572,10 +580,10 @@ export function verifyAppendOnlyHistory() {
         if (filename.endsWith("copy-denylist.txt")) {
           const before = validateDenylistRecords(git("show", `${parent}:${filename}`), `${parent}:${filename}`, { resolveSources: false });
           const after = validateDenylistRecords(git("show", `${commit}:${filename}`), `${commit}:${filename}`, { resolveSources: false });
-          assertDenylistRecordsStable(before, after, `commit ${commit}`, (record) => !historyPathEverExisted(parent, record.source_file));
+          assertDenylistRecordsStable(before, after, `commit ${commit}`, (record) => !historyFileExists(parent, record.source_file));
         } else {
           const before = parseHistoricalJSON(parent, filename).claims;
-          assertVerifiedClaimsStable(before, parseHistoricalJSON(commit, filename).claims, `commit ${commit}`);
+          assertVerifiedClaimsStable(before, parseHistoricalJSON(commit, filename).claims, `commit ${commit}`, (claim) => !historyFileExists(parent, claim.source_file));
         }
       }
     }
@@ -583,11 +591,11 @@ export function verifyAppendOnlyHistory() {
   if (historyFileExists("HEAD", "moderation/copy-denylist.txt")) {
     const before = validateDenylistRecords(git("show", "HEAD:moderation/copy-denylist.txt"), "HEAD denylist", { resolveSources: false });
     const after = validateDenylistRecords(readFileSync(path.join(repositoryRoot, "moderation/copy-denylist.txt"), "utf8"), "worktree denylist");
-    assertDenylistRecordsStable(before, after, "worktree", (record) => !historyPathEverExisted("HEAD", record.source_file));
+    assertDenylistRecordsStable(before, after, "worktree", (record) => !historyFileExists("HEAD", record.source_file));
   }
   if (historyFileExists("HEAD", "copy/provenance.v1.json")) {
     const before = parseHistoricalJSON("HEAD", "copy/provenance.v1.json").claims;
-    assertVerifiedClaimsStable(before, readJSON(path.join(repositoryRoot, "copy/provenance.v1.json")).claims, "worktree");
+    assertVerifiedClaimsStable(before, readJSON(path.join(repositoryRoot, "copy/provenance.v1.json")).claims, "worktree", (claim) => !historyFileExists("HEAD", claim.source_file));
   }
 }
 

@@ -3,8 +3,7 @@
 - **Status:** implemented
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
-- **Design refs:** `design/08` (the flavor bible — voice rules, era presentation, the tonal law), `design/11` (UX writing, first-session), the research-provenance conventions (`design/research/README.md`)
-- **Research:** the whole flavor corpus; `gaming-enshittification.md §6` + `societal-satire.md` (voice), all `[V]/[M]` provenance discipline
+- **Design refs:** `design/08` (the flavor bible — voice rules, era presentation, the tonal law), `design/11` (UX writing, first-session), the research-provenance conventions (`design/research/README.md` — **the research corpus is internal and unpublished; references to it in this RFC are functional system inputs and intentionally unresolved in the public tree**)
 - **Depends on:** implemented client/tooling foundations only (C1 ruling)
 - **Unblocks:** UI Foundation (UF3 consumes this artifact), all content RFCs' copy
 - **Owner ruling honored:** breadth-first — the copy SYSTEM (keys, artifact, lints), not the copy.
@@ -39,9 +38,10 @@ to a deterministic warning report because copy may legitimately precede its cont
 ### CP3 — The legal lint (the tonal law, mechanical)
 
 - **No-🔴-names:** the copy linter greps every string against the maintained denylist of
-  trademarked/protected names from the research legal matrices (Neopets, Habbo, Blizzard marks,
+  trademarked/protected names from the internal research legal matrices (third-party marks,
   real living individuals in a mocking frame…). A 🔴 term in shipped copy fails CI. The denylist
-  is `moderation/copy-denylist.txt`, sourced from the research files' legal-axis tables,
+  is `moderation/copy-denylist.txt` (the in-repo canonical artifact), sourced from the internal
+  research files' legal-axis tables,
   extend-only.
 - **Provenance enforcement:** the deliberately narrow detector covers literal numbers adjacent
   to `%`, configured currency/unit tokens, and historical four-digit years. Placeholders are
@@ -280,3 +280,25 @@ The package has no Svelte dependency so UI consumes it without owning it.
   append-only denylist; unauthenticated review flag removed; separate copy identity and root CI
   gates. Accepted for implementation.
 - 2026-08-03: Codex acceptance review recorded C1–C10; owner adopted all ten contracts.
+- 2026-08-06: non-normative reference cleanup for publication; the internal research corpus is marked unpublished (functional provenance references intentionally unresolved). No spec change.
+
+## Amendment A1 — the research-unpublication migration (2026-08-06, owner ruling)
+
+The internal research corpus became unpublished (untracked, local-only). Two contract changes keep
+the shipping gates sound without it:
+
+1. **The tracked provenance source is `design/research/provenance-extracts.md`** — a publishable,
+   append-only extracts file (claim-anchored facts + public HTTPS sources; a gitignore negation
+   keeps it tracked inside the otherwise-ignored directory). Denylist rows and provenance claims
+   cite it.
+2. **A narrow retarget escape in the stability guards:** a verified provenance claim (and a denylist
+   citation) may be RETARGETED — `source_file`/`source_anchor` only; `claim_id`/`status`/
+   `source_urls` remain immutable — iff the old source is a `design/research/` path ABSENT from the
+   compared commit's tree (`historyFileExists`), i.e. exactly the unpublication migration. All other
+   mutation/removal remains forbidden; the history walk applies the same rule per commit. The
+   tracked/never-committed self-test fixtures are re-grounded on filter-stable paths
+   (`design/00-vision.md`; the reserved `design/research/fixture-never-committed.md`).
+
+Guard intent preserved: while a source is tracked, retargeting is still an error; the escape opens
+only when the cited source has actually been withdrawn from the tree.
+- 2026-08-06: Amendment A1 — research-unpublication migration (tracked extracts file + narrow retarget escape).

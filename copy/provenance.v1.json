@@ -3,8 +3,8 @@
   "claims": [
     {
       "claim_id": "speedrun.category_taxonomy",
-      "source_file": "design/research/speedrun-governance.md",
-      "source_anchor": "31-the-taxonomy-and-how-it-proliferates",
+      "source_file": "design/research/provenance-extracts.md",
+      "source_anchor": "speedrun-category-taxonomy",
       "status": "verified",
       "source_urls": [
         "https://en.wikipedia.org/wiki/Speedrun"
