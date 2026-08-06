@@ -54,7 +54,7 @@ You start as a sole proprietor in the last good year of the internet. You own yo
 ## Anti-goals (the trap list)
 
 - No IAPs, no ads, no NFTs — not even ironically functional ones.
-- No anti-idle hazards (The Last Meadow's sin) — inattention is a build, not a failure.
+- No anti-idle hazards (The Last Meadow's sin) — inattention is a build, not a failure. **Refined 2026-08-05: the constraint is on *consequences*, not on interaction. What is barred is a net *loss* inflicted on a player for being offline — not offline interaction itself. An asymmetric mechanic where an active player acts against your absent snapshot is permitted as long as your side loses nothing: loss-decoupled defense, the Clash "Clash Anytime" clone-base model (attacker earns rewards from a clone; the defender loses no resources/standing). This is why offline raiding was rejected in its naive form (real defender loss) but a loss-decoupled form is on the deferred list, not banned.** "No FOMO with real costs" (§pillar 6) is thus a balance target — zero net cost to the absent player — not a prohibition on the mechanic.
 - No wiki-dependence by design (IdleOn's sin) — if optimal play needs an external tool, build the tool into the game (the Cookie Clicker FtHoF-predictor lesson).
 - No softcaps — hardcaps with visible numbers (Paper Pilot).
 - No global milestones without throughput telemetry (Clash of Clans burned all five tiers in 48 hours).

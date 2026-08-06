@@ -66,3 +66,25 @@ The full Almanac §6 parody suite (`research/gaming-enshittification.md`), imple
 ## 6. Rendering
 
 Cattery's CSS-only sprite system reused: nested-div creatures styled by custom properties, data-attribute poses, zero image assets, infinitely recolorable, `prefers-reduced-motion` respected. Physics/steering primitives (drag, cursor avoidance, nudgeToward) reused for the house/world ambience. Ambient event system (birds at the window, a bulldozer passing — escalating with tiers to drone deliveries and protest marches) reused for life.
+
+
+## Neopets teardown adoptions (2026-08-01, `research/neopets-systems.md §3`)
+
+- **No-death confirmed as genre canon**: 26 years of dormant accounts reactivating to living
+  pets is their most-cited return reason — neglect stays public awkwardness (guild-visible pet
+  status), never loss.
+- **The Lab Ray shape**: one-time expensive consumed unlock → one daily RNG zap forever, with
+  real but grind-reversible downsides — infinite retention from a single sink. Ours:
+  "Experimental Cloud Migration" ray. No published odds on fun-RNG; exact odds on anything
+  monetization-shaped (compliance line).
+- **Breakpoint step tables** for battle stats (their strength table: a point at 54 worthless, at
+  55 +33%) — legible breakpoints are community-teachable builds; adopt for pet training atop the
+  hardcapped ceilings (breakpoints choose WHERE inside the cap to sit, options not power).
+- **Training consumes a RANDOM market item** (their codestones) — keeps an item-market segment
+  liquid; time-as-cost brackets (2 h → 24 h) are idle-native; a scaffold stat gates the rest
+  (their 2×-level rule).
+- **Ship the player-invented brackets day one**: their community self-organized stat-band
+  ("League") and loadout-budget ("Set-Cap") battling because the operator never shipped
+  fairness bands — ours are first-class (`05 §4`).
+- **A deliberately useless permanent nesting layer** (their petpetpets): pure-status deep
+  nesting as comedy + burn. The pet's pet's pet does nothing, forever, and that's the joke.

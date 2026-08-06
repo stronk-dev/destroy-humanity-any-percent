@@ -107,3 +107,40 @@ Launch set:
 - **The war log:** every GM intervention is publicly logged in-fiction ("Head Office adjusted regional demand"). Opacity → meta-narrative; the Helldivers "the war is a lie" backlash is designed out by radical disclosure.
 - **Watchdogs:** every event/situation has a max lifetime, a forced-resolution path, and an alarm (GW2's stuck-event bug is the #1 operational risk for this genre of system).
 - **Telemetry-first thresholds:** all collective-objective numbers are set from measured throughput with uncertainty margins, tunable mid-event via the (logged) dials.
+
+
+## Neopets plot adoptions (2026-08-01, `research/neopets-social-history.md §1`)
+
+- **The plot-point prize shop** joins the contribution-reward toolbox alongside GW2 medals and
+  the impact modifier: scored actions fill a plot wallet; a one-time shop opens at arc's end;
+  players CHOOSE prizes (collectors/battlers/merchants buy differently); ops tunes economy
+  injection by pricing after seeing participation. Adopted as the default reward surface for
+  Layer-3 arcs.
+- **Individual completion, communal solving**: at least one puzzle per major arc hard enough to
+  REQUIRE community collaboration (their Lost Desert model) — the third contribution mode beside
+  aggregate meters and personal rank; shared bewilderment is the social engine, and our
+  no-free-text boards get structured "theory" posting surfaces for it.
+- **Tiered war waves** (weak/medium/strong brackets) so every build contributes to fight-shaped
+  arcs — already consonant with our contribution-window law.
+- **The evergreen conversion** (their Altador model): each retired seasonal arc converts to a
+  permanent self-paced quest — event content becomes onboarding content, the anti-FOMO answer to
+  "I missed it."
+- **One annual immovable ritual tournament** (their Cup ran 20 years including through the
+  drought): identity-based team join, low-floor participation, support games for non-twitch
+  players — and their 2026 flat-threshold reform (250/500/1,000 points, no All-Star grind
+  ladder) is the version we adopt from day one.
+- **The plot drought is the satire**: the in-fiction event pipeline gets "defunded" while the
+  in-fiction cash shop ships weekly — played straight, per the enshittification arc.
+
+
+## The Black Sunday doctrine (adopted 2026-08-01, `research/kol-puzzle-pirates.md §A2`)
+
+KoL's 2004 hyperinflation exploit was fixed WITHOUT a rollback: an in-fiction collections agency
+(the Penguin Mafia) confiscated bug-currency, and pre-authored vanity sinks — including a
+1-billion-meat item that was "a completely useless accessory meant only to be a symbol of
+shameful prestige" — drained the rest over months. Adopted as our economy-incident doctrine: a
+pre-authored **"Billing Anomaly" event kit** (in-fiction collections NPC + shameful-prestige
+sink SKUs) ships WITH the economy, so the answer to a live exploit is narrative + sinks, with
+rollback as the last resort the deterministic ledger makes possible but the community never
+prefers. Gaia's counter-example (sink events as theater while faucets kept selling) defines the
+failure mode: our incident sinks must never coexist with an open faucet.

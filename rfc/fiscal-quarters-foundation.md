@@ -1,9 +1,8 @@
 # RFC: Fiscal Quarters Foundation (the wall-clock meta-currency)
 
-- **Status:** accepted — F1-F8 ruled; implementation recheck blocked on F9-F15 (exact catalog and
-  multiplier rows, seed derivation, compound sweep/rejection semantics, immutable run contribution
-  storage, v19 initialization wire, exact Founder envelopes, and the Quarter→offer owner). Founder
-  v19.
+- **Status:** accepted — F1-F15 ruled (exact artifact rows, runidentity/Substream seed, the compound
+  Founder-command wrapper, `run_frozen_contributions` storage with NO Company bump, v19 save shape,
+  byte-enumerated wire, Prestige-offer scope split); implementing. Founder v19.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
 - **Design refs:** `design/02 §5` (Fiscal Quarters — the CpS-immune clock: the Earnings Call ripens on
@@ -504,3 +503,82 @@ material scope increase.
 
 Until F9-F15 are ruled and reconciled into FQ1-FQ6, implementation would invent persistence and
 wire semantics. The accepted F1-F8 gameplay decisions remain intact.
+
+## Owner rulings on F9-F15 (2026-08-06) — the exact persistence/wire under F1-F8
+
+All accepted (Codex's proposed contracts are executable and sound). Owner-calls: F11, F15.
+
+- **F9 — accepted (exact artifact rows).** Root `{schema_version:1, clock_policy, credit_policy,
+  hoard_policy, generator_level_rows, unlock_rows}`. `clock_policy {early_ms, guaranteed_ms, auto_ms,
+  early_success_ppm}`; `credit_policy {credit_per_period, hardcap, hardcap_reason_key}` with
+  `credit_per_period ≤ hardcap`; `hoard_policy {ppm_per_credit, cap_credits, slot, source_id,
+  target=all}`; generator rows raw-byte-sorted exact `{generator_id, ppm_per_level, level_hardcap,
+  hardcap_reason_key, slot, source_id}` (target = own ID); unlock rows raw-byte-sorted `{unlock_id,
+  cost}`. Slot/source/target must match a multiplier-source declaration in the SAME economy artifact.
+  Factors Decimal-exact `1 + min(credit,cap_credits)*ppm_per_credit/1e6` and `1 +
+  level*ppm_per_level/1e6`, canonical-quantized once. Shared Go/TS mutation corpus.
+- **F10 — accepted (exact seed derivation).** `base = runidentity.Seed(founder_id, fiscal_period_seq)`
+  (UTF-8 founder ID, SHA-256, first eight bytes big-endian, xor uint64 seq); draw =
+  `determinism.Substream(base, "fiscal.early_harvest.v1").Bound(1_000_000)`; the TS port is the
+  byte-identical SHA-256/FNV-1a/SplitMix64/rejection-sampling sequence. Shared vectors: seq 0, seq 1, a
+  high safe-int seq, and both sides of the `early_success_ppm` comparison. (This pins F2's "how".)
+- **F11 — RULED (the compound envelope).** Under active Fiscal v19 EVERY Founder command returns one
+  exact wrapper `{intent_id, outcome, founder_revision, fiscal_sweep, action}`. `fiscal_sweep` is null
+  or `{periods, credit_before, credited, credit_after, opened_before_ms, opened_after_ms, seq_before,
+  seq_after, saturated, hardcap_reason_key}`. **If the sweep is non-null the OUTER outcome is `applied`
+  and the revision commits even when `action.outcome == rejected`** — this preserves "rejected action =
+  no action state change" at the ACTION level while the time-based sweep (a valid independent
+  sub-transition) commits; it does NOT add rejected-with-mutation semantics to the save store (that
+  weakens a project-wide invariant — rejected). The automatic event emits before an applied action's
+  events. A harvest after its own pre-action sweep uses action outcome `consumed_by_auto` and closes no
+  further period. With no sweep, existing applied/rejected semantics are unchanged.
+- **F12 — accepted (frozen contributions; NO Company save bump).** Add immutable
+  `run_frozen_contributions` rows keyed `(company_stream_id, run_seq, source_id)` with
+  `{slot, target, factor}` + a deferrable link to the run pin/genesis. New-Founder creation and Exit
+  write the COMPLETE set in the same transaction as genesis; an immutability trigger rejects
+  update/delete. A composed `ContributionProvider` reads only these run-keyed rows at the current
+  Company revision identity, and the existing replay-input contribution array carries the same bytes
+  into `ApplyLogged` — so live play has NO Founder read, replay has NO DB read, mid-run Fiscal changes
+  can't alter the run, and **the Company save axis is untouched (no v-bump)**. Fault injection covers
+  genesis-without-rows and rows-without-genesis; retry requires byte-identical rows. (This is F4's
+  freeze-at-genesis made concrete.)
+- **F13 — accepted (Founder v19 exact save shape).** v19 appends `fiscal_credit`,
+  `fiscal_period_opened_wall_ms`, `fiscal_period_seq`, `fiscal_generator_levels` (a COMPLETE object
+  keyed by every artifact generator row, zero-or-capped), `fiscal_unlocks` (raw-byte-sorted unique,
+  artifact unlock IDs only). Activation initializes `{credit:0, opened:logged_server_ms, seq:0,
+  all_levels:0, unlocks:[]}` from the recorded Founder-command timestamp (Exit) / genesis timestamp
+  (New Founder). Pre-v19 has NONE of these; v19 requires ALL; presence iff floor ≥ 19 (requires
+  minigames+pets).
+- **F14 — accepted (byte-enumerated wire).** Harvest request `{intent_id,kind,expected_revision}`;
+  spend `{intent_id,kind,expected_revision,target}` with target ∈ `{kind:"generator_level",
+  generator_id,levels}` | `{kind:"unlock",unlock_id}`. Resolved harvest exact `{kind,now_wall_ms,
+  period_opened_wall_ms_before,periods_swept,seq_before,draw_ppm,outcome}` (draw nullable only outside
+  the risky manual window; outcome ∈ `auto_reported|early_succeeded|early_failed|guaranteed|
+  consumed_by_auto|rejected`); resolved spend `{kind,target,resolved_cost}`. The action receipt + two
+  event payloads enumerate from these fields inside F11's wrapper; shared vectors compare raw
+  state/receipt/event-order.
+- **F15 — RULED (scope split; Prestige amended).** This foundation emits the immutable
+  `fiscal_period_harvested.v1` FACT only; **Quarter-triggered offer-spawning is routed to a successor
+  multi-stream/event-consumer RFC** (Fiscal does NOT become Exit-style multi-stream now — that's a
+  material scope increase, rejected). `rfc/prestige-and-exits.md`'s "offer spawn at Quarter harvests"
+  wording is amended to name that successor dependency (done in the same edit — the reconcile-the-body
+  law across RFCs).
+
+F9-F15 fully ruled. FQ3/FQ4/FQ6 are refined (not contradicted) — the exact rows/seed/wire are additive
+enumerations of the F1-F8 shapes. Numbers stay data.
+
+## Correction to F11 (2026-08-06) — aligned with Active-Play A11: ROLLBACK, not the wrapper
+
+Active-Play A11 surfaced that the F11 compound-wrapper (sweep commits even when the action rejects,
+via a universal `{outcome, fiscal_sweep, action}` envelope on every Founder command) is
+over-engineered and inconsistent with the project-wide "rejected intent = no state change" invariant.
+**REVISED: the auto-sweep is part of the ordinary applied command and ROLLS BACK with any semantic
+rejection** — nothing is lost, because the sweep is deterministic (`n = floor((now−opened)/auto_ms)`)
+and re-triggers on the next APPLIED command (`opened`/`fiscal_period_seq` advance only on commit). An
+APPLIED command that swept records the sweep in its resolved arm/receipt (`fiscal_sweep`: periods,
+credit deltas, opened/seq before/after — for replay/transparency); a REJECTED command records NOTHING
+and re-triggers next time. There is NO "outer applied / inner rejected" compound outcome and NO
+universal wrapper on every command. F14's receipts simplify accordingly (the harvest is always an
+applied outcome; other commands carry a nullable `fiscal_sweep` arm only when they actually swept).
+This supersedes the F11 wrapper's commit-under-rejection clause; the rest of F11 (the sweep math,
+`consumed_by_auto`, phase preservation) stands.

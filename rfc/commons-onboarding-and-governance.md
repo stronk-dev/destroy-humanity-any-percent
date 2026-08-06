@@ -63,7 +63,7 @@ yet exist.
 
 ## DESIGN-GAPs blocking acceptance (Codex review, 2026-07-29)
 
-**Status ruling (2026-07-29): explicitly BLOCKED-ON-OWNER — do not implement.** Blocker #1 is
+**Status ruling (2026-08-03): UNBLOCKED — every owner contract now exists.** Original 2026-07-29 ruling preserved below for the record; the six blockers are answered in the new contracts section. Blocker #1 is
 one-third answered (`account-and-session-bootstrap.md` now owns identity; transport's contracts are
 answered T1–T6). The remaining owners — **faction/incorporation model** and **guild model** — are not
 drafted, and blockers #2–#5 all hang off them. This RFC stays out of the implementable queue until
@@ -87,11 +87,48 @@ exists at all).
    add a source-fingerprint/parity test; “renders every formula” must not create a second hand-written
    formula authority.
 
+## Executable contracts (answering the six blockers, 2026-08-03 — all owners now implemented)
+
+1. **Owner contracts (blocker #1): closed.** Account/session (implemented), faction/incorporation
+   (implemented — F2's compact binding + F2a's tithe-raise), guild model (implemented — G3's
+   Health term, GD3-1's evaluation-based activity), transport (implemented — wire v2, event
+   relay). This RFC now binds to real seams only.
+2. **Incorporation contract (blocker #2):** the Compact line item renders on the incorporation
+   sheet for every faction; `sign`/`decline` at any time from Tier 0 (signing = the existing
+   `sign_compact` intent; the incorporation-time render is UI convenience, not a separate path);
+   Open Source auto-sign and the existing-member tithe-raise are the implemented F2/F2a paths —
+   fixtures consume them, nothing new. Decline persists as a visible affordance (client state,
+   re-render each run).
+3. **Ballot protocol (blocker #3), executable:** monthly in server time = the FIRST accrual
+   boundary on or after 00:00 UTC on the 1st opens a 72-hour window (window identity =
+   `(cohort_id, year, month)`, restart-safe because it derives from the calendar, not a timer).
+   Ballot = `cast_tithe_ballot {window_id, direction}` intent, `direction ∈ {lower, hold,
+   raise}` (direction-only — the design's law), one per Founder per window (idempotency by
+   window in the intent record), eligibility = compact member at cast time. Resolution at
+   window close: plurality; tie → `hold`; result event `tithe_ballot_resolved {window_id,
+   tally, direction, new_tithe_ppm}` with the band-clamped step (`ballot_step_ppm` catalog
+   literal, 10_000) applying at the next accrual boundary after the event. Epoch changes
+   mid-window: the window completes under its opening epoch's band (windows are short;
+   the pin rule is the run rule).
+4. **Snapshot/event surface (blocker #4):** the cohort panel consumes exactly: `cohort` scope
+   snapshots (existing schema), `compact_sampled`/`compact_left`/collapse/recovery/recruitment
+   events (existing kinds), and the generated formula artifact — enumerated, closed, nothing
+   new; recovery ordering is the wire-v2 cursor contract (no special case).
+5. **Guild contribution boundary (blocker #5):** implemented (G3 + GD3-1 + the membership-period
+   clearing rules); this RFC renders it, never recomputes.
+6. **Formula UI (blocker #6):** the panel renders the SHIPPED generated artifact verbatim with
+   its source fingerprint displayed; a parity test asserts the rendered bytes equal the artifact
+   (no second authority — the blocker's own demand, now testable).
+
+Client scope: the cohort panel, incorporation sheet, and ballot card join the Game-UI RFC's
+second screen set (same U2 wire-only contract).
+
 ## Changelog
 
 - 2026-07-29: split from Commons Compact during implementation review so missing client/governance
   dependencies remain explicit rather than improvised or falsely marked shipped.
 - 2026-07-29: updated implemented dependencies; Codex acceptance review confirmed six blocking
   contracts, including the RFC's existing ballot gap.
+- 2026-08-03: UNBLOCKED — all six blockers answered against the implemented owner contracts; calendar-derived ballot windows, direction-only voting, band-clamped steps.
 - 2026-07-29: ruled blocked-on-owner (faction/incorporation + guild RFCs); account/session and
   transport dependencies now answered.

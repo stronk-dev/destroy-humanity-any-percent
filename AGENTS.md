@@ -81,6 +81,31 @@ These are settled. Do not "improve" them without explicit sign-off from Marco:
   commit range it consumed. Those cited ranges must union to the full implementation span being
   archived; uncovered edge commits remain unreviewed even when later dependent commits passed.
 
+- **Two review gates, both mandatory before archival (resolved 2026-08-05, owner ruling — option
+  c).** These are independent and BOTH required; neither substitutes for the other:
+  (a) **Range-union binds every review, delegated ones included.** A delegated or self review's
+  cited commit ranges must union to the full implementation span it claims to approve. An approval
+  that does not cover the span does not count *for the uncovered commits* — a green checkmark over a
+  range it never inspected is not coverage.
+  (b) **A designated independent adversarial pass is a mandatory archival gate.** No batch is
+  archival-eligible until a designated reviewer (not the implementer, not a delegated first-filter)
+  has adversarially reviewed it and its verdict cites the exact reviewed range. This holds
+  regardless of any delegated approval. The delegated/self review is a first filter that catches
+  cheap defects early; the designated pass is the gate that makes "approved" mean something.
+  Instituted after 8 consecutive batches in which the designated pass was the only review actually
+  covering the implemented range.
+  (c) **The designated pass is CROSS-PARTY: it is run by the OTHER agent (Claude reviews Codex's
+  implementations; Codex reviews Claude's RFC/design commits) — resolved 2026-08-06, owner ruling.**
+  A reviewer the IMPLEMENTER runs on its own side — however adversarial, and whatever it is named
+  (e.g. an in-house `Darwin`/independent-review tool) — is a self/delegated first-filter, NOT the
+  designated pass, and MUST NOT be recorded as it. **The implementer NEVER archives on its own
+  review.** It hands off "ready for designated review + archival" and waits for the cross-party
+  reviewer's verdict; only then does the archival move (status→implemented, move to `archive/`, docs
+  canonical) happen. Instituted after the Relevance Harness was archived on a `Review by: Darwin,
+  Recorded by: Codex` verdict — a recorder-relabeled delegated review — bypassing the cross-party
+  gate; a retroactive Claude-side pass validated the code, but the archival was procedurally
+  premature.
+
 - **Language/tooling:** Go code passes `gofmt` + `go vet`; TS is strict-mode; tests accompany every non-trivial change. The golden-vector suite and (once it exists) the balance-harness pacing targets are acceptance gates.
 - **Small, reviewable changes.** One system per PR/commit. Reference the design doc section your change implements in the commit message (e.g. `economy: implement generator cost curve (design/02 §2.1)`).
 - **Player-facing text** follows the flavor bible voice rules; any real-world statistic must come from the research files, and anything on a research file's "verify before shipping" list must be flagged, not shipped as fact.
@@ -101,7 +126,12 @@ useful batches instead of asking for permission one invocation at a time:
 
 A plan checkbox (`[x]` in planning/*/plan.md) may flip only in a commit that carries the test
 exercising the claimed behavior — a flipped box with no test is a review finding of the same
-severity as an unreviewed archive.
+severity as an unreviewed archive. **Refinement (2026-08-05): the impl+record two-commit pattern is
+permitted** — the box may flip in a same-range planning/record commit PROVIDED the exercising test
+already landed in an earlier commit of the SAME designated-review range. The intent of the rule is
+to forbid a "done" claim with no proof anywhere in the reviewed span; it is not violated when the
+proof demonstrably exists one commit earlier in the same range. A flip whose exercising test is
+absent from the entire reviewed range remains a high-severity finding.
 
 History rewriting (rebase/amend of committed work) is permitted for exactly one purpose: correcting
 a protocol-violating commit — a wrong subject (`BALANCE-CHANGE:`/`CONSTANTS-IDENTITY:`

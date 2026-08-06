@@ -1,12 +1,9 @@
 # RFC: Soul Foundation (the personal ledger)
 
-- **Status:** accepted — SB1-SB9 ruled; implementation blocked on SB10-SB16 plus Fiscal F9-F15.
-  The pure catalog/band layer also awaits the exact schema in SB10. Historical SB1-SB9 summary:
-  v20 ACTIVATES the existing field, debit-as-component-in-owner-
-  transition, full-debit affordability, real touch-grass activity with production-suppression, visible
-  published meter, dated `soul.depleted` ending fact, routed correlation gate). Implementation
-  DEPENDENCY-BLOCKED on Fiscal v19 being implemented (SB9); pure Soul catalog/band functions may land
-  earlier.
+- **Status:** accepted — SB1-SB16 ruled (exact artifact, soul_exhausted_source_ids eligibility, the
+  ApplyDebit component, touch-grass `soul_recovery_sessions` with NO Company bump, human-content
+  classification, v20 activation+wire). Implementation DEPENDENCY-BLOCKED on Fiscal v19 being
+  implemented; the pure catalog/band layer may land earlier.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
 - **Design refs:** `design/02 §8` (Soul — the personal ledger, distinct from the moral Trust axis;
@@ -508,3 +505,69 @@ SB10-SB15 close, SB16 cannot honestly be implemented.
 Until SB10-SB16 and Fiscal F9-F15 are ruled, only conceptual package boundaries are known. Shipping a
 catalog or activity now would invent persistence and cross-stream semantics despite the explicit
 DESIGN-GAP law.
+
+## Owner rulings on SB10-SB16 (2026-08-06) — exact schema/state/lifecycle/wire under SB1-SB9
+
+All accepted (Codex's proposed contracts are sound). Owner-calls: SB11, SB13.
+
+- **SB10 — accepted (exact Soul artifact).** Root `{schema_version:1, policy, bands, debit_sources,
+  recovery_activities, ending_policy}`. `policy {soul_floor, soul_initial, soul_max}`. `bands` = a
+  value-ordered COMPLETE array of `{band_member, min_inclusive, max_inclusive, human_content_locked,
+  reason_key}` over closed members `whole|dimming|hollow|near_zero`, contiguous + non-overlapping +
+  covering `[floor,max]`, ONLY `near_zero` locked. `debit_sources` raw-byte-sorted `{source_id,
+  owner_kind, amount, may_exhaust, single_use, curtain_copy_key}` with the biconditional `may_exhaust ==
+  single_use`; fixture owner_kind only outside epoch-seeded artifacts. `recovery_activities`
+  raw-byte-sorted `{activity_id, duration_attended_ms, recovery_amount, reason_key}`. `ending_policy
+  {whole_variant, depleted_variant}` over closed IDs. All checks byte-identical Go/TS.
+- **SB11 — RULED (once-only eligibility state).** Persist a raw-byte-sorted `soul_exhausted_source_ids`
+  set in Founder v20, limited to catalog rows with `may_exhaust:true`; the debit component INSERTS on
+  the same atomic transition and rejects `not_eligible/soul_source_consumed` thereafter. This is
+  current-eligibility state, NOT a second Soul balance/history authority (history stays in the Founder
+  log).
+- **SB12 — accepted (the debit component API).** Export a pure `ApplyDebit(state, artifact, {source_id,
+  owner_kind, eligibility_ref}) -> {soul_before, debit, soul_after, band_before, band_after,
+  curtain_copy_key, depleted_first_time}`. It validates owner, full affordability, once-only state, and
+  canonical bands; the OWNER transition supplies + persists its eligibility reference and benefit
+  atomically. Event order: the owner's benefit event FIRST, then `soul_price_paid.v1`, optional
+  `soul_band_changed.v1`, and ONLY on the first exact-floor debit `soul_depleted.v1` + insert
+  `soul.depleted` into the Founder `LedgerFactKinds` in that same transaction (SB7's dated fact).
+  Exercise via a package-private test entrypoint — NEVER a production parser kind (that would ship the
+  forbidden standalone rail).
+- **SB13 — RULED (touch-grass suppression: NO Company save-version bump — the Fiscal-F12 pattern).** A
+  Postgres `soul_recovery_sessions` lifecycle (patterned on minigames, a SEPARATE table — NOT Company
+  save state) plus an immutable resolved **suppression segment frozen into the affected Company
+  command's `replay_inputs`**. So — exactly like Fiscal F12's frozen contributions — the Company save
+  axis is UNTOUCHED (no v19): the session is a separate table, the zero-output segment is a
+  replay-input, and resolve advances the EXISTING `evaluated_through` over the suppression interval. While
+  a session is active, ordinary Company intents reject `not_eligible/exclusive_activity` (a
+  session-existence check, not save state). Start + resolve are Company+Founder transactions under the
+  **ratified Founder-then-Company lock order** (C38).
+- **SB14 — accepted (lifecycle); lock order corrected to Founder-then-Company.** Start creates exactly
+  ONE active session per founder (records Founder+Company stream/revision/run coordinates, activity ID,
+  attended start, required duration, claim-token state) and rejects if another exclusive session exists.
+  Attended time uses the race-safe Founder attendance resolver and PAUSES OFFLINE. Early resolve rejects
+  without mutation; eligible resolve claims, then locks **Founder-then-Company** (the ratified order —
+  correcting SB14's "Company→Founder" wording), validates unchanged run/session identity, and atomically
+  commits the zero-output suppression segment, saturating recovery, both replay logs, receipts/events,
+  and terminal session state. Identical retry replays; expired claim leases recover. Cancel (before
+  resolution) grants ZERO Soul, ends suppression at the cancel coordinate, never backfills output. Exit
+  REJECTS while a session is active (recommended — avoids a three-outcome terminal transaction) unless a
+  successor defines cancel-on-Exit. Reconnect resumes the same row.
+- **SB15 — accepted (human-content gating classification).** Extend the pinned minigame artifact with a
+  closed `soul_gate: human_hobby|unrelated` field and pet action rows with `soul_gate:
+  essential|recovery|ordinary`. The Soul package exports ONLY `HumanContentLocked(soul, artifact)` +
+  band projection. A composed Founder-state resolver supplies the pinned Soul snapshot/bundle to
+  minigame-start and pet eligibility; at `near_zero`, `human_hobby` minigames and `ordinary` pet actions
+  reject `not_eligible/human_content_locked`, while `unrelated`, `essential`, and `recovery` paths remain
+  available. Artifact cross-validation refuses gated consumers unless the same bundle pins Soul.
+- **SB16 — accepted (v20 activation + wire); stays dependency-blocked on Fiscal v19 impl.** After Fiscal
+  v19 is implemented, Founder v20 RETAINS the existing `soul` key but changes its validation to
+  `[floor,max]` and appends only the ruled eligibility (`soul_exhausted_source_ids`) / activity-owned
+  state. Soul artifact presence biconditional with Founder floor 20, requires fiscal+minigames+pets;
+  Company rejects v20. Exit/New-Founder activation resolves `{soul_initial, band_member}` from the pinned
+  bundle into the Founder log; pre-v20 rejects nonzero Soul. Enumerate the exact start/cancel/resolve +
+  owner-debit resolved/receipt/event objects, event registry/DB migration, Go/TS save corpus, and a
+  sequential Founder replay fixture crossing every band + the first-depletion fact.
+
+SB10-SB16 fully ruled. S1-S6 refined (not contradicted). Soul implementation remains DEPENDENCY-BLOCKED
+on Fiscal v19 being implemented; the pure catalog/band/`HumanContentLocked` layer may land earlier.

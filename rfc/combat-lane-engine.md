@@ -43,6 +43,13 @@ Defender snapshot `{v: 1, deck (8 ids), care_derived}` at challenge time — dec
 3. Elixir/cycle legality negative tests per union arm.
 4. Fuzz: 10k random matches, zero invariant violations (position bounds, elixir bounds, simultaneous-death consistency, terminal reached).
 
+## Content successors
+
+- **"Shipping Wars" (solo era-lane, Age of War pattern):** `design/03 §12b` — same pure engine,
+  era decks selected by tier, building counts as C5-pattern scaling inputs, unranked by
+  definition (the Fairness Law). Research: `design/research/tier-relevance.md` §4 (role
+  differentiation). Lands as a content RFC once the engine ships.
+
 ## Open questions
 
 - Second lane / spatial widening — explicitly out; a future RFC changes the map, not this engine's laws.

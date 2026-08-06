@@ -1011,6 +1011,10 @@ server-certified (not client-claimed) payout rule. Notes ratify the load-bearing
   offline-quality state + the frozen Founder-attendance sample. Register exact `minigame_resolved.v1`
   and `minigame_rating_changed.v1` in the closed event registry; both runtimes compare receipt/event
   bytes and order in one sequential fixture.
+  - *Integrity note (review F1, 2026-08-05):* the Founder arm carries a `source` coordinate that is
+    NOT cross-checked during Founder history replay (unlike the exit arm), because the minigame arm
+    routes no reproduced state through it. Acceptable ONLY while that holds; any future Founder arm
+    that routes state through `source` must add the exit-style cross-check.
 - **C40 — accepted; certified `rating_delta` is authoritative, K-factor moves into the engine.** The
   server-certified tenant `rating_delta` is authoritative for Phase A: the platform checked-adds it
   to old Elo, saturates only at catalog floor/ceiling, increments `games_counted` once. `null` means

@@ -71,6 +71,24 @@ Hard rule: **hardcaps, never softcaps.** Any cap is a visible number with a tool
 - **Offline progress is default** at 90% efficiency, cap 24 h (Melvor's goodwill number), extendable by upgrades and the Enterprise faction (contracts fulfil fully offline).
 - Server computes offline gains closed-form on reconnect; client renders the welcome-back modal from the server result (`06-tech.md §idle-math`).
 
+## 2c. Three economy laws from the 26-year Neopets experiment (adopted 2026-08-01)
+
+> Research: `research/neopets-systems.md §8` — the longest-running live economy in our genre.
+
+1. **Wage-faucets + optional-sinks = permanent inflation.** Neopets pays near-linear wages for
+   labor and sinks only status; its trade-cap had to be raised 12.5× after 25 years. Our kernel
+   ships **mandatory flow-through sinks** (upkeep, consumables, training fees that consume
+   market items) alongside prestige burns, and the epoch changelog carries a published
+   faucet/sink budget per balance change.
+2. **Every cap mints a currency.** Their shop cap minted Baby-Paint-Brush money; their gift-box
+   throttle minted "caps." Any cap we ship is designed KNOWING what parallel currency it mints —
+   named in the catalog, satirized in fiction, never discovered by surprise.
+3. **Possession-checked achievements create credit markets** (their community built
+   collateralized, credit-checked avatar-lending institutions). Every achievement declares
+   `check: burn | provenance | possession` in the catalog; `possession` requires an explicit
+   justification line, because possession will be rented. Proof-of-burn (their Kadoatery) is the
+   default for prestige sinks — unfakeable, and the sink is the point.
+
 ## 3. Founder layer (prestige)
 
 ### 3.1 The prestige formula
@@ -134,6 +152,18 @@ Conversion: **PR Interns** (kitten equivalents) each multiply production by `(1 
 
 Downstream: Clout also gates **regulatory outcomes** (lobbying events check Clout), **MMO visibility** (feed prominence, leaderboard flair), and **canonization events** (the South Park episode fires at Clout thresholds — see `08-satire-flavor.md`). Clout persists with the founder: the personal brand survives the company. (Satire: it survives *better than the employees do* — a lore card says so.)
 
+### 6b. The Gaia law (adopted 2026-08-01, `research/gaia-hyperinflation.md §4a`)
+
+Gaia Online ran our exact Clout design — social activity as primary mint, first-act bonus with
+decay — for a DECADE without breaking. What broke it was an uncapped second faucet (cash-shop
+gold generators) added on top of sinks sized for the social mint, with inflation detected by
+players within 30 minutes. **Law: Clout has exactly ONE mint (social activity through the
+declared decay curve). Nothing — no product, no event, no reward table — emits Clout outside
+it.** Any proposal that does is a second faucet by definition and dies in review. Their whole
+collapse (executives selling printers while running sink-events as theater, ToS bans on
+criticism, the int64 cap raise, the 10M:1 redenomination that took 9 years because legacy
+currency was left circulating) is banked as the satire arc it deserves to be.
+
 ## 7. The moral axis (not spendable)
 
 - **Trust: five constituencies × two independent bars** — {Users, Employees, Regulators, Press, Investors} × {Standing, Grievance} (applied 2026-07-28 per `research/morality-systems.md`: the New Vegas factional architecture; a single signed bar fails mixed play). **All meters visible and published** — hiding a number just moves the optimisation to a wiki. **Meters modulate; facts gate:** Trust continuously modulates cost curves, churn and event weights, but **endings and event branches key on dated ledger facts, never thresholds** (no "20 more evil points"). **Cannot be bought.**
@@ -149,7 +179,7 @@ Distinct from morals: Trust is what you do to others; Soul is what's left of *yo
 
 - **Drains:** Faustian contracts (VC term sheet clause 7(c): "…and one (1) soul"), crunch/founder-mode events, longevity rungs, skipping the recital.
 - **Gates the human content:** as Soul drains, the pet stops recognizing you and its UI literally greys out (the cattery trust system is the soul proxy); hobby minigames lock behind *"you no longer remember why this was fun."*
-- **Recovery:** touch-grass activities that cost time and produce nothing (a genuine idle-build synergy; an active-play tax).
+- **Recovery:** touch-grass activities are a **deliberate, opportunity-costed action** — they cost time and produce nothing, and Soul does **NOT** passively refill while idle (ruled 2026-08-05: a passive idle refill makes the drain toothless and the training-data ending unreachable). The per-playstyle asymmetry is that the *same deliberate action* is cheap for an idle build (already idle) and a real tax for an active build (forgone production) — not that idling alone restores Soul.
 - **Endgame:** the Soul balance answers "what exactly ascends?" at Transcendence. Zero Soul → training-data ending.
 - Both corners are reachable and both are satire: the ethical workaholic (high Trust, no Soul) and the well-rested oligarch (low Trust, full Soul, does yoga).
 
@@ -185,6 +215,59 @@ Distinct from morals: Trust is what you do to others; Soul is what's left of *yo
 | Long tail | Quarters, seasonal arcs, categories/challenge runs, Ethical%, world-firsts — clock- and community-driven, not grind-driven |
 
 Verification approach: a balance simulation harness (headless run of the production stack against scripted strategies — pure-idle, check-in, optimizer) must reproduce these targets within tolerance before launch and after every balance patch. Community-milestone thresholds are set from live telemetry with uncertainty margins (the Clash of Clans 48-hour lesson), never guessed.
+
+## 11b. Tier-relevance doctrine (adopted 2026-08-01)
+
+> Research: `research/tier-relevance.md` (mechanism survey, five families) +
+> `research/balance-enforcement.md` (formal detection; Demaine et al. hardness + greedy bound,
+> restricted-play attribution, Riot ANY/ALL gate precedent). The problem this solves: Cookie
+> Clicker's "only the newest 1–3 buildings matter; ~75% of purchases are dead" — our design goal
+> is that **every purchasable stays meaningful in SOME role for its whole availability window**,
+> and that deadness is DETECTED structurally, not discovered by players.
+
+All five survey families are adopted, each bound to a hook we already have:
+
+1. **Kinetic chain with the purchased/generated split (core production graph).** Within each tier
+   era, higher-tier infrastructure *provisions* units of the tier below (thematically: your AI ops
+   provision datacenter racks provision cloud instances provision servers…). Only PURCHASED counts
+   pay costs and earn per-count multipliers (the AD split — the best-shipped fix for
+   chain-decision collapse); generated counts are free and priceless. Structural consequence: no
+   tier's count ever leaves the production product. [Owner-confirmable: chain core vs flat core —
+   doctrine assumes chain.]
+2. **Systematic coupling via a catalog synergy schema, never retrofit patches.** A closed
+   `synergies` catalog family: pooled-stat form (all purchased counts feed named global pools that
+   enter the multiplier stack — the Synergism architecture, our satire name space: "Operational
+   Excellence", "Institutional Knowledge") plus optional pairwise entries (CC's asymmetric
+   +5%/+0.1% shape) as content. Legibility law: every pool's composition renders in the formula
+   view (the Commons generated-artifact precedent) — no opaque nesting.
+3. **Staggered milestone ladders** (Pecorella's prescription, already partially present): per-
+   generator thresholds are STAGGERED per class so the best-next-purchase rotates across tiers;
+   ladder offsets are balance data the relevance harness tunes.
+4. **Role differentiation as LAW: every generator class declares ≥1 non-production role in the
+   catalog, loader-enforced.** Role vocabulary (closed, grows by RFC): capacity (Energy/Water/
+   Permits caps — the Kittens model on the constraint resources we already have), minigame input
+   (the CC sugar-lump second-job pattern), faction-stock rate, gate-discount basis, Quarter yield,
+   sacrifice fuel (late-tier consumption of early-tier populations — layoffs/decommissioning, on
+   theme). A building whose production has faded still has a job; the loader rejects a roleless
+   generator class. The minigame half of this law — the scaling-seam contract, the Fairness Law,
+   and the era-lane — is `design/03 §12b`.
+5. **Build re-authoring** — factions and doctrines already re-weight which tiers matter per run
+   (Realm Grinder's lesson; the strongest community verdicts). No new mechanism needed; the
+   relevance harness measures per-faction, so a tier may be alive BECAUSE of one faction — that
+   counts, and the report says so.
+
+**Normalized/share-of-total production stays OUT of the core** (unshipped anywhere, breaks
+per-purchase legibility); permitted only for display-level dials (Planet/World gauges).
+
+**Enforcement (the novel part — no shipped precedent found):** the balance harness gains a
+**relevance report**: per purchasable × persona, leave-one-out counterfactual Δtime-to-milestone
+(restricted play), group ablations per tier/category (catches substitute-redundancy LOO hides),
+payback-period-at-purchase, and purchase share. CI gate with the Riot ANY/ALL shape: every
+purchasable must (a) cost ≥ε time to SOME persona when deleted within its window, AND (b) be
+bought by the near-greedy reference persona at all (trap detection). Greedy reference is justified
+by Demaine et al.'s 1+O(1/log M) bound; exact optimality is strongly NP-hard — not chased. A tier
+"falling off" is now a recorded fact: the report's per-tier contribution shares are golden
+artifacts per epoch, and the changelog inherits the relevance table. Spec: `rfc/relevance-harness.md`.
 
 ## 12. Big numbers
 

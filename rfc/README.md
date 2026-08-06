@@ -11,23 +11,34 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Balance Harness Dispatch Integrity](balance-harness-dispatch-integrity.md) | withdrawn — premise refuted | Balance Harness Foundation |
 | [CI Baseline](scaffolding-and-ci.md) | implementing | — |
 | [Account & Session Bootstrap](account-and-session-bootstrap.md) | implementing | Save Layer |
-| [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | blocked-on-owner (faction+guild drafts now exist — unblocks when they accept) | Commons Compact |
+| [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
+| [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
+| [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
+| [API Foundation](api-foundation.md) | accepted — C1–C17 ruled; implementing | Account API / Transport / Gameserver Composition |
+| [Meters Foundation](meters-foundation.md) | accepted — C1–C12 ruled; implementing | Production / Run Genesis / Purchasable Content; unblocks Achievements and Pet Care |
+| [Achievements Foundation](clout-and-achievements-foundation.md) | accepted — C1–C10 ruled; scope narrowed to Achievements; implementing | Meters / Copy Pipeline / Production / Run Genesis |
+| [Founder Attendance Foundation](founder-attendance-foundation.md) | accepted — A1–A5 ruled; implementing | Save / Run Genesis / Prestige |
+| [Minigame Platform Foundation](minigame-platform-foundation.md) | accepted — C1–C40 ruled; implementing | Gameserver Composition / Founder Attendance / Combat |
+| [Pet Care Foundation](pet-care-foundation.md) | accepted — C1–C21 ruled; introduces `ApplyFounderLogged`; implementing | Save / Run Genesis / Combat Shared Kernel |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | implementing | — |
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
-| [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
-| [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
-| [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 | [UI Foundation](ui-foundation.md) | accepted architecture — C9–C11 implementation blockers | Client Shell / Transport / Copy Pipeline |
-| [API Foundation](api-foundation.md) | implementing — C1–C17 ruled | Account API / Transport / Gameserver Composition |
-| [Meters Foundation](meters-foundation.md) | implementing — C1–C12 ruled | Production / Run Genesis / Purchasable Content; unblocks Achievements and Pet Care |
-| [Achievements Foundation](clout-and-achievements-foundation.md) | implementing — C1–C10 ruled | Meters / Copy Pipeline / Production / Run Genesis |
+| [Game-UI Screens](game-ui-screens.md) | draft | UI Foundation / Client Shell |
+| [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft — UNBLOCKED, blockers answered | Commons Compact |
+| [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |
+| [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
+| [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
 | [Fiscal Quarters Foundation](fiscal-quarters-foundation.md) | accepted — implementation blocked on F9–F15 (Founder v19) | Save / Run Genesis / Founder Attendance |
 | [Active-Play Buff Windows](active-play-buff-windows.md) | accepted — implementation blocked on A9–A16 (Company v18) | Production / Save / Numeric Core |
 | [Soul Foundation](soul-foundation.md) | accepted — implementation blocked on SB10–SB16 + Fiscal F9–F15 (Founder v20) | Save / Run Genesis / Founder Attendance / Pet Care |
+| [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
+| [T0–T1 Playable Content](t0-t1-playable-content.md) | draft | Production / Purchasable Content / Copy Pipeline |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
+**Coverage map:** `planning/coverage-map/` — the validated research→design→RFC→impl tracker and the
+dependency-ordered gap backlog for the still-uncontracted (design-only) systems.
 
 ## Archive
 
@@ -71,12 +82,19 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Doctrine & Compute Credit](archive/doctrine-and-compute-credit.md) | implemented | [Doctrine and Compute Credit](../docs/doctrine-and-compute-credit.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md), [Routes](../docs/routes.md) |
 | [Relevance Harness](archive/relevance-harness.md) | implemented | [Balance harness](../docs/balance-harness.md), [Production engine](../docs/production-engine.md) |
 
-Remaining Phase-0 contracts (not yet drafted): Layer-1 events engine · doctrine intents · Compute Credit spend · game-UI screens · deployment
-(Prestige & Exits owns the reset) · production Balance Epoch artifact/hot-reload semantics
-(Leaderboards owns board binding) · doctrine intents (must define doctrine-pick ordering before
-same-boundary doctrine routes can ship). Later named work: Compute Credit spend · deployment and
-draining · an outcome-sensitive near-cap Guild reserved-credit regression before either a nonzero
-stock-consumption modifier or multi-worker clearing topology ships.
+**Phase-0 contract status (reconciled 2026-08-05 against the coverage-map sweep):** the contracts
+previously listed here as "not yet drafted" — Layer-1 events engine, doctrine intents, Compute
+Credit spend, game-UI screens, deployment — **now all exist as draft RFCs** (in the Active table
+above; drafted 2026-08-03). Remaining structural notes: Prestige & Exits owns the reset; Leaderboards
+owns board binding; doctrine intents must define doctrine-pick ordering before same-boundary doctrine
+routes can ship. Later named work: an outcome-sensitive near-cap Guild reserved-credit regression
+before either a nonzero stock-consumption modifier or multi-worker clearing topology ships.
+
+The **still-uncontracted (design-only) systems** — the ~28 gameplay elements that are researched
+and designed but have no RFC yet (individual minigames, the monetization-satire content, the
+narrative layer, tiers 2–8) — are tracked with their build-on dependencies and draft-order waves in
+`planning/coverage-map/gap-backlog.md`. That backlog, not this paragraph, is the source of truth for
+what remains to be drafted.
 
 ### Deferred decisions register
 

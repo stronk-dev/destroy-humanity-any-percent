@@ -53,6 +53,11 @@ First verified completion per `(category, epoch)` emits a feed/dispatch event (t
 
 ## Open questions
 
+- **G3 (from `wc3-custom-ecosystem.md` §5.6):** threshold promotion (D4's 25-runs/10-founders)
+  needs a flat, enumerable browse tail for unpromoted player categories — the SC2 Arcade
+  sort-order lesson (popularity-sorted-only discovery buries new content and calcifies the top
+  list). Promotion thresholds gate RANKING, never VISIBILITY.
+
 - Promotion thresholds (25/10) and mandate count: provisional, data.
 - Board retention/pagination scale: implementation freedom.
 

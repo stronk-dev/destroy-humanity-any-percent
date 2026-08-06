@@ -96,3 +96,53 @@
 ## 8. Social platform embedding (later)
 
 The Discord Embedded App SDK path (`research/idle-landscape.md`, Discord Embedded App SDK) is kept open as a post-launch channel: the game is a web app; an embedded guild-scoped view (guild dashboard + feed + quick actions) inside Discord is feasible without a separate codebase. **Hard rule from the Last Meadow backlash: nothing ambient/persistent in anyone's client chrome** — the embed is opened deliberately or not at all.
+
+
+## Neopets social adoptions (2026-08-01, `research/neopets-social-history.md §2–3`)
+
+- **Fund the guild identity surfaces**: their zero-mechanics guilds thrived for decades on
+  custom rank names, layouts, member-run newsletters and rituals. Ours have mechanics — but the
+  stickiness is identity: custom rank titles (menu-composed, name-moderated), guild page
+  decoration from achievements, member-run scheduled rituals. Budget these as first-class, not
+  polish.
+- **Amplification-gated curation is the UGC template for a no-free-text world**: free-form
+  expression on OWNED surfaces (galleries, structured price lists, decorated pages), an
+  editorial gate on anything BROADCAST — and publication through the gate is itself a coveted
+  prestige reward (their Neopian Times model: unlimited submission, curated publication,
+  publication-as-status). Judge-curated contests over vote-based ones (their Beauty Contest
+  proves vote-based UGC becomes a social-capital market).
+- **The filter becomes lore**: constrained communication styles sociality rather than killing
+  it, and the pressure relocates — so we ship official release surfaces (structured phrases,
+  emotes, curated pages) knowing the community builds unofficial ones otherwise. Their adult
+  users accepted a childlike register as the price of the world; ours choose it knowingly.
+- **Bless the fan-tooling layer early** (their revival granted the community outfit-planner
+  formal permission after 15 years of gray status): our published formulas + generated artifacts
+  are already the policy; add: a documented read-API stance so the JellyNeo-equivalent builds
+  WITH us from day one.
+
+
+## Player-authored content ownership (owner decision 2026-08-01, closing wc3-custom-ecosystem.md §5.4 G1)
+
+WC3 proves the absence of an ownership policy is existential in BOTH directions: no creator
+rights → the talent exodus that cost Blizzard the MOBA genre; total assignment (the Reforged
+AUP's "sole and exclusive property… without any remuneration") → trust death, review-bombing,
+refunds. Our policy, adopted as the middle setting the dossier recommends:
+
+1. **Creators keep their IP.** A player-authored predicate, route name, category ruleset, or
+   ticker line remains the author's.
+2. **We take a perpetual, non-exclusive, irrevocable display-and-operation licence** — enough to
+   run, rank, archive, and rebalance the content forever (including after account deletion,
+   anonymized per A-D5a), never enough to sell it out from under them.
+3. **Attribution is contractual, not courtesy.** The Route Registry's permanent first-executor
+   credit (already law, `§6`) generalizes: every player-authored surface carries its author line
+   as a structural field the operator cannot remove — WC3's mapmakers were paid in a name on a
+   loading screen, and credit theft was the scene's defining crime precisely because credit was
+   the only currency.
+4. **Fork lineage is recorded** (G2): derivations carry their ancestry chain (DotA Allstars WAS
+   a fork; erasing the chain was the grievance). Route Registry and category schemas gain a
+   `derived_from` field in their next RFC touch.
+5. Exact licence text goes to the compliance/lawyer queue (`compliance-2026-refresh.md`
+   backlog) before any player-authored surface ships to real users.
+
+The Reforged AUP itself is banked as a found satire object — structurally identical to a Valley
+employment IP-assignment clause, a double target for us.

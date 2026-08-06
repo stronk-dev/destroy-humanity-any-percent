@@ -1,11 +1,8 @@
 # RFC: Active-Play Buff Windows Foundation
 
-- **Status:** accepted — A1-A8 ruled; implementation blocked on A9-A16 (exact artifact, scheduler,
-  compound-transition, contribution, saturation, save/wire, and activation contracts). A1-A8 select
-  the gameplay shape but do not yet close the shipped transition surfaces. (Company v18.)
-  Historical A1-A8 summary: reuse `perform_manual_batch` not a new click intent, attended-ms
-  lazy scheduler, server-logged t⁵·exp schedule, `claim_opportunity` lifecycle, `opportunities`
-  artifact, minimal derived-factor buff state, Lucky faucet-saturation.
+- **Status:** accepted — A1-A16 ruled (exact opportunities artifact, runidentity/Substream scheduler,
+  ROLLBACK lazy-scheduler semantics, in-ApplyLogged buff-contribution owner, Lucky faucet-saturation,
+  v18 state/wire enumeration, activation/Exit invariant); implementing. Company v18.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
 - **Design refs:** `design/02 §2.3` (active play: golden opportunities on the shaped t⁵·exp spawn, the
@@ -519,3 +516,68 @@ registries change in the same balance commit.
 
 Until A9-A16 are ruled and reconciled into AB1-AB5, implementation would invent catalog, state,
 replay, and transition semantics. A1-A8's gameplay decisions remain intact.
+
+## Owner rulings on A9-A16 (2026-08-06) — exact catalog/state/replay/wire under A1-A8
+
+All accepted (Codex's proposed contracts are executable and sound). Owner-call: A11.
+
+- **A9 — accepted (exact artifact).** Root `{schema_version:1, schedule_policy, effects, combo_policy}`.
+  `schedule_policy` names sampler version, substream label, interval params, lifetime, max-due-
+  transitions. `effects` = raw-byte-sorted tagged union keyed by `effect_row_id` + `weight`:
+  `production_frenzy {factor,duration_ms,targets}`, `click_frenzy {factor,duration_ms,action_ids}`,
+  `building_special {per_owned_ppm,duration_ms,eligible_generator_ids}`, `lucky_payout
+  {lucky_bank_frac,lucky_rate_cap,epsilon,resource_id,hardcap_reason_key}`. `combo_policy
+  {combo_cap,hardcap_reason_key}`. Decimal canonical strings; durations/weights/ppm/max-due positive
+  safe ints; exact-key/sorted/unique/target/resource/generator/action/multiplier-source checks in both
+  loaders vs the pinned economy artifact. Adding `opportunities` is a mint.
+- **A10 — accepted (exact scheduler seed/draw).** `base = runidentity.Seed(founder_id, run_seq)`;
+  `determinism.Substream(base ⊕ uint64(spawn_seq), "active_play.spawn.v1")`; NO second mutable PRNG
+  state. One Go sampler (finite-domain checks + floor/ceil-to-ms rule); only its sampled interval is a
+  trusted logged input for TS. Then `Bound(total_weight)` for effect, and only for `building_special`
+  `Bound(total_generator_weight)`, in that order; both runtimes recompute the integer selections and
+  reject logged disagreement. UUIDv7-compatible opportunity/buff IDs from a separate named substream +
+  the attended coordinate (collision/domain vectors). `spawn_seq++` once per advance (incl. a missed
+  opportunity). (Consistent with the Fiscal F10 framing.)
+- **A11 — RULED: ROLLBACK (and Fiscal F11 revised to match — one consistent model).** Lazy
+  spawn/expiry is part of the ordinary command and ROLLS BACK with any semantic rejection; expired rows
+  are still ignored immediately by all math, and the next APPLIED command persists cleanup/events. This
+  keeps the global rejected-intent invariant and needs NO compound receipt. (The over-engineered
+  commit-under-rejection wrapper is rejected for BOTH Active-Play and Fiscal.)
+- **A12 — accepted (buff contributions owned inside `ApplyLogged`).** An internal
+  `activePlayContributions(state, artifact, attended_now)` assembler inside `ApplyLogged` + its TS
+  mirror is the SOLE owner of `event_buffs` contributions and is NOT serialized in `replay_inputs`
+  (no stale external-provider view, no duplicated authority). Targets (resolving A6): `production_frenzy`
+  → generator production ONLY (never manual); `click_frenzy` → only its declared manual action IDs;
+  `building_special` → only the logged selected generator. Source IDs
+  `active_play.<effect_row_id>.<buff_instance_id>`, raw-byte sorted. The transition advances/filters the
+  scheduler BEFORE assembling contributions; the pre-claim Lucky rate uses the same active set EXCLUDING
+  the pending effect.
+- **A13 — accepted (Lucky saturation exact).** `bank_term = Quantize(frac*bank)`, `rate_term =
+  Quantize(rate_cap*rate)`, `requested = Quantize(min(bank_term, rate_term) + epsilon)`; one named
+  accrual-only ledger method returns `(actual_delta, saturated)` and NEVER rejects at the hardcap. A
+  claim ALWAYS consumes the opportunity (incl. actual delta zero); receipt/event carry requested delta,
+  actual credited delta, `saturated`, and a nullable cap reason (required iff saturated). Vectors:
+  zero/zero, epsilon-only, one-ulp-below-cap, at-cap, overflow-scale.
+- **A14 — accepted (v18 state bytes).** Exact absent/null/empty rules + invariants for the scheduler,
+  pending object, and buff list; a canonical raw-byte array rule for buff ordering. NOTE: since A1
+  reuses the existing `perform_manual_batch` token fields, "clamp accounting" adds NO new state.
+- **A15 — accepted (wire).** A replay-inputs version bump whose resolved object carries an `active_play`
+  arm on every APPLIED v18 command: scheduler before/after seq + coordinate, zero-or-more ordered expiry
+  records, an optional spawn record (sampled interval + integer draw evidence), and optional claim
+  resolution. `claim_opportunity` = the A4 request. Reuse `unknown_id/opportunity_id`,
+  `not_eligible/opportunity_expired`, `not_eligible/opportunity_not_pending`; a typed `opportunity`
+  result in the standard receipt. Event order: expired rows by buff-instance raw bytes → missed pending
+  expiry → newly spawned → command-specific claim/event. Exact payloads for `opportunity_spawned.v1`,
+  `opportunity_expired.v1`, `opportunity_claimed.v1`, `buff_started.v1`, `buff_expired.v1`; registered
+  in Go + the DB constraint; shared sequential vectors.
+- **A16 — accepted (activation/init/Exit).** `opportunities` presence biconditional with Company floor
+  18, requires meters+achievements+doctrines, forbidden on Founder state; the Company codec maximum
+  becomes 18 (Founder axis unchanged). At an activating Exit/New Founder: init empty pending/buffs,
+  `spawn_seq=0`, derive the first schedule from attended coordinate zero using the server-resolved run
+  identity, and record that schedule in the new-run genesis/Exit evidence (replayable). An Exit from
+  active v18 DISCARDS all old scheduler/pending/buff state and inits the next run from its own run seed
+  + pinned next artifact. Artifact addition is a mint; all artifact-set/hash/KV-1 registries change in
+  the same balance commit.
+
+A9-A16 fully ruled. AB1-AB5 refined (not contradicted); the compound-transition inconsistency with
+Fiscal is resolved (both ROLLBACK). Numbers stay data.

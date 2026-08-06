@@ -87,3 +87,19 @@ Speedrun categories (`08-satire-flavor.md §speedrun`) double as challenge modif
 ## 6. Policies (the AGI-tier meta-playstyle)
 
 At Tier 6, playstyle itself becomes authorable: **policies** are saved, named, shareable scripts (Idle Loops / Stuck in Time lineage) that automate lower-tier verbs — including minigames (writing a bot for your own hobbies triggers the Soul question by design). Policy libraries are community content: shareable, forkable, with a policy-exchange board. The active/idle/check-in/banker distinction ascends one level: now it describes how you *manage policies*.
+
+
+## KoL ascension-path adoptions (2026-08-01, `research/kol-puzzle-pirates.md §A3`)
+
+Fifty challenge paths over 15 years from ~6 archetypes (constraint-alphabet, avatar,
+world-remix, systems-inversion, meta-paths-about-the-rotation-itself) on a fixed 3-per-year
+calendar — the proof that a rulebook engine built once ships rulesets forever, and the
+strongest external validation of our challenge-run design. Three specific adoptions: **"Live.
+Ascend. Repeat." shipped a fully deterministic mode as a PATH** (our deterministic harness can
+be player-facing content, not just infrastructure); a "ranked by Fun" season (their OCRS)
+licenses non-time categories; and their Karma arithmetic ADMITS it's tuned in the UI ("Not
+coincidentally, this is exactly the amount…") — the transparency gag our published-formula law
+was born for. The Standard/"Type 69" rolling legality window (paid power auto-sunsets from
+ranked play after ~2 years) is banked for IF we ever have anything resembling paid power — we
+don't — but its shape (rolling content windows per season) applies to keeping old epoch content
+from dominating category metas.
