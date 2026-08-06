@@ -364,6 +364,54 @@ func TestFounderV17AndV18RoundTripWhileCompanyRejectsThem(t *testing.T) {
 	}
 }
 
+func TestFounderV19FiscalRoundTripAndExactEnvelope(t *testing.T) {
+	catalog := stateCatalog(t)
+	ledger, err := economy.NewLedger(catalog, economy.ScopeFounder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := &State{WireVersion: 19, Ledger: ledger, GeneratorCounts: map[string]int64{}, GeneratorProvisioned: map[string]int64{},
+		ProvisionRemaindersPPM: map[string]int64{}, UpgradesOwned: map[string]bool{}, EvaluatedThrough: testCursor,
+		ManualTokenRefilledAt: testCursor, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{},
+		LedgerFactKinds: map[string]bool{}, MeterValues: map[string]int{}, MeterDecayRemainders: map[string]int64{}, MeterInputRemainders: map[string]int64{},
+		AchievementsEarnedRun: map[string]bool{}, AchievementsEarnedLifetime: map[string]bool{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{},
+		CompactSamples: []CompactSample{}, OfflineSpans: []OfflineSpan{}, NetworkSlots: []NetworkSlot{}, ExitHistory: []ExitRecord{},
+		MinigameRatings: map[string]MinigameRatingState{}, MinigameOfflineQuality: map[string]MinigameOfflineQualityState{}, Pets: map[string]pet.CareState{},
+		FiscalCredit: 17, FiscalPeriodOpenedWallMS: 1_786_000_000_000, FiscalPeriodSequence: 9,
+		FiscalGeneratorLevels: map[string]int64{"generator.beige_tower": 3}, FiscalUnlocks: map[string]bool{"unlock.arcade": true}}
+	encoded, err := EncodeState(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err := RestoreState(encoded, 19, catalog, economy.ScopeFounder, time.Time{})
+	if err != nil || restored.FiscalCredit != 17 || restored.FiscalPeriodOpenedWallMS != 1_786_000_000_000 || restored.FiscalPeriodSequence != 9 ||
+		restored.FiscalGeneratorLevels["generator.beige_tower"] != 3 || !restored.FiscalUnlocks["unlock.arcade"] {
+		t.Fatalf("v19 restore=%+v err=%v", restored, err)
+	}
+	var object map[string]json.RawMessage
+	if err := json.Unmarshal(encoded, &object); err != nil {
+		t.Fatal(err)
+	}
+	for _, key := range []string{"fiscal_credit", "fiscal_period_opened_wall_ms", "fiscal_period_seq", "fiscal_generator_levels", "fiscal_unlocks"} {
+		candidate := make(map[string]json.RawMessage, len(object))
+		for name, value := range object {
+			candidate[name] = value
+		}
+		delete(candidate, key)
+		missing, _ := json.Marshal(candidate)
+		if _, err := RestoreState(missing, 19, catalog, economy.ScopeFounder, time.Time{}); !errors.Is(err, ErrInvalidState) {
+			t.Fatalf("Founder v19 accepted missing %s: %v", key, err)
+		}
+	}
+	if _, err := RestoreState(encoded, 19, catalog, economy.ScopeCompany, time.Time{}); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("Company accepted Founder v19: %v", err)
+	}
+	state.WireVersion = 18
+	if _, err := EncodeState(state); !errors.Is(err, ErrInvalidState) {
+		t.Fatalf("v18 silently discarded fiscal state: %v", err)
+	}
+}
+
 func TestStateV15AndV16CollectionsFailClosed(t *testing.T) {
 	state := testState(t)
 	state.WireVersion = 15

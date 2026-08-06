@@ -13,6 +13,7 @@ import (
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
+	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/leaderboard"
 	"cloud-clicker/server/meters"
@@ -150,19 +151,26 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.Pets = petCatalog
 	}
+	if fiscalBytes, active := artifacts["fiscal"]; active {
+		fiscalCatalog, fiscalErr := fiscal.LoadCatalog(fiscalBytes, economyCatalog)
+		if fiscalErr != nil {
+			return production.CatalogBundle{}, fiscalErr
+		}
+		bundle.Fiscal = fiscalCatalog
+	}
 	return bundle, nil
 }
 
 func validArtifactNames(artifacts map[string][]byte) bool {
 	base := [...]string{"categories", "commons", "economy", "factions", "guilds", "prestige", "routes"}
-	allowed := make(map[string]bool, len(base)+5)
+	allowed := make(map[string]bool, len(base)+6)
 	for _, name := range base {
 		allowed[name] = true
 		if len(artifacts[name]) == 0 {
 			return false
 		}
 	}
-	for _, name := range [...]string{"achievements", "doctrines", "meters", "minigames", "pets"} {
+	for _, name := range [...]string{"achievements", "doctrines", "fiscal", "meters", "minigames", "pets"} {
 		allowed[name] = true
 	}
 	for name, data := range artifacts {
@@ -175,7 +183,8 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	_, doctrines := artifacts["doctrines"]
 	_, minigames := artifacts["minigames"]
 	_, pets := artifacts["pets"]
-	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames {
+	_, fiscalActive := artifacts["fiscal"]
+	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets {
 		return false
 	}
 	want := len(base)
@@ -189,6 +198,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 		want++
 	}
 	if pets {
+		want++
+	}
+	if fiscalActive {
 		want++
 	}
 	return len(artifacts) == want

@@ -260,7 +260,7 @@ func applyFounderExitResolved(state *save.State, command save.FounderReplayComma
 		resultCatalogs = *catalogs.Next
 	}
 	wantFounderVersion, _ := resultCatalogs.versionFloors()
-	if resolved.ResultFounderWireVersion != wantFounderVersion || activateFounderFeatureState(state, resultCatalogs, resolved.ResultFounderWireVersion) != nil {
+	if resolved.ResultFounderWireVersion != wantFounderVersion || activateFounderFeatureState(state, resultCatalogs, resolved.ResultFounderWireVersion, command.ServerTSMS) != nil {
 		return FounderLoggedTransition{}, ErrInvalidReplayInputs
 	}
 	state.WireVersion = resolved.ResultFounderWireVersion
@@ -280,7 +280,7 @@ func applyFounderExitResolved(state *save.State, command save.FounderReplayComma
 		Events: events, ResultConstantsHash: resolved.ResultConstantsHash}, nil
 }
 
-func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resultVersion int) error {
+func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resultVersion int, serverTSMS int64) error {
 	current := save.VersionForState(state)
 	if resultVersion < current {
 		return ErrInvalidReplayInputs
@@ -297,6 +297,17 @@ func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resu
 			return ErrInvalidReplayInputs
 		}
 		state.Pets = map[string]pet.CareState{}
+	}
+	if resultVersion >= 19 && current < 19 {
+		if catalogs.Fiscal == nil || serverTSMS <= 0 || serverTSMS > decimal.MaxExactInteger {
+			return ErrInvalidReplayInputs
+		}
+		state.FiscalCredit, state.FiscalPeriodOpenedWallMS, state.FiscalPeriodSequence = 0, serverTSMS, 0
+		state.FiscalGeneratorLevels = make(map[string]int64, len(catalogs.Fiscal.GeneratorLevelRows()))
+		for _, row := range catalogs.Fiscal.GeneratorLevelRows() {
+			state.FiscalGeneratorLevels[row.GeneratorID] = 0
+		}
+		state.FiscalUnlocks = map[string]bool{}
 	}
 	return nil
 }

@@ -152,3 +152,55 @@ func TestLoadActivatesDoctrineOnlyAbovePairedFoundations(t *testing.T) {
 		t.Fatal("doctrine artifact activated without paired foundations")
 	}
 }
+
+func TestLoadActivatesFiscalOnlyAfterPets(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "replay", "apply-logged-v1.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture struct {
+		PetArtifacts map[string]string `json:"pet_founder_artifacts"`
+	}
+	if err := json.Unmarshal(data, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	artifacts := make(map[string][]byte, len(fixture.PetArtifacts)+1)
+	for name, value := range fixture.PetArtifacts {
+		artifacts[name] = []byte(value)
+	}
+	var economyRoot map[string]any
+	if err := json.Unmarshal(artifacts["economy"], &economyRoot); err != nil {
+		t.Fatal(err)
+	}
+	sources := economyRoot["multiplier_sources"].([]any)
+	sources = append(sources,
+		map[string]any{"id": "fiscal.generator.beige_tower", "slot": "prestige", "target": "generator.beige_tower", "provider": "fiscal"},
+		map[string]any{"id": "fiscal.hoard", "slot": "prestige", "target": "all", "provider": "fiscal"},
+	)
+	economyRoot["multiplier_sources"] = sources
+	artifacts["economy"], _ = json.Marshal(economyRoot)
+	fiscalFixture, err := os.ReadFile(filepath.Join("..", "..", "balance", "testdata", "fiscal-foundation-v1.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fiscalEnvelope struct {
+		Baseline json.RawMessage `json:"baseline"`
+	}
+	if err := json.Unmarshal(fiscalFixture, &fiscalEnvelope); err != nil {
+		t.Fatal(err)
+	}
+	artifacts["fiscal"] = fiscalEnvelope.Baseline
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	loaded, err := Load(hash, artifacts)
+	if err != nil || loaded.Fiscal == nil {
+		t.Fatalf("fiscal bundle=%+v err=%v", loaded, err)
+	}
+	delete(artifacts, "pets")
+	orphanHash, _ := save.ConstantsHashArtifacts(artifacts)
+	if _, err := Load(orphanHash, artifacts); err == nil {
+		t.Fatal("fiscal artifact activated without pets")
+	}
+}

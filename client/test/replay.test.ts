@@ -280,6 +280,28 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(() => restoreReplayState(companySource, 17, bundle.economy, catalogs)).toThrow();
   });
 
+  it("activates the exact Founder v19 Fiscal envelope only under a pinned Fiscal artifact", async () => {
+		const artifacts = structuredClone(fixture.pet_founder_artifacts) as unknown as Record<string, string>;
+		const economy = JSON.parse(artifacts.economy!) as any;
+		economy.multiplier_sources.push(
+			{ id: "fiscal.generator.beige_tower", slot: "prestige", target: "generator.beige_tower", provider: "fiscal" },
+			{ id: "fiscal.hoard", slot: "prestige", target: "all", provider: "fiscal" },
+		);
+		artifacts.economy = JSON.stringify(economy);
+		artifacts.fiscal = JSON.stringify((await import("../../balance/testdata/fiscal-foundation-v1.json")).default.baseline);
+		const bundle = await loadReplayCatalogBundle(await artifactHash(artifacts as unknown as ReplayArtifacts), artifacts as unknown as ReplayArtifacts);
+		const source = { ...(fixture.pet_founder_cases[0]!.pre_state as Record<string, unknown>), fiscal_credit: 17,
+			fiscal_period_opened_wall_ms: 1_786_000_000_000, fiscal_period_seq: 9,
+			fiscal_generator_levels: { "generator.beige_tower": 3 }, fiscal_unlocks: ["unlock.arcade"] };
+		const state = restoreFounderReplayState(source, 19, bundle);
+		expect(state.fiscalCredit).toBe(17); expect(state.fiscalGeneratorLevels["generator.beige_tower"]).toBe(3);
+		expect(encodeFounderReplayState(state)).toMatchObject({ fiscal_credit: 17, fiscal_period_seq: 9, fiscal_unlocks: ["unlock.arcade"] });
+		const withoutArtifact = { ...bundle, fiscal: undefined };
+		expect(() => restoreFounderReplayState(source, 19, withoutArtifact)).toThrow();
+		const missing: Record<string, unknown> = { ...source }; delete missing.fiscal_generator_levels;
+		expect(() => restoreFounderReplayState(missing, 19, bundle)).toThrow();
+  });
+
   it.each(fixture.cases)("replays $name to the Go receipt, events, and state", async (testCase) => {
     const bundle = await loadReplayCatalogBundle(fixture.constants_hash, fixture.artifacts);
     const state = restoreReplayState(testCase.pre_state, 14, bundle.economy);

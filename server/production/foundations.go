@@ -2,10 +2,13 @@ package production
 
 import (
 	"fmt"
+	"sort"
 
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/copykeys"
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
+	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/pet"
@@ -93,6 +96,32 @@ func (bundle CatalogBundle) ValidateFoundationState(state *save.State) error {
 		} else if pet.ValidateCareStatesForCatalog(state.Pets, bundle.Pets) != nil {
 			return fmt.Errorf("%w: invalid pinned pet state", ErrInvalidEngineState)
 		}
+		if err := validateFounderFiscalState(bundle.Fiscal, state); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func validateFounderFiscalState(catalog *fiscal.Catalog, state *save.State) error {
+	if catalog == nil {
+		if state.FiscalCredit != 0 || state.FiscalPeriodOpenedWallMS != 0 || state.FiscalPeriodSequence != 0 ||
+			len(state.FiscalGeneratorLevels) != 0 || len(state.FiscalUnlocks) != 0 {
+			return fmt.Errorf("%w: fiscal state without pinned artifact", ErrInvalidEngineState)
+		}
+		return nil
+	}
+	unlockIDs := make([]string, 0, len(state.FiscalUnlocks))
+	for id, unlocked := range state.FiscalUnlocks {
+		if !unlocked {
+			return fmt.Errorf("%w: invalid fiscal unlock state", ErrInvalidEngineState)
+		}
+		unlockIDs = append(unlockIDs, id)
+	}
+	sort.Strings(unlockIDs)
+	if err := catalog.ValidateState(fiscal.State{Credit: state.FiscalCredit, PeriodOpenedWallMS: state.FiscalPeriodOpenedWallMS,
+		PeriodSequence: state.FiscalPeriodSequence, GeneratorLevels: state.FiscalGeneratorLevels, Unlocks: unlockIDs}); err != nil {
+		return fmt.Errorf("%w: invalid pinned fiscal state", ErrInvalidEngineState)
 	}
 	return nil
 }
@@ -183,6 +212,18 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 	}
 	if next.Pets != nil && current.Pets == nil {
 		founder.Pets = map[string]pet.CareState{}
+	}
+	if next.Fiscal != nil && current.Fiscal == nil {
+		openedMS := newCompany.RunStartedAt.UnixMilli()
+		if openedMS <= 0 || openedMS > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: Fiscal activation timestamp", ErrInvalidEngineState)
+		}
+		founder.FiscalCredit, founder.FiscalPeriodOpenedWallMS, founder.FiscalPeriodSequence = 0, openedMS, 0
+		founder.FiscalGeneratorLevels = make(map[string]int64, len(next.Fiscal.GeneratorLevelRows()))
+		for _, row := range next.Fiscal.GeneratorLevelRows() {
+			founder.FiscalGeneratorLevels[row.GeneratorID] = 0
+		}
+		founder.FiscalUnlocks = map[string]bool{}
 	}
 	founder.WireVersion = nextFounderFloor
 	newMeters, err := meters.NewRunState(next.Meters, founder.Notoriety)

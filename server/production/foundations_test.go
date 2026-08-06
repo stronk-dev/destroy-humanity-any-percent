@@ -10,6 +10,7 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
+	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/multiplier"
@@ -118,6 +119,51 @@ func founderFeatureBundles(t *testing.T, active CatalogBundle) (CatalogBundle, C
 	return withMinigames, withPets
 }
 
+func fiscalFeatureBundle(t *testing.T, pets CatalogBundle) CatalogBundle {
+	t.Helper()
+	result := pets
+	result.Artifacts = cloneArtifactMap(pets.Artifacts)
+	var economyRoot map[string]any
+	if err := json.Unmarshal(result.Artifacts["economy"], &economyRoot); err != nil {
+		t.Fatal(err)
+	}
+	sources := economyRoot["multiplier_sources"].([]any)
+	sources = append(sources,
+		map[string]any{"id": "fiscal.generator.beige_tower", "slot": "prestige", "target": "generator.beige_tower", "provider": "fiscal"},
+		map[string]any{"id": "fiscal.hoard", "slot": "prestige", "target": "all", "provider": "fiscal"},
+	)
+	economyRoot["multiplier_sources"] = sources
+	result.Artifacts["economy"], _ = json.Marshal(economyRoot)
+	economyCatalog, err := economy.LoadCatalog(result.Artifacts["economy"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	fixture, err := os.ReadFile("../../balance/testdata/fiscal-foundation-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var envelope struct {
+		Baseline json.RawMessage `json:"baseline"`
+	}
+	if err := json.Unmarshal(fixture, &envelope); err != nil {
+		t.Fatal(err)
+	}
+	fiscalCatalog, err := fiscal.LoadCatalog(envelope.Baseline, economyCatalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result.Artifacts["fiscal"] = envelope.Baseline
+	result.ConstantsHash, err = save.ConstantsHashArtifacts(result.Artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result.Economy, result.Fiscal = economyCatalog, fiscalCatalog
+	if !result.valid(result.ConstantsHash) {
+		t.Fatal("Fiscal feature bundle invalid")
+	}
+	return result
+}
+
 func cloneArtifactMap(source map[string][]byte) map[string][]byte {
 	result := make(map[string][]byte, len(source)+1)
 	for key, value := range source {
@@ -153,6 +199,35 @@ func TestFounderFeatureVersionsAreReachableWithoutChangingCompanyAxis(t *testing
 	}
 	if save.VersionForState(founder) != 18 || save.VersionForState(thirdCompany) != 16 || founder.Pets == nil {
 		t.Fatalf("v18 axes/state founder=%d company=%d pets=%v", save.VersionForState(founder), save.VersionForState(thirdCompany), founder.Pets)
+	}
+}
+
+func TestFiscalV19ActivatesAtRunBoundaryWithIndependentCompanyAxis(t *testing.T) {
+	legacy, active := foundationTestBundles(t)
+	minigames, pets := founderFeatureBundles(t, active)
+	fiscalBundle := fiscalFeatureBundle(t, pets)
+	founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+	company := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	first := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	if err := settleAndActivateFoundations(legacy, active, founder, company, first); err != nil {
+		t.Fatal(err)
+	}
+	second := foundationScopeState(t, minigames.Economy, economy.ScopeCompany)
+	if err := settleAndActivateFoundations(active, minigames, founder, first, second); err != nil {
+		t.Fatal(err)
+	}
+	third := foundationScopeState(t, pets.Economy, economy.ScopeCompany)
+	if err := settleAndActivateFoundations(minigames, pets, founder, second, third); err != nil {
+		t.Fatal(err)
+	}
+	fourth := foundationScopeState(t, fiscalBundle.Economy, economy.ScopeCompany)
+	fourth.RunStartedAt = time.UnixMilli(1_786_000_000_000).UTC()
+	if err := settleAndActivateFoundations(pets, fiscalBundle, founder, third, fourth); err != nil {
+		t.Fatal(err)
+	}
+	if save.VersionForState(founder) != 19 || save.VersionForState(fourth) != 16 || founder.FiscalPeriodOpenedWallMS != 1_786_000_000_000 ||
+		founder.FiscalGeneratorLevels["generator.beige_tower"] != 0 || founder.FiscalUnlocks == nil {
+		t.Fatalf("v19 activation founder=%+v company_version=%d", founder, save.VersionForState(fourth))
 	}
 }
 

@@ -22,7 +22,7 @@ import (
 const (
 	CurrentVersion           = 14
 	LatestSupportedVersion   = 16
-	LatestFounderVersion     = 18
+	LatestFounderVersion     = 19
 	LatestCompanyVersion     = 17
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
@@ -65,6 +65,11 @@ type State struct {
 	MinigameRatings            map[string]MinigameRatingState
 	MinigameOfflineQuality     map[string]MinigameOfflineQualityState
 	Pets                       map[string]pet.CareState
+	FiscalCredit               int64
+	FiscalPeriodOpenedWallMS   int64
+	FiscalPeriodSequence       int64
+	FiscalGeneratorLevels      map[string]int64
+	FiscalUnlocks              map[string]bool
 	RegionTraits               map[string]bool
 	RouteKnowledgeBalance      int64
 	HintsUnlocked              map[string]bool
@@ -283,6 +288,15 @@ type stateV18 struct {
 	Pets map[string]pet.CareState `json:"pets"`
 }
 
+type stateV19 struct {
+	stateV18
+	FiscalCredit             *int64           `json:"fiscal_credit"`
+	FiscalPeriodOpenedWallMS *int64           `json:"fiscal_period_opened_wall_ms"`
+	FiscalPeriodSequence     *int64           `json:"fiscal_period_seq"`
+	FiscalGeneratorLevels    map[string]int64 `json:"fiscal_generator_levels"`
+	FiscalUnlocks            []string         `json:"fiscal_unlocks"`
+}
+
 type rawExitOfferState struct {
 	OfferID     string          `json:"offer_id"`
 	ExitType    string          `json:"exit_type"`
@@ -421,7 +435,7 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 	if normalized.Ledger.Scope() == economy.ScopeFounder {
 		maximum = LatestFounderVersion
 	}
-	if version < 1 || version > maximum || version != CurrentVersion && version != 15 && version != 16 && version != 17 && version != 18 {
+	if version < 1 || version > maximum || version != CurrentVersion && version != 15 && version != 16 && version != 17 && version != 18 && version != 19 {
 		return nil, fmt.Errorf("%w: unsupported encode version %d", ErrInvalidState, version)
 	}
 	if err := validateFoundationState(&normalized, version, normalized.Ledger.Scope()); err != nil {
@@ -483,7 +497,14 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 						MinigameOfflineQuality: cloneMinigameOfflineQuality(normalized.MinigameOfflineQuality)}
 					wire = v17
 					if version >= 18 {
-						wire = stateV18{stateV17: v17, Pets: clonePetStates(normalized.Pets)}
+						v18 := stateV18{stateV17: v17, Pets: clonePetStates(normalized.Pets)}
+						wire = v18
+						if version >= 19 {
+							credit, opened, sequence := normalized.FiscalCredit, normalized.FiscalPeriodOpenedWallMS, normalized.FiscalPeriodSequence
+							wire = stateV19{stateV18: v18, FiscalCredit: &credit, FiscalPeriodOpenedWallMS: &opened,
+								FiscalPeriodSequence: &sequence, FiscalGeneratorLevels: cloneInt64Map(normalized.FiscalGeneratorLevels),
+								FiscalUnlocks: sortedTrueKeys(normalized.FiscalUnlocks)}
+						}
 					}
 				}
 			}
@@ -534,6 +555,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	}
 
 	var source stateV18
+	var fiscalSource *stateV19
 	var computeBurstRemainingMS int64
 	if version == 1 {
 		var legacy stateV1
@@ -621,6 +643,12 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		}
 		source.stateV17.stateV16 = company.stateV16
 		computeBurstRemainingMS = *company.ComputeBurstRemainingMS
+	} else if version == 19 && scope == economy.ScopeFounder {
+		var fiscal stateV19
+		if err := decodeState(data, &fiscal); err != nil {
+			return nil, err
+		}
+		source, fiscalSource = fiscal.stateV18, &fiscal
 	} else if err := decodeState(data, &source); err != nil {
 		return nil, err
 	}
@@ -692,6 +720,10 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	}
 	if scope == economy.ScopeFounder && version >= 18 && source.Pets == nil {
 		return nil, fmt.Errorf("%w: pet Founder collection is required", ErrInvalidState)
+	}
+	if scope == economy.ScopeFounder && version >= 19 && (fiscalSource == nil || fiscalSource.FiscalCredit == nil || fiscalSource.FiscalPeriodOpenedWallMS == nil ||
+		fiscalSource.FiscalPeriodSequence == nil || fiscalSource.FiscalGeneratorLevels == nil || fiscalSource.FiscalUnlocks == nil) {
+		return nil, fmt.Errorf("%w: fiscal Founder state is required", ErrInvalidState)
 	}
 	ownedUpgrades, err := validateOwnedUpgrades(catalog, scope, source.UpgradesOwned)
 	if err != nil {
@@ -778,6 +810,16 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	if scope == economy.ScopeFounder && version >= 18 {
 		state.Pets = clonePetStates(source.Pets)
 	}
+	if scope == economy.ScopeFounder && version >= 19 {
+		state.FiscalCredit = *fiscalSource.FiscalCredit
+		state.FiscalPeriodOpenedWallMS = *fiscalSource.FiscalPeriodOpenedWallMS
+		state.FiscalPeriodSequence = *fiscalSource.FiscalPeriodSequence
+		state.FiscalGeneratorLevels = cloneInt64Map(fiscalSource.FiscalGeneratorLevels)
+		state.FiscalUnlocks, err = sortedUniqueMechanicalKeys(fiscalSource.FiscalUnlocks, "fiscal_unlocks")
+		if err != nil {
+			return nil, err
+		}
+	}
 	if source.GuildBoundaryGuildID != nil {
 		state.GuildBoundaryGuildID = *source.GuildBoundaryGuildID
 	}
@@ -849,7 +891,7 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	if version < 15 {
 		if len(state.MeterValues) != 0 || len(state.MeterDecayRemainders) != 0 || len(state.MeterInputRemainders) != 0 ||
 			len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 ||
-			state.ComputeBurstRemainingMS != 0 || len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
+			state.ComputeBurstRemainingMS != 0 || len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 || fiscalStatePresent(state) {
 			return fmt.Errorf("%w: inactive foundation state present before v15", ErrInvalidState)
 		}
 		return nil
@@ -865,7 +907,7 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 		if len(state.AchievementsEarnedRun) != 0 || state.AchievementScoreRun != 0 || len(state.AchievementsEarnedLifetime) != 0 || state.AchievementScoreLifetime != 0 {
 			return fmt.Errorf("%w: achievement state present before v16", ErrInvalidState)
 		}
-		if len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
+		if len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 || fiscalStatePresent(state) {
 			return fmt.Errorf("%w: Founder mechanics present before v17", ErrInvalidState)
 		}
 		return nil
@@ -885,7 +927,7 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 		return fmt.Errorf("%w: achievement state leaked outside founder scopes", ErrInvalidState)
 	}
 	if version < 17 {
-		if state.ComputeBurstRemainingMS != 0 || len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 {
+		if state.ComputeBurstRemainingMS != 0 || len(state.MinigameRatings) != 0 || len(state.MinigameOfflineQuality) != 0 || len(state.Pets) != 0 || fiscalStatePresent(state) {
 			return fmt.Errorf("%w: Founder mechanics present before v17", ErrInvalidState)
 		}
 		return nil
@@ -916,7 +958,7 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 		}
 	}
 	if version < 18 {
-		if len(state.Pets) != 0 {
+		if len(state.Pets) != 0 || fiscalStatePresent(state) {
 			return fmt.Errorf("%w: pet state present before v18", ErrInvalidState)
 		}
 		return nil
@@ -924,7 +966,34 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	if state.Pets == nil || validatePetStateShape(state.Pets) != nil {
 		return fmt.Errorf("%w: invalid pet state", ErrInvalidState)
 	}
+	if version < 19 {
+		if fiscalStatePresent(state) {
+			return fmt.Errorf("%w: fiscal state present before v19", ErrInvalidState)
+		}
+		return nil
+	}
+	if scope != economy.ScopeFounder || state.FiscalCredit < 0 || state.FiscalCredit > decimal.MaxExactInteger ||
+		state.FiscalPeriodOpenedWallMS <= 0 || state.FiscalPeriodOpenedWallMS > decimal.MaxExactInteger ||
+		state.FiscalPeriodSequence < 0 || state.FiscalPeriodSequence > decimal.MaxExactInteger ||
+		state.FiscalGeneratorLevels == nil || state.FiscalUnlocks == nil {
+		return fmt.Errorf("%w: invalid fiscal state", ErrInvalidState)
+	}
+	for id, level := range state.FiscalGeneratorLevels {
+		if !stateMechanicalIDPattern.MatchString(id) || level < 0 || level > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid fiscal generator level", ErrInvalidState)
+		}
+	}
+	for id, unlocked := range state.FiscalUnlocks {
+		if !stateMechanicalIDPattern.MatchString(id) || !unlocked {
+			return fmt.Errorf("%w: invalid fiscal unlock", ErrInvalidState)
+		}
+	}
 	return nil
+}
+
+func fiscalStatePresent(state *State) bool {
+	return state.FiscalCredit != 0 || state.FiscalPeriodOpenedWallMS != 0 || state.FiscalPeriodSequence != 0 ||
+		len(state.FiscalGeneratorLevels) != 0 || len(state.FiscalUnlocks) != 0
 }
 
 func validatePetStateShape(states map[string]pet.CareState) error {
