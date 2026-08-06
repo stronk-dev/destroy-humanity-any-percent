@@ -130,7 +130,7 @@ func ValidateRepositoryBaselineChange(root string) error {
 			return fmt.Errorf("invalid baseline commit %s: %w", commit, err)
 		}
 		if strings.HasPrefix(string(subject), "CONSTANTS-IDENTITY:") {
-			if err := validateConstantsIdentityCommit(root, commits[index-1], parent, commit); err != nil {
+			if err := validateConstantsIdentityCommit(root, commits[index-1], parent, commit, relevanceReports); err != nil {
 				return fmt.Errorf("invalid constants-identity commit %s: %w", commit, err)
 			}
 		}
@@ -190,7 +190,7 @@ func registeredRelevanceGoldenPaths(data []byte) ([]string, error) {
 	return paths, nil
 }
 
-func validateConstantsIdentityCommit(root, previousBaseline, parent, commit string) error {
+func validateConstantsIdentityCommit(root, previousBaseline, parent, commit string, relevanceReports []string) error {
 	seedBytes, err := gitBlob(root, commit, epochSeedPath)
 	if err != nil {
 		return err
@@ -222,7 +222,137 @@ func validateConstantsIdentityCommit(root, previousBaseline, parent, commit stri
 	if err != nil {
 		return err
 	}
-	return validateConstantsIdentityBlobs(beforeBaseline, afterBaseline, beforeGolden, afterGolden, expectedHash)
+	if err := validateConstantsIdentityBlobs(beforeBaseline, afterBaseline, beforeGolden, afterGolden, expectedHash); err != nil {
+		return err
+	}
+	return validateRelevanceIdentityReports(root, parent, commit, seed, expectedHash, relevanceReports)
+}
+
+func validateRelevanceIdentityReports(root, parent, commit string, seed epochSeed, expectedHash string, reports []string) error {
+	activeReports, err := activeRelevanceReportsAt(root, commit, seed)
+	if err != nil {
+		return err
+	}
+	for _, reportPath := range reports {
+		if reportPath == baselinePath || reportPath == goldenPath {
+			continue
+		}
+		before, beforePresent, err := gitBlobIfPresent(root, parent, reportPath)
+		if err != nil {
+			return err
+		}
+		after, afterPresent, err := gitBlobIfPresent(root, commit, reportPath)
+		if err != nil {
+			return err
+		}
+		if beforePresent != afterPresent {
+			return fmt.Errorf("constants-identity commit adds or removes relevance report %s", reportPath)
+		}
+		if !beforePresent {
+			continue
+		}
+		if !activeReports[reportPath] {
+			if !bytes.Equal(before, after) {
+				return fmt.Errorf("constants-identity commit changes inactive relevance report %s", reportPath)
+			}
+			continue
+		}
+		var oldReport, newReport RelevanceReport
+		if err := decodeStrictJSON(before, &oldReport); err != nil {
+			return fmt.Errorf("decode previous relevance report %s: %w", reportPath, err)
+		}
+		if err := decodeStrictJSON(after, &newReport); err != nil {
+			return fmt.Errorf("decode relevance report %s: %w", reportPath, err)
+		}
+		if newReport.ConstantsHash != expectedHash {
+			return fmt.Errorf("relevance report %s hash differs from epoch manifest", reportPath)
+		}
+		oldReport.ConstantsHash, newReport.ConstantsHash = "", ""
+		if !reflect.DeepEqual(oldReport, newReport) {
+			return fmt.Errorf("constants-identity commit changes relevance behavior in %s", reportPath)
+		}
+	}
+	return nil
+}
+
+func activeRelevanceReportsAt(root, commit string, seed epochSeed) (map[string]bool, error) {
+	result := map[string]bool{}
+	activeEconomy, present := epochArtifactPath(seed, "economy")
+	if !present {
+		return nil, errors.New("epoch seed has no economy artifact")
+	}
+	economyBytes, err := gitBlob(root, commit, activeEconomy)
+	if err != nil {
+		return nil, err
+	}
+	var economyEnvelope struct {
+		SchemaVersion int `json:"schema_version"`
+	}
+	if err := json.Unmarshal(economyBytes, &economyEnvelope); err != nil {
+		return nil, err
+	}
+	if economyEnvelope.SchemaVersion < 4 {
+		return result, nil
+	}
+	activeRoutes, routesPresent := epochArtifactPath(seed, "routes")
+	activePolicy, policyPresent := epochArtifactPath(seed, "relevance_policy")
+	if !routesPresent || !policyPresent {
+		return nil, errors.New("active relevance epoch is missing routes or relevance_policy")
+	}
+	registryBytes, err := gitBlob(root, commit, relevanceRegistryPath)
+	if err != nil {
+		return nil, err
+	}
+	var registry struct {
+		SchemaVersion *int                         `json:"schema_version"`
+		Entries       []relevanceRegistryWireEntry `json:"entries"`
+	}
+	if err := decodeRelevanceStrict(registryBytes, &registry); err != nil || registry.SchemaVersion == nil || *registry.SchemaVersion != 1 {
+		return nil, errors.New("invalid relevance registry in constants-identity commit")
+	}
+	for _, entry := range registry.Entries {
+		if entry.EconomyCatalog == nil || *entry.EconomyCatalog != activeEconomy || entry.Scenario == nil || entry.RelevancePolicy == nil || entry.GoldenReport == nil {
+			continue
+		}
+		scenarioBytes, err := gitBlob(root, commit, *entry.Scenario)
+		if err != nil {
+			return nil, err
+		}
+		var scenario RelevanceScenario
+		if err := decodeRelevanceStrict(scenarioBytes, &scenario); err != nil {
+			return nil, err
+		}
+		if scenario.Catalog != activeEconomy || scenario.RoutesCatalog != activeRoutes || scenario.Policy != activePolicy || *entry.RelevancePolicy != activePolicy {
+			return nil, errors.New("active relevance registry does not match epoch artifacts")
+		}
+		result[*entry.GoldenReport] = true
+	}
+	if len(result) != 1 {
+		return nil, errors.New("active relevance epoch does not have exactly one report")
+	}
+	return result, nil
+}
+
+func epochArtifactPath(seed epochSeed, name string) (string, bool) {
+	for _, artifact := range seed.Artifacts {
+		if artifact.Name == name {
+			return artifact.Path, true
+		}
+	}
+	return "", false
+}
+
+func gitBlobIfPresent(root, commit, path string) ([]byte, bool, error) {
+	command := exec.Command("git", "cat-file", "-e", commit+":"+path)
+	command.Dir = root
+	if output, err := command.CombinedOutput(); err != nil {
+		if _, ok := err.(*exec.ExitError); ok {
+			return nil, false, nil
+		}
+		return nil, false, fmt.Errorf("git cat-file -e %s:%s: %w: %s", commit, path, err, strings.TrimSpace(string(output)))
+	}
+	data, err := gitBlob(root, commit, path)
+	return data, true, err
 }
 
 func validateConstantsIdentityArtifactBytes(root, previousBaseline, commit string, current epochSeed) error {

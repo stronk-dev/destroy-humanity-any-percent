@@ -92,6 +92,79 @@ func TestConstantsIdentityPinsArtifactBytesAtPreviousBaseline(t *testing.T) {
 	}
 }
 
+func TestConstantsIdentityCannotRewriteInactiveRelevanceBehavior(t *testing.T) {
+	root, seed, artifacts := newEpochGuardRepository(t)
+	initialHash := seed.Epochs[0].AcceptedHashes[0]
+	baselineBytes, _ := json.Marshal(AggregateReport{SchemaVersion: 1, ConstantsHash: initialHash})
+	goldenBytes, _ := json.Marshal(GoldenReport{SchemaVersion: 1, Runs: []RunReport{{Key: RunKey{ConstantsHash: initialHash}}}})
+	relevancePath := "testdata/harness/relevance/identity-report.json"
+	relevanceBytes, _ := json.Marshal(RelevanceReport{SchemaVersion: 1, ConstantsHash: "sha256:local-fixture"})
+	registry := `{"schema_version":1,"entries":[{"economy_catalog":"` + artifacts["economy"] + `","scenario":"testdata/harness/relevance/scenario-v1.json","relevance_policy":"testdata/harness/relevance/policy-v1.json","golden_report":"` + relevancePath + `","justification_changelog":"changelog/epoch-1.md"}]}`
+	writeGuardCommit(t, root, "harness: initial baseline", map[string]string{
+		baselinePath:          string(baselineBytes),
+		goldenPath:            string(goldenBytes),
+		relevancePath:         string(relevanceBytes),
+		relevanceRegistryPath: registry,
+	})
+	rewrittenBytes, _ := json.Marshal(RelevanceReport{SchemaVersion: 1, ConstantsHash: "sha256:local-fixture", Failures: []string{"hidden.rewrite"}})
+	writeGuardCommit(t, root, "CONSTANTS-IDENTITY: rewrite relevance behavior", map[string]string{
+		relevancePath: string(rewrittenBytes),
+	})
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "inactive relevance report") {
+		t.Fatalf("identity guard accepted inactive relevance rewrite: %v", err)
+	}
+}
+
+func TestConstantsIdentityAllowsOnlyActiveRelevanceHashRepair(t *testing.T) {
+	root, seed, artifacts := newEpochGuardRepository(t)
+	economyBytes, err := os.ReadFile("../../testdata/economy-foundation-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	policyBytes, err := os.ReadFile("../../testdata/harness/relevance/policy-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	policyPath := "balance/relevance/phase0.json"
+	seed.Artifacts = []epochArtifact{
+		{Name: "commons", Path: artifacts["commons"]},
+		{Name: "economy", Path: artifacts["economy"]},
+		{Name: "prestige", Path: artifacts["prestige"]},
+		{Name: "relevance_policy", Path: policyPath},
+		{Name: "routes", Path: artifacts["routes"]},
+	}
+	expectedHash := epochHash(t, root, seed, map[string]string{
+		artifacts["economy"]: string(economyBytes),
+		policyPath:           string(policyBytes),
+	})
+	seed.Epochs[0].AcceptedHashes = []string{expectedHash}
+	baselineBytes, _ := json.Marshal(AggregateReport{SchemaVersion: 1, ConstantsHash: expectedHash})
+	goldenBytes, _ := json.Marshal(GoldenReport{SchemaVersion: 1, Runs: []RunReport{{Key: RunKey{ConstantsHash: expectedHash}}}})
+	relevancePath := "testdata/harness/relevance/identity-report.json"
+	oldHash := "sha256:" + strings.Repeat("0", 64)
+	relevanceBytes, _ := json.Marshal(RelevanceReport{SchemaVersion: 1, ConstantsHash: oldHash})
+	scenarioPath := "testdata/harness/relevance/scenario-v1.json"
+	scenario := `{"catalog":"` + artifacts["economy"] + `","routes_catalog":"` + artifacts["routes"] + `","relevance_policy":"` + policyPath + `"}`
+	registry := `{"schema_version":1,"entries":[{"economy_catalog":"` + artifacts["economy"] + `","scenario":"` + scenarioPath + `","relevance_policy":"` + policyPath + `","golden_report":"` + relevancePath + `","justification_changelog":"changelog/epoch-1.md"}]}`
+	writeGuardCommit(t, root, "harness: initial active relevance baseline", map[string]string{
+		artifacts["economy"]:  string(economyBytes),
+		policyPath:            string(policyBytes),
+		epochSeedPath:         encodeEpochSeed(t, seed),
+		baselinePath:          string(baselineBytes),
+		goldenPath:            string(goldenBytes),
+		relevancePath:         string(relevanceBytes),
+		relevanceRegistryPath: registry,
+		scenarioPath:          scenario,
+	})
+	repairedBytes, _ := json.Marshal(RelevanceReport{SchemaVersion: 1, ConstantsHash: expectedHash})
+	writeGuardCommit(t, root, "CONSTANTS-IDENTITY: repair active relevance hash", map[string]string{
+		relevancePath: string(repairedBytes),
+	})
+	if err := ValidateRepositoryBaselineChange(root); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestEpochGuardRejectsHardcapLoweringAsHotfix(t *testing.T) {
 	root, seed, artifacts := newEpochGuardRepository(t)
 	economyBytes, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(artifacts["economy"])))
