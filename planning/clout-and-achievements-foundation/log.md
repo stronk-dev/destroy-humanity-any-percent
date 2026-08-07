@@ -525,3 +525,25 @@ regression the delegated approval didn't.
 - **Decision:** approved, no findings. The reviewer independently verified the real 70/high →
   69/low transition, simultaneous Achievement earn, exact Meter→Achievement order, canonical
   cross-runtime parity, additive corpus diff, and green focused Go/client suites.
+
+## 2026-08-07 — designated cross-party sliver verdict: {04e1905} — APPROVE (closes the 2026-08-04 coverage finding)
+
+- **Review by:** designated cross-party Claude reviewer. **Recorded by:** same.
+- **Reviewed range:** `04e1905^..04e1905` (post-filter hash `03ee02db0bb4d58c7ce5e748814c9ee57f9591eb`;
+  pre-filter names retained for continuity with older entries via
+  `planning/history-rewrites/2026-08-06-unpublication-filter.map`).
+
+The closure is real, exactly scoped, and discriminating on BOTH runtimes: 04e1905 restores the
+`active-foundation-band-crossing` case to the shared apply-logged corpus (doom.probability 70/high →
+69/low with same-command `achievement.first_gate`), with the Go builder failing on anything but the
+exact `meter_band_changed.v1` → `achievement_earned.v1` order and the TS suite asserting envelope
+byte-parity + ordered kinds. Probe A (corrupt band payload): fixture test FAILS at 04e1905, PASSES
+at parent 40eeff7 — direct proof the pre-closure blind spot existed and is now closed. Probe B (TS):
+exactly the band case fails. No scope creep (test/corpus/planning only). The intervening 40eeff7 is
+a zero-implementation planning-record commit, inspected in this pass.
+
+**Range-union: {2f0343e..dd073b7} ∪ {04e1905} = complete designated-review coverage of this
+foundation's implementation span as of 04e1905. No gap.** The prior delegated Darwin entry for
+04e1905 remains a first-filter; THIS entry satisfies the cross-party gate. With this verdict, the
+foundation's remaining distance to archival is the owner content mint (First Content Epoch) +
+final verify/docs/move — no review debt remains.
