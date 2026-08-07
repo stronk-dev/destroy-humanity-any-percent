@@ -47,3 +47,16 @@ The subsequent full `make verify` completed Go, formulas, harness, client typech
 wire-identical typed-sentinel refactor in kernel-watched production files without a kernel bump.
 That refactor must be dropped under the unpushed/unreviewed behavior-identical history carve-out;
 it must not receive a false kernel semantic version. No green full-gate claim is made here.
+
+## 2026-08-07 — Approved rewrite complete; ready for designated review
+
+The owner-approved prepublication rewrite replaced `d4c2312` with `ab9d15e`. The replacement drops
+only the typed-sentinel edits from the three kernel-watched production files; the exact activity
+lifecycle tests, replay corpus, plan state, and evidence remain. The implementation range is
+`4973c8e^..ab9d15e`.
+
+A fresh root `make verify` completed successfully after the rewrite: Go vet/tests, formulas,
+population invariance, balance harness, TypeScript/Svelte typecheck, production build, 6,587 client
+unit assertions, kernel history/adversarial guards, copy/schema/content-manifest checks, and 19,770
+browser assertions all pass. No production epoch was minted and AC4/AC5 remain carried to the UI
+successor. Ready for cross-party designated review; Codex does not authorize archival.
