@@ -177,6 +177,99 @@ artifact is the care-numbers artifact, nothing more.
 The full row proposal (loader-validated drafts for meters/achievements/pets, 17 DESIGN-GAPs, copy-key
 list) is at `planning/coverage-map/mint-content-rows-proposal.md` (internal) pending owner rulings.
 
+## Codex acceptance review blockers (2026-08-07 — FCE-C1–FCE-C6)
+
+The mint machinery is implementable, but the exact epoch is not yet acceptance-ready. These are
+content/identity decisions; implementation must not resolve them by choosing convenient bytes.
+
+### FCE-C1 — Doctrine is optional in the real dependency graph, and its archived contract forbids this mint
+
+`validArtifactNames` requires `doctrines -> meters`; it does **not** require doctrines for Pitch.
+The actual Pitch chain is `pitch -> soul -> fiscal -> pets -> minigames -> meters ⇔ achievements`.
+The archived Doctrine D8 ruling separately says production Doctrine stays unminted until the real
+T3-to-T4 gate and literal row exist. Merely adding `gate.t3_to_t4` is still under-specified: the
+archived route example uses the nonexistent `company.permits`, while substituting `company.cash`
+would invent a gate requirement and balance amount that the temporal-validity RFC deliberately
+refused to invent. Retargeting the doctrine would change its reviewed semantics.
+
+**Proposed contract (recommended):** epoch 6 omits `doctrines`. It carries the seven base artifacts
+plus exactly seven optional artifacts: meters, achievements, minigames, pets, fiscal, soul, and
+pitch. Company activates through v16, Founder through v20. Doctrine and Active-Play activation move
+to the later T3/T4 content epoch whose accepted RFC owns the real gate requirement/resource, route
+bytes, doctrine row, and their composed review. Amend FCE1/FCE3/FCE5 from 15 artifacts/eight owners
+to 14 artifacts/seven owners. If the owner instead insists on Doctrine in epoch 6, acceptance first
+requires a separate T3-to-T4 gate-content RFC with the exact requirement bytes and economy-resource
+authority; “extend routes” alone is not an executable contract.
+
+### FCE-C2 — FCE2's byte-identical-promotion claim is false for the three proposed row artifacts
+
+The proposed meters artifact changes grievance initialization/decay and drops an inert input; the
+pet artifact replaces several fixture literals with design-grounded values and adds production FSM
+rows; the achievements artifact assembles twelve production rows rather than promoting one reviewed
+fixture wholesale. Those may be good first-production bytes, but they are authored balance content,
+not byte-identical promotion. Leaving FCE2 unchanged would make the changelog materially false.
+
+**Proposed contract:** classify the three drafts as owner-ratified first-production artifacts. Pin
+their exact pre-mint SHA-256 values in FCE2's source table; land each changed family through a
+`BALANCE-CHANGE:` content commit, its real Go/TypeScript content gate, and a designated review
+before the epoch commit consumes it. Keep byte-identical promotion as the rule only for the other
+artifact families whose production bytes actually equal their reviewed source fixture.
+
+### FCE-C3 — Owner approval must bind complete artifact bytes, not only three highlighted literals
+
+The proposal correctly flags many provisional numbers beyond grievance and achievement score:
+meter band/decay literals; pet grid, floors, cooldowns, Soul gates, uniform Trust gain, and FSM
+durations. Selecting only the three headline decisions would leave the implementer silently owning
+the rest of the balance artifact.
+
+**Proposed contract:** after deciding the doctrine scope, grievance direction, and achievement
+grant, the owner approves the complete meters/achievements/pets JSON documents by exact SHA-256.
+The current drafts are `meters=320deca9ccbe70c1822f0d2664ea75dfd7627d7f098dfd1243ef432bea7bb485`,
+`achievements=1a11d6c5a0c044ff8077574bb71f1c893bde93a050e20a91e0d776c7e79f8903`, and
+`pets=5c1f27006871ddbd688cdb36e673a64ef5080c92950d22df486576dfae4aa1c1`.
+Any ruling edit that changes a document records the replacement hash. Codex recommends grievance
+start/target `0/0` (derived quantities do not manufacture themselves) and flat `+4`
+`achievement_score` (the literal design law with only the currency name changed), but neither is
+implemented without owner ratification.
+
+### FCE-C4 — The achievements artifact is deliberately unloadable against the shipped copy registry
+
+All thirteen required keys are named, but their player-facing text is absent. The proposal's own
+loader probe only passed after substituting an expanded in-memory registry; production
+`copykeys.All()` correctly rejects the artifact today. FCE5.4 cannot be checked against key names
+alone.
+
+**Proposed contract:** before the achievements balance commit, land all thirteen exact copy rows
+through the Copy Pipeline, including the possession-warning disclosure, provenance registry entries,
+generated Go keys, and manifest hash. `make copy-check` and an achievement load using the real
+`copykeys.All()` are discriminating gates. The balance artifact never lands in an unloadable
+intermediate commit.
+
+### FCE-C5 — FCE4 promises pet starter creation that FCE-B2 says cannot exist
+
+The activation section says pet starter creation begins at the first pet-carrying epoch. The ruled
+pet artifact has no species/acquisition authority, and FCE-B2 correctly defers that system. Epoch 6
+can activate the Founder v18 care-state schema and its pinned policies, but it cannot create a pet
+record or make care reachable for a founder without one.
+
+**Proposed contract:** reconcile FCE4 to say exactly that: v18 care state/policy activates, while
+pet acquisition/species and first-record creation remain successor work. The activation fixture
+asserts empty initialized maps and pinned policy bytes, not a fabricated starter pet.
+
+### FCE-C6 — The exact promotion manifest and cross-runtime proof are incomplete
+
+The proposal supplies exact draft files for only three optional families. FCE2 still delegates the
+remaining source-fixture selection and hashes to an implementing plan, and the validation record
+only claims the Go loaders for the new JSON documents (with AJV for two schemas). A constants hash
+and cross-runtime replay bundle cannot be reviewed from family names.
+
+**Proposed contract:** before status moves to accepted, append one literal table covering every
+epoch-6 artifact: artifact name, production path, source path or “owner-authored,” SHA-256, schema
+version, content-gate command, and consumed designated verdict. Run the exact meters,
+achievements, and pets bytes through both Go and TypeScript loaders in shared fixtures; pets needs
+that explicit parity fixture even though it has no JSON Schema file. The table—not an
+implementer-chosen path—is the owner-approved mint manifest.
+
 ## Changelog
 
 - 2026-08-07: created (draft) — the owner-gated dependency-complete mint promised by TP-C18 and
@@ -186,3 +279,6 @@ list) is at `planning/coverage-map/mint-content-rows-proposal.md` (internal) pen
   the content-row drafting pass.
 - 2026-08-07: all three open questions ruled by Marco (name "First Content"; mint provisional
   bytes as-is; mint ASAP once gates green). No open questions remain — acceptance-ready.
+- 2026-08-07: Codex acceptance review filed FCE-C1–FCE-C6. The draft remains blocked on Doctrine
+  scope/gate ownership, exact first-production byte ratification, copy rows, pet activation wording,
+  and the complete cross-runtime promotion manifest.
