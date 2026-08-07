@@ -95,9 +95,18 @@ as the checklist the integration test covers:
 
 ### FCE5 — The mint gates (ALL green before the mint commit exists)
 
-1. **Review-complete:** every contributing implementation has its designated cross-party verdict
-   filed and its RFC archived — as of drafting, The Pitch (remediation in flight) and Soul Recovery
-   (handoff pending) are the open items; the changelog cites every consumed verdict.
+1. **Review-complete (reformulated 2026-08-07 after the foundation audit — the original "archived
+   before the mint" wording was CIRCULAR for mint-blocked foundations and is superseded):** for
+   every ARTIFACT-CONTRIBUTING foundation (the 8 artifact owners), (a) its implementation range is
+   designated-cross-party-review-covered with a complete range union, and (b) every acceptance
+   criterion RELEVANT TO ITS ARTIFACT's behavior is green. Foundations whose only remaining open
+   items are the mint itself (Meters, Achievements, Pet Care — their final AC IS this RFC) archive
+   WITH or immediately after the mint, citing it; foundations whose open items are explicitly
+   non-artifact successors (Minigame Platform AC6's combat-duel adapter, Pet Care AC3's combat
+   cross-verify — both gated on the still-draft Combat Duel Engine) do not block the mint on
+   those, and their archival waits for those successors without holding the epoch hostage.
+   Non-artifact substrate foundations (Founder Attendance, API Foundation) are OUTSIDE this gate
+   entirely. The changelog cites every consumed verdict.
 2. **Content gates green** for every artifact at its production bytes (the Pitch corpus drift
    check, soul lifecycle corpus, and each loader's validation — TP-C18's "minted only after the
    Pitch content gate passes").
