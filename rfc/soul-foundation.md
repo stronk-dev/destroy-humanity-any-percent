@@ -1,10 +1,9 @@
 # RFC: Soul Foundation (the personal ledger)
 
-- **Status:** accepted — SB1-SB23 ruled (artifact enums + copy-key registry, ApplyDebit typed
-  errors + exact events, the recovery-session coordinator, the `ApplySuppressedLogged` zero-output
-  boundary, minimal v20 codec + `next_soul` Exit arm, `soul_gate` artifact schema bumps, event
-  ordering + single-transaction atomicity). Fiscal v19 is implemented and archived, so Soul is
-  IMPLEMENTABLE; the pure catalog/band layer may land first.
+- **Status:** accepted — SB1-SB24 ruled (…and SB24: the claim-tokened recovery progress heartbeat —
+  session-row-only beats, absence pauses never kills, terminal-only replay bytes, lazy watchdog).
+  Substrate implemented (203d40a, under designated review); production recovery activities mint only
+  after SB24 implements + reviews.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
 - **Design refs:** `design/02 §8` (Soul — the personal ledger, distinct from the moral Trust axis;
