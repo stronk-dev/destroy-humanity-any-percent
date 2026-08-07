@@ -129,3 +129,41 @@ Evidence read to completion: `make test-save-integration`, focused Go tests, Typ
 typecheck, 6,595 client tests, and full `make verify` including 19,794 browser assertions. The diff
 contains tests, one shared test vector, RFC text, and this planning evidence only; kernel remains
 0.3.77. This entry is a handoff, not a verdict or archival authorization.
+
+## 2026-08-07 — designated cross-party re-review: remediation 02ccc4c..2a55e12 — APPROVED
+
+- **Review by:** the designated Claude reviewer (independent; both gate suites re-run at 2a55e12;
+  destructive discrimination probes run in a throwaway worktree and removed). **Recorded by:** same.
+
+Narrow scope verified — the range contains exactly one commit (`2a55e12`, tests + planning + RFC
+reconciliation only, zero production code, no scope creep):
+- **F1 CLOSED, discrimination proven:** composed Postgres test
+  (`server/production/pitch_integration_test.go:130-173`) isolates the soul gate (fiscal unlock
+  pre-granted), Soul=0 → `StartMinigameSession` rejects `ErrInvalidIntent` +
+  `human_content_locked`. Probe: deleting the `human_hobby` enforcement block makes the suite fail
+  at exactly this assertion.
+- **F4 CLOSED, discrimination proven in BOTH runtimes:** shared vector
+  `testdata/pitch/big-number-v1.json` (2×(1e300×1e100)=2e400 — past float64 range, hack
+  interaction included, byte-pinned literal, hand-verifiable). Go consumes it through the real
+  `score()`; TS through the full `applyPitch` path against the same bytes. Tamper probe: mutating
+  the expected value fails both suites independently.
+- **F2/F3 reconciled:** TP-C22 body+ruling now state the interleaved single raw-byte pass; all
+  five substream references record the shipped nested binding; zero stale notation remains; no new
+  contradictions.
+- Gates: `make verify` green (6,595 client tests, 19,794 browser assertions, kernel parity+history
+  guard 0.3.77); Postgres suite green; no-bump claim verified mechanically (`_test.go`/unwatched
+  residue only).
+
+**Follow-up editorial (non-blocking, pre-existing):** TP-C4's accepted ruling (~rfc lines 291-294)
+still carries the coarse staged "hand-shape factors → ordered hack interactions" wording predating
+the F2 ruling; TP-C22's byte equation governs. Reconcile in a future RFC edit (e.g. the archival
+move's edit).
+
+**Verdict: APPROVED for the combined set {0eb3772, 853ef93, 2a55e12}.** Range-union: prior verdict
+consumed {0eb3772, 853ef93}; this re-review consumed 02ccc4c..2a55e12 = {2a55e12}; the union covers
+every implementation commit of The Pitch span (intervening 7688c59 = the verdict filing itself,
+02ccc4c = a Claude-side RFC draft outside this span, in the Codex-reviews-Claude channel).
+
+**The Pitch is ARCHIVAL-ELIGIBLE on this verdict.** The archival move (status→implemented, RFC +
+planning to archives, canonical docs page) is Codex's to execute, citing this entry and the exact
+consumed set — recommended to fold the TP-C4 editorial line into the same edit.
