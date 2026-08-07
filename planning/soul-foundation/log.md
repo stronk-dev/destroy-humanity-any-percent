@@ -232,3 +232,16 @@ self-review found that the live coordinator stored its rich terminal API receipt
 `ApplySuppressedLogged` reproduced the Company suppression receipt. The persistence coordinator now
 stores a distinct replay-owned Company receipt, with a real-Postgres regression that applies the
 stored payload/inputs and compares the persisted receipt. Kernel version advances to 0.3.74.
+
+## 2026-08-07 — owner rulings SB25-SB27 (the heartbeat executable layer)
+- SB25: distinct progress_token issued at start; reconnect = start-on-active returns the session with
+  a ROTATED token (stale instances reject not_eligible/recovery_token); no independent expiry (the
+  watchdog bounds the session); terminal claim token untouched.
+- SB26: watchdog = coordinator-preflight ONLY (start/progress/resolve/cancel — outside Company locks,
+  Founder-then-Company per SB23); ordinary commands stay reject-only + a read-only session_expired
+  hint detail; race with a concurrent cancel resolves naturally (guard finds no session).
+- SB27: beat-ceiling + max-wall join the soul artifact policy exact keys (schema_version stays 1 —
+  legal only because no epoch ever pinned a soul artifact; reasoning recorded); exact start/reconnect
+  + progress response keys; cancel receipts gain required cancelled_by (absent on resolve); NEW
+  append-only migration, no backfill (no production rows).
+Codex unblocked to implement SB24-SB27 + the closing designated review.

@@ -1,6 +1,6 @@
 # RFC: Soul Foundation (the personal ledger)
 
-- **Status:** accepted — SB1-SB24 ruled (…and SB24: the claim-tokened recovery progress heartbeat —
+- **Status:** accepted — SB1-SB27 ruled (…and SB24: the claim-tokened recovery progress heartbeat —
   session-row-only beats, absence pauses never kills, terminal-only replay bytes, lazy watchdog).
   Substrate implemented (203d40a, under designated review); production recovery activities mint only
   after SB24 implements + reviews.
@@ -772,3 +772,46 @@ ineligible one millisecond past the tolerance. **Ruling: a claim-tokened coordin
 
 Production `recovery_activities` rows may mint once SB24 is implemented and reviewed; the fixture-only
 restriction stands until then.
+
+## Owner rulings SB25-SB27 (2026-08-07) — the heartbeat's executable layer
+
+- **SB25 — the progress token (a distinct capability, issued at start, rotated on reconnect).** The
+  terminal claim token stays untouched (ClaimTx/FinishTx, same-transaction). **`start_soul_recovery`
+  issues a separate `progress_token`** (server-generated opaque 128-bit, stored on the session row,
+  constant-time compared). **Reconnect = calling `start_soul_recovery` while the founder's session is
+  active: it returns the EXISTING session with a ROTATED `progress_token`** (the old token is
+  invalidated — a stale client instance's beats reject after a reconnect takes over; this is the
+  token's whole job, since the transport already authenticates the founder). No independent expiry —
+  the token lives exactly as long as the session (the watchdog bounds the session). A beat with a
+  wrong/stale token rejects `not_eligible/recovery_token` (closed detail, no mutation).
+- **SB26 — watchdog ownership: COORDINATOR SURFACES ONLY; ordinary commands never execute it.** The
+  ruled lock order is inviolable, and the ordinary-command guard runs after the Company lock — so
+  ordinary commands keep their existing reject-only behavior (`not_eligible/exclusive_activity`),
+  extended with a READ-ONLY hint detail `session_expired: true` when the session is past
+  `max_session_wall_ms` (no locks taken beyond what the guard already reads). **The watchdog
+  auto-cancel executes only as a PREFLIGHT of the four coordinator commands**
+  (start/progress/resolve/cancel), which run outside any Company lock and take Founder-then-Company
+  properly for the SB23 cancel path. Liveness holds: any client that can send an ordinary command can
+  call the coordinator; the rejection hint tells it to. Race rule: if an ordinary command raced a
+  concurrent coordinator cancel, its guard simply finds no active session and proceeds normally —
+  no retry semantics change.
+- **SB27 — catalog placement + exact wire.**
+  - **Catalog:** `recovery_beat_ceiling_ms` and `max_session_wall_ms` join the Soul artifact's
+    `policy` exact keys: `{soul_floor, soul_initial, soul_max, recovery_beat_ceiling_ms,
+    max_session_wall_ms}` (positive safe ints; `recovery_beat_ceiling_ms ≤` the global catch-up
+    ceiling, loader-checked). **Schema_version stays 1 with the grammar extended in place** — legal
+    ONLY because no production epoch has ever pinned a soul artifact (nothing immutable
+    reinterpreted); the loaders change in the same commit and the fixture is regenerated. Were any
+    epoch pinned, this would be a schema bump; record that reasoning in the loader comment.
+  - **Start/reconnect response (exact keys):** `{session_id, progress_token, activity_id,
+    required_duration_attended_ms, attended_progress_ms, last_progress_server_ms, started_wall_ms}`.
+  - **Progress response (exact keys):** `{session_id, attended_progress_ms,
+    required_duration_attended_ms, last_progress_server_ms, eligible}` (`eligible` derived =
+    progress ≥ required; carried for legibility, never authoritative).
+  - **Terminal receipt reconciliation:** cancel receipts gain required `cancelled_by:
+    player|watchdog` (closed enum); resolve receipts do NOT carry the field (exact-key per receipt
+    kind — absent, not null).
+  - **Migration:** a NEW append-only migration adds `progress_token`, `attended_progress_ms`,
+    `last_progress_server_ms` to the session table with CHECKs requiring them for
+    `active|claimed` rows; no backfill rules needed (no production rows exist — state that in the
+    migration comment rather than inventing defaults).
