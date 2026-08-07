@@ -162,12 +162,10 @@ as the checklist the integration test covers:
 Loader-verified during the content-row proposal work: the reviewed doctrines fixture references
 `gate.t3_to_t4`, which is absent from the live `balance/routes/phase0.json` —
 `DoctrineCatalog.ValidateRoutes` hard-fails at bundle load, so the dependency-complete epoch-6
-bundle AS CURRENTLY CONSTITUTED cannot load. FCE2's "byte-identical promotion" is therefore
-insufficient for the doctrines artifact: the mint must EITHER (a) extend the routes artifact with
-the missing gate row (a BASE-artifact byte change — re-accept + content gate + review, the one
-place FCE1's "base bytes unchanged" gives way), OR (b) retune the doctrine row to reference an
-existing gate (a reviewed retune per FCE2). Decision at acceptance review; either path is a
-`BALANCE-CHANGE:` reviewed before the mint consumes it.
+bundle AS CURRENTLY CONSTITUTED cannot load. **RULED (Marco, 2026-08-07): option (a) — the routes
+artifact is EXTENDED with the missing `gate.t3_to_t4` row** (a BASE-artifact byte change — the one
+place FCE1's "base bytes unchanged" gives way; re-accept + content gate + review as a
+`BALANCE-CHANGE:` before the mint consumes it). The doctrine row is unchanged.
 
 ### FCE-B2 — Scope clarification: no pet species roster in this mint
 
