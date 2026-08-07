@@ -145,7 +145,14 @@ The real-time meta-currency (sugar-lump lineage), diegetic:
 
 Two feeds, one axis:
 
-1. **Achievements** (the milk model): every achievement grants +4 Clout. Achievements are deliberately weird and load-bearing (own 300 of a generator, win a chess minigame against the hardest bot, keep the pet at max trust for a week, trigger `AGI In Two Years` five times). Target ~600 at launch across all systems.
+1. **Achievements** (the milk model): achievements grant Clout on a **tiered scale — 2/4/8 by
+   difficulty class** (trivial first-touch / session milestone / long-arc). *Amended 2026-08-07 by
+   owner ruling (First Content Epoch FCE-C3 round): the original flat +4 was superseded — put to
+   the owner explicitly against the flat model and overruled; 4 stays the middle tier so the
+   aggregate economy shape is unchanged.* Achievements are deliberately weird and load-bearing
+   (own 300 of a generator, win a chess minigame against the hardest bot, keep the pet at max
+   trust for a week, trigger `AGI In Two Years` five times). Target ~600 at launch across all
+   systems.
 2. **Attention-economy play**: posting (a lightweight timed action), viral events, the podcast circuit, thought-leadership upgrades. Fed by and feeding the events system.
 
 Conversion: **PR Interns** (kitten equivalents) each multiply production by `(1 + Clout × factor)`, stacking multiplicatively — the single biggest multiplier family in the game, making optional weirdness load-bearing (CC's highest-leverage idea).

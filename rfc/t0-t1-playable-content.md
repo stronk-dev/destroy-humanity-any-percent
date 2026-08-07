@@ -58,6 +58,13 @@ carries verified provenance in the claim registry; anything not yet verified is 
 shipped. The copy lands as catalog/copy-system data (the content pipeline design), reviewable
 like any diff.
 
+**Carried debt (PT-C4, 2026-08-07):** generator presentation copy has NO binding surface in the
+economy grammar (rows carry no copy field, and the Copy Pipeline forbids deriving display text
+from mechanical IDs) — this RFC owns defining how generators become player-facing (either the
+generator-copy grammar extension PT-C4 declined to add, or a presentation-layer binding). The
+first two consumers waiting on it: `generator.beige_tower` (shipped, presentation-less) and
+`generator.legal_dept` (Permits RFC; its title/description explicitly carried here).
+
 ## Acceptance criteria
 
 0. **F1 precondition:** a founder idle beyond the offline cap under a provisioning catalog

@@ -146,3 +146,13 @@ is SQL-NULL-permissive, backed by app-side validation (defense-in-depth).
 **Verdict: the Founder cross-stream chain (ApplyFounderLogged → genesis → Exit-as-founder-log →
 age_ms-sampled race-safe clock) is complete and sound. Proceed to the pet-decay and faucet
 consumers.**
+
+## 2026-08-07 — owner-side docs ruling (Claude): canonical home = founder-transitions.md
+
+The archival audit (2026-08-07) flagged an open docs decision: dedicated page vs the existing
+attendance section in docs/founder-transitions.md. RULED: the founder-transitions.md attendance
+section IS the canonical home — attendance is a facet of founder transitions, not a standalone
+system, and a dedicated page would split one lifecycle across two documents. The archival move
+cites this ruling; the remaining pre-archival items are unchanged (rollback/retention Postgres
+coverage residue + the final verify + move). docs/README.md must index founder-transitions.md
+when the archival lands (it is currently unindexed — flagged in the 2026-08-07 hygiene list).
