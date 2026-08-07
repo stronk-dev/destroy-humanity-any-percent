@@ -30,6 +30,8 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
+| [The Pitch (minigame content — template)](minigame-the-pitch.md) | draft — Wave-B opener, queued for acceptance review | Minigame Platform (archived) / Fiscal / Soul |
+| [Soul Recovery Activities](soul-recovery-activities.md) | draft — Wave-B, the Soul owner-content mint | Soul Foundation |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
 | [T0–T1 Playable Content](t0-t1-playable-content.md) | draft | Production / Purchasable Content / Copy Pipeline |
 
