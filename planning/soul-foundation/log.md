@@ -261,3 +261,44 @@ resumption, eligibility, terminal-only replay, read-only expired-session hint, w
 and the existing nine-boundary atomic fault matrix. Heartbeats add no event or replay row. Kernel
 version advances to 0.3.75. This is an implementation handoff only: it does not satisfy the
 cross-party designated gate and does not authorize archival.
+
+## 2026-08-07 — designated cross-party CLOSING verdict: heartbeat batch (e6ca030 + 3ff2082) — APPROVE; Soul ARCHIVAL-ELIGIBLE
+
+- **Review by:** the designated Claude reviewer (independent; make verify exit 0 at 0.3.75 with
+  explicit typecheck, full Docker/Postgres integration suite exit 0, targeted verbose re-run of the
+  soul-recovery integration test, and a LIVE MUTATION PROBE of the LOW-1 assertion — dropping a
+  restore field made the integration test fail, probe reverted, re-passed). **Recorded by:** same.
+
+**PART A — the Active-Play archival commit 398e62f: PASS.** Cites the exact four-range union + the
+consumed verdict e9ebb0c; canonical docs/active-play.md added and accurate against code; RFC/README/
+planning rotations correct; the commit is docs-only.
+
+**PART B — SB24-SB27 + both routed LOWs: all VERIFIED CORRECT.**
+- e6ca030: LOW-1 is now a REAL assertion (17-authority byte snapshot before Evaluate, compared after
+  restore — mutation-probe-proven); LOW-2 band parity aligned with a shared rejection vector; the
+  self-caught replay-receipt bug fixed with a real-Postgres regression comparing the stored receipt
+  against a fresh ApplyLogged.
+- Heartbeat/token (SB24/25): coordinator-only (no parser/transport surface), server-stamped,
+  session-row-only, pause-never-kill proven (1000/1000/1000/5000 sequence), beat ceiling
+  loader-checked <= the global ceiling in both runtimes, token rotation on reconnect with
+  constant-time stale rejection.
+- Watchdog (SB26): preflight of all four coordinator commands only, outside Company locks,
+  Founder-then-Company via the shared coordinator; ordinary commands reject-only + read-only
+  session_expired hint; no lock-order reversal on any path.
+- Wire/catalog (SB27): exact policy keys with the never-epoch-pinned justification recorded in both
+  loaders; exact 7-key start / 5-key progress receipts (key-count asserted); cancelled_by required on
+  cancel, absent on resolve; migration 00070 new append-only with no-backfill comment.
+- Terminal totals validated (end−start == attended_progress against the sole writer; replay checks
+  totals never cadence — no beat is ever a replay byte); eligibility + early-resolve-no-mutation
+  proven; kernel 0.3.73→74→75 lockstep; containment holds (no soul artifact in any epoch).
+- Findings: 5 INFO only (transport-deferred rejection mapping, format-precheck before constant-time
+  compare, a residual SB24-bullet text tension resolved by SB26, a defensive dead branch, 122-bit
+  token entropy — all recorded, none blocking).
+
+**Range-union: COMPLETE.** {a3f7f30, 8d2e1a6, 203d40a} (substrate verdict) ∪ {e6ca030, 3ff2082}
+(this verdict) = every Soul implementation commit in existence; 398e62f is docs-only; no prior
+verdict cites e6ca030/3ff2082.
+
+**Verdict: APPROVE. Soul is ARCHIVAL-ELIGIBLE citing the five-commit union. Archival is the
+implementer's move (this verdict is the gate); production recovery_activities may mint only after
+archival + owner content per the RFC. This closes the LAST Wave-A foundation gate.**
