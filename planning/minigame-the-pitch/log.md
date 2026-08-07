@@ -60,3 +60,53 @@ Self-check evidence read to terminal completion before handoff:
 Codex self-review additionally closed Go/TypeScript parity gaps for undeclared copy keys, negative
 snapshot Decimals, unknown slotted hacks, malformed command rejection, and canonical nested offer
 bytes. This self-review does not satisfy the mandatory designated cross-party review.
+
+## 2026-08-07 — designated cross-party verdict: The Pitch (0eb3772 + 853ef93) — NOT APPROVED (narrow)
+
+- **Review by:** the designated Claude reviewer (independent; make verify + Postgres suite re-run,
+  discriminating probes executed and reverted). **Recorded by:** same.
+
+**Substantively excellent — every TP-C19–C25 byte contract verified at source:** the
+TenantContentResolver identity chain (cloning proven against aliasing), the 13-key snapshot +
+instance IDs (dark_pattern's pair reachability test-proven), per-round Fisher–Yates with rejection
+sampling and the fixed deal slices, the income/shop contracts, the one-quantize byte equation
+(order-pinned by test), terminal semantics + integer-facts-only Result, the complete loadable v3
+definition in BOTH runtimes with the fiscal_unlock arm and reject-before/succeed-after proof, the
+12-scenario content-gate corpus (transition budget 108 = exact command sum, drift-checked),
+containment (no production artifacts), kernel 0.3.75→77 lockstep.
+
+**The two highest-risk items both verified clean:**
+- The approved d4c2312 rewrite was executed EXACTLY as approved (only the sentinel-refactor hunks +
+  their one dependent test assertion dropped; lifecycle tests/corpus/evidence intact; no bump owed).
+- The ApplyFounderLogged composer change is CORRECT and empirically pinned: live resolution
+  previously hand-mutated Founder state while replay ran the full boundary (Fiscal sweep +
+  receipt decoration) → honest logs failed VerifyFounderHistory. The fix routes live through the
+  same boundary; atomicity/lock-order/idempotency untouched; reverting the hunk makes the
+  integration test fail with state_divergence — a real discriminating regression.
+
+**BLOCKING (route to Codex):**
+- **F1 (MEDIUM): AC1's soul-gate arm has ZERO test coverage** — deleting the human_hobby
+  enforcement block leaves the whole suite green. Close with one composed test: Soul ≤ near-zero →
+  Pitch start rejects `not_eligible/human_content_locked`.
+- **F4 (LOW-MED): AC2's "big-number-regime hand" vector is absent** (corpus max ≈2.5e3; the TP-C17
+  vectors exercise exponent projection only, never score()). Close with one synthetic big-regime
+  scoring vector (catalog-independent, both runtimes).
+
+**Owner rulings on F2/F3 (recorded now, reconcile in the remediation edit):**
+- **F2 RULED: the IMPLEMENTED interleaved single raw-byte pass is canonical** — shape_factor and
+  chain_factor apply in one pass over hacks in raw-byte hack_id order (simpler, corpus-pinned, and
+  identical in both runtimes). TP-C22's staged wording (shapes-then-chains) is SUPERSEDED; the RFC
+  body gets the one-line reconciliation in the remediation edit.
+- **F3 RULED: the shipped substream binding is canonical** —
+  `Substream(Substream(seed, "pitch.run.v1").Next() XOR round, label)` is the recorded meaning of
+  the ruling's `Substream(seed, label, round)` notation; record the binding in the same edit.
+
+F5/F6 observations: no action required (cosmetic parity nuance; unreachable guard asymmetry).
+
+**Range-union:** this verdict consumes exactly {0eb3772, 853ef93}. Soul Recovery's code
+(4973c8e, ab9d15e, f04c2f3, d1cd39c) awaits its own designated review; 506f12d/f88f178 belong to
+the completed Soul Foundation gate; all other span commits are docs-tier. No code commit between
+3ff2082 and 853ef93 lacks a named review thread.
+
+**Verdict: NOT APPROVED pending F1 + F4 (one test + one vector); re-review is narrow. Archival will
+cite {0eb3772, 853ef93} + the remediation range.**
