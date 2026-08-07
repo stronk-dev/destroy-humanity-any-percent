@@ -1,6 +1,7 @@
 # RFC: The Pitch (minigame content — THE TEMPLATE)
 
-- **Status:** draft — acceptance blocked on TP-C1–TP-C10. **This is the exemplar
+- **Status:** accepted — TP-C1–TP-C10 ruled; implementing (v1 scope: engine + pinned catalog +
+  internal integration; playability lands with the Minigame API & Surface successor). **This is the exemplar
   minigame-content RFC**: its structure (tenant row → engine contract → certified result → economy
   hooks → content-as-data) is the template the other minigame content RFCs replicate.
 - **Author:** Marco (drafted by Claude)
@@ -50,20 +51,21 @@ unlock_condition}` — every sub-object per the already-ruled closed grammars. S
 - **`fallback`:** `solo` (the closed fallback row for solo-by-design games — no bot exists because
   no opponent exists; the threshold is the opponent).
 - **`soul_gate`: `human_hobby`** — the founder's hobby; locks at near-zero Soul per SB15.
-- **`unlock_condition`:** the Tier-5 casino home unlocks via the standard catalog fact; the Demo
-  Disc Arcade variant is tutorial-tier per `design/03 §5`. The purchased unlock uses the **Fiscal
-  Investor-Confidence unlock sink** (`fiscal_unlocks` — the cross-foundation tie this template
-  demonstrates).
-- **`rating_policy`:** none in v1 (solo, unrated — `rating_delta: null` per C40; Elo/count unchanged,
-  resolution + offline-quality still commit).
+- **`unlock_condition`:** the Tier-5 casino home, unlocked by the purchased **Fiscal
+  Investor-Confidence unlock** via the `fiscal_unlock {unlock_id}` resolver arm (TP-C6 — the
+  composed server resolver reads the pinned Founder fiscal flag; the unlock_id registers in the
+  Fiscal artifact). The Demo Disc Arcade variant is REMOVED from v1 (a successor with the arcade
+  content RFC).
+- **`rating_policy`:** a real neutral rating-season row with certified `rating_delta: null` (per
+  C40 — Elo/count provably unchanged; resolution + offline-quality still commit). There is no
+  `none` arm in the loader grammar (TP-C5).
 
 ### TP2 — The engine contract (deterministic, Decimal-exact)
 
 A new engine package (`server/pitch` + `client/src/pitch`) behind the platform's engine seam:
 - **A run** = `(seed, ordered choices)`. The seed derives from the platform's session identity via
-  the established substream discipline (a named `pitch.run.v1` substream); a **daily-seed variant**
-  uses the calendar day as the published seed input (the built-in-predictor stance: the seed is
-  SHOWN, the skill is the drafting).
+  the established substream discipline (a named `pitch.run.v1` substream). The daily-seed variant is
+  REMOVED from v1 (TP-C7 — the async-snapshot successor owns the calendar seed and its board).
 - **The loop (structure ruled; all magnitudes are catalog data):** each round presents a drafted
   hand of `metric_card`s (each carries a base `metric` value) and the player's slotted
   `growth_hack`s (each a modifier in a **closed effect union**: flat metric adds, per-card
@@ -76,8 +78,10 @@ A new engine package (`server/pitch` + `client/src/pitch`) behind the platform's
 - **Hardcaps, visibly:** hack slots, hand size, and rounds are visible hardcaps with reason keys.
   The score itself is uncapped (the numeric core governs it — watching the number leave the solar
   system is the reward).
-- **The certified result** = `{final_round, best_hand_valuation (canonical Decimal string),
-  outcome}` — recomputable byte-for-byte from `(seed, choices)`; `engine_version` pins the calc;
+- **The certified result** = the platform's integer-fact grammar (TP-C1): `pitch.final_round` (the
+  payout/quality fact) + `pitch.best_hand_exponent` (display-only, hardcapped); the full Decimal
+  valuation lives in the terminal ENGINE SNAPSHOT, which the platform byte-compares — recomputable
+  byte-for-byte from `(seed, choices)`; `engine_version` ("1.0.0") pins the calc;
   the platform's resolve composer (C37–C40) owns everything after certification. Go/TS byte-parity
   golden vectors over the scoring math, including hack-order interactions and the
   big-number boundary.
@@ -96,8 +100,10 @@ constraint: ≥~12 `metric_card`s and ≥~8 `growth_hack`s, each individually fl
 than a large pool (depth comes from hack INTERACTIONS, which the closed effect union makes
 enumerable and testable). Card/hack rows are exact-key catalog data with copy keys through the copy
 pipeline (flavor lives in data; `pitch`/`metric_card`/`growth_hack`/`valuation` are the mechanical
-names). Every card/hack must pass the relevance harness's floors once T0-1's production baseline
-activates (dead content fails CI — the instrument exists; use it).
+names). Dead content is gated by the Pitch-owned content gate (TP-C9): every row must be reachable in
+seeded generation AND affect at least one declared golden scenario; interaction arms require
+pairwise fixtures. (The production relevance harness does NOT measure engine content — a
+statistical strategy-relevance harness is a named successor.)
 
 ### TP5 — The template notes (for the ~10 RFCs that replicate this)
 
@@ -118,8 +124,7 @@ followed; mechanical naming per the naming law.
 1. Tenant row loads under the pinned artifact in both runtimes; Fairness-Law loader rejection
    proven (a power-stat scaling input fails); soul_gate honored (near-zero Soul rejects start).
 2. Engine determinism: `(seed, choices)` recomputes the certified result byte-identically Go/TS;
-   golden vectors cover scoring incl. hack interactions and a big-number-regime hand; daily seed
-   published in the wire.
+   golden vectors cover scoring incl. hack interactions and a big-number-regime hand.
 3. Full platform path: create→play→resolve→payout for a real run through the shipped composer;
    faucet cap forfeits with reason; offline_quality charges; unlock via the Fiscal sink proven.
 4. Content: launch catalog rows exact-key validated; copy keys resolve; relevance floors green once

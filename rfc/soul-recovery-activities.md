@@ -1,6 +1,7 @@
 # RFC: Soul Recovery Activities (the cozy content — touch-grass v1)
 
-- **Status:** draft — acceptance blocked on SR-C1–SR-C8. The **owner-content
+- **Status:** accepted — SR-C1–SR-C8 ruled; implementing (playability gated on the coordinator
+  API amendment + an accepted UI Foundation). The **owner-content
   mint** the Soul verdict requires before production `recovery_activities` rows may exist.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-07
