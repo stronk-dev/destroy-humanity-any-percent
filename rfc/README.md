@@ -33,6 +33,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [The Pitch (minigame content — template)](minigame-the-pitch.md) | acceptance blocked on TP-C19–TP-C25 | Minigame Platform (archived) / Fiscal / Soul |
 | [Soul Recovery Activities](soul-recovery-activities.md) | accepted — implementing (SR-C1–SR-C14 ruled; UI debt carried) | Soul Foundation / API / UI |
 | [Minigame & Recovery API + Surface](minigame-api-and-surface.md) | draft — the playability seam, queued for acceptance review | API Foundation / Minigame Platform (archived) / Soul / UI Foundation |
+| [First Content Epoch](first-content-epoch.md) | draft — owner-gated mint (successor of TP-C18/SR-C13) | ALL fixture-first content foundations |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
 | [T0–T1 Playable Content](t0-t1-playable-content.md) | draft | Production / Purchasable Content / Copy Pipeline |
 

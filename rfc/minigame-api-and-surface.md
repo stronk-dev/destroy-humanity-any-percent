@@ -113,10 +113,18 @@ None — this exposes ruled machinery over the established API discipline.
 
 ## Open questions
 
-- Whether `GET .../sessions/current` should cover minigame AND recovery in one call for the
-  reconnect screen (a convenience composite) — decide at acceptance review.
+- ~~Whether `GET .../sessions/current` should cover minigame AND recovery in one call~~ — **RULED
+  2026-08-07 (owner-side, pre-acceptance): no composite endpoint in v1.** Each family owns its own
+  reconnect read: minigames via `GET .../sessions/current` as specified; recovery via SB25's
+  idempotent `start` (which returns the active session with a rotated token) invoked only on user
+  intent, with passive display derived from the founder state the client already receives. If
+  acceptance review finds the reconnect screen needs a passive recovery read the founder snapshot
+  doesn't carry, the remedy is a per-family `GET /api/v1/soul-recovery/current`, NOT a composite —
+  a cross-family composite would be a second source of truth over two independently-owned session
+  stores.
 - The streaming successor's trigger condition (first real-time tenant) — declared, not designed.
 
 ## Changelog
 
 - 2026-08-07: created (draft) — the playability seam TP-C10/SR-C1/SR-C3 named.
+- 2026-08-07: composite-reconnect open question ruled (no composite; per-family reads).
