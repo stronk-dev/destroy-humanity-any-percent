@@ -111,6 +111,9 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
+	if composition.Minigames == nil {
+		t.Fatal("composed gameserver omitted the minigame platform")
+	}
 	serverContext, cancelServer := context.WithCancel(ctx)
 	defer cancelServer()
 	if err := composition.Server.Start(serverContext); err != nil {

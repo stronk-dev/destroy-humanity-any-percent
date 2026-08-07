@@ -20,6 +20,8 @@ import (
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/leaderboard"
+	"cloud-clicker/server/minigame"
+	"cloud-clicker/server/pitch"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/replaycatalog"
@@ -56,6 +58,7 @@ type Composition struct {
 	Accounts             *account.Repository
 	Production           *production.Service
 	Guilds               *guild.Service
+	Minigames            *minigame.Service
 	Commons              *commonsprojection.Projector
 	Verification         *replayverify.Repository
 	LeaderboardProjector *leaderboard.QueueProjector
@@ -105,6 +108,12 @@ func (catalogs *runtimeCatalogs) ValidateState(hash string, state *save.State) e
 }
 func (catalogs *runtimeCatalogs) ResolveReplayCatalogs(hash string) (production.CatalogBundle, bool) {
 	return catalogs.bundle(hash)
+}
+func (catalogs *runtimeCatalogs) ResolveTenantContent(constantsHash, engineRef, engineVersion string) (minigame.TenantContent, bool) {
+	if catalogs == nil {
+		return minigame.TenantContent{}, false
+	}
+	return catalogs.replay.ResolveTenantContent(constantsHash, engineRef, engineVersion)
 }
 func (catalogs *runtimeCatalogs) ResolvePrestige(hash string) (*prestigecore.Policy, bool) {
 	bundle, ok := catalogs.bundle(hash)
@@ -246,6 +255,18 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err != nil {
 		return nil, err
 	}
+	minigameRepository, err := minigame.NewRepository(config.DB)
+	if err != nil {
+		return nil, err
+	}
+	minigameTenants, err := minigame.NewTenantRegistry(pitch.NewTenant())
+	if err != nil {
+		return nil, err
+	}
+	minigameService, err := minigame.NewService(minigameRepository, minigameTenants, catalogs)
+	if err != nil {
+		return nil, err
+	}
 	providers := production.CombinedContributionProviders{
 		production.FrozenContributionProvider{DB: config.DB},
 		commonsbinding.Provider{Catalogs: catalogs.commons, Snapshots: commonsProjector},
@@ -359,6 +380,6 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err := server.AttachJobs(world, verificationJob, presenceJob, clearingJob, sweepJob, sessionGCJob); err != nil {
 		return nil, err
 	}
-	return &Composition{CurrentHash: seed.Hash, Server: server, Node: node, Accounts: accounts, Production: productionService, Guilds: guildService,
+	return &Composition{CurrentHash: seed.Hash, Server: server, Node: node, Accounts: accounts, Production: productionService, Guilds: guildService, Minigames: minigameService,
 		Commons: commonsProjector, Verification: verification, LeaderboardProjector: boardProjector, Clearing: clearing, Catalogs: catalogs}, nil
 }
