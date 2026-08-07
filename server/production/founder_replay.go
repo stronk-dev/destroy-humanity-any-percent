@@ -77,6 +77,9 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 	if isSoulRecoveryPayload(canonicalPayload) {
 		return applyFounderSoulRecovery(state, canonicalPayload, catalogs, wire)
 	}
+	if isStartMinigameSessionPayload(canonicalPayload) {
+		return applyFounderStartMinigameSession(state, canonicalPayload, catalogs, wire)
+	}
 	request, err := parseLoggedIntent(canonicalPayload, wire.Command.IntentID)
 	if err != nil || !bytes.Equal(request.CanonicalPayload, canonicalPayload) {
 		return FounderLoggedTransition{}, fmt.Errorf("%w: Founder canonical command", ErrInvalidReplayInputs)

@@ -75,3 +75,23 @@ now-ruled MA-C10–C14.
   advance from 0.3.79 to 0.3.80.
 - The coordinator and typed handlers still need to consume these primitives; no completion or
   archival claim is made here.
+
+## 2026-08-07 — MA-C11 replay-owned session-start coordinator
+
+- Added the server-only `start_minigame_session` Founder command and an atomic
+  Founder→Company→session coordinator. The transaction locks the active Founder and both save
+  streams in the declared order, validates their shared pinned run, advances only Founder v21's
+  `minigame_session_seq`, inserts the frozen tenant genesis/session and create receipt, then writes
+  the Founder revision/log before committing.
+- Session seeds are derived from the persisted sequence and the save-seeded substream contract in
+  both runtimes. The shared replay corpus proves the exact Founder transition, receipt, and seed;
+  no deploy-current content is read inside replay.
+- Real-Postgres coverage injects faults after Founder genesis, revision, events, log, and retention
+  and proves that no session, receipt, or sequence increment survives. It also proves same-key
+  replay without a second sequence increment, conflicting active-session rejection, Company-state
+  immutability, and verification of the resulting Founder history.
+- Kernel semantics advance from 0.3.80 to 0.3.81. The standard Go, client, typecheck, replay-fixture,
+  kernel-history, and full Postgres integration gates are green.
+- This is implementation and self-review evidence only. The public create handler is intentionally
+  still unmounted, MA-C12 and terminal command composition remain open, and this entry is not the
+  designated cross-party verdict or archival authority.

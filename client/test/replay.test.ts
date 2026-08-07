@@ -144,6 +144,9 @@ const fixture = fixtureJSON as {
 	readonly soul_artifacts: ReplayArtifacts;
 	readonly soul_company_case: FixtureCase;
 	readonly soul_founder_case: FounderFixtureCase;
+	readonly minigame_start_constants_hash: string;
+	readonly minigame_start_artifacts: ReplayArtifacts;
+	readonly minigame_start_founder_case: FounderFixtureCase;
 	readonly founder_run: {
 		readonly founder_stream_id: string; readonly founder_id: string; readonly genesis_revision: number; readonly genesis_version: 14 | 15 | 16 | 17 | 18;
     readonly genesis_constants_hash: string; readonly genesis: unknown; readonly head_revision: number; readonly head_version: 14 | 15 | 16;
@@ -250,6 +253,16 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 			appliedRevision: 2, serverTSMS: founderWire.command.server_ts_ms, source: { companyStreamId: companyWire.command.company_stream_id,
 				runSeq: companyWire.command.run_seq, runLogSeq: companyWire.command.run_log_seq } }],
 			{ revision: 2, version: 20, constantsHash: fixture.soul_constants_hash, state: founderCase.post_state }, [bundle])).resolves.toBe("verified");
+	});
+
+	it("replays the Founder-owned minigame session sequence and seed", async () => {
+		const bundle = await loadReplayCatalogBundle(fixture.minigame_start_constants_hash, fixture.minigame_start_artifacts);
+		const testCase = fixture.minigame_start_founder_case;
+		const founder = restoreFounderReplayState(testCase.pre_state, testCase.state_version, bundle);
+		const transition = await applyFounderLogged(founder, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+		expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+		expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
+		expect(canonicalJSONString(encodeFounderReplayState(founder))).toBe(testCase.post_state_json);
 	});
 
   it("replays the sequential doctrine and Compute Credit corpus", async () => {

@@ -102,16 +102,28 @@ func NewService(repository *Repository, tenants *TenantRegistry, contentResolver
 // tenant for a deterministic genesis snapshot, then freezes both inputs in the
 // authoritative session row.
 func (service *Service) Start(ctx context.Context, request StartRequest) (Session, error) {
+	prepared, err := service.PrepareStart(request)
+	if err != nil {
+		return Session{}, err
+	}
+	return service.repository.create(ctx, prepared)
+}
+
+// PrepareStart resolves the pure tenant genesis and freezes all content and
+// scaling inputs without touching persistence. Coordinators use the returned
+// value with CreateTx so the Founder sequence, session, and API receipt commit
+// atomically.
+func (service *Service) PrepareStart(request StartRequest) (CreateSession, error) {
 	if service == nil || request.EngineVersion == "" {
-		return Session{}, ErrInvalidSession
+		return CreateSession{}, ErrInvalidSession
 	}
 	descriptor, ok := service.tenants.Descriptor(request.EngineRef)
 	if !ok || descriptor.EngineVersion != request.EngineVersion {
-		return Session{}, ErrInvalidTenant
+		return CreateSession{}, ErrInvalidTenant
 	}
 	seed, err := strconv.ParseUint(request.Seed, 10, 64)
 	if err != nil || request.Seed != "0" && request.Seed[0] == '0' {
-		return Session{}, ErrInvalidSession
+		return CreateSession{}, ErrInvalidSession
 	}
 	content := service.resolveContent(request.ConstantsHash, request.EngineRef, request.EngineVersion)
 	genesis, err := service.tenants.Create(request.EngineRef, request.EngineVersion, CreateInput{
@@ -119,18 +131,22 @@ func (service *Service) Start(ctx context.Context, request StartRequest) (Sessio
 		ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion,
 	})
 	if err != nil {
-		return Session{}, err
+		return CreateSession{}, err
 	}
 	scaling, err := json.Marshal(request.ScalingInputs)
 	if err != nil {
-		return Session{}, ErrInvalidSession
+		return CreateSession{}, ErrInvalidSession
 	}
-	return service.repository.create(ctx, CreateSession{
+	prepared := CreateSession{
 		SessionID: request.SessionID, MinigameID: request.MinigameID, FounderID: request.FounderID,
 		CompanyStreamID: request.CompanyStreamID, RunSeq: request.RunSeq, EngineRef: request.EngineRef,
 		EngineVersion: request.EngineVersion, ConstantsHash: request.ConstantsHash,
 		ScalingInputs: scaling, Seed: request.Seed, Mode: request.Mode, Genesis: genesis,
-	})
+	}
+	if !validCreate(prepared) {
+		return CreateSession{}, ErrInvalidSession
+	}
+	return prepared, nil
 }
 
 // Play claims the authoritative row before invoking the pure tenant. Rejected

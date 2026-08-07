@@ -21,6 +21,7 @@ import (
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
+	"cloud-clicker/server/minigameapi"
 	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
@@ -31,33 +32,36 @@ import (
 var updateReplayFixture = flag.Bool("update-replay-fixture", false, "rewrite the shared ApplyLogged fixture")
 
 type crossRuntimeFixture struct {
-	Version         int                        `json:"version"`
-	ConstantsHash   string                     `json:"constants_hash"`
-	Artifacts       map[string]string          `json:"artifacts"`
-	Cases           []crossRuntimeFixtureCase  `json:"cases"`
-	TerminalCases   []crossRuntimeTerminalCase `json:"terminal_cases"`
-	Additional      []crossRuntimeBundleCase   `json:"additional_bundles"`
-	ActiveExit      crossRuntimeActiveExit     `json:"active_foundation_exit"`
-	ActivePlayExit  crossRuntimeActiveExit     `json:"active_play_exit"`
-	FullRun         crossRuntimeFullRun        `json:"full_run"`
-	DoctrineRun     crossRuntimeFullRun        `json:"doctrine_run"`
-	ActivePlayRun   crossRuntimeFullRun        `json:"active_play_run"`
-	RejectedExit    crossRuntimeFullRun        `json:"rejected_exit_run"`
-	FounderHash     string                     `json:"founder_constants_hash"`
-	FounderFiles    map[string]string          `json:"founder_artifacts"`
-	FounderCases    []crossRuntimeFounderCase  `json:"founder_cases"`
-	FounderRun      crossRuntimeFounderRun     `json:"founder_run"`
-	PetFounderHash  string                     `json:"pet_founder_constants_hash"`
-	PetFounderFiles map[string]string          `json:"pet_founder_artifacts"`
-	PetFounderCases []crossRuntimeFounderCase  `json:"pet_founder_cases"`
-	MinigameHash    string                     `json:"minigame_constants_hash"`
-	MinigameFiles   map[string]string          `json:"minigame_artifacts"`
-	MinigameCompany crossRuntimeFixtureCase    `json:"minigame_company_case"`
-	MinigameFounder crossRuntimeFounderCase    `json:"minigame_founder_case"`
-	SoulHash        string                     `json:"soul_constants_hash"`
-	SoulFiles       map[string]string          `json:"soul_artifacts"`
-	SoulCompany     crossRuntimeFixtureCase    `json:"soul_company_case"`
-	SoulFounder     crossRuntimeFounderCase    `json:"soul_founder_case"`
+	Version            int                        `json:"version"`
+	ConstantsHash      string                     `json:"constants_hash"`
+	Artifacts          map[string]string          `json:"artifacts"`
+	Cases              []crossRuntimeFixtureCase  `json:"cases"`
+	TerminalCases      []crossRuntimeTerminalCase `json:"terminal_cases"`
+	Additional         []crossRuntimeBundleCase   `json:"additional_bundles"`
+	ActiveExit         crossRuntimeActiveExit     `json:"active_foundation_exit"`
+	ActivePlayExit     crossRuntimeActiveExit     `json:"active_play_exit"`
+	FullRun            crossRuntimeFullRun        `json:"full_run"`
+	DoctrineRun        crossRuntimeFullRun        `json:"doctrine_run"`
+	ActivePlayRun      crossRuntimeFullRun        `json:"active_play_run"`
+	RejectedExit       crossRuntimeFullRun        `json:"rejected_exit_run"`
+	FounderHash        string                     `json:"founder_constants_hash"`
+	FounderFiles       map[string]string          `json:"founder_artifacts"`
+	FounderCases       []crossRuntimeFounderCase  `json:"founder_cases"`
+	FounderRun         crossRuntimeFounderRun     `json:"founder_run"`
+	PetFounderHash     string                     `json:"pet_founder_constants_hash"`
+	PetFounderFiles    map[string]string          `json:"pet_founder_artifacts"`
+	PetFounderCases    []crossRuntimeFounderCase  `json:"pet_founder_cases"`
+	MinigameHash       string                     `json:"minigame_constants_hash"`
+	MinigameFiles      map[string]string          `json:"minigame_artifacts"`
+	MinigameCompany    crossRuntimeFixtureCase    `json:"minigame_company_case"`
+	MinigameFounder    crossRuntimeFounderCase    `json:"minigame_founder_case"`
+	SoulHash           string                     `json:"soul_constants_hash"`
+	SoulFiles          map[string]string          `json:"soul_artifacts"`
+	SoulCompany        crossRuntimeFixtureCase    `json:"soul_company_case"`
+	SoulFounder        crossRuntimeFounderCase    `json:"soul_founder_case"`
+	MinigameStartHash  string                     `json:"minigame_start_constants_hash"`
+	MinigameStartFiles map[string]string          `json:"minigame_start_artifacts"`
+	MinigameStart      crossRuntimeFounderCase    `json:"minigame_start_founder_case"`
 }
 
 type crossRuntimeFounderCase struct {
@@ -347,7 +351,62 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	result.PetFounderHash, result.PetFounderFiles, result.PetFounderCases = makePetFounderReplayFixture(t, baseNow)
 	result.MinigameHash, result.MinigameFiles, result.MinigameCompany, result.MinigameFounder = makeMinigameResolutionReplayFixture(t, baseNow)
 	result.SoulHash, result.SoulFiles, result.SoulCompany, result.SoulFounder = makeSoulRecoveryReplayFixture(t, baseNow)
+	result.MinigameStartHash, result.MinigameStartFiles, result.MinigameStart = makeMinigameStartReplayFixture(t, baseNow)
 	return result
+}
+
+func makeMinigameStartReplayFixture(t *testing.T, now time.Time) (string, map[string]string, crossRuntimeFounderCase) {
+	t.Helper()
+	catalogs := pitchFeatureBundle(t)
+	apiBytes, err := os.ReadFile("../../balance/testdata/minigame-api-candidate-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs.Artifacts = cloneArtifactMap(catalogs.Artifacts)
+	catalogs.Artifacts["minigame_api"] = apiBytes
+	catalogs.MinigameAPI, err = minigameapi.LoadCatalog(apiBytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogs.ConstantsHash, err = save.ConstantsHashArtifacts(catalogs.Artifacts)
+	if err != nil || !catalogs.valid(catalogs.ConstantsHash) {
+		t.Fatalf("minigame start fixture bundle err=%v", err)
+	}
+	state := replayFounderFixtureState(t, catalogs, now)
+	state.WireVersion, state.MinigameSessionSeq = 21, 7
+	state.MinigameRatings = map[string]save.MinigameRatingState{"pitch": {Elo: 1000, SeasonMember: "s1"}}
+	state.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{"pitch": {GradePPM: 200_000}}
+	state.Pets = map[string]pet.CareState{}
+	state.FiscalPeriodOpenedWallMS, state.FiscalGeneratorLevels, state.FiscalUnlocks = now.UnixMilli(), map[string]int64{}, map[string]bool{"minigame.pitch": true}
+	for _, row := range catalogs.Fiscal.GeneratorLevelRows() {
+		state.FiscalGeneratorLevels[row.GeneratorID] = 0
+	}
+	state.Soul, state.SoulExhaustedSourceIDs = 50, []string{}
+	pre := mustEncodeState(t, state)
+	const sessionID = "01986666-2b00-7000-8000-000000000001"
+	const founderID = "01986666-3b00-7000-8000-000000000001"
+	payload, _ := json.Marshal(startMinigameSessionPayload{Kind: startMinigameSessionKind, SessionID: sessionID, MinigameID: "pitch"})
+	command := save.FounderReplayCommand{IntentID: sessionID, FounderStreamID: "01986666-2c00-4000-8000-000000000001",
+		FounderID: founderID, Revision: 1, FounderLogSeq: 1, ServerTSMS: now.UnixMilli()}
+	resolved := startMinigameSessionResolved{Kind: startMinigameSessionKind, CompanyStreamID: "01986666-1b00-4000-8000-000000000001",
+		RunSeq: 1, SequenceBefore: 7, SequenceAfter: 8, Seed: minigameSessionSeed(founderID, 1, 8)}
+	inputs, err := save.MarshalFounderReplayInputs(command, resolved)
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyFounderLogged(state, payload, catalogs, inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	post := mustEncodeState(t, state)
+	events := fixtureEvents(transition.Events)
+	return catalogs.ConstantsHash, stringArtifacts(catalogs.Artifacts), crossRuntimeFounderCase{
+		Name: "start-minigame-session-founder", StateVersion: 21, PreState: pre, CanonicalPayload: payload,
+		ReplayInputs: inputs, Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events,
+		PostState: post, ResultConstantsHash: transition.ResultConstantsHash,
+		ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events),
+		PostStateJSON: canonicalFixtureJSON(t, post),
+	}
 }
 
 func makeDoctrineReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFullRun {

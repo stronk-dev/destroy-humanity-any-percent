@@ -22,6 +22,7 @@ import { parsePetCareStates, validatePetCareStatesForCatalog, type PetCareState 
 import { applyPetCareTransition, careStatus } from "./pet/transition";
 import { discountedRequirements, evaluatePredicate, parseRoutesCatalog, type RouteContext, type RoutesCatalog } from "./routes";
 import { parseSoulCatalog, soulBand, type SoulCatalog } from "./soul/catalog";
+import { substream } from "./combat/rng";
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -629,6 +630,7 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
     const kind = string(wire.resolved.kind);
     if (kind === "resolve_minigame_session") return finish(await applyFounderMinigameLogged(state, canonicalPayload, catalogs, wire));
 		if (kind === "soul_recovery") return finish(applyFounderSoulRecovery(state, canonicalPayload, catalogs, wire));
+		if (kind === "start_minigame_session") return finish(await applyFounderStartMinigameSession(state, canonicalPayload, catalogs, wire));
     const request = parseIntent(canonicalPayload, wire.command.intent_id);
     if (kind === "invalid") {
       onlyKeys(wire.resolved, ["kind", "detail"], "invalid Founder inputs");
@@ -694,6 +696,28 @@ export async function applyFounderLogged(state: FounderReplayState, canonicalPay
     if (kind === "exit.v1") return finish(applyFounderExit(state, request, wire, catalogs));
     throw new RangeError("unknown Founder replay arm");
   } catch (error) { rollback(); throw error; }
+}
+
+async function applyFounderStartMinigameSession(state: FounderReplayState, canonicalPayload: string,
+	catalogs: ReplayCatalogBundle, wire: FounderReplayWire): Promise<FounderLoggedTransition> {
+	if (state.wireVersion < 21 || !catalogs.minigameAPI || !catalogs.minigames) throw new RangeError("inactive minigame API state");
+	const payload = exactObject(parseJSON(canonicalPayload), ["kind", "session_id", "minigame_id"], "minigame start payload");
+	const sessionId = uuidV7String(payload.session_id), minigameId = mechanicalString(payload.minigame_id);
+	if (payload.kind !== "start_minigame_session" || sessionId !== wire.command.intent_id || canonicalJSONString(payload) !== canonicalPayload) throw new RangeError("minigame start command mismatch");
+	const resolved = exactObject(wire.resolved, ["kind", "company_stream_id", "run_seq", "sequence_before", "sequence_after", "seed"], "minigame start inputs");
+	const companyStreamId = uuidString(resolved.company_stream_id), runSeq = safeInteger(resolved.run_seq, 1, MAX_EXACT_INTEGER);
+	const before = safeInteger(resolved.sequence_before, 0, MAX_EXACT_INTEGER - 1), after = safeInteger(resolved.sequence_after, 1, MAX_EXACT_INTEGER);
+	if (resolved.kind !== "start_minigame_session" || after !== before + 1 || state.minigameSessionSeq !== before) throw new RangeError("minigame start sequence mismatch");
+	const definition = catalogs.minigames.minigames.find((row) => row.minigame_id === minigameId);
+	const tenant = catalogs.minigameAPI.tenants.find((row) => row.minigameId === minigameId);
+	if (!definition || !tenant || tenant.engineRef !== definition.engine_ref || tenant.engineVersion !== definition.engine_version) throw new RangeError("minigame start tenant mismatch");
+	const seed = substream((await founderSeed(wire.command.founder_id, runSeq)) ^ BigInt(after), "minigame.session.v1").next().toString();
+	if (string(resolved.seed) !== seed) throw new RangeError("minigame start seed mismatch");
+	state.minigameSessionSeq = after;
+	const receipt = { founder_revision: wire.command.revision + 1, intent_id: sessionId, minigame_id: minigameId,
+		outcome: "applied", seed, sequence_after: after, sequence_before: before, session_id: sessionId };
+	void companyStreamId;
+	return { state, outcome: "applied", receipt, events: [], resultConstantsHash: catalogs.constantsHash };
 }
 
 function applyFounderSoulRecovery(state: FounderReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, wire: FounderReplayWire): FounderLoggedTransition {

@@ -124,8 +124,37 @@ func (repository *Repository) create(ctx context.Context, input CreateSession) (
 	if err := lockFounder(ctx, tx, input.FounderID); err != nil {
 		return Session{}, err
 	}
+	created, err := createTx(ctx, tx, input)
+	if err != nil {
+		return Session{}, err
+	}
+	if err := tx.Commit(); err != nil {
+		return Session{}, err
+	}
+	return created, nil
+}
+
+// CreateTx inserts a prepared deterministic session inside a coordinator-
+// owned Founder→Company transaction. The caller must already hold the Founder
+// serialization lock; the database still rechecks recovery exclusivity and
+// pinned-run ownership before the insert.
+func CreateTx(ctx context.Context, tx *sql.Tx, input CreateSession) (Session, error) {
+	if tx == nil || !validCreate(input) {
+		return Session{}, ErrInvalidSession
+	}
+	return createTx(ctx, tx, input)
+}
+
+func createTx(ctx context.Context, tx *sql.Tx, input CreateSession) (Session, error) {
 	var exclusive bool
 	if err := tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM soul_recovery_sessions WHERE founder_id=$1 AND status IN ('active','claimed'))`,
+		input.FounderID).Scan(&exclusive); err != nil {
+		return Session{}, err
+	}
+	if exclusive {
+		return Session{}, ErrExclusiveActivity
+	}
+	if err := tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM minigame_sessions WHERE founder_id=$1 AND status IN ('active','claimed'))`,
 		input.FounderID).Scan(&exclusive); err != nil {
 		return Session{}, err
 	}
@@ -138,17 +167,9 @@ func (repository *Repository) create(ctx context.Context, input CreateSession) (
 	} else if err != nil {
 		return Session{}, err
 	}
-	row := tx.QueryRowContext(ctx, createSessionSQL, input.SessionID, input.MinigameID, input.FounderID,
+	return scanSession(tx.QueryRowContext(ctx, createSessionSQL, input.SessionID, input.MinigameID, input.FounderID,
 		input.CompanyStreamID, input.RunSeq, input.EngineRef, input.EngineVersion, input.ConstantsHash,
-		string(input.ScalingInputs), input.Seed, input.Mode, string(input.Genesis))
-	created, err := scanSession(row)
-	if err != nil {
-		return Session{}, err
-	}
-	if err := tx.Commit(); err != nil {
-		return Session{}, err
-	}
-	return created, nil
+		string(input.ScalingInputs), input.Seed, input.Mode, string(input.Genesis)))
 }
 
 func (repository *Repository) Load(ctx context.Context, founderID, sessionID string) (Session, error) {
