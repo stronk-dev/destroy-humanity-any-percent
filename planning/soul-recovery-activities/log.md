@@ -41,3 +41,9 @@ changed.
 Focused Go tests, client typecheck, and the production package's full Postgres integration tests
 pass. The implementation remains fixture-first: the First Content Epoch mint and UI toy AC4/AC5
 stay open by contract. Ready for designated review; this entry does not authorize archival.
+
+The subsequent full `make verify` completed Go, formulas, harness, client typecheck/build, and
+6,587 client assertions, then correctly failed the history guard: commit `d4c2312` includes a
+wire-identical typed-sentinel refactor in kernel-watched production files without a kernel bump.
+That refactor must be dropped under the unpushed/unreviewed behavior-identical history carve-out;
+it must not receive a false kernel semantic version. No green full-gate claim is made here.
