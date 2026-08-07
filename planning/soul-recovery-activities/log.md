@@ -60,3 +60,55 @@ population invariance, balance harness, TypeScript/Svelte typecheck, production 
 unit assertions, kernel history/adversarial guards, copy/schema/content-manifest checks, and 19,770
 browser assertions all pass. No production epoch was minted and AC4/AC5 remain carried to the UI
 successor. Ready for cross-party designated review; Codex does not authorize archival.
+
+## 2026-08-07 — designated cross-party verdict: Soul Recovery (4973c8e^..ab9d15e) — NOT APPROVED (narrow)
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**Server side verified APPROVED-QUALITY with adversarial probes:** SR-C10 coordinator commands
+(identity from claims only, client founder_id rejected 400, strict decoding, closed error pairs);
+SB25 rotation (probe: removing rotation fails the suite at soul_recovery_integration_test.go:194);
+SB24 starvation closure (probe: zeroing accumulation fails at :239; all three literal activities
+driven through real multi-transaction heartbeats and replay-verified); SR-C6 limiter literals
+(burst 6, refill ceiling÷6, 429 rate_limited/recovery_progress, no mutation on limited flood);
+SR-C12 rows + all 12 copy keys byte-exact; zero-reward law (company cash "0" post-resolve, no
+facts leakage); SB26 watchdog coordinator-preflight-only with forced resolution; replay
+determinism; fixture-first containment (constants_hash untouched); kernel 0.3.75→0.3.76 lockstep
+with ab9d15e correctly bump-free. Both gate suites independently green at ab9d15e.
+
+**BLOCKING (route to Codex; both inside the SR-C14 accepted scope, NOT the AC4/AC5 carried debt):**
+- **F1 (MEDIUM): the scheduler never treats a missed ceiling as a pause.** SR-C6 rules "missed
+  ceiling = pause, reconnect via start before resuming"; `client/src/soul/recovery-scheduler.ts`
+  `#beat()` checks only backwards time — after any forward gap (sleep-while-visible, long hidden
+  interval) it dispatches with the OLD token and resumes directly. The first scheduler test
+  ENSHRINES the deviation (10,000 ms hidden gap vs the 5,000 ms fixture ceiling resumes with the
+  original token and asserts success).
+- **F2 (LOW-MED): two ruled test-matrix cases missing** — duplicate retry (the `#requestInFlight`
+  guard is untested) and the watchdog terminal case.
+
+**OWNER-SIDE RULING (recorded now — closes the DESIGN-GAP the reviewer flagged inside F1):** the
+ruled scheduler interface carries no ceiling input, and it does not need one. **The canonical
+missed-ceiling inference is `elapsed > 3 × beat_interval_ms`** — exact, because SR-C6 defines
+cadence = ceiling/3, so 3×interval IS the ceiling in the scheduler's own units. The fix is
+confined to the scheduler: on any elapsed gap > 3×beat_interval_ms (visible or hidden), enter the
+paused state, emit `on_pause`, and require an upstream `reconnect()` (the SB25 start-as-reconnect,
+rotating the token) before beating resumes. No interface change, no server change. The enshrining
+test must be corrected to assert pause+reconnect for over-ceiling gaps (an under-ceiling hidden
+gap may still resume directly).
+
+**Non-blocking, recorded:**
+- **F3:** string-contains error classification in `writeSoulRecoveryResult` is the accepted
+  residue of the approved d4c2312 rewrite; reinstate typed sentinels in the next commit that
+  honestly bumps the kernel (standing rider, not a gate).
+- **F4 (intended readings, now canonical):** (a) transient store errors mapping to 404
+  `unknown_id` follows the pre-existing route pattern — acceptable; (b) `session_expired` never
+  surfaces as an API error — expiry is delivered as the watchdog-cancel receipt at preflight per
+  SB26, with `session_expired:true` reserved for ordinary intents. Both are the intended readings.
+
+**Consumed:** exactly {4973c8e, ab9d15e} + docs-tier {f04c2f3, d1cd39c}. **Range-union:** relative
+to the Soul Foundation closing endpoint 3ff2082, the path-filtered implementation span is exactly
+{4973c8e, ab9d15e}; all intervening commits are docs-tier. No uncovered edge commits.
+
+**Verdict: NOT APPROVED pending F1 + F2 (scheduler pause + two test cases); re-review is narrow
+(the scheduler delta only). Archival blocked until then; everything else in the range needs no
+rework.**
