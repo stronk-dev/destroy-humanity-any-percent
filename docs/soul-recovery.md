@@ -40,7 +40,9 @@ remain server errors.
 ## Heartbeat lifecycle
 
 The framework-neutral client scheduler beats only while the recovery surface is active and
-visible. Its interval is exactly one third of the catalog ceiling. An elapsed gap greater than
+visible. Its interval is contracted (SR-C6) to be one third of the catalog ceiling; the shipped
+scheduler accepts any interval ≥ 1 ms, and the ceiling/3 derivation is owed by the UI wiring that
+constructs it. An elapsed gap greater than
 `3 * beat_interval_ms`, whether caused by a hidden tab, sleep, clock regression, or transport
 failure, enters a reconnect-required pause. No further beat is sent until reconnect rotates the
 token. An under-ceiling hidden interval may resume immediately, and queued beats are never replayed.

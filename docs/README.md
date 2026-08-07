@@ -47,6 +47,24 @@ Implemented systems:
   Fiscal/Soul admission, certified payout, and fixture-first content verification.
 - [Soul Recovery](soul-recovery.md) — zero-output recovery activities, authenticated coordinator
   lifecycle, heartbeat ceiling/reconnect behavior, and fixture-first activation boundary.
+- [Balance harness](balance-harness.md) — scenario-driven pacing observation, baseline-change
+  guard, and the relevance report.
+- [Copy pipeline](copy-pipeline.md) — the shipped-string authority: catalog, references,
+  generation, and the completeness gates.
+- [Purchasable content](purchasable-content.md) — catalog-driven upgrade/purchase surfaces on the
+  economy kernel.
+- [Guilds](guilds.md) — guild model, tithe, and reserved-credit clearing.
+- [Combat](combat.md) — the shared combat data model and arithmetic kernel.
+- [Meters](meters.md) — the Company meter catalog: bands, decay, inputs, trust reseed
+  (foundation implementation in progress; no production artifact minted).
+- [Achievements](achievements.md) — condition/proof grammar and score grants
+  (foundation implementation in progress; no production artifact minted).
+- [Pet care](pet-care.md) — Founder-scoped care state, decay/trust policies, the FSM
+  (foundation implementation in progress; no production artifact minted).
+- [API foundation](api-foundation.md) — schema/cursor authority and the operation registry
+  (foundation implementation in progress).
+- [Founder transitions](founder-transitions.md) — Exit lifecycle and the attendance clock
+  (canonical home for Founder Attendance per the 2026-08-07 ruling).
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.

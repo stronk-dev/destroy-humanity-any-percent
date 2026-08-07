@@ -1,6 +1,6 @@
 # RFC: Minigame & Recovery API + Surface (the playability seam)
 
-- **Status:** accepted — MA-C1–C9 ruled (2026-08-07); implementation-ready. The named successor
+- **Status:** accepted — MA-C1–C15 ruled (2026-08-07); implementing (composition slice designated-APPROVED e935c22). The named successor
   that TP-C10 (The Pitch) and SR-C1/SR-C3 (Soul Recovery) both depend on for HUMAN playability;
   **every later minigame and coordinator activity inherits this boundary.**
 - **Author:** Marco (drafted by Claude)
