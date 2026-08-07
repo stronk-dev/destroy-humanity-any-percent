@@ -323,3 +323,37 @@ implementer-chosen path—is the owner-approved mint manifest.
   commissioned); dual-lane FCE2; the three artifact documents RATIFIED by SHA (tiered scoring
   stands); copy-first sequencing; pet activation reconciled; promotion-manifest table owed at
   acceptance.
+
+## Codex implementation blockers — copy activation (2026-08-07)
+
+### FCE-C7 — The thirteen achievement copy rows have identifiers but no owner-ratified text
+
+The mint proposal enumerates the thirteen required keys and the possession-warning disclosure,
+but deliberately does not draft the English copy. The Copy Pipeline makes those strings shipped
+content: an implementation cannot choose their text, parameters, era binding, tone, or provenance
+without authoring product copy that this RFC has not approved.
+
+**Proposed contract:** supply or ratify one literal thirteen-row `copy.v1` document before
+implementation. Unless the owner chooses otherwise, the structural defaults are `params: []`,
+`era: null`, `provenance: []`, and `tone: "achievement"`; the possession-warning row uses the
+already-ruled exact disclosure. Ratification names the complete source document and its SHA-256,
+not only the key list.
+
+### FCE-C8 — Copy references cannot point at the achievements artifact before that artifact exists
+
+FCE-C4 says copy lands before the achievements balance commit. The current copy gate resolves
+every active reference against the seed artifact set, so adding the two achievements reference
+pointers in that earlier commit would make the intermediate history unloadable. Conversely,
+waiting to add all copy until the mint contradicts the ruled copy-first gate.
+
+**Proposed contract:** use a three-stage fail-closed landing:
+
+1. land the thirteen copy rows and generated outputs as intentional orphans; `make copy-check`
+   remains green;
+2. stage and content-gate the owner-ratified achievements candidate against those generated keys,
+   without changing the active seed;
+3. in the epoch-6 mint commit, add the achievements artifact and its two reference-pointer rows
+   atomically, regenerate outputs, and require `make copy-check` green again.
+
+No tracked commit may contain a reference to an absent artifact or an active artifact whose copy
+keys do not resolve.
