@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"os"
 	"testing"
 
 	"cloud-clicker/server/minigame"
@@ -19,6 +20,35 @@ func TestScoreUsesRuledOrderAndSingleQuantize(t *testing.T) {
 	withoutPartner, err := score([]string{"api_call#1", "api_call#2"}, []string{"stealth_mode"}, catalog)
 	if err != nil || withoutPartner.String() != "3e1" {
 		t.Fatalf("partner-absent valuation=%s err=%v", withoutPartner.String(), err)
+	}
+}
+
+func TestScoreCrossesTheBigNumberRegime(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/pitch/big-number-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var vector struct {
+		Version           int      `json:"version"`
+		BaseMetric        string   `json:"base_metric"`
+		CardFactor        string   `json:"card_factor"`
+		SelectedCardIDs   []string `json:"selected_card_ids"`
+		SlottedHackIDs    []string `json:"slotted_hack_ids"`
+		ExpectedValuation string   `json:"expected_valuation"`
+	}
+	if json.Unmarshal(data, &vector) != nil || vector.Version != 1 {
+		t.Fatal("invalid Pitch big-number vector")
+	}
+	_, catalog := loadFixture(t)
+	card := catalog.cardByID["api_call"]
+	card.BaseMetric = vector.BaseMetric
+	catalog.cardByID[card.CardID] = card
+	hack := catalog.hackByID["ab_test"]
+	hack.Effect.Factor = vector.CardFactor
+	catalog.hackByID[hack.HackID] = hack
+	valuation, err := score(vector.SelectedCardIDs, vector.SlottedHackIDs, catalog)
+	if err != nil || valuation.String() != vector.ExpectedValuation {
+		t.Fatalf("big-number valuation=%s want=%s err=%v", valuation.String(), vector.ExpectedValuation, err)
 	}
 }
 

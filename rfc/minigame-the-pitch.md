@@ -69,7 +69,8 @@ on rounds reached, cap.minigame_faucet, season s1, neutral Elo 1000 [0,3000], fa
 
 A new engine package (`server/pitch` + `client/src/pitch`) behind the platform's engine seam:
 - **A run** = `(seed, ordered choices)`. The seed derives from the platform's session identity via
-  the established substream discipline (a named `pitch.run.v1` substream). The daily-seed variant is
+  the established substream discipline: `run_seed = Substream(seed, "pitch.run.v1").Next()`; each
+  per-round draw uses `Substream(run_seed XOR uint64(round), label)`. The daily-seed variant is
   REMOVED from v1 (TP-C7 — the async-snapshot successor owns the calendar seed and its board).
 - **The loop (structure ruled; all magnitudes are catalog data):** each round presents a drafted
   hand of `metric_card`s (each carries a base `metric` value) and the player's slotted
@@ -527,7 +528,8 @@ IDs, the launch hack is unreachable.
 ID `<card_id>#<copy_ordinal>`; `hand[]` and command `card_ids[]` contain instance IDs, remain
 duplicate-free, and scoring resolves their base card IDs. At each round, derive a fresh full-deck
 Fisher–Yates permutation using SplitMix64 with mandated rejection sampling and
-`Substream(seed,"pitch.deck.v1",round)`. Deal positions 0–6, 7–13, and 14–20 for the three hands;
+`Substream(Substream(seed,"pitch.run.v1").Next() XOR uint64(round),"pitch.deck.v1")`. Deal
+positions 0–6, 7–13, and 14–20 for the three hands;
 the four unused cards stay in the deck. `deck_count` is the number remaining after the current deal.
 The snapshot needs no mutable PRNG cursor because `(seed,round,hand_number)` reproduces the draw.
 
@@ -542,7 +544,8 @@ schema, weighted-without-replacement rule, ownership exclusion, purchase-removal
 choose the provisional literal) and grant it exactly once when a non-final round clears, before
 entering shop. Shop offers are exact objects `{offer_id,hack_id,price}`. Generate `shop_size`
 unowned hacks without replacement by `draft_weight` using SplitMix64 rejection sampling under
-`Substream(seed,"pitch.shop.v1",round)`; `offer_id = "pitch.offer.<round>.<slot>.<hack_id>"`.
+`Substream(Substream(seed,"pitch.run.v1").Next() XOR uint64(round),"pitch.shop.v1")`;
+`offer_id = "pitch.offer.<round>.<slot>.<hack_id>"`.
 Buying removes the offer and auto-slots the hack; owned hacks never reappear. `end_shop` discards
 unbought offers and advances the round. Currency and prices are exact nonnegative safe integers.
 
@@ -557,9 +560,10 @@ legal valuations, and two union members have no computable predicate.
 **Proposed contract:** narrow schema-v1 shapes to the used `pair | full_hand` members. `pair` means
 at least two selected instances share a base card ID; `full_hand` means exactly `play_size`
 instances. For each selected card, compute `base_metric + sum(flat_add amounts)`, then multiply that
-card by every slotted `card_factor`; sum the per-card values; multiply once by each satisfied
-`shape_factor`; then multiply once by each `chain_factor` whose partner is slotted, visiting hacks
-in raw-byte `hack_id` order. Quantize once after the final multiplication. `triple` and
+card by every slotted `card_factor`; sum the per-card values; then visit hacks in one raw-byte
+`hack_id` pass, multiplying when the current row is a satisfied `shape_factor` or a `chain_factor`
+whose partner is slotted (the already-accounted flat/card-factor rows are no-ops in this pass).
+Quantize once after the final multiplication. `triple` and
 `flush_kind` require successor content/schema fields and are not reserved executable v1 arms.
 
 ### TP-C23 — Terminal result semantics are not named
@@ -619,13 +623,15 @@ All accepted; owner literals supplied where demanded.
   `<card_id>#<copy_ordinal>`; `hand[]`/`card_ids[]` carry instance IDs (duplicate-free), scoring
   resolves base IDs — which makes `dark_pattern`'s pair reachable via the two copies (the exact
   defect this catches). Per-round full-deck Fisher–Yates via SplitMix64 with mandated rejection
-  sampling under `Substream(seed, "pitch.deck.v1", round)`; deal positions 0–6 / 7–13 / 14–20 for
+  sampling under `Substream(Substream(seed, "pitch.run.v1").Next() XOR uint64(round),
+  "pitch.deck.v1")`; deal positions 0–6 / 7–13 / 14–20 for
   the three hands; `deck_count` = remaining after the current deal; no mutable PRNG cursor
   (`(seed, round, hand_number)` reproduces every draw).
 - **TP-C21 — accepted; the income literal is `round_clear_currency: 3` (provisional).** Granted
   exactly once when a non-final round clears, before entering shop. Shop offers are exact
   `{offer_id, hack_id, price}`; `shop_size` unowned hacks drawn without replacement by
-  `draft_weight` (SplitMix64 rejection sampling, `Substream(seed, "pitch.shop.v1", round)`);
+  `draft_weight` (SplitMix64 rejection sampling, `Substream(Substream(seed,
+  "pitch.run.v1").Next() XOR uint64(round), "pitch.shop.v1")`);
   `offer_id = "pitch.offer.<round>.<slot>.<hack_id>"`; buying removes the offer and auto-slots;
   owned hacks never reappear; `end_shop` discards and advances. All currency/prices nonnegative
   safe integers.
@@ -633,9 +639,9 @@ All accepted; owner literals supplied where demanded.
   four-member list — `triple`/`flush_kind` need successor content/schema fields and are NOT reserved
   v1 arms; no launch hack used them). `pair` = ≥2 selected instances share a base ID; `full_hand` =
   exactly `play_size` instances. The byte equation: per selected card `base_metric + Σ(flat_add)`,
-  × every slotted `card_factor`; Σ the per-card values; × each satisfied `shape_factor`; × each
-  `chain_factor` whose partner is slotted, hacks visited in raw-byte `hack_id` order; ONE quantize
-  after the final multiplication.
+  × every slotted `card_factor`; Σ the per-card values; then one raw-byte `hack_id` pass applying
+  each satisfied `shape_factor` or partner-present `chain_factor` in its encountered position; ONE
+  quantize after the final multiplication.
 - **TP-C23 — accepted.** `pitch.final_round` = the highest round ENTERED (failing round 1 emits 1;
   clearing round 8 emits 8). Outcomes: closed `funded | funding_failed`. The terminal transition
   writes `phase:"terminal"`, retains the final `round_best_valuation`, `hands_remaining: 0` on

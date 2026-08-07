@@ -127,6 +127,51 @@ func TestPitchComposedIntegrationUnlockReplayAndPayout(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	const lockedAccountID = "01986666-c102-4000-8000-000000000001"
+	const lockedFounderID = "01986666-c102-4000-8000-000000000002"
+	if _, err := db.ExecContext(ctx, `INSERT INTO accounts(account_id,recovery_hash) VALUES($1,'test')`, lockedAccountID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id) VALUES($1,$2)`, lockedAccountID, lockedFounderID); err != nil {
+		t.Fatal(err)
+	}
+	lockedCompany := replayFixtureState(t, bundle.Economy, now)
+	lockedCompany.WireVersion, lockedCompany.MeterBands = 16, nil
+	lockedMeters, err := meters.NewRunState(bundle.Meters, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lockedCompany.MeterValues, lockedCompany.MeterDecayRemainders, lockedCompany.MeterInputRemainders =
+		lockedMeters.Values, lockedMeters.DecayRemainders, lockedMeters.InputRemainders
+	lockedCompany.AchievementsEarnedRun = map[string]bool{}
+	lockedCompanyRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: lockedFounderID, Scope: economy.ScopeCompany},
+		bundle.ConstantsHash, lockedCompany, save.WriteContext{Cause: "pitch.soul-gate.integration"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	lockedFounder := replayFounderFixtureState(t, bundle, now)
+	lockedFounder.WireVersion = 20
+	lockedFounder.MinigameRatings = map[string]save.MinigameRatingState{"pitch": {Elo: 1000, SeasonMember: "s1"}}
+	lockedFounder.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{"pitch": {GradePPM: 200_000}}
+	lockedFounder.Pets = map[string]pet.CareState{}
+	lockedFounder.FiscalCredit, lockedFounder.FiscalPeriodOpenedWallMS, lockedFounder.FiscalPeriodSequence = 0, now.UnixMilli(), 0
+	lockedFounder.FiscalGeneratorLevels = make(map[string]int64, len(bundle.Fiscal.GeneratorLevelRows()))
+	for _, row := range bundle.Fiscal.GeneratorLevelRows() {
+		lockedFounder.FiscalGeneratorLevels[row.GeneratorID] = 0
+	}
+	lockedFounder.FiscalUnlocks = map[string]bool{"minigame.pitch": true}
+	lockedFounder.Soul, lockedFounder.SoulExhaustedSourceIDs = 0, []string{}
+	if _, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: lockedFounderID, Scope: economy.ScopeFounder},
+		bundle.ConstantsHash, lockedFounder, save.WriteContext{Cause: "pitch.soul-gate.integration"}); err != nil {
+		t.Fatal(err)
+	}
+	lockedRequest := minigame.StartRequest{SessionID: "01986666-c102-7000-8000-000000000003", MinigameID: "pitch", FounderID: lockedFounderID,
+		CompanyStreamID: lockedCompanyRevision.StreamID, RunSeq: 1, EngineRef: pitch.EngineRef, EngineVersion: pitch.EngineVersion,
+		ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{pitch.ScalingDestination: 1}, Seed: "3", Mode: minigame.ModeSolo}
+	if _, err := production.StartMinigameSession(ctx, platform, lockedRequest, now); !errors.Is(err, ErrInvalidIntent) ||
+		!strings.Contains(err.Error(), "human_content_locked") {
+		t.Fatalf("near-zero Soul Pitch start must reject not_eligible/human_content_locked: %v", err)
+	}
 	request := minigame.StartRequest{SessionID: "01986666-c101-7000-8000-000000000001", MinigameID: "pitch", FounderID: founderID,
 		CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: pitch.EngineRef, EngineVersion: pitch.EngineVersion,
 		ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{pitch.ScalingDestination: 1}, Seed: "2", Mode: minigame.ModeSolo}

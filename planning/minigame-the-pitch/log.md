@@ -110,3 +110,22 @@ the completed Soul Foundation gate; all other span commits are docs-tier. No cod
 
 **Verdict: NOT APPROVED pending F1 + F4 (one test + one vector); re-review is narrow. Archival will
 cite {0eb3772, 853ef93} + the remediation range.**
+
+## 2026-08-07 — Codex narrow remediation: ready for designated re-review
+
+Review by: pending designated cross-party reviewer. Recorded by: Codex.
+
+- **F1 closed:** the composed real-Postgres test now creates a separately unlocked Founder at Soul
+  0 and proves Pitch start rejects `ErrInvalidIntent` with `human_content_locked` before the tenant
+  or session row is reached.
+- **F4 closed:** `testdata/pitch/big-number-v1.json` is one shared Go/TypeScript vector. Both
+  runtimes execute the actual scoring path and produce the exact Decimal `2e400` from two `1e300`
+  cards under a `1e100` card factor—well beyond binary-float range.
+- **F2/F3 reconciled:** the normative RFC now records the interleaved raw-byte predicate-factor pass
+  and the exact nested `pitch.run.v1`/per-round substream construction ruled by the designated
+  reviewer.
+
+Evidence read to completion: `make test-save-integration`, focused Go tests, TypeScript/Svelte
+typecheck, 6,595 client tests, and full `make verify` including 19,794 browser assertions. The diff
+contains tests, one shared test vector, RFC text, and this planning evidence only; kernel remains
+0.3.77. This entry is a handoff, not a verdict or archival authorization.

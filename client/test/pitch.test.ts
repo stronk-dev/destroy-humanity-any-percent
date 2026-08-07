@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import fixture from "../../balance/testdata/pitch-v1.json";
+import bigNumberVector from "../../testdata/pitch/big-number-v1.json";
 import { parsePitchCatalog, pitchContentHash } from "../src/pitch/catalog";
 import { applyPitch, createPitch } from "../src/pitch/engine";
 
@@ -32,6 +33,26 @@ describe("The Pitch content and engine", () => {
       else expect(output.result).toEqual({ outcome: "funding_failed", rating_delta: null,
         score_facts: [{ kind: "pitch.best_hand_exponent", value: 0 }, { kind: "pitch.final_round", value: 1 }] });
     }
+  });
+
+  it("scores the shared vector beyond the binary-float regime", async () => {
+    const synthetic = structuredClone(fixture);
+    synthetic.metric_cards.find((row) => row.card_id === "api_call")!.base_metric = bigNumberVector.base_metric;
+    const factor = synthetic.growth_hacks.find((row) => row.hack_id === "ab_test")!.effect;
+    if (factor.kind !== "card_factor") throw new Error("big-number vector requires ab_test card_factor");
+    factor.factor = bigNumberVector.card_factor;
+    for (const [index, row] of synthetic.funding_curve.entries()) row.funding_target = `1e${500 + index}`;
+    const syntheticContent = JSON.stringify(synthetic);
+    const contentHash = await pitchContentHash(syntheticContent);
+    const genesis = await createPitch({ content: syntheticContent, content_hash: contentHash, content_schema_version: 1,
+      seed: 1n, mode: "solo", scaling_inputs: scaling });
+    const output = await applyPitch({ content: syntheticContent, content_hash: contentHash, content_schema_version: 1,
+      seed: 1n, mode: "solo", scaling_inputs: scaling, revision: 1,
+      snapshot: { ...genesis, hand: bigNumberVector.selected_card_ids, slotted_hacks: bigNumberVector.slotted_hack_ids,
+        funding_target: bigNumberVector.funding_target },
+      command: { kind: "play_hand", card_ids: bigNumberVector.selected_card_ids } });
+    expect(output.snapshot.round_best_valuation).toBe(bigNumberVector.expected_valuation);
+    expect(output.result).toBeNull();
   });
 
   it("rejects content identity drift and duplicate selections", async () => {

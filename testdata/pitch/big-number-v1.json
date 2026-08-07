@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "base_metric": "1e300",
+  "card_factor": "1e100",
+  "selected_card_ids": ["api_call#1", "api_call#2"],
+  "slotted_hack_ids": ["ab_test"],
+  "funding_target": "1e500",
+  "expected_valuation": "2e400"
+}
