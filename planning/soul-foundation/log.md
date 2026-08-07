@@ -196,3 +196,39 @@ already discloses it.
 **Verdict: the substrate is archival-ready EXCEPT SB24 (the heartbeat) — implement SB24 + the two
 LOW fixes, then the closing designated review, then archival citing a3f7f30 + 8d2e1a6 + 203d40a +
 the SB24 range.**
+
+## 2026-08-07 — SB24 implementation recheck: blocked on SB25-SB27; adjacent fixes landed
+
+Review by: Codex implementation recheck (self-review; not the designated gate). Recorded by: Codex.
+
+SB24 correctly selects a heartbeat, but three executable contracts are still absent:
+
+- **SB25 — no claim token can reach the heartbeat caller.** The exact request requires
+  `{session_id,claim_token}`, but start/reconnect never issues or renews such a token. The only
+  existing `claim_token` is generated inside the terminal transaction's `ClaimTx`, immediately
+  consumed by `FinishTx`, and is therefore unavailable before progress. Reusing it, adding a stable
+  progress capability, or changing start/reconnect are materially different security/lifecycle
+  contracts. Pick one and define expiry/reclaim plus exact start/reconnect response bytes.
+- **SB26 — the ordinary-command watchdog touch conflicts with the ruled lock order.** The existing
+  race-safe eligibility guard runs after locking the Company stream. SB24 requires an expired
+  session to execute the SB23 cancel path, which locks Founder then Company and writes both replay
+  streams. Running that from the guard reverses the lock order. Rule a preflight coordinator shape
+  (including the race/retry behavior when the ordinary command continues) or remove ordinary
+  commands from watchdog touch ownership.
+- **SB27 — the exact artifact and coordinator wire schemas are not reconciled.** SB10 fixes the Soul
+  root and `policy` exact keys, while SB24 adds `recovery_beat_ceiling_ms` and
+  `max_session_wall_ms` without locating them. The progress response names three carried values but
+  does not enumerate the full exact receipt; watchdog adds `cancelled_by` without reconciling the
+  terminal receipt schema. Locate the catalog fields and enumerate exact start/progress/watchdog
+  response keys plus migration defaults/backfill rules.
+
+Writing past these would invent a public capability, a cross-stream lock protocol, and immutable
+catalog/wire bytes. The fixture-only containment therefore remains in force.
+
+The implementable review findings are closed in this range: the suppression zero-output assertion
+now snapshots every restored output authority before evaluation and compares after restoration; a
+shared Go/TypeScript mutation rejects the MaxExactInteger nonterminal-band overlap; and an additional
+self-review found that the live coordinator stored its rich terminal API receipt in `run_log` while
+`ApplySuppressedLogged` reproduced the Company suppression receipt. The persistence coordinator now
+stores a distinct replay-owned Company receipt, with a real-Postgres regression that applies the
+stored payload/inputs and compares the persisted receipt. Kernel version advances to 0.3.74.

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"cloud-clicker/server/economy"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/multiplier"
 	prestigecore "cloud-clicker/server/prestige"
@@ -91,6 +90,10 @@ func ApplySuppressedLogged(state *save.State, canonicalPayload []byte, catalogs 
 	if err != nil {
 		return SuppressedTransition{}, err
 	}
+	beforeOutputs, err := suppressionOutputSnapshot(before)
+	if err != nil {
+		return SuppressedTransition{}, err
+	}
 	effectiveNow := time.UnixMilli(suppression.ToEvaluatedMS).UTC()
 	var scheduleEvents []save.EventWrite
 	if resolved.ActivePlay != nil {
@@ -139,9 +142,8 @@ func ApplySuppressedLogged(state *save.State, canonicalPayload []byte, catalogs 
 	state.AchievementScoreRun = before.AchievementScoreRun
 	state.LifetimeValue = before.LifetimeValue
 	refillManualTokens(state, catalogs.Economy.ManualPolicy(), effectiveNow)
-	if !bytes.Equal(mustEncodeLedger(state.Ledger), mustEncodeLedger(before.Ledger)) ||
-		!equalInt64Map(state.GeneratorProvisioned, before.GeneratorProvisioned) ||
-		!equalInt64Map(state.ProvisionRemaindersPPM, before.ProvisionRemaindersPPM) {
+	afterOutputs, err := suppressionOutputSnapshot(state)
+	if err != nil || !bytes.Equal(beforeOutputs, afterOutputs) {
 		return SuppressedTransition{}, ErrInvalidEngineState
 	}
 	receipt, _ := json.Marshal(map[string]any{"intent_id": wire.Command.IntentID, "outcome": string(save.IntentApplied),
@@ -181,22 +183,27 @@ func isSoulRecoveryPayload(data []byte) bool {
 		(payload.Kind == soulRecoveryResolveKind || payload.Kind == soulRecoveryCancelKind)
 }
 
-func equalInt64Map(left, right map[string]int64) bool {
-	if len(left) != len(right) {
-		return false
+func suppressionOutputSnapshot(state *save.State) ([]byte, error) {
+	if state == nil || state.Ledger == nil {
+		return nil, ErrInvalidEngineState
 	}
-	for key, value := range left {
-		if right[key] != value {
-			return false
-		}
-	}
-	return true
-}
-
-func mustEncodeLedger(ledger *economy.Ledger) []byte {
-	if ledger == nil {
-		return nil
-	}
-	value, _ := json.Marshal(ledger.Snapshot())
-	return value
+	return json.Marshal(map[string]any{
+		"ledger":                      state.Ledger.Snapshot(),
+		"generator_provisioned":       state.GeneratorProvisioned,
+		"provision_remainders_ppm":    state.ProvisionRemaindersPPM,
+		"stock_units":                 state.StockUnits,
+		"stock_progress_ms":           state.StockProgressMS,
+		"stock_rate_remainder_ppm":    state.StockRateRemainderPPM,
+		"consumed_stock_units":        state.ConsumedStockUnits,
+		"guild_tithe_carry_ppm":       state.GuildTitheCarryPPM,
+		"guild_boundary_guild_id":     state.GuildBoundaryGuildID,
+		"guild_boundary_seq":          state.GuildBoundarySeq,
+		"guild_consumed_window_units": state.GuildConsumedWindow,
+		"meter_values":                state.MeterValues,
+		"meter_decay_remainders":      state.MeterDecayRemainders,
+		"meter_input_remainders":      state.MeterInputRemainders,
+		"achievements_earned_run":     state.AchievementsEarnedRun,
+		"achievement_score_run":       state.AchievementScoreRun,
+		"lifetime_value":              state.LifetimeValue,
+	})
 }

@@ -3,6 +3,7 @@ package soul
 import (
 	"encoding/json"
 	"errors"
+	"os"
 	"testing"
 )
 
@@ -63,6 +64,16 @@ func TestLoadCatalogRejectsMissingNestedKeysAndFixtureEpochRows(t *testing.T) {
 	}
 	if _, err := LoadCatalog(fixtureCatalogBytes(t), fixtureDeclarations(true)); !errors.Is(err, ErrInvalidCatalog) {
 		t.Fatal("fixture source accepted in epoch-seeded artifact")
+	}
+}
+
+func TestLoadCatalogRejectsMaxExactNonterminalBandParityVector(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/soul/catalog-invalid-max-exact-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := LoadCatalog(data, fixtureDeclarations(false)); !errors.Is(err, ErrInvalidCatalog) {
+		t.Fatal("MaxExactInteger nonterminal band accepted")
 	}
 }
 

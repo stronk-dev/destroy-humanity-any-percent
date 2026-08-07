@@ -242,6 +242,20 @@ func TestSoulRecoveryIntegrationAtomicSuppressionReplayAndExclusivity(t *testing
 	if companyLogs != 1 || founderLogs != 1 || startedEvents != 1 || recoveredEvents != 1 {
 		t.Fatalf("logs=%d/%d events=%d/%d", companyLogs, founderLogs, startedEvents, recoveredEvents)
 	}
+	var loggedPayload, loggedInputs, loggedReceipt []byte
+	if err := db.QueryRowContext(ctx, `SELECT canonical_payload,replay_inputs::text,receipt::text
+		FROM run_log WHERE company_stream_id=$1 AND intent_id=$2`, companyRevision.StreamID, sessionID).
+		Scan(&loggedPayload, &loggedInputs, &loggedReceipt); err != nil {
+		t.Fatal(err)
+	}
+	replayState, err := save.RestoreState(genesis, save.VersionForState(company), bundle.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	replayedCompany, err := ApplyLogged(replayState, loggedPayload, bundle, loggedInputs)
+	if err != nil || !jsonSemanticallyEqual(replayedCompany.Receipt, loggedReceipt) {
+		t.Fatalf("live Company receipt is not replayable: live=%s replay=%s err=%v", loggedReceipt, replayedCompany.Receipt, err)
+	}
 
 	faultSteps := []string{"soul_session_terminal", "company_revision", "company_events", "run_log", "founder_revision", "founder_events", "founder_log", "intent_record", "retention"}
 	for index, step := range faultSteps {

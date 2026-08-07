@@ -11,16 +11,17 @@ RFC: `rfc/soul-foundation.md`
   versions, and cross-stream event order.
 - [x] Implement the strict Soul artifact, dormant-to-active save transition, and pure band/gate API.
 - [ ] Implement the ruled atomic debit component and real recovery activity coordinator. The debit
-  component is complete; recovery persistence/replay/atomicity are complete, but eligible recovery
-  cannot progress beyond the online catch-up tolerance without a ruled attendance-advancement seam.
+  component and recovery persistence/replay/atomicity are complete. SB24 selects a progress
+  heartbeat, but its token acquisition, watchdog transaction entrypoint, and exact catalog/wire
+  shapes remain unresolved by the accepted text (SB25-SB27 in the implementation log).
 - [x] Add pet/minigame consumers, exact wire/event/replay vectors, and migration corpus.
 - [ ] Route the Trust/Soul correlation and ending-copy obligations to named owners.
 - [ ] Run normal root gates and obtain both mandatory full-range reviews before docs/archive.
 
-Current blocker: the SB14 lifecycle requires an exclusive recovery to become eligible after a
-Founder-attended duration while ordinary Company commands reject without mutation. The only shipped
-mid-run attendance authority advances through successful Company evaluations and classifies a gap
-larger than `catchup_ceiling_ms` as offline. Consequently an exclusive recovery has no legal writer
-that can advance its attendance/evaluated cursor; after the tolerance elapses, every future resolve
-remains ineligible. A new ruled presence/heartbeat or suppressed-progress boundary is required before
-the recovery coordinator can be called complete or a production recovery row can mint.
+Current blocker: SB24 chooses the missing heartbeat, but the command cannot yet be implemented
+without inventing three public/persistence contracts. The request requires a `claim_token`, while
+start/reconnect never issues or renews one and the existing claim token is transaction-internal.
+Lazy watchdog cancellation from an ordinary command cannot run inside the existing Company-locked
+guard without reversing the Founder-then-Company order. Finally, the exact Soul artifact policy and
+progress/start/watchdog receipt keys were not reconciled into the SB10/SB19 schemas. SB25-SB27 must
+be ruled before a production recovery row can mint.

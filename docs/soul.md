@@ -49,15 +49,15 @@ applies the exact saturation and event ordering. Founder history links the audit
 run-log witness and loads events by applied revision, so the separate start event cannot contaminate
 terminal replay parity. Real-Postgres fault injection covers every write boundary.
 
-## Open recovery liveness contract
+## Open heartbeat implementation contract
 
-The current attendance authority cannot yet make a long recovery eligible. Ordinary Company
-commands reject without mutation while recovery is active, early resolve also rejects without
-mutation, and the current-run attended partial advances only through successful Company
-evaluations. Once the unresolved gap exceeds the pinned catch-up ceiling it is classified offline;
-with no legal writer advancing the cursor, later resolves remain ineligible forever.
+SB24 selects a claim-tokened, server-stamped progress heartbeat: bounded gaps add attended progress
+to the session row, longer absences add zero, and terminal replay validates only the accumulated
+total. A lazy watchdog cancels over-age sessions through the ordinary zero-Soul cancel path.
 
-A successor ruling must name the server-authoritative presence/progress write—plus reconnect,
-offline, idempotency, and replay semantics—before a production recovery activity can be minted.
-The exact-boundary fixture proves the existing transaction and replay machinery only; it is not a
-claim that the player lifecycle is complete.
+Three executable details remain unresolved: start/reconnect does not issue the claim token required
+by the progress request; an ordinary-command watchdog touch cannot enter the Founder-then-Company
+cancel transaction from the current Company-locked guard; and the exact catalog/receipt keys were
+not reconciled with the existing strict schemas. Until those contracts are ruled and implemented,
+the fixture-only recovery row proves transaction/replay machinery but no production recovery
+activity may mint.

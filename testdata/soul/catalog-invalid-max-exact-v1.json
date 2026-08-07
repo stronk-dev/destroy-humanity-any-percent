@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "soul_floor": 0,
+    "soul_initial": 100,
+    "soul_max": 9007199254740991
+  },
+  "bands": [
+    {
+      "band_member": "near_zero",
+      "min_inclusive": 0,
+      "max_inclusive": 9,
+      "human_content_locked": true,
+      "reason_key": "category.low_percent"
+    },
+    {
+      "band_member": "hollow",
+      "min_inclusive": 10,
+      "max_inclusive": 9007199254740991,
+      "human_content_locked": false,
+      "reason_key": "category.ethical_percent"
+    },
+    {
+      "band_member": "dimming",
+      "min_inclusive": 9007199254740991,
+      "max_inclusive": 9007199254740991,
+      "human_content_locked": false,
+      "reason_key": "category.hundred_percent"
+    },
+    {
+      "band_member": "whole",
+      "min_inclusive": 9007199254740991,
+      "max_inclusive": 9007199254740991,
+      "human_content_locked": false,
+      "reason_key": "category.any_percent"
+    }
+  ],
+  "debit_sources": [
+    {
+      "source_id": "soul.fixture",
+      "owner_kind": "fixture",
+      "amount": 20,
+      "may_exhaust": true,
+      "single_use": true,
+      "curtain_copy_key": "category.valuation"
+    }
+  ],
+  "recovery_activities": [
+    {
+      "activity_id": "touch_grass.fixture",
+      "duration_attended_ms": 5000,
+      "recovery_amount": 15,
+      "reason_key": "category.any_percent"
+    }
+  ],
+  "ending_policy": {
+    "whole_variant": "earnest_ascension",
+    "depleted_variant": "training_data"
+  }
+}

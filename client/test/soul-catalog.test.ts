@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { humanContentLocked, parseSoulCatalog, soulBand } from "../src/soul/catalog";
+import invalidMaxExact from "../../testdata/soul/catalog-invalid-max-exact-v1.json";
 
 const keys = new Set(["category.low_percent", "category.ethical_percent", "category.hundred_percent", "category.any_percent", "category.valuation"]);
 const fixture = () => ({ schema_version: 1, policy: { soul_floor: 0, soul_initial: 100, soul_max: 100 }, bands: [
@@ -24,5 +25,8 @@ describe("Soul catalog", () => {
     const unknown = fixture(); unknown.bands[0]!.reason_key = "soul.unknown";
     expect(() => parseSoulCatalog(unknown, { copyKeys: keys, epochSeeded: false })).toThrow();
     expect(() => parseSoulCatalog(fixture(), { copyKeys: keys, epochSeeded: true })).toThrow();
+  });
+  it("rejects the shared MaxExactInteger nonterminal-band mutation", () => {
+    expect(() => parseSoulCatalog(invalidMaxExact, { copyKeys: keys, epochSeeded: false })).toThrow();
   });
 });

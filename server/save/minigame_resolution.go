@@ -15,7 +15,12 @@ import (
 // and faucet window through its owning package using the supplied transaction;
 // Store owns every save/log/event/outbox write around it.
 type MinigameResolutionDecision struct {
-	Receipt               json.RawMessage
+	Receipt json.RawMessage
+	// CompanyLogReceipt is the receipt reproduced by the Company replay
+	// boundary. When absent, Receipt remains the shared API/log receipt used by
+	// ordinary minigame resolutions. Cross-stream coordinators may expose a
+	// richer durable API receipt without corrupting Company replay parity.
+	CompanyLogReceipt     json.RawMessage
 	FounderReceipt        json.RawMessage
 	CompanyReplayInputs   json.RawMessage
 	FounderReplayResolved json.RawMessage
@@ -150,6 +155,13 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 	if err != nil || !jsonObject(decision.Receipt) {
 		return IntentResult{}, fmt.Errorf("%w: invalid minigame resolution receipt", ErrInvalidStream)
 	}
+	companyLogReceipt := decision.Receipt
+	if len(decision.CompanyLogReceipt) != 0 {
+		companyLogReceipt, err = normalizeJSON(decision.CompanyLogReceipt)
+		if err != nil || !jsonObject(companyLogReceipt) {
+			return IntentResult{}, fmt.Errorf("%w: invalid Company replay receipt", ErrInvalidStream)
+		}
+	}
 	decision.FounderReceipt, err = normalizeJSON(decision.FounderReceipt)
 	if err != nil || !jsonObject(decision.FounderReceipt) {
 		return IntentResult{}, fmt.Errorf("%w: invalid Founder minigame receipt", ErrInvalidStream)
@@ -201,7 +213,7 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 			return IntentResult{}, err
 		}
 		if err := insertRunLog(ctx, tx, request.CompanyStreamID, company.RunSeq, runLogSequence, request.SessionID,
-			request.CanonicalPayload, decision.CompanyReplayInputs, decision.Receipt, &companyNext); err != nil {
+			request.CanonicalPayload, decision.CompanyReplayInputs, companyLogReceipt, &companyNext); err != nil {
 			return IntentResult{}, err
 		}
 		if err := runExitFault(fault, "run_log"); err != nil {
@@ -240,7 +252,7 @@ func (s *Store) ApplyMinigameResolutionTransaction(ctx context.Context, request 
 			return IntentResult{}, err
 		}
 		if err := insertRunLog(ctx, tx, request.CompanyStreamID, company.RunSeq, runLogSequence, request.SessionID,
-			request.CanonicalPayload, decision.CompanyReplayInputs, decision.Receipt, &companyNext); err != nil {
+			request.CanonicalPayload, decision.CompanyReplayInputs, companyLogReceipt, &companyNext); err != nil {
 			return IntentResult{}, err
 		}
 		if err := runExitFault(fault, "run_log"); err != nil {

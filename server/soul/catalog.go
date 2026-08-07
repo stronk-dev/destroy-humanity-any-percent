@@ -146,11 +146,7 @@ func validateCatalog(catalog *Catalog, declarations Declarations) error {
 			band.MaxInclusive > catalog.Policy.Max || band.HumanContentLocked != (band.Member == BandNearZero) || !copyKey(declarations, band.ReasonKey) {
 			return ErrInvalidCatalog
 		}
-		if band.MaxInclusive == decimal.MaxExactInteger {
-			next = band.MaxInclusive
-		} else {
-			next = band.MaxInclusive + 1
-		}
+		next = band.MaxInclusive + 1
 	}
 	if catalog.Bands[len(catalog.Bands)-1].MaxInclusive != catalog.Policy.Max {
 		return ErrInvalidCatalog

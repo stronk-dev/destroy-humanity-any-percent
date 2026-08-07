@@ -292,7 +292,8 @@ func (s *Service) finishSoulRecovery(ctx context.Context, request FinishSoulReco
 			}
 		}
 		founderEvents := append([]save.EventWrite(nil), founderTransition.Events...)
-		return save.MinigameResolutionDecision{Receipt: receiptBytes, FounderReceipt: founderTransition.Receipt,
+		return save.MinigameResolutionDecision{Receipt: receiptBytes, CompanyLogReceipt: companyTransition.Receipt,
+			FounderReceipt:      founderTransition.Receipt,
 			CompanyReplayInputs: companyInputs, FounderReplayResolved: mustJSON(founderResolved),
 			CompanyEvents: companyTransition.Events, FounderEvents: founderEvents}, nil
 	}, fault)
