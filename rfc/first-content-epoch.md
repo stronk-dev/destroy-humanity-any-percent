@@ -182,24 +182,23 @@ list) is at `planning/coverage-map/mint-content-rows-proposal.md` (internal) pen
 The mint machinery is implementable, but the exact epoch is not yet acceptance-ready. These are
 content/identity decisions; implementation must not resolve them by choosing convenient bytes.
 
-### FCE-C1 — Doctrine is optional in the real dependency graph, and its archived contract forbids this mint
+### FCE-C1 — The Routes-extension direction is ruled, but the gate row still has no requirement bytes
 
-`validArtifactNames` requires `doctrines -> meters`; it does **not** require doctrines for Pitch.
-The actual Pitch chain is `pitch -> soul -> fiscal -> pets -> minigames -> meters ⇔ achievements`.
-The archived Doctrine D8 ruling separately says production Doctrine stays unminted until the real
-T3-to-T4 gate and literal row exist. Merely adding `gate.t3_to_t4` is still under-specified: the
-archived route example uses the nonexistent `company.permits`, while substituting `company.cash`
-would invent a gate requirement and balance amount that the temporal-validity RFC deliberately
-refused to invent. Retargeting the doctrine would change its reviewed semantics.
+Owner ruling `9334bee` settles FCE-B1's branch: epoch 6 includes Doctrine and extends Routes with
+`gate.t3_to_t4`; retargeting/omission are no longer options. The ruling does not yet make the row
+executable. The archived route example uses the nonexistent `company.permits`, while substituting
+`company.cash` would choose a resource and amount that the temporal-validity RFC deliberately
+refused to invent. The economy catalog's Tier-3 `1e12` progress coordinate is an observation target,
+not automatically a gate price. A gate ID without a requirement fails the strict Routes grammar.
 
-**Proposed contract (recommended):** epoch 6 omits `doctrines`. It carries the seven base artifacts
-plus exactly seven optional artifacts: meters, achievements, minigames, pets, fiscal, soul, and
-pitch. Company activates through v16, Founder through v20. Doctrine and Active-Play activation move
-to the later T3/T4 content epoch whose accepted RFC owns the real gate requirement/resource, route
-bytes, doctrine row, and their composed review. Amend FCE1/FCE3/FCE5 from 15 artifacts/eight owners
-to 14 artifacts/seven owners. If the owner instead insists on Doctrine in epoch 6, acceptance first
-requires a separate T3-to-T4 gate-content RFC with the exact requirement bytes and economy-resource
-authority; “extend routes” alone is not an executable contract.
+**Proposed contract:** add a narrow T3-to-T4 gate-content ruling (inside this RFC or a named
+pre-mint RFC) containing the literal exact gate row: requirement resource(s), canonical amount(s),
+and route list/order. If the resource is `company.permits`, the same contract owns its economy row,
+source/faucet, and replay semantics; if it is `company.cash`, record the deliberate deviation from
+the permits/community-gate design. The `BALANCE-CHANGE:` landing re-runs both route loaders,
+economy gate-reference validation, doctrine `ValidateRoutes`, chronology/depletion gates, composed
+Go/TypeScript bundle parity, and designated review before epoch 6 consumes the bytes. “Extend
+routes” chooses the direction; these exact bytes close it.
 
 ### FCE-C2 — FCE2's byte-identical-promotion claim is false for the three proposed row artifacts
 
@@ -279,6 +278,7 @@ implementer-chosen path—is the owner-approved mint manifest.
   the content-row drafting pass.
 - 2026-08-07: all three open questions ruled by Marco (name "First Content"; mint provisional
   bytes as-is; mint ASAP once gates green). No open questions remain — acceptance-ready.
-- 2026-08-07: Codex acceptance review filed FCE-C1–FCE-C6. The draft remains blocked on Doctrine
-  scope/gate ownership, exact first-production byte ratification, copy rows, pet activation wording,
+- 2026-08-07: Codex acceptance review filed FCE-C1–FCE-C6, then reconciled C1 with owner ruling
+  `9334bee` (Routes extension selected). The draft remains blocked on the gate's literal
+  requirement bytes, exact first-production byte ratification, copy rows, pet activation wording,
   and the complete cross-runtime promotion manifest.
