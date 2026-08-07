@@ -2,13 +2,13 @@
 
 Soul is a Founder-scoped exact-integer axis that remains mechanically independent from Trust. The
 runtime foundation is implemented, but no production epoch contains a `soul` artifact and no
-production debit source or recovery activity is enabled. The recovery lifecycle has one unresolved
-attendance-progression contract described below, so it is not launch-ready.
+production debit source or recovery activity is enabled. The complete recovery lifecycle is ready
+for content activation once its implementation passes the closing independent review.
 
 ## Artifact, state, and activation
 
-The strict schema-v1 artifact owns the bounded policy, complete ordered bands, debit sources,
-recovery activities, and ending variants. Go and TypeScript enforce the same exact keys, closed
+The strict schema-v1 artifact owns the bounded policy, heartbeat and session-wall ceilings, complete
+ordered bands, debit sources, recovery activities, and ending variants. Go and TypeScript enforce the same exact keys, closed
 enums, ordering, interval coverage, safe-integer domains, copy-key references, and fixture-versus-
 epoch row rules. The artifact participates in constants identity and requires the bumped minigame
 and pet artifacts plus Fiscal v19.
@@ -42,6 +42,20 @@ resolve use the established Founder-then-Company lock order and one transaction 
 session, Company suppression revision/log, Founder revision/log, events, receipt, and outbox.
 Literal retries return the committed receipt; mismatched reuse fails closed.
 
+Start returns a distinct opaque progress capability. Calling start while a recovery is already
+active reconnects to that session and rotates the capability, invalidating stale clients. A
+server-stamped progress command mutates only the session row: gaps at or below the pinned beat
+ceiling add attended milliseconds; longer gaps add zero and merely reset the watermark. Duplicate
+beats are harmless, absence pauses progress, and beats produce no resources, Soul, events, or replay
+bytes. Resolve becomes eligible when the accumulated progress reaches the activity duration.
+
+Sessions beyond the pinned wall-age ceiling are cancelled lazily during the next recovery
+coordinator preflight. The watchdog uses the same atomic zero-Soul cancel path, ends suppression at
+the last progress coordinate, and records `cancelled_by: watchdog`; player cancellation records
+`cancelled_by: player`. Ordinary Company commands never execute the watchdog from inside their
+Company lock. They remain read-only rejections and add `session_expired: true` when coordinator
+cleanup is due.
+
 The shared Go/TypeScript `ApplySuppressedLogged` boundary advances Company time and hook watermarks
 through the frozen suppression interval while restoring every output-bearing authority. It asserts
 zero ledger, provision, stock, guild, meter, achievement, and lifetime-value output. Founder replay
@@ -49,15 +63,6 @@ applies the exact saturation and event ordering. Founder history links the audit
 run-log witness and loads events by applied revision, so the separate start event cannot contaminate
 terminal replay parity. Real-Postgres fault injection covers every write boundary.
 
-## Open heartbeat implementation contract
-
-SB24 selects a claim-tokened, server-stamped progress heartbeat: bounded gaps add attended progress
-to the session row, longer absences add zero, and terminal replay validates only the accumulated
-total. A lazy watchdog cancels over-age sessions through the ordinary zero-Soul cancel path.
-
-Three executable details remain unresolved: start/reconnect does not issue the claim token required
-by the progress request; an ordinary-command watchdog touch cannot enter the Founder-then-Company
-cancel transaction from the current Company-locked guard; and the exact catalog/receipt keys were
-not reconciled with the existing strict schemas. Until those contracts are ruled and implemented,
-the fixture-only recovery row proves transaction/replay machinery but no production recovery
-activity may mint.
+Heartbeat cadence is intentionally absent from replay. Terminal Founder inputs freeze the accumulated
+attended total, and Company replay freezes the suppressed wall interval; live and replay validate the
+same totals without turning coordinator presence traffic into immutable gameplay commands.

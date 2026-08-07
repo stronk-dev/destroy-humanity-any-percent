@@ -3,7 +3,9 @@
   "policy": {
     "soul_floor": 0,
     "soul_initial": 100,
-    "soul_max": 9007199254740991
+    "soul_max": 9007199254740991,
+    "recovery_beat_ceiling_ms": 5000,
+    "max_session_wall_ms": 86400000
   },
   "bands": [
     {

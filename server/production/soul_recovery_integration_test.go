@@ -43,7 +43,8 @@ func recoverySoulBundle(t *testing.T) CatalogBundle {
 	for _, key := range copykeys.All() {
 		keys[key] = struct{}{}
 	}
-	catalog, err := soul.LoadCatalog(artifact, soul.Declarations{CopyKeys: keys, EpochSeeded: true})
+	catalog, err := soul.LoadCatalog(artifact, soul.Declarations{CopyKeys: keys, EpochSeeded: true,
+		CatchupCeilingMS: bundle.Prestige.CatchupCeilingMS})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -165,13 +166,22 @@ func TestSoulRecoveryIntegrationAtomicSuppressionReplayAndExclusivity(t *testing
 	const sessionID = "01986666-b101-7000-8000-000000000001"
 	start, err := service.StartSoulRecovery(ctx, StartSoulRecoveryRequest{SessionID: sessionID, FounderID: founderID,
 		CompanyStreamID: companyRevision.StreamID, ActivityID: "touch_grass.fixture"}, now)
-	if err != nil || !strings.Contains(string(start.Receipt), `"action":"start_soul_recovery"`) {
+	var startReceipt soulRecoveryStartReceipt
+	var startKeys map[string]json.RawMessage
+	if err != nil || json.Unmarshal(start.Receipt, &startReceipt) != nil || json.Unmarshal(start.Receipt, &startKeys) != nil || len(startKeys) != 7 || startReceipt.SessionID != sessionID ||
+		startReceipt.ProgressToken == "" || startReceipt.AttendedProgressMS != 0 || startReceipt.LastProgressServerMS != now.UnixMilli() {
 		t.Fatalf("start receipt=%s err=%v", start.Receipt, err)
 	}
 	retryStart, err := service.StartSoulRecovery(ctx, StartSoulRecoveryRequest{SessionID: sessionID, FounderID: founderID,
 		CompanyStreamID: companyRevision.StreamID, ActivityID: "touch_grass.fixture"}, now)
-	if err != nil || !bytes.Equal(retryStart.Receipt, start.Receipt) {
+	var reconnectReceipt soulRecoveryStartReceipt
+	if err != nil || json.Unmarshal(retryStart.Receipt, &reconnectReceipt) != nil ||
+		reconnectReceipt.SessionID != sessionID || reconnectReceipt.ProgressToken == startReceipt.ProgressToken {
 		t.Fatalf("start retry receipt=%s err=%v", retryStart.Receipt, err)
+	}
+	if _, err := service.ProgressSoulRecovery(ctx, ProgressSoulRecoveryRequest{SessionID: sessionID, FounderID: founderID,
+		ProgressToken: startReceipt.ProgressToken}, now.Add(time.Second), nil); err == nil || !strings.Contains(err.Error(), "recovery_token") {
+		t.Fatalf("stale progress token error=%v", err)
 	}
 	ordinary := []byte(`{"intent_id":"01986666-b101-7000-8000-000000000002","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`)
 	blocked, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now.Add(time.Second), ordinary)
@@ -203,11 +213,23 @@ func TestSoulRecoveryIntegrationAtomicSuppressionReplayAndExclusivity(t *testing
 	if err != nil || active.Status != soul.RecoveryActive {
 		t.Fatalf("early resolution mutated session=%+v err=%v", active, err)
 	}
-	result, err := service.ResolveSoulRecovery(ctx, FinishSoulRecoveryRequest{SessionID: sessionID, FounderID: founderID}, now.Add(5*time.Second), nil)
+	progressTimes := []time.Duration{time.Second, time.Second, 10 * time.Second, 14 * time.Second}
+	wantProgress := []int64{1000, 1000, 1000, 5000}
+	for index, offset := range progressTimes {
+		progress, progressErr := service.ProgressSoulRecovery(ctx, ProgressSoulRecoveryRequest{SessionID: sessionID,
+			FounderID: founderID, ProgressToken: reconnectReceipt.ProgressToken}, now.Add(offset), nil)
+		var receipt soulRecoveryProgressReceipt
+		var progressKeys map[string]json.RawMessage
+		if progressErr != nil || json.Unmarshal(progress.Receipt, &receipt) != nil || json.Unmarshal(progress.Receipt, &progressKeys) != nil || len(progressKeys) != 5 || receipt.AttendedProgressMS != wantProgress[index] ||
+			receipt.Eligible != (wantProgress[index] >= 5000) {
+			t.Fatalf("progress[%d] receipt=%s err=%v", index, progress.Receipt, progressErr)
+		}
+	}
+	result, err := service.ResolveSoulRecovery(ctx, FinishSoulRecoveryRequest{SessionID: sessionID, FounderID: founderID}, now.Add(14*time.Second), nil)
 	if err != nil || result.Replay || !strings.Contains(string(result.Receipt), `"soul_after":65`) {
 		t.Fatalf("resolve receipt=%s replay=%v err=%v", result.Receipt, result.Replay, err)
 	}
-	retry, err := service.ResolveSoulRecovery(ctx, FinishSoulRecoveryRequest{SessionID: sessionID, FounderID: founderID}, now.Add(5*time.Second), nil)
+	retry, err := service.ResolveSoulRecovery(ctx, FinishSoulRecoveryRequest{SessionID: sessionID, FounderID: founderID}, now.Add(14*time.Second), nil)
 	if err != nil || !retry.Replay || !bytes.Equal(retry.Receipt, result.Receipt) {
 		t.Fatalf("resolve retry receipt=%s replay=%v err=%v", retry.Receipt, retry.Replay, err)
 	}
@@ -215,13 +237,34 @@ func TestSoulRecoveryIntegrationAtomicSuppressionReplayAndExclusivity(t *testing
 	loadedFounder, _ := store.LoadLatest(ctx, founderRevision.StreamID)
 	cash, _ := loadedCompany.State.Ledger.Balance("company.cash")
 	if loadedCompany.Revision.Number != 2 || loadedFounder.Revision.Number != 2 || cash.String() != "0" ||
-		loadedFounder.State.Soul != 65 || !loadedCompany.State.EvaluatedThrough.Equal(now.Add(5*time.Second)) {
+		loadedFounder.State.Soul != 65 || !loadedCompany.State.EvaluatedThrough.Equal(now.Add(14*time.Second)) {
 		t.Fatalf("company=%d cash=%s evaluated=%s founder=%d soul=%d", loadedCompany.Revision.Number, cash,
 			loadedCompany.State.EvaluatedThrough, loadedFounder.Revision.Number, loadedFounder.State.Soul)
 	}
 	history, err := store.LoadFounderHistory(ctx, founderRevision.StreamID)
 	if err != nil || VerifyFounderHistory(history, ReplayCatalogSet{bundle.ConstantsHash: bundle}) != ReplayVerified {
 		t.Fatalf("Founder Soul history failed verification: %v", err)
+	}
+	const watchdogSessionID = "01986666-b101-7000-8000-000000000004"
+	watchdogStart, err := service.StartSoulRecovery(ctx, StartSoulRecoveryRequest{SessionID: watchdogSessionID,
+		FounderID: founderID, CompanyStreamID: companyRevision.StreamID, ActivityID: "touch_grass.fixture"}, now.Add(20*time.Second))
+	var watchdogStartReceipt soulRecoveryStartReceipt
+	if err != nil || json.Unmarshal(watchdogStart.Receipt, &watchdogStartReceipt) != nil {
+		t.Fatalf("watchdog start=%s err=%v", watchdogStart.Receipt, err)
+	}
+	expiredBlocked, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now.Add(25*time.Hour), ordinary)
+	if err != nil || !strings.Contains(string(expiredBlocked.Receipt), `"session_expired":true`) {
+		t.Fatalf("expired ordinary command receipt=%s err=%v", expiredBlocked.Receipt, err)
+	}
+	watchdogResult, err := service.ProgressSoulRecovery(ctx, ProgressSoulRecoveryRequest{SessionID: watchdogSessionID,
+		FounderID: founderID, ProgressToken: watchdogStartReceipt.ProgressToken}, now.Add(25*time.Hour), nil)
+	if err != nil || !strings.Contains(string(watchdogResult.Receipt), `"cancelled_by":"watchdog"`) {
+		t.Fatalf("watchdog receipt=%s err=%v", watchdogResult.Receipt, err)
+	}
+	watchdogCompany, _ := store.LoadLatest(ctx, companyRevision.StreamID)
+	watchdogFounder, _ := store.LoadLatest(ctx, founderRevision.StreamID)
+	if !watchdogCompany.State.EvaluatedThrough.Equal(now.Add(20*time.Second)) || watchdogFounder.State.Soul != 65 {
+		t.Fatalf("watchdog terminal coordinate=%s soul=%d", watchdogCompany.State.EvaluatedThrough, watchdogFounder.State.Soul)
 	}
 	var companyLogs, founderLogs, startedEvents, recoveredEvents int
 	queries := []struct {
@@ -260,7 +303,7 @@ func TestSoulRecoveryIntegrationAtomicSuppressionReplayAndExclusivity(t *testing
 	faultSteps := []string{"soul_session_terminal", "company_revision", "company_events", "run_log", "founder_revision", "founder_events", "founder_log", "intent_record", "retention"}
 	for index, step := range faultSteps {
 		sessionID := fmt.Sprintf("01986666-b2%02x-7000-8000-%012d", index, index+1)
-		at := now.Add(time.Duration(index+10) * time.Second)
+		at := now.Add(25*time.Hour + time.Duration(index+10)*time.Second)
 		if _, err := service.StartSoulRecovery(ctx, StartSoulRecoveryRequest{SessionID: sessionID, FounderID: founderID,
 			CompanyStreamID: companyRevision.StreamID, ActivityID: "touch_grass.fixture"}, at); err != nil {
 			t.Fatal(err)
@@ -285,7 +328,8 @@ func TestSoulRecoveryIntegrationAtomicSuppressionReplayAndExclusivity(t *testing
 				beforeCompany.Revision.Number, afterCompany.Revision.Number, beforeFounder.Revision.Number,
 				afterFounder.Revision.Number, session, loadErr)
 		}
-		if _, err := service.CancelSoulRecovery(ctx, FinishSoulRecoveryRequest{SessionID: sessionID, FounderID: founderID}, at, nil); err != nil {
+		cleanup, err := service.CancelSoulRecovery(ctx, FinishSoulRecoveryRequest{SessionID: sessionID, FounderID: founderID}, at, nil)
+		if err != nil || !strings.Contains(string(cleanup.Receipt), `"cancelled_by":"player"`) {
 			t.Fatalf("cleanup cancel after %s: %v", step, err)
 		}
 	}

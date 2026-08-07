@@ -11,7 +11,8 @@ func fixtureCatalogBytes(t *testing.T) []byte {
 	t.Helper()
 	value := map[string]any{
 		"schema_version": 1,
-		"policy":         map[string]any{"soul_floor": 0, "soul_initial": 100, "soul_max": 100},
+		"policy": map[string]any{"soul_floor": 0, "soul_initial": 100, "soul_max": 100,
+			"recovery_beat_ceiling_ms": 5000, "max_session_wall_ms": 86400000},
 		"bands": []any{
 			map[string]any{"band_member": "near_zero", "min_inclusive": 0, "max_inclusive": 9, "human_content_locked": true, "reason_key": "category.low_percent"},
 			map[string]any{"band_member": "hollow", "min_inclusive": 10, "max_inclusive": 39, "human_content_locked": false, "reason_key": "category.ethical_percent"},
@@ -30,7 +31,7 @@ func fixtureCatalogBytes(t *testing.T) []byte {
 }
 
 func fixtureDeclarations(epoch bool) Declarations {
-	return Declarations{EpochSeeded: epoch, CopyKeys: map[string]struct{}{
+	return Declarations{EpochSeeded: epoch, CatchupCeilingMS: 5000, CopyKeys: map[string]struct{}{
 		"category.low_percent": {}, "category.ethical_percent": {}, "category.hundred_percent": {}, "category.any_percent": {}, "category.valuation": {},
 	}}
 }
@@ -64,6 +65,18 @@ func TestLoadCatalogRejectsMissingNestedKeysAndFixtureEpochRows(t *testing.T) {
 	}
 	if _, err := LoadCatalog(fixtureCatalogBytes(t), fixtureDeclarations(true)); !errors.Is(err, ErrInvalidCatalog) {
 		t.Fatal("fixture source accepted in epoch-seeded artifact")
+	}
+}
+
+func TestLoadCatalogRejectsHeartbeatCeilingAboveGlobalCatchup(t *testing.T) {
+	var root map[string]any
+	if err := json.Unmarshal(fixtureCatalogBytes(t), &root); err != nil {
+		t.Fatal(err)
+	}
+	root["policy"].(map[string]any)["recovery_beat_ceiling_ms"] = float64(5001)
+	data, _ := json.Marshal(root)
+	if _, err := LoadCatalog(data, fixtureDeclarations(false)); !errors.Is(err, ErrInvalidCatalog) {
+		t.Fatal("heartbeat ceiling above global catch-up accepted")
 	}
 }
 

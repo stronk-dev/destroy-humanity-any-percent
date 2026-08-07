@@ -3,7 +3,8 @@ import { humanContentLocked, parseSoulCatalog, soulBand } from "../src/soul/cata
 import invalidMaxExact from "../../testdata/soul/catalog-invalid-max-exact-v1.json";
 
 const keys = new Set(["category.low_percent", "category.ethical_percent", "category.hundred_percent", "category.any_percent", "category.valuation"]);
-const fixture = () => ({ schema_version: 1, policy: { soul_floor: 0, soul_initial: 100, soul_max: 100 }, bands: [
+const declarations = { copyKeys: keys, epochSeeded: false, catchupCeilingMs: 5000 } as const;
+const fixture = () => ({ schema_version: 1, policy: { soul_floor: 0, soul_initial: 100, soul_max: 100, recovery_beat_ceiling_ms: 5000, max_session_wall_ms: 86400000 }, bands: [
   { band_member: "near_zero", min_inclusive: 0, max_inclusive: 9, human_content_locked: true, reason_key: "category.low_percent" },
   { band_member: "hollow", min_inclusive: 10, max_inclusive: 39, human_content_locked: false, reason_key: "category.ethical_percent" },
   { band_member: "dimming", min_inclusive: 40, max_inclusive: 74, human_content_locked: false, reason_key: "category.hundred_percent" },
@@ -14,19 +15,23 @@ ending_policy: { whole_variant: "earnest_ascension", depleted_variant: "training
 
 describe("Soul catalog", () => {
   it("matches every inclusive band boundary", () => {
-    const catalog = parseSoulCatalog(fixture(), { copyKeys: keys, epochSeeded: false });
+    const catalog = parseSoulCatalog(fixture(), declarations);
     expect([0, 9, 10, 39, 40, 74, 75, 100].map((value) => soulBand(catalog, value).band_member)).toEqual(["near_zero", "near_zero", "hollow", "hollow", "dimming", "dimming", "whole", "whole"]);
     expect(humanContentLocked(catalog, 0)).toBe(true);
     expect(humanContentLocked(catalog, 10)).toBe(false);
   });
   it("fails closed on missing rows, copy drift, and epoch fixture content", () => {
     const missing = fixture(); delete (missing.policy as Partial<typeof missing.policy>).soul_initial;
-    expect(() => parseSoulCatalog(missing, { copyKeys: keys, epochSeeded: false })).toThrow();
+    expect(() => parseSoulCatalog(missing, declarations)).toThrow();
     const unknown = fixture(); unknown.bands[0]!.reason_key = "soul.unknown";
-    expect(() => parseSoulCatalog(unknown, { copyKeys: keys, epochSeeded: false })).toThrow();
-    expect(() => parseSoulCatalog(fixture(), { copyKeys: keys, epochSeeded: true })).toThrow();
+    expect(() => parseSoulCatalog(unknown, declarations)).toThrow();
+    expect(() => parseSoulCatalog(fixture(), { ...declarations, epochSeeded: true })).toThrow();
   });
   it("rejects the shared MaxExactInteger nonterminal-band mutation", () => {
-    expect(() => parseSoulCatalog(invalidMaxExact, { copyKeys: keys, epochSeeded: false })).toThrow();
+    expect(() => parseSoulCatalog(invalidMaxExact, declarations)).toThrow();
+  });
+  it("rejects a heartbeat ceiling above the global catch-up ceiling", () => {
+    const invalid = fixture(); (invalid.policy as { recovery_beat_ceiling_ms: number }).recovery_beat_ceiling_ms = 5001;
+    expect(() => parseSoulCatalog(invalid, declarations)).toThrow();
   });
 });

@@ -245,3 +245,19 @@ stored payload/inputs and compares the persisted receipt. Kernel version advance
   + progress response keys; cancel receipts gain required cancelled_by (absent on resolve); NEW
   append-only migration, no backfill (no production rows).
 Codex unblocked to implement SB24-SB27 + the closing designated review.
+
+## 2026-08-07 — SB24-SB27 implementation: ready for designated review
+
+Review by: pending cross-party designated review. Recorded by: Codex.
+
+Implemented the distinct progress capability, reconnect rotation, session-row-only attended
+heartbeat, and coordinator-owned lazy watchdog. The Soul artifact now owns the beat and wall-age
+ceilings with Go/TypeScript exact-key and global-catch-up validation. Append-only migration 00070
+adds the capability/progress authority without fabricating a backfill. Start and progress responses
+use the ruled exact keys; cancel receipts distinguish player and watchdog ownership.
+
+The real-Postgres integration drives a stale-token rejection, duplicate beat, long-gap pause,
+resumption, eligibility, terminal-only replay, read-only expired-session hint, watchdog cancellation,
+and the existing nine-boundary atomic fault matrix. Heartbeats add no event or replay row. Kernel
+version advances to 0.3.75. This is an implementation handoff only: it does not satisfy the
+cross-party designated gate and does not authorize archival.

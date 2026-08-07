@@ -165,7 +165,8 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		for _, key := range copykeys.All() {
 			keys[key] = struct{}{}
 		}
-		soulCatalog, soulErr := soul.LoadCatalog(soulBytes, soul.Declarations{CopyKeys: keys, EpochSeeded: true})
+		soulCatalog, soulErr := soul.LoadCatalog(soulBytes, soul.Declarations{CopyKeys: keys, EpochSeeded: true,
+			CatchupCeilingMS: prestigePolicy.CatchupCeilingMS})
 		if soulErr != nil {
 			return production.CatalogBundle{}, soulErr
 		}

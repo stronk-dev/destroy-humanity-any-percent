@@ -30,7 +30,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
-| [Soul Foundation](soul-foundation.md) | accepted — SB1–SB27 ruled; implementing (Founder v20) | Save / Run Genesis / Founder Attendance / Pet Care |
+| [Soul Foundation](soul-foundation.md) | implementing — SB1–SB27 implemented; closing review pending (Founder v20) | Save / Run Genesis / Founder Attendance / Pet Care |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
 | [T0–T1 Playable Content](t0-t1-playable-content.md) | draft | Production / Purchasable Content / Copy Pipeline |
 

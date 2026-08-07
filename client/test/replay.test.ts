@@ -397,7 +397,8 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		const pets = JSON.parse(artifacts.pets!) as any; pets.schema_version = 2;
 		for (const row of pets.actions) row.soul_gate = "ordinary";
 		artifacts.pets = JSON.stringify(pets);
-		artifacts.soul = JSON.stringify({ schema_version: 1, policy: { soul_floor: 0, soul_initial: 100, soul_max: 100 }, bands: [
+		artifacts.soul = JSON.stringify({ schema_version: 1, policy: { soul_floor: 0, soul_initial: 100, soul_max: 100,
+			recovery_beat_ceiling_ms: 5000, max_session_wall_ms: 86400000 }, bands: [
 			{ band_member: "near_zero", min_inclusive: 0, max_inclusive: 9, human_content_locked: true, reason_key: "category.low_percent" },
 			{ band_member: "hollow", min_inclusive: 10, max_inclusive: 39, human_content_locked: false, reason_key: "category.ethical_percent" },
 			{ band_member: "dimming", min_inclusive: 40, max_inclusive: 74, human_content_locked: false, reason_key: "category.hundred_percent" },

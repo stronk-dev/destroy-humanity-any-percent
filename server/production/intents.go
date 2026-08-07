@@ -368,13 +368,12 @@ func (s *Service) Handle(
 		if loadErr != nil {
 			return HandleResult{}, loadErr
 		}
-		active, activeErr := s.soulRecoveries.HasActive(ctx, loaded.Key.OwnerID)
+		active, expired, activeErr := s.soulRecoveryExclusivity(ctx, loaded.Key.OwnerID, now)
 		if activeErr != nil {
 			return HandleResult{}, activeErr
 		}
 		if active {
-			return HandleResult{Receipt: marshalRejection(request.IntentID, loaded.Revision.Number,
-				"not_eligible", "exclusive_activity")}, nil
+			return HandleResult{Receipt: marshalExclusiveActivityRejection(request.IntentID, loaded.Revision.Number, expired)}, nil
 		}
 	}
 	if request.InvalidDetail == "" && (request.Kind == IntentAcceptExitOffer || request.Kind == IntentWindDown || request.Kind == IntentFileIPO) {
@@ -1696,6 +1695,16 @@ func marshalRejection(intentID string, currentRevision int64, category, detail s
 		"intent_id": intentID, "outcome": "rejected", "current_revision": currentRevision,
 		"rejection": map[string]string{"category": category, "detail": detail},
 	})
+	return encoded
+}
+
+func marshalExclusiveActivityRejection(intentID string, currentRevision int64, expired bool) json.RawMessage {
+	rejection := map[string]any{"category": "not_eligible", "detail": "exclusive_activity"}
+	if expired {
+		rejection["session_expired"] = true
+	}
+	encoded, _ := json.Marshal(map[string]any{"intent_id": intentID, "outcome": "rejected",
+		"current_revision": currentRevision, "rejection": rejection})
 	return encoded
 }
 

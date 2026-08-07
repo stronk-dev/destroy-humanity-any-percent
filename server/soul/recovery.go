@@ -2,6 +2,7 @@ package soul
 
 import (
 	"context"
+	"crypto/subtle"
 	"database/sql"
 	"encoding/json"
 	"errors"
@@ -18,6 +19,7 @@ var (
 	ErrRecoveryGone        = errors.New("soul recovery session is unavailable")
 	ErrRecoveryClaimLost   = errors.New("soul recovery claim lost")
 	ErrRecoveryIdempotency = errors.New("soul recovery idempotency conflict")
+	ErrRecoveryToken       = errors.New("invalid soul recovery progress token")
 	recoveryUUIDPattern    = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
 	recoveryUUIDV7Pattern  = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
 	recoveryHashPattern    = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
@@ -47,6 +49,9 @@ type RecoverySession struct {
 	StartRequestHash       string
 	TerminalRequestHash    string
 	ClaimToken             string
+	ProgressToken          string
+	AttendedProgressMS     int64
+	LastProgressServerMS   int64
 	ClaimedAt              *time.Time
 	TerminalReceipt        json.RawMessage
 	CreatedAt              time.Time
@@ -67,6 +72,15 @@ type StartRecovery struct {
 	FounderRevision        int64
 	CompanyRevision        int64
 	RequestHash            string
+	ServerNowMS            int64
+}
+
+type ProgressRecovery struct {
+	SessionID             string
+	FounderID             string
+	ProgressToken         string
+	ServerNowMS           int64
+	RecoveryBeatCeilingMS int64
 }
 
 type RecoveryRepository struct{ db *sql.DB }
@@ -97,14 +111,15 @@ func (repository *RecoveryRepository) Start(ctx context.Context, input StartReco
 	} else if err != nil {
 		return RecoverySession{}, err
 	}
-	if existing, loadErr := loadRecoveryRow(tx.QueryRowContext(ctx, recoveryByIDSQL, input.SessionID, input.FounderID)); loadErr == nil {
-		if existing.StartRequestHash != input.RequestHash {
-			return RecoverySession{}, ErrRecoveryIdempotency
+	if existing, loadErr := loadRecoveryRow(tx.QueryRowContext(ctx, recoveryActiveByFounderSQL+` FOR UPDATE`, input.FounderID)); loadErr == nil {
+		rotated, rotateErr := loadRecoveryRow(tx.QueryRowContext(ctx, rotateRecoveryProgressTokenSQL, existing.SessionID))
+		if rotateErr != nil {
+			return RecoverySession{}, rotateErr
 		}
 		if err := tx.Commit(); err != nil {
 			return RecoverySession{}, err
 		}
-		return existing, nil
+		return rotated, nil
 	} else if !errors.Is(loadErr, sql.ErrNoRows) {
 		return RecoverySession{}, loadErr
 	}
@@ -116,18 +131,13 @@ func (repository *RecoveryRepository) Start(ctx context.Context, input StartReco
 	if otherExclusive {
 		return RecoverySession{}, ErrRecoveryActive
 	}
-	var existingID string
-	if err := tx.QueryRowContext(ctx, `SELECT session_id FROM soul_recovery_sessions WHERE founder_id=$1 AND status IN ('active','claimed')`, input.FounderID).Scan(&existingID); err == nil {
-		return RecoverySession{}, ErrRecoveryActive
-	} else if !errors.Is(err, sql.ErrNoRows) {
-		return RecoverySession{}, err
-	}
 	if err := verifyRecoveryCoordinate(ctx, tx, input); err != nil {
 		return RecoverySession{}, err
 	}
 	created, err := loadRecoveryRow(tx.QueryRowContext(ctx, createRecoverySQL,
 		input.SessionID, input.FounderID, input.FounderStreamID, input.CompanyStreamID, input.RunSeq,
-		input.ConstantsHash, input.ActivityID, input.FounderAttendedStartMS, input.RequiredDurationMS, input.RequestHash))
+		input.ConstantsHash, input.ActivityID, input.FounderAttendedStartMS, input.RequiredDurationMS, input.RequestHash,
+		input.ServerNowMS))
 	if err != nil {
 		return RecoverySession{}, err
 	}
@@ -184,6 +194,69 @@ func (repository *RecoveryRepository) HasActive(ctx context.Context, founderID s
 		return false, nil
 	}
 	return found, err
+}
+
+func (repository *RecoveryRepository) Active(ctx context.Context, founderID string) (RecoverySession, error) {
+	if repository == nil || !recoveryUUIDPattern.MatchString(founderID) {
+		return RecoverySession{}, ErrInvalidRecovery
+	}
+	result, err := loadRecoveryRow(repository.db.QueryRowContext(ctx, recoveryActiveByFounderSQL, founderID))
+	if errors.Is(err, sql.ErrNoRows) {
+		return RecoverySession{}, ErrRecoveryGone
+	}
+	return result, err
+}
+
+// Progress is the only non-terminal writer for attended recovery progress.
+// It serializes on the session row, compares the capability in constant time,
+// and deliberately emits no event or replay row.
+func (repository *RecoveryRepository) Progress(ctx context.Context, input ProgressRecovery) (RecoverySession, error) {
+	if repository == nil || !recoveryUUIDV7Pattern.MatchString(input.SessionID) ||
+		!recoveryUUIDPattern.MatchString(input.FounderID) || !recoveryUUIDPattern.MatchString(input.ProgressToken) ||
+		input.ServerNowMS < 0 || input.ServerNowMS > 9_007_199_254_740_991 || input.RecoveryBeatCeilingMS < 1 {
+		return RecoverySession{}, ErrInvalidRecovery
+	}
+	tx, err := repository.db.BeginTx(ctx, nil)
+	if err != nil {
+		return RecoverySession{}, err
+	}
+	defer tx.Rollback()
+	if err := tx.QueryRowContext(ctx, `SELECT true FROM account_founders WHERE founder_id=$1 AND archived_at IS NULL FOR UPDATE`, input.FounderID).Scan(new(bool)); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return RecoverySession{}, ErrRecoveryGone
+		}
+		return RecoverySession{}, err
+	}
+	session, err := loadRecoveryRow(tx.QueryRowContext(ctx, recoveryByIDSQL+` FOR UPDATE`, input.SessionID, input.FounderID))
+	if errors.Is(err, sql.ErrNoRows) || err == nil && session.Status != RecoveryActive {
+		return RecoverySession{}, ErrRecoveryGone
+	}
+	if err != nil {
+		return RecoverySession{}, err
+	}
+	if subtle.ConstantTimeCompare([]byte(session.ProgressToken), []byte(input.ProgressToken)) != 1 {
+		return RecoverySession{}, ErrRecoveryToken
+	}
+	gap := input.ServerNowMS - session.LastProgressServerMS
+	if gap < 0 {
+		return RecoverySession{}, ErrInvalidRecovery
+	}
+	increment := int64(0)
+	if gap <= input.RecoveryBeatCeilingMS {
+		increment = gap
+	}
+	if session.AttendedProgressMS > 9_007_199_254_740_991-increment {
+		return RecoverySession{}, ErrInvalidRecovery
+	}
+	updated, err := loadRecoveryRow(tx.QueryRowContext(ctx, progressRecoverySQL, session.SessionID,
+		session.AttendedProgressMS+increment, input.ServerNowMS))
+	if err != nil {
+		return RecoverySession{}, err
+	}
+	if err := tx.Commit(); err != nil {
+		return RecoverySession{}, err
+	}
+	return updated, nil
 }
 
 // ClaimTx runs after the save coordinator has acquired Founder then Company
@@ -262,7 +335,7 @@ func validStartRecovery(input StartRecovery) bool {
 		recoveryMechanicalID.MatchString(input.ActivityID) && input.FounderAttendedStartMS >= 0 &&
 		input.FounderAttendedStartMS <= 9_007_199_254_740_991 && input.RequiredDurationMS > 0 &&
 		input.RequiredDurationMS <= 9_007_199_254_740_991 && input.FounderRevision > 0 && input.CompanyRevision > 0 &&
-		recoveryHashPattern.MatchString(input.RequestHash)
+		recoveryHashPattern.MatchString(input.RequestHash) && input.ServerNowMS >= 0 && input.ServerNowMS <= 9_007_199_254_740_991
 }
 
 func validRecoveryReceipt(receipt []byte) bool {
@@ -274,17 +347,18 @@ type recoveryScanner interface{ Scan(...any) error }
 
 func loadRecoveryRow(row recoveryScanner) (RecoverySession, error) {
 	var result RecoverySession
-	var claimToken, requestHash string
+	var claimToken, progressToken, requestHash string
 	var receipt []byte
 	var claimedAt, terminalAt sql.NullTime
 	err := row.Scan(&result.SessionID, &result.FounderID, &result.FounderStreamID, &result.CompanyStreamID,
 		&result.RunSeq, &result.ConstantsHash, &result.ActivityID, &result.FounderAttendedStartMS,
 		&result.RequiredDurationMS, &result.Status, &result.StartRequestHash, &requestHash, &claimToken,
+		&progressToken, &result.AttendedProgressMS, &result.LastProgressServerMS,
 		&claimedAt, &receipt, &result.CreatedAt, &result.UpdatedAt, &terminalAt)
 	if err != nil {
 		return RecoverySession{}, err
 	}
-	result.TerminalRequestHash, result.ClaimToken = requestHash, claimToken
+	result.TerminalRequestHash, result.ClaimToken, result.ProgressToken = requestHash, claimToken, progressToken
 	if claimedAt.Valid {
 		value := claimedAt.Time
 		result.ClaimedAt = &value
@@ -301,11 +375,19 @@ func loadRecoveryRow(row recoveryScanner) (RecoverySession, error) {
 
 const recoveryColumns = `session_id,founder_id,founder_stream_id,company_stream_id,run_seq,constants_hash,activity_id,
 	founder_attended_start_ms,required_duration_ms,status,start_request_hash,COALESCE(terminal_request_hash,''),
-	COALESCE(claim_token::text,''),claimed_at,COALESCE(terminal_receipt::text,'')::bytea,created_at,updated_at,terminal_at`
+	COALESCE(claim_token::text,''),progress_token::text,attended_progress_ms,last_progress_server_ms,
+	claimed_at,COALESCE(terminal_receipt::text,'')::bytea,created_at,updated_at,terminal_at`
 const recoveryByIDSQL = `SELECT ` + recoveryColumns + ` FROM soul_recovery_sessions WHERE session_id=$1 AND founder_id=$2`
+const recoveryActiveByFounderSQL = `SELECT ` + recoveryColumns + ` FROM soul_recovery_sessions WHERE founder_id=$1 AND status IN ('active','claimed')`
 const createRecoverySQL = `INSERT INTO soul_recovery_sessions(session_id,founder_id,founder_stream_id,company_stream_id,run_seq,
-	constants_hash,activity_id,founder_attended_start_ms,required_duration_ms,start_request_hash)
-	VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING ` + recoveryColumns
+	constants_hash,activity_id,founder_attended_start_ms,required_duration_ms,start_request_hash,progress_token,
+	attended_progress_ms,last_progress_server_ms,created_at,updated_at)
+	VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,gen_random_uuid(),0,$11::bigint,
+		to_timestamp(($11::bigint)::double precision/1000),to_timestamp(($11::bigint)::double precision/1000)) RETURNING ` + recoveryColumns
+const rotateRecoveryProgressTokenSQL = `UPDATE soul_recovery_sessions SET progress_token=gen_random_uuid(),updated_at=clock_timestamp()
+	WHERE session_id=$1 AND status='active' RETURNING ` + recoveryColumns
+const progressRecoverySQL = `UPDATE soul_recovery_sessions SET attended_progress_ms=$2,last_progress_server_ms=$3,updated_at=clock_timestamp()
+	WHERE session_id=$1 AND status='active' RETURNING ` + recoveryColumns
 const claimRecoverySQL = `UPDATE soul_recovery_sessions SET status='claimed',claim_token=gen_random_uuid(),claimed_at=clock_timestamp(),
 	updated_at=clock_timestamp(),terminal_request_hash=$4 WHERE session_id=$1 AND founder_id=$2 AND
 	(status='active' OR (status='claimed' AND claimed_at<clock_timestamp()-($3::bigint*interval '1 millisecond')))

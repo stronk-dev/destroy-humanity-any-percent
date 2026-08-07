@@ -193,12 +193,13 @@ func soulFeatureBundle(t *testing.T, fiscalBundle CatalogBundle) CatalogBundle {
 	if err != nil {
 		t.Fatal(err)
 	}
-	soulBytes := []byte(`{"schema_version":1,"policy":{"soul_floor":0,"soul_initial":100,"soul_max":100},"bands":[{"band_member":"near_zero","min_inclusive":0,"max_inclusive":9,"human_content_locked":true,"reason_key":"category.low_percent"},{"band_member":"hollow","min_inclusive":10,"max_inclusive":39,"human_content_locked":false,"reason_key":"category.ethical_percent"},{"band_member":"dimming","min_inclusive":40,"max_inclusive":74,"human_content_locked":false,"reason_key":"category.hundred_percent"},{"band_member":"whole","min_inclusive":75,"max_inclusive":100,"human_content_locked":false,"reason_key":"category.any_percent"}],"debit_sources":[],"recovery_activities":[],"ending_policy":{"whole_variant":"earnest_ascension","depleted_variant":"training_data"}}`)
+	soulBytes := []byte(`{"schema_version":1,"policy":{"soul_floor":0,"soul_initial":100,"soul_max":100,"recovery_beat_ceiling_ms":5000,"max_session_wall_ms":86400000},"bands":[{"band_member":"near_zero","min_inclusive":0,"max_inclusive":9,"human_content_locked":true,"reason_key":"category.low_percent"},{"band_member":"hollow","min_inclusive":10,"max_inclusive":39,"human_content_locked":false,"reason_key":"category.ethical_percent"},{"band_member":"dimming","min_inclusive":40,"max_inclusive":74,"human_content_locked":false,"reason_key":"category.hundred_percent"},{"band_member":"whole","min_inclusive":75,"max_inclusive":100,"human_content_locked":false,"reason_key":"category.any_percent"}],"debit_sources":[],"recovery_activities":[],"ending_policy":{"whole_variant":"earnest_ascension","depleted_variant":"training_data"}}`)
 	keys := map[string]struct{}{}
 	for _, key := range copykeys.All() {
 		keys[key] = struct{}{}
 	}
-	soulCatalog, err := soul.LoadCatalog(soulBytes, soul.Declarations{CopyKeys: keys, EpochSeeded: true})
+	soulCatalog, err := soul.LoadCatalog(soulBytes, soul.Declarations{CopyKeys: keys, EpochSeeded: true,
+		CatchupCeilingMS: result.Prestige.CatchupCeilingMS})
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -5,7 +5,7 @@ export type SoulBand = (typeof SOUL_BANDS)[number];
 export type SoulOwnerKind = "event" | "longevity" | "contract" | "fixture";
 export type SoulEndingVariant = "earnest_ascension" | "training_data";
 
-export interface SoulPolicy { readonly soul_floor: number; readonly soul_initial: number; readonly soul_max: number }
+export interface SoulPolicy { readonly soul_floor: number; readonly soul_initial: number; readonly soul_max: number; readonly recovery_beat_ceiling_ms: number; readonly max_session_wall_ms: number }
 export interface SoulBandRow { readonly band_member: SoulBand; readonly min_inclusive: number; readonly max_inclusive: number; readonly human_content_locked: boolean; readonly reason_key: string }
 export interface SoulDebitSource { readonly source_id: string; readonly owner_kind: SoulOwnerKind; readonly amount: number; readonly may_exhaust: boolean; readonly single_use: boolean; readonly curtain_copy_key: string }
 export interface SoulRecoveryActivity { readonly activity_id: string; readonly duration_attended_ms: number; readonly recovery_amount: number; readonly reason_key: string }
@@ -18,7 +18,7 @@ export interface SoulCatalog {
   readonly ending_policy: { readonly whole_variant: "earnest_ascension"; readonly depleted_variant: "training_data" };
 }
 
-export interface SoulDeclarations { readonly copyKeys: ReadonlySet<string>; readonly epochSeeded: boolean }
+export interface SoulDeclarations { readonly copyKeys: ReadonlySet<string>; readonly epochSeeded: boolean; readonly catchupCeilingMs: number }
 
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 const owners = new Set<SoulOwnerKind>(["event", "longevity", "contract", "fixture"]);
@@ -27,9 +27,13 @@ export function parseSoulCatalog(source: unknown, declarations: SoulDeclarations
   if (declarations.copyKeys.size === 0) throw new SyntaxError("Soul copy registry is empty");
   const root = exactObject(source, ["schema_version", "policy", "bands", "debit_sources", "recovery_activities", "ending_policy"], "Soul catalog");
   if (root.schema_version !== 1) throw new SyntaxError("invalid Soul catalog version");
-  const policyRow = exactObject(root.policy, ["soul_floor", "soul_initial", "soul_max"], "Soul policy");
+  // Schema v1 grows in place only because no production epoch ever pinned a
+  // Soul artifact before these heartbeat fields shipped.
+  const policyRow = exactObject(root.policy, ["soul_floor", "soul_initial", "soul_max", "recovery_beat_ceiling_ms", "max_session_wall_ms"], "Soul policy");
   const floor = safeInteger(policyRow.soul_floor, 0, MAX_EXACT_INTEGER), maximum = safeInteger(policyRow.soul_max, floor, MAX_EXACT_INTEGER);
-  const policy: SoulPolicy = Object.freeze({ soul_floor: floor, soul_initial: safeInteger(policyRow.soul_initial, floor, maximum), soul_max: maximum });
+  const beat = safeInteger(policyRow.recovery_beat_ceiling_ms, 1, declarations.catchupCeilingMs);
+  const policy: SoulPolicy = Object.freeze({ soul_floor: floor, soul_initial: safeInteger(policyRow.soul_initial, floor, maximum), soul_max: maximum,
+    recovery_beat_ceiling_ms: beat, max_session_wall_ms: safeInteger(policyRow.max_session_wall_ms, 1, MAX_EXACT_INTEGER) });
   if (!Array.isArray(root.bands) || root.bands.length !== SOUL_BANDS.length) throw new SyntaxError("Soul bands must be complete");
   let next = floor;
   const bands = Object.freeze(root.bands.map((item, index) => {

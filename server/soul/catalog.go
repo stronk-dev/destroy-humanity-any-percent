@@ -39,9 +39,11 @@ const (
 )
 
 type Policy struct {
-	Floor   int64 `json:"soul_floor"`
-	Initial int64 `json:"soul_initial"`
-	Max     int64 `json:"soul_max"`
+	Floor                 int64 `json:"soul_floor"`
+	Initial               int64 `json:"soul_initial"`
+	Max                   int64 `json:"soul_max"`
+	RecoveryBeatCeilingMS int64 `json:"recovery_beat_ceiling_ms"`
+	MaxSessionWallMS      int64 `json:"max_session_wall_ms"`
 }
 
 type Band struct {
@@ -83,8 +85,9 @@ type Catalog struct {
 }
 
 type Declarations struct {
-	CopyKeys    map[string]struct{}
-	EpochSeeded bool
+	CopyKeys         map[string]struct{}
+	EpochSeeded      bool
+	CatchupCeilingMS int64
 }
 
 var mechanicalID = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
@@ -111,7 +114,10 @@ func exactSoulCatalogKeys(data []byte) bool {
 		return false
 	}
 	var root map[string]json.RawMessage
-	if json.Unmarshal(data, &root) != nil || !exactKeys(root["policy"], "soul_floor", "soul_initial", "soul_max") ||
+	// Schema v1 may grow here only because no production epoch ever pinned a
+	// Soul artifact before the heartbeat fields shipped. A pinned grammar would
+	// require a schema-version bump instead of this in-place extension.
+	if json.Unmarshal(data, &root) != nil || !exactKeys(root["policy"], "max_session_wall_ms", "recovery_beat_ceiling_ms", "soul_floor", "soul_initial", "soul_max") ||
 		!exactKeys(root["ending_policy"], "depleted_variant", "whole_variant") {
 		return false
 	}
@@ -135,6 +141,8 @@ func exactRows(data []byte, keys ...string) bool {
 
 func validateCatalog(catalog *Catalog, declarations Declarations) error {
 	if catalog.Policy.Floor < 0 || catalog.Policy.Max > decimal.MaxExactInteger || catalog.Policy.Floor > catalog.Policy.Initial || catalog.Policy.Initial > catalog.Policy.Max ||
+		catalog.Policy.RecoveryBeatCeilingMS < 1 || catalog.Policy.RecoveryBeatCeilingMS > declarations.CatchupCeilingMS ||
+		catalog.Policy.MaxSessionWallMS < 1 || catalog.Policy.MaxSessionWallMS > decimal.MaxExactInteger ||
 		len(catalog.Bands) != 4 || catalog.DebitSources == nil || catalog.RecoveryActivities == nil ||
 		catalog.EndingPolicy.WholeVariant != EndingEarnestAscension || catalog.EndingPolicy.DepletedVariant != EndingTrainingData {
 		return ErrInvalidCatalog

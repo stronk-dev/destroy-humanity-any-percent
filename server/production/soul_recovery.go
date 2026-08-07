@@ -23,6 +23,12 @@ type StartSoulRecoveryRequest struct {
 	ActivityID      string
 }
 
+type ProgressSoulRecoveryRequest struct {
+	SessionID     string
+	FounderID     string
+	ProgressToken string
+}
+
 // StartMinigameSession is the composed Soul gate in front of the authoritative
 // minigame service. The client never supplies the Founder revision, Soul
 // value, or constants hash used by this decision.
@@ -107,6 +113,25 @@ type soulRecoveryReceipt struct {
 	SoulAfter       int64           `json:"soul_after"`
 	BandBefore      soul.BandMember `json:"band_before"`
 	BandAfter       soul.BandMember `json:"band_after"`
+	CancelledBy     string          `json:"cancelled_by,omitempty"`
+}
+
+type soulRecoveryStartReceipt struct {
+	SessionID                  string `json:"session_id"`
+	ProgressToken              string `json:"progress_token"`
+	ActivityID                 string `json:"activity_id"`
+	RequiredDurationAttendedMS int64  `json:"required_duration_attended_ms"`
+	AttendedProgressMS         int64  `json:"attended_progress_ms"`
+	LastProgressServerMS       int64  `json:"last_progress_server_ms"`
+	StartedWallMS              int64  `json:"started_wall_ms"`
+}
+
+type soulRecoveryProgressReceipt struct {
+	SessionID                  string `json:"session_id"`
+	AttendedProgressMS         int64  `json:"attended_progress_ms"`
+	RequiredDurationAttendedMS int64  `json:"required_duration_attended_ms"`
+	LastProgressServerMS       int64  `json:"last_progress_server_ms"`
+	Eligible                   bool   `json:"eligible"`
 }
 
 // StartSoulRecovery is a coordinator command, not a Company or Founder
@@ -114,6 +139,12 @@ type soulRecoveryReceipt struct {
 func (s *Service) StartSoulRecovery(ctx context.Context, request StartSoulRecoveryRequest, now time.Time) (HandleResult, error) {
 	if s == nil || s.soulRecoveries == nil || s.replayCatalogs == nil {
 		return HandleResult{}, ErrInvalidIntent
+	}
+	if _, expired, err := s.cancelExpiredSoulRecovery(ctx, request.FounderID, now, nil); err != nil {
+		return HandleResult{}, err
+	} else if expired {
+		// The preflight owns the stale session's terminal transition; this start
+		// continues and creates the requested replacement session.
 	}
 	company, err := s.store.LoadLatest(ctx, request.CompanyStreamID)
 	if err != nil {
@@ -145,40 +176,80 @@ func (s *Service) StartSoulRecovery(ctx context.Context, request StartSoulRecove
 		FounderStreamID: founder.Revision.StreamID, CompanyStreamID: request.CompanyStreamID, RunSeq: company.State.RunSeq,
 		ConstantsHash: company.Revision.ConstantsHash, ActivityID: request.ActivityID,
 		FounderAttendedStartMS: attendance.EffectiveFounderAttendedMS, RequiredDurationMS: activity.DurationAttendedMS,
-		FounderRevision: founder.Revision.Number, CompanyRevision: company.Revision.Number, RequestHash: hash})
+		FounderRevision: founder.Revision.Number, CompanyRevision: company.Revision.Number, RequestHash: hash,
+		ServerNowMS: save.CanonicalServerTime(now).UnixMilli()})
 	if err != nil {
 		return HandleResult{}, err
 	}
-	receipt, _ := json.Marshal(map[string]any{"intent_id": request.SessionID, "outcome": string(save.IntentApplied),
-		"action": "start_soul_recovery", "session_id": request.SessionID, "activity_id": request.ActivityID,
-		"founder_attended_start_ms": session.FounderAttendedStartMS, "required_duration_ms": session.RequiredDurationMS})
+	receipt, _ := json.Marshal(soulRecoveryStartReceipt{SessionID: session.SessionID, ProgressToken: session.ProgressToken,
+		ActivityID: session.ActivityID, RequiredDurationAttendedMS: session.RequiredDurationMS,
+		AttendedProgressMS: session.AttendedProgressMS, LastProgressServerMS: session.LastProgressServerMS,
+		StartedWallMS: session.CreatedAt.UnixMilli()})
+	return HandleResult{Receipt: receipt}, nil
+}
+
+func (s *Service) ProgressSoulRecovery(ctx context.Context, request ProgressSoulRecoveryRequest, now time.Time,
+	fault save.ExitFaultInjector,
+) (HandleResult, error) {
+	if s == nil || s.soulRecoveries == nil || s.replayCatalogs == nil {
+		return HandleResult{}, ErrInvalidIntent
+	}
+	if result, expired, err := s.cancelExpiredSoulRecovery(ctx, request.FounderID, now, fault); err != nil {
+		return HandleResult{}, err
+	} else if expired {
+		return result, nil
+	}
+	session, err := s.soulRecoveries.Load(ctx, request.FounderID, request.SessionID)
+	if err != nil {
+		return HandleResult{}, err
+	}
+	bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(session.ConstantsHash)
+	if !ok || bundle.Soul == nil {
+		return HandleResult{}, ErrInvalidIntent
+	}
+	updated, err := s.soulRecoveries.Progress(ctx, soul.ProgressRecovery{SessionID: request.SessionID,
+		FounderID: request.FounderID, ProgressToken: request.ProgressToken,
+		ServerNowMS: save.CanonicalServerTime(now).UnixMilli(), RecoveryBeatCeilingMS: bundle.Soul.Policy.RecoveryBeatCeilingMS})
+	if errors.Is(err, soul.ErrRecoveryToken) {
+		return HandleResult{}, fmt.Errorf("%w: recovery_token", ErrInvalidIntent)
+	}
+	if err != nil {
+		return HandleResult{}, err
+	}
+	receipt, _ := json.Marshal(soulRecoveryProgressReceipt{SessionID: updated.SessionID,
+		AttendedProgressMS: updated.AttendedProgressMS, RequiredDurationAttendedMS: updated.RequiredDurationMS,
+		LastProgressServerMS: updated.LastProgressServerMS, Eligible: updated.AttendedProgressMS >= updated.RequiredDurationMS})
 	return HandleResult{Receipt: receipt}, nil
 }
 
 func (s *Service) CancelSoulRecovery(ctx context.Context, request FinishSoulRecoveryRequest, now time.Time,
 	fault save.ExitFaultInjector,
 ) (HandleResult, error) {
-	return s.finishSoulRecovery(ctx, request, now, soulRecoveryCancelKind, fault)
+	if result, expired, err := s.cancelExpiredSoulRecovery(ctx, request.FounderID, now, fault); err != nil || expired {
+		return result, err
+	}
+	return s.finishSoulRecovery(ctx, request, now, soulRecoveryCancelKind, "player", fault, true)
 }
 
 func (s *Service) ResolveSoulRecovery(ctx context.Context, request FinishSoulRecoveryRequest, now time.Time,
 	fault save.ExitFaultInjector,
 ) (HandleResult, error) {
-	return s.finishSoulRecovery(ctx, request, now, soulRecoveryResolveKind, fault)
+	if result, expired, err := s.cancelExpiredSoulRecovery(ctx, request.FounderID, now, fault); err != nil || expired {
+		return result, err
+	}
+	return s.finishSoulRecovery(ctx, request, now, soulRecoveryResolveKind, "", fault, true)
 }
 
-func (s *Service) finishSoulRecovery(ctx context.Context, request FinishSoulRecoveryRequest, now time.Time, kind string,
-	fault save.ExitFaultInjector,
+func (s *Service) finishSoulRecovery(ctx context.Context, request FinishSoulRecoveryRequest, now time.Time, kind,
+	cancelledBy string, fault save.ExitFaultInjector, watchdogChecked bool,
 ) (HandleResult, error) {
 	if s == nil || s.soulRecoveries == nil || s.replayCatalogs == nil ||
-		(kind != soulRecoveryResolveKind && kind != soulRecoveryCancelKind) {
+		(kind != soulRecoveryResolveKind && kind != soulRecoveryCancelKind) ||
+		(kind == soulRecoveryCancelKind && cancelledBy != "player" && cancelledBy != "watchdog") ||
+		(kind == soulRecoveryResolveKind && cancelledBy != "") || !watchdogChecked {
 		return HandleResult{}, ErrInvalidIntent
 	}
 	session, err := s.soulRecoveries.Load(ctx, request.FounderID, request.SessionID)
-	if err != nil {
-		return HandleResult{}, err
-	}
-	attendance, err := s.ResolveFounderAttendance(ctx, session.FounderStreamID, session.CompanyStreamID, now)
 	if err != nil {
 		return HandleResult{}, err
 	}
@@ -201,17 +272,18 @@ func (s *Service) finishSoulRecovery(ctx context.Context, request FinishSoulReco
 		bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(companyRevision.ConstantsHash)
 		if !ok || bundle.Soul == nil || claimed.ConstantsHash != companyRevision.ConstantsHash ||
 			claimed.FounderStreamID != founderRevision.StreamID || claimed.CompanyStreamID != companyRevision.StreamID ||
-			claimed.RunSeq != company.RunSeq || attendance.CompanyRevision != companyRevision.Number ||
-			attendance.CompanyConstantsHash != companyRevision.ConstantsHash ||
-			ValidateFounderAttendanceSample(founder, founderRevision.Number, founderRevision.Number, attendance) != nil {
-			return save.MinigameResolutionDecision{}, ErrFounderAttendanceStale
+			claimed.RunSeq != company.RunSeq {
+			return save.MinigameResolutionDecision{}, ErrInvalidIntent
 		}
 		activity, ok := bundle.Soul.RecoveryActivity(claimed.ActivityID)
 		if !ok || activity.DurationAttendedMS != claimed.RequiredDurationMS {
 			return save.MinigameResolutionDecision{}, ErrInvalidIntent
 		}
-		if kind == soulRecoveryResolveKind && attendance.EffectiveFounderAttendedMS-claimed.FounderAttendedStartMS < claimed.RequiredDurationMS {
+		if kind == soulRecoveryResolveKind && claimed.AttendedProgressMS < claimed.RequiredDurationMS {
 			return save.MinigameResolutionDecision{}, fmt.Errorf("%w: soul_recovery_not_ready", ErrInvalidIntent)
+		}
+		if claimed.FounderAttendedStartMS > 9_007_199_254_740_991-claimed.AttendedProgressMS {
+			return save.MinigameResolutionDecision{}, ErrInvalidIntent
 		}
 		var commonsWeight *int64
 		if company.CompactMember {
@@ -221,13 +293,20 @@ func (s *Service) finishSoulRecovery(ctx context.Context, request FinishSoulReco
 			}
 			commonsWeight = &weight
 		}
+		terminalMS := save.CanonicalServerTime(now).UnixMilli()
+		if cancelledBy == "watchdog" {
+			terminalMS = claimed.LastProgressServerMS
+		}
+		if terminalMS < company.EvaluatedThrough.UnixMilli() {
+			terminalMS = company.EvaluatedThrough.UnixMilli()
+		}
 		suppression := soulSuppression{FromEvaluatedMS: company.EvaluatedThrough.UnixMilli(),
-			ToEvaluatedMS: save.CanonicalServerTime(now).UnixMilli(), FounderAttendedStart: claimed.FounderAttendedStartMS,
-			FounderAttendedEnd: attendance.EffectiveFounderAttendedMS, SessionID: claimed.SessionID}
+			ToEvaluatedMS: terminalMS, FounderAttendedStart: claimed.FounderAttendedStartMS,
+			FounderAttendedEnd: claimed.FounderAttendedStartMS + claimed.AttendedProgressMS, SessionID: claimed.SessionID}
 		var activeEvidence *activePlayScheduleEvidence
 		if company.WireVersion == 18 {
 			resolved, activeErr := resolveActivePlaySchedule(company, bundle.Opportunities, bundle.Prestige,
-				companyRevision.OwnerID, now)
+				companyRevision.OwnerID, time.UnixMilli(terminalMS))
 			if activeErr != nil {
 				return save.MinigameResolutionDecision{}, activeErr
 			}
@@ -262,7 +341,7 @@ func (s *Service) finishSoulRecovery(ctx context.Context, request FinishSoulReco
 		founderResolved := founderSoulRecoveryResolved{Kind: "soul_recovery", Action: kind, SessionID: claimed.SessionID,
 			ActivityID: claimed.ActivityID, CompanyStreamID: claimed.CompanyStreamID, RunSeq: claimed.RunSeq,
 			FounderAttendedStartMS: claimed.FounderAttendedStartMS,
-			FounderAttendedEndMS:   attendance.EffectiveFounderAttendedMS, RecoveryAmount: activity.RecoveryAmount,
+			FounderAttendedEndMS:   claimed.FounderAttendedStartMS + claimed.AttendedProgressMS, RecoveryAmount: activity.RecoveryAmount,
 			SoulBefore: beforeSoul, SoulAfter: afterSoul, BandBefore: beforeBand.Member, BandAfter: afterBand.Member,
 			ReasonKey: activity.ReasonKey}
 		founderInputs, marshalErr := save.MarshalFounderReplayInputs(founderCommand, founderResolved)
@@ -277,6 +356,9 @@ func (s *Service) finishSoulRecovery(ctx context.Context, request FinishSoulReco
 			SessionID: claimed.SessionID, ActivityID: claimed.ActivityID, CompanyRevision: companyNext,
 			FounderRevision: founderNext, SoulBefore: beforeSoul, SoulAfter: afterSoul,
 			BandBefore: beforeBand.Member, BandAfter: afterBand.Member}
+		if kind == soulRecoveryCancelKind {
+			receipt.CancelledBy = cancelledBy
+		}
 		receiptBytes, _ := json.Marshal(receipt)
 		terminalStatus := soul.RecoveryResolved
 		if kind == soulRecoveryCancelKind {
@@ -307,6 +389,48 @@ func (s *Service) finishSoulRecovery(ctx context.Context, request FinishSoulReco
 		return HandleResult{}, err
 	}
 	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
+}
+
+func (s *Service) cancelExpiredSoulRecovery(ctx context.Context, founderID string, now time.Time,
+	fault save.ExitFaultInjector,
+) (HandleResult, bool, error) {
+	if s == nil || s.soulRecoveries == nil || s.replayCatalogs == nil {
+		return HandleResult{}, false, ErrInvalidIntent
+	}
+	session, err := s.soulRecoveries.Active(ctx, founderID)
+	if errors.Is(err, soul.ErrRecoveryGone) {
+		return HandleResult{}, false, nil
+	}
+	if err != nil {
+		return HandleResult{}, false, err
+	}
+	bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(session.ConstantsHash)
+	nowMS := save.CanonicalServerTime(now).UnixMilli()
+	if !ok || bundle.Soul == nil || nowMS-session.CreatedAt.UnixMilli() <= bundle.Soul.Policy.MaxSessionWallMS {
+		return HandleResult{}, false, nil
+	}
+	result, err := s.finishSoulRecovery(ctx, FinishSoulRecoveryRequest{SessionID: session.SessionID,
+		FounderID: founderID}, now, soulRecoveryCancelKind, "watchdog", fault, true)
+	if errors.Is(err, soul.ErrRecoveryGone) || errors.Is(err, soul.ErrRecoveryBusy) {
+		return HandleResult{}, false, nil
+	}
+	return result, err == nil, err
+}
+
+func (s *Service) soulRecoveryExclusivity(ctx context.Context, founderID string, now time.Time) (bool, bool, error) {
+	session, err := s.soulRecoveries.Active(ctx, founderID)
+	if errors.Is(err, soul.ErrRecoveryGone) {
+		return false, false, nil
+	}
+	if err != nil {
+		return false, false, err
+	}
+	bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(session.ConstantsHash)
+	if !ok || bundle.Soul == nil {
+		return false, false, ErrInvalidIntent
+	}
+	expired := save.CanonicalServerTime(now).UnixMilli()-session.CreatedAt.UnixMilli() > bundle.Soul.Policy.MaxSessionWallMS
+	return true, expired, nil
 }
 
 func soulRequestHash(payload []byte) string {

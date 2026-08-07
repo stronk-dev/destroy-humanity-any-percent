@@ -1,9 +1,7 @@
 # RFC: Soul Foundation (the personal ledger)
 
-- **Status:** accepted — SB1-SB27 ruled (…and SB24: the claim-tokened recovery progress heartbeat —
-  session-row-only beats, absence pauses never kills, terminal-only replay bytes, lazy watchdog).
-  Substrate implemented (203d40a, under designated review); production recovery activities mint only
-  after SB24 implements + reviews.
+- **Status:** implementing — SB1-SB27 implemented; heartbeat/session watchdog closing review pending.
+  Production recovery activities mint only after that review passes.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
 - **Design refs:** `design/02 §8` (Soul — the personal ledger, distinct from the moral Trust axis;
