@@ -8,8 +8,9 @@
 - **Design refs:** `design/06 §transport` (authenticated command surface), `design/11` (first-session
   UX — the onboarding dossier's MUST/MUST-NOT list applies to these surfaces)
 - **Depends on:** API Foundation (accepted, implementing — this AMENDS its authenticated `/api/v1/`
-  surface, additive-only per its A1 policy), Minigame Platform (archived — the internal
-  create/play/resolve services this exposes), Soul Foundation (archival-eligible — the SB19/SB24
+  surface, additive-only per its A1 policy), Minigame Platform (accepted, implementing — its RFC is
+  NOT yet archived; the internal create/play/resolve services this exposes are implemented and
+  reviewed through The Pitch's designated verdicts), Soul Foundation (archived — the SB19/SB24
   coordinator this exposes), UI Foundation (accepted — the component/token substrate the surfaces
   render on), Game-UI Screens (draft — consumes the surface contracts defined here).
 - **Planning:** `planning/minigame-api-and-surface/` (once implementing)

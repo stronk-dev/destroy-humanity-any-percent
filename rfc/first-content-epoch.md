@@ -133,18 +133,22 @@ as the checklist the integration test covers:
    changelog cites every consumed review verdict and reviewed range.
 5. `make verify` + the Postgres integration suite green at the mint commit.
 
-## Open questions (owner rulings wanted at acceptance)
+## Open questions — ALL RULED by Marco, 2026-08-07
 
-1. **Epoch name** — recommend the mechanical `"First Content"` (matches "Faction Foundation" /
-   "Canonical Boards"; flavor lives in data files, not registry names).
-2. **Provisional bytes** — recommend minting the reviewed provisional constants as-is (FCE2
-   default) rather than a pre-mint retune pass; epoch 7 is the retune lane once the composed
-   harness report and real play data exist.
-3. **Mint timing vs the playability seam** — the mint does not depend on Minigame API & Surface
-   (internal services consume the bundle either way); recommend minting as soon as FCE5 is green
-   rather than waiting for the API surface, so surface work tests against production content.
+1. **Epoch name — RULED: `"First Content"`** (mechanical, matches the registry pattern; flavor
+   lives in data files, not registry names).
+2. **Provisional bytes — RULED: mint as-is.** Byte-identical promotion of the reviewed fixture
+   bytes; epoch 7 is the retune lane once the composed harness report and real play data exist.
+   FCE2's default is now normative.
+3. **Mint timing — RULED: ASAP once FCE5 is green**, independent of the Minigame API & Surface
+   work; surface work then tests against production content. Note recorded with the ruling: FCE5.1
+   requires the OLDER contributing foundations (meters, achievements, minigame platform, pet care,
+   founder attendance) to reach their designated-review/archival gates too — that closure work is
+   on the mint's critical path (audit in flight at ruling time).
 
 ## Changelog
 
 - 2026-08-07: created (draft) — the owner-gated dependency-complete mint promised by TP-C18 and
   SR-C13; scope pinned to the loader's enforced artifact chain; gates enumerated.
+- 2026-08-07: all three open questions ruled by Marco (name "First Content"; mint provisional
+  bytes as-is; mint ASAP once gates green). No open questions remain — acceptance-ready.
