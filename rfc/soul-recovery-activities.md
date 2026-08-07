@@ -1,6 +1,6 @@
 # RFC: Soul Recovery Activities (the cozy content — touch-grass v1)
 
-- **Status:** accepted — SR-C1–SR-C8 ruled; implementing (playability gated on the coordinator
+- **Status:** acceptance blocked on SR-C9–SR-C14 (SR-C1–SR-C8 ruled; playability remains gated on the coordinator
   API amendment + an accepted UI Foundation). The **owner-content
   mint** the Soul verdict requires before production `recovery_activities` rows may exist.
 - **Author:** Marco (drafted by Claude)
@@ -245,3 +245,77 @@ All accepted; scope decision on C1/C3. Body reconciliations noted.
   machinery await owner content; this RFC activates RECOVERY only; the first production debit
   source — and with it the training-data ending's production reachability — belongs to a later
   Events/longevity content RFC.
+
+## Implementation blockers (Codex, 2026-08-07)
+
+The first rulings select the right product shape. The remaining blockers are the exact API and mint
+bytes, plus contradictions left in the normative body. Implementing them without a second ruling
+would invent public authority, error behavior, and an owner-gated balance epoch.
+
+### SR-C9 — The normative body still claims the retracted scope
+
+The header says this RFC adds “ONLY catalog rows + client presentation + copy. Zero server
+mechanics,” while SR-C1 puts a new authenticated coordinator API in scope. SR4 says the Game-UI
+consumer ships the rows/toys even though UI Foundation remains unaccepted. SR1 still describes copy
+keys as an informal suffix rather than the ruled exact row fields.
+
+**Proposed contract:** reconcile SR1/SR4/dependencies/ACs. Mark the implementable landing as catalog,
+coordinator API, and internal/browser-independent contract tests; keep actual toy components blocked
+on UI Foundation and record them as carried acceptance debt rather than claiming them shipped.
+
+### SR-C10 — Public coordinator request authority and routes are not exact
+
+SB25–SB27 define internal responses, but not HTTP route names or request bodies. The production start
+method currently accepts client-supplied session, Founder, and Company IDs; the authenticated API
+must decide which are server-derived. Resolve/cancel token semantics and HTTP status/error mapping
+are also absent.
+
+**Proposed contract:** enumerate four literal routes and exact JSON bodies. Recommended:
+`POST /api/v1/soul-recovery/start {activity_id}` (server creates session ID and resolves active
+Founder/Company), `/progress {session_id,progress_token}`, `/cancel {session_id}`, and `/resolve
+{session_id}`. Founder/Company IDs never cross the public wire. Define reconnect as repeated start,
+and map every deterministic error to one closed `{category,detail}` pair while transient/store errors
+remain 5xx and never become gameplay rejections.
+
+### SR-C11 — The per-session heartbeat limiter has no contract
+
+“Rate-limited heartbeats” provides no capacity, refill rule, key lifetime, status, or interaction
+with the account limiter. These values affect ordinary browser behavior around the ruled
+`ceiling/3` cadence.
+
+**Proposed contract:** make the database heartbeat transition the semantic authority and add a
+small API abuse limiter keyed by session ID. Specify literal Phase-0 burst/refill values that safely
+admit the catalog-derived cadence, return `429 rate_limited/recovery_progress`, and evict at terminal
+or bounded idle TTL. The limiter must not consume/rotate the progress token on rejection.
+
+### SR-C12 — Presentation and copy identifiers are still missing
+
+The ruled row adds four fields, but no literal `reason_key`, title, description, or disclosure keys
+are supplied for any activity. The copy catalog cannot be generated from prose labels.
+
+**Proposed contract:** list the exact eight-field rows for all three activities and the exact
+copy entries. Recommended mechanical key family: `soul.recovery.<activity>.{title,description,
+disclosure}` plus `soul.recovery.<activity>.reason`; the shared disclosure may reuse one key only if
+the row explicitly names it. Copy text must pass the existing tone/provenance gates.
+
+### SR-C13 — The first-Soul mint is described but not enumerable
+
+The live epoch manifest contains none of Fiscal/Minigame/Pet/Soul. “Full bundle transition” does not
+name the next epoch, artifact order/paths, exact dependency bytes, changelog, or baseline changes.
+Those are owner-sensitive balance/history decisions, not implementation details.
+
+**Proposed contract:** enumerate the complete next epoch manifest and every artifact file, or rule
+the implementation fixture-only until a dedicated content-mint RFC. Recommended: land row grammar,
+literal fixture, API, and activation integration now; keep the production mint owner-gated until the
+full dependency artifact bytes are reviewed together.
+
+### SR-C14 — The browser contract is not implementable before UI Foundation
+
+The cadence/focus behavior is ruled, but no accepted component host, routing, request client, or
+test environment owns it. Writing toy components now would create the UI seam that SR-C3 says is a
+dependency.
+
+**Proposed contract:** keep a framework-neutral scheduler/state-machine module in scope only if its
+exact input/output interface is written here; otherwise defer all browser/toy code to the accepted
+UI successor. Either choice must leave AC4/AC5 visibly open rather than satisfied by catalog/API
+tests.

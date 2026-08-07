@@ -1,6 +1,6 @@
 # RFC: The Pitch (minigame content — THE TEMPLATE)
 
-- **Status:** accepted — TP-C1–TP-C10 ruled; implementing (v1 scope: engine + pinned catalog +
+- **Status:** acceptance blocked on TP-C11–TP-C18 (TP-C1–TP-C10 ruled). v1 scope: engine + pinned catalog +
   internal integration; playability lands with the Minigame API & Surface successor). **This is the exemplar
   minigame-content RFC**: its structure (tenant row → engine contract → certified result → economy
   hooks → content-as-data) is the template the other minigame content RFCs replicate.
@@ -319,3 +319,98 @@ All accepted; product decisions on C6/C10. Body reconciliations noted inline.
 
 Reconciliations applied to the body: daily seed removed (TP2/AC2), arcade home removed (TP1),
 relevance claim replaced (TP4), Result grammar corrected (TP2/AC).
+
+## Implementation blockers (Codex, 2026-08-07)
+
+The first ruling round settled every product fork, but it did not supply the byte contracts it says
+are exact. The normative body also retains several original placeholders. This narrower bounce asks
+only for the literals and state-machine rules needed to implement the chosen product shape.
+
+### TP-C11 — The normative body still contradicts the accepted rulings
+
+TP1 still specifies `engine_version: 1`, `result_score_fact_ids: [...]`, and an incomplete object;
+TP4 still says `≥~12` and `≥~8`; the dependency/header text still says “No new platform mechanics”
+despite the ruled Pitch artifact and Fiscal unlock amendment. A reader cannot tell whether the body
+or appended rulings govern.
+
+**Proposed contract:** reconcile TP1–TP5 and AC1–AC5 in the ruling edit itself. Replace every
+placeholder and approximate count with the final literal contract, and describe the two platform
+amendments explicitly. Historical blocker text may retain the old wording.
+
+### TP-C12 — The exact engine snapshot and command wire remain absent
+
+TP-C3 accepted a closed command set, but no command payload keys, snapshot keys, phase transitions,
+collection representation, or error IDs were supplied. Even genesis is undefined. Go and TypeScript
+cannot independently implement byte-identical state from the current prose.
+
+**Proposed contract:** add literal JSON examples or tables for genesis and every snapshot phase;
+define exact payload keys for all five commands, legal source/target phases, revision/counter effects,
+terminal success/failure rules, and the complete sorted rejection enum. State whether indexes or IDs
+select cards/hacks and how a shop offer is represented and consumed.
+
+### TP-C13 — The effect and content row unions are still unnamed
+
+TP-C4 accepted four effect families without specifying their discriminator names or exact fields.
+TP-C8 requires 12+8 literal rows, but none are present. Prices, weights, base values, interaction
+partners, hand shapes, funding targets, hand budgets, slot caps, and reason/copy keys remain choices.
+
+**Proposed contract:** enumerate exact schemas for `metric_card`, `growth_hack`, each effect arm,
+funding-round rows, and global policy; then include all 20 byte-sorted launch rows and the complete
+funding curve. Values may be marked provisional, but they must be literal owner-approved bytes.
+
+### TP-C14 — The pinned Pitch artifact/session identity amendment is not specified
+
+The platform session stores the minigame constants hash and genesis, but has no separately named
+Pitch content hash/version. `CatalogBundle` and epoch artifact authority likewise have no `pitch`
+member. “Freeze it in genesis” does not define which fields, hash algorithm, loader, or consistency
+checks own that identity.
+
+**Proposed contract:** specify artifact name/path/schema version; canonical hash construction; the
+new `CatalogBundle.Pitch` type; exact genesis identity keys; start-time equality checks among epoch,
+bundle, definition, tenant, and genesis; replay lookup; and the migration/immutability rule if any
+session columns change. Prefer storing content identity in exact genesis keys unless a queryable DB
+column has a named consumer.
+
+### TP-C15 — The Fiscal unlock grammar and state predicate are incomplete
+
+The current platform grammar is only `always | fact_equals`; the current Fiscal catalog has sorted
+`{unlock_id,cost}` rows and Founder state stores unlocked IDs. The ruling names
+`fiscal_unlock {unlock_id}` but not its exact JSON keys, the literal Pitch unlock ID/cost, or the
+start-time predicate and error.
+
+**Proposed contract:** add the exact third unlock arm and literal Fiscal row. Recommended wire:
+`{"kind":"fiscal_unlock","unlock_id":"minigame.pitch"}`; start resolves the pinned Founder state
+and requires that ID in its byte-sorted unlocked set, otherwise returns the existing typed
+not-eligible category with a named detail. Add Go/TS loader parity and composed before/after tests.
+
+### TP-C16 — The schema-v3 minigame definition is still not literal
+
+TP-C5 says a complete row will ship, but the RFC does not provide it. Resource ID, payout fact,
+cap key, grade curve, automation destination, quality decay, neutral Elo bounds, season member,
+breadth source/destination, and exact modes remain implementation choices.
+
+**Proposed contract:** include the complete JSON definition in the RFC. All structural strings and
+every provisional integer must be explicit; the implementation copies those bytes into the fixture
+and production artifact rather than authoring policy in Go.
+
+### TP-C17 — Scoring normalization and exponent projection are ambiguous
+
+“One canonical quantize” does not state the significant-digit constant, whether intermediate
+Decimal operations use the core's ordinary quantization, or how the base-10 exponent is derived for
+zero/sub-unit/scientific values. The exponent hardcap and reason key are unnamed.
+
+**Proposed contract:** bind scoring to the existing Decimal canonical significant-digit rule at the
+named final boundary; define zero and sign domain; define exponent as the canonical Decimal base-10
+exponent after final quantization; name its integer min/max, saturation behavior, and reason key;
+provide boundary vectors in the shared corpus.
+
+### TP-C18 — No production mint is defined for the new artifact set
+
+The live epoch manifest currently has no Fiscal, Minigame, Pet, Soul, or Pitch artifacts. Adding
+Pitch is a balance mint and artifact-set growth, but the RFC gives no epoch ID/name, artifact order,
+paths, dependency-complete bytes, or baseline regeneration duties.
+
+**Proposed contract:** either (a) declare this implementation fixture-only and defer the production
+mint, or (b) enumerate the complete next epoch artifact list and changelog. Recommended for honest
+scope: implement engine/catalog/internal integration fixture-first; mint Pitch together with the
+dependency-complete content epoch only after its balance rows pass the content gate.
