@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "key": "achievement.career_attended_day",
+      "text": "Day One (Cumulative) — Twenty-four attended hours across your career. The deck calls this dedication.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.career_attended_hour",
+      "text": "Billable Hour — One full attended hour. HR has logged your enthusiasm.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.exit_count_5",
+      "text": "Serial Founder — Five exits. At this point the exits are the product.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.first_gate",
+      "text": "Out of the Garage — Crossed your first tier gate. The commemorative plaque is already being engraved.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.gate_burn_t3",
+      "text": "Burn Rate — Spent 1e9 cash crossing a single gate. The board calls this investing in growth.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.generators_owned_100",
+      "text": "Server Farm — One hundred beige towers. The hum is audible from the parking lot.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.generators_owned_300",
+      "text": "Beige at Scale — Three hundred beige towers. Nobody remembers what the first one does.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.generators_purchased_1",
+      "text": "CAPEX — Bought your first generator. It began depreciating before the receipt printed.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.generators_purchased_25",
+      "text": "Procurement Pipeline — Twenty-five generators purchased. The vendor sent a gift basket.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.generators_purchased_25_tier_3",
+      "text": "Enterprise Refresh — Twenty-five generators in one Tier-3 run. The old ones were fine.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.old_hand",
+      "text": "Exit Interview — Completed your first exit. You kept the hoodie.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.possession_warning",
+      "text": "Verified by possession: the game checked what you own right now. It did not ask how, and it will not ask again.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    },
+    {
+      "key": "achievement.tier_5",
+      "text": "Hyperscale — Reached Tier 5. Your infrastructure has infrastructure.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "achievement"
+    }
+  ]
+}
