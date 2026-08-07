@@ -1,7 +1,7 @@
 # RFC: Soul Foundation (the personal ledger)
 
-- **Status:** implementing — SB1-SB27 implemented; heartbeat/session watchdog closing review pending.
-  Production recovery activities mint only after that review passes.
+- **Status:** implemented — SB1-SB27 implemented and independently reviewed. Production recovery
+  activities remain owner-authored content; no production epoch currently pins a Soul artifact.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
 - **Design refs:** `design/02 §8` (Soul — the personal ledger, distinct from the moral Trust axis;

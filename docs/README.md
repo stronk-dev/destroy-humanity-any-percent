@@ -23,7 +23,7 @@ Implemented systems:
 - [Active-play opportunities](active-play.md) — attended-time scheduling, deterministic claims,
   multiplicative buff windows, combo hardcaps, and schema-v2 cap receipts/events.
 - [Soul foundation](soul.md) — Founder-v20 policy, debit and consumer gates, zero-output recovery
-  persistence/replay, and the explicitly open recovery-attendance liveness contract.
+  persistence/replay, attended progress capabilities, and lazy watchdog cancellation.
 - [Commons Compact](commons.md) — membership, source-derived Enclosure, Health/Capacity,
   persistent cohorts, AI fallback, production multiplier, dispatches, and population invariance.
 - [Client shell](client-shell.md) — Svelte DOM routes, authoritative stream boundary, Worker

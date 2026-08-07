@@ -30,7 +30,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
-| [Soul Foundation](soul-foundation.md) | implementing — SB1–SB27 implemented; closing review pending (Founder v20) | Save / Run Genesis / Founder Attendance / Pet Care |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
 | [T0–T1 Playable Content](t0-t1-playable-content.md) | draft | Production / Purchasable Content / Copy Pipeline |
 
@@ -81,6 +80,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Relevance Harness](archive/relevance-harness.md) | implemented | [Balance harness](../docs/balance-harness.md), [Production engine](../docs/production-engine.md) |
 | [Fiscal Quarters Foundation](archive/fiscal-quarters-foundation.md) | implemented | [Fiscal Quarters](../docs/fiscal-quarters.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Active-Play Buff Windows](archive/active-play-buff-windows.md) | implemented | [Active-play opportunities](../docs/active-play.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
+| [Soul Foundation](archive/soul-foundation.md) | implemented | [Soul foundation](../docs/soul.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 
 **Phase-0 contract status (reconciled 2026-08-05 against the coverage-map sweep):** the contracts
 previously listed here as "not yet drafted" — Layer-1 events engine, doctrine intents, Compute

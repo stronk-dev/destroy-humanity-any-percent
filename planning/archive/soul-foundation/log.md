@@ -302,3 +302,12 @@ verdict cites e6ca030/3ff2082.
 **Verdict: APPROVE. Soul is ARCHIVAL-ELIGIBLE citing the five-commit union. Archival is the
 implementer's move (this verdict is the gate); production recovery_activities may mint only after
 archival + owner content per the RFC. This closes the LAST Wave-A foundation gate.**
+
+## 2026-08-07 — archived; Wave-A foundation program complete
+
+Review by: designated Claude reviewer. Recorded by: Codex.
+
+Consumed the closing verdict above and its complete implementation union:
+`a3f7f30 + 8d2e1a6 + 203d40a + e6ca030 + 3ff2082`. Canonical behavior is in
+`docs/soul.md`; the RFC and planning record rotate to their archives in this commit. No production
+Soul artifact or recovery activity was minted, and nothing was pushed.

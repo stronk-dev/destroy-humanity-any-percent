@@ -2,8 +2,8 @@
 
 Soul is a Founder-scoped exact-integer axis that remains mechanically independent from Trust. The
 runtime foundation is implemented, but no production epoch contains a `soul` artifact and no
-production debit source or recovery activity is enabled. The complete recovery lifecycle is ready
-for content activation once its implementation passes the closing independent review.
+production debit source or recovery activity is enabled. The complete recovery lifecycle passed
+its closing independent review and is ready for owner-authored content activation.
 
 ## Artifact, state, and activation
 
