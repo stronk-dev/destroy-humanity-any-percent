@@ -17,8 +17,9 @@
 
 The first three production touch-grass activities — **`defrag`** (a zen tile-layer: watch the disk
 come to order), **`server_room`** (a no-goal toybox: arrange the racks, water nothing, help no one),
-**`repot`** (a short daily ritual: repot the server-room plants) — as `recovery_activities` catalog
-rows on the shipped Soul substrate. Each costs deliberate attended time under production
+**`repot`** (a short ritual: repot the server-room plants — "daily" is tonal only, SR-C7) — as
+`recovery_activities` catalog rows + the authenticated coordinator API (SR-C1/SR-C10) on the shipped
+Soul substrate. Each costs deliberate attended time under production
 suppression and **produces nothing** except Soul recovery: no resource, no score, no achievement,
 no record of how well you did, because there is no "well." The tooltip says so, sincerely — the one
 place the game's curtain-pulling voice goes quiet.
@@ -41,8 +42,9 @@ commission owns the soundscape later).
 
 ### SR1 — The three catalog rows
 
-Exact `recovery_activities` rows per the SB10/SB17 grammar
-(`{activity_id, duration_attended_ms, recovery_amount, reason_key}` + copy keys):
+Exact `recovery_activities` rows per the SB10/SB17 grammar extended by SR-C2
+(`{activity_id, duration_attended_ms, recovery_amount, toy_kind, reason_key, title_copy_key,
+description_copy_key, disclosure_copy_key}` — the literal rows are in the SR-C12 ruling):
 - **`defrag`** — the zen tile-layer. Medium duration. Flavor: "Defragment the disk."
 - **`server_room`** — the toybox. Long duration (the deep rest). Flavor: "Sit in the server room."
 - **`repot`** — the daily ritual. Short duration (the accessible one). Flavor: "Repot the plants."
@@ -75,11 +77,11 @@ discloses the absence of one, sincerely. Copy through the pipeline; the exact li
 
 ### SR4 — Activation
 
-The rows enter the pinned Soul artifact (the SB17 grammar allows production rows; the fixture-only
-containment lifts exactly here, per the Soul closing verdict: **after Soul's archival + this
-content**). Activation is the standard epoch mint under the activation-boundary law. UI surfacing
-(where the activities appear) is the Game-UI screens RFC's consumer seam; this RFC ships the rows,
-the toys, and the copy.
+The rows land FIXTURE-ONLY in this RFC (SR-C13); the production mint of the full dependency
+artifact set belongs to the dedicated **First Content Epoch RFC** (owner-gated, minted together —
+no partial chain). UI surfacing is the `soul_recovery` surface (the Minigame & Recovery API +
+Surface RFC + Game-UI screens); this RFC ships the rows, the coordinator API, the scheduler module,
+and the copy — toy components are carried acceptance debt on the UI successor.
 
 ## Deviations from design
 
@@ -319,3 +321,51 @@ dependency.
 exact input/output interface is written here; otherwise defer all browser/toy code to the accepted
 UI successor. Either choice must leave AC4/AC5 visibly open rather than satisfied by catalog/API
 tests.
+
+## Owner rulings on SR-C9–SR-C14 (2026-08-07) — the literals
+
+- **SR-C9 — accepted; bodies reconciled in this edit.** The implementable landing = catalog rows +
+  coordinator API + internal/browser-independent contract tests; toy components stay blocked on the
+  UI Foundation successor and are recorded as CARRIED ACCEPTANCE DEBT (AC4/AC5 marked open), never
+  claimed shipped.
+- **SR-C10 — RULED (exact routes; supersedes the `/api/v1/recovery/` naming in the API/Surface
+  draft, which is amended to match):** `POST /api/v1/soul-recovery/start {activity_id}` (server
+  creates the session ID and resolves the active Founder/Company — no ID crosses the wire; repeated
+  start = reconnect with token rotation) · `POST /api/v1/soul-recovery/progress
+  {session_id, progress_token}` · `POST /api/v1/soul-recovery/cancel {session_id}` ·
+  `POST /api/v1/soul-recovery/resolve {session_id}`. Founder/Company IDs never appear in any public
+  request or response. Every deterministic rejection maps to one closed `{category, detail}` pair in
+  the API Foundation's error envelope; transient/store errors are 5xx and NEVER become gameplay
+  rejections.
+- **SR-C11 — accepted (literals).** The database heartbeat transition is the semantic authority; the
+  API adds an abuse limiter keyed by session ID: **burst 6, refill 1 token per `ceiling/6` ms**
+  (catalog-derived — safely admits the ruled `ceiling/3` cadence with jitter), rejection
+  `429 rate_limited/recovery_progress`, evicted at terminal state or a 15-minute idle TTL. A limiter
+  rejection NEVER consumes or rotates the progress token.
+- **SR-C12 — RULED (the literal eight-field rows + copy identifiers).** Key family
+  `soul.recovery.<activity>.{title, description, disclosure}` + `soul.recovery.<activity>.reason` —
+  per-activity keys, no shared-key exception. The rows (byte-sorted; durations/amounts provisional
+  per SR-C4):
+  - `defrag {duration_attended_ms: 900000, recovery_amount: 12, toy_kind: "defrag",
+    reason_key: "soul.recovery.defrag.reason", title_copy_key: "soul.recovery.defrag.title",
+    description_copy_key: "soul.recovery.defrag.description",
+    disclosure_copy_key: "soul.recovery.defrag.disclosure"}`
+  - `repot {300000, 5, "repot", "soul.recovery.repot.reason", "soul.recovery.repot.title",
+    "soul.recovery.repot.description", "soul.recovery.repot.disclosure"}`
+  - `server_room {2700000, 30, "server_room", "soul.recovery.server_room.reason",
+    "soul.recovery.server_room.title", "soul.recovery.server_room.description",
+    "soul.recovery.server_room.disclosure"}`
+  Copy text lands through the pipeline's tone/provenance gates (the sincere register; each
+  disclosure states "This produces nothing." in the activity's own voice).
+- **SR-C13 — RULED: fixture-only now; the production mint belongs to the dedicated First Content
+  Epoch RFC** (shared ruling with TP-C18): row grammar, literal fixture, API, and activation
+  integration land in this RFC; the full dependency artifact set (fiscal + minigame/pet bumps +
+  soul + pitch) mints together, owner-gated, with its own reviewed epoch bytes and changelog.
+- **SR-C14 — RULED: the framework-neutral heartbeat scheduler IS in scope, with this exact
+  interface** (no DOM, no framework imports): constructor input `{session_id, progress_token,
+  beat_interval_ms, transport: {progress(session_id, token) → Promise<response>},
+  now() → ms, visibility: {subscribe(cb(visible: bool)) → unsubscribe}}`; outputs = callbacks
+  `{on_progress(response), on_pause(reason: hidden|network), on_resume(), on_token_rotated(token),
+  on_terminal(kind)}`; behavior per SR-C6 (beat only while visible, missed ceiling = pause, resume
+  via reconnect-start upstream, never queue/replay beats). Toy components and all DOM code defer to
+  the UI successor; AC4/AC5 remain visibly open (carried debt), satisfied only by the surface work.

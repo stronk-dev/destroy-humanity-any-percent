@@ -11,7 +11,9 @@
   multiplicative production stack this game deliberately mirrors)
 - **Depends on:** Minigame Platform Foundation (implemented + archived — C1–C40; this registers as a
   tenant), Fiscal Quarters (archived — the unlock sink), Soul Foundation (`soul_gate` field,
-  archival-eligible). No new platform mechanics: this RFC adds a TENANT, an ENGINE, and CONTENT.
+  archival-eligible). This RFC adds a TENANT, an ENGINE, CONTENT, and **two named platform/
+  composition amendments** (TP-C2's pinned `pitch` artifact + `CatalogBundle.Pitch`; TP-C6/TP-C15's
+  `fiscal_unlock` resolver arm).
 - **Planning:** `planning/minigame-the-pitch/` (once implementing)
 
 ## Summary
@@ -42,9 +44,12 @@ successor), the card/hack CATALOGS beyond the launch set (content/data), and all
 ### TP1 — The tenant row (the platform's C37 grammar, filled in)
 
 One row in the pinned `minigames` artifact:
-`{minigame_id: "pitch", engine_ref: "pitch", engine_version: 1, modes: ["solo"],
-result_score_fact_ids: [...], scaling, payout, fallback, offline_quality, rating_policy,
-unlock_condition}` — every sub-object per the already-ruled closed grammars. Specifics:
+`{minigame_id: "pitch", engine_ref: "pitch", engine_version: "1.0.0", modes: ["solo"],
+result_score_fact_ids: ["pitch.final_round", "pitch.best_hand_exponent"], scaling, payout,
+fallback, offline_quality, rating_policy, unlock_condition}` — every sub-object per the
+already-ruled closed grammars, with the complete literal bindings in the TP-C16 ruling (grade curve
+on rounds reached, cap.minigame_faucet, season s1, neutral Elo 1000 [0,3000], fallback
+{kind:"solo"}). Specifics:
 - **`scaling`:** the Fairness Law applies in full — NOTHING here scales with tier power. The only
   scaling input is `breadth` (unlocked card-set variants), never a power stat. Loader-rejected
   otherwise (the platform already enforces this).
@@ -96,9 +101,9 @@ funding-target curve, card/hack magnitudes) are balance data.
 ### TP4 — Content scope (the deckbuilder discipline)
 
 Launch catalog: **small and flat** — the research's content-obligation warning is adopted as a
-constraint: ≥~12 `metric_card`s and ≥~8 `growth_hack`s, each individually flat and legible, rather
-than a large pool (depth comes from hack INTERACTIONS, which the closed effect union makes
-enumerable and testable). Card/hack rows are exact-key catalog data with copy keys through the copy
+constraint: **exactly 12 `metric_card`s and 8 `growth_hack`s** (the literal rows are in the TP-C13
+ruling), each individually flat and legible (depth comes from hack INTERACTIONS, which the closed
+effect union makes enumerable and testable). Card/hack rows are exact-key catalog data with copy keys through the copy
 pipeline (flavor lives in data; `pitch`/`metric_card`/`growth_hack`/`valuation` are the mechanical
 names). Dead content is gated by the Pitch-owned content gate (TP-C9): every row must be reachable in
 seeded generation AND affect at least one declared golden scenario; interaction arms require
@@ -414,3 +419,73 @@ paths, dependency-complete bytes, or baseline regeneration duties.
 mint, or (b) enumerate the complete next epoch artifact list and changelog. Recommended for honest
 scope: implement engine/catalog/internal integration fixture-first; mint Pitch together with the
 dependency-complete content epoch only after its balance rows pass the content gate.
+
+## Owner rulings on TP-C11–TP-C18 (2026-08-07) — the literals
+
+- **TP-C11 — accepted; bodies reconciled in this edit** (TP1 literals, TP4 exact counts, the
+  header's "no new platform mechanics" corrected to name the two amendments).
+- **TP-C12 — RULED, and the command set is NARROWED for v1** (per TP-C3's "owner-selected closed
+  set"): three arms — `play_hand {card_ids[]}` (a sorted, duplicate-free subset of the current hand,
+  size ≤ `play_size`), `buy_hack {offer_id}`, `end_shop {}`. `draft_card`/`slot_hack` are REMOVED
+  from v1 (hands are dealt automatically; purchased hacks auto-slot up to the slot hardcap; a
+  drafting variant is a successor). **Phases:** `playing → shop → (playing | terminal)`; genesis
+  enters `playing` at round 1. **Genesis:** deck = every card × its `copies`, shuffled via substream
+  `pitch.deck.v1`; hand of `hand_size` dealt; `run_currency = start_currency`; shop offers drawn via
+  `pitch.shop.v1` on each shop entry. **Snapshot exact keys:** `{phase, round, hands_remaining,
+  deck_count, hand[], slotted_hacks[], run_currency, shop_offers[], funding_target,
+  round_best_valuation, revision}` — IDs are strings, all Decimal values canonical strings; `hand`
+  and `slotted_hacks` sorted raw-byte; cards selected by ID (never index). Playing a hand scores it,
+  decrements `hands_remaining`, and updates `round_best_valuation`; meeting `funding_target` within
+  the round's hands enters `shop`; exhausting hands below target is the terminal failure; clearing
+  the final funding row is the terminal success. One terminal transition emits the result. **Sorted
+  rejection enum:** `duplicate_card | hack_slots_full | hand_too_large | illegal_phase |
+  insufficient_currency | unknown_card | unknown_offer` — all reject without mutation.
+- **TP-C13 — RULED (exact schemas + the 20 launch rows + the curve; values provisional bytes).**
+  Effect arms (discriminator `kind`): `flat_add {amount}` · `card_factor {factor}` (per played
+  card) · `shape_factor {shape ∈ pair|triple|flush_kind|full_hand, factor}` · `chain_factor
+  {partner_hack_id, factor}` (applies only when the partner is also slotted; evaluation position =
+  the ordered-interactions stage). Amount/factor are canonical Decimal strings.
+  `metric_card {card_id, base_metric, copies, copy_key}` — the 12 (base_metric provisional):
+  `api_call 15` · `beta_invite 30` · `cache_hit 20` · `demo_day 90` · `newsletter 25` ·
+  `page_views 10` · `patch_release 40` · `press_mention 75` · `referral_loop 60` ·
+  `testimonial 50` · `uptime_nines 45` · `users_signup 35`; `copies: 2` each; copy keys
+  `pitch.card.<card_id>`.
+  `growth_hack {hack_id, price, draft_weight, effect, copy_key}` — the 8 (prices/weights
+  provisional): `ab_test {3, 10, card_factor 1.5}` · `buzzword {2, 12, flat_add 25}` ·
+  `dark_pattern {4, 8, shape_factor pair ×3}` · `growth_loop {5, 6, card_factor 2}` ·
+  `infinite_scroll {3, 10, flat_add 50}` · `pivot {6, 4, shape_factor full_hand ×4}` ·
+  `stealth_mode {4, 6, chain_factor pivot ×2.5}` · `synergy_deck {4, 6, chain_factor ab_test ×2}`;
+  copy keys `pitch.hack.<hack_id>`. Every `chain_factor` partner exists (loader-checked).
+  **Funding curve** `{round, funding_target}`: `1:100 · 2:300 · 3:1000 · 4:5000 · 5:25000 ·
+  6:200000 · 7:2000000 · 8:50000000` (8 rounds; provisional). **Global policy:** `hand_size 7,
+  play_size 4, hands_per_round 3, hack_slots 4, start_currency 4, shop_size 3` — all visible
+  hardcaps with reason keys.
+- **TP-C14 — accepted.** Artifact `balance/pitch.json`, `schema_version: 1`; canonical hash by the
+  platform's established constants-hash construction; new `CatalogBundle.Pitch`; **content identity
+  lives in exact genesis keys** `{pitch_content_hash, pitch_schema_version}` (no DB column — no
+  queryable consumer exists); start-time equality checked among epoch, bundle, definition, and
+  genesis; replay resolves through the constants-hash-pinned bundle. No session-table migration.
+- **TP-C15 — accepted.** The third unlock arm, exact wire
+  `{"kind":"fiscal_unlock","unlock_id":"minigame.pitch"}`; the literal Fiscal row
+  `{unlock_id:"minigame.pitch", cost: 3}` (provisional); start resolves the pinned Founder state's
+  byte-sorted unlocked set and rejects `not_eligible/fiscal_unlock_required` otherwise; Go/TS loader
+  parity + composed before/after tests.
+- **TP-C16 — RULED.** The complete literal definition ships IN THE RFC BODY'S TP1 (reconciled this
+  edit) with these bindings: `engine_version "1.0.0"`, modes `["solo"]`, resource `cash`,
+  payout fact `pitch.final_round`, grade curve `{1: 200000, 3: 500000, 5: 800000, 8: 1000000}`
+  (round-reached → grade ppm, provisional), cap reason `cap.minigame_faucet`, season member `s1`,
+  neutral Elo `1000` bounds `[0, 3000]` (untouched — solo), breadth source = unlocked card-set
+  variants (v1: the single launch set), `fallback {kind:"solo"}`, `soul_gate "human_hobby"`.
+  **Where any literal field name here drifts from the shipped schema-v3 grammar, the shipped grammar
+  governs and the value mapping is 1:1** — the implementation copies bytes, never authors policy in
+  Go.
+- **TP-C17 — accepted.** Scoring binds to the core's canonical significant-digit rule at ONE named
+  final boundary (the `play_hand` valuation quantize); intermediates use ordinary core Decimal ops;
+  the domain is non-negative (zero valid). `pitch.best_hand_exponent` = the canonical base-10
+  exponent after final quantization; zero → exponent 0; hardcap `1_000_000` with reason
+  `cap.pitch_exponent`, saturating. Boundary vectors (zero, sub-unit, 1e12±, the hardcap) in the
+  shared corpus.
+- **TP-C18 — RULED (option a): fixture-first.** This implementation is fixture-only; the production
+  mint of the ENTIRE new artifact set (fiscal + minigame/pet schema bumps + soul + pitch) is
+  owner-gated in a dedicated **First Content Epoch RFC** (shared with SR-C13), minted only after the
+  Pitch content gate passes. No partial chain, no epoch bytes here.

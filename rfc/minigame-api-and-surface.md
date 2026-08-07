@@ -56,16 +56,17 @@ authority (A2/A5):
 Rate limits per the API Foundation's operational middleware (C16/C20 literals); commands
 additionally per-session budgeted (catalog data).
 
-### MA2 — The recovery coordinator API (authenticated `/api/v1/recovery/`)
+### MA2 — The recovery coordinator API (authenticated `/api/v1/soul-recovery/`)
 
 The SB25–SB27 schemas, verbatim — this RFC adds NO fields:
-- `POST /api/v1/recovery/sessions` — start/reconnect (SB25: returns the existing session with a
+- `POST /api/v1/soul-recovery/start {activity_id}` — start/reconnect (SB25: returns the existing session with a
   ROTATED progress token when one is active). Exact 7-key response.
-- `POST /api/v1/recovery/sessions/{session_id}/progress` — the heartbeat. Exact 5-key response;
+- `POST /api/v1/soul-recovery/progress {session_id, progress_token}` — the heartbeat. Exact 5-key response;
   per-session rate limit derived from the catalog beat cadence (SR-C6: cadence = ceiling/3; the
   limiter allows modest jitter above it, rejects flooding).
-- `POST /api/v1/recovery/sessions/{session_id}/cancel` and `/resolve` — terminal; retry returns the
-  stored receipt.
+- `POST /api/v1/soul-recovery/cancel {session_id}` and `/resolve {session_id}` — terminal; retry
+  returns the stored receipt. (Route shapes per the SR-C10 ruling — flat command routes, the
+  intents pattern.)
 Typed rejections: `recovery_token`, `exclusive_activity`, `session_expired`,
 `idempotency_conflict` — surfaced exactly as ruled, never exposing claim-lease internals.
 
