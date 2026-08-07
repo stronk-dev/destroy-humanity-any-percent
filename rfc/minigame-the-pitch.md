@@ -442,7 +442,7 @@ dependency-complete content epoch only after its balance rows pass the content g
   insufficient_currency | unknown_card | unknown_offer` — all reject without mutation.
 - **TP-C13 — RULED (exact schemas + the 20 launch rows + the curve; values provisional bytes).**
   Effect arms (discriminator `kind`): `flat_add {amount}` · `card_factor {factor}` (per played
-  card) · `shape_factor {shape ∈ pair|triple|flush_kind|full_hand, factor}` · `chain_factor
+  card) · `shape_factor {shape ∈ pair|full_hand, factor}` (narrowed by TP-C22 — `triple`/`flush_kind` are successor arms) · `chain_factor
   {partner_hack_id, factor}` (applies only when the partner is also slotted; evaluation position =
   the ordered-interactions stage). Amount/factor are canonical Decimal strings.
   `metric_card {card_id, base_metric, copies, copy_key}` — the 12 (base_metric provisional):
@@ -603,3 +603,57 @@ chain hacks include both partner-present and partner-absent rows, and `dark_patt
 their triggering and control hands. The gate validates row coverage structurally and byte-compares
 Go/TypeScript outputs. Declare a fixed maximum transition count equal to the sum of corpus command
 counts; content changes regenerate this corpus in a reviewable balance-change commit.
+
+## Owner rulings on TP-C19–TP-C25 (2026-08-07)
+
+All accepted; owner literals supplied where demanded.
+
+- **TP-C19 — accepted.** One platform-owned `TenantContentResolver` keyed
+  `(constants_hash, engine_ref, engine_version)` returning canonical artifact bytes + SHA-256 +
+  schema version; `CreateInput`/`ApplyInput` receive cloned immutable content bytes, content hash,
+  schema version, and the server-owned session seed; live and replay both resolve from the session's
+  immutable identity; the tenant rejects any identity mismatch. No process-current reads, no new
+  session column.
+- **TP-C20 — accepted.** The snapshot has exactly THIRTEEN keys (the C12 eleven +
+  `pitch_content_hash`, `pitch_schema_version`). Physical cards are instance IDs
+  `<card_id>#<copy_ordinal>`; `hand[]`/`card_ids[]` carry instance IDs (duplicate-free), scoring
+  resolves base IDs — which makes `dark_pattern`'s pair reachable via the two copies (the exact
+  defect this catches). Per-round full-deck Fisher–Yates via SplitMix64 with mandated rejection
+  sampling under `Substream(seed, "pitch.deck.v1", round)`; deal positions 0–6 / 7–13 / 14–20 for
+  the three hands; `deck_count` = remaining after the current deal; no mutable PRNG cursor
+  (`(seed, round, hand_number)` reproduces every draw).
+- **TP-C21 — accepted; the income literal is `round_clear_currency: 3` (provisional).** Granted
+  exactly once when a non-final round clears, before entering shop. Shop offers are exact
+  `{offer_id, hack_id, price}`; `shop_size` unowned hacks drawn without replacement by
+  `draft_weight` (SplitMix64 rejection sampling, `Substream(seed, "pitch.shop.v1", round)`);
+  `offer_id = "pitch.offer.<round>.<slot>.<hack_id>"`; buying removes the offer and auto-slots;
+  owned hacks never reappear; `end_shop` discards and advances. All currency/prices nonnegative
+  safe integers.
+- **TP-C22 — accepted; the shape union NARROWS to `pair | full_hand`** (supersedes TP-C13's
+  four-member list — `triple`/`flush_kind` need successor content/schema fields and are NOT reserved
+  v1 arms; no launch hack used them). `pair` = ≥2 selected instances share a base ID; `full_hand` =
+  exactly `play_size` instances. The byte equation: per selected card `base_metric + Σ(flat_add)`,
+  × every slotted `card_factor`; Σ the per-card values; × each satisfied `shape_factor`; × each
+  `chain_factor` whose partner is slotted, hacks visited in raw-byte `hack_id` order; ONE quantize
+  after the final multiplication.
+- **TP-C23 — accepted.** `pitch.final_round` = the highest round ENTERED (failing round 1 emits 1;
+  clearing round 8 emits 8). Outcomes: closed `funded | funding_failed`. The terminal transition
+  writes `phase:"terminal"`, retains the final `round_best_valuation`, `hands_remaining: 0` on
+  failure / the post-play count on success, `shop_offers: []`, score facts byte-sorted
+  (`pitch.best_hand_exponent`, `pitch.final_round`), `rating_delta: null`.
+- **TP-C24 — accepted; the missing literals (all provisional balance data):** payout
+  `{sends_per_day: 5, per_send_cap: 300, conversion_ppm: 500000}`; offline-quality
+  `{decay_grid_ms: 3600000, decay_ppm_per_grid: 10000}` with the automation destination bound 1:1
+  to the shipped destination kind the fixture tenant uses, targeted at `minigame.pitch`; rating
+  `{neutral: 1000, floor: 0, ceiling: 3000, season: "s1", provisional_games: 10}` (inert — solo);
+  the scaling row is a literal breadth input of `1` (the single launch set; a real card-set state
+  owner is a successor); the resource binds exactly `company.cash`. **The closed unlock union in
+  BOTH loaders extends with `fiscal_unlock {unlock_id}`** and the composed resolver reads the
+  pinned Founder fiscal unlock set (the TP-C15 arm made loadable). The shipped-grammar-governs
+  1:1-mapping clause (TP-C16) applies to every literal here.
+- **TP-C25 — accepted.** A versioned Pitch content-gate corpus is checked in: every one of the 12
+  cards and 8 hacks names ≥1 exact `(seed, commands)` scenario with its expected terminal snapshot;
+  chain hacks include partner-present AND partner-absent rows; `dark_pattern`/`pivot` include
+  triggering and control hands; the gate validates coverage structurally and byte-compares Go/TS
+  outputs; the fixed maximum transition budget = the sum of corpus command counts; content changes
+  regenerate the corpus in a reviewable balance-change commit.
