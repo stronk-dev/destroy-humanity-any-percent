@@ -1,6 +1,6 @@
 # RFC: API Foundation (versioning, schemas, the public read surface)
 
-- **Status:** accepted (C1–C17 ruled; implementing)
+- **Status:** accepted (C1–C20 ruled; implementing)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/06` (chi REST, closed surfaces), `design/05` (published formulas — the transparency law), the fan-tooling stance (`design/05`: "a documented read-API stance so community tooling builds WITH us from day one")
@@ -137,6 +137,32 @@ boundary.
 grammar/maximum bytes. The loader then requires the complete exact object and startup separately
 resolves both named cursor secrets from deployment configuration. Cache ages remain the already
 ruled 3600/60/31536000/300 seconds; secrets never appear in the file.
+
+## Owner rulings on C18–C20 (2026-08-07)
+
+- **C18 — RULED: accepted as proposed.** `CatalogArtifact` is a discriminated `oneOf` keyed by the
+  literal artifact `name`; each artifact owner exports its exact schema descriptor; common fields
+  stay `{name, sha256, json}`; no free-form JSON/map arm, ever. Artifact-set growth adds a
+  response-union arm in the same change (allowed response widening under C2). **Sequencing note:**
+  the First Content Epoch mint grows the set by 8 artifacts — the API change adding those 8 arms
+  lands WITH or immediately after the mint, and the mint's changelog names it; until then the
+  union carries only the 7 base arms.
+- **C19 — RULED: accepted as proposed.** Operation responses are the closed union
+  `schema {status, content_type:"application/json", schema_ref}` |
+  `raw {status, content_type:"application/json"|"application/gzip", content_hash_header}`. Raw
+  handlers write repository bytes without decoding; the conformance test hashes exact bytes; no
+  generic media type.
+- **C20 — RULED: the Phase-0 literals (provisional bytes — config, retunable via the normal
+  balance-data lane, never code):**
+  `burst: 60` · `refill_per_minute: 300` (matching the shipped, reviewed account-limiter budget —
+  one operational abuse posture across the surface, not two) · `max_ip_entries: 65536` (bounded
+  LRU) · `trusted_proxy_hops: 1` (the caddy tier in the declared compose deployment; a second
+  proxy tier is a config change, not a ruling) · cursor key IDs `current: "k1"`,
+  `previous: "k0"` (at first deployment both names MAY resolve to the same secret value —
+  rotation then changes only deployment config) · request-ID grammar `^[A-Za-z0-9-]{1,64}$`,
+  maximum 64 bytes, rejected-not-truncated above that. The loader requires the complete exact
+  object; startup resolves both named cursor secrets from deployment configuration; secrets never
+  appear in the file. Cache ages remain 3600/60/31536000/300 as already ruled.
 
 ## Acceptance criteria
 
@@ -534,3 +560,5 @@ a write transaction or exposes an operator mutation path.
 - 2026-08-03: C20 records the still-absent operational limiter/proxy/request-ID literals; middleware
   does not invent production security policy.
 - 2026-08-06: non-normative reference cleanup for publication; no spec change.
+- 2026-08-07: C18–C20 ruled (artifact oneOf by name + FCE sequencing note; schema|raw response
+  union; the complete C20 operational literal set, provisional bytes).
