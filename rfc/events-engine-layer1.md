@@ -27,8 +27,8 @@ immediate[], options[], cooldown_ms, fire_only_once, hidden}` — with:
   triggers see only what `ApplyLogged` sees.
 - **MTTH, determinized:** `mtth_ms` with a multiplicative modifier list, but
   evaluated as a **per-accrual-boundary hazard draw from the save-seeded SplitMix64 substream**
-  (`"events"` label): P(fire) = 1 − exp(−elapsed_ms/mtth_effective) computed in fixed-point ppm
-  (integer, both runtimes — the exp via the kernel's existing log-domain helpers, golden-
+  (the exact derivation in E4): P(fire) = 1 − exp(−elapsed_ms/mtth_effective) computed in
+  fixed-point ppm (integer, both runtimes — the exp via the E4 approximation contract, golden-
   vectored). Offline elapsed uses the same attended/offline split as everything else: events
   fire on ATTENDED time only (an event queue greeting your return is Layer-2/3 territory).
 - **Options:** per-option triggers, `show_as_unavailable`, `dangerous`/`fallback` flags, effects
@@ -59,6 +59,43 @@ first-customer beats, the garage-plaque event, an early regulator knock as the p
 teaser). Layer 2 (meters) and Layer 3 (server events) are successor RFCs on the same evaluator —
 E1's schema is designed so a meter is a hidden recurring event and a Layer-3 situation is a
 server-authored catalog overlay; nothing here forecloses them.
+
+### E4 — Exact determinism contracts (pre-acceptance hardening, 2026-08-07)
+
+Applying the established patterns so the acceptance round is short:
+- **The hazard draw is a pure function of immutable inputs** (the Fiscal-F10 pattern; NO mutable
+  PRNG cursor): `draw_ppm = Substream(run_seed ⊕ FNV1a64(event_id) ⊕
+  uint64(boundary_evaluated_through_ms), "events.hazard.v1").Bound(1_000_000)` — one draw per
+  (event, accrual boundary), reproducible from the save alone. Chain delays and pool weights use
+  the same construction with labels `"events.chain.v1"` / `"events.pool.v1"`. Instance IDs are
+  UUIDv7-compatible from `"events.instance.v1"` + the attended coordinate (the Active-Play pattern).
+- **The exp approximation is a versioned pure contract, not an assumed helper:** if a shipped
+  log-domain kernel helper exists, bind it by name; otherwise the hazard uses a 64-entry
+  piecewise-linear table over `x = elapsed_ms·1e6/mtth_effective ∈ [0, 16e6]` ppm, the table
+  shipped as artifact bytes and golden-vectored byte-identically in both runtimes. Either way the
+  approximation's identity is pinned (no float `exp` in either runtime).
+- **Bounded evaluation:** at most `max_events_per_boundary` fire per accrual boundary (catalog,
+  visible hardcap + reason key); chain `delay_ms_range` minimum is loader-enforced > 0 (no
+  same-boundary cascades); the pending queue has a visible hardcap.
+
+### E5 — Save/version/artifact identity
+
+Pending instances (`{instance_id, event_id, presented_at_attended_ms, timeout_at_attended_ms}`,
+raw-byte sorted) and `last_event_at_by_category` are Company save fields at **Company v19** (the
+chain: v17 doctrines → v18 active-play → v19 events), activating new-run-forward under ONE pinned
+`events` artifact (biconditional with floor ≥ 19; requires the v17/v18 chain). `balance/events/*.json`
+compiles to that single artifact; `CatalogBundle.Events` is the sole live/replay resolver (the C37
+discipline). Timeout/fallback resolution is LAZY: the first accrual boundary at/after
+`timeout_at_attended_ms` auto-resolves the declared `fallback` option (attended-ms; absence pauses).
+
+### E6 — Exact wire
+
+`choose_event_option {intent_id, kind, expected_revision, event_instance_id, option_id}` (exact
+keys). Rejections reuse the closed taxonomy: `unknown_id/event_instance`, `unknown_id/option`,
+`not_eligible/option_unavailable`, `not_eligible/event_resolved`. Events registered:
+`event_presented.v1 {instance_id, event_id, presented_at_attended_ms}` and `event_resolved.v1
+{instance_id, event_id, option_id, resolution: chosen|fallback|timeout}` — exact payloads, Go + DB
+registry, byte-compared in the sequential corpus.
 
 ## Acceptance criteria
 
