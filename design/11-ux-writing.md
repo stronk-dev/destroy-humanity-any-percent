@@ -31,9 +31,14 @@ The game states its conceit in the first ten seconds, before any clicking:
 - **Run-1 presence budget:** exactly one multiplayer signal in run 1 — the diegetic 1995 visitor
   counter (period furniture that is secretly the live player count). The activity feed unlocks at
   the scripted first failure as consolation-content; the first social prompt waits ~7th login.
-- **The ≤10-minute satire beat (T0):** the beat EXISTS in the first ten minutes; its exact content
-  is owned by a dedicated period-satire/banter research + copy pass (commissioned 2026-08-07), not
-  improvised here. Horse Armor remains the Tier-1 shop's opening joke.
+- **The ≤10-minute satire beat (T0) — RESOLVED (2026-08-07, from `research/era-1995-satire.md`):**
+  the named beat is the arcade's **ORDER NOW: $0.00** order screen, composed with two pieces of
+  permanent T0 chrome: the **UNREGISTERED nag that counts UP** ("UNREGISTERED — day 4,382") and the
+  **README.TXT** voice as the codex skin. The hit-counter rollover is a free bonus beat; guestbook /
+  webring / AOL-CD-rain are T1 backlog (the guestbook is NPC-seeded until post-failure, preserving
+  the run-1 one-presence-signal rule). Horse Armor remains the Tier-1 shop's opening joke. T0 copy
+  speaks as the earnest webmaster — warmth, never mockery; the era-boundary banned-word list is
+  copy-linter-enforced.
 
 ## 2. Teaching: diegetic, dripped, never a tutorial
 
