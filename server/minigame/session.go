@@ -22,12 +22,14 @@ var (
 	ErrSessionGone       = errors.New("minigame session is unavailable")
 	ErrClaimLost         = errors.New("minigame session claim lost")
 	ErrExclusiveActivity = errors.New("another exclusive activity is active")
+	ErrAPIIdempotency    = errors.New("minigame API idempotency conflict")
 
 	uuidPattern       = regexp.MustCompile("^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 	uuidV7Pattern     = regexp.MustCompile("^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 	mechanicalPattern = regexp.MustCompile("^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)*$")
 	versionPattern    = regexp.MustCompile("^[0-9]+\\.[0-9]+\\.[0-9]+$")
 	hashPattern       = regexp.MustCompile("^sha256:[0-9a-f]{64}$")
+	opaqueIDPattern   = regexp.MustCompile("^[A-Za-z0-9-]{1,64}$")
 )
 
 type Mode string
@@ -98,6 +100,11 @@ type Repository struct {
 	db *sql.DB
 }
 
+type APIReceipt struct {
+	SessionID string
+	Response  json.RawMessage
+}
+
 func NewRepository(db *sql.DB) (*Repository, error) {
 	if db == nil {
 		return nil, errors.New("minigame repository requires database")
@@ -155,6 +162,69 @@ func (repository *Repository) Load(ctx context.Context, founderID, sessionID str
 	return result, err
 }
 
+// Current returns the sole active or claimed session for a Founder. Migration
+// 00071 makes cardinality a database invariant rather than an API assumption.
+func (repository *Repository) Current(ctx context.Context, founderID string) (Session, bool, error) {
+	if repository == nil || !uuidPattern.MatchString(founderID) {
+		return Session{}, false, ErrInvalidSession
+	}
+	result, err := scanSession(repository.db.QueryRowContext(ctx, currentSessionSQL, founderID))
+	if errors.Is(err, sql.ErrNoRows) {
+		return Session{}, false, nil
+	}
+	return result, err == nil, err
+}
+
+// CreateReceipt and CommandReceipt are read-before-execute idempotency gates.
+// A hash mismatch is deterministic evidence; a missing row is not an error.
+func (repository *Repository) CreateReceipt(ctx context.Context, founderID, idempotencyKey, requestHash string) (APIReceipt, bool, error) {
+	if repository == nil || !uuidPattern.MatchString(founderID) || !opaqueIDPattern.MatchString(idempotencyKey) || !hashPattern.MatchString(requestHash) {
+		return APIReceipt{}, false, ErrInvalidSession
+	}
+	var result APIReceipt
+	var storedHash string
+	var response []byte
+	err := repository.db.QueryRowContext(ctx, loadCreateReceiptSQL, founderID, idempotencyKey).Scan(&storedHash, &result.SessionID, &response)
+	if errors.Is(err, sql.ErrNoRows) {
+		return APIReceipt{}, false, nil
+	}
+	if err != nil {
+		return APIReceipt{}, false, err
+	}
+	if storedHash != requestHash {
+		return APIReceipt{}, false, ErrAPIIdempotency
+	}
+	result.Response, _ = canonicalJSONObject(response)
+	if !validJSONObject(result.Response) {
+		return APIReceipt{}, false, ErrInvalidSession
+	}
+	return result, true, nil
+}
+
+func (repository *Repository) CommandReceipt(ctx context.Context, founderID, sessionID, commandID, requestHash string) (APIReceipt, bool, error) {
+	if repository == nil || !uuidPattern.MatchString(founderID) || !uuidV7Pattern.MatchString(sessionID) ||
+		!opaqueIDPattern.MatchString(commandID) || !hashPattern.MatchString(requestHash) {
+		return APIReceipt{}, false, ErrInvalidSession
+	}
+	var storedHash string
+	var response []byte
+	err := repository.db.QueryRowContext(ctx, loadCommandReceiptSQL, sessionID, founderID, commandID).Scan(&storedHash, &response)
+	if errors.Is(err, sql.ErrNoRows) {
+		return APIReceipt{}, false, nil
+	}
+	if err != nil {
+		return APIReceipt{}, false, err
+	}
+	if storedHash != requestHash {
+		return APIReceipt{}, false, ErrAPIIdempotency
+	}
+	canonical, ok := canonicalJSONObject(response)
+	if !ok {
+		return APIReceipt{}, false, ErrInvalidSession
+	}
+	return APIReceipt{SessionID: sessionID, Response: canonical}, true, nil
+}
+
 // Claim serializes a server-side play or resolution command. The founder row
 // is locked before the session row; this is the C13 account/session lock order.
 func (repository *Repository) claim(ctx context.Context, founderID, sessionID string) (Session, error) {
@@ -192,8 +262,26 @@ func (repository *Repository) claim(ctx context.Context, founderID, sessionID st
 }
 
 func (repository *Repository) completePlay(ctx context.Context, founderID, sessionID, claimToken string, command, state json.RawMessage) (Session, error) {
+	return repository.completePlayWithReceipt(ctx, founderID, sessionID, claimToken, command, state, "", "", nil)
+}
+
+// CompletePlayWithReceipt commits the nonterminal command, authoritative
+// snapshot, and exact API response under one claim token.
+func (repository *Repository) CompletePlayWithReceipt(ctx context.Context, founderID, sessionID, claimToken string,
+	command, state json.RawMessage, commandID, requestHash string, response json.RawMessage,
+) (Session, error) {
+	return repository.completePlayWithReceipt(ctx, founderID, sessionID, claimToken, command, state, commandID, requestHash, response)
+}
+
+func (repository *Repository) completePlayWithReceipt(ctx context.Context, founderID, sessionID, claimToken string,
+	command, state json.RawMessage, commandID, requestHash string, response json.RawMessage,
+) (Session, error) {
 	if repository == nil || !uuidPattern.MatchString(founderID) || !uuidV7Pattern.MatchString(sessionID) ||
 		!uuidPattern.MatchString(claimToken) || !validJSONObject(command) || !validJSONObject(state) {
+		return Session{}, ErrInvalidSession
+	}
+	withReceipt := commandID != "" || requestHash != "" || len(response) != 0
+	if withReceipt && (!opaqueIDPattern.MatchString(commandID) || !hashPattern.MatchString(requestHash) || !validJSONObject(response)) {
 		return Session{}, ErrInvalidSession
 	}
 	tx, err := repository.db.BeginTx(ctx, nil)
@@ -207,6 +295,11 @@ func (repository *Repository) completePlay(ctx context.Context, founderID, sessi
 	if err := appendSessionCommand(ctx, tx, sessionID, founderID, claimToken, command, resolutionIdentity{}); err != nil {
 		return Session{}, err
 	}
+	if withReceipt {
+		if err := InsertCommandReceiptTx(ctx, tx, founderID, sessionID, claimToken, commandID, requestHash, response); err != nil {
+			return Session{}, err
+		}
+	}
 	row := tx.QueryRowContext(ctx, completePlaySQL, sessionID, founderID, claimToken, string(state))
 	updated, err := scanSession(row)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -219,6 +312,45 @@ func (repository *Repository) completePlay(ctx context.Context, founderID, sessi
 		return Session{}, err
 	}
 	return updated, nil
+}
+
+// InsertCreateReceiptTx binds a successful, transaction-scoped session insert
+// to the client's Founder-scoped create key.
+func InsertCreateReceiptTx(ctx context.Context, tx *sql.Tx, founderID, idempotencyKey, requestHash, sessionID string, response json.RawMessage) error {
+	if tx == nil || !uuidPattern.MatchString(founderID) || !opaqueIDPattern.MatchString(idempotencyKey) ||
+		!hashPattern.MatchString(requestHash) || !uuidV7Pattern.MatchString(sessionID) || !validJSONObject(response) {
+		return ErrInvalidSession
+	}
+	result, err := tx.ExecContext(ctx, insertCreateReceiptSQL, founderID, idempotencyKey, requestHash, sessionID, string(response))
+	if err != nil {
+		return err
+	}
+	if affected, rowsErr := result.RowsAffected(); rowsErr != nil {
+		return rowsErr
+	} else if affected != 1 {
+		return ErrInvalidSession
+	}
+	return nil
+}
+
+// InsertCommandReceiptTx is called before the claimed→active/resolved update;
+// its INSERT SELECT makes a stale claim token incapable of publishing bytes.
+func InsertCommandReceiptTx(ctx context.Context, tx *sql.Tx, founderID, sessionID, claimToken, commandID, requestHash string, response json.RawMessage) error {
+	if tx == nil || !uuidPattern.MatchString(founderID) || !uuidV7Pattern.MatchString(sessionID) ||
+		!uuidPattern.MatchString(claimToken) || !opaqueIDPattern.MatchString(commandID) ||
+		!hashPattern.MatchString(requestHash) || !validJSONObject(response) {
+		return ErrInvalidSession
+	}
+	result, err := tx.ExecContext(ctx, insertCommandReceiptSQL, sessionID, founderID, claimToken, commandID, requestHash, string(response))
+	if err != nil {
+		return err
+	}
+	if affected, rowsErr := result.RowsAffected(); rowsErr != nil {
+		return rowsErr
+	} else if affected != 1 {
+		return ErrClaimLost
+	}
+	return nil
 }
 
 func (repository *Repository) releaseClaim(ctx context.Context, founderID, sessionID, claimToken string) error {
@@ -444,6 +576,7 @@ const createSessionSQL = "INSERT INTO minigame_sessions(session_id,minigame_id,f
 	"engine_ref,engine_version,constants_hash,scaling_inputs,seed,mode,genesis,state) " +
 	"VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$12) RETURNING " + sessionColumns
 const loadSessionSQL = "SELECT " + sessionColumns + " FROM minigame_sessions WHERE session_id=$1 AND founder_id=$2"
+const currentSessionSQL = "SELECT " + sessionColumns + " FROM minigame_sessions WHERE founder_id=$1 AND status IN ('active','claimed')"
 const claimSessionSQL = "UPDATE minigame_sessions SET status='claimed',claim_token=gen_random_uuid()," +
 	"claimed_at=clock_timestamp(),updated_at=clock_timestamp() WHERE session_id=$1 AND founder_id=$2 AND " +
 	"(status='active' OR (status='claimed' AND claimed_at<clock_timestamp()-$3::interval)) RETURNING " + sessionColumns
@@ -471,6 +604,13 @@ const loadClaimedReplaySQL = "SELECT " + sessionColumns + " FROM minigame_sessio
 	"AND status='claimed' AND claim_token=$8 FOR UPDATE"
 const loadSessionCommandsSQL = "SELECT seq,command,applied_revision,server_ts_ms FROM minigame_session_commands " +
 	"WHERE session_id=$1 ORDER BY seq"
+const loadCreateReceiptSQL = "SELECT request_hash,session_id,response::text FROM minigame_create_receipts WHERE founder_id=$1 AND idempotency_key=$2"
+const loadCommandReceiptSQL = "SELECT r.request_hash,r.response::text FROM minigame_command_receipts r JOIN minigame_sessions s USING(session_id) " +
+	"WHERE r.session_id=$1 AND s.founder_id=$2 AND r.command_id=$3"
+const insertCreateReceiptSQL = "INSERT INTO minigame_create_receipts(founder_id,idempotency_key,request_hash,session_id,response) " +
+	"SELECT $1,$2,$3,$4,$5 FROM minigame_sessions WHERE session_id=$4 AND founder_id=$1"
+const insertCommandReceiptSQL = "INSERT INTO minigame_command_receipts(session_id,command_id,request_hash,response) " +
+	"SELECT session_id,$4,$5,$6 FROM minigame_sessions WHERE session_id=$1 AND founder_id=$2 AND status='claimed' AND claim_token=$3"
 const lockFounderSQL = "SELECT true FROM account_founders WHERE founder_id=$1 AND archived_at IS NULL FOR UPDATE"
 
 type rowScanner interface {

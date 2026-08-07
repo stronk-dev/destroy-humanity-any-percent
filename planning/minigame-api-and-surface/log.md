@@ -60,3 +60,18 @@ now-ruled MA-C10–C14.
   guards are green.
 - This is implementation evidence and a First Content Epoch candidate, not a mint, independent
   verdict, archival decision, or completion claim for MA-C11's still-unbuilt sequencing command.
+
+## 2026-08-07 — MA-C5/MA-C6/MA-C13 receipt persistence primitives
+
+- Migration 00071 makes the accepted one-active-minigame-per-Founder rule a partial-unique database
+  invariant and adds immutable Founder-scoped create receipts plus session-scoped command receipts.
+- Repository reads distinguish missing, same-key/same-hash replay, and same-key/different-hash
+  conflict. The current-session query returns only the sole `active|claimed` row.
+- Nonterminal command, snapshot/revision, and canonical API response can now commit in one
+  transaction. Terminal callers receive a transaction-scoped insert helper whose `INSERT SELECT`
+  is guarded by the exact claim token, so an expired worker cannot publish stale bytes.
+- Real-Postgres tests prove cardinality, retry/hash conflict, immutability, atomic nonterminal
+  commit, and stale-token rejection. The full save integration suite is green. Kernel semantics
+  advance from 0.3.79 to 0.3.80.
+- The coordinator and typed handlers still need to consume these primitives; no completion or
+  archival claim is made here.

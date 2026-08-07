@@ -222,6 +222,95 @@ func TestSessionClaimIntegration(t *testing.T) {
 	}
 }
 
+func TestAPIReceiptAndCurrentSessionIntegration(t *testing.T) {
+	db := minigameIntegrationDB(t)
+	seedMinigameRun(t, db)
+	repository, err := NewRepository(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx := context.Background()
+	created, err := repository.create(ctx, testCreateSession())
+	if err != nil {
+		t.Fatal(err)
+	}
+	current, found, err := repository.Current(ctx, testFounderID)
+	if err != nil || !found || current.SessionID != created.SessionID {
+		t.Fatalf("current=%+v found=%v err=%v", current, found, err)
+	}
+	second := testCreateSession()
+	second.SessionID = "018f0000-0000-7000-8000-000000000105"
+	if _, err := repository.create(ctx, second); err == nil {
+		t.Fatal("database admitted two active minigame sessions for one Founder")
+	}
+
+	createResponse := json.RawMessage(`{"kind":"pitch","session_id":"018f0000-0000-7000-8000-000000000104"}`)
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := InsertCreateReceiptTx(ctx, tx, testFounderID, "create-1", testHash, testSessionID, createResponse); err != nil {
+		_ = tx.Rollback()
+		t.Fatal(err)
+	}
+	if err := tx.Commit(); err != nil {
+		t.Fatal(err)
+	}
+	receipt, found, err := repository.CreateReceipt(ctx, testFounderID, "create-1", testHash)
+	if err != nil || !found || receipt.SessionID != testSessionID || !bytes.Equal(receipt.Response, createResponse) {
+		t.Fatalf("create receipt=%+v found=%v err=%v", receipt, found, err)
+	}
+	otherHash := "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+	if _, _, err := repository.CreateReceipt(ctx, testFounderID, "create-1", otherHash); !errors.Is(err, ErrAPIIdempotency) {
+		t.Fatalf("create idempotency mismatch=%v", err)
+	}
+	if _, err := db.ExecContext(ctx, `UPDATE minigame_create_receipts SET response='{}' WHERE founder_id=$1`, testFounderID); err == nil {
+		t.Fatal("create receipt was mutable")
+	}
+
+	claimed, err := repository.claim(ctx, testFounderID, testSessionID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	commandResponse := json.RawMessage(`{"revision":2,"session_id":"018f0000-0000-7000-8000-000000000104"}`)
+	played, err := repository.CompletePlayWithReceipt(ctx, testFounderID, testSessionID, claimed.ClaimToken,
+		json.RawMessage(`{"advance":1}`), json.RawMessage(`{"turn":1}`), "command-1", testHash, commandResponse)
+	if err != nil || played.Revision != 2 {
+		t.Fatalf("played=%+v err=%v", played, err)
+	}
+	commandReceipt, found, err := repository.CommandReceipt(ctx, testFounderID, testSessionID, "command-1", testHash)
+	if err != nil || !found || !bytes.Equal(commandReceipt.Response, commandResponse) {
+		t.Fatalf("command receipt=%+v found=%v err=%v", commandReceipt, found, err)
+	}
+	if _, _, err := repository.CommandReceipt(ctx, testFounderID, testSessionID, "command-1", otherHash); !errors.Is(err, ErrAPIIdempotency) {
+		t.Fatalf("command idempotency mismatch=%v", err)
+	}
+	if _, err := db.ExecContext(ctx, `DELETE FROM minigame_command_receipts WHERE session_id=$1`, testSessionID); err == nil {
+		t.Fatal("command receipt was deletable")
+	}
+
+	stale, err := repository.claim(ctx, testFounderID, testSessionID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, "UPDATE minigame_sessions SET claimed_at=clock_timestamp()-interval '6 minutes' WHERE session_id=$1", testSessionID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := repository.claim(ctx, testFounderID, testSessionID); err != nil {
+		t.Fatal(err)
+	}
+	staleTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := InsertCommandReceiptTx(ctx, staleTx, testFounderID, testSessionID, stale.ClaimToken,
+		"command-stale", testHash, json.RawMessage(`{"revision":3}`)); !errors.Is(err, ErrClaimLost) {
+		_ = staleTx.Rollback()
+		t.Fatalf("stale claim published receipt: %v", err)
+	}
+	_ = staleTx.Rollback()
+}
+
 func TestServiceIntegration(t *testing.T) {
 	db := minigameIntegrationDB(t)
 	seedMinigameRun(t, db)

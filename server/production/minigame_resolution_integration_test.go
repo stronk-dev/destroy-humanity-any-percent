@@ -198,6 +198,9 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 	if current, loadErr := store.LoadLatest(ctx, founderRevision.StreamID); loadErr != nil || current.Revision.Number != 1 {
 		t.Fatalf("Founder genesis fault leaked revision=%d err=%v", current.Revision.Number, loadErr)
 	}
+	if _, err := db.ExecContext(ctx, `DELETE FROM minigame_sessions WHERE session_id=$1`, "01986666-a963-7000-8000-000000000099"); err != nil {
+		t.Fatal(err)
+	}
 	resolution := makeResolution(1)
 	result, err := production.ResolveMinigameSession(ctx, platform, resolution, now.Add(time.Minute), nil)
 	if err != nil || result.Replay || !bytes.Contains(result.Receipt, []byte(`"credited_delta":"5e1"`)) {
@@ -257,6 +260,9 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 			session.Status != minigame.StatusClaimed || session.Result != nil {
 			t.Fatalf("fault %s leaked company=%d/%d founder=%d/%d session=%+v err=%v", step, beforeCompany.Revision.Number,
 				afterCompany.Revision.Number, beforeFounder.Revision.Number, afterFounder.Revision.Number, session, loadErr)
+		}
+		if _, err := db.ExecContext(ctx, `DELETE FROM minigame_sessions WHERE session_id=$1`, view.SessionID); err != nil {
+			t.Fatal(err)
 		}
 	}
 }
