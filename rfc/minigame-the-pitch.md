@@ -259,3 +259,58 @@ every later minigame will inherit it.
 
 - 2026-08-07: created (draft) — Wave-B opener; the exemplar minigame-content RFC.
 - 2026-08-07: Codex acceptance review filed TP-C1–TP-C10; implementation blocked pending owner rulings.
+
+## Owner rulings on TP-C1–TP-C10 (2026-08-07)
+
+All accepted; product decisions on C6/C10. Body reconciliations noted inline.
+
+- **TP-C1 — accepted.** The Decimal valuation lives in the terminal ENGINE SNAPSHOT (already
+  byte-compared); the `Result` carries bounded integer facts only: `pitch.final_round` is the
+  payout/quality fact; `pitch.best_hand_exponent` (exact derivation: the canonical Decimal's base-10
+  exponent, hardcapped with a reason key) is display/analytics only. NO platform Result-v2.
+- **TP-C2 — accepted (recommended arm).** A separately hash-pinned `pitch` artifact joins
+  `CatalogBundle`; a constants-hash-aware tenant resolver; the exact content hash + engine-content
+  version frozen into session genesis. Law 4 (balance-data, hot-reloadable) preserved; no
+  process-global catalog, no compiled-in content.
+- **TP-C3 — accepted.** Closed command arms `draft_card | buy_hack | slot_hack | play_hand |
+  end_shop`; exact genesis/snapshot keys; a phase enum; sorted collection rules; named SplitMix64
+  substream labels + counters for shuffle/draw; one terminal transition emits the result; sorted
+  tenant error taxonomy; every applied command advances one revision; illegal phase/index/insufficient
+  run-currency rejects without mutation.
+- **TP-C4 — accepted.** Every effect arm enumerated with exact keys and ONE published evaluation
+  order: card base → flat adds → per-card factors → hand-shape factors → ordered hack interactions →
+  one canonical quantize. Factors are RFC-0001 canonical Decimal strings; all tie/order behavior
+  bytewise; the funding-target curve row and run-currency arithmetic use the same precision rules.
+- **TP-C5 — accepted.** One complete LITERAL schema-v3 definition ships in this RFC's
+  implementation: `engine_version: "1.0.0"`, `fallback: {kind:"solo"}`, nil certified `rating_delta`
+  with a real neutral rating-season row (state provably unchanged), literal score-fact IDs, the
+  six-key payout row, offline-quality row, exact scaling row (`breadth` with named
+  destination/source), unlock row, and every schema/error ID. Structural IDs literal; magnitudes
+  provisional catalog values.
+- **TP-C6 — RULED (product shape): ONE platform definition.** `pitch` is the Tier-5 casino game,
+  unlocked by the purchased **Fiscal unlock** via a new composed server unlock resolver: a
+  `fiscal_unlock {unlock_id}` arm in the platform's unlock grammar, resolving the pinned Founder
+  fiscal flag server-side (never a client fact), with the `unlock_id` registered in the Fiscal
+  artifact — **a named platform/composition amendment, explicitly in this RFC's scope** (the
+  exemplar establishes the seam). **The Demo Disc Arcade appearance is REMOVED from v1** (my
+  draft's overreach — the tutorial-arcade variant becomes a successor when the arcade content RFC
+  exists). Start rejects before purchase, succeeds after — test-proven.
+- **TP-C7 — accepted; daily seed REMOVED from v1** (body + AC reconciled). Solo sessions use the
+  server-authored platform seed + `pitch.run.v1`. The async-snapshot successor owns the calendar
+  seed, its publication, the board, and fairness.
+- **TP-C8 — accepted.** The complete byte-sorted launch rows are checked in as provisional balance
+  data: **exactly 12 `metric_card`s and 8 `growth_hack`s**, each with exact keys, copy keys,
+  price/draft policy, one declared effect arm; every referenced interaction partner must exist
+  (loader-checked).
+- **TP-C9 — accepted; the relevance-harness claim is RETRACTED** (it was false — the harness
+  ablates production purchasables, not engine content). Replaced with a Pitch-owned content gate:
+  every row reachable in seeded generation AND affecting ≥1 declared golden scenario; interaction
+  arms require pairwise fixtures. A statistical strategy-relevance harness is a named successor.
+- **TP-C10 — RULED (honest scope): v1 = engine + pinned catalog + internal platform integration**
+  ("playable from Go", proven by the composed integration test). The authenticated minigame API +
+  the UI surface are a NAMED DEPENDENCY — the **Minigame API & Surface** successor (an API-Foundation
+  amendment + a Game-UI consumer), which every later minigame inherits; this template declares that
+  boundary explicitly instead of pretending it away. Player-facing playability lands there.
+
+Reconciliations applied to the body: daily seed removed (TP2/AC2), arcade home removed (TP1),
+relevance claim replaced (TP4), Result grammar corrected (TP2/AC).

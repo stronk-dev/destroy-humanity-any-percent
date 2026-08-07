@@ -24,8 +24,9 @@ place the game's curtain-pulling voice goes quiet.
 
 ## Motivation
 
-Soul's drain is live machinery awaiting its counterweight: without production activity rows, the
-training-data ending is reachable but recovery is fixture-only. The research finding this rests on:
+Soul's drain and recovery are both reviewed machinery awaiting owner content; this RFC activates
+RECOVERY only (the first production debit source — and the training-data ending's production
+reachability — belongs to a later Events/longevity content RFC; SR-C8). The research finding this rests on:
 **"produces nothing" and "cheap to serve" are the same property** — a zero-reward toy has nothing
 to cheat, so the server needs only the session lifecycle (which exists), and the entire interactive
 content is client-side presentation. This is the cheapest content RFC in the game and it completes
@@ -203,3 +204,43 @@ first production debit source and ending reachability.
 
 - 2026-08-07: created (draft) — Wave-B; the owner-content mint for Soul recovery.
 - 2026-08-07: Codex acceptance review filed SR-C1–SR-C8; implementation blocked pending owner rulings.
+
+## Owner rulings on SR-C1–SR-C8 (2026-08-07)
+
+All accepted; scope decision on C1/C3. Body reconciliations noted.
+
+- **SR-C1 — accepted; the "zero server mechanics" claim is RETRACTED** (false — no public surface
+  existed). A narrow authenticated HTTP coordinator API (the intents pattern — heartbeats are
+  bounded commands, not stream events) with the exact SB25–SB27 start/reconnect, progress, cancel,
+  resolve schemas; Founder identity from the session only; per-session progress rate limit; typed
+  rejections (`recovery_token`, `exclusive_activity`, `session_expired`) without exposing claim
+  leases. Housed as a declared **API-Foundation amendment** implemented with this RFC.
+- **SR-C2 — accepted.** The never-epoch-pinned recovery row is extended IN THIS RFC with exact
+  `toy_kind` (closed: `defrag | server_room | repot`), `title_copy_key`, `description_copy_key`,
+  `disclosure_copy_key` — one authority (no separate presentation artifact); all keys registered in
+  Go + generated TS.
+- **SR-C3 — accepted.** This RFC depends on an ACCEPTED UI Foundation (C9–C11 are now on the
+  critical path for playability) and defines one `soul_recovery` surface contract: session receipt +
+  local toy seed in, coordinator callbacks out, one heartbeat scheduler, visibility/background pause,
+  token replacement on reconnect, cancel affordance, progress display, terminal return. Toy
+  components receive presentation data/callbacks only.
+- **SR-C4 — accepted; provisional literals ruled now** (exact integers, normal balance mints later):
+  `defrag {duration 900000, recovery 12}` · `repot {duration 300000, recovery 5}` ·
+  `server_room {duration 2700000, recovery 30}` — byte-sorted rows with copy/reason keys; duration
+  validated < `max_session_wall_ms`; recovery validated within the Soul domain.
+- **SR-C5 — accepted.** The first-Soul mint is enumerated as the FULL bundle transition (fiscal +
+  the bumped minigame/pet schemas + soul), with a real pre-mint Founder→Exit→v20 activation fixture
+  proving all four scalar versions initialize together and existing runs finish under old bytes. No
+  partial chain mints.
+- **SR-C6 — accepted.** Client cadence = catalog-derived, strictly below the ceiling (ruled:
+  `recovery_beat_ceiling_ms / 3`); beats sent only while the surface is active/visible; a missed
+  ceiling is a pause; resume via reconnect-start; queued beats are NEVER replayed after sleep. The
+  fake-clock browser test covers foreground, duplicate retry, hidden-tab pause, reconnect rotation,
+  and watchdog.
+- **SR-C7 — RULED: "daily" is TONAL ONLY in v1.** `repot` is repeatable like the others — no
+  streak, cooldown, or multiplier (a once-per-day gate would be a new Founder-attended-day
+  authority; if ever wanted, it's an explicit successor, never client presentation).
+- **SR-C8 — accepted; the motivation is CORRECTED** (body reconciled): both drain and recovery
+  machinery await owner content; this RFC activates RECOVERY only; the first production debit
+  source — and with it the training-data ending's production reachability — belongs to a later
+  Events/longevity content RFC.
