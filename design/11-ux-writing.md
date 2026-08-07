@@ -16,6 +16,25 @@ The game states its conceit in the first ten seconds, before any clicking:
 - Below the fold, small print in the honesty voice: *"Free forever. No purchases. No ads. The only thing this game harvests is the fictional planet."*
 - **The return sequence (one modal, maximum — holes 6/10 resolved 2026-07-28):** a returning player gets the **diorama fast-forward** (`13 §2`, ≤5 s, skippable — the stage catching up is the welcome, not a dialog), with the offline-gains line docked in the header afterward, not modal. Then **at most one modal**: the ripe Fiscal Quarter prompt, and only if one is ripe — it is the day's decision and has earned the interruption. Everything else (events digest, feed, milestone movement) is a badge. **Before the first Exit** the splits panel shows the current attempt with an **empty comparison column** — no PB means no judgment, per the timer-semantics rule (`08 §6`); the panel earns its comparison the moment a PB exists. After the first Exit, splits-vs-PB becomes the returning player's primary tab.
 
+### 1b. First-session adoptions (owner rulings, 2026-08-07 — from `research/onboarding-retention.md`)
+
+- **Account model — silent server-anonymous (Option A):** `[ BEGIN ATTEMPT ]` creates an anonymous
+  server account with zero UI (no form, no email); the save is server-authoritative and
+  board-eligible from click one. Local-only play is the labeled OFFLINE fallback when the server is
+  unreachable, never the default. "Register" = attaching an email for recovery, offered around
+  session 3+ with a stated benefit, never a wall.
+- **The Vision Slide — REQUIRED for v1.0:** a skippable ten-second cold open — the future Tier-7
+  dashboard rendered as a pitch-deck "vision slide" — then the smash-cut to 1995 and the contract
+  screen. Diegetic, and it gives the timer chrome its referent.
+- **The contract screen shows `PB: —` and NO world-record line** until real validated boards exist
+  (fabricated records are radioactive; the no-fake-WR rule applies from the first shipped screen).
+- **Run-1 presence budget:** exactly one multiplayer signal in run 1 — the diegetic 1995 visitor
+  counter (period furniture that is secretly the live player count). The activity feed unlocks at
+  the scripted first failure as consolation-content; the first social prompt waits ~7th login.
+- **The ≤10-minute satire beat (T0):** the beat EXISTS in the first ten minutes; its exact content
+  is owned by a dedicated period-satire/banter research + copy pass (commissioned 2026-08-07), not
+  improvised here. Horse Armor remains the Tier-1 shop's opening joke.
+
 ## 2. Teaching: diegetic, dripped, never a tutorial
 
 - **No tutorial mode.** The Tier-0 era does the teaching by being small: one button, then one generator, then the shop appears (unfold-as-onboarding — the genre's native pattern).
