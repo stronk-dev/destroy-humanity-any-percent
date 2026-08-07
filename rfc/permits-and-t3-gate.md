@@ -94,3 +94,102 @@ semantics). `routes: []` in v1 — permit-dodging skips (the Externality-priced
 
 - 2026-08-07: created (draft) — commissioned by the FCE-C1 owner ruling (permits now); minimal
   shapes over existing grammar; faucet DESIGN-GAP flagged and direction owner-confirmed.
+
+## Codex acceptance-review blockers (2026-08-07 — PT-C1–PT-C6)
+
+The three literal rows fit the schema-3 economy/routes grammars, and the existing production,
+ledger, gate-debit, replay, and new-run initialization paths are catalog-driven. Implementation is
+still blocked on the following contracts. They are content/governance decisions; code must not
+silently choose them.
+
+### PT-C1 — The required pre-mint `BALANCE-CHANGE:` is impossible under the epoch guard
+
+P4/AC4 require this change to land as `BALANCE-CHANGE:` **before** the First Content Epoch consumes
+it. The live artifact authority points `economy` and `routes` at the two `phase0.json` files. The
+fail-closed epoch guard permits changing either active file only when the same commit changes the
+seed; a `BALANCE-CHANGE:` seed change must append exactly one epoch. Therefore a separate Permits
+balance commit would itself mint epoch 6, making the First Content Epoch epoch 7. A hotfix would
+prematurely extend epoch 5 and cannot honestly carry the mandated `BALANCE-CHANGE:` subject. The
+artifact authority also forbids replacing an existing artifact name/path, so staging under a new
+production path does not solve the active-byte transition.
+
+**Proposed contract:** implement and review Permits against byte-exact candidate fixtures first,
+without touching the active epoch artifacts. The single owner-gated First Content Epoch mint then
+copies those reviewed rows into the active `economy` and `routes` documents and appends epoch 6 in
+that same `BALANCE-CHANGE:` commit. Its changelog consumes the Permits verdict and its tests prove
+the production bytes equal the reviewed candidates. Reconcile AC4 from “before the First Content
+Epoch” to “reviewed before, activated atomically by the First Content Epoch.” Alternative: mint a
+dedicated Permits epoch 6 and renumber First Content to epoch 7; do not let implementation choose.
+
+### PT-C2 — “T3-era generator” is not enforceable by the existing generator grammar
+
+`generator.legal_dept` is a schema-3 generator row. `buy_generator` checks identity, count,
+affordability, and exact arithmetic; it does not inspect Company tier. Even schema-4's `tier` field
+classifies relevance groups and does not gate purchase eligibility. As written, the Legal
+Department is purchasable in any tier whenever the Company has `1e8` Cash, contradicting the
+normative “T3-era” description.
+
+**Proposed contract:** preserve the no-new-mechanics scope and rule the generator globally
+purchasable, with its `1e8` price as pacing rather than an authorization boundary; rewrite
+“T3-era” as “priced for the approach to T3.” If mechanical T3 availability is required, this RFC
+must own a generator-availability grammar/runtime/replay extension (or reuse a fully specified
+existing window mechanism); that is no longer a three-row content RFC.
+
+### PT-C3 — The faucet's exact multiplier semantics are unstated
+
+The existing production path applies every eligible `target:"all"` contribution to every
+Company generator. Consequently Legal Department output is not always `N × 1e-3` permits/second:
+Commons, faction/guild, event, prestige, and future all-target factors can scale it, and offline
+efficiency applies through the standard accrual path. Both Go and TypeScript will implement that
+automatically, but AC2 currently reads like an unmultiplied fixed faucet.
+
+**Proposed contract:** adopt the existing production law explicitly. Online permit rate is
+`N × 1e-3 × contributionFactor(generator.legal_dept)` and offline accrual applies the pinned
+offline policy, with one ledger quantization and accrual-only saturation at 24. The shared parity
+fixture covers neutral, non-neutral all-target, 24-hour offline, and near-cap saturation cases. If
+Permits must ignore production multipliers, that requires a new production kind and contradicts
+the existing-grammar ruling.
+
+### PT-C4 — The promised generator copy has no binding surface
+
+The resource hardcap reason is a real registered copy-bearing field, so
+`resource.company_permits.cap.phase0` can be resolved and completeness-gated. Economy generator
+rows have no `copy_key`/`name_key`, and the Copy Pipeline deliberately forbids deriving display
+text from mechanical IDs. Adding an orphan `generator.legal_dept.*` copy family would not make the
+generator player-facing or prove any binding; there is also no existing generator-copy convention
+for P4 to invoke.
+
+**Proposed contract:** narrow this RFC's copy work to the bound cap-reason row, with exact owner
+text supplied in the ruling, and carry Legal Department title/description to the Game UI content
+surface that owns generator presentation. Alternative: extend the economy generator grammar with
+an explicit copy field, register it in `copy/references.v1.json`, and bump/port the catalog schema;
+that is a real cross-runtime mechanic and must be specified here rather than implied. In either
+case, delete “names per the existing ... conventions,” because no such convention exists.
+
+### PT-C5 — Activation and save-shape behavior must be new-run-bound
+
+Adding a resource and generator changes the exact key sets of Company balances and generator maps.
+Pinned in-flight runs correctly retain the old economy bytes; new state creation is catalog-driven
+and can initialize both new keys. The RFC currently says only “no save-schema bump expected,”
+without binding which side of the epoch boundary owns the new maps. A hotfix-style interpretation
+would risk validating old state against new exact key sets.
+
+**Proposed contract:** activation is new-run-bound with the epoch-6 economy bytes. An epoch-5 run
+finishes and replays under its pinned one-resource/one-generator catalog; Exit into epoch 6 creates
+the next run with `company.permits:"0"` and `generator.legal_dept:0`; a fresh epoch-6 founder gets
+the same keys at genesis. No migration mutates an in-flight run and no save version changes. Add
+the cross-epoch Exit, fresh-genesis, and old-run replay fixtures to AC1/AC3.
+
+### PT-C6 — The candidate-byte manifest and copy literal are incomplete
+
+The mechanical JSON snippets are exact, but the review cannot bind final artifact bytes from
+additive snippets alone: insertion order, unchanged surrounding bytes, candidate paths/hashes,
+and the cap-reason English row are unspecified. FCE-C6 requires a literal promotion manifest, so
+leaving these choices to implementation would recreate the same gap one layer earlier.
+
+**Proposed contract:** before status becomes accepted, append a literal Permits manifest naming
+the candidate economy path, routes path, copy source path, SHA-256 of each complete document,
+schema versions, exact copy row, and commands/content gates. State that the resource is inserted
+after `company.cash`, the generator after `generator.beige_tower`, and `gate.t3_to_t4` between the
+T2→T3 and T4→T5 rows; gate requirements remain byte-ordered `company.cash`, then
+`company.permits`. FCE's promotion table consumes these hashes rather than reconstructing rows.
