@@ -313,3 +313,14 @@ schemas, migration 00067) per the docs-canonical law.**
 **Verdict: APPROVE. Active-Play is ARCHIVAL-ELIGIBLE — the archival commit must cite the full union
 above and add the canonical docs page. Archival itself remains the implementer's move per the
 cross-party protocol (never on its own review — this verdict IS the gate).**
+
+## 2026-08-07 — archival handoff
+
+- **Implemented by:** Codex. **Archived under:** designated cross-party verdict `e9ebb0c`.
+- **Consumed review range union:** `32e5a63^..d3b18ef` + `45944ca` +
+  `1f5a2f8^..16eb935` + `45f082d`. The designated verdict proves this union covers every
+  Active-Play implementation commit.
+- Added `docs/active-play.md` as the canonical scheduler, effect, combo-hardcap, schema-v2 event,
+  and migration-00067 description. Status is `implemented`; RFC and planning record rotate to their
+  archives in this commit. No self-review or new implementation claim is substituted for the filed
+  cross-party verdict.

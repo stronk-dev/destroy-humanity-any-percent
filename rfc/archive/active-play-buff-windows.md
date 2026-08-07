@@ -1,8 +1,7 @@
 # RFC: Active-Play Buff Windows Foundation
 
-- **Status:** accepted — A1-A16 ruled (exact opportunities artifact, runidentity/Substream scheduler,
-  ROLLBACK lazy-scheduler semantics, in-ApplyLogged buff-contribution owner, Lucky faucet-saturation,
-  v18 state/wire enumeration, activation/Exit invariant); implementing. Company v18.
+- **Status:** implemented — Company v18 scheduler, claims, Lucky saturation, combo hardcap, replay,
+  schema-v2 cap events, and Exit reset are shipped and independently reviewed.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
 - **Design refs:** `design/02 §2.3` (active play: golden opportunities on the shaped t⁵·exp spawn, the
