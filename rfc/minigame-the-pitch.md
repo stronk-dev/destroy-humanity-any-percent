@@ -1,6 +1,6 @@
 # RFC: The Pitch (minigame content — THE TEMPLATE)
 
-- **Status:** acceptance blocked on TP-C11–TP-C18 (TP-C1–TP-C10 ruled). v1 scope: engine + pinned catalog +
+- **Status:** acceptance blocked on TP-C19–TP-C25 (TP-C1–TP-C18 ruled). v1 scope: engine + pinned catalog +
   internal integration; playability lands with the Minigame API & Surface successor). **This is the exemplar
   minigame-content RFC**: its structure (tenant row → engine contract → certified result → economy
   hooks → content-as-data) is the template the other minigame content RFCs replicate.
@@ -489,3 +489,117 @@ dependency-complete content epoch only after its balance rows pass the content g
   mint of the ENTIRE new artifact set (fiscal + minigame/pet schema bumps + soul + pitch) is
   owner-gated in a dedicated **First Content Epoch RFC** (shared with SR-C13), minted only after the
   Pitch content gate passes. No partial chain, no epoch bytes here.
+
+## Implementation-readiness blockers (Codex, 2026-08-07) — TP-C19–TP-C25
+
+TP-C11–TP-C18 settle the literal content and product scope. A source walk against the shipped
+tenant boundary found seven remaining executable gaps. These are not balance retuning: the current
+contracts permit multiple incompatible byte histories, and two literal rows are unreachable under
+the ruled command grammar. Implementing through them would require inventing mechanics.
+
+### TP-C19 — The pinned Pitch artifact still cannot reach the pure tenant
+
+`CatalogBundle.Pitch` names an owner, but the shipped tenant receives only
+`CreateInput{mode,seed,scaling_inputs}` and `ApplyInput{mode,revision,snapshot,command,scaling_inputs}`.
+`TenantRegistry` is process-static and `Service.Play` does not resolve catalog bytes. C14 therefore
+cannot perform its required epoch/bundle/definition/genesis equality check, and replay cannot give
+the engine the hash-pinned cards it must recompute.
+
+**Proposed contract:** add one platform-owned `TenantContentResolver` keyed by
+`(constants_hash,engine_ref,engine_version)`. It returns canonical artifact bytes plus the artifact
+SHA-256 and schema version. `CreateInput` and `ApplyInput` receive cloned immutable content bytes,
+content hash, schema version, and the server-owned session seed; live play and replay resolve them
+from the session's immutable `constants_hash` and `seed`. The Pitch tenant rejects any mismatch
+between those resolved values and the snapshot's identity. No tenant reads process-current data and
+no new session column is needed.
+
+### TP-C20 — The exact snapshot and the deterministic deal cannot both hold
+
+C12's “exact” snapshot omits C14's required `pitch_content_hash` and
+`pitch_schema_version`. It also has no seed, draw cursor, or deck order, while `ApplyInput` currently
+has no seed. Even after C19, the rules do not say whether the 24-card deck persists across rounds,
+when it reshuffles, or how `deck_count` changes. More sharply: `play_hand.card_ids` is duplicate-free
+while every catalog card has two copies and `dark_pattern` requires a pair. If `card_ids` means base
+IDs, the launch hack is unreachable.
+
+**Proposed contract:** every snapshot has exactly thirteen keys: C12's eleven plus
+`pitch_content_hash` and `pitch_schema_version`. Represent each physical card as the stable instance
+ID `<card_id>#<copy_ordinal>`; `hand[]` and command `card_ids[]` contain instance IDs, remain
+duplicate-free, and scoring resolves their base card IDs. At each round, derive a fresh full-deck
+Fisher–Yates permutation using SplitMix64 with mandated rejection sampling and
+`Substream(seed,"pitch.deck.v1",round)`. Deal positions 0–6, 7–13, and 14–20 for the three hands;
+the four unused cards stay in the deck. `deck_count` is the number remaining after the current deal.
+The snapshot needs no mutable PRNG cursor because `(seed,round,hand_number)` reproduces the draw.
+
+### TP-C21 — Shop identity and run-currency income are absent
+
+The engine starts with four currency and can spend it, but no transition earns currency. Hacks cost
+up to six, so legal catalog rows may be permanently unaffordable. `shop_offers[]` also has no item
+schema, weighted-without-replacement rule, ownership exclusion, purchase-removal rule, or stable
+`offer_id`; the same seed can legally produce different shops in two runtimes.
+
+**Proposed contract:** add one explicit `round_clear_currency` integer to global policy (owner must
+choose the provisional literal) and grant it exactly once when a non-final round clears, before
+entering shop. Shop offers are exact objects `{offer_id,hack_id,price}`. Generate `shop_size`
+unowned hacks without replacement by `draft_weight` using SplitMix64 rejection sampling under
+`Substream(seed,"pitch.shop.v1",round)`; `offer_id = "pitch.offer.<round>.<slot>.<hack_id>"`.
+Buying removes the offer and auto-slots the hack; owned hacks never reappear. `end_shop` discards
+unbought offers and advances the round. Currency and prices are exact nonnegative safe integers.
+
+### TP-C22 — The effect formulas and shape vocabulary still admit divergent scores
+
+`flat_add` does not say whether it applies once per hand or once per card; `card_factor` says “per
+played card” but has no target selector; and the order between those arms is not a byte equation.
+The shape union includes `flush_kind`, but cards have no kind field, and includes `triple` while the
+launch deck has only two copies per base ID. Go and TypeScript can therefore implement different
+legal valuations, and two union members have no computable predicate.
+
+**Proposed contract:** narrow schema-v1 shapes to the used `pair | full_hand` members. `pair` means
+at least two selected instances share a base card ID; `full_hand` means exactly `play_size`
+instances. For each selected card, compute `base_metric + sum(flat_add amounts)`, then multiply that
+card by every slotted `card_factor`; sum the per-card values; multiply once by each satisfied
+`shape_factor`; then multiply once by each `chain_factor` whose partner is slotted, visiting hacks
+in raw-byte `hack_id` order. Quantize once after the final multiplication. `triple` and
+`flush_kind` require successor content/schema fields and are not reserved executable v1 arms.
+
+### TP-C23 — Terminal result semantics are not named
+
+C12 says “final round” and “round reached” in different places, but does not say whether a failed
+round is counted, nor name `Result.outcome`. It also does not define the terminal snapshot's
+`phase`, `hands_remaining`, or retained Decimal valuation. Those bytes feed payout and are compared
+during replay.
+
+**Proposed contract:** `pitch.final_round` is the highest round entered (failure on round 1 emits
+1; clearing round 8 emits 8). Outcomes are the closed `funded | funding_failed`. The command that
+fails the last available hand or clears round 8 writes `phase:"terminal"`, retains the final
+`round_best_valuation`, leaves `hands_remaining:0` on failure and the post-play count on success,
+sets `shop_offers:[]`, and emits score facts byte-sorted as
+`pitch.best_hand_exponent`, `pitch.final_round`; `rating_delta:null`.
+
+### TP-C24 — TP-C16 still does not form a loadable schema-v3 definition
+
+The ruled binding omits required payout literals (`sends_per_day`, `per_send_cap`,
+`conversion_ppm`), offline-quality decay literals and automation destination, provisional-games,
+and the exact scaling row. “Breadth source = unlocked card-set variants” is not a shipped scaling
+source kind, and `resource cash` is not the registered `company.cash` ID. The current loader also
+has no `fiscal_unlock` arm, so a row matching C15 cannot load.
+
+**Proposed contract:** provide the complete literal schema-v3 JSON row, including all six payout
+keys, all six offline-quality keys, the one scaling row, all five rating keys, and the exact
+automation destination. For v1's single launch set, use a literal breadth input of 1 unless a real
+card-set state owner is added. Bind `company.cash` exactly. Extend the closed unlock union in both
+loaders to `fiscal_unlock {unlock_id}`, and make the composed resolver read the pinned Founder
+fiscal unlock set. No implementation chooses the missing balance integers.
+
+### TP-C25 — The Pitch-owned content gate has no reproducible corpus
+
+TP-C9 requires every row to affect a declared golden scenario, but no scenario file, seed, command
+sequence, expected valuation, or gate budget exists. “Reachable in seeded generation” is also not a
+finite CI assertion without a seed set. A test author would have to invent the acceptance evidence.
+
+**Proposed contract:** check in a versioned Pitch content-gate corpus. Each of the twelve cards and
+eight hacks names at least one exact `(seed,commands)` scenario and expected terminal snapshot;
+chain hacks include both partner-present and partner-absent rows, and `dark_pattern`/`pivot` include
+their triggering and control hands. The gate validates row coverage structurally and byte-compares
+Go/TypeScript outputs. Declare a fixed maximum transition count equal to the sum of corpus command
+counts; content changes regenerate this corpus in a reviewable balance-change commit.

@@ -18,3 +18,15 @@ The owner rulings settle the product decisions, but the normative body still con
 placeholders and no exact engine snapshot, command, effect, content, tenant, artifact-identity,
 unlock, exponent, or mint bytes. Eight narrower blockers with proposed contracts are filed. This is
 not a re-litigation of TP-C1–TP-C10; it is the executable layer those rulings require.
+
+## 2026-08-07 — Codex source-grounded implementation review: blocked (TP-C19–TP-C25)
+
+Review by: Codex. Recorded by: Codex.
+
+TP-C11–TP-C18 settle the launch rows and visible product shape, but a walk against the actual tenant
+service proves the engine still cannot receive its pinned content or immutable seed during Apply.
+The exact snapshot contradicts its required genesis identity; duplicate-free base card IDs make the
+pair hack unreachable; shop identity, currency income, two effect predicates, terminal facts, six
+required tenant-policy literals, and the content-gate corpus remain undefined. Seven narrow
+blockers with executable proposals are filed. Soul Recovery implementation continued; no Pitch
+mechanic or balance byte was improvised.
