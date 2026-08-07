@@ -269,6 +269,43 @@ achievements, and pets bytes through both Go and TypeScript loaders in shared fi
 that explicit parity fixture even though it has no JSON Schema file. The table—not an
 implementer-chosen path—is the owner-approved mint manifest.
 
+## Owner rulings on FCE-C1–FCE-C6 (2026-08-07)
+
+- **FCE-C1 — RULED (Marco): PERMITS NOW.** The gate is NOT cash-only interpolation:
+  `company.permits` is introduced as the game's second economy resource, and `gate.t3_to_t4`
+  requires `[{company.cash, 1e12}, {company.permits, 12}]`. The complete narrow contract —
+  resource row, the `generator.legal_dept` faucet, the gate row, copy, and gates — is the
+  commissioned pre-mint RFC **`rfc/permits-and-t3-gate.md`**. Its bytes land as `BALANCE-CHANGE:`
+  with designated review BEFORE this epoch consumes them; FCE1's "base bytes unchanged" now gives
+  way for BOTH the routes AND economy artifacts, exactly as far as that RFC specifies and no
+  further.
+- **FCE-C2 — accepted as proposed.** The meters/achievements/pets documents are OWNER-RATIFIED
+  FIRST-PRODUCTION ARTIFACTS, not promotions; FCE2 is reclassified dual-lane: byte-identical
+  promotion for every family whose production bytes equal the reviewed fixture; ratified-authored
+  (SHA-pinned, content-gated, designated-reviewed `BALANCE-CHANGE:` commits) for these three.
+- **FCE-C3 — RESOLVED: Marco RATIFIED all three complete documents by SHA-256 (2026-08-07):**
+  `meters = 320deca9ccbe70c1822f0d2664ea75dfd7627d7f098dfd1243ef432bea7bb485` ·
+  `achievements = 1a11d6c5a0c044ff8077574bb71f1c893bde93a050e20a91e0d776c7e79f8903` ·
+  `pets = 5c1f27006871ddbd688cdb36e673a64ef5080c92950d22df486576dfae4aa1c1`
+  (drafts at `planning/coverage-map/draft-artifacts/`, provenance per value in the proposal doc).
+  Grievance 0/0 confirmed (aligned with Codex's recommendation). **Achievement scoring: TIERED
+  2/4/8 STANDS** — Codex's flat-+4 counter-recommendation was put to the owner explicitly and
+  overruled; design/02 §6 owes the tiered amendment note. Any later edit to a ratified document
+  records its replacement hash here.
+- **FCE-C4 — accepted as proposed.** The thirteen achievement copy rows land through the Copy
+  Pipeline BEFORE the achievements balance commit; `make copy-check` + a load against the real
+  `copykeys.All()` are the discriminating gates; no unloadable intermediate commit.
+- **FCE-C5 — accepted as proposed.** FCE4's pet clause is reconciled by this ruling: epoch 6
+  activates the Founder v18 care-state schema and pinned policy bytes ONLY; no starter creation,
+  no acquisition; the activation fixture asserts empty initialized maps + pinned policies. (The
+  FCE4 bullet's "pet starter creation begins at the first pet-carrying epoch" is superseded by
+  this ruling and FCE-B2.)
+- **FCE-C6 — accepted as proposed.** Before status moves to accepted, this RFC gains the one
+  literal promotion-manifest table (artifact, production path, source or "owner-authored",
+  SHA-256, schema version, content-gate command, consumed verdict) covering every epoch-6
+  artifact; the three authored artifacts get shared Go/TS parity fixtures (pets explicitly,
+  despite having no JSON Schema file). The table is the owner-approved mint manifest.
+
 ## Changelog
 
 - 2026-08-07: created (draft) — the owner-gated dependency-complete mint promised by TP-C18 and
@@ -282,3 +319,7 @@ implementer-chosen path—is the owner-approved mint manifest.
   `9334bee` (Routes extension selected). The draft remains blocked on the gate's literal
   requirement bytes, exact first-production byte ratification, copy rows, pet activation wording,
   and the complete cross-runtime promotion manifest.
+- 2026-08-07: FCE-C1–C6 ALL RULED (owner round): permits now (`rfc/permits-and-t3-gate.md`
+  commissioned); dual-lane FCE2; the three artifact documents RATIFIED by SHA (tiered scoring
+  stands); copy-first sequencing; pet activation reconciled; promotion-manifest table owed at
+  acceptance.

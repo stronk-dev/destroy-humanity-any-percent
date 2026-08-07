@@ -1,8 +1,8 @@
 # RFC: Minigame & Recovery API + Surface (the playability seam)
 
-- **Status:** draft — queued for Codex acceptance review. The named successor that TP-C10 (The
-  Pitch) and SR-C1/SR-C3 (Soul Recovery) both depend on for HUMAN playability; **every later
-  minigame and coordinator activity inherits this boundary.**
+- **Status:** accepted — MA-C1–C9 ruled (2026-08-07); implementation-ready. The named successor
+  that TP-C10 (The Pitch) and SR-C1/SR-C3 (Soul Recovery) both depend on for HUMAN playability;
+  **every later minigame and coordinator activity inherits this boundary.**
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-07
 - **Design refs:** `design/06 §transport` (authenticated command surface), `design/11` (first-session
@@ -261,6 +261,57 @@ non-authoritative toy seed generated on mount. Enumerate the closed UI states
 AC5 runs through the UI Foundation browser/a11y fixture and remains blocked until that dependency is
 implemented.
 
+## Owner rulings on MA-C1–MA-C9 (2026-08-07)
+
+- **MA-C1 — accepted as proposed.** MA2 is a REGISTRATION/GENERATION pass over the already-shipped,
+  designated-reviewed recovery routes — never a second implementation. Exact schemas exported from
+  the single operation registry; archived runtime behavior byte-for-byte; `session_expired` REMOVED
+  from the public taxonomy (the Soul verdict's canonical reading: expiry is a watchdog terminal
+  receipt, never an API error); the actual exact pairs (`unknown_id/recovery_session`,
+  `not_eligible/exclusive_activity`, `conflict/recovery_session`,
+  `idempotency_conflict/recovery_session`) are the documented surface. Conformance-discovered
+  runtime changes route to the Soul Recovery owner.
+- **MA-C2 — accepted as proposed.** This RFC owns the parked Platform AC1 composition slice:
+  repository, closed tenant registry (Pitch `1.0.0`), pinned resolver, `minigame.Service`, one
+  coordinator adapter on the authenticated API, platform exposed on `Composition`, bounded-drain
+  participation proven either way; a real-socket composed-binary integration test drives the
+  endpoints.
+- **MA-C3 — RULED: the persisted sequence coordinate.** The seed contract is the recommended
+  `minigame_session_seq` (persisted monotonic, Founder/run-scoped) with
+  `Substream(runidentity.Seed(founder_id, run_seq) XOR uint64(seq), "minigame.session.v1").Next()`
+  — the `fiscal_period_seq` precedent (F2), keeping seeds a pure function of immutable persisted
+  inputs; the opaque-random alternative is REJECTED (it weakens the save-seeded law for one field's
+  savings). The Summary's "no new persistence" claim is amended by this ruling: exactly this
+  coordinate + MA-C5's receipt rows, nothing else. Placement and the (honest) save-schema bump
+  follow the migration-chain law at implementation.
+- **MA-C4 — accepted, recommended arm.** The command endpoint detects a terminal `PlayDecision`
+  and composes the certified resolution IN THE SAME REQUEST, returning the stored terminal
+  receipt; `/resolve` becomes retry/read of an already-terminal session (rejects an active one);
+  the in-memory capability never crosses an HTTP boundary.
+- **MA-C5 — accepted, persistence arm (the at-most-once amendment is REJECTED for the playability
+  seam — a lost response stranding a claimed session is exactly what this RFC exists to prevent).**
+  API command IDs with canonical-request SHA-256; unique `(session_id, command_id)` receipt rows
+  claim-token-guarded in the same transition; same ID+hash → stored response, same ID+different
+  hash → `idempotency_conflict`; create takes a client opaque idempotency key scoped to the
+  authenticated Founder and returns the same descriptor on retry.
+- **MA-C6 — accepted as proposed.** Founder-scoped current-session query (sole `active|claimed`
+  under the exclusivity invariant); HTTP 200 closed union `{kind:"none"}` |
+  `{kind:"active", session, snapshot}`; no claim tokens, no recovery state, resolved receipts only
+  via the terminal/retry path.
+- **MA-C7 — accepted as proposed.** Exact envelopes; discriminated `oneOf` snapshot arm per
+  registered `(tenant, engine_version)` starting with Pitch `1.0.0` (the C18 pattern, never
+  `map[string]any`); literal `{status, category, detail}` error rows; transient SQL stays 5xx;
+  growth by additive amendment.
+- **MA-C8 — accepted as proposed.** "Catalog command budget" is STRUCK from MA1; v1 = the API
+  Foundation authenticated limiter + exactly one in-flight claim per session; any future tenant
+  budget is a strict operational policy row with its own RFC, never simulation balance data.
+- **MA-C9 — accepted as proposed.** Sequencing: API + composition first; surface components AFTER
+  UI Foundation is implemented (AC5 explicitly blocked on it). Generated tenant-surface registry
+  keyed by the same `(engine_ref, engine_version)` arm; Pitch registers one child; recovery
+  surface props from generated MA2 DTOs + a client-local non-authoritative toy seed on mount;
+  closed UI states `loading|active|paused_reconnect|required_terminal|error` with keyboard/cancel
+  behavior and copy keys enumerated.
+
 ## Changelog
 
 - 2026-08-07: created (draft) — the playability seam TP-C10/SR-C1/SR-C3 named.
@@ -268,3 +319,7 @@ implemented.
 - 2026-08-07: Codex acceptance review filed MA-C1–MA-C9. Implementation remains blocked on honest
   recovery-route ownership, gameserver/platform composition, server-owned start inputs, terminal
   resolution/idempotency/current-session wire, exact schemas, and the executable UI boundary.
+- 2026-08-07: MA-C1–C9 ALL RULED (accepted as proposed except where a decision was owed: C3 the
+  persisted `minigame_session_seq` + substream contract; C5 the persistence arm). The Summary's
+  "no new persistence" is amended to name exactly the C3 coordinate and C5 receipt rows.
+  Implementation-ready.
