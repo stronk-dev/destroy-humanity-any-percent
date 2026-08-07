@@ -112,3 +112,25 @@ to the Soul Foundation closing endpoint 3ff2082, the path-filtered implementatio
 **Verdict: NOT APPROVED pending F1 + F2 (scheduler pause + two test cases); re-review is narrow
 (the scheduler delta only). Archival blocked until then; everything else in the range needs no
 rework.**
+
+## 2026-08-07 — Codex narrow scheduler remediation; ready for designated re-review
+
+Implemented by: Codex. Recorded by: Codex.
+
+- **F1 closed:** the scheduler derives the missed ceiling exactly as
+  `3 * beat_interval_ms`. A forward or backward clock gap beyond that boundary enters an explicit
+  reconnect-required state, emits `on_pause("network")`, and cannot dispatch again until
+  `reconnect()` rotates the token. An under-ceiling hidden interval resumes immediately without
+  replaying queued beats.
+- **F2 closed:** the fake-clock matrix now covers an in-flight duplicate attempt and watchdog
+  terminal delivery in addition to over-ceiling pause/reconnect, under-ceiling resume, and network
+  token rotation.
+- The semantic scheduler change is inside the existing guarded `client/src/soul/` kernel path.
+  The full gate correctly rejected the review's tentative no-bump expectation, so the implementation
+  records the honest kernel transition `0.3.77 -> 0.3.78`; no guard exception was added.
+
+Root `make typecheck` reports zero TypeScript/Svelte diagnostics; `make test-client` passes 6,598
+tests (3 skipped); and a complete root `make verify` passes Go vet/tests, the balance harness,
+client typecheck/build, all 6,598 client tests, kernel/history guards at `0.3.78`, copy/schema gates,
+and 19,803 browser assertions. No production epoch was minted. Ready for the narrow designated
+cross-party re-review; this entry does not authorize Soul Recovery archival.

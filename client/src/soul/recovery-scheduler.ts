@@ -43,11 +43,14 @@ export class RecoveryScheduler {
   #visible = true;
   #running = false;
   #requestInFlight = false;
+  #requiresReconnect = false;
   #lastDispatchMS: number;
+  readonly #missedCeilingMS: number;
 
   constructor(input: RecoverySchedulerInput, callbacks: RecoverySchedulerCallbacks) {
     if (!mechanicalSession(input.session_id) || !opaqueToken(input.progress_token) ||
         !Number.isSafeInteger(input.beat_interval_ms) || input.beat_interval_ms < 1 ||
+        !Number.isSafeInteger(input.beat_interval_ms * 3) ||
         typeof input.now !== "function" || typeof input.transport?.progress !== "function" ||
         typeof input.visibility?.subscribe !== "function") {
       throw new TypeError("invalid Soul recovery scheduler input");
@@ -55,6 +58,7 @@ export class RecoveryScheduler {
     this.#input = input;
     this.#callbacks = callbacks;
     this.#progressToken = input.progress_token;
+    this.#missedCeilingMS = input.beat_interval_ms * 3;
     this.#lastDispatchMS = input.now();
   }
 
@@ -78,8 +82,10 @@ export class RecoveryScheduler {
   reconnect(progressToken: string): void {
     if (!opaqueToken(progressToken)) throw new TypeError("invalid Soul recovery progress token");
     this.#progressToken = progressToken;
+    this.#requiresReconnect = false;
     this.#lastDispatchMS = this.#input.now();
     this.#callbacks.on_token_rotated(progressToken);
+    if (this.#running && this.#visible) this.#callbacks.on_resume();
     if (this.#running && this.#visible && !this.#requestInFlight) {
       this.#clearTimer();
       this.#schedule();
@@ -94,13 +100,19 @@ export class RecoveryScheduler {
       this.#callbacks.on_pause("hidden");
       return;
     }
-    this.#lastDispatchMS = this.#input.now();
+    const now = this.#input.now();
+    if (!Number.isSafeInteger(now) || now < this.#lastDispatchMS ||
+        now - this.#lastDispatchMS > this.#missedCeilingMS) {
+      this.#pauseForReconnect();
+      return;
+    }
+    if (this.#requiresReconnect) return;
     this.#callbacks.on_resume();
-    if (this.#running && !this.#requestInFlight) this.#schedule();
+    if (this.#running && !this.#requestInFlight) void this.#beat();
   }
 
   #schedule(): void {
-    if (!this.#running || !this.#visible || this.#timer !== undefined) return;
+    if (!this.#running || !this.#visible || this.#requiresReconnect || this.#timer !== undefined) return;
     this.#timer = setTimeout(() => {
       this.#timer = undefined;
       void this.#beat();
@@ -108,10 +120,11 @@ export class RecoveryScheduler {
   }
 
   async #beat(): Promise<void> {
-    if (!this.#running || !this.#visible || this.#requestInFlight) return;
+    if (!this.#running || !this.#visible || this.#requiresReconnect || this.#requestInFlight) return;
     const now = this.#input.now();
-    if (!Number.isSafeInteger(now) || now < this.#lastDispatchMS) {
-      this.#callbacks.on_pause("network");
+    if (!Number.isSafeInteger(now) || now < this.#lastDispatchMS ||
+        now - this.#lastDispatchMS > this.#missedCeilingMS) {
+      this.#pauseForReconnect();
       return;
     }
     this.#lastDispatchMS = now;
@@ -121,11 +134,18 @@ export class RecoveryScheduler {
       if (!this.#running) return;
       this.#callbacks.on_progress(response);
     } catch {
-      if (this.#running) this.#callbacks.on_pause("network");
+      if (this.#running) this.#pauseForReconnect();
     } finally {
       this.#requestInFlight = false;
-      if (this.#running && this.#visible) this.#schedule();
+      if (this.#running && this.#visible && !this.#requiresReconnect) this.#schedule();
     }
+  }
+
+  #pauseForReconnect(): void {
+    this.#clearTimer();
+    if (this.#requiresReconnect) return;
+    this.#requiresReconnect = true;
+    this.#callbacks.on_pause("network");
   }
 
   #clearTimer(): void {
