@@ -146,3 +146,13 @@ formula and schema drift, kernel history/parity at `0.3.73`, TypeScript/Svelte t
 client build, 6,582 unit assertions, and 19,755 browser assertions all passed. This is self-
 verification only; it does not satisfy the cross-party designated review gate and does not authorize
 archival.
+
+## 2026-08-07 — SB24 ruled: the recovery progress heartbeat (closes the attendance DESIGN-GAP)
+A 4th coordinator command `soul_recovery_progress {session_id, claim_token}` (never an intent):
+server-stamped; session-row-only mutation; delta counts iff gap <= recovery_beat_ceiling_ms (catalog,
+<= global ceiling), larger gaps add zero — absence PAUSES, never kills. Beats grant nothing and are
+not replay bytes (nothing to farm); replay stays terminal-only — the resolve/cancel arm's
+founder_attended start/end must equal attended_progress_ms (validated). Eligibility: progress >=
+duration. Lazy watchdog: max_session_wall_ms auto-cancels at next touch (SB23 cancel path,
+cancelled_by: watchdog, zero Soul) — no background job. rejected=no-mutation preserved (session row =
+coordinator state). Production recovery rows may mint only after SB24 implements + reviews.

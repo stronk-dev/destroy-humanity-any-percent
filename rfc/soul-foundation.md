@@ -734,3 +734,42 @@ All seven accepted (Codex's proposed contracts are sound and pattern-consistent)
 
 SB1-SB23 complete. Implementation remains dependency-blocked on Fiscal v19 (implemented + archived ✓)
 — i.e. now unblocked EXCEPT for the ordinary queue; the pure catalog/band layer may land first.
+
+## Owner ruling SB24 (2026-08-07) — recovery attendance: the progress heartbeat
+
+The DESIGN-GAP is real: SB14's exclusivity rejects every ordinary Company command, and the shipped
+attendance authority advances only through successful Company evaluations (gaps > the catch-up
+ceiling classify offline) — so an exclusive recovery had no legal writer and became permanently
+ineligible one millisecond past the tolerance. **Ruling: a claim-tokened coordinator heartbeat.**
+
+- **`soul_recovery_progress {session_id, claim_token}`** — the fourth coordinator command (like
+  start/cancel/resolve: NEVER an `ApplyLogged` intent kind). Server-stamped on receipt. It mutates
+  ONLY the session row: `attended_progress_ms += min(now_server − last_progress_server_ms,
+  beat)` where the delta counts iff `now_server − last_progress_server_ms ≤
+  recovery_beat_ceiling_ms` (a catalog value ≤ the global catch-up ceiling); a larger gap adds ZERO
+  — **absence pauses the session, never kills it** (the no-FOMO law: an interrupted recovery
+  resumes; it just doesn't progress while away). `last_progress_server_ms` re-stamps either way.
+  Idempotent by construction (the server computes the delta; a duplicate beat re-stamps harmlessly);
+  a wrong/expired claim token rejects `idempotency_conflict`/lease rules per SB19.
+- **Beats grant NOTHING and are not replay bytes.** No production, no resource, no Soul, no
+  Company/Founder log rows, no events — nothing to farm (a headless beater is simply "present",
+  identical in effect to leaving the game open, which is what attended means everywhere else).
+  Replay stays TERMINAL-ONLY per SB20/SB23: the resolve/cancel arm's
+  `founder_attended_start_ms/end_ms` satisfy `end − start == attended_progress_ms` (validated), and
+  the suppressed interval covers the session's wall span — replay validates the recorded totals,
+  never the beat cadence. `rejected = no mutation` is preserved (the session row is coordinator
+  state, the same class as claim leases — outside intent semantics).
+- **Eligibility:** resolve requires `attended_progress_ms ≥ duration_attended_ms`. Early resolve
+  still rejects without mutation (SB14).
+- **The lazy watchdog (session max-lifetime):** a catalog `max_session_wall_ms`; a session whose
+  total wall age exceeds it is AUTO-CANCELLED lazily at the next coordinator touch or the next
+  ordinary Company command's eligibility check (no background job — the no-tick-loop law). Auto-
+  cancel is the SB23 cancel path at the last-progress coordinate: zero Soul, suppression ends there,
+  terminal receipt records `cancelled_by: watchdog`. (Every long-lived session gets a forced
+  resolution path; a dangling session cannot brick the founder.)
+- **Wire:** the progress request/response is exact-key coordinator API (response carries
+  `attended_progress_ms`, `duration_attended_ms`, `last_progress_server_ms`); numbers
+  (`recovery_beat_ceiling_ms`, `max_session_wall_ms`) are catalog balance data.
+
+Production `recovery_activities` rows may mint once SB24 is implemented and reviewed; the fixture-only
+restriction stands until then.
