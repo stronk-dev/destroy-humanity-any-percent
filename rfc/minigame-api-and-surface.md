@@ -45,8 +45,8 @@ authority (A2/A5):
   `fiscal_unlock` resolver arm, TP-C6), soul_gate, and the platform's session rules. Response: the
   session descriptor + the engine's initial snapshot.
 - `POST /api/v1/minigames/sessions/{session_id}/commands` — one engine command per request (the
-  tenant's closed command union, e.g. The Pitch's `draft_card | buy_hack | slot_hack | play_hand |
-  end_shop`), idempotent by the platform's existing intent-record discipline; response: the
+  tenant's closed command union, e.g. The Pitch's `play_hand | buy_hack | end_shop`, TP-C12),
+  idempotent by the platform's existing intent-record discipline; response: the
   post-command snapshot + revision. Typed rejections reuse the closed taxonomy verbatim.
 - `POST /api/v1/minigames/sessions/{session_id}/resolve` — triggers the certified resolve through
   the shipped composer; response: the terminal receipt (payout, quality, facts). Retry returns the
