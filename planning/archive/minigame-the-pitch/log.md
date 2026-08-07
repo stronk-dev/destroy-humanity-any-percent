@@ -167,3 +167,12 @@ every implementation commit of The Pitch span (intervening 7688c59 = the verdict
 **The Pitch is ARCHIVAL-ELIGIBLE on this verdict.** The archival move (status→implemented, RFC +
 planning to archives, canonical docs page) is Codex's to execute, citing this entry and the exact
 consumed set — recommended to fold the TP-C4 editorial line into the same edit.
+
+## 2026-08-07 — archival rotation
+
+Implemented by: Codex. Archived under: designated cross-party verdict `c76101a`.
+
+The consumed implementation set is exactly `{0eb3772, 853ef93, 2a55e12}`. The RFC status is now
+implemented, TP-C4 uses the ruled interleaved raw-byte factor order, canonical behavior is
+distilled into `docs/minigame-the-pitch.md`, and the RFC/planning record rotate to their archives.
+No production artifact or epoch was minted; that authority remains with First Content Epoch.

@@ -30,7 +30,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
-| [The Pitch (minigame content — template)](minigame-the-pitch.md) | acceptance blocked on TP-C19–TP-C25 | Minigame Platform (archived) / Fiscal / Soul |
 | [Soul Recovery Activities](soul-recovery-activities.md) | accepted — implementing (SR-C1–SR-C14 ruled; UI debt carried) | Soul Foundation / API / UI |
 | [Minigame & Recovery API + Surface](minigame-api-and-surface.md) | draft — the playability seam, queued for acceptance review | API Foundation / Minigame Platform (archived) / Soul / UI Foundation |
 | [First Content Epoch](first-content-epoch.md) | draft — owner-gated mint (successor of TP-C18/SR-C13) | ALL fixture-first content foundations |
@@ -85,6 +84,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Fiscal Quarters Foundation](archive/fiscal-quarters-foundation.md) | implemented | [Fiscal Quarters](../docs/fiscal-quarters.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Active-Play Buff Windows](archive/active-play-buff-windows.md) | implemented | [Active-play opportunities](../docs/active-play.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Soul Foundation](archive/soul-foundation.md) | implemented | [Soul foundation](../docs/soul.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
+| [The Pitch](archive/minigame-the-pitch.md) | implemented | [The Pitch](../docs/minigame-the-pitch.md), [Minigame platform](../docs/minigame-platform.md) |
 
 **Phase-0 contract status (reconciled 2026-08-05 against the coverage-map sweep):** the contracts
 previously listed here as "not yet drafted" — Layer-1 events engine, doctrine intents, Compute

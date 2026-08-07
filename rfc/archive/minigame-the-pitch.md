@@ -1,7 +1,7 @@
 # RFC: The Pitch (minigame content — THE TEMPLATE)
 
-- **Status:** accepted; implementing (TP-C1–TP-C25 ruled). v1 scope: engine + pinned catalog +
-  internal integration; playability lands with the Minigame API & Surface successor. **This is the exemplar
+- **Status:** implemented — TP-C1–TP-C25 ship fixture-first and passed the designated cross-party
+  review; playability lands with the Minigame API & Surface successor. **This is the exemplar
   minigame-content RFC**: its structure (tenant row → engine contract → certified result → economy
   hooks → content-as-data) is the template the other minigame content RFCs replicate.
 - **Author:** Marco (drafted by Claude)
@@ -14,7 +14,7 @@
   archival-eligible). This RFC adds a TENANT, an ENGINE, CONTENT, and **two named platform/
   composition amendments** (TP-C2's pinned `pitch` artifact + `CatalogBundle.Pitch`; TP-C6/TP-C15's
   `fiscal_unlock` resolver arm).
-- **Planning:** `planning/minigame-the-pitch/` (once implementing)
+- **Planning:** `planning/archive/minigame-the-pitch/`
 
 ## Summary
 
@@ -289,8 +289,9 @@ All accepted; product decisions on C6/C10. Body reconciliations noted inline.
   tenant error taxonomy; every applied command advances one revision; illegal phase/index/insufficient
   run-currency rejects without mutation.
 - **TP-C4 — accepted.** Every effect arm enumerated with exact keys and ONE published evaluation
-  order: card base → flat adds → per-card factors → hand-shape factors → ordered hack interactions →
-  one canonical quantize. Factors are RFC-0001 canonical Decimal strings; all tie/order behavior
+  order: card base → flat adds → per-card factors → sum cards → one raw-byte `hack_id` pass applying
+  each satisfied shape or partner-present chain factor in encountered order → one canonical
+  quantize. Factors are RFC-0001 canonical Decimal strings; all tie/order behavior
   bytewise; the funding-target curve row and run-currency arithmetic use the same precision rules.
 - **TP-C5 — accepted.** One complete LITERAL schema-v3 definition ships in this RFC's
   implementation: `engine_version: "1.0.0"`, `fallback: {kind:"solo"}`, nil certified `rating_delta`

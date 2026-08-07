@@ -43,6 +43,8 @@ Implemented systems:
   readiness, real settlement wiring, world snapshots, and bounded drain.
 - [Minigame platform](minigame-platform.md) — frozen session genesis, Postgres claim ownership,
   and the pure tenant engine boundary (foundation implementation in progress).
+- [The Pitch](minigame-the-pitch.md) — deterministic Decimal card scoring, pinned tenant content,
+  Fiscal/Soul admission, certified payout, and fixture-first content verification.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.
