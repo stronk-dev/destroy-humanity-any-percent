@@ -1,6 +1,6 @@
 # RFC: Soul Recovery Activities (the cozy content — touch-grass v1)
 
-- **Status:** draft — Wave-B content; queued for Codex acceptance review. The **owner-content
+- **Status:** draft — acceptance blocked on SR-C1–SR-C8. The **owner-content
   mint** the Soul verdict requires before production `recovery_activities` rows may exist.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-07
@@ -104,6 +104,102 @@ exactly.
   client-preference storage, never save state) — nice, cheap, and honest; decide at implementation.
 - Ambient audio — deferred to the audio commission; the toys ship silent-but-pleasant first.
 
+## Acceptance-review blockers (Codex, 2026-08-07)
+
+The activity concept matches Soul's covenant, but the current repository can only exercise it from
+Go. The draft calls the work “catalog rows + client presentation” while the public coordinator and
+presentation catalog do not exist. Those seams must be owned explicitly before production rows mint.
+
+### SR-C1 — The recovery coordinator has no public API or transport surface
+
+`StartSoulRecovery`, `ProgressSoulRecovery`, `CancelSoulRecovery`, and `ResolveSoulRecovery` are
+internal production methods with no publicapi/chi route, transport command, or client decoder. A toy
+cannot acquire/rotate the progress token or send a heartbeat. “Zero server mechanics” is therefore a
+false scope claim.
+
+**Proposed contract:** add a narrow authenticated coordinator API (recommended HTTP like intents,
+because heartbeats are bounded commands, not stream events) with exact start/reconnect, progress,
+cancel, and resolve schemas from SB25–SB27. Founder identity comes only from the session; rate-limit
+progress per session; reconnect stores only the newest token client-side. Map typed rejections,
+including `recovery_token`, `exclusive_activity`, and `session_expired`, without exposing claim leases.
+
+### SR-C2 — Recovery rows cannot identify a toy or its copy
+
+The exact row is only `{activity_id,duration_attended_ms,recovery_amount,reason_key}`. It has no
+`toy_kind`, title, description, or disclosure key. The copy pipeline cannot infer “Defragment the
+disk” or “This produces nothing” from an ID, and hardcoding an ID→component map contradicts the
+content-as-data claim.
+
+**Proposed contract:** extend the never-yet-epoch-pinned Soul recovery row in this successor with
+exact `toy_kind`, `title_copy_key`, `description_copy_key`, and `disclosure_copy_key` fields, all
+closed/registered in Go and TypeScript. Enumerate `toy_kind:defrag|server_room|repot` and register
+every key in the tracked copy catalog. If row grammar must remain frozen, create a separately pinned
+presentation artifact keyed one-to-one by activity ID instead; do not create two optional authorities.
+
+### SR-C3 — The UI foundation and recovery surface are not available
+
+UI Foundation remains blocked on C9–C11, and Game UI explicitly excludes minigame surfaces. No route,
+component input, heartbeat lifecycle, focus/background behavior, or reconnect view exists. AC4 cannot
+pass by adding three isolated components.
+
+**Proposed contract:** depend on an accepted UI Foundation and define one `soul_recovery` surface
+contract: session receipt + local toy seed in, coordinator callbacks out, one heartbeat scheduler,
+visibility/background pause behavior, token replacement on reconnect, cancel affordance, progress
+display, and terminal return. Toy components receive presentation data/callbacks only and import no
+transport internals.
+
+### SR-C4 — The three “rows” have no literal bytes
+
+Durations, recovery amounts, reason/copy keys, and even final row ordering are absent. A production
+artifact mint and balance-harness baseline cannot review an adjective such as short/medium/long.
+
+**Proposed contract:** provide the complete byte-sorted literal rows (`defrag`, `repot`,
+`server_room`) with provisional exact integers and copy keys. Validate duration against
+`max_session_wall_ms` and the client heartbeat policy; validate recovery against the Soul domain.
+Changing these values later is a normal balance mint.
+
+### SR-C5 — The first Soul mint is a multi-artifact activation, not one row edit
+
+No production epoch currently pins Soul. A Soul-bearing bundle requires the Fiscal artifact and the
+bumped Minigame/Pet schemas, activating the Founder v17→v20 chain at the next run boundary. SR4 calls
+this “the standard epoch mint” without enumerating the accepted artifact set or migration scenario.
+
+**Proposed contract:** enumerate the exact first-Soul artifact bundle and epoch transition, including
+the production-safe minigame and pet artifacts it requires. Add a real pre-mint Founder→Exit→v20
+activation fixture proving all four scalar versions initialize together and existing runs finish
+under old bytes. Do not mint a partial dependency chain.
+
+### SR-C6 — Heartbeat cadence and browser lifecycle are unspecified
+
+SB24 defines the server ceiling, not how often the client beats, what hidden/background tabs do, or
+how network retries interact with token rotation. Those choices determine whether ordinary browser
+throttling pauses every session.
+
+**Proposed contract:** choose a catalog-derived or literal client cadence strictly below
+`recovery_beat_ceiling_ms`, send only while the surface is active/visible, treat a missed ceiling as a
+pause, and reconnect via start before resuming. Never replay queued beats after sleep. A fake-clock
+browser test covers foreground, duplicate retry, hidden-tab pause, reconnect rotation, and watchdog.
+
+### SR-C7 — `repot` says “daily” but no daily gate exists
+
+The Soul session state has no per-activity cooldown or completion ledger. Calling this a daily ritual
+can be flavor or a new authority; the draft does not decide.
+
+**Proposed contract:** make “daily” tonal only in v1: `repot` is repeatable like the other activities,
+with no streak, cooldown, or reward multiplier. If once-per-day is intended, it needs a Founder-
+attended-day state contract and cannot hide in client presentation.
+
+### SR-C8 — The motivation overstates the production drain state
+
+No production debit source is enabled; only the pure debit machinery and fixture source exist. The
+training-data ending is therefore not presently reachable through production content. Saying “the
+drain is live” reverses the archival record.
+
+**Proposed contract:** correct the motivation to say recovery and drain machinery are both awaiting
+owner content, and this RFC activates recovery only. A later Events/longevity content RFC owns the
+first production debit source and ending reachability.
+
 ## Changelog
 
 - 2026-08-07: created (draft) — Wave-B; the owner-content mint for Soul recovery.
+- 2026-08-07: Codex acceptance review filed SR-C1–SR-C8; implementation blocked pending owner rulings.

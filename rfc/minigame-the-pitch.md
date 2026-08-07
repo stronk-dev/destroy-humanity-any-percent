@@ -1,6 +1,6 @@
 # RFC: The Pitch (minigame content — THE TEMPLATE)
 
-- **Status:** draft — Wave-B content; queued for Codex acceptance review. **This is the exemplar
+- **Status:** draft — acceptance blocked on TP-C1–TP-C10. **This is the exemplar
   minigame-content RFC**: its structure (tenant row → engine contract → certified result → economy
   hooks → content-as-data) is the template the other minigame content RFCs replicate.
 - **Author:** Marco (drafted by Claude)
@@ -134,6 +134,128 @@ followed; mechanical naming per the naming law.
   `design/03` roster decision owed before the NEXT combat-shaped minigame RFC; The Pitch is not a
   combat surface and does not wait on it.
 
+## Acceptance-review blockers (Codex, 2026-08-07)
+
+The concept fits the platform, but the draft cannot yet serve as an executable template. Several
+claimed seams do not exist in the archived platform, and the engine/content byte contracts are not
+enumerated. Implementing through these gaps would either add platform mechanics under a content RFC
+or make deploy-current content part of a pinned replay.
+
+### TP-C1 — The certified Decimal result cannot cross the platform result boundary
+
+The shipped `minigame.Result` is exactly `{outcome,rating_delta,score_facts[]}`, and every score fact
+is an exact signed `int64` within the JavaScript-safe domain. It cannot carry
+`best_hand_valuation: canonical Decimal string`; payout also selects one nonnegative integer fact.
+TP2/AC2 require the Decimal string in the certified result while TP5 forbids a platform change.
+
+**Proposed contract:** keep the full Decimal valuation in the terminal engine snapshot (which the
+platform already byte-compares), and enumerate bounded integer result facts separately. Recommended:
+`pitch.final_round` is the payout/quality fact and `pitch.best_hand_exponent` is display/analytics
+only, with an exact exponent derivation and hardcap. If the Decimal string must live in `Result`,
+declare a Minigame Platform Result-v2 successor instead; The Pitch cannot add it invisibly.
+
+### TP-C2 — Versioned content has no pinned tenant input
+
+The tenant receives only `(mode,seed,revision,snapshot,command,scaling_inputs)`. The registry is keyed
+only by `(engine_ref,engine_version)`, and the replay bundle has no `pitch` artifact. A tenant cannot
+read a hot-reloadable card/hack/target catalog without ambient deploy-current state, while putting
+rows in the existing minigame definition violates its exact schema.
+
+**Proposed contract:** choose one replay-safe owner. Recommended: add a separately hash-pinned
+`pitch` artifact to `CatalogBundle`, construct a constants-hash-aware tenant resolver, and freeze the
+exact content hash/engine-content version in session genesis. An alternative is compiling the entire
+launch set into engine version `1.0.0`, but that explicitly deviates from balance-data law 4 and
+requires owner approval. No unpinned process-global catalog is acceptable.
+
+### TP-C3 — The engine transition grammar is directional, not executable
+
+There are no exact genesis/snapshot/command schemas, phase/state machine, rejection taxonomy,
+shuffle/draw algorithm, shop transaction, hand-budget transition, target lookup, or terminal rule.
+“Ordered choices” cannot be validated without naming each choice arm and its legal phase.
+
+**Proposed contract:** enumerate command arms (`draft_card`, `buy_hack`, `slot_hack`, `play_hand`,
+`end_shop`, or the owner-selected closed set), the exact snapshot keys, phase enum, sorted collection
+rules, SplitMix64 substream labels/counters, terminal outcomes, and sorted tenant error taxonomy.
+Every applied command advances one revision; illegal phase/index/insufficient run-currency rejects
+without mutation. The result is emitted by exactly one terminal transition.
+
+### TP-C4 — The effect union and Decimal operation order are not byte contracts
+
+“Flat adds, per-card multipliers, hand-shape multipliers, and hack-order interactions” does not name
+row keys, target selectors, rational/Decimal factor grammar, applicability, ordering, or quantization.
+Go and TypeScript could satisfy the prose with different scores.
+
+**Proposed contract:** enumerate every effect arm with exact keys and one published evaluation order:
+card base → flat adds → per-card factors → hand-shape factors → ordered hack interactions → one
+canonical quantize. Factors use RFC-0001 canonical Decimal strings; all tie/order behavior is bytewise.
+Define the target-curve row and run-currency debit arithmetic with the same precision rules.
+
+### TP-C5 — The tenant row is incomplete and `rating_policy: none` is not legal grammar
+
+The loader has no `none` rating arm. Every definition needs literal score-fact IDs, a six-key payout
+row, offline-quality row, valid rating-season row, exact scaling row(s), unlock row, and semver engine
+identity. `engine_version: 1`, `[...]`, “economy-resource credits,” and “breadth” do not load.
+
+**Proposed contract:** provide one complete literal schema-v3 definition and descriptor. Use
+`engine_version:"1.0.0"`, `fallback:{kind:"solo"}`, nil certified `rating_delta`, and a real neutral
+rating row whose state remains unchanged. Name the credited resource, payout/quality score fact,
+automation destination, cap reason, breadth destination/source, season member, and every schema/error
+ID. Balance magnitudes may remain provisional catalog values; structural IDs may not.
+
+### TP-C6 — The Fiscal unlock is parsed but not enforced, and the two homes conflict
+
+Production start checks Soul but never evaluates `Definition.Unlock`; no resolver maps
+`fiscal_unlocks` to the generic `fact_equals` row. One row also cannot be both the free T0–T1 Demo
+Disc tutorial and the purchased Tier-5 casino unlock.
+
+**Proposed contract:** decide the product shape. Recommended: one free tutorial definition
+`pitch.demo` and one full `pitch` definition, or explicitly make the demo a non-platform tutorial
+inside the full game's client. Add a composed server unlock resolver that reads the pinned Founder
+Fiscal flag (never a client fact), register its exact `unlock_id` in the Fiscal artifact, and prove
+start rejects before purchase and succeeds after it. This is a named platform/composition amendment,
+not tenant-engine code.
+
+### TP-C7 — Daily seed is simultaneously out of scope and an acceptance criterion
+
+TP2 introduces and publishes a daily seed, AC2 requires it in the wire, but TP1 ships only `solo` and
+the Open Questions defer the daily/async variant. No calendar input exists in the tenant boundary.
+
+**Proposed contract:** remove daily-seed behavior and AC text from v1. The solo session continues to
+use the server-authored platform seed and `pitch.run.v1` substream. A later async-snapshot RFC owns
+the calendar seed, publication, board, and fairness rules.
+
+### TP-C8 — The launch content set is not a catalog
+
+`≥~12` and `≥~8` are neither exact counts nor literal rows. No IDs, copy keys, effects, rarity/draft
+weights, prices, or interaction declarations exist, so an engine fixture and loader cannot be built.
+
+**Proposed contract:** check in the complete byte-sorted launch rows as provisional balance data.
+Every card and hack has exact keys, copy keys, price/draft policy, and one declared effect arm. State
+the exact launch count and require every referenced interaction partner to exist.
+
+### TP-C9 — Relevance Harness does not measure minigame cards or hacks
+
+The shipped harness ablates production purchasables through `SimulateAdvance`; it has no Pitch
+engine, card-pool, draft, or hack-interaction boundary. TP4's “dead content fails CI” claim is false.
+
+**Proposed contract:** replace that claim with a Pitch-owned exhaustive/enumerated content gate:
+every row must be reachable in seeded generation and must affect at least one declared golden
+scenario; interaction arms require pairwise fixtures. A statistical strategy-relevance harness is a
+successor after real balance data exists, not an invented reuse of the production harness.
+
+### TP-C10 — No player-facing command/surface reaches the platform
+
+The authoritative platform and tenant registry are internal services; Game UI explicitly excludes
+minigame surfaces. This draft requires create/play/resolve and a client engine but names neither an
+authenticated coordinator API nor a surface/component contract.
+
+**Proposed contract:** either scope this RFC honestly to engine+catalog+internal integration and
+defer “playable” UI, or add dependencies/contracts for the minigame API and one UI surface: exact
+create/play/resolve request/response schemas, authenticated Founder authority, reconnect snapshot,
+command dispatcher, and terminal rendering. The exemplar should make this boundary explicit because
+every later minigame will inherit it.
+
 ## Changelog
 
 - 2026-08-07: created (draft) — Wave-B opener; the exemplar minigame-content RFC.
+- 2026-08-07: Codex acceptance review filed TP-C1–TP-C10; implementation blocked pending owner rulings.
