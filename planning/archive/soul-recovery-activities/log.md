@@ -169,3 +169,12 @@ behavior files). Both blockers closed with discriminating tests:
 Foundation closing endpoint 3ff2082 (intervening commits are docs-tier or The Pitch's own APPROVED
 set). No uncovered edge commits. Soul Recovery is ARCHIVAL-ELIGIBLE**, subject to the carried
 AC4/AC5 UI-successor debt (unchanged). The archival move is Codex's to execute citing this entry.
+
+## 2026-08-07 — archival rotation
+
+Implemented by: Codex. Archived under: designated cross-party verdict `5754901`.
+
+The consumed set is exactly `{4973c8e, ab9d15e, 3cfc0e6}` plus docs-tier
+`{f04c2f3, d1cd39c}`. Canonical shipped behavior is distilled into `docs/soul-recovery.md`.
+AC4/AC5 remain explicit UI-successor debt, and the production artifact mint remains solely owned
+by the First Content Epoch RFC; this rotation mints no content and deploys nothing.

@@ -1,17 +1,19 @@
 # RFC: Soul Recovery Activities (the cozy content — touch-grass v1)
 
-- **Status:** accepted — SR-C1–SR-C14 ruled; implementing (playability remains gated on the coordinator
-  API amendment + an accepted UI Foundation). The **owner-content
-  mint** the Soul verdict requires before production `recovery_activities` rows may exist.
+- **Status:** implemented fixture-first — SR-C1–SR-C14 ship and passed the designated cross-party
+  review. Production activation remains owned by the First Content Epoch; toy rendering and final
+  disclosure presentation remain carried to the UI successor.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-07
 - **Design refs:** `design/02 §8` (recovery: deliberate, opportunity-costed, produces nothing),
   `design/03 §5` (the cozy category is the SOLE Soul-recovery source — board games pay but never
   restore; ruled 2026-08-06)
-- **Depends on:** Soul Foundation (SB1–SB27 — the complete session/heartbeat/suppression substrate;
-  archival-eligible). **This RFC adds ONLY catalog rows + client presentation + copy. Zero server
-  mechanics** — the coordinator, watchdog, suppression, and replay already exist and are reviewed.
-- **Planning:** `planning/soul-recovery-activities/` (once implementing)
+- **Depends on:** Soul Foundation (SB1–SB27 — the archived session/heartbeat/suppression substrate),
+  API Foundation amendment (the authenticated coordinator surface), and UI Foundation successor
+  work for the carried toys/disclosures. This RFC adds the fixture catalog/copy, coordinator API,
+  rate limiter, and framework-neutral heartbeat scheduler; the Soul transition mechanics remain
+  owned by the archived foundation.
+- **Planning:** `planning/archive/soul-recovery-activities/`
 
 ## Summary
 

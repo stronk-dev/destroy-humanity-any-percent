@@ -45,6 +45,8 @@ Implemented systems:
   and the pure tenant engine boundary (foundation implementation in progress).
 - [The Pitch](minigame-the-pitch.md) — deterministic Decimal card scoring, pinned tenant content,
   Fiscal/Soul admission, certified payout, and fixture-first content verification.
+- [Soul Recovery](soul-recovery.md) — zero-output recovery activities, authenticated coordinator
+  lifecycle, heartbeat ceiling/reconnect behavior, and fixture-first activation boundary.
 
 Rules (from RFC-0000):
 - Organized by system, not history: `architecture.md`, `economy.md`, `data-formats.md`, `ops.md`, … created as systems land.
