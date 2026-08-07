@@ -19,9 +19,12 @@ func fixtureCatalogBytes(t *testing.T) []byte {
 			map[string]any{"band_member": "dimming", "min_inclusive": 40, "max_inclusive": 74, "human_content_locked": false, "reason_key": "category.hundred_percent"},
 			map[string]any{"band_member": "whole", "min_inclusive": 75, "max_inclusive": 100, "human_content_locked": false, "reason_key": "category.any_percent"},
 		},
-		"debit_sources":       []any{map[string]any{"source_id": "soul.fixture", "owner_kind": "fixture", "amount": 20, "may_exhaust": true, "single_use": true, "curtain_copy_key": "category.valuation"}},
-		"recovery_activities": []any{map[string]any{"activity_id": "touch_grass.fixture", "duration_attended_ms": 5000, "recovery_amount": 15, "reason_key": "category.any_percent"}},
-		"ending_policy":       map[string]any{"whole_variant": "earnest_ascension", "depleted_variant": "training_data"},
+		"debit_sources": []any{map[string]any{"source_id": "soul.fixture", "owner_kind": "fixture", "amount": 20, "may_exhaust": true, "single_use": true, "curtain_copy_key": "category.valuation"}},
+		"recovery_activities": []any{map[string]any{"activity_id": "touch_grass.fixture", "duration_attended_ms": 5000,
+			"recovery_amount": 15, "toy_kind": "defrag", "reason_key": "soul.recovery.defrag.reason",
+			"title_copy_key": "soul.recovery.defrag.title", "description_copy_key": "soul.recovery.defrag.description",
+			"disclosure_copy_key": "soul.recovery.defrag.disclosure"}},
+		"ending_policy": map[string]any{"whole_variant": "earnest_ascension", "depleted_variant": "training_data"},
 	}
 	data, err := json.Marshal(value)
 	if err != nil {
@@ -33,6 +36,7 @@ func fixtureCatalogBytes(t *testing.T) []byte {
 func fixtureDeclarations(epoch bool) Declarations {
 	return Declarations{EpochSeeded: epoch, CatchupCeilingMS: 5000, CopyKeys: map[string]struct{}{
 		"category.low_percent": {}, "category.ethical_percent": {}, "category.hundred_percent": {}, "category.any_percent": {}, "category.valuation": {},
+		"soul.recovery.defrag.reason": {}, "soul.recovery.defrag.title": {}, "soul.recovery.defrag.description": {}, "soul.recovery.defrag.disclosure": {},
 	}}
 }
 
@@ -50,6 +54,27 @@ func TestLoadCatalogExactGrammarAndBands(t *testing.T) {
 	locked, err := catalog.HumanContentLocked(0)
 	if err != nil || !locked {
 		t.Fatalf("near-zero gate = %v,%v", locked, err)
+	}
+}
+
+func TestLoadProductionRecoveryActivitiesFixture(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/soul/recovery-activities-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	declarations := fixtureDeclarations(false)
+	for _, activity := range []string{"repot", "server_room"} {
+		for _, suffix := range []string{"reason", "title", "description", "disclosure"} {
+			declarations.CopyKeys["soul.recovery."+activity+"."+suffix] = struct{}{}
+		}
+	}
+	catalog, err := LoadCatalog(data, declarations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(catalog.RecoveryActivities) != 3 || catalog.RecoveryActivities[0].ActivityID != "defrag" ||
+		catalog.RecoveryActivities[1].ActivityID != "repot" || catalog.RecoveryActivities[2].ActivityID != "server_room" {
+		t.Fatalf("recovery rows = %#v", catalog.RecoveryActivities)
 	}
 }
 

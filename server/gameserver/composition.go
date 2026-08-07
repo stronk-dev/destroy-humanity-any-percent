@@ -279,6 +279,9 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err := api.AttachGuildIntents(guildService); err != nil {
 		return nil, err
 	}
+	if err := api.AttachSoulRecoveries(productionService); err != nil {
+		return nil, err
+	}
 	policyBytes, err := os.ReadFile(filepath.Join(config.RepositoryRoot, "balance", "transport", "phase0.json"))
 	if err != nil {
 		return nil, err

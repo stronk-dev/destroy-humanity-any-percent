@@ -29,6 +29,24 @@ type ProgressSoulRecoveryRequest struct {
 	ProgressToken string
 }
 
+// SoulRecoveryBeatCeilingMS resolves the active session's pinned heartbeat
+// policy for the authenticated API abuse limiter. It is read-only; the
+// repository transition remains the semantic attendance authority.
+func (s *Service) SoulRecoveryBeatCeilingMS(ctx context.Context, founderID, sessionID string) (int64, error) {
+	if s == nil || s.soulRecoveries == nil || s.replayCatalogs == nil {
+		return 0, ErrInvalidIntent
+	}
+	session, err := s.soulRecoveries.Load(ctx, founderID, sessionID)
+	if err != nil {
+		return 0, err
+	}
+	bundle, ok := s.replayCatalogs.ResolveReplayCatalogs(session.ConstantsHash)
+	if !ok || bundle.Soul == nil || bundle.Soul.Policy.RecoveryBeatCeilingMS < 1 {
+		return 0, ErrInvalidIntent
+	}
+	return bundle.Soul.Policy.RecoveryBeatCeilingMS, nil
+}
+
 // StartMinigameSession is the composed Soul gate in front of the authoritative
 // minigame service. The client never supplies the Founder revision, Soul
 // value, or constants hash used by this decision.

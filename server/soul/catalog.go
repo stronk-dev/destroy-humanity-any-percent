@@ -33,9 +33,17 @@ const (
 
 type EndingVariant string
 
+type ToyKind string
+
 const (
 	EndingEarnestAscension EndingVariant = "earnest_ascension"
 	EndingTrainingData     EndingVariant = "training_data"
+)
+
+const (
+	ToyDefrag     ToyKind = "defrag"
+	ToyRepot      ToyKind = "repot"
+	ToyServerRoom ToyKind = "server_room"
 )
 
 type Policy struct {
@@ -64,10 +72,14 @@ type DebitSource struct {
 }
 
 type RecoveryActivity struct {
-	ActivityID         string `json:"activity_id"`
-	DurationAttendedMS int64  `json:"duration_attended_ms"`
-	RecoveryAmount     int64  `json:"recovery_amount"`
-	ReasonKey          string `json:"reason_key"`
+	ActivityID         string  `json:"activity_id"`
+	DurationAttendedMS int64   `json:"duration_attended_ms"`
+	RecoveryAmount     int64   `json:"recovery_amount"`
+	ToyKind            ToyKind `json:"toy_kind"`
+	ReasonKey          string  `json:"reason_key"`
+	TitleCopyKey       string  `json:"title_copy_key"`
+	DescriptionCopyKey string  `json:"description_copy_key"`
+	DisclosureCopyKey  string  `json:"disclosure_copy_key"`
 }
 
 type EndingPolicy struct {
@@ -123,7 +135,8 @@ func exactSoulCatalogKeys(data []byte) bool {
 	}
 	return exactRows(root["bands"], "band_member", "human_content_locked", "max_inclusive", "min_inclusive", "reason_key") &&
 		exactRows(root["debit_sources"], "amount", "curtain_copy_key", "may_exhaust", "owner_kind", "single_use", "source_id") &&
-		exactRows(root["recovery_activities"], "activity_id", "duration_attended_ms", "reason_key", "recovery_amount")
+		exactRows(root["recovery_activities"], "activity_id", "description_copy_key", "disclosure_copy_key",
+			"duration_attended_ms", "reason_key", "recovery_amount", "title_copy_key", "toy_kind")
 }
 
 func exactRows(data []byte, keys ...string) bool {
@@ -170,7 +183,10 @@ func validateCatalog(catalog *Catalog, declarations Declarations) error {
 	prior = ""
 	for _, activity := range catalog.RecoveryActivities {
 		if !mechanicalID.MatchString(activity.ActivityID) || activity.ActivityID <= prior || activity.DurationAttendedMS < 1 || activity.DurationAttendedMS > decimal.MaxExactInteger ||
-			activity.RecoveryAmount < 1 || activity.RecoveryAmount > decimal.MaxExactInteger || !copyKey(declarations, activity.ReasonKey) {
+			activity.DurationAttendedMS >= catalog.Policy.MaxSessionWallMS || activity.RecoveryAmount < 1 ||
+			activity.RecoveryAmount > catalog.Policy.Max-catalog.Policy.Floor || !validToyKind(activity.ToyKind) ||
+			!copyKey(declarations, activity.ReasonKey) || !copyKey(declarations, activity.TitleCopyKey) ||
+			!copyKey(declarations, activity.DescriptionCopyKey) || !copyKey(declarations, activity.DisclosureCopyKey) {
 			return ErrInvalidCatalog
 		}
 		prior = activity.ActivityID
@@ -179,6 +195,10 @@ func validateCatalog(catalog *Catalog, declarations Declarations) error {
 		return ErrInvalidCatalog
 	}
 	return nil
+}
+
+func validToyKind(value ToyKind) bool {
+	return value == ToyDefrag || value == ToyRepot || value == ToyServerRoom
 }
 
 func validOwner(value OwnerKind) bool {

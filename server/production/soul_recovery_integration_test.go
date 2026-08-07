@@ -33,7 +33,9 @@ func recoverySoulBundle(t *testing.T) CatalogBundle {
 	}
 	root["recovery_activities"] = []any{map[string]any{
 		"activity_id": "touch_grass.fixture", "duration_attended_ms": float64(5_000),
-		"recovery_amount": float64(15), "reason_key": "category.any_percent",
+		"recovery_amount": float64(15), "toy_kind": "defrag", "reason_key": "soul.recovery.defrag.reason",
+		"title_copy_key": "soul.recovery.defrag.title", "description_copy_key": "soul.recovery.defrag.description",
+		"disclosure_copy_key": "soul.recovery.defrag.disclosure",
 	}}
 	artifact, err := json.Marshal(root)
 	if err != nil {

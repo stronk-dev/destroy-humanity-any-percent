@@ -4,11 +4,12 @@ export const SOUL_BANDS = ["near_zero", "hollow", "dimming", "whole"] as const;
 export type SoulBand = (typeof SOUL_BANDS)[number];
 export type SoulOwnerKind = "event" | "longevity" | "contract" | "fixture";
 export type SoulEndingVariant = "earnest_ascension" | "training_data";
+export type SoulToyKind = "defrag" | "repot" | "server_room";
 
 export interface SoulPolicy { readonly soul_floor: number; readonly soul_initial: number; readonly soul_max: number; readonly recovery_beat_ceiling_ms: number; readonly max_session_wall_ms: number }
 export interface SoulBandRow { readonly band_member: SoulBand; readonly min_inclusive: number; readonly max_inclusive: number; readonly human_content_locked: boolean; readonly reason_key: string }
 export interface SoulDebitSource { readonly source_id: string; readonly owner_kind: SoulOwnerKind; readonly amount: number; readonly may_exhaust: boolean; readonly single_use: boolean; readonly curtain_copy_key: string }
-export interface SoulRecoveryActivity { readonly activity_id: string; readonly duration_attended_ms: number; readonly recovery_amount: number; readonly reason_key: string }
+export interface SoulRecoveryActivity { readonly activity_id: string; readonly duration_attended_ms: number; readonly recovery_amount: number; readonly toy_kind: SoulToyKind; readonly reason_key: string; readonly title_copy_key: string; readonly description_copy_key: string; readonly disclosure_copy_key: string }
 export interface SoulCatalog {
   readonly schema_version: 1;
   readonly policy: SoulPolicy;
@@ -55,11 +56,16 @@ export function parseSoulCatalog(source: unknown, declarations: SoulDeclarations
   }));
   prior = "";
   const activities = Object.freeze(root.recovery_activities.map((item) => {
-    const row = exactObject(item, ["activity_id", "duration_attended_ms", "recovery_amount", "reason_key"], "Soul recovery activity");
+    const row = exactObject(item, ["activity_id", "duration_attended_ms", "recovery_amount", "toy_kind", "reason_key", "title_copy_key", "description_copy_key", "disclosure_copy_key"], "Soul recovery activity");
     const activityId = identifier(row.activity_id, "Soul activity");
-    if (byteCompare(prior, activityId) >= 0) throw new SyntaxError("Soul activities are not byte sorted");
+    const duration = safeInteger(row.duration_attended_ms, 1, policy.max_session_wall_ms - 1);
+    const amount = safeInteger(row.recovery_amount, 1, policy.soul_max - policy.soul_floor);
+    if (byteCompare(prior, activityId) >= 0 || row.toy_kind !== "defrag" && row.toy_kind !== "repot" && row.toy_kind !== "server_room") throw new SyntaxError("invalid Soul recovery activity");
     prior = activityId;
-    return Object.freeze({ activity_id: activityId, duration_attended_ms: safeInteger(row.duration_attended_ms, 1, MAX_EXACT_INTEGER), recovery_amount: safeInteger(row.recovery_amount, 1, MAX_EXACT_INTEGER), reason_key: copyKey(row.reason_key, declarations) });
+    return Object.freeze({ activity_id: activityId, duration_attended_ms: duration, recovery_amount: amount,
+      toy_kind: row.toy_kind as SoulToyKind, reason_key: copyKey(row.reason_key, declarations),
+      title_copy_key: copyKey(row.title_copy_key, declarations), description_copy_key: copyKey(row.description_copy_key, declarations),
+      disclosure_copy_key: copyKey(row.disclosure_copy_key, declarations) });
   }));
   if (!declarations.epochSeeded && (debitSources.length === 0 || activities.length === 0)) throw new SyntaxError("fixture Soul catalog needs source and activity rows");
   const ending = exactObject(root.ending_policy, ["whole_variant", "depleted_variant"], "Soul ending policy");

@@ -99,6 +99,102 @@
       "era_variants": null,
       "provenance": [],
       "tone": "corporate"
+    },
+    {
+      "key": "soul.recovery.defrag.description",
+      "text": "Watch the disk come gently back into order.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery.defrag.disclosure",
+      "text": "This produces nothing.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery.defrag.reason",
+      "text": "You gave yourself time to recover.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery.defrag.title",
+      "text": "Defragment the disk",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery.repot.description",
+      "text": "Repot the server-room plants. There is no streak to keep.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery.repot.disclosure",
+      "text": "This produces nothing.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery.repot.reason",
+      "text": "You stopped long enough to care for something.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery.repot.title",
+      "text": "Repot the plants",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery.server_room.description",
+      "text": "Sit among the quiet racks. Arrange things if you feel like it.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery.server_room.disclosure",
+      "text": "This produces nothing.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery.server_room.reason",
+      "text": "Nothing needed you for a while.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "soul.recovery.server_room.title",
+      "text": "Sit in the server room",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
     }
   ]
 }

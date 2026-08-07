@@ -13,6 +13,8 @@ import (
 	"time"
 
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/save"
+	"cloud-clicker/server/soul"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -24,6 +26,14 @@ type IntentHandler interface {
 type GuildIntentHandler interface {
 	HandleGuild(context.Context, string, []byte) (json.RawMessage, bool, error)
 	IsInvalidGuildIntent(error) bool
+}
+
+type SoulRecoveryHandler interface {
+	StartSoulRecovery(context.Context, production.StartSoulRecoveryRequest, time.Time) (production.HandleResult, error)
+	ProgressSoulRecovery(context.Context, production.ProgressSoulRecoveryRequest, time.Time, save.ExitFaultInjector) (production.HandleResult, error)
+	CancelSoulRecovery(context.Context, production.FinishSoulRecoveryRequest, time.Time, save.ExitFaultInjector) (production.HandleResult, error)
+	ResolveSoulRecovery(context.Context, production.FinishSoulRecoveryRequest, time.Time, save.ExitFaultInjector) (production.HandleResult, error)
+	SoulRecoveryBeatCeilingMS(context.Context, string, string) (int64, error)
 }
 
 type APIConfig struct {
@@ -42,12 +52,14 @@ func Phase0APIConfig() APIConfig {
 }
 
 type API struct {
-	repository *Repository
-	intents    IntentHandler
-	guilds     GuildIntentHandler
-	config     APIConfig
-	unauth     *tokenBuckets
-	accounts   *tokenBuckets
+	repository       *Repository
+	intents          IntentHandler
+	guilds           GuildIntentHandler
+	recoveries       SoulRecoveryHandler
+	config           APIConfig
+	unauth           *tokenBuckets
+	accounts         *tokenBuckets
+	recoveryProgress *recoveryBuckets
 }
 
 func (api *API) AttachGuildIntents(handler GuildIntentHandler) error {
@@ -55,6 +67,14 @@ func (api *API) AttachGuildIntents(handler GuildIntentHandler) error {
 		return ErrInvalidRequest
 	}
 	api.guilds = handler
+	return nil
+}
+
+func (api *API) AttachSoulRecoveries(handler SoulRecoveryHandler) error {
+	if api == nil || handler == nil || api.recoveries != nil {
+		return ErrInvalidRequest
+	}
+	api.recoveries = handler
 	return nil
 }
 
@@ -70,8 +90,9 @@ func NewAPI(repository *Repository, intents IntentHandler, config APIConfig) (*A
 		return nil, ErrInvalidRequest
 	}
 	return &API{repository: repository, intents: intents, config: config,
-		unauth:   newTokenBuckets(config.UnauthenticatedBurst, config.UnauthenticatedPerMin, config.LimiterMaxEntries),
-		accounts: newTokenBuckets(config.AccountBurst, config.AccountPerMin, config.LimiterMaxEntries)}, nil
+		unauth:           newTokenBuckets(config.UnauthenticatedBurst, config.UnauthenticatedPerMin, config.LimiterMaxEntries),
+		accounts:         newTokenBuckets(config.AccountBurst, config.AccountPerMin, config.LimiterMaxEntries),
+		recoveryProgress: newRecoveryBuckets(config.LimiterMaxEntries)}, nil
 }
 
 func (api *API) Router() http.Handler {
@@ -98,9 +119,139 @@ func (api *API) Router() http.Handler {
 			authenticated.Get("/founder/state", api.getFounderState)
 			authenticated.Post("/intents", api.submitIntent)
 			authenticated.Post("/guild/intents", api.submitGuildIntent)
+			authenticated.Post("/soul-recovery/start", api.startSoulRecovery)
+			authenticated.Post("/soul-recovery/progress", api.progressSoulRecovery)
+			authenticated.Post("/soul-recovery/cancel", api.cancelSoulRecovery)
+			authenticated.Post("/soul-recovery/resolve", api.resolveSoulRecovery)
 		})
 	})
 	return router
+}
+
+func (api *API) startSoulRecovery(response http.ResponseWriter, request *http.Request) {
+	var body struct {
+		ActivityID string `json:"activity_id"`
+	}
+	if api.recoveries == nil {
+		writeError(response, http.StatusServiceUnavailable, "not_configured", "soul_recovery")
+		return
+	}
+	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || body.ActivityID == "" {
+		writeError(response, http.StatusBadRequest, "invalid", "body")
+		return
+	}
+	state, err := api.repository.ActiveCompanyState(request.Context(), requestClaims(request).Subject)
+	if err != nil {
+		writeError(response, http.StatusNotFound, "unknown_id", "company_stream")
+		return
+	}
+	now := api.repository.clock()
+	sessionID, err := newUUIDv7(now, api.repository.random)
+	if err != nil {
+		writeError(response, http.StatusInternalServerError, "internal_invariant", "session_id")
+		return
+	}
+	result, err := api.recoveries.StartSoulRecovery(request.Context(), production.StartSoulRecoveryRequest{
+		SessionID: sessionID, FounderID: state.FounderID, CompanyStreamID: state.StreamID, ActivityID: body.ActivityID}, now)
+	api.writeSoulRecoveryResult(response, result, err, "start")
+}
+
+func (api *API) progressSoulRecovery(response http.ResponseWriter, request *http.Request) {
+	var body struct {
+		SessionID     string `json:"session_id"`
+		ProgressToken string `json:"progress_token"`
+	}
+	if api.recoveries == nil {
+		writeError(response, http.StatusServiceUnavailable, "not_configured", "soul_recovery")
+		return
+	}
+	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || body.SessionID == "" || body.ProgressToken == "" {
+		writeError(response, http.StatusBadRequest, "invalid", "body")
+		return
+	}
+	founder, err := api.repository.ActiveFounder(request.Context(), requestClaims(request).Subject)
+	if err != nil {
+		writeError(response, http.StatusNotFound, "unknown_id", "founder")
+		return
+	}
+	ceiling, err := api.recoveries.SoulRecoveryBeatCeilingMS(request.Context(), founder.ID, body.SessionID)
+	if err != nil {
+		api.writeSoulRecoveryResult(response, production.HandleResult{}, err, "progress")
+		return
+	}
+	now := api.repository.clock()
+	if !api.recoveryProgress.allow(body.SessionID, now, maxInt64(1, ceiling/6)) {
+		writeError(response, http.StatusTooManyRequests, "rate_limited", "recovery_progress")
+		return
+	}
+	result, err := api.recoveries.ProgressSoulRecovery(request.Context(), production.ProgressSoulRecoveryRequest{
+		SessionID: body.SessionID, FounderID: founder.ID, ProgressToken: body.ProgressToken}, now, nil)
+	api.writeSoulRecoveryResult(response, result, err, "progress")
+}
+
+func (api *API) cancelSoulRecovery(response http.ResponseWriter, request *http.Request) {
+	api.finishSoulRecovery(response, request, false)
+}
+
+func (api *API) resolveSoulRecovery(response http.ResponseWriter, request *http.Request) {
+	api.finishSoulRecovery(response, request, true)
+}
+
+func (api *API) finishSoulRecovery(response http.ResponseWriter, request *http.Request, resolve bool) {
+	var body struct {
+		SessionID string `json:"session_id"`
+	}
+	if api.recoveries == nil {
+		writeError(response, http.StatusServiceUnavailable, "not_configured", "soul_recovery")
+		return
+	}
+	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || body.SessionID == "" {
+		writeError(response, http.StatusBadRequest, "invalid", "body")
+		return
+	}
+	founder, err := api.repository.ActiveFounder(request.Context(), requestClaims(request).Subject)
+	if err != nil {
+		writeError(response, http.StatusNotFound, "unknown_id", "founder")
+		return
+	}
+	finish := production.FinishSoulRecoveryRequest{SessionID: body.SessionID, FounderID: founder.ID}
+	var result production.HandleResult
+	if resolve {
+		result, err = api.recoveries.ResolveSoulRecovery(request.Context(), finish, api.repository.clock(), nil)
+	} else {
+		result, err = api.recoveries.CancelSoulRecovery(request.Context(), finish, api.repository.clock(), nil)
+	}
+	if err == nil {
+		api.recoveryProgress.remove(body.SessionID)
+	}
+	api.writeSoulRecoveryResult(response, result, err, map[bool]string{true: "resolve", false: "cancel"}[resolve])
+}
+
+func (api *API) writeSoulRecoveryResult(response http.ResponseWriter, result production.HandleResult, err error, action string) {
+	if err == nil {
+		response.Header().Set("Content-Type", "application/json")
+		response.WriteHeader(http.StatusOK)
+		_, _ = response.Write(result.Receipt)
+		return
+	}
+	switch {
+	case errors.Is(err, soul.ErrRecoveryGone):
+		writeError(response, http.StatusNotFound, "unknown_id", "recovery_session")
+	case errors.Is(err, soul.ErrRecoveryActive):
+		writeError(response, http.StatusConflict, "not_eligible", "exclusive_activity")
+	case errors.Is(err, soul.ErrRecoveryBusy), errors.Is(err, soul.ErrRecoveryClaimLost):
+		writeError(response, http.StatusConflict, "conflict", "recovery_session")
+	case errors.Is(err, save.ErrIdempotencyConflict), errors.Is(err, soul.ErrRecoveryIdempotency):
+		writeError(response, http.StatusConflict, "idempotency_conflict", "recovery_session")
+	case errors.Is(err, production.ErrInvalidIntent) && strings.Contains(err.Error(), "recovery_token"):
+		writeError(response, http.StatusBadRequest, "not_eligible", "recovery_token")
+	case errors.Is(err, production.ErrInvalidIntent) && strings.Contains(err.Error(), "soul_recovery_not_ready"):
+		writeError(response, http.StatusBadRequest, "not_eligible", "soul_recovery_not_ready")
+	case errors.Is(err, production.ErrInvalidIntent), errors.Is(err, soul.ErrInvalidRecovery):
+		writeError(response, http.StatusBadRequest, "invalid", "soul_recovery_"+action)
+	default:
+		writeError(response, http.StatusInternalServerError, "internal_invariant", "soul_recovery")
+	}
 }
 
 func (api *API) submitGuildIntent(response http.ResponseWriter, request *http.Request) {
@@ -489,4 +640,105 @@ func (buckets *tokenBuckets) removeOldest() {
 	}
 	delete(buckets.buckets, element.Value.(string))
 	buckets.recency.Remove(element)
+}
+
+type recoveryBucket struct {
+	tokens       int64
+	lastRefillMS int64
+	lastSeen     time.Time
+	element      *list.Element
+}
+
+type recoveryBuckets struct {
+	mu      sync.Mutex
+	values  map[string]*recoveryBucket
+	recency *list.List
+	max     int
+}
+
+func newRecoveryBuckets(maxEntries int) *recoveryBuckets {
+	return &recoveryBuckets{values: map[string]*recoveryBucket{}, recency: list.New(), max: maxEntries}
+}
+
+func (buckets *recoveryBuckets) allow(key string, now time.Time, refillMS int64) bool {
+	if buckets == nil || key == "" || now.IsZero() || refillMS < 1 {
+		return false
+	}
+	buckets.mu.Lock()
+	defer buckets.mu.Unlock()
+	buckets.evict(now)
+	nowMS := now.UnixMilli()
+	current := buckets.values[key]
+	if current == nil {
+		if len(buckets.values) >= buckets.max {
+			buckets.removeOldest()
+		}
+		current = &recoveryBucket{tokens: 6, lastRefillMS: nowMS, lastSeen: now}
+		current.element = buckets.recency.PushFront(key)
+		buckets.values[key] = current
+	} else {
+		if nowMS > current.lastRefillMS {
+			refills := (nowMS - current.lastRefillMS) / refillMS
+			if refills > 0 {
+				current.tokens = minInt64(6, current.tokens+refills)
+				current.lastRefillMS += refills * refillMS
+			}
+		}
+		if !now.Before(current.lastSeen) {
+			current.lastSeen = now
+			buckets.recency.MoveToFront(current.element)
+		}
+	}
+	if current.tokens == 0 {
+		return false
+	}
+	current.tokens--
+	return true
+}
+
+func (buckets *recoveryBuckets) remove(key string) {
+	if buckets == nil {
+		return
+	}
+	buckets.mu.Lock()
+	defer buckets.mu.Unlock()
+	if current := buckets.values[key]; current != nil {
+		buckets.recency.Remove(current.element)
+		delete(buckets.values, key)
+	}
+}
+
+func (buckets *recoveryBuckets) evict(now time.Time) {
+	for element := buckets.recency.Back(); element != nil; element = buckets.recency.Back() {
+		key := element.Value.(string)
+		current := buckets.values[key]
+		if now.Before(current.lastSeen) || now.Sub(current.lastSeen) < 15*time.Minute {
+			return
+		}
+		buckets.recency.Remove(element)
+		delete(buckets.values, key)
+	}
+}
+
+func (buckets *recoveryBuckets) removeOldest() {
+	element := buckets.recency.Back()
+	if element == nil {
+		return
+	}
+	delete(buckets.values, element.Value.(string))
+	buckets.recency.Remove(element)
+}
+
+func minInt64(left, right int64) int64 {
+	if left < right {
+		return left
+	}
+	return right
+}
+
+func maxInt64(left, right int64) int64 {
+	if left > right {
+		return left
+	}
+	return right
 }

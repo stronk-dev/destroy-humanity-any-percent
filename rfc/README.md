@@ -31,7 +31,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
 | [The Pitch (minigame content — template)](minigame-the-pitch.md) | acceptance blocked on TP-C11–TP-C18 | Minigame Platform (archived) / Fiscal / Soul |
-| [Soul Recovery Activities](soul-recovery-activities.md) | acceptance blocked on SR-C9–SR-C14 | Soul Foundation / API / UI |
+| [Soul Recovery Activities](soul-recovery-activities.md) | accepted — implementing (SR-C1–SR-C14 ruled; UI debt carried) | Soul Foundation / API / UI |
 | [Minigame & Recovery API + Surface](minigame-api-and-surface.md) | draft — the playability seam, queued for acceptance review | API Foundation / Minigame Platform (archived) / Soul / UI Foundation |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
 | [T0–T1 Playable Content](t0-t1-playable-content.md) | draft | Production / Purchasable Content / Copy Pipeline |

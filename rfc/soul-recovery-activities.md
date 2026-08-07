@@ -1,6 +1,6 @@
 # RFC: Soul Recovery Activities (the cozy content — touch-grass v1)
 
-- **Status:** acceptance blocked on SR-C9–SR-C14 (SR-C1–SR-C8 ruled; playability remains gated on the coordinator
+- **Status:** accepted — SR-C1–SR-C14 ruled; implementing (playability remains gated on the coordinator
   API amendment + an accepted UI Foundation). The **owner-content
   mint** the Soul verdict requires before production `recovery_activities` rows may exist.
 - **Author:** Marco (drafted by Claude)
@@ -97,9 +97,9 @@ exactly.
    watchdog paths unchanged.
 3. Grep-proof: no resource/score/achievement/event grants anywhere in the toy layer; the server
    receives no toy input.
-4. The toys render and resume-after-reconnect; presence-without-interaction recovers identically
+4. **CARRIED TO UI SUCCESSOR:** the toys render and resume-after-reconnect; presence-without-interaction recovers identically
    (no interaction requirement).
-5. The disclosure tooltip present for all three, in the sincere register (copy-review flag, not
+5. **CARRIED TO UI SUCCESSOR:** the disclosure tooltip is present for all three, in the sincere register (copy-review flag, not
    CI-provable).
 
 ## Open questions

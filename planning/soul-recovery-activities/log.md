@@ -17,3 +17,14 @@ The owner rulings choose the correct architecture, but do not enumerate the auth
 wire, limiter, copy IDs, or production epoch. The body also retains the retracted “zero server
 mechanics” claim and UI-shipping language while UI Foundation is blocked. Six narrow blockers with
 proposed contracts are filed; no public API, artifact mint, or client surface was improvised.
+
+## 2026-08-07 — Fixture content, coordinator API, and scheduler implemented
+
+Implemented the exact eight-field activity grammar in Go and TypeScript, the three literal fixture
+rows, twelve copy-pipeline entries, authenticated four-route coordinator API with server-owned
+Founder/Company/session identity, the session-keyed 6-token catalog-rate limiter, and the
+framework-neutral visible-only scheduler. Focused Go, TypeScript, copy, replay-corpus, and kernel
+guards pass. No epoch manifest or production artifact set changed; UI toy AC4/AC5 remain carried.
+
+Implementation handoff only. Ready for the mandatory review gates after the complete RFC range is
+assembled; this entry does not authorize archival.

@@ -1,4 +1,17 @@
 {
   "schema_version": 1,
-  "keys": []
+  "keys": [
+    "soul.recovery.defrag.description",
+    "soul.recovery.defrag.disclosure",
+    "soul.recovery.defrag.reason",
+    "soul.recovery.defrag.title",
+    "soul.recovery.repot.description",
+    "soul.recovery.repot.disclosure",
+    "soul.recovery.repot.reason",
+    "soul.recovery.repot.title",
+    "soul.recovery.server_room.description",
+    "soul.recovery.server_room.disclosure",
+    "soul.recovery.server_room.reason",
+    "soul.recovery.server_room.title"
+  ]
 }
