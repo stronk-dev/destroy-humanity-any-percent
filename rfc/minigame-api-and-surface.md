@@ -323,3 +323,93 @@ implemented.
   persisted `minigame_session_seq` + substream contract; C5 the persistence arm). The Summary's
   "no new persistence" is amended to name exactly the C3 coordinate and C5 receipt rows.
   Implementation-ready.
+
+## Codex implementation blockers (2026-08-07 — MA-C10–MA-C14)
+
+The MA-C2 composition-only slice is implemented and tested. The public coordinator cannot be
+implemented honestly from MA-C1–MA-C9 yet: the accepted proposals say that exact contracts will be
+enumerated, but the normative body never enumerates them, and the chosen persisted seed coordinate
+creates one replay/lifecycle decision that the acceptance round left to implementation.
+
+### MA-C10 — The exact request/response envelopes promised by MA-C7 still do not exist
+
+MA-C7 accepts a proposal to enumerate exact create/current/command/terminal envelopes and literal
+error/status rows. No such table or schema appears in the RFC. In particular, it does not say
+where create's idempotency key lives, whether command wraps the tenant command or flattens it, what
+keys identify revision/engine/content, whether terminal command responses share the nonterminal
+shape, or what body `/resolve` accepts. The API schema DSL cannot generate a closed `oneOf` from
+directional nouns.
+
+**Proposed contract:** append literal JSON shapes and status tables. Recommended requests are
+create `{idempotency_key}`, command `{command_id,expected_revision,command}`, resolve `{}` and no
+body for current. Responses are a closed union with a common exact descriptor
+`{session_id,minigame_id,engine_ref,engine_version,constants_hash,mode,revision,status}` and a Pitch
+`1.0.0` snapshot arm; terminal adds only the stored exact resolution receipt. Name the formats and
+maximum bytes for both opaque IDs. Enumerate every deterministic mapping from repository,
+platform, tenant, unlock/Soul, revision, and idempotency errors to `{status,category,detail}`;
+unlisted/store errors are 500 `internal_invariant`, never guessed by handlers.
+
+### MA-C11 — The sequence field's replay owner and atomic coordinator are unresolved
+
+MA-C3 chooses a persisted `minigame_session_seq` and says placement/save bump follow the migration
+law at implementation. Placement is semantic here. A side-table counter would be a second mutable
+authority outside Founder replay. A Company-save field is run-local but cannot be mutated by the
+existing session repository transaction without bypassing `ApplyLogged`. A Founder-save field can
+use `ApplyFounderLogged`, but must reset at Exit and session creation must commit atomically with
+the logged increment; the current `Repository.create` owns a separate transaction.
+
+**Proposed contract:** Founder v21 adds exactly `minigame_session_seq`; Exit resets it to zero when
+it advances the Company run. Add the server-only Founder command `start_minigame_session` and a
+single coordinator transaction that locks Founder → Company → session, increments/logs the
+sequence through the shared Founder transition boundary, derives the seed from the resulting
+sequence and current Company `run_seq`, and inserts the genesis/session before commit. Retry by
+create idempotency key returns the prior committed descriptor without incrementing. The command is
+not client-parseable; Founder replay reproduces the sequence mutation from frozen resolved inputs.
+If the owner instead selects Company state, specify the corresponding ApplyLogged coordinator and
+lock order; a database-only counter is rejected by the no-second-authority law.
+
+### MA-C12 — Exit with an active minigame strands a run-bound session
+
+Sessions pin `(company_stream_id,run_seq,constants_hash)`. Nothing currently prevents `wind_down`
+while a minigame is active. After Exit, commands can still advance the tenant snapshot, but terminal
+resolution loads the Company's new run and fails the pinned-run invariant; the session cannot
+resolve and remains the founder's sole active minigame forever. Resetting MA-C11's sequence at Exit
+makes this lifecycle edge load-bearing.
+
+**Proposed contract:** while one minigame session is `active|claimed`, Exit rejects
+`not_eligible/minigame_session_active` before evaluation and mutates nothing. The production
+service receives a read-only active-session resolver from composition; the same predicate runs in
+live and replay from a frozen boolean resolved input. Alternative: Exit atomically cancels the
+session and records a terminal receipt, which is a larger multi-stream contract. Do not let an
+unlogged repository read decide replay behavior.
+
+### MA-C13 — Command idempotency has no transaction boundary for terminal auto-resolution
+
+MA-C5 requires a `(session_id,command_id)` request-hash/receipt row in the same transition. The
+existing nonterminal `completePlay` and terminal `ResolveMinigameSession` use different
+transactions; terminal resolution also writes two save streams, both logs, events, the faucet
+window, the session, and its durable receipt. Writing an API receipt before or after those paths
+would either replay an uncommitted result or permit duplicate tenant execution.
+
+**Proposed contract:** extend the minigame repository with transaction-scoped command-receipt
+helpers. Nonterminal completion appends the session command, updates its snapshot/revision, and
+stores the canonical API response under the claim token in one transaction. Terminal completion
+passes the command ID/hash/response into `ApplyMinigameResolutionTransaction`, which writes the
+same receipt row in its existing all-or-nothing transaction. The command handler checks the row
+before tenant execution; equal hash returns bytes, unequal hash returns
+`idempotency_conflict/minigame_command`. Claim-lease expiry cannot let an old worker overwrite a
+new receipt (`RowsAffected == 1` on the token guard).
+
+### MA-C14 — API Foundation generation is still an upstream implementation dependency
+
+The repository contains the schema DSL and operation registry foundation, but API Foundation's
+OpenAPI/TypeScript generation, compatibility pins, middleware/router composition, and privacy gate
+remain unchecked in `planning/api-foundation/plan.md`. MA-C1/MA-C7 require these routes to generate
+from that single authority; manually mounting handlers now and promising later registration would
+repeat the exact two-authority design the ruling rejected.
+
+**Proposed contract:** implement MA runtime/coordinator code behind typed handlers after C10–C13,
+but keep schema registration and endpoint mounting in the API Foundation continuation. The two
+ranges then receive one combined real-socket/conformance review before this RFC can claim AC1–AC4.
+Alternatively move the minimal generator/router slice into this RFC explicitly and consume it as
+API Foundation work; never add a handwritten parallel router contract.
