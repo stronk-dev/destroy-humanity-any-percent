@@ -31,12 +31,24 @@ func recoverySoulBundle(t *testing.T) CatalogBundle {
 	if err := json.Unmarshal(bundle.Artifacts["soul"], &root); err != nil {
 		t.Fatal(err)
 	}
-	root["recovery_activities"] = []any{map[string]any{
+	productionFixture, err := os.ReadFile("../../testdata/soul/recovery-activities-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var productionRoot map[string]any
+	if err := json.Unmarshal(productionFixture, &productionRoot); err != nil {
+		t.Fatal(err)
+	}
+	activities, ok := productionRoot["recovery_activities"].([]any)
+	if !ok || len(activities) != 3 {
+		t.Fatal("production Soul recovery fixture must contain three activities")
+	}
+	root["recovery_activities"] = append(activities, map[string]any{
 		"activity_id": "touch_grass.fixture", "duration_attended_ms": float64(5_000),
 		"recovery_amount": float64(15), "toy_kind": "defrag", "reason_key": "soul.recovery.defrag.reason",
 		"title_copy_key": "soul.recovery.defrag.title", "description_copy_key": "soul.recovery.defrag.description",
 		"disclosure_copy_key": "soul.recovery.defrag.disclosure",
-	}}
+	})
 	artifact, err := json.Marshal(root)
 	if err != nil {
 		t.Fatal(err)
@@ -334,5 +346,48 @@ func TestSoulRecoveryIntegrationAtomicSuppressionReplayAndExclusivity(t *testing
 		if err != nil || !strings.Contains(string(cleanup.Receipt), `"cancelled_by":"player"`) {
 			t.Fatalf("cleanup cancel after %s: %v", step, err)
 		}
+	}
+
+	// SR-AC2: drive every literal production activity through the real
+	// coordinator. The exact durations deliberately require multiple heartbeat
+	// transactions; no test-only shortcut is allowed to grant attended time.
+	productionActivities := []struct {
+		id        string
+		duration  int64
+		soulAfter int64
+	}{
+		{id: "defrag", duration: 900_000, soulAfter: 77},
+		{id: "repot", duration: 300_000, soulAfter: 82},
+		{id: "server_room", duration: 2_700_000, soulAfter: 100},
+	}
+	activityNow := now.Add(26 * time.Hour)
+	for activityIndex, activity := range productionActivities {
+		sessionID := fmt.Sprintf("01986666-b4%02x-7000-8000-%012d", activityIndex, activityIndex+1)
+		started, startErr := service.StartSoulRecovery(ctx, StartSoulRecoveryRequest{SessionID: sessionID,
+			FounderID: founderID, CompanyStreamID: companyRevision.StreamID, ActivityID: activity.id}, activityNow)
+		var startedReceipt soulRecoveryStartReceipt
+		if startErr != nil || json.Unmarshal(started.Receipt, &startedReceipt) != nil ||
+			startedReceipt.RequiredDurationAttendedMS != activity.duration {
+			t.Fatalf("production activity %s start=%s err=%v", activity.id, started.Receipt, startErr)
+		}
+		for elapsed := int64(5_000); elapsed <= activity.duration; elapsed += 5_000 {
+			progress, progressErr := service.ProgressSoulRecovery(ctx, ProgressSoulRecoveryRequest{SessionID: sessionID,
+				FounderID: founderID, ProgressToken: startedReceipt.ProgressToken}, activityNow.Add(time.Duration(elapsed)*time.Millisecond), nil)
+			if progressErr != nil {
+				t.Fatalf("production activity %s progress=%d receipt=%s err=%v", activity.id, elapsed, progress.Receipt, progressErr)
+			}
+		}
+		resolved, resolveErr := service.ResolveSoulRecovery(ctx, FinishSoulRecoveryRequest{SessionID: sessionID,
+			FounderID: founderID}, activityNow.Add(time.Duration(activity.duration)*time.Millisecond), nil)
+		var receipt soulRecoveryReceipt
+		if resolveErr != nil || json.Unmarshal(resolved.Receipt, &receipt) != nil || receipt.ActivityID != activity.id ||
+			receipt.SoulAfter != activity.soulAfter {
+			t.Fatalf("production activity %s resolve=%s err=%v", activity.id, resolved.Receipt, resolveErr)
+		}
+		activityNow = activityNow.Add(time.Duration(activity.duration+5_000) * time.Millisecond)
+	}
+	finalHistory, err := store.LoadFounderHistory(ctx, founderRevision.StreamID)
+	if err != nil || VerifyFounderHistory(finalHistory, ReplayCatalogSet{bundle.ConstantsHash: bundle}) != ReplayVerified {
+		t.Fatalf("production activity Founder history failed verification: %v", err)
 	}
 }

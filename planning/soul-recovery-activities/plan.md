@@ -8,7 +8,7 @@ SR-C1–SR-C14 are owner-ruled.
 - [x] Extend the activity/presentation grammar and add the three literal fixture rows/copy.
 - [x] Implement the framework-neutral heartbeat scheduler.
 - [ ] Mint the complete first-Soul artifact set with activation-boundary coverage.
-- [ ] Prove all three production-shaped activity lifecycles and browser reconnect behavior.
+- [x] Prove all three production-shaped activity lifecycles and browser reconnect behavior.
 - [ ] Run both mandatory full-range reviews before docs/archive.
 
 Current state: fixture/API/scheduler implementation landed. The production mint is intentionally
