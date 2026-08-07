@@ -38,7 +38,7 @@ func TestPermitsCandidatesComposeThroughProductionAndDoctrine(t *testing.T) {
 		t.Fatalf("legal department = %+v exists=%v", legal, ok)
 	}
 
-	routeBytes, err := os.ReadFile("../../balance/routes-testdata/valid/permits-t3-gate-candidate-v1.json")
+	routeBytes, err := os.ReadFile("../../balance/testdata/permits-t3-gate-candidate-v1.json")
 	if err != nil {
 		t.Fatal(err)
 	}

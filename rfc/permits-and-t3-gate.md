@@ -249,7 +249,7 @@ The RFC's human-form `24` and `12` amounts are encoded below as RFC-0001 canonic
 | Role | Path | Schema | SHA-256 |
 |---|---|---:|---|
 | Economy candidate | `balance/testdata/valid/permits-economy-candidate-v1.json` | economy 3 | `31af760c45394401af5847b0e1be5790281d88555b9380a73bd5ca87a0105990` |
-| Routes candidate | `balance/routes-testdata/valid/permits-t3-gate-candidate-v1.json` | routes 1 | `6c7c4350bcd43840a141fb5c0525d9779f11ed0ed836a8783f21f22f6c880df2` |
+| Routes candidate | `balance/testdata/permits-t3-gate-candidate-v1.json` | routes 1 | `6c7c4350bcd43840a141fb5c0525d9779f11ed0ed836a8783f21f22f6c880df2` |
 | Bound copy source | `copy/catalog/permits-candidate.json` | copy 1 | `e87b0224f6d17a25ffb018ab09cf0898e720e8c783bee470ae1ac7bf29e1a512` |
 | Composed generated copy | `client/src/copy/generated/catalog.json` | copy 1 | `8462d6d5a8ccde29508d51e46c256eeac52a569988f8561e8bed87fcdfcb08a2` |
 

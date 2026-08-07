@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import doctrineCorpus from "../../balance/testdata/doctrines-catalog-parity-v1.json";
 import economyCandidate from "../../balance/testdata/valid/permits-economy-candidate-v1.json";
-import routesCandidate from "../../balance/routes-testdata/valid/permits-t3-gate-candidate-v1.json";
+import routesCandidate from "../../balance/testdata/permits-t3-gate-candidate-v1.json";
 import { loadDoctrineCatalog, validateDoctrineRoutes } from "../src/doctrines";
 import { parseCatalog } from "../src/economy-kernel";
 import { parseRoutesCatalog, validateRouteCatalogResources } from "../src/routes";
