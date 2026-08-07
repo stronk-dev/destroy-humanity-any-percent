@@ -418,3 +418,16 @@ would contradict the requested owner ratification.
 `era_variants: null`, `provenance: []`, and `tone: "achievement"`. Once supplied, Codex assembles
 all thirteen byte-sorted rows, runs the intentional-orphan stage, and files the complete source
 and generated-copy SHA-256 values together.
+
+## Owner ruling on FCE-C9 (2026-08-07)
+
+- **FCE-C9 — RULED, with the error owned:** the FCE-C7 row-13 reference to an "already-ruled exact
+  possession disclosure" was WRONG — no such literal ever existed (a phantom citation in the
+  Claude-side ruling; Codex was right to refuse to author it). The literal text is supplied here
+  verbatim:
+  **`achievement.possession_warning` = "Verified by possession: the game checked what you own
+  right now. It did not ask how, and it will not ask again."**
+  Structural fields as already ruled (`params: []`, `era_variants: null`, `provenance: []`,
+  `tone: "achievement"`). All thirteen rows are now byte-determined; Codex assembles the
+  byte-sorted document, runs the intentional-orphan stage, and files the source + generated-copy
+  SHA-256 values together for ratification.

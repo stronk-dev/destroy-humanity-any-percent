@@ -482,3 +482,19 @@ operation/tenant versions), joins constants identity, and is required by the com
 session creation. Existing bundles without it remain exactly v17–v20. Alternative: bump the
 minigames catalog to a new schema version whose explicit API-policy row supplies the same
 authority. Do not key v21 to deployed kernel version, a non-empty tenant list, or first command.
+
+## Owner ruling on MA-C15 (2026-08-07)
+
+- **MA-C15 — RULED: the pinned `minigame_api` activation artifact (primary arm).** The First
+  Content Epoch bundle gains a ninth optional artifact, `minigame_api` — structural policy only
+  (schema version + the closed operation/tenant versions), joining constants identity. Its
+  PRESENCE sets Founder floor 21; Exit initializes `minigame_session_seq: 0` preserving every v20
+  field; the composed API requires it before session creation; every bundle without it remains
+  exactly v17–v20, leaving the reviewed fixture/history chain untouched. Loader chain:
+  `minigame_api → pitch` (the API artifact requires the full content chain beneath it) — added to
+  `validArtifactNames` with the same hard-fail discipline. The catalog-schema-bump alternative is
+  REJECTED (a balance catalog must not carry API policy); keying v21 to deployed kernel version,
+  tenant-list shape, or first command is REJECTED as the proposal states. FCE consequences (owned
+  by this ruling): FCE1's count becomes 9 optional artifacts, and the FCE3 registry list + FCE-C6
+  promotion-manifest table gain the `minigame_api` row — the artifact is Codex-assembled
+  structural bytes, SHA-filed for ratification like the other authored artifacts.
