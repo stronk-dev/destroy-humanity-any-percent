@@ -1,6 +1,6 @@
 # RFC: UI Foundation (primitives, not screens)
 
-- **Status:** accepted architecture (C1–C8 ruled; C9–C11 block implementation)
+- **Status:** accepted — C1–C11 ruled (token matrix, formatter pin, axe-core); implementing
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/06` (Svelte 5 runes, DOM-first, per-tab `$derived`, 10 Hz formatting), `design/08` (era presentation: the UI itself ages through gaming eras — the load-bearing satire surface), `design/11` (voice, first-session), `design/03 §9` (arcade era-skins)
@@ -264,3 +264,43 @@ Game-UI/T0–T1 import from.
 - 2026-08-03: C1–C8 reconciled. Codex follow-up found C9–C11: the “closed/pinned” theme,
   formatter, and accessibility contracts omit their actual token/value/version literals.
 - 2026-08-06: non-normative reference cleanup for publication; no spec change.
+
+## Owner rulings on C9-C11 (2026-08-07) — the UI Foundation is implementable
+
+- **C9 — the exact token matrix (literal values are PROVISIONAL styling data, tunable like balance;
+  the KEY SET is the closed contract).** Every era artifact carries exactly these keys, mapped to
+  `--cc-{group}-{key}`; the loader rejects any other leaf; layout-only custom properties live in a
+  separate named allowlist.
+  - `color`: `bg, surface, text, text_muted, accent, accent_text, border, link, danger, success`
+  - `type`: `font_ui, font_display, font_mono, size_base, size_small, size_large, size_display,
+    weight_normal, weight_bold, line_height`
+  - `space`: `unit, xs, sm, md, lg, xl`
+  - `border`: `width, radius, style, bevel`
+  - `chrome`: `window_bg, window_border, titlebar_bg, titlebar_text, button_face, button_shadow`
+  - `motion`: `duration_fast, duration_base, duration_slow, easing, budget`
+  **`era_1995` literals (honest shareware — Tier 0):** color: `#c0c0c0, #ffffff, #000000, #555555,
+  #000080, #ffffff, #808080, #0000ee, #aa0000, #006600`; type: `'Tahoma, "MS Sans Serif", Geneva,
+  sans-serif'` (ui + display), `'"Courier New", monospace'`, `13px, 11px, 16px, 20px, 400, 700,
+  1.35`; space: `4px, 2px, 4px, 8px, 16px, 24px`; border: `2px, 0px, solid, outset`; chrome:
+  `#c0c0c0, #000000, #000080, #ffffff, #c0c0c0, #808080`; motion: `0ms, 0ms, 0ms, linear, none` —
+  **the 1995 motion budget is literally zero** (nothing animated in shareware; that is the era's
+  honesty and the joke).
+  **`era_2000` literals (Web 1.0 — Tier 1, per design/08 §2 and the C1 ruling):** color: `#ffffff,
+  #f0f0fa, #000000, #333366, #3366cc, #ffffff, #9999cc, #0000cc, #cc0000, #009900`; type:
+  `'Verdana, Arial, Helvetica, sans-serif'` (ui + display), `'"Courier New", monospace'`, `12px,
+  10px, 15px, 18px, 400, 700, 1.4`; space: same grid as 1995; border: `1px, 4px, solid, none`;
+  chrome: `linear-gradient(180deg, #6699ff, #3366cc)` (window_bg), `#336, #3366cc, #ffffff,
+  #e8eefc, #9999cc`; motion: `100ms, 200ms, 400ms, ease-in-out, respect`.
+- **C10 — the Amount formatter pin.** `@antimatter-dimensions/notations`, **Standard notation**,
+  pinned to the newest 1.x resolvable at implementation with the exact version RECORDED in this
+  RFC's changelog AND the lockfile in the same implementing commit (a bounded delegation — the
+  version literal is recorded, not chosen ad hoc). Options: 3 significant mantissa digits
+  (`1.23 Qa`); values < 1000 render as plain integers (0 decimal places); **no
+  standard-to-scientific threshold in Phase A** (Standard throughout; scientific is a later user
+  option, not a fallback). Negative canonical values ARE valid Amount props (deltas exist) and
+  render with a leading `−`. The mandatory golden vectors record expected strings BEFORE component
+  implementation.
+- **C11 — the accessibility engine.** **`axe-core`**, exact version recorded the same way as C10,
+  invoked inside the existing Vitest-browser fixture route with **WCAG 2.2 AA tags**; the allowed
+  impact set is **zero `serious|critical` violations**. Keyboard/focus/name/motion assertions remain
+  separate and mandatory (the engine augments, never replaces them).

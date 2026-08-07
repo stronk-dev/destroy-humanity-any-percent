@@ -24,7 +24,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
-| [UI Foundation](ui-foundation.md) | accepted architecture — C9–C11 implementation blockers | Client Shell / Transport / Copy Pipeline |
+| [UI Foundation](ui-foundation.md) | accepted — C1–C11 ruled; implementing | Client Shell / Transport / Copy Pipeline |
 | [Game-UI Screens](game-ui-screens.md) | draft | UI Foundation / Client Shell |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft — UNBLOCKED, blockers answered | Commons Compact |
 | [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |

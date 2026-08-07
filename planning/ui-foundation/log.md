@@ -58,3 +58,12 @@ C9's literal token matrix/era values, C10's notation package pin/options/golden 
 accessibility engine/version remain explicit unchecked plan items and the RFC status still blocks
 implementation. No presentation constant, dependency, or playable screen was invented in this
 range. Exact-range diff checking and the fresh root `make verify` both pass.
+
+## 2026-08-07 — owner rulings C9-C11 (the last implementation blockers)
+C9: the closed token key-set (color/type/space/border/chrome/motion, 41 keys) + literal era_1995 and
+era_2000 matrices (values provisional/tunable; the KEY SET is the contract; the 1995 motion budget is
+literally zero). C10: @antimatter-dimensions/notations Standard, 3 sig digits, plain ints <1000, no
+scientific threshold in Phase A, negatives valid; exact version recorded in changelog+lockfile at the
+implementing commit. C11: axe-core (same version-recording duty), WCAG 2.2 AA, zero serious|critical;
+keyboard/focus/name/motion assertions stay separate. Status -> accepted; implementing. UI Foundation
+is now the playability critical path together with the Minigame API & Surface amendment.
