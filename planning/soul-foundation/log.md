@@ -156,3 +156,43 @@ founder_attended start/end must equal attended_progress_ms (validated). Eligibil
 duration. Lazy watchdog: max_session_wall_ms auto-cancels at next touch (SB23 cancel path,
 cancelled_by: watchdog, zero Soul) — no background job. rejected=no-mutation preserved (session row =
 coordinator state). Production recovery rows may mint only after SB24 implements + reviews.
+
+## 2026-08-07 — designated cross-party verdict: Soul v20 substrate — APPROVE (except the SB24 gap)
+
+- **Review by:** the designated Claude reviewer (independent; make verify + test-save-integration
+  re-run, real-Postgres fault injection at all nine boundaries verified). **Recorded by:** same.
+- **Range:** the three Soul commits `a3f7f30` (artifact/debit foundation), `8d2e1a6` (v20
+  activation), `203d40a` (recovery transaction substrate) — all previously unreviewed, reviewed in
+  full here. Gap commits are docs-only EXCEPT `45f082d` (Active-Play RR-remediation code) which is
+  explicitly NOT consumed — it belongs to the Active-Play round-3 thread. **Any Soul archival must
+  cite these three commits and must not claim 45f082d.**
+
+**Verified sound:** ApplySuppressedLogged runs the FULL Evaluate + hook chain then restores every
+output authority (not the forbidden evaluated_through shortcut) with byte-identical Go/TS replay;
+coordinator commands unreachable from any parser/transport; SB23 lock order + all-or-none proven at
+every fault boundary; v20 codec exact (+1 key), next_soul recomputed-from-bytes both directions;
+soul_gate schema bumps with no deploy-current read; ApplyDebit + events exact; genesis-safe retention
+(pruning can no longer delete the Founder genesis revision career replay depends on); kernel
+0.3.69→0.3.73 lockstep; heartbeat-gap containment verified (no soul artifact in any production
+epoch, no endpoint).
+
+**Findings routed to Codex (with the SB24 implementation):**
+- LOW-1: the SB20 zero-output "assert" compares pointers it just restored — dead code presenting as
+  an assertion. Make it a real check (snapshot outputs BEFORE restore; compare) so a future edit
+  that drops a field from the restore list is caught.
+- LOW-2: Go/TS band-loader divergence at max_inclusive == MaxExactInteger (Go special-cases, TS
+  doesn't) — a pathological catalog validates on the server and is refused by the client. Align (drop
+  the Go special-case) + a shared mutation vector.
+- INFO-2 (no action): the claim-lease takeover branch is currently unreachable (claim+finish commit
+  together) — fine as defensive machinery.
+
+**Owner ruling on INFO-1 (meter decay during suppression):** ACCEPTED AS CANONICAL — meters PAUSE
+during a recovery session (the suppression freezes meter time-decay along with production). This is
+the correct reading of the recovery covenant: touch-grass costs production and time, and it must not
+ALSO silently bleed Trust while you rest — a recovery that punishes recovering would be the Stardew
+trap in meter form. The SB20 zero-set is formally extended to include meter time-decay; docs/soul.md
+already discloses it.
+
+**Verdict: the substrate is archival-ready EXCEPT SB24 (the heartbeat) — implement SB24 + the two
+LOW fixes, then the closing designated review, then archival citing a3f7f30 + 8d2e1a6 + 203d40a +
+the SB24 range.**
