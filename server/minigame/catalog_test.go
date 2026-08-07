@@ -49,6 +49,19 @@ func TestLoadCatalogV3RequiresSoulGateWithoutReinterpretingV2(t *testing.T) {
 	}
 }
 
+func TestLoadCatalogV3AcceptsFiscalUnlockPitchDefinition(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/minigame/pitch-v3.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := LoadCatalog(data)
+	definition, found := catalog.Definition("pitch")
+	if err != nil || !found || definition.Unlock.Kind != "fiscal_unlock" || definition.Unlock.UnlockID != "minigame.pitch" ||
+		definition.Payout.CreditedResourceID != "company.cash" || definition.OfflineQuality.AutomationDestination != "minigame.pitch" {
+		t.Fatalf("definition=%+v found=%v err=%v", definition, found, err)
+	}
+}
+
 func TestLoadCatalogRejectsPartialOrDuplicatedPolicy(t *testing.T) {
 	for _, invalid := range []string{
 		`{"schema_version":2,"rating_seasons":[],"minigames":[],"extra":0}`,

@@ -36,17 +36,37 @@ type Descriptor struct {
 }
 
 type CreateInput struct {
-	Mode          Mode
-	Seed          uint64
-	ScalingInputs map[string]int64
+	Mode                 Mode
+	Seed                 uint64
+	ScalingInputs        map[string]int64
+	Content              json.RawMessage
+	ContentHash          string
+	ContentSchemaVersion int
 }
 
 type ApplyInput struct {
-	Mode          Mode
-	Revision      int64
-	Snapshot      json.RawMessage
-	Command       json.RawMessage
-	ScalingInputs map[string]int64
+	Mode                 Mode
+	Seed                 uint64
+	Revision             int64
+	Snapshot             json.RawMessage
+	Command              json.RawMessage
+	ScalingInputs        map[string]int64
+	Content              json.RawMessage
+	ContentHash          string
+	ContentSchemaVersion int
+}
+
+// TenantContent is the immutable, constants-hash-pinned content input for a
+// tenant. Legacy content-free tenants receive the zero value. The platform
+// owns resolution; tenants never read process-current catalogs.
+type TenantContent struct {
+	Bytes         json.RawMessage
+	Hash          string
+	SchemaVersion int
+}
+
+type TenantContentResolver interface {
+	ResolveTenantContent(constantsHash, engineRef, engineVersion string) (TenantContent, bool)
 }
 
 type ScoreFact struct {
@@ -179,10 +199,7 @@ func (registry *TenantRegistry) Apply(engineRef, engineVersion string, input App
 	if commandErr := tenant.ValidateCommand(canonicalCommand); commandErr != nil {
 		return ApplyOutput{}, validateTenantError(commandErr, descriptor)
 	}
-	input.Snapshot = bytes.Clone(canonicalSnapshot)
-	input.Command = bytes.Clone(canonicalCommand)
-	input.ScalingInputs = cloneScaling(input.ScalingInputs)
-	output, tenantErr := tenant.Apply(input)
+	output, tenantErr := tenant.Apply(cloneApplyInput(input))
 	if err := validateTenantError(tenantErr, descriptor); err != nil {
 		return ApplyOutput{}, err
 	}
@@ -307,6 +324,15 @@ func cloneDescriptor(value Descriptor) Descriptor {
 
 func cloneCreateInput(value CreateInput) CreateInput {
 	value.ScalingInputs = cloneScaling(value.ScalingInputs)
+	value.Content = bytes.Clone(value.Content)
+	return value
+}
+
+func cloneApplyInput(value ApplyInput) ApplyInput {
+	value.Snapshot = bytes.Clone(value.Snapshot)
+	value.Command = bytes.Clone(value.Command)
+	value.ScalingInputs = cloneScaling(value.ScalingInputs)
+	value.Content = bytes.Clone(value.Content)
 	return value
 }
 

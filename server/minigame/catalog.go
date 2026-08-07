@@ -21,9 +21,10 @@ type RatingPolicy struct {
 }
 
 type UnlockCondition struct {
-	Kind   string          `json:"kind"`
-	FactID string          `json:"fact_id,omitempty"`
-	Value  json.RawMessage `json:"value,omitempty"`
+	Kind     string          `json:"kind"`
+	FactID   string          `json:"fact_id,omitempty"`
+	Value    json.RawMessage `json:"value,omitempty"`
+	UnlockID string          `json:"unlock_id,omitempty"`
 }
 
 type Definition struct {
@@ -215,6 +216,18 @@ func loadUnlockCondition(data []byte) (UnlockCondition, error) {
 			return UnlockCondition{}, ErrInvalidCatalog
 		}
 		return UnlockCondition{Kind: wire.Kind, FactID: wire.FactID, Value: bytes.Clone(wire.Value)}, nil
+	case "fiscal_unlock":
+		if !hasExactJSONKeys(data, "kind", "unlock_id") {
+			return UnlockCondition{}, ErrInvalidCatalog
+		}
+		var wire struct {
+			Kind     string `json:"kind"`
+			UnlockID string `json:"unlock_id"`
+		}
+		if decodeExact(data, &wire) != nil || !mechanicalPattern.MatchString(wire.UnlockID) {
+			return UnlockCondition{}, ErrInvalidCatalog
+		}
+		return UnlockCondition{Kind: wire.Kind, UnlockID: wire.UnlockID}, nil
 	default:
 		return UnlockCondition{}, ErrInvalidCatalog
 	}

@@ -83,8 +83,16 @@ func (s *Service) StartMinigameSession(ctx context.Context, platform *minigame.S
 		return minigame.Session{}, ErrInvalidIntent
 	}
 	definition, ok := bundle.Minigames.Definition(request.MinigameID)
-	if !ok {
+	if !ok || definition.EngineRef != request.EngineRef || definition.EngineVersion != request.EngineVersion {
 		return minigame.Session{}, ErrInvalidIntent
+	}
+	if definition.Unlock.Kind == "fiscal_unlock" {
+		if bundle.Fiscal == nil {
+			return minigame.Session{}, ErrInvalidIntent
+		}
+		if _, declared := bundle.Fiscal.Unlock(definition.Unlock.UnlockID); !declared || !founder.State.FiscalUnlocks[definition.Unlock.UnlockID] {
+			return minigame.Session{}, fmt.Errorf("%w: fiscal_unlock_required", ErrInvalidIntent)
+		}
 	}
 	if definition.SoulGate == "human_hobby" {
 		if bundle.Soul == nil || save.VersionForState(founder.State) < 20 {

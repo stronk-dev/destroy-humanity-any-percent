@@ -1,7 +1,7 @@
 # RFC: The Pitch (minigame content — THE TEMPLATE)
 
-- **Status:** acceptance blocked on TP-C19–TP-C25 (TP-C1–TP-C18 ruled). v1 scope: engine + pinned catalog +
-  internal integration; playability lands with the Minigame API & Surface successor). **This is the exemplar
+- **Status:** accepted; implementing (TP-C1–TP-C25 ruled). v1 scope: engine + pinned catalog +
+  internal integration; playability lands with the Minigame API & Surface successor. **This is the exemplar
   minigame-content RFC**: its structure (tenant row → engine contract → certified result → economy
   hooks → content-as-data) is the template the other minigame content RFCs replicate.
 - **Author:** Marco (drafted by Claude)
@@ -132,8 +132,8 @@ followed; mechanical naming per the naming law.
    golden vectors cover scoring incl. hack interactions and a big-number-regime hand.
 3. Full platform path: create→play→resolve→payout for a real run through the shipped composer;
    faucet cap forfeits with reason; offline_quality charges; unlock via the Fiscal sink proven.
-4. Content: launch catalog rows exact-key validated; copy keys resolve; relevance floors green once
-   the production baseline exists.
+4. Content: launch catalog rows exact-key validated; copy keys resolve; the Pitch-owned content
+   corpus covers every card/hack and its ruled interaction controls.
 5. No Company resource enters the run; no run-local currency leaves it (grep + test).
 
 ## Open questions

@@ -20,6 +20,7 @@ import (
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/pet"
+	"cloud-clicker/server/pitch"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/routes"
@@ -172,19 +173,30 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.Soul = soulCatalog
 	}
+	if pitchBytes, active := artifacts["pitch"]; active {
+		keys := make(map[string]struct{})
+		for _, key := range copykeys.All() {
+			keys[key] = struct{}{}
+		}
+		pitchCatalog, pitchErr := pitch.LoadCatalog(pitchBytes, pitch.Declarations{CopyKeys: keys})
+		if pitchErr != nil {
+			return production.CatalogBundle{}, pitchErr
+		}
+		bundle.Pitch = pitchCatalog
+	}
 	return bundle, nil
 }
 
 func validArtifactNames(artifacts map[string][]byte) bool {
 	base := [...]string{"categories", "commons", "economy", "factions", "guilds", "prestige", "routes"}
-	allowed := make(map[string]bool, len(base)+7)
+	allowed := make(map[string]bool, len(base)+8)
 	for _, name := range base {
 		allowed[name] = true
 		if len(artifacts[name]) == 0 {
 			return false
 		}
 	}
-	for _, name := range [...]string{"achievements", "doctrines", "fiscal", "meters", "minigames", "pets", "soul"} {
+	for _, name := range [...]string{"achievements", "doctrines", "fiscal", "meters", "minigames", "pets", "pitch", "soul"} {
 		allowed[name] = true
 	}
 	for name, data := range artifacts {
@@ -199,7 +211,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	_, pets := artifacts["pets"]
 	_, fiscalActive := artifacts["fiscal"]
 	_, soulActive := artifacts["soul"]
-	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets || soulActive && !fiscalActive {
+	_, pitchActive := artifacts["pitch"]
+	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets ||
+		soulActive && !fiscalActive || pitchActive && !soulActive {
 		return false
 	}
 	want := len(base)
@@ -219,6 +233,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 		want++
 	}
 	if soulActive {
+		want++
+	}
+	if pitchActive {
 		want++
 	}
 	return len(artifacts) == want

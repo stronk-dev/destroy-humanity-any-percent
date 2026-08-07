@@ -30,3 +30,18 @@ pair hack unreachable; shop identity, currency income, two effect predicates, te
 required tenant-policy literals, and the content-gate corpus remain undefined. Seven narrow
 blockers with executable proposals are filed. Soul Recovery implementation continued; no Pitch
 mechanic or balance byte was improvised.
+
+## 2026-08-07 — Codex implementation: ready for designated review
+
+Review by: pending designated cross-party reviewer. Recorded by: Codex.
+
+Implemented TP-C1–TP-C25 fixture-first without minting a production artifact: exact Go/TypeScript
+catalog loaders and tenant engines; pinned tenant-content resolution; Fiscal unlock composition;
+the complete 12-card/8-hack launch fixture; shared content-gate corpus; generated copy bindings; and
+a real Postgres create→play→resolve→payout→retry→Founder-replay path. The composed test exposed a
+pre-existing coordinator seam: live minigame resolution manually mutated Founder rating/quality
+while replay used `ApplyFounderLogged`, so a Fiscal auto-sweep could make an honest log diverge.
+Live resolution now invokes the same Founder boundary and the integration test proves the combined
+Fiscal + Pitch history verifies. Kernel semantics advance to 0.3.77 and register both Pitch paths.
+
+This is a handoff, not a verdict. No archive or production mint is authorized by this entry.

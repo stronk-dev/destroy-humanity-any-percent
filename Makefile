@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check formulas formulas-check harness harness-check commons-harness-check harness-update epoch-hash copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check harness harness-check commons-harness-check harness-update epoch-hash copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -53,6 +53,12 @@ replay-fixture:
 
 replay-fixture-check:
 	cd server && go test ./production -run '^TestApplyLoggedCrossRuntimeFixture$$'
+
+pitch-corpus:
+	cd server && go test ./pitch -run '^TestPitchContentGate$$' -update-pitch-corpus
+
+pitch-corpus-check:
+	cd server && go test ./pitch -run '^TestPitchContentGate$$'
 
 formulas:
 	cd server && go run ./cmd/gen-formulas -output ../docs/generated/production-formulas.json
@@ -121,7 +127,7 @@ verify-meters-boundary:
 verify-achievements-boundary:
 	node client/tools/verify-achievements-boundaries.mjs
 
-verify-server: vet test-go formulas-check harness-check verify-routes-boundary verify-commons-boundary
+verify-server: vet test-go pitch-corpus-check formulas-check harness-check verify-routes-boundary verify-commons-boundary
 
 verify-client: typecheck build-client test-client verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary copy-check
 

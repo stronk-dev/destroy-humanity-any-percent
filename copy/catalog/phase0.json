@@ -2,6 +2,62 @@
   "schema_version": 1,
   "entries": [
     {
+      "key": "cap.minigame_faucet",
+      "text": "Daily minigame payout limit",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "cap.pitch_exponent",
+      "text": "Best-hand exponent limit",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "cap.pitch_hack_slots",
+      "text": "Growth-hack slot limit",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "cap.pitch_hand",
+      "text": "Pitch hand limit",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "cap.pitch_hands",
+      "text": "Hands per funding round",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "cap.pitch_play",
+      "text": "Cards per pitch",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "cap.pitch_rounds",
+      "text": "Funding-round limit",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "category.any_percent",
       "text": "Any%",
       "params": [],
@@ -76,6 +132,166 @@
     {
       "key": "incorporate.vc_funded",
       "text": "VC-Funded",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.api_call",
+      "text": "API Call",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.beta_invite",
+      "text": "Beta Invite",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.cache_hit",
+      "text": "Cache Hit",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.demo_day",
+      "text": "Demo Day",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.newsletter",
+      "text": "Newsletter",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.page_views",
+      "text": "Page Views",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.patch_release",
+      "text": "Patch Release",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.press_mention",
+      "text": "Press Mention",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.referral_loop",
+      "text": "Referral Loop",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.testimonial",
+      "text": "Testimonial",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.uptime_nines",
+      "text": "Uptime Nines",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.card.users_signup",
+      "text": "Users Signup",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.hack.ab_test",
+      "text": "A/B Test",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.hack.buzzword",
+      "text": "Buzzword",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.hack.dark_pattern",
+      "text": "Dark Pattern",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.hack.growth_loop",
+      "text": "Growth Loop",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.hack.infinite_scroll",
+      "text": "Infinite Scroll",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.hack.pivot",
+      "text": "Pivot",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.hack.stealth_mode",
+      "text": "Stealth Mode",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
+      "key": "pitch.hack.synergy_deck",
+      "text": "Synergy Deck",
       "params": [],
       "era_variants": null,
       "provenance": [],

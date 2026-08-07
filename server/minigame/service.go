@@ -12,8 +12,9 @@ import (
 var ErrSessionRevision = errors.New("minigame session revision conflict")
 
 type Service struct {
-	repository *Repository
-	tenants    *TenantRegistry
+	repository      *Repository
+	tenants         *TenantRegistry
+	contentResolver TenantContentResolver
 }
 
 type StartRequest struct {
@@ -86,11 +87,15 @@ func (resolution *CertifiedResolution) View() (CertifiedResolutionView, error) {
 		ResultBytes: bytes.Clone(resolution.bytes)}, nil
 }
 
-func NewService(repository *Repository, tenants *TenantRegistry) (*Service, error) {
-	if repository == nil || tenants == nil {
+func NewService(repository *Repository, tenants *TenantRegistry, contentResolvers ...TenantContentResolver) (*Service, error) {
+	if repository == nil || tenants == nil || len(contentResolvers) > 1 || len(contentResolvers) == 1 && contentResolvers[0] == nil {
 		return nil, errors.New("minigame service requires repository and tenant registry")
 	}
-	return &Service{repository: repository, tenants: tenants}, nil
+	service := &Service{repository: repository, tenants: tenants}
+	if len(contentResolvers) == 1 {
+		service.contentResolver = contentResolvers[0]
+	}
+	return service, nil
 }
 
 // Start consumes only server-resolved identity and scaling values. It asks the
@@ -108,8 +113,10 @@ func (service *Service) Start(ctx context.Context, request StartRequest) (Sessio
 	if err != nil || request.Seed != "0" && request.Seed[0] == '0' {
 		return Session{}, ErrInvalidSession
 	}
+	content := service.resolveContent(request.ConstantsHash, request.EngineRef, request.EngineVersion)
 	genesis, err := service.tenants.Create(request.EngineRef, request.EngineVersion, CreateInput{
-		Mode: request.Mode, Seed: seed, ScalingInputs: request.ScalingInputs,
+		Mode: request.Mode, Seed: seed, ScalingInputs: request.ScalingInputs, Content: content.Bytes,
+		ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion,
 	})
 	if err != nil {
 		return Session{}, err
@@ -153,9 +160,15 @@ func (service *Service) Play(ctx context.Context, request PlayRequest) (decision
 	if !ok {
 		return PlayDecision{}, ErrTenantDivergence
 	}
+	seed, seedErr := strconv.ParseUint(claimed.Seed, 10, 64)
+	if seedErr != nil {
+		return PlayDecision{}, ErrTenantDivergence
+	}
+	content := service.resolveContent(claimed.ConstantsHash, claimed.EngineRef, claimed.EngineVersion)
 	output, err := service.tenants.Apply(claimed.EngineRef, claimed.EngineVersion, ApplyInput{
-		Mode: claimed.Mode, Revision: claimed.Revision, Snapshot: claimed.State,
-		Command: request.Command, ScalingInputs: scaling,
+		Mode: claimed.Mode, Seed: seed, Revision: claimed.Revision, Snapshot: claimed.State,
+		Command: request.Command, ScalingInputs: scaling, Content: content.Bytes,
+		ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion,
 	})
 	if err != nil {
 		return PlayDecision{}, err
@@ -259,12 +272,18 @@ func (service *Service) validateReplayTx(ctx context.Context, tx *sql.Tx, resolu
 	if !ok {
 		return ErrTenantDivergence
 	}
+	seed, err := strconv.ParseUint(session.Seed, 10, 64)
+	if err != nil {
+		return ErrTenantDivergence
+	}
+	content := service.resolveContent(session.ConstantsHash, session.EngineRef, session.EngineVersion)
 	snapshot := bytes.Clone(session.Genesis)
 	revision := int64(1)
 	for _, command := range commands {
 		output, applyErr := service.tenants.Apply(session.EngineRef, session.EngineVersion, ApplyInput{
-			Mode: session.Mode, Revision: revision, Snapshot: snapshot,
-			Command: command.Command, ScalingInputs: scaling,
+			Mode: session.Mode, Seed: seed, Revision: revision, Snapshot: snapshot,
+			Command: command.Command, ScalingInputs: scaling, Content: content.Bytes,
+			ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion,
 		})
 		if applyErr != nil || output.Result != nil {
 			return ErrTenantDivergence
@@ -275,8 +294,9 @@ func (service *Service) validateReplayTx(ctx context.Context, tx *sql.Tx, resolu
 		return ErrTenantDivergence
 	}
 	output, err := service.tenants.Apply(session.EngineRef, session.EngineVersion, ApplyInput{
-		Mode: session.Mode, Revision: revision, Snapshot: snapshot,
-		Command: resolution.command, ScalingInputs: scaling,
+		Mode: session.Mode, Seed: seed, Revision: revision, Snapshot: snapshot,
+		Command: resolution.command, ScalingInputs: scaling, Content: content.Bytes,
+		ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion,
 	})
 	if err != nil || output.Result == nil || !bytes.Equal(output.Snapshot, resolution.state) ||
 		service.tenants.validateCertifiedResult(session.EngineRef, session.EngineVersion, output.Result) != nil {
@@ -287,6 +307,18 @@ func (service *Service) validateReplayTx(ctx context.Context, tx *sql.Tx, resolu
 		return ErrTenantDivergence
 	}
 	return nil
+}
+
+func (service *Service) resolveContent(constantsHash, engineRef, engineVersion string) TenantContent {
+	if service == nil || service.contentResolver == nil {
+		return TenantContent{}
+	}
+	content, ok := service.contentResolver.ResolveTenantContent(constantsHash, engineRef, engineVersion)
+	if !ok {
+		return TenantContent{}
+	}
+	content.Bytes = bytes.Clone(content.Bytes)
+	return content
 }
 
 func decodeScalingInputs(data []byte) (map[string]int64, bool) {

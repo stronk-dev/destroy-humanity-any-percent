@@ -23,6 +23,7 @@ import (
 	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/pet"
+	"cloud-clicker/server/pitch"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
@@ -47,6 +48,7 @@ type CatalogBundle struct {
 	Pets          *pet.Catalog
 	Fiscal        *fiscal.Catalog
 	Soul          *soul.Catalog
+	Pitch         *pitch.Catalog
 	Opportunities *activeplay.Catalog
 	Next          *CatalogBundle
 }
@@ -103,6 +105,18 @@ func (set ReplayCatalogSet) ResolveFaction(constantsHash string) (*faction.Catal
 	return bundle.Faction, true
 }
 
+func (set ReplayCatalogSet) ResolveTenantContent(constantsHash, engineRef, engineVersion string) (minigame.TenantContent, bool) {
+	bundle, ok := set.ResolveReplayCatalogs(constantsHash)
+	if !ok || engineRef != pitch.EngineRef || engineVersion != pitch.EngineVersion || bundle.Pitch == nil {
+		return minigame.TenantContent{}, false
+	}
+	data := bundle.Artifacts["pitch"]
+	if len(data) == 0 {
+		return minigame.TenantContent{}, false
+	}
+	return minigame.TenantContent{Bytes: bytes.Clone(data), Hash: pitch.ContentHash(data), SchemaVersion: pitch.SchemaVersion}, true
+}
+
 func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withFoundations := bundle.Meters != nil || bundle.Achievements != nil
 	withDoctrines := bundle.Doctrines != nil
@@ -110,6 +124,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withPets := bundle.Pets != nil
 	withFiscal := bundle.Fiscal != nil
 	withSoul := bundle.Soul != nil
+	withPitch := bundle.Pitch != nil
 	withOpportunities := bundle.Opportunities != nil
 	expectedArtifacts := 7
 	if withFoundations {
@@ -128,6 +143,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		expectedArtifacts++
 	}
 	if withSoul {
+		expectedArtifacts++
+	}
+	if withPitch {
 		expectedArtifacts++
 	}
 	if withOpportunities {
@@ -154,6 +172,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	if withMinigames && (!withFoundations || len(bundle.Artifacts["minigames"]) == 0) || withPets && (!withMinigames || len(bundle.Artifacts["pets"]) == 0) ||
 		withFiscal && (!withPets || len(bundle.Artifacts["fiscal"]) == 0) ||
 		withSoul && (!withFiscal || len(bundle.Artifacts["soul"]) == 0 || !bundle.Minigames.SchemaSupportsSoul() || !bundle.Pets.SchemaSupportsSoul()) ||
+		withPitch && (!withSoul || len(bundle.Artifacts["pitch"]) == 0) ||
 		withOpportunities && (!withDoctrines || len(bundle.Artifacts["opportunities"]) == 0) {
 		return false
 	}

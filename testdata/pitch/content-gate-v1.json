@@ -1,0 +1,1514 @@
+{
+  "version": 1,
+  "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+  "transition_budget": 108,
+  "scenarios": [
+    {
+      "name": "ab-test",
+      "seed": 2,
+      "commands": [
+        {
+          "card_ids": [
+            "demo_day#1",
+            "patch_release#1",
+            "testimonial#2",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.3.ab_test"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "testimonial#1",
+            "uptime_nines#1",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "referral_loop#1",
+            "testimonial#2",
+            "uptime_nines#1",
+            "users_signup#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "cache_hit#2",
+            "press_mention#1",
+            "testimonial#1",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#2",
+            "press_mention#2",
+            "referral_loop#2",
+            "users_signup#2"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "1e3",
+        "hand": [
+          "demo_day#2",
+          "newsletter#1",
+          "newsletter#2",
+          "page_views#1",
+          "press_mention#2",
+          "referral_loop#2",
+          "users_signup#2"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 9,
+        "round": 3,
+        "round_best_valuation": "3.9e2",
+        "run_currency": 7,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "ab_test"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 2
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 3
+          }
+        ]
+      },
+      "covers_cards": [
+        "cache_hit",
+        "demo_day",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "ab_test"
+      ],
+      "assertions": []
+    },
+    {
+      "name": "buzzword",
+      "seed": 2,
+      "commands": [
+        {
+          "card_ids": [
+            "demo_day#1",
+            "patch_release#1",
+            "testimonial#2",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.1.buzzword"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "testimonial#1",
+            "uptime_nines#1",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "referral_loop#1",
+            "testimonial#2",
+            "uptime_nines#1",
+            "users_signup#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "cache_hit#2",
+            "press_mention#1",
+            "testimonial#1",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#2",
+            "press_mention#2",
+            "referral_loop#2",
+            "users_signup#2"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "1e3",
+        "hand": [
+          "demo_day#2",
+          "newsletter#1",
+          "newsletter#2",
+          "page_views#1",
+          "press_mention#2",
+          "referral_loop#2",
+          "users_signup#2"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 9,
+        "round": 3,
+        "round_best_valuation": "3.6e2",
+        "run_currency": 8,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "buzzword"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 2
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 3
+          }
+        ]
+      },
+      "covers_cards": [
+        "cache_hit",
+        "demo_day",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "buzzword"
+      ],
+      "assertions": []
+    },
+    {
+      "name": "dark-pattern-trigger",
+      "seed": 1,
+      "commands": [
+        {
+          "card_ids": [
+            "press_mention#2",
+            "referral_loop#1",
+            "referral_loop#2",
+            "uptime_nines#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.1.dark_pattern"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "press_mention#1",
+            "referral_loop#2",
+            "uptime_nines#1",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "testimonial#1",
+            "testimonial#2",
+            "uptime_nines#2",
+            "users_signup#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "page_views#1",
+            "page_views#2",
+            "patch_release#1",
+            "referral_loop#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "demo_day#2",
+            "press_mention#1",
+            "referral_loop#2"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "1e3",
+        "hand": [
+          "cache_hit#1",
+          "demo_day#1",
+          "demo_day#2",
+          "newsletter#1",
+          "patch_release#2",
+          "press_mention#1",
+          "referral_loop#2"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 9,
+        "round": 3,
+        "round_best_valuation": "9.45e2",
+        "run_currency": 6,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "dark_pattern"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 2
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 3
+          }
+        ]
+      },
+      "covers_cards": [
+        "demo_day",
+        "page_views",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "dark_pattern"
+      ],
+      "assertions": [
+        "shape_trigger:dark_pattern"
+      ]
+    },
+    {
+      "name": "growth-loop",
+      "seed": 2,
+      "commands": [
+        {
+          "card_ids": [
+            "demo_day#1",
+            "patch_release#1",
+            "testimonial#2",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.2.growth_loop"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "testimonial#1",
+            "uptime_nines#1",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "referral_loop#1",
+            "testimonial#2",
+            "uptime_nines#1",
+            "users_signup#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "cache_hit#2",
+            "press_mention#1",
+            "testimonial#1",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#2",
+            "press_mention#2",
+            "referral_loop#2",
+            "users_signup#2"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "1e3",
+        "hand": [
+          "demo_day#2",
+          "newsletter#1",
+          "newsletter#2",
+          "page_views#1",
+          "press_mention#2",
+          "referral_loop#2",
+          "users_signup#2"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 9,
+        "round": 3,
+        "round_best_valuation": "5.2e2",
+        "run_currency": 5,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "growth_loop"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 2
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 3
+          }
+        ]
+      },
+      "covers_cards": [
+        "cache_hit",
+        "demo_day",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "growth_loop"
+      ],
+      "assertions": []
+    },
+    {
+      "name": "infinite-scroll",
+      "seed": 3,
+      "commands": [
+        {
+          "card_ids": [
+            "demo_day#1",
+            "press_mention#1",
+            "testimonial#1",
+            "uptime_nines#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.1.infinite_scroll"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "beta_invite#2",
+            "demo_day#2",
+            "newsletter#1",
+            "press_mention#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "beta_invite#1",
+            "referral_loop#1",
+            "referral_loop#2",
+            "testimonial#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "patch_release#1",
+            "patch_release#2",
+            "press_mention#2",
+            "users_signup#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "demo_day#2",
+            "press_mention#1",
+            "testimonial#2"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "1e3",
+        "hand": [
+          "demo_day#1",
+          "demo_day#2",
+          "newsletter#1",
+          "page_views#2",
+          "press_mention#1",
+          "testimonial#2",
+          "uptime_nines#2"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 9,
+        "round": 3,
+        "round_best_valuation": "5.05e2",
+        "run_currency": 7,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "infinite_scroll"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 2
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 3
+          }
+        ]
+      },
+      "covers_cards": [
+        "beta_invite",
+        "demo_day",
+        "newsletter",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "infinite_scroll"
+      ],
+      "assertions": []
+    },
+    {
+      "name": "pivot-trigger",
+      "seed": 1,
+      "commands": [
+        {
+          "card_ids": [
+            "press_mention#2",
+            "referral_loop#1",
+            "referral_loop#2",
+            "uptime_nines#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.2.pivot"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "press_mention#1",
+            "referral_loop#2",
+            "uptime_nines#1",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "testimonial#1",
+            "testimonial#2",
+            "uptime_nines#2",
+            "users_signup#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "newsletter#2",
+            "patch_release#1",
+            "referral_loop#1",
+            "users_signup#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "demo_day#2",
+            "press_mention#1",
+            "referral_loop#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "demo_day#2",
+            "testimonial#2",
+            "uptime_nines#1",
+            "users_signup#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "patch_release#1",
+            "patch_release#2",
+            "press_mention#1",
+            "press_mention#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "referral_loop#2",
+            "uptime_nines#2",
+            "users_signup#1"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "5e3",
+        "hand": [
+          "api_call#1",
+          "beta_invite#2",
+          "cache_hit#2",
+          "demo_day#1",
+          "referral_loop#2",
+          "uptime_nines#2",
+          "users_signup#1"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 13,
+        "round": 4,
+        "round_best_valuation": "9.2e2",
+        "run_currency": 7,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "pivot"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 2
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 4
+          }
+        ]
+      },
+      "covers_cards": [
+        "demo_day",
+        "newsletter",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "pivot"
+      ],
+      "assertions": [
+        "shape_trigger:pivot"
+      ]
+    },
+    {
+      "name": "stealth-partner-absent",
+      "seed": 4,
+      "commands": [
+        {
+          "card_ids": [
+            "demo_day#1",
+            "patch_release#2",
+            "referral_loop#1",
+            "referral_loop#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.1.stealth_mode"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "demo_day#2",
+            "patch_release#2",
+            "testimonial#1",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "patch_release#1",
+            "press_mention#2",
+            "uptime_nines#1",
+            "users_signup#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "press_mention#1",
+            "referral_loop#2",
+            "testimonial#2"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "3e2",
+        "hand": [
+          "cache_hit#1",
+          "demo_day#1",
+          "newsletter#2",
+          "press_mention#1",
+          "referral_loop#2",
+          "testimonial#2",
+          "users_signup#2"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 7,
+        "round": 2,
+        "round_best_valuation": "2.75e2",
+        "run_currency": 3,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "stealth_mode"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 2
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 2
+          }
+        ]
+      },
+      "covers_cards": [
+        "demo_day",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "stealth_mode"
+      ],
+      "assertions": [
+        "chain_partner_absent:stealth_mode"
+      ]
+    },
+    {
+      "name": "synergy-partner-absent",
+      "seed": 1,
+      "commands": [
+        {
+          "card_ids": [
+            "press_mention#2",
+            "referral_loop#1",
+            "referral_loop#2",
+            "uptime_nines#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.3.synergy_deck"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "press_mention#1",
+            "referral_loop#2",
+            "uptime_nines#1",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "beta_invite#1",
+            "cache_hit#1",
+            "patch_release#1",
+            "testimonial#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#2",
+            "press_mention#2",
+            "users_signup#1",
+            "users_signup#2"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "3e2",
+        "hand": [
+          "cache_hit#2",
+          "demo_day#2",
+          "newsletter#1",
+          "newsletter#2",
+          "press_mention#2",
+          "users_signup#1",
+          "users_signup#2"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 7,
+        "round": 2,
+        "round_best_valuation": "2.35e2",
+        "run_currency": 3,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "synergy_deck"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 2
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 2
+          }
+        ]
+      },
+      "covers_cards": [
+        "beta_invite",
+        "cache_hit",
+        "demo_day",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "synergy_deck"
+      ],
+      "assertions": [
+        "chain_partner_absent:synergy_deck"
+      ]
+    },
+    {
+      "name": "stealth-partner-present",
+      "seed": 39,
+      "commands": [
+        {
+          "card_ids": [
+            "demo_day#2",
+            "patch_release#2",
+            "referral_loop#2",
+            "testimonial#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.3.pivot"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "beta_invite#2",
+            "newsletter#1",
+            "patch_release#2",
+            "referral_loop#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "beta_invite#2",
+            "demo_day#1",
+            "press_mention#2",
+            "users_signup#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "patch_release#1",
+            "referral_loop#2",
+            "testimonial#1",
+            "users_signup#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#2",
+            "press_mention#1",
+            "uptime_nines#1",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.3.3.stealth_mode"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "patch_release#2",
+            "press_mention#1",
+            "referral_loop#2",
+            "uptime_nines#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "referral_loop#1",
+            "testimonial#1",
+            "testimonial#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "beta_invite#1",
+            "newsletter#1",
+            "patch_release#1",
+            "press_mention#2"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "5e3",
+        "hand": [
+          "api_call#1",
+          "beta_invite#1",
+          "cache_hit#1",
+          "newsletter#1",
+          "page_views#1",
+          "patch_release#1",
+          "press_mention#2"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 14,
+        "round": 4,
+        "round_best_valuation": "2.5e3",
+        "run_currency": 3,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "pivot",
+          "stealth_mode"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 3
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 4
+          }
+        ]
+      },
+      "covers_cards": [
+        "beta_invite",
+        "demo_day",
+        "newsletter",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "pivot",
+        "stealth_mode"
+      ],
+      "assertions": [
+        "chain_partner_present:stealth_mode"
+      ]
+    },
+    {
+      "name": "synergy-partner-present",
+      "seed": 11,
+      "commands": [
+        {
+          "card_ids": [
+            "newsletter#1",
+            "patch_release#1",
+            "press_mention#1",
+            "referral_loop#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.3.ab_test"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.1.synergy_deck"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "patch_release#2",
+            "referral_loop#1",
+            "testimonial#1",
+            "uptime_nines#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "beta_invite#1",
+            "demo_day#1",
+            "press_mention#1",
+            "referral_loop#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "patch_release#1",
+            "referral_loop#1",
+            "uptime_nines#1",
+            "users_signup#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "press_mention#2",
+            "testimonial#1",
+            "testimonial#2",
+            "uptime_nines#2"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "1e3",
+        "hand": [
+          "cache_hit#1",
+          "newsletter#2",
+          "page_views#2",
+          "press_mention#2",
+          "testimonial#1",
+          "testimonial#2",
+          "uptime_nines#2"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 10,
+        "round": 3,
+        "round_best_valuation": "7.65e2",
+        "run_currency": 3,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "ab_test",
+          "synergy_deck"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 2
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 3
+          }
+        ]
+      },
+      "covers_cards": [
+        "beta_invite",
+        "demo_day",
+        "newsletter",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "ab_test",
+        "synergy_deck"
+      ],
+      "assertions": [
+        "chain_partner_present:synergy_deck"
+      ]
+    },
+    {
+      "name": "dark-pattern-control",
+      "seed": 1,
+      "commands": [
+        {
+          "card_ids": [
+            "press_mention#2",
+            "referral_loop#1",
+            "referral_loop#2",
+            "uptime_nines#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.1.dark_pattern"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "patch_release#2",
+            "press_mention#1",
+            "referral_loop#2",
+            "uptime_nines#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "api_call#1",
+            "api_call#2",
+            "patch_release#1",
+            "testimonial#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "testimonial#1",
+            "testimonial#2",
+            "uptime_nines#2",
+            "users_signup#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "page_views#1",
+            "page_views#2",
+            "patch_release#1",
+            "referral_loop#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "demo_day#2",
+            "press_mention#1",
+            "referral_loop#2"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "1e3",
+        "hand": [
+          "cache_hit#1",
+          "demo_day#1",
+          "demo_day#2",
+          "newsletter#1",
+          "patch_release#2",
+          "press_mention#1",
+          "referral_loop#2"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 10,
+        "round": 3,
+        "round_best_valuation": "9.45e2",
+        "run_currency": 6,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "dark_pattern"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 2
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 3
+          }
+        ]
+      },
+      "covers_cards": [
+        "api_call",
+        "demo_day",
+        "page_views",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "dark_pattern"
+      ],
+      "assertions": [
+        "shape_control:dark_pattern"
+      ]
+    },
+    {
+      "name": "pivot-control",
+      "seed": 1,
+      "commands": [
+        {
+          "card_ids": [
+            "press_mention#2",
+            "referral_loop#1",
+            "referral_loop#2",
+            "uptime_nines#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "buy_hack",
+          "offer_id": "pitch.offer.1.2.pivot"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "press_mention#1",
+            "referral_loop#2",
+            "uptime_nines#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "beta_invite#1",
+            "cache_hit#1",
+            "patch_release#1",
+            "testimonial#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "testimonial#1",
+            "testimonial#2",
+            "uptime_nines#2",
+            "users_signup#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "newsletter#2",
+            "patch_release#1",
+            "referral_loop#1",
+            "users_signup#1"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "demo_day#2",
+            "press_mention#1",
+            "referral_loop#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "kind": "end_shop"
+        },
+        {
+          "card_ids": [
+            "demo_day#2",
+            "testimonial#2",
+            "uptime_nines#1",
+            "users_signup#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "patch_release#1",
+            "patch_release#2",
+            "press_mention#1",
+            "press_mention#2"
+          ],
+          "kind": "play_hand"
+        },
+        {
+          "card_ids": [
+            "demo_day#1",
+            "referral_loop#2",
+            "uptime_nines#2",
+            "users_signup#1"
+          ],
+          "kind": "play_hand"
+        }
+      ],
+      "expected_terminal": {
+        "deck_count": 3,
+        "funding_target": "5e3",
+        "hand": [
+          "api_call#1",
+          "beta_invite#2",
+          "cache_hit#2",
+          "demo_day#1",
+          "referral_loop#2",
+          "uptime_nines#2",
+          "users_signup#1"
+        ],
+        "hands_remaining": 0,
+        "phase": "terminal",
+        "pitch_content_hash": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+        "pitch_schema_version": 1,
+        "revision": 14,
+        "round": 4,
+        "round_best_valuation": "9.2e2",
+        "run_currency": 7,
+        "shop_offers": [],
+        "slotted_hacks": [
+          "pivot"
+        ]
+      },
+      "expected_result": {
+        "outcome": "funding_failed",
+        "rating_delta": null,
+        "score_facts": [
+          {
+            "kind": "pitch.best_hand_exponent",
+            "value": 2
+          },
+          {
+            "kind": "pitch.final_round",
+            "value": 4
+          }
+        ]
+      },
+      "covers_cards": [
+        "beta_invite",
+        "cache_hit",
+        "demo_day",
+        "newsletter",
+        "patch_release",
+        "press_mention",
+        "referral_loop",
+        "testimonial",
+        "uptime_nines",
+        "users_signup"
+      ],
+      "covers_hacks": [
+        "pivot"
+      ],
+      "assertions": [
+        "shape_control:pivot"
+      ]
+    }
+  ],
+  "exponent_boundaries": [
+    {
+      "valuation": "0",
+      "expected": 0
+    },
+    {
+      "valuation": "9e-1",
+      "expected": -1
+    },
+    {
+      "valuation": "9.99999999999e11",
+      "expected": 11
+    },
+    {
+      "valuation": "1e12",
+      "expected": 12
+    },
+    {
+      "valuation": "1e1000001",
+      "expected": 1000000
+    }
+  ]
+}

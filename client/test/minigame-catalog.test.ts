@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import fixture from "../../testdata/minigame/catalog-v2.json";
+import pitchFixture from "../../testdata/minigame/pitch-v3.json";
 import { parseMinigameCatalog } from "../src/minigame/catalog";
 
 describe("pinned minigame catalog", () => {
@@ -14,5 +15,11 @@ describe("pinned minigame catalog", () => {
   it("rejects missing policy bytes and noncanonical ordering", () => {
     expect(() => parseMinigameCatalog({ schema_version: 2, rating_seasons: [], minigames: [{ minigame_id: "partial" }] })).toThrow();
     expect(() => parseMinigameCatalog({ ...fixture, rating_seasons: ["ranked", "preseason"] })).toThrow();
+  });
+
+  it("loads the closed Fiscal unlock arm for The Pitch", () => {
+    const definition = parseMinigameCatalog(pitchFixture).minigames[0]!;
+    expect(definition.unlock_condition).toEqual({ kind: "fiscal_unlock", unlock_id: "minigame.pitch" });
+    expect(definition.payout.credited_resource_id).toBe("company.cash");
   });
 });

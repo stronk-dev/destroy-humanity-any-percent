@@ -189,8 +189,6 @@ func (s *Service) ResolveMinigameSession(ctx context.Context, platform *minigame
 		newRating := save.MinigameRatingState{Elo: transition.RatingAfter.Elo, SeasonMember: transition.RatingAfter.SeasonMember, GamesCounted: transition.RatingAfter.GamesCounted}
 		newQuality := save.MinigameOfflineQualityState{GradePPM: transition.QualityAfter.GradePPM,
 			LastFounderAttendedMS: transition.QualityAfter.LastFounderAttendedMS, DecayRemainderPPM: transition.QualityAfter.DecayRemainderPPM}
-		founder.MinigameRatings[definition.MinigameID] = newRating
-		founder.MinigameOfflineQuality[definition.MinigameID] = newQuality
 		requested := decimal.FromString(strconv.FormatInt(prepared.Faucet.CreditedUnits, 10))
 		ledgerReceipt, ledgerErr := company.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{
 			ResourceID: definition.Payout.CreditedResourceID, Delta: requested,
@@ -241,20 +239,26 @@ func (s *Service) ResolveMinigameSession(ctx context.Context, platform *minigame
 		founderResolved := minigameFounderResolved{Kind: minigameResolutionKind, SessionID: view.SessionID,
 			MinigameID: definition.MinigameID, CertifiedResultHash: certifiedHash,
 			RatingBefore: oldRating, RatingAfter: newRating, QualityBefore: oldQuality, QualityAfter: newQuality, Attendance: attendance}
-		founderReceiptBytes, _ := json.Marshal(minigameFounderReceipt{IntentID: view.SessionID, Outcome: string(save.IntentApplied),
-			FounderRevision: founderNext, SessionID: view.SessionID, CertifiedResultHash: certifiedHash,
-			RatingChange: ratingChange, QualityChange: qualityChange})
+		founderReplayInputs, marshalErr := save.MarshalFounderReplayInputs(founderCommand, mustJSON(founderResolved))
+		if marshalErr != nil {
+			return save.MinigameResolutionDecision{}, marshalErr
+		}
+		founderTransition, transitionErr := ApplyFounderLogged(founder, payload, bundle, founderReplayInputs)
+		if transitionErr != nil || founderTransition.Outcome != save.IntentApplied ||
+			founderTransition.ResultConstantsHash != bundle.ConstantsHash {
+			if transitionErr != nil {
+				return save.MinigameResolutionDecision{}, transitionErr
+			}
+			return save.MinigameResolutionDecision{}, fmt.Errorf("%w: Founder minigame transition", ErrInvalidReplayInputs)
+		}
 		companyEventPayload, _ := json.Marshal(map[string]any{"session_id": view.SessionID, "minigame_id": definition.MinigameID,
 			"certified_result_hash": certifiedHash, "credited_resource_id": definition.Payout.CreditedResourceID,
 			"credited_delta": creditedDelta, "configured_cap_forfeit_units": prepared.Faucet.ForfeitedUnits,
 			"cap_reason_key": prepared.Faucet.ConfiguredCapReasonKey, "founder_revision": founderNext})
-		founderEventPayload, _ := json.Marshal(map[string]any{"session_id": view.SessionID, "minigame_id": definition.MinigameID,
-			"certified_result_hash": certifiedHash, "old_elo": oldRating.Elo, "new_elo": newRating.Elo,
-			"season_member": newRating.SeasonMember, "old_quality": oldQuality, "new_quality": newQuality})
-		return save.MinigameResolutionDecision{Receipt: receiptBytes, FounderReceipt: founderReceiptBytes,
+		return save.MinigameResolutionDecision{Receipt: receiptBytes, FounderReceipt: founderTransition.Receipt,
 			CompanyReplayInputs: companyInputs, FounderReplayResolved: mustJSON(founderResolved),
 			CompanyEvents: []save.EventWrite{{Kind: save.EventMinigameResolved, SchemaVersion: 1, IntentID: view.SessionID, Payload: companyEventPayload}},
-			FounderEvents: []save.EventWrite{{Kind: save.EventMinigameRatingChanged, SchemaVersion: 1, IntentID: view.SessionID, Payload: founderEventPayload}}}, nil
+			FounderEvents: founderTransition.Events}, nil
 	}, fault)
 	if err != nil {
 		return HandleResult{}, err

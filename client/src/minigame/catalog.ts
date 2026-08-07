@@ -149,6 +149,11 @@ function parseRating(source: unknown, seasons: readonly string[]): MinigameRatin
 function parseUnlock(source: unknown): Readonly<Record<string, unknown>> {
   const probe = exactRecord(source, "unlock condition");
   if (probe.kind === "always") return Object.freeze(exactObject(source, ["kind"], "always unlock"));
+	if (probe.kind === "fiscal_unlock") {
+		const row = exactObject(source, ["kind", "unlock_id"], "fiscal unlock");
+		mechanicalString(row.unlock_id, "fiscal unlock id");
+		return Object.freeze(row);
+	}
   if (probe.kind !== "fact_equals") throw new SyntaxError("invalid unlock condition");
   const row = exactObject(source, ["kind", "fact_id", "value"], "fact unlock");
   mechanicalString(row.fact_id, "unlock fact");
