@@ -413,3 +413,53 @@ but keep schema registration and endpoint mounting in the API Foundation continu
 ranges then receive one combined real-socket/conformance review before this RFC can claim AC1–AC4.
 Alternatively move the minimal generator/router slice into this RFC explicitly and consume it as
 API Foundation work; never add a handwritten parallel router contract.
+
+## Owner rulings on MA-C10–MA-C14 (2026-08-07)
+
+- **MA-C10 — accepted, recommended shapes RULED as the normative wire.** Requests: create
+  `{idempotency_key}` · command `{command_id, expected_revision, command}` (the tenant command as a
+  nested object, never flattened) · resolve `{}` · current takes no body. Responses: a closed
+  union over the common exact descriptor
+  `{session_id, minigame_id, engine_ref, engine_version, constants_hash, mode, revision, status}`
+  plus the discriminated Pitch `1.0.0` snapshot arm; terminal responses add ONLY the stored exact
+  resolution receipt. Both opaque IDs (`idempotency_key`, `command_id`) use the C20 request-ID
+  grammar for consistency: `^[A-Za-z0-9-]{1,64}$`, max 64 bytes, rejected-not-truncated. Every
+  deterministic error mapping is enumerated as literal `{status, category, detail}` rows in the
+  implementing schema table; anything unlisted (incl. store errors) is `500 internal_invariant` —
+  handlers never guess.
+- **MA-C11 — RULED: the Founder arm, exactly as proposed.** Founder v21 adds exactly
+  `minigame_session_seq`; Exit resets it to zero when it advances the Company run. The server-only
+  Founder command `start_minigame_session` runs in a single coordinator transaction locking
+  Founder → Company → session, increments/logs the sequence through the shared Founder transition
+  boundary, derives the seed from the resulting sequence + current `run_seq`, and inserts
+  genesis/session before commit. Create-retry by idempotency key returns the prior committed
+  descriptor WITHOUT incrementing. Not client-parseable; Founder replay reproduces the mutation
+  from frozen resolved inputs. Company-state placement and the database-only counter are REJECTED
+  (the no-second-authority law).
+- **MA-C12 — RULED: reject-Exit, the primary arm.** While one minigame session is
+  `active|claimed`, Exit rejects `not_eligible/minigame_session_active` before evaluation and
+  mutates nothing; the production service receives a read-only active-session resolver from
+  composition; the same predicate runs live and in replay from a frozen boolean resolved input.
+  The atomic-cancel alternative is REJECTED for v1 (a larger multi-stream contract; a Pitch
+  session always has a reachable terminal, so the player is never soft-locked — declared successor
+  if a future tenant lacks that property). An unlogged repository read never decides replay
+  behavior.
+- **MA-C13 — accepted as proposed.** Transaction-scoped command-receipt helpers on the minigame
+  repository: nonterminal completion appends command + snapshot/revision + canonical API response
+  under the claim token in ONE transaction; terminal completion passes command ID/hash/response
+  into `ApplyMinigameResolutionTransaction`, which writes the same receipt row inside its existing
+  all-or-nothing transaction. Handler checks the row before tenant execution; equal hash → stored
+  bytes; unequal → `idempotency_conflict/minigame_command`; the `RowsAffected == 1` token guard
+  forbids an expired worker overwriting a newer receipt.
+- **MA-C14 — accepted, primary arm.** MA runtime/coordinator code lands behind typed handlers
+  after C10–C13; schema registration and endpoint mounting stay in the API Foundation continuation
+  (C1–C20 are fully ruled — that work is unblocked); the two ranges receive ONE combined
+  real-socket/conformance designated review before this RFC claims AC1–AC4. A handwritten parallel
+  router is permanently rejected.
+
+## Changelog (second rulings round)
+
+- 2026-08-07: MA-C10–C14 ALL RULED — literal wire shapes (C20-grammar IDs); Founder v21
+  `minigame_session_seq` with the atomic coordinator; Exit rejection over atomic cancel;
+  transaction-scoped command receipts; combined-review sequencing with the API Foundation
+  continuation.

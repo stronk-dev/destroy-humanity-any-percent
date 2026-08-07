@@ -193,3 +193,50 @@ schema versions, exact copy row, and commands/content gates. State that the reso
 after `company.cash`, the generator after `generator.beige_tower`, and `gate.t3_to_t4` between the
 T2→T3 and T4→T5 rows; gate requirements remain byte-ordered `company.cash`, then
 `company.permits`. FCE's promotion table consumes these hashes rather than reconstructing rows.
+
+## Owner rulings on PT-C1–PT-C6 (2026-08-07)
+
+- **PT-C1 — accepted as proposed (primary arm).** Permits is implemented and reviewed against
+  BYTE-EXACT CANDIDATE FIXTURES, never touching the active epoch artifacts; the single owner-gated
+  First Content Epoch mint copies the reviewed rows into the active `economy`/`routes` documents
+  and appends epoch 6 in the SAME `BALANCE-CHANGE:` commit, its changelog consuming the Permits
+  verdict and its tests proving production bytes = reviewed candidates. AC4 is RECONCILED by this
+  ruling: "reviewed before, activated atomically by the First Content Epoch." The dedicated
+  Permits-epoch alternative is REJECTED (one owner-gated mint, not two).
+- **PT-C2 — accepted, recommended arm.** `generator.legal_dept` is globally purchasable; the
+  `1e8` price is PACING, not an authorization boundary. P2's "T3-era" wording is reconciled to
+  "priced for the approach to T3" by this ruling. A generator-availability grammar is NOT
+  introduced here.
+- **PT-C3 — accepted as proposed.** The existing production law applies EXPLICITLY: online permit
+  rate = `N × 1e-3 × contributionFactor(generator.legal_dept)` (all-target multipliers included),
+  offline via the pinned policy, one ledger quantization, accrual-only saturation at 24. AC2 is
+  reconciled to this reading. The shared parity fixture covers neutral, non-neutral all-target,
+  24-hour offline, and near-cap saturation. A multiplier-immune production kind is REJECTED.
+- **PT-C4 — accepted, narrow arm.** This RFC's copy work is exactly ONE bound row — the cap
+  reason — with the owner text supplied here verbatim:
+  **`resource.company_permits.cap.phase0` = "The county issues at most 24 concurrent permits. The
+  county does not care about your roadmap."**
+  Legal Department title/description is CARRIED to the Game-UI content surface that owns generator
+  presentation (recorded debt there, not here). P4's "names per the existing … conventions" phrase
+  is STRUCK by this ruling (no such convention exists). The generator-copy grammar extension is
+  REJECTED for this RFC.
+- **PT-C5 — accepted as proposed.** Activation is NEW-RUN-BOUND with the epoch-6 economy bytes:
+  an epoch-5 run finishes and replays under its pinned one-resource/one-generator catalog; Exit
+  into epoch 6 creates the next run with `company.permits: "0"` and `generator.legal_dept: 0`; a
+  fresh epoch-6 founder gets the same keys at genesis; no migration mutates an in-flight run; no
+  save version changes. The cross-epoch Exit, fresh-genesis, and old-run replay fixtures are added
+  to AC1/AC3 by this ruling.
+- **PT-C6 — accepted as proposed, with the assembly split.** Insertion order is RULED now:
+  resource after `company.cash`; generator after `generator.beige_tower`; `gate.t3_to_t4` between
+  the T2→T3 and T4→T5 rows; gate requirements byte-ordered `company.cash` then `company.permits`;
+  the copy row is the PT-C4 literal. Codex assembles the two complete candidate documents to these
+  rulings and files their SHA-256 + paths + schema versions + gate commands as the Permits
+  manifest; owner ratification of those hashes (the FCE-C3 pattern) completes acceptance. FCE's
+  promotion table consumes the ratified hashes.
+
+## Changelog (rulings round)
+
+- 2026-08-07: PT-C1–C6 ALL RULED — candidate-fixture landing with atomic mint activation; global
+  purchasability (price = pacing); explicit multiplier semantics; single bound copy row with owner
+  text; new-run-bound activation fixtures; insertion order ruled, manifest hashes owed by
+  assembly + ratification.

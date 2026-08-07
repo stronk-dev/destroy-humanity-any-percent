@@ -357,3 +357,48 @@ waiting to add all copy until the mint contradicts the ruled copy-first gate.
 
 No tracked commit may contain a reference to an absent artifact or an active artifact whose copy
 keys do not resolve.
+
+## Owner rulings on FCE-C7–FCE-C8 (2026-08-07)
+
+- **FCE-C7 — RULED: the thirteen copy texts are supplied here verbatim** (structural defaults as
+  proposed: `params: []`, `era: null`, `provenance: []`, `tone: "achievement"`; each row's text
+  below is `Title — body`; if the copy grammar carries separate title/body fields, split at the
+  em-dash). Codex assembles the literal thirteen-row `copy.v1` document from these texts and files
+  its SHA-256 for ratification (the FCE-C3 pattern; the text is the owner-authored part):
+  1. `achievement.career_attended_hour` — "Billable Hour — One full attended hour. HR has logged
+     your enthusiasm."
+  2. `achievement.career_attended_day` — "Day One (Cumulative) — Twenty-four attended hours across
+     your career. The deck calls this dedication."
+  3. `achievement.generators_purchased_1` — "CAPEX — Bought your first generator. It began
+     depreciating before the receipt printed."
+  4. `achievement.first_gate` — "Out of the Garage — Crossed your first tier gate. The
+     commemorative plaque is already being engraved."
+  5. `achievement.generators_purchased_25` — "Procurement Pipeline — Twenty-five generators
+     purchased. The vendor sent a gift basket."
+  6. `achievement.generators_owned_100` — "Server Farm — One hundred beige towers. The hum is
+     audible from the parking lot."
+  7. `achievement.old_hand` — "Exit Interview — Completed your first exit. You kept the hoodie."
+  8. `achievement.gate_burn_t3` — "Burn Rate — Spent 1e9 cash crossing a single gate. The board
+     calls this investing in growth."
+  9. `achievement.generators_owned_300` — "Beige at Scale — Three hundred beige towers. Nobody
+     remembers what the first one does."
+  10. `achievement.generators_purchased_25_tier_3` — "Enterprise Refresh — Twenty-five generators
+      in one Tier-3 run. The old ones were fine."
+  11. `achievement.tier_5` — "Hyperscale — Reached Tier 5. Your infrastructure has
+      infrastructure."
+  12. `achievement.exit_count_5` — "Serial Founder — Five exits. At this point the exits are the
+      product."
+  13. `achievement.possession_warning` — the ALREADY-RULED exact possession disclosure, verbatim,
+      unchanged (this ruling adds no text to it; it is listed for completeness of the
+      thirteen-row document).
+- **FCE-C8 — accepted as proposed.** The three-stage fail-closed landing is normative: (1) the
+  thirteen copy rows + generated outputs land as INTENTIONAL ORPHANS with `make copy-check` green;
+  (2) the ratified achievements candidate is staged and content-gated against the generated keys
+  WITHOUT touching the active seed; (3) the epoch-6 mint commit adds the artifact + its two
+  reference-pointer rows atomically and regenerates, `make copy-check` green again. No tracked
+  commit may reference an absent artifact or carry unresolvable active copy keys.
+
+## Changelog (C7–C8 round)
+
+- 2026-08-07: FCE-C7 ruled (all thirteen copy texts authored in the ruling; document assembly +
+  SHA ratification owed); FCE-C8 accepted (three-stage fail-closed landing normative).
