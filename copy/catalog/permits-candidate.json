@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "key": "resource.company_permits.cap.phase0",
+      "text": "The county issues at most 24 concurrent permits. The county does not care about your roadmap.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    }
+  ]
+}

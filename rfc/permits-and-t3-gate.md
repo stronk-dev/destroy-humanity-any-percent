@@ -1,7 +1,7 @@
 # RFC: Permits & the T3→T4 Gate (pre-mint)
 
-- **Status:** draft — the narrow pre-mint contract commissioned by FCE-C1 (owner ruling
-  2026-08-07: introduce `company.permits` now rather than interpolate a cash-only gate).
+- **Status:** candidate implemented — byte-exact fixtures assembled and gated; awaiting owner
+  ratification of the manifest hashes and designated implementation review before acceptance.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-07
 - **Design refs:** `design/02 §1` (Permits = a Company-run constraint resource alongside
@@ -240,3 +240,25 @@ T2→T3 and T4→T5 rows; gate requirements remain byte-ordered `company.cash`, 
   purchasability (price = pacing); explicit multiplier semantics; single bound copy row with owner
   text; new-run-bound activation fixtures; insertion order ruled, manifest hashes owed by
   assembly + ratification.
+
+## Candidate manifest (2026-08-07 — awaiting owner ratification)
+
+The RFC's human-form `24` and `12` amounts are encoded below as RFC-0001 canonical Decimals
+`2.4e1` and `1.2e1`. This is a representation normalization only; the ruled values are unchanged.
+
+| Role | Path | Schema | SHA-256 |
+|---|---|---:|---|
+| Economy candidate | `balance/testdata/valid/permits-economy-candidate-v1.json` | economy 3 | `31af760c45394401af5847b0e1be5790281d88555b9380a73bd5ca87a0105990` |
+| Routes candidate | `balance/routes-testdata/valid/permits-t3-gate-candidate-v1.json` | routes 1 | `6c7c4350bcd43840a141fb5c0525d9779f11ed0ed836a8783f21f22f6c880df2` |
+| Bound copy source | `copy/catalog/permits-candidate.json` | copy 1 | `e87b0224f6d17a25ffb018ab09cf0898e720e8c783bee470ae1ac7bf29e1a512` |
+| Composed generated copy | `client/src/copy/generated/catalog.json` | copy 1 | `8462d6d5a8ccde29508d51e46c256eeac52a569988f8561e8bed87fcdfcb08a2` |
+
+Gates: `make copy-check`, `make test`, and the final repository `make verify`. The production mint
+must copy the candidate economy/routes documents byte-for-byte apart from their already-active
+surrounding path and must consume the designated verdict for this candidate range.
+
+## Changelog (candidate assembly)
+
+- 2026-08-07: byte-exact economy/routes/copy candidates assembled; shared Go/TypeScript loader,
+  doctrine-route, multiplier, offline, and hardcap proofs added; manifest hashes filed for owner
+  ratification. No active balance artifact or epoch seed changed.

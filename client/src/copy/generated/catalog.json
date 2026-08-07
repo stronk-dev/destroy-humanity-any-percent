@@ -311,6 +311,14 @@
       "tone": "corporate"
     },
     {
+      "key": "resource.company_permits.cap.phase0",
+      "text": "The county issues at most 24 concurrent permits. The county does not care about your roadmap.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "corporate"
+    },
+    {
       "key": "route.registry_first_reordered",
       "text": "Route Registry first-executor credit corrected",
       "params": [],
