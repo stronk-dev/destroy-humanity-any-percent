@@ -276,3 +276,40 @@ Active-Play remains unarchived.
 Final round-3 handoff verification: full `make verify` PASS at kernel 0.3.70 after the remediation
 commit, in addition to the fresh Docker/Postgres integration pass above. The designated reviewer
 should consume `45f082d^..45f082d` plus this planning handoff; no completion or archival claim is made.
+
+## 2026-08-07 — designated cross-party ROUND-3 verdict: 45f082d — APPROVE; Active-Play ARCHIVAL-ELIGIBLE
+
+- **Review by:** the designated Claude round-3 reviewer (independent; isolated worktree at 45f082d;
+  make verify exit 0 with explicit typecheck; full Postgres integration suite exit 0 PLUS a
+  clean-chain probe on an isolated scratch database). **Recorded by:** same.
+
+**RR-1..RR-4 all CLOSED, probe-confirmed:**
+- RR-1: new append-only migration 00067 extends events_schema_version_check (00035 byte-untouched);
+  8/8 fresh-chain probe matrix (v2 accepted for the two kinds, rejected elsewhere, v1/run_ended
+  unchanged); the round-2 coverage gap closed by a REAL end-to-end integration test driving a
+  buff-granting claim through service->store->Postgres and asserting the committed v2 rows.
+- RR-2: TS-replay option — a bounded transition loop (maxDueTransitions) replays miss/spawn in either
+  order; shared corpus entries 11 (miss->successor-spawn) AND 14 (spawn->self-miss) byte-compared in
+  both runtimes; the structural loader rule retained makes single-miss/single-spawn structurally
+  complete per command.
+- RR-3: the owned=100 edit moved to the CORRECT builder (and reverted from the doctrine builder);
+  slot product 77 vs cap 10 — genuinely exceeds; corpus entry 3 carries the clamp with generation-time
+  assertions; TS clamp-bite path executes under shared fixtures with byte parity; the false round-2
+  remediation claim corrected append-only in 9f52da1.
+- RR-4: entry 3 carries cap.active_combo through receipt + both v2 event payloads, byte-compared.
+Kernel 0.3.70 lockstep in the semantic commit; KV-1 green; diff scope exactly the 8 RR files.
+
+**Range-union: COMPLETE.** `32e5a63^..d3b18ef` + 45944ca + `1f5a2f8^..16eb935` + `45f082d` union to
+the full Active-Play implementation span (29 commits in the span; the 7 outside are docs/RFC or the
+separately-reviewed KRM guard thread). No Active-Play code commit is uncovered; no prior verdict
+cites 45f082d.
+
+Non-blocking: INFO — the mantissa-ULP fallback offsets are defensive dead branches under shipped
+constants (byte-identical both runtimes); INFO — TS clamp covered via corpus parity (the acceptance
+mechanism), no isolated unit test. **LOW, REQUIRED WITH ARCHIVAL: docs/ has no Active-Play page —
+the archival commit must add the canonical page (scheduler, combo clamp + cap.active_combo, v2 event
+schemas, migration 00067) per the docs-canonical law.**
+
+**Verdict: APPROVE. Active-Play is ARCHIVAL-ELIGIBLE — the archival commit must cite the full union
+above and add the canonical docs page. Archival itself remains the implementer's move per the
+cross-party protocol (never on its own review — this verdict IS the gate).**
