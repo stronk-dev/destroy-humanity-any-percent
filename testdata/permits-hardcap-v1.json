@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "resource_id": "company.permits",
+  "start": "2.39995e1",
+  "rate_per_second": "1e-3",
+  "elapsed_ms": 1000,
+  "hardcap": "2.4e1",
+  "hardcap_reason_key": "resource.company_permits.cap.phase0",
+  "expect": "2.4e1"
+}

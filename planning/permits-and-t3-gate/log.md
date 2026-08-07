@@ -58,3 +58,18 @@ kernel honestly unchanged (guards green).
 **Verdict: NOT APPROVED pending F1 (urgent — the repo gate) + F2–F4; re-review will be narrow.
 Owner ratification of the manifest hashes is HELD until the fix lands (hashes need not change if
 files move rather than change content).**
+
+## 2026-08-07 — narrow remediation by Codex — ready for designated re-review
+
+- F1: the unchanged routes candidate moved outside the active-resource semantic sweep in
+  `90633a6`; its SHA stayed unchanged and `verify-schema` is green again.
+- F2/F3: `testdata/permits-hardcap-v1.json` now drives both the Go engine and the TypeScript
+  prediction machine from `2.39995e1` at `1e-3/s` for one second. The unclamped value is
+  `2.40005e1`, so the expected `2.4e1` is a discriminating hardcap assertion in both runtimes.
+- F4: a candidate-bundle test proves rejection leaves both balances untouched and success debits
+  cash and permits atomically. The genesis, cross-epoch activation, old-run replay, and shared
+  replay-row proofs cannot honestly run before the owner-gated epoch-6 artifact exists; each is
+  now an explicit unchecked mint item in `plan.md`.
+
+This is a remediation handoff, not an approval or archival claim. It is ready for the designated
+cross-party re-review after the normal repository gates pass.
