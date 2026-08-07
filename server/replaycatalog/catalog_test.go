@@ -273,6 +273,28 @@ func TestLoadActivatesPitchOnlyOnCompleteSoulChain(t *testing.T) {
 	if !ok || !bytes.Equal(content.Bytes, artifacts["pitch"]) || content.SchemaVersion != 1 {
 		t.Fatalf("content=%+v ok=%v", content, ok)
 	}
+	artifacts["minigame_api"], err = os.ReadFile(filepath.Join("..", "..", "balance", "testdata", "minigame-api-candidate-v1.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	apiHash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	apiBundle, err := Load(apiHash, artifacts)
+	if err != nil || apiBundle.MinigameAPI == nil {
+		t.Fatalf("minigame API bundle=%+v err=%v", apiBundle, err)
+	}
+	delete(artifacts, "pitch")
+	invalidAPIHash, _ := save.ConstantsHashArtifacts(artifacts)
+	if _, err := Load(invalidAPIHash, artifacts); err == nil {
+		t.Fatal("minigame API artifact activated without Pitch")
+	}
+	delete(artifacts, "minigame_api")
+	artifacts["pitch"], err = os.ReadFile(filepath.Join("..", "..", "balance", "testdata", "pitch-v1.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
 	delete(artifacts, "soul")
 	orphanHash, _ := save.ConstantsHashArtifacts(artifacts)
 	if _, err := Load(orphanHash, artifacts); err == nil {

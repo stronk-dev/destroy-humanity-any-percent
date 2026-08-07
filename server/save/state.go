@@ -22,7 +22,7 @@ import (
 const (
 	CurrentVersion           = 14
 	LatestSupportedVersion   = 16
-	LatestFounderVersion     = 20
+	LatestFounderVersion     = 21
 	LatestCompanyVersion     = 18
 	millisecondCursorVersion = 4
 	maxOfflineSpans          = 256
@@ -68,6 +68,7 @@ type State struct {
 	AchievementScoreLifetime   int64
 	MinigameRatings            map[string]MinigameRatingState
 	MinigameOfflineQuality     map[string]MinigameOfflineQualityState
+	MinigameSessionSeq         int64
 	Pets                       map[string]pet.CareState
 	FiscalCredit               int64
 	FiscalPeriodOpenedWallMS   int64
@@ -331,6 +332,11 @@ type stateV20 struct {
 	SoulExhaustedSourceIDs []string `json:"soul_exhausted_source_ids"`
 }
 
+type stateV21 struct {
+	stateV20
+	MinigameSessionSeq *int64 `json:"minigame_session_seq"`
+}
+
 type rawExitOfferState struct {
 	OfferID     string          `json:"offer_id"`
 	ExitType    string          `json:"exit_type"`
@@ -469,7 +475,7 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 	if normalized.Ledger.Scope() == economy.ScopeFounder {
 		maximum = LatestFounderVersion
 	}
-	if version < 1 || version > maximum || version != CurrentVersion && version != 15 && version != 16 && version != 17 && version != 18 && version != 19 && version != 20 {
+	if version < 1 || version > maximum || version != CurrentVersion && version != 15 && version != 16 && version != 17 && version != 18 && version != 19 && version != 20 && version != 21 {
 		return nil, fmt.Errorf("%w: unsupported encode version %d", ErrInvalidState, version)
 	}
 	if err := validateFoundationState(&normalized, version, normalized.Ledger.Scope()); err != nil {
@@ -546,7 +552,12 @@ func EncodeStateVersion(state *State, version int) ([]byte, error) {
 								FiscalUnlocks: sortedTrueKeys(normalized.FiscalUnlocks)}
 							wire = v19
 							if version >= 20 {
-								wire = stateV20{stateV19: v19, SoulExhaustedSourceIDs: append([]string{}, normalized.SoulExhaustedSourceIDs...)}
+								v20 := stateV20{stateV19: v19, SoulExhaustedSourceIDs: append([]string{}, normalized.SoulExhaustedSourceIDs...)}
+								wire = v20
+								if version >= 21 {
+									sequence := normalized.MinigameSessionSeq
+									wire = stateV21{stateV20: v20, MinigameSessionSeq: &sequence}
+								}
 							}
 						}
 					}
@@ -601,6 +612,7 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	var source stateV18
 	var fiscalSource *stateV19
 	var soulSource *stateV20
+	var minigameAPISource *stateV21
 	var computeBurstRemainingMS int64
 	var activeCompany *companyStateV18
 	if version == 1 {
@@ -700,6 +712,12 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 		}
 		source.stateV17.stateV16 = company.stateV16
 		computeBurstRemainingMS, activeCompany = *company.ComputeBurstRemainingMS, &company
+	} else if version == 21 && scope == economy.ScopeFounder {
+		var api stateV21
+		if err := decodeState(data, &api); err != nil {
+			return nil, err
+		}
+		source, fiscalSource, soulSource, minigameAPISource = api.stateV20.stateV19.stateV18, &api.stateV20.stateV19, &api.stateV20, &api
 	} else if version == 20 && scope == economy.ScopeFounder {
 		var soul stateV20
 		if err := decodeState(data, &soul); err != nil {
@@ -790,6 +808,9 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 	}
 	if scope == economy.ScopeFounder && version >= 20 && (soulSource == nil || soulSource.SoulExhaustedSourceIDs == nil) {
 		return nil, fmt.Errorf("%w: Soul Founder state is required", ErrInvalidState)
+	}
+	if scope == economy.ScopeFounder && version >= 21 && (minigameAPISource == nil || minigameAPISource.MinigameSessionSeq == nil) {
+		return nil, fmt.Errorf("%w: minigame API Founder state is required", ErrInvalidState)
 	}
 	ownedUpgrades, err := validateOwnedUpgrades(catalog, scope, source.UpgradesOwned)
 	if err != nil {
@@ -898,6 +919,9 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 			return nil, err
 		}
 	}
+	if scope == economy.ScopeFounder && version >= 21 {
+		state.MinigameSessionSeq = *minigameAPISource.MinigameSessionSeq
+	}
 	if source.GuildBoundaryGuildID != nil {
 		state.GuildBoundaryGuildID = *source.GuildBoundaryGuildID
 	}
@@ -965,6 +989,9 @@ func RestoreState(data []byte, version int, catalog *economy.Catalog, scope econ
 func validateFoundationState(state *State, version int, scope economy.Scope) error {
 	if scope == economy.ScopeCompany && version > LatestCompanyVersion {
 		return fmt.Errorf("%w: Company scope rejects Founder-only save v%d", ErrInvalidState, version)
+	}
+	if version < 21 && state.MinigameSessionSeq != 0 {
+		return fmt.Errorf("%w: minigame session sequence present before v21", ErrInvalidState)
 	}
 	if version < 15 {
 		if len(state.MeterValues) != 0 || len(state.MeterDecayRemainders) != 0 || len(state.MeterInputRemainders) != 0 ||
@@ -1086,6 +1113,12 @@ func validateFoundationState(state *State, version int, scope economy.Scope) err
 	}
 	if state.Soul < 0 || state.Soul > decimal.MaxExactInteger || !sortedMechanicalSlice(state.SoulExhaustedSourceIDs) {
 		return fmt.Errorf("%w: invalid Soul state", ErrInvalidState)
+	}
+	if version < 21 {
+		return nil
+	}
+	if scope != economy.ScopeFounder || state.MinigameSessionSeq < 0 || state.MinigameSessionSeq > decimal.MaxExactInteger {
+		return fmt.Errorf("%w: invalid minigame session sequence", ErrInvalidState)
 	}
 	return nil
 }

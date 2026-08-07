@@ -45,3 +45,18 @@ to the previously unbuilt AC1 composition wiring; intervening minigame/pitch cod
 (0eb3772, 2a55e12) belong to The Pitch's separately consumed set. The coordinator adapter,
 wire contracts, idempotency/sequencing, and the composed lifecycle proof remain open behind the
 now-ruled MA-C10–C14.
+
+## 2026-08-07 — MA-C15 pinned activation candidate and Founder v21 codec
+
+- Added the byte-exact `minigame_api` schema-v1 candidate at
+  `balance/testdata/minigame-api-candidate-v1.json`; SHA-256
+  `b16b5e0eb6f9426c8b1b94255e2d8e04f53f78b391fdbbb348ad7438d7bab31c`.
+- Both replay runtimes now accept `minigame_api` only above the complete Pitch chain, validate its
+  closed operation/tenant rows, and derive Founder floor 21 exclusively from its pinned presence.
+- Founder v21 adds exactly `minigame_session_seq`; Go and TypeScript codecs reject missing,
+  premature, or Company-scoped state, and Exit activation initializes the field to zero.
+- Kernel semantics advance from 0.3.78 to 0.3.79. The new Go authority is registered in the
+  fail-closed kernel path list; focused Go suites, strict TypeScript checks, and kernel-history
+  guards are green.
+- This is implementation evidence and a First Content Epoch candidate, not a mint, independent
+  verdict, archival decision, or completion claim for MA-C11's still-unbuilt sequencing command.

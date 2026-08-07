@@ -17,6 +17,7 @@ import { parsePrestigePolicy, type PrestigePolicy } from "./prestige";
 import { minigameCatalogSupportsSoul, parseMinigameCatalog, type MinigameCatalog } from "./minigame/catalog";
 import { applyFounderMinigameResolution, type CertifiedMinigameResult, type MinigameRatingState } from "./minigame/resolution";
 import { parsePetCatalog, petCatalogSupportsSoul, type PetCatalog } from "./pet/catalog";
+import { parsePitchCatalog, type PitchCatalog } from "./pitch/catalog";
 import { parsePetCareStates, validatePetCareStatesForCatalog, type PetCareState } from "./pet/state";
 import { applyPetCareTransition, careStatus } from "./pet/transition";
 import { discountedRequirements, evaluatePredicate, parseRoutesCatalog, type RouteContext, type RoutesCatalog } from "./routes";
@@ -27,11 +28,12 @@ const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]
 const hashPattern = /^sha256:[0-9a-f]{64}$/;
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 
-export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly meters?: string; readonly achievements?: string; readonly doctrines?: string; readonly minigames?: string; readonly pets?: string; readonly fiscal?: string; readonly opportunities?: string; readonly soul?: string }
+export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly meters?: string; readonly achievements?: string; readonly doctrines?: string; readonly minigames?: string; readonly pets?: string; readonly fiscal?: string; readonly opportunities?: string; readonly soul?: string; readonly pitch?: string; readonly minigame_api?: string }
+export interface MinigameAPIPolicy { readonly schemaVersion: 1; readonly tenants: readonly { readonly engineRef: string; readonly engineVersion: string; readonly minigameId: string }[] }
 export interface ReplayCatalogBundle {
   readonly constantsHash: string; readonly artifacts: ReplayArtifacts; readonly economy: EconomyCatalog; readonly routes: RoutesCatalog;
   readonly commons: CommonsCatalog; readonly prestige: PrestigePolicy; readonly factions: FactionCatalog; readonly guilds: GuildCatalog;
-  readonly meters?: MeterCatalog; readonly achievements?: AchievementCatalog; readonly doctrines?: DoctrineCatalog; readonly minigames?: MinigameCatalog; readonly pets?: PetCatalog; readonly fiscal?: FiscalCatalog; readonly opportunities?: ActivePlayCatalog; readonly soul?: SoulCatalog;
+  readonly meters?: MeterCatalog; readonly achievements?: AchievementCatalog; readonly doctrines?: DoctrineCatalog; readonly minigames?: MinigameCatalog; readonly pets?: PetCatalog; readonly fiscal?: FiscalCatalog; readonly opportunities?: ActivePlayCatalog; readonly soul?: SoulCatalog; readonly pitch?: PitchCatalog; readonly minigameAPI?: MinigameAPIPolicy;
   readonly next?: ReplayCatalogBundle;
 }
 export interface ReplayContribution { readonly slot: MultiplierSlot; readonly source_id: string; readonly target: string; readonly factor: string }
@@ -64,7 +66,7 @@ export interface LoggedExitTransition {
   readonly founderEvents: readonly ReplayEvent[]; readonly companyEndedEvents: readonly ReplayEvent[]; readonly companyStartedEvents: readonly ReplayEvent[];
 }
 export interface FounderReplayState {
-	wireVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20;
+	wireVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21;
   balances: Record<string, string>; generators: Record<string, number>; generatorPurchasedTotal: number;
   upgradesOwned: Set<string>; generatorsProvisioned: Record<string, number>; provisionRemaindersPpm: Record<string, number>;
   stockRateRemainderPpm: number; evaluatedThroughMs: number; computeCreditMs: number; manualTokenMilli: number;
@@ -78,6 +80,7 @@ export interface FounderReplayState {
   fiscalCredit: number; fiscalPeriodOpenedWallMs: number; fiscalPeriodSequence: number;
   fiscalGeneratorLevels: Record<string, number>; fiscalUnlocks: Set<string>;
 	soulExhaustedSourceIds: Set<string>;
+	minigameSessionSeq: number;
 }
 export interface FounderLoggedTransition {
   readonly state: FounderReplayState; readonly outcome: "applied" | "rejected"; readonly receipt: unknown;
@@ -88,7 +91,7 @@ export interface FounderReplayLogEntry {
   readonly replayInputs: unknown; readonly receiptJSON: string; readonly eventsJSON: string; readonly appliedRevision: number | null;
   readonly serverTSMS: number; readonly source: null | { readonly companyStreamId: string; readonly runSeq: number; readonly runLogSeq: number };
 }
-export interface FounderReplayHead { readonly revision: number; readonly version: 14 | 15 | 16 | 17 | 18 | 19 | 20; readonly constantsHash: string; readonly state: unknown }
+export interface FounderReplayHead { readonly revision: number; readonly version: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; readonly constantsHash: string; readonly state: unknown }
 export interface FounderAttendanceSample {
   readonly companyStreamId: string; readonly runSeq: number; readonly companyRevision: number; readonly companyConstantsHash: string;
   readonly completedAttendedMs: number; readonly currentRunPartialAttendedMs: number; readonly effectiveFounderAttendedMs: number;
@@ -123,12 +126,13 @@ interface ExitTerms { reputation_delta: number; network_slot_unlocks: NetworkSlo
 export async function loadReplayCatalogBundle(constantsHash: string, artifacts: ReplayArtifacts): Promise<ReplayCatalogBundle> {
   const names = Object.keys(artifacts).sort(byteCompare);
   const required = ["categories", "commons", "economy", "factions", "guilds", "prestige", "routes"];
-  const allowed = new Set([...required, "achievements", "doctrines", "fiscal", "meters", "minigames", "opportunities", "pets", "soul"]);
+  const allowed = new Set([...required, "achievements", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "soul"]);
   const foundations = artifacts.meters !== undefined || artifacts.achievements !== undefined;
   if (!hashPattern.test(constantsHash) || names.some((name) => !allowed.has(name)) || required.some((name) => !names.includes(name)) ||
       (artifacts.meters === undefined) !== (artifacts.achievements === undefined) || artifacts.doctrines !== undefined && !foundations ||
       artifacts.minigames !== undefined && !foundations || artifacts.pets !== undefined && artifacts.minigames === undefined ||
-      artifacts.fiscal !== undefined && artifacts.pets === undefined || artifacts.soul !== undefined && artifacts.fiscal === undefined || artifacts.opportunities !== undefined && artifacts.doctrines === undefined) throw new SyntaxError("invalid replay artifact set");
+      artifacts.fiscal !== undefined && artifacts.pets === undefined || artifacts.soul !== undefined && artifacts.fiscal === undefined || artifacts.pitch !== undefined && artifacts.soul === undefined ||
+      artifacts.minigame_api !== undefined && artifacts.pitch === undefined || artifacts.opportunities !== undefined && artifacts.doctrines === undefined) throw new SyntaxError("invalid replay artifact set");
   const computed = await constantsHashArtifacts(artifacts);
   if (computed !== constantsHash) throw new SyntaxError("replay artifact label mismatch");
   const economy = parseCatalog(parseJSON(artifacts.economy)); const routes = parseRoutesCatalog(parseJSON(artifacts.routes));
@@ -149,9 +153,34 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
   const fiscal = artifacts.fiscal === undefined ? undefined : loadFiscalCatalog(parseJSON(artifacts.fiscal), economy);
 	const soul = artifacts.soul === undefined ? undefined : parseSoulCatalog(parseJSON(artifacts.soul), { copyKeys: new Set(COPY_KEYS), epochSeeded: true, catchupCeilingMs: prestige.catchupCeilingMs });
 	if (soul && (!minigames || !minigameCatalogSupportsSoul(minigames) || !pets || !petCatalogSupportsSoul(pets))) throw new SyntaxError("Soul requires bumped minigame and pet artifacts");
+  const pitch = artifacts.pitch === undefined ? undefined : parsePitchCatalog(parseJSON(artifacts.pitch), new Set(COPY_KEYS));
+  const minigameAPI = artifacts.minigame_api === undefined ? undefined : parseMinigameAPIPolicy(parseJSON(artifacts.minigame_api));
+  if (minigameAPI && (!pitch || !minigames || !minigameAPI.tenants.some((row) => row.minigameId === "pitch" && row.engineRef === "pitch" && row.engineVersion === "1.0.0"))) throw new SyntaxError("minigame API requires the Pitch content chain");
   const opportunities = artifacts.opportunities === undefined ? undefined : loadActivePlayCatalog(parseJSON(artifacts.opportunities), economy);
   if (opportunities && opportunities.schedule.minimumIntervalMs + opportunities.schedule.lifetimeMs <= prestige.catchupCeilingMs) throw new SyntaxError("opportunity schedule exceeds one pending transition per online horizon");
-	return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, doctrines, minigames, pets, fiscal, opportunities, soul });
+	return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, doctrines, minigames, pets, fiscal, opportunities, soul, pitch, minigameAPI });
+}
+
+function parseMinigameAPIPolicy(source: unknown): MinigameAPIPolicy {
+  const root = exactObject(source, ["operations", "schema_version", "tenants"], "minigame API policy");
+  if (root.schema_version !== 1) throw new SyntaxError("invalid minigame API schema version");
+  const required = ["create_minigame_session", "get_current_minigame_session", "play_minigame_command", "resolve_minigame_session"];
+  const operations = array(root.operations, "minigame API operations").map((item) => {
+    const row = exactObject(item, ["operation_id", "version"], "minigame API operation");
+    return { id: mechanicalString(row.operation_id), version: safeInteger(row.version, 1, 1) };
+  });
+  if (!same(operations.map((row) => row.id), required) || operations.some((row) => row.version !== 1)) throw new SyntaxError("invalid minigame API operations");
+  let prior = "";
+  const tenants = array(root.tenants, "minigame API tenants").map((item) => {
+    const row = exactObject(item, ["engine_ref", "engine_version", "minigame_id"], "minigame API tenant");
+    const tenant = { engineRef: mechanicalString(row.engine_ref), engineVersion: string(row.engine_version), minigameId: mechanicalString(row.minigame_id) };
+    const key = `${tenant.engineRef}\0${tenant.engineVersion}\0${tenant.minigameId}`;
+    if (!/^[1-9][0-9]*\.[0-9]+\.[0-9]+$/.test(tenant.engineVersion) || byteCompare(prior, key) >= 0) throw new SyntaxError("invalid minigame API tenant order");
+    prior = key;
+    return tenant;
+  });
+  if (tenants.length === 0) throw new SyntaxError("empty minigame API tenant set");
+  return Object.freeze({ schemaVersion: 1, tenants: Object.freeze(tenants) });
 }
 
 const REPLAY_EVENT_KINDS = Object.freeze([
@@ -280,6 +309,7 @@ const founderMinigameSaveKeys = ["minigame_ratings", "minigame_offline_quality"]
 const founderPetSaveKeys = ["pets"] as const;
 const founderFiscalSaveKeys = ["fiscal_credit", "fiscal_period_opened_wall_ms", "fiscal_period_seq", "fiscal_generator_levels", "fiscal_unlocks"] as const;
 const founderSoulSaveKeys = ["soul_exhausted_source_ids"] as const;
+const founderMinigameAPISaveKeys = ["minigame_session_seq"] as const;
 
 export function restoreReplayState(source: unknown, version: number, catalog: EconomyCatalog, foundationCatalogs?: { readonly meters: MeterCatalog; readonly achievements: AchievementCatalog; readonly doctrines?: DoctrineCatalog; readonly opportunities?: ActivePlayCatalog }): ReplayState {
   const requestedVersion = version;
@@ -458,11 +488,11 @@ function parseReplayActiveBuffs(source: unknown, catalog: ActivePlayCatalog): Re
 export function restoreFounderReplayState(source: unknown, version: number, catalogs: ReplayCatalogBundle): FounderReplayState {
   const requestedVersion = version;
   let foundationRaw: Record<string, unknown> | null = null;
-	if (version >= 15 && version <= 20) {
-		const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys.slice(0, version === 15 ? 3 : foundationSaveKeys.length), ...(version >= 17 ? founderMinigameSaveKeys : []), ...(version >= 18 ? founderPetSaveKeys : []), ...(version >= 19 ? founderFiscalSaveKeys : []), ...(version >= 20 ? founderSoulSaveKeys : [])];
+	if (version >= 15 && version <= 21) {
+		const activeKeys = [...saveV14Keys.filter((key) => key !== "meter_bands"), ...foundationSaveKeys.slice(0, version === 15 ? 3 : foundationSaveKeys.length), ...(version >= 17 ? founderMinigameSaveKeys : []), ...(version >= 18 ? founderPetSaveKeys : []), ...(version >= 19 ? founderFiscalSaveKeys : []), ...(version >= 20 ? founderSoulSaveKeys : []), ...(version >= 21 ? founderMinigameAPISaveKeys : [])];
     foundationRaw = exactObject(source, activeKeys, "Founder save v16");
     source = { ...foundationRaw, meter_bands: {} };
-		for (const key of [...foundationSaveKeys, ...founderMinigameSaveKeys, ...founderPetSaveKeys, ...founderFiscalSaveKeys, ...founderSoulSaveKeys]) delete (source as Record<string, unknown>)[key];
+		for (const key of [...foundationSaveKeys, ...founderMinigameSaveKeys, ...founderPetSaveKeys, ...founderFiscalSaveKeys, ...founderSoulSaveKeys, ...founderMinigameAPISaveKeys]) delete (source as Record<string, unknown>)[key];
     version = 14;
   }
   if (version !== 14) throw new SyntaxError("unsupported Founder replay save version");
@@ -503,6 +533,7 @@ export function restoreFounderReplayState(source: unknown, version: number, cata
   let minigameRatings: FounderReplayState["minigameRatings"] = {}, minigameOfflineQuality: FounderReplayState["minigameOfflineQuality"] = {}, pets: Record<string, PetCareState> = {};
 	let fiscalCredit = 0, fiscalPeriodOpenedWallMs = 0, fiscalPeriodSequence = 0, fiscalGeneratorLevels: Record<string, number> = {}, fiscalUnlocks = new Set<string>();
 	let soulExhaustedSourceIds = new Set<string>();
+	let minigameSessionSeq = 0;
   if (requestedVersion >= 17) {
     if (!catalogs.minigames) throw new SyntaxError("Founder v17 requires minigames artifact");
     const ratingsRaw = exactRecord(foundationRaw!.minigame_ratings, catalogs.minigames.minigameIds, "minigame ratings");
@@ -538,13 +569,17 @@ export function restoreFounderReplayState(source: unknown, version: number, cata
 		if (safeInteger(raw.soul, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER) !== 0) throw new SyntaxError("inactive Soul state before v20");
 		if (catalogs.soul) throw new SyntaxError("Soul artifact requires Founder v20");
 	}
-	return { wireVersion: requestedVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm,
+	if (requestedVersion >= 21) {
+		if (!catalogs.minigameAPI) throw new SyntaxError("Founder v21 requires minigame API artifact");
+		minigameSessionSeq = safeInteger(foundationRaw!.minigame_session_seq, 0, MAX_EXACT_INTEGER);
+	} else if (catalogs.minigameAPI) throw new SyntaxError("minigame API artifact requires Founder v21");
+	return { wireVersion: requestedVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21, balances, generators, generatorPurchasedTotal: safeInteger(raw.generators_purchased_total, 0, MAX_EXACT_INTEGER), upgradesOwned, generatorsProvisioned, provisionRemaindersPpm,
     stockRateRemainderPpm: 0, evaluatedThroughMs, computeCreditMs: 0, manualTokenMilli: 0, manualTokenRefilledAtMs,
     routeKnowledgeBalance: safeInteger(raw.route_knowledge_balance, 0, MAX_EXACT_INTEGER), hintsUnlocked: mechanicalSet(raw.hints_unlocked), ledgerFactKinds: mechanicalSet(raw.ledger_fact_kinds),
 		reputationLevel: safeInteger(raw.reputation_level, 0, MAX_EXACT_INTEGER), networkSlots, cloutLifetime: safeInteger(raw.clout_lifetime, 0, MAX_EXACT_INTEGER), soul: requestedVersion >= 20 ? safeInteger(raw.soul, catalogs.soul!.policy.soul_floor, catalogs.soul!.policy.soul_max) : 0,
     ageMs: safeInteger(raw.age_ms, 0, MAX_EXACT_INTEGER), notoriety: safeInteger(raw.notoriety, 0, MAX_EXACT_INTEGER), advisorMode: boolean(raw.advisor_mode), exitHistory,
     achievementsEarnedLifetime: earnedLifetime, achievementScoreLifetime: lifetimeScore, minigameRatings, minigameOfflineQuality, pets,
-		fiscalCredit, fiscalPeriodOpenedWallMs, fiscalPeriodSequence, fiscalGeneratorLevels, fiscalUnlocks, soulExhaustedSourceIds };
+		fiscalCredit, fiscalPeriodOpenedWallMs, fiscalPeriodSequence, fiscalGeneratorLevels, fiscalUnlocks, soulExhaustedSourceIds, minigameSessionSeq };
 }
 
 export function encodeFounderReplayState(state: FounderReplayState): unknown {
@@ -569,6 +604,7 @@ export function encodeFounderReplayState(state: FounderReplayState): unknown {
 	if (state.wireVersion >= 19) Object.assign(active, { fiscal_credit: state.fiscalCredit, fiscal_period_opened_wall_ms: state.fiscalPeriodOpenedWallMs,
 		fiscal_period_seq: state.fiscalPeriodSequence, fiscal_generator_levels: sortedRecord(state.fiscalGeneratorLevels), fiscal_unlocks: [...state.fiscalUnlocks].sort(byteCompare) });
 	if (state.wireVersion >= 20) Object.assign(active, { soul_exhausted_source_ids: [...state.soulExhaustedSourceIds].sort(byteCompare) });
+	if (state.wireVersion >= 21) Object.assign(active, { minigame_session_seq: state.minigameSessionSeq });
   return active;
 }
 
@@ -730,7 +766,7 @@ function applyFounderFiscalSpend(state: FounderReplayState, request: Intent, wir
   return { state, outcome: "applied", receipt: { intent_id: request.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, fiscal_sweep: null, target: wireTarget, resolved_cost: resolvedCost, fiscal_credit_before: creditBefore, fiscal_credit_after: state.fiscalCredit }, events: [event("fiscal_credit_spent.v1", request.intent_id, { target: wireTarget, resolved_cost: resolvedCost, fiscal_credit_before: creditBefore, fiscal_credit_after: state.fiscalCredit })], resultConstantsHash: catalogs.constantsHash };
 }
 
-export async function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20, genesisHash: string,
+export async function verifyFounderReplayHistory(genesis: unknown, genesisRevision: number, genesisVersion: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21, genesisHash: string,
   founderStreamId: string, founderId: string, entries: readonly FounderReplayLogEntry[], head: FounderReplayHead,
   bundles: readonly ReplayCatalogBundle[]): Promise<ReplayVerdict> {
   const catalogs = new Map(bundles.map((value) => [value.constantsHash, value]));
@@ -1519,7 +1555,7 @@ function founderWireSnapshot(state: FounderReplayState): unknown {
 function applyFounderExit(state: FounderReplayState, request: Intent, wire: FounderReplayWire, catalogs: ReplayCatalogBundle): FounderLoggedTransition {
 	const inputHash = catalogs.constantsHash;
 	const probe = wire.resolved;
-	const probedVersion = safeInteger(probe.result_founder_wire_version, 1, 20);
+	const probedVersion = safeInteger(probe.result_founder_wire_version, 1, 21);
 	const activatesSoul = probedVersion >= 20 && state.wireVersion < 20;
   const keys = ["kind", "outcome", "company_stream_id", "run_seq", "run_log_seq", "result_constants_hash", "reputation_delta", "route_knowledge_delta", "attended_ms", "age_ms_before", "age_ms_after", "achievement_score_delta", "added_network_slots", "added_ledger_fact_kinds", "added_lifetime_achievements", "exit_record", "result_founder_wire_version", "rejection", ...(activatesSoul ? ["next_soul"] : [])];
 	const raw = exactObject(wire.resolved, keys, "Founder Exit inputs");
@@ -1528,8 +1564,8 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
   const resultHash = string(raw.result_constants_hash); if (!hashPattern.test(resultHash)) throw new SyntaxError("invalid Founder result hash");
   const ageBefore = safeInteger(raw.age_ms_before, 0, MAX_EXACT_INTEGER); const ageAfter = safeInteger(raw.age_ms_after, 0, MAX_EXACT_INTEGER); const attended = safeInteger(raw.attended_ms, 0, MAX_EXACT_INTEGER);
   if (ageBefore !== state.ageMs || ageAfter < ageBefore || attended !== ageAfter - ageBefore) throw new RangeError("invalid Founder attendance facts");
-	const resultVersion = safeInteger(raw.result_founder_wire_version, 1, 20);
-	if (![14, 15, 16, 17, 18, 19, 20].includes(resultVersion)) throw new RangeError("unsupported Founder result version");
+	const resultVersion = safeInteger(raw.result_founder_wire_version, 1, 21);
+	if (![14, 15, 16, 17, 18, 19, 20, 21].includes(resultVersion)) throw new RangeError("unsupported Founder result version");
   const outcome = string(raw.outcome);
   if (outcome === "rejected") {
     const rejection = exactObject(raw.rejection, ["category", "detail"], "Founder Exit rejection"); const category = string(rejection.category); const detail = string(rejection.detail);
@@ -1568,7 +1604,11 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
 		if (initial !== resultCatalogs.soul.policy.soul_initial || evidence.band_member !== band.band_member) throw new RangeError("Soul activation evidence mismatch");
 		state.soul = initial; state.soulExhaustedSourceIds = new Set();
 	}
-	state.wireVersion = resultVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20;
+	if (resultVersion >= 21 && state.wireVersion < 21) {
+		if (!resultCatalogs.minigameAPI) throw new RangeError("missing minigame API activation artifact");
+		state.minigameSessionSeq = 0;
+	}
+	state.wireVersion = resultVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21;
   Object.assign(state, restoreFounderReplayState(encodeFounderReplayState(state), resultVersion, resultCatalogs));
   const receipt = { intent_id: wire.command.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, result_constants_hash: resultHash };
   const founderEvent = event("founder_advanced", wire.command.intent_id, { founder_id: wire.command.founder_id, run_id: { company_stream_id: companyStreamId, run_seq: runSeq }, exit_type: exit.exit_type, reputation_delta: reputationDelta, route_knowledge: routeDelta, occurred_at_ms: exit.occurred_at_ms });

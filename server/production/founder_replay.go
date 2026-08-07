@@ -706,6 +706,12 @@ func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resu
 	} else if nextSoul != nil {
 		return ErrInvalidReplayInputs
 	}
+	if resultVersion >= 21 && current < 21 {
+		if catalogs.MinigameAPI == nil {
+			return ErrInvalidReplayInputs
+		}
+		state.MinigameSessionSeq = 0
+	}
 	return nil
 }
 

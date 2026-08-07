@@ -19,6 +19,7 @@ import (
 	"cloud-clicker/server/leaderboard"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
+	"cloud-clicker/server/minigameapi"
 	"cloud-clicker/server/pet"
 	"cloud-clicker/server/pitch"
 	prestigecore "cloud-clicker/server/prestige"
@@ -184,19 +185,30 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.Pitch = pitchCatalog
 	}
+	if apiBytes, active := artifacts["minigame_api"]; active {
+		apiCatalog, apiErr := minigameapi.LoadCatalog(apiBytes)
+		if apiErr != nil || bundle.Minigames == nil || bundle.Pitch == nil {
+			return production.CatalogBundle{}, minigameapi.ErrInvalidCatalog
+		}
+		definition, ok := bundle.Minigames.Definition("pitch")
+		if !ok || !apiCatalog.SupportsTenant(definition.MinigameID, definition.EngineRef, definition.EngineVersion) {
+			return production.CatalogBundle{}, minigameapi.ErrInvalidCatalog
+		}
+		bundle.MinigameAPI = apiCatalog
+	}
 	return bundle, nil
 }
 
 func validArtifactNames(artifacts map[string][]byte) bool {
 	base := [...]string{"categories", "commons", "economy", "factions", "guilds", "prestige", "routes"}
-	allowed := make(map[string]bool, len(base)+8)
+	allowed := make(map[string]bool, len(base)+9)
 	for _, name := range base {
 		allowed[name] = true
 		if len(artifacts[name]) == 0 {
 			return false
 		}
 	}
-	for _, name := range [...]string{"achievements", "doctrines", "fiscal", "meters", "minigames", "pets", "pitch", "soul"} {
+	for _, name := range [...]string{"achievements", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "pets", "pitch", "soul"} {
 		allowed[name] = true
 	}
 	for name, data := range artifacts {
@@ -212,8 +224,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	_, fiscalActive := artifacts["fiscal"]
 	_, soulActive := artifacts["soul"]
 	_, pitchActive := artifacts["pitch"]
+	_, minigameAPIActive := artifacts["minigame_api"]
 	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets ||
-		soulActive && !fiscalActive || pitchActive && !soulActive {
+		soulActive && !fiscalActive || pitchActive && !soulActive || minigameAPIActive && !pitchActive {
 		return false
 	}
 	want := len(base)
@@ -236,6 +249,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 		want++
 	}
 	if pitchActive {
+		want++
+	}
+	if minigameAPIActive {
 		want++
 	}
 	return len(artifacts) == want

@@ -34,6 +34,7 @@
     "server/leaderboard/categories.go",
     "server/meters/",
     "server/minigame/",
+    "server/minigameapi/",
     "server/multiplier/",
     "server/pet/",
     "server/pitch/",

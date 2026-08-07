@@ -21,6 +21,7 @@ import (
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
+	"cloud-clicker/server/minigameapi"
 	"cloud-clicker/server/multiplier"
 	"cloud-clicker/server/pet"
 	"cloud-clicker/server/pitch"
@@ -45,6 +46,7 @@ type CatalogBundle struct {
 	Meters        *meters.Catalog
 	Achievements  *achievements.Catalog
 	Minigames     *minigame.Catalog
+	MinigameAPI   *minigameapi.Catalog
 	Pets          *pet.Catalog
 	Fiscal        *fiscal.Catalog
 	Soul          *soul.Catalog
@@ -125,6 +127,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withFiscal := bundle.Fiscal != nil
 	withSoul := bundle.Soul != nil
 	withPitch := bundle.Pitch != nil
+	withMinigameAPI := bundle.MinigameAPI != nil
 	withOpportunities := bundle.Opportunities != nil
 	expectedArtifacts := 7
 	if withFoundations {
@@ -146,6 +149,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		expectedArtifacts++
 	}
 	if withPitch {
+		expectedArtifacts++
+	}
+	if withMinigameAPI {
 		expectedArtifacts++
 	}
 	if withOpportunities {
@@ -173,6 +179,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		withFiscal && (!withPets || len(bundle.Artifacts["fiscal"]) == 0) ||
 		withSoul && (!withFiscal || len(bundle.Artifacts["soul"]) == 0 || !bundle.Minigames.SchemaSupportsSoul() || !bundle.Pets.SchemaSupportsSoul()) ||
 		withPitch && (!withSoul || len(bundle.Artifacts["pitch"]) == 0) ||
+		withMinigameAPI && (!withPitch || len(bundle.Artifacts["minigame_api"]) == 0) ||
 		withOpportunities && (!withDoctrines || len(bundle.Artifacts["opportunities"]) == 0) {
 		return false
 	}
@@ -203,6 +210,9 @@ func (bundle CatalogBundle) versionFloors() (founder, company int) {
 	}
 	if bundle.Soul != nil {
 		founder = 20
+	}
+	if bundle.MinigameAPI != nil {
+		founder = 21
 	}
 	if bundle.Opportunities != nil {
 		company = 18

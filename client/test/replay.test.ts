@@ -60,7 +60,7 @@ interface TerminalFixtureCase {
 }
 
 interface FounderFixtureCase extends FixtureCase {
-	readonly state_version: 14 | 15 | 16 | 17 | 18 | 19 | 20;
+	readonly state_version: 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21;
   readonly result_constants_hash: string;
 }
 
@@ -415,6 +415,25 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		const missing: Record<string, unknown> = { ...source }; delete missing.soul_exhausted_source_ids;
 		expect(() => restoreFounderReplayState(missing, 20, bundle)).toThrow();
 		expect(() => restoreFounderReplayState(source, 19, { ...bundle, soul: undefined })).toThrow(/fields are not exact|inactive Soul/);
+	});
+
+	it("activates Founder v21 only under the pinned minigame API and Pitch chain", async () => {
+		const artifacts = structuredClone(fixture.soul_artifacts) as unknown as Record<string, string>;
+		artifacts.pitch = JSON.stringify((await import("../../balance/testdata/pitch-v1.json")).default);
+		artifacts.minigame_api = JSON.stringify((await import("../../balance/testdata/minigame-api-candidate-v1.json")).default);
+		const bundle = await loadReplayCatalogBundle(
+			await artifactHash(artifacts as unknown as ReplayArtifacts),
+			artifacts as unknown as ReplayArtifacts,
+		);
+		const source = {
+			...(fixture.soul_founder_case.post_state as Record<string, unknown>),
+			minigame_session_seq: 41,
+		};
+		const state = restoreFounderReplayState(source, 21, bundle);
+		expect(state.minigameSessionSeq).toBe(41);
+		expect(encodeFounderReplayState(state)).toMatchObject({ minigame_session_seq: 41 });
+		expect(() => restoreFounderReplayState(source, 20, { ...bundle, minigameAPI: undefined })).toThrow(/fields are not exact|inactive/);
+		expect(() => restoreFounderReplayState(source, 21, { ...bundle, minigameAPI: undefined })).toThrow(/requires minigame API/);
 	});
 
   it.each(fixture.cases)("replays $name to the Go receipt, events, and state", async (testCase) => {

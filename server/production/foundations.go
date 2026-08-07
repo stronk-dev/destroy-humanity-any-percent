@@ -102,6 +102,13 @@ func (bundle CatalogBundle) ValidateFoundationState(state *save.State) error {
 		if err := validateFounderSoulState(bundle, state); err != nil {
 			return err
 		}
+		if bundle.MinigameAPI == nil {
+			if state.MinigameSessionSeq != 0 {
+				return fmt.Errorf("%w: minigame API state without pinned artifact", ErrInvalidEngineState)
+			}
+		} else if state.MinigameSessionSeq < 0 || state.MinigameSessionSeq > decimal.MaxExactInteger {
+			return fmt.Errorf("%w: invalid minigame API state", ErrInvalidEngineState)
+		}
 	}
 	return nil
 }
@@ -252,6 +259,9 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 	if next.Soul != nil && current.Soul == nil {
 		founder.Soul = next.Soul.Policy.Initial
 		founder.SoulExhaustedSourceIDs = []string{}
+	}
+	if next.MinigameAPI != nil && current.MinigameAPI == nil {
+		founder.MinigameSessionSeq = 0
 	}
 	founder.WireVersion = nextFounderFloor
 	newMeters, err := meters.NewRunState(next.Meters, founder.Notoriety)
