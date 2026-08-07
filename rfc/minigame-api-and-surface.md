@@ -463,3 +463,22 @@ API Foundation work; never add a handwritten parallel router contract.
   `minigame_session_seq` with the atomic coordinator; Exit rejection over atomic cancel;
   transaction-scoped command receipts; combined-review sequencing with the API Foundation
   continuation.
+
+## Codex implementation blocker — v21 activation authority (2026-08-07)
+
+### MA-C15 — No pinned artifact distinguishes Founder v21 from reviewed v17–v20 histories
+
+The new-mechanic activation law requires a Founder schema bump to occur at a new-run boundary from
+the pinned next bundle. Today `versionFloors()` derives Founder versions solely from artifact
+presence: minigames→17, pets→18, fiscal→19, Soul→20. MA-C11 adds v21 but names no new artifact or
+schema predicate. Reinterpreting every existing minigames artifact as floor 21 would invalidate
+the already-reviewed v17–v20 fixture/history chain. Upgrading a v20 Founder lazily on
+`start_minigame_session` would mutate the schema mid-run and make replay depend on deployed code.
+
+**Proposed contract:** add a pinned `minigame_api` activation artifact to the First Content Epoch
+bundle; its presence sets Founder floor 21, and Exit initializes `minigame_session_seq: 0` while
+preserving every v20 field. The artifact is structural policy (schema version plus the closed
+operation/tenant versions), joins constants identity, and is required by the composed API before
+session creation. Existing bundles without it remain exactly v17–v20. Alternative: bump the
+minigames catalog to a new schema version whose explicit API-policy row supplies the same
+authority. Do not key v21 to deployed kernel version, a non-empty tenant list, or first command.

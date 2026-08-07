@@ -402,3 +402,19 @@ keys do not resolve.
 
 - 2026-08-07: FCE-C7 ruled (all thirteen copy texts authored in the ruling; document assembly +
   SHA ratification owed); FCE-C8 accepted (three-stage fail-closed landing normative).
+
+## Codex implementation blocker — missing thirteenth copy byte (2026-08-07)
+
+### FCE-C9 — `achievement.possession_warning` still has no literal text
+
+FCE-C7 says all thirteen texts are supplied verbatim, but row 13 refers to an “ALREADY-RULED exact
+possession disclosure.” No such literal exists in this RFC, the Achievements RFC/log, the design
+documents, the mint proposal, the copy catalogs, or tracked history. The first twelve rows are
+byte-determined; inventing the thirteenth would make the assembled SHA partly Codex-authored and
+would contradict the requested owner ratification.
+
+**Proposed contract:** supply the exact single-line text for
+`achievement.possession_warning`. Its already-ruled structural fields remain `params: []`,
+`era_variants: null`, `provenance: []`, and `tone: "achievement"`. Once supplied, Codex assembles
+all thirteen byte-sorted rows, runs the intentional-orphan stage, and files the complete source
+and generated-copy SHA-256 values together.
