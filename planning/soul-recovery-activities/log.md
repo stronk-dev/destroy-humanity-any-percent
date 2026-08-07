@@ -134,3 +134,38 @@ tests (3 skipped); and a complete root `make verify` passes Go vet/tests, the ba
 client typecheck/build, all 6,598 client tests, kernel/history guards at `0.3.78`, copy/schema gates,
 and 19,803 browser assertions. No production epoch was minted. Ready for the narrow designated
 cross-party re-review; this entry does not authorize Soul Recovery archival.
+
+## 2026-08-07 — designated cross-party re-review: scheduler remediation 3cfc0e6^..3cfc0e6 — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+Narrow scope confirmed (one commit: scheduler + tests + kernel parity bumps + planning; no server
+behavior files). Both blockers closed with discriminating tests:
+- **F1 CLOSED:** `#missedCeilingMS = 3 × beat_interval_ms` (the ruled inference, with an integer
+  overflow guard); the forward-gap check exists on BOTH paths (`#beat()` for sleep-while-visible,
+  `#setVisible(true)` for hidden intervals) routing to `#pauseForReconnect()` (single
+  `on_pause("network")`, latch, beat refusal until `reconnect()` rotates the token and emits
+  `on_token_rotated` + `on_resume`). Under-ceiling hidden gaps resume directly, test-pinned. The
+  previously-enshrining test is corrected (over-ceiling gap asserts pause + rotated-token resume).
+  Probe: neutering the ceiling comparison fails exactly the corrected test.
+- **F2 CLOSED:** in-flight dedup test (never-resolving transport + hide/show cycle, exactly 1
+  dispatch) and watchdog-terminal idempotence test both present; probes on each guard fail exactly
+  the matching test.
+- **Kernel honest:** 0.3.77→0.3.78 in all three parity points; guard + adversarial fixtures
+  independently green. **Gates:** all `make verify` components pass at 3cfc0e6 (6,598 client,
+  19,803 browser); Postgres suite waived (client-only delta).
+- **F3 rider — assessed NOT TRIGGERED, remains standing, wording re-anchored:** 3cfc0e6's bump is
+  client-path-only; folding a server error-taxonomy refactor into a narrow client remediation
+  would have broken remediation-only scope. The rider is re-anchored as: **typed sentinels return
+  in the next commit that touches `server/account/` behavior or bumps the kernel for a
+  server-path change** — it can no longer be skipped by client-side bumps.
+- **Non-blocking observations recorded:** O1 — the `#requiresReconnect` latch's solely-owned
+  effect (no retry after transport error until reconnect) has no pinning test; suggested future
+  test recorded (coverage note, behavior doubly implemented). O2/O3 — harmless `on_resume`
+  emission nuance; rapid-toggle cadence contained by the server-side SR-C6 limiter authority.
+
+**Verdict: APPROVED. Combined consumed set {4973c8e, ab9d15e, 3cfc0e6} + docs-tier
+{f04c2f3, d1cd39c} unions to the complete Soul Recovery implementation span relative to the Soul
+Foundation closing endpoint 3ff2082 (intervening commits are docs-tier or The Pitch's own APPROVED
+set). No uncovered edge commits. Soul Recovery is ARCHIVAL-ELIGIBLE**, subject to the carried
+AC4/AC5 UI-successor debt (unchanged). The archival move is Codex's to execute citing this entry.
