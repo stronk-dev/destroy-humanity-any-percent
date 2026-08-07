@@ -155,9 +155,36 @@ as the checklist the integration test covers:
    founder attendance) to reach their designated-review/archival gates too — that closure work is
    on the mint's critical path (audit in flight at ruling time).
 
+## Blockers found during content-row drafting (2026-08-07)
+
+### FCE-B1 — The reviewed doctrines fixture does not compose with unchanged routes bytes
+
+Loader-verified during the content-row proposal work: the reviewed doctrines fixture references
+`gate.t3_to_t4`, which is absent from the live `balance/routes/phase0.json` —
+`DoctrineCatalog.ValidateRoutes` hard-fails at bundle load, so the dependency-complete epoch-6
+bundle AS CURRENTLY CONSTITUTED cannot load. FCE2's "byte-identical promotion" is therefore
+insufficient for the doctrines artifact: the mint must EITHER (a) extend the routes artifact with
+the missing gate row (a BASE-artifact byte change — re-accept + content gate + review, the one
+place FCE1's "base bytes unchanged" gives way), OR (b) retune the doctrine row to reference an
+existing gate (a reviewed retune per FCE2). Decision at acceptance review; either path is a
+`BALANCE-CHANGE:` reviewed before the mint consumes it.
+
+### FCE-B2 — Scope clarification: no pet species roster in this mint
+
+The ruled pet artifact grammar carries care/decay/trust/FSM rows only — it has NO
+species/temperament slot. The launch species roster (design/04) therefore CANNOT be minted here
+and belongs to the pet-acquisition successor RFC (which owns the grammar extension). Epoch 6's pet
+artifact is the care-numbers artifact, nothing more.
+
+The full row proposal (loader-validated drafts for meters/achievements/pets, 17 DESIGN-GAPs, copy-key
+list) is at `planning/coverage-map/mint-content-rows-proposal.md` (internal) pending owner rulings.
+
 ## Changelog
 
 - 2026-08-07: created (draft) — the owner-gated dependency-complete mint promised by TP-C18 and
   SR-C13; scope pinned to the loader's enforced artifact chain; gates enumerated.
+- 2026-08-07: FCE-B1 (doctrines/routes composition failure — loader-verified) and FCE-B2 (no
+  species slot in the pet grammar; roster deferred to the acquisition successor) recorded from
+  the content-row drafting pass.
 - 2026-08-07: all three open questions ruled by Marco (name "First Content"; mint provisional
   bytes as-is; mint ASAP once gates green). No open questions remain — acceptance-ready.
