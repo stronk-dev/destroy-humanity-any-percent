@@ -45,3 +45,18 @@ Live resolution now invokes the same Founder boundary and the integration test p
 Fiscal + Pitch history verifies. Kernel semantics advance to 0.3.77 and register both Pitch paths.
 
 This is a handoff, not a verdict. No archive or production mint is authorized by this entry.
+
+Implementation range: `d1cd39cffbbb3d2b3e1af174420bebb137d2776d..0eb3772`.
+
+Self-check evidence read to terminal completion before handoff:
+
+- `make verify` — green, including all Go packages, Pitch content-corpus drift, formula/harness
+  checks, TypeScript + Svelte typecheck, production client build, 6,594 client tests, kernel-history
+  guard 0.3.77, copy/schema/boundary gates, and 19,791 browser assertions.
+- `make test-save-integration` — green against real Postgres, including the composed Pitch path and
+  Founder replay with the Fiscal sweep active.
+- `git diff --check` — green before commit.
+
+Codex self-review additionally closed Go/TypeScript parity gaps for undeclared copy keys, negative
+snapshot Decimals, unknown slotted hacks, malformed command rejection, and canonical nested offer
+bytes. This self-review does not satisfy the mandatory designated cross-party review.
