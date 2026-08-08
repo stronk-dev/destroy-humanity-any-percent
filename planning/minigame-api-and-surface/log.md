@@ -248,3 +248,13 @@ Codex-reviews-Claude direction.
 - Implementation commit: `dc773bb`. Focused Go, shared replay-fixture, client, typecheck, and
   kernel-history gates are green. This is a narrow remediation handoff, not approval or archival
   authority; it is ready for the designated one-finding re-review.
+
+### Verification correction — activation and recurring reset remain two explicit arms
+
+The first full `make verify` run after `dc773bb` failed
+`TestMinigameAPIArtifactAloneOwnsFounderV21Activation`: consolidating initialization into the
+post-activation Exit reset removed the activation helper's independently required v20→v21 zeroing.
+Commit `bef1a87` restores that arm in both runtimes. The resulting contract is explicit: first
+v21 activation initializes zero, and every applied v21 Exit resets zero thereafter. Focused
+production and client suites are green after the correction; no earlier green full-gate claim is
+made.
