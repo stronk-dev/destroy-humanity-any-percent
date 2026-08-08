@@ -519,3 +519,40 @@ must be replaced by the candidate designated-review entry before this RFC become
 | prestige | `balance/prestige/phase0.json` | same | `1873090781bed666c8f989169a9e59990547b1f713ac2f9a8215f51d3f0ea7ec` | 1 | schema | Prestige verdict |
 | routes | `balance/routes/phase0.json` | `balance/testdata/permits-t3-gate-candidate-v1.json` | `6c7c4350bcd43840a141fb5c0525d9779f11ed0ed836a8783f21f22f6c880df2` | 1 | schema + routes + replaycatalog | Permits `88e2054` |
 | soul | `balance/soul/first-content.json` | `balance/testdata/first-content/soul-v1.json` | `a57798f94892a86fd6ea727b76d5bfa663db27c4abd10180204c26ea83587de4` | 1 | soul + replaycatalog + client | pending candidate review |
+
+## Owner rulings on FCE-C10–C12 — RATIFIED (Marco, 2026-08-08)
+
+Ruled after the candidate designated review (planning/first-content-epoch/log.md, 2026-08-08
+APPROVED entry — all 16 hashes independently recomputed, every byte traced to a ruled or reviewed
+source):
+
+- **FCE-C10 — RATIFIED.** `balance/testdata/first-content/categories-v1.json`
+  (`8232b8932649aafdfef6a4502ee4d6003ab6665c37042926fa8eace2b619f8ef`) is the Categories
+  candidate — the THIRD ruled base-byte replacement alongside Economy and Routes, differing from
+  epoch-5 by exactly the sorted insertion of `gate.t3_to_t4` in `full_gate_set`, with the
+  both-runtimes rejection probe as its standing gate. FCE1's body statement of this change is
+  hereby CONFIRMED (closing the review's OBS-1).
+- **FCE-C11 — RATIFIED, all three composed candidates:** Economy v3
+  `2d4807b7628e3e258536802625ba35806c32d0429c3e819a19a7a287e3c552a1` · Fiscal v1
+  `3847236f8001ed7e29ab41054fbeef38c5e5ea8b838e478d2c4057fdc417f2a9` · Soul v1
+  `a57798f94892a86fd6ea727b76d5bfa663db27c4abd10180204c26ea83587de4`. Test helpers cease being
+  artifact authors; every row is already-ruled (Permits pins + the two reviewed fiscal multiplier
+  declarations; the TP-C15 pitch unlock at cost 3; SR-C13's recovery rows with empty production
+  debit_sources).
+- **FCE-C12 — RATIFIED:** the achievement copy source
+  `0dd211486b3e988c0fffa5311ed95c216f5bc08b4f9fd6ef7068409c3a091cf3` (generated catalog
+  `2f299e2a…166b` as point-in-time attestation, refreshed at mint per the Permits precedent) ·
+  `minigame_api` v1 `b16b5e0eb6f9426c8b1b94255e2d8e04f53f78b391fdbbb348ad7438d7bab31c` · the
+  literal production paths in the FCE-C6 table · the composed candidate constants hash
+  `sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a` as THE bundle for the
+  composed harness run. Per OBS-2, the manifest MAY gain a `provenance` field
+  (source-fixture | owner-authored | base-unchanged) at the implementer's discretion — no re-hash
+  of candidate documents is implied (the manifest is planning-tier).
+  **Ratification does NOT authorize the mint: FCE5.3 (composed harness report, owner-read) and
+  FCE5.6 (the mint sign-off) remain, in that order.**
+
+## Changelog (C10–C12 round)
+
+- 2026-08-08: FCE-C10–C12 RATIFIED in full after the APPROVED candidate designated review; the
+  manifest's pending-verdict fields may now cite that review's entry. Remaining before the mint:
+  the FCE5.3 composed harness report, then the FCE5.6 owner sign-off.
