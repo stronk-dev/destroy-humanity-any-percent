@@ -241,7 +241,18 @@ T2→T3 and T4→T5 rows; gate requirements remain byte-ordered `company.cash`, 
   text; new-run-bound activation fixtures; insertion order ruled, manifest hashes owed by
   assembly + ratification.
 
-## Candidate manifest (2026-08-07 — awaiting owner ratification)
+## Candidate manifest — **RATIFIED by Marco, 2026-08-08**
+
+**Owner ratification (post-designated-APPROVE of {7d9cb37, 90633a6, d30ab9e}):** the three
+candidate documents are RATIFIED as byte-pins — economy `31af760c…990`, routes `6c7c4350…df2`
+(at its post-F1 path `balance/testdata/permits-t3-gate-candidate-v1.json`), copy source
+`e87b0224…512`. The generated-copy hash `8462d6d5…8a2` is recorded as the point-in-time
+composition attestation at 7d9cb37 per the re-review's N1 (the composed catalog is a shared
+living artifact; the cell is refreshed at mint time). The epoch-6 mint MUST copy the ratified
+documents byte-identically (PT-C1: activated atomically by the First Content Epoch). Any edit to
+a ratified document records a replacement hash here.
+
+### Original manifest (2026-08-07 — as filed for ratification)
 
 The RFC's human-form `24` and `12` amounts are encoded below as RFC-0001 canonical Decimals
 `2.4e1` and `1.2e1`. This is a representation normalization only; the ruled values are unchanged.
