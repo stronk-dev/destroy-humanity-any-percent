@@ -12,5 +12,8 @@
 - [x] Wire authenticated create/command/resolve/current handlers through the generated API registry.
 - [x] Prove create → command → terminal auto-resolve → retry/current over the composed real socket.
 - [x] Register/generate the recovery and minigame operation schemas through API Foundation.
+- [ ] Extend the composed real-socket lifecycle through the Soul Recovery half required by AC1.
+- [ ] Prove authenticated minigame-command flooding is bounded by the ruled account/session policy.
+- [ ] Enumerate and verify the privacy contract for all four public minigame endpoints.
 - [ ] Implement surface components after UI Foundation, per MA-C9.
 - [ ] Hand the complete range off for designated cross-party review; do not self-archive.

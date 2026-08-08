@@ -231,3 +231,20 @@ e935c22→ad06e03 EXCEPT {90633a6, d30ab9e} (Permits remediation — its narrow 
 Codex-reviews-Claude direction.
 
 **Verdict: NOT APPROVED pending F1 (+ F2 plan honesty); re-review is a one-finding delta.**
+
+## 2026-08-08 — MA lifecycle F1 remediation handoff
+
+- Every applied Founder Exit whose result schema is v21 now resets `minigame_session_seq` to zero
+  in both Go and TypeScript, including the v21→v21 path that the first designated review found.
+  Activation still validates the pinned `minigame_api` artifact separately; one post-activation
+  reset site is the authority for both first activation and later runs.
+- The shared cross-runtime corpus starts from a content-bearing v21 Founder at sequence 8 and runs
+  the full `ApplyFounderLogged` Exit boundary. It pins sequence 0 together with the Fiscal
+  auto-sweep-decorated receipt, event bytes, and complete post-state, so bypassing either runtime's
+  reset fails independently. Kernel semantics advance from 0.3.84 to 0.3.85.
+- F2 is recorded explicitly in `plan.md`: composed Soul Recovery coverage, authenticated command-
+  flooding proof, and privacy enumeration remain unchecked acceptance debt. AC1–AC4 are not
+  claimed complete.
+- Implementation commit: `dc773bb`. Focused Go, shared replay-fixture, client, typecheck, and
+  kernel-history gates are green. This is a narrow remediation handoff, not approval or archival
+  authority; it is ready for the designated one-finding re-review.
