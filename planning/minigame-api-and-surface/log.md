@@ -179,3 +179,55 @@ now-ruled MA-C10–C14.
 - This entry is implementation and self-review evidence only. The batch is ready for the required
   designated cross-party review; it is not an approval, archival, content-mint, or publication
   authority.
+
+## 2026-08-08 — designated cross-party verdict: composed MA lifecycle — NOT APPROVED (narrow, F1 only)
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+- **Declared range `2e2a372^..ad06e03` was INSUFFICIENT** — six earlier unconsumed implementation
+  commits existed in the thread. **Reviewed set actually consumed: {5ebef16, 043ab22, 30999da,
+  a8ab0dc, f0fa2ae, 69faa63, 4a8bdba, 2e2a372, ad06e03}** (the full minigame/API-Foundation
+  implementation span since e935c22).
+
+**Verified clean across the widened span:**
+- **The bound Probe-B acceptance condition is SATISFIED** — severing the composed resolver fails
+  the lifecycle test (create → 500 internal_invariant/minigame_api).
+- MA-C10 wire to the letter (nested tenant command enforced, strict decodes, closed 8-key
+  descriptor union, ID grammar rejected-not-truncated, closed literal error table).
+- MA-C11 coordinator: one transaction, ruled lock order, exact seed derivation recomputed and
+  replay-enforced in both runtimes, retry-without-increment, fault-injection atomicity. v21 codecs
+  fail-closed both runtimes; migration chain law respected (00071 appended, never edited).
+- MA-C12 Exit guard from frozen resolved inputs (artifact-presence parity law both runtimes);
+  MA-C13 same-transaction receipts with byte-exact HTTP retry proofs and the stale-claim guard;
+  MA-C14 single registry authority (no parallel route anywhere; api-check green); MA-C15
+  candidate-only artifact, floor 21, chain hard-fail, v17–v20 fixtures byte-untouched.
+- **All three composition seams are genuine defect fixes with discriminating coverage** (content-
+  bearing v17 activation with pinned-catalog-derived state; DB-transaction timestamp — probe-
+  proven; distinct start-command intent ID resolving a founder_log UNIQUE collision).
+- Kernel lockstep honest across all six bumps (0.3.78→0.3.84, two honest no-bumps verified
+  against affecting-paths); both repo gates independently green at ad06e03.
+
+**BLOCKING:**
+- **F1 (HIGH): the twice-ruled Exit reset of `minigame_session_seq` is NOT implemented.** MA-C11:
+  "Exit resets it to zero when it advances the Company run"; MA-C3: Founder/RUN-scoped. Both
+  runtimes zero it only at the v20→v21 activation crossing; a v21→v21 Exit preserves it
+  (founder-lifetime scoping), with no test in either direction. Bounded today (run_seq keeps
+  seeds unique; zero v21 histories exist) — which is exactly why the fix is free NOW and becomes
+  a replay-versioning problem the moment a real v21 history exists. Remedy: reset in both
+  runtimes' Exit transition for v21 states + a shared corpus row pinning it. (The ruling STANDS —
+  no amendment; implement as ruled.)
+
+**Non-blocking:**
+- **F2 (MEDIUM):** plan.md must carry the open AC debt as unchecked items — AC1's composed
+  recovery half, AC3's minigame-command flooding proof, AC4's privacy enumeration for the four
+  new endpoints. MA-C14's combined-review clause means AC1–AC4 remain unclaimable until then.
+- **F3 (LOW):** create-handler second-UUID failure detail says `session_id`; save/minigame_start.go
+  kernel-unwatched (precedent-consistent — flag at next path-list edit); the client `pitch`
+  artifact arm rode along in 5ebef16 unnamed in the log.
+
+**Range-union:** with all prior endpoints, coverage now spans every implementation commit
+e935c22→ad06e03 EXCEPT {90633a6, d30ab9e} (Permits remediation — its narrow re-review launched
+2026-08-08), {3530b08} (FCE-C7 copy staging — owed to the FCE ratification flow), and {b14f82e}
+(Codex record commit — owed to the next record-review pass). Claude-side commits belong to the
+Codex-reviews-Claude direction.
+
+**Verdict: NOT APPROVED pending F1 (+ F2 plan honesty); re-review is a one-finding delta.**
