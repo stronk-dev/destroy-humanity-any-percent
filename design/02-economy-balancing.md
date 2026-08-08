@@ -196,6 +196,13 @@ Distinct from morals: Trust is what you do to others; Soul is what's left of *yo
 - Offline hours accrue as **Compute Credits** ("unused reserved capacity") up to a banked cap; spend them as chosen-moment acceleration bursts (e.g. 1 credit-hour = 60× speed for 1 min, tunable).
 - Makes absence a *decision* and creates the banker playstyle (`10-playstyles.md`).
 - **Legibility rules** (the Idle Spiral lesson): a loud, unmissable banked-time affordance in the primary HUD, and an optional auto-spend toggle so casual players aren't punished for not engaging.
+- **CANDIDATE (owner-adopted 2026-08-08, `research/healthy-engagement.md`): the rested/return
+  bonus** — a short, VISIBLE boost on return after absence (WoW's rested-XP pattern; the beta
+  shipped it as an anti-binge *penalty*, players revolted, identical numbers reframed as a bonus
+  were beloved). Deliberately the anti-streak: it rewards leaving. Distinct from both offline
+  progress (which produces while away) and Compute Credits (which bank absence as spendable time);
+  this is a rate multiplier on attended play after a gap. Design properly in a future economy
+  content RFC; the curtain-pull tooltip may honestly note the penalty-reframed-as-bonus lineage.
 
 ## 10. The daily & weekly clock (the session scaffold)
 
