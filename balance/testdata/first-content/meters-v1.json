@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "trust_reseed": {
+    "base_value": 90,
+    "notoriety_numerator": 35,
+    "notoriety_denominator": 100,
+    "floor_value": 55,
+    "ceiling_value": 90
+  },
+  "meters": [
+    {
+      "id": "doom.probability",
+      "scope": "company",
+      "min_value": 0,
+      "max_value": 100,
+      "initial_value": 50,
+      "bands": [
+        { "id": "low", "floor_value": 0 },
+        { "id": "high", "floor_value": 70 }
+      ],
+      "inputs": [
+        { "kind": "ledger_fact", "fact_kind": "externality.emitted", "delta": 3 }
+      ],
+      "decay": { "toward_value": 50, "rate_per_attended_hour": 2 }
+    },
+    {
+      "id": "trust.employees.grievance",
+      "scope": "company",
+      "min_value": 0,
+      "max_value": 100,
+      "initial_value": 0,
+      "bands": [
+        { "id": "low", "floor_value": 0 },
+        { "id": "high", "floor_value": 70 }
+      ],
+      "inputs": [],
+      "decay": { "toward_value": 0, "rate_per_attended_hour": 1 }
+    },
+    {
+      "id": "trust.employees.standing",
+      "scope": "company",
+      "min_value": 0,
+      "max_value": 100,
+      "initial_value": 50,
+      "bands": [
+        { "id": "low", "floor_value": 0 },
+        { "id": "high", "floor_value": 70 }
+      ],
+      "inputs": [],
+      "decay": { "toward_value": 50, "rate_per_attended_hour": 2 }
+    },
+    {
+      "id": "trust.investors.grievance",
+      "scope": "company",
+      "min_value": 0,
+      "max_value": 100,
+      "initial_value": 0,
+      "bands": [
+        { "id": "low", "floor_value": 0 },
+        { "id": "high", "floor_value": 70 }
+      ],
+      "inputs": [],
+      "decay": { "toward_value": 0, "rate_per_attended_hour": 1 }
+    },
+    {
+      "id": "trust.investors.standing",
+      "scope": "company",
+      "min_value": 0,
+      "max_value": 100,
+      "initial_value": 50,
+      "bands": [
+        { "id": "low", "floor_value": 0 },
+        { "id": "high", "floor_value": 70 }
+      ],
+      "inputs": [],
+      "decay": { "toward_value": 50, "rate_per_attended_hour": 2 }
+    },
+    {
+      "id": "trust.press.grievance",
+      "scope": "company",
+      "min_value": 0,
+      "max_value": 100,
+      "initial_value": 0,
+      "bands": [
+        { "id": "low", "floor_value": 0 },
+        { "id": "high", "floor_value": 70 }
+      ],
+      "inputs": [],
+      "decay": { "toward_value": 0, "rate_per_attended_hour": 1 }
+    },
+    {
+      "id": "trust.press.standing",
+      "scope": "company",
+      "min_value": 0,
+      "max_value": 100,
+      "initial_value": 50,
+      "bands": [
+        { "id": "low", "floor_value": 0 },
+        { "id": "high", "floor_value": 70 }
+      ],
+      "inputs": [],
+      "decay": { "toward_value": 50, "rate_per_attended_hour": 2 }
+    },
+    {
+      "id": "trust.regulators.grievance",
+      "scope": "company",
+      "min_value": 0,
+      "max_value": 100,
+      "initial_value": 0,
+      "bands": [
+        { "id": "low", "floor_value": 0 },
+        { "id": "high", "floor_value": 70 }
+      ],
+      "inputs": [],
+      "decay": { "toward_value": 0, "rate_per_attended_hour": 1 }
+    },
+    {
+      "id": "trust.regulators.standing",
+      "scope": "company",
+      "min_value": 0,
+      "max_value": 100,
+      "initial_value": 50,
+      "bands": [
+        { "id": "low", "floor_value": 0 },
+        { "id": "high", "floor_value": 70 }
+      ],
+      "inputs": [],
+      "decay": { "toward_value": 50, "rate_per_attended_hour": 2 }
+    },
+    {
+      "id": "trust.users.grievance",
+      "scope": "company",
+      "min_value": 0,
+      "max_value": 100,
+      "initial_value": 0,
+      "bands": [
+        { "id": "low", "floor_value": 0 },
+        { "id": "high", "floor_value": 70 }
+      ],
+      "inputs": [],
+      "decay": { "toward_value": 0, "rate_per_attended_hour": 1 }
+    },
+    {
+      "id": "trust.users.standing",
+      "scope": "company",
+      "min_value": 0,
+      "max_value": 100,
+      "initial_value": 50,
+      "bands": [
+        { "id": "low", "floor_value": 0 },
+        { "id": "high", "floor_value": 70 }
+      ],
+      "inputs": [
+        { "kind": "contribution_slot", "slot": "commons", "source_id": "commons.member", "delta_per_attended_hour": 1 }
+      ],
+      "decay": { "toward_value": 50, "rate_per_attended_hour": 2 }
+    }
+  ]
+}

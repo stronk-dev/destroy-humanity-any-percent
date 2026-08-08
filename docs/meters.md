@@ -11,8 +11,9 @@ the existing separate carry value and is read-only to ordinary Company transitio
 
 Catalogs are schema v1 and declare initial values, floor-ordered bands, optional exact decay, and
 two causal input kinds: newly emitted ledger facts and active contribution-slot sources. Meter IDs
-are structurally disjoint from economy resource IDs and the meters package cannot import economy or
-production owners, so no intent can use a meter as ledger payment.
+are structurally disjoint from economy resource IDs. Both composed replay-catalog loaders enforce
+that separation against the pinned Economy artifact; the meters package itself remains free of
+economy and production imports, so no intent can use a meter as ledger payment.
 
 The transition kernel validates complete state maps, advances decay first, then applies newly
 caused ledger facts and active contribution sources, clamps the final value, and derives at most

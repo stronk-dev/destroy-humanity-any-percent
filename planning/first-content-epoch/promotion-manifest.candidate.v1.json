@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "status": "candidate_awaiting_owner_ratification",
+  "constants_hash": "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a",
+  "artifacts": [
+    {
+      "name": "achievements",
+      "schema_version": 1,
+      "source_path": "balance/testdata/first-content/achievements-v1.json",
+      "production_path": "balance/achievements/first-content.json",
+      "sha256": "1a11d6c5a0c044ff8077574bb71f1c893bde93a050e20a91e0d776c7e79f8903",
+      "content_gate": "make test-go GO_PACKAGES='./achievements ./replaycatalog' && make test-client",
+      "consumed_verdict": "pending:first-content-candidate-designated-review"
+    },
+    {
+      "name": "categories",
+      "schema_version": 1,
+      "source_path": "balance/testdata/first-content/categories-v1.json",
+      "production_path": "balance/categories/phase0.json",
+      "sha256": "8232b8932649aafdfef6a4502ee4d6003ab6665c37042926fa8eace2b619f8ef",
+      "content_gate": "make test-go GO_PACKAGES='./leaderboard ./replaycatalog'",
+      "consumed_verdict": "pending:FCE-C10-and-first-content-candidate-designated-review"
+    },
+    {
+      "name": "commons",
+      "schema_version": 1,
+      "source_path": "balance/commons/phase0.json",
+      "production_path": "balance/commons/phase0.json",
+      "sha256": "33d4e73a32e12c973acf9633a1e829fd4da2de0753c6004821fb93ff14208c93",
+      "content_gate": "make verify-schema",
+      "consumed_verdict": "planning/archive/commons-compact/log.md"
+    },
+    {
+      "name": "doctrines",
+      "schema_version": 1,
+      "source_path": "balance/testdata/first-content/doctrines-v1.json",
+      "production_path": "balance/doctrines/first-content.json",
+      "sha256": "a3bca5f7eb07fb3b5bf185ce6191771c044a033b47c6bba390582dd7e1745672",
+      "content_gate": "make test-go GO_PACKAGES='./doctrine ./replaycatalog' && make test-client",
+      "consumed_verdict": "planning/archive/doctrine-and-compute-credit/log.md"
+    },
+    {
+      "name": "economy",
+      "schema_version": 3,
+      "source_path": "balance/testdata/first-content/economy-v3.json",
+      "production_path": "balance/catalogs/phase0.json",
+      "sha256": "2d4807b7628e3e258536802625ba35806c32d0429c3e819a19a7a287e3c552a1",
+      "content_gate": "make verify-schema && make test-go GO_PACKAGES='./economy ./fiscal ./replaycatalog'",
+      "consumed_verdict": "pending:first-content-candidate-designated-review"
+    },
+    {
+      "name": "factions",
+      "schema_version": 1,
+      "source_path": "balance/factions/phase0.json",
+      "production_path": "balance/factions/phase0.json",
+      "sha256": "e44f461eca6cc6c048edebc42356915e6d4be16f480b4795a1fcc458855005fe",
+      "content_gate": "make verify-schema",
+      "consumed_verdict": "planning/archive/faction-incorporation/log.md"
+    },
+    {
+      "name": "fiscal",
+      "schema_version": 1,
+      "source_path": "balance/testdata/first-content/fiscal-v1.json",
+      "production_path": "balance/fiscal/first-content.json",
+      "sha256": "3847236f8001ed7e29ab41054fbeef38c5e5ea8b838e478d2c4057fdc417f2a9",
+      "content_gate": "make test-go GO_PACKAGES='./fiscal ./replaycatalog' && make test-client",
+      "consumed_verdict": "pending:first-content-candidate-designated-review"
+    },
+    {
+      "name": "guilds",
+      "schema_version": 1,
+      "source_path": "balance/guilds/phase0.json",
+      "production_path": "balance/guilds/phase0.json",
+      "sha256": "e70e644fd62be3c37e0ae465ea55eb104dfc83f810f2d66f11806328d18366fa",
+      "content_gate": "make verify-schema",
+      "consumed_verdict": "planning/archive/guild-model/log.md"
+    },
+    {
+      "name": "meters",
+      "schema_version": 1,
+      "source_path": "balance/testdata/first-content/meters-v1.json",
+      "production_path": "balance/meters/first-content.json",
+      "sha256": "320deca9ccbe70c1822f0d2664ea75dfd7627d7f098dfd1243ef432bea7bb485",
+      "content_gate": "make test-go GO_PACKAGES='./meters ./replaycatalog' && make test-client",
+      "consumed_verdict": "pending:first-content-candidate-designated-review"
+    },
+    {
+      "name": "minigame_api",
+      "schema_version": 1,
+      "source_path": "balance/testdata/minigame-api-candidate-v1.json",
+      "production_path": "balance/minigame-api/first-content.json",
+      "sha256": "b16b5e0eb6f9426c8b1b94255e2d8e04f53f78b391fdbbb348ad7438d7bab31c",
+      "content_gate": "make test-go GO_PACKAGES='./minigameapi ./replaycatalog' && make test-client",
+      "consumed_verdict": "planning/minigame-api-and-surface/log.md#2026-08-08-ce69a4b"
+    },
+    {
+      "name": "minigames",
+      "schema_version": 3,
+      "source_path": "testdata/minigame/pitch-v3.json",
+      "production_path": "balance/minigames/first-content.json",
+      "sha256": "f08fd3ab1959da66f389ef918b936f81d8a2562762055e7b27f4f9e771ff0862",
+      "content_gate": "make test-go GO_PACKAGES='./minigame ./replaycatalog' && make test-client",
+      "consumed_verdict": "planning/minigame-platform-foundation/log.md"
+    },
+    {
+      "name": "pets",
+      "schema_version": 2,
+      "source_path": "balance/testdata/first-content/pets-v2.json",
+      "production_path": "balance/pets/first-content.json",
+      "sha256": "5c1f27006871ddbd688cdb36e673a64ef5080c92950d22df486576dfae4aa1c1",
+      "content_gate": "make test-go GO_PACKAGES='./pet ./replaycatalog' && make test-client",
+      "consumed_verdict": "pending:first-content-candidate-designated-review"
+    },
+    {
+      "name": "pitch",
+      "schema_version": 1,
+      "source_path": "balance/testdata/pitch-v1.json",
+      "production_path": "balance/pitch.json",
+      "sha256": "bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f",
+      "content_gate": "make test-go GO_PACKAGES='./pitch ./replaycatalog' && make test-client",
+      "consumed_verdict": "planning/archive/minigame-the-pitch/log.md#2026-08-07-c76101a"
+    },
+    {
+      "name": "prestige",
+      "schema_version": 1,
+      "source_path": "balance/prestige/phase0.json",
+      "production_path": "balance/prestige/phase0.json",
+      "sha256": "1873090781bed666c8f989169a9e59990547b1f713ac2f9a8215f51d3f0ea7ec",
+      "content_gate": "make verify-schema",
+      "consumed_verdict": "planning/prestige-and-exits/log.md"
+    },
+    {
+      "name": "routes",
+      "schema_version": 1,
+      "source_path": "balance/testdata/permits-t3-gate-candidate-v1.json",
+      "production_path": "balance/routes/phase0.json",
+      "sha256": "6c7c4350bcd43840a141fb5c0525d9779f11ed0ed836a8783f21f22f6c880df2",
+      "content_gate": "make verify-schema && make test-go GO_PACKAGES='./routes ./replaycatalog'",
+      "consumed_verdict": "planning/permits-and-t3-gate/log.md#2026-08-08-88e2054"
+    },
+    {
+      "name": "soul",
+      "schema_version": 1,
+      "source_path": "balance/testdata/first-content/soul-v1.json",
+      "production_path": "balance/soul/first-content.json",
+      "sha256": "a57798f94892a86fd6ea727b76d5bfa663db27c4abd10180204c26ea83587de4",
+      "content_gate": "make test-go GO_PACKAGES='./soul ./replaycatalog' && make test-client",
+      "consumed_verdict": "pending:first-content-candidate-designated-review"
+    }
+  ]
+}

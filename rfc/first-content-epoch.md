@@ -10,20 +10,19 @@
   `CLAUDE.md` (declarative data, hardcaps, formula shapes exact / constants are config).
 - **Depends on:** every fixture-first content foundation — Meters + Achievements, Doctrine,
   Minigame Platform, Pet Care, Fiscal Quarters, Soul Foundation, Soul Recovery Activities, The
-  Pitch — each at its own designated-review/archival gate (see FCE5).
+  Pitch, Minigame API & Surface — each at its own designated-review/archival gate (see FCE5).
 - **Planning:** `planning/first-content-epoch/` (once implementing)
 
 ## Summary
 
 The live epoch registry (`balance/epochs/phase0.json`, `current_epoch_id: 5`) carries only the 7
 base artifacts; every content system since — meters, achievements, doctrines, minigames, pets,
-fiscal, soul (including recovery activities), pitch — shipped **fixture-first**, with its reviewed
+fiscal, soul (including recovery activities), pitch, minigame API — shipped **fixture-first**, with its reviewed
 artifact bytes living in test fixtures and its production mint explicitly deferred to this RFC.
-This RFC defines **epoch 6**: one dependency-complete mint that promotes the reviewed fixture bytes
-into production balance artifacts, registers the epoch, and activates the content under the
-already-shipped activation laws. It authors **zero new mechanics and zero new bytes** — it is a
-promotion, its blast radius is the epoch registry, and every gate that made "reviewed" mean
-something applies to it.
+This RFC defines **epoch 6**: one dependency-complete mint that installs reviewed or owner-ratified
+candidate bytes, registers the epoch, and activates the content under the already-shipped
+activation laws. It authors **zero new mechanics**; first-production bytes use the explicit
+SHA-pinned lane ruled in FCE-C2/C3, and every gate that made "reviewed" mean something applies.
 
 ## Motivation
 
@@ -41,22 +40,28 @@ dependency chain as a hard load failure:
 
 ```
 achievements ⇔ meters · doctrines → meters · minigames → meters ·
-pets → minigames · fiscal → pets · soul → fiscal · pitch → soul
+pets → minigames · fiscal → pets · soul → fiscal · pitch → soul · minigame_api → pitch
 ```
 
-An epoch carrying Pitch therefore **must** carry all 8 optional artifacts. Epoch 6 is exactly that:
-the 7 base artifacts (bytes unchanged) + the 8 content artifacts, loaded as one bundle under one
-new constants hash. TP-C18's "no partial chain" ruling is thereby structural, not procedural.
+An epoch carrying the public minigame API therefore **must** carry all 9 optional artifacts. Epoch
+6 is exactly that: the 7 base artifact names + the 9 content artifacts, loaded as one bundle under
+one new constants hash. Economy and Routes change under the Permits ruling; Categories changes
+only to keep its exact `full_gate_set` synchronized with Routes (FCE-C10). TP-C18's "no partial
+chain" ruling is thereby structural, not procedural.
 
-### FCE2 — Byte provenance: promotion, never authorship
+### FCE2 — Byte provenance: reviewed promotion or owner-ratified first production
 
-Each content artifact's production bytes are **byte-identical to the reviewed fixture bytes** that
-passed that system's content gate and designated review (e.g. `testdata/minigame/pitch-v3.json`,
-`testdata/soul/recovery-activities-v1.json`, `balance/testdata/fiscal-foundation-v1.json`, and the
-meters/achievements/doctrines/minigames/pets equivalents — the implementing plan enumerates the
-exact source-fixture → production-path table with hashes). Production paths follow the repo
-convention: `balance/<kind>/first-content.json` (exact names implementer-chosen, one file per
-artifact kind, registered in the epoch registry's `artifacts` list).
+Each artifact's production bytes use one of two closed provenance lanes:
+
+1. **byte-identical promotion** of an already-reviewed source artifact; or
+2. **owner-ratified first-production bytes**, pinned by SHA-256, content-gated in both runtimes,
+   and designated-reviewed before the mint consumes them.
+
+The second lane owns the authored meters/achievements/pets documents and the literal composed
+Categories/Economy/Fiscal/Soul candidates required by already-ruled cross-artifact contracts. The
+literal source → production manifest is
+`planning/first-content-epoch/promotion-manifest.candidate.v1.json` until owner ratification and
+candidate review make it final. No test helper may synthesize bytes absent from that manifest.
 
 **Any retune between review and mint is a new review.** If a provisional constant is changed from
 the reviewed fixture bytes, the changed artifact re-runs its content gate and the change lands as
@@ -67,8 +72,9 @@ unblocks playability).
 ### FCE3 — Registry mechanics
 
 One mint commit (subject class `BALANCE-CHANGE:`) that:
-1. adds the 8 production artifact files (FCE2);
-2. appends the 8 rows to `artifacts` and the epoch-6 entry to `epochs` in
+1. adds the 9 optional production artifact files and installs the three ruled base-artifact
+   replacements (FCE2);
+2. appends the 9 optional rows to `artifacts` and the epoch-6 entry to `epochs` in
    `balance/epochs/phase0.json` — `{epoch_id: 6, name: "First Content", changelog_ref:
    "changelog/epoch-6.md", accepted_hashes: [<the new constants hash>]}` — and bumps
    `current_epoch_id` to 6;
@@ -87,9 +93,11 @@ as the checklist the integration test covers:
 - **Company-scoped** (meters, achievements, doctrines): new-mechanic activation is **NEW-RUN-BOUND**
   at the first epoch whose pinned catalog carries the artifact; in-flight runs stay frozen at
   genesis (`run_frozen_contributions` — no retroactive grants, no Company bump).
-- **Founder-scoped** (minigames, pets, fiscal, soul, pitch): activates on epoch adoption per each
-  foundation's shipped rules (pet starter creation begins at the first pet-carrying epoch; fiscal
-  accrual, soul meter, minigame/pitch start-eligibility follow their archived activation clauses).
+- **Founder-scoped** (minigames, pets, fiscal, soul, pitch, minigame API): activates on epoch
+  adoption per each foundation's shipped rules. Pet v18 care state and pinned policies activate
+  with empty maps; species/acquisition and first-record creation remain successor work. Fiscal
+  accrual, soul meter, minigame/pitch start-eligibility, and Founder v21 session sequencing follow
+  their archived activation clauses.
 - **Leaderboards:** board binding across the epoch boundary follows the archived Leaderboards &
   Balance Epochs law unchanged; the mint itself makes no board decisions.
 
@@ -97,7 +105,7 @@ as the checklist the integration test covers:
 
 1. **Review-complete (reformulated 2026-08-07 after the foundation audit — the original "archived
    before the mint" wording was CIRCULAR for mint-blocked foundations and is superseded):** for
-   every ARTIFACT-CONTRIBUTING foundation (the 8 artifact owners), (a) its implementation range is
+   every ARTIFACT-CONTRIBUTING foundation (the 9 optional artifact owners), (a) its implementation range is
    designated-cross-party-review-covered with a complete range union, and (b) every acceptance
    criterion RELEVANT TO ITS ARTIFACT's behavior is green. Foundations whose only remaining open
    items are the mint itself (Meters, Achievements, Pet Care — their final AC IS this RFC) archive
@@ -114,7 +122,7 @@ as the checklist the integration test covers:
    pacing run — every prior run exercised systems in isolation or partial fixtures) and its report
    is recorded in the planning log. Pacing regressions against the Phase-0 observation targets are
    findings, not vetoes — but they are findings the owner sees before signing.
-4. **Copy coverage:** every copy key declared by the 8 artifacts ships through `verify-copy` green.
+4. **Copy coverage:** every copy key declared by the 9 optional artifacts ships through `verify-copy` green.
 5. **Guard discipline:** kernel version policy applied (the mint commit touches watched
    balance paths → honest bump or guard-green no-op per policy); `make verify` + the Postgres suite
    green at the mint commit.
@@ -132,7 +140,8 @@ as the checklist the integration test covers:
 ## Acceptance criteria
 
 1. Epoch 6 registered per FCE3; `LoadBundle` resolves the new constants hash to a bundle carrying
-   all 15 artifacts; the promotion table (fixture hash = production hash) verified by test.
+   all 16 artifacts; the promotion table's source hash = production hash invariant is verified by
+   test.
 2. Activation integration test: a founder present across the epoch 5→6 boundary gets new-run-bound
    Company activation (no retroactive grants) and Founder-scoped activation per the shipped laws;
    a fresh founder at epoch 6 gets the full content set from genesis.
@@ -431,3 +440,82 @@ and generated-copy SHA-256 values together.
   `tone: "achievement"`). All thirteen rows are now byte-determined; Codex assembles the
   byte-sorted document, runs the intentional-orphan stage, and files the source + generated-copy
   SHA-256 values together for ratification.
+
+## Codex implementation blockers — literal bundle composition (2026-08-08)
+
+### FCE-C10 — The Permits gate also changes the Categories artifact
+
+`leaderboard.LoadCategoryCatalog` requires `full_gate_set` to exactly equal the sorted gate IDs
+from Routes. Adding ruled `gate.t3_to_t4` while retaining `balance/categories/phase0.json` makes the
+full epoch-6 bundle fail closed. Existing composition tests hid this by inserting the gate into a
+decoded Categories object in memory; no candidate bytes or manifest row owned that change.
+
+**Proposed contract:** ratify `balance/testdata/first-content/categories-v1.json` as the Categories
+candidate, SHA-256
+`8232b8932649aafdfef6a4502ee4d6003ab6665c37042926fa8eace2b619f8ef`. It differs from the
+epoch-5 artifact only by the sorted insertion of `gate.t3_to_t4` in `full_gate_set`; category rows,
+fact sets, predicates, and timers are byte-unchanged. Categories becomes the third ruled base-byte
+replacement alongside Economy and Routes, and its designated candidate review must include the
+pre-Permits-set rejection probe now in both runtimes.
+
+### FCE-C11 — Three reviewed helpers synthesize production bytes that no artifact owns
+
+The composed server tests currently append Fiscal multiplier declarations to Economy, append the
+`minigame.pitch` unlock to Fiscal, and replace Soul's fixture-only debit source in memory. The
+individual source fixtures therefore are not literal production artifacts. Directly promoting
+them either fails load (Fiscal and epoch-seeded Soul) or omits a ruled seam (Pitch unlock).
+
+**Proposed contract:** ratify the following literal candidates, each containing only already-ruled
+rows and no new mechanic or number:
+
+- Economy v3 (Permits rows + Fiscal multiplier declarations):
+  `2d4807b7628e3e258536802625ba35806c32d0429c3e819a19a7a287e3c552a1`;
+- Fiscal v1 (reviewed baseline + `minigame.pitch`, cost 3):
+  `3847236f8001ed7e29ab41054fbeef38c5e5ea8b838e478d2c4057fdc417f2a9`;
+- Soul v1 (reviewed recovery rows + empty production `debit_sources`, as SR-C13 ruled):
+  `a57798f94892a86fd6ea727b76d5bfa663db27c4abd10180204c26ea83587de4`.
+
+The candidate designated review consumes the prior component verdicts and re-proves the composed
+bytes. Test helpers cease being artifact authors.
+
+### FCE-C12 — Candidate manifest and activation SHA ratifications are now concrete
+
+The machine-readable sixteen-artifact table is
+`planning/first-content-epoch/promotion-manifest.candidate.v1.json`; its composed constants hash is
+`sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a` in both Go and
+TypeScript. The two explicit activation inputs awaiting the requested owner ratification are:
+
+- achievement copy source `0dd211486b3e988c0fffa5311ed95c216f5bc08b4f9fd6ef7068409c3a091cf3`
+  (generated catalog point-in-time attestation
+  `2f299e2a3babb8f04e02c8406a127f8d3fbab321689038fbb22614cc6dba166b`);
+- `minigame_api` v1 `b16b5e0eb6f9426c8b1b94255e2d8e04f53f78b391fdbbb348ad7438d7bab31c`.
+
+**Proposed contract:** ratify the C10/C11 candidates, the two activation inputs above, the literal
+production paths below, and the composed candidate hash as the bundle to receive the designated
+candidate review and composed harness run. Generated copy remains a point-in-time attestation and
+is refreshed at the mint, matching the Permits-copy precedent. Ratification does not authorize the
+mint; FCE5.3, candidate review, and the separate owner sign-off remain mandatory.
+
+### FCE-C6 literal promotion table — candidate pending C10–C12
+
+The JSON manifest is normative for full command strings and verdict references. `pending` verdicts
+must be replaced by the candidate designated-review entry before this RFC becomes accepted.
+
+| artifact | production path | source path | SHA-256 | schema | content gate | consumed verdict |
+|---|---|---|---|---:|---|---|
+| achievements | `balance/achievements/first-content.json` | `balance/testdata/first-content/achievements-v1.json` | `1a11d6c5a0c044ff8077574bb71f1c893bde93a050e20a91e0d776c7e79f8903` | 1 | achievements + replaycatalog + client | pending candidate review |
+| categories | `balance/categories/phase0.json` | `balance/testdata/first-content/categories-v1.json` | `8232b8932649aafdfef6a4502ee4d6003ab6665c37042926fa8eace2b619f8ef` | 1 | leaderboard + replaycatalog | pending C10 + candidate review |
+| commons | `balance/commons/phase0.json` | same | `33d4e73a32e12c973acf9633a1e829fd4da2de0753c6004821fb93ff14208c93` | 1 | schema | Commons Compact verdict |
+| doctrines | `balance/doctrines/first-content.json` | `balance/testdata/first-content/doctrines-v1.json` | `a3bca5f7eb07fb3b5bf185ce6191771c044a033b47c6bba390582dd7e1745672` | 1 | doctrine + replaycatalog + client | Doctrine verdict + candidate review |
+| economy | `balance/catalogs/phase0.json` | `balance/testdata/first-content/economy-v3.json` | `2d4807b7628e3e258536802625ba35806c32d0429c3e819a19a7a287e3c552a1` | 3 | schema + economy + fiscal + replaycatalog | pending candidate review |
+| factions | `balance/factions/phase0.json` | same | `e44f461eca6cc6c048edebc42356915e6d4be16f480b4795a1fcc458855005fe` | 1 | schema | Faction verdict |
+| fiscal | `balance/fiscal/first-content.json` | `balance/testdata/first-content/fiscal-v1.json` | `3847236f8001ed7e29ab41054fbeef38c5e5ea8b838e478d2c4057fdc417f2a9` | 1 | fiscal + replaycatalog + client | pending candidate review |
+| guilds | `balance/guilds/phase0.json` | same | `e70e644fd62be3c37e0ae465ea55eb104dfc83f810f2d66f11806328d18366fa` | 1 | schema | Guild verdict |
+| meters | `balance/meters/first-content.json` | `balance/testdata/first-content/meters-v1.json` | `320deca9ccbe70c1822f0d2664ea75dfd7627d7f098dfd1243ef432bea7bb485` | 1 | meters + replaycatalog + client | pending candidate review |
+| minigame_api | `balance/minigame-api/first-content.json` | `balance/testdata/minigame-api-candidate-v1.json` | `b16b5e0eb6f9426c8b1b94255e2d8e04f53f78b391fdbbb348ad7438d7bab31c` | 1 | minigameapi + replaycatalog + client | MA `ce69a4b` |
+| minigames | `balance/minigames/first-content.json` | `testdata/minigame/pitch-v3.json` | `f08fd3ab1959da66f389ef918b936f81d8a2562762055e7b27f4f9e771ff0862` | 3 | minigame + replaycatalog + client | Minigame Platform verdict |
+| pets | `balance/pets/first-content.json` | `balance/testdata/first-content/pets-v2.json` | `5c1f27006871ddbd688cdb36e673a64ef5080c92950d22df486576dfae4aa1c1` | 2 | pet + replaycatalog + client | pending candidate review |
+| pitch | `balance/pitch.json` | `balance/testdata/pitch-v1.json` | `bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f` | 1 | pitch + replaycatalog + client | Pitch `c76101a` |
+| prestige | `balance/prestige/phase0.json` | same | `1873090781bed666c8f989169a9e59990547b1f713ac2f9a8215f51d3f0ea7ec` | 1 | schema | Prestige verdict |
+| routes | `balance/routes/phase0.json` | `balance/testdata/permits-t3-gate-candidate-v1.json` | `6c7c4350bcd43840a141fb5c0525d9779f11ed0ed836a8783f21f22f6c880df2` | 1 | schema + routes + replaycatalog | Permits `88e2054` |
+| soul | `balance/soul/first-content.json` | `balance/testdata/first-content/soul-v1.json` | `a57798f94892a86fd6ea727b76d5bfa663db27c4abd10180204c26ea83587de4` | 1 | soul + replaycatalog + client | pending candidate review |

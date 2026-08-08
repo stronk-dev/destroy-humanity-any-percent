@@ -1,4 +1,4 @@
-// Package replaycatalog composes the six immutable Phase-0 balance artifacts
+// Package replaycatalog composes immutable, hash-pinned balance artifacts
 // without weakening the production/Commons amplitude boundary.
 package replaycatalog
 
@@ -123,6 +123,13 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 	if _, active := artifacts["meters"]; active {
 		meterCatalog, meterErr := meters.LoadCatalog(artifacts["meters"])
 		if meterErr != nil {
+			return production.CatalogBundle{}, meterErr
+		}
+		resourceIDs := make([]string, 0, len(economyCatalog.Resources()))
+		for _, resource := range economyCatalog.Resources() {
+			resourceIDs = append(resourceIDs, resource.ID)
+		}
+		if meterErr := meterCatalog.ValidateResourceSeparation(resourceIDs); meterErr != nil {
 			return production.CatalogBundle{}, meterErr
 		}
 		achievementCatalog, achievementErr := achievements.LoadCatalog(artifacts["achievements"], production.FoundationAchievementRegistry(economyCatalog))
