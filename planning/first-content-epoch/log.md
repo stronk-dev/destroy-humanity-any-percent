@@ -62,3 +62,37 @@ the committed-history guard explicitly reports `kernel version parity and histor
 
 Pending before the manifest can become owner-approved: C10–C12 rulings/ratification, the candidate
 designated review (which replaces every `pending` verdict field), and the composed harness report.
+
+## 2026-08-08 — designated cross-party verdict: candidate staging {3530b08, d0dccb4, a0ca14e} — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+No blocking findings. Verified: the candidate-landing law HELD (active artifacts/seed
+byte-untouched; only copy-orphan additions; constants_hash unchanged, copy_hash moved per the
+FCE-C8 stage); ALL 16 manifest hashes recomputed and matching; byte-fidelity traced for every
+candidate — meters/achievements/pets = the FCE-C3 ratified pins; economy v3 = the ratified
+Permits pin + exactly the two fiscal multiplier declarations (verbatim from reviewed helpers);
+routes = the ratified pin; fiscal = reviewed baseline + the TP-C15 ruled pitch unlock (cost 3);
+soul = reviewed recovery fixture with debit_sources → [] per SR-C13 (single hunk); doctrines/
+minigames/pitch untouched since their reviewed commits; minigame_api = the MA-C15 reviewed shape;
+copy document = ALL THIRTEEN ruled texts verbatim incl. the FCE-C9 possession literal, structural
+defaults exact, orphan discipline held (zero achievement rows in the active seed). Categories:
+exactly one sorted line (gate.t3_to_t4 in full_gate_set), probe-proven load-bearing in BOTH
+runtimes, and FCE-C10 is an honest new-ruling request, not a slip. The Go resource-separation fix
+matches pre-existing TS behavior exactly, probe-discriminated, nothing rode along; kernel
+0.3.85→0.3.86 honest (3530b08 correctly bump-free). Composed candidate constants hash
+sha256:1a4463bc…f21a confirmed by execution in BOTH runtimes independently. make verify + the
+Postgres suite green at a0ca14e.
+
+Observations (non-blocking): OBS-1 — FCE1's body pre-states the Categories change; the C10 ruling
+must confirm it (or the body re-edits). OBS-2 — manifest lacks a provenance field for the
+owner-authored lane (carried by the RFC table; consider adding at ratification). OBS-3/OBS-4 —
+the economy fiscal-declaration rows and the wrapper→document extractions are recorded as
+understood context for the C11 ruling.
+
+**Range-union:** consumed {3530b08, d0dccb4, a0ca14e}; with all prior verdicts, EVERY
+implementation commit from e935c22 through a0ca14e is verdict-covered. Remaining non-implementation
+debt: the record-review pass ({b14f82e} + the MA handoff-discipline notes).
+
+**Verdict: APPROVED as the candidate designated review. NOT mint authorization — FCE-C10–C12
+owner rulings, the FCE5.3 composed harness report, and the FCE5.6 owner sign-off remain.**
