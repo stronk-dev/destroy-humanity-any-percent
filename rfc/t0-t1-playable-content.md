@@ -25,6 +25,15 @@ horizon (`engine.go:153`) while the live service evaluates ONLY `ModeOnline`. A 
 RFC may not mint until online evaluation drives offline catchup at session boundaries OR clamps
 the online horizon** — the fix lands here (or in session-bootstrap) as AC0.
 
+**Arm RULED (owner-side, 2026-08-08): session-boundary offline catchup, owned by Account &
+Session Bootstrap.** When a session opens against a stream whose cursor lies past the online
+horizon, bootstrap FIRST runs the standard offline catchup (the canonical 90%/24h-cap policy —
+`docs/production-engine.md`) up to now, THEN online evaluation proceeds from the caught-up
+cursor. The clamp arm is REJECTED: silently clamping the online horizon caps accrual without the
+offline policy's visible, published discount — an invisible cap, which the design forbids. AC0
+lands in session-bootstrap with a fixture proving a > 24h-idle founder resumes un-bricked with
+exactly the offline-policy accrual.
+
 ### T1 — Catalog content (the mint)
 
 - **Tier 0 (Sole Proprietor, 1995):** manual action `manual.click` re-skinned ("Reply to a
