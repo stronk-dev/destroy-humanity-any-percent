@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strconv"
 	"time"
@@ -13,6 +14,11 @@ import (
 	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/runidentity"
 	"cloud-clicker/server/save"
+)
+
+var (
+	ErrMinigameFiscalUnlockRequired = errors.New("minigame fiscal unlock required")
+	ErrMinigameHumanContentLocked   = errors.New("minigame human content locked")
 )
 
 const startMinigameSessionKind = "start_minigame_session"
@@ -135,7 +141,7 @@ func (s *Service) StartMinigameAPISession(ctx context.Context, platform *minigam
 				return save.MinigameStartDecision{}, ErrInvalidIntent
 			}
 			if _, declared := bundle.Fiscal.Unlock(definition.Unlock.UnlockID); !declared || !founder.FiscalUnlocks[definition.Unlock.UnlockID] {
-				return save.MinigameStartDecision{}, fmt.Errorf("%w: fiscal_unlock_required", ErrInvalidIntent)
+				return save.MinigameStartDecision{}, fmt.Errorf("%w: %w", ErrInvalidIntent, ErrMinigameFiscalUnlockRequired)
 			}
 		}
 		if definition.SoulGate == "human_hobby" {
@@ -147,7 +153,7 @@ func (s *Service) StartMinigameAPISession(ctx context.Context, platform *minigam
 				return save.MinigameStartDecision{}, lockErr
 			}
 			if locked {
-				return save.MinigameStartDecision{}, fmt.Errorf("%w: human_content_locked", ErrInvalidIntent)
+				return save.MinigameStartDecision{}, fmt.Errorf("%w: %w", ErrInvalidIntent, ErrMinigameHumanContentLocked)
 			}
 		}
 		scaling, scalingErr := definition.Scaling.Resolve(minigame.ScalingContext{

@@ -2,7 +2,7 @@
 
 - [x] Compose the minigame repository, closed Pitch tenant registry, pinned content resolver, and
   platform service in `gameserver.Compose`; expose it on `Composition`.
-- [ ] Attach the authenticated minigame coordinator API after MA-C10–MA-C14 are ruled.
+- [x] Attach the authenticated minigame coordinator adapter after MA-C10–MA-C14 are ruled.
 - [x] Implement Founder-v21 replay-owned create sequencing, atomic session creation, and create
   request-receipt idempotency.
 - [x] Implement transaction-scoped command-receipt persistence primitives.

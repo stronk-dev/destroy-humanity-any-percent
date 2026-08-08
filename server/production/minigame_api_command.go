@@ -53,7 +53,7 @@ func (s *Service) PlayMinigameAPICommand(ctx context.Context, platform *minigame
 		FounderID: request.FounderID, SessionID: request.SessionID,
 		ExpectedRevision: request.ExpectedRevision, Command: command,
 	}, request.CommandID, requestHash, func(session minigame.Session) (json.RawMessage, error) {
-		return minigameAPISessionReceipt(session, nil)
+		return MinigameAPISessionReceipt(session, nil)
 	})
 	if err != nil {
 		return save.IntentResult{}, err
@@ -72,7 +72,7 @@ func (s *Service) PlayMinigameAPICommand(ctx context.Context, platform *minigame
 	return save.IntentResult{Outcome: save.IntentApplied, Receipt: resolved.Receipt, Replay: resolved.Replay}, nil
 }
 
-func minigameAPISessionReceipt(session minigame.Session, resolutionReceipt json.RawMessage) (json.RawMessage, error) {
+func MinigameAPISessionReceipt(session minigame.Session, resolutionReceipt json.RawMessage) (json.RawMessage, error) {
 	if len(session.State) == 0 || session.Revision < 1 {
 		return nil, fmt.Errorf("%w: invalid minigame API session", ErrInvalidIntent)
 	}

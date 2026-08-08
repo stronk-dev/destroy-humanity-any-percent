@@ -107,6 +107,20 @@ func NewService(repository *Repository, tenants *TenantRegistry, contentResolver
 	return service, nil
 }
 
+func (service *Service) Current(ctx context.Context, founderID string) (Session, bool, error) {
+	if service == nil {
+		return Session{}, false, ErrInvalidSession
+	}
+	return service.repository.Current(ctx, founderID)
+}
+
+func (service *Service) Load(ctx context.Context, founderID, sessionID string) (Session, error) {
+	if service == nil {
+		return Session{}, ErrInvalidSession
+	}
+	return service.repository.Load(ctx, founderID, sessionID)
+}
+
 // Start consumes only server-resolved identity and scaling values. It asks the
 // tenant for a deterministic genesis snapshot, then freezes both inputs in the
 // authoritative session row.

@@ -36,6 +36,13 @@ type SoulRecoveryHandler interface {
 	SoulRecoveryBeatCeilingMS(context.Context, string, string) (int64, error)
 }
 
+type MinigameAPIHandler interface {
+	CreateMinigameSession(context.Context, string, string, string, string, time.Time) (json.RawMessage, error)
+	PlayMinigameCommand(context.Context, string, string, string, int64, json.RawMessage, time.Time) (json.RawMessage, error)
+	CurrentMinigameSession(context.Context, string) (json.RawMessage, error)
+	ResolveMinigameSession(context.Context, string, string) (json.RawMessage, error)
+}
+
 type APIConfig struct {
 	UnauthenticatedBurst  int
 	UnauthenticatedPerMin int
@@ -56,6 +63,7 @@ type API struct {
 	intents          IntentHandler
 	guilds           GuildIntentHandler
 	recoveries       SoulRecoveryHandler
+	minigames        MinigameAPIHandler
 	config           APIConfig
 	unauth           *httpapi.TokenBuckets
 	accounts         *httpapi.TokenBuckets
@@ -75,6 +83,14 @@ func (api *API) AttachSoulRecoveries(handler SoulRecoveryHandler) error {
 		return ErrInvalidRequest
 	}
 	api.recoveries = handler
+	return nil
+}
+
+func (api *API) AttachMinigames(handler MinigameAPIHandler) error {
+	if api == nil || handler == nil || api.minigames != nil {
+		return ErrInvalidRequest
+	}
+	api.minigames = handler
 	return nil
 }
 
@@ -245,9 +261,9 @@ func (api *API) writeSoulRecoveryResult(response http.ResponseWriter, result pro
 		writeError(response, http.StatusConflict, "conflict", "recovery_session")
 	case errors.Is(err, save.ErrIdempotencyConflict), errors.Is(err, soul.ErrRecoveryIdempotency):
 		writeError(response, http.StatusConflict, "idempotency_conflict", "recovery_session")
-	case errors.Is(err, production.ErrInvalidIntent) && strings.Contains(err.Error(), "recovery_token"):
+	case errors.Is(err, production.ErrSoulRecoveryToken):
 		writeError(response, http.StatusBadRequest, "not_eligible", "recovery_token")
-	case errors.Is(err, production.ErrInvalidIntent) && strings.Contains(err.Error(), "soul_recovery_not_ready"):
+	case errors.Is(err, production.ErrSoulRecoveryNotReady):
 		writeError(response, http.StatusBadRequest, "not_eligible", "soul_recovery_not_ready")
 	case errors.Is(err, production.ErrInvalidIntent), errors.Is(err, soul.ErrInvalidRecovery):
 		writeError(response, http.StatusBadRequest, "invalid", "soul_recovery_"+action)

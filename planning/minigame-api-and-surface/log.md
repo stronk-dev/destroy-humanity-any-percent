@@ -115,3 +115,25 @@ now-ruled MA-C10–C14.
 - Kernel semantics advance from 0.3.81 to 0.3.82. This is self-review evidence only: API mounting,
   generated schemas, current-session/resolve handlers, and the Probe-B composed socket lifecycle
   remain open, and no archival claim is made.
+
+## 2026-08-07 — MA-C10 typed-handler and composed-adapter slice
+
+- Added the four exact typed handler shapes without mounting a handwritten route: create accepts
+  only `{idempotency_key}`, command accepts only
+  `{command_id,expected_revision,command}`, current accepts no body, and resolve accepts `{}`/empty.
+  Founder, Company, clock, seed, engine, mode, scaling, and constants identity remain server-owned.
+- Added one composed adapter binding the authenticated account to the already-reviewed start/play
+  coordinators and the platform's current/resolved reads. Current returns the closed `none|active`
+  union without claim state; resolve returns only the reconstructed stored terminal API receipt and
+  rejects active sessions.
+- Enumerated the deterministic HTTP mapping in one handler table. Tenant rejections, unlock/Soul,
+  exclusivity, idempotency, missing session/founder, claim/revision conflict, invalid input, and
+  unknown tenant each have literal status/category/detail behavior; every unlisted/store error is
+  `500 internal_invariant`.
+- Closed Soul Recovery's carried typed-sentinel rider in this first subsequent server/account
+  behavior commit. The API now uses `errors.Is` for recovery-token and not-ready decisions; no
+  error-string classification remains on that path.
+- Kernel semantics advance from 0.3.82 to 0.3.83. These handlers remain deliberately unmounted:
+  API Foundation registration/generation, the combined real-socket lifecycle (including the
+  Probe-B resolver-break discriminator), privacy conformance, designated review, and archival all
+  remain open.

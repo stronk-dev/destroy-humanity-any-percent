@@ -194,7 +194,7 @@ func TestSoulRecoveryIntegrationAtomicSuppressionReplayAndExclusivity(t *testing
 		t.Fatalf("start retry receipt=%s err=%v", retryStart.Receipt, err)
 	}
 	if _, err := service.ProgressSoulRecovery(ctx, ProgressSoulRecoveryRequest{SessionID: sessionID, FounderID: founderID,
-		ProgressToken: startReceipt.ProgressToken}, now.Add(time.Second), nil); err == nil || !strings.Contains(err.Error(), "recovery_token") {
+		ProgressToken: startReceipt.ProgressToken}, now.Add(time.Second), nil); !errors.Is(err, ErrSoulRecoveryToken) {
 		t.Fatalf("stale progress token error=%v", err)
 	}
 	ordinary := []byte(`{"intent_id":"01986666-b101-7000-8000-000000000002","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`)

@@ -16,6 +16,11 @@ import (
 	"cloud-clicker/server/soul"
 )
 
+var (
+	ErrSoulRecoveryToken    = errors.New("invalid soul recovery progress token")
+	ErrSoulRecoveryNotReady = errors.New("soul recovery is not ready")
+)
+
 type StartSoulRecoveryRequest struct {
 	SessionID       string
 	FounderID       string
@@ -237,7 +242,7 @@ func (s *Service) ProgressSoulRecovery(ctx context.Context, request ProgressSoul
 		FounderID: request.FounderID, ProgressToken: request.ProgressToken,
 		ServerNowMS: save.CanonicalServerTime(now).UnixMilli(), RecoveryBeatCeilingMS: bundle.Soul.Policy.RecoveryBeatCeilingMS})
 	if errors.Is(err, soul.ErrRecoveryToken) {
-		return HandleResult{}, fmt.Errorf("%w: recovery_token", ErrInvalidIntent)
+		return HandleResult{}, fmt.Errorf("%w: %w", ErrInvalidIntent, ErrSoulRecoveryToken)
 	}
 	if err != nil {
 		return HandleResult{}, err
@@ -306,7 +311,7 @@ func (s *Service) finishSoulRecovery(ctx context.Context, request FinishSoulReco
 			return save.MinigameResolutionDecision{}, ErrInvalidIntent
 		}
 		if kind == soulRecoveryResolveKind && claimed.AttendedProgressMS < claimed.RequiredDurationMS {
-			return save.MinigameResolutionDecision{}, fmt.Errorf("%w: soul_recovery_not_ready", ErrInvalidIntent)
+			return save.MinigameResolutionDecision{}, fmt.Errorf("%w: %w", ErrInvalidIntent, ErrSoulRecoveryNotReady)
 		}
 		if claimed.FounderAttendedStartMS > 9_007_199_254_740_991-claimed.AttendedProgressMS {
 			return save.MinigameResolutionDecision{}, ErrInvalidIntent

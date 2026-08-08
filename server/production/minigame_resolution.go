@@ -247,7 +247,7 @@ func (s *Service) resolveMinigameSession(ctx context.Context, platform *minigame
 		if apiCommand != nil {
 			terminal := prepared.Session
 			terminal.Status, terminal.Revision, terminal.State = minigame.StatusResolved, terminal.Revision+1, view.Snapshot
-			apiReceipt, marshalErr = minigameAPISessionReceipt(terminal, receiptBytes)
+			apiReceipt, marshalErr = MinigameAPISessionReceipt(terminal, receiptBytes)
 			if marshalErr != nil {
 				return save.MinigameResolutionDecision{}, marshalErr
 			}
