@@ -137,3 +137,20 @@ now-ruled MA-C10–C14.
   API Foundation registration/generation, the combined real-socket lifecycle (including the
   Probe-B resolver-break discriminator), privacy conformance, designated review, and archival all
   remain open.
+
+## 2026-08-07 — MA-C14 authenticated registry and generation slice
+
+- Registered the four minigame operations and the four archived Soul Recovery operations in one
+  immutable private-v1 authority. The chi router now mounts those handlers only through the
+  registry's declared access-token middleware; there is no parallel handwritten route table.
+- Added exact request/response descriptors, path-parameter formats, runtime fixture validation,
+  canonical OpenAPI 3.1 and TypeScript generation, and the committed additive-only v1
+  compatibility pin. The ordinary `make api-check` target regenerates without mutating the pin;
+  an intentional baseline update is the separate `make api-pin` operation.
+- Extended the authenticated real-Postgres account test through the actually mounted minigame
+  create route and validates the returned bytes against the same registry. This proves routing and
+  auth/schema conformance, but it deliberately uses the typed adapter stub: the Probe-B composed
+  create → command → terminal → retry/current lifecycle remains open and its plan box is unchanged.
+- Focused Go tests, API drift generation, TypeScript typecheck, and the full save integration suite
+  are the required evidence for this slice. This is implementation/self-review evidence only,
+  ready for the later combined designated review; it is not approval or archival authority.

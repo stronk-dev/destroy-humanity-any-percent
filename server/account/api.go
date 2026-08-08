@@ -13,6 +13,7 @@ import (
 
 	"cloud-clicker/server/httpapi"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/publicapi"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
 
@@ -64,6 +65,7 @@ type API struct {
 	guilds           GuildIntentHandler
 	recoveries       SoulRecoveryHandler
 	minigames        MinigameAPIHandler
+	privateRegistry  *publicapi.Registry
 	config           APIConfig
 	unauth           *httpapi.TokenBuckets
 	accounts         *httpapi.TokenBuckets
@@ -107,9 +109,14 @@ func NewAPI(repository *Repository, intents IntentHandler, config APIConfig) (*A
 	}
 	unauth, _ := httpapi.NewTokenBuckets(config.UnauthenticatedBurst, config.UnauthenticatedPerMin, config.LimiterMaxEntries)
 	accounts, _ := httpapi.NewTokenBuckets(config.AccountBurst, config.AccountPerMin, config.LimiterMaxEntries)
+	privateRegistry, err := newPrivateAPIRegistry()
+	if err != nil {
+		return nil, ErrInvalidRequest
+	}
 	return &API{repository: repository, intents: intents, config: config,
 		unauth:           unauth,
 		accounts:         accounts,
+		privateRegistry:  privateRegistry,
 		recoveryProgress: newRecoveryBuckets(config.LimiterMaxEntries)}, nil
 }
 
@@ -137,12 +144,23 @@ func (api *API) Router() http.Handler {
 			authenticated.Get("/founder/state", api.getFounderState)
 			authenticated.Post("/intents", api.submitIntent)
 			authenticated.Post("/guild/intents", api.submitGuildIntent)
-			authenticated.Post("/soul-recovery/start", api.startSoulRecovery)
-			authenticated.Post("/soul-recovery/progress", api.progressSoulRecovery)
-			authenticated.Post("/soul-recovery/cancel", api.cancelSoulRecovery)
-			authenticated.Post("/soul-recovery/resolve", api.resolveSoulRecovery)
 		})
 	})
+	bindings := []publicapi.Binding{
+		{OperationID: "cancel_soul_recovery", Handler: http.HandlerFunc(api.cancelSoulRecovery)},
+		{OperationID: "create_minigame_session", Handler: http.HandlerFunc(api.createMinigameSession)},
+		{OperationID: "get_current_minigame_session", Handler: http.HandlerFunc(api.getCurrentMinigameSession)},
+		{OperationID: "play_minigame_command", Handler: http.HandlerFunc(api.playMinigameCommand)},
+		{OperationID: "progress_soul_recovery", Handler: http.HandlerFunc(api.progressSoulRecovery)},
+		{OperationID: "resolve_minigame_session", Handler: http.HandlerFunc(api.resolveMinigameSession)},
+		{OperationID: "resolve_soul_recovery", Handler: http.HandlerFunc(api.resolveSoulRecovery)},
+		{OperationID: "start_soul_recovery", Handler: http.HandlerFunc(api.startSoulRecovery)},
+	}
+	if err := api.privateRegistry.Mount(router, bindings, map[publicapi.AuthMode]publicapi.Middleware{
+		publicapi.AuthAccessToken: func(next http.Handler) http.Handler { return api.authenticate(api.limitAccount(next)) },
+	}); err != nil {
+		panic(err)
+	}
 	return router
 }
 
@@ -154,7 +172,7 @@ func (api *API) startSoulRecovery(response http.ResponseWriter, request *http.Re
 		writeError(response, http.StatusServiceUnavailable, "not_configured", "soul_recovery")
 		return
 	}
-	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || body.ActivityID == "" {
+	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || !apiMechanicalIDPattern.MatchString(body.ActivityID) {
 		writeError(response, http.StatusBadRequest, "invalid", "body")
 		return
 	}
@@ -183,7 +201,7 @@ func (api *API) progressSoulRecovery(response http.ResponseWriter, request *http
 		writeError(response, http.StatusServiceUnavailable, "not_configured", "soul_recovery")
 		return
 	}
-	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || body.SessionID == "" || body.ProgressToken == "" {
+	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || !apiUUIDV7Pattern.MatchString(body.SessionID) || !apiUUIDPattern.MatchString(body.ProgressToken) {
 		writeError(response, http.StatusBadRequest, "invalid", "body")
 		return
 	}
@@ -223,7 +241,7 @@ func (api *API) finishSoulRecovery(response http.ResponseWriter, request *http.R
 		writeError(response, http.StatusServiceUnavailable, "not_configured", "soul_recovery")
 		return
 	}
-	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || body.SessionID == "" {
+	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil || !apiUUIDV7Pattern.MatchString(body.SessionID) {
 		writeError(response, http.StatusBadRequest, "invalid", "body")
 		return
 	}

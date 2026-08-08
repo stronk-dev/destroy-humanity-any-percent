@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+
+	"github.com/go-chi/chi/v5"
 )
 
 var ErrInvalidOperation = errors.New("invalid API operation")
@@ -51,15 +53,21 @@ type Response struct {
 }
 
 type Operation struct {
-	ID        string
-	Method    string
-	Path      string
-	Surface   Surface
-	Auth      AuthMode
-	Public    bool
-	Request   string
-	CursorKey string
-	Responses []Response
+	ID         string
+	Method     string
+	Path       string
+	Surface    Surface
+	Auth       AuthMode
+	Public     bool
+	Parameters []Parameter
+	Request    string
+	CursorKey  string
+	Responses  []Response
+}
+
+type Parameter struct {
+	Name   string
+	Schema *Schema
 }
 
 type Registry struct {
@@ -67,6 +75,13 @@ type Registry struct {
 	operations []Operation
 	byID       map[string]Operation
 }
+
+type Binding struct {
+	OperationID string
+	Handler     http.Handler
+}
+
+type Middleware func(http.Handler) http.Handler
 
 var operationIDPattern = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 var responseHeaderPattern = regexp.MustCompile(`^[A-Z][A-Za-z0-9-]*$`)
@@ -88,6 +103,9 @@ func NewRegistry(schemas []NamedSchema, operations []Operation) (*Registry, erro
 		if operation.Request != "" && definitions[operation.Request] == nil {
 			return nil, fmt.Errorf("%w: request schema", ErrInvalidOperation)
 		}
+		if !validPathParameters(operation.Path, operation.Parameters, definitions) {
+			return nil, fmt.Errorf("%w: path parameters", ErrInvalidOperation)
+		}
 		if operation.CursorKey != "" && (definitions[operation.CursorKey] == nil || definitions[operation.CursorKey].Kind != SchemaObject) {
 			return nil, fmt.Errorf("%w: cursor key schema", ErrInvalidOperation)
 		}
@@ -105,6 +123,7 @@ func NewRegistry(schemas []NamedSchema, operations []Operation) (*Registry, erro
 		}
 		seenRoutes[key] = true
 		operation.Responses = cloneResponses(operation.Responses)
+		operation.Parameters = cloneParameters(operation.Parameters)
 		result.operations[index], result.byID[operation.ID], lastID = operation, operation, operation.ID
 	}
 	return result, nil
@@ -116,6 +135,7 @@ func (registry *Registry) Operation(id string) (Operation, bool) {
 	}
 	operation, ok := registry.byID[id]
 	operation.Responses = cloneResponses(operation.Responses)
+	operation.Parameters = cloneParameters(operation.Parameters)
 	return operation, ok
 }
 
@@ -126,6 +146,7 @@ func (registry *Registry) Operations() []Operation {
 	result := make([]Operation, len(registry.operations))
 	for index, operation := range registry.operations {
 		operation.Responses = cloneResponses(operation.Responses)
+		operation.Parameters = cloneParameters(operation.Parameters)
 		result[index] = operation
 	}
 	return result
@@ -147,6 +168,31 @@ func (registry *Registry) Schemas() []NamedSchema {
 	return result
 }
 
+// Mount binds every operation exactly once through the registry's declared
+// auth mode. Missing, extra, unsorted, or nil bindings fail before chi sees a
+// route, so runtime mounting cannot silently drift from generation.
+func (registry *Registry) Mount(router chi.Router, bindings []Binding, middleware map[AuthMode]Middleware) error {
+	if registry == nil || router == nil || len(bindings) != len(registry.operations) {
+		return ErrInvalidOperation
+	}
+	for index, operation := range registry.operations {
+		binding := bindings[index]
+		if binding.OperationID != operation.ID || binding.Handler == nil {
+			return ErrInvalidOperation
+		}
+		handler := binding.Handler
+		if operation.Auth != AuthNone {
+			wrap := middleware[operation.Auth]
+			if wrap == nil {
+				return ErrInvalidOperation
+			}
+			handler = wrap(handler)
+		}
+		router.Method(operation.Method, operation.Path, handler)
+	}
+	return nil
+}
+
 func (registry *Registry) cursorSchema(operationID string) (string, bool) {
 	if registry == nil {
 		return "", false
@@ -166,6 +212,20 @@ func (registry *Registry) ValidateResponse(operationID string, status int, data 
 		}
 	}
 	return ErrInvalidOperation
+}
+
+func (registry *Registry) ValidateRequest(operationID string, data []byte) error {
+	operation, ok := registry.byID[operationID]
+	if !ok {
+		return ErrInvalidOperation
+	}
+	if operation.Request == "" {
+		if len(data) != 0 {
+			return ErrInvalidOperation
+		}
+		return nil
+	}
+	return ValidateJSON(operation.Request, data, registry.schemas)
 }
 
 func (registry *Registry) ValidateRawResponse(operationID string, status int, contentType string, data []byte, contentHash string) error {
@@ -236,6 +296,33 @@ func validOperationPath(path string, surface Surface) bool {
 
 func cloneResponses(source []Response) []Response {
 	return append([]Response(nil), source...)
+}
+
+func cloneParameters(source []Parameter) []Parameter {
+	result := make([]Parameter, len(source))
+	for index, parameter := range source {
+		result[index] = Parameter{Name: parameter.Name, Schema: cloneSchema(parameter.Schema)}
+	}
+	return result
+}
+
+func validPathParameters(path string, parameters []Parameter, definitions map[string]*Schema) bool {
+	want := []string{}
+	for _, segment := range strings.Split(path, "/") {
+		if strings.HasPrefix(segment, "{") && strings.HasSuffix(segment, "}") {
+			want = append(want, segment[1:len(segment)-1])
+		}
+	}
+	if len(want) != len(parameters) {
+		return false
+	}
+	for index, parameter := range parameters {
+		if parameter.Name != want[index] || parameter.Schema == nil || validateSchema(parameter.Schema, definitions, 0) != nil ||
+			parameter.Schema.Kind == SchemaObject || parameter.Schema.Kind == SchemaArray || parameter.Schema.Kind == SchemaOneOf || parameter.Schema.Kind == SchemaNull {
+			return false
+		}
+	}
+	return true
 }
 
 func SortedResponseStatuses(operation Operation) []int {

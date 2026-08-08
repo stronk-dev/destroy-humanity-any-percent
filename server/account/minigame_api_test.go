@@ -95,7 +95,7 @@ func TestTypedMinigameHandlersKeepIdentityAndTenantCommandOffTheFlatWire(t *test
 		t.Fatalf("resolve accepted a missing object: %d %s", response.Code, response.Body.String())
 	}
 	response = httptest.NewRecorder()
-	api.resolveMinigameSession(response, minigameAPIRequest(http.MethodPost, "/api/v1/minigames/sessions/id/resolve", `{}`, map[string]string{"session_id": "id"}))
+	api.resolveMinigameSession(response, minigameAPIRequest(http.MethodPost, "/api/v1/minigames/sessions/id/resolve", `{}`, map[string]string{"session_id": "01986666-ca01-7000-8000-000000000010"}))
 	if response.Code != http.StatusOK {
 		t.Fatalf("empty-object resolve failed: %d %s", response.Code, response.Body.String())
 	}

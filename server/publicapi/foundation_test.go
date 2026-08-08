@@ -6,8 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func integerPointer(value int64) *int64 { return &value }
@@ -36,10 +40,11 @@ func testSchemas() []NamedSchema {
 
 func testOperations() []Operation {
 	return []Operation{
-		{ID: "get_board", Method: "GET", Path: "/api/public/v1/boards/{category}", Surface: SurfacePublicV1, Auth: AuthNone, Public: true, CursorKey: "TimeKey", Responses: []Response{
-			{Kind: ResponseSchema, Status: 200, ContentType: ContentJSON, SchemaRef: "EpochPage"},
-			{Kind: ResponseSchema, Status: 400, ContentType: ContentJSON, SchemaRef: "APIError"},
-		}},
+		{ID: "get_board", Method: "GET", Path: "/api/public/v1/boards/{category}", Surface: SurfacePublicV1, Auth: AuthNone, Public: true,
+			Parameters: []Parameter{{Name: "category", Schema: &Schema{Kind: SchemaString, Format: "mechanical-id"}}}, CursorKey: "TimeKey", Responses: []Response{
+				{Kind: ResponseSchema, Status: 200, ContentType: ContentJSON, SchemaRef: "EpochPage"},
+				{Kind: ResponseSchema, Status: 400, ContentType: ContentJSON, SchemaRef: "APIError"},
+			}},
 		{ID: "get_epochs", Method: "GET", Path: "/api/public/v1/epochs", Surface: SurfacePublicV1, Auth: AuthNone, Public: true, Responses: []Response{
 			{Kind: ResponseSchema, Status: 200, ContentType: ContentJSON, SchemaRef: "EpochPage"},
 			{Kind: ResponseSchema, Status: 400, ContentType: ContentJSON, SchemaRef: "APIError"},
@@ -153,6 +158,25 @@ func TestRegistryRejectsDuplicateAndPublicAuthDrift(t *testing.T) {
 	}
 }
 
+func TestRegistryRequiresExactPathParameterDescriptors(t *testing.T) {
+	base := testOperations()
+	base[0].Parameters = []Parameter{{Name: "category", Schema: &Schema{Kind: SchemaString, Format: "mechanical-id"}}}
+	if _, err := NewRegistry(testSchemas(), base); err != nil {
+		t.Fatal(err)
+	}
+	for _, parameters := range [][]Parameter{
+		nil,
+		{{Name: "wrong", Schema: &Schema{Kind: SchemaString}}},
+		{{Name: "category", Schema: &Schema{Kind: SchemaObject}}},
+	} {
+		invalid := testOperations()
+		invalid[0].Parameters = parameters
+		if _, err := NewRegistry(testSchemas(), invalid); err == nil {
+			t.Fatalf("invalid path parameters accepted: %+v", parameters)
+		}
+	}
+}
+
 func TestRegistryResponseUnionValidatesSchemaAndRawBytes(t *testing.T) {
 	operations := testOperations()
 	operations[1].Responses = []Response{
@@ -190,6 +214,47 @@ func TestRegistryResponseUnionValidatesSchemaAndRawBytes(t *testing.T) {
 	invalid[1].Responses = []Response{{Kind: ResponseRaw, Status: 200, ContentType: "application/octet-stream", ContentHashHeader: "X-Content-SHA256"}}
 	if _, err := NewRegistry(testSchemas(), invalid); err == nil {
 		t.Fatal("generic raw media type accepted")
+	}
+}
+
+func TestRegistryMountRejectsBindingDriftAndAppliesDeclaredAuth(t *testing.T) {
+	operations := testOperations()
+	operations[0].Auth, operations[0].Public, operations[0].Surface, operations[0].Path = AuthAccessToken, false, SurfacePrivateV1, "/api/v1/boards/{category}"
+	registry, err := NewRegistry(testSchemas(), operations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	newBindings := func() []Binding {
+		return []Binding{
+			{OperationID: "get_board", Handler: http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) { response.WriteHeader(http.StatusNoContent) })},
+			{OperationID: "get_epochs", Handler: http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) { response.WriteHeader(http.StatusNoContent) })},
+		}
+	}
+	for _, mutate := range []func([]Binding) []Binding{
+		func(values []Binding) []Binding { return values[:1] },
+		func(values []Binding) []Binding { values[0].OperationID = "get_epochs"; return values },
+		func(values []Binding) []Binding { values[0].Handler = nil; return values },
+	} {
+		if err := registry.Mount(chi.NewRouter(), mutate(newBindings()), map[AuthMode]Middleware{AuthAccessToken: func(next http.Handler) http.Handler { return next }}); err == nil {
+			t.Fatal("binding drift mounted")
+		}
+	}
+
+	router := chi.NewRouter()
+	authenticated := false
+	err = registry.Mount(router, newBindings(), map[AuthMode]Middleware{AuthAccessToken: func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+			authenticated = true
+			next.ServeHTTP(response, request)
+		})
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	response := httptest.NewRecorder()
+	router.ServeHTTP(response, httptest.NewRequest(http.MethodGet, "/api/v1/boards/any_percent", nil))
+	if response.Code != http.StatusNoContent || !authenticated {
+		t.Fatalf("status=%d authenticated=%t", response.Code, authenticated)
 	}
 }
 

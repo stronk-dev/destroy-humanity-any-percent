@@ -180,3 +180,22 @@ after `8697883`, the adversarial chain reproducer above, and a fresh repository-
 The full gate exits 0 with 6,517 client assertions and 19,560 browser assertions. C18–C20 and the
 later endpoint/generation/composition work remain the only recorded API blockers; approval here is
 for the implemented schema/cursor foundation, not those unbuilt surfaces.
+
+## 2026-08-07 — authenticated registry generation and compatibility gate
+
+- Added canonical OpenAPI 3.1 and TypeScript DTO/operation generation from the immutable Go
+  registry. The same operation rows now mount the authenticated Soul Recovery and minigame
+  handlers, so runtime routing and generated contracts cannot drift into parallel authorities.
+- Added exact path-parameter descriptors and the ruled UUIDv7, opaque-ID, mechanical-ID, semver,
+  and prefixed-SHA formats. Registry construction rejects any path-template/descriptor mismatch;
+  runtime request and response fixtures reject unknown fields and private coordinator state.
+- Committed an additive-only v1 compatibility pin. Ordinary generation checks the prior pin before
+  writing outputs; only the explicit `make api-pin` target can replace the baseline. Negative tests
+  cover operation removal/change, response-field removal, request-union growth, response-status
+  removal, and constraint narrowing; optional response growth remains permitted.
+- `make api-schema` is the RFC-named generator target and `make api-check` is part of
+  `verify-server`. This slice generates the authenticated registry only. Public readers, the thin
+  generated-client transport, full public privacy enumeration, and the combined MA real-socket
+  lifecycle remain open and are not credited here.
+- This entry records implementation/self-review evidence only. It does not satisfy the designated
+  cross-party gate and authorizes neither archival nor publication.

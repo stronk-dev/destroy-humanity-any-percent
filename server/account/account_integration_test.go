@@ -144,6 +144,10 @@ func TestAccountSessionIntegration(t *testing.T) {
 	if err := api.AttachSoulRecoveries(recoveries); err != nil {
 		t.Fatalf("Soul recovery composition: %v", err)
 	}
+	minigames := &minigameAPIStub{result: json.RawMessage(`{"constants_hash":"` + hash + `","engine_ref":"pitch","engine_version":"1.0.0","minigame_id":"pitch","mode":"solo","revision":1,"session_id":"01986666-ca01-7000-8000-000000000010","snapshot":{"deck_count":17,"funding_target":"1e3","hand":[],"hands_remaining":3,"phase":"playing","pitch_content_hash":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","pitch_schema_version":1,"revision":1,"round":1,"round_best_valuation":"0","run_currency":4,"shop_offers":[],"slotted_hacks":[]},"status":"active"}`)}
+	if err := api.AttachMinigames(minigames); err != nil {
+		t.Fatalf("minigame composition: %v", err)
+	}
 	server := testhttp.New(api.Router())
 	defer server.Close()
 
@@ -209,6 +213,16 @@ func TestAccountSessionIntegration(t *testing.T) {
 	decodeResponse(t, profileResponse, &profile)
 	if profile.ID != claims.FounderID || profile.Display == nil {
 		t.Fatalf("profile=%+v claims=%+v", profile, claims)
+	}
+	minigameCreate := requestJSON(t, server.Client, http.MethodPost, server.URL+"/api/v1/minigames/pitch/sessions", firstPair.AccessToken,
+		`{"idempotency_key":"create-1"}`)
+	if minigameCreate.StatusCode != http.StatusOK {
+		t.Fatalf("minigame create status=%d body=%s", minigameCreate.StatusCode, readBody(minigameCreate))
+	}
+	minigameBytes := []byte(readBody(minigameCreate))
+	if err := api.privateRegistry.ValidateResponse("create_minigame_session", http.StatusOK, minigameBytes); err != nil ||
+		minigames.createAccount != created.AccountID || minigames.createGame != "pitch" || minigames.createKey != "create-1" {
+		t.Fatalf("registered minigame route response=%s stub=%+v err=%v", minigameBytes, minigames, err)
 	}
 	oldState, err := repository.ActiveCompanyState(ctx, created.AccountID)
 	if err != nil || oldState.Revision != 1 {

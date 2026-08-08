@@ -1,0 +1,1052 @@
+{
+  "generator_version": "1",
+  "operations": [
+    {
+      "id": "cancel_soul_recovery",
+      "method": "POST",
+      "path": "/api/v1/soul-recovery/cancel",
+      "surface": "private_v1",
+      "auth": "access_token",
+      "request": "SoulRecoveryFinishRequest",
+      "parameters": [],
+      "responses": [
+        "200:schema:application/json:SoulRecoveryTerminalResponse",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
+        "409:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError",
+        "503:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "create_minigame_session",
+      "method": "POST",
+      "path": "/api/v1/minigames/{minigame_id}/sessions",
+      "surface": "private_v1",
+      "auth": "access_token",
+      "request": "MinigameCreateRequest",
+      "parameters": [
+        "minigame_id={\"format\":\"mechanical-id\",\"type\":\"string\"}"
+      ],
+      "responses": [
+        "200:schema:application/json:MinigameSessionResponseActive",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
+        "409:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError",
+        "503:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "get_current_minigame_session",
+      "method": "GET",
+      "path": "/api/v1/minigames/sessions/current",
+      "surface": "private_v1",
+      "auth": "access_token",
+      "parameters": [],
+      "responses": [
+        "200:schema:application/json:MinigameCurrentResponse",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
+        "409:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError",
+        "503:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "play_minigame_command",
+      "method": "POST",
+      "path": "/api/v1/minigames/sessions/{session_id}/commands",
+      "surface": "private_v1",
+      "auth": "access_token",
+      "request": "MinigameCommandRequest",
+      "parameters": [
+        "session_id={\"format\":\"uuid-v7\",\"type\":\"string\"}"
+      ],
+      "responses": [
+        "200:schema:application/json:MinigameSessionResponse",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
+        "409:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError",
+        "503:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "progress_soul_recovery",
+      "method": "POST",
+      "path": "/api/v1/soul-recovery/progress",
+      "surface": "private_v1",
+      "auth": "access_token",
+      "request": "SoulRecoveryProgressRequest",
+      "parameters": [],
+      "responses": [
+        "200:schema:application/json:SoulRecoveryProgressResponse",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
+        "409:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError",
+        "503:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "resolve_minigame_session",
+      "method": "POST",
+      "path": "/api/v1/minigames/sessions/{session_id}/resolve",
+      "surface": "private_v1",
+      "auth": "access_token",
+      "request": "MinigameEmptyRequest",
+      "parameters": [
+        "session_id={\"format\":\"uuid-v7\",\"type\":\"string\"}"
+      ],
+      "responses": [
+        "200:schema:application/json:MinigameSessionResponseTerminal",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
+        "409:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError",
+        "503:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "resolve_soul_recovery",
+      "method": "POST",
+      "path": "/api/v1/soul-recovery/resolve",
+      "surface": "private_v1",
+      "auth": "access_token",
+      "request": "SoulRecoveryFinishRequest",
+      "parameters": [],
+      "responses": [
+        "200:schema:application/json:SoulRecoveryTerminalResponse",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
+        "409:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError",
+        "503:schema:application/json:APIError"
+      ]
+    },
+    {
+      "id": "start_soul_recovery",
+      "method": "POST",
+      "path": "/api/v1/soul-recovery/start",
+      "surface": "private_v1",
+      "auth": "access_token",
+      "request": "SoulRecoveryStartRequest",
+      "parameters": [],
+      "responses": [
+        "200:schema:application/json:SoulRecoveryStartResponse",
+        "400:schema:application/json:APIError",
+        "401:schema:application/json:APIError",
+        "404:schema:application/json:APIError",
+        "409:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError",
+        "503:schema:application/json:APIError"
+      ]
+    }
+  ],
+  "schemas": {
+    "APIError": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "conflict",
+            "idempotency_conflict",
+            "internal_invariant",
+            "invalid",
+            "not_configured",
+            "not_eligible",
+            "rate_limited",
+            "unauthorized",
+            "unknown_id"
+          ],
+          "type": "string"
+        },
+        "detail": {
+          "enum": [
+            "access_token",
+            "account",
+            "body",
+            "duplicate_card",
+            "exclusive_activity",
+            "fiscal_unlock_required",
+            "founder",
+            "hack_slots_full",
+            "hand_too_large",
+            "human_content_locked",
+            "illegal_phase",
+            "insufficient_currency",
+            "ip",
+            "minigame_api",
+            "minigame_command",
+            "minigame_create",
+            "minigame_revision",
+            "minigame_session",
+            "minigame_tenant",
+            "recovery_progress",
+            "recovery_session",
+            "recovery_token",
+            "session_id",
+            "soul_recovery_cancel",
+            "soul_recovery_not_ready",
+            "soul_recovery_progress",
+            "soul_recovery_resolve",
+            "soul_recovery_start",
+            "unknown_card",
+            "unknown_offer"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "category",
+        "detail"
+      ],
+      "type": "object"
+    },
+    "MinigameCommandRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "$ref": "#/components/schemas/MinigameTenantCommand"
+        },
+        "command_id": {
+          "format": "opaque-id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "command_id",
+        "expected_revision"
+      ],
+      "type": "object"
+    },
+    "MinigameCreateRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "idempotency_key": {
+          "format": "opaque-id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "idempotency_key"
+      ],
+      "type": "object"
+    },
+    "MinigameCurrentActive": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "active"
+          ],
+          "type": "string"
+        },
+        "session": {
+          "$ref": "#/components/schemas/MinigameSessionDescriptor"
+        },
+        "snapshot": {
+          "$ref": "#/components/schemas/PitchSnapshot"
+        }
+      },
+      "required": [
+        "kind",
+        "session",
+        "snapshot"
+      ],
+      "type": "object"
+    },
+    "MinigameCurrentNone": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "none"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "type": "object"
+    },
+    "MinigameCurrentResponse": {
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/MinigameCurrentActive"
+        },
+        {
+          "$ref": "#/components/schemas/MinigameCurrentNone"
+        }
+      ]
+    },
+    "MinigameEmptyRequest": {
+      "additionalProperties": false,
+      "properties": {},
+      "type": "object"
+    },
+    "MinigameQualityChange": {
+      "additionalProperties": false,
+      "properties": {
+        "new": {
+          "$ref": "#/components/schemas/MinigameQualityState"
+        },
+        "old": {
+          "$ref": "#/components/schemas/MinigameQualityState"
+        }
+      },
+      "required": [
+        "new",
+        "old"
+      ],
+      "type": "object"
+    },
+    "MinigameQualityState": {
+      "additionalProperties": false,
+      "properties": {
+        "decay_remainder_ppm": {
+          "maximum": 999999,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "grade_ppm": {
+          "maximum": 1000000,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "last_founder_attended_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "decay_remainder_ppm",
+        "grade_ppm",
+        "last_founder_attended_ms"
+      ],
+      "type": "object"
+    },
+    "MinigameRatingChange": {
+      "additionalProperties": false,
+      "properties": {
+        "games_after": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "games_before": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "new_elo": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "old_elo": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "rated": {
+          "type": "boolean"
+        },
+        "season_member": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "games_after",
+        "games_before",
+        "new_elo",
+        "old_elo",
+        "rated",
+        "season_member"
+      ],
+      "type": "object"
+    },
+    "MinigameResolutionReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "cap_reason_key": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "certified_result_hash": {
+          "format": "sha256-prefixed",
+          "type": "string"
+        },
+        "company_revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "configured_cap_forfeit_units": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "credited_delta": {
+          "format": "canonical-decimal",
+          "type": "string"
+        },
+        "credited_resource_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "founder_revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "intent_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "minigame_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "applied"
+          ],
+          "type": "string"
+        },
+        "quality_change": {
+          "$ref": "#/components/schemas/MinigameQualityChange"
+        },
+        "rating_change": {
+          "$ref": "#/components/schemas/MinigameRatingChange"
+        },
+        "session_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cap_reason_key",
+        "certified_result_hash",
+        "company_revision",
+        "configured_cap_forfeit_units",
+        "credited_delta",
+        "credited_resource_id",
+        "founder_revision",
+        "intent_id",
+        "minigame_id",
+        "outcome",
+        "quality_change",
+        "rating_change",
+        "session_id"
+      ],
+      "type": "object"
+    },
+    "MinigameSessionDescriptor": {
+      "additionalProperties": false,
+      "properties": {
+        "constants_hash": {
+          "format": "sha256-prefixed",
+          "type": "string"
+        },
+        "engine_ref": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "engine_version": {
+          "format": "semver",
+          "type": "string"
+        },
+        "minigame_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "async_snapshot",
+            "solo"
+          ],
+          "type": "string"
+        },
+        "revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "session_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "claimed",
+            "resolved"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "constants_hash",
+        "engine_ref",
+        "engine_version",
+        "minigame_id",
+        "mode",
+        "revision",
+        "session_id",
+        "status"
+      ],
+      "type": "object"
+    },
+    "MinigameSessionResponse": {
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/MinigameSessionResponseActive"
+        },
+        {
+          "$ref": "#/components/schemas/MinigameSessionResponseTerminal"
+        }
+      ]
+    },
+    "MinigameSessionResponseActive": {
+      "additionalProperties": false,
+      "properties": {
+        "constants_hash": {
+          "format": "sha256-prefixed",
+          "type": "string"
+        },
+        "engine_ref": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "engine_version": {
+          "format": "semver",
+          "type": "string"
+        },
+        "minigame_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "async_snapshot",
+            "solo"
+          ],
+          "type": "string"
+        },
+        "revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "session_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "snapshot": {
+          "$ref": "#/components/schemas/PitchSnapshot"
+        },
+        "status": {
+          "enum": [
+            "active"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "constants_hash",
+        "engine_ref",
+        "engine_version",
+        "minigame_id",
+        "mode",
+        "revision",
+        "session_id",
+        "snapshot",
+        "status"
+      ],
+      "type": "object"
+    },
+    "MinigameSessionResponseTerminal": {
+      "additionalProperties": false,
+      "properties": {
+        "constants_hash": {
+          "format": "sha256-prefixed",
+          "type": "string"
+        },
+        "engine_ref": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "engine_version": {
+          "format": "semver",
+          "type": "string"
+        },
+        "minigame_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "async_snapshot",
+            "solo"
+          ],
+          "type": "string"
+        },
+        "resolution_receipt": {
+          "$ref": "#/components/schemas/MinigameResolutionReceipt"
+        },
+        "revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "session_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "snapshot": {
+          "$ref": "#/components/schemas/PitchSnapshot"
+        },
+        "status": {
+          "enum": [
+            "resolved"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "constants_hash",
+        "engine_ref",
+        "engine_version",
+        "minigame_id",
+        "mode",
+        "resolution_receipt",
+        "revision",
+        "session_id",
+        "snapshot",
+        "status"
+      ],
+      "type": "object"
+    },
+    "MinigameTenantCommand": {
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/PitchBuyHackCommand"
+        },
+        {
+          "$ref": "#/components/schemas/PitchEndShopCommand"
+        },
+        {
+          "$ref": "#/components/schemas/PitchPlayHandCommand"
+        }
+      ]
+    },
+    "PitchBuyHackCommand": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "buy_hack"
+          ],
+          "type": "string"
+        },
+        "offer_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "offer_id"
+      ],
+      "type": "object"
+    },
+    "PitchEndShopCommand": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "end_shop"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "type": "object"
+    },
+    "PitchPlayHandCommand": {
+      "additionalProperties": false,
+      "properties": {
+        "card_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "play_hand"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "card_ids",
+        "kind"
+      ],
+      "type": "object"
+    },
+    "PitchShopOffer": {
+      "additionalProperties": false,
+      "properties": {
+        "hack_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "offer_id": {
+          "type": "string"
+        },
+        "price": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "hack_id",
+        "offer_id",
+        "price"
+      ],
+      "type": "object"
+    },
+    "PitchSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "deck_count": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "funding_target": {
+          "format": "canonical-decimal",
+          "type": "string"
+        },
+        "hand": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "hands_remaining": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "phase": {
+          "enum": [
+            "playing",
+            "shop",
+            "terminal"
+          ],
+          "type": "string"
+        },
+        "pitch_content_hash": {
+          "format": "sha256-prefixed",
+          "type": "string"
+        },
+        "pitch_schema_version": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "round": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "round_best_valuation": {
+          "format": "canonical-decimal",
+          "type": "string"
+        },
+        "run_currency": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "shop_offers": {
+          "items": {
+            "$ref": "#/components/schemas/PitchShopOffer"
+          },
+          "type": "array"
+        },
+        "slotted_hacks": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "deck_count",
+        "funding_target",
+        "hand",
+        "hands_remaining",
+        "phase",
+        "pitch_content_hash",
+        "pitch_schema_version",
+        "revision",
+        "round",
+        "round_best_valuation",
+        "run_currency",
+        "shop_offers",
+        "slotted_hacks"
+      ],
+      "type": "object"
+    },
+    "SoulRecoveryFinishRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "session_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        }
+      },
+      "required": [
+        "session_id"
+      ],
+      "type": "object"
+    },
+    "SoulRecoveryProgressRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "progress_token": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "session_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        }
+      },
+      "required": [
+        "progress_token",
+        "session_id"
+      ],
+      "type": "object"
+    },
+    "SoulRecoveryProgressResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "attended_progress_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "eligible": {
+          "type": "boolean"
+        },
+        "last_progress_server_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "required_duration_attended_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "session_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        }
+      },
+      "required": [
+        "attended_progress_ms",
+        "eligible",
+        "last_progress_server_ms",
+        "required_duration_attended_ms",
+        "session_id"
+      ],
+      "type": "object"
+    },
+    "SoulRecoveryStartRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "activity_id"
+      ],
+      "type": "object"
+    },
+    "SoulRecoveryStartResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "attended_progress_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "last_progress_server_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "progress_token": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "required_duration_attended_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "session_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "started_wall_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "activity_id",
+        "attended_progress_ms",
+        "last_progress_server_ms",
+        "progress_token",
+        "required_duration_attended_ms",
+        "session_id",
+        "started_wall_ms"
+      ],
+      "type": "object"
+    },
+    "SoulRecoveryTerminalResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "cancel",
+            "resolve"
+          ],
+          "type": "string"
+        },
+        "activity_id": {
+          "format": "mechanical-id",
+          "type": "string"
+        },
+        "band_after": {
+          "enum": [
+            "dimming",
+            "hollow",
+            "near_zero",
+            "whole"
+          ],
+          "type": "string"
+        },
+        "band_before": {
+          "enum": [
+            "dimming",
+            "hollow",
+            "near_zero",
+            "whole"
+          ],
+          "type": "string"
+        },
+        "cancelled_by": {
+          "enum": [
+            "player",
+            "watchdog"
+          ],
+          "type": "string"
+        },
+        "company_revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "founder_revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "intent_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "applied"
+          ],
+          "type": "string"
+        },
+        "session_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "soul_after": {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "soul_before": {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "action",
+        "activity_id",
+        "band_after",
+        "band_before",
+        "company_revision",
+        "founder_revision",
+        "intent_id",
+        "outcome",
+        "session_id",
+        "soul_after",
+        "soul_before"
+      ],
+      "type": "object"
+    }
+  }
+}

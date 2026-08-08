@@ -14,11 +14,14 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var minigameOpaqueIDPattern = regexp.MustCompile(`^[A-Za-z0-9-]{1,64}$`)
+var (
+	minigameOpaqueIDPattern = regexp.MustCompile(`^[A-Za-z0-9-]{1,64}$`)
+	apiMechanicalIDPattern  = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
+	apiUUIDPattern          = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
+	apiUUIDV7Pattern        = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
+)
 
-// These handlers deliberately remain unmounted until the API Foundation
-// registry mounts them. Keeping them typed here lets MA-C10's wire and error
-// contracts land without creating a second handwritten route authority.
+// These handlers are mounted exclusively through the API Foundation registry.
 func (api *API) createMinigameSession(response http.ResponseWriter, request *http.Request) {
 	var body struct {
 		IdempotencyKey string `json:"idempotency_key"`
@@ -29,7 +32,7 @@ func (api *API) createMinigameSession(response http.ResponseWriter, request *htt
 		return
 	}
 	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil ||
-		!minigameOpaqueIDPattern.MatchString(body.IdempotencyKey) || minigameID == "" {
+		!minigameOpaqueIDPattern.MatchString(body.IdempotencyKey) || !apiMechanicalIDPattern.MatchString(minigameID) {
 		writeError(response, http.StatusBadRequest, "invalid", "minigame_create")
 		return
 	}
@@ -55,7 +58,8 @@ func (api *API) playMinigameCommand(response http.ResponseWriter, request *http.
 		return
 	}
 	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil ||
-		!minigameOpaqueIDPattern.MatchString(body.CommandID) || body.ExpectedRevision < 1 ||
+		!minigameOpaqueIDPattern.MatchString(body.CommandID) || body.ExpectedRevision < 1 || body.ExpectedRevision > apiMaxExactInteger ||
+		!apiUUIDV7Pattern.MatchString(chi.URLParam(request, "session_id")) ||
 		len(body.Command) == 0 || body.Command[0] != '{' {
 		writeError(response, http.StatusBadRequest, "invalid", "minigame_command")
 		return
@@ -84,7 +88,8 @@ func (api *API) resolveMinigameSession(response http.ResponseWriter, request *ht
 		return
 	}
 	var body struct{}
-	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil {
+	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil ||
+		!apiUUIDV7Pattern.MatchString(chi.URLParam(request, "session_id")) {
 		writeError(response, http.StatusBadRequest, "invalid", "body")
 		return
 	}

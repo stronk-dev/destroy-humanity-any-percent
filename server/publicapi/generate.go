@@ -1,0 +1,274 @@
+package publicapi
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"sort"
+	"strconv"
+	"strings"
+)
+
+const GeneratorVersion = "1"
+
+// GenerateOpenAPI emits canonical OpenAPI 3.1 JSON from the same immutable
+// registry that mounts runtime handlers. No router reflection or handwritten
+// schema fragment participates.
+func GenerateOpenAPI(registry *Registry, title string) ([]byte, error) {
+	if registry == nil || title == "" {
+		return nil, ErrInvalidOperation
+	}
+	components := map[string]any{}
+	for _, definition := range registry.Schemas() {
+		components[definition.Name] = openAPISchema(definition.Schema)
+	}
+	paths := map[string]any{}
+	for _, operation := range registry.Operations() {
+		pathItem, _ := paths[operation.Path].(map[string]any)
+		if pathItem == nil {
+			pathItem = map[string]any{}
+			paths[operation.Path] = pathItem
+		}
+		generated := map[string]any{"operationId": operation.ID, "responses": openAPIResponses(operation.Responses)}
+		if operation.Auth == AuthAccessToken {
+			generated["security"] = []any{map[string]any{"accessToken": []any{}}}
+		}
+		if len(operation.Parameters) != 0 {
+			parameters := make([]any, len(operation.Parameters))
+			for index, parameter := range operation.Parameters {
+				parameters[index] = map[string]any{"in": "path", "name": parameter.Name, "required": true, "schema": openAPISchema(parameter.Schema)}
+			}
+			generated["parameters"] = parameters
+		}
+		if operation.Request != "" {
+			generated["requestBody"] = map[string]any{"required": true, "content": map[string]any{
+				ContentJSON: map[string]any{"schema": map[string]any{"$ref": "#/components/schemas/" + operation.Request}},
+			}}
+		}
+		pathItem[strings.ToLower(operation.Method)] = generated
+	}
+	document := map[string]any{
+		"components": map[string]any{
+			"schemas": components,
+			"securitySchemes": map[string]any{"accessToken": map[string]any{
+				"bearerFormat": "JWT", "scheme": "bearer", "type": "http",
+			}},
+		},
+		"info":    map[string]any{"title": title, "version": GeneratorVersion},
+		"openapi": "3.1.0",
+		"paths":   paths,
+	}
+	encoded, err := json.MarshalIndent(document, "", "  ")
+	if err != nil {
+		return nil, err
+	}
+	return append(encoded, '\n'), nil
+}
+
+func openAPIResponses(responses []Response) map[string]any {
+	result := map[string]any{}
+	for _, response := range responses {
+		status := strconv.Itoa(response.Status)
+		row, _ := result[status].(map[string]any)
+		if row == nil {
+			row = map[string]any{"description": "HTTP " + status, "content": map[string]any{}}
+			result[status] = row
+		}
+		content := row["content"].(map[string]any)
+		if response.Kind == ResponseSchema {
+			content[response.ContentType] = map[string]any{"schema": map[string]any{"$ref": "#/components/schemas/" + response.SchemaRef}}
+		} else {
+			content[response.ContentType] = map[string]any{"schema": map[string]any{"format": "binary", "type": "string"}}
+			row["headers"] = map[string]any{response.ContentHashHeader: map[string]any{
+				"required": true, "schema": map[string]any{"format": "sha256", "type": "string"},
+			}}
+		}
+	}
+	return result
+}
+
+func openAPISchema(schema *Schema) map[string]any {
+	switch schema.Kind {
+	case SchemaRef:
+		return map[string]any{"$ref": "#/components/schemas/" + schema.Ref}
+	case SchemaObject:
+		properties := map[string]any{}
+		required := []string{}
+		for _, field := range schema.Fields {
+			properties[field.Name] = openAPISchema(field.Schema)
+			if field.Required {
+				required = append(required, field.Name)
+			}
+		}
+		result := map[string]any{"additionalProperties": false, "properties": properties, "type": "object"}
+		if len(required) != 0 {
+			result["required"] = required
+		}
+		return result
+	case SchemaArray:
+		return map[string]any{"items": openAPISchema(schema.Items), "type": "array"}
+	case SchemaOneOf:
+		alternates := make([]any, len(schema.Alternates))
+		for index, alternate := range schema.Alternates {
+			alternates[index] = openAPISchema(alternate)
+		}
+		return map[string]any{"oneOf": alternates}
+	case SchemaNull:
+		return map[string]any{"type": "null"}
+	case SchemaString:
+		result := map[string]any{"type": "string"}
+		if schema.Format != "" {
+			result["format"] = schema.Format
+		}
+		if len(schema.Enum) != 0 {
+			result["enum"] = append([]string(nil), schema.Enum...)
+		}
+		return result
+	case SchemaInteger:
+		result := map[string]any{"type": "integer"}
+		if schema.Minimum != nil {
+			result["minimum"] = *schema.Minimum
+		}
+		if schema.Maximum != nil {
+			result["maximum"] = *schema.Maximum
+		}
+		return result
+	case SchemaBoolean:
+		return map[string]any{"type": "boolean"}
+	default:
+		return map[string]any{}
+	}
+}
+
+// GenerateTypeScript emits exact DTO types plus operation metadata and the
+// request/response association used by the handwritten transport boundary.
+func GenerateTypeScript(registry *Registry) ([]byte, error) {
+	if registry == nil {
+		return nil, ErrInvalidOperation
+	}
+	var output bytes.Buffer
+	output.WriteString("// Code generated by Cloud Clicker API generator v" + GeneratorVersion + "; DO NOT EDIT.\n\n")
+	for _, definition := range registry.Schemas() {
+		fmt.Fprintf(&output, "export type %s = %s;\n\n", definition.Name, typeScriptSchema(definition.Schema))
+	}
+	output.WriteString("export const operations = {\n")
+	for _, operation := range registry.Operations() {
+		fmt.Fprintf(&output, "  %s: { auth: %q, method: %q, path: %q, pathParameters: [", operation.ID, operation.Auth, operation.Method, operation.Path)
+		for index, parameter := range operation.Parameters {
+			if index != 0 {
+				output.WriteString(", ")
+			}
+			fmt.Fprintf(&output, "%q", parameter.Name)
+		}
+		output.WriteString("] },\n")
+	}
+	output.WriteString("} as const;\n\nexport type OperationID = keyof typeof operations;\n\n")
+	output.WriteString("export interface OperationTypes {\n")
+	for _, operation := range registry.Operations() {
+		request := "null"
+		if operation.Request != "" {
+			request = operation.Request
+		}
+		responses := []string{}
+		seen := map[string]bool{}
+		for _, response := range operation.Responses {
+			if response.Kind == ResponseSchema && !seen[response.SchemaRef] {
+				seen[response.SchemaRef] = true
+				responses = append(responses, response.SchemaRef)
+			}
+		}
+		pathFields := []string{}
+		for _, parameter := range operation.Parameters {
+			pathFields = append(pathFields, fmt.Sprintf("%s: %s", parameter.Name, typeScriptSchema(parameter.Schema)))
+		}
+		fmt.Fprintf(&output, "  %s: { path: { %s }; request: %s; response: %s };\n", operation.ID,
+			strings.Join(pathFields, "; "), request, strings.Join(responses, " | "))
+	}
+	output.WriteString("}\n")
+	return output.Bytes(), nil
+}
+
+func typeScriptSchema(schema *Schema) string {
+	switch schema.Kind {
+	case SchemaRef:
+		return schema.Ref
+	case SchemaObject:
+		fields := make([]string, len(schema.Fields))
+		for index, field := range schema.Fields {
+			optional := ""
+			if !field.Required {
+				optional = "?"
+			}
+			fields[index] = fmt.Sprintf("%s%s: %s", field.Name, optional, typeScriptSchema(field.Schema))
+		}
+		return "{ " + strings.Join(fields, "; ") + " }"
+	case SchemaArray:
+		return "Array<" + typeScriptSchema(schema.Items) + ">"
+	case SchemaOneOf:
+		values := make([]string, len(schema.Alternates))
+		for index, alternate := range schema.Alternates {
+			values[index] = typeScriptSchema(alternate)
+		}
+		return strings.Join(values, " | ")
+	case SchemaString:
+		if len(schema.Enum) == 0 {
+			return "string"
+		}
+		values := append([]string(nil), schema.Enum...)
+		for index, value := range values {
+			values[index] = strconv.Quote(value)
+		}
+		return strings.Join(values, " | ")
+	case SchemaInteger:
+		return "number"
+	case SchemaBoolean:
+		return "boolean"
+	case SchemaNull:
+		return "null"
+	default:
+		return "never"
+	}
+}
+
+func CanonicalOperationPins(registry *Registry) ([]byte, error) {
+	if registry == nil {
+		return nil, ErrInvalidOperation
+	}
+	type pin struct {
+		ID         string   `json:"id"`
+		Method     string   `json:"method"`
+		Path       string   `json:"path"`
+		Surface    Surface  `json:"surface"`
+		Auth       AuthMode `json:"auth"`
+		Request    string   `json:"request,omitempty"`
+		Parameters []string `json:"parameters"`
+		Responses  []string `json:"responses"`
+	}
+	pins := make([]pin, 0, len(registry.operations))
+	for _, operation := range registry.Operations() {
+		parameters := make([]string, len(operation.Parameters))
+		for index, parameter := range operation.Parameters {
+			encoded, err := json.Marshal(openAPISchema(parameter.Schema))
+			if err != nil {
+				return nil, err
+			}
+			parameters[index] = parameter.Name + "=" + string(encoded)
+		}
+		responses := make([]string, len(operation.Responses))
+		for index, response := range operation.Responses {
+			responses[index] = fmt.Sprintf("%d:%s:%s:%s", response.Status, response.Kind, response.ContentType, response.SchemaRef)
+		}
+		pins = append(pins, pin{ID: operation.ID, Method: operation.Method, Path: operation.Path, Surface: operation.Surface,
+			Auth: operation.Auth, Request: operation.Request, Parameters: parameters, Responses: responses})
+	}
+	sort.Slice(pins, func(left, right int) bool { return pins[left].ID < pins[right].ID })
+	schemas := map[string]any{}
+	for _, definition := range registry.Schemas() {
+		schemas[definition.Name] = openAPISchema(definition.Schema)
+	}
+	encoded, err := json.MarshalIndent(map[string]any{"generator_version": GeneratorVersion, "operations": pins, "schemas": schemas}, "", "  ")
+	if err != nil {
+		return nil, err
+	}
+	return append(encoded, '\n'), nil
+}

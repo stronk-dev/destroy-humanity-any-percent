@@ -59,7 +59,12 @@ var (
 	schemaNamePattern = regexp.MustCompile(`^[A-Z][A-Za-z0-9]*$`)
 	fieldNamePattern  = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	sha256Pattern     = regexp.MustCompile(`^[0-9a-f]{64}$`)
+	prefixedSHA256    = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
 	uuidPattern       = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
+	uuidV7Pattern     = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
+	mechanicalPattern = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
+	opaqueIDPattern   = regexp.MustCompile(`^[A-Za-z0-9-]{1,64}$`)
+	semverPattern     = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+$`)
 )
 
 func ValidateSchemaDefinitions(definitions []NamedSchema) (map[string]*Schema, error) {
@@ -353,7 +358,7 @@ func validateValue(schema *Schema, value any, definitions map[string]*Schema, de
 
 func validStringFormat(format string) bool {
 	switch format {
-	case "", "sha256", "uuid", "date-time-ms", "canonical-decimal":
+	case "", "sha256", "sha256-prefixed", "uuid", "uuid-v7", "date-time-ms", "canonical-decimal", "mechanical-id", "opaque-id", "semver":
 		return true
 	default:
 		return false
@@ -366,14 +371,24 @@ func matchesFormat(format, value string) bool {
 		return true
 	case "sha256":
 		return sha256Pattern.MatchString(value)
+	case "sha256-prefixed":
+		return prefixedSHA256.MatchString(value)
 	case "uuid":
 		return uuidPattern.MatchString(value)
+	case "uuid-v7":
+		return uuidV7Pattern.MatchString(value)
 	case "date-time-ms":
 		parsed, err := time.Parse("2006-01-02T15:04:05.000Z", value)
 		return err == nil && parsed.UTC().Format("2006-01-02T15:04:05.000Z") == value
 	case "canonical-decimal":
 		_, err := decimal.ParseCanonical(value)
 		return err == nil
+	case "mechanical-id":
+		return mechanicalPattern.MatchString(value)
+	case "opaque-id":
+		return opaqueIDPattern.MatchString(value)
+	case "semver":
+		return semverPattern.MatchString(value)
 	default:
 		return false
 	}
