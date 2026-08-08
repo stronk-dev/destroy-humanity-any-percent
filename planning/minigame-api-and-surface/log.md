@@ -258,3 +258,37 @@ Commit `bef1a87` restores that arm in both runtimes. The resulting contract is e
 v21 activation initializes zero, and every applied v21 Exit resets zero thereafter. Focused
 production and client suites are green after the correction; no earlier green full-gate claim is
 made.
+
+## 2026-08-08 — designated cross-party verdict: MA lifecycle + F1 remediation — APPROVED
+
+- **Review by:** Claude (designated cross-party; the delta pass ran probes + full gates at the
+  pre-rewrite tree, and the mechanical re-review verified the rewrite at the new head).
+  **Recorded by:** Claude.
+
+**Rewrite remap addendum (append-only preserved, d4c2312 pattern):** the F1 remediation
+originally landed as `dc773bb` + `bef1a87`; under the owner-ruled protocol remedy (CLAUDE.md
+history-rewrite clause: an unpushed behavior-identical change to kernel-watched files that could
+neither honestly bump nor pass the guard) the pair was SQUASHED into **`8c3ae4b`**, whose single
+honest 0.3.85 bump covers the combined delta. The two prior handoff entries' hashes map:
+dc773bb → 8c3ae4b; bef1a87 → (squashed into 8c3ae4b). Record commits remapped f59094a → 8025c24,
+ce05afd → d9872fa; later commits preserved (Permits verdict → 88e2054, ratification → 8600533).
+
+**Mechanical re-review verified at the new head:** HEAD tree == pre-rewrite tree (c61472e…,
+byte-identical); d9872fa tree == old ce05afd tree; 8c3ae4b's non-planning diff == the combined
+old diff EXACTLY (empty diff-of-diffs); kernel guard + adversarial fixtures green at 0.3.85. The
+delta pass had already verified this identical tree end-to-end (F1 probes discriminating in BOTH
+runtimes on the shared corpus row `minigame_exit_reset_founder_case`; full gate stack green
+except the now-resolved guard) — those results transfer by tree identity. The kept client
+activation-arm line is shadowed by the unconditional reset; retained deliberately per the
+recorded two-arm contract ("first v21 activation initializes zero; every applied v21 Exit resets
+zero thereafter") — accepted as the annotation.
+
+**Verdict: APPROVED. Consumed set: {5ebef16, 043ab22, 30999da, a8ab0dc, f0fa2ae, 69faa63,
+4a8bdba, 2e2a372, ad06e03, 8c3ae4b} + records {8025c24, d9872fa}.** Range-union: with the prior
+endpoints (composition {e935c22}, Pitch, Soul Recovery, Permits {7d9cb37, 90633a6, d30ab9e}),
+every implementation commit from e935c22 through 8c3ae4b is verdict-covered EXCEPT {3530b08}
+(FCE-C7 copy staging — owed to the FCE ratification flow) and the record-review debt
+({b14f82e} + the DF3-noted handoff-discipline items, now including the pre-rewrite records'
+claims). **AC1–AC4 remain UNCLAIMABLE** per the carried F2 plan boxes (composed recovery half,
+command-flooding proof, privacy enumeration) and MA-C9's surface sequencing — this verdict
+covers the implementation to date; it is NOT archival authorization.
