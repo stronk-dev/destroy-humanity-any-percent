@@ -6,12 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"net"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
 
+	"cloud-clicker/server/httpapi"
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
@@ -57,8 +57,8 @@ type API struct {
 	guilds           GuildIntentHandler
 	recoveries       SoulRecoveryHandler
 	config           APIConfig
-	unauth           *tokenBuckets
-	accounts         *tokenBuckets
+	unauth           *httpapi.TokenBuckets
+	accounts         *httpapi.TokenBuckets
 	recoveryProgress *recoveryBuckets
 }
 
@@ -89,9 +89,11 @@ func NewAPI(repository *Repository, intents IntentHandler, config APIConfig) (*A
 		config.TrustedProxyHops < 0 || config.TrustedProxyHops > 8 || config.LimiterMaxEntries < 1 {
 		return nil, ErrInvalidRequest
 	}
+	unauth, _ := httpapi.NewTokenBuckets(config.UnauthenticatedBurst, config.UnauthenticatedPerMin, config.LimiterMaxEntries)
+	accounts, _ := httpapi.NewTokenBuckets(config.AccountBurst, config.AccountPerMin, config.LimiterMaxEntries)
 	return &API{repository: repository, intents: intents, config: config,
-		unauth:           newTokenBuckets(config.UnauthenticatedBurst, config.UnauthenticatedPerMin, config.LimiterMaxEntries),
-		accounts:         newTokenBuckets(config.AccountBurst, config.AccountPerMin, config.LimiterMaxEntries),
+		unauth:           unauth,
+		accounts:         accounts,
 		recoveryProgress: newRecoveryBuckets(config.LimiterMaxEntries)}, nil
 }
 
@@ -465,7 +467,7 @@ func (api *API) authenticate(next http.Handler) http.Handler {
 
 func (api *API) limitUnauthenticated(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
-		if !api.unauth.allow(api.clientIP(request), api.repository.clock()) {
+		if !api.unauth.Allow(api.clientIP(request), api.repository.clock()) {
 			writeError(response, http.StatusTooManyRequests, "rate_limited", "ip")
 			return
 		}
@@ -474,7 +476,7 @@ func (api *API) limitUnauthenticated(next http.Handler) http.Handler {
 }
 
 func (api *API) writeAuthenticationFailure(response http.ResponseWriter, request *http.Request) {
-	if !api.unauth.allow(api.clientIP(request), api.repository.clock()) {
+	if !api.unauth.Allow(api.clientIP(request), api.repository.clock()) {
 		writeError(response, http.StatusTooManyRequests, "rate_limited", "ip")
 		return
 	}
@@ -482,35 +484,12 @@ func (api *API) writeAuthenticationFailure(response http.ResponseWriter, request
 }
 
 func (api *API) clientIP(request *http.Request) string {
-	host, _, err := net.SplitHostPort(request.RemoteAddr)
-	if err != nil {
-		host = request.RemoteAddr
-	}
-	if parsed := net.ParseIP(strings.TrimSpace(host)); parsed != nil {
-		host = parsed.String()
-	}
-	if api.config.TrustedProxyHops == 0 {
-		return host
-	}
-	var forwarded []string
-	for _, value := range request.Header.Values("X-Forwarded-For") {
-		for _, entry := range strings.Split(value, ",") {
-			forwarded = append(forwarded, strings.TrimSpace(entry))
-		}
-	}
-	if len(forwarded) < api.config.TrustedProxyHops {
-		return host
-	}
-	candidate := forwarded[len(forwarded)-api.config.TrustedProxyHops]
-	if parsed := net.ParseIP(candidate); parsed != nil {
-		return parsed.String()
-	}
-	return host
+	return httpapi.ClientIP(request, api.config.TrustedProxyHops)
 }
 
 func (api *API) limitAccount(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
-		if !api.accounts.allow(requestClaims(request).Subject, api.repository.clock()) {
+		if !api.accounts.Allow(requestClaims(request).Subject, api.repository.clock()) {
 			writeError(response, http.StatusTooManyRequests, "rate_limited", "account")
 			return
 		}
@@ -562,84 +541,6 @@ func writeError(response http.ResponseWriter, status int, category, detail strin
 		Category string `json:"category"`
 		Detail   string `json:"detail"`
 	}{Category: category, Detail: detail})
-}
-
-type bucket struct {
-	tokens   float64
-	last     time.Time
-	lastSeen time.Time
-	element  *list.Element
-}
-
-type tokenBuckets struct {
-	mu       sync.Mutex
-	buckets  map[string]*bucket
-	recency  *list.List
-	capacity float64
-	perMS    float64
-	idleTTL  time.Duration
-	max      int
-}
-
-func newTokenBuckets(capacity, perMinute, maxEntries int) *tokenBuckets {
-	refillMinutes := (capacity + perMinute - 1) / perMinute
-	if refillMinutes < 1 {
-		refillMinutes = 1
-	}
-	return &tokenBuckets{buckets: make(map[string]*bucket), recency: list.New(), capacity: float64(capacity),
-		perMS: float64(perMinute) / float64(time.Minute/time.Millisecond), idleTTL: time.Duration(refillMinutes) * time.Minute, max: maxEntries}
-}
-
-func (buckets *tokenBuckets) allow(key string, now time.Time) bool {
-	buckets.mu.Lock()
-	defer buckets.mu.Unlock()
-	buckets.evictExpired(now)
-	current, ok := buckets.buckets[key]
-	if !ok {
-		if len(buckets.buckets) >= buckets.max {
-			buckets.removeOldest()
-		}
-		current = &bucket{tokens: buckets.capacity, last: now, lastSeen: now}
-		current.element = buckets.recency.PushFront(key)
-		buckets.buckets[key] = current
-	} else if !now.Before(current.lastSeen) {
-		current.lastSeen = now
-		buckets.recency.MoveToFront(current.element)
-	}
-	elapsed := now.Sub(current.last).Milliseconds()
-	if elapsed > 0 {
-		current.tokens += float64(elapsed) * buckets.perMS
-		if current.tokens > buckets.capacity {
-			current.tokens = buckets.capacity
-		}
-		current.last = now
-	}
-	if current.tokens < 1 {
-		return false
-	}
-	current.tokens--
-	return true
-}
-
-func (buckets *tokenBuckets) evictExpired(now time.Time) {
-	for element := buckets.recency.Back(); element != nil; element = buckets.recency.Back() {
-		key := element.Value.(string)
-		current := buckets.buckets[key]
-		if now.Before(current.lastSeen) || now.Sub(current.lastSeen) < buckets.idleTTL {
-			return
-		}
-		buckets.recency.Remove(element)
-		delete(buckets.buckets, key)
-	}
-}
-
-func (buckets *tokenBuckets) removeOldest() {
-	element := buckets.recency.Back()
-	if element == nil {
-		return
-	}
-	delete(buckets.buckets, element.Value.(string))
-	buckets.recency.Remove(element)
 }
 
 type recoveryBucket struct {

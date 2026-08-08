@@ -13,6 +13,8 @@ import (
 	"testing"
 	"time"
 
+	"cloud-clicker/server/httpapi"
+
 	"golang.org/x/crypto/argon2"
 )
 
@@ -90,14 +92,14 @@ func TestUUIDv7AndTokenBucketClockRegression(t *testing.T) {
 	if err != nil || len(id) != 36 || id[14] != '7' || !strings.Contains("89ab", string(id[19])) {
 		t.Fatalf("uuid=%q err=%v", id, err)
 	}
-	buckets := newTokenBuckets(1, 60, 2)
-	if !buckets.allow("client", now) || buckets.allow("client", now.Add(-time.Hour)) || !buckets.allow("client", now.Add(time.Second)) {
+	buckets, err := httpapi.NewTokenBuckets(1, 60, 2)
+	if err != nil || !buckets.Allow("client", now) || buckets.Allow("client", now.Add(-time.Hour)) || !buckets.Allow("client", now.Add(time.Second)) {
 		t.Fatal("token bucket did not fail closed on clock regression/refill")
 	}
-	if !buckets.allow("second", now.Add(2*time.Second)) || !buckets.allow("third", now.Add(2*time.Second)) || len(buckets.buckets) != 2 {
-		t.Fatalf("bounded LRU buckets=%d", len(buckets.buckets))
+	if !buckets.Allow("second", now.Add(2*time.Second)) || !buckets.Allow("third", now.Add(2*time.Second)) || buckets.Len() != 2 {
+		t.Fatalf("bounded LRU buckets=%d", buckets.Len())
 	}
-	if _, retained := buckets.buckets["client"]; retained {
+	if buckets.Contains("client") {
 		t.Fatal("least-recently-used bucket was not evicted")
 	}
 }
@@ -116,7 +118,8 @@ func TestTrustedProxyAddressAndFailedAuthenticationLimit(t *testing.T) {
 	}
 
 	now := time.Date(2026, 7, 30, 12, 0, 0, 0, time.UTC)
-	api = &API{repository: &Repository{clock: func() time.Time { return now }}, config: APIConfig{}, unauth: newTokenBuckets(1, 1, 10)}
+	unauth, _ := httpapi.NewTokenBuckets(1, 1, 10)
+	api = &API{repository: &Repository{clock: func() time.Time { return now }}, config: APIConfig{}, unauth: unauth}
 	handler := api.authenticate(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
 		t.Fatal("unauthenticated request reached handler")
 	}))

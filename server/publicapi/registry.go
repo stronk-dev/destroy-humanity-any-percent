@@ -1,6 +1,7 @@
 package publicapi
 
 import (
+	"crypto/sha256"
 	"errors"
 	"fmt"
 	"net/http"
@@ -25,6 +26,30 @@ const (
 	AuthAccessToken AuthMode = "access_token"
 )
 
+type ResponseKind string
+
+const (
+	ResponseSchema ResponseKind = "schema"
+	ResponseRaw    ResponseKind = "raw"
+)
+
+const (
+	ContentJSON = "application/json"
+	ContentGzip = "application/gzip"
+)
+
+// Response is the closed C19 operation-response union. Schema responses are
+// exact JSON DTOs. Raw responses are repository-owned immutable evidence bytes;
+// their declared hash header is mandatory and their media type is deliberately
+// limited to the two evidence formats the API contract ships.
+type Response struct {
+	Kind              ResponseKind
+	Status            int
+	ContentType       string
+	SchemaRef         string
+	ContentHashHeader string
+}
+
 type Operation struct {
 	ID        string
 	Method    string
@@ -34,7 +59,7 @@ type Operation struct {
 	Public    bool
 	Request   string
 	CursorKey string
-	Responses map[int]string
+	Responses []Response
 }
 
 type Registry struct {
@@ -44,6 +69,7 @@ type Registry struct {
 }
 
 var operationIDPattern = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
+var responseHeaderPattern = regexp.MustCompile(`^[A-Z][A-Za-z0-9-]*$`)
 
 func NewRegistry(schemas []NamedSchema, operations []Operation) (*Registry, error) {
 	definitions, err := ValidateSchemaDefinitions(schemas)
@@ -65,10 +91,13 @@ func NewRegistry(schemas []NamedSchema, operations []Operation) (*Registry, erro
 		if operation.CursorKey != "" && (definitions[operation.CursorKey] == nil || definitions[operation.CursorKey].Kind != SchemaObject) {
 			return nil, fmt.Errorf("%w: cursor key schema", ErrInvalidOperation)
 		}
-		for status, schema := range operation.Responses {
-			if status < 100 || status > 599 || definitions[schema] == nil {
-				return nil, fmt.Errorf("%w: response schema", ErrInvalidOperation)
+		lastResponse := ""
+		for _, response := range operation.Responses {
+			key := fmt.Sprintf("%03d\x00%s", response.Status, response.ContentType)
+			if key <= lastResponse || !validResponse(response, definitions) {
+				return nil, fmt.Errorf("%w: response descriptor", ErrInvalidOperation)
 			}
+			lastResponse = key
 		}
 		key := operation.Method + "\x00" + operation.Path
 		if seenRoutes[key] {
@@ -131,11 +160,44 @@ func (registry *Registry) ValidateResponse(operationID string, status int, data 
 	if !ok {
 		return ErrInvalidOperation
 	}
-	schema := operation.Responses[status]
-	if schema == "" {
+	for _, response := range operation.Responses {
+		if response.Status == status && response.Kind == ResponseSchema {
+			return ValidateJSON(response.SchemaRef, data, registry.schemas)
+		}
+	}
+	return ErrInvalidOperation
+}
+
+func (registry *Registry) ValidateRawResponse(operationID string, status int, contentType string, data []byte, contentHash string) error {
+	operation, ok := registry.byID[operationID]
+	if !ok || !sha256Pattern.MatchString(contentHash) {
 		return ErrInvalidOperation
 	}
-	return ValidateJSON(schema, data, registry.schemas)
+	for _, response := range operation.Responses {
+		if response.Status == status && response.Kind == ResponseRaw && response.ContentType == contentType {
+			digest := fmt.Sprintf("%x", sha256.Sum256(data))
+			if digest != contentHash {
+				return ErrInvalidOperation
+			}
+			return nil
+		}
+	}
+	return ErrInvalidOperation
+}
+
+func validResponse(response Response, definitions map[string]*Schema) bool {
+	if response.Status < 100 || response.Status > 599 {
+		return false
+	}
+	switch response.Kind {
+	case ResponseSchema:
+		return response.ContentType == ContentJSON && definitions[response.SchemaRef] != nil && response.ContentHashHeader == ""
+	case ResponseRaw:
+		return (response.ContentType == ContentJSON || response.ContentType == ContentGzip) && response.SchemaRef == "" &&
+			responseHeaderPattern.MatchString(response.ContentHashHeader)
+	default:
+		return false
+	}
 }
 
 func validMethod(method string) bool {
@@ -172,19 +234,16 @@ func validOperationPath(path string, surface Surface) bool {
 	return true
 }
 
-func cloneResponses(source map[int]string) map[int]string {
-	result := make(map[int]string, len(source))
-	for status, schema := range source {
-		result[status] = schema
-	}
-	return result
+func cloneResponses(source []Response) []Response {
+	return append([]Response(nil), source...)
 }
 
 func SortedResponseStatuses(operation Operation) []int {
 	result := make([]int, 0, len(operation.Responses))
-	for status := range operation.Responses {
-		result = append(result, status)
+	for _, response := range operation.Responses {
+		if len(result) == 0 || result[len(result)-1] != response.Status {
+			result = append(result, response.Status)
+		}
 	}
-	sort.Ints(result)
 	return result
 }

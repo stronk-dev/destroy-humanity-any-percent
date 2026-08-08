@@ -10,6 +10,29 @@ changelog now truthfully mark implementation unblocked.
 Formula fallback remains prohibited: hashes without stored formula artifact bytes return honest
 unavailability until the future artifact-growth mint.
 
+## 2026-08-07 — C19/C20 response and operational-policy implementation
+
+- Replaced the registry's JSON-only response map with C19's closed descriptor union. Schema
+  responses name an exact JSON descriptor; raw responses admit only `application/json` or
+  `application/gzip`, require a declared content-hash header, and validate the exact repository
+  bytes against their SHA-256 without decoding.
+- Added strict `balance/api/phase0.json` ownership for the ruled public limiter, trusted-proxy,
+  cache, cursor-key-ID, and request-ID literals. The loader rejects unknown, missing, duplicate,
+  trailing, or out-of-domain fields. Startup resolves both named 32-byte deployment secrets and
+  permits the ruled same-secret first-deployment state without putting secrets in JSON.
+- Extracted the account API's reviewed token-bucket and trusted-client-IP mechanics into the
+  shared `httpapi` package, then routed the account API through that one authority. LRU bounds,
+  refill behavior, clock-regression behavior, and proxy selection remain pinned by the original
+  account tests plus shared-package fixtures.
+- Added public request-ID resolution and exact cache serving. Valid caller IDs echo; invalid or
+  overlong IDs become UUIDv7. Strong ETags hash served bytes, verification responses add
+  `immutable`, and matching conditional requests return 304 before the public limiter, so repeated
+  cache hits spend no token. Ordinary responses remain bounded per IP.
+- The repository-root `make verify` gate passed in full: typecheck reported zero diagnostics,
+  6,603 client tests passed (3 skipped), and all 19,818 browser assertions passed. C18's seven exact
+  owner artifact arms and the public handlers/generator remain visibly open; this entry makes no
+  endpoint, review, or archival claim.
+
 ## 2026-08-03 — operation schema and cursor foundation
 
 - Added an explicit Go schema DSL over exact object, array, string, bounded integer, boolean, null,

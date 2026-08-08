@@ -36,8 +36,14 @@ func testSchemas() []NamedSchema {
 
 func testOperations() []Operation {
 	return []Operation{
-		{ID: "get_board", Method: "GET", Path: "/api/public/v1/boards/{category}", Surface: SurfacePublicV1, Auth: AuthNone, Public: true, CursorKey: "TimeKey", Responses: map[int]string{200: "EpochPage", 400: "APIError"}},
-		{ID: "get_epochs", Method: "GET", Path: "/api/public/v1/epochs", Surface: SurfacePublicV1, Auth: AuthNone, Public: true, Responses: map[int]string{200: "EpochPage", 400: "APIError"}},
+		{ID: "get_board", Method: "GET", Path: "/api/public/v1/boards/{category}", Surface: SurfacePublicV1, Auth: AuthNone, Public: true, CursorKey: "TimeKey", Responses: []Response{
+			{Kind: ResponseSchema, Status: 200, ContentType: ContentJSON, SchemaRef: "EpochPage"},
+			{Kind: ResponseSchema, Status: 400, ContentType: ContentJSON, SchemaRef: "APIError"},
+		}},
+		{ID: "get_epochs", Method: "GET", Path: "/api/public/v1/epochs", Surface: SurfacePublicV1, Auth: AuthNone, Public: true, Responses: []Response{
+			{Kind: ResponseSchema, Status: 200, ContentType: ContentJSON, SchemaRef: "EpochPage"},
+			{Kind: ResponseSchema, Status: 400, ContentType: ContentJSON, SchemaRef: "APIError"},
+		}},
 	}
 }
 
@@ -106,11 +112,11 @@ func TestRegistryOwnsImmutableSchemaAndOperationSnapshots(t *testing.T) {
 		t.Fatal(err)
 	}
 	schemas[2].Schema.Fields[0].Name = "corrupted"
-	operations[1].Responses[200] = "APIError"
+	operations[1].Responses[0].SchemaRef = "APIError"
 	schemaSnapshot := registry.Schemas()
 	schemaSnapshot[2].Schema.Fields[0].Name = "also_corrupted"
 	operationSnapshot := registry.Operations()
-	operationSnapshot[1].Responses[200] = "APIError"
+	operationSnapshot[1].Responses[0].SchemaRef = "APIError"
 	valid := []byte(`{"items":[{"epoch_id":1,"name":"Phase 0","started_at":"2026-08-03T12:34:56.789Z"}],"next_cursor":null}`)
 	if err := registry.ValidateResponse("get_epochs", 200, valid); err != nil {
 		t.Fatalf("registry changed after external mutation: %v", err)
@@ -137,13 +143,53 @@ func TestCanonicalDecimalFormatUsesNumericCoreGrammar(t *testing.T) {
 }
 
 func TestRegistryRejectsDuplicateAndPublicAuthDrift(t *testing.T) {
-	base := Operation{ID: "get_epochs", Method: "GET", Path: "/api/public/v1/epochs", Surface: SurfacePublicV1, Auth: AuthNone, Public: true, Responses: map[int]string{200: "EpochPage"}}
+	base := Operation{ID: "get_epochs", Method: "GET", Path: "/api/public/v1/epochs", Surface: SurfacePublicV1, Auth: AuthNone, Public: true, Responses: []Response{{Kind: ResponseSchema, Status: 200, ContentType: ContentJSON, SchemaRef: "EpochPage"}}}
 	if _, err := NewRegistry(testSchemas(), []Operation{base, {ID: "get_epochs_two", Method: base.Method, Path: base.Path, Surface: base.Surface, Auth: base.Auth, Public: true, Responses: base.Responses}}); err == nil {
 		t.Fatal("duplicate route accepted")
 	}
 	base.Auth = AuthAccessToken
 	if _, err := NewRegistry(testSchemas(), []Operation{base}); err == nil {
 		t.Fatal("authenticated public operation accepted")
+	}
+}
+
+func TestRegistryResponseUnionValidatesSchemaAndRawBytes(t *testing.T) {
+	operations := testOperations()
+	operations[1].Responses = []Response{
+		{Kind: ResponseRaw, Status: 200, ContentType: ContentGzip, ContentHashHeader: "X-Content-SHA256"},
+		{Kind: ResponseSchema, Status: 200, ContentType: ContentJSON, SchemaRef: "EpochPage"},
+		{Kind: ResponseSchema, Status: 400, ContentType: ContentJSON, SchemaRef: "APIError"},
+	}
+	registry, err := NewRegistry(testSchemas(), operations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := []byte("immutable gzip bytes")
+	digest := fmt.Sprintf("%x", sha256.Sum256(body))
+	if err := registry.ValidateRawResponse("get_epochs", 200, ContentGzip, body, digest); err != nil {
+		t.Fatal(err)
+	}
+	for _, mutation := range []struct {
+		contentType string
+		body        []byte
+		digest      string
+	}{
+		{ContentJSON, body, digest},
+		{ContentGzip, append(append([]byte(nil), body...), '!'), digest},
+		{ContentGzip, body, strings.Repeat("0", 64)},
+	} {
+		if err := registry.ValidateRawResponse("get_epochs", 200, mutation.contentType, mutation.body, mutation.digest); err == nil {
+			t.Fatalf("invalid raw response accepted: %+v", mutation)
+		}
+	}
+	if err := registry.ValidateResponse("get_epochs", 200, []byte(`{"items":[],"next_cursor":null}`)); err != nil {
+		t.Fatal(err)
+	}
+
+	invalid := testOperations()
+	invalid[1].Responses = []Response{{Kind: ResponseRaw, Status: 200, ContentType: "application/octet-stream", ContentHashHeader: "X-Content-SHA256"}}
+	if _, err := NewRegistry(testSchemas(), invalid); err == nil {
+		t.Fatal("generic raw media type accepted")
 	}
 }
 

@@ -1,0 +1,23 @@
+{
+  "cache_max_age_seconds": {
+    "boards": 60,
+    "catalogs_epochs": 3600,
+    "registry": 300,
+    "verification": 31536000
+  },
+  "cursor_key_ids": {
+    "current": "k1",
+    "previous": "k0"
+  },
+  "public_limiter": {
+    "burst": 60,
+    "max_ip_entries": 65536,
+    "refill_per_minute": 300
+  },
+  "request_id": {
+    "max_bytes": 64,
+    "pattern": "^[A-Za-z0-9-]{1,64}$"
+  },
+  "schema_version": 1,
+  "trusted_proxy_hops": 1
+}
