@@ -152,7 +152,7 @@ func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplay(t *testing.T)
 		sessionID := "01986666-ca01-7000-8000-00000000000" + string(rune('1'+index))
 		key := "fault-" + step
 		_, startErr := production.StartMinigameAPISession(ctx, platform, StartMinigameAPIRequest{
-			SessionID: sessionID, FounderID: founderID, CompanyStreamID: companyRevision.StreamID,
+			SessionID: sessionID, IntentID: "01986666-ca02-7000-8000-00000000000" + string(rune('1'+index)), FounderID: founderID, CompanyStreamID: companyRevision.StreamID,
 			MinigameID: "pitch", IdempotencyKey: key,
 		}, now, func(actual string) error {
 			if actual == step {
@@ -175,7 +175,7 @@ func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplay(t *testing.T)
 		}
 	}
 
-	request := StartMinigameAPIRequest{SessionID: "01986666-ca01-7000-8000-000000000010", FounderID: founderID,
+	request := StartMinigameAPIRequest{SessionID: "01986666-ca01-7000-8000-000000000010", IntentID: "01986666-ca02-7000-8000-000000000010", FounderID: founderID,
 		CompanyStreamID: companyRevision.StreamID, MinigameID: "pitch", IdempotencyKey: "create-pitch-1"}
 	created, err := production.StartMinigameAPISession(ctx, platform, request, now, nil)
 	if err != nil || created.Replay {
@@ -227,7 +227,7 @@ func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplay(t *testing.T)
 		t.Fatalf("idempotent cardinality sessions=%d receipts=%d", sessionCount, receiptCount)
 	}
 	_, err = production.StartMinigameAPISession(ctx, platform, StartMinigameAPIRequest{
-		SessionID: "01986666-ca01-7000-8000-000000000012", FounderID: founderID,
+		SessionID: "01986666-ca01-7000-8000-000000000012", IntentID: "01986666-ca02-7000-8000-000000000012", FounderID: founderID,
 		CompanyStreamID: companyRevision.StreamID, MinigameID: "pitch", IdempotencyKey: "create-pitch-2",
 	}, now.Add(2*time.Second), nil)
 	if !errors.Is(err, minigame.ErrExclusiveActivity) {

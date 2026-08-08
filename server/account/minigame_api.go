@@ -42,8 +42,13 @@ func (api *API) createMinigameSession(response http.ResponseWriter, request *htt
 		writeError(response, http.StatusInternalServerError, "internal_invariant", "session_id")
 		return
 	}
+	commandID, err := newUUIDv7(now, api.repository.random)
+	if err != nil {
+		writeError(response, http.StatusInternalServerError, "internal_invariant", "session_id")
+		return
+	}
 	receipt, err := api.minigames.CreateMinigameSession(request.Context(), requestClaims(request).Subject,
-		minigameID, sessionID, body.IdempotencyKey, now)
+		minigameID, sessionID, commandID, body.IdempotencyKey, now)
 	api.writeMinigameResult(response, receipt, err, "create")
 }
 

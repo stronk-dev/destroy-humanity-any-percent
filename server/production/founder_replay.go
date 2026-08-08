@@ -674,11 +674,9 @@ func activateFounderFeatureState(state *save.State, catalogs CatalogBundle, resu
 		return ErrInvalidReplayInputs
 	}
 	if resultVersion >= 17 && current < 17 {
-		if catalogs.Minigames == nil || len(catalogs.Minigames.MinigameIDs()) != 0 {
+		if err := activateMinigameState(state, catalogs.Minigames); err != nil {
 			return ErrInvalidReplayInputs
 		}
-		state.MinigameRatings = map[string]save.MinigameRatingState{}
-		state.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{}
 	}
 	if resultVersion >= 18 && current < 18 {
 		if catalogs.Pets == nil {

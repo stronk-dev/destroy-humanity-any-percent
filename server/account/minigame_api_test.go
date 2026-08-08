@@ -26,7 +26,7 @@ type minigameAPIStub struct {
 	err           error
 }
 
-func (stub *minigameAPIStub) CreateMinigameSession(_ context.Context, accountID, minigameID, _, idempotencyKey string, _ time.Time) (json.RawMessage, error) {
+func (stub *minigameAPIStub) CreateMinigameSession(_ context.Context, accountID, minigameID, _, _, idempotencyKey string, _ time.Time) (json.RawMessage, error) {
 	stub.createAccount, stub.createGame, stub.createKey = accountID, minigameID, idempotencyKey
 	return stub.result, stub.err
 }

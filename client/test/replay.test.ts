@@ -148,6 +148,11 @@ const fixture = fixtureJSON as {
 	readonly minigame_start_artifacts: ReplayArtifacts;
 	readonly minigame_start_founder_case: FounderFixtureCase;
 	readonly minigame_active_exit_case: FixtureCase;
+	readonly minigame_activation: {
+		readonly constants_hash: string; readonly artifacts: ReplayArtifacts;
+		readonly next_constants_hash: string; readonly next_artifacts: ReplayArtifacts;
+		readonly case: FounderFixtureCase;
+	};
 	readonly founder_run: {
 		readonly founder_stream_id: string; readonly founder_id: string; readonly genesis_revision: number; readonly genesis_version: 14 | 15 | 16 | 17 | 18;
     readonly genesis_constants_hash: string; readonly genesis: unknown; readonly head_revision: number; readonly head_version: 14 | 15 | 16;
@@ -264,6 +269,21 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
 		expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
 		expect(canonicalJSONString(encodeFounderReplayState(founder))).toBe(testCase.post_state_json);
+	});
+
+	it("activates pinned minigame rows identically to Go", async () => {
+		const fixtureActivation = fixture.minigame_activation;
+		const current = await loadReplayCatalogBundle(fixtureActivation.constants_hash, fixtureActivation.artifacts);
+		const next = await loadReplayCatalogBundle(fixtureActivation.next_constants_hash, fixtureActivation.next_artifacts);
+		const bundle = withNextReplayCatalogBundle(current, next);
+		const testCase = fixtureActivation.case;
+		const founder = restoreFounderReplayState(testCase.pre_state, testCase.state_version, bundle);
+		const transition = await applyFounderLogged(founder, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+		expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+		expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
+		expect(canonicalJSONString(encodeFounderReplayState(transition.state))).toBe(testCase.post_state_json);
+		expect(transition.state.minigameRatings.pitch).toEqual({ elo: 1000, season_member: "s1", games_counted: 0 });
+		expect(transition.state.minigameOfflineQuality.pitch).toEqual({ grade_ppm: 200_000, last_founder_attended_ms: 12_345, decay_remainder_ppm: 0 });
 	});
 
 	it("replays the frozen active-minigame Exit rejection without mutation", async () => {

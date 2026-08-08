@@ -25,6 +25,7 @@ const startMinigameSessionKind = "start_minigame_session"
 
 type StartMinigameAPIRequest struct {
 	SessionID       string
+	IntentID        string
 	FounderID       string
 	CompanyStreamID string
 	MinigameID      string
@@ -59,7 +60,7 @@ func applyFounderStartMinigameSession(state *save.State, canonicalPayload []byte
 	var payload startMinigameSessionPayload
 	var resolved startMinigameSessionResolved
 	if decodeReplayStrict(canonicalPayload, &payload) != nil || decodeReplayStrict(wire.Resolved, &resolved) != nil ||
-		payload.Kind != startMinigameSessionKind || payload.SessionID != wire.Command.IntentID ||
+		payload.Kind != startMinigameSessionKind ||
 		resolved.Kind != startMinigameSessionKind || resolved.CompanyStreamID == "" || resolved.RunSeq < 1 ||
 		resolved.RunSeq > decimal.MaxExactInteger || resolved.SequenceBefore < 0 ||
 		resolved.SequenceBefore >= decimal.MaxExactInteger || resolved.SequenceAfter != resolved.SequenceBefore+1 ||
@@ -78,7 +79,7 @@ func applyFounderStartMinigameSession(state *save.State, canonicalPayload []byte
 	state.MinigameSessionSeq = resolved.SequenceAfter
 	receipt, _ := json.Marshal(map[string]any{
 		"founder_revision": wire.Command.Revision + 1,
-		"intent_id":        payload.SessionID,
+		"intent_id":        wire.Command.IntentID,
 		"minigame_id":      payload.MinigameID,
 		"outcome":          string(save.IntentApplied),
 		"seed":             resolved.Seed,
@@ -99,7 +100,7 @@ func minigameSessionSeed(founderID string, runSeq, sequence int64) string {
 // Founder v21 sequence, immutable Founder log, tenant genesis/session, and
 // create-idempotency response in one transaction.
 func (s *Service) StartMinigameAPISession(ctx context.Context, platform *minigame.Service,
-	request StartMinigameAPIRequest, now time.Time, fault save.ExitFaultInjector,
+	request StartMinigameAPIRequest, _ time.Time, fault save.ExitFaultInjector,
 ) (save.IntentResult, error) {
 	if s == nil || s.store == nil || s.replayCatalogs == nil || platform == nil {
 		return save.IntentResult{}, ErrInvalidIntent
@@ -116,11 +117,14 @@ func (s *Service) StartMinigameAPISession(ctx context.Context, platform *minigam
 	if err != nil {
 		return save.IntentResult{}, ErrInvalidIntent
 	}
-	serverTSMS := save.CanonicalServerTime(now).UnixMilli()
+	canonicalPayload, err = normalizeReplayJSON(canonicalPayload)
+	if err != nil {
+		return save.IntentResult{}, ErrInvalidIntent
+	}
 	return s.store.ApplyMinigameStartTransaction(ctx, save.MinigameStartRequest{
-		SessionID: request.SessionID, FounderID: request.FounderID, CompanyStreamID: request.CompanyStreamID,
+		SessionID: request.SessionID, IntentID: request.IntentID, FounderID: request.FounderID, CompanyStreamID: request.CompanyStreamID,
 		IdempotencyKey: request.IdempotencyKey, RequestHash: soulRequestHash(requestIdentity),
-		CanonicalPayload: canonicalPayload, ServerTSMS: serverTSMS,
+		CanonicalPayload: canonicalPayload,
 	}, func(ctx context.Context, tx *sql.Tx, founder *save.State, founderRevision save.Revision,
 		company *save.State, companyRevision save.Revision, founderCommand save.FounderReplayCommand,
 		_ int64,

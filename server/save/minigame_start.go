@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 )
 
@@ -21,12 +20,12 @@ var minigameOpaqueIDPattern = regexp.MustCompile(`^[A-Za-z0-9-]{1,64}$`)
 // Founder replay command.
 type MinigameStartRequest struct {
 	SessionID        string
+	IntentID         string
 	FounderID        string
 	CompanyStreamID  string
 	IdempotencyKey   string
 	RequestHash      string
 	CanonicalPayload json.RawMessage
-	ServerTSMS       int64
 }
 
 type MinigameStartDecision struct {
@@ -47,10 +46,9 @@ type MinigameStartMutation func(ctx context.Context, tx *sql.Tx, founder *State,
 func (s *Store) ApplyMinigameStartTransaction(ctx context.Context, request MinigameStartRequest,
 	mutate MinigameStartMutation, fault ExitFaultInjector,
 ) (IntentResult, error) {
-	if s == nil || !uuidV7Pattern.MatchString(request.SessionID) || !uuidPattern.MatchString(request.FounderID) ||
+	if s == nil || !uuidV7Pattern.MatchString(request.SessionID) || !uuidV7Pattern.MatchString(request.IntentID) || request.IntentID == request.SessionID || !uuidPattern.MatchString(request.FounderID) ||
 		!uuidPattern.MatchString(request.CompanyStreamID) || !minigameOpaqueIDPattern.MatchString(request.IdempotencyKey) ||
-		!hashPattern.MatchString(request.RequestHash) || !jsonObject(request.CanonicalPayload) ||
-		request.ServerTSMS < 1 || request.ServerTSMS > decimal.MaxExactInteger || mutate == nil {
+		!hashPattern.MatchString(request.RequestHash) || !jsonObject(request.CanonicalPayload) || mutate == nil {
 		return IntentResult{}, fmt.Errorf("%w: invalid minigame start request", ErrInvalidStream)
 	}
 	var founderStreamID string
@@ -125,9 +123,13 @@ func (s *Store) ApplyMinigameStartTransaction(ctx context.Context, request Minig
 	if err != nil {
 		return IntentResult{}, err
 	}
-	command := FounderReplayCommand{IntentID: request.SessionID, FounderStreamID: founderStreamID,
+	serverTSMS, err := founderServerTimestamp(ctx, tx)
+	if err != nil {
+		return IntentResult{}, err
+	}
+	command := FounderReplayCommand{IntentID: request.IntentID, FounderStreamID: founderStreamID,
 		FounderID: request.FounderID, Revision: founderRevision.Number, FounderLogSeq: founderLogSequence,
-		ServerTSMS: request.ServerTSMS}
+		ServerTSMS: serverTSMS}
 	if founderLogSequence == 1 {
 		if err := InsertFounderGenesisTx(ctx, tx, FounderGenesis{FounderStreamID: founderStreamID,
 			Revision: founderRevision.Number, State: founderStateBytes, Version: founderRevision.Version,

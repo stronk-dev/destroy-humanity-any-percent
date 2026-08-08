@@ -253,6 +253,53 @@ func TestFounderFeatureVersionsAreReachableWithoutChangingCompanyAxis(t *testing
 	}
 }
 
+func TestMinigameActivationSeedsPinnedDefinitionState(t *testing.T) {
+	legacy, active := foundationTestBundles(t)
+	artifact, err := os.ReadFile("../../testdata/minigame/pitch-v3.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := minigame.LoadCatalog(artifact)
+	if err != nil {
+		t.Fatal(err)
+	}
+	withContent := active
+	withContent.Artifacts = cloneArtifactMap(active.Artifacts)
+	withContent.Artifacts["minigames"] = artifact
+	withContent.ConstantsHash, err = save.ConstantsHashArtifacts(withContent.Artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	withContent.Minigames = catalog
+	if !withContent.valid(withContent.ConstantsHash) {
+		t.Fatal("content-bearing minigame bundle is invalid")
+	}
+
+	founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
+	company := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	firstCompany := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	if err := settleAndActivateFoundations(legacy, active, founder, company, firstCompany); err != nil {
+		t.Fatal(err)
+	}
+	founder.AgeMS = 12_345
+	secondCompany := foundationScopeState(t, active.Economy, economy.ScopeCompany)
+	if err := settleAndActivateFoundations(active, withContent, founder, firstCompany, secondCompany); err != nil {
+		t.Fatal(err)
+	}
+	if save.VersionForState(founder) != 17 || save.VersionForState(secondCompany) != 16 {
+		t.Fatalf("activation versions founder=%d company=%d", save.VersionForState(founder), save.VersionForState(secondCompany))
+	}
+	if got := founder.MinigameRatings["pitch"]; got != (save.MinigameRatingState{Elo: 1000, SeasonMember: "s1"}) {
+		t.Fatalf("rating activation=%+v", got)
+	}
+	if got := founder.MinigameOfflineQuality["pitch"]; got != (save.MinigameOfflineQualityState{GradePPM: 200_000, LastFounderAttendedMS: 12_345}) {
+		t.Fatalf("offline-quality activation=%+v", got)
+	}
+	if err := withContent.ValidateFoundationState(founder); err != nil {
+		t.Fatalf("activated Founder state rejected: %v", err)
+	}
+}
+
 func TestFiscalV19ActivatesAtRunBoundaryWithIndependentCompanyAxis(t *testing.T) {
 	legacy, active := foundationTestBundles(t)
 	minigames, pets := founderFeatureBundles(t, active)

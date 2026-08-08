@@ -17,14 +17,14 @@ type minigameAPIAdapter struct {
 }
 
 func (adapter minigameAPIAdapter) CreateMinigameSession(ctx context.Context, accountID, minigameID,
-	sessionID, idempotencyKey string, now time.Time,
+	sessionID, commandID, idempotencyKey string, now time.Time,
 ) (json.RawMessage, error) {
 	state, err := adapter.accounts.ActiveCompanyState(ctx, accountID)
 	if err != nil {
 		return nil, err
 	}
 	result, err := adapter.production.StartMinigameAPISession(ctx, adapter.platform,
-		production.StartMinigameAPIRequest{SessionID: sessionID, FounderID: state.FounderID,
+		production.StartMinigameAPIRequest{SessionID: sessionID, IntentID: commandID, FounderID: state.FounderID,
 			CompanyStreamID: state.StreamID, MinigameID: minigameID, IdempotencyKey: idempotencyKey}, now, nil)
 	return result.Receipt, err
 }

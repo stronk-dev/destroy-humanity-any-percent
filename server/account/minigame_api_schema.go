@@ -65,13 +65,13 @@ func minigameAPISchemas() []publicapi.NamedSchema {
 		{Name: "MinigameRatingChange", Schema: apiObject(
 			apiField("games_after", integer(0, apiMaxExactInteger)),
 			apiField("games_before", integer(0, apiMaxExactInteger)),
-			apiField("new_elo", integer(0, apiMaxExactInteger)),
-			apiField("old_elo", integer(0, apiMaxExactInteger)),
+			apiField("new_elo", integer(-apiMaxExactInteger, apiMaxExactInteger)),
+			apiField("old_elo", integer(-apiMaxExactInteger, apiMaxExactInteger)),
 			apiField("rated", &publicapi.Schema{Kind: publicapi.SchemaBoolean}),
 			apiField("season_member", apiString("")),
 		)},
 		{Name: "MinigameResolutionReceipt", Schema: apiObject(
-			apiField("cap_reason_key", apiString("mechanical-id")),
+			apiField("cap_reason_key", apiString("")),
 			apiField("certified_result_hash", apiString("sha256-prefixed")),
 			apiField("company_revision", integer(1, apiMaxExactInteger)),
 			apiField("configured_cap_forfeit_units", integer(0, apiMaxExactInteger)),

@@ -236,10 +236,9 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 	}
 	nextFounderFloor, nextCompanyFloor := next.versionFloors()
 	if next.Minigames != nil && current.Minigames == nil {
-		founder.MinigameRatings = map[string]save.MinigameRatingState{}
-		founder.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{}
-		// Content rows activate only with a later mint. An empty activation
-		// artifact therefore produces complete empty maps without inventing Elo.
+		if err := activateMinigameState(founder, next.Minigames); err != nil {
+			return err
+		}
 	}
 	if next.Pets != nil && current.Pets == nil {
 		founder.Pets = map[string]pet.CareState{}
@@ -279,4 +278,26 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 		return err
 	}
 	return next.ValidateFoundationState(newCompany)
+}
+
+func activateMinigameState(state *save.State, catalog *minigame.Catalog) error {
+	if state == nil || catalog == nil {
+		return fmt.Errorf("%w: missing pinned minigame catalog", ErrInvalidEngineState)
+	}
+	ids := catalog.MinigameIDs()
+	state.MinigameRatings = make(map[string]save.MinigameRatingState, len(ids))
+	state.MinigameOfflineQuality = make(map[string]save.MinigameOfflineQualityState, len(ids))
+	for _, id := range ids {
+		definition, ok := catalog.Definition(id)
+		if !ok {
+			return fmt.Errorf("%w: missing pinned minigame definition", ErrInvalidEngineState)
+		}
+		state.MinigameRatings[id] = save.MinigameRatingState{
+			Elo: definition.Rating.StartingElo, SeasonMember: definition.Rating.SeasonMember,
+		}
+		state.MinigameOfflineQuality[id] = save.MinigameOfflineQualityState{
+			GradePPM: definition.OfflineQuality.NeutralFloorPPM, LastFounderAttendedMS: state.AgeMS,
+		}
+	}
+	return nil
 }

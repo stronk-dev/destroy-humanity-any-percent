@@ -38,7 +38,7 @@ type SoulRecoveryHandler interface {
 }
 
 type MinigameAPIHandler interface {
-	CreateMinigameSession(context.Context, string, string, string, string, time.Time) (json.RawMessage, error)
+	CreateMinigameSession(context.Context, string, string, string, string, string, time.Time) (json.RawMessage, error)
 	PlayMinigameCommand(context.Context, string, string, string, int64, json.RawMessage, time.Time) (json.RawMessage, error)
 	CurrentMinigameSession(context.Context, string) (json.RawMessage, error)
 	ResolveMinigameSession(context.Context, string, string) (json.RawMessage, error)

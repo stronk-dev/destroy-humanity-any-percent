@@ -703,7 +703,7 @@ async function applyFounderStartMinigameSession(state: FounderReplayState, canon
 	if (state.wireVersion < 21 || !catalogs.minigameAPI || !catalogs.minigames) throw new RangeError("inactive minigame API state");
 	const payload = exactObject(parseJSON(canonicalPayload), ["kind", "session_id", "minigame_id"], "minigame start payload");
 	const sessionId = uuidV7String(payload.session_id), minigameId = mechanicalString(payload.minigame_id);
-	if (payload.kind !== "start_minigame_session" || sessionId !== wire.command.intent_id || canonicalJSONString(payload) !== canonicalPayload) throw new RangeError("minigame start command mismatch");
+	if (payload.kind !== "start_minigame_session" || canonicalJSONString(payload) !== canonicalPayload) throw new RangeError("minigame start command mismatch");
 	const resolved = exactObject(wire.resolved, ["kind", "company_stream_id", "run_seq", "sequence_before", "sequence_after", "seed"], "minigame start inputs");
 	const companyStreamId = uuidString(resolved.company_stream_id), runSeq = safeInteger(resolved.run_seq, 1, MAX_EXACT_INTEGER);
 	const before = safeInteger(resolved.sequence_before, 0, MAX_EXACT_INTEGER - 1), after = safeInteger(resolved.sequence_after, 1, MAX_EXACT_INTEGER);
@@ -714,7 +714,7 @@ async function applyFounderStartMinigameSession(state: FounderReplayState, canon
 	const seed = substream((await founderSeed(wire.command.founder_id, runSeq)) ^ BigInt(after), "minigame.session.v1").next().toString();
 	if (string(resolved.seed) !== seed) throw new RangeError("minigame start seed mismatch");
 	state.minigameSessionSeq = after;
-	const receipt = { founder_revision: wire.command.revision + 1, intent_id: sessionId, minigame_id: minigameId,
+	const receipt = { founder_revision: wire.command.revision + 1, intent_id: wire.command.intent_id, minigame_id: minigameId,
 		outcome: "applied", seed, sequence_after: after, sequence_before: before, session_id: sessionId };
 	void companyStreamId;
 	return { state, outcome: "applied", receipt, events: [], resultConstantsHash: catalogs.constantsHash };
@@ -1612,8 +1612,13 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
   const resultCatalogs = resultHash === inputHash ? catalogs : catalogs.next;
   if (!resultCatalogs || resultCatalogs.constantsHash !== resultHash || resultVersion < state.wireVersion) throw new RangeError("missing Founder result catalogs");
   if (resultVersion >= 17 && state.wireVersion < 17) {
-    if (!resultCatalogs.minigames || resultCatalogs.minigames.minigameIds.length !== 0) throw new RangeError("unsupported minigame activation content");
-    state.minigameRatings = {}; state.minigameOfflineQuality = {};
+		if (!resultCatalogs.minigames) throw new RangeError("missing minigame activation artifact");
+		state.minigameRatings = Object.fromEntries(resultCatalogs.minigames.minigames.map((definition) => [definition.minigame_id, {
+			elo: definition.rating_policy.starting_elo, season_member: definition.rating_policy.season_member, games_counted: 0,
+		}]));
+		state.minigameOfflineQuality = Object.fromEntries(resultCatalogs.minigames.minigames.map((definition) => [definition.minigame_id, {
+			grade_ppm: definition.offline_quality.neutral_floor_ppm, last_founder_attended_ms: state.ageMs, decay_remainder_ppm: 0,
+		}]));
   }
   if (resultVersion >= 18 && state.wireVersion < 18) {
     if (!resultCatalogs.pets) throw new RangeError("missing pet activation artifact"); state.pets = {};

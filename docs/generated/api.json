@@ -206,12 +206,12 @@
           },
           "new_elo": {
             "maximum": 9007199254740991,
-            "minimum": 0,
+            "minimum": -9007199254740991,
             "type": "integer"
           },
           "old_elo": {
             "maximum": 9007199254740991,
-            "minimum": 0,
+            "minimum": -9007199254740991,
             "type": "integer"
           },
           "rated": {
@@ -235,7 +235,6 @@
         "additionalProperties": false,
         "properties": {
           "cap_reason_key": {
-            "format": "mechanical-id",
             "type": "string"
           },
           "certified_result_hash": {
