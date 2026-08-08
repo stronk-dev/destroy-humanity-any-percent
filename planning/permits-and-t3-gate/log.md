@@ -73,3 +73,37 @@ files move rather than change content).**
 
 This is a remediation handoff, not an approval or archival claim. It is ready for the designated
 cross-party re-review after the normal repository gates pass.
+
+## 2026-08-08 — designated cross-party re-review: remediation {90633a6, d30ab9e} — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+All four findings CLOSED with probes:
+- **F1:** pure R100 move (similarity 100%, SHA recomputed unchanged at old-commit/new-commit/HEAD)
+  out of every semantic sweep; verify-schema green at 90633a6, full `make verify` green (exit 0,
+  synchronous) at d30ab9e; zero stale path references; RFC manifest path cell reconciled with the
+  hash cell untouched.
+- **F2:** the new shared vector overshoots (2.39995e1 + 1e-3/s × 1s = 2.40005e1 > cap 2.4e1,
+  representable at canonical 12 digits both runtimes); probe: neutering the Go clamp fails the
+  test at exactly the near-cap assertion.
+- **F3:** genuinely shared fixture — TS drives PredictionMachine through 20 real ticks and fails
+  on a neutered clamp (probe-proven). CORRECTION recorded: the TS clamp predates 7d9cb37
+  (client-shell foundation) — the original "TS has NO clamping" was overstated; the true gap was
+  the missing cross-runtime proof, which d30ab9e supplies. No client/src change → no kernel bump
+  owed (verified honest).
+- **F4:** the first-ever two-requirement gate crossing is now tested atomically (rejection with
+  cash satisfied + permits short leaves BOTH balances untouched; success debits both to zero and
+  crosses Tier 3→4); the four activation proofs are explicit unchecked plan items tied to the
+  epoch-6 landing (the verdict's tracked-deferral branch — sound for law-inactive candidates).
+
+**N1 (ADVISORY):** the manifest's "composed generated copy" hash 8462d6d5… is a point-in-time
+composition attestation at 7d9cb37 — interleaved MA copy landings moved the live composed catalog
+(now 2f299e2a…, permits row present and byte-exact). Ratify the economy/routes/copy-source hashes
+as byte-pins; treat the generated hash as attestation-only, refreshed at mint time.
+
+**Verdict: APPROVED — combined Permits set {7d9cb37, 90633a6, d30ab9e}; range union covers the
+full Permits implementation span. The candidate manifest is RATIFICATION-READY:** economy
+31af760c…990 · routes 6c7c4350…df2 (at balance/testdata/permits-t3-gate-candidate-v1.json) · copy
+e87b0224…512 as byte-pins; generated 8462d6d5…8a2 as the 7d9cb37 attestation per N1. After owner
+ratification, the bytes await only the epoch-6 mint (PT-C1: activated atomically by the First
+Content Epoch).
