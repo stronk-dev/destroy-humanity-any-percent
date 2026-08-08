@@ -95,3 +95,23 @@ now-ruled MA-C10–C14.
 - This is implementation and self-review evidence only. The public create handler is intentionally
   still unmounted, MA-C12 and terminal command composition remain open, and this entry is not the
   designated cross-party verdict or archival authority.
+
+## 2026-08-07 — MA-C12/MA-C13 command and Exit coordinator slice
+
+- Added the typed, unmounted command coordinator. It checks the durable `(session_id,command_id)`
+  receipt before tenant execution; an equal request hash returns the stored bytes and a different
+  hash fails deterministically. Nonterminal tenant state, revision, command row, and exact API
+  response commit together under the claim token.
+- Terminal commands auto-resolve in the same request. The composite terminal API response and
+  command receipt now commit inside the existing Founder→Company→session transaction, while the
+  byte-compared Company replay log and durable session retain the exact underlying resolution
+  receipt. A stale claim cannot publish either representation.
+- Added the MA-C12 read-only active-session resolver to composition. Exit freezes its result in
+  replay inputs only when the pinned `minigame_api` artifact is active; both runtimes reject
+  `not_eligible/minigame_session_active` before evaluation and restore byte-identical state.
+- Real-Postgres tests prove terminal auto-resolution/retry/hash conflict, rollback of the command
+  receipt under an injected Company-revision fault, and active-session Exit with unchanged Founder
+  and Company revisions. The shared Go/TypeScript corpus pins the frozen Exit rejection.
+- Kernel semantics advance from 0.3.81 to 0.3.82. This is self-review evidence only: API mounting,
+  generated schemas, current-session/resolve handlers, and the Probe-B composed socket lifecycle
+  remain open, and no archival claim is made.

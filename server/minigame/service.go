@@ -43,6 +43,14 @@ type PlayDecision struct {
 	Resolution *CertifiedResolution
 }
 
+type APIPlayDecision struct {
+	PlayDecision
+	Receipt json.RawMessage
+	Replay  bool
+}
+
+type CommandReceiptBuilder func(Session) (json.RawMessage, error)
+
 type CertifiedResolution struct {
 	identity resolutionIdentity
 	command  json.RawMessage
@@ -62,6 +70,7 @@ type CertifiedResolutionView struct {
 	ConstantsHash   string
 	Result          *Result
 	ResultBytes     json.RawMessage
+	Snapshot        json.RawMessage
 }
 
 type PreparedResolution struct {
@@ -84,7 +93,7 @@ func (resolution *CertifiedResolution) View() (CertifiedResolutionView, error) {
 		CompanyStreamID: resolution.identity.companyStreamID, RunSeq: resolution.identity.runSeq,
 		EngineRef: resolution.identity.engineRef, EngineVersion: resolution.identity.engineVersion,
 		ConstantsHash: resolution.identity.constantsHash, Result: cloneResult(resolution.result),
-		ResultBytes: bytes.Clone(resolution.bytes)}, nil
+		ResultBytes: bytes.Clone(resolution.bytes), Snapshot: bytes.Clone(resolution.state)}, nil
 }
 
 func NewService(repository *Repository, tenants *TenantRegistry, contentResolvers ...TenantContentResolver) (*Service, error) {
@@ -154,12 +163,40 @@ func (service *Service) PrepareStart(request StartRequest) (CreateSession, error
 // remains claim-owned so the caller can commit it with the Company payout via
 // ResolveTx; clients never supply that result.
 func (service *Service) Play(ctx context.Context, request PlayRequest) (decision PlayDecision, err error) {
-	if service == nil || request.ExpectedRevision < 1 || !validJSONObject(request.Command) {
-		return PlayDecision{}, ErrInvalidSession
+	result, err := service.play(ctx, request, "", "", nil)
+	return result.PlayDecision, err
+}
+
+// PlayWithReceipt checks command idempotency before tenant execution. A
+// nonterminal command commits its snapshot and exact API bytes together; a
+// terminal command remains claimed for the cross-stream resolution
+// coordinator, which commits the same receipt in that transaction.
+func (service *Service) PlayWithReceipt(ctx context.Context, request PlayRequest, commandID, requestHash string,
+	build CommandReceiptBuilder,
+) (decision APIPlayDecision, err error) {
+	return service.play(ctx, request, commandID, requestHash, build)
+}
+
+func (service *Service) play(ctx context.Context, request PlayRequest, commandID, requestHash string,
+	build CommandReceiptBuilder,
+) (decision APIPlayDecision, err error) {
+	withReceipt := commandID != "" || requestHash != "" || build != nil
+	if service == nil || request.ExpectedRevision < 1 || !validJSONObject(request.Command) ||
+		withReceipt && (build == nil || !opaqueIDPattern.MatchString(commandID) || !hashPattern.MatchString(requestHash)) {
+		return APIPlayDecision{}, ErrInvalidSession
+	}
+	if withReceipt {
+		recorded, ok, receiptErr := service.repository.CommandReceipt(ctx, request.FounderID, request.SessionID, commandID, requestHash)
+		if receiptErr != nil {
+			return APIPlayDecision{}, receiptErr
+		}
+		if ok {
+			return APIPlayDecision{Receipt: recorded.Response, Replay: true}, nil
+		}
 	}
 	claimed, err := service.repository.claim(ctx, request.FounderID, request.SessionID)
 	if err != nil {
-		return PlayDecision{}, err
+		return APIPlayDecision{}, err
 	}
 	release := true
 	defer func() {
@@ -170,15 +207,15 @@ func (service *Service) Play(ctx context.Context, request PlayRequest) (decision
 		}
 	}()
 	if claimed.Revision != request.ExpectedRevision {
-		return PlayDecision{}, ErrSessionRevision
+		return APIPlayDecision{}, ErrSessionRevision
 	}
 	scaling, ok := decodeScalingInputs(claimed.ScalingInputs)
 	if !ok {
-		return PlayDecision{}, ErrTenantDivergence
+		return APIPlayDecision{}, ErrTenantDivergence
 	}
 	seed, seedErr := strconv.ParseUint(claimed.Seed, 10, 64)
 	if seedErr != nil {
-		return PlayDecision{}, ErrTenantDivergence
+		return APIPlayDecision{}, ErrTenantDivergence
 	}
 	content := service.resolveContent(claimed.ConstantsHash, claimed.EngineRef, claimed.EngineVersion)
 	output, err := service.tenants.Apply(claimed.EngineRef, claimed.EngineVersion, ApplyInput{
@@ -187,15 +224,15 @@ func (service *Service) Play(ctx context.Context, request PlayRequest) (decision
 		ContentHash: content.Hash, ContentSchemaVersion: content.SchemaVersion,
 	})
 	if err != nil {
-		return PlayDecision{}, err
+		return APIPlayDecision{}, err
 	}
 	if output.Result != nil {
 		resultBytes, marshalErr := json.Marshal(output.Result)
 		if marshalErr != nil || !validJSONObject(resultBytes) {
-			return PlayDecision{}, ErrTenantDivergence
+			return APIPlayDecision{}, ErrTenantDivergence
 		}
 		claimed.State = output.Snapshot
-		decision = PlayDecision{Session: claimed, Resolution: &CertifiedResolution{
+		decision.PlayDecision = PlayDecision{Session: claimed, Resolution: &CertifiedResolution{
 			identity: resolutionIdentity{sessionID: claimed.SessionID, minigameID: claimed.MinigameID, founderID: claimed.FounderID,
 				companyStreamID: claimed.CompanyStreamID, runSeq: claimed.RunSeq, engineRef: claimed.EngineRef,
 				engineVersion: claimed.EngineVersion, constantsHash: claimed.ConstantsHash, claimToken: claimed.ClaimToken},
@@ -205,13 +242,30 @@ func (service *Service) Play(ctx context.Context, request PlayRequest) (decision
 		release = false
 		return decision, nil
 	}
-	updated, err := service.repository.completePlay(ctx, request.FounderID, request.SessionID,
-		claimed.ClaimToken, request.Command, output.Snapshot)
+	var receipt json.RawMessage
+	if withReceipt {
+		preview := claimed
+		preview.State = bytes.Clone(output.Snapshot)
+		preview.Revision++
+		preview.Status, preview.ClaimToken, preview.ClaimedAt = StatusActive, "", nil
+		receipt, err = build(preview)
+		if err != nil || !validJSONObject(receipt) {
+			return APIPlayDecision{}, ErrInvalidSession
+		}
+	}
+	var updated Session
+	if withReceipt {
+		updated, err = service.repository.CompletePlayWithReceipt(ctx, request.FounderID, request.SessionID,
+			claimed.ClaimToken, request.Command, output.Snapshot, commandID, requestHash, receipt)
+	} else {
+		updated, err = service.repository.completePlay(ctx, request.FounderID, request.SessionID,
+			claimed.ClaimToken, request.Command, output.Snapshot)
+	}
 	if err != nil {
-		return PlayDecision{}, err
+		return APIPlayDecision{}, err
 	}
 	release = false
-	return PlayDecision{Session: updated}, nil
+	return APIPlayDecision{PlayDecision: PlayDecision{Session: updated}, Receipt: receipt}, nil
 }
 
 // PrepareResolutionTx verifies the claimed session by replaying its immutable

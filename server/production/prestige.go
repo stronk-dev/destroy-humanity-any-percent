@@ -346,6 +346,16 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 		GuildSettlementBatch: settlements,
 		RouteContextVersion:  current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true,
 		ExecutedRouteIDs: executedRoutes, SelectedExitType: selectedType, SelectedTerms: selectedTerms, NextConstantsHash: s.currentConstantsHash}
+	if current.MinigameAPI != nil {
+		if s.minigameActivity == nil {
+			return save.ExitDecision{}, nil, fmt.Errorf("%w: minigame activity resolver unavailable", ErrInvalidIntent)
+		}
+		active, activeErr := s.minigameActivity.ActiveMinigame(ctx, companyRevision.OwnerID)
+		if activeErr != nil {
+			return save.ExitDecision{}, nil, activeErr
+		}
+		build.MinigameSessionActive = &active
+	}
 	if company.WireVersion == 18 {
 		activeEvidence, activeErr := resolveActivePlaySchedule(company, current.Opportunities, current.Prestige, companyRevision.OwnerID, now)
 		if activeErr != nil {

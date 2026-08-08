@@ -278,6 +278,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 		production.WithCompactPolicies(catalogs), production.WithCommonsWeightResolver(commonsProjector),
 		production.WithReplayCatalogs(catalogs), production.WithProgressionRuntime(catalogs),
 		production.WithGuildRuntime(catalogs), production.WithGuildSettlements(guildService),
+		production.WithMinigameActivity(minigameRepository),
 		production.WithSoulRecovery(soulRecoveries),
 		production.WithCurrentConstantsHash(seed.Hash))
 	if err != nil {

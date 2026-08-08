@@ -115,12 +115,39 @@ type minigameFounderReceipt struct {
 	QualityChange       minigameQualityChangeReceipt `json:"quality_change"`
 }
 
+type minigameCommandReceiptIdentity struct {
+	CommandID   string
+	RequestHash string
+}
+
 // ResolveMinigameSession composes the already-certified tenant result. It is
 // server-only: no public intent decoder constructs minigameResolutionPayload.
 func (s *Service) ResolveMinigameSession(ctx context.Context, platform *minigame.Service,
 	resolution *minigame.CertifiedResolution, now time.Time, fault save.ExitFaultInjector,
 ) (HandleResult, error) {
+	return s.resolveMinigameSession(ctx, platform, resolution, nil, now, fault)
+}
+
+// ResolveMinigameAPICommand commits the terminal command response in the same
+// Founder→Company→session transaction as payout, rating, replay logs, and the
+// durable terminal session receipt.
+func (s *Service) ResolveMinigameAPICommand(ctx context.Context, platform *minigame.Service,
+	resolution *minigame.CertifiedResolution, commandID, requestHash string, now time.Time,
+	fault save.ExitFaultInjector,
+) (HandleResult, error) {
+	return s.resolveMinigameSession(ctx, platform, resolution,
+		&minigameCommandReceiptIdentity{CommandID: commandID, RequestHash: requestHash}, now, fault)
+}
+
+func (s *Service) resolveMinigameSession(ctx context.Context, platform *minigame.Service,
+	resolution *minigame.CertifiedResolution, apiCommand *minigameCommandReceiptIdentity,
+	now time.Time, fault save.ExitFaultInjector,
+) (HandleResult, error) {
 	if s == nil || s.store == nil || s.replayCatalogs == nil || platform == nil || resolution == nil {
+		return HandleResult{}, ErrInvalidIntent
+	}
+	if apiCommand != nil && (!minigameAPIOpaqueIDPattern.MatchString(apiCommand.CommandID) ||
+		!minigameAPIHashPattern.MatchString(apiCommand.RequestHash)) {
 		return HandleResult{}, ErrInvalidIntent
 	}
 	view, err := resolution.View()
@@ -216,6 +243,19 @@ func (s *Service) ResolveMinigameSession(ctx context.Context, platform *minigame
 		if marshalErr != nil {
 			return save.MinigameResolutionDecision{}, marshalErr
 		}
+		apiReceipt := receiptBytes
+		if apiCommand != nil {
+			terminal := prepared.Session
+			terminal.Status, terminal.Revision, terminal.State = minigame.StatusResolved, terminal.Revision+1, view.Snapshot
+			apiReceipt, marshalErr = minigameAPISessionReceipt(terminal, receiptBytes)
+			if marshalErr != nil {
+				return save.MinigameResolutionDecision{}, marshalErr
+			}
+			if receiptErr := minigame.InsertCommandReceiptTx(ctx, tx, view.FounderID, view.SessionID,
+				prepared.Session.ClaimToken, apiCommand.CommandID, apiCommand.RequestHash, apiReceipt); receiptErr != nil {
+				return save.MinigameResolutionDecision{}, receiptErr
+			}
+		}
 		if _, finalizeErr := platform.FinalizeResolutionTx(ctx, tx, resolution, receiptBytes, companyNext, founderNext); finalizeErr != nil {
 			return save.MinigameResolutionDecision{}, fmt.Errorf("finalize certified minigame resolution: %w", finalizeErr)
 		}
@@ -255,10 +295,14 @@ func (s *Service) ResolveMinigameSession(ctx context.Context, platform *minigame
 			"certified_result_hash": certifiedHash, "credited_resource_id": definition.Payout.CreditedResourceID,
 			"credited_delta": creditedDelta, "configured_cap_forfeit_units": prepared.Faucet.ForfeitedUnits,
 			"cap_reason_key": prepared.Faucet.ConfiguredCapReasonKey, "founder_revision": founderNext})
-		return save.MinigameResolutionDecision{Receipt: receiptBytes, FounderReceipt: founderTransition.Receipt,
+		decision := save.MinigameResolutionDecision{Receipt: apiReceipt, FounderReceipt: founderTransition.Receipt,
 			CompanyReplayInputs: companyInputs, FounderReplayResolved: mustJSON(founderResolved),
 			CompanyEvents: []save.EventWrite{{Kind: save.EventMinigameResolved, SchemaVersion: 1, IntentID: view.SessionID, Payload: companyEventPayload}},
-			FounderEvents: founderTransition.Events}, nil
+			FounderEvents: founderTransition.Events}
+		if apiCommand != nil {
+			decision.CompanyLogReceipt = receiptBytes
+		}
+		return decision, nil
 	}, fault)
 	if err != nil {
 		return HandleResult{}, err

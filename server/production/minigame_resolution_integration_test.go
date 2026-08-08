@@ -238,6 +238,63 @@ func TestResolveMinigameSessionIntegrationAtomicReplayAndFaults(t *testing.T) {
 	if companyLogs != 1 || founderLogs != 1 || resolutionEvents != 2 || quota != 1 {
 		t.Fatalf("logs=%d/%d events=%d quota=%d", companyLogs, founderLogs, resolutionEvents, quota)
 	}
+
+	apiSessionID := "01986666-a964-7000-8000-000000000100"
+	if _, err := platform.Start(ctx, minigame.StartRequest{SessionID: apiSessionID, MinigameID: "fixture.counter", FounderID: founderID,
+		CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
+		ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "2", Mode: minigame.ModeSolo}); err != nil {
+		t.Fatal(err)
+	}
+	apiCommand := PlayMinigameAPIRequest{FounderID: founderID, SessionID: apiSessionID, CommandID: "terminal-1", ExpectedRevision: 1,
+		Command: json.RawMessage(`{"add":400,"finish":true}`)}
+	apiResult, err := production.PlayMinigameAPICommand(ctx, platform, apiCommand, now.Add(90*time.Second), nil)
+	var apiResponse map[string]json.RawMessage
+	if err != nil || apiResult.Replay || json.Unmarshal(apiResult.Receipt, &apiResponse) != nil || len(apiResponse) != 10 ||
+		string(apiResponse["status"]) != `"resolved"` || len(apiResponse["resolution_receipt"]) == 0 {
+		t.Fatalf("API terminal receipt=%s replay=%v err=%v", apiResult.Receipt, apiResult.Replay, err)
+	}
+	apiRetry, err := production.PlayMinigameAPICommand(ctx, platform, apiCommand, now.Add(2*time.Minute), nil)
+	if err != nil || !apiRetry.Replay || !bytes.Equal(apiRetry.Receipt, apiResult.Receipt) {
+		t.Fatalf("API retry receipt=%s replay=%v err=%v", apiRetry.Receipt, apiRetry.Replay, err)
+	}
+	conflict := apiCommand
+	conflict.Command = json.RawMessage(`{"add":401,"finish":true}`)
+	if _, err := production.PlayMinigameAPICommand(ctx, platform, conflict, now.Add(2*time.Minute), nil); !errors.Is(err, minigame.ErrAPIIdempotency) {
+		t.Fatalf("API command hash conflict err=%v", err)
+	}
+	apiSession, err := repository.Load(ctx, founderID, apiSessionID)
+	if err != nil || apiSession.Status != minigame.StatusResolved || apiSession.Revision != 2 ||
+		bytes.Contains(apiSession.ResolutionReceipt, []byte(`"snapshot"`)) {
+		t.Fatalf("API terminal session=%+v err=%v", apiSession, err)
+	}
+	var commandReceipts int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM minigame_command_receipts WHERE session_id=$1`, apiSessionID).Scan(&commandReceipts); err != nil || commandReceipts != 1 {
+		t.Fatalf("API command receipts=%d err=%v", commandReceipts, err)
+	}
+
+	faultSessionID := "01986666-a964-7000-8000-000000000101"
+	if _, err := platform.Start(ctx, minigame.StartRequest{SessionID: faultSessionID, MinigameID: "fixture.counter", FounderID: founderID,
+		CompanyStreamID: companyRevision.StreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
+		ConstantsHash: bundle.ConstantsHash, ScalingInputs: map[string]int64{"option.count": 3}, Seed: "3", Mode: minigame.ModeSolo}); err != nil {
+		t.Fatal(err)
+	}
+	_, err = production.PlayMinigameAPICommand(ctx, platform, PlayMinigameAPIRequest{FounderID: founderID, SessionID: faultSessionID,
+		CommandID: "terminal-fault", ExpectedRevision: 1, Command: json.RawMessage(`{"add":400,"finish":true}`)}, now.Add(3*time.Minute), func(step string) error {
+		if step == "company_revision" {
+			return errors.New("injected API terminal fault")
+		}
+		return nil
+	})
+	if err == nil {
+		t.Fatal("API terminal fault committed")
+	}
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM minigame_command_receipts WHERE session_id=$1`, faultSessionID).Scan(&commandReceipts); err != nil || commandReceipts != 0 {
+		t.Fatalf("API terminal fault receipts=%d err=%v", commandReceipts, err)
+	}
+	if _, err := db.ExecContext(ctx, `DELETE FROM minigame_sessions WHERE session_id=$1`, faultSessionID); err != nil {
+		t.Fatal(err)
+	}
+
 	faultSteps := []string{"faucet_window", "session_terminal", "founder_revision", "founder_events", "company_revision", "company_events", "run_log", "founder_log", "intent_record", "retention"}
 	for index, step := range faultSteps {
 		resolution := makeResolution(index + 2)

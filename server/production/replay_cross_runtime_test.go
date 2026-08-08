@@ -62,6 +62,7 @@ type crossRuntimeFixture struct {
 	MinigameStartHash  string                     `json:"minigame_start_constants_hash"`
 	MinigameStartFiles map[string]string          `json:"minigame_start_artifacts"`
 	MinigameStart      crossRuntimeFounderCase    `json:"minigame_start_founder_case"`
+	MinigameActiveExit crossRuntimeFixtureCase    `json:"minigame_active_exit_case"`
 }
 
 type crossRuntimeFounderCase struct {
@@ -351,11 +352,11 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	result.PetFounderHash, result.PetFounderFiles, result.PetFounderCases = makePetFounderReplayFixture(t, baseNow)
 	result.MinigameHash, result.MinigameFiles, result.MinigameCompany, result.MinigameFounder = makeMinigameResolutionReplayFixture(t, baseNow)
 	result.SoulHash, result.SoulFiles, result.SoulCompany, result.SoulFounder = makeSoulRecoveryReplayFixture(t, baseNow)
-	result.MinigameStartHash, result.MinigameStartFiles, result.MinigameStart = makeMinigameStartReplayFixture(t, baseNow)
+	result.MinigameStartHash, result.MinigameStartFiles, result.MinigameStart, result.MinigameActiveExit = makeMinigameStartReplayFixture(t, baseNow)
 	return result
 }
 
-func makeMinigameStartReplayFixture(t *testing.T, now time.Time) (string, map[string]string, crossRuntimeFounderCase) {
+func makeMinigameStartReplayFixture(t *testing.T, now time.Time) (string, map[string]string, crossRuntimeFounderCase, crossRuntimeFixtureCase) {
 	t.Helper()
 	catalogs := pitchFeatureBundle(t)
 	apiBytes, err := os.ReadFile("../../balance/testdata/minigame-api-candidate-v1.json")
@@ -400,13 +401,54 @@ func makeMinigameStartReplayFixture(t *testing.T, now time.Time) (string, map[st
 	}
 	post := mustEncodeState(t, state)
 	events := fixtureEvents(transition.Events)
-	return catalogs.ConstantsHash, stringArtifacts(catalogs.Artifacts), crossRuntimeFounderCase{
+	founderCase := crossRuntimeFounderCase{
 		Name: "start-minigame-session-founder", StateVersion: 21, PreState: pre, CanonicalPayload: payload,
 		ReplayInputs: inputs, Outcome: string(transition.Outcome), Receipt: transition.Receipt, Events: events,
 		PostState: post, ResultConstantsHash: transition.ResultConstantsHash,
 		ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events),
 		PostStateJSON: canonicalFixtureJSON(t, post),
 	}
+
+	company := replayFixtureState(t, catalogs.Economy, now)
+	company.WireVersion, company.MeterBands = 16, nil
+	meterState, meterErr := meters.NewRunState(catalogs.Meters, 0)
+	if meterErr != nil {
+		t.Fatal(meterErr)
+	}
+	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders =
+		meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	company.AchievementsEarnedRun = map[string]bool{}
+	companyPre := mustEncodeState(t, company)
+	exitRequest, err := ParseIntent([]byte(`{"intent_id":"01986666-2b00-7000-8000-000000000002","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	exitPayload := json.RawMessage(exitRequest.CanonicalPayload)
+	exitCommand := save.ReplayCommand{IntentID: exitRequest.IntentID, CompanyStreamID: resolved.CompanyStreamID,
+		FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	carry := founderCarry(state)
+	carry.FounderRevision, carry.FounderConstantsHash = 1, catalogs.ConstantsHash
+	active := true
+	exitInputs, err := buildReplayInputs(replayBuild{Command: exitCommand, Mode: ModeOnline, Now: now,
+		IntentKind: exitRequest.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry,
+		Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first",
+		SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: catalogs.ConstantsHash,
+		MinigameSessionActive: &active})
+	if err != nil {
+		t.Fatal(err)
+	}
+	exitTransition, err := ApplyLoggedExit(company, exitPayload, catalogs, exitInputs)
+	if err != nil || exitTransition.Decision.Outcome != save.IntentRejected {
+		t.Fatalf("active minigame Exit outcome=%s err=%v", exitTransition.Decision.Outcome, err)
+	}
+	companyPost := mustEncodeState(t, company)
+	exitEvents := []fixtureEvent{}
+	exitCase := crossRuntimeFixtureCase{Name: "minigame-active-exit-rejected", PreState: companyPre,
+		CanonicalPayload: exitPayload, ReplayInputs: exitInputs, Outcome: string(exitTransition.Decision.Outcome),
+		Receipt: exitTransition.Decision.Receipt, Events: exitEvents, PostState: companyPost,
+		ReceiptJSON: canonicalFixtureJSON(t, exitTransition.Decision.Receipt), EventsJSON: canonicalFixtureValue(t, exitEvents),
+		PostStateJSON: canonicalFixtureJSON(t, companyPost)}
+	return catalogs.ConstantsHash, stringArtifacts(catalogs.Artifacts), founderCase, exitCase
 }
 
 func makeDoctrineReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFullRun {

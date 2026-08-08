@@ -1043,13 +1043,15 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const request = parseIntent(canonicalPayload, wire.command.intent_id);
   if (request.expected_revision !== wire.command.revision || wire.command.run_seq !== company.runSeq) throw new RangeError("terminal command/state mismatch");
   const resolved = wire.resolved;
-  const hasActive="active_play" in resolved,hasNextActive="next_active_play" in resolved;onlyKeys(resolved, ["kind", "intent_kind", "accrual", "founder_carry", "executed_route_ids", "selected_exit_type", "selected_terms", "next_constants_hash",...(hasActive?["active_play"]:[]),...(hasNextActive?["next_active_play"]:[])], "terminal resolved inputs");
+  const hasActive="active_play" in resolved,hasNextActive="next_active_play" in resolved,hasMinigameActivity="minigame_session_active" in resolved;onlyKeys(resolved, ["kind", "intent_kind", "accrual", "founder_carry", "executed_route_ids", "selected_exit_type", "selected_terms", "next_constants_hash",...(hasActive?["active_play"]:[]),...(hasNextActive?["next_active_play"]:[]),...(hasMinigameActivity?["minigame_session_active"]:[])], "terminal resolved inputs");
   if (resolved.kind !== "exit" || resolved.intent_kind !== request.kind || typeof resolved.selected_exit_type !== "string" || !hashPattern.test(string(resolved.next_constants_hash))) throw new RangeError("terminal resolved union mismatch");
   const selectedTerms = exactObject(resolved.selected_terms, Object.keys(resolved.selected_terms as object), "selected terms");
   const nextHash = string(resolved.next_constants_hash);
   const next = nextHash === catalogs.constantsHash ? catalogs : catalogs.next;
   if (!next || next.constantsHash !== nextHash) throw new RangeError("next catalog bundle mismatch");
   const activeEvidence=hasActive?parseActiveSchedule(resolved.active_play):null,nextActive=hasNextActive?parseActiveSpawn(resolved.next_active_play):null;if((company.wireVersion===18)!==(activeEvidence!==null)||company.wireVersion===18&&wire.v<5||(next.opportunities!==undefined)!==(nextActive!==null)||activeEvidence?.claim!==null&&activeEvidence!==null)throw new RangeError("terminal active-play evidence mismatch");
+  if ((catalogs.minigameAPI !== undefined) !== hasMinigameActivity) throw new RangeError("terminal minigame activity evidence mismatch");
+  const minigameSessionActive = hasMinigameActivity ? boolean(resolved.minigame_session_active) : false;
   if (foundationsActive(next) && wire.v < 3) throw new SyntaxError("foundation activation requires replay inputs v3+");
   const accrual = parseAccrual(resolved.accrual, catalogs);
   if (company.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
@@ -1064,6 +1066,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   let exitType: string;
   let terms: ExitTerms;
   const rejectState = (category: string, detail: string): LoggedExitTransition => { restoreReplaySnapshot(company, companyBefore); return rejectedExit(company, founder, request.intent_id, revision, category, detail); };
+  if (minigameSessionActive) return rejectState("not_eligible", "minigame_session_active");
   try {
   const activeEvents=activeEvidence===null?[]:await applyActiveSchedule(company,catalogs,wire.command,wire.evaluated_at_ms,activeEvidence);
   applyGuildSettlements(company, accrual.guild_settlement_batch, catalogs.factions.stockCap);

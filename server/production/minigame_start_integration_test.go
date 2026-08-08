@@ -142,7 +142,8 @@ func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplay(t *testing.T)
 		t.Fatal(err)
 	}
 	production, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver),
-		WithCurrentConstantsHash(bundle.ConstantsHash), WithReplayCatalogs(set), WithGuildSettlements(emptyGuildSettlements{}))
+		WithCurrentConstantsHash(bundle.ConstantsHash), WithReplayCatalogs(set), WithGuildSettlements(emptyGuildSettlements{}),
+		WithMinigameActivity(repository))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -235,6 +236,16 @@ func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplay(t *testing.T)
 	loadedFounder, _ = store.LoadLatest(ctx, founderRevision.StreamID)
 	if loadedFounder.Revision.Number != 2 || loadedFounder.State.MinigameSessionSeq != 1 {
 		t.Fatalf("rejected second session advanced Founder=%+v", loadedFounder)
+	}
+	exit := []byte(`{"intent_id":"01986666-ca01-7000-8000-000000000013","kind":"wind_down","expected_revision":1,"expected_founder_revision":2}`)
+	exitResult, err := production.Handle(ctx, companyRevision.StreamID, ModeOnline, now.Add(3*time.Second), exit)
+	if err != nil || !bytes.Contains(exitResult.Receipt, []byte(`"detail":"minigame_session_active"`)) {
+		t.Fatalf("active-session Exit receipt=%s err=%v", exitResult.Receipt, err)
+	}
+	loadedCompany, _ = store.LoadLatest(ctx, companyRevision.StreamID)
+	loadedFounder, _ = store.LoadLatest(ctx, founderRevision.StreamID)
+	if loadedCompany.Revision.Number != 1 || loadedFounder.Revision.Number != 2 || loadedFounder.State.MinigameSessionSeq != 1 {
+		t.Fatalf("active-session Exit mutated Company/Founder: company=%d founder=%+v", loadedCompany.Revision.Number, loadedFounder)
 	}
 	history, err := store.LoadFounderHistory(ctx, founderRevision.StreamID)
 	if err != nil || VerifyFounderHistory(history, set) != ReplayVerified {

@@ -196,6 +196,17 @@ func (repository *Repository) Current(ctx context.Context, founderID string) (Se
 	return result, err == nil, err
 }
 
+// ActiveMinigame is the read-only MA-C12 predicate. Exit freezes this value
+// into replay inputs; it never lets an ambient repository read decide replay.
+func (repository *Repository) ActiveMinigame(ctx context.Context, founderID string) (bool, error) {
+	if repository == nil || !uuidPattern.MatchString(founderID) {
+		return false, ErrInvalidSession
+	}
+	var active bool
+	err := repository.db.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM minigame_sessions WHERE founder_id=$1 AND status IN ('active','claimed'))`, founderID).Scan(&active)
+	return active, err
+}
+
 // CreateReceipt and CommandReceipt are read-before-execute idempotency gates.
 // A hash mismatch is deterministic evidence; a missing row is not an error.
 func (repository *Repository) CreateReceipt(ctx context.Context, founderID, idempotencyKey, requestHash string) (APIReceipt, bool, error) {

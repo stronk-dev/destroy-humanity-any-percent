@@ -479,6 +479,58 @@ func TestServiceIntegration(t *testing.T) {
 	}
 }
 
+func TestPlayWithReceiptChecksBeforeExecutionAndCommitsSnapshotAtomically(t *testing.T) {
+	db := minigameIntegrationDB(t)
+	seedMinigameRun(t, db)
+	repository, err := NewRepository(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	tenants, err := NewTenantRegistry(fixtureTenant{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	service, err := NewService(repository, tenants)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx := context.Background()
+	if _, err := service.Start(ctx, StartRequest{
+		SessionID: testSessionID, MinigameID: "combat.duel", FounderID: testFounderID,
+		CompanyStreamID: testStreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
+		ConstantsHash: testHash, ScalingInputs: map[string]int64{"era": 1}, Seed: "8", Mode: ModeSolo,
+	}); err != nil {
+		t.Fatal(err)
+	}
+	build := func(session Session) (json.RawMessage, error) {
+		return json.Marshal(map[string]any{"revision": session.Revision, "snapshot": session.State, "status": session.Status})
+	}
+	request := PlayRequest{FounderID: testFounderID, SessionID: testSessionID, ExpectedRevision: 1,
+		Command: json.RawMessage(`{"add":4,"finish":false}`)}
+	first, err := service.PlayWithReceipt(ctx, request, "command-1", testHash, build)
+	if err != nil || first.Replay || first.Session.Revision != 2 ||
+		!jsonObjectEqual(first.Receipt, []byte(`{"revision":2,"snapshot":{"done":false,"total":5},"status":"active"}`)) {
+		t.Fatalf("first=%+v receipt=%s err=%v", first, first.Receipt, err)
+	}
+	// The stored response wins before revision or tenant validation. This retry
+	// would be stale and tenant-rejected if it executed.
+	retryRequest := request
+	retryRequest.ExpectedRevision = 99
+	retryRequest.Command = json.RawMessage(`{"add":-1,"finish":false}`)
+	retry, err := service.PlayWithReceipt(ctx, retryRequest, "command-1", testHash, build)
+	if err != nil || !retry.Replay || !bytes.Equal(retry.Receipt, first.Receipt) {
+		t.Fatalf("retry=%+v receipt=%s err=%v", retry, retry.Receipt, err)
+	}
+	if _, err := service.PlayWithReceipt(ctx, request, "command-1",
+		"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", build); !errors.Is(err, ErrAPIIdempotency) {
+		t.Fatalf("hash conflict err=%v", err)
+	}
+	stored, err := repository.Load(ctx, testFounderID, testSessionID)
+	if err != nil || stored.Revision != 2 || !jsonObjectEqual(stored.State, []byte(`{"done":false,"total":5}`)) {
+		t.Fatalf("stored=%+v err=%v", stored, err)
+	}
+}
+
 func testCreateSession() CreateSession {
 	return CreateSession{
 		SessionID: testSessionID, MinigameID: "combat.duel", FounderID: testFounderID,

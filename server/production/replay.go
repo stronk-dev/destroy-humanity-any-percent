@@ -519,6 +519,9 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 			*company = *companyBefore
 		}
 	}()
+	if (catalogs.MinigameAPI != nil) != (resolved.MinigameSessionActive != nil) {
+		return LoggedExitTransition{}, fmt.Errorf("%w: terminal minigame activity evidence", ErrInvalidReplayInputs)
+	}
 	if (company.WireVersion == 18) != (resolved.ActivePlay != nil) || company.WireVersion == 18 && wire.Version < 5 ||
 		(next.Opportunities != nil) != (resolved.NextActivePlay != nil) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal active-play evidence", ErrInvalidReplayInputs)
@@ -560,6 +563,10 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	founder, err := stateFromFounderCarry(resolved.FounderCarry, catalogs)
 	if err != nil {
 		return LoggedExitTransition{}, fmt.Errorf("%w: founder carry state", ErrInvalidReplayInputs)
+	}
+	if resolved.MinigameSessionActive != nil && *resolved.MinigameSessionActive {
+		decision := rejectedExitDecision(request, wire.Command.Revision, "not_eligible", "minigame_session_active")
+		return LoggedExitTransition{Founder: founder, Company: company, Decision: decision}, nil
 	}
 	hook := closedReplayAccrualHook(catalogs, resolved.Accrual.CommonsWeightPPM)
 	var prefix []save.EventWrite
@@ -873,16 +880,17 @@ type replayCrossGateResolved struct {
 }
 
 type replayExitResolved struct {
-	Kind              string                      `json:"kind"`
-	IntentKind        string                      `json:"intent_kind"`
-	Accrual           replayAccrual               `json:"accrual"`
-	FounderCarry      replayFounderCarry          `json:"founder_carry"`
-	ExecutedRouteIDs  []string                    `json:"executed_route_ids"`
-	SelectedExitType  string                      `json:"selected_exit_type"`
-	SelectedTerms     json.RawMessage             `json:"selected_terms"`
-	NextConstantsHash string                      `json:"next_constants_hash"`
-	ActivePlay        *activePlayScheduleEvidence `json:"active_play,omitempty"`
-	NextActivePlay    *activePlaySpawnEvidence    `json:"next_active_play,omitempty"`
+	Kind                  string                      `json:"kind"`
+	IntentKind            string                      `json:"intent_kind"`
+	Accrual               replayAccrual               `json:"accrual"`
+	FounderCarry          replayFounderCarry          `json:"founder_carry"`
+	ExecutedRouteIDs      []string                    `json:"executed_route_ids"`
+	SelectedExitType      string                      `json:"selected_exit_type"`
+	SelectedTerms         json.RawMessage             `json:"selected_terms"`
+	NextConstantsHash     string                      `json:"next_constants_hash"`
+	ActivePlay            *activePlayScheduleEvidence `json:"active_play,omitempty"`
+	NextActivePlay        *activePlaySpawnEvidence    `json:"next_active_play,omitempty"`
+	MinigameSessionActive *bool                       `json:"minigame_session_active,omitempty"`
 }
 
 type replayBuild struct {
@@ -903,6 +911,7 @@ type replayBuild struct {
 	NextConstantsHash      string
 	ActivePlay             *activePlayScheduleEvidence
 	NextActivePlay         *activePlaySpawnEvidence
+	MinigameSessionActive  *bool
 }
 
 func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
@@ -934,7 +943,8 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 		resolved, err = json.Marshal(replayExitResolved{Kind: "exit", IntentKind: input.IntentKind, Accrual: accrual,
 			FounderCarry: carry, ExecutedRouteIDs: routes, SelectedExitType: input.SelectedExitType,
 			SelectedTerms: append(json.RawMessage(nil), input.SelectedTerms...), NextConstantsHash: input.NextConstantsHash,
-			ActivePlay: input.ActivePlay, NextActivePlay: input.NextActivePlay})
+			ActivePlay: input.ActivePlay, NextActivePlay: input.NextActivePlay,
+			MinigameSessionActive: input.MinigameSessionActive})
 	case input.IntentKind == IntentCrossGate:
 		var carry *replayFounderCarry
 		if input.FounderCarry != nil {

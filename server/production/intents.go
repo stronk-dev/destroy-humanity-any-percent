@@ -102,6 +102,10 @@ type GuildSettlementResolver interface {
 	PendingSettlements(context.Context, string, string, int64) (guild.SettlementBatch, error)
 }
 
+type MinigameActivityResolver interface {
+	ActiveMinigame(context.Context, string) (bool, error)
+}
+
 type ServiceOption func(*Service) error
 
 func WithRouteCatalogs(resolver RouteCatalogResolver) ServiceOption {
@@ -198,6 +202,16 @@ func WithGuildSettlements(resolver GuildSettlementResolver) ServiceOption {
 	}
 }
 
+func WithMinigameActivity(resolver MinigameActivityResolver) ServiceOption {
+	return func(service *Service) error {
+		if resolver == nil {
+			return ErrInvalidIntent
+		}
+		service.minigameActivity = resolver
+		return nil
+	}
+}
+
 // WithCurrentConstantsHash binds the process's authoritative balance identity.
 // Existing runs continue under their pinned hash; only a Prestige transition
 // uses this value to assemble and pin the next run.
@@ -255,6 +269,7 @@ type Service struct {
 	projectors           []EventProjector
 	guildCatalogs        guild.CatalogResolver
 	guildSettlements     GuildSettlementResolver
+	minigameActivity     MinigameActivityResolver
 	prestigePolicies     PrestigePolicyResolver
 	simulation           *simulationPolicy
 	currentConstantsHash string

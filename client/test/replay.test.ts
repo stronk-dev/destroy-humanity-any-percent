@@ -147,6 +147,7 @@ const fixture = fixtureJSON as {
 	readonly minigame_start_constants_hash: string;
 	readonly minigame_start_artifacts: ReplayArtifacts;
 	readonly minigame_start_founder_case: FounderFixtureCase;
+	readonly minigame_active_exit_case: FixtureCase;
 	readonly founder_run: {
 		readonly founder_stream_id: string; readonly founder_id: string; readonly genesis_revision: number; readonly genesis_version: 14 | 15 | 16 | 17 | 18;
     readonly genesis_constants_hash: string; readonly genesis: unknown; readonly head_revision: number; readonly head_version: 14 | 15 | 16;
@@ -263,6 +264,19 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
 		expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
 		expect(canonicalJSONString(encodeFounderReplayState(founder))).toBe(testCase.post_state_json);
+	});
+
+	it("replays the frozen active-minigame Exit rejection without mutation", async () => {
+		const bundle = await loadReplayCatalogBundle(fixture.minigame_start_constants_hash, fixture.minigame_start_artifacts);
+		if (!bundle.meters || !bundle.achievements || !bundle.minigameAPI) throw new Error("minigame Exit fixture lacks pinned catalogs");
+		const testCase = fixture.minigame_active_exit_case;
+		const company = restoreReplayState(testCase.pre_state, 16, bundle.economy,
+			{ meters: bundle.meters, achievements: bundle.achievements });
+		const transition = await applyLoggedExit(company, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+		expect(transition.outcome).toBe(testCase.outcome);
+		expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+		expect(canonicalJSONString([...transition.founderEvents, ...transition.companyEndedEvents, ...transition.companyStartedEvents])).toBe(testCase.events_json);
+		expect(canonicalJSONString(encodeReplayState(transition.finalCompany))).toBe(testCase.post_state_json);
 	});
 
   it("replays the sequential doctrine and Compute Credit corpus", async () => {
