@@ -56,5 +56,9 @@ Focused evidence from the repository root:
   artifact drift checks, 0-error TypeScript/Svelte diagnostics, 6,607 client tests, kernel-history
   guard at 0.3.86, copy/schema/content-manifest gates, and 19,830 browser assertions.
 
+The same `make verify` command was repeated after implementation commit `d0dccb4`; it exits 0 and
+the committed-history guard explicitly reports `kernel version parity and history guard ok:
+0.3.86`.
+
 Pending before the manifest can become owner-approved: C10–C12 rulings/ratification, the candidate
 designated review (which replaces every `pending` verdict field), and the composed harness report.
