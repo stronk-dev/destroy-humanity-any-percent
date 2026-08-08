@@ -10,7 +10,7 @@
   completion, and terminal auto-resolution receipt composition.
 - [x] Reject Exit from a frozen active-minigame predicate in both replay runtimes.
 - [x] Wire authenticated create/command/resolve/current handlers through the generated API registry.
-- [ ] Prove create → command → terminal auto-resolve → retry/current over the composed real socket.
+- [x] Prove create → command → terminal auto-resolve → retry/current over the composed real socket.
 - [x] Register/generate the recovery and minigame operation schemas through API Foundation.
 - [ ] Implement surface components after UI Foundation, per MA-C9.
 - [ ] Hand the complete range off for designated cross-party review; do not self-archive.

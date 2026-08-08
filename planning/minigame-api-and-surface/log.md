@@ -154,3 +154,28 @@ now-ruled MA-C10–C14.
 - Focused Go tests, API drift generation, TypeScript typecheck, and the full save integration suite
   are the required evidence for this slice. This is implementation/self-review evidence only,
   ready for the later combined designated review; it is not approval or archival authority.
+
+## 2026-08-07 — MA-C2/MA-C11/MA-C14 composed lifecycle handoff
+
+- Added a real-Postgres test against the composed gameserver and authenticated HTTP surface. It
+  creates an account, earns and spends the server-resolved Fiscal unlock, creates and reconnects
+  to a Pitch session, executes every tenant transition through the mounted API, auto-resolves the
+  terminal command, and proves byte-exact command/create/resolve retry plus terminal `current=none`.
+  There is no direct service pre-application in the fixture: severing the composed tenant-content
+  resolver or command adapter breaks the lifecycle, satisfying the designated composition
+  verdict's Probe-B acceptance condition.
+- The dependency-complete candidate bundle exposed three cross-component seams that isolated
+  fixtures could not: content-bearing Founder-v17 activation initialized incomplete maps; session
+  start accepted an application clock instead of the transaction's database timestamp; and start
+  and terminal resolution reused one Founder-log intent ID. Live and replay now share catalog-row
+  activation, the store derives the command timestamp, and session and start-command UUIDv7 IDs
+  are distinct server-owned coordinates.
+- Added a shared Go/TypeScript replay row for content-bearing minigame activation, including exact
+  rating/offline-quality state. API generation now admits the platform's signed Elo domain and an
+  honestly empty cap reason. Kernel semantics advance from 0.3.83 to 0.3.84.
+- Evidence: focused Go/client/typecheck/kernel gates, the generated replay fixture, the composed
+  lifecycle target, and the full real-Postgres save integration suite are green. Implementation
+  commit: `2e2a372`.
+- This entry is implementation and self-review evidence only. The batch is ready for the required
+  designated cross-party review; it is not an approval, archival, content-mint, or publication
+  authority.
