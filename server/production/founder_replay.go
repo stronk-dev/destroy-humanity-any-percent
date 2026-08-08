@@ -651,6 +651,9 @@ func applyFounderExitResolved(state *save.State, command save.FounderReplayComma
 	if resolved.ResultFounderWireVersion != wantFounderVersion || activateFounderFeatureState(state, resultCatalogs, resolved.ResultFounderWireVersion, command.ServerTSMS, resolved.NextSoul) != nil {
 		return FounderLoggedTransition{}, ErrInvalidReplayInputs
 	}
+	if resolved.ResultFounderWireVersion >= 21 {
+		state.MinigameSessionSeq = 0
+	}
 	state.WireVersion = resolved.ResultFounderWireVersion
 	if err := resultCatalogs.ValidateFoundationState(state); err != nil {
 		return FounderLoggedTransition{}, err

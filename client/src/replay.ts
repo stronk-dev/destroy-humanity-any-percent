@@ -1640,6 +1640,7 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
 		if (!resultCatalogs.minigameAPI) throw new RangeError("missing minigame API activation artifact");
 		state.minigameSessionSeq = 0;
 	}
+	if (resultVersion >= 21) state.minigameSessionSeq = 0;
 	state.wireVersion = resultVersion as 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21;
   Object.assign(state, restoreFounderReplayState(encodeFounderReplayState(state), resultVersion, resultCatalogs));
   const receipt = { intent_id: wire.command.intent_id, outcome: "applied", founder_revision: wire.command.revision + 1, result_constants_hash: resultHash };

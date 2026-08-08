@@ -62,6 +62,7 @@ type crossRuntimeFixture struct {
 	MinigameStartHash  string                        `json:"minigame_start_constants_hash"`
 	MinigameStartFiles map[string]string             `json:"minigame_start_artifacts"`
 	MinigameStart      crossRuntimeFounderCase       `json:"minigame_start_founder_case"`
+	MinigameExitReset  crossRuntimeFounderCase       `json:"minigame_exit_reset_founder_case"`
 	MinigameActiveExit crossRuntimeFixtureCase       `json:"minigame_active_exit_case"`
 	MinigameActivation crossRuntimeFounderActivation `json:"minigame_activation"`
 }
@@ -361,7 +362,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	result.PetFounderHash, result.PetFounderFiles, result.PetFounderCases = makePetFounderReplayFixture(t, baseNow)
 	result.MinigameHash, result.MinigameFiles, result.MinigameCompany, result.MinigameFounder = makeMinigameResolutionReplayFixture(t, baseNow)
 	result.SoulHash, result.SoulFiles, result.SoulCompany, result.SoulFounder = makeSoulRecoveryReplayFixture(t, baseNow)
-	result.MinigameStartHash, result.MinigameStartFiles, result.MinigameStart, result.MinigameActiveExit = makeMinigameStartReplayFixture(t, baseNow)
+	result.MinigameStartHash, result.MinigameStartFiles, result.MinigameStart, result.MinigameExitReset, result.MinigameActiveExit = makeMinigameStartReplayFixture(t, baseNow)
 	result.MinigameActivation = makeMinigameActivationFixture(t, baseNow)
 	return result
 }
@@ -423,7 +424,7 @@ func artifactStrings(artifacts map[string][]byte) map[string]string {
 	return result
 }
 
-func makeMinigameStartReplayFixture(t *testing.T, now time.Time) (string, map[string]string, crossRuntimeFounderCase, crossRuntimeFixtureCase) {
+func makeMinigameStartReplayFixture(t *testing.T, now time.Time) (string, map[string]string, crossRuntimeFounderCase, crossRuntimeFounderCase, crossRuntimeFixtureCase) {
 	t.Helper()
 	catalogs := pitchFeatureBundle(t)
 	apiBytes, err := os.ReadFile("../../balance/testdata/minigame-api-candidate-v1.json")
@@ -516,7 +517,38 @@ func makeMinigameStartReplayFixture(t *testing.T, now time.Time) (string, map[st
 		Receipt: exitTransition.Decision.Receipt, Events: exitEvents, PostState: companyPost,
 		ReceiptJSON: canonicalFixtureJSON(t, exitTransition.Decision.Receipt), EventsJSON: canonicalFixtureValue(t, exitEvents),
 		PostStateJSON: canonicalFixtureJSON(t, companyPost)}
-	return catalogs.ConstantsHash, stringArtifacts(catalogs.Artifacts), founderCase, exitCase
+	resetPre := mustEncodeState(t, state)
+	resetCommand := save.FounderReplayCommand{IntentID: "01986666-2b02-7000-8000-000000000001",
+		FounderStreamID: command.FounderStreamID, FounderID: founderID, Revision: 2, FounderLogSeq: 2, ServerTSMS: now.Add(time.Second).UnixMilli()}
+	resetResolved := founderExitResolvedWire{Kind: founderExitResolvedKind, Outcome: string(save.IntentApplied),
+		CompanyStreamID: resolved.CompanyStreamID, RunSeq: 1, RunLogSeq: 2, ResultConstantsHash: catalogs.ConstantsHash,
+		AgeMSBefore: state.AgeMS, AgeMSAfter: state.AgeMS, AddedNetworkSlots: []save.NetworkSlot{}, AddedLedgerFactKinds: []string{},
+		AddedLifetimeAchievements: []string{}, ExitRecord: &founderExitRecordWire{RunID: 1, ExitType: "collapse",
+			OccurredAtMS: resetCommand.ServerTSMS}, ResultFounderWireVersion: 21}
+	resetInputs, err := save.MarshalFounderReplayInputs(resetCommand, resetResolved)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resetRequest, err := ParseIntent([]byte(`{"intent_id":"01986666-2b02-7000-8000-000000000001","kind":"wind_down","expected_revision":1,"expected_founder_revision":2}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	resetPayload := json.RawMessage(resetRequest.CanonicalPayload)
+	resetTransition, err := ApplyFounderLogged(state, resetPayload, catalogs, resetInputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resetPost := mustEncodeState(t, state)
+	resetEvents := fixtureEvents(resetTransition.Events)
+	resetCase := crossRuntimeFounderCase{Name: "exit-resets-minigame-session-sequence", StateVersion: 21,
+		PreState: resetPre, CanonicalPayload: resetPayload, ReplayInputs: resetInputs, Outcome: string(resetTransition.Outcome),
+		Receipt: resetTransition.Receipt, Events: resetEvents, PostState: resetPost,
+		ResultConstantsHash: resetTransition.ResultConstantsHash, ReceiptJSON: canonicalFixtureJSON(t, resetTransition.Receipt),
+		EventsJSON: canonicalFixtureValue(t, resetEvents), PostStateJSON: canonicalFixtureJSON(t, resetPost)}
+	if state.MinigameSessionSeq != 0 {
+		t.Fatalf("v21 Exit preserved minigame session sequence %d", state.MinigameSessionSeq)
+	}
+	return catalogs.ConstantsHash, stringArtifacts(catalogs.Artifacts), founderCase, resetCase, exitCase
 }
 
 func makeDoctrineReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFullRun {

@@ -147,6 +147,7 @@ const fixture = fixtureJSON as {
 	readonly minigame_start_constants_hash: string;
 	readonly minigame_start_artifacts: ReplayArtifacts;
 	readonly minigame_start_founder_case: FounderFixtureCase;
+	readonly minigame_exit_reset_founder_case: FounderFixtureCase;
 	readonly minigame_active_exit_case: FixtureCase;
 	readonly minigame_activation: {
 		readonly constants_hash: string; readonly artifacts: ReplayArtifacts;
@@ -266,6 +267,18 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
 		const testCase = fixture.minigame_start_founder_case;
 		const founder = restoreFounderReplayState(testCase.pre_state, testCase.state_version, bundle);
 		const transition = await applyFounderLogged(founder, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+		expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+		expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
+		expect(canonicalJSONString(encodeFounderReplayState(founder))).toBe(testCase.post_state_json);
+	});
+
+	it("resets the Founder-owned minigame session sequence at Exit", async () => {
+		const bundle = await loadReplayCatalogBundle(fixture.minigame_start_constants_hash, fixture.minigame_start_artifacts);
+		const testCase = fixture.minigame_exit_reset_founder_case;
+		const founder = restoreFounderReplayState(testCase.pre_state, testCase.state_version, bundle);
+		expect(founder.minigameSessionSeq).toBeGreaterThan(0);
+		const transition = await applyFounderLogged(founder, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+		expect(transition.state.minigameSessionSeq).toBe(0);
 		expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
 		expect(canonicalJSONString(transition.events)).toBe(testCase.events_json);
 		expect(canonicalJSONString(encodeFounderReplayState(founder))).toBe(testCase.post_state_json);
