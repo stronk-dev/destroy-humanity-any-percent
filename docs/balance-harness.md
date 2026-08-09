@@ -91,6 +91,9 @@ as a relevance baseline.
   aggregate report.
 - `make harness-check` is read-only and compares the seed-0 golden report, pacing baseline, and
   every registered relevance golden report.
+- `make first-content-harness` validates the ratified first-content manifest and its complete
+  16-artifact replay bundle, then writes the owner-facing candidate-versus-baseline pacing report.
+  Pacing drift is reported rather than vetoed; deterministic invariant failures still fail the run.
 - `make harness-update` deliberately regenerates those tracked artifacts for review.
 
 Drift above 10% warns and above 25% fails using integer cross-multiplication. After the initial

@@ -167,42 +167,11 @@ type runTask struct {
 }
 
 func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
-	scenarioBytes, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(scenarioPath)))
+	scenario, scenarioBytes, err := loadScenario(repositoryRoot, scenarioPath)
 	if err != nil {
-		return nil, err
-	}
-	var scenario Scenario
-	decoder := json.NewDecoder(bytes.NewReader(scenarioBytes))
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&scenario); err != nil {
-		return nil, fmt.Errorf("scenario: %w", err)
-	}
-	if scenario.SchemaVersion != 1 || scenario.ID == "" || scenario.Version < 1 || scenario.Catalog == "" || scenario.RoutesCatalog == "" || scenario.CommonsCatalog == "" || len(scenario.Runs) == 0 {
-		return nil, errors.New("invalid scenario envelope")
-	}
-	knownInvariants := map[string]bool{"state_encodes": true, "numeric_domain": true, "resource_bounds": true,
-		"ledger_reconciles": true, "revision_monotone": true, "must_reach": true}
-	seenInvariants := make(map[string]bool)
-	for _, invariant := range scenario.RequiredInvariants {
-		if !knownInvariants[invariant] || seenInvariants[invariant] {
-			return nil, fmt.Errorf("invalid required invariant %q", invariant)
-		}
-		seenInvariants[invariant] = true
-	}
-	if len(seenInvariants) != len(knownInvariants) {
-		return nil, errors.New("scenario must require the complete v1 invariant registry")
-	}
-	if err := validateMilestones(scenario.Milestones); err != nil {
-		return nil, err
-	}
-	if err := validateObservationMatrix(scenario.Runs, scenario.Milestones, scenario.Envelopes); err != nil {
 		return nil, err
 	}
 	catalogBytes, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(scenario.Catalog)))
-	if err != nil {
-		return nil, err
-	}
-	catalog, err := economy.LoadCatalog(catalogBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -210,15 +179,7 @@ func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
 	if err != nil {
 		return nil, err
 	}
-	commonsCatalog, err := commons.LoadCatalog(commonsCatalogBytes)
-	if err != nil {
-		return nil, err
-	}
 	routesCatalogBytes, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(scenario.RoutesCatalog)))
-	if err != nil {
-		return nil, err
-	}
-	routesCatalog, err := routes.LoadCatalog(routesCatalogBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -232,11 +193,65 @@ func LoadSuite(repositoryRoot, scenarioPath string) (*Suite, error) {
 			return nil, fmt.Errorf("scenario %s path %q differs from epoch manifest %q", name, scenarioPath, manifestPath)
 		}
 	}
+	return newSuite(scenario, scenarioBytes, catalogBytes, routesCatalogBytes, commonsCatalogBytes, bundle.Hash)
+}
+
+func loadScenario(repositoryRoot, scenarioPath string) (Scenario, []byte, error) {
+	scenarioBytes, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(scenarioPath)))
+	if err != nil {
+		return Scenario{}, nil, err
+	}
+	var scenario Scenario
+	decoder := json.NewDecoder(bytes.NewReader(scenarioBytes))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&scenario); err != nil {
+		return Scenario{}, nil, fmt.Errorf("scenario: %w", err)
+	}
+	if scenario.SchemaVersion != 1 || scenario.ID == "" || scenario.Version < 1 || scenario.Catalog == "" || scenario.RoutesCatalog == "" || scenario.CommonsCatalog == "" || len(scenario.Runs) == 0 {
+		return Scenario{}, nil, errors.New("invalid scenario envelope")
+	}
+	knownInvariants := map[string]bool{"state_encodes": true, "numeric_domain": true, "resource_bounds": true,
+		"ledger_reconciles": true, "revision_monotone": true, "must_reach": true}
+	seenInvariants := make(map[string]bool)
+	for _, invariant := range scenario.RequiredInvariants {
+		if !knownInvariants[invariant] || seenInvariants[invariant] {
+			return Scenario{}, nil, fmt.Errorf("invalid required invariant %q", invariant)
+		}
+		seenInvariants[invariant] = true
+	}
+	if len(seenInvariants) != len(knownInvariants) {
+		return Scenario{}, nil, errors.New("scenario must require the complete v1 invariant registry")
+	}
+	if err := validateMilestones(scenario.Milestones); err != nil {
+		return Scenario{}, nil, err
+	}
+	if err := validateObservationMatrix(scenario.Runs, scenario.Milestones, scenario.Envelopes); err != nil {
+		return Scenario{}, nil, err
+	}
+	return scenario, scenarioBytes, nil
+}
+
+func newSuite(scenario Scenario, scenarioBytes, catalogBytes, routesCatalogBytes, commonsCatalogBytes []byte, constantsHash string) (*Suite, error) {
+	catalog, err := economy.LoadCatalog(catalogBytes)
+	if err != nil {
+		return nil, err
+	}
+	commonsCatalog, err := commons.LoadCatalog(commonsCatalogBytes)
+	if err != nil {
+		return nil, err
+	}
+	routesCatalog, err := routes.LoadCatalog(routesCatalogBytes)
+	if err != nil {
+		return nil, err
+	}
+	if constantsHash == "" {
+		return nil, errors.New("harness constants hash is empty")
+	}
 	scenarioDigest := sha256.Sum256(scenarioBytes)
 	return &Suite{Scenario: scenario, ScenarioBytes: scenarioBytes, Catalog: catalog, CatalogBytes: catalogBytes,
 		RoutesCatalog: routesCatalog, RoutesCatalogBytes: routesCatalogBytes,
 		CommonsCatalog: commonsCatalog, CommonsCatalogBytes: commonsCatalogBytes,
-		ScenarioHash: "sha256:" + hex.EncodeToString(scenarioDigest[:]), ConstantsHash: bundle.Hash}, nil
+		ScenarioHash: "sha256:" + hex.EncodeToString(scenarioDigest[:]), ConstantsHash: constantsHash}, nil
 }
 
 func (suite *Suite) RunAll() ([]RunReport, AggregateReport, error) {

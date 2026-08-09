@@ -129,7 +129,7 @@ func firstContentCandidateManifest(t *testing.T) firstContentManifest {
 		t.Fatal(err)
 	}
 	var manifest firstContentManifest
-	if err := json.Unmarshal(data, &manifest); err != nil || manifest.SchemaVersion != 1 || manifest.Status != "candidate_awaiting_owner_ratification" || len(manifest.Artifacts) != 16 {
+	if err := json.Unmarshal(data, &manifest); err != nil || manifest.SchemaVersion != 1 || manifest.Status != "ratified" || len(manifest.Artifacts) != 16 {
 		t.Fatalf("invalid first-content promotion manifest: %v", err)
 	}
 	return manifest

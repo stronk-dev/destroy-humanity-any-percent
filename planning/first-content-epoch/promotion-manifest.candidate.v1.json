@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "candidate_awaiting_owner_ratification",
+  "status": "ratified",
   "constants_hash": "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a",
   "artifacts": [
     {
@@ -10,7 +10,7 @@
       "production_path": "balance/achievements/first-content.json",
       "sha256": "1a11d6c5a0c044ff8077574bb71f1c893bde93a050e20a91e0d776c7e79f8903",
       "content_gate": "make test-go GO_PACKAGES='./achievements ./replaycatalog' && make test-client",
-      "consumed_verdict": "pending:first-content-candidate-designated-review"
+      "consumed_verdict": "planning/first-content-epoch/log.md#2026-08-08-b0277a1"
     },
     {
       "name": "categories",
@@ -19,7 +19,7 @@
       "production_path": "balance/categories/phase0.json",
       "sha256": "8232b8932649aafdfef6a4502ee4d6003ab6665c37042926fa8eace2b619f8ef",
       "content_gate": "make test-go GO_PACKAGES='./leaderboard ./replaycatalog'",
-      "consumed_verdict": "pending:FCE-C10-and-first-content-candidate-designated-review"
+      "consumed_verdict": "planning/first-content-epoch/log.md#2026-08-08-b0277a1"
     },
     {
       "name": "commons",
@@ -46,7 +46,7 @@
       "production_path": "balance/catalogs/phase0.json",
       "sha256": "2d4807b7628e3e258536802625ba35806c32d0429c3e819a19a7a287e3c552a1",
       "content_gate": "make verify-schema && make test-go GO_PACKAGES='./economy ./fiscal ./replaycatalog'",
-      "consumed_verdict": "pending:first-content-candidate-designated-review"
+      "consumed_verdict": "planning/first-content-epoch/log.md#2026-08-08-b0277a1"
     },
     {
       "name": "factions",
@@ -64,7 +64,7 @@
       "production_path": "balance/fiscal/first-content.json",
       "sha256": "3847236f8001ed7e29ab41054fbeef38c5e5ea8b838e478d2c4057fdc417f2a9",
       "content_gate": "make test-go GO_PACKAGES='./fiscal ./replaycatalog' && make test-client",
-      "consumed_verdict": "pending:first-content-candidate-designated-review"
+      "consumed_verdict": "planning/first-content-epoch/log.md#2026-08-08-b0277a1"
     },
     {
       "name": "guilds",
@@ -82,7 +82,7 @@
       "production_path": "balance/meters/first-content.json",
       "sha256": "320deca9ccbe70c1822f0d2664ea75dfd7627d7f098dfd1243ef432bea7bb485",
       "content_gate": "make test-go GO_PACKAGES='./meters ./replaycatalog' && make test-client",
-      "consumed_verdict": "pending:first-content-candidate-designated-review"
+      "consumed_verdict": "planning/first-content-epoch/log.md#2026-08-08-b0277a1"
     },
     {
       "name": "minigame_api",
@@ -109,7 +109,7 @@
       "production_path": "balance/pets/first-content.json",
       "sha256": "5c1f27006871ddbd688cdb36e673a64ef5080c92950d22df486576dfae4aa1c1",
       "content_gate": "make test-go GO_PACKAGES='./pet ./replaycatalog' && make test-client",
-      "consumed_verdict": "pending:first-content-candidate-designated-review"
+      "consumed_verdict": "planning/first-content-epoch/log.md#2026-08-08-b0277a1"
     },
     {
       "name": "pitch",
@@ -145,7 +145,7 @@
       "production_path": "balance/soul/first-content.json",
       "sha256": "a57798f94892a86fd6ea727b76d5bfa663db27c4abd10180204c26ea83587de4",
       "content_gate": "make test-go GO_PACKAGES='./soul ./replaycatalog' && make test-client",
-      "consumed_verdict": "pending:first-content-candidate-designated-review"
+      "consumed_verdict": "planning/first-content-epoch/log.md#2026-08-08-b0277a1"
     }
   ]
 }

@@ -31,8 +31,8 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
 | [Minigame & Recovery API + Surface](minigame-api-and-surface.md) | accepted — MA-C1–C15 ruled; implementing | API Foundation / Minigame Platform (accepted, implementing) / Soul / UI Foundation |
-| [Permits & the T3→T4 Gate](permits-and-t3-gate.md) | candidate implemented — awaiting ratification + designated review | Economy Kernel / Route Registry / First Content Epoch |
-| [First Content Epoch](first-content-epoch.md) | draft — owner-gated mint (successor of TP-C18/SR-C13) | ALL fixture-first content foundations |
+| [Permits & the T3→T4 Gate](permits-and-t3-gate.md) | candidate implemented, designated-approved + ratified — promotion awaits epoch-6 mint | Economy Kernel / Route Registry / First Content Epoch |
+| [First Content Epoch](first-content-epoch.md) | accepted — FCE5.3 complete; awaiting owner mint sign-off | ALL fixture-first content foundations |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
 | [T0–T1 Playable Content](t0-t1-playable-content.md) | draft | Production / Purchasable Content / Copy Pipeline |
 

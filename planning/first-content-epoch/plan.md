@@ -6,7 +6,7 @@ RFC: `rfc/first-content-epoch.md`
   the copy artifacts.
 - [x] Stage and content-gate the ratified meters, achievements, pets, permits, and `minigame_api`
   candidate artifacts without touching the active epoch seed.
-- [ ] Complete the literal promotion manifest and composed harness evidence.
+- [x] Complete the literal promotion manifest and composed harness evidence.
 - [ ] Obtain explicit owner sign-off for the single epoch-6 mint commit.
 - [ ] Mint the complete dependency chain atomically, run every declared gate, receive the
   cross-party designated review, and archive.

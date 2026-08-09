@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "manifest_path": "planning/first-content-epoch/promotion-manifest.candidate.v1.json",
+  "artifact_count": 16,
+  "artifact_names": [
+    "achievements",
+    "categories",
+    "commons",
+    "doctrines",
+    "economy",
+    "factions",
+    "fiscal",
+    "guilds",
+    "meters",
+    "minigame_api",
+    "minigames",
+    "pets",
+    "pitch",
+    "prestige",
+    "routes",
+    "soul"
+  ],
+  "candidate_constants_hash": "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a",
+  "baseline_constants_hash": "sha256:63ab30c96b5d76b941b053131fcee63c94b6b3ad91322f9160d94973ce8c58fa",
+  "scenario_id": "scenario.phase0_production",
+  "scenario_hash": "sha256:10aa5c8a2dd8a5c79a5902e74f4e55a1ca3ab46a2d35c9bf3dd25fc729dbb07a",
+  "run_count": 300,
+  "values": [
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.first_manual",
+      "statistic": "p50",
+      "baseline_ms": 600000,
+      "candidate_ms": 600000,
+      "delta_ms": 0,
+      "relative_delta_ppm": 0
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.first_manual",
+      "statistic": "p95",
+      "baseline_ms": 1500000,
+      "candidate_ms": 2400000,
+      "delta_ms": 900000,
+      "relative_delta_ppm": 600000
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.first_generator_purchase",
+      "statistic": "p50",
+      "baseline_ms": 1800000,
+      "candidate_ms": 2400000,
+      "delta_ms": 600000,
+      "relative_delta_ppm": 333333
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.first_generator_purchase",
+      "statistic": "p95",
+      "baseline_ms": 4200000,
+      "candidate_ms": 6000000,
+      "delta_ms": 1800000,
+      "relative_delta_ppm": 428571
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p50",
+      "baseline_ms": 1800000,
+      "candidate_ms": 2400000,
+      "delta_ms": 600000,
+      "relative_delta_ppm": 333333
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p95",
+      "baseline_ms": 4200000,
+      "candidate_ms": 6000000,
+      "delta_ms": 1800000,
+      "relative_delta_ppm": 428571
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.t0_progress_1",
+      "statistic": "p50",
+      "baseline_ms": 2400000,
+      "candidate_ms": 3300000,
+      "delta_ms": 900000,
+      "relative_delta_ppm": 375000
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.t0_progress_1",
+      "statistic": "p95",
+      "baseline_ms": 4800000,
+      "candidate_ms": 7200000,
+      "delta_ms": 2400000,
+      "relative_delta_ppm": 500000
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.first_manual",
+      "statistic": "p50",
+      "baseline_ms": 0,
+      "candidate_ms": 0,
+      "delta_ms": 0,
+      "relative_delta_ppm": 0
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.first_manual",
+      "statistic": "p95",
+      "baseline_ms": 0,
+      "candidate_ms": 0,
+      "delta_ms": 0,
+      "relative_delta_ppm": 0
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.first_generator_purchase",
+      "statistic": "p50",
+      "baseline_ms": 10000,
+      "candidate_ms": 10000,
+      "delta_ms": 0,
+      "relative_delta_ppm": 0
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.first_generator_purchase",
+      "statistic": "p95",
+      "baseline_ms": 10000,
+      "candidate_ms": 10000,
+      "delta_ms": 0,
+      "relative_delta_ppm": 0
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p50",
+      "baseline_ms": 10000,
+      "candidate_ms": 10000,
+      "delta_ms": 0,
+      "relative_delta_ppm": 0
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p95",
+      "baseline_ms": 10000,
+      "candidate_ms": 10000,
+      "delta_ms": 0,
+      "relative_delta_ppm": 0
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.t0_progress_1",
+      "statistic": "p50",
+      "baseline_ms": 337000,
+      "candidate_ms": 337000,
+      "delta_ms": 0,
+      "relative_delta_ppm": 0
+    },
+    {
+      "policy_id": "casual.phase0",
+      "milestone_id": "milestone.t0_progress_1",
+      "statistic": "p95",
+      "baseline_ms": 337000,
+      "candidate_ms": 337000,
+      "delta_ms": 0,
+      "relative_delta_ppm": 0
+    }
+  ],
+  "pacing_warnings": [],
+  "pacing_findings": [
+    "drift over 25%: chaos.phase0\u0000milestone.first_generator_purchase\u0000p50",
+    "drift over 25%: chaos.phase0\u0000milestone.first_generator_purchase\u0000p95",
+    "drift over 25%: chaos.phase0\u0000milestone.first_manual\u0000p95",
+    "drift over 25%: chaos.phase0\u0000milestone.generator_count_1\u0000p50",
+    "drift over 25%: chaos.phase0\u0000milestone.generator_count_1\u0000p95",
+    "drift over 25%: chaos.phase0\u0000milestone.t0_progress_1\u0000p50",
+    "drift over 25%: chaos.phase0\u0000milestone.t0_progress_1\u0000p95"
+  ],
+  "invariant_failures": []
+}

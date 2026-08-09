@@ -1,6 +1,6 @@
 # RFC: The First Content Epoch (epoch 6 — the owner-gated production mint)
 
-- **Status:** draft — **owner-gated.** The mint commit requires Marco's explicit sign-off; this RFC
+- **Status:** accepted — implementing; **the mint remains owner-gated.** The mint commit requires Marco's explicit sign-off; this RFC
   exists so that sign-off approves a fully enumerated, precondition-checked change instead of a
   judgment call. Named successor of TP-C18 (The Pitch, ruled option a: fixture-first) and SR-C13
   (Soul Recovery, ruled: fixture-only now, minted together here).
@@ -59,9 +59,10 @@ Each artifact's production bytes use one of two closed provenance lanes:
 
 The second lane owns the authored meters/achievements/pets documents and the literal composed
 Categories/Economy/Fiscal/Soul candidates required by already-ruled cross-artifact contracts. The
-literal source → production manifest is
-`planning/first-content-epoch/promotion-manifest.candidate.v1.json` until owner ratification and
-candidate review make it final. No test helper may synthesize bytes absent from that manifest.
+ratified literal source → production manifest is
+`planning/first-content-epoch/promotion-manifest.candidate.v1.json`. Its candidate review is filed
+at `planning/first-content-epoch/log.md#2026-08-08-b0277a1`; no test helper may synthesize bytes
+absent from that manifest.
 
 **Any retune between review and mint is a new review.** If a provisional constant is changed from
 the reviewed fixture bytes, the changed artifact re-runs its content gate and the change lands as
@@ -496,29 +497,30 @@ candidate review and composed harness run. Generated copy remains a point-in-tim
 is refreshed at the mint, matching the Permits-copy precedent. Ratification does not authorize the
 mint; FCE5.3, candidate review, and the separate owner sign-off remain mandatory.
 
-### FCE-C6 literal promotion table — candidate pending C10–C12
+### FCE-C6 literal promotion table — ratified after C10–C12 candidate review
 
-The JSON manifest is normative for full command strings and verdict references. `pending` verdicts
-must be replaced by the candidate designated-review entry before this RFC becomes accepted.
+The JSON manifest is normative for full command strings and verdict references. Its seven
+first-production rows consume the designated candidate-review entry `b0277a1`; the other rows
+retain their named implementation verdicts.
 
 | artifact | production path | source path | SHA-256 | schema | content gate | consumed verdict |
 |---|---|---|---|---:|---|---|
-| achievements | `balance/achievements/first-content.json` | `balance/testdata/first-content/achievements-v1.json` | `1a11d6c5a0c044ff8077574bb71f1c893bde93a050e20a91e0d776c7e79f8903` | 1 | achievements + replaycatalog + client | pending candidate review |
-| categories | `balance/categories/phase0.json` | `balance/testdata/first-content/categories-v1.json` | `8232b8932649aafdfef6a4502ee4d6003ab6665c37042926fa8eace2b619f8ef` | 1 | leaderboard + replaycatalog | pending C10 + candidate review |
+| achievements | `balance/achievements/first-content.json` | `balance/testdata/first-content/achievements-v1.json` | `1a11d6c5a0c044ff8077574bb71f1c893bde93a050e20a91e0d776c7e79f8903` | 1 | achievements + replaycatalog + client | Candidate `b0277a1` |
+| categories | `balance/categories/phase0.json` | `balance/testdata/first-content/categories-v1.json` | `8232b8932649aafdfef6a4502ee4d6003ab6665c37042926fa8eace2b619f8ef` | 1 | leaderboard + replaycatalog | FCE-C10 + Candidate `b0277a1` |
 | commons | `balance/commons/phase0.json` | same | `33d4e73a32e12c973acf9633a1e829fd4da2de0753c6004821fb93ff14208c93` | 1 | schema | Commons Compact verdict |
 | doctrines | `balance/doctrines/first-content.json` | `balance/testdata/first-content/doctrines-v1.json` | `a3bca5f7eb07fb3b5bf185ce6191771c044a033b47c6bba390582dd7e1745672` | 1 | doctrine + replaycatalog + client | Doctrine verdict + candidate review |
-| economy | `balance/catalogs/phase0.json` | `balance/testdata/first-content/economy-v3.json` | `2d4807b7628e3e258536802625ba35806c32d0429c3e819a19a7a287e3c552a1` | 3 | schema + economy + fiscal + replaycatalog | pending candidate review |
+| economy | `balance/catalogs/phase0.json` | `balance/testdata/first-content/economy-v3.json` | `2d4807b7628e3e258536802625ba35806c32d0429c3e819a19a7a287e3c552a1` | 3 | schema + economy + fiscal + replaycatalog | Candidate `b0277a1` |
 | factions | `balance/factions/phase0.json` | same | `e44f461eca6cc6c048edebc42356915e6d4be16f480b4795a1fcc458855005fe` | 1 | schema | Faction verdict |
-| fiscal | `balance/fiscal/first-content.json` | `balance/testdata/first-content/fiscal-v1.json` | `3847236f8001ed7e29ab41054fbeef38c5e5ea8b838e478d2c4057fdc417f2a9` | 1 | fiscal + replaycatalog + client | pending candidate review |
+| fiscal | `balance/fiscal/first-content.json` | `balance/testdata/first-content/fiscal-v1.json` | `3847236f8001ed7e29ab41054fbeef38c5e5ea8b838e478d2c4057fdc417f2a9` | 1 | fiscal + replaycatalog + client | Candidate `b0277a1` |
 | guilds | `balance/guilds/phase0.json` | same | `e70e644fd62be3c37e0ae465ea55eb104dfc83f810f2d66f11806328d18366fa` | 1 | schema | Guild verdict |
-| meters | `balance/meters/first-content.json` | `balance/testdata/first-content/meters-v1.json` | `320deca9ccbe70c1822f0d2664ea75dfd7627d7f098dfd1243ef432bea7bb485` | 1 | meters + replaycatalog + client | pending candidate review |
+| meters | `balance/meters/first-content.json` | `balance/testdata/first-content/meters-v1.json` | `320deca9ccbe70c1822f0d2664ea75dfd7627d7f098dfd1243ef432bea7bb485` | 1 | meters + replaycatalog + client | Candidate `b0277a1` |
 | minigame_api | `balance/minigame-api/first-content.json` | `balance/testdata/minigame-api-candidate-v1.json` | `b16b5e0eb6f9426c8b1b94255e2d8e04f53f78b391fdbbb348ad7438d7bab31c` | 1 | minigameapi + replaycatalog + client | MA `ce69a4b` |
 | minigames | `balance/minigames/first-content.json` | `testdata/minigame/pitch-v3.json` | `f08fd3ab1959da66f389ef918b936f81d8a2562762055e7b27f4f9e771ff0862` | 3 | minigame + replaycatalog + client | Minigame Platform verdict |
-| pets | `balance/pets/first-content.json` | `balance/testdata/first-content/pets-v2.json` | `5c1f27006871ddbd688cdb36e673a64ef5080c92950d22df486576dfae4aa1c1` | 2 | pet + replaycatalog + client | pending candidate review |
+| pets | `balance/pets/first-content.json` | `balance/testdata/first-content/pets-v2.json` | `5c1f27006871ddbd688cdb36e673a64ef5080c92950d22df486576dfae4aa1c1` | 2 | pet + replaycatalog + client | Candidate `b0277a1` |
 | pitch | `balance/pitch.json` | `balance/testdata/pitch-v1.json` | `bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f` | 1 | pitch + replaycatalog + client | Pitch `c76101a` |
 | prestige | `balance/prestige/phase0.json` | same | `1873090781bed666c8f989169a9e59990547b1f713ac2f9a8215f51d3f0ea7ec` | 1 | schema | Prestige verdict |
 | routes | `balance/routes/phase0.json` | `balance/testdata/permits-t3-gate-candidate-v1.json` | `6c7c4350bcd43840a141fb5c0525d9779f11ed0ed836a8783f21f22f6c880df2` | 1 | schema + routes + replaycatalog | Permits `88e2054` |
-| soul | `balance/soul/first-content.json` | `balance/testdata/first-content/soul-v1.json` | `a57798f94892a86fd6ea727b76d5bfa663db27c4abd10180204c26ea83587de4` | 1 | soul + replaycatalog + client | pending candidate review |
+| soul | `balance/soul/first-content.json` | `balance/testdata/first-content/soul-v1.json` | `a57798f94892a86fd6ea727b76d5bfa663db27c4abd10180204c26ea83587de4` | 1 | soul + replaycatalog + client | Candidate `b0277a1` |
 
 ## Owner rulings on FCE-C10–C12 — RATIFIED (Marco, 2026-08-08)
 

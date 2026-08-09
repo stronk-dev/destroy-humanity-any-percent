@@ -96,3 +96,47 @@ debt: the record-review pass ({b14f82e} + the MA handoff-discipline notes).
 
 **Verdict: APPROVED as the candidate designated review. NOT mint authorization — FCE-C10–C12
 owner rulings, the FCE5.3 composed harness report, and the FCE5.6 owner sign-off remain.**
+
+## 2026-08-09 — FCE5.3 ratified-bundle composed pacing report
+
+`make first-content-harness` completed successfully over the ratified 16-artifact manifest at
+candidate constants hash
+`sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a`.
+The command validated every source SHA-256, rejected pending verdicts, loaded the complete bundle
+through `replaycatalog.Load`, and then executed the production pacing scenario against the
+candidate Economy, Routes, and Commons bytes. It ran 300 deterministic policy/seed/mode cases.
+
+The canonical report is
+`planning/first-content-epoch/composed-harness-report.v1.json`, SHA-256
+`f2b41978a33309b29d6904391ffc299dc193976543207e2348b94daf6a09006c`.
+
+Results:
+
+- **Invariant failures: 0.** All 300 runs completed and the candidate report contains no
+  deterministic envelope, conservation, resource-bound, or other harness invariant failure.
+- **Pacing warnings (10–25%): 0.**
+- **Owner-visible pacing findings (>25%): 7.** All seven are in `chaos.phase0`; Casual is unchanged
+  on all eight statistics. Chaos first-manual p50 is also unchanged.
+- Chaos first-manual p95: 1,500,000 → 2,400,000 ms (**+60.0%**).
+- Chaos first-generator-purchase p50/p95: 1,800,000 → 2,400,000 ms (**+33.3%**) and
+  4,200,000 → 6,000,000 ms (**+42.9%**).
+- Chaos generator-count-1 p50/p95: the same 1,800,000 → 2,400,000 ms (**+33.3%**) and
+  4,200,000 → 6,000,000 ms (**+42.9%**) movement.
+- Chaos T0-progress-1 p50/p95: 2,400,000 → 3,300,000 ms (**+37.5%**) and
+  4,800,000 → 7,200,000 ms (**+50.0%**).
+
+Per FCE5.3, these pacing regressions are findings for Marco's mint decision, not automatic vetoes.
+No active artifact, epoch row, current-epoch pointer, or production constants hash changed. The
+next step remains FCE5.6: explicit owner sign-off against this report. This entry does **not**
+authorize the mint.
+
+Verification from the repository root:
+
+- `make test-go GO_PACKAGES='./harness ./cmd/balance-harness ./replaycatalog' GO_TEST_FLAGS='-count=1'`
+  — all three complete package suites pass.
+- `make first-content-harness` — exits 0; repeated generation is byte-identical at the report SHA
+  above.
+- `make verify` — exits 0 after the full active-epoch harness, Go vet/all-package tests, generated
+  formula/API checks, 0-error TypeScript/Svelte diagnostics, production client build, 6,607 client
+  tests, kernel-history guard at 0.3.86, copy/schema/content-manifest gates, and 19,830 browser
+  assertions.

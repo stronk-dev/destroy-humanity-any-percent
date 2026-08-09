@@ -165,6 +165,44 @@ func TestBaselineDriftThresholdsUseIntegerCrossMultiplication(t *testing.T) {
 	}
 }
 
+func TestLoadRatifiedFirstContentCandidateSuite(t *testing.T) {
+	root := filepath.Join("..", "..")
+	suite, identity, err := LoadCandidateSuite(root, "testdata/harness/scenarios/phase0-production.json",
+		"planning/first-content-epoch/promotion-manifest.candidate.v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if identity.ConstantsHash != "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a" ||
+		len(identity.ArtifactNames) != 16 || suite.ConstantsHash != identity.ConstantsHash {
+		t.Fatalf("identity=%+v suite hash=%s", identity, suite.ConstantsHash)
+	}
+	if _, ok := suite.Catalog.Resource("company.permits"); !ok {
+		t.Fatal("candidate harness did not load the ratified Economy bytes")
+	}
+	found := false
+	for _, gate := range suite.RoutesCatalog.Gates() {
+		found = found || gate.ID == "gate.t3_to_t4"
+	}
+	if !found {
+		t.Fatal("candidate harness did not load the ratified Routes bytes")
+	}
+}
+
+func TestCandidatePacingReportSeparatesFindingsFromInvariants(t *testing.T) {
+	baseline := AggregateReport{ConstantsHash: "sha256:baseline", Values: []AggregateValue{{PolicyID: "p", Milestone: "m", Statistic: "p50", ValueMS: 100}}}
+	current := AggregateReport{ScenarioID: "scenario", ScenarioHash: "sha256:scenario", ConstantsHash: "sha256:candidate", RunCount: 1,
+		Values:   []AggregateValue{{PolicyID: "p", Milestone: "m", Statistic: "p50", ValueMS: 130}},
+		Failures: []string{"envelope p/m/p50=130 outside bounds", "schema=1/policy=p:resource_bounds"}}
+	report := BuildCandidatePacingReport(CandidateIdentity{ManifestPath: "manifest.json", ArtifactNames: []string{"economy"}, ConstantsHash: current.ConstantsHash}, current, baseline)
+	if len(report.PacingFindings) != 2 || len(report.InvariantFailures) != 1 || len(report.Values) != 1 || report.Values[0].DeltaMS != 30 ||
+		report.Values[0].RelativeDeltaPPM == nil || *report.Values[0].RelativeDeltaPPM != 300_000 {
+		t.Fatalf("report=%+v", report)
+	}
+	if report.PacingWarnings == nil || report.PacingFindings == nil || report.InvariantFailures == nil {
+		t.Fatalf("candidate report lists must use closed empty arrays: %+v", report)
+	}
+}
+
 func TestT0ProgressObservationParticipatesInBaselineDrift(t *testing.T) {
 	baseline := AggregateReport{Values: []AggregateValue{{PolicyID: "casual.phase0", Milestone: "milestone.t0_progress_1", Statistic: "p50", ValueMS: 337_000}}}
 	warning := AggregateReport{Values: []AggregateValue{{PolicyID: "casual.phase0", Milestone: "milestone.t0_progress_1", Statistic: "p50", ValueMS: 371_000}}}
