@@ -19,6 +19,8 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/replaycatalog"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/transport"
 
@@ -655,15 +657,11 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `UPDATE save_streams SET archived_at=$2 WHERE owner_kind='founder' AND owner_id=$1 AND archived_at IS NULL`, initialFounder.ID, now); err != nil {
 		t.Fatal(err)
 	}
-	catalog, ok := composition.Catalogs.Resolve(composition.CurrentHash)
-	if !ok {
-		t.Fatal("current economy catalog unavailable")
-	}
 	store, err := save.NewStore(db, composition.Catalogs, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	founderState, companyState := progressedCompositionStates(t, catalog, now)
+	founderState, companyState, frozen := progressedCompositionStates(t, composition.Catalogs, composition.CurrentHash, now)
 	founderRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeFounder},
 		composition.CurrentHash, founderState, save.WriteContext{Cause: "gameserver.composition.integration"})
 	if err != nil {
@@ -677,7 +675,24 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id,created_at) VALUES($1,$2,$3)`, created.AccountID, founderID, now); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := store.PinRunToCurrentEpoch(ctx, companyRevision.StreamID, founderID, 1, companyRevision.ConstantsHash); err != nil {
+	pinTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var genesis []byte
+	if err := pinTx.QueryRowContext(ctx, `SELECT state::text FROM save_revisions WHERE stream_id=$1 AND revision=$2`, companyRevision.StreamID, companyRevision.Number).Scan(&genesis); err != nil {
+		_ = pinTx.Rollback()
+		t.Fatal(err)
+	}
+	if _, err := save.PinRunWithGenesisTx(ctx, pinTx, companyRevision.StreamID, founderID, 1, companyRevision.ConstantsHash, companyRevision.Version, genesis); err != nil {
+		_ = pinTx.Rollback()
+		t.Fatal(err)
+	}
+	if err := save.InsertRunFrozenContributionsTx(ctx, pinTx, companyRevision.StreamID, 1, frozen); err != nil {
+		_ = pinTx.Rollback()
+		t.Fatal(err)
+	}
+	if err := pinTx.Commit(); err != nil {
 		t.Fatal(err)
 	}
 
@@ -687,12 +702,52 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 		t.Fatalf("manual status=%d body=%s", manualResponse.StatusCode, responseBody(manualResponse))
 	}
 	_ = responseBody(manualResponse)
+	loadedCompany, err := store.LoadLatest(ctx, companyRevision.StreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	loadedFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if companyVersion, founderVersion := save.VersionForState(loadedCompany.State), save.VersionForState(loadedFounder.State); companyVersion != 17 || founderVersion != 21 {
+		t.Fatalf("pre-Exit activation versions company=%d founder=%d", companyVersion, founderVersion)
+	}
 	exit := `{"intent_id":"01985555-5002-7000-8000-000000000502","kind":"wind_down","expected_revision":2,"expected_founder_revision":1}`
 	exitResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/intents", tokens.AccessToken, exit)
 	if exitResponse.StatusCode != http.StatusOK {
 		t.Fatalf("exit status=%d body=%s", exitResponse.StatusCode, responseBody(exitResponse))
 	}
 	_ = responseBody(exitResponse)
+	var pinnedGenesis []byte
+	var pinnedVersion int
+	if err := db.QueryRowContext(ctx, `SELECT state,version FROM run_genesis WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&pinnedGenesis, &pinnedVersion); err != nil {
+		t.Fatal(err)
+	}
+	pinnedCatalog, ok := composition.Catalogs.Resolve(composition.CurrentHash)
+	if !ok {
+		t.Fatal("current replay economy catalog unavailable")
+	}
+	if _, err := save.RestoreState(pinnedGenesis, pinnedVersion, pinnedCatalog, economy.ScopeCompany, time.Time{}); err != nil {
+		t.Fatalf("pinned genesis version=%d does not restore: %v", pinnedVersion, err)
+	}
+	var pinnedArtifactCount int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM catalog_artifacts WHERE constants_hash=$1`, composition.CurrentHash).Scan(&pinnedArtifactCount); err != nil || pinnedArtifactCount != 16 {
+		t.Fatalf("pinned artifact count=%d err=%v", pinnedArtifactCount, err)
+	}
+	var pinnedReplayBundle production.CatalogBundle
+	if replaySet, err := replaycatalog.LoadDatabase(ctx, db); err != nil {
+		t.Fatalf("pinned replay catalog load: %v", err)
+	} else if pinnedReplayBundle, ok = replaySet.ResolveReplayCatalogs(composition.CurrentHash); !ok {
+		t.Fatal("pinned replay catalog missing current hash")
+	}
+	if verdict := production.VerifyReplayRun(pinnedGenesis, pinnedVersion, pinnedReplayBundle, nil, composition.CurrentHash, false); verdict != production.ReplayLogGap {
+		t.Fatalf("pinned replay preflight verdict=%s version=%d", verdict, pinnedVersion)
+	}
+	var runHash string
+	if err := db.QueryRowContext(ctx, `SELECT constants_hash FROM run_epochs WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&runHash); err != nil || runHash != composition.CurrentHash {
+		t.Fatalf("run pin hash=%s want=%s err=%v", runHash, composition.CurrentHash, err)
+	}
 
 	deadline := time.Now().Add(3 * time.Second)
 	for time.Now().Before(deadline) {
@@ -731,13 +786,17 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	t.Fatalf("terminal run did not reach board: status=%s verdict=%s rows=%d", status, verdict, boardRows)
 }
 
-func progressedCompositionStates(t *testing.T, catalog *economy.Catalog, now time.Time) (*save.State, *save.State) {
+func progressedCompositionStates(t *testing.T, catalogs *runtimeCatalogs, constantsHash string, now time.Time) (*save.State, *save.State, []save.FrozenContribution) {
 	t.Helper()
+	catalog, ok := catalogs.Resolve(constantsHash)
+	if !ok {
+		t.Fatal("progressed-state economy catalog unavailable")
+	}
 	founderLedger, err := economy.NewLedger(catalog, economy.ScopeFounder)
 	if err != nil {
 		t.Fatal(err)
 	}
-	companyLedger, err := economy.RestoreLedger(catalog, economy.ScopeCompany, map[string]string{"company.cash": "0"})
+	companyLedger, err := economy.NewLedger(catalog, economy.ScopeCompany)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -749,13 +808,20 @@ func progressedCompositionStates(t *testing.T, catalog *economy.Catalog, now tim
 	}
 	founder := base(founderLedger)
 	company := base(companyLedger)
-	company.GeneratorCounts = map[string]int64{"generator.beige_tower": 0}
+	company.GeneratorCounts = map[string]int64{}
+	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
+		company.GeneratorCounts[generator.ID] = 0
+	}
 	company.ManualTokenMilli = catalog.ManualPolicy().BucketCapMilli
 	company.RunSeq = 1
+	company.RunStartedAt = now.Add(-10 * time.Minute)
+	frozen, err := (production.FounderInitializer{Catalogs: catalogs}).InitializeNewFounder(constantsHash, now, founder, company)
+	if err != nil {
+		t.Fatal(err)
+	}
 	company.Tier = 2
 	company.LifetimeValue = decimal.New(8, 12)
-	company.RunStartedAt = now.Add(-10 * time.Minute)
-	return founder, company
+	return founder, company, frozen
 }
 
 func filepathRoot(t *testing.T) string {

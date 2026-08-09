@@ -175,7 +175,12 @@ are frozen rather than re-read from mutable projections. Replay-inputs v3 extend
 with the sorted lifetime-achievement IDs and derived score required by active v16 runs; v4 carries
 that immutable Founder view on every active-run command so career predicates are deterministic.
 Historical v2 inputs remain replayable only for pre-foundation runs and v3 remains readable for
-its pinned active semantics. Non-empty settlement batches already have
+its pinned active semantics. Replay-inputs v5 remains readable for its pinned pre-content
+semantics. V6 adds the closed `founder_extensions` view required by Founder v17-v21 catalogs:
+minigame rating/quality, pet care, Fiscal, Soul, and minigame-session sequence state. The extension
+is required exactly when the pinned current bundle's Founder floor is at least 17, is validated
+against those pinned artifact bytes in both runtimes, and is carried through Exit so same-epoch
+Founder state cannot disappear; the session sequence still resets at every v21 Exit. Non-empty settlement batches already have
 closed UUID/safe-integer/order validation, so composition does not require a replay schema change.
 
 Rows written before replay-input migration deliberately retain SQL NULL and will become `log_gap`

@@ -40,8 +40,8 @@ func TestEpochMintHotfixAndRunPinningIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `TRUNCATE verification_projection_events,epochs,catalog_sets,accounts,save_streams RESTART IDENTITY CASCADE`); err != nil {
 		t.Fatal(err)
 	}
-	economyBytes, _ := os.ReadFile("../../balance/catalogs/phase0.json")
-	routeBytes, _ := os.ReadFile("../../balance/routes/phase0.json")
+	economyBytes, _ := os.ReadFile("../../balance/testdata/epoch5/economy.json")
+	routeBytes, _ := os.ReadFile("../../balance/testdata/epoch5/routes.json")
 	artifacts := []Artifact{{Name: "economy", Bytes: economyBytes}, {Name: "routes", Bytes: routeBytes}}
 	root := t.TempDir()
 	if err := os.MkdirAll(filepath.Join(root, "changelog"), 0o755); err != nil {

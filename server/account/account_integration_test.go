@@ -16,7 +16,6 @@ import (
 	"time"
 
 	"cloud-clicker/server/economy"
-	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/internal/testhttp"
 	"cloud-clicker/server/production"
@@ -95,10 +94,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 	}
 	truncateAccountIntegration(t, db)
 
-	repositoryBundle, err := epochseed.Load(filepath.Join("..", ".."))
-	if err != nil {
-		t.Fatal(err)
-	}
+	repositoryBundle := epoch5AccountIntegrationBundle(t)
 	catalogBytes := repositoryBundle.Artifacts["economy"]
 	catalog, err := economy.LoadCatalog(catalogBytes)
 	if err != nil {
@@ -492,10 +488,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	truncateAccountIntegration(t, db)
-	bundle, err := epochseed.Load(filepath.Join("..", ".."))
-	if err != nil {
-		t.Fatal(err)
-	}
+	bundle := epoch5AccountIntegrationBundle(t)
 	catalog, err := economy.LoadCatalog(bundle.Artifacts["economy"])
 	if err != nil {
 		t.Fatal(err)
@@ -551,6 +544,30 @@ func seedAccountEpoch(t *testing.T, db *sql.DB, hash string, artifacts map[strin
 	if _, err := db.Exec(`INSERT INTO epoch_hashes(epoch_id,constants_hash) VALUES($1,$2)`, epochID, hash); err != nil {
 		t.Fatal(err)
 	}
+}
+
+type accountIntegrationBundle struct {
+	Hash      string
+	Artifacts map[string][]byte
+}
+
+func epoch5AccountIntegrationBundle(t *testing.T) accountIntegrationBundle {
+	t.Helper()
+	files := map[string]string{"categories": "categories.json", "commons": "commons.json", "economy": "economy.json",
+		"factions": "factions.json", "guilds": "guilds.json", "prestige": "prestige.json", "routes": "routes.json"}
+	artifacts := make(map[string][]byte, len(files))
+	for name, filename := range files {
+		data, err := os.ReadFile(filepath.Join("..", "..", "balance", "testdata", "epoch5", filename))
+		if err != nil {
+			t.Fatalf("read epoch-5 %s: %v", name, err)
+		}
+		artifacts[name] = data
+	}
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil || hash != "sha256:63ab30c96b5d76b941b053131fcee63c94b6b3ad91322f9160d94973ce8c58fa" {
+		t.Fatalf("epoch-5 account fixture hash=%s err=%v", hash, err)
+	}
+	return accountIntegrationBundle{Hash: hash, Artifacts: artifacts}
 }
 
 func truncateAccountIntegration(t *testing.T, db *sql.DB) {

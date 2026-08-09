@@ -115,12 +115,21 @@ interface ReplayAccrual { contributions: ReplayContribution[]; commons_weight_pp
 interface ActiveSpawnEvidence { sequence:number; sampled_interval_ms:number; effect_draw:string; generator_draw:string|null; effect_row_id:string; selected_generator_id:string|null; opportunity_id:string; spawned_attended_ms:number; expires_attended_ms:number }
 interface ActiveClaimEvidence { opportunity_id:string; effect_row_id:string; selected_target:string|null; buff_instance_id:string|null; requested_delta:string|null; actual_credited_delta:string|null; saturated:boolean|null; cap_reason_key:string|null; next_sampled_interval_ms:number; next_opportunity_attended_ms:number }
 interface ActiveScheduleEvidence { attended_now_ms:number; before_sequence:number; before_next_opportunity_attended_ms:number; after_sequence:number; after_next_opportunity_attended_ms:number; expired_buffs:{buff_instance_id:string}[]; missed_opportunity_id:string|null; spawned:ActiveSpawnEvidence|null; claim:ActiveClaimEvidence|null }
-interface ReplayWire { v: 2 | 3 | 4 | 5; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; resolved: Record<string, unknown> }
+interface ReplayWire { v: 2 | 3 | 4 | 5 | 6; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; resolved: Record<string, unknown> }
 interface NetworkSlot { readonly slot: string; readonly carried_ref: string }
+interface FounderExtensions {
+  minigame_ratings: Record<string, { elo: number; season_member: string; games_counted: number }>;
+  minigame_offline_quality: Record<string, { grade_ppm: number; last_founder_attended_ms: number; decay_remainder_ppm: number }>;
+  pets: Record<string, PetCareState>;
+  fiscal_credit: number; fiscal_period_opened_wall_ms: number; fiscal_period_seq: number;
+  fiscal_generator_levels: Record<string, number>; fiscal_unlocks: string[];
+  soul: number; soul_exhausted_source_ids: string[]; minigame_session_seq: number;
+}
 interface FounderCarry {
   founder_revision: number; founder_constants_hash: string; reputation_level: number; route_knowledge_balance: number;
   age_ms: number; notoriety: number; advisor_mode: boolean; network_slots: NetworkSlot[]; ledger_fact_kinds: string[]; exit_history_count: number;
   achievements_earned_lifetime: string[]; achievement_score_lifetime: number;
+  founder_extensions?: FounderExtensions;
 }
 interface ExitTerms { reputation_delta: number; network_slot_unlocks: NetworkSlot[]; route_knowledge: number; clout_reach_note: string }
 
@@ -210,6 +219,16 @@ function foundationAchievementRegistry(catalog: EconomyCatalog): AchievementRegi
 
 function foundationsActive(bundle: ReplayCatalogBundle): bundle is ReplayCatalogBundle & { readonly meters: MeterCatalog; readonly achievements: AchievementCatalog } {
   return bundle.meters !== undefined && bundle.achievements !== undefined;
+}
+
+function founderVersionFloor(bundle: ReplayCatalogBundle): 14 | 16 | 17 | 18 | 19 | 20 | 21 {
+  if (!foundationsActive(bundle)) return 14;
+  if (bundle.minigameAPI) return 21;
+  if (bundle.soul) return 20;
+  if (bundle.fiscal) return 19;
+  if (bundle.pets) return 18;
+  if (bundle.minigames) return 17;
+  return 16;
 }
 
 function validateCategoryCatalog(source: unknown, routeGateIds: readonly string[]): void {
@@ -1106,7 +1125,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   }
   if (resolved.selected_exit_type !== exitType) throw new RangeError("selected exit type mismatch");
   if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, companyBefore, company, founder, wire.command, request, wire.evaluated_at_ms, contributions, actionDebits, true, prefix);
-  return await finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, next,nextActive);
+  return await finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, catalogs, next,nextActive);
   } catch (error) { restoreReplaySnapshot(company, companyBefore); throw error; }
 }
 
@@ -1482,7 +1501,41 @@ function promiseTerms(preview: ExitTerms, current: ExitTerms): ExitTerms {
   return { ...current, reputation_delta: Math.max(preview.reputation_delta, current.reputation_delta), route_knowledge: Math.max(preview.route_knowledge, current.route_knowledge), network_slot_unlocks: [...slots.values()].sort((left, right) => byteCompare(left.slot, right.slot)) };
 }
 
-async function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId: string, command: ReplayCommand, nowMs: number, exitType: string, inputTerms: ExitTerms, prefix: ReplayEvent[], executedRoutes: string[], next: ReplayCatalogBundle,nextActive:ActiveSpawnEvidence|null): Promise<LoggedExitTransition> {
+function advanceFounderExtensions(founder: FounderCarry, current: ReplayCatalogBundle, next: ReplayCatalogBundle, nowMs: number): void {
+  const currentFloor = founderVersionFloor(current), nextFloor = founderVersionFloor(next);
+  if (nextFloor < currentFloor) throw new RangeError("Founder mechanics cannot disappear between epochs");
+  let extensions = founder.founder_extensions;
+  if (currentFloor >= 17 && extensions === undefined || currentFloor < 17 && extensions !== undefined) throw new RangeError("Founder extension/current-catalog mismatch");
+  if (nextFloor < 17) return;
+  if (extensions === undefined) {
+    extensions = { minigame_ratings: {}, minigame_offline_quality: {}, pets: {}, fiscal_credit: 0, fiscal_period_opened_wall_ms: 0,
+      fiscal_period_seq: 0, fiscal_generator_levels: {}, fiscal_unlocks: [], soul: 0, soul_exhausted_source_ids: [], minigame_session_seq: 0 };
+    founder.founder_extensions = extensions;
+  }
+  if (currentFloor < 17) {
+    if (!next.minigames) throw new RangeError("missing minigame activation artifact");
+    extensions.minigame_ratings = Object.fromEntries(next.minigames.minigames.map((definition) => [definition.minigame_id, {
+      elo: definition.rating_policy.starting_elo, season_member: definition.rating_policy.season_member, games_counted: 0,
+    }]));
+    extensions.minigame_offline_quality = Object.fromEntries(next.minigames.minigames.map((definition) => [definition.minigame_id, {
+      grade_ppm: definition.offline_quality.neutral_floor_ppm, last_founder_attended_ms: founder.age_ms, decay_remainder_ppm: 0,
+    }]));
+  }
+  if (nextFloor >= 18 && currentFloor < 18) extensions.pets = {};
+  if (nextFloor >= 19 && currentFloor < 19) {
+    if (!next.fiscal) throw new RangeError("missing fiscal activation artifact");
+    extensions.fiscal_credit = 0; extensions.fiscal_period_opened_wall_ms = safeInteger(nowMs, 1, MAX_EXACT_INTEGER); extensions.fiscal_period_seq = 0;
+    extensions.fiscal_generator_levels = Object.fromEntries(next.fiscal.generatorLevelRows.map((row) => [row.generatorId, 0])); extensions.fiscal_unlocks = [];
+  }
+  if (nextFloor >= 20 && currentFloor < 20) {
+    if (!next.soul) throw new RangeError("missing Soul activation artifact");
+    extensions.soul = next.soul.policy.soul_initial; extensions.soul_exhausted_source_ids = [];
+  }
+  if (nextFloor >= 21) extensions.minigame_session_seq = 0;
+  founder.founder_extensions = parseFounderExtensions(extensions, next);
+}
+
+async function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId: string, command: ReplayCommand, nowMs: number, exitType: string, inputTerms: ExitTerms, prefix: ReplayEvent[], executedRoutes: string[], current: ReplayCatalogBundle, next: ReplayCatalogBundle,nextActive:ActiveSpawnEvidence|null): Promise<LoggedExitTransition> {
   const attended = attendedMS(company, nowMs);
   const terms = { ...inputTerms, reputation_delta: Math.min(inputTerms.reputation_delta, MAX_EXACT_INTEGER - founder.reputation_level) };
   if (terms.route_knowledge > MAX_EXACT_INTEGER - founder.route_knowledge_balance || attended > MAX_EXACT_INTEGER - founder.age_ms) throw new RangeError("founder carry overflow");
@@ -1508,6 +1561,7 @@ async function finishLoggedExit(company: ReplayState, founder: FounderCarry, int
     founder.achievements_earned_lifetime = [];
     founder.achievement_score_lifetime = 0;
   }
+  advanceFounderExtensions(founder, current, next, nowMs);
   const newCompany = newRunState(next, company, founder, nowMs);
   if(next.opportunities){if(nextActive===null||nextActive.sequence!==0||nextActive.spawned_attended_ms!==nextActive.sampled_interval_ms||nextActive.expires_attended_ms-nextActive.spawned_attended_ms!==next.opportunities.schedule.lifetimeMs)throw new RangeError("missing next active schedule");const seed=await founderSeed(command.founder_id,newCompany.runSeq),selection=selectActivePlayEffect(next.opportunities,seed,0);if(selection.effectRowId!==nextActive.effect_row_id||selection.effectDraw.toString()!==nextActive.effect_draw||(selection.generatorDraw?.toString()??null)!==nextActive.generator_draw||selection.selectedGenerator!==nextActive.selected_generator_id||activePlayOpportunityId(seed,0,nextActive.spawned_attended_ms)!==nextActive.opportunity_id)throw new RangeError("next active selection mismatch");newCompany.nextOpportunityAttendedMs=nextActive.spawned_attended_ms;}else if(nextActive!==null)throw new RangeError("unexpected next active schedule");
   const runID = { company_stream_id: command.company_stream_id, run_seq: company.runSeq };
@@ -1538,7 +1592,7 @@ function sortedUniqueMechanical(source: unknown[]): string[] {
   return source.map((item) => { const value = mechanicalString(item); if (byteCompare(value, last) <= 0) throw new SyntaxError("values must be sorted and unique"); last = value; return value; });
 }
 
-function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 2 && root.v !== 3 && root.v !== 4 && root.v !== 5 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: root.v as 2|3|4|5, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
+function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 2 && root.v !== 3 && root.v !== 4 && root.v !== 5 && root.v !== 6 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: root.v as 2|3|4|5|6, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
 function parseFounderReplayWire(source: unknown): FounderReplayWire {
   const root = exactObject(source, ["v", "command", "evaluated_at_ms", "resolved"], "Founder replay inputs");
   if (root.v !== 1) throw new SyntaxError("invalid Founder replay version");
@@ -1692,9 +1746,53 @@ function applyGuildSettlements(state: ReplayState, batch: ReplayGuildSettlementB
   }
 }
 
-function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4 | 5): FounderCarry {
+function parseFounderExtensions(source: unknown, catalogs: ReplayCatalogBundle): FounderExtensions {
+  if (!catalogs.minigames) throw new SyntaxError("Founder extensions require minigames");
+  const raw = exactObject(source, ["minigame_ratings", "minigame_offline_quality", "pets", "fiscal_credit", "fiscal_period_opened_wall_ms", "fiscal_period_seq", "fiscal_generator_levels", "fiscal_unlocks", "soul", "soul_exhausted_source_ids", "minigame_session_seq"], "Founder extensions");
+  const ratingRows = exactRecord(raw.minigame_ratings, catalogs.minigames.minigameIds, "Founder carry ratings");
+  const qualityRows = exactRecord(raw.minigame_offline_quality, catalogs.minigames.minigameIds, "Founder carry quality");
+  const minigame_ratings = Object.fromEntries(catalogs.minigames.minigameIds.map((id) => {
+    const row = exactObject(ratingRows[id], ["elo", "season_member", "games_counted"], "Founder carry rating");
+    const season = mechanicalString(row.season_member);
+    if (!catalogs.minigames!.ratingSeasons.includes(season)) throw new SyntaxError("unknown Founder carry rating season");
+    return [id, { elo: safeInteger(row.elo, -MAX_EXACT_INTEGER, MAX_EXACT_INTEGER), season_member: season, games_counted: safeInteger(row.games_counted, 0, MAX_EXACT_INTEGER) }];
+  }));
+  const minigame_offline_quality = Object.fromEntries(catalogs.minigames.minigameIds.map((id) => {
+    const row = exactObject(qualityRows[id], ["grade_ppm", "last_founder_attended_ms", "decay_remainder_ppm"], "Founder carry quality");
+    return [id, { grade_ppm: safeInteger(row.grade_ppm, 0, 1_000_000), last_founder_attended_ms: safeInteger(row.last_founder_attended_ms, 0, MAX_EXACT_INTEGER), decay_remainder_ppm: safeInteger(row.decay_remainder_ppm, 0, 999_999) }];
+  }));
+  let pets: Record<string, PetCareState> = {};
+  if (catalogs.pets) {
+    pets = parsePetCareStates(raw.pets, { action_ids: catalogs.pets.actions.map((row) => row.action_id), behavior_ids: ["active", "care_response", "idle", "resting"] });
+    validatePetCareStatesForCatalog(pets, catalogs.pets);
+  } else if (Object.keys(exactObject(raw.pets, [], "inactive Founder pets")).length !== 0) throw new SyntaxError("pet state without artifact");
+  let fiscal_credit = 0, fiscal_period_opened_wall_ms = 0, fiscal_period_seq = 0, fiscal_generator_levels: Record<string, number> = {}, fiscal_unlocks: string[] = [];
+  if (catalogs.fiscal) {
+    fiscal_credit = safeInteger(raw.fiscal_credit, 0, catalogs.fiscal.credit.hardcap);
+    fiscal_period_opened_wall_ms = safeInteger(raw.fiscal_period_opened_wall_ms, 1, MAX_EXACT_INTEGER);
+    fiscal_period_seq = safeInteger(raw.fiscal_period_seq, 0, MAX_EXACT_INTEGER);
+    const ids = catalogs.fiscal.generatorLevelRows.map((row) => row.generatorId);
+    const levels = exactRecord(raw.fiscal_generator_levels, ids, "Founder carry fiscal levels");
+    fiscal_generator_levels = Object.fromEntries(catalogs.fiscal.generatorLevelRows.map((row) => [row.generatorId, safeInteger(levels[row.generatorId], 0, row.levelHardcap)]));
+    fiscal_unlocks = sortedUniqueMechanical(array(raw.fiscal_unlocks, "Founder carry fiscal unlocks"));
+    for (const id of fiscal_unlocks) if (!catalogs.fiscal.unlockRows.some((row) => row.unlockId === id)) throw new SyntaxError("unknown Founder carry fiscal unlock");
+  } else if (safeInteger(raw.fiscal_credit, 0, 0) !== 0 || safeInteger(raw.fiscal_period_opened_wall_ms, 0, 0) !== 0 || safeInteger(raw.fiscal_period_seq, 0, 0) !== 0 || Object.keys(exactObject(raw.fiscal_generator_levels, [], "inactive fiscal levels")).length !== 0 || array(raw.fiscal_unlocks, "inactive fiscal unlocks").length !== 0) throw new SyntaxError("fiscal state without artifact");
+  let soul = 0, soul_exhausted_source_ids: string[] = [];
+  if (catalogs.soul) {
+    soul = safeInteger(raw.soul, catalogs.soul.policy.soul_floor, catalogs.soul.policy.soul_max);
+    soul_exhausted_source_ids = sortedUniqueMechanical(array(raw.soul_exhausted_source_ids, "Founder carry exhausted Soul sources"));
+    for (const id of soul_exhausted_source_ids) if (!catalogs.soul.debit_sources.find((row) => row.source_id === id)?.may_exhaust) throw new SyntaxError("unknown Founder carry exhausted Soul source");
+  } else if (safeInteger(raw.soul, 0, 0) !== 0 || array(raw.soul_exhausted_source_ids, "inactive Soul sources").length !== 0) throw new SyntaxError("Soul state without artifact");
+  const minigame_session_seq = catalogs.minigameAPI ? safeInteger(raw.minigame_session_seq, 0, MAX_EXACT_INTEGER) : safeInteger(raw.minigame_session_seq, 0, 0);
+  return { minigame_ratings, minigame_offline_quality, pets, fiscal_credit, fiscal_period_opened_wall_ms, fiscal_period_seq, fiscal_generator_levels, fiscal_unlocks, soul, soul_exhausted_source_ids, minigame_session_seq };
+}
+
+function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4 | 5 | 6): FounderCarry {
   const legacyKeys = ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"];
-  const carry = { ...objectWithOnlyKeys(source, wireVersion >= 3 ? [...legacyKeys, "achievements_earned_lifetime", "achievement_score_lifetime"] : legacyKeys, "founder carry") };
+  const floor = founderVersionFloor(catalogs);
+  const keys = wireVersion >= 3 ? [...legacyKeys, "achievements_earned_lifetime", "achievement_score_lifetime"] : legacyKeys;
+  if (wireVersion >= 6 && floor >= 17) keys.push("founder_extensions");
+  const carry = { ...objectWithOnlyKeys(source, keys, "founder carry") };
   safeInteger(carry.founder_revision, 1, MAX_EXACT_INTEGER);
   if (carry.founder_constants_hash !== catalogs.constantsHash) throw new RangeError("founder catalog mismatch");
   carry.reputation_level = safeInteger(carry.reputation_level ?? 0, 0, MAX_EXACT_INTEGER);
@@ -1710,6 +1808,8 @@ function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireV
   if (foundationsActive(catalogs)) {
     if (wireVersion < 3 || achievementScore(catalogs.achievements, new Set(earnedLifetime)) !== lifetimeScore) throw new RangeError("invalid active Founder achievement carry");
   } else if (earnedLifetime.length !== 0 || lifetimeScore !== 0) throw new RangeError("legacy Founder carry contains active foundation state");
+  if (wireVersion < 6 && floor > 16) throw new SyntaxError("legacy replay inputs cannot carry Founder feature state");
+  if (wireVersion >= 6 && floor >= 17) carry.founder_extensions = parseFounderExtensions(carry.founder_extensions, catalogs);
   let lastFact = "";
   for (const item of array(carry.ledger_fact_kinds, "founder facts")) {
     const fact = string(item);

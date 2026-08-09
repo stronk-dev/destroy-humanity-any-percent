@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"testing"
 	"time"
@@ -39,6 +38,7 @@ type crossRuntimeFixture struct {
 	Additional         []crossRuntimeBundleCase      `json:"additional_bundles"`
 	ActiveExit         crossRuntimeActiveExit        `json:"active_foundation_exit"`
 	ActivePlayExit     crossRuntimeActiveExit        `json:"active_play_exit"`
+	FirstContentExit   crossRuntimeActiveExit        `json:"first_content_exit"`
 	FullRun            crossRuntimeFullRun           `json:"full_run"`
 	DoctrineRun        crossRuntimeFullRun           `json:"doctrine_run"`
 	ActivePlayRun      crossRuntimeFullRun           `json:"active_play_run"`
@@ -319,6 +319,17 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		if err != nil {
 			t.Fatalf("%s inputs: %v", definition.name, err)
 		}
+		if definition.name == "manual-online" {
+			var historical replayInputsWire
+			if err := decodeReplayStrict(inputs, &historical); err != nil {
+				t.Fatal(err)
+			}
+			historical.Version = 5
+			inputs, err = json.Marshal(historical)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
 		transition, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
 		if err != nil {
 			t.Fatalf("%s transition: %v", definition.name, err)
@@ -349,6 +360,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	)
 	result.ActiveExit = makeActiveFoundationExitFixture(t, baseNow)
 	result.ActivePlayExit = makeActivePlayExitFixture(t, baseNow)
+	result.FirstContentExit = makeFirstContentExitFixture(t, baseNow)
 	result.FullRun = makeFullRunFixture(t, catalogs, catalogs.ConstantsHash, baseNow)
 	result.DoctrineRun = makeDoctrineReplayRunFixture(t, baseNow)
 	result.ActivePlayRun = makeActivePlayReplayRunFixture(t, baseNow)
@@ -1364,6 +1376,63 @@ func makeActiveFoundationExitFixture(t *testing.T, now time.Time) crossRuntimeAc
 	return crossRuntimeActiveExit{ConstantsHash: current.ConstantsHash, Artifacts: stringArtifacts(current.Artifacts), NextConstantsHash: next.ConstantsHash, NextArtifacts: stringArtifacts(next.Artifacts), Case: result}
 }
 
+func makeFirstContentExitFixture(t *testing.T, now time.Time) crossRuntimeActiveExit {
+	t.Helper()
+	catalogs := activeFirstContentBundle(t)
+	company := replayFixtureState(t, catalogs.Economy, now.Add(-20*time.Minute))
+	company.WireVersion = 17
+	company.MeterBands = nil
+	meterState, err := meters.NewRunState(catalogs.Meters, 9)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	company.AchievementsEarnedRun = map[string]bool{}
+	company.Tier = 1
+	if err := catalogs.ValidateFoundationState(company); err != nil {
+		t.Fatalf("first-content company: %v", err)
+	}
+	founder := replayFounderFixtureState(t, catalogs, now)
+	founder.WireVersion = 21
+	if err := activateMinigameState(founder, catalogs.Minigames); err != nil {
+		t.Fatal(err)
+	}
+	founder.MinigameRatings["pitch"] = save.MinigameRatingState{Elo: 1017, SeasonMember: "s1", GamesCounted: 2}
+	founder.MinigameOfflineQuality["pitch"] = save.MinigameOfflineQualityState{GradePPM: 700_000, LastFounderAttendedMS: 12_000, DecayRemainderPPM: 3}
+	founder.Pets = map[string]pet.CareState{}
+	founder.FiscalCredit, founder.FiscalPeriodOpenedWallMS, founder.FiscalPeriodSequence = 2, now.UnixMilli(), 1
+	founder.FiscalGeneratorLevels = make(map[string]int64, len(catalogs.Fiscal.GeneratorLevelRows()))
+	for _, row := range catalogs.Fiscal.GeneratorLevelRows() {
+		founder.FiscalGeneratorLevels[row.GeneratorID] = 0
+	}
+	founder.FiscalUnlocks = map[string]bool{"minigame.pitch": true}
+	founder.Soul, founder.SoulExhaustedSourceIDs, founder.MinigameSessionSeq = 80, []string{}, 9
+	founder.ExitHistory = []save.ExitRecord{{RunID: 0, ExitType: "collapse", OccurredAt: now.Add(-time.Hour)}}
+	if err := catalogs.ValidateFoundationState(founder); err != nil {
+		t.Fatalf("first-content Founder: %v", err)
+	}
+	preState := mustEncodeState(t, company)
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0c00-7000-8000-000000000001","kind":"wind_down","expected_revision":1,"expected_founder_revision":2}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	carry := founderCarry(founder)
+	carry.FounderRevision, carry.FounderConstantsHash = 2, catalogs.ConstantsHash
+	minigameActive := false
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1c00-7000-8000-000000000001",
+		FounderID: "01986666-2c00-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+		RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
+		SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: catalogs.ConstantsHash,
+		MinigameSessionActive: &minigameActive})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result := executeTerminalFixture(t, "first-content-same-epoch-exit", catalogs, company, preState, request, inputs, carry)
+	return crossRuntimeActiveExit{ConstantsHash: catalogs.ConstantsHash, Artifacts: stringArtifacts(catalogs.Artifacts),
+		NextConstantsHash: catalogs.ConstantsHash, NextArtifacts: stringArtifacts(catalogs.Artifacts), Case: result}
+}
+
 func stringArtifacts(source map[string][]byte) map[string]string {
 	result := make(map[string]string, len(source))
 	for name, data := range source {
@@ -2233,17 +2302,9 @@ func canonicalFixtureValue(t *testing.T, value any) string {
 }
 
 func replayFounderOutput(state *save.State, carry replayFounderCarry) any {
-	facts := make([]string, 0, len(state.LedgerFactKinds))
-	for fact := range state.LedgerFactKinds {
-		facts = append(facts, fact)
-	}
-	sort.Strings(facts)
-	return map[string]any{"founder_revision": carry.FounderRevision, "founder_constants_hash": carry.FounderConstantsHash,
-		"reputation_level": state.ReputationLevel, "route_knowledge_balance": state.RouteKnowledgeBalance, "age_ms": state.AgeMS,
-		"notoriety": state.Notoriety, "advisor_mode": state.AdvisorMode, "network_slots": state.NetworkSlots,
-		"ledger_fact_kinds": facts, "exit_history_count": len(state.ExitHistory),
-		"achievements_earned_lifetime": sortedBoolKeys(state.AchievementsEarnedLifetime),
-		"achievement_score_lifetime":   state.AchievementScoreLifetime}
+	result := founderCarry(state)
+	result.FounderRevision, result.FounderConstantsHash = carry.FounderRevision, carry.FounderConstantsHash
+	return result
 }
 
 func fixtureEvents(events []save.EventWrite) []fixtureEvent {

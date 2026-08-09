@@ -636,9 +636,6 @@ func (repository *Repository) artifacts(ctx context.Context, hash string) (map[s
 	if err := repository.runFault("catalog_rows"); err != nil {
 		return nil, err
 	}
-	if len(result) != 7 {
-		return nil, fmt.Errorf("%w: incomplete artifact bundle", errDeterministicCatalogData)
-	}
 	return result, nil
 }
 

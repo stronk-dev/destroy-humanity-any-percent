@@ -215,7 +215,7 @@ func projectorRunEndedPayload(streamID, founderID string, runSeq int64, preTimer
 		"founder_id": founderID, "run_id": map[string]any{"company_stream_id": streamID, "run_seq": runSeq}, "exit_type": "collapse",
 		"started_at_ms": 100, "ended_at_ms": 200, "rta_ms": 100, "attended_ms": 90, "pre_timer": preTimer, "terminal_seq": 1,
 		"payout": map[string]any{}, "tier": 3, "lifetime_value": "1e3", "ledger_fact_kinds": []string{},
-		"executed_routes": routes, "gates_crossed": []string{"gate.t2_to_t3", "gate.t4_to_t5", "gate.t7_to_t8"},
+		"executed_routes": routes, "gates_crossed": []string{"gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8"},
 		"generators_purchased_total": 10, "assisted": map[string]bool{"commons": true, "advisor": false}, "faction": factionValue,
 	})
 	return payload

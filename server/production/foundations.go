@@ -259,7 +259,7 @@ func settleAndActivateFoundations(current, next CatalogBundle, founder, company,
 		founder.Soul = next.Soul.Policy.Initial
 		founder.SoulExhaustedSourceIDs = []string{}
 	}
-	if next.MinigameAPI != nil && current.MinigameAPI == nil {
+	if next.MinigameAPI != nil {
 		founder.MinigameSessionSeq = 0
 	}
 	founder.WireVersion = nextFounderFloor

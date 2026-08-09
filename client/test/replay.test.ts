@@ -130,6 +130,9 @@ const fixture = fixtureJSON as {
   readonly active_play_exit: {
     readonly constants_hash: string; readonly artifacts: ReplayArtifacts; readonly next_constants_hash: string; readonly next_artifacts: ReplayArtifacts; readonly case: TerminalFixtureCase;
   };
+  readonly first_content_exit: {
+    readonly constants_hash: string; readonly artifacts: ReplayArtifacts; readonly next_constants_hash: string; readonly next_artifacts: ReplayArtifacts; readonly case: TerminalFixtureCase;
+  };
   readonly founder_constants_hash: string;
   readonly founder_artifacts: ReplayArtifacts;
   readonly founder_cases: readonly FounderFixtureCase[];
@@ -590,6 +593,23 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(canonicalJSONString(transition.companyStartedEvents)).toBe(testCase.company_started_events_json);
     expect(transition.founder.achievement_score_lifetime).toBe(11);
     expect(transition.companyEndedEvents.some((value) => value.kind === "achievement_earned.v1")).toBe(true);
+  });
+
+  it("replays a same-epoch First Content Exit with complete Founder v21 carry", async () => {
+    const fixtureExit = fixture.first_content_exit;
+    const bundle = await loadReplayCatalogBundle(fixtureExit.constants_hash, fixtureExit.artifacts);
+    const testCase = fixtureExit.case;
+    const state = restoreReplayState(testCase.pre_state, 17, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines });
+    const transition = await applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+    expect(transition.outcome).toBe("applied");
+    expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+    expect(canonicalJSONString(transition.founder)).toBe(testCase.founder_output_json);
+    expect(canonicalJSONString(encodeReplayState(transition.finalCompany))).toBe(testCase.final_company_json);
+    expect(canonicalJSONString(encodeReplayState(transition.newCompany!))).toBe(testCase.new_company_json);
+    expect(transition.founder.founder_extensions?.minigame_ratings.pitch).toEqual({ elo: 1017, season_member: "s1", games_counted: 2 });
+    expect(transition.founder.founder_extensions?.fiscal_credit).toBe(2);
+    expect(transition.founder.founder_extensions?.soul).toBe(80);
+    expect(transition.founder.founder_extensions?.minigame_session_seq).toBe(0);
   });
 
   it("rejects an active Exit whose run set overlaps Founder lifetime ownership", async () => {

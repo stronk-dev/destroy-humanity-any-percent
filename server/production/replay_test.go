@@ -323,7 +323,7 @@ func TestFoundationReplayCarryAndClonePreserveV16State(t *testing.T) {
 	carry := founderCarry(founder)
 	carry.FounderRevision = 1
 	carry.FounderConstantsHash = active.ConstantsHash
-	if !validFounderCarry(carry, save.ReplayInputsVersion, true) {
+	if !validFounderCarry(carry, save.ReplayInputsVersion, active) {
 		t.Fatal("valid v16 Founder carry rejected")
 	}
 	restored, err := stateFromFounderCarry(carry, active)
@@ -459,13 +459,14 @@ func TestReplayEnvelopeVersionFollowsPinnedFoundationActivation(t *testing.T) {
 func TestFounderCarryVersionBoundaryKeepsLegacyV2Replayable(t *testing.T) {
 	legacy := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: "sha256:" + strings.Repeat("a", 64),
 		NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}}
-	if !validFounderCarry(legacy, 2, false) {
+	if !validFounderCarry(legacy, 2, CatalogBundle{}) {
 		t.Fatal("legacy replay-inputs v2 Founder carry rejected")
 	}
-	if validFounderCarry(legacy, 2, true) {
+	_, active := foundationTestBundles(t)
+	if validFounderCarry(legacy, 2, active) {
 		t.Fatal("active foundation run accepted legacy replay-inputs v2 Founder carry")
 	}
-	if validFounderCarry(legacy, save.ReplayInputsVersion, false) {
+	if validFounderCarry(legacy, save.ReplayInputsVersion, CatalogBundle{}) {
 		t.Fatal("replay-inputs v3 accepted missing lifetime achievement fields")
 	}
 }

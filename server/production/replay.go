@@ -253,18 +253,36 @@ type replayAccrual struct {
 }
 
 type replayFounderCarry struct {
-	FounderRevision            int64              `json:"founder_revision"`
-	FounderConstantsHash       string             `json:"founder_constants_hash"`
-	ReputationLevel            int64              `json:"reputation_level"`
-	RouteKnowledgeBalance      int64              `json:"route_knowledge_balance"`
-	AgeMS                      int64              `json:"age_ms"`
-	Notoriety                  int64              `json:"notoriety"`
-	AdvisorMode                bool               `json:"advisor_mode"`
-	NetworkSlots               []save.NetworkSlot `json:"network_slots"`
-	LedgerFactKinds            []string           `json:"ledger_fact_kinds"`
-	ExitHistoryCount           int                `json:"exit_history_count"`
-	AchievementsEarnedLifetime []string           `json:"achievements_earned_lifetime"`
-	AchievementScoreLifetime   int64              `json:"achievement_score_lifetime"`
+	FounderRevision            int64                    `json:"founder_revision"`
+	FounderConstantsHash       string                   `json:"founder_constants_hash"`
+	ReputationLevel            int64                    `json:"reputation_level"`
+	RouteKnowledgeBalance      int64                    `json:"route_knowledge_balance"`
+	AgeMS                      int64                    `json:"age_ms"`
+	Notoriety                  int64                    `json:"notoriety"`
+	AdvisorMode                bool                     `json:"advisor_mode"`
+	NetworkSlots               []save.NetworkSlot       `json:"network_slots"`
+	LedgerFactKinds            []string                 `json:"ledger_fact_kinds"`
+	ExitHistoryCount           int                      `json:"exit_history_count"`
+	AchievementsEarnedLifetime []string                 `json:"achievements_earned_lifetime"`
+	AchievementScoreLifetime   int64                    `json:"achievement_score_lifetime"`
+	FounderExtensions          *replayFounderExtensions `json:"founder_extensions,omitempty"`
+}
+
+// replayFounderExtensions closes the v17-v21 Founder state carried through
+// the Company replay boundary. Earlier replay-input versions intentionally
+// omit it and remain valid only for bundles whose Founder floor is at most 16.
+type replayFounderExtensions struct {
+	MinigameRatings        map[string]save.MinigameRatingState         `json:"minigame_ratings"`
+	MinigameOfflineQuality map[string]save.MinigameOfflineQualityState `json:"minigame_offline_quality"`
+	Pets                   map[string]pet.CareState                    `json:"pets"`
+	FiscalCredit           int64                                       `json:"fiscal_credit"`
+	FiscalPeriodOpenedMS   int64                                       `json:"fiscal_period_opened_wall_ms"`
+	FiscalPeriodSequence   int64                                       `json:"fiscal_period_seq"`
+	FiscalGeneratorLevels  map[string]int64                            `json:"fiscal_generator_levels"`
+	FiscalUnlocks          []string                                    `json:"fiscal_unlocks"`
+	Soul                   int64                                       `json:"soul"`
+	SoulExhaustedSourceIDs []string                                    `json:"soul_exhausted_source_ids"`
+	MinigameSessionSeq     int64                                       `json:"minigame_session_seq"`
 }
 
 type replayInputsWire struct {
@@ -367,7 +385,7 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 		accrual, declined = resolved.Accrual, resolved.DeclinedExitOfferCount
 		activeEvidence = resolved.ActivePlay
 		if resolved.FounderCarry != nil {
-			if !validFounderCarry(*resolved.FounderCarry, wire.Version, catalogs.foundationsActive()) || resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash {
+			if !validFounderCarry(*resolved.FounderCarry, wire.Version, catalogs) || resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash {
 				return LoggedTransition{}, fmt.Errorf("%w: founder carry", ErrInvalidReplayInputs)
 			}
 			founder, err = stateFromFounderCarry(*resolved.FounderCarry, catalogs)
@@ -383,7 +401,7 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 		accrual = resolved.Accrual
 		activeEvidence = resolved.ActivePlay
 		if resolved.FounderCarry != nil {
-			if !validFounderCarry(*resolved.FounderCarry, wire.Version, catalogs.foundationsActive()) || resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash {
+			if !validFounderCarry(*resolved.FounderCarry, wire.Version, catalogs) || resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash {
 				return LoggedTransition{}, fmt.Errorf("%w: founder carry", ErrInvalidReplayInputs)
 			}
 			founder, err = stateFromFounderCarry(*resolved.FounderCarry, catalogs)
@@ -540,7 +558,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	if err != nil || resolved.Accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal accrual inputs", ErrInvalidReplayInputs)
 	}
-	if company.CompactMember != (resolved.Accrual.CommonsWeightPPM != nil) || !validFounderCarry(resolved.FounderCarry, wire.Version, catalogs.foundationsActive()) ||
+	if company.CompactMember != (resolved.Accrual.CommonsWeightPPM != nil) || !validFounderCarry(resolved.FounderCarry, wire.Version, catalogs) ||
 		resolved.FounderCarry.FounderConstantsHash != catalogs.ConstantsHash || !sortedUniqueMechanical(resolved.ExecutedRouteIDs) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal frozen inputs", ErrInvalidReplayInputs)
 	}
@@ -562,7 +580,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		Number: wire.Command.Revision, ConstantsHash: catalogs.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
 	founder, err := stateFromFounderCarry(resolved.FounderCarry, catalogs)
 	if err != nil {
-		return LoggedExitTransition{}, fmt.Errorf("%w: founder carry state", ErrInvalidReplayInputs)
+		return LoggedExitTransition{}, fmt.Errorf("%w: founder carry state: %v", ErrInvalidReplayInputs, err)
 	}
 	if resolved.MinigameSessionActive != nil && *resolved.MinigameSessionActive {
 		decision := rejectedExitDecision(request, wire.Command.Revision, "not_eligible", "minigame_session_active")
@@ -782,7 +800,8 @@ func cloneReplayState(state *save.State, catalog *economy.Catalog) (*save.State,
 	return cloned, nil
 }
 
-func validFounderCarry(carry replayFounderCarry, wireVersion int, foundationsActive bool) bool {
+func validFounderCarry(carry replayFounderCarry, wireVersion int, catalogs CatalogBundle) bool {
+	foundationsActive := catalogs.foundationsActive()
 	if carry.FounderRevision < 1 || carry.FounderRevision > decimal.MaxExactInteger ||
 		len(carry.FounderConstantsHash) != len("sha256:")+64 || !strings.HasPrefix(carry.FounderConstantsHash, "sha256:") ||
 		carry.ReputationLevel < 0 || carry.ReputationLevel > decimal.MaxExactInteger ||
@@ -792,6 +811,14 @@ func validFounderCarry(carry replayFounderCarry, wireVersion int, foundationsAct
 		carry.AchievementScoreLifetime < 0 || carry.AchievementScoreLifetime > decimal.MaxExactInteger || carry.NetworkSlots == nil ||
 		carry.LedgerFactKinds == nil || wireVersion == 2 && (foundationsActive || len(carry.AchievementsEarnedLifetime) != 0 || carry.AchievementScoreLifetime != 0) ||
 		wireVersion >= 3 && carry.AchievementsEarnedLifetime == nil {
+		return false
+	}
+	founderFloor, _ := catalogs.versionFloors()
+	if wireVersion < 6 {
+		if carry.FounderExtensions != nil || founderFloor > 16 {
+			return false
+		}
+	} else if (founderFloor >= 17) != (carry.FounderExtensions != nil) {
 		return false
 	}
 	last := ""
@@ -847,16 +874,55 @@ func stateFromFounderCarry(carry replayFounderCarry, catalogs CatalogBundle) (*s
 		}
 		return state, nil
 	}
-	state.WireVersion = save.LatestSupportedVersion
+	founderFloor, _ := catalogs.versionFloors()
+	state.WireVersion = founderFloor
 	state.AchievementsEarnedLifetime = make(map[string]bool, len(carry.AchievementsEarnedLifetime))
 	for _, id := range carry.AchievementsEarnedLifetime {
 		state.AchievementsEarnedLifetime[id] = true
 	}
 	state.AchievementScoreLifetime = carry.AchievementScoreLifetime
-	// Founder carry is a deliberately partial Company-transition input. Validate
-	// only the foundation fields it carries; Founder-only minigame/pet maps are
-	// owned by ApplyFounderLogged and are not duplicated into Company replay.
-	if err := validateFounderCarryFoundationState(catalogs, state); err != nil {
+	if founderFloor < 17 {
+		if carry.FounderExtensions != nil {
+			return nil, ErrInvalidReplayInputs
+		}
+		if err := validateFounderCarryFoundationState(catalogs, state); err != nil {
+			return nil, err
+		}
+		return state, nil
+	}
+	extensions := carry.FounderExtensions
+	if extensions == nil {
+		return nil, ErrInvalidReplayInputs
+	}
+	state.MinigameRatings = cloneMinigameRatingsForReplay(extensions.MinigameRatings)
+	state.MinigameOfflineQuality = cloneMinigameQualityForReplay(extensions.MinigameOfflineQuality)
+	if founderFloor >= 18 {
+		state.Pets = clonePetStatesForReplay(extensions.Pets)
+	} else if len(extensions.Pets) != 0 {
+		return nil, ErrInvalidReplayInputs
+	}
+	if founderFloor >= 19 {
+		state.FiscalCredit = extensions.FiscalCredit
+		state.FiscalPeriodOpenedWallMS = extensions.FiscalPeriodOpenedMS
+		state.FiscalPeriodSequence = extensions.FiscalPeriodSequence
+		state.FiscalGeneratorLevels = cloneInt64Counts(extensions.FiscalGeneratorLevels)
+		state.FiscalUnlocks = boolMapFromSorted(extensions.FiscalUnlocks)
+	} else if extensions.FiscalCredit != 0 || extensions.FiscalPeriodOpenedMS != 0 || extensions.FiscalPeriodSequence != 0 ||
+		len(extensions.FiscalGeneratorLevels) != 0 || len(extensions.FiscalUnlocks) != 0 {
+		return nil, ErrInvalidReplayInputs
+	}
+	if founderFloor >= 20 {
+		state.Soul = extensions.Soul
+		state.SoulExhaustedSourceIDs = append([]string{}, extensions.SoulExhaustedSourceIDs...)
+	} else if extensions.Soul != 0 || len(extensions.SoulExhaustedSourceIDs) != 0 {
+		return nil, ErrInvalidReplayInputs
+	}
+	if founderFloor >= 21 {
+		state.MinigameSessionSeq = extensions.MinigameSessionSeq
+	} else if extensions.MinigameSessionSeq != 0 {
+		return nil, ErrInvalidReplayInputs
+	}
+	if err := catalogs.ValidateFoundationState(state); err != nil {
 		return nil, err
 	}
 	return state, nil
@@ -979,6 +1045,9 @@ func normalizedFounderCarry(carry replayFounderCarry) replayFounderCarry {
 	if carry.AchievementsEarnedLifetime == nil {
 		carry.AchievementsEarnedLifetime = []string{}
 	}
+	if carry.FounderExtensions != nil {
+		carry.FounderExtensions = cloneFounderExtensions(carry.FounderExtensions)
+	}
 	return carry
 }
 
@@ -1033,15 +1102,116 @@ func founderCarry(state *save.State) replayFounderCarry {
 	if earned == nil {
 		earned = []string{}
 	}
-	return replayFounderCarry{ReputationLevel: state.ReputationLevel, RouteKnowledgeBalance: state.RouteKnowledgeBalance,
+	result := replayFounderCarry{ReputationLevel: state.ReputationLevel, RouteKnowledgeBalance: state.RouteKnowledgeBalance,
 		AgeMS: state.AgeMS, Notoriety: state.Notoriety, AdvisorMode: state.AdvisorMode, NetworkSlots: slots,
 		LedgerFactKinds: facts, ExitHistoryCount: len(state.ExitHistory), AchievementsEarnedLifetime: earned,
 		AchievementScoreLifetime: state.AchievementScoreLifetime}
+	if save.VersionForState(state) >= 17 {
+		unlocks := sortedBoolKeys(state.FiscalUnlocks)
+		if unlocks == nil {
+			unlocks = []string{}
+		}
+		exhausted := append([]string{}, state.SoulExhaustedSourceIDs...)
+		if exhausted == nil {
+			exhausted = []string{}
+		}
+		extensions := &replayFounderExtensions{
+			MinigameRatings: cloneMinigameRatingsForReplay(state.MinigameRatings), MinigameOfflineQuality: cloneMinigameQualityForReplay(state.MinigameOfflineQuality),
+			Pets: clonePetStatesForReplay(state.Pets), FiscalCredit: state.FiscalCredit, FiscalPeriodOpenedMS: state.FiscalPeriodOpenedWallMS,
+			FiscalPeriodSequence: state.FiscalPeriodSequence, FiscalGeneratorLevels: cloneInt64Counts(state.FiscalGeneratorLevels), FiscalUnlocks: unlocks,
+			Soul: state.Soul, SoulExhaustedSourceIDs: exhausted, MinigameSessionSeq: state.MinigameSessionSeq,
+		}
+		if extensions.MinigameRatings == nil {
+			extensions.MinigameRatings = map[string]save.MinigameRatingState{}
+		}
+		if extensions.MinigameOfflineQuality == nil {
+			extensions.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{}
+		}
+		if extensions.Pets == nil {
+			extensions.Pets = map[string]pet.CareState{}
+		}
+		if extensions.FiscalGeneratorLevels == nil {
+			extensions.FiscalGeneratorLevels = map[string]int64{}
+		}
+		result.FounderExtensions = extensions
+	}
+	return result
+}
+
+func cloneFounderExtensions(source *replayFounderExtensions) *replayFounderExtensions {
+	if source == nil {
+		return nil
+	}
+	return &replayFounderExtensions{
+		MinigameRatings: cloneMinigameRatingsForReplay(source.MinigameRatings), MinigameOfflineQuality: cloneMinigameQualityForReplay(source.MinigameOfflineQuality),
+		Pets: clonePetStatesForReplay(source.Pets), FiscalCredit: source.FiscalCredit, FiscalPeriodOpenedMS: source.FiscalPeriodOpenedMS,
+		FiscalPeriodSequence: source.FiscalPeriodSequence, FiscalGeneratorLevels: cloneInt64Counts(source.FiscalGeneratorLevels),
+		FiscalUnlocks: append([]string{}, source.FiscalUnlocks...), Soul: source.Soul,
+		SoulExhaustedSourceIDs: append([]string{}, source.SoulExhaustedSourceIDs...), MinigameSessionSeq: source.MinigameSessionSeq,
+	}
+}
+
+func cloneMinigameRatingsForReplay(source map[string]save.MinigameRatingState) map[string]save.MinigameRatingState {
+	if source == nil {
+		return nil
+	}
+	result := make(map[string]save.MinigameRatingState, len(source))
+	for id, value := range source {
+		result[id] = value
+	}
+	return result
+}
+
+func cloneMinigameQualityForReplay(source map[string]save.MinigameOfflineQualityState) map[string]save.MinigameOfflineQualityState {
+	if source == nil {
+		return nil
+	}
+	result := make(map[string]save.MinigameOfflineQualityState, len(source))
+	for id, value := range source {
+		result[id] = value
+	}
+	return result
+}
+
+func clonePetStatesForReplay(source map[string]pet.CareState) map[string]pet.CareState {
+	if source == nil {
+		return nil
+	}
+	result := make(map[string]pet.CareState, len(source))
+	for id, value := range source {
+		stats := make(map[pet.StatID]int64, len(value.StatsPPM))
+		for statID, amount := range value.StatsPPM {
+			stats[statID] = amount
+		}
+		remainders := make(map[pet.StatID]int64, len(value.StatDecayRemaindersPPM))
+		for statID, amount := range value.StatDecayRemaindersPPM {
+			remainders[statID] = amount
+		}
+		cooldowns := make(map[string]int64, len(value.CooldownUntilAttendedMS))
+		for actionID, cursor := range value.CooldownUntilAttendedMS {
+			cooldowns[actionID] = cursor
+		}
+		value.StatsPPM, value.StatDecayRemaindersPPM, value.CooldownUntilAttendedMS = stats, remainders, cooldowns
+		value.BehaviorQueue = append([]pet.BehaviorQueueEntry{}, value.BehaviorQueue...)
+		result[id] = value
+	}
+	return result
+}
+
+func boolMapFromSorted(values []string) map[string]bool {
+	if values == nil {
+		return nil
+	}
+	result := make(map[string]bool, len(values))
+	for _, value := range values {
+		result[value] = true
+	}
+	return result
 }
 
 func parseReplayInputs(data []byte) (replayInputsWire, error) {
 	var wire replayInputsWire
-	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != save.ReplayInputsVersion) ||
+	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != save.ReplayInputsVersion) ||
 		(wire.EvaluationMode != ModeOnline && wire.EvaluationMode != ModeOffline) || wire.EvaluatedAtMS <= 0 {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}

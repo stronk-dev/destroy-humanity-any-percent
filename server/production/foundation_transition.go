@@ -146,5 +146,8 @@ func validateFoundationHookInputs(bundle CatalogBundle, state, founder *save.Sta
 	if err := bundle.ValidateFoundationState(state); err != nil {
 		return err
 	}
+	if save.VersionForState(founder) >= 17 {
+		return bundle.ValidateFoundationState(founder)
+	}
 	return validateFounderCarryFoundationState(bundle, founder)
 }

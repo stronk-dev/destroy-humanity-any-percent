@@ -7,13 +7,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"testing"
 	"time"
 
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
-	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/leaderboard"
 	prestigecore "cloud-clicker/server/prestige"
@@ -43,14 +43,10 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,save_streams RESTART IDENTITY CASCADE`); err != nil {
 		t.Fatal(err)
 	}
-	bundle, err := epochseed.Load(filepath.Join("..", ".."))
-	if err != nil {
-		t.Fatal(err)
-	}
-	replayBundle := loadReplayTestBundle(t, bundle.Hash, bundle.Artifacts)
-	economyBytes := bundle.Artifacts["economy"]
-	routeBytes := bundle.Artifacts["routes"]
-	prestigeBytes := bundle.Artifacts["prestige"]
+	replayBundle := epoch5TestBundle(t)
+	economyBytes := replayBundle.Artifacts["economy"]
+	routeBytes := replayBundle.Artifacts["routes"]
+	prestigeBytes := replayBundle.Artifacts["prestige"]
 	catalog, err := economy.LoadCatalog(economyBytes)
 	if err != nil {
 		t.Fatal(err)
@@ -63,11 +59,11 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	commonsCatalog, err := commons.LoadCatalog(bundle.Artifacts["commons"])
+	commonsCatalog, err := commons.LoadCatalog(replayBundle.Artifacts["commons"])
 	if err != nil {
 		t.Fatal(err)
 	}
-	factionCatalog, err := faction.LoadCatalog(bundle.Artifacts["factions"], faction.CompactTitheBand{
+	factionCatalog, err := faction.LoadCatalog(replayBundle.Artifacts["factions"], faction.CompactTitheBand{
 		MinimumPPM: commonsCatalog.MinimumTithePPM,
 		DefaultPPM: commonsCatalog.DefaultTithePPM,
 		MaximumPPM: commonsCatalog.MaximumTithePPM,
@@ -75,8 +71,8 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	hash := bundle.Hash
-	seedProductionEpoch(t, db, hash, bundle.Artifacts)
+	hash := replayBundle.ConstantsHash
+	seedProductionEpoch(t, db, hash, replayBundle.Artifacts)
 	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}, prestige: map[string]*prestigecore.Policy{hash: policy}, factions: map[string]*faction.Catalog{hash: factionCatalog}}
 	commonsCatalogs := commons.CatalogSet{hash: commonsCatalog}
 	store, err := save.NewStore(db, resolver, nil)
@@ -384,8 +380,8 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	changedEconomyBytes := append(append([]byte(nil), economyBytes...), '\n')
-	changedArtifacts := make(map[string][]byte, len(bundle.Artifacts))
-	for name, data := range bundle.Artifacts {
+	changedArtifacts := make(map[string][]byte, len(replayBundle.Artifacts))
+	for name, data := range replayBundle.Artifacts {
 		changedArtifacts[name] = append([]byte(nil), data...)
 	}
 	changedArtifacts["economy"] = changedEconomyBytes
@@ -404,9 +400,14 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	names := make([]string, 0, len(changedArtifacts))
+	for name := range changedArtifacts {
+		names = append(names, name)
+	}
+	sort.Strings(names)
 	artifacts := make([]leaderboard.Artifact, 0, len(changedArtifacts))
-	for _, declaration := range bundle.Seed.Artifacts {
-		artifacts = append(artifacts, leaderboard.Artifact{Name: declaration.Name, Bytes: changedArtifacts[declaration.Name]})
+	for _, name := range names {
+		artifacts = append(artifacts, leaderboard.Artifact{Name: name, Bytes: changedArtifacts[name]})
 	}
 	var firstEpochStarted time.Time
 	if err := db.QueryRowContext(ctx, `SELECT started_at FROM epochs WHERE ended_at IS NULL`).Scan(&firstEpochStarted); err != nil {

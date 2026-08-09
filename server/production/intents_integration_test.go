@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -15,7 +14,6 @@ import (
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/commonsprojection"
 	"cloud-clicker/server/economy"
-	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/pet"
@@ -295,27 +293,23 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,commons_recruitment_offers,commons_health_scopes,commons_member_samples,commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes, route_hint_projection_events, founder_route_state, founder_route_executions, route_projection_events, events, intent_records, save_revisions, save_streams CASCADE`); err != nil {
 		t.Fatal(err)
 	}
-	bundle, err := epochseed.Load(filepath.Join("..", ".."))
-	if err != nil {
-		t.Fatal(err)
-	}
-	replayBundle := loadReplayTestBundle(t, bundle.Hash, bundle.Artifacts)
-	catalogBytes := bundle.Artifacts["economy"]
+	replayBundle := epoch5TestBundle(t)
+	catalogBytes := replayBundle.Artifacts["economy"]
 	catalog, err := economy.LoadCatalog(catalogBytes)
 	if err != nil {
 		t.Fatal(err)
 	}
-	routeBytes := bundle.Artifacts["routes"]
+	routeBytes := replayBundle.Artifacts["routes"]
 	routeCatalog, err := routes.LoadCatalog(routeBytes)
 	if err != nil {
 		t.Fatal(err)
 	}
-	commonsBytes := bundle.Artifacts["commons"]
+	commonsBytes := replayBundle.Artifacts["commons"]
 	commonsCatalog, err := commons.LoadCatalog(commonsBytes)
 	if err != nil {
 		t.Fatal(err)
 	}
-	factionCatalog, err := faction.LoadCatalog(bundle.Artifacts["factions"], faction.CompactTitheBand{
+	factionCatalog, err := faction.LoadCatalog(replayBundle.Artifacts["factions"], faction.CompactTitheBand{
 		MinimumPPM: commonsCatalog.MinimumTithePPM,
 		DefaultPPM: commonsCatalog.DefaultTithePPM,
 		MaximumPPM: commonsCatalog.MaximumTithePPM,
@@ -323,12 +317,12 @@ func TestIntentServiceIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	prestigePolicy, err := prestigecore.LoadPolicy(bundle.Artifacts["prestige"])
+	prestigePolicy, err := prestigecore.LoadPolicy(replayBundle.Artifacts["prestige"])
 	if err != nil {
 		t.Fatal(err)
 	}
-	hash := bundle.Hash
-	seedProductionEpoch(t, db, hash, bundle.Artifacts)
+	hash := replayBundle.ConstantsHash
+	seedProductionEpoch(t, db, hash, replayBundle.Artifacts)
 	resolver := integrationCatalogs{economy: map[string]*economy.Catalog{hash: catalog}, routes: map[string]*routes.Catalog{hash: routeCatalog}, prestige: map[string]*prestigecore.Policy{hash: prestigePolicy}, factions: map[string]*faction.Catalog{hash: factionCatalog}}
 	store, err := save.NewStore(db, resolver, nil)
 	if err != nil {

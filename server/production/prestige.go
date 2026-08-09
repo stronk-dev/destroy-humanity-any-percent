@@ -416,6 +416,19 @@ func applyFounderReplayOutput(target, replayed *save.State) error {
 	target.WireVersion = replayed.WireVersion
 	target.AchievementsEarnedLifetime = cloneBools(replayed.AchievementsEarnedLifetime)
 	target.AchievementScoreLifetime = replayed.AchievementScoreLifetime
+	if save.VersionForState(replayed) >= 17 {
+		target.MinigameRatings = cloneMinigameRatingsForReplay(replayed.MinigameRatings)
+		target.MinigameOfflineQuality = cloneMinigameQualityForReplay(replayed.MinigameOfflineQuality)
+		target.Pets = clonePetStatesForReplay(replayed.Pets)
+		target.FiscalCredit = replayed.FiscalCredit
+		target.FiscalPeriodOpenedWallMS = replayed.FiscalPeriodOpenedWallMS
+		target.FiscalPeriodSequence = replayed.FiscalPeriodSequence
+		target.FiscalGeneratorLevels = cloneInt64Counts(replayed.FiscalGeneratorLevels)
+		target.FiscalUnlocks = cloneBools(replayed.FiscalUnlocks)
+		target.Soul = replayed.Soul
+		target.SoulExhaustedSourceIDs = append([]string{}, replayed.SoulExhaustedSourceIDs...)
+		target.MinigameSessionSeq = replayed.MinigameSessionSeq
+	}
 	return nil
 }
 
