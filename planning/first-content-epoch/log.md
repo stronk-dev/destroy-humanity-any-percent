@@ -177,3 +177,62 @@ law held (zero balance/seed/deployment bytes changed).
 
 **Verdict: APPROVED {821dfb9} (range fb4f1c5..821dfb9 exactly). FCE5.3 is SATISFIED. The FCE5.6
 owner sign-off is now the only remaining mint gate.**
+
+## 2026-08-09 — epoch-6 mint implementation handoff — READY FOR DESIGNATED REVIEW
+
+The authorized mint landed in `3ff34bf` as one `BALANCE-CHANGE:` commit: all ratified candidate
+documents were copied to their production paths, epoch 6 (`First Content`) was appended without
+removing any earlier accepted hash, `current_epoch_id` and the deployment constants identity moved
+to `sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a`, the epoch-6 changelog
+was added, and the achievement reference-pointer rows were activated with copy regeneration.
+
+The first full Postgres integration run after the mint found two real latent defects that the
+fixture-first suites could not expose:
+
+1. Company replay-inputs v5 carried only the Founder-v16 foundation projection. Epoch 6 activates
+   Founder v21, so ordinary commands and Exit could reconstruct neither the v17-v21 mutable
+   Founder fields nor the pinned Founder version. The live transition therefore failed closed and
+   an honest epoch-6 run could not Exit.
+2. `replayverify.Repository.artifacts` duplicated the old seven-artifact cardinality instead of
+   relying on `replaycatalog.Load`'s closed artifact-set authority. Every honest 16-artifact run
+   was therefore classified `constants_mismatch` before replay.
+
+`84cf570` closes both findings. Replay-inputs v6 adds a closed `founder_extensions` record for the
+v17-v21 minigame, pet, Fiscal, Soul, and session-sequence state; it is required exactly for pinned
+Founder floors at or above 17 and is validated against the pinned artifact bytes in Go and
+TypeScript. Same-epoch Exit preserves every field while resetting `minigame_session_seq` under the
+v21 law. Historical v2-v5 parsing remains in place, and the shared corpus deliberately keeps a v5
+row alongside a new byte-compared epoch-6/v21 Exit row. Kernel `0.3.87` is an honest semantic bump.
+The verifier's stale cardinality check is deleted; the single closed artifact authority now owns
+both completeness and dependency validation.
+
+The active epoch necessarily moved the canonical harness seed away from epoch 5. In accordance
+with the repository's baseline guard, `c41b388` is a separate baseline-only `BALANCE-CHANGE:`
+commit. Its pacing values reproduce the owner-read FCE5.3 candidate report exactly: the seven
+disclosed Chaos movements, zero Casual movement, and no invariant failure.
+
+Discriminating evidence in the implementation range:
+
+- the shared Go/TypeScript `first_content_exit` fixture exercises a legal same-epoch Founder-v21
+  Exit, preserves ratings/quality, pets, Fiscal and Soul state, resets the session sequence, and
+  compares receipt/state bytes;
+- the composed gameserver/Postgres test creates an epoch-6 Founder and Company, pins genesis and
+  all frozen contributions, applies a command, Exits, loads all 16 database artifacts through
+  `replaycatalog`, and waits for replay verification to project the terminal run to the board;
+- epoch-5 fixtures remain exact and pre-epoch-6 histories continue to restore and replay.
+
+Verification from the repository root:
+
+- `make verify` — exits 0: Go vet/all-package tests, active harness, generated formula/API drift,
+  TypeScript/Svelte diagnostics (0 errors, 0 warnings), production client build, 6,608 client
+  tests, kernel-history guard at 0.3.87, copy/schema/content-manifest gates, and 19,833 browser
+  assertions.
+- `make test-save-integration` — exits 0 against the real Docker/Postgres stack, including
+  gameserver, production, replay verification, leaderboard, save, and migration paths.
+- `git diff --check` — clean before each implementation commit.
+
+**Code-and-baseline range for the designated mint review:** `3ff34bf^..c41b388`; the handoff range
+also includes the later record commit containing this entry. This entry is an implementation
+record, not a review verdict. The mint is implemented and self-checks are green;
+Meters, Achievements, and Pet Care remain unarchived until the designated cross-party review
+consumes the full range and approves it. Nothing was pushed.

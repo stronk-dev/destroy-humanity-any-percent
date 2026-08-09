@@ -1,8 +1,9 @@
 # RFC: The First Content Epoch (epoch 6 — the owner-gated production mint)
 
-- **Status:** accepted — implementing; **the mint remains owner-gated.** The mint commit requires Marco's explicit sign-off; this RFC
-  exists so that sign-off approves a fully enumerated, precondition-checked change instead of a
-  judgment call. Named successor of TP-C18 (The Pitch, ruled option a: fixture-first) and SR-C13
+- **Status:** implementing — the authorized epoch-6 mint has landed and is **awaiting its designated
+  cross-party review.** No dependent archival is authorized before that verdict. This RFC exists so
+  the completed owner sign-off approved a fully enumerated, precondition-checked change instead of
+  a judgment call. Named successor of TP-C18 (The Pitch, ruled option a: fixture-first) and SR-C13
   (Soul Recovery, ruled: fixture-only now, minted together here).
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-07
@@ -15,8 +16,8 @@
 
 ## Summary
 
-The live epoch registry (`balance/epochs/phase0.json`, `current_epoch_id: 5`) carries only the 7
-base artifacts; every content system since — meters, achievements, doctrines, minigames, pets,
+Before this mint, the live epoch registry (`balance/epochs/phase0.json`, `current_epoch_id: 5`)
+carried only the 7 base artifacts; every content system since — meters, achievements, doctrines, minigames, pets,
 fiscal, soul (including recovery activities), pitch, minigame API — shipped **fixture-first**, with its reviewed
 artifact bytes living in test fixtures and its production mint explicitly deferred to this RFC.
 This RFC defines **epoch 6**: one dependency-complete mint that installs reviewed or owner-ratified
