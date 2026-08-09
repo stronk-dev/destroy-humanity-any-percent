@@ -140,3 +140,38 @@ Verification from the repository root:
   formula/API checks, 0-error TypeScript/Svelte diagnostics, production client build, 6,607 client
   tests, kernel-history guard at 0.3.86, copy/schema/content-manifest gates, and 19,830 browser
   assertions.
+
+## 2026-08-09 — designated cross-party verdict: FCE5.3 harness report {821dfb9} — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**Report integrity fully verified:** the complete 300-run candidate harness re-run from the
+committed tree reproduces the report BYTE-IDENTICALLY; the composed hash 1a4463bc… recomputed in
+an independent implementation over the 16 manifest sources — exact match; a candidate/active
+mixture is structurally impossible (loader cross-validation rejects it); a sensitivity probe
+(one constant changed) moved 12/16 values including Casual — proving "Casual unchanged" is a real
+result, not insensitivity. All honesty checks pass: raw zero-deltas (nothing rounded away),
+warnings/invariants genuinely empty, run count uncapped at 300 (200 chaos + 100 casual).
+
+**The 7 Chaos findings are a SAMPLER ARTIFACT, proven mechanically:** the candidate catalog is
+purely additive; the chaos policy samples uniformly over manual+generators, so adding the
+(1e8, unaffordable-early) legal_dept dilutes per-tick manual probability 1/2 to 1/3 and wastes a
+third of ticks on unaffordable buy attempts — the geometric math reproduces every committed delta
+to the digit (e.g. p95 first-manual tick 5 to 8 = +60%). Not a bug, and not a human-visible
+regression: no real player buy-attempts an unaffordable generator every third action.
+
+**Finding 1 (MODERATE, interpretive — for the FCE5.6 sign-off):** the pacing simulation exercises
+only economy/routes/commons; the other 13 artifacts are hash/load/cross-validated but NEVER
+SIMULATED. The report therefore provides no pacing evidence for the new content's actual dynamics
+(buff windows, fiscal harvests, pitch payouts, permits accrual — incl. fiscal.hoard's x2.0
+all-target multiplier reaching legal_dept accrual, bounded by the visible 24 cap). FCE5.3's "runs
+the FULL bundle" is satisfied in the load/validate sense only. Minor: the commit ships the
+candidate-mode harness tooling itself (reviewed in this pass — strict validation, active goldens
+green); a non-resolving verdict anchor slug to fix at the mint; cosmetic NUL-separator strings in
+the findings output.
+
+make verify + focused suites green at 821dfb9; kernel honest at 0.3.86; the candidate-landing
+law held (zero balance/seed/deployment bytes changed).
+
+**Verdict: APPROVED {821dfb9} (range fb4f1c5..821dfb9 exactly). FCE5.3 is SATISFIED. The FCE5.6
+owner sign-off is now the only remaining mint gate.**
