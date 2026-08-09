@@ -558,3 +558,21 @@ source):
 - 2026-08-08: FCE-C10–C12 RATIFIED in full after the APPROVED candidate designated review; the
   manifest's pending-verdict fields may now cite that review's entry. Remaining before the mint:
   the FCE5.3 composed harness report, then the FCE5.6 owner sign-off.
+
+## FCE5.6 — OWNER SIGN-OFF: THE MINT IS AUTHORIZED (Marco, 2026-08-09)
+
+Given with everything on the table: all 16 candidate documents owner-ratified and byte-pinned
+(FCE-C3/C10/C11/C12); every implementation commit designated-review-covered; the FCE5.3 harness
+report reproduced byte-identically by its designated review, the 7 Chaos findings proven a
+sampler artifact, Casual zero-delta on raw data; and the review's Finding 1 (new-content dynamics
+load-validated but not simulated) weighed against the provisional-bytes law, visible hardcaps,
+and the epoch-7 retune lane. **Codex is authorized to execute the FCE3 mint commit** — the
+`BALANCE-CHANGE:` copying every ratified document byte-identically, appending epoch 6 "First
+Content", bumping `current_epoch_id`, and writing `balance/changelog/epoch-6.md` citing every
+consumed verdict — followed by the mint's own designated review, then the Meters/Achievements/
+Pet Care archival moves citing it. THE PUSH remains separate and Marco-only. The new-content
+harness scenarios (Finding 1's evidence gap) are registered epoch-7-lane work.
+
+## Changelog (sign-off)
+
+- 2026-08-09: FCE5.3 satisfied (verdict 270e97b); FCE5.6 GIVEN — mint authorized.
