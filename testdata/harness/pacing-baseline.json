@@ -2,7 +2,7 @@
   "schema_version": 1,
   "scenario_id": "scenario.phase0_production",
   "scenario_hash": "sha256:10aa5c8a2dd8a5c79a5902e74f4e55a1ca3ab46a2d35c9bf3dd25fc729dbb07a",
-  "constants_hash": "sha256:63ab30c96b5d76b941b053131fcee63c94b6b3ad91322f9160d94973ce8c58fa",
+  "constants_hash": "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a",
   "run_count": 300,
   "values": [
     {
@@ -15,43 +15,43 @@
       "policy_id": "chaos.phase0",
       "milestone_id": "milestone.first_manual",
       "statistic": "p95",
-      "value_ms": 1500000
+      "value_ms": 2400000
     },
     {
       "policy_id": "chaos.phase0",
       "milestone_id": "milestone.first_generator_purchase",
-      "statistic": "p50",
-      "value_ms": 1800000
-    },
-    {
-      "policy_id": "chaos.phase0",
-      "milestone_id": "milestone.first_generator_purchase",
-      "statistic": "p95",
-      "value_ms": 4200000
-    },
-    {
-      "policy_id": "chaos.phase0",
-      "milestone_id": "milestone.generator_count_1",
-      "statistic": "p50",
-      "value_ms": 1800000
-    },
-    {
-      "policy_id": "chaos.phase0",
-      "milestone_id": "milestone.generator_count_1",
-      "statistic": "p95",
-      "value_ms": 4200000
-    },
-    {
-      "policy_id": "chaos.phase0",
-      "milestone_id": "milestone.t0_progress_1",
       "statistic": "p50",
       "value_ms": 2400000
     },
     {
       "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.first_generator_purchase",
+      "statistic": "p95",
+      "value_ms": 6000000
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p50",
+      "value_ms": 2400000
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p95",
+      "value_ms": 6000000
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.t0_progress_1",
+      "statistic": "p50",
+      "value_ms": 3300000
+    },
+    {
+      "policy_id": "chaos.phase0",
       "milestone_id": "milestone.t0_progress_1",
       "statistic": "p95",
-      "value_ms": 4800000
+      "value_ms": 7200000
     },
     {
       "policy_id": "casual.phase0",
