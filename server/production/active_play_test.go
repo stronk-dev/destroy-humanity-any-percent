@@ -16,7 +16,7 @@ import (
 
 func activePlayTestCatalog(t *testing.T) (*economy.Catalog, *activeplay.Catalog) {
 	t.Helper()
-	economyBytes, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	economyBytes, err := os.ReadFile("../../balance/testdata/epoch5/economy.json")
 	if err != nil {
 		t.Fatal(err)
 	}

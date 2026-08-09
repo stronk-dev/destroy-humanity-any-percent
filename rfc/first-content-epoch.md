@@ -79,7 +79,7 @@ One mint commit (subject class `BALANCE-CHANGE:`) that:
    `balance/epochs/phase0.json` — `{epoch_id: 6, name: "First Content", changelog_ref:
    "changelog/epoch-6.md", accepted_hashes: [<the new constants hash>]}` — and bumps
    `current_epoch_id` to 6;
-3. writes `balance/changelog/epoch-6.md` enumerating every artifact, its source fixture, its
+3. writes `changelog/epoch-6.md` enumerating every artifact, its source fixture, its
    reviewed range, and the verdict entries consumed;
 4. updates `deployment/content-manifest.v1.json` to the new `constants_hash` (and `copy_hash` if
    the copy pipeline output moves);
@@ -568,7 +568,7 @@ sampler artifact, Casual zero-delta on raw data; and the review's Finding 1 (new
 load-validated but not simulated) weighed against the provisional-bytes law, visible hardcaps,
 and the epoch-7 retune lane. **Codex is authorized to execute the FCE3 mint commit** — the
 `BALANCE-CHANGE:` copying every ratified document byte-identically, appending epoch 6 "First
-Content", bumping `current_epoch_id`, and writing `balance/changelog/epoch-6.md` citing every
+Content", bumping `current_epoch_id`, and writing `changelog/epoch-6.md` citing every
 consumed verdict — followed by the mint's own designated review, then the Meters/Achievements/
 Pet Care archival moves citing it. THE PUSH remains separate and Marco-only. The new-content
 harness scenarios (Finding 1's evidence gap) are registered epoch-7-lane work.

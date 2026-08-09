@@ -2,6 +2,16 @@
   "schema_version": 1,
   "references": [
     {
+      "artifact_name": "achievements",
+      "json_pointer_pattern": "/achievements/*/copy_key",
+      "field_kind": "copy_key"
+    },
+    {
+      "artifact_name": "achievements",
+      "json_pointer_pattern": "/achievements/*/proof/justification_copy_key",
+      "field_kind": "copy_key"
+    },
+    {
       "artifact_name": "categories",
       "json_pointer_pattern": "/categories/*/name_key",
       "field_kind": "name_key"

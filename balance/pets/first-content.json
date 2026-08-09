@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "stat_policy": {
+    "grid_ms": 360000,
+    "stats": [
+      { "stat_id": "hunger", "initial_ppm": 750000, "floor_ppm": 100000, "decay_ppm_per_grid": 2000 },
+      { "stat_id": "energy", "initial_ppm": 750000, "floor_ppm": 100000, "decay_ppm_per_grid": 2000 },
+      { "stat_id": "cleanliness", "initial_ppm": 750000, "floor_ppm": 100000, "decay_ppm_per_grid": 2000 },
+      { "stat_id": "affection", "initial_ppm": 750000, "floor_ppm": 100000, "decay_ppm_per_grid": 2000 }
+    ],
+    "diminishing_threshold_ppm": 900000,
+    "diminishing_factor_ppm": 500000
+  },
+  "actions": [
+    { "action_id": "care.feed", "stat_id": "hunger", "delta_ppm": 400000, "cooldown_attended_ms": 3600000, "min_eligible_ppm": 100000, "soul_gate": "essential" },
+    { "action_id": "care.groom", "stat_id": "cleanliness", "delta_ppm": 250000, "cooldown_attended_ms": 3600000, "min_eligible_ppm": 100000, "soul_gate": "essential" },
+    { "action_id": "care.pet", "stat_id": "affection", "delta_ppm": 200000, "cooldown_attended_ms": 600000, "min_eligible_ppm": 100000, "soul_gate": "ordinary" },
+    { "action_id": "care.play", "stat_id": "affection", "delta_ppm": 250000, "cooldown_attended_ms": 1800000, "min_eligible_ppm": 100000, "soul_gate": "ordinary" },
+    { "action_id": "care.rest", "stat_id": "energy", "delta_ppm": 250000, "cooldown_attended_ms": 3600000, "min_eligible_ppm": 100000, "soul_gate": "essential" }
+  ],
+  "trust_policy": {
+    "initial_ppm": 500000,
+    "neutral_ppm": 500000,
+    "floor_ppm": 0,
+    "cap_ppm": 1000000,
+    "gain_ppm_per_effective_action": 20000,
+    "decay_ppm_per_grid": 42
+  },
+  "mood_policy": [
+    { "mood_member": "withdrawn", "floor_ppm": 0 },
+    { "mood_member": "restless", "floor_ppm": 250000 },
+    { "mood_member": "neutral", "floor_ppm": 500000 },
+    { "mood_member": "engaged", "floor_ppm": 750000 }
+  ],
+  "behavior_policy": [
+    { "from_state": "idle", "event": "care_applied", "to_state": "care_response", "duration_grid_ticks": 1 },
+    { "from_state": "idle", "event": "care_rejected", "to_state": "resting", "duration_grid_ticks": 1 },
+    { "from_state": "idle", "event": "grid_tick", "to_state": "active", "duration_grid_ticks": 2 },
+    { "from_state": "active", "event": "care_applied", "to_state": "care_response", "duration_grid_ticks": 1 },
+    { "from_state": "active", "event": "grid_tick", "to_state": "resting", "duration_grid_ticks": 2 },
+    { "from_state": "care_response", "event": "grid_tick", "to_state": "idle", "duration_grid_ticks": 1 },
+    { "from_state": "resting", "event": "care_applied", "to_state": "care_response", "duration_grid_ticks": 1 },
+    { "from_state": "resting", "event": "grid_tick", "to_state": "idle", "duration_grid_ticks": 2 }
+  ]
+}

@@ -92,6 +92,8 @@ describe("shared economy catalog", () => {
     ]);
     expect(catalog.multiplierSources).toEqual([
       { id: "commons.member", slot: "commons", target: "all", provider: "commons" },
+      { id: "fiscal.generator.beige_tower", slot: "prestige", target: "generator.beige_tower", provider: "fiscal" },
+      { id: "fiscal.hoard", slot: "prestige", target: "all", provider: "fiscal" },
       { id: "guild.stock_consumption", slot: "faction", target: "all", provider: "faction" },
     ]);
     expect(catalog.progressCoordinates.map((coordinate) => coordinate.tier)).toEqual([0, 1, 2, 3]);

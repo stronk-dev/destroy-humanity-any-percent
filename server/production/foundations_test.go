@@ -10,7 +10,6 @@ import (
 	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
-	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/fiscal"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
@@ -45,11 +44,7 @@ func foundationAchievementRegistry(fixture achievementParityFixture) achievement
 
 func foundationTestBundles(t *testing.T) (CatalogBundle, CatalogBundle) {
 	t.Helper()
-	seed, err := epochseed.Load("../..")
-	if err != nil {
-		t.Fatal(err)
-	}
-	legacy := loadReplayTestBundle(t, seed.Hash, seed.Artifacts)
+	legacy := epoch5TestBundle(t)
 	metersFixture, err := os.ReadFile("../../balance/testdata/meters-catalog-parity-v1.json")
 	if err != nil {
 		t.Fatal(err)
@@ -69,8 +64,8 @@ func foundationTestBundles(t *testing.T) (CatalogBundle, CatalogBundle) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	artifacts := make(map[string][]byte, len(seed.Artifacts)+2)
-	for name, data := range seed.Artifacts {
+	artifacts := make(map[string][]byte, len(legacy.Artifacts)+2)
+	for name, data := range legacy.Artifacts {
 		artifacts[name] = append([]byte(nil), data...)
 	}
 	artifacts["meters"] = append([]byte(nil), meterEnvelope.Baseline...)

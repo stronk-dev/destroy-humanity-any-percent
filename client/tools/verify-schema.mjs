@@ -300,6 +300,12 @@ async function main() {
 
   const metersSchema = await readJSON(path.join(balanceDirectory, "meters.schema.json"));
   const validateMeters = ajv.compile(metersSchema);
+  const meterCatalogs = await jsonFiles(path.join(balanceDirectory, "meters"));
+  if (meterCatalogs.length === 0) throw new Error("meter schema verification requires a production catalog");
+  for (const filename of meterCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateMeters(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateMeters)}`);
+  }
   const meterFixture = meterSchemaFixture();
   if (!validateMeters(meterFixture)) throw new Error(`meter schema rejected valid fixture: ${validationErrors(validateMeters)}`);
   for (const mutate of [
@@ -314,6 +320,12 @@ async function main() {
 
   const achievementsSchema = await readJSON(path.join(balanceDirectory, "achievements.schema.json"));
   const validateAchievements = ajv.compile(achievementsSchema);
+  const achievementCatalogs = await jsonFiles(path.join(balanceDirectory, "achievements"));
+  if (achievementCatalogs.length === 0) throw new Error("achievement schema verification requires a production catalog");
+  for (const filename of achievementCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateAchievements(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateAchievements)}`);
+  }
   const achievementFixture = achievementSchemaFixture();
   if (!validateAchievements(achievementFixture)) throw new Error(`achievement schema rejected valid fixture: ${validationErrors(validateAchievements)}`);
   for (const mutate of [
@@ -328,6 +340,12 @@ async function main() {
 
   const doctrinesSchema = await readJSON(path.join(balanceDirectory, "doctrines.schema.json"));
   const validateDoctrines = ajv.compile(doctrinesSchema);
+  const doctrineCatalogs = await jsonFiles(path.join(balanceDirectory, "doctrines"));
+  if (doctrineCatalogs.length === 0) throw new Error("doctrine schema verification requires a production catalog");
+  for (const filename of doctrineCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateDoctrines(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateDoctrines)}`);
+  }
   const doctrineFixture = doctrineSchemaFixture();
   if (!validateDoctrines(doctrineFixture)) throw new Error(`doctrine schema rejected valid fixture: ${validationErrors(validateDoctrines)}`);
   for (const mutate of [
@@ -342,6 +360,12 @@ async function main() {
 
   const fiscalSchema = await readJSON(path.join(balanceDirectory, "fiscal.schema.json"));
   const validateFiscal = ajv.compile(fiscalSchema);
+  const fiscalCatalogs = await jsonFiles(path.join(balanceDirectory, "fiscal"));
+  if (fiscalCatalogs.length === 0) throw new Error("fiscal schema verification requires a production catalog");
+  for (const filename of fiscalCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateFiscal(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateFiscal)}`);
+  }
   const fiscalFixture = await readJSON(path.join(balanceDirectory, "testdata", "fiscal-foundation-v1.json"));
   if (!validateFiscal(fiscalFixture.baseline)) throw new Error(`fiscal schema rejected valid fixture: ${validationErrors(validateFiscal)}`);
   for (const mutate of [
@@ -554,7 +578,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + meters(pre-mint) + achievements(pre-mint) + doctrines(pre-mint) + fiscal(pre-mint) + opportunities(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness + relevance, ${production.length} economy catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s), ${relevanceRegistry.entries.length} relevance scenario(s)`,
+    `schema ok: economy + meters + achievements + doctrines + fiscal + opportunities(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness + relevance, ${production.length} economy catalog(s), ${meterCatalogs.length} meter catalog(s), ${achievementCatalogs.length} achievement catalog(s), ${doctrineCatalogs.length} doctrine catalog(s), ${fiscalCatalogs.length} fiscal catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s), ${relevanceRegistry.entries.length} relevance scenario(s)`,
   );
 }
 

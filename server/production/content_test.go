@@ -96,7 +96,7 @@ func foundationState(t *testing.T, catalog *economy.Catalog, now time.Time) *sav
 
 func foundationRoutes(t *testing.T) *routes.Catalog {
 	t.Helper()
-	data, err := os.ReadFile("../../balance/routes/phase0.json")
+	data, err := os.ReadFile("../../balance/testdata/epoch5/routes.json")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import catalogJson from "../../balance/routes/phase0.json";
 import economyJson from "../../balance/catalogs/phase0.json";
+import epoch5CatalogJson from "../../balance/testdata/epoch5/routes.json";
 import validCatalogJson from "../../balance/routes-testdata/valid/minimal.json";
 import reachableCatalogJson from "../../balance/routes-testdata/invalid/reachable-depletion.json";
 import unknownFieldCatalogJson from "../../balance/routes-testdata/invalid/unknown-field.json";
@@ -40,7 +41,7 @@ describe("routes catalog and predicate parity", () => {
   it("loads the shipped catalog and proves Depletion unreachable in one run", () => {
     const catalog = parseRoutesCatalog(catalogJson);
     expect(() => validateRouteCatalogResources(catalog, parseCatalog(economyJson))).not.toThrow();
-    expect(catalog.gates).toHaveLength(3);
+    expect(catalog.gates).toHaveLength(4);
     expect(catalog.maxRoutesPerRun()).toBe(4);
     expect(catalog.depletionDistinctRoutesRequired).toBe(5);
     expect(catalog.route("route.nonprofit_wrapper_zip")?.effect).toEqual({ kind: "substitute" });
@@ -61,13 +62,13 @@ describe("routes catalog and predicate parity", () => {
     const reachable = structuredClone(catalogJson) as typeof catalogJson;
     reachable.depletion_distinct_routes_required = 4;
     expect(() => parseRoutesCatalog(reachable)).toThrow(/reachable/);
-    const unavailable = structuredClone(catalogJson) as typeof catalogJson;
+    const unavailable = structuredClone(epoch5CatalogJson);
     unavailable.gates[1]!.routes[0]!.active = true;
     expect(() => parseRoutesCatalog(unavailable)).toThrow(/unavailable context/);
-    const lyingContext = structuredClone(catalogJson) as typeof catalogJson;
+    const lyingContext = structuredClone(epoch5CatalogJson);
     lyingContext.gates[1]!.routes[0]!.requires_context_version = 1;
     expect(() => parseRoutesCatalog(lyingContext)).toThrow(/context version 2/);
-    const sameBoundary = structuredClone(catalogJson) as typeof catalogJson;
+    const sameBoundary = structuredClone(epoch5CatalogJson);
     sameBoundary.gates[1]!.gate_id = "gate.t3_to_t4";
     expect(() => parseRoutesCatalog(sameBoundary)).not.toThrow();
   });

@@ -17,7 +17,6 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
-	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/meters"
 	"cloud-clicker/server/minigame"
@@ -220,13 +219,9 @@ func TestApplyLoggedCrossRuntimeFixture(t *testing.T) {
 
 func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	t.Helper()
-	bundleBytes, err := epochseed.Load("../..")
-	if err != nil {
-		t.Fatal(err)
-	}
-	catalogs := loadReplayTestBundle(t, bundleBytes.Hash, bundleBytes.Artifacts)
-	artifacts := make(map[string]string, len(bundleBytes.Artifacts))
-	for name, data := range bundleBytes.Artifacts {
+	catalogs := epoch5TestBundle(t)
+	artifacts := make(map[string]string, len(catalogs.Artifacts))
+	for name, data := range catalogs.Artifacts {
 		artifacts[name] = string(data)
 	}
 	baseNow := time.Date(2026, 8, 1, 8, 0, 0, 0, time.UTC)
@@ -247,14 +242,14 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		{name: "buy-generator-max", payload: `{"intent_id":"01986666-0014-7000-8000-000000000014","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"max"}}`, mode: ModeOnline, configure: func(state *save.State) { setCash(t, state, "1e1000") }},
 		{name: "purchase-total-cap-precedes-affordability", payload: `{"intent_id":"01986666-0018-7000-8000-000000000018","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":1}}`, mode: ModeOnline,
 			configure: func(state *save.State) { state.GeneratorPurchasedTotal = decimal.MaxExactInteger }},
-		{name: "cross-gate", payload: `{"intent_id":"01986666-0004-7000-8000-000000000004","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline, configure: func(state *save.State) { state.Tier = 2; setCash(t, state, "1e10") }, carry: &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: bundleBytes.Hash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}},
+		{name: "cross-gate", payload: `{"intent_id":"01986666-0004-7000-8000-000000000004","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline, configure: func(state *save.State) { state.Tier = 2; setCash(t, state, "1e10") }, carry: &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}},
 		{name: "cross-gate-offer-spawn", payload: `{"intent_id":"01986666-0011-7000-8000-000000000011","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline,
 			configure: func(state *save.State) {
 				state.Tier = 2
 				state.LifetimeValue = decimal.New(8, 12)
 				setCash(t, state, "1e10")
 			},
-			carry:     &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: bundleBytes.Hash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1},
+			carry:     &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1},
 			founderID: offerFixtureFounder(t, catalogs.Prestige.SpawnGatePPM[3])},
 		{name: "sign-compact", payload: `{"intent_id":"01986666-0005-7000-8000-000000000005","kind":"sign_compact","expected_revision":1,"tithe_ppm":110000}`, mode: ModeOnline},
 		{name: "leave-compact", payload: `{"intent_id":"01986666-0006-7000-8000-000000000006","kind":"leave_compact","expected_revision":1}`, mode: ModeOnline, configure: func(state *save.State) { state.CompactMember, state.CompactTithePPM = true, 110_000 }, weight: int64Pointer(800_000)},
@@ -265,8 +260,8 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		{name: "offer-expires-during-manual-batch", payload: `{"intent_id":"01986666-0015-7000-8000-000000000015","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`, mode: ModeOnline, configure: func(state *save.State) {
 			state.OfferState = &save.ExitOfferState{OfferID: "01986666-0015-7000-8000-000000000099", ExitType: "acquisition", TermsJSON: json.RawMessage(`{"market_modifier_ppm":1000000,"payout_preview":{"reputation_delta":0,"network_slot_unlocks":[],"route_knowledge":0,"clout_reach_note":"clout.reach.preserved"}}`), SpawnedAt: baseNow.Add(-time.Minute), ExpiresAt: baseNow}
 		}},
-		{name: "skip-ahead-gate", payload: `{"intent_id":"01986666-0016-7000-8000-000000000016","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline, configure: func(state *save.State) { state.Tier = 1; setCash(t, state, "1e10") }, carry: &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: bundleBytes.Hash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}},
-		{name: "lower-gate-after-higher", payload: `{"intent_id":"01986666-0017-7000-8000-000000000017","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline, configure: func(state *save.State) { state.Tier = 4; setCash(t, state, "1e10") }, carry: &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: bundleBytes.Hash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}},
+		{name: "skip-ahead-gate", payload: `{"intent_id":"01986666-0016-7000-8000-000000000016","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline, configure: func(state *save.State) { state.Tier = 1; setCash(t, state, "1e10") }, carry: &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}},
+		{name: "lower-gate-after-higher", payload: `{"intent_id":"01986666-0017-7000-8000-000000000017","kind":"cross_gate","expected_revision":1,"gate_id":"gate.t2_to_t3","route_id":null}`, mode: ModeOnline, configure: func(state *save.State) { state.Tier = 4; setCash(t, state, "1e10") }, carry: &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}},
 		{name: "closed-hook-chain", payload: `{"intent_id":"01986666-0009-7000-8000-000000000009","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":60000}`, advance: time.Minute, mode: ModeOnline,
 			configure: func(state *save.State) {
 				state.GeneratorCounts["generator.beige_tower"] = 2
@@ -299,7 +294,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 				state.CompactMember, state.CompactTithePPM = true, 110_000
 			}, weight: int64Pointer(800_000)},
 	}
-	result := crossRuntimeFixture{Version: 1, ConstantsHash: bundleBytes.Hash, Artifacts: artifacts, Cases: make([]crossRuntimeFixtureCase, 0, len(cases))}
+	result := crossRuntimeFixture{Version: 1, ConstantsHash: catalogs.ConstantsHash, Artifacts: artifacts, Cases: make([]crossRuntimeFixtureCase, 0, len(cases))}
 	for index, definition := range cases {
 		state := replayFixtureState(t, catalogs.Economy, baseNow)
 		if definition.configure != nil {
@@ -341,11 +336,11 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 			ReceiptJSON: canonicalFixtureJSON(t, transition.Receipt), EventsJSON: canonicalFixtureValue(t, events), PostStateJSON: canonicalFixtureJSON(t, postState)})
 	}
 	result.TerminalCases = []crossRuntimeTerminalCase{
-		makeTerminalFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
-		makeAcceptedOfferFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
-		makeScriptedGateFixtureCase(t, catalogs, bundleBytes.Hash, baseNow),
+		makeTerminalFixtureCase(t, catalogs, catalogs.ConstantsHash, baseNow),
+		makeAcceptedOfferFixtureCase(t, catalogs, catalogs.ConstantsHash, baseNow),
+		makeScriptedGateFixtureCase(t, catalogs, catalogs.ConstantsHash, baseNow),
 	}
-	result.Additional = append([]crossRuntimeBundleCase{makeFallbackInvariantFixture(t, bundleBytes.Artifacts, baseNow)}, makeFoundationFixtures(t, bundleBytes.Artifacts, baseNow)...)
+	result.Additional = append([]crossRuntimeBundleCase{makeFallbackInvariantFixture(t, catalogs.Artifacts, baseNow)}, makeFoundationFixtures(t, catalogs.Artifacts, baseNow)...)
 	result.Additional = append(result.Additional,
 		makeActiveFoundationReplayFixture(t, baseNow, 5001*time.Millisecond, "active-foundation-offline-5001ms"),
 		makeActiveFoundationReplayFixture(t, baseNow, 25*time.Hour, "active-foundation-offline-25h"),
@@ -354,10 +349,10 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	)
 	result.ActiveExit = makeActiveFoundationExitFixture(t, baseNow)
 	result.ActivePlayExit = makeActivePlayExitFixture(t, baseNow)
-	result.FullRun = makeFullRunFixture(t, catalogs, bundleBytes.Hash, baseNow)
+	result.FullRun = makeFullRunFixture(t, catalogs, catalogs.ConstantsHash, baseNow)
 	result.DoctrineRun = makeDoctrineReplayRunFixture(t, baseNow)
 	result.ActivePlayRun = makeActivePlayReplayRunFixture(t, baseNow)
-	result.RejectedExit = makeRejectedExitFixture(t, catalogs, bundleBytes.Hash, baseNow)
+	result.RejectedExit = makeRejectedExitFixture(t, catalogs, catalogs.ConstantsHash, baseNow)
 	result.FounderHash, result.FounderFiles, result.FounderCases, result.FounderRun = makeFounderReplayFixture(t, baseNow)
 	result.PetFounderHash, result.PetFounderFiles, result.PetFounderCases = makePetFounderReplayFixture(t, baseNow)
 	result.MinigameHash, result.MinigameFiles, result.MinigameCompany, result.MinigameFounder = makeMinigameResolutionReplayFixture(t, baseNow)

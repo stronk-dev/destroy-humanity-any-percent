@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
-	"sort"
 	"testing"
 
 	"cloud-clicker/server/epochseed"
@@ -13,7 +12,7 @@ import (
 	"cloud-clicker/server/save"
 )
 
-func TestLoadRequiresExactSevenArtifactBundle(t *testing.T) {
+func TestLoadRequiresCompleteArtifactBundle(t *testing.T) {
 	bundle, err := epochseed.Load(filepath.Join("..", ".."))
 	if err != nil {
 		t.Fatal(err)
@@ -105,46 +104,15 @@ func TestLoadActivatesDoctrineOnlyAbovePairedFoundations(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	meterFixture, err := os.ReadFile(filepath.Join("..", "..", "balance", "testdata", "meters-catalog-parity-v1.json"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	var meterEnvelope struct {
-		Baseline json.RawMessage `json:"baseline"`
-	}
-	if err := json.Unmarshal(meterFixture, &meterEnvelope); err != nil {
-		t.Fatal(err)
-	}
-	artifacts := make(map[string][]byte, len(seed.Artifacts)+3)
+	artifacts := make(map[string][]byte, len(seed.Artifacts))
 	for name, data := range seed.Artifacts {
 		artifacts[name] = append([]byte(nil), data...)
 	}
-	artifacts["meters"] = meterEnvelope.Baseline
-	artifacts["achievements"] = []byte(`{"schema_version":1,"achievements":[{"id":"achievement.first_gate","condition_scope":"run","condition":{"kind":"counter_at_least","counter":"tier","minimum":1},"proof":{"kind":"provenance","event_kinds":["gate_crossed"]},"score_grant":4,"copy_key":"category.any_percent"}]}`)
-	artifacts["doctrines"] = []byte(`{"schema_version":1,"transitions":[{"transition_id":"transition.t3_to_t4","source_tier":3,"gate_id":"gate.t3_to_t4","doctrine_ids":["doctrine.capture","doctrine.ethical"]}]}`)
-	var routeRoot map[string]any
-	if err := json.Unmarshal(artifacts["routes"], &routeRoot); err != nil {
-		t.Fatal(err)
-	}
-	routeRoot["gates"] = append(routeRoot["gates"].([]any), map[string]any{"gate_id": "gate.t3_to_t4", "requirement": []any{map[string]any{"resource_id": "company.cash", "amount": "1e12"}}, "routes": []any{}})
-	artifacts["routes"], _ = json.Marshal(routeRoot)
-	var categories map[string]any
-	if err := json.Unmarshal(artifacts["categories"], &categories); err != nil {
-		t.Fatal(err)
-	}
-	set := append(categories["full_gate_set"].([]any), "gate.t3_to_t4")
-	sort.Slice(set, func(i, j int) bool { return set[i].(string) < set[j].(string) })
-	categories["full_gate_set"] = set
-	artifacts["categories"], _ = json.Marshal(categories)
-	hash, err := save.ConstantsHashArtifacts(artifacts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	loaded, err := Load(hash, artifacts)
+	loaded, err := Load(seed.Hash, artifacts)
 	if err != nil || loaded.Doctrines == nil {
 		t.Fatalf("doctrine bundle=%+v err=%v", loaded, err)
 	}
-	if _, ok := loaded.ResolvePrestige(hash); !ok {
+	if _, ok := loaded.ResolvePrestige(seed.Hash); !ok {
 		t.Fatal("loaded doctrine bundle did not satisfy catalog validity")
 	}
 	delete(artifacts, "meters")

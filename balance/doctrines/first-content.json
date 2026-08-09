@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "transitions": [
+    {
+      "transition_id": "transition.t3_to_t4",
+      "source_tier": 3,
+      "gate_id": "gate.t3_to_t4",
+      "doctrine_ids": ["doctrine.capture", "doctrine.ethical"]
+    }
+  ]
+}

@@ -26,7 +26,7 @@ func mustDecimal(t *testing.T, source string) decimal.Decimal {
 
 func phase0Catalog(t *testing.T) *economy.Catalog {
 	t.Helper()
-	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	data, err := os.ReadFile("../../balance/testdata/epoch5/economy.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -39,7 +39,7 @@ func phase0Catalog(t *testing.T) *economy.Catalog {
 
 func phase0Routes(t *testing.T) *routes.Catalog {
 	t.Helper()
-	data, err := os.ReadFile("../../balance/routes/phase0.json")
+	data, err := os.ReadFile("../../balance/testdata/epoch5/routes.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -177,7 +177,7 @@ func TestComputeBurstIsPartitionInvariantAndOfflineCapBounded(t *testing.T) {
 		t.Fatalf("provision-boundary cash=%s one-shot=%s provisioned=%v remaining=%d", got, want, provisionSplit.GeneratorProvisioned, provisionSplit.ComputeBurstRemainingMS)
 	}
 
-	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	data, err := os.ReadFile("../../balance/testdata/epoch5/economy.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -206,7 +206,7 @@ func TestComputeBurstIsPartitionInvariantAndOfflineCapBounded(t *testing.T) {
 }
 
 func TestEvaluateOfflineCreditAndResourceHardcaps(t *testing.T) {
-	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	data, err := os.ReadFile("../../balance/testdata/epoch5/economy.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -238,7 +238,7 @@ func TestEvaluateOfflineCreditAndResourceHardcaps(t *testing.T) {
 }
 
 func TestEvaluateSaturatesR1VectorAndFollowingPurchaseSucceeds(t *testing.T) {
-	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	data, err := os.ReadFile("../../balance/testdata/epoch5/economy.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -289,7 +289,7 @@ func TestEvaluateSaturatesR1VectorAndFollowingPurchaseSucceeds(t *testing.T) {
 }
 
 func TestEvaluateAtHardcapAdvancesCursorWithoutLedgerChange(t *testing.T) {
-	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	data, err := os.ReadFile("../../balance/testdata/epoch5/economy.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -359,7 +359,7 @@ func TestEvaluationPolicyGoldenVectors(t *testing.T) {
 }
 
 func TestRatesValidateDeclaredContributions(t *testing.T) {
-	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	data, err := os.ReadFile("../../balance/testdata/epoch5/economy.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -412,7 +412,7 @@ func TestRatesValidateDeclaredContributions(t *testing.T) {
 }
 
 func TestRatesArePermutationInvariantWithinSlot(t *testing.T) {
-	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	data, err := os.ReadFile("../../balance/testdata/epoch5/economy.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -532,7 +532,7 @@ func TestSubProgressSharedFixture(t *testing.T) {
 
 func phase0CatalogWithResourceLogTarget(t *testing.T, target string, composite bool) (*economy.Catalog, error) {
 	t.Helper()
-	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	data, err := os.ReadFile("../../balance/testdata/epoch5/economy.json")
 	if err != nil {
 		t.Fatal(err)
 	}

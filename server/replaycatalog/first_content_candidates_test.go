@@ -1,6 +1,7 @@
 package replaycatalog
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
@@ -8,8 +9,50 @@ import (
 	"path/filepath"
 	"testing"
 
+	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/save"
 )
+
+func TestFirstContentMintPromotesRatifiedBytesAndPreservesEpoch5(t *testing.T) {
+	root := filepath.Join("..", "..")
+	manifest := firstContentCandidateManifest(t)
+	bundle, err := epochseed.Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if bundle.Seed.CurrentEpochID != 6 || len(bundle.Artifacts) != 16 || bundle.Hash != manifest.ConstantsHash ||
+		!epochseed.Accepts(epochseed.Current(bundle.Seed), manifest.ConstantsHash) {
+		t.Fatalf("mint identity epoch=%d artifacts=%d hash=%s", bundle.Seed.CurrentEpochID, len(bundle.Artifacts), bundle.Hash)
+	}
+	for _, row := range manifest.Artifacts {
+		source, sourceErr := os.ReadFile(filepath.Join(root, row.SourcePath))
+		production, productionErr := os.ReadFile(filepath.Join(root, row.ProductionPath))
+		if sourceErr != nil || productionErr != nil || !bytes.Equal(source, production) {
+			t.Fatalf("%s source/production mismatch source_err=%v production_err=%v", row.Name, sourceErr, productionErr)
+		}
+	}
+	if _, err := Load(bundle.Hash, bundle.Artifacts); err != nil {
+		t.Fatalf("load minted bundle: %v", err)
+	}
+
+	epoch5Paths := map[string]string{"categories": "categories.json", "commons": "commons.json", "economy": "economy.json",
+		"factions": "factions.json", "guilds": "guilds.json", "prestige": "prestige.json", "routes": "routes.json"}
+	epoch5Artifacts := make(map[string][]byte, len(epoch5Paths))
+	for name, filename := range epoch5Paths {
+		data, readErr := os.ReadFile(filepath.Join(root, "balance", "testdata", "epoch5", filename))
+		if readErr != nil {
+			t.Fatal(readErr)
+		}
+		epoch5Artifacts[name] = data
+	}
+	epoch5Hash, err := save.ConstantsHashArtifacts(epoch5Artifacts)
+	if err != nil || epoch5Hash != bundle.Seed.Epochs[4].AcceptedHashes[0] {
+		t.Fatalf("epoch-5 fixture hash=%s err=%v", epoch5Hash, err)
+	}
+	if _, err := Load(epoch5Hash, epoch5Artifacts); err != nil {
+		t.Fatalf("historical epoch-5 bundle no longer loads: %v", err)
+	}
+}
 
 func TestFirstContentCandidateBundleLoadsFromLiteralArtifacts(t *testing.T) {
 	artifacts := firstContentCandidateArtifacts(t)

@@ -15,6 +15,7 @@ const eras = new Set(["era_1995", "era_2000"]);
 const statuses = new Set(["model", "plausible", "verified"]);
 const fieldKinds = new Set(["copy_key", "name_key", "reason_key"]);
 const artifactSchemas = Object.freeze({
+  achievements: "balance/achievements.schema.json",
   categories: "balance/leaderboards.schema.json",
   economy: "balance/economy.schema.json",
   factions: "balance/factions.schema.json",

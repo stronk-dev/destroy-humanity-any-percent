@@ -63,6 +63,8 @@ the committed-history guard explicitly reports `kernel version parity and histor
 Pending before the manifest can become owner-approved: C10–C12 rulings/ratification, the candidate
 designated review (which replaces every `pending` verdict field), and the composed harness report.
 
+<a id="2026-08-08-b0277a1"></a>
+
 ## 2026-08-08 — designated cross-party verdict: candidate staging {3530b08, d0dccb4, a0ca14e} — APPROVED
 
 - **Review by:** Claude (designated cross-party). **Recorded by:** Claude.

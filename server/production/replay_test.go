@@ -13,7 +13,6 @@ import (
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
-	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/meters"
@@ -188,11 +187,7 @@ func TestFounderScopeRouteHintHasNoReplayUnionArm(t *testing.T) {
 }
 
 func TestApplyLoggedDerivesFactionStockResourceInsideBoundary(t *testing.T) {
-	bundleBytes, err := epochseed.Load("../..")
-	if err != nil {
-		t.Fatal(err)
-	}
-	catalogs := loadReplayTestBundle(t, bundleBytes.Hash, bundleBytes.Artifacts)
+	catalogs := epoch5TestBundle(t)
 	member, ok := catalogs.Faction.Faction("open_source")
 	if !ok {
 		t.Fatal("open_source fixture missing")
@@ -218,11 +213,7 @@ func TestApplyLoggedDerivesFactionStockResourceInsideBoundary(t *testing.T) {
 }
 
 func TestApplyLoggedRejectsMismatchedFounderCatalogCarry(t *testing.T) {
-	bundleBytes, err := epochseed.Load("../..")
-	if err != nil {
-		t.Fatal(err)
-	}
-	catalogs := loadReplayTestBundle(t, bundleBytes.Hash, bundleBytes.Artifacts)
+	catalogs := epoch5TestBundle(t)
 	request, err := ParseIntent([]byte(`{"intent_id":"01985555-7130-7000-8000-000000000001","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`))
 	if err != nil {
 		t.Fatal(err)
@@ -245,11 +236,7 @@ func TestApplyLoggedRejectsMismatchedFounderCatalogCarry(t *testing.T) {
 }
 
 func TestApplyLoggedReplaysByteIdenticalTransition(t *testing.T) {
-	bundleBytes, err := epochseed.Load("../..")
-	if err != nil {
-		t.Fatal(err)
-	}
-	catalogs := loadReplayTestBundle(t, bundleBytes.Hash, bundleBytes.Artifacts)
+	catalogs := epoch5TestBundle(t)
 	cursor := time.Date(2026, 7, 31, 8, 0, 0, 0, time.UTC)
 	newState := func() *save.State {
 		ledger, ledgerErr := economy.RestoreLedger(catalogs.Economy, economy.ScopeCompany, map[string]string{"company.cash": "1e2"})

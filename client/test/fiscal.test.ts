@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import fixture from "../../balance/testdata/fiscal-foundation-v1.json";
-import phase0 from "../../balance/catalogs/phase0.json";
+import epoch5Economy from "../../balance/testdata/epoch5/economy.json";
 import { parseCatalog } from "../src/economy-kernel";
 import { fiscalEarlyHarvestDraw, fiscalGeneratorCost, fiscalGeneratorFactor, fiscalHoardFactor, harvestFiscal, loadFiscalCatalog, spendFiscal, sweepFiscal, type FiscalState } from "../src/fiscal";
 
 function economyWithFiscalSources(): ReturnType<typeof parseCatalog> {
-  const source = structuredClone(phase0) as any;
+  const source = structuredClone(epoch5Economy) as any;
   source.multiplier_sources.push(
     { id: "fiscal.generator.beige_tower", slot: "prestige", target: "generator.beige_tower", provider: "fiscal" },
     { id: "fiscal.hoard", slot: "prestige", target: "all", provider: "fiscal" },

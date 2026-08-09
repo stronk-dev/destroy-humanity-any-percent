@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "current_epoch_id": 5,
+  "current_epoch_id": 6,
   "artifacts": [
     { "name": "commons", "path": "balance/commons/phase0.json" },
     { "name": "economy", "path": "balance/catalogs/phase0.json" },
@@ -8,7 +8,16 @@
     { "name": "routes", "path": "balance/routes/phase0.json" },
     { "name": "factions", "path": "balance/factions/phase0.json" },
     { "name": "guilds", "path": "balance/guilds/phase0.json" },
-    { "name": "categories", "path": "balance/categories/phase0.json" }
+    { "name": "categories", "path": "balance/categories/phase0.json" },
+    { "name": "achievements", "path": "balance/achievements/first-content.json" },
+    { "name": "doctrines", "path": "balance/doctrines/first-content.json" },
+    { "name": "fiscal", "path": "balance/fiscal/first-content.json" },
+    { "name": "meters", "path": "balance/meters/first-content.json" },
+    { "name": "minigame_api", "path": "balance/minigame-api/first-content.json" },
+    { "name": "minigames", "path": "balance/minigames/first-content.json" },
+    { "name": "pets", "path": "balance/pets/first-content.json" },
+    { "name": "pitch", "path": "balance/pitch.json" },
+    { "name": "soul", "path": "balance/soul/first-content.json" }
   ],
   "epochs": [
     {
@@ -50,6 +59,14 @@
       "changelog_ref": "changelog/epoch-5.md",
       "accepted_hashes": [
         "sha256:63ab30c96b5d76b941b053131fcee63c94b6b3ad91322f9160d94973ce8c58fa"
+      ]
+    },
+    {
+      "epoch_id": 6,
+      "name": "First Content",
+      "changelog_ref": "changelog/epoch-6.md",
+      "accepted_hashes": [
+        "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a"
       ]
     }
   ]

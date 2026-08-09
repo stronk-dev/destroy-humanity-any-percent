@@ -11,17 +11,6 @@
         "amount": "1e1000",
         "reason_key": "resource.company_cash.cap.phase0"
       }
-    },
-    {
-      "id": "company.permits",
-      "scope": "company",
-      "numeric_kind": "decimal",
-      "initial": "0",
-      "minimum": "0",
-      "hardcap": {
-        "amount": "2.4e1",
-        "reason_key": "resource.company_permits.cap.phase0"
-      }
     }
   ],
   "generator_classes": [
@@ -35,18 +24,6 @@
       "production": {
         "resource_id": "company.cash",
         "base_rate": "1e0"
-      }
-    },
-    {
-      "id": "generator.legal_dept",
-      "price": {
-        "resource_id": "company.cash",
-        "base": "1e8",
-        "curve": { "kind": "geometric", "ratio": "1.15e0" }
-      },
-      "production": {
-        "resource_id": "company.permits",
-        "base_rate": "1e-3"
       }
     }
   ],
@@ -62,18 +39,6 @@
       "slot": "commons",
       "target": "all",
       "provider": "commons"
-    },
-    {
-      "id": "fiscal.generator.beige_tower",
-      "slot": "prestige",
-      "target": "generator.beige_tower",
-      "provider": "fiscal"
-    },
-    {
-      "id": "fiscal.hoard",
-      "slot": "prestige",
-      "target": "all",
-      "provider": "fiscal"
     },
     {
       "id": "guild.stock_consumption",

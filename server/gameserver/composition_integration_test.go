@@ -140,6 +140,50 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
+	if composition.CurrentHash != "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a" {
+		t.Fatalf("composed constants hash=%s", composition.CurrentHash)
+	}
+	currentBundle, ok := composition.Catalogs.bundle(composition.CurrentHash)
+	if !ok {
+		t.Fatal("current replay bundle unavailable")
+	}
+	activeCompany, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	companyState, err := save.RestoreState(activeCompany.State, activeCompany.Version, currentBundle.Economy, economy.ScopeCompany, clock.Time())
+	if err != nil {
+		t.Fatal(err)
+	}
+	var founderVersion int
+	var founderHash string
+	var founderBytes []byte
+	if err := db.QueryRowContext(ctx, `
+		SELECT r.version,r.constants_hash,r.state
+		FROM save_streams s
+		JOIN LATERAL (SELECT version,constants_hash,state FROM save_revisions WHERE stream_id=s.id ORDER BY revision DESC LIMIT 1) r ON true
+		WHERE s.owner_kind='founder' AND s.owner_id=$1 AND s.scope='founder' AND s.archived_at IS NULL`, founder.ID).
+		Scan(&founderVersion, &founderHash, &founderBytes); err != nil {
+		t.Fatal(err)
+	}
+	founderState, err := save.RestoreState(founderBytes, founderVersion, currentBundle.Economy, economy.ScopeFounder, clock.Time())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if activeCompany.Version != 17 || activeCompany.ConstantsHash != composition.CurrentHash || founderVersion != 21 || founderHash != composition.CurrentHash {
+		t.Fatalf("fresh activation company=(v%d,%s) founder=(v%d,%s)", activeCompany.Version, activeCompany.ConstantsHash, founderVersion, founderHash)
+	}
+	if len(companyState.MeterValues) != 11 || companyState.AchievementsEarnedRun == nil ||
+		len(founderState.MinigameRatings) != 1 || founderState.MinigameOfflineQuality == nil || founderState.Pets == nil ||
+		founderState.FiscalPeriodOpenedWallMS == 0 || founderState.Soul != currentBundle.Soul.Policy.Initial {
+		t.Fatalf("fresh epoch-6 state company=%+v founder=%+v", companyState, founderState)
+	}
+	if err := currentBundle.ValidateFoundationState(companyState); err != nil {
+		t.Fatalf("fresh Company state: %v", err)
+	}
+	if err := currentBundle.ValidateFoundationState(founderState); err != nil {
+		t.Fatalf("fresh Founder state: %v", err)
+	}
 
 	websocketURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/connection/websocket"
 	player := dialCompositionSocket(t, websocketURL, httpServer.Client(), tokens.AccessToken)
@@ -239,10 +283,6 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
-	currentBundle, ok := composition.Catalogs.bundle(composition.CurrentHash)
-	if !ok {
-		t.Fatal("current replay bundle unavailable")
-	}
 	factionBytes, err := os.ReadFile(filepath.Join(filepathRoot(t), "balance/factions/phase0.json"))
 	if err != nil {
 		t.Fatal(err)
@@ -271,7 +311,7 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	historicalBundle.ConstantsHash = historicalHash
 	historicalBundle.Faction = historicalFaction
 	composition.Catalogs.replay[historicalHash] = historicalBundle
-	if _, err := db.ExecContext(ctx, `UPDATE save_revisions SET version=1,state='{"balances":{"company.cash":"0"}}'::jsonb,constants_hash=$3 WHERE stream_id=$1 AND revision=$2`,
+	if _, err := db.ExecContext(ctx, `UPDATE save_revisions SET version=1,state='{"balances":{"company.cash":"0","company.permits":"0"}}'::jsonb,constants_hash=$3 WHERE stream_id=$1 AND revision=$2`,
 		legacyCompany.StreamID, legacyCompany.Revision, historicalHash); err != nil {
 		t.Fatal(err)
 	}
