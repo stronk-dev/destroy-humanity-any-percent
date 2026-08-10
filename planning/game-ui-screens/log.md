@@ -73,3 +73,18 @@ GameUISnapshot itself over a v4 catalog/v18 stream (the predicate alone is teste
 ruling's renderer-substitution requirement (mechanical IDs never render) as a GU acceptance test.**
 Range D {00cb2a6} records: APPROVED (honest scoping, clean provenance). Combined union:
 a8bbd5d..00cb2a6 complete, no uncovered edge commits.
+
+## 2026-08-10 — GU-C12 mechanical assembly review
+
+- **Review by:** Codex (implementer-side acceptance review). **Recorded by:** Codex.
+- Mechanical extraction proves 130 affected rows = 129 new keys plus the adopted replacement of
+  existing `resource.company_cash.cap.phase0`; no duplicate authored key exists.
+- The shipped exit-type union was independently enumerated from both Go and TypeScript as
+  `acquihire`, `acquisition`, `collapse`, `ipo`, `scripted_first`.
+- Fixed one unambiguous Copy validator defect discovered by the extraction: valid underscore
+  placeholders such as `{run_seq}` were mistaken for Markdown emphasis even though Copy C3's
+  parameter grammar explicitly permits underscores. The validator now removes only lexically
+  valid placeholders before its markup probe; an explicit regression passes `make copy-check`.
+- GU-C13–GU-C16 record the four remaining owner-contract gaps: README slot grammar, mandatory
+  provenance collisions, exact param types, and presentation-v2/exit-title bytes. No candidate
+  SHA is claimed until those are ruled.

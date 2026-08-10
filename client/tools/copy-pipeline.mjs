@@ -83,7 +83,11 @@ export function validatePlainCopyText(value, label = "copy text") {
   if (Buffer.byteLength(value, "utf8") > maxBytes) fail(label, `exceeds ${maxBytes} UTF-8 bytes`);
   if (value.split("\n").length > maxLines) fail(label, `exceeds ${maxLines} lines`);
   if (/[^\P{Cc}\n]/u.test(value)) fail(label, "contains a control character");
-  if (/[<`*_~\[\]|\\]|-->| {2,}$|^ {4}|^\s{0,3}(?:#{1,6}(?:\s|$)|>|[-+]\s|\d+[.)](?:\s|$))|^\s{0,3}[-=]+\s*$/mu.test(value)) {
+  // Parameter names are governed separately by placeholders()/validateTextParams.
+  // Remove only already-lexically-valid placeholders before the Markdown scan so
+  // an underscore in {run_seq} is not mistaken for emphasis syntax.
+  const markupProbe = value.replace(/\{[a-z][a-z0-9_]*\}/gu, "");
+  if (/[<`*_~\[\]|\\]|-->| {2,}$|^ {4}|^\s{0,3}(?:#{1,6}(?:\s|$)|>|[-+]\s|\d+[.)](?:\s|$))|^\s{0,3}[-=]+\s*$/mu.test(markupProbe)) {
     fail(label, "must be plain text, not HTML or Markdown");
   }
   return value;

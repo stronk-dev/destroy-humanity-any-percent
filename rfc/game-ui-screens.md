@@ -326,7 +326,8 @@ literal or mechanical-ID title derivation is permitted meanwhile.
   `run_ended` as the accepted-offer signal loses the offer identity exactly where the Offer Sheet
   needs it.)
 - **GU-C12 — SEQUENCED: the copy round is now in flight** (Claude authoring per the FCE-C7
-  orphan-first lane; the drafted set covers Vision/navigation/Desk/settings/drain/resync/offer/
+  text-ruling pattern, landing per the FCE-C8 orphan-first stage discipline; the drafted set
+  covers Vision/navigation/Desk/settings/drain/resync/offer/
   run-end screen copy PLUS the presentation-bound generator/upgrade/manual/cosmetic titles and
   the T0 satire elements). Codex assembles byte-exactly on delivery; no component literals
   meanwhile.
@@ -335,3 +336,59 @@ literal or mechanical-ID title derivation is permitted meanwhile.
 
 - 2026-08-10: GU-C9–C11 ruled (kernel rate projection; bootstrap coordinator; additive
   exit_offer_resolved); GU-C12 sequenced — the copy authoring round launched.
+
+## Codex assembly blockers (2026-08-10 — GU-C13–GU-C16)
+
+Mechanical extraction of the ruled GU-C12 document yields 130 affected Copy rows: the original
+128, plus `event.exit_offer_resolved` and `gate.t0_to_t1.title`. Because
+`resource.company_cash.cap.phase0` replaces an existing row, this is exactly 129 new keys plus one
+retune—the handoff's “129 strings” count is therefore consistent. Four shipped-grammar decisions
+remain before those bytes can form a valid ratification candidate; implementation stops rather
+than weakening the archived Copy contract.
+
+### GU-C13 — The ruled README is outside the closed Copy text grammar
+
+`satire.readme.body` is 46 lines while `copy/config.v1.json` caps every entry at 16. Its ASCII
+heading rules and `*` bullets are also deliberately rejected as Markdown-like syntax by the
+plain-text gate. The ruling explicitly approves this as a long-form slot, but no slot-specific
+grammar exists and Copy C2/C3 forbid extra row keys and raw-markup escape hatches.
+
+**Proposed contract:** either re-author the README into the shipped 16-line plain-text grammar, or
+amend Copy Foundation with one exact, fail-closed long-form text contract and its renderer. Do not
+silently raise global limits or exempt a key by label matching.
+
+### GU-C14 — Ten authored rows trip the mandatory provenance detector
+
+The detector correctly flags the Horse Armor price/history rows, five `$0.00` order-form rows,
+the order confirmation, the README, the shareware tooltip, and the offline-progress tooltip. Copy
+C7 has no suppression flag: detected fictional/mechanical literals must be rewritten (prefer
+runtime placeholders for prices, offline rate, and offline cap), while the real 2006/shareware
+claims require verified rows in `provenance.v1.json` backed by tracked extracts and HTTPS sources.
+The ruling's “no statistic needs a flag” statement cannot override the archived fail-closed gate.
+
+**Proposed contract:** owner-author the exact placeholder rewrites and commission the two real
+historical provenance extracts/registry rows. No unrelated verified claim may be attached merely
+to make the detector green.
+
+### GU-C15 — Parameter names exist, but their required types do not
+
+The Copy grammar requires every param to choose `string|integer|canonical_decimal`; the ruling
+names 20 parameterized rows but supplies no types.
+
+**Proposed contract:** integers are `tier`, `count`, `cap`, `current`, `run_seq`, `expires_at_ms`,
+`attended_ms`, and `day`; canonical decimals are the two `cost` parameters; all already-formatted
+display values (`rta`, `pb`, `rate`, `ago`, `amount`, `remaining`, `attended`) and mechanical/title
+substitution inputs (`exit_type`, `gate_id`, `generator_id`, `upgrade_id`, `founder`) are strings.
+Any new placeholders introduced by GU-C14 receive their explicit types in that ruling.
+
+### GU-C16 — The presentation extension and exit-title rows lack byte grammar
+
+The ratified presentation-v1 document has exact top-level keys and no `gates` or `exit_types`
+arms. Adding prose “families” does not define row keys or whether the schema version changes.
+The shipped exit-type union is exactly `acquihire|acquisition|collapse|ipo|scripted_first`, but the
+promised follow-up title texts do not yet exist.
+
+**Proposed contract:** mint presentation schema v2 by retaining the four v1 arrays byte-identical
+and adding byte-sorted `gates:[{id,title_key}]` plus `exit_types:[{id,title_key}]`; the candidate
+contains `gate.t0_to_t1 → gate.t0_to_t1.title` and all five exit IDs once the owner supplies their
+five literal titles. The future loader enforces set equality against Routes and Prestige.

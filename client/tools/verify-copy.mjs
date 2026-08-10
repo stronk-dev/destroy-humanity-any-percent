@@ -63,6 +63,7 @@ expectFailure("known-name copy fixture", () => validateCopySafety([{ ...safetyEn
 for (const fixture of ["     indented code", ">quoted", "#", "<!DOCTYPE html>", "<?xml version=\"1.0\"?>", "line  \nnext", "Heading\n=", "Heading\n--"]) {
   expectFailure("plain-text build fixture", () => validatePlainCopyText(fixture), /plain text/);
 }
+validatePlainCopyText("Offer declined. Run {run_seq} continues.", "underscore placeholder fixture");
 
 const references = JSON.parse(readFileSync(path.join(repositoryRoot, "copy/references.v1.json"), "utf8"));
 const codeReferences = built.codeReferences;
