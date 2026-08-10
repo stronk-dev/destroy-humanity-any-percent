@@ -117,3 +117,15 @@ The implementation commit is `ddb106f`; its designated-review range is `b01c98f.
 contains only the T01-C11 relevance grammar, executable fixtures, candidate pin #9, and their
 planning/RFC record. The later full-repository `make verify` at `1e8f628` also consumed these bytes
 successfully.
+
+## 2026-08-10 — designated verdict: relevance multi-segment + candidates {ddb106f} — APPROVED, RATIFY-READY (#9a/#9b)
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+The T01-C11 matrix implemented exactly (all seven rejection arms Go-tested; JSON-Schema
+independently pins v1 rules); solver mathematics UNCHANGED (byte-identity probe: fresh RunRelevance
+reproduces the v1 golden byte-for-byte); both candidate SHAs recomputed and matching; the three
+ruled intervals exact; all 19 item windows verified truthful against ratified economy v4
+(bidirectional cover, byte-sorted); both load under the real loader. Interpretation note recorded:
+"raw-byte-ordered" implemented as catalog-position interval ordering — equal for every in-repo
+catalog and the truthful-window reading. **Pins #9a f8878cbf…30bf (policy) / #9b 2f1afb92…2629
+(scenario) are RATIFY-READY.**

@@ -180,3 +180,11 @@ UI Foundation is archived under the designated verdict immediately above. The fr
 behavior remains `docs/ui-foundation.md`. This move consumes the implementation verdict for
 `3483ab1`, the F1/F3-F6 remediation review for `{8873301, 5a7dc01}`, and the final carry-fix verdict
 for `d2cf2cd`; together those entries cover the complete implementation and remediation chain.
+
+## 2026-08-10 — designated cross-party verdict: the archival execution {b01c98f} — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+Moves byte-intact apart from sanctioned edits; the full three-verdict chain cited (NOT APPROVED →
+remediation NOT APPROVED (F1-R) → carry-fix APPROVED/ELIGIBLE); the client/-touching span union
+closed (fa03e02 owned by the MA thread); docs true as written post-carry-fix; index rows correct;
+no self-approval. UI Foundation is the twelfth archived foundation.

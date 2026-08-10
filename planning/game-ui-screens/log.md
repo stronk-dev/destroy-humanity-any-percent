@@ -55,3 +55,21 @@ the generated API pin, composed harness, TypeScript/Svelte typecheck, production
 tests, kernel-history guard, copy/schema checks, and 19,932 browser assertions. The designated
 review range for this batch is `ddb106f..1e8f628`; it contains only this Game-UI implementation
 commit.
+
+## 2026-08-10 — designated cross-party verdict: contract/composition layer {1e8f628} — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+All eight GU rulings verified implemented-or-honestly-deferred: the DTO on the EXISTING route
+(which this commit converts from a hand-mounted raw-save-bytes chi route to the registry-mounted
+schema-validated operation — closing a save-state escape, the MA-C14 discipline); five-kind exact
+event unions with the honest pre-GU-C11 offer handling; RTA/PB per ruling; the five-surface
+registry with tested preemption; GU-C8 literals count-asserted with a red probe; BOTH composition
+seams genuine with discriminating tests (pre-v18 zero-provisioned; the OwnerID fill that fails
+composed-end-to-end when reverted); schema-v4 rejection fail-closed; kernel honest; all gates
+green incl. cold -count=1 and the full Postgres suite.
+**Routed to the GU-C9/screens batch (non-blocking): C-F1 (MEDIUM) — a store-level test driving
+GameUISnapshot itself over a v4 catalog/v18 stream (the predicate alone is tested today); C-F2
+(LOW) — wire the CI-observable performance arm when the first screen ships. Plus the copy
+ruling's renderer-substitution requirement (mechanical IDs never render) as a GU acceptance test.**
+Range D {00cb2a6} records: APPROVED (honest scoping, clean provenance). Combined union:
+a8bbd5d..00cb2a6 complete, no uncovered edge commits.
