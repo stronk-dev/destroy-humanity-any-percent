@@ -28,7 +28,9 @@ func run(logger *slog.Logger) error {
 	databaseURL := os.Getenv("DATABASE_URL")
 	serverID := os.Getenv("CLOUD_CLICKER_SERVER_ID")
 	key, err := base64.StdEncoding.DecodeString(os.Getenv("CLOUD_CLICKER_JWT_KEY"))
-	if err != nil || databaseURL == "" || serverID == "" || len(key) < 32 {
+	bootstrapKey, bootstrapErr := base64.StdEncoding.DecodeString(os.Getenv("CLOUD_CLICKER_BOOTSTRAP_KEY"))
+	bootstrapKeyID := os.Getenv("CLOUD_CLICKER_BOOTSTRAP_KEY_ID")
+	if err != nil || bootstrapErr != nil || databaseURL == "" || serverID == "" || len(key) < 32 || len(bootstrapKey) != 32 || bootstrapKeyID == "" {
 		return gameserver.ErrComposition
 	}
 	repositoryRoot := os.Getenv("CLOUD_CLICKER_REPOSITORY_ROOT")
@@ -51,7 +53,8 @@ func run(logger *slog.Logger) error {
 	}
 	defer db.Close()
 	composition, err := gameserver.Compose(ctx, gameserver.CompositionConfig{DB: db, RepositoryRoot: repositoryRoot, ServerID: serverID,
-		ActivityBracket: activity, SigningKeys: account.SigningKeys{CurrentID: "runtime", Current: key}, Logger: logger})
+		ActivityBracket: activity, SigningKeys: account.SigningKeys{CurrentID: "runtime", Current: key},
+		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: bootstrapKeyID, Current: bootstrapKey}, Logger: logger})
 	if err != nil {
 		return err
 	}

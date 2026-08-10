@@ -56,6 +56,7 @@ type initialFounderStates struct {
 	Encoded map[economy.Scope][]byte
 	Version map[economy.Scope]int
 	Frozen  []save.FrozenContribution
+	State   map[economy.Scope]*save.State
 }
 
 type CreatedAccount struct {
@@ -582,6 +583,10 @@ func (repository *Repository) DeleteAccount(ctx context.Context, accountID strin
 			return err
 		}
 	}
+	if _, err := tx.ExecContext(ctx, `UPDATE bootstrap_receipts SET key_id=NULL,nonce=NULL,ciphertext=NULL,tombstoned_at=$2
+		WHERE account_id=$1 AND tombstoned_at IS NULL`, accountID, now); err != nil {
+		return err
+	}
 	result, err := tx.ExecContext(ctx, `DELETE FROM accounts WHERE account_id=$1`, accountID)
 	if err != nil {
 		return err
@@ -594,6 +599,10 @@ func (repository *Repository) DeleteAccount(ctx context.Context, accountID strin
 
 func (repository *Repository) issueTokenPair(ctx context.Context, tx *sql.Tx, accountID, founderID, familyID string) (TokenPair, error) {
 	now := save.CanonicalServerTime(repository.clock())
+	return repository.issueTokenPairAt(ctx, tx, accountID, founderID, familyID, now)
+}
+
+func (repository *Repository) issueTokenPairAt(ctx context.Context, tx *sql.Tx, accountID, founderID, familyID string, now time.Time) (TokenPair, error) {
 	refreshToken, refreshHash, err := newOpaqueToken(repository.random)
 	if err != nil {
 		return TokenPair{}, err
@@ -657,7 +666,7 @@ func (repository *Repository) initialStates(now time.Time, companyOverride *save
 			return initialFounderStates{}, err
 		}
 	}
-	result := initialFounderStates{Encoded: make(map[economy.Scope][]byte, 2), Version: make(map[economy.Scope]int, 2), Frozen: frozen}
+	result := initialFounderStates{Encoded: make(map[economy.Scope][]byte, 2), Version: make(map[economy.Scope]int, 2), Frozen: frozen, State: states}
 	for _, scope := range []economy.Scope{economy.ScopeCompany, economy.ScopeFounder} {
 		version := save.VersionForState(states[scope])
 		encoded, err := save.EncodeStateVersion(states[scope], version)

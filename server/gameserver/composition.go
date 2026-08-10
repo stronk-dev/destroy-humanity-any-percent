@@ -46,6 +46,7 @@ type CompositionConfig struct {
 	ServerID           string
 	ActivityBracket    string
 	SigningKeys        account.SigningKeys
+	BootstrapKeys      account.BootstrapReceiptKeys
 	Clock              func() time.Time
 	Random             io.Reader
 	Logger             *slog.Logger
@@ -296,7 +297,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err := accounts.AttachAccountDeletionParticipant(guildService); err != nil {
 		return nil, err
 	}
-	api, err := account.NewAPI(accounts, productionService, account.Phase0APIConfig())
+	api, err := account.NewAPI(accounts, productionService, account.Phase0APIConfig(config.BootstrapKeys))
 	if err != nil {
 		return nil, err
 	}

@@ -11,7 +11,7 @@ RFC: `rfc/game-ui-screens.md`
   candidate SHAs for owner ratification.
 - [ ] Implement GU-C9's kernel-owned rate projection, including the required store-level
   schema-v4/Company-v18 rejection regression.
-- [ ] Implement GU-C10's idempotent bootstrap coordinator through the API Foundation lane.
+- [x] Implement GU-C10's idempotent bootstrap coordinator through the API Foundation lane.
 - [x] Implement GU-C11's additive `exit_offer_resolved` event in both runtimes.
 - [ ] Build Desk, Vision Slide, run-end, Offer Sheet, and Settings from the ruled copy and
   generated wire contracts.

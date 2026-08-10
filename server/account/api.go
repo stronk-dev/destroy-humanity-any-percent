@@ -46,6 +46,7 @@ type MinigameAPIHandler interface {
 
 type GameUIHandler interface {
 	GameUISnapshot(context.Context, string, time.Time) (json.RawMessage, error)
+	BootstrapSnapshotBuilder
 }
 
 type APIConfig struct {
@@ -56,11 +57,16 @@ type APIConfig struct {
 	MaxBodyBytes          int64
 	TrustedProxyHops      int
 	LimiterMaxEntries     int
+	BootstrapReceiptKeys  BootstrapReceiptKeys
 }
 
-func Phase0APIConfig() APIConfig {
-	return APIConfig{UnauthenticatedBurst: 10, UnauthenticatedPerMin: 30, AccountBurst: 60, AccountPerMin: 300,
+func Phase0APIConfig(receiptKeys ...BootstrapReceiptKeys) APIConfig {
+	config := APIConfig{UnauthenticatedBurst: 10, UnauthenticatedPerMin: 30, AccountBurst: 60, AccountPerMin: 300,
 		MaxBodyBytes: 64 << 10, LimiterMaxEntries: 65_536}
+	if len(receiptKeys) == 1 {
+		config.BootstrapReceiptKeys = receiptKeys[0]
+	}
+	return config
 }
 
 type API struct {
@@ -117,7 +123,7 @@ func NewAPI(repository *Repository, intents IntentHandler, config APIConfig) (*A
 	}
 	if repository == nil || intents == nil || config.UnauthenticatedBurst < 1 || config.UnauthenticatedPerMin < 1 ||
 		config.AccountBurst < 1 || config.AccountPerMin < 1 || config.MaxBodyBytes < 1024 ||
-		config.TrustedProxyHops < 0 || config.TrustedProxyHops > 8 || config.LimiterMaxEntries < 1 {
+		config.TrustedProxyHops < 0 || config.TrustedProxyHops > 8 || config.LimiterMaxEntries < 1 || config.BootstrapReceiptKeys.validate() != nil {
 		return nil, ErrInvalidRequest
 	}
 	unauth, _ := httpapi.NewTokenBuckets(config.UnauthenticatedBurst, config.UnauthenticatedPerMin, config.LimiterMaxEntries)
@@ -126,6 +132,12 @@ func NewAPI(repository *Repository, intents IntentHandler, config APIConfig) (*A
 	if err != nil {
 		return nil, ErrInvalidRequest
 	}
+	config.BootstrapReceiptKeys.Current = append([]byte(nil), config.BootstrapReceiptKeys.Current...)
+	previous := make(map[string][]byte, len(config.BootstrapReceiptKeys.Previous))
+	for id, key := range config.BootstrapReceiptKeys.Previous {
+		previous[id] = append([]byte(nil), key...)
+	}
+	config.BootstrapReceiptKeys.Previous = previous
 	return &API{repository: repository, intents: intents, config: config,
 		unauth:           unauth,
 		accounts:         accounts,
@@ -160,6 +172,7 @@ func (api *API) Router() http.Handler {
 	})
 	bindings := []publicapi.Binding{
 		{OperationID: "cancel_soul_recovery", Handler: http.HandlerFunc(api.cancelSoulRecovery)},
+		{OperationID: "create_bootstrap", Handler: api.limitUnauthenticated(http.HandlerFunc(api.createBootstrap))},
 		{OperationID: "create_minigame_session", Handler: http.HandlerFunc(api.createMinigameSession)},
 		{OperationID: "get_current_minigame_session", Handler: http.HandlerFunc(api.getCurrentMinigameSession)},
 		{OperationID: "get_game_ui_snapshot", Handler: http.HandlerFunc(api.getGameUISnapshot)},
@@ -175,6 +188,40 @@ func (api *API) Router() http.Handler {
 		panic(err)
 	}
 	return router
+}
+
+func (api *API) createBootstrap(response http.ResponseWriter, request *http.Request) {
+	response.Header().Set("Cache-Control", "no-store")
+	var body struct {
+		IdempotencyKey string `json:"idempotency_key"`
+	}
+	if api.gameUI == nil {
+		writeError(response, http.StatusInternalServerError, "internal_invariant", "bootstrap")
+		return
+	}
+	if decodeRequest(response, request, api.config.MaxBodyBytes, &body) != nil {
+		writeError(response, http.StatusBadRequest, "invalid", "bootstrap")
+		return
+	}
+	encoded, err := api.repository.CreateBootstrap(request.Context(), body.IdempotencyKey, api.gameUI,
+		api.config.BootstrapReceiptKeys, func(payload []byte) error {
+			return api.privateRegistry.ValidateResponse("create_bootstrap", http.StatusCreated, payload)
+		}, nil)
+	if errors.Is(err, ErrInvalidRequest) {
+		writeError(response, http.StatusBadRequest, "invalid", "bootstrap")
+		return
+	}
+	if errors.Is(err, ErrBootstrapExpired) {
+		writeError(response, http.StatusConflict, "conflict", "bootstrap_expired")
+		return
+	}
+	if err != nil {
+		writeError(response, http.StatusInternalServerError, "internal_invariant", "bootstrap")
+		return
+	}
+	response.Header().Set("Content-Type", "application/json")
+	response.WriteHeader(http.StatusCreated)
+	_, _ = response.Write(encoded)
 }
 
 func (api *API) getGameUISnapshot(response http.ResponseWriter, request *http.Request) {

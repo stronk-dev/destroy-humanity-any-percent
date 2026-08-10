@@ -18,6 +18,10 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
+func testBootstrapReceiptKeys() BootstrapReceiptKeys {
+	return BootstrapReceiptKeys{CurrentID: "bootstrap-test", Current: bytes.Repeat([]byte{0x7b}, 32)}
+}
+
 func TestRecoveryCredentialRoundTripAndEncodedParameters(t *testing.T) {
 	random := bytes.NewReader(bytes.Repeat([]byte{0x5a}, 64))
 	code, err := newRecoveryCode(random)

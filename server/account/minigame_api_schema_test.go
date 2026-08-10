@@ -90,6 +90,38 @@ func TestGameUISnapshotAPIRegistryPinsTheProjectionEnvelope(t *testing.T) {
 	}
 }
 
+func TestBootstrapAPIRegistryPinsCredentialSafeWire(t *testing.T) {
+	registry, err := newPrivateAPIRegistry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := []byte(`{"idempotency_key":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}`)
+	if err := registry.ValidateRequest("create_bootstrap", request); err != nil {
+		t.Fatal(err)
+	}
+	operation, ok := registry.Operation("create_bootstrap")
+	if !ok || operation.Public || operation.Auth != publicapi.AuthNone || operation.Method != http.MethodPost || operation.Path != "/api/v1/bootstrap" {
+		t.Fatalf("bootstrap authority=%+v ok=%v", operation, ok)
+	}
+	snapshot := `{"constants_hash":"` + testConstantsHash + `","evaluated_through_ms":1800000000000,"facts":[],"generators":[],"manual_action":{"action_id":"manual.click","bucket_cap_milli":1,"refill_milli_per_ms":1,"refilled_at_ms":1800000000000,"tokens_milli":0},"progress":[],"resources":[],"revision":1,"run":{"category":"any_percent","exit_count":0,"founder_id":"01985555-1111-7111-8111-111111111111","run_seq":1,"run_started_at_ms":1800000000000,"tier":0},"schema_version":1,"server_now_ms":1800000000000,"upgrades":[]}`
+	response := []byte(`{"account":{"account_id":"01985555-1111-7111-8111-111111111110","created_at":"2026-08-10T12:00:00.000Z","recovery_code":"recovery"},"session":{"access_token":"access","refresh_token":"refresh"},"game_ui_snapshot":` + snapshot + `}`)
+	if err := registry.ValidateResponse("create_bootstrap", http.StatusCreated, response); err != nil {
+		t.Fatalf("valid bootstrap response: %v", err)
+	}
+	for _, invalid := range [][]byte{
+		[]byte(`{"idempotency_key":"a","account_id":"private"}`),
+		append(append([]byte(nil), response[:len(response)-1]...), []byte(`,"receipt_ciphertext":"private"}`)...),
+	} {
+		if bytes.Contains(invalid, []byte("account_id\":\"private")) {
+			if err := registry.ValidateRequest("create_bootstrap", invalid); err == nil {
+				t.Fatalf("accepted private bootstrap request %s", invalid)
+			}
+		} else if err := registry.ValidateResponse("create_bootstrap", http.StatusCreated, invalid); err == nil {
+			t.Fatalf("accepted private bootstrap response %s", invalid)
+		}
+	}
+}
+
 func TestMinigameEndpointPrivacyContractIsClosed(t *testing.T) {
 	registry, err := newPrivateAPIRegistry()
 	if err != nil {

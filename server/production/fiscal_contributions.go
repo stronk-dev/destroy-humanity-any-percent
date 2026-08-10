@@ -41,6 +41,30 @@ func FrozenFiscalContributions(catalog *fiscal.Catalog, founder *save.State) ([]
 
 type FrozenContributionProvider struct{ DB *sql.DB }
 
+// ResolveFrozenContributions validates immutable run contributions against
+// their pinned economy catalog. Persisted and transaction-local projections
+// share this conversion so bootstrap cannot grow a second interpretation.
+func ResolveFrozenContributions(catalog *economy.Catalog, values []save.FrozenContribution) ([]multiplier.Contribution, error) {
+	if catalog == nil {
+		return nil, ErrInvalidEngineState
+	}
+	result := make([]multiplier.Contribution, len(values))
+	seen := map[string]bool{}
+	for index, value := range values {
+		declaration, ok := catalog.MultiplierSource(value.SourceID)
+		if !ok || seen[value.SourceID] || declaration.Provider != "fiscal" || multiplier.Slot(declaration.Slot) != value.Slot || declaration.Target != value.Target {
+			return nil, fmt.Errorf("%w: frozen Fiscal contribution declaration", ErrInvalidEngineState)
+		}
+		factor, err := decimal.ParseCanonical(value.Factor)
+		if err != nil || !factor.IsStateValue() || !factor.Gt(decimal.Zero) {
+			return nil, ErrInvalidEngineState
+		}
+		seen[value.SourceID] = true
+		result[index] = multiplier.Contribution{SourceID: value.SourceID, Slot: value.Slot, Target: value.Target, Factor: factor}
+	}
+	return result, nil
+}
+
 func (provider FrozenContributionProvider) Contributions(ctx context.Context, state *save.State, catalog *economy.Catalog,
 	revision save.Revision) ([]multiplier.Contribution, error) {
 	if provider.DB == nil || state == nil || catalog == nil || state.RunSeq < 1 {
@@ -50,17 +74,5 @@ func (provider FrozenContributionProvider) Contributions(ctx context.Context, st
 	if err != nil {
 		return nil, err
 	}
-	result := make([]multiplier.Contribution, len(values))
-	for index, value := range values {
-		declaration, ok := catalog.MultiplierSource(value.SourceID)
-		if !ok || declaration.Provider != "fiscal" || multiplier.Slot(declaration.Slot) != value.Slot || declaration.Target != value.Target {
-			return nil, fmt.Errorf("%w: frozen Fiscal contribution declaration", ErrInvalidEngineState)
-		}
-		factor, err := decimal.ParseCanonical(value.Factor)
-		if err != nil || !factor.IsStateValue() || !factor.Gt(decimal.Zero) {
-			return nil, ErrInvalidEngineState
-		}
-		result[index] = multiplier.Contribution{SourceID: value.SourceID, Slot: value.Slot, Target: value.Target, Factor: factor}
-	}
-	return result, nil
+	return ResolveFrozenContributions(catalog, values)
 }

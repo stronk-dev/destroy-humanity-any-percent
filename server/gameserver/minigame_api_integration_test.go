@@ -51,6 +51,7 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		DB: db, RepositoryRoot: composedMinigameRepositoryRoot(t, filepathRoot(t)),
 		ServerID: "01986666-f100-4000-8000-000000000001", ActivityBracket: "activity.standard",
 		Clock: clock.Time, SigningKeys: account.SigningKeys{CurrentID: "minigame-lifecycle", Current: bytes.Repeat([]byte{0x57}, 32)},
+		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-minigame", Current: bytes.Repeat([]byte{0x58}, 32)},
 	})
 	if err != nil {
 		t.Fatal(err)

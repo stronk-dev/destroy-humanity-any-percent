@@ -70,6 +70,12 @@ type compositionSocket struct {
 	pending    []wsReply
 }
 
+type bootstrapResponseEnvelope struct {
+	Account        account.CreatedAccount `json:"account"`
+	Session        account.TokenPair      `json:"session"`
+	GameUISnapshot json.RawMessage        `json:"game_ui_snapshot"`
+}
+
 func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
@@ -84,7 +90,7 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err := save.Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	const cleanDatabase = `TRUNCATE accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE`
+	const cleanDatabase = `TRUNCATE bootstrap_receipts,accounts,save_streams,catalog_sets,epochs RESTART IDENTITY CASCADE`
 	if _, err := db.ExecContext(ctx, cleanDatabase); err != nil {
 		t.Fatal(err)
 	}
@@ -108,7 +114,8 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 			CurrentID: "composition-integration",
 			Current:   bytes.Repeat([]byte{0x42}, 32),
 		},
-		Clock: clock.Time,
+		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-integration", Current: bytes.Repeat([]byte{0x43}, 32)},
+		Clock:         clock.Time,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -125,19 +132,32 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	defer httpServer.Close()
 	waitHTTPStatus(t, httpServer.Client(), httpServer.URL+"/readyz", http.StatusNoContent)
 
-	createdResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/account", "", `{}`)
-	if createdResponse.StatusCode != http.StatusCreated {
-		t.Fatalf("account create status=%d body=%s", createdResponse.StatusCode, responseBody(createdResponse))
+	invalidBootstrap := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/bootstrap", "",
+		`{"idempotency_key":"guessable"}`)
+	if invalidBootstrap.StatusCode != http.StatusBadRequest || responseBody(invalidBootstrap) != "{\"category\":\"invalid\",\"detail\":\"bootstrap\"}\n" {
+		t.Fatal("invalid bootstrap key did not fail closed")
 	}
-	var created account.CreatedAccount
-	decodeCompositionResponse(t, createdResponse, &created)
-	sessionResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
-		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
-	if sessionResponse.StatusCode != http.StatusOK {
-		t.Fatalf("session status=%d body=%s", sessionResponse.StatusCode, responseBody(sessionResponse))
+	bootstrapKey := strings.Repeat("ab", 32)
+	bootstrapResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/bootstrap", "",
+		fmt.Sprintf(`{"idempotency_key":%q}`, bootstrapKey))
+	if bootstrapResponse.StatusCode != http.StatusCreated || bootstrapResponse.Header.Get("Cache-Control") != "no-store" {
+		t.Fatalf("bootstrap status=%d cache=%q body=%s", bootstrapResponse.StatusCode, bootstrapResponse.Header.Get("Cache-Control"), responseBody(bootstrapResponse))
 	}
-	var tokens account.TokenPair
-	decodeCompositionResponse(t, sessionResponse, &tokens)
+	var bootstrap bootstrapResponseEnvelope
+	decodeCompositionResponse(t, bootstrapResponse, &bootstrap)
+	created, tokens := bootstrap.Account, bootstrap.Session
+	retryResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/bootstrap", "",
+		fmt.Sprintf(`{"idempotency_key":%q}`, bootstrapKey))
+	var retry bootstrapResponseEnvelope
+	if retryResponse.StatusCode != http.StatusCreated || retryResponse.Header.Get("Cache-Control") != "no-store" {
+		t.Fatalf("bootstrap retry status=%d cache=%q body=%s", retryResponse.StatusCode, retryResponse.Header.Get("Cache-Control"), responseBody(retryResponse))
+	}
+	decodeCompositionResponse(t, retryResponse, &retry)
+	firstEncoded, _ := json.Marshal(bootstrap)
+	retryEncoded, _ := json.Marshal(retry)
+	if !bytes.Equal(firstEncoded, retryEncoded) {
+		t.Fatalf("bootstrap retry changed receipt\nfirst=%s\nretry=%s", firstEncoded, retryEncoded)
+	}
 	uiResponse := compositionRequest(t, httpServer.Client(), http.MethodGet, httpServer.URL+"/api/v1/founder/state", tokens.AccessToken, "")
 	if uiResponse.StatusCode != http.StatusOK {
 		company, companyErr := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
@@ -162,7 +182,20 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 			RunSeq    int64  `json:"run_seq"`
 		} `json:"run"`
 	}
-	decodeCompositionResponse(t, uiResponse, &uiSnapshot)
+	uiBytes := []byte(responseBody(uiResponse))
+	if err := json.Unmarshal(uiBytes, &uiSnapshot); err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(bootstrap.GameUISnapshot, uiBytes) {
+		t.Fatalf("transaction-local bootstrap snapshot differs from first committed read\nbootstrap=%s\ncommitted=%s", bootstrap.GameUISnapshot, uiBytes)
+	}
+	var bootstrapSnapshot struct {
+		ConstantsHash string `json:"constants_hash"`
+		Revision      int64  `json:"revision"`
+	}
+	if json.Unmarshal(bootstrap.GameUISnapshot, &bootstrapSnapshot) != nil || bootstrapSnapshot.ConstantsHash != composition.CurrentHash || bootstrapSnapshot.Revision != 1 {
+		t.Fatalf("bootstrap Game UI snapshot=%+v", bootstrapSnapshot)
+	}
 	founder, err := composition.Accounts.ActiveFounder(ctx, created.AccountID)
 	if err != nil {
 		t.Fatal(err)
@@ -575,7 +608,8 @@ func TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration(
 	composition, err := Compose(ctx, CompositionConfig{
 		DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000303",
 		ActivityBracket: "activity.standard", Clock: clock.Time,
-		SigningKeys: account.SigningKeys{CurrentID: "composition-prime", Current: bytes.Repeat([]byte{0x63}, 32)},
+		SigningKeys:   account.SigningKeys{CurrentID: "composition-prime", Current: bytes.Repeat([]byte{0x63}, 32)},
+		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-prime", Current: bytes.Repeat([]byte{0x64}, 32)},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -651,7 +685,8 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	composition, err := Compose(ctx, CompositionConfig{
 		DB: db, RepositoryRoot: filepathRoot(t), ServerID: "018f0000-0000-4000-8000-000000000302",
 		ActivityBracket: "activity.standard", Clock: func() time.Time { return now },
-		SigningKeys: account.SigningKeys{CurrentID: "composition-verification", Current: bytes.Repeat([]byte{0x24}, 32)},
+		SigningKeys:   account.SigningKeys{CurrentID: "composition-verification", Current: bytes.Repeat([]byte{0x24}, 32)},
+		BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "bootstrap-verification", Current: bytes.Repeat([]byte{0x25}, 32)},
 	})
 	if err != nil {
 		t.Fatal(err)

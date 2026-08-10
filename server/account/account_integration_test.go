@@ -129,7 +129,7 @@ func TestAccountSessionIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	api, err := NewAPI(repository, intentService, APIConfig{UnauthenticatedBurst: 20, UnauthenticatedPerMin: 60, AccountBurst: 100, AccountPerMin: 600, MaxBodyBytes: 64 << 10})
+	api, err := NewAPI(repository, intentService, APIConfig{UnauthenticatedBurst: 20, UnauthenticatedPerMin: 60, AccountBurst: 100, AccountPerMin: 600, MaxBodyBytes: 64 << 10, BootstrapReceiptKeys: testBootstrapReceiptKeys()})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -511,7 +511,7 @@ func TestAccountUnauthenticatedRateLimitIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	api, err := NewAPI(repository, service, APIConfig{UnauthenticatedBurst: 1, UnauthenticatedPerMin: 1, AccountBurst: 1, AccountPerMin: 1, MaxBodyBytes: 64 << 10})
+	api, err := NewAPI(repository, service, APIConfig{UnauthenticatedBurst: 1, UnauthenticatedPerMin: 1, AccountBurst: 1, AccountPerMin: 1, MaxBodyBytes: 64 << 10, BootstrapReceiptKeys: testBootstrapReceiptKeys()})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -572,7 +572,7 @@ func epoch5AccountIntegrationBundle(t *testing.T) accountIntegrationBundle {
 
 func truncateAccountIntegration(t *testing.T, db *sql.DB) {
 	t.Helper()
-	_, err := db.Exec(`TRUNCATE epochs,catalog_sets,access_tokens,sessions,account_emails,account_founders,accounts,commons_recruitment_offers,commons_health_scopes,commons_member_samples,commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes,route_hint_projection_events,founder_route_state,founder_route_executions,route_projection_events,events,intent_records,save_revisions,save_streams CASCADE`)
+	_, err := db.Exec(`TRUNCATE bootstrap_receipts,epochs,catalog_sets,access_tokens,sessions,account_emails,account_founders,accounts,commons_recruitment_offers,commons_health_scopes,commons_member_samples,commons_projection_events,company_compact_memberships,founder_commons_assignments,commons_cohorts,registry_routes,route_hint_projection_events,founder_route_state,founder_route_executions,route_projection_events,events,intent_records,save_revisions,save_streams CASCADE`)
 	if err != nil {
 		t.Fatal(err)
 	}

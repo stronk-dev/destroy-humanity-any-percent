@@ -23,6 +23,8 @@
               "access_token",
               "account",
               "body",
+              "bootstrap",
+              "bootstrap_expired",
               "duplicate_card",
               "exclusive_activity",
               "fiscal_unlock_required",
@@ -59,6 +61,77 @@
         "required": [
           "category",
           "detail"
+        ],
+        "type": "object"
+      },
+      "BootstrapAccount": {
+        "additionalProperties": false,
+        "properties": {
+          "account_id": {
+            "format": "uuid-v7",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time-ms",
+            "type": "string"
+          },
+          "recovery_code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "created_at",
+          "recovery_code"
+        ],
+        "type": "object"
+      },
+      "BootstrapRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "idempotency_key": {
+            "format": "opaque-id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotency_key"
+        ],
+        "type": "object"
+      },
+      "BootstrapResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "account": {
+            "$ref": "#/components/schemas/BootstrapAccount"
+          },
+          "game_ui_snapshot": {
+            "$ref": "#/components/schemas/GameUISnapshot"
+          },
+          "session": {
+            "$ref": "#/components/schemas/BootstrapSession"
+          }
+        },
+        "required": [
+          "account",
+          "game_ui_snapshot",
+          "session"
+        ],
+        "type": "object"
+      },
+      "BootstrapSession": {
+        "additionalProperties": false,
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token"
         ],
         "type": "object"
       },
@@ -1245,6 +1318,73 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/bootstrap": {
+      "post": {
+        "operationId": "create_bootstrap",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BootstrapRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BootstrapResponse"
+                }
+              }
+            },
+            "description": "HTTP 201"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 400"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 409"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 429"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            },
+            "description": "HTTP 500"
+          }
+        }
+      }
+    },
     "/api/v1/founder/state": {
       "get": {
         "operationId": "get_game_ui_snapshot",

@@ -138,6 +138,38 @@ func (projector *Projector) GameUISnapshot(ctx context.Context, streamID string,
 			return nil, err
 		}
 	}
+	founder, err := projector.store.LoadSiblingLatest(ctx, streamID, economy.ScopeFounder)
+	if err != nil || founder.State == nil {
+		return nil, errors.Join(ErrInvalidProjection, err)
+	}
+	return projectSnapshot(bundle, loaded.Key.OwnerID, loaded.Revision.Number, state, founder.State, contributions, now)
+}
+
+// InitialGameUISnapshot projects transaction-local initial states without a
+// database read. Bootstrap can therefore validate and persist the exact
+// response in the account-creation transaction.
+func (projector *Projector) InitialGameUISnapshot(_ context.Context, constantsHash, founderID string,
+	company, founder *save.State, frozen []save.FrozenContribution, now time.Time) (json.RawMessage, error) {
+	if projector == nil || constantsHash == "" || founderID == "" || company == nil || founder == nil || now.IsZero() {
+		return nil, ErrInvalidProjection
+	}
+	bundle, ok := projector.catalogs.ResolveReplayCatalogs(constantsHash)
+	if !ok || bundle.Economy == nil || bundle.Routes == nil {
+		return nil, ErrInvalidProjection
+	}
+	contributions, err := production.ResolveFrozenContributions(bundle.Economy, frozen)
+	if err != nil {
+		return nil, err
+	}
+	return projectSnapshot(bundle, founderID, 1, company, founder, contributions, now)
+}
+
+func projectSnapshot(bundle production.CatalogBundle, founderID string, revision int64, state, founder *save.State,
+	contributions []multiplier.Contribution, now time.Time) (json.RawMessage, error) {
+	if state == nil || state.Ledger == nil || founder == nil || founder.Ledger == nil || founderID == "" || revision < 1 || now.IsZero() {
+		return nil, ErrInvalidProjection
+	}
+	catalog := bundle.Economy
 	attendedMS, err := production.ResolveRateProjectionAttendedMS(bundle, state, now)
 	if err != nil {
 		return nil, err
@@ -163,10 +195,6 @@ func (projector *Projector) GameUISnapshot(ctx context.Context, streamID string,
 		return nil, ErrInvalidProjection
 	}
 	policy := catalog.ManualPolicy()
-	founder, err := projector.store.LoadSiblingLatest(ctx, streamID, economy.ScopeFounder)
-	if err != nil || founder.State == nil {
-		return nil, errors.Join(ErrInvalidProjection, err)
-	}
 	progress := []progressRow{}
 	if _, exists := catalog.ProgressCoordinate(int(state.Tier)); exists {
 		value, progressErr := production.SubProgressValue(catalog, state, int(state.Tier))
@@ -181,14 +209,14 @@ func (projector *Projector) GameUISnapshot(ctx context.Context, streamID string,
 	}
 	sort.Slice(facts, func(left, right int) bool { return facts[left].FactID < facts[right].FactID })
 	result := snapshot{
-		ConstantsHash: loaded.Revision.ConstantsHash,
+		ConstantsHash: bundle.ConstantsHash,
 		Facts:         facts,
 		Generators:    generators,
 		ManualAction: manualActionRow{ActionID: manualActions[0].ID, BucketCapMilli: policy.BucketCapMilli,
 			RefilledAtMS: state.ManualTokenRefilledAt.UnixMilli(), RefillMilliPerMS: policy.RefillMilliPerMS,
 			TokensMilli: state.ManualTokenMilli},
-		Progress: progress, Resources: resources, Revision: loaded.Revision.Number,
-		Run: runRow{Category: "any_percent", ExitCount: int64(len(founder.State.ExitHistory)), FounderID: loaded.Key.OwnerID,
+		Progress: progress, Resources: resources, Revision: revision,
+		Run: runRow{Category: "any_percent", ExitCount: int64(len(founder.ExitHistory)), FounderID: founderID,
 			RunSeq: state.RunSeq, RunStartedAtMS: state.RunStartedAt.UnixMilli(), Tier: state.Tier},
 		EvaluatedThroughMS: state.EvaluatedThrough.UnixMilli(), SchemaVersion: 1,
 		ServerNowMS: save.CanonicalServerTime(now).UnixMilli(), Upgrades: upgrades,

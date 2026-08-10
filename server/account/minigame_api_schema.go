@@ -31,7 +31,7 @@ func minigameAPISchemas() []publicapi.NamedSchema {
 	return []publicapi.NamedSchema{
 		{Name: "APIError", Schema: apiObject(
 			apiField("category", apiString("", "conflict", "idempotency_conflict", "internal_invariant", "invalid", "not_configured", "not_eligible", "rate_limited", "unauthorized", "unknown_id")),
-			apiField("detail", apiString("", "access_token", "account", "body", "duplicate_card", "exclusive_activity", "fiscal_unlock_required", "founder", "founder_state", "game_ui_snapshot", "hack_slots_full", "hand_too_large", "human_content_locked", "illegal_phase", "insufficient_currency", "ip", "minigame_api", "minigame_command", "minigame_create", "minigame_revision", "minigame_session", "minigame_tenant", "recovery_progress", "recovery_session", "recovery_token", "session_id", "soul_recovery_cancel", "soul_recovery_not_ready", "soul_recovery_progress", "soul_recovery_resolve", "soul_recovery_start", "unknown_card", "unknown_offer")),
+			apiField("detail", apiString("", "access_token", "account", "body", "bootstrap", "bootstrap_expired", "duplicate_card", "exclusive_activity", "fiscal_unlock_required", "founder", "founder_state", "game_ui_snapshot", "hack_slots_full", "hand_too_large", "human_content_locked", "illegal_phase", "insufficient_currency", "ip", "minigame_api", "minigame_command", "minigame_create", "minigame_revision", "minigame_session", "minigame_tenant", "recovery_progress", "recovery_session", "recovery_token", "session_id", "soul_recovery_cancel", "soul_recovery_not_ready", "soul_recovery_progress", "soul_recovery_resolve", "soul_recovery_start", "unknown_card", "unknown_offer")),
 		)},
 		{Name: "MinigameCommandRequest", Schema: apiObject(
 			apiField("command", apiRef("MinigameTenantCommand")),
@@ -190,8 +190,10 @@ func minigameAPIOperations() []publicapi.Operation {
 func newPrivateAPIRegistry() (*publicapi.Registry, error) {
 	schemas := append(minigameAPISchemas(), soulRecoveryAPISchemas()...)
 	schemas = append(schemas, gameUIAPISchemas()...)
+	schemas = append(schemas, bootstrapAPISchemas()...)
 	operations := append(minigameAPIOperations(), soulRecoveryAPIOperations()...)
 	operations = append(operations, gameUIAPIOperations()...)
+	operations = append(operations, bootstrapAPIOperations()...)
 	sort.Slice(schemas, func(left, right int) bool { return schemas[left].Name < schemas[right].Name })
 	sort.Slice(operations, func(left, right int) bool { return operations[left].ID < operations[right].ID })
 	return publicapi.NewRegistry(schemas, operations)
