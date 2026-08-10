@@ -29,3 +29,25 @@
 - The workflow file cannot be executed on a hosted runner without pushing. Owner previously said
   not to push, so the RFC remains `implementing`; hosted completion under five minutes is the only
   unverified acceptance gate.
+
+## 2026-08-10 — designated cross-party verdict: CI-repair batch {4a45b8d, 0db9768} — BOTH APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+**The Decimal fix verified genuine at bit level:** the shipped Int64Exact classified via a lossy
+float64 reconstruction whose snap-tolerance comparison the Go arm64 backend FMA-fuses (proven:
+the darwin diff 7.46e-11 is not a ULP multiple — only possible with an unrounded intermediate),
+while linux/amd64 rounds separately (exactly 1 ULP ≥ the 1e-10 snap) and REJECTED canonical
+integers. Reproduced in both directions across real architectures. **Blast radius bounded:** the
+sole consumer fails CLOSED (ErrInvalidEngineState — availability fault, never corruption); stored
+mantissa/exponent bits identical on both platforms; no persisted state/receipt/replay/wire could
+have diverged; unpushed repo, zero production exposure. The fix (round-trip through the
+normalized representation) is architecture-independent, only tightens acceptance, and the 0.3.89
+bump is honest and REQUIRED. No shared-vector op exists for this classification (no TS twin —
+correctly); the Go-side pin + the linux/amd64 CI gate discriminate. Fixture repairs test-tier
+(both genuinely stale, both reproduced); `make test-go-ci` faithfully mirrors the Actions job and
+ran GREEN under emulation; the plan record faithful with no box flips.
+**Routed follow-ups (non-blocking):** R-F1 (MEDIUM) — the root FMA sensitivity remains in
+toFloat64's snap comparison, and Floor IS a shared-vector op: force materialization (explicit
+float64 conversion) in a future kernel bump + a razor-edge floor golden vector. R-F2 (LOW) — the
+regression test discriminates only on linux/amd64 (by nature; the CI gate carries it). R-F3
+(LOW) — docs/ci.md owes the test-go-ci line. R-F4 — a Claude-side numbering slip, fixed same day.
