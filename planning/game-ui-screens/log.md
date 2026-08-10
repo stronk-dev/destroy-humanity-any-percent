@@ -348,3 +348,24 @@ GameUISnapshot shape change turns old live receipts into 500s (fail-closed, acce
 at the next schema move).
 **Range-union: consumes exactly {9c23e80, 81114cf}. {8a8e485, b1c82b1} are the GU-C12 thread —
 pending its designated verdict (which MUST cite f2cecba as executable code) + owner ratification.**
+
+## 2026-08-11 — designated cross-party verdict: GU-C12 assembly {f2cecba, 8a8e485, b1c82b1} — APPROVED (two owner dispositions gate ratification)
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+**f2cecba consumed AS CODE** (independent re-verification + ten seeded probes — the standing
+caution closed). **Text fidelity: 131 rows byte-checked against the ruling — zero unexplained
+drift outside the findings**; all 24 param types exact; the longform kind contract-exact with
+negative fixtures in both pipeline and runtime; provenance clean (two claims, tracked extracts,
+HTTPS, zero suppressions — no suppression mechanism even exists); presentation v2 byte-proven
+additive over the ratified v1; orphan-first held; all SHAs recomputed twice; kernel honestly
+untouched; all gates green at the pinned worktree.
+**F1 (HIGH, owner disposition):** three README lines beyond the authored rewrite — two
+detector-FORCED but implementer-worded ("mail us zero dollars"; "nineteen ninety-five"), one
+UNFORCED ("slide 1 of 1" → "the only slide", probed clean both ways, and inconsistent with the
+retained Vision Slide footnote). **F2 (MEDIUM, owner disposition):** the permits-cap ruling rested
+on a stale premise (the PT-C4 county line was already the landed OWNER text); Codex kept the
+county line — defensible, but which owner text wins is the owner's call. **F3 (LOW):** seven
+implementer-chosen tones to adopt. F4/F5 observations recorded.
+**Range union 516bddb..81114cf CLOSED** — all 13 commits covered across the four verdicts, no
+uncovered edges. Ratification package (pending dispositions): copy candidate ec6d8294… ·
+phase0 24e90af2… · presentation-v2 42cbe31a… · event-copy-v2 71d88ebb… · generated bfc2c7c0….
