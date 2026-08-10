@@ -170,3 +170,20 @@ Normal root-target evidence on the exact implementation tree:
 
 GU-C11 is ready for the required cross-party designated review. GU-C10 and GU-C12 remain blocked
 only on their recorded owner rulings; nothing is self-approved or archived.
+
+## 2026-08-10 — designated cross-party verdict: GU-C11 {607e5a2, 349757a} — BOTH APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+The ruled contract implemented exactly: emission guarded on the accept intent, appended
+immediately before run_ended in the same batch (same revision structurally); ordering
+discriminated TWICE in both runtimes (order-swap probes fail the corpus byte-compares and the
+in-test assertion); the two pre-existing accepted-offer corpus cases correctly updated in place
+with every other case byte-identical; declined/expired paths byte-untouched; both-runtime
+lockstep validation with negative tests; migration 00072 append-only, mechanically verified as
+00068's Up + exactly the new kind, Down byte-restores; `make validate-migrations` sound and
+justified; kernel 0.3.90→0.3.91 honest; all five gates green incl. cold Linux.
+**Carried obligation:** when the GU-C3 generator lands, it must own the hand-added union arm.
+**Range-union: this verdict covers exactly {607e5a2, 349757a}. NOT covered and pending:**
+{bc2370a, 46676e9} (GU-C9 — its own review, launched same day with golden-vector scrutiny) and
+{f2cecba, 3e16587} (copy-assembly validation + blocker filings — consumed by the ratification
+and ruling flows). The union over 516bddb..HEAD completes when those land.
