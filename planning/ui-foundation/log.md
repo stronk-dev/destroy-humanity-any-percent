@@ -117,3 +117,23 @@ covered — the same-day B1 verdict (planning/first-content-epoch/log.md) explic
 
 **Verdict: NOT APPROVED pending F1 (+F2 repo-wide, owned by the mint thread; +F3/F4 bundled).
 Re-review is a narrow delta.**
+
+## 2026-08-10 — F1/F3-F6 remediation handoff
+
+Commit `8873301` implements the designated verdict's narrow UI delta:
+
+- Amount precision is selected from the three-significant-digit rounded engineering group, pinning
+  `1.23 K`, `12.3 K`, and `123 K`; the golden set now includes the two wider mantissas, rounding
+  carry, and a sub-visible `4.9e-1 -> 0` case.
+- the browser fixture performs a real Enter-key activation, observes the era transition, and
+  requires a non-none focus outline;
+- the boundary walker is recursive and rejects seeded gradient literals plus raw `fetch` and
+  `WebSocket` use;
+- a capped Amount's accessible name retains the rendered numeric value before its resolved reason.
+
+Normal repository gates pass: `make verify-client` (0 TypeScript/Svelte diagnostics; 6,626 unit
+assertions) and `make test-browser` (19,890 assertions across Chromium, Firefox, and WebKit).
+The separate mint-thread remediation also passes the complete uncached Go suite through
+`make test-go GO_TEST_FLAGS='-count=1'`. This is an implementation record, not an approval;
+`8873301` is ready for the narrow designated cross-party re-review. UI Foundation remains
+unarchived pending that verdict.
