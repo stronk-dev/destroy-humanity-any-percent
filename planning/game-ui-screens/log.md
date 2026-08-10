@@ -124,3 +124,14 @@ Normal root-target evidence on the exact implementation tree:
 
 GU-C9 is ready for the required cross-party designated review. GU-C10, GU-C11, and GU-C12's
 GU-C13–GU-C16 owner blockers remain open; nothing is self-approved or archived.
+
+## 2026-08-10 — GU-C10 acceptance review — owner blockers GU-C17–GU-C22
+
+- **Review by:** Codex (implementer-side acceptance review). **Recorded by:** Codex.
+- GU-C10's direction is accepted, but the executable wire, possession boundary, secret-at-rest
+  policy, atomic coordinator transaction, receipt expiry, and supposedly mismatched request are
+  not determined. The sharp contradiction is exact durable replay of recovery/refresh secrets
+  against the shipped hash-only credential law.
+- GU-C17–GU-C22 are filed in the RFC with recommended contracts. No coordinator, migration, API
+  row, or secret-storage behavior was invented. GU-C10 remains blocked pending owner rulings;
+  GU-C11 stays mechanically independent and may proceed after GU-C9's designated handoff.

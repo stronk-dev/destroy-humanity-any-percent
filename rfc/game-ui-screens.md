@@ -396,3 +396,87 @@ promised follow-up title texts do not yet exist.
 and adding byte-sorted `gates:[{id,title_key}]` plus `exit_types:[{id,title_key}]`; the candidate
 contains `gate.t0_to_t1 → gate.t0_to_t1.title` and all five exit IDs once the owner supplies their
 five literal titles. The future loader enforces set equality against Routes and Prestige.
+
+## Codex GU-C10 acceptance blockers (2026-08-10 — GU-C17–GU-C22)
+
+GU-C10 rules the product direction but not enough of the unauthenticated security/persistence
+contract to implement it. The existing account path stores only hashes of recovery and refresh
+credentials; an “exact persisted receipt” would silently reverse that law unless the owner chooses
+an explicit protected-recovery mechanism. No coordinator code is written past these blockers.
+
+### GU-C17 — The bootstrap operation has no exact public wire
+
+No method/path, request object, response object, status-on-retry, registry operation ID, or closed
+error rows are ruled. “Contains recovery material + token pair + snapshot” does not determine JSON
+nesting or generated API bytes.
+
+**Proposed contract:** add registry operation `create_bootstrap`, `POST /api/v1/bootstrap`, request
+`{idempotency_key}` using C20 `opaque-id`, and a required response
+`{account:{account_id,created_at,recovery_code},session:{access_token,refresh_token},game_ui_snapshot:<GameUISnapshot>}`.
+Both first commit and exact retry return the stored bytes with HTTP 201 and `Cache-Control:no-store`.
+The closed errors are `400 invalid/bootstrap`, `409 idempotency_conflict/bootstrap` if GU-C22 keeps
+that arm, `429 rate_limited/ip`, and `500 internal_invariant/bootstrap`. The old account/session
+operations remain additive compatibility surfaces, not a second UI bootstrap route.
+
+### GU-C18 — The unauthenticated retry key can become a credential-exfiltration bearer token
+
+An exact retry returns the recovery code and live tokens. Anyone who guesses or observes a global
+1–64-character C20 key can therefore retrieve the account's complete credentials. The C20 grammar
+permits one-character values and states syntax, not entropy or possession security.
+
+**Proposed contract:** bootstrap keys are still C20 strings on the wire but additionally require
+the exact 64-character lowercase hexadecimal encoding of 32 cryptographically random bytes; the
+client generator owns that requirement and the server validates it before lookup. Store only SHA-256 of
+the key and key the receipt by that digest. If retaining the full 1–64 C20 domain is mandatory,
+rule a separate possession secret/challenge; do not expose credentials by a guessable row key.
+
+### GU-C19 — Exact durable retry conflicts with the existing hash-only credential law
+
+Accounts store a salted recovery-code hash and sessions store refresh-token hashes. Persisting the
+response JSON in plaintext would put both reusable secrets back in the database; storing only the
+current hashes makes byte-exact retry impossible. No encryption/derivation key, rotation policy,
+or retention boundary exists.
+
+**Proposed contract:** add a deployment-resolved bootstrap-receipt encryption key ID to API config;
+encrypt the canonical response with authenticated encryption, store `{key_id,nonce,ciphertext}`
+beside the request digest, and decrypt only after possession of the bootstrap key is proven. A
+successor rotation keeps prior key IDs readable until receipt expiry. Alternatively derive all
+secret bytes reproducibly from a ruled deployment secret and the bootstrap key; either choice is a
+security contract and cannot be improvised in account code.
+
+### GU-C20 — The all-or-nothing coordinator boundary is not defined
+
+`CreateAccount` and `CreateSession` currently commit separate transactions, while
+`GameUISnapshot` reads a committed stream through `save.Store`. Calling them in sequence can leave
+an account without a receipt after a session, projection, or receipt-write failure. Persisting a
+receipt after commit is not idempotent account creation.
+
+**Proposed contract:** one repository coordinator transaction creates account + Founder streams +
+session family/tokens + encrypted receipt. Add a transaction-aware/pure Game-UI snapshot builder
+over the exact initial states and pinned bundle; validate the generated response against the API
+registry before inserting it and committing. Fault injection at every boundary proves no account,
+stream, token, or receipt survives any failure. Do not weaken `GameUISnapshot` into an ambient
+post-commit repair.
+
+### GU-C21 — Receipt lifetime and expired-token retry semantics are absent
+
+The stored access token expires after 15 minutes and refresh token after 30 days. Returning the
+same bytes forever eventually produces a successful HTTP response containing unusable credentials;
+minting replacement tokens on retry violates exactness.
+
+**Proposed contract:** retain/replay the receipt through the refresh expiry. After that coordinate,
+the key remains tombstoned and returns one new closed `409 conflict/bootstrap_expired` response;
+it never creates another account. Recovery proceeds through the existing recovery-code session
+operation. A bounded GC removes encrypted bytes only after writing the tombstone; retry identity
+outlives secret retention.
+
+### GU-C22 — “Mismatched reuse” is unreachable for the ruled one-field request
+
+With request `{idempotency_key}` and exact-object decoding, the lookup key is the only semantic
+field. Reusing the same key necessarily hashes the same request; extra fields reject before lookup.
+There is no second value that can differ, so the ruled `idempotency_conflict` acceptance arm cannot
+be discriminatingly tested.
+
+**Proposed contract:** remove mismatched-reuse from this zero-payload coordinator and define only
+exact replay plus GU-C21 expiry, or add and rule a genuinely semantic request field whose mismatch
+must conflict. Do not keep a nominal error category no legal request pair can reach.
