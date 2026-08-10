@@ -274,3 +274,11 @@ and meaning.
   `{from_gate: null, to_gate: "gate.t0_to_t1"}` T0 policy fixture, and the report proof land with
   the change. (The grammar the economy window already has, extended to the one loader that
   lacked it — correctly refused rather than mis-encoded.)
+
+## T01-C10 implementation note (2026-08-10)
+
+The schema-v2 compatibility boundary is implemented in Go, TypeScript, and the three JSON
+Schemas. Schema v1 continues to reject a null `from_gate`; schema v2 treats it as run genesis,
+preserves it in report bytes, and remains byte-compatible with every v1 policy, scenario, and
+golden report. This implements only the ruled boundary grammar; the candidate policy remains
+subject to the candidate-round review and owner ratification.

@@ -19,7 +19,7 @@ import (
 	"cloud-clicker/server/save"
 )
 
-const RelevanceReportSchemaVersion = 1
+const RelevanceReportSchemaVersion = 2
 
 type RelevanceRunSpec struct {
 	PolicyID  string `json:"policy_id"`
@@ -38,7 +38,7 @@ type RelevanceMilestone struct {
 
 type RelevanceSegment struct {
 	MilestoneID string  `json:"milestone_id"`
-	FromGate    string  `json:"from_gate"`
+	FromGate    *string `json:"from_gate"`
 	ToGate      *string `json:"to_gate"`
 }
 
@@ -187,6 +187,9 @@ func LoadRelevanceSuite(repositoryRoot, scenarioPath string) (*RelevanceSuite, e
 	if err != nil {
 		return nil, err
 	}
+	if policy.SchemaVersion != scenario.SchemaVersion {
+		return nil, errors.New("relevance scenario and policy schema versions differ")
+	}
 	if err := validateRelevanceSegments(scenario, routeCatalog); err != nil {
 		return nil, err
 	}
@@ -203,7 +206,7 @@ func LoadRelevanceSuite(repositoryRoot, scenarioPath string) (*RelevanceSuite, e
 }
 
 func validateRelevanceScenario(scenario RelevanceScenario) error {
-	if scenario.SchemaVersion != 1 || !relevanceIDPattern.MatchString(scenario.ID) || scenario.Catalog == "" || scenario.RoutesCatalog == "" || scenario.Policy == "" ||
+	if scenario.SchemaVersion < 1 || scenario.SchemaVersion > RelevancePolicySchemaVersion || !relevanceIDPattern.MatchString(scenario.ID) || scenario.Catalog == "" || scenario.RoutesCatalog == "" || scenario.Policy == "" ||
 		len(scenario.Runs) == 0 || scenario.Reducer != "worst" && scenario.Reducer != "p05" || scenario.HorizonMS < 1 ||
 		scenario.HorizonMS > relevanceMaxSafeInteger || scenario.MaxDecisions < 1 || scenario.BeamWidth != 8 || scenario.GreedyGapMaximumPPM < 0 ||
 		scenario.GreedyGapMaximumPPM > 1_000_000 || scenario.RelevanceBudgetMaxRuns < 1 || scenario.RelevanceBudgetMaxTransitions < 1 {
@@ -260,9 +263,12 @@ func validateRelevanceSegments(scenario RelevanceScenario, catalog *routes.Catal
 		order[gate.ID] = index
 	}
 	segment := scenario.Segments[0]
-	from, ok := order[segment.FromGate]
+	from, ok := relevanceBoundaryPosition(segment.FromGate, order)
 	if !ok {
 		return errors.New("relevance segment references unknown from_gate")
+	}
+	if scenario.SchemaVersion == 1 && segment.FromGate == nil {
+		return errors.New("schema-v1 relevance segment requires from_gate")
 	}
 	if segment.ToGate != nil {
 		to, ok := order[*segment.ToGate]
@@ -279,14 +285,20 @@ func validateRelevanceWindows(scenario RelevanceScenario, policy *RelevancePolic
 		order[gate.ID] = index
 	}
 	for _, item := range policy.Items {
-		from := order[item.Availability.FromGate]
+		from, ok := relevanceBoundaryPosition(item.Availability.FromGate, order)
+		if !ok {
+			return fmt.Errorf("relevance item %q references unknown from_gate", item.PurchasableID)
+		}
 		to := len(order)
 		if item.Availability.ToGate != nil {
 			to = order[*item.Availability.ToGate]
 		}
 		matched := false
 		for _, segment := range scenario.Segments {
-			position := order[segment.FromGate]
+			position, ok := relevanceBoundaryPosition(segment.FromGate, order)
+			if !ok {
+				return errors.New("relevance segment references unknown from_gate")
+			}
 			if position >= from && position < to {
 				matched = true
 				break
@@ -348,7 +360,7 @@ func MakeRelevanceDelta(milestoneID string, baseline, ablated *int64, horizonMS 
 }
 
 func ValidateRelevanceReport(report RelevanceReport) error {
-	if report.SchemaVersion != RelevanceReportSchemaVersion || !relevanceIDPattern.MatchString(report.ScenarioID) ||
+	if report.SchemaVersion < 1 || report.SchemaVersion > RelevanceReportSchemaVersion || !relevanceIDPattern.MatchString(report.ScenarioID) ||
 		!relevanceHashPattern.MatchString(report.ScenarioHash) || !relevanceHashPattern.MatchString(report.ConstantsHash) || !relevanceHashPattern.MatchString(report.RelevancePolicyHash) ||
 		report.Items == nil || report.Groups == nil || report.TierContributions == nil || report.RoleActivations == nil || report.Failures == nil ||
 		!relevanceSafePositive(report.RunBudget.DeclaredRuns) || report.RunBudget.DeclaredRuns != report.RunBudget.ExecutedRuns ||
@@ -368,7 +380,8 @@ func ValidateRelevanceReport(report RelevanceReport) error {
 	for _, item := range report.Items {
 		if !relevanceIDPattern.MatchString(item.PurchasableID) || prior != "" && prior >= item.PurchasableID || item.IndividualDeltas == nil ||
 			item.ActionRemovalDeltas == nil || item.Support != "individual" && item.Support != "group_supported" && item.Support != "failed" ||
-			item.SupportingGroupID != nil != (item.Support == "group_supported") || !relevanceIDPattern.MatchString(item.AvailabilityWindow.FromGate) ||
+			item.SupportingGroupID != nil != (item.Support == "group_supported") || report.SchemaVersion == 1 && item.AvailabilityWindow.FromGate == nil ||
+			item.AvailabilityWindow.FromGate != nil && !relevanceIDPattern.MatchString(*item.AvailabilityWindow.FromGate) ||
 			item.AvailabilityWindow.ToGate != nil && !relevanceIDPattern.MatchString(*item.AvailabilityWindow.ToGate) || !relevanceSafePositive(item.EpsilonMS) ||
 			!relevanceSafe(item.BaselinePurchaseCount) || !relevanceSafe(item.NearestPassingEpsilonMS) ||
 			item.RelevancePassed != (item.Support != "failed") || item.TrapPassed != (item.BaselinePurchaseCount > 0 || item.TrapExempt) ||

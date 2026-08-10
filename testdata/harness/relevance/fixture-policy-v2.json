@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "items": [
+    { "purchasable_id": "generator.alpha", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1, "trap_exempt": false, "justification_key": null, "group_ids": ["group.category_fixture", "group.substitutes", "group.tier_0"] },
+    { "purchasable_id": "generator.beta", "availability_window": { "from_gate": null, "to_gate": "gate.t1_to_t2" }, "epsilon_ms": 1, "trap_exempt": false, "justification_key": null, "group_ids": ["group.category_fixture", "group.tier_1"] },
+    { "purchasable_id": "upgrade.alpha", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1, "trap_exempt": true, "justification_key": "relevance.intentional_trap", "group_ids": ["group.substitutes"] },
+    { "purchasable_id": "upgrade.dead", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1, "trap_exempt": true, "justification_key": "relevance.dead_fixture", "group_ids": [] }
+  ],
+  "groups": [
+    { "group_id": "group.category_fixture", "axis": "category", "member_ids": ["generator.alpha", "generator.beta"], "epsilon_ms": 1 },
+    { "group_id": "group.substitutes", "axis": "declared", "member_ids": ["generator.alpha", "upgrade.alpha"], "epsilon_ms": 1 },
+    { "group_id": "group.tier_0", "axis": "tier", "member_ids": ["generator.alpha"], "epsilon_ms": 1 },
+    { "group_id": "group.tier_1", "axis": "tier", "member_ids": ["generator.beta"], "epsilon_ms": 1 }
+  ]
+}

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import economyFixture from "../../testdata/economy-foundation-v4.json";
 import mutationFixture from "../../testdata/harness/relevance/policy-mutations-v1.json";
 import policyFixture from "../../testdata/harness/relevance/policy-v1.json";
+import policyV2Fixture from "../../testdata/harness/relevance/fixture-policy-v2.json";
 import routesFixture from "../../balance/routes/phase0.json";
 import { parseRelevancePolicy } from "../src/relevance";
 
@@ -66,5 +67,19 @@ describe("relevance policy parity", () => {
       if (test.accepted) expect(() => parseRelevancePolicy(value, catalog, gates), test.id).not.toThrow();
       else expect(() => parseRelevancePolicy(value, catalog, gates), test.id).toThrow();
     }
+  });
+
+  it("accepts run genesis only in schema v2", () => {
+    const fixtureCatalog = {
+      generators: [
+        { id: "generator.alpha", tier: 0, category: "category.fixture" },
+        { id: "generator.beta", tier: 1, category: "category.fixture" },
+      ],
+      upgradeIds: ["upgrade.alpha", "upgrade.dead"],
+    };
+    const parsed = parseRelevancePolicy(JSON.stringify(policyV2Fixture), fixtureCatalog, ["gate.t0_to_t1", "gate.t1_to_t2"]);
+    expect(parsed.schema_version).toBe(2);
+    expect(parsed.items[0]?.availability_window.from_gate).toBeNull();
+    expect(() => parseRelevancePolicy(JSON.stringify({ ...policyV2Fixture, schema_version: 1 }), fixtureCatalog, ["gate.t0_to_t1", "gate.t1_to_t2"])).toThrow();
   });
 });

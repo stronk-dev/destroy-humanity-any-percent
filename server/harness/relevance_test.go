@@ -1,6 +1,8 @@
 package harness
 
 import (
+	"bytes"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -145,9 +147,28 @@ func TestRelevanceWindowsBindEveryItemToAnInWindowMilestone(t *testing.T) {
 	}
 	invalid := suite.Scenario
 	invalid.Segments = append([]RelevanceSegment(nil), suite.Scenario.Segments...)
-	invalid.Segments[0].FromGate = "gate.t1_to_t2"
+	fromGate := "gate.t1_to_t2"
+	invalid.Segments[0].FromGate = &fromGate
 	if err := validateRelevanceWindows(invalid, suite.Policy, suite.Routes); err == nil || !strings.Contains(err.Error(), "no milestone") {
 		t.Fatalf("out-of-window milestone accepted: %v", err)
+	}
+}
+
+func TestRelevanceV2PreservesRunGenesisWindowInReport(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	report, err := suite.RunRelevance()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if report.SchemaVersion != 2 || len(report.Items) == 0 || report.Items[0].AvailabilityWindow.FromGate != nil {
+		t.Fatalf("v2 report=%+v", report)
+	}
+	encoded, err := json.Marshal(report.Items[0].AvailabilityWindow)
+	if err != nil || !bytes.Equal(encoded, []byte(`{"from_gate":null,"to_gate":"gate.t0_to_t1"}`)) {
+		t.Fatalf("v2 report did not preserve null window: %s err=%v", encoded, err)
 	}
 }
 

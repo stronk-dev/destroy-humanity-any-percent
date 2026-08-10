@@ -18,14 +18,14 @@ import (
 	"cloud-clicker/server/routes"
 )
 
-const RelevancePolicySchemaVersion = 1
+const RelevancePolicySchemaVersion = 2
 const relevanceMaxSafeInteger = int64(9_007_199_254_740_991)
 
 var relevanceIDPattern = regexp.MustCompile(`^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$`)
 var relevanceHashPattern = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
 
 type RelevanceWindow struct {
-	FromGate string  `json:"from_gate"`
+	FromGate *string `json:"from_gate"`
 	ToGate   *string `json:"to_gate"`
 }
 
@@ -59,7 +59,7 @@ type rawRelevancePolicy struct {
 }
 
 type rawRelevanceWindow struct {
-	FromGate *string         `json:"from_gate"`
+	FromGate json.RawMessage `json:"from_gate"`
 	ToGate   json.RawMessage `json:"to_gate"`
 }
 
@@ -88,12 +88,12 @@ func LoadRelevancePolicy(data []byte, catalog *economy.Catalog, routeCatalog *ro
 		return nil, fmt.Errorf("relevance policy: %w", err)
 	}
 	schemaVersion, schemaErr := relevanceSafeInteger(raw.SchemaVersion)
-	if schemaErr != nil || schemaVersion != RelevancePolicySchemaVersion || raw.Items == nil || raw.Groups == nil {
+	if schemaErr != nil || schemaVersion < 1 || schemaVersion > RelevancePolicySchemaVersion || raw.Items == nil || raw.Groups == nil {
 		return nil, errors.New("relevance policy: missing or unsupported envelope")
 	}
 	policy := &RelevancePolicy{SchemaVersion: int(schemaVersion), Items: make([]RelevancePolicyItem, 0, len(raw.Items)), Groups: make([]RelevancePolicyGroup, 0, len(raw.Groups))}
 	for index, source := range raw.Items {
-		item, err := parseRelevanceItem(source)
+		item, err := parseRelevanceItem(source, int(schemaVersion))
 		if err != nil {
 			return nil, fmt.Errorf("relevance policy items[%d]: %w", index, err)
 		}
@@ -114,12 +114,16 @@ func LoadRelevancePolicy(data []byte, catalog *economy.Catalog, routeCatalog *ro
 	return policy, nil
 }
 
-func parseRelevanceItem(source rawRelevancePolicyItem) (RelevancePolicyItem, error) {
+func parseRelevanceItem(source rawRelevancePolicyItem, schemaVersion int) (RelevancePolicyItem, error) {
 	if source.PurchasableID == nil || source.Availability == nil || source.EpsilonMS == nil || source.TrapExempt == nil || source.JustificationKey == nil || source.GroupIDs == nil {
 		return RelevancePolicyItem{}, errors.New("missing required key")
 	}
 	if source.Availability.FromGate == nil || source.Availability.ToGate == nil {
 		return RelevancePolicyItem{}, errors.New("availability_window missing required key")
+	}
+	fromGate, err := nullableString(source.Availability.FromGate)
+	if err != nil || schemaVersion == 1 && fromGate == nil {
+		return RelevancePolicyItem{}, errors.New("from_gate must be a gate in schema v1 and a gate or null in schema v2")
 	}
 	toGate, err := nullableString(source.Availability.ToGate)
 	if err != nil {
@@ -134,7 +138,7 @@ func parseRelevanceItem(source rawRelevancePolicyItem) (RelevancePolicyItem, err
 		return RelevancePolicyItem{}, fmt.Errorf("epsilon_ms: %w", err)
 	}
 	return RelevancePolicyItem{PurchasableID: *source.PurchasableID,
-		Availability: RelevanceWindow{FromGate: *source.Availability.FromGate, ToGate: toGate},
+		Availability: RelevanceWindow{FromGate: fromGate, ToGate: toGate},
 		EpsilonMS:    epsilon, TrapExempt: *source.TrapExempt, JustificationKey: justification,
 		GroupIDs: append([]string(nil), source.GroupIDs...)}, nil
 }
@@ -201,12 +205,13 @@ func validateRelevancePolicy(policy *RelevancePolicy, catalog *economy.Catalog, 
 			index > 0 && policy.Items[index-1].PurchasableID >= item.PurchasableID {
 			return fmt.Errorf("invalid or unsorted relevance item %q", item.PurchasableID)
 		}
-		if _, ok := gateOrder[item.Availability.FromGate]; !ok {
-			return fmt.Errorf("item %q references unknown from_gate %q", item.PurchasableID, item.Availability.FromGate)
+		from, ok := relevanceBoundaryPosition(item.Availability.FromGate, gateOrder)
+		if !ok {
+			return fmt.Errorf("item %q references unknown from_gate", item.PurchasableID)
 		}
 		if item.Availability.ToGate != nil {
 			to, ok := gateOrder[*item.Availability.ToGate]
-			if !ok || gateOrder[item.Availability.FromGate] >= to {
+			if !ok || from >= to {
 				return fmt.Errorf("item %q has invalid to_gate", item.PurchasableID)
 			}
 		}
@@ -275,6 +280,14 @@ func validateRelevancePolicy(policy *RelevancePolicy, catalog *economy.Catalog, 
 		}
 	}
 	return nil
+}
+
+func relevanceBoundaryPosition(gate *string, order map[string]int) (int, bool) {
+	if gate == nil {
+		return -1, true
+	}
+	position, ok := order[*gate]
+	return position, ok
 }
 
 func nullableString(data json.RawMessage) (*string, error) {

@@ -35,3 +35,19 @@ kinds all real production kinds; T01-C10 verified real (and RULED accepted, 2514
 **Also binding from the EH-C8 ruling (2514f0c): the candidate set GROWS by the owner-ratified
 `opportunities` artifact + active_play economy declarations** — the fixed proposal includes it.
 Ratification round follows the fixed set + re-review.
+
+## 2026-08-10 — Codex implementation handoff: T01-C10 relevance schema v2
+
+- **Review by:** Codex self-review only. **Recorded by:** Codex. This is ready for the required
+  designated review and is not an approval or archival authorization.
+- Implemented the ruled nullable `from_gate` boundary in the Go and TypeScript relevance-policy
+  loaders, scenario validation, report grammar, and JSON Schemas. Null orders before the first
+  Routes gate and remains forbidden in every schema-v1 surface.
+- Added a complete schema-v2 fixture and scenario, Go/TypeScript parity tests, report-byte proof,
+  and schema mutation checks proving that changing those same bytes to version 1 fails closed.
+  Existing schema-v1 goldens retain their version and bytes.
+- Normal repository gates passed: `make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1'`,
+  `make verify-schema`, and `make verify-client` (6,630 client tests; zero type/Svelte errors).
+- The candidate's honest multi-window binding cannot be expressed by the still-single-segment
+  scenario grammar. That separate contract is recorded as T01-C11 in the candidate remediation;
+  this implementation does not improvise it.

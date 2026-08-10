@@ -554,10 +554,34 @@ async function main() {
   if (!validateRelevance(await readJSON(relevancePolicy))) {
     throw new Error(`${path.relative(repositoryDirectory, relevancePolicy)}: ${validationErrors(validateRelevance)}`);
   }
+  const relevancePolicyV2 = await readJSON(path.join(harnessDirectory, "relevance", "fixture-policy-v2.json"));
+  if (!validateRelevance(relevancePolicyV2)) {
+    throw new Error(`testdata/harness/relevance/fixture-policy-v2.json: ${validationErrors(validateRelevance)}`);
+  }
+  if (validateRelevance({ ...relevancePolicyV2, schema_version: 1 })) {
+    throw new Error("relevance schema v1 accepted a null from_gate");
+  }
   const relevanceScenarioSchema = await readJSON(path.join(harnessDirectory, "relevance", "scenario.schema.json"));
   const validateRelevanceScenario = ajv.compile(relevanceScenarioSchema);
+  const relevanceScenarioV2 = await readJSON(path.join(harnessDirectory, "relevance", "scenario-v2.json"));
+  if (!validateRelevanceScenario(relevanceScenarioV2)) {
+    throw new Error(`testdata/harness/relevance/scenario-v2.json: ${validationErrors(validateRelevanceScenario)}`);
+  }
+  if (validateRelevanceScenario({ ...relevanceScenarioV2, schema_version: 1 })) {
+    throw new Error("relevance scenario schema v1 accepted a null from_gate");
+  }
   const relevanceReportSchema = await readJSON(path.join(harnessDirectory, "relevance", "report.schema.json"));
   const validateRelevanceReport = ajv.compile(relevanceReportSchema);
+  const relevanceReportV1 = await readJSON(path.join(harnessDirectory, "relevance", "golden-report-v1.json"));
+  const relevanceReportWithGenesisWindow = structuredClone(relevanceReportV1);
+  relevanceReportWithGenesisWindow.items[0].availability_window.from_gate = null;
+  if (validateRelevanceReport(relevanceReportWithGenesisWindow)) {
+    throw new Error("relevance report schema v1 accepted a null from_gate");
+  }
+  relevanceReportWithGenesisWindow.schema_version = 2;
+  if (!validateRelevanceReport(relevanceReportWithGenesisWindow)) {
+    throw new Error(`relevance report schema v2 rejected a null from_gate: ${validationErrors(validateRelevanceReport)}`);
+  }
   const relevanceRegistryPath = path.join(harnessDirectory, "relevance", "registry-v1.json");
   const relevanceRegistry = await readJSON(relevanceRegistryPath);
   if (relevanceRegistry.schema_version !== 1 || !Array.isArray(relevanceRegistry.entries)) {

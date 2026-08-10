@@ -73,7 +73,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		return RelevanceReport{}, errors.New("relevance transition budget exceeds scenario limit")
 	}
 	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
-	report := RelevanceReport{SchemaVersion: RelevanceReportSchemaVersion, ScenarioID: suite.Scenario.ID,
+	report := RelevanceReport{SchemaVersion: suite.Scenario.SchemaVersion, ScenarioID: suite.Scenario.ID,
 		ScenarioHash: suite.ScenarioHash, ConstantsHash: suite.ConstantsHash, RelevancePolicyHash: suite.Policy.Hash,
 		Items: []RelevanceItemReport{}, Groups: []RelevanceGroupReport{}, TierContributions: []RelevanceTierContribution{},
 		RoleActivations: []RoleActivationCount{}, Failures: []string{}}

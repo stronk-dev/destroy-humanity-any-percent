@@ -47,6 +47,21 @@ func TestLoadRelevancePolicyExactAndComplete(t *testing.T) {
 	}
 }
 
+func TestRelevancePolicyV2AcceptsRunGenesisWithoutWeakeningV1(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v2.json")
+	if err != nil || suite.Policy.SchemaVersion != 2 || suite.Policy.Items[0].Availability.FromGate != nil {
+		t.Fatalf("v2 suite=%+v err=%v", suite, err)
+	}
+	v2, err := os.ReadFile("../../testdata/harness/relevance/fixture-policy-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v1Null := bytes.Replace(v2, []byte(`"schema_version": 2`), []byte(`"schema_version": 1`), 1)
+	if _, err := LoadRelevancePolicy(v1Null, suite.Catalog, suite.Routes); err == nil {
+		t.Fatal("schema-v1 policy accepted a null from_gate")
+	}
+}
+
 func TestLoadRelevancePolicyRejectsWireAndSemanticMutations(t *testing.T) {
 	data, catalog, routeCatalog := relevancePolicyDependencies(t)
 	mutationBytes, err := os.ReadFile("../../testdata/harness/relevance/policy-mutations-v1.json")

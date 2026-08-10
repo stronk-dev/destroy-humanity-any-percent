@@ -14,7 +14,7 @@ export interface RelevanceCatalogView {
 }
 
 export interface RelevanceWindow {
-  readonly from_gate: string;
+  readonly from_gate: string | null;
   readonly to_gate: string | null;
 }
 
@@ -35,7 +35,7 @@ export interface RelevancePolicyGroup {
 }
 
 export interface RelevancePolicy {
-  readonly schema_version: 1;
+  readonly schema_version: 1 | 2;
   readonly items: readonly RelevancePolicyItem[];
   readonly groups: readonly RelevancePolicyGroup[];
 }
@@ -49,7 +49,8 @@ export function parseRelevancePolicy(source: string, catalog: RelevanceCatalogVi
 
 function parseRelevancePolicyObject(source: unknown, catalog: RelevanceCatalogView, gateIds: readonly string[]): RelevancePolicy {
   const root = exactObject(source, ["schema_version", "items", "groups"], "relevance policy");
-  if (root.schema_version !== 1 || !Array.isArray(root.items) || !Array.isArray(root.groups)) throw new SyntaxError("invalid relevance policy envelope");
+  if (root.schema_version !== 1 && root.schema_version !== 2 || !Array.isArray(root.items) || !Array.isArray(root.groups)) throw new SyntaxError("invalid relevance policy envelope");
+  const schemaVersion = root.schema_version;
   const gates = new Map(gateIds.map((id, index) => [mechanicalString(id, "gate id"), index]));
   if (gates.size !== gateIds.length) throw new SyntaxError("duplicate gate ids");
   const purchasables = new Set([...catalog.generators.map((row) => row.id), ...catalog.upgradeIds]);
@@ -60,9 +61,11 @@ function parseRelevancePolicyObject(source: unknown, catalog: RelevanceCatalogVi
     if (!purchasables.has(id) || prior !== "" && byteCompare(prior, id) >= 0) throw new SyntaxError("incomplete or unsorted relevance items");
     prior = id;
     const window = exactObject(row.availability_window, ["from_gate", "to_gate"], "availability window");
-    const from = mechanicalString(window.from_gate, "from gate");
+    const from = window.from_gate === null ? null : mechanicalString(window.from_gate, "from gate");
     const to = window.to_gate === null ? null : mechanicalString(window.to_gate, "to gate");
-    if (!gates.has(from) || to !== null && (!gates.has(to) || (gates.get(from) as number) >= (gates.get(to) as number))) throw new SyntaxError("invalid relevance window");
+    const fromPosition = from === null ? -1 : gates.get(from);
+    if (schemaVersion === 1 && from === null || from !== null && fromPosition === undefined ||
+      to !== null && (!gates.has(to) || (fromPosition as number) >= (gates.get(to) as number))) throw new SyntaxError("invalid relevance window");
     if (typeof row.trap_exempt !== "boolean" || row.trap_exempt !== (row.justification_key !== null)) throw new SyntaxError("invalid trap exemption");
     const justification = row.justification_key === null ? null : mechanicalString(row.justification_key, "justification key");
     return Object.freeze({ purchasable_id: id, availability_window: Object.freeze({ from_gate: from, to_gate: to }),
@@ -99,7 +102,7 @@ function parseRelevancePolicyObject(source: unknown, catalog: RelevanceCatalogVi
     const expected = catalog.generators.filter((row) => group.axis === "tier" ? row.tier === first.tier : row.category === first.category).map((row) => row.id).sort(byteCompare);
     if (!sameStrings(expected, group.member_ids)) throw new SyntaxError("incomplete derived group");
   }
-  return Object.freeze({ schema_version: 1, items: Object.freeze(items), groups: Object.freeze(groups) });
+  return Object.freeze({ schema_version: schemaVersion, items: Object.freeze(items), groups: Object.freeze(groups) });
 }
 
 function validateExactPolicyNumbers(source: string): void {
