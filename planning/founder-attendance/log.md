@@ -156,3 +156,21 @@ system, and a dedicated page would split one lifecycle across two documents. The
 cites this ruling; the remaining pre-archival items are unchanged (rollback/retention Postgres
 coverage residue + the final verify + move). docs/README.md must index founder-transitions.md
 when the archival lands (it is currently unindexed — flagged in the 2026-08-07 hygiene list).
+
+## 2026-08-10 — rollback/retention closure handoff
+
+- Audited the carried coverage debt against the live suite. The rollback arm was already real and
+  attendance-specific: `ApplyFounderLogged` increments `age_ms`, an oversized authoritative
+  outbox receipt fails after the log write, and Postgres proves the Founder revision, log, intent
+  record, and outbox all remain unchanged.
+- Added the missing retention arm. Five more applied Founder commands advance the stream beyond
+  the ordinary five-revision window; the exact retained set is genesis revision 1 plus revisions
+  4–8. Revisions 2–3 are pruned, while `LoadFounderHistory` still returns genesis 1, head 8, and all
+  eight immutable command rows.
+- The canonical attendance section in `docs/founder-transitions.md` now records both guarantees,
+  and `docs/README.md` already indexes that ruled canonical home.
+- `make test-save-integration` and the complete root `make verify` gate are green with the new
+  real-Postgres proof (6,623 client tests, 19,881 browser tests, zero type diagnostics, and kernel
+  history green at the unchanged 0.3.88).
+- This closes the remaining test debt only. It is ready for designated cross-party review after
+  the root gate; no self-review authorizes archival.

@@ -63,6 +63,12 @@ contexts. A Founder-locked consumer must call `ValidateFounderAttendanceSample`;
 changes the Founder revision and `age_ms`, making the old sample stale rather than double-counting
 the completed run. No second Founder attendance cursor exists.
 
+The Postgres boundary pins the lifecycle failure cases directly. A post-log failure after an
+`age_ms` mutation rolls back the Founder revision, log, intent record, and player outbox together.
+After enough Founder commands to cross the ordinary five-revision window, pruning removes only
+superseded ordinary revisions: the immutable genesis revision remains alongside the latest five,
+and `LoadFounderHistory` still returns the complete command career and authoritative head.
+
 The feature package still owns its closed canonical command, resolved-input, receipt, event, and
 state-transition unions. The persistence layer validates the shared envelope and transaction; it
 does not invent feature mechanics.

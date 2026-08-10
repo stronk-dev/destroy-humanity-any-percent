@@ -6,7 +6,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
+	"slices"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -277,6 +279,55 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 		t.Fatalf("post-log rollback rows=%d err=%v", rollbackRows, err)
 	}
 
+	// Advance beyond the ordinary five-revision retention window. The exact
+	// genesis revision remains as the replay witness while superseded ordinary
+	// revisions disappear; the immutable log and authoritative head still load
+	// as one complete career snapshot.
+	for index := 0; index < 5; index++ {
+		expectedRevision := int64(3 + index)
+		retentionID := fmt.Sprintf("01990000-01%02d-7000-8000-000000000101", index)
+		retentionPayload := []byte(fmt.Sprintf(`{"kind":"fixture_founder_retention_%d"}`, index))
+		retentionDigest := sha256.Sum256(retentionPayload)
+		if _, err := store.ApplyFounderLogged(ctx, founderRevision.StreamID, expectedRevision, retentionID,
+			"sha256:"+hex.EncodeToString(retentionDigest[:]), retentionPayload,
+			func(state *State, _ Revision, command FounderReplayCommand) (IntentDecision, json.RawMessage, error) {
+				state.AgeMS++
+				return IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{"outcome":"applied"}`)},
+					testFounderReplayInputs(t, command, "fixture_founder_retention"), nil
+			}); err != nil {
+			t.Fatalf("retention write %d: %v", index, err)
+		}
+	}
+	loaded, err = store.LoadLatest(ctx, founderRevision.StreamID)
+	if err != nil || loaded.Revision.Number != 8 || loaded.State.AgeMS != 7 {
+		t.Fatalf("retention head revision=%d age_ms=%d err=%v", loaded.Revision.Number, loaded.State.AgeMS, err)
+	}
+	retainedRows, err := db.QueryContext(ctx, `SELECT revision FROM save_revisions
+		WHERE stream_id=$1 ORDER BY revision`, founderRevision.StreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var retained []int64
+	for retainedRows.Next() {
+		var revision int64
+		if err := retainedRows.Scan(&revision); err != nil {
+			t.Fatal(err)
+		}
+		retained = append(retained, revision)
+	}
+	if err := retainedRows.Close(); err != nil {
+		t.Fatal(err)
+	}
+	wantRetained := []int64{1, 4, 5, 6, 7, 8}
+	if !slices.Equal(retained, wantRetained) {
+		t.Fatalf("retained Founder revisions=%v want=%v", retained, wantRetained)
+	}
+	history, err := store.LoadFounderHistory(ctx, founderRevision.StreamID)
+	if err != nil || history.Genesis.Revision != 1 || history.HeadRevision != 8 || len(history.Entries) != 8 {
+		t.Fatalf("retained Founder history genesis=%d head=%d entries=%d err=%v",
+			history.Genesis.Revision, history.HeadRevision, len(history.Entries), err)
+	}
+
 	archiveTx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -299,7 +350,7 @@ func TestApplyFounderLoggedIntegration(t *testing.T) {
 	go func() {
 		_, insertErr := insertConn.ExecContext(ctx, `INSERT INTO founder_log(founder_stream_id,seq,intent_id,
 			canonical_payload,replay_inputs,receipt,constants_hash,server_ts_ms)
-			VALUES($1,4,$2,'{}','{}','{}',$3,1)`, founderRevision.StreamID, archiveRaceID, hash)
+			VALUES($1,9,$2,'{}','{}','{}',$3,1)`, founderRevision.StreamID, archiveRaceID, hash)
 		insertResult <- insertErr
 	}()
 	blocked := false
