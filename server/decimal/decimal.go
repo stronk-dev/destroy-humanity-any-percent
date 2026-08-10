@@ -415,6 +415,14 @@ func (d Decimal) Floor() Decimal {
 	return d
 }
 
+//go:noinline
+func materializeFloat64(value float64) float64 {
+	// This call boundary is deliberate. Without it, Go's arm64 backend may
+	// fuse the reconstruction multiply with the later subtraction while amd64
+	// rounds the multiply first, changing the snap decision at one-ULP edges.
+	return value
+}
+
 func (d Decimal) toFloat64() float64 {
 	if d.IsNaN() || math.IsInf(d.mantissa, 0) {
 		return d.mantissa
@@ -428,7 +436,7 @@ func (d Decimal) toFloat64() float64 {
 	if d.exponent == -324 {
 		return math.Copysign(5e-324, d.mantissa)
 	}
-	value := d.mantissa * math.Pow10(int(d.exponent))
+	value := materializeFloat64(d.mantissa * math.Pow10(int(d.exponent)))
 	if math.IsInf(value, 0) || d.exponent < 0 {
 		return value
 	}

@@ -22,6 +22,12 @@ Counts, milestones, sequence numbers, and time units remain exact integers cappe
 integer by round-tripping the normalized Decimal representation, avoiding architecture-dependent
 classification through a second lossy `float64` reconstruction.
 
+When Go reconstructs an ordinary float for compatibility operations such as `Floor`, it crosses
+an explicit non-inlined float64 materialization boundary before applying the JavaScript snap
+tolerance. This prevents the arm64 compiler from fusing the reconstruction multiply with the
+later subtraction while amd64 rounds between them. The shared `floor-fma-snap` golden edge and
+the cold Linux gate pin the same decision on both architectures.
+
 ## Authoritative state boundary
 
 Before a calculated value becomes player state, the server must:
@@ -134,9 +140,9 @@ This runs Go tests and static analysis, strict TypeScript checking, the Node/V8 
 same TypeScript vectors in Chromium, Firefox, and WebKit. First-time setup is documented in the
 root README.
 
-The committed `testdata/decimal-vectors.json` uses schema 3 and contains 6,295 cases produced
+The committed `testdata/decimal-vectors.json` uses schema 3 and contains 6,296 cases produced
 with a seeded RNG and the real pinned JavaScript library. It includes recomputed
-operation/classification counts, 22 mandatory named domain edges, and an assertion that random
+operation/classification counts, 23 mandatory named domain edges, and an assertion that random
 binary inputs reach above absolute exponent `4e15`, so upper-domain coverage cannot silently
 disappear. Regenerate it with:
 

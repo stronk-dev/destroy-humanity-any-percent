@@ -279,6 +279,9 @@ pushUnary(vectors, "log10", 400, () =>
 pushUnary(vectors, "ln", 400, () =>
   randomDecimal({ positive: true, exponentLimit: 3_000_000_000_000_000 }),
 );
+vectors.push(approximateVector("floor", "9.26157e5", "", new Decimal("9.26157e5").floor(), {
+  edge: "floor-fma-snap",
+}));
 pushUnary(vectors, "floor", 250);
 
 const expInputs = ["-1000e0", "-1e0", "0", "1e0", "7.097e2", "7.1e2", "1e3", "8.999999999999e15"];

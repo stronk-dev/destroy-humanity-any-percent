@@ -50,7 +50,8 @@ func candidateState(t *testing.T, catalog *economy.Catalog) *save.State {
 	provisioned["generator.beige_tower"] = 3
 	return &save.State{
 		Ledger: ledger, GeneratorCounts: counts, GeneratorProvisioned: provisioned,
-		UpgradesOwned: map[string]bool{}, GatesCrossed: map[string]bool{},
+		ProvisionRemaindersPPM: map[string]int64{"generator.beige_tower": 0},
+		UpgradesOwned:          map[string]bool{}, GatesCrossed: map[string]bool{},
 		DoctrinesByTransition: map[string]string{}, LedgerFactKinds: map[string]bool{},
 		MeterBands: map[string]int{}, RegionTraits: map[string]bool{},
 		EvaluatedThrough: time.UnixMilli(1_800_000_000_000).UTC(),
@@ -61,23 +62,19 @@ func candidateState(t *testing.T, catalog *economy.Catalog) *save.State {
 func TestProjectionRowsAreSortedPinnedCatalogViews(t *testing.T) {
 	catalog, routeCatalog := loadCandidateCatalogs(t)
 	state := candidateState(t, catalog)
-	counts, err := totalGeneratorCounts(catalog, state)
-	if err != nil || counts["generator.beige_tower"] != 5 {
-		t.Fatalf("counts=%v err=%v", counts, err)
-	}
-	rates, err := production.Rates(catalog, counts, nil)
+	rates, err := production.ProjectRates(production.CatalogBundle{Economy: catalog}, state, nil, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
-	resources, err := resourceRows(catalog, state, rates)
+	resources, err := resourceRows(catalog, state, rates.Resources)
 	if err != nil || len(resources) != 2 || resources[0].ResourceID != "company.cash" || resources[1].ResourceID != "company.permits" ||
 		resources[0].Cap == nil || resources[0].Cap.ReasonKey != "resource.company_cash.cap.phase0" {
 		t.Fatalf("resources=%+v err=%v", resources, err)
 	}
-	generators, err := generatorRows(catalog, state, nil)
+	generators, err := generatorRows(catalog, state, rates.Generators)
 	if err != nil || len(generators) != 9 || generators[0].GeneratorID != "generator.answering_machine" ||
 		generators[1].GeneratorID != "generator.beige_tower" || generators[1].Owned != 2 || generators[1].Provisioned != 3 ||
-		generators[1].RateContribution != "5e0" || generators[1].NextCost != "1.2769e1" {
+		generators[1].RateContribution != "5.01e0" || generators[1].NextCost != "1.2769e1" {
 		t.Fatalf("generators=%+v err=%v", generators, err)
 	}
 	upgrades, err := upgradeRows(catalog, routeCatalog, state)
@@ -90,7 +87,7 @@ func TestProjectionRejectsIncompleteGeneratorKeySets(t *testing.T) {
 	catalog, _ := loadCandidateCatalogs(t)
 	state := candidateState(t, catalog)
 	delete(state.GeneratorProvisioned, "generator.beige_tower")
-	if _, err := totalGeneratorCounts(catalog, state); err == nil {
+	if _, err := production.ProjectRates(production.CatalogBundle{Economy: catalog}, state, nil, 0); err == nil {
 		t.Fatal("incomplete provisioned-count set projected")
 	}
 }
@@ -99,15 +96,18 @@ func TestProjectionTreatsPreProvisioningStateAsZeroProvisioned(t *testing.T) {
 	catalog, _ := loadCandidateCatalogs(t)
 	state := candidateState(t, catalog)
 	state.GeneratorProvisioned = nil
-	counts, err := totalGeneratorCounts(catalog, state)
-	if err != nil || counts["generator.beige_tower"] != 2 {
-		t.Fatalf("legacy counts=%v err=%v", counts, err)
+	rates, err := production.ProjectRates(production.CatalogBundle{Economy: catalog}, state, nil, 0)
+	if err != nil || rates.Generators[1].GeneratorID != "generator.beige_tower" || rates.Generators[1].Rate.String() != "2.004e0" {
+		t.Fatalf("legacy rates=%v err=%v", rates.Generators, err)
 	}
 }
 
-func TestProjectionFailsClosedUntilKernelOwnsSchemaV4RateProjection(t *testing.T) {
+func TestProjectionUsesKernelOwnedSchemaV4RateProjection(t *testing.T) {
 	catalog, _ := loadCandidateCatalogs(t)
-	if !requiresKernelRateProjection(catalog, candidateState(t, catalog)) {
-		t.Fatal("schema-v4 content would be projected from the incomplete external-provider subset")
+	state := candidateState(t, catalog)
+	state.GeneratorCounts["generator.beige_tower"] = 25
+	rates, err := production.ProjectRates(production.CatalogBundle{Economy: catalog}, state, nil, 0)
+	if err != nil || rates.Generators[1].GeneratorID != "generator.beige_tower" || rates.Generators[1].Rate.String() != "5.74e1" {
+		t.Fatalf("schema-v4 kernel rates=%v err=%v", rates.Generators, err)
 	}
 }

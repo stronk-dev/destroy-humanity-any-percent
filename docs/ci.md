@@ -85,6 +85,7 @@ make verify
 The narrower commands are useful while iterating:
 
 ```sh
+make test-go-ci
 make verify-server
 make verify-client
 make verify-schema
@@ -93,6 +94,10 @@ make test-browser
 make fuzz-ci
 make vectors-check
 ```
+
+`make test-go-ci` reproduces the blocking server job cold on Linux/amd64 with
+Postgres, including packages whose integration tests are not selected by the
+focused `test-save-integration` target.
 
 Go commands invoked by the Makefile use the ignored repository-local `.cache/go-build` directory.
 Focused tests can run without writing to a user-level cache or requiring sandbox permission:

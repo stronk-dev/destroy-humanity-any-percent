@@ -36,6 +36,13 @@ only the neutral `server/multiplier` package; production does not import feature
 and comments do not change the fingerprint; changing a rate or ordering authority requires a
 separate reviewed artifact-regeneration commit. The gate is part of the blocking server CI job.
 
+The production kernel also exposes a pure read projection for authoritative UI rates. Its inputs
+are the pinned catalog bundle, replay-owned Company state, already-resolved external
+contributions, and an attended-time sample. It assembles upgrades, ladders, synergies, and
+active-play contributions through the same private functions used by live and replay evaluation,
+including the active-play product clamp, then returns generator- and resource-ID-sorted rows.
+The projection does not advance a cursor or create state, events, receipts, or replay inputs.
+
 ## Time evaluation
 
 `production.Evaluate` integrates all rates through the shared `AccrueConstant` primitive and

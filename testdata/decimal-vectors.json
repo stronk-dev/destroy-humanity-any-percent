@@ -11,7 +11,7 @@
       "commit-mul": 100,
       "div": 803,
       "exp": 353,
-      "floor": 250,
+      "floor": 251,
       "ln": 402,
       "log10": 402,
       "mul": 803,
@@ -23,7 +23,7 @@
       "sum": 300
     },
     "classifications": {
-      "finite": 5297,
+      "finite": 5298,
       "nan": 87,
       "negative-infinity": 50,
       "positive-infinity": 83
@@ -34,6 +34,7 @@
       "exp-finite",
       "exp-float-underflow",
       "exp-infinity",
+      "floor-fma-snap",
       "infinity-cancellation",
       "infinity-times-zero",
       "ln-negative",
@@ -37228,6 +37229,15 @@
       "op": "ln",
       "expect": "2763421940041767",
       "expectClass": "finite"
+    },
+    {
+      "assert": "approx",
+      "a": "9.26157e5",
+      "b": "",
+      "op": "floor",
+      "expect": "926157.0000000001",
+      "expectClass": "finite",
+      "edge": "floor-fma-snap"
     },
     {
       "assert": "approx",

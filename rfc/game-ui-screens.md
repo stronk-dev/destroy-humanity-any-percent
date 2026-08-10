@@ -336,6 +336,10 @@ literal or mechanical-ID title derivation is permitted meanwhile.
 
 - 2026-08-10: GU-C9–C11 ruled (kernel rate projection; bootstrap coordinator; additive
   exit_offer_resolved); GU-C12 sequenced — the copy authoring round launched.
+- 2026-08-10: GU-C9 implemented: the projector now consumes the production kernel's pure canonical
+  rate view for schema-v4/Company-v18 states; the former fail-closed temporary rejection is removed.
+  C-F1 is pinned by a real-Postgres store-level projection fixture. Ready for designated review;
+  this is not an approval or archival claim.
 
 ## Codex assembly blockers (2026-08-10 — GU-C13–GU-C16)
 

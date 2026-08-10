@@ -114,8 +114,8 @@ type snapshot struct {
 }
 
 // GameUISnapshot projects the latest committed Company revision and its pinned
-// catalog. The supplied time is a display sample only; it never evaluates or
-// commits production.
+// catalog. The supplied time resolves display clocks and the read-only active-
+// play rate sample; it never evaluates or commits production.
 func (projector *Projector) GameUISnapshot(ctx context.Context, streamID string, now time.Time) (json.RawMessage, error) {
 	if projector == nil || now.IsZero() {
 		return nil, ErrInvalidProjection
@@ -129,13 +129,6 @@ func (projector *Projector) GameUISnapshot(ctx context.Context, streamID string,
 		return nil, ErrInvalidProjection
 	}
 	state, catalog := loaded.State, bundle.Economy
-	// Schema-v4 content and active-play rates are assembled inside the replay
-	// kernel from catalog-owned and attended-time inputs. Until that kernel-owned
-	// read model is exposed, rejecting is safer than publishing a plausible but
-	// incomplete rate contribution from the external-provider subset.
-	if requiresKernelRateProjection(catalog, state) {
-		return nil, ErrInvalidProjection
-	}
 	contributions := []multiplier.Contribution{}
 	if projector.contributions != nil {
 		revision := loaded.Revision
@@ -145,19 +138,19 @@ func (projector *Projector) GameUISnapshot(ctx context.Context, streamID string,
 			return nil, err
 		}
 	}
-	counts, err := totalGeneratorCounts(catalog, state)
+	attendedMS, err := production.ResolveRateProjectionAttendedMS(bundle, state, now)
 	if err != nil {
 		return nil, err
 	}
-	rates, err := production.Rates(catalog, counts, contributions)
+	rates, err := production.ProjectRates(bundle, state, contributions, attendedMS)
 	if err != nil {
 		return nil, err
 	}
-	resources, err := resourceRows(catalog, state, rates)
+	resources, err := resourceRows(catalog, state, rates.Resources)
 	if err != nil {
 		return nil, err
 	}
-	generators, err := generatorRows(catalog, state, contributions)
+	generators, err := generatorRows(catalog, state, rates.Generators)
 	if err != nil {
 		return nil, err
 	}
@@ -207,39 +200,11 @@ func (projector *Projector) GameUISnapshot(ctx context.Context, streamID string,
 	return encoded, nil
 }
 
-func requiresKernelRateProjection(catalog *economy.Catalog, state *save.State) bool {
-	if state != nil && save.VersionForState(state) >= 18 {
-		return true
+func resourceRows(catalog *economy.Catalog, state *save.State, rates []production.ResourceRate) ([]resourceRow, error) {
+	byResource := make(map[string]decimal.Decimal, len(rates))
+	for _, rate := range rates {
+		byResource[rate.ResourceID] = rate.Rate
 	}
-	if catalog == nil || len(catalog.Upgrades()) != 0 || len(catalog.SynergyPools()) != 0 {
-		return true
-	}
-	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
-		if len(generator.Ladder) != 0 {
-			return true
-		}
-	}
-	return false
-}
-
-func totalGeneratorCounts(catalog *economy.Catalog, state *save.State) (map[string]int64, error) {
-	result := make(map[string]int64)
-	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
-		owned, ownedOK := state.GeneratorCounts[generator.ID]
-		provisioned := int64(0)
-		provisionedOK := state.GeneratorProvisioned == nil
-		if state.GeneratorProvisioned != nil {
-			provisioned, provisionedOK = state.GeneratorProvisioned[generator.ID]
-		}
-		if !ownedOK || !provisionedOK || owned < 0 || provisioned < 0 || owned > decimal.MaxExactInteger-provisioned {
-			return nil, ErrInvalidProjection
-		}
-		result[generator.ID] = owned + provisioned
-	}
-	return result, nil
-}
-
-func resourceRows(catalog *economy.Catalog, state *save.State, rates map[string][]decimal.Decimal) ([]resourceRow, error) {
 	result := []resourceRow{}
 	for _, resource := range catalog.Resources() {
 		if resource.Scope != economy.ScopeCompany {
@@ -249,9 +214,9 @@ func resourceRows(catalog *economy.Catalog, state *save.State, rates map[string]
 		if !ok {
 			return nil, ErrInvalidProjection
 		}
-		rate := decimal.Zero
-		for _, part := range rates[resource.ID] {
-			rate = rate.Add(part)
+		rate, ok := byResource[resource.ID]
+		if !ok {
+			return nil, ErrInvalidProjection
 		}
 		var cap *resourceCap
 		if resource.Hardcap != nil {
@@ -263,25 +228,18 @@ func resourceRows(catalog *economy.Catalog, state *save.State, rates map[string]
 	return result, nil
 }
 
-func generatorRows(catalog *economy.Catalog, state *save.State, contributions []multiplier.Contribution) ([]generatorRow, error) {
+func generatorRows(catalog *economy.Catalog, state *save.State, rates []production.GeneratorRate) ([]generatorRow, error) {
 	definitions := catalog.GeneratorClassesForScope(economy.ScopeCompany)
+	byGenerator := make(map[string]decimal.Decimal, len(rates))
+	for _, rate := range rates {
+		byGenerator[rate.GeneratorID] = rate.Rate
+	}
 	result := make([]generatorRow, 0, len(definitions))
 	for _, generator := range definitions {
 		owned, provisioned := state.GeneratorCounts[generator.ID], state.GeneratorProvisioned[generator.ID]
-		isolated := make(map[string]int64, len(definitions))
-		for _, row := range definitions {
-			isolated[row.ID] = 0
-		}
-		isolated[generator.ID] = owned + provisioned
-		rates, err := production.Rates(catalog, isolated, contributions)
-		if err != nil {
-			return nil, err
-		}
-		rate := decimal.Zero
-		if generator.Production != nil {
-			for _, part := range rates[generator.Production.ResourceID] {
-				rate = rate.Add(part)
-			}
+		rate, ok := byGenerator[generator.ID]
+		if !ok {
+			return nil, ErrInvalidProjection
 		}
 		balance, exists := state.Ledger.Balance(generator.Price.ResourceID)
 		if !exists {

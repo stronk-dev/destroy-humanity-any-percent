@@ -38,6 +38,7 @@ const requiredEdges = [
   "exp-finite",
   "exp-float-underflow",
   "exp-infinity",
+  "floor-fma-snap",
   "infinity-cancellation",
   "infinity-times-zero",
   "ln-negative",

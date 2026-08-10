@@ -231,7 +231,7 @@ func TestGoldenVectors(t *testing.T) {
 	}
 	requiredEdges := []string{
 		"div-reciprocal-boundary", "div-zero", "exp-finite", "exp-float-underflow", "exp-infinity",
-		"infinity-cancellation", "infinity-times-zero", "ln-negative", "ln-zero",
+		"floor-fma-snap", "infinity-cancellation", "infinity-times-zero", "ln-negative", "ln-zero",
 		"log10-negative", "log10-zero", "mul-lower-bound-carry", "negative-infinity-input", "positive-infinity-input",
 		"pow-negative-fractional", "pow-negative-integer", "pow-zero-negative",
 		"pow-zero-positive", "pow-zero-zero", "quantize-max-carry", "quantize-min-carry",
