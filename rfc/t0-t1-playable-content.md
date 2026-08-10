@@ -319,3 +319,14 @@ single-segment rule and bytes. The T0–T1 candidate uses exactly:
 Required proof: Go and JSON-Schema rejection fixtures for v1-multiple, unordered, overlapping,
 duplicate, unknown-boundary, and unbound-item cases; one schema-v2 suite proving all three
 candidate intervals bind while report/delta bytes remain single-milestone.
+
+## Owner ruling on T01-C11 (2026-08-10)
+
+- **T01-C11 — accepted as proposed.** Relevance schema v2 permits multiple raw-byte-ordered,
+  NON-OVERLAPPING segments for the same sole `optimization_milestone` (one per honest
+  availability interval; strictly increasing boundary pairs; duplicate intervals reject; every
+  policy item must match ≥1 segment whose start lies inside its window). The solver's target
+  milestone, delta, reducer, budget, and simulation mathematics are UNCHANGED; schema v1 keeps
+  its exact single-segment rule and bytes. The candidate uses exactly the three named intervals.
+  (Correctly bounced rather than falsely extending two windows — the truthful-encoding
+  discipline holding again.)
