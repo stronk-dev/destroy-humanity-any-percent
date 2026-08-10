@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "id": "scenario.relevance_fixture_v2_segments",
+  "catalog": "testdata/harness/relevance/economy-v4.json",
+  "routes_catalog": "testdata/harness/relevance/routes-v1.json",
+  "relevance_policy": "testdata/harness/relevance/fixture-policy-v2.json",
+  "runs": [{ "policy_id": "reference.greedy", "seed_start": "0", "seed_count": 1, "reference": true }],
+  "optimization_milestone": { "id": "milestone.cash_target", "kind": "resource_at_least", "resource_id": "company.cash", "amount": "1e3", "required": true },
+  "segments": [
+    { "milestone_id": "milestone.cash_target", "from_gate": null, "to_gate": "gate.t0_to_t1" },
+    { "milestone_id": "milestone.cash_target", "from_gate": "gate.t0_to_t1", "to_gate": "gate.t1_to_t2" }
+  ],
+  "reducer": "worst",
+  "horizon_ms": 120000,
+  "decision_horizons_ms": [1000, 5000, 15000, 30000, 60000, 120000],
+  "max_decisions": 12,
+  "beam_width": 8,
+  "greedy_gap_maximum_ppm": 50000,
+  "relevance_budget_max_runs": 100,
+  "relevance_budget_max_transitions": 2000000
+}

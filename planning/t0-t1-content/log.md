@@ -94,3 +94,21 @@ economy under the real activeplay loader; values trace to the reviewed baseline 
 3b18304a… · event-copy 6413fa05… · harness-scenario e74e271b… · opportunities 63e51084… ·
 presentation 70953a6d… · routes a84cce06…). The ninth (relevance) follows the T01-C11
 implementation.
+
+## 2026-08-10 — T01-C11 implementation and relevance pin #9 handoff
+
+- **Review by:** Codex self-review only. **Recorded by:** Codex. Ready for designated review and
+  owner ratification; this is not approval or mint authorization.
+- Schema v2 now accepts multiple ordered, non-overlapping segments for the same sole optimization
+  milestone. Schema v1 remains exactly one segment. Duplicate intervals, unknown boundaries,
+  invalid pairs, overlap/order drift, a wrong milestone binding, and items with no in-window segment
+  fail closed. JSON Schema independently pins v1-multiple and duplicate rejection.
+- The report still emits exactly one delta per item for the sole milestone; no reducer, solver,
+  budget, or simulation math changed. The fixture suite proves this on a two-segment executable run.
+- Candidate pin #9 is `balance/testdata/t0-t1/relevance-policy-v2.json`, SHA-256
+  `f8878cbf6705581eb5ffd88ea51e3719ebf2641c661bbe3d87ff7667002d30bf`. Its three-interval harness
+  coordinate is `balance/testdata/t0-t1/relevance-scenario-v2.json`, SHA-256
+  `2f1afb928e1f2d84d2e9748fbbd565bbbdebce24d7c411a0df7feb0b47692629`. Epsilon, horizon, seed,
+  and budget literals are provisional review bytes, not empirical facts.
+- Normal gates passed: `make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1'` and
+  `make verify-schema`.

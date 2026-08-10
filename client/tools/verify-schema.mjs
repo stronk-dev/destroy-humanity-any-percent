@@ -570,6 +570,18 @@ async function main() {
   if (validateRelevanceScenario({ ...relevanceScenarioV2, schema_version: 1 })) {
     throw new Error("relevance scenario schema v1 accepted a null from_gate");
   }
+  const relevanceScenarioV2Multiple = await readJSON(path.join(harnessDirectory, "relevance", "scenario-v2-multisegment.json"));
+  if (!validateRelevanceScenario(relevanceScenarioV2Multiple)) {
+    throw new Error(`testdata/harness/relevance/scenario-v2-multisegment.json: ${validationErrors(validateRelevanceScenario)}`);
+  }
+  if (validateRelevanceScenario({ ...relevanceScenarioV2Multiple, schema_version: 1 })) {
+    throw new Error("relevance scenario schema v1 accepted multiple segments");
+  }
+  const duplicateSegments = structuredClone(relevanceScenarioV2Multiple);
+  duplicateSegments.segments[1] = structuredClone(duplicateSegments.segments[0]);
+  if (validateRelevanceScenario(duplicateSegments)) {
+    throw new Error("relevance scenario schema accepted duplicate segments");
+  }
   const relevanceReportSchema = await readJSON(path.join(harnessDirectory, "relevance", "report.schema.json"));
   const validateRelevanceReport = ajv.compile(relevanceReportSchema);
   const relevanceReportV1 = await readJSON(path.join(harnessDirectory, "relevance", "golden-report-v1.json"));

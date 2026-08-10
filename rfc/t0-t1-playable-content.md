@@ -331,6 +331,14 @@ candidate intervals bind while report/delta bytes remain single-milestone.
   (Correctly bounced rather than falsely extending two windows — the truthful-encoding
   discipline holding again.)
 
+## T01-C11 implementation note (2026-08-10)
+
+The Go loader and JSON Schema now enforce the ruled version split and rejection matrix. The
+review candidate uses all three exact intervals and keeps one optimization milestone, reducer,
+delta family, and simulation path. Its policy/scenario hashes are recorded in
+`planning/t0-t1-content/candidate-proposal.md`; they are review coordinates pending designated
+review and owner ratification, not production pins.
+
 ## Owner ratification — the eight-document candidate core (Marco, 2026-08-10)
 
 Ratified after the FINDINGS-FIRST content review, the F1–F10 remediation, and the designated

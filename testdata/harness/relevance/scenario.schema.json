@@ -9,7 +9,7 @@
     "catalog": { "type": "string" }, "routes_catalog": { "type": "string" }, "relevance_policy": { "type": "string" },
     "runs": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/run" } },
     "optimization_milestone": { "$ref": "#/$defs/milestone" },
-    "segments": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/segment" } },
+    "segments": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/segment" } },
     "reducer": { "enum": ["p05", "worst"] },
     "horizon_ms": { "$ref": "#/$defs/positive" },
     "decision_horizons_ms": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/positive" } },
@@ -23,7 +23,7 @@
       "then": {
         "properties": {
           "segments": {
-            "type": "array",
+            "type": "array", "maxItems": 1,
             "items": { "type": "object", "properties": { "from_gate": { "$ref": "#/$defs/id" } } }
           }
         }

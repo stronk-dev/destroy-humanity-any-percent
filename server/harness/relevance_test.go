@@ -172,6 +172,94 @@ func TestRelevanceV2PreservesRunGenesisWindowInReport(t *testing.T) {
 	}
 }
 
+func TestRelevanceV2BindsMultipleOrderedSegmentsToOneMilestone(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v2-multisegment.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(suite.Scenario.Segments) != 2 || suite.Scenario.Segments[0].MilestoneID != suite.Scenario.Milestone.ID ||
+		suite.Scenario.Segments[1].MilestoneID != suite.Scenario.Milestone.ID {
+		t.Fatalf("multi-segment scenario=%+v", suite.Scenario.Segments)
+	}
+	report, err := suite.RunRelevance()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, item := range report.Items {
+		if len(item.IndividualDeltas) != 1 || item.IndividualDeltas[0].MilestoneID != suite.Scenario.Milestone.ID {
+			t.Fatalf("item %s changed single-milestone report bytes: %+v", item.PurchasableID, item.IndividualDeltas)
+		}
+	}
+}
+
+func TestRelevanceSegmentValidationRejectsRuledV2Matrix(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v2-multisegment.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	clone := func() RelevanceScenario {
+		result := suite.Scenario
+		result.Segments = append([]RelevanceSegment(nil), suite.Scenario.Segments...)
+		return result
+	}
+	t0, t1 := "gate.t0_to_t1", "gate.t1_to_t2"
+	unknown := "gate.unknown"
+	tests := []struct {
+		name string
+		edit func(*RelevanceScenario)
+		want string
+	}{
+		{name: "v1_multiple", edit: func(value *RelevanceScenario) { value.SchemaVersion = 1 }, want: "completely bind"},
+		{name: "unordered", edit: func(value *RelevanceScenario) {
+			value.Segments[0], value.Segments[1] = value.Segments[1], value.Segments[0]
+		}, want: "ordered"},
+		{name: "overlapping", edit: func(value *RelevanceScenario) { value.Segments[1].FromGate = nil }, want: "ordered"},
+		{name: "duplicate", edit: func(value *RelevanceScenario) { value.Segments[1] = value.Segments[0] }, want: "duplicate"},
+		{name: "unknown_from", edit: func(value *RelevanceScenario) { value.Segments[1].FromGate = &unknown }, want: "unknown from_gate"},
+		{name: "unknown_to", edit: func(value *RelevanceScenario) { value.Segments[1].ToGate = &unknown }, want: "unknown to_gate"},
+		{name: "invalid_pair", edit: func(value *RelevanceScenario) {
+			value.Segments[1] = RelevanceSegment{MilestoneID: value.Milestone.ID, FromGate: &t1, ToGate: &t0}
+		}, want: "invalid boundary"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			value := clone()
+			test.edit(&value)
+			if err := validateRelevanceSegments(value, suite.Routes); err == nil || !strings.Contains(err.Error(), test.want) {
+				t.Fatalf("error=%v want=%q", err, test.want)
+			}
+		})
+	}
+	unbound := clone()
+	unbound.Segments = []RelevanceSegment{{MilestoneID: unbound.Milestone.ID, FromGate: &t0, ToGate: &t1}}
+	if err := validateRelevanceSegments(unbound, suite.Routes); err != nil {
+		t.Fatal(err)
+	}
+	if err := validateRelevanceWindows(unbound, suite.Policy, suite.Routes); err == nil || !strings.Contains(err.Error(), "no milestone") {
+		t.Fatalf("unbound item error=%v", err)
+	}
+}
+
+func TestT0T1RelevanceCandidateBindsThreeHonestIntervals(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if suite.Scenario.SchemaVersion != 2 || len(suite.Scenario.Segments) != 3 || len(suite.Policy.Items) != 19 || len(suite.Policy.Groups) != 0 {
+		t.Fatalf("candidate segments=%d items=%d groups=%d", len(suite.Scenario.Segments), len(suite.Policy.Items), len(suite.Policy.Groups))
+	}
+	want := [][2]string{{"", "gate.t0_to_t1"}, {"gate.t0_to_t1", "gate.t2_to_t3"}, {"gate.t2_to_t3", "gate.t3_to_t4"}}
+	for index, segment := range suite.Scenario.Segments {
+		from := ""
+		if segment.FromGate != nil {
+			from = *segment.FromGate
+		}
+		if segment.MilestoneID != suite.Scenario.Milestone.ID || segment.ToGate == nil || from != want[index][0] || *segment.ToGate != want[index][1] {
+			t.Fatalf("candidate segment[%d]=%+v", index, segment)
+		}
+	}
+}
+
 func TestRelevanceScheduleCardinalityIsBoundedBeforeMaterialization(t *testing.T) {
 	for _, policy := range []string{"casual.phase0", "chaos.phase0"} {
 		for _, horizon := range []int64{0, 299_999, 300_000, 86_400_000, 172_800_123} {

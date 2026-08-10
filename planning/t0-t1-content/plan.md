@@ -6,7 +6,7 @@ RFC: `rfc/t0-t1-playable-content.md`
 - [x] Owner-rule T01-C1–T01-C9 and reconcile the normative body.
 - [x] Implement the ruled T01-C10 run-genesis relevance boundary in schema v2.
 - [ ] Land the logged session-bootstrap offline-catchup transition.
-- [ ] Assemble and loader-validate the exact content/presentation/copy candidates (non-relevance
-  documents remediated; relevance policy blocked on owner ruling T01-C11 multi-window binding).
+- [x] Assemble and loader-validate the exact non-copy content/presentation candidates, including
+  the review-ready T01-C11 relevance policy and three-segment scenario coordinate.
 - [ ] Run mandatory pacing/relevance/composed first-hour gates and owner-gated mint protocol.
 - [ ] Hand the full range to designated review; archive only after approval.

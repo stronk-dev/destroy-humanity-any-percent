@@ -1,6 +1,6 @@
 # T0–T1 candidate proposal
 
-Status: **findings remediated; T01-C11 owner ruling required; not ratified; not mint-authorized**
+Status: **eight-document core owner-ratified; relevance pin #9 is a review candidate; not mint-authorized**
 
 RFC: `rfc/t0-t1-playable-content.md`
 
@@ -17,13 +17,15 @@ Candidate directory: `balance/testdata/t0-t1/`
 | `harness-scenario-v1.json` | `e74e271be3b844bfde411887af16de06890a9a281596d45b8ad9deb7b1a502a5` | Exact proposed first-hour grammar; harness extensions not implemented |
 | `opportunities-v1.json` | `63e51084863bd00da7d5a0b358f54741b0b0682d8ef25b2fc7cb3da2c77f27cb` | Real Go active-play loader against candidate economy |
 | `presentation-v1.json` | `70953a6dfa53794f9e1e03627f0b2ddb06abb4870550dccc608a9ca0daeba0d7` | Exact proposed grammar; production loader not implemented |
+| `relevance-policy-v2.json` | `f8878cbf6705581eb5ffd88ea51e3719ebf2641c661bbe3d87ff7667002d30bf` | Real Go loader against candidate economy/routes; T01-C11 matrix + three-segment candidate fixture |
 | `routes-v1.json` | `a84cce06ae67a68817174b99cfe7191e3c2f9bf47c1c20b4ebab1704baf99cfa` | Real Go Routes loader + candidate literal test |
 
-These hashes are fresh review coordinates, not owner ratifications. Production artifact paths
-remain untouched. Eight documents now exist: the original six, the F1 categories correction,
-and the EH-C8 opportunities addition. The mandatory ninth document, Relevance policy/scenario,
-is intentionally absent pending T01-C11; schema v2 can express run genesis, but its single
-optimization segment cannot truthfully bind the candidate's three disjoint availability windows.
+The eight hashes above are owner-ratified in `rfc/t0-t1-playable-content.md`. Production artifact
+paths remain untouched. The relevance pin #9 candidate now lives at
+`balance/testdata/t0-t1/relevance-policy-v2.json`, with its harness coordinate at
+`balance/testdata/t0-t1/relevance-scenario-v2.json` (review coordinate
+`2f1afb928e1f2d84d2e9748fbbd565bbbdebce24d7c411a0df7feb0b47692629`). It uses the T01-C11
+three-segment grammar and remains subject to designated review and owner ratification.
 
 ## Findings-first remediation
 
@@ -125,18 +127,14 @@ building/click/lucky/production effects, and combo cap. It is intentionally a ca
 not a production mint. The economy document adds exactly the three multiplier declarations that
 its multiplicative effects resolve; Lucky is a payout, not a multiplier source.
 
-## T01-C11 — owner ruling required
+## T01-C11 — implemented candidate boundary
 
-Schema v2 now models run genesis, but its scenario validator still requires exactly one segment
-for the sole optimization milestone. T0, T1, and the tier-3 Legal Department occupy three
-disjoint availability intervals. One segment cannot cover them without lying.
-
-Proposed resolution: schema v2 permits multiple raw-byte-ordered, non-overlapping segments for
-the same sole milestone; each item must match at least one segment. Schema v1 stays exactly one
-segment. The candidate uses `[run genesis,T0→T1)`, `[T0→T1,T2→T3)`, and `[T2→T3,T3→T4)`.
-This changes binding coverage only: the optimization target, reducer, delta math, simulations,
-and budgets remain singular and byte-compatible. The full rejection/proof matrix is in T01-C11
-in the RFC.
+Schema v2 now permits multiple ordered, non-overlapping segments for the same sole milestone;
+schema v1 remains exactly one segment. The candidate uses `[run genesis,T0→T1)`,
+`[T0→T1,T2→T3)`, and `[T2→T3,T3→T4)`. The Go loader rejects the ruled semantic matrix, the JSON
+Schema rejects v1-multiple and duplicate rows, and a schema-v2 fixture proves report/delta bytes
+remain single-milestone. Candidate epsilon, horizon, seed, and budget literals are provisional
+review coordinates, not empirical claims or production authorization.
 
 ## Review request
 

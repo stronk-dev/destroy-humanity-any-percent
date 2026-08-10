@@ -255,26 +255,46 @@ func validateRelevanceScenario(scenario RelevanceScenario) error {
 }
 
 func validateRelevanceSegments(scenario RelevanceScenario, catalog *routes.Catalog) error {
-	if len(scenario.Segments) != 1 || scenario.Segments[0].MilestoneID != scenario.Milestone.ID {
+	if len(scenario.Segments) == 0 || scenario.SchemaVersion == 1 && len(scenario.Segments) != 1 {
 		return errors.New("relevance segments must completely bind the optimization milestone")
 	}
 	order := map[string]int{}
 	for index, gate := range catalog.Gates() {
 		order[gate.ID] = index
 	}
-	segment := scenario.Segments[0]
-	from, ok := relevanceBoundaryPosition(segment.FromGate, order)
-	if !ok {
-		return errors.New("relevance segment references unknown from_gate")
-	}
-	if scenario.SchemaVersion == 1 && segment.FromGate == nil {
-		return errors.New("schema-v1 relevance segment requires from_gate")
-	}
-	if segment.ToGate != nil {
-		to, ok := order[*segment.ToGate]
-		if !ok || from >= to {
-			return errors.New("relevance segment has invalid to_gate")
+	previousTo := -1
+	seen := map[string]bool{}
+	for index, segment := range scenario.Segments {
+		if segment.MilestoneID != scenario.Milestone.ID {
+			return errors.New("relevance segments must completely bind the optimization milestone")
 		}
+		from, ok := relevanceBoundaryPosition(segment.FromGate, order)
+		if !ok {
+			return errors.New("relevance segment references unknown from_gate")
+		}
+		if scenario.SchemaVersion == 1 && segment.FromGate == nil {
+			return errors.New("schema-v1 relevance segment requires from_gate")
+		}
+		to := len(order)
+		if segment.ToGate != nil {
+			var exists bool
+			to, exists = order[*segment.ToGate]
+			if !exists {
+				return errors.New("relevance segment references unknown to_gate")
+			}
+		}
+		if from >= to {
+			return errors.New("relevance segment has invalid boundary pair")
+		}
+		key := fmt.Sprintf("%d\x00%d", from, to)
+		if seen[key] {
+			return errors.New("relevance segments contain a duplicate interval")
+		}
+		seen[key] = true
+		if index > 0 && from < previousTo {
+			return errors.New("relevance segments must be ordered and non-overlapping")
+		}
+		previousTo = to
 	}
 	return nil
 }
