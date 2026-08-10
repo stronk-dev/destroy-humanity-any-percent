@@ -88,3 +88,39 @@ a8bbd5d..00cb2a6 complete, no uncovered edge commits.
 - GU-C13–GU-C16 record the four remaining owner-contract gaps: README slot grammar, mandatory
   provenance collisions, exact param types, and presentation-v2/exit-title bytes. No candidate
   SHA is claimed until those are ruled.
+
+## 2026-08-10 — GU-C9 implementation handoff — ready for designated review
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is an implementer handoff, not an
+  independent verdict or archival authorization.
+- **Implementation commit:** `bc2370a` (the complete GU-C9 implementation range). The production
+  kernel now exposes one pure `ProjectRates` read model over the pinned bundle, replay-owned
+  Company state, resolved external contributions, and attended coordinate. It assembles the exact
+  existing upgrade/ladder/synergy/active-play contribution paths, including the product clamp,
+  and returns byte-sorted generator/resource rows without mutating a cursor or producing state,
+  events, receipts, or replay inputs. Game UI consumes this seam and no longer reconstructs rates.
+- **C-F1 closed:** a real-Postgres test persists a schema-v4, Company-v18 stream and drives
+  `GameUISnapshot` itself. Its expected rows require purchased + provisioned counts, the ladder and
+  synergy paths, and a live active-play factor; reverting the GU-C9 seam restores the former hard
+  rejection and fails the test.
+- **R-F1 closed in the same honest kernel bump:** `toFloat64` now crosses a non-inlined float64
+  materialization boundary before the snap comparison, preventing arm64 FMA fusion from changing
+  the decision. The mandatory shared `floor-fma-snap` vector is consumed by Go and TypeScript;
+  `make test-go-ci` proves it on cold Linux/amd64. Kernel `0.3.89 -> 0.3.90` is intentional.
+- **R-F3 closed:** `docs/ci.md` now names `make test-go-ci` and its production-architecture scope.
+
+Normal root-target evidence on the exact implementation tree:
+
+- `make test-go GO_PACKAGES='./decimal ./production ./gameui' GO_TEST_FLAGS='-count=1'` — green;
+- `make test-save-integration` — every real-Postgres integration package green;
+- `make test-go-ci` — every Go package green, cold, on Linux/amd64 with Postgres;
+- `make vectors-check` — 6,296 deterministic vectors, 23 mandatory edges, no drift;
+- `make verify` — full aggregate green before commit: 6,641 client tests, 19,935 browser
+  assertions, zero TypeScript/Svelte diagnostics, and all guard/harness/schema/generated checks;
+- post-commit `make verify` repeated every gate through schema; its first browser-server startup
+  was denied by the execution sandbox (`listen EPERM`, before tests). The ordinary root
+  `make test-browser` target was immediately rerun and passed all 19,935 assertions. No product
+  test failed and the committed tree is clean.
+
+GU-C9 is ready for the required cross-party designated review. GU-C10, GU-C11, and GU-C12's
+GU-C13–GU-C16 owner blockers remain open; nothing is self-approved or archived.
