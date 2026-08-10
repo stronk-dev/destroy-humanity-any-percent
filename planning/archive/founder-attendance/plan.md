@@ -5,6 +5,6 @@
 - [x] Implement Go and TypeScript Founder replay from genesis across ordinary commands and Exits.
 - [x] Implement the race-safe, offline-aware effective-attendance resolver without a second persisted cursor.
 - [x] Add shared parity vectors and real-Postgres race/rollback/retention coverage.
-- [ ] Update canonical docs, run root verification, obtain independent full-range review, and archive.
+- [x] Update canonical docs, run root verification, obtain independent full-range review, and archive.
 
 Checkboxes flip only with the test that proves the behavior.

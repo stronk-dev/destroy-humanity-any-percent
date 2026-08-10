@@ -1,13 +1,14 @@
 # RFC: Founder Attendance Foundation (the shared cross-run clock)
 
-- **Status:** accepted (A1-A5 ruled; implementing)
+- **Status:** implemented — A1-A5, Founder genesis, Exit logging, rollback, and retention are
+  implemented and independently reviewed.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-05
 - **Design refs:** `design/02 §2` (Founder scope, persists), `design/02 §9` (attended vs offline — the banked-time model)
 - **Depends on:** Save + Run Genesis + ApplyFounderLogged (implemented), plus the Founder
   genesis/Exit-log slice owned as this RFC's first implementation batch
 - **Unblocks:** Pet Care C10 (pet decay clock), Minigame Platform C26 (cross-run faucet quota) — TWO consumers, which is why it's its own primitive, not owned by either.
-- **Planning:** `planning/founder-attendance/` (once implementing)
+- **Planning:** `planning/archive/founder-attendance/`
 - **Created because:** Pet Care C10 + Minigame C26 both showed a server timestamp is not an attendance authority (elapsed wall time counts offline gaps; the command instant advances by zero). A shared clock two systems need deserves deliberate design, not a ruling squeezed into either bounce.
 
 ## Summary

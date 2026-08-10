@@ -15,7 +15,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 | [API Foundation](api-foundation.md) | accepted — C1–C17 ruled; implementing | Account API / Transport / Gameserver Composition |
-| [Founder Attendance Foundation](founder-attendance-foundation.md) | accepted — A1–A5 ruled; implementing | Save / Run Genesis / Prestige |
 | [Minigame Platform Foundation](minigame-platform-foundation.md) | accepted — C1–C40 ruled; implementing | Gameserver Composition / Founder Attendance / Combat |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | implementing | — |
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
@@ -83,6 +82,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Soul Foundation](archive/soul-foundation.md) | implemented | [Soul foundation](../docs/soul.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [The Pitch](archive/minigame-the-pitch.md) | implemented | [The Pitch](../docs/minigame-the-pitch.md), [Minigame platform](../docs/minigame-platform.md) |
 | [Soul Recovery Activities](archive/soul-recovery-activities.md) | implemented fixture-first | [Soul Recovery](../docs/soul-recovery.md), [Soul foundation](../docs/soul.md) |
+| [Founder Attendance Foundation](archive/founder-attendance-foundation.md) | implemented | [Founder transitions](../docs/founder-transitions.md), [Save layer](../docs/save-layer.md) |
 | [Meters Foundation](archive/meters-foundation.md) | implemented | [Meters](../docs/meters.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Achievements Foundation](archive/clout-and-achievements-foundation.md) | implemented | [Achievements](../docs/achievements.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Pet Care Foundation](archive/pet-care-foundation.md) | implemented; combat AC3 carried | [Pet care](../docs/pet-care.md), [Founder transitions](../docs/founder-transitions.md), [Save layer](../docs/save-layer.md) |

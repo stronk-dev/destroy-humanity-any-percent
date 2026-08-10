@@ -4,7 +4,7 @@ Append-only. A fresh agent must be able to resume from this file and the accepte
 
 ## 2026-08-05 — implementation opened
 
-- Owner accepted A1-A5 in `rfc/founder-attendance-foundation.md`.
+- Owner accepted A1-A5 in `rfc/archive/founder-attendance-foundation.md`.
 - Existing `age_ms` remains the only persisted completed-run attendance authority.
 - First batch is the Pet-C9 prerequisite: immutable Founder genesis plus Exit participation in
   `founder_log`, followed by career-long Founder replay. Attendance consumers do not land before
@@ -184,3 +184,12 @@ honestly pre-archival; docs updated in-change with the ruled canonical home inde
 prior FA designated verdict + the canonical-docs ruling + this closure, **the archival move is
 AUTHORIZED** (provenance note: the prior verdict's pre-repair hashes dangle; coverage is closed
 via the mint verdict's range-union declaration — recorded here for future readers).
+
+## 2026-08-10 — archival execution
+
+Founder Attendance is archived under the authorization immediately above. The frozen RFC lives at
+`rfc/archive/founder-attendance-foundation.md`, its evidence at
+`planning/archive/founder-attendance/`, and its canonical behavior remains the attendance section
+of `docs/founder-transitions.md` (indexed from `docs/README.md`). This move consumes the original
+designated implementation verdict, the 2026-08-07 canonical-docs ruling, the mint verdict's
+range-union provenance closure, and the designated rollback/retention verdict for `ab08ee8`.
