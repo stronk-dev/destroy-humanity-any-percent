@@ -20,7 +20,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
-| [UI Foundation](ui-foundation.md) | accepted — C1–C11 ruled; implementing | Client Shell / Transport / Copy Pipeline |
 | [Game-UI Screens](game-ui-screens.md) | draft | UI Foundation / Client Shell |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft — UNBLOCKED, blockers answered | Commons Compact |
 | [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |
@@ -86,6 +85,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Meters Foundation](archive/meters-foundation.md) | implemented | [Meters](../docs/meters.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Achievements Foundation](archive/clout-and-achievements-foundation.md) | implemented | [Achievements](../docs/achievements.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Pet Care Foundation](archive/pet-care-foundation.md) | implemented; combat AC3 carried | [Pet care](../docs/pet-care.md), [Founder transitions](../docs/founder-transitions.md), [Save layer](../docs/save-layer.md) |
+| [UI Foundation](archive/ui-foundation.md) | implemented | [UI foundation](../docs/ui-foundation.md) |
 
 **Phase-0 contract status (reconciled 2026-08-05 against the coverage-map sweep):** the contracts
 previously listed here as "not yet drafted" — Layer-1 events engine, doctrine intents, Compute

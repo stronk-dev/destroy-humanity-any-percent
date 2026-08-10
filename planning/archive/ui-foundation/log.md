@@ -172,3 +172,11 @@ the 9.99499e5→"999 K" boundary confirming); group selection and rendered value
 construction (standard.format receives the quantized value); revert-probe fails exactly the three
 new goldens; docs true as written across the carry window. **UI Foundation C1–C11 is fully
 verified and ARCHIVAL-ELIGIBLE (standard flow); Game-UI implementation is UNBLOCKED.**
+
+## 2026-08-10 — archival execution
+
+UI Foundation is archived under the designated verdict immediately above. The frozen RFC lives at
+`rfc/archive/ui-foundation.md`, its evidence at `planning/archive/ui-foundation/`, and the canonical
+behavior remains `docs/ui-foundation.md`. This move consumes the implementation verdict for
+`3483ab1`, the F1/F3-F6 remediation review for `{8873301, 5a7dc01}`, and the final carry-fix verdict
+for `d2cf2cd`; together those entries cover the complete implementation and remediation chain.

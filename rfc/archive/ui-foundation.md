@@ -1,12 +1,12 @@
 # RFC: UI Foundation (primitives, not screens)
 
-- **Status:** accepted — C1–C11 ruled (token matrix, formatter pin, axe-core); implementing
+- **Status:** implemented — C1–C11 are shipped and independently reviewed.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/06` (Svelte 5 runes, DOM-first, per-tab `$derived`, 10 Hz formatting), `design/08` (era presentation: the UI itself ages through gaming eras — the load-bearing satire surface), `design/11` (voice, first-session), `design/03 §9` (arcade era-skins)
 - **Depends on:** Client Shell, Transport wire v2, Copy Pipeline (implemented)
 - **Owner ruling honored:** breadth-first — this RFC ships ZERO screens; it ships the system every future screen is made of, so screens never rebuild when foundations shift.
-- **Planning:** `planning/ui-foundation/` (once implementing)
+- **Planning:** `planning/archive/ui-foundation/`
 
 ## Summary
 
