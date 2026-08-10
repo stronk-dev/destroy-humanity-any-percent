@@ -480,3 +480,71 @@ be discriminatingly tested.
 **Proposed contract:** remove mismatched-reuse from this zero-payload coordinator and define only
 exact replay plus GU-C21 expiry, or add and rule a genuinely semantic request field whose mismatch
 must conflict. Do not keep a nominal error category no legal request pair can reach.
+
+## Owner rulings on GU-C13–GU-C22 (2026-08-10)
+
+**The assembly four:**
+- **GU-C13 — RULED: amend Copy Foundation with ONE fail-closed long-form kind.** `text_kind:
+  "longform"` — plain printable ASCII, ≤80 columns, ≤64 lines, ZERO substitution params, no
+  markup semantics (the `*`/rule characters are literal glyphs, not syntax — the plain-text
+  gate's Markdown heuristics do not apply to this kind; its own validator enforces the
+  column/line/charset caps instead); rendered in a preformatted block. No global limit changes,
+  no label-matching exemptions. The README stays a real README.
+- **GU-C14 — RULED: placeholders + two provenance extracts; the rewrites are AUTHORED here:**
+  1. Order-form amount rows: the five `$0.00` literals become `{price}` (string param, bound to a
+     presentation-data constant "$0.00" — law-1 values are still data). The confirmation becomes
+     "Thank you, {founder}!! Your {price} has been processed. Nothing will ship. You already had
+     everything."
+  2. Horse Armor description: "…Price: {price}, forever." (same binding).
+  3. Offline-progress tooltip: "While you were away the machine kept working at {rate_percent}%,
+     up to {cap_hours} hours. BBS door games did this first…" — params bound to the PINNED
+     offline policy (truer than literals: survives retunes).
+  4. README body: the two numeric mentions are re-spelled as prose — "at ninety percent, for up
+     to a day" — period-authentic and detector-clean; the longform kind gets NO detector
+     exemption.
+  5. The two REAL claims (the 2006 armor anchor; the shareware mail-a-check register) get
+     verified `provenance.v1.json` rows backed by extract rows in the tracked
+     `design/research/provenance-extracts.md`, derived from the gaming-enshittification and
+     era-1995 dossiers' already-sourced material. Codex assembles the rows; no unrelated claim
+     rides along.
+- **GU-C15 — accepted as proposed**, plus the new params: `price` string · `rate_percent`
+  integer · `cap_hours` integer.
+- **GU-C16 — accepted; the five exit titles AUTHORED here:** presentation schema v2 (v1 arrays
+  byte-identical + byte-sorted `gates`/`exit_types` arms; loader enforces set equality against
+  Routes and Prestige). Titles: `acquihire` = "Acqui-hired" · `acquisition` = "Acquired" ·
+  `collapse` = "Collapsed" · `ipo` = "Went Public" · `scripted_first` = "First Failure".
+
+**The bootstrap six:**
+- **GU-C17 — accepted as proposed** (`create_bootstrap`, `POST /api/v1/bootstrap`,
+  `{idempotency_key}`, the exact three-object response, HTTP 201 on first commit AND exact
+  replay, `Cache-Control: no-store`; old account/session operations stay additive) — with the
+  GU-C22 outcome applied: the `409 idempotency_conflict/bootstrap` row is REMOVED; the closed
+  errors are `400 invalid/bootstrap`, `409 conflict/bootstrap_expired` (GU-C21),
+  `429 rate_limited/ip`, `500 internal_invariant/bootstrap`.
+- **GU-C18 — accepted as proposed, primary arm.** The wire stays C20; the bootstrap key
+  additionally REQUIRES the 64-char lowercase-hex encoding of 32 cryptographically random bytes
+  (client generator owns it; server validates before lookup); only the SHA-256 digest is stored;
+  the receipt is keyed by digest. The challenge alternative is rejected.
+- **GU-C19 — accepted, authenticated-encryption arm.** Deployment-resolved receipt key ID in API
+  config; AE over the canonical response; store `{key_id, nonce, ciphertext}` beside the digest;
+  decrypt only after possession proof; rotation keeps prior key IDs readable until receipt
+  expiry. The derive-everything alternative is rejected (couples all secrets to one KDF forever).
+- **GU-C20 — accepted as proposed.** One coordinator transaction (account + Founder streams +
+  session family + encrypted receipt); a transaction-aware PURE snapshot builder over the exact
+  initial states + pinned bundle; registry-validate the response BEFORE insert/commit; fault
+  injection at every boundary proves nothing survives any failure. GameUISnapshot never becomes
+  ambient post-commit repair.
+- **GU-C21 — accepted as proposed.** Replay through refresh expiry; past it the key is
+  TOMBSTONED and returns exactly `409 conflict/bootstrap_expired` forever (never a second
+  account); recovery via the existing recovery-code operation; bounded GC deletes ciphertext
+  only after the tombstone — retry identity outlives secret retention.
+- **GU-C22 — accepted, REMOVE arm.** Mismatched-reuse is unreachable for a zero-payload
+  coordinator; exact replay + GU-C21 expiry are the COMPLETE semantics. No nominal error
+  category no legal request can reach.
+
+## Changelog (C13–C22 round)
+
+- 2026-08-10: all ten ruled — the longform copy kind; the GU-C14 placeholder rewrites +
+  provenance-extract commissions (authored in the ruling); param types; presentation v2 with the
+  five exit titles; the complete bootstrap security contract (entropy-bound keys, AE receipts,
+  one-transaction coordinator, tombstoned expiry, no unreachable arms).
