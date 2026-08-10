@@ -112,3 +112,8 @@ implementation.
   and budget literals are provisional review bytes, not empirical facts.
 - Normal gates passed: `make test-go GO_PACKAGES='./harness' GO_TEST_FLAGS='-count=1'` and
   `make verify-schema`.
+
+The implementation commit is `ddb106f`; its designated-review range is `b01c98f..ddb106f` and
+contains only the T01-C11 relevance grammar, executable fixtures, candidate pin #9, and their
+planning/RFC record. The later full-repository `make verify` at `1e8f628` also consumed these bytes
+successfully.

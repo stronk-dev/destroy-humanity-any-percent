@@ -49,3 +49,9 @@ Focused evidence, all through ordinary root Make targets:
 
 This batch is not an archival claim. It is ready for the cross-party designated review after its
 commit range is recorded; GU-C9–GU-C12 remain explicit blockers to the full screen acceptance gate.
+
+The implementation commit is `1e8f628`. Post-commit `make verify` completed successfully through
+the generated API pin, composed harness, TypeScript/Svelte typecheck, production build, 6,640 client
+tests, kernel-history guard, copy/schema checks, and 19,932 browser assertions. The designated
+review range for this batch is `ddb106f..1e8f628`; it contains only this Game-UI implementation
+commit.
