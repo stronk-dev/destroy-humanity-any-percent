@@ -236,3 +236,40 @@ also includes the later record commit containing this entry. This entry is an im
 record, not a review verdict. The mint is implemented and self-checks are green;
 Meters, Achievements, and Pet Care remain unarchived until the designated cross-party review
 consumes the full range and approves it. Nothing was pushed.
+
+## 2026-08-10 — designated cross-party verdict: THE EPOCH-6 MINT {3ff34bf, 84cf570, c41b388, 08c995e} — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**The core claim holds without deviation:** all 16 production artifacts byte-identical to their
+owner-ratified pins (every SHA recomputed; source==production verified independently of the
+in-repo test; the base four byte-untouched vs epoch 5). Registry exact (9 rows appended, epoch-6
+entry literal, current_epoch_id 5→6, ALL epoch 1-5 hashes preserved verbatim); changelog cites
+resolving APPROVED verdicts (the anchor slug fixed); deployment identity moved to 1a4463bc… with
+the ratified copy attestation confirmed by recomputation. FCE-C8 stage 3 atomic; copy-check green
+at every commit in the range.
+
+**84cf570 (replay-inputs v5→v6) verified a GENUINE mint-time necessity:** the Postgres suite is
+RED at the mint commit alone (reproduced — the 16-artifact bundle breaks active-seed tests), and
+the remediation is fail-closed in both runtimes (founder_extensions required iff floor ≥ 17,
+v<6 decodable and valid only for floors ≤ 16). **The whole pre-existing corpus is byte-identical
+modulo the version field** (33+3 cases diffed old-vs-new; main cases stay pinned to epoch-5).
+Baseline c41b388 correct per the baseline-guard two-commit protocol, deltas equal the owner-read
+report to the digit, harness-check reproduces. Kernel map clean (one honest bump at 84cf570);
+subject discipline clean; AC1-AC5 green at range head; no archival jumped the gate.
+
+**F1 (HIGH, registered follow-up obligation — not blocking):** `applyFounderReplayOutput`'s v17+
+extension-persistence block (server/production/prestige.go:419) has NO discriminating test —
+probe-proven: full unit + Postgres suites green with it disabled. Correct by inspection, but a
+silent live-state/replay divergence seam. REQUIRED: a case where a founder with non-default
+extension state Exits and the PERSISTED founder is asserted (e.g. seq 9→0, fiscal credit
+preserved) — lands with the archival batch or the next production-package change.
+**F2:** AC5's "green at the mint commit" is structurally unmeetable under the baseline-guard
+protocol (Postgres red at 3ff34bf alone, harness-check red until c41b388) — green at range head;
+RFC reconciliation note added same day (Claude-side). F3/F4 minor citation-anchor cosmetics;
+F5 the mint's mechanical path reconciliation inside sign-off text (correct direction, noted);
+F6 epoch-5-pinned integration tests leave active-epoch e2e coverage on the composed test.
+
+**Range-union:** every implementation commit through 08c995e is designated-verdict-covered.
+**The Meters, Achievements, and Pet Care archival moves citing this verdict are AUTHORIZED.**
+THE PUSH remains separate and Marco-only.

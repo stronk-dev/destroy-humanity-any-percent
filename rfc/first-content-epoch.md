@@ -577,3 +577,11 @@ harness scenarios (Finding 1's evidence gap) are registered epoch-7-lane work.
 ## Changelog (sign-off)
 
 - 2026-08-09: FCE5.3 satisfied (verdict 270e97b); FCE5.6 GIVEN — mint authorized.
+
+## Post-mint reconciliation (2026-08-10, Claude-side — closes the mint review's F2)
+
+AC5's "green at the mint commit" is reconciled to **"green at the mint RANGE head"**: the
+baseline-change guard's own two-commit protocol makes literal per-commit greenness impossible
+(the Postgres suite requires the remediation commit; harness-check requires the separate baseline
+commit). The mint verdict (2026-08-10) verified green at 08c995e. This is the acceptance text
+matching the shipped guard protocol, not a weakening.
