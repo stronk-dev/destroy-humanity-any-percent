@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -159,6 +159,14 @@ try {
   if (!correctionRebindFailed) throw new Error("kernel guard accepted correction review-log rebinding");
   run(root, "git", ["restore", "kernel/history-corrections.json"]);
   rmSync(path.join(root, "planning/unrelated"), { recursive: true, force: true });
+
+  // Archiving an implemented RFC moves its immutable review ledger. The correction retains the
+  // original citation, and the guard must resolve the process-defined archive path without a
+  // mutable correction-register rewrite.
+  mkdirSync(path.join(root, "planning/archive"), { recursive: true });
+  renameSync(path.join(root, "planning/kernel-fix"), path.join(root, "planning/archive/kernel-fix"));
+  run(root, "node", ["client/tools/verify-kernel-version.mjs"]);
+  renameSync(path.join(root, "planning/archive/kernel-fix"), path.join(root, "planning/kernel-fix"));
 
   write(root, "kernel/history-corrections.json", `${JSON.stringify({ schema_version: 1, corrections: [] }, null, 2)}\n`);
   let correctionRemovalFailed = false;

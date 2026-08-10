@@ -52,6 +52,15 @@ const parseCorrections = (data, label) => validateCorrections(JSON.parse(data), 
 const readCorrectionsFile = (filename, label) => existsSync(filename) ? parseCorrections(readFileSync(filename, "utf8"), label) : emptyCorrections();
 const sameCorrection = (left, right) => left.offending_commit === right.offending_commit &&
   left.corrected_in_version === right.corrected_in_version && left.reason === right.reason && left.review_log === right.review_log;
+// Corrections retain their immutable active-planning citation after an RFC archives. Resolve that
+// citation to the process-defined archive location only when the original path no longer exists;
+// the correction record itself therefore stays append-only across the archival move.
+const reviewLogPath = (reviewLog) => {
+  const active = path.join(repositoryRoot, reviewLog);
+  if (existsSync(active) || !reviewLog.startsWith("planning/") || reviewLog.startsWith("planning/archive/")) return active;
+  const archived = path.join(repositoryRoot, "planning/archive", reviewLog.slice("planning/".length));
+  return existsSync(archived) ? archived : active;
+};
 const affecting = (filename, paths) => !filename.endsWith("_test.go") && paths.some((entry) => entry.endsWith("/") ? filename.startsWith(entry) : filename === entry);
 const versionTuple = (value, label) => {
   const match = value.match(/^0\.([0-9]+)\.([0-9]+)$/);
@@ -69,7 +78,7 @@ const assertBump = (label, commit, files, paths, before, after, corrections, hea
     if (correction !== undefined) {
       const corrected = versionTuple(correction.corrected_in_version, `${label} correction`);
       const head = versionTuple(headVersion, "current corrected version");
-      if (tupleGreater(corrected, left) && (head[0] > corrected[0] || head[0] === corrected[0] && head[1] >= corrected[1]) && existsSync(path.join(repositoryRoot, correction.review_log))) return;
+      if (tupleGreater(corrected, left) && (head[0] > corrected[0] || head[0] === corrected[0] && head[1] >= corrected[1]) && existsSync(reviewLogPath(correction.review_log))) return;
     }
     throw new Error(`${label} changes kernel semantics without a real kernel/VERSION bump: ${changed.join(", ")}`);
   }
@@ -85,7 +94,7 @@ const correctionsAt = (ref, label) => {
   try { return parseCorrections(git("show", `${ref}:${correctionsPath}`), label); } catch { return emptyCorrections(); }
 };
 const reviewRecordsCorrection = (correction) => {
-  const filename = path.join(repositoryRoot, correction.review_log);
+  const filename = reviewLogPath(correction.review_log);
   if (!existsSync(filename)) return false;
   const content = readFileSync(filename, "utf8");
   const ranges = /\(`([0-9a-f]{7,40})\^\.\.([0-9a-f]{7,40})`\)/g;
