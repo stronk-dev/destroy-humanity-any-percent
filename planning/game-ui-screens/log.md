@@ -322,3 +322,29 @@ Normal repository evidence on the exact implementation tree:
 GU-C10 is implemented and ready for the required cross-party designated review. GU-C12 remains a
 separate ratification/review thread, the screen components do not consume bootstrap yet, and
 nothing is self-approved or archived.
+
+## 2026-08-11 — designated cross-party verdict: GU-C10 {9c23e80, 81114cf} — BOTH APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+Contract-exact against all six rulings: the C17 wire closed-set proven over real HTTP (201 +
+no-store both paths; no idempotency_conflict reachable); C18 digest-before-BeginTx statically
+provable with no plaintext key column anywhere; C19 AES-256-GCM with associated data binding
+digest‖key_id (the digest IS the possession proof; wrong-digest decryption fails by
+construction), two-key rotation replay proven, coordinator-level raw-byte replay equality; C20
+one transaction with ALL ELEVEN fault boundaries enumerated + 7-table residue checks — the
+reviewer's own sabotage probe was caught at exactly the injected boundary; C21 tombstone
+semantics ENFORCED STRONGER THAN RULED (the migration CHECK makes ciphertext-absent-without-
+tombstone unrepresentable; the trigger forbids DELETE and reversal — both SQL-tested); C22's
+dead arm verified absent. Migration 00073 append-only; kernel 0.3.92 honest (the range's watched
+touch is a real fail-closed tightening); the GET projector refactor byte-equal by construction
+and empirically. All five gates green incl. cold Linux.
+**Routed (none blocking): F1 (MEDIUM, due by the Game-UI archival gate) — the receipt GC has NO
+production caller** (sessions get a periodic job; receipts don't; never-retried ciphertext
+outlives expiry indefinitely) — wire a NewPeriodicJob beside the session GC. F2 (LOW) the
+DeleteAccount tombstone branch untested under a live receipt; F3 (LOW) the composed replay check
+compares re-marshaled envelopes (raw-byte equality separately proven at coordinator level).
+**Forward note:** replay revalidates decrypted receipts against the CURRENT registry — a future
+GameUISnapshot shape change turns old live receipts into 500s (fail-closed, acceptable, remember
+at the next schema move).
+**Range-union: consumes exactly {9c23e80, 81114cf}. {8a8e485, b1c82b1} are the GU-C12 thread —
+pending its designated verdict (which MUST cite f2cecba as executable code) + owner ratification.**
