@@ -78,3 +78,42 @@ content-free primitive fixture; it invents no screen or authoritative game value
 
 Focused typecheck, client tests, schema/boundary gates, and the full browser matrix are green. This
 entry is a self-check record only: independent designated review and archival remain open.
+
+## 2026-08-10 — designated cross-party verdict: UI Foundation implementation {3483ab1} — NOT APPROVED (narrow)
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**Verified excellent across C1-C11:** byte-exact 41-key token matrix both eras (era_1995 motion
+all-zero as ruled); tokens as schema-validated data with a strict 41-property runtime loader;
+DOM-stable era switch; single formatter boundary with notations 1.6.0 pinned same-commit (and the
+nested break_infinity 1.3.0 correctly aliased out — law 3 intact); zero component literals (both
+seeded-violation probes red); the C11 axe gate LIVE in make verify across Chromium+Firefox+WebKit
+and probe-red on a seeded contrast violation; closed surface registry with exact-key/duplicate/
+unknown-fact rejection and proven lifecycle ordering; strict TS; honest no-bump kernel handling.
+
+**BLOCKING (F1, HIGH): the C10 ruled literal is not what ships.** Ruled: "3 significant mantissa
+digits (1.23 Qa)". Shipped: fixed 2 DECIMAL PLACES (probe: 1.2345e4 → "12.34 K" = 4 sig digits;
+1.2345e5 → "123.45 K" = 5). The goldens dodge the exposing range and docs/ui-foundation.md
+restates the unshipped behavior as canonical fact. **OWNER-SIDE RULING (recorded now): the C10
+literal STANDS — fix the formatter to true 3-significant-digit mantissas** (width-stable under
+Standard notation: 1.23 / 12.3 / 123), add the mantissa≥10 goldens AND the missing C3
+sub-visible-collapse golden (F3), and the docs become true as written. No re-ruling.
+
+**F2 (CRITICAL, OUT-OF-RANGE — routed to the First Content mint thread): the Go suite is RED
+under cold caches since the MINT COMMIT 3ff34bf** — the mint added fiscal.generator.beige_tower/
+fiscal.hoard to the live economy artifact while server/fiscal/catalog_test.go:55-60 appends the
+same IDs → duplicate-id rejection in ./economy, ./epochseed, ./fiscal with -count=1. Warm Go
+caches masked this through the mint review, the B1/B4/B5 review, and every green claim since.
+Fix: the test must use non-colliding IDs (test-file fix); the mint thread gets a record note
+(the mint verdict's gate claim was cache-masked — the mint BYTES are unaffected).
+
+**F4-F6 (non-blocking, fix with F1 or note):** keyboard activation never dispatched in the C7
+test + visible focus unasserted; lint gaps (gradient literals, fetch/WebSocket, non-recursive
+readdir); capped Amount aria-label replaces the numeric value in the accessible name.
+
+**Range-union:** consumes exactly {3483ab1}. NOTE closing the reviewer's item 7: 7b48a9d IS
+covered — the same-day B1 verdict (planning/first-content-epoch/log.md) explicitly consumed
+{7b48a9d, 5c20ee3}; no thread gap exists.
+
+**Verdict: NOT APPROVED pending F1 (+F2 repo-wide, owned by the mint thread; +F3/F4 bundled).
+Re-review is a narrow delta.**

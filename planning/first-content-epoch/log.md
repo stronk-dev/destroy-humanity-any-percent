@@ -295,3 +295,13 @@ disabling the prestige.go:419 extension-persistence block now fails the composed
 exactly the predicted seam. The guard-tooling edge commit 7b48a9d (archive-path citation
 fallback) is minimal, fail-closed, adversarial-fixture-covered. A-F1 (LOW): Pet Care's body
 reconciliation beyond status/path is the rulings-reconcile convention, correctly labeled.
+
+## 2026-08-10 — record note (from the UI Foundation review's F2): the mint-range gate claim was cache-masked
+
+Cold-cache `go test -count=1` fails ./economy, ./epochseed, ./fiscal from the mint commit 3ff34bf
+forward: server/fiscal/catalog_test.go appends fiscal.generator.beige_tower/fiscal.hoard, which
+the minted economy artifact now carries → duplicate-id rejection. Warm caches masked this through
+the mint review and subsequent verdicts. THE MINT BYTES ARE UNAFFECTED (the defect is a stale
+test fixture colliding with live content); the fix is a test-file change (non-colliding IDs) +
+this record. Gate claims in the affected verdicts remain honest as-run; the masking is a
+test-caching hazard now on record — reviewers should prefer -count=1 for gate claims.
