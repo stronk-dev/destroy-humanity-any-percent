@@ -110,3 +110,9 @@ mints an epoch with changed artifact bytes while a run is active and exits it ac
 and migrates a literal v6 Company through a successful pre-timer scripted Exit. The first elective
 Exit pacing envelope remains gated on the explicitly missing T0–T1 playable-content contract; no
 fixture timing is presented as shipped balance.
+
+## Offer resolution events
+
+Accepting a live exit offer emits `exit_offer_resolved` schema v1 with the exact payload
+`{"offer_id": <uuid-v7>, "resolution": "accepted"}` immediately before `run_ended` in the same
+Company revision. Declined and expired offers retain their existing event kinds and payloads.

@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration test-client test-browser typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness commons-harness-check harness-update epoch-hash copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration validate-migrations test-client test-browser typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness commons-harness-check harness-update epoch-hash copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -35,6 +35,12 @@ test-go-ci:
 
 test-save-integration:
 	docker compose -f compose.save-test.yml run --rm test go test -p 1 $(SAVE_TEST_FLAGS) $(SAVE_TEST_PACKAGES) -count=1
+
+# Validate the complete embedded migration chain on real Postgres while keeping
+# the scope focused on the package that owns it. Migration-named unit probes and
+# every save integration test both run cold.
+validate-migrations:
+	docker compose -f compose.save-test.yml run --rm test go test -p 1 -run 'Integration|Migration' ./save -count=1
 
 test-client:
 	cd client && $(CLIENT_BIN)/vitest run

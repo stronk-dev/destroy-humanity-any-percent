@@ -232,6 +232,25 @@ func TestRunEndedV2RequiresTerminalCategoryFacts(t *testing.T) {
 	}
 }
 
+func TestAcceptedExitOfferResolutionPayloadIsExact(t *testing.T) {
+	valid := EventWrite{Kind: EventExitOfferResolved, SchemaVersion: 1, IntentID: testIntentID,
+		Payload: json.RawMessage(`{"offer_id":"018f6b7c-9abc-7def-8abc-0123456789ac","resolution":"accepted"}`)}
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: []EventWrite{valid}}, testIntentID); err != nil {
+		t.Fatal(err)
+	}
+	for _, payload := range []string{
+		`{"offer_id":"018f6b7c-9abc-7def-8abc-0123456789ac","resolution":"declined"}`,
+		`{"offer_id":"018f6b7c-9abc-7def-8abc-0123456789ac"}`,
+		`{"offer_id":"018f6b7c-9abc-7def-8abc-0123456789ac","resolution":"accepted","run_seq":1}`,
+	} {
+		invalid := valid
+		invalid.Payload = json.RawMessage(payload)
+		if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: []EventWrite{invalid}}, testIntentID); !errors.Is(err, ErrInvalidStream) {
+			t.Fatalf("invalid accepted resolution payload accepted: %s err=%v", payload, err)
+		}
+	}
+}
+
 func TestUUIDV7AndRequestHashGrammar(t *testing.T) {
 	if !uuidV7Pattern.MatchString(testIntentID) {
 		t.Fatal("valid UUIDv7 rejected")

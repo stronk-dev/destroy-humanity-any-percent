@@ -348,6 +348,40 @@ func TestPrestigeWindDownAndScriptedExitIntegration(t *testing.T) {
 		if result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, acceptBody); err != nil || result.Replay {
 			t.Fatalf("accept=%+v err=%v", result, err)
 		}
+		rows, err := db.QueryContext(ctx, `SELECT kind,payload::text FROM events WHERE stream_id=$1 AND intent_id=$2 ORDER BY event_seq`, companyRevision.StreamID, "01985555-3002-7000-8000-000000000003")
+		if err != nil {
+			t.Fatal(err)
+		}
+		var acceptedKinds []string
+		var acceptedPayloads []string
+		for rows.Next() {
+			var kind, payload string
+			if err := rows.Scan(&kind, &payload); err != nil {
+				rows.Close()
+				t.Fatal(err)
+			}
+			acceptedKinds = append(acceptedKinds, kind)
+			acceptedPayloads = append(acceptedPayloads, payload)
+		}
+		if err := rows.Close(); err != nil {
+			t.Fatal(err)
+		}
+		resolvedIndex, endedIndex := -1, -1
+		for index, kind := range acceptedKinds {
+			if kind == "exit_offer_resolved" {
+				resolvedIndex = index
+				var payload map[string]string
+				if err := json.Unmarshal([]byte(acceptedPayloads[index]), &payload); err != nil || payload["offer_id"] != offerID || payload["resolution"] != "accepted" || len(payload) != 2 {
+					t.Fatalf("accepted resolution payload=%s err=%v", acceptedPayloads[index], err)
+				}
+			}
+			if kind == "run_ended" {
+				endedIndex = index
+			}
+		}
+		if resolvedIndex < 0 || endedIndex < 0 || resolvedIndex >= endedIndex {
+			t.Fatalf("accepted event order=%v", acceptedKinds)
+		}
 		founder, err := store.LoadLatest(ctx, founderRevision.StreamID)
 		if err != nil || founder.State.ReputationLevel < stored.PayoutPreview.ReputationDelta {
 			t.Fatalf("founder reputation=%d preview=%d err=%v", founder.State.ReputationLevel, stored.PayoutPreview.ReputationDelta, err)

@@ -11,7 +11,7 @@ type PrestigeTerms = Readonly<{
 
 export type GateCrossedEvent = Readonly<{ cursor: number; kind: "gate_crossed"; occurred_at_ms: number; payload: Readonly<{ founder_id: string; gate_id: string; route_id: string | null; run_id: RunID }> }>;
 export type ExitOfferSpawnedEvent = Readonly<{ cursor: number; kind: "exit_offer_spawned"; occurred_at_ms: number; payload: Readonly<{ exit_type: string; expires_at_ms: number; offer_id: string; payout_preview: PrestigeTerms }> }>;
-export type ExitOfferResolvedEvent = Readonly<{ cursor: number; kind: "exit_offer_resolved"; occurred_at_ms: number; payload: Readonly<{ offer_id: string; resolution: "declined" | "expired"; run_seq: number | null }> }>;
+export type ExitOfferResolvedEvent = Readonly<{ cursor: number; kind: "exit_offer_resolved"; occurred_at_ms: number; payload: Readonly<{ offer_id: string; resolution: "accepted" | "declined" | "expired"; run_seq: number | null }> }>;
 export type RunEndedEvent = Readonly<{ cursor: number; kind: "run_ended"; occurred_at_ms: number; payload: Readonly<{
   assisted: Readonly<{ advisor: boolean; commons: boolean }>;
   attended_ms: number;
@@ -98,6 +98,11 @@ export function decodeGameUIEvent(envelope: TransportEnvelope): GameUILifecycleE
   if (kind === "exit_offer_declined" || kind === "exit_offer_expired") {
     exact(payload, kind === "exit_offer_declined" ? ["offer_id", "run_seq"] : ["offer_id"], kind);
     return { cursor: envelope.rev, kind: "exit_offer_resolved", occurred_at_ms: occurredAtMS, payload: { offer_id: uuidString(payload.offer_id), resolution: kind === "exit_offer_declined" ? "declined" : "expired", run_seq: kind === "exit_offer_declined" ? safe(payload.run_seq, 1) : null } };
+  }
+  if (kind === "exit_offer_resolved") {
+    exact(payload, ["offer_id", "resolution"], kind);
+    if (payload.resolution !== "accepted") throw new SyntaxError("invalid accepted offer resolution");
+    return { cursor: envelope.rev, kind, occurred_at_ms: occurredAtMS, payload: { offer_id: uuidString(payload.offer_id), resolution: payload.resolution, run_seq: null } };
   }
   if (kind !== "run_ended") return undefined;
   exact(payload, ["assisted", "attended_ms", "ended_at_ms", "executed_routes", "exit_type", "faction", "founder_id", "gates_crossed", "generators_purchased_total", "ledger_fact_kinds", "lifetime_value", "payout", "pre_timer", "rta_ms", "run_id", "started_at_ms", "terminal_seq", "tier"], "run_ended");

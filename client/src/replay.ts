@@ -197,7 +197,7 @@ const REPLAY_EVENT_KINDS = Object.freeze([
 	"achievement_earned.v1",
   "compact_cascade_started", "compact_health_band_changed", "compact_left", "compact_recovered", "compact_recruitment_offered", "compact_sampled", "compact_signed", "compact_tithe_raised", "compensation",
 	"compute_credit_spent", "doctrine_picked",
-  "exit_offer_declined", "exit_offer_expired", "exit_offer_spawned", "faction_stock_saturated", "founder_advanced", "gate_crossed", "generator_purchased", "guild_activity_evaluated", "guild_tithe_accrued",
+  "exit_offer_declined", "exit_offer_expired", "exit_offer_resolved", "exit_offer_spawned", "faction_stock_saturated", "founder_advanced", "gate_crossed", "generator_purchased", "guild_activity_evaluated", "guild_tithe_accrued",
 	"incorporated", "invariant_reported", "meter_band_changed.v1", "route_executed", "route_hint_purchased", "route_knowledge_granted", "run_ended", "run_started", "upgrade_purchased",
 	"pet_care_applied.v1", "pet_status_changed.v1",
 	"minigame_rating_changed.v1", "minigame_resolved.v1",
@@ -1125,7 +1125,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   }
   if (resolved.selected_exit_type !== exitType) throw new RangeError("selected exit type mismatch");
   if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, companyBefore, company, founder, wire.command, request, wire.evaluated_at_ms, contributions, actionDebits, true, prefix);
-  return await finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, catalogs, next,nextActive);
+  return await finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, request.kind === "accept_exit_offer" ? request.offer_id : null, catalogs, next,nextActive);
   } catch (error) { restoreReplaySnapshot(company, companyBefore); throw error; }
 }
 
@@ -1535,7 +1535,7 @@ function advanceFounderExtensions(founder: FounderCarry, current: ReplayCatalogB
   founder.founder_extensions = parseFounderExtensions(extensions, next);
 }
 
-async function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId: string, command: ReplayCommand, nowMs: number, exitType: string, inputTerms: ExitTerms, prefix: ReplayEvent[], executedRoutes: string[], current: ReplayCatalogBundle, next: ReplayCatalogBundle,nextActive:ActiveSpawnEvidence|null): Promise<LoggedExitTransition> {
+async function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId: string, command: ReplayCommand, nowMs: number, exitType: string, inputTerms: ExitTerms, prefix: ReplayEvent[], executedRoutes: string[], acceptedOfferId: string | null, current: ReplayCatalogBundle, next: ReplayCatalogBundle,nextActive:ActiveSpawnEvidence|null): Promise<LoggedExitTransition> {
   const attended = attendedMS(company, nowMs);
   const terms = { ...inputTerms, reputation_delta: Math.min(inputTerms.reputation_delta, MAX_EXACT_INTEGER - founder.reputation_level) };
   if (terms.route_knowledge > MAX_EXACT_INTEGER - founder.route_knowledge_balance || attended > MAX_EXACT_INTEGER - founder.age_ms) throw new RangeError("founder carry overflow");
@@ -1566,6 +1566,7 @@ async function finishLoggedExit(company: ReplayState, founder: FounderCarry, int
   if(next.opportunities){if(nextActive===null||nextActive.sequence!==0||nextActive.spawned_attended_ms!==nextActive.sampled_interval_ms||nextActive.expires_attended_ms-nextActive.spawned_attended_ms!==next.opportunities.schedule.lifetimeMs)throw new RangeError("missing next active schedule");const seed=await founderSeed(command.founder_id,newCompany.runSeq),selection=selectActivePlayEffect(next.opportunities,seed,0);if(selection.effectRowId!==nextActive.effect_row_id||selection.effectDraw.toString()!==nextActive.effect_draw||(selection.generatorDraw?.toString()??null)!==nextActive.generator_draw||selection.selectedGenerator!==nextActive.selected_generator_id||activePlayOpportunityId(seed,0,nextActive.spawned_attended_ms)!==nextActive.opportunity_id)throw new RangeError("next active selection mismatch");newCompany.nextOpportunityAttendedMs=nextActive.spawned_attended_ms;}else if(nextActive!==null)throw new RangeError("unexpected next active schedule");
   const runID = { company_stream_id: command.company_stream_id, run_seq: company.runSeq };
   const founderEvent = event("founder_advanced", intentId, { exit_type: exitType, founder_id: command.founder_id, occurred_at_ms: nowMs, reputation_delta: terms.reputation_delta, route_knowledge: terms.route_knowledge, run_id: runID });
+  if (acceptedOfferId !== null) prefix.push(event("exit_offer_resolved", intentId, { offer_id: acceptedOfferId, resolution: "accepted" }));
   const endedEvent = event("run_ended", intentId, { assisted: { advisor: founder.advisor_mode, commons: company.compactMember }, attended_ms: attended, ended_at_ms: nowMs, executed_routes: executedRoutes, exit_type: exitType, faction: company.factionId || null, founder_id: command.founder_id, gates_crossed: Object.keys(company.gatesCrossed).filter((gate) => company.gatesCrossed[gate]).sort(byteCompare), generators_purchased_total: company.generatorPurchasedTotal, ledger_fact_kinds: [...company.ledgerFactKinds].sort(byteCompare), lifetime_value: company.lifetimeValue, payout: terms, pre_timer: company.runPreTimer, rta_ms: nowMs - company.runStartedAtMs, run_id: runID, started_at_ms: company.runStartedAtMs, terminal_seq: command.run_log_seq, tier: company.tier }, 2);
   const startedEvent = event("run_started", intentId, { assisted: { advisor: founder.advisor_mode, commons: false }, founder_id: command.founder_id, run_id: { company_stream_id: command.company_stream_id, run_seq: newCompany.runSeq }, started_at_ms: nowMs });
   const receipt = { applied_count: 1, evaluated_at: rfc3339(nowMs), founder_revision: founder.founder_revision + 1, intent_id: intentId, new_revision: command.revision + 2, outcome: "applied", receipt: { changes: [] }, snapshot: wireSnapshot(newCompany, next.economy) };

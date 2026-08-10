@@ -99,6 +99,9 @@ describe("Game UI decoded event boundary", () => {
     expect(gate).toMatchObject({ cursor: 2, kind: "gate_crossed", occurred_at_ms: Date.parse("2026-08-10T12:00:00Z") });
     const resolved = decodeGameUIEvent(envelope("exit_offer_declined", { offer_id: "01985555-3333-7333-8333-333333333333", run_seq: 1 }));
     expect(resolved).toMatchObject({ kind: "exit_offer_resolved", payload: { resolution: "declined", run_seq: 1 } });
+    const accepted = decodeGameUIEvent(envelope("exit_offer_resolved", { offer_id: "01985555-3333-7333-8333-333333333333", resolution: "accepted" }));
+    expect(accepted).toMatchObject({ kind: "exit_offer_resolved", payload: { resolution: "accepted", run_seq: null } });
+    expect(() => decodeGameUIEvent(envelope("exit_offer_resolved", { offer_id: "01985555-3333-7333-8333-333333333333", resolution: "declined" }))).toThrow();
   });
 
   it("decodes a run-end object without accepting snapshot bytes", () => {

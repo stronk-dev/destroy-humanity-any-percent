@@ -51,6 +51,7 @@ const (
 	EventExitOfferSpawned          EventKind = "exit_offer_spawned"
 	EventExitOfferExpired          EventKind = "exit_offer_expired"
 	EventExitOfferDeclined         EventKind = "exit_offer_declined"
+	EventExitOfferResolved         EventKind = "exit_offer_resolved"
 	EventRunEnded                  EventKind = "run_ended"
 	EventRunStarted                EventKind = "run_started"
 	EventFounderAdvanced           EventKind = "founder_advanced"
@@ -89,7 +90,7 @@ var AllEventKinds = [...]EventKind{
 	EventCompactSigned, EventCompactTitheRaised, EventCompensation,
 	EventComputeCreditSpent, EventDoctrinePicked,
 	EventFiscalCreditSpent, EventFiscalPeriodHarvested,
-	EventExitOfferDeclined, EventExitOfferExpired, EventExitOfferSpawned,
+	EventExitOfferDeclined, EventExitOfferExpired, EventExitOfferResolved, EventExitOfferSpawned,
 	EventFactionStockSaturated, EventFounderAdvanced, EventGateCrossed,
 	EventGeneratorPurchased, EventGuildActivityEvaluated, EventGuildTitheAccrued,
 	EventIncorporated, EventInvariantReported, EventRouteExecuted,
@@ -1063,6 +1064,14 @@ func validateEventPayload(event EventWrite) error {
 		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidV7Pattern.MatchString(payload.OfferID) ||
 			payload.RunSeq < 1 || payload.RunSeq > decimal.MaxExactInteger {
 			return fmt.Errorf("%w: invalid exit offer decline payload", ErrInvalidStream)
+		}
+	case EventExitOfferResolved:
+		var payload struct {
+			OfferID    string `json:"offer_id"`
+			Resolution string `json:"resolution"`
+		}
+		if err := decodeStrictJSON(event.Payload, &payload); err != nil || !uuidV7Pattern.MatchString(payload.OfferID) || payload.Resolution != "accepted" {
+			return fmt.Errorf("%w: invalid exit offer resolution payload", ErrInvalidStream)
 		}
 	case EventRunEnded:
 		var payload eventRunEnded

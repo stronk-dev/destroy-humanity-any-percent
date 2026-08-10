@@ -2211,7 +2211,23 @@ func makeAcceptedOfferFixtureCase(t *testing.T, catalogs CatalogBundle, constant
 	if err != nil {
 		t.Fatal(err)
 	}
-	return executeTerminalFixture(t, "accept-stored-offer", catalogs, company, preState, request, inputs, carry)
+	result := executeTerminalFixture(t, "accept-stored-offer", catalogs, company, preState, request, inputs, carry)
+	resolvedIndex, endedIndex := -1, -1
+	for index, current := range result.CompanyEndedEvents {
+		if current.Kind == string(save.EventExitOfferResolved) {
+			resolvedIndex = index
+			if string(current.Payload) != `{"offer_id":"01986666-0200-7000-8000-000000000200","resolution":"accepted"}` {
+				t.Fatalf("accepted resolution payload=%s", current.Payload)
+			}
+		}
+		if current.Kind == string(save.EventRunEnded) {
+			endedIndex = index
+		}
+	}
+	if resolvedIndex < 0 || endedIndex < 0 || resolvedIndex >= endedIndex {
+		t.Fatalf("accepted terminal event order=%+v", result.CompanyEndedEvents)
+	}
+	return result
 }
 
 func makeScriptedGateFixtureCase(t *testing.T, catalogs CatalogBundle, constantsHash string, now time.Time) crossRuntimeTerminalCase {

@@ -272,6 +272,10 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 	advancedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType, "reputation_delta": terms.ReputationDelta, "route_knowledge": terms.RouteKnowledge, "occurred_at_ms": now.UnixMilli()})
 	receipt, _ := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": "applied", "applied_count": 1, "receipt": map[string]any{"changes": []any{}}, "new_revision": companyRevision.Number + 2, "founder_revision": founderRevision.Number + 1, "evaluated_at": now.Format(time.RFC3339Nano), "snapshot": wireSnapshot(newCompany, nextBundle.Economy)})
 	endedEvents := append([]save.EventWrite(nil), endedPrefix...)
+	if request.Kind == IntentAcceptExitOffer {
+		resolvedPayload, _ := json.Marshal(map[string]string{"offer_id": request.OfferID, "resolution": "accepted"})
+		endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventExitOfferResolved, SchemaVersion: 1, IntentID: request.IntentID, Payload: resolvedPayload})
+	}
 	endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventRunEnded, SchemaVersion: 2, IntentID: request.IntentID, Payload: endedPayload})
 	frozen, err := FrozenFiscalContributions(nextBundle.Fiscal, founder)
 	if err != nil {
