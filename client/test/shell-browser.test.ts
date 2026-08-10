@@ -48,7 +48,7 @@ it.skipIf(typeof document === "undefined")("renders Amount synchronously for cap
   expect(output.textContent).toBe("1.23 K");
 
   fixture.setCap({ amount: "1e3", reason_key: "resource.company_cash.cap.phase0" }); flushSync();
-  expect(target.textContent).toContain("Company cash is capped.");
+  expect(target.textContent).toContain("Cash is capped. The cap is a number, the number is visible, and nothing will ever sell you the difference.");
   expect(target.textContent).not.toContain("resource.company_cash.cap.phase0");
 
   let outputMutations = 0;
@@ -92,7 +92,7 @@ it.skipIf(typeof document === "undefined")("meets the primitive accessibility, f
       fixture.switchEra();
       fixture.setCap({ amount: "1e3", reason_key: "resource.company_cash.cap.phase0" });
       flushSync();
-      expect(target.querySelector("output")?.getAttribute("aria-label")).toBe("1.23 K. Company cash is capped.");
+      expect(target.querySelector("output")?.getAttribute("aria-label")).toBe("1.23 K. Cash is capped. The cap is a number, the number is visible, and nothing will ever sell you the difference.");
     }
     const result = await axe.run(target, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] } });
     expect(result.violations.filter((violation) => violation.impact === "serious" || violation.impact === "critical"), era).toEqual([]);

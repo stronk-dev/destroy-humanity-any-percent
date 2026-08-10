@@ -12,6 +12,7 @@ import {
   historyPathEverExisted,
   repositoryRoot,
   validateDenylist,
+  validateLongformCopyText,
   validateCopySafety,
   validatePlainCopyText,
   validateProvenanceRegistry,
@@ -64,6 +65,10 @@ for (const fixture of ["     indented code", ">quoted", "#", "<!DOCTYPE html>", 
   expectFailure("plain-text build fixture", () => validatePlainCopyText(fixture), /plain text/);
 }
 validatePlainCopyText("Offer declined. Run {run_seq} continues.", "underscore placeholder fixture");
+validateLongformCopyText("TITLE\n=====\n\n* literal glyph, not markup", "longform fixture");
+expectFailure("longform non-ASCII fixture", () => validateLongformCopyText("Dialing…"), /printable ASCII/);
+expectFailure("longform column fixture", () => validateLongformCopyText("x".repeat(81)), /80 columns/);
+expectFailure("longform line fixture", () => validateLongformCopyText(Array.from({ length: 65 }, () => "x").join("\n")), /64 lines/);
 
 const references = JSON.parse(readFileSync(path.join(repositoryRoot, "copy/references.v1.json"), "utf8"));
 const codeReferences = built.codeReferences;

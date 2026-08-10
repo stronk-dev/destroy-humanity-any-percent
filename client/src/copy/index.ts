@@ -8,6 +8,7 @@ export { COPY_HASH, COPY_KEYS, COPY_MAX_TEXT_LINES, COPY_MAX_TEXT_UTF8_BYTES, ty
 export type CopyEra = "era_1995" | "era_2000";
 export type CopyTone = "corporate" | "diegetic" | "lore_card" | "achievement";
 export type CopyParamType = "string" | "integer" | "canonical_decimal";
+export type CopyTextKind = "plain" | "longform";
 
 export interface CopyParamDefinition {
   readonly name: string;
@@ -21,6 +22,7 @@ export interface CopyEntry {
   readonly eraVariants: Readonly<Partial<Record<CopyEra, string>>> | null;
   readonly provenance: readonly string[];
   readonly tone: CopyTone;
+  readonly textKind: CopyTextKind;
 }
 
 export interface CopyCatalog {
@@ -43,6 +45,7 @@ const mechanicalID = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 const paramName = /^[a-z][a-z0-9_]*$/;
 const tones = new Set<CopyTone>(["achievement", "corporate", "diegetic", "lore_card"]);
 const paramTypes = new Set<CopyParamType>(["canonical_decimal", "integer", "string"]);
+const textKinds = new Set<CopyTextKind>(["longform", "plain"]);
 const eras = new Set<CopyEra>(["era_1995", "era_2000"]);
 
 function syntax(message: string): never {
@@ -63,7 +66,18 @@ function plainText(value: unknown, label: string): string {
   if (typeof value !== "string" || value !== value.normalize("NFC") || new TextEncoder().encode(value).length > COPY_MAX_TEXT_UTF8_BYTES || value.split("\n").length > COPY_MAX_TEXT_LINES) {
     syntax(`${label} is not bounded NFC text`);
   }
-  if (/[^\P{Cc}\n]/u.test(value) || /[<`*_~\[\]|\\]|-->| {2,}$|^ {4}|^\s{0,3}(?:#{1,6}(?:\s|$)|>|[-+]\s|\d+[.)](?:\s|$))|^\s{0,3}[-=]+\s*$/mu.test(value)) syntax(`${label} must be plain text`);
+  const markupProbe = value.replace(/\{[a-z][a-z0-9_]*\}/gu, "");
+  if (/[^\P{Cc}\n]/u.test(value) || /[<`*_~\[\]|\\]|-->| {2,}$|^ {4}|^\s{0,3}(?:#{1,6}(?:\s|$)|>|[-+]\s|\d+[.)](?:\s|$))|^\s{0,3}[-=]+\s*$/mu.test(markupProbe)) syntax(`${label} must be plain text`);
+  return value;
+}
+
+function longformText(value: unknown, label: string): string {
+  if (typeof value !== "string" || value !== value.normalize("NFC") || new TextEncoder().encode(value).length > COPY_MAX_TEXT_UTF8_BYTES) {
+    syntax(`${label} is not bounded NFC text`);
+  }
+  if (!/^[\x20-\x7e\n]*$/u.test(value)) syntax(`${label} must contain only printable ASCII and line feeds`);
+  const lines = value.split("\n");
+  if (lines.length > 64 || lines.some((line) => line.length > 80)) syntax(`${label} exceeds the longform bounds`);
   return value;
 }
 
@@ -87,7 +101,13 @@ function placeholderNames(text: string, label: string): readonly string[] {
 }
 
 function parseEntry(value: unknown, label: string): CopyEntry {
-  const row = exactObject(value, ["era_variants", "key", "params", "provenance", "text", "tone"], label);
+  if (value === null || typeof value !== "object" || Array.isArray(value)) syntax(`${label} must be an object`);
+  const sourceRow = value as Record<string, unknown>;
+  const textKind = sourceRow.text_kind ?? "plain";
+  if (typeof textKind !== "string" || !textKinds.has(textKind as CopyTextKind)) syntax(`${label}.text_kind is invalid`);
+  const row = exactObject(value, textKind === "longform"
+    ? ["era_variants", "key", "params", "provenance", "text", "text_kind", "tone"]
+    : ["era_variants", "key", "params", "provenance", "text", "tone"], label);
   if (typeof row.key !== "string" || !mechanicalID.test(row.key)) syntax(`${label}.key is invalid`);
   if (typeof row.tone !== "string" || !tones.has(row.tone as CopyTone)) syntax(`${label}.tone is invalid`);
   if (!Array.isArray(row.params)) syntax(`${label}.params must be an array`);
@@ -97,7 +117,8 @@ function parseEntry(value: unknown, label: string): CopyEntry {
     return Object.freeze({ name: param.name, type: param.type as CopyParamType });
   });
   if (params.some((param, index) => index > 0 && params[index - 1].name >= param.name)) syntax(`${label}.params must be sorted and unique`);
-  const text = plainText(row.text, `${label}.text`);
+  if (textKind === "longform" && params.length !== 0) syntax(`${label}.params longform copy requires zero params`);
+  const text = textKind === "longform" ? longformText(row.text, `${label}.text`) : plainText(row.text, `${label}.text`);
   const expected = params.map((param) => param.name);
   if (placeholderNames(text, `${label}.text`).join("\0") !== expected.join("\0")) syntax(`${label}.text placeholders differ from params`);
   let eraVariants: CopyEntry["eraVariants"] = null;
@@ -108,14 +129,14 @@ function parseEntry(value: unknown, label: string): CopyEntry {
     if (keys.length === 0 || keys.some((key) => !eras.has(key as CopyEra)) || keys.some((key, index) => index > 0 && keys[index - 1] >= key)) syntax(`${label}.era_variants is invalid`);
     const parsed: Partial<Record<CopyEra, string>> = {};
     for (const key of keys as CopyEra[]) {
-      const variant = plainText(source[key], `${label}.era_variants.${key}`);
+      const variant = textKind === "longform" ? longformText(source[key], `${label}.era_variants.${key}`) : plainText(source[key], `${label}.era_variants.${key}`);
       if (placeholderNames(variant, `${label}.era_variants.${key}`).join("\0") !== expected.join("\0")) syntax(`${label}.era_variants.${key} placeholders differ from params`);
       parsed[key] = variant;
     }
     eraVariants = Object.freeze(parsed);
   }
   if (!Array.isArray(row.provenance) || row.provenance.some((claim) => typeof claim !== "string") || row.provenance.some((claim, index) => index > 0 && (row.provenance as string[])[index - 1] >= claim)) syntax(`${label}.provenance must be sorted unique strings`);
-  return Object.freeze({ key: row.key, text, params: Object.freeze(params), eraVariants, provenance: Object.freeze([...(row.provenance as string[])]), tone: row.tone as CopyTone });
+  return Object.freeze({ key: row.key, text, params: Object.freeze(params), eraVariants, provenance: Object.freeze([...(row.provenance as string[])]), tone: row.tone as CopyTone, textKind: textKind as CopyTextKind });
 }
 
 export function loadCopyCatalog(bytes: string | Uint8Array): CopyCatalog {

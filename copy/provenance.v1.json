@@ -2,6 +2,26 @@
   "schema_version": 1,
   "claims": [
     {
+      "claim_id": "gaming.horse_armor_2006",
+      "source_file": "design/research/provenance-extracts.md",
+      "source_anchor": "horse-armor-2006-paid-cosmetic",
+      "status": "verified",
+      "source_urls": [
+        "https://news.xbox.com/en-us/2006/04/03/pimp-your-oblivion-ride/",
+        "https://www.xbox.com/en-us/games/store/horse-armor-pack/btrgkrwlhwrj"
+      ]
+    },
+    {
+      "claim_id": "shareware.mail_registration",
+      "source_file": "design/research/provenance-extracts.md",
+      "source_anchor": "shareware-mail-registration",
+      "status": "verified",
+      "source_urls": [
+        "https://asp-software.org/history/the-history-of-shareware-psl/",
+        "https://groups.google.com/g/rec.games.go/c/a0PLHuYinTI"
+      ]
+    },
+    {
       "claim_id": "speedrun.category_taxonomy",
       "source_file": "design/research/provenance-extracts.md",
       "source_anchor": "speedrun-category-taxonomy",

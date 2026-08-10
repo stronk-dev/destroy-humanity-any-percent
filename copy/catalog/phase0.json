@@ -299,14 +299,11 @@
     },
     {
       "key": "resource.company_cash.cap.phase0",
-      "text": "Company cash is capped.",
+      "text": "Cash is capped. The cap is a number, the number is visible, and nothing will ever sell you the difference.",
       "params": [],
-      "era_variants": {
-        "era_1995": "Company cash is capped.",
-        "era_2000": "Company cash is capped."
-      },
+      "era_variants": null,
       "provenance": [],
-      "tone": "corporate"
+      "tone": "diegetic"
     },
     {
       "key": "route.registry_first_reordered",

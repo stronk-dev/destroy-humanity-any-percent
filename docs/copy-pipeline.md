@@ -6,8 +6,9 @@ than English text.
 
 ## Authoring and generated artifacts
 
-- `copy/catalog/*.json` contains schema-version-1 source catalogs. Entries have exactly `key`,
-  `text`, `params`, `era_variants`, `provenance`, and `tone`.
+- `copy/catalog/*.json` contains schema-version-1 source catalogs. Plain entries have exactly
+  `key`, `text`, `params`, `era_variants`, `provenance`, and `tone`. The sole additive entry arm
+  is `text_kind: "longform"`; omitting `text_kind` means `plain`.
 - `copy/config.v1.json` owns the declared text bounds and the deliberately narrow statistic
   detector token/range configuration.
 - `copy/references.v1.json` is the only authority for copy-bearing JSON paths in epoch artifacts.
@@ -46,10 +47,13 @@ events, receipts, and saves continue storing mechanical keys.
 - `applicationCopyCatalog` and the shorthand `t()`;
 - `hashCopyCatalog` / `verifyCopyCatalogHash` for deployment or fetched-artifact identity checks.
 
-Text is plain text. Svelte owns DOM escaping after resolution. Placeholders use `{name}`; `{{` and
-`}}` produce literal braces. Parameter types are `string`, safe `integer`, and
-`canonical_decimal`. Decimal text is validated through the shared numeric core and inserted
-verbatim so this layer never invents numeric notation.
+Plain text rejects HTML and Markdown shapes. The closed `longform` arm is printable ASCII plus
+line feeds, at most 80 columns and 64 lines, and permits no substitution params; its punctuation
+is literal and its consumer renders it as a preformatted block. Both arms remain text rather than
+markup, so Svelte owns DOM escaping after resolution. Placeholders use `{name}`; `{{` and `}}`
+produce literal braces. Parameter types are `string`, safe `integer`, and `canonical_decimal`.
+Decimal text is validated through the shared numeric core and inserted verbatim so this layer
+never invents numeric notation.
 
 Missing/extra/wrongly typed params and unknown keys throw in development and tests. Production
 requires an invariant reporter, returns the loud mechanical key, and emits exactly one
@@ -87,3 +91,8 @@ previously valid source cannot reopen that exception.
 3. Add the copy row and any verified claim row. Never derive display text from a key.
 4. Run `make copy-generate`, then `make copy-check` from the repository root.
 5. Review generated copy and the orphan report in the diff.
+
+The Game-UI candidate has its own deterministic source compiler. `make game-ui-copy-candidate`
+assembles the owner-authored ruling into its orphan catalog plus the presentation/event-copy
+candidate revisions; `make game-ui-copy-candidate-check` fails on source or generated drift and is
+part of `make copy-check`.

@@ -60,4 +60,15 @@ describe("copy catalog", () => {
       expect(() => loadCopyCatalog(catalog({ ...base, text }))).toThrow(/plain text/);
     }
   });
+
+  it("accepts only the bounded zero-parameter longform arm", () => {
+    const longform = { ...base, text: "README.TXT\n==========\n\n* literal glyph", params: [], era_variants: null, text_kind: "longform" };
+    const loaded = loadCopyCatalog(catalog(longform));
+    expect(loaded.entries[0].textKind).toBe("longform");
+    expect(resolveCopy(loaded, "test.message", {})).toContain("* literal glyph");
+    expect(() => loadCopyCatalog(catalog({ ...longform, text_kind: "markup" }))).toThrow(/text_kind is invalid/);
+    expect(() => loadCopyCatalog(catalog({ ...longform, params: [{ name: "value", type: "string" }], text: "{value}" }))).toThrow(/requires zero params/);
+    expect(() => loadCopyCatalog(catalog({ ...longform, text: "x".repeat(81) }))).toThrow(/longform bounds/);
+    expect(() => loadCopyCatalog(catalog({ ...longform, text: "Dialing…" }))).toThrow(/printable ASCII/);
+  });
 });

@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration validate-migrations test-client test-browser typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness commons-harness-check harness-update epoch-hash copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration validate-migrations test-client test-browser typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -117,11 +117,17 @@ harness-update:
 epoch-hash:
 	cd server && go run ./cmd/balance-harness -mode=epoch-hash -root=..
 
+game-ui-copy-candidate:
+	node client/tools/assemble-game-ui-copy.mjs
+
+game-ui-copy-candidate-check:
+	node client/tools/assemble-game-ui-copy.mjs --check
+
 copy-generate:
 	node client/tools/generate-copy.mjs
 	cd server && go run ./cmd/gen-content-manifest -root=.. -output=deployment/content-manifest.v1.json
 
-copy-check:
+copy-check: game-ui-copy-candidate-check
 	node client/tools/verify-copy.mjs
 	cd server && go run ./cmd/gen-content-manifest -root=.. -output=deployment/content-manifest.v1.json -check
 

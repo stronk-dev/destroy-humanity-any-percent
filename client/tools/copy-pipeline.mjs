@@ -11,6 +11,7 @@ const paramName = /^[a-z][a-z0-9_]*$/;
 const canonicalDecimal = /^(?:0|-?[1-9](?:\.\d{0,10}[1-9])?e(?:0|-?[1-9]\d*))$/;
 const tones = new Set(["achievement", "corporate", "diegetic", "lore_card"]);
 const paramTypes = new Set(["canonical_decimal", "integer", "string"]);
+const textKinds = new Set(["longform", "plain"]);
 const eras = new Set(["era_1995", "era_2000"]);
 const statuses = new Set(["model", "plausible", "verified"]);
 const fieldKinds = new Set(["copy_key", "name_key", "reason_key"]);
@@ -93,6 +94,18 @@ export function validatePlainCopyText(value, label = "copy text") {
   return value;
 }
 
+export function validateLongformCopyText(value, label = "copy text") {
+  const { maxTextBytes: maxBytes } = copyConfig().limits;
+  if (typeof value !== "string") fail(label, "must be a string");
+  if (value !== value.normalize("NFC")) fail(label, "must be NFC-normalized");
+  if (Buffer.byteLength(value, "utf8") > maxBytes) fail(label, `exceeds ${maxBytes} UTF-8 bytes`);
+  if (!/^[\x20-\x7e\n]*$/u.test(value)) fail(label, "must contain only printable ASCII and line feeds");
+  const lines = value.split("\n");
+  if (lines.length > 64) fail(label, "exceeds 64 lines");
+  if (lines.some((line) => line.length > 80)) fail(label, "exceeds 80 columns");
+  return value;
+}
+
 export function placeholders(text, label = "copy text") {
   const found = [];
   for (let index = 0; index < text.length; ) {
@@ -123,7 +136,12 @@ function validateTextParams(text, expected, label) {
 }
 
 function validateEntry(value, label) {
-  const row = exactObject(value, ["era_variants", "key", "params", "provenance", "text", "tone"], label);
+  if (value === null || typeof value !== "object" || Array.isArray(value)) fail(label, "must be an object");
+  const textKind = value.text_kind ?? "plain";
+  if (!textKinds.has(textKind)) fail(`${label}.text_kind`, "is outside the closed text-kind union");
+  const row = exactObject(value, textKind === "longform"
+    ? ["era_variants", "key", "params", "provenance", "text", "text_kind", "tone"]
+    : ["era_variants", "key", "params", "provenance", "text", "tone"], label);
   if (typeof row.key !== "string" || !mechanicalID.test(row.key)) fail(`${label}.key`, "must be a mechanical ID");
   if (!tones.has(row.tone)) fail(`${label}.tone`, "is outside the closed tone union");
   if (!Array.isArray(row.params)) fail(`${label}.params`, "must be an array");
@@ -135,7 +153,10 @@ function validateEntry(value, label) {
     if (index > 0 && names[index - 1] >= item.name) fail(`${label}.params`, "must be byte-sorted and unique by name");
     names.push(item.name);
   }
-  row.text = validatePlainCopyText(row.text, `${label}.text`);
+  if (textKind === "longform" && names.length !== 0) fail(`${label}.params`, "longform copy requires zero params");
+  row.text = textKind === "longform"
+    ? validateLongformCopyText(row.text, `${label}.text`)
+    : validatePlainCopyText(row.text, `${label}.text`);
   validateTextParams(row.text, names, `${label}.text`);
   if (row.era_variants !== null) {
     if (typeof row.era_variants !== "object" || Array.isArray(row.era_variants)) fail(`${label}.era_variants`, "must be null or an object");
@@ -143,7 +164,9 @@ function validateEntry(value, label) {
     if (variantKeys.length === 0 || variantKeys.some((era) => !eras.has(era))) fail(`${label}.era_variants`, "contains an unknown or empty era set");
     if (variantKeys.some((era, index) => index > 0 && variantKeys[index - 1] >= era)) fail(`${label}.era_variants`, "keys must be byte-sorted");
     for (const era of variantKeys) {
-      row.era_variants[era] = validatePlainCopyText(row.era_variants[era], `${label}.era_variants.${era}`);
+      row.era_variants[era] = textKind === "longform"
+        ? validateLongformCopyText(row.era_variants[era], `${label}.era_variants.${era}`)
+        : validatePlainCopyText(row.era_variants[era], `${label}.era_variants.${era}`);
       validateTextParams(row.era_variants[era], names, `${label}.era_variants.${era}`);
     }
   }
