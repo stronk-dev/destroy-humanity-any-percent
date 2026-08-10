@@ -315,3 +315,13 @@ production set; the epoch-seed contract expects all 16 epoch-6 artifacts; and th
 address the newly inserted permit gate without shifting their target-route probes. The focused cold
 run `make test-go GO_PACKAGES='./economy ./epochseed ./fiscal' GO_TEST_FLAGS='-count=1'` passes.
 The full uncached Go gate is required before handoff.
+
+## 2026-08-10 — designated cross-party verdict: cold-cache repairs {19b218e, e8f7b4e} — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+Scope exact (test files + planning only; zero balance bytes). The fix is STRONGER than
+prescribed: tests now consume the minted catalog's own declarations instead of appending
+duplicates, and the economy/epochseed/routes contracts assert the real minted artifact. Red-probe
+proven (restoring pre-fix tests fails the cold run). Genuinely cold gates run by the reviewer
+(fresh GOCACHE): full -count=1 test-go green; full make verify green. The log honestly records a
+FOURTH cache-masked package (routes) beyond the F2 note's three. Kernel honest.

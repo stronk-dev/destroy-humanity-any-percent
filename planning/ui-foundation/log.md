@@ -137,3 +137,19 @@ The separate mint-thread remediation also passes the complete uncached Go suite 
 `make test-go GO_TEST_FLAGS='-count=1'`. This is an implementation record, not an approval;
 `8873301` is ready for the narrow designated cross-party re-review. UI Foundation remains
 unarchived pending that verdict.
+
+## 2026-08-10 — designated cross-party re-review: F1/F3–F6 remediation {8873301, 5a7dc01} — NOT APPROVED (one residual)
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+F1 core + F3–F6 all CLOSED with probes (ruled probe values render correctly; reverting the
+formatter fails exactly the two new goldens; real keyboard activation + focus assertion; all
+three lint gaps seeded-red; capped accessible name keeps the number). Gates green (19,890
+browser assertions); kernel honest at 0.3.88.
+**F1-R (blocking under the standing C10 ruling): the group-carry window still ships 4–5 sig
+digits** — `groupDigits` derives from the 3-sig-quantized exponent but `standard.format` receives
+the UNROUNDED magnitude, so in ≈[999.5, 999.995) of every engineering group the render is e.g.
+"999.60 K" where the ruled literal demands "1.00 M"; every growing counter crosses the window in
+every group, and docs/ui-foundation.md:26 is false inside it — the same truth-as-written test the
+original F1 applied. Fix: format the ALREADY-QUANTIZED value so group selection and formatted
+value agree; add carry-boundary goldens; collapse the "−0" sign nit while in the file.
+**Re-review is a one-file delta.**

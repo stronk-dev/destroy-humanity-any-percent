@@ -193,3 +193,12 @@ Founder Attendance is archived under the authorization immediately above. The fr
 of `docs/founder-transitions.md` (indexed from `docs/README.md`). This move consumes the original
 designated implementation verdict, the 2026-08-07 canonical-docs ruling, the mint verdict's
 range-union provenance closure, and the designated rollback/retention verdict for `ab08ee8`.
+
+## 2026-08-10 — designated cross-party verdict: the archival execution {fc1440d} — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+Archival procedurally valid: the authorization verdict precedes the execution entry; every
+citation resolves (implementation verdict, canonical-docs ruling, mint range-union provenance
+closure, the ab08ee8 closure verdict); the dangling-hash provenance note carried verbatim; moves
+byte-intact apart from sanctioned edits; index rows correct; zero dangling path references; no
+self-approval language. Founder Attendance is the eleventh archived foundation.
