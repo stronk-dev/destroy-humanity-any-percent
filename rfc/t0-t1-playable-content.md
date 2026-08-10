@@ -263,3 +263,14 @@ Reports preserve null byte-for-byte. Add Go/schema mutation tests, a T0 policy f
 window is `{from_gate:null,to_gate:"gate.t0_to_t1"}`, and a report proof that a T0 purchasable is
 evaluated in that segment. Existing schema-v1 artifacts and reports retain their current bytes
 and meaning.
+
+## Owner ruling on T01-C10 (2026-08-10)
+
+- **T01-C10 — accepted as proposed.** Relevance-policy schema v2: `availability_window.from_gate`
+  becomes `null | gate_id`, null = run genesis, sorting before every declared gate; scenario
+  segments get the same nullable form; validation over the ordered domain `[run_start, gates…]`;
+  `to_gate` stays exclusive; reports preserve null byte-for-byte; schema-v1 artifacts/reports
+  retain their bytes and meaning. The Go/schema mutation tests, the
+  `{from_gate: null, to_gate: "gate.t0_to_t1"}` T0 policy fixture, and the report proof land with
+  the change. (The grammar the economy window already has, extended to the one loader that
+  lacked it — correctly refused rather than mis-encoded.)

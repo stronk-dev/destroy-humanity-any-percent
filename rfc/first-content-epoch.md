@@ -740,3 +740,27 @@ every per-file hash, the recomputed bundle hash, and acceptance by the named epo
 Later mints add new snapshots/entries and never reinterpret old ones. The baseline guard governs
 the registry, scenario, snapshot manifest, snapshot bytes, and golden with adversarial
 missing/extra/tampered-artifact fixtures.
+
+## Owner rulings on EH-C8–EH-C9 (2026-08-10)
+
+- **EH-C8 — accepted as proposed, with the consequence ROUTED:** the runner + production-boundary
+  tests land against a fixture-only complete bundle; the production content-dynamics registry
+  stays EMPTY and NO initial golden is generated until an epoch pins `opportunities` + its
+  `active_play` economy declarations. **Consequence routed to T0–T1 (binding): the T0–T1 epoch
+  candidate set GROWS by an owner-ratified `opportunities` artifact and the required economy
+  multiplier declarations** — the current six-document proposal is incomplete by exactly that;
+  Codex extends it in the same draft-ratify lane. A missing artifact owner is a hard
+  pre-execution error; no skip, no synthetic policy.
+- **EH-C9 — accepted as proposed.** Registry entries are `{epoch_seed_path, epoch_id,
+  bundle_snapshot_manifest}`; `make content-harness` GENERATES the immutable snapshot from the
+  exact active `epochseed.Bundle` (never a hand-authored subset); snapshot schema v1 with the
+  complete sorted `{name, production_path, snapshot_path, sha256}` set + accepted constants hash
+  + epoch coordinate; bytes under `testdata/harness/content-dynamics/bundles/<full-hash>/`;
+  the read-only loader verifies set equality, every per-file hash, the recomputed bundle hash,
+  and epoch acceptance before execution; later mints add entries, never reinterpret; the baseline
+  guard governs all five surfaces with adversarial missing/extra/tampered fixtures.
+
+## Changelog (EH-C8/C9 round)
+
+- 2026-08-10: EH-C8/C9 accepted; the opportunities-artifact requirement routed into the T0–T1
+  candidate set; the runner is implementable now (registry empty until the next mint).
