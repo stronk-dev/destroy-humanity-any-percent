@@ -585,3 +585,83 @@ baseline-change guard's own two-commit protocol makes literal per-commit greenne
 (the Postgres suite requires the remediation commit; harness-check requires the separate baseline
 commit). The mint verdict (2026-08-10) verified green at 08c995e. This is the acceptance text
 matching the shipped guard protocol, not a weakening.
+
+## Epoch-7 content-dynamics harness blockers (Codex, 2026-08-10 — EH-C1–EH-C7)
+
+The sign-off correctly registered pacing coverage for Active-Play buff windows, Fiscal harvests,
+Pitch payouts, and Permit accrual. That obligation cannot be discharged by adding rows to the
+current scenario file: the shipped harness owns only Company `Transition` over the
+economy/Routes/Commons slice. Fiscal harvest is a Founder transition, Active Play requires the
+full pinned policy bundle and schedule resolution, and Pitch uses the tenant engine plus platform
+payout kernel. Copying any of those mechanics into `server/harness` would create a second balance
+authority. Implementation pauses for these executable contracts.
+
+### EH-C1 — One production-owned simulation boundary is missing
+
+**Proposed contract:** add a second closed harness lane, `content_dynamics.v1`. It loads the exact
+active epoch through `epochseed` + `replaycatalog` and invokes production-owned pure boundaries:
+Company evaluation/Active Play, Founder Fiscal commands, Pitch `Tenant.Create/Apply`, and the
+platform payout selection/conversion kernel. Where the live resolver is currently private, expose
+a simulation-only wrapper analogous to `SimulateTransition`; the source guard permits calls only
+from `server/harness` and tests. The harness may assemble inputs, never reimplement arithmetic or
+author replay-resolved records.
+
+### EH-C2 — The scenario and report grammars are unspecified
+
+**Proposed contract:** one strict registry binds the active epoch seed, a scenario document, and a
+golden report. The scenario has `{schema_version:1,id,version,runs,transition_budget}`. `runs` is a
+closed union of `active_play_window | fiscal_harvest | pitch_payout | permit_accrual`; each arm has
+an ID, string seed range, horizon, and only the mechanical coordinates named below. The report
+records the full constants hash, scenario hash, exact run count, ordered integer/Decimal
+observations, and named invariant failures. Unknown keys, missing artifact owners, unsafe seeds,
+duplicate IDs, or work above the declared budget fail before execution.
+
+### EH-C3 — The four policies need exact, non-self-serving definitions
+
+**Proposed contract:**
+
+- `active_play_window`: initialize a new Company run through the production initializer, advance
+  to the first naturally spawned opportunity, claim it, and compare its declared target's output
+  during the complete buff window with an identical unclaimed control. Never synthesize a pending
+  opportunity or select an effect in the report.
+- `fiscal_harvest`: initialize Founder v21 at a period boundary and observe production-owned lazy
+  harvests after exactly 1 and 4 complete Fiscal periods, including sequence, credited amount, and
+  hardcap status.
+- `pitch_payout`: seeds 0–63 under a versioned deterministic policy: play the first four
+  byte-sorted hand IDs; in shops buy the cheapest affordable offer (price, then offer ID), otherwise
+  end shop. Observe terminal round, certified payout score, and converted Company Cash.
+- `permit_accrual`: one purchased `generator.legal_dept`, no other producers; compare frozen
+  Fiscal credit 0 versus the hoard cap (100). Observe time to 12 Permits, time to the visible cap
+  24, and the cap reason. This pins the intended `fiscal.hoard` ×2 all-target interaction.
+
+### EH-C4 — Pacing observations versus blocking invariants are not separated
+
+**Proposed contract:** exact state/receipt reconciliation, partition invariance, declared cap,
+artifact identity, and transition-budget failures block immediately. First-lane pacing values are
+owner-facing observations with no invented pass envelope: Active-Play bonus delta, Fiscal credits,
+Pitch p50/p95 terminal round and payout, and Permit p50/p95 times. After owner review accepts the
+initial golden, later drift uses the existing 10% warning / 25% failure rule.
+
+### EH-C5 — Baseline governance must remain fail-closed
+
+**Proposed contract:** the scenario/runner lands first. Its generated golden lands in a separate
+`BALANCE-CHANGE:` commit under the existing full-history guard; extend the governed path set and
+adversarial fixtures rather than creating a second exception. `make harness-check` runs both the
+legacy Phase-0 lane and every registered content-dynamics golden.
+
+### EH-C6 — Full-bundle identity and historical behavior need one rule
+
+**Proposed contract:** registry entries name the epoch-seed path, not a hand-authored subset or
+hash. The runner recomputes the complete artifact bundle and records its accepted constants hash.
+An entry follows its pinned epoch bytes forever; advancing the active epoch requires a new entry,
+not reinterpretation under deploy-current content.
+
+### EH-C7 — Execution cardinality must be literal
+
+**Proposed contract:** 1 Active-Play control pair, 2 Fiscal cases, 64 Pitch seeds, and 2 Permit
+cases; the scenario declares the exact total transition budget derived from those arms. No
+Postgres, HTTP, sleeps, background workers, or unbounded per-millisecond loops are permitted.
+The command exposes `make content-harness` and the read-only gate remains `make harness-check`.
+
+**Status:** owner rulings required before implementation. The proposals deliberately reuse the
+shipped math and governance; Codex will not invent a parallel content simulator.
