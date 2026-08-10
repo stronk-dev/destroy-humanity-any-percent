@@ -55,12 +55,10 @@ Implemented systems:
   economy kernel.
 - [Guilds](guilds.md) — guild model, tithe, and reserved-credit clearing.
 - [Combat](combat.md) — the shared combat data model and arithmetic kernel.
-- [Meters](meters.md) — the Company meter catalog: bands, decay, inputs, trust reseed
-  (foundation implementation in progress; no production artifact minted).
-- [Achievements](achievements.md) — condition/proof grammar and score grants
-  (foundation implementation in progress; no production artifact minted).
-- [Pet care](pet-care.md) — Founder-scoped care state, decay/trust policies, the FSM
-  (foundation implementation in progress; no production artifact minted).
+- [Meters](meters.md) — the live Company meter catalog: bands, decay, inputs, and Trust reseed.
+- [Achievements](achievements.md) — live condition/proof grammar, score grants, settlement, and copy.
+- [Pet care](pet-care.md) — live Founder-scoped care policy, decay/Trust arithmetic, and the FSM;
+  pet acquisition and combat consumption remain successor work.
 - [API foundation](api-foundation.md) — schema/cursor authority and the operation registry
   (foundation implementation in progress).
 - [Founder transitions](founder-transitions.md) — Exit lifecycle and the attendance clock

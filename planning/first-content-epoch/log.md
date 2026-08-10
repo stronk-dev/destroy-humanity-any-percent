@@ -273,3 +273,13 @@ F6 epoch-5-pinned integration tests leave active-epoch e2e coverage on the compo
 **Range-union:** every implementation commit through 08c995e is designated-verdict-covered.
 **The Meters, Achievements, and Pet Care archival moves citing this verdict are AUTHORIZED.**
 THE PUSH remains separate and Marco-only.
+
+## 2026-08-10 — mint-review F1 discrimination closure
+
+The required persisted-Founder seam test is added to the composed epoch-6 Postgres lifecycle. It
+starts Founder v21 with `minigame_session_seq=9`, `fiscal_credit=2`, and `soul=80`, performs a real
+Company command and Exit, then reloads the Founder revision and requires sequence reset to 0 while
+Fiscal credit and Soul remain 2 and 80. A mutation probe disabling the v17+ copy block at
+`server/production/prestige.go` makes that lifecycle fail at Exit with `internal_invariant`; the
+unaltered code passes the full Postgres suite. This closes the verdict's named F1 obligation without
+changing runtime semantics or the kernel version.

@@ -1,9 +1,9 @@
 # RFC: The First Content Epoch (epoch 6 — the owner-gated production mint)
 
-- **Status:** implementing — the authorized epoch-6 mint has landed and is **awaiting its designated
-  cross-party review.** No dependent archival is authorized before that verdict. This RFC exists so
-  the completed owner sign-off approved a fully enumerated, precondition-checked change instead of
-  a judgment call. Named successor of TP-C18 (The Pitch, ruled option a: fixture-first) and SR-C13
+- **Status:** implementing — the epoch-6 mint has landed and its designated cross-party review is
+  **APPROVED**; the authorized dependent archival moves are in progress. This RFC exists so the
+  completed owner sign-off approved a fully enumerated, precondition-checked change instead of a
+  judgment call. Named successor of TP-C18 (The Pitch, ruled option a: fixture-first) and SR-C13
   (Soul Recovery, ruled: fixture-only now, minted together here).
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-07

@@ -1,12 +1,13 @@
 # RFC: Meters Foundation (Trust · p(doom))
 
-- **Status:** accepted (C1–C12 ruled; implementing)
+- **Status:** implemented — mechanics, production epoch-6 catalog, activation, replay, and events
+  are shipped and designated-review covered.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/02 §7` (moral axis — not spendable; Trust 5 constituencies + Externality ledger), `design/02 §8` (Soul, the personal ledger), `design/09 §2` (pressure meters, forecastable disaster windows), `design/10` (Ethical% consumes the moral stack)
 - **Depends on:** Production + Run Genesis + Purchasable Content (implemented — meters mutate inside `ApplyLogged` after Purchasable Content)
 - **Owner ruling honored:** breadth-first foundation — the meter MECHANICS, not the events or endings that consume them.
-- **Planning:** `planning/meters-foundation/` (once implementing)
+- **Planning:** `planning/archive/meters-foundation/`
 
 ## Summary
 

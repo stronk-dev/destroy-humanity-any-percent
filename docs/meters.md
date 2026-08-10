@@ -1,8 +1,8 @@
 # Meters
 
-The implemented Meters foundation provides the strict catalog boundary and a deterministic
-transition hook in the shared Go/TypeScript replay kernels; no production meter artifact has been
-minted yet.
+The Meters foundation provides the strict catalog boundary and a deterministic transition hook in
+the shared Go/TypeScript replay kernels. Epoch 6 pins the production schema-v1 meter artifact and
+new runs activate it through the paired Meters/Achievements foundation boundary.
 
 Phase A recognizes exactly eleven run-scoped Company values in the integer range 0–100: Standing
 and Grievance for users, employees, regulators, press, and investors, plus `doom.probability`.
@@ -27,8 +27,11 @@ partitioning, band changes, target-phase reset, and saturation.
 
 Go and TypeScript loaders enforce the same closed eleven-ID set, input shapes, numeric bounds,
 unique source bindings, and band ordering. `balance/meters.schema.json` is wired into the root
-schema gate with discriminating pre-mint fixtures. Literal production floors, initials, rates, and
-bindings remain balance data that must be supplied before the epoch artifact is minted.
+schema gate. The epoch-6 artifact starts Standing at 50, Grievance at 0, and p(doom) at 50; every
+row exposes `low` at 0 and `high` at 70. Standing and p(doom) decay toward 50, while Grievance
+decays toward 0. The live causal bindings are `externality.emitted` → p(doom) +3 and active
+`commons.member` → users' Standing +1 per attended hour. These remain declarative balance rows,
+not code constants.
 
 Save v16 activates Meters and Achievements together only on a new-run boundary whose pinned epoch
 contains both artifacts. Active Company state carries complete meter value and remainder maps;
@@ -38,4 +41,5 @@ reseed, active route context, and byte-identical ordinary and terminal transitio
 commands execute decay and causal inputs after the existing production hooks, emit exact
 `meter_band_changed.v1` events in meter-ID order, and expose authoritative meter state in receipts.
 The formula artifact publishes the transition order and carried arithmetic. Historical v3 rows
-retain their pre-hook semantics. Literal balance rows and the production epoch mint remain pending.
+retain their pre-hook semantics. Epochs 1–5 preserve their earlier artifact sets and do not
+retroactively activate Meters.

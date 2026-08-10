@@ -547,3 +547,13 @@ foundation's implementation span as of 04e1905. No gap.** The prior delegated Da
 04e1905 remains a first-filter; THIS entry satisfies the cross-party gate. With this verdict, the
 foundation's remaining distance to archival is the owner content mint (First Content Epoch) +
 final verify/docs/move — no review debt remains.
+
+## 2026-08-10 — archival handoff
+
+- **Implemented by:** Codex. **Archived under:** the designated First Content mint verdict recorded
+  in `planning/first-content-epoch/log.md` on 2026-08-10 (`40aaad0`).
+- **Consumed foundation review chain:** designated full-span verdict `2f0343e..dd073b7` plus the
+  cross-party coverage-closure verdict for `04e1905`; the latter records the complete range union.
+- Epoch 6 pins `balance/achievements/first-content.json` and its verified copy bindings
+  byte-identically to the owner-ratified candidate. Canonical `docs/achievements.md` now records the
+  live production definitions. Status is `implemented`; RFC and planning records rotate here.

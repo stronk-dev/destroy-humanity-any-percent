@@ -15,11 +15,8 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
 | [API Foundation](api-foundation.md) | accepted — C1–C17 ruled; implementing | Account API / Transport / Gameserver Composition |
-| [Meters Foundation](meters-foundation.md) | accepted — C1–C12 ruled; implementing | Production / Run Genesis / Purchasable Content; unblocks Achievements and Pet Care |
-| [Achievements Foundation](clout-and-achievements-foundation.md) | accepted — C1–C10 ruled; scope narrowed to Achievements; implementing | Meters / Copy Pipeline / Production / Run Genesis |
 | [Founder Attendance Foundation](founder-attendance-foundation.md) | accepted — A1–A5 ruled; implementing | Save / Run Genesis / Prestige |
 | [Minigame Platform Foundation](minigame-platform-foundation.md) | accepted — C1–C40 ruled; implementing | Gameserver Composition / Founder Attendance / Combat |
-| [Pet Care Foundation](pet-care-foundation.md) | accepted — C1–C21 ruled; introduces `ApplyFounderLogged`; implementing | Save / Run Genesis / Combat Shared Kernel |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | implementing | — |
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
@@ -31,8 +28,8 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
 | [Minigame & Recovery API + Surface](minigame-api-and-surface.md) | accepted — MA-C1–C15 ruled; implementing | API Foundation / Minigame Platform (accepted, implementing) / Soul / UI Foundation |
-| [Permits & the T3→T4 Gate](permits-and-t3-gate.md) | candidate implemented, designated-approved + ratified — promotion awaits epoch-6 mint | Economy Kernel / Route Registry / First Content Epoch |
-| [First Content Epoch](first-content-epoch.md) | accepted — FCE5.3 complete; awaiting owner mint sign-off | ALL fixture-first content foundations |
+| [Permits & the T3→T4 Gate](permits-and-t3-gate.md) | promoted in reviewed epoch 6; archival pending | Economy Kernel / Route Registry / First Content Epoch |
+| [First Content Epoch](first-content-epoch.md) | epoch 6 minted and designated-approved; dependent archival in progress | ALL fixture-first content foundations |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
 | [T0–T1 Playable Content](t0-t1-playable-content.md) | draft | Production / Purchasable Content / Copy Pipeline |
 
@@ -86,6 +83,9 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Soul Foundation](archive/soul-foundation.md) | implemented | [Soul foundation](../docs/soul.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [The Pitch](archive/minigame-the-pitch.md) | implemented | [The Pitch](../docs/minigame-the-pitch.md), [Minigame platform](../docs/minigame-platform.md) |
 | [Soul Recovery Activities](archive/soul-recovery-activities.md) | implemented fixture-first | [Soul Recovery](../docs/soul-recovery.md), [Soul foundation](../docs/soul.md) |
+| [Meters Foundation](archive/meters-foundation.md) | implemented | [Meters](../docs/meters.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
+| [Achievements Foundation](archive/clout-and-achievements-foundation.md) | implemented | [Achievements](../docs/achievements.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
+| [Pet Care Foundation](archive/pet-care-foundation.md) | implemented; combat AC3 carried | [Pet care](../docs/pet-care.md), [Founder transitions](../docs/founder-transitions.md), [Save layer](../docs/save-layer.md) |
 
 **Phase-0 contract status (reconciled 2026-08-05 against the coverage-map sweep):** the contracts
 previously listed here as "not yet drafted" — Layer-1 events engine, doctrine intents, Compute

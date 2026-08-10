@@ -1,8 +1,9 @@
 # Pet Care
 
-The implemented Pet Care foundation owns the cross-runtime wire grammar, replay-owned Founder v18
-state, the pure care transition, and the server-authoritative `care_action` command. Production pet
-identity/species rows and combat consumption remain unimplemented and are not claimed here.
+The Pet Care foundation owns the cross-runtime wire grammar, replay-owned Founder v18 state, the
+pure care transition, and the server-authoritative `care_action` command. Epoch 6 pins the complete
+care-policy artifact. Pet identity/species acquisition and combat consumption remain unimplemented
+and are not claimed here.
 
 ## Closed Phase-A vocabulary
 
@@ -16,15 +17,15 @@ Care rejection details are `cooldown`, `ineligible`, `saturated`, `unknown_pet`,
 use the label `pet.behavior.v1`. Go and TypeScript consume one shared parity fixture for every
 member and the queue boundary. These names are protocol grammar, not balance data.
 
-Thresholds, durations, candidate weights, stat deltas, species, and temperaments remain catalog
-content. No production pet row is synthesized from the protocol vocabulary.
+Thresholds, durations, stat deltas, species, and temperaments are catalog content. Epoch 6 supplies
+the care-policy rows but does not synthesize a pet identity from protocol vocabulary.
 
 The two Phase-A catalog row families now have exact cross-runtime grammar. Mood thresholds are
 `{mood_member, floor_ppm}` rows containing every closed mood exactly once with strictly ascending
 ppm floors. Behavior candidates are `{from_state, event, to_state, duration_grid_ticks}` rows over
 the closed behavior state/event unions, with positive exact tick durations and no duplicate
-transition tuple. The persisted behavior queue remains hardcapped at eight; thresholds and
-durations in the shared fixture are test data, not production balance data.
+transition tuple. The persisted behavior queue remains hardcapped at eight. The epoch-6 artifact
+pins the production thresholds and deterministic transition durations.
 
 ## Replay-owned mutable state
 
@@ -37,9 +38,10 @@ fixture and enforce the same exact domains.
 
 This state is embedded into replay-owned Founder save v18. The pinned pet artifact is the complete
 closed union of stat-grid, action, Trust, mood-threshold, and deterministic behavior-transition
-policies; pinning the earlier mood/behavior fixture alone is rejected. v18 requires the v17
-minigames artifact to remain pinned, while Company remains v14/v16. Mood stays derived and is
-never persisted. Numeric policy rows remain fixture/balance data and no production pet is enabled.
+policies; pinning mood/behavior rows alone is rejected. v18 requires the v17 minigames artifact to
+remain pinned, while the Company version axis remains independent. Mood stays derived and is never
+persisted. Epoch 6 activates the policy and empty replay-owned pet map for new Founders; no starter
+pet or species is fabricated.
 
 ## Care transition and authoritative intent
 

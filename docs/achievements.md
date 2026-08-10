@@ -38,5 +38,7 @@ an actual minimum action debit measured from the post-accrual balance boundary, 
 income cannot hide or fabricate a sink. Terminal evaluation includes the settling Exit in career
 age, fact, and exit-count observations before the run set is unioned into Founder lifetime state;
 both kernels reject any run/lifetime ownership overlap before settlement.
-Historical v3 rows retain their pre-hook semantics. Production definitions and the epoch mint
-remain pending.
+Historical v3 rows retain their pre-hook semantics. Epoch 6 pins twelve production definitions
+with exact score grants of 2, 4, or 8 and verified Copy Pipeline bindings; epochs 1–5 remain on
+their earlier semantics. The production rows cover attended-time and Exit career milestones plus
+run-scoped gate and generator milestones.

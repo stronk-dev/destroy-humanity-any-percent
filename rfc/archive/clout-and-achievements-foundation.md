@@ -1,13 +1,14 @@
 # RFC: Achievements Foundation (Clout deferred — see C1/C2 rulings)
 
-- **Status:** accepted (C1–C10 ruled; SCOPE NARROWED to Achievements; implementing)
+- **Status:** implemented — the Clout-free achievement engine, production epoch-6 definitions,
+  activation, settlement, replay, events, and copy bindings are shipped and designated-review covered.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/02 §6` (Clout — the achievement/influence axis; achievement-score + attention-economy play; feeds the multiplicative CloutStack), `design/02 §2c.3` + `§6b` (the possession/burn/provenance law + the one-mint law), `design/08` (influencer-culture satire)
 - **Depends on:** Production + Run Genesis + Copy Pipeline (implemented); Meters Foundation
   (implementing — shares the strict registry pattern; Phase-A predicates do not yet consume meters)
 - **Owner ruling honored:** breadth-first — the mint/decay/check MECHANICS and the achievement engine, not the individual achievements (those are content).
-- **Planning:** `planning/clout-and-achievements-foundation/`
+- **Planning:** `planning/archive/clout-and-achievements-foundation/`
 
 ## Summary
 

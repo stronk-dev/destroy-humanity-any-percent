@@ -1,20 +1,22 @@
 # RFC: Pet Care Foundation
 
-- **Status:** accepted (C1-C21 ruled; introduces the Founder mutation boundary; implementing)
+- **Status:** implemented — Founder mutation/replay, production epoch-6 care policy, and the pure
+  combat-input producer are shipped and designated-review covered. AC3's combat consumption remains
+  carried to the duel engine.
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/04 §1` (the companion layer — 4-stat decay, care actions + diminishing returns, personality behavior FSM, trust/mood two-tier, bonds), `design/04 §adoptions` (the no-death canon: public-awkwardness-not-loss), `design/03 §10` / combat C5 (the pet is the On-Call Leader — the seam awaits its two integers)
 - **Depends on:** Save + Run Genesis (implemented); Combat Shared Kernel (implemented). **NOT the Company `ApplyLogged` path — C1: this RFC introduces the Founder mutation boundary.**
 - **Owner ruling honored:** breadth-first — the care/trust/mood/FSM MECHANICS, not pets' content (species, cosmetics, the battle content).
-- **Planning:** `planning/pet-care-foundation/` (once implementing)
+- **Planning:** `planning/archive/pet-care-foundation/`
 
 ## Summary
 
 The companion-care foundation, deterministic and server-authoritative — a direct descendant of our own prior project's care systems. Care stats with diminishing-return
 actions, the two-tier trust/mood model, the personality behavior FSM, and bonds — all as
 Founder-scoped state mutated by care intents through `ApplyFounderLogged`. Critically: this RFC
-CLOSES combat's C5 fixture-only boundary by producing the real `(trust_ppm, soul)` inputs the duel
-and lane engines consume.
+exports the real `(trust_ppm, soul)` input pair as a pure producer. Combat C5 remains open until the
+duel engine's Obedience table consumes that pair.
 
 ## Specification
 
@@ -41,10 +43,9 @@ in both runtimes.
 
 **Trust** (persistent, server, decays slowly toward neutral absent care — a slow multi-day
 decay shape generalized to attended time) and **Mood** (session, volatile). Trust is the durable
-relationship; mood is the moment. **This is combat's C5 input:** `trust_ppm` (from care quality
-over time) → the Obedience curve (50%→30% across Trust 1.00→0.80, already specced in the combat
-kernel); `soul` (from the Meters foundation) → the leader-ability modulation. This RFC's output is
-exactly the two integers combat froze as fixtures — combat's fixture boundary becomes real.
+relationship; mood is the moment. The foundation exports `trust_ppm` (from care quality over time)
+and Founder `soul` as exact integers. The combat engine remains the sole owner of the Obedience and
+leader-ability mappings; no combat formula lives in this foundation.
 
 ### PC4 — The personality behavior FSM
 
@@ -68,9 +69,9 @@ screens.
    away); no-death (a floored stat floors, pet persists, options grey — never removal).
 2. Care actions: diminishing-returns curve byte-parity Go/TS; over-care wastes; the ceiling is
    the shared identity hardcap (care can't exceed it).
-3. Trust/mood: trust decays slowly, mood is volatile; **the produced `(trust_ppm, soul)` drive a
-   combat duel's Obedience exactly as the combat C5 golden vectors specify** — combat's fixture
-   boundary replaced by this RFC's real output, cross-verified.
+3. **Carried to Combat Duel Engine:** Trust/mood state and the pure `(trust_ppm, soul)` producer are
+   shipped; the duel's Obedience table must consume the pair and cross-verify combat C5 before this
+   end-to-end criterion closes.
 4. FSM: behavior deterministic given (personality, stats, seed), replay-safe; bonds affect
    behavior only, never economy.
 5. Founder-scope persistence across Exit; migration + corpus; the sprite contract typed for UI.

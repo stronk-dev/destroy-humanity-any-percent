@@ -772,8 +772,12 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 				t.Fatal(err)
 			}
 			loadedFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
-			if err != nil || len(loadedFounder.State.ExitHistory) != 1 {
-				t.Fatalf("founder exit history=%+v err=%v", loadedFounder.State.ExitHistory, err)
+			if err != nil || len(loadedFounder.State.ExitHistory) != 1 ||
+				loadedFounder.State.MinigameSessionSeq != 0 || loadedFounder.State.FiscalCredit != 2 ||
+				loadedFounder.State.Soul != 80 {
+				t.Fatalf("persisted founder exit history=%+v session_seq=%d fiscal_credit=%d soul=%d err=%v",
+					loadedFounder.State.ExitHistory, loadedFounder.State.MinigameSessionSeq,
+					loadedFounder.State.FiscalCredit, loadedFounder.State.Soul, err)
 			}
 			return
 		}
@@ -819,6 +823,9 @@ func progressedCompositionStates(t *testing.T, catalogs *runtimeCatalogs, consta
 	if err != nil {
 		t.Fatal(err)
 	}
+	founder.MinigameSessionSeq = 9
+	founder.FiscalCredit = 2
+	founder.Soul = 80
 	company.Tier = 2
 	company.LifetimeValue = decimal.New(8, 12)
 	return founder, company, frozen

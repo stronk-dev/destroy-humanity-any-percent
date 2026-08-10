@@ -700,3 +700,21 @@ This is a REAL defect in the resolve span, not the care span. The resolve verdic
 stands for the persistence/replay LOGIC, but the range carries a **required typecheck fix before the
 minigame RFC archives.** ROUTED to Codex. Process gap: the designated review AND Codex's verify must
 run `pnpm typecheck`, not only vitest — vitest green != types green.
+
+## 2026-08-10 — archival handoff with combat AC3 carried
+
+- **Implemented by:** Codex. **Archived under:** the designated First Content mint verdict recorded
+  in `planning/first-content-epoch/log.md` on 2026-08-10 (`40aaad0`).
+- **Consumed foundation review chain:** the designated entries for ApplyFounderLogged
+  (`7620311..1ba07fd`), Founder genesis (`70d2d4a..7af623c`), Minigame/Pet grammar
+  (`95a3e35..75b0a87`), payout/faucet/pet state (`75b0a87..58118e9`), version floors
+  (`dc635f7..0c3707f`), Founder v17/v18 (`0c3707f..9e958b1`), required-key remediation
+  (`9e958b1..965fd4a`), the pure combat-input seam (`965fd4a..8d1cc5d`), and care composer
+  (`8d1cc5d..b1cbbf1`), followed by the mint verdict's full-range coverage through epoch 6.
+- Epoch 6 pins `balance/pets/first-content.json` byte-identically to the owner-ratified policy
+  candidate. It activates Founder-v18 care state without fabricating a starter pet or species.
+- **Carried acceptance debt:** AC3 remains open. The pure `{pet_trust_ppm,soul}` producer is shipped,
+  but Combat Duel Engine must own and consume the Obedience table before the cross-verified combat
+  criterion closes.
+- Canonical `docs/pet-care.md` now distinguishes the live care policy from successor acquisition
+  and combat work. Status is `implemented`; RFC and planning records rotate to their archives here.

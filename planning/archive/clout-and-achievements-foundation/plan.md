@@ -1,6 +1,6 @@
 # Achievements Foundation implementation plan
 
-RFC: `rfc/clout-and-achievements-foundation.md`
+RFC: `rfc/archive/clout-and-achievements-foundation.md`
 
 - [x] Reconcile the owner-approved C1–C10 rulings into one Clout-free contract.
 - [x] Land the strict schema/loaders, bounded predicate/proof union, copy-key composition, and
@@ -9,12 +9,11 @@ RFC: `rfc/clout-and-achievements-foundation.md`
 - [x] Evaluate achievements at the shared live/replay boundary and emit ordered earned events.
 - [x] Settle run achievements atomically at Exit and reset the next run.
 - [x] Join paired epoch identity and active Go/TypeScript replay fixtures without minting content.
-- [ ] Pass normal root verification and Postgres integration, obtain an independent full-range
+- [x] Pass normal root verification and Postgres integration, obtain an independent full-range
   adversarial verdict, update canonical docs, and archive.
 
-Carried content dependency: literal production achievement rows are owner-authored T0–T1 content;
-the strict engine uses discriminating fixtures and does not invent achievements.
+The owner-authored production achievement rows and their verified copy bindings shipped in epoch 6.
 
 Activation ruling C11 is implemented: paired artifacts activate save v16 only for the next run;
-pre-artifact runs finish under v14. Earning is live in the shared kernels; the literal production
-artifact mint remains owner/content dependent.
+pre-artifact runs finish under v14. Earning is live in the shared kernels and the production
+artifact is pinned by epoch 6.
