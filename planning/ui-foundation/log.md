@@ -162,3 +162,13 @@ Goldens pin both ruled carry boundaries (`9.9995e2 -> 1.00 K`, `9.996e5 -> 1.00 
 sub-visible collapse (`-4.9e-1 -> 0`). `make verify-client` passes with 0 TypeScript/Svelte
 diagnostics and 6,629 unit assertions. This is a remediation record only; the delta is ready for
 the narrow designated cross-party re-review and UI Foundation remains unarchived.
+
+## 2026-08-10 — designated cross-party re-review: carry fix {d2cf2cd} — APPROVED; ARCHIVAL-ELIGIBLE
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+All boundary probes pass live (9.996e5→"1.00 M"; 9.9995e2→"1.00 K"; −0 collapsed); the 9.9994e5
+carry verified 3-sig-TRUE (9.9994 rounds to 10.0 — the carried render is correct rounding, with
+the 9.99499e5→"999 K" boundary confirming); group selection and rendered value agree by
+construction (standard.format receives the quantized value); revert-probe fails exactly the three
+new goldens; docs true as written across the carry window. **UI Foundation C1–C11 is fully
+verified and ARCHIVAL-ELIGIBLE (standard flow); Game-UI implementation is UNBLOCKED.**

@@ -72,3 +72,25 @@ Ratification round follows the fixed set + re-review.
   multiple ordered non-overlapping segments for the same single optimization milestone in v2,
   while retaining v1's one-segment rule and all solver mathematics. The mandatory ninth
   Relevance document is blocked on this ruling; no substitute bytes were authored.
+
+## 2026-08-10 — designated verdicts: relevance v2 {27b7694} APPROVED · remediation {4a95f7d} APPROVED, RATIFY-READY
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+**{27b7694}:** T01-C10 implemented exactly (null sorts first; ordered-domain validation; reports
+preserve null byte-for-byte; three-surface fail-closed mutation proofs; v1 byte-stability probed
+across the span); multi-segment HONESTLY deferred (T01-C11 ruled only at HEAD); the
+single-segment rule intact for both versions — no premature hole.
+**{4a95f7d}:** every findings-first item verified closed (F1 categories one-sorted-insertion with
+real-loader set-equality test; F2 all pairs rescaled inside their windows and pinned pairwise;
+F3 body reconciled to the actual 1.07–1.13 band with the live-byte preservation declared; F4 the
+legal_dept role labeled a NEW owner-ratified choice; F5 shipped-vs-extension invariant names
+honest; F6 clocks pinned + run-2-faster comparative same-seed; F7 closed copy object with named
+binding surface; F8 stragglers classified; F9 the 6.5^7 value verified as EXACTLY what the
+canonical 12-digit half-even quantize produces — the "corrected" wording owes a 1-ulp-rounding
+sentence at next touch; F10 carried). The opportunities candidate loads against the composed
+economy under the real activeplay loader; values trace to the reviewed baseline subtree
+(value-identical, reserialized — LOW wording note). All eight SHAs recomputed and matching.
+**RATIFY-READY: eight documents** (categories ff63b341… · curriculum 17e5e0c7… · economy
+3b18304a… · event-copy 6413fa05… · harness-scenario e74e271b… · opportunities 63e51084… ·
+presentation 70953a6d… · routes a84cce06…). The ninth (relevance) follows the T01-C11
+implementation.

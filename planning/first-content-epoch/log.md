@@ -325,3 +325,14 @@ duplicates, and the economy/epochseed/routes contracts assert the real minted ar
 proven (restoring pre-fix tests fails the cold run). Genuinely cold gates run by the reviewer
 (fresh GOCACHE): full -count=1 test-go green; full make verify green. The log honestly records a
 FOURTH cache-masked package (routes) beyond the F2 note's three. Kernel honest.
+
+## 2026-08-10 — designated cross-party verdict: EH snapshots + empty registry {a7ab5a2} — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+Snapshot generation accepts only the exact active epochseed.Bundle (subset/rewrite test-rejected);
+all four ruled loader checks present; LIVE tamper probe: one appended byte in a generated
+16-artifact snapshot fails the gate with a hash mismatch; production registry EMPTY, no golden,
+honest no-op probed; the baseline guard governs the new surfaces with the full adversarial matrix.
+LOW-1: bundles/<hash>/ dirname is convention not loader-enforced (add dirname==hash when the
+first real entry lands); LOW-2: scenario/golden existence unchecked — acceptable only while the
+runner is future work. The four-arm runner honestly out of the slice.
