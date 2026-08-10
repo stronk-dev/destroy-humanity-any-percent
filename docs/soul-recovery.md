@@ -1,6 +1,6 @@
 # Soul Recovery Activities
 
-Soul Recovery ships three fixture-first, zero-output recovery activities on the archived Soul
+Soul Recovery ships three minted (epoch 6), zero-output recovery activities on the archived Soul
 session machinery: `defrag`, `repot`, and `server_room`. Each activity advances only through
 attended presence, suppresses Company production while active, and grants only its catalog-declared
 Soul recovery at terminal resolution. No score, resource, achievement, or toy result enters the
