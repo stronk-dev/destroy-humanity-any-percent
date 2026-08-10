@@ -359,3 +359,14 @@ before any epoch-7 mint: the copy-text authoring round (FCE-C7 pattern, orphan-f
 loader/owner implementations for the four new artifact families, the T01-C6/AC0 bootstrap
 catchup, the composed harness golden (post-opportunities-mint per EH-C8), and the separate
 owner mint sign-off.
+
+## Owner ratification — pins #9a/#9b (Marco, 2026-08-10): THE CANDIDATE SET IS COMPLETE
+
+- relevance policy `f8878cbf6705581eb5ffd88ea51e3719ebf2641c661bbe3d87ff7667002d30bf`
+- relevance scenario `2f1afb928e1f2d84d2e9748fbbd565bbbdebce24d7c411a0df7feb0b47692629`
+
+Ratified after the designated RATIFY-READY verdict (planning/t0-t1-content/log.md, 2026-08-10).
+The nine-document epoch-7 candidate core is COMPLETE. Remaining before any epoch-7 mint: the
+screen-copy assembly ratification (the v1 ruling is issued; SHAs pending), the four new artifact
+families' loaders/owners, the T01-C6/AC0 bootstrap catchup, the mandatory relevance + composed
+harness runs over the complete set, and the separate owner mint sign-off.
