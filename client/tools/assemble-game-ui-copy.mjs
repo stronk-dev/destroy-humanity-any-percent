@@ -155,7 +155,6 @@ function applyRulings(row) {
     next.text = next.text
       .replace("  equipment keeps working while you are away -- at 90%, for up to 24\n  hours, the way the door games on the BBS shared one phone line.", "  equipment keeps working while you are away -- at ninety percent,\n  for up to a day, the way the door games on the BBS shared one phone line.")
       .replace("mail us $0.00", "mail us zero dollars")
-      .replace("slide 1 of 1", "the only slide")
       .replace("-- the authors, 1995", "-- the authors, nineteen ninety-five");
     next.text_kind = "longform";
   }
