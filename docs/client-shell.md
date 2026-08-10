@@ -1,9 +1,9 @@
 # Client Shell and Simulation Loop
 
-The browser client has a Svelte 5 DOM shell and a dedicated prediction Worker. The shell can be
-built and opened now; until the transport RFC lands, the production entry point uses a pending
-`SnapshotStream` that deliberately supplies no invented local state. An injected transport owns
-delivery of authoritative snapshots and receipts.
+The browser client has a Svelte 5 presentation controller and a dedicated prediction Worker. The
+runtime boundary remains available to future screens, while the production entry currently mounts
+the content-free [UI Foundation](ui-foundation.md) fixture. Game UI owns the later composition of
+that runtime with real screen surfaces and transport.
 
 ## Runtime boundary
 
@@ -18,9 +18,8 @@ unexplained caps, duplicate progress stages, malformed hashes and receipts, and 
 Snapshots older than the visible revision are ignored. Receipt and snapshot revisions must match.
 The transport wire envelope and reconnect channel remain owned by the active transport RFC.
 
-The browser entry validates both [`balance/catalogs/phase0.json`](../balance/catalogs/phase0.json)
-and [`balance/client-shell/phase0.json`](../balance/client-shell/phase0.json) at startup. No resource,
-generator, progress-stage, or cap ID is compiled into the shell package.
+The runtime adapters validate the economy and client-shell catalogs before use. No resource,
+generator, progress-stage, or cap ID is compiled into a UI primitive.
 
 ## Prediction
 
@@ -60,12 +59,12 @@ Formatting and Svelte view refresh are throttled to 100 ms.
 Client telemetry is aggregate-only: epsilon breaches, discrete rebases, rejection categories,
 Worker overrun count, and total overrun milliseconds. It retains no intent IDs or player data.
 
-## Routes and lifecycle
+## Controller routes and lifecycle
 
-The DOM shell contains the contract, main-panel, and run-end containers. The RTA clock begins only
-after the injected begin-attempt action succeeds. PB/WR comparison remains unavailable until an
-Exit. The four generic main tabs are company, world, pet, and minigame; panels render only the
-active route.
+The controller retains contract, main-panel, and run-end states for the future Game UI consumer.
+The RTA clock begins only after the injected begin-attempt action succeeds. PB/WR comparison remains
+unavailable until an Exit. The old hard-coded screen scaffold is no longer the production entry;
+surface routing now belongs to the UI Foundation registry.
 
 For an absence over 30 seconds, the authoritative snapshot loads behind one return recap instead
 of visibly snapping the counters. The recap lasts at most five seconds and is skippable, gains stay
@@ -88,6 +87,7 @@ make verify-client-boundary
 make verify-schema
 ```
 
-The browser suite records the contract/main/run-end routes, cap and progress surfaces, continuous
-and discrete reconciliation, typed rejection presentation, and a ten-minute return in Chromium,
-Firefox, and WebKit. The production build must contain a separate prediction Worker chunk.
+The unit suite pins controller state, continuous/discrete reconciliation, typed rejection handling,
+and return behavior. The browser suite now exercises the content-free UI primitive fixture in
+Chromium, Firefox, and WebKit. The production build retains the prediction Worker implementation
+for the later Game UI composition.

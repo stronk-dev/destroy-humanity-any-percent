@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cloud-clicker.invalid/ui/themes.schema.json",
+  "title": "Cloud Clicker UI theme",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "era", "color", "type", "space", "border", "chrome", "motion"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "era": { "enum": ["era_1995", "era_2000"] },
+    "color": { "$ref": "#/$defs/color" },
+    "type": { "$ref": "#/$defs/type" },
+    "space": { "$ref": "#/$defs/space" },
+    "border": { "$ref": "#/$defs/border" },
+    "chrome": { "$ref": "#/$defs/chrome" },
+    "motion": { "$ref": "#/$defs/motion" }
+  },
+  "$defs": {
+    "token": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "color": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bg", "surface", "text", "text_muted", "accent", "accent_text", "border", "link", "danger", "success"],
+      "properties": { "bg": {"$ref":"#/$defs/token"}, "surface": {"$ref":"#/$defs/token"}, "text": {"$ref":"#/$defs/token"}, "text_muted": {"$ref":"#/$defs/token"}, "accent": {"$ref":"#/$defs/token"}, "accent_text": {"$ref":"#/$defs/token"}, "border": {"$ref":"#/$defs/token"}, "link": {"$ref":"#/$defs/token"}, "danger": {"$ref":"#/$defs/token"}, "success": {"$ref":"#/$defs/token"} }
+    },
+    "type": {
+      "type": "object", "additionalProperties": false,
+      "required": ["font_ui", "font_display", "font_mono", "size_base", "size_small", "size_large", "size_display", "weight_normal", "weight_bold", "line_height"],
+      "properties": { "font_ui": {"$ref":"#/$defs/token"}, "font_display": {"$ref":"#/$defs/token"}, "font_mono": {"$ref":"#/$defs/token"}, "size_base": {"$ref":"#/$defs/token"}, "size_small": {"$ref":"#/$defs/token"}, "size_large": {"$ref":"#/$defs/token"}, "size_display": {"$ref":"#/$defs/token"}, "weight_normal": {"$ref":"#/$defs/token"}, "weight_bold": {"$ref":"#/$defs/token"}, "line_height": {"$ref":"#/$defs/token"} }
+    },
+    "space": {
+      "type": "object", "additionalProperties": false,
+      "required": ["unit", "xs", "sm", "md", "lg", "xl"],
+      "properties": { "unit": {"$ref":"#/$defs/token"}, "xs": {"$ref":"#/$defs/token"}, "sm": {"$ref":"#/$defs/token"}, "md": {"$ref":"#/$defs/token"}, "lg": {"$ref":"#/$defs/token"}, "xl": {"$ref":"#/$defs/token"} }
+    },
+    "border": {
+      "type": "object", "additionalProperties": false,
+      "required": ["width", "radius", "style", "bevel"],
+      "properties": { "width": {"$ref":"#/$defs/token"}, "radius": {"$ref":"#/$defs/token"}, "style": {"$ref":"#/$defs/token"}, "bevel": {"$ref":"#/$defs/token"} }
+    },
+    "chrome": {
+      "type": "object", "additionalProperties": false,
+      "required": ["window_bg", "window_border", "titlebar_bg", "titlebar_text", "button_face", "button_shadow"],
+      "properties": { "window_bg": {"$ref":"#/$defs/token"}, "window_border": {"$ref":"#/$defs/token"}, "titlebar_bg": {"$ref":"#/$defs/token"}, "titlebar_text": {"$ref":"#/$defs/token"}, "button_face": {"$ref":"#/$defs/token"}, "button_shadow": {"$ref":"#/$defs/token"} }
+    },
+    "motion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["duration_fast", "duration_base", "duration_slow", "easing", "budget"],
+      "properties": { "duration_fast": {"$ref":"#/$defs/token"}, "duration_base": {"$ref":"#/$defs/token"}, "duration_slow": {"$ref":"#/$defs/token"}, "easing": {"$ref":"#/$defs/token"}, "budget": {"$ref":"#/$defs/token"} }
+    }
+  }
+}

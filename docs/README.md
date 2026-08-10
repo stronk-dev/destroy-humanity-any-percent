@@ -28,6 +28,8 @@ Implemented systems:
   persistent cohorts, AI fallback, production multiplier, dispatches, and population invariance.
 - [Client shell](client-shell.md) — Svelte DOM routes, authoritative stream boundary, Worker
   prediction, reconciliation, visible caps, return flow, lifecycle, and client telemetry.
+- [UI foundation](ui-foundation.md) — strict era tokens, exact-number presentation, Copy-backed
+  primitives, surface lifecycle ownership, and the cross-browser accessibility fixture.
 - [Accounts and sessions](accounts-and-sessions.md) — anonymous recovery credentials, exact JWTs,
   refresh-family rotation, Founder ownership/import, deletion, rate limits, and the HTTP intent
   boundary.

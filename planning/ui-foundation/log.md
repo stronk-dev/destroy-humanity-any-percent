@@ -67,3 +67,14 @@ scientific threshold in Phase A, negatives valid; exact version recorded in chan
 implementing commit. C11: axe-core (same version-recording duty), WCAG 2.2 AA, zero serious|critical;
 keyboard/focus/name/motion assertions stay separate. Status -> accepted; implementing. UI Foundation
 is now the playability critical path together with the Minigame API & Surface amendment.
+
+## 2026-08-10 — implementation handoff preparation
+
+The C9–C11 literals now have executable owners: two strict 41-token theme artifacts and loader,
+Standard notation 1.6.0 with canonical Decimal goldens and the shared 100-ms Amount scheduler, and
+axe-core 4.12.1 in the existing three-browser fixture route. The surface registry rejects unknown
+shell facts and proves unsubscribe-before-mount plus zero inactive callbacks. `App.svelte` is now a
+content-free primitive fixture; it invents no screen or authoritative game value.
+
+Focused typecheck, client tests, schema/boundary gates, and the full browser matrix are green. This
+entry is a self-check record only: independent designated review and archival remain open.

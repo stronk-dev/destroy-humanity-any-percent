@@ -506,6 +506,18 @@ async function main() {
     }
   }
 
+  const uiDirectory = path.join(repositoryDirectory, "ui");
+  const themeSchema = await readJSON(path.join(uiDirectory, "themes.schema.json"));
+  const validateTheme = ajv.compile(themeSchema);
+  const themeCatalogs = await jsonFiles(path.join(uiDirectory, "themes"));
+  if (themeCatalogs.length !== 2) throw new Error("UI Foundation requires exactly two Phase-A theme artifacts");
+  const expectedEras = ["era_1995", "era_2000"];
+  for (const [index, filename] of themeCatalogs.entries()) {
+    const data = await readJSON(filename);
+    if (!validateTheme(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateTheme)}`);
+    if (data.era !== expectedEras[index]) throw new Error(`${path.relative(repositoryDirectory, filename)}: theme era/file order mismatch`);
+  }
+
   const harnessDirectory = path.join(repositoryDirectory, "testdata", "harness");
   const scenarioSchema = await readJSON(path.join(harnessDirectory, "scenario.schema.json"));
   const reportSchema = await readJSON(path.join(harnessDirectory, "report.schema.json"));
@@ -578,7 +590,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + meters + achievements + doctrines + fiscal + opportunities(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + harness + relevance, ${production.length} economy catalog(s), ${meterCatalogs.length} meter catalog(s), ${achievementCatalogs.length} achievement catalog(s), ${doctrineCatalogs.length} doctrine catalog(s), ${fiscalCatalogs.length} fiscal catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${scenarios.length} scenario(s), ${relevanceRegistry.entries.length} relevance scenario(s)`,
+    `schema ok: economy + meters + achievements + doctrines + fiscal + opportunities(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + UI themes + harness + relevance, ${production.length} economy catalog(s), ${meterCatalogs.length} meter catalog(s), ${achievementCatalogs.length} achievement catalog(s), ${doctrineCatalogs.length} doctrine catalog(s), ${fiscalCatalogs.length} fiscal catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${themeCatalogs.length} UI theme(s), ${scenarios.length} scenario(s), ${relevanceRegistry.entries.length} relevance scenario(s)`,
   );
 }
 

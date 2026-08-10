@@ -264,6 +264,9 @@ Game-UI/T0–T1 import from.
 - 2026-08-03: C1–C8 reconciled. Codex follow-up found C9–C11: the “closed/pinned” theme,
   formatter, and accessibility contracts omit their actual token/value/version literals.
 - 2026-08-06: non-normative reference cleanup for publication; no spec change.
+- 2026-08-10: implementation pins `@antimatter-dimensions/notations` **1.6.0** and `axe-core`
+  **4.12.1** in the client lockfile; the exact C9 token artifacts, Amount goldens, and WCAG 2.2 AA
+  browser gate now ship behind the content-free fixture host.
 
 ## Owner rulings on C9-C11 (2026-08-07) — the UI Foundation is implementable
 
