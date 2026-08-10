@@ -153,3 +153,12 @@ every group, and docs/ui-foundation.md:26 is false inside it — the same truth-
 original F1 applied. Fix: format the ALREADY-QUANTIZED value so group selection and formatted
 value agree; add carry-boundary goldens; collapse the "−0" sign nit while in the file.
 **Re-review is a one-file delta.**
+
+## 2026-08-10 — F1-R remediation handoff
+
+The formatter now passes its already-three-significant-digit-quantized value to Standard, so the
+engineering group used to choose decimal places is the same value the notation library renders.
+Goldens pin both ruled carry boundaries (`9.9995e2 -> 1.00 K`, `9.996e5 -> 1.00 M`) and negative
+sub-visible collapse (`-4.9e-1 -> 0`). `make verify-client` passes with 0 TypeScript/Svelte
+diagnostics and 6,629 unit assertions. This is a remediation record only; the delta is ready for
+the narrow designated cross-party re-review and UI Foundation remains unarchived.

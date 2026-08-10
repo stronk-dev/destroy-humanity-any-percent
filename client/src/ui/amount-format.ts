@@ -14,6 +14,6 @@ export function formatAmount(value: string): string {
   const rounded = quantize(magnitude, AMOUNT_MANTISSA_DIGITS);
   const groupDigits = magnitude.lt(1_000) ? 1 : ((rounded.exponent % 3) + 3) % 3 + 1;
   const mantissaPlaces = AMOUNT_MANTISSA_DIGITS - groupDigits;
-  const formatted = standard.format(magnitude.toString(), mantissaPlaces, AMOUNT_UNDER_1000_PLACES).trim();
-  return negative ? `−${formatted}` : formatted;
+  const formatted = standard.format(rounded.toString(), mantissaPlaces, AMOUNT_UNDER_1000_PLACES).trim();
+  return negative && formatted !== "0" ? `−${formatted}` : formatted;
 }
