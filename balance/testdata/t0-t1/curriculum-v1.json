@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "triggers": [
+    {
+      "id": "curriculum.scripted_first_failure",
+      "eligible_when": {
+        "all": [
+          { "kind": "founder_exit_count_equals", "count": 0 },
+          { "kind": "company_run_seq_equals", "run_seq": 1 },
+          { "kind": "attended_ms_at_least", "attended_ms": 900000 },
+          { "kind": "gate_crossed", "gate_id": "gate.t0_to_t1" }
+        ]
+      },
+      "one_shot_marker": { "kind": "founder_exit_history", "exit_type": "scripted_first" },
+      "evaluation": "first_player_company_command_after_accrual",
+      "requested_command_effect": "replaced_by_terminal_transition",
+      "exit_type": "scripted_first",
+      "payout_policy": "full_first_exit",
+      "event_order": ["accrual_hooks", "curriculum_failure.v1", "run_ended", "founder_advanced", "run_started"],
+      "next_run": "standard_exit_assembly"
+    }
+  ]
+}

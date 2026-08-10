@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "scenario.t0_t1_first_hour",
+  "version": 1,
+  "epoch_seed": "balance/epochs/phase0.json",
+  "runs": [
+    { "policy_id": "chaos.t0_t1", "policy_version": 1, "seed_start": "0", "seed_count": 64, "horizon_ms": 7200000 },
+    { "policy_id": "casual.t0_t1", "policy_version": 1, "seed_start": "0", "seed_count": 32, "horizon_ms": 7200000 },
+    { "policy_id": "reference.greedy", "policy_version": 1, "seed_start": "0", "seed_count": 1, "horizon_ms": 7200000 }
+  ],
+  "milestones": [
+    { "id": "milestone.first_manual", "kind": "intent_applied", "intent_kind": "perform_manual_batch", "must_reach": true },
+    { "id": "milestone.first_generator", "kind": "event_seen", "event_kind": "generator_purchased", "must_reach": true },
+    { "id": "milestone.first_upgrade", "kind": "event_seen", "event_kind": "upgrade_purchased", "must_reach": true },
+    { "id": "milestone.garage_gate", "kind": "gate_crossed", "gate_id": "gate.t0_to_t1", "must_reach": true },
+    { "id": "milestone.scripted_failure", "kind": "run_ended", "exit_type": "scripted_first", "run_seq": 1, "must_reach": true },
+    { "id": "milestone.run2_garage_gate", "kind": "gate_crossed", "gate_id": "gate.t0_to_t1", "run_seq": 2, "must_reach": true },
+    { "id": "milestone.first_elective_exit", "kind": "run_ended", "exit_type_not": "scripted_first", "must_reach": true }
+  ],
+  "envelopes": [
+    { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.first_generator", "statistic": "p50", "maximum_ms": 30000 },
+    { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.first_upgrade", "statistic": "p50", "maximum_ms": 120000 },
+    { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.garage_gate", "statistic": "p50", "minimum_ms": 480000, "maximum_ms": 600000 },
+    { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.scripted_failure", "statistic": "p50", "minimum_ms": 840000, "maximum_ms": 960000 },
+    { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.run2_garage_gate", "statistic": "p50", "maximum_ms": 900000 },
+    { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.first_elective_exit", "statistic": "p50", "minimum_ms": 2700000, "maximum_ms": 5400000 },
+    { "policy_id": "casual.t0_t1", "milestone_id": "milestone.first_elective_exit", "statistic": "p95", "minimum_ms": 2700000, "maximum_ms": 5400000 }
+  ],
+  "required_invariants": [
+    "artifact_identity",
+    "ledger_reconciles",
+    "numeric_domain",
+    "replay_parity",
+    "revision_monotone",
+    "role_activation",
+    "state_encodes"
+  ],
+  "transition_budget": 2000000
+}

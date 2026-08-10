@@ -243,3 +243,23 @@ remain excluded and unknown kinds fail load rather than deriving prose from an I
   catalog; shipped-roles-only; the presentation artifact closing PT-C4; lazy scripted failure;
   logged bootstrap catchup; single-script harness rows; literal gate + era activation; closed
   event-copy set. The content candidate round is Codex-draftable NOW.
+
+## Candidate-round blocker (2026-08-10 — T01-C10)
+
+### T01-C10 — Relevance cannot encode a pre-first-gate availability window
+
+The mandatory Relevance artifact requires every purchasable to declare
+`availability_window.from_gate` as a concrete Routes gate. T0 generators and upgrades are
+available from run genesis, before `gate.t0_to_t1`; using that gate as their `from_gate` would
+exclude the exact T0 segment the report must measure. The economy window grammar already models
+this correctly with `from_gate: null`, but the Relevance loader rejects null and has no
+`run_start` sentinel. No literal candidate can be both loadable and semantically true.
+
+**Proposed contract:** relevance-policy schema v2 changes `availability_window.from_gate` to
+`null | gate_id`, where null means run genesis and sorts before every declared gate. Scenario
+segments receive the same nullable `from_gate`. Validation compares boundaries over the ordered
+domain `[run_start, gates...]`; `to_gate` remains exclusive and must follow the start boundary.
+Reports preserve null byte-for-byte. Add Go/schema mutation tests, a T0 policy fixture whose
+window is `{from_gate:null,to_gate:"gate.t0_to_t1"}`, and a report proof that a T0 purchasable is
+evaluated in that segment. Existing schema-v1 artifacts and reports retain their current bytes
+and meaning.

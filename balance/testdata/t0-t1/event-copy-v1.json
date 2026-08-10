@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "bindings": [
+    { "event_kind": "exit_offer_declined", "copy_key": "event.exit_offer_declined", "parameters": ["run_seq"] },
+    { "event_kind": "exit_offer_expired", "copy_key": "event.exit_offer_expired", "parameters": [] },
+    { "event_kind": "exit_offer_spawned", "copy_key": "event.exit_offer_spawned", "parameters": ["exit_type", "expires_at_ms"] },
+    { "event_kind": "gate_crossed", "copy_key": "event.gate_crossed", "parameters": ["gate_id"] },
+    { "event_kind": "generator_purchased", "copy_key": "event.generator_purchased", "parameters": ["generator_id", "count", "cost"] },
+    { "event_kind": "run_ended", "copy_key": "event.run_ended", "parameters": ["exit_type", "attended_ms", "tier"] },
+    { "event_kind": "upgrade_purchased", "copy_key": "event.upgrade_purchased", "parameters": ["upgrade_id", "cost"] }
+  ],
+  "unknown_event": "reject"
+}
