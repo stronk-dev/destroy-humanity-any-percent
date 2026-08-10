@@ -187,3 +187,35 @@ justified; kernel 0.3.90→0.3.91 honest; all five gates green incl. cold Linux.
 {bc2370a, 46676e9} (GU-C9 — its own review, launched same day with golden-vector scrutiny) and
 {f2cecba, 3e16587} (copy-assembly validation + blocker filings — consumed by the ratification
 and ruling flows). The union over 516bddb..HEAD completes when those land.
+
+## 2026-08-11 — designated cross-party verdict: GU-C9 {bc2370a, 46676e9} — BOTH APPROVED (follow-ups routed)
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+**The seam is genuinely kernel-owned:** ProjectRates assembles through the IDENTICAL private
+functions the live/replay paths use (activePlayContributions with the same saturation clamp,
+assembleContributions, ratesWithProvisionedAndPolicy, SumDeterministic) — no second math; purity
+proven (clone-before-RecordOfflineSpan verified at all three mutation sites; DeepEqual pins);
+active-play saturation exercised through the seam; the v4/v18 gate lifted exactly behind it;
+**C-F1 DISCHARGED with a real probe** (neutering the attended wiring fails the store-level
+Postgres test — the ×7 buff factor drops out of the expected rows).
+**The R-F1 decimal fix is genuine and empirically proven both directions on arm64** (the exact
+non-ULP-multiple fused diff reproduced; the reviewer's own probes got FMA-fused twice) — and the
+discriminating class was FOUND: Floor(8.00002e5) = 800002 unfixed-arm64 vs 800001 everywhere
+else — a whole-integer cross-runtime kernel split, now killed. Vector-file scrutiny clean (one
+added vector, zero expected-byte changes, byte-identical regeneration). Kernel 0.3.89→0.3.90
+honest and required.
+**Routed follow-ups (none blocking; F1+F2 should land by the GU-C9 archival gate):**
+- **F1 (MEDIUM): the shipped floor-fma-snap vector does NOT discriminate** — reverting the fix
+  stays green on both architectures (the vector errs upward; floor is invariant there). Add a
+  below-integer-window vector (e.g. floor(8.00002e5) → 800001) and correct the
+  docs/numeric-core.md "pins the same decision" sentence.
+- **F2 (MEDIUM):** no projection-vs-transition equivalence test — add the property: resource
+  rate × Δt == transition accrual delta for the same state/inputs.
+- **F3 (LOW):** the fix uses //go:noinline rather than the spec-blessed explicit float64()
+  conversion — switch or record the deliberate choice. **F4 (LOW, pre-existing):** the frozen
+  external-contribution wiring has no rate-asserting test (nil-provider everywhere).
+**RANGE-UNION CAUTION (recorded for the ratification flow): f2cecba is NOT pure ruling text** —
+it carries an executable copy-pipeline validator change (placeholder-stripping before the
+Markdown scan; inspected sound, fixture-exercised). The GU-C12 ratification verdict MUST cite it
+as code or the union over 516bddb..607e5a2^ has an unreviewed executable commit. 3e16587 is pure
+ruling text, correctly tiered.
