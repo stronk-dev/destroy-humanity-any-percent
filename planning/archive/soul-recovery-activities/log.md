@@ -178,3 +178,16 @@ The consumed set is exactly `{4973c8e, ab9d15e, 3cfc0e6}` plus docs-tier
 `{f04c2f3, d1cd39c}`. Canonical shipped behavior is distilled into `docs/soul-recovery.md`.
 AC4/AC5 remain explicit UI-successor debt, and the production artifact mint remains solely owned
 by the First Content Epoch RFC; this rotation mints no content and deploys nothing.
+
+## 2026-08-10 — post-archival owner-routing record (MA-C1 clause; closes MA review finding B-F1)
+
+The MA implementation's conformance work discovered that `finishSoulRecovery` wrote the INTERNAL
+ApplyLogged kind (resolve_soul_recovery/cancel_soul_recovery) into the durable public receipt's
+`action` field, where the generated public contract pins the closed set {"cancel","resolve"}. Per
+the MA-C1 ruling ("conformance-discovered runtime changes route to the Soul Recovery owner"),
+this entry is that routing: **the owner side ACKNOWLEDGES the fix (fa03e02) as a correct defect
+fix consistent with this archived RFC's contracts** — the public grammar was always the ruled
+surface; the internal kind leaking into it was the defect; replay inputs and founder events
+correctly retain the internal kind. Designated-review coverage: the 2026-08-10 MA verdict
+(probe-proven discriminating; kernel 0.3.88 honest). Append-only addendum; no archived text is
+modified.

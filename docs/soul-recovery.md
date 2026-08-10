@@ -10,11 +10,11 @@ authoritative transition.
 
 Each strict activity row declares its mechanical ID, attended duration, recovery amount, toy kind,
 reason key, and title/description/disclosure copy keys. Go and TypeScript loaders accept the same
-closed grammar, and all copy resolves through the copy pipeline. The implementation remains
-fixture-first: no production epoch pins these rows until the owner-gated First Content Epoch mints
-the dependency-complete artifact bundle.
+closed grammar, and all copy resolves through the copy pipeline. The rows are LIVE: the epoch-6
+mint (First Content, 2026-08-10) pins them via `balance/soul/first-content.json`; retunes ride
+the normal epoch lane.
 
-The provisional rows are:
+The minted rows are:
 
 - `repot`: 300,000 attended milliseconds, 5 Soul;
 - `defrag`: 900,000 attended milliseconds, 12 Soul;

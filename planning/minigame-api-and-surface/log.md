@@ -321,3 +321,15 @@ covers the implementation to date; it is NOT archival authorization.
 - This entry is implementation and self-check evidence only. The batch is not approved or
   archival authority; it is ready for the required designated cross-party review after the full
   gate completes. Surface components remain the sole unchecked MA implementation item.
+
+## 2026-08-10 — designated cross-party verdict: MA AC proofs + recovery wire fix {fa03e02} — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+AC1's composed-socket recovery half, AC3's flooding proof (429 before handler invocation,
+post-refill snapshot byte-identical), and AC4's privacy enumeration (byte-equal foreign/missing
+rejections; identity fields rejected) are REAL — AC1–AC4 now claimable; AC5/surfaces the sole
+remaining item; MA NOT archival-eligible until MA-C9 lands. The recovery wire fix is a genuine
+defect (internal ApplyLogged kind leaked into the public receipt's action field vs the generated
+contract's closed {"cancel","resolve"}); replay identity untouched; probe-proven discriminating;
+kernel 0.3.88 honest. **B-F1 (REQUIRED before MA archival): the MA-C1 owner-routing record — filed
+same day in planning/archive/soul-recovery-activities/log.md (see entry there); CLOSED.**

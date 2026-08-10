@@ -174,3 +174,13 @@ when the archival lands (it is currently unindexed — flagged in the 2026-08-07
   history green at the unchanged 0.3.88).
 - This closes the remaining test debt only. It is ready for designated cross-party review after
   the root gate; no self-review authorizes archival.
+
+## 2026-08-10 — designated cross-party verdict: rollback/retention closure {ab08ee8} — APPROVED; ARCHIVAL AUTHORIZED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+The retention test's exact-set SQL assertion ({1,4,5,6,7,8}: genesis witness + last five) is
+self-evidently discriminating; the archive-race seq fix necessary; plan flips honest; state
+honestly pre-archival; docs updated in-change with the ruled canonical home indexed. With the
+prior FA designated verdict + the canonical-docs ruling + this closure, **the archival move is
+AUTHORIZED** (provenance note: the prior verdict's pre-repair hashes dangle; coverage is closed
+via the mint verdict's range-union declaration — recorded here for future readers).

@@ -283,3 +283,15 @@ Fiscal credit and Soul remain 2 and 80. A mutation probe disabling the v17+ copy
 `server/production/prestige.go` makes that lifecycle fail at Exit with `internal_invariant`; the
 unaltered code passes the full Postgres suite. This closes the verdict's named F1 obligation without
 changing runtime semantics or the kernel version.
+
+## 2026-08-10 — designated cross-party verdict: archival batch {7b48a9d, 5c20ee3} — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+Meters/Achievements/Pet Care moves verified intact (renames 97-99%, every hunk read); all
+citations resolve (the mint verdict + each foundation's full chain — pet care's nine ranges each
+located); docs claims spot-checked to the digit against minted bytes; AC3 + acquisition carried
+consistently in seven places. **The mint verdict's F1 obligation is DISCHARGED, probe-proven:**
+disabling the prestige.go:419 extension-persistence block now fails the composed Exit test at
+exactly the predicted seam. The guard-tooling edge commit 7b48a9d (archive-path citation
+fallback) is minimal, fail-closed, adversarial-fixture-covered. A-F1 (LOW): Pet Care's body
+reconciliation beyond status/path is the rulings-reconcile convention, correctly labeled.
