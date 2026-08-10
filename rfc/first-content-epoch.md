@@ -698,3 +698,45 @@ cardinality). Binding highlights:
 ## Changelog (EH round)
 
 - 2026-08-10: EH-C1–C7 all accepted as proposed; the content-dynamics lane is implementable.
+
+## Epoch-7 content-dynamics implementation blockers (Codex, 2026-08-10 — EH-C8–EH-C9)
+
+Implementation against the minted repository exposed two contradictions that the acceptance
+review's abstract bundle model did not catch. Neither can be resolved by choosing convenient
+fixture bytes inside the runner.
+
+### EH-C8 — Epoch 6 cannot execute the ruled Active-Play arm
+
+Epoch 6 pins sixteen artifacts but does not pin `opportunities`, and its economy artifact contains
+no `active_play` multiplier-source declarations. Loading the exact active epoch through
+`epochseed` + `replaycatalog` therefore correctly yields `CatalogBundle.Opportunities == nil`.
+The only opportunity policy is `balance/testdata/active-play-foundation-v1.json`; injecting it
+would violate EH-C1/EH-C6 and make a fixture look like active content. `docs/active-play.md`
+explicitly confirms that no production epoch currently pins the artifact.
+
+**Proposed contract:** land the strict runner and its production-boundary tests against a
+fixture-only complete bundle, but keep the production content-dynamics registry empty and do not
+generate the initial golden yet. The next owner-gated content epoch (the T0–T1 candidate unless
+superseded) must include an exact owner-ratified `opportunities` artifact plus its required
+`active_play` economy multiplier declarations. Only after that mint does the first registered
+scenario run all four EH-C3 arms and establish the initial golden. A missing artifact owner is a
+hard pre-execution error for a registered scenario; no skip or synthetic policy is allowed.
+
+### EH-C9 — An epoch-seed path does not preserve historical artifact bytes
+
+EH-C6 says each registry entry follows its pinned epoch bytes forever, but the seed has one global
+artifact-path list and those production paths move forward at later mints. An entry containing only
+`balance/epochs/phase0.json` will resolve deploy-current files after epoch 7 and cannot reconstruct
+epoch 6. Accepted hashes prove identity but do not recover the bytes. Running only the newest entry
+would contradict EH-C5's requirement to check every registered golden.
+
+**Proposed contract:** every registry entry names `{epoch_seed_path, epoch_id,
+bundle_snapshot_manifest}`. `make content-harness` generates the immutable snapshot from the exact
+active `epochseed.Bundle`; it never accepts a hand-authored subset. Snapshot schema v1 records the
+complete sorted artifact set as `{name, production_path, snapshot_path, sha256}`, the accepted
+constants hash, and the source epoch coordinate. Artifact bytes live under
+`testdata/harness/content-dynamics/bundles/<full-hash>/`. The read-only loader verifies set equality,
+every per-file hash, the recomputed bundle hash, and acceptance by the named epoch before execution.
+Later mints add new snapshots/entries and never reinterpret old ones. The baseline guard governs
+the registry, scenario, snapshot manifest, snapshot bytes, and golden with adversarial
+missing/extra/tampered-artifact fixtures.

@@ -1,6 +1,7 @@
 # Epoch-7 content-dynamics harness plan
 
-- [ ] Obtain owner rulings on EH-C1–EH-C7; reconcile the FCE successor text in the same edit.
+- [x] Obtain owner rulings on EH-C1–EH-C7; reconcile the FCE successor text in the same edit.
+- [ ] Owner-rule EH-C8–EH-C9 (inactive opportunities; immutable historical bundle snapshots).
 - [ ] Land the production-owned simulation seams and strict registry/scenario/report schemas.
 - [ ] Implement the four ruled scenarios with exact work budgets and discrimination tests.
 - [ ] Register the active epoch-6 entry and generate the first owner-facing report.
