@@ -192,3 +192,54 @@ number, so two implementations can claim opposite results.
 duration, 20-Hz input count, maximum 10-Hz formatted commits, long-task ceiling, and dropped-frame
 allowance. If deterministic browser timing is not reliable in CI, gate observable update counts
 and long tasks in CI and record the hardware profile as a manual release check.
+
+## Owner rulings on GU-C1–GU-C8 (2026-08-10)
+
+- **GU-C1 — accepted as proposed, with the transport arm ruled:** `game_ui_snapshot.v1` is a
+  server-owned generated projection DTO (revision/hash/time envelope + closed mechanical-ID-sorted
+  `run/manual_action/generators/upgrades/resources/facts/progress`). It rides the EXISTING
+  authoritative snapshot channel (additive payload widening — no new channel, no new server
+  surface class); initial mount consumes the same DTO via the existing bootstrap/sync flow.
+  Affordability advisory-only; receipts authoritative; screens never read save state or the
+  economy catalog directly.
+- **GU-C2 — accepted; the surface split is RULED:** Phase-A SURFACES (own `surface_id` rows):
+  `vision_slide`, `desk`, `run_end`, `offer_sheet`, `settings`. COMPONENTS (no surface row): the
+  run-title bar and visitor counter (persistent chrome), the splits panel (desk child). Default
+  surface: `vision_slide` when the bootstrap-needed fact holds, else `desk`. **Event-navigation
+  precedence RULED:** authoritative lifecycle events (`run_ended`, offer spawn) preempt
+  player-selected tabs, in event-cursor order; `settings` is never preempted while a destructive
+  confirmation is open. Codex enumerates the literal surface document; it lands via the
+  candidate-ratification lane.
+- **GU-C3 — accepted as proposed.** Generated v1 discriminated payloads for `gate_crossed`,
+  `run_ended`, `exit_offer_spawned`/`exit_offer_resolved`, `server_restarting`,
+  `resync_required`; run-end typed to the decoded object only, compile-time fixture proving no
+  snapshot parameter.
+- **GU-C4 — accepted as proposed.** RTA = frozen `{server_now_ms, run_started_at_ms}` sample +
+  monotonic elapsed, resampled per authoritative snapshot, snapped on terminal data. Local-only
+  versioned PB/split record keyed Founder/run/category; corruption falls back to `PB: —`; NEVER
+  feeds an intent or board submission.
+- **GU-C5 — accepted, existing-operation arm.** The CTA binds to the EXISTING accounts/bootstrap
+  operation by generated name; idempotent retry; credentials persisted before navigation; the
+  authoritative fact selects Vision vs Desk. A new operation is added only if conformance proves
+  a gap, via the API Foundation lane.
+- **GU-C6 — accepted; converges with T01-C4/C6.** T0–T1 owns the byte-sorted screen-copy +
+  presentation manifest; Game UI consumes only it. The literal launch text is owner-authored via
+  the established FCE-C7 pattern (texts in a ruling, assembly SHA-ratified) during T0–T1's
+  candidate round — no mechanical-ID derivation, ever.
+- **GU-C7 — accepted; U2 reconciled by this ruling.** Era derives EXCLUSIVELY from the
+  authoritative tier fact, closed mapping `{0: era_1995, 1: era_2000}`, later tiers fail closed;
+  the switch changes only the UI root tokens/attribute and preserves surface/focus where the
+  element persists. U2's "era_1995 for Phase A" is SUPERSEDED (it contradicted the two-era first
+  hour — correctly caught).
+- **GU-C8 — accepted, CI-observable arm, provisional literals:** viewport 1280×720, 4× CPU
+  throttle, 60 s duration, 20 Hz input cadence, ≤10 Hz formatted-commit rate asserted by count,
+  long-task ceiling 200 ms, dropped-frame allowance 5%. CI gates observable update counts +
+  long tasks; the hardware profile (mid-range Android per the mobile dossier) is a recorded
+  manual release check. Literals are provisional bytes.
+
+## Changelog (rulings round)
+
+- 2026-08-10: GU-C1–C8 ALL RULED (snapshot DTO on the existing channel; surface/component split +
+  navigation precedence; event payload generation; RTA/PB contract; existing bootstrap op; T0–T1
+  copy manifest ownership; tier-fact era mapping superseding U2's fixed era; executable perf
+  budget). Implementation-ready pending the T0–T1 content lane it ships with.

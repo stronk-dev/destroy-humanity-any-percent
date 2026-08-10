@@ -665,3 +665,36 @@ The command exposes `make content-harness` and the read-only gate remains `make 
 
 **Status:** owner rulings required before implementation. The proposals deliberately reuse the
 shipped math and governance; Codex will not invent a parallel content simulator.
+
+## Owner rulings on EH-C1–EH-C7 (2026-08-10)
+
+All seven accepted AS PROPOSED — the contracts are exactly the right shape (production-owned
+boundaries, no second balance authority, strict grammars, fail-closed governance, literal
+cardinality). Binding highlights:
+
+- **EH-C1:** the `content_dynamics.v1` lane loads the exact active epoch through
+  `epochseed` + `replaycatalog` and invokes production-owned pure boundaries only; private
+  resolvers get simulation-only wrappers with the source guard (`server/harness` + tests). The
+  harness assembles inputs, NEVER reimplements arithmetic or authors replay-resolved records.
+- **EH-C2:** the strict scenario/report registry as specified; unknown keys / unsafe seeds /
+  budget overruns fail before execution.
+- **EH-C3:** the four policy definitions as written — including the control-pair discipline
+  (never synthesize an opportunity; never select an effect in the report), the 0-vs-hoard-cap
+  Permit comparison pinning the intended `fiscal.hoard` ×2 interaction, and the versioned
+  deterministic Pitch policy over seeds 0–63.
+- **EH-C4:** blocking invariants vs owner-facing observations partitioned as specified; the
+  initial golden has NO invented pass envelope — owner review accepts it, then the existing
+  10%/25% drift rule governs.
+- **EH-C5:** runner first, golden in a separate `BALANCE-CHANGE:` commit under the EXISTING
+  full-history guard (extend the governed path set + adversarial fixtures; no second exception).
+- **EH-C6:** registry entries name the epoch-seed path; entries follow their pinned epoch bytes
+  forever; a new active epoch = a new entry.
+- **EH-C7:** literal cardinality (1+2+64+2), declared total transition budget, no
+  Postgres/HTTP/sleeps/workers; `make content-harness` + the read-only `make harness-check`.
+
+**B6 is UNBLOCKED.** The initial golden's owner acceptance rides the normal report-read flow
+(the FCE5.3 pattern: report + designated review, then Marco reads).
+
+## Changelog (EH round)
+
+- 2026-08-10: EH-C1–C7 all accepted as proposed; the content-dynamics lane is implementable.

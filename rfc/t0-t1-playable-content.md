@@ -201,3 +201,45 @@ cannot be checked.
 **Proposed contract:** enumerate every v1 event-copy binding with exact allowed parameters and
 fallback behavior. Only kinds already emitted by production may appear; Layer-1 authored events
 remain excluded and unknown kinds fail load rather than deriving prose from an ID.
+
+## Owner rulings on T01-C1–T01-C9 (2026-08-10)
+
+- **T01-C1 — accepted.** The body rebases on epoch 6; the relevance report + content gate are
+  MANDATORY; this mint is the owner-gated EPOCH-7 candidate (or the next free epoch number at
+  mint review time), full artifact list + accepted-hash protocol filled then.
+- **T01-C2 — accepted, via the established draft-ratify lane:** Codex drafts the complete strict
+  schema-v4 candidate documents (every Phase-A generator/upgrade/manual/gate/route row, ladders,
+  synergy pools, policy literals) from T1's ranges + design/02's formula shapes, loader-validated,
+  provenance-annotated per value (the mint-content-rows pattern); Claude reviews; Marco ratifies
+  by SHA. Provisional numbers are still literals; both loaders green before acceptance.
+- **T01-C3 — accepted, shipped-roles arm.** Epoch 7 uses ONLY the four executable roles
+  (`provision`, `synergy_feed`, `manual_output`, `stock_rate`), one non-neutral activation
+  fixture per declared role. Capacity and minigame_input roles are EXCLUDED — each needs its own
+  mechanic RFC (consistent with the Permits capacity deferral).
+- **T01-C4 — accepted.** One presentation artifact keyed by mechanical IDs with exact copy-key
+  families and strict loader/reference validation — this CLOSES the carried PT-C4/GU-C6 debt.
+  Horse Armor is explicitly non-purchasable and non-stateful in v1; any stateful cosmetic belongs
+  to a cosmetics foundation.
+- **T01-C5 — accepted as proposed.** The scripted first failure is a lazy-evaluated trigger over
+  attended/progress state with a one-shot persisted marker, evaluated on the first eligible
+  command through `ApplyLogged`; exact transition outcome, event ordering, and next-run assembly
+  bytes enumerated in the candidate round. No background timer.
+- **T01-C6 — accepted as proposed.** Session-boundary catchup is a server-authored Company logged
+  command with frozen `{opened_at_ms, offline_span}` inputs, run-pinned offline policy, locked
+  after authentication, idempotent per session-open token; the >24h fixture proves discounted
+  accrual + replay parity + the Exit-race ordering. (The executable form of the ruled T0 arm.)
+- **T01-C7 — accepted.** Literal harness scenario + milestone predicates + persona seeds/reducer/
+  envelopes/relevance windows/transition budgets, authored in the candidate round; the composed
+  human-path fixture references the SAME IDs (one script, not two).
+- **T01-C8 — accepted.** The literal `gate.t0_to_t1` requirement/route row lands with the T01-C2
+  candidates; new-run-bound activation tests exactly as proposed; era follows the authoritative
+  tier fact through GU-C7's ruled mapping (never deployment content).
+- **T01-C9 — accepted as proposed.** The closed v1 event-copy binding set: only kinds production
+  already emits; exact parameters; unknown kinds fail load; Layer-1 authored events excluded.
+
+## Changelog (rulings round)
+
+- 2026-08-10: T01-C1–C9 ALL RULED — epoch-7 candidate framing; draft-ratify lane for the full
+  catalog; shipped-roles-only; the presentation artifact closing PT-C4; lazy scripted failure;
+  logged bootstrap catchup; single-script harness rows; literal gate + era activation; closed
+  event-copy set. The content candidate round is Codex-draftable NOW.

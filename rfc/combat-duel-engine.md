@@ -162,3 +162,20 @@ examples.
 detail,round,slot}}`, with errors producing no log. Pin one fuzz seed and exact generation bounds,
 then enumerate HP/stamina bounds, active-index validity, one terminal event, event/state agreement,
 round monotonicity, catalog immutability, and termination within 100 rounds.
+
+## Owner ruling on DU-C1–DU-C8 (2026-08-10)
+
+- **DU-C1 — accepted as proposed, and it GOVERNS the set:** this child is BLOCKED on Combat
+  Shared Data C2/C5 completion (the strict Go/TS catalog, 12-species/24-move fixture, exact
+  effect union, input tables, artifact registration, content hash). No duel code before the
+  parent lands and is designated-reviewed.
+- **DU-C2–DU-C8 — DEFERRED, not ruled.** The proposals read sound, but ruling exact wire/byte
+  contracts against a catalog that does not yet exist invites reconciliation churn; they will be
+  ruled in one round when the parent's catalog bytes are real. Codex should carry them unchanged
+  in the RFC as the standing blocker record. (Combat is post-playability; nothing on the critical
+  path waits on this.)
+
+## Changelog (ruling)
+
+- 2026-08-10: DU-C1 accepted (blocked on parent C2/C5); DU-C2–C8 deferred to a single ruling
+  round once the parent catalog exists.
