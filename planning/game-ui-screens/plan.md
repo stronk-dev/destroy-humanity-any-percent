@@ -6,8 +6,15 @@ RFC: `rfc/game-ui-screens.md`
 - [x] Owner-rule GU-C1–GU-C8 and reconcile the normative body.
 - [x] Implement the generated epoch-6 UI snapshot, existing sync-route composition, client decoder,
   shell adapter, typed existing event arms, surface registry, navigation, timing, and performance contracts.
-- [ ] Resolve GU-C9–GU-C12 (kernel rate view, idempotent bootstrap, accepted-offer event, owner copy).
-- [ ] Extend the snapshot/event composition through schema-v4/Company-v18 after GU-C9/GU-C11.
-- [ ] Implement the literal surface/copy manifests and Phase-A screens.
-- [ ] Pass the composed first-hour, accessibility, lifecycle, and performance gates.
+- [ ] Assemble the GU-C12 screen-copy ruling orphan-first: event-copy revision, gate-title and
+  presentation-manifest additions, shipped exit-type enumeration, generated Copy outputs, and
+  candidate SHAs for owner ratification.
+- [ ] Implement GU-C9's kernel-owned rate projection, including the required store-level
+  schema-v4/Company-v18 rejection regression.
+- [ ] Implement GU-C10's idempotent bootstrap coordinator through the API Foundation lane.
+- [ ] Implement GU-C11's additive `exit_offer_resolved` event in both runtimes.
+- [ ] Build Desk, Vision Slide, run-end, Offer Sheet, and Settings from the ruled copy and
+  generated wire contracts.
+- [ ] Pass the composed first-hour human path, renderer-substitution, accessibility, lifecycle,
+  and CI performance gates.
 - [ ] Hand the full range to designated review; archive only after approval.
