@@ -271,3 +271,54 @@ it carries an executable copy-pipeline validator change (placeholder-stripping b
 Markdown scan; inspected sound, fixture-exercised). The GU-C12 ratification verdict MUST cite it
 as code or the union over 516bddb..607e5a2^ has an unreviewed executable commit. 3e16587 is pure
 ruling text, correctly tiered.
+
+## 2026-08-10 — GU-C10 bootstrap coordinator handoff — ready for designated review
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is an implementation handoff, not an
+  independent verdict or archival authorization.
+- **Implementation commit:** `9c23e80`. **Designated-review range:** `b1c82b1..HEAD` (the record
+  commit completing this entry is docs-tier; the sole implementation commit is `9c23e80`).
+- The generated authority now owns `create_bootstrap`, `POST /api/v1/bootstrap`, the exact
+  request/201 response, and the closed bootstrap error details. Runtime mounting uses the same
+  registry entry; the old account/session routes remain compatibility surfaces.
+- One transaction now creates the account, active Founder, Company+Founder streams/genesis/run
+  pin/frozen contributions, session family and token pair, transaction-local initial
+  `game_ui_snapshot.v1`, and encrypted retry receipt. The response is registry-validated before
+  insert/commit. The composed test asserts the transaction-local snapshot is byte-identical to
+  the first committed GET.
+- Bootstrap keys require exactly 32 random bytes encoded as 64 lowercase hexadecimal characters.
+  Only SHA-256 of that string is stored. Equal-key requests serialize through a transaction
+  advisory lock; concurrent first calls produce one account and byte-identical 201 receipts.
+- Receipt plaintext is AES-256-GCM protected with digest+key-ID associated data. API config owns
+  current/previous key IDs and clones the material on construction. Tests prove old-key replay
+  through rotation and fail closed on ciphertext/digest tampering; database probes confirm the
+  recovery code and both tokens are absent from stored ciphertext.
+- Refresh expiry performs the sole live-to-tombstone transition: ciphertext, nonce, and key ID
+  are destroyed while request digest/account coordinate remain. Bounded `SKIP LOCKED` GC performs
+  the same transition; a trigger forbids deletion or reversal, and account deletion tombstones
+  live receipts before removing credentials.
+- Migration `00073_bootstrap_receipts.sql` is append-only. The production binary now requires a
+  separate deployment-resolved `CLOUD_CLICKER_BOOTSTRAP_KEY_ID` + base64
+  `CLOUD_CLICKER_BOOTSTRAP_KEY`; canonical gameserver docs wait for the Game UI archival move.
+- Fault injection covers all eleven coordinator boundaries. Every injected failure leaves zero
+  account/founder/stream/family/token/receipt residue; registry-response rejection is separately
+  proven to roll back. Exact retry, key rotation, concurrent first calls, expiry, GC, permanent
+  tombstones, invalid public keys, and composed HTTP success are all exercised on real Postgres.
+
+Normal repository evidence on the exact implementation tree:
+
+- focused Go packages and bootstrap schema/crypto tests — green;
+- `make validate-migrations` — green;
+- focused real-Postgres coordinator fault matrix and composed gameserver lifecycle — green;
+- `make test-save-integration` — complete single-run, cold `-count=1` Postgres suite green across
+  all packages. An earlier accidental overlapping pair of full runs was explicitly discarded
+  after the two processes interfered by truncating their shared test database; neither partial
+  output was treated as a verdict;
+- `make api-check` and `make typecheck` — green;
+- `make test-go-ci` — complete cold Linux/amd64 suite green, explicit exit 0;
+- `make verify` — complete aggregate green, including kernel 0.3.92 history guard, 6,642 client
+  tests, generated artifacts, harness/schema/boundary/copy gates, and 19,938 browser assertions.
+
+GU-C10 is implemented and ready for the required cross-party designated review. GU-C12 remains a
+separate ratification/review thread, the screen components do not consume bootstrap yet, and
+nothing is self-approved or archived.
