@@ -18,7 +18,9 @@ than retaining meaningless low digits at gigantic magnitudes.
 
 `Decimal` is only for continuous magnitudes such as currency, prices, rates, and multipliers.
 Counts, milestones, sequence numbers, and time units remain exact integers capped at
-`9,007,199,254,740,991` when they cross the JavaScript boundary.
+`9,007,199,254,740,991` when they cross the JavaScript boundary. The Go boundary recognizes an
+integer by round-tripping the normalized Decimal representation, avoiding architecture-dependent
+classification through a second lossy `float64` reconstruction.
 
 ## Authoritative state boundary
 

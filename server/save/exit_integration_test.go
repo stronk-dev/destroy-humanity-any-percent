@@ -141,8 +141,9 @@ func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
 	}
 
 	intentID := "01985555-0010-7000-8000-000000000010"
-	requestHash := "sha256:2222222222222222222222222222222222222222222222222222222222222222"
-	result, err := store.ApplyExitTransaction(ctx, companyRevision.StreamID, 1, 1, intentID, requestHash, exitTestMutation(ownerID, companyRevision.StreamID, intentID, hash, now), nil)
+	requestHash := loggedHash
+	result, err := store.ApplyExitTransactionLogged(ctx, companyRevision.StreamID, 1, 1, intentID, requestHash, loggedPayload,
+		loggedExitTestMutation(t, ownerID, companyRevision.StreamID, intentID, hash, now), nil)
 	if err != nil || result.Outcome != IntentApplied || result.Replay || len(result.Events) != 4 {
 		t.Fatalf("result=%+v err=%v", result, err)
 	}
@@ -246,7 +247,7 @@ func exitTestMutation(ownerID, companyStreamID, intentID, hash string, now time.
 			OfflineSpans: []OfflineSpan{}, NetworkSlots: []NetworkSlot{}, ExitHistory: []ExitRecord{}}
 		terms := map[string]any{"reputation_delta": 2, "network_slot_unlocks": []any{}, "route_knowledge": 25, "clout_reach_note": "reach.none"}
 		runID := map[string]any{"company_stream_id": companyStreamID, "run_seq": company.RunSeq}
-		ended, _ := json.Marshal(map[string]any{"founder_id": ownerID, "run_id": runID, "exit_type": "collapse", "started_at_ms": company.RunStartedAt.UnixMilli(), "ended_at_ms": now.UnixMilli(), "rta_ms": now.Sub(company.RunStartedAt).Milliseconds(), "attended_ms": now.Sub(company.RunStartedAt).Milliseconds(), "terminal_seq": 1, "payout": terms, "tier": company.Tier, "lifetime_value": company.LifetimeValue.String(), "ledger_fact_kinds": []string{}, "executed_routes": []string{}, "assisted": map[string]bool{"commons": false, "advisor": false}})
+		ended, _ := json.Marshal(map[string]any{"founder_id": ownerID, "run_id": runID, "exit_type": "collapse", "started_at_ms": company.RunStartedAt.UnixMilli(), "ended_at_ms": now.UnixMilli(), "rta_ms": now.Sub(company.RunStartedAt).Milliseconds(), "attended_ms": now.Sub(company.RunStartedAt).Milliseconds(), "terminal_seq": 1, "payout": terms, "tier": company.Tier, "lifetime_value": company.LifetimeValue.String(), "ledger_fact_kinds": []string{}, "executed_routes": []string{}, "gates_crossed": []string{}, "generators_purchased_total": company.GeneratorPurchasedTotal, "assisted": map[string]bool{"commons": false, "advisor": false}})
 		started, _ := json.Marshal(map[string]any{"founder_id": ownerID, "run_id": map[string]any{"company_stream_id": companyStreamID, "run_seq": company.RunSeq + 1}, "started_at_ms": now.UnixMilli(), "assisted": map[string]bool{"commons": false, "advisor": false}})
 		advanced, _ := json.Marshal(map[string]any{"founder_id": ownerID, "run_id": runID, "exit_type": "collapse", "reputation_delta": 2, "route_knowledge": 25, "occurred_at_ms": now.UnixMilli()})
 		declined, _ := json.Marshal(map[string]any{"offer_id": "01985555-0011-7000-8000-000000000011", "run_seq": company.RunSeq})
@@ -255,7 +256,7 @@ func exitTestMutation(ownerID, companyStreamID, intentID, hash string, now time.
 			FounderEvents: []EventWrite{{Kind: EventFounderAdvanced, SchemaVersion: 1, IntentID: intentID, Payload: advanced}},
 			CompanyEndedEvents: []EventWrite{
 				{Kind: EventExitOfferDeclined, SchemaVersion: 1, IntentID: intentID, Payload: declined},
-				{Kind: EventRunEnded, SchemaVersion: 1, IntentID: intentID, Payload: ended},
+				{Kind: EventRunEnded, SchemaVersion: 2, IntentID: intentID, Payload: ended},
 			},
 			CompanyStartedEvents: []EventWrite{{Kind: EventRunStarted, SchemaVersion: 1, IntentID: intentID, Payload: started}}}, nil
 	}

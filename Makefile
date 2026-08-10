@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-save-integration test-client test-browser typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness commons-harness-check harness-update epoch-hash copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration test-client test-browser typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness commons-harness-check harness-update epoch-hash copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -8,6 +8,8 @@ GO_PACKAGES ?= ./...
 GO_TEST_FLAGS ?=
 SAVE_TEST_PACKAGES ?= ./...
 SAVE_TEST_FLAGS ?= -run Integration
+CI_TEST_PACKAGES ?= ./...
+CI_TEST_FLAGS ?=
 CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
 
 setup:
@@ -24,6 +26,12 @@ test: test-go test-client test-browser
 
 test-go:
 	cd server && go test -p 1 $(GO_TEST_FLAGS) $(GO_PACKAGES)
+
+# Reproduce the Actions server job on its real architecture, with Postgres and
+# cold test execution. This intentionally runs every package rather than the
+# Integration-named subset used by the focused save-integration target.
+test-go-ci:
+	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test go test -p 1 $(CI_TEST_FLAGS) $(CI_TEST_PACKAGES) -count=1
 
 test-save-integration:
 	docker compose -f compose.save-test.yml run --rm test go test -p 1 $(SAVE_TEST_FLAGS) $(SAVE_TEST_PACKAGES) -count=1

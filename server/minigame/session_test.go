@@ -498,7 +498,7 @@ func TestPlayWithReceiptChecksBeforeExecutionAndCommitsSnapshotAtomically(t *tes
 	if _, err := service.Start(ctx, StartRequest{
 		SessionID: testSessionID, MinigameID: "combat.duel", FounderID: testFounderID,
 		CompanyStreamID: testStreamID, RunSeq: 1, EngineRef: "fixture.counter", EngineVersion: "1.0.0",
-		ConstantsHash: testHash, ScalingInputs: map[string]int64{"era": 1}, Seed: "8", Mode: ModeSolo,
+		ConstantsHash: testHash, ScalingInputs: map[string]int64{"era": 1, "trust_ppm": 500_000}, Seed: "8", Mode: ModeSolo,
 	}); err != nil {
 		t.Fatal(err)
 	}

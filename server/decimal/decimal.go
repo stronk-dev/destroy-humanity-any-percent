@@ -447,10 +447,11 @@ func (d Decimal) Int64Exact() (int64, bool) {
 		return 0, false
 	}
 	value := d.toFloat64()
-	if math.Trunc(value) != value || value < -jsMaxInteger || value > jsMaxInteger {
+	integer := math.Round(value)
+	if integer < -jsMaxInteger || integer > jsMaxInteger || !d.Eq(FromFloat64(integer)) {
 		return 0, false
 	}
-	return int64(value), true
+	return int64(integer), true
 }
 
 // Cmp returns -1, 0, or 1 according to d's ordering relative to other. It

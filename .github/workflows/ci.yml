@@ -84,6 +84,7 @@ jobs:
           node-version: 24
           cache: pnpm
           cache-dependency-path: client/pnpm-lock.yaml
+      - run: apt-get update && apt-get install -y --no-install-recommends make
       - run: pnpm --dir client install --frozen-lockfile
       - run: make test-browser
 

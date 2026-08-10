@@ -20,3 +20,21 @@ func TestExponentBoundaryArithmetic(t *testing.T) {
 		})
 	}
 }
+
+func TestInt64ExactAcceptsCanonicalIntegerAcrossArchitectures(t *testing.T) {
+	// linux/amd64 reconstructs this normalized Decimal just below 926157 in
+	// toFloat64 even though Floor returned the canonical representation of the
+	// exact integer. Int64Exact must classify the Decimal representation, not a
+	// second lossy float reconstruction.
+	progress := FromString("9.26157482632e-1")
+	got, ok := progress.Mul(FromFloat64(1_000_000)).Floor().Int64Exact()
+	if !ok || got != 926_157 {
+		t.Fatalf("got %d ok=%v, want 926157 true", got, ok)
+	}
+
+	for _, fractional := range []string{"9.261571e5", "-9.261571e5"} {
+		if got, ok := FromString(fractional).Int64Exact(); ok {
+			t.Fatalf("%s accepted as exact integer %d", fractional, got)
+		}
+	}
+}
