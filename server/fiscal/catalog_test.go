@@ -48,18 +48,7 @@ func fiscalEconomy(t *testing.T) *economy.Catalog {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var root map[string]any
-	if json.Unmarshal(data, &root) != nil {
-		t.Fatal("invalid economy fixture")
-	}
-	values := root["multiplier_sources"].([]any)
-	values = append(values,
-		map[string]any{"id": "fiscal.generator.beige_tower", "slot": "prestige", "target": "generator.beige_tower", "provider": "fiscal"},
-		map[string]any{"id": "fiscal.hoard", "slot": "prestige", "target": "all", "provider": "fiscal"},
-	)
-	root["multiplier_sources"] = values
-	candidate, _ := json.Marshal(root)
-	catalog, err := economy.LoadCatalog(candidate)
+	catalog, err := economy.LoadCatalog(data)
 	if err != nil {
 		t.Fatal(err)
 	}

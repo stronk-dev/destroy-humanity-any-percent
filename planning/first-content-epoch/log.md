@@ -305,3 +305,12 @@ the mint review and subsequent verdicts. THE MINT BYTES ARE UNAFFECTED (the defe
 test fixture colliding with live content); the fix is a test-file change (non-colliding IDs) +
 this record. Gate claims in the affected verdicts remain honest as-run; the masking is a
 test-caching hazard now on record — reviewers should prefer -count=1 for gate claims.
+
+## 2026-08-10 — cold-cache test-fixture remediation
+
+The cache-masked failure is closed without changing production bytes or runtime behavior. The
+Fiscal fixture now consumes the multiplier declarations already present in the minted economy
+catalog instead of appending duplicates; the economy contract expects the complete four-source
+production set; and the epoch-seed contract expects all 16 epoch-6 artifacts. The focused cold
+run `make test-go GO_PACKAGES='./economy ./epochseed ./fiscal' GO_TEST_FLAGS='-count=1'` passes.
+The full uncached Go gate is required before handoff.

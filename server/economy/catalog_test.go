@@ -257,8 +257,11 @@ func TestProductionCatalogV3Contract(t *testing.T) {
 	if !ok || action.Output.ResourceID != "company.cash" || action.Output.AmountPerAction.String() != "1e0" {
 		t.Fatalf("manual action = %+v, exists=%v", action, ok)
 	}
-	if sources := catalog.MultiplierSources(); len(sources) != 2 || sources[0].ID != "commons.member" || sources[0].Slot != SlotCommons || sources[0].Provider != "commons" ||
-		sources[1].ID != "guild.stock_consumption" || sources[1].Slot != SlotFaction || sources[1].Provider != "faction" {
+	if sources := catalog.MultiplierSources(); len(sources) != 4 ||
+		sources[0].ID != "commons.member" || sources[0].Slot != SlotCommons || sources[0].Provider != "commons" ||
+		sources[1].ID != "fiscal.generator.beige_tower" || sources[1].Slot != SlotPrestige || sources[1].Provider != "fiscal" ||
+		sources[2].ID != "fiscal.hoard" || sources[2].Slot != SlotPrestige || sources[2].Provider != "fiscal" ||
+		sources[3].ID != "guild.stock_consumption" || sources[3].Slot != SlotFaction || sources[3].Provider != "faction" {
 		t.Fatalf("phase-0 multiplier sources = %+v", sources)
 	}
 	if got := catalog.ManualPolicy(); got.RefillMilliPerMS != 25 || got.BucketCapMilli != 50_000 {
