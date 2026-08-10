@@ -99,3 +99,105 @@ first two consumers waiting on it: `generator.beige_tower` (shipped, presentatio
 
 - 2026-08-03: created (draft) — the oldest remaining contract, now the critical path to a game.
 - 2026-08-06: non-normative reference cleanup for publication; no spec change.
+
+## Codex acceptance-review blockers (2026-08-10 — T01-C1–T01-C9)
+
+The Foundation and Relevance dependencies now exist, but this draft remains directional content
+rather than byte-complete catalog input. The mint cannot be implemented without the following
+owner contracts.
+
+### T01-C1 — Dependency/status claims are stale
+
+Purchasable Content Foundation and Relevance Harness are archived and epoch 6 is live. This RFC
+still calls both drafts, treats relevance as optional, calls the economy rows placeholders, and
+speaks of an unnamed next epoch.
+
+**Proposed contract:** rebase the body on epoch 6 and make the relevance report/content gate
+mandatory. Name this change as an owner-gated epoch-7 candidate (unless another epoch lands first)
+whose complete artifact list and accepted-hash protocol are filled at mint review time.
+
+### T01-C2 — No literal economy catalog exists
+
+T1 provides ranges and counts, not exact generator/upgrade/manual/gate rows. Costs, ratios,
+effects, requirements, role bindings, ladders, copy keys, chain edges, synergy pools, provisioning
+caps/reasons, and insertion order are all absent.
+
+**Proposed contract:** append the complete strict schema-v4 candidate documents byte-for-byte:
+every Phase-A generator and upgrade row, milestone ladder, synergy pool, manual action, gate/route
+change, and policy literal. Provisional balance numbers are still literals and must pass both
+loaders before status becomes accepted.
+
+### T01-C3 — The promised role set names mechanics that do not exist
+
+The shipped Phase-A role vocabulary activates only executed `provision`, `synergy_feed`,
+`manual_output`, and `stock_rate` bindings. T1 requires capacity and minigame-token roles, which
+the Foundation deliberately deferred until their owners existed. Permits being a resource does
+not create a capacity effect, and Minigame Platform does not create a generator payout hook.
+
+**Proposed contract:** use only the four shipped executable roles in epoch 7, with at least one
+non-neutral activation fixture per declared role. Capacity/minigame_input rows require their own
+mechanic RFC and are excluded from this mint; alternatively this RFC must specify those new effect
+arms, replay inputs, save state, and cross-runtime hooks.
+
+### T01-C4 — Generator/manual/cosmetic presentation has no binding grammar
+
+The carried PT-C4 debt is still open. Generator rows have no copy key, manual action display copy
+has no declared reference site, and Horse Armor has neither a cosmetic catalog nor a ruled stub
+wire. Orphan Copy entries cannot satisfy the UI law.
+
+**Proposed contract:** add one presentation artifact keyed by mechanical generator, upgrade,
+manual-action, and cosmetic-stub IDs, with exact Copy-key families and strict loader/reference
+validation. The Horse Armor row is explicitly non-purchasable/non-stateful in v1; if it mutates
+state, it belongs to a cosmetics foundation instead.
+
+### T01-C5 — The scripted failure is not an executable event contract
+
+“Fires ~15 min” does not name a condition, authoritative transition, event kind/payload, whether
+the run ends, or how it avoids firing twice. Existing first-Exit curriculum checks do not create a
+time-triggered failure by themselves.
+
+**Proposed contract:** enumerate the exact lazy-evaluated trigger over attended/progress state, its
+one-shot persisted marker, transition outcome, event ordering, terminal/non-terminal behavior,
+and `run_ended`/next-run assembly bytes. No background timer: the first eligible command evaluates
+the trigger through `ApplyLogged`.
+
+### T01-C6 — Session-boundary offline catchup lacks transaction and replay semantics
+
+The arm is directionally ruled, but “session opens” is not tied to a composed handler, lock order,
+catalog pin, intent/log row, or idempotency rule. Running a state mutation during authentication
+without a replay record would create a second transition path.
+
+**Proposed contract:** name the exact bootstrap operation and route catchup through the existing
+Company logged boundary with a server-authored command and frozen `{opened_at_ms, offline_span}`
+inputs. It locks the Company stream after authentication, uses the run-pinned offline policy,
+returns the committed revision/snapshot, and is idempotent for one session-open token. A >24h
+fixture proves exact discounted accrual, replay parity, and an Exit-race ordering.
+
+### T01-C7 — The first-hour script needs exact milestone and harness rows
+
+Approximate prose times do not identify which catalog facts prove “first upgrade,” “scripted
+failure,” “run 2 faster,” or “elective Exit,” nor the persona seeds/reducer/envelopes. Relevance
+windows likewise cannot infer the new purchasable set.
+
+**Proposed contract:** append the literal harness scenario, milestone predicates, persona runs,
+reducer, time envelopes, relevance windows, and transition budgets. The composed human-path
+fixture references those same IDs, so pacing and UI cannot silently define different scripts.
+
+### T01-C8 — T0/T1 gate and era activation are not pinned
+
+The draft says `gate.t0_to_t1 gains real requirements` without literal requirement rows or stating
+how a live epoch-6 run crosses into the new catalog. Theme era is not a constants artifact and must
+follow authoritative tier rather than the deployment's current content.
+
+**Proposed contract:** include the exact gate requirement/route row and new-run-bound activation
+tests: epoch-6 runs finish under their pins, an Exit/fresh genesis under the new epoch receives the
+full catalog, and tier 0/1 facts select `era_1995`/`era_2000` through Game UI's ruled mapping.
+
+### T01-C9 — “Event copy for existing kinds” is not a closed set
+
+No event-kind-to-copy-key rows or parameter grammar are listed, so completeness and provenance
+cannot be checked.
+
+**Proposed contract:** enumerate every v1 event-copy binding with exact allowed parameters and
+fallback behavior. Only kinds already emitted by production may appear; Layer-1 authored events
+remain excluded and unknown kinds fail load rather than deriving prose from an ID.
