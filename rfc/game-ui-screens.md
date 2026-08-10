@@ -94,3 +94,101 @@ is a later screen-set RFC on the same U2 contract.
   (token matrix, pinned notations, C11 axe gate); design/11 §1b first-session adoptions bound
   (Vision Slide, `PB: —` first-run title bar, visitor-counter-only presence, T0 satire beats);
   U3 reconciled with the Minigame & Recovery API + Surface RFC's MA3 surface ownership.
+
+## Codex acceptance-review blockers (2026-08-10 — GU-C1–GU-C8)
+
+UI Foundation now supplies the governed primitives, but the screen RFC does not yet define the
+data and lifecycle contracts needed to connect those primitives to the composed server. These are
+product/wire decisions; implementation remains blocked rather than filling them in locally.
+
+### GU-C1 — The shipped shell snapshot cannot represent the Desk
+
+`AuthoritativeSnapshot` contains resources, discrete facts, and progress coordinates only. It has
+no generator purchased/provisioned counts or contribution rows, upgrade ownership/eligibility,
+manual-token state, tier, run sequence, Founder exit count, or server time sample. U1 requires all
+of those, and the production entry currently mounts the UI fixture without composing a stream.
+
+**Proposed contract:** enumerate one exact generated `game_ui_snapshot.v1` DTO owned by the server
+projection and decoded by the shell. It carries the revision/hash/time envelope plus closed `run`,
+`manual_action`, `generators`, `upgrades`, `resources`, `facts`, and `progress` fields; every row is
+mechanical-ID sorted. Buttons submit existing intents and treat affordability as advisory display
+only—the receipt remains authoritative. Pin which HTTP/socket snapshot operation supplies it and
+how it composes into `ShellRuntime`; do not let screens read save state or the economy catalog
+directly.
+
+### GU-C2 — The screen/surface registry is not a literal catalog
+
+U1 names seven conceptual areas, but no `surface_id`, `mount_id`, unlock row, default surface, or
+authoritative fact manifest exists. UI Foundation rejects unknown facts and duplicate mounts, so
+the prose cannot load through it.
+
+**Proposed contract:** add the complete Phase-A surface document with exact rows and default/fallback
+selection. State explicitly which U1 items are surfaces versus components inside a surface, and
+name every `fact_equals` ID in the snapshot manifest. Run-end/offer navigation driven by events
+must have one deterministic precedence rule over player-selected tabs.
+
+### GU-C3 — Required event payloads are opaque or incomplete at the client boundary
+
+The transport validates event envelopes, not the per-kind payload shapes the screens require.
+The RFC assumes exact gate times, complete `run_ended` curriculum/delta data, offer terms and
+expiry, while no generated TypeScript discriminated union owns those bytes.
+
+**Proposed contract:** enumerate and generate the exact v1 payloads for `gate_crossed`,
+`run_ended`, `exit_offer_spawned`/resolved, `server_restarting`, and `resync_required`, including
+schema-version behavior and cursor effect. The run-end component receives only the decoded
+`run_ended` object in its type; a compile-time fixture proves no snapshot parameter is available.
+
+### GU-C4 — The timer, PB, and split persistence model is under-specified
+
+There is no server-clock-offset sample on the wire and no local PB/split storage schema. Browser
+wall time alone cannot implement the stated RTA law across reconnect/sleep, while an unspecified
+client store makes reset, imported runs, and run identity ambiguous.
+
+**Proposed contract:** bind RTA to a frozen server sample `{server_now_ms, run_started_at_ms}` plus
+monotonic elapsed time, resampled on every authoritative snapshot and snapped on terminal data.
+Define a versioned local-only record keyed by Founder/run/category with exact PB and split fields,
+write timing, corruption fallback, and deletion semantics. It must never feed an intent or board
+submission.
+
+### GU-C5 — First-session/bootstrap ownership has no executable transition
+
+The Vision Slide says `[BEGIN ATTEMPT]` silently creates an anonymous account, but no command,
+success receipt, retry/idempotency rule, or failure screen is named. The current UI fixture has no
+account/bootstrap composition.
+
+**Proposed contract:** bind the CTA to the existing account/bootstrap operation by exact generated
+API name and response, or add the missing operation in the API Foundation. Specify idempotent retry,
+credential persistence before navigation, and the authoritative fact that selects Vision versus
+Desk. No local click may enter play before bootstrap succeeds.
+
+### GU-C6 — Screen copy and presentation bindings are absent
+
+Copy Pipeline has no keys for the Vision Slide, navigation, generator titles/descriptions,
+settings, drain/resync story beats, Horse Armor, or the named T0 satire elements. Generator rows
+also have no presentation key—the carried PT-C4 debt. The UI boundary correctly rejects component
+text literals, so implementation has nothing legal to render.
+
+**Proposed contract:** T0–T1 owns one byte-sorted screen-copy/presentation manifest binding every
+surface, action, generator, upgrade, system state, and first-session element to registered Copy
+keys. Game UI consumes only that manifest. Supply literal launch text before implementation; no
+mechanical-ID title derivation.
+
+### GU-C7 — Era selection contradicts the two-era first hour
+
+U2 says `era_1995 for Phase A`, while T0–T1 and UI Foundation explicitly map T0 to `era_1995` and
+T1 to `era_2000`. A fixed era would make the UI fail its own core satire contract.
+
+**Proposed contract:** derive era exclusively from the authoritative tier fact using the closed
+mapping `{0:era_1995, 1:era_2000}`; later tiers fail closed until their theme artifacts exist.
+The switch changes only the UI root tokens/attribute and preserves active surface/focus where the
+element still exists.
+
+### GU-C8 — The performance acceptance criterion has no executable budget
+
+“Reference low-end profile” and “without frame drops” name neither hardware emulation nor a
+number, so two implementations can claim opposite results.
+
+**Proposed contract:** define a repository fixture with exact viewport, CPU-throttle factor,
+duration, 20-Hz input count, maximum 10-Hz formatted commits, long-task ceiling, and dropped-frame
+allowance. If deterministic browser timing is not reliable in CI, gate observable update counts
+and long tasks in CI and record the hardware profile as a manual release check.
