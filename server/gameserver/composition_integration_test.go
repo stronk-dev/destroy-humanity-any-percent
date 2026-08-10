@@ -138,9 +138,40 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	}
 	var tokens account.TokenPair
 	decodeCompositionResponse(t, sessionResponse, &tokens)
+	uiResponse := compositionRequest(t, httpServer.Client(), http.MethodGet, httpServer.URL+"/api/v1/founder/state", tokens.AccessToken, "")
+	if uiResponse.StatusCode != http.StatusOK {
+		company, companyErr := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
+		if companyErr == nil {
+			_, projectionErr := composition.GameUI.GameUISnapshot(ctx, company.StreamID, clock.Time())
+			t.Fatalf("Game UI snapshot status=%d body=%s projection_err=%v", uiResponse.StatusCode, responseBody(uiResponse), projectionErr)
+		}
+		t.Fatalf("Game UI snapshot status=%d body=%s", uiResponse.StatusCode, responseBody(uiResponse))
+	}
+	var uiSnapshot struct {
+		ConstantsHash    string `json:"constants_hash"`
+		EvaluatedThrough int64  `json:"evaluated_through_ms"`
+		Generators       []struct {
+			ID string `json:"generator_id"`
+		} `json:"generators"`
+		ManualAction struct {
+			ID string `json:"action_id"`
+		} `json:"manual_action"`
+		Revision int64 `json:"revision"`
+		Run      struct {
+			FounderID string `json:"founder_id"`
+			RunSeq    int64  `json:"run_seq"`
+		} `json:"run"`
+	}
+	decodeCompositionResponse(t, uiResponse, &uiSnapshot)
 	founder, err := composition.Accounts.ActiveFounder(ctx, created.AccountID)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if uiSnapshot.ConstantsHash != composition.CurrentHash || uiSnapshot.EvaluatedThrough != clock.Time().UnixMilli() ||
+		uiSnapshot.Revision != 1 || uiSnapshot.Run.FounderID != founder.ID || uiSnapshot.Run.RunSeq != 1 ||
+		uiSnapshot.ManualAction.ID != "manual.click" || len(uiSnapshot.Generators) != 2 ||
+		uiSnapshot.Generators[0].ID != "generator.beige_tower" || uiSnapshot.Generators[1].ID != "generator.legal_dept" {
+		t.Fatalf("Game UI snapshot=%+v", uiSnapshot)
 	}
 	if composition.CurrentHash != "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a" {
 		t.Fatalf("composed constants hash=%s", composition.CurrentHash)

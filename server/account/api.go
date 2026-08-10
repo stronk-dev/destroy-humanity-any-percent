@@ -44,6 +44,10 @@ type MinigameAPIHandler interface {
 	ResolveMinigameSession(context.Context, string, string) (json.RawMessage, error)
 }
 
+type GameUIHandler interface {
+	GameUISnapshot(context.Context, string, time.Time) (json.RawMessage, error)
+}
+
 type APIConfig struct {
 	UnauthenticatedBurst  int
 	UnauthenticatedPerMin int
@@ -65,6 +69,7 @@ type API struct {
 	guilds           GuildIntentHandler
 	recoveries       SoulRecoveryHandler
 	minigames        MinigameAPIHandler
+	gameUI           GameUIHandler
 	privateRegistry  *publicapi.Registry
 	config           APIConfig
 	unauth           *httpapi.TokenBuckets
@@ -93,6 +98,14 @@ func (api *API) AttachMinigames(handler MinigameAPIHandler) error {
 		return ErrInvalidRequest
 	}
 	api.minigames = handler
+	return nil
+}
+
+func (api *API) AttachGameUI(handler GameUIHandler) error {
+	if api == nil || handler == nil || api.gameUI != nil {
+		return ErrInvalidRequest
+	}
+	api.gameUI = handler
 	return nil
 }
 
@@ -141,7 +154,6 @@ func (api *API) Router() http.Handler {
 			authenticated.Post("/founder", api.newFounder)
 			authenticated.Get("/founder", api.getFounder)
 			authenticated.Post("/founder/import", api.importFounder)
-			authenticated.Get("/founder/state", api.getFounderState)
 			authenticated.Post("/intents", api.submitIntent)
 			authenticated.Post("/guild/intents", api.submitGuildIntent)
 		})
@@ -150,6 +162,7 @@ func (api *API) Router() http.Handler {
 		{OperationID: "cancel_soul_recovery", Handler: http.HandlerFunc(api.cancelSoulRecovery)},
 		{OperationID: "create_minigame_session", Handler: http.HandlerFunc(api.createMinigameSession)},
 		{OperationID: "get_current_minigame_session", Handler: http.HandlerFunc(api.getCurrentMinigameSession)},
+		{OperationID: "get_game_ui_snapshot", Handler: http.HandlerFunc(api.getGameUISnapshot)},
 		{OperationID: "play_minigame_command", Handler: http.HandlerFunc(api.playMinigameCommand)},
 		{OperationID: "progress_soul_recovery", Handler: http.HandlerFunc(api.progressSoulRecovery)},
 		{OperationID: "resolve_minigame_session", Handler: http.HandlerFunc(api.resolveMinigameSession)},
@@ -162,6 +175,26 @@ func (api *API) Router() http.Handler {
 		panic(err)
 	}
 	return router
+}
+
+func (api *API) getGameUISnapshot(response http.ResponseWriter, request *http.Request) {
+	if api.gameUI == nil {
+		writeError(response, http.StatusServiceUnavailable, "not_configured", "game_ui_snapshot")
+		return
+	}
+	state, err := api.repository.ActiveCompanyState(request.Context(), requestClaims(request).Subject)
+	if err != nil {
+		writeError(response, http.StatusNotFound, "unknown_id", "founder_state")
+		return
+	}
+	encoded, err := api.gameUI.GameUISnapshot(request.Context(), state.StreamID, api.repository.clock())
+	if err != nil || api.privateRegistry.ValidateResponse("get_game_ui_snapshot", http.StatusOK, encoded) != nil {
+		writeError(response, http.StatusInternalServerError, "internal_invariant", "game_ui_snapshot")
+		return
+	}
+	response.Header().Set("Content-Type", "application/json")
+	response.WriteHeader(http.StatusOK)
+	_, _ = response.Write(encoded)
 }
 
 func (api *API) startSoulRecovery(response http.ResponseWriter, request *http.Request) {
@@ -443,15 +476,6 @@ func (api *API) importFounder(response http.ResponseWriter, request *http.Reques
 		return
 	}
 	writeJSON(response, http.StatusOK, founder)
-}
-
-func (api *API) getFounderState(response http.ResponseWriter, request *http.Request) {
-	state, err := api.repository.ActiveCompanyState(request.Context(), requestClaims(request).Subject)
-	if err != nil {
-		writeError(response, http.StatusNotFound, "unknown_id", "founder_state")
-		return
-	}
-	writeJSON(response, http.StatusOK, state)
 }
 
 func (api *API) submitIntent(response http.ResponseWriter, request *http.Request) {

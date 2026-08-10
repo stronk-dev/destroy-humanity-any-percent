@@ -18,6 +18,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/faction"
+	"cloud-clicker/server/gameui"
 	"cloud-clicker/server/guild"
 	"cloud-clicker/server/leaderboard"
 	"cloud-clicker/server/minigame"
@@ -59,6 +60,7 @@ type Composition struct {
 	Production           *production.Service
 	Guilds               *guild.Service
 	Minigames            *minigame.Service
+	GameUI               *gameui.Projector
 	Commons              *commonsprojection.Projector
 	Verification         *replayverify.Repository
 	LeaderboardProjector *leaderboard.QueueProjector
@@ -307,6 +309,13 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 	if err := api.AttachMinigames(minigameAPIAdapter{accounts: accounts, production: productionService, platform: minigameService}); err != nil {
 		return nil, err
 	}
+	gameUIProjector, err := gameui.New(store, catalogs, providers)
+	if err != nil {
+		return nil, err
+	}
+	if err := api.AttachGameUI(gameUIProjector); err != nil {
+		return nil, err
+	}
 	policyBytes, err := os.ReadFile(filepath.Join(config.RepositoryRoot, "balance", "transport", "phase0.json"))
 	if err != nil {
 		return nil, err
@@ -385,5 +394,5 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 		return nil, err
 	}
 	return &Composition{CurrentHash: seed.Hash, Server: server, Node: node, Accounts: accounts, Production: productionService, Guilds: guildService, Minigames: minigameService,
-		Commons: commonsProjector, Verification: verification, LeaderboardProjector: boardProjector, Clearing: clearing, Catalogs: catalogs}, nil
+		GameUI: gameUIProjector, Commons: commonsProjector, Verification: verification, LeaderboardProjector: boardProjector, Clearing: clearing, Catalogs: catalogs}, nil
 }

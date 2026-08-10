@@ -1,0 +1,7 @@
+[
+  { "mount_id": "game.surface.desk", "surface_id": "desk", "unlock": { "kind": "always" } },
+  { "mount_id": "game.surface.offer_sheet", "surface_id": "offer_sheet", "unlock": { "kind": "always" } },
+  { "mount_id": "game.surface.run_end", "surface_id": "run_end", "unlock": { "kind": "always" } },
+  { "mount_id": "game.surface.settings", "surface_id": "settings", "unlock": { "kind": "always" } },
+  { "mount_id": "game.surface.vision_slide", "surface_id": "vision_slide", "unlock": { "fact_id": "bootstrap.needed", "kind": "fact_equals", "value": true } }
+]

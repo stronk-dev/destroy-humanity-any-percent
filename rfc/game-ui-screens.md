@@ -1,11 +1,11 @@
 # RFC: Game UI Screens (the play surfaces)
 
-- **Status:** draft
+- **Status:** accepted — GU-C1–GU-C8 ruled; implementing (GU-C9–GU-C12 implementation blockers recorded)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/11-ux-writing.md` (first-session narrative, voice), `design/08 §speedrun` (run-title bar, splits panel, PB/gold deltas), `design/06` (DOM-first, Svelte 5 runes, `$derived` bound to visible tab only), client-shell docs (reconciliation, `reason_key` caps, activity_ppm never-frozen)
-- **Depends on:** Client Shell (implemented), Transport (implemented), **UI Foundation (accepted —
-  C1–C11 ruled; implementing)** — screens are built FROM its token matrix and components and
+- **Depends on:** Client Shell (implemented), Transport (implemented), **UI Foundation (implemented;
+  archived 2026-08-10)** — screens are built FROM its token matrix and components and
   inherit its gates, T0–T1 Content (draft — ships together; screens without content are furniture)
 - **Planning:** `planning/game-ui-screens/` (once implementing)
 
@@ -243,3 +243,65 @@ and long tasks in CI and record the hardware profile as a manual release check.
   navigation precedence; event payload generation; RTA/PB contract; existing bootstrap op; T0–T1
   copy manifest ownership; tier-fact era mapping superseding U2's fixed era; executable perf
   budget). Implementation-ready pending the T0–T1 content lane it ships with.
+
+## Codex implementation blockers (2026-08-10 — GU-C9–GU-C12)
+
+The ruled client-side contracts and the epoch-6 projection are implemented and tested, but four
+gaps only become visible at the real composition boundary. The implementation fails closed rather
+than shipping placeholder rates, copy, or bootstrap authority.
+
+### GU-C9 — Schema-v4 rate rows need a kernel-owned read model
+
+The production service receives external frozen/Commons/faction contributions, then `ApplyLogged`
+assembles upgrade, ladder, synergy, and attended active-play contributions inside the replay
+kernel. The Game-UI projector can obtain only the external subset. Calling `production.Rates`
+with that subset produces convincing but false per-generator rates as soon as T0–T1 schema-v4
+content activates. Duplicating `contentContributions` in the UI package would create a second math
+implementation.
+
+**Proposed contract:** export one pure, read-only production-kernel projection that accepts the
+pinned `CatalogBundle`, replay-owned Company state, frozen external contributions, and the resolved
+attended-time sample, and returns byte-sorted per-generator and per-resource rates after the exact
+canonical contribution assembly (including active-play saturation). The live projector and tests
+consume that seam; no save mutation, event, receipt, or replay input is created. This is an honest
+kernel behavior addition and carries the normal Go/TS/version discipline where applicable. Until
+it lands, Game UI rejects schema-v4/Company-v18 projection.
+
+### GU-C10 — The existing account operation is neither idempotent nor snapshot-producing
+
+`POST /api/v1/account` silently creates the account and Founder, but retry creates another account;
+the separate session operation must then receive the recovery secret. There is no idempotency key,
+combined receipt, or persisted-before-navigation protocol. Also, `bootstrap.needed` cannot be an
+authoritative fact before an authenticated account exists. GU-C5 selected the existing-operation
+arm but its required idempotent retry is not implementable from the shipped wire.
+
+**Proposed contract:** add an API-Foundation-owned bootstrap coordinator with an opaque idempotency
+key. Its persisted receipt contains the existing account recovery material, session token pair,
+and initial `game_ui_snapshot.v1`; an exact retry returns the same receipt and a mismatched reuse
+fails with `idempotency_conflict`. The client persists recovery material and refresh token before
+mounting Desk. Absence of locally persisted credentials selects Vision Slide; after authentication,
+the server snapshot carries `bootstrap.needed=false`. No local click fabricates an authoritative
+fact.
+
+### GU-C11 — No accepted-offer resolution event exists
+
+The server emits `exit_offer_spawned`, `exit_offer_declined`, and `exit_offer_expired`; accepting an
+offer emits `run_ended` without the offer ID. GU-C3 names `exit_offer_resolved`, but no such event
+kind or payload exists, so a generated exact union cannot honestly implement that arm.
+
+**Proposed contract:** keep the existing declined/expired rows and add an additive
+`exit_offer_resolved` v1 event only for accepted offers, carrying `{offer_id, resolution:"accepted"}`
+before `run_ended` in the same revision. Alternatively amend GU-C3 to define the three existing
+terminal paths as the complete grammar and explicitly make `run_ended` the accepted transition.
+The owner chooses; the client currently normalizes declined/expired only and does not invent an
+accepted offer ID.
+
+### GU-C12 — The owner-authored screen-copy document is not present
+
+The ratified presentation candidate binds generators/upgrades/manual/cosmetic rows, but the Copy
+catalog still has none of the Vision, navigation, Desk action, settings, drain/resync, offer, or
+run-end keys GU-C6 requires. Components cannot legally contain substitute literals.
+
+**Required owner input:** author the literal screen-copy ruling through the FCE-C7 orphan-first
+lane already assigned to Claude. Codex then assembles and consumes it byte-exactly; no component
+literal or mechanical-ID title derivation is permitted meanwhile.
