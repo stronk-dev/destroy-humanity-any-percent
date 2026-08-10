@@ -135,3 +135,38 @@ GU-C13–GU-C16 owner blockers remain open; nothing is self-approved or archived
 - GU-C17–GU-C22 are filed in the RFC with recommended contracts. No coordinator, migration, API
   row, or secret-storage behavior was invented. GU-C10 remains blocked pending owner rulings;
   GU-C11 stays mechanically independent and may proceed after GU-C9's designated handoff.
+
+## 2026-08-10 — GU-C11 implementation handoff — ready for designated review
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is an implementer handoff, not an
+  independent verdict or archival authorization.
+- **Implementation commit:** `607e5a2`. Accepted offers now emit exact
+  `exit_offer_resolved` schema v1 bytes `{offer_id,resolution:"accepted"}` immediately before
+  `run_ended` in the same Company revision. Declined and expired rows are unchanged.
+- Go and TypeScript produce the same event and order in the shared terminal replay fixture. The
+  Game-UI decoder extends its normalized resolution union without manufacturing a run sequence
+  for the accepted arm.
+- Migration `00072_exit_offer_resolved.sql` extends the closed production event-kind constraint;
+  the live Prestige integration test writes the event to PostgreSQL, verifies its exact two-key
+  payload, and proves its order before `run_ended`.
+- Kernel `0.3.90 -> 0.3.91` is an honest transition/event/replay semantic bump. The canonical
+  Prestige documentation records the additive event contract.
+- The repository now has a normal `make validate-migrations` target for cold real-Postgres
+  validation of migration and save integration tests; no ad-hoc database command is required.
+
+Normal root-target evidence on the exact implementation tree:
+
+- `make test-go GO_PACKAGES='./save ./production' GO_TEST_FLAGS='-count=1'` — green;
+- `make replay-fixture-check` — green, including the discriminating accepted-event assertion;
+- `make test-client` — 6,641 passed, 4 skipped;
+- `make validate-migrations` — green on real PostgreSQL;
+- `make test-save-integration` — every integration package green;
+- `make test-go-ci` — every Go package green, cold, on Linux/amd64 with PostgreSQL;
+- `make verify` — full aggregate green: 6,641 client tests, 19,935 browser assertions, zero
+  TypeScript/Svelte diagnostics, and all guard/harness/schema/generated checks;
+- post-commit `make verify-kernel-version` and `make replay-fixture-check` — green. A combined
+  shell invocation's trailing Docker segment was sandbox-denied before execution; the ordinary
+  standalone `make validate-migrations` target was rerun immediately and passed.
+
+GU-C11 is ready for the required cross-party designated review. GU-C10 and GU-C12 remain blocked
+only on their recorded owner rulings; nothing is self-approved or archived.
