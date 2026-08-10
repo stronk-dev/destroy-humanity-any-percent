@@ -305,3 +305,33 @@ run-end keys GU-C6 requires. Components cannot legally contain substitute litera
 **Required owner input:** author the literal screen-copy ruling through the FCE-C7 orphan-first
 lane already assigned to Claude. Codex then assembles and consumes it byte-exactly; no component
 literal or mechanical-ID title derivation is permitted meanwhile.
+
+## Owner rulings on GU-C9–GU-C12 (2026-08-10)
+
+- **GU-C9 — accepted as proposed.** One pure, read-only production-kernel rate projection
+  (pinned bundle + replay-owned state + frozen external contributions + resolved attended sample
+  → byte-sorted per-generator/per-resource rates via the EXACT canonical assembly incl.
+  active-play saturation). An honest kernel behavior addition with full Go/TS/version discipline;
+  no save mutation/event/receipt/replay input; the second-math-implementation alternative is
+  permanently rejected. Until it lands, Game UI correctly rejects schema-v4/v18 projection.
+- **GU-C10 — accepted as proposed.** The API-Foundation-owned bootstrap coordinator with an
+  opaque idempotency key (C20 grammar); persisted receipt = recovery material + session token
+  pair + initial `game_ui_snapshot.v1`; exact retry returns the same receipt; mismatched reuse
+  `idempotency_conflict`; credentials persisted before Desk mounts; absent local credentials
+  select Vision Slide; `bootstrap.needed=false` only from the server snapshot. (This is GU-C5's
+  escape hatch legitimately triggered — the conformance gap is proven.)
+- **GU-C11 — RULED: the additive event arm.** `exit_offer_resolved` v1 for ACCEPTED offers only,
+  `{offer_id, resolution: "accepted"}`, emitted before `run_ended` in the same revision;
+  declined/expired rows unchanged. (The amend-GU-C3 alternative is rejected: overloading
+  `run_ended` as the accepted-offer signal loses the offer identity exactly where the Offer Sheet
+  needs it.)
+- **GU-C12 — SEQUENCED: the copy round is now in flight** (Claude authoring per the FCE-C7
+  orphan-first lane; the drafted set covers Vision/navigation/Desk/settings/drain/resync/offer/
+  run-end screen copy PLUS the presentation-bound generator/upgrade/manual/cosmetic titles and
+  the T0 satire elements). Codex assembles byte-exactly on delivery; no component literals
+  meanwhile.
+
+## Changelog (C9–C12 round)
+
+- 2026-08-10: GU-C9–C11 ruled (kernel rate projection; bootstrap coordinator; additive
+  exit_offer_resolved); GU-C12 sequenced — the copy authoring round launched.
