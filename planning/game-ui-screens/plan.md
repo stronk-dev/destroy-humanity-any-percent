@@ -6,7 +6,7 @@ RFC: `rfc/game-ui-screens.md`
 - [x] Owner-rule GU-C1–GU-C8 and reconcile the normative body.
 - [x] Implement the generated epoch-6 UI snapshot, existing sync-route composition, client decoder,
   shell adapter, typed existing event arms, surface registry, navigation, timing, and performance contracts.
-- [ ] Assemble the GU-C12 screen-copy ruling orphan-first: event-copy revision, gate-title and
+- [x] Assemble the GU-C12 screen-copy ruling orphan-first: event-copy revision, gate-title and
   presentation-manifest additions, shipped exit-type enumeration, generated Copy outputs, and
   candidate SHAs for owner ratification.
 - [ ] Implement GU-C9's kernel-owned rate projection, including the required store-level

@@ -188,6 +188,58 @@ justified; kernel 0.3.90→0.3.91 honest; all five gates green incl. cold Linux.
 {f2cecba, 3e16587} (copy-assembly validation + blocker filings — consumed by the ratification
 and ruling flows). The union over 516bddb..HEAD completes when those land.
 
+## 2026-08-10 — GU-C12 copy assembly handoff — ready for designated review and owner ratification
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is an implementation handoff, not an
+  independent verdict, owner ratification, or archival authorization.
+- **Implementation commit:** `8a8e485`. A deterministic compiler now extracts the 128 ruled
+  screen rows, applies GU-C13–GU-C16's exact rewrites/types/provenance, and emits the orphan
+  catalog plus presentation/event-copy revisions. `make game-ui-copy-candidate-check` verifies
+  those bytes and is a dependency of the ordinary `make copy-check` gate.
+- The current tree already contained the separately reviewed permits cap row. It remains
+  byte-identical in `permits-candidate.json`; the ruled cash row is retuned in its existing owner
+  catalog. Therefore this post-mint assembly adds 133 unique rows: 126 of the original 128 after
+  excluding both existing cap keys, plus accepted-offer copy, one gate title, and five exit-type
+  titles. This corrects the pre-permits mechanical count without changing either ruling.
+- Copy's strict row union has one new arm only: `text_kind: "longform"`. It is printable ASCII,
+  at most 80 columns and 64 lines, has zero params, and retains literal README glyphs without an
+  HTML/Markdown escape. Build-time and runtime loaders share the rule and reject unknown kinds,
+  params, non-ASCII, over-width, and over-line fixtures. Canonical docs are updated.
+- The real Horse Armor and shareware-registration claims resolve through two new append-only
+  verified registry rows backed by tracked publishable extracts. Mechanical price/offline values
+  are placeholders; README numerals are rendered as prose, leaving only those two deliberately
+  sourced historical/statistical rows.
+
+Candidate coordinates for owner ratification (SHA-256 over exact file bytes):
+
+- `copy/catalog/game-ui-candidate.json` —
+  `ec6d8294837919a03e32f10f0ed81053d43f45306fdc27c8cca6be834de1ea23`
+- `copy/catalog/phase0.json` —
+  `24e90af2e48db4dbb5e154aea0c3c5ebe0975c48cf9955e15a5a225bfe9df698`
+- `balance/testdata/t0-t1/presentation-v2.json` —
+  `42cbe31acd040dc6b4a78c8d2b81d7e27738728cec97791414a9537be3d9f015`
+- `balance/testdata/t0-t1/event-copy-v2.json` —
+  `71d88ebbdff37582246e0014377e2db852e154801e622bf2a04ad12efe6beb0c`
+- generated copy artifact identity —
+  `sha256:bfc2c7c0051fcbc6c0e76edf796a3dbef01f205eee975605be74f4ae5e8ce86c`
+
+Normal repository evidence on the exact implementation tree:
+
+- `make game-ui-copy-candidate-check` and `make copy-check` — green, including append-only
+  provenance history, orphan report, generated types/Go keys, and deployment identity;
+- `make typecheck` — zero TypeScript/Svelte diagnostics;
+- `make test-client` — 6,642 passed, 4 skipped;
+- `make test-browser` — 19,938 passed across Chromium, Firefox, and WebKit. The first full-gate
+  run correctly exposed two stale pre-retune cash-copy expectations; the assertions were updated
+  to the owner-authored text and the independent browser target passed before the full rerun;
+- `make verify` — complete aggregate green: all Go packages/vet, generated API/formulas,
+  balance harness, schema/boundary/history/copy gates, client build/tests, and all browser tests;
+- post-commit `make verify-kernel-version` and `make copy-check` — green at kernel `0.3.91`.
+
+GU-C12 is ready for the required cross-party designated review and the candidate hashes are ready
+for Marco's ratification. No component consumes these orphan rows yet, GU-C10 remains separate,
+and nothing is self-approved or archived.
+
 ## 2026-08-11 — designated cross-party verdict: GU-C9 {bc2370a, 46676e9} — BOTH APPROVED (follow-ups routed)
 
 - **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
