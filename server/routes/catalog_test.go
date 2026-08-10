@@ -29,7 +29,7 @@ func TestCatalogLoadsAndProvesDepletionUnreachable(t *testing.T) {
 	if catalog.DepletionDistinctRequired() != 5 {
 		t.Fatalf("depletion count = %d", catalog.DepletionDistinctRequired())
 	}
-	if len(catalog.Gates()) != 3 {
+	if len(catalog.Gates()) != 4 {
 		t.Fatalf("gates = %d", len(catalog.Gates()))
 	}
 	policy := catalog.KnowledgePolicy()
@@ -54,7 +54,7 @@ func TestCatalogRejectsReachableDepletionAndUnavailableActiveRoute(t *testing.T)
 		t.Fatal(err)
 	}
 	gates := root["gates"].([]any)
-	routes := gates[1].(map[string]any)["routes"].([]any)
+	routes := gates[2].(map[string]any)["routes"].([]any)
 	routes[0].(map[string]any)["active"] = true
 	mutated, _ = json.Marshal(root)
 	if _, err := LoadCatalog(mutated); err == nil {
@@ -64,7 +64,7 @@ func TestCatalogRejectsReachableDepletionAndUnavailableActiveRoute(t *testing.T)
 		t.Fatal(err)
 	}
 	gates = root["gates"].([]any)
-	routes = gates[1].(map[string]any)["routes"].([]any)
+	routes = gates[2].(map[string]any)["routes"].([]any)
 	routes[0].(map[string]any)["requires_context_version"] = float64(1)
 	mutated, _ = json.Marshal(root)
 	if _, err := LoadCatalog(mutated); err == nil {
@@ -98,7 +98,8 @@ func TestCatalogAcceptsDoctrineRouteAtSameOrLaterBoundary(t *testing.T) {
 		t.Fatal(err)
 	}
 	gates := root["gates"].([]any)
-	gates[1].(map[string]any)["gate_id"] = "gate.t3_to_t4"
+	gates[2].(map[string]any)["gate_id"] = "gate.t3_to_t4"
+	root["gates"] = append(gates[:1], gates[2:]...)
 	mutated, _ := json.Marshal(root)
 	if _, err := LoadCatalog(mutated); err != nil {
 		t.Fatalf("same-boundary doctrine route rejected: %v", err)

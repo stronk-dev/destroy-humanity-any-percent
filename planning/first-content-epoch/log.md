@@ -311,6 +311,7 @@ test-caching hazard now on record — reviewers should prefer -count=1 for gate 
 The cache-masked failure is closed without changing production bytes or runtime behavior. The
 Fiscal fixture now consumes the multiplier declarations already present in the minted economy
 catalog instead of appending duplicates; the economy contract expects the complete four-source
-production set; and the epoch-seed contract expects all 16 epoch-6 artifacts. The focused cold
+production set; the epoch-seed contract expects all 16 epoch-6 artifacts; and the routes tests
+address the newly inserted permit gate without shifting their target-route probes. The focused cold
 run `make test-go GO_PACKAGES='./economy ./epochseed ./fiscal' GO_TEST_FLAGS='-count=1'` passes.
 The full uncached Go gate is required before handoff.
