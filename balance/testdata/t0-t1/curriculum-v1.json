@@ -16,6 +16,11 @@
       "requested_command_effect": "replaced_by_terminal_transition",
       "exit_type": "scripted_first",
       "payout_policy": "full_first_exit",
+      "copy": {
+        "title_key": "curriculum.scripted_first_failure.title",
+        "body_key": "curriculum.scripted_first_failure.body",
+        "next_run_key": "curriculum.scripted_first_failure.next_run"
+      },
       "event_order": ["accrual_hooks", "curriculum_failure.v1", "run_ended", "founder_advanced", "run_started"],
       "next_run": "standard_exit_assembly"
     }

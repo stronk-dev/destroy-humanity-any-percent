@@ -4,16 +4,22 @@
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/01 §Tier 0–1` (Sole Proprietor 1995 / Garage 2000s, era beats), `design/02 §2, §11` (curves, pacing targets: scripted failure ~15 min, first elective Exit [45,90] min), `design/03` (T0–1 arcade toys free, staggered unlocks), `design/08` (voice rules, era presentation), UX docs (first-session narrative)
-- **Depends on:** **Purchasable Content Foundation (draft — the upgrade/role/chain/synergy mechanics this content declares; my original "no new engine code" claim was FALSE and is withdrawn)**; Relevance Harness (draft — lands between Foundation and this)
+- **Depends on:** Purchasable Content Foundation and Relevance Harness (both archived); epoch 6
+  `First Content` is the byte-preserved baseline for this owner-gated next-epoch candidate.
 - **Closes:** the oldest line in `rfc/README.md`'s remaining-contracts list
 - **Planning:** `planning/t0-t1-content/` (once implementing)
 
 ## Summary
 
-The Phase-0 catalog has 3 placeholder generators. This RFC turns tiers 0–1 into a playable,
+Epoch 6 has a live permits-gated ladder and the original Phase-0 economy rows. This RFC turns
+tiers 0–1 into a playable,
 funny, correctly-paced first hour: the full T0–T1 catalog (generators, upgrades, gates, manual
 actions), the first-session script, and the copy — all as data on existing schemas, gated by the
-existing harness. One new catalog content epoch (mint) on the Foundation's mechanics. (Correction 2026-08-03: the original draft claimed "no new engine code" and "16 milestones" — both false; the Foundation RFC owns the engine work, and HEAD has 4 milestones × 4 persona-runs = 16 observations. The milestone set grows with this RFC's content.)
+existing harness. One owner-gated content epoch mints the complete candidate only after its
+mandatory pacing and relevance reports pass. (Correction 2026-08-03: the original draft claimed
+"no new engine code" and "16 milestones" — both false; the Foundation RFC owns the engine work,
+and HEAD had 4 milestones × 4 persona-runs = 16 observations. The milestone set grows with this
+RFC's content.)
 
 ## Specification
 
@@ -38,9 +44,10 @@ exactly the offline-policy accrual.
 
 - **Tier 0 (Sole Proprietor, 1995):** manual action `manual.click` re-skinned ("Reply to a
   Customer"); generators: `beige_tower` (exists — becomes real), `dot_matrix_queue`,
-  `answering_machine`, `nephew_intern` (4 generator classes, cost curves in the 1.07–1.12 band
+  `answering_machine`, `nephew_intern` (4 generator classes, cost curves in the 1.07–1.13 band
   per design/02, staggered milestone ladders per §11b). Upgrades: 8–12, each with ≥1 non-production-rate
-  role (loader-enforced role law) — capacity on Permits, minigame token yield, stock-rate.
+  role through the shipped vocabulary (`provision`, `synergy_feed`, `manual_output`,
+  `stock_rate`). Capacity and minigame-input roles remain successor mechanics.
 - **Tier 1 (Garage, 2000s):** `gate.t0_to_t1` gains real requirements; generators:
   `garage_rack`, `crt_wall`, `first_hire`, `beige_tower_v2` (chain-provisioning per the §11b
   purchased/generated split); the cosmetic shop appears with `Horse Armor (Free)` as its first
@@ -48,14 +55,15 @@ exactly the offline-policy accrual.
 - Era-authentic **event copy** for the existing event kinds (threshold crossings, gate
   crossings, offers) — Layer-1 authored events are OUT of scope (the events-engine RFC owns the
   evaluator; this RFC writes only copy for events the engine already emits).
-- All values provisional balance data; the epoch mint carries the first REAL relevance report if
-  the Relevance Harness lands first (recommended order).
+- All values are provisional balance data; the epoch mint requires a REAL relevance report over
+  the complete candidate bundle.
 
 ### T2 — The first session script
 
 Deterministic sequence on existing machinery: boot → one manual click pays → first generator
 affordable ≤ 30 s → first upgrade ≤ 2 min → `gate.t0_to_t1` crossable at ~8–10 min (chaos
-persona) → **the scripted first failure fires ~15 min** (implemented; this RFC writes its
+persona) → **the scripted first failure fires ~15 min** (the candidate defines its lazy logged
+transition and copy binding; implementation remains acceptance debt) → this RFC writes its
 narrative copy — the wind-down screen, the "run 2 opens with" beat) → run 2 reaches Tier 1
 faster (D6 assembly working as designed) → first elective Exit lands in [45,90] min (the
 existing harness gate now measures REAL content instead of placeholder values — AC1).
@@ -80,7 +88,7 @@ first two consumers waiting on it: `generator.beige_tower` (shipped, presentatio
    evaluates successfully (no online-horizon brick) — the mint-blocking regression.
 1. The pacing harness passes on REAL content: the grown T0–T1 milestone set's distributions within design/02 §11
    targets; the [45,90] elective-Exit gate green with the T0–T1 catalog (not fixture values).
-2. Relevance report (if harness landed): zero dead purchasables in the T0–T1 window; every
+2. Mandatory Relevance report: zero dead purchasables in the T0–T1 window; every
    generator class shows a non-production role activation.
 3. Every upgrade/generator/gate loads through strict loaders; the mint follows the epoch
    protocol; golden reports regenerate.
@@ -89,11 +97,12 @@ first two consumers waiting on it: `generator.beige_tower` (shipped, presentatio
 5. Copy audit: no 🔴-flagged names, no unverified statistics (grep-able provenance tags in the
    copy source).
 
-## Open questions
+## Ruled candidate scope
 
-- Exact generator/upgrade names and joke density — content review with the owner (the fun part).
-- Whether `Horse Armor (Free)` needs the cosmetic-slot system or ships as a stub shelf item
-  (recommend: stub shelf — the cosmetics system is its own later RFC; the joke can't wait).
+- Exact mechanical IDs and provisional literals travel through the draft-review-owner-ratify
+  lane before mint.
+- `Horse Armor (Free)` is a non-purchasable, non-stateful shelf stub in v1. A stateful cosmetic
+  requires the successor cosmetics foundation.
 
 ## Changelog
 
@@ -282,3 +291,31 @@ Schemas. Schema v1 continues to reject a null `from_gate`; schema v2 treats it a
 preserves it in report bytes, and remains byte-compatible with every v1 policy, scenario, and
 golden report. This implements only the ruled boundary grammar; the candidate policy remains
 subject to the candidate-round review and owner ratification.
+
+## Candidate-remediation blocker (2026-08-10 — T01-C11)
+
+### T01-C11 — One optimization segment cannot cover the candidate's disjoint windows
+
+T01-C10 makes run-genesis windows truthful, but the scenario loader still requires exactly one
+segment for its sole optimization milestone. The candidate contains three honest, disjoint
+availability intervals: T0 rows from run genesis to `gate.t0_to_t1`; T1 rows from
+`gate.t0_to_t1` to `gate.t2_to_t3`; and the retained Legal Department row from
+`gate.t2_to_t3` to `gate.t3_to_t4`. One segment cannot bind all three without falsely extending
+at least two windows. The candidate Relevance artifact therefore remains unauthorable even
+though schema v2 itself is implemented.
+
+**Proposed contract:** schema v2 permits multiple raw-byte-ordered, non-overlapping segments for
+the same sole `optimization_milestone`, one per availability interval. Every segment must name
+that milestone, have a valid strictly increasing boundary pair, and be ordered without overlap;
+duplicate intervals reject. Every policy item must match at least one segment whose start lies
+inside the item's availability window. The solver still evaluates one target milestone and does
+not change its delta, reducer, budget, or simulation mathematics. Schema v1 retains its exact
+single-segment rule and bytes. The T0–T1 candidate uses exactly:
+
+1. `{from_gate:null,to_gate:"gate.t0_to_t1"}`;
+2. `{from_gate:"gate.t0_to_t1",to_gate:"gate.t2_to_t3"}`;
+3. `{from_gate:"gate.t2_to_t3",to_gate:"gate.t3_to_t4"}`.
+
+Required proof: Go and JSON-Schema rejection fixtures for v1-multiple, unordered, overlapping,
+duplicate, unknown-boundary, and unbound-item cases; one schema-v2 suite proving all three
+candidate intervals bind while report/delta bytes remain single-milestone.

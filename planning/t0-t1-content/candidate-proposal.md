@@ -1,104 +1,146 @@
 # T0–T1 candidate proposal
 
-Status: **draft for owner review; not ratified; not mint-authorized**  
-RFC: `rfc/t0-t1-playable-content.md`  
+Status: **findings remediated; T01-C11 owner ruling required; not ratified; not mint-authorized**
+
+RFC: `rfc/t0-t1-playable-content.md`
+
 Candidate directory: `balance/testdata/t0-t1/`
 
 ## Candidate documents
 
 | Document | SHA-256 | Validation state |
 |---|---|---|
-| `economy-v4.json` | `022a41470853b627fbb8f29202672b85c69ee762bc1a5c0b77f3b65fdc31ecda` | Real Go economy loader + candidate binding test |
-| `routes-v1.json` | `a84cce06ae67a68817174b99cfe7191e3c2f9bf47c1c20b4ebab1704baf99cfa` | Real Go Routes loader + candidate literal test |
-| `presentation-v1.json` | `70953a6dfa53794f9e1e03627f0b2ddb06abb4870550dccc608a9ca0daeba0d7` | Exact proposed grammar; production loader not implemented |
+| `categories-v1.json` | `ff63b341ff8a7439e48cbfa7cb91dcf51089809fcbb0e6e54201965e5911b9a5` | Real Go leaderboard loader + candidate full-gate-set test |
+| `curriculum-v1.json` | `17e5e0c7e8b8f7217c6063b41067af0bed41a34cc26a22e9d4ddfc00513e98d9` | Exact proposed grammar + named Copy binding; transition owner not implemented |
+| `economy-v4.json` | `3b18304a2a56e06619d027f3512f671cf88ddc1da4daacd77045d0b762679ac1` | Real Go economy loader + candidate binding test |
 | `event-copy-v1.json` | `6413fa05f76c56797ec49e82de28ecf81f52cfa502d5b687f8d764d335a94210` | Exact proposed grammar; production loader not implemented |
-| `curriculum-v1.json` | `28b5edee4a938171f1c4d866e1f4967a95188fcb151e6a0e60bd53dcabeaacfb` | Exact proposed grammar; transition owner not implemented |
-| `harness-scenario-v1.json` | `00c9496cd3e0f95051f50db9243cc757f92eb76194e9f7fe23b461d6ed7c366f` | Exact proposed first-hour grammar; harness extension not implemented |
+| `harness-scenario-v1.json` | `e74e271be3b844bfde411887af16de06890a9a281596d45b8ad9deb7b1a502a5` | Exact proposed first-hour grammar; harness extensions not implemented |
+| `opportunities-v1.json` | `63e51084863bd00da7d5a0b358f54741b0b0682d8ef25b2fc7cb3da2c77f27cb` | Real Go active-play loader against candidate economy |
+| `presentation-v1.json` | `70953a6dfa53794f9e1e03627f0b2ddb06abb4870550dccc608a9ca0daeba0d7` | Exact proposed grammar; production loader not implemented |
+| `routes-v1.json` | `a84cce06ae67a68817174b99cfe7191e3c2f9bf47c1c20b4ebab1704baf99cfa` | Real Go Routes loader + candidate literal test |
 
-These hashes are review coordinates, not owner ratifications. Production artifact paths remain
-untouched. The mandatory Relevance document is intentionally absent pending T01-C10: the shipped
-schema cannot truthfully express a window beginning at run genesis.
+These hashes are fresh review coordinates, not owner ratifications. Production artifact paths
+remain untouched. Eight documents now exist: the original six, the F1 categories correction,
+and the EH-C8 opportunities addition. The mandatory ninth document, Relevance policy/scenario,
+is intentionally absent pending T01-C11; schema v2 can express run genesis, but its single
+optimization segment cannot truthfully bind the candidate's three disjoint availability windows.
+
+## Findings-first remediation
+
+- **F1 — closed:** `categories-v1.json` is the live epoch-6 categories artifact plus the one
+  raw-byte-sorted `gate.t0_to_t1` insertion in `full_gate_set`. A real loader test composes it
+  against the candidate Routes gate set.
+- **F2 — closed for re-review:** the four upgrade rows that were structurally outside their
+  windows now use `8.64e4`, `7.5e8`, `8.5e8`, and `9.5e8` cash respectively, and their
+  `resource_at_least` requirements match those prices. These remain provisional pacing bytes;
+  the mandatory relevance report, not this rescale, decides whether they are live content.
+- **F3 — closed:** the body now declares the actual `1.07`–`1.13` T0 band. The `1.13` Beige Tower
+  ratio deliberately preserves its live epoch-6 byte; this is declared preservation rather than
+  silently narrowing the rule around it.
+- **F4 — declared change:** schema v4 requires an executable role for Legal Department. The
+  candidate deliberately makes it a `synergy_feed` source in `pool.institutional_knowledge` at
+  provisional `4000 ppm`, so a permit faucet also feeds the global upgrades multiplier. This is
+  a new owner-ratified balance choice, not epoch-6 byte preservation.
+- **F5 — contract made honest:** the six shipped invariant names remain
+  `state_encodes`, `numeric_domain`, `resource_bounds`, `ledger_reconciles`,
+  `revision_monotone`, and `must_reach`. Three candidate harness extensions are explicit:
+  `artifact_identity` asserts the pinned bundle hash never changes during a run;
+  `replay_parity` byte-compares Go/TypeScript state, receipt, and event outputs; and
+  `role_activation` requires every declared generator-role binding to execute a non-neutral
+  result. Unknown names reject until those runner arms land.
+- **F6 — closed:** every milestone names its clock. Run 1 and run 2 gate milestones explicitly
+  name their run sequence, and `relations` requires run 2's attended-time gate crossing to be
+  strictly earlier than run 1 for the same seed.
+- **F7 — closed:** the curriculum row now binds its three narrative keys in a closed `copy`
+  object (`title_key`, `body_key`, `next_run_key`). The presentation/Copy loader must resolve
+  them before mint.
+- **F8 — documented:** manual refill ppm, stock-rate ppm, provision ppm, synergy weights/curves,
+  the two-million transition budget, and persona seeds are provisional deterministic balance or
+  computation-budget literals, not empirical facts. `9007199254740991` is the shared exact-
+  integer interoperability ceiling, not a gameplay or research claim.
+- **F9 — closed but still gate-owned:** Beige Tower v2's truncated rate is corrected to
+  `4.90222789063e5`. Its provisioning role is deliberately showcased rather than trap-exempt;
+  it must therefore pass the same mandatory relevance gate as every other purchasable.
+- **F10 — carried explicitly:** T01-C6/AC0 still owns the session-bootstrap offline-catchup
+  implementation and >24h replay fixture. Copy assembly must follow FCE-C8's orphan-first order:
+  Copy rows land before any candidate artifact references them, then the owner-gated mint moves
+  the complete referenced set atomically.
 
 ## Economy literals and provenance
 
-The candidate keeps every epoch-6 economy policy byte that this RFC does not own: resources,
-manual action mechanics, multiplier-source registrations, progress coordinates, manual policy,
-offline policy, the Legal Department, and the fiscal multiplier rows.
+The candidate keeps every epoch-6 economy policy byte this RFC does not own: resources, manual
+action mechanics, progress coordinates, manual/offline policy, the Legal Department's core
+permit production, and fiscal multiplier rows. The three active-play multiplier declarations
+are added because the EH-C8 opportunities artifact makes those source IDs part of the composed
+candidate.
 
-The authored T0–T1 progression uses the design's geometric cost band and a regular candidate
-ladder so review can reason about the curve before harness tuning:
+The authored T0–T1 progression is deliberately regular so the harness can expose rather than
+hide pacing errors:
 
-- Generator cost ratios are `1.10`–`1.13`, within design/02's declared `1.07`–`1.15` band.
-- Consecutive base costs multiply by `12`; consecutive base production rates multiply by `6.5`.
-  Those are provisional pacing literals, not research-derived facts.
-- Generator ladders use three `2x` rungs, staggered among `20|25|30`, `50|55|60`, and `100`
-  purchased. These are provisional balance rows shaped by design/02 §11b.
-- Ten upgrades cost one decade above the associated progression point and contribute a `2x`
-  Decimal factor through the shipped `upgrades` slot. The values are provisional.
-- Every upgrade declares only `synergy_feed`, because every upgrade is an actual source in one
-  shipped pool. Generator rows collectively execute all four ruled role kinds: `provision`,
-  `synergy_feed`, `manual_output`, and `stock_rate`.
-- `generator.beige_tower_v2` provisions `generator.beige_tower` at `100000 ppm`; pool source
-  weights and both pool curves are provisional. The existing 60-second provision grid is kept.
-- `gate.t0_to_t1` requires `1e5 company.cash`, with no route rows. This is a provisional pacing
-  literal. Every later epoch-6 gate and route byte remains unchanged.
+- Generator ratios are `1.10`–`1.13`, within design/02's `1.07`–`1.15` band; consecutive base
+  costs multiply by `12`, and production rates multiply by `6.5`.
+- Generator ladders use provisional `2x` rungs staggered among `20|25|30`, `50|55|60`, and `100`.
+- Each upgrade contributes a `2x` Decimal factor through the shipped `upgrades` slot. The revised
+  prices above keep the affected rows reachable inside their declared windows.
+- Generator rows collectively execute the four shipped role kinds: `provision`, `synergy_feed`,
+  `manual_output`, and `stock_rate`. Capacity and minigame-input remain excluded.
+- Beige Tower v2 provisions Beige Tower at provisional `100000 ppm` on the existing 60-second
+  absolute grid. Pool weights and both pool curves are provisional.
+- `gate.t0_to_t1` requires provisional `1e5 company.cash`, with no route rows. Every later
+  epoch-6 gate and route byte is unchanged.
 
-No value above is presented as an empirical fact. Harness results may change these bytes only in
-a later reviewed/owner-ratified candidate revision.
+None of those literals is represented as empirical fact. Changes after review require a new
+candidate hash and owner ratification.
 
 ## Proposed content grammars
 
-### Presentation v1
+### Presentation and event copy v1
 
-The document binds every mechanical generator and upgrade ID, `manual.click`, and the one Horse
-Armor shelf stub to explicit Copy keys. `cosmetic.horse_armor_free` is byte-explicitly
-non-purchasable and non-stateful. The production loader must require exact key sets, raw-byte
-sorted unique IDs, set equality with the pinned economy catalog, Copy registry resolution, and
-the `purchasable=false` + `stateful=false` biconditional for v1 cosmetic stubs.
-
-The candidate intentionally supplies bindings, not prose. Copy authoring begins after mechanical
-review so rejected IDs do not create orphan Copy rows.
-
-### Event-copy v1
-
-The closed set is the seven event kinds currently needed by the first-hour flow:
-`exit_offer_declined`, `exit_offer_expired`, `exit_offer_spawned`, `gate_crossed`,
-`generator_purchased`, `run_ended`, and `upgrade_purchased`. Each row declares the only payload
-parameters copy may reference; unknown kinds reject. The production loader must prove those
-parameters against the registered event schema rather than trusting this document.
+Presentation binds every mechanical generator and upgrade, `manual.click`, and the Horse Armor
+shelf stub to explicit Copy keys. The stub is byte-explicitly non-purchasable and non-stateful.
+The future loader must enforce exact sets against economy, resolve every Copy key, and reject any
+stateful v1 cosmetic. Event copy remains the closed seven-kind set in the candidate; unknown
+kinds reject and parameters must match the registered production event schemas.
 
 ### Curriculum v1
 
-The one trigger fires only for Founder exit-count zero, Company run 1, at least 900,000 attended
-milliseconds, and `gate.t0_to_t1` crossed. The first subsequent player Company command evaluates
-accrual, replaces the requested action with a terminal `scripted_first` Exit, records the
-one-shot marker in Founder exit history, grants the normal first-Exit payout, and uses standard
-next-run assembly. The declared event order is exact candidate wire grammar. This requires the
-ruled logged transition implementation before any mint.
+The trigger applies only to Founder exit-count zero, Company run 1, at least 900,000 attended
+milliseconds, and `gate.t0_to_t1` crossed. The first later player Company command evaluates
+accrual, replaces the requested action with terminal `scripted_first`, records the one-shot
+Founder-history marker, grants the standard first-Exit payout, and uses normal next-run assembly.
+Its exact event order and three Copy bindings are candidate wire grammar. The ruled logged
+transition remains implementation debt.
 
 ### First-hour harness scenario v1
 
-The proposed scenario declares three deterministic policies, seven exact milestones, seven
-envelopes, the complete invariant set, and a two-million-transition ceiling. Times are the RFC's
-provisional pacing targets, not claimed results. The harness must reject unknown predicate arms
-and prove the composed human-path fixture consumes these same milestone IDs.
+The scenario declares three deterministic policies, seven clocked milestones, seven envelopes,
+one same-seed run-2-faster relation, all six shipped invariants plus the three named extensions,
+and a two-million-transition ceiling. Times are provisional targets, not claimed results. The
+composed human-path fixture must consume these same milestone IDs.
 
-## T01-C10 — owner ruling required
+### Opportunities v1
 
-Relevance-policy schema v1 requires a non-null concrete `from_gate`. T0 purchasables exist from
-genesis, before the first gate, so no schema-v1 row can describe them accurately. Using
-`gate.t0_to_t1` would make the mandatory report omit the T0 interval.
+This is byte-identical to the reviewed Active-Play foundation fixture: the gamma6 schedule,
+building/click/lucky/production effects, and combo cap. It is intentionally a candidate artifact,
+not a production mint. The economy document adds exactly the three multiplier declarations that
+its multiplicative effects resolve; Lucky is a payout, not a multiplier source.
 
-Proposed resolution: schema v2 permits `from_gate:null`, meaning run genesis, in policy windows
-and scenario segments. Null sorts before all Routes gates; `to_gate` remains exclusive. Existing
-schema-v1 bytes retain their meaning. Required proof: strict Go/schema mutation tests, one
-`{null,"gate.t0_to_t1"}` candidate window, and a report showing the T0 item was evaluated in that
-segment.
+## T01-C11 — owner ruling required
+
+Schema v2 now models run genesis, but its scenario validator still requires exactly one segment
+for the sole optimization milestone. T0, T1, and the tier-3 Legal Department occupy three
+disjoint availability intervals. One segment cannot cover them without lying.
+
+Proposed resolution: schema v2 permits multiple raw-byte-ordered, non-overlapping segments for
+the same sole milestone; each item must match at least one segment. Schema v1 stays exactly one
+segment. The candidate uses `[run genesis,T0→T1)`, `[T0→T1,T2→T3)`, and `[T2→T3,T3→T4)`.
+This changes binding coverage only: the optimization target, reducer, delta math, simulations,
+and budgets remain singular and byte-compatible. The full rejection/proof matrix is in T01-C11
+in the RFC.
 
 ## Review request
 
-Review the six pinned draft documents for mechanical shape and provisional numbers, rule
-T01-C10, and author the presentation/event/curriculum Copy text only after the ID set is accepted.
-After that ruling Codex can implement the missing strict loaders and logged transitions, produce
-the mandatory Relevance artifact, run the composed pacing/relevance gates, and return the final
-candidate hashes for owner ratification. No epoch-7 mint is authorized by this proposal.
+Re-review the eight present candidate documents and the F1–F10 closures. Rule T01-C11 before the
+ninth Relevance document is authored. After that, Codex can implement the missing strict loaders,
+logged transitions, and harness extensions; run the composed pacing/relevance gates; and return
+the complete candidate hashes for owner ratification. No epoch mint is authorized here.

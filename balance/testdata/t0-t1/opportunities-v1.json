@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "schedule_policy": {
+    "sampler_version": "gamma6_exp.v1",
+    "substream_label": "active_play.spawn.v1",
+    "minimum_interval_ms": 1000,
+    "scale_ms": 500,
+    "lifetime_ms": 3000,
+    "max_due_transitions": 16
+  },
+  "effects": [
+    {
+      "effect_row_id": "active.building",
+      "kind": "building_special",
+      "weight": 2,
+      "per_owned_ppm": 100000,
+      "duration_ms": 2000,
+      "eligible_generator_ids": ["generator.beige_tower"]
+    },
+    {
+      "effect_row_id": "active.click",
+      "kind": "click_frenzy",
+      "weight": 3,
+      "factor": "7e0",
+      "duration_ms": 1000,
+      "action_ids": ["manual.click"]
+    },
+    {
+      "effect_row_id": "active.lucky",
+      "kind": "lucky_payout",
+      "weight": 1,
+      "lucky_bank_frac": "1.5e-1",
+      "lucky_rate_cap": "9e2",
+      "epsilon": "1.3e1",
+      "resource_id": "company.cash",
+      "hardcap_reason_key": "cap.cash"
+    },
+    {
+      "effect_row_id": "active.production",
+      "kind": "production_frenzy",
+      "weight": 4,
+      "factor": "7e0",
+      "duration_ms": 5000,
+      "targets": ["generator_production"]
+    }
+  ],
+  "combo_policy": { "combo_cap": "1e4", "hardcap_reason_key": "cap.active_combo" }
+}

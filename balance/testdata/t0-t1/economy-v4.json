@@ -120,7 +120,7 @@
       "tier": 1,
       "category": "category.hardware",
       "price": { "resource_id": "company.cash", "base": "3.5831808e8", "curve": { "kind": "geometric", "ratio": "1.1e0" } },
-      "production": { "resource_id": "company.cash", "base_rate": "4.90222789e5" },
+      "production": { "resource_id": "company.cash", "base_rate": "4.90222789063e5" },
       "provisions": { "generator_id": "generator.beige_tower", "rate_ppm": 100000 },
       "ladder": [
         { "purchased_at": 30, "multiplier_ppm": 2000000 },
@@ -178,9 +178,9 @@
     },
     {
       "id": "upgrade.nephew_business_cards",
-      "cost": { "resource": "company.cash", "amount": "1.728e6" },
+      "cost": { "resource": "company.cash", "amount": "8.64e4" },
       "window": { "from_gate": null, "to_gate": "gate.t0_to_t1" },
-      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "1.728e6" }],
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "8.64e4" }],
       "effects": [{ "source_id": "upgrade.nephew_business_cards.factor", "slot": "upgrades", "target": "generator.nephew_intern", "factor": "2e0" }],
       "roles": ["synergy_feed"],
       "copy_key": "upgrade.nephew_business_cards"
@@ -205,27 +205,27 @@
     },
     {
       "id": "upgrade.employee_handbook_v0",
-      "cost": { "resource": "company.cash", "amount": "2.985984e9" },
+      "cost": { "resource": "company.cash", "amount": "7.5e8" },
       "window": { "from_gate": "gate.t0_to_t1", "to_gate": "gate.t2_to_t3" },
-      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "2.985984e9" }],
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "7.5e8" }],
       "effects": [{ "source_id": "upgrade.employee_handbook_v0.factor", "slot": "upgrades", "target": "generator.first_hire", "factor": "2e0" }],
       "roles": ["synergy_feed"],
       "copy_key": "upgrade.employee_handbook_v0"
     },
     {
       "id": "upgrade.refurbished_sticker",
-      "cost": { "resource": "company.cash", "amount": "3.5831808e10" },
+      "cost": { "resource": "company.cash", "amount": "8.5e8" },
       "window": { "from_gate": "gate.t0_to_t1", "to_gate": "gate.t2_to_t3" },
-      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "3.5831808e10" }],
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "8.5e8" }],
       "effects": [{ "source_id": "upgrade.refurbished_sticker.factor", "slot": "upgrades", "target": "generator.beige_tower_v2", "factor": "2e0" }],
       "roles": ["synergy_feed"],
       "copy_key": "upgrade.refurbished_sticker"
     },
     {
       "id": "upgrade.institutional_memory",
-      "cost": { "resource": "company.cash", "amount": "4.29981696e11" },
+      "cost": { "resource": "company.cash", "amount": "9.5e8" },
       "window": { "from_gate": "gate.t0_to_t1", "to_gate": "gate.t2_to_t3" },
-      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "4.29981696e11" }],
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "9.5e8" }],
       "effects": [{ "source_id": "upgrade.institutional_memory.factor", "slot": "upgrades", "target": "generator.beige_tower", "factor": "2e0" }],
       "roles": ["synergy_feed"],
       "copy_key": "upgrade.institutional_memory"
@@ -267,6 +267,9 @@
     { "id": "manual.click", "output": { "resource_id": "company.cash", "amount_per_action": "1e0" } }
   ],
   "multiplier_sources": [
+    { "id": "active.building.generator.beige_tower", "slot": "event_buffs", "target": "generator.beige_tower", "provider": "active_play" },
+    { "id": "active.click", "slot": "event_buffs", "target": "manual.click", "provider": "active_play" },
+    { "id": "active.production", "slot": "event_buffs", "target": "all", "provider": "active_play" },
     { "id": "commons.member", "slot": "commons", "target": "all", "provider": "commons" },
     { "id": "fiscal.generator.beige_tower", "slot": "prestige", "target": "generator.beige_tower", "provider": "fiscal" },
     { "id": "fiscal.hoard", "slot": "prestige", "target": "all", "provider": "fiscal" },

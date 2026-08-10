@@ -51,3 +51,24 @@ Ratification round follows the fixed set + re-review.
 - The candidate's honest multi-window binding cannot be expressed by the still-single-segment
   scenario grammar. That separate contract is recorded as T01-C11 in the candidate remediation;
   this implementation does not improvise it.
+
+## 2026-08-10 — Codex candidate remediation handoff: F1–F10 + EH-C8 addition
+
+- **Review by:** Codex self-review only. **Recorded by:** Codex. This is a findings-first
+  remediation handoff, not owner ratification, designated approval, or mint authorization.
+- F1 closes with a byte-sorted categories candidate and a real loader/set-equality test. EH-C8
+  closes at candidate shape with the reviewed four-effect opportunities document, the three
+  required active-play multiplier declarations, and a real composed loader test.
+- F2's affected upgrade prices and their `resource_at_least` requirements are rescaled together;
+  the test pins all four pairs so a cheap cost cannot hide an unreachable requirement. F3–F10 are
+  reconciled in the RFC/proposal: actual 1.13 band; Legal Department synergy declared as a new
+  owner choice; exact invariant-extension semantics; explicit clocks/run-2 relation; curriculum
+  Copy binding; provenance classification; corrected Beige Tower v2 rate; and both carried debts.
+- Eight candidate coordinates are recorded in `candidate-proposal.md`. Production bytes remain
+  untouched. Normal cold validation passed through `make test-go
+  GO_PACKAGES='./economy ./routes ./leaderboard ./activeplay' GO_TEST_FLAGS='-count=1'`.
+- **T01-C11 — OWNER RULING REQUIRED:** schema v2's single-segment rule cannot cover the honest
+  run-genesis, T1, and tier-3 Legal Department intervals simultaneously. The RFC proposes
+  multiple ordered non-overlapping segments for the same single optimization milestone in v2,
+  while retaining v1's one-segment rule and all solver mathematics. The mandatory ninth
+  Relevance document is blocked on this ruling; no substitute bytes were authored.
