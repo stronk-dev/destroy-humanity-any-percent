@@ -28,6 +28,27 @@ events, and replay logs in one transaction. Fault injection covers every write b
 answered from the durable session-ID idempotency receipt without executing the tenant or faucet
 again.
 
+## Authenticated composed API
+
+The composed server mounts the generated private-v1 registry as the only route authority for
+minigame create, current, command, and resolve requests and for Soul-Recovery start, progress,
+cancel, and resolve requests. Founder identity always comes from the access token. Request schemas
+reject Founder IDs, Company stream IDs, and server-clock coordinates, and a foreign session ID is
+indistinguishable from a well-formed missing session ID.
+
+The real-socket integration path proves a complete Pitch session and a complete Soul-Recovery
+session through the composed binary. Recovery reconnect rotates the progress token; the old token
+fails, attended heartbeats reach eligibility, terminal retry returns identical durable bytes, and
+an over-age session terminates through the watchdog path. Authenticated command flooding reaches
+the shared account limiter without changing the active session; after refill, the exact prior
+snapshot remains current and ordinary play resumes. Recovery heartbeats retain their additional
+per-session limiter.
+
+The internal recovery command kind remains `resolve_soul_recovery` or
+`cancel_soul_recovery` for replay. The public durable terminal receipt uses the API grammar's
+`action: "resolve" | "cancel"`; the distinction is explicit so internal command vocabulary cannot
+leak across the public schema boundary.
+
 ## Tenant boundary
 
 A tenant registers one immutable descriptor: engine/version identity, command/snapshot/result

@@ -383,7 +383,11 @@ func (s *Service) finishSoulRecovery(ctx context.Context, request FinishSoulReco
 		if transitionErr != nil {
 			return save.MinigameResolutionDecision{}, transitionErr
 		}
-		receipt := soulRecoveryReceipt{IntentID: request.SessionID, Outcome: string(save.IntentApplied), Action: kind,
+		receiptAction := "resolve"
+		if kind == soulRecoveryCancelKind {
+			receiptAction = "cancel"
+		}
+		receipt := soulRecoveryReceipt{IntentID: request.SessionID, Outcome: string(save.IntentApplied), Action: receiptAction,
 			SessionID: claimed.SessionID, ActivityID: claimed.ActivityID, CompanyRevision: companyNext,
 			FounderRevision: founderNext, SoulBefore: beforeSoul, SoulAfter: afterSoul,
 			BandBefore: beforeBand.Member, BandAfter: afterBand.Member}

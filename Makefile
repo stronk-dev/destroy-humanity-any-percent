@@ -6,6 +6,8 @@ REPO_CACHE_DIR ?= $(CURDIR)/.cache
 export GOCACHE ?= $(REPO_CACHE_DIR)/go-build
 GO_PACKAGES ?= ./...
 GO_TEST_FLAGS ?=
+SAVE_TEST_PACKAGES ?= ./...
+SAVE_TEST_FLAGS ?= -run Integration
 CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
 
 setup:
@@ -24,7 +26,7 @@ test-go:
 	cd server && go test -p 1 $(GO_TEST_FLAGS) $(GO_PACKAGES)
 
 test-save-integration:
-	docker compose -f compose.save-test.yml run --rm test
+	docker compose -f compose.save-test.yml run --rm test go test -p 1 $(SAVE_TEST_FLAGS) $(SAVE_TEST_PACKAGES) -count=1
 
 test-client:
 	cd client && $(CLIENT_BIN)/vitest run

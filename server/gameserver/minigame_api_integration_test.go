@@ -128,6 +128,74 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		t.Fatalf("reconnect=%s", currentBytes)
 	}
 
+	// The authenticated account limiter bounds command flooding before tenant
+	// execution. Invalid commands exercise the exact public route without
+	// changing the active session, then a refill proves ordinary play can
+	// resume from byte-identical state.
+	limited := false
+	for attempt := 0; attempt < 100; attempt++ {
+		floodResponse := compositionRequest(t, httpServer.Client(), http.MethodPost,
+			httpServer.URL+"/api/v1/minigames/sessions/"+current.SessionID+"/commands", tokens.AccessToken, `{}`)
+		floodBytes := readCompositionBytes(t, floodResponse)
+		switch floodResponse.StatusCode {
+		case http.StatusBadRequest:
+		case http.StatusTooManyRequests:
+			if string(floodBytes) != "{\"category\":\"rate_limited\",\"detail\":\"account\"}\n" {
+				t.Fatalf("command flood rejection=%s", floodBytes)
+			}
+			limited = true
+		default:
+			t.Fatalf("command flood status=%d body=%s", floodResponse.StatusCode, floodBytes)
+		}
+		if limited {
+			break
+		}
+	}
+	if !limited {
+		t.Fatal("authenticated command flood never reached the account limiter")
+	}
+	clock.Set(clock.Time().Add(15 * time.Second))
+	currentResponse = compositionRequest(t, httpServer.Client(), http.MethodGet, httpServer.URL+"/api/v1/minigames/sessions/current", tokens.AccessToken, "")
+	postFloodBytes := readCompositionBytes(t, currentResponse)
+	if currentResponse.StatusCode != http.StatusOK || !bytes.Equal(postFloodBytes, currentBytes) {
+		t.Fatalf("command flood mutated session: status=%d equal=%v body=%s", currentResponse.StatusCode, bytes.Equal(postFloodBytes, currentBytes), postFloodBytes)
+	}
+
+	// A second authenticated account cannot enumerate the first account's
+	// current or addressed session. Addressing an existing foreign session is
+	// byte-indistinguishable from addressing a well-formed missing session.
+	secondCreatedResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/account", "", `{}`)
+	if secondCreatedResponse.StatusCode != http.StatusCreated {
+		t.Fatalf("second account create status=%d body=%s", secondCreatedResponse.StatusCode, responseBody(secondCreatedResponse))
+	}
+	var secondCreated account.CreatedAccount
+	decodeCompositionResponse(t, secondCreatedResponse, &secondCreated)
+	secondSessionResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/session", "",
+		fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, secondCreated.AccountID, secondCreated.RecoveryCode))
+	if secondSessionResponse.StatusCode != http.StatusOK {
+		t.Fatalf("second session status=%d body=%s", secondSessionResponse.StatusCode, responseBody(secondSessionResponse))
+	}
+	var secondTokens account.TokenPair
+	decodeCompositionResponse(t, secondSessionResponse, &secondTokens)
+	secondCurrent := compositionRequest(t, httpServer.Client(), http.MethodGet, httpServer.URL+"/api/v1/minigames/sessions/current", secondTokens.AccessToken, "")
+	if secondBytes := readCompositionBytes(t, secondCurrent); secondCurrent.StatusCode != http.StatusOK || string(secondBytes) != `{"kind":"none"}` {
+		t.Fatalf("foreign current status=%d body=%s", secondCurrent.StatusCode, secondBytes)
+	}
+	missingSessionID := "01986666-f100-7000-8000-000000000099"
+	privacyCommand := `{"command_id":"privacy-command","expected_revision":1,"command":{"kind":"end_shop"}}`
+	assertPrivateSessionResponse(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/minigames/sessions/"+current.SessionID+"/commands",
+		httpServer.URL+"/api/v1/minigames/sessions/"+missingSessionID+"/commands", secondTokens.AccessToken, privacyCommand)
+	assertPrivateSessionResponse(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/minigames/sessions/"+current.SessionID+"/resolve",
+		httpServer.URL+"/api/v1/minigames/sessions/"+missingSessionID+"/resolve", secondTokens.AccessToken, `{}`)
+	strictCreate := compositionRequest(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/minigames/pitch/sessions", secondTokens.AccessToken,
+		fmt.Sprintf(`{"idempotency_key":"privacy-create","founder_id":%q}`, created.AccountID))
+	if strictBytes := readCompositionBytes(t, strictCreate); strictCreate.StatusCode != http.StatusBadRequest || string(strictBytes) != "{\"category\":\"invalid\",\"detail\":\"minigame_create\"}\n" {
+		t.Fatalf("create accepted client identity: status=%d body=%s", strictCreate.StatusCode, strictBytes)
+	}
+
 	var terminalBytes, terminalCommand []byte
 	for step := 0; step < 24 && current.Status == "active"; step++ {
 		var command map[string]any
@@ -192,6 +260,80 @@ func TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration(t *test
 		t.Fatalf("terminal current status=%d body=%s", currentResponse.StatusCode, currentBytes)
 	}
 
+	// The recovery half of MA AC1 uses only the composed authenticated socket:
+	// start, reconnect/token rotation, attended heartbeats, resolve/retry, and a
+	// separate watchdog-terminal session.
+	recoveryStart := compositionRequest(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/soul-recovery/start", tokens.AccessToken, `{"activity_id":"repot"}`)
+	recoveryStartBytes := readCompositionBytes(t, recoveryStart)
+	if recoveryStart.StatusCode != http.StatusOK || registry.ValidateResponse("start_soul_recovery", http.StatusOK, recoveryStartBytes) != nil {
+		t.Fatalf("recovery start status=%d body=%s", recoveryStart.StatusCode, recoveryStartBytes)
+	}
+	var recovery recoveryAPIStart
+	if json.Unmarshal(recoveryStartBytes, &recovery) != nil || recovery.SessionID == "" || recovery.ProgressToken == "" || recovery.RequiredDurationAttendedMS != 300_000 {
+		t.Fatalf("recovery start=%s", recoveryStartBytes)
+	}
+	recoveryReconnect := compositionRequest(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/soul-recovery/start", tokens.AccessToken, `{"activity_id":"repot"}`)
+	recoveryReconnectBytes := readCompositionBytes(t, recoveryReconnect)
+	var reconnected recoveryAPIStart
+	if recoveryReconnect.StatusCode != http.StatusOK || json.Unmarshal(recoveryReconnectBytes, &reconnected) != nil ||
+		reconnected.SessionID != recovery.SessionID || reconnected.ProgressToken == recovery.ProgressToken {
+		t.Fatalf("recovery reconnect status=%d body=%s", recoveryReconnect.StatusCode, recoveryReconnectBytes)
+	}
+	staleProgress := compositionRequest(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/soul-recovery/progress", tokens.AccessToken,
+		fmt.Sprintf(`{"session_id":%q,"progress_token":%q}`, recovery.SessionID, recovery.ProgressToken))
+	if staleBytes := readCompositionBytes(t, staleProgress); staleProgress.StatusCode != http.StatusBadRequest || string(staleBytes) != "{\"category\":\"not_eligible\",\"detail\":\"recovery_token\"}\n" {
+		t.Fatalf("stale recovery token status=%d body=%s", staleProgress.StatusCode, staleBytes)
+	}
+	var progress recoveryAPIProgress
+	for progress.AttendedProgressMS < reconnected.RequiredDurationAttendedMS {
+		clock.Set(clock.Time().Add(5 * time.Second))
+		progressResponse := compositionRequest(t, httpServer.Client(), http.MethodPost,
+			httpServer.URL+"/api/v1/soul-recovery/progress", tokens.AccessToken,
+			fmt.Sprintf(`{"session_id":%q,"progress_token":%q}`, reconnected.SessionID, reconnected.ProgressToken))
+		progressBytes := readCompositionBytes(t, progressResponse)
+		if progressResponse.StatusCode != http.StatusOK || registry.ValidateResponse("progress_soul_recovery", http.StatusOK, progressBytes) != nil || json.Unmarshal(progressBytes, &progress) != nil {
+			t.Fatalf("recovery progress status=%d body=%s", progressResponse.StatusCode, progressBytes)
+		}
+	}
+	if !progress.Eligible || progress.AttendedProgressMS != reconnected.RequiredDurationAttendedMS {
+		t.Fatalf("recovery progress=%+v", progress)
+	}
+	recoveryResolve := compositionRequest(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/soul-recovery/resolve", tokens.AccessToken, fmt.Sprintf(`{"session_id":%q}`, reconnected.SessionID))
+	recoveryResolveBytes := readCompositionBytes(t, recoveryResolve)
+	if recoveryResolve.StatusCode != http.StatusOK || registry.ValidateResponse("resolve_soul_recovery", http.StatusOK, recoveryResolveBytes) != nil {
+		t.Fatalf("recovery resolve status=%d body=%s", recoveryResolve.StatusCode, recoveryResolveBytes)
+	}
+	recoveryRetry := compositionRequest(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/soul-recovery/resolve", tokens.AccessToken, fmt.Sprintf(`{"session_id":%q}`, reconnected.SessionID))
+	if retryBytes := readCompositionBytes(t, recoveryRetry); recoveryRetry.StatusCode != http.StatusOK || !bytes.Equal(retryBytes, recoveryResolveBytes) {
+		t.Fatalf("recovery retry status=%d equal=%v body=%s", recoveryRetry.StatusCode, bytes.Equal(retryBytes, recoveryResolveBytes), retryBytes)
+	}
+
+	watchdogStart := compositionRequest(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/soul-recovery/start", tokens.AccessToken, `{"activity_id":"server_room"}`)
+	watchdogStartBytes := readCompositionBytes(t, watchdogStart)
+	var watchdog recoveryAPIStart
+	if watchdogStart.StatusCode != http.StatusOK || json.Unmarshal(watchdogStartBytes, &watchdog) != nil {
+		t.Fatalf("watchdog start status=%d body=%s", watchdogStart.StatusCode, watchdogStartBytes)
+	}
+	clock.Set(clock.Time().Add(24*time.Hour + time.Millisecond))
+	watchdogRefresh := compositionRequest(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/session/refresh", "", fmt.Sprintf(`{"refresh_token":%q}`, tokens.RefreshToken))
+	if watchdogRefresh.StatusCode != http.StatusOK {
+		t.Fatalf("watchdog token refresh status=%d body=%s", watchdogRefresh.StatusCode, responseBody(watchdogRefresh))
+	}
+	decodeCompositionResponse(t, watchdogRefresh, &tokens)
+	watchdogCancel := compositionRequest(t, httpServer.Client(), http.MethodPost,
+		httpServer.URL+"/api/v1/soul-recovery/cancel", tokens.AccessToken, fmt.Sprintf(`{"session_id":%q}`, watchdog.SessionID))
+	watchdogBytes := readCompositionBytes(t, watchdogCancel)
+	if watchdogCancel.StatusCode != http.StatusOK || registry.ValidateResponse("cancel_soul_recovery", http.StatusOK, watchdogBytes) != nil || !bytes.Contains(watchdogBytes, []byte(`"cancelled_by":"watchdog"`)) {
+		t.Fatalf("watchdog cancel status=%d body=%s", watchdogCancel.StatusCode, watchdogBytes)
+	}
+
 	drainContext, cancelDrain := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancelDrain()
 	if err := composition.Server.Drain(drainContext, clock.Time()); err != nil {
@@ -210,6 +352,29 @@ type minigameAPIEnvelope struct {
 type pitchAPISnapshot struct {
 	Phase string   `json:"phase"`
 	Hand  []string `json:"hand"`
+}
+
+type recoveryAPIStart struct {
+	SessionID                  string `json:"session_id"`
+	ProgressToken              string `json:"progress_token"`
+	RequiredDurationAttendedMS int64  `json:"required_duration_attended_ms"`
+}
+
+type recoveryAPIProgress struct {
+	AttendedProgressMS int64 `json:"attended_progress_ms"`
+	Eligible           bool  `json:"eligible"`
+}
+
+func assertPrivateSessionResponse(t *testing.T, client *http.Client, method, foreignURL, missingURL, token, body string) {
+	t.Helper()
+	foreign := compositionRequest(t, client, method, foreignURL, token, body)
+	foreignBytes := readCompositionBytes(t, foreign)
+	missing := compositionRequest(t, client, method, missingURL, token, body)
+	missingBytes := readCompositionBytes(t, missing)
+	if foreign.StatusCode != http.StatusNotFound || missing.StatusCode != http.StatusNotFound ||
+		!bytes.Equal(foreignBytes, missingBytes) || string(foreignBytes) != "{\"category\":\"unknown_id\",\"detail\":\"minigame_session\"}\n" {
+		t.Fatalf("session privacy foreign=(%d,%s) missing=(%d,%s)", foreign.StatusCode, foreignBytes, missing.StatusCode, missingBytes)
+	}
 }
 
 func readCompositionBytes(t *testing.T, response *http.Response) []byte {

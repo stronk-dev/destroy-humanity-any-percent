@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"net/http"
 	"testing"
+
+	"cloud-clicker/server/publicapi"
 )
 
 const (
@@ -62,6 +64,53 @@ func TestMinigameAPIRegistryValidatesExactWire(t *testing.T) {
 	broken = append(broken[:len(broken)-1], []byte(`,"claim_token":"private"}`)...)
 	if err := registry.ValidateResponse("create_minigame_session", http.StatusOK, broken); err == nil {
 		t.Fatal("private claim token accepted by response schema")
+	}
+}
+
+func TestMinigameEndpointPrivacyContractIsClosed(t *testing.T) {
+	registry, err := newPrivateAPIRegistry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantParameters := map[string][]string{
+		"create_minigame_session":      {"minigame_id"},
+		"get_current_minigame_session": nil,
+		"play_minigame_command":        {"session_id"},
+		"resolve_minigame_session":     {"session_id"},
+	}
+	valid := map[string][]byte{
+		"create_minigame_session":      []byte(`{"idempotency_key":"create-1"}`),
+		"get_current_minigame_session": nil,
+		"play_minigame_command":        []byte(`{"command":{"kind":"end_shop"},"command_id":"command-1","expected_revision":1}`),
+		"resolve_minigame_session":     []byte(`{}`),
+	}
+	for operationID, parameters := range wantParameters {
+		operation, ok := registry.Operation(operationID)
+		if !ok || operation.Public || operation.Surface != publicapi.SurfacePrivateV1 || operation.Auth != publicapi.AuthAccessToken {
+			t.Fatalf("%s authority=%+v ok=%v", operationID, operation, ok)
+		}
+		if len(operation.Parameters) != len(parameters) {
+			t.Fatalf("%s parameters=%+v", operationID, operation.Parameters)
+		}
+		for index, name := range parameters {
+			if operation.Parameters[index].Name != name {
+				t.Fatalf("%s parameter[%d]=%q", operationID, index, operation.Parameters[index].Name)
+			}
+		}
+		if err := registry.ValidateRequest(operationID, valid[operationID]); err != nil {
+			t.Fatalf("%s valid request: %v", operationID, err)
+		}
+		for _, privateField := range []string{"founder_id", "company_stream_id", "server_now_ms"} {
+			body := append([]byte(nil), valid[operationID]...)
+			if len(body) == 0 || string(body) == `{}` {
+				body = []byte(`{"` + privateField + `":"attacker"}`)
+			} else {
+				body = append(body[:len(body)-1], []byte(`,"`+privateField+`":"attacker"}`)...)
+			}
+			if err := registry.ValidateRequest(operationID, body); err == nil {
+				t.Fatalf("%s accepted private field %s", operationID, privateField)
+			}
+		}
 	}
 }
 

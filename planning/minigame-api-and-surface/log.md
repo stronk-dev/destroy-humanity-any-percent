@@ -292,3 +292,32 @@ every implementation commit from e935c22 through 8c3ae4b is verdict-covered EXCE
 claims). **AC1–AC4 remain UNCLAIMABLE** per the carried F2 plan boxes (composed recovery half,
 command-flooding proof, privacy enumeration) and MA-C9's surface sequencing — this verdict
 covers the implementation to date; it is NOT archival authorization.
+
+## 2026-08-10 — MA composed acceptance-debt implementation handoff
+
+- Extended the composed real-HTTP lifecycle through Soul Recovery without test-only state
+  mutation: start, reconnect with token rotation, stale-token rejection, attended heartbeat
+  progression, resolve with byte-identical retry, and watchdog cancellation all traverse the
+  generated authenticated routes and production coordinator.
+- Proved authenticated minigame-command flooding reaches the shared account limiter and leaves the
+  active session byte-identical; advancing the injected clock through the ordinary refill policy
+  restores service and the same Pitch run completes normally.
+- Closed MA4 at both authorities. The generated registry test enumerates all four minigame
+  operations as private/access-token-only, pins their sole allowed path parameters, and rejects
+  Founder, Company, or server-clock fields. The composed Postgres test proves a second account sees
+  no current session and receives byte-identical `unknown_id/minigame_session` responses for a
+  foreign versus missing command/resolve target.
+- The composed proof exposed a real public-wire divergence: durable recovery receipts used the
+  internal replay kinds `resolve_soul_recovery|cancel_soul_recovery`, while the generated API
+  contract requires `resolve|cancel`. The coordinator now keeps the internal kind in replay inputs
+  and emits the closed public action in the durable receipt. This is an honest semantic correction;
+  kernel identity advances from 0.3.87 to 0.3.88.
+- The root `test-save-integration` target now accepts `SAVE_TEST_PACKAGES` and `SAVE_TEST_FLAGS`
+  overrides while retaining the ordinary Docker-backed full-suite defaults. This keeps focused
+  integration work behind the repository's Make interface.
+- Normal repository verification is green after the change: `make test-save-integration` and the
+  complete `make verify` gate (including 6,623 client tests, 19,881 browser tests, typecheck with
+  zero diagnostics, schema/copy/generated checks, and the kernel-history guard at 0.3.88).
+- This entry is implementation and self-check evidence only. The batch is not approved or
+  archival authority; it is ready for the required designated cross-party review after the full
+  gate completes. Surface components remain the sole unchecked MA implementation item.
