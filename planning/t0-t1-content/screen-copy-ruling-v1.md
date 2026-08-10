@@ -595,3 +595,22 @@ figure a Sources screen would need to defend.
    recounted. The server's copy wins. It always does. Nothing was lost."
 5. `desk.manual.meter_tooltip` — "You have two hands. The meter refills on its own, free,
    always. It is a speed limit, not a store."
+
+---
+
+## Owner dispositions — v1.1 (Marco, 2026-08-11; closes the assembly review's F1/F2/F3)
+
+1. **README lines:** the two detector-FORCED prose edits are ADOPTED as owner text ("mail us
+   zero dollars"; "-- the authors, nineteen ninety-five"). The UNFORCED edit is REVERTED:
+   line 32 returns to "(see: OUR VISION, slide 1 of 1)" — consistent with the retained Vision
+   Slide footnote. Codex reassembles through the drift-gated lane; the copy-candidate SHA is
+   re-minted; all other document SHAs unchanged.
+2. **Permits cap:** the PT-C4 county line WINS ("The county issues at most 24 concurrent
+   permits. The county does not care about your roadmap."). The GU-C14 ruling's "drawer" text is
+   WITHDRAWN — its premise (no existing row) was stale when ruled. Recorded as the standing
+   example: rulings must check the landed catalog before authoring replacements.
+3. **Tones:** the seven implementer-chosen tones for the addition rows are ADOPTED.
+
+Ratification of the full package follows the reassembly: presentation-v2 42cbe31a…,
+event-copy-v2 71d88ebb…, phase0 24e90af2… stand as reviewed; the copy candidate and generated
+hashes re-mint with the one-line revert.
