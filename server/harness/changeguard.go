@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"reflect"
@@ -53,7 +54,7 @@ func validateBaselineCommit(commitPaths, inputsBefore []string, subject string, 
 	}
 	for _, path := range inputsBefore {
 		path = strings.TrimSpace(path)
-		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/categories/") || strings.HasPrefix(path, "balance/routes/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "balance/factions/") || strings.HasPrefix(path, "balance/prestige/") || strings.HasPrefix(path, "balance/guilds/") || strings.HasPrefix(path, "balance/relevance/") || strings.HasPrefix(path, "changelog/") || strings.HasPrefix(path, "testdata/harness/scenarios/") || strings.HasPrefix(path, "testdata/harness/relevance/") {
+		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/categories/") || strings.HasPrefix(path, "balance/routes/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "balance/factions/") || strings.HasPrefix(path, "balance/prestige/") || strings.HasPrefix(path, "balance/guilds/") || strings.HasPrefix(path, "balance/relevance/") || strings.HasPrefix(path, "changelog/") || strings.HasPrefix(path, "testdata/harness/scenarios/") || strings.HasPrefix(path, "testdata/harness/relevance/") || strings.HasPrefix(path, "testdata/harness/content-dynamics/") {
 			return nil
 		}
 	}
@@ -68,9 +69,17 @@ func ValidateRepositoryBaselineChange(root string) error {
 	if err != nil {
 		return fmt.Errorf("baseline guard cannot load relevance registry: %w", err)
 	}
+	contentReports, err := repositoryContentGoldenPaths(root)
+	if err != nil {
+		return fmt.Errorf("baseline guard cannot load content-dynamics registry: %w", err)
+	}
 	governed := map[string]struct{}{baselinePath: {}, goldenPath: {}}
 	reports := map[string]struct{}{baselinePath: {}}
 	for _, report := range relevanceReports {
+		governed[report] = struct{}{}
+		reports[report] = struct{}{}
+	}
+	for _, report := range contentReports {
 		governed[report] = struct{}{}
 		reports[report] = struct{}{}
 	}
@@ -88,6 +97,7 @@ func ValidateRepositoryBaselineChange(root string) error {
 
 	artifactPaths := []string{baselinePath, goldenPath}
 	artifactPaths = append(artifactPaths, relevanceReports...)
+	artifactPaths = append(artifactPaths, contentReports...)
 	dirtyArguments := []string{"status", "--porcelain", "--untracked-files=all", "--"}
 	dirtyArguments = append(dirtyArguments, artifactPaths...)
 	dirty, err := gitOutput(root, dirtyArguments...)
@@ -100,6 +110,7 @@ func ValidateRepositoryBaselineChange(root string) error {
 
 	historyArguments := []string{"log", "--reverse", "--format=%H", "HEAD", "--", baselinePath}
 	historyArguments = append(historyArguments, relevanceReports...)
+	historyArguments = append(historyArguments, contentReports...)
 	history, err := gitOutput(root, historyArguments...)
 	if err != nil {
 		return fmt.Errorf("baseline guard requires complete baseline history: %w", err)
@@ -136,6 +147,67 @@ func ValidateRepositoryBaselineChange(root string) error {
 		}
 	}
 	return nil
+}
+
+func repositoryContentGoldenPaths(root string) ([]string, error) {
+	history, err := gitOutput(root, "log", "--reverse", "--format=%H", "HEAD", "--", contentDynamicsRegistryPath)
+	if err != nil {
+		return nil, err
+	}
+	commits := strings.Fields(string(history))
+	seen := map[string]bool{}
+	if len(commits) == 0 {
+		data, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(contentDynamicsRegistryPath)))
+		if err != nil {
+			return nil, err
+		}
+		paths, err := registeredContentGoldenPaths(data)
+		if err != nil {
+			return nil, err
+		}
+		for _, path := range paths {
+			seen[path] = true
+		}
+	} else {
+		for _, commit := range commits {
+			data, err := gitBlob(root, commit, contentDynamicsRegistryPath)
+			if err != nil {
+				return nil, err
+			}
+			paths, err := registeredContentGoldenPaths(data)
+			if err != nil {
+				return nil, fmt.Errorf("content-dynamics registry at %s: %w", commit, err)
+			}
+			for _, path := range paths {
+				seen[path] = true
+			}
+		}
+	}
+	paths := make([]string, 0, len(seen))
+	for path := range seen {
+		paths = append(paths, path)
+	}
+	sort.Strings(paths)
+	return paths, nil
+}
+
+func registeredContentGoldenPaths(data []byte) ([]string, error) {
+	var registry struct {
+		SchemaVersion *int                               `json:"schema_version"`
+		Entries       []contentDynamicsRegistryWireEntry `json:"entries"`
+	}
+	if err := decodeRelevanceStrict(data, &registry); err != nil || registry.SchemaVersion == nil || *registry.SchemaVersion != 1 || registry.Entries == nil {
+		return nil, errors.New("invalid content-dynamics registry")
+	}
+	result := make([]string, 0, len(registry.Entries))
+	for index, entry := range registry.Entries {
+		if entry.GoldenReport == nil || !validRepositoryPath(*entry.GoldenReport) ||
+			!strings.HasPrefix(*entry.GoldenReport, "testdata/harness/content-dynamics/goldens/") {
+			return nil, fmt.Errorf("invalid content-dynamics golden path at entry %d", index)
+		}
+		result = append(result, *entry.GoldenReport)
+	}
+	return result, nil
 }
 
 func repositoryRelevanceGoldenPaths(root string) ([]string, error) {

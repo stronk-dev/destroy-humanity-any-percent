@@ -33,3 +33,24 @@ Append-only. This is the successor evidence lane registered by the First Content
   executable under its original bytes.
 - No runner, golden, registry, production artifact, or balance baseline was authored past these
   unresolved identity contracts.
+
+## 2026-08-10 — implementation handoff: EH-C9 snapshots + EH-C8 empty registry
+
+- **Review by:** Codex self-review only. **Recorded by:** Codex. This is ready for designated
+  review as a partial implementation slice; it does not claim the four-arm runner or a golden.
+- Added the strict five-coordinate `content_dynamics.v1` registry with zero production entries,
+  exactly as EH-C8 requires while epoch 6 has no Opportunities owner. `make content-harness` is
+  therefore an honest no-op rather than a skip or synthetic-policy lane.
+- Added generated, immutable full-bundle snapshots. Generation accepts only the complete active
+  `epochseed.Bundle` at its accepted current epoch, writes content-addressed bytes once, and
+  refuses a later rewrite. Loading verifies registry/manifest coordinates, accepted epoch hash,
+  raw-byte-sorted declarations, per-file SHA-256, exact directory set, and recomputed bundle hash.
+- Adversarial tests cover missing, extra, tampered, manifest-rehashed, hand-subsetted, and rewrite
+  attempts. The baseline guard now discovers future content-dynamics golden paths from registry
+  history, and its accepted input surface includes the governed content-dynamics tree.
+- Normal repository commands passed: focused cold `make test-go
+  GO_PACKAGES='./harness ./cmd/balance-harness' GO_TEST_FLAGS='-count=1'`, `make content-harness`,
+  and read-only `make harness-check`.
+- Still open in this RFC: the production-owned four-arm simulation seams, strict scenario/report
+  grammar, literal-cardinality runner, and the separate first golden after a real epoch pins
+  Opportunities. No balance artifact or golden was created.

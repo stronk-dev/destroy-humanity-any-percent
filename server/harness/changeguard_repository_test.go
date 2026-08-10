@@ -142,6 +142,7 @@ func newGuardRepository(t *testing.T) string {
 	writeGuardFile(t, root, goldenPath, `{"golden":1}`)
 	writeGuardFile(t, root, relevanceGoldenPath, `{"schema_version":0}`)
 	writeGuardFile(t, root, relevanceRegistryPath, `{"schema_version":1,"entries":[{"economy_catalog":"balance/catalogs/phase0.json","scenario":"testdata/harness/relevance/scenario-v1.json","relevance_policy":"testdata/harness/relevance/policy-v1.json","golden_report":"testdata/harness/relevance/golden-report-v1.json","justification_changelog":"testdata/harness/relevance/CHANGELOG.md"}]}`)
+	writeGuardFile(t, root, contentDynamicsRegistryPath, `{"schema_version":1,"entries":[]}`)
 	writeGuardFile(t, root, "balance/catalogs/phase0.json", `{"value":1}`)
 	writeGuardFile(t, root, "server/code.go", "package server\n")
 	runGuardGit(t, root, "add", ".")

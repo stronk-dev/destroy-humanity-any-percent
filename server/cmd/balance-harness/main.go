@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	mode := flag.String("mode", "check", "run, check, update, candidate, or epoch-hash")
+	mode := flag.String("mode", "check", "run, check, update, candidate, content, or epoch-hash")
 	output := flag.String("output", "", "explicit output path for run mode")
 	root := flag.String("root", "..", "repository root")
 	candidateManifest := flag.String("candidate-manifest", "", "repository-relative ratified candidate manifest for candidate mode")
@@ -26,6 +26,12 @@ func main() {
 	}
 	if *mode == "candidate" {
 		runCandidate(*root, *output, *candidateManifest)
+		return
+	}
+	if *mode == "content" {
+		if err := harness.GenerateRegisteredContentSnapshots(*root); err != nil {
+			fail(err)
+		}
 		return
 	}
 	suite, err := harness.LoadSuite(*root, "testdata/harness/scenarios/phase0-production.json")
@@ -97,6 +103,9 @@ func main() {
 			fail(err)
 		}
 		if err := harness.ValidateRelevanceRegistry(*root); err != nil {
+			fail(err)
+		}
+		if err := harness.ValidateContentDynamicsRegistry(*root); err != nil {
 			fail(err)
 		}
 		if err := harness.ValidateRepositoryEpochChanges(*root); err != nil {

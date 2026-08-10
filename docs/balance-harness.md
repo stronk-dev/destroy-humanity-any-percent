@@ -65,7 +65,9 @@ first positive marginal output. Beam nodes deduplicate by canonical state plus v
 componentwise dominance before the width bound. Both run cardinality and transition work are
 checked before simulation, and every simulation call spends from the transition budget.
 
-Each policy item's availability window must contain at least one scenario segment, and that segment's
+Schema v2 permits an availability/segment `from_gate` of null, meaning run genesis and sorting
+before every declared gate; schema-v1 bytes retain their concrete-gate requirement. Each policy
+item's availability window must contain at least one scenario segment, and that segment's
 milestone is the only evidence eligible for the item's verdict. The report contains ordered item,
 group, tier-contribution, role-activation, and failure rows with
 only safe integers, booleans, and canonical hashes. Required baselines that do not reach their
@@ -95,6 +97,16 @@ as a relevance baseline.
   16-artifact replay bundle, then writes the owner-facing candidate-versus-baseline pacing report.
   Pacing drift is reported rather than vetoed; deterministic invariant failures still fail the run.
 - `make harness-update` deliberately regenerates those tracked artifacts for review.
+
+The successor `content_dynamics.v1` lane has an intentionally empty production registry until an
+epoch pins an Opportunities artifact and its economy declarations. `make content-harness`
+generates any newly registered current-epoch bundle snapshot; with the empty registry it is an
+honest no-op. Snapshots are immutable and content-addressed under
+`testdata/harness/content-dynamics/bundles/<full-hash>/`: their manifest records the complete
+sorted artifact set, production and snapshot paths, per-file SHA-256, epoch coordinate, and full
+bundle hash. The read-only `harness-check` rejects missing, extra, tampered, subsetted, rehashed,
+or epoch-unaccepted snapshot bytes. Later epochs add snapshots rather than resolving old entries
+through mutable production paths.
 
 Drift above 10% warns and above 25% fails using integer cross-multiplication. After the initial
 baseline, economy/Commons/relevance catalog or scenario inputs land first. A separate commit whose

@@ -303,6 +303,7 @@ func newEpochGuardRepository(t *testing.T) (string, epochSeed, map[string]string
 	writeGuardFile(t, root, epochSeedPath, encodeEpochSeed(t, seed))
 	writeGuardFile(t, root, "changelog/epoch-1.md", "# Epoch 1\n")
 	writeGuardFile(t, root, relevanceRegistryPath, `{"schema_version":1,"entries":[{"economy_catalog":"balance/catalogs/phase0.json","scenario":"testdata/harness/relevance/scenario-v1.json","relevance_policy":"testdata/harness/relevance/policy-v1.json","golden_report":"testdata/harness/pacing-baseline.json","justification_changelog":"changelog/epoch-1.md"}]}`)
+	writeGuardFile(t, root, contentDynamicsRegistryPath, `{"schema_version":1,"entries":[]}`)
 	runGuardGit(t, root, "add", ".")
 	runGuardGit(t, root, "commit", "--quiet", "-m", "epochs: seed Phase 0")
 	return root, seed, artifacts
