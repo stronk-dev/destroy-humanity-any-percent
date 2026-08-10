@@ -71,21 +71,28 @@ it.skipIf(typeof document === "undefined")("renders Amount synchronously for cap
 });
 
 it.skipIf(typeof document === "undefined")("meets the primitive accessibility, focus, and naming baseline", async () => {
+  const { userEvent } = await import("vitest/browser");
   const target = document.createElement("div"); document.body.append(target);
   const fixture = mount(FixtureHost, { target }) as unknown as FixtureExports;
   flushSync();
   const button = target.querySelector("button")!;
   button.focus();
   expect(document.activeElement).toBe(button);
+  await userEvent.keyboard("{Enter}");
+  flushSync();
+  expect(target.querySelector("main")?.dataset.era).toBe("era_2000");
+  expect(getComputedStyle(button).outlineStyle).not.toBe("none");
   expect(button.textContent?.trim().length).toBeGreaterThan(0);
   expect(target.querySelector("output")?.getAttribute("aria-label")).toBeNull();
 
   for (const era of ["era_1995", "era_2000"] as const) {
-    if (era === "era_2000") {
+    if (era === "era_1995") {
+      fixture.switchEra();
+    } else {
       fixture.switchEra();
       fixture.setCap({ amount: "1e3", reason_key: "resource.company_cash.cap.phase0" });
       flushSync();
-      expect(target.querySelector("output")?.getAttribute("aria-label")).toBe("Company cash is capped.");
+      expect(target.querySelector("output")?.getAttribute("aria-label")).toBe("1.23 K. Company cash is capped.");
     }
     const result = await axe.run(target, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] } });
     expect(result.violations.filter((violation) => violation.impact === "serious" || violation.impact === "critical"), era).toEqual([]);

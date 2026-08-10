@@ -30,12 +30,13 @@
   const capReason = $derived(capped && cap
     ? resolveCopy(applicationCopyCatalog, cap.reason_key, {}, era)
     : undefined);
+  const accessibleName = $derived(capReason ? `${rendered}. ${capReason}` : undefined);
 
   onDestroy(() => amountRenderScheduler.cancel(owner));
 </script>
 
 <span class="cc-amount" data-capped={capped || undefined}>
-  <output aria-label={capReason}>{rendered}</output>
+  <output aria-label={accessibleName}>{rendered}</output>
   {#if capReason}<small class="cc-amount__reason">{capReason}</small>{/if}
 </span>
 
