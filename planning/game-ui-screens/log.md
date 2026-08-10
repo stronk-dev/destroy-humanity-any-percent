@@ -369,3 +369,26 @@ implementer-chosen tones to adopt. F4/F5 observations recorded.
 **Range union 516bddb..81114cf CLOSED** — all 13 commits covered across the four verdicts, no
 uncovered edges. Ratification package (pending dispositions): copy candidate ec6d8294… ·
 phase0 24e90af2… · presentation-v2 42cbe31a… · event-copy-v2 71d88ebb… · generated bfc2c7c0….
+
+## 2026-08-11 — GU-C12 owner-disposition reassembly — ready for mechanical ratification
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is a narrow disposition handoff, not
+  owner ratification or archival authorization.
+- **Implementation commit:** `2bb0f71`. The assembler no longer performs the unforced
+  `slide 1 of 1` → `the only slide` replacement. Reassembly restores the owner-authored README
+  line exactly to `(see: OUR VISION, slide 1 of 1)` while retaining both adopted detector-forced
+  prose rewrites. No other ruled row changed.
+- The three reviewed documents remain byte-identical at their approved coordinates:
+  `phase0.json` `24e90af2…698`, presentation-v2 `42cbe31a…015`, and event-copy-v2
+  `71d88ebb…b0c`.
+- **Refreshed owner-ratification pins:**
+  - `copy/catalog/game-ui-candidate.json` —
+    `7793d334efb8e9c6ba6169466ec51a1b8318145f470b643a849937943725b4f2`
+  - generated copy identity —
+    `sha256:0f9801e40718d440ce25966d965da2cfff44b99216638dae5afa014b01a25d12`
+- Normal drift-gated evidence: `make game-ui-copy-candidate-check`, `make copy-check`, and the
+  complete post-commit `make verify` all green; the aggregate included 6,642 client tests and
+  19,938 browser assertions. Kernel remains 0.3.92; the change is copy/generator-only.
+
+The two refreshed hashes are ready for Marco's mechanical ratification. Screen components remain
+unstarted until that ratification; nothing is self-ratified, archived, or pushed.
