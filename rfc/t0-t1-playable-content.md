@@ -330,3 +330,24 @@ candidate intervals bind while report/delta bytes remain single-milestone.
   its exact single-segment rule and bytes. The candidate uses exactly the three named intervals.
   (Correctly bounced rather than falsely extending two windows — the truthful-encoding
   discipline holding again.)
+
+## Owner ratification — the eight-document candidate core (Marco, 2026-08-10)
+
+Ratified after the FINDINGS-FIRST content review, the F1–F10 remediation, and the designated
+re-review's RATIFY-READY verdict (all SHAs recomputed; planning/t0-t1-content/log.md):
+
+- categories `ff63b341ff8a7439e48cbfa7cb91dcf51089809fcbb0e6e54201965e5911b9a5`
+- curriculum `17e5e0c7e8b8f7217c6063b41067af0bed41a34cc26a22e9d4ddfc00513e98d9`
+- economy v4 `3b18304a2a56e06619d027f3512f671cf88ddc1da4daacd77045d0b762679ac1`
+- event-copy `6413fa05f76c56797ec49e82de28ecf81f52cfa502d5b687f8d764d335a94210`
+- harness-scenario `e74e271be3b844bfde411887af16de06890a9a281596d45b8ad9deb7b1a502a5`
+- opportunities `63e51084863bd00da7d5a0b358f54741b0b0682d8ef25b2fc7cb3da2c77f27cb`
+- presentation `70953a6dfa53794f9e1e03627f0b2ddb06abb4870550dccc608a9ca0daeba0d7`
+- routes `a84cce06ae67a68817174b99cfe7191e3c2f9bf47c1c20b4ebab1704baf99cfa`
+
+Any edit to a ratified document records a replacement hash here. **Pin #9 (relevance) follows the
+T01-C11 multi-segment implementation** through the same review-then-ratify flow. Still ahead
+before any epoch-7 mint: the copy-text authoring round (FCE-C7 pattern, orphan-first), the
+loader/owner implementations for the four new artifact families, the T01-C6/AC0 bootstrap
+catchup, the composed harness golden (post-opportunities-mint per EH-C8), and the separate
+owner mint sign-off.
