@@ -370,3 +370,62 @@ The nine-document epoch-7 candidate core is COMPLETE. Remaining before any epoch
 screen-copy assembly ratification (the v1 ruling is issued; SHAs pending), the four new artifact
 families' loaders/owners, the T01-C6/AC0 bootstrap catchup, the mandatory relevance + composed
 harness runs over the complete set, and the separate owner mint sign-off.
+
+## Mint-runway implementation blockers (Codex, 2026-08-11 — T01-C12–T01-C15)
+
+The first normal `make t0-t1-relevance` execution and a production-owner audit found four
+contracts that must be reconciled before a promotion manifest can honestly describe a mint.
+
+### T01-C12 — The ratified relevance work budget fails before dispatch
+
+The schema-v2 candidate declares `relevance_budget_max_transitions: 2000000`. Under the shipped
+fail-before-dispatch proof, its 19 items, one reference seed, width 8, and 128 decisions require a
+static ceiling of **4,529,004,752** transitions. The mandatory report therefore cannot start; the
+runner correctly rejects before executing work above the declared budget. Raising the literal to
+4.53 billion would make a routine mint gate operationally unusable, while silently weakening the
+preflight or the ruled beam changes reviewed harness semantics.
+
+**Proposed contract:** keep the two-million hard budget and rule a bounded beam expansion that has
+an exact static ceiling below it (including the order in which children are selected before an
+expensive rollout), then re-run the 5% greedy-gap proof and re-ratify the scenario hash. Alternative:
+explicitly ratify the 4,529,004,752 budget and accept its cost. Implementation must not choose.
+
+### T01-C13 — Earlier core pins conflict with the later screens ratification
+
+The nine-document list still pins `presentation-v1` (`70953a6d…`) and `event-copy-v1`
+(`6413fa05…`). The later owner-ratified screens package explicitly supersedes presentation with
+`presentation-v3` (`c387402b…`) and event copy with `event-copy-v2` (`71d88ebb…`). One epoch cannot
+claim both versions as the single artifact authority, and the promotion manifest cannot infer
+which ratification wins.
+
+**Proposed contract:** the explicit supersession wins: epoch 7 promotes presentation-v3 and
+event-copy-v2, and this RFC's owner-pin table records those replacement hashes. Presentation-v1
+and event-copy-v1 remain historical candidate inputs only.
+
+### T01-C14 — Four candidate artifacts still lack production owners
+
+The candidate proposal honestly records `curriculum`, `event-copy`, `presentation`, and the
+first-hour harness scenario as exact proposed grammars whose production loaders/owners were not
+implemented. Current source confirms that state. In particular, no curriculum loader owns the
+lazy terminal trigger, `curriculum_failure.v1` is absent from the event registry, and no runner
+understands the candidate milestone/invariant extensions. Minting these bytes would make them
+identity baggage rather than executable content.
+
+**Proposed contract:** land strict owners before promotion: presentation/event-copy exact-set
+loaders bound to Copy and the emitted event registry; the curriculum loader plus its existing-Exit
+coordinator integration and additive event grammar; and the first-hour scenario loader/runner with
+the nine named invariants. Each joins `CatalogBundle`/replay identity only where its mechanic is
+actually consumed. Exact curriculum receipt/event payload bytes that are not present in the
+candidate document require a narrow owner ruling before code.
+
+### T01-C15 — AC0 names a boundary but not an executable session-open operation
+
+The repository has anonymous account bootstrap, refresh, and normal intent routes, but no
+authenticated session-open command or receipt/idempotency store that could own T01-C6's frozen
+`{opened_at_ms, offline_span}` transition. The accepted paragraph does not enumerate the public
+operation, server-authored command kind, receipt/event bytes, or its race coordinate with Exit.
+
+**Proposed contract:** rule that exact API/transition grammar (or bind catchup to an existing
+named operation) before implementation. It must remain one replay-logged Company mutation using
+the run-pinned offline policy and a claim-token/idempotency pattern already shipped; authentication
+alone must never mutate the save.

@@ -11,10 +11,11 @@ import (
 )
 
 func main() {
-	mode := flag.String("mode", "check", "run, check, update, candidate, content, or epoch-hash")
+	mode := flag.String("mode", "check", "run, check, update, candidate, content, relevance, or epoch-hash")
 	output := flag.String("output", "", "explicit output path for run mode")
 	root := flag.String("root", "..", "repository root")
 	candidateManifest := flag.String("candidate-manifest", "", "repository-relative ratified candidate manifest for candidate mode")
+	scenario := flag.String("scenario", "", "repository-relative scenario for relevance mode")
 	flag.Parse()
 	if *mode == "epoch-hash" {
 		hash, err := harness.ComputeEpochSeedHash(*root)
@@ -26,6 +27,12 @@ func main() {
 	}
 	if *mode == "candidate" {
 		runCandidate(*root, *output, *candidateManifest)
+		return
+	}
+	if *mode == "relevance" {
+		if err := runRelevance(*root, *output, *scenario); err != nil {
+			fail(err)
+		}
 		return
 	}
 	if *mode == "content" {
@@ -185,6 +192,35 @@ func runCandidate(root, output, manifestPath string) {
 	if len(report.InvariantFailures) > 0 {
 		fail(fmt.Errorf("candidate harness invariant failures: %v", report.InvariantFailures))
 	}
+}
+
+func runRelevance(root, output, scenarioPath string) error {
+	if output == "" || scenarioPath == "" {
+		return fmt.Errorf("-output and -scenario are required in relevance mode")
+	}
+	suite, err := harness.LoadRelevanceSuite(root, scenarioPath)
+	if err != nil {
+		return err
+	}
+	report, err := suite.RunRelevance()
+	if err != nil {
+		return err
+	}
+	return writeRelevanceReport(output, report)
+}
+
+func writeRelevanceReport(output string, report harness.RelevanceReport) error {
+	if len(report.Failures) > 0 {
+		return fmt.Errorf("relevance failures: %v", report.Failures)
+	}
+	reportBytes, err := harness.CanonicalJSON(report)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(output, reportBytes, 0o644); err != nil {
+		return err
+	}
+	return nil
 }
 
 func fail(err error) { fmt.Fprintln(os.Stderr, err); os.Exit(1) }

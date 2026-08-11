@@ -764,3 +764,18 @@ missing/extra/tampered-artifact fixtures.
 
 - 2026-08-10: EH-C8/C9 accepted; the opportunities-artifact requirement routed into the T0–T1
   candidate set; the runner is implementable now (registry empty until the next mint).
+
+## Epoch-7 mint-order blocker (Codex, 2026-08-11 — EH-C10)
+
+EH-C8/C9 require the first production registry entry and immutable bundle snapshot only **after**
+an epoch pins Opportunities; `GenerateRegisteredContentSnapshots` correctly refuses to generate a
+snapshot for an epoch absent from the accepted seed. The current runway instead asks for that same
+registered composed run before the owner sign-off and mint. Both orderings cannot hold.
+
+**Proposed contract:** add a candidate-only content-dynamics report mode, analogous to FCE5.3,
+which loads the complete ratified promotion manifest without registering a historical golden. The
+owner reads that report before sign-off. The mint then makes epoch 7 authoritative; a separate
+`BALANCE-CHANGE:` baseline commit snapshots the accepted epoch, adds the first registry entry and
+golden, and receives its own designated review. Alternative: move the content-dynamics evidence
+after mint and explicitly remove it from the pre-sign-off gates. Do not fabricate an epoch-7
+registry coordinate before epoch 7 exists.

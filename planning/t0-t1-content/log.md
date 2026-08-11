@@ -129,3 +129,19 @@ ruled intervals exact; all 19 item windows verified truthful against ratified ec
 "raw-byte-ordered" implemented as catalog-position interval ordering — equal for every in-repo
 catalog and the truthful-window reading. **Pins #9a f8878cbf…30bf (policy) / #9b 2f1afb92…2629
 (scenario) are RATIFY-READY.**
+
+## 2026-08-11 — mandatory relevance gate execution and mint-runway bounce
+
+- **Implemented/inspected by:** Codex. **Recorded by:** Codex. This is an implementation record
+  and blocker report, not a review verdict or mint authorization.
+- Added the ordinary `make t0-t1-relevance` report command. It invokes the shipped
+  `LoadRelevanceSuite`/`RunRelevance` authority and writes the owner-facing report only after a
+  successful run; runner failures remain non-zero. The transition preflight now reports the
+  required and declared counts instead of the previous generic message.
+- The first execution failed before dispatch exactly as the harness law requires: the ratified
+  scenario needs `4,529,004,752` statically bounded transitions but declares `2,000,000`. No
+  report or partial evidence was written. T01-C12 records the required owner decision.
+- The same audit found three independent mint blockers: superseded presentation/event-copy pins
+  (T01-C13), missing production owners and exact curriculum bytes (T01-C14), and the unnamed
+  session-open catchup operation (T01-C15). EH-C10 records the contradictory pre/post-mint order
+  for the first content-dynamics registry entry. No production balance bytes were changed.

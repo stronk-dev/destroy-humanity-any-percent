@@ -69,8 +69,12 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		return RelevanceReport{}, errors.New("relevance run budget exceeds scenario limit")
 	}
 	transitionCeiling, err := suite.preflightTransitionCeiling(referenceSeeds, nonReferenceTransitions)
-	if err != nil || transitionCeiling > suite.Scenario.RelevanceBudgetMaxTransitions {
-		return RelevanceReport{}, errors.New("relevance transition budget exceeds scenario limit")
+	if err != nil {
+		return RelevanceReport{}, fmt.Errorf("relevance transition budget preflight: %w", err)
+	}
+	if transitionCeiling > suite.Scenario.RelevanceBudgetMaxTransitions {
+		return RelevanceReport{}, fmt.Errorf("relevance transition budget requires %d, scenario declares %d",
+			transitionCeiling, suite.Scenario.RelevanceBudgetMaxTransitions)
 	}
 	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
 	report := RelevanceReport{SchemaVersion: suite.Scenario.SchemaVersion, ScenarioID: suite.Scenario.ID,
