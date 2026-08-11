@@ -37232,10 +37232,10 @@
     },
     {
       "assert": "approx",
-      "a": "9.26157e5",
+      "a": "8.00002e5",
       "b": "",
       "op": "floor",
-      "expect": "926157.0000000001",
+      "expect": "800001",
       "expectClass": "finite",
       "edge": "floor-fma-snap"
     },

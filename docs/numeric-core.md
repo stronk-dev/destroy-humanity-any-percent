@@ -25,8 +25,11 @@ classification through a second lossy `float64` reconstruction.
 When Go reconstructs an ordinary float for compatibility operations such as `Floor`, it crosses
 an explicit non-inlined float64 materialization boundary before applying the JavaScript snap
 tolerance. This prevents the arm64 compiler from fusing the reconstruction multiply with the
-later subtraction while amd64 rounds between them. The shared `floor-fma-snap` golden edge and
-the cold Linux gate pin the same decision on both architectures.
+later subtraction while amd64 rounds between them. The non-inlined boundary is deliberate: a
+same-type `float64()` conversion does not require Go to store and reload the intermediate, while
+the call boundary does. The shared `floor-fma-snap` golden uses a below-integer reconstruction
+window where the unfixed arm64 result differs by a whole integer; the cold Linux gate separately
+pins production-architecture behavior.
 
 ## Authoritative state boundary
 
