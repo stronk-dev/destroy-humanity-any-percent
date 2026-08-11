@@ -392,3 +392,85 @@ phase0 24e90af2… · presentation-v2 42cbe31a… · event-copy-v2 71d88ebb… �
 
 The two refreshed hashes are ready for Marco's mechanical ratification. Screen components remain
 unstarted until that ratification; nothing is self-ratified, archived, or pushed.
+
+## 2026-08-11 — screens implementation DESIGN-GAP: Offer acceptance lacks the Founder CAS coordinate
+
+- **Recorded by:** Codex. This is an implementation-time blocker, not a ruling or completion
+  claim. The ratified screen copy and the five surfaces are otherwise being implemented normally.
+- `accept_exit_offer` requires `expected_founder_revision`, but `game_ui_snapshot.v1`, bootstrap,
+  and `exit_offer_spawned` expose only the Company revision. A resumed client therefore cannot
+  construct a sound acceptance intent. Using `1` (or copying the Company revision) would be an
+  unruled client-side authority guess and is rejected.
+- The current screen fails closed: acceptance remains disabled until a Founder-scoped event has
+  supplied an observed revision. Decline remains usable because it is Company-only.
+- **GU-C23 proposal:** widen the generated snapshot to `game_ui_snapshot.v2` with one exact
+  positive `founder_revision` field, resolved transactionally by the server for bootstrap and
+  ordinary sync. The client resamples it on every snapshot and advances it only from decoded
+  Founder-scoped event coordinates. Offer acceptance submits that exact coordinate. This keeps
+  the existing intent and transport channel, creates no second authority, and makes reconnect
+  behavior sound. Owner ruling is required before the accept button can be claimed complete.
+- Separate acceptance debt: AC1's exact T0→T2 script depends on the owner-ratified epoch-7
+  content candidate, which is not minted in the live epoch-6 bundle. This batch will prove the
+  real composed bootstrap/intent/snapshot browser path without fabricating candidate mechanics;
+  the full scripted progression remains visibly mint-gated.
+
+## 2026-08-11 — screens implementation DESIGN-GAP: payout terms have no presentation rows
+
+- **Recorded by:** Codex. This is an implementation-time copy blocker, not a ruling.
+- U1 requires the Offer Sheet to render the complete `payout_preview` terms and the run-end delta
+  list. The decoded wire correctly supplies reputation delta, route knowledge, network-slot
+  unlocks, and the Clout-reach note, but the ratified GU-C12 package supplies only the Offer
+  heading/actions/countdown and one generic run-end delta heading. It has no legal labels or row
+  frames for any of those four term kinds, and network slots have no presentation binding.
+  Rendering JSON, mechanical IDs, or implementer-authored labels would violate the zero-literal
+  and renderer-substitution laws.
+- **GU-C24 proposal:** owner-author four byte-sorted term-row copy bindings shared by Offer Sheet
+  and run-end (`reputation_delta`, `route_knowledge`, `network_slot_unlock`, `clout_reach_note`),
+  with a presentation binding for every shipped slot/carried-ref ID. The existing decoded terms
+  object remains the sole data source; no wire or gameplay change is needed. Until ruled and
+  ratified, the screen shows the exit type and truthful expiry but cannot claim the complete
+  terms/delta-list arms.
+
+## 2026-08-11 — screens self-review: Window/Worker monotonic origins could reject honest sync
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is an implementer finding and fix,
+  pending the batch's designated review.
+- Composing `game_ui_snapshot.v1` into the archived `ShellRuntime` exposed a dormant browser race:
+  `PredictionWorkerClient` stamped initialization and authoritative refreshes with Window
+  `performance.now()`, while the prediction loop compared those samples to Worker
+  `performance.now()`. Different time origins (and ordinary message delay after a Worker pulse)
+  made an honest authoritative refresh throw `non-monotonic authoritative clock` in real browsers.
+- The Worker now owns every monotonic sample it compares: initialize and authoritative messages
+  carry snapshot bytes only, and the Worker samples its clock when processing each command. A
+  cross-Chromium/Firefox/WebKit browser test composes the real Worker, publishes a second
+  authoritative UI snapshot, and proves prediction continues. Reverting either ownership change
+  reproduces the uncaught rollback error.
+- These are presentation-only Client Shell paths outside the KV-1 watched set; no gameplay kernel
+  version bump is owed. Canonical Client Shell documentation records the clock ownership.
+
+## 2026-08-11 — Phase-A screens implementation slice ready for designated review
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is a handoff, not an approval or an
+  archival claim. Code range: `c9fc04f..9a97543`; this planning record is docs-only and belongs
+  to the same designated-review range.
+- The production Svelte entry now mounts all five Phase-A surfaces over the generated
+  `game_ui_snapshot.v1`, the archived prediction Worker, decoded lifecycle events, the bootstrap
+  coordinator, existing intents, and the ratified Copy/Presentation bytes. Era follows the
+  authoritative tier without replacing persistent focus; presence stays hidden until a real
+  world count arrives; run-end accepts only its decoded terminal event.
+- The renderer-substitution lint and browser proof, C11 axe pass over every surface/system beat,
+  local RTA/PB/split lifecycle, cross-browser Worker composition, deterministic 20 Hz/10 Hz
+  performance arm, raw-socket fail-closed decoding, and composed bootstrap-receipt GC are all in
+  the range. GU-C9's four routed proof items are closed by the discriminating Floor vector,
+  non-neutral provider test, and projection-versus-transition equivalence property.
+- **Normal test evidence, read through final exit:** `make test-client` (6,646 passed, 12
+  skipped); `make test-browser` (19,972 passed, 2 skipped across Chromium/Firefox/WebKit);
+  `make test-go GO_TEST_FLAGS='-count=1'`; `make test-save-integration` on real Postgres;
+  `make test-go-ci` on cold Linux/amd64; standalone `make verify-kernel-version` (kernel
+  `0.3.92`); and the complete `make verify` aggregate all exited 0. Copy assembly reverified the
+  ratified presentation SHA `42cbe31a…f015` and its byte-identical client mirror.
+- **Scope remains deliberately incomplete:** GU-C23 and GU-C24 above require owner rulings. Offer
+  acceptance therefore fails closed and the complete payout/delta rows do not render. AC1's exact
+  T0→T2 browser script also remains epoch-7-mint-gated; this range does not substitute fixtures for
+  live content or claim the aggregate plan boxes closed. The implemented slice is ready for the
+  cross-party designated pass; it is not archival-eligible on this record.
