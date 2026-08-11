@@ -471,3 +471,36 @@ alone must never mutate the save.
   command awkward in the first place); no new operation, receipt store, or idempotency surface is
   added; the Exit race is resolved by the existing Company stream lock ordering. The >24h fixture,
   replay-parity proof, and Exit-race ordering test from T01-C6 attach here unchanged.
+
+## Owner ruling on T01-C17 + a protocol authorization (2026-08-11)
+
+- **T01-C17 — RULED: bound the beam. This is NOT a repeat of the withdrawn ruling — the premise
+  is now MEASURED, not estimated.** The withdrawn T01-C12 ruling rested on a static estimator
+  30,556× looser than reality (actual work: 148,220 transitions). With T01-C16's bootstrap landed,
+  the beam finally does real work and genuinely exhausts 2,000,000 by runtime count — the same
+  remedy, now on evidence. **Ruled:**
+  1. **Deterministic pre-rollout child selection** bounds expansion: each beam entry expands at
+     most `beam_children` candidates per decision, chosen by a cheap deterministic ordering key
+     then raw-byte item ID, with NO rollout executed before selection. Identity dedup stays
+     (it helps; it is not sufficient).
+  2. **The 5% greedy-gap oracle proof MUST be re-run and hold** at the chosen parameters. If it
+     cannot hold at any parameters that fit, that is a finding to bring back — never a weakened
+     acceptance property.
+  3. **The budget is then set FROM MEASUREMENT, never blind.** Branch A: if bounded work fits
+     under 2,000,000, the budget STANDS unchanged and the scenario re-ratifies only for the new
+     beam parameters. Branch B: if it provably cannot fit, the budget is re-derived as the
+     measured worst-case work across the ratified content **× 2 headroom, rounded up to a round
+     literal**, with the measurement recorded in the planning log — and re-ratified with that
+     evidence attached. Raising an UNMEASURED budget remains rejected in both branches.
+  4. The scenario document carries the literal `{width, beam_children, decisions}` and the
+     resulting hash comes back for re-ratification (the candidate lane, as always).
+
+- **PROTOCOL AUTHORIZATION — the `d05dc13` rewrite is APPROVED.** It matches the written
+  sanctioned case exactly: a commit whose packaging violates the `BALANCE-CHANGE:` class (a
+  regenerated golden combined with code/docs), which the baseline guard permanently rejects; it is
+  unpushed, on no remote ref, and **cited by no review verdict** (the freeze trigger is a verdict
+  citation, not an implementer record — the d4c2312 precedent). **Authorized scope: rewrite ONLY
+  `d05dc13`,** into (1) a code/tests/docs checkpoint and (2) an isolated `BALANCE-CHANGE:`
+  golden-report commit. Append a remap addendum to the planning log naming old→new hashes
+  (the d4c2312 pattern); no other history may move. Marco may veto; absent veto this stands as
+  the owner-side authorization.
