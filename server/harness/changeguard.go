@@ -2,6 +2,7 @@ package harness
 
 import (
 	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -15,10 +16,23 @@ import (
 )
 
 const (
-	baselinePath        = "testdata/harness/pacing-baseline.json"
-	goldenPath          = "testdata/harness/golden-seed.json"
-	relevanceGoldenPath = "testdata/harness/relevance/golden-report-v1.json"
+	baselinePath                   = "testdata/harness/pacing-baseline.json"
+	goldenPath                     = "testdata/harness/golden-seed.json"
+	relevanceGoldenPath            = "testdata/harness/relevance/golden-report-v1.json"
+	baselineHistoryCorrectionsPath = "kernel/baseline-history-corrections.json"
 )
+
+type baselineHistoryCorrection struct {
+	OffendingCommit string `json:"offending_commit"`
+	Kind            string `json:"kind"`
+	Reason          string `json:"reason"`
+	ReviewLog       string `json:"review_log"`
+}
+
+type baselineHistoryCorrections struct {
+	SchemaVersion int                         `json:"schema_version"`
+	Corrections   []baselineHistoryCorrection `json:"corrections"`
+}
 
 // ValidateBaselineCommit enforces the separate-commit review protocol for one
 // non-initial baseline revision. inputsBefore contains paths changed after the
@@ -65,6 +79,10 @@ func validateBaselineCommit(commitPaths, inputsBefore []string, subject string, 
 // baseline revision. It intentionally uses no CI-provider metadata, so local
 // and hosted checks enforce the same repository history.
 func ValidateRepositoryBaselineChange(root string) error {
+	corrections, err := repositoryBaselineHistoryCorrections(root)
+	if err != nil {
+		return fmt.Errorf("baseline guard cannot load history corrections: %w", err)
+	}
 	relevanceReports, err := repositoryRelevanceGoldenPaths(root)
 	if err != nil {
 		return fmt.Errorf("baseline guard cannot load relevance registry: %w", err)
@@ -98,7 +116,7 @@ func ValidateRepositoryBaselineChange(root string) error {
 	artifactPaths := []string{baselinePath, goldenPath}
 	artifactPaths = append(artifactPaths, relevanceReports...)
 	artifactPaths = append(artifactPaths, contentReports...)
-	dirtyArguments := []string{"status", "--porcelain", "--untracked-files=all", "--"}
+	dirtyArguments := []string{"status", "--porcelain", "--untracked-files=all", "--", baselineHistoryCorrectionsPath}
 	dirtyArguments = append(dirtyArguments, artifactPaths...)
 	dirty, err := gitOutput(root, dirtyArguments...)
 	if err != nil {
@@ -138,13 +156,120 @@ func ValidateRepositoryBaselineChange(root string) error {
 			return fmt.Errorf("baseline guard cannot inspect subject for %s: %w", commit, err)
 		}
 		if err := validateBaselineCommit(commitPaths, inputPaths, string(subject), governed, reports); err != nil {
-			return fmt.Errorf("invalid baseline commit %s: %w", commit, err)
+			correction, corrected := corrections[commit]
+			if !corrected || correction.Kind != "mixed_artifact_commit" || !isMixedArtifactCommit(commitPaths, governed, reports) {
+				return fmt.Errorf("invalid baseline commit %s: %w", commit, err)
+			}
+			delete(corrections, commit)
 		}
 		if strings.HasPrefix(string(subject), "CONSTANTS-IDENTITY:") {
 			if err := validateConstantsIdentityCommit(root, commits[index-1], parent, commit, relevanceReports); err != nil {
 				return fmt.Errorf("invalid constants-identity commit %s: %w", commit, err)
 			}
 		}
+	}
+	if len(corrections) != 0 {
+		return fmt.Errorf("baseline history correction targets a commit that does not change a governed report")
+	}
+	return nil
+}
+
+func isMixedArtifactCommit(paths []string, governed, reports map[string]struct{}) bool {
+	hasReport, hasOutsidePath := false, false
+	for _, path := range paths {
+		path = strings.TrimSpace(path)
+		if _, ok := reports[path]; ok {
+			hasReport = true
+		}
+		if _, ok := governed[path]; !ok {
+			hasOutsidePath = true
+		}
+	}
+	return hasReport && hasOutsidePath
+}
+
+func repositoryBaselineHistoryCorrections(root string) (map[string]baselineHistoryCorrection, error) {
+	history, err := gitOutput(root, "log", "--reverse", "--format=%H", "HEAD", "--", baselineHistoryCorrectionsPath)
+	if err != nil {
+		return nil, err
+	}
+	commits := strings.Fields(string(history))
+	result := map[string]baselineHistoryCorrection{}
+	for _, commit := range commits {
+		parent, err := firstParent(root, commit)
+		if err != nil {
+			return nil, err
+		}
+		paths, err := gitLines(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "-M", parent, commit)
+		if err != nil {
+			return nil, err
+		}
+		if len(paths) != 1 || paths[0] != baselineHistoryCorrectionsPath {
+			return nil, fmt.Errorf("history-correction commit %s must change only %s", commit, baselineHistoryCorrectionsPath)
+		}
+		data, err := gitBlob(root, commit, baselineHistoryCorrectionsPath)
+		if err != nil {
+			return nil, err
+		}
+		parsed, err := decodeBaselineHistoryCorrections(data)
+		if err != nil {
+			return nil, fmt.Errorf("history corrections at %s: %w", commit, err)
+		}
+		if len(parsed) <= len(result) {
+			return nil, fmt.Errorf("history-correction commit %s does not append an entry", commit)
+		}
+		for offending, prior := range result {
+			if current, ok := parsed[offending]; !ok || current != prior {
+				return nil, fmt.Errorf("history-correction commit %s changes or removes an existing entry", commit)
+			}
+		}
+		for offending, correction := range parsed {
+			if _, exists := result[offending]; exists {
+				continue
+			}
+			if err := gitAncestor(root, offending, commit); err != nil {
+				return nil, fmt.Errorf("history correction %s does not follow its offending commit: %w", offending, err)
+			}
+			if _, present, err := gitBlobIfPresent(root, commit, correction.ReviewLog); err != nil || !present {
+				if err != nil {
+					return nil, err
+				}
+				return nil, fmt.Errorf("history correction %s references missing review log %s", offending, correction.ReviewLog)
+			}
+		}
+		result = parsed
+	}
+	return result, nil
+}
+
+func decodeBaselineHistoryCorrections(data []byte) (map[string]baselineHistoryCorrection, error) {
+	var registry baselineHistoryCorrections
+	if err := decodeStrictJSON(data, &registry); err != nil {
+		return nil, err
+	}
+	if registry.SchemaVersion != 1 || registry.Corrections == nil {
+		return nil, errors.New("invalid baseline history-corrections envelope")
+	}
+	result := make(map[string]baselineHistoryCorrection, len(registry.Corrections))
+	prior := ""
+	for _, correction := range registry.Corrections {
+		decoded, err := hex.DecodeString(correction.OffendingCommit)
+		if err != nil || len(decoded) != 20 || hex.EncodeToString(decoded) != correction.OffendingCommit ||
+			correction.OffendingCommit <= prior || correction.Kind != "mixed_artifact_commit" || strings.TrimSpace(correction.Reason) == "" ||
+			!validRepositoryPath(correction.ReviewLog) || !strings.HasPrefix(correction.ReviewLog, "planning/") || !strings.HasSuffix(correction.ReviewLog, "/log.md") {
+			return nil, errors.New("invalid or unsorted baseline history correction")
+		}
+		result[correction.OffendingCommit] = correction
+		prior = correction.OffendingCommit
+	}
+	return result, nil
+}
+
+func gitAncestor(root, ancestor, descendant string) error {
+	command := exec.Command("git", "merge-base", "--is-ancestor", ancestor, descendant)
+	command.Dir = root
+	if output, err := command.CombinedOutput(); err != nil {
+		return fmt.Errorf("git merge-base --is-ancestor %s %s: %w: %s", ancestor, descendant, err, strings.TrimSpace(string(output)))
 	}
 	return nil
 }

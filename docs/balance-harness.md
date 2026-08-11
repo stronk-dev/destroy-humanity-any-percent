@@ -119,6 +119,12 @@ subject begins `BALANCE-CHANGE:` then contains only the generated pacing, seed, 
 artifact. The repository guard scans every reachable baseline revision, not only HEAD, and fails
 on shallow history, uncommitted artifacts, missing prior inputs, wrong subjects, or any unrelated
 path in the artifact commit. CI fetches complete history so local and hosted enforcement are
-identical. The schema gate rejects unknown scenario fields/kinds and non-string or unsafe seed
+identical. If a mixed artifact commit is discovered only after publication, it cannot be rewritten:
+the sole forward remedy is an append-only entry in
+`kernel/baseline-history-corrections.json`. Each entry names the exact immutable offending commit,
+its correction class, rationale, and planning log. Commits changing that registry may change no
+other path, entries may only be appended unchanged, and corrections forgive only the named mixed-
+artifact packaging violation—not future commits or other guard failures. The schema gate rejects
+unknown scenario fields/kinds and non-string or unsafe seed
 encodings. Go and TypeScript load the same mutation corpus, including semantic JSON integers written
 with a decimal lexical form.

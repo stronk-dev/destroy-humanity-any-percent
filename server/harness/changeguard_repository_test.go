@@ -40,6 +40,63 @@ func TestRepositoryGuardRejectsSmuggledPath(t *testing.T) {
 	}
 }
 
+func TestRepositoryGuardAcceptsNamedPublishedMixedCommitCorrection(t *testing.T) {
+	root := newGuardRepository(t)
+	writeGuardCommit(t, root, "harness: implementation input", map[string]string{
+		"testdata/harness/relevance/scenario-v1.json": `{"version":2}`,
+	})
+	writeGuardCommit(t, root, "harness: mixed implementation and golden", map[string]string{
+		relevanceGoldenPath: `{"schema_version":1}`,
+		"server/code.go":    "package server\n\nconst Mixed = true\n",
+	})
+	offendingBytes, err := gitOutput(root, "rev-parse", "HEAD")
+	if err != nil {
+		t.Fatal(err)
+	}
+	offending := string(offendingBytes)
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "server/code.go") {
+		t.Fatalf("mixed commit unexpectedly passed before correction: %v", err)
+	}
+	writeGuardCommit(t, root, "docs: record published packaging correction", map[string]string{
+		"planning/test/log.md": "published correction record\n",
+	})
+	registry := fmt.Sprintf(`{"schema_version":1,"corrections":[{"offending_commit":%q,"kind":"mixed_artifact_commit","reason":"Published artifact packaging cannot be rewritten.","review_log":"planning/test/log.md"}]}`, offending)
+	writeGuardCommit(t, root, "guard: register published baseline correction", map[string]string{
+		baselineHistoryCorrectionsPath: registry,
+	})
+	if err := ValidateRepositoryBaselineChange(root); err != nil {
+		t.Fatalf("named published correction failed: %v", err)
+	}
+
+	writeGuardCommit(t, root, "guard: illegally remove correction", map[string]string{
+		baselineHistoryCorrectionsPath: `{"schema_version":1,"corrections":[]}`,
+	})
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "does not append") {
+		t.Fatalf("non-append-only correction registry err=%v", err)
+	}
+}
+
+func TestRepositoryGuardRejectsCorrectionCommitWithSmuggledPath(t *testing.T) {
+	root := newGuardRepository(t)
+	writeGuardCommit(t, root, "harness: mixed implementation and golden", map[string]string{
+		relevanceGoldenPath: `{"schema_version":1}`,
+		"server/code.go":    "package server\n\nconst Mixed = true\n",
+	})
+	offendingBytes, err := gitOutput(root, "rev-parse", "HEAD")
+	if err != nil {
+		t.Fatal(err)
+	}
+	writeGuardCommit(t, root, "docs: correction record", map[string]string{"planning/test/log.md": "record\n"})
+	registry := fmt.Sprintf(`{"schema_version":1,"corrections":[{"offending_commit":%q,"kind":"mixed_artifact_commit","reason":"Published artifact packaging cannot be rewritten.","review_log":"planning/test/log.md"}]}`, string(offendingBytes))
+	writeGuardCommit(t, root, "guard: smuggle with correction", map[string]string{
+		baselineHistoryCorrectionsPath: registry,
+		"README.md":                    "smuggled\n",
+	})
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "must change only") {
+		t.Fatalf("smuggled correction commit err=%v", err)
+	}
+}
+
 func TestRepositoryGuardAcceptsSeparateInputAndArtifacts(t *testing.T) {
 	root := newGuardRepository(t)
 	writeGuardCommit(t, root, "economy: retune", map[string]string{

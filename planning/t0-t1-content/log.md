@@ -234,3 +234,23 @@ range and belongs to Codex's lane — it is now superseded regardless, below.
   more real work once made reachable. Owner direction is required on the now-observable conflict;
   Codex has not bounded the beam, raised the budget, weakened the 5% oracle, or changed a ratified
   hash.
+
+## 2026-08-11 — published baseline-packaging repair for d05dc13 (CI run 31538481943)
+
+- **Implemented/inspected by:** Codex. **Recorded by:** Codex. Ready for designated cross-party
+  review; this is not that verdict.
+- Hosted `make verify-server` correctly rejected `d05dc13`: the regenerated relevance golden was
+  committed beside its implementation, tests, canonical docs, and record instead of in the guard's
+  required artifact-only follow-up. Client, browser, schema, and composed jobs passed. The report
+  bytes themselves reproduce through `make harness-update`; the defect is commit packaging.
+- The commit is already published on `main`, so the unpublication/history-rewrite exception is
+  closed. The guard now has a narrow append-only forward-correction registry modeled on the kernel
+  history corrections: full immutable offending hash, closed correction kind, rationale, and a
+  resolving planning log. Registry commits are single-path-only, entries are sorted and append-only,
+  the offending commit must precede the correction, and an entry can forgive only a named mixed-
+  artifact commit that actually changes a governed report plus outside paths. Missing logs,
+  smuggled paths, altered/deleted entries, non-report targets, and every unlisted historical defect
+  still fail closed.
+- The correction entry for `d05dc13917e1c85f38694b6c82596d3789db0a00` acknowledges only this
+  published packaging error. It does not approve the T01-C12/C16 implementation, alter the golden,
+  waive the new relevance-budget blocker, or authorize the epoch-7 mint.
