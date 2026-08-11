@@ -385,8 +385,7 @@ func Compose(ctx context.Context, config CompositionConfig) (*Composition, error
 		return nil, err
 	}
 	sessionGCJob, err := NewPeriodicJob(time.Minute, func(ctx context.Context) error {
-		_, err := accounts.PruneExpiredSessions(ctx, config.Clock(), 1_000)
-		return err
+		return pruneExpiredCredentials(ctx, accounts, config.Clock(), 1_000)
 	})
 	if err != nil {
 		return nil, err

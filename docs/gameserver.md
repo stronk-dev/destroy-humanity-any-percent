@@ -11,7 +11,9 @@ The binary requires:
 
 - `DATABASE_URL`, a Postgres connection string;
 - `CLOUD_CLICKER_SERVER_ID`, a canonical UUID identifying the Commons server shard;
-- `CLOUD_CLICKER_JWT_KEY`, at least 32 key bytes encoded with standard base64.
+- `CLOUD_CLICKER_JWT_KEY`, at least 32 key bytes encoded with standard base64;
+- `CLOUD_CLICKER_BOOTSTRAP_KEY_ID`, the active bootstrap-receipt encryption key ID;
+- `CLOUD_CLICKER_BOOTSTRAP_KEY`, exactly 32 AES-256-GCM key bytes encoded with standard base64.
 
 `CLOUD_CLICKER_REPOSITORY_ROOT` defaults to the working directory,
 `CLOUD_CLICKER_ACTIVITY_BRACKET` defaults to `activity.standard`, and `LISTEN_ADDR` defaults to
@@ -47,8 +49,11 @@ Channel authorization resolves active Guild membership and projected Commons coh
 from Postgres. `match:*` remains deliberately deny-closed until its owner engine lands. The durable
 player relay publishes transaction-owned events and receipts; the Guild presence relay publishes
 claimed membership changes. The verification worker drives the shared replay verifier and
-leaderboard projector. Guild clearing, below-floor sweeping, expired-session collection, and all
-relay/queue work run as owned jobs and are stopped before socket drain.
+leaderboard projector. Guild clearing, below-floor sweeping, expired-session collection,
+bootstrap-receipt tombstoning, and all relay/queue work run as owned jobs and are stopped before
+socket drain. Session and bootstrap-receipt expiry share one ordered credential-GC job: a
+transient session-prune failure prevents the receipt pass and fails the job instead of reporting a
+partial success.
 
 The world aggregator samples existing projection tables at the transport catalog's 4 Hz cadence.
 It owns `world_rev`, publishes only closed integer version-1 snapshots, and increments the revision
@@ -71,7 +76,8 @@ authorizes both Guild and Commons cohort channels while Match remains denied, co
 three reserved clearing boundaries without over-allocation, proves a New Founder cannot inherit an
 old settlement, restores a version-1 member at its authoritative revision timestamp,
 and drains to non-readiness. A separate startup-barrier fixture proves the attached clearing and
-session-GC jobs themselves perform their prime passes; the socket/settlement fixture independently
+credential-GC jobs themselves perform their prime passes, including destruction of expired
+bootstrap ciphertext into its permanent tombstone; the socket/settlement fixture independently
 proves pagination beyond the first Guild. `make test-save-integration` runs these inside the
 repository's standard Postgres test topology.
 The same composed graph also runs a progressed fixture through authoritative play and Exit, the

@@ -616,6 +616,16 @@ func TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration(
 	}
 	httpServer := httptest.NewServer(composition.Server.Handler())
 	defer httpServer.Close()
+	bootstrapResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/bootstrap", "",
+		fmt.Sprintf(`{"idempotency_key":%q}`, strings.Repeat("cd", 32)))
+	if bootstrapResponse.StatusCode != http.StatusCreated {
+		t.Fatalf("bootstrap status=%d body=%s", bootstrapResponse.StatusCode, responseBody(bootstrapResponse))
+	}
+	_ = responseBody(bootstrapResponse)
+	var liveBootstrapReceipts int
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM bootstrap_receipts WHERE tombstoned_at IS NULL`).Scan(&liveBootstrapReceipts); err != nil || liveBootstrapReceipts != 1 {
+		t.Fatalf("live bootstrap receipts=%d err=%v", liveBootstrapReceipts, err)
+	}
 	createdResponse := compositionRequest(t, httpServer.Client(), http.MethodPost, httpServer.URL+"/api/v1/account", "", `{}`)
 	var created account.CreatedAccount
 	decodeCompositionResponse(t, createdResponse, &created)
@@ -640,7 +650,7 @@ func TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration(
 	if err := composition.Server.Start(serverContext); err != nil {
 		t.Fatal(err)
 	}
-	var clearings, sessions, accessTokens, families int
+	var clearings, sessions, accessTokens, families, tombstonedBootstrapReceipts int
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM guild_clearing_results`).Scan(&clearings); err != nil || clearings != 1 {
 		t.Fatalf("attached clearing prime count=%d err=%v", clearings, err)
 	}
@@ -649,6 +659,9 @@ func TestComposedGameserverStartupPrimesAttachedClearingAndSessionGCIntegration(
 	}
 	if sessions != 0 || accessTokens != 0 || families != 0 {
 		t.Fatalf("attached session GC left sessions=%d access=%d families=%d", sessions, accessTokens, families)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM bootstrap_receipts WHERE tombstoned_at IS NOT NULL AND key_id IS NULL AND nonce IS NULL AND ciphertext IS NULL`).Scan(&tombstonedBootstrapReceipts); err != nil || tombstonedBootstrapReceipts != 1 {
+		t.Fatalf("attached bootstrap receipt GC tombstones=%d err=%v", tombstonedBootstrapReceipts, err)
 	}
 	drainContext, cancelDrain := context.WithTimeout(context.Background(), time.Second)
 	defer cancelDrain()

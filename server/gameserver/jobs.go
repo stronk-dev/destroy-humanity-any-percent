@@ -4,9 +4,27 @@ import (
 	"context"
 	"errors"
 	"time"
+
+	"cloud-clicker/server/account"
 )
 
 var ErrInvalidJob = errors.New("invalid gameserver job")
+
+type credentialPruner interface {
+	PruneExpiredSessions(context.Context, time.Time, int) (account.SessionGCResult, error)
+	PruneExpiredBootstrapReceipts(context.Context, time.Time, int) (int64, error)
+}
+
+func pruneExpiredCredentials(ctx context.Context, repository credentialPruner, before time.Time, limit int) error {
+	if repository == nil || before.IsZero() || limit < 1 {
+		return ErrInvalidJob
+	}
+	if _, err := repository.PruneExpiredSessions(ctx, before, limit); err != nil {
+		return err
+	}
+	_, err := repository.PruneExpiredBootstrapReceipts(ctx, before, limit)
+	return err
+}
 
 type PeriodicJob struct {
 	interval time.Duration
