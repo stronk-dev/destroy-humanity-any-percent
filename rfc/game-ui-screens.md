@@ -195,7 +195,8 @@ and long tasks in CI and record the hardware profile as a manual release check.
 
 ## Owner rulings on GU-C1–GU-C8 (2026-08-10)
 
-- **GU-C1 — accepted as proposed, with the transport arm ruled:** `game_ui_snapshot.v1` is a
+- **GU-C1 — accepted as proposed, with GU-C23's later widening reconciled:** the current
+  `game_ui_snapshot.v2` is a
   server-owned generated projection DTO (revision/hash/time envelope + closed mechanical-ID-sorted
   `run/manual_action/generators/upgrades/resources/facts/progress`). It rides the EXISTING
   authoritative snapshot channel (additive payload widening — no new channel, no new server
@@ -314,9 +315,11 @@ literal or mechanical-ID title derivation is permitted meanwhile.
   active-play saturation). An honest kernel behavior addition with full Go/TS/version discipline;
   no save mutation/event/receipt/replay input; the second-math-implementation alternative is
   permanently rejected. Until it lands, Game UI correctly rejects schema-v4/v18 projection.
-- **GU-C10 — accepted as proposed.** The API-Foundation-owned bootstrap coordinator with an
+- **GU-C10 — accepted as proposed, with GU-C23's receipt rule reconciled.** The
+  API-Foundation-owned bootstrap coordinator with an
   opaque idempotency key (C20 grammar); persisted receipt = recovery material + session token
-  pair + initial `game_ui_snapshot.v1`; exact retry returns the same receipt; mismatched reuse
+  pair + the current Game UI snapshot schema at mint; exact retry returns the same receipt under
+  that minted schema (including legal replay of stored v1 receipts by v2 code); mismatched reuse
   `idempotency_conflict`; credentials persisted before Desk mounts; absent local credentials
   select Vision Slide; `bootstrap.needed=false` only from the server snapshot. (This is GU-C5's
   escape hatch legitimately triggered — the conformance gap is proven.)
@@ -580,3 +583,5 @@ must conflict. Do not keep a nominal error category no legal request pair can re
   ruled with the four term-row texts authored and the slot-binding family established.
 - 2026-08-11: GU-C24's reputation parameter reconciled to the later M1 owner ruling: display
   string through `formatAmount`, not canonical wire notation.
+- 2026-08-11: the earlier normative GU-C1/GU-C10 rulings reconciled to GU-C23's current-v2 and
+  minted-schema receipt contract; historical blocker proposals remain as the quoted record.
