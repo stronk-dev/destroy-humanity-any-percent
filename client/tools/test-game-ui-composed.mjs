@@ -53,12 +53,21 @@ async function waitForReady() {
 
 async function stopGameserver() {
   if (gameserver.exitCode !== null) return;
-  process.kill(-gameserver.pid, "SIGTERM");
+  signalGameserver("SIGTERM");
   await Promise.race([
     new Promise((resolve) => gameserver.once("exit", resolve)),
     new Promise((resolve) => setTimeout(resolve, 10_000)),
   ]);
-  if (gameserver.exitCode === null) process.kill(-gameserver.pid, "SIGKILL");
+  if (gameserver.exitCode === null) signalGameserver("SIGKILL");
+}
+
+function signalGameserver(signal) {
+  try {
+    process.kill(-gameserver.pid, signal);
+  } catch (error) {
+    if (error?.code !== "EPERM") throw error;
+    gameserver.kill(signal);
+  }
 }
 
 try {
