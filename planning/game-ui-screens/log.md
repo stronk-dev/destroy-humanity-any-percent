@@ -516,3 +516,42 @@ same strict-loader discipline as every other arm. Two rows authored NOW:
   register: a person, not a company).
 No component may substitute a formatted number or a foreign copy row for a ruled constant — a
 missing constant is a thrown error (the requirePresentation pattern), never a silent fallback.
+
+## 2026-08-11 — GU-C23/GU-C24 and screens findings delta ready for designated review
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is a handoff, not an approval,
+  ratification, archival claim, or push authorization. Implementation commits are `e780059` and
+  `26f9a0d`. The full uncovered post-verdict span is `85c0578..26f9a0d`; its earlier executable
+  commits `{61da160, 2b87e24, f546271}` and docs-tier `6ee8da1` remain in the declared span, while
+  `c0021e7` and `ae6c8c5` are the owner rulings and consumed verdict this delta implements.
+- **F1 / GU-C24:** presentation v3 now owns the two ruled constants and four payout-term rows.
+  Every lookup is strict; components no longer substitute formatted zero, company copy, or raw
+  term IDs. The shipped network-slot set is empty, so unknown future slot IDs are withheld until
+  their owner-authored bindings exist. Candidate hashes awaiting owner ratification are:
+  `game-ui-candidate.json` `sha256:6e11c76a67b5ed639ac93ee39e5cfcff384f098969da2edc3d85eb0f2653e8a7`,
+  presentation v3 and its client mirror
+  `sha256:a91d37e9907103e5ba050e928b0e1740d1c509b02499e5e360fbcc57e62d798e`, and
+  generated copy identity
+  `sha256:a8002acc109beaaecb01266b3a51faed4051985d439bca6d36940ac860ce2fcf`.
+- **GU-C23:** the live Game UI schema is v2 with a positive Founder revision. Bootstrap receipt
+  replay remains explicitly v1-or-v2, while ordinary live sync rejects v1. A replayed v1 receipt
+  clears the client CAS coordinate and keeps offer acceptance disabled until an authoritative v2
+  snapshot or Founder event supplies it; v2 submits the exact observed revision.
+- **F2–F4:** the browser harness now fails on uncaught Window, Promise, and Worker errors; the
+  RunEnd surface has a compile-time no-snapshot fixture; and the new composed test drives an
+  actual Chromium page through Vite, the real gameserver/Postgres bootstrap, the live Game UI
+  snapshot, and the existing world WebSocket until the visible visitor counter arrives. That test
+  exposed and closed one real seam: `runtime.ts` had listened for a nonexistent presence frame
+  instead of the composed server's existing world snapshot. The cleanup follow-up `26f9a0d`
+  preserves process-group cleanup normally and falls back to the direct child only where a
+  restricted runner rejects group signalling; the test exits cleanly and leaves no listener.
+- **Evidence read through final exit:** `make verify` (including 6,649 client tests and 19,984
+  browser assertions); `make test-save-integration` on real Postgres; `make test-go-ci` cold on
+  Linux/amd64; the exact Playwright CI container (`docker compose -f compose.browser-test.yml run
+  --rm browser`, 19,984 passed / 2 skipped across Chromium, Firefox, and WebKit); and
+  `node client/tools/test-game-ui-composed.mjs` all exited 0. `make api-check`, `make copy-check`,
+  and the kernel-history guard are included in the aggregate; kernel remains honestly at
+  `0.3.92`.
+- **Still open by design:** the exact live-content T0→T2 AC1 path remains epoch-7-mint-gated, the
+  three new content hashes above require owner ratification, and this span requires its designated
+  cross-party pass. Nothing here self-authorizes archival or deployment.
