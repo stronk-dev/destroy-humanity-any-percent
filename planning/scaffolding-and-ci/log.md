@@ -51,3 +51,20 @@ toFloat64's snap comparison, and Floor IS a shared-vector op: force materializat
 float64 conversion) in a future kernel bump + a razor-edge floor golden vector. R-F2 (LOW) — the
 regression test discriminates only on linux/amd64 (by nature; the CI gate carries it). R-F3
 (LOW) — docs/ci.md owes the test-go-ci line. R-F4 — a Claude-side numbering slip, fixed same day.
+
+## 2026-08-11 — Actions run 31486886470 browser failure reproduced and repaired
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is an implementation record pending the
+  ordinary designated review; it is not an approval.
+- The public run metadata isolated the failure to the Playwright `browser` job at `9a97543`.
+  Client and schema were green; server was cancelled by workflow fail-fast rather than failing.
+  The local GitHub CLI credential was invalid, so the public Actions API supplied job metadata and
+  the failure was reproduced in the exact `mcr.microsoft.com/playwright:v1.62.0-noble` image.
+- Linux Firefox exposed a test-clock race: the real Worker/render integration was required to
+  change the visible amount within a fixed 750 ms while all three browser projects ran
+  concurrently. The Worker remained correct, but Firefox was scheduled after that arbitrary
+  deadline and the assertion observed `100 == 100`.
+- Commit `61da160` retains the same discriminating observable contract but waits up to five seconds
+  for the amount to change, polling every 50 ms. It does not stub the Worker, skip Firefox, or
+  weaken the expected output. The exact CI image then passed all 120 browser files and 19,972 tests
+  with two declared skips; the focused ordinary Make target passed all three engines locally.
