@@ -429,3 +429,45 @@ operation, server-authored command kind, receipt/event bytes, or its race coordi
 named operation) before implementation. It must remain one replay-logged Company mutation using
 the run-pinned offline policy and a claim-token/idempotency pattern already shipped; authentication
 alone must never mutate the save.
+
+## Owner rulings on T01-C12–T01-C15 (2026-08-11)
+
+- **T01-C12 — RULED: the 2,000,000 budget STANDS; the beam gets bounded.** Ratifying 4.53 billion
+  is rejected outright — a mandatory gate that costs billions of transitions is a gate that stops
+  being run, and a cap nobody believes in erodes (the RuneScape lesson in
+  `research/healthy-engagement.md`, now applying to our own tooling). **The ruled contract shape,
+  with parameters owed back to me:** (1) the runner computes an EXACT STATIC ceiling at load from
+  the scenario's declared parameters and refuses before dispatch if it exceeds the budget — the
+  shipped fail-before-write behavior, kept; (2) child expansion is BOUNDED — each decision expands
+  at most `beam_children` candidates per beam entry, selected in deterministic raw-byte order by
+  item ID after a cheap ordering key, and NO expensive rollout runs before that selection; (3) the
+  ceiling formula and the chosen `{width, beam_children, decisions}` must be stated literally in
+  the scenario document and asserted in code; (4) **the acceptance property is unchanged: the
+  5%-greedy-gap proof must still hold** at the new parameters — if it cannot, that is a finding
+  to bring back, not a number to weaken. Codex derives parameters satisfying (1)–(4), re-runs the
+  gap proof, and files the new scenario hash for re-ratification. I do not pick beam width blind.
+- **T01-C13 — accepted: the explicit supersession wins.** Epoch 7 promotes **presentation-v3**
+  (`c387402b…`) and **event-copy-v2** (`71d88ebb…`); the v1 pins are historical candidate inputs
+  only. This RFC's pin table records the replacements.
+- **T01-C14 — RULED, and the mint is NARROWED instead.** Landing four new production owners
+  before a mint that exists to make the game playable is the wrong trade. **Epoch 7 promotes only
+  artifacts with executable owners AND consumers:** the epoch-6 carryover set + economy v4 +
+  routes + categories + relevance + opportunities. The four ownerless documents are re-routed, not
+  minted: **presentation and event-copy stay CLIENT-MIRRORED BUILD-TIME content** (exactly how the
+  screens render today — the generated mirror is already drift-gated by `copy-check`; they are
+  presentation, not replay-identity, and nothing server-side consumes them); **curriculum** gets
+  its own successor RFC owning the loader, the Exit-coordinator integration, and the
+  `curriculum_failure.v1` event grammar (the scripted first failure is content, not a mint
+  precondition); **the first-hour harness scenario is harness input, not a bundle artifact** — it
+  lands with the harness extension that consumes it. Identity baggage is thereby avoided by
+  removal rather than by hurried owners.
+- **T01-C15 — RULED: the LAZY PREFLIGHT arm; no new public operation.** Catchup binds to the
+  shipped coordinator-preflight pattern (SB26's watchdog discipline): **the first eligible
+  authenticated Company command evaluates the catchup and applies it through the existing
+  `ApplyLogged` boundary as one server-authored transition with frozen
+  `{opened_at_ms, offline_span}` inputs and the run-pinned offline policy, BEFORE its own
+  mutation** — so the online evaluation proceeds from the caught-up cursor and the >24h brick
+  cannot occur. Authentication alone still never mutates the save (the law that made a session-open
+  command awkward in the first place); no new operation, receipt store, or idempotency surface is
+  added; the Exit race is resolved by the existing Company stream lock ordering. The >24h fixture,
+  replay-parity proof, and Exit-race ordering test from T01-C6 attach here unchanged.

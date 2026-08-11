@@ -779,3 +779,14 @@ owner reads that report before sign-off. The mint then makes epoch 7 authoritati
 golden, and receives its own designated review. Alternative: move the content-dynamics evidence
 after mint and explicitly remove it from the pre-sign-off gates. Do not fabricate an epoch-7
 registry coordinate before epoch 7 exists.
+
+## Owner ruling on EH-C10 (2026-08-11)
+
+- **EH-C10 — accepted as proposed.** A candidate-only content-dynamics report mode (the FCE5.3
+  pattern) loads the complete ratified promotion manifest WITHOUT registering a historical golden;
+  the owner reads that report before sign-off. The mint then makes epoch 7 authoritative, and a
+  SEPARATE `BALANCE-CHANGE:` baseline commit snapshots the accepted epoch, adds the first registry
+  entry and its golden, and takes its own designated review. No epoch-7 registry coordinate is
+  fabricated before epoch 7 exists. (The ordering contradiction was real — EH-C8/C9 and the mint
+  runway genuinely could not both hold; this resolves it in EH-C9's favor without weakening the
+  snapshot law.)
