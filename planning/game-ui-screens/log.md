@@ -638,3 +638,61 @@ commits) — with the two Claude-side commits above owed to Codex's lane. **NOT 
   F5 (`ago(0)` save age) and F6 (player-facing attribute literals escaping the Copy lint) are
   implemented in the remediation delta with a deterministic elapsed-time browser assertion and
   seeded attribute violations in the boundary gate. Their closure still awaits designated review.
+
+## 2026-08-11 — Codex cross-party review of Claude-authored {c0021e7, ae6c8c5}
+
+- **Review by:** Codex (designated cross-party). **Recorded by:** Codex. This review covers only
+  the two named Claude-authored commits; it is independent of Claude's review of Codex's screen
+  implementation.
+- **`c0021e7`: NOT APPROVED AS AUTHORED, two findings.** CXR1 is the now-owner-ruled M1 defect:
+  GU-C24 typed a player-visible Reputation delta as `canonical_decimal`, contradicting GU-C15's
+  display-string law and producing `Reputation +1e0`. CXR2 is procedural and normative: the
+  commit appended GU-C23 but left the earlier GU-C1 and GU-C10 owner-ruling bodies naming v1 as
+  current, violating the same-edit body-reconciliation rule. GU-C23's server-owned Founder CAS
+  coordinate, minted-schema receipt replay clause, and GU-C24's other three authored rows are
+  otherwise sound. CXR1 is corrected by owner ruling `8cfa00b` plus implementation `ebf3ddf`;
+  CXR2 is corrected in the same remediation record change by making v2/current and v1/legacy
+  explicit while retaining the old blocker proposals as historical quotations. Both closures
+  still belong to Claude's narrow remediation re-review before archival.
+- **`ae6c8c5`: APPROVED.** The entry labels provenance honestly, its five cited hashes and parent
+  chain resolve, it neither consumes the later Claude-authored ruling nor self-authorizes
+  archival, and its F1–F4 findings match the inspected source. In particular it correctly left
+  GU-C23/GU-C24 and the exact live-content AC open. No corrective action is owed on this commit.
+
+## 2026-08-11 — screens remediation round two ready for designated review
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is a handoff, not an approval,
+  ratification, archival claim, or push authorization. Remediation implementation: `ebf3ddf`;
+  normative body reconciliation: `062a80f`; this docs-only record belongs to the same designated
+  review delta beginning after `8cfa00b`.
+- **H1:** composed-runner termination now treats either exit status or signal status as terminal,
+  tolerates both `EPERM` and an already-dead process group's `ESRCH`, and exits cleanly after its
+  real browser assertion. **H2:** the GU-C23-authorized compatibility re-baseline is explicitly
+  recorded above and the current-plus-legacy naming law is canonical documentation.
+- **M1/M4/L5:** Reputation uses an exact `formatAmount` display string, with equality assertions
+  that reject `1e0`. Presentation v3 now owns a mechanical-ID binding for the shipped Clout note;
+  unknown Clout-note and network-slot IDs are withheld, with a negative test proving none of the
+  IDs or carried refs render. The revised candidate pins awaiting owner ratification are:
+  `game-ui-candidate.json` `sha256:cad6b472712071fa81f6d5c0c041bc378d6acd5c913823e2c873fde707d18d89`,
+  presentation v3/client mirror
+  `sha256:c387402bce1607807dc0a5148c845d30afcef2f81441039e5888386c23d3137f`, and generated
+  Copy identity `sha256:98883f308f18ac60a62a47ded7a0c9aa6d71912556e0d6f45ce2e47c9740bc2c`.
+- **M2/M3:** the composed Chromium script now performs an authenticated
+  `/api/v1/founder/state` round trip and requires snapshot v2 plus a positive Founder revision in
+  addition to bootstrap and the real world subscription. A dedicated `game-ui-composed` Actions
+  job installs Chromium and runs the public `make test-game-ui-composed` target on every push and
+  pull request.
+- **L1/L2/L4/L6:** save age derives from elapsed monotonic time since the authoritative snapshot;
+  literal player-facing attributes are covered by the seeded Copy boundary lint; Founder event
+  coordinates max-advance under reordering; and unused copy-assembler param-name mappings were
+  removed. F5/F6 remain visible in the preceding record until the designated pass closes them.
+- **Evidence read through final exit:** `make verify` (6,650 client tests; 19,993 browser
+  assertions), sequential `make test-save-integration`, sequential cold-Linux/amd64
+  `make test-go-ci`, the exact Playwright CI container (19,993 passed / 2 skipped across Chromium,
+  Firefox, and WebKit), and the composed Postgres/browser test all exited 0. One first attempt
+  mistakenly ran the two shared-Postgres Make targets concurrently and produced fixture
+  collisions; those results are discarded as invalid orchestration, and both normal sequential
+  targets then passed cleanly. Kernel/history guard remains green at `0.3.92`.
+- The exact epoch-7 T0→T2 progression remains mint-gated, the three revised hashes above require
+  owner ratification, and this delta requires Claude's designated remediation pass. Nothing here
+  authorizes archival, deployment, or publication.
