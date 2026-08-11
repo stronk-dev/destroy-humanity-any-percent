@@ -474,3 +474,45 @@ unstarted until that ratification; nothing is self-ratified, archived, or pushed
   T0→T2 browser script also remains epoch-7-mint-gated; this range does not substitute fixtures for
   live content or claim the aggregate plan boxes closed. The implemented slice is ready for the
   cross-party designated pass; it is not archival-eligible on this record.
+
+## 2026-08-11 — designated cross-party verdict: the Phase-A screens {2bb0f71, 816100b, aacf7ae, 9a97543, 85c0578} — ALL APPROVED (F1/F2 block acceptance claims)
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+Seven probes, seven correct outcomes: the boundary lint (literal + catalog import both red), the
+GU-C9 replacement vector (revert → floor("8.00002e5") fails EXACTLY as designed — F1 discharged),
+the C11 axe gate (seeded violation red at the right surface), renderer substitution (raw ID red
+in two tests), the era map (flip red). All five surfaces on the real stack with full import
+sweeps; fail-closed arms genuine (accept-disable browser-tested; no substitute literals); GU-C10
+F1 receipt GC discharged with ordered fail-stop + composed proof; GU-C9 F2/F3/F4 closed; C-F2
+perf arm wired; kernel honestly unbumped; every gate green incl. cold Linux; the below-base edge
+2bb0f71 consumed as code (exactly the one ruled revert, pin-matching).
+**F1 (HIGH, blocks Desk-satire acceptance): the ruled $0.00 binding was never minted** — no
+presentation constant exists, components silently substitute formatAmount("0"), six ratified
+rows render "0" instead of the owner-authored beat; {founder} silently bound to the COMPANY
+fallback. An unruled substitution where a DESIGN-GAP escalation was owed. **OWNER RULING (issued
+same day, below).**
+**F2 (HIGH, seams standard): the worker clock-fix regression test does not discriminate** — the
+probe reproduces 13-18 uncaught worker errors per engine on pre-fix code and every test still
+exits 0. Required: the browser harness FAILS on unhandled worker errors (hardening every test),
+or an assertion on continued prediction advancement. (Post-range 61da160 touches this test — its
+own review decides whether it closes this.)
+**F3 (MEDIUM):** the promised composed bootstrap/intent/snapshot BROWSER path does not exist —
+the real runtime.ts centrifuge handshake has never met the real embedded server from any test;
+required with the GU-C23 delta: one composed-socket browser test, or an honest recorded re-scope.
+**F4 (MEDIUM):** AC3's ruled compile-time no-snapshot fixture absent. **F5/F6 (LOW):** the
+hardcoded ago(0) save-status; the attribute-value lint hole; noted observations.
+**Range-union: the union over 516bddb..85c0578 is CLOSED.** Post-range {61da160, 6ee8da1,
+2b87e24, f546271 + drift} landed mid-review and await their own pass. The batch remains correctly
+non-archival (GU-C23/C24 unimplemented; AC1 mint-gated; F1/F2 open).
+
+## 2026-08-11 — OWNER RULING closing the screens F1 (the constants home)
+
+**Presentation schema v3 adds a `constants` arm** — byte-sorted `{id, value}` string rows, the
+same strict-loader discipline as every other arm. Two rows authored NOW:
+- `constant.price_zero` = "$0.00" — the `{price}` param binds here (data, not copy — exactly why
+  the detector forced the placeholder in the first place).
+- `constant.founder_fallback` = "Founder" — the `{founder}` param binds here pre-naming ("Thank
+  you, Founder!!" — honest, period-plausible); the company fallback binding is WITHDRAWN (wrong
+  register: a person, not a company).
+No component may substitute a formatted number or a foreign copy row for a ruled constant — a
+missing constant is a thrown error (the requirePresentation pattern), never a silent fallback.
