@@ -64,8 +64,11 @@ single-resource payback calculation, including lower-bound searches for first af
 first positive marginal output. At run genesis it may bootstrap the cheapest milestone-resource
 purchase through the pinned manual action: the requested count is derived from the real quote and
 catalog yield, capped by the catalog's click bucket, and its window is derived from the catalog
-refill rate. Beam nodes deduplicate by canonical state plus virtual time before greedy rollout and
-use componentwise dominance before the width bound. Run cardinality is checked before simulation.
+refill rate. Relevance scenarios declare `beam_children`; each beam node orders candidates by the
+real current one-unit quote and then raw-byte ID, selects at most that many, and only then performs
+the expensive R10 scoring and greedy completion. Beam nodes deduplicate by canonical state plus
+virtual time before greedy rollout and use componentwise dominance before the width bound. Run
+cardinality is checked before simulation.
 The static transition estimate is only a generous runaway-configuration guard; the scenario's work
 budget is enforced by counting every simulation call at runtime and aborting without a partial
 report when the limit is reached.

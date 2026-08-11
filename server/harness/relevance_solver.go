@@ -302,7 +302,7 @@ func (suite *RelevanceSuite) preflightTransitionCeiling(referenceSeeds, nonRefer
 	if err != nil {
 		return 0, err
 	}
-	beamPerSeed, err := checkedMul(suite.Scenario.MaxDecisions, suite.Scenario.BeamWidth, items+1, perRun+perDecision)
+	beamPerSeed, err := checkedMul(suite.Scenario.MaxDecisions, suite.Scenario.BeamWidth, suite.Scenario.BeamChildren+1, perRun+perDecision)
 	if err != nil {
 		return 0, err
 	}
@@ -474,7 +474,10 @@ func (suite *RelevanceSuite) runReference(mask production.AblationMask, counter 
 }
 
 func (suite *RelevanceSuite) rankCandidates(state *save.State, revision, nowMS, horizonMS int64, mask production.AblationMask, counter *relevanceCounter) ([]relevanceCandidate, error) {
-	ids := suite.purchasableIDs()
+	return suite.rankCandidateIDs(state, revision, nowMS, horizonMS, suite.purchasableIDs(), mask, counter)
+}
+
+func (suite *RelevanceSuite) rankCandidateIDs(state *save.State, revision, nowMS, horizonMS int64, ids []string, mask production.AblationMask, counter *relevanceCounter) ([]relevanceCandidate, error) {
 	result := make([]relevanceCandidate, 0, len(ids))
 	for _, id := range ids {
 		if state.UpgradesOwned[id] {
@@ -497,6 +500,43 @@ func (suite *RelevanceSuite) rankCandidates(state *save.State, revision, nowMS, 
 		}
 		return result[left].ID < result[right].ID
 	})
+	return result, nil
+}
+
+// beamCandidateIDs applies T01-C17's cheap, deterministic selection before
+// any affordability search, marginal-output probe, or greedy rollout. The
+// real one-unit quote is the ordering key and the raw-byte ID is the tie-break.
+func (suite *RelevanceSuite) beamCandidateIDs(state *save.State) ([]string, error) {
+	type cheapCandidate struct {
+		id   string
+		cost decimal.Decimal
+	}
+	values := make([]cheapCandidate, 0, len(suite.Policy.Items))
+	for _, id := range suite.purchasableIDs() {
+		if state.UpgradesOwned[id] {
+			continue
+		}
+		resourceID, cost, err := suite.candidateCost(state, id)
+		if err != nil {
+			return nil, err
+		}
+		if resourceID == suite.Scenario.Milestone.ResourceID {
+			values = append(values, cheapCandidate{id: id, cost: cost})
+		}
+	}
+	sort.Slice(values, func(left, right int) bool {
+		if !values[left].cost.Eq(values[right].cost) {
+			return values[left].cost.Lt(values[right].cost)
+		}
+		return values[left].id < values[right].id
+	})
+	if int64(len(values)) > suite.Scenario.BeamChildren {
+		values = values[:suite.Scenario.BeamChildren]
+	}
+	result := make([]string, len(values))
+	for index := range values {
+		result[index] = values[index].id
+	}
 	return result, nil
 }
 
@@ -985,7 +1025,11 @@ func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) 
 			if !ok {
 				continue
 			}
-			candidates, rankErr := suite.rankCandidates(current.state, current.revision, current.atMS, next, production.AblationMask{}, counter)
+			candidateIDs, selectionErr := suite.beamCandidateIDs(current.state)
+			if selectionErr != nil {
+				return nil, selectionErr
+			}
+			candidates, rankErr := suite.rankCandidateIDs(current.state, current.revision, current.atMS, next, candidateIDs, production.AblationMask{}, counter)
 			if rankErr != nil {
 				return nil, rankErr
 			}

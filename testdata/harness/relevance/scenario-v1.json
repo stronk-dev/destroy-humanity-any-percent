@@ -12,6 +12,7 @@
   "decision_horizons_ms": [1000, 5000, 15000, 30000, 60000, 120000],
   "max_decisions": 12,
   "beam_width": 8,
+  "beam_children": 4,
   "greedy_gap_maximum_ppm": 50000,
   "relevance_budget_max_runs": 100,
   "relevance_budget_max_transitions": 2000000

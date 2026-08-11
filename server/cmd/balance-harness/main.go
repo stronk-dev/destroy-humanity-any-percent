@@ -211,7 +211,7 @@ func runRelevance(root, output, scenarioPath string) error {
 
 func writeRelevanceReport(output string, report harness.RelevanceReport) error {
 	if len(report.Failures) > 0 {
-		return fmt.Errorf("relevance failures: %v", report.Failures)
+		return fmt.Errorf("relevance failures: %v; run_budget=%+v; greedy_oracle=%+v", report.Failures, report.RunBudget, report.GreedyOracle)
 	}
 	reportBytes, err := harness.CanonicalJSON(report)
 	if err != nil {

@@ -177,6 +177,52 @@ func TestT0T1ReferenceBootstrapMakesNonEmptyPurchaseThroughPinnedManualClamp(t *
 	}
 }
 
+func TestT0T1BeamSelectsCheapCandidatesBeforeSimulation(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	state, err := suite.newRelevanceState()
+	if err != nil {
+		t.Fatal(err)
+	}
+	ids, err := suite.beamCandidateIDs(state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"generator.beige_tower"}
+	if !reflect.DeepEqual(ids, want) {
+		t.Fatalf("cheap beam candidates=%v want=%v", ids, want)
+	}
+	if state.EvaluatedThrough != Epoch || state.GeneratorPurchasedTotal != 0 {
+		t.Fatalf("cheap selection simulated or mutated state: evaluated=%s purchases=%d", state.EvaluatedThrough, state.GeneratorPurchasedTotal)
+	}
+}
+
+func TestBeamChildBoundReducesWorkBeforeRollout(t *testing.T) {
+	load := func(children int64) (*RelevanceSuite, *relevanceCounter) {
+		t.Helper()
+		suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+		if err != nil {
+			t.Fatal(err)
+		}
+		suite.Scenario.BeamChildren = children
+		return suite, &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	}
+
+	bounded, boundedCounter := load(1)
+	if _, err := bounded.runBeam(boundedCounter); err != nil {
+		t.Fatal(err)
+	}
+	exhaustive, exhaustiveCounter := load(4)
+	if _, err := exhaustive.runBeam(exhaustiveCounter); err != nil {
+		t.Fatal(err)
+	}
+	if boundedCounter.value >= exhaustiveCounter.value {
+		t.Fatalf("pre-rollout child bound did not reduce work: bounded=%d exhaustive=%d", boundedCounter.value, exhaustiveCounter.value)
+	}
+}
+
 func TestRelevanceWindowsBindEveryItemToAnInWindowMilestone(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
 	if err != nil {

@@ -58,6 +58,7 @@ type RelevanceScenario struct {
 	DecisionHorizonsMS            []int64            `json:"decision_horizons_ms"`
 	MaxDecisions                  int64              `json:"max_decisions"`
 	BeamWidth                     int64              `json:"beam_width"`
+	BeamChildren                  int64              `json:"beam_children"`
 	GreedyGapMaximumPPM           int64              `json:"greedy_gap_maximum_ppm"`
 	RelevanceBudgetMaxRuns        int64              `json:"relevance_budget_max_runs"`
 	RelevanceBudgetMaxTransitions int64              `json:"relevance_budget_max_transitions"`
@@ -210,7 +211,8 @@ func LoadRelevanceSuite(repositoryRoot, scenarioPath string) (*RelevanceSuite, e
 func validateRelevanceScenario(scenario RelevanceScenario) error {
 	if scenario.SchemaVersion < 1 || scenario.SchemaVersion > RelevancePolicySchemaVersion || !relevanceIDPattern.MatchString(scenario.ID) || scenario.Catalog == "" || scenario.RoutesCatalog == "" || scenario.Policy == "" ||
 		len(scenario.Runs) == 0 || scenario.Reducer != "worst" && scenario.Reducer != "p05" || scenario.HorizonMS < 1 ||
-		scenario.HorizonMS > relevanceMaxSafeInteger || scenario.MaxDecisions < 1 || scenario.BeamWidth != 8 || scenario.GreedyGapMaximumPPM < 0 ||
+		scenario.HorizonMS > relevanceMaxSafeInteger || scenario.MaxDecisions < 1 || scenario.BeamWidth != 8 || scenario.BeamChildren < 1 ||
+		scenario.BeamChildren > relevanceMaxSafeInteger || scenario.GreedyGapMaximumPPM < 0 ||
 		scenario.GreedyGapMaximumPPM > 1_000_000 || scenario.RelevanceBudgetMaxRuns < 1 || scenario.RelevanceBudgetMaxTransitions < 1 {
 		return errors.New("invalid relevance scenario envelope")
 	}

@@ -268,3 +268,34 @@ The test is narrowed to the behavior it genuinely proves (pinned-clamp bootstrap
 purchase set); T01-C16's milestone acceptance remains open alongside the 2,000,000-transition beam
 conflict. Fixing either requires an owner ruling on scenario decisions/beam semantics or new
 ratified scenario bytes, not a weakened assertion.
+
+## 2026-08-12 — T01-C17 bounded-beam implementation and measured blocker
+
+- **Implemented/inspected by:** Codex. **Recorded by:** Codex. Ready for designated cross-party
+  review as an implementation checkpoint; this is not approval or a ratification request.
+- Added literal positive-safe-int `beam_children` to the scenario grammar. Beam expansion now sorts
+  the still-eligible milestone-resource candidates by their real current one-unit quote, then
+  raw-byte ID, selects at most the declared count, and only then invokes affordability searches,
+  marginal-output probes, or greedy completion. A regression pins the T0 ordering and proves the
+  preselection does not advance or mutate state. R11 state/time identity dedup remains before
+  rollout. The generic four-item fixture declares 4 and remains exhaustive.
+- **Measured parameter sweep on the ratified T0–T1 content:** `{width:8, decisions:128,
+  beam_children:4}`, then 2, then the minimum legal 1 each exhaust the runtime counter at exactly
+  2,000,000 transitions. With `beam_children:1`, a temporary 10,000,000 diagnostic ceiling also
+  exhausts exactly after roughly 21 minutes. No partial report is written in any run. The candidate
+  is restored to its ruled 2,000,000 budget; the provisional child literal remains 1 solely to name
+  the measured minimum, not as ratification-ready bytes.
+- **T01-C17 branch A is disproven. Branch B cannot yet be executed honestly:** even the minimum
+  child bound does not complete under 10,000,000, so there is no measured worst-case value from
+  which to derive `×2` headroom. Raising again would create a mandatory gate with tens of minutes
+  to hours of wall cost before establishing the still-required oracle result.
+- **The independent T01-C16 blocker also remains:** the unmasked greedy reference uses 126 one-unit
+  purchases inside the 128-decision envelope, ends the 24-hour horizon at `1.71274492719e9` cash,
+  and never reaches the `1e12` milestone. Therefore no bounded-beam parameter can currently produce
+  the required reached-vs-reached 5% oracle proof. Owner direction is required on the reference
+  decision envelope/completion contract before further budget measurement is meaningful; Codex has
+  not raised the ratified budget or weakened the oracle.
+- The separately authorized `d05dc13` rewrite was not performed: GitHub Actions run 31538481943
+  identifies that exact hash as published `main`, falsifying the ruling's unpushed/no-remote-ref
+  premise. The append-only correction range `{759e369, 0151ddc, 3a3f4cd}` is the non-destructive
+  repair and passes `make verify-server`, cold Linux `make test-go-ci`, and full `make verify`.
