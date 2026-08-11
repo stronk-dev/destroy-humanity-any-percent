@@ -59,6 +59,7 @@ interface AppExports {
   fixtureOffer(value: ExitOfferSpawnedEvent): void;
   fixtureRunEnd(value: RunEndedEvent): void;
   fixtureSystem(value: "drain" | "resync"): void;
+  fixtureMonotonicElapsed(value: number): void;
 }
 
 async function assertAxe(target: HTMLElement, label: string): Promise<void> {
@@ -161,8 +162,33 @@ it.skipIf(typeof document === "undefined")("renders ruled constants and complete
   app.fixtureOffer(offer); flushSync();
   expect(target.textContent).toContain("Clout carries. The personal brand survives the company.");
   expect(target.textContent).toContain("Reputation +1");
+  expect(target.textContent).not.toContain("Reputation +1e0");
   expect(target.textContent).toContain("Route Knowledge +2");
   expect(target.textContent).not.toContain("clout.reach.preserved");
+  await unmount(app); target.remove();
+});
+
+it.skipIf(typeof document === "undefined")("max-advances the Founder CAS coordinate across out-of-order events", async () => {
+  const runtime = new FixtureRuntime(true);
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  app.fixtureSnapshot(snapshot);
+  runtime.listener?.({ kind: "event", revision: 4, scope: "founder", value: crossed });
+  runtime.listener?.({ kind: "event", revision: 3, scope: "founder", value: crossed });
+  app.fixtureOffer(offer); flushSync();
+  const sign = [...target.querySelectorAll("button")].find((button) => button.textContent === "Sign")!;
+  sign.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(runtime.requests[0]).toMatchObject({ kind: "accept_exit_offer", expected_founder_revision: 4 });
+  await unmount(app); target.remove();
+});
+
+it.skipIf(typeof document === "undefined")("renders save age from the last authoritative snapshot", async () => {
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(true) } }) as unknown as AppExports;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  app.fixtureSnapshot(snapshot); app.fixtureMonotonicElapsed(61_000); app.fixtureSurface("settings"); flushSync();
+  expect(target.textContent).toContain("Saved to the server 0:01:01 ago.");
   await unmount(app); target.remove();
 });
 

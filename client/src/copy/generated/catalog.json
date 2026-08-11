@@ -1639,7 +1639,7 @@
       "params": [
         {
           "name": "delta",
-          "type": "canonical_decimal"
+          "type": "string"
         }
       ],
       "era_variants": null,

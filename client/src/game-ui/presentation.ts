@@ -7,6 +7,7 @@ type DescribedBinding = NamedBinding & Readonly<{ description_key: CopyKey }>;
 type GeneratorBinding = DescribedBinding & Readonly<{ cap_reason_key: CopyKey | null }>;
 type CosmeticBinding = DescribedBinding & Readonly<{ disclosure_key: CopyKey; purchasable: false; stateful: false }>;
 type ConstantBinding = Readonly<{ id: string; value: string }>;
+type TextBinding = Readonly<{ id: string; text_key: CopyKey }>;
 const mechanicalID = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 
 function exact(value: object, keys: readonly string[], label: string): void {
@@ -16,6 +17,7 @@ function exact(value: object, keys: readonly string[], label: string): void {
 
 export interface GameUIPresentation {
   readonly schemaVersion: 3;
+  readonly cloutReachNotes: ReadonlyMap<string, TextBinding>;
   readonly constants: ReadonlyMap<string, string>;
   readonly generators: ReadonlyMap<string, GeneratorBinding>;
   readonly upgrades: ReadonlyMap<string, DescribedBinding>;
@@ -46,11 +48,12 @@ function constants(values: readonly ConstantBinding[]): ReadonlyMap<string, stri
   return result;
 }
 
-exact(source, ["constants", "cosmetic_stubs", "exit_types", "gates", "generators", "manual_actions", "network_slots", "schema_version", "upgrades"], "game UI presentation");
+exact(source, ["clout_reach_notes", "constants", "cosmetic_stubs", "exit_types", "gates", "generators", "manual_actions", "network_slots", "schema_version", "upgrades"], "game UI presentation");
 if (source.schema_version !== 3) throw new SyntaxError("game UI presentation must be schema v3");
 
 export const GAME_UI_PRESENTATION: GameUIPresentation = Object.freeze({
   schemaVersion: 3,
+  cloutReachNotes: rows(source.clout_reach_notes as TextBinding[], ["id", "text_key"], "Clout-reach presentation"),
   constants: constants(source.constants as ConstantBinding[]),
   generators: rows(source.generators as GeneratorBinding[], ["cap_reason_key", "description_key", "id", "title_key"], "generator presentation"),
   upgrades: rows(source.upgrades as DescribedBinding[], ["description_key", "id", "title_key"], "upgrade presentation"),

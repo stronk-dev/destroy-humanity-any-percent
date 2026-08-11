@@ -137,7 +137,7 @@
       return;
     }
     if (message.kind !== "event") return;
-    if (message.scope === "founder") founderRevision = message.revision;
+    if (message.scope === "founder") founderRevision = Math.max(founderRevision ?? 0, message.revision);
     const value = message.value;
     if (value.kind === "gate_crossed" && snapshot && value.payload.founder_id === snapshot.run.founder_id && value.payload.run_id.run_seq === snapshot.run.run_seq) {
       const split = { gate_id: value.payload.gate_id, rta_ms: Math.max(0, value.occurred_at_ms - snapshot.run.run_started_at_ms) };
@@ -201,6 +201,7 @@
   export function fixtureOffer(value: ExitOfferSpawnedEvent): void { offer = value; show("offer_sheet"); }
   export function fixtureRunEnd(value: RunEndedEvent): void { ended = value; show("run_end"); }
   export function fixtureSystem(value: "drain" | "resync"): void { if (value === "drain") draining = true; else resyncing = true; }
+  export function fixtureMonotonicElapsed(value: number): void { monotonicMS = snapshotMonotonicMS + value; }
 </script>
 
 <main bind:this={root} class="game-ui" data-surface={surface}>
@@ -321,7 +322,7 @@
   {:else if surface === "run_end" && ended}
     <RunEndSurface {ended} />
   {:else if snapshot && surface === "settings"}
-    <section class="surface" aria-labelledby="settings-heading"><h1 id="settings-heading">{t("surface.settings.title", {}, era)}</h1><p>{offline ? t("settings.save_status.offline", {}, era) : pending ? t("settings.save_status.saving", {}, era) : t("settings.save_status.saved_frame", { ago: duration(0) }, era)}</p><p>{t("settings.account_note", {}, era)}</p></section>
+    <section class="surface" aria-labelledby="settings-heading"><h1 id="settings-heading">{t("surface.settings.title", {}, era)}</h1><p>{offline ? t("settings.save_status.offline", {}, era) : pending ? t("settings.save_status.saving", {}, era) : t("settings.save_status.saved_frame", { ago: duration(Math.max(0, monotonicMS - snapshotMonotonicMS)) }, era)}</p><p>{t("settings.account_note", {}, era)}</p></section>
   {/if}
 </main>
 

@@ -30,6 +30,7 @@ const governedStyle = /^(?:color|background(?:-color)?|border(?:-(?:top|right|bo
 const literalStyle = /(?:#[0-9a-f]{3,8}\b|\brgba?\(|\bhsla?\(|\b(?:repeating-)?(?:linear|radial|conic)-gradient\(|\b(?:0|[1-9]\d*)(?:\.\d+)?m?s\b|\b(?:Arial|Courier|Geneva|Helvetica|Tahoma|Verdana)\b|\b(?:inset\s+)?-?(?:0|[1-9]\d*)px\s+-?(?:0|[1-9]\d*)px)/i;
 const forbiddenImports = /from\s+["'][^"']*(?:\/transport|\/replay|\/production|\/economy(?:-kernel)?|\/shell\/runtime|balance\/)[^"']*["']/;
 const forbiddenNetwork = /\b(?:fetch\s*\(|new\s+WebSocket\s*\()/;
+const playerFacingAttributes = new Set(["alt", "aria-description", "aria-label", "placeholder", "title", "value"]);
 
 function visit(node, callback, seen = new Set()) {
   if (node === null || typeof node !== "object" || seen.has(node)) return;
@@ -59,6 +60,10 @@ function verifySvelteSource(source, label) {
   });
   visit(ast.fragment, (node) => {
     if (node.type === "Text" && !attributeText.has(node) && node.data.trim().length > 0) throw new Error(`${label}: player-facing text must resolve through the Copy pipeline`);
+    if (node.type === "Attribute" && playerFacingAttributes.has(node.name) && Array.isArray(node.value) &&
+      node.value.some((part) => part.type === "Text" && part.data.trim().length > 0)) {
+      throw new Error(`${label}: player-facing attribute ${node.name} must resolve through the Copy pipeline`);
+    }
     if (node.type === "Attribute" && node.name === "style") {
       if (!Array.isArray(node.value) || node.value.some((part) => part.type !== "Text")) throw new Error(`${label}: dynamic inline style attributes are forbidden`);
       const inline = node.value.map((part) => part.data).join("");
@@ -94,6 +99,8 @@ for (const seeded of [
   `<p style="border-radius: 4px">{value}</p>`,
   `<p style:color={value}>{value}</p>`,
   `<p>Unregistered player copy</p>`,
+  `<button aria-label="Unregistered label">{value}</button>`,
+  `<input placeholder="Unregistered placeholder" />`,
 ]) {
   let rejected = false;
   try { verifySvelteSource(seeded, "seeded violation"); } catch { rejected = true; }

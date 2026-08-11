@@ -116,9 +116,11 @@ test service. Use these targets when host-platform success could mask scheduling
 cold-run behavior.
 
 `make test-game-ui-composed` starts its isolated repository Postgres service, the real composed gameserver,
-and Vite, then drives Chromium through anonymous bootstrap, the authoritative UI snapshot, and the
-actual Centrifuge WebSocket subscription. Its visitor-counter assertion is the socket-handshake
-proof; no browser runtime or server transport is stubbed.
+and Vite, then drives Chromium through anonymous bootstrap, an authenticated live
+`/api/v1/founder/state` v2 round trip, and the actual Centrifuge WebSocket subscription. The
+snapshot assertion and visitor-counter assertion prove both HTTP synchronization and the socket
+handshake; no browser runtime or server transport is stubbed. The dedicated
+`game-ui-composed` Actions job runs this same Make target on every push and pull request.
 
 Go commands invoked by the Makefile use the ignored repository-local `.cache/go-build` directory.
 Focused tests can run without writing to a user-level cache or requiring sandbox permission:

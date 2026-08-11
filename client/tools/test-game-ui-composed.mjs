@@ -52,21 +52,26 @@ async function waitForReady() {
 }
 
 async function stopGameserver() {
-  if (gameserver.exitCode !== null) return;
+  if (gameserverStopped()) return;
   signalGameserver("SIGTERM");
   await Promise.race([
-    new Promise((resolve) => gameserver.once("exit", resolve)),
+    gameserverStopped() ? Promise.resolve() : new Promise((resolve) => gameserver.once("exit", resolve)),
     new Promise((resolve) => setTimeout(resolve, 10_000)),
   ]);
-  if (gameserver.exitCode === null) signalGameserver("SIGKILL");
+  if (!gameserverStopped()) signalGameserver("SIGKILL");
+}
+
+function gameserverStopped() {
+  return gameserver.exitCode !== null || gameserver.signalCode !== null;
 }
 
 function signalGameserver(signal) {
   try {
     process.kill(-gameserver.pid, signal);
   } catch (error) {
+    if (error?.code === "ESRCH") return;
     if (error?.code !== "EPERM") throw error;
-    gameserver.kill(signal);
+    if (!gameserver.kill(signal) && !gameserverStopped()) throw error;
   }
 }
 
@@ -99,6 +104,16 @@ try {
     credentials: localStorage.getItem("cloud-clicker.credentials.v1"),
   }));
   if (stored.bootstrap !== null || stored.credentials === null) throw new Error("bootstrap credential handoff was not committed before navigation");
+  const liveSnapshot = await page.evaluate(async () => {
+    const storedCredentials = localStorage.getItem("cloud-clicker.credentials.v1");
+    if (!storedCredentials) throw new Error("missing composed credentials");
+    const parsed = JSON.parse(storedCredentials);
+    const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
+    return { body: await response.json(), status: response.status };
+  });
+  if (liveSnapshot.status !== 200 || liveSnapshot.body?.schema_version !== 2 || !Number.isSafeInteger(liveSnapshot.body?.founder_revision) || liveSnapshot.body.founder_revision < 1) {
+    throw new Error("composed live Game UI v2 snapshot round trip failed");
+  }
   if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
   console.log("composed Game UI bootstrap + snapshot + WebSocket presence handshake: PASS");
   await page.goto("about:blank");

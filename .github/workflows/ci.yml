@@ -91,6 +91,29 @@ jobs:
       - run: pnpm --dir client install --frozen-lockfile
       - run: make test-browser
 
+  game-ui-composed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: server/go.mod
+          cache: false
+      - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: client/package.json
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: client/pnpm-lock.yaml
+      - run: pnpm --dir client install --frozen-lockfile
+      - run: pnpm --dir client exec playwright install --with-deps chromium
+      - run: make test-game-ui-composed
+
   schema:
     runs-on: ubuntu-latest
     timeout-minutes: 5

@@ -6,6 +6,7 @@ import { GameUINavigation } from "../src/game-ui/navigation";
 import { GAME_UI_PERFORMANCE_BUDGET, validatePerformanceObservation } from "../src/game-ui/performance";
 import { defaultSurface, GAME_UI_SURFACES } from "../src/game-ui/surface-catalog";
 import { requirePresentationConstant } from "../src/game-ui/presentation";
+import { renderPrestigeTermRows } from "../src/game-ui/prestige-terms";
 import { parseLocalTiming, priorPersonalBest, RTATimer, timingStorageKey, writeLocalRunTiming } from "../src/game-ui/timing";
 import { decodeTransportEnvelope } from "../src/transport";
 
@@ -58,6 +59,29 @@ describe("Game UI snapshot contract", () => {
     expect(() => parseGameUISnapshot({ ...legacy, schema_version: 2 })).toThrow(/exact/);
     expect(() => parseGameUISnapshot({ ...snapshot, schema_version: 1 })).toThrow(/exact/);
     expect(() => parseGameUISnapshot({ ...snapshot, founder_revision: 0 })).toThrow(/safe integer/);
+  });
+});
+
+describe("Game UI payout presentation", () => {
+  it("formats display deltas and withholds unknown governed IDs", () => {
+    expect(renderPrestigeTermRows({
+      clout_reach_note: "clout.reach.preserved",
+      network_slot_unlocks: [],
+      reputation_delta: 1,
+      route_knowledge: 2,
+    }, "era_1995")).toEqual([
+      "Clout carries. The personal brand survives the company.",
+      "Reputation +1",
+      "Route Knowledge +2",
+    ]);
+    const withheld = renderPrestigeTermRows({
+      clout_reach_note: "clout.reach.future",
+      network_slot_unlocks: [{ carried_ref: "carried.future", slot: "network.future" }],
+      reputation_delta: 2,
+      route_knowledge: 3,
+    }, "era_1995");
+    expect(withheld).toEqual(["Reputation +2", "Route Knowledge +3"]);
+    expect(withheld.join(" ")).not.toMatch(/clout\.reach\.future|network\.future|carried\.future/u);
   });
 });
 

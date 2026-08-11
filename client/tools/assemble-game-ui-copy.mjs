@@ -46,7 +46,7 @@ const additions = Object.freeze([
 const termAdditions = Object.freeze([
   { key: "terms.clout_reach_note.text", text: "Clout carries. The personal brand survives the company.", params: [], era_variants: null, provenance: [], tone: "diegetic" },
   { key: "terms.network_slot_unlock.frame", text: "Network: {title}", params: [{ name: "title", type: "string" }], era_variants: null, provenance: [], tone: "diegetic" },
-  { key: "terms.reputation_delta.frame", text: "Reputation +{delta}", params: [{ name: "delta", type: "canonical_decimal" }], era_variants: null, provenance: [], tone: "diegetic" },
+  { key: "terms.reputation_delta.frame", text: "Reputation +{delta}", params: [{ name: "delta", type: "string" }], era_variants: null, provenance: [], tone: "diegetic" },
   { key: "terms.route_knowledge.frame", text: "Route Knowledge +{delta}", params: [{ name: "delta", type: "integer" }], era_variants: null, provenance: [], tone: "diegetic" },
 ]);
 
@@ -56,11 +56,9 @@ const paramTypes = Object.freeze({
   attended: "string",
   attended_ms: "integer",
   cap: "integer",
-  cap_hours: "integer",
   cost: "canonical_decimal",
   count: "integer",
   current: "integer",
-  delta: "canonical_decimal",
   day: "integer",
   exit_type: "string",
   expires_at_ms: "integer",
@@ -68,14 +66,11 @@ const paramTypes = Object.freeze({
   gate_id: "string",
   generator_id: "string",
   pb: "string",
-  price: "string",
   rate: "string",
-  rate_percent: "integer",
   remaining: "string",
   rta: "string",
   run_seq: "integer",
   tier: "integer",
-  title: "string",
   upgrade_id: "string",
 });
 
@@ -216,7 +211,7 @@ const presentationV2 = presentationV1
   .replace(/\n\}\n$/u, `,\n  "gates": [\n    { "id": "gate.t0_to_t1", "title_key": "gate.t0_to_t1.title" }\n  ],\n  "exit_types": [\n    { "id": "acquihire", "title_key": "exit_type.acquihire.title" },\n    { "id": "acquisition", "title_key": "exit_type.acquisition.title" },\n    { "id": "collapse", "title_key": "exit_type.collapse.title" },\n    { "id": "ipo", "title_key": "exit_type.ipo.title" },\n    { "id": "scripted_first", "title_key": "exit_type.scripted_first.title" }\n  ]\n}\n`);
 const presentationV3 = presentationV2
   .replace('"schema_version": 2', '"schema_version": 3')
-  .replace(/\n\}\n$/u, `,\n  "constants": [\n    { "id": "constant.founder_fallback", "value": "Founder" },\n    { "id": "constant.price_zero", "value": "$0.00" }\n  ],\n  "network_slots": []\n}\n`);
+  .replace(/\n\}\n$/u, `,\n  "clout_reach_notes": [\n    { "id": "clout.reach.preserved", "text_key": "terms.clout_reach_note.text" }\n  ],\n  "constants": [\n    { "id": "constant.founder_fallback", "value": "Founder" },\n    { "id": "constant.price_zero", "value": "$0.00" }\n  ],\n  "network_slots": []\n}\n`);
 
 const eventCopyV1 = readFileSync(eventCopyV1Path, "utf8");
 const eventCopy = JSON.parse(eventCopyV1);

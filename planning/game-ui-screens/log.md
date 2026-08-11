@@ -623,3 +623,18 @@ commits) — with the two Claude-side commits above owed to Codex's lane. **NOT 
   re-baseline of `api-compat-v1.json` must cite its authorizing ruling in the same commit
   message and planning entry; an unrecorded re-baseline is a review finding of the same severity
   as an unreviewed archive.
+
+## 2026-08-11 — H2 compatibility-pin re-baseline record and carried LOW findings
+
+- **Recorded by:** Codex. GU-C23 in `c0021e7` authorized widening the live Game UI snapshot to
+  v2 while retaining receipt replay for v1. Implementation commit `e780059` therefore ran the
+  explicit `make api-pin` operation: the unversioned `GameUISnapshot` schema now names the current
+  v2 shape, and `GameUISnapshotV1` is the retained legacy receipt shape. This is the missing record
+  for that deliberate compatibility-baseline refresh; the generated delta was not incidental.
+- The current-plus-legacy naming convention and ruling-citation duty are now canonical in
+  `docs/api-foundation.md`. Future compatibility-pin refreshes without their authorizing ruling
+  in the same change remain a review finding even when the underlying widening is valid.
+- The prior verdict's F5/F6 findings remain carried rather than disappearing from a handoff:
+  F5 (`ago(0)` save age) and F6 (player-facing attribute literals escaping the Copy lint) are
+  implemented in the remediation delta with a deterministic elapsed-time browser assertion and
+  seeded attribute violations in the boundary gate. Their closure still awaits designated review.

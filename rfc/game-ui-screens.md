@@ -566,7 +566,8 @@ must conflict. Do not keep a nominal error category no legal request pair can re
     tone: diegetic (the design/02 satire line in its short form).
   - `terms.network_slot_unlock.frame` — "Network: {title}" — params: title string (the title
     resolves through the slot presentation binding).
-  - `terms.reputation_delta.frame` — "Reputation +{delta}" — params: delta canonical_decimal.
+  - `terms.reputation_delta.frame` — "Reputation +{delta}" — params: delta string, produced by
+    `formatAmount` from the canonical wire value; player-visible deltas never expose wire notation.
   - `terms.route_knowledge.frame` — "Route Knowledge +{delta}" — params: delta integer.
   **Slot presentation bindings:** the family is RULED (one row per shipped slot/carried-ref ID,
   mechanical-ID-keyed, the exit-type precedent); Codex enumerates the shipped slot IDs in the
@@ -577,3 +578,5 @@ must conflict. Do not keep a nominal error category no legal request pair can re
 
 - 2026-08-11: GU-C23 accepted (v2 snapshot + the receipt schema-version replay clause); GU-C24
   ruled with the four term-row texts authored and the slot-binding family established.
+- 2026-08-11: GU-C24's reputation parameter reconciled to the later M1 owner ruling: display
+  string through `formatAmount`, not canonical wire notation.

@@ -18,6 +18,10 @@ byte-compares both outputs as part of `make verify-server`. The committed
 operations, request unions, statuses, required fields, and bounds cannot narrow or disappear;
 responses may add optional fields or widen an enum/union. Updating the compatibility baseline is
 an explicit `make api-pin` operation, never an incidental effect of ordinary generation.
+Schema names follow the current-plus-legacy convention: an unversioned name denotes the current
+shape, while a retained historical shape uses an explicit `V<n>` suffix. A compatibility-pin
+refresh must cite its authorizing ruling and be recorded in the owning planning log in the same
+change; an otherwise valid widening is not permission for a silent re-baseline.
 
 Public pagination cursors contain canonical `{filter_sha256,key,op,v}` JSON followed by an
 HMAC-SHA256 signature, encoded as unpadded base64url. The codec verifies the signature with the

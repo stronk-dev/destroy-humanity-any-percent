@@ -46,6 +46,9 @@
     { "id": "ipo", "title_key": "exit_type.ipo.title" },
     { "id": "scripted_first", "title_key": "exit_type.scripted_first.title" }
   ],
+  "clout_reach_notes": [
+    { "id": "clout.reach.preserved", "text_key": "terms.clout_reach_note.text" }
+  ],
   "constants": [
     { "id": "constant.founder_fallback", "value": "Founder" },
     { "id": "constant.price_zero", "value": "$0.00" }

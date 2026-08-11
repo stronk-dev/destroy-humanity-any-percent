@@ -37,8 +37,9 @@ style literals. `make test-browser` applies the WCAG 2.2 AA axe gate to all five
 Chromium, Firefox, and WebKit and includes the sixty-second observable performance scenario. The
 focused `make test-game-ui-performance` command runs that scenario alone.
 `make test-game-ui-composed` additionally drives Chromium through the real Vite proxy, composed
-gameserver, Postgres bootstrap/snapshot transaction, and Centrifuge world subscription; its visible
-visitor-counter assertion proves the production WebSocket handshake completed.
+gameserver, Postgres bootstrap transaction, authenticated live snapshot-v2 route, and Centrifuge
+world subscription; its schema/revision and visible visitor-counter assertions prove the production
+HTTP synchronization and WebSocket handshake completed.
 
 The deterministic performance lane feeds 1,200 authoritative snapshot updates representing 60
 seconds at 20 Hz through 600 shared formatter windows in a 1280×720 Chromium viewport. The shared
