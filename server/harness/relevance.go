@@ -21,6 +21,8 @@ import (
 
 const RelevanceReportSchemaVersion = 2
 
+var errRelevanceRatioOutsideExactDomain = errors.New("relevance ratio outside exact integer domain")
+
 type RelevanceRunSpec struct {
 	PolicyID  string `json:"policy_id"`
 	SeedStart string `json:"seed_start"`
@@ -570,7 +572,7 @@ func ceilDecimalRatio(numerator, denominator decimal.Decimal) (int64, error) {
 	ratio := new(big.Rat).Quo(numeratorCoefficient, denominatorCoefficient)
 	exponent := numeratorExponent - denominatorExponent
 	if exponent > 16 {
-		return 0, errors.New("relevance ratio outside exact integer domain")
+		return 0, errRelevanceRatioOutsideExactDomain
 	}
 	if exponent < -20 {
 		return 1, nil
@@ -586,7 +588,7 @@ func ceilDecimalRatio(numerator, denominator decimal.Decimal) (int64, error) {
 		quotient.Add(quotient, big.NewInt(1))
 	}
 	if !quotient.IsInt64() || quotient.Sign() < 0 || quotient.Int64() > relevanceMaxSafeInteger {
-		return 0, errors.New("relevance ratio outside exact integer domain")
+		return 0, errRelevanceRatioOutsideExactDomain
 	}
 	return quotient.Int64(), nil
 }

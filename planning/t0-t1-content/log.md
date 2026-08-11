@@ -207,3 +207,30 @@ range and belongs to Codex's lane — it is now superseded regardless, below.
   pins it. Exact cadence/parameters come back to me with the numbers, as with any solver contract.
   Until this lands, the 41 failures are a SOLVER defect and NOT evidence against the ratified
   content — no content retune may be justified by them.
+
+## 2026-08-11 — T01-C12/C16 implementation checkpoint: runtime guard and bootstrap proven; budget conflict surfaced
+
+- **Implemented/inspected by:** Codex. **Recorded by:** Codex. This is an implementation checkpoint
+  and blocker report, not a review verdict, content finding, or mint authorization.
+- T01-C12's two guards are separated: run cardinality and the deliberately generous static runaway
+  ceiling fail before dispatch, while `relevance_budget_max_transitions` counts real production
+  simulations and aborts immediately with executed/maximum context. The report writer remains
+  unreachable on either failure. Ratified scenario and policy bytes are unchanged.
+- T01-C16's candidate cadence is derived entirely from pinned bytes: `manual.click` yields `1e0`,
+  the cheapest one-unit quote is `1e1`, bucket capacity is 50 actions, and refill is 25 actions/s.
+  The reference therefore requests exactly **10 actions in a 400 ms window**, leaving 40 actions in
+  the bucket. A regression proves that real `SimulateTransition` applies exactly that batch, the
+  reference purchases at least one item, and the reference reaches `milestone.t3_cash`.
+- Exact-domain paybacks beyond the finite horizon are treated as non-viable candidates rather than
+  fatal arithmetic errors; other ratio errors still fail with the candidate ID. R11 node-identity
+  duplicates are collapsed before their identical greedy rollouts, preserving the ruled score and
+  raw-byte path tie-break while avoiding unperformed work.
+- **NEW BLOCKER — the corrected T01-C12 and T01-C16 cannot both pass as currently ruled.** With the
+  previously dead reference/beam arms now bootstrapped, `make t0-t1-relevance` reaches the actual
+  runtime limit and fails closed at exactly `2,000,000` transitions in the `reference.greedy` beam.
+  The same result holds for the full-bucket 50-action/2,000 ms candidate and the minimal
+  10-action/400 ms candidate, and after pre-rollout identity deduplication. No report is written.
+  This is not evidence against the ratified content: the unchanged R11 width-eight oracle performs
+  more real work once made reachable. Owner direction is required on the now-observable conflict;
+  Codex has not bounded the beam, raised the budget, weakened the 5% oracle, or changed a ratified
+  hash.

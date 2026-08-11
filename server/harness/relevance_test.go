@@ -137,6 +137,46 @@ func TestRelevanceFailsBeforeDispatchWhenRunBudgetIsTooSmall(t *testing.T) {
 	}
 }
 
+func TestRelevanceRuntimeTransitionBudgetAbortsAtActualWork(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	suite.Scenario.RelevanceBudgetMaxTransitions = 1
+	if _, err := suite.RunRelevance(); err == nil || !strings.Contains(err.Error(), "executed 1, maximum 1") {
+		t.Fatalf("runtime transition budget error=%v", err)
+	}
+}
+
+func TestT0T1ReferenceBootstrapsThroughPinnedManualClamp(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	state, err := suite.newRelevanceState()
+	if err != nil {
+		t.Fatal(err)
+	}
+	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	manual, err := suite.applyReferenceManual(state, 1, 0, production.AblationMask{}, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cash, _ := state.Ledger.Balance("company.cash")
+	if manual.Applied != 10 || !cash.Eq(decimal.New(1, 1)) || state.ManualTokenMilli != 40000 || counter.value != 1 {
+		t.Fatalf("manual bootstrap=%+v cash=%s tokens=%d transitions=%d", manual, cash, state.ManualTokenMilli, counter.value)
+	}
+
+	counter = &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	reference, err := suite.runReference(production.AblationMask{}, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if reference.MilestoneMS == nil || len(reference.Purchases) == 0 || counter.value > suite.Scenario.RelevanceBudgetMaxTransitions {
+		t.Fatalf("reference milestone=%v purchases=%v transitions=%d", reference.MilestoneMS, reference.Purchases, counter.value)
+	}
+}
+
 func TestRelevanceWindowsBindEveryItemToAnInWindowMilestone(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
 	if err != nil {
@@ -277,7 +317,7 @@ func TestRelevanceScheduleCardinalityIsBoundedBeforeMaterialization(t *testing.T
 		t.Fatal(err)
 	}
 	suite.Scenario.HorizonMS = relevanceMaxSafeInteger
-	if _, err := suite.RunRelevance(); err == nil || !strings.Contains(err.Error(), "transition budget") {
+	if _, err := suite.RunRelevance(); err == nil || !strings.Contains(err.Error(), "runaway preflight") {
 		t.Fatalf("huge horizon reached schedule materialization: %v", err)
 	}
 }

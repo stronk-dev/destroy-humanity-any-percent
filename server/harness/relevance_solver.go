@@ -3,6 +3,7 @@ package harness
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"sort"
@@ -13,6 +14,8 @@ import (
 	"cloud-clicker/server/production"
 	"cloud-clicker/server/save"
 )
+
+const relevanceRunawayPreflightCeiling int64 = 1_000_000_000_000
 
 type relevanceCandidate struct {
 	ID                      string
@@ -31,13 +34,17 @@ type relevanceCounter struct {
 
 func (counter *relevanceCounter) add() error {
 	if counter.value >= counter.limit {
-		return errors.New("relevance transition budget exceeded")
+		return fmt.Errorf("relevance transition budget exceeded: executed %d, maximum %d", counter.value, counter.limit)
 	}
 	counter.value++
 	return nil
 }
 
 func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
+	if suite.Scenario.HorizonMS > suite.Catalog.OfflinePolicy().AccrualCapMS {
+		return RelevanceReport{}, fmt.Errorf("relevance runaway preflight horizon %d exceeds online ceiling %d",
+			suite.Scenario.HorizonMS, suite.Catalog.OfflinePolicy().AccrualCapMS)
+	}
 	nonReferenceSeeds, referenceSeeds := int64(0), int64(0)
 	nonReferenceTransitions := int64(0)
 	for _, run := range suite.Scenario.Runs {
@@ -72,9 +79,9 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	if err != nil {
 		return RelevanceReport{}, fmt.Errorf("relevance transition budget preflight: %w", err)
 	}
-	if transitionCeiling > suite.Scenario.RelevanceBudgetMaxTransitions {
-		return RelevanceReport{}, fmt.Errorf("relevance transition budget requires %d, scenario declares %d",
-			transitionCeiling, suite.Scenario.RelevanceBudgetMaxTransitions)
+	if transitionCeiling > relevanceRunawayPreflightCeiling {
+		return RelevanceReport{}, fmt.Errorf("relevance runaway preflight requires %d, ceiling %d",
+			transitionCeiling, relevanceRunawayPreflightCeiling)
 	}
 	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
 	report := RelevanceReport{SchemaVersion: suite.Scenario.SchemaVersion, ScenarioID: suite.Scenario.ID,
@@ -97,7 +104,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			seed := start + uint64(offset)
 			baseline, runErr := suite.runPersona(spec, seed, production.AblationMask{}, counter)
 			if runErr != nil {
-				return RelevanceReport{}, runErr
+				return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d baseline: %w", spec.PolicyID, seed, runErr)
 			}
 			executedRuns++
 			if baseline.MilestoneMS == nil {
@@ -112,14 +119,14 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			for _, item := range suite.Policy.Items {
 				masked, runErr := suite.runPersona(spec, seed, effectMask(item.PurchasableID, suite.Catalog), counter)
 				if runErr != nil {
-					return RelevanceReport{}, runErr
+					return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d effect mask %s: %w", spec.PolicyID, seed, item.PurchasableID, runErr)
 				}
 				executedRuns++
 				appendRelevancePair(itemPairs, item.PurchasableID, spec.PolicyID, baseline.MilestoneMS, masked.MilestoneMS)
 				if spec.Reference {
 					removed, removeErr := suite.runPersona(spec, seed, removalMask(item.PurchasableID, suite.Catalog), counter)
 					if removeErr != nil {
-						return RelevanceReport{}, removeErr
+						return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d removal mask %s: %w", spec.PolicyID, seed, item.PurchasableID, removeErr)
 					}
 					executedRuns++
 					appendRelevancePair(removalPairs, item.PurchasableID, spec.PolicyID, baseline.MilestoneMS, removed.MilestoneMS)
@@ -128,7 +135,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			for _, group := range suite.Policy.Groups {
 				masked, runErr := suite.runPersona(spec, seed, groupMask(group.MemberIDs, suite.Catalog), counter)
 				if runErr != nil {
-					return RelevanceReport{}, runErr
+					return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d group mask %s: %w", spec.PolicyID, seed, group.GroupID, runErr)
 				}
 				executedRuns++
 				appendRelevancePair(groupPairs, group.GroupID, spec.PolicyID, baseline.MilestoneMS, masked.MilestoneMS)
@@ -136,7 +143,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			if spec.Reference {
 				beam, beamErr := suite.runBeam(counter)
 				if beamErr != nil {
-					return RelevanceReport{}, beamErr
+					return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d beam: %w", spec.PolicyID, seed, beamErr)
 				}
 				oraclePairs = append(oraclePairs, oraclePair{greedy: cloneInt64(baseline.MilestoneMS), beam: cloneInt64(beam)})
 				executedRuns++ // one beam invocation is one R14 run, regardless of internal transitions.
@@ -416,6 +423,14 @@ func (suite *RelevanceSuite) runReference(mask production.AblationMask, counter 
 			result.MilestoneMS = &copy
 			break
 		}
+		if suite.needsReferenceBootstrap(state) {
+			manual, manualErr := suite.applyReferenceManual(state, revision, nowMS, mask, counter)
+			if manualErr != nil {
+				return relevanceRunResult{}, manualErr
+			}
+			revision++
+			mergeRoleActivations(result.Roles, manual.RoleActivations)
+		}
 		next, ok := suite.nextDecisionHorizon(nowMS)
 		if !ok {
 			break
@@ -564,8 +579,14 @@ func (suite *RelevanceSuite) rankCandidate(state *save.State, revision, nowMS, h
 	}
 	duration := horizonMS - earliest
 	value, err := ceilDecimalRatio(cost.Mul(decimal.FromFloat64(float64(duration))), gross)
-	if err != nil || value > relevanceMaxSafeInteger-(earliest-nowMS) {
-		return relevanceCandidate{}, false, err
+	if err != nil {
+		if errors.Is(err, errRelevanceRatioOutsideExactDomain) {
+			return relevanceCandidate{}, false, nil
+		}
+		return relevanceCandidate{}, false, fmt.Errorf("relevance candidate %s payback: %w", id, err)
+	}
+	if value > relevanceMaxSafeInteger-(earliest-nowMS) {
+		return relevanceCandidate{}, false, fmt.Errorf("relevance candidate %s payback exceeds exact integer domain", id)
 	}
 	return relevanceCandidate{ID: id, PaybackMS: earliest - nowMS + value, EarliestPositiveDeltaMS: positiveLow,
 		AtMS: earliest, State: candidateAtBuy, Revision: revision + 1, RoleActivations: activations}, true, nil
@@ -627,15 +648,103 @@ func (suite *RelevanceSuite) candidateCost(state *save.State, id string) (string
 }
 
 func candidateIntent(id string, revision int64) production.IntentRequest {
-	intentID := fmt.Sprintf("00000000-0000-7000-8000-%012x", revision)
-	if len(intentID) > 36 {
-		intentID = "00000000-0000-7000-8000-000000000001"
-	}
+	intentID := relevanceIntentID(revision)
 	if len(id) >= len("generator.") && id[:len("generator.")] == "generator." {
 		return production.IntentRequest{IntentID: intentID, Kind: production.IntentBuyGenerator, ExpectedRevision: revision,
 			GeneratorID: id, CountMode: "exact", Count: 1}
 	}
 	return production.IntentRequest{IntentID: intentID, Kind: production.IntentBuyUpgrade, ExpectedRevision: revision, UpgradeID: id}
+}
+
+type relevanceManualResult struct {
+	Applied         int64
+	RoleActivations []production.RoleActivation
+}
+
+func (suite *RelevanceSuite) applyReferenceManual(state *save.State, revision, nowMS int64, mask production.AblationMask, counter *relevanceCounter) (relevanceManualResult, error) {
+	actions := suite.Catalog.ManualActions()
+	sort.Slice(actions, func(left, right int) bool { return actions[left].ID < actions[right].ID })
+	matching := make([]economy.ManualActionDefinition, 0, 1)
+	for _, action := range actions {
+		if action.Output.ResourceID == suite.Scenario.Milestone.ResourceID {
+			matching = append(matching, action)
+		}
+	}
+	if len(matching) != 1 {
+		return relevanceManualResult{}, fmt.Errorf("relevance reference requires exactly one milestone-resource manual action, got %d", len(matching))
+	}
+	policy := suite.Catalog.ManualPolicy()
+	maximumCount := policy.BucketCapMilli / 1000
+	balance, _ := state.Ledger.Balance(suite.Scenario.Milestone.ResourceID)
+	var cheapest decimal.Decimal
+	foundCheapest := false
+	for _, id := range suite.purchasableIDs() {
+		resourceID, cost, costErr := suite.candidateCost(state, id)
+		if costErr != nil {
+			return relevanceManualResult{}, costErr
+		}
+		if resourceID == suite.Scenario.Milestone.ResourceID && cost.Gt(balance) && (!foundCheapest || cost.Lt(cheapest)) {
+			cheapest = cost
+			foundCheapest = true
+		}
+	}
+	if !foundCheapest {
+		return relevanceManualResult{}, errors.New("relevance reference has no milestone-resource bootstrap purchase")
+	}
+	count, countErr := ceilDecimalRatio(cheapest.Sub(balance), matching[0].Output.AmountPerAction)
+	if countErr != nil {
+		return relevanceManualResult{}, fmt.Errorf("relevance reference manual bootstrap count: %w", countErr)
+	}
+	if count > maximumCount {
+		count = maximumCount
+	}
+	if count < 1 || policy.RefillMilliPerMS < 1 || count > relevanceMaxSafeInteger/1000 {
+		return relevanceManualResult{}, errors.New("relevance reference manual cadence is invalid")
+	}
+	windowMS := (count*1000 + policy.RefillMilliPerMS - 1) / policy.RefillMilliPerMS
+	request := production.IntentRequest{IntentID: relevanceIntentID(revision), Kind: production.IntentPerformManualBatch,
+		ExpectedRevision: revision, ActionID: matching[0].ID, Count: count, WindowMS: windowMS}
+	if err := counter.add(); err != nil {
+		return relevanceManualResult{}, err
+	}
+	simulation, err := production.SimulateTransition(request, state, suite.Catalog,
+		production.SimulationDependencies{Routes: suite.Routes}, save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash},
+		production.ModeOnline, relevanceNow(nowMS), nil, nil, mask)
+	if err != nil {
+		return relevanceManualResult{}, err
+	}
+	if simulation.Decision.Outcome != save.IntentApplied {
+		return relevanceManualResult{}, errors.New("relevance reference manual action rejected")
+	}
+	var receipt struct {
+		AppliedCount int64 `json:"applied_count"`
+	}
+	if err := json.Unmarshal(simulation.Decision.Receipt, &receipt); err != nil || receipt.AppliedCount < 0 || receipt.AppliedCount > count {
+		return relevanceManualResult{}, errors.New("relevance reference manual receipt is invalid")
+	}
+	return relevanceManualResult{Applied: receipt.AppliedCount, RoleActivations: simulation.RoleActivations}, nil
+}
+
+func (suite *RelevanceSuite) needsReferenceBootstrap(state *save.State) bool {
+	for _, generator := range suite.Catalog.GeneratorClassesForScope(economy.ScopeCompany) {
+		if state.GeneratorCounts[generator.ID] > 0 {
+			return false
+		}
+	}
+	for _, upgrade := range suite.Catalog.Upgrades() {
+		if state.UpgradesOwned[upgrade.ID] {
+			return false
+		}
+	}
+	return true
+}
+
+func relevanceIntentID(revision int64) string {
+	intentID := fmt.Sprintf("00000000-0000-7000-8000-%012x", revision)
+	if len(intentID) > 36 {
+		return "00000000-0000-7000-8000-000000000001"
+	}
+	return intentID
 }
 
 func (suite *RelevanceSuite) newRelevanceState() (*save.State, error) {
@@ -864,6 +973,14 @@ func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) 
 				}
 				continue
 			}
+			if suite.needsReferenceBootstrap(current.state) {
+				manual, manualErr := suite.applyReferenceManual(current.state, current.revision, current.atMS, production.AblationMask{}, counter)
+				if manualErr != nil {
+					return nil, manualErr
+				}
+				current.revision++
+				current.path += fmt.Sprintf("/~manual:%d", manual.Applied)
+			}
 			next, ok := suite.nextDecisionHorizon(current.atMS)
 			if !ok {
 				continue
@@ -885,7 +1002,6 @@ func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) 
 			}
 			children = append(children, node{state: waitState, revision: current.revision, atMS: next, path: current.path + "/~wait"})
 		}
-		dedup := map[string]node{}
 		pruned := make([]node, 0, len(children))
 		for index := range children {
 			dominated := false
@@ -900,7 +1016,28 @@ func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) 
 				pruned = append(pruned, children[index])
 			}
 		}
-		children = pruned
+		// R11 defines node identity as canonical state hash + virtual time.
+		// Collapse identical children before running their expensive greedy
+		// completions; identical nodes have identical scores, so the raw-byte
+		// path tie-break can be applied without evaluating duplicate rollouts.
+		dedup := map[string]node{}
+		for index := range pruned {
+			child := pruned[index]
+			digest, digestErr := stateDigest(child.state)
+			if digestErr != nil {
+				return nil, digestErr
+			}
+			key := fmt.Sprintf("%s:%d", digest, child.atMS)
+			prior, exists := dedup[key]
+			if !exists || child.path < prior.path {
+				dedup[key] = child
+			}
+		}
+		children = children[:0]
+		for _, child := range dedup {
+			children = append(children, child)
+		}
+		sort.Slice(children, func(left, right int) bool { return children[left].path < children[right].path })
 		for index := range children {
 			child := &children[index]
 			rolloutState, cloneErr := cloneState(suite.Catalog, child.state)
@@ -921,18 +1058,9 @@ func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) 
 					best = &copy
 				}
 			}
-			digest, digestErr := stateDigest(child.state)
-			if digestErr != nil {
-				return nil, digestErr
-			}
-			key := fmt.Sprintf("%s:%d", digest, child.atMS)
-			prior, exists := dedup[key]
-			if !exists || child.score < prior.score || child.score == prior.score && child.path < prior.path {
-				dedup[key] = *child
-			}
 		}
 		frontier = frontier[:0]
-		for _, child := range dedup {
+		for _, child := range children {
 			frontier = append(frontier, child)
 		}
 		sort.Slice(frontier, func(left, right int) bool {
@@ -1004,6 +1132,14 @@ func (suite *RelevanceSuite) runReferenceFrom(state *save.State, revision, nowMS
 			copy := nowMS
 			result.MilestoneMS = &copy
 			break
+		}
+		if suite.needsReferenceBootstrap(state) {
+			manual, err := suite.applyReferenceManual(state, revision, nowMS, production.AblationMask{}, counter)
+			if err != nil {
+				return relevanceRunResult{}, err
+			}
+			revision++
+			mergeRoleActivations(result.Roles, manual.RoleActivations)
 		}
 		next, ok := suite.nextDecisionHorizon(nowMS)
 		if !ok {

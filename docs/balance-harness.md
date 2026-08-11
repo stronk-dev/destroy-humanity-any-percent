@@ -61,9 +61,14 @@ For every declared run it records an unmasked baseline, per-item effect ablation
 ablations. Reference runs additionally record action-removal diagnostics and one width-eight beam
 oracle. The reference policy ranks one-unit generator buys and unowned upgrades by an exact
 single-resource payback calculation, including lower-bound searches for first affordability and
-first positive marginal output. Beam nodes deduplicate by canonical state plus virtual time and use
-componentwise dominance before the width bound. Both run cardinality and transition work are
-checked before simulation, and every simulation call spends from the transition budget.
+first positive marginal output. At run genesis it may bootstrap the cheapest milestone-resource
+purchase through the pinned manual action: the requested count is derived from the real quote and
+catalog yield, capped by the catalog's click bucket, and its window is derived from the catalog
+refill rate. Beam nodes deduplicate by canonical state plus virtual time before greedy rollout and
+use componentwise dominance before the width bound. Run cardinality is checked before simulation.
+The static transition estimate is only a generous runaway-configuration guard; the scenario's work
+budget is enforced by counting every simulation call at runtime and aborting without a partial
+report when the limit is reached.
 
 Schema v2 permits an availability/segment `from_gate` of null, meaning run genesis and sorting
 before every declared gate; schema-v1 bytes retain their concrete-gate requirement. Each policy

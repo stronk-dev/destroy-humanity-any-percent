@@ -7,14 +7,14 @@
   "run_budget": {
     "declared_runs": 14,
     "executed_runs": 14,
-    "declared_transitions": 166244,
-    "executed_transitions": 166244
+    "declared_transitions": 156709,
+    "executed_transitions": 156709
   },
   "greedy_oracle": {
     "milestone_id": "milestone.cash_target",
-    "greedy_ms": 7055,
-    "beam_ms": 6869,
-    "gap_ppm": 27078,
+    "greedy_ms": 6445,
+    "beam_ms": 6270,
+    "gap_ppm": 27910,
     "maximum_ppm": 50000,
     "passed": true
   },
@@ -33,17 +33,17 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 7231,
-          "delta_ms": 176
+          "baseline_ms": 6445,
+          "ablated_ms": 6614,
+          "delta_ms": 169
         }
       ],
       "action_removal_deltas": [
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 7055,
+          "baseline_ms": 6445,
+          "ablated_ms": 6445,
           "delta_ms": 0
         }
       ],
@@ -67,18 +67,18 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 50427,
-          "delta_ms": 43372
+          "baseline_ms": 6445,
+          "ablated_ms": 47273,
+          "delta_ms": 40828
         }
       ],
       "action_removal_deltas": [
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 50427,
-          "delta_ms": 43372
+          "baseline_ms": 6445,
+          "ablated_ms": 47273,
+          "delta_ms": 40828
         }
       ],
       "support": "individual",
@@ -101,8 +101,8 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 7055,
+          "baseline_ms": 6445,
+          "ablated_ms": 6445,
           "delta_ms": 0
         }
       ],
@@ -110,8 +110,8 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 7055,
+          "baseline_ms": 6445,
+          "ablated_ms": 6445,
           "delta_ms": 0
         }
       ],
@@ -135,8 +135,8 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 7055,
+          "baseline_ms": 6445,
+          "ablated_ms": 6445,
           "delta_ms": 0
         }
       ],
@@ -144,8 +144,8 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 7055,
+          "baseline_ms": 6445,
+          "ablated_ms": 6445,
           "delta_ms": 0
         }
       ],
@@ -164,9 +164,9 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "ablated_unreached",
-          "baseline_ms": 7055,
+          "baseline_ms": 6445,
           "ablated_ms": null,
-          "delta_ms": 112945
+          "delta_ms": 113555
         }
       ],
       "passed": true
@@ -178,9 +178,9 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 7231,
-          "delta_ms": 176
+          "baseline_ms": 6445,
+          "ablated_ms": 6614,
+          "delta_ms": 169
         }
       ],
       "passed": true
@@ -192,9 +192,9 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 7231,
-          "delta_ms": 176
+          "baseline_ms": 6445,
+          "ablated_ms": 6614,
+          "delta_ms": 169
         }
       ],
       "passed": true
@@ -206,9 +206,9 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 50427,
-          "delta_ms": 43372
+          "baseline_ms": 6445,
+          "ablated_ms": 47273,
+          "delta_ms": 40828
         }
       ],
       "passed": true
@@ -221,9 +221,9 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 7231,
-          "delta_ms": 176
+          "baseline_ms": 6445,
+          "ablated_ms": 6614,
+          "delta_ms": 169
         }
       ]
     },
@@ -233,9 +233,9 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "both_reached",
-          "baseline_ms": 7055,
-          "ablated_ms": 50427,
-          "delta_ms": 43372
+          "baseline_ms": 6445,
+          "ablated_ms": 47273,
+          "delta_ms": 40828
         }
       ]
     }
@@ -245,7 +245,7 @@
       "generator_id": "generator.beta",
       "kind": "provision",
       "target_id": "generator.alpha",
-      "count": 2
+      "count": 1
     }
   ],
   "failures": [
