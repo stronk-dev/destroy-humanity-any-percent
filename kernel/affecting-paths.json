@@ -48,6 +48,8 @@
     "server/save/founderlog.go",
     "server/save/genesis.go",
     "server/save/intent.go",
+    "server/save/minigame_resolution.go",
+    "server/save/minigame_start.go",
     "server/save/runlog.go",
     "server/save/state.go",
     "server/soul/"

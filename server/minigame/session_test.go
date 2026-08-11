@@ -479,7 +479,7 @@ func TestServiceIntegration(t *testing.T) {
 	}
 }
 
-func TestPlayWithReceiptChecksBeforeExecutionAndCommitsSnapshotAtomically(t *testing.T) {
+func TestPlayWithReceiptChecksBeforeExecutionAndCommitsSnapshotAtomicallyIntegration(t *testing.T) {
 	db := minigameIntegrationDB(t)
 	seedMinigameRun(t, db)
 	repository, err := NewRepository(db)

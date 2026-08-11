@@ -29,7 +29,7 @@ func (value integrationAssignment) ResolveAssignment(string) (commonsprojection.
 	return commonsprojection.AssignmentContext{ServerID: value.serverID, ActivityBracket: "activity.standard"}, true
 }
 
-func TestCareActionResolvesActiveCompanyClockAndPersistsFounderReplay(t *testing.T) {
+func TestCareActionResolvesActiveCompanyClockAndPersistsFounderReplayIntegration(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL not set")
@@ -125,7 +125,7 @@ func TestCareActionResolvesActiveCompanyClockAndPersistsFounderReplay(t *testing
 	}
 }
 
-func TestActivePlayBuffClaimPersistsSchemaV2Events(t *testing.T) {
+func TestActivePlayBuffClaimPersistsSchemaV2EventsIntegration(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL not set")

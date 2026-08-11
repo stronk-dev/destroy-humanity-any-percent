@@ -386,3 +386,18 @@ of its own earlier "exact reproduction" claim.
 
 **Range-union: {02d00d7, b6a3d2c} consumed. Every implementation commit from 8cfa00b through
 b6a3d2c is now verdict-covered with no gaps**, including the previously carved-out 02d00d7.
+
+## 2026-08-11 — post-verdict guard and gate follow-ups (F1–F4)
+
+- **Implemented by:** Codex. **Recorded by:** Codex. Ready for the ordinary designated
+  cross-party review; this entry is not an approval.
+- F1: the kernel registry now watches both save-layer minigame coordinators in strict lexical
+  order. The registry-only addition changes no runtime semantics and therefore carries no false
+  version bump; the history/parity guard remains green at 0.3.93.
+- F2: the active-play claim, care-action Founder replay, Exit atomicity/fault/replay, and
+  minigame receipt tests now include `Integration` in their test names. The unchanged ordinary
+  `make test-save-integration` selector executed all four alongside the existing Postgres suite.
+- F3: the pnpm v11 SQLite index and project symlink are removed from Git tracking. The ignored
+  local cache files remain present for pnpm; future test runs can no longer dirty the worktree.
+- F4: the three-engine browser job now has the same ten-minute budget as the composed browser
+  job, covering dependency/browser installation without weakening or skipping its test gate.

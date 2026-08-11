@@ -16,7 +16,7 @@ import (
 	"cloud-clicker/server/economy"
 )
 
-func TestApplyExitTransactionAtomicFaultsAndReplay(t *testing.T) {
+func TestApplyExitTransactionAtomicFaultsAndReplayIntegration(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL not set")
