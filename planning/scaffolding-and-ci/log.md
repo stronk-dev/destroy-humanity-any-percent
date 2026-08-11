@@ -68,3 +68,17 @@ regression test discriminates only on linux/amd64 (by nature; the CI gate carrie
   for the amount to change, polling every 50 ms. It does not stub the Worker, skip Firefox, or
   weaken the expected output. The exact CI image then passed all 120 browser files and 19,972 tests
   with two declared skips; the focused ordinary Make target passed all three engines locally.
+
+## 2026-08-11 — Actions run 31486886470 server timeout repaired
+
+- **Implemented by:** Codex. **Recorded by:** Codex. Pending the ordinary designated review.
+- The server job began at 11:30:16Z and GitHub cancelled it at 11:35:32Z while `make
+  verify-server` was still running: the five-minute job budget, not a test assertion, terminated
+  the gate. A cold linux/amd64 reproduction took 4m30s merely to finish the Go/Postgres suite and
+  generation checks before entering the composed balance harness, proving the old timeout
+  structurally insufficient.
+- The server job now has a ten-minute ceiling without removing, splitting, caching away, or
+  skipping any verification. `make verify-server-ci` reproduces the entire gate on linux/amd64
+  with real Postgres and completed green. `make test-browser-ci` similarly owns the exact pinned
+  Playwright-image reproduction and completed all 19,972 browser tests green. Both normal targets
+  are documented in `docs/ci.md`; the existing host targets remain unchanged.

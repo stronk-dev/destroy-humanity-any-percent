@@ -1,0 +1,20 @@
+services:
+  browser:
+    image: mcr.microsoft.com/playwright:v1.62.0-noble
+    ipc: host
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - browser-node-modules:/workspace/client/node_modules
+    command:
+      - bash
+      - -lc
+      - >-
+        corepack enable &&
+        corepack prepare pnpm@11.15.1 --activate &&
+        pnpm --dir client install --frozen-lockfile &&
+        cd client &&
+        node_modules/.bin/vitest run --config vitest.browser.config.ts
+
+volumes:
+  browser-node-modules:

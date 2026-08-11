@@ -17,7 +17,10 @@ concurrency:
 jobs:
   server:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    # A cold Linux run includes every Postgres integration package plus the
+    # composed balance harness. Run 31486886470 reached the old five-minute
+    # job deadline before verify-server could finish.
+    timeout-minutes: 10
     env:
       TEST_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_test@127.0.0.1:5432/cloud_clicker_test?sslmode=disable
     services:
