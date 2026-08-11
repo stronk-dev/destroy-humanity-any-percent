@@ -30,6 +30,9 @@ Implemented systems:
   prediction, reconciliation, visible caps, return flow, lifecycle, and client telemetry.
 - [UI foundation](ui-foundation.md) — strict era tokens, exact-number presentation, Copy-backed
   primitives, surface lifecycle ownership, and the cross-browser accessibility fixture.
+- [Game UI](game-ui.md) — the five Phase-A Svelte surfaces, bootstrap/runtime boundary, local
+  display timing, accessibility and performance gates; two explicitly fail-closed arms remain
+  under implementation-time rulings.
 - [Accounts and sessions](accounts-and-sessions.md) — anonymous recovery credentials, exact JWTs,
   refresh-family rotation, Founder ownership/import, deletion, rate limits, and the HTTP intent
   boundary.

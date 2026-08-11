@@ -20,6 +20,7 @@ export default defineConfig({
       enabled: true,
       headless: true,
       provider: playwright(),
+      viewport: { width: 1280, height: 720 },
       instances: [
         { browser: "chromium" },
         { browser: "firefox" },

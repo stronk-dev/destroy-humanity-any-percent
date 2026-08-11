@@ -1,5 +1,5 @@
 <script lang="ts">
-  import FixtureHost from "../ui/FixtureHost.svelte";
+  import GameUIApp from "../game-ui/GameUIApp.svelte";
 </script>
 
-<FixtureHost />
+<GameUIApp />

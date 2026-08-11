@@ -30,6 +30,7 @@ export interface LocalRunTiming {
   readonly splits: readonly Readonly<{ gate_id: string; rta_ms: number }>[];
 }
 export interface LocalTimingDocument { readonly schema_version: 1; readonly records: readonly LocalRunTiming[] }
+export interface LocalTimingStorage { getItem(key: string): string | null; setItem(key: string, value: string): void }
 
 export function parseLocalTiming(source: string | null): LocalTimingDocument {
   if (source === null) return { schema_version: 1, records: [] };
@@ -57,3 +58,28 @@ export function parseLocalTiming(source: string | null): LocalTimingDocument {
 }
 
 export function timingStorageKey(founderID: string): string { return `cloud-clicker.timing.v1.${founderID}`; }
+
+export function readLocalTiming(storage: LocalTimingStorage, founderID: string): LocalTimingDocument {
+  try { return parseLocalTiming(storage.getItem(timingStorageKey(founderID))); }
+  catch { return { schema_version: 1, records: [] }; }
+}
+
+export function priorPersonalBest(document: LocalTimingDocument, founderID: string, runSeq: number, category: string): number | undefined {
+  let best: number | undefined;
+  for (const record of document.records) {
+    if (record.founder_id !== founderID || record.category !== category || record.run_seq >= runSeq) continue;
+    if (best === undefined || record.pb_rta_ms < best) best = record.pb_rta_ms;
+  }
+  return best;
+}
+
+export function writeLocalRunTiming(storage: LocalTimingStorage, record: LocalRunTiming): void {
+  const key = timingStorageKey(record.founder_id);
+  const current = readLocalTiming(storage, record.founder_id);
+  const records = current.records.filter((row) => !(row.founder_id === record.founder_id && row.run_seq === record.run_seq && row.category === record.category));
+  const byteOrder = (left: string, right: string) => left < right ? -1 : left > right ? 1 : 0;
+  records.push({ ...record, splits: [...record.splits].sort((left, right) => byteOrder(left.gate_id, right.gate_id)) });
+  records.sort((left, right) => left.run_seq - right.run_seq || byteOrder(left.category, right.category));
+  try { storage.setItem(key, JSON.stringify({ schema_version: 1, records } satisfies LocalTimingDocument)); }
+  catch { /* Local timing is optional display state and never blocks authoritative play. */ }
+}

@@ -5,7 +5,7 @@ import { decodeGameUIEvent, decodeGameUISystemEvent } from "../src/game-ui/event
 import { GameUINavigation } from "../src/game-ui/navigation";
 import { GAME_UI_PERFORMANCE_BUDGET, validatePerformanceObservation } from "../src/game-ui/performance";
 import { defaultSurface, GAME_UI_SURFACES } from "../src/game-ui/surface-catalog";
-import { parseLocalTiming, RTATimer, timingStorageKey } from "../src/game-ui/timing";
+import { parseLocalTiming, priorPersonalBest, RTATimer, timingStorageKey, writeLocalRunTiming } from "../src/game-ui/timing";
 import { decodeTransportEnvelope } from "../src/transport";
 
 const snapshot = {
@@ -78,6 +78,17 @@ describe("Game UI lifecycle and local timing", () => {
     expect(parseLocalTiming("not-json")).toEqual({ schema_version: 1, records: [] });
     expect(parseLocalTiming('{"schema_version":1,"records":[]}')).toEqual({ schema_version: 1, records: [] });
     expect(timingStorageKey("founder-id")).toBe("cloud-clicker.timing.v1.founder-id");
+  });
+
+  it("persists byte-sorted local splits and resolves PB only from prior runs", () => {
+    const values = new Map<string, string>();
+    const storage = { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => { values.set(key, value); } };
+    writeLocalRunTiming(storage, { category: "any_percent", founder_id: "founder", pb_rta_ms: 2_000, run_seq: 1, splits: [{ gate_id: "gate.z", rta_ms: 1_500 }, { gate_id: "gate.a", rta_ms: 500 }] });
+    writeLocalRunTiming(storage, { category: "any_percent", founder_id: "founder", pb_rta_ms: 1_500, run_seq: 2, splits: [] });
+    const document = parseLocalTiming(values.get(timingStorageKey("founder"))!);
+    expect(document.records[0].splits.map((row) => row.gate_id)).toEqual(["gate.a", "gate.z"]);
+    expect(priorPersonalBest(document, "founder", 2, "any_percent")).toBe(2_000);
+    expect(priorPersonalBest(document, "founder", 3, "any_percent")).toBe(1_500);
   });
 });
 

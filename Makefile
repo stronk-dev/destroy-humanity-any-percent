@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration validate-migrations test-client test-browser typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration validate-migrations test-client test-browser test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -11,6 +11,7 @@ SAVE_TEST_FLAGS ?= -run Integration
 CI_TEST_PACKAGES ?= ./...
 CI_TEST_FLAGS ?=
 CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
+BROWSER_TEST_FLAGS ?=
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -46,7 +47,10 @@ test-client:
 	cd client && $(CLIENT_BIN)/vitest run
 
 test-browser:
-	cd client && $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts
+	cd client && $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts $(BROWSER_TEST_FLAGS)
+
+test-game-ui-performance:
+	cd client && $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts test/game-ui-screens-browser.test.ts --testNamePattern 'observable 20 Hz / 10 Hz screen budget'
 
 typecheck:
 	cd client && $(CLIENT_BIN)/tsc --noEmit && $(CLIENT_BIN)/svelte-check --tsconfig ./tsconfig.json

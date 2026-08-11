@@ -91,6 +91,7 @@ make verify-client
 make verify-schema
 make formulas-check
 make test-browser
+make test-game-ui-performance
 make fuzz-ci
 make vectors-check
 ```
@@ -98,6 +99,13 @@ make vectors-check
 `make test-go-ci` reproduces the blocking server job cold on Linux/amd64 with
 Postgres, including packages whose integration tests are not selected by the
 focused `test-save-integration` target.
+
+`make test-game-ui-performance` focuses the browser job's deterministic sixty-second Game UI
+cadence simulation: 1,200 snapshot inputs (20 Hz) are grouped through 600 shared formatter flush
+windows (10 Hz) in a 1280×720 Chromium viewport, with the commit count and 200 ms long-task ceiling
+enforced. The real-time 4× CPU / dropped-frame profile remains the manual release check described
+in the Game UI docs. The same deterministic test remains part of ordinary `make test-browser`;
+the focused target exists for normal iteration, not as a separate claim.
 
 Go commands invoked by the Makefile use the ignored repository-local `.cache/go-build` directory.
 Focused tests can run without writing to a user-level cache or requiring sandbox permission:

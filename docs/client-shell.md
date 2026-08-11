@@ -1,9 +1,9 @@
 # Client Shell and Simulation Loop
 
 The browser client has a Svelte 5 presentation controller and a dedicated prediction Worker. The
-runtime boundary remains available to future screens, while the production entry currently mounts
-the content-free [UI Foundation](ui-foundation.md) fixture. Game UI owns the later composition of
-that runtime with real screen surfaces and transport.
+production entry mounts the [Game UI](game-ui.md), whose application bridge feeds the generated
+server projection into this archived runtime while keeping transport ownership outside Svelte
+components. The content-free [UI Foundation](ui-foundation.md) fixture remains a test surface.
 
 ## Runtime boundary
 
@@ -28,6 +28,11 @@ The Worker owns a monotonic 50-ms fixed-step accumulator and emits presentation 
 milliseconds through the shared `accrueConstant` production primitive. Prediction therefore does
 not change when the same elapsed time arrives as one pulse or several pulses. Declared hardcaps are
 respected locally, but only the server commits state.
+
+The Worker timestamps initialization and every authoritative snapshot when it processes the
+message. The main thread does not attach its own monotonic sample: Worker and Window clocks can
+have different time origins, and queueing can also leave a Window sample behind the Worker's
+latest scheduled pulse. Either case would turn an honest refresh into a false clock rollback.
 
 A clock gap above 5,000 ms performs no local catch-up and requests the authoritative offline path.
 The same request occurs on visibility return. The lifecycle layer measures the actual hidden
@@ -61,7 +66,7 @@ Worker overrun count, and total overrun milliseconds. It retains no intent IDs o
 
 ## Controller routes and lifecycle
 
-The controller retains contract, main-panel, and run-end states for the future Game UI consumer.
+The controller retains contract, main-panel, and run-end states for the Game UI consumer.
 The RTA clock begins only after the injected begin-attempt action succeeds. PB/WR comparison remains
 unavailable until an Exit. The old hard-coded screen scaffold is no longer the production entry;
 surface routing now belongs to the UI Foundation registry.
@@ -88,6 +93,6 @@ make verify-schema
 ```
 
 The unit suite pins controller state, continuous/discrete reconciliation, typed rejection handling,
-and return behavior. The browser suite now exercises the content-free UI primitive fixture in
-Chromium, Firefox, and WebKit. The production build retains the prediction Worker implementation
-for the later Game UI composition.
+and return behavior. The browser suite exercises both the content-free primitive fixture and all
+five Phase-A Game UI surfaces in Chromium, Firefox, and WebKit. The production build instantiates
+the prediction Worker through the Game UI snapshot bridge.

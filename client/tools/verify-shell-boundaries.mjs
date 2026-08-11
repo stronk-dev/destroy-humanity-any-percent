@@ -6,6 +6,7 @@ import { parse } from "svelte/compiler";
 const client = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const shell = path.join(client, "src", "shell");
 const ui = path.join(client, "src", "ui");
+const gameUI = path.join(client, "src", "game-ui");
 async function sourceFiles(directory, prefix = "") {
   const found = [];
   for (const entry of (await fs.readdir(directory, { withFileTypes: true })).sort((left, right) => left.name.localeCompare(right.name))) {
@@ -78,6 +79,14 @@ for (const name of uiFiles) {
   if (name.endsWith(".svelte")) verifySvelteSource(source, name);
 }
 
+const gameUIFiles = (await sourceFiles(gameUI)).filter((name) => name.endsWith(".svelte"));
+for (const name of gameUIFiles) {
+  const source = await fs.readFile(path.join(gameUI, name), "utf8");
+  if (forbiddenImports.test(source)) throw new Error(`${name}: Game UI component may not import authoritative or transport internals`);
+  if (forbiddenNetwork.test(source)) throw new Error(`${name}: Game UI component may not open raw fetch/WebSocket connections`);
+  verifySvelteSource(source, `game-ui/${name}`);
+}
+
 verifySvelteSource(`<p style="width: 3px"><span class="ok">{value}</span></p><style>.ok{color:var(--cc-color-text);width:3px}</style>`, "seeded pass");
 for (const seeded of [
   `<style>.bad{color:#fff}</style>`,
@@ -95,4 +104,4 @@ for (const seeded of ["fetch('/api')", "new WebSocket('wss://example.invalid')"]
   if (!forbiddenNetwork.test(seeded)) throw new Error("UI raw-network lint did not reject its seeded violation");
 }
 
-console.log(`shell/UI boundaries ok: ${files.length} shell and ${uiFiles.length} UI source files`);
+console.log(`shell/UI boundaries ok: ${files.length} shell, ${uiFiles.length} UI, and ${gameUIFiles.length} Game UI component files`);

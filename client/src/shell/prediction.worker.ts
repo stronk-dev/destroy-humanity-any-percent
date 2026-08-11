@@ -10,9 +10,11 @@ function pulse(monotonicMs: number): void {
 }
 self.onmessage = (event: MessageEvent<WorkerCommand>) => {
   const command = event.data;
-  if (command.kind === "initialize") { if (timer !== undefined) self.clearInterval(timer); machine = new PredictionMachine(command.policy); machine.initialize(command.snapshot, command.monotonicMs); timer = self.setInterval(() => pulse(performance.now()), command.policy.tickMs); return; }
+  if (command.kind === "initialize") { if (timer !== undefined) self.clearInterval(timer); machine = new PredictionMachine(command.policy); machine.initialize(command.snapshot, performance.now()); timer = self.setInterval(() => pulse(performance.now()), command.policy.tickMs); return; }
   if (command.kind === "dispose") { if (timer !== undefined) self.clearInterval(timer); machine = undefined; self.close(); return; }
   if (!machine) throw new Error("prediction worker is not initialized");
-  if (command.kind === "authoritative_snapshot") { machine.applyAuthoritative(command.snapshot, command.monotonicMs); return; }
+  // The Worker owns its monotonic cursor. A main-thread sample can be older
+  // than the Worker's latest scheduled pulse by the time this message runs.
+  if (command.kind === "authoritative_snapshot") { machine.applyAuthoritative(command.snapshot, performance.now()); return; }
   pulse(command.monotonicMs);
 };

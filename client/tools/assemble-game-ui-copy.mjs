@@ -10,6 +10,7 @@ const candidatePath = path.join(repositoryRoot, "copy/catalog/game-ui-candidate.
 const phase0Path = path.join(repositoryRoot, "copy/catalog/phase0.json");
 const presentationV1Path = path.join(repositoryRoot, "balance/testdata/t0-t1/presentation-v1.json");
 const presentationV2Path = path.join(repositoryRoot, "balance/testdata/t0-t1/presentation-v2.json");
+const presentationClientPath = path.join(repositoryRoot, "client/src/game-ui/presentation.generated.json");
 const eventCopyV1Path = path.join(repositoryRoot, "balance/testdata/t0-t1/event-copy-v1.json");
 const eventCopyV2Path = path.join(repositoryRoot, "balance/testdata/t0-t1/event-copy-v2.json");
 
@@ -214,6 +215,7 @@ const eventCopyV2 = eventCopyV1.replace(
 const outputs = new Map([
   [candidatePath, bytes({ schema_version: 1, entries })],
   [presentationV2Path, presentationV2],
+  [presentationClientPath, presentationV2],
   [eventCopyV2Path, eventCopyV2],
 ]);
 for (const [filename, value] of outputs) output(filename, value);

@@ -1,0 +1,49 @@
+{
+  "schema_version": 2,
+  "generators": [
+    { "id": "generator.answering_machine", "title_key": "generator.answering_machine.title", "description_key": "generator.answering_machine.description", "cap_reason_key": null },
+    { "id": "generator.beige_tower", "title_key": "generator.beige_tower.title", "description_key": "generator.beige_tower.description", "cap_reason_key": "generator.beige_tower.provisioned_cap" },
+    { "id": "generator.beige_tower_v2", "title_key": "generator.beige_tower_v2.title", "description_key": "generator.beige_tower_v2.description", "cap_reason_key": null },
+    { "id": "generator.crt_wall", "title_key": "generator.crt_wall.title", "description_key": "generator.crt_wall.description", "cap_reason_key": null },
+    { "id": "generator.dot_matrix_queue", "title_key": "generator.dot_matrix_queue.title", "description_key": "generator.dot_matrix_queue.description", "cap_reason_key": null },
+    { "id": "generator.first_hire", "title_key": "generator.first_hire.title", "description_key": "generator.first_hire.description", "cap_reason_key": null },
+    { "id": "generator.garage_rack", "title_key": "generator.garage_rack.title", "description_key": "generator.garage_rack.description", "cap_reason_key": null },
+    { "id": "generator.legal_dept", "title_key": "generator.legal_dept.title", "description_key": "generator.legal_dept.description", "cap_reason_key": null },
+    { "id": "generator.nephew_intern", "title_key": "generator.nephew_intern.title", "description_key": "generator.nephew_intern.description", "cap_reason_key": null }
+  ],
+  "upgrades": [
+    { "id": "upgrade.beige_tower_cache", "title_key": "upgrade.beige_tower_cache.title", "description_key": "upgrade.beige_tower_cache.description" },
+    { "id": "upgrade.continuous_feed_paper", "title_key": "upgrade.continuous_feed_paper.title", "description_key": "upgrade.continuous_feed_paper.description" },
+    { "id": "upgrade.crt_degauss_button", "title_key": "upgrade.crt_degauss_button.title", "description_key": "upgrade.crt_degauss_button.description" },
+    { "id": "upgrade.employee_handbook_v0", "title_key": "upgrade.employee_handbook_v0.title", "description_key": "upgrade.employee_handbook_v0.description" },
+    { "id": "upgrade.hold_music_license", "title_key": "upgrade.hold_music_license.title", "description_key": "upgrade.hold_music_license.description" },
+    { "id": "upgrade.institutional_memory", "title_key": "upgrade.institutional_memory.title", "description_key": "upgrade.institutional_memory.description" },
+    { "id": "upgrade.nephew_business_cards", "title_key": "upgrade.nephew_business_cards.title", "description_key": "upgrade.nephew_business_cards.description" },
+    { "id": "upgrade.rack_rail_standardization", "title_key": "upgrade.rack_rail_standardization.title", "description_key": "upgrade.rack_rail_standardization.description" },
+    { "id": "upgrade.refurbished_sticker", "title_key": "upgrade.refurbished_sticker.title", "description_key": "upgrade.refurbished_sticker.description" },
+    { "id": "upgrade.reply_all_macro", "title_key": "upgrade.reply_all_macro.title", "description_key": "upgrade.reply_all_macro.description" }
+  ],
+  "manual_actions": [
+    { "id": "manual.click", "title_key": "manual.click.title", "description_key": "manual.click.description" }
+  ],
+  "cosmetic_stubs": [
+    {
+      "id": "cosmetic.horse_armor_free",
+      "title_key": "cosmetic.horse_armor_free.title",
+      "description_key": "cosmetic.horse_armor_free.description",
+      "disclosure_key": "cosmetic.horse_armor_free.disclosure",
+      "purchasable": false,
+      "stateful": false
+    }
+  ],
+  "gates": [
+    { "id": "gate.t0_to_t1", "title_key": "gate.t0_to_t1.title" }
+  ],
+  "exit_types": [
+    { "id": "acquihire", "title_key": "exit_type.acquihire.title" },
+    { "id": "acquisition", "title_key": "exit_type.acquisition.title" },
+    { "id": "collapse", "title_key": "exit_type.collapse.title" },
+    { "id": "ipo", "title_key": "exit_type.ipo.title" },
+    { "id": "scripted_first", "title_key": "exit_type.scripted_first.title" }
+  ]
+}
