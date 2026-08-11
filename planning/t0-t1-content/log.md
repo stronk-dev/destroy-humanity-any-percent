@@ -145,3 +145,65 @@ catalog and the truthful-window reading. **Pins #9a f8878cbf…30bf (policy) / #
   (T01-C13), missing production owners and exact curriculum bytes (T01-C14), and the unnamed
   session-open catchup operation (T01-C15). EH-C10 records the contradictory pre/post-mint order
   for the first content-dynamics registry entry. No production balance bytes were changed.
+
+## 2026-08-11 — designated cross-party verdict: {dba3bf7, b567f1a} — APPROVED (code); the T01-C12 FILING AND MY RULING ON IT ARE FALSIFIED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**dba3bf7 APPROVED** — all four MA follow-ups verified by execution and adversarial probe: the
+kernel-path additions PROVE OUT (a semantic edit to either coordinator now fails the guard; a
+`_test.go` edit correctly does not), and a historical check confirms all six prior commits
+touching those files bumped anyway, so the registry omission never let anything through. The four
+renamed DB tests genuinely execute under the selector now (they contained no `Integration`
+substring before — a real gap, really closed). pnpm-store untracked; browser timeout 10.
+
+**b567f1a APPROVED AS CODE** — fail-before-write proven THREE ways (code path; lowering
+max_decisions to 1 makes it genuinely dispatch 23 s of real simulation and still write nothing;
+the write path is live for clean reports). Nothing implemented past the blockers.
+
+**HIGH-1 — the T01-C12 filing misdiagnosed, and MY RULING (aebde56) IS WITHDRAWN.** The
+4,529,004,752 figure is a TIGHT STATIC WORST-CASE BOUND (independently re-derived digit for digit,
+within 0.75% of the true worst case) — but the ACTUAL run of the byte-identical ratified scenario
+executes **148,220 transitions in 30 seconds: 30,556× below the ceiling and 13.5× BELOW the
+scenario's own 2,000,000 budget.** There is no combinatorial explosion. The defect is the
+PREFLIGHT ESTIMATOR being used as a content gate: a DoS guard whose bound is four and a half
+orders of magnitude loose. My ruling commissioned bounded-beam work, a gap-proof re-run, and a
+re-ratification against a cost that does not exist — and its own clause (1) demanded an "EXACT
+static ceiling" the shipped estimator does not provide. **Codex: STOP any bounded-beam work.**
+**HIGH-2 — UNFILED AND REAL: the ratified content FAILS the relevance gate, 41 failures**
+(`baseline_unreached`, `greedy_oracle:milestone_unreached`, 19× `relevance_floor`, 19×
+`trap_floor`, `role_floor:generator.nephew_intern`). Root cause: **the solver's reference arm can
+never bootstrap** — it starts at 0 cash and only ever considers the 19 policy purchasables,
+never emitting a manual action, while the cheapest generator costs 10 and `manual.click` yields 1.
+It buys NOTHING across the full 24-hour horizon (probe: final_balance=0, purchases={}). This also
+explains the loose bound: the beam term is 99.8% of the ceiling but does ~0 real work because the
+arm dies at 220 transitions. **Bounding the beam would shrink the ceiling and fix none of the 41
+failures.** This is the real mint blocker, and it means the mandatory relevance gate has never
+validated any content.
+MED-1: the run-budget refusal keeps the opaque message the same commit fixed three lines below.
+LOW-1/2 noted.
+
+**Range-union: {dba3bf7, b567f1a} consumed; no gaps.** `aebde56` (my rulings) postdates this
+range and belongs to Codex's lane — it is now superseded regardless, below.
+
+## 2026-08-11 — CORRECTED OWNER RULINGS superseding aebde56's T01-C12
+
+- **T01-C12 — WITHDRAWN AND REPLACED. The budget semantics were wrong, not the content.**
+  A work budget must measure WORK ACTUALLY DONE, not a loose upper bound on work that might be
+  attempted. **Ruled:** (1) `relevance_budget_max_transitions` is enforced by a RUNTIME COUNTER —
+  the run aborts the moment actual transitions exceed it, writing no partial report (the
+  fail-before-write discipline extended to fail-during); (2) the static preflight estimator is
+  RETAINED but demoted to a runaway-configuration guard compared against its own separate,
+  deliberately generous `preflight_ceiling` — never against the work budget; (3) the 2,000,000
+  budget STANDS and the ratified scenario now passes it by 13.5× on measured work; (4) NO beam
+  bounding, NO gap-proof re-run, NO scenario re-ratification — the ratified hashes are unaffected.
+- **NEW — T01-C16 (filed by the owner side, closing the review's unfiled HIGH-2): the relevance
+  solver cannot bootstrap from genesis.** The arms must be able to reach the first purchasable the
+  way a player does — **by manual action.** Ruled shape: the reference/greedy/beam arms MAY emit
+  the pinned catalog's manual action, bounded by the shipped click clamp as its rate ceiling (no
+  arm may out-click a human's legal cadence), with the manual yield read from the pinned economy —
+  never a solver-authored constant. **Acceptance property: on the ratified content the reference
+  arm must reach a non-empty purchase set and the milestone must be reachable**; a regression test
+  pins it. Exact cadence/parameters come back to me with the numbers, as with any solver contract.
+  Until this lands, the 41 failures are a SOLVER defect and NOT evidence against the ratified
+  content — no content retune may be justified by them.
