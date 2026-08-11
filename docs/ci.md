@@ -13,12 +13,12 @@ runners, deployment credentials, or deployment steps.
 |---|---|---|
 | `server` | `make verify-server` | Go vet/tests plus generated production-formula drift |
 | `client` | `make verify-client` | strict TypeScript and Node/V8 tests; full Git history is required by KV-1 |
-| `browser` | `make test-browser` | Chromium, Firefox, and WebKit suites |
+| `browser` | `make test-browser` | Chromium, Firefox, and WebKit functional suites, then isolated Chromium performance |
 | `schema` | `make verify-schema` | schema compilation plus production and fixture catalogs |
 
-Every job has a five-minute timeout. The complete blocking workflow has a normative five-minute
-elapsed-time budget; the first hosted measurement is pending the initial push. Until that run is
-observed, the CI Baseline RFC remains implementing.
+The server, browser, and composed-browser jobs have ten-minute timeouts; the remaining blocking
+jobs keep five-minute timeouts. The complete blocking workflow has a normative five-minute
+elapsed-time target, measured by parallel wall time rather than the sum of job ceilings.
 
 ## Nightly numeric maintenance
 
@@ -103,19 +103,21 @@ make vectors-check
 Postgres, including packages whose integration tests are not selected by the
 focused `test-save-integration` target.
 
-`make test-game-ui-performance` focuses the browser job's deterministic sixty-second Game UI
+`make test-game-ui-performance` owns the browser job's deterministic sixty-second Game UI
 cadence simulation: 1,200 snapshot inputs (20 Hz) are grouped through 600 shared formatter flush
 windows (10 Hz) in a 1280×720 Chromium viewport, with the commit count and 200 ms long-task ceiling
-enforced. The real-time 4× CPU / dropped-frame profile remains the manual release check described
-in the Game UI docs. The same deterministic test remains part of ordinary `make test-browser`;
-the focused target exists for normal iteration, not as a separate claim.
+enforced. `make test-browser` first runs the functional three-engine matrix with this one
+wall-clock-sensitive test disabled, then invokes the focused target in a fresh Chromium process.
+This keeps Firefox/WebKit contention and unrelated test files out of the measurement without
+changing any budget. The real-time 4× CPU / dropped-frame profile remains the manual release check
+described in the Game UI docs.
 
-`make test-browser-ci` runs the ordinary browser target with `CI=true` in the pinned Linux
-Playwright image, using fresh anonymous `node_modules` and pnpm-store volumes on every invocation.
-Actions installs the same pinned browser versions explicitly on its ordinary Ubuntu runner. `make
-verify-server-ci` runs the complete server gate on linux/amd64 against the repository's Postgres
-test service. Use these targets when host-platform success could mask scheduling, architecture,
-or cold-run behavior.
+`make test-browser-ci` runs the same functional-matrix-then-isolated-performance sequence with
+`CI=true` in the pinned Linux Playwright image, using fresh anonymous `node_modules` and
+pnpm-store volumes on every invocation. Actions installs the same pinned browser versions
+explicitly on its ordinary Ubuntu runner. `make verify-server-ci` runs the complete server gate on
+linux/amd64 against the repository's Postgres test service. Use these targets when host-platform
+success could mask scheduling, architecture, or cold-run behavior.
 
 `make test-game-ui-composed` starts its isolated repository Postgres service, the real composed gameserver,
 and Vite, then drives Chromium through anonymous bootstrap, an authenticated live

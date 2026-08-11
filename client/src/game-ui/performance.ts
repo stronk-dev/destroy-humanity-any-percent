@@ -9,6 +9,15 @@ export const GAME_UI_PERFORMANCE_BUDGET = Object.freeze({
 });
 
 export function validatePerformanceObservation(observation: Readonly<{ formattedCommits: number; inputs: number; longestTaskMS: number }>): void {
-  if (observation.inputs !== GAME_UI_PERFORMANCE_BUDGET.inputCount || observation.formattedCommits > GAME_UI_PERFORMANCE_BUDGET.formattedCommitsMaximum ||
-      observation.longestTaskMS > GAME_UI_PERFORMANCE_BUDGET.longTaskCeilingMS) throw new RangeError("Game UI performance budget exceeded");
+  const failures: string[] = [];
+  if (observation.inputs !== GAME_UI_PERFORMANCE_BUDGET.inputCount) {
+    failures.push(`inputs=${observation.inputs}, expected=${GAME_UI_PERFORMANCE_BUDGET.inputCount}`);
+  }
+  if (observation.formattedCommits > GAME_UI_PERFORMANCE_BUDGET.formattedCommitsMaximum) {
+    failures.push(`formatted_commits=${observation.formattedCommits}, maximum=${GAME_UI_PERFORMANCE_BUDGET.formattedCommitsMaximum}`);
+  }
+  if (observation.longestTaskMS > GAME_UI_PERFORMANCE_BUDGET.longTaskCeilingMS) {
+    failures.push(`longest_task_ms=${observation.longestTaskMS}, maximum=${GAME_UI_PERFORMANCE_BUDGET.longTaskCeilingMS}`);
+  }
+  if (failures.length > 0) throw new RangeError(`Game UI performance budget exceeded: ${failures.join("; ")}`);
 }

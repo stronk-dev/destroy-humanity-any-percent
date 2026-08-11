@@ -19,4 +19,6 @@ services:
         corepack prepare pnpm@11.15.1 --activate &&
         pnpm --dir client install --frozen-lockfile &&
         cd client &&
-        node_modules/.bin/vitest run --config vitest.browser.config.ts
+        VITE_GAME_UI_PERFORMANCE=0 node_modules/.bin/vitest run --config vitest.browser.config.ts &&
+        VITE_GAME_UI_PERFORMANCE=1 node_modules/.bin/vitest run --config vitest.browser.config.ts
+        test/game-ui-screens-browser.test.ts --testNamePattern 'observable 20 Hz / 10 Hz screen budget'

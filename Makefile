@@ -49,7 +49,8 @@ test-client:
 	cd client && $(CLIENT_BIN)/vitest run
 
 test-browser:
-	cd client && $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts $(BROWSER_TEST_FLAGS)
+	cd client && VITE_GAME_UI_PERFORMANCE=0 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts $(BROWSER_TEST_FLAGS)
+	$(MAKE) test-game-ui-performance
 
 test-browser-ci:
 	docker compose -f compose.browser-test.yml run --rm browser
@@ -62,7 +63,7 @@ test-game-ui-composed:
 	node client/tools/test-game-ui-composed.mjs
 
 test-game-ui-performance:
-	cd client && $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts test/game-ui-screens-browser.test.ts --testNamePattern 'observable 20 Hz / 10 Hz screen budget'
+	cd client && VITE_GAME_UI_PERFORMANCE=1 $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts test/game-ui-screens-browser.test.ts --testNamePattern 'observable 20 Hz / 10 Hz screen budget'
 
 typecheck:
 	cd client && $(CLIENT_BIN)/tsc --noEmit && $(CLIENT_BIN)/svelte-check --tsconfig ./tsconfig.json

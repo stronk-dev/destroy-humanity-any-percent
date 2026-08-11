@@ -41,9 +41,11 @@ gameserver, Postgres bootstrap transaction, authenticated live snapshot-v2 route
 world subscription; its schema/revision and visible visitor-counter assertions prove the production
 HTTP synchronization and WebSocket handshake completed.
 
-The deterministic performance lane feeds 1,200 authoritative snapshot updates representing 60
-seconds at 20 Hz through 600 shared formatter windows in a 1280×720 Chromium viewport. The shared
-renderer may commit a hot Amount at most 600 times and may not produce a long task over 200 ms.
+The deterministic performance lane runs in an isolated Chromium process after the functional
+Chromium/Firefox/WebKit matrix, then feeds 1,200 authoritative snapshot updates representing 60
+seconds at 20 Hz through 600 shared formatter windows in a 1280×720 viewport. Isolation keeps
+concurrent browser engines from becoming part of the measurement. The shared renderer may commit
+a hot Amount at most 600 times and may not produce a long task over 200 ms.
 Four-times CPU throttling and the five-percent dropped-frame allowance remain the manual
 mid-range-Android release profile; deterministic CI gates the observable commits and long tasks
 as ruled.

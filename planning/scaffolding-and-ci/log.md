@@ -120,3 +120,21 @@ regression test discriminates only on linux/amd64 (by nature; the CI gate carrie
   green. The exact cold linux/amd64 `make test-go-ci` job then passed every package. Kernel 0.3.93
   is an honest semantic bump. The Make targets now expose repeat-count selectors alongside their
   existing package/regex selectors so focused stress runs remain ordinary repository commands.
+
+## 2026-08-11 — Actions run 31527960279 browser-performance topology repaired
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is an implementation record pending the
+  ordinary designated cross-party review; it is not an approval.
+- The public Actions check annotations identify the only failure as the Chromium Game UI
+  performance assertion in `validatePerformanceObservation`; every setup step succeeded. The
+  assertion previously reported no measured values, hiding which budget arm fired.
+- The wall-clock-sensitive Chromium case ran inside the complete three-engine suite while
+  Firefox, WebKit, and unrelated high-volume test files competed for a hosted runner's CPU. That
+  topology makes shared-runner scheduling part of the long-task observation. The same code passed
+  both the host browser target and the pinned Linux Playwright image, confirming the failure was
+  not a deterministic formatted-commit or input-count regression.
+- `make test-browser` now runs the complete functional Chromium/Firefox/WebKit matrix first and
+  then runs the unchanged 200 ms/600-commit performance budget in a fresh Chromium-only process.
+  `make test-browser-ci` mirrors that two-stage flow with cold anonymous dependency volumes. The
+  validator now includes every observed and allowed value in its error, so a future hosted failure
+  is actionable from the annotation alone. No product behavior or performance literal changed.

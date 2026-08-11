@@ -134,7 +134,9 @@ describe("Game UI lifecycle and local timing", () => {
 it("pins the executable CI performance literals", () => {
   expect(GAME_UI_PERFORMANCE_BUDGET).toEqual({ cpuThrottle: 4, droppedFrameAllowancePPM: 50_000, durationMS: 60_000, formattedCommitsMaximum: 600, inputCount: 1_200, longTaskCeilingMS: 200, viewport: { height: 720, width: 1280 } });
   expect(() => validatePerformanceObservation({ formattedCommits: 600, inputs: 1_200, longestTaskMS: 200 })).not.toThrow();
-  expect(() => validatePerformanceObservation({ formattedCommits: 601, inputs: 1_200, longestTaskMS: 200 })).toThrow();
+  expect(() => validatePerformanceObservation({ formattedCommits: 601, inputs: 1_199, longestTaskMS: 201 })).toThrowError(
+    "Game UI performance budget exceeded: inputs=1199, expected=1200; formatted_commits=601, maximum=600; longest_task_ms=201, maximum=200",
+  );
 });
 
 describe("Game UI decoded event boundary", () => {
