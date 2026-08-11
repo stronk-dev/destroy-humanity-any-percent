@@ -630,3 +630,22 @@ verified as exactly the one ruled revert):
 
 GU-C12 is DISCHARGED. **The screens batch is UNGATED.** Any text change from here is a copy
 retune with a replacement hash recorded.
+
+---
+
+## Owner ratification — the corrected screens package (Marco, 2026-08-11)
+
+Ratified after the remediation's designated verdict (all blockers probe-closed; every hash
+recomputed independently by the reviewer). These SUPERSEDE the 2026-08-11 copy/presentation pins
+— they carry the M1 correction (reputation delta typed `string`, rendered through `formatAmount`
+— the Offer Sheet reads "Reputation +1", never the wire encoding) and the constants arm:
+
+- copy candidate `sha256:cad6b472712071fa81f6d5c0c041bc378d6acd5c913823e2c873fde707d18d89`
+- presentation-v3 `sha256:c387402bce1607807dc0a5148c845d30afcef2f81441039e5888386c23d3137f`
+  (`balance/testdata/t0-t1/presentation-v3.json` and its client mirror, parity verified)
+- generated copy identity
+  `sha256:98883f308f18ac60a62a47ded7a0c9aa6d71912556e0d6f45ce2e47c9740bc2c`
+
+Unchanged and still ratified: phase0 `24e90af2…`, presentation-v2 `42cbe31a…`, event-copy-v2
+`71d88ebb…`. **The screens' content is complete and pinned.** Remaining before the Game UI
+archival: AC1's epoch-7-mint-gated live script, `02d00d7`'s designated review, and the move.
