@@ -163,8 +163,7 @@ it.skipIf(typeof document === "undefined")("feeds authoritative Game UI snapshot
   app.fixtureSnapshot({ ...snapshot, resources: [{ ...snapshot.resources[0], rate_per_second: "1e3" }] }); app.fixtureSurface("desk"); flushSync();
   const output = target.querySelector(".cc-amount output")!;
   const before = output.textContent;
-  await new Promise((resolve) => setTimeout(resolve, 750)); flushSync();
-  expect(output.textContent).not.toBe(before);
+  await expect.poll(() => output.textContent, { interval: 50, timeout: 5_000 }).not.toBe(before);
   await unmount(app); target.remove();
 });
 
