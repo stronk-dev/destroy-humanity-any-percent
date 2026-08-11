@@ -696,3 +696,55 @@ commits) — with the two Claude-side commits above owed to Codex's lane. **NOT 
 - The exact epoch-7 T0→T2 progression remains mint-gated, the three revised hashes above require
   owner ratification, and this delta requires Claude's designated remediation pass. Nothing here
   authorizes archival, deployment, or publication.
+
+## 2026-08-11 — designated cross-party verdict: remediation 8cfa00b..31a49cd — ALL THREE APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**Every prior blocker closed by discriminating probe:** H1 — `make test-game-ui-composed` now
+exits 0 (was 2), with the signal-kill mechanism reproduced in isolation and the fix proven exactly
+on-target; M1 — reverting the formatAmount binding turns the unit `toEqual` red ("Reputation +1e0")
+AND the browser negative assertion red in all three engines (param retyped `string`, assertions
+exact-string, not prefix-contains); M2 — **the exact probe that PASSED last review now FAILS**
+(breaking `/api/v1/founder/state` fails the composed test), so the live v2 snapshot is genuinely
+covered and the three doc sentences are now true; M3 — the composed job is top-level in CI and has
+passed on hosted Actions; M4/L1/L2/L4/L5/L6 all probe-verified (removing the withholding surfaces
+raw IDs and reddens the test; restoring ago(0) reddens all three engines; removing the attribute
+lint check fails the tool's own self-test). H2 recorded with its GU-C23 authorization cited and
+the current+legacy convention codified in docs/api-foundation.md. Gates all green at 31a49cd
+(composed, verify, cold -count=1, Postgres, cold Linux, perf); handoff numbers match the
+reviewer's exactly; kernel honestly unbumped.
+
+**The reverse-direction review VALIDATED.** Codex's rejection of the Claude-authored c0021e7 was
+legitimate on both counts (the appended GU-C23 left normative GU-C1/GU-C10 text contradicting it —
+the same-edit body-reconciliation rule; and M1's "+1e0" reproduced literally). **062a80f alters no
+ruling's substance** — verified line by line: GU-C1 is v1→v2 plus a header phrase with the DTO
+field list byte-identical; GU-C10's restatement is a faithful rendering of GU-C23's own ruled
+clause; residual v1 mentions sit inside exempt blocker-record blocks. 31a49cd's provenance is
+well-formed, correctly scoped to the two Claude commits, and self-authorizes nothing. **The
+cross-party gate is now proven symmetric — it has caught real defects in both directions.**
+
+**Findings (none blocking):** L1 `waitForReady()` still uses the pre-fix predicate at the one
+other site testing the same condition (a signal-killed server during startup spins to the 60 s
+deadline) — apply the same fix; L2 the M2 round trip is issued by the test rather than the app's
+runtime (honestly worded; the client's own consumption of live v2 stays unasserted); **L3 (owner
+ruling owed BEFORE network-slot content ships): the Offer Sheet's authored copy promises "all of
+them. Nothing on this sheet is hidden" while the withhold arm silently DROPS an unbound row** —
+latent today (both fields bound), but withholding-vs-transparency needs ruling then; L4 run-end
+lacks a direct no-wire-notation browser assertion (shared helper + exact-array unit test make
+coverage adequate but asymmetric); INFO the tracked `.pnpm-store` index mutates on test runs
+(already routed by Codex).
+
+**PROCESS CONVENTION (recorded now):** when a cross-party review finds an owner ruling's normative
+text stale or self-contradicting, **the reconciliation belongs in the RULING AUTHOR's own edit** —
+the implementer files the finding and waits. 062a80f passed scrutiny, but the general case must not
+put ruling text in implementer hands.
+
+**Range-union: 8cfa00b..31a49cd CLOSED.** **`02d00d7` landed DURING this review and is NOT
+covered** — it repairs a hosted-Actions red that the reviewed span leaves in place (environmental,
+Playwright-container-only; the same suite is green locally, in the pinned container, and on every
+other Actions job). It needs its own declared range.
+
+**The Game UI Screens RFC carries NO blocking findings in the reviewed span.** Remaining before
+archival: AC1's epoch-7-mint-gated live script; the three content hashes' owner ratification;
+02d00d7's review; the final status/move.
