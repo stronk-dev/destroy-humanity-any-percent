@@ -2,7 +2,7 @@ import { parseCanonical } from "../numeric";
 import type { TransportEnvelope } from "../transport";
 
 type RunID = Readonly<{ company_stream_id: string; run_seq: number }>;
-type PrestigeTerms = Readonly<{
+export type PrestigeTerms = Readonly<{
   clout_reach_note: string;
   network_slot_unlocks: readonly Readonly<{ carried_ref: string; slot: string }>[];
   reputation_delta: number;
@@ -32,6 +32,7 @@ export type RunEndedEvent = Readonly<{ cursor: number; kind: "run_ended"; occurr
   terminal_seq: number;
   tier: number;
 }> }>;
+export type RunEndSurfaceProps = Readonly<{ ended: RunEndedEvent }>;
 export type GameUILifecycleEvent = GateCrossedEvent | ExitOfferSpawnedEvent | ExitOfferResolvedEvent | RunEndedEvent;
 export type GameUISystemEvent = Readonly<{ kind: "resync_required" }> | Readonly<{ kind: "server_restarting"; resume_after_ms: number }>;
 

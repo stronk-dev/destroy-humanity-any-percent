@@ -1613,6 +1613,53 @@
       "tone": "diegetic"
     },
     {
+      "key": "terms.clout_reach_note.text",
+      "text": "Clout carries. The personal brand survives the company.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "terms.network_slot_unlock.frame",
+      "text": "Network: {title}",
+      "params": [
+        {
+          "name": "title",
+          "type": "string"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "terms.reputation_delta.frame",
+      "text": "Reputation +{delta}",
+      "params": [
+        {
+          "name": "delta",
+          "type": "canonical_decimal"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "terms.route_knowledge.frame",
+      "text": "Route Knowledge +{delta}",
+      "params": [
+        {
+          "name": "delta",
+          "type": "integer"
+        }
+      ],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "upgrade.beige_tower_cache.description",
       "text": "Spare RAM in a shoebox under the desk. The tower finds everything twice as fast now.",
       "params": [],

@@ -6,7 +6,7 @@ export type BootstrapAccount = { account_id: string; created_at: string; recover
 
 export type BootstrapRequest = { idempotency_key: string };
 
-export type BootstrapResponse = { account: BootstrapAccount; game_ui_snapshot: GameUISnapshot; session: BootstrapSession };
+export type BootstrapResponse = { account: BootstrapAccount; game_ui_snapshot: GameUISnapshot | GameUISnapshotV1; session: BootstrapSession };
 
 export type BootstrapSession = { access_token: string; refresh_token: string };
 
@@ -24,7 +24,9 @@ export type GameUIResourceCap = { amount: string; reason_key: string };
 
 export type GameUIRun = { category: string; exit_count: number; founder_id: string; run_seq: number; run_started_at_ms: number; tier: number };
 
-export type GameUISnapshot = { constants_hash: string; evaluated_through_ms: number; facts: Array<GameUIFact>; generators: Array<GameUIGenerator>; manual_action: GameUIManualAction; progress: Array<GameUIProgress>; resources: Array<GameUIResource>; revision: number; run: GameUIRun; schema_version: number; server_now_ms: number; upgrades: Array<GameUIUpgrade> };
+export type GameUISnapshot = { constants_hash: string; evaluated_through_ms: number; facts: Array<GameUIFact>; founder_revision: number; generators: Array<GameUIGenerator>; manual_action: GameUIManualAction; progress: Array<GameUIProgress>; resources: Array<GameUIResource>; revision: number; run: GameUIRun; schema_version: number; server_now_ms: number; upgrades: Array<GameUIUpgrade> };
+
+export type GameUISnapshotV1 = { constants_hash: string; evaluated_through_ms: number; facts: Array<GameUIFact>; generators: Array<GameUIGenerator>; manual_action: GameUIManualAction; progress: Array<GameUIProgress>; resources: Array<GameUIResource>; revision: number; run: GameUIRun; schema_version: number; server_now_ms: number; upgrades: Array<GameUIUpgrade> };
 
 export type GameUIUpgrade = { cost_amount: string; cost_resource_id: string; eligible: boolean; owned: boolean; upgrade_id: string };
 

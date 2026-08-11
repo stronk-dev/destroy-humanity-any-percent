@@ -1,4 +1,4 @@
-import type { GameUISnapshot } from "../api/generated/types";
+import type { GameUISnapshot, GameUISnapshotV1 } from "../api/generated/types";
 import { parseCanonical } from "../numeric";
 import type { AuthoritativeSnapshot, DiscreteFact } from "../shell/contracts";
 
@@ -44,11 +44,17 @@ function sortedRows(values: unknown, id: string, label: string): Record<string, 
   return rows;
 }
 
-export function parseGameUISnapshot(source: unknown): GameUISnapshot {
+export type ParsedGameUISnapshot = GameUISnapshot | GameUISnapshotV1;
+
+export function parseGameUISnapshot(source: unknown): ParsedGameUISnapshot {
   const root = object(source, "game UI snapshot");
-  exact(root, ["constants_hash", "evaluated_through_ms", "facts", "generators", "manual_action", "progress", "resources", "revision", "run", "schema_version", "server_now_ms", "upgrades"], "game UI snapshot");
-  if (root.schema_version !== 1 || typeof root.constants_hash !== "string" || !hash.test(root.constants_hash)) throw new SyntaxError("invalid game UI envelope");
+  if (root.schema_version !== 1 && root.schema_version !== 2) throw new SyntaxError("invalid game UI envelope");
+  const fields = ["constants_hash", "evaluated_through_ms", "facts", "generators", "manual_action", "progress", "resources", "revision", "run", "schema_version", "server_now_ms", "upgrades"];
+  if (root.schema_version === 2) fields.push("founder_revision");
+  exact(root, fields, "game UI snapshot");
+  if (typeof root.constants_hash !== "string" || !hash.test(root.constants_hash)) throw new SyntaxError("invalid game UI envelope");
   const revision = integer(root.revision, 1);
+  if (root.schema_version === 2) integer(root.founder_revision, 1);
   const evaluatedThrough = integer(root.evaluated_through_ms, 1);
   const serverNow = integer(root.server_now_ms, evaluatedThrough);
 
@@ -95,10 +101,10 @@ export function parseGameUISnapshot(source: unknown): GameUISnapshot {
     decimal(row.cost_amount); identifier(row.cost_resource_id);
     if (typeof row.eligible !== "boolean" || typeof row.owned !== "boolean" || row.owned && row.eligible) throw new SyntaxError("invalid upgrade state");
   }
-  return { ...(root as unknown as GameUISnapshot), revision, evaluated_through_ms: evaluatedThrough, server_now_ms: serverNow };
+  return { ...(root as unknown as ParsedGameUISnapshot), revision, evaluated_through_ms: evaluatedThrough, server_now_ms: serverNow };
 }
 
-export function toShellSnapshot(snapshot: GameUISnapshot): AuthoritativeSnapshot {
+export function toShellSnapshot(snapshot: ParsedGameUISnapshot): AuthoritativeSnapshot {
   return {
     revision: snapshot.revision,
     evaluatedThroughMs: snapshot.evaluated_through_ms,
@@ -113,7 +119,7 @@ export function toShellSnapshot(snapshot: GameUISnapshot): AuthoritativeSnapshot
   };
 }
 
-export function eraForSnapshot(snapshot: GameUISnapshot): "era_1995" | "era_2000" {
+export function eraForSnapshot(snapshot: ParsedGameUISnapshot): "era_1995" | "era_2000" {
   if (snapshot.run.tier === 0) return "era_1995";
   if (snapshot.run.tier === 1) return "era_2000";
   throw new RangeError(`tier ${snapshot.run.tier} has no shipped UI era`);

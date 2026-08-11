@@ -7,6 +7,7 @@ import RunEndSurface from "../src/game-ui/RunEndSurface.svelte";
 import type { ExitOfferSpawnedEvent, GateCrossedEvent, RunEndedEvent } from "../src/game-ui/events";
 import type { GameUIRuntime, GameUIRuntimeMessage } from "../src/game-ui/runtime";
 import type { GameUISnapshot } from "../src/api/generated/types";
+import type { ParsedGameUISnapshot } from "../src/game-ui/contracts";
 import { canonicalString } from "../src/numeric";
 import { GAME_UI_PERFORMANCE_BUDGET, validatePerformanceObservation } from "../src/game-ui/performance";
 import { amountRenderScheduler } from "../src/ui/render-scheduler";
@@ -15,13 +16,14 @@ const snapshot: GameUISnapshot = {
   constants_hash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   evaluated_through_ms: 1_800_000_000_000,
   facts: [{ fact_id: "bootstrap.needed", value: false }, { fact_id: "gate.t0_to_t1", value: false }],
+  founder_revision: 1,
   generators: [{ generator_id: "generator.beige_tower", max_affordable: 2, next_cost: "1e1", next_cost_resource_id: "company.cash", owned: 1, provisioned: 0, rate_contribution: "1e0" }],
   manual_action: { action_id: "manual.click", bucket_cap_milli: 50_000, refill_milli_per_ms: 25, refilled_at_ms: 1_800_000_000_000, tokens_milli: 50_000 },
   progress: [{ current: "5e-1", stage_id: "progress.tier", target: "1e0" }],
   resources: [{ amount: "1e2", cap: { amount: "1e1000", reason_key: "resource.company_cash.cap.phase0" }, rate_per_second: "1e0", resource_id: "company.cash" }],
   revision: 1,
   run: { category: "any_percent", exit_count: 0, founder_id: "01985555-1111-7111-8111-111111111111", run_seq: 1, run_started_at_ms: 1_799_999_000_000, tier: 0 },
-  schema_version: 1, server_now_ms: 1_800_000_000_000,
+  schema_version: 2, server_now_ms: 1_800_000_000_000,
   upgrades: [{ cost_amount: "2e1", cost_resource_id: "company.cash", eligible: true, owned: false, upgrade_id: "upgrade.beige_tower_cache" }],
 };
 
@@ -52,7 +54,7 @@ class FixtureRuntime implements GameUIRuntime {
 }
 
 interface AppExports {
-  fixtureSnapshot(value: GameUISnapshot): void;
+  fixtureSnapshot(value: ParsedGameUISnapshot): void;
   fixtureSurface(value: "desk" | "offer_sheet" | "run_end" | "settings" | "vision_slide"): void;
   fixtureOffer(value: ExitOfferSpawnedEvent): void;
   fixtureRunEnd(value: RunEndedEvent): void;
@@ -126,19 +128,41 @@ it.skipIf(typeof document === "undefined")("records immutable gate timing locall
   await unmount(app); target.remove();
 });
 
-it.skipIf(typeof document === "undefined")("fails offer acceptance closed without a Founder CAS coordinate while decline remains authoritative", async () => {
+it.skipIf(typeof document === "undefined")("replays a v1 bootstrap receipt fail-closed, then accepts from a v2 Founder coordinate", async () => {
   const runtime = new FixtureRuntime(true);
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime } }) as unknown as AppExports;
   await new Promise((resolve) => setTimeout(resolve, 0));
-  app.fixtureSnapshot(snapshot); app.fixtureOffer(offer); flushSync();
+  const { founder_revision: _founderRevision, ...legacy } = snapshot;
+  app.fixtureSnapshot({ ...legacy, schema_version: 1 }); app.fixtureOffer(offer); flushSync();
   const buttons = [...target.querySelectorAll("button")];
   const sign = buttons.find((button) => button.textContent === "Sign")!;
   const decline = buttons.find((button) => button.textContent === "Decline")!;
   expect(sign.disabled).toBe(true);
+  app.fixtureSnapshot(snapshot); flushSync();
+  expect(sign.disabled).toBe(false);
+  sign.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+  expect(runtime.requests[0]).toMatchObject({ kind: "accept_exit_offer", expected_founder_revision: 1, offer_id: offer.payload.offer_id });
   decline.click(); await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
-  expect(runtime.requests[0]).toMatchObject({ kind: "decline_exit_offer", offer_id: offer.payload.offer_id });
-  expect(runtime.requests[0]).not.toHaveProperty("expected_founder_revision");
+  expect(runtime.requests[1]).toMatchObject({ kind: "decline_exit_offer", offer_id: offer.payload.offer_id });
+  expect(runtime.requests[1]).not.toHaveProperty("expected_founder_revision");
+  await unmount(app); target.remove();
+});
+
+it.skipIf(typeof document === "undefined")("renders ruled constants and complete decoded payout terms without mechanical substitutes", async () => {
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(true) } }) as unknown as AppExports;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  app.fixtureSnapshot(snapshot); app.fixtureSurface("desk"); flushSync();
+  expect(target.textContent).toContain("$0.00");
+  const order = [...target.querySelectorAll("button")].find((button) => button.textContent === "PLACE ORDER")!;
+  order.click(); flushSync();
+  expect(target.textContent).toContain("Thank you, Founder!!");
+  app.fixtureOffer(offer); flushSync();
+  expect(target.textContent).toContain("Clout carries. The personal brand survives the company.");
+  expect(target.textContent).toContain("Reputation +1");
+  expect(target.textContent).toContain("Route Knowledge +2");
+  expect(target.textContent).not.toContain("clout.reach.preserved");
   await unmount(app); target.remove();
 });
 

@@ -4,8 +4,7 @@ import type { IntentReceipt, SnapshotStream } from "../shell/contracts";
 import { ShellController, type ShellView } from "../shell/controller";
 import { parseClientShellPolicy } from "../shell/policy";
 import { ShellRuntime } from "../shell/runtime";
-import { toShellSnapshot } from "./contracts";
-import type { GameUISnapshot } from "../api/generated/types";
+import { toShellSnapshot, type ParsedGameUISnapshot } from "./contracts";
 
 export class GameUISnapshotStream implements SnapshotStream {
   readonly #request: () => void;
@@ -20,7 +19,7 @@ export class GameUISnapshotStream implements SnapshotStream {
     return () => this.#consumers.delete(consumer);
   }
 
-  publish(snapshot: GameUISnapshot, receipt?: IntentReceipt): void {
+  publish(snapshot: ParsedGameUISnapshot, receipt?: IntentReceipt): void {
     if (this.#disposed) return;
     const shell = toShellSnapshot(snapshot);
     for (const consumer of this.#consumers) consumer(shell, receipt);
@@ -49,7 +48,7 @@ export class GameUIShell {
     this.#started = true;
     this.#runtime.start();
   }
-  publish(snapshot: GameUISnapshot, receipt?: IntentReceipt): void { this.#stream.publish(snapshot, receipt); }
+  publish(snapshot: ParsedGameUISnapshot, receipt?: IntentReceipt): void { this.#stream.publish(snapshot, receipt); }
   subscribe(consumer: (view: ShellView) => void): () => void { return this.#controller.subscribe(consumer); }
   view(): ShellView { return this.#controller.view(); }
   dispose(): void { this.#runtime.dispose(); }

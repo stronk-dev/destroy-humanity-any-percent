@@ -12,6 +12,7 @@ const snapshot = {
   run: { category: "any_percent", exit_count: 0, founder_id: "01985555-1111-7111-8111-111111111111", run_seq: 1, run_started_at_ms: 1_799_999_000_000, tier: 0 },
   schema_version: 1, server_now_ms: 1_800_000_000_000, upgrades: [],
 };
+const currentSnapshot = { ...snapshot, founder_revision: 1, schema_version: 2 };
 
 class MemoryStorage implements RuntimeStorage {
   readonly values = new Map<string, string>();
@@ -48,12 +49,19 @@ describe("browser Game UI runtime", () => {
     const requests: RequestInit[] = [];
     const fetcher = async (_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
       requests.push(init ?? {});
-      return new Response(JSON.stringify(requests.length === 1 ? snapshot : { outcome: "applied", new_revision: 2 }), { status: 200, headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify(requests.length === 1 ? currentSnapshot : { outcome: "applied", new_revision: 2 }), { status: 200, headers: { "Content-Type": "application/json" } });
     };
     const runtime = createBrowserGameUIRuntime(storage, fetcher as typeof fetch);
     expect((await runtime.snapshot()).revision).toBe(1);
     await runtime.intent({ kind: "perform_manual_batch" });
     expect(requests.map((request) => (request.headers as Record<string, string>).Authorization)).toEqual(["Bearer access", "Bearer access"]);
+  });
+
+  it("rejects a legacy receipt snapshot on the live sync operation", async () => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const runtime = createBrowserGameUIRuntime(storage, async () => new Response(JSON.stringify(snapshot), { status: 200 }));
+    await expect(runtime.snapshot()).rejects.toThrow(/schema v2/);
   });
 
   it("decodes raw socket publications inside the runtime boundary", () => {
@@ -78,10 +86,13 @@ describe("browser Game UI runtime", () => {
     ]);
     const envelope = { v: 2, ch: "world", kind: "presence", rev: 1, constants_hash: snapshot.constants_hash, ts: "2026-08-11T12:00:00Z", payload: { joined: [], left: [], count: 7 } };
     for (const listener of listeners.get("message") ?? []) listener({ data: JSON.stringify({ push: { pub: { data: envelope } } }) });
+    const world = { v: 2, ch: "world", kind: "snapshot", rev: 2, constants_hash: snapshot.constants_hash, ts: "2026-08-11T12:00:01Z", payload: { scope: "world", rev: 2, state: { v: 1, world_rev: 2, planet: { depletion_ppm: 0, health_ppm: 0 }, commons: { server_health_ppm: 0, active_founders: 0, compact_members: 0 }, population: { online: 3, founders_total: 1 }, milestones: { active_id: null, progress_ppm: 0 }, epoch: { epoch_id: 6, name: "First Content" } } } };
+    for (const listener of listeners.get("message") ?? []) listener({ data: JSON.stringify({ push: { pub: { data: world } } }) });
     for (const listener of listeners.get("message") ?? []) listener({ data: JSON.stringify({ push: { pub: { data: {} } } }) });
     for (const listener of listeners.get("message") ?? []) listener({ data: "{" });
     expect(received).toEqual([
       { kind: "presence", count: 7 },
+      { kind: "presence", count: 3 },
       { kind: "system", value: { kind: "resync_required" } },
       { kind: "system", value: { kind: "resync_required" } },
     ]);

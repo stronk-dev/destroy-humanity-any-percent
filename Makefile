@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-ci verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-ci verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -51,6 +51,13 @@ test-browser:
 
 test-browser-ci:
 	docker compose -f compose.browser-test.yml run --rm browser
+
+# Real browser -> Vite proxy -> composed gameserver/Postgres. The visible
+# visitor counter is the assertion that runtime.ts completed its actual
+# Centrifuge WebSocket handshake, not a mocked socket exchange.
+test-game-ui-composed:
+	docker compose -f compose.game-ui-test.yml up -d --wait game-ui-postgres
+	node client/tools/test-game-ui-composed.mjs
 
 test-game-ui-performance:
 	cd client && $(CLIENT_BIN)/vitest run --config vitest.browser.config.ts test/game-ui-screens-browser.test.ts --testNamePattern 'observable 20 Hz / 10 Hz screen budget'

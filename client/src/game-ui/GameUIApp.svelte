@@ -7,10 +7,11 @@
   import Amount from "../ui/Amount.svelte";
   import type { ShellView } from "../shell/controller";
   import { installTheme, UI_THEMES } from "../ui/themes";
-  import { eraForSnapshot } from "./contracts";
+  import { eraForSnapshot, type ParsedGameUISnapshot } from "./contracts";
   import type { ExitOfferSpawnedEvent, RunEndedEvent } from "./events";
   import { GameUINavigation } from "./navigation";
-  import { GAME_UI_PRESENTATION, requirePresentation } from "./presentation";
+  import { GAME_UI_PRESENTATION, requirePresentation, requirePresentationConstant } from "./presentation";
+  import { renderPrestigeTermRows } from "./prestige-terms";
   import { createBrowserGameUIRuntime, newIntentID, type GameUIRuntime, type GameUIRuntimeMessage } from "./runtime";
   import { defaultSurface, type GameUISurfaceID } from "./surface-catalog";
   import { priorPersonalBest, readLocalTiming, RTATimer, writeLocalRunTiming, type LocalTimingStorage } from "./timing";
@@ -23,7 +24,7 @@
   let root: HTMLElement;
   function startupSurface(): GameUISurfaceID { return runtime.hasCredentials() ? "desk" : "vision_slide"; }
   const initialSurface = startupSurface();
-  let snapshot = $state<GameUISnapshot | undefined>();
+  let snapshot = $state<ParsedGameUISnapshot | undefined>();
   let surface = $state<GameUISurfaceID>(initialSurface);
   let navigation = new GameUINavigation(initialSurface);
   let pending = $state(false);
@@ -69,7 +70,7 @@
     surface = navigation.active;
   }
 
-  function bindSnapshot(value: GameUISnapshot): void {
+  function bindSnapshot(value: ParsedGameUISnapshot): void {
     const sampledMonotonicMs = performance.now();
     if (snapshot === undefined) {
       const authoritativeDefault = defaultSurface(Object.fromEntries(value.facts.map((fact) => [fact.fact_id, fact.value])));
@@ -81,6 +82,7 @@
     monotonicMS = sampledMonotonicMs;
     snapshotMonotonicMS = sampledMonotonicMs;
     snapshot = value;
+    founderRevision = "founder_revision" in value ? value.founder_revision : undefined;
     shell.publish(value);
     const nextRunIdentity = `${value.run.founder_id}\0${value.run.run_seq}\0${value.run.category}`;
     if (runIdentity !== nextRunIdentity) {
@@ -194,7 +196,7 @@
     return value === undefined ? resource.amount : canonicalString(value);
   }
 
-  export function fixtureSnapshot(value: GameUISnapshot): void { bindSnapshot(value); }
+  export function fixtureSnapshot(value: ParsedGameUISnapshot): void { bindSnapshot(value); }
   export function fixtureSurface(value: GameUISurfaceID): void { show(value); }
   export function fixtureOffer(value: ExitOfferSpawnedEvent): void { offer = value; show("offer_sheet"); }
   export function fixtureRunEnd(value: RunEndedEvent): void { ended = value; show("run_end"); }
@@ -290,18 +292,18 @@
         <details><summary>{t("chrome.splits.label", {}, era)}</summary>{#each splits as split}<p>{t(requirePresentation(GAME_UI_PRESENTATION.gates, split.gate_id).title_key, {}, era)} {duration(split.rta_ms)}</p>{/each}{#if personalBestMS === undefined}<p>{t("chrome.splits.first_attempt_note", {}, era)}</p>{/if}</details>
       {/if}
 
-      <section class="card"><h2>{t("cosmetic.horse_armor_free.title", {}, era)}</h2><p>{t("cosmetic.horse_armor_free.description", { price: formatAmount("0") }, era)}</p><small>{t("cosmetic.horse_armor_free.disclosure", {}, era)}</small></section>
+      <section class="card"><h2>{t("cosmetic.horse_armor_free.title", {}, era)}</h2><p>{t("cosmetic.horse_armor_free.description", { price: requirePresentationConstant("constant.price_zero") }, era)}</p><small>{t("cosmetic.horse_armor_free.disclosure", {}, era)}</small></section>
       {#if era === "era_1995"}
         <section class="card" title={t("satire.unregistered.tooltip", {}, era)}><h2>{t("satire.unregistered.titlebar_frame", { day: evaluationDay() }, era)}</h2></section>
         <section class="card" aria-labelledby="order-heading">
           <h2 id="order-heading">{t("satire.order_form.window_title", {}, era)}</h2>
           <h3>{t("satire.order_form.heading", {}, era)}</h3>
-          <p>{t("satire.order_form.item_full_version", { price: formatAmount("0") }, era)}</p>
-          <p>{t("satire.order_form.item_shipping", { price: formatAmount("0") }, era)}</p>
-          <p>{t("satire.order_form.item_site_license", { price: formatAmount("0") }, era)}</p>
-          <strong>{t("satire.order_form.total", { price: formatAmount("0") }, era)}</strong>
+          <p>{t("satire.order_form.item_full_version", { price: requirePresentationConstant("constant.price_zero") }, era)}</p>
+          <p>{t("satire.order_form.item_shipping", { price: requirePresentationConstant("constant.price_zero") }, era)}</p>
+          <p>{t("satire.order_form.item_site_license", { price: requirePresentationConstant("constant.price_zero") }, era)}</p>
+          <strong>{t("satire.order_form.total", { price: requirePresentationConstant("constant.price_zero") }, era)}</strong>
           <button type="button" onclick={() => { orderPlaced = true; }}>{t("satire.order_form.place_order", {}, era)}</button>
-          {#if orderPlaced}<p role="status">{t("satire.order_form.confirmation", { founder: t("chrome.run_title.company_fallback", {}, era), price: formatAmount("0") }, era)}</p>{/if}
+          {#if orderPlaced}<p role="status">{t("satire.order_form.confirmation", { founder: requirePresentationConstant("constant.founder_fallback"), price: requirePresentationConstant("constant.price_zero") }, era)}</p>{/if}
           <small>{t("satire.order_form.small_print", {}, era)}</small>
         </section>
       {/if}
@@ -310,7 +312,9 @@
   {:else if surface === "offer_sheet" && offer}
     <section class="surface" aria-labelledby="offer-heading">
       <h1 id="offer-heading">{t("screen.offer_sheet.heading", {}, era)}</h1><p>{t("screen.offer_sheet.preamble", {}, era)}</p><h2>{t("screen.offer_sheet.terms_label", {}, era)}</h2>
-      <p>{exitTitle(offer.payload.exit_type)}</p><p title={t("screen.offer_sheet.countdown_tooltip", {}, era)}>{t("screen.offer_sheet.countdown_frame", { remaining: duration(offer.payload.expires_at_ms - estimatedServerNowMS()) }, era)}</p>
+      <p>{exitTitle(offer.payload.exit_type)}</p>
+      {#each renderPrestigeTermRows(offer.payload.payout_preview, era) as row}<p>{row}</p>{/each}
+      <p title={t("screen.offer_sheet.countdown_tooltip", {}, era)}>{t("screen.offer_sheet.countdown_frame", { remaining: duration(offer.payload.expires_at_ms - estimatedServerNowMS()) }, era)}</p>
       <button type="button" disabled={pending || founderRevision === undefined} onclick={acceptOffer}>{t("screen.offer_sheet.accept", {}, era)}</button>
       <button type="button" disabled={pending} onclick={() => act({ kind: "decline_exit_offer", offer_id: offer!.payload.offer_id })}>{t("screen.offer_sheet.decline", {}, era)}</button>
     </section>

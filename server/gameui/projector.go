@@ -102,6 +102,7 @@ type snapshot struct {
 	ConstantsHash      string          `json:"constants_hash"`
 	EvaluatedThroughMS int64           `json:"evaluated_through_ms"`
 	Facts              []factRow       `json:"facts"`
+	FounderRevision    int64           `json:"founder_revision"`
 	Generators         []generatorRow  `json:"generators"`
 	ManualAction       manualActionRow `json:"manual_action"`
 	Progress           []progressRow   `json:"progress"`
@@ -142,7 +143,7 @@ func (projector *Projector) GameUISnapshot(ctx context.Context, streamID string,
 	if err != nil || founder.State == nil {
 		return nil, errors.Join(ErrInvalidProjection, err)
 	}
-	return projectSnapshot(bundle, loaded.Key.OwnerID, loaded.Revision.Number, state, founder.State, contributions, now)
+	return projectSnapshot(bundle, loaded.Key.OwnerID, loaded.Revision.Number, founder.Revision.Number, state, founder.State, contributions, now)
 }
 
 // InitialGameUISnapshot projects transaction-local initial states without a
@@ -161,12 +162,12 @@ func (projector *Projector) InitialGameUISnapshot(_ context.Context, constantsHa
 	if err != nil {
 		return nil, err
 	}
-	return projectSnapshot(bundle, founderID, 1, company, founder, contributions, now)
+	return projectSnapshot(bundle, founderID, 1, 1, company, founder, contributions, now)
 }
 
-func projectSnapshot(bundle production.CatalogBundle, founderID string, revision int64, state, founder *save.State,
+func projectSnapshot(bundle production.CatalogBundle, founderID string, revision, founderRevision int64, state, founder *save.State,
 	contributions []multiplier.Contribution, now time.Time) (json.RawMessage, error) {
-	if state == nil || state.Ledger == nil || founder == nil || founder.Ledger == nil || founderID == "" || revision < 1 || now.IsZero() {
+	if state == nil || state.Ledger == nil || founder == nil || founder.Ledger == nil || founderID == "" || revision < 1 || founderRevision < 1 || now.IsZero() {
 		return nil, ErrInvalidProjection
 	}
 	catalog := bundle.Economy
@@ -209,16 +210,17 @@ func projectSnapshot(bundle production.CatalogBundle, founderID string, revision
 	}
 	sort.Slice(facts, func(left, right int) bool { return facts[left].FactID < facts[right].FactID })
 	result := snapshot{
-		ConstantsHash: bundle.ConstantsHash,
-		Facts:         facts,
-		Generators:    generators,
+		ConstantsHash:   bundle.ConstantsHash,
+		Facts:           facts,
+		FounderRevision: founderRevision,
+		Generators:      generators,
 		ManualAction: manualActionRow{ActionID: manualActions[0].ID, BucketCapMilli: policy.BucketCapMilli,
 			RefilledAtMS: state.ManualTokenRefilledAt.UnixMilli(), RefillMilliPerMS: policy.RefillMilliPerMS,
 			TokensMilli: state.ManualTokenMilli},
 		Progress: progress, Resources: resources, Revision: revision,
 		Run: runRow{Category: "any_percent", ExitCount: int64(len(founder.ExitHistory)), FounderID: founderID,
 			RunSeq: state.RunSeq, RunStartedAtMS: state.RunStartedAt.UnixMilli(), Tier: state.Tier},
-		EvaluatedThroughMS: state.EvaluatedThrough.UnixMilli(), SchemaVersion: 1,
+		EvaluatedThroughMS: state.EvaluatedThrough.UnixMilli(), SchemaVersion: 2,
 		ServerNowMS: save.CanonicalServerTime(now).UnixMilli(), Upgrades: upgrades,
 	}
 	encoded, err := json.Marshal(result)

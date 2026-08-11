@@ -14,6 +14,27 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 	factValue := &publicapi.Schema{Kind: publicapi.SchemaOneOf, Alternates: []*publicapi.Schema{
 		{Kind: publicapi.SchemaBoolean}, integer(-apiMaxExactInteger, apiMaxExactInteger), apiString(""),
 	}}
+	snapshotFields := func(version int, founderRevision bool) []publicapi.Field {
+		fields := []publicapi.Field{
+			apiField("constants_hash", apiString("sha256-prefixed")),
+			apiField("evaluated_through_ms", integer(1, apiMaxExactInteger)),
+			apiField("facts", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIFact")}),
+		}
+		if founderRevision {
+			fields = append(fields, apiField("founder_revision", integer(1, apiMaxExactInteger)))
+		}
+		return append(fields,
+			apiField("generators", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIGenerator")}),
+			apiField("manual_action", apiRef("GameUIManualAction")),
+			apiField("progress", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIProgress")}),
+			apiField("resources", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIResource")}),
+			apiField("revision", integer(1, apiMaxExactInteger)),
+			apiField("run", apiRef("GameUIRun")),
+			apiField("schema_version", integer(int64(version), int64(version))),
+			apiField("server_now_ms", integer(1, apiMaxExactInteger)),
+			apiField("upgrades", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIUpgrade")}),
+		)
+	}
 	return []publicapi.NamedSchema{
 		{Name: "GameUIFact", Schema: apiObject(
 			apiField("fact_id", apiString("mechanical-id")),
@@ -58,20 +79,8 @@ func gameUIAPISchemas() []publicapi.NamedSchema {
 			apiField("run_started_at_ms", integer(1, apiMaxExactInteger)),
 			apiField("tier", integer(0, 9)),
 		)},
-		{Name: "GameUISnapshot", Schema: apiObject(
-			apiField("constants_hash", apiString("sha256-prefixed")),
-			apiField("evaluated_through_ms", integer(1, apiMaxExactInteger)),
-			apiField("facts", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIFact")}),
-			apiField("generators", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIGenerator")}),
-			apiField("manual_action", apiRef("GameUIManualAction")),
-			apiField("progress", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIProgress")}),
-			apiField("resources", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIResource")}),
-			apiField("revision", integer(1, apiMaxExactInteger)),
-			apiField("run", apiRef("GameUIRun")),
-			apiField("schema_version", integer(1, 1)),
-			apiField("server_now_ms", integer(1, apiMaxExactInteger)),
-			apiField("upgrades", &publicapi.Schema{Kind: publicapi.SchemaArray, Items: apiRef("GameUIUpgrade")}),
-		)},
+		{Name: "GameUISnapshot", Schema: apiObject(snapshotFields(2, true)...)},
+		{Name: "GameUISnapshotV1", Schema: apiObject(snapshotFields(1, false)...)},
 		{Name: "GameUIUpgrade", Schema: apiObject(
 			apiField("cost_amount", apiString("canonical-decimal")),
 			apiField("cost_resource_id", apiString("mechanical-id")),

@@ -5,6 +5,7 @@ import { decodeGameUIEvent, decodeGameUISystemEvent } from "../src/game-ui/event
 import { GameUINavigation } from "../src/game-ui/navigation";
 import { GAME_UI_PERFORMANCE_BUDGET, validatePerformanceObservation } from "../src/game-ui/performance";
 import { defaultSurface, GAME_UI_SURFACES } from "../src/game-ui/surface-catalog";
+import { requirePresentationConstant } from "../src/game-ui/presentation";
 import { parseLocalTiming, priorPersonalBest, RTATimer, timingStorageKey, writeLocalRunTiming } from "../src/game-ui/timing";
 import { decodeTransportEnvelope } from "../src/transport";
 
@@ -12,18 +13,24 @@ const snapshot = {
   constants_hash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   evaluated_through_ms: 1_800_000_000_000,
   facts: [{ fact_id: "bootstrap.needed", value: false }, { fact_id: "gate.t2_to_t3", value: false }],
+  founder_revision: 1,
   generators: [{ generator_id: "generator.beige_tower", max_affordable: 2, next_cost: "1e1", next_cost_resource_id: "company.cash", owned: 1, provisioned: 0, rate_contribution: "1e0" }],
   manual_action: { action_id: "manual.click", bucket_cap_milli: 50_000, refill_milli_per_ms: 25, refilled_at_ms: 1_800_000_000_000, tokens_milli: 50_000 },
   progress: [{ current: "5e-1", stage_id: "progress.tier", target: "1e0" }],
   resources: [{ amount: "1e2", cap: { amount: "1e1000", reason_key: "resource.company_cash.cap.phase0" }, rate_per_second: "1e0", resource_id: "company.cash" }],
   revision: 1,
   run: { category: "any_percent", exit_count: 0, founder_id: "01985555-1111-7111-8111-111111111111", run_seq: 1, run_started_at_ms: 1_799_999_000_000, tier: 0 },
-  schema_version: 1,
+  schema_version: 2,
   server_now_ms: 1_800_000_000_000,
   upgrades: [],
 };
 
 describe("Game UI snapshot contract", () => {
+  it("requires the two ruled presentation constants without substitution", () => {
+    expect(requirePresentationConstant("constant.price_zero")).toBe("$0.00");
+    expect(requirePresentationConstant("constant.founder_fallback")).toBe("Founder");
+    expect(() => requirePresentationConstant("constant.missing")).toThrow(/missing presentation/);
+  });
   it("validates the exact sorted projection and feeds the existing shell snapshot", () => {
     const parsed = parseGameUISnapshot(snapshot);
     const shell = toShellSnapshot(parsed);
@@ -43,6 +50,14 @@ describe("Game UI snapshot contract", () => {
     expect(() => parseGameUISnapshot({ ...snapshot, facts: [...snapshot.facts].reverse() })).toThrow(/sorted/);
     expect(() => parseGameUISnapshot({ ...snapshot, save_state: {} })).toThrow(/exact/);
     expect(() => parseGameUISnapshot({ ...snapshot, resources: [{ ...snapshot.resources[0], amount: "1e1001" }] })).toThrow(/cap/);
+  });
+
+  it("accepts stored bootstrap schema v1 but requires the Founder coordinate in live schema v2", () => {
+    const { founder_revision: _founderRevision, ...legacy } = snapshot;
+    expect(parseGameUISnapshot({ ...legacy, schema_version: 1 })).not.toHaveProperty("founder_revision");
+    expect(() => parseGameUISnapshot({ ...legacy, schema_version: 2 })).toThrow(/exact/);
+    expect(() => parseGameUISnapshot({ ...snapshot, schema_version: 1 })).toThrow(/exact/);
+    expect(() => parseGameUISnapshot({ ...snapshot, founder_revision: 0 })).toThrow(/safe integer/);
   });
 });
 

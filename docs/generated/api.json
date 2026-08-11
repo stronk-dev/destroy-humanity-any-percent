@@ -106,7 +106,14 @@
             "$ref": "#/components/schemas/BootstrapAccount"
           },
           "game_ui_snapshot": {
-            "$ref": "#/components/schemas/GameUISnapshot"
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameUISnapshot"
+              },
+              {
+                "$ref": "#/components/schemas/GameUISnapshotV1"
+              }
+            ]
           },
           "session": {
             "$ref": "#/components/schemas/BootstrapSession"
@@ -365,6 +372,92 @@
         "type": "object"
       },
       "GameUISnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "constants_hash": {
+            "format": "sha256-prefixed",
+            "type": "string"
+          },
+          "evaluated_through_ms": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "facts": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIFact"
+            },
+            "type": "array"
+          },
+          "founder_revision": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "generators": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIGenerator"
+            },
+            "type": "array"
+          },
+          "manual_action": {
+            "$ref": "#/components/schemas/GameUIManualAction"
+          },
+          "progress": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIProgress"
+            },
+            "type": "array"
+          },
+          "resources": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIResource"
+            },
+            "type": "array"
+          },
+          "revision": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "run": {
+            "$ref": "#/components/schemas/GameUIRun"
+          },
+          "schema_version": {
+            "maximum": 2,
+            "minimum": 2,
+            "type": "integer"
+          },
+          "server_now_ms": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "upgrades": {
+            "items": {
+              "$ref": "#/components/schemas/GameUIUpgrade"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "constants_hash",
+          "evaluated_through_ms",
+          "facts",
+          "founder_revision",
+          "generators",
+          "manual_action",
+          "progress",
+          "resources",
+          "revision",
+          "run",
+          "schema_version",
+          "server_now_ms",
+          "upgrades"
+        ],
+        "type": "object"
+      },
+      "GameUISnapshotV1": {
         "additionalProperties": false,
         "properties": {
           "constants_hash": {

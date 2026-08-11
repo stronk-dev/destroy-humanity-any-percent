@@ -15,6 +15,7 @@ export default defineConfig({
   optimizeDeps: { include: ["svelte", "@antimatter-dimensions/notations"] },
   ssr: { noExternal: ["@antimatter-dimensions/notations"] },
   test: {
+    setupFiles: ["./test/browser-error-guard.ts"],
     api: { host: "127.0.0.1" },
     browser: {
       enabled: true,

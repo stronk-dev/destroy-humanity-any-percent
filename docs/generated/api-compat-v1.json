@@ -21,6 +21,22 @@
       ]
     },
     {
+      "id": "create_bootstrap",
+      "method": "POST",
+      "path": "/api/v1/bootstrap",
+      "surface": "private_v1",
+      "auth": "none",
+      "request": "BootstrapRequest",
+      "parameters": [],
+      "responses": [
+        "201:schema:application/json:BootstrapResponse",
+        "400:schema:application/json:APIError",
+        "409:schema:application/json:APIError",
+        "429:schema:application/json:APIError",
+        "500:schema:application/json:APIError"
+      ]
+    },
+    {
       "id": "create_minigame_session",
       "method": "POST",
       "path": "/api/v1/minigames/{minigame_id}/sessions",
@@ -200,6 +216,8 @@
             "access_token",
             "account",
             "body",
+            "bootstrap",
+            "bootstrap_expired",
             "duplicate_card",
             "exclusive_activity",
             "fiscal_unlock_required",
@@ -236,6 +254,84 @@
       "required": [
         "category",
         "detail"
+      ],
+      "type": "object"
+    },
+    "BootstrapAccount": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "format": "uuid-v7",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time-ms",
+          "type": "string"
+        },
+        "recovery_code": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "account_id",
+        "created_at",
+        "recovery_code"
+      ],
+      "type": "object"
+    },
+    "BootstrapRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "idempotency_key": {
+          "format": "opaque-id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "idempotency_key"
+      ],
+      "type": "object"
+    },
+    "BootstrapResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "account": {
+          "$ref": "#/components/schemas/BootstrapAccount"
+        },
+        "game_ui_snapshot": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/GameUISnapshot"
+            },
+            {
+              "$ref": "#/components/schemas/GameUISnapshotV1"
+            }
+          ]
+        },
+        "session": {
+          "$ref": "#/components/schemas/BootstrapSession"
+        }
+      },
+      "required": [
+        "account",
+        "game_ui_snapshot",
+        "session"
+      ],
+      "type": "object"
+    },
+    "BootstrapSession": {
+      "additionalProperties": false,
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "refresh_token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "access_token",
+        "refresh_token"
       ],
       "type": "object"
     },
@@ -469,6 +565,92 @@
       "type": "object"
     },
     "GameUISnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "constants_hash": {
+          "format": "sha256-prefixed",
+          "type": "string"
+        },
+        "evaluated_through_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "facts": {
+          "items": {
+            "$ref": "#/components/schemas/GameUIFact"
+          },
+          "type": "array"
+        },
+        "founder_revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "generators": {
+          "items": {
+            "$ref": "#/components/schemas/GameUIGenerator"
+          },
+          "type": "array"
+        },
+        "manual_action": {
+          "$ref": "#/components/schemas/GameUIManualAction"
+        },
+        "progress": {
+          "items": {
+            "$ref": "#/components/schemas/GameUIProgress"
+          },
+          "type": "array"
+        },
+        "resources": {
+          "items": {
+            "$ref": "#/components/schemas/GameUIResource"
+          },
+          "type": "array"
+        },
+        "revision": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "run": {
+          "$ref": "#/components/schemas/GameUIRun"
+        },
+        "schema_version": {
+          "maximum": 2,
+          "minimum": 2,
+          "type": "integer"
+        },
+        "server_now_ms": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "upgrades": {
+          "items": {
+            "$ref": "#/components/schemas/GameUIUpgrade"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "constants_hash",
+        "evaluated_through_ms",
+        "facts",
+        "founder_revision",
+        "generators",
+        "manual_action",
+        "progress",
+        "resources",
+        "revision",
+        "run",
+        "schema_version",
+        "server_now_ms",
+        "upgrades"
+      ],
+      "type": "object"
+    },
+    "GameUISnapshotV1": {
       "additionalProperties": false,
       "properties": {
         "constants_hash": {

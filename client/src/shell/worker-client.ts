@@ -8,6 +8,10 @@ export class PredictionWorkerClient {
   constructor(policy: ClientShellPolicy, snapshot: AuthoritativeSnapshot, consume: (output: WorkerOutput) => void) {
     this.#worker = new Worker(new URL("./prediction.worker.ts", import.meta.url), { type: "module" });
     this.#worker.onmessage = (event: MessageEvent<WorkerOutput>) => consume(event.data);
+    this.#worker.onerror = (event) => {
+      const error = event.error instanceof Error ? event.error : new Error(event.message || "prediction worker failed");
+      queueMicrotask(() => { throw error; });
+    };
     this.#worker.postMessage({ kind: "initialize", policy, snapshot } satisfies WorkerCommand);
   }
   authoritative(snapshot: AuthoritativeSnapshot): void { if (!this.#disposed) this.#worker.postMessage({ kind: "authoritative_snapshot", snapshot } satisfies WorkerCommand); }

@@ -115,6 +115,11 @@ verify-server-ci` runs the complete server gate on linux/amd64 against the repos
 test service. Use these targets when host-platform success could mask scheduling, architecture, or
 cold-run behavior.
 
+`make test-game-ui-composed` starts its isolated repository Postgres service, the real composed gameserver,
+and Vite, then drives Chromium through anonymous bootstrap, the authoritative UI snapshot, and the
+actual Centrifuge WebSocket subscription. Its visitor-counter assertion is the socket-handshake
+proof; no browser runtime or server transport is stubbed.
+
 Go commands invoked by the Makefile use the ignored repository-local `.cache/go-build` directory.
 Focused tests can run without writing to a user-level cache or requiring sandbox permission:
 

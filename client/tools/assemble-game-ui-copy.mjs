@@ -10,6 +10,7 @@ const candidatePath = path.join(repositoryRoot, "copy/catalog/game-ui-candidate.
 const phase0Path = path.join(repositoryRoot, "copy/catalog/phase0.json");
 const presentationV1Path = path.join(repositoryRoot, "balance/testdata/t0-t1/presentation-v1.json");
 const presentationV2Path = path.join(repositoryRoot, "balance/testdata/t0-t1/presentation-v2.json");
+const presentationV3Path = path.join(repositoryRoot, "balance/testdata/t0-t1/presentation-v3.json");
 const presentationClientPath = path.join(repositoryRoot, "client/src/game-ui/presentation.generated.json");
 const eventCopyV1Path = path.join(repositoryRoot, "balance/testdata/t0-t1/event-copy-v1.json");
 const eventCopyV2Path = path.join(repositoryRoot, "balance/testdata/t0-t1/event-copy-v2.json");
@@ -42,6 +43,13 @@ const additions = Object.freeze([
   ["gate.t0_to_t1.title", "Garage", "diegetic"],
 ]);
 
+const termAdditions = Object.freeze([
+  { key: "terms.clout_reach_note.text", text: "Clout carries. The personal brand survives the company.", params: [], era_variants: null, provenance: [], tone: "diegetic" },
+  { key: "terms.network_slot_unlock.frame", text: "Network: {title}", params: [{ name: "title", type: "string" }], era_variants: null, provenance: [], tone: "diegetic" },
+  { key: "terms.reputation_delta.frame", text: "Reputation +{delta}", params: [{ name: "delta", type: "canonical_decimal" }], era_variants: null, provenance: [], tone: "diegetic" },
+  { key: "terms.route_knowledge.frame", text: "Route Knowledge +{delta}", params: [{ name: "delta", type: "integer" }], era_variants: null, provenance: [], tone: "diegetic" },
+]);
+
 const paramTypes = Object.freeze({
   ago: "string",
   amount: "string",
@@ -52,6 +60,7 @@ const paramTypes = Object.freeze({
   cost: "canonical_decimal",
   count: "integer",
   current: "integer",
+  delta: "canonical_decimal",
   day: "integer",
   exit_type: "string",
   expires_at_ms: "integer",
@@ -66,6 +75,7 @@ const paramTypes = Object.freeze({
   rta: "string",
   run_seq: "integer",
   tier: "integer",
+  title: "string",
   upgrade_id: "string",
 });
 
@@ -174,8 +184,9 @@ if (omitted.size !== 2 || !omitted.has(cashReplacement.key) || !omitted.has(exis
 const entries = ruled
   .filter((row) => !omitted.has(row.key))
   .concat(additions.map(([key, text, tone]) => ({ key, text, params: [], era_variants: null, provenance: [], tone })))
+  .concat(termAdditions)
   .sort((left, right) => Buffer.from(left.key).compare(Buffer.from(right.key)));
-if (entries.length !== 133 || new Set(entries.map((row) => row.key)).size !== 133) fail(`expected 133 new unique rows; found ${entries.length}`);
+if (entries.length !== 137 || new Set(entries.map((row) => row.key)).size !== 137) fail(`expected 137 new unique rows; found ${entries.length}`);
 
 for (const entry of entries) {
   if (entry.text_kind === "longform") validateLongformCopyText(entry.text, entry.key);
@@ -203,6 +214,9 @@ if (presentation.schema_version !== 1) fail("presentation v1 identity drifted");
 const presentationV2 = presentationV1
   .replace('"schema_version": 1', '"schema_version": 2')
   .replace(/\n\}\n$/u, `,\n  "gates": [\n    { "id": "gate.t0_to_t1", "title_key": "gate.t0_to_t1.title" }\n  ],\n  "exit_types": [\n    { "id": "acquihire", "title_key": "exit_type.acquihire.title" },\n    { "id": "acquisition", "title_key": "exit_type.acquisition.title" },\n    { "id": "collapse", "title_key": "exit_type.collapse.title" },\n    { "id": "ipo", "title_key": "exit_type.ipo.title" },\n    { "id": "scripted_first", "title_key": "exit_type.scripted_first.title" }\n  ]\n}\n`);
+const presentationV3 = presentationV2
+  .replace('"schema_version": 2', '"schema_version": 3')
+  .replace(/\n\}\n$/u, `,\n  "constants": [\n    { "id": "constant.founder_fallback", "value": "Founder" },\n    { "id": "constant.price_zero", "value": "$0.00" }\n  ],\n  "network_slots": []\n}\n`);
 
 const eventCopyV1 = readFileSync(eventCopyV1Path, "utf8");
 const eventCopy = JSON.parse(eventCopyV1);
@@ -215,7 +229,8 @@ const eventCopyV2 = eventCopyV1.replace(
 const outputs = new Map([
   [candidatePath, bytes({ schema_version: 1, entries })],
   [presentationV2Path, presentationV2],
-  [presentationClientPath, presentationV2],
+  [presentationV3Path, presentationV3],
+  [presentationClientPath, presentationV3],
   [eventCopyV2Path, eventCopyV2],
 ]);
 for (const [filename, value] of outputs) output(filename, value);

@@ -1,9 +1,10 @@
 <script lang="ts">
   import { t, type CopyEra } from "../copy";
-  import type { RunEndedEvent } from "./events";
+  import type { RunEndSurfaceProps } from "./events";
   import { GAME_UI_PRESENTATION, requirePresentation } from "./presentation";
+  import { renderPrestigeTermRows } from "./prestige-terms";
 
-  let { ended }: { ended: RunEndedEvent } = $props();
+  let { ended }: RunEndSurfaceProps = $props();
   const era = $derived<CopyEra>(ended.payload.tier === 0 ? "era_1995" : ended.payload.tier === 1 ? "era_2000" : (() => { throw new RangeError(`tier ${ended.payload.tier} has no shipped UI era`); })());
 
   function duration(ms: number): string {
@@ -29,6 +30,7 @@
     <p>{t("screen.run_end.founder_note", {}, era)}</p>
   {/if}
   <h2>{t("screen.run_end.delta_heading", { run_seq: ended.payload.run_id.run_seq + 1 }, era)}</h2>
+  {#each renderPrestigeTermRows(ended.payload.payout, era) as row}<p>{row}</p>{/each}
 </section>
 
 <style>

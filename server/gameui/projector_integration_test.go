@@ -108,8 +108,9 @@ func TestGameUISnapshotProjectsStoredSchemaV4CompanyV18RatesIntegration(t *testi
 		ManualTokenRefilledAt: now, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{},
 		LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{}, RegionTraits: map[string]bool{}, HintsUnlocked: map[string]bool{},
 		CompactSamples: []save.CompactSample{}, LifetimeValue: decimal.Zero, OfflineSpans: []save.OfflineSpan{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
-	if _, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: ownerID, Scope: economy.ScopeFounder},
-		hash, founder, save.WriteContext{Cause: "game-ui-v18-integration-founder"}); err != nil {
+	founderRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: ownerID, Scope: economy.ScopeFounder},
+		hash, founder, save.WriteContext{Cause: "game-ui-v18-integration-founder"})
+	if err != nil {
 		t.Fatal(err)
 	}
 	projector, err := New(store, catalogs, nil)
@@ -121,7 +122,9 @@ func TestGameUISnapshotProjectsStoredSchemaV4CompanyV18RatesIntegration(t *testi
 		t.Fatal(err)
 	}
 	var projected struct {
-		Generators []struct {
+		FounderRevision int64 `json:"founder_revision"`
+		SchemaVersion   int   `json:"schema_version"`
+		Generators      []struct {
 			GeneratorID      string `json:"generator_id"`
 			RateContribution string `json:"rate_contribution"`
 		} `json:"generators"`
@@ -133,7 +136,8 @@ func TestGameUISnapshotProjectsStoredSchemaV4CompanyV18RatesIntegration(t *testi
 	if json.Unmarshal(encoded, &projected) != nil {
 		t.Fatal("snapshot JSON")
 	}
-	if len(projected.Generators) != 9 || projected.Generators[1].GeneratorID != "generator.beige_tower" ||
+	if projected.SchemaVersion != 2 || projected.FounderRevision != founderRevision.Number ||
+		len(projected.Generators) != 9 || projected.Generators[1].GeneratorID != "generator.beige_tower" ||
 		projected.Generators[1].RateContribution != "4.018e2" || len(projected.Resources) != 2 ||
 		projected.Resources[0].ResourceID != "company.cash" || projected.Resources[0].RatePerSecond != "4.018e2" {
 		t.Fatalf("v4/v18 projection=%+v", projected)

@@ -13,10 +13,10 @@ RFC: `rfc/game-ui-screens.md`
   schema-v4/Company-v18 rejection regression.
 - [x] Implement GU-C10's idempotent bootstrap coordinator through the API Foundation lane.
 - [x] Implement GU-C11's additive `exit_offer_resolved` event in both runtimes.
-- [ ] Build Desk, Vision Slide, run-end, Offer Sheet, and Settings from the ruled copy and
+- [x] Build Desk, Vision Slide, run-end, Offer Sheet, and Settings from the ruled copy and
   generated wire contracts.
-- [ ] Rule and close GU-C23 (Founder revision for offer acceptance) and GU-C24 (complete payout
-  term/delta presentation); the implemented surfaces fail closed on those two arms.
+- [x] Rule and close GU-C23 (Founder revision for offer acceptance) and GU-C24 (complete payout
+  term/delta presentation), including legacy bootstrap-receipt replay.
 - [ ] Pass the composed first-hour human path, renderer-substitution, accessibility, lifecycle,
   and CI performance gates.
 - [ ] Hand the full range to designated review; archive only after approval.

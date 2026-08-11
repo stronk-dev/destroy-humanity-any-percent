@@ -1,6 +1,6 @@
-import type { BootstrapResponse, GameUISnapshot } from "../api/generated/types";
-import { decodeTransportEnvelope } from "../transport";
-import { parseGameUISnapshot } from "./contracts";
+import type { BootstrapResponse } from "../api/generated/types";
+import { decodeTransportEnvelope, decodeWorldSnapshot } from "../transport";
+import { parseGameUISnapshot, type ParsedGameUISnapshot } from "./contracts";
 import { decodeGameUIEvent, decodeGameUISystemEvent, type GameUILifecycleEvent, type GameUISystemEvent } from "./events";
 
 export interface GameUICredentials {
@@ -19,8 +19,8 @@ export type GameUIRuntimeMessage =
 
 export interface GameUIRuntime {
   hasCredentials(): boolean;
-  bootstrap(): Promise<GameUISnapshot>;
-  snapshot(): Promise<GameUISnapshot>;
+  bootstrap(): Promise<ParsedGameUISnapshot>;
+  snapshot(): Promise<ParsedGameUISnapshot>;
   intent(body: Readonly<Record<string, unknown>>): Promise<void>;
   subscribe(founderID: string, listener: (message: GameUIRuntimeMessage) => void): () => void;
 }
@@ -80,7 +80,9 @@ export function createBrowserGameUIRuntime(
       return parsed;
     },
     async snapshot() {
-      return parseGameUISnapshot(await responseJSON(await fetcher("/api/v1/founder/state", { headers: authHeaders() })));
+      const parsed = parseGameUISnapshot(await responseJSON(await fetcher("/api/v1/founder/state", { headers: authHeaders() })));
+      if (parsed.schema_version !== 2 || !("founder_revision" in parsed)) throw new SyntaxError("live Game UI snapshot must use schema v2");
+      return parsed;
     },
     async intent(body) {
       await responseJSON(await fetcher("/api/v1/intents", { method: "POST", headers: authHeaders(), body: JSON.stringify(body) }));
@@ -117,6 +119,11 @@ export function createBrowserGameUIRuntime(
             }
             if (envelope.kind === "presence" && envelope.ch === "world") {
               listener({ kind: "presence", count: envelope.payload.count as number });
+              continue;
+            }
+            if (envelope.kind === "snapshot" && envelope.ch === "world") {
+              const world = decodeWorldSnapshot(envelope.payload.state);
+              listener({ kind: "presence", count: world.population.online });
               continue;
             }
             if (envelope.kind === "system") {
