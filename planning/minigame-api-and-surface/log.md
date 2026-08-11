@@ -333,3 +333,56 @@ defect (internal ApplyLogged kind leaked into the public receipt's action field 
 contract's closed {"cancel","resolve"}); replay identity untouched; probe-proven discriminating;
 kernel 0.3.88 honest. **B-F1 (REQUIRED before MA archival): the MA-C1 owner-routing record — filed
 same day in planning/archive/soul-recovery-activities/log.md (see entry there); CLOSED.**
+
+## 2026-08-11 — designated cross-party verdict: {02d00d7, b6a3d2c} — BOTH APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**The defect anatomy, and a correction to the handoff's framing.** The MA-C11 coordinator seam
+minted a distinct server-authored Founder intent ID for `start_minigame_session` (emission side,
+`founder_replay.go:67` decorating the lazy Fiscal sweep with `wire.Command.IntentID`) — but the
+VALIDATION side passed `request.SessionID`, while `minigame_start.go:49` explicitly enforces that
+those two differ. The halves of one seam were guaranteed to disagree whenever a sweep event
+existed at all. **It was NOT genuinely intermittent:** `FiscalPeriodOpenedWallMS` only advances
+when a sweep or harvest COMMITS, and with the shipped `auto_ms = 300` any founder idle 300 ms
+emits the event and 500s — every rollback leaves the condition intact and widening. **Deployed,
+this would have been a hard, reproducible outage of the entire minigame entry point**, not a
+flake; the "intermittent" reading is an artifact of the test fixture resetting the clock
+immediately before the call. Realized exposure: zero (unpushed).
+**Blast radius: fail-closed, verified.** The error returns under `defer tx.Rollback()` before
+every durable write (revisions, events, founder log, retention, commit); no row, receipt, or
+replay history is created, and the idempotency key is not consumed — a replay cannot diverge
+because the history never exists.
+**Probes:** reverting the fix fails 5/5 deterministically with the exact error; the PRE-FIX test
+against PRE-FIX code passes 20/20 (the old coverage was genuinely blind); fixture offsets of
+-290 ms and -200 ms bracket the 300 ms boundary empirically (10/10 fail vs 0/30 fail). The new
+regression test is discriminating, not decorative. Stress at -count=20: stable. No sibling
+defect (every other `validateIntentDecision` call site checked); no client parity divergence (TS
+already used the command intent ID). Nothing rode along; the new Make selectors leave every gate
+default byte-identical (`make -n` expansion unchanged; `verify` untouched). Kernel 0.3.93 is a
+VOLUNTARY honest over-signal (the touched paths are unwatched — see F1). All gates green.
+**This reviewer's own lane missed it:** the 2026-08-08 MA verdict blessed the distinct-intent-ID
+seam after probing the emission half and never traced its other consumer forty lines below.
+Recorded as the lesson: when a review approves a seam, it must enumerate BOTH sides' consumers.
+
+**02d00d7 APPROVED** — CI-only, no product code, sound and scoped, with an honest self-correction
+of its own earlier "exact reproduction" claim.
+
+**Findings (none blocking):**
+- **F1 (MEDIUM — action before MA archival): `server/save/minigame_start.go` and
+  `minigame_resolution.go` are still kernel-UNWATCHED** (`server/save/` is enumerated
+  file-by-file). The 2026-08-08 F3 flagged this as theoretical; it is not any more — this file
+  just shipped a semantic defect, and the next silent change to either coordinator carries no
+  guard. Add both paths to `kernel/affecting-paths.json`.
+- **F2 (LOW-MED): the `-run Integration` selector hole is systemic**, closed only for this file.
+  Four DB-gated tests still fall outside `make test-save-integration` (active-play buff claim,
+  care-action founder replay, the Exit atomicity/fault/replay test, minigame PlayWithReceipt) —
+  all verified green against Postgres, so it's a selector gap not a latent red, but rename them
+  into the gate.
+- **F3 (LOW): `.pnpm-store/v11/index.db` and its symlink remain TRACKED** despite the gitignore
+  entry (gitignore does not untrack); the index is still being written today. `git rm --cached`.
+- **F4 (LOW): the repaired browser job keeps `timeout-minutes: 5`** while gaining a three-engine
+  Playwright install — raise to 10 (the composed job's budget, for one engine).
+
+**Range-union: {02d00d7, b6a3d2c} consumed. Every implementation commit from 8cfa00b through
+b6a3d2c is now verdict-covered with no gaps**, including the previously carved-out 02d00d7.
