@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "corrections": [
+    {
+      "offending_commit": "d05dc13917e1c85f38694b6c82596d3789db0a00",
+      "kind": "mixed_artifact_commit",
+      "reason": "The published T01-C12/C16 checkpoint mixed a reproducible relevance golden with its implementation and record; published history cannot be rewritten, so this entry records the exact packaging-only exception.",
+      "review_log": "planning/t0-t1-content/log.md"
+    }
+  ]
+}
