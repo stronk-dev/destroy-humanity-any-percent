@@ -299,3 +299,25 @@ ratified scenario bytes, not a weakened assertion.
   identifies that exact hash as published `main`, falsifying the ruling's unpushed/no-remote-ref
   premise. The append-only correction range `{759e369, 0151ddc, 3a3f4cd}` is the non-destructive
   repair and passes `make verify-server`, cold Linux `make test-go-ci`, and full `make verify`.
+
+## 2026-08-12 — Codex cross-party review of `ff44744`: NOT APPROVED
+
+- **Review by:** Codex (cross-party review of the Claude-co-authored ruling commit). **Recorded
+  by:** Codex. Reviewed commit: `ff44744`.
+- **F1 — HIGH, protocol authorization rests on a false premise.** `d05dc13` is the head of
+  `origin/main` and GitHub Actions run 31538481943 identifies it as the published revision. The
+  standing rewrite carve-out requires the affected commit to be unpushed and on no remote ref.
+  Therefore the rewrite authorization in `ff44744` is void and must be reconciled to the
+  append-only correction `{759e369, 0151ddc, 3a3f4cd}`; executing it would rewrite published
+  history contrary to `AGENTS.md`.
+- **F2 — MEDIUM, the normative body still contradicts the corrected ruling.** The earlier
+  T01-C12 block remains labelled `RULED` and still requires an `EXACT STATIC ceiling` that rejects
+  before dispatch. T01-C17 calls that ruling withdrawn, while the implemented corrected T01-C12
+  contract uses the static estimate only as a runaway-configuration guard and enforces work with
+  the runtime counter. Under the same-edit body-reconciliation law, the ruling author must replace
+  the stale normative paragraph; the historical blocker text may remain.
+- T01-C17's child-selection shape is otherwise executable and is implemented in `{dc6c859,
+  a48686d}`. Its own required fallback behaved correctly: measured minimum `beam_children:1`
+  still exhausts 10,000,000 transitions and the greedy reference misses the milestone inside 128
+  decisions, so the oracle/hash cannot be claimed and the contract returns to the owner instead of
+  weakening the 5% property or inventing a budget.
