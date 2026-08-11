@@ -3,10 +3,14 @@ services:
     image: mcr.microsoft.com/playwright:v1.62.0-noble
     ipc: host
     working_dir: /workspace
+    environment:
+      CI: "true"
     volumes:
       - .:/workspace
-      - browser-node-modules:/workspace/client/node_modules
-      - browser-pnpm-store:/workspace/.pnpm-store
+      # Anonymous volumes make every invocation a cold dependency install and
+      # keep Linux pnpm metadata out of the host worktree.
+      - /workspace/client/node_modules
+      - /workspace/.pnpm-store
     command:
       - bash
       - -lc
@@ -16,7 +20,3 @@ services:
         pnpm --dir client install --frozen-lockfile &&
         cd client &&
         node_modules/.bin/vitest run --config vitest.browser.config.ts
-
-volumes:
-  browser-node-modules:
-  browser-pnpm-store:

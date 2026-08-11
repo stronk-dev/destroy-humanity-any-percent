@@ -74,9 +74,6 @@ jobs:
   browser:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    container:
-      image: mcr.microsoft.com/playwright:v1.62.0-noble
-      options: --ipc=host
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -87,8 +84,8 @@ jobs:
           node-version: 24
           cache: pnpm
           cache-dependency-path: client/pnpm-lock.yaml
-      - run: apt-get update && apt-get install -y --no-install-recommends make
       - run: pnpm --dir client install --frozen-lockfile
+      - run: pnpm --dir client exec playwright install --with-deps chromium firefox webkit
       - run: make test-browser
 
   game-ui-composed:

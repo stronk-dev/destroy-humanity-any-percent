@@ -82,3 +82,19 @@ regression test discriminates only on linux/amd64 (by nature; the CI gate carrie
   with real Postgres and completed green. `make test-browser-ci` similarly owns the exact pinned
   Playwright-image reproduction and completed all 19,972 browser tests green. Both normal targets
   are documented in `docs/ci.md`; the existing host targets remain unchanged.
+
+## 2026-08-11 — Actions run 31504640635 browser environment repaired
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is an implementation record pending the
+  ordinary designated review; it is not an approval.
+- Public Actions metadata isolates the new failure to the `browser` job at `ebf3ddf`: dependency
+  installation succeeded, but `make test-browser` exited 2 after roughly two seconds. The server,
+  client, schema, and composed-browser jobs all passed; notably, the composed browser job already
+  used the ordinary Ubuntu runner plus an explicit Playwright install.
+- The full browser suite was reproduced with `CI=true`, fresh dependencies, and the pinned
+  `mcr.microsoft.com/playwright:v1.62.0-noble` image. A clean rerun completed all 19,993 assertions
+  with two declared skips, so no product assertion or browser implementation was weakened.
+- The Actions browser job now uses the same ordinary-runner setup that passed the composed-browser
+  job and installs all three pinned browser engines explicitly. The local `make test-browser-ci`
+  path now sets `CI=true` and uses fresh anonymous dependency volumes, eliminating the warm named
+  volumes that made its prior “exact” claim inaccurate and polluted the tracked pnpm-store index.

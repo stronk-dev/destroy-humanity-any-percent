@@ -36,8 +36,9 @@ target exists so automation always terminates.
   build cache is not.
 - Node is version 24. pnpm reads the exact version from `client/package.json`, installs from the
   frozen lockfile, and caches only the pnpm dependency store.
-- The browser job runs inside `mcr.microsoft.com/playwright:v1.62.0-noble`, exactly matching the
-  `playwright` package. Browser executables come from the image and are not cached separately.
+- The browser job runs on the ordinary Ubuntu runner and installs Chromium, Firefox, and WebKit
+  explicitly from the pinned Playwright package. This is the same runner pattern used by the
+  composed browser job; browser executables are not cached separately.
 - Workflow actions use supported major release tags. Updating Playwright requires changing the
   package, lockfile, and container tag together.
 
@@ -109,11 +110,12 @@ enforced. The real-time 4× CPU / dropped-frame profile remains the manual relea
 in the Game UI docs. The same deterministic test remains part of ordinary `make test-browser`;
 the focused target exists for normal iteration, not as a separate claim.
 
-`make test-browser-ci` runs the ordinary browser target in the exact pinned Linux Playwright image
-used by Actions, with isolated Linux `node_modules` and pnpm-store volumes. `make
+`make test-browser-ci` runs the ordinary browser target with `CI=true` in the pinned Linux
+Playwright image, using fresh anonymous `node_modules` and pnpm-store volumes on every invocation.
+Actions installs the same pinned browser versions explicitly on its ordinary Ubuntu runner. `make
 verify-server-ci` runs the complete server gate on linux/amd64 against the repository's Postgres
-test service. Use these targets when host-platform success could mask scheduling, architecture, or
-cold-run behavior.
+test service. Use these targets when host-platform success could mask scheduling, architecture,
+or cold-run behavior.
 
 `make test-game-ui-composed` starts its isolated repository Postgres service, the real composed gameserver,
 and Vite, then drives Chromium through anonymous bootstrap, an authenticated live
