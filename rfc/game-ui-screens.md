@@ -548,3 +548,32 @@ must conflict. Do not keep a nominal error category no legal request pair can re
   provenance-extract commissions (authored in the ruling); param types; presentation v2 with the
   five exit titles; the complete bootstrap security contract (entropy-bound keys, AE receipts,
   one-transaction coordinator, tombstoned expiry, no unreachable arms).
+
+## Owner rulings on GU-C23–GU-C24 (2026-08-11)
+
+- **GU-C23 — accepted as proposed, with the receipt-replay clause the GU-C10 forward-note
+  demands:** `game_ui_snapshot.v2` adds one exact positive `founder_revision`, resolved
+  transactionally server-side for bootstrap and ordinary sync; the client resamples per snapshot
+  and advances it ONLY from decoded Founder-scoped event coordinates; offer acceptance submits
+  that exact coordinate; no second authority, no new channel. **The widening MUST NOT break
+  stored bootstrap receipts:** replay validates a stored receipt against the snapshot schema
+  version it was MINTED under (a v1 receipt with no founder_revision is a legal replay; the
+  client's existing fail-closed accept-disable handles the absence). This closes the recorded
+  "old live receipts become 500s" hazard at exactly the move it predicted.
+- **GU-C24 — RULED; the four term-row texts are AUTHORED here** (shared by Offer Sheet and
+  run-end; byte-sorted; the decoded terms object stays the sole data source):
+  - `terms.clout_reach_note.text` — "Clout carries. The personal brand survives the company." —
+    tone: diegetic (the design/02 satire line in its short form).
+  - `terms.network_slot_unlock.frame` — "Network: {title}" — params: title string (the title
+    resolves through the slot presentation binding).
+  - `terms.reputation_delta.frame` — "Reputation +{delta}" — params: delta canonical_decimal.
+  - `terms.route_knowledge.frame` — "Route Knowledge +{delta}" — params: delta integer.
+  **Slot presentation bindings:** the family is RULED (one row per shipped slot/carried-ref ID,
+  mechanical-ID-keyed, the exit-type precedent); Codex enumerates the shipped slot IDs in the
+  assembly and the titles are authored in the follow-up disposition — no raw ID renders
+  meanwhile (the frame falls back to withholding the row, never to the ID).
+
+## Changelog (C23–C24 round)
+
+- 2026-08-11: GU-C23 accepted (v2 snapshot + the receipt schema-version replay clause); GU-C24
+  ruled with the four term-row texts authored and the slot-binding family established.
