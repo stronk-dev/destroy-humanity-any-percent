@@ -555,3 +555,71 @@ missing constant is a thrown error (the requirePresentation pattern), never a si
 - **Still open by design:** the exact live-content T0→T2 AC1 path remains epoch-7-mint-gated, the
   three new content hashes above require owner ratification, and this span requires its designated
   cross-party pass. Nothing here self-authorizes archival or deployment.
+
+## 2026-08-11 — designated cross-party verdict: screens remediation 85c0578..6d50df2 — MIXED (one REJECTION)
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**Per-commit:** {61da160, 6ee8da1, 2b87e24, f546271} APPROVED (the mid-review CI batch — the
+Firefox repair keeps the discriminating observable, proven by the F2 probe); **{e780059}
+APPROVED WITH FINDINGS**; **{26f9a0d} REJECTED (H1)**; {6d50df2} APPROVED WITH FINDINGS.
+**{c0021e7, ae6c8c5} are CLAUDE-AUTHORED and are NOT approved by this verdict** — the reviewer
+correctly refused to designate-review its own side; they need Codex's cross-party pass (or an
+explicit owner waiver) before any archival cites this range as wholly covered.
+
+**Closures verified by probe:** F1 — the constants arm fails CLOSED (removing a constant throws;
+six rows now render "$0.00" and "Thank you, Founder!!" in a real browser). F2 — CLOSED: the
+error guard makes the prior review's exact probe RED where it exited 0 before. F4 — CLOSED
+(@ts-expect-error genuinely fails typecheck when widened). **GU-C23 sound** — server-resolved
+both paths, scope-validated advancement, CAS-checked acceptance, and **the ruled receipt clause
+verified against real Postgres** (a v1-MINTED receipt replays legally; deleting the V1 alternate
+turns the pin test red — the arm is load-bearing). GU-C24 texts byte-exact and rendering.
+**F3 partially true:** the composed Chromium→Vite→gameserver→Postgres→WebSocket path is
+genuinely composed (nothing stubbed; breaking the subscribe channel fails it) and proves
+bootstrap + the real Centrifuge handshake + the visitor counter — but breaking
+`/api/v1/founder/state` still PASSES, so the live v2 sync (the GU-C23 core) is uncovered.
+
+**BLOCKING:**
+- **H1 — {26f9a0d} REJECTED: it regresses the composed gate to exit 2** (`kill ESRCH` in its own
+  cleanup: a signal-killed child leaves exitCode null, so escalation always fires at a dead
+  group and only EPERM is tolerated). The handoff claims exit 0; on the reviewing platform it is
+  red. Fix: accept `exitCode !== null || signalCode !== null` and tolerate ESRCH beside EPERM.
+- **H2 — the API compatibility pin was silently re-baselined** (+182 lines; restoring the
+  pre-commit pin makes gen-api fail — the guard WOULD have flagged the widening). The widening is
+  owner-ruled; the re-baseline is nowhere in the RFC, log, or handoff. **RULED below.**
+- **M1 — the ruled payout terms render the CANONICAL WIRE ENCODING to players**
+  ("Reputation +1e0", "Reputation +2e0"), and the shipped assertion `toContain("Reputation +1")`
+  passes on the defect — the exact non-discriminating class F2 named. **RULED below.**
+
+**Non-blocking, routed:** M2 — the F3 overstatement persists in docs/ci.md, docs/game-ui.md and
+the handoff; correct all three or extend the script by one `/founder/state` round trip (preferred
+— it closes M2 and the F3 gap together). M3 — the composed test is in NO CI job (with H1 that
+means the headline proof is red and unwatched); add it to a CI job. M4 — GU-C24's fail-closed
+withhold arm has zero coverage (all fixtures ship empty slot lists); add the negative test.
+L1–L6 recorded: the `ago(0)` save-status, the attribute-value lint hole, **F5/F6 dropped from the
+handoff ledger entirely (carried findings must stay visible)**, `founderRevision` assigned rather
+than max-advanced, the discarded clout-note ID (a second value would silently render the first
+note's text — apply the slot arm's withholding discipline), and the dead paramTypes config.
+
+**Range-union: the Codex-authored implementation span 85c0578..6d50df2 is CLOSED** (seven
+commits) — with the two Claude-side commits above owed to Codex's lane. **NOT archival-eligible.**
+
+## 2026-08-11 — OWNER RULINGS closing M1 and H2
+
+- **M1 — RULED: player-visible deltas are FORMATTED, never canonical wire.** GU-C24's
+  `reputation_delta.delta` is RETYPED `canonical_decimal → string`, rendered through
+  `formatAmount` like every other player-visible number (the GU-C15 law: canonical_decimal is for
+  raw values, already-formatted display values are strings — my GU-C24 text ruling mis-typed it,
+  and literal compliance over a DESIGN-GAP escalation is the wrong instinct: escalate next time).
+  `route_knowledge.delta` stays integer. **The assertions must discriminate** — assert the exact
+  rendered string (`"Reputation +1"`), never `toContain` of a prefix that a defect satisfies.
+  This re-mints the copy candidate hash; ratification waits for it.
+- **H2 — RULED: record it, and codify the convention that made it invisible.** The re-baseline
+  stands (the widening is owner-ruled and there are no external consumers), but it must be
+  RECORDED — a planning entry naming the widening, citing GU-C23 as its authorization, and
+  stating that the pin was regenerated. **The naming convention is hereby CURRENT+LEGACY:** the
+  unversioned schema name always denotes the CURRENT shape and legacy shapes take `…V<n>` names
+  (which is what shipped, and which the bootstrap receipt replay depends on). Any future
+  re-baseline of `api-compat-v1.json` must cite its authorizing ruling in the same commit
+  message and planning entry; an unrecorded re-baseline is a review finding of the same severity
+  as an unreviewed archive.
