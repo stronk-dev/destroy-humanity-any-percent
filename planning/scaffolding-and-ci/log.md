@@ -98,3 +98,25 @@ regression test discriminates only on linux/amd64 (by nature; the CI gate carrie
   job and installs all three pinned browser engines explicitly. The local `make test-browser-ci`
   path now sets `CI=true` and uses fresh anonymous dependency volumes, eliminating the warm named
   volumes that made its prior “exact” claim inaccurate and polluted the tracked pnpm-store index.
+
+## 2026-08-11 — Actions run 31506864417 minigame-start identity failure repaired
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is an implementation record pending the
+  ordinary designated cross-party review; it is not an approval.
+- The failing server job was read directly through `gh run view --log-failed`. Its sole assertion
+  failure was `TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration`: session create
+  returned `500 internal_invariant/minigame_api`. Repeating that test against cold Postgres exposed
+  the intermittent underlying error: `event intent does not match mutation`.
+- Root cause: the minigame-start coordinator validated Founder events against the public session
+  ID even though `ApplyFounderLogged` correctly attributes its lazy Fiscal sweep to the distinct,
+  server-authored Founder command intent ID. The defect surfaced only when the 300 ms Fiscal auto
+  boundary elapsed between fixture creation and the transaction timestamp.
+- The coordinator now validates the decision against the Founder intent ID. Its Postgres fixture
+  makes the Fiscal sweep unconditional, keeps session/intent IDs distinct, and asserts the stored
+  event identity. Renaming the fixture into the `Integration` test namespace also closes the gate
+  hole that previously kept this file-level integration test out of `make test-save-integration`.
+- Discrimination proof: restoring the old session-ID validation makes the ordinary Postgres target
+  fail deterministically at the original error; restoring the fix makes the same complete target
+  green. The exact cold linux/amd64 `make test-go-ci` job then passed every package. Kernel 0.3.93
+  is an honest semantic bump. The Make targets now expose repeat-count selectors alongside their
+  existing package/regex selectors so focused stress runs remain ordinary repository commands.

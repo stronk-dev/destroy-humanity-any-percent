@@ -21,7 +21,7 @@ import (
 	"cloud-clicker/server/save"
 )
 
-func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplay(t *testing.T) {
+func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplayIntegration(t *testing.T) {
 	databaseURL := os.Getenv("TEST_DATABASE_URL")
 	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL not set")
@@ -91,7 +91,10 @@ func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplay(t *testing.T)
 	founder.MinigameRatings = map[string]save.MinigameRatingState{"pitch": {Elo: 1000, SeasonMember: "s1"}}
 	founder.MinigameOfflineQuality = map[string]save.MinigameOfflineQualityState{"pitch": {GradePPM: 200_000}}
 	founder.Pets = map[string]pet.CareState{}
-	founder.FiscalCredit, founder.FiscalPeriodOpenedWallMS, founder.FiscalPeriodSequence = 0, now.UnixMilli(), 0
+	// Guarantee that start_minigame_session performs its lazy Fiscal sweep. The
+	// sweep event belongs to the server-authored Founder intent, not the public
+	// session coordinate; keeping those IDs distinct pins that persistence law.
+	founder.FiscalCredit, founder.FiscalPeriodOpenedWallMS, founder.FiscalPeriodSequence = 0, now.Add(-time.Minute).UnixMilli(), 0
 	founder.FiscalGeneratorLevels = make(map[string]int64, len(bundle.Fiscal.GeneratorLevelRows()))
 	for _, row := range bundle.Fiscal.GeneratorLevelRows() {
 		founder.FiscalGeneratorLevels[row.GeneratorID] = 0
@@ -180,6 +183,10 @@ func TestStartMinigameAPISessionAtomicSequenceIdempotencyAndReplay(t *testing.T)
 	created, err := production.StartMinigameAPISession(ctx, platform, request, now, nil)
 	if err != nil || created.Replay {
 		t.Fatalf("create receipt=%s replay=%v err=%v", created.Receipt, created.Replay, err)
+	}
+	if len(created.Events) != 1 || created.Events[0].Kind != save.EventFiscalPeriodHarvested ||
+		created.Events[0].IntentID != request.IntentID || created.Events[0].IntentID == request.SessionID {
+		t.Fatalf("Fiscal sweep event identity=%+v intent=%s session=%s", created.Events, request.IntentID, request.SessionID)
 	}
 	var response struct {
 		SessionID string          `json:"session_id"`

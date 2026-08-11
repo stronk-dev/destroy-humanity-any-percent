@@ -8,8 +8,10 @@ GO_PACKAGES ?= ./...
 GO_TEST_FLAGS ?=
 SAVE_TEST_PACKAGES ?= ./...
 SAVE_TEST_FLAGS ?= -run Integration
+SAVE_TEST_COUNT ?= 1
 CI_TEST_PACKAGES ?= ./...
 CI_TEST_FLAGS ?=
+CI_TEST_COUNT ?= 1
 CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
 BROWSER_TEST_FLAGS ?=
 
@@ -32,10 +34,10 @@ test-go:
 # cold test execution. This intentionally runs every package rather than the
 # Integration-named subset used by the focused save-integration target.
 test-go-ci:
-	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test go test -p 1 $(CI_TEST_FLAGS) $(CI_TEST_PACKAGES) -count=1
+	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test go test -p 1 $(CI_TEST_FLAGS) $(CI_TEST_PACKAGES) -count=$(CI_TEST_COUNT)
 
 test-save-integration:
-	docker compose -f compose.save-test.yml run --rm test go test -p 1 $(SAVE_TEST_FLAGS) $(SAVE_TEST_PACKAGES) -count=1
+	docker compose -f compose.save-test.yml run --rm test go test -p 1 $(SAVE_TEST_FLAGS) $(SAVE_TEST_PACKAGES) -count=$(SAVE_TEST_COUNT)
 
 # Validate the complete embedded migration chain on real Postgres while keeping
 # the scope focused on the package that owns it. Migration-named unit probes and

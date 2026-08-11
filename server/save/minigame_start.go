@@ -171,7 +171,7 @@ func (s *Store) ApplyMinigameStartTransaction(ctx context.Context, request Minig
 	if err != nil {
 		return IntentResult{}, err
 	}
-	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: decision.FounderReceipt, Events: decision.FounderEvents}, request.SessionID); err != nil {
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: decision.FounderReceipt, Events: decision.FounderEvents}, request.IntentID); err != nil {
 		return IntentResult{}, err
 	}
 	if VersionForState(founder) != migratedWriteVersion(founderRevision.Version) ||
