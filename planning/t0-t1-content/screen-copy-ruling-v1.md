@@ -614,3 +614,19 @@ figure a Sources screen would need to defend.
 Ratification of the full package follows the reassembly: presentation-v2 42cbe31a…,
 event-copy-v2 71d88ebb…, phase0 24e90af2… stand as reviewed; the copy candidate and generated
 hashes re-mint with the one-line revert.
+
+---
+
+## Owner ratification — the complete copy package (Marco, 2026-08-11)
+
+Ratified after the designated assembly verdict + the executed v1.1 dispositions (the reassembly
+verified as exactly the one ruled revert):
+
+- copy candidate `7793d334efb8e9c6ba6169466ec51a1b8318145f470b643a849937943725b4f2`
+- generated copy `sha256:0f9801e40718d440ce25966d965da2cfff44b99216638dae5afa014b01a25d12`
+- presentation-v2 `42cbe31acd040dc6b4a78c8d2b81d7e27738728cec97791414a9537be3d9f015`
+- event-copy-v2 `71d88ebbdff37582246e0014377e2db852e154801e622bf2a04ad12efe6beb0c`
+- phase0 (retuned cash-cap row) `24e90af2e48db4dbb5e154aea0c3c5ebe0975c48cf9955e15a5a225bfe9df698`
+
+GU-C12 is DISCHARGED. **The screens batch is UNGATED.** Any text change from here is a copy
+retune with a replacement hash recorded.
