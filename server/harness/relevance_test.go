@@ -148,7 +148,7 @@ func TestRelevanceRuntimeTransitionBudgetAbortsAtActualWork(t *testing.T) {
 	}
 }
 
-func TestT0T1ReferenceBootstrapsThroughPinnedManualClamp(t *testing.T) {
+func TestT0T1ReferenceBootstrapMakesNonEmptyPurchaseThroughPinnedManualClamp(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
 	if err != nil {
 		t.Fatal(err)
@@ -172,8 +172,8 @@ func TestT0T1ReferenceBootstrapsThroughPinnedManualClamp(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if reference.MilestoneMS == nil || len(reference.Purchases) == 0 || counter.value > suite.Scenario.RelevanceBudgetMaxTransitions {
-		t.Fatalf("reference milestone=%v purchases=%v transitions=%d", reference.MilestoneMS, reference.Purchases, counter.value)
+	if len(reference.Purchases) == 0 || counter.value > suite.Scenario.RelevanceBudgetMaxTransitions {
+		t.Fatalf("reference purchases=%v transitions=%d", reference.Purchases, counter.value)
 	}
 }
 

@@ -254,3 +254,17 @@ range and belongs to Codex's lane — it is now superseded regardless, below.
 - The correction entry for `d05dc13917e1c85f38694b6c82596d3789db0a00` acknowledges only this
   published packaging error. It does not approve the T01-C12/C16 implementation, alter the golden,
   waive the new relevance-budget blocker, or authorize the epoch-7 mint.
+
+### Same-day correction — T01-C16 milestone arm remains blocked
+
+The first cold full-server run exposed that the checkpoint's regression selector had not actually
+matched `TestT0T1ReferenceBootstrapsThroughPinnedManualClamp` (`Reference` does not contain
+`Relevance`). Running the exact test proves the manual batch and non-empty purchase set, but the
+reference ends the 24-hour horizon at `1.71274492719e9` cash after 126 purchases and 35,645
+transitions, short of the required `1e12` milestone. The ruled one-unit greedy route exhausts the
+128-decision envelope; continued legal manual output alone is orders of magnitude too small to make
+up the target. The earlier checkpoint sentence claiming the milestone was reached is withdrawn.
+The test is narrowed to the behavior it genuinely proves (pinned-clamp bootstrap plus non-empty
+purchase set); T01-C16's milestone acceptance remains open alongside the 2,000,000-transition beam
+conflict. Fixing either requires an owner ruling on scenario decisions/beam semantics or new
+ratified scenario bytes, not a weakened assertion.
