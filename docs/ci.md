@@ -110,9 +110,10 @@ in the Game UI docs. The same deterministic test remains part of ordinary `make 
 the focused target exists for normal iteration, not as a separate claim.
 
 `make test-browser-ci` runs the ordinary browser target in the exact pinned Linux Playwright image
-used by Actions, with an isolated Linux `node_modules` volume. `make verify-server-ci` runs the
-complete server gate on linux/amd64 against the repository's Postgres test service. Use these
-targets when host-platform success could mask scheduling, architecture, or cold-run behavior.
+used by Actions, with isolated Linux `node_modules` and pnpm-store volumes. `make
+verify-server-ci` runs the complete server gate on linux/amd64 against the repository's Postgres
+test service. Use these targets when host-platform success could mask scheduling, architecture, or
+cold-run behavior.
 
 Go commands invoked by the Makefile use the ignored repository-local `.cache/go-build` directory.
 Focused tests can run without writing to a user-level cache or requiring sandbox permission:

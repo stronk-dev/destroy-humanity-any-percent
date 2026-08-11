@@ -6,6 +6,7 @@ services:
     volumes:
       - .:/workspace
       - browser-node-modules:/workspace/client/node_modules
+      - browser-pnpm-store:/workspace/.pnpm-store
     command:
       - bash
       - -lc
@@ -18,3 +19,4 @@ services:
 
 volumes:
   browser-node-modules:
+  browser-pnpm-store:
