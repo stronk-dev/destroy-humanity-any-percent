@@ -82,7 +82,14 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			transitionCeiling, suite.Scenario.PreflightCeiling)
 	}
 	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
-	report := RelevanceReport{SchemaVersion: suite.Scenario.SchemaVersion, ScenarioID: suite.Scenario.ID,
+	preflight, err := suite.runReference(production.AblationMask{}, counter)
+	if err != nil {
+		return RelevanceReport{}, fmt.Errorf("relevance milestone preflight: %w", err)
+	}
+	if preflight.MilestoneMS == nil {
+		return RelevanceReport{}, fmt.Errorf("milestone_unreachable:%s", suite.Scenario.Milestone.ID)
+	}
+	report := RelevanceReport{SchemaVersion: RelevanceReportSchemaVersion, ScenarioID: suite.Scenario.ID,
 		ScenarioHash: suite.ScenarioHash, ConstantsHash: suite.ConstantsHash, RelevancePolicyHash: suite.Policy.Hash,
 		Items: []RelevanceItemReport{}, Groups: []RelevanceGroupReport{}, TierContributions: []RelevanceTierContribution{},
 		RoleActivations: []RoleActivationCount{}, Failures: []string{}}
@@ -90,7 +97,6 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	removalPairs := map[string]map[string][]relevancePairedResult{}
 	groupPairs := map[string]map[string][]relevancePairedResult{}
 	baselinePurchases := map[string]int64{}
-	referencePurchaseSamples := map[string][]int64{}
 	baselineRoleRuns := map[string][]map[string]RoleActivationCount{}
 	executedRuns := int64(0)
 	type oraclePair struct{ greedy, beam *int64 }
@@ -108,11 +114,6 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			if baseline.MilestoneMS == nil {
 				baselineUnreached = true
 			}
-			if spec.Reference {
-				for _, item := range suite.Policy.Items {
-					referencePurchaseSamples[item.PurchasableID] = append(referencePurchaseSamples[item.PurchasableID], baseline.Purchases[item.PurchasableID])
-				}
-			}
 			baselineRoleRuns[spec.PolicyID] = append(baselineRoleRuns[spec.PolicyID], baseline.Roles)
 			for _, item := range suite.Policy.Items {
 				masked, runErr := suite.runPersona(spec, seed, effectMask(item.PurchasableID, suite.Catalog), counter)
@@ -120,14 +121,14 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 					return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d effect mask %s: %w", spec.PolicyID, seed, item.PurchasableID, runErr)
 				}
 				executedRuns++
-				appendRelevancePair(itemPairs, item.PurchasableID, spec.PolicyID, baseline.MilestoneMS, masked.MilestoneMS)
+				appendRelevancePair(itemPairs, item.PurchasableID, spec.PolicyID, baseline.MilestoneMS, masked.MilestoneMS, baseline.Purchases[item.PurchasableID])
 				if spec.Reference {
 					removed, removeErr := suite.runPersona(spec, seed, removalMask(item.PurchasableID, suite.Catalog), counter)
 					if removeErr != nil {
 						return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d removal mask %s: %w", spec.PolicyID, seed, item.PurchasableID, removeErr)
 					}
 					executedRuns++
-					appendRelevancePair(removalPairs, item.PurchasableID, spec.PolicyID, baseline.MilestoneMS, removed.MilestoneMS)
+					appendRelevancePair(removalPairs, item.PurchasableID, spec.PolicyID, baseline.MilestoneMS, removed.MilestoneMS, baseline.Purchases[item.PurchasableID])
 				}
 			}
 			for _, group := range suite.Policy.Groups {
@@ -136,7 +137,11 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 					return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d group mask %s: %w", spec.PolicyID, seed, group.GroupID, runErr)
 				}
 				executedRuns++
-				appendRelevancePair(groupPairs, group.GroupID, spec.PolicyID, baseline.MilestoneMS, masked.MilestoneMS)
+				purchases := int64(0)
+				for _, memberID := range group.MemberIDs {
+					purchases += baseline.Purchases[memberID]
+				}
+				appendRelevancePair(groupPairs, group.GroupID, spec.PolicyID, baseline.MilestoneMS, masked.MilestoneMS, purchases)
 			}
 			if spec.Reference {
 				beam, beamErr := suite.runBeam(counter)
@@ -155,7 +160,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		report.Failures = append(report.Failures, "baseline_unreached:"+suite.Scenario.Milestone.ID)
 	}
 	for _, item := range suite.Policy.Items {
-		baselinePurchases[item.PurchasableID] = reduceRelevanceCounts(referencePurchaseSamples[item.PurchasableID], suite.Scenario.Reducer)
+		baselinePurchases[item.PurchasableID] = reduceRelevancePairPurchases(itemPairs[item.PurchasableID], suite.Scenario.Reducer)
 	}
 	baselineRoles, roleReduceErr := reduceRelevanceRoles(baselineRoleRuns, suite.Scenario.Reducer)
 	if roleReduceErr != nil {
@@ -163,25 +168,26 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	}
 	groupReduced := map[string]RelevanceDelta{}
 	for _, group := range suite.Policy.Groups {
-		reduced, reduceErr := reduceRelevancePairMatrix(groupPairs[group.GroupID], suite.Scenario.Reducer,
+		reduced, excluded, reduceErr := reduceRelevancePairMatrix(groupPairs[group.GroupID], suite.Scenario.Reducer,
 			suite.Scenario.Milestone.ID, suite.Scenario.HorizonMS)
 		if reduceErr != nil {
 			return RelevanceReport{}, reduceErr
 		}
 		passed := reduced.DeltaMS != nil && *reduced.DeltaMS >= group.EpsilonMS
-		report.Groups = append(report.Groups, RelevanceGroupReport{GroupID: group.GroupID, Axis: group.Axis, Deltas: []RelevanceDelta{reduced}, Passed: passed})
+		report.Groups = append(report.Groups, RelevanceGroupReport{GroupID: group.GroupID, Axis: group.Axis,
+			ExcludedPersonaIDs: excluded, Deltas: []RelevanceDelta{reduced}, Passed: passed})
 		groupReduced[group.GroupID] = reduced
 		if group.Axis == "tier" {
 			report.TierContributions = append(report.TierContributions, RelevanceTierContribution{GroupID: group.GroupID, Deltas: []RelevanceDelta{reduced}})
 		}
 	}
 	for _, item := range suite.Policy.Items {
-		individual, reduceErr := reduceRelevancePairMatrix(itemPairs[item.PurchasableID], suite.Scenario.Reducer,
+		individual, excluded, reduceErr := reduceRelevancePairMatrix(itemPairs[item.PurchasableID], suite.Scenario.Reducer,
 			suite.Scenario.Milestone.ID, suite.Scenario.HorizonMS)
 		if reduceErr != nil {
 			return RelevanceReport{}, reduceErr
 		}
-		removal, reduceErr := reduceRelevancePairMatrix(removalPairs[item.PurchasableID], suite.Scenario.Reducer,
+		removal, _, reduceErr := reduceRelevancePairMatrix(removalPairs[item.PurchasableID], suite.Scenario.Reducer,
 			suite.Scenario.Milestone.ID, suite.Scenario.HorizonMS)
 		if reduceErr != nil {
 			return RelevanceReport{}, reduceErr
@@ -216,7 +222,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		trapPassed := baselinePurchases[item.PurchasableID] > 0 || item.TrapExempt
 		report.Items = append(report.Items, RelevanceItemReport{PurchasableID: item.PurchasableID,
 			AvailabilityWindow: item.Availability, EpsilonMS: item.EpsilonMS, TrapExempt: item.TrapExempt,
-			JustificationKey: item.JustificationKey, BaselinePurchaseCount: baselinePurchases[item.PurchasableID],
+			JustificationKey: item.JustificationKey, BaselinePurchaseCount: baselinePurchases[item.PurchasableID], ExcludedPersonaIDs: excluded,
 			IndividualDeltas: []RelevanceDelta{individual}, ActionRemovalDeltas: []RelevanceDelta{removal}, Support: support,
 			SupportingGroupID: supportingGroup, NearestPassingEpsilonMS: nearest, RelevancePassed: relevancePassed, TrapPassed: trapPassed})
 		if !relevancePassed {
@@ -233,9 +239,9 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			roleGenerators[role.GeneratorID] = true
 		}
 	}
-	for _, generator := range suite.Catalog.GeneratorClassesForScope(economy.ScopeCompany) {
-		if !roleGenerators[generator.ID] {
-			report.Failures = append(report.Failures, "role_floor:"+generator.ID)
+	for _, item := range suite.Policy.Items {
+		if _, generator := suite.Catalog.GeneratorClass(item.PurchasableID); generator && !roleGenerators[item.PurchasableID] {
+			report.Failures = append(report.Failures, "role_floor:"+item.PurchasableID)
 		}
 	}
 	var selected *RelevanceGreedyOracle
@@ -870,20 +876,20 @@ func policyGroup(policy *RelevancePolicy, id string) RelevancePolicyGroup {
 	return RelevancePolicyGroup{}
 }
 
-func appendRelevancePair(destination map[string]map[string][]relevancePairedResult, targetID, policyID string, baseline, ablated *int64) {
+func appendRelevancePair(destination map[string]map[string][]relevancePairedResult, targetID, policyID string, baseline, ablated *int64, baselinePurchases int64) {
 	if destination[targetID] == nil {
 		destination[targetID] = map[string][]relevancePairedResult{}
 	}
 	destination[targetID][policyID] = append(destination[targetID][policyID], relevancePairedResult{
-		baseline: cloneInt64(baseline), ablated: cloneInt64(ablated),
+		baseline: cloneInt64(baseline), ablated: cloneInt64(ablated), baselinePurchases: baselinePurchases,
 	})
 }
 
 // reduceRelevancePairMatrix applies the scenario's conservative reducer inside
 // each persona first, then the ANY gate selects the strongest persona result.
-func reduceRelevancePairMatrix(byPolicy map[string][]relevancePairedResult, reducer, milestoneID string, horizonMS int64) (RelevanceDelta, error) {
+func reduceRelevancePairMatrix(byPolicy map[string][]relevancePairedResult, reducer, milestoneID string, horizonMS int64) (RelevanceDelta, []string, error) {
 	if len(byPolicy) == 0 {
-		return RelevanceDelta{}, errors.New("missing relevance pair matrix")
+		return RelevanceDelta{}, nil, errors.New("missing relevance pair matrix")
 	}
 	policies := make([]string, 0, len(byPolicy))
 	for policyID := range byPolicy {
@@ -892,15 +898,24 @@ func reduceRelevancePairMatrix(byPolicy map[string][]relevancePairedResult, redu
 	sort.Strings(policies)
 	var selected *RelevanceDelta
 	var fallback *RelevanceDelta
+	excluded := []string{}
 	for _, policyID := range policies {
 		pairs := byPolicy[policyID]
+		purchaseCounts := make([]int64, 0, len(pairs))
+		for _, pair := range pairs {
+			purchaseCounts = append(purchaseCounts, pair.baselinePurchases)
+		}
+		if reduceRelevanceCounts(purchaseCounts, reducer) == 0 {
+			excluded = append(excluded, policyID)
+			continue
+		}
 		rows := make([]RelevanceDelta, 0, len(pairs))
 		for _, pair := range pairs {
 			rows = append(rows, MakeRelevanceDelta(milestoneID, pair.baseline, pair.ablated, horizonMS))
 		}
 		reduced, err := reduceRelevanceDeltas(rows, reducer)
 		if err != nil {
-			return RelevanceDelta{}, err
+			return RelevanceDelta{}, nil, err
 		}
 		if fallback == nil {
 			copy := reduced
@@ -912,9 +927,12 @@ func reduceRelevancePairMatrix(byPolicy map[string][]relevancePairedResult, redu
 		}
 	}
 	if selected != nil {
-		return *selected, nil
+		return *selected, excluded, nil
 	}
-	return *fallback, nil
+	if fallback != nil {
+		return *fallback, excluded, nil
+	}
+	return RelevanceDelta{MilestoneID: milestoneID, Status: "both_unreached"}, excluded, nil
 }
 
 func reduceRelevanceCounts(values []int64, reducer string) int64 {
@@ -928,6 +946,20 @@ func reduceRelevanceCounts(values []int64, reducer string) int64 {
 		index = (len(ordered) - 1) * 5 / 100
 	}
 	return ordered[index]
+}
+
+func reduceRelevancePairPurchases(byPolicy map[string][]relevancePairedResult, reducer string) int64 {
+	result := int64(0)
+	for _, pairs := range byPolicy {
+		values := make([]int64, 0, len(pairs))
+		for _, pair := range pairs {
+			values = append(values, pair.baselinePurchases)
+		}
+		if reduced := reduceRelevanceCounts(values, reducer); reduced > result {
+			result = reduced
+		}
+	}
+	return result
 }
 
 func reduceRelevanceRoles(byPolicy map[string][]map[string]RoleActivationCount, reducer string) (map[string]RoleActivationCount, error) {
@@ -984,7 +1016,7 @@ func stateDigest(state *save.State) (string, error) {
 	return hex.EncodeToString(digest[:]), nil
 }
 
-// runBeam performs the ruled width-eight search. Each child is scored by a
+// runBeam performs the ruled declared-width search. Each child is scored by a
 // deterministic greedy rollout; equal-state nodes deduplicate on state hash +
 // virtual time, with raw-byte paths as the final ordering key.
 func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) {

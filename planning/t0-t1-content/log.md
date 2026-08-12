@@ -531,3 +531,58 @@ measurement truncated at the T1 boundary would tune to a truncated objective.**
   The law-3 account is internally consistent with the unchanged exact/decision vectors and the
   recorded cross-architecture regeneration. **No findings.** This supplies the required reverse-
   direction cross-party verdict for the Claude-authored ruling commit.
+
+## 2026-08-12 — T01-C18 two-scenario implementation measurements + remaining findings
+
+- The T0 candidate now contains exactly the nine rows whose windows open before
+  `gate.t0_to_t1`; its target remains `company.cash >= 1e5`. The cumulative T1 candidate carries
+  the eighteen rows open before `gate.t2_to_t3` and targets that gate's `company.cash >= 1e9`
+  coordinate. `generator.legal_dept` remains outside both because it opens at the T1 terminal
+  coordinate. Loader validation derives and enforces each exact scoped set from the pinned economy
+  and Routes bytes. Dedicated Make targets run either phase or both. The proper T0 Make gate
+  executes 1,335,808 total transitions and returns thirteen findings (seven relevance, one role,
+  five trap) without writing a partial report.
+- **T01-C17 branch B measured, not estimated:** the narrowest meaningful T1 oracle
+  (`beam_width:1`, `beam_children:1`, `max_decisions:128`) executed **6,710,806 transitions**
+  including the 35,544-transition reachability preflight;
+  greedy and beam both reached at **50,640,468 ms** with **0 ppm** gap. The scenario budget is the
+  ruled measured-worst-case ×2 headroom rounded up to **14,000,000**. Reference-only measurement
+  made 126 purchases in 35,544 transitions. The complete report still returns nineteen content-
+  floor findings (nine relevance, three role, seven trap); these are evidence for the owner, not
+  gates weakened or hidden by this implementation.
+- **Hold Music measured proposal (not landed pending owner ratification):** the T0 reference crosses
+  60k/72k/80k/86.4k/90k at 417,480/470,924/**506,553**/535,057/551,090 ms and reaches the 100k
+  gate at 595,627 ms. Proposed unlock/cost: **`8e4`**, leaving 20% coordinate headroom and ~89 s
+  measured time headroom while remaining well inside the authored T0 window.
+- **Negative-delta diagnosis — solver limitation, no content retune:** at the first binding choice,
+  the ranker chooses `dot_matrix_queue` on local one-unit payback **31,425 ms** over the next-best
+  `beige_tower` **32,789 ms**; later it chooses `reply_all_macro` at **48,835 ms** over Beige
+  Tower **50,619 ms**. The equation adds the candidate's paid cost back when measuring that
+  candidate's gross output, so it measures direct one-unit payback correctly, but it does not price
+  the opportunity cost of delaying the mutually-exclusive next-best purchase. End-to-end removal
+  proves the consequence: removing Dot Matrix improves the milestone by 41,741 ms; removing Reply
+  All improves it by 61,368 ms. This is a myopic ranking/model defect, not evidence that either
+  content row should be retuned. Both content rows remain unchanged pending a successor ruling.
+- Report schema v3 makes zero-purchase persona exclusions explicit on item and group rows. The
+  fixture oracle again pins a genuine nonzero equal-envelope gap (221,598 ppm under its fixture-only
+  250,000-ppm bound) while both production candidates retain the ruled 50,000-ppm bound; this does
+  not weaken the production gate. The static estimate remains only a scenario-declared runaway
+  guard, and the fast reference preflight emits the distinct `milestone_unreachable:<id>` diagnosis
+  before the ablation matrix.
+- **Review coordinates pending owner ratification:** T0 scenario
+  `8871957aaeac2b484a0c11c9b627e9409d9a6cb63e15aabdafe267f4164c9587`, T0 policy
+  `18a531274f60a7b53517c8c591204e4d02c8050691b7ffea960a1c166ed8c235`; T1 scenario
+  `1d9b95ea51ad339102d01a0d2187589dbbb8f21bdaf44f18d99b30992646f037`, T1 policy
+  `f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef`.
+
+## 2026-08-12 — Codex cross-party re-review of Claude reconciliation `{fe4ca5e}` — APPROVE
+
+- **Review by:** Codex (cross-party). **Recorded by:** Codex.
+- **Range reviewed:** `{fe4ca5e}` (RFC-only reconciliation).
+- The edit replaces the falsified T01-C12 static-budget paragraph in place with the ruled runtime-
+  counter/separate-runaway-ceiling contract, and corrects the published-history repair to the
+  factual `{759e369, 0151ddc, 3a3f4cd}` range. `a48686d` is correctly removed as the claimed
+  repair and remains only a later scenario-hash regeneration. The edit changes no independent
+  owner decision, retains T01-C17/T01-C18 ownership of subsequent measured parameters, and leaves
+  no competing normative paragraph. **No findings.** This closes the reverse-direction review
+  debt recorded for `{fe4ca5e}`.

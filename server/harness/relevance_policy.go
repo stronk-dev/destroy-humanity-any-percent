@@ -80,6 +80,10 @@ type rawRelevancePolicyGroup struct {
 }
 
 func LoadRelevancePolicy(data []byte, catalog *economy.Catalog, routeCatalog *routes.Catalog) (*RelevancePolicy, error) {
+	return loadRelevancePolicy(data, catalog, routeCatalog, true)
+}
+
+func loadRelevancePolicy(data []byte, catalog *economy.Catalog, routeCatalog *routes.Catalog, requireComplete bool) (*RelevancePolicy, error) {
 	if catalog == nil || routeCatalog == nil {
 		return nil, errors.New("relevance policy requires economy and routes catalogs")
 	}
@@ -106,7 +110,7 @@ func LoadRelevancePolicy(data []byte, catalog *economy.Catalog, routeCatalog *ro
 		}
 		policy.Groups = append(policy.Groups, group)
 	}
-	if err := validateRelevancePolicy(policy, catalog, routeCatalog); err != nil {
+	if err := validateRelevancePolicy(policy, catalog, routeCatalog, requireComplete); err != nil {
 		return nil, err
 	}
 	digest := sha256.Sum256(data)
@@ -184,7 +188,7 @@ func relevanceSafeInteger(value *json.Number) (int64, error) {
 	return result, nil
 }
 
-func validateRelevancePolicy(policy *RelevancePolicy, catalog *economy.Catalog, routeCatalog *routes.Catalog) error {
+func validateRelevancePolicy(policy *RelevancePolicy, catalog *economy.Catalog, routeCatalog *routes.Catalog, requireComplete bool) error {
 	purchasables := make(map[string]bool)
 	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
 		purchasables[generator.ID] = true
@@ -192,7 +196,7 @@ func validateRelevancePolicy(policy *RelevancePolicy, catalog *economy.Catalog, 
 	for _, upgrade := range catalog.Upgrades() {
 		purchasables[upgrade.ID] = true
 	}
-	if len(policy.Items) != len(purchasables) {
+	if requireComplete && len(policy.Items) != len(purchasables) {
 		return fmt.Errorf("relevance policy item set is incomplete: got %d want %d", len(policy.Items), len(purchasables))
 	}
 	gateOrder := make(map[string]int)

@@ -58,7 +58,7 @@ trap exemptions, and tier/category/declared groups without adding harness metada
 catalog.
 
 For every declared run it records an unmasked baseline, per-item effect ablations, and group effect
-ablations. Reference runs additionally record action-removal diagnostics and one width-eight beam
+ablations. Reference runs additionally record action-removal diagnostics and one declared-width beam
 oracle. The reference policy ranks one-unit generator buys and unowned upgrades by an exact
 single-resource payback calculation, including lower-bound searches for first affordability and
 first positive marginal output. At run genesis it may bootstrap the cheapest milestone-resource
@@ -67,11 +67,15 @@ catalog yield, capped by the catalog's click bucket, and its window is derived f
 refill rate. Relevance scenarios declare `beam_children`; each beam node orders candidates by the
 real current one-unit quote and then raw-byte ID, selects at most that many, and only then performs
 the expensive R10 scoring and greedy completion. Beam nodes deduplicate by canonical state plus
-virtual time before greedy rollout and use componentwise dominance before the width bound. Run
-cardinality is checked before simulation.
-The static transition estimate is only a generous runaway-configuration guard; the scenario's work
-budget is enforced by counting every simulation call at runtime and aborting without a partial
-report when the limit is reached.
+virtual time before greedy rollout and use componentwise dominance before the width bound. A beam
+path and its greedy completion share one `max_decisions` envelope: rollout receives only the
+decisions the path has not consumed. Run cardinality is checked before simulation. The static
+transition estimate is only a generous runaway-configuration guard, compared with the scenario's
+declarative `preflight_ceiling`; it is never treated as measured work. The scenario's separate work
+budget is enforced by one counter spanning every simulation call, including the reachability
+preflight, and aborting without a partial report when the limit is reached. Before the factorial
+ablation matrix begins, one reference-arm probe fails with `milestone_unreachable:<id>` when the
+target cannot be reached at all.
 
 Schema v2 permits an availability/segment `from_gate` of null, meaning run genesis and sorting
 before every declared gate; schema-v1 bytes retain their concrete-gate requirement. Each policy
@@ -81,7 +85,16 @@ group, tier-contribution, role-activation, and failure rows with
 only safe integers, booleans, and canonical hashes. Required baselines that do not reach their
 milestone are named failures; unreachable ablations use the finite horizon-minus-baseline encoding.
 An item passes through its own effect delta or one declared supporting group, while the trap test
-always remains individual. Role evidence comes only from unmasked baseline execution.
+always remains individual. A persona whose unmasked baseline buys none of the item contributes no
+ablation signal and cannot bind either floor; report schema v3 records every such persona in the
+affected item or group row's `excluded_persona_ids`. Personas that do buy remain binding. Role
+evidence comes only from unmasked baseline execution.
+
+Production candidates use phase-scoped relevance policies. The T0 scenario measures rows whose
+windows open before `gate.t0_to_t1`; the cumulative T1 scenario continues through
+`gate.t2_to_t3`. A scoped policy must exactly match the catalog rows open before its milestone gate,
+so later content is retired by measurement scope rather than by exemption. Content that opens at
+the terminal coordinate belongs to a later reachable scenario.
 
 `testdata/harness/relevance/registry-v1.json` is the fail-closed scenario authority. Every registered
 golden is discovered dynamically by the history and TypeScript schema gates. Each trap exemption's
@@ -104,6 +117,8 @@ as a relevance baseline.
 - `make first-content-harness` validates the ratified first-content manifest and its complete
   16-artifact replay bundle, then writes the owner-facing candidate-versus-baseline pacing report.
   Pacing drift is reported rather than vetoed; deterministic invariant failures still fail the run.
+- `make t0-t1-relevance-all` runs the phase-scoped T0 and cumulative T1 candidate gates; either
+  target can be run alone with `make t0-t1-relevance` or `make t1-relevance`.
 - `make harness-update` deliberately regenerates those tracked artifacts for review.
 
 The successor `content_dynamics.v1` lane has an intentionally empty production registry until an
@@ -127,7 +142,10 @@ the sole forward remedy is an append-only entry in
 `kernel/baseline-history-corrections.json`. Each entry names the exact immutable offending commit,
 its correction class, rationale, and planning log. Commits changing that registry may change no
 other path, entries may only be appended unchanged, and corrections forgive only the named mixed-
-artifact packaging violation—not future commits or other guard failures. The schema gate rejects
+artifact packaging violation—not future commits or other guard failures. The guard also proves the
+offending commit is an ancestor of the configured `refs/remotes/origin/main`; a missing remote-
+tracking ref is a fail-closed CI configuration error, while a named unpublished commit is rejected
+with the instruction to repackage it instead of spending an amnesty entry. The schema gate rejects
 unknown scenario fields/kinds and non-string or unsafe seed
 encodings. Go and TypeScript load the same mutation corpus, including semantic JSON integers written
 with a decimal lexical form.

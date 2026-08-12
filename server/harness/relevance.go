@@ -19,7 +19,7 @@ import (
 	"cloud-clicker/server/save"
 )
 
-const RelevanceReportSchemaVersion = 2
+const RelevanceReportSchemaVersion = 3
 
 var errRelevanceRatioOutsideExactDomain = errors.New("relevance ratio outside exact integer domain")
 
@@ -96,6 +96,7 @@ type RelevanceItemReport struct {
 	TrapExempt              bool             `json:"trap_exempt"`
 	JustificationKey        *string          `json:"justification_key"`
 	BaselinePurchaseCount   int64            `json:"baseline_purchase_count"`
+	ExcludedPersonaIDs      []string         `json:"excluded_persona_ids"`
 	IndividualDeltas        []RelevanceDelta `json:"individual_deltas"`
 	ActionRemovalDeltas     []RelevanceDelta `json:"action_removal_deltas"`
 	Support                 string           `json:"support"`
@@ -106,10 +107,11 @@ type RelevanceItemReport struct {
 }
 
 type RelevanceGroupReport struct {
-	GroupID string           `json:"group_id"`
-	Axis    string           `json:"axis"`
-	Deltas  []RelevanceDelta `json:"deltas"`
-	Passed  bool             `json:"passed"`
+	GroupID            string           `json:"group_id"`
+	Axis               string           `json:"axis"`
+	ExcludedPersonaIDs []string         `json:"excluded_persona_ids"`
+	Deltas             []RelevanceDelta `json:"deltas"`
+	Passed             bool             `json:"passed"`
 }
 
 type RelevanceTierContribution struct {
@@ -152,8 +154,9 @@ type relevanceRunResult struct {
 }
 
 type relevancePairedResult struct {
-	baseline *int64
-	ablated  *int64
+	baseline          *int64
+	ablated           *int64
+	baselinePurchases int64
 }
 
 func LoadRelevanceSuite(repositoryRoot, scenarioPath string) (*RelevanceSuite, error) {
@@ -188,7 +191,7 @@ func LoadRelevanceSuite(repositoryRoot, scenarioPath string) (*RelevanceSuite, e
 	if err != nil {
 		return nil, err
 	}
-	policy, err := LoadRelevancePolicy(policyBytes, catalog, routeCatalog)
+	policy, err := loadRelevancePolicy(policyBytes, catalog, routeCatalog, false)
 	if err != nil {
 		return nil, err
 	}
@@ -201,6 +204,9 @@ func LoadRelevanceSuite(repositoryRoot, scenarioPath string) (*RelevanceSuite, e
 	if err := validateRelevanceWindows(scenario, policy, routeCatalog); err != nil {
 		return nil, err
 	}
+	if err := validateScopedRelevancePolicy(scenario, policy, catalog, routeCatalog); err != nil {
+		return nil, err
+	}
 	constantsHash, err := save.ConstantsHashArtifacts(map[string][]byte{"economy": catalogBytes, "relevance_policy": policyBytes, "routes": routesBytes})
 	if err != nil {
 		return nil, err
@@ -210,11 +216,83 @@ func LoadRelevanceSuite(repositoryRoot, scenarioPath string) (*RelevanceSuite, e
 		Routes: routeCatalog, Policy: policy, ConstantsHash: constantsHash}, nil
 }
 
+func validateScopedRelevancePolicy(scenario RelevanceScenario, policy *RelevancePolicy, catalog *economy.Catalog, routeCatalog *routes.Catalog) error {
+	if len(policy.Items) == len(catalog.GeneratorClassesForScope(economy.ScopeCompany))+len(catalog.Upgrades()) {
+		return nil
+	}
+	target, err := decimal.ParseCanonical(scenario.Milestone.Amount)
+	if err != nil {
+		return err
+	}
+	targetBoundary := -1
+	targetMatches := 0
+	gateOrder := map[string]int{}
+	for index, gate := range routeCatalog.Gates() {
+		gateOrder[gate.ID] = index
+		for _, requirement := range gate.Requirement {
+			if requirement.ResourceID == scenario.Milestone.ResourceID && requirement.Amount.Eq(target) {
+				targetBoundary = index
+				targetMatches++
+			}
+		}
+	}
+	if targetMatches != 1 {
+		return errors.New("scoped relevance policy requires a milestone equal to a route-gate coordinate")
+	}
+	startBoundary := targetBoundary
+	for _, segment := range scenario.Segments {
+		position := -1
+		if segment.FromGate != nil {
+			position = gateOrder[*segment.FromGate]
+		}
+		if position < startBoundary {
+			startBoundary = position
+		}
+	}
+	expected := map[string]bool{}
+	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
+		openBoundary := -1
+		if generator.Tier > 0 {
+			needle := fmt.Sprintf("gate.t%d_to_t%d", generator.Tier-1, generator.Tier)
+			position, ok := gateOrder[needle]
+			if !ok {
+				return fmt.Errorf("relevance scope cannot derive opening gate for tier-%d generator %q", generator.Tier, generator.ID)
+			}
+			openBoundary = position
+		}
+		if openBoundary >= startBoundary && openBoundary < targetBoundary {
+			expected[generator.ID] = true
+		}
+	}
+	for _, upgrade := range catalog.Upgrades() {
+		openBoundary := -1
+		if upgrade.Window.FromGate != "" {
+			position, ok := gateOrder[upgrade.Window.FromGate]
+			if !ok {
+				return fmt.Errorf("relevance scope cannot derive opening gate for upgrade %q", upgrade.ID)
+			}
+			openBoundary = position
+		}
+		if openBoundary >= startBoundary && openBoundary < targetBoundary {
+			expected[upgrade.ID] = true
+		}
+	}
+	if len(policy.Items) != len(expected) {
+		return fmt.Errorf("scoped relevance policy item set is incomplete: got %d want %d", len(policy.Items), len(expected))
+	}
+	for _, item := range policy.Items {
+		if !expected[item.PurchasableID] {
+			return fmt.Errorf("relevance item %q is outside the scenario milestone scope", item.PurchasableID)
+		}
+	}
+	return nil
+}
+
 func validateRelevanceScenario(scenario RelevanceScenario) error {
 	if scenario.SchemaVersion < 1 || scenario.SchemaVersion > RelevancePolicySchemaVersion || !relevanceIDPattern.MatchString(scenario.ID) || scenario.Catalog == "" || scenario.RoutesCatalog == "" || scenario.Policy == "" ||
 		len(scenario.Runs) == 0 || scenario.Reducer != "worst" && scenario.Reducer != "p05" || scenario.HorizonMS < 1 ||
-		scenario.HorizonMS > relevanceMaxSafeInteger || scenario.MaxDecisions < 1 || scenario.BeamWidth != 8 || scenario.BeamChildren < 1 ||
-		scenario.BeamChildren > relevanceMaxSafeInteger || scenario.GreedyGapMaximumPPM < 0 ||
+		scenario.HorizonMS > relevanceMaxSafeInteger || scenario.MaxDecisions < 1 || scenario.BeamWidth < 1 || scenario.BeamWidth > relevanceMaxSafeInteger ||
+		scenario.BeamChildren < 1 || scenario.BeamChildren > relevanceMaxSafeInteger || scenario.GreedyGapMaximumPPM < 0 ||
 		scenario.GreedyGapMaximumPPM > 1_000_000 || scenario.RelevanceBudgetMaxRuns < 1 || scenario.RelevanceBudgetMaxTransitions < 1 ||
 		scenario.PreflightCeiling < 1 || scenario.PreflightCeiling > relevanceMaxSafeInteger {
 		return errors.New("invalid relevance scenario envelope")
@@ -407,6 +485,7 @@ func ValidateRelevanceReport(report RelevanceReport) error {
 	for _, item := range report.Items {
 		if !relevanceIDPattern.MatchString(item.PurchasableID) || prior != "" && prior >= item.PurchasableID || item.IndividualDeltas == nil ||
 			item.ActionRemovalDeltas == nil || item.Support != "individual" && item.Support != "group_supported" && item.Support != "failed" ||
+			report.SchemaVersion >= 3 && item.ExcludedPersonaIDs == nil || sortedUniqueIDs(item.ExcludedPersonaIDs) != nil ||
 			item.SupportingGroupID != nil != (item.Support == "group_supported") || report.SchemaVersion == 1 && item.AvailabilityWindow.FromGate == nil ||
 			item.AvailabilityWindow.FromGate != nil && !relevanceIDPattern.MatchString(*item.AvailabilityWindow.FromGate) ||
 			item.AvailabilityWindow.ToGate != nil && !relevanceIDPattern.MatchString(*item.AvailabilityWindow.ToGate) || !relevanceSafePositive(item.EpsilonMS) ||
@@ -435,7 +514,8 @@ func ValidateRelevanceReport(report RelevanceReport) error {
 	prior = ""
 	for _, group := range report.Groups {
 		if !relevanceIDPattern.MatchString(group.GroupID) || prior != "" && prior >= group.GroupID || len(group.Deltas) == 0 ||
-			group.Axis != "tier" && group.Axis != "category" && group.Axis != "declared" {
+			group.Axis != "tier" && group.Axis != "category" && group.Axis != "declared" ||
+			report.SchemaVersion >= 3 && group.ExcludedPersonaIDs == nil || sortedUniqueIDs(group.ExcludedPersonaIDs) != nil {
 			return fmt.Errorf("invalid relevance group report %q", group.GroupID)
 		}
 		priorMilestone := ""

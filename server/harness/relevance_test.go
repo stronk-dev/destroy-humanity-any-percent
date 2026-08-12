@@ -61,24 +61,42 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 		t.Fatalf("greedy oracle=%+v", first.GreedyOracle)
 	}
 	joined := strings.Join(first.Failures, ",")
-	for _, expected := range []string{"relevance_floor:upgrade.dead", "role_floor:generator.alpha", "trap_floor:generator.alpha"} {
+	for _, expected := range []string{"relevance_floor:upgrade.dead", "role_floor:generator.alpha"} {
 		if !strings.Contains(joined, expected) {
 			t.Fatalf("fixture did not discriminate %q: %v", expected, first.Failures)
 		}
 	}
-	var supported bool
+	var supported, deliberateTrap bool
 	for _, item := range first.Items {
 		if item.PurchasableID == "upgrade.alpha" && item.Support == "group_supported" && item.RelevancePassed {
 			supported = true
+			deliberateTrap = item.TrapExempt && item.JustificationKey != nil && *item.JustificationKey == "relevance.intentional_trap"
 		}
 	}
-	if !supported {
-		t.Fatalf("fixture did not demonstrate group-supported substitute: %+v", first.Items)
+	if !supported || !deliberateTrap {
+		t.Fatalf("fixture did not demonstrate group-supported deliberate trap: %+v", first.Items)
 	}
 	if err := ValidateRelevanceReport(first); err != nil {
 		t.Fatal(err)
 	}
 	invalid := first
+	invalid.Items = append([]RelevanceItemReport(nil), first.Items...)
+	invalid.Items[0].ExcludedPersonaIDs = nil
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("schema-v3 report accepted a missing persona-exclusion row")
+	}
+	legacy := invalid
+	legacy.SchemaVersion = 2
+	if err := ValidateRelevanceReport(legacy); err != nil {
+		t.Fatalf("schema-v2 report lost backward compatibility: %v", err)
+	}
+	invalid = first
+	invalid.Groups = append([]RelevanceGroupReport(nil), first.Groups...)
+	invalid.Groups[0].ExcludedPersonaIDs = nil
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("schema-v3 report accepted a missing group persona-exclusion row")
+	}
+	invalid = first
 	invalid.Groups = nil
 	if err := ValidateRelevanceReport(invalid); err == nil {
 		t.Fatal("report accepted a missing row family")
@@ -145,6 +163,18 @@ func TestRelevanceRuntimeTransitionBudgetAbortsAtActualWork(t *testing.T) {
 	suite.Scenario.RelevanceBudgetMaxTransitions = 1
 	if _, err := suite.RunRelevance(); err == nil || !strings.Contains(err.Error(), "executed 1, maximum 1") {
 		t.Fatalf("runtime transition budget error=%v", err)
+	}
+}
+
+func TestRelevanceMilestonePreflightFailsBeforeTheAblationMatrix(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	suite.Scenario.Milestone.Amount = "1e24"
+	suite.Scenario.MaxDecisions = 1
+	if _, err := suite.RunRelevance(); err == nil || err.Error() != "milestone_unreachable:"+suite.Scenario.Milestone.ID {
+		t.Fatalf("unreachable milestone preflight err=%v", err)
 	}
 }
 
@@ -275,7 +305,7 @@ func TestRelevanceV2PreservesRunGenesisWindowInReport(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if report.SchemaVersion != 2 || len(report.Items) == 0 || report.Items[0].AvailabilityWindow.FromGate != nil {
+	if report.SchemaVersion != RelevanceReportSchemaVersion || len(report.Items) == 0 || report.Items[0].AvailabilityWindow.FromGate != nil {
 		t.Fatalf("v2 report=%+v", report)
 	}
 	encoded, err := json.Marshal(report.Items[0].AvailabilityWindow)
@@ -352,15 +382,15 @@ func TestRelevanceSegmentValidationRejectsRuledV2Matrix(t *testing.T) {
 	}
 }
 
-func TestT0T1RelevanceCandidateBindsThreeHonestIntervals(t *testing.T) {
+func TestT0T1RelevanceCandidatesBindTheirMeasuredWindows(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if suite.Scenario.SchemaVersion != 2 || len(suite.Scenario.Segments) != 3 || len(suite.Policy.Items) != 19 || len(suite.Policy.Groups) != 0 {
+	if suite.Scenario.SchemaVersion != 2 || len(suite.Scenario.Segments) != 1 || len(suite.Policy.Items) != 9 || len(suite.Policy.Groups) != 0 {
 		t.Fatalf("candidate segments=%d items=%d groups=%d", len(suite.Scenario.Segments), len(suite.Policy.Items), len(suite.Policy.Groups))
 	}
-	want := [][2]string{{"", "gate.t0_to_t1"}, {"gate.t0_to_t1", "gate.t2_to_t3"}, {"gate.t2_to_t3", "gate.t3_to_t4"}}
+	want := [][2]string{{"", "gate.t0_to_t1"}}
 	for index, segment := range suite.Scenario.Segments {
 		from := ""
 		if segment.FromGate != nil {
@@ -369,6 +399,26 @@ func TestT0T1RelevanceCandidateBindsThreeHonestIntervals(t *testing.T) {
 		if segment.MilestoneID != suite.Scenario.Milestone.ID || segment.ToGate == nil || from != want[index][0] || *segment.ToGate != want[index][1] {
 			t.Fatalf("candidate segment[%d]=%+v", index, segment)
 		}
+	}
+	t1, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-t1-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(t1.Scenario.Segments) != 2 || len(t1.Policy.Items) != 18 {
+		t.Fatalf("T1 candidate segments=%d items=%d", len(t1.Scenario.Segments), len(t1.Policy.Items))
+	}
+	if t1.Scenario.BeamWidth != 1 || t1.Scenario.BeamChildren != 1 || t1.Scenario.RelevanceBudgetMaxTransitions != 14_000_000 {
+		t.Fatalf("T1 measured branch-B envelope=%+v", t1.Scenario)
+	}
+	for _, item := range t1.Policy.Items {
+		if item.PurchasableID == "generator.legal_dept" {
+			t.Fatal("T1 policy included a generator that opens at its terminal milestone")
+		}
+	}
+	trimmed := *suite.Policy
+	trimmed.Items = append([]RelevancePolicyItem(nil), suite.Policy.Items[:len(suite.Policy.Items)-1]...)
+	if err := validateScopedRelevancePolicy(suite.Scenario, &trimmed, suite.Catalog, suite.Routes); err == nil || !strings.Contains(err.Error(), "item set is incomplete") {
+		t.Fatalf("incomplete scoped policy err=%v", err)
 	}
 }
 
@@ -403,17 +453,28 @@ func TestRelevanceReducesSeedsBeforePersonaAnyAndPrunesDominatedState(t *testing
 	value := func(input int64) *int64 { return &input }
 	matrix := map[string][]relevancePairedResult{
 		"casual.phase0": {
-			{baseline: value(100), ablated: value(110)},
-			{baseline: value(100), ablated: value(120)},
+			{baseline: value(100), ablated: value(110), baselinePurchases: 1},
+			{baseline: value(100), ablated: value(120), baselinePurchases: 1},
 		},
 		"reference.greedy": {
-			{baseline: value(100), ablated: value(200)},
-			{baseline: value(100), ablated: value(210)},
+			{baseline: value(100), ablated: value(200), baselinePurchases: 1},
+			{baseline: value(100), ablated: value(210), baselinePurchases: 1},
+		},
+		"spectator.phase0": {
+			{baseline: value(100), ablated: value(100), baselinePurchases: 0},
+			{baseline: value(100), ablated: value(100), baselinePurchases: 0},
+		},
+		"sometimes.phase0": {
+			{baseline: value(100), ablated: value(150), baselinePurchases: 0},
+			{baseline: value(100), ablated: value(150), baselinePurchases: 1},
 		},
 	}
-	reduced, err := reduceRelevancePairMatrix(matrix, "worst", "milestone.test", 500)
-	if err != nil || reduced.DeltaMS == nil || *reduced.DeltaMS != 100 {
-		t.Fatalf("persona ANY reduction=%+v err=%v", reduced, err)
+	reduced, excluded, err := reduceRelevancePairMatrix(matrix, "worst", "milestone.test", 500)
+	if err != nil || reduced.DeltaMS == nil || *reduced.DeltaMS != 100 || !reflect.DeepEqual(excluded, []string{"sometimes.phase0", "spectator.phase0"}) {
+		t.Fatalf("persona ANY reduction=%+v excluded=%v err=%v", reduced, excluded, err)
+	}
+	if purchases := reduceRelevancePairPurchases(matrix, "worst"); purchases != 1 {
+		t.Fatalf("persona ANY purchase count=%d", purchases)
 	}
 	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
 	if err != nil {
@@ -442,6 +503,20 @@ func TestRelevanceReducesSeedsBeforePersonaAnyAndPrunesDominatedState(t *testing
 	suite.Scenario.MaxDecisions = relevanceMaxSafeInteger
 	if _, err := suite.preflightTransitionCeiling(1, 0); err == nil {
 		t.Fatal("transition preflight overflow failed open")
+	}
+}
+
+func TestRelevanceFixturePinsANonzeroEqualEnvelopeOracleGap(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	report, err := suite.RunRelevance()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if report.GreedyOracle == nil || report.GreedyOracle.GapPPM == 0 || !report.GreedyOracle.Passed {
+		t.Fatalf("equal-envelope oracle=%+v", report.GreedyOracle)
 	}
 }
 

@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "items": [
+    { "purchasable_id": "generator.answering_machine", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1000, "trap_exempt": false, "justification_key": null, "group_ids": [] },
+    { "purchasable_id": "generator.beige_tower", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1000, "trap_exempt": false, "justification_key": null, "group_ids": [] },
+    { "purchasable_id": "generator.dot_matrix_queue", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1000, "trap_exempt": false, "justification_key": null, "group_ids": [] },
+    { "purchasable_id": "generator.nephew_intern", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1000, "trap_exempt": false, "justification_key": null, "group_ids": [] },
+    { "purchasable_id": "upgrade.beige_tower_cache", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1000, "trap_exempt": false, "justification_key": null, "group_ids": [] },
+    { "purchasable_id": "upgrade.continuous_feed_paper", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1000, "trap_exempt": false, "justification_key": null, "group_ids": [] },
+    { "purchasable_id": "upgrade.hold_music_license", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1000, "trap_exempt": false, "justification_key": null, "group_ids": [] },
+    { "purchasable_id": "upgrade.nephew_business_cards", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1000, "trap_exempt": false, "justification_key": null, "group_ids": [] },
+    { "purchasable_id": "upgrade.reply_all_macro", "availability_window": { "from_gate": null, "to_gate": "gate.t0_to_t1" }, "epsilon_ms": 1000, "trap_exempt": false, "justification_key": null, "group_ids": [] }
+  ],
+  "groups": []
+}

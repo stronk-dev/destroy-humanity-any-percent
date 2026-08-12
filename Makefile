@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness t0-t1-relevance commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-ci verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness t0-t1-relevance t1-relevance t0-t1-relevance-all commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-ci verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -14,6 +14,8 @@ CI_TEST_FLAGS ?=
 CI_TEST_COUNT ?= 1
 CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
 BROWSER_TEST_FLAGS ?=
+RELEVANCE_SCENARIO ?= balance/testdata/t0-t1/relevance-scenario-v2.json
+RELEVANCE_OUTPUT ?= planning/t0-t1-content/relevance-report.v3.json
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -131,8 +133,17 @@ first-content-harness:
 
 t0-t1-relevance:
 	cd server && go run ./cmd/balance-harness -mode=relevance -root=.. \
-		-scenario=balance/testdata/t0-t1/relevance-scenario-v2.json \
-		-output=../planning/t0-t1-content/relevance-report.v2.json
+		-scenario=$(RELEVANCE_SCENARIO) \
+		-output=../$(RELEVANCE_OUTPUT)
+
+t1-relevance:
+	$(MAKE) t0-t1-relevance \
+		RELEVANCE_SCENARIO=balance/testdata/t0-t1/relevance-scenario-t1-v2.json \
+		RELEVANCE_OUTPUT=planning/t0-t1-content/relevance-report-t1.v3.json
+
+t0-t1-relevance-all:
+	$(MAKE) t0-t1-relevance
+	$(MAKE) t1-relevance
 
 commons-harness-check:
 	cd server && go test ./harness -run '^TestCommonsPopulationInvariance$$' -count=1

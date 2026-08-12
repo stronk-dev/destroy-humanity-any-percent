@@ -13,7 +13,7 @@
     "reducer": { "enum": ["p05", "worst"] },
     "horizon_ms": { "$ref": "#/$defs/positive" },
     "decision_horizons_ms": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/positive" } },
-    "max_decisions": { "$ref": "#/$defs/positive" }, "beam_width": { "const": 8 }, "beam_children": { "$ref": "#/$defs/positive" },
+    "max_decisions": { "$ref": "#/$defs/positive" }, "beam_width": { "$ref": "#/$defs/positive" }, "beam_children": { "$ref": "#/$defs/positive" },
     "greedy_gap_maximum_ppm": { "type": "integer", "minimum": 0, "maximum": 1000000 },
     "relevance_budget_max_runs": { "$ref": "#/$defs/positive" }, "relevance_budget_max_transitions": { "$ref": "#/$defs/positive" },
     "preflight_ceiling": { "$ref": "#/$defs/positive" }

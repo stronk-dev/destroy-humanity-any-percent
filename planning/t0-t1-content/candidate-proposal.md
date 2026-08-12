@@ -1,6 +1,7 @@
 # T0–T1 candidate proposal
 
-Status: **eight-document core owner-ratified; relevance pin #9 is a review candidate; not mint-authorized**
+Status: **eight-document core owner-ratified; replacement phase-scoped relevance pins are review
+candidates; not mint-authorized**
 
 RFC: `rfc/t0-t1-playable-content.md`
 
@@ -17,15 +18,17 @@ Candidate directory: `balance/testdata/t0-t1/`
 | `harness-scenario-v1.json` | `e74e271be3b844bfde411887af16de06890a9a281596d45b8ad9deb7b1a502a5` | Exact proposed first-hour grammar; harness extensions not implemented |
 | `opportunities-v1.json` | `63e51084863bd00da7d5a0b358f54741b0b0682d8ef25b2fc7cb3da2c77f27cb` | Real Go active-play loader against candidate economy |
 | `presentation-v1.json` | `70953a6dfa53794f9e1e03627f0b2ddb06abb4870550dccc608a9ca0daeba0d7` | Exact proposed grammar; production loader not implemented |
-| `relevance-policy-v2.json` | `f8878cbf6705581eb5ffd88ea51e3719ebf2641c661bbe3d87ff7667002d30bf` | Real Go loader against candidate economy/routes; T01-C11 matrix + three-segment candidate fixture |
+| `relevance-policy-t0-v2.json` | `18a531274f60a7b53517c8c591204e4d02c8050691b7ffea960a1c166ed8c235` | Real Go loader against candidate economy/routes; exact pre-T1 item set |
+| `relevance-policy-t1-v2.json` | `f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef` | Real Go loader against candidate economy/routes; cumulative exact pre-T2 item set |
 | `routes-v1.json` | `a84cce06ae67a68817174b99cfe7191e3c2f9bf47c1c20b4ebab1704baf99cfa` | Real Go Routes loader + candidate literal test |
 
-The eight hashes above are owner-ratified in `rfc/t0-t1-playable-content.md`. Production artifact
-paths remain untouched. The relevance pin #9 candidate now lives at
-`balance/testdata/t0-t1/relevance-policy-v2.json`, with its harness coordinate at
-`balance/testdata/t0-t1/relevance-scenario-v2.json` (review coordinate
-`2f1afb928e1f2d84d2e9748fbbd565bbbdebce24d7c411a0df7feb0b47692629`). It uses the T01-C11
-three-segment grammar and remains subject to designated review and owner ratification.
+The non-relevance hashes above retain their recorded owner ratification in
+`rfc/t0-t1-playable-content.md`; production artifact paths remain untouched. T01-C18 replaces the
+old single relevance coordinate with two review candidates: T0 scenario
+`8871957aaeac2b484a0c11c9b627e9409d9a6cb63e15aabdafe267f4164c9587` and T1 scenario
+`1d9b95ea51ad339102d01a0d2187589dbbb8f21bdaf44f18d99b30992646f037`, paired with the two policy
+hashes above. All four are pending designated review and owner re-ratification; the historical
+pin #9 remains an immutable record, not authority for these replacement bytes.
 
 ## Findings-first remediation
 
