@@ -504,3 +504,51 @@ alone must never mutate the save.
   golden-report commit. Append a remap addendum to the planning log naming old→new hashes
   (the d4c2312 pattern); no other history may move. Marco may veto; absent veto this stands as
   the owner-side authorization.
+
+## Owner rulings 2026-08-12 — the push changes the protocol; T01-C18; my stale text reconciled
+
+### The repository is PUBLISHED — `d05dc13` is on `origin/main`. My rewrite authorization is WITHDRAWN.
+
+Verified: `origin` = `git@github.com:stronk-dev/destroy-humanity-any-percent.git`, `origin/main`
+= `d05dc13`, local 7 ahead. **Codex was right to refuse the rewrite** — the ff44744 authorization
+rested on an unpushed premise that is false, and the rejection record (50f9909) is correct.
+**Standing consequence, effective now: NO history rewrite is possible on any published commit,
+ever.** CLAUDE.md's own successor clause governs — "a wrong-subject commit discovered after that
+point gets a follow-up correction commit and a planning-log ruling, never a rewrite."
+**RULED, the forward fix for `d05dc13`'s packaging violation:** the baseline guard gains a
+CORRECTIONS LEDGER (the `kernel/history-corrections.json` pattern, which exists precisely for
+published-history defects): one entry naming `d05dc13` as a historical `BALANCE-CHANGE:`
+packaging violation — golden combined with code — recording that it is published and therefore
+immutable, and citing the isolated golden commit `a48686d` as its forward correction. The guard
+consults the ledger and passes only for that exact named commit; the rule itself does not soften,
+and any FUTURE combined commit still fails hard. No history moves.
+
+### T01-C18 — the optimization milestone is unreachable by the content being measured
+
+Measured: `beam_children` 1, 2, and 4 all exhaust 2M; even 1 exhausts 10M after ~21 minutes; and
+the greedy reference makes 126 purchases yet reaches only **1.71e9 of the 1e12 target** within
+128 decisions. **The diagnosis is not the beam — it is the target.** `milestone.t3_cash` = 1e12
+is the **t2_to_t3 gate cost — two tiers beyond this catalog.** The T0–T1 scenario has nine
+tier-0/1 generators and a 24-hour horizon; asking a garage to reach a Tier-3 coordinate is a
+mis-specified measurement, and every downstream symptom (no completion, no reached-vs-reached
+oracle, unbounded search) follows from it.
+**RULED:** (1) **A relevance scenario's optimization milestone MUST be provably reachable by the
+reference arm within the declared horizon and decision budget on the content it measures** — this
+becomes a loader-checked property of the scenario document, not an implementer assumption;
+(2) the T0–T1 scenario **retargets to a T0–T1 coordinate** — the first-gate cash coordinate
+(`1e5`, the ruled `gate.t0_to_t1` requirement) unless measurement shows a higher coordinate is
+reached with headroom, in which case use the measured-reachable value; (3) **reachability is
+PROVEN BY MEASUREMENT and recorded before the hash is re-ratified** — reference completion, the
+purchase count, and the decisions consumed; (4) with a reachable target the beam's work collapses
+by construction, so T01-C17's branch A (budget stands at 2,000,000) is expected — if it still
+does not fit, report the measurement and branch B applies as ruled. **No content retune may be
+justified by the current 41 failures** (they remain solver/target artifacts, per T01-C16).
+
+### Reconciliation of my own stale T01-C12 text (the ruling author's job, per the recorded convention)
+
+The withdrawn ruling's static-ceiling language in `aebde56` is superseded in full by the corrected
+T01-C12 in `planning/t0-t1-content/log.md` (runtime counter enforces the budget; the static
+estimator is demoted to a runaway-config guard against its own separate ceiling and is NEVER
+compared to the work budget). Any remaining normative sentence implying the static ceiling gates
+the run is stale text, not contract; this reconciliation is the authority. Thanks for the flag —
+the convention worked as intended.
