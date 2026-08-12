@@ -938,3 +938,24 @@ jobs under their declared deadlines, satisfying F7 against the actual hosted env
   evidence superseded several measurements and is recorded append-only above; that does not make
   the historical handoff inaccurate. It authorizes no implementation beyond the cited rulings and
   changes no owner decision. **No findings.**
+
+## 2026-08-12 — Codex handoff: F1/F2 instrument repair ready for designated review
+
+- **Implementation range:** `{94487f9, 764e789}`. The first commit contains the fail-loud
+  reference guard, visible instrument exclusions, schema-v4 validation, discriminating tests, and
+  the reconciled records. The second is the isolated generated golden required by the baseline
+  protocol; the first commit names `harness-check` and its stale-golden reason explicitly.
+- **Measured guard:** T0 first completes at 331 decisions; the candidate uses 384 headroom. The
+  screened reference reaches at 900,000 ms in 257 decisions and excludes
+  `upgrade.continuous_feed_paper`. T1 remains milestone-unreached at the 24-hour horizon even with
+  a temporary 2,048-decision measurement envelope. No production budget or content hash was
+  changed on incomplete work.
+- **Verification read to completion:** focused starvation/schema tests; production-path fixture
+  (73.59 s); full `make test-harness` (334.17 s); `make verify-schema`; `make harness-check`;
+  `make verify-server-core`; cold-linux `make test-go-ci` (harness 583.42 s under amd64 emulation);
+  and repository-wide `make verify`, including typecheck, 6,650 unit tests, 19,992 browser tests,
+  performance, history guards, generated-byte checks, and schema validation. All GREEN at range
+  head; tree clean.
+- **Status:** implemented and self-checked, **ready for designated cross-party review**. Not
+  approved or archival-eligible. T01-C20 remains the owner blocker before ranker semantics,
+  measured branch-B budgets, scenario hashes, or content findings may proceed.
