@@ -16,13 +16,20 @@ import (
 )
 
 type relevanceCandidate struct {
-	ID                      string
-	PaybackMS               int64
-	EarliestPositiveDeltaMS int64
-	AtMS                    int64
-	State                   *save.State
-	Revision                int64
-	RoleActivations         []production.RoleActivation
+	ID              string
+	Projection      relevanceProjection
+	AtMS            int64
+	State           *save.State
+	Revision        int64
+	RoleActivations []production.RoleActivation
+}
+
+// relevanceProjection is an exact comparison ratio in milliseconds. Keeping
+// numerator and denominator separate avoids rounding or overflowing projected
+// times that lie beyond the safe-integer domain early in a run.
+type relevanceProjection struct {
+	Numerator   decimal.Decimal
+	Denominator decimal.Decimal
 }
 
 type relevanceOpportunityDecision struct {
@@ -268,18 +275,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			IndividualDeltas:   []RelevanceDelta{individual}, ActionRemovalDeltas: []RelevanceDelta{removal}, Support: support,
 			SupportingGroupID: supportingGroup, NearestPassingEpsilonMS: nearest, RelevancePassed: relevancePassed, TrapPassed: trapPassed})
 		if !relevancePassed {
-			prefix := ""
-			if instrumentAffected {
-				prefix = "instrument_affected:"
-			}
-			report.Failures = append(report.Failures, prefix+"relevance_floor:"+item.PurchasableID)
+			report.Failures = append(report.Failures, relevanceFloorFailure("relevance_floor", item.PurchasableID, instrumentAffected))
 		}
 		if !trapPassed {
-			prefix := ""
-			if instrumentAffected {
-				prefix = "instrument_affected:"
-			}
-			report.Failures = append(report.Failures, prefix+"trap_floor:"+item.PurchasableID)
+			report.Failures = append(report.Failures, relevanceFloorFailure("trap_floor", item.PurchasableID, instrumentAffected))
 		}
 	}
 	report.RoleActivations = sortedRoleActivations(baselineRoles)
@@ -327,6 +326,14 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		return RelevanceReport{}, err
 	}
 	return report, nil
+}
+
+func relevanceFloorFailure(kind, id string, instrumentAffected bool) string {
+	prefix := ""
+	if instrumentAffected {
+		prefix = "instrument_affected:"
+	}
+	return prefix + kind + ":" + id
 }
 
 func relevanceStarvationDiagnostic(report RelevanceReport, declaredRuns, executedRuns, declaredTransitions, executedTransitions int64) RelevanceReport {
@@ -593,17 +600,21 @@ func (suite *RelevanceSuite) runReferenceWithOpportunity(mask, opportunityMask p
 			decisionGuardExhausted = false
 			break
 		}
-		candidates, rankErr := suite.rankCandidates(state, revision, nowMS, next, effectiveMask, counter)
+		candidates, bank, bankAtMS, rankErr := suite.rankDecisionOptions(state, revision, nowMS, next, 1, effectiveMask, counter)
 		if rankErr != nil {
 			return relevanceRunResult{}, rankErr
 		}
-		if len(candidates) == 0 {
-			advanced, advanceErr := suite.advance(state, revision, next, effectiveMask, counter)
+		if bank || len(candidates) == 0 {
+			advanceAt := next
+			if bank {
+				advanceAt = bankAtMS
+			}
+			advanced, advanceErr := suite.advance(state, revision, advanceAt, effectiveMask, counter)
 			if advanceErr != nil {
 				return relevanceRunResult{}, advanceErr
 			}
 			mergeRoleActivations(result.Roles, advanced.RoleActivations)
-			nowMS = next
+			nowMS = advanceAt
 			continue
 		}
 		chosen := candidates[0]
@@ -645,14 +656,61 @@ func (suite *RelevanceSuite) rankCandidates(state *save.State, revision, nowMS, 
 }
 
 func (suite *RelevanceSuite) rankBeamCandidates(state *save.State, revision, nowMS, horizonMS int64, mask production.AblationMask, counter *relevanceCounter) ([]relevanceCandidate, error) {
+	candidates, _, _, err := suite.rankDecisionOptions(state, revision, nowMS, horizonMS,
+		suite.Scenario.BeamChildren, mask, counter)
+	return candidates, err
+}
+
+// rankDecisionOptions orders purchases and the first-class bank option by the
+// same projected milestone time. Purchases win equal scores and then tie-break
+// by raw-byte ID. bankAtMS is the next declared boundary or the milestone,
+// whichever the closed form reaches first.
+func (suite *RelevanceSuite) rankDecisionOptions(state *save.State, revision, nowMS, horizonMS, limit int64,
+	mask production.AblationMask, counter *relevanceCounter) ([]relevanceCandidate, bool, int64, error) {
 	candidates, err := suite.rankCandidates(state, revision, nowMS, horizonMS, mask, counter)
 	if err != nil {
-		return nil, err
+		return nil, false, 0, err
 	}
-	if int64(len(candidates)) > suite.Scenario.BeamChildren {
-		candidates = candidates[:suite.Scenario.BeamChildren]
+	bankProjection, bankReachable, err := suite.projectedMilestone(state, mask)
+	if err != nil {
+		return nil, false, 0, err
 	}
-	return candidates, nil
+	return selectProjectedDecisionOptions(candidates, bankProjection, bankReachable, nowMS, horizonMS, limit)
+}
+
+func selectProjectedDecisionOptions(candidates []relevanceCandidate, bankProjection relevanceProjection, bankReachable bool,
+	nowMS, horizonMS, limit int64) ([]relevanceCandidate, bool, int64, error) {
+	bankAtMS := horizonMS
+	if bankReachable {
+		bankMS, ratioErr := ceilDecimalRatio(bankProjection.Numerator, bankProjection.Denominator)
+		if ratioErr == nil && bankMS <= relevanceMaxSafeInteger-nowMS && nowMS+bankMS < bankAtMS {
+			bankAtMS = nowMS + bankMS
+		} else if ratioErr != nil && !errors.Is(ratioErr, errRelevanceRatioOutsideExactDomain) {
+			return nil, false, 0, ratioErr
+		}
+	}
+	if limit < 1 {
+		return nil, false, 0, errors.New("relevance decision option limit must be positive")
+	}
+	if !bankReachable {
+		if int64(len(candidates)) > limit {
+			candidates = candidates[:limit]
+		}
+		return candidates, false, bankAtMS, nil
+	}
+	// Purchases win exact ties, so bank follows every purchase with the same
+	// projected milestone time.
+	bankIndex := sort.Search(len(candidates), func(index int) bool {
+		return compareRelevanceProjections(candidates[index].Projection, bankProjection) > 0
+	})
+	if int64(bankIndex) >= limit {
+		return candidates[:limit], false, bankAtMS, nil
+	}
+	purchaseLimit := limit - 1
+	if int64(len(candidates)) > purchaseLimit {
+		candidates = candidates[:purchaseLimit]
+	}
+	return candidates, true, bankAtMS, nil
 }
 
 func (suite *RelevanceSuite) rankDirectCandidateIDs(state *save.State, revision, nowMS, horizonMS int64, ids []string, mask production.AblationMask, counter *relevanceCounter) ([]relevanceCandidate, error) {
@@ -675,14 +733,15 @@ func (suite *RelevanceSuite) rankDirectCandidateIDs(state *save.State, revision,
 
 func sortRelevanceCandidates(result []relevanceCandidate) {
 	sort.Slice(result, func(left, right int) bool {
-		if result[left].PaybackMS != result[right].PaybackMS {
-			return result[left].PaybackMS < result[right].PaybackMS
-		}
-		if result[left].EarliestPositiveDeltaMS != result[right].EarliestPositiveDeltaMS {
-			return result[left].EarliestPositiveDeltaMS < result[right].EarliestPositiveDeltaMS
+		if comparison := compareRelevanceProjections(result[left].Projection, result[right].Projection); comparison != 0 {
+			return comparison < 0
 		}
 		return result[left].ID < result[right].ID
 	})
+}
+
+func compareRelevanceProjections(left, right relevanceProjection) int {
+	return int(left.Numerator.Mul(right.Denominator).Cmp(right.Numerator.Mul(left.Denominator)))
 }
 
 func (suite *RelevanceSuite) rankCandidate(state *save.State, revision, nowMS, horizonMS int64, id string, mask production.AblationMask, counter *relevanceCounter) (relevanceCandidate, bool, error) {
@@ -721,62 +780,42 @@ func (suite *RelevanceSuite) rankCandidate(state *save.State, revision, nowMS, h
 		return relevanceCandidate{}, false, err
 	}
 	activations = append(activations, simulation.RoleActivations...)
-	grossAt := func(atMS int64) (decimal.Decimal, error) {
-		baseline, cloneErr := cloneState(suite.Catalog, baseAtBuy)
-		if cloneErr != nil {
-			return decimal.NaN, cloneErr
-		}
-		candidate, cloneErr := cloneState(suite.Catalog, candidateAtBuy)
-		if cloneErr != nil {
-			return decimal.NaN, cloneErr
-		}
-		if atMS > earliest {
-			if _, advanceErr := suite.advance(baseline, revision, atMS, mask, counter); advanceErr != nil {
-				return decimal.NaN, advanceErr
-			}
-			if _, advanceErr := suite.advance(candidate, revision+1, atMS, mask, counter); advanceErr != nil {
-				return decimal.NaN, advanceErr
-			}
-		}
-		baseBalance, _ := baseline.Ledger.Balance(resourceID)
-		candidateBalance, _ := candidate.Ledger.Balance(resourceID)
-		return candidateBalance.Add(cost).Sub(baseBalance), nil
-	}
-	gross, err := grossAt(horizonMS)
+	projection, reachable, err := suite.projectedMilestone(candidateAtBuy, mask)
 	if err != nil {
-		return relevanceCandidate{}, false, err
+		return relevanceCandidate{}, false, fmt.Errorf("relevance candidate %s projected milestone: %w", id, err)
 	}
-	if !gross.Gt(decimal.Zero) {
+	if !reachable {
 		return relevanceCandidate{}, false, nil
 	}
-	positiveLow, positiveHigh := earliest, horizonMS
-	for positiveLow < positiveHigh {
-		middle := positiveLow + (positiveHigh-positiveLow)/2
-		value, valueErr := grossAt(middle)
-		if valueErr != nil {
-			return relevanceCandidate{}, false, valueErr
-		}
-		if value.Gt(decimal.Zero) {
-			positiveHigh = middle
-		} else {
-			positiveLow = middle + 1
-		}
+	waitMS := earliest - nowMS
+	if waitMS > 0 {
+		projection.Numerator = projection.Numerator.Add(projection.Denominator.Mul(decimal.FromString(strconv.FormatInt(waitMS, 10))))
 	}
-	duration := horizonMS - earliest
-	value, err := ceilDecimalRatio(cost.Mul(decimal.FromFloat64(float64(duration))), gross)
-	if err != nil {
-		if errors.Is(err, errRelevanceRatioOutsideExactDomain) {
-			return relevanceCandidate{}, false, nil
-		}
-		return relevanceCandidate{}, false, fmt.Errorf("relevance candidate %s payback: %w", id, err)
-	}
-	if value > relevanceMaxSafeInteger-(earliest-nowMS) {
-		return relevanceCandidate{}, false, fmt.Errorf("relevance candidate %s payback exceeds exact integer domain", id)
-	}
-	directPayback := earliest - nowMS + value
-	return relevanceCandidate{ID: id, PaybackMS: directPayback,
-		EarliestPositiveDeltaMS: positiveLow, AtMS: earliest, State: candidateAtBuy, Revision: revision + 1,
+	return relevanceCandidate{ID: id, Projection: projection,
+		AtMS: earliest, State: candidateAtBuy, Revision: revision + 1,
 		RoleActivations: activations}, true, nil
+}
+
+// projectedMilestone evaluates the T01-C20 closed form as a comparison ratio
+// against the production engine's canonical masked rate. The rate is per
+// second, hence the exact ×1000 numerator for millisecond scores.
+func (suite *RelevanceSuite) projectedMilestone(state *save.State, mask production.AblationMask) (relevanceProjection, bool, error) {
+	balance, ok := state.Ledger.Balance(suite.Scenario.Milestone.ResourceID)
+	target, err := decimal.ParseCanonical(suite.Scenario.Milestone.Amount)
+	if err != nil || !ok {
+		return relevanceProjection{}, false, err
+	}
+	if balance.Gte(target) {
+		return relevanceProjection{Numerator: decimal.Zero, Denominator: decimal.One}, true, nil
+	}
+	rate, err := production.SimulateResourceRate(state, suite.Catalog, suite.Scenario.Milestone.ResourceID, mask)
+	if err != nil {
+		return relevanceProjection{}, false, err
+	}
+	if !rate.Gt(decimal.Zero) {
+		return relevanceProjection{}, false, nil
+	}
+	return relevanceProjection{Numerator: target.Sub(balance).Mul(decimal.New(1, 3)), Denominator: rate}, true, nil
 }
 
 func (suite *RelevanceSuite) earliestAffordable(state *save.State, revision, nowMS, horizonMS int64, resourceID string, cost decimal.Decimal, mask production.AblationMask, counter *relevanceCounter) (int64, bool, error) {
@@ -1270,9 +1309,9 @@ func stateDigest(state *save.State) (string, error) {
 	return hex.EncodeToString(digest[:]), nil
 }
 
-// runBeam performs the ruled declared-width search. Each child is scored by a
-// deterministic greedy rollout; equal-state nodes deduplicate on state hash +
-// virtual time, with raw-byte paths as the final ordering key.
+// runBeam performs the ruled declared-width search. Each child is scored by
+// the same T01-C20 projected-milestone metric as the reference arm; equal-state
+// nodes deduplicate on state hash + virtual time, with raw-byte paths last.
 func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) {
 	effectiveMask, _, err := suite.opportunityAwareMask(production.AblationMask{}, counter)
 	if err != nil {
@@ -1283,12 +1322,13 @@ func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) 
 
 func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.AblationMask, counter *relevanceCounter) (*int64, error) {
 	type node struct {
-		state    *save.State
-		revision int64
-		atMS     int64
-		path     string
-		reached  *int64
-		score    int64
+		state          *save.State
+		revision       int64
+		atMS           int64
+		path           string
+		reached        *int64
+		score          relevanceProjection
+		scoreReachable bool
 	}
 	initial, err := suite.newRelevanceState()
 	if err != nil {
@@ -1318,7 +1358,8 @@ func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.Abl
 			if !ok {
 				continue
 			}
-			candidates, rankErr := suite.rankBeamCandidates(current.state, current.revision, current.atMS, next, effectiveMask, counter)
+			candidates, bank, bankAtMS, rankErr := suite.rankDecisionOptions(current.state, current.revision,
+				current.atMS, next, suite.Scenario.BeamChildren, effectiveMask, counter)
 			if rankErr != nil {
 				return nil, rankErr
 			}
@@ -1326,14 +1367,16 @@ func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.Abl
 				children = append(children, node{state: candidate.State, revision: candidate.Revision, atMS: candidate.AtMS,
 					path: current.path + "/" + candidate.ID})
 			}
-			waitState, cloneErr := cloneState(suite.Catalog, current.state)
-			if cloneErr != nil {
-				return nil, cloneErr
+			if bank {
+				waitState, cloneErr := cloneState(suite.Catalog, current.state)
+				if cloneErr != nil {
+					return nil, cloneErr
+				}
+				if _, advanceErr := suite.advance(waitState, current.revision, bankAtMS, effectiveMask, counter); advanceErr != nil {
+					return nil, advanceErr
+				}
+				children = append(children, node{state: waitState, revision: current.revision, atMS: bankAtMS, path: current.path + "/~bank"})
 			}
-			if _, advanceErr := suite.advance(waitState, current.revision, next, effectiveMask, counter); advanceErr != nil {
-				return nil, advanceErr
-			}
-			children = append(children, node{state: waitState, revision: current.revision, atMS: next, path: current.path + "/~wait"})
 		}
 		pruned := make([]node, 0, len(children))
 		for index := range children {
@@ -1350,9 +1393,8 @@ func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.Abl
 			}
 		}
 		// R11 defines node identity as canonical state hash + virtual time.
-		// Collapse identical children before running their expensive greedy
-		// completions; identical nodes have identical scores, so the raw-byte
-		// path tie-break can be applied without evaluating duplicate rollouts.
+		// Collapse identical children before scoring them; identical nodes have
+		// identical projections, so the raw-byte path tie-break stays canonical.
 		dedup := map[string]node{}
 		for index := range pruned {
 			child := pruned[index]
@@ -1373,24 +1415,25 @@ func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.Abl
 		sort.Slice(children, func(left, right int) bool { return children[left].path < children[right].path })
 		for index := range children {
 			child := &children[index]
-			rolloutState, cloneErr := cloneState(suite.Catalog, child.state)
-			if cloneErr != nil {
-				return nil, cloneErr
-			}
-			remainingDecisions := suite.Scenario.MaxDecisions - depth - 1
-			rollout, rolloutErr := suite.runGreedyRolloutFromRanked(rolloutState, child.revision, child.atMS,
-				remainingDecisions, effectiveMask, counter)
-			if rolloutErr != nil {
-				return nil, rolloutErr
-			}
-			child.reached = rollout.MilestoneMS
-			child.score = suite.Scenario.HorizonMS + 1
-			if child.reached != nil {
-				child.score = *child.reached
-				if best == nil || *child.reached < *best {
-					copy := *child.reached
+			if reached, reachErr := suite.relevanceMilestoneReached(child.state); reachErr != nil {
+				return nil, reachErr
+			} else if reached {
+				copy := child.atMS
+				child.reached, child.scoreReachable = &copy, true
+				child.score = relevanceProjection{Numerator: decimal.Zero, Denominator: decimal.One}
+				if best == nil || copy < *best {
 					best = &copy
 				}
+				continue
+			}
+			projection, reachable, projectionErr := suite.projectedMilestone(child.state, effectiveMask)
+			if projectionErr != nil {
+				return nil, projectionErr
+			}
+			child.score, child.scoreReachable = projection, reachable
+			if reachable && child.atMS > 0 {
+				child.score.Numerator = child.score.Numerator.Add(
+					child.score.Denominator.Mul(decimal.FromString(strconv.FormatInt(child.atMS, 10))))
 			}
 		}
 		frontier = frontier[:0]
@@ -1398,8 +1441,13 @@ func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.Abl
 			frontier = append(frontier, child)
 		}
 		sort.Slice(frontier, func(left, right int) bool {
-			if frontier[left].score != frontier[right].score {
-				return frontier[left].score < frontier[right].score
+			if frontier[left].scoreReachable != frontier[right].scoreReachable {
+				return frontier[left].scoreReachable
+			}
+			if frontier[left].scoreReachable {
+				if comparison := compareRelevanceProjections(frontier[left].score, frontier[right].score); comparison != 0 {
+					return comparison < 0
+				}
 			}
 			return frontier[left].path < frontier[right].path
 		})
@@ -1462,17 +1510,10 @@ func (suite *RelevanceSuite) runReferenceFrom(state *save.State, revision, nowMS
 }
 
 func (suite *RelevanceSuite) runReferenceFromRanked(state *save.State, revision, nowMS, maxDecisions int64, mask production.AblationMask, counter *relevanceCounter) (relevanceRunResult, error) {
-	return suite.runRankedCompletion(state, revision, nowMS, maxDecisions, mask, counter, false)
+	return suite.runRankedCompletion(state, revision, nowMS, maxDecisions, mask, counter)
 }
 
-// runGreedyRolloutFromRanked explicitly allows a beam-scoring rollout to stop
-// making purchases and coast. It is a heuristic completion, never a reference
-// measurement; reference runs fail loud when their decision guard is exhausted.
-func (suite *RelevanceSuite) runGreedyRolloutFromRanked(state *save.State, revision, nowMS, maxDecisions int64, mask production.AblationMask, counter *relevanceCounter) (relevanceRunResult, error) {
-	return suite.runRankedCompletion(state, revision, nowMS, maxDecisions, mask, counter, true)
-}
-
-func (suite *RelevanceSuite) runRankedCompletion(state *save.State, revision, nowMS, maxDecisions int64, mask production.AblationMask, counter *relevanceCounter, coastAfterGuard bool) (relevanceRunResult, error) {
+func (suite *RelevanceSuite) runRankedCompletion(state *save.State, revision, nowMS, maxDecisions int64, mask production.AblationMask, counter *relevanceCounter) (relevanceRunResult, error) {
 	result := relevanceRunResult{Purchases: map[string]int64{}, Roles: map[string]RoleActivationCount{}, FinalState: state}
 	decisionGuardExhausted := true
 	for decision := int64(0); decision < maxDecisions; decision++ {
@@ -1498,15 +1539,19 @@ func (suite *RelevanceSuite) runRankedCompletion(state *save.State, revision, no
 			decisionGuardExhausted = false
 			break
 		}
-		candidates, err := suite.rankCandidates(state, revision, nowMS, next, mask, counter)
+		candidates, bank, bankAtMS, err := suite.rankDecisionOptions(state, revision, nowMS, next, 1, mask, counter)
 		if err != nil {
 			return relevanceRunResult{}, err
 		}
-		if len(candidates) == 0 {
-			if _, err := suite.advance(state, revision, next, mask, counter); err != nil {
+		if bank || len(candidates) == 0 {
+			advanceAt := next
+			if bank {
+				advanceAt = bankAtMS
+			}
+			if _, err := suite.advance(state, revision, advanceAt, mask, counter); err != nil {
 				return relevanceRunResult{}, err
 			}
-			nowMS = next
+			nowMS = advanceAt
 			continue
 		}
 		chosen := candidates[0]
@@ -1523,7 +1568,7 @@ func (suite *RelevanceSuite) runRankedCompletion(state *save.State, revision, no
 		}
 	}
 	result.DecisionStarved = result.MilestoneMS == nil && decisionGuardExhausted
-	if result.MilestoneMS == nil && (!result.DecisionStarved || coastAfterGuard) && nowMS < suite.Scenario.HorizonMS {
+	if result.MilestoneMS == nil && !result.DecisionStarved && nowMS < suite.Scenario.HorizonMS {
 		finishedMS, reachedMS, activations, err := suite.finishToMilestone(state, revision, nowMS, mask, counter)
 		if err != nil {
 			return relevanceRunResult{}, err

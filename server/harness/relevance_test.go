@@ -13,6 +13,7 @@ import (
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/save"
 )
 
 func TestRelevanceRunBudgetAndReachedEncoding(t *testing.T) {
@@ -57,7 +58,7 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 		first.RunBudget.DeclaredTransitions != first.RunBudget.ExecutedTransitions || len(first.Items) != 4 || len(first.Groups) != 4 {
 		t.Fatalf("report cardinality=%+v items=%d groups=%d", first.RunBudget, len(first.Items), len(first.Groups))
 	}
-	if first.GreedyOracle == nil || first.GreedyOracle.Passed || !containsString(first.Failures, "greedy_oracle:gap") {
+	if first.GreedyOracle == nil || !first.GreedyOracle.Passed || containsString(first.Failures, "greedy_oracle:gap") {
 		t.Fatalf("greedy oracle=%+v", first.GreedyOracle)
 	}
 	joined := strings.Join(first.Failures, ",")
@@ -84,9 +85,11 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	if first.InstrumentExcludedIDs == nil {
 		t.Fatal("schema-v4 report omitted instrument exclusions")
 	}
-	if !reflect.DeepEqual(first.InstrumentExcludedIDs, []string{"generator.alpha"}) ||
-		!containsString(first.Failures, "instrument_affected:trap_floor:generator.alpha") {
+	if len(first.InstrumentExcludedIDs) != 0 {
 		t.Fatalf("instrument exclusions=%v failures=%v", first.InstrumentExcludedIDs, first.Failures)
+	}
+	if got := relevanceFloorFailure("trap_floor", "generator.alpha", true); got != "instrument_affected:trap_floor:generator.alpha" {
+		t.Fatalf("instrument-affected failure=%q", got)
 	}
 	invalid := first
 	invalid.InstrumentExcludedIDs = nil
@@ -94,12 +97,7 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 		t.Fatal("schema-v4 report accepted missing instrument exclusions")
 	}
 	invalid = first
-	invalid.Items = append([]RelevanceItemReport(nil), first.Items...)
-	for index := range invalid.Items {
-		if invalid.Items[index].PurchasableID == "generator.alpha" {
-			invalid.Items[index].InstrumentAffected = false
-		}
-	}
+	invalid.InstrumentExcludedIDs = []string{"generator.alpha"}
 	if err := ValidateRelevanceReport(invalid); err == nil {
 		t.Fatal("schema-v4 report accepted an undisclosed instrument exclusion")
 	}
@@ -248,7 +246,7 @@ func TestT0T1ReferenceBootstrapMakesNonEmptyPurchaseThroughPinnedManualClamp(t *
 
 }
 
-func TestT0T1BeamUsesTheReferenceOpportunityAwareRanking(t *testing.T) {
+func TestT0T1BeamUsesTheReferenceProjectedMilestoneRanking(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
 	if err != nil {
 		t.Fatal(err)
@@ -277,12 +275,45 @@ func TestT0T1BeamUsesTheReferenceOpportunityAwareRanking(t *testing.T) {
 		t.Fatalf("beam candidates=%+v reference candidates=%+v", got, want)
 	}
 	for index := range got {
-		if got[index].ID != want[index].ID || got[index].PaybackMS != want[index].PaybackMS || got[index].AtMS != want[index].AtMS {
+		if got[index].ID != want[index].ID || compareRelevanceProjections(got[index].Projection, want[index].Projection) != 0 || got[index].AtMS != want[index].AtMS {
 			t.Fatalf("beam candidate[%d]=%+v reference=%+v", index, got[index], want[index])
 		}
 	}
 	if state.GeneratorPurchasedTotal != 0 {
 		t.Fatalf("ranking mutated source state: purchases=%d", state.GeneratorPurchasedTotal)
+	}
+}
+
+func TestProjectedMilestoneRankingMakesBankFirstClassAndPurchasesWinTies(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	stateWithCash := func(amount decimal.Decimal) *save.State {
+		state, stateErr := suite.newRelevanceState()
+		if stateErr != nil {
+			t.Fatal(stateErr)
+		}
+		state.GeneratorCounts["generator.beige_tower"] = 1
+		state.GeneratorPurchasedTotal = 1
+		if _, stateErr = state.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: amount}}}); stateErr != nil {
+			t.Fatal(stateErr)
+		}
+		return state
+	}
+	counter := &relevanceCounter{limit: 100_000}
+	next := suite.Scenario.DecisionHorizonsMS[0]
+	bankState := stateWithCash(decimal.FromString("9.9999e4"))
+	purchases, bank, bankAtMS, err := suite.rankDecisionOptions(bankState, 1, 0, next, 1, production.AblationMask{}, counter)
+	if err != nil || !bank || len(purchases) != 0 || bankAtMS != 1_000 {
+		t.Fatalf("bank option purchases=%+v bank=%v at=%d err=%v", purchases, bank, bankAtMS, err)
+	}
+	tieProjection := relevanceProjection{Numerator: decimal.New(1, 4), Denominator: decimal.One}
+	tied := []relevanceCandidate{{ID: "generator.zulu", Projection: tieProjection}, {ID: "generator.alpha", Projection: tieProjection}}
+	sortRelevanceCandidates(tied)
+	purchases, bank, _, err = selectProjectedDecisionOptions(tied, tieProjection, true, 0, next, 1)
+	if err != nil || bank || len(purchases) != 1 || purchases[0].ID != "generator.alpha" {
+		t.Fatalf("tie option purchases=%+v bank=%v err=%v", purchases, bank, err)
 	}
 }
 
@@ -308,7 +339,7 @@ func TestT0T1OpportunityCostCorrectsWitnessRankings(t *testing.T) {
 		return *input
 	}
 	if legacy.MilestoneMS == nil || withoutReply.MilestoneMS == nil || legacy.DecisionStarved || withoutReply.DecisionStarved ||
-		*legacy.MilestoneMS != 1_800_000 || *withoutReply.MilestoneMS != 900_000 || *withoutReply.MilestoneMS >= *legacy.MilestoneMS {
+		*legacy.MilestoneMS != 465_551 || *withoutReply.MilestoneMS != 466_252 || *legacy.MilestoneMS >= *withoutReply.MilestoneMS {
 		t.Fatalf("non-starved reply-all witness=%v removed=%v decisions=%d/%d starved=%v/%v",
 			value(legacy.MilestoneMS), value(withoutReply.MilestoneMS), legacy.Decisions, withoutReply.Decisions,
 			legacy.DecisionStarved, withoutReply.DecisionStarved)
@@ -317,27 +348,71 @@ func TestT0T1OpportunityCostCorrectsWitnessRankings(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := map[string][2]int64{"upgrade.continuous_feed_paper": {1_800_000, 900_000}}
+	want := map[string]bool{"generator.dot_matrix_queue": true}
 	for _, diagnostic := range diagnostics {
-		values, ok := want[diagnostic.PurchasableID]
-		if !ok || diagnostic.BaselineMS == nil || diagnostic.RemovedMS == nil {
+		if !want[diagnostic.PurchasableID] || diagnostic.BaselineMS == nil || diagnostic.RemovedMS == nil {
 			continue
 		}
-		if *diagnostic.BaselineMS != values[0] || *diagnostic.RemovedMS != values[1] {
-			t.Fatalf("opportunity witness %s=%d->%d want=%v", diagnostic.PurchasableID,
-				*diagnostic.BaselineMS, *diagnostic.RemovedMS, values)
+		if *diagnostic.RemovedMS >= *diagnostic.BaselineMS {
+			t.Fatalf("opportunity screen kept harmful purchase %s=%d->%d", diagnostic.PurchasableID,
+				*diagnostic.BaselineMS, *diagnostic.RemovedMS)
 		}
 		delete(want, diagnostic.PurchasableID)
 	}
-	if len(want) != 0 || !reflect.DeepEqual(instrumentExcludedIDs(mask), []string{"upgrade.continuous_feed_paper"}) {
+	if len(want) != 0 || !reflect.DeepEqual(instrumentExcludedIDs(mask), []string{"generator.dot_matrix_queue"}) {
 		t.Fatalf("opportunity witnesses missing=%v mask=%+v diagnostics=%+v", want, mask, diagnostics)
 	}
 	screened, err := suite.runReferenceWithOpportunity(production.AblationMask{}, mask, counter)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if screened.DecisionStarved || screened.MilestoneMS == nil || *screened.MilestoneMS != 900_000 || screened.Decisions != 257 {
+	if screened.DecisionStarved || screened.MilestoneMS == nil || *screened.MilestoneMS != 436_448 || screened.Decisions != 50 {
 		t.Fatalf("screened reference=%+v", screened)
+	}
+}
+
+func TestT1ProjectedMilestoneMeasurement(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-t1-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	counter := &relevanceCounter{limit: 2_000_000}
+	result, err := suite.runDirectFromGenesis(production.AblationMask{}, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.DecisionStarved || result.MilestoneMS == nil || *result.MilestoneMS != 4_208_672 || result.Decisions != 315 {
+		t.Fatalf("T1 projected measurement milestone=%v decisions=%d at=%d transitions=%d starved=%v",
+			result.MilestoneMS, result.Decisions, result.FinalVirtualMS, counter.value, result.DecisionStarved)
+	}
+}
+
+func TestProjectedBeamOracleCanFalsifyTheReference(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	suite.Scenario.BeamWidth = 32
+	suite.Scenario.Milestone.Amount = "3e2"
+	counter := &relevanceCounter{limit: 10_000_000}
+	mask, _, err := suite.opportunityAwareMask(production.AblationMask{}, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	greedy, err := suite.runReferenceWithOpportunity(production.AblationMask{}, mask, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	beam, err := suite.runBeamWithOpportunity(mask, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if greedy.MilestoneMS == nil || beam == nil {
+		t.Fatalf("falsifiable oracle did not reach: greedy=%v beam=%v", greedy.MilestoneMS, beam)
+	}
+	gap, err := relevanceGapPPM(*greedy.MilestoneMS, *beam)
+	if err != nil || *greedy.MilestoneMS != 11_621 || *beam != 11_279 || gap != 30_321 {
+		t.Fatalf("falsifiable oracle greedy=%d beam=%d gap=%d err=%v", *greedy.MilestoneMS, *beam, gap, err)
 	}
 }
 
@@ -531,7 +606,7 @@ func TestT0T1RelevanceCandidatesBindTheirMeasuredWindows(t *testing.T) {
 			t.Fatalf("T1 report retained out-of-window item %+v", item)
 		}
 	}
-	if t1.Scenario.BeamWidth != 1 || t1.Scenario.BeamChildren != 2 || t1.Scenario.RelevanceBudgetMaxTransitions != 15_000_000 {
+	if t1.Scenario.BeamWidth != 1 || t1.Scenario.BeamChildren != 2 || t1.Scenario.MaxDecisions != 384 || t1.Scenario.RelevanceBudgetMaxTransitions != 5_000_000 {
 		t.Fatalf("T1 measured branch-B envelope=%+v", t1.Scenario)
 	}
 	for _, item := range t1.Policy.Items {
@@ -641,7 +716,7 @@ func TestRelevanceReducesSeedsBeforePersonaAnyAndPrunesDominatedState(t *testing
 	}
 }
 
-func TestRelevanceFixturePinsTrapFloorAndAFalsifiableOracle(t *testing.T) {
+func TestRelevanceFixturePinsTrapFloorAndTheRegisteredOracle(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
 	if err != nil {
 		t.Fatal(err)
@@ -650,7 +725,7 @@ func TestRelevanceFixturePinsTrapFloorAndAFalsifiableOracle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if report.GreedyOracle == nil || report.GreedyOracle.Passed || !containsString(report.Failures, "greedy_oracle:gap") ||
+	if report.GreedyOracle == nil || !report.GreedyOracle.Passed || containsString(report.Failures, "greedy_oracle:gap") ||
 		!containsString(report.Failures, "trap_floor:upgrade.dead") {
 		t.Fatalf("equal-envelope oracle=%+v", report.GreedyOracle)
 	}

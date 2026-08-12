@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/accrualhook"
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/multiplier"
@@ -54,6 +55,37 @@ type SimulationResult struct {
 type AdvanceSimulationResult struct {
 	Evaluation      EvaluationResult
 	RoleActivations []RoleActivation
+}
+
+// SimulateResourceRate projects one resource's canonical current per-second
+// production rate under a harness-only ablation mask. It shares the exact
+// contribution and generator-rate assembly used by SimulateAdvance; callers
+// must not reconstruct production arithmetic from catalog rows.
+func SimulateResourceRate(state *save.State, catalog *economy.Catalog, resourceID string, mask AblationMask) (decimal.Decimal, error) {
+	if state == nil || state.Ledger == nil || state.Ledger.Scope() != economy.ScopeCompany || catalog == nil {
+		return decimal.NaN, ErrInvalidEngineState
+	}
+	resource, exists := catalog.Resource(resourceID)
+	if !exists || resource.Scope != economy.ScopeCompany {
+		return decimal.NaN, ErrInvalidEngineState
+	}
+	policy, err := simulationPolicyFor(catalog, mask)
+	if err != nil {
+		return decimal.NaN, err
+	}
+	contributions, err := assembleContributionsWithPolicy(state, catalog, nil, policy)
+	if err != nil {
+		return decimal.NaN, err
+	}
+	purchased, provisioned, err := projectionGeneratorCounts(catalog, state)
+	if err != nil {
+		return decimal.NaN, err
+	}
+	rates, err := ratesWithProvisionedAndPolicy(catalog, purchased, provisioned, contributions, policy)
+	if err != nil {
+		return decimal.NaN, err
+	}
+	return decimal.SumDeterministic(rates[resourceID]), nil
 }
 
 type simulationPolicy struct {

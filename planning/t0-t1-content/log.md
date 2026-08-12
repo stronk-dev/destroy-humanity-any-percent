@@ -1003,3 +1003,41 @@ is the parameter to revisit — report it, do not stretch a target to fit.
 incomplete run, as Codex correctly refused) → re-derive all four hashes → designated review →
 ratification → content dispositions. **The 4,000,000 T0 ceiling intentionally failing in the
 meantime is the correct state.**
+
+## 2026-08-12 — Codex T01-C20/C21 implementation measurements
+
+The T01-C20 score is implemented as an exact comparison ratio: the numerator is
+`(target - balance) * 1000`, the denominator is the production engine's canonical masked
+per-second resource rate, and candidate ratios compare by cross-multiplication without an early
+integer conversion. Purchases win an exact tie and then raw-byte ID; bank advances to the
+milestone or the next declared boundary. Reference, beam child selection, and beam node scoring
+all use that same ratio. The harness does not reconstruct production: the new simulation-only
+resource-rate seam calls the engine's existing contribution and generator-rate assembly.
+
+**T01-C21 measurement:** the repaired T1 reference reaches `1e9` at **4,208,672 ms** in **315
+decisions**. It also reaches `1e12` at 23,959,672 ms, but `1e12` closes `gate.t3_to_t4`, beyond the
+T1 policy's `gate.t0_to_t1 -> gate.t2_to_t3` evidence window; selecting it would leave no T1 rows
+eligible for evidence. Therefore `1e9` remains the highest reachable coordinate inside the
+declared T1 window, with roughly 22.8 hours of horizon headroom. Both scenarios use a measured
+384-decision runaway guard.
+
+**Measured final work:** T0 executes **211,295 transitions**, greedy **436,448 ms**, beam
+**720,847 ms**, reported gap **0 ppm** (the beam found no improvement); its pre-existing 2,000,000
+ceiling stands under T01-C17 branch A. T1 executes **2,369,809 transitions**, greedy **3,236,032
+ms**, beam **3,236,038 ms**, reported gap **0 ppm**; branch B pins a rounded **5,000,000** ceiling,
+above measured work x2. A permanent synthetic production-path witness keeps the oracle
+falsifiable: at the fixture's `3e2` target and width 32, beam reaches 11,279 ms against greedy's
+11,621 ms, a 30,321 ppm improvement. The whole-item screen still removes harmful purchases under
+the new ranker (T0: `generator.dot_matrix_queue`), while the old Reply All myopia disappears
+(465,551 ms with it versus 466,252 ms without it).
+
+Re-derived candidate pins (all **UNRATIFIED**):
+
+- economy v4: `sha256:687fece9cf09550e2ff84266bc51a55aa52246fc1be638bb43b37217faf5ba85`
+- T1 relevance policy v2: `sha256:f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef`
+- T0 scenario v2: `sha256:04bac900d71b7e5714a237adf204660363db910ab3989cd32add413d9ada435e`
+- T1 scenario v2: `sha256:e4609014f5b348b615f11df72a0b9f50964609717bac9317f1d9575d8bc00fa7`
+
+The completed gates emit non-authoritative diagnostics because they now reach genuine content
+floors; no content row is changed or dispositioned in this instrument batch. Those findings wait
+for designated review and owner action.

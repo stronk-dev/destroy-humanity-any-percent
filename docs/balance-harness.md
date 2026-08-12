@@ -59,23 +59,22 @@ catalog.
 
 For every declared run it records an unmasked baseline, per-item effect ablations, and group effect
 ablations. Reference runs additionally record action-removal diagnostics and one declared-width beam
-oracle. The reference policy ranks one-unit generator buys and unowned upgrades by an exact
-single-resource payback calculation, including lower-bound searches for first affordability and
-first positive marginal output. Before the ablation matrix, one opportunity screen compares the
-direct-payback trajectory with each purchase removed and monotonically removes a purchase when
-that counterfactual reaches the milestone earlier. This is a whole-item backward-elimination
-screen; it does not change the payback formula or comparator. The same immutable screen and
-unchanged payback ordering govern the reference arm, every reference ablation, and every beam
-rollout. At
+oracle. The reference policy compares banking with every affordable one-unit generator or unowned
+upgrade by exact projected time to the scenario's balance milestone. It obtains the current and
+post-purchase resource rates from the production engine's masked rate assembly, then compares the
+closed-form ratios without rounding: `(target - balance) * 1000 / rate`. Purchases win equal scores
+and tie-break by raw-byte ID; banking advances to the milestone or next declared boundary. Before
+the ablation matrix, one whole-item backward-elimination screen removes any purchase whose absence
+strictly improves the projected-time reference trajectory. The same immutable screen and projected-
+time metric govern reference, ablations, beam child selection, and beam node scoring. At
 run genesis it may bootstrap the cheapest milestone-resource
 purchase through the pinned manual action: the requested count is derived from the real quote and
 catalog yield, capped by the catalog's click bucket, and its window is derived from the catalog
-refill rate. Relevance scenarios declare `beam_children >= 2`; each beam node orders candidates by
-the same payback metric as the reference arm and then raw-byte ID, selects at most that many, and only then performs
-the expensive R10 scoring and greedy completion. Beam nodes deduplicate by canonical state plus
-virtual time before greedy rollout and use componentwise dominance before the width bound. A beam
-path and its greedy completion share one `max_decisions` envelope: rollout receives only the
-decisions the path has not consumed. Run cardinality is checked before simulation. The static
+refill rate. Relevance scenarios declare `beam_children >= 2`; each beam node orders purchase and
+bank choices by the same projected-time metric, keeps at most that many, deduplicates by canonical
+state plus virtual time, applies componentwise dominance, and scores the survivors with that same
+closed form before the width bound. It never launches a second greedy completion with different
+semantics. Run cardinality is checked before simulation. The static
 transition estimate is only a generous runaway-configuration guard, compared with the scenario's
 declarative `preflight_ceiling`; it is never treated as measured work. The scenario's separate work
 budget is enforced by one counter spanning every simulation call, including the reachability
@@ -117,7 +116,7 @@ has no such later scenario and is named coverage debt rather than silently exemp
 golden is discovered dynamically by the history and TypeScript schema gates. Each trap exemption's
 mechanical justification key must appear in the entry's reviewable changelog. The current
 schema-v4 entry is deliberately a test fixture: it proves a dead upgrade, a deliberate trap
-exemption, a roleless generator, group-supported substitution, and a greedy/beam gap under its
+exemption, a roleless generator, and group-supported substitution under its
 declared bound. Fixture findings are recorded in its golden report but do not block the production
 gate. When the active epoch first uses an economy schema v4 or later, its registry entry must bind
 the exact epoch-owned economy, Routes, and relevance-policy artifacts, use the current epoch

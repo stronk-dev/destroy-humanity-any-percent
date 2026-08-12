@@ -171,6 +171,39 @@ func TestResolveRateProjectionAttendedMSClassifiesLongGapOnClone(t *testing.T) {
 	}
 }
 
+func TestSimulateResourceRateSharesCanonicalProjectionAndHonorsAblation(t *testing.T) {
+	catalog := rateProjectionMinimalCatalog(t)
+	ledger, err := economy.NewLedger(catalog, economy.ScopeCompany)
+	if err != nil {
+		t.Fatal(err)
+	}
+	counts, provisioned := map[string]int64{}, map[string]int64{}
+	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
+		counts[generator.ID], provisioned[generator.ID] = 0, 0
+	}
+	counts["generator.beige_tower"] = 2
+	state := &save.State{Ledger: ledger, GeneratorCounts: counts, GeneratorProvisioned: provisioned,
+		UpgradesOwned: map[string]bool{}}
+	projection, err := ProjectRates(CatalogBundle{Economy: catalog}, state, nil, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := decimal.Zero
+	for _, resource := range projection.Resources {
+		if resource.ResourceID == "company.cash" {
+			want = resource.Rate
+		}
+	}
+	got, err := SimulateResourceRate(state, catalog, "company.cash", AblationMask{})
+	if err != nil || !got.Eq(want) {
+		t.Fatalf("simulated rate=%s projection=%s err=%v", got, want, err)
+	}
+	masked, err := SimulateResourceRate(state, catalog, "company.cash", AblationMask{GeneratorIDs: []string{"generator.beige_tower"}})
+	if err != nil || !masked.Eq(decimal.Zero) {
+		t.Fatalf("masked rate=%s err=%v", masked, err)
+	}
+}
+
 func rateProjectionMinimalCatalog(t *testing.T) *economy.Catalog {
 	t.Helper()
 	data, err := os.ReadFile("../../balance/testdata/epoch5/economy.json")

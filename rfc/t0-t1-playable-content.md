@@ -479,9 +479,9 @@ alone must never mutate the save.
   the beam finally does real work and genuinely exhausts 2,000,000 by runtime count — the same
   remedy, now on evidence. **Ruled:**
   1. **Deterministic pre-rollout child selection** bounds expansion: each beam entry expands at
-     most `beam_children` candidates per decision, chosen by the SAME unchanged direct-payback
-     ordering as the screened reference arm then raw-byte item ID, with NO rollout executed before
-     selection.
+     most `beam_children` candidates per decision, chosen by the SAME T01-C20 projected-time
+     ordering as the screened reference arm; purchases tie-break by raw-byte item ID and beat bank
+     on an exact tie, with NO secondary rollout executed before selection.
      `beam_children` is at least 2 so the runner-up counterfactual is reachable. Identity dedup
      stays (it helps; it is not sufficient).
   2. **The 5% greedy-gap oracle proof MUST be re-run and hold** at the chosen parameters. If it
@@ -557,15 +557,14 @@ replacement paragraph is the contract; no stale normative sentence remains.
 
 ## T01-C19 — opportunity-cost-aware reference and falsifiable oracle (2026-08-12)
 
-The one-unit payback quotient alone is not a complete purchasing decision: it omits the alternative
-use of the same cash and the finite decision slot. The ranking formula and comparator remain
-unchanged. The instrument instead applies one deterministic whole-item backward-elimination screen
-before the matrix: run the direct-payback
-trajectory, remove each purchase actually made, and permanently mask a purchase when that
-counterfactual reaches the milestone earlier; repeat to a monotonic fixed point. The resulting
-immutable mask composes with every effect/removal ablation. Reference and beam then use the same
-direct-payback ordering; beam selects at least two children before rollout and remains an independent
-declared-width search capable of falsifying greedy.
+The historical one-unit payback quotient was incomplete because it omitted the alternative use of
+cash and could never choose to accumulate a balance. T01-C20 supersedes that comparator with exact
+projected time to the balance milestone: banking and each purchase are compared as closed-form
+ratios using the production engine's canonical current/post-purchase rates; purchases win exact
+ties and then raw-byte `item_id`. One deterministic whole-item backward-elimination screen remains
+before the matrix and composes its immutable mask with every effect/removal ablation. Reference and
+beam use the same projected-time metric, including beam node scoring; the beam selects at least two
+children and remains an independent declared-width search capable of falsifying greedy.
 
 The witness arithmetic is pinned. The old direct trajectory reached 595,627 ms; removing
 `upgrade.reply_all_macro` alone reached 534,259 ms. At the repaired fixed point,
@@ -574,9 +573,10 @@ after that correction because its then-current comparison is 502,100 → 503,906
 content disposition: Hold Music's 8e4 unlock is only the correctness repair that places it inside
 its declared window, and all deadness decisions wait for the repaired reports.
 
-The review's original counterexample remains a literal regression witness: removing both Dot Matrix
-Queue and Reply All is a legal 525,465 ms trajectory against the old 595,627 ms greedy run, exactly
-133,523 ppm better, and therefore must trip the 50,000 ppm oracle bound.
+The review's original counterexample remains historical evidence against the superseded payback
+ranker. Under the T01-C20 metric Reply All is beneficial (465,551 ms with it, 466,252 ms without),
+while the screen still independently rejects Dot Matrix Queue and exposes that exclusion in the
+schema-v4 report.
 
 The first production-catalog witness proved the oracle could fire, but its milestone times and
 deltas were later invalidated because the reference exhausted `max_decisions` and silently coasted.
