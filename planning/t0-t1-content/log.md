@@ -432,3 +432,90 @@ T01-C16's milestone arm, T01-C17's budget derivation, and T01-C18's retarget rem
   proves the reached-vs-reached oracle, but it still reports 38 relevance/role/trap floor findings.
   Those are now honest content-gate findings, not justification for an unreviewed retune; the
   candidate report remains unwritten under the existing fail-before-write-on-findings contract.
+
+## 2026-08-12 — designated cross-party verdict: {e06e61b, cadadd0} — BOTH APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**M2's bypass is CLOSED, two-sided.** Probes: a fresh local mixed commit still fails hard; named
+in the ledger while UNPUBLISHED it fails with its own ruled message; advancing `origin/main` to
+include it flips the verdict to ACCEPT; reverting the ref flips it back to REJECT. The check is
+precisely publication and nothing else. L1 + the unused-entry guard both mutation-verified; the
+reviewer's own stockpile probe proves pre-authorized amnesties cannot be banked. M1's constant is
+gone and the declarative ceiling is genuinely consumed. Every solver change enumerated: the
+`remainingDecisions` fix is a real TIGHTENING (the old beam got a fresh full envelope on top of
+its consumed path — up to ~2× the reference's budget); no floor, threshold, or test was weakened
+— every test change strengthens. T01-C18 reproduced EXACTLY (1,579,008 transitions; 595,627 ms;
+0 ppm; 31 purchases / 32 decisions; 38 findings) and the 0 ppm is MEANINGFUL — perturbing the beam
+yields a real 27,910 ppm gap that fires the gate. Candidate SHA `a77f420e…` recomputed and matching.
+
+**THE 38 FINDINGS — the decisive fact: `gate.t0_to_t1`'s requirement IS 1e5, identical to the new
+milestone, so the measurement terminates at the exact instant the T1 window opens.**
+- **(b) 25 of 38 (65.8%) are MEASUREMENT-SCOPE ARTIFACTS, not content defects** — ten items whose
+  windows open at `gate.t0_to_t1` or later (9 T1 rows + `legal_dept`, whose window sits four
+  orders of magnitude past the milestone). No content retune can move them.
+- **(a) 13 are genuine**, and one is a REAL AUTHORING BUG the old 1e12 target masked:
+  **`upgrade.hold_music_license` declares a T0 policy window but the catalog gates it at 1.44e5 —
+  ABOVE the 1e5 gate that closes its own window.** It is unpurchasable inside its declared window
+  at any balance; two data files disagree. Plus: `nephew_intern` (0 buys, role_floor),
+  `beige_tower_cache` and `continuous_feed_paper` (dead within window), and — most interesting —
+  `dot_matrix_queue` and `reply_all_macro`, which the reference BUYS with **negative** removal
+  deltas (−41,741 ms / −61,368 ms: removing them makes the reference FASTER).
+- **Methodology amplifier:** the `worst` reducer spans personas that reach 1e5 by IDLING to
+  18,000,000 ms and buy almost nothing, so their ablation deltas are 0 for nearly every item —
+  which alone fails `relevance_floor`. For most rows the PERSONAS, not the content, are binding
+  (17 fail relevance_floor vs 15 trap_floor).
+
+**Findings:** F1 (MED) T01-C18's ruled loader check was not built and the deviation undisclosed;
+F2 (MED) the publication check hard-depends on `refs/remotes/origin/main` and MISDIAGNOSES its
+absence as "unpublished" — a PR-triggered hosted run may not have that ref; F3 (LOW-MED) the
+scenario sits in a ONE-VALUE feasible band (16 → oracle fails at 214,770 ppm; 32 → 79% of budget;
+40 → budget exceeded), so "widen the window" is blocked until T01-C17 branch B is revisited;
+F4 message accuracy; F5 docs debt (three behavior changes, no docs); F6 a 1 ms conservative
+pessimism; F7 the fixture golden no longer exercises a nonzero gap.
+
+**Range-union: `335433e..cadadd0` consumed. NOTE: `335433e` (my rulings commit) has received no
+cross-party verdict — it goes to Codex's lane.**
+
+## 2026-08-12 — OWNER DISPOSITIONS on the 38 findings and F1–F7
+
+**Scope first, content second — the reviewer's sequencing is adopted: retuning against a
+measurement truncated at the T1 boundary would tune to a truncated objective.**
+1. **SCENARIO SCOPE — RULED: two scenarios, not one.** The T0–T1 catalog cannot be measured by a
+   single run whose milestone coincides with the T0/T1 boundary. **(i)** the current scenario is
+   the **T0 scenario** (milestone `company.cash >= 1e5`) and measures ONLY items whose windows
+   open before that gate — the 10 later-window items are REMOVED from its policy, which retires
+   all 25 scope artifacts by construction rather than by exemption; **(ii)** a **T1 scenario** is
+   added with a milestone above `gate.t0_to_t1` chosen so the T1 windows genuinely open, measured
+   by the same reachability discipline. If the T1 scenario cannot fit 2,000,000, **T01-C17 branch
+   B applies as already ruled** — re-derive the budget from ITS measurement × 2 headroom with the
+   numbers recorded, and re-ratify. Both scenario hashes come back for ratification.
+2. **THE NEGATIVE-DELTA PAIR — RULED: DIAGNOSE BEFORE RETUNING.** `dot_matrix_queue` and
+   `reply_all_macro` are bought by the greedy arm while making it slower. That is either a genuine
+   content trap or a **payback-ranking defect in the solver** — and retuning content to satisfy a
+   defective ranker would be exactly backwards. **No content change to either item until the
+   diagnosis lands** (expected shape: does the ranker score one-unit payback without accounting
+   for the opportunity cost of the spend? show the arithmetic on one item).
+3. **`hold_music_license` — RULED: a genuine defect, fix the CATALOG.** The item is T0 content by
+   design (`design/08` register, the 1995 licensing beat); its unlock must sit inside its declared
+   window — lower the catalog unlock below the 1e5 gate to a value the measured T0 trajectory
+   actually crosses with headroom, bring the number back. The policy window is correct as authored.
+4. **THE REDUCER — RULED: personas that purchase nothing measure nothing.** A persona whose
+   baseline purchase count is ZERO contributes no ablation signal and MUST NOT bind the relevance
+   or trap floor; exclude such personas from those reductions and RECORD the exclusion in the
+   report (visible, not silent). This does not weaken the floor for personas that actually play —
+   it stops non-players from making every item look dead.
+5. **F1 — MY RULING IS AMENDED, not enforced.** Reachability is a RUNTIME property; a load-time
+   check for it was not implementable, which is why it wasn't built — my wording asked for
+   something that cannot exist. **Amended:** the runner performs a FAST PREFLIGHT PROBE (reference
+   arm, small decision budget) that fails with an explicit `milestone_unreachable` diagnosis
+   BEFORE the full run — delivering the diagnosis latency the ruling wanted without pretending it
+   is a load check. Codex should have filed the impossibility rather than silently substituting;
+   the amendment is mine to own.
+6. **F2 — RULED:** separate "remote-tracking ref missing" from "commit unpublished" with distinct
+   messages; a missing ref must fail closed as a CONFIGURATION error, never as a false amnesty
+   denial; confirm behavior on the first PR-triggered hosted run.
+7. **F4/F5/F7 — accepted:** correct the unused-entry message ("ledger entry was never consumed");
+   close the docs debt (the ledger's publication precondition, the scenario-declared ceiling, the
+   shared beam decision budget) BEFORE archival; add a fixture whose beam legitimately beats
+   greedy under an equal envelope so the golden itself exercises a nonzero gap again. F3/F6 noted.
