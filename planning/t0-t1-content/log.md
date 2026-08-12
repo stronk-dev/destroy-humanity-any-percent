@@ -1041,3 +1041,18 @@ Re-derived candidate pins (all **UNRATIFIED**):
 The completed gates emit non-authoritative diagnostics because they now reach genuine content
 floors; no content row is changed or dispositioned in this instrument batch. Those findings wait
 for designated review and owner action.
+
+## 2026-08-12 — Codex handoff: T01-C20/C21 ready for designated review
+
+- **Implementation range:** `{c672b48, d3b0846, bf9de62}`. `c672b48` contains the kernel/ranker,
+  exact production-rate seam, measured scenario envelopes, tests, and reconciled records;
+  `d3b0846` is the isolated generated golden. `bf9de62` is a bounded forward guard fix recognizing
+  `balance/testdata/` candidate scenarios as legitimate inputs before a governed golden; its
+  adversarial contract still rejects baseline-only and mixed-artifact commits.
+- **Verification read to completion:** focused rate/ranking/bank/tie/starvation/T1/oracle tests;
+  full `make test-harness` (27.65 s); both candidate gates with measured diagnostics; repository-
+  wide `make verify`; and cold-linux/amd64 `make test-go-ci` with `-count=1` (harness 55.74 s).
+  All repository gates GREEN at range head. The candidate commands exit nonzero only for their
+  explicitly listed content-floor findings and write `authoritative:false` diagnostics.
+- **Status:** implemented and self-checked, **ready for designated cross-party review**. The four
+  hashes above remain UNRATIFIED and no content disposition or archival is claimed.
