@@ -124,10 +124,21 @@ function approximateVector(op, a, b, result, extra = {}) {
     a,
     b,
     op,
-    expect: result.toString(),
+    expect: stableApproximateString(result),
     expectClass: classify(result),
     ...extra,
   };
+}
+
+// Approximate vectors allow 1e-12 relative error in both runtimes. Pinning the
+// full host-libm result made regeneration differ by one trailing digit between
+// Darwin/arm64 and Linux/amd64. Fifteen significant digits retain far more
+// precision than the assertion needs while producing one architecture-stable
+// expected value.
+function stableApproximateString(value) {
+  if (classify(value) !== "finite" || value.eq(0)) return value.toString();
+  const mantissa = Number(value.mantissa.toPrecision(15));
+  return Decimal.fromMantissaExponent(mantissa, value.exponent).toString();
 }
 
 function pushBinary(vectors, op, count) {

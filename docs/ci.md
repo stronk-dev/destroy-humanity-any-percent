@@ -97,11 +97,17 @@ make test-game-ui-performance
 make verify-server-ci
 make fuzz-ci
 make vectors-check
+make vectors-check-ci
 ```
 
 `make test-go-ci` reproduces the blocking server job cold on Linux/amd64 with
 Postgres, including packages whose integration tests are not selected by the
 focused `test-save-integration` target.
+
+`make vectors-check-ci` regenerates the shared Decimal corpus under Node 24 on
+Linux/amd64 and rejects any byte drift. This complements the host
+`make vectors-check` target: both must produce the same file, preventing
+host-libm rounding differences from surfacing only in scheduled Actions runs.
 
 `make test-game-ui-performance` owns the browser job's deterministic sixty-second Game UI
 cadence simulation: 1,200 snapshot inputs (20 Hz) are grouped through 600 shared formatter flush

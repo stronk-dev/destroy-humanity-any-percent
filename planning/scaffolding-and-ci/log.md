@@ -138,3 +138,20 @@ regression test discriminates only on linux/amd64 (by nature; the CI gate carrie
   `make test-browser-ci` mirrors that two-stage flow with cold anonymous dependency volumes. The
   validator now includes every observed and allowed value in its error, so a future hosted failure
   is actionable from the annotation alone. No product behavior or performance literal changed.
+## 2026-08-12 — scheduled run 31562066740 repair
+
+- **Implemented/inspected by:** Codex. **Recorded by:** Codex. Ready for designated cross-party
+  review; this entry is not an approval and nothing was pushed or rerun remotely.
+- The public Actions metadata identifies two failures at published `d05dc13`: `server` exits 2 on
+  the already-recorded mixed relevance-golden commit, and `numeric-maintenance` exits 2 at
+  `make vectors-check`. The append-only baseline correction `{759e369, 0151ddc, 3a3f4cd}` closes
+  the server failure; the exact Linux/Postgres `make verify-server` job passes at this range head.
+- Linux/amd64 Node 24 reproduction found three last-digit differences in approximate `pow`, `exp`,
+  and `sum` expectations. The generator had serialized the full host-libm result even though both
+  runtime assertions allow `1e-12` relative error. Approximate expectations now normalize to 15
+  significant digits: materially tighter than the assertion while byte-identical on Darwin/arm64
+  and Linux/amd64. Both hosts generated SHA-256
+  `879ce1306cfd01bc7cfc493a98441280f35f7686a1b9e8801fcc7c55011a0f22`.
+- Added `make vectors-check-ci` and its pinned-major Linux/amd64 Node compose service so scheduled
+  numeric drift is reproducible locally. The scheduled setup-go step now names `server/go.sum`,
+  closing its root-`go.mod` cache warning. Go and TypeScript shared-vector suites pass.
