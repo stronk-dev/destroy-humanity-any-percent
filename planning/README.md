@@ -1,5 +1,9 @@
 # Planning — Working Docs & Job Log
 
+> **Start here on a fresh session: [`CURRENT-STATE.md`](CURRENT-STATE.md)** — where the project
+> actually is, what is blocking what, what is ratified, and the open debts. Read it after
+> `CLAUDE.md` and before touching anything.
+
 One directory per RFC under implementation: `planning/<rfc-slug>/` containing:
 
 - **`plan.md`** — task breakdown, sequencing, acceptance gates, who/what is assigned (human, Claude, Codex).
