@@ -63,9 +63,10 @@ oracle. The reference policy ranks one-unit generator buys and unowned upgrades 
 single-resource payback calculation, including lower-bound searches for first affordability and
 first positive marginal output. Before the ablation matrix, one opportunity screen compares the
 direct-payback trajectory with each purchase removed and monotonically removes a purchase when
-that counterfactual reaches the milestone earlier. This fixed point prices both the cash and finite
-decision slot displaced by a superficially attractive purchase; the same immutable screen and
-payback ordering govern the reference arm, every reference ablation, and every beam rollout. At
+that counterfactual reaches the milestone earlier. This is a whole-item backward-elimination
+screen; it does not change the payback formula or comparator. The same immutable screen and
+unchanged payback ordering govern the reference arm, every reference ablation, and every beam
+rollout. At
 run genesis it may bootstrap the cheapest milestone-resource
 purchase through the pinned manual action: the requested count is derived from the real quote and
 catalog yield, capped by the catalog's click bucket, and its window is derived from the catalog
@@ -79,8 +80,10 @@ transition estimate is only a generous runaway-configuration guard, compared wit
 declarative `preflight_ceiling`; it is never treated as measured work. The scenario's separate work
 budget is enforced by one counter spanning every simulation call, including the reachability
 preflight, and aborting without a partial report when the limit is reached. Before the factorial
-ablation matrix begins, one reference-arm probe fails with `milestone_unreachable:<id>` when the
-target cannot be reached at all. A failing run removes the authoritative output and writes a
+ablation matrix begins, one reference-arm probe fails with `reference_decision_starved` when the
+declared decision guard fires before the milestone, and with `milestone_unreachable:<id>` when the
+target cannot be reached within the horizon for another reason. Guard exhaustion never silently
+coasts to a milestone. A failing run removes the authoritative output and writes a
 separate `*.diagnostic.json` envelope marked `authoritative: false`; diagnostics are never golden
 inputs and a later passing run removes any stale diagnostic.
 
@@ -94,9 +97,11 @@ milestone are named failures; unreachable ablations use the finite horizon-minus
 An item passes through its own effect delta or one declared supporting group, while the trap test
 always remains individual. A seed whose unmasked baseline buys none of the item contributes no
 ablation signal. A persona is excluded only when every one of its seeds buys zero; report schema v3
-records every such persona in the affected item or group row's `excluded_persona_ids`. Any positive
-seed remains binding, and baseline purchase counts reduce over positive seeds before taking the
-maximum across personas. Role
+records every such persona in the affected item or group row's `excluded_persona_ids`. Report
+schema v4 additionally records the screen's complete sorted `instrument_excluded_ids` and marks
+matching item rows `instrument_affected`; their floor findings use the same prefix so they cannot
+be mistaken for independent content verdicts. Any positive seed remains binding, and baseline
+purchase counts reduce over positive seeds before taking the maximum across personas. Role
 evidence comes only from unmasked baseline execution.
 
 Production candidates use phase-scoped relevance policies. The T0 scenario measures rows whose

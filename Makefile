@@ -15,7 +15,7 @@ CI_TEST_COUNT ?= 1
 CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
 BROWSER_TEST_FLAGS ?=
 RELEVANCE_SCENARIO ?= balance/testdata/t0-t1/relevance-scenario-v2.json
-RELEVANCE_OUTPUT ?= planning/t0-t1-content/relevance-report.v3.json
+RELEVANCE_OUTPUT ?= planning/t0-t1-content/relevance-report.v4.json
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -147,7 +147,7 @@ t0-t1-relevance:
 t1-relevance:
 	$(MAKE) t0-t1-relevance \
 		RELEVANCE_SCENARIO=balance/testdata/t0-t1/relevance-scenario-t1-v2.json \
-		RELEVANCE_OUTPUT=planning/t0-t1-content/relevance-report-t1.v3.json
+		RELEVANCE_OUTPUT=planning/t0-t1-content/relevance-report-t1.v4.json
 
 t0-t1-relevance-all:
 	$(MAKE) t0-t1-relevance

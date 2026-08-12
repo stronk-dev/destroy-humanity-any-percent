@@ -897,3 +897,44 @@ the four hashes remain UNRATIFIED.**
    cannot distinguish from breakage is not an acceptable intermediate state. Run the focused
    suite for the package you touched before committing, always.
 5. **F5/F6/F10–F15 accepted as filed.** F8: `d9e34ef` goes to Codex's cross-party lane.
+
+## 2026-08-12 — Codex implementation-time blocker T01-C20: non-starved ranker contract required
+
+The F1 fail-loud implementation changed the diagnosis again, and code must not be written past it.
+The old T0 opportunity screen starves at 330 decisions and first completes at 331; the candidate's
+round guard is therefore 384, while the screened reference itself reaches the milestone in 257
+decisions. Under that honest envelope the screen excludes `upgrade.continuous_feed_paper` and the
+reference reaches at 900,000 ms. The old `{dot_matrix_queue, beige_tower_cache}` exclusion story was
+itself a product of the truncated trajectory.
+
+The current beam is not operational under that envelope: the complete T0 gate exhausted both the
+old 4,000,000 ceiling and a measurement-only 8,000,000 ceiling while still inside the beam. No new
+budget is proposed because neither run completed; raising a ceiling from those numbers would violate
+T01-C17's measurement-only rule. T1 is sharper: with a temporary 2,048 guard, the unscreened greedy
+arm consumed 1,047 decisions, made 1,036 generator purchases plus five upgrades, reached the 24-hour
+horizon, and still did not reach `company.cash >= 1e9`. It terminated on the horizon rather than the
+decision guard, so more decisions cannot repair that trajectory. The myopia therefore survives the
+F1 correction and the F3 ruling says the ranker change is still owed.
+
+**BLOCKER T01-C20 — owner ruling required:** the repository has no exact byte-level formula for the
+non-starved opportunity-cost-aware ranking metric. T01-C19 now normatively describes the accepted
+whole-item backward-elimination screen and explicitly says the direct-payback formula/comparator are
+unchanged; F3 simultaneously says an actual ranker change is owed if myopia survives. It has survived,
+but choosing a new comparator here would invent balance mechanics and search semantics. Rule the
+exact candidate score/tie-break (and whether beam rollout may use a different bounded scoring
+completion) before the T0/T1 budgets and four hashes can be re-derived. Until then the candidate
+budget remains 4,000,000 and intentionally fails; no content finding is authoritative.
+
+The independent CI question is closed: hosted Actions run `31617073113` at `11e7789` completed
+SUCCESS with the final split topology. The server-core and exhaustive harness proofs ran in separate
+jobs under their declared deadlines, satisfying F7 against the actual hosted environment.
+
+## 2026-08-12 — Codex cross-party review of Claude resumable handoff `{d9e34ef}` — APPROVE
+
+- **Review by:** Codex (cross-party). **Recorded by:** Codex.
+- **Range reviewed:** `{d9e34ef}` (planning-only; no executable paths).
+- The handoff faithfully restated the then-binding H1–H3/T01-C19 order, preserved the explicit
+  no-retune rule and unratified hash state, and named the reverse-direction review debt. Later
+  evidence superseded several measurements and is recorded append-only above; that does not make
+  the historical handoff inaccurate. It authorizes no implementation beyond the cited rulings and
+  changes no owner decision. **No findings.**

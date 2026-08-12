@@ -4,13 +4,14 @@
   "type": "object", "additionalProperties": false,
   "required": ["schema_version", "scenario_id", "scenario_hash", "constants_hash", "relevance_policy_hash", "run_budget", "greedy_oracle", "items", "groups", "tier_contributions", "role_activations", "failures"],
   "properties": {
-    "schema_version": { "enum": [1, 2, 3] }, "scenario_id": { "$ref": "#/$defs/id" },
+    "schema_version": { "enum": [1, 2, 3, 4] }, "scenario_id": { "$ref": "#/$defs/id" },
     "scenario_hash": { "$ref": "#/$defs/hash" }, "constants_hash": { "$ref": "#/$defs/hash" }, "relevance_policy_hash": { "$ref": "#/$defs/hash" },
     "run_budget": { "$ref": "#/$defs/budget" }, "greedy_oracle": { "oneOf": [{ "$ref": "#/$defs/oracle" }, { "type": "null" }] },
     "items": { "type": "array", "items": { "$ref": "#/$defs/item" } },
     "groups": { "type": "array", "items": { "$ref": "#/$defs/group" } },
     "tier_contributions": { "type": "array", "items": { "$ref": "#/$defs/tier" } },
     "role_activations": { "type": "array", "items": { "$ref": "#/$defs/role" } },
+    "instrument_excluded_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
     "failures": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
   },
   "allOf": [
@@ -47,6 +48,23 @@
           }
         }
       }
+    },
+    {
+      "if": { "properties": { "schema_version": { "const": 4 } }, "required": ["schema_version"] },
+      "then": {
+        "required": ["instrument_excluded_ids"],
+        "properties": {
+          "instrument_excluded_ids": {},
+          "items": {
+            "type": "array",
+            "items": { "type": "object", "required": ["excluded_persona_ids", "instrument_affected"], "properties": { "excluded_persona_ids": {}, "instrument_affected": {} } }
+          },
+          "groups": {
+            "type": "array",
+            "items": { "type": "object", "required": ["excluded_persona_ids"], "properties": { "excluded_persona_ids": {} } }
+          }
+        }
+      }
     }
   ],
   "$defs": {
@@ -59,7 +77,7 @@
     "budget": { "type": "object", "additionalProperties": false, "required": ["declared_runs", "executed_runs", "declared_transitions", "executed_transitions"], "properties": { "declared_runs": { "$ref": "#/$defs/safePositive" }, "executed_runs": { "$ref": "#/$defs/safePositive" }, "declared_transitions": { "$ref": "#/$defs/safe" }, "executed_transitions": { "$ref": "#/$defs/safe" } } },
     "oracle": { "type": "object", "additionalProperties": false, "required": ["milestone_id", "greedy_ms", "beam_ms", "gap_ppm", "maximum_ppm", "passed"], "properties": { "milestone_id": { "$ref": "#/$defs/id" }, "greedy_ms": { "$ref": "#/$defs/safePositive" }, "beam_ms": { "$ref": "#/$defs/safePositive" }, "gap_ppm": { "$ref": "#/$defs/safe" }, "maximum_ppm": { "$ref": "#/$defs/safe" }, "passed": { "type": "boolean" } } },
     "delta": { "type": "object", "additionalProperties": false, "required": ["milestone_id", "status", "baseline_ms", "ablated_ms", "delta_ms"], "properties": { "milestone_id": { "$ref": "#/$defs/id" }, "status": { "enum": ["both_reached", "ablated_unreached", "baseline_unreached", "both_unreached"] }, "baseline_ms": { "$ref": "#/$defs/nullableSafe" }, "ablated_ms": { "$ref": "#/$defs/nullableSafe" }, "delta_ms": { "oneOf": [{ "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 }, { "type": "null" }] } }, "allOf": [ { "if": { "properties": { "status": { "const": "both_reached" } } }, "then": { "properties": { "baseline_ms": { "$ref": "#/$defs/safe" }, "ablated_ms": { "$ref": "#/$defs/safe" }, "delta_ms": { "type": "integer" } } } }, { "if": { "properties": { "status": { "const": "ablated_unreached" } } }, "then": { "properties": { "baseline_ms": { "$ref": "#/$defs/safe" }, "ablated_ms": { "type": "null" }, "delta_ms": { "type": "integer" } } } }, { "if": { "properties": { "status": { "const": "baseline_unreached" } } }, "then": { "properties": { "baseline_ms": { "type": "null" }, "ablated_ms": { "$ref": "#/$defs/safe" }, "delta_ms": { "type": "null" } } } }, { "if": { "properties": { "status": { "const": "both_unreached" } } }, "then": { "properties": { "baseline_ms": { "type": "null" }, "ablated_ms": { "type": "null" }, "delta_ms": { "type": "null" } } } } ] },
-    "item": { "type": "object", "additionalProperties": false, "required": ["purchasable_id", "availability_window", "epsilon_ms", "trap_exempt", "justification_key", "baseline_purchase_count", "individual_deltas", "action_removal_deltas", "support", "supporting_group_id", "nearest_passing_epsilon_ms", "relevance_passed", "trap_passed"], "properties": { "purchasable_id": { "$ref": "#/$defs/id" }, "availability_window": { "$ref": "#/$defs/window" }, "epsilon_ms": { "$ref": "#/$defs/safePositive" }, "trap_exempt": { "type": "boolean" }, "justification_key": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }, "baseline_purchase_count": { "$ref": "#/$defs/safe" }, "excluded_persona_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "individual_deltas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/delta" } }, "action_removal_deltas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/delta" } }, "support": { "enum": ["individual", "group_supported", "failed"] }, "supporting_group_id": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }, "nearest_passing_epsilon_ms": { "$ref": "#/$defs/safe" }, "relevance_passed": { "type": "boolean" }, "trap_passed": { "type": "boolean" } } },
+    "item": { "type": "object", "additionalProperties": false, "required": ["purchasable_id", "availability_window", "epsilon_ms", "trap_exempt", "justification_key", "baseline_purchase_count", "individual_deltas", "action_removal_deltas", "support", "supporting_group_id", "nearest_passing_epsilon_ms", "relevance_passed", "trap_passed"], "properties": { "purchasable_id": { "$ref": "#/$defs/id" }, "availability_window": { "$ref": "#/$defs/window" }, "epsilon_ms": { "$ref": "#/$defs/safePositive" }, "trap_exempt": { "type": "boolean" }, "justification_key": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }, "baseline_purchase_count": { "$ref": "#/$defs/safe" }, "excluded_persona_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "instrument_affected": { "type": "boolean" }, "individual_deltas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/delta" } }, "action_removal_deltas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/delta" } }, "support": { "enum": ["individual", "group_supported", "failed"] }, "supporting_group_id": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }, "nearest_passing_epsilon_ms": { "$ref": "#/$defs/safe" }, "relevance_passed": { "type": "boolean" }, "trap_passed": { "type": "boolean" } } },
     "group": { "type": "object", "additionalProperties": false, "required": ["group_id", "axis", "deltas", "passed"], "properties": { "group_id": { "$ref": "#/$defs/id" }, "axis": { "enum": ["tier", "category", "declared"] }, "excluded_persona_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "deltas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/delta" } }, "passed": { "type": "boolean" } } },
     "tier": { "type": "object", "additionalProperties": false, "required": ["group_id", "deltas"], "properties": { "group_id": { "$ref": "#/$defs/id" }, "deltas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/delta" } } } },
     "role": { "type": "object", "additionalProperties": false, "required": ["generator_id", "kind", "target_id", "count"], "properties": { "generator_id": { "$ref": "#/$defs/id" }, "kind": { "enum": ["provision", "synergy_feed", "manual_output", "stock_rate"] }, "target_id": { "$ref": "#/$defs/id" }, "count": { "$ref": "#/$defs/safePositive" } } }

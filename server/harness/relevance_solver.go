@@ -18,7 +18,6 @@ import (
 type relevanceCandidate struct {
 	ID                      string
 	PaybackMS               int64
-	DirectPaybackMS         int64
 	EarliestPositiveDeltaMS int64
 	AtMS                    int64
 	State                   *save.State
@@ -36,6 +35,8 @@ type relevanceCounter struct {
 	value int64
 	limit int64
 }
+
+var errReferenceDecisionStarved = errors.New("reference_decision_starved")
 
 func (counter *relevanceCounter) add() error {
 	if counter.value >= counter.limit {
@@ -92,22 +93,30 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		return RelevanceReport{}, fmt.Errorf("relevance runaway preflight requires %d, ceiling %d",
 			transitionCeiling, suite.Scenario.PreflightCeiling)
 	}
+	report := RelevanceReport{SchemaVersion: RelevanceReportSchemaVersion, ScenarioID: suite.Scenario.ID,
+		ScenarioHash: suite.ScenarioHash, ConstantsHash: suite.ConstantsHash, RelevancePolicyHash: suite.Policy.Hash,
+		Items: []RelevanceItemReport{}, Groups: []RelevanceGroupReport{}, TierContributions: []RelevanceTierContribution{},
+		RoleActivations: []RoleActivationCount{}, InstrumentExcludedIDs: []string{}, Failures: []string{}}
 	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
 	opportunityMask, _, err := suite.opportunityAwareMask(production.AblationMask{}, counter)
 	if err != nil {
+		if errors.Is(err, errReferenceDecisionStarved) {
+			return relevanceStarvationDiagnostic(report, declaredRuns, 0, suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
+		}
 		return RelevanceReport{}, fmt.Errorf("relevance opportunity preflight: %w", err)
 	}
+	report.InstrumentExcludedIDs = instrumentExcludedIDs(opportunityMask)
 	preflight, err := suite.runReferenceWithOpportunity(production.AblationMask{}, opportunityMask, counter)
 	if err != nil {
 		return RelevanceReport{}, fmt.Errorf("relevance milestone preflight: %w", err)
 	}
+	if preflight.DecisionStarved {
+		return relevanceStarvationDiagnostic(report, declaredRuns, 0,
+			suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
+	}
 	if preflight.MilestoneMS == nil {
 		return RelevanceReport{}, fmt.Errorf("milestone_unreachable:%s", suite.Scenario.Milestone.ID)
 	}
-	report := RelevanceReport{SchemaVersion: RelevanceReportSchemaVersion, ScenarioID: suite.Scenario.ID,
-		ScenarioHash: suite.ScenarioHash, ConstantsHash: suite.ConstantsHash, RelevancePolicyHash: suite.Policy.Hash,
-		Items: []RelevanceItemReport{}, Groups: []RelevanceGroupReport{}, TierContributions: []RelevanceTierContribution{},
-		RoleActivations: []RoleActivationCount{}, Failures: []string{}}
 	itemPairs := map[string]map[string][]relevancePairedResult{}
 	removalPairs := map[string]map[string][]relevancePairedResult{}
 	groupPairs := map[string]map[string][]relevancePairedResult{}
@@ -126,6 +135,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 				return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d baseline: %w", spec.PolicyID, seed, runErr)
 			}
 			executedRuns++
+			if spec.Reference && baseline.DecisionStarved {
+				return relevanceStarvationDiagnostic(report, declaredRuns, executedRuns,
+					suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
+			}
 			if baseline.MilestoneMS == nil {
 				baselineUnreached = true
 			}
@@ -136,6 +149,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 					return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d effect mask %s: %w", spec.PolicyID, seed, item.PurchasableID, runErr)
 				}
 				executedRuns++
+				if spec.Reference && masked.DecisionStarved {
+					return relevanceStarvationDiagnostic(report, declaredRuns, executedRuns,
+						suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
+				}
 				appendRelevancePair(itemPairs, item.PurchasableID, spec.PolicyID, baseline.MilestoneMS, masked.MilestoneMS, baseline.Purchases[item.PurchasableID])
 				if spec.Reference {
 					removed, removeErr := suite.runPersonaWithOpportunity(spec, seed, removalMask(item.PurchasableID, suite.Catalog), opportunityMask, counter)
@@ -143,6 +160,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 						return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d removal mask %s: %w", spec.PolicyID, seed, item.PurchasableID, removeErr)
 					}
 					executedRuns++
+					if removed.DecisionStarved {
+						return relevanceStarvationDiagnostic(report, declaredRuns, executedRuns,
+							suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
+					}
 					appendRelevancePair(removalPairs, item.PurchasableID, spec.PolicyID, baseline.MilestoneMS, removed.MilestoneMS, baseline.Purchases[item.PurchasableID])
 				}
 			}
@@ -152,6 +173,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 					return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d group mask %s: %w", spec.PolicyID, seed, group.GroupID, runErr)
 				}
 				executedRuns++
+				if spec.Reference && masked.DecisionStarved {
+					return relevanceStarvationDiagnostic(report, declaredRuns, executedRuns,
+						suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
+				}
 				purchases := int64(0)
 				for _, memberID := range group.MemberIDs {
 					purchases += baseline.Purchases[memberID]
@@ -235,16 +260,26 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			}
 		}
 		trapPassed := baselinePurchases[item.PurchasableID] > 0 || item.TrapExempt
+		instrumentAffected := maskRemoves(opportunityMask, item.PurchasableID, suite.Catalog)
 		report.Items = append(report.Items, RelevanceItemReport{PurchasableID: item.PurchasableID,
 			AvailabilityWindow: item.Availability, EpsilonMS: item.EpsilonMS, TrapExempt: item.TrapExempt,
 			JustificationKey: item.JustificationKey, BaselinePurchaseCount: baselinePurchases[item.PurchasableID], ExcludedPersonaIDs: excluded,
-			IndividualDeltas: []RelevanceDelta{individual}, ActionRemovalDeltas: []RelevanceDelta{removal}, Support: support,
+			InstrumentAffected: instrumentAffected,
+			IndividualDeltas:   []RelevanceDelta{individual}, ActionRemovalDeltas: []RelevanceDelta{removal}, Support: support,
 			SupportingGroupID: supportingGroup, NearestPassingEpsilonMS: nearest, RelevancePassed: relevancePassed, TrapPassed: trapPassed})
 		if !relevancePassed {
-			report.Failures = append(report.Failures, "relevance_floor:"+item.PurchasableID)
+			prefix := ""
+			if instrumentAffected {
+				prefix = "instrument_affected:"
+			}
+			report.Failures = append(report.Failures, prefix+"relevance_floor:"+item.PurchasableID)
 		}
 		if !trapPassed {
-			report.Failures = append(report.Failures, "trap_floor:"+item.PurchasableID)
+			prefix := ""
+			if instrumentAffected {
+				prefix = "instrument_affected:"
+			}
+			report.Failures = append(report.Failures, prefix+"trap_floor:"+item.PurchasableID)
 		}
 	}
 	report.RoleActivations = sortedRoleActivations(baselineRoles)
@@ -292,6 +327,19 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		return RelevanceReport{}, err
 	}
 	return report, nil
+}
+
+func relevanceStarvationDiagnostic(report RelevanceReport, declaredRuns, executedRuns, declaredTransitions, executedTransitions int64) RelevanceReport {
+	report.RunBudget = RelevanceRunBudget{DeclaredRuns: declaredRuns, ExecutedRuns: executedRuns,
+		DeclaredTransitions: declaredTransitions, ExecutedTransitions: executedTransitions}
+	report.Failures = []string{errReferenceDecisionStarved.Error()}
+	return report
+}
+
+func instrumentExcludedIDs(mask production.AblationMask) []string {
+	values := append([]string{}, mask.RemovedGeneratorIDs...)
+	values = append(values, mask.RemovedUpgradeIDs...)
+	return sortedUniqueStrings(values)
 }
 
 // measuredPolicyRows keeps optimization candidates cumulative while limiting
@@ -521,12 +569,14 @@ func (suite *RelevanceSuite) runReferenceWithOpportunity(mask, opportunityMask p
 	}
 	result := relevanceRunResult{Purchases: map[string]int64{}, Roles: map[string]RoleActivationCount{}, FinalState: state}
 	revision, nowMS := int64(1), int64(0)
+	decisionGuardExhausted := true
 	for decision := int64(0); decision < suite.Scenario.MaxDecisions; decision++ {
 		if reached, reachErr := suite.relevanceMilestoneReached(state); reachErr != nil {
 			return relevanceRunResult{}, reachErr
 		} else if reached {
 			copy := nowMS
 			result.MilestoneMS = &copy
+			decisionGuardExhausted = false
 			break
 		}
 		if suite.needsReferenceBootstrap(state) {
@@ -540,6 +590,7 @@ func (suite *RelevanceSuite) runReferenceWithOpportunity(mask, opportunityMask p
 		result.Decisions = decision + 1
 		next, ok := suite.nextDecisionHorizon(nowMS)
 		if !ok {
+			decisionGuardExhausted = false
 			break
 		}
 		candidates, rankErr := suite.rankCandidates(state, revision, nowMS, next, effectiveMask, counter)
@@ -560,7 +611,16 @@ func (suite *RelevanceSuite) runReferenceWithOpportunity(mask, opportunityMask p
 		result.Purchases[chosen.ID]++
 		mergeRoleActivations(result.Roles, chosen.RoleActivations)
 	}
-	if result.MilestoneMS == nil && nowMS < suite.Scenario.HorizonMS {
+	if result.MilestoneMS == nil {
+		if reached, reachErr := suite.relevanceMilestoneReached(state); reachErr != nil {
+			return relevanceRunResult{}, reachErr
+		} else if reached {
+			copy := nowMS
+			result.MilestoneMS = &copy
+		}
+	}
+	result.DecisionStarved = result.MilestoneMS == nil && decisionGuardExhausted
+	if result.MilestoneMS == nil && !result.DecisionStarved && nowMS < suite.Scenario.HorizonMS {
 		finishedMS, reachedMS, activations, advanceErr := suite.finishToMilestone(state, revision, nowMS, effectiveMask, counter)
 		if advanceErr != nil {
 			return relevanceRunResult{}, advanceErr
@@ -714,7 +774,7 @@ func (suite *RelevanceSuite) rankCandidate(state *save.State, revision, nowMS, h
 		return relevanceCandidate{}, false, fmt.Errorf("relevance candidate %s payback exceeds exact integer domain", id)
 	}
 	directPayback := earliest - nowMS + value
-	return relevanceCandidate{ID: id, PaybackMS: directPayback, DirectPaybackMS: directPayback,
+	return relevanceCandidate{ID: id, PaybackMS: directPayback,
 		EarliestPositiveDeltaMS: positiveLow, AtMS: earliest, State: candidateAtBuy, Revision: revision + 1,
 		RoleActivations: activations}, true, nil
 }
@@ -999,6 +1059,9 @@ func (suite *RelevanceSuite) opportunityAwareMask(base production.AblationMask, 
 		if err != nil {
 			return production.AblationMask{}, nil, err
 		}
+		if baseline.DecisionStarved {
+			return production.AblationMask{}, nil, errReferenceDecisionStarved
+		}
 		changed := false
 		for _, id := range suite.purchasableIDs() {
 			if baseline.Purchases[id] == 0 || maskRemoves(effective, id, suite.Catalog) {
@@ -1009,6 +1072,9 @@ func (suite *RelevanceSuite) opportunityAwareMask(base production.AblationMask, 
 			without, err := suite.runDirectFromGenesis(removed, counter)
 			if err != nil {
 				return production.AblationMask{}, nil, err
+			}
+			if without.DecisionStarved {
+				return production.AblationMask{}, nil, errReferenceDecisionStarved
 			}
 			diagnostics = append(diagnostics, relevanceOpportunityDecision{PurchasableID: id,
 				BaselineMS: cloneInt64(baseline.MilestoneMS), RemovedMS: cloneInt64(without.MilestoneMS)})
@@ -1029,7 +1095,7 @@ func (suite *RelevanceSuite) runDirectFromGenesis(mask production.AblationMask, 
 	if err != nil {
 		return relevanceRunResult{}, err
 	}
-	return suite.runReferenceFromRanked(state, 1, 0, suite.Scenario.MaxDecisions, mask, counter, true)
+	return suite.runReferenceFromRanked(state, 1, 0, suite.Scenario.MaxDecisions, mask, counter)
 }
 
 func groupMask(ids []string, catalog *economy.Catalog) production.AblationMask {
@@ -1312,8 +1378,8 @@ func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.Abl
 				return nil, cloneErr
 			}
 			remainingDecisions := suite.Scenario.MaxDecisions - depth - 1
-			rollout, rolloutErr := suite.runReferenceFromRanked(rolloutState, child.revision, child.atMS,
-				remainingDecisions, effectiveMask, counter, true)
+			rollout, rolloutErr := suite.runGreedyRolloutFromRanked(rolloutState, child.revision, child.atMS,
+				remainingDecisions, effectiveMask, counter)
 			if rolloutErr != nil {
 				return nil, rolloutErr
 			}
@@ -1392,17 +1458,30 @@ func relevanceStateDominates(left, right *save.State, catalog *economy.Catalog) 
 }
 
 func (suite *RelevanceSuite) runReferenceFrom(state *save.State, revision, nowMS, maxDecisions int64, counter *relevanceCounter) (relevanceRunResult, error) {
-	return suite.runReferenceFromRanked(state, revision, nowMS, maxDecisions, production.AblationMask{}, counter, false)
+	return suite.runReferenceFromRanked(state, revision, nowMS, maxDecisions, production.AblationMask{}, counter)
 }
 
-func (suite *RelevanceSuite) runReferenceFromRanked(state *save.State, revision, nowMS, maxDecisions int64, mask production.AblationMask, counter *relevanceCounter, direct bool) (relevanceRunResult, error) {
+func (suite *RelevanceSuite) runReferenceFromRanked(state *save.State, revision, nowMS, maxDecisions int64, mask production.AblationMask, counter *relevanceCounter) (relevanceRunResult, error) {
+	return suite.runRankedCompletion(state, revision, nowMS, maxDecisions, mask, counter, false)
+}
+
+// runGreedyRolloutFromRanked explicitly allows a beam-scoring rollout to stop
+// making purchases and coast. It is a heuristic completion, never a reference
+// measurement; reference runs fail loud when their decision guard is exhausted.
+func (suite *RelevanceSuite) runGreedyRolloutFromRanked(state *save.State, revision, nowMS, maxDecisions int64, mask production.AblationMask, counter *relevanceCounter) (relevanceRunResult, error) {
+	return suite.runRankedCompletion(state, revision, nowMS, maxDecisions, mask, counter, true)
+}
+
+func (suite *RelevanceSuite) runRankedCompletion(state *save.State, revision, nowMS, maxDecisions int64, mask production.AblationMask, counter *relevanceCounter, coastAfterGuard bool) (relevanceRunResult, error) {
 	result := relevanceRunResult{Purchases: map[string]int64{}, Roles: map[string]RoleActivationCount{}, FinalState: state}
+	decisionGuardExhausted := true
 	for decision := int64(0); decision < maxDecisions; decision++ {
 		if reached, err := suite.relevanceMilestoneReached(state); err != nil {
 			return relevanceRunResult{}, err
 		} else if reached {
 			copy := nowMS
 			result.MilestoneMS = &copy
+			decisionGuardExhausted = false
 			break
 		}
 		if suite.needsReferenceBootstrap(state) {
@@ -1416,15 +1495,10 @@ func (suite *RelevanceSuite) runReferenceFromRanked(state *save.State, revision,
 		result.Decisions = decision + 1
 		next, ok := suite.nextDecisionHorizon(nowMS)
 		if !ok {
+			decisionGuardExhausted = false
 			break
 		}
-		var candidates []relevanceCandidate
-		var err error
-		if direct {
-			candidates, err = suite.rankDirectCandidateIDs(state, revision, nowMS, next, suite.purchasableIDs(), mask, counter)
-		} else {
-			candidates, err = suite.rankCandidates(state, revision, nowMS, next, mask, counter)
-		}
+		candidates, err := suite.rankCandidates(state, revision, nowMS, next, mask, counter)
 		if err != nil {
 			return relevanceRunResult{}, err
 		}
@@ -1440,7 +1514,16 @@ func (suite *RelevanceSuite) runReferenceFromRanked(state *save.State, revision,
 		result.Purchases[chosen.ID]++
 		mergeRoleActivations(result.Roles, chosen.RoleActivations)
 	}
-	if result.MilestoneMS == nil && nowMS < suite.Scenario.HorizonMS {
+	if result.MilestoneMS == nil {
+		if reached, reachErr := suite.relevanceMilestoneReached(state); reachErr != nil {
+			return relevanceRunResult{}, reachErr
+		} else if reached {
+			copy := nowMS
+			result.MilestoneMS = &copy
+		}
+	}
+	result.DecisionStarved = result.MilestoneMS == nil && decisionGuardExhausted
+	if result.MilestoneMS == nil && (!result.DecisionStarved || coastAfterGuard) && nowMS < suite.Scenario.HorizonMS {
 		finishedMS, reachedMS, activations, err := suite.finishToMilestone(state, revision, nowMS, mask, counter)
 		if err != nil {
 			return relevanceRunResult{}, err

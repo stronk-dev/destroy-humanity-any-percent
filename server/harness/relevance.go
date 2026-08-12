@@ -19,7 +19,7 @@ import (
 	"cloud-clicker/server/save"
 )
 
-const RelevanceReportSchemaVersion = 3
+const RelevanceReportSchemaVersion = 4
 
 var errRelevanceRatioOutsideExactDomain = errors.New("relevance ratio outside exact integer domain")
 
@@ -97,6 +97,7 @@ type RelevanceItemReport struct {
 	JustificationKey        *string          `json:"justification_key"`
 	BaselinePurchaseCount   int64            `json:"baseline_purchase_count"`
 	ExcludedPersonaIDs      []string         `json:"excluded_persona_ids"`
+	InstrumentAffected      bool             `json:"instrument_affected"`
 	IndividualDeltas        []RelevanceDelta `json:"individual_deltas"`
 	ActionRemovalDeltas     []RelevanceDelta `json:"action_removal_deltas"`
 	Support                 string           `json:"support"`
@@ -120,18 +121,19 @@ type RelevanceTierContribution struct {
 }
 
 type RelevanceReport struct {
-	SchemaVersion       int                         `json:"schema_version"`
-	ScenarioID          string                      `json:"scenario_id"`
-	ScenarioHash        string                      `json:"scenario_hash"`
-	ConstantsHash       string                      `json:"constants_hash"`
-	RelevancePolicyHash string                      `json:"relevance_policy_hash"`
-	RunBudget           RelevanceRunBudget          `json:"run_budget"`
-	GreedyOracle        *RelevanceGreedyOracle      `json:"greedy_oracle"`
-	Items               []RelevanceItemReport       `json:"items"`
-	Groups              []RelevanceGroupReport      `json:"groups"`
-	TierContributions   []RelevanceTierContribution `json:"tier_contributions"`
-	RoleActivations     []RoleActivationCount       `json:"role_activations"`
-	Failures            []string                    `json:"failures"`
+	SchemaVersion         int                         `json:"schema_version"`
+	ScenarioID            string                      `json:"scenario_id"`
+	ScenarioHash          string                      `json:"scenario_hash"`
+	ConstantsHash         string                      `json:"constants_hash"`
+	RelevancePolicyHash   string                      `json:"relevance_policy_hash"`
+	RunBudget             RelevanceRunBudget          `json:"run_budget"`
+	GreedyOracle          *RelevanceGreedyOracle      `json:"greedy_oracle"`
+	Items                 []RelevanceItemReport       `json:"items"`
+	Groups                []RelevanceGroupReport      `json:"groups"`
+	TierContributions     []RelevanceTierContribution `json:"tier_contributions"`
+	RoleActivations       []RoleActivationCount       `json:"role_activations"`
+	InstrumentExcludedIDs []string                    `json:"instrument_excluded_ids"`
+	Failures              []string                    `json:"failures"`
 }
 
 type RelevanceSuite struct {
@@ -144,13 +146,14 @@ type RelevanceSuite struct {
 }
 
 type relevanceRunResult struct {
-	MilestoneMS    *int64
-	Purchases      map[string]int64
-	Roles          map[string]RoleActivationCount
-	Transitions    int64
-	Decisions      int64
-	FinalState     *save.State
-	FinalVirtualMS int64
+	MilestoneMS     *int64
+	Purchases       map[string]int64
+	Roles           map[string]RoleActivationCount
+	Transitions     int64
+	Decisions       int64
+	FinalState      *save.State
+	FinalVirtualMS  int64
+	DecisionStarved bool
 }
 
 type relevancePairedResult struct {
@@ -480,6 +483,7 @@ func ValidateRelevanceReport(report RelevanceReport) error {
 	if report.SchemaVersion < 1 || report.SchemaVersion > RelevanceReportSchemaVersion || !relevanceIDPattern.MatchString(report.ScenarioID) ||
 		!relevanceHashPattern.MatchString(report.ScenarioHash) || !relevanceHashPattern.MatchString(report.ConstantsHash) || !relevanceHashPattern.MatchString(report.RelevancePolicyHash) ||
 		report.Items == nil || report.Groups == nil || report.TierContributions == nil || report.RoleActivations == nil || report.Failures == nil ||
+		report.SchemaVersion >= 4 && report.InstrumentExcludedIDs == nil || sortedUniqueIDs(report.InstrumentExcludedIDs) != nil ||
 		!relevanceSafePositive(report.RunBudget.DeclaredRuns) || report.RunBudget.DeclaredRuns != report.RunBudget.ExecutedRuns ||
 		!relevanceSafe(report.RunBudget.DeclaredTransitions) || report.RunBudget.DeclaredTransitions != report.RunBudget.ExecutedTransitions {
 		return errors.New("invalid relevance report envelope")
@@ -493,6 +497,10 @@ func ValidateRelevanceReport(report RelevanceReport) error {
 			return errors.New("invalid relevance greedy oracle")
 		}
 	}
+	instrumentExcluded := map[string]bool{}
+	for _, id := range report.InstrumentExcludedIDs {
+		instrumentExcluded[id] = true
+	}
 	prior := ""
 	for _, item := range report.Items {
 		if !relevanceIDPattern.MatchString(item.PurchasableID) || prior != "" && prior >= item.PurchasableID || item.IndividualDeltas == nil ||
@@ -502,6 +510,7 @@ func ValidateRelevanceReport(report RelevanceReport) error {
 			item.AvailabilityWindow.FromGate != nil && !relevanceIDPattern.MatchString(*item.AvailabilityWindow.FromGate) ||
 			item.AvailabilityWindow.ToGate != nil && !relevanceIDPattern.MatchString(*item.AvailabilityWindow.ToGate) || !relevanceSafePositive(item.EpsilonMS) ||
 			!relevanceSafe(item.BaselinePurchaseCount) || !relevanceSafe(item.NearestPassingEpsilonMS) ||
+			report.SchemaVersion >= 4 && item.InstrumentAffected != instrumentExcluded[item.PurchasableID] ||
 			item.RelevancePassed != (item.Support != "failed") || item.TrapPassed != (item.BaselinePurchaseCount > 0 || item.TrapExempt) ||
 			item.TrapExempt != (item.JustificationKey != nil) || item.JustificationKey != nil && !relevanceIDPattern.MatchString(*item.JustificationKey) {
 			return fmt.Errorf("invalid relevance item report %q", item.PurchasableID)

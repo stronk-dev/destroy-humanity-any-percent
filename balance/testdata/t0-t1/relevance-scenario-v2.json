@@ -14,7 +14,7 @@
   "reducer": "worst",
   "horizon_ms": 86400000,
   "decision_horizons_ms": [60000, 300000, 600000, 900000, 1800000, 3600000, 7200000, 14400000, 28800000, 43200000, 86400000],
-  "max_decisions": 32,
+  "max_decisions": 384,
   "beam_width": 8,
   "beam_children": 2,
   "greedy_gap_maximum_ppm": 50000,
