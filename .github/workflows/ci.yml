@@ -18,9 +18,11 @@ jobs:
   server:
     runs-on: ubuntu-latest
     # A cold Linux run includes every Postgres integration package plus the
-    # composed balance harness. Run 31486886470 reached the old five-minute
-    # job deadline before verify-server could finish.
-    timeout-minutes: 10
+    # composed balance harness. The T01-C19 falsifiable-oracle regression makes
+    # the harness intentionally exhaustive; run 31613669423 reached the former
+    # ten-minute deadline while the exact target remained green locally and in
+    # the Linux container. Twenty minutes is measured headroom, not a retry fix.
+    timeout-minutes: 20
     env:
       TEST_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_test@127.0.0.1:5432/cloud_clicker_test?sslmode=disable
     services:
