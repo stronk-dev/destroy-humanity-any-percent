@@ -17,12 +17,7 @@ concurrency:
 jobs:
   server:
     runs-on: ubuntu-latest
-    # A cold Linux run includes every Postgres integration package plus the
-    # composed balance harness. The T01-C19 falsifiable-oracle regression makes
-    # the harness intentionally exhaustive; run 31613669423 reached the former
-    # ten-minute deadline while the exact target remained green locally and in
-    # the Linux container. Twenty minutes is measured headroom, not a retry fix.
-    timeout-minutes: 20
+    timeout-minutes: 10
     env:
       TEST_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_test@127.0.0.1:5432/cloud_clicker_test?sslmode=disable
     services:
@@ -51,7 +46,23 @@ jobs:
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-mod-${{ hashFiles('server/go.mod', 'server/go.sum') }}
-      - run: make verify-server
+      - run: make verify-server-core
+
+  harness:
+    runs-on: ubuntu-latest
+    # T01-C19 deliberately runs a real falsifiable beam oracle. Isolate that
+    # exhaustive proof so it stays mandatory without serializing every server
+    # package behind it or running it twice in one job.
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - run: make verify-harness
 
   client:
     runs-on: ubuntu-latest

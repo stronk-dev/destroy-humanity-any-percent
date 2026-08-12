@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness t0-t1-relevance t1-relevance t0-t1-relevance-all commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-ci verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness t0-t1-relevance t1-relevance t0-t1-relevance-all commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -31,6 +31,14 @@ test: test-go test-client test-browser
 
 test-go:
 	cd server && go test -p 1 $(GO_TEST_FLAGS) $(GO_PACKAGES)
+
+# The relevance oracle is intentionally exhaustive. Keep it mandatory while
+# allowing hosted CI to run it in parallel with the rest of the server suite.
+test-go-core:
+	cd server && go test -p 1 $(GO_TEST_FLAGS) $$(go list ./... | grep -v '^cloud-clicker/server/harness$$')
+
+test-harness:
+	cd server && go test -p 1 $(GO_TEST_FLAGS) ./harness
 
 # Reproduce the Actions server job on its real architecture, with Postgres and
 # cold test execution. This intentionally runs every package rather than the
@@ -207,8 +215,15 @@ verify-achievements-boundary:
 
 verify-server: vet test-go pitch-corpus-check formulas-check api-check harness-check verify-routes-boundary verify-commons-boundary
 
+verify-server-core: vet test-go-core pitch-corpus-check formulas-check api-check verify-routes-boundary verify-commons-boundary
+
+verify-harness: test-harness harness-check
+
 verify-server-ci:
-	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test sh -c 'cd /workspace && make verify-server'
+	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test sh -c 'cd /workspace && make verify-server-core'
+
+verify-harness-ci:
+	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test sh -c 'cd /workspace && make verify-harness'
 
 verify-client: typecheck build-client test-client verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary copy-check
 
