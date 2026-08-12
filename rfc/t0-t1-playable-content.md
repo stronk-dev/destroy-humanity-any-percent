@@ -573,6 +573,10 @@ after that correction because its then-current comparison is 502,100 → 503,906
 content disposition: Hold Music's 8e4 unlock is only the correctness repair that places it inside
 its declared window, and all deadness decisions wait for the repaired reports.
 
+The review's original counterexample remains a literal regression witness: removing both Dot Matrix
+Queue and Reply All is a legal 525,465 ms trajectory against the old 595,627 ms greedy run, exactly
+133,523 ppm better, and therefore must trip the 50,000 ppm oracle bound.
+
 A permanent production-catalog witness proves the oracle can fire: the opportunity-aware greedy
 trajectory reaches 502,100 ms while the declared beam finds 447,952 ms, a 120,879 ppm gap against
 the 50,000 ppm maximum. A zero-gap assertion cannot substitute for this test. Measured full-gate

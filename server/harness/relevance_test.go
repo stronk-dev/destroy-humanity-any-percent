@@ -293,8 +293,19 @@ func TestT0T1OpportunityCostCorrectsWitnessRankings(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if legacy.MilestoneMS == nil || withoutReply.MilestoneMS == nil || *legacy.MilestoneMS != 595_627 || *withoutReply.MilestoneMS != 534_259 {
+	knownBetterMask := production.AblationMask{RemovedGeneratorIDs: []string{"generator.dot_matrix_queue"},
+		RemovedUpgradeIDs: []string{"upgrade.reply_all_macro"}}
+	knownBetter, err := suite.runDirectFromGenesis(knownBetterMask, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if legacy.MilestoneMS == nil || withoutReply.MilestoneMS == nil || knownBetter.MilestoneMS == nil ||
+		*legacy.MilestoneMS != 595_627 || *withoutReply.MilestoneMS != 534_259 || *knownBetter.MilestoneMS != 525_465 {
 		t.Fatalf("reply-all legacy witness=%v removed=%v", legacy.MilestoneMS, withoutReply.MilestoneMS)
+	}
+	if gap := mustRelevanceGapPPM(t, *legacy.MilestoneMS, *knownBetter.MilestoneMS); gap != 133_523 || gap <= suite.Scenario.GreedyGapMaximumPPM {
+		t.Fatalf("known-better witness did not fire oracle: greedy=%d better=%d gap_ppm=%d",
+			*legacy.MilestoneMS, *knownBetter.MilestoneMS, gap)
 	}
 	mask, diagnostics, err := suite.opportunityAwareMask(production.AblationMask{}, counter)
 	if err != nil {

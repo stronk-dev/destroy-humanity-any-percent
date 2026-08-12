@@ -781,3 +781,10 @@ intermediate commit remains immutable historical evidence; L6's full-decision pr
 as the deliberately cheap diagnosis before the expensive matrix, not misrepresented as a loader
 proof. The four candidate hashes are re-derived below after the final gates; they remain
 **UNRATIFIED** pending the designated review and owner action.
+
+Re-derived candidate pins (all **UNRATIFIED**):
+
+- economy v4: `sha256:687fece9cf09550e2ff84266bc51a55aa52246fc1be638bb43b37217faf5ba85`
+- T1 relevance policy v2: `sha256:f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef`
+- T0 scenario v2: `sha256:4e159d95b741f24a9ae512ef8b104e730ac6c92aa6397f87d34f406e664e53ab`
+- T1 scenario v2: `sha256:d0d75f4f37db6333d807e95a694f9a6285d14b2473650194bed54e05f5fa5451`
