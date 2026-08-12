@@ -586,3 +586,89 @@ measurement truncated at the T1 boundary would tune to a truncated objective.**
   owner decision, retains T01-C17/T01-C18 ownership of subsequent measured parameters, and leaves
   no competing normative paragraph. **No findings.** This closes the reverse-direction review
   debt recorded for `{fe4ca5e}`.
+
+## 2026-08-12 — designated cross-party verdict: 65fe46c..18a94da — ALL FIVE APPROVED; H1 CHANGES WHAT THE 32 FINDINGS MEAN
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**Verified:** the two-scenario split is correct and loader-enforced (T0 policy 9 items, T1 18; the
+10 later-window rows are ABSENT, not exempted; the derivation recomputed by hand); all four
+ratification hashes recomputed and matching; the T1 budget 14,000,000 IS measured (6,710,806 × 2
+rounded), reproduced exactly; the T1 milestone at 14.07 h is sensible against design/02 §11 (Tier
+3 targets day 2–4; an optimizer at 14 h is early, and T0's 9.9 min sits against a ~15 min target);
+BOTH publication diagnostics probed on the real repo with the ref deleted and restored (missing
+ref fails as CONFIGURATION, not as false amnesty); the myopic-ranker arithmetic reproduced to the
+millisecond at decision 9 (dot_matrix payback 31,425 vs beige_tower 32,789 — wins by 1,364 ms
+while costing 4× and burning 13.2 s).
+
+**H1 (HIGH) — THE 5% GREEDY-GAP ORACLE IS VACUOUS AT SHIPPED PARAMETERS, BOTH SCENARIOS.** The
+beam ranks candidates by CHEAPEST COST while greedy ranks by PAYBACK; at `beam_children: 1` every
+node expands to exactly {buy-cheapest, wait}, so the beam can never explore "buy the runner-up
+instead" — the ONLY counterfactual that can detect the diagnosed myopia. Instrumented: all 8
+frontier entries are `k × beige_tower` then waits, monotonically ordered, 1,171,590 transitions
+(88% of the gate) spent re-deriving a number greedy computed in 7,366. **The witness:** legal
+trajectories exist at 553,886 / 534,259 / **525,465 ms** vs greedy's 595,627 — the best is
+**133,523 ppm better, 2.67× the 50,000 ppm bound — and the oracle reports 0 ppm, Passed: true.**
+T1 is worse (`beam_width: 1` — a single-path hill climb). Codex's own fixture pins gap 221,598 at
+`beam_children: 4`, proving the machinery works only above the shipped parameters.
+**CONSEQUENCE: all 32 findings are ablation deltas measured against a baseline provably ≥13%
+suboptimal, by the very ranker whose defect was diagnosed.** Never-bought-by-any-persona survives
+that caveat; every delta MAGNITUDE and every single-persona `relevance_floor` does not.
+**H2 (HIGH) — an UNDISCLOSED trap_floor loosening arrived with the deletion of its only test.**
+`baselinePurchases` moved from reference-arm samples to max-over-personas-of-min-over-seeds —
+monotonically ≥ the old value, so strictly more items pass — and in the same range the golden lost
+`trap_floor:generator.alpha` and its assertion was DELETED. **After this range no test anywhere
+proves trap_floor can fire.**
+**H3 (HIGH) — persona exclusion drops personas that DO purchase** (worst-seed-zero excludes the
+whole persona) while `docs/balance-harness.md`, added in the same commit, states the opposite.
+**M1:** Hold Music at 8e4 is UNLANDED and, measured, insufficient — I built the counterfactual
+catalog and it changes nothing (identical 13 findings; the item is dead on merit, confirmed
+independently by T1 where it is trivially affordable and still fails both floors). M2 a pinned
+`beam_width == 8` invariant was relaxed to allow T1's width-1 oracle, undisclosed. M3 the ranker
+defect is not filed as a numbered blocker and its blast radius is understated. M4 T1 deltas are
+not window-scoped. M5 no test proves `greedy_oracle:gap` FIRES. M6 the exclusion record is
+structurally unobservable on failing runs (no report is written, and both scenarios fail).
+L1 `1f81be2` leaves an avoidable red intermediate commit. L2/L4/L5/L6 noted (incl. legal_dept now
+having NO relevance coverage in any scenario — staged debt, unrecorded).
+
+**Per-commit: ALL FIVE APPROVED** ({bcaa3b3, cd64503, 18a94da} clean; {74a7a14} with the findings
+above; {1f81be2} with L1). The split itself is good work, precisely executed. **NOT
+archival-ready, and the four hashes are NOT ratified** — H1 means both reports measure content
+against a baseline the harness cannot certify.
+
+## 2026-08-12 — OWNER RULINGS on H1–H3 and the disposition order
+
+**THE ORDER IS NOW FIXED: fix the instrument, re-measure, THEN judge content. No content retune
+of ANY item — including Hold Music — happens before the re-measurement.**
+1. **T01-C19 (filed now, owner-side): the payback ranker is opportunity-cost blind.** It prices
+   one-unit payback without pricing the alternative use of the same cash, so it buys items that
+   make the run slower. **RULED: the ranker must account for the opportunity cost of delaying the
+   next-best purchase**; the arithmetic and the corrected ranking on the two witness items come
+   back with the fix. Blast radius stated explicitly in the RFC: this ranker drives the reference
+   arm AND every beam rollout, so it conditions all 32 findings — not two rows.
+2. **H1 — RULED, three parts.** (i) **The beam must be able to falsify greedy:** it ranks
+   candidates by the SAME payback metric greedy uses (not cheapest) with `beam_children >= 2`, so
+   "buy the runner-up instead" is reachable. (ii) **The witness becomes a permanent regression
+   test:** a configuration in which a known-better trajectory exists MUST make the oracle FIRE —
+   use the measured 525,465 ms path (133,523 ppm). **An oracle that cannot fire is not an oracle**,
+   and this closes M5 in the same stroke. (iii) Budget consequences follow T01-C17 branch B as
+   already ruled — measure, ×2, round, record, re-ratify. The `beam_width` invariant relaxation
+   (M2) is ACCEPTED but must be disclosed in the RFC with the parameters it exists to allow.
+3. **H2 — RULED: restore the proof, then keep the semantics.** The max-over-personas
+   `baselinePurchases` reduction is defensible (an item bought by SOME persona is measurable), so
+   it stands — but it is a semantic change and lands in the RFC as one, WITH a discriminating
+   fixture test proving `trap_floor` fires. A floor with no failing test is decoration.
+4. **H3 — RULED: exclude at the SEED level, not the persona level.** A seed that purchases
+   nothing contributes no ablation signal; a persona is excluded only when ALL its seeds are
+   zero. That makes the shipped doc sentence ("personas that do buy remain binding") true instead
+   of correcting it downward.
+5. **M6 — RULED: failing runs must emit a NON-AUTHORITATIVE diagnostic.** Fail-before-write
+   protects the GOLDEN, not the owner's visibility. On failure the runner writes
+   `*.diagnostic.json` (clearly marked, never consumable as a golden, never registered) carrying
+   the findings and the exclusion record. The owner cannot disposition what the tool refuses to
+   show.
+6. **M4 — RULED:** T1 ablation deltas are window-scoped like T0's, so no row is judged on evidence
+   earned after its own window closed. **M1 — Hold Music: the catalog/policy contradiction is a
+   CORRECTNESS defect and is fixed regardless** (the unlock must sit inside its declared window);
+   its DEADNESS is deferred to the post-ranker re-measurement with every other content finding.
+   L1/L2/L4/L5/L6 accepted as filed; record legal_dept's coverage gap as named debt.
