@@ -79,6 +79,11 @@ func TestRepositoryGuardAcceptsNamedPublishedMixedCommitCorrection(t *testing.T)
 
 func TestRepositoryGuardRejectsUnpublishedMixedCommitCorrection(t *testing.T) {
 	root := newGuardRepository(t)
+	initialBytes, err := gitOutput(root, "rev-parse", "HEAD")
+	if err != nil {
+		t.Fatal(err)
+	}
+	runGuardGit(t, root, "update-ref", publishedMainRef, string(initialBytes))
 	writeGuardCommit(t, root, "harness: mixed implementation and golden", map[string]string{
 		relevanceGoldenPath: `{"schema_version":1}`,
 		"server/code.go":    "package server\n\nconst Mixed = true\n",
@@ -100,6 +105,29 @@ func TestRepositoryGuardRejectsUnpublishedMixedCommitCorrection(t *testing.T) {
 	}
 }
 
+func TestRepositoryGuardRejectsMissingPublicationRefAsConfigurationError(t *testing.T) {
+	root := newGuardRepository(t)
+	writeGuardCommit(t, root, "harness: mixed implementation and golden", map[string]string{
+		relevanceGoldenPath: `{"schema_version":1}`,
+		"server/code.go":    "package server\n\nconst Mixed = true\n",
+	})
+	offendingBytes, err := gitOutput(root, "rev-parse", "HEAD")
+	if err != nil {
+		t.Fatal(err)
+	}
+	writeGuardCommit(t, root, "docs: correction record", map[string]string{
+		"planning/test/log.md": "missing publication ref must fail as configuration\n",
+	})
+	registry := fmt.Sprintf(`{"schema_version":1,"corrections":[{"offending_commit":%q,"kind":"mixed_artifact_commit","reason":"Publication cannot be established.","review_log":"planning/test/log.md"}]}`, string(offendingBytes))
+	writeGuardCommit(t, root, "guard: attempt correction without publication ref", map[string]string{
+		baselineHistoryCorrectionsPath: registry,
+	})
+	err = ValidateRepositoryBaselineChange(root)
+	if err == nil || !strings.Contains(err.Error(), "publication check is not configured") || !strings.Contains(err.Error(), publishedMainRef) {
+		t.Fatalf("missing publication ref err=%v", err)
+	}
+}
+
 func TestRepositoryGuardRejectsCorrectionForUngovernedCommit(t *testing.T) {
 	root := newGuardRepository(t)
 	writeGuardCommit(t, root, "docs: ordinary unpublished-independent change", map[string]string{
@@ -118,7 +146,7 @@ func TestRepositoryGuardRejectsCorrectionForUngovernedCommit(t *testing.T) {
 	writeGuardCommit(t, root, "guard: attempt blanket baseline correction", map[string]string{
 		baselineHistoryCorrectionsPath: registry,
 	})
-	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "does not change a governed report") {
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "ledger entry was never consumed") {
 		t.Fatalf("blanket correction err=%v", err)
 	}
 }

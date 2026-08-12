@@ -170,7 +170,7 @@ func ValidateRepositoryBaselineChange(root string) error {
 		}
 	}
 	if len(corrections) != 0 {
-		return fmt.Errorf("baseline history correction targets a commit that does not change a governed report")
+		return fmt.Errorf("baseline history-correction ledger entry was never consumed by a governed report commit")
 	}
 	return nil
 }
@@ -230,6 +230,9 @@ func repositoryBaselineHistoryCorrections(root string) (map[string]baselineHisto
 			}
 			if err := gitAncestor(root, offending, commit); err != nil {
 				return nil, fmt.Errorf("history correction %s does not follow its offending commit: %w", offending, err)
+			}
+			if _, err := gitOutput(root, "rev-parse", "--verify", "--quiet", publishedMainRef); err != nil {
+				return nil, fmt.Errorf("history correction publication check is not configured: remote-tracking ref %s is missing", publishedMainRef)
 			}
 			if err := gitAncestor(root, offending, publishedMainRef); err != nil {
 				return nil, fmt.Errorf("history correction %s targets an unpublished commit; unpublished commits must be repackaged, not forgiven", offending)
