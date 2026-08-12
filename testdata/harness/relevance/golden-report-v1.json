@@ -1,20 +1,20 @@
 {
   "schema_version": 1,
   "scenario_id": "scenario.relevance_fixture",
-  "scenario_hash": "sha256:15c82ec9407c922a5386413f3e4c2c971fcefdca4475547930639a17c8fa37ac",
+  "scenario_hash": "sha256:ef2ffd1beaa8fc1395ba640c16288d1ce400e1753807f67ef5093385f9bde711",
   "constants_hash": "sha256:6a51af9b09becc3031fd9512a363d708af79a25f7ef5ca9b006a28e7ee5f002d",
   "relevance_policy_hash": "sha256:89e7029ce3869871b74a3612e32403b3fd479bdee4be0eae105f05609f5abefe",
   "run_budget": {
     "declared_runs": 14,
     "executed_runs": 14,
-    "declared_transitions": 156709,
-    "executed_transitions": 156709
+    "declared_transitions": 58740,
+    "executed_transitions": 58740
   },
   "greedy_oracle": {
     "milestone_id": "milestone.cash_target",
     "greedy_ms": 6445,
-    "beam_ms": 6270,
-    "gap_ppm": 27910,
+    "beam_ms": 6445,
+    "gap_ppm": 0,
     "maximum_ppm": 50000,
     "passed": true
   },
