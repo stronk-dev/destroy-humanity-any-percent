@@ -149,8 +149,9 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 		t.Fatal("fixture has no reconcilable delta to mutate")
 	}
 	invalid.Items[deltaItem].IndividualDeltas = append([]RelevanceDelta(nil), first.Items[deltaItem].IndividualDeltas...)
-	badAblated := *invalid.Items[deltaItem].IndividualDeltas[0].AblatedMS + 1
-	invalid.Items[deltaItem].IndividualDeltas[0].AblatedMS = &badAblated
+	badDelta := *invalid.Items[deltaItem].IndividualDeltas[0].DeltaMS + 1
+	invalid.Items[deltaItem].IndividualDeltas[0].DeltaMS = &badDelta
+	invalid.Items[deltaItem].IndividualDeltas[0].Status = "both_reached"
 	if err := ValidateRelevanceReport(invalid); err == nil {
 		t.Fatal("report accepted a non-reconciling delta")
 	}
