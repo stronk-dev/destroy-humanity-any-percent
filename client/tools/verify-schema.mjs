@@ -586,6 +586,7 @@ async function main() {
   const validateRelevanceReport = ajv.compile(relevanceReportSchema);
   const relevanceReportV1 = await readJSON(path.join(harnessDirectory, "relevance", "golden-report-v1.json"));
   const relevanceReportWithGenesisWindow = structuredClone(relevanceReportV1);
+  relevanceReportWithGenesisWindow.schema_version = 1;
   relevanceReportWithGenesisWindow.items[0].availability_window.from_gate = null;
   if (validateRelevanceReport(relevanceReportWithGenesisWindow)) {
     throw new Error("relevance report schema v1 accepted a null from_gate");
