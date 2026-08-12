@@ -807,3 +807,93 @@ harness tests and golden comparison, and Actions runs those mandatory gates in p
 aggregate `verify-server`/`verify` remain intact for local use. Independently run after the split:
 `make verify-server-core` PASS, `make verify-harness` PASS, workflow/kernel-history guards PASS.
 The exact pre-split container target `make verify-server-ci` also passed before the topology change.
+
+## 2026-08-12 — designated cross-party verdict: d9e34ef..11e7789 (7 commits) — ALL APPROVED; F1 INVALIDATES BOTH REPORTS' DELTAS
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**The instrument repair is REAL and probe-verified.** The witness test genuinely fires: reverting
+the beam to cheapest-cost + 1 child reproduces the EXACT vacuous 0 ppm the H1 verdict diagnosed,
+and the witness test FAILS there (the discriminating change is the ranking metric — 0 → 110,076
+ppm — with children ≥ 2 adding ~10,800 more). H2's trap-floor proof discriminates on two probes;
+H3's seed-level exclusion probe-verified (persona-level reverts the test to red); M6's diagnostic
+is confirmed unregistrable and unconsumable by any tool (grep-proven); M4's window scope
+recomputed by hand (T0 9 rows, T1 9 of 18); budgets are genuinely measured ×2 and both runs
+reproduced to the transition; all four hashes recomputed and matching; the CI split's coverage
+union enumerated target-by-target and proven IDENTICAL — nothing lost. **No unruled content
+change anywhere** (every balance/testdata file diffed: only the ruled Hold Music fix, the ruled
+scenario parameters, and the H2 discriminator).
+
+**F1 (HIGH) — THE REFERENCE ARM IS DECISION-STARVED; THE ORACLE GAP IS AN ARTIFACT OF
+`max_decisions`, NOT GREEDY MYOPIA.** Sweeping the parameter: T0 gap **120,879 ppm at 32
+decisions → 1,536 ppm at 48 → 7,096 at 64.** At 48 the greedy reference is within 0.15% of the
+beam — 33× INSIDE the bound. The bound is not too tight and greedy is not structurally
+incapable. Greedy **never once terminates on the milestone** in either scenario — it exhausts its
+envelope and `finishToMilestone` silently coasts it the rest of the way: **241,728 ms, 48% of the
+reported T0 milestone time, is post-decision coasting.** A width-1 beam already captures 84% of
+the gap, so within the starved regime the loss is a scoring-function artifact, not search
+breadth; the beam's winning line differs by two decisions, one of which is "spend a slot on
+waiting" — a move greedy cannot make because it takes `candidates[0]` unconditionally whenever
+anything is affordable. **Consequence: every milestone time and every ablation delta in BOTH
+reports is a function of the search bound. The Batch-3 content dispositions cannot be made on
+them.** The guard was specified as a runaway guard, never a modelling parameter; one that always
+fires first is a scenario-parameter defect, and `finishToMilestone` absorbing it silently is why
+eight review rounds never saw it.
+**F2 (HIGH) — the opportunity screen permanently ablates a SECOND production item, undisclosed.**
+The T0 fixed-point mask removes `generator.dot_matrix_queue` AND **`upgrade.beige_tower_cache`**
+(553,886 → 502,100 ms); every record narrates only the first. Both items' floor failures are
+partly INSTRUMENT-INDUCED — the reference arm is forbidden from buying them — and the report has
+no field distinguishing an instrument exclusion from a content verdict. Reading those rows as
+content deadness in Batch 3 would be a category error.
+**F3/F4 (MED) — ruling fidelity:** the ranker's formula and comparator are BYTE-IDENTICAL to
+pre-repair (verified by replaying decision 9: it still prefers dot_matrix by the same 1,364 ms);
+what landed is a global backward-elimination screen over the item set — defensible, but not what
+the ruling said, and never stated plainly. `DirectPaybackMS` is a dead duplicate implying a
+distinction that does not exist, and rfc line 482 now claims an "opportunity-aware payback
+metric" that does not exist while line 566 and the docs describe the real mechanism — two
+inconsistent normative descriptions of one thing.
+**F5–F15:** dead `direct bool` parameter with byte-identical branches; the Hold Music magnitude
+(8e4, a 44% cut) is discretionary and underived; **F7 the FINAL CI topology has no hosted
+validation** (the cited runs are pre-split, and the same commit drops the server job back to 10
+min); **F8 `d9e34ef` is covered by no verdict on either side**; **F9 a deterministic nil-deref
+panic reached published history**, meaning the harness suite was not run locally at `dacddae` —
+and the "expected red intermediate" pattern actively masks this, since a deliberate red is
+indistinguishable from a broken one; F10 the registered fixture's oracle is again gap-0 (the
+production witness is strictly stronger, but the fixture no longer carries the property); F11 a
+published no-op timeout pair; F12 an unchecked gate-ID map read; F13/F14/F15 noted.
+
+**Per-commit: ALL SEVEN APPROVED** (`f0da146` with F1–F6/F14; `dacddae` with F9; `d4b3a66`,
+`0ad12cb`, `11e7789` clean; `bd5219a` superseded; `7f92e5c` with F7/F15). **NOT archival-ready;
+the four hashes remain UNRATIFIED.**
+
+## 2026-08-12 — OWNER RULINGS on F1–F9
+
+1. **F1 — RULED: a reference arm that terminates on the GUARD is an INVALID MEASUREMENT and must
+   FAIL LOUD.** (i) `finishToMilestone` may no longer silently absorb guard exhaustion — the run
+   records that it terminated on the guard, and the gate FAILS with an explicit
+   `reference_decision_starved` finding. A measurement that quietly coasts 48% of the way is
+   worse than no measurement, because it looks like data. (ii) `max_decisions` is re-derived from
+   MEASUREMENT as the smallest value at which greedy terminates on the milestone in every
+   persona, plus headroom, recorded. (iii) Budgets then follow T01-C17 branch B a third time —
+   measure, ×2, round, record, re-ratify; the ~5.26 M observed at 48 decisions says the T0
+   ceiling will move again, and that is expected and fine. **No content disposition happens
+   against decision-starved numbers.**
+2. **F2 — RULED: instrument exclusions must be VISIBLE and must not read as content verdicts.**
+   The report gains a first-class field naming every item removed by the opportunity screen, and
+   any floor failure for such an item is labelled instrument-affected. Disclose
+   `upgrade.beige_tower_cache` explicitly in the RFC and the log — an undisclosed second ablation
+   is the kind of omission that turns a measurement into a story.
+3. **F3/F4 — RULED: the screen STANDS, the description gets fixed, and the ranker question is
+   re-opened AFTER F1.** The whole-item screen is an acceptable implementation of the intent, but
+   the records must say plainly that the ranking metric is UNCHANGED; remove the dead
+   `DirectPaybackMS`; reconcile rfc line 482 to match line 566 and the docs (body-reconciliation,
+   Codex's own text). **Then re-measure with the F1 fix and report whether the myopia still
+   produces harmful purchases** — if it does not at a non-starved decision budget, the ranker
+   change is moot and the screen may be retired; if it does, the ruled ranker change is still owed.
+4. **F7 — RULED: the final CI topology gets a hosted validation run before this batch can be
+   called done.** A timeout fix validated only locally has not been tested against the thing it
+   fixes. **F9 — RULED: the "expected red intermediate" pattern is now bounded** — any commit
+   left red must name in its message EXACTLY which gate is red and why; a red that a reviewer
+   cannot distinguish from breakage is not an acceptable intermediate state. Run the focused
+   suite for the package you touched before committing, always.
+5. **F5/F6/F10–F15 accepted as filed.** F8: `d9e34ef` goes to Codex's cross-party lane.
