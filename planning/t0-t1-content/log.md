@@ -788,3 +788,22 @@ Re-derived candidate pins (all **UNRATIFIED**):
 - T1 relevance policy v2: `sha256:f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef`
 - T0 scenario v2: `sha256:4e159d95b741f24a9ae512ef8b104e730ac6c92aa6397f87d34f406e664e53ab`
 - T1 scenario v2: `sha256:d0d75f4f37db6333d807e95a694f9a6285d14b2473650194bed54e05f5fa5451`
+
+### CI follow-up and verification topology
+
+Hosted run `31609826372` failed only the server job at `dacddae`: the full server suite exposed a
+test corruption probe that dereferenced the optional `ablated_ms` arm. `0ad12cb` replaces it with
+an invalid-but-total union mutation; the focused cold test, complete `make verify`, and cold
+Linux/amd64 `make test-go-ci` all pass. Replacement run `31613669423` then reached the old
+ten-minute server timeout while still executing `make verify-server`; every other hosted job
+passed. It was cancelled by the deadline, not a test failure.
+
+The timing diagnosis is structural: the generic server job first runs the exhaustive oracle inside
+`go test ./...`, then recomputes every registered harness report in `harness-check`. Both proofs
+are required, but serializing them behind every other server package made the job unnecessarily
+long. `{bd5219a, 7f92e5c}` records the measured timeout incident and then implements the proper
+topology: `verify-server-core` excludes only the harness package, `verify-harness` owns both the
+harness tests and golden comparison, and Actions runs those mandatory gates in parallel. Existing
+aggregate `verify-server`/`verify` remain intact for local use. Independently run after the split:
+`make verify-server-core` PASS, `make verify-harness` PASS, workflow/kernel-history guards PASS.
+The exact pre-split container target `make verify-server-ci` also passed before the topology change.
