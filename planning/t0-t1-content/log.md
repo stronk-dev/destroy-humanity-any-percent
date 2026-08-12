@@ -672,3 +672,58 @@ of ANY item — including Hold Music — happens before the re-measurement.**
    CORRECTNESS defect and is fixed regardless** (the unlock must sit inside its declared window);
    its DEADNESS is deferred to the post-ranker re-measurement with every other content finding.
    L1/L2/L4/L5/L6 accepted as filed; record legal_dept's coverage gap as named debt.
+
+## 2026-08-12 — RESUMABLE HANDOFF (written after both agents compacted; a fresh agent can resume from this alone)
+
+**Where things stand.** Every implementation commit through `18a94da` is designated-review-covered
+(verdicts above). The two-scenario split is APPROVED and correct. **The four candidate hashes are
+NOT ratified** and no content may be retuned, because the designated review proved the acceptance
+oracle vacuous at shipped parameters — see the H1 entry above for the witness (a legal trajectory
+133,523 ppm better than greedy that the oracle reports as 0 ppm / passed).
+
+**THE RULED ORDER — do not deviate: fix the instrument → re-measure → judge content.**
+
+**Batch 1 — the instrument repair (all of this before any re-measurement):**
+1. **T01-C19** — make the payback ranker opportunity-cost aware (it currently prices one-unit
+   payback without pricing the alternative use of the same cash). File it as a numbered RFC
+   blocker with the blast radius stated: this ranker drives the reference arm AND every beam
+   rollout, so it conditions all 32 findings. Show the corrected arithmetic on the two witness
+   items (`generator.dot_matrix_queue`, `upgrade.reply_all_macro`).
+2. **H1(i)** — the beam ranks candidates by the SAME payback metric greedy uses (not cheapest),
+   with `beam_children >= 2`, so "buy the runner-up instead" is reachable.
+3. **H1(ii)** — the witness becomes a permanent regression test: a configuration where a
+   known-better trajectory exists MUST make the oracle fire (use the measured 525,465 ms path).
+   This also closes M5.
+4. **H1(iii)** — budget via T01-C17 branch B: measure, ×2, round up, record the measurement,
+   re-ratify. Disclose the `beam_width == 8` invariant relaxation (M2) in the RFC with the
+   parameters it exists to permit.
+5. **H2** — keep the max-over-personas `baselinePurchases` semantics (defensible) but land it in
+   the RFC as an explicit semantic change AND restore a discriminating fixture test proving
+   `trap_floor` fires. No floor ships without a failing case.
+6. **H3** — exclude at the SEED level: a persona is excluded only when ALL its seeds purchase
+   zero. This makes the shipped `docs/balance-harness.md` sentence true rather than correcting it
+   downward.
+7. **M6** — on failure the runner writes a clearly-marked NON-AUTHORITATIVE `*.diagnostic.json`
+   (never consumable as a golden, never registered) carrying the findings and the exclusion
+   record. Fail-before-write protects the golden, not the owner's visibility.
+8. **M4** — window-scope the T1 ablation deltas so no row is judged on evidence earned after its
+   own window closed.
+9. **M1 (correctness half only)** — fix the `upgrade.hold_music_license` catalog/policy
+   contradiction: its unlock must sit inside its declared window. Its DEADNESS is deferred with
+   every other content finding.
+10. **L1/L2/L4/L5/L6** — minor; record `generator.legal_dept`'s total loss of relevance coverage
+    (dropped from both policies, no T2 scenario) as named debt.
+
+**Batch 2 — re-measure, then hand off:** re-run both relevance gates, re-derive ALL FOUR hashes
+(they will move), and hand off for designated review. Marco ratifies only after that review.
+**Batch 3 — content dispositions:** the 32 findings get re-characterized against the repaired
+instrument. Only then does any content retune happen — Hold Music's deadness, the five
+never-bought T0 rows, the five inert T1 upgrades, and the two role_floor mechanic gaps.
+
+**Also outstanding:** the Claude-authored commits `65fe46c` and `b87cf8a` await Codex's
+cross-party pass (rulings/verdict records; the reverse-direction lane).
+
+**Downstream, unchanged and still gated on all of the above:** the epoch-7 mint (candidate
+content-dynamics report per EH-C10 → promotion manifest over the narrowed artifact set → Marco's
+sign-off → the mint), after which AC1's live T0→T2 script closes the last Game-UI acceptance
+criterion and the Game UI Screens RFC becomes archival-eligible.
