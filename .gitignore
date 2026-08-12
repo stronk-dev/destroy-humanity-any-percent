@@ -23,6 +23,7 @@ server/coverage/
 
 # Local runtime output
 *.log
+planning/**/*.diagnostic.json
 
 # Internal working material — local-only, never published (decided 2026-08-06;
 # see design/research/README.md). History-filtered before first push.

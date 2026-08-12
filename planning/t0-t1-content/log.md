@@ -727,3 +727,57 @@ cross-party pass (rulings/verdict records; the reverse-direction lane).
 content-dynamics report per EH-C10 → promotion manifest over the narrowed artifact set → Marco's
 sign-off → the mint), after which AC1's live T0→T2 script closes the last Game-UI acceptance
 criterion and the Game UI Screens RFC becomes archival-eligible.
+
+## 2026-08-12 — Codex cross-party pass: owner records {65fe46c, b87cf8a} — APPROVED
+
+- **Review by:** Codex (cross-party). **Recorded by:** Codex.
+- Scope was record/ruling fidelity only. `65fe46c` accurately records the T01-C18 implementation
+  verdict and distinguishes measured scope artifacts from content defects; its later Hold Music
+  disposition is explicitly superseded by `b87cf8a`'s fix-instrument-first ordering.
+- `b87cf8a` accurately records the vacuous-oracle witness, the trap-floor proof loss, the
+  seed/persona reduction defect, and T01-C19's owner contract. It authorizes no content retune and
+  preserves the four hashes as unratified. No silent owner-ruling change or stale competing
+  normative claim found. **Both record commits APPROVED.** This closes the reverse-direction debt.
+
+## 2026-08-12 — T01-C19 implementation and first repaired measurements — READY FOR DESIGNATED REVIEW
+
+**Instrument repair.** Reference and beam now share one immutable opportunity-cost screen derived
+once per suite run. The screen evaluates purchases made by the direct-payback trajectory and
+monotonically removes a purchase when its removal reaches the milestone sooner; ordinary effect
+and removal ablations compose with that plan rather than re-deriving it. Both arms rank the
+remaining candidates by the same payback tuple, and scenario validation rejects
+`beam_children < 2`. This fixes the oracle's cheapest-item asymmetry without turning beam into a
+copy of greedy.
+
+**Witness arithmetic.** The old direct trajectory is pinned at 595,627 ms and its standalone
+Reply All removal at 534,259 ms. The fixed point first rejects
+`generator.dot_matrix_queue` (595,627 → 553,886 ms). On the corrected trajectory Reply All is no
+longer a trap: 502,100 → 503,906 ms when removed, so it remains eligible. That reclassification is
+instrument evidence, not a content edit. The independent declared-width beam reaches 447,952 ms
+against greedy's 502,100 ms: **120,879 ppm**, and the permanent regression test requires that this
+exceed the 50,000 ppm limit. The oracle can now fail on the exact production catalog.
+
+**Measured branch-B budgets.** After sharing the invariant opportunity screen across the ablation
+matrix, the complete T0 gate executed **1,514,488** transitions and T1 executed **7,415,259**.
+Their round ceilings are therefore **4,000,000** and **15,000,000** respectively, each above
+measured work ×2. Parameters are T0 `{width:8, children:2, decisions:32}` and T1
+`{width:1, children:2, decisions:128}`; the width relaxation is explicit. Re-running under the
+final ceilings reproduces the same reports. Both gates still correctly fail the immutable 5%
+oracle bound: T0 120,879 ppm; T1 83,065 ppm. Those are findings for owner disposition after this
+instrument review, not grounds for a hidden retune.
+
+**Other closures.** Zero-purchase samples are filtered at seed level; a persona is excluded only
+when all seeds are zero, while baseline purchases remain max-over-personas. The fixture's
+unexempted `upgrade.dead` emits `trap_floor:upgrade.dead`. T1 uses cumulative candidates but emits
+only its nine window-scoped item rows. Failed CLI runs remove authoritative output and write a
+separate `authoritative:false` diagnostic; passing runs remove stale diagnostics. Hold Music's
+unlock moves from 1.44e5 to 8e4 solely to put it inside its declared T0 window; it still fails both
+floors, so no deadness retune is claimed. The orphan candidate policy file is removed. The absent
+post-T1 scenario for `generator.legal_dept` is named coverage debt.
+
+**Packaging note.** The fixture golden regeneration is isolated in the following
+`BALANCE-CHANGE:` commit as required by the published-history guard. L1's historical red
+intermediate commit remains immutable historical evidence; L6's full-decision preflight is kept
+as the deliberately cheap diagnosis before the expensive matrix, not misrepresented as a loader
+proof. The four candidate hashes are re-derived below after the final gates; they remain
+**UNRATIFIED** pending the designated review and owner action.

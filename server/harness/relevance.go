@@ -217,7 +217,19 @@ func LoadRelevanceSuite(repositoryRoot, scenarioPath string) (*RelevanceSuite, e
 }
 
 func validateScopedRelevancePolicy(scenario RelevanceScenario, policy *RelevancePolicy, catalog *economy.Catalog, routeCatalog *routes.Catalog) error {
-	if len(policy.Items) == len(catalog.GeneratorClassesForScope(economy.ScopeCompany))+len(catalog.Upgrades()) {
+	all := map[string]bool{}
+	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
+		all[generator.ID] = true
+	}
+	for _, upgrade := range catalog.Upgrades() {
+		all[upgrade.ID] = true
+	}
+	if len(policy.Items) == len(all) {
+		for _, item := range policy.Items {
+			if !all[item.PurchasableID] {
+				return fmt.Errorf("full relevance policy contains unknown item %q", item.PurchasableID)
+			}
+		}
 		return nil
 	}
 	target, err := decimal.ParseCanonical(scenario.Milestone.Amount)
@@ -292,7 +304,7 @@ func validateRelevanceScenario(scenario RelevanceScenario) error {
 	if scenario.SchemaVersion < 1 || scenario.SchemaVersion > RelevancePolicySchemaVersion || !relevanceIDPattern.MatchString(scenario.ID) || scenario.Catalog == "" || scenario.RoutesCatalog == "" || scenario.Policy == "" ||
 		len(scenario.Runs) == 0 || scenario.Reducer != "worst" && scenario.Reducer != "p05" || scenario.HorizonMS < 1 ||
 		scenario.HorizonMS > relevanceMaxSafeInteger || scenario.MaxDecisions < 1 || scenario.BeamWidth < 1 || scenario.BeamWidth > relevanceMaxSafeInteger ||
-		scenario.BeamChildren < 1 || scenario.BeamChildren > relevanceMaxSafeInteger || scenario.GreedyGapMaximumPPM < 0 ||
+		scenario.BeamChildren < 2 || scenario.BeamChildren > relevanceMaxSafeInteger || scenario.GreedyGapMaximumPPM < 0 ||
 		scenario.GreedyGapMaximumPPM > 1_000_000 || scenario.RelevanceBudgetMaxRuns < 1 || scenario.RelevanceBudgetMaxTransitions < 1 ||
 		scenario.PreflightCeiling < 1 || scenario.PreflightCeiling > relevanceMaxSafeInteger {
 		return errors.New("invalid relevance scenario envelope")

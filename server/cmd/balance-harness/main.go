@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"cloud-clicker/server/harness"
 )
@@ -211,6 +212,20 @@ func runRelevance(root, output, scenarioPath string) error {
 
 func writeRelevanceReport(output string, report harness.RelevanceReport) error {
 	if len(report.Failures) > 0 {
+		diagnostic := struct {
+			SchemaVersion int                     `json:"schema_version"`
+			Kind          string                  `json:"kind"`
+			Authoritative bool                    `json:"authoritative"`
+			Report        harness.RelevanceReport `json:"report"`
+		}{SchemaVersion: 1, Kind: "non_authoritative_relevance_diagnostic", Authoritative: false, Report: report}
+		bytes, err := harness.CanonicalJSON(diagnostic)
+		if err != nil {
+			return err
+		}
+		_ = os.Remove(output)
+		if err := os.WriteFile(relevanceDiagnosticPath(output), bytes, 0o644); err != nil {
+			return err
+		}
 		return fmt.Errorf("relevance failures: %v; run_budget=%+v; greedy_oracle=%+v", report.Failures, report.RunBudget, report.GreedyOracle)
 	}
 	reportBytes, err := harness.CanonicalJSON(report)
@@ -220,7 +235,14 @@ func writeRelevanceReport(output string, report harness.RelevanceReport) error {
 	if err := os.WriteFile(output, reportBytes, 0o644); err != nil {
 		return err
 	}
+	if err := os.Remove(relevanceDiagnosticPath(output)); err != nil && !os.IsNotExist(err) {
+		return err
+	}
 	return nil
+}
+
+func relevanceDiagnosticPath(output string) string {
+	return strings.TrimSuffix(output, ".json") + ".diagnostic.json"
 }
 
 func fail(err error) { fmt.Fprintln(os.Stderr, err); os.Exit(1) }

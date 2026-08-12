@@ -61,15 +61,17 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 		t.Fatalf("greedy oracle=%+v", first.GreedyOracle)
 	}
 	joined := strings.Join(first.Failures, ",")
-	for _, expected := range []string{"relevance_floor:upgrade.dead", "role_floor:generator.alpha"} {
+	for _, expected := range []string{"relevance_floor:upgrade.dead", "trap_floor:upgrade.dead", "role_floor:generator.alpha"} {
 		if !strings.Contains(joined, expected) {
 			t.Fatalf("fixture did not discriminate %q: %v", expected, first.Failures)
 		}
 	}
 	var supported, deliberateTrap bool
 	for _, item := range first.Items {
-		if item.PurchasableID == "upgrade.alpha" && item.Support == "group_supported" && item.RelevancePassed {
+		if item.Support == "group_supported" && item.RelevancePassed {
 			supported = true
+		}
+		if item.PurchasableID == "upgrade.alpha" {
 			deliberateTrap = item.TrapExempt && item.JustificationKey != nil && *item.JustificationKey == "relevance.intentional_trap"
 		}
 	}
@@ -136,9 +138,19 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	}
 	invalid = first
 	invalid.Items = append([]RelevanceItemReport(nil), first.Items...)
-	invalid.Items[0].IndividualDeltas = append([]RelevanceDelta(nil), first.Items[0].IndividualDeltas...)
-	badDelta := *invalid.Items[0].IndividualDeltas[0].DeltaMS + 1
-	invalid.Items[0].IndividualDeltas[0].DeltaMS = &badDelta
+	deltaItem := -1
+	for index := range invalid.Items {
+		if invalid.Items[index].IndividualDeltas[0].DeltaMS != nil {
+			deltaItem = index
+			break
+		}
+	}
+	if deltaItem < 0 {
+		t.Fatal("fixture has no reconcilable delta to mutate")
+	}
+	invalid.Items[deltaItem].IndividualDeltas = append([]RelevanceDelta(nil), first.Items[deltaItem].IndividualDeltas...)
+	badAblated := *invalid.Items[deltaItem].IndividualDeltas[0].AblatedMS + 1
+	invalid.Items[deltaItem].IndividualDeltas[0].AblatedMS = &badAblated
 	if err := ValidateRelevanceReport(invalid); err == nil {
 		t.Fatal("report accepted a non-reconciling delta")
 	}
@@ -152,6 +164,18 @@ func TestRelevanceFailsBeforeDispatchWhenRunBudgetIsTooSmall(t *testing.T) {
 	suite.Scenario.RelevanceBudgetMaxRuns = 11
 	if _, err := suite.RunRelevance(); err == nil || !strings.Contains(err.Error(), "run budget") {
 		t.Fatalf("budget error=%v", err)
+	}
+}
+
+func TestRelevanceScenarioRequiresTwoBeamChildren(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	invalid := suite.Scenario
+	invalid.BeamChildren = 1
+	if err := validateRelevanceScenario(invalid); err == nil {
+		t.Fatal("single-child beam accepted even though it cannot explore the runner-up")
 	}
 }
 
@@ -171,8 +195,9 @@ func TestRelevanceMilestonePreflightFailsBeforeTheAblationMatrix(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	suite.Scenario.Milestone.Amount = "1e24"
 	suite.Scenario.MaxDecisions = 1
+	suite.Scenario.HorizonMS = 1
+	suite.Scenario.DecisionHorizonsMS = []int64{1}
 	if _, err := suite.RunRelevance(); err == nil || err.Error() != "milestone_unreachable:"+suite.Scenario.Milestone.ID {
 		t.Fatalf("unreachable milestone preflight err=%v", err)
 	}
@@ -214,7 +239,7 @@ func TestT0T1ReferenceBootstrapMakesNonEmptyPurchaseThroughPinnedManualClamp(t *
 		*reference.MilestoneMS, purchaseCount, reference.Decisions, counter.value)
 }
 
-func TestT0T1BeamSelectsCheapCandidatesBeforeSimulation(t *testing.T) {
+func TestT0T1BeamUsesTheReferenceOpportunityAwareRanking(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
 	if err != nil {
 		t.Fatal(err)
@@ -223,17 +248,110 @@ func TestT0T1BeamSelectsCheapCandidatesBeforeSimulation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ids, err := suite.beamCandidateIDs(state)
+	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	manual, err := suite.applyReferenceManual(state, 1, 0, production.AblationMask{}, counter)
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"generator.beige_tower"}
-	if !reflect.DeepEqual(ids, want) {
-		t.Fatalf("cheap beam candidates=%v want=%v", ids, want)
+	if manual.Applied == 0 {
+		t.Fatal("reference bootstrap applied no manual actions")
 	}
-	if state.EvaluatedThrough != Epoch || state.GeneratorPurchasedTotal != 0 {
-		t.Fatalf("cheap selection simulated or mutated state: evaluated=%s purchases=%d", state.EvaluatedThrough, state.GeneratorPurchasedTotal)
+	want, err := suite.rankCandidates(state, 2, 0, suite.Scenario.DecisionHorizonsMS[0], production.AblationMask{}, counter)
+	if err != nil {
+		t.Fatal(err)
 	}
+	got, err := suite.rankBeamCandidates(state, 2, 0, suite.Scenario.DecisionHorizonsMS[0], production.AblationMask{}, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) == 0 || len(got) > int(suite.Scenario.BeamChildren) || len(want) < len(got) {
+		t.Fatalf("beam candidates=%+v reference candidates=%+v", got, want)
+	}
+	for index := range got {
+		if got[index].ID != want[index].ID || got[index].PaybackMS != want[index].PaybackMS ||
+			got[index].DirectPaybackMS != want[index].DirectPaybackMS || got[index].AtMS != want[index].AtMS {
+			t.Fatalf("beam candidate[%d]=%+v reference=%+v", index, got[index], want[index])
+		}
+	}
+	if state.GeneratorPurchasedTotal != 0 {
+		t.Fatalf("ranking mutated source state: purchases=%d", state.GeneratorPurchasedTotal)
+	}
+}
+
+func TestT0T1OpportunityCostCorrectsWitnessRankings(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	counter := &relevanceCounter{limit: 10_000_000}
+	legacy, err := suite.runDirectFromGenesis(production.AblationMask{}, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	replyRemoved := production.AblationMask{RemovedUpgradeIDs: []string{"upgrade.reply_all_macro"}}
+	withoutReply, err := suite.runDirectFromGenesis(replyRemoved, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if legacy.MilestoneMS == nil || withoutReply.MilestoneMS == nil || *legacy.MilestoneMS != 595_627 || *withoutReply.MilestoneMS != 534_259 {
+		t.Fatalf("reply-all legacy witness=%v removed=%v", legacy.MilestoneMS, withoutReply.MilestoneMS)
+	}
+	mask, diagnostics, err := suite.opportunityAwareMask(production.AblationMask{}, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[string][2]int64{
+		"generator.dot_matrix_queue": {595_627, 553_886},
+		"upgrade.reply_all_macro":    {502_100, 503_906},
+	}
+	for _, diagnostic := range diagnostics {
+		values, ok := want[diagnostic.PurchasableID]
+		if !ok || diagnostic.BaselineMS == nil || diagnostic.RemovedMS == nil {
+			continue
+		}
+		if *diagnostic.BaselineMS != values[0] || *diagnostic.RemovedMS != values[1] {
+			t.Fatalf("opportunity witness %s=%d->%d want=%v", diagnostic.PurchasableID,
+				*diagnostic.BaselineMS, *diagnostic.RemovedMS, values)
+		}
+		delete(want, diagnostic.PurchasableID)
+	}
+	if len(want) != 0 || !maskRemoves(mask, "generator.dot_matrix_queue", suite.Catalog) ||
+		maskRemoves(mask, "upgrade.reply_all_macro", suite.Catalog) {
+		t.Fatalf("opportunity witnesses missing=%v mask=%+v diagnostics=%+v", want, mask, diagnostics)
+	}
+}
+
+func TestT0T1OracleCanFalsifyOpportunityAwareGreedy(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	counter := &relevanceCounter{limit: 100_000_000}
+	greedy, err := suite.runReference(production.AblationMask{}, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	beam, err := suite.runBeam(counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if greedy.MilestoneMS == nil || beam == nil {
+		t.Fatalf("greedy=%v beam=%v", greedy.MilestoneMS, beam)
+	}
+	gap := mustRelevanceGapPPM(t, *greedy.MilestoneMS, *beam)
+	if *greedy.MilestoneMS != 502_100 || *beam != 447_952 || gap != 120_879 || gap <= suite.Scenario.GreedyGapMaximumPPM {
+		t.Fatalf("oracle failed to expose witness: greedy=%d beam=%d gap_ppm=%d maximum=%d transitions=%d",
+			*greedy.MilestoneMS, *beam, gap, suite.Scenario.GreedyGapMaximumPPM, counter.value)
+	}
+}
+
+func mustRelevanceGapPPM(t *testing.T, greedy, beam int64) int64 {
+	t.Helper()
+	value, err := relevanceGapPPM(greedy, beam)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return value
 }
 
 func TestBeamRolloutSharesThePathDecisionBudget(t *testing.T) {
@@ -256,26 +374,32 @@ func TestBeamRolloutSharesThePathDecisionBudget(t *testing.T) {
 }
 
 func TestBeamChildBoundReducesWorkBeforeRollout(t *testing.T) {
-	load := func(children int64) (*RelevanceSuite, *relevanceCounter) {
-		t.Helper()
-		suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
-		if err != nil {
-			t.Fatal(err)
-		}
-		suite.Scenario.BeamChildren = children
-		return suite, &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
-	}
-
-	bounded, boundedCounter := load(1)
-	if _, err := bounded.runBeam(boundedCounter); err != nil {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
+	if err != nil {
 		t.Fatal(err)
 	}
-	exhaustive, exhaustiveCounter := load(4)
-	if _, err := exhaustive.runBeam(exhaustiveCounter); err != nil {
+	state, err := suite.newRelevanceState()
+	if err != nil {
 		t.Fatal(err)
 	}
-	if boundedCounter.value >= exhaustiveCounter.value {
-		t.Fatalf("pre-rollout child bound did not reduce work: bounded=%d exhaustive=%d", boundedCounter.value, exhaustiveCounter.value)
+	if _, err := state.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{ResourceID: "company.cash", Delta: decimal.New(1, 6)}}}); err != nil {
+		t.Fatal(err)
+	}
+	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	all, err := suite.rankCandidates(state, 1, 0, suite.Scenario.DecisionHorizonsMS[0], production.AblationMask{}, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(all) < 3 {
+		t.Fatalf("fixture exposes only %d ranked children", len(all))
+	}
+	suite.Scenario.BeamChildren = 2
+	bounded, err := suite.rankBeamCandidates(state, 1, 0, suite.Scenario.DecisionHorizonsMS[0], production.AblationMask{}, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(bounded) != 2 || bounded[0].ID != all[0].ID || bounded[1].ID != all[1].ID {
+		t.Fatalf("pre-rollout bound=%v full=%v", bounded, all)
 	}
 }
 
@@ -407,7 +531,20 @@ func TestT0T1RelevanceCandidatesBindTheirMeasuredWindows(t *testing.T) {
 	if len(t1.Scenario.Segments) != 2 || len(t1.Policy.Items) != 18 {
 		t.Fatalf("T1 candidate segments=%d items=%d", len(t1.Scenario.Segments), len(t1.Policy.Items))
 	}
-	if t1.Scenario.BeamWidth != 1 || t1.Scenario.BeamChildren != 1 || t1.Scenario.RelevanceBudgetMaxTransitions != 14_000_000 {
+	measuredItems, measuredGroups, err := t1.measuredPolicyRows()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(measuredItems) != 9 || len(measuredGroups) != 0 {
+		t.Fatalf("T1 evidence scope items=%d groups=%d", len(measuredItems), len(measuredGroups))
+	}
+	for _, item := range measuredItems {
+		if item.Availability.FromGate == nil || *item.Availability.FromGate != "gate.t0_to_t1" ||
+			item.Availability.ToGate == nil || *item.Availability.ToGate != "gate.t2_to_t3" {
+			t.Fatalf("T1 report retained out-of-window item %+v", item)
+		}
+	}
+	if t1.Scenario.BeamWidth != 1 || t1.Scenario.BeamChildren != 2 || t1.Scenario.RelevanceBudgetMaxTransitions != 15_000_000 {
 		t.Fatalf("T1 measured branch-B envelope=%+v", t1.Scenario)
 	}
 	for _, item := range t1.Policy.Items {
@@ -419,6 +556,17 @@ func TestT0T1RelevanceCandidatesBindTheirMeasuredWindows(t *testing.T) {
 	trimmed.Items = append([]RelevancePolicyItem(nil), suite.Policy.Items[:len(suite.Policy.Items)-1]...)
 	if err := validateScopedRelevancePolicy(suite.Scenario, &trimmed, suite.Catalog, suite.Routes); err == nil || !strings.Contains(err.Error(), "item set is incomplete") {
 		t.Fatalf("incomplete scoped policy err=%v", err)
+	}
+	fullFixture, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	invalidFull := *fullFixture.Policy
+	invalidFull.Items = append([]RelevancePolicyItem(nil), fullFixture.Policy.Items...)
+	invalidFull.Items[0].PurchasableID = "generator.unknown"
+	if err := validateScopedRelevancePolicy(fullFixture.Scenario, &invalidFull, fullFixture.Catalog, fullFixture.Routes); err == nil ||
+		!strings.Contains(err.Error(), "unknown item") {
+		t.Fatalf("full-cardinality policy bypassed identity validation: %v", err)
 	}
 }
 
@@ -470,7 +618,7 @@ func TestRelevanceReducesSeedsBeforePersonaAnyAndPrunesDominatedState(t *testing
 		},
 	}
 	reduced, excluded, err := reduceRelevancePairMatrix(matrix, "worst", "milestone.test", 500)
-	if err != nil || reduced.DeltaMS == nil || *reduced.DeltaMS != 100 || !reflect.DeepEqual(excluded, []string{"sometimes.phase0", "spectator.phase0"}) {
+	if err != nil || reduced.DeltaMS == nil || *reduced.DeltaMS != 100 || !reflect.DeepEqual(excluded, []string{"spectator.phase0"}) {
 		t.Fatalf("persona ANY reduction=%+v excluded=%v err=%v", reduced, excluded, err)
 	}
 	if purchases := reduceRelevancePairPurchases(matrix, "worst"); purchases != 1 {
@@ -506,7 +654,7 @@ func TestRelevanceReducesSeedsBeforePersonaAnyAndPrunesDominatedState(t *testing
 	}
 }
 
-func TestRelevanceFixturePinsANonzeroEqualEnvelopeOracleGap(t *testing.T) {
+func TestRelevanceFixturePinsTrapFloorAndAValidOracle(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
 	if err != nil {
 		t.Fatal(err)
@@ -515,9 +663,18 @@ func TestRelevanceFixturePinsANonzeroEqualEnvelopeOracleGap(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if report.GreedyOracle == nil || report.GreedyOracle.GapPPM == 0 || !report.GreedyOracle.Passed {
+	if report.GreedyOracle == nil || !report.GreedyOracle.Passed || !containsString(report.Failures, "trap_floor:upgrade.dead") {
 		t.Fatalf("equal-envelope oracle=%+v", report.GreedyOracle)
 	}
+}
+
+func containsString(values []string, want string) bool {
+	for _, value := range values {
+		if value == want {
+			return true
+		}
+	}
+	return false
 }
 
 func TestRelevanceRegistryIsFailClosedForActiveCatalogs(t *testing.T) {

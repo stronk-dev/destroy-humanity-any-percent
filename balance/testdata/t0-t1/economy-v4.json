@@ -169,9 +169,9 @@
     },
     {
       "id": "upgrade.hold_music_license",
-      "cost": { "resource": "company.cash", "amount": "1.44e5" },
+      "cost": { "resource": "company.cash", "amount": "8e4" },
       "window": { "from_gate": null, "to_gate": "gate.t0_to_t1" },
-      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "1.44e5" }],
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "8e4" }],
       "effects": [{ "source_id": "upgrade.hold_music_license.factor", "slot": "upgrades", "target": "generator.answering_machine", "factor": "2e0" }],
       "roles": ["synergy_feed"],
       "copy_key": "upgrade.hold_music_license"

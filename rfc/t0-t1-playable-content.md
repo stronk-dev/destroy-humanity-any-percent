@@ -479,9 +479,10 @@ alone must never mutate the save.
   the beam finally does real work and genuinely exhausts 2,000,000 by runtime count — the same
   remedy, now on evidence. **Ruled:**
   1. **Deterministic pre-rollout child selection** bounds expansion: each beam entry expands at
-     most `beam_children` candidates per decision, chosen by a cheap deterministic ordering key
-     then raw-byte item ID, with NO rollout executed before selection. Identity dedup stays
-     (it helps; it is not sufficient).
+     most `beam_children` candidates per decision, chosen by the SAME opportunity-aware payback
+     metric as the reference arm then raw-byte item ID, with NO rollout executed before selection.
+     `beam_children` is at least 2 so the runner-up counterfactual is reachable. Identity dedup
+     stays (it helps; it is not sufficient).
   2. **The 5% greedy-gap oracle proof MUST be re-run and hold** at the chosen parameters. If it
      cannot hold at any parameters that fit, that is a finding to bring back — never a weakened
      acceptance property.
@@ -552,3 +553,39 @@ My first attempt appended a "this is stale" note beside the unchanged body — w
 defect the body-reconciliation rule exists to forbid, and which I have enforced on Codex
 repeatedly. Codex's rejection (b24554c) was correct; the rule binds its author identically. The
 replacement paragraph is the contract; no stale normative sentence remains.
+
+## T01-C19 — opportunity-cost-aware reference and falsifiable oracle (2026-08-12)
+
+The one-unit payback quotient alone is not a complete purchasing decision: it omits the alternative
+use of the same cash and the finite decision slot. That defect drove the reference arm and every
+beam rollout, so it conditioned all 32 findings from the first two-scenario run. The repaired
+instrument applies one deterministic opportunity screen before the matrix: run the direct-payback
+trajectory, remove each purchase actually made, and permanently mask a purchase when that
+counterfactual reaches the milestone earlier; repeat to a monotonic fixed point. The resulting
+immutable mask composes with every effect/removal ablation. Reference and beam then use the same
+direct-payback ordering; beam selects at least two children before rollout and remains an independent
+declared-width search capable of falsifying greedy.
+
+The witness arithmetic is pinned. The old direct trajectory reached 595,627 ms; removing
+`upgrade.reply_all_macro` alone reached 534,259 ms. At the repaired fixed point,
+`generator.dot_matrix_queue` is rejected because 595,627 → 553,886 ms, while Reply All is retained
+after that correction because its then-current comparison is 502,100 → 503,906 ms. This is not a
+content disposition: Hold Music's 8e4 unlock is only the correctness repair that places it inside
+its declared window, and all deadness decisions wait for the repaired reports.
+
+A permanent production-catalog witness proves the oracle can fire: the opportunity-aware greedy
+trajectory reaches 502,100 ms while the declared beam finds 447,952 ms, a 120,879 ppm gap against
+the 50,000 ppm maximum. A zero-gap assertion cannot substitute for this test. Measured full-gate
+work is 1,514,488 transitions for T0 and 7,415,259 for T1. T01-C17 branch B therefore pins round
+ceilings of 4,000,000 and 15,000,000 respectively (more than measured ×2). T0 uses
+`{beam_width:8, beam_children:2}`; the accepted width relaxation permits T1's deliberately narrow
+`{beam_width:1, beam_children:2}` under the same falsifiable ordering. The present reports still
+fail the 5% oracle bound (T0 120,879 ppm; T1 83,065 ppm); those are authoritative instrument
+findings, not a reason to weaken the bound or retune content before review.
+
+Trap-floor reduction is max-over-personas after filtering zero-purchase seeds: a persona is omitted
+only when all its seeds purchase zero. The fixture contains an unexempted never-bought upgrade and
+must emit `trap_floor:upgrade.dead`. T1 optimizes with the cumulative catalog but reports deltas only
+for the window closing at its target. Failed gates remove the authoritative report and emit a
+separate, explicitly non-authoritative diagnostic. `generator.legal_dept` remains named coverage
+debt until a later scenario measures the window in which it opens.

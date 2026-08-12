@@ -61,11 +61,16 @@ For every declared run it records an unmasked baseline, per-item effect ablation
 ablations. Reference runs additionally record action-removal diagnostics and one declared-width beam
 oracle. The reference policy ranks one-unit generator buys and unowned upgrades by an exact
 single-resource payback calculation, including lower-bound searches for first affordability and
-first positive marginal output. At run genesis it may bootstrap the cheapest milestone-resource
+first positive marginal output. Before the ablation matrix, one opportunity screen compares the
+direct-payback trajectory with each purchase removed and monotonically removes a purchase when
+that counterfactual reaches the milestone earlier. This fixed point prices both the cash and finite
+decision slot displaced by a superficially attractive purchase; the same immutable screen and
+payback ordering govern the reference arm, every reference ablation, and every beam rollout. At
+run genesis it may bootstrap the cheapest milestone-resource
 purchase through the pinned manual action: the requested count is derived from the real quote and
 catalog yield, capped by the catalog's click bucket, and its window is derived from the catalog
-refill rate. Relevance scenarios declare `beam_children`; each beam node orders candidates by the
-real current one-unit quote and then raw-byte ID, selects at most that many, and only then performs
+refill rate. Relevance scenarios declare `beam_children >= 2`; each beam node orders candidates by
+the same payback metric as the reference arm and then raw-byte ID, selects at most that many, and only then performs
 the expensive R10 scoring and greedy completion. Beam nodes deduplicate by canonical state plus
 virtual time before greedy rollout and use componentwise dominance before the width bound. A beam
 path and its greedy completion share one `max_decisions` envelope: rollout receives only the
@@ -75,7 +80,9 @@ declarative `preflight_ceiling`; it is never treated as measured work. The scena
 budget is enforced by one counter spanning every simulation call, including the reachability
 preflight, and aborting without a partial report when the limit is reached. Before the factorial
 ablation matrix begins, one reference-arm probe fails with `milestone_unreachable:<id>` when the
-target cannot be reached at all.
+target cannot be reached at all. A failing run removes the authoritative output and writes a
+separate `*.diagnostic.json` envelope marked `authoritative: false`; diagnostics are never golden
+inputs and a later passing run removes any stale diagnostic.
 
 Schema v2 permits an availability/segment `from_gate` of null, meaning run genesis and sorting
 before every declared gate; schema-v1 bytes retain their concrete-gate requirement. Each policy
@@ -85,16 +92,21 @@ group, tier-contribution, role-activation, and failure rows with
 only safe integers, booleans, and canonical hashes. Required baselines that do not reach their
 milestone are named failures; unreachable ablations use the finite horizon-minus-baseline encoding.
 An item passes through its own effect delta or one declared supporting group, while the trap test
-always remains individual. A persona whose unmasked baseline buys none of the item contributes no
-ablation signal and cannot bind either floor; report schema v3 records every such persona in the
-affected item or group row's `excluded_persona_ids`. Personas that do buy remain binding. Role
+always remains individual. A seed whose unmasked baseline buys none of the item contributes no
+ablation signal. A persona is excluded only when every one of its seeds buys zero; report schema v3
+records every such persona in the affected item or group row's `excluded_persona_ids`. Any positive
+seed remains binding, and baseline purchase counts reduce over positive seeds before taking the
+maximum across personas. Role
 evidence comes only from unmasked baseline execution.
 
 Production candidates use phase-scoped relevance policies. The T0 scenario measures rows whose
-windows open before `gate.t0_to_t1`; the cumulative T1 scenario continues through
-`gate.t2_to_t3`. A scoped policy must exactly match the catalog rows open before its milestone gate,
-so later content is retired by measurement scope rather than by exemption. Content that opens at
-the terminal coordinate belongs to a later reachable scenario.
+windows close at `gate.t0_to_t1`; the cumulative T1 optimizer continues through `gate.t2_to_t3`,
+but its report and ablation budget include only rows in the T1 window that closes at that target.
+Earlier content remains available to the optimizer without earning evidence after its own window.
+A scoped policy must exactly match the cumulative catalog rows needed to reach its milestone; a
+row is judged only in the scenario whose target closes its declared window. Content that opens at
+the terminal coordinate belongs to a later reachable scenario. `generator.legal_dept` currently
+has no such later scenario and is named coverage debt rather than silently exempted.
 
 `testdata/harness/relevance/registry-v1.json` is the fail-closed scenario authority. Every registered
 golden is discovered dynamically by the history and TypeScript schema gates. Each trap exemption's
