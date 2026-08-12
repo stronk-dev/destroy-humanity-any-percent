@@ -959,3 +959,47 @@ jobs under their declared deadlines, satisfying F7 against the actual hosted env
 - **Status:** implemented and self-checked, **ready for designated cross-party review**. Not
   approved or archival-eligible. T01-C20 remains the owner blocker before ranker semantics,
   measured branch-B budgets, scenario hashes, or content findings may proceed.
+
+## 2026-08-12 — OWNER RULING on T01-C20 — and my T01-C18 T1 milestone was mis-specified the same way 1e12 was
+
+**The evidence names the defect precisely.** With a 2,048-decision envelope the T1 greedy arm
+consumed 1,047 decisions, bought 1,036 generators plus five upgrades, hit the 24-hour HORIZON, and
+never reached `company.cash >= 1e9` — terminating on the horizon, not the guard, so more decisions
+cannot repair it. **That is not slowness; it is a structural impossibility of the ranker.** The
+milestone is a CASH BALANCE target, and greedy takes `candidates[0]` unconditionally whenever
+anything is affordable — so it converts cash into generators forever and can never ACCUMULATE a
+balance. For a rate target that is merely suboptimal; for a balance target it is fatal. The
+earlier review's "greedy cannot choose to wait" is the same defect seen before coasting hid it.
+
+**T01-C20 — RULED: the candidate score is closed-form projected time-to-milestone, and NOT BUYING
+is a first-class candidate.** At a decision with balance `B`, target `T`, current rate `R`:
+- **bank** (no purchase; advance to the next affordability/expiry boundary): `t = (T − B) / R`.
+- **buy item i** (cost `c_i`, resulting rate `R + Δr_i`): `t_i = (T − (B − c_i)) / (R + Δr_i)`.
+Choose the MINIMUM `t`. This prices the opportunity cost explicitly — spending `c` pushes the
+balance backwards and only pays off if `Δr` recovers it before the target — and it makes banking
+win exactly when no purchase pays back before the milestone, which is the move greedy could never
+make. **Tie-break (deterministic):** among purchases, raw-byte `item_id`; `bank` loses all ties
+(a purchase at equal projected time is never worse for later measurement). **The beam rollout uses
+the SAME metric** — no second scoring semantics anywhere (that divergence was H1's root cause).
+Computable in closed form against the shipped accrual; no rollout per candidate, so it should be
+cheap. **This is not new balance mechanics** — it makes the search objective identical to the
+milestone the measurement is defined by, which is what "opportunity-cost aware" always meant.
+If the closed form cannot be evaluated exactly against the shipped kernel, STOP and report rather
+than approximating.
+
+**T01-C21 (filed now, owner-side): the T1 milestone `1e9` is unreachable in-horizon and my
+T01-C18 ruling picked it badly.** I chose `gate.t2_to_t3`'s coordinate to force the T1 windows
+open, and it is TWO tiers beyond a garage catalog — the same error class as the original 1e12,
+which I had just finished criticizing. The 14.07 h "success" that made it look fine was produced
+by the coasting F1 has now abolished. **RULED: re-derive the T1 milestone by MEASUREMENT** — the
+highest coordinate the T1 content provably reaches inside the horizon under the T01-C20 ranker,
+with headroom, recorded — exactly the discipline T01-C18 stated and I then failed to apply to my
+own number. If no coordinate above `gate.t0_to_t1` is reachable in-horizon, that is itself the
+finding: it would mean the T1 content cannot be measured at 24 h and the horizon (not the target)
+is the parameter to revisit — report it, do not stretch a target to fit.
+
+**Sequencing unchanged:** T01-C20 ranker → re-derive T1's milestone (T01-C21) → re-derive
+`max_decisions` non-starved → branch-B budgets (measurement-only; no ceiling raised from an
+incomplete run, as Codex correctly refused) → re-derive all four hashes → designated review →
+ratification → content dispositions. **The 4,000,000 T0 ceiling intentionally failing in the
+meantime is the correct state.**
