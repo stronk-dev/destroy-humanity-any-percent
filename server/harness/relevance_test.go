@@ -172,9 +172,16 @@ func TestT0T1ReferenceBootstrapMakesNonEmptyPurchaseThroughPinnedManualClamp(t *
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(reference.Purchases) == 0 || counter.value > suite.Scenario.RelevanceBudgetMaxTransitions {
-		t.Fatalf("reference purchases=%v transitions=%d", reference.Purchases, counter.value)
+	purchaseCount := int64(0)
+	for _, count := range reference.Purchases {
+		purchaseCount += count
 	}
+	if reference.MilestoneMS == nil || purchaseCount == 0 || reference.Decisions < 1 || reference.Decisions > suite.Scenario.MaxDecisions ||
+		counter.value > suite.Scenario.RelevanceBudgetMaxTransitions {
+		t.Fatalf("reference milestone=%v purchases=%v decisions=%d transitions=%d", reference.MilestoneMS, reference.Purchases, reference.Decisions, counter.value)
+	}
+	t.Logf("T01-C18 reference measurement: completed_ms=%d purchases=%d decisions=%d transitions=%d",
+		*reference.MilestoneMS, purchaseCount, reference.Decisions, counter.value)
 }
 
 func TestT0T1BeamSelectsCheapCandidatesBeforeSimulation(t *testing.T) {
@@ -196,6 +203,25 @@ func TestT0T1BeamSelectsCheapCandidatesBeforeSimulation(t *testing.T) {
 	}
 	if state.EvaluatedThrough != Epoch || state.GeneratorPurchasedTotal != 0 {
 		t.Fatalf("cheap selection simulated or mutated state: evaluated=%s purchases=%d", state.EvaluatedThrough, state.GeneratorPurchasedTotal)
+	}
+}
+
+func TestBeamRolloutSharesThePathDecisionBudget(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	state, err := suite.newRelevanceState()
+	if err != nil {
+		t.Fatal(err)
+	}
+	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	rollout, err := suite.runReferenceFrom(state, 1, 0, 1, counter)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rollout.Decisions != 1 {
+		t.Fatalf("rollout consumed %d decisions from a one-decision remainder", rollout.Decisions)
 	}
 }
 
@@ -362,6 +388,11 @@ func TestRelevanceScheduleCardinalityIsBoundedBeforeMaterialization(t *testing.T
 	if err != nil {
 		t.Fatal(err)
 	}
+	suite.Scenario.PreflightCeiling = 1
+	if _, err := suite.RunRelevance(); err == nil || !strings.Contains(err.Error(), "runaway preflight") {
+		t.Fatalf("declarative preflight ceiling failed open: %v", err)
+	}
+	suite.Scenario.PreflightCeiling = 1_000_000_000_000
 	suite.Scenario.HorizonMS = relevanceMaxSafeInteger
 	if _, err := suite.RunRelevance(); err == nil || !strings.Contains(err.Error(), "runaway preflight") {
 		t.Fatalf("huge horizon reached schedule materialization: %v", err)

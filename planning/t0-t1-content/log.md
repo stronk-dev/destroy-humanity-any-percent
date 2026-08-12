@@ -393,3 +393,42 @@ All gates green at HEAD incl. both architectures.
 implementation commit — all 13 in `b6a3d2c..origin/main`, no gaps.** The local unpushed
 `fe4ca5e` is Claude-authored and awaits Codex's cross-party pass. Nothing is archival-eligible:
 T01-C16's milestone arm, T01-C17's budget derivation, and T01-C18's retarget remain open.
+
+## 2026-08-12 — Codex cross-party re-review of `fe4ca5e`: APPROVE
+
+- **Review by:** Codex. **Recorded by:** Codex. Reviewed the Claude-authored remediation commit
+  `fe4ca5e`; no implementation code is consumed by this verdict.
+- **The stale T01-C12 contract is actually replaced in place.** The normative body now names the
+  runtime transition counter as the work-budget authority and the separate declarative preflight
+  ceiling solely as the runaway-configuration guard. The superseded static-ceiling contract no
+  longer survives as a second `RULED` arm; the historical blocker and withdrawal records remain
+  clearly historical.
+- **The published-history repair citation is factually corrected without changing the ruling's
+  substance.** The body names `{759e369, 0151ddc, 3a3f4cd}` as the landed append-only repair and
+  identifies `a48686d` correctly as the later T01-C17 scenario-hash regeneration. It authorizes no
+  rewrite and preserves the fail-hard rule for future mixed artifact commits.
+- **Verdict: APPROVE.** This closes the two findings recorded in `b24554c`. The owner ruling itself
+  was reconciled by its author; no implementer-authored narrowing or reversal was introduced.
+
+## 2026-08-12 — T01-C18 milestone retarget + measured decision envelope
+
+- **Implemented/inspected by:** Codex. **Recorded by:** Codex. Ready for designated cross-party
+  review; this record is neither approval nor owner ratification.
+- The candidate milestone is now the shipped first-gate cash coordinate:
+  `milestone.t0_t1_cash`, `company.cash >= 1e5`. No economy, route, relevance-policy, or acceptance
+  threshold byte changed. The scenario's runaway ceiling is declarative (`1_000_000_000_000`),
+  while the runtime work budget remains the ruled `2_000_000`.
+- Measurement over the unchanged ratified content found the smallest tested decision envelope that
+  preserves the ruled oracle: 8 decisions produced a 556,325-ppm gap, 16 produced 214,770 ppm, and
+  **32 produced 0 ppm** (`greedy_ms = beam_ms = 595,627`) against the unchanged 50,000-ppm maximum.
+  At 32, the reference reaches the milestone in 595,627 ms after 31 purchases and 32 decisions;
+  the complete run executes **1,579,008 transitions**, so T01-C17 branch A holds and the 2,000,000
+  budget does not move. Candidate scenario SHA-256:
+  `a77f420e219adf7e8e011be8e8b3fc7f619eb3ebbbddb92d3f9c893a18e85476`.
+- A solver defect surfaced during measurement and is fixed: child rollouts previously received a
+  fresh `max_decisions` allowance after the beam path had already consumed decisions. The rollout
+  now receives only the path's remaining allowance; a focused regression pins the shared envelope.
+- **T01-C16's milestone arm is closed by measurement.** The full candidate run now completes and
+  proves the reached-vs-reached oracle, but it still reports 38 relevance/role/trap floor findings.
+  Those are now honest content-gate findings, not justification for an unreviewed retune; the
+  candidate report remains unwritten under the existing fail-before-write-on-findings contract.

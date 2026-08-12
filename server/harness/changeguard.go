@@ -20,6 +20,7 @@ const (
 	goldenPath                     = "testdata/harness/golden-seed.json"
 	relevanceGoldenPath            = "testdata/harness/relevance/golden-report-v1.json"
 	baselineHistoryCorrectionsPath = "kernel/baseline-history-corrections.json"
+	publishedMainRef               = "refs/remotes/origin/main"
 )
 
 type baselineHistoryCorrection struct {
@@ -229,6 +230,9 @@ func repositoryBaselineHistoryCorrections(root string) (map[string]baselineHisto
 			}
 			if err := gitAncestor(root, offending, commit); err != nil {
 				return nil, fmt.Errorf("history correction %s does not follow its offending commit: %w", offending, err)
+			}
+			if err := gitAncestor(root, offending, publishedMainRef); err != nil {
+				return nil, fmt.Errorf("history correction %s targets an unpublished commit; unpublished commits must be repackaged, not forgiven", offending)
 			}
 			if _, present, err := gitBlobIfPresent(root, commit, correction.ReviewLog); err != nil || !present {
 				if err != nil {

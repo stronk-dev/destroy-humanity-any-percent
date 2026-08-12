@@ -62,6 +62,7 @@ type RelevanceScenario struct {
 	GreedyGapMaximumPPM           int64              `json:"greedy_gap_maximum_ppm"`
 	RelevanceBudgetMaxRuns        int64              `json:"relevance_budget_max_runs"`
 	RelevanceBudgetMaxTransitions int64              `json:"relevance_budget_max_transitions"`
+	PreflightCeiling              int64              `json:"preflight_ceiling"`
 }
 
 type RelevanceDelta struct {
@@ -145,6 +146,7 @@ type relevanceRunResult struct {
 	Purchases      map[string]int64
 	Roles          map[string]RoleActivationCount
 	Transitions    int64
+	Decisions      int64
 	FinalState     *save.State
 	FinalVirtualMS int64
 }
@@ -213,7 +215,8 @@ func validateRelevanceScenario(scenario RelevanceScenario) error {
 		len(scenario.Runs) == 0 || scenario.Reducer != "worst" && scenario.Reducer != "p05" || scenario.HorizonMS < 1 ||
 		scenario.HorizonMS > relevanceMaxSafeInteger || scenario.MaxDecisions < 1 || scenario.BeamWidth != 8 || scenario.BeamChildren < 1 ||
 		scenario.BeamChildren > relevanceMaxSafeInteger || scenario.GreedyGapMaximumPPM < 0 ||
-		scenario.GreedyGapMaximumPPM > 1_000_000 || scenario.RelevanceBudgetMaxRuns < 1 || scenario.RelevanceBudgetMaxTransitions < 1 {
+		scenario.GreedyGapMaximumPPM > 1_000_000 || scenario.RelevanceBudgetMaxRuns < 1 || scenario.RelevanceBudgetMaxTransitions < 1 ||
+		scenario.PreflightCeiling < 1 || scenario.PreflightCeiling > relevanceMaxSafeInteger {
 		return errors.New("invalid relevance scenario envelope")
 	}
 	if scenario.Milestone.Kind != "resource_at_least" || !scenario.Milestone.Required || !relevanceIDPattern.MatchString(scenario.Milestone.ID) ||

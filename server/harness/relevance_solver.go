@@ -15,8 +15,6 @@ import (
 	"cloud-clicker/server/save"
 )
 
-const relevanceRunawayPreflightCeiling int64 = 1_000_000_000_000
-
 type relevanceCandidate struct {
 	ID                      string
 	PaybackMS               int64
@@ -79,9 +77,9 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	if err != nil {
 		return RelevanceReport{}, fmt.Errorf("relevance transition budget preflight: %w", err)
 	}
-	if transitionCeiling > relevanceRunawayPreflightCeiling {
+	if transitionCeiling > suite.Scenario.PreflightCeiling {
 		return RelevanceReport{}, fmt.Errorf("relevance runaway preflight requires %d, ceiling %d",
-			transitionCeiling, relevanceRunawayPreflightCeiling)
+			transitionCeiling, suite.Scenario.PreflightCeiling)
 	}
 	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
 	report := RelevanceReport{SchemaVersion: suite.Scenario.SchemaVersion, ScenarioID: suite.Scenario.ID,
@@ -431,6 +429,7 @@ func (suite *RelevanceSuite) runReference(mask production.AblationMask, counter 
 			revision++
 			mergeRoleActivations(result.Roles, manual.RoleActivations)
 		}
+		result.Decisions = decision + 1
 		next, ok := suite.nextDecisionHorizon(nowMS)
 		if !ok {
 			break
@@ -1089,7 +1088,8 @@ func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) 
 				return nil, cloneErr
 			}
 			rolloutSuite := *suite
-			rollout, rolloutErr := rolloutSuite.runReferenceFrom(rolloutState, child.revision, child.atMS, counter)
+			remainingDecisions := suite.Scenario.MaxDecisions - depth - 1
+			rollout, rolloutErr := rolloutSuite.runReferenceFrom(rolloutState, child.revision, child.atMS, remainingDecisions, counter)
 			if rolloutErr != nil {
 				return nil, rolloutErr
 			}
@@ -1167,9 +1167,9 @@ func relevanceStateDominates(left, right *save.State, catalog *economy.Catalog) 
 	return strict
 }
 
-func (suite *RelevanceSuite) runReferenceFrom(state *save.State, revision, nowMS int64, counter *relevanceCounter) (relevanceRunResult, error) {
+func (suite *RelevanceSuite) runReferenceFrom(state *save.State, revision, nowMS, maxDecisions int64, counter *relevanceCounter) (relevanceRunResult, error) {
 	result := relevanceRunResult{Purchases: map[string]int64{}, Roles: map[string]RoleActivationCount{}, FinalState: state}
-	for decision := int64(0); decision < suite.Scenario.MaxDecisions; decision++ {
+	for decision := int64(0); decision < maxDecisions; decision++ {
 		if reached, err := suite.relevanceMilestoneReached(state); err != nil {
 			return relevanceRunResult{}, err
 		} else if reached {
@@ -1185,6 +1185,7 @@ func (suite *RelevanceSuite) runReferenceFrom(state *save.State, revision, nowMS
 			revision++
 			mergeRoleActivations(result.Roles, manual.RoleActivations)
 		}
+		result.Decisions = decision + 1
 		next, ok := suite.nextDecisionHorizon(nowMS)
 		if !ok {
 			break

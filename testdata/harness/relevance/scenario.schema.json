@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cloud-clicker.invalid/relevance-scenario.schema.json",
   "type": "object", "additionalProperties": false,
-  "required": ["schema_version", "id", "catalog", "routes_catalog", "relevance_policy", "runs", "optimization_milestone", "segments", "reducer", "horizon_ms", "decision_horizons_ms", "max_decisions", "beam_width", "beam_children", "greedy_gap_maximum_ppm", "relevance_budget_max_runs", "relevance_budget_max_transitions"],
+  "required": ["schema_version", "id", "catalog", "routes_catalog", "relevance_policy", "runs", "optimization_milestone", "segments", "reducer", "horizon_ms", "decision_horizons_ms", "max_decisions", "beam_width", "beam_children", "greedy_gap_maximum_ppm", "relevance_budget_max_runs", "relevance_budget_max_transitions", "preflight_ceiling"],
   "properties": {
     "schema_version": { "enum": [1, 2] },
     "id": { "$ref": "#/$defs/id" },
@@ -15,7 +15,8 @@
     "decision_horizons_ms": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/positive" } },
     "max_decisions": { "$ref": "#/$defs/positive" }, "beam_width": { "const": 8 }, "beam_children": { "$ref": "#/$defs/positive" },
     "greedy_gap_maximum_ppm": { "type": "integer", "minimum": 0, "maximum": 1000000 },
-    "relevance_budget_max_runs": { "$ref": "#/$defs/positive" }, "relevance_budget_max_transitions": { "$ref": "#/$defs/positive" }
+    "relevance_budget_max_runs": { "$ref": "#/$defs/positive" }, "relevance_budget_max_transitions": { "$ref": "#/$defs/positive" },
+    "preflight_ceiling": { "$ref": "#/$defs/positive" }
   },
   "allOf": [
     {

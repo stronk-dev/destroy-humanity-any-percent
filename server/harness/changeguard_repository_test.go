@@ -57,6 +57,7 @@ func TestRepositoryGuardAcceptsNamedPublishedMixedCommitCorrection(t *testing.T)
 	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "server/code.go") {
 		t.Fatalf("mixed commit unexpectedly passed before correction: %v", err)
 	}
+	runGuardGit(t, root, "update-ref", publishedMainRef, offending)
 	writeGuardCommit(t, root, "docs: record published packaging correction", map[string]string{
 		"planning/test/log.md": "published correction record\n",
 	})
@@ -73,6 +74,52 @@ func TestRepositoryGuardAcceptsNamedPublishedMixedCommitCorrection(t *testing.T)
 	})
 	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "does not append") {
 		t.Fatalf("non-append-only correction registry err=%v", err)
+	}
+}
+
+func TestRepositoryGuardRejectsUnpublishedMixedCommitCorrection(t *testing.T) {
+	root := newGuardRepository(t)
+	writeGuardCommit(t, root, "harness: mixed implementation and golden", map[string]string{
+		relevanceGoldenPath: `{"schema_version":1}`,
+		"server/code.go":    "package server\n\nconst Mixed = true\n",
+	})
+	offendingBytes, err := gitOutput(root, "rev-parse", "HEAD")
+	if err != nil {
+		t.Fatal(err)
+	}
+	offending := string(offendingBytes)
+	writeGuardCommit(t, root, "docs: correction record", map[string]string{
+		"planning/test/log.md": "unpublished correction must fail\n",
+	})
+	registry := fmt.Sprintf(`{"schema_version":1,"corrections":[{"offending_commit":%q,"kind":"mixed_artifact_commit","reason":"This commit is not published.","review_log":"planning/test/log.md"}]}`, offending)
+	writeGuardCommit(t, root, "guard: attempt unpublished baseline correction", map[string]string{
+		baselineHistoryCorrectionsPath: registry,
+	})
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "unpublished commits must be repackaged, not forgiven") {
+		t.Fatalf("unpublished correction err=%v", err)
+	}
+}
+
+func TestRepositoryGuardRejectsCorrectionForUngovernedCommit(t *testing.T) {
+	root := newGuardRepository(t)
+	writeGuardCommit(t, root, "docs: ordinary unpublished-independent change", map[string]string{
+		"README.md": "ordinary change\n",
+	})
+	offendingBytes, err := gitOutput(root, "rev-parse", "HEAD")
+	if err != nil {
+		t.Fatal(err)
+	}
+	offending := string(offendingBytes)
+	runGuardGit(t, root, "update-ref", publishedMainRef, offending)
+	writeGuardCommit(t, root, "docs: correction record", map[string]string{
+		"planning/test/log.md": "blanket amnesty must fail\n",
+	})
+	registry := fmt.Sprintf(`{"schema_version":1,"corrections":[{"offending_commit":%q,"kind":"mixed_artifact_commit","reason":"This commit changed no governed report.","review_log":"planning/test/log.md"}]}`, offending)
+	writeGuardCommit(t, root, "guard: attempt blanket baseline correction", map[string]string{
+		baselineHistoryCorrectionsPath: registry,
+	})
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "does not change a governed report") {
+		t.Fatalf("blanket correction err=%v", err)
 	}
 }
 
