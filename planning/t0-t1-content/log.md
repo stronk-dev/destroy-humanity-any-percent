@@ -340,3 +340,56 @@ ratified scenario bytes, not a weakened assertion.
      reconciliation edit to fix the contradicting body text itself; a later disclaimer does not
      make a document read one way. Replace the stale paragraph with the runtime-counter/runaway-
      guard contract and retain the historical defect only in the blocker record.
+
+## 2026-08-12 — designated cross-party COVERAGE AUDIT + verdicts: the 11 uncovered origin/main commits
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+
+**Audit result: 11 uncovered Codex implementation commits, not the 8 flagged** — the audit also
+found `b545c10`, `b24554c`, and **`d05dc13` itself**, whose IMPLEMENTATION had never been
+reviewed (only its packaging was ever discussed). All eleven now consumed.
+
+**APPROVED:** `b545c10`, `759e369` (L1), `0151ddc` (M2), `3a3f4cd` (L2), `dc6c859`, `a48686d`,
+`18175a5`, `7e3f5b4`. **APPROVED AS CODE:** `d05dc13` (M1). **APPROVED AS RECORD:** `50f9909`,
+`b24554c` — both correct cross-party direction, both provenance-clean, both factually right
+(the rewrite authorization was indeed void; `a48686d` is demonstrably a one-line scenario_hash
+update, not the d05dc13 correction).
+
+**LAW-3 verified decisively on `7e3f5b4` (2,961 changed lines):** every field compared — ZERO
+non-`expect` changes, ZERO exact/decision vectors touched (all 778 byte-identical), all changes
+are `approx` in the seven full-double-precision ops, max relative delta **8.65e-15 against a
+1e-12 tolerance in BOTH suites** (115× inside — discrimination still governed by the unchanged
+tolerance). `vectors-check` byte-identical on Darwin/arm64 AND in the linux/amd64 container
+(architecture stability independently verified, not taken on report); the pre-fix generator on
+amd64 reproduced exactly 3 last-digit divergences, so the instability was real and is closed.
+**The discriminating floor vector still discriminates** (inlining materializeFloat64 fails
+`floor("8.00002e5")` at 1.25e-06 relative error — six orders above tolerance).
+**The baseline guard still FAILS HARD on new combined commits** (seeded probe rejected, exit 1) —
+the ledger documents a violation without softening the rule. Bounded-beam selection verified pure
+(no rollout before selection, state unmutated); the 2,000,000 exhaustion reproduced exactly.
+All gates green at HEAD incl. both architectures.
+
+**Findings + OWNER RULINGS:**
+- **M2 (the one that matters) — the ledger grants amnesty regardless of PUBLICATION, probe-proven**
+  (a freshly-created local commit was accepted). Publication is the exception's entire
+  justification and it is enforced nowhere. **RULED: the guard must verify publication
+  mechanically** — an amnesty entry is valid only if its named commit is an ancestor of the
+  remote-tracking ref (`git merge-base --is-ancestor <sha> origin/main`); an unpublished commit
+  named in the ledger is a HARD FAILURE with its own message ("unpublished commits must be
+  repackaged, not forgiven"). Add the adversarial fixture.
+- **M1 — the `preflight_ceiling` shipped as a hardcoded Go constant** while the corrected T01-C12
+  ruling specified a separate DECLARATIVE ceiling and every sibling budget lives in the scenario
+  JSON. **RULED: move it to the scenario document + schema** (design law 4: declarative, never
+  constants in code); authors must be able to see and tune it. Not a weakening — a shape fix.
+- **L1 — RULED: test the ledger's tightest property.** The `len(corrections) != 0` branch that
+  prevents blanket amnesty has no test; add it with the M2 fixture.
+- **L2 — RECORDED: T01-C16 is only HALF-PINNED.** Narrowing the test dropped the milestone half
+  of its ruled acceptance property. Honest and disclosed, but **T01-C16 must not be read as
+  satisfied** until the milestone arm is restored — which T01-C18's retarget makes achievable.
+- **INFO:** 15-digit normalization is empirically (not provably) stable for this seed; the
+  hosted nightly cross-architecture `vectors-check` is the standing mitigation.
+
+**RANGE-UNION: `origin/main` is now FULLY verdict-covered for every Codex-authored
+implementation commit — all 13 in `b6a3d2c..origin/main`, no gaps.** The local unpushed
+`fe4ca5e` is Claude-authored and awaits Codex's cross-party pass. Nothing is archival-eligible:
+T01-C16's milestone arm, T01-C17's budget derivation, and T01-C18's retarget remain open.
