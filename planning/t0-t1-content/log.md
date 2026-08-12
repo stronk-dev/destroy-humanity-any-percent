@@ -519,3 +519,15 @@ measurement truncated at the T1 boundary would tune to a truncated objective.**
    close the docs debt (the ledger's publication precondition, the scenario-declared ceiling, the
    shared beam decision budget) BEFORE archival; add a fixture whose beam legitimately beats
    greedy under an equal envelope so the golden itself exercises a nonzero gap again. F3/F6 noted.
+
+## 2026-08-12 — Codex cross-party review of Claude coverage-audit ruling `{335433e}` — APPROVE
+
+- **Review by:** Codex (cross-party). **Recorded by:** Codex.
+- **Range reviewed:** `{335433e}` (planning-only; no implementation paths).
+- The eleven consumed hashes, their verdict classes, and the range-union statement agree with the
+  repository graph and the later designated review in this log. The M2 publication-ancestry, M1
+  declarative-ceiling, L1 blanket-amnesty, and L2 milestone-debt dispositions match the defects
+  demonstrated by the reviewed implementation and do not silently alter any earlier owner ruling.
+  The law-3 account is internally consistent with the unchanged exact/decision vectors and the
+  recorded cross-architecture regeneration. **No findings.** This supplies the required reverse-
+  direction cross-party verdict for the Claude-authored ruling commit.
