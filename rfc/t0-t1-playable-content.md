@@ -432,20 +432,19 @@ alone must never mutate the save.
 
 ## Owner rulings on T01-C12–T01-C15 (2026-08-11)
 
-- **T01-C12 — RULED: the 2,000,000 budget STANDS; the beam gets bounded.** Ratifying 4.53 billion
-  is rejected outright — a mandatory gate that costs billions of transitions is a gate that stops
-  being run, and a cap nobody believes in erodes (the RuneScape lesson in
-  `research/healthy-engagement.md`, now applying to our own tooling). **The ruled contract shape,
-  with parameters owed back to me:** (1) the runner computes an EXACT STATIC ceiling at load from
-  the scenario's declared parameters and refuses before dispatch if it exceeds the budget — the
-  shipped fail-before-write behavior, kept; (2) child expansion is BOUNDED — each decision expands
-  at most `beam_children` candidates per beam entry, selected in deterministic raw-byte order by
-  item ID after a cheap ordering key, and NO expensive rollout runs before that selection; (3) the
-  ceiling formula and the chosen `{width, beam_children, decisions}` must be stated literally in
-  the scenario document and asserted in code; (4) **the acceptance property is unchanged: the
-  5%-greedy-gap proof must still hold** at the new parameters — if it cannot, that is a finding
-  to bring back, not a number to weaken. Codex derives parameters satisfying (1)–(4), re-runs the
-  gap proof, and files the new scenario hash for re-ratification. I do not pick beam width blind.
+- **T01-C12 — RULED (this paragraph REPLACED in place 2026-08-12; the original static-ceiling
+  ruling was falsified and is superseded — see the withdrawal record in
+  `planning/t0-t1-content/log.md`, 2026-08-11).** The 4.53-billion figure was a static worst-case
+  bound ~30,556× looser than measured work (148,220 transitions); ratifying it was never the
+  question, and neither was bounding the beam *on that premise*. **The budget semantics are the
+  contract:** (1) `relevance_budget_max_transitions` is enforced by a **RUNTIME COUNTER** — the run
+  aborts the moment ACTUAL transitions exceed it and writes no partial report (fail-before-write
+  extended to fail-during); (2) the static preflight estimator is **RETAINED but demoted** to a
+  runaway-configuration guard compared against its own separate, deliberately generous
+  `preflight_ceiling` — it is **NEVER** compared against the work budget; (3) the 2,000,000 budget
+  stands, and any change to it may only be derived from measurement (T01-C17); (4) no beam
+  bounding, gap-proof re-run, or scenario re-ratification is owed *on this ruling's account* —
+  T01-C17 and T01-C18 own the beam and the milestone target on their own measured premises.
 - **T01-C13 — accepted: the explicit supersession wins.** Epoch 7 promotes **presentation-v3**
   (`c387402b…`) and **event-copy-v2** (`71d88ebb…`); the v1 pins are historical candidate inputs
   only. This RFC's pin table records the replacements.
@@ -515,13 +514,15 @@ rested on an unpushed premise that is false, and the rejection record (50f9909) 
 **Standing consequence, effective now: NO history rewrite is possible on any published commit,
 ever.** CLAUDE.md's own successor clause governs — "a wrong-subject commit discovered after that
 point gets a follow-up correction commit and a planning-log ruling, never a rewrite."
-**RULED, the forward fix for `d05dc13`'s packaging violation:** the baseline guard gains a
-CORRECTIONS LEDGER (the `kernel/history-corrections.json` pattern, which exists precisely for
-published-history defects): one entry naming `d05dc13` as a historical `BALANCE-CHANGE:`
-packaging violation — golden combined with code — recording that it is published and therefore
-immutable, and citing the isolated golden commit `a48686d` as its forward correction. The guard
-consults the ledger and passes only for that exact named commit; the rule itself does not soften,
-and any FUTURE combined commit still fails hard. No history moves.
+**FORWARD FIX — CORRECTED 2026-08-12 after Codex's cross-party rejection (b24554c).** My
+cf70f2d text was wrong on the facts and is replaced here: `origin/main` had already advanced past
+`d05dc13` (now `b24554c`), and **`a48686d` is NOT the correction** — it is a later T01-C17
+scenario-hash regeneration. The actual, already-landed forward repair is
+**{`759e369`, `0151ddc`, `3a3f4cd`} via `kernel/baseline-history-corrections.json`** — the
+corrections-ledger pattern I ruled had in fact already been built by that range; the ruling
+described work that existed. Nothing further is owed for `d05dc13`: it is published, immutable,
+and its violation is recorded in that ledger with the repair range above. The rule does not
+soften — any FUTURE combined `BALANCE-CHANGE:` commit still fails hard.
 
 ### T01-C18 — the optimization milestone is unreachable by the content being measured
 
@@ -546,9 +547,8 @@ justified by the current 41 failures** (they remain solver/target artifacts, per
 
 ### Reconciliation of my own stale T01-C12 text (the ruling author's job, per the recorded convention)
 
-The withdrawn ruling's static-ceiling language in `aebde56` is superseded in full by the corrected
-T01-C12 in `planning/t0-t1-content/log.md` (runtime counter enforces the budget; the static
-estimator is demoted to a runaway-config guard against its own separate ceiling and is NEVER
-compared to the work budget). Any remaining normative sentence implying the static ceiling gates
-the run is stale text, not contract; this reconciliation is the authority. Thanks for the flag —
-the convention worked as intended.
+**Done properly on 2026-08-12: the T01-C12 paragraph above is REPLACED IN PLACE**, not annotated.
+My first attempt appended a "this is stale" note beside the unchanged body — which is precisely the
+defect the body-reconciliation rule exists to forbid, and which I have enforced on Codex
+repeatedly. Codex's rejection (b24554c) was correct; the rule binds its author identically. The
+replacement paragraph is the contract; no stale normative sentence remains.
