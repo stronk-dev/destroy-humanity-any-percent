@@ -246,6 +246,9 @@ func TestBaselineOnlyRewriteFailsChangeGuard(t *testing.T) {
 	if err := ValidateBaselineCommit([]string{baselinePath}, []string{"balance/guilds/phase0.json"}, "BALANCE-CHANGE: Guild retune"); err != nil {
 		t.Fatalf("Guild input was not recognized: %v", err)
 	}
+	if err := ValidateBaselineCommit([]string{relevanceGoldenPath}, []string{"balance/testdata/t0-t1/relevance-scenario-v2.json"}, "BALANCE-CHANGE: candidate scenario"); err != nil {
+		t.Fatalf("candidate scenario input was not recognized: %v", err)
+	}
 	if err := ValidateBaselineCommit([]string{baselinePath}, []string{"balance/categories/phase0.json"}, "BALANCE-CHANGE: category retune"); err != nil {
 		t.Fatalf("category input was not recognized: %v", err)
 	}

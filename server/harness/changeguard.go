@@ -69,7 +69,7 @@ func validateBaselineCommit(commitPaths, inputsBefore []string, subject string, 
 	}
 	for _, path := range inputsBefore {
 		path = strings.TrimSpace(path)
-		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/categories/") || strings.HasPrefix(path, "balance/routes/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "balance/factions/") || strings.HasPrefix(path, "balance/prestige/") || strings.HasPrefix(path, "balance/guilds/") || strings.HasPrefix(path, "balance/relevance/") || strings.HasPrefix(path, "changelog/") || strings.HasPrefix(path, "testdata/harness/scenarios/") || strings.HasPrefix(path, "testdata/harness/relevance/") || strings.HasPrefix(path, "testdata/harness/content-dynamics/") {
+		if strings.HasPrefix(path, "balance/catalogs/") || strings.HasPrefix(path, "balance/categories/") || strings.HasPrefix(path, "balance/routes/") || strings.HasPrefix(path, "balance/commons/") || strings.HasPrefix(path, "balance/factions/") || strings.HasPrefix(path, "balance/prestige/") || strings.HasPrefix(path, "balance/guilds/") || strings.HasPrefix(path, "balance/relevance/") || strings.HasPrefix(path, "balance/testdata/") || strings.HasPrefix(path, "changelog/") || strings.HasPrefix(path, "testdata/harness/scenarios/") || strings.HasPrefix(path, "testdata/harness/relevance/") || strings.HasPrefix(path, "testdata/harness/content-dynamics/") {
 			return nil
 		}
 	}
