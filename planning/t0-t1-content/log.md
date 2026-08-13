@@ -1376,3 +1376,20 @@ property. Reuse the existing hash/changeguard machinery rather than inventing a 
   state. Traces to my own F-B wording.
 - **F-D (owner/RFC author):** reconcile T01-C19 and the R-block in `rfc/t0-t1-playable-content.md`,
   whose current text still asserts beam properties that this thread has since changed.
+
+## 2026-08-13 — Codex correction of G-A and tiered-oracle proposal — READY FOR OWNER RULING
+
+- **G-A correction:** the shipped, memoized T0 measurement is **790,795 actual transitions**, not
+  1,402,199. The latter number in Codex's earlier entry was measured before suffix memoization
+  landed. Oracle output is unchanged: reference 436,448 ms, beam 419,315 ms, gap 40,859 ppm. Any
+  future transition budget must use a fresh run against the exact implementation identity; neither
+  historical number is authority for T1.
+- **Proposal:** `planning/t0-t1-content/tiered-oracle-proposal.md` answers the owner's handoff with
+  an exact draft contract. Always-run deterministic forced-deviation probes remain content-specific
+  and falsifiable; the existing terminal beam becomes a hash-triggered deep attestation. A complete
+  identity covers constants, scenario, policy, and exact oracle implementation bytes. Changed
+  identity is a visible blocking stale state; cheap green never impersonates deep verification.
+  The proposal also corrects equality semantics (`tied` passes; only beam-worse is
+  `search_regressed`) and defines measurement-only versus authoritative deep runs.
+- **No authority claimed:** no ruled RFC body, implementation, candidate artifact, budget, or hash
+  changed. The five decisions at the proposal's end require owner sign-off before implementation.
