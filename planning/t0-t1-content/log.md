@@ -1212,3 +1212,98 @@ added test asserts only the positive case. Recorded, not blocking.
   This is **not** an archival or candidate-gate completion claim. Owner action is required to apply
   T01-C17 branch B (authorize a higher-ceiling measurement, then pin measured worst-case ×2) or to
   rule a further search bound. Nothing was pushed.
+
+## 2026-08-13 — Claude designated cross-party review of the terminal-oracle remediation `{bb32f48, 8fd215b, 14773ca}` — APPROVED with a required record correction
+
+- **Review by:** Claude (designated cross-party, adversarial). **Recorded by:** Claude.
+- **Range reviewed:** `5a36f65..14773ca` = `{bb32f48, 8fd215b, 14773ca}`. The handoff cited
+  `{bb32f48, 8fd215b}`; I extended to `14773ca` so the reviewed range unions the full span. No
+  `plan.md` changed; the checkbox rule is not engaged.
+- **Independently executed:** `make test-harness -count=1` (GREEN, 27.686 s); `make t0-t1-relevance`
+  ×2; `make t1-relevance`; `make verify-server -count=1` (exit 0); `make verify-kernel-version`
+  (exit 0); plus a cache-disabled rebuild of the T0 gate in a throwaway worktree.
+
+### All four code findings are genuinely fixed. Verified by execution, not by reading.
+
+- **F-A closed.** Beam nodes regain a terminal completion through the *same* ranked policy as the
+  reference — which satisfies T01-C20's "no second scoring semantics" without the vacuity. The
+  registered fixture is now a real declared-parameter negative control and fires: greedy 11,976 ms,
+  beam 11,662 ms, 26,925 ppm against its 25,000 ppm bound, `passed:false`, and the exact triple is
+  pinned by test so drift cannot silently un-fire it. In the T0 gate the beam now genuinely beats
+  greedy — 419,315 ms against 436,448 ms, 40,859 ppm — which is the oracle doing its job for the
+  first time in this thread. `TestRegisteredBeamResultIsMonotonicWithWidth` pins widths 1/8/32, the
+  exact pathology I measured last round.
+- **F-B closed** (with a follow-up below). `greedy_oracle:beam_not_better` replaces the silent
+  clamp, and `ValidateRelevanceReport` now reconciles oracle state against failures in both
+  directions, with negatives for a missing failure and for a noncompetitive beam marked passed.
+- **F-C closed.** The fixture produces a real `generator.alpha` exclusion again; the test asserts
+  the ID list, the `instrument_affected:trap_floor:` failure, *and* the item-level
+  `InstrumentAffected` flag, with two validator negatives. Green-gate coverage is restored.
+- **F-E closed** with a demonstrated failing case asserting the error text.
+- **F-D correctly routed, not self-edited.** Codex left `rfc/t0-t1-playable-content.md` untouched
+  and referred it to the RFC author. That is the rule working as intended; the reconciliation of
+  T01-C19 and the R-block is now owed by me/the owner, not by the implementer.
+
+### G-A (MEDIUM — record correction required before the branch-B decision)
+
+**The recorded T0 measurement does not reproduce against the shipped bytes.** The log states T0
+"completes under its unchanged 2,000,000 ceiling at **1,402,199** actual transitions". I measured
+**790,795**, stable across two runs, with the oracle triple (436,448 / 419,315 / 40,859 ppm)
+matching the record exactly.
+
+I identified the cause rather than guessing at it: rebuilding the same gate with the completion
+cache disabled reproduces **1,402,199 exactly**. The recorded T0 figure is a *pre-memoization*
+measurement, taken mid-development and never re-taken after the cache landed in the same commit.
+The same paragraph asserts the T1 result holds "even after deterministic suffix memoization", so
+one measurement paragraph silently mixes two code states.
+
+This matters because T01-C17 branch B derives the ceiling as *measured worst case × 2*, and this
+record is the artifact the owner will use to make that call. **The correct shipped T0 figure is
+790,795 — 40% of its 2,000,000 ceiling, not 70%.** Codex to correct its own entry.
+
+**The T1 conclusion itself is confirmed and stands.** I reproduced it against shipped bytes:
+`relevance run reference.greedy seed 0 beam: relevance transition budget exceeded: executed
+5000000, maximum 5000000`, no partial report emitted. Refusing to raise that ceiling from an
+incomplete run is exactly right (evidence rule 4), and T01-C17 branch B or a further ruled search
+bound is genuinely required. **Whoever runs the branch-B measurement must run it with memoization
+enabled** — the T0 datapoint shows every pre-memoization work estimate in this thread is now 44%
+too high, so no prior number should be carried into the derivation.
+
+### G-B (MEDIUM — follow-up, and the wording that caused it is mine)
+
+`relevanceOracleOutcome` fails on `beamMS >= greedyMS`, so a beam that *ties* greedy is reported as
+`beam_not_better`. But a tie is the expected healthy outcome when greedy is optimal, not a fault.
+With the terminal completion restored, the greedy trajectory is always reproducible by the beam at
+depth 0 — children include greedy's top-ranked choice and the completion receives
+`MaxDecisions - depth - 1`, so the envelopes are symmetric — which makes `beam < greedy` or
+`beam == greedy` the only structurally reachable outcomes. The check therefore fires on health and
+essentially never on the fault it was built for, and it quietly makes the gate two-sided: a
+scenario must now exhibit a greedy gap forever, which is a content property wearing an instrument
+check's clothing. T0 currently passes inside a narrow 0 < gap <= 50,000 ppm corridor at 40,859 ppm.
+
+**This came from my own F-B wording** ("make `BeamMS >= GreedyMS` a visible instrument finding") and
+Codex implemented precisely what I asked. The correction is mine to make: `beamMS > greedyMS` should
+be the fault, and `beamMS == greedyMS` should pass with a distinct visible field (no improvement
+found) so it is never confused with an exercised oracle. Not blocking — the registered negative
+control already carries the "oracle can fire" proof, which is what R-block item 2 actually requires.
+
+### Low-severity notes (recorded, not blocking)
+
+- `ExecutedTransitions` now counts uncached work only (docs say so plainly), so any T01-C17 budget
+  derived from it is coupled to cache effectiveness. Worth stating explicitly wherever the branch-B
+  ceiling is pinned, so a later cache change does not silently invalidate the bound.
+- `runRankedCompletionCached` returns `FinalState`/`FinalVirtualMS` from the *hit point*, not the
+  completed run. Only `MilestoneMS` is consumed today, so this is latent, but it is a silently-wrong
+  value waiting for the next caller. Either populate them or make the cached variant return only
+  what it can honestly fill.
+- The cache key omits the ablation mask. Correct today because the map is per-`runBeamWithOpportunity`
+  call and the mask is constant within it; one shared cache across masks would silently corrupt.
+- `runReferenceWithOpportunity` and `runRankedCompletion` remain two parallel decision loops that
+  must stay behaviorally identical for `beam <= greedy` to hold. Nothing pins their equivalence.
+
+### Verdict
+
+Remediation **APPROVED**. Not an archival claim, and none was made: the T1 candidate gate remains
+open pending the owner's T01-C17 branch-B decision. G-A must be corrected before that decision is
+taken from this record. Gates green at range head; candidate hashes untouched and UNRATIFIED;
+`AGENTS.md` working-tree change left alone; nothing pushed.
