@@ -1307,3 +1307,72 @@ Remediation **APPROVED**. Not an archival claim, and none was made: the T1 candi
 open pending the owner's T01-C17 branch-B decision. G-A must be corrected before that decision is
 taken from this record. Gates green at range head; candidate hashes untouched and UNRATIFIED;
 `AGENTS.md` working-tree change left alone; nothing pushed.
+
+## 2026-08-13 — Owner direction: tiered oracle verification — HANDED TO CODEX FOR IDEATION
+
+**Owner's framing (Marco, this session):** the greedy-gap oracle does not have to be affordable on
+every run. A cheap check can run always, with a full high-budget search run rarely — before a
+release, or when the content actually moves. Codex to ideate; the output is a **draft RFC/proposed
+ruling for owner sign-off, not an implementation.** This changes ruled search semantics (R11,
+R-block item 1, T01-C19, T01-C20), so nothing here is authority to change the beam.
+
+### The question
+
+The reference arm produces the product — the per-item relevance/trap verdicts — and genuinely needs
+full production simulation. The beam is only a **guard**: its entire job is to answer one yes/no,
+"is the reference leaving more than `greedy_gap_maximum_ppm` on the table?" It is currently built
+like an exhaustive search, which is why T1 cannot finish inside 5,000,000 transitions. Design a
+verification model that keeps the guard honest without paying search cost on every run.
+
+### Owner's steer: trigger on content, not on a calendar
+
+Key the deep run to the **balance-data hash**, not a date. If the content has not moved, re-running
+the guard proves nothing; if it has, the guard is exactly what is owed. The repository already pins
+balance artifacts by hash and already distinguishes `make verify` gates from candidate gates, so
+"before a big release" falls out of a hash trigger for free. A calendar trigger has neither
+property. Reuse the existing hash/changeguard machinery rather than inventing a parallel one.
+
+### Hard constraints on any proposal
+
+1. **The cheap tier must still be falsifiable** (evidence rule 1). "Cheap" must not mean "cannot
+   fail." Ship it with a demonstrated failing case, as always.
+2. **The cheap tier must state what it did not check** (evidence rule 3). A run that skipped the
+   deep search must say so in its report as a first-class visible field. A cheap green must never be
+   indistinguishable from a verified green — that is precisely the failure mode of the batch I
+   blocked in F-A.
+3. **Staleness is a reportable state.** If content has moved since the last deep run, that is a
+   visible finding, not silence.
+4. Determinism and reproducibility are non-negotiable; a seeded generator is fine, wall-clock or
+   unseeded randomness is not.
+5. No budget or bound derived from an incomplete run (evidence rule 4, T01-C17).
+
+### Inputs to ideation — starting points, NOT conclusions
+
+- **Complete only the width survivors.** The beam currently completes every child and *then*
+  truncates to `beam_width`. Ranking children by the cheap T01-C20 closed form, truncating, and
+  completing only survivors is roughly a 4x saving and does not contradict R-block item 1, which
+  bounds pre-rollout child expansion but never requires completing every child.
+- **Early exit.** The oracle needs only to know whether *anything* beats the reference by more than
+  the threshold. The moment one completion does, the answer exists; finishing the search is wasted.
+- **Branch-and-bound — with a caveat.** Discarding branches whose best conceivable outcome cannot
+  beat the reference would be the strongest prune, but the T01-C20 closed form is **not** a valid
+  optimistic bound for it: it assumes the current rate holds forever, while further purchases raise
+  the rate, so true completion can be faster than the estimate. It is a ranking key, not a bound.
+  Constructing an admissible bound is real work; do not assume the existing formula for it.
+- **Consider whether a search is the right guard at all.** A seeded perturbation fuzzer — replay the
+  reference but force a different choice at a handful of decision points, over many seeds — is far
+  cheaper, fully deterministic, and arguably a *stronger* falsifier, because it is not correlated
+  with the policy it is trying to catch out. A beam that ranks by the same metric the reference uses
+  is structurally inclined to agree with it. This would supersede rather than tune the beam, so it
+  needs an explicit owner ruling.
+
+### Still owed independently of this work
+
+- **G-A (Codex):** correct the stale T0 measurement in this log. Recorded 1,402,199 is
+  pre-memoization; shipped bytes give 790,795 (I reproduced 1,402,199 exactly with the cache
+  disabled). Any branch-B derivation must use post-memoization numbers.
+- **G-B (owner/RFC author):** `beam == greedy` is currently treated as a fault; it is the expected
+  healthy outcome. Fault should be `beam > greedy`, with equality a distinct visible non-failing
+  state. Traces to my own F-B wording.
+- **F-D (owner/RFC author):** reconcile T01-C19 and the R-block in `rfc/t0-t1-playable-content.md`,
+  whose current text still asserts beam properties that this thread has since changed.
