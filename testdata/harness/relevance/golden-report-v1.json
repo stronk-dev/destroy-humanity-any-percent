@@ -1,22 +1,35 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "scenario_id": "scenario.relevance_fixture",
-  "scenario_hash": "sha256:d19e418fc4f641f34ab6fca50229b5c74f0e8e94dd2548486be2c1c6c3696702",
-  "constants_hash": "sha256:55822d7070dab52fc78b469d40ed14bf1eb2012535a8ae6962d59d42bb4f573a",
+  "scenario_hash": "sha256:c8d977428cb86385ad91b3d291c8a7be7f690638977ba6c5659f93222a0b8cb0",
+  "constants_hash": "sha256:b91243997defd085624689a614d2db5d827b9d79c4f1b3f8cd8b302008eb8d6e",
   "relevance_policy_hash": "sha256:04b7149ad2e6d8fa9ab3da549e6cddb20c42b28fd62693ce507ab8424b0f0e56",
   "run_budget": {
-    "declared_runs": 14,
-    "executed_runs": 14,
-    "declared_transitions": 20711,
-    "executed_transitions": 20711
+    "declared_runs": 23,
+    "executed_runs": 23,
+    "declared_transitions": 3324,
+    "executed_transitions": 3324
   },
-  "greedy_oracle": {
+  "greedy_oracle": null,
+  "deviation_oracle": {
+    "kind": "deviation.v1",
     "milestone_id": "milestone.cash_target",
-    "greedy_ms": 11976,
-    "beam_ms": 11662,
-    "gap_ppm": 26925,
+    "status": "counterexample",
+    "eligible_coordinates": 9,
+    "selected_coordinates": 9,
+    "executed_probes": 10,
+    "unprobed_coordinates": 0,
+    "maximum_forced_deviations": 1,
     "maximum_ppm": 25000,
-    "passed": false
+    "witness": {
+      "decision_ordinal": 8,
+      "state_hash": "f6c82bc98eead0aa6b9189c286a20369d7260c601c89c1c092ac535cb836408c",
+      "reference_arm": "bank",
+      "forced_arm": "generator.beta",
+      "reference_ms": 5558,
+      "alternate_ms": 5401,
+      "gap_ppm": 29068
+    }
   },
   "items": [
     {
@@ -66,25 +79,25 @@
       "epsilon_ms": 1,
       "trap_exempt": false,
       "justification_key": null,
-      "baseline_purchase_count": 11,
+      "baseline_purchase_count": 7,
       "excluded_persona_ids": [],
       "instrument_affected": false,
       "individual_deltas": [
         {
           "milestone_id": "milestone.cash_target",
           "status": "ablated_unreached",
-          "baseline_ms": 11976,
+          "baseline_ms": 5558,
           "ablated_ms": null,
-          "delta_ms": 168024
+          "delta_ms": 174442
         }
       ],
       "action_removal_deltas": [
         {
           "milestone_id": "milestone.cash_target",
           "status": "ablated_unreached",
-          "baseline_ms": 11976,
+          "baseline_ms": 5558,
           "ablated_ms": null,
-          "delta_ms": 168024
+          "delta_ms": 174442
         }
       ],
       "support": "individual",
@@ -179,9 +192,9 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "ablated_unreached",
-          "baseline_ms": 11976,
+          "baseline_ms": 5558,
           "ablated_ms": null,
-          "delta_ms": 168024
+          "delta_ms": 174442
         }
       ],
       "passed": true
@@ -228,9 +241,9 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "ablated_unreached",
-          "baseline_ms": 11976,
+          "baseline_ms": 5558,
           "ablated_ms": null,
-          "delta_ms": 168024
+          "delta_ms": 174442
         }
       ],
       "passed": true
@@ -255,9 +268,9 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "ablated_unreached",
-          "baseline_ms": 11976,
+          "baseline_ms": 5558,
           "ablated_ms": null,
-          "delta_ms": 168024
+          "delta_ms": 174442
         }
       ]
     }
@@ -267,14 +280,14 @@
       "generator_id": "generator.beta",
       "kind": "provision",
       "target_id": "generator.alpha",
-      "count": 5
+      "count": 2
     }
   ],
   "instrument_excluded_ids": [
     "generator.alpha"
   ],
   "failures": [
-    "greedy_oracle:gap",
+    "greedy_oracle:deviation_gap",
     "instrument_affected:trap_floor:generator.alpha",
     "relevance_floor:upgrade.alpha",
     "relevance_floor:upgrade.dead",
