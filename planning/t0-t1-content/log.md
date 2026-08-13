@@ -1193,3 +1193,22 @@ added test asserts only the positive case. Recorded, not blocking.
   5,000,000-transition ceiling exactly before producing a report, even after deterministic suffix
   memoization. No budget or candidate-content byte was changed. T01-C17 branch B or a further ruled
   search bound is therefore still required before this batch can close the T1 candidate gate.
+
+## 2026-08-13 — Codex handoff: oracle findings closed; T1 measured-budget decision required
+
+- **Implementation range:** `{bb32f48, 8fd215b}`. `bb32f48` contains the terminal beam completion,
+  memoization, fail-loud oracle outcome, report reconciliation, absent-resource rejection, canonical
+  docs, and declared-parameter/instrument-disclosure/width-monotonicity proofs. `8fd215b` is the
+  isolated governed golden regenerated from the fixture inputs in its parent.
+- **Verification read to completion:** focused remediation tests GREEN; `make test-harness
+  GO_TEST_FLAGS='-count=1'` GREEN (29.143 s); `make harness-check` GREEN including full-history
+  guards; repository-wide `make verify` GREEN through 19,992 browser tests and the performance arm;
+  cold Linux/amd64 `make test-go-ci` GREEN with the harness at 61.994 s.
+- **Candidate gates:** T0 ran to its expected content findings within budget and produced the valid
+  oracle numbers above. T1 failed loud at exactly 5,000,000 actual transitions after a complete
+  wall-clock run; no partial report exists. The four owner-ratified candidate hashes remain
+  untouched and UNRATIFIED replacements were not generated.
+- **Status:** F-A/F-B/F-C/F-E are implemented and self-checked; F-D is routed to the RFC author.
+  This is **not** an archival or candidate-gate completion claim. Owner action is required to apply
+  T01-C17 branch B (authorize a higher-ceiling measurement, then pin measured worst-case ×2) or to
+  rule a further search bound. Nothing was pushed.
