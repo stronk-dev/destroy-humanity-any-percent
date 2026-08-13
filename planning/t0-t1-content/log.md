@@ -1056,3 +1056,123 @@ for designated review and owner action.
   explicitly listed content-floor findings and write `authoritative:false` diagnostics.
 - **Status:** implemented and self-checked, **ready for designated cross-party review**. The four
   hashes above remain UNRATIFIED and no content disposition or archival is claimed.
+
+## 2026-08-13 — Claude designated cross-party review of T01-C20/C21 `{c672b48, d3b0846, bf9de62, f6c2ff0}` — CHANGES REQUESTED
+
+- **Review by:** Claude (designated cross-party, adversarial). **Recorded by:** Claude.
+- **Range reviewed:** `b8c4939..f6c2ff0` = `{c672b48, d3b0846, bf9de62, f6c2ff0}`. The handoff cited
+  `{c672b48, d3b0846, bf9de62}`; I extended the pass to `f6c2ff0` so the reviewed range unions the
+  full implementation span. `f6c2ff0` is planning-only and flips no plan checkbox; no `plan.md`
+  changed anywhere in the span, so the checkbox/exercising-test rule is not engaged.
+- **Independently executed** (not read): `make test-harness -count=1` (30.6 s, GREEN);
+  `make t0-t1-relevance`; `make t1-relevance`; `make verify-server -count=1` (GREEN); plus a
+  purpose-built beam-power probe across widths 1/8/32/64 on both registered scenarios.
+  Both candidate gates reproduce Codex's reported numbers exactly (T0 211,295 transitions;
+  T1 2,369,809 transitions), and their nonzero exits carry only content-floor findings as claimed.
+
+### Verdict: NOT archival-eligible. F-A blocks.
+
+**F-A (HIGH — blocker). The greedy-gap oracle can no longer fire at any registered scenario's
+declared parameters. Its green 0 ppm is the absence of a measurement, not evidence about greedy.**
+
+The batch's own regenerated golden proves it, at an unchanged scenario, width, and milestone
+(`testdata/harness/relevance/scenario-v1.json` is untouched in this span):
+
+| | greedy_ms | beam_ms | gap_ppm | oracle |
+|---|---|---|---|---|
+| before | 120,000 | 30,000 | 3,000,000 | **failed (fired correctly)** |
+| after | 22,943 | 32,811 | 0 | passed |
+
+Greedy genuinely improved 5.2× — that is T01-C20 working, and it is good. But the beam did not
+merely get outpaced: it **regressed in absolute terms**, 30,000 ms → 32,811 ms, at identical
+parameters. It lost the independent search power that made it an oracle. Confirmed in both
+production gates: T0 `GreedyMS:436448 BeamMS:720847 GapPPM:0 Passed:true` (the search arm is 65%
+worse than the arm it is supposed to bound); T1 `3236032` vs `3236038`.
+
+My width sweep shows the beam never beats greedy at any width on either registered scenario, and —
+decisively — that its answer is **non-monotonic in width**: T0 gives 442,131 ms at width 1,
+720,847 at width 8, 719,912 at width 32, 569,143 at width 64. A search whose result degrades 63%
+when granted 8× the width is not a valid upper bound on anything.
+
+The surviving falsifiability demonstration, `TestProjectedBeamOracleCanFalsifyTheReference`, has to
+mutate the suite away from every declared parameter to fire: width 32 (declared: 8) **and**
+milestone `3e2` (declared: `1e3`). I ran width 32 against the declared `1e3` milestone — the oracle
+still does not fire (beam 23,788 vs greedy 22,943). So no registered scenario, at its declared
+parameters, retains a beam capable of falsifying greedy.
+
+Root cause, both halves introduced here: (1) beam children are now selected *and* scored by the
+same closed form, so the beam has no signal with which to disagree with greedy; (2) deleting
+`runGreedyRolloutFromRanked` left the beam with no completion at all — `best` is recorded only when
+a node's state has *already* reached the milestone — while the reference arm kept
+`finishToMilestone`. The reference gets a closed-form finish the beam is denied, which is why the
+beam loses even at width 1.
+
+This fails R-block ruling item 2 ("**The 5% greedy-gap oracle proof MUST be re-run and hold** at the
+chosen parameters") and CLAUDE.md evidence rule 1, which names this exact defect — "an oracle
+structurally unable to falsify its own subject."
+
+**In fairness to the implementation:** T01-C20 *did* rule "the beam rollout uses the SAME metric —
+no second scoring semantics anywhere," and Codex honoured that faithfully. But "same metric" is not
+"no completion": a rollout that plays out under the T01-C20 metric and reports its actually-reached
+time satisfies the ruling word-for-word while restoring the beam's power. The remedy does not
+require reopening the ruling. Whether to spend the wall-clock it costs — the rollout arm is most of
+the 334 s → 27.65 s win — is an owner call, and it should be made explicitly rather than absorbed
+silently into a green checkmark.
+
+**F-B (MEDIUM — fail loud).** `relevanceGapPPM` (`server/harness/relevance.go:632`) clamps
+`greedyMS <= beamMS` to `0`. The clamp predates this batch and was harmless while the beam was
+competitive; it now silently converts "the oracle's search arm failed to match greedy" into
+"0 ppm, passed". Per evidence rule 3, beam-worse-than-greedy is an instrument artifact and must be
+a visible first-class field and a failure, not a green checkmark. This batch is what made the clamp
+load-bearing, so the disclosure belongs to it.
+
+**F-C (MEDIUM — coverage).** The ruled F2 instrument-exclusion disclosure lost its only automated
+end-to-end assertion. The schema-v4 fixture now yields `instrument_excluded_ids: []`, the test was
+changed to assert emptiness, and the replacement assertion evaluates
+`relevanceFloorFailure("trap_floor", "generator.alpha", true)` — a six-line pure string concat.
+That is a check that cannot fail for the property it stands in for. The real path does still run:
+both candidate gates emit `instrument_affected:relevance_floor:...`. But those gates exit nonzero
+by design and are not in `make verify`, so after this batch no green gate covers F2.
+
+**F-D (MEDIUM — process).** `c672b48` rewrites owner-authored ruled text: T01-C19's normative body
+and R-block ruling item 1 in `rfc/t0-t1-playable-content.md`. Evidence rules 5 and 6 reserve that
+to the ruling author; the implementer files the staleness and waits. The staleness was real —
+T01-C20 landed only in this log, touching no RFC file — but the remedy was a finding, not an edit.
+The concrete harm is visible in F-A: the replacement text asserts the beam "remains an independent
+declared-width search capable of falsifying greedy," a normative claim about the implementer's own
+work that the measurements contradict. Owner/RFC-author to reconcile T01-C19 and the R-block once
+F-A is resolved.
+
+**F-E (LOW).** `projectedMilestone` (`server/harness/relevance_solver.go:805`) returns
+`(zero, false, err)` when `!ok`, so an absent milestone-resource balance with a nil error reads as
+an unreachable milestone rather than an instrument fault. Narrow, but it is the class F1 ruled
+against; it should return an error.
+
+**F-F (LOW — note, not a blocker).** `bf9de62` adds `balance/testdata/` to the changeguard input
+prefixes. It is broader than its siblings (which name specific artifact directories), and the
+guard's coarse "some governed input changed" semantics mean a candidate-lane scenario edit now
+authorizes regenerating a golden it is not an input to — the real cause of the golden change was
+the solver rework, which the guard cannot represent at all. Pre-existing design limitation; the
+added test asserts only the positive case. Recorded, not blocking.
+
+### Confirmed good
+
+- T01-C20 is implemented **exactly** as ruled: bank-or-buy compared as an exact cross-multiplied
+  ratio with no premature integer conversion, bank losing all ties, raw-byte `item_id` tie-break.
+  No approximation, and the ruling's "STOP and report rather than approximating" was not needed.
+- `SimulateResourceRate` reuses the engine's contribution and generator-rate assembly instead of
+  reconstructing production math, and its test carries a real falsifying case (ablation → 0).
+- T01-C21 answered by measurement: `1e9` at 4,208,672 ms in 315 decisions, with `1e12` rejected on
+  evidence-window reasoning rather than convenience. Budgets derived from measurement (T1
+  5,000,000 against 2 × 2,369,809), never raised to fit — evidence rule 4 respected.
+- Protocol clean: isolated `BALANCE-CHANGE:` golden commit, three-file kernel bump in lockstep,
+  four hashes left UNRATIFIED, no content retuned, no self-archival claimed.
+
+### Required before re-review
+
+1. Restore an oracle that can fire at declared parameters (F-A), or bring an owner ruling that
+   explicitly redefines what the beam arm is for. Ship it with a demonstrated failing case **at a
+   registered scenario's declared parameters** — not at mutated ones.
+2. Make `BeamMS >= GreedyMS` a visible instrument finding (F-B).
+3. Restore green-gate coverage of the F2 disclosure path (F-C).
+4. Fix F-E; owner/RFC-author reconciles T01-C19 and the R-block (F-D).
