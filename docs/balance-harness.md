@@ -66,15 +66,18 @@ closed-form ratios without rounding: `(target - balance) * 1000 / rate`. Purchas
 and tie-break by raw-byte ID; banking advances to the milestone or next declared boundary. Before
 the ablation matrix, one whole-item backward-elimination screen removes any purchase whose absence
 strictly improves the projected-time reference trajectory. The same immutable screen and projected-
-time metric govern reference, ablations, beam child selection, and beam node scoring. At
-run genesis it may bootstrap the cheapest milestone-resource
+time metric govern reference, ablations, beam child selection, and the terminal completion used to
+score each beam node. At run genesis it may bootstrap the cheapest milestone-resource
 purchase through the pinned manual action: the requested count is derived from the real quote and
 catalog yield, capped by the catalog's click bucket, and its window is derived from the catalog
 refill rate. Relevance scenarios declare `beam_children >= 2`; each beam node orders purchase and
 bank choices by the same projected-time metric, keeps at most that many, deduplicates by canonical
-state plus virtual time, applies componentwise dominance, and scores the survivors with that same
-closed form before the width bound. It never launches a second greedy completion with different
-semantics. Run cardinality is checked before simulation. The static
+state plus virtual time, applies componentwise dominance, and completes survivors with the same
+ranked policy before the width bound. Deterministic completion suffixes are memoized by state,
+revision, virtual time, and remaining decision allowance; cached work is not counted as an executed
+transition. A beam that does not strictly beat its reference is reported as
+`greedy_oracle:beam_not_better`, never clamped to a green zero-gap result. Run cardinality is checked
+before simulation. The static
 transition estimate is only a generous runaway-configuration guard, compared with the scenario's
 declarative `preflight_ceiling`; it is never treated as measured work. The scenario's separate work
 budget is enforced by one counter spanning every simulation call, including the reachability

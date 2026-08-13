@@ -58,7 +58,9 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 		first.RunBudget.DeclaredTransitions != first.RunBudget.ExecutedTransitions || len(first.Items) != 4 || len(first.Groups) != 4 {
 		t.Fatalf("report cardinality=%+v items=%d groups=%d", first.RunBudget, len(first.Items), len(first.Groups))
 	}
-	if first.GreedyOracle == nil || !first.GreedyOracle.Passed || containsString(first.Failures, "greedy_oracle:gap") {
+	if first.GreedyOracle == nil || first.GreedyOracle.Passed || first.GreedyOracle.GreedyMS != 11_976 ||
+		first.GreedyOracle.BeamMS != 11_662 || first.GreedyOracle.GapPPM != 26_925 ||
+		!containsString(first.Failures, "greedy_oracle:gap") {
 		t.Fatalf("greedy oracle=%+v", first.GreedyOracle)
 	}
 	joined := strings.Join(first.Failures, ",")
@@ -85,11 +87,18 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	if first.InstrumentExcludedIDs == nil {
 		t.Fatal("schema-v4 report omitted instrument exclusions")
 	}
-	if len(first.InstrumentExcludedIDs) != 0 {
+	if !reflect.DeepEqual(first.InstrumentExcludedIDs, []string{"generator.alpha"}) ||
+		!containsString(first.Failures, "instrument_affected:trap_floor:generator.alpha") {
 		t.Fatalf("instrument exclusions=%v failures=%v", first.InstrumentExcludedIDs, first.Failures)
 	}
-	if got := relevanceFloorFailure("trap_floor", "generator.alpha", true); got != "instrument_affected:trap_floor:generator.alpha" {
-		t.Fatalf("instrument-affected failure=%q", got)
+	var alphaAffected bool
+	for _, item := range first.Items {
+		if item.PurchasableID == "generator.alpha" {
+			alphaAffected = item.InstrumentAffected
+		}
+	}
+	if !alphaAffected {
+		t.Fatal("instrument exclusion did not reach the item report")
 	}
 	invalid := first
 	invalid.InstrumentExcludedIDs = nil
@@ -97,7 +106,7 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 		t.Fatal("schema-v4 report accepted missing instrument exclusions")
 	}
 	invalid = first
-	invalid.InstrumentExcludedIDs = []string{"generator.alpha"}
+	invalid.InstrumentExcludedIDs = []string{}
 	if err := ValidateRelevanceReport(invalid); err == nil {
 		t.Fatal("schema-v4 report accepted an undisclosed instrument exclusion")
 	}
@@ -157,6 +166,34 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 		t.Fatal("report accepted a non-reconciling greedy gap")
 	}
 	invalid = first
+	invalid.Failures = append([]string(nil), first.Failures...)
+	for index, failure := range invalid.Failures {
+		if failure == "greedy_oracle:gap" {
+			invalid.Failures = append(invalid.Failures[:index], invalid.Failures[index+1:]...)
+			break
+		}
+	}
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("report accepted a missing greedy-oracle failure")
+	}
+	invalid = first
+	invalid.GreedyOracle = &RelevanceGreedyOracle{MilestoneID: first.GreedyOracle.MilestoneID,
+		GreedyMS: first.GreedyOracle.GreedyMS, BeamMS: first.GreedyOracle.GreedyMS, GapPPM: 0,
+		MaximumPPM: first.GreedyOracle.MaximumPPM, Passed: false}
+	invalid.Failures = append([]string(nil), first.Failures...)
+	for index, failure := range invalid.Failures {
+		if failure == "greedy_oracle:gap" {
+			invalid.Failures[index] = "greedy_oracle:beam_not_better"
+		}
+	}
+	if err := ValidateRelevanceReport(invalid); err != nil {
+		t.Fatalf("report rejected an honestly disclosed noncompetitive beam: %v", err)
+	}
+	invalid.GreedyOracle.Passed = true
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("report accepted a noncompetitive beam as passed")
+	}
+	invalid = first
 	invalid.Items = append([]RelevanceItemReport(nil), first.Items...)
 	deltaItem := -1
 	for index := range invalid.Items {
@@ -208,6 +245,17 @@ func TestRelevanceRuntimeTransitionBudgetAbortsAtActualWork(t *testing.T) {
 	suite.Scenario.RelevanceBudgetMaxTransitions = 1
 	if _, err := suite.RunRelevance(); err == nil || !strings.Contains(err.Error(), "executed 1, maximum 1") {
 		t.Fatalf("runtime transition budget error=%v", err)
+	}
+}
+
+func TestRelevanceOracleFailsLoudWhenBeamDoesNotBeatReference(t *testing.T) {
+	gap, passed, failure, err := relevanceOracleOutcome(100, 100, 50_000)
+	if err != nil || gap != 0 || passed || failure != "greedy_oracle:beam_not_better" {
+		t.Fatalf("equal oracle gap=%d passed=%v failure=%q err=%v", gap, passed, failure, err)
+	}
+	gap, passed, failure, err = relevanceOracleOutcome(100, 101, 50_000)
+	if err != nil || gap != 0 || passed || failure != "greedy_oracle:beam_not_better" {
+		t.Fatalf("worse beam gap=%d passed=%v failure=%q err=%v", gap, passed, failure, err)
 	}
 }
 
@@ -387,32 +435,90 @@ func TestT1ProjectedMilestoneMeasurement(t *testing.T) {
 	}
 }
 
-func TestProjectedBeamOracleCanFalsifyTheReference(t *testing.T) {
+func TestRegisteredBeamOracleCanFalsifyTheReferenceAtDeclaredParameters(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	suite.Scenario.BeamWidth = 32
-	suite.Scenario.Milestone.Amount = "3e2"
-	counter := &relevanceCounter{limit: 10_000_000}
-	mask, _, err := suite.opportunityAwareMask(production.AblationMask{}, counter)
+	if suite.Scenario.BeamWidth != 8 || suite.Scenario.Milestone.Amount != "1e3" || suite.Scenario.GreedyGapMaximumPPM != 25_000 {
+		t.Fatalf("registered oracle parameters drifted: %+v", suite.Scenario)
+	}
+	report, err := suite.RunRelevance()
 	if err != nil {
 		t.Fatal(err)
 	}
-	greedy, err := suite.runReferenceWithOpportunity(production.AblationMask{}, mask, counter)
+	if report.GreedyOracle == nil || report.GreedyOracle.Passed || report.GreedyOracle.GapPPM <= report.GreedyOracle.MaximumPPM ||
+		!containsString(report.Failures, "greedy_oracle:gap") {
+		t.Fatalf("declared-parameter oracle did not fire: %+v failures=%v", report.GreedyOracle, report.Failures)
+	}
+}
+
+func TestRegisteredBeamResultIsMonotonicWithWidth(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	beam, err := suite.runBeamWithOpportunity(mask, counter)
+	maskCounter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	mask, _, err := suite.opportunityAwareMask(production.AblationMask{}, maskCounter)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if greedy.MilestoneMS == nil || beam == nil {
-		t.Fatalf("falsifiable oracle did not reach: greedy=%v beam=%v", greedy.MilestoneMS, beam)
+	prior := int64(relevanceMaxSafeInteger)
+	for _, width := range []int64{1, 8, 32} {
+		suite.Scenario.BeamWidth = width
+		counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+		milestone, runErr := suite.runBeamWithOpportunity(mask, counter)
+		if runErr != nil || milestone == nil {
+			t.Fatalf("width %d milestone=%v transitions=%d err=%v", width, milestone, counter.value, runErr)
+		}
+		if *milestone > prior {
+			t.Fatalf("beam regressed as width grew: width=%d milestone=%d prior=%d", width, *milestone, prior)
+		}
+		prior = *milestone
 	}
-	gap, err := relevanceGapPPM(*greedy.MilestoneMS, *beam)
-	if err != nil || *greedy.MilestoneMS != 11_621 || *beam != 11_279 || gap != 30_321 {
-		t.Fatalf("falsifiable oracle greedy=%d beam=%d gap=%d err=%v", *greedy.MilestoneMS, *beam, gap, err)
+}
+
+func TestBeamTerminalCompletionCacheReusesAnIdenticalSuffix(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	firstState, err := suite.newRelevanceState()
+	if err != nil {
+		t.Fatal(err)
+	}
+	secondState, err := cloneState(suite.Catalog, firstState)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cache := map[string]relevanceCompletionCacheEntry{}
+	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	first, err := suite.runRankedCompletionCached(firstState, 1, 0, suite.Scenario.MaxDecisions,
+		production.AblationMask{}, counter, cache)
+	if err != nil || first.MilestoneMS == nil {
+		t.Fatalf("first completion=%+v err=%v", first, err)
+	}
+	afterFirst := counter.value
+	second, err := suite.runRankedCompletionCached(secondState, 1, 0, suite.Scenario.MaxDecisions,
+		production.AblationMask{}, counter, cache)
+	if err != nil || second.MilestoneMS == nil || *second.MilestoneMS != *first.MilestoneMS || counter.value != afterFirst {
+		t.Fatalf("cached completion first=%v second=%v before=%d after=%d err=%v",
+			first.MilestoneMS, second.MilestoneMS, afterFirst, counter.value, err)
+	}
+}
+
+func TestProjectedMilestoneRejectsAbsentResource(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	state, err := suite.newRelevanceState()
+	if err != nil {
+		t.Fatal(err)
+	}
+	suite.Scenario.Milestone.ResourceID = "company.absent"
+	if _, _, err := suite.projectedMilestone(state, production.AblationMask{}); err == nil || !strings.Contains(err.Error(), "absent from the save ledger") {
+		t.Fatalf("absent milestone resource failed open: %v", err)
 	}
 }
 
@@ -725,9 +831,9 @@ func TestRelevanceFixturePinsTrapFloorAndTheRegisteredOracle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if report.GreedyOracle == nil || !report.GreedyOracle.Passed || containsString(report.Failures, "greedy_oracle:gap") ||
+	if report.GreedyOracle == nil || report.GreedyOracle.Passed || !containsString(report.Failures, "greedy_oracle:gap") ||
 		!containsString(report.Failures, "trap_floor:upgrade.dead") {
-		t.Fatalf("equal-envelope oracle=%+v", report.GreedyOracle)
+		t.Fatalf("registered negative-control oracle=%+v failures=%v", report.GreedyOracle, report.Failures)
 	}
 }
 

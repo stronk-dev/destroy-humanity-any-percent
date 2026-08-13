@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"cloud-clicker/server/decimal"
@@ -488,14 +489,28 @@ func ValidateRelevanceReport(report RelevanceReport) error {
 		!relevanceSafe(report.RunBudget.DeclaredTransitions) || report.RunBudget.DeclaredTransitions != report.RunBudget.ExecutedTransitions {
 		return errors.New("invalid relevance report envelope")
 	}
+	expectedOracleFailure := "greedy_oracle:milestone_unreached"
 	if report.GreedyOracle != nil {
 		oracle := report.GreedyOracle
-		gap, err := relevanceGapPPM(oracle.GreedyMS, oracle.BeamMS)
+		gap, passed, failure, err := relevanceOracleOutcome(oracle.GreedyMS, oracle.BeamMS, oracle.MaximumPPM)
 		if err != nil || !relevanceIDPattern.MatchString(oracle.MilestoneID) || !relevanceSafePositive(oracle.GreedyMS) ||
 			!relevanceSafePositive(oracle.BeamMS) || gap != oracle.GapPPM || !relevanceSafe(oracle.MaximumPPM) ||
-			oracle.Passed != (oracle.GapPPM <= oracle.MaximumPPM) {
+			oracle.Passed != passed {
 			return errors.New("invalid relevance greedy oracle")
 		}
+		expectedOracleFailure = failure
+	}
+	oracleFailureCount := 0
+	for _, failure := range report.Failures {
+		if strings.HasPrefix(failure, "greedy_oracle:") {
+			oracleFailureCount++
+			if failure != expectedOracleFailure {
+				return errors.New("relevance greedy oracle failure does not reconcile")
+			}
+		}
+	}
+	if expectedOracleFailure == "" && oracleFailureCount != 0 || expectedOracleFailure != "" && oracleFailureCount != 1 {
+		return errors.New("relevance greedy oracle failure is missing or duplicated")
 	}
 	instrumentExcluded := map[string]bool{}
 	for _, id := range report.InstrumentExcludedIDs {
@@ -638,6 +653,20 @@ func relevanceGapPPM(greedyMS, beamMS int64) (int64, error) {
 		return 0, errors.New("relevance oracle gap outside safe integer domain")
 	}
 	return value.Int64(), nil
+}
+
+func relevanceOracleOutcome(greedyMS, beamMS, maximumPPM int64) (int64, bool, string, error) {
+	gap, err := relevanceGapPPM(greedyMS, beamMS)
+	if err != nil {
+		return 0, false, "", err
+	}
+	if beamMS >= greedyMS {
+		return gap, false, "greedy_oracle:beam_not_better", nil
+	}
+	if gap > maximumPPM {
+		return gap, false, "greedy_oracle:gap", nil
+	}
+	return gap, true, "", nil
 }
 
 func reduceRelevanceDeltas(rows []RelevanceDelta, reducer string) (RelevanceDelta, error) {

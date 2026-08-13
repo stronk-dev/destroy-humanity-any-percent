@@ -1176,3 +1176,20 @@ added test asserts only the positive case. Recorded, not blocking.
 2. Make `BeamMS >= GreedyMS` a visible instrument finding (F-B).
 3. Restore green-gate coverage of the F2 disclosure path (F-C).
 4. Fix F-E; owner/RFC-author reconciles T01-C19 and the R-block (F-D).
+
+## 2026-08-13 — Codex remediation record: F-D routed; terminal-oracle measurement
+
+- **F-D routing:** `c672b48` improperly edited owner-authored normative text while implementing
+  T01-C20. Codex does not alter `rfc/t0-t1-playable-content.md` in this remediation. The RFC author
+  must reconcile T01-C19 and the R-block after the repaired oracle is reviewed, per evidence rule 5.
+- **Measured remediation:** beam nodes now receive an actual terminal completion through the exact
+  same T01-C20 ranked policy as the reference. The registered fixture, unchanged at its declared
+  width/milestone during execution, is a negative control: 11,976 ms reference versus 11,662 ms
+  beam = 26,925 ppm against a 25,000 ppm fixture bound. Widths 1/8/32 are monotonic in a cold test.
+  Its opportunity screen also produces a real `generator.alpha` exclusion, so a green test now
+  covers the schema-v4 item flag and `instrument_affected:` failure prefix end to end.
+- **Candidate measurement:** T0 completes under its unchanged 2,000,000 ceiling at 1,402,199 actual
+  transitions (436,448 ms reference; 419,315 ms beam; 40,859 ppm, pass). T1 exhausts its unchanged
+  5,000,000-transition ceiling exactly before producing a report, even after deterministic suffix
+  memoization. No budget or candidate-content byte was changed. T01-C17 branch B or a further ruled
+  search bound is therefore still required before this batch can close the T1 candidate gate.

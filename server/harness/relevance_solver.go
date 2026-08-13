@@ -294,21 +294,26 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		}
 	}
 	var selected *RelevanceGreedyOracle
+	selectedFailure := ""
 	for _, pair := range oraclePairs {
 		if pair.greedy == nil || pair.beam == nil {
 			selected = nil
 			break
 		}
-		gap := int64(0)
-		gap, gapErr := relevanceGapPPM(*pair.greedy, *pair.beam)
+		gap, passed, failure, gapErr := relevanceOracleOutcome(*pair.greedy, *pair.beam,
+			suite.Scenario.GreedyGapMaximumPPM)
 		if gapErr != nil {
 			return RelevanceReport{}, gapErr
 		}
 		candidate := &RelevanceGreedyOracle{MilestoneID: suite.Scenario.Milestone.ID,
 			GreedyMS: *pair.greedy, BeamMS: *pair.beam, GapPPM: gap, MaximumPPM: suite.Scenario.GreedyGapMaximumPPM,
-			Passed: gap <= suite.Scenario.GreedyGapMaximumPPM}
-		if selected == nil || candidate.GapPPM > selected.GapPPM {
+			Passed: passed}
+		candidateNoncompetitive := failure == "greedy_oracle:beam_not_better"
+		selectedNoncompetitive := selectedFailure == "greedy_oracle:beam_not_better"
+		if selected == nil || candidateNoncompetitive && !selectedNoncompetitive || candidateNoncompetitive == selectedNoncompetitive &&
+			(!candidate.Passed && selected.Passed || candidate.Passed == selected.Passed && candidate.GapPPM > selected.GapPPM) {
 			selected = candidate
+			selectedFailure = failure
 		}
 	}
 	if selected == nil {
@@ -316,7 +321,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	} else {
 		report.GreedyOracle = selected
 		if !selected.Passed {
-			report.Failures = append(report.Failures, "greedy_oracle:gap")
+			report.Failures = append(report.Failures, selectedFailure)
 		}
 	}
 	report.RunBudget = RelevanceRunBudget{DeclaredRuns: declaredRuns, ExecutedRuns: executedRuns,
@@ -802,8 +807,11 @@ func (suite *RelevanceSuite) rankCandidate(state *save.State, revision, nowMS, h
 func (suite *RelevanceSuite) projectedMilestone(state *save.State, mask production.AblationMask) (relevanceProjection, bool, error) {
 	balance, ok := state.Ledger.Balance(suite.Scenario.Milestone.ResourceID)
 	target, err := decimal.ParseCanonical(suite.Scenario.Milestone.Amount)
-	if err != nil || !ok {
+	if err != nil {
 		return relevanceProjection{}, false, err
+	}
+	if !ok {
+		return relevanceProjection{}, false, fmt.Errorf("relevance milestone resource %q is absent from the save ledger", suite.Scenario.Milestone.ResourceID)
 	}
 	if balance.Gte(target) {
 		return relevanceProjection{Numerator: decimal.Zero, Denominator: decimal.One}, true, nil
@@ -1309,9 +1317,9 @@ func stateDigest(state *save.State) (string, error) {
 	return hex.EncodeToString(digest[:]), nil
 }
 
-// runBeam performs the ruled declared-width search. Each child is scored by
-// the same T01-C20 projected-milestone metric as the reference arm; equal-state
-// nodes deduplicate on state hash + virtual time, with raw-byte paths last.
+// runBeam performs the ruled declared-width search. Each child is completed by
+// the same T01-C20 ranked policy as the reference arm; equal-state nodes
+// deduplicate on state hash + virtual time, with raw-byte paths last.
 func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) {
 	effectiveMask, _, err := suite.opportunityAwareMask(production.AblationMask{}, counter)
 	if err != nil {
@@ -1322,19 +1330,19 @@ func (suite *RelevanceSuite) runBeam(counter *relevanceCounter) (*int64, error) 
 
 func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.AblationMask, counter *relevanceCounter) (*int64, error) {
 	type node struct {
-		state          *save.State
-		revision       int64
-		atMS           int64
-		path           string
-		reached        *int64
-		score          relevanceProjection
-		scoreReachable bool
+		state    *save.State
+		revision int64
+		atMS     int64
+		path     string
+		reached  *int64
+		score    int64
 	}
 	initial, err := suite.newRelevanceState()
 	if err != nil {
 		return nil, err
 	}
 	frontier := []node{{state: initial, revision: 1}}
+	completionCache := map[string]relevanceCompletionCacheEntry{}
 	var best *int64
 	for depth := int64(0); depth < suite.Scenario.MaxDecisions && len(frontier) > 0; depth++ {
 		children := []node{}
@@ -1393,8 +1401,9 @@ func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.Abl
 			}
 		}
 		// R11 defines node identity as canonical state hash + virtual time.
-		// Collapse identical children before scoring them; identical nodes have
-		// identical projections, so the raw-byte path tie-break stays canonical.
+		// Collapse identical children before running their terminal completions;
+		// identical nodes have identical scores, so the raw-byte path tie-break
+		// stays canonical.
 		dedup := map[string]node{}
 		for index := range pruned {
 			child := pruned[index]
@@ -1415,25 +1424,24 @@ func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.Abl
 		sort.Slice(children, func(left, right int) bool { return children[left].path < children[right].path })
 		for index := range children {
 			child := &children[index]
-			if reached, reachErr := suite.relevanceMilestoneReached(child.state); reachErr != nil {
-				return nil, reachErr
-			} else if reached {
-				copy := child.atMS
-				child.reached, child.scoreReachable = &copy, true
-				child.score = relevanceProjection{Numerator: decimal.Zero, Denominator: decimal.One}
-				if best == nil || copy < *best {
+			rolloutState, cloneErr := cloneState(suite.Catalog, child.state)
+			if cloneErr != nil {
+				return nil, cloneErr
+			}
+			remainingDecisions := suite.Scenario.MaxDecisions - depth - 1
+			rollout, rolloutErr := suite.runRankedCompletionCached(rolloutState, child.revision, child.atMS,
+				remainingDecisions, effectiveMask, counter, completionCache)
+			if rolloutErr != nil {
+				return nil, rolloutErr
+			}
+			child.reached = rollout.MilestoneMS
+			child.score = suite.Scenario.HorizonMS + 1
+			if child.reached != nil {
+				child.score = *child.reached
+				if best == nil || *child.reached < *best {
+					copy := *child.reached
 					best = &copy
 				}
-				continue
-			}
-			projection, reachable, projectionErr := suite.projectedMilestone(child.state, effectiveMask)
-			if projectionErr != nil {
-				return nil, projectionErr
-			}
-			child.score, child.scoreReachable = projection, reachable
-			if reachable && child.atMS > 0 {
-				child.score.Numerator = child.score.Numerator.Add(
-					child.score.Denominator.Mul(decimal.FromString(strconv.FormatInt(child.atMS, 10))))
 			}
 		}
 		frontier = frontier[:0]
@@ -1441,13 +1449,8 @@ func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.Abl
 			frontier = append(frontier, child)
 		}
 		sort.Slice(frontier, func(left, right int) bool {
-			if frontier[left].scoreReachable != frontier[right].scoreReachable {
-				return frontier[left].scoreReachable
-			}
-			if frontier[left].scoreReachable {
-				if comparison := compareRelevanceProjections(frontier[left].score, frontier[right].score); comparison != 0 {
-					return comparison < 0
-				}
+			if frontier[left].score != frontier[right].score {
+				return frontier[left].score < frontier[right].score
 			}
 			return frontier[left].path < frontier[right].path
 		})
@@ -1514,9 +1517,36 @@ func (suite *RelevanceSuite) runReferenceFromRanked(state *save.State, revision,
 }
 
 func (suite *RelevanceSuite) runRankedCompletion(state *save.State, revision, nowMS, maxDecisions int64, mask production.AblationMask, counter *relevanceCounter) (relevanceRunResult, error) {
+	return suite.runRankedCompletionCached(state, revision, nowMS, maxDecisions, mask, counter, nil)
+}
+
+type relevanceCompletionCacheEntry struct {
+	MilestoneMS     *int64
+	DecisionStarved bool
+}
+
+func (suite *RelevanceSuite) runRankedCompletionCached(state *save.State, revision, nowMS, maxDecisions int64,
+	mask production.AblationMask, counter *relevanceCounter, cache map[string]relevanceCompletionCacheEntry) (relevanceRunResult, error) {
 	result := relevanceRunResult{Purchases: map[string]int64{}, Roles: map[string]RoleActivationCount{}, FinalState: state}
+	cacheKeys := []string{}
 	decisionGuardExhausted := true
 	for decision := int64(0); decision < maxDecisions; decision++ {
+		if cache != nil {
+			key, keyErr := relevanceCompletionCacheKey(state, revision, nowMS, maxDecisions-decision)
+			if keyErr != nil {
+				return relevanceRunResult{}, keyErr
+			}
+			if cached, ok := cache[key]; ok {
+				result.MilestoneMS = cloneInt64(cached.MilestoneMS)
+				result.DecisionStarved = cached.DecisionStarved
+				for _, priorKey := range cacheKeys {
+					cache[priorKey] = cached
+				}
+				result.FinalState, result.FinalVirtualMS, result.Transitions = state, nowMS, counter.value
+				return result, nil
+			}
+			cacheKeys = append(cacheKeys, key)
+		}
 		if reached, err := suite.relevanceMilestoneReached(state); err != nil {
 			return relevanceRunResult{}, err
 		} else if reached {
@@ -1577,7 +1607,21 @@ func (suite *RelevanceSuite) runRankedCompletion(state *save.State, revision, no
 		nowMS, result.MilestoneMS = finishedMS, reachedMS
 	}
 	result.FinalState, result.FinalVirtualMS, result.Transitions = state, nowMS, counter.value
+	if cache != nil {
+		entry := relevanceCompletionCacheEntry{MilestoneMS: cloneInt64(result.MilestoneMS), DecisionStarved: result.DecisionStarved}
+		for _, key := range cacheKeys {
+			cache[key] = entry
+		}
+	}
 	return result, nil
+}
+
+func relevanceCompletionCacheKey(state *save.State, revision, nowMS, remainingDecisions int64) (string, error) {
+	digest, err := stateDigest(state)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%s:%d:%d:%d", digest, revision, nowMS, remainingDecisions), nil
 }
 
 func (suite *RelevanceSuite) finishToMilestone(state *save.State, revision, nowMS int64, mask production.AblationMask, counter *relevanceCounter) (int64, *int64, []production.RoleActivation, error) {
