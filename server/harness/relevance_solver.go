@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"strings"
 
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
@@ -36,6 +37,23 @@ type relevanceOpportunityDecision struct {
 	PurchasableID string
 	BaselineMS    *int64
 	RemovedMS     *int64
+}
+
+type relevanceForcedArm struct {
+	ID        string
+	Candidate *relevanceCandidate
+	BankAtMS  int64
+}
+
+type relevanceDecisionTrace struct {
+	DecisionOrdinal int64
+	StateHash       string
+	State           *save.State
+	Revision        int64
+	NowMS           int64
+	ReferenceArm    string
+	ReferenceMS     int64
+	Alternatives    []relevanceForcedArm
 }
 
 type relevanceCounter struct {
@@ -88,8 +106,11 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			nonReferenceTransitions += actions * run.SeedCount * factor
 		}
 	}
-	declaredRuns, err := ComputeRelevanceRunBudget(nonReferenceSeeds, referenceSeeds, int64(len(measuredItems)), int64(len(measuredGroups)), true)
-	if err != nil || declaredRuns > suite.Scenario.RelevanceBudgetMaxRuns {
+	baseRuns, err := ComputeRelevanceRunBudget(nonReferenceSeeds, referenceSeeds, int64(len(measuredItems)), int64(len(measuredGroups)), false)
+	maxProbeRuns, probeRunErr := checkedRelevanceProduct(referenceSeeds, suite.Scenario.DeviationProbeCount,
+		suite.Scenario.DeviationAlternativesPerProbe)
+	if err != nil || probeRunErr != nil || baseRuns > relevanceMaxSafeInteger-maxProbeRuns ||
+		baseRuns+maxProbeRuns > suite.Scenario.RelevanceBudgetMaxRuns {
 		return RelevanceReport{}, errors.New("relevance run budget exceeds scenario limit")
 	}
 	transitionCeiling, err := suite.preflightTransitionCeiling(referenceSeeds, nonReferenceTransitions)
@@ -108,7 +129,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	opportunityMask, _, err := suite.opportunityAwareMask(production.AblationMask{}, counter)
 	if err != nil {
 		if errors.Is(err, errReferenceDecisionStarved) {
-			return relevanceStarvationDiagnostic(report, declaredRuns, 0, suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
+			return relevanceStarvationDiagnostic(report, baseRuns, 0, suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
 		}
 		return RelevanceReport{}, fmt.Errorf("relevance opportunity preflight: %w", err)
 	}
@@ -118,7 +139,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		return RelevanceReport{}, fmt.Errorf("relevance milestone preflight: %w", err)
 	}
 	if preflight.DecisionStarved {
-		return relevanceStarvationDiagnostic(report, declaredRuns, 0,
+		return relevanceStarvationDiagnostic(report, baseRuns, 0,
 			suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
 	}
 	if preflight.MilestoneMS == nil {
@@ -130,24 +151,34 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	baselinePurchases := map[string]int64{}
 	baselineRoleRuns := map[string][]map[string]RoleActivationCount{}
 	executedRuns := int64(0)
-	type oraclePair struct{ greedy, beam *int64 }
-	oraclePairs := []oraclePair{}
+	deviationTraces := []relevanceDecisionTrace{}
 	baselineUnreached := false
 	for _, spec := range suite.Scenario.Runs {
 		start, _ := parseSeed(spec.SeedStart)
 		for offset := int64(0); offset < spec.SeedCount; offset++ {
 			seed := start + uint64(offset)
-			baseline, runErr := suite.runPersonaWithOpportunity(spec, seed, production.AblationMask{}, opportunityMask, counter)
+			traceStart := len(deviationTraces)
+			var baseline relevanceRunResult
+			var runErr error
+			if spec.Reference {
+				baseline, runErr = suite.runReferenceWithOpportunityTrace(production.AblationMask{}, opportunityMask, counter, &deviationTraces)
+			} else {
+				baseline, runErr = suite.runPersonaWithOpportunity(spec, seed, production.AblationMask{}, opportunityMask, counter)
+			}
 			if runErr != nil {
 				return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d baseline: %w", spec.PolicyID, seed, runErr)
 			}
 			executedRuns++
 			if spec.Reference && baseline.DecisionStarved {
-				return relevanceStarvationDiagnostic(report, declaredRuns, executedRuns,
+				return relevanceStarvationDiagnostic(report, baseRuns, executedRuns,
 					suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
 			}
 			if baseline.MilestoneMS == nil {
 				baselineUnreached = true
+			} else if spec.Reference {
+				for index := traceStart; index < len(deviationTraces); index++ {
+					deviationTraces[index].ReferenceMS = *baseline.MilestoneMS
+				}
 			}
 			baselineRoleRuns[spec.PolicyID] = append(baselineRoleRuns[spec.PolicyID], baseline.Roles)
 			for _, item := range measuredItems {
@@ -157,7 +188,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 				}
 				executedRuns++
 				if spec.Reference && masked.DecisionStarved {
-					return relevanceStarvationDiagnostic(report, declaredRuns, executedRuns,
+					return relevanceStarvationDiagnostic(report, baseRuns, executedRuns,
 						suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
 				}
 				appendRelevancePair(itemPairs, item.PurchasableID, spec.PolicyID, baseline.MilestoneMS, masked.MilestoneMS, baseline.Purchases[item.PurchasableID])
@@ -168,7 +199,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 					}
 					executedRuns++
 					if removed.DecisionStarved {
-						return relevanceStarvationDiagnostic(report, declaredRuns, executedRuns,
+						return relevanceStarvationDiagnostic(report, baseRuns, executedRuns,
 							suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
 					}
 					appendRelevancePair(removalPairs, item.PurchasableID, spec.PolicyID, baseline.MilestoneMS, removed.MilestoneMS, baseline.Purchases[item.PurchasableID])
@@ -181,7 +212,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 				}
 				executedRuns++
 				if spec.Reference && masked.DecisionStarved {
-					return relevanceStarvationDiagnostic(report, declaredRuns, executedRuns,
+					return relevanceStarvationDiagnostic(report, baseRuns, executedRuns,
 						suite.Scenario.RelevanceBudgetMaxTransitions, counter.value), nil
 				}
 				purchases := int64(0)
@@ -190,19 +221,16 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 				}
 				appendRelevancePair(groupPairs, group.GroupID, spec.PolicyID, baseline.MilestoneMS, masked.MilestoneMS, purchases)
 			}
-			if spec.Reference {
-				beam, beamErr := suite.runBeamWithOpportunity(opportunityMask, counter)
-				if beamErr != nil {
-					return RelevanceReport{}, fmt.Errorf("relevance run %s seed %d beam: %w", spec.PolicyID, seed, beamErr)
-				}
-				oraclePairs = append(oraclePairs, oraclePair{greedy: cloneInt64(baseline.MilestoneMS), beam: cloneInt64(beam)})
-				executedRuns++ // one beam invocation is one R14 run, regardless of internal transitions.
-			}
 		}
 	}
-	if executedRuns != declaredRuns || len(oraclePairs) == 0 {
+	if executedRuns != baseRuns || len(deviationTraces) == 0 {
 		return RelevanceReport{}, errors.New("relevance run cardinality mismatch")
 	}
+	deviation, deviationRuns, deviationErr := suite.runDeviationOracle(deviationTraces, opportunityMask, counter)
+	if deviationErr != nil {
+		return RelevanceReport{}, fmt.Errorf("relevance deviation oracle: %w", deviationErr)
+	}
+	executedRuns += deviationRuns
 	if baselineUnreached {
 		report.Failures = append(report.Failures, "baseline_unreached:"+suite.Scenario.Milestone.ID)
 	}
@@ -293,44 +321,172 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			report.Failures = append(report.Failures, "role_floor:"+item.PurchasableID)
 		}
 	}
-	var selected *RelevanceGreedyOracle
-	selectedFailure := ""
-	for _, pair := range oraclePairs {
-		if pair.greedy == nil || pair.beam == nil {
-			selected = nil
-			break
-		}
-		gap, passed, failure, gapErr := relevanceOracleOutcome(*pair.greedy, *pair.beam,
-			suite.Scenario.GreedyGapMaximumPPM)
-		if gapErr != nil {
-			return RelevanceReport{}, gapErr
-		}
-		candidate := &RelevanceGreedyOracle{MilestoneID: suite.Scenario.Milestone.ID,
-			GreedyMS: *pair.greedy, BeamMS: *pair.beam, GapPPM: gap, MaximumPPM: suite.Scenario.GreedyGapMaximumPPM,
-			Passed: passed}
-		candidateNoncompetitive := failure == "greedy_oracle:beam_not_better"
-		selectedNoncompetitive := selectedFailure == "greedy_oracle:beam_not_better"
-		if selected == nil || candidateNoncompetitive && !selectedNoncompetitive || candidateNoncompetitive == selectedNoncompetitive &&
-			(!candidate.Passed && selected.Passed || candidate.Passed == selected.Passed && candidate.GapPPM > selected.GapPPM) {
-			selected = candidate
-			selectedFailure = failure
-		}
+	report.DeviationOracle = deviation
+	if deviation.Status == "counterexample" {
+		report.Failures = append(report.Failures, "greedy_oracle:deviation_gap")
 	}
-	if selected == nil {
-		report.Failures = append(report.Failures, "greedy_oracle:milestone_unreached")
-	} else {
-		report.GreedyOracle = selected
-		if !selected.Passed {
-			report.Failures = append(report.Failures, selectedFailure)
-		}
-	}
-	report.RunBudget = RelevanceRunBudget{DeclaredRuns: declaredRuns, ExecutedRuns: executedRuns,
+	report.RunBudget = RelevanceRunBudget{DeclaredRuns: executedRuns, ExecutedRuns: executedRuns,
 		DeclaredTransitions: counter.value, ExecutedTransitions: counter.value}
 	report.Failures = sortedUniqueStrings(report.Failures)
 	if err := ValidateRelevanceReport(report); err != nil {
 		return RelevanceReport{}, err
 	}
 	return report, nil
+}
+
+func (suite *RelevanceSuite) runDeviationOracle(traces []relevanceDecisionTrace, mask production.AblationMask,
+	counter *relevanceCounter) (*RelevanceDeviationOracle, int64, error) {
+	type coordinate struct {
+		trace relevanceDecisionTrace
+		key   string
+	}
+	coordinates := make([]coordinate, 0, len(traces))
+	for _, trace := range traces {
+		if len(trace.Alternatives) == 0 || trace.ReferenceMS < 1 {
+			continue
+		}
+		coordinates = append(coordinates, coordinate{trace: trace, key: suite.deviationSelectionKey(trace, "")})
+	}
+	sort.Slice(coordinates, func(left, right int) bool {
+		if coordinates[left].key != coordinates[right].key {
+			return coordinates[left].key < coordinates[right].key
+		}
+		if coordinates[left].trace.DecisionOrdinal != coordinates[right].trace.DecisionOrdinal {
+			return coordinates[left].trace.DecisionOrdinal < coordinates[right].trace.DecisionOrdinal
+		}
+		return coordinates[left].trace.StateHash < coordinates[right].trace.StateHash
+	})
+	selectedCount := suite.Scenario.DeviationProbeCount
+	if selectedCount > int64(len(coordinates)) {
+		selectedCount = int64(len(coordinates))
+	}
+	oracle := &RelevanceDeviationOracle{Kind: "deviation.v1", MilestoneID: suite.Scenario.Milestone.ID,
+		Status: "passed", EligibleCoordinates: int64(len(coordinates)), SelectedCoordinates: selectedCount,
+		UnprobedCoordinates: int64(len(coordinates)) - selectedCount, MaximumForcedDeviations: 1,
+		MaximumPPM: suite.Scenario.GreedyGapMaximumPPM}
+	for _, selected := range coordinates[:selectedCount] {
+		alternatives := append([]relevanceForcedArm(nil), selected.trace.Alternatives...)
+		sort.Slice(alternatives, func(left, right int) bool {
+			leftKey := suite.deviationSelectionKey(selected.trace, alternatives[left].ID)
+			rightKey := suite.deviationSelectionKey(selected.trace, alternatives[right].ID)
+			if leftKey != rightKey {
+				return leftKey < rightKey
+			}
+			return alternatives[left].ID < alternatives[right].ID
+		})
+		alternativeCount := suite.Scenario.DeviationAlternativesPerProbe
+		if alternativeCount > int64(len(alternatives)) {
+			alternativeCount = int64(len(alternatives))
+		}
+		for _, forced := range alternatives[:alternativeCount] {
+			alternate, err := suite.runForcedDeviation(selected.trace, forced, mask, counter)
+			if err != nil {
+				return nil, oracle.ExecutedProbes, err
+			}
+			oracle.ExecutedProbes++
+			if alternate == nil || *alternate >= selected.trace.ReferenceMS {
+				continue
+			}
+			gap, err := relevanceGapPPM(selected.trace.ReferenceMS, *alternate)
+			if err != nil {
+				return nil, oracle.ExecutedProbes, err
+			}
+			if gap <= suite.Scenario.GreedyGapMaximumPPM || oracle.Witness != nil && gap <= oracle.Witness.GapPPM {
+				continue
+			}
+			oracle.Status = "counterexample"
+			oracle.Witness = &RelevanceDeviationWitness{DecisionOrdinal: selected.trace.DecisionOrdinal,
+				StateHash: selected.trace.StateHash, ReferenceArm: selected.trace.ReferenceArm, ForcedArm: forced.ID,
+				ReferenceMS: selected.trace.ReferenceMS, AlternateMS: *alternate, GapPPM: gap}
+		}
+	}
+	return oracle, oracle.ExecutedProbes, nil
+}
+
+// RunBeamDiagnostic runs the reviewed beam explicitly. Routine relevance,
+// repository, CI, and release gates never call this method.
+func (suite *RelevanceSuite) RunBeamDiagnostic() (RelevanceBeamDiagnostic, error) {
+	counter := &relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}
+	mask, _, err := suite.opportunityAwareMask(production.AblationMask{}, counter)
+	if err != nil {
+		return RelevanceBeamDiagnostic{}, err
+	}
+	reference, err := suite.runReferenceWithOpportunity(production.AblationMask{}, mask, counter)
+	if err != nil {
+		return RelevanceBeamDiagnostic{}, err
+	}
+	if reference.MilestoneMS == nil {
+		return RelevanceBeamDiagnostic{}, errors.New("manual relevance beam reference did not reach the milestone")
+	}
+	beam, err := suite.runBeamWithOpportunity(mask, counter)
+	if err != nil {
+		return RelevanceBeamDiagnostic{}, err
+	}
+	if beam == nil {
+		return RelevanceBeamDiagnostic{}, errors.New("manual relevance beam did not reach the milestone")
+	}
+	gap, passed, _, err := relevanceOracleOutcome(*reference.MilestoneMS, *beam, suite.Scenario.GreedyGapMaximumPPM)
+	if err != nil {
+		return RelevanceBeamDiagnostic{}, err
+	}
+	return RelevanceBeamDiagnostic{SchemaVersion: 1, ScenarioID: suite.Scenario.ID, ScenarioHash: suite.ScenarioHash,
+		ConstantsHash: suite.ConstantsHash, RelevancePolicyHash: suite.Policy.Hash,
+		RunBudget: RelevanceRunBudget{DeclaredRuns: 2, ExecutedRuns: 2, DeclaredTransitions: counter.value, ExecutedTransitions: counter.value},
+		Oracle: RelevanceGreedyOracle{MilestoneID: suite.Scenario.Milestone.ID, GreedyMS: *reference.MilestoneMS,
+			BeamMS: *beam, GapPPM: gap, MaximumPPM: suite.Scenario.GreedyGapMaximumPPM, Passed: passed}}, nil
+}
+
+func (suite *RelevanceSuite) deviationSelectionKey(trace relevanceDecisionTrace, armID string) string {
+	material := strings.Join([]string{suite.ScenarioHash, suite.ConstantsHash, suite.Policy.Hash,
+		"relevance.deviation.v1", strconv.FormatInt(trace.DecisionOrdinal, 10), trace.StateHash, armID}, "\x00")
+	digest := sha256.Sum256([]byte(material))
+	return hex.EncodeToString(digest[:])
+}
+
+func (suite *RelevanceSuite) runForcedDeviation(trace relevanceDecisionTrace, forced relevanceForcedArm,
+	mask production.AblationMask, counter *relevanceCounter) (*int64, error) {
+	var state *save.State
+	var err error
+	revision, nowMS := trace.Revision, trace.NowMS
+	if forced.ID == "bank" {
+		state, err = cloneState(suite.Catalog, trace.State)
+		if err != nil {
+			return nil, err
+		}
+		if _, err = suite.advance(state, revision, forced.BankAtMS, mask, counter); err != nil {
+			return nil, err
+		}
+		nowMS = forced.BankAtMS
+	} else {
+		if forced.Candidate == nil {
+			return nil, errors.New("relevance deviation purchase arm has no candidate")
+		}
+		state, err = cloneState(suite.Catalog, forced.Candidate.State)
+		if err != nil {
+			return nil, err
+		}
+		revision, nowMS = forced.Candidate.Revision, forced.Candidate.AtMS
+	}
+	remaining := suite.Scenario.MaxDecisions - trace.DecisionOrdinal - 1
+	if remaining < 0 {
+		return nil, errors.New("relevance deviation has invalid remaining decision count")
+	}
+	completion, err := suite.runRankedCompletion(state, revision, nowMS, remaining, mask, counter)
+	if err != nil {
+		return nil, err
+	}
+	return cloneInt64(completion.MilestoneMS), nil
+}
+
+func checkedRelevanceProduct(values ...int64) (int64, error) {
+	result := int64(1)
+	for _, value := range values {
+		if value < 0 || value != 0 && result > relevanceMaxSafeInteger/value {
+			return 0, errors.New("relevance run budget overflow")
+		}
+		result *= value
+	}
+	return result, nil
 }
 
 func relevanceFloorFailure(kind, id string, instrumentAffected bool) string {
@@ -452,11 +608,11 @@ func (suite *RelevanceSuite) preflightTransitionCeiling(referenceSeeds, nonRefer
 	if err != nil {
 		return 0, err
 	}
-	beamPerSeed, err := checkedMul(suite.Scenario.MaxDecisions, suite.Scenario.BeamWidth, suite.Scenario.BeamChildren+1, perRun+perDecision)
+	probePerSeed, err := checkedMul(suite.Scenario.DeviationProbeCount, suite.Scenario.DeviationAlternativesPerProbe, perRun+perDecision)
 	if err != nil {
 		return 0, err
 	}
-	beam, err := checkedMul(referenceSeeds, beamPerSeed)
+	probes, err := checkedMul(referenceSeeds, probePerSeed)
 	if err != nil {
 		return 0, err
 	}
@@ -465,10 +621,10 @@ func (suite *RelevanceSuite) preflightTransitionCeiling(referenceSeeds, nonRefer
 		return 0, err
 	}
 	runWork, err := checkedMul(referenceRuns, perRun)
-	if err != nil || runWork > relevanceMaxSafeInteger-beam || runWork+beam > relevanceMaxSafeInteger-nonReferenceTransitions {
+	if err != nil || runWork > relevanceMaxSafeInteger-probes || runWork+probes > relevanceMaxSafeInteger-nonReferenceTransitions {
 		return 0, errors.New("relevance transition preflight overflow")
 	}
-	return runWork + beam + nonReferenceTransitions, nil
+	return runWork + probes + nonReferenceTransitions, nil
 }
 
 func (suite *RelevanceSuite) runPersona(spec RelevanceRunSpec, seed uint64, mask production.AblationMask, counter *relevanceCounter) (relevanceRunResult, error) {
@@ -574,6 +730,11 @@ func (suite *RelevanceSuite) runReference(mask production.AblationMask, counter 
 }
 
 func (suite *RelevanceSuite) runReferenceWithOpportunity(mask, opportunityMask production.AblationMask, counter *relevanceCounter) (relevanceRunResult, error) {
+	return suite.runReferenceWithOpportunityTrace(mask, opportunityMask, counter, nil)
+}
+
+func (suite *RelevanceSuite) runReferenceWithOpportunityTrace(mask, opportunityMask production.AblationMask,
+	counter *relevanceCounter, trace *[]relevanceDecisionTrace) (relevanceRunResult, error) {
 	effectiveMask := mergeAblationMasks(mask, opportunityMask)
 	state, err := suite.newRelevanceState()
 	if err != nil {
@@ -605,9 +766,44 @@ func (suite *RelevanceSuite) runReferenceWithOpportunity(mask, opportunityMask p
 			decisionGuardExhausted = false
 			break
 		}
-		candidates, bank, bankAtMS, rankErr := suite.rankDecisionOptions(state, revision, nowMS, next, 1, effectiveMask, counter)
+		allCandidates, bankProjection, bankReachable, bankAtMS, rankErr := suite.rankAllDecisionOptions(state, revision, nowMS, next, effectiveMask, counter)
 		if rankErr != nil {
 			return relevanceRunResult{}, rankErr
+		}
+		candidates, bank, bankAtMS, rankErr := selectProjectedDecisionOptions(allCandidates, bankProjection,
+			bankReachable, nowMS, next, 1)
+		if rankErr != nil {
+			return relevanceRunResult{}, rankErr
+		}
+		if trace != nil {
+			snapshot, cloneErr := cloneState(suite.Catalog, state)
+			if cloneErr != nil {
+				return relevanceRunResult{}, cloneErr
+			}
+			digest, digestErr := stateDigest(snapshot)
+			if digestErr != nil {
+				return relevanceRunResult{}, digestErr
+			}
+			referenceArm := "bank"
+			if !bank && len(candidates) > 0 {
+				referenceArm = candidates[0].ID
+			}
+			alternatives := make([]relevanceForcedArm, 0, len(allCandidates)+1)
+			for index := range allCandidates {
+				candidate := allCandidates[index]
+				if candidate.ID != referenceArm {
+					alternatives = append(alternatives, relevanceForcedArm{ID: candidate.ID, Candidate: &candidate})
+				}
+			}
+			// Waiting to the next decision boundary is always a legal arm. When
+			// the current rate can reach the milestone sooner, bankAtMS is that
+			// earlier time; otherwise it remains the declared boundary.
+			if referenceArm != "bank" {
+				alternatives = append(alternatives, relevanceForcedArm{ID: "bank", BankAtMS: bankAtMS})
+			}
+			sort.Slice(alternatives, func(left, right int) bool { return alternatives[left].ID < alternatives[right].ID })
+			*trace = append(*trace, relevanceDecisionTrace{DecisionOrdinal: decision, StateHash: digest,
+				State: snapshot, Revision: revision, NowMS: nowMS, ReferenceArm: referenceArm, Alternatives: alternatives})
 		}
 		if bank || len(candidates) == 0 {
 			advanceAt := next
@@ -672,15 +868,33 @@ func (suite *RelevanceSuite) rankBeamCandidates(state *save.State, revision, now
 // whichever the closed form reaches first.
 func (suite *RelevanceSuite) rankDecisionOptions(state *save.State, revision, nowMS, horizonMS, limit int64,
 	mask production.AblationMask, counter *relevanceCounter) ([]relevanceCandidate, bool, int64, error) {
-	candidates, err := suite.rankCandidates(state, revision, nowMS, horizonMS, mask, counter)
-	if err != nil {
-		return nil, false, 0, err
-	}
-	bankProjection, bankReachable, err := suite.projectedMilestone(state, mask)
+	candidates, bankProjection, bankReachable, _, err := suite.rankAllDecisionOptions(state, revision, nowMS, horizonMS, mask, counter)
 	if err != nil {
 		return nil, false, 0, err
 	}
 	return selectProjectedDecisionOptions(candidates, bankProjection, bankReachable, nowMS, horizonMS, limit)
+}
+
+func (suite *RelevanceSuite) rankAllDecisionOptions(state *save.State, revision, nowMS, horizonMS int64,
+	mask production.AblationMask, counter *relevanceCounter) ([]relevanceCandidate, relevanceProjection, bool, int64, error) {
+	candidates, err := suite.rankCandidates(state, revision, nowMS, horizonMS, mask, counter)
+	if err != nil {
+		return nil, relevanceProjection{}, false, 0, err
+	}
+	bankProjection, bankReachable, err := suite.projectedMilestone(state, mask)
+	if err != nil {
+		return nil, relevanceProjection{}, false, 0, err
+	}
+	bankAtMS := horizonMS
+	if bankReachable {
+		bankMS, ratioErr := ceilDecimalRatio(bankProjection.Numerator, bankProjection.Denominator)
+		if ratioErr == nil && bankMS <= relevanceMaxSafeInteger-nowMS && nowMS+bankMS < bankAtMS {
+			bankAtMS = nowMS + bankMS
+		} else if ratioErr != nil && !errors.Is(ratioErr, errRelevanceRatioOutsideExactDomain) {
+			return nil, relevanceProjection{}, false, 0, ratioErr
+		}
+	}
+	return candidates, bankProjection, bankReachable, bankAtMS, nil
 }
 
 func selectProjectedDecisionOptions(candidates []relevanceCandidate, bankProjection relevanceProjection, bankReachable bool,

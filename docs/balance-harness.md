@@ -75,9 +75,13 @@ bank choices by the same projected-time metric, keeps at most that many, dedupli
 state plus virtual time, applies componentwise dominance, and completes survivors with the same
 ranked policy before the width bound. Deterministic completion suffixes are memoized by state,
 revision, virtual time, and remaining decision allowance; cached work is not counted as an executed
-transition. A beam that does not strictly beat its reference is reported as
-`greedy_oracle:beam_not_better`, never clamped to a green zero-gap result. Run cardinality is checked
-before simulation. The static
+transition. Routine runs apply deterministic `deviation.v1` probes: each selected coordinate forces
+one legal alternative and completes through the same ranked policy. Reports disclose the eligible,
+selected, executed, and unprobed coordinate counts plus `maximum_forced_deviations: 1`; this is an
+honest radius-1 falsifier, not an optimality proof. The expensive beam is available only through
+`make relevance-beam`, is absent from repository, CI, and release gates, and treats equality with
+the reference as healthy while a slower search is `greedy_oracle:beam_not_better`. Run cardinality
+is checked before simulation. The static
 transition estimate is only a generous runaway-configuration guard, compared with the scenario's
 declarative `preflight_ceiling`; it is never treated as measured work. The scenario's separate work
 budget is enforced by one counter spanning every simulation call, including the reachability
@@ -104,7 +108,9 @@ schema v4 additionally records the screen's complete sorted `instrument_excluded
 matching item rows `instrument_affected`; their floor findings use the same prefix so they cannot
 be mistaken for independent content verdicts. Any positive seed remains binding, and baseline
 purchase counts reduce over positive seeds before taking the maximum across personas. Role
-evidence comes only from unmasked baseline execution.
+evidence comes only from unmasked baseline execution. Report schema v5 replaces the routine
+`greedy_oracle` result with `deviation_oracle`; the legacy field remains null so a cheap probe cannot
+be mistaken for a beam result.
 
 Production candidates use phase-scoped relevance policies. The T0 scenario measures rows whose
 windows close at `gate.t0_to_t1`; the cumulative T1 optimizer continues through `gate.t2_to_t3`,
@@ -118,9 +124,9 @@ has no such later scenario and is named coverage debt rather than silently exemp
 `testdata/harness/relevance/registry-v1.json` is the fail-closed scenario authority. Every registered
 golden is discovered dynamically by the history and TypeScript schema gates. Each trap exemption's
 mechanical justification key must appear in the entry's reviewable changelog. The current
-schema-v4 entry is deliberately a test fixture: it proves a dead upgrade, a deliberate trap
-exemption, a roleless generator, and group-supported substitution under its
-declared bound. Fixture findings are recorded in its golden report but do not block the production
+schema-v5 entry is deliberately a test fixture: it proves a dead upgrade, a deliberate trap
+exemption, a roleless generator, group-supported substitution, and a registered forced-deviation
+counterexample under its declared bound. Fixture findings are recorded in its golden report but do not block the production
 gate. When the active epoch first uses an economy schema v4 or later, its registry entry must bind
 the exact epoch-owned economy, Routes, and relevance-policy artifacts, use the current epoch
 changelog, and emit the accepted full epoch-bundle constants hash. `harness-check` executes the
@@ -133,6 +139,8 @@ as a relevance baseline.
   aggregate report.
 - `make harness-check` is read-only and compares the seed-0 golden report, pacing baseline, and
   every registered relevance golden report.
+- `make relevance-beam RELEVANCE_SCENARIO=…` runs the expensive beam explicitly. It is diagnostic
+  only and is intentionally absent from every aggregate verification target.
 - `make first-content-harness` validates the ratified first-content manifest and its complete
   16-artifact replay bundle, then writes the owner-facing candidate-versus-baseline pacing report.
   Pacing drift is reported rather than vetoed; deterministic invariant failures still fail the run.

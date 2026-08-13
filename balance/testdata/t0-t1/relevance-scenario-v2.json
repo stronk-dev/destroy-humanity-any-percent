@@ -18,6 +18,8 @@
   "beam_width": 8,
   "beam_children": 2,
   "greedy_gap_maximum_ppm": 50000,
+  "deviation_probe_count": 4,
+  "deviation_alternatives_per_probe": 2,
   "relevance_budget_max_runs": 256,
   "relevance_budget_max_transitions": 2000000,
   "preflight_ceiling": 1000000000000

@@ -54,14 +54,16 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	if !reflect.DeepEqual(firstBytes, secondBytes) {
 		t.Fatal("relevance report is not byte deterministic")
 	}
-	if first.RunBudget.DeclaredRuns != 14 || first.RunBudget.ExecutedRuns != 14 ||
+	if first.RunBudget.DeclaredRuns != 23 || first.RunBudget.ExecutedRuns != 23 ||
 		first.RunBudget.DeclaredTransitions != first.RunBudget.ExecutedTransitions || len(first.Items) != 4 || len(first.Groups) != 4 {
 		t.Fatalf("report cardinality=%+v items=%d groups=%d", first.RunBudget, len(first.Items), len(first.Groups))
 	}
-	if first.GreedyOracle == nil || first.GreedyOracle.Passed || first.GreedyOracle.GreedyMS != 11_976 ||
-		first.GreedyOracle.BeamMS != 11_662 || first.GreedyOracle.GapPPM != 26_925 ||
-		!containsString(first.Failures, "greedy_oracle:gap") {
-		t.Fatalf("greedy oracle=%+v", first.GreedyOracle)
+	if first.GreedyOracle != nil || first.DeviationOracle == nil || first.DeviationOracle.Status != "counterexample" ||
+		first.DeviationOracle.MaximumForcedDeviations != 1 || first.DeviationOracle.UnprobedCoordinates != 0 ||
+		first.DeviationOracle.Witness == nil || first.DeviationOracle.Witness.DecisionOrdinal != 8 ||
+		first.DeviationOracle.Witness.ForcedArm != "generator.beta" || first.DeviationOracle.Witness.GapPPM != 29_068 ||
+		!containsString(first.Failures, "greedy_oracle:deviation_gap") {
+		t.Fatalf("deviation oracle=%+v", first.DeviationOracle)
 	}
 	joined := strings.Join(first.Failures, ",")
 	for _, expected := range []string{"relevance_floor:upgrade.dead", "trap_floor:upgrade.dead", "role_floor:generator.alpha"} {
@@ -118,6 +120,16 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	}
 	legacy := invalid
 	legacy.SchemaVersion = 2
+	legacy.DeviationOracle = nil
+	legacy.GreedyOracle = &RelevanceGreedyOracle{MilestoneID: first.DeviationOracle.MilestoneID,
+		GreedyMS: 5_558, BeamMS: 5_558, GapPPM: 0, MaximumPPM: 25_000, Passed: true}
+	legacy.Failures = append([]string(nil), first.Failures...)
+	for index, failure := range legacy.Failures {
+		if failure == "greedy_oracle:deviation_gap" {
+			legacy.Failures = append(legacy.Failures[:index], legacy.Failures[index+1:]...)
+			break
+		}
+	}
 	if err := ValidateRelevanceReport(legacy); err != nil {
 		t.Fatalf("schema-v2 report lost backward compatibility: %v", err)
 	}
@@ -159,39 +171,29 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 		t.Fatal("report accepted duplicate role activations")
 	}
 	invalid = first
-	invalid.GreedyOracle = &RelevanceGreedyOracle{MilestoneID: first.GreedyOracle.MilestoneID,
-		GreedyMS: first.GreedyOracle.GreedyMS, BeamMS: first.GreedyOracle.BeamMS, GapPPM: first.GreedyOracle.GapPPM + 1,
-		MaximumPPM: first.GreedyOracle.MaximumPPM, Passed: first.GreedyOracle.Passed}
+	invalid.DeviationOracle = nil
 	if err := ValidateRelevanceReport(invalid); err == nil {
-		t.Fatal("report accepted a non-reconciling greedy gap")
+		t.Fatal("schema-v5 report accepted a missing deviation oracle")
 	}
 	invalid = first
 	invalid.Failures = append([]string(nil), first.Failures...)
 	for index, failure := range invalid.Failures {
-		if failure == "greedy_oracle:gap" {
+		if failure == "greedy_oracle:deviation_gap" {
 			invalid.Failures = append(invalid.Failures[:index], invalid.Failures[index+1:]...)
 			break
 		}
 	}
 	if err := ValidateRelevanceReport(invalid); err == nil {
-		t.Fatal("report accepted a missing greedy-oracle failure")
+		t.Fatal("report accepted a missing deviation-oracle failure")
 	}
 	invalid = first
-	invalid.GreedyOracle = &RelevanceGreedyOracle{MilestoneID: first.GreedyOracle.MilestoneID,
-		GreedyMS: first.GreedyOracle.GreedyMS, BeamMS: first.GreedyOracle.GreedyMS, GapPPM: 0,
-		MaximumPPM: first.GreedyOracle.MaximumPPM, Passed: false}
-	invalid.Failures = append([]string(nil), first.Failures...)
-	for index, failure := range invalid.Failures {
-		if failure == "greedy_oracle:gap" {
-			invalid.Failures[index] = "greedy_oracle:beam_not_better"
-		}
-	}
-	if err := ValidateRelevanceReport(invalid); err != nil {
-		t.Fatalf("report rejected an honestly disclosed noncompetitive beam: %v", err)
-	}
-	invalid.GreedyOracle.Passed = true
+	invalid.DeviationOracle = &RelevanceDeviationOracle{Kind: "deviation.v1", MilestoneID: first.DeviationOracle.MilestoneID,
+		Status: "passed", EligibleCoordinates: first.DeviationOracle.EligibleCoordinates,
+		SelectedCoordinates: first.DeviationOracle.SelectedCoordinates, ExecutedProbes: first.DeviationOracle.ExecutedProbes,
+		UnprobedCoordinates: first.DeviationOracle.UnprobedCoordinates, MaximumForcedDeviations: 1,
+		MaximumPPM: first.DeviationOracle.MaximumPPM, Witness: first.DeviationOracle.Witness}
 	if err := ValidateRelevanceReport(invalid); err == nil {
-		t.Fatal("report accepted a noncompetitive beam as passed")
+		t.Fatal("passing deviation oracle accepted a counterexample witness")
 	}
 	invalid = first
 	invalid.Items = append([]RelevanceItemReport(nil), first.Items...)
@@ -248,9 +250,9 @@ func TestRelevanceRuntimeTransitionBudgetAbortsAtActualWork(t *testing.T) {
 	}
 }
 
-func TestRelevanceOracleFailsLoudWhenBeamDoesNotBeatReference(t *testing.T) {
+func TestRelevanceOracleTreatsEqualityAsHealthyAndFailsOnRegression(t *testing.T) {
 	gap, passed, failure, err := relevanceOracleOutcome(100, 100, 50_000)
-	if err != nil || gap != 0 || passed || failure != "greedy_oracle:beam_not_better" {
+	if err != nil || gap != 0 || !passed || failure != "" {
 		t.Fatalf("equal oracle gap=%d passed=%v failure=%q err=%v", gap, passed, failure, err)
 	}
 	gap, passed, failure, err = relevanceOracleOutcome(100, 101, 50_000)
@@ -443,13 +445,12 @@ func TestRegisteredBeamOracleCanFalsifyTheReferenceAtDeclaredParameters(t *testi
 	if suite.Scenario.BeamWidth != 8 || suite.Scenario.Milestone.Amount != "1e3" || suite.Scenario.GreedyGapMaximumPPM != 25_000 {
 		t.Fatalf("registered oracle parameters drifted: %+v", suite.Scenario)
 	}
-	report, err := suite.RunRelevance()
+	diagnostic, err := suite.RunBeamDiagnostic()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if report.GreedyOracle == nil || report.GreedyOracle.Passed || report.GreedyOracle.GapPPM <= report.GreedyOracle.MaximumPPM ||
-		!containsString(report.Failures, "greedy_oracle:gap") {
-		t.Fatalf("declared-parameter oracle did not fire: %+v failures=%v", report.GreedyOracle, report.Failures)
+	if diagnostic.Oracle.Passed || diagnostic.Oracle.GapPPM <= diagnostic.Oracle.MaximumPPM {
+		t.Fatalf("declared-parameter manual beam did not fire: %+v", diagnostic.Oracle)
 	}
 }
 
@@ -822,7 +823,7 @@ func TestRelevanceReducesSeedsBeforePersonaAnyAndPrunesDominatedState(t *testing
 	}
 }
 
-func TestRelevanceFixturePinsTrapFloorAndTheRegisteredOracle(t *testing.T) {
+func TestRelevanceFixturePinsTrapFloorAndTheRegisteredDeviationWitness(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
 	if err != nil {
 		t.Fatal(err)
@@ -831,9 +832,10 @@ func TestRelevanceFixturePinsTrapFloorAndTheRegisteredOracle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if report.GreedyOracle == nil || report.GreedyOracle.Passed || !containsString(report.Failures, "greedy_oracle:gap") ||
+	if report.DeviationOracle == nil || report.DeviationOracle.Status != "counterexample" ||
+		!containsString(report.Failures, "greedy_oracle:deviation_gap") ||
 		!containsString(report.Failures, "trap_floor:upgrade.dead") {
-		t.Fatalf("registered negative-control oracle=%+v failures=%v", report.GreedyOracle, report.Failures)
+		t.Fatalf("registered deviation witness=%+v failures=%v", report.DeviationOracle, report.Failures)
 	}
 }
 

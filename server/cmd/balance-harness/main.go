@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	mode := flag.String("mode", "check", "run, check, update, candidate, content, relevance, or epoch-hash")
+	mode := flag.String("mode", "check", "run, check, update, candidate, content, relevance, relevance-beam, or epoch-hash")
 	output := flag.String("output", "", "explicit output path for run mode")
 	root := flag.String("root", "..", "repository root")
 	candidateManifest := flag.String("candidate-manifest", "", "repository-relative ratified candidate manifest for candidate mode")
@@ -32,6 +32,12 @@ func main() {
 	}
 	if *mode == "relevance" {
 		if err := runRelevance(*root, *output, *scenario); err != nil {
+			fail(err)
+		}
+		return
+	}
+	if *mode == "relevance-beam" {
+		if err := runRelevanceBeam(*root, *output, *scenario); err != nil {
 			fail(err)
 		}
 		return
@@ -210,6 +216,36 @@ func runRelevance(root, output, scenarioPath string) error {
 	return writeRelevanceReport(output, report)
 }
 
+func runRelevanceBeam(root, output, scenarioPath string) error {
+	if scenarioPath == "" {
+		return fmt.Errorf("-scenario is required in relevance-beam mode")
+	}
+	suite, err := harness.LoadRelevanceSuite(root, scenarioPath)
+	if err != nil {
+		return err
+	}
+	diagnostic, err := suite.RunBeamDiagnostic()
+	if err != nil {
+		return err
+	}
+	data, err := harness.CanonicalJSON(diagnostic)
+	if err != nil {
+		return err
+	}
+	if output == "" {
+		_, err = os.Stdout.Write(data)
+	} else {
+		err = os.WriteFile(output, data, 0o644)
+	}
+	if err != nil {
+		return err
+	}
+	if !diagnostic.Oracle.Passed {
+		return fmt.Errorf("manual relevance beam found greedy gap or search regression: %+v", diagnostic.Oracle)
+	}
+	return nil
+}
+
 func writeRelevanceReport(output string, report harness.RelevanceReport) error {
 	if len(report.Failures) > 0 {
 		diagnostic := struct {
@@ -226,7 +262,7 @@ func writeRelevanceReport(output string, report harness.RelevanceReport) error {
 		if err := os.WriteFile(relevanceDiagnosticPath(output), bytes, 0o644); err != nil {
 			return err
 		}
-		return fmt.Errorf("relevance failures: %v; run_budget=%+v; greedy_oracle=%+v", report.Failures, report.RunBudget, report.GreedyOracle)
+		return fmt.Errorf("relevance failures: %v; run_budget=%+v; deviation_oracle=%+v", report.Failures, report.RunBudget, report.DeviationOracle)
 	}
 	reportBytes, err := harness.CanonicalJSON(report)
 	if err != nil {

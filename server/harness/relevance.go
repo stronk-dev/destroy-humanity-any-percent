@@ -20,7 +20,7 @@ import (
 	"cloud-clicker/server/save"
 )
 
-const RelevanceReportSchemaVersion = 4
+const RelevanceReportSchemaVersion = 5
 
 var errRelevanceRatioOutsideExactDomain = errors.New("relevance ratio outside exact integer domain")
 
@@ -61,6 +61,8 @@ type RelevanceScenario struct {
 	BeamWidth                     int64              `json:"beam_width"`
 	BeamChildren                  int64              `json:"beam_children"`
 	GreedyGapMaximumPPM           int64              `json:"greedy_gap_maximum_ppm"`
+	DeviationProbeCount           int64              `json:"deviation_probe_count"`
+	DeviationAlternativesPerProbe int64              `json:"deviation_alternatives_per_probe"`
 	RelevanceBudgetMaxRuns        int64              `json:"relevance_budget_max_runs"`
 	RelevanceBudgetMaxTransitions int64              `json:"relevance_budget_max_transitions"`
 	PreflightCeiling              int64              `json:"preflight_ceiling"`
@@ -88,6 +90,42 @@ type RelevanceGreedyOracle struct {
 	GapPPM      int64  `json:"gap_ppm"`
 	MaximumPPM  int64  `json:"maximum_ppm"`
 	Passed      bool   `json:"passed"`
+}
+
+type RelevanceBeamDiagnostic struct {
+	SchemaVersion       int                   `json:"schema_version"`
+	ScenarioID          string                `json:"scenario_id"`
+	ScenarioHash        string                `json:"scenario_hash"`
+	ConstantsHash       string                `json:"constants_hash"`
+	RelevancePolicyHash string                `json:"relevance_policy_hash"`
+	RunBudget           RelevanceRunBudget    `json:"run_budget"`
+	Oracle              RelevanceGreedyOracle `json:"oracle"`
+}
+
+type RelevanceDeviationWitness struct {
+	DecisionOrdinal int64  `json:"decision_ordinal"`
+	StateHash       string `json:"state_hash"`
+	ReferenceArm    string `json:"reference_arm"`
+	ForcedArm       string `json:"forced_arm"`
+	ReferenceMS     int64  `json:"reference_ms"`
+	AlternateMS     int64  `json:"alternate_ms"`
+	GapPPM          int64  `json:"gap_ppm"`
+}
+
+// RelevanceDeviationOracle is the deliberately small, always-run deviation.v1
+// guard. It reports only what the radius-1 probe actually measured; it is not
+// an optimality attestation.
+type RelevanceDeviationOracle struct {
+	Kind                    string                     `json:"kind"`
+	MilestoneID             string                     `json:"milestone_id"`
+	Status                  string                     `json:"status"`
+	EligibleCoordinates     int64                      `json:"eligible_coordinates"`
+	SelectedCoordinates     int64                      `json:"selected_coordinates"`
+	ExecutedProbes          int64                      `json:"executed_probes"`
+	UnprobedCoordinates     int64                      `json:"unprobed_coordinates"`
+	MaximumForcedDeviations int64                      `json:"maximum_forced_deviations"`
+	MaximumPPM              int64                      `json:"maximum_ppm"`
+	Witness                 *RelevanceDeviationWitness `json:"witness"`
 }
 
 type RelevanceItemReport struct {
@@ -129,6 +167,7 @@ type RelevanceReport struct {
 	RelevancePolicyHash   string                      `json:"relevance_policy_hash"`
 	RunBudget             RelevanceRunBudget          `json:"run_budget"`
 	GreedyOracle          *RelevanceGreedyOracle      `json:"greedy_oracle"`
+	DeviationOracle       *RelevanceDeviationOracle   `json:"deviation_oracle,omitempty"`
 	Items                 []RelevanceItemReport       `json:"items"`
 	Groups                []RelevanceGroupReport      `json:"groups"`
 	TierContributions     []RelevanceTierContribution `json:"tier_contributions"`
@@ -310,6 +349,8 @@ func validateRelevanceScenario(scenario RelevanceScenario) error {
 		scenario.HorizonMS > relevanceMaxSafeInteger || scenario.MaxDecisions < 1 || scenario.BeamWidth < 1 || scenario.BeamWidth > relevanceMaxSafeInteger ||
 		scenario.BeamChildren < 2 || scenario.BeamChildren > relevanceMaxSafeInteger || scenario.GreedyGapMaximumPPM < 0 ||
 		scenario.GreedyGapMaximumPPM > 1_000_000 || scenario.RelevanceBudgetMaxRuns < 1 || scenario.RelevanceBudgetMaxTransitions < 1 ||
+		scenario.DeviationProbeCount < 1 || scenario.DeviationProbeCount > relevanceMaxSafeInteger ||
+		scenario.DeviationAlternativesPerProbe < 1 || scenario.DeviationAlternativesPerProbe > relevanceMaxSafeInteger ||
 		scenario.PreflightCeiling < 1 || scenario.PreflightCeiling > relevanceMaxSafeInteger {
 		return errors.New("invalid relevance scenario envelope")
 	}
@@ -490,6 +531,17 @@ func ValidateRelevanceReport(report RelevanceReport) error {
 		return errors.New("invalid relevance report envelope")
 	}
 	expectedOracleFailure := "greedy_oracle:milestone_unreached"
+	if report.SchemaVersion >= 5 {
+		if report.GreedyOracle != nil || validateRelevanceDeviationOracle(report.DeviationOracle) != nil {
+			return errors.New("invalid relevance deviation oracle")
+		}
+		expectedOracleFailure = ""
+		if report.DeviationOracle.Status == "counterexample" {
+			expectedOracleFailure = "greedy_oracle:deviation_gap"
+		}
+	} else if report.DeviationOracle != nil {
+		return errors.New("legacy relevance report contains deviation oracle")
+	}
 	if report.GreedyOracle != nil {
 		oracle := report.GreedyOracle
 		gap, passed, failure, err := relevanceOracleOutcome(oracle.GreedyMS, oracle.BeamMS, oracle.MaximumPPM)
@@ -660,13 +712,48 @@ func relevanceOracleOutcome(greedyMS, beamMS, maximumPPM int64) (int64, bool, st
 	if err != nil {
 		return 0, false, "", err
 	}
-	if beamMS >= greedyMS {
+	if beamMS > greedyMS {
 		return gap, false, "greedy_oracle:beam_not_better", nil
+	}
+	if beamMS == greedyMS {
+		return gap, true, "", nil
 	}
 	if gap > maximumPPM {
 		return gap, false, "greedy_oracle:gap", nil
 	}
 	return gap, true, "", nil
+}
+
+func validateRelevanceDeviationOracle(oracle *RelevanceDeviationOracle) error {
+	if oracle == nil || oracle.Kind != "deviation.v1" || !relevanceIDPattern.MatchString(oracle.MilestoneID) ||
+		oracle.Status != "passed" && oracle.Status != "counterexample" || !relevanceSafe(oracle.EligibleCoordinates) ||
+		!relevanceSafe(oracle.SelectedCoordinates) || oracle.SelectedCoordinates > oracle.EligibleCoordinates ||
+		!relevanceSafe(oracle.ExecutedProbes) || oracle.ExecutedProbes < oracle.SelectedCoordinates ||
+		oracle.UnprobedCoordinates != oracle.EligibleCoordinates-oracle.SelectedCoordinates ||
+		oracle.MaximumForcedDeviations != 1 || !relevanceSafe(oracle.MaximumPPM) {
+		return errors.New("invalid relevance deviation oracle")
+	}
+	if oracle.Status == "passed" {
+		if oracle.Witness != nil {
+			return errors.New("passing relevance deviation oracle contains a witness")
+		}
+		return nil
+	}
+	witness := oracle.Witness
+	if witness == nil || !relevanceSafe(witness.DecisionOrdinal) || len(witness.StateHash) != 64 ||
+		witness.ReferenceArm == "" || witness.ForcedArm == "" || !relevanceSafePositive(witness.ReferenceMS) ||
+		!relevanceSafePositive(witness.AlternateMS) || witness.AlternateMS >= witness.ReferenceMS ||
+		!relevanceSafe(witness.GapPPM) || witness.GapPPM <= oracle.MaximumPPM {
+		return errors.New("invalid relevance deviation witness")
+	}
+	if _, err := hex.DecodeString(witness.StateHash); err != nil {
+		return errors.New("invalid relevance deviation witness state hash")
+	}
+	gap, err := relevanceGapPPM(witness.ReferenceMS, witness.AlternateMS)
+	if err != nil || gap != witness.GapPPM {
+		return errors.New("relevance deviation witness gap does not reconcile")
+	}
+	return nil
 }
 
 func reduceRelevanceDeltas(rows []RelevanceDelta, reducer string) (RelevanceDelta, error) {

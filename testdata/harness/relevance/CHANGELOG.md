@@ -5,6 +5,10 @@
 - F7 fixture repair — `generator.beta`'s fixture-only price/rate pair restores a nonzero
   equal-decision-envelope greedy/beam gap while retaining the two exemption proofs above.
 - F-A instrument repair — beam nodes regain terminal completion through the same T01-C20 ranked
-  policy as the reference arm. The fixture's stronger `generator.beta` provision interaction and
-  25,000 ppm threshold make the registered scenario a declared-parameter negative control for the
-  greedy-gap oracle; the same run exercises visible opportunity-screen exclusions end to end.
+  policy as the reference arm. The fixture's stronger `generator.beta` provision interaction keeps
+  the manual beam a declared-parameter negative control.
+- `deviation.v1` routine guard — the fixture's 5,000,000 ppm provision interaction and exhaustive
+  fixture probe counts pin a radius-1 witness at the existing 25,000 ppm bound: forcing
+  `generator.beta` instead of banking at decision 8 improves 5,558 ms to 5,401 ms (29,068 ppm).
+  The same routine run exercises visible opportunity-screen
+  exclusions end to end; the beam is not invoked by any gate.

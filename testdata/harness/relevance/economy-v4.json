@@ -15,7 +15,7 @@
       "id": "generator.beta", "tier": 1, "category": "category.fixture",
       "price": { "resource_id": "company.cash", "base": "1.5e1", "curve": { "kind": "geometric", "ratio": "1.1e0" } },
       "production": { "resource_id": "company.cash", "base_rate": "2.5e0" },
-      "provisions": { "generator_id": "generator.alpha", "rate_ppm": 1000000 },
+      "provisions": { "generator_id": "generator.alpha", "rate_ppm": 5000000 },
       "ladder": [], "roles": [{ "kind": "provision", "generator_id": "generator.alpha" }]
     }
   ],

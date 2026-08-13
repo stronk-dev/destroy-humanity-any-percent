@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness t0-t1-relevance t1-relevance t0-t1-relevance-all commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness t0-t1-relevance t1-relevance t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -15,7 +15,7 @@ CI_TEST_COUNT ?= 1
 CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
 BROWSER_TEST_FLAGS ?=
 RELEVANCE_SCENARIO ?= balance/testdata/t0-t1/relevance-scenario-v2.json
-RELEVANCE_OUTPUT ?= planning/t0-t1-content/relevance-report.v4.json
+RELEVANCE_OUTPUT ?= planning/t0-t1-content/relevance-report.v5.json
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -32,8 +32,9 @@ test: test-go test-client test-browser
 test-go:
 	cd server && go test -p 1 $(GO_TEST_FLAGS) $(GO_PACKAGES)
 
-# The relevance oracle is intentionally exhaustive. Keep it mandatory while
-# allowing hosted CI to run it in parallel with the rest of the server suite.
+# The relevance content matrix is intentionally long-running. Keep it in the
+# harness lane while allowing hosted CI to run the remaining server suite in
+# parallel; the expensive beam is manual-only and is not part of either lane.
 test-go-core:
 	cd server && go test -p 1 $(GO_TEST_FLAGS) $$(go list ./... | grep -v '^cloud-clicker/server/harness$$')
 
@@ -147,11 +148,16 @@ t0-t1-relevance:
 t1-relevance:
 	$(MAKE) t0-t1-relevance \
 		RELEVANCE_SCENARIO=balance/testdata/t0-t1/relevance-scenario-t1-v2.json \
-		RELEVANCE_OUTPUT=planning/t0-t1-content/relevance-report-t1.v4.json
+		RELEVANCE_OUTPUT=planning/t0-t1-content/relevance-report-t1.v5.json
 
 t0-t1-relevance-all:
 	$(MAKE) t0-t1-relevance
 	$(MAKE) t1-relevance
+
+# Manual diagnostic only: intentionally absent from verify, CI, and release gates.
+relevance-beam:
+	cd server && go run ./cmd/balance-harness -mode=relevance-beam -root=.. \
+		-scenario=$(RELEVANCE_SCENARIO) $(if $(RELEVANCE_BEAM_OUTPUT),$(if $(filter /%,$(RELEVANCE_BEAM_OUTPUT)),-output=$(RELEVANCE_BEAM_OUTPUT),-output=../$(RELEVANCE_BEAM_OUTPUT)),)
 
 commons-harness-check:
 	cd server && go test ./harness -run '^TestCommonsPopulationInvariance$$' -count=1
