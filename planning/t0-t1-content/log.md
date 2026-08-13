@@ -1393,3 +1393,18 @@ property. Reuse the existing hash/changeguard machinery rather than inventing a 
   `search_regressed`) and defines measurement-only versus authoritative deep runs.
 - **No authority claimed:** no ruled RFC body, implementation, candidate artifact, budget, or hash
   changed. The five decisions at the proposal's end require owner sign-off before implementation.
+
+## 2026-08-13 — Codex proposal refinement after cross-party assessment
+
+- Accepted the assessment's two corrections before owner ruling. Exact-byte implementation identity
+  remains because it would have invalidated the proof during F-A, but stale evidence is now a
+  visible warning in ordinary CI and a hard failure only in `relevance-release-check` for mint or
+  release. This avoids turning comment/gofmt changes into a permanently red tree while preserving
+  the point where freshness is load-bearing.
+- The cheap tier now declares its precise **radius-1** limit: one forced decision followed by the
+  reference policy cannot detect improvements requiring two or more coordinated deviations. The
+  report carries `maximum_forced_deviations: 1` and the unprobed-coordinate count. The draft also
+  states that exact-byte identity changes deliberately reshuffle deterministic probe coordinates,
+  so rotating cheap coverage is expected rather than surprising.
+- Decisions 1–3 and 5 remain unchanged. Decision 4 now asks the owner to ratify the explicit
+  ordinary-warning versus mint/release-blocking split.

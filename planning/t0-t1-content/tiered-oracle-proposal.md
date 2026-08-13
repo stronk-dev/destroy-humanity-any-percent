@@ -46,6 +46,10 @@ freshness is worse than an occasional extra deep run.
 
 Changing any identity member makes the prior attestation **stale**. Content identity alone is not
 enough: a solver change can invalidate yesterday's proof while reading identical balance bytes.
+Because implementation identity uses exact bytes, a comment-only or formatting-only edit can make
+the attestation stale and reshuffle the deterministic deviation sample. This is intentional:
+rotating cheap coverage is acceptable, while ordinary-CI policy below prevents a harmless edit
+from making the whole repository unworkable.
 
 Deep results live under an immutable, full-identity-keyed path:
 
@@ -103,7 +107,11 @@ from the fixture proving `beam.v2` can fire.
 ### Honest scope
 
 A green deviation run means only: "none of the declared deterministic probes found a >bound
-counterexample." It does not mean the reference is within the bound globally.
+counterexample." Each probe changes exactly one decision and then returns to the reference policy:
+the cheap tier is a **radius-1 neighborhood** and structurally cannot detect an improvement that
+requires two or more coordinated deviations. It does not mean the reference is within the bound
+globally. The report must expose this limitation as `maximum_forced_deviations: 1`, alongside the
+unprobed-coordinate count.
 
 ## 3. Hash-triggered deep tier
 
@@ -167,6 +175,7 @@ Replace the single ambiguous `greedy_oracle` status with:
       "declared_probes": 0,
       "executed_probes": 0,
       "unprobed_coordinates": 0,
+      "maximum_forced_deviations": 1,
       "deep_search_executed": false,
       "best_alternate_ms": null,
       "gap_ppm": null,
@@ -190,16 +199,22 @@ Effective status:
 
 - deviation failure → `failed` and a named `greedy_oracle:deviation_*` finding;
 - matching passing deep attestation + passing deviation tier → `verified`;
-- missing/mismatched attestation → `stale` and `greedy_oracle:deep_stale`;
+- missing/mismatched attestation → `stale` and a `greedy_oracle:deep_stale` warning;
 - failing attestation → `failed` with its exact deep outcome.
 
 Therefore a balance change cannot get a verified green from the cheap tier. It becomes visibly
-stale until the deep run is completed, reviewed, and committed.
+stale until the deep run is completed, reviewed, and committed. Ordinary CI may pass with that
+warning; mint/release validation may not.
 
 ## 6. Commands and cadence
 
 - `make relevance-check`: full reference/content matrix + deviation tier + deep-attestation
-  freshness check. Runs in ordinary verification. Never executes beam search.
+  freshness check. Runs in ordinary verification and never executes beam search. A passing
+  deviation tier with a stale/missing deep attestation exits zero but prints and persists the
+  `greedy_oracle:deep_stale` warning; content or deviation failures remain nonzero.
+- `make relevance-release-check`: runs the ordinary check and additionally requires
+  `effective_status: verified`. This is the mint/release gate; stale or missing deep evidence exits
+  nonzero.
 - `make relevance-deep-measure`: explicit non-authoritative measurement; never writes the registry
   or an attestation.
 - `make relevance-deep`: runs the complete beam under the pinned budget and writes the immutable
@@ -213,7 +228,8 @@ defined exclusively by identity.
 
 ## 7. Guard and review requirements
 
-- An identity change without a new deep attestation makes `relevance-check` fail stale.
+- An identity change without a new deep attestation makes `relevance-check` report stale and makes
+  `relevance-release-check` fail.
 - An attestation commit is governed like a golden: isolated subject class, only immutable report
   bytes plus its registry pointer, and preceding governed input changes required.
 - The guard recomputes identity and the report hash; retargeting a registry entry to unrelated bytes
@@ -238,7 +254,8 @@ defined exclusively by identity.
 2. Accept the full oracle identity, including exact implementation bytes, rather than balance hash
    alone.
 3. Accept `tied` as healthy and `search_regressed` as the strict beam-worse failure.
-4. Accept stale deep identity as a blocking finding for content mint/release, while ordinary
-   code-only CI remains cheap when identity is unchanged.
+4. Accept stale deep identity as a visible warning in ordinary CI and a blocking finding for
+   content mint/release. Exact-byte identity remains deliberately broad; comment/format changes may
+   rotate cheap probe selection but do not make ordinary CI red by themselves.
 5. Authorize a one-time generous T1 **measurement-only** run after implementation; its result, not
    this proposal, determines the deep budget and deviation-probe literals.
