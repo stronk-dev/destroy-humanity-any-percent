@@ -1512,3 +1512,59 @@ diagnostics name the ruling's content rows and report no instrument failure.
 
 Nothing was pushed or archived. Ready for the designated cross-party pass; the named content rows
 remain the next task after that gate.
+
+## 2026-08-13 — Claude designated cross-party review of `{ab24e78, 6264d2a, 2d47e79}` — APPROVED
+
+- **Review by:** Claude (designated cross-party). **Recorded by:** Claude.
+- **Range reviewed:** `f76ab8c..2d47e79`, extended past the cited `{ab24e78, 6264d2a}` to cover the
+  handoff commit. No `plan.md` changed.
+- **Executed:** `make test-harness -count=1` (GREEN, 26.3 s); both candidate gates; `make
+  verify-server -count=1` (exit 0); `make harness-check` (exit 0); grep for beam call sites.
+
+**The ruling was implemented as scoped, and the payoff is real.** T1 completes routinely at
+**2,598,093** transitions under its unchanged 5,000,000 ceiling — the blocker that consumed this
+thread is gone without touching the budget. T0 drops from 790,795 to **173,025**, 4.6x cheaper, and
+**both gates return content findings identical to the beam era**. That is the evidence that mattered:
+removing the beam changed no content verdict.
+
+Verified: `deviation.v1` fires at declared parameters on the registered fixture (decision 8,
+`bank` → `generator.beta`, 5,558 → 5,401 ms, 29,068 ppm against 25,000), pinned exactly, so the
+cheap tier is falsifiable. Disclosure fields populated. Probe selection is deterministic, seed-free,
+and uncorrelated with the ranked policy. The beam has exactly one non-test call site
+(`main.go:227`, `relevance-beam` mode) and is in no gate. Equality semantics fixed and tested. None
+of the rejected machinery was built.
+
+### H-A (MEDIUM) — the run-cardinality check became vacuous
+
+`RunBudget.DeclaredRuns` and `ExecutedRuns` are now both assigned from `executedRuns`, so
+`ValidateRelevanceReport`'s `DeclaredRuns != ExecutedRuns` assertion cannot fail. Previously
+`DeclaredRuns` came from `ComputeRelevanceRunBudget` — an independent prediction. Both gates print
+`DeclaredRuns:107 ExecutedRuns:107`. The base-matrix cross-check does survive inside `RunRelevance`
+(`executedRuns != baseRuns`), so nothing is unchecked; the *report field* and the validator
+assertion over it are now tautological. Carry a real prediction into the field or drop it.
+
+### H-B (MEDIUM) — probe outcomes are not disclosed
+
+In `runForcedDeviation`, a completion that returns no milestone is dropped with `continue`, and
+`completion.DecisionStarved` is discarded. The report therefore cannot distinguish "8 probes found
+no improvement" from "8 probes never reached the milestone at all" — both render as
+`Status: passed, ExecutedProbes: 8, Witness: nil`, which is what both gates currently print. Given
+F1 ruled that decision starvation must fail loud, this is the one place the new tier can look like
+coverage it does not have. Add reached/unreached counts and surface starvation.
+
+### H-C (LOW, record) — recorded eligible-coordinate count is off by one
+
+Handoff says T1 had 307 eligible / 303 unprobed; the artifact says **308 / 304**. Transitions match
+to the digit, so the run is deterministic and this is a transcription slip — but it is the second
+recorded number in this thread that does not match its artifact (after G-A). Read the numbers off
+the report.
+
+### H-D (observation, owner's call — not a defect)
+
+Coverage is 4 of 308 eligible coordinates on T1, ~1.3%, honestly disclosed. T1 uses 2.6M of its 5M
+budget, so probe count could roughly double inside the existing ceiling. The ruling deliberately
+chose cheapness; recorded so the choice stays visible rather than becoming an accident.
+
+**Verdict: APPROVED.** H-A and H-B are small and should land in the next change; neither invalidates
+the result or blocks the content work. Candidate hashes untouched, nothing pushed, `AGENTS.md`
+untouched. **The instrument thread is closed. The nine content items are the work.**
