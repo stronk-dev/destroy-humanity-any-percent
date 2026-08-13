@@ -563,8 +563,11 @@ projected time to the balance milestone: banking and each purchase are compared 
 ratios using the production engine's canonical current/post-purchase rates; purchases win exact
 ties and then raw-byte `item_id`. One deterministic whole-item backward-elimination screen remains
 before the matrix and composes its immutable mask with every effect/removal ablation. Reference and
-beam use the same projected-time metric, including beam node scoring; the beam selects at least two
-children and remains an independent declared-width search capable of falsifying greedy.
+beam share that one projected-time metric for candidate SELECTION. Beam nodes are then SCORED by a
+terminal completion executed under the same ranked policy — not by the selection metric — so the
+search has a signal with which it can disagree with the reference. The beam selects at least two
+children and is an independent declared-width search; its power to falsify the reference is a
+measured property recorded below, never an assertion.
 
 The witness arithmetic is pinned. The old direct trajectory reached 595,627 ms; removing
 `upgrade.reply_all_macro` alone reached 534,259 ms. At the repaired fixed point,
@@ -587,6 +590,31 @@ fails with `reference_decision_starved`, and only non-starved measurements may s
 support content findings. The screen's complete exclusion set is report data; an excluded item's
 floor failure is labelled instrument-affected rather than presented as an independent content
 verdict. A zero-gap assertion cannot substitute for a falsifiable oracle test.
+
+**Author reconciliation (2026-08-13, RFC author — discharges finding F-D).** The two paragraphs
+above were rewritten by the implementer in `c672b48` while implementing T01-C20. That was a rule-6
+violation (owner/author-authored normative text), and the text it produced asserted a beam property
+the implementation did not then have: node scoring had been replaced by a static one-step
+projection, which left the beam unable to beat the reference at any tested width and the oracle
+structurally unable to fire. The author has now re-authored the affected clauses; the implementer
+correctly declined to touch this file during the remediation.
+
+**R-block item 2 — the 5% greedy-gap oracle proof — is satisfied on evidence, not assertion.** The
+registered fixture is a declared-parameter negative control that fires: reference 11,976 ms, beam
+11,662 ms, 26,925 ppm against its 25,000 ppm bound, `passed:false`, pinned by an exact-value test.
+The T0 candidate gate shows the beam genuinely beating the reference — 436,448 ms against
+419,315 ms, 40,859 ppm inside a 50,000 ppm bound — and `TestRegisteredBeamResultIsMonotonicWithWidth`
+pins widths 1/8/32 against the regression that produced this finding. Verified independently at
+`{bb32f48, 8fd215b, 14773ca}`; verdicts at `c81fc32` and, for the defect, `5a36f65`.
+
+**Equality semantics are a known open defect, not settled text.** The shipped code treats
+`beam == reference` as the failure `beam_not_better`. Because the reference trajectory is always
+reproducible by the beam at depth 0, a tie is the expected healthy outcome when the reference is
+optimal, and only `beam > reference` is an instrument fault. The wording that produced this came
+from the reviewer's own remediation text and is the reviewer's to correct; a ruling is pending.
+
+**Verification cadence is under an open owner ruling** (`planning/t0-t1-content/tiered-oracle-proposal.md`).
+Nothing in this section authorizes a tiered or attestation-based oracle until that ruling lands.
 
 Trap-floor reduction is max-over-personas after filtering zero-purchase seeds: a persona is omitted
 only when all its seeds purchase zero. The fixture contains an unexempted never-bought upgrade and
