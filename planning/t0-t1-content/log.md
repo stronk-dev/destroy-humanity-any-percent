@@ -1466,3 +1466,49 @@ while the instrument was argued about. They are the next task, and they are what
   `upgrade.institutional_memory`, `upgrade.rack_rail_standardization`,
   `upgrade.refurbished_sticker` below the relevance floor and reading as traps;
   `generator.beige_tower_v2` and `generator.first_hire` fail role floors.
+
+## 2026-08-13 — Codex handoff: cheap probes + manual beam — READY FOR DESIGNATED REVIEW
+
+**Implementation range:** `{ab24e78, 6264d2a}`. The first commit contains code, schemas, scenarios,
+tests, and docs; the second is the isolated `BALANCE-CHANGE:` golden required by baseline history
+discipline. The user's unrelated uncommitted `AGENTS.md` edit was preserved and is in neither.
+
+Implemented exactly the bounded `f76ab8c` scope:
+
+- report schema v5 replaces the routine beam result with `deviation_oracle` (`deviation.v1`),
+  including eligible/selected/executed/unprobed counts and
+  `maximum_forced_deviations: 1`; the legacy `greedy_oracle` is null;
+- probe selection is deterministic and uncorrelated with the ranked policy, using existing
+  scenario/constants/policy hashes plus decision ordinal, state hash, and arm bytes. No new oracle
+  identity, attestation, registry, staleness, or cadence machinery exists;
+- each probe restores immutable reference state, forces one different legal arm, and completes
+  through the same T01-C20 policy. The fixture exhaustively pins a real witness: decision 8,
+  `bank` → `generator.beta`, 5,558 ms → 5,401 ms, 29,068 ppm against 25,000 ppm;
+- routine relevance, repository, CI, and release paths never invoke the beam.
+  `make relevance-beam RELEVANCE_SCENARIO=…` is its only public entry point; its negative control
+  and width-monotonicity tests remain;
+- equality is healthy (`beam == reference` passes); only `beam > reference` is search regression.
+
+### Measured cheap-probe literals
+
+Production scenarios declare 4 coordinates × 2 alternatives. Runtime-counter measurements:
+
+- T0: 48 eligible, 4 selected, 8 probes, 44 unprobed; 173,025 transitions; about 23 seconds;
+- T1: 307 eligible, 4 selected, 8 probes, 303 unprobed; 2,598,093 transitions; about 6m10s.
+
+T1 remains under the unchanged 5,000,000 ceiling. No branch-B measurement, derivation, or budget
+edit occurred. Both production commands terminate on the already-ruled content findings; their v5
+diagnostics name the ruling's content rows and report no instrument failure.
+
+### Gates read through completion
+
+- `make test-harness GO_TEST_FLAGS='-count=1'` — GREEN (full harness; focused fixture re-run after
+  the fixture-only witness strengthening);
+- `make harness-check` — GREEN from the committed two-commit baseline;
+- `make verify` — GREEN, including Go, typecheck/Svelte, 6,650 client tests, 19,992 browser tests,
+  schema/copy/content drift, kernel guards, and the UI performance arm;
+- `make test-go-ci` — GREEN under the cold Linux/amd64 Docker lane (`-count=1`), including harness
+  55.503 s.
+
+Nothing was pushed or archived. Ready for the designated cross-party pass; the named content rows
+remain the next task after that gate.
