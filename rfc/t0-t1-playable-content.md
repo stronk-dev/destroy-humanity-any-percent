@@ -624,3 +624,72 @@ must emit `trap_floor:upgrade.dead`. T1 optimizes with the cumulative catalog bu
 for the window closing at its target. Failed gates remove the authoritative report and emit a
 separate, explicitly non-authoritative diagnostic. `generator.legal_dept` remains named coverage
 debt until a later scenario measures the window in which it opens.
+
+## Content-disposition blockers (2026-08-13 — T01-C22–T01-C24)
+
+The first post-instrument content pass found that only the four T0 upgrade findings currently
+measure balance. The five T1 upgrade findings and all three role-floor findings are produced by
+missing scenario context. Retuning owner-ratified bytes against those findings would encode test
+setup defects as game balance, so implementation stops for these contracts.
+
+### T01-C22 — The T1 scenario declares a post-gate segment but never crosses the gate
+
+`scenario.t1_relevance` declares the interval beginning at `gate.t0_to_t1`, but every simulated
+save starts with `gates_crossed:{}` and no persona or reference arm emits `cross_gate`. Production's
+`buy_upgrade` correctly rejects all five T1 upgrades as `not_eligible/window`. A scratch probe
+reduced their prices by between 8.5x and 950x; the direct reference milestone and purchase set were
+byte-for-byte unchanged, proving that the reported five dead/trap rows cannot be content evidence.
+Tier-numbered generators remain buyable, which makes the resulting state especially misleading:
+T1 generators exist beside T1 upgrades that are structurally unreachable.
+
+**Proposed contract:** the relevance runner materializes declared segment progression through the
+real `cross_gate` transition, never by writing `Tier` or `GatesCrossed` directly. At the first
+decision boundary where the pinned Routes requirements for the next non-terminal segment boundary
+are satisfied, every arm applies the same server-authored `cross_gate` through
+`SimulateTransition`, consumes its revision/transition work, and fails loud if it rejects. The
+optimization milestone's terminal gate is not auto-crossed. A discriminating fixture proves a
+post-gate upgrade is rejected before the crossing and purchased/evaluated after it; pre-gate T0
+results remain byte-identical.
+
+### T01-C23 — `role_floor` contradicts the ruled candidate-fixture boundary
+
+T01-C3 requires one non-neutral activation fixture per declared role. The relevance runner instead
+hard-fails every measured generator whose role happened not to activate in its generic personas.
+Three candidate rows cannot satisfy that surrogate:
+
+- `generator.nephew_intern`/`stock_rate` needs a Company faction context and the real accrual hook;
+  relevance supplies neither, so activation is impossible at every balance value.
+- `generator.first_hire`/`manual_output` requires a manual action after ownership; the ranked
+  reference only clicks for zero-production bootstrap.
+- `generator.beige_tower_v2`/`provision` requires enough owned source units to cross the absolute
+  provision grid; the current trajectory buys one.
+
+**Proposed contract:** implement T01-C3 literally as a mandatory candidate-specific role gate over
+the pinned economy bytes. It enumerates every declared generator-role row and executes a real
+transition with the minimum honest context needed for a non-neutral effect (real faction hook for
+`stock_rate`, post-ownership manual input for `manual_output`, grid-crossing advance for
+`provision`, and exercised targets for `synergy_feed`). Each row has a masked/control twin proving
+the effect disappears. The relevance report keeps role observations as evidence but no longer
+turns absent generic-persona context into `role_floor`; AC2 is the conjunction of zero dead
+purchasables in relevance and a green role-activation gate.
+
+### T01-C24 — The four T0 upgrades need one coordinated owner disposition
+
+The T0 findings are real. Current reference evidence is: `continuous_feed_paper`,
+`hold_music_license`, and `nephew_business_cards` are never bought; `reply_all_macro` is bought but
+misses its 1,000-ms floor by 21 ms. Price-only counterfactuals prove that every row can be useful in
+isolation while retaining its ruled 2x effect and copy: Continuous Feed at 500 yields 116,916 ms;
+Hold Music at 10,000 yields 24,241 ms; Business Cards at 10,000 yields 22,322 ms; Reply-All at 50
+yields 1,227 ms. Those are diagnostic coordinates, not proposed bytes. Applied together, the
+trajectory changes: Continuous Feed can displace the Answering Machine/Nephew paths and make the
+other upgrades dead again. Independent one-row tuning is therefore unsound.
+
+**Proposed contract (recommended):** retain all four authored rows, their exact 2x effects, copy,
+1,000-ms individual floor, and no trap exemptions. After T01-C22/C23 land, derive one coordinated
+price tuple through the complete T0 gate; change each `cost.amount` and matching
+`resource_at_least.value` atomically; require every row to be purchased by at least one measured
+persona and to pass individually (group support does not substitute). Bring the exact tuple,
+report, economy hash, and relevance hashes back through designated review and owner
+re-ratification. The alternatives — deleting authored rows, changing their 2x identities, adding
+group support, or granting trap exemptions — remain owner decisions and are not authorized by the
+present evidence.

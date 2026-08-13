@@ -1568,3 +1568,28 @@ chose cheapness; recorded so the choice stays visible rather than becoming an ac
 **Verdict: APPROVED.** H-A and H-B are small and should land in the next change; neither invalidates
 the result or blocks the content work. Candidate hashes untouched, nothing pushed, `AGENTS.md`
 untouched. **The instrument thread is closed. The nine content items are the work.**
+
+## 2026-08-13 — Codex content diagnosis: T01-C22–T01-C24 — OWNER RULING REQUIRED
+
+- **Implemented/inspected by:** Codex. **Recorded by:** Codex. This is a blocker report and
+  counterfactual measurement record, not an implementation, balance change, review verdict, or
+  ratification request. The temporary probe was removed; the only working-tree change outside
+  this record remains the owner's pre-existing `AGENTS.md` edit.
+- **T1 evidence is invalid, not balance:** `scenario.t1_relevance` declares the post-T0 gate
+  interval but its saves keep `GatesCrossed` empty and emit no `cross_gate`. Production therefore
+  rejects all five T1 upgrades on their window. Reducing the five prices by 8.5x–950x left the
+  direct reference exactly unchanged at 4,208,672 ms with the same purchase set. T01-C22 proposes
+  applying the real gate transition at declared segment progression.
+- **Role evidence is invalid, not balance:** stock-rate cannot execute without the faction accrual
+  hook, manual-output needs a post-purchase click, and provision needs a real grid crossing. T01-C3
+  ruled candidate fixtures; the report substituted generic-persona activation. T01-C23 restores
+  the fixture boundary with masked/control discrimination and makes AC2 the two-gate conjunction.
+- **T0 is genuine content work:** baseline 436,448 ms. Isolated price-only probes, all through the
+  real production simulator: Continuous Feed 500 -> bought once / +116,916 ms; Hold Music 10,000
+  -> bought once / +24,241 ms; Business Cards 10,000 -> bought once / +22,322 ms; Reply-All 50 ->
+  bought once / +1,227 ms (current 100 -> +979 ms). These literals are diagnostics only. A combined
+  tuple changed the opportunity-screen fixed point and made other target paths disappear, proving
+  four independent edits would be unsound. T01-C24 recommends one coordinated price-only retune,
+  preserving every authored row, 2x identity, individual floor, and no trap exemptions.
+- **No ratified candidate byte changed.** No Make golden was regenerated, no hash changed, and no
+  production content was touched. Owner rulings on C22–C24 are required before implementation.
