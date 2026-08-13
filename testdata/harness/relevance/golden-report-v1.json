@@ -1,22 +1,22 @@
 {
   "schema_version": 4,
   "scenario_id": "scenario.relevance_fixture",
-  "scenario_hash": "sha256:d36cc322e2b0c182d234f4a245224ce69d783300949040cdb43af647fab16bde",
-  "constants_hash": "sha256:4d5a3e2fbdf5564b06c50876a84ed733c321a26e92b2d27012529f2c6c86d2ef",
+  "scenario_hash": "sha256:d19e418fc4f641f34ab6fca50229b5c74f0e8e94dd2548486be2c1c6c3696702",
+  "constants_hash": "sha256:55822d7070dab52fc78b469d40ed14bf1eb2012535a8ae6962d59d42bb4f573a",
   "relevance_policy_hash": "sha256:04b7149ad2e6d8fa9ab3da549e6cddb20c42b28fd62693ce507ab8424b0f0e56",
   "run_budget": {
     "declared_runs": 14,
     "executed_runs": 14,
-    "declared_transitions": 27090,
-    "executed_transitions": 27090
+    "declared_transitions": 20711,
+    "executed_transitions": 20711
   },
   "greedy_oracle": {
     "milestone_id": "milestone.cash_target",
-    "greedy_ms": 22943,
-    "beam_ms": 32811,
-    "gap_ppm": 0,
-    "maximum_ppm": 250000,
-    "passed": true
+    "greedy_ms": 11976,
+    "beam_ms": 11662,
+    "gap_ppm": 26925,
+    "maximum_ppm": 25000,
+    "passed": false
   },
   "items": [
     {
@@ -28,32 +28,34 @@
       "epsilon_ms": 1,
       "trap_exempt": false,
       "justification_key": null,
-      "baseline_purchase_count": 10,
-      "excluded_persona_ids": [],
-      "instrument_affected": false,
+      "baseline_purchase_count": 0,
+      "excluded_persona_ids": [
+        "reference.greedy"
+      ],
+      "instrument_affected": true,
       "individual_deltas": [
         {
           "milestone_id": "milestone.cash_target",
-          "status": "both_reached",
-          "baseline_ms": 22943,
-          "ablated_ms": 38980,
-          "delta_ms": 16037
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
         }
       ],
       "action_removal_deltas": [
         {
           "milestone_id": "milestone.cash_target",
-          "status": "both_reached",
-          "baseline_ms": 22943,
-          "ablated_ms": 24739,
-          "delta_ms": 1796
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
         }
       ],
-      "support": "individual",
-      "supporting_group_id": null,
+      "support": "group_supported",
+      "supporting_group_id": "group.category_fixture",
       "nearest_passing_epsilon_ms": 0,
       "relevance_passed": true,
-      "trap_passed": true
+      "trap_passed": false
     },
     {
       "purchasable_id": "generator.beta",
@@ -64,25 +66,25 @@
       "epsilon_ms": 1,
       "trap_exempt": false,
       "justification_key": null,
-      "baseline_purchase_count": 16,
+      "baseline_purchase_count": 11,
       "excluded_persona_ids": [],
       "instrument_affected": false,
       "individual_deltas": [
         {
           "milestone_id": "milestone.cash_target",
-          "status": "both_reached",
-          "baseline_ms": 22943,
-          "ablated_ms": 39200,
-          "delta_ms": 16257
+          "status": "ablated_unreached",
+          "baseline_ms": 11976,
+          "ablated_ms": null,
+          "delta_ms": 168024
         }
       ],
       "action_removal_deltas": [
         {
           "milestone_id": "milestone.cash_target",
-          "status": "both_reached",
-          "baseline_ms": 22943,
-          "ablated_ms": 39200,
-          "delta_ms": 16257
+          "status": "ablated_unreached",
+          "baseline_ms": 11976,
+          "ablated_ms": null,
+          "delta_ms": 168024
         }
       ],
       "support": "individual",
@@ -123,10 +125,10 @@
           "delta_ms": null
         }
       ],
-      "support": "group_supported",
-      "supporting_group_id": "group.substitutes",
-      "nearest_passing_epsilon_ms": 0,
-      "relevance_passed": true,
+      "support": "failed",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 1,
+      "relevance_passed": false,
       "trap_passed": true
     },
     {
@@ -177,9 +179,9 @@
         {
           "milestone_id": "milestone.cash_target",
           "status": "ablated_unreached",
-          "baseline_ms": 22943,
+          "baseline_ms": 11976,
           "ablated_ms": null,
-          "delta_ms": 157057
+          "delta_ms": 168024
         }
       ],
       "passed": true
@@ -187,32 +189,36 @@
     {
       "group_id": "group.substitutes",
       "axis": "declared",
-      "excluded_persona_ids": [],
+      "excluded_persona_ids": [
+        "reference.greedy"
+      ],
       "deltas": [
         {
           "milestone_id": "milestone.cash_target",
-          "status": "both_reached",
-          "baseline_ms": 22943,
-          "ablated_ms": 38980,
-          "delta_ms": 16037
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
         }
       ],
-      "passed": true
+      "passed": false
     },
     {
       "group_id": "group.tier_0",
       "axis": "tier",
-      "excluded_persona_ids": [],
+      "excluded_persona_ids": [
+        "reference.greedy"
+      ],
       "deltas": [
         {
           "milestone_id": "milestone.cash_target",
-          "status": "both_reached",
-          "baseline_ms": 22943,
-          "ablated_ms": 38980,
-          "delta_ms": 16037
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
         }
       ],
-      "passed": true
+      "passed": false
     },
     {
       "group_id": "group.tier_1",
@@ -221,10 +227,10 @@
       "deltas": [
         {
           "milestone_id": "milestone.cash_target",
-          "status": "both_reached",
-          "baseline_ms": 22943,
-          "ablated_ms": 39200,
-          "delta_ms": 16257
+          "status": "ablated_unreached",
+          "baseline_ms": 11976,
+          "ablated_ms": null,
+          "delta_ms": 168024
         }
       ],
       "passed": true
@@ -236,10 +242,10 @@
       "deltas": [
         {
           "milestone_id": "milestone.cash_target",
-          "status": "both_reached",
-          "baseline_ms": 22943,
-          "ablated_ms": 38980,
-          "delta_ms": 16037
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
         }
       ]
     },
@@ -248,10 +254,10 @@
       "deltas": [
         {
           "milestone_id": "milestone.cash_target",
-          "status": "both_reached",
-          "baseline_ms": 22943,
-          "ablated_ms": 39200,
-          "delta_ms": 16257
+          "status": "ablated_unreached",
+          "baseline_ms": 11976,
+          "ablated_ms": null,
+          "delta_ms": 168024
         }
       ]
     }
@@ -261,11 +267,16 @@
       "generator_id": "generator.beta",
       "kind": "provision",
       "target_id": "generator.alpha",
-      "count": 13
+      "count": 5
     }
   ],
-  "instrument_excluded_ids": [],
+  "instrument_excluded_ids": [
+    "generator.alpha"
+  ],
   "failures": [
+    "greedy_oracle:gap",
+    "instrument_affected:trap_floor:generator.alpha",
+    "relevance_floor:upgrade.alpha",
     "relevance_floor:upgrade.dead",
     "role_floor:generator.alpha",
     "trap_floor:upgrade.dead"
