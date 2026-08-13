@@ -613,8 +613,10 @@ reproducible by the beam at depth 0, a tie is the expected healthy outcome when 
 optimal, and only `beam > reference` is an instrument fault. The wording that produced this came
 from the reviewer's own remediation text and is the reviewer's to correct; a ruling is pending.
 
-**Verification cadence is under an open owner ruling** (`planning/t0-t1-content/tiered-oracle-proposal.md`).
-Nothing in this section authorizes a tiered or attestation-based oracle until that ruling lands.
+**Verification cadence was ruled 2026-08-13 (owner):** cheap deterministic deviation probes run
+always; the beam is a manual command only, in no gate. R-block item 2's "MUST be re-run and hold at
+the chosen parameters" therefore no longer binds routine runs — the fixture negative control keeps
+the beam falsifiable when it is run. See the ruling in `planning/t0-t1-content/log.md`.
 
 Trap-floor reduction is max-over-personas after filtering zero-purchase seeds: a persona is omitted
 only when all its seeds purchase zero. The fixture contains an unexempted never-bought upgrade and

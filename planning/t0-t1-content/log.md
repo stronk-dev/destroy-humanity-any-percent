@@ -1408,3 +1408,61 @@ property. Reuse the existing hash/changeguard machinery rather than inventing a 
   so rotating cheap coverage is expected rather than surprising.
 - Decisions 1–3 and 5 remain unchanged. Decision 4 now asks the owner to ratify the explicit
   ordinary-warning versus mint/release-blocking split.
+
+## 2026-08-13 — OWNER RULING: stop building the instrument. Cheap probes + manual beam.
+
+**Owner's judgement, and it is correct:** this thread has spent 48 commits on the harness since
+2026-08-01 against 2 on actual game content. The measuring device became the project. The relevance
+check exists to answer one question — "is this upgrade worth buying or is it dead weight?" — and
+none of the beam/attestation/cadence apparatus produces that answer; it only argues about whether
+the tool that produces it can be trusted. That argument has now cost more than the answer is worth.
+
+**RULED:**
+
+1. **Cheap deterministic forced-deviation probes run always**, as part of ordinary relevance runs.
+   `deviation.v1` per §2 of `tiered-oracle-proposal.md`, including its registered falsifiability
+   witness and its honest-scope disclosure (`maximum_forced_deviations: 1`, unprobed-coordinate
+   count). This is the routine guard.
+2. **The beam is a manual command only.** It is in no gate, no CI path, and no release check. Run it
+   when someone wants it. Its registered declared-parameter negative control and the
+   width-monotonicity test stay, so it remains falsifiable whenever it is run.
+3. **REJECTED as overengineering:** oracle identity hashing, attestation storage and registry,
+   staleness states, the tiered report grammar, the four-command cadence, and the attestation guard
+   requirements. Do not build them. `tiered-oracle-proposal.md` is marked superseded; only §2
+   survives.
+4. **T1's transition budget stays 5,000,000, unchanged.** Nothing is re-derived. The beam was the
+   only thing exceeding it, and the beam is no longer in the routine path — the budget question was
+   the wrong question. **T01-C17 branch B is moot and is not to be executed.** No generous
+   measurement-only run is authorized.
+5. **Equality semantics are fixed as a defect** (former decision 3): `beam == reference` is healthy;
+   only `beam > reference` is the `search_regressed` instrument fault. Small correction of the
+   reviewer's own F-B wording; carry it in the same change as (1).
+
+**R-block item 2 no longer binds routine runs.** Its "MUST be re-run and hold at the chosen
+parameters" was written when the beam gated every run. With the beam manual, the fixture negative
+control carries the falsifiability proof. `rfc/t0-t1-playable-content.md` T01-C19 is reconciled to
+this in the same change (`875a8a4` and this commit).
+
+### Codex implementation scope — authorized
+
+Small and bounded. Nothing else in the harness moves.
+
+- Implement `deviation.v1` (§2 of the superseded proposal) with its registered fixture witness and
+  the two disclosure fields. Probe counts derived from a cheap measured run, recorded.
+- Remove the beam from every gate; expose it as a manual target. Keep its negative control and
+  width-monotonicity test.
+- Apply the equality-semantics fix.
+- Do NOT build identity hashing, attestations, registries, staleness, or new cadence commands.
+
+### Then: the actual work
+
+The content findings have been sitting unactioned this entire thread, labelled non-authoritative
+while the instrument was argued about. They are the next task, and they are what this RFC is for:
+
+- **T0:** `upgrade.continuous_feed_paper`, `upgrade.hold_music_license`,
+  `upgrade.nephew_business_cards`, `upgrade.reply_all_macro` below the relevance floor; the first
+  three also read as traps; `generator.nephew_intern` fails its role floor.
+- **T1:** `upgrade.crt_degauss_button`, `upgrade.employee_handbook_v0`,
+  `upgrade.institutional_memory`, `upgrade.rack_rail_standardization`,
+  `upgrade.refurbished_sticker` below the relevance floor and reading as traps;
+  `generator.beige_tower_v2` and `generator.first_hire` fail role floors.

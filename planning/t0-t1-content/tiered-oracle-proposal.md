@@ -1,6 +1,12 @@
 # Proposed contract: hash-triggered tiered relevance oracle
 
-- **Status:** draft for owner ruling; this document authorizes no implementation.
+- **Status: SUPERSEDED 2026-08-13 by the owner ruling in `log.md` ("cheap probes + manual beam").**
+  Only §2 (the deterministic deviation tier) survives, and its falsifiability proof with it. The
+  hash identity (§1), attestation storage, registry, staleness states, tiered report grammar (§5),
+  the `relevance-check`/`relevance-release-check`/`relevance-deep-check` cadence (§6), and the guard
+  requirements (§7) are all REJECTED as overengineering. Retained here as history only; do not
+  implement from this document.
+- **Original status:** draft for owner ruling; this document authorizes no implementation.
 - **Author:** Codex, responding to the 2026-08-13 owner direction in `log.md`.
 - **Scope:** supersedes only the verification cadence and oracle-report portions of R11, the
   R-block, T01-C19, and T01-C20. The reference arm, relevance/trap verdicts, exact production
