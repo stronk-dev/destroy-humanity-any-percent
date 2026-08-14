@@ -1,6 +1,6 @@
 # RFC: T0–T1 Playable Content (the first hour)
 
-- **Status:** draft
+- **Status:** accepted — T01-C1–C27 ruled; implementing (C26/C27 instrument repairs in flight; coordinated price tuple next; four relevance hashes UNRATIFIED pending it)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/01 §Tier 0–1` (Sole Proprietor 1995 / Garage 2000s, era beats), `design/02 §2, §11` (curves, pacing targets: scripted failure ~15 min, first elective Exit [45,90] min), `design/03` (T0–1 arcade toys free, staggered unlocks), `design/08` (voice rules, era presentation), UX docs (first-session narrative)

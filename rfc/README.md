@@ -20,7 +20,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
-| [Game-UI Screens](game-ui-screens.md) | draft | UI Foundation / Client Shell |
+| [Game-UI Screens](game-ui-screens.md) | accepted — GU-C1–C24 ruled; implementing; archival gated on epoch-7 mint (AC1) | UI Foundation / Client Shell |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft — UNBLOCKED, blockers answered | Commons Compact |
 | [World Layer Foundation](world-layer-foundation.md) | draft | Commons / Production / Save |
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
@@ -29,7 +29,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Permits & the T3→T4 Gate](permits-and-t3-gate.md) | promoted in reviewed epoch 6; archival pending | Economy Kernel / Route Registry / First Content Epoch |
 | [First Content Epoch](first-content-epoch.md) | epoch 6 minted and designated-approved; dependent archival in progress | ALL fixture-first content foundations |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
-| [T0–T1 Playable Content](t0-t1-playable-content.md) | draft | Production / Purchasable Content / Copy Pipeline |
+| [T0–T1 Playable Content](t0-t1-playable-content.md) | accepted — T01-C1–C27 ruled; instrument repaired; branch-aware tuple in flight | Production / Purchasable Content / Copy Pipeline |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 **Coverage map:** `planning/coverage-map/` (internal, unpublished) — the validated research→design→RFC→impl tracker and the
