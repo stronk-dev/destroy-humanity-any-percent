@@ -208,3 +208,13 @@ regression test discriminates only on linux/amd64 (by nature; the CI gate carrie
 
 Nothing was pushed or rerun remotely. This test/CI batch must join the current designated-review
 range before any completion claim.
+
+## 2026-08-14 — Codex cold-harness follow-up — READY FOR DESIGNATED REVIEW
+
+- The hosted `harness` job previously called `go test ./harness` without an explicit count, leaving
+  it eligible for Go result-cache restoration even after `verify-server-core` was hardened.
+- `test-harness` now passes `-count=$(HARNESS_TEST_COUNT)`, default `1`, and the Linux/Postgres
+  `make verify-harness-ci` wrapper exercises that exact path. The workflow comment is reconciled to
+  the shipped cheap-probe design; the manual beam is not relabelled as a CI gate.
+- No production path, balance artifact, or kernel byte changed. This record does not substitute
+  for the designated cross-party review.

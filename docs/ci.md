@@ -125,8 +125,9 @@ explicitly on its ordinary Ubuntu runner. `make verify-server-ci` runs the compl
 linux/amd64 against the repository's Postgres test service. `test-go-core` and therefore
 `verify-server-core` always pass an explicit `-count=$(CORE_TEST_COUNT)` (default `1`), so restored
 compiler/module caches cannot restore test results; increase `CORE_TEST_COUNT` for focused stress
-runs. Use these targets when host-platform success could mask scheduling, architecture, or
-cold-run behavior.
+runs. The parallel harness job has the same contract through `HARNESS_TEST_COUNT` (default `1`).
+Use these targets when host-platform success could mask scheduling, architecture, or cold-run
+behavior.
 
 `make test-game-ui-composed` starts its isolated repository Postgres service, the real composed gameserver,
 and Vite, then drives Chromium through anonymous bootstrap, an authenticated live

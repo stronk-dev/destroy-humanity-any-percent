@@ -50,9 +50,9 @@ jobs:
 
   harness:
     runs-on: ubuntu-latest
-    # T01-C19 deliberately runs a real falsifiable beam oracle. Isolate that
-    # exhaustive proof so it stays mandatory without serializing every server
-    # package behind it or running it twice in one job.
+    # Relevance and content-dynamics evidence are isolated from the core lane
+    # so their cold, uncached simulation work does not serialize every server
+    # package or run twice in one job.
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6

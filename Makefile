@@ -7,6 +7,7 @@ export GOCACHE ?= $(REPO_CACHE_DIR)/go-build
 GO_PACKAGES ?= ./...
 GO_TEST_FLAGS ?=
 CORE_TEST_COUNT ?= 1
+HARNESS_TEST_COUNT ?= 1
 SAVE_TEST_PACKAGES ?= ./...
 SAVE_TEST_FLAGS ?= -run Integration
 SAVE_TEST_COUNT ?= 1
@@ -41,7 +42,7 @@ test-go-core:
 	cd server && go test -p 1 $(GO_TEST_FLAGS) $$(go list ./... | grep -v '^cloud-clicker/server/harness$$') -count=$(CORE_TEST_COUNT)
 
 test-harness:
-	cd server && go test -p 1 $(GO_TEST_FLAGS) ./harness
+	cd server && go test -p 1 $(GO_TEST_FLAGS) ./harness -count=$(HARNESS_TEST_COUNT)
 
 # Reproduce the Actions server job on its real architecture, with Postgres and
 # cold test execution. This intentionally runs every package rather than the
