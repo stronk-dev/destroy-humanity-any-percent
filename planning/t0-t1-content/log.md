@@ -2340,3 +2340,32 @@ C28 returns as a finding, never a stretched literal. Also records the design con
 unit-per-grid provisioning cannot carry relevance across a ~5e5 intra-tier scale gap because
 generated counts earn no per-count multipliers; target-side scaling belongs to the T2 content RFC.
 Codex measures after sign-off; exact literals return through designated review.
+
+## 2026-08-14 — OWNER RULING on the C28 proposal: CLEAN REMOVAL variant signed
+
+Ruled by Marco (recorded by Claude from the owner's explicit selection, made with the costs in
+front of him — copy-adoption round, orphaned provision fixture, removed chain edge):
+
+1. **`generator.beige_tower_v2` DROPS its `provision` role entirely and gains
+   `synergy_feed → pool.institutional_knowledge` (ppm measured) as its sole non-production role.**
+   The recommended keep-provision variant is REJECTED — mechanics that exist only as flavor are
+   not wanted; the row does what its copy says or the copy changes.
+2. **Consequences accepted and recorded:**
+   - The candidate loses its only `provision` edge. The C23 role matrix drops to 11 rows with NO
+     provision row; provision-fixture coverage becomes NAMED COVERAGE DEBT (legal_dept precedent)
+     until a future tier ships a provision edge that can carry relevance. §11b family 1's chain
+     doctrine keeps its adopted status; its first live edge moves to T2+ content, and the
+     T2 drafting note stands: generated counts need target-side scaling to matter.
+   - `provision_tick_ms` machinery ships unexercised by epoch-7 content. AC0 (session-boundary
+     offline catchup) REMAINS a mint precondition — it is a production-engine correctness
+     property, not a per-epoch content property; recorded so nobody "optimizes it away" because
+     the trigger content vanished.
+   - BTv2's ratified description is invalidated by the mechanic's removal and enters the copy
+     lane for owner adoption below. The title stays.
+3. **Measurement plan otherwise unchanged from the filed proposal:** ppm sweep first, atomic
+   price fallback second, honest finding third; whole-path non-regression; exact literals through
+   designated review; the candidate lane reopens for exactly the BTv2 row, the pool-source row,
+   the presentation/copy binding, and the affected hashes.
+
+The proposal file is annotated as ruled; Codex may begin measurement once the replacement copy is
+owner-adopted (the copy text gates the byte change, not the measurement).

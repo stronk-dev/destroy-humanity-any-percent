@@ -1,7 +1,9 @@
 # T01-C28 proposal: Beige Tower v2 role redesign
 
-- **Status:** draft for owner sign-off. Authorizes NOTHING until signed; exact literals return
-  after measurement.
+- **Status:** RULED 2026-08-14 — owner signed the CLEAN REMOVAL variant, not the recommendation:
+  provision role REMOVED, `synergy_feed → pool.institutional_knowledge` becomes the sole
+  non-production role; copy enters owner adoption; consequences recorded in `log.md`. Exact
+  literals still return after measurement.
 - **Author:** Claude (design lane, per the 2026-08-14 C28 ruling). Measurements: Codex.
 - **Ruling constraints honored:** engine unchanged (fractional-provision arm REJECTED); redesign
   within the shipped role vocabulary (`provision`, `synergy_feed`, `manual_output`, `stock_rate`)
