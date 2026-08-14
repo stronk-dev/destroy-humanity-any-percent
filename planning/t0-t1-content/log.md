@@ -2390,3 +2390,30 @@ description lands with the same batch through the copy pipeline; C23 matrix re-p
 with provision coverage named as debt; whole-path non-regression against T0 419,462 /
 screened T1 2,724,115; exact literals and re-derived hashes back through designated review and
 owner re-ratification.
+
+## 2026-08-14 — Claude designated cross-party review of `{928126b, 67bd1f0, 41d4cf6, 727b775, e42a506}` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** the five commits above (interleaved
+  with same-day docs/ruling commits, which are Claude-authored and not part of this batch; the
+  union of the five plus those docs commits covers `a0d6550..e42a506` with no uncovered
+  implementation commit).
+- **`928126b` (soak protocol fix):** the failing Actions job's diagnosis is credible and the fix
+  is the right shape — the soak now mirrors the browser runtime's newline-delimited stream
+  boundary instead of demanding one publication per WebSocket frame, while still rejecting
+  malformed JSON, non-world pushes, receipt leaks, and non-monotone revisions; empty
+  filtered-batch frames are legal, as the real client treats them. Focused negatives pinned.
+  Executed: the soak passes locally `-count=1` (1.9 s). Hosted confirmation necessarily waits for
+  the owner's next push — origin is at `ebcfc15`.
+- **`67bd1f0` + `41d4cf6` (H-A/H-B closure, schema v6):** H-A properly dead — `declared_runs` is
+  again an independent prediction (base + planned probe cardinality) with a fail-loud mismatch
+  error; H-B properly dead — probe outcomes partition into reached/unreached/starved with the sum
+  pinned to `executed_probes`, and any starved probe makes the oracle `incomplete` and fails the
+  gate. Discriminating negatives present for both (forged-complete and forged-incomplete unions).
+  Golden isolated correctly.
+- **`e42a506` + the `CORE_TEST_COUNT` half of `928126b`:** the warm-cache trap is now closed at
+  the Make-target level — harness and core lanes default to `-count=1` — which institutionalizes
+  evidence rule 2 instead of relying on reviewers remembering it. Good.
+- **`727b775` (EH-C11–C14):** correctly filed as blockers instead of inventing the first golden's
+  grammar; reviewed as records. Executed at range head: full harness suite (23.6 s, GREEN under
+  the new uncached default), soak, `make verify-server` (exit 0).
+- **No findings. APPROVED.** EH-C11–C14 rulings are the remaining gate on the mint runway.
