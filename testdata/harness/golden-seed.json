@@ -10,11 +10,11 @@
         "policy_id": "casual.phase0",
         "policy_version": 1,
         "seed": "0",
-        "constants_hash": "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a"
+        "constants_hash": "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789"
       },
       "outcome": "completed",
       "final_virtual_ms": 1814400000,
-      "final_state_hash": "sha256:28bbfb2fdb646d1db5f7efcfead896825a720c90a92d23f3dc6a58accb61d6ba",
+      "final_state_hash": "sha256:c46b487ed396dc64e1aa7a8f3ae33323a8f764de7dcf43f388bd6e47ed4af96c",
       "milestones": [
         {
           "id": "milestone.first_manual",
@@ -30,43 +30,103 @@
         },
         {
           "id": "milestone.t0_progress_1",
-          "first_ms": 337000
+          "first_ms": 211000
         }
       ],
       "applied": [
         {
           "id": "buy_generator",
-          "count": 119
+          "count": 1497
         },
         {
           "id": "perform_manual_batch",
-          "count": 30122
+          "count": 28744
         }
       ],
       "rejected": [],
+      "role_activations": [
+        {
+          "generator_id": "generator.answering_machine",
+          "kind": "manual_output",
+          "target_id": "manual.click",
+          "count": 28566
+        },
+        {
+          "generator_id": "generator.beige_tower",
+          "kind": "manual_output",
+          "target_id": "manual.click",
+          "count": 28734
+        },
+        {
+          "generator_id": "generator.beige_tower",
+          "kind": "synergy_feed",
+          "target_id": "pool.operational_excellence",
+          "count": 30230
+        },
+        {
+          "generator_id": "generator.beige_tower_v2",
+          "kind": "provision",
+          "target_id": "generator.beige_tower",
+          "count": 477
+        },
+        {
+          "generator_id": "generator.crt_wall",
+          "kind": "synergy_feed",
+          "target_id": "pool.institutional_knowledge",
+          "count": 29250
+        },
+        {
+          "generator_id": "generator.dot_matrix_queue",
+          "kind": "synergy_feed",
+          "target_id": "pool.operational_excellence",
+          "count": 30143
+        },
+        {
+          "generator_id": "generator.first_hire",
+          "kind": "manual_output",
+          "target_id": "manual.click",
+          "count": 28090
+        },
+        {
+          "generator_id": "generator.garage_rack",
+          "kind": "synergy_feed",
+          "target_id": "pool.institutional_knowledge",
+          "count": 29657
+        },
+        {
+          "generator_id": "generator.legal_dept",
+          "kind": "synergy_feed",
+          "target_id": "pool.institutional_knowledge",
+          "count": 28740
+        }
+      ],
       "source_totals": [
         {
           "resource_id": "company.cash",
-          "amount": "1.793590306e8"
+          "amount": "1.16454363956e15"
+        },
+        {
+          "resource_id": "company.permits",
+          "amount": "2.4e1"
         }
       ],
       "sink_totals": [
         {
           "resource_id": "company.cash",
-          "amount": "1.59357342531e8"
+          "amount": "1.10676980011e15"
         }
       ],
       "final_balances": [
         {
           "resource_id": "company.cash",
-          "amount": "2.00016880692e7"
+          "amount": "5.77738394481e13"
         },
         {
           "resource_id": "company.permits",
-          "amount": "0"
+          "amount": "2.4e1"
         }
       ],
-      "maximum_progress_gap_ms": 327000,
+      "maximum_progress_gap_ms": 201000,
       "invariant_failures": []
     },
     {
@@ -78,68 +138,128 @@
         "policy_id": "chaos.phase0",
         "policy_version": 1,
         "seed": "0",
-        "constants_hash": "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a"
+        "constants_hash": "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789"
       },
       "outcome": "completed",
       "final_virtual_ms": 2592000000,
-      "final_state_hash": "sha256:eddc2d8f8334cc9f4621eab54476834234aef9d5859f8dff22acce79e1f815a0",
+      "final_state_hash": "sha256:2a70aafa3b0d4cd93cdf441d7b857f8fd3ff24af09956dcb58dc52a74acf1310",
       "milestones": [
         {
           "id": "milestone.first_manual",
-          "first_ms": 2100000
+          "first_ms": 3300000
         },
         {
           "id": "milestone.first_generator_purchase",
-          "first_ms": 4200000
+          "first_ms": 3900000
         },
         {
           "id": "milestone.generator_count_1",
-          "first_ms": 4200000
+          "first_ms": 3900000
         },
         {
           "id": "milestone.t0_progress_1",
-          "first_ms": 4800000
+          "first_ms": 6300000
         }
       ],
       "applied": [
         {
           "id": "buy_generator",
-          "count": 53
+          "count": 573
         },
         {
           "id": "perform_manual_batch",
-          "count": 2961
+          "count": 803
         }
       ],
       "rejected": [
         {
           "id": "unaffordable",
-          "count": 5626
+          "count": 7264
+        }
+      ],
+      "role_activations": [
+        {
+          "generator_id": "generator.answering_machine",
+          "kind": "manual_output",
+          "target_id": "manual.click",
+          "count": 801
+        },
+        {
+          "generator_id": "generator.beige_tower",
+          "kind": "manual_output",
+          "target_id": "manual.click",
+          "count": 802
+        },
+        {
+          "generator_id": "generator.beige_tower",
+          "kind": "synergy_feed",
+          "target_id": "pool.operational_excellence",
+          "count": 1374
+        },
+        {
+          "generator_id": "generator.beige_tower_v2",
+          "kind": "provision",
+          "target_id": "generator.beige_tower",
+          "count": 1349
+        },
+        {
+          "generator_id": "generator.crt_wall",
+          "kind": "synergy_feed",
+          "target_id": "pool.institutional_knowledge",
+          "count": 1363
+        },
+        {
+          "generator_id": "generator.dot_matrix_queue",
+          "kind": "synergy_feed",
+          "target_id": "pool.operational_excellence",
+          "count": 1372
+        },
+        {
+          "generator_id": "generator.first_hire",
+          "kind": "manual_output",
+          "target_id": "manual.click",
+          "count": 801
+        },
+        {
+          "generator_id": "generator.garage_rack",
+          "kind": "synergy_feed",
+          "target_id": "pool.institutional_knowledge",
+          "count": 1365
+        },
+        {
+          "generator_id": "generator.legal_dept",
+          "kind": "synergy_feed",
+          "target_id": "pool.institutional_knowledge",
+          "count": 1342
         }
       ],
       "source_totals": [
         {
           "resource_id": "company.cash",
-          "amount": "2.92791163072e8"
+          "amount": "1.73664204896e15"
+        },
+        {
+          "resource_id": "company.permits",
+          "amount": "2.4e1"
         }
       ],
       "sink_totals": [
         {
           "resource_id": "company.cash",
-          "amount": "2.9007213357e8"
+          "amount": "1.71833756111e15"
         }
       ],
       "final_balances": [
         {
           "resource_id": "company.cash",
-          "amount": "2.71902950138e6"
+          "amount": "1.83044878479e13"
         },
         {
           "resource_id": "company.permits",
-          "amount": "0"
+          "amount": "2.4e1"
         }
       ],
-      "maximum_progress_gap_ms": 2100000,
+      "maximum_progress_gap_ms": 3300000,
       "invariant_failures": []
     }
   ]

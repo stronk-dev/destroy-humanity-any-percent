@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "achievements": [
+    {
+      "id": "achievement.career_attended_day",
+      "condition_scope": "career",
+      "condition": {
+        "kind": "counter_at_least",
+        "counter": "age_ms",
+        "minimum": 86400000
+      },
+      "proof": {
+        "kind": "provenance",
+        "event_kinds": [
+          "founder_advanced"
+        ]
+      },
+      "score_grant": 4,
+      "copy_key": "achievement.career_attended_day"
+    },
+    {
+      "id": "achievement.career_attended_hour",
+      "condition_scope": "career",
+      "condition": {
+        "kind": "counter_at_least",
+        "counter": "age_ms",
+        "minimum": 3600000
+      },
+      "proof": {
+        "kind": "provenance",
+        "event_kinds": [
+          "founder_advanced"
+        ]
+      },
+      "score_grant": 2,
+      "copy_key": "achievement.career_attended_hour"
+    },
+    {
+      "id": "achievement.exit_count_5",
+      "condition_scope": "career",
+      "condition": {
+        "kind": "exit_count_at_least",
+        "count": 5
+      },
+      "proof": {
+        "kind": "provenance",
+        "event_kinds": [
+          "founder_advanced",
+          "run_ended"
+        ]
+      },
+      "score_grant": 8,
+      "copy_key": "achievement.exit_count_5"
+    },
+    {
+      "id": "achievement.first_gate",
+      "condition_scope": "run",
+      "condition": {
+        "kind": "counter_at_least",
+        "counter": "tier",
+        "minimum": 1
+      },
+      "proof": {
+        "kind": "provenance",
+        "event_kinds": [
+          "gate_crossed"
+        ]
+      },
+      "score_grant": 2,
+      "copy_key": "achievement.first_gate"
+    },
+    {
+      "id": "achievement.gate_burn_t3",
+      "condition_scope": "run",
+      "condition": {
+        "kind": "counter_at_least",
+        "counter": "tier",
+        "minimum": 3
+      },
+      "proof": {
+        "kind": "burn",
+        "event_kind": "gate_crossed",
+        "resource_id": "company.cash",
+        "minimum": "1e9"
+      },
+      "score_grant": 8,
+      "copy_key": "achievement.gate_burn_t3"
+    },
+    {
+      "id": "achievement.generators_owned_100",
+      "condition_scope": "run",
+      "condition": {
+        "kind": "owns_generator_at_least",
+        "generator_id": "generator.beige_tower",
+        "count": 100
+      },
+      "proof": {
+        "kind": "possession",
+        "justification_copy_key": "achievement.possession_warning"
+      },
+      "score_grant": 4,
+      "copy_key": "achievement.generators_owned_100"
+    },
+    {
+      "id": "achievement.generators_owned_300",
+      "condition_scope": "run",
+      "condition": {
+        "kind": "owns_generator_at_least",
+        "generator_id": "generator.beige_tower",
+        "count": 300
+      },
+      "proof": {
+        "kind": "possession",
+        "justification_copy_key": "achievement.possession_warning"
+      },
+      "score_grant": 8,
+      "copy_key": "achievement.generators_owned_300"
+    },
+    {
+      "id": "achievement.generators_purchased_1",
+      "condition_scope": "run",
+      "condition": {
+        "kind": "counter_at_least",
+        "counter": "generators_purchased_total",
+        "minimum": 1
+      },
+      "proof": {
+        "kind": "provenance",
+        "event_kinds": [
+          "generator_purchased"
+        ]
+      },
+      "score_grant": 2,
+      "copy_key": "achievement.generators_purchased_1"
+    },
+    {
+      "id": "achievement.generators_purchased_25",
+      "condition_scope": "run",
+      "condition": {
+        "kind": "counter_at_least",
+        "counter": "generators_purchased_total",
+        "minimum": 25
+      },
+      "proof": {
+        "kind": "provenance",
+        "event_kinds": [
+          "generator_purchased"
+        ]
+      },
+      "score_grant": 4,
+      "copy_key": "achievement.generators_purchased_25"
+    },
+    {
+      "id": "achievement.generators_purchased_25_tier_3",
+      "condition_scope": "run",
+      "condition": {
+        "kind": "all_of",
+        "conditions": [
+          {
+            "kind": "counter_at_least",
+            "counter": "generators_purchased_total",
+            "minimum": 25
+          },
+          {
+            "kind": "counter_at_least",
+            "counter": "tier",
+            "minimum": 3
+          }
+        ]
+      },
+      "proof": {
+        "kind": "provenance",
+        "event_kinds": [
+          "gate_crossed",
+          "generator_purchased"
+        ]
+      },
+      "score_grant": 8,
+      "copy_key": "achievement.generators_purchased_25_tier_3"
+    },
+    {
+      "id": "achievement.old_hand",
+      "condition_scope": "career",
+      "condition": {
+        "kind": "exit_count_at_least",
+        "count": 1
+      },
+      "proof": {
+        "kind": "provenance",
+        "event_kinds": [
+          "founder_advanced",
+          "run_ended"
+        ]
+      },
+      "score_grant": 4,
+      "copy_key": "achievement.old_hand"
+    },
+    {
+      "id": "achievement.tier_5",
+      "condition_scope": "run",
+      "condition": {
+        "kind": "counter_at_least",
+        "counter": "tier",
+        "minimum": 5
+      },
+      "proof": {
+        "kind": "provenance",
+        "event_kinds": [
+          "gate_crossed"
+        ]
+      },
+      "score_grant": 8,
+      "copy_key": "achievement.tier_5"
+    }
+  ]
+}

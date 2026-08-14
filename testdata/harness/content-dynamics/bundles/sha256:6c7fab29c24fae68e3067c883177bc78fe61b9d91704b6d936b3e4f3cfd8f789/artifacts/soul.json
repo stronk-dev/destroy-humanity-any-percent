@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "soul_floor": 0,
+    "soul_initial": 100,
+    "soul_max": 100,
+    "recovery_beat_ceiling_ms": 5000,
+    "max_session_wall_ms": 86400000
+  },
+  "bands": [
+    {"band_member":"near_zero","min_inclusive":0,"max_inclusive":9,"human_content_locked":true,"reason_key":"category.low_percent"},
+    {"band_member":"hollow","min_inclusive":10,"max_inclusive":39,"human_content_locked":false,"reason_key":"category.ethical_percent"},
+    {"band_member":"dimming","min_inclusive":40,"max_inclusive":74,"human_content_locked":false,"reason_key":"category.hundred_percent"},
+    {"band_member":"whole","min_inclusive":75,"max_inclusive":100,"human_content_locked":false,"reason_key":"category.any_percent"}
+  ],
+  "debit_sources": [],
+  "recovery_activities": [
+    {"activity_id":"defrag","duration_attended_ms":900000,"recovery_amount":12,"toy_kind":"defrag","reason_key":"soul.recovery.defrag.reason","title_copy_key":"soul.recovery.defrag.title","description_copy_key":"soul.recovery.defrag.description","disclosure_copy_key":"soul.recovery.defrag.disclosure"},
+    {"activity_id":"repot","duration_attended_ms":300000,"recovery_amount":5,"toy_kind":"repot","reason_key":"soul.recovery.repot.reason","title_copy_key":"soul.recovery.repot.title","description_copy_key":"soul.recovery.repot.description","disclosure_copy_key":"soul.recovery.repot.disclosure"},
+    {"activity_id":"server_room","duration_attended_ms":2700000,"recovery_amount":30,"toy_kind":"server_room","reason_key":"soul.recovery.server_room.reason","title_copy_key":"soul.recovery.server_room.title","description_copy_key":"soul.recovery.server_room.description","disclosure_copy_key":"soul.recovery.server_room.disclosure"}
+  ],
+  "ending_policy": {"whole_variant":"earnest_ascension","depleted_variant":"training_data"}
+}

@@ -2,58 +2,58 @@
   "schema_version": 1,
   "scenario_id": "scenario.phase0_production",
   "scenario_hash": "sha256:10aa5c8a2dd8a5c79a5902e74f4e55a1ca3ab46a2d35c9bf3dd25fc729dbb07a",
-  "constants_hash": "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a",
+  "constants_hash": "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789",
   "run_count": 300,
   "values": [
     {
       "policy_id": "chaos.phase0",
       "milestone_id": "milestone.first_manual",
       "statistic": "p50",
-      "value_ms": 600000
+      "value_ms": 2100000
     },
     {
       "policy_id": "chaos.phase0",
       "milestone_id": "milestone.first_manual",
       "statistic": "p95",
-      "value_ms": 2400000
+      "value_ms": 8700000
     },
     {
       "policy_id": "chaos.phase0",
       "milestone_id": "milestone.first_generator_purchase",
       "statistic": "p50",
-      "value_ms": 2400000
+      "value_ms": 6900000
     },
     {
       "policy_id": "chaos.phase0",
       "milestone_id": "milestone.first_generator_purchase",
       "statistic": "p95",
-      "value_ms": 6000000
+      "value_ms": 17700000
     },
     {
       "policy_id": "chaos.phase0",
       "milestone_id": "milestone.generator_count_1",
       "statistic": "p50",
-      "value_ms": 2400000
-    },
-    {
-      "policy_id": "chaos.phase0",
-      "milestone_id": "milestone.generator_count_1",
-      "statistic": "p95",
-      "value_ms": 6000000
-    },
-    {
-      "policy_id": "chaos.phase0",
-      "milestone_id": "milestone.t0_progress_1",
-      "statistic": "p50",
-      "value_ms": 3300000
-    },
-    {
-      "policy_id": "chaos.phase0",
-      "milestone_id": "milestone.t0_progress_1",
-      "statistic": "p95",
       "value_ms": 7200000
     },
     {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.generator_count_1",
+      "statistic": "p95",
+      "value_ms": 18600000
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.t0_progress_1",
+      "statistic": "p50",
+      "value_ms": 8400000
+    },
+    {
+      "policy_id": "chaos.phase0",
+      "milestone_id": "milestone.t0_progress_1",
+      "statistic": "p95",
+      "value_ms": 18900000
+    },
+    {
       "policy_id": "casual.phase0",
       "milestone_id": "milestone.first_manual",
       "statistic": "p50",
@@ -93,13 +93,13 @@
       "policy_id": "casual.phase0",
       "milestone_id": "milestone.t0_progress_1",
       "statistic": "p50",
-      "value_ms": 337000
+      "value_ms": 211000
     },
     {
       "policy_id": "casual.phase0",
       "milestone_id": "milestone.t0_progress_1",
       "statistic": "p95",
-      "value_ms": 337000
+      "value_ms": 211000
     }
   ],
   "warnings": [],

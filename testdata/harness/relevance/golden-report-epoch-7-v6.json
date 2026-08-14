@@ -1,0 +1,445 @@
+{
+  "schema_version": 6,
+  "scenario_id": "scenario.t1_relevance",
+  "scenario_hash": "sha256:e4d54cd0e75119f9f623d82a73db4fa33282a387f77d16fa61559489af83e7d8",
+  "constants_hash": "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789",
+  "relevance_policy_hash": "sha256:f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef",
+  "run_budget": {
+    "declared_runs": 105,
+    "executed_runs": 105,
+    "declared_transitions": 1993965,
+    "executed_transitions": 1993965
+  },
+  "greedy_oracle": null,
+  "deviation_oracle": {
+    "kind": "deviation.v1",
+    "milestone_id": "milestone.t1_cash",
+    "status": "passed",
+    "eligible_coordinates": 242,
+    "selected_coordinates": 4,
+    "executed_probes": 6,
+    "reached_probes": 6,
+    "unreached_probes": 0,
+    "starved_probes": 0,
+    "unprobed_coordinates": 238,
+    "maximum_forced_deviations": 1,
+    "maximum_ppm": 50000,
+    "witness": null
+  },
+  "items": [
+    {
+      "purchasable_id": "generator.beige_tower_v2",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t2_to_t3"
+      },
+      "epsilon_ms": 1000,
+      "trap_exempt": false,
+      "justification_key": null,
+      "baseline_purchase_count": 2,
+      "excluded_persona_ids": [
+        "casual.phase0",
+        "reference.greedy"
+      ],
+      "instrument_affected": false,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_reached",
+          "baseline_ms": 19800000,
+          "ablated_ms": 19800000,
+          "delta_ms": 0
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
+        }
+      ],
+      "support": "failed",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 1000,
+      "relevance_passed": false,
+      "trap_passed": true
+    },
+    {
+      "purchasable_id": "generator.crt_wall",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t2_to_t3"
+      },
+      "epsilon_ms": 1000,
+      "trap_exempt": false,
+      "justification_key": null,
+      "baseline_purchase_count": 19,
+      "excluded_persona_ids": [
+        "casual.phase0"
+      ],
+      "instrument_affected": false,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_reached",
+          "baseline_ms": 2724115,
+          "ablated_ms": 2845448,
+          "delta_ms": 121333
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_reached",
+          "baseline_ms": 2724115,
+          "ablated_ms": 2845448,
+          "delta_ms": 121333
+        }
+      ],
+      "support": "individual",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 0,
+      "relevance_passed": true,
+      "trap_passed": true
+    },
+    {
+      "purchasable_id": "generator.first_hire",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t2_to_t3"
+      },
+      "epsilon_ms": 1000,
+      "trap_exempt": false,
+      "justification_key": null,
+      "baseline_purchase_count": 10,
+      "excluded_persona_ids": [
+        "casual.phase0"
+      ],
+      "instrument_affected": false,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_reached",
+          "baseline_ms": 2724115,
+          "ablated_ms": 2896884,
+          "delta_ms": 172769
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_reached",
+          "baseline_ms": 2724115,
+          "ablated_ms": 2896884,
+          "delta_ms": 172769
+        }
+      ],
+      "support": "individual",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 0,
+      "relevance_passed": true,
+      "trap_passed": true
+    },
+    {
+      "purchasable_id": "generator.garage_rack",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t2_to_t3"
+      },
+      "epsilon_ms": 1000,
+      "trap_exempt": false,
+      "justification_key": null,
+      "baseline_purchase_count": 48,
+      "excluded_persona_ids": [
+        "reference.greedy"
+      ],
+      "instrument_affected": true,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_reached",
+          "baseline_ms": 39600000,
+          "ablated_ms": 86400000,
+          "delta_ms": 46800000
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
+        }
+      ],
+      "support": "individual",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 0,
+      "relevance_passed": true,
+      "trap_passed": true
+    },
+    {
+      "purchasable_id": "upgrade.crt_degauss_button",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t2_to_t3"
+      },
+      "epsilon_ms": 1000,
+      "trap_exempt": false,
+      "justification_key": null,
+      "baseline_purchase_count": 0,
+      "excluded_persona_ids": [
+        "casual.phase0",
+        "chaos.phase0",
+        "reference.greedy"
+      ],
+      "instrument_affected": false,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
+        }
+      ],
+      "support": "failed",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 1000,
+      "relevance_passed": false,
+      "trap_passed": false
+    },
+    {
+      "purchasable_id": "upgrade.employee_handbook_v0",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t2_to_t3"
+      },
+      "epsilon_ms": 1000,
+      "trap_exempt": false,
+      "justification_key": null,
+      "baseline_purchase_count": 1,
+      "excluded_persona_ids": [
+        "casual.phase0",
+        "chaos.phase0"
+      ],
+      "instrument_affected": false,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_reached",
+          "baseline_ms": 2724115,
+          "ablated_ms": 3330105,
+          "delta_ms": 605990
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_reached",
+          "baseline_ms": 2724115,
+          "ablated_ms": 3330105,
+          "delta_ms": 605990
+        }
+      ],
+      "support": "individual",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 0,
+      "relevance_passed": true,
+      "trap_passed": true
+    },
+    {
+      "purchasable_id": "upgrade.institutional_memory",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t2_to_t3"
+      },
+      "epsilon_ms": 1000,
+      "trap_exempt": false,
+      "justification_key": null,
+      "baseline_purchase_count": 0,
+      "excluded_persona_ids": [
+        "casual.phase0",
+        "chaos.phase0",
+        "reference.greedy"
+      ],
+      "instrument_affected": true,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
+        }
+      ],
+      "support": "failed",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 1000,
+      "relevance_passed": false,
+      "trap_passed": false
+    },
+    {
+      "purchasable_id": "upgrade.rack_rail_standardization",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t2_to_t3"
+      },
+      "epsilon_ms": 1000,
+      "trap_exempt": false,
+      "justification_key": null,
+      "baseline_purchase_count": 0,
+      "excluded_persona_ids": [
+        "casual.phase0",
+        "chaos.phase0",
+        "reference.greedy"
+      ],
+      "instrument_affected": true,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
+        }
+      ],
+      "support": "failed",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 1000,
+      "relevance_passed": false,
+      "trap_passed": false
+    },
+    {
+      "purchasable_id": "upgrade.refurbished_sticker",
+      "availability_window": {
+        "from_gate": "gate.t0_to_t1",
+        "to_gate": "gate.t2_to_t3"
+      },
+      "epsilon_ms": 1000,
+      "trap_exempt": false,
+      "justification_key": null,
+      "baseline_purchase_count": 0,
+      "excluded_persona_ids": [
+        "casual.phase0",
+        "chaos.phase0",
+        "reference.greedy"
+      ],
+      "instrument_affected": false,
+      "individual_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
+        }
+      ],
+      "action_removal_deltas": [
+        {
+          "milestone_id": "milestone.t1_cash",
+          "status": "both_unreached",
+          "baseline_ms": null,
+          "ablated_ms": null,
+          "delta_ms": null
+        }
+      ],
+      "support": "failed",
+      "supporting_group_id": null,
+      "nearest_passing_epsilon_ms": 1000,
+      "relevance_passed": false,
+      "trap_passed": false
+    }
+  ],
+  "groups": [],
+  "tier_contributions": [],
+  "role_activations": [
+    {
+      "generator_id": "generator.answering_machine",
+      "kind": "manual_output",
+      "target_id": "manual.click",
+      "count": 478
+    },
+    {
+      "generator_id": "generator.beige_tower",
+      "kind": "manual_output",
+      "target_id": "manual.click",
+      "count": 646
+    },
+    {
+      "generator_id": "generator.beige_tower",
+      "kind": "synergy_feed",
+      "target_id": "pool.operational_excellence",
+      "count": 1225
+    },
+    {
+      "generator_id": "generator.crt_wall",
+      "kind": "synergy_feed",
+      "target_id": "pool.institutional_knowledge",
+      "count": 161
+    },
+    {
+      "generator_id": "generator.dot_matrix_queue",
+      "kind": "synergy_feed",
+      "target_id": "pool.operational_excellence",
+      "count": 1129
+    },
+    {
+      "generator_id": "generator.first_hire",
+      "kind": "manual_output",
+      "target_id": "manual.click",
+      "count": 1
+    },
+    {
+      "generator_id": "generator.garage_rack",
+      "kind": "synergy_feed",
+      "target_id": "pool.institutional_knowledge",
+      "count": 386
+    }
+  ],
+  "instrument_excluded_ids": [
+    "generator.answering_machine",
+    "generator.garage_rack",
+    "upgrade.continuous_feed_paper"
+  ],
+  "failures": [
+    "instrument_affected:effect_target:generator.garage_rack:relevance_floor:upgrade.institutional_memory",
+    "instrument_affected:effect_target:generator.garage_rack:relevance_floor:upgrade.rack_rail_standardization",
+    "instrument_affected:effect_target:generator.garage_rack:trap_floor:upgrade.institutional_memory",
+    "instrument_affected:effect_target:generator.garage_rack:trap_floor:upgrade.rack_rail_standardization",
+    "relevance_floor:generator.beige_tower_v2",
+    "relevance_floor:upgrade.crt_degauss_button",
+    "relevance_floor:upgrade.refurbished_sticker",
+    "trap_floor:upgrade.crt_degauss_button",
+    "trap_floor:upgrade.refurbished_sticker"
+  ]
+}

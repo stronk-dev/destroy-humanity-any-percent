@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "clock_policy": {
+    "early_ms": 100,
+    "guaranteed_ms": 200,
+    "auto_ms": 300,
+    "early_success_ppm": 500000
+  },
+  "credit_policy": {
+    "credit_per_period": 3,
+    "hardcap": 1000,
+    "hardcap_reason_key": "cap.fiscal_credit"
+  },
+  "hoard_policy": {
+    "ppm_per_credit": 10000,
+    "cap_credits": 100,
+    "slot": "prestige",
+    "source_id": "fiscal.hoard",
+    "target": "all"
+  },
+  "generator_level_rows": [
+    {
+      "generator_id": "generator.beige_tower",
+      "ppm_per_level": 10000,
+      "level_hardcap": 100,
+      "hardcap_reason_key": "cap.fiscal_level.beige_tower",
+      "slot": "prestige",
+      "source_id": "fiscal.generator.beige_tower"
+    }
+  ],
+  "unlock_rows": [
+    {"unlock_id": "minigame.pitch", "cost": 3},
+    {"unlock_id": "unlock.arcade", "cost": 5}
+  ]
+}

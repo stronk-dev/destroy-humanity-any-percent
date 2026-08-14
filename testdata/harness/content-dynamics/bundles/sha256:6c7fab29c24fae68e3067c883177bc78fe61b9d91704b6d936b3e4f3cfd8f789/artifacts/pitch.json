@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "hand_size": 7,
+    "play_size": 4,
+    "hands_per_round": 3,
+    "hack_slots": 4,
+    "start_currency": 4,
+    "shop_size": 3,
+    "round_clear_currency": 3,
+    "hand_size_reason_key": "cap.pitch_hand",
+    "play_size_reason_key": "cap.pitch_play",
+    "hands_per_round_reason_key": "cap.pitch_hands",
+    "hack_slots_reason_key": "cap.pitch_hack_slots",
+    "rounds_reason_key": "cap.pitch_rounds",
+    "exponent_reason_key": "cap.pitch_exponent",
+    "best_exponent_hardcap": 1000000
+  },
+  "metric_cards": [
+    {"card_id":"api_call","base_metric":"1.5e1","copies":2,"copy_key":"pitch.card.api_call"},
+    {"card_id":"beta_invite","base_metric":"3e1","copies":2,"copy_key":"pitch.card.beta_invite"},
+    {"card_id":"cache_hit","base_metric":"2e1","copies":2,"copy_key":"pitch.card.cache_hit"},
+    {"card_id":"demo_day","base_metric":"9e1","copies":2,"copy_key":"pitch.card.demo_day"},
+    {"card_id":"newsletter","base_metric":"2.5e1","copies":2,"copy_key":"pitch.card.newsletter"},
+    {"card_id":"page_views","base_metric":"1e1","copies":2,"copy_key":"pitch.card.page_views"},
+    {"card_id":"patch_release","base_metric":"4e1","copies":2,"copy_key":"pitch.card.patch_release"},
+    {"card_id":"press_mention","base_metric":"7.5e1","copies":2,"copy_key":"pitch.card.press_mention"},
+    {"card_id":"referral_loop","base_metric":"6e1","copies":2,"copy_key":"pitch.card.referral_loop"},
+    {"card_id":"testimonial","base_metric":"5e1","copies":2,"copy_key":"pitch.card.testimonial"},
+    {"card_id":"uptime_nines","base_metric":"4.5e1","copies":2,"copy_key":"pitch.card.uptime_nines"},
+    {"card_id":"users_signup","base_metric":"3.5e1","copies":2,"copy_key":"pitch.card.users_signup"}
+  ],
+  "growth_hacks": [
+    {"hack_id":"ab_test","price":3,"draft_weight":10,"effect":{"kind":"card_factor","factor":"1.5e0"},"copy_key":"pitch.hack.ab_test"},
+    {"hack_id":"buzzword","price":2,"draft_weight":12,"effect":{"kind":"flat_add","amount":"2.5e1"},"copy_key":"pitch.hack.buzzword"},
+    {"hack_id":"dark_pattern","price":4,"draft_weight":8,"effect":{"kind":"shape_factor","shape":"pair","factor":"3e0"},"copy_key":"pitch.hack.dark_pattern"},
+    {"hack_id":"growth_loop","price":5,"draft_weight":6,"effect":{"kind":"card_factor","factor":"2e0"},"copy_key":"pitch.hack.growth_loop"},
+    {"hack_id":"infinite_scroll","price":3,"draft_weight":10,"effect":{"kind":"flat_add","amount":"5e1"},"copy_key":"pitch.hack.infinite_scroll"},
+    {"hack_id":"pivot","price":6,"draft_weight":4,"effect":{"kind":"shape_factor","shape":"full_hand","factor":"4e0"},"copy_key":"pitch.hack.pivot"},
+    {"hack_id":"stealth_mode","price":4,"draft_weight":6,"effect":{"kind":"chain_factor","partner_hack_id":"pivot","factor":"2.5e0"},"copy_key":"pitch.hack.stealth_mode"},
+    {"hack_id":"synergy_deck","price":4,"draft_weight":6,"effect":{"kind":"chain_factor","partner_hack_id":"ab_test","factor":"2e0"},"copy_key":"pitch.hack.synergy_deck"}
+  ],
+  "funding_curve": [
+    {"round":1,"funding_target":"1e2"},
+    {"round":2,"funding_target":"3e2"},
+    {"round":3,"funding_target":"1e3"},
+    {"round":4,"funding_target":"5e3"},
+    {"round":5,"funding_target":"2.5e4"},
+    {"round":6,"funding_target":"2e5"},
+    {"round":7,"funding_target":"2e6"},
+    {"round":8,"funding_target":"5e7"}
+  ]
+}

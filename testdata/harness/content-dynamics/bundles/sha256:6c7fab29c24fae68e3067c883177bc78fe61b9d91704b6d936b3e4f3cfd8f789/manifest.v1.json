@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "epoch_seed_path": "balance/epochs/phase0.json",
+  "epoch_id": 7,
+  "constants_hash": "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789",
+  "artifacts": [
+    {
+      "name": "achievements",
+      "production_path": "balance/achievements/first-content.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/achievements.json",
+      "sha256": "sha256:1a11d6c5a0c044ff8077574bb71f1c893bde93a050e20a91e0d776c7e79f8903"
+    },
+    {
+      "name": "categories",
+      "production_path": "balance/categories/phase0.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/categories.json",
+      "sha256": "sha256:ff63b341ff8a7439e48cbfa7cb91dcf51089809fcbb0e6e54201965e5911b9a5"
+    },
+    {
+      "name": "commons",
+      "production_path": "balance/commons/phase0.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/commons.json",
+      "sha256": "sha256:33d4e73a32e12c973acf9633a1e829fd4da2de0753c6004821fb93ff14208c93"
+    },
+    {
+      "name": "doctrines",
+      "production_path": "balance/doctrines/first-content.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/doctrines.json",
+      "sha256": "sha256:a3bca5f7eb07fb3b5bf185ce6191771c044a033b47c6bba390582dd7e1745672"
+    },
+    {
+      "name": "economy",
+      "production_path": "balance/catalogs/phase0.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/economy.json",
+      "sha256": "sha256:fb75e5cf32f545d9470cc8512a8c63f45ed9edd96c68ba65cfeabe0ce2c7f37d"
+    },
+    {
+      "name": "factions",
+      "production_path": "balance/factions/phase0.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/factions.json",
+      "sha256": "sha256:e44f461eca6cc6c048edebc42356915e6d4be16f480b4795a1fcc458855005fe"
+    },
+    {
+      "name": "fiscal",
+      "production_path": "balance/fiscal/first-content.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/fiscal.json",
+      "sha256": "sha256:3847236f8001ed7e29ab41054fbeef38c5e5ea8b838e478d2c4057fdc417f2a9"
+    },
+    {
+      "name": "guilds",
+      "production_path": "balance/guilds/phase0.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/guilds.json",
+      "sha256": "sha256:e70e644fd62be3c37e0ae465ea55eb104dfc83f810f2d66f11806328d18366fa"
+    },
+    {
+      "name": "meters",
+      "production_path": "balance/meters/first-content.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/meters.json",
+      "sha256": "sha256:320deca9ccbe70c1822f0d2664ea75dfd7627d7f098dfd1243ef432bea7bb485"
+    },
+    {
+      "name": "minigame_api",
+      "production_path": "balance/minigame-api/first-content.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/minigame_api.json",
+      "sha256": "sha256:b16b5e0eb6f9426c8b1b94255e2d8e04f53f78b391fdbbb348ad7438d7bab31c"
+    },
+    {
+      "name": "minigames",
+      "production_path": "balance/minigames/first-content.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/minigames.json",
+      "sha256": "sha256:f08fd3ab1959da66f389ef918b936f81d8a2562762055e7b27f4f9e771ff0862"
+    },
+    {
+      "name": "opportunities",
+      "production_path": "balance/opportunities/t0-t1.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/opportunities.json",
+      "sha256": "sha256:d2aab242f2e5b9a73c11b32981fdb3971b4cbf6d96df3fbf0277abfc1ebc7974"
+    },
+    {
+      "name": "pets",
+      "production_path": "balance/pets/first-content.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/pets.json",
+      "sha256": "sha256:5c1f27006871ddbd688cdb36e673a64ef5080c92950d22df486576dfae4aa1c1"
+    },
+    {
+      "name": "pitch",
+      "production_path": "balance/pitch.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/pitch.json",
+      "sha256": "sha256:bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f"
+    },
+    {
+      "name": "prestige",
+      "production_path": "balance/prestige/phase0.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/prestige.json",
+      "sha256": "sha256:1873090781bed666c8f989169a9e59990547b1f713ac2f9a8215f51d3f0ea7ec"
+    },
+    {
+      "name": "relevance",
+      "production_path": "balance/relevance/t0-t1.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/relevance.json",
+      "sha256": "sha256:f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef"
+    },
+    {
+      "name": "routes",
+      "production_path": "balance/routes/phase0.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/routes.json",
+      "sha256": "sha256:a84cce06ae67a68817174b99cfe7191e3c2f9bf47c1c20b4ebab1704baf99cfa"
+    },
+    {
+      "name": "soul",
+      "production_path": "balance/soul/first-content.json",
+      "snapshot_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/artifacts/soul.json",
+      "sha256": "sha256:a57798f94892a86fd6ea727b76d5bfa663db27c4abd10180204c26ea83587de4"
+    }
+  ]
+}

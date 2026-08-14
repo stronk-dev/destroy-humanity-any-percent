@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "scenario_id": "epoch7.content_dynamics",
+  "scenario_hash": "sha256:a6df65535eeafd7b96aa017a7bf6666d400058209903d359bb39f5ef7c2f6a54",
+  "constants_hash": "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789",
+  "manifest_path": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/manifest.v1.json",
+  "declared_runs": 69,
+  "executed_runs": 69,
+  "declared_transitions": 4215,
+  "executed_transitions": 786,
+  "observations": [
+    {
+      "run_id": "active_play.window",
+      "metric_id": "active_play.bonus_output",
+      "statistic": "exact",
+      "value": "3.003e1"
+    },
+    {
+      "run_id": "active_play.window",
+      "metric_id": "active_play.claimed_output",
+      "statistic": "exact",
+      "value": "3.5035e1"
+    },
+    {
+      "run_id": "active_play.window",
+      "metric_id": "active_play.control_output",
+      "statistic": "exact",
+      "value": "5.005e0"
+    },
+    {
+      "run_id": "active_play.window",
+      "metric_id": "active_play.duration_ms",
+      "statistic": "exact",
+      "value": "5000"
+    },
+    {
+      "run_id": "active_play.window",
+      "metric_id": "active_play.spawned_attended_ms",
+      "statistic": "exact",
+      "value": "3558"
+    },
+    {
+      "run_id": "fiscal.four_periods",
+      "metric_id": "fiscal.credit_after",
+      "statistic": "exact",
+      "value": "12"
+    },
+    {
+      "run_id": "fiscal.four_periods",
+      "metric_id": "fiscal.credited",
+      "statistic": "exact",
+      "value": "12"
+    },
+    {
+      "run_id": "fiscal.four_periods",
+      "metric_id": "fiscal.period_sequence_after",
+      "statistic": "exact",
+      "value": "4"
+    },
+    {
+      "run_id": "fiscal.four_periods",
+      "metric_id": "fiscal.saturated",
+      "statistic": "exact",
+      "value": "0"
+    },
+    {
+      "run_id": "fiscal.one_period",
+      "metric_id": "fiscal.credit_after",
+      "statistic": "exact",
+      "value": "3"
+    },
+    {
+      "run_id": "fiscal.one_period",
+      "metric_id": "fiscal.credited",
+      "statistic": "exact",
+      "value": "3"
+    },
+    {
+      "run_id": "fiscal.one_period",
+      "metric_id": "fiscal.period_sequence_after",
+      "statistic": "exact",
+      "value": "1"
+    },
+    {
+      "run_id": "fiscal.one_period",
+      "metric_id": "fiscal.saturated",
+      "statistic": "exact",
+      "value": "0"
+    },
+    {
+      "run_id": "permit.hoard",
+      "metric_id": "permits.time_to_12_ms",
+      "statistic": "p50",
+      "value": "5989616"
+    },
+    {
+      "run_id": "permit.hoard",
+      "metric_id": "permits.time_to_12_ms",
+      "statistic": "p95",
+      "value": "5989616"
+    },
+    {
+      "run_id": "permit.hoard",
+      "metric_id": "permits.time_to_cap_ms",
+      "statistic": "p50",
+      "value": "11979232"
+    },
+    {
+      "run_id": "permit.hoard",
+      "metric_id": "permits.time_to_cap_ms",
+      "statistic": "p95",
+      "value": "11979232"
+    },
+    {
+      "run_id": "permit.zero",
+      "metric_id": "permits.time_to_12_ms",
+      "statistic": "p50",
+      "value": "11979232"
+    },
+    {
+      "run_id": "permit.zero",
+      "metric_id": "permits.time_to_12_ms",
+      "statistic": "p95",
+      "value": "11979232"
+    },
+    {
+      "run_id": "permit.zero",
+      "metric_id": "permits.time_to_cap_ms",
+      "statistic": "p50",
+      "value": "23958463"
+    },
+    {
+      "run_id": "permit.zero",
+      "metric_id": "permits.time_to_cap_ms",
+      "statistic": "p95",
+      "value": "23958463"
+    },
+    {
+      "run_id": "pitch.seed_sweep",
+      "metric_id": "pitch.converted_cash",
+      "statistic": "p50",
+      "value": "1"
+    },
+    {
+      "run_id": "pitch.seed_sweep",
+      "metric_id": "pitch.converted_cash",
+      "statistic": "p95",
+      "value": "2"
+    },
+    {
+      "run_id": "pitch.seed_sweep",
+      "metric_id": "pitch.final_round",
+      "statistic": "p50",
+      "value": "3"
+    },
+    {
+      "run_id": "pitch.seed_sweep",
+      "metric_id": "pitch.final_round",
+      "statistic": "p95",
+      "value": "4"
+    },
+    {
+      "run_id": "pitch.seed_sweep",
+      "metric_id": "pitch.payout_score",
+      "statistic": "p50",
+      "value": "3"
+    },
+    {
+      "run_id": "pitch.seed_sweep",
+      "metric_id": "pitch.payout_score",
+      "statistic": "p95",
+      "value": "4"
+    }
+  ],
+  "invariant_failures": []
+}

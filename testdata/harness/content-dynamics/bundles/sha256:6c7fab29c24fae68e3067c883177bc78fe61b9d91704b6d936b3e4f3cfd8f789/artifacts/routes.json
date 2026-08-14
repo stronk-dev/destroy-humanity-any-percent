@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "context_version": 1,
+  "depletion_distinct_routes_required": 5,
+  "knowledge": {
+    "registry_first_bonus": 100,
+    "founder_first_grant": 25,
+    "repeat_grant": 5,
+    "hint_cost": 50
+  },
+  "gates": [
+    {
+      "gate_id": "gate.t0_to_t1",
+      "requirement": [{ "resource_id": "company.cash", "amount": "1e5" }],
+      "routes": []
+    },
+    {
+      "gate_id": "gate.t2_to_t3",
+      "requirement": [{ "resource_id": "company.cash", "amount": "1e9" }],
+      "routes": []
+    },
+    {
+      "gate_id": "gate.t3_to_t4",
+      "requirement": [
+        { "resource_id": "company.cash", "amount": "1e12" },
+        { "resource_id": "company.permits", "amount": "1.2e1" }
+      ],
+      "routes": []
+    },
+    {
+      "gate_id": "gate.t4_to_t5",
+      "requirement": [{ "resource_id": "company.cash", "amount": "1e15" }],
+      "routes": [
+        {
+          "route_id": "route.regulatory_capture",
+          "house_name": "Regulatory Capture Skip",
+          "active": false,
+          "requires_context_version": 2,
+          "exclusion_slot": "doctrine:transition.t3_to_t4",
+          "exclusion_value": "doctrine.ethical",
+          "predicate": [
+            { "kind": "doctrine_is", "transition": "transition.t3_to_t4", "doctrine_id": "doctrine.ethical" },
+            { "kind": "meter_band", "meter_id": "trust.regulators.standing", "min": 70, "max": 100 },
+            { "kind": "meter_band", "meter_id": "trust.regulators.grievance", "min": 0, "max": 20 }
+          ],
+          "effect": { "kind": "discount", "fraction": "4e-1" }
+        },
+        {
+          "route_id": "route.ipo_sequence_break",
+          "house_name": "IPO Sequence Break",
+          "active": true,
+          "requires_context_version": 1,
+          "exclusion_slot": "doctrine:transition.t3_to_t4",
+          "exclusion_value": "doctrine.capture",
+          "predicate": [
+            { "kind": "doctrine_is", "transition": "transition.t3_to_t4", "doctrine_id": "doctrine.capture" },
+            { "kind": "resource_at_least", "resource_id": "company.cash", "value": "4e8" }
+          ],
+          "effect": { "kind": "discount", "fraction": "4e-1" }
+        },
+        {
+          "route_id": "route.acquihire_out_of_bounds",
+          "house_name": "Acquihire Out-of-Bounds",
+          "active": true,
+          "requires_context_version": 1,
+          "exclusion_slot": "doctrine:transition.t3_to_t4",
+          "exclusion_value": "doctrine.capture",
+          "predicate": [
+            { "kind": "doctrine_is", "transition": "transition.t3_to_t4", "doctrine_id": "doctrine.capture" },
+            { "kind": "ledger_fact_present", "fact_kind": "exit.acquihire" }
+          ],
+          "effect": { "kind": "discount", "fraction": "5e-1" }
+        },
+        {
+          "route_id": "route.non_road_engine_clip",
+          "house_name": "Non-Road Engine Clip",
+          "active": false,
+          "requires_context_version": 2,
+          "exclusion_slot": "structure",
+          "exclusion_value": "structure.corporation",
+          "predicate": [
+            { "kind": "structure_is", "structure_id": "structure.corporation" },
+            { "kind": "region_trait", "trait_id": "trait.non_road" }
+          ],
+          "effect": { "kind": "discount", "fraction": "6e-1" }
+        },
+        {
+          "route_id": "route.nonprofit_wrapper_zip",
+          "house_name": "Nonprofit Wrapper Zip",
+          "active": true,
+          "requires_context_version": 1,
+          "exclusion_slot": "structure",
+          "exclusion_value": "structure.nonprofit",
+          "predicate": [{ "kind": "structure_is", "structure_id": "structure.nonprofit" }],
+          "effect": { "kind": "substitute" }
+        },
+        {
+          "route_id": "route.offset_warp",
+          "house_name": "Offset Warp",
+          "active": false,
+          "requires_context_version": 2,
+          "exclusion_slot": "structure",
+          "exclusion_value": "structure.nonprofit",
+          "predicate": [
+            { "kind": "structure_is", "structure_id": "structure.nonprofit" },
+            { "kind": "meter_band", "meter_id": "planet.offset_coverage", "min": 90, "max": 100 }
+          ],
+          "effect": { "kind": "discount", "fraction": "2e-1" }
+        }
+      ]
+    },
+    {
+      "gate_id": "gate.t7_to_t8",
+      "requirement": [{ "resource_id": "company.cash", "amount": "1e24" }],
+      "routes": [
+        {
+          "route_id": "route.sovereign_ai_early_warp",
+          "house_name": "Sovereign AI Early Warp",
+          "active": false,
+          "requires_context_version": 2,
+          "exclusion_slot": "structure",
+          "exclusion_value": "structure.corporation",
+          "predicate": [
+            { "kind": "structure_is", "structure_id": "structure.corporation" },
+            { "kind": "region_trait", "trait_id": "trait.sovereign_compute" }
+          ],
+          "effect": { "kind": "substitute" }
+        }
+      ]
+    }
+  ]
+}
