@@ -155,3 +155,24 @@ regression test discriminates only on linux/amd64 (by nature; the CI gate carrie
 - Added `make vectors-check-ci` and its pinned-major Linux/amd64 Node compose service so scheduled
   numeric drift is reproducible locally. The scheduled setup-go step now names `server/go.sum`,
   closing its root-`go.mod` cache warning. Go and TypeScript shared-vector suites pass.
+
+## 2026-08-14 — Claude designated cross-party review of `{02d00d7}` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `{02d00d7}` — the browser-gate
+  environment repair that landed during the 8cfa00b..31a49cd Game-UI review and was explicitly
+  named uncovered by that verdict. This closes that gap; the Game-UI range-union note is
+  discharged.
+- **Diff review:** the browser job moves off the Playwright container onto the ordinary Ubuntu
+  runner with an explicit pinned `playwright install --with-deps` — the exact pattern the
+  composed-browser job already used successfully, eliminating the divergence that made one job
+  red and its twin green. The local compose reproduction switches to anonymous volumes + `CI=true`,
+  making every invocation a cold install — this also retires the "warm caches masked the hosted
+  environment" failure mode this thread's evidence rules warn about, and fixes the tracked
+  `.pnpm-store` index mutation noted INFO in the prior Game-UI verdict. Docs updated in the same
+  change; the planning record is honest ("pending the ordinary designated review; not an
+  approval").
+- **Verified in the target environment, not just locally:** the commit is published, and the
+  NEWEST hosted Actions run at `c718d6a` shows `browser: success` alongside all sibling jobs —
+  the job this commit exists to repair is green on the infrastructure it was red on. No product
+  assertion count was weakened (19,993 with two declared skips, matching the record).
+- **No findings.** APPROVED.
