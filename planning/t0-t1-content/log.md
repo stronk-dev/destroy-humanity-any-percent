@@ -1606,3 +1606,34 @@ untouched. **The instrument thread is closed. The nine content items are the wor
   windows and their findings stand as content evidence. The price-cut counterfactual (8.5x–950x,
   byte-identical result) is exactly what the window rejection predicts. **No findings.** T01-C22–
   C24 are correctly framed as owner contracts; awaiting ruling.
+
+## 2026-08-14 — OWNER RULING: T01-C22, T01-C23, T01-C24 — all three accepted as proposed
+
+Ruled by Marco (recorded by Claude from the owner's explicit selections):
+
+1. **T01-C22 ACCEPTED — real gate crossing.** The relevance runner materializes declared segment
+   progression through the real `cross_gate` transition via `SimulateTransition`, never by writing
+   `Tier`/`GatesCrossed` directly. Crossing happens at the first decision boundary where the pinned
+   Routes requirements are met, applies identically in every arm, consumes counted work, and fails
+   loud on rejection. The optimization milestone's terminal gate is not auto-crossed. Discriminating
+   fixture: a post-gate upgrade rejected before the crossing, purchasable after; pre-gate T0 results
+   byte-identical. The alternative (starting T1 runs from a post-gate save) is REJECTED — it leaves
+   the crossing unmeasured and detaches the T1 timeline from a real player's.
+2. **T01-C23 ACCEPTED — candidate-specific role fixtures, per T01-C3 as originally ruled.** One
+   targeted fixture per declared generator-role row with the minimum honest context for a
+   non-neutral effect, each with a masked/control twin proving the effect disappears. The relevance
+   report keeps role observations as evidence but no longer converts absent generic-persona context
+   into `role_floor`. AC2 becomes the conjunction: zero dead purchasables in relevance AND a green
+   role-activation gate. Wiring full context into relevance is REJECTED (regrows the expensive run);
+   dropping role checks is REJECTED.
+3. **T01-C24 ACCEPTED — one coordinated T0 price retune.** All four authored rows retained with
+   exact 2x effects, copy, the 1,000-ms individual floor, and no trap exemptions. AFTER C22/C23
+   land, derive one coordinated price tuple through the complete T0 gate; change each `cost.amount`
+   and matching `resource_at_least.value` atomically; every row must be purchased by at least one
+   measured persona and pass individually (group support does not substitute). The exact tuple,
+   report, and hashes return through designated review and owner re-ratification. Deleting or
+   redesigning rows is NOT authorized on present evidence.
+
+**Sequencing:** C22 + C23 (instrument context, either order or together) → re-run both gates →
+C24 tuple derivation → designated review → re-ratification of the four candidate hashes → content
+dispositions. Codex may implement C22/C23 now under the standard two-commit and review protocol.
