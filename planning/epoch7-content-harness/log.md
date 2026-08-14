@@ -102,3 +102,24 @@ with its alternatives presented):
 **The epoch-7 candidate runner is unblocked.** Deliverables back through designated review:
 the runner + candidate mode, the eighteen-row manifest, the scenario bytes/hash and C14
 coordinate for owner pinning, then the EH-C10 candidate report toward the mint.
+
+## 2026-08-14 — implementation bounce: EH-C15, ratified bundle fails the live replay resolver
+
+- Implemented the cycle-free Relevance owner, eighteen-row candidate manifest, strict four-arm
+  scenario/report runner, production-owned simulation boundaries, and candidate Make/CLI lane far
+  enough to execute all 69 declared runs. The provisional output was 786 real transitions and 27
+  ordered observations; it was deleted rather than presented as evidence after the full-bundle
+  validity failure below.
+- The Founder-v21 Fiscal arm intentionally uses `ApplyFounderLogged`. It failed closed because the
+  exact candidate bundle is not a valid replay bundle: Opportunities pins `1000 + 3000` ms while
+  Prestige pins a 5000 ms catch-up ceiling, contradicting the archived strict `interval + lifetime
+  > ceiling` law.
+- Ran a discriminating in-memory probe through `ReplayCatalogSet.ResolveReplayCatalogs`: ratified
+  `minimum_interval_ms: 1000` rejects; changing only that value to the archived, cross-runtime
+  fixture's `2500` accepts. A second probe ran the complete 69-run candidate successfully after
+  that one change and an 11-second C14 horizon. No source balance byte was edited by either probe.
+- Filed EH-C15 in the RFC with the recommended ratification path and the two broader alternatives.
+  The existing Opportunities SHA, candidate constants hash, C14 scenario hash, and report cannot
+  be honestly pinned until the owner rules this ratified-byte conflict. Implementation changes
+  remain local and uncommitted; no golden, production artifact, epoch coordinate, or mint authority
+  changed.

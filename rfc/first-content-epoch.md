@@ -861,3 +861,23 @@ rejects if the pinned draw/target does not match; the harness never manufactures
 opportunity or chooses the effect. The report compares claimed versus byte-identical unclaimed
 control across exactly the effect's declared duration. The coordinate and target return with the
 scenario hash for owner acceptance rather than being selected silently in code.
+
+### EH-C15 — the ratified Opportunities bytes cannot form a live replay bundle
+
+Implementing the Founder-v21 Fiscal arm through `ApplyFounderLogged` exposed a pre-mint bundle
+failure that the artifact-local loader reviews did not exercise. The ratified Opportunities row
+has `minimum_interval_ms: 1000` and `lifetime_ms: 3000`, while the carried Prestige artifact pins
+`catchup_ceiling_ms: 5000`. The archived Active-Play law and `CatalogBundle.valid` require
+`minimum_interval_ms + lifetime_ms > catchup_ceiling_ms`, so the exact eighteen-artifact candidate
+is rejected by the live replay resolver. A discriminating probe changes only the in-memory minimum
+to the already-reviewed Active-Play fixture value `2500`: the complete bundle then resolves; with
+the ratified `1000`, it does not. The same correction moves the pinned C14 first spawn from 3558 ms
+to 5058 ms, so the scenario horizon/hash and report necessarily follow the content decision.
+
+**Proposed contract:** restore `minimum_interval_ms: 2500`, the value already exercised by the
+archived cross-runtime Active-Play corpus; re-run the Opportunities content gate and designated
+review; replace its owner ratification; then rederive the eighteen-row manifest constants hash,
+C14 horizon/scenario hash, and EH-C10 report. Alternatives requiring owner choice are increasing
+`lifetime_ms` above 4000 (changes opportunity availability) or lowering the global Prestige
+catch-up ceiling below 4000 (cross-system behavior change). Codex will not silently edit a ratified
+artifact or emit a candidate report from a bundle the live resolver rejects.
