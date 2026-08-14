@@ -313,19 +313,17 @@ func repositoryContentBaselinePaths(root string) ([]string, []string, error) {
 			}
 		}
 	} else {
-		for _, commit := range commits {
-			data, err := gitBlob(root, commit, contentDynamicsRegistryPath)
-			if err != nil {
+		data, err := gitBlob(root, commits[len(commits)-1], contentDynamicsRegistryPath)
+		if err != nil {
+			return nil, nil, err
+		}
+		entries, err := decodeContentDynamicsRegistry(data)
+		if err != nil {
+			return nil, nil, fmt.Errorf("content-dynamics registry at HEAD: %w", err)
+		}
+		for _, entry := range entries {
+			if err := addContentBaselinePathsFromCommit(root, "HEAD", entry, governed, reports); err != nil {
 				return nil, nil, err
-			}
-			entries, err := decodeContentDynamicsRegistry(data)
-			if err != nil {
-				return nil, nil, fmt.Errorf("content-dynamics registry at %s: %w", commit, err)
-			}
-			for _, entry := range entries {
-				if err := addContentBaselinePathsFromCommit(root, commit, entry, governed, reports); err != nil {
-					return nil, nil, err
-				}
 			}
 		}
 	}
@@ -394,16 +392,21 @@ func validateContentDynamicsRegistryHistory(root string) error {
 			}
 			continue
 		}
-		subject, err := gitOutput(root, "show", "-s", "--format=%s", commit)
-		if err != nil || !strings.HasPrefix(string(subject), "BALANCE-CHANGE:") {
-			return fmt.Errorf("registry entry commit %s must begin BALANCE-CHANGE:", commit)
-		}
-		changed, err := gitLines(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "-M", commit+"^", commit)
-		if err != nil {
-			return err
-		}
 		for _, entry := range entries[len(prior):] {
-			manifestBytes, err := gitBlob(root, commit, entry.BundleSnapshotManifest)
+			baselineHistory, err := gitOutput(root, "log", "--reverse", "--format=%H", commit+"^..HEAD", "--", entry.BundleSnapshotManifest)
+			if err != nil {
+				return err
+			}
+			baselineCommits := strings.Fields(string(baselineHistory))
+			if len(baselineCommits) == 0 {
+				return fmt.Errorf("registry commit %s has no baseline commit for %s", commit, entry.BundleSnapshotManifest)
+			}
+			baselineCommit := baselineCommits[0]
+			subject, err := gitOutput(root, "show", "-s", "--format=%s", baselineCommit)
+			if err != nil || !strings.HasPrefix(string(subject), "BALANCE-CHANGE:") {
+				return fmt.Errorf("content-dynamics baseline commit %s must begin BALANCE-CHANGE:", baselineCommit)
+			}
+			manifestBytes, err := gitBlob(root, baselineCommit, entry.BundleSnapshotManifest)
 			if err != nil {
 				return err
 			}
@@ -415,13 +418,17 @@ func validateContentDynamicsRegistryHistory(root string) error {
 			for _, artifact := range manifest.Artifacts {
 				required = append(required, artifact.SnapshotPath)
 			}
+			added, err := gitLines(root, "diff-tree", "--no-commit-id", "--name-only", "--diff-filter=A", "-r", "-M", baselineCommit+"^", baselineCommit)
+			if err != nil {
+				return err
+			}
 			for _, path := range required {
-				if !containsPath(changed, path) {
-					return fmt.Errorf("registry commit %s did not add %s atomically", commit, path)
+				if !containsPath(added, path) {
+					return fmt.Errorf("content-dynamics baseline commit %s did not add %s atomically", baselineCommit, path)
 				}
 			}
 			for _, path := range append(required, entry.Scenario) {
-				later, err := gitOutput(root, "log", "--format=%H", commit+"..HEAD", "--", path)
+				later, err := gitOutput(root, "log", "--format=%H", baselineCommit+"..HEAD", "--", path)
 				if err != nil {
 					return err
 				}

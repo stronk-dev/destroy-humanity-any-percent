@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	mode := flag.String("mode", "check", "run, check, update, candidate, content-candidate, content, relevance, relevance-branches, relevance-beam, or epoch-hash")
+	mode := flag.String("mode", "check", "run, check, update, guard, candidate, content-candidate, content, relevance, relevance-branches, relevance-beam, or epoch-hash")
 	output := flag.String("output", "", "explicit output path for run mode")
 	root := flag.String("root", "..", "repository root")
 	candidateManifest := flag.String("candidate-manifest", "", "repository-relative ratified candidate manifest for candidate mode")
@@ -60,6 +60,15 @@ func main() {
 		}
 		return
 	}
+	if *mode == "guard" {
+		if _, err := harness.LoadRelevanceRegistry(*root); err != nil {
+			fail(err)
+		}
+		if err := validateHarnessRepositoryGuards(*root); err != nil {
+			fail(err)
+		}
+		return
+	}
 	var registry []harness.RelevanceRegistryEntry
 	var err error
 	if *mode == "update" {
@@ -69,6 +78,11 @@ func main() {
 	}
 	if err != nil {
 		fail(err)
+	}
+	if *mode == "check" {
+		if err := validateHarnessRepositoryGuards(*root); err != nil {
+			fail(err)
+		}
 	}
 	suite, err := harness.LoadSuite(*root, "testdata/harness/scenarios/phase0-production.json")
 	if err != nil {
@@ -156,18 +170,6 @@ func main() {
 			fail(err)
 		}
 	case "check":
-		if err := harness.ValidateRepositoryBaselineChange(*root); err != nil {
-			fail(err)
-		}
-		if err := harness.ValidateRelevanceRegistry(*root); err != nil {
-			fail(err)
-		}
-		if err := harness.ValidateContentDynamicsRegistry(*root); err != nil {
-			fail(err)
-		}
-		if err := harness.ValidateRepositoryEpochChanges(*root); err != nil {
-			fail(err)
-		}
 		wantGolden, err := os.ReadFile(goldenPath)
 		if err != nil {
 			fail(err)
@@ -220,6 +222,16 @@ func main() {
 	default:
 		fail(fmt.Errorf("unsupported mode %q", *mode))
 	}
+}
+
+func validateHarnessRepositoryGuards(root string) error {
+	if err := harness.ValidateRepositoryBaselineChange(root); err != nil {
+		return err
+	}
+	if err := harness.ValidateContentDynamicsRegistry(root); err != nil {
+		return err
+	}
+	return harness.ValidateRepositoryEpochChanges(root)
 }
 
 func runContentCandidate(root, output, scenarioPath, manifestPath string) {

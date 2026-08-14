@@ -229,6 +229,33 @@ func TestRepositoryGuardPinsContentDynamicsEntryAtomicallyAndImmutably(t *testin
 	}
 }
 
+func TestRepositoryGuardAcceptsStagedContentDynamicsRegistryBeforeBaseline(t *testing.T) {
+	root := newGuardRepository(t)
+	const (
+		scenario = "testdata/harness/content-dynamics/scenarios/epoch-7-staged.json"
+		manifest = "testdata/harness/content-dynamics/bundles/sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/manifest.v1.json"
+		snapshot = "testdata/harness/content-dynamics/bundles/sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/artifacts/economy.json"
+		golden   = "testdata/harness/content-dynamics/goldens/epoch-7-staged.json"
+	)
+	registry := `{"schema_version":1,"entries":[{"epoch_seed_path":"balance/epochs/phase0.json","epoch_id":7,"bundle_snapshot_manifest":"` + manifest + `","scenario":"` + scenario + `","golden_report":"` + golden + `"}]}`
+	manifestBytes := `{"schema_version":1,"epoch_seed_path":"balance/epochs/phase0.json","epoch_id":7,"constants_hash":"sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","artifacts":[{"name":"economy","production_path":"balance/catalogs/phase0.json","snapshot_path":"` + snapshot + `","sha256":"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}]}`
+	writeGuardCommit(t, root, "harness: stage content-dynamics registry", map[string]string{
+		contentDynamicsRegistryPath: registry,
+		scenario:                    `{"schema_version":1}`,
+	})
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), manifest) {
+		t.Fatalf("missing staged baseline err=%v", err)
+	}
+	writeGuardCommit(t, root, "BALANCE-CHANGE: materialize staged content baseline", map[string]string{
+		manifest: manifestBytes,
+		snapshot: `{"value":2}`,
+		golden:   `{"schema_version":1}`,
+	})
+	if err := ValidateRepositoryBaselineChange(root); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestRepositoryGuardDiscoversEveryRegisteredRelevanceGolden(t *testing.T) {
 	root := newGuardRepository(t)
 	secondGolden := "testdata/harness/relevance/golden-report-v2.json"
