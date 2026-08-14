@@ -2500,3 +2500,40 @@ Ruled by Marco (recorded by Claude from the owner's explicit selection, alternat
 
 **Codex implementation order is unchanged otherwise:** C29 generator lane → refreshed reports →
 designated review → then the epoch-7 runner deliverables under EH-C11–C14.
+
+## 2026-08-14 — Codex T01-C29 generator branch proof — READY FOR DESIGNATED REVIEW
+
+- **Implementation commit:** `652a5ab` (`harness: extend branch proofs to generators
+  (T01-C29)`). **Declared review range:** `146dede..652a5ab`. This is an implementation handoff,
+  not a self-review or archival authorization.
+- The branch report grammar is now schema v2 and distinguishes `generator` from `upgrade` rows.
+  Generator rows derive only from a validated whole-path item that is below its relevance floor
+  without an `instrument_affected` label. A supplied whole-path report must match the loaded
+  scenario, constants, and relevance-policy hashes exactly; the stale C28 diagnostic was rejected
+  in a live check on its differing constants hash. Omitting the report still performs the full
+  derivation inline.
+- The generator prefix uses the shared T01-C20 ranker from genesis, removes and reports every
+  later generator and competing upgrade, and purchases the selected generator through the real
+  engine. Baseline and control then clone the exact post-purchase state. The control masks only the
+  purchased generator's production and declared roles; ownership and its paid cost remain in both
+  twins. Unit coverage rejects a non-discriminating masked control and proves stale measurement
+  identity fails closed.
+- **C29 result at the ratified bytes:** `generator.beige_tower_v2` selected at **3,963,733 ms**;
+  baseline **4,561,889 ms**; generator-effect-masked control **4,889,988 ms**; delta
+  **328,099 ms** against the **1,000-ms** floor — **PASS**. The row discloses
+  `generator.legal_dept` plus all ten upgrades as its branch removals. No economy, policy,
+  scenario, copy, or other ratified content byte changed; the shelved replacement copy remains
+  unassembled.
+- Refreshed canonical evidence is `branch-report.v2.json` and `branch-report-t1.v2.json`, both with
+  empty failure sets. Whole-path reference baselines are unchanged at **419,462 ms** (T0) and
+  **2,724,115 ms** (screened T1), matching the ruling. Branch work is **88,094** transitions for
+  T0 and **1,858,591** for T1, both inside the unchanged scenario ceilings. The root Make flow is
+  now `make t0-t1-branch-check`; `t0-t1-upgrade-check` remains a compatibility alias.
+- **Independent executable checks read through final exit:** `make verify-harness
+  HARNESS_TEST_COUNT=1` GREEN; `make t0-t1-branch-check` GREEN; cold `make verify-server-core`
+  GREEN; exact Linux/Docker `make verify-harness-ci` GREEN; exact Linux/Docker
+  `make verify-server-ci` GREEN; kernel history/version guard GREEN at **0.3.94** (no kernel bump
+  owed — harness/tooling only). The fresh whole-path measurements still emit their already-known
+  coarse/instrument-affected findings; this handoff claims the ruled complementary branch evidence,
+  not that those raw reports became finding-free.
+- The user's uncommitted `AGENTS.md` edit was not staged or modified. Nothing was pushed.
