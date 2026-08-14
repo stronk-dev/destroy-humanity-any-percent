@@ -70,3 +70,35 @@ Append-only. This is the successor evidence lane registered by the First Content
 - Still open in this RFC: the production-owned four-arm simulation seams, strict scenario/report
   grammar, literal-cardinality runner, and the separate first golden after a real epoch pins
   Opportunities. No balance artifact or golden was created.
+
+## 2026-08-14 — OWNER RULING: EH-C11–EH-C14 all ACCEPTED as proposed
+
+Ruled by Marco (recorded by Claude from the owner's explicit per-contract selections, each made
+with its alternatives presented):
+
+1. **EH-C11 ACCEPTED.** One minted `relevance` artifact: the cumulative T1 schema-v2 policy,
+   byte-for-byte, at `balance/relevance/t0-t1.json`. The T0 policy and both scenarios remain
+   harness inputs. The strict decoder/validator moves to a cycle-free `server/relevancepolicy`
+   package consumed by both harness and replaycatalog; the parsed policy joins `CatalogBundle`.
+   Epoch 7 = exactly eighteen sorted artifacts. (Mint-both REJECTED as redundant weight;
+   mint-neither REJECTED — it would reopen T01-C14.)
+2. **EH-C12 ACCEPTED.** `planning/t0-t1-content/promotion-manifest.candidate.v1.json` in the
+   shipped manifest-v1 grammar, status `ratified`, the exact eighteen rows; carryover rows keep
+   production hashes and consumed verdicts; loader cardinality generalized; epoch-6 test still
+   pins sixteen, a new epoch-7 test pins the exact set, hashes, and recomputed bundle hash.
+   (Grammar v2 REJECTED — churn without need.)
+3. **EH-C13 ACCEPTED.** Content-dynamics scenario/report schema v1 exactly as proposed: strict
+   roots, byte-sorted run IDs and observation rows, canonical Decimal-string values, candidate at
+   `testdata/harness/content-dynamics/scenarios/epoch-7-candidate.v1.json`; the derived budget and
+   the scenario bytes + hash return for owner pinning before any golden is accepted. (Reusing the
+   relevance schema REJECTED — couples unrelated contracts.)
+4. **EH-C14 ACCEPTED.** One pinned deterministic founder/run coordinate whose first natural draw
+   is duration-bearing, with the named minimum owned target; the engine performs the natural
+   spawn/claim and fails loud on mismatch; the harness never manufactures an opportunity. The
+   exact coordinate and target return with the scenario hash for owner acceptance. (Runtime seed
+   search REJECTED — adapts to content changes instead of failing on them; vacuous-run tolerance
+   REJECTED — fail-loud law.)
+
+**The epoch-7 candidate runner is unblocked.** Deliverables back through designated review:
+the runner + candidate mode, the eighteen-row manifest, the scenario bytes/hash and C14
+coordinate for owner pinning, then the EH-C10 candidate report toward the mint.
