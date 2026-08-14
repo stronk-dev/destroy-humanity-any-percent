@@ -2471,3 +2471,32 @@ purchasables.
   ONLY for upgrades. BTv2 fails not because its 490k/s production is worthless but because
   generators have no access to the fine-grained proof lane the owner already accepted for
   upgrades. C29's cleanest resolution may therefore be symmetry, not new design.
+
+## 2026-08-14 — OWNER RULING on T01-C29: extend the C27 branch proof to generators
+
+Ruled by Marco (recorded by Claude from the owner's explicit selection, alternatives presented):
+
+1. **The C27 branch-proof lane is EXTENDED to branch-specific GENERATORS** — the symmetrical
+   counterpart of the upgrade lane the owner signed in C26/C27: deterministic legally reachable
+   prefix through the shared T01-C20 ranker, the generator purchased through the real engine,
+   an effect-masked twin from the same post-purchase state, policy-epsilon savings requirement,
+   full removal disclosure, no synthesized state, no exemptions. Row derivation mirrors C27:
+   every measured generator the main reference leaves below its floor without an
+   instrument-affected label. Validation extends the branch report grammar in place (schema bump
+   if row kinds must be distinguished).
+2. **C28's role-redesign thread is CLOSED WITHOUT a content change:** BTv2 keeps its ratified
+   bytes — provision role, price, production, copy — because the C29 diagnosis shows the failure
+   was measurement asymmetry, not content. The adopted replacement description (2026-08-14 copy
+   adoption) is SHELVED unassembled: its premise (Institutional Knowledge feed) no longer ships.
+   The C28 clean-removal ruling is superseded by this ruling (same author, reconciled here): no
+   provision removal, no synergy row.
+3. **Exemption-until-T2 REJECTED** (mints an unverified purchasable when a measurable lane is one
+   symmetric step away); **cutting BTv2 REJECTED** (loses the tier capstone and orphans
+   Refurbished Sticker's target).
+4. **Acceptance:** BTv2's branch proof passes at the RATIFIED bytes with delta ≥ the 1,000-ms
+   floor and the whole-path baselines non-regressed (T0 419,462 / screened T1 2,724,115); the
+   refreshed branch reports return through designated review. If the generator lane ALSO cannot
+   certify BTv2 at ratified bytes, C29 reopens with that evidence — not with a stretched literal.
+
+**Codex implementation order is unchanged otherwise:** C29 generator lane → refreshed reports →
+designated review → then the epoch-7 runner deliverables under EH-C11–C14.
