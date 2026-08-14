@@ -337,3 +337,19 @@ archival**. No push or publication occurred; the owner's `AGENTS.md` edit remain
   **NOT ready for designated review or archival** until EH-C16 is ruled and the historical
   content-dynamics baseline can be committed and pass its exact Linux gate. Nothing was pushed;
   the owner's uncommitted `AGENTS.md` edit remains untouched and unstaged.
+
+## 2026-08-14 — OWNER RULING: EH-C16 ACCEPTED as proposed
+
+Ruled by Marco (recorded by Claude; the owner asked for and received the zoom-out — this is the
+LAST instrument/bookkeeping item of the epoch-7 chain, and the next critical-path work is game
+content: the first-session script, screens, minigames):
+
+1. The active relevance registry row gains one exact `branch_report` binding, validated by
+   identity (scenario/constants/policy hashes must match the bound whole-path report) and strict
+   set equality: every whole-path finding not otherwise carried must correspond to a passing
+   branch row; no exemptions, no dropped findings, any mismatch fails the gate.
+2. The stale `relevance_policy` authority lookup is reconciled to the minted artifact name
+   `relevance` (EH-C11/T01-C14).
+3. The generated immutable snapshot/goldens may then be committed under the balance-change guard,
+   `make verify-harness-ci` must go green, and the complete mint range comes back for the
+   designated cross-party review and archival chain.
