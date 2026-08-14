@@ -151,7 +151,7 @@ func loadCandidateManifest(repositoryRoot, manifestPath string) (candidateManife
 	}
 	var trailing any
 	if !errors.Is(decoder.Decode(&trailing), io.EOF) || manifest.SchemaVersion != 1 || manifest.Status != candidateManifestStatus ||
-		len(manifest.Artifacts) != 16 || manifest.ConstantsHash == "" {
+		len(manifest.Artifacts) == 0 || manifest.ConstantsHash == "" {
 		return candidateManifest{}, nil, nil, errors.New("invalid ratified candidate manifest")
 	}
 	artifacts := make(map[string][]byte, len(manifest.Artifacts))

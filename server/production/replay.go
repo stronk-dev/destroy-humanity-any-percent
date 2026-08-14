@@ -26,6 +26,7 @@ import (
 	"cloud-clicker/server/pet"
 	"cloud-clicker/server/pitch"
 	prestigecore "cloud-clicker/server/prestige"
+	"cloud-clicker/server/relevancepolicy"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
@@ -52,6 +53,7 @@ type CatalogBundle struct {
 	Soul          *soul.Catalog
 	Pitch         *pitch.Catalog
 	Opportunities *activeplay.Catalog
+	Relevance     *relevancepolicy.RelevancePolicy
 	Next          *CatalogBundle
 }
 
@@ -129,6 +131,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withPitch := bundle.Pitch != nil
 	withMinigameAPI := bundle.MinigameAPI != nil
 	withOpportunities := bundle.Opportunities != nil
+	withRelevance := bundle.Relevance != nil
 	expectedArtifacts := 7
 	if withFoundations {
 		expectedArtifacts = 9
@@ -157,6 +160,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	if withOpportunities {
 		expectedArtifacts++
 	}
+	if withRelevance {
+		expectedArtifacts++
+	}
 	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != expectedArtifacts || bundle.Economy == nil ||
 		bundle.Routes == nil || bundle.Commons == nil || bundle.Prestige == nil || bundle.Faction == nil || bundle.Guild == nil {
 		return false
@@ -180,7 +186,8 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		withSoul && (!withFiscal || len(bundle.Artifacts["soul"]) == 0 || !bundle.Minigames.SchemaSupportsSoul() || !bundle.Pets.SchemaSupportsSoul()) ||
 		withPitch && (!withSoul || len(bundle.Artifacts["pitch"]) == 0) ||
 		withMinigameAPI && (!withPitch || len(bundle.Artifacts["minigame_api"]) == 0) ||
-		withOpportunities && (!withDoctrines || len(bundle.Artifacts["opportunities"]) == 0) {
+		withOpportunities && (!withDoctrines || len(bundle.Artifacts["opportunities"]) == 0) ||
+		withRelevance && (!withOpportunities || len(bundle.Artifacts["relevance"]) == 0) {
 		return false
 	}
 	if withOpportunities && (bundle.Opportunities.Schedule.MinimumIntervalMS > decimal.MaxExactInteger-bundle.Opportunities.Schedule.LifetimeMS ||

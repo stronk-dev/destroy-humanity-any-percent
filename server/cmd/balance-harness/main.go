@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	mode := flag.String("mode", "check", "run, check, update, candidate, content, relevance, relevance-branches, relevance-beam, or epoch-hash")
+	mode := flag.String("mode", "check", "run, check, update, candidate, content-candidate, content, relevance, relevance-branches, relevance-beam, or epoch-hash")
 	output := flag.String("output", "", "explicit output path for run mode")
 	root := flag.String("root", "..", "repository root")
 	candidateManifest := flag.String("candidate-manifest", "", "repository-relative ratified candidate manifest for candidate mode")
@@ -29,6 +29,10 @@ func main() {
 	}
 	if *mode == "candidate" {
 		runCandidate(*root, *output, *candidateManifest)
+		return
+	}
+	if *mode == "content-candidate" {
+		runContentCandidate(*root, *output, *scenario, *candidateManifest)
 		return
 	}
 	if *mode == "relevance" {
@@ -172,6 +176,27 @@ func main() {
 		_ = wantBaseline
 	default:
 		fail(fmt.Errorf("unsupported mode %q", *mode))
+	}
+}
+
+func runContentCandidate(root, output, scenarioPath, manifestPath string) {
+	if output == "" || scenarioPath == "" || manifestPath == "" {
+		fail(fmt.Errorf("-output, -scenario, and -candidate-manifest are required in content-candidate mode"))
+	}
+	suite, err := harness.LoadCandidateContentDynamicsSuite(root, scenarioPath, manifestPath)
+	if err != nil {
+		fail(err)
+	}
+	report, err := suite.Run()
+	if err != nil {
+		fail(err)
+	}
+	reportBytes, err := harness.CanonicalJSON(report)
+	if err != nil {
+		fail(err)
+	}
+	if err := os.WriteFile(output, reportBytes, 0o644); err != nil {
+		fail(err)
 	}
 }
 

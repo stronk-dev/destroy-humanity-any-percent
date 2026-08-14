@@ -12,6 +12,8 @@ import (
 
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
+	"cloud-clicker/server/replaycatalog"
+	"cloud-clicker/server/save"
 )
 
 func TestRoleActivationCountsAreCanonicalAndComplete(t *testing.T) {
@@ -185,6 +187,59 @@ func TestLoadRatifiedFirstContentCandidateSuite(t *testing.T) {
 	}
 	if !found {
 		t.Fatal("candidate harness did not load the ratified Routes bytes")
+	}
+}
+
+func TestLoadRatifiedT0T1CandidateManifest(t *testing.T) {
+	root := filepath.Join("..", "..")
+	manifestPath := "planning/t0-t1-content/promotion-manifest.candidate.v1.json"
+	manifest, artifacts, productionPaths, err := loadCandidateManifest(root, manifestPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]struct {
+		schema int
+		source string
+		path   string
+		hash   string
+		gate   string
+	}{
+		"achievements":  {1, "balance/testdata/first-content/achievements-v1.json", "balance/achievements/first-content.json", "1a11d6c5a0c044ff8077574bb71f1c893bde93a050e20a91e0d776c7e79f8903", "make test-go GO_PACKAGES='./achievements ./replaycatalog' && make test-client"},
+		"categories":    {1, "balance/testdata/t0-t1/categories-v1.json", "balance/categories/phase0.json", "ff63b341ff8a7439e48cbfa7cb91dcf51089809fcbb0e6e54201965e5911b9a5", "make test-go GO_PACKAGES='./leaderboard ./replaycatalog'"},
+		"commons":       {1, "balance/commons/phase0.json", "balance/commons/phase0.json", "33d4e73a32e12c973acf9633a1e829fd4da2de0753c6004821fb93ff14208c93", "make verify-schema"},
+		"doctrines":     {1, "balance/testdata/first-content/doctrines-v1.json", "balance/doctrines/first-content.json", "a3bca5f7eb07fb3b5bf185ce6191771c044a033b47c6bba390582dd7e1745672", "make test-go GO_PACKAGES='./doctrine ./replaycatalog' && make test-client"},
+		"economy":       {4, "balance/testdata/t0-t1/economy-v4.json", "balance/catalogs/phase0.json", "fb75e5cf32f545d9470cc8512a8c63f45ed9edd96c68ba65cfeabe0ce2c7f37d", "make verify-schema && make t0-t1-branch-check"},
+		"factions":      {1, "balance/factions/phase0.json", "balance/factions/phase0.json", "e44f461eca6cc6c048edebc42356915e6d4be16f480b4795a1fcc458855005fe", "make verify-schema"},
+		"fiscal":        {1, "balance/testdata/first-content/fiscal-v1.json", "balance/fiscal/first-content.json", "3847236f8001ed7e29ab41054fbeef38c5e5ea8b838e478d2c4057fdc417f2a9", "make test-go GO_PACKAGES='./fiscal ./replaycatalog' && make test-client"},
+		"guilds":        {1, "balance/guilds/phase0.json", "balance/guilds/phase0.json", "e70e644fd62be3c37e0ae465ea55eb104dfc83f810f2d66f11806328d18366fa", "make verify-schema"},
+		"meters":        {1, "balance/testdata/first-content/meters-v1.json", "balance/meters/first-content.json", "320deca9ccbe70c1822f0d2664ea75dfd7627d7f098dfd1243ef432bea7bb485", "make test-go GO_PACKAGES='./meters ./replaycatalog' && make test-client"},
+		"minigame_api":  {1, "balance/testdata/minigame-api-candidate-v1.json", "balance/minigame-api/first-content.json", "b16b5e0eb6f9426c8b1b94255e2d8e04f53f78b391fdbbb348ad7438d7bab31c", "make test-go GO_PACKAGES='./minigameapi ./replaycatalog' && make test-client"},
+		"minigames":     {3, "testdata/minigame/pitch-v3.json", "balance/minigames/first-content.json", "f08fd3ab1959da66f389ef918b936f81d8a2562762055e7b27f4f9e771ff0862", "make test-go GO_PACKAGES='./minigame ./replaycatalog' && make test-client"},
+		"opportunities": {1, "balance/testdata/t0-t1/opportunities-v1.json", "balance/opportunities/t0-t1.json", "d2aab242f2e5b9a73c11b32981fdb3971b4cbf6d96df3fbf0277abfc1ebc7974", "make test-go GO_PACKAGES='./activeplay ./replaycatalog'"},
+		"pets":          {2, "balance/testdata/first-content/pets-v2.json", "balance/pets/first-content.json", "5c1f27006871ddbd688cdb36e673a64ef5080c92950d22df486576dfae4aa1c1", "make test-go GO_PACKAGES='./pet ./replaycatalog' && make test-client"},
+		"pitch":         {1, "balance/testdata/pitch-v1.json", "balance/pitch.json", "bd4218199c5ef00eaa2851020f6d77fcf826a30eee1d399a371a711b9b0ee10f", "make test-go GO_PACKAGES='./pitch ./replaycatalog' && make test-client"},
+		"prestige":      {1, "balance/prestige/phase0.json", "balance/prestige/phase0.json", "1873090781bed666c8f989169a9e59990547b1f713ac2f9a8215f51d3f0ea7ec", "make verify-schema"},
+		"relevance":     {2, "balance/testdata/t0-t1/relevance-policy-t1-v2.json", "balance/relevance/t0-t1.json", "f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef", "make t0-t1-relevance-all && make test-go GO_PACKAGES='./relevancepolicy ./replaycatalog'"},
+		"routes":        {1, "balance/testdata/t0-t1/routes-v1.json", "balance/routes/phase0.json", "a84cce06ae67a68817174b99cfe7191e3c2f9bf47c1c20b4ebab1704baf99cfa", "make verify-schema && make test-go GO_PACKAGES='./routes ./replaycatalog'"},
+		"soul":          {1, "balance/testdata/first-content/soul-v1.json", "balance/soul/first-content.json", "a57798f94892a86fd6ea727b76d5bfa663db27c4abd10180204c26ea83587de4", "make test-go GO_PACKAGES='./soul ./replaycatalog' && make test-client"},
+	}
+	if len(manifest.Artifacts) != len(want) || len(artifacts) != len(want) || len(productionPaths) != len(want) {
+		t.Fatalf("epoch-7 candidate artifacts=%d loaded=%d paths=%d want=%d", len(manifest.Artifacts), len(artifacts), len(productionPaths), len(want))
+	}
+	for _, row := range manifest.Artifacts {
+		expected, ok := want[row.Name]
+		if !ok || row.SchemaVersion != expected.schema || row.SourcePath != expected.source || row.ProductionPath != expected.path ||
+			row.SHA256 != expected.hash || row.ContentGate != expected.gate {
+			t.Fatalf("unexpected epoch-7 row %+v", row)
+		}
+	}
+	hash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil || hash != manifest.ConstantsHash || hash != "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789" {
+		t.Fatalf("epoch-7 constants hash=%s manifest=%s err=%v", hash, manifest.ConstantsHash, err)
+	}
+	bundle, err := replaycatalog.Load(manifest.ConstantsHash, artifacts)
+	if err != nil || bundle.Opportunities == nil || bundle.Relevance == nil {
+		t.Fatalf("epoch-7 replay bundle opportunities=%v relevance=%v err=%v", bundle.Opportunities != nil, bundle.Relevance != nil, err)
 	}
 }
 

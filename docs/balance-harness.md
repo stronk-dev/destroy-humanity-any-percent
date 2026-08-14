@@ -176,6 +176,12 @@ as a relevance baseline.
 - `make first-content-harness` validates the ratified first-content manifest and its complete
   16-artifact replay bundle, then writes the owner-facing candidate-versus-baseline pacing report.
   Pacing drift is reported rather than vetoed; deterministic invariant failures still fail the run.
+- `make epoch7-content-harness` validates the ratified eighteen-artifact T0–T1 candidate as a live
+  replay bundle and writes the owner-facing `content_dynamics.v1` candidate report. The strict
+  scenario executes one natural Active-Play control pair, Fiscal sweeps after one and four periods,
+  Pitch seeds 0–63, and Permit accrual at zero and maximum Fiscal credit: 69 runs total. It invokes
+  production-owned simulation boundaries, rejects a changed natural opportunity draw, and derives
+  its transition ceiling from the four policies rather than accepting an arbitrary budget.
 - `make t0-t1-role-check` runs the candidate-specific role activation/control matrix.
 - `make t0-t1-upgrade-check` runs both candidate branch-proof matrices and preserves a diagnostic
   report for each failing scenario.
@@ -194,6 +200,15 @@ sorted artifact set, production and snapshot paths, per-file SHA-256, epoch coor
 bundle hash. The read-only `harness-check` rejects missing, extra, tampered, subsetted, rehashed,
 or epoch-unaccepted snapshot bytes. Later epochs add snapshots rather than resolving old entries
 through mutable production paths.
+
+Before that mint, the candidate lane loads the complete ratified promotion manifest directly and
+does not fabricate an epoch coordinate, registry row, snapshot, or golden. Its schema-v1 report
+records the manifest path, scenario and bundle hashes, declared/executed runs and transitions,
+byte-sorted observations, and an empty invariant-failure list. Active-Play reconciliation and
+partition invariance, Founder-v21 Fiscal event/state agreement, Pitch certified-result conversion,
+Permit hardcap identity, exact artifact identity, and transition ceilings fail the run; the first
+pacing values remain owner-facing observations without an invented pass envelope. After mint, the
+separate baseline commit snapshots those accepted bytes and creates the first historical golden.
 
 Drift above 10% warns and above 25% fails using integer cross-multiplication. After the initial
 baseline, economy/Commons/relevance catalog or scenario inputs land first. A separate commit whose

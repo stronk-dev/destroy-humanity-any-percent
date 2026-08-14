@@ -8,6 +8,7 @@ import (
 	"sort"
 
 	"cloud-clicker/server/achievements"
+	"cloud-clicker/server/activeplay"
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/copykeys"
@@ -24,6 +25,7 @@ import (
 	"cloud-clicker/server/pitch"
 	prestigecore "cloud-clicker/server/prestige"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/relevancepolicy"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
@@ -203,19 +205,37 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.MinigameAPI = apiCatalog
 	}
+	if opportunityBytes, active := artifacts["opportunities"]; active {
+		opportunityCatalog, opportunityErr := activeplay.LoadCatalog(opportunityBytes, economyCatalog)
+		if opportunityErr != nil {
+			return production.CatalogBundle{}, opportunityErr
+		}
+		bundle.Opportunities = opportunityCatalog
+	}
+	if relevanceBytes, active := artifacts["relevance"]; active {
+		// Epoch relevance artifacts may deliberately cover a gate-bounded catalog
+		// slice (the cumulative T1 policy excludes later Legal Department content).
+		// The strict parser still validates every present row and cross-reference;
+		// scenario loaders own window completeness for the slice they measure.
+		relevanceCatalog, relevanceErr := relevancepolicy.Load(relevanceBytes, economyCatalog, routeCatalog, false)
+		if relevanceErr != nil {
+			return production.CatalogBundle{}, relevanceErr
+		}
+		bundle.Relevance = relevanceCatalog
+	}
 	return bundle, nil
 }
 
 func validArtifactNames(artifacts map[string][]byte) bool {
 	base := [...]string{"categories", "commons", "economy", "factions", "guilds", "prestige", "routes"}
-	allowed := make(map[string]bool, len(base)+9)
+	allowed := make(map[string]bool, len(base)+11)
 	for _, name := range base {
 		allowed[name] = true
 		if len(artifacts[name]) == 0 {
 			return false
 		}
 	}
-	for _, name := range [...]string{"achievements", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "pets", "pitch", "soul"} {
+	for _, name := range [...]string{"achievements", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "relevance", "soul"} {
 		allowed[name] = true
 	}
 	for name, data := range artifacts {
@@ -232,8 +252,11 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	_, soulActive := artifacts["soul"]
 	_, pitchActive := artifacts["pitch"]
 	_, minigameAPIActive := artifacts["minigame_api"]
+	_, opportunitiesActive := artifacts["opportunities"]
+	_, relevanceActive := artifacts["relevance"]
 	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets ||
-		soulActive && !fiscalActive || pitchActive && !soulActive || minigameAPIActive && !pitchActive {
+		soulActive && !fiscalActive || pitchActive && !soulActive || minigameAPIActive && !pitchActive ||
+		opportunitiesActive && !doctrines || relevanceActive && !opportunitiesActive {
 		return false
 	}
 	want := len(base)
@@ -259,6 +282,12 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 		want++
 	}
 	if minigameAPIActive {
+		want++
+	}
+	if opportunitiesActive {
+		want++
+	}
+	if relevanceActive {
 		want++
 	}
 	return len(artifacts) == want

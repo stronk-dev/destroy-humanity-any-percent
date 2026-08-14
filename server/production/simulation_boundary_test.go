@@ -17,12 +17,20 @@ func hasSimulationCall(data []byte, filename string) (bool, error) {
 		return false, err
 	}
 	found := false
+	simulationEntrypoints := map[string]bool{
+		"SimulateTransition":                true,
+		"SimulateAdvance":                   true,
+		"SimulateContentDynamicsActivePlay": true,
+		"SimulateContentDynamicsFiscal":     true,
+		"SimulateContentDynamicsPitch":      true,
+		"SimulateContentDynamicsPermits":    true,
+	}
 	ast.Inspect(file, func(node ast.Node) bool {
 		switch value := node.(type) {
 		case *ast.SelectorExpr:
-			found = found || value.Sel.Name == "SimulateTransition" || value.Sel.Name == "SimulateAdvance"
+			found = found || simulationEntrypoints[value.Sel.Name]
 		case *ast.Ident:
-			found = found || value.Name == "SimulateTransition" || value.Name == "SimulateAdvance"
+			found = found || simulationEntrypoints[value.Name]
 		}
 		return !found
 	})
@@ -46,6 +54,10 @@ func TestSimulationEntrypointCallersAreHarnessOrTests(t *testing.T) {
 	if found, err := hasSimulationCall(alias, "alias.go"); err != nil || !found {
 		t.Fatalf("source guard misses function-value alias: found=%v err=%v", found, err)
 	}
+	contentDynamics := []byte("package seeded\nfunc invalid() { production.SimulateContentDynamicsPitch() }\n")
+	if found, err := hasSimulationCall(contentDynamics, "content_dynamics.go"); err != nil || !found {
+		t.Fatalf("source guard misses content-dynamics call: found=%v err=%v", found, err)
+	}
 
 	serverRoot := ".."
 	err := filepath.WalkDir(serverRoot, func(path string, entry fs.DirEntry, walkErr error) error {
@@ -59,7 +71,8 @@ func TestSimulationEntrypointCallersAreHarnessOrTests(t *testing.T) {
 		if err != nil {
 			return err
 		}
-		if strings.HasPrefix(relative, "harness"+string(filepath.Separator)) || relative == filepath.Join("production", "simulation.go") {
+		if strings.HasPrefix(relative, "harness"+string(filepath.Separator)) || relative == filepath.Join("production", "simulation.go") ||
+			relative == filepath.Join("production", "content_dynamics.go") {
 			return nil
 		}
 		data, err := os.ReadFile(path)

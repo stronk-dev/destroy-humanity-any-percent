@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "epoch7.content_dynamics",
+  "version": 1,
+  "runs": [
+    {
+      "id": "active_play.window",
+      "kind": "active_play_window",
+      "seed_start": "0",
+      "seed_count": 1,
+      "horizon_ms": 10000,
+      "policy": {
+        "founder_id": "018f6b7c-9abc-7def-8abc-000000000001",
+        "run_seq": 1,
+        "effect_row_id": "active.production",
+        "target_generator_id": "generator.beige_tower"
+      }
+    },
+    {
+      "id": "fiscal.four_periods",
+      "kind": "fiscal_harvest",
+      "seed_start": "0",
+      "seed_count": 1,
+      "horizon_ms": 1200,
+      "policy": { "periods": 4 }
+    },
+    {
+      "id": "fiscal.one_period",
+      "kind": "fiscal_harvest",
+      "seed_start": "0",
+      "seed_count": 1,
+      "horizon_ms": 300,
+      "policy": { "periods": 1 }
+    },
+    {
+      "id": "permit.hoard",
+      "kind": "permit_accrual",
+      "seed_start": "0",
+      "seed_count": 1,
+      "horizon_ms": 86400000,
+      "policy": { "fiscal_credit": 100 }
+    },
+    {
+      "id": "permit.zero",
+      "kind": "permit_accrual",
+      "seed_start": "0",
+      "seed_count": 1,
+      "horizon_ms": 86400000,
+      "policy": { "fiscal_credit": 0 }
+    },
+    {
+      "id": "pitch.seed_sweep",
+      "kind": "pitch_payout",
+      "seed_start": "0",
+      "seed_count": 64,
+      "horizon_ms": 1,
+      "policy": { "strategy_version": "pitch.first_four_cheapest.v1" }
+    }
+  ],
+  "transition_budget": 4215
+}
