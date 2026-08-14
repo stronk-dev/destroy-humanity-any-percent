@@ -119,7 +119,7 @@
       "excluded_persona_ids": [
         "reference.greedy"
       ],
-      "instrument_affected": false,
+      "instrument_affected": true,
       "individual_deltas": [
         {
           "milestone_id": "milestone.cash_target",
@@ -157,7 +157,7 @@
       "excluded_persona_ids": [
         "reference.greedy"
       ],
-      "instrument_affected": false,
+      "instrument_affected": true,
       "individual_deltas": [
         {
           "milestone_id": "milestone.cash_target",
@@ -288,9 +288,9 @@
   ],
   "failures": [
     "greedy_oracle:deviation_gap",
-    "instrument_affected:trap_floor:generator.alpha",
-    "relevance_floor:upgrade.alpha",
-    "relevance_floor:upgrade.dead",
-    "trap_floor:upgrade.dead"
+    "instrument_affected:effect_target:generator.alpha:relevance_floor:upgrade.alpha",
+    "instrument_affected:effect_target:generator.alpha:relevance_floor:upgrade.dead",
+    "instrument_affected:effect_target:generator.alpha:trap_floor:upgrade.dead",
+    "instrument_affected:exact_id:generator.alpha:trap_floor:generator.alpha"
   ]
 }
