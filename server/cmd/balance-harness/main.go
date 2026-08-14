@@ -94,8 +94,14 @@ func main() {
 			fail(encodeErr)
 		}
 		result := relevanceResult{entry: entry, report: relevance, bytes: relevanceBytes}
-		if entry.BranchReport != "" {
-			branch, branchErr := relevanceSuite.RunRelevanceBranchProofs(&relevance)
+		if entry.BranchReport != "" && (*mode == "update" || *mode == "check") {
+			var branch harness.RelevanceBranchReport
+			var branchErr error
+			if *mode == "update" {
+				branch, branchErr = relevanceSuite.RunRelevanceBranchProofs(&relevance)
+			} else {
+				branch, branchErr = harness.LoadRegisteredRelevanceBranchReport(*root, entry)
+			}
 			if branchErr != nil {
 				fail(branchErr)
 			}
