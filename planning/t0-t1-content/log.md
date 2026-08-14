@@ -1747,3 +1747,49 @@ under a valid post-crossing T1 measurement, plus the instrument-affected Beige T
 **C24 may proceed**, and its coordinated tuple derivation should decide whether it covers the four
 T1 rows too or files them separately — that scope call belongs to the C24 change, not this verdict.
 Candidate hashes untouched; nothing pushed; `AGENTS.md` untouched.
+
+## 2026-08-14 — Codex C24 coordinated-price calibration — OWNER SIGN-OFF REQUIRED
+
+- **Calibrated by:** Codex. **Recorded by:** Codex. This is an in-memory counterfactual report,
+  not a balance change, implementation verdict, hash-ratification request, or authorization to
+  edit candidate bytes. The temporary test was removed. The owner's `AGENTS.md` edit remains the
+  only working-tree change outside this record.
+- **Proposed exact T0 tuple:** `upgrade.continuous_feed_paper = 9e2`,
+  `upgrade.hold_music_license = 8e0`, `upgrade.nephew_business_cards = 1e1`, and
+  `upgrade.reply_all_macro = 1e1`. On implementation, each literal changes both `cost.amount` and
+  its matching `resource_at_least.value`; every 2x effect, row, copy binding, 1,000-ms floor, and
+  lack of exemption remains byte-identical.
+- **Complete-gate result, reproduced twice to the digit:** all four rows are purchased once by
+  `reference.greedy`, with `casual.phase0` and `chaos.phase0` excluded because those policies issue
+  no upgrade intents. Individual deltas are Continuous Feed **93,810 ms**, Hold Music **1,325 ms**,
+  Business Cards **1,313 ms**, and Reply-All **1,313 ms**. All four report
+  `support: individual`, `relevance_passed: true`, and `trap_passed: true`; group support is unused.
+  The run executes **224,153** transitions. The only report failures are the pre-existing,
+  explicitly instrument-affected generator floors for `generator.answering_machine` and
+  `generator.nephew_intern`; no C24 row fails.
+- **Why these values, rather than cliff maxima:** a coordinated sweep covered more than 50 tuples
+  across Continuous Feed 500–5,000, Hold Music 1–10,000, Business Cards 1–10,000, and Reply-All
+  10–50.
+  The reference path is discontinuous: one-unit changes can switch among Dot Matrix, Answering
+  Machine, and Nephew trajectories. `{975, 9, 10, 10}` passes Business Cards and Reply-All by only
+  34 ms, while `{1000, 9, 10, 10}` fails both at 910 ms; `{500, 10, 10, 10}` switches paths and
+  drops Continuous Feed to 295 ms. `{900, 8, 10, 10}` is an interior coordinate with at least
+  313 ms of headroom on every narrow result, not a literal selected at a pass/fail cliff.
+- **No ratified candidate byte or hash changed.** On owner sign-off, Codex will land the four
+  paired price/requirement edits as one isolated `BALANCE-CHANGE:`, regenerate both affected
+  candidate reports and all four hashes, run the complete gates, and hand the range back for the
+  required designated review and re-ratification.
+
+### T01-C25 — four T1 rows require a separate owner disposition
+
+C24 remains scoped to the four T0 rows because the owner's ruling names a coordinated **T0**
+retune and derives it through the complete T0 gate. Pulling the newly-valid T1 findings into that
+tuple would silently expand an accepted balance contract. The post-C22 evidence names four T1
+rows below both floors: `upgrade.crt_degauss_button`, `upgrade.employee_handbook_v0`,
+`upgrade.institutional_memory`, and `upgrade.refurbished_sticker`.
+
+**Proposed disposition:** keep C24 T0-only. After its bytes are accepted, diagnose the four T1
+rows together through the complete cumulative T1 gate and return either one coordinated
+price-only tuple under the same retain-effects/copy/no-exemptions discipline, or a narrower
+numbered blocker if the trajectory proves price-only tuning unsound. Do not delete, exempt,
+redesign, or silently bundle these four rows into C24 without an owner ruling.
