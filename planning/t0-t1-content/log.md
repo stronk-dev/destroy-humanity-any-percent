@@ -1991,3 +1991,29 @@ Ruled by Marco (recorded by Claude from the owner's explicit selections):
 **Authorized sequencing:** implement C26 + C27 → re-run the unchanged catalog through the corrected
 gates → derive one branch-aware tuple inside the accepted bounds → both branch rows green AND no
 whole-path pacing regression → designated review → owner signs exact literals → re-ratification.
+
+## 2026-08-14 — Claude designated cross-party review of `{94487f9, 764e789}` (debt discharge) — APPROVED with one coverage finding
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `{94487f9, 764e789}` — the F1
+  fail-loud + F2 visible-exclusions batch, previously only spot-checked (named debt in
+  CURRENT-STATE §4). Reviewed against today's HEAD since later rounds reworked the same code; the
+  two ruled PROPERTIES, not the historical diff hunks, are what must hold.
+- **Method: mutation probes in a scratch worktree** (a check that cannot fail is not a check):
+  - **F2 HOLDS with discriminating coverage.** Mutating `RunRelevance` to hide instrument
+    exclusions (`InstrumentExcludedIDs = []`) turns
+    `TestRelevanceFixtureRunsDeterministicallyThroughProduction` red immediately.
+  - **F1 HOLDS in the ranked-completion path** (`TestReferenceDecisionGuardNeverCoasts` red under
+    mutation of its site) **but has NO discriminating coverage in the traced-reference arm**:
+    forcing `DecisionStarved = false` at the `runReferenceWithOpportunityTrace` site — silent
+    coasting re-enabled in the PRIMARY measurement arm, the exact historic F1 defect — survives
+    the ENTIRE harness suite green (`-count=1`, full run). Every existing assertion on that arm
+    checks the healthy direction only.
+- **Finding D-A (MEDIUM, follow-up to Codex):** add a discriminating starvation test for the
+  traced reference arm — a scenario/guard combination where the traced arm exhausts its decisions,
+  asserting the starvation diagnostic (declared vs executed, no authoritative report) is produced.
+  Natural to fold into the C26/C27 batch since the same file is open. Until it lands, F1's
+  protection on the main arm rests on the ranked-completion path's coverage plus code identity,
+  not on a test that can fail.
+- **Verdict: APPROVED retroactively** — both ruled properties hold at HEAD and the batch's own
+  claims were consistent; the debt in CURRENT-STATE §4 is discharged. D-A is the one real gap the
+  original spot-check missed, and it is exactly the kind of gap the debt existed to find.
