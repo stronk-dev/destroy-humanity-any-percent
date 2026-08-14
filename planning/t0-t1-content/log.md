@@ -2266,3 +2266,30 @@ it. The alternatives tested above are rejected as non-fixes. AC2 remains open on
 No archival, mint, push, or re-ratification is claimed. `AGENTS.md` remains owner-modified and was
 not touched or staged. Ready for the designated cross-party review of `9abfc2c` plus this record
 commit; C28 awaits owner ruling.
+
+## 2026-08-14 — Claude designated cross-party review of the landed tuple `{9abfc2c, 8b2a197, 08009e9}` — APPROVED; hashes ready for ratification
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `be48897..08009e9` =
+  `{9abfc2c, 8b2a197, 08009e9}` (range unions the span; no `plan.md` flips).
+- **Executed:** full `make test-harness -count=1` (GREEN, 24.3 s); `make t0-t1-upgrade-check`
+  (GREEN, and re-running it reproduced the two committed branch reports BYTE-IDENTICAL);
+  `make verify-server -count=1` (exit 0); the full aggregate `make t0-t1-relevance-all`, whose
+  failure sets match my pre-signing scratch-worktree tuple run exactly; independent SHA-256 of all
+  four candidate artifacts — **all four match the recorded pins**.
+- **The balance commit is exactly the signature:** six price+requirement pairs, one retarget, two
+  signed unchanged coordinates byte-identical, nothing else in the commit.
+- **E-A closed properly:** the phantom 3,318,634 ms is identified (in-memory mutation without
+  refreshed artifact identity — the same failure class as G-A) and replaced by the reproducible
+  2,724,115 ms that my independent measurement had already produced. E-B disclosed verbatim.
+- **The cold-CI correction is the process working:** warm `make verify` passed over three stale
+  pre-signoff exact-value assertions; cold `-count=1` CI caught them (evidence rule 2 doing its
+  job). The fixes pin the signed tuple as candidate-byte assertions, not regenerated goldens.
+- **C28 diagnosis reviewed:** the sweep evidence (price to 1e8, production to 12x, synergy,
+  provisioning to 100,000x) supports "no honest existing-literal fix"; the arithmetic is
+  convincing — a source producing ~490k cash/s provisioning 0.1 units/min of a 1 cash/s generator
+  is structurally irrelevant at any price. The proposal (a replay-pinned fractional-of-source
+  provision arm, historical arm preserved, exact ppm measured before sign-off) is correctly
+  filed as a DESIGN-GAP mechanic and not implemented. Correctly refused: extreme literals and
+  trap exemptions.
+- **No findings. APPROVED.** The four UNRATIFIED pins are now backed by a green designated
+  review and are ready for owner ratification. AC2 remains open solely on C28.
