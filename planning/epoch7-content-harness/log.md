@@ -2,6 +2,22 @@
 
 Append-only. This is the successor evidence lane registered by the First Content Epoch sign-off.
 
+## 2026-08-14 — candidate-runway acceptance bounce: EH-C11–EH-C14
+
+- Resumed at the owner-ratified T0–T1 bytes. The existing lane owns only the empty registry and
+  immutable snapshot generator/validator; no content-dynamics scenario parser, four-arm runner,
+  candidate report mode, or report schema exists.
+- The mint cannot yet be represented honestly: T01-C14 names a singular `relevance` artifact but
+  the repo has two ratified policies and no cycle-free replay-bundle owner; the only promotion
+  loader hardcodes the epoch-6 cardinality of sixteen; and the scenario/report bytes remain
+  directional rather than exact.
+- The single Active-Play pair is additionally underdetermined because the pinned catalog can draw
+  a non-window Lucky effect and a fresh Company has no owned building target. A favorable seed or
+  synthetic pending row would violate EH-C3.
+- Filed EH-C11–EH-C14 in the RFC with concrete proposed contracts. No candidate artifact, epoch
+  coordinate, production balance byte, or mint authority was changed. The relevance H-A/H-B LOW
+  closures are independent and ready for their designated review.
+
 ## 2026-08-10 — implementation bounce: current harness cannot own the four mechanics
 
 - Audited the active harness rather than treating “full bundle loaded” as “full bundle simulated.”

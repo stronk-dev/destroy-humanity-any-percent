@@ -790,3 +790,74 @@ registry coordinate before epoch 7 exists.
   fabricated before epoch 7 exists. (The ordering contradiction was real — EH-C8/C9 and the mint
   runway genuinely could not both hold; this resolves it in EH-C9's favor without weakening the
   snapshot law.)
+
+## Epoch-7 candidate-runner blockers (Codex, 2026-08-14 — EH-C11–EH-C14)
+
+Implementation resumed after the T0–T1 hashes were ratified and found four byte-level choices the
+EH-C1–C10 prose does not settle. The immutable-snapshot machinery exists, but the four-arm runner,
+candidate mode, scenario grammar, and report grammar do not. Codex will not turn these choices into
+an accidental first golden.
+
+### EH-C11 — `relevance` is named as an epoch artifact but has no bundle representation
+
+T01-C14 narrows epoch 7 to the epoch-6 carryover plus economy, routes, categories, relevance, and
+opportunities. `replaycatalog.Load` can already own Opportunities through `CatalogBundle`, but it
+has no Relevance field and cannot import the current parser because that parser lives in
+`server/harness`, which already imports `replaycatalog`. Two policy documents are ratified while
+the ruling names one artifact; neither its production path nor whether the T0 or cumulative T1
+policy is authoritative is stated.
+
+**Proposed contract:** mint one `relevance` artifact containing the cumulative T1 schema-v2 policy
+byte-for-byte at `balance/relevance/t0-t1.json`; the T0 policy and both scenarios remain harness
+inputs, not replay artifacts. Move the strict policy decoder/validator into a cycle-free
+`server/relevancepolicy` owner used by both harness and replaycatalog, and add the parsed policy to
+`CatalogBundle`. Epoch 7 then has exactly eighteen sorted artifacts: the sixteen epoch-6 rows,
+with categories/economy/routes replaced, plus `opportunities` and `relevance`.
+
+### EH-C12 — the candidate manifest has no exact epoch-7 shape
+
+The only candidate loader hard-rejects anything except the epoch-6 manifest's sixteen rows. EH-C10
+says the content-dynamics candidate mode loads “the complete ratified promotion manifest,” but no
+epoch-7 path, row count, status, or relationship to the four scenario/policy pins is defined.
+
+**Proposed contract:** add
+`planning/t0-t1-content/promotion-manifest.candidate.v1.json`, using the shipped manifest-v1 row
+grammar and status `ratified`, with the exact eighteen rows from EH-C11. Carryover rows retain their
+production hashes and consumed verdicts; the five epoch-7 coordinates cite their own designated
+chains and owner ratifications. Generalize the loader's cardinality check, while the epoch-6 test
+continues to pin sixteen and a new epoch-7 test pins eighteen, exact set equality, source hashes,
+schema versions, production paths, content gates, and recomputed bundle hash.
+
+### EH-C13 — the four-arm scenario and report are not byte-specified
+
+EH-C2 names a closed union and observation families but not the JSON keys for any arm or report
+row, the candidate scenario path, the single Active-Play seed/founder coordinate, or the literal
+transition budget. Multiple incompatible byte streams satisfy the prose, so implementing one
+would invent the first baseline grammar.
+
+**Proposed contract:** schema v1 uses root
+`{schema_version,id,version,runs,transition_budget}` and byte-sorted run IDs. Each run is
+`{id,kind,seed_start,seed_count,horizon_ms,policy}`; `policy` is a strict kind-specific object.
+The candidate lives at
+`testdata/harness/content-dynamics/scenarios/epoch-7-candidate.v1.json`. The report is
+`{schema_version,scenario_id,scenario_hash,constants_hash,manifest_path,declared_runs,executed_runs,declared_transitions,executed_transitions,observations,invariant_failures}`;
+observations are byte-sorted `{run_id,metric_id,statistic,value}` rows, with `value` a canonical
+Decimal string or safe integer encoded as a string. The implementation derives the exact budget
+from the accepted arms and returns the candidate scenario bytes and hash for owner pinning before
+any golden is accepted.
+
+### EH-C14 — the single Active-Play control pair can legally measure no buff
+
+EH-C3 says to advance to the first naturally spawned opportunity and measure its declared target
+during the complete buff window. The pinned artifact also contains `lucky_payout`, which has no
+buff window, and a new Company owns no generator whose output could demonstrate a building buff.
+With only one control pair (EH-C7), an unspecified seed can therefore make the required arm
+undefined or vacuous.
+
+**Proposed contract:** the scenario pins one deterministic founder/run coordinate whose first draw
+is a duration-bearing effect and names the minimum real owned target needed to make its output
+non-zero. The production simulation boundary still performs the natural spawn and claim and
+rejects if the pinned draw/target does not match; the harness never manufactures a pending
+opportunity or chooses the effect. The report compares claimed versus byte-identical unclaimed
+control across exactly the effect's declared duration. The coordinate and target return with the
+scenario hash for owner acceptance rather than being selected silently in code.
