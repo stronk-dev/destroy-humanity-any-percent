@@ -1841,3 +1841,106 @@ target, unlock timing, or redesign) that gives it a real job. Deliver one coordi
 owner sign-off. Redesigns may be PROPOSED but nothing is authorized to change without the owner's
 explicit acceptance of the proposal; design/02's formula shapes remain binding; no trap exemptions.
 The C24 calibration record stays as measurement evidence for that proposal.
+
+## 2026-08-14 — Codex holistic T0–T1 diagnosis — OWNER RULING REQUIRED
+
+**Scope and method.** This is the diagnostic pass authorized by the superseding C24 ruling, not a
+balance change or hash-ratification request. Codex ran temporary in-memory catalog mutations through
+the real relevance engine and removed the scratch test afterward. No candidate byte changed. The
+owner's unrelated `AGENTS.md` edit remains untouched and unstaged.
+
+### First correction: the two named generator paths are already healthy
+
+The current authoritative T0 report does **not** support the premise that the Answering Machine or
+Nephew Intern is weak:
+
+- `generator.answering_machine` is bought **21** times and its effect ablation costs **81,102 ms**.
+- `generator.nephew_intern` is bought **5** times and its effect ablation costs **18,250 ms** (the
+  casual persona is excluded because it does not exercise the stock-rate context).
+
+Both clear the 1,000-ms floor by an order of magnitude and both pass the C23 role gate with a masked
+control. The rejected `{900,8,10,10}` tuple itself redirected the one greedy trajectory away from
+these branches; reading that redirected path as proof the generators were weak inverted cause and
+effect. **Proposal: change neither generator's price curve, base rate, ladder, nor role.**
+
+### Two new evidence defects block a truthful ten-row tuple
+
+1. **T01-C26 — dependency-aware instrument disclosure is missing.** The opportunity screen removes
+   `generator.dot_matrix_queue` in T0, then judges `upgrade.continuous_feed_paper` (whose sole effect
+   doubles Dot-Matrix Queue) as an ordinary dead upgrade. It likewise removes
+   `generator.beige_tower_v2` in T1, then judges `upgrade.refurbished_sticker` (whose sole effect
+   doubles Beige Tower v2) as ordinary dead content. `maskRemoves` marks only exact IDs, so neither
+   dependent upgrade receives `instrument_affected`; both reports present instrument-manufactured
+   zero effects as balance evidence. The raw unscreened reference also does not buy either row at
+   current prices, so the rows may still need tuning, but the current gate cannot say how much.
+
+   **Proposed contract:** compute the transitive mechanical dependency set of every removal (upgrade
+   effect target, provision target, manual target, and declared role target). Any measured item whose
+   only non-neutral path intersects that set is labelled `instrument_affected:<reason>:<removed_id>`
+   and cannot authorize a balance disposition. Pin both concrete regressions: removing Dot-Matrix
+   affects Continuous Feed; removing Beige Tower v2 affects Refurbished Sticker. Exact-ID-only
+   disclosure and silently continuing to call these ordinary content failures are REJECTED.
+
+2. **T01-C27 — one global reference path cannot certify mutually competing upgrade branches.** The
+   only persona that ever issues `buy_upgrade` is `reference.greedy`; casual and chaos issue manual
+   or generator intents only. Consequently every upgrade must be bought by the same deterministic
+   path to satisfy `trap_floor`. At individually useful prices, the complete T0 run buys Hold Music
+   and causes the opportunity screen to remove Nephew Intern, so Business Cards becomes impossible;
+   forcing both through one path is what drove the rejected 8,000x–10,000x cuts. T1 repeats the
+   pattern: Institutional Memory at a useful price makes the screen remove CRT Degauss. Group support
+   cannot cure this because it can satisfy relevance but not the purchase-based trap floor.
+
+   **Proposed contract:** add a candidate-owned, exhaustively enumerated near-greedy branch fixture
+   for branch-specific upgrades. Each row starts from a deterministic legally reachable prefix,
+   evaluates purchase versus bank through the same T01-C20 projection and production simulator,
+   applies the purchase through the real engine, and pairs it with an effect-masked control. A row
+   passes only when the purchase is selected, reaches the milestone, and its effect saves at least
+   the policy epsilon. The main unmasked reference remains mandatory for whole-path pacing and the
+   deviation oracle; the branch fixture supplies the “meaningful in SOME role/window” proof and is
+   not a trap exemption. Its row count is derived from every upgrade not bought by the main
+   reference, so a new orphan cannot skip the gate. Synthesized cash/count states, hand-authored
+   output arithmetic, weakening the epsilon, and `trap_exempt` are REJECTED.
+
+### Per-item diagnosis and smallest measured product change
+
+These are **provisional landing coordinates**, not authorized bytes. C26/C27 must land first; then
+the complete corrected gates derive the final tuple and hashes for owner sign-off.
+
+| Item | Intended first-hour job | Why it is outside today's trajectory | Smallest measured viable change |
+|---|---|---|---|
+| `upgrade.continuous_feed_paper` | T0 hardware branch payoff; double Dot-Matrix Queue | price 12,000 is late, and the instrument removes its target before judging it | price **2,000** retained 2x target; isolated reference buys it and its effect saves **7,123 ms**. C26 must validate it before landing |
+| `upgrade.hold_music_license` | T0 office/Answering Machine branch payoff | price 80,000 arrives at the 100,000 terminal balance; 40,000 is still unbought | price **20,000**, retained 2x target; isolated effect saves **34,996 ms** |
+| `upgrade.nephew_business_cards` | T0 people/Nephew branch payoff | price 86,400 arrives too near the terminal balance; it competes with Hold Music in the sole reference | price **20,000**, retained 2x target; isolated effect saves **10,594 ms** |
+| `upgrade.reply_all_macro` | cheap manual-click tutorial payoff | already bought; its 979-ms delta misses the 1,000-ms floor by 21 ms | price **80** (100→80), retained 2x manual target; isolated delta **1,015 ms** |
+| `generator.answering_machine` | online production plus click-value role | it is not outside the trajectory; the rejected tuple displaced it | **no change** (21 purchases / 81,102-ms effect) |
+| `generator.nephew_intern` | late-T0 production plus stock-rate role | it is not outside the trajectory; the rejected tuple displaced it | **no change** (5 purchases / 18,250-ms effect) |
+| `upgrade.crt_degauss_button` | T1 CRT/hardware branch payoff | price 248,832,000 is too late; the outcome is path-discontinuous (100m is harmful, 50m useful, 25m harmful) | price **50,000,000**, retained 2x target; isolated effect saves **245,005 ms** |
+| `upgrade.employee_handbook_v0` | T1 people/First Hire branch payoff | price 750,000,000 leaves no payback before the 1b milestone | price **75,000,000**, retained 2x target; isolated effect saves **330,195 ms** |
+| `upgrade.refurbished_sticker` | T1 Beige Tower v2/provision branch payoff | price 850,000,000 is too late and C26 currently removes its target | price **200,000,000**, retained 2x target; in the unscreened branch it is bought and saves **9,778 ms**. C26/C27 must validate it before landing |
+| `upgrade.institutional_memory` | capstone institutional-knowledge payoff | price 950,000,000 is too late and doubling the tier-0 Beige Tower is mechanically/thematically stale | retarget to `generator.garage_rack` and price **100,000,000**; isolated effect saves **44,986 ms**. This is the sole proposed effect redesign |
+
+The T1 price anchors are not “cheaper is always better”: CRT at 150m is harmful by 286,307 ms,
+100m harmful by 20,651 ms, 50m helpful by 245,005 ms, and 25m harmful by 135,670 ms because each
+price changes purchase order. The exact tuple therefore must be measured as a composition, never
+derived by independent payback arithmetic.
+
+### Composition probes and proposed sequencing
+
+- `{CRT=50m, Handbook=75m}` is a viable joint anchor: milestone **3,302,300 ms** versus the current
+  **3,458,872 ms**, with conditional effect deltas **16,334 ms** and **1,070,358 ms**. This is the
+  only tested joint pair that both improves whole-path pacing and keeps both rows useful.
+- `{CRT=50m, Handbook=150m}` passes both local relevance checks but regresses the whole reference to
+  **3,810,640 ms**. That tuple is REJECTED; local deltas alone are insufficient evidence.
+- Adding Institutional Memory at 100m leaves it unbought; at 50m it becomes useful (**47,590 ms**)
+  but the opportunity screen removes CRT. This is branch competition, not authority for another
+  near-free global tuple.
+- The T0 `{Reply-All=80, Hold=20k, Business Cards=20k}` composition buys Hold Music, removes Nephew
+  Intern, leaves Business Cards unbought, and drops Reply-All below its floor. It is REJECTED as a
+  one-reference tuple even though all three coordinates work in isolation.
+
+**Proposed order for owner ruling:** accept C26 and C27 as instrument repairs; accept the per-item
+product directions above (including no generator changes and the one Institutional Memory retarget)
+as calibration bounds, not final bytes; implement C26/C27 → re-run the unchanged catalog → derive
+one branch-aware candidate tuple within those bounds → require both branch rows green AND no
+whole-path pacing regression → designated review → owner signs exact literals and re-ratifies the
+four affected hashes. No production/candidate content edit is authorized by this entry.
