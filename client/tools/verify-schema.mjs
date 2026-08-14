@@ -283,12 +283,12 @@ async function main() {
   }
 
   const foundationShape = await readJSON(path.join(repositoryDirectory, "testdata", "economy-foundation-v4.json"));
-  const phase0Shape = await readJSON(production[0]);
+  const phase0ShapeV3 = await readJSON(path.join(balanceDirectory, "testdata", "first-content", "economy-v3.json"));
   const schemaParityCases = [
     ["scalar upgrade requires", (value) => { value.upgrades[0].requires = value.upgrades[0].requires[0]; }, foundationShape],
     ["empty upgrade requires", (value) => { value.upgrades[0].requires = []; }, foundationShape],
-    ["v3 root with upgrades", (value) => { value.upgrades = []; }, phase0Shape],
-    ["v3 generator with roles", (value) => { value.generator_classes[0].roles = []; }, phase0Shape],
+    ["v3 root with upgrades", (value) => { value.upgrades = []; }, phase0ShapeV3],
+    ["v3 generator with roles", (value) => { value.generator_classes[0].roles = []; }, phase0ShapeV3],
   ];
   for (const [name, mutate, source] of schemaParityCases) {
     const candidate = structuredClone(source);
@@ -380,6 +380,12 @@ async function main() {
 
   const opportunitiesSchema = await readJSON(path.join(balanceDirectory, "opportunities.schema.json"));
   const validateOpportunities = ajv.compile(opportunitiesSchema);
+  const opportunityCatalogs = await jsonFiles(path.join(balanceDirectory, "opportunities"));
+  if (opportunityCatalogs.length === 0) throw new Error("opportunities schema verification requires a production catalog");
+  for (const filename of opportunityCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateOpportunities(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateOpportunities)}`);
+  }
   const opportunitiesFixture = await readJSON(path.join(balanceDirectory, "testdata", "active-play-foundation-v1.json"));
   if (!validateOpportunities(opportunitiesFixture.baseline)) throw new Error(`opportunities schema rejected valid fixture: ${validationErrors(validateOpportunities)}`);
   for (const mutate of [
@@ -525,6 +531,12 @@ async function main() {
   const validateReport = ajv.compile(reportSchema);
   const relevanceSchema = await readJSON(path.join(balanceDirectory, "relevance.schema.json"));
   const validateRelevance = ajv.compile(relevanceSchema);
+  const relevanceCatalogs = await jsonFiles(path.join(balanceDirectory, "relevance"));
+  if (relevanceCatalogs.length === 0) throw new Error("relevance schema verification requires a production catalog");
+  for (const filename of relevanceCatalogs) {
+    const data = await readJSON(filename);
+    if (!validateRelevance(data)) throw new Error(`${path.relative(repositoryDirectory, filename)}: ${validationErrors(validateRelevance)}`);
+  }
   const scenarios = await jsonFiles(path.join(harnessDirectory, "scenarios"));
   const invalidScenarios = await jsonFiles(path.join(harnessDirectory, "invalid"));
   if (scenarios.length === 0 || invalidScenarios.length === 0) {
@@ -627,7 +639,7 @@ async function main() {
   }
 
   console.log(
-    `schema ok: economy + meters + achievements + doctrines + fiscal + opportunities(pre-mint) + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + UI themes + harness + relevance, ${production.length} economy catalog(s), ${meterCatalogs.length} meter catalog(s), ${achievementCatalogs.length} achievement catalog(s), ${doctrineCatalogs.length} doctrine catalog(s), ${fiscalCatalogs.length} fiscal catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${themeCatalogs.length} UI theme(s), ${scenarios.length} scenario(s), ${relevanceRegistry.entries.length} relevance scenario(s)`,
+    `schema ok: economy + meters + achievements + doctrines + fiscal + opportunities + routes + commons + factions + guilds + client-shell + prestige + transport + leaderboards + UI themes + harness + relevance, ${production.length} economy catalog(s), ${meterCatalogs.length} meter catalog(s), ${achievementCatalogs.length} achievement catalog(s), ${doctrineCatalogs.length} doctrine catalog(s), ${fiscalCatalogs.length} fiscal catalog(s), ${opportunityCatalogs.length} opportunities catalog(s), ${routeCatalogs.length} routes catalog(s), ${commonsCatalogs.length} commons catalog(s), ${factionCatalogs.length} faction catalog(s), ${guildCatalogs.length} guild catalog(s), ${shellCatalogs.length} client-shell catalog(s), ${prestigeCatalogs.length} prestige catalog(s), ${transportCatalogs.length} transport policy(s), ${leaderboardCatalogs.length} leaderboard catalog(s), ${themeCatalogs.length} UI theme(s), ${scenarios.length} scenario(s), ${relevanceCatalogs.length} relevance catalog(s), ${relevanceRegistry.entries.length} registered relevance scenario(s)`,
   );
 }
 

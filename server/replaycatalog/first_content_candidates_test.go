@@ -13,14 +13,14 @@ import (
 	"cloud-clicker/server/save"
 )
 
-func TestFirstContentMintPromotesRatifiedBytesAndPreservesEpoch5(t *testing.T) {
+func TestT0T1MintPromotesRatifiedBytesAndPreservesFirstContent(t *testing.T) {
 	root := filepath.Join("..", "..")
-	manifest := firstContentCandidateManifest(t)
+	manifest := t0T1CandidateManifest(t)
 	bundle, err := epochseed.Load(root)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if bundle.Seed.CurrentEpochID != 6 || len(bundle.Artifacts) != 16 || bundle.Hash != manifest.ConstantsHash ||
+	if bundle.Seed.CurrentEpochID != 7 || len(bundle.Artifacts) != 18 || bundle.Hash != manifest.ConstantsHash ||
 		!epochseed.Accepts(epochseed.Current(bundle.Seed), manifest.ConstantsHash) {
 		t.Fatalf("mint identity epoch=%d artifacts=%d hash=%s", bundle.Seed.CurrentEpochID, len(bundle.Artifacts), bundle.Hash)
 	}
@@ -31,26 +31,21 @@ func TestFirstContentMintPromotesRatifiedBytesAndPreservesEpoch5(t *testing.T) {
 			t.Fatalf("%s source/production mismatch source_err=%v production_err=%v", row.Name, sourceErr, productionErr)
 		}
 	}
-	if _, err := Load(bundle.Hash, bundle.Artifacts); err != nil {
+	loaded, err := Load(bundle.Hash, bundle.Artifacts)
+	if err != nil {
 		t.Fatalf("load minted bundle: %v", err)
 	}
+	if loaded.Opportunities == nil || loaded.Relevance == nil {
+		t.Fatal("epoch-7 bundle omitted its new artifact owners")
+	}
 
-	epoch5Paths := map[string]string{"categories": "categories.json", "commons": "commons.json", "economy": "economy.json",
-		"factions": "factions.json", "guilds": "guilds.json", "prestige": "prestige.json", "routes": "routes.json"}
-	epoch5Artifacts := make(map[string][]byte, len(epoch5Paths))
-	for name, filename := range epoch5Paths {
-		data, readErr := os.ReadFile(filepath.Join(root, "balance", "testdata", "epoch5", filename))
-		if readErr != nil {
-			t.Fatal(readErr)
-		}
-		epoch5Artifacts[name] = data
+	epoch6Artifacts := firstContentCandidateArtifacts(t)
+	epoch6Hash, err := save.ConstantsHashArtifacts(epoch6Artifacts)
+	if err != nil || epoch6Hash != bundle.Seed.Epochs[5].AcceptedHashes[0] {
+		t.Fatalf("epoch-6 fixture hash=%s err=%v", epoch6Hash, err)
 	}
-	epoch5Hash, err := save.ConstantsHashArtifacts(epoch5Artifacts)
-	if err != nil || epoch5Hash != bundle.Seed.Epochs[4].AcceptedHashes[0] {
-		t.Fatalf("epoch-5 fixture hash=%s err=%v", epoch5Hash, err)
-	}
-	if _, err := Load(epoch5Hash, epoch5Artifacts); err != nil {
-		t.Fatalf("historical epoch-5 bundle no longer loads: %v", err)
+	if _, err := Load(epoch6Hash, epoch6Artifacts); err != nil {
+		t.Fatalf("historical epoch-6 bundle no longer loads: %v", err)
 	}
 }
 
@@ -174,6 +169,19 @@ func firstContentCandidateManifest(t *testing.T) firstContentManifest {
 	var manifest firstContentManifest
 	if err := json.Unmarshal(data, &manifest); err != nil || manifest.SchemaVersion != 1 || manifest.Status != "ratified" || len(manifest.Artifacts) != 16 {
 		t.Fatalf("invalid first-content promotion manifest: %v", err)
+	}
+	return manifest
+}
+
+func t0T1CandidateManifest(t *testing.T) firstContentManifest {
+	t.Helper()
+	data, err := os.ReadFile(filepath.Join("..", "..", "planning", "t0-t1-content", "promotion-manifest.candidate.v1.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var manifest firstContentManifest
+	if err := json.Unmarshal(data, &manifest); err != nil || manifest.SchemaVersion != 1 || manifest.Status != "ratified" || len(manifest.Artifacts) != 18 {
+		t.Fatalf("invalid T0-T1 promotion manifest: %v", err)
 	}
 	return manifest
 }

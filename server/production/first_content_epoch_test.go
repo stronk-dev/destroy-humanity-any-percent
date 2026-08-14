@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/achievements"
+	"cloud-clicker/server/activeplay"
 	"cloud-clicker/server/copykeys"
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
@@ -15,17 +16,18 @@ import (
 	"cloud-clicker/server/minigameapi"
 	"cloud-clicker/server/pet"
 	"cloud-clicker/server/pitch"
+	"cloud-clicker/server/relevancepolicy"
 	"cloud-clicker/server/save"
 	"cloud-clicker/server/soul"
 )
 
-func activeFirstContentBundle(t *testing.T) CatalogBundle {
+func activeContentBundle(t *testing.T) CatalogBundle {
 	t.Helper()
 	bundle, err := epochseed.Load("../..")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if bundle.Seed.CurrentEpochID != 6 || bundle.Hash != "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a" {
+	if bundle.Seed.CurrentEpochID != 7 || bundle.Hash != "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789" {
 		t.Fatalf("active epoch=%d hash=%s", bundle.Seed.CurrentEpochID, bundle.Hash)
 	}
 	return loadCompleteReplayTestBundle(t, bundle.Hash, bundle.Artifacts)
@@ -86,6 +88,18 @@ func loadCompleteReplayTestBundle(t *testing.T, hash string, artifacts map[strin
 	if err != nil {
 		t.Fatal(err)
 	}
+	if data := artifacts["opportunities"]; len(data) != 0 {
+		bundle.Opportunities, err = activeplay.LoadCatalog(data, bundle.Economy)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	if data := artifacts["relevance"]; len(data) != 0 {
+		bundle.Relevance, err = relevancepolicy.Load(data, bundle.Economy, bundle.Routes, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
 	definition, ok := bundle.Minigames.Definition("pitch")
 	if !ok || !bundle.MinigameAPI.SupportsTenant(definition.MinigameID, definition.EngineRef, definition.EngineVersion) || !bundle.valid(hash) {
 		t.Fatal("complete first-content bundle is internally inconsistent")
@@ -95,7 +109,7 @@ func loadCompleteReplayTestBundle(t *testing.T, hash string, artifacts map[strin
 
 func TestFirstContentEpochActivatesAtNewRunBoundary(t *testing.T) {
 	legacy := epoch5TestBundle(t)
-	active := activeFirstContentBundle(t)
+	active := activeContentBundle(t)
 	now := time.Date(2026, 8, 9, 12, 0, 0, 0, time.UTC)
 	founder := foundationScopeState(t, legacy.Economy, economy.ScopeFounder)
 	company := foundationScopeState(t, legacy.Economy, economy.ScopeCompany)
@@ -106,7 +120,7 @@ func TestFirstContentEpochActivatesAtNewRunBoundary(t *testing.T) {
 	if err := settleAndActivateFoundations(legacy, active, founder, company, newCompany); err != nil {
 		t.Fatal(err)
 	}
-	if save.VersionForState(company) != save.CurrentVersion || save.VersionForState(newCompany) != 17 || save.VersionForState(founder) != 21 {
+	if save.VersionForState(company) != save.CurrentVersion || save.VersionForState(newCompany) != 18 || save.VersionForState(founder) != 21 {
 		t.Fatalf("versions old_company=%d new_company=%d founder=%d", save.VersionForState(company), save.VersionForState(newCompany), save.VersionForState(founder))
 	}
 	if len(newCompany.MeterValues) != 11 || len(newCompany.AchievementsEarnedRun) != 0 || newCompany.AchievementScoreRun != 0 ||
@@ -126,7 +140,7 @@ func TestFirstContentEpochActivatesAtNewRunBoundary(t *testing.T) {
 }
 
 func TestFirstContentEpochInitializesFreshFounderWithFullSet(t *testing.T) {
-	active := activeFirstContentBundle(t)
+	active := activeContentBundle(t)
 	now := time.Date(2026, 8, 9, 13, 0, 0, 0, time.UTC)
 	founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
 	company := foundationScopeState(t, active.Economy, economy.ScopeCompany)
@@ -136,7 +150,7 @@ func TestFirstContentEpochInitializesFreshFounderWithFullSet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if save.VersionForState(founder) != 21 || save.VersionForState(company) != 17 || len(frozen) != len(active.Fiscal.GeneratorLevelRows())+1 ||
+	if save.VersionForState(founder) != 21 || save.VersionForState(company) != 18 || len(frozen) != len(active.Fiscal.GeneratorLevelRows())+1 ||
 		len(founder.Pets) != 0 || founder.Soul != active.Soul.Policy.Initial || len(founder.MinigameRatings) != 1 {
 		t.Fatalf("fresh Founder founder=%+v company=%+v frozen=%+v", founder, company, frozen)
 	}

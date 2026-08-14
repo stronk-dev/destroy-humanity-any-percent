@@ -206,7 +206,7 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 		uiSnapshot.Generators[0].ID != "generator.beige_tower" || uiSnapshot.Generators[1].ID != "generator.legal_dept" {
 		t.Fatalf("Game UI snapshot=%+v", uiSnapshot)
 	}
-	if composition.CurrentHash != "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a" {
+	if composition.CurrentHash != "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789" {
 		t.Fatalf("composed constants hash=%s", composition.CurrentHash)
 	}
 	currentBundle, ok := composition.Catalogs.bundle(composition.CurrentHash)
@@ -236,13 +236,14 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
-	if activeCompany.Version != 17 || activeCompany.ConstantsHash != composition.CurrentHash || founderVersion != 21 || founderHash != composition.CurrentHash {
+	if activeCompany.Version != 18 || activeCompany.ConstantsHash != composition.CurrentHash || founderVersion != 21 || founderHash != composition.CurrentHash {
 		t.Fatalf("fresh activation company=(v%d,%s) founder=(v%d,%s)", activeCompany.Version, activeCompany.ConstantsHash, founderVersion, founderHash)
 	}
-	if len(companyState.MeterValues) != 11 || companyState.AchievementsEarnedRun == nil ||
+	if len(companyState.MeterValues) != 11 || companyState.AchievementsEarnedRun == nil || companyState.NextOpportunityAttendedMS != 0 ||
+		companyState.PendingOpportunity != nil || companyState.ActiveBuffs == nil ||
 		len(founderState.MinigameRatings) != 1 || founderState.MinigameOfflineQuality == nil || founderState.Pets == nil ||
 		founderState.FiscalPeriodOpenedWallMS == 0 || founderState.Soul != currentBundle.Soul.Policy.Initial {
-		t.Fatalf("fresh epoch-6 state company=%+v founder=%+v", companyState, founderState)
+		t.Fatalf("fresh epoch-7 state company=%+v founder=%+v", companyState, founderState)
 	}
 	if err := currentBundle.ValidateFoundationState(companyState); err != nil {
 		t.Fatalf("fresh Company state: %v", err)
@@ -789,7 +790,7 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if companyVersion, founderVersion := save.VersionForState(loadedCompany.State), save.VersionForState(loadedFounder.State); companyVersion != 17 || founderVersion != 21 {
+	if companyVersion, founderVersion := save.VersionForState(loadedCompany.State), save.VersionForState(loadedFounder.State); companyVersion != 18 || founderVersion != 21 {
 		t.Fatalf("pre-Exit activation versions company=%d founder=%d", companyVersion, founderVersion)
 	}
 	exit := `{"intent_id":"01985555-5002-7000-8000-000000000502","kind":"wind_down","expected_revision":2,"expected_founder_revision":1}`
@@ -811,7 +812,7 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 		t.Fatalf("pinned genesis version=%d does not restore: %v", pinnedVersion, err)
 	}
 	var pinnedArtifactCount int
-	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM catalog_artifacts WHERE constants_hash=$1`, composition.CurrentHash).Scan(&pinnedArtifactCount); err != nil || pinnedArtifactCount != 16 {
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM catalog_artifacts WHERE constants_hash=$1`, composition.CurrentHash).Scan(&pinnedArtifactCount); err != nil || pinnedArtifactCount != 18 {
 		t.Fatalf("pinned artifact count=%d err=%v", pinnedArtifactCount, err)
 	}
 	var pinnedReplayBundle production.CatalogBundle
@@ -835,6 +836,16 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 		statusErr := db.QueryRowContext(ctx, `SELECT status FROM verification_queue WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&status)
 		boardErr := db.QueryRowContext(ctx, `SELECT count(*) FROM verified_runs WHERE run_id=$1 AND category_id='any_percent'`, companyRevision.StreamID+":1").Scan(&boardRows)
 		if statusErr == nil && boardErr == nil && status == "verified" && boardRows == 1 {
+			activeRun, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			activeState, restoreErr := save.RestoreState(activeRun.State, activeRun.Version, pinnedReplayBundle.Economy, economy.ScopeCompany, now)
+			if restoreErr != nil || activeRun.Version != 18 || activeRun.ConstantsHash != composition.CurrentHash || activeState.RunSeq != 2 ||
+				activeState.OpportunitySpawnSeq != 0 || activeState.NextOpportunityAttendedMS <= 0 ||
+				activeState.PendingOpportunity != nil || activeState.ActiveBuffs == nil {
+				t.Fatalf("epoch-7 new-run activation=%+v state=%+v err=%v", activeRun, activeState, restoreErr)
+			}
 			var retainedExitWitness int
 			if err := db.QueryRowContext(ctx, `SELECT count(*) FROM run_log log
 				WHERE log.company_stream_id=$1 AND log.run_seq=1 AND EXISTS (

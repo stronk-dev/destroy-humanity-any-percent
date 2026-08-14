@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "current_epoch_id": 6,
+  "current_epoch_id": 7,
   "artifacts": [
     { "name": "commons", "path": "balance/commons/phase0.json" },
     { "name": "economy", "path": "balance/catalogs/phase0.json" },
@@ -17,7 +17,9 @@
     { "name": "minigames", "path": "balance/minigames/first-content.json" },
     { "name": "pets", "path": "balance/pets/first-content.json" },
     { "name": "pitch", "path": "balance/pitch.json" },
-    { "name": "soul", "path": "balance/soul/first-content.json" }
+    { "name": "soul", "path": "balance/soul/first-content.json" },
+    { "name": "opportunities", "path": "balance/opportunities/t0-t1.json" },
+    { "name": "relevance", "path": "balance/relevance/t0-t1.json" }
   ],
   "epochs": [
     {
@@ -67,6 +69,14 @@
       "changelog_ref": "changelog/epoch-6.md",
       "accepted_hashes": [
         "sha256:1a4463bcf67440ce1ba01e6c6eb850c0614329cac63064ef07725d042c7cf21a"
+      ]
+    },
+    {
+      "epoch_id": 7,
+      "name": "T0-T1 Playable Content",
+      "changelog_ref": "changelog/epoch-7.md",
+      "accepted_hashes": [
+        "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789"
       ]
     }
   ]

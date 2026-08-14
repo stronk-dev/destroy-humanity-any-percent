@@ -1378,9 +1378,10 @@ func makeActiveFoundationExitFixture(t *testing.T, now time.Time) crossRuntimeAc
 
 func makeFirstContentExitFixture(t *testing.T, now time.Time) crossRuntimeActiveExit {
 	t.Helper()
-	catalogs := activeFirstContentBundle(t)
+	catalogs := activeContentBundle(t)
 	company := replayFixtureState(t, catalogs.Economy, now.Add(-20*time.Minute))
-	company.WireVersion = 17
+	company.WireVersion = 18
+	company.ActiveBuffs = []save.ActiveBuff{}
 	company.MeterBands = nil
 	meterState, err := meters.NewRunState(catalogs.Meters, 9)
 	if err != nil {
@@ -1419,12 +1420,21 @@ func makeFirstContentExitFixture(t *testing.T, now time.Time) crossRuntimeActive
 	carry := founderCarry(founder)
 	carry.FounderRevision, carry.FounderConstantsHash = 2, catalogs.ConstantsHash
 	minigameActive := false
+	activeEvidence, err := resolveActivePlaySchedule(company, catalogs.Opportunities, catalogs.Prestige,
+		"01986666-2c00-7000-8000-000000000001", now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	nextSpawn, err := catalogs.Opportunities.Spawn("01986666-2c00-7000-8000-000000000001", company.RunSeq+1, 0, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1c00-7000-8000-000000000001",
 		FounderID: "01986666-2c00-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
 	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
 		RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
 		SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: catalogs.ConstantsHash,
-		MinigameSessionActive: &minigameActive})
+		ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn), MinigameSessionActive: &minigameActive})
 	if err != nil {
 		t.Fatal(err)
 	}

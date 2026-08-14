@@ -62,6 +62,6 @@ integration suite writes a real buff claim through service, store, and Postgres 
 rows, so the database contract is exercised rather than inferred from unit validation.
 
 Live and replay transitions compare state, receipts, and ordered event bytes. The Company-v18 codec,
-artifact activation, and Exit reset are enforced in both runtimes. No production epoch currently
-pins the opportunities artifact; the mechanism and its verification surface are implemented ahead
-of the content mint.
+artifact activation, and Exit reset are enforced in both runtimes. Epoch 7 pins
+`balance/opportunities/t0-t1.json`; new runs on that epoch activate the mechanic while older runs
+continue against their immutable accepted bundle.

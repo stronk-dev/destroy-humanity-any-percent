@@ -10,6 +10,11 @@
   },
   "gates": [
     {
+      "gate_id": "gate.t0_to_t1",
+      "requirement": [{ "resource_id": "company.cash", "amount": "1e5" }],
+      "routes": []
+    },
+    {
       "gate_id": "gate.t2_to_t3",
       "requirement": [{ "resource_id": "company.cash", "amount": "1e9" }],
       "routes": []

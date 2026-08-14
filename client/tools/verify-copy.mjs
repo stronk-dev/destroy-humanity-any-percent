@@ -76,6 +76,13 @@ const keys = new Set(built.artifact.entries.map((entry) => entry.key));
 const missing = new Set(keys);
 missing.delete("category.any_percent");
 expectFailure("missing-copy completeness fixture", () => validateReferences(references, missing, codeReferences), /categories:\/categories\/0\/name_key:category\.any_percent/);
+const missingPrefixMember = new Set(keys);
+missingPrefixMember.delete("upgrade.continuous_feed_paper.title");
+expectFailure(
+  "missing-copy-prefix member fixture",
+  () => validateReferences(references, missingPrefixMember, codeReferences),
+  /economy:\/upgrades\/2\/copy_key:upgrade\.continuous_feed_paper\.title/,
+);
 
 for (const [filename, expected] of generatedOutputs()) {
   let actual;

@@ -14,7 +14,7 @@ func TestFixtureArtifactSetIsManifestDriven(t *testing.T) {
 	}
 	want := []string{
 		"achievements", "categories", "commons", "doctrines", "economy", "factions", "fiscal", "guilds",
-		"meters", "minigame_api", "minigames", "pets", "pitch", "prestige", "routes", "soul",
+		"meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "prestige", "relevance", "routes", "soul",
 	}
 	if len(bundle.Artifacts) != len(want) || !Accepts(Current(bundle.Seed), bundle.Hash) {
 		t.Fatalf("artifacts=%v hash=%s", bundle.Artifacts, bundle.Hash)

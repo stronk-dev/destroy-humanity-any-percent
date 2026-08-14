@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "full_gate_set": ["gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8"],
+  "full_gate_set": ["gate.t0_to_t1", "gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8"],
   "fact_sets": {
     "completion_set": [],
     "forbidden_set": ["darkpattern.", "externality."]

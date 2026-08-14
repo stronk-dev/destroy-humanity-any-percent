@@ -14,7 +14,7 @@ const paramTypes = new Set(["canonical_decimal", "integer", "string"]);
 const textKinds = new Set(["longform", "plain"]);
 const eras = new Set(["era_1995", "era_2000"]);
 const statuses = new Set(["model", "plausible", "verified"]);
-const fieldKinds = new Set(["copy_key", "name_key", "reason_key"]);
+const fieldKinds = new Set(["copy_key", "copy_prefix", "name_key", "reason_key"]);
 const artifactSchemas = Object.freeze({
   achievements: "balance/achievements.schema.json",
   categories: "balance/leaderboards.schema.json",
@@ -427,8 +427,11 @@ export function validateReferences(value, copyKeys, codeReferences) {
     const artifact = readJSON(path.join(repositoryRoot, artifactPath));
     for (const match of walkPointer(artifact, segments)) {
       if (typeof match.value !== "string" || !mechanicalID.test(match.value)) fail(`${row.artifact_name}:${match.path}`, "copy reference must be a mechanical ID");
-      if (!copyKeys.has(match.value)) fail(`${row.artifact_name}:${match.path}:${match.value}`, "missing copy key");
-      referenced.add(match.value);
+      const keys = row.field_kind === "copy_prefix" ? [`${match.value}.description`, `${match.value}.title`] : [match.value];
+      for (const key of keys) {
+        if (!copyKeys.has(key)) fail(`${row.artifact_name}:${match.path}:${key}`, "missing copy key");
+        referenced.add(key);
+      }
     }
   }
   for (const key of codeReferences) if (!copyKeys.has(key)) fail(`code:${key}`, "missing copy key");

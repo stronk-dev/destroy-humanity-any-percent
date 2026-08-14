@@ -29,7 +29,7 @@
     {
       "artifact_name": "economy",
       "json_pointer_pattern": "/upgrades/*/copy_key",
-      "field_kind": "copy_key"
+      "field_kind": "copy_prefix"
     },
     {
       "artifact_name": "factions",
