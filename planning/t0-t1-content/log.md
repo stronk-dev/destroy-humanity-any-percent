@@ -2314,3 +2314,16 @@ Ruled by Marco (recorded by Claude from the owner's explicit selections):
    changes; it must state the intended first-hour job per design/01–02, carry branch + whole-path
    measurements under the ratified instrument, and touch nothing else in the ratified candidate
    without reopening this ruling. Claude drafts the proposal (design lane); Codex measures it.
+
+## 2026-08-14 — Claude C28 role-redesign proposal filed — OWNER SIGN-OFF REQUIRED
+
+`planning/t0-t1-content/btv2-role-redesign-proposal.md`. Recommended: ADD
+`synergy_feed → pool.institutional_knowledge` (ppm measured, 2,000–50,000 sweep) and KEEP the
+provision row — every other T1 generator already feeds the knowledge pool, the ratified BTv2 copy
+("New Beige Towers just arrive") survives untouched, the C23 provision fixture and §11b chain edge
+stay covered, and the diff is one role row plus one pool-source row. Fallback lever if no ppm
+passes: BTv2 price swept within [1e8, 3.58e8] as one atomic row revision. If both sweeps fail,
+C28 returns as a finding, never a stretched literal. Also records the design consequence for T2+:
+unit-per-grid provisioning cannot carry relevance across a ~5e5 intra-tier scale gap because
+generated counts earn no per-count multipliers; target-side scaling belongs to the T2 content RFC.
+Codex measures after sign-off; exact literals return through designated review.
