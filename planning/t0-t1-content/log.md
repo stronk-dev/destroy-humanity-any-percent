@@ -1816,3 +1816,28 @@ redesign, or silently bundle these four rows into C24 without an owner ruling.
   remedy is mechanically sound and honestly derived; whether near-free trinket upgrades are the
   intended game feel, or the generator paths are the real defect, is the owner's call and is being
   put to the owner explicitly. **No findings against the calibration itself.**
+
+## 2026-08-14 — OWNER RULING: C24 tuple REJECTED; holistic balance diagnosis ordered (supersedes the price-only remedy)
+
+Ruled by Marco (recorded by Claude from the owner's explicit selections):
+
+1. **The proposed T0 tuple `{900, 8, 10, 10}` is REJECTED — no price lands.** Not because the
+   calibration was wrong (it reproduced exactly and is good work), but because of what it revealed:
+   three of the four rows only become "relevant" at near-free prices, and for two of them the
+   structural cause is that their target generators (`generator.answering_machine`,
+   `generator.nephew_intern`) barely contribute on the milestone path at all. Pricing upgrades as
+   token pickups to satisfy a floor is treating the symptom. **T01-C24's price-only constraint is
+   superseded by this ruling** (the ruling author reconciling their own contract, per evidence
+   rule 5): upgrades and generators are one balance problem and get one combined proposal.
+2. **T01-C25 (the four dead T1 upgrades) — diagnose before pricing.** No tuple derivation yet.
+   First establish WHY each row is dead (mispriced, or boosting the wrong thing — the same class of
+   question as the T0 generator paths), then propose either prices or a design change.
+
+**Authorized next step (Codex):** one diagnostic pass over the full T0–T1 dead-content structure —
+the four T0 upgrades, the two weak T0 generator paths, and the four T1 upgrades — answering, per
+row: what role does this content play in the intended first hour (design/01–02), why is it
+currently outside the reference trajectory, and what is the smallest change (price, curve, effect
+target, unlock timing, or redesign) that gives it a real job. Deliver one coordinated proposal for
+owner sign-off. Redesigns may be PROPOSED but nothing is authorized to change without the owner's
+explicit acceptance of the proposal; design/02's formula shapes remain binding; no trap exemptions.
+The C24 calibration record stays as measurement evidence for that proposal.
