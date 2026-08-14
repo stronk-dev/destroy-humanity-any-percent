@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -18,7 +18,7 @@ CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
 BROWSER_TEST_FLAGS ?=
 RELEVANCE_SCENARIO ?= balance/testdata/t0-t1/relevance-scenario-v2.json
 RELEVANCE_OUTPUT ?= planning/t0-t1-content/relevance-report.v5.json
-RELEVANCE_BRANCH_INPUT ?= planning/t0-t1-content/relevance-report.v5.diagnostic.json
+RELEVANCE_BRANCH_INPUT ?=
 RELEVANCE_BRANCH_OUTPUT ?= planning/t0-t1-content/branch-report.v2.json
 
 setup:
@@ -167,6 +167,16 @@ t0-t1-branch-check:
 	$(MAKE) relevance-branches || status=1; \
 	$(MAKE) relevance-branches \
 		RELEVANCE_SCENARIO=balance/testdata/t0-t1/relevance-scenario-t1-v2.json \
+		RELEVANCE_BRANCH_OUTPUT=planning/t0-t1-content/branch-report-t1.v2.json || status=1; \
+	exit $$status
+
+# Fast path for a combined run that has just produced hash-matched diagnostics.
+t0-t1-branch-check-from-reports:
+	@status=0; \
+	$(MAKE) relevance-branches \
+		RELEVANCE_BRANCH_INPUT=planning/t0-t1-content/relevance-report.v5.diagnostic.json || status=1; \
+	$(MAKE) relevance-branches \
+		RELEVANCE_SCENARIO=balance/testdata/t0-t1/relevance-scenario-t1-v2.json \
 		RELEVANCE_BRANCH_INPUT=planning/t0-t1-content/relevance-report-t1.v5.diagnostic.json \
 		RELEVANCE_BRANCH_OUTPUT=planning/t0-t1-content/branch-report-t1.v2.json || status=1; \
 	exit $$status
@@ -178,7 +188,7 @@ t0-t1-relevance-all: t0-t1-role-check
 	@status=0; \
 	$(MAKE) t0-t1-relevance || status=1; \
 	$(MAKE) t1-relevance || status=1; \
-	$(MAKE) t0-t1-branch-check || status=1; \
+	$(MAKE) t0-t1-branch-check-from-reports || status=1; \
 	exit $$status
 
 # Manual diagnostic only: intentionally absent from verify, CI, and release gates.

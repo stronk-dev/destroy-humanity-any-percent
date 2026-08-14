@@ -139,7 +139,9 @@ purchase and its cost in both cloned completions. The prefix removes and disclos
 upgrade as well as every generator beyond the target branch. The schema-v2 report distinguishes
 generator and upgrade rows explicitly. A supplied whole-path report is accepted only when its
 scenario, constants, and relevance-policy hashes match the loaded suite; omitting it performs the
-measurement inline. This lane does not replace the main
+measurement inline. `make t0-t1-branch-check` is therefore self-contained on a clean checkout;
+`make t0-t1-branch-check-from-reports` is the explicit reuse path after the combined gate has just
+written hash-matched diagnostics. This lane does not replace the main
 unmasked reference, whole-path pacing, or the deviation oracle, and it cannot grant a trap exemption.
 
 Production candidates use phase-scoped relevance policies. The T0 scenario measures rows whose
