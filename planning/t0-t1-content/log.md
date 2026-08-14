@@ -2584,3 +2584,23 @@ for the designated cross-party review; no approval or archival is claimed.
   the main path or its branch proof, and every remaining report failure is an instrument-affected
   disclosure carried by a passing proof. AC2's evidence set is complete pending the epoch-7
   runner's report.
+
+## 2026-08-14 — Claude finding (self-filed): the epoch-7 mint proceeded against unmet AC0
+
+- **Filed by:** Claude, against its own mint-runway presentation. The T01 RFC's bold F1
+  precondition — "may not mint until online evaluation drives offline catchup at session
+  boundaries" (arm ruled 2026-08-08: session-boundary catchup, clamp REJECTED) — is UNMET:
+  no catchup exists in the gameserver (verified: no `ModeOffline` caller outside harness code;
+  `engine.go:183` hard-rejects online horizons past the accrual cap when provisioning is active),
+  the plan box is unchecked, and epoch 7 activates provisioning via BTv2's retained provision
+  role. The superseded C28 "provisioning ships unexercised" consequence briefly made this look
+  moot; C29's reversal re-armed it and no record re-flagged AC0. The mint sign-off I presented to
+  the owner did not re-walk the acceptance list. **Exposure today: none** — the mint is local,
+  unpushed, playerless; the content bytes are unaffected.
+- **Remedy (proportionate, no unwind):** AC0 is added to the still-open mint-range closeout
+  alongside EH-C16. The designated review of the mint range WILL NOT PASS, and the epoch may not
+  be archived or published, until the ruled session-boundary offline catchup lands with its
+  fixture: a founder idle beyond `accrual_cap_ms` on the provisioning epoch-7 catalog resumes
+  un-bricked with exactly the canonical 90%/24h offline-policy accrual, then online evaluation
+  proceeds from the caught-up cursor. Owner-ruled arm and fixture wording are already pinned in
+  the RFC's T0 section; no new ruling is required — only the implementation and its proof.
