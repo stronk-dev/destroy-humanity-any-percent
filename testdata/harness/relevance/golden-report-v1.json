@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "scenario_id": "scenario.relevance_fixture",
   "scenario_hash": "sha256:c8d977428cb86385ad91b3d291c8a7be7f690638977ba6c5659f93222a0b8cb0",
   "constants_hash": "sha256:b91243997defd085624689a614d2db5d827b9d79c4f1b3f8cd8b302008eb8d6e",
@@ -18,6 +18,9 @@
     "eligible_coordinates": 9,
     "selected_coordinates": 9,
     "executed_probes": 10,
+    "reached_probes": 10,
+    "unreached_probes": 0,
+    "starved_probes": 0,
     "unprobed_coordinates": 0,
     "maximum_forced_deviations": 1,
     "maximum_ppm": 25000,
