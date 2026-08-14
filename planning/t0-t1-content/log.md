@@ -1700,3 +1700,50 @@ only the final hashes. The owner's unrelated `AGENTS.md` edit remains unstaged a
 **No candidate content hash changed, C24 has not started, nothing was pushed or archived.** Ready
 for the designated cross-party pass over `{9d71857, b3e92b7}`. The previously approved H-A/H-B
 report-disclosure notes remain carried and were not expanded into unruled report grammar here.
+
+## 2026-08-14 — Claude designated cross-party review of T01-C22/C23 `{9d71857, b3e92b7, 2dfa352}` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `7ece822..2dfa352` =
+  `{9d71857, b3e92b7, 2dfa352}` — extended past the cited implementation pair to include the
+  handoff commit, so the range unions the span. No `plan.md` changed.
+- **Executed:** `make test-harness -count=1` (GREEN, 25.5 s); `make t0-t1-role-check` (GREEN, all
+  11 rows); both candidate gates; `make verify-server -count=1` (exit 0).
+- **Both gates reproduce the handoff to the digit:** T0 unchanged at 173,025 transitions with the
+  four ruled C24 findings and `role_floor:generator.nephew_intern` gone; T1 completes at 2,816,696
+  under the unchanged 5,000,000 with all three context-only role findings gone and
+  `upgrade.rack_rail_standardization` now passing after the real crossing.
+
+**C22 verified as ruled.** Progression applies only the real `cross_gate` intent through
+`SimulateTransition` — never a direct `Tier`/`GatesCrossed` write — locates the first eligible
+boundary by bisection on cloned states, counts all probe/advance/crossing work in the shared
+counter, fails loud with the production receipt on rejection, and excludes the terminal gate. All
+four arms (personas, traced reference, beam, ranked completion) progress identically. The
+discriminating fixture proves rejected-before/purchasable-after and the exact 1,000-ms first
+eligible boundary. Schema-v1 fixtures are exempted explicitly with the historical-bytes rationale.
+
+**C23 verified as ruled.** `TestT0T1CandidateRoleActivations` enumerates the 11 declared rows from
+the exact candidate bytes and pins the count so a new role row cannot silently skip the gate. Each
+row gets the minimum honest context (real faction accrual hook for `stock_rate`, post-ownership
+manual click, grid-crossing provision counts) and a generator-masked control that must remove both
+the activation tuple and a non-neutral state effect — a real failing case per evidence rule 1.
+`role_floor` no longer exists as a relevance failure; the gate is wired into `verify-harness` and
+ahead of `t0-t1-relevance-all`. The golden change is exactly the one-line deletion claimed.
+
+**History repackaging accepted.** The pre-handoff rewrite of `{bf2f7fb, 239b54c}` fits the
+sanctioned window precisely: a `BALANCE-CHANGE:` packaging-order violation, unpushed, cited by no
+verdict, disclosed in the handoff with the old hashes named.
+
+**Notes (LOW, non-blocking):** (1) `gateRequirementsMet` reimplements gate requirement evaluation
+in the harness rather than calling a production-owned predicate — correct today for
+resource-threshold requirements, but it will silently diverge if Routes ever grows another
+requirement kind; a shared predicate or a loud unknown-kind failure would pin it. (2) The
+`stock_rate` fixture's 120s catchup policy literal is fixture-local; fine as a floor probe, worth a
+comment that it is not the shipped policy value.
+
+**Verdict: APPROVED.** C22/C23 discharge their contracts. The remaining content findings are now
+all genuine balance evidence: the four ruled C24 T0 upgrades, and — new, real — four T1 upgrades
+(`crt_degauss_button`, `employee_handbook_v0`, `institutional_memory`, `refurbished_sticker`) dead
+under a valid post-crossing T1 measurement, plus the instrument-affected Beige Tower v2 exclusion.
+**C24 may proceed**, and its coordinated tuple derivation should decide whether it covers the four
+T1 rows too or files them separately — that scope call belongs to the C24 change, not this verdict.
+Candidate hashes untouched; nothing pushed; `AGENTS.md` untouched.
