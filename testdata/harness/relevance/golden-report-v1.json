@@ -291,7 +291,6 @@
     "instrument_affected:trap_floor:generator.alpha",
     "relevance_floor:upgrade.alpha",
     "relevance_floor:upgrade.dead",
-    "role_floor:generator.alpha",
     "trap_floor:upgrade.dead"
   ]
 }
