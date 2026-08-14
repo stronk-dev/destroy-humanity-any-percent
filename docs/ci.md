@@ -11,7 +11,7 @@ runners, deployment credentials, or deployment steps.
 
 | Job | Repository command | Coverage |
 |---|---|---|
-| `server` | `make verify-server` | Go vet/tests plus generated production-formula drift |
+| `server` | `make verify-server-core` | Cold Go vet/tests outside the parallel harness lane, plus generated production-formula/API drift |
 | `client` | `make verify-client` | strict TypeScript and Node/V8 tests; full Git history is required by KV-1 |
 | `browser` | `make test-browser` | Chromium, Firefox, and WebKit functional suites, then isolated Chromium performance |
 | `schema` | `make verify-schema` | schema compilation plus production and fixture catalogs |
@@ -100,7 +100,7 @@ make vectors-check
 make vectors-check-ci
 ```
 
-`make test-go-ci` reproduces the blocking server job cold on Linux/amd64 with
+`make test-go-ci` reproduces the complete Go suite cold on Linux/amd64 with
 Postgres, including packages whose integration tests are not selected by the
 focused `test-save-integration` target.
 
@@ -122,8 +122,11 @@ described in the Game UI docs.
 `CI=true` in the pinned Linux Playwright image, using fresh anonymous `node_modules` and
 pnpm-store volumes on every invocation. Actions installs the same pinned browser versions
 explicitly on its ordinary Ubuntu runner. `make verify-server-ci` runs the complete server gate on
-linux/amd64 against the repository's Postgres test service. Use these targets when host-platform
-success could mask scheduling, architecture, or cold-run behavior.
+linux/amd64 against the repository's Postgres test service. `test-go-core` and therefore
+`verify-server-core` always pass an explicit `-count=$(CORE_TEST_COUNT)` (default `1`), so restored
+compiler/module caches cannot restore test results; increase `CORE_TEST_COUNT` for focused stress
+runs. Use these targets when host-platform success could mask scheduling, architecture, or
+cold-run behavior.
 
 `make test-game-ui-composed` starts its isolated repository Postgres service, the real composed gameserver,
 and Vite, then drives Chromium through anonymous bootstrap, an authenticated live

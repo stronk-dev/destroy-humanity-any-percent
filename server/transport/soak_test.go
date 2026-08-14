@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -122,18 +123,68 @@ func sniffWorldPublications(connection *websocket.Conn, result chan<- error) {
 			result <- err
 			return
 		}
-		var reply protocolPushReply
-		if err := json.Unmarshal(data, &reply); err != nil || reply.Push == nil || reply.Push.Publication == nil || reply.Push.Channel != "world" {
-			result <- fmt.Errorf("invalid public push %s: %v", data, err)
+		revisions, err := worldPublicationRevisions(data)
+		if err != nil {
+			result <- err
 			return
 		}
-		var envelope Envelope
-		if err := json.Unmarshal(reply.Push.Publication.Data, &envelope); err != nil || envelope.Channel != "world" || envelope.Kind != "snapshot" ||
-			envelope.Revision <= lastRevision || envelope.Revision > soakWorldTicks {
-			result <- fmt.Errorf("unexpected public envelope %s: %v", reply.Push.Publication.Data, err)
-			return
+		for _, revision := range revisions {
+			if revision <= lastRevision || revision > soakWorldTicks {
+				result <- fmt.Errorf("unexpected world revision %d after %d", revision, lastRevision)
+				return
+			}
+			lastRevision = revision
 		}
-		lastRevision = envelope.Revision
 	}
 	result <- nil
+}
+
+// worldPublicationRevisions mirrors the browser runtime's JSON stream
+// boundary: one WebSocket message may contain newline-delimited replies, and a
+// Centrifuge batch whose publications were all coalesced away may be empty.
+// Protocol keepalives and command replies carry no push and are ignored; any
+// actual push must still be a valid world snapshot.
+func worldPublicationRevisions(data []byte) ([]int64, error) {
+	var revisions []int64
+	for _, line := range bytes.Split(data, []byte{'\n'}) {
+		line = bytes.TrimSpace(line)
+		if len(line) == 0 {
+			continue
+		}
+		var reply protocolPushReply
+		if err := json.Unmarshal(line, &reply); err != nil {
+			return nil, fmt.Errorf("invalid public frame %s: %w", line, err)
+		}
+		if reply.Push == nil {
+			continue
+		}
+		if reply.Push.Publication == nil || reply.Push.Channel != "world" {
+			return nil, fmt.Errorf("invalid public push %s", line)
+		}
+		var envelope Envelope
+		if err := json.Unmarshal(reply.Push.Publication.Data, &envelope); err != nil {
+			return nil, fmt.Errorf("invalid public envelope %s: %w", reply.Push.Publication.Data, err)
+		}
+		if envelope.Channel != "world" || envelope.Kind != "snapshot" || envelope.Revision < 1 {
+			return nil, fmt.Errorf("unexpected public envelope %s", reply.Push.Publication.Data)
+		}
+		revisions = append(revisions, envelope.Revision)
+	}
+	return revisions, nil
+}
+
+func TestWorldPublicationRevisionsAcceptsProtocolFramesAndBatches(t *testing.T) {
+	first := `{"push":{"channel":"world","pub":{"data":{"v":2,"ch":"world","kind":"snapshot","rev":1}}}}`
+	second := `{"push":{"channel":"world","pub":{"data":{"v":2,"ch":"world","kind":"snapshot","rev":2}}}}`
+	revisions, err := worldPublicationRevisions([]byte("\n{}\n{\"id\":7}\n" + first + "\n" + second))
+	if err != nil || len(revisions) != 2 || revisions[0] != 1 || revisions[1] != 2 {
+		t.Fatalf("protocol stream revisions=%v err=%v", revisions, err)
+	}
+	if revisions, err = worldPublicationRevisions(nil); err != nil || len(revisions) != 0 {
+		t.Fatalf("empty filtered batch revisions=%v err=%v", revisions, err)
+	}
+	receipt := []byte(`{"push":{"channel":"world","pub":{"data":{"v":2,"ch":"world","kind":"receipt","rev":3}}}}`)
+	if _, err = worldPublicationRevisions(receipt); err == nil {
+		t.Fatal("private receipt-shaped world push accepted")
+	}
 }

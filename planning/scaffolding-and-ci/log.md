@@ -176,3 +176,35 @@ regression test discriminates only on linux/amd64 (by nature; the CI gate carrie
   the job this commit exists to repair is green on the infrastructure it was red on. No product
   assertion count was weakened (19,993 with two declared skips, matching the record).
 - **No findings.** APPROVED.
+
+## 2026-08-14 — Codex repair of Actions run 31797558199 `verify-server-core` soak failure — READY FOR DESIGNATED REVIEW
+
+- **Implemented by:** Codex. **Recorded by:** Codex. This is an implementation record, not a
+  designated verdict. The supplied public job was inspected directly with `gh run view`; it ran at
+  `ebcfc15` and its sole failing assertion was
+  `TestFiveThousandConnectionWorldFanoutSoak`: subscriber 0 received an empty JSON application
+  frame, which the test tried to decode as a world publication (`unexpected end of JSON input`).
+- **Root cause:** Centrifuge's batch writer calls its transport `WriteMany` after the application's
+  `OnTransportWrite` filter. When every queued stale/coalesced world item in one batch is filtered,
+  the resulting JSON batch is empty and the WebSocket transport writes an empty application frame.
+  The real browser runtime already splits newline-delimited protocol frames and ignores empty
+  lines, keepalives, and command replies. The soak incorrectly required every WebSocket frame to
+  contain exactly one publication, so it could fail under legitimate batching/coalescing even
+  though the player runtime remained connected.
+- **Repair:** the soak now uses a strict JSON-stream decoder matching the runtime boundary. It
+  ignores only empty/whitespace frames and valid replies without a push; it decodes every
+  newline-delimited push and still rejects malformed JSON, non-world pushes, private receipt kinds,
+  invalid envelopes, and non-monotone/out-of-range revisions. A focused test pins empty filtered
+  batches, `{}` keepalives, command replies, multi-publication frames, and the receipt-leak negative
+  case.
+- **Gate hardening:** `test-go-core` now passes explicit `-count=$(CORE_TEST_COUNT)`, default `1`.
+  Therefore the hosted `make verify-server-core` job cannot satisfy its package tests from Go's
+  result cache; callers may raise the count without bypassing the repository Make target. Canonical
+  CI docs now name the actual hosted command and its cold-run contract.
+- **Verification:** the original soak passed **50 consecutive Linux/amd64 runs** (250,000 total
+  WebSocket connections) after the repair. The exact `make verify-server-ci` Linux/Postgres wrapper
+  then ran the complete hosted `verify-server-core` command successfully. No product transport
+  behavior, wire byte, balance artifact, or kernel version changed.
+
+Nothing was pushed or rerun remotely. This test/CI batch must join the current designated-review
+range before any completion claim.

@@ -6,6 +6,7 @@ REPO_CACHE_DIR ?= $(CURDIR)/.cache
 export GOCACHE ?= $(REPO_CACHE_DIR)/go-build
 GO_PACKAGES ?= ./...
 GO_TEST_FLAGS ?=
+CORE_TEST_COUNT ?= 1
 SAVE_TEST_PACKAGES ?= ./...
 SAVE_TEST_FLAGS ?= -run Integration
 SAVE_TEST_COUNT ?= 1
@@ -37,7 +38,7 @@ test-go:
 # harness lane while allowing hosted CI to run the remaining server suite in
 # parallel; the expensive beam is manual-only and is not part of either lane.
 test-go-core:
-	cd server && go test -p 1 $(GO_TEST_FLAGS) $$(go list ./... | grep -v '^cloud-clicker/server/harness$$')
+	cd server && go test -p 1 $(GO_TEST_FLAGS) $$(go list ./... | grep -v '^cloud-clicker/server/harness$$') -count=$(CORE_TEST_COUNT)
 
 test-harness:
 	cd server && go test -p 1 $(GO_TEST_FLAGS) ./harness
