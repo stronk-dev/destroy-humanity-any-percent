@@ -40,14 +40,14 @@ export interface RelevancePolicy {
   readonly groups: readonly RelevancePolicyGroup[];
 }
 
-export function parseRelevancePolicy(source: string, catalog: RelevanceCatalogView, gateIds: readonly string[]): RelevancePolicy {
+export function parseRelevancePolicy(source: string, catalog: RelevanceCatalogView, gateIds: readonly string[], requireComplete = true): RelevancePolicy {
   validateExactPolicyNumbers(source);
   let parsed: unknown;
   try { parsed = JSON.parse(source) as unknown; } catch (error) { throw new SyntaxError(`invalid relevance policy JSON: ${String(error)}`); }
-  return parseRelevancePolicyObject(parsed, catalog, gateIds);
+  return parseRelevancePolicyObject(parsed, catalog, gateIds, requireComplete);
 }
 
-function parseRelevancePolicyObject(source: unknown, catalog: RelevanceCatalogView, gateIds: readonly string[]): RelevancePolicy {
+function parseRelevancePolicyObject(source: unknown, catalog: RelevanceCatalogView, gateIds: readonly string[], requireComplete: boolean): RelevancePolicy {
   const root = exactObject(source, ["schema_version", "items", "groups"], "relevance policy");
   if (root.schema_version !== 1 && root.schema_version !== 2 || !Array.isArray(root.items) || !Array.isArray(root.groups)) throw new SyntaxError("invalid relevance policy envelope");
   const schemaVersion = root.schema_version;
@@ -72,7 +72,7 @@ function parseRelevancePolicyObject(source: unknown, catalog: RelevanceCatalogVi
       epsilon_ms: safePositive(row.epsilon_ms, "item epsilon"), trap_exempt: row.trap_exempt,
       justification_key: justification, group_ids: sortedMechanical(row.group_ids, "item groups") });
   });
-  if (items.length !== purchasables.size || items.some((item) => !purchasables.has(item.purchasable_id))) throw new SyntaxError("incomplete relevance item set");
+  if ((requireComplete && items.length !== purchasables.size) || items.some((item) => !purchasables.has(item.purchasable_id))) throw new SyntaxError("incomplete relevance item set");
   const itemById = new Map(items.map((item) => [item.purchasable_id, item]));
   prior = "";
   const groups = root.groups.map((raw): RelevancePolicyGroup => {

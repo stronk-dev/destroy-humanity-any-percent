@@ -41,7 +41,7 @@ describe("routes catalog and predicate parity", () => {
   it("loads the shipped catalog and proves Depletion unreachable in one run", () => {
     const catalog = parseRoutesCatalog(catalogJson);
     expect(() => validateRouteCatalogResources(catalog, parseCatalog(economyJson))).not.toThrow();
-    expect(catalog.gates).toHaveLength(4);
+    expect(catalog.gates).toHaveLength(5);
     expect(catalog.maxRoutesPerRun()).toBe(4);
     expect(catalog.depletionDistinctRoutesRequired).toBe(5);
     expect(catalog.route("route.nonprofit_wrapper_zip")?.effect).toEqual({ kind: "substitute" });

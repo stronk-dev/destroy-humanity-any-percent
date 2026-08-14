@@ -598,8 +598,13 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
   it("replays a same-epoch First Content Exit with complete Founder v21 carry", async () => {
     const fixtureExit = fixture.first_content_exit;
     const bundle = await loadReplayCatalogBundle(fixtureExit.constants_hash, fixtureExit.artifacts);
+    expect(bundle.relevance?.items).toHaveLength(18);
+    const relevanceWithoutOpportunities = { ...fixtureExit.artifacts } as Record<string, string>;
+    delete relevanceWithoutOpportunities.opportunities;
+    const withoutOpportunities = relevanceWithoutOpportunities as unknown as ReplayArtifacts;
+    await expect(loadReplayCatalogBundle(await artifactHash(withoutOpportunities), withoutOpportunities)).rejects.toThrow(/artifact set/);
     const testCase = fixtureExit.case;
-    const state = restoreReplayState(testCase.pre_state, 17, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines });
+    const state = restoreReplayState(testCase.pre_state, 18, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
     const transition = await applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
     expect(transition.outcome).toBe("applied");
     expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);

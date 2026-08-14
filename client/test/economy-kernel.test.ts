@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import phase0Json from "../../balance/catalogs/phase0.json";
+import permitsEconomyJson from "../../balance/testdata/valid/permits-economy-candidate-v1.json";
 import fixtureJson from "../../testdata/economy-kernel.json";
 import engineFixtureJson from "../../testdata/production-engine.json";
 import foundationV4Json from "../../testdata/economy-foundation-v4.json";
@@ -85,16 +86,22 @@ describe("shared economy catalog", () => {
     expect(catalog.generatorClass("generator.constant")?.production).toBeNull();
   });
 
-  it("loads the strict production catalog v3 contract", () => {
+  it("loads the strict production catalog v4 contract", () => {
     const catalog = parseCatalog(phase0Json);
     expect(catalog.manualActions).toEqual([
       { id: "manual.click", output: { resourceId: "company.cash", amountPerAction: "1e0" } },
     ]);
-    expect(catalog.multiplierSources).toEqual([
+    expect(catalog.multiplierSources).toHaveLength(46);
+    expect(catalog.multiplierSources.slice(0, 9)).toEqual([
+      { id: "active.building.generator.beige_tower", slot: "event_buffs", target: "generator.beige_tower", provider: "active_play" },
+      { id: "active.click", slot: "event_buffs", target: "manual.click", provider: "active_play" },
+      { id: "active.production", slot: "event_buffs", target: "all", provider: "active_play" },
       { id: "commons.member", slot: "commons", target: "all", provider: "commons" },
       { id: "fiscal.generator.beige_tower", slot: "prestige", target: "generator.beige_tower", provider: "fiscal" },
       { id: "fiscal.hoard", slot: "prestige", target: "all", provider: "fiscal" },
       { id: "guild.stock_consumption", slot: "faction", target: "all", provider: "faction" },
+      { id: "pool.institutional_knowledge", slot: "upgrades", target: "all", provider: "pool.institutional_knowledge" },
+      { id: "pool.operational_excellence", slot: "upgrades", target: "all", provider: "pool.operational_excellence" },
     ]);
     expect(catalog.progressCoordinates.map((coordinate) => coordinate.tier)).toEqual([0, 1, 2, 3]);
     expect(catalog.manualPolicy).toEqual({ refillMilliPerMs: 25, bucketCapMilli: 50_000 });
@@ -322,7 +329,7 @@ function mutateCatalog(source: Record<string, unknown>, name: string): unknown {
 }
 
 function mutateMultiplierCatalog(name: string): unknown {
-  const root = structuredClone(phase0Json) as Record<string, unknown>;
+  const root = structuredClone(permitsEconomyJson) as Record<string, unknown>;
   const sources: Array<Record<string, unknown>> = [
     { id: "upgrade.a", slot: "upgrades", target: "all", provider: "upgrade.a" },
     {
