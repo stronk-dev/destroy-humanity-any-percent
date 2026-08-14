@@ -2017,3 +2017,88 @@ whole-path pacing regression → designated review → owner signs exact literal
 - **Verdict: APPROVED retroactively** — both ruled properties hold at HEAD and the batch's own
   claims were consistent; the debt in CURRENT-STATE §4 is discharged. D-A is the one real gap the
   original spot-check missed, and it is exactly the kind of gap the debt existed to find.
+
+## 2026-08-14 — Codex T01-C26/C27 implementation + corrected tuple measurement — READY FOR DESIGNATED REVIEW; OWNER SIGN-OFF REQUIRED
+
+**Implementation range:** `{99caaa6, 6db811d}`. `99caaa6` implements the instrument and branch
+contracts; `6db811d` is the isolated `BALANCE-CHANGE:` regeneration of the registered fixture after
+the C26 report-grammar change. No candidate economy, policy, scenario, or production artifact byte
+changed. Marco's unrelated `AGENTS.md` edit remains untouched and unstaged.
+
+### C26/C27 implementation evidence
+
+- C26 follows every opportunity removal through the measured row's non-neutral paths and emits a
+  reason-qualified failure (`exact_id`, `effect_target`, `provision_target`, or `role_target`) that
+  names the removed ID. Report validation requires that ID to occur in the disclosed instrument
+  exclusion set. The two ruled regressions are pinned: Dot-Matrix Queue → Continuous Feed Paper and
+  Beige Tower v2 → Refurbished Sticker. On the unchanged candidate, both complete relevance runs
+  now report those upgrade findings as `instrument_affected:effect_target:...`, never as ordinary
+  dead-content findings.
+- C27 adds a deterministic candidate gate for every measured upgrade absent from the main reference
+  purchase set. It reaches the branch from genesis through the shared T01-C20 ranker, applies the
+  upgrade through the real production engine, and completes an exact effect-masked twin from the
+  same post-purchase state. Every competing upgrade and every later generator is removed and
+  disclosed; no cash/count state is synthesized. Report validation recomputes the delta and closed
+  failure set. `make t0-t1-upgrade-check` and the aggregate `make t0-t1-relevance-all` always run
+  both scenarios before returning findings.
+- The prior D-A review debt is discharged in the same range: a direct traced-reference test forces
+  the decision guard to exhaust and asserts `DecisionStarved`, nil milestone, no horizon coast, and
+  one emitted trace. Mutating that arm back to the historical silent-coast behavior breaks the
+  assertion.
+
+### Unchanged-byte remeasurement
+
+The aggregate gate ran all four arms. Its nonzero result is the expected content finding state, not
+a stopped/partial run:
+
+- T0 main: 173,025 transitions. Continuous Feed and its removed Dot-Matrix target are explicitly
+  instrument-affected; Hold Music, Business Cards, and Reply-All remain ordinary balance findings.
+  The branch matrix (81,804 transitions) proves Continuous Feed already passes at its current
+  12,000 price (selected 290,533 ms; baseline 462,101; masked 615,128; delta 153,027) and leaves only
+  Hold Music / Business Cards unselected at current prices.
+- T1 main: 2,816,696 transitions. Refurbished Sticker and its removed Beige Tower v2 target are
+  explicitly instrument-affected; CRT, Handbook, and Institutional Memory remain ordinary balance
+  findings. The branch matrix (1,577,343 transitions) proves CRT already passes at its current
+  248,832,000 price (selected 3,338,621 ms; baseline 4,114,215; masked 4,730,427; delta 616,212) and
+  leaves Handbook / Institutional Memory / Refurbished Sticker unselected at current prices.
+
+### Exact coordinated tuple proposed for owner sign-off
+
+This tuple was applied only in memory, then removed. It changes neither generator. It preserves the
+ruled effects except for the already-authorized Institutional Memory retarget.
+
+| Row | Current | Proposed exact literal | Corrected evidence |
+|---|---|---|---|
+| Continuous Feed Paper | `1.2e4` | **`1.2e4` (unchanged)** | C27 branch delta **153,027 ms**; the earlier `2e3` anchor was derived from an instrument-manufactured zero |
+| Hold Music License | `8e4` | **`2e4`** | main-path delta **35,061 ms**, purchased once |
+| Nephew Business Cards | `8.64e4` | **`2e4`** | C27 branch selected 391,405 ms; baseline 451,526; masked 489,821; delta **38,295 ms** |
+| Reply-All Macro | `1e2` | **`4e1`** | main-path delta **1,077 ms**, purchased once; `8e1` produced only 873 ms in the composition and therefore cannot be the final literal |
+| CRT Degauss Button | `2.48832e8` | **`2.48832e8` (unchanged)** | C27 branch delta **616,212 ms**; the earlier `5e7` anchor is unnecessary on the corrected branch instrument |
+| Employee Handbook v0 | `7.5e8` | **`7.5e7`** | main-path delta **1,055,942 ms**, purchased once |
+| Refurbished Sticker | `8.5e8` | **`2e8`** | C27 branch selected 4,090,596 ms; baseline 4,525,188; masked 4,688,752; delta **163,564 ms** |
+| Institutional Memory | `9.5e8`, Beige Tower | **`1e8`, `generator.garage_rack`** | C27 branch selected 2,945,098 ms; baseline 6,052,443; masked 8,500,539; delta **2,448,096 ms** |
+
+The tuple improves rather than regresses the complete unmasked reference: T0 **436,448 → 419,462
+ms** and T1 **3,458,872 → 3,318,634 ms**. Both candidate branch reports have an empty failure set.
+The full reports keep branch-only/instrument-affected rows visible as findings rather than silently
+turning the alternate proof into a trap exemption; the companion branch report is the ruled C27
+proof.
+
+**Owner decision requested:** sign or reject the eight exact coordinates above. In particular,
+explicitly approve leaving Continuous Feed and CRT at their existing literals: C26/C27 proved the
+preliminary lower anchors were unnecessary once the test stopped deleting their path. On approval,
+Codex will edit the paired `cost.amount` / `resource_at_least.value` bytes and the one effect target,
+rerun both complete gates, derive the replacement economy/report hashes, and return them for the
+already-ruled designated review + re-ratification. No byte change is authorized by this entry.
+
+### Verification read to completion
+
+- `make test-harness GO_TEST_FLAGS='-count=1'` — green.
+- `make harness-check` — green after the protocol-correct isolated fixture regeneration.
+- `make verify` — green, exit 0 (full Go suite/vet, generation and history guards, TypeScript +
+  Svelte diagnostics, production client build, 6,650 client tests, 19,992 browser tests, and the
+  Game-UI performance arm).
+- `make test-go-ci` — green, exit 0 in the Linux/amd64 Docker CI environment with `-count=1` across
+  every Go package, including the 54.319-second harness package.
+- `make t0-t1-relevance-all` — expected exit 2 after running all four constituent arms; the exact
+  current-byte content findings and transition counts are recorded above.
