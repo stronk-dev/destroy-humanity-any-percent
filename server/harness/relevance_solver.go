@@ -233,9 +233,12 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	if executedRuns != baseRuns || len(deviationTraces) == 0 {
 		return RelevanceReport{}, errors.New("relevance run cardinality mismatch")
 	}
-	deviation, deviationRuns, deviationErr := suite.runDeviationOracle(deviationTraces, opportunityMask, counter)
+	deviation, declaredDeviationRuns, deviationRuns, deviationErr := suite.runDeviationOracle(deviationTraces, opportunityMask, counter)
 	if deviationErr != nil {
 		return RelevanceReport{}, fmt.Errorf("relevance deviation oracle: %w", deviationErr)
+	}
+	if declaredDeviationRuns != deviationRuns {
+		return RelevanceReport{}, errors.New("relevance deviation run cardinality mismatch")
 	}
 	executedRuns += deviationRuns
 	if baselineUnreached {
@@ -321,8 +324,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 	report.DeviationOracle = deviation
 	if deviation.Status == "counterexample" {
 		report.Failures = append(report.Failures, "greedy_oracle:deviation_gap")
+	} else if deviation.Status == "incomplete" {
+		report.Failures = append(report.Failures, "greedy_oracle:deviation_incomplete")
 	}
-	report.RunBudget = RelevanceRunBudget{DeclaredRuns: executedRuns, ExecutedRuns: executedRuns,
+	report.RunBudget = RelevanceRunBudget{DeclaredRuns: baseRuns + declaredDeviationRuns, ExecutedRuns: executedRuns,
 		DeclaredTransitions: counter.value, ExecutedTransitions: counter.value}
 	report.Failures = sortedUniqueStrings(report.Failures)
 	if err := ValidateRelevanceReport(report); err != nil {
@@ -332,7 +337,7 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 }
 
 func (suite *RelevanceSuite) runDeviationOracle(traces []relevanceDecisionTrace, mask production.AblationMask,
-	counter *relevanceCounter) (*RelevanceDeviationOracle, int64, error) {
+	counter *relevanceCounter) (*RelevanceDeviationOracle, int64, int64, error) {
 	type coordinate struct {
 		trace relevanceDecisionTrace
 		key   string
@@ -361,6 +366,7 @@ func (suite *RelevanceSuite) runDeviationOracle(traces []relevanceDecisionTrace,
 		Status: "passed", EligibleCoordinates: int64(len(coordinates)), SelectedCoordinates: selectedCount,
 		UnprobedCoordinates: int64(len(coordinates)) - selectedCount, MaximumForcedDeviations: 1,
 		MaximumPPM: suite.Scenario.GreedyGapMaximumPPM}
+	declaredRuns := int64(0)
 	for _, selected := range coordinates[:selectedCount] {
 		alternatives := append([]relevanceForcedArm(nil), selected.trace.Alternatives...)
 		sort.Slice(alternatives, func(left, right int) bool {
@@ -375,18 +381,29 @@ func (suite *RelevanceSuite) runDeviationOracle(traces []relevanceDecisionTrace,
 		if alternativeCount > int64(len(alternatives)) {
 			alternativeCount = int64(len(alternatives))
 		}
+		declaredRuns += alternativeCount
 		for _, forced := range alternatives[:alternativeCount] {
-			alternate, err := suite.runForcedDeviation(selected.trace, forced, mask, counter)
+			completion, err := suite.runForcedDeviation(selected.trace, forced, mask, counter)
 			if err != nil {
-				return nil, oracle.ExecutedProbes, err
+				return nil, declaredRuns, oracle.ExecutedProbes, err
 			}
 			oracle.ExecutedProbes++
-			if alternate == nil || *alternate >= selected.trace.ReferenceMS {
+			if completion.DecisionStarved {
+				oracle.StarvedProbes++
+				continue
+			}
+			if completion.MilestoneMS == nil {
+				oracle.UnreachedProbes++
+				continue
+			}
+			oracle.ReachedProbes++
+			alternate := completion.MilestoneMS
+			if *alternate >= selected.trace.ReferenceMS {
 				continue
 			}
 			gap, err := relevanceGapPPM(selected.trace.ReferenceMS, *alternate)
 			if err != nil {
-				return nil, oracle.ExecutedProbes, err
+				return nil, declaredRuns, oracle.ExecutedProbes, err
 			}
 			if gap <= suite.Scenario.GreedyGapMaximumPPM || oracle.Witness != nil && gap <= oracle.Witness.GapPPM {
 				continue
@@ -397,7 +414,10 @@ func (suite *RelevanceSuite) runDeviationOracle(traces []relevanceDecisionTrace,
 				ReferenceMS: selected.trace.ReferenceMS, AlternateMS: *alternate, GapPPM: gap}
 		}
 	}
-	return oracle, oracle.ExecutedProbes, nil
+	if oracle.StarvedProbes > 0 {
+		oracle.Status, oracle.Witness = "incomplete", nil
+	}
+	return oracle, declaredRuns, oracle.ExecutedProbes, nil
 }
 
 // RunBeamDiagnostic runs the reviewed beam explicitly. Routine relevance,
@@ -441,38 +461,39 @@ func (suite *RelevanceSuite) deviationSelectionKey(trace relevanceDecisionTrace,
 }
 
 func (suite *RelevanceSuite) runForcedDeviation(trace relevanceDecisionTrace, forced relevanceForcedArm,
-	mask production.AblationMask, counter *relevanceCounter) (*int64, error) {
+	mask production.AblationMask, counter *relevanceCounter) (relevanceRunResult, error) {
 	var state *save.State
 	var err error
 	revision, nowMS := trace.Revision, trace.NowMS
 	if forced.ID == "bank" {
 		state, err = cloneState(suite.Catalog, trace.State)
 		if err != nil {
-			return nil, err
+			return relevanceRunResult{}, err
 		}
 		if _, err = suite.advance(state, revision, forced.BankAtMS, mask, counter); err != nil {
-			return nil, err
+			return relevanceRunResult{}, err
 		}
 		nowMS = forced.BankAtMS
 	} else {
 		if forced.Candidate == nil {
-			return nil, errors.New("relevance deviation purchase arm has no candidate")
+			return relevanceRunResult{}, errors.New("relevance deviation purchase arm has no candidate")
 		}
 		state, err = cloneState(suite.Catalog, forced.Candidate.State)
 		if err != nil {
-			return nil, err
+			return relevanceRunResult{}, err
 		}
 		revision, nowMS = forced.Candidate.Revision, forced.Candidate.AtMS
 	}
 	remaining := suite.Scenario.MaxDecisions - trace.DecisionOrdinal - 1
 	if remaining < 0 {
-		return nil, errors.New("relevance deviation has invalid remaining decision count")
+		return relevanceRunResult{}, errors.New("relevance deviation has invalid remaining decision count")
 	}
 	completion, err := suite.runRankedCompletion(state, revision, nowMS, remaining, mask, counter)
 	if err != nil {
-		return nil, err
+		return relevanceRunResult{}, err
 	}
-	return cloneInt64(completion.MilestoneMS), nil
+	completion.MilestoneMS = cloneInt64(completion.MilestoneMS)
+	return completion, nil
 }
 
 func checkedRelevanceProduct(values ...int64) (int64, error) {

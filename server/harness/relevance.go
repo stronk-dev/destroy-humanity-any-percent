@@ -20,7 +20,7 @@ import (
 	"cloud-clicker/server/save"
 )
 
-const RelevanceReportSchemaVersion = 5
+const RelevanceReportSchemaVersion = 6
 
 var errRelevanceRatioOutsideExactDomain = errors.New("relevance ratio outside exact integer domain")
 
@@ -122,6 +122,9 @@ type RelevanceDeviationOracle struct {
 	EligibleCoordinates     int64                      `json:"eligible_coordinates"`
 	SelectedCoordinates     int64                      `json:"selected_coordinates"`
 	ExecutedProbes          int64                      `json:"executed_probes"`
+	ReachedProbes           int64                      `json:"reached_probes"`
+	UnreachedProbes         int64                      `json:"unreached_probes"`
+	StarvedProbes           int64                      `json:"starved_probes"`
 	UnprobedCoordinates     int64                      `json:"unprobed_coordinates"`
 	MaximumForcedDeviations int64                      `json:"maximum_forced_deviations"`
 	MaximumPPM              int64                      `json:"maximum_ppm"`
@@ -532,12 +535,14 @@ func ValidateRelevanceReport(report RelevanceReport) error {
 	}
 	expectedOracleFailure := "greedy_oracle:milestone_unreached"
 	if report.SchemaVersion >= 5 {
-		if report.GreedyOracle != nil || validateRelevanceDeviationOracle(report.DeviationOracle) != nil {
+		if report.GreedyOracle != nil || validateRelevanceDeviationOracle(report.DeviationOracle, report.SchemaVersion) != nil {
 			return errors.New("invalid relevance deviation oracle")
 		}
 		expectedOracleFailure = ""
 		if report.DeviationOracle.Status == "counterexample" {
 			expectedOracleFailure = "greedy_oracle:deviation_gap"
+		} else if report.DeviationOracle.Status == "incomplete" {
+			expectedOracleFailure = "greedy_oracle:deviation_incomplete"
 		}
 	} else if report.DeviationOracle != nil {
 		return errors.New("legacy relevance report contains deviation oracle")
@@ -740,18 +745,21 @@ func relevanceOracleOutcome(greedyMS, beamMS, maximumPPM int64) (int64, bool, st
 	return gap, true, "", nil
 }
 
-func validateRelevanceDeviationOracle(oracle *RelevanceDeviationOracle) error {
+func validateRelevanceDeviationOracle(oracle *RelevanceDeviationOracle, schemaVersion int) error {
 	if oracle == nil || oracle.Kind != "deviation.v1" || !relevanceIDPattern.MatchString(oracle.MilestoneID) ||
-		oracle.Status != "passed" && oracle.Status != "counterexample" || !relevanceSafe(oracle.EligibleCoordinates) ||
+		oracle.Status != "passed" && oracle.Status != "counterexample" && (schemaVersion < 6 || oracle.Status != "incomplete") || !relevanceSafe(oracle.EligibleCoordinates) ||
 		!relevanceSafe(oracle.SelectedCoordinates) || oracle.SelectedCoordinates > oracle.EligibleCoordinates ||
 		!relevanceSafe(oracle.ExecutedProbes) || oracle.ExecutedProbes < oracle.SelectedCoordinates ||
+		schemaVersion >= 6 && (!relevanceSafe(oracle.ReachedProbes) || !relevanceSafe(oracle.UnreachedProbes) || !relevanceSafe(oracle.StarvedProbes) ||
+			oracle.ReachedProbes+oracle.UnreachedProbes+oracle.StarvedProbes != oracle.ExecutedProbes) ||
 		oracle.UnprobedCoordinates != oracle.EligibleCoordinates-oracle.SelectedCoordinates ||
 		oracle.MaximumForcedDeviations != 1 || !relevanceSafe(oracle.MaximumPPM) {
 		return errors.New("invalid relevance deviation oracle")
 	}
-	if oracle.Status == "passed" {
-		if oracle.Witness != nil {
-			return errors.New("passing relevance deviation oracle contains a witness")
+	if oracle.Status == "passed" || oracle.Status == "incomplete" {
+		if oracle.Witness != nil || oracle.Status == "passed" && oracle.StarvedProbes != 0 ||
+			oracle.Status == "incomplete" && oracle.StarvedProbes == 0 {
+			return errors.New("invalid relevance deviation completion status")
 		}
 		return nil
 	}

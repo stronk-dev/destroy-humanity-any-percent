@@ -4,7 +4,7 @@
   "type": "object", "additionalProperties": false,
   "required": ["schema_version", "scenario_id", "scenario_hash", "constants_hash", "relevance_policy_hash", "run_budget", "greedy_oracle", "items", "groups", "tier_contributions", "role_activations", "failures"],
   "properties": {
-    "schema_version": { "enum": [1, 2, 3, 4, 5] }, "scenario_id": { "$ref": "#/$defs/id" },
+    "schema_version": { "enum": [1, 2, 3, 4, 5, 6] }, "scenario_id": { "$ref": "#/$defs/id" },
     "scenario_hash": { "$ref": "#/$defs/hash" }, "constants_hash": { "$ref": "#/$defs/hash" }, "relevance_policy_hash": { "$ref": "#/$defs/hash" },
     "run_budget": { "$ref": "#/$defs/budget" }, "greedy_oracle": { "oneOf": [{ "$ref": "#/$defs/oracle" }, { "type": "null" }] },
     "deviation_oracle": { "$ref": "#/$defs/deviationOracle" },
@@ -68,7 +68,7 @@
       }
     },
     {
-      "if": { "properties": { "schema_version": { "const": 5 } }, "required": ["schema_version"] },
+      "if": { "properties": { "schema_version": { "enum": [5, 6] } }, "required": ["schema_version"] },
       "then": {
         "required": ["instrument_excluded_ids", "deviation_oracle"],
         "properties": {
@@ -85,6 +85,22 @@
           }
         }
       }
+    },
+    {
+      "if": { "properties": { "schema_version": { "const": 6 } }, "required": ["schema_version"] },
+      "then": {
+        "properties": {
+          "deviation_oracle": {
+            "type": "object",
+            "required": ["reached_probes", "unreached_probes", "starved_probes"],
+            "properties": {
+              "reached_probes": {},
+              "unreached_probes": {},
+              "starved_probes": {}
+            }
+          }
+        }
+      }
     }
   ],
   "$defs": {
@@ -97,7 +113,7 @@
     "budget": { "type": "object", "additionalProperties": false, "required": ["declared_runs", "executed_runs", "declared_transitions", "executed_transitions"], "properties": { "declared_runs": { "$ref": "#/$defs/safePositive" }, "executed_runs": { "$ref": "#/$defs/safePositive" }, "declared_transitions": { "$ref": "#/$defs/safe" }, "executed_transitions": { "$ref": "#/$defs/safe" } } },
     "oracle": { "type": "object", "additionalProperties": false, "required": ["milestone_id", "greedy_ms", "beam_ms", "gap_ppm", "maximum_ppm", "passed"], "properties": { "milestone_id": { "$ref": "#/$defs/id" }, "greedy_ms": { "$ref": "#/$defs/safePositive" }, "beam_ms": { "$ref": "#/$defs/safePositive" }, "gap_ppm": { "$ref": "#/$defs/safe" }, "maximum_ppm": { "$ref": "#/$defs/safe" }, "passed": { "type": "boolean" } } },
     "deviationWitness": { "type": "object", "additionalProperties": false, "required": ["decision_ordinal", "state_hash", "reference_arm", "forced_arm", "reference_ms", "alternate_ms", "gap_ppm"], "properties": { "decision_ordinal": { "$ref": "#/$defs/safe" }, "state_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }, "reference_arm": { "type": "string", "minLength": 1 }, "forced_arm": { "type": "string", "minLength": 1 }, "reference_ms": { "$ref": "#/$defs/safePositive" }, "alternate_ms": { "$ref": "#/$defs/safePositive" }, "gap_ppm": { "$ref": "#/$defs/safe" } } },
-    "deviationOracle": { "type": "object", "additionalProperties": false, "required": ["kind", "milestone_id", "status", "eligible_coordinates", "selected_coordinates", "executed_probes", "unprobed_coordinates", "maximum_forced_deviations", "maximum_ppm", "witness"], "properties": { "kind": { "const": "deviation.v1" }, "milestone_id": { "$ref": "#/$defs/id" }, "status": { "enum": ["passed", "counterexample"] }, "eligible_coordinates": { "$ref": "#/$defs/safe" }, "selected_coordinates": { "$ref": "#/$defs/safe" }, "executed_probes": { "$ref": "#/$defs/safe" }, "unprobed_coordinates": { "$ref": "#/$defs/safe" }, "maximum_forced_deviations": { "const": 1 }, "maximum_ppm": { "$ref": "#/$defs/safe" }, "witness": { "oneOf": [{ "$ref": "#/$defs/deviationWitness" }, { "type": "null" }] } } },
+    "deviationOracle": { "type": "object", "additionalProperties": false, "required": ["kind", "milestone_id", "status", "eligible_coordinates", "selected_coordinates", "executed_probes", "unprobed_coordinates", "maximum_forced_deviations", "maximum_ppm", "witness"], "properties": { "kind": { "const": "deviation.v1" }, "milestone_id": { "$ref": "#/$defs/id" }, "status": { "enum": ["passed", "counterexample", "incomplete"] }, "eligible_coordinates": { "$ref": "#/$defs/safe" }, "selected_coordinates": { "$ref": "#/$defs/safe" }, "executed_probes": { "$ref": "#/$defs/safe" }, "reached_probes": { "$ref": "#/$defs/safe" }, "unreached_probes": { "$ref": "#/$defs/safe" }, "starved_probes": { "$ref": "#/$defs/safe" }, "unprobed_coordinates": { "$ref": "#/$defs/safe" }, "maximum_forced_deviations": { "const": 1 }, "maximum_ppm": { "$ref": "#/$defs/safe" }, "witness": { "oneOf": [{ "$ref": "#/$defs/deviationWitness" }, { "type": "null" }] } } },
     "delta": { "type": "object", "additionalProperties": false, "required": ["milestone_id", "status", "baseline_ms", "ablated_ms", "delta_ms"], "properties": { "milestone_id": { "$ref": "#/$defs/id" }, "status": { "enum": ["both_reached", "ablated_unreached", "baseline_unreached", "both_unreached"] }, "baseline_ms": { "$ref": "#/$defs/nullableSafe" }, "ablated_ms": { "$ref": "#/$defs/nullableSafe" }, "delta_ms": { "oneOf": [{ "type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991 }, { "type": "null" }] } }, "allOf": [ { "if": { "properties": { "status": { "const": "both_reached" } } }, "then": { "properties": { "baseline_ms": { "$ref": "#/$defs/safe" }, "ablated_ms": { "$ref": "#/$defs/safe" }, "delta_ms": { "type": "integer" } } } }, { "if": { "properties": { "status": { "const": "ablated_unreached" } } }, "then": { "properties": { "baseline_ms": { "$ref": "#/$defs/safe" }, "ablated_ms": { "type": "null" }, "delta_ms": { "type": "integer" } } } }, { "if": { "properties": { "status": { "const": "baseline_unreached" } } }, "then": { "properties": { "baseline_ms": { "type": "null" }, "ablated_ms": { "$ref": "#/$defs/safe" }, "delta_ms": { "type": "null" } } } }, { "if": { "properties": { "status": { "const": "both_unreached" } } }, "then": { "properties": { "baseline_ms": { "type": "null" }, "ablated_ms": { "type": "null" }, "delta_ms": { "type": "null" } } } } ] },
     "item": { "type": "object", "additionalProperties": false, "required": ["purchasable_id", "availability_window", "epsilon_ms", "trap_exempt", "justification_key", "baseline_purchase_count", "individual_deltas", "action_removal_deltas", "support", "supporting_group_id", "nearest_passing_epsilon_ms", "relevance_passed", "trap_passed"], "properties": { "purchasable_id": { "$ref": "#/$defs/id" }, "availability_window": { "$ref": "#/$defs/window" }, "epsilon_ms": { "$ref": "#/$defs/safePositive" }, "trap_exempt": { "type": "boolean" }, "justification_key": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }, "baseline_purchase_count": { "$ref": "#/$defs/safe" }, "excluded_persona_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "instrument_affected": { "type": "boolean" }, "individual_deltas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/delta" } }, "action_removal_deltas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/delta" } }, "support": { "enum": ["individual", "group_supported", "failed"] }, "supporting_group_id": { "oneOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] }, "nearest_passing_epsilon_ms": { "$ref": "#/$defs/safe" }, "relevance_passed": { "type": "boolean" }, "trap_passed": { "type": "boolean" } } },
     "group": { "type": "object", "additionalProperties": false, "required": ["group_id", "axis", "deltas", "passed"], "properties": { "group_id": { "$ref": "#/$defs/id" }, "axis": { "enum": ["tier", "category", "declared"] }, "excluded_persona_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }, "deltas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/delta" } }, "passed": { "type": "boolean" } } },

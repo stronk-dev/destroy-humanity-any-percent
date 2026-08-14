@@ -2315,6 +2315,19 @@ Ruled by Marco (recorded by Claude from the owner's explicit selections):
    measurements under the ratified instrument, and touch nothing else in the ratified candidate
    without reopening this ruling. Claude drafts the proposal (design lane); Codex measures it.
 
+## 2026-08-14 — Codex instrument LOW closure — READY FOR DESIGNATED REVIEW
+
+- **H-A closed:** relevance report schema v6 no longer copies `executed_runs` into
+  `declared_runs`. The runner independently plans the exact forced-deviation cardinality, checks it
+  against actual execution, and reports `base_runs + planned_probe_runs` beside the observed count.
+- **H-B closed:** every forced-deviation attempt is now classified as reached, unreached, or
+  decision-starved. The three counts must sum to `executed_probes`; starvation produces the
+  fail-loud `greedy_oracle:deviation_incomplete` finding rather than silently looking like a clean
+  pass. Schema/validator mutation cases pin both the complete and incomplete unions.
+- `make test-harness GO_TEST_FLAGS='-count=1'` and `make verify-schema` are green. The registered
+  fixture golden is regenerated separately under the existing balance-change discipline. No
+  candidate content byte or owner-ratified hash changed.
+
 ## 2026-08-14 — Claude C28 role-redesign proposal filed — OWNER SIGN-OFF REQUIRED
 
 `planning/t0-t1-content/btv2-role-redesign-proposal.md`. Recommended: ADD

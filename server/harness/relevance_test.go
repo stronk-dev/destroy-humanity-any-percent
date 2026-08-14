@@ -60,6 +60,8 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	}
 	if first.GreedyOracle != nil || first.DeviationOracle == nil || first.DeviationOracle.Status != "counterexample" ||
 		first.DeviationOracle.MaximumForcedDeviations != 1 || first.DeviationOracle.UnprobedCoordinates != 0 ||
+		first.DeviationOracle.ReachedProbes != first.DeviationOracle.ExecutedProbes || first.DeviationOracle.UnreachedProbes != 0 ||
+		first.DeviationOracle.StarvedProbes != 0 ||
 		first.DeviationOracle.Witness == nil || first.DeviationOracle.Witness.DecisionOrdinal != 8 ||
 		first.DeviationOracle.Witness.ForcedArm != "generator.beta" || first.DeviationOracle.Witness.GapPPM != 29_068 ||
 		!containsString(first.Failures, "greedy_oracle:deviation_gap") {
@@ -190,10 +192,31 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	invalid.DeviationOracle = &RelevanceDeviationOracle{Kind: "deviation.v1", MilestoneID: first.DeviationOracle.MilestoneID,
 		Status: "passed", EligibleCoordinates: first.DeviationOracle.EligibleCoordinates,
 		SelectedCoordinates: first.DeviationOracle.SelectedCoordinates, ExecutedProbes: first.DeviationOracle.ExecutedProbes,
+		ReachedProbes: first.DeviationOracle.ReachedProbes, UnreachedProbes: first.DeviationOracle.UnreachedProbes,
+		StarvedProbes:       first.DeviationOracle.StarvedProbes,
 		UnprobedCoordinates: first.DeviationOracle.UnprobedCoordinates, MaximumForcedDeviations: 1,
 		MaximumPPM: first.DeviationOracle.MaximumPPM, Witness: first.DeviationOracle.Witness}
 	if err := ValidateRelevanceReport(invalid); err == nil {
 		t.Fatal("passing deviation oracle accepted a counterexample witness")
+	}
+	invalid = first
+	invalid.DeviationOracle = &RelevanceDeviationOracle{Kind: "deviation.v1", MilestoneID: first.DeviationOracle.MilestoneID,
+		Status: "incomplete", EligibleCoordinates: 1, SelectedCoordinates: 1, ExecutedProbes: 1,
+		ReachedProbes: 0, UnreachedProbes: 0, StarvedProbes: 1, UnprobedCoordinates: 0,
+		MaximumForcedDeviations: 1, MaximumPPM: first.DeviationOracle.MaximumPPM}
+	invalid.Failures = make([]string, 0, len(first.Failures))
+	for _, failure := range first.Failures {
+		if failure != "greedy_oracle:deviation_gap" {
+			invalid.Failures = append(invalid.Failures, failure)
+		}
+	}
+	invalid.Failures = sortedUniqueStrings(append(invalid.Failures, "greedy_oracle:deviation_incomplete"))
+	if err := ValidateRelevanceReport(invalid); err != nil {
+		t.Fatalf("schema-v6 report rejected disclosed starved probe: %v", err)
+	}
+	invalid.DeviationOracle.StarvedProbes = 0
+	if err := ValidateRelevanceReport(invalid); err == nil {
+		t.Fatal("schema-v6 report accepted undisclosed probe outcome")
 	}
 	invalid = first
 	invalid.Items = append([]RelevanceItemReport(nil), first.Items...)

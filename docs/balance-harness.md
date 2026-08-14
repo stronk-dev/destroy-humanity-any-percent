@@ -111,7 +111,10 @@ effect target was removed cannot masquerade as dead content. Any positive seed r
 purchase counts reduce over positive seeds before taking the maximum across personas. Role
 evidence comes only from unmasked baseline execution. Report schema v5 replaces the routine
 `greedy_oracle` result with `deviation_oracle`; the legacy field remains null so a cheap probe cannot
-be mistaken for a beam result.
+be mistaken for a beam result. Report schema v6 independently plans the run count and checks it
+against execution. It also partitions every forced-deviation attempt into reached, unreached, or
+decision-starved counts; any starvation marks the oracle incomplete and fails the gate rather than
+silently looking like a successful probe.
 
 Internal segment boundaries are part of the measured trajectory. At the first decision boundary
 where the pinned Routes requirements are reachable, every relevance arm advances to that point and
@@ -146,7 +149,7 @@ has no such later scenario and is named coverage debt rather than silently exemp
 `testdata/harness/relevance/registry-v1.json` is the fail-closed scenario authority. Every registered
 golden is discovered dynamically by the history and TypeScript schema gates. Each trap exemption's
 mechanical justification key must appear in the entry's reviewable changelog. The current
-schema-v5 entry is deliberately a test fixture: it proves a dead upgrade, a deliberate trap
+schema-v6 entry is deliberately a test fixture: it proves a dead upgrade, a deliberate trap
 exemption, observational role evidence, group-supported substitution, and a registered forced-deviation
 counterexample under its declared bound. Fixture findings are recorded in its golden report but do not block the production
 gate. When the active epoch first uses an economy schema v4 or later, its registry entry must bind
