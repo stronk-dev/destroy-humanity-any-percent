@@ -241,3 +241,20 @@ mint sign-off.
   unchanged, re-derivation order) is unaffected.
 - **No findings. APPROVED.** The scenario hash and C14 coordinate are ready for owner pinning;
   the EH-C10 report is ready for owner review toward the mint sign-off.
+
+## 2026-08-14 — OWNER PINS + MINT SIGN-OFF
+
+Ruled by Marco (recorded by Claude from the owner's explicit selections):
+
+1. **PINNED:** the epoch-7 content-dynamics scenario at
+   `sha256:a6df65535eeafd7b96aa017a7bf6666d400058209903d359bb39f5ef7c2f6a54` and the EH-C14
+   coordinate (founder `018f6b7c-9abc-7def-8abc-000000000001`, run sequence `1`, first natural
+   effect `active.production` on `generator.beige_tower`, spawn `3558` attended ms, duration
+   `5000` ms). Any change to either reopens the candidate lane.
+2. **MINT SIGNED.** The EH-C10 candidate report (`sha256:cef5fa23…9e73`, 69/69 runs, zero
+   invariant failures) is accepted as the owner-facing mint evidence. **Codex is authorized to
+   mint epoch 7** from the pinned eighteen-row manifest
+   (`sha256:5cb718f6…41bc`): execute the epoch protocol, register the immutable snapshot,
+   generate the first historical report and the accepted goldens under the balance-change guard,
+   and hand the complete range back for designated cross-party review and the archival chain.
+   The mint is local; **publishing/THE PUSH remains a separate owner decision.**
