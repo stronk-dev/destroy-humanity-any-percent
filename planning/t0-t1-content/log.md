@@ -2157,3 +2157,28 @@ one honestly-dead generator, which needs its own follow-up (diagnosis or disposi
 TUPLE is verified in substance (all eight rows pass via main path or branch proof) but its record
 carries E-A and its sign-off must present E-B/E-C. No candidate byte changes until the owner signs
 with those facts in front of them.**
+
+## 2026-08-14 — OWNER RULING: the C26/C27 tuple is SIGNED; T01-C28 filed for Beige Tower v2
+
+Ruled by Marco (recorded by Claude from the owner's explicit selection), with review findings
+E-A/E-B/E-C explicitly in front of the owner at decision time:
+
+1. **The exact eight-row tuple is SIGNED as proposed:** Continuous Feed `1.2e4` (unchanged), Hold
+   Music `2e4`, Business Cards `2e4`, Reply-All `4e1`, CRT Degauss `2.48832e8` (unchanged),
+   Handbook `7.5e7`, Refurbished Sticker `2e8`, Institutional Memory `1e8` retargeted to
+   `generator.garage_rack`. Authorization rests on the DESIGNATED REVIEW's independent
+   byte-applied measurement (T0 419,462 ms; screened T1 2,724,115 ms; both branch reports
+   empty-failure; every branch delta reproduced exactly), not on the E-A-affected record line.
+2. **Codex lands the tuple** as the isolated `BALANCE-CHANGE:` + paired requirement edits ruled in
+   C24's discipline, regenerates the affected reports and all four candidate hashes, and — in the
+   same batch — **corrects E-A** by naming the arm behind the 3,318,634 ms figure or replacing it
+   with the reproducible number. The E-B evidence-shape disclosure (Business Cards, Institutional
+   Memory, Rack Rail carried by branch proofs; nephew_intern/garage_rack screen-removed) goes in
+   the batch record verbatim.
+3. **T01-C28 (filed now): `generator.beige_tower_v2` is genuinely dead** — the first validly
+   measured verdict on it (worst persona delta 0, ordinary `relevance_floor`). Follow-up, not a
+   blocker to this tuple: diagnose why (price curve, provision economics, unlock timing, role),
+   propose the smallest change giving it a real job, return for owner ruling. AC2's "zero dead
+   purchasables" is NOT claimable until C28 resolves.
+4. Re-ratification of the four hashes follows the landed tuple through the standard designated
+   review; then the epoch-7 mint runway proceeds.
