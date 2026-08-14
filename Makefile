@@ -8,6 +8,7 @@ GO_PACKAGES ?= ./...
 GO_TEST_FLAGS ?=
 CORE_TEST_COUNT ?= 1
 HARNESS_TEST_COUNT ?= 1
+HARNESS_WORKERS ?= 4
 SAVE_TEST_PACKAGES ?= ./...
 SAVE_TEST_FLAGS ?= -run Integration
 SAVE_TEST_COUNT ?= 1
@@ -131,10 +132,10 @@ api-check: api-generate
 
 harness:
 	@test -n "$(HARNESS_OUTPUT)" || (echo "HARNESS_OUTPUT is required" >&2; exit 1)
-	cd server && go run ./cmd/balance-harness -mode=run -root=.. -output="$(HARNESS_OUTPUT)"
+	cd server && go run ./cmd/balance-harness -mode=run -root=.. -workers=$(HARNESS_WORKERS) -output="$(HARNESS_OUTPUT)"
 
 harness-check: commons-harness-check
-	cd server && go run ./cmd/balance-harness -mode=check -root=..
+	cd server && go run ./cmd/balance-harness -mode=check -root=.. -workers=$(HARNESS_WORKERS)
 
 content-harness:
 	cd server && go run ./cmd/balance-harness -mode=content -root=..
@@ -147,6 +148,7 @@ epoch7-content-harness:
 
 first-content-harness:
 	cd server && go run ./cmd/balance-harness -mode=candidate -root=.. \
+		-workers=$(HARNESS_WORKERS) \
 		-candidate-manifest=planning/first-content-epoch/promotion-manifest.candidate.v1.json \
 		-output=../planning/first-content-epoch/composed-harness-report.v1.json
 
@@ -206,7 +208,7 @@ commons-harness-check:
 	cd server && go test ./harness -run '^TestCommonsPopulationInvariance$$' -count=1
 
 harness-update:
-	cd server && go run ./cmd/balance-harness -mode=update -root=..
+	cd server && go run ./cmd/balance-harness -mode=update -root=.. -workers=$(HARNESS_WORKERS)
 
 epoch-hash:
 	cd server && go run ./cmd/balance-harness -mode=epoch-hash -root=..

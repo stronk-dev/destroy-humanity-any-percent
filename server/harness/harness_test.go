@@ -149,6 +149,31 @@ func TestRunTaskDispatchRejectsMismatchedResultKey(t *testing.T) {
 	}
 }
 
+func TestRunTaskDispatchWorkerCountDoesNotChangeOrderedBytes(t *testing.T) {
+	suite := Suite{Scenario: Scenario{ID: "scenario.workers", Version: 1},
+		ScenarioHash: "sha256:scenario", ConstantsHash: "sha256:constants"}
+	tasks := make([]runTask, 17)
+	for index := range tasks {
+		spec := RunSpec{PolicyID: "policy.workers", PolicyVersion: 1, HorizonMS: 1}
+		seed := uint64(index)
+		tasks[index] = runTask{spec: spec, seed: seed, key: suite.runKey(spec, seed)}
+	}
+	run := func(workers int) []byte {
+		reports, err := dispatchRunTasks(tasks, workers, func(task runTask) RunReport { return RunReport{Key: task.key} })
+		if err != nil {
+			t.Fatal(err)
+		}
+		encoded, err := CanonicalJSON(reports)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return encoded
+	}
+	if one, many := run(1), run(12); !bytes.Equal(one, many) {
+		t.Fatalf("worker count changed ordered report bytes\none=%s\nmany=%s", one, many)
+	}
+}
+
 func TestBaselineDriftThresholdsUseIntegerCrossMultiplication(t *testing.T) {
 	baseline := AggregateReport{Values: []AggregateValue{{PolicyID: "casual.phase0", Milestone: "m", Statistic: "p50", ValueMS: 100}}}
 	warning := AggregateReport{Values: []AggregateValue{{PolicyID: "casual.phase0", Milestone: "m", Statistic: "p50", ValueMS: 111}}}

@@ -18,6 +18,7 @@ func main() {
 	candidateManifest := flag.String("candidate-manifest", "", "repository-relative ratified candidate manifest for candidate mode")
 	scenario := flag.String("scenario", "", "repository-relative scenario for relevance mode")
 	relevanceReport := flag.String("relevance-report", "", "validated relevance report used to derive branch rows")
+	workers := flag.Int("workers", 4, "parallel workers for the standard pacing suite")
 	flag.Parse()
 	if *mode == "epoch-hash" {
 		hash, err := harness.ComputeEpochSeedHash(*root)
@@ -28,7 +29,7 @@ func main() {
 		return
 	}
 	if *mode == "candidate" {
-		runCandidate(*root, *output, *candidateManifest)
+		runCandidate(*root, *output, *candidateManifest, *workers)
 		return
 	}
 	if *mode == "content-candidate" {
@@ -63,7 +64,7 @@ func main() {
 	if err != nil {
 		fail(err)
 	}
-	runs, aggregate, err := suite.RunAll()
+	runs, aggregate, err := suite.RunAllWithWorkers(*workers)
 	if err != nil {
 		fail(err)
 	}
@@ -200,7 +201,7 @@ func runContentCandidate(root, output, scenarioPath, manifestPath string) {
 	}
 }
 
-func runCandidate(root, output, manifestPath string) {
+func runCandidate(root, output, manifestPath string, workers int) {
 	if output == "" || manifestPath == "" {
 		fail(fmt.Errorf("-output and -candidate-manifest are required in candidate mode"))
 	}
@@ -208,7 +209,7 @@ func runCandidate(root, output, manifestPath string) {
 	if err != nil {
 		fail(err)
 	}
-	_, aggregate, err := suite.RunAll()
+	_, aggregate, err := suite.RunAllWithWorkers(workers)
 	if err != nil {
 		fail(err)
 	}

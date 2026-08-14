@@ -255,6 +255,12 @@ func newSuite(scenario Scenario, scenarioBytes, catalogBytes, routesCatalogBytes
 }
 
 func (suite *Suite) RunAll() ([]RunReport, AggregateReport, error) {
+	return suite.RunAllWithWorkers(4)
+}
+
+// RunAllWithWorkers changes only execution concurrency. Reports retain their
+// canonical run-key order, so worker count cannot alter golden bytes.
+func (suite *Suite) RunAllWithWorkers(workerLimit int) ([]RunReport, AggregateReport, error) {
 	var tasks []runTask
 	for _, spec := range suite.Scenario.Runs {
 		start, err := strconv.ParseUint(spec.SeedStart, 10, 64)
@@ -266,7 +272,7 @@ func (suite *Suite) RunAll() ([]RunReport, AggregateReport, error) {
 			tasks = append(tasks, runTask{spec: spec, seed: seed, key: suite.runKey(spec, seed)})
 		}
 	}
-	reports, err := dispatchRunTasks(tasks, 4, func(task runTask) RunReport {
+	reports, err := dispatchRunTasks(tasks, workerLimit, func(task runTask) RunReport {
 		return suite.run(task.spec, task.seed)
 	})
 	if err != nil {

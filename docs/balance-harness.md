@@ -159,11 +159,12 @@ mechanical justification key must appear in the entry's reviewable changelog. Th
 schema-v6 entry is deliberately a test fixture: it proves a dead upgrade, a deliberate trap
 exemption, observational role evidence, group-supported substitution, and a registered forced-deviation
 counterexample under its declared bound. Fixture findings are recorded in its golden report but do not block the production
-gate. When the active epoch first uses an economy schema v4 or later, its registry entry must bind
-the exact epoch-owned economy, Routes, and relevance-policy artifacts, use the current epoch
-changelog, and emit the accepted full epoch-bundle constants hash. `harness-check` executes the
-entry and fails on any relevance finding. The current schema-v3 production catalog is not presented
-as a relevance baseline.
+gate. When the active epoch uses an economy schema v4 or later, its registry entry must bind the
+exact epoch-owned economy, Routes, and relevance-policy artifacts, use the current epoch changelog,
+and emit the accepted full epoch-bundle constants hash. `harness-check` executes each registered
+entry and fails on any relevance finding. Epoch 7's schema-v4 content is measured by the separate
+T0/T1 whole-path and branch-proof gates; the original relevance registry remains a structural
+fixture baseline rather than being relabelled as production evidence.
 
 ## Commands and drift
 
@@ -171,6 +172,10 @@ as a relevance baseline.
   aggregate report.
 - `make harness-check` is read-only and compares the seed-0 golden report, pacing baseline, and
   every registered relevance golden report.
+- Standard pacing runs use four workers by default. Long local runs may set `HARNESS_WORKERS`
+  explicitly (for example, `make harness-update HARNESS_WORKERS=12`). Worker count changes only
+  execution concurrency; reports are sorted by complete run key before aggregation, so output
+  bytes remain identical.
 - `make relevance-beam RELEVANCE_SCENARIO=…` runs the expensive beam explicitly. It is diagnostic
   only and is intentionally absent from every aggregate verification target.
 - `make first-content-harness` validates the ratified first-content manifest and its complete
