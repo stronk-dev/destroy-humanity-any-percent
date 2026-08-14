@@ -2537,3 +2537,21 @@ designated review → then the epoch-7 runner deliverables under EH-C11–C14.
   coarse/instrument-affected findings; this handoff claims the ruled complementary branch evidence,
   not that those raw reports became finding-free.
 - The user's uncommitted `AGENTS.md` edit was not staged or modified. Nothing was pushed.
+
+### Same-day append-only handoff correction — clean-checkout Make prerequisite
+
+The first recorded `make t0-t1-branch-check` pass reused ignored local `*.diagnostic.json` files by
+default. Its hashes were validated and its proof result was sound, but that public target would have
+failed on a fresh checkout because those diagnostics are intentionally untracked. This is a real CI
+packaging defect in the first handoff claim, not a C29 mechanic defect.
+
+Forward fix `5cc1e8f` makes `make t0-t1-branch-check` self-contained: with no input report it derives
+the full validated measurement inline for both scenarios. The report-reuse optimization now lives
+only at the explicit `make t0-t1-branch-check-from-reports` target used after a combined run has just
+created the hash-matched diagnostics. The corrected public target was run synchronously through its
+final exit from the current tree and is **GREEN** without either diagnostic as a prerequisite; it
+regenerated both committed schema-v2 reports byte-identically. The C29 values, ratified content
+bytes, implementation verdict request, and all earlier Linux/native gate results are unchanged.
+
+**Corrected complete handoff range:** `146dede..5cc1e8f`, plus this docs-tier record commit. Ready
+for the designated cross-party review; no approval or archival is claimed.
