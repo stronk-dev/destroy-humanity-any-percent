@@ -5,7 +5,7 @@
     "substream_label": "active_play.spawn.v1",
     "minimum_interval_ms": 1000,
     "scale_ms": 500,
-    "lifetime_ms": 3000,
+    "lifetime_ms": 4500,
     "max_due_transitions": 16
   },
   "effects": [
