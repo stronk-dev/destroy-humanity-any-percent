@@ -145,13 +145,15 @@ func TestFirstContentEpochInitializesFreshFounderWithFullSet(t *testing.T) {
 	founder := foundationScopeState(t, active.Economy, economy.ScopeFounder)
 	company := foundationScopeState(t, active.Economy, economy.ScopeCompany)
 	company.RunStartedAt = now
+	company.RunSeq = 1
 	initializer := FounderInitializer{Catalogs: fixedReplayBundleResolver{bundle: active}}
-	frozen, err := initializer.InitializeNewFounder(active.ConstantsHash, now, founder, company)
+	frozen, err := initializer.InitializeNewFounder(active.ConstantsHash, "01986666-f101-7000-8000-000000000002", now, founder, company)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if save.VersionForState(founder) != 21 || save.VersionForState(company) != 18 || len(frozen) != len(active.Fiscal.GeneratorLevelRows())+1 ||
-		len(founder.Pets) != 0 || founder.Soul != active.Soul.Policy.Initial || len(founder.MinigameRatings) != 1 {
+		len(founder.Pets) != 0 || founder.Soul != active.Soul.Policy.Initial || len(founder.MinigameRatings) != 1 ||
+		company.NextOpportunityAttendedMS <= 0 || company.PendingOpportunity != nil || company.ActiveBuffs == nil {
 		t.Fatalf("fresh Founder founder=%+v company=%+v frozen=%+v", founder, company, frozen)
 	}
 	if err := active.ValidateFoundationState(founder); err != nil {

@@ -49,7 +49,7 @@ type AccountDeletionParticipant interface {
 }
 
 type FounderInitializer interface {
-	InitializeNewFounder(constantsHash string, now time.Time, founder, company *save.State) ([]save.FrozenContribution, error)
+	InitializeNewFounder(constantsHash, founderID string, now time.Time, founder, company *save.State) ([]save.FrozenContribution, error)
 }
 
 type initialFounderStates struct {
@@ -209,7 +209,7 @@ func (repository *Repository) CreateAccount(ctx context.Context) (CreatedAccount
 	if err != nil {
 		return CreatedAccount{}, err
 	}
-	states, err := repository.initialStates(now, nil)
+	states, err := repository.initialStates(now, founderID, nil)
 	if err != nil {
 		return CreatedAccount{}, err
 	}
@@ -399,7 +399,7 @@ func (repository *Repository) NewFounder(ctx context.Context, accountID string) 
 	if err != nil {
 		return Founder{}, err
 	}
-	states, err := repository.initialStates(now, nil)
+	states, err := repository.initialStates(now, founderID, nil)
 	if err != nil {
 		return Founder{}, err
 	}
@@ -489,11 +489,11 @@ func (repository *Repository) ImportFounder(ctx context.Context, accountID, cons
 	if err != nil {
 		return Founder{}, ErrInvalidRequest
 	}
-	states, err := repository.initialStates(now, normalized)
+	importedFounderID, err := newUUIDv7(now, repository.random)
 	if err != nil {
 		return Founder{}, err
 	}
-	importedFounderID, err := newUUIDv7(now, repository.random)
+	states, err := repository.initialStates(now, importedFounderID, normalized)
 	if err != nil {
 		return Founder{}, err
 	}
@@ -626,7 +626,7 @@ func (repository *Repository) issueTokenPairAt(ctx context.Context, tx *sql.Tx, 
 	return TokenPair{AccessToken: accessToken, RefreshToken: refreshToken}, nil
 }
 
-func (repository *Repository) initialStates(now time.Time, companyOverride *save.State) (initialFounderStates, error) {
+func (repository *Repository) initialStates(now time.Time, founderID string, companyOverride *save.State) (initialFounderStates, error) {
 	catalog, ok := repository.catalogs.Resolve(repository.constantsHash)
 	if !ok {
 		return initialFounderStates{}, ErrInvalidRequest
@@ -638,10 +638,17 @@ func (repository *Repository) initialStates(now time.Time, companyOverride *save
 			return initialFounderStates{}, err
 		}
 		counts := make(map[string]int64)
+		provisioned := make(map[string]int64)
+		remainders := make(map[string]int64)
 		for _, generator := range catalog.GeneratorClassesForScope(scope) {
 			counts[generator.ID] = 0
+			provisioned[generator.ID] = 0
+			if generator.Provision != nil {
+				remainders[generator.Provision.GeneratorID] = 0
+			}
 		}
-		state := &save.State{Ledger: ledger, GeneratorCounts: counts, EvaluatedThrough: now,
+		state := &save.State{Ledger: ledger, GeneratorCounts: counts, GeneratorProvisioned: provisioned,
+			ProvisionRemaindersPPM: remainders, UpgradesOwned: map[string]bool{}, EvaluatedThrough: now,
 			ManualTokenRefilledAt: now, GatesCrossed: map[string]bool{}, DoctrinesByTransition: map[string]string{},
 			LedgerFactKinds: map[string]bool{}, MeterBands: map[string]int{}, RegionTraits: map[string]bool{},
 			HintsUnlocked: map[string]bool{}, CompactSamples: []save.CompactSample{},
@@ -660,7 +667,7 @@ func (repository *Repository) initialStates(now time.Time, companyOverride *save
 	var frozen []save.FrozenContribution
 	var err error
 	if repository.initializer != nil {
-		frozen, err = repository.initializer.InitializeNewFounder(repository.constantsHash, now,
+		frozen, err = repository.initializer.InitializeNewFounder(repository.constantsHash, founderID, now,
 			states[economy.ScopeFounder], states[economy.ScopeCompany])
 		if err != nil {
 			return initialFounderStates{}, err

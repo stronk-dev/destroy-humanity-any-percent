@@ -22,7 +22,7 @@ func TestFrozenFiscalContributionsAndNewFounderActivation(t *testing.T) {
 	founder.WireVersion = save.CurrentVersion
 	company := replayFixtureState(t, legacy.Economy, now)
 	initializer := FounderInitializer{Catalogs: fixedReplayBundleResolver{bundle: bundle}}
-	values, err := initializer.InitializeNewFounder(bundle.ConstantsHash, now, founder, company)
+	values, err := initializer.InitializeNewFounder(bundle.ConstantsHash, "01986666-f101-7000-8000-000000000001", now, founder, company)
 	if err != nil {
 		t.Fatal(err)
 	}

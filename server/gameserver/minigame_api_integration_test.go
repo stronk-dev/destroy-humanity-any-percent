@@ -398,6 +398,11 @@ func composedMinigameRepositoryRoot(t *testing.T, repositoryRoot string) string 
 	for name, data := range base.Artifacts {
 		artifacts[name] = append([]byte(nil), data...)
 	}
+	// This composed fixture deliberately remains a pre-epoch-7 Company catalog.
+	// Do not pair production relevance/opportunity rows with its two-generator
+	// schema-v3 economy; those artifacts activate together in the real epoch.
+	delete(artifacts, "opportunities")
+	delete(artifacts, "relevance")
 	artifacts["economy"] = composedEconomyCatalog(t, repositoryRoot)
 	artifacts["routes"] = readCompositionFixture(t, repositoryRoot, "balance/testdata/permits-t3-gate-candidate-v1.json")
 	artifacts["categories"] = composedCategoryCatalog(t, artifacts["categories"])
@@ -453,6 +458,9 @@ func composedEconomyCatalog(t *testing.T, repositoryRoot string) []byte {
 		t.Fatal("economy candidate has no multiplier sources")
 	}
 	value["multiplier_sources"] = append(sources,
+		map[string]any{"id": "active.building.generator.beige_tower", "slot": "event_buffs", "target": "generator.beige_tower", "provider": "active_play"},
+		map[string]any{"id": "active.click", "slot": "event_buffs", "target": "manual.click", "provider": "active_play"},
+		map[string]any{"id": "active.production", "slot": "event_buffs", "target": "all", "provider": "active_play"},
 		map[string]any{"id": "fiscal.generator.beige_tower", "slot": "prestige", "target": "generator.beige_tower", "provider": "fiscal"},
 		map[string]any{"id": "fiscal.hoard", "slot": "prestige", "target": "all", "provider": "fiscal"},
 	)

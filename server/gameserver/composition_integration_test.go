@@ -10,6 +10,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"sync"
 	"testing"
@@ -74,6 +75,16 @@ type bootstrapResponseEnvelope struct {
 	Account        account.CreatedAccount `json:"account"`
 	Session        account.TokenPair      `json:"session"`
 	GameUISnapshot json.RawMessage        `json:"game_ui_snapshot"`
+}
+
+func generatorIDs(rows []struct {
+	ID string `json:"generator_id"`
+}) []string {
+	ids := make([]string, len(rows))
+	for index := range rows {
+		ids[index] = rows[index].ID
+	}
+	return ids
 }
 
 func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) {
@@ -202,8 +213,10 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	}
 	if uiSnapshot.ConstantsHash != composition.CurrentHash || uiSnapshot.EvaluatedThrough != clock.Time().UnixMilli() ||
 		uiSnapshot.Revision != 1 || uiSnapshot.Run.FounderID != founder.ID || uiSnapshot.Run.RunSeq != 1 ||
-		uiSnapshot.ManualAction.ID != "manual.click" || len(uiSnapshot.Generators) != 2 ||
-		uiSnapshot.Generators[0].ID != "generator.beige_tower" || uiSnapshot.Generators[1].ID != "generator.legal_dept" {
+		uiSnapshot.ManualAction.ID != "manual.click" || !reflect.DeepEqual(generatorIDs(uiSnapshot.Generators), []string{
+		"generator.answering_machine", "generator.beige_tower", "generator.beige_tower_v2", "generator.crt_wall",
+		"generator.dot_matrix_queue", "generator.first_hire", "generator.garage_rack", "generator.legal_dept", "generator.nephew_intern",
+	}) {
 		t.Fatalf("Game UI snapshot=%+v", uiSnapshot)
 	}
 	if composition.CurrentHash != "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789" {
@@ -239,7 +252,11 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	if activeCompany.Version != 18 || activeCompany.ConstantsHash != composition.CurrentHash || founderVersion != 21 || founderHash != composition.CurrentHash {
 		t.Fatalf("fresh activation company=(v%d,%s) founder=(v%d,%s)", activeCompany.Version, activeCompany.ConstantsHash, founderVersion, founderHash)
 	}
-	if len(companyState.MeterValues) != 11 || companyState.AchievementsEarnedRun == nil || companyState.NextOpportunityAttendedMS != 0 ||
+	initialOpportunity, err := currentBundle.Opportunities.Spawn(founder.ID, 1, 0, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(companyState.MeterValues) != 11 || companyState.AchievementsEarnedRun == nil || companyState.NextOpportunityAttendedMS != initialOpportunity.SpawnedAttendedMS ||
 		companyState.PendingOpportunity != nil || companyState.ActiveBuffs == nil ||
 		len(founderState.MinigameRatings) != 1 || founderState.MinigameOfflineQuality == nil || founderState.Pets == nil ||
 		founderState.FiscalPeriodOpenedWallMS == 0 || founderState.Soul != currentBundle.Soul.Policy.Initial {
@@ -903,13 +920,23 @@ func progressedCompositionStates(t *testing.T, catalogs *runtimeCatalogs, consta
 	founder := base(founderLedger)
 	company := base(companyLedger)
 	company.GeneratorCounts = map[string]int64{}
+	company.GeneratorProvisioned = map[string]int64{}
+	company.ProvisionRemaindersPPM = map[string]int64{}
+	company.UpgradesOwned = map[string]bool{}
 	for _, generator := range catalog.GeneratorClassesForScope(economy.ScopeCompany) {
 		company.GeneratorCounts[generator.ID] = 0
+		company.GeneratorProvisioned[generator.ID] = 0
+		if generator.Provision != nil {
+			company.ProvisionRemaindersPPM[generator.Provision.GeneratorID] = 0
+		}
 	}
 	company.ManualTokenMilli = catalog.ManualPolicy().BucketCapMilli
 	company.RunSeq = 1
-	company.RunStartedAt = now.Add(-10 * time.Minute)
-	frozen, err := (production.FounderInitializer{Catalogs: catalogs}).InitializeNewFounder(constantsHash, now, founder, company)
+	// Active-play attended time starts at the run boundary. This fixture drives
+	// one immediate intent, so do not manufacture ten minutes of unprocessed
+	// attended scheduling before its first command.
+	company.RunStartedAt = now
+	frozen, err := (production.FounderInitializer{Catalogs: catalogs}).InitializeNewFounder(constantsHash, "018f0000-0000-4000-8000-000000000502", now, founder, company)
 	if err != nil {
 		t.Fatal(err)
 	}

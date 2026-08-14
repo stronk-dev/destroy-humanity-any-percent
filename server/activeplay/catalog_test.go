@@ -15,19 +15,7 @@ func activeEconomy(t *testing.T) *economy.Catalog {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var root map[string]any
-	if json.Unmarshal(data, &root) != nil {
-		t.Fatal("invalid economy fixture")
-	}
-	values := root["multiplier_sources"].([]any)
-	values = append(values,
-		map[string]any{"id": "active.building.generator.beige_tower", "slot": "event_buffs", "target": "generator.beige_tower", "provider": "active_play"},
-		map[string]any{"id": "active.click", "slot": "event_buffs", "target": "manual.click", "provider": "active_play"},
-		map[string]any{"id": "active.production", "slot": "event_buffs", "target": "all", "provider": "active_play"},
-	)
-	root["multiplier_sources"] = values
-	candidate, _ := json.Marshal(root)
-	catalog, err := economy.LoadCatalog(candidate)
+	catalog, err := economy.LoadCatalog(data)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -80,7 +68,18 @@ func TestCatalogRejectsMissingAndCrossArtifactKeys(t *testing.T) {
 	}
 	if _, err := LoadCatalog(activeFixture(t), func() *economy.Catalog {
 		data, _ := os.ReadFile("../../balance/catalogs/phase0.json")
-		value, _ := economy.LoadCatalog(data)
+		var root map[string]any
+		_ = json.Unmarshal(data, &root)
+		values := root["multiplier_sources"].([]any)
+		kept := make([]any, 0, len(values))
+		for _, raw := range values {
+			if raw.(map[string]any)["provider"] != "active_play" {
+				kept = append(kept, raw)
+			}
+		}
+		root["multiplier_sources"] = kept
+		candidate, _ := json.Marshal(root)
+		value, _ := economy.LoadCatalog(candidate)
 		return value
 	}()); err == nil {
 		t.Fatal("missing multiplier declarations accepted")

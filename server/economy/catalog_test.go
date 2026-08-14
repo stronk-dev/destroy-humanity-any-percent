@@ -3,6 +3,7 @@ package economy
 import (
 	"encoding/json"
 	"os"
+	"reflect"
 	"testing"
 
 	"cloud-clicker/server/decimal"
@@ -105,7 +106,7 @@ func TestSharedInvalidCatalogCases(t *testing.T) {
 
 func TestSharedMultiplierCatalogCases(t *testing.T) {
 	fixture := loadKernelFixture(t)
-	phase0, err := os.ReadFile("../../balance/catalogs/phase0.json")
+	phase0, err := os.ReadFile("../../balance/testdata/valid/permits-economy-candidate-v1.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -244,7 +245,7 @@ func TestCatalogV1RemainsReadableWithoutProduction(t *testing.T) {
 	}
 }
 
-func TestProductionCatalogV3Contract(t *testing.T) {
+func TestProductionCatalogV4Contract(t *testing.T) {
 	data, err := os.ReadFile("../../balance/catalogs/phase0.json")
 	if err != nil {
 		t.Fatal(err)
@@ -257,12 +258,19 @@ func TestProductionCatalogV3Contract(t *testing.T) {
 	if !ok || action.Output.ResourceID != "company.cash" || action.Output.AmountPerAction.String() != "1e0" {
 		t.Fatalf("manual action = %+v, exists=%v", action, ok)
 	}
-	if sources := catalog.MultiplierSources(); len(sources) != 4 ||
-		sources[0].ID != "commons.member" || sources[0].Slot != SlotCommons || sources[0].Provider != "commons" ||
-		sources[1].ID != "fiscal.generator.beige_tower" || sources[1].Slot != SlotPrestige || sources[1].Provider != "fiscal" ||
-		sources[2].ID != "fiscal.hoard" || sources[2].Slot != SlotPrestige || sources[2].Provider != "fiscal" ||
-		sources[3].ID != "guild.stock_consumption" || sources[3].Slot != SlotFaction || sources[3].Provider != "faction" {
-		t.Fatalf("phase-0 multiplier sources = %+v", sources)
+	wantSources := []MultiplierSourceDefinition{
+		{ID: "active.building.generator.beige_tower", Slot: SlotEventBuffs, Target: "generator.beige_tower", Provider: "active_play"},
+		{ID: "active.click", Slot: SlotEventBuffs, Target: "manual.click", Provider: "active_play"},
+		{ID: "active.production", Slot: SlotEventBuffs, Target: "all", Provider: "active_play"},
+		{ID: "commons.member", Slot: SlotCommons, Target: "all", Provider: "commons"},
+		{ID: "fiscal.generator.beige_tower", Slot: SlotPrestige, Target: "generator.beige_tower", Provider: "fiscal"},
+		{ID: "fiscal.hoard", Slot: SlotPrestige, Target: "all", Provider: "fiscal"},
+		{ID: "guild.stock_consumption", Slot: SlotFaction, Target: "all", Provider: "faction"},
+		{ID: "pool.institutional_knowledge", Slot: SlotUpgrades, Target: "all", Provider: "pool.institutional_knowledge"},
+		{ID: "pool.operational_excellence", Slot: SlotUpgrades, Target: "all", Provider: "pool.operational_excellence"},
+	}
+	if sources := catalog.MultiplierSources(); len(sources) != 46 || !reflect.DeepEqual(sources[:len(wantSources)], wantSources) {
+		t.Fatalf("production multiplier sources = %+v, want 46 with prefix %+v", sources, wantSources)
 	}
 	if got := catalog.ManualPolicy(); got.RefillMilliPerMS != 25 || got.BucketCapMilli != 50_000 {
 		t.Fatalf("manual policy = %+v", got)

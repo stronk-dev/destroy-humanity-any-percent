@@ -91,7 +91,9 @@ func TestQueueProjectorCategoriesVariablesPreTimerAndRetryIntegration(t *testing
 	if err := rows.Err(); err != nil {
 		t.Fatal(err)
 	}
-	if !sameStrings(categories, []string{"any_percent", "ethical_percent", "hundred_percent", "low_percent", "valuation"}) {
+	// This historical fixture predates gate.t0_to_t1, so it is intentionally no
+	// longer eligible for the full-gate hundred-percent category.
+	if !sameStrings(categories, []string{"any_percent", "ethical_percent", "low_percent", "valuation"}) {
 		t.Fatalf("categories=%v", categories)
 	}
 

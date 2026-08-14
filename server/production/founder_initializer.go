@@ -8,8 +8,8 @@ import (
 
 type FounderInitializer struct{ Catalogs ReplayCatalogResolver }
 
-func (initializer FounderInitializer) InitializeNewFounder(constantsHash string, now time.Time, founder, company *save.State) ([]save.FrozenContribution, error) {
-	if initializer.Catalogs == nil || founder == nil || company == nil {
+func (initializer FounderInitializer) InitializeNewFounder(constantsHash, founderID string, now time.Time, founder, company *save.State) ([]save.FrozenContribution, error) {
+	if initializer.Catalogs == nil || founderID == "" || founder == nil || company == nil {
 		return nil, ErrInvalidEngineState
 	}
 	bundle, ok := initializer.Catalogs.ResolveReplayCatalogs(constantsHash)
@@ -18,6 +18,11 @@ func (initializer FounderInitializer) InitializeNewFounder(constantsHash string,
 	}
 	if bundle.foundationsActive() {
 		if err := settleAndActivateFoundations(CatalogBundle{}, bundle, founder, company, company); err != nil {
+			return nil, err
+		}
+	}
+	if bundle.Opportunities != nil {
+		if _, err := initializeActivePlayState(company, bundle.Opportunities, founderID); err != nil {
 			return nil, err
 		}
 	}

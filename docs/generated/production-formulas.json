@@ -63,9 +63,107 @@
     "synergy_linear": "1 + sum_ppm / 1000000",
     "synergy_log": "1 + log10(1 + sum_ppm / 1000000)",
     "ladders": "product(reached purchased-only rung multiplier_ppm / 1000000) in raw-byte source order",
-    "provision_tick_ms": 0,
-    "provisioned_hardcaps": [],
-    "synergy_pools": []
+    "provision_tick_ms": 60000,
+    "provisioned_hardcaps": [
+      {
+        "generator_id": "generator.beige_tower",
+        "count": 9007199254740991,
+        "reason_key": "generator.beige_tower.provisioned_cap"
+      }
+    ],
+    "synergy_pools": [
+      {
+        "id": "pool.operational_excellence",
+        "curve": "linear",
+        "slot": "upgrades",
+        "target": "all",
+        "sources": [
+          {
+            "kind": "generator",
+            "id_or_class": "generator.beige_tower",
+            "per_count_ppm": 1000
+          },
+          {
+            "kind": "generator",
+            "id_or_class": "generator.dot_matrix_queue",
+            "per_count_ppm": 2000
+          },
+          {
+            "kind": "upgrade",
+            "id_or_class": "upgrade.reply_all_macro",
+            "per_count_ppm": 10000
+          },
+          {
+            "kind": "upgrade",
+            "id_or_class": "upgrade.beige_tower_cache",
+            "per_count_ppm": 10000
+          },
+          {
+            "kind": "upgrade",
+            "id_or_class": "upgrade.continuous_feed_paper",
+            "per_count_ppm": 10000
+          },
+          {
+            "kind": "upgrade",
+            "id_or_class": "upgrade.hold_music_license",
+            "per_count_ppm": 10000
+          },
+          {
+            "kind": "upgrade",
+            "id_or_class": "upgrade.nephew_business_cards",
+            "per_count_ppm": 10000
+          }
+        ]
+      },
+      {
+        "id": "pool.institutional_knowledge",
+        "curve": "log",
+        "slot": "upgrades",
+        "target": "all",
+        "sources": [
+          {
+            "kind": "generator",
+            "id_or_class": "generator.garage_rack",
+            "per_count_ppm": 2000
+          },
+          {
+            "kind": "generator",
+            "id_or_class": "generator.crt_wall",
+            "per_count_ppm": 3000
+          },
+          {
+            "kind": "generator",
+            "id_or_class": "generator.legal_dept",
+            "per_count_ppm": 4000
+          },
+          {
+            "kind": "upgrade",
+            "id_or_class": "upgrade.rack_rail_standardization",
+            "per_count_ppm": 20000
+          },
+          {
+            "kind": "upgrade",
+            "id_or_class": "upgrade.crt_degauss_button",
+            "per_count_ppm": 20000
+          },
+          {
+            "kind": "upgrade",
+            "id_or_class": "upgrade.employee_handbook_v0",
+            "per_count_ppm": 20000
+          },
+          {
+            "kind": "upgrade",
+            "id_or_class": "upgrade.refurbished_sticker",
+            "per_count_ppm": 20000
+          },
+          {
+            "kind": "upgrade",
+            "id_or_class": "upgrade.institutional_memory",
+            "per_count_ppm": 20000
+          }
+        ]
+      }
+    ]
   },
   "meters": {
     "hook_order": "decay, then newly emitted ledger facts, then active non-neutral contribution inputs; clamp once; derive one prior-to-final band event; achievements evaluate after meters",

@@ -217,7 +217,7 @@ func (repository *Repository) CreateBootstrap(ctx context.Context, key string, b
 	if err != nil {
 		return nil, err
 	}
-	states, err := repository.initialStates(now, nil)
+	states, err := repository.initialStates(now, founderID, nil)
 	if err != nil {
 		return nil, err
 	}

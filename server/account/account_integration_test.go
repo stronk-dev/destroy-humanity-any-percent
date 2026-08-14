@@ -402,6 +402,17 @@ func TestConcurrentRefreshReplayRevokesEntireFamilyIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	companyRevision, err := repository.ActiveCompanyState(ctx, created.AccountID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company, err := save.RestoreState(companyRevision.State, companyRevision.Version, catalog, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, ok := company.ProvisionRemaindersPPM["generator.beige_tower"]; !ok || got != 0 {
+		t.Fatalf("new company provision remainder=%d present=%t", got, ok)
+	}
 	first, err := repository.CreateSession(ctx, created.AccountID, created.RecoveryCode)
 	if err != nil {
 		t.Fatal(err)

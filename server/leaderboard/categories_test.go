@@ -11,7 +11,7 @@ func TestPhase0CategoryCatalogAndPredicates(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	gates := []string{"gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8"}
+	gates := []string{"gate.t0_to_t1", "gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8"}
 	catalog, err := LoadCategoryCatalog(data, gates)
 	if err != nil {
 		t.Fatal(err)
@@ -41,8 +41,8 @@ func TestCategoryCatalogRejectsDriftAndOpenUnion(t *testing.T) {
 		t.Fatal(err)
 	}
 	cases := [][]string{
-		{"gate.t2_to_t3", "gate.t4_to_t5", "gate.t7_to_t8"},
-		{"gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8", "gate.unknown"},
+		{"gate.t0_to_t1", "gate.t2_to_t3", "gate.t4_to_t5", "gate.t7_to_t8"},
+		{"gate.t0_to_t1", "gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8", "gate.unknown"},
 	}
 	for _, gates := range cases {
 		if _, err := LoadCategoryCatalog(data, gates); err == nil {
@@ -54,11 +54,11 @@ func TestCategoryCatalogRejectsDriftAndOpenUnion(t *testing.T) {
 		t.Fatal("accepted open predicate union")
 	}
 	driftedFacts := bytes.Replace(data, []byte(`"completion_set": []`), []byte(`"completion_set": ["exit.acquihire"]`), 1)
-	if _, err := LoadCategoryCatalog(driftedFacts, []string{"gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8"}); err == nil {
+	if _, err := LoadCategoryCatalog(driftedFacts, []string{"gate.t0_to_t1", "gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8"}); err == nil {
 		t.Fatal("accepted Phase-0 fact-set drift")
 	}
 	driftedName := bytes.Replace(data, []byte(`"name_key": "category.any_percent"`), []byte(`"name_key": "category.wrong"`), 1)
-	if _, err := LoadCategoryCatalog(driftedName, []string{"gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8"}); err == nil {
+	if _, err := LoadCategoryCatalog(driftedName, []string{"gate.t0_to_t1", "gate.t2_to_t3", "gate.t3_to_t4", "gate.t4_to_t5", "gate.t7_to_t8"}); err == nil {
 		t.Fatal("accepted a non-canonical category name key")
 	}
 }
