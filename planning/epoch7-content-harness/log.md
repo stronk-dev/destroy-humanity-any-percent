@@ -123,3 +123,23 @@ coordinate for owner pinning, then the EH-C10 candidate report toward the mint.
   be honestly pinned until the owner rules this ratified-byte conflict. Implementation changes
   remain local and uncommitted; no golden, production artifact, epoch coordinate, or mint authority
   changed.
+
+## 2026-08-14 — OWNER RULING on EH-C15: keep the 1000 ms spawn gap; raise lifetime
+
+Ruled by Marco (recorded by Claude from the owner's explicit selection, alternatives presented —
+the restore-2500 recommendation and the prestige-ceiling arm were both declined):
+
+1. **`minimum_interval_ms` stays `1000`. `lifetime_ms` rises above 4000** so the composition law
+   (`minimum + lifetime > catchup_ceiling` = 5000) holds. **Literal: `4500`** — chosen as the
+   round value giving the same 500 ms safety margin the archived 2500+3000 corpus carries
+   (1000+4500 = 5500 = 2500+3000). Recorded as the ruling's default literal; since the changed
+   artifact returns for owner re-ratification anyway, the owner can adjust the literal at that
+   gate without reopening this ruling's direction.
+2. Consequences accepted: opportunities spawn as frequently as today but linger 1,500 ms longer —
+   a player-visible claim-window change. Prestige's `catchup_ceiling_ms` and every other
+   carryover artifact stay untouched.
+3. **Process:** Codex edits the Opportunities candidate, re-runs its content gate, hands the
+   change through designated review; the owner re-ratifies the Opportunities hash; then the
+   eighteen-row manifest constants hash, the C14 coordinate (first spawn moves accordingly),
+   scenario bytes/hash, and the EH-C10 report are re-derived in that order. No other ratified
+   artifact moves.
