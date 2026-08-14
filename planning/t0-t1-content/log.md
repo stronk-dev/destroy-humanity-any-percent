@@ -2369,3 +2369,24 @@ front of him — copy-adoption round, orphaned provision fixture, removed chain 
 
 The proposal file is annotated as ruled; Codex may begin measurement once the replacement copy is
 owner-adopted (the copy text gates the byte change, not the measurement).
+
+## 2026-08-14 — OWNER COPY ADOPTION: Beige Tower v2 replacement description
+
+Adopted by Marco (explicit selection after intent discussion; drafted by Claude, owner-adopted per
+the copy-pipeline discipline — this is the ruled text, byte-exact):
+
+> **generator.beige_tower_v2.description:** "Every process the company ever survived, stacked
+> vertically. The archive is load-bearing now — deleting anything voids the warranty on
+> everything."
+
+Title unchanged ("Beige Tower v2"). Rationale recorded: mechanically true (the Institutional
+Knowledge pool multiplies the tier, so the tower is literally load-bearing), era-authentic
+(the legacy machine nobody dares unplug), deadpan per design/08 §1.
+
+**C28 implementation is now fully unblocked for Codex:** provision role removed; sole
+non-production role `synergy_feed → pool.institutional_knowledge` with measured ppm (2,000–50,000
+sweep, atomic price fallback within [1e8, 3.5831808e8], honest finding if both fail); the adopted
+description lands with the same batch through the copy pipeline; C23 matrix re-pins at 11 rows
+with provision coverage named as debt; whole-path non-regression against T0 419,462 /
+screened T1 2,724,115; exact literals and re-derived hashes back through designated review and
+owner re-ratification.
