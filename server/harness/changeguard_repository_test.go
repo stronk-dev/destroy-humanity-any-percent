@@ -200,6 +200,35 @@ func TestRepositoryGuardAcceptsSeparateRelevanceFixtureAndGolden(t *testing.T) {
 	}
 }
 
+func TestRepositoryGuardPinsContentDynamicsEntryAtomicallyAndImmutably(t *testing.T) {
+	root := newGuardRepository(t)
+	const (
+		scenario = "testdata/harness/content-dynamics/scenarios/epoch-7.json"
+		manifest = "testdata/harness/content-dynamics/bundles/sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/manifest.v1.json"
+		snapshot = "testdata/harness/content-dynamics/bundles/sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/artifacts/economy.json"
+		golden   = "testdata/harness/content-dynamics/goldens/epoch-7.json"
+	)
+	writeGuardCommit(t, root, "harness: stage content-dynamics input", map[string]string{
+		"balance/catalogs/phase0.json": `{"value":2}`,
+		scenario:                       `{"schema_version":1}`,
+	})
+	registry := `{"schema_version":1,"entries":[{"epoch_seed_path":"balance/epochs/phase0.json","epoch_id":7,"bundle_snapshot_manifest":"` + manifest + `","scenario":"` + scenario + `","golden_report":"` + golden + `"}]}`
+	manifestBytes := `{"schema_version":1,"epoch_seed_path":"balance/epochs/phase0.json","epoch_id":7,"constants_hash":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","artifacts":[{"name":"economy","production_path":"balance/catalogs/phase0.json","snapshot_path":"` + snapshot + `","sha256":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}]}`
+	writeGuardCommit(t, root, "BALANCE-CHANGE: register content-dynamics baseline", map[string]string{
+		contentDynamicsRegistryPath: registry,
+		manifest:                    manifestBytes,
+		snapshot:                    `{"value":2}`,
+		golden:                      `{"schema_version":1}`,
+	})
+	if err := ValidateRepositoryBaselineChange(root); err != nil {
+		t.Fatal(err)
+	}
+	writeGuardCommit(t, root, "harness: rewrite immutable snapshot", map[string]string{snapshot: `{"value":3}`})
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "changed after registration") {
+		t.Fatalf("immutable snapshot rewrite err=%v", err)
+	}
+}
+
 func TestRepositoryGuardDiscoversEveryRegisteredRelevanceGolden(t *testing.T) {
 	root := newGuardRepository(t)
 	secondGolden := "testdata/harness/relevance/golden-report-v2.json"

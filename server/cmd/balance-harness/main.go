@@ -54,7 +54,7 @@ func main() {
 		return
 	}
 	if *mode == "content" {
-		if err := harness.GenerateRegisteredContentSnapshots(*root); err != nil {
+		if err := harness.GenerateRegisteredContentBaselines(*root); err != nil {
 			fail(err)
 		}
 		return

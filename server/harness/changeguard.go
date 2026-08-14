@@ -88,7 +88,7 @@ func ValidateRepositoryBaselineChange(root string) error {
 	if err != nil {
 		return fmt.Errorf("baseline guard cannot load relevance registry: %w", err)
 	}
-	contentReports, err := repositoryContentGoldenPaths(root)
+	contentGoverned, contentReports, err := repositoryContentBaselinePaths(root)
 	if err != nil {
 		return fmt.Errorf("baseline guard cannot load content-dynamics registry: %w", err)
 	}
@@ -99,8 +99,13 @@ func ValidateRepositoryBaselineChange(root string) error {
 		reports[report] = struct{}{}
 	}
 	for _, report := range contentReports {
-		governed[report] = struct{}{}
 		reports[report] = struct{}{}
+	}
+	for _, path := range contentGoverned {
+		governed[path] = struct{}{}
+	}
+	if err := validateContentDynamicsRegistryHistory(root); err != nil {
+		return fmt.Errorf("baseline guard content-dynamics history: %w", err)
 	}
 	shallow, err := gitOutput(root, "rev-parse", "--is-shallow-repository")
 	if err != nil {
@@ -116,7 +121,7 @@ func ValidateRepositoryBaselineChange(root string) error {
 
 	artifactPaths := []string{baselinePath, goldenPath}
 	artifactPaths = append(artifactPaths, relevanceReports...)
-	artifactPaths = append(artifactPaths, contentReports...)
+	artifactPaths = append(artifactPaths, contentGoverned...)
 	dirtyArguments := []string{"status", "--porcelain", "--untracked-files=all", "--", baselineHistoryCorrectionsPath}
 	dirtyArguments = append(dirtyArguments, artifactPaths...)
 	dirty, err := gitOutput(root, dirtyArguments...)
@@ -282,45 +287,161 @@ func gitAncestor(root, ancestor, descendant string) error {
 }
 
 func repositoryContentGoldenPaths(root string) ([]string, error) {
+	_, reports, err := repositoryContentBaselinePaths(root)
+	return reports, err
+}
+
+func repositoryContentBaselinePaths(root string) ([]string, []string, error) {
 	history, err := gitOutput(root, "log", "--reverse", "--format=%H", "HEAD", "--", contentDynamicsRegistryPath)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	commits := strings.Fields(string(history))
-	seen := map[string]bool{}
+	governed, reports := map[string]bool{contentDynamicsRegistryPath: true}, map[string]bool{}
 	if len(commits) == 0 {
 		data, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(contentDynamicsRegistryPath)))
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
-		paths, err := registeredContentGoldenPaths(data)
+		entries, err := decodeContentDynamicsRegistry(data)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
-		for _, path := range paths {
-			seen[path] = true
+		for _, entry := range entries {
+			if err := addContentBaselinePathsFromWorktree(root, entry, governed, reports); err != nil {
+				return nil, nil, err
+			}
 		}
 	} else {
 		for _, commit := range commits {
 			data, err := gitBlob(root, commit, contentDynamicsRegistryPath)
 			if err != nil {
-				return nil, err
+				return nil, nil, err
 			}
-			paths, err := registeredContentGoldenPaths(data)
+			entries, err := decodeContentDynamicsRegistry(data)
 			if err != nil {
-				return nil, fmt.Errorf("content-dynamics registry at %s: %w", commit, err)
+				return nil, nil, fmt.Errorf("content-dynamics registry at %s: %w", commit, err)
 			}
-			for _, path := range paths {
-				seen[path] = true
+			for _, entry := range entries {
+				if err := addContentBaselinePathsFromCommit(root, commit, entry, governed, reports); err != nil {
+					return nil, nil, err
+				}
 			}
 		}
 	}
-	paths := make([]string, 0, len(seen))
-	for path := range seen {
-		paths = append(paths, path)
+	governedPaths := make([]string, 0, len(governed))
+	for path := range governed {
+		governedPaths = append(governedPaths, path)
 	}
-	sort.Strings(paths)
-	return paths, nil
+	reportPaths := make([]string, 0, len(reports))
+	for path := range reports {
+		reportPaths = append(reportPaths, path)
+	}
+	sort.Strings(governedPaths)
+	sort.Strings(reportPaths)
+	return governedPaths, reportPaths, nil
+}
+
+func addContentBaselinePathsFromWorktree(root string, entry ContentDynamicsRegistryEntry, governed, reports map[string]bool) error {
+	manifestBytes, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(entry.BundleSnapshotManifest)))
+	if err != nil {
+		return err
+	}
+	return addContentBaselinePaths(entry, manifestBytes, governed, reports)
+}
+
+func addContentBaselinePathsFromCommit(root, commit string, entry ContentDynamicsRegistryEntry, governed, reports map[string]bool) error {
+	manifestBytes, err := gitBlob(root, commit, entry.BundleSnapshotManifest)
+	if err != nil {
+		return err
+	}
+	return addContentBaselinePaths(entry, manifestBytes, governed, reports)
+}
+
+func addContentBaselinePaths(entry ContentDynamicsRegistryEntry, manifestBytes []byte, governed, reports map[string]bool) error {
+	manifest, err := decodeContentDynamicsSnapshotManifest(manifestBytes)
+	if err != nil || manifest.EpochID != entry.EpochID || manifest.EpochSeedPath != entry.EpochSeedPath {
+		return errors.New("content-dynamics registry has an invalid snapshot manifest")
+	}
+	for _, path := range []string{entry.Scenario, entry.BundleSnapshotManifest, entry.GoldenReport} {
+		governed[path] = true
+	}
+	reports[entry.GoldenReport] = true
+	for _, artifact := range manifest.Artifacts {
+		governed[artifact.SnapshotPath] = true
+	}
+	return nil
+}
+
+func validateContentDynamicsRegistryHistory(root string) error {
+	history, err := gitOutput(root, "log", "--reverse", "--format=%H", "HEAD", "--", contentDynamicsRegistryPath)
+	if err != nil {
+		return err
+	}
+	var prior []ContentDynamicsRegistryEntry
+	for _, commit := range strings.Fields(string(history)) {
+		data, err := gitBlob(root, commit, contentDynamicsRegistryPath)
+		if err != nil {
+			return err
+		}
+		entries, err := decodeContentDynamicsRegistry(data)
+		if err != nil || len(entries) < len(prior) || !contentRegistryPrefixEqual(prior, entries) {
+			return fmt.Errorf("registry commit %s is not append-only", commit)
+		}
+		if len(entries) == len(prior) {
+			if len(prior) != 0 {
+				return fmt.Errorf("registry commit %s changes no entry", commit)
+			}
+			continue
+		}
+		subject, err := gitOutput(root, "show", "-s", "--format=%s", commit)
+		if err != nil || !strings.HasPrefix(string(subject), "BALANCE-CHANGE:") {
+			return fmt.Errorf("registry entry commit %s must begin BALANCE-CHANGE:", commit)
+		}
+		changed, err := gitLines(root, "diff-tree", "--no-commit-id", "--name-only", "-r", "-M", commit+"^", commit)
+		if err != nil {
+			return err
+		}
+		for _, entry := range entries[len(prior):] {
+			manifestBytes, err := gitBlob(root, commit, entry.BundleSnapshotManifest)
+			if err != nil {
+				return err
+			}
+			manifest, err := decodeContentDynamicsSnapshotManifest(manifestBytes)
+			if err != nil {
+				return err
+			}
+			required := []string{entry.BundleSnapshotManifest, entry.GoldenReport}
+			for _, artifact := range manifest.Artifacts {
+				required = append(required, artifact.SnapshotPath)
+			}
+			for _, path := range required {
+				if !containsPath(changed, path) {
+					return fmt.Errorf("registry commit %s did not add %s atomically", commit, path)
+				}
+			}
+			for _, path := range append(required, entry.Scenario) {
+				later, err := gitOutput(root, "log", "--format=%H", commit+"..HEAD", "--", path)
+				if err != nil {
+					return err
+				}
+				if len(later) != 0 {
+					return fmt.Errorf("immutable content-dynamics path %s changed after registration", path)
+				}
+			}
+		}
+		prior = entries
+	}
+	return nil
+}
+
+func contentRegistryPrefixEqual(prior, current []ContentDynamicsRegistryEntry) bool {
+	for index := range prior {
+		if prior[index] != current[index] {
+			return false
+		}
+	}
+	return true
 }
 
 func registeredContentGoldenPaths(data []byte) ([]string, error) {

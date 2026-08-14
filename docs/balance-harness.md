@@ -191,10 +191,12 @@ as a relevance baseline.
   `make t0-t1-relevance` or `make t1-relevance`.
 - `make harness-update` deliberately regenerates those tracked artifacts for review.
 
-The successor `content_dynamics.v1` lane has an intentionally empty production registry until an
-epoch pins an Opportunities artifact and its economy declarations. `make content-harness`
-generates any newly registered current-epoch bundle snapshot; with the empty registry it is an
-honest no-op. Snapshots are immutable and content-addressed under
+The successor `content_dynamics.v1` lane registers an epoch only after it pins an Opportunities
+artifact and its economy declarations. `make content-harness` generates any newly registered
+current-epoch bundle snapshot and its first historical report; with an empty registry it is an
+honest no-op. `make harness-check` reloads the immutable snapshot, executes the registered
+scenario through the production-owned seams, and byte-compares the result with that report.
+Snapshots are immutable and content-addressed under
 `testdata/harness/content-dynamics/bundles/<full-hash>/`: their manifest records the complete
 sorted artifact set, production and snapshot paths, per-file SHA-256, epoch coordinate, and full
 bundle hash. The read-only `harness-check` rejects missing, extra, tampered, subsetted, rehashed,

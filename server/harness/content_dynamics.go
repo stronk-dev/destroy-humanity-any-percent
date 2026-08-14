@@ -53,6 +53,10 @@ func LoadContentDynamicsRegistry(repositoryRoot string) ([]ContentDynamicsRegist
 	if err != nil {
 		return nil, err
 	}
+	return decodeContentDynamicsRegistry(data)
+}
+
+func decodeContentDynamicsRegistry(data []byte) ([]ContentDynamicsRegistryEntry, error) {
 	var wire struct {
 		SchemaVersion *int                               `json:"schema_version"`
 		Entries       []contentDynamicsRegistryWireEntry `json:"entries"`
@@ -117,14 +121,58 @@ func GenerateRegisteredContentSnapshots(repositoryRoot string) error {
 	return nil
 }
 
+func GenerateRegisteredContentBaselines(repositoryRoot string) error {
+	if err := GenerateRegisteredContentSnapshots(repositoryRoot); err != nil {
+		return err
+	}
+	entries, err := LoadContentDynamicsRegistry(repositoryRoot)
+	if err != nil {
+		return err
+	}
+	for _, entry := range entries {
+		suite, loadErr := LoadRegisteredContentDynamicsSuite(repositoryRoot, entry)
+		if loadErr != nil {
+			return loadErr
+		}
+		report, runErr := suite.Run()
+		if runErr != nil {
+			return runErr
+		}
+		data, encodeErr := CanonicalJSON(report)
+		if encodeErr != nil {
+			return encodeErr
+		}
+		if err := writeImmutableFile(filepath.Join(repositoryRoot, filepath.FromSlash(entry.GoldenReport)), data); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func ValidateContentDynamicsRegistry(repositoryRoot string) error {
 	entries, err := LoadContentDynamicsRegistry(repositoryRoot)
 	if err != nil {
 		return err
 	}
 	for _, entry := range entries {
-		if _, err := LoadContentBundleSnapshot(repositoryRoot, entry); err != nil {
+		suite, err := LoadRegisteredContentDynamicsSuite(repositoryRoot, entry)
+		if err != nil {
 			return err
+		}
+		report, err := suite.Run()
+		if err != nil {
+			return err
+		}
+		actual, err := CanonicalJSON(report)
+		if err != nil {
+			return err
+		}
+		golden, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(entry.GoldenReport)))
+		if err != nil {
+			return err
+		}
+		if !bytes.Equal(actual, golden) {
+			return fmt.Errorf("content-dynamics golden drift for %q", entry.Scenario)
 		}
 	}
 	return nil
@@ -169,9 +217,8 @@ func LoadContentBundleSnapshot(repositoryRoot string, entry ContentDynamicsRegis
 	if err != nil {
 		return epochseed.Bundle{}, err
 	}
-	var manifest contentDynamicsSnapshotManifest
-	if err := decodeRelevanceStrict(manifestBytes, &manifest); err != nil || manifest.SchemaVersion != 1 || manifest.EpochSeedPath != entry.EpochSeedPath ||
-		manifest.EpochID != entry.EpochID || !relevanceHashPattern.MatchString(manifest.ConstantsHash) || len(manifest.Artifacts) == 0 {
+	manifest, err := decodeContentDynamicsSnapshotManifest(manifestBytes)
+	if err != nil || manifest.EpochSeedPath != entry.EpochSeedPath || manifest.EpochID != entry.EpochID {
 		return epochseed.Bundle{}, errors.New("invalid content-dynamics snapshot manifest")
 	}
 	seedBytes, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(entry.EpochSeedPath)))
@@ -226,6 +273,23 @@ func LoadContentBundleSnapshot(repositoryRoot string, entry ContentDynamicsRegis
 		snapshotSeed.Artifacts = append(snapshotSeed.Artifacts, epochseed.Artifact{Name: row.Name, Path: row.ProductionPath})
 	}
 	return epochseed.Bundle{Seed: snapshotSeed, Artifacts: artifacts, Hash: manifest.ConstantsHash}, nil
+}
+
+func decodeContentDynamicsSnapshotManifest(data []byte) (contentDynamicsSnapshotManifest, error) {
+	var manifest contentDynamicsSnapshotManifest
+	if err := decodeRelevanceStrict(data, &manifest); err != nil || manifest.SchemaVersion != 1 ||
+		!validRepositoryPath(manifest.EpochSeedPath) || !relevanceHashPattern.MatchString(manifest.ConstantsHash) || len(manifest.Artifacts) == 0 {
+		return contentDynamicsSnapshotManifest{}, errors.New("invalid content-dynamics snapshot manifest")
+	}
+	prior, productionPaths, snapshotPaths := "", map[string]bool{}, map[string]bool{}
+	for _, row := range manifest.Artifacts {
+		if row.Name == "" || prior != "" && prior >= row.Name || !validRepositoryPath(row.ProductionPath) || !validRepositoryPath(row.SnapshotPath) ||
+			!relevanceHashPattern.MatchString(row.SHA256) || productionPaths[row.ProductionPath] || snapshotPaths[row.SnapshotPath] {
+			return contentDynamicsSnapshotManifest{}, errors.New("invalid content-dynamics snapshot artifact set")
+		}
+		prior, productionPaths[row.ProductionPath], snapshotPaths[row.SnapshotPath] = row.Name, true, true
+	}
+	return manifest, nil
 }
 
 func validRepositoryPath(value string) bool {

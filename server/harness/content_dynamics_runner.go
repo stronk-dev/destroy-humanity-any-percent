@@ -108,13 +108,33 @@ func LoadCandidateContentDynamicsSuite(repositoryRoot, scenarioPath, manifestPat
 	if err != nil {
 		return nil, err
 	}
-	bundle, err := replaycatalog.Load(manifest.ConstantsHash, artifacts)
+	return loadContentDynamicsSuite(data, scenario, manifest.ConstantsHash, manifestPath, artifacts)
+}
+
+func LoadRegisteredContentDynamicsSuite(repositoryRoot string, entry ContentDynamicsRegistryEntry) (*ContentDynamicsSuite, error) {
+	data, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(entry.Scenario)))
 	if err != nil {
-		return nil, fmt.Errorf("content-dynamics candidate bundle: %w", err)
+		return nil, err
 	}
-	resolved, ok := (production.ReplayCatalogSet{manifest.ConstantsHash: bundle}).ResolveReplayCatalogs(manifest.ConstantsHash)
+	scenario, err := loadContentDynamicsScenario(data)
+	if err != nil {
+		return nil, err
+	}
+	snapshot, err := LoadContentBundleSnapshot(repositoryRoot, entry)
+	if err != nil {
+		return nil, err
+	}
+	return loadContentDynamicsSuite(data, scenario, snapshot.Hash, entry.BundleSnapshotManifest, snapshot.Artifacts)
+}
+
+func loadContentDynamicsSuite(data []byte, scenario ContentDynamicsScenario, constantsHash, manifestPath string, artifacts map[string][]byte) (*ContentDynamicsSuite, error) {
+	bundle, err := replaycatalog.Load(constantsHash, artifacts)
+	if err != nil {
+		return nil, fmt.Errorf("content-dynamics bundle: %w", err)
+	}
+	resolved, ok := (production.ReplayCatalogSet{constantsHash: bundle}).ResolveReplayCatalogs(constantsHash)
 	if !ok {
-		return nil, errors.New("content-dynamics candidate bundle is not live-replay valid")
+		return nil, errors.New("content-dynamics bundle is not live-replay valid")
 	}
 	bundle = resolved
 	if bundle.Opportunities == nil || bundle.Relevance == nil || bundle.Fiscal == nil || bundle.Pitch == nil || bundle.Minigames == nil {
