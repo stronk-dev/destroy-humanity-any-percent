@@ -277,7 +277,7 @@ verify-server-ci:
 	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test sh -c 'cd /workspace && make verify-server-core'
 
 verify-harness-ci:
-	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test sh -c 'cd /workspace && make verify-harness'
+	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test sh -c 'cd /workspace && make verify-harness HARNESS_WORKERS=$(HARNESS_WORKERS)'
 
 verify-client: typecheck build-client test-client verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary copy-check
 
