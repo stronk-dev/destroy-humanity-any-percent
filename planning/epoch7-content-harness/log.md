@@ -211,3 +211,33 @@ mint sign-off.
   exit 0; aggregate `make verify` exit 0, including 6,650 client tests, 19,992 browser tests, and
   the Game-UI performance arm. The user's uncommitted `AGENTS.md` edit remains unstaged and
   untouched. Nothing was pushed.
+
+## 2026-08-14 — Claude designated cross-party review of `{2a0f7c9, 6c1d423, d232312}` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `33418ba..d232312` (unions the span).
+- **Executed:** `make epoch7-content-harness` — exit 0 and the committed EH-C10 report
+  regenerates BYTE-IDENTICAL; full harness suite GREEN (25.6 s, uncached); `make
+  verify-kernel-version` GREEN at 0.3.95; `make verify-server` exit 0. Independent SHA-256:
+  manifest `5cb718f6…41bc`, scenario `a6df6553…6a54`, report `cef5fa23…9e73` — all match the
+  handoff; the report's embedded scenario/constants hashes reconcile (sha256-prefixed).
+- **Contracts honored as ruled:** EH-C11 (cycle-free `relevancepolicy` owner; cumulative T1
+  policy in the parsed bundle; the candidate loader now proves LIVE-replay validity of the full
+  eighteen-artifact set — the exact gap EH-C15 exposed, now structurally closed); EH-C12
+  (eighteen-row manifest, per-row hash/schema/path/gate/verdict pins, recomputed constants hash);
+  EH-C13 (strict schema v1, byte-sorted observations, canonical values); EH-C14 (pinned
+  coordinate spawns NATURALLY at 3,558 attended ms with a 5,000-ms duration effect on a real
+  owned target; 35.035 claimed vs 5.005 control = 30.03 bonus).
+- **Plan checkboxes** flipped in the record commit with exercising tests in `2a0f7c9` of the same
+  range — compliant under the 2026-08-05 two-commit refinement. The reworded box (registry entry
+  deferred to post-mint) matches EH-C13's candidate-only grammar; honest scope, not a silent cut.
+- **Note (non-blocking):** `declared_transitions: 4215` is the derived static ceiling beside
+  `executed_transitions: 786`; disclosed side-by-side and nothing gates on its tightness. Fine as
+  a runaway guard; must never be quoted as measured work (T01-C17 discipline).
+- **Reconciliation owed by this reviewer, discharged here:** the EH-C15 ruling record I
+  transcribed said the C14 "first spawn moves accordingly" — that inference was carried over from
+  the superseded restore-2500 arm and is WRONG for the lifetime-only fix the owner actually
+  chose: the spawn stays at 3,558 ms; only expiry moves to 8,058 ms. Codex correctly routed the
+  stale sentence back instead of editing it. The ruling's operative content (literal 4500, gap
+  unchanged, re-derivation order) is unaffected.
+- **No findings. APPROVED.** The scenario hash and C14 coordinate are ready for owner pinning;
+  the EH-C10 report is ready for owner review toward the mint sign-off.
