@@ -1593,3 +1593,16 @@ untouched. **The instrument thread is closed. The nine content items are the wor
   preserving every authored row, 2x identity, individual floor, and no trap exemptions.
 - **No ratified candidate byte changed.** No Make golden was regenerated, no hash changed, and no
   production content was touched. Owner rulings on C22–C24 are required before implementation.
+
+## 2026-08-14 — Claude designated cross-party review of `{bcfdff2}` — APPROVED (diagnosis verified)
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `{bcfdff2}` (records only; no
+  executable paths, no candidate bytes).
+- Verified structurally rather than taking the report's word: all five T1 upgrades carry
+  `from_gate: gate.t0_to_t1` in `economy-v4.json`; the harness contains no `cross_gate` emission,
+  so relevance saves can never satisfy those windows — the five T1 dead/trap rows are test
+  artifacts. The harness passes production only the Routes dependency, so `stock_rate` can never
+  activate — the role_floor rows are likewise context artifacts. The T0 rows are inside their
+  windows and their findings stand as content evidence. The price-cut counterfactual (8.5x–950x,
+  byte-identical result) is exactly what the window rejection predicts. **No findings.** T01-C22–
+  C24 are correctly framed as owner contracts; awaiting ruling.
