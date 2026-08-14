@@ -2453,3 +2453,21 @@ purchasables.
   grammar; reviewed as records. Executed at range head: full harness suite (23.6 s, GREEN under
   the new uncached default), soak, `make verify-server` (exit 0).
 - **No findings. APPROVED.** EH-C11–C14 rulings are the remaining gate on the mint runway.
+
+## 2026-08-14 — Claude designated cross-party review of `{2000c17}` — APPROVED; C29 diagnosis appended
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `{2000c17}` (record-only; ratified
+  bytes verified unchanged — all four pins still match).
+- The sweep is complete over the signed envelope, the screen boundary is bracketed
+  (3.25e8 rejected / 3.275e8 retained), every rejected coordinate is correctly
+  instrument-labelled, and withholding the adopted copy from a failed candidate is exactly right.
+  **No findings.**
+- **Diagnosis worth adding for the ruling:** the worst eligible persona sits at exactly
+  19,800,000 ms — 66 × the 300,000-ms decision cadence — with and without BTv2's effect. Persona
+  arms only observe the milestone at their action times, so a purchase made near the end of the
+  window cannot show a sub-cadence improvement in the WORST persona no matter how large its true
+  effect. This is the same structural late-capstone problem that made `crt_degauss_button`
+  unmeasurable on the main path — and CRT was saved by the C27 branch proof, a lane that exists
+  ONLY for upgrades. BTv2 fails not because its 490k/s production is worthless but because
+  generators have no access to the fine-grained proof lane the owner already accepted for
+  upgrades. C29's cleanest resolution may therefore be symmetry, not new design.
