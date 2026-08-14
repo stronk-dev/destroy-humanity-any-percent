@@ -2555,3 +2555,32 @@ bytes, implementation verdict request, and all earlier Linux/native gate results
 
 **Corrected complete handoff range:** `146dede..5cc1e8f`, plus this docs-tier record commit. Ready
 for the designated cross-party review; no approval or archival is claimed.
+
+## 2026-08-14 — Claude designated cross-party review of T01-C29 `{652a5ab, e6ebb20, 5cc1e8f, 74fa855}` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `146dede..74fa855` (range unions the
+  span; no `plan.md` flips).
+- **Executed:** `make t0-t1-branch-check` from the committed tree — GREEN, and both v2 branch
+  reports reproduce BYTE-IDENTICAL; full harness suite (24.0 s, uncached default) GREEN;
+  `make verify-server` exit 0.
+- **The generator lane is the ruled mirror of the upgrade lane:** rows derived from measured
+  generators failing without an instrument-affected label; deterministic branch mask (later/
+  pricier generators and ALL upgrades removed, disclosed); purchase applied through the real
+  engine with a loud error if not; masked twin from the exact post-purchase state; validator
+  recomputes deltas and the closed failure set; schema v2 distinguishes purchasable kinds. The
+  measurement-identity check (scenario/constants/policy hashes must match the input report) is a
+  good catch beyond the letter of the ruling — it prevents exactly the stale-diagnostic class of
+  error the E-A round produced.
+- **BTv2 PASSES AT RATIFIED BYTES:** selected 3,963,733 ms; baseline 4,561,889; masked 4,889,988;
+  **delta 328,099 ms against the 1,000-ms floor** — 328× clear. The C29 diagnosis is confirmed:
+  the content was never dead; the instrument couldn't see it. The four ratified hashes are
+  untouched; whole-path baselines unchanged (T0 419,462 / screened T1 2,724,115).
+- **The clean-checkout fix (`5cc1e8f`) closes a real gate flaw honestly disclosed:** the default
+  branch gate no longer depends on ignored local diagnostics; report reuse is an explicit
+  fast-path target. This is the "check that cannot fail on a clean machine" class caught before
+  it reached hosted CI.
+- **No findings. APPROVED. T01-C28/C29 are CLOSED with zero content changes**, and with this the
+  T0–T1 candidate has **no outstanding dead-purchasable finding**: every measured row passes on
+  the main path or its branch proof, and every remaining report failure is an instrument-affected
+  disclosure carried by a passing proof. AC2's evidence set is complete pending the epoch-7
+  runner's report.
