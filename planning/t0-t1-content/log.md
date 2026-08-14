@@ -1944,3 +1944,21 @@ as calibration bounds, not final bytes; implement C26/C27 → re-run the unchang
 one branch-aware candidate tuple within those bounds → require both branch rows green AND no
 whole-path pacing regression → designated review → owner signs exact literals and re-ratifies the
 four affected hashes. No production/candidate content edit is authorized by this entry.
+
+## 2026-08-14 — Claude designated cross-party review of the holistic diagnosis `{172a180}` — VERIFIED (ruling teed up)
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `{172a180}` (record-only).
+- **Verified against artifacts and bytes:** answering_machine/nephew_intern deltas (81,102 /
+  18,250 ms, passing, not instrument-affected) match the current diagnostic report exactly;
+  `continuous_feed_paper` → `dot_matrix_queue` and `refurbished_sticker` → `beige_tower_v2`
+  effect-target dependencies confirmed in `economy-v4.json`, with both targets screen-excluded in
+  the current T0/T1 reports — C26's gap is real; `institutional_memory` does target the tier-0
+  `generator.beige_tower` at a 9.5e8 price, supporting the staleness rationale; `IntentBuyUpgrade`
+  is issued only by the reference candidate lane — C27's mechanism is real.
+- **Correction to my own C24-review framing (evidence rule: report faithfully):** my "material
+  fact" that Hold Music and Business Cards double near-dead generators was read from the rejected
+  tuple's redirected trajectory, not from current prices. The diagnosis' cause-and-effect
+  correction is right and my framing was wrong on that point; the tuple rejection itself remains
+  sound on the near-free-pricing ground.
+- **No findings against the diagnosis.** C26/C27 and the per-item directions are correctly framed
+  as owner contracts; awaiting ruling.
