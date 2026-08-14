@@ -1793,3 +1793,26 @@ rows together through the complete cumulative T1 gate and return either one coor
 price-only tuple under the same retain-effects/copy/no-exemptions discipline, or a narrower
 numbered blocker if the trajectory proves price-only tuning unsound. Do not delete, exempt,
 redesign, or silently bundle these four rows into C24 without an owner ruling.
+
+## 2026-08-14 — Claude designated cross-party review of C24 calibration `{c718d6a}` — VERIFIED (sign-off pending)
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `{c718d6a}` (record-only).
+- **Independently reproduced** in a scratch worktree by applying the proposed tuple to the candidate
+  bytes and running the real `make t0-t1-relevance` gate: all four individual deltas match the
+  record to the digit (93,810 / 1,325 / 1,313 / 1,313 ms), all four rows pass relevance and trap
+  individually with `support: individual`, and the only failures are the two pre-existing
+  instrument-affected generator floors. My probe's transition count differed (242,842 vs 224,153)
+  because it edited every `resource_at_least` matching by value rather than only the four paired
+  rows — a probe artifact, noted for honesty; the balance outcome is confirmed.
+- The cliff analysis is real diligence: the chosen tuple is an interior coordinate with ≥313 ms
+  headroom, not a boundary literal. C25's refusal to silently widen the ruled T0 scope to the T1
+  rows is correct.
+- **Material fact surfaced for the owner:** three of the four proposed prices are cuts of 10x
+  (Reply-All 100→10), 8,640x (Business Cards 86,400→10), and 10,000x (Hold Music 80,000→8), and
+  their deltas clear the 1,000-ms floor by ~30%. The structural reason is that Hold Music and
+  Business Cards double `generator.answering_machine` and `generator.nephew_intern`, which the
+  opportunity screen itself excludes as unhelpful on the milestone path — an upgrade doubling a
+  near-dead generator can only become "relevant" by becoming nearly free. The ruled price-only
+  remedy is mechanically sound and honestly derived; whether near-free trinket upgrades are the
+  intended game feel, or the generator paths are the real defect, is the owner's call and is being
+  put to the owner explicitly. **No findings against the calibration itself.**
