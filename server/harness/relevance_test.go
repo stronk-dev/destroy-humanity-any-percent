@@ -1148,15 +1148,22 @@ func TestRelevanceRegistryIsFailClosedForActiveCatalogs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(entries) != 1 || entries[0].Active {
-		t.Fatalf("fixture registry entries=%+v", entries)
+	var fixture *RelevanceRegistryEntry
+	for index := range entries {
+		if entries[index].EconomyCatalog == "testdata/harness/relevance/economy-v4.json" {
+			fixture = &entries[index]
+			break
+		}
+	}
+	if len(entries) != 2 || fixture == nil || fixture.Active {
+		t.Fatalf("registry entries=%+v fixture=%+v", entries, fixture)
 	}
 	report := RelevanceReport{Failures: []string{"relevance_floor:upgrade.dead"}}
-	if err := ValidateActiveRelevanceReport(entries[0], report); err != nil {
+	if err := ValidateActiveRelevanceReport(*fixture, report); err != nil {
 		t.Fatalf("inactive fixture unexpectedly gated: %v", err)
 	}
-	entries[0].Active = true
-	if err := ValidateActiveRelevanceReport(entries[0], report); err == nil || !strings.Contains(err.Error(), "relevance_floor:upgrade.dead") {
+	fixture.Active = true
+	if err := ValidateActiveRelevanceReport(*fixture, report); err == nil || !strings.Contains(err.Error(), "relevance_floor:upgrade.dead") {
 		t.Fatalf("active fixture failed open: %v", err)
 	}
 }
