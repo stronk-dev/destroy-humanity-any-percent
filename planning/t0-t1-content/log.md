@@ -2102,3 +2102,58 @@ already-ruled designated review + re-ratification. No byte change is authorized 
   every Go package, including the 54.319-second harness package.
 - `make t0-t1-relevance-all` — expected exit 2 after running all four constituent arms; the exact
   current-byte content findings and transition counts are recorded above.
+
+## 2026-08-14 — Claude designated cross-party review of T01-C26/C27 `{99caaa6, 6db811d, de55919}` — IMPLEMENTATION APPROVED; tuple record needs one correction before sign-off
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `25e9b8a..de55919` =
+  `{99caaa6, 6db811d, de55919}` (handoff commit included; range unions the span).
+- **Executed:** full `make test-harness -count=1` (GREEN, 28.9 s); `make t0-t1-role-check`
+  (GREEN); unchanged-byte T0 main + branch arms (match the record to the digit: 173,025 /
+  81,804 transitions, Continuous Feed branch delta 153,027 at the current 12,000 price);
+  the ENTIRE proposed tuple applied byte-for-byte in a scratch worktree and all four arms re-run.
+- **D-A discharged and verified adversarially:** the exact mutation that survived the full suite
+  in yesterday's debt probe (silent coasting re-enabled in the traced reference arm) now fails
+  `TestTracedReferenceDecisionGuardFailsLoudWithoutCoasting` loudly. F1 finally has
+  discriminating coverage on the primary arm.
+- **C26 verified:** reason-qualified labels (`instrument_affected:<kind>:<removed_id>:...`) with
+  the removed ID required in the disclosed exclusion set; both ruled regressions pinned; the
+  production-generator exception (own production ⇒ never invalidated by removed role targets) is
+  the right rule and is what keeps Beige Tower v2 judgeable below.
+- **C27 verified:** branch prefixes come from the shared ranker on legal paths, purchases go
+  through the real engine, masked twins share the exact post-purchase state, the validator
+  recomputes delta and the closed failure set, and row derivation covers every upgrade the main
+  reference misses.
+
+### Tuple verification — what reproduces and what does not
+
+Confirmed to the digit with the tuple applied to real bytes: **T0 whole path 436,448 → 419,462**;
+**both branch reports empty-failure**; every claimed branch delta exact (CF 153,027; BC 38,295;
+CRT 616,212; Handbook main-path; Sticker 163,564; Institutional Memory 2,448,096; Rack Rail
+2,589,974).
+
+**Finding E-A (record correction required): the claimed T1 pacing number does not reproduce
+against applied bytes.** The handoff states T1 improves 3,458,872 → 3,318,634 ms. My byte-applied
+run's screened T1 reference is **2,724,115 ms** — better than claimed, but not the claimed number,
+and the handoff does not name which arm it measured. After G-A (stale pre-memoization count) and
+the 307/308 slip, this is the third recorded number that does not match its artifact. Codex names
+the arm and corrects the record before the owner signs anything containing it.
+
+**Finding E-B (disclosure, material for sign-off): the tuple changes the instrument's exclusion
+composition, and the handoff topline does not say so.** Under the applied tuple: T0's screen also
+removes `generator.nephew_intern` (Business Cards' evidence moves entirely onto its branch proof);
+T1's screen removes `generator.garage_rack` — the retargeted Institutional Memory's NEW target —
+so Institutional Memory AND Rack Rail (previously the thread's one clean pass) become
+instrument-affected on the main path, resting entirely on their (passing) branch proofs.
+Structurally legitimate under C26/C27; must be visible at sign-off, not discovered later.
+
+**Finding E-C (material for sign-off): the tuple surfaces `generator.beige_tower_v2` as an
+ORDINARY dead finding** (`relevance_floor`, worst persona delta 0). Before the tuple, BTv2 was
+screen-excluded and unjudgeable; the tuple's changed composition makes it judgeable for the first
+time — and it fails. This is newly-valid evidence, not a regression, but it means the proposed
+tuple does NOT reach AC2's "zero dead purchasables": signing it buys eight passing upgrades and
+one honestly-dead generator, which needs its own follow-up (diagnosis or disposition).
+
+**Verdict: C26/C27 implementation APPROVED — the instrument work is correct and well-tested. The
+TUPLE is verified in substance (all eight rows pass via main path or branch proof) but its record
+carries E-A and its sign-off must present E-B/E-C. No candidate byte changes until the owner signs
+with those facts in front of them.**
