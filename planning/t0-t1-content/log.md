@@ -2391,6 +2391,42 @@ with provision coverage named as debt; whole-path non-regression against T0 419,
 screened T1 2,724,115; exact literals and re-derived hashes back through designated review and
 owner re-ratification.
 
+## 2026-08-14 — Codex C28 measurement: both authorized levers fail — DESIGN-GAP T01-C29
+
+The C28 implementation was exercised against the real T1 relevance gate before any candidate
+byte was committed. The mechanical shape itself is valid: replacing BTv2's `provision` row with
+`synergy_feed → pool.institutional_knowledge` loads, and the real-engine C23 role activation plus
+masked control pass with the ruled 11-row total. It does not, however, make the purchasable
+relevant under the ratified instrument.
+
+Measured coordinates (all use the shipped T1 scenario and the maximum authorized feed where a
+price is named):
+
+- At the unchanged `3.5831808e8` price, both `2,000 ppm` and `50,000 ppm` retain BTv2 in the
+  opportunity screen and buy it, but the worst eligible persona remains exactly
+  `19,800,000 ms` with and without its effects: delta `0 ms`, below the `1,000 ms` floor.
+- With `50,000 ppm`, prices `1e8`, `2e8`, `3e8`, `3.2e8`, and `3.25e8` cause the opportunity
+  screen to remove BTv2 as harmful. The resulting floor is correctly labelled
+  `instrument_affected:exact_id:generator.beige_tower_v2`, so none is balance evidence.
+- With `50,000 ppm`, prices `3.275e8`, `3.3e8`, and `3.4e8` retain BTv2, but again measure an
+  exact `0 ms` individual delta. This brackets the screen boundary: the last sampled rejected
+  coordinate is `3.25e8`, while the first sampled retained coordinate is `3.275e8`; the retained
+  side still supplies no milestone benefit.
+
+This reproduces the proposal's required fallback outcome: no authorized ppm/price coordinate
+both survives the opportunity screen and clears the relevance floor. The previously adopted copy
+was not assembled because its "load-bearing" claim would be mechanically false on a failed
+candidate. All experimental economy/test/copy edits were restored byte-for-byte; the four
+owner-ratified candidate hashes therefore remain authoritative and no re-ratification is owed by
+this failed experiment.
+
+**T01-C29 — owner/design ruling required.** The clean-removal Institutional Knowledge design is
+exhausted under its signed literal bounds. Do not raise the ppm beyond `50,000`, weaken the floor,
+grant a trap exemption, or silently keep the role as flavor. A new role/effect shape, generator
+disposition, or explicit widening of the design envelope must be owner-authored before Codex can
+change candidate bytes. C28 remains open; the epoch-7 candidate cannot claim zero dead
+purchasables.
+
 ## 2026-08-14 — Claude designated cross-party review of `{928126b, 67bd1f0, 41d4cf6, 727b775, e42a506}` — APPROVED
 
 - **Review by:** Claude. **Recorded by:** Claude. **Range:** the five commits above (interleaved
