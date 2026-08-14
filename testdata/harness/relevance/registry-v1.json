@@ -7,7 +7,7 @@
       "relevance_policy": "balance/relevance/t0-t1.json",
       "golden_report": "testdata/harness/relevance/golden-report-epoch-7-v6.json",
       "branch_report": "testdata/harness/relevance/branch-report-epoch-7-v2.json",
-      "justification_changelog": "balance/changelog/epoch-7.md"
+      "justification_changelog": "changelog/epoch-7.md"
     },
     {
       "economy_catalog": "testdata/harness/relevance/economy-v4.json",

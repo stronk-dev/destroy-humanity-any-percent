@@ -35,6 +35,17 @@ type relevanceRegistryWireEntry struct {
 }
 
 func LoadRelevanceRegistry(repositoryRoot string) ([]RelevanceRegistryEntry, error) {
+	return loadRelevanceRegistry(repositoryRoot, false)
+}
+
+// LoadRelevanceRegistryForUpdate permits only generated evidence paths to be
+// absent. All source artifacts remain mandatory, and the ordinary loader stays
+// fail-closed so a check can never accept an unmaterialized registry entry.
+func LoadRelevanceRegistryForUpdate(repositoryRoot string) ([]RelevanceRegistryEntry, error) {
+	return loadRelevanceRegistry(repositoryRoot, true)
+}
+
+func loadRelevanceRegistry(repositoryRoot string, allowMissingEvidence bool) ([]RelevanceRegistryEntry, error) {
 	data, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(relevanceRegistryPath)))
 	if err != nil {
 		return nil, err
@@ -65,8 +76,10 @@ func LoadRelevanceRegistry(repositoryRoot string) ([]RelevanceRegistryEntry, err
 		}
 		prior = *entry.EconomyCatalog
 		entryPaths := []string{*entry.EconomyCatalog, *entry.Scenario, *entry.RelevancePolicy, *entry.GoldenReport, *entry.JustificationChangelog}
+		evidencePaths := map[string]bool{*entry.GoldenReport: true}
 		if entry.BranchReport != nil {
 			entryPaths = append(entryPaths, *entry.BranchReport)
+			evidencePaths[*entry.BranchReport] = true
 		}
 		for _, path := range entryPaths {
 			if filepath.ToSlash(filepath.Clean(path)) != path {
@@ -76,7 +89,7 @@ func LoadRelevanceRegistry(repositoryRoot string) ([]RelevanceRegistryEntry, err
 				return nil, fmt.Errorf("duplicate relevance registry path %q", path)
 			}
 			ownedPaths[path] = true
-			if _, err := os.Stat(filepath.Join(repositoryRoot, filepath.FromSlash(path))); err != nil {
+			if err := validateRelevanceRegistryPath(repositoryRoot, path, evidencePaths[path], allowMissingEvidence); err != nil {
 				return nil, fmt.Errorf("relevance registry path %q: %w", path, err)
 			}
 		}
@@ -118,6 +131,14 @@ func LoadRelevanceRegistry(repositoryRoot string) ([]RelevanceRegistryEntry, err
 		}
 	}
 	return entries, nil
+}
+
+func validateRelevanceRegistryPath(repositoryRoot, path string, evidence, allowMissingEvidence bool) error {
+	_, err := os.Stat(filepath.Join(repositoryRoot, filepath.FromSlash(path)))
+	if allowMissingEvidence && evidence && errors.Is(err, os.ErrNotExist) {
+		return nil
+	}
+	return err
 }
 
 func validateTrapJustifications(repositoryRoot string, entry RelevanceRegistryEntry, policy *RelevancePolicy) error {

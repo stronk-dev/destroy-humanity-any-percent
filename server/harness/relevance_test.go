@@ -1161,6 +1161,39 @@ func TestRelevanceRegistryIsFailClosedForActiveCatalogs(t *testing.T) {
 	}
 }
 
+func TestRelevanceRegistryUpdateCanMaterializeMissingEvidence(t *testing.T) {
+	entries, err := LoadRelevanceRegistryForUpdate("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	active := 0
+	for _, entry := range entries {
+		if entry.Active {
+			active++
+			if entry.GoldenReport == "" || entry.BranchReport == "" {
+				t.Fatalf("active update entry lacks evidence coordinates: %+v", entry)
+			}
+		}
+	}
+	if active != 1 {
+		t.Fatalf("active entries=%d, want 1", active)
+	}
+}
+
+func TestRelevanceRegistryUpdateRelaxesOnlyMissingEvidence(t *testing.T) {
+	root := t.TempDir()
+	const missing = "generated/missing.json"
+	if err := validateRelevanceRegistryPath(root, missing, true, true); err != nil {
+		t.Fatalf("update rejected missing generated evidence: %v", err)
+	}
+	if err := validateRelevanceRegistryPath(root, missing, true, false); err == nil {
+		t.Fatal("strict check accepted missing generated evidence")
+	}
+	if err := validateRelevanceRegistryPath(root, missing, false, true); err == nil {
+		t.Fatal("update accepted missing source artifact")
+	}
+}
+
 func TestActiveRelevanceEvidenceRequiresExactBranchCoverage(t *testing.T) {
 	entries, err := LoadRelevanceRegistry("../..")
 	if err != nil {

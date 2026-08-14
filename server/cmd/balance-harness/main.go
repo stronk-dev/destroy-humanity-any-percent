@@ -60,15 +60,21 @@ func main() {
 		}
 		return
 	}
+	var registry []harness.RelevanceRegistryEntry
+	var err error
+	if *mode == "update" {
+		registry, err = harness.LoadRelevanceRegistryForUpdate(*root)
+	} else {
+		registry, err = harness.LoadRelevanceRegistry(*root)
+	}
+	if err != nil {
+		fail(err)
+	}
 	suite, err := harness.LoadSuite(*root, "testdata/harness/scenarios/phase0-production.json")
 	if err != nil {
 		fail(err)
 	}
 	runs, aggregate, err := suite.RunAllWithWorkers(*workers)
-	if err != nil {
-		fail(err)
-	}
-	registry, err := harness.LoadRelevanceRegistry(*root)
 	if err != nil {
 		fail(err)
 	}
