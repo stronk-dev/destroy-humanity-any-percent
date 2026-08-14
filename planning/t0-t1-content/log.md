@@ -1962,3 +1962,32 @@ four affected hashes. No production/candidate content edit is authorized by this
   sound on the near-free-pricing ground.
 - **No findings against the diagnosis.** C26/C27 and the per-item directions are correctly framed
   as owner contracts; awaiting ruling.
+
+## 2026-08-14 — OWNER RULING: T01-C26 and T01-C27 ACCEPTED; balance direction accepted including the Institutional Memory retarget
+
+Ruled by Marco (recorded by Claude from the owner's explicit selections):
+
+1. **T01-C26 ACCEPTED as proposed.** Transitive dependency-aware instrument disclosure: any
+   measured item whose only non-neutral path intersects a removal's mechanical dependency set
+   (effect target, provision target, manual target, declared role target) is labelled
+   `instrument_affected:<reason>:<removed_id>` and cannot authorize a balance disposition. Both
+   concrete regressions pinned (Dot-Matrix → Continuous Feed; Beige Tower v2 → Refurbished
+   Sticker). Exact-ID-only disclosure REJECTED.
+2. **T01-C27 ACCEPTED as proposed.** Candidate-owned near-greedy branch fixtures for
+   branch-specific upgrades: deterministic legally-reachable prefix, T01-C20 projection decision,
+   real-engine purchase, effect-masked control, policy-epsilon savings requirement; row count
+   derived from every upgrade the main reference does not buy. The main unmasked reference remains
+   mandatory for whole-path pacing and the deviation oracle. Synthesized states, hand-authored
+   arithmetic, epsilon weakening, and `trap_exempt` all REJECTED. One-path-only certification
+   REJECTED as the standing alternative.
+3. **Balance direction ACCEPTED, including the sole redesign.** Both generators unchanged
+   (healthy; the earlier "weak generators" reading is corrected on the record). Anchors accepted
+   as calibration bounds, not bytes: Reply-All 80, Hold Music 20k, Business Cards 20k, Continuous
+   Feed 2k, CRT Degauss 50m, Handbook 75m, Refurbished Sticker 200m. **Institutional Memory is
+   retargeted to `generator.garage_rack`** with a 100m anchor — the one accepted effect redesign.
+   Final literals are re-measured on the corrected instrument and return for explicit owner
+   sign-off with the four re-derived hashes.
+
+**Authorized sequencing:** implement C26 + C27 → re-run the unchanged catalog through the corrected
+gates → derive one branch-aware tuple inside the accepted bounds → both branch rows green AND no
+whole-path pacing regression → designated review → owner signs exact literals → re-ratification.
