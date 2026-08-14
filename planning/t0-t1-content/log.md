@@ -2293,3 +2293,24 @@ commit; C28 awaits owner ruling.
   trap exemptions.
 - **No findings. APPROVED.** The four UNRATIFIED pins are now backed by a green designated
   review and are ready for owner ratification. AC2 remains open solely on C28.
+
+## 2026-08-14 — OWNER RULING: four hashes RATIFIED; C28 resolved by ROLE REDESIGN, engine unchanged
+
+Ruled by Marco (recorded by Claude from the owner's explicit selections):
+
+1. **RATIFIED — the four T0–T1 candidate pins are owner-ratified at the designated-reviewed
+   bytes:**
+   - `economy-v4.json` `sha256:fb75e5cf32f545d9470cc8512a8c63f45ed9edd96c68ba65cfeabe0ce2c7f37d`
+   - `relevance-policy-t1-v2.json` `sha256:f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef`
+   - `relevance-scenario-v2.json` `sha256:008c08df62da0792b84b5a1c5367f52cdfbfaa5ac46603fd920dcdaa94035a18`
+   - `relevance-scenario-t1-v2.json` `sha256:0d6049b2736eee7560d82f9459972f8da62e7b8b1933fca885631b0e09195419`
+   Any change to these bytes reopens the candidate lane. The epoch-7 mint runway may proceed
+   (EH-C10 candidate report → promotion manifest → owner sign-off → mint), with AC2's completion
+   still gated on C28.
+2. **C28 — the fractional-provision engine extension is REJECTED. Beige Tower v2 keeps the engine
+   as-is and gets a ROLE REDESIGN:** a different job (role/effect) inside the existing shipped
+   vocabulary (`provision`, `synergy_feed`, `manual_output`, `stock_rate`) or a justified
+   composition of them. The redesign proposal returns for explicit owner sign-off BEFORE any byte
+   changes; it must state the intended first-hour job per design/01–02, carry branch + whole-path
+   measurements under the ratified instrument, and touch nothing else in the ratified candidate
+   without reopening this ruling. Claude drafts the proposal (design lane); Codex measures it.
