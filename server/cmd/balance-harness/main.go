@@ -73,9 +73,11 @@ func main() {
 		fail(err)
 	}
 	type relevanceResult struct {
-		entry  harness.RelevanceRegistryEntry
-		report harness.RelevanceReport
-		bytes  []byte
+		entry       harness.RelevanceRegistryEntry
+		report      harness.RelevanceReport
+		bytes       []byte
+		branch      *harness.RelevanceBranchReport
+		branchBytes []byte
 	}
 	relevanceResults := make([]relevanceResult, 0, len(registry))
 	for _, entry := range registry {
@@ -91,7 +93,19 @@ func main() {
 		if encodeErr != nil {
 			fail(encodeErr)
 		}
-		relevanceResults = append(relevanceResults, relevanceResult{entry: entry, report: relevance, bytes: relevanceBytes})
+		result := relevanceResult{entry: entry, report: relevance, bytes: relevanceBytes}
+		if entry.BranchReport != "" {
+			branch, branchErr := relevanceSuite.RunRelevanceBranchProofs(&relevance)
+			if branchErr != nil {
+				fail(branchErr)
+			}
+			branchBytes, encodeErr := harness.CanonicalJSON(branch)
+			if encodeErr != nil {
+				fail(encodeErr)
+			}
+			result.branch, result.branchBytes = &branch, branchBytes
+		}
+		relevanceResults = append(relevanceResults, result)
 	}
 	golden := harness.GoldenReport{SchemaVersion: 1}
 	for _, report := range runs {
@@ -115,6 +129,11 @@ func main() {
 		for _, result := range relevanceResults {
 			if err := os.WriteFile(filepath.Join(*root, filepath.FromSlash(result.entry.GoldenReport)), result.bytes, 0o644); err != nil {
 				fail(err)
+			}
+			if result.branch != nil {
+				if err := os.WriteFile(filepath.Join(*root, filepath.FromSlash(result.entry.BranchReport)), result.branchBytes, 0o644); err != nil {
+					fail(err)
+				}
 			}
 		}
 	case "run":
@@ -164,7 +183,18 @@ func main() {
 			if string(wantRelevance) != string(result.bytes) {
 				fail(fmt.Errorf("relevance golden drift for %q; run make harness-update and review", result.entry.Scenario))
 			}
-			if gateErr := harness.ValidateActiveRelevanceReport(result.entry, result.report); gateErr != nil {
+			if result.entry.Active {
+				wantBranch, readErr := os.ReadFile(filepath.Join(*root, filepath.FromSlash(result.entry.BranchReport)))
+				if readErr != nil {
+					fail(readErr)
+				}
+				if result.branch == nil || string(wantBranch) != string(result.branchBytes) {
+					fail(fmt.Errorf("relevance branch golden drift for %q; run make harness-update and review", result.entry.Scenario))
+				}
+				if gateErr := harness.ValidateActiveRelevanceEvidence(result.entry, result.report, *result.branch); gateErr != nil {
+					fail(gateErr)
+				}
+			} else if gateErr := harness.ValidateActiveRelevanceReport(result.entry, result.report); gateErr != nil {
 				fail(gateErr)
 			}
 		}

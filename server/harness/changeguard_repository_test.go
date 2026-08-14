@@ -232,15 +232,17 @@ func TestRepositoryGuardPinsContentDynamicsEntryAtomicallyAndImmutably(t *testin
 func TestRepositoryGuardDiscoversEveryRegisteredRelevanceGolden(t *testing.T) {
 	root := newGuardRepository(t)
 	secondGolden := "testdata/harness/relevance/golden-report-v2.json"
+	secondBranch := "testdata/harness/relevance/branch-report-v2.json"
 	registry := `{"schema_version":1,"entries":[` +
 		`{"economy_catalog":"balance/catalogs/phase0.json","scenario":"testdata/harness/relevance/scenario-v1.json","relevance_policy":"testdata/harness/relevance/policy-v1.json","golden_report":"` + relevanceGoldenPath + `","justification_changelog":"testdata/harness/relevance/CHANGELOG.md"},` +
-		`{"economy_catalog":"balance/catalogs/phase1.json","scenario":"testdata/harness/relevance/scenario-v2.json","relevance_policy":"testdata/harness/relevance/policy-v2.json","golden_report":"` + secondGolden + `","justification_changelog":"testdata/harness/relevance/CHANGELOG.md"}]}`
+		`{"economy_catalog":"balance/catalogs/phase1.json","scenario":"testdata/harness/relevance/scenario-v2.json","relevance_policy":"testdata/harness/relevance/policy-v2.json","golden_report":"` + secondGolden + `","branch_report":"` + secondBranch + `","justification_changelog":"testdata/harness/relevance/CHANGELOG.md"}]}`
 	writeGuardCommit(t, root, "harness: register second relevance scenario", map[string]string{
 		relevanceRegistryPath:                         registry,
 		"testdata/harness/relevance/scenario-v2.json": `{"version":2}`,
 	})
 	writeGuardCommit(t, root, "BALANCE-CHANGE: add second relevance golden", map[string]string{
 		secondGolden: `{"schema_version":1}`,
+		secondBranch: `{"schema_version":1}`,
 	})
 	if err := ValidateRepositoryBaselineChange(root); err != nil {
 		t.Fatal(err)
@@ -250,6 +252,11 @@ func TestRepositoryGuardDiscoversEveryRegisteredRelevanceGolden(t *testing.T) {
 		t.Fatalf("dynamic dirty relevance golden err=%v", err)
 	}
 	writeGuardFile(t, root, secondGolden, `{"schema_version":1}`)
+	writeGuardFile(t, root, secondBranch, `{"dirty":true}`)
+	if err := ValidateRepositoryBaselineChange(root); err == nil || !strings.Contains(err.Error(), "uncommitted") {
+		t.Fatalf("dynamic dirty relevance branch err=%v", err)
+	}
+	writeGuardFile(t, root, secondBranch, `{"schema_version":1}`)
 	writeGuardCommit(t, root, "harness: retire second relevance scenario", map[string]string{
 		relevanceRegistryPath: `{"schema_version":1,"entries":[{"economy_catalog":"balance/catalogs/phase0.json","scenario":"testdata/harness/relevance/scenario-v1.json","relevance_policy":"testdata/harness/relevance/policy-v1.json","golden_report":"testdata/harness/relevance/golden-report-v1.json","justification_changelog":"testdata/harness/relevance/CHANGELOG.md"}]}`,
 	})

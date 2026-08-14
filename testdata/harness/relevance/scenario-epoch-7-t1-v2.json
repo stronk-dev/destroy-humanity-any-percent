@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "id": "scenario.t1_relevance",
+  "catalog": "balance/catalogs/phase0.json",
+  "routes_catalog": "balance/routes/phase0.json",
+  "relevance_policy": "balance/relevance/t0-t1.json",
+  "runs": [
+    { "policy_id": "casual.phase0", "seed_start": "0", "seed_count": 4, "reference": false },
+    { "policy_id": "chaos.phase0", "seed_start": "0", "seed_count": 4, "reference": false },
+    { "policy_id": "reference.greedy", "seed_start": "0", "seed_count": 1, "reference": true }
+  ],
+  "optimization_milestone": { "id": "milestone.t1_cash", "kind": "resource_at_least", "resource_id": "company.cash", "amount": "1e9", "required": true },
+  "segments": [
+    { "milestone_id": "milestone.t1_cash", "from_gate": null, "to_gate": "gate.t0_to_t1" },
+    { "milestone_id": "milestone.t1_cash", "from_gate": "gate.t0_to_t1", "to_gate": "gate.t2_to_t3" }
+  ],
+  "reducer": "worst",
+  "horizon_ms": 86400000,
+  "decision_horizons_ms": [60000, 300000, 600000, 900000, 1800000, 3600000, 7200000, 14400000, 28800000, 43200000, 86400000],
+  "max_decisions": 384,
+  "beam_width": 1,
+  "beam_children": 2,
+  "greedy_gap_maximum_ppm": 50000,
+  "deviation_probe_count": 4,
+  "deviation_alternatives_per_probe": 2,
+  "relevance_budget_max_runs": 256,
+  "relevance_budget_max_transitions": 5000000,
+  "preflight_ceiling": 1000000000000
+}

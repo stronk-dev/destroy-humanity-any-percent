@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"cloud-clicker/server/epochseed"
 )
@@ -18,6 +19,7 @@ type RelevanceRegistryEntry struct {
 	Scenario               string `json:"scenario"`
 	RelevancePolicy        string `json:"relevance_policy"`
 	GoldenReport           string `json:"golden_report"`
+	BranchReport           string `json:"branch_report,omitempty"`
 	JustificationChangelog string `json:"justification_changelog"`
 	Active                 bool   `json:"-"`
 	ConstantsHash          string `json:"-"`
@@ -28,6 +30,7 @@ type relevanceRegistryWireEntry struct {
 	Scenario               *string `json:"scenario"`
 	RelevancePolicy        *string `json:"relevance_policy"`
 	GoldenReport           *string `json:"golden_report"`
+	BranchReport           *string `json:"branch_report"`
 	JustificationChangelog *string `json:"justification_changelog"`
 }
 
@@ -61,7 +64,11 @@ func LoadRelevanceRegistry(repositoryRoot string) ([]RelevanceRegistryEntry, err
 			return nil, fmt.Errorf("invalid relevance registry entry %d", index)
 		}
 		prior = *entry.EconomyCatalog
-		for _, path := range []string{*entry.EconomyCatalog, *entry.Scenario, *entry.RelevancePolicy, *entry.GoldenReport, *entry.JustificationChangelog} {
+		entryPaths := []string{*entry.EconomyCatalog, *entry.Scenario, *entry.RelevancePolicy, *entry.GoldenReport, *entry.JustificationChangelog}
+		if entry.BranchReport != nil {
+			entryPaths = append(entryPaths, *entry.BranchReport)
+		}
+		for _, path := range entryPaths {
 			if filepath.ToSlash(filepath.Clean(path)) != path {
 				return nil, fmt.Errorf("invalid relevance registry path %q", path)
 			}
@@ -74,8 +81,12 @@ func LoadRelevanceRegistry(repositoryRoot string) ([]RelevanceRegistryEntry, err
 			}
 		}
 		paths[*entry.EconomyCatalog] = true
+		branchReport := ""
+		if entry.BranchReport != nil {
+			branchReport = *entry.BranchReport
+		}
 		entries = append(entries, RelevanceRegistryEntry{EconomyCatalog: *entry.EconomyCatalog, Scenario: *entry.Scenario,
-			RelevancePolicy: *entry.RelevancePolicy, GoldenReport: *entry.GoldenReport, JustificationChangelog: *entry.JustificationChangelog,
+			RelevancePolicy: *entry.RelevancePolicy, GoldenReport: *entry.GoldenReport, BranchReport: branchReport, JustificationChangelog: *entry.JustificationChangelog,
 			Active: *entry.EconomyCatalog == activeEconomy})
 	}
 	version, err := economySchemaVersion(filepath.Join(repositoryRoot, filepath.FromSlash(activeEconomy)))
@@ -98,6 +109,9 @@ func LoadRelevanceRegistry(repositoryRoot string) ([]RelevanceRegistryEntry, err
 		}
 		if !entries[index].Active || version < 4 {
 			continue
+		}
+		if entries[index].BranchReport == "" {
+			return nil, fmt.Errorf("active relevance entry %q has no branch report", entries[index].Scenario)
 		}
 		if err := bindActiveRelevanceAuthority(&entries[index], suite.Scenario, bundle); err != nil {
 			return nil, err
@@ -124,7 +138,7 @@ func validateTrapJustifications(repositoryRoot string, entry RelevanceRegistryEn
 
 func bindActiveRelevanceAuthority(entry *RelevanceRegistryEntry, scenario RelevanceScenario, bundle epochseed.Bundle) error {
 	activeRoutes, routesPresent := epochseed.ArtifactPath(bundle.Seed, "routes")
-	activePolicy, policyPresent := epochseed.ArtifactPath(bundle.Seed, "relevance_policy")
+	activePolicy, policyPresent := epochseed.ArtifactPath(bundle.Seed, "relevance")
 	if !routesPresent || !policyPresent || scenario.RoutesCatalog != activeRoutes || entry.RelevancePolicy != activePolicy {
 		return fmt.Errorf("active relevance entry %q is not owned by the epoch artifact manifest", entry.Scenario)
 	}
@@ -163,7 +177,77 @@ func ValidateRelevanceRegistry(repositoryRoot string) error {
 
 func ValidateActiveRelevanceReport(entry RelevanceRegistryEntry, report RelevanceReport) error {
 	if entry.Active && len(report.Failures) > 0 {
-		return fmt.Errorf("active relevance gate failures for %q: %v", entry.Scenario, report.Failures)
+		return fmt.Errorf("active relevance gate failures for %q require branch evidence: %v", entry.Scenario, report.Failures)
+	}
+	return nil
+}
+
+func LoadRegisteredRelevanceBranchReport(repositoryRoot string, entry RelevanceRegistryEntry) (RelevanceBranchReport, error) {
+	if entry.BranchReport == "" {
+		return RelevanceBranchReport{}, errors.New("relevance registry entry has no branch report")
+	}
+	data, err := os.ReadFile(filepath.Join(repositoryRoot, filepath.FromSlash(entry.BranchReport)))
+	if err != nil {
+		return RelevanceBranchReport{}, err
+	}
+	var report RelevanceBranchReport
+	if err := decodeRelevanceStrict(data, &report); err != nil {
+		return RelevanceBranchReport{}, err
+	}
+	if err := ValidateRelevanceBranchReport(report); err != nil {
+		return RelevanceBranchReport{}, err
+	}
+	return report, nil
+}
+
+// ValidateActiveRelevanceEvidence composes the whole-path measurement with
+// the branch-specific proofs accepted by T01-C23/C29. Active content may carry
+// whole-path findings only when every affected purchasable has one passing
+// branch proof under byte-identical scenario, constants, and policy identity.
+func ValidateActiveRelevanceEvidence(entry RelevanceRegistryEntry, report RelevanceReport, branch RelevanceBranchReport) error {
+	if !entry.Active {
+		return nil
+	}
+	if entry.BranchReport == "" || report.ScenarioID != branch.ScenarioID || report.ScenarioHash != branch.ScenarioHash ||
+		report.ConstantsHash != branch.ConstantsHash || report.RelevancePolicyHash != branch.RelevancePolicyHash ||
+		report.ConstantsHash != entry.ConstantsHash {
+		return fmt.Errorf("active relevance evidence identity mismatch for %q", entry.Scenario)
+	}
+	if err := ValidateRelevanceReport(report); err != nil {
+		return err
+	}
+	if err := ValidateRelevanceBranchReport(branch); err != nil {
+		return err
+	}
+	if len(branch.Failures) != 0 {
+		return fmt.Errorf("active relevance branch failures for %q: %v", entry.Scenario, branch.Failures)
+	}
+	want := make([]string, 0)
+	for _, item := range report.Items {
+		if !item.RelevancePassed {
+			want = append(want, item.PurchasableID)
+		}
+	}
+	for _, failure := range report.Failures {
+		covered := false
+		for _, id := range want {
+			if strings.HasSuffix(failure, ":"+id) {
+				covered = true
+				break
+			}
+		}
+		if !covered {
+			return fmt.Errorf("active relevance finding has no branch evidence for %q: %s", entry.Scenario, failure)
+		}
+	}
+	got := make([]string, 0, len(branch.Proofs))
+	for _, proof := range branch.Proofs {
+		if proof.Passed {
+			got = append(got, proof.PurchasableID)
+		}
+	}
+	if fmt.Sprint(want) != fmt.Sprint(got) {
+		return fmt.Errorf("active relevance branch coverage mismatch for %q: whole_path=%v branch=%v", entry.Scenario, want, got)
 	}
 	return nil
 }

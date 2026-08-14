@@ -1161,13 +1161,67 @@ func TestRelevanceRegistryIsFailClosedForActiveCatalogs(t *testing.T) {
 	}
 }
 
+func TestActiveRelevanceEvidenceRequiresExactBranchCoverage(t *testing.T) {
+	entries, err := LoadRelevanceRegistry("../..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var active *RelevanceRegistryEntry
+	for index := range entries {
+		if entries[index].Active {
+			active = &entries[index]
+			break
+		}
+	}
+	if active == nil {
+		t.Fatal("active relevance registry entry is missing")
+	}
+	mainData, err := os.ReadFile(filepath.Join("../..", filepath.FromSlash(active.GoldenReport)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var main RelevanceReport
+	if err := decodeRelevanceStrict(mainData, &main); err != nil {
+		t.Fatal(err)
+	}
+	branch, err := LoadRegisteredRelevanceBranchReport("../..", *active)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := ValidateActiveRelevanceEvidence(*active, main, branch); err != nil {
+		t.Fatal(err)
+	}
+
+	missing := branch
+	missing.Proofs = append([]RelevanceBranchProof(nil), branch.Proofs[1:]...)
+	if err := ValidateActiveRelevanceEvidence(*active, main, missing); err == nil || !strings.Contains(err.Error(), "coverage mismatch") {
+		t.Fatalf("missing branch proof accepted: %v", err)
+	}
+
+	wrongIdentity := branch
+	wrongIdentity.ConstantsHash = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	if err := ValidateActiveRelevanceEvidence(*active, main, wrongIdentity); err == nil || !strings.Contains(err.Error(), "identity mismatch") {
+		t.Fatalf("mismatched branch identity accepted: %v", err)
+	}
+
+	uncovered := main
+	uncovered.Failures = append(append([]string(nil), main.Failures...), "zzz_unrelated:finding")
+	if err := ValidateActiveRelevanceEvidence(*active, uncovered, branch); err == nil || !strings.Contains(err.Error(), "no branch evidence") {
+		t.Fatalf("uncovered whole-path finding accepted: %v", err)
+	}
+}
+
 func TestActiveRelevanceAuthorityUsesEpochArtifactsAndAcceptedHash(t *testing.T) {
 	bundle, err := epochseed.Load("../..")
 	if err != nil {
 		t.Fatal(err)
 	}
 	policyPath := "balance/relevance/phase0.json"
-	bundle.Seed.Artifacts = append(bundle.Seed.Artifacts, epochseed.Artifact{Name: "relevance_policy", Path: policyPath})
+	for index := range bundle.Seed.Artifacts {
+		if bundle.Seed.Artifacts[index].Name == "relevance" {
+			bundle.Seed.Artifacts[index].Path = policyPath
+		}
+	}
 	entry := RelevanceRegistryEntry{Scenario: "scenario.active", RelevancePolicy: policyPath,
 		JustificationChangelog: epochseed.Current(bundle.Seed).ChangelogRef, Active: true}
 	routesPath, _ := epochseed.ArtifactPath(bundle.Seed, "routes")

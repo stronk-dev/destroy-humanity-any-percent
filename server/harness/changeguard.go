@@ -502,7 +502,7 @@ func registeredRelevanceGoldenPaths(data []byte) ([]string, error) {
 	if err := decodeRelevanceStrict(data, &registry); err != nil || registry.SchemaVersion == nil || *registry.SchemaVersion != 1 || registry.Entries == nil {
 		return nil, errors.New("invalid relevance scenario registry")
 	}
-	paths := make([]string, 0, len(registry.Entries))
+	paths := make([]string, 0, len(registry.Entries)*2)
 	seen := map[string]bool{}
 	for index, entry := range registry.Entries {
 		if entry.GoldenReport == nil || filepath.ToSlash(filepath.Clean(*entry.GoldenReport)) != *entry.GoldenReport || seen[*entry.GoldenReport] {
@@ -510,6 +510,13 @@ func registeredRelevanceGoldenPaths(data []byte) ([]string, error) {
 		}
 		seen[*entry.GoldenReport] = true
 		paths = append(paths, *entry.GoldenReport)
+		if entry.BranchReport != nil {
+			if filepath.ToSlash(filepath.Clean(*entry.BranchReport)) != *entry.BranchReport || seen[*entry.BranchReport] {
+				return nil, fmt.Errorf("invalid relevance registry branch path at entry %d", index)
+			}
+			seen[*entry.BranchReport] = true
+			paths = append(paths, *entry.BranchReport)
+		}
 	}
 	sort.Strings(paths)
 	return paths, nil
@@ -576,32 +583,53 @@ func validateRelevanceIdentityReports(root, parent, commit string, seed epochSee
 		if !beforePresent {
 			continue
 		}
-		if !activeReports[reportPath] {
+		kind, active := activeReports[reportPath]
+		if !active {
 			if !bytes.Equal(before, after) {
 				return fmt.Errorf("constants-identity commit changes inactive relevance report %s", reportPath)
 			}
 			continue
 		}
-		var oldReport, newReport RelevanceReport
-		if err := decodeStrictJSON(before, &oldReport); err != nil {
-			return fmt.Errorf("decode previous relevance report %s: %w", reportPath, err)
-		}
-		if err := decodeStrictJSON(after, &newReport); err != nil {
-			return fmt.Errorf("decode relevance report %s: %w", reportPath, err)
-		}
-		if newReport.ConstantsHash != expectedHash {
-			return fmt.Errorf("relevance report %s hash differs from epoch manifest", reportPath)
-		}
-		oldReport.ConstantsHash, newReport.ConstantsHash = "", ""
-		if !reflect.DeepEqual(oldReport, newReport) {
-			return fmt.Errorf("constants-identity commit changes relevance behavior in %s", reportPath)
+		switch kind {
+		case "whole":
+			var oldReport, newReport RelevanceReport
+			if err := decodeStrictJSON(before, &oldReport); err != nil {
+				return fmt.Errorf("decode previous relevance report %s: %w", reportPath, err)
+			}
+			if err := decodeStrictJSON(after, &newReport); err != nil {
+				return fmt.Errorf("decode relevance report %s: %w", reportPath, err)
+			}
+			if newReport.ConstantsHash != expectedHash {
+				return fmt.Errorf("relevance report %s hash differs from epoch manifest", reportPath)
+			}
+			oldReport.ConstantsHash, newReport.ConstantsHash = "", ""
+			if !reflect.DeepEqual(oldReport, newReport) {
+				return fmt.Errorf("constants-identity commit changes relevance behavior in %s", reportPath)
+			}
+		case "branch":
+			var oldReport, newReport RelevanceBranchReport
+			if err := decodeStrictJSON(before, &oldReport); err != nil {
+				return fmt.Errorf("decode previous relevance branch report %s: %w", reportPath, err)
+			}
+			if err := decodeStrictJSON(after, &newReport); err != nil {
+				return fmt.Errorf("decode relevance branch report %s: %w", reportPath, err)
+			}
+			if newReport.ConstantsHash != expectedHash {
+				return fmt.Errorf("relevance branch report %s hash differs from epoch manifest", reportPath)
+			}
+			oldReport.ConstantsHash, newReport.ConstantsHash = "", ""
+			if !reflect.DeepEqual(oldReport, newReport) {
+				return fmt.Errorf("constants-identity commit changes relevance branch behavior in %s", reportPath)
+			}
+		default:
+			return fmt.Errorf("unknown active relevance report kind %q", kind)
 		}
 	}
 	return nil
 }
 
-func activeRelevanceReportsAt(root, commit string, seed epochSeed) (map[string]bool, error) {
-	result := map[string]bool{}
+func activeRelevanceReportsAt(root, commit string, seed epochSeed) (map[string]string, error) {
+	result := map[string]string{}
 	activeEconomy, present := epochArtifactPath(seed, "economy")
 	if !present {
 		return nil, errors.New("epoch seed has no economy artifact")
@@ -620,9 +648,9 @@ func activeRelevanceReportsAt(root, commit string, seed epochSeed) (map[string]b
 		return result, nil
 	}
 	activeRoutes, routesPresent := epochArtifactPath(seed, "routes")
-	activePolicy, policyPresent := epochArtifactPath(seed, "relevance_policy")
+	activePolicy, policyPresent := epochArtifactPath(seed, "relevance")
 	if !routesPresent || !policyPresent {
-		return nil, errors.New("active relevance epoch is missing routes or relevance_policy")
+		return nil, errors.New("active relevance epoch is missing routes or relevance")
 	}
 	registryBytes, err := gitBlob(root, commit, relevanceRegistryPath)
 	if err != nil {
@@ -636,7 +664,7 @@ func activeRelevanceReportsAt(root, commit string, seed epochSeed) (map[string]b
 		return nil, errors.New("invalid relevance registry in constants-identity commit")
 	}
 	for _, entry := range registry.Entries {
-		if entry.EconomyCatalog == nil || *entry.EconomyCatalog != activeEconomy || entry.Scenario == nil || entry.RelevancePolicy == nil || entry.GoldenReport == nil {
+		if entry.EconomyCatalog == nil || *entry.EconomyCatalog != activeEconomy || entry.Scenario == nil || entry.RelevancePolicy == nil || entry.GoldenReport == nil || entry.BranchReport == nil {
 			continue
 		}
 		scenarioBytes, err := gitBlob(root, commit, *entry.Scenario)
@@ -650,10 +678,11 @@ func activeRelevanceReportsAt(root, commit string, seed epochSeed) (map[string]b
 		if scenario.Catalog != activeEconomy || scenario.RoutesCatalog != activeRoutes || scenario.Policy != activePolicy || *entry.RelevancePolicy != activePolicy {
 			return nil, errors.New("active relevance registry does not match epoch artifacts")
 		}
-		result[*entry.GoldenReport] = true
+		result[*entry.GoldenReport] = "whole"
+		result[*entry.BranchReport] = "branch"
 	}
-	if len(result) != 1 {
-		return nil, errors.New("active relevance epoch does not have exactly one report")
+	if len(result) != 2 {
+		return nil, errors.New("active relevance epoch does not have exactly one whole-path and branch report")
 	}
 	return result, nil
 }
