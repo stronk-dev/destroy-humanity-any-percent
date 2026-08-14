@@ -1637,3 +1637,66 @@ Ruled by Marco (recorded by Claude from the owner's explicit selections):
 **Sequencing:** C22 + C23 (instrument context, either order or together) → re-run both gates →
 C24 tuple derivation → designated review → re-ratification of the four candidate hashes → content
 dispositions. Codex may implement C22/C23 now under the standard two-commit and review protocol.
+
+## 2026-08-14 — Codex handoff: T01-C22/C23 evidence boundaries — READY FOR DESIGNATED REVIEW
+
+**Implementation range:** `{9d71857, b3e92b7}`. The first commit contains the executable harness,
+candidate-specific role gate, tests, fixture changelog, Make wiring, and canonical docs. The second
+is the isolated `BALANCE-CHANGE:` relevance fixture regeneration required by the baseline-history
+guard. Earlier local checkpoint hashes `{bf2f7fb, 239b54c}` were losslessly repackaged before any
+push or verdict because the fixture changelog must precede its generated golden; this record cites
+only the final hashes. The owner's unrelated `AGENTS.md` edit remains unstaged and is in neither.
+
+### T01-C22 — real segment progression
+
+- Schema-v2 relevance arms locate the first decision boundary at which the next non-terminal
+  segment gate's pinned Routes requirements are met, advance through `SimulateAdvance`, and apply
+  the actual `cross_gate` intent through `SimulateTransition`. Work from eligibility probes,
+  authoritative advance, and crossing is counted by the shared transition counter.
+- The transition carries deterministic harness owner/stream identity, burns the real requirement,
+  advances the real tier, and fails loud with its receipt on any rejection. The final segment's
+  `to_gate` is excluded from automatic progression. Schema-v1 fixture behavior and report bytes are
+  retained.
+- Discriminating tests prove the post-gate upgrade is rejected before crossing and purchasable
+  after, the engine sets tier 1, the terminal gate stays closed, and a state one cash short crosses
+  at the exact first eligible boundary (1,000 ms). The existing T0 reference pin remains 436,448 ms.
+
+### T01-C23 — candidate-specific role gate
+
+- Generic relevance personas still report observed role activations, but no longer turn absent
+  execution context into `role_floor` findings.
+- `make t0-t1-role-check` enumerates all **11** declared generator-role rows from the exact candidate
+  economy bytes. Every row runs through real production context appropriate to its kind
+  (`synergy_feed`, `manual_output`, `stock_rate` with the real faction hook, or a materialized
+  `provision` boundary), paired with a generator-masked control. Each control must remove both the
+  exact activation tuple and a non-neutral state/output effect. The role check is part of
+  `verify-harness` and runs before the combined T0/T1 relevance target.
+- The schema-v1 fixture golden changes by exactly one line: deletion of the invalid
+  `role_floor:generator.alpha`; every other byte is unchanged.
+
+### Post-context measurements (diagnostic, not ratification)
+
+- T0: unchanged findings and exactly **173,025** transitions. The four ruled C24 upgrade findings
+  remain; no balance byte was edited.
+- T1: **2,816,696** transitions under the unchanged 5,000,000 limit. All three context-only role
+  findings disappear. `upgrade.rack_rail_standardization` now passes after the real gate crossing;
+  the remaining upgrade findings are `crt_degauss_button`, `employee_handbook_v0`,
+  `institutional_memory`, and `refurbished_sticker` (relevance + trap), with the existing
+  instrument-affected Beige Tower v2 floor. These diagnostics are local fail-before-write evidence,
+  not golden artifacts or content dispositions.
+
+### Gates read through completion
+
+- `make test-harness GO_TEST_FLAGS='-count=1'` — GREEN (full harness, 25.0 s).
+- `make t0-t1-role-check` — GREEN (all 11 control/masked pairs).
+- `make t0-t1-relevance-all` — role gate GREEN; T0 stopped honestly on its ruled content findings.
+  `make t1-relevance` then completed separately with the measurement above.
+- `make verify` — GREEN from the final two-commit range head, including full Go, harness drift,
+  typecheck/Svelte, 6,650 client tests, 19,992 browser tests, schema/copy/kernel guards, and the UI
+  performance arm.
+- `make test-go-ci` — GREEN under cold Linux/amd64 Docker (`-count=1`), including harness 52.0 s,
+  production 5.9 s, and every server package.
+
+**No candidate content hash changed, C24 has not started, nothing was pushed or archived.** Ready
+for the designated cross-party pass over `{9d71857, b3e92b7}`. The previously approved H-A/H-B
+report-disclosure notes remain carried and were not expanded into unruled report grammar here.
