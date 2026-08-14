@@ -156,3 +156,14 @@ the restore-2500 recommendation and the prestige-ceiling arm were both declined)
 - **No findings. APPROVED.** Ready for owner re-ratification of the Opportunities pin; the
   full-bundle resolution proof lands with the resumed runner derivation, which is the next step
   after ratification.
+
+## 2026-08-14 — OWNER RATIFICATION: Opportunities candidate re-ratified
+
+Ratified by Marco (recorded by Claude from the owner's explicit selection):
+`balance/testdata/t0-t1/opportunities-v1.json` at
+`sha256:d2aab242f2e5b9a73c11b32981fdb3971b4cbf6d96df3fbf0277abfc1ebc7974` (lifetime 4500,
+spawn gap 1000), superseding the prior Opportunities pin. Consumed verdict: `d740318` over
+`{70ef082}`. **The EH-C15 derivation chain is unpaused:** Codex re-derives the eighteen-row
+manifest constants hash, the C14 coordinate, and the scenario bytes/hash, then produces the
+EH-C10 candidate report; the scenario hash and C14 coordinate return for owner pinning, then the
+mint sign-off.
