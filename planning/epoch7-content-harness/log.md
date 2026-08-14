@@ -305,3 +305,35 @@ treating the branch report as unguarded planning evidence.
 Until EH-C16 is ruled, the generated snapshot/report stay uncommitted, `harness-update`/`harness-check`
 cannot honestly pass at epoch 7, and the mint range is **not ready for designated review or
 archival**. No push or publication occurred; the owner's `AGENTS.md` edit remains untouched.
+
+## 2026-08-14 — Codex cold-CI remediation and terminal verification
+
+- **Server repair:** `be2b35b` updates stale post-mint fixtures to consume the live epoch-7
+  catalogs and closes a production activation defect exposed by the cold lane: a fresh
+  Company-v18 state did not initialize its deterministic Active-Play schedule. Founder identity
+  now reaches `FounderInitializer`; new state initializes provision counts/remainders; the first
+  natural spawn is pinned through the real Postgres/socket path. Kernel `0.3.95 -> 0.3.96` is an
+  honest behavior bump.
+- **Client/replay repair:** `7880705` updates stale economy/routes/Active-Play expectations and
+  makes the TypeScript replay catalog parse the minted `relevance` artifact with the same
+  gate-bounded completeness semantics as Go. Relevance now fail-closes without Opportunities;
+  historical replay coverage remains explicit. Kernel `0.3.96 -> 0.3.97` is an honest wire/replay
+  bump.
+- **Terminal green checks (full output read):** exact cold Linux/Docker `make verify-server-ci`;
+  real-Postgres `make test-save-integration`; `make verify-client` (typecheck, production build,
+  6,650 tests, boundaries, copy/content guards); `make verify-schema`; `make test-browser-ci`
+  (Chromium + Firefox + WebKit: 120 files, 19,992 passed, 3 skipped, plus the dedicated screen
+  performance arm); and `make test-game-ui-composed` (real Chromium, embedded gameserver, real
+  Postgres, bootstrap + snapshot + WebSocket presence handshake). Kernel guard is GREEN at
+  `0.3.97`.
+- **Terminal red check, intentionally preserved:** exact cold Linux/Docker `make
+  verify-harness-ci` fails only the three EH-C16 baseline assertions: the now-stale
+  honestly-empty registry test; the stale `relevance_policy` authority lookup; and the active
+  schema-v4 catalog's unrepresentable whole-path-plus-branch evidence. The generated immutable
+  snapshot/report remain uncommitted pending the owner ruling. No test was skipped, weakened, or
+  reclassified to manufacture a green aggregate.
+- **Protocol state:** the mint production bytes are landed locally and the ordinary server,
+  client, schema, browser, and composed-stack CI lanes are repaired. The overall range remains
+  **NOT ready for designated review or archival** until EH-C16 is ruled and the historical
+  content-dynamics baseline can be committed and pass its exact Linux gate. Nothing was pushed;
+  the owner's uncommitted `AGENTS.md` edit remains untouched and unstaged.
