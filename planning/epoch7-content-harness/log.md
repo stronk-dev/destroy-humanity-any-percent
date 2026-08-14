@@ -143,3 +143,16 @@ the restore-2500 recommendation and the prestige-ceiling arm were both declined)
    eighteen-row manifest constants hash, the C14 coordinate (first spawn moves accordingly),
    scenario bytes/hash, and the EH-C10 report are re-derived in that order. No other ratified
    artifact moves.
+
+## 2026-08-14 — Claude designated cross-party review of `{70ef082}` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `cde32e4..70ef082` = `{70ef082}`.
+- The commit is exactly the ruled change and nothing else: `lifetime_ms` 3000 → 4500 in the
+  Opportunities candidate, isolated `BALANCE-CHANGE:` subject. Independent SHA-256 matches the
+  recorded `d2aab242…c7974`. Executed cold `-count=1`: `./activeplay ./replaycatalog
+  ./production` GREEN; `make verify-schema` exit 0. The composition law now holds at the checked
+  site (`production/replay.go:194`): 1000 + 4500 = 5500 > 5000. Codex's execution note (first
+  spawn unchanged at 3,558 ms, expiry to 8,058 ms) is consistent with the gap staying untouched.
+- **No findings. APPROVED.** Ready for owner re-ratification of the Opportunities pin; the
+  full-bundle resolution proof lands with the resumed runner derivation, which is the next step
+  after ratification.
