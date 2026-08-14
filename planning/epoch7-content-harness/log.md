@@ -167,3 +167,47 @@ spawn gap 1000), superseding the prior Opportunities pin. Consumed verdict: `d74
 manifest constants hash, the C14 coordinate, and the scenario bytes/hash, then produces the
 EH-C10 candidate report; the scenario hash and C14 coordinate return for owner pinning, then the
 mint sign-off.
+
+## 2026-08-14 — EH-C11–EH-C15 runner + EH-C10 report — READY FOR DESIGNATED REVIEW
+
+- **Review by:** Codex self-review only. **Recorded by:** Codex. This is an implementation
+  handoff, not the designated cross-party verdict, owner scenario pin, golden acceptance, archival,
+  or mint authorization. **Code/report commits:** `{2a0f7c9, 6c1d423}`; include this docs-tier
+  record commit in the designated range.
+- Added the cycle-free `relevancepolicy` owner and made the exact cumulative T1 policy a parsed
+  member of the replay bundle. The candidate loader now proves the complete eighteen-artifact set
+  is live-replay valid, not merely artifact-local loadable. The manifest pins every source hash,
+  schema, production path, content gate, and the recomputed constants hash
+  `sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789`.
+- Added strict scenario/report schema v1 and `make epoch7-content-harness`. The runner executes the
+  ruled literal cardinality: one natural Active-Play pair, two Founder-v21 Fiscal sweeps, Pitch
+  seeds 0–63, and two Permit cases. Harness code assembles inputs only; production-owned wrappers
+  call the real scheduler/claim/accrual, `ApplyFounderLogged`, Pitch tenant plus payout conversion,
+  and engine evaluation with frozen Fiscal contributions. The source guard permits these wrappers
+  only from harness/tests. The report validator rejects a missing or invented observation.
+- **C14 coordinate returned for owner pinning:** founder
+  `018f6b7c-9abc-7def-8abc-000000000001`, run sequence `1`, first natural effect
+  `active.production`, target `generator.beige_tower`, spawn `3558` attended ms, complete buff
+  duration `5000` ms. Scenario SHA-256 is
+  `a6df65535eeafd7b96aa017a7bf6666d400058209903d359bb39f5ef7c2f6a54`. EH-C15's lifetime-only
+  edit extends opportunity expiry to `8058` ms but does NOT move the spawn; the owner ruling's
+  stale “first spawn moves accordingly” process sentence is returned to its author for
+  reconciliation rather than silently edited by Codex.
+- **EH-C10 owner-facing report:** SHA-256
+  `cef5fa23a28e8b16bb8f630f9f63cf49a6df9241ab89a57b27594c4fac2a9e73`; 69/69 runs,
+  786/4215 transitions, 27 byte-sorted observations, zero invariant failures. Active-Play output is
+  `35.035` claimed versus `5.005` control (`30.03` bonus); Fiscal credits are `3` and `12`; Pitch
+  p50/p95 final rounds are `3/4`, payout scores `3/4`, converted Cash `1/2`; zero-credit Permits
+  reach 12/cap at `11,979,232/23,958,463` ms and hoard-credit reaches them at
+  `5,989,616/11,979,232` ms. These are observations for owner review, not an invented pass band.
+- Honest kernel lockstep bump `0.3.94 -> 0.3.95` covers the new replay artifact owner and watched
+  production simulation boundary. No production balance path, epoch seed, registry, immutable
+  snapshot, golden, deployment manifest, or current epoch changed.
+- **Verification read through final exits:** focused cold packages
+  `./activeplay ./harness ./production ./replaycatalog ./relevancepolicy ./cmd/balance-harness`
+  GREEN; `make verify-kernel-version` GREEN at 0.3.95; `make verify-schema` GREEN;
+  `make verify-harness HARNESS_TEST_COUNT=1` GREEN; cold native `make verify-server-core` GREEN;
+  exact Linux/Docker `make verify-harness-ci` exit 0; exact Linux/Docker `make verify-server-ci`
+  exit 0; aggregate `make verify` exit 0, including 6,650 client tests, 19,992 browser tests, and
+  the Game-UI performance arm. The user's uncommitted `AGENTS.md` edit remains unstaged and
+  untouched. Nothing was pushed.
