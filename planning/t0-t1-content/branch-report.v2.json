@@ -1,0 +1,72 @@
+{
+  "schema_version": 2,
+  "scenario_id": "scenario.t0_relevance",
+  "scenario_hash": "sha256:008c08df62da0792b84b5a1c5367f52cdfbfaa5ac46603fd920dcdaa94035a18",
+  "constants_hash": "sha256:43d57b6542517d01535852b4c8b83a6312c22f203d1d189a06df28b72c6ff0b5",
+  "relevance_policy_hash": "sha256:18a531274f60a7b53517c8c591204e4d02c8050691b7ffea960a1c166ed8c235",
+  "main_reference_ms": 419462,
+  "executed_transitions": 88094,
+  "proofs": [
+    {
+      "purchasable_kind": "upgrade",
+      "purchasable_id": "upgrade.continuous_feed_paper",
+      "effect_target_id": "generator.dot_matrix_queue",
+      "removed_generator_ids": [
+        "generator.answering_machine",
+        "generator.beige_tower_v2",
+        "generator.crt_wall",
+        "generator.first_hire",
+        "generator.garage_rack",
+        "generator.legal_dept",
+        "generator.nephew_intern"
+      ],
+      "removed_upgrade_ids": [
+        "upgrade.beige_tower_cache",
+        "upgrade.crt_degauss_button",
+        "upgrade.employee_handbook_v0",
+        "upgrade.hold_music_license",
+        "upgrade.institutional_memory",
+        "upgrade.nephew_business_cards",
+        "upgrade.rack_rail_standardization",
+        "upgrade.refurbished_sticker",
+        "upgrade.reply_all_macro"
+      ],
+      "selected_at_ms": 290533,
+      "baseline_ms": 462101,
+      "masked_ms": 615128,
+      "delta_ms": 153027,
+      "epsilon_ms": 1000,
+      "passed": true
+    },
+    {
+      "purchasable_kind": "upgrade",
+      "purchasable_id": "upgrade.nephew_business_cards",
+      "effect_target_id": "generator.nephew_intern",
+      "removed_generator_ids": [
+        "generator.beige_tower_v2",
+        "generator.crt_wall",
+        "generator.first_hire",
+        "generator.garage_rack",
+        "generator.legal_dept"
+      ],
+      "removed_upgrade_ids": [
+        "upgrade.beige_tower_cache",
+        "upgrade.continuous_feed_paper",
+        "upgrade.crt_degauss_button",
+        "upgrade.employee_handbook_v0",
+        "upgrade.hold_music_license",
+        "upgrade.institutional_memory",
+        "upgrade.rack_rail_standardization",
+        "upgrade.refurbished_sticker",
+        "upgrade.reply_all_macro"
+      ],
+      "selected_at_ms": 391405,
+      "baseline_ms": 451526,
+      "masked_ms": 489821,
+      "delta_ms": 38295,
+      "epsilon_ms": 1000,
+      "passed": true
+    }
+  ],
+  "failures": []
+}

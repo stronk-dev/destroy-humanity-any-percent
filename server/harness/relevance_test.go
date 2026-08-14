@@ -291,7 +291,8 @@ func TestUpgradeBranchProofUsesLegalRankedPrefixAndMaskedControl(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if proof.SelectedAtMS == nil || proof.BaselineMS == nil || proof.MaskedMS == nil || proof.DeltaMS == nil || !proof.Passed ||
+	if proof.PurchasableKind != relevanceBranchUpgrade || proof.PurchasableID != upgrade.ID ||
+		proof.SelectedAtMS == nil || proof.BaselineMS == nil || proof.MaskedMS == nil || proof.DeltaMS == nil || !proof.Passed ||
 		*proof.DeltaMS < proof.EpsilonMS || !containsString(proof.RemovedGeneratorIDs, "generator.beta") ||
 		!containsString(proof.RemovedUpgradeIDs, "upgrade.dead") {
 		t.Fatalf("branch proof=%+v", proof)
@@ -302,11 +303,46 @@ func TestUpgradeBranchProofUsesLegalRankedPrefixAndMaskedControl(t *testing.T) {
 	zero := int64(0)
 	invalid.DeltaMS = &zero
 	invalid.Passed = true
-	report := RelevanceBranchReport{SchemaVersion: 1, ScenarioID: suite.Scenario.ID, ScenarioHash: suite.ScenarioHash,
+	report := RelevanceBranchReport{SchemaVersion: RelevanceBranchReportSchemaVersion, ScenarioID: suite.Scenario.ID, ScenarioHash: suite.ScenarioHash,
 		ConstantsHash: suite.ConstantsHash, RelevancePolicyHash: suite.Policy.Hash, MainReferenceMS: 1,
 		Proofs: []RelevanceBranchProof{invalid}, Failures: []string{}}
 	if err := ValidateRelevanceBranchReport(report); err == nil {
 		t.Fatal("branch report accepted a non-discriminating masked control")
+	}
+}
+
+func TestGeneratorBranchProofUsesLegalRankedPrefixAndMaskedControl(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	generator, ok := suite.Catalog.GeneratorClass("generator.beta")
+	if !ok {
+		t.Fatal("fixture generator is absent")
+	}
+	proof, err := suite.runGeneratorBranchProof(generator, 1, &relevanceCounter{limit: 2_000_000})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if proof.PurchasableKind != relevanceBranchGenerator || proof.PurchasableID != generator.ID ||
+		proof.EffectTargetID != generator.ID || proof.SelectedAtMS == nil || proof.BaselineMS == nil ||
+		proof.MaskedMS == nil || proof.DeltaMS == nil || !proof.Passed || *proof.DeltaMS < proof.EpsilonMS ||
+		len(proof.RemovedGeneratorIDs) != 0 ||
+		!containsString(proof.RemovedUpgradeIDs, "upgrade.alpha") ||
+		!containsString(proof.RemovedUpgradeIDs, "upgrade.dead") {
+		t.Fatalf("generator branch proof=%+v", proof)
+	}
+
+	invalid := proof
+	invalid.MaskedMS = invalid.BaselineMS
+	zero := int64(0)
+	invalid.DeltaMS = &zero
+	invalid.Passed = true
+	report := RelevanceBranchReport{SchemaVersion: RelevanceBranchReportSchemaVersion, ScenarioID: suite.Scenario.ID,
+		ScenarioHash: suite.ScenarioHash, ConstantsHash: suite.ConstantsHash, RelevancePolicyHash: suite.Policy.Hash,
+		MainReferenceMS: 1, Proofs: []RelevanceBranchProof{invalid}, Failures: []string{}}
+	if err := ValidateRelevanceBranchReport(report); err == nil {
+		t.Fatal("branch report accepted a non-discriminating generator-masked control")
 	}
 }
 
@@ -315,17 +351,73 @@ func TestUpgradeBranchReportDerivesEveryUpgradeMissedByMainReference(t *testing.
 	if err != nil {
 		t.Fatal(err)
 	}
-	report, err := suite.RunUpgradeBranchProofs()
+	report, err := suite.RunRelevanceBranchProofs(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	ids := make([]string, 0, len(report.Proofs))
 	for _, proof := range report.Proofs {
-		ids = append(ids, proof.UpgradeID)
+		ids = append(ids, proof.PurchasableID)
 	}
 	if !reflect.DeepEqual(ids, []string{"upgrade.alpha", "upgrade.dead"}) ||
 		!containsString(report.Failures, "branch_unselected:upgrade.dead") {
 		t.Fatalf("proof ids=%v failures=%v", ids, report.Failures)
+	}
+}
+
+func TestBranchReportDerivesFailedUninstrumentedGeneratorFromValidatedMeasurement(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	measurement, err := suite.RunRelevance()
+	if err != nil {
+		t.Fatal(err)
+	}
+	measurement.InstrumentExcludedIDs = []string{}
+	cleanFailures := []string{}
+	for _, failure := range measurement.Failures {
+		if !strings.HasPrefix(failure, "instrument_affected:") {
+			cleanFailures = append(cleanFailures, failure)
+		}
+	}
+	measurement.Failures = cleanFailures
+	found := false
+	for index := range measurement.Items {
+		item := &measurement.Items[index]
+		item.InstrumentAffected = false
+		if item.PurchasableID != "generator.alpha" {
+			continue
+		}
+		item.RelevancePassed = false
+		item.Support = "failed"
+		item.SupportingGroupID = nil
+		item.NearestPassingEpsilonMS = item.EpsilonMS
+		measurement.Failures = sortedUniqueStrings(append(measurement.Failures,
+			"relevance_floor:generator.alpha"))
+		found = true
+	}
+	if !found {
+		t.Fatal("fixture measurement omitted generator.alpha")
+	}
+	report, err := suite.RunRelevanceBranchProofs(&measurement)
+	if err != nil {
+		t.Fatal(err)
+	}
+	proofFound := false
+	for _, proof := range report.Proofs {
+		if proof.PurchasableID == "generator.alpha" {
+			proofFound = proof.PurchasableKind == relevanceBranchGenerator
+		}
+	}
+	if !proofFound {
+		t.Fatalf("branch proofs=%+v", report.Proofs)
+	}
+
+	stale := measurement
+	stale.ConstantsHash = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	if _, err := suite.RunRelevanceBranchProofs(&stale); err == nil || !strings.Contains(err.Error(), "identity mismatch") {
+		t.Fatalf("stale measurement error=%v", err)
 	}
 }
 

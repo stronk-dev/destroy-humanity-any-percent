@@ -129,12 +129,17 @@ manual, provision, and synergy roles require different honest execution contexts
 candidate, exercises its minimum real production context, and pairs it with a generator-masked
 control that must remove both the activation and its non-neutral effect.
 
-Branch-specific upgrades have a separate candidate gate. `RunUpgradeBranchProofs` derives one row
-for every measured upgrade the main reference does not buy, follows the shared ranked policy from
-genesis through a legally reachable generator prefix, and accepts the row only when the real engine
-selects the upgrade over banking and an effect-masked completion loses at least the policy epsilon.
-The prefix removes and discloses every competing upgrade as well as every generator beyond the
-target branch. It does not replace the main
+Branch-specific purchasables have a separate candidate gate. `RunRelevanceBranchProofs` derives
+upgrade rows the main reference does not buy and generator rows whose validated whole-path report
+leaves below their floor without an instrument-affected label. It follows the shared ranked policy
+from genesis through a legally reachable prefix and accepts a row only when the real engine selects
+the purchasable over banking and an effect-masked completion loses at least the policy epsilon. For
+a generator, the mask suppresses its production and declared roles while preserving the real
+purchase and its cost in both cloned completions. The prefix removes and discloses every competing
+upgrade as well as every generator beyond the target branch. The schema-v2 report distinguishes
+generator and upgrade rows explicitly. A supplied whole-path report is accepted only when its
+scenario, constants, and relevance-policy hashes match the loaded suite; omitting it performs the
+measurement inline. This lane does not replace the main
 unmasked reference, whole-path pacing, or the deviation oracle, and it cannot grant a trap exemption.
 
 Production candidates use phase-scoped relevance policies. The T0 scenario measures rows whose

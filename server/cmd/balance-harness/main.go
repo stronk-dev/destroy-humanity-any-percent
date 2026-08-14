@@ -17,6 +17,7 @@ func main() {
 	root := flag.String("root", "..", "repository root")
 	candidateManifest := flag.String("candidate-manifest", "", "repository-relative ratified candidate manifest for candidate mode")
 	scenario := flag.String("scenario", "", "repository-relative scenario for relevance mode")
+	relevanceReport := flag.String("relevance-report", "", "validated relevance report used to derive branch rows")
 	flag.Parse()
 	if *mode == "epoch-hash" {
 		hash, err := harness.ComputeEpochSeedHash(*root)
@@ -37,7 +38,7 @@ func main() {
 		return
 	}
 	if *mode == "relevance-branches" {
-		if err := runRelevanceBranches(*root, *output, *scenario); err != nil {
+		if err := runRelevanceBranches(*root, *output, *scenario, *relevanceReport); err != nil {
 			fail(err)
 		}
 		return
@@ -252,7 +253,7 @@ func runRelevanceBeam(root, output, scenarioPath string) error {
 	return nil
 }
 
-func runRelevanceBranches(root, output, scenarioPath string) error {
+func runRelevanceBranches(root, output, scenarioPath, reportPath string) error {
 	if output == "" || scenarioPath == "" {
 		return fmt.Errorf("-output and -scenario are required in relevance-branches mode")
 	}
@@ -260,7 +261,28 @@ func runRelevanceBranches(root, output, scenarioPath string) error {
 	if err != nil {
 		return err
 	}
-	report, err := suite.RunUpgradeBranchProofs()
+	var measurement *harness.RelevanceReport
+	if reportPath != "" {
+		data, readErr := os.ReadFile(reportPath)
+		if readErr != nil {
+			return readErr
+		}
+		var direct harness.RelevanceReport
+		if unmarshalErr := json.Unmarshal(data, &direct); unmarshalErr != nil {
+			return unmarshalErr
+		}
+		if direct.ScenarioID == "" {
+			var diagnostic struct {
+				Report harness.RelevanceReport `json:"report"`
+			}
+			if unmarshalErr := json.Unmarshal(data, &diagnostic); unmarshalErr != nil {
+				return unmarshalErr
+			}
+			direct = diagnostic.Report
+		}
+		measurement = &direct
+	}
+	report, err := suite.RunRelevanceBranchProofs(measurement)
 	if err != nil {
 		return err
 	}
