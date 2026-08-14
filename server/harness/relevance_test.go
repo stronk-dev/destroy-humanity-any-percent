@@ -549,7 +549,7 @@ func TestT0T1OpportunityCostCorrectsWitnessRankings(t *testing.T) {
 		return *input
 	}
 	if legacy.MilestoneMS == nil || withoutReply.MilestoneMS == nil || legacy.DecisionStarved || withoutReply.DecisionStarved ||
-		*legacy.MilestoneMS != 465_551 || *withoutReply.MilestoneMS != 466_252 || *legacy.MilestoneMS >= *withoutReply.MilestoneMS {
+		*legacy.MilestoneMS != 451_703 || *withoutReply.MilestoneMS != 452_861 || *legacy.MilestoneMS >= *withoutReply.MilestoneMS {
 		t.Fatalf("non-starved reply-all witness=%v removed=%v decisions=%d/%d starved=%v/%v",
 			value(legacy.MilestoneMS), value(withoutReply.MilestoneMS), legacy.Decisions, withoutReply.Decisions,
 			legacy.DecisionStarved, withoutReply.DecisionStarved)
@@ -558,7 +558,10 @@ func TestT0T1OpportunityCostCorrectsWitnessRankings(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := map[string]bool{"generator.dot_matrix_queue": true}
+	want := map[string]bool{
+		"generator.dot_matrix_queue": true,
+		"generator.nephew_intern":    true,
+	}
 	for _, diagnostic := range diagnostics {
 		if !want[diagnostic.PurchasableID] || diagnostic.BaselineMS == nil || diagnostic.RemovedMS == nil {
 			continue
@@ -569,14 +572,14 @@ func TestT0T1OpportunityCostCorrectsWitnessRankings(t *testing.T) {
 		}
 		delete(want, diagnostic.PurchasableID)
 	}
-	if len(want) != 0 || !reflect.DeepEqual(instrumentExcludedIDs(mask), []string{"generator.dot_matrix_queue"}) {
+	if len(want) != 0 || !reflect.DeepEqual(instrumentExcludedIDs(mask), []string{"generator.dot_matrix_queue", "generator.nephew_intern"}) {
 		t.Fatalf("opportunity witnesses missing=%v mask=%+v diagnostics=%+v", want, mask, diagnostics)
 	}
 	screened, err := suite.runReferenceWithOpportunity(production.AblationMask{}, mask, counter)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if screened.DecisionStarved || screened.MilestoneMS == nil || *screened.MilestoneMS != 436_448 || screened.Decisions != 50 {
+	if screened.DecisionStarved || screened.MilestoneMS == nil || *screened.MilestoneMS != 419_462 || screened.Decisions != 51 {
 		t.Fatalf("screened reference=%+v", screened)
 	}
 }
@@ -591,7 +594,7 @@ func TestT1ProjectedMilestoneMeasurement(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if result.DecisionStarved || result.MilestoneMS == nil || *result.MilestoneMS != 4_299_108 || result.Decisions != 297 {
+	if result.DecisionStarved || result.MilestoneMS == nil || *result.MilestoneMS != 4_149_073 || result.Decisions != 289 {
 		t.Fatalf("T1 projected measurement milestone=%v decisions=%d at=%d transitions=%d starved=%v",
 			result.MilestoneMS, result.Decisions, result.FinalVirtualMS, counter.value, result.DecisionStarved)
 	}

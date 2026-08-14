@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "scenario_id": "scenario.t1_relevance",
+  "scenario_hash": "sha256:0d6049b2736eee7560d82f9459972f8da62e7b8b1933fca885631b0e09195419",
+  "constants_hash": "sha256:d7d0c81371f29ccc22bb726a8b9c3a18d6cbdfb0c4ae3b7e1fcb2be7b1a1e5c1",
+  "relevance_policy_hash": "sha256:f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef",
+  "main_reference_ms": 2724115,
+  "executed_transitions": 1700334,
+  "proofs": [
+    {
+      "upgrade_id": "upgrade.crt_degauss_button",
+      "effect_target_id": "generator.crt_wall",
+      "removed_generator_ids": [
+        "generator.beige_tower_v2",
+        "generator.first_hire",
+        "generator.legal_dept"
+      ],
+      "removed_upgrade_ids": [
+        "upgrade.beige_tower_cache",
+        "upgrade.continuous_feed_paper",
+        "upgrade.employee_handbook_v0",
+        "upgrade.hold_music_license",
+        "upgrade.institutional_memory",
+        "upgrade.nephew_business_cards",
+        "upgrade.rack_rail_standardization",
+        "upgrade.refurbished_sticker",
+        "upgrade.reply_all_macro"
+      ],
+      "selected_at_ms": 3338621,
+      "baseline_ms": 4114215,
+      "masked_ms": 4730427,
+      "delta_ms": 616212,
+      "epsilon_ms": 1000,
+      "passed": true
+    },
+    {
+      "upgrade_id": "upgrade.institutional_memory",
+      "effect_target_id": "generator.garage_rack",
+      "removed_generator_ids": [
+        "generator.beige_tower_v2",
+        "generator.crt_wall",
+        "generator.first_hire",
+        "generator.legal_dept"
+      ],
+      "removed_upgrade_ids": [
+        "upgrade.beige_tower_cache",
+        "upgrade.continuous_feed_paper",
+        "upgrade.crt_degauss_button",
+        "upgrade.employee_handbook_v0",
+        "upgrade.hold_music_license",
+        "upgrade.nephew_business_cards",
+        "upgrade.rack_rail_standardization",
+        "upgrade.refurbished_sticker",
+        "upgrade.reply_all_macro"
+      ],
+      "selected_at_ms": 2945098,
+      "baseline_ms": 6052443,
+      "masked_ms": 8500539,
+      "delta_ms": 2448096,
+      "epsilon_ms": 1000,
+      "passed": true
+    },
+    {
+      "upgrade_id": "upgrade.rack_rail_standardization",
+      "effect_target_id": "generator.garage_rack",
+      "removed_generator_ids": [
+        "generator.beige_tower_v2",
+        "generator.crt_wall",
+        "generator.first_hire",
+        "generator.legal_dept"
+      ],
+      "removed_upgrade_ids": [
+        "upgrade.beige_tower_cache",
+        "upgrade.continuous_feed_paper",
+        "upgrade.crt_degauss_button",
+        "upgrade.employee_handbook_v0",
+        "upgrade.hold_music_license",
+        "upgrade.institutional_memory",
+        "upgrade.nephew_business_cards",
+        "upgrade.refurbished_sticker",
+        "upgrade.reply_all_macro"
+      ],
+      "selected_at_ms": 2217846,
+      "baseline_ms": 5430482,
+      "masked_ms": 8020456,
+      "delta_ms": 2589974,
+      "epsilon_ms": 1000,
+      "passed": true
+    },
+    {
+      "upgrade_id": "upgrade.refurbished_sticker",
+      "effect_target_id": "generator.beige_tower_v2",
+      "removed_generator_ids": [
+        "generator.legal_dept"
+      ],
+      "removed_upgrade_ids": [
+        "upgrade.beige_tower_cache",
+        "upgrade.continuous_feed_paper",
+        "upgrade.crt_degauss_button",
+        "upgrade.employee_handbook_v0",
+        "upgrade.hold_music_license",
+        "upgrade.institutional_memory",
+        "upgrade.nephew_business_cards",
+        "upgrade.rack_rail_standardization",
+        "upgrade.reply_all_macro"
+      ],
+      "selected_at_ms": 4090596,
+      "baseline_ms": 4525188,
+      "masked_ms": 4688752,
+      "delta_ms": 163564,
+      "epsilon_ms": 1000,
+      "passed": true
+    }
+  ],
+  "failures": []
+}

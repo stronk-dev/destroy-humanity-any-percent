@@ -13,7 +13,7 @@ Candidate directory: `balance/testdata/t0-t1/`
 |---|---|---|
 | `categories-v1.json` | `ff63b341ff8a7439e48cbfa7cb91dcf51089809fcbb0e6e54201965e5911b9a5` | Real Go leaderboard loader + candidate full-gate-set test |
 | `curriculum-v1.json` | `17e5e0c7e8b8f7217c6063b41067af0bed41a34cc26a22e9d4ddfc00513e98d9` | Exact proposed grammar + named Copy binding; transition owner not implemented |
-| `economy-v4.json` | `3b18304a2a56e06619d027f3512f671cf88ddc1da4daacd77045d0b762679ac1` | Real Go economy loader + candidate binding test |
+| `economy-v4.json` | `fb75e5cf32f545d9470cc8512a8c63f45ed9edd96c68ba65cfeabe0ce2c7f37d` | Real Go economy loader + candidate binding test; owner-signed C24–C27 tuple applied |
 | `event-copy-v1.json` | `6413fa05f76c56797ec49e82de28ecf81f52cfa502d5b687f8d764d335a94210` | Exact proposed grammar; production loader not implemented |
 | `harness-scenario-v1.json` | `e74e271be3b844bfde411887af16de06890a9a281596d45b8ad9deb7b1a502a5` | Exact proposed first-hour grammar; harness extensions not implemented |
 | `opportunities-v1.json` | `63e51084863bd00da7d5a0b358f54741b0b0682d8ef25b2fc7cb3da2c77f27cb` | Real Go active-play loader against candidate economy |
@@ -25,8 +25,8 @@ Candidate directory: `balance/testdata/t0-t1/`
 The non-relevance hashes above retain their recorded owner ratification in
 `rfc/t0-t1-playable-content.md`; production artifact paths remain untouched. T01-C18 replaces the
 old single relevance coordinate with two review candidates: T0 scenario
-`8871957aaeac2b484a0c11c9b627e9409d9a6cb63e15aabdafe267f4164c9587` and T1 scenario
-`1d9b95ea51ad339102d01a0d2187589dbbb8f21bdaf44f18d99b30992646f037`, paired with the two policy
+`008c08df62da0792b84b5a1c5367f52cdfbfaa5ac46603fd920dcdaa94035a18` and T1 scenario
+`0d6049b2736eee7560d82f9459972f8da62e7b8b1933fca885631b0e09195419`, paired with the two policy
 hashes above. All four are pending designated review and owner re-ratification; the historical
 pin #9 remains an immutable record, not authority for these replacement bytes.
 
@@ -35,10 +35,12 @@ pin #9 remains an immutable record, not authority for these replacement bytes.
 - **F1 — closed:** `categories-v1.json` is the live epoch-6 categories artifact plus the one
   raw-byte-sorted `gate.t0_to_t1` insertion in `full_gate_set`. A real loader test composes it
   against the candidate Routes gate set.
-- **F2 — closed for re-review:** the four upgrade rows that were structurally outside their
-  windows now use `8.64e4`, `7.5e8`, `8.5e8`, and `9.5e8` cash respectively, and their
-  `resource_at_least` requirements match those prices. These remain provisional pacing bytes;
-  the mandatory relevance report, not this rescale, decides whether they are live content.
+- **F2 — superseded by the owner-signed C24–C27 tuple:** all paired `cost.amount` and
+  `resource_at_least.value` bytes agree. The final signed coordinates are Continuous Feed `1.2e4`,
+  Hold Music `2e4`, Business Cards `2e4`, Reply-All `4e1`, CRT Degauss `2.48832e8`, Handbook
+  `7.5e7`, Refurbished Sticker `2e8`, and Institutional Memory `1e8`; Institutional Memory targets
+  `generator.garage_rack`. These remain provisional candidate bytes until designated review and
+  owner re-ratification.
 - **F3 — closed:** the body now declares the actual `1.07`–`1.13` T0 band. The `1.13` Beige Tower
   ratio deliberately preserves its live epoch-6 byte; this is declared preservation rather than
   silently narrowing the rule around it.

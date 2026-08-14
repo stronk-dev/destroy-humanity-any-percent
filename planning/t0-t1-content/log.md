@@ -2182,3 +2182,87 @@ E-A/E-B/E-C explicitly in front of the owner at decision time:
    purchasables" is NOT claimable until C28 resolves.
 4. Re-ratification of the four hashes follows the landed tuple through the standard designated
    review; then the epoch-7 mint runway proceeds.
+
+## 2026-08-14 — Codex landed signed C24–C27 tuple; reports refreshed; E-A corrected; T01-C28 diagnosis — READY FOR DESIGNATED REVIEW
+
+- **Implementation commit:** `9abfc2c` (`BALANCE-CHANGE: retune T0-T1 branch upgrades (T01
+  C24-C27)`). The commit contains only `balance/testdata/t0-t1/economy-v4.json`: all six changed
+  prices have matching `resource_at_least` requirements, Institutional Memory targets
+  `generator.garage_rack`, and the two signed unchanged coordinates (Continuous Feed and CRT
+  Degauss) remain byte-identical. No production artifact, epoch, or owner-authored copy changed.
+- **Authoritative branch reports refreshed:** `upgrade-branch-report.v1.json` and
+  `upgrade-branch-report-t1.v1.json`. Both have empty failure sets. T0's screened reference is
+  **419,462 ms** (88,094 transitions); T1's screened reference is **2,724,115 ms** (1,700,334
+  transitions). The exact passing deltas are Continuous Feed 153,027 ms, Business Cards 38,295
+  ms, CRT Degauss 616,212 ms, Institutional Memory 2,448,096 ms, Rack Rail 2,589,974 ms, and
+  Refurbished Sticker 163,564 ms; Hold Music, Reply-All, and Handbook remain main-path passes.
+- **E-A corrected:** the earlier **3,318,634 ms** was not produced by a valid byte-applied report
+  arm. It came from temporary in-memory catalog mutation without recomputing the suite's
+  constants/artifact identity. The reproducible committed-byte screened T1 reference is
+  **2,724,115 ms**, matching the designated review and the regenerated authoritative report.
+- **E-B disclosure, verbatim in substance:** T0's screen removes `generator.nephew_intern`, so
+  Business Cards rests on its passing branch proof. T1's screen removes `generator.garage_rack`,
+  so Institutional Memory and Rack Rail rest on their passing branch proofs. This is the ruled
+  C26/C27 evidence shape, not a claim that the main-path arm exercised those effects.
+
+Re-derived candidate pins (all **UNRATIFIED**, pending the designated review of this range):
+
+- `economy-v4.json`: `fb75e5cf32f545d9470cc8512a8c63f45ed9edd96c68ba65cfeabe0ce2c7f37d`
+- `relevance-policy-t1-v2.json`: `f513360cc421e9b5a4ca624c977fdde055104b52052952e28a4aa5d5443554ef`
+- `relevance-scenario-v2.json`: `008c08df62da0792b84b5a1c5367f52cdfbfaa5ac46603fd920dcdaa94035a18`
+- `relevance-scenario-t1-v2.json`: `0d6049b2736eee7560d82f9459972f8da62e7b8b1933fca885631b0e09195419`
+
+### T01-C28 diagnosis — no honest existing-literal repair; owner ruling required
+
+The ordinary T1 diagnostic still buys Beige Tower v2 (two purchases in the worst measured chaos
+trajectory) and reports `relevance_floor:generator.beige_tower_v2`: baseline and effect-masked
+milestones both land at 19,800,000 ms, delta 0. Its role fixture separately proves the provision
+hook executes, so this is not a loader, unlock, or dormant-role defect.
+
+The economics explain the zero. One purchased Beige Tower v2 produces `490,222.789063` cash/s,
+but its intended job provisions only `0.1` Beige Tower per source per 60-second grid, and each
+provisioned Beige Tower contributes `1` cash/s. The role's output is therefore negligible beside
+the source's own output. Real-loader/real-engine scratch sweeps (discarded after measurement,
+never candidate bytes) ruled out cosmetic repairs:
+
+- price `358,318,080` down through `100,000,000`: worst delta remains 0; lower prices cause the
+  opportunity screen to remove Beige Tower v2 as harmful rather than establish relevance;
+- own production rate from 2x through 11x: worst delta remains 0; at 12x the row passes only by
+  displacing four other generator paths, so it is a composition rewrite, not a small repair;
+- adding Institutional Knowledge synergy at 20,000–200,000 ppm per purchased count: worst delta
+  remains 0 and sometimes displaces `first_hire`;
+- provisioning at 100,000,000; 1,000,000,000; and **10,000,000,000 ppm** (up to a 100,000x
+  increase): the worst delta remains 0. At the largest value only one chaos seed improves, by one
+  300,000-ms decision interval.
+
+**Smallest honest proposal:** do not authorize an extreme balance literal or a trap exemption.
+The intended chain-provision role needs an explicit, replay-pinned provision arm whose quantity is
+rate-equivalent to a declared fraction of the source generator's output, while retaining the
+existing unit-per-grid arm unchanged for historical artifacts. Beige Tower v2 would opt into that
+new arm and its exact ppm would then be derived by the same branch + whole-path measurements before
+owner sign-off. This is a narrow Purchasable-Content/production contract extension, but it is still
+a mechanic and therefore returns to the owner as a DESIGN-GAP; Codex has not implemented or minted
+it. The alternatives tested above are rejected as non-fixes. AC2 remains open on C28.
+
+### Verification completed for this handoff
+
+- `make verify-schema` — green after the isolated balance edit.
+- `make t0-t1-role-check` — green after the isolated balance edit.
+- `make t0-t1-relevance-all` — all four arms executed; expected exit 2 because C28 remains an
+  ordinary content finding. Both authoritative branch reports are green; the main diagnostics are
+  fail-before-write, non-authoritative evidence and remain ignored.
+- Focused C28 provision sweep — green under `make test-go` with `-count=1`; the temporary scratch
+  test was removed afterward.
+- **Cold-CI correction:** an initial warm-cache `make verify` passed while three exact-value tests
+  still pinned the pre-signoff candidate. The first `make test-go-ci` correctly failed in
+  `server/economy/t0_t1_candidate_test.go` and two relevance measurement tests. This batch updates
+  those tests to assert the complete owner-signed eight-coordinate tuple, the Institutional Memory
+  target, the changed T0 exclusion set/reference result, and the committed-byte T1 measurement.
+  The tests are candidate-byte assertions, not regenerated goldens. After those fixes,
+  `make test-go-ci` ran every Go package cold with `-count=1` and exited 0; a complete subsequent
+  `make verify` also exited 0 after 6,650 client tests, 19,992 browser tests, and the performance
+  arm. No partial output was treated as a pass.
+
+No archival, mint, push, or re-ratification is claimed. `AGENTS.md` remains owner-modified and was
+not touched or staged. Ready for the designated cross-party review of `9abfc2c` plus this record
+commit; C28 awaits owner ruling.

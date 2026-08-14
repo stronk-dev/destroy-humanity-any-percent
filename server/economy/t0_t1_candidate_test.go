@@ -21,15 +21,23 @@ func TestT0T1CandidateLoadsAndBindsEveryGate(t *testing.T) {
 		t.Fatal(err)
 	}
 	for id, amount := range map[string]string{
-		"upgrade.employee_handbook_v0":  "7.5e8",
-		"upgrade.institutional_memory":  "9.5e8",
-		"upgrade.nephew_business_cards": "8.64e4",
-		"upgrade.refurbished_sticker":   "8.5e8",
+		"upgrade.continuous_feed_paper": "1.2e4",
+		"upgrade.crt_degauss_button":    "2.48832e8",
+		"upgrade.employee_handbook_v0":  "7.5e7",
+		"upgrade.hold_music_license":    "2e4",
+		"upgrade.institutional_memory":  "1e8",
+		"upgrade.nephew_business_cards": "2e4",
+		"upgrade.refurbished_sticker":   "2e8",
+		"upgrade.reply_all_macro":       "4e1",
 	} {
 		upgrade, ok := catalog.Upgrade(id)
 		if !ok || upgrade.Cost.Amount.String() != amount || len(upgrade.Requires) != 1 || upgrade.Requires[0].Value.String() != amount {
-			t.Fatalf("rescaled upgrade %s = %+v", id, upgrade)
+			t.Fatalf("owner-signed upgrade %s = %+v", id, upgrade)
 		}
+	}
+	institutional, ok := catalog.Upgrade("upgrade.institutional_memory")
+	if !ok || len(institutional.Effects) != 1 || institutional.Effects[0].Target != "generator.garage_rack" {
+		t.Fatalf("institutional-memory target = %+v", institutional)
 	}
 	for _, id := range []string{"active.building.generator.beige_tower", "active.click", "active.production"} {
 		if _, ok := catalog.MultiplierSource(id); !ok {
