@@ -58,6 +58,7 @@ type relevanceDecisionTrace struct {
 	Revision        int64
 	NowMS           int64
 	ReferenceArm    string
+	ReferenceChoice *relevanceCandidate
 	ReferenceMS     int64
 	Alternatives    []relevanceForcedArm
 }
@@ -301,7 +302,8 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			}
 		}
 		trapPassed := baselinePurchases[item.PurchasableID] > 0 || item.TrapExempt
-		instrumentAffected := maskRemoves(opportunityMask, item.PurchasableID, suite.Catalog)
+		instrumentReasons := instrumentAffectedReasons(opportunityMask, item.PurchasableID, suite.Catalog)
+		instrumentAffected := len(instrumentReasons) > 0
 		report.Items = append(report.Items, RelevanceItemReport{PurchasableID: item.PurchasableID,
 			AvailabilityWindow: item.Availability, EpsilonMS: item.EpsilonMS, TrapExempt: item.TrapExempt,
 			JustificationKey: item.JustificationKey, BaselinePurchaseCount: baselinePurchases[item.PurchasableID], ExcludedPersonaIDs: excluded,
@@ -309,10 +311,10 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 			IndividualDeltas:   []RelevanceDelta{individual}, ActionRemovalDeltas: []RelevanceDelta{removal}, Support: support,
 			SupportingGroupID: supportingGroup, NearestPassingEpsilonMS: nearest, RelevancePassed: relevancePassed, TrapPassed: trapPassed})
 		if !relevancePassed {
-			report.Failures = append(report.Failures, relevanceFloorFailure("relevance_floor", item.PurchasableID, instrumentAffected))
+			report.Failures = append(report.Failures, relevanceFloorFailure("relevance_floor", item.PurchasableID, instrumentReasons))
 		}
 		if !trapPassed {
-			report.Failures = append(report.Failures, relevanceFloorFailure("trap_floor", item.PurchasableID, instrumentAffected))
+			report.Failures = append(report.Failures, relevanceFloorFailure("trap_floor", item.PurchasableID, instrumentReasons))
 		}
 	}
 	report.RoleActivations = sortedRoleActivations(baselineRoles)
@@ -484,12 +486,106 @@ func checkedRelevanceProduct(values ...int64) (int64, error) {
 	return result, nil
 }
 
-func relevanceFloorFailure(kind, id string, instrumentAffected bool) string {
-	prefix := ""
-	if instrumentAffected {
-		prefix = "instrument_affected:"
+type instrumentAffectedReason struct {
+	Kind      string
+	RemovedID string
+}
+
+func instrumentAffectedReasons(mask production.AblationMask, id string, catalog *economy.Catalog) []instrumentAffectedReason {
+	if catalog == nil {
+		return nil
 	}
-	return prefix + kind + ":" + id
+	removed := map[string]bool{}
+	for _, value := range mask.RemovedGeneratorIDs {
+		removed[value] = true
+	}
+	for _, value := range mask.RemovedUpgradeIDs {
+		removed[value] = true
+	}
+	for _, value := range mask.RemovedActionIDs {
+		removed[value] = true
+	}
+	if removed[id] {
+		return []instrumentAffectedReason{{Kind: "exact_id", RemovedID: id}}
+	}
+
+	// Upgrade effects are the authoritative non-neutral output paths for an
+	// upgrade. If every effect target was removed by the instrument, judging the
+	// upgrade is judging a test-manufactured zero rather than the content.
+	if upgrade, ok := catalog.Upgrade(id); ok {
+		reasons := make([]instrumentAffectedReason, 0, len(upgrade.Effects))
+		for _, effect := range upgrade.Effects {
+			if !removed[effect.Target] {
+				return nil
+			}
+			reasons = append(reasons, instrumentAffectedReason{Kind: "effect_target", RemovedID: effect.Target})
+		}
+		return sortedInstrumentReasons(reasons)
+	}
+
+	// Generator production is an independent non-neutral path. A generator
+	// whose production remains cannot be invalidated merely because one of its
+	// provision/manual/role targets was removed. The generic path enumeration
+	// below covers future role-only generator rows without weakening that rule.
+	if generator, ok := catalog.GeneratorClass(id); ok {
+		if generator.Production != nil {
+			return nil
+		}
+		paths := make([]instrumentAffectedReason, 0, 1+len(generator.Roles))
+		if generator.Provision != nil {
+			paths = append(paths, instrumentAffectedReason{Kind: "provision_target", RemovedID: generator.Provision.GeneratorID})
+		}
+		for _, role := range generator.Roles {
+			target := ""
+			switch role.Kind {
+			case economy.RoleProvision:
+				target = role.GeneratorID
+			case economy.RoleManualOutput:
+				target = role.ActionID
+			case economy.RoleSynergyFeed:
+				target = role.PoolID
+			case economy.RoleStockRate:
+				target = "faction.stock"
+			}
+			if target != "" {
+				paths = append(paths, instrumentAffectedReason{Kind: "role_target", RemovedID: target})
+			}
+		}
+		if len(paths) == 0 {
+			return nil
+		}
+		for _, path := range paths {
+			if !removed[path.RemovedID] {
+				return nil
+			}
+		}
+		return sortedInstrumentReasons(paths)
+	}
+	return nil
+}
+
+func sortedInstrumentReasons(values []instrumentAffectedReason) []instrumentAffectedReason {
+	sort.Slice(values, func(left, right int) bool {
+		if values[left].Kind != values[right].Kind {
+			return values[left].Kind < values[right].Kind
+		}
+		return values[left].RemovedID < values[right].RemovedID
+	})
+	result := values[:0]
+	for _, value := range values {
+		if len(result) == 0 || result[len(result)-1] != value {
+			result = append(result, value)
+		}
+	}
+	return result
+}
+
+func relevanceFloorFailure(kind, id string, reasons []instrumentAffectedReason) string {
+	if len(reasons) == 0 {
+		return kind + ":" + id
+	}
+	reason := reasons[0]
+	return "instrument_affected:" + reason.Kind + ":" + reason.RemovedID + ":" + kind + ":" + id
 }
 
 func relevanceStarvationDiagnostic(report RelevanceReport, declaredRuns, executedRuns, declaredTransitions, executedTransitions int64) RelevanceReport {
@@ -800,8 +896,11 @@ func (suite *RelevanceSuite) runReferenceWithOpportunityTrace(mask, opportunityM
 				return relevanceRunResult{}, digestErr
 			}
 			referenceArm := "bank"
+			var referenceChoice *relevanceCandidate
 			if !bank && len(candidates) > 0 {
 				referenceArm = candidates[0].ID
+				choice := candidates[0]
+				referenceChoice = &choice
 			}
 			alternatives := make([]relevanceForcedArm, 0, len(allCandidates)+1)
 			for index := range allCandidates {
@@ -818,7 +917,8 @@ func (suite *RelevanceSuite) runReferenceWithOpportunityTrace(mask, opportunityM
 			}
 			sort.Slice(alternatives, func(left, right int) bool { return alternatives[left].ID < alternatives[right].ID })
 			*trace = append(*trace, relevanceDecisionTrace{DecisionOrdinal: decision, StateHash: digest,
-				State: snapshot, Revision: revision, NowMS: nowMS, ReferenceArm: referenceArm, Alternatives: alternatives})
+				State: snapshot, Revision: revision, NowMS: nowMS, ReferenceArm: referenceArm,
+				ReferenceChoice: referenceChoice, Alternatives: alternatives})
 		}
 		if bank || len(candidates) == 0 {
 			advanceAt := next

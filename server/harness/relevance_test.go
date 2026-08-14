@@ -90,7 +90,7 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 		t.Fatal("schema-v4 report omitted instrument exclusions")
 	}
 	if !reflect.DeepEqual(first.InstrumentExcludedIDs, []string{"generator.alpha"}) ||
-		!containsString(first.Failures, "instrument_affected:trap_floor:generator.alpha") {
+		!containsString(first.Failures, "instrument_affected:exact_id:generator.alpha:trap_floor:generator.alpha") {
 		t.Fatalf("instrument exclusions=%v failures=%v", first.InstrumentExcludedIDs, first.Failures)
 	}
 	var alphaAffected bool
@@ -213,6 +213,96 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 	invalid.Items[deltaItem].IndividualDeltas[0].Status = "both_reached"
 	if err := ValidateRelevanceReport(invalid); err == nil {
 		t.Fatal("report accepted a non-reconciling delta")
+	}
+}
+
+func TestCandidateInstrumentDependenciesInvalidateTargetedUpgradeFindings(t *testing.T) {
+	tests := []struct {
+		scenario  string
+		upgradeID string
+		removedID string
+	}{
+		{scenario: "balance/testdata/t0-t1/relevance-scenario-v2.json", upgradeID: "upgrade.continuous_feed_paper", removedID: "generator.dot_matrix_queue"},
+		{scenario: "balance/testdata/t0-t1/relevance-scenario-t1-v2.json", upgradeID: "upgrade.refurbished_sticker", removedID: "generator.beige_tower_v2"},
+	}
+	for _, test := range tests {
+		t.Run(test.upgradeID, func(t *testing.T) {
+			suite, err := LoadRelevanceSuite("../..", test.scenario)
+			if err != nil {
+				t.Fatal(err)
+			}
+			reasons := instrumentAffectedReasons(production.AblationMask{RemovedGeneratorIDs: []string{test.removedID}}, test.upgradeID, suite.Catalog)
+			want := []instrumentAffectedReason{{Kind: "effect_target", RemovedID: test.removedID}}
+			if !reflect.DeepEqual(reasons, want) {
+				t.Fatalf("reasons=%+v want=%+v", reasons, want)
+			}
+			failure := relevanceFloorFailure("relevance_floor", test.upgradeID, reasons)
+			wantFailure := "instrument_affected:effect_target:" + test.removedID + ":relevance_floor:" + test.upgradeID
+			if failure != wantFailure {
+				t.Fatalf("failure=%q want=%q", failure, wantFailure)
+			}
+		})
+	}
+}
+
+func TestUpgradeBranchProofUsesLegalRankedPrefixAndMaskedControl(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogBytes, err := os.ReadFile("../../testdata/harness/relevance/economy-v4.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogBytes = bytes.Replace(catalogBytes, []byte(`"amount": "9e2"`), []byte(`"amount": "1e2"`), 1)
+	catalogBytes = bytes.Replace(catalogBytes, []byte(`"value": "9e2"`), []byte(`"value": "1e2"`), 1)
+	suite.Catalog, err = economy.LoadCatalog(catalogBytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	upgrade, ok := suite.Catalog.Upgrade("upgrade.alpha")
+	if !ok {
+		t.Fatal("fixture upgrade is absent")
+	}
+	proof, err := suite.runUpgradeBranchProof(upgrade, 1, &relevanceCounter{limit: 2_000_000})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if proof.SelectedAtMS == nil || proof.BaselineMS == nil || proof.MaskedMS == nil || proof.DeltaMS == nil || !proof.Passed ||
+		*proof.DeltaMS < proof.EpsilonMS || !containsString(proof.RemovedGeneratorIDs, "generator.beta") ||
+		!containsString(proof.RemovedUpgradeIDs, "upgrade.dead") {
+		t.Fatalf("branch proof=%+v", proof)
+	}
+
+	invalid := proof
+	invalid.MaskedMS = invalid.BaselineMS
+	zero := int64(0)
+	invalid.DeltaMS = &zero
+	invalid.Passed = true
+	report := RelevanceBranchReport{SchemaVersion: 1, ScenarioID: suite.Scenario.ID, ScenarioHash: suite.ScenarioHash,
+		ConstantsHash: suite.ConstantsHash, RelevancePolicyHash: suite.Policy.Hash, MainReferenceMS: 1,
+		Proofs: []RelevanceBranchProof{invalid}, Failures: []string{}}
+	if err := ValidateRelevanceBranchReport(report); err == nil {
+		t.Fatal("branch report accepted a non-discriminating masked control")
+	}
+}
+
+func TestUpgradeBranchReportDerivesEveryUpgradeMissedByMainReference(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "testdata/harness/relevance/scenario-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	report, err := suite.RunUpgradeBranchProofs()
+	if err != nil {
+		t.Fatal(err)
+	}
+	ids := make([]string, 0, len(report.Proofs))
+	for _, proof := range report.Proofs {
+		ids = append(ids, proof.UpgradeID)
+	}
+	if !reflect.DeepEqual(ids, []string{"upgrade.alpha", "upgrade.dead"}) ||
+		!containsString(report.Failures, "branch_unselected:upgrade.dead") {
+		t.Fatalf("proof ids=%v failures=%v", ids, report.Failures)
 	}
 }
 
@@ -612,6 +702,23 @@ func TestReferenceDecisionGuardNeverCoasts(t *testing.T) {
 	}
 }
 
+func TestTracedReferenceDecisionGuardFailsLoudWithoutCoasting(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	suite.Scenario.MaxDecisions = 1
+	traces := []relevanceDecisionTrace{}
+	result, err := suite.runReferenceWithOpportunityTrace(production.AblationMask{}, production.AblationMask{},
+		&relevanceCounter{limit: suite.Scenario.RelevanceBudgetMaxTransitions}, &traces)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.DecisionStarved || result.MilestoneMS != nil || result.FinalVirtualMS >= suite.Scenario.HorizonMS || len(traces) != 1 {
+		t.Fatalf("traced reference guard did not fail loud: result=%+v traces=%d", result, len(traces))
+	}
+}
+
 func TestBeamChildBoundReducesWorkBeforeRollout(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
 	if err != nil {
@@ -904,7 +1011,7 @@ func TestRelevanceFixturePinsTrapFloorAndTheRegisteredDeviationWitness(t *testin
 	}
 	if report.DeviationOracle == nil || report.DeviationOracle.Status != "counterexample" ||
 		!containsString(report.Failures, "greedy_oracle:deviation_gap") ||
-		!containsString(report.Failures, "trap_floor:upgrade.dead") {
+		!containsString(report.Failures, "instrument_affected:effect_target:generator.alpha:trap_floor:upgrade.dead") {
 		t.Fatalf("registered deviation witness=%+v failures=%v", report.DeviationOracle, report.Failures)
 	}
 }

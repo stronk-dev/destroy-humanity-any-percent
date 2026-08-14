@@ -105,8 +105,9 @@ always remains individual. A seed whose unmasked baseline buys none of the item 
 ablation signal. A persona is excluded only when every one of its seeds buys zero; report schema v3
 records every such persona in the affected item or group row's `excluded_persona_ids`. Report
 schema v4 additionally records the screen's complete sorted `instrument_excluded_ids` and marks
-matching item rows `instrument_affected`; their floor findings use the same prefix so they cannot
-be mistaken for independent content verdicts. Any positive seed remains binding, and baseline
+matching or mechanically dependent item rows `instrument_affected`; their floor findings name the
+reason and removed target (`instrument_affected:<reason>:<removed-id>:…`) so an upgrade whose sole
+effect target was removed cannot masquerade as dead content. Any positive seed remains binding, and baseline
 purchase counts reduce over positive seeds before taking the maximum across personas. Role
 evidence comes only from unmasked baseline execution. Report schema v5 replaces the routine
 `greedy_oracle` result with `deviation_oracle`; the legacy field remains null so a cheap probe cannot
@@ -124,6 +125,14 @@ manual, provision, and synergy roles require different honest execution contexts
 `make t0-t1-role-check` gate instead enumerates every generator-role row in the pinned T0–T1 economy
 candidate, exercises its minimum real production context, and pairs it with a generator-masked
 control that must remove both the activation and its non-neutral effect.
+
+Branch-specific upgrades have a separate candidate gate. `RunUpgradeBranchProofs` derives one row
+for every measured upgrade the main reference does not buy, follows the shared ranked policy from
+genesis through a legally reachable generator prefix, and accepts the row only when the real engine
+selects the upgrade over banking and an effect-masked completion loses at least the policy epsilon.
+The prefix removes and discloses every competing upgrade as well as every generator beyond the
+target branch. It does not replace the main
+unmasked reference, whole-path pacing, or the deviation oracle, and it cannot grant a trap exemption.
 
 Production candidates use phase-scoped relevance policies. The T0 scenario measures rows whose
 windows close at `gate.t0_to_t1`; the cumulative T1 optimizer continues through `gate.t2_to_t3`,
@@ -158,9 +167,12 @@ as a relevance baseline.
   16-artifact replay bundle, then writes the owner-facing candidate-versus-baseline pacing report.
   Pacing drift is reported rather than vetoed; deterministic invariant failures still fail the run.
 - `make t0-t1-role-check` runs the candidate-specific role activation/control matrix.
-- `make t0-t1-relevance-all` first runs that role matrix, then the phase-scoped T0 and cumulative T1
-  relevance gates; either relevance target can still be run alone with `make t0-t1-relevance` or
-  `make t1-relevance`.
+- `make t0-t1-upgrade-check` runs both candidate branch-proof matrices and preserves a diagnostic
+  report for each failing scenario.
+- `make t0-t1-relevance-all` first runs the role matrix, then runs both phase-scoped relevance gates
+  and both branch-proof matrices even when one reports content findings; the final target remains
+  nonzero if any constituent failed. Either relevance target can still be run alone with
+  `make t0-t1-relevance` or `make t1-relevance`.
 - `make harness-update` deliberately regenerates those tracked artifacts for review.
 
 The successor `content_dynamics.v1` lane has an intentionally empty production registry until an

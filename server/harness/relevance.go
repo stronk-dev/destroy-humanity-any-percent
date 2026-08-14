@@ -564,9 +564,25 @@ func ValidateRelevanceReport(report RelevanceReport) error {
 	if expectedOracleFailure == "" && oracleFailureCount != 0 || expectedOracleFailure != "" && oracleFailureCount != 1 {
 		return errors.New("relevance greedy oracle failure is missing or duplicated")
 	}
+	instrumentAffected := map[string]bool{}
 	instrumentExcluded := map[string]bool{}
 	for _, id := range report.InstrumentExcludedIDs {
 		instrumentExcluded[id] = true
+	}
+	for _, failure := range report.Failures {
+		parts := strings.Split(failure, ":")
+		if len(parts) == 0 || parts[0] != "instrument_affected" {
+			continue
+		}
+		if len(parts) != 5 || parts[1] != "exact_id" && parts[1] != "effect_target" && parts[1] != "provision_target" && parts[1] != "role_target" ||
+			!relevanceIDPattern.MatchString(parts[2]) || parts[3] != "relevance_floor" && parts[3] != "trap_floor" ||
+			!relevanceIDPattern.MatchString(parts[4]) {
+			return errors.New("invalid instrument-affected failure")
+		}
+		if !instrumentExcluded[parts[2]] {
+			return errors.New("instrument-affected failure target is not excluded")
+		}
+		instrumentAffected[parts[4]] = true
 	}
 	prior := ""
 	for _, item := range report.Items {
@@ -577,7 +593,7 @@ func ValidateRelevanceReport(report RelevanceReport) error {
 			item.AvailabilityWindow.FromGate != nil && !relevanceIDPattern.MatchString(*item.AvailabilityWindow.FromGate) ||
 			item.AvailabilityWindow.ToGate != nil && !relevanceIDPattern.MatchString(*item.AvailabilityWindow.ToGate) || !relevanceSafePositive(item.EpsilonMS) ||
 			!relevanceSafe(item.BaselinePurchaseCount) || !relevanceSafe(item.NearestPassingEpsilonMS) ||
-			report.SchemaVersion >= 4 && item.InstrumentAffected != instrumentExcluded[item.PurchasableID] ||
+			report.SchemaVersion >= 4 && item.InstrumentAffected != (instrumentAffected[item.PurchasableID] || instrumentExcluded[item.PurchasableID]) ||
 			item.RelevancePassed != (item.Support != "failed") || item.TrapPassed != (item.BaselinePurchaseCount > 0 || item.TrapExempt) ||
 			item.TrapExempt != (item.JustificationKey != nil) || item.JustificationKey != nil && !relevanceIDPattern.MatchString(*item.JustificationKey) {
 			return fmt.Errorf("invalid relevance item report %q", item.PurchasableID)

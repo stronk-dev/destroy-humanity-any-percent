@@ -15,3 +15,6 @@
 - T01-C23 role evidence boundary — generic relevance personas retain observed role activations but
   no longer manufacture `role_floor` findings from contexts they do not exercise. The candidate's
   complete role contract is enforced separately by the real-engine, masked-control role gate.
+- T01-C26 dependency disclosure — upgrades whose only non-neutral effect target is removed by the
+  opportunity instrument are explicitly marked instrument-affected. The fixture pins both the
+  exact `generator.alpha` removal and its dependent `upgrade.alpha` / `upgrade.dead` findings.
