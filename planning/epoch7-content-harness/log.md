@@ -258,3 +258,50 @@ Ruled by Marco (recorded by Claude from the owner's explicit selections):
    generate the first historical report and the accepted goldens under the balance-change guard,
    and hand the complete range back for designated cross-party review and the archival chain.
    The mint is local; **publishing/THE PUSH remains a separate owner decision.**
+
+## 2026-08-14 — Codex mint execution: epoch landed; EH-C16 relevance-baseline seam
+
+- **Mint commit:** `38eaffd` (`BALANCE-CHANGE: mint T0-T1 playable content epoch (T01 / FCE
+  EH-C10-C15)`). The eighteen production artifacts hash to the pinned
+  `sha256:6c7fab29…f789`; epoch 7 is appended without changing any earlier accepted hash; the
+  deployment manifest, copy reference graph, Company-v18 activation tests, historical epoch-6
+  load, and shared Go/TypeScript replay corpus are updated. Focused cold package tests,
+  `make verify-schema`, `make copy-check`, and replay-fixture parity are green.
+- **Historical content-dynamics output generated but NOT committed:** the immutable eighteen-file
+  snapshot and first report reproduce the signed evidence exactly (69/69 runs, 786/4215
+  transitions, scenario hash `sha256:a6df6553…a54`, first spawn 3558 ms). They remain pending the
+  baseline commit and its full gates.
+- **Testing-flow improvement:** `6035c18` adds explicit `HARNESS_WORKERS`/`-workers` control while
+  preserving canonical run-key ordering; its 1-worker-versus-12-worker byte-equivalence test is
+  green. This was necessary after the fixed four-worker full pacing updater exceeded the known
+  practical runtime envelope. It changes concurrency only, never report bytes.
+
+**EH-C16 — OWNER/DESIGN RULING REQUIRED (baseline gate; mint bytes unaffected).** Activating the
+schema-v4 Economy exposes a pre-existing composition gap between two already-ruled evidence
+contracts:
+
+1. `LoadRelevanceRegistry` correctly requires the active schema-v4 Economy to have one
+   epoch-owned relevance registry entry, but the epoch authority lookup still asks for the stale
+   artifact name `relevance_policy`; EH-C11/T01-C14 minted the ruled singular artifact name
+   `relevance`. That identifier must be reconciled to the minted name.
+2. The active registry gate only accepts the whole-path `relevance.v6` report and rejects ANY
+   finding. The ratified T1 whole-path report intentionally retains nine findings for the five
+   branch-specific rows covered by C23/C29 (BTv2, CRT Degauss, Institutional Memory, Rack Rail,
+   Refurbished Sticker). The reviewed schema-v2 branch report proves every one passes and has an
+   empty failure set, but the production registry grammar has no field through which to bind or
+   validate that evidence. Thus the ruled acceptance law (“whole-path + branch proofs green
+   together”) cannot be represented in the historical registry.
+
+**Codex recommendation:** extend an active relevance registry row with one exact `branch_report`
+path. The baseline runner regenerates both reports from the same pinned production scenario;
+loading/checking requires byte-exact scenario/constants/policy identity, a valid empty-failure
+branch report, and exact set equality between whole-path failing purchasable IDs and passing branch
+proof IDs. The baseline guard governs both report paths. This preserves every finding, adds no
+exemption, and directly composes the already-ruled C23/C29 evidence. Alternatives rejected by
+Codex: silently dropping the nine findings; exempting schema-v4 production from the registry;
+pointing the active registry at candidate paths instead of epoch-owned production bytes; or
+treating the branch report as unguarded planning evidence.
+
+Until EH-C16 is ruled, the generated snapshot/report stay uncommitted, `harness-update`/`harness-check`
+cannot honestly pass at epoch 7, and the mint range is **not ready for designated review or
+archival**. No push or publication occurred; the owner's `AGENTS.md` edit remains untouched.
