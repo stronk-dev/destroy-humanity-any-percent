@@ -1,7 +1,7 @@
 # T0–T1 candidate proposal
 
-Status: **eight-document core owner-ratified; replacement phase-scoped relevance pins are review
-candidates; not mint-authorized**
+Status: **historical eight-document core owner-ratified; the current economy pin and replacement
+phase-scoped relevance pins await designated review + owner re-ratification; not mint-authorized**
 
 RFC: `rfc/t0-t1-playable-content.md`
 
@@ -23,8 +23,9 @@ Candidate directory: `balance/testdata/t0-t1/`
 | `routes-v1.json` | `a84cce06ae67a68817174b99cfe7191e3c2f9bf47c1c20b4ebab1704baf99cfa` | Real Go Routes loader + candidate literal test |
 
 The non-relevance hashes above retain their recorded owner ratification in
-`rfc/t0-t1-playable-content.md`; production artifact paths remain untouched. T01-C18 replaces the
-old single relevance coordinate with two review candidates: T0 scenario
+`rfc/t0-t1-playable-content.md` **except `economy-v4.json`**, whose owner-signed C24–C27 tuple
+produces the new unratified pin shown above. Production artifact paths remain untouched. T01-C18
+replaces the old single relevance coordinate with two review candidates: T0 scenario
 `008c08df62da0792b84b5a1c5367f52cdfbfaa5ac46603fd920dcdaa94035a18` and T1 scenario
 `0d6049b2736eee7560d82f9459972f8da62e7b8b1933fca885631b0e09195419`, paired with the two policy
 hashes above. All four are pending designated review and owner re-ratification; the historical
@@ -141,9 +142,10 @@ Schema rejects v1-multiple and duplicate rows, and a schema-v2 fixture proves re
 remain single-milestone. Candidate epsilon, horizon, seed, and budget literals are provisional
 review coordinates, not empirical claims or production authorization.
 
-## Review request
+## Current review request
 
-Re-review the eight present candidate documents and the F1–F10 closures. Rule T01-C11 before the
-ninth Relevance document is authored. After that, Codex can implement the missing strict loaders,
-logged transitions, and harness extensions; run the composed pacing/relevance gates; and return
-the complete candidate hashes for owner ratification. No epoch mint is authorized here.
+Designated-review the signed balance commit and its regenerated evidence range. The four current
+pins are the economy document, T1 policy, T0 scenario, and T1 scenario listed above; all remain
+unratified until that verdict and the owner's explicit re-ratification. T01-C28 is a separate open
+content-design ruling and prevents a zero-dead-purchasables claim, but it does not authorize any
+further candidate byte. No epoch mint is authorized here.
