@@ -293,11 +293,22 @@ type replayFounderExtensions struct {
 }
 
 type replayInputsWire struct {
-	Version        int                `json:"v"`
-	Command        save.ReplayCommand `json:"command"`
-	EvaluatedAtMS  int64              `json:"evaluated_at_ms"`
-	EvaluationMode EvaluationMode     `json:"evaluation_mode"`
-	Resolved       json.RawMessage    `json:"resolved"`
+	Version        int                   `json:"v"`
+	Command        save.ReplayCommand    `json:"command"`
+	EvaluatedAtMS  int64                 `json:"evaluated_at_ms"`
+	EvaluationMode EvaluationMode        `json:"evaluation_mode"`
+	OfflineCatchup *replayOfflineCatchup `json:"offline_catchup,omitempty"`
+	Resolved       json.RawMessage       `json:"resolved"`
+}
+
+type replayOfflineCatchup struct {
+	OpenedAtMS  int64             `json:"opened_at_ms"`
+	OfflineSpan replayOfflineSpan `json:"offline_span"`
+}
+
+type replayOfflineSpan struct {
+	FromMS int64 `json:"from_ms"`
+	ToMS   int64 `json:"to_ms"`
 }
 
 type LoggedTransition struct {
@@ -423,6 +434,25 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 	if (state.WireVersion == 18) != (activeEvidence != nil) || state.WireVersion == 18 && wire.Version < 5 {
 		return LoggedTransition{}, fmt.Errorf("%w: active-play resolved presence", ErrInvalidReplayInputs)
 	}
+	externalContributions, err := contributionsFromReplay(accrual)
+	if err != nil || accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
+		return LoggedTransition{}, fmt.Errorf("%w: accrual inputs", ErrInvalidReplayInputs)
+	}
+	if err := applyReplayGuildSettlements(state, accrual.GuildSettlementBatch, catalogs.Faction.StockCap); err != nil {
+		return LoggedTransition{}, fmt.Errorf("%w: guild settlement inputs", ErrInvalidReplayInputs)
+	}
+	baseContributions, err := assembleContributions(state, catalogs.Economy, externalContributions)
+	if err != nil {
+		return LoggedTransition{}, err
+	}
+	if state.CompactMember != (accrual.CommonsWeightPPM != nil) {
+		return LoggedTransition{}, fmt.Errorf("%w: commons weight presence", ErrInvalidReplayInputs)
+	}
+	hook := closedReplayAccrualHook(catalogs, accrual.CommonsWeightPPM)
+	catchupEvents, err := applyReplayOfflineCatchup(state, catalogs.Economy, wire, baseContributions, hook, revision, request.IntentID)
+	if err != nil {
+		return LoggedTransition{}, err
+	}
 	var activeEvents []save.EventWrite
 	if activeEvidence != nil {
 		activeEvents, err = applyActivePlaySchedule(state, catalogs.Opportunities, catalogs.Prestige, revision.OwnerID, now, *activeEvidence)
@@ -433,28 +463,18 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 			activeEvents[index].IntentID = request.IntentID
 		}
 	}
-	contributions, err := contributionsFromReplay(accrual)
-	if err != nil || accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
-		return LoggedTransition{}, fmt.Errorf("%w: accrual inputs", ErrInvalidReplayInputs)
-	}
-	if err := applyReplayGuildSettlements(state, accrual.GuildSettlementBatch, catalogs.Faction.StockCap); err != nil {
-		return LoggedTransition{}, fmt.Errorf("%w: guild settlement inputs", ErrInvalidReplayInputs)
-	}
+	contributionInputs := append([]multiplier.Contribution(nil), externalContributions...)
 	if state.WireVersion == 18 {
 		activeContributions, activeErr := activePlayContributions(state, catalogs.Opportunities, activeEvidence.AttendedNowMS)
 		if activeErr != nil {
 			return LoggedTransition{}, activeErr
 		}
-		contributions = append(contributions, activeContributions...)
+		contributionInputs = append(contributionInputs, activeContributions...)
 	}
-	contributions, err = assembleContributions(state, catalogs.Economy, contributions)
+	contributions, err := assembleContributions(state, catalogs.Economy, contributionInputs)
 	if err != nil {
 		return LoggedTransition{}, err
 	}
-	if state.CompactMember != (accrual.CommonsWeightPPM != nil) {
-		return LoggedTransition{}, fmt.Errorf("%w: commons weight presence", ErrInvalidReplayInputs)
-	}
-	hook := closedReplayAccrualHook(catalogs, accrual.CommonsWeightPPM)
 	band := &CompactTitheBand{MinimumPPM: catalogs.Commons.MinimumTithePPM(), MaximumPPM: catalogs.Commons.MaximumTithePPM()}
 	var decision save.IntentDecision
 	if request.Kind == IntentClaimOpportunity {
@@ -474,7 +494,7 @@ func ApplyLogged(state *save.State, canonicalPayload []byte, catalogs CatalogBun
 		return LoggedTransition{}, err
 	}
 	if decision.Outcome == save.IntentApplied {
-		decision.Events = append(activeEvents, decision.Events...)
+		decision.Events = append(append(catchupEvents, activeEvents...), decision.Events...)
 		if err := afterPrestigeTransitionResolved(catalogs.Prestige, catalogs.Economy, request, state, revision, now, &decision, founder, declined); err != nil {
 			return LoggedTransition{}, err
 		}
@@ -551,17 +571,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		(next.Opportunities != nil) != (resolved.NextActivePlay != nil) {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal active-play evidence", ErrInvalidReplayInputs)
 	}
-	var activeEvents []save.EventWrite
-	if resolved.ActivePlay != nil {
-		activeEvents, err = applyActivePlaySchedule(company, catalogs.Opportunities, catalogs.Prestige, wire.Command.FounderID, now, *resolved.ActivePlay)
-		if err != nil || resolved.ActivePlay.Claim != nil {
-			return LoggedExitTransition{}, fmt.Errorf("%w: terminal active-play schedule", ErrInvalidReplayInputs)
-		}
-		for index := range activeEvents {
-			activeEvents[index].IntentID = request.IntentID
-		}
-	}
-	contributions, err := contributionsFromReplay(resolved.Accrual)
+	externalContributions, err := contributionsFromReplay(resolved.Accrual)
 	if err != nil || resolved.Accrual.RouteContextVersion != catalogs.Routes.ContextVersion() {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal accrual inputs", ErrInvalidReplayInputs)
 	}
@@ -572,19 +582,39 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	if err := applyReplayGuildSettlements(company, resolved.Accrual.GuildSettlementBatch, catalogs.Faction.StockCap); err != nil {
 		return LoggedExitTransition{}, fmt.Errorf("%w: terminal guild settlement inputs", ErrInvalidReplayInputs)
 	}
+	revision := save.Revision{StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
+		Number: wire.Command.Revision, ConstantsHash: catalogs.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
+	baseContributions, err := assembleContributions(company, catalogs.Economy, externalContributions)
+	if err != nil {
+		return LoggedExitTransition{}, err
+	}
+	hook := closedReplayAccrualHook(catalogs, resolved.Accrual.CommonsWeightPPM)
+	catchupEvents, err := applyReplayOfflineCatchup(company, catalogs.Economy, wire, baseContributions, hook, revision, request.IntentID)
+	if err != nil {
+		return LoggedExitTransition{}, err
+	}
+	var activeEvents []save.EventWrite
+	if resolved.ActivePlay != nil {
+		activeEvents, err = applyActivePlaySchedule(company, catalogs.Opportunities, catalogs.Prestige, wire.Command.FounderID, now, *resolved.ActivePlay)
+		if err != nil || resolved.ActivePlay.Claim != nil {
+			return LoggedExitTransition{}, fmt.Errorf("%w: terminal active-play schedule", ErrInvalidReplayInputs)
+		}
+		for index := range activeEvents {
+			activeEvents[index].IntentID = request.IntentID
+		}
+	}
+	contributionInputs := append([]multiplier.Contribution(nil), externalContributions...)
 	if resolved.ActivePlay != nil {
 		activeContributions, activeErr := activePlayContributions(company, catalogs.Opportunities, resolved.ActivePlay.AttendedNowMS)
 		if activeErr != nil {
 			return LoggedExitTransition{}, activeErr
 		}
-		contributions = append(contributions, activeContributions...)
+		contributionInputs = append(contributionInputs, activeContributions...)
 	}
-	contributions, err = assembleContributions(company, catalogs.Economy, contributions)
+	contributions, err := assembleContributions(company, catalogs.Economy, contributionInputs)
 	if err != nil {
 		return LoggedExitTransition{}, err
 	}
-	revision := save.Revision{StreamID: wire.Command.CompanyStreamID, OwnerID: wire.Command.FounderID,
-		Number: wire.Command.Revision, ConstantsHash: catalogs.ConstantsHash, RunLogSequence: wire.Command.RunLogSeq}
 	founder, err := stateFromFounderCarry(resolved.FounderCarry, catalogs)
 	if err != nil {
 		return LoggedExitTransition{}, fmt.Errorf("%w: founder carry state: %v", ErrInvalidReplayInputs, err)
@@ -593,7 +623,6 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		decision := rejectedExitDecision(request, wire.Command.Revision, "not_eligible", "minigame_session_active")
 		return LoggedExitTransition{Founder: founder, Company: company, Decision: decision}, nil
 	}
-	hook := closedReplayAccrualHook(catalogs, resolved.Accrual.CommonsWeightPPM)
 	var prefix []save.EventWrite
 	var actionDebits map[string]string
 	var exitType string
@@ -612,7 +641,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		if attendedErr != nil || attended < 900_000 || len(founder.ExitHistory) != 0 {
 			return LoggedExitTransition{}, ErrInvalidEngineState
 		}
-		exitType, prefix = "scripted_first", append(activeEvents, transition.Events...)
+		exitType, prefix = "scripted_first", append(append(catchupEvents, activeEvents...), transition.Events...)
 		terms, err = prestigecore.ComputeTerms(company, founder, catalogs.Prestige, exitType)
 	} else {
 		if request.Kind == IntentFileIPO {
@@ -651,7 +680,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 			return LoggedExitTransition{}, evaluationErr
 		}
 		prefix, err = runAccrualHook(hook, request.IntentID, company, catalogs.Economy, revision, evaluation, contributions)
-		prefix = append(activeEvents, prefix...)
+		prefix = append(append(catchupEvents, activeEvents...), prefix...)
 		if err == nil {
 			terms, err = prestigecore.ComputeTerms(company, founder, catalogs.Prestige, exitType)
 		}
@@ -985,6 +1014,7 @@ type replayBuild struct {
 	ActivePlay             *activePlayScheduleEvidence
 	NextActivePlay         *activePlaySpawnEvidence
 	MinigameSessionActive  *bool
+	OfflineCatchup         *replayOfflineCatchup
 }
 
 func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
@@ -1038,7 +1068,8 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 		return nil, err
 	}
 	wire, err := json.Marshal(replayInputsWire{Version: save.ReplayInputsVersion, Command: input.Command,
-		EvaluatedAtMS: save.CanonicalServerTime(input.Now).UnixMilli(), EvaluationMode: input.Mode, Resolved: resolved})
+		EvaluatedAtMS: save.CanonicalServerTime(input.Now).UnixMilli(), EvaluationMode: input.Mode,
+		OfflineCatchup: input.OfflineCatchup, Resolved: resolved})
 	if err != nil {
 		return nil, err
 	}
@@ -1046,6 +1077,60 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 		return nil, err
 	}
 	return wire, nil
+}
+
+func buildOfflineCatchup(state *save.State, catalog *economy.Catalog, mode EvaluationMode, now time.Time) (*replayOfflineCatchup, error) {
+	if state == nil || catalog == nil || state.EvaluatedThrough.IsZero() || mode != ModeOnline {
+		return nil, nil
+	}
+	opened := save.CanonicalServerTime(now)
+	if !opened.After(state.EvaluatedThrough) {
+		return nil, nil
+	}
+	capMS := catalog.OfflinePolicy().AccrualCapMS
+	if capMS <= 0 {
+		return nil, ErrInvalidEngineState
+	}
+	if opened.Sub(state.EvaluatedThrough).Milliseconds() <= capMS {
+		return nil, nil
+	}
+	return &replayOfflineCatchup{OpenedAtMS: opened.UnixMilli(), OfflineSpan: replayOfflineSpan{
+		FromMS: state.EvaluatedThrough.UnixMilli(), ToMS: opened.UnixMilli(),
+	}}, nil
+}
+
+func applyReplayOfflineCatchup(state *save.State, catalog *economy.Catalog, wire replayInputsWire,
+	contributions []multiplier.Contribution, hook AccrualHook, revision save.Revision, intentID string,
+) ([]save.EventWrite, error) {
+	needed, err := buildOfflineCatchup(state, catalog, wire.EvaluationMode, time.UnixMilli(wire.EvaluatedAtMS).UTC())
+	if err != nil {
+		return nil, err
+	}
+	if wire.Version < 7 {
+		if wire.OfflineCatchup != nil {
+			return nil, fmt.Errorf("%w: legacy offline catchup", ErrInvalidReplayInputs)
+		}
+		return []save.EventWrite{}, nil
+	}
+	if (needed == nil) != (wire.OfflineCatchup == nil) {
+		return nil, fmt.Errorf("%w: offline catchup presence", ErrInvalidReplayInputs)
+	}
+	if needed == nil {
+		return []save.EventWrite{}, nil
+	}
+	if *needed != *wire.OfflineCatchup || wire.OfflineCatchup.OpenedAtMS != wire.EvaluatedAtMS ||
+		wire.OfflineCatchup.OfflineSpan.FromMS >= wire.OfflineCatchup.OfflineSpan.ToMS {
+		return nil, fmt.Errorf("%w: offline catchup coordinates", ErrInvalidReplayInputs)
+	}
+	evaluation, err := Evaluate(state, catalog, time.UnixMilli(wire.OfflineCatchup.OpenedAtMS).UTC(), ModeOffline, contributions)
+	if err != nil {
+		return nil, err
+	}
+	events, err := runAccrualHook(hook, intentID, state, catalog, revision, evaluation, contributions)
+	if err != nil {
+		return nil, err
+	}
+	return events, nil
 }
 
 func normalizedFounderCarry(carry replayFounderCarry) replayFounderCarry {
@@ -1218,8 +1303,14 @@ func boolMapFromSorted(values []string) map[string]bool {
 
 func parseReplayInputs(data []byte) (replayInputsWire, error) {
 	var wire replayInputsWire
-	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != save.ReplayInputsVersion) ||
+	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != save.ReplayInputsVersion) ||
 		(wire.EvaluationMode != ModeOnline && wire.EvaluationMode != ModeOffline) || wire.EvaluatedAtMS <= 0 {
+		return replayInputsWire{}, ErrInvalidReplayInputs
+	}
+	if wire.Version < 7 && wire.OfflineCatchup != nil || wire.OfflineCatchup != nil &&
+		(wire.OfflineCatchup.OpenedAtMS <= 0 || wire.OfflineCatchup.OpenedAtMS != wire.EvaluatedAtMS ||
+			wire.OfflineCatchup.OfflineSpan.FromMS <= 0 || wire.OfflineCatchup.OfflineSpan.ToMS != wire.EvaluatedAtMS ||
+			wire.OfflineCatchup.OfflineSpan.FromMS >= wire.OfflineCatchup.OfflineSpan.ToMS) {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}
 	var discriminator struct {

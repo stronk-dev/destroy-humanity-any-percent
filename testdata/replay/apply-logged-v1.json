@@ -300,7 +300,7 @@
         "window_ms": 100
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0002-7000-8000-000000000002",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -466,6 +466,245 @@
       "post_state_json": "{\"advisor_mode\":false,\"age_ms\":0,\"balances\":{\"company.cash\":\"2.33282e5\"},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_credit_ms\":43200000,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-03T08:00:00Z\",\"exit_history\":[],\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.beige_tower\":3},\"generators_provisioned\":{\"generator.beige_tower\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"2.3328e5\",\"manual_token_milli\":48000,\"manual_token_refilled_at\":\"2026-08-03T08:00:00Z\",\"meter_bands\":{},\"network_slots\":[],\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[{\"from_ms\":1785571200000,\"to_ms\":1785744000000}],\"provision_remainders_ppm\":{},\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785571200000,\"soul\":0,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_units\":0,\"structure_id\":\"\",\"tier\":0,\"upgrades_owned\":[]}"
     },
     {
+      "name": "session-boundary-offline-catchup",
+      "pre_state": {
+        "balances": {
+          "company.cash": "0"
+        },
+        "generators": {
+          "generator.beige_tower": 3
+        },
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "compute_credit_ms": 0,
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "0",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null,
+        "generators_purchased_total": 0,
+        "upgrades_owned": [],
+        "generators_provisioned": {
+          "generator.beige_tower": 0
+        },
+        "provision_remainders_ppm": {},
+        "stock_rate_remainder_ppm": 0
+      },
+      "canonical_payload": {
+        "action_id": "manual.click",
+        "count": 2,
+        "expected_revision": 1,
+        "kind": "perform_manual_batch",
+        "window_ms": 100
+      },
+      "replay_inputs": {
+        "v": 7,
+        "command": {
+          "intent_id": "01986666-0019-7000-8000-000000000019",
+          "company_stream_id": "01986666-1000-7000-8000-000000000001",
+          "founder_id": "01986666-2000-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 3
+        },
+        "evaluated_at_ms": 1785744000000,
+        "evaluation_mode": "online",
+        "offline_catchup": {
+          "opened_at_ms": 1785744000000,
+          "offline_span": {
+            "from_ms": 1785571200000,
+            "to_ms": 1785744000000
+          }
+        },
+        "resolved": {
+          "kind": "accrual",
+          "intent_kind": "perform_manual_batch",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": {
+              "guild_id": "",
+              "base_seq": 0,
+              "settlements": []
+            },
+            "route_context_version": 1
+          }
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 2,
+        "evaluated_at": "2026-08-03T08:00:00Z",
+        "intent_id": "01986666-0019-7000-8000-000000000019",
+        "new_revision": 2,
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "2.33282e5",
+              "before": "2.3328e5",
+              "delta": "2e0",
+              "resource_id": "company.cash"
+            }
+          ]
+        },
+        "snapshot": {
+          "balances": {
+            "company.cash": "2.33282e5"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": false,
+          "compact_solidarity_ppm": 0,
+          "compact_tithe_ppm": 0,
+          "compute_credit_ms": 43200000,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-03T08:00:00Z",
+          "faction_id": null,
+          "gates_crossed": {},
+          "generators": {
+            "generator.beige_tower": 3
+          },
+          "generators_provisioned": {
+            "generator.beige_tower": 0
+          },
+          "generators_purchased_total": 0,
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 0,
+          "hints_unlocked": [],
+          "incorporated_at_ms": null,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "2.3328e5",
+          "manual_token_milli": 48000,
+          "manual_token_refilled_at": "2026-08-03T08:00:00Z",
+          "meter_bands": {},
+          "offer_state": null,
+          "offline_spans": [
+            {
+              "from_ms": 1785571200000,
+              "to_ms": 1785744000000
+            }
+          ],
+          "provision_remainders_ppm": {},
+          "provisioned_hardcaps": {},
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 1,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_rate_remainder_ppm": 0,
+          "stock_resource": null,
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 0,
+          "upgrades_owned": []
+        }
+      },
+      "events": [],
+      "post_state": {
+        "balances": {
+          "company.cash": "2.33282e5"
+        },
+        "generators": {
+          "generator.beige_tower": 3
+        },
+        "evaluated_through": "2026-08-03T08:00:00Z",
+        "compute_credit_ms": 43200000,
+        "manual_token_milli": 48000,
+        "manual_token_refilled_at": "2026-08-03T08:00:00Z",
+        "gates_crossed": {},
+        "run_seq": 1,
+        "doctrines_by_transition": {},
+        "structure_id": "",
+        "ledger_fact_kinds": [],
+        "meter_bands": {},
+        "region_traits": [],
+        "route_knowledge_balance": 0,
+        "hints_unlocked": [],
+        "compact_member": false,
+        "compact_tithe_ppm": 0,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "tier": 0,
+        "lifetime_value": "2.3328e5",
+        "offer_state": null,
+        "run_started_at_ms": 1785571200000,
+        "offline_spans": [
+          {
+            "from_ms": 1785571200000,
+            "to_ms": 1785744000000
+          }
+        ],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "network_slots": [],
+        "clout_lifetime": 0,
+        "soul": 0,
+        "age_ms": 0,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "exit_history": [],
+        "run_pre_timer": false,
+        "collapsed_offline_ms": 0,
+        "faction_id": null,
+        "incorporated_at_ms": null,
+        "stock_units": 0,
+        "stock_progress_ms": 0,
+        "consumed_stock_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_boundary_guild_id": null,
+        "generators_purchased_total": 0,
+        "upgrades_owned": [],
+        "generators_provisioned": {
+          "generator.beige_tower": 0
+        },
+        "provision_remainders_ppm": {},
+        "stock_rate_remainder_ppm": 0
+      },
+      "receipt_json": "{\"applied_count\":2,\"evaluated_at\":\"2026-08-03T08:00:00Z\",\"intent_id\":\"01986666-0019-7000-8000-000000000019\",\"new_revision\":2,\"outcome\":\"applied\",\"receipt\":{\"changes\":[{\"after\":\"2.33282e5\",\"before\":\"2.3328e5\",\"delta\":\"2e0\",\"resource_id\":\"company.cash\"}]},\"snapshot\":{\"balances\":{\"company.cash\":\"2.33282e5\"},\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_tithe_ppm\":0,\"compute_credit_ms\":43200000,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-03T08:00:00Z\",\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.beige_tower\":3},\"generators_provisioned\":{\"generator.beige_tower\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"2.3328e5\",\"manual_token_milli\":48000,\"manual_token_refilled_at\":\"2026-08-03T08:00:00Z\",\"meter_bands\":{},\"offer_state\":null,\"offline_spans\":[{\"from_ms\":1785571200000,\"to_ms\":1785744000000}],\"provision_remainders_ppm\":{},\"provisioned_hardcaps\":{},\"region_traits\":[],\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785571200000,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_resource\":null,\"stock_units\":0,\"structure_id\":\"\",\"tier\":0,\"upgrades_owned\":[]}}",
+      "events_json": "[]",
+      "post_state_json": "{\"advisor_mode\":false,\"age_ms\":0,\"balances\":{\"company.cash\":\"2.33282e5\"},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_credit_ms\":43200000,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-03T08:00:00Z\",\"exit_history\":[],\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.beige_tower\":3},\"generators_provisioned\":{\"generator.beige_tower\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"2.3328e5\",\"manual_token_milli\":48000,\"manual_token_refilled_at\":\"2026-08-03T08:00:00Z\",\"meter_bands\":{},\"network_slots\":[],\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[{\"from_ms\":1785571200000,\"to_ms\":1785744000000}],\"provision_remainders_ppm\":{},\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785571200000,\"soul\":0,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_units\":0,\"structure_id\":\"\",\"tier\":0,\"upgrades_owned\":[]}"
+    },
+    {
       "name": "buy-generator",
       "pre_state": {
         "balances": {
@@ -541,7 +780,7 @@
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 3
+          "run_log_seq": 4
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -769,14 +1008,14 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0014-7000-8000-000000000014",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 4
+          "run_log_seq": 5
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -1005,14 +1244,14 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0018-7000-8000-000000000018",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 5
+          "run_log_seq": 6
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -1169,14 +1408,14 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0004-7000-8000-000000000004",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 6
+          "run_log_seq": 7
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -1424,14 +1663,14 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0011-7000-8000-000000000011",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 7
+          "run_log_seq": 8
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -1722,14 +1961,14 @@
         "tithe_ppm": 110000
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0005-7000-8000-000000000005",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 8
+          "run_log_seq": 9
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -1950,14 +2189,14 @@
         "kind": "leave_compact"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0006-7000-8000-000000000006",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 9
+          "run_log_seq": 10
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -2179,14 +2418,14 @@
         "kind": "incorporate"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0007-7000-8000-000000000007",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 10
+          "run_log_seq": 11
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -2438,14 +2677,14 @@
         "offer_id": "01986666-0008-7000-8000-000000000099"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0008-7000-8000-000000000008",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 11
+          "run_log_seq": 12
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -2677,14 +2916,14 @@
         "window_ms": 1
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0015-7000-8000-000000000015",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 12
+          "run_log_seq": 13
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -2907,14 +3146,14 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0016-7000-8000-000000000016",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 13
+          "run_log_seq": 14
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -3162,14 +3401,14 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0017-7000-8000-000000000017",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 14
+          "run_log_seq": 15
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -3418,14 +3657,14 @@
         "window_ms": 60000
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0009-7000-8000-000000000009",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 15
+          "run_log_seq": 16
         },
         "evaluated_at_ms": 1785571260000,
         "evaluation_mode": "online",
@@ -3702,14 +3941,14 @@
         "window_ms": 1
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0010-7000-8000-000000000010",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 16
+          "run_log_seq": 17
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -3869,14 +4108,14 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0101-7000-8000-000000000101",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 17
+          "run_log_seq": 18
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -4033,14 +4272,14 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0102-7000-8000-000000000102",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 18
+          "run_log_seq": 19
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -4200,14 +4439,14 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0103-7000-8000-000000000103",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 19
+          "run_log_seq": 20
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -4367,14 +4606,14 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0104-7000-8000-000000000104",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 20
+          "run_log_seq": 21
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -4533,14 +4772,14 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0105-7000-8000-000000000105",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 21
+          "run_log_seq": 22
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -4698,14 +4937,14 @@
         "window_ms": 1
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0106-7000-8000-000000000106",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 22
+          "run_log_seq": 23
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -4863,14 +5102,14 @@
         "window_ms": 0
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0107-7000-8000-000000000107",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 23
+          "run_log_seq": 24
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -5027,14 +5266,14 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0108-7000-8000-000000000108",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 24
+          "run_log_seq": 25
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -5193,14 +5432,14 @@
         "route_id": "INVALID"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0109-7000-8000-000000000109",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 25
+          "run_log_seq": 26
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -5358,14 +5597,14 @@
         "tithe_ppm": 1000001
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0110-7000-8000-000000000110",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 26
+          "run_log_seq": 27
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -5521,14 +5760,14 @@
         "kind": "incorporate"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0111-7000-8000-000000000111",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 27
+          "run_log_seq": 28
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -5684,14 +5923,14 @@
         "offer_id": "INVALID"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0112-7000-8000-000000000112",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 28
+          "run_log_seq": 29
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -5848,14 +6087,14 @@
         "offer_id": "INVALID"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0113-7000-8000-000000000113",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 29
+          "run_log_seq": 30
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -6011,14 +6250,14 @@
         "kind": "wind_down"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0114-7000-8000-000000000114",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 30
+          "run_log_seq": 31
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -6174,14 +6413,14 @@
         "kind": "leave_compact"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0115-7000-8000-000000000115",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 31
+          "run_log_seq": 32
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
@@ -6341,14 +6580,14 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0012-7000-8000-000000000012",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 32
+          "run_log_seq": 33
         },
         "evaluated_at_ms": 1785571260000,
         "evaluation_mode": "online",
@@ -6504,14 +6743,14 @@
         "tithe_ppm": 110000
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0013-7000-8000-000000000013",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
           "founder_id": "01986666-2000-7000-8000-000000000001",
           "revision": 1,
           "run_seq": 1,
-          "run_log_seq": 33
+          "run_log_seq": 34
         },
         "evaluated_at_ms": 1785571260000,
         "evaluation_mode": "online",
@@ -6669,7 +6908,7 @@
         "kind": "wind_down"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0100-7000-8000-000000000100",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -7076,7 +7315,7 @@
         "offer_id": "01986666-0200-7000-8000-000000000200"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0200-7000-8000-000000000201",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -7500,7 +7739,7 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0300-7000-8000-000000000300",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -7935,7 +8174,7 @@
           "kind": "buy_generator"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0201-7000-8000-000000000201",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -8193,7 +8432,7 @@
           "upgrade_id": "upgrade.click"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0301-7000-8000-000000000301",
             "company_stream_id": "01986666-1300-7000-8000-000000000001",
@@ -8459,7 +8698,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0302-7000-8000-000000000302",
             "company_stream_id": "01986666-1300-7000-8000-000000000001",
@@ -8710,7 +8949,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0303-7000-8000-000000000303",
             "company_stream_id": "01986666-1300-7000-8000-000000000001",
@@ -8973,7 +9212,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0304-7000-8000-000000000304",
             "company_stream_id": "01986666-1300-7000-8000-000000000001",
@@ -9258,7 +9497,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0400-7000-8000-000000000401",
             "company_stream_id": "01986666-1400-7000-8000-000000000001",
@@ -9633,7 +9872,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0400-7000-8000-000000000401",
             "company_stream_id": "01986666-1400-7000-8000-000000000001",
@@ -9644,6 +9883,13 @@
           },
           "evaluated_at_ms": 1785571200000,
           "evaluation_mode": "online",
+          "offline_catchup": {
+            "opened_at_ms": 1785571200000,
+            "offline_span": {
+              "from_ms": 1785481200000,
+              "to_ms": 1785571200000
+            }
+          },
           "resolved": {
             "kind": "accrual",
             "intent_kind": "perform_manual_batch",
@@ -9704,7 +9950,7 @@
             "compact_member": false,
             "compact_solidarity_ppm": 0,
             "compact_tithe_ppm": 0,
-            "compute_credit_ms": 0,
+            "compute_credit_ms": 1800000,
             "consumed_stock_units": 0,
             "doctrines_by_transition": {},
             "evaluated_through": "2026-08-01T08:00:00Z",
@@ -9813,7 +10059,7 @@
           "compact_solidarity_ppm": 0,
           "compact_solidarity_samples": [],
           "compact_tithe_ppm": 0,
-          "compute_credit_ms": 0,
+          "compute_credit_ms": 1800000,
           "consumed_stock_units": 0,
           "doctrines_by_transition": {},
           "evaluated_through": "2026-08-01T08:00:00Z",
@@ -9891,9 +10137,9 @@
           "tier": 1,
           "upgrades_owned": []
         },
-        "receipt_json": "{\"applied_count\":1,\"evaluated_at\":\"2026-08-01T08:00:00Z\",\"intent_id\":\"01986666-0400-7000-8000-000000000401\",\"new_revision\":2,\"outcome\":\"applied\",\"receipt\":{\"changes\":[{\"after\":\"1e0\",\"before\":\"0\",\"delta\":\"1e0\",\"resource_id\":\"company.cash\"}]},\"snapshot\":{\"achievement_score_run\":4,\"achievements_earned_run\":[\"achievement.first_gate\"],\"balances\":{\"company.cash\":\"1e0\"},\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_tithe_ppm\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.beige_tower\":0},\"generators_provisioned\":{\"generator.beige_tower\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":49000,\"manual_token_refilled_at\":\"2026-08-01T08:00:00Z\",\"meter_decay_remainders\":{\"doom.probability\":0,\"trust.employees.grievance\":0,\"trust.employees.standing\":0,\"trust.investors.grievance\":0,\"trust.investors.standing\":0,\"trust.press.grievance\":0,\"trust.press.standing\":0,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":0,\"trust.users.grievance\":0,\"trust.users.standing\":0},\"meter_input_remainders\":{\"doom.probability:1\":0},\"meter_values\":{\"doom.probability\":71,\"trust.employees.grievance\":50,\"trust.employees.standing\":85,\"trust.investors.grievance\":50,\"trust.investors.standing\":85,\"trust.press.grievance\":50,\"trust.press.standing\":85,\"trust.regulators.grievance\":50,\"trust.regulators.standing\":85,\"trust.users.grievance\":50,\"trust.users.standing\":85},\"offer_state\":null,\"offline_spans\":[{\"from_ms\":1785481200000,\"to_ms\":1785571200000}],\"provision_remainders_ppm\":{},\"provisioned_hardcaps\":{},\"region_traits\":[],\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785481200000,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_resource\":null,\"stock_units\":0,\"structure_id\":\"\",\"tier\":1,\"upgrades_owned\":[]}}",
+        "receipt_json": "{\"applied_count\":1,\"evaluated_at\":\"2026-08-01T08:00:00Z\",\"intent_id\":\"01986666-0400-7000-8000-000000000401\",\"new_revision\":2,\"outcome\":\"applied\",\"receipt\":{\"changes\":[{\"after\":\"1e0\",\"before\":\"0\",\"delta\":\"1e0\",\"resource_id\":\"company.cash\"}]},\"snapshot\":{\"achievement_score_run\":4,\"achievements_earned_run\":[\"achievement.first_gate\"],\"balances\":{\"company.cash\":\"1e0\"},\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_tithe_ppm\":0,\"compute_credit_ms\":1800000,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.beige_tower\":0},\"generators_provisioned\":{\"generator.beige_tower\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":49000,\"manual_token_refilled_at\":\"2026-08-01T08:00:00Z\",\"meter_decay_remainders\":{\"doom.probability\":0,\"trust.employees.grievance\":0,\"trust.employees.standing\":0,\"trust.investors.grievance\":0,\"trust.investors.standing\":0,\"trust.press.grievance\":0,\"trust.press.standing\":0,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":0,\"trust.users.grievance\":0,\"trust.users.standing\":0},\"meter_input_remainders\":{\"doom.probability:1\":0},\"meter_values\":{\"doom.probability\":71,\"trust.employees.grievance\":50,\"trust.employees.standing\":85,\"trust.investors.grievance\":50,\"trust.investors.standing\":85,\"trust.press.grievance\":50,\"trust.press.standing\":85,\"trust.regulators.grievance\":50,\"trust.regulators.standing\":85,\"trust.users.grievance\":50,\"trust.users.standing\":85},\"offer_state\":null,\"offline_spans\":[{\"from_ms\":1785481200000,\"to_ms\":1785571200000}],\"provision_remainders_ppm\":{},\"provisioned_hardcaps\":{},\"region_traits\":[],\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785481200000,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_resource\":null,\"stock_units\":0,\"structure_id\":\"\",\"tier\":1,\"upgrades_owned\":[]}}",
         "events_json": "[{\"intent_id\":\"01986666-0400-7000-8000-000000000401\",\"kind\":\"achievement_earned.v1\",\"payload\":{\"achievement_id\":\"achievement.first_gate\",\"condition_scope\":\"run\",\"run_id\":{\"company_stream_id\":\"01986666-1400-7000-8000-000000000001\",\"run_seq\":1},\"score_grant\":4},\"schema_version\":1}]",
-        "post_state_json": "{\"achievement_score_lifetime\":0,\"achievement_score_run\":4,\"achievements_earned_lifetime\":[],\"achievements_earned_run\":[\"achievement.first_gate\"],\"advisor_mode\":false,\"age_ms\":0,\"balances\":{\"company.cash\":\"1e0\"},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"exit_history\":[],\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.beige_tower\":0},\"generators_provisioned\":{\"generator.beige_tower\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":49000,\"manual_token_refilled_at\":\"2026-08-01T08:00:00Z\",\"meter_decay_remainders\":{\"doom.probability\":0,\"trust.employees.grievance\":0,\"trust.employees.standing\":0,\"trust.investors.grievance\":0,\"trust.investors.standing\":0,\"trust.press.grievance\":0,\"trust.press.standing\":0,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":0,\"trust.users.grievance\":0,\"trust.users.standing\":0},\"meter_input_remainders\":{\"doom.probability:1\":0},\"meter_values\":{\"doom.probability\":71,\"trust.employees.grievance\":50,\"trust.employees.standing\":85,\"trust.investors.grievance\":50,\"trust.investors.standing\":85,\"trust.press.grievance\":50,\"trust.press.standing\":85,\"trust.regulators.grievance\":50,\"trust.regulators.standing\":85,\"trust.users.grievance\":50,\"trust.users.standing\":85},\"network_slots\":[],\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[{\"from_ms\":1785481200000,\"to_ms\":1785571200000}],\"provision_remainders_ppm\":{},\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785481200000,\"soul\":0,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_units\":0,\"structure_id\":\"\",\"tier\":1,\"upgrades_owned\":[]}"
+        "post_state_json": "{\"achievement_score_lifetime\":0,\"achievement_score_run\":4,\"achievements_earned_lifetime\":[],\"achievements_earned_run\":[\"achievement.first_gate\"],\"advisor_mode\":false,\"age_ms\":0,\"balances\":{\"company.cash\":\"1e0\"},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_credit_ms\":1800000,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"exit_history\":[],\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.beige_tower\":0},\"generators_provisioned\":{\"generator.beige_tower\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":49000,\"manual_token_refilled_at\":\"2026-08-01T08:00:00Z\",\"meter_decay_remainders\":{\"doom.probability\":0,\"trust.employees.grievance\":0,\"trust.employees.standing\":0,\"trust.investors.grievance\":0,\"trust.investors.standing\":0,\"trust.press.grievance\":0,\"trust.press.standing\":0,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":0,\"trust.users.grievance\":0,\"trust.users.standing\":0},\"meter_input_remainders\":{\"doom.probability:1\":0},\"meter_values\":{\"doom.probability\":71,\"trust.employees.grievance\":50,\"trust.employees.standing\":85,\"trust.investors.grievance\":50,\"trust.investors.standing\":85,\"trust.press.grievance\":50,\"trust.press.standing\":85,\"trust.regulators.grievance\":50,\"trust.regulators.standing\":85,\"trust.users.grievance\":50,\"trust.users.standing\":85},\"network_slots\":[],\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[{\"from_ms\":1785481200000,\"to_ms\":1785571200000}],\"provision_remainders_ppm\":{},\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785481200000,\"soul\":0,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_units\":0,\"structure_id\":\"\",\"tier\":1,\"upgrades_owned\":[]}"
       }
     },
     {
@@ -10008,7 +10254,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0400-7000-8000-000000000403",
             "company_stream_id": "01986666-1400-7000-8000-000000000003",
@@ -10389,7 +10635,7 @@
           "route_id": null
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0400-7000-8000-000000000402",
             "company_stream_id": "01986666-1400-7000-8000-000000000002",
@@ -10790,7 +11036,7 @@
         "offer_id": "01986666-0600-7000-8000-000000000600"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0600-7000-8000-000000000601",
           "company_stream_id": "01986666-1600-7000-8000-000000000001",
@@ -11404,7 +11650,7 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01987777-0300-7000-8000-000000000300",
           "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -11985,7 +12231,7 @@
         "compute_credit_ms": 0,
         "consumed_stock_units": 0,
         "doctrines_by_transition": {},
-        "evaluated_through": "2026-08-01T07:40:00Z",
+        "evaluated_through": "2026-07-30T08:00:00Z",
         "exit_history": [],
         "faction_id": null,
         "gates_crossed": {},
@@ -12021,7 +12267,7 @@
         "ledger_fact_kinds": [],
         "lifetime_value": "0",
         "manual_token_milli": 50000,
-        "manual_token_refilled_at": "2026-08-01T07:40:00Z",
+        "manual_token_refilled_at": "2026-07-30T08:00:00Z",
         "meter_decay_remainders": {
           "doom.probability": 0,
           "trust.employees.grievance": 0,
@@ -12067,7 +12313,7 @@
         "route_knowledge_balance": 0,
         "run_pre_timer": false,
         "run_seq": 1,
-        "run_started_at_ms": 1785570000000,
+        "run_started_at_ms": 1785398400000,
         "soul": 0,
         "stock_progress_ms": 0,
         "stock_rate_remainder_ppm": 0,
@@ -12082,7 +12328,7 @@
         "kind": "wind_down"
       },
       "replay_inputs": {
-        "v": 6,
+        "v": 7,
         "command": {
           "intent_id": "01986666-0c00-7000-8000-000000000001",
           "company_stream_id": "01986666-1c00-7000-8000-000000000001",
@@ -12093,6 +12339,13 @@
         },
         "evaluated_at_ms": 1785571200000,
         "evaluation_mode": "online",
+        "offline_catchup": {
+          "opened_at_ms": 1785571200000,
+          "offline_span": {
+            "from_ms": 1785398400000,
+            "to_ms": 1785571200000
+          }
+        },
         "resolved": {
           "kind": "exit",
           "intent_kind": "wind_down",
@@ -12366,7 +12619,7 @@
         "compact_solidarity_samples": [],
         "compact_tithe_ppm": 0,
         "compute_burst_remaining_ms": 0,
-        "compute_credit_ms": 0,
+        "compute_credit_ms": 43200000,
         "consumed_stock_units": 0,
         "doctrines_by_transition": {},
         "evaluated_through": "2026-08-01T08:00:00Z",
@@ -12405,7 +12658,7 @@
         "ledger_fact_kinds": [],
         "lifetime_value": "0",
         "manual_token_milli": 50000,
-        "manual_token_refilled_at": "2026-08-01T07:40:00Z",
+        "manual_token_refilled_at": "2026-07-30T08:00:00Z",
         "meter_decay_remainders": {
           "doom.probability": 0,
           "trust.employees.grievance": 0,
@@ -12441,7 +12694,7 @@
         "offer_state": null,
         "offline_spans": [
           {
-            "from_ms": 1785570000000,
+            "from_ms": 1785398400000,
             "to_ms": 1785571200000
           }
         ],
@@ -12456,7 +12709,7 @@
         "route_knowledge_balance": 0,
         "run_pre_timer": false,
         "run_seq": 1,
-        "run_started_at_ms": 1785570000000,
+        "run_started_at_ms": 1785398400000,
         "soul": 0,
         "stock_progress_ms": 0,
         "stock_rate_remainder_ppm": 0,
@@ -12651,12 +12904,12 @@
               "clout_reach_note": "clout.reach.preserved"
             },
             "pre_timer": false,
-            "rta_ms": 1200000,
+            "rta_ms": 172800000,
             "run_id": {
               "company_stream_id": "01986666-1c00-7000-8000-000000000001",
               "run_seq": 1
             },
-            "started_at_ms": 1785570000000,
+            "started_at_ms": 1785398400000,
             "terminal_seq": 1,
             "tier": 1
           }
@@ -12683,10 +12936,10 @@
       ],
       "receipt_json": "{\"applied_count\":1,\"evaluated_at\":\"2026-08-01T08:00:00Z\",\"founder_revision\":3,\"intent_id\":\"01986666-0c00-7000-8000-000000000001\",\"new_revision\":3,\"outcome\":\"applied\",\"receipt\":{\"changes\":[]},\"snapshot\":{\"achievement_score_run\":0,\"achievements_earned_run\":[],\"active_buffs\":[],\"balances\":{\"company.cash\":\"0\",\"company.permits\":\"0\"},\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_tithe_ppm\":0,\"compute_burst_remaining_ms\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_provisioned\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":50000,\"manual_token_refilled_at\":\"2026-08-01T08:00:00Z\",\"meter_decay_remainders\":{\"doom.probability\":0,\"trust.employees.grievance\":0,\"trust.employees.standing\":0,\"trust.investors.grievance\":0,\"trust.investors.standing\":0,\"trust.press.grievance\":0,\"trust.press.standing\":0,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":0,\"trust.users.grievance\":0,\"trust.users.standing\":0},\"meter_input_remainders\":{\"trust.users.standing:0\":0},\"meter_values\":{\"doom.probability\":50,\"trust.employees.grievance\":0,\"trust.employees.standing\":90,\"trust.investors.grievance\":0,\"trust.investors.standing\":90,\"trust.press.grievance\":0,\"trust.press.standing\":90,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":90,\"trust.users.grievance\":0,\"trust.users.standing\":90},\"next_opportunity_attended_ms\":3244,\"offer_state\":null,\"offline_spans\":[],\"opportunity_spawn_seq\":0,\"pending_opportunity\":null,\"provision_remainders_ppm\":{\"generator.beige_tower\":0},\"provisioned_hardcaps\":{\"generator.beige_tower\":{\"count\":9007199254740991,\"reason_key\":\"generator.beige_tower.provisioned_cap\"}},\"region_traits\":[],\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":2,\"run_started_at_ms\":1785571200000,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_resource\":null,\"stock_units\":0,\"structure_id\":\"\",\"tier\":0,\"upgrades_owned\":[]}}",
       "founder_output_json": "{\"achievement_score_lifetime\":6,\"achievements_earned_lifetime\":[\"achievement.first_gate\",\"achievement.old_hand\"],\"advisor_mode\":false,\"age_ms\":0,\"exit_history_count\":2,\"founder_constants_hash\":\"sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789\",\"founder_extensions\":{\"fiscal_credit\":2,\"fiscal_generator_levels\":{\"generator.beige_tower\":0},\"fiscal_period_opened_wall_ms\":1785571200000,\"fiscal_period_seq\":1,\"fiscal_unlocks\":[\"minigame.pitch\"],\"minigame_offline_quality\":{\"pitch\":{\"decay_remainder_ppm\":3,\"grade_ppm\":700000,\"last_founder_attended_ms\":12000}},\"minigame_ratings\":{\"pitch\":{\"elo\":1017,\"games_counted\":2,\"season_member\":\"s1\"}},\"minigame_session_seq\":0,\"pets\":{},\"soul\":80,\"soul_exhausted_source_ids\":[]},\"founder_revision\":2,\"ledger_fact_kinds\":[],\"network_slots\":[],\"notoriety\":0,\"reputation_level\":0,\"route_knowledge_balance\":25}",
-      "final_company_json": "{\"achievement_score_lifetime\":0,\"achievement_score_run\":6,\"achievements_earned_lifetime\":[],\"achievements_earned_run\":[\"achievement.first_gate\",\"achievement.old_hand\"],\"active_buffs\":[],\"advisor_mode\":false,\"age_ms\":0,\"balances\":{\"company.cash\":\"0\",\"company.permits\":\"0\"},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_burst_remaining_ms\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"exit_history\":[],\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_provisioned\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":50000,\"manual_token_refilled_at\":\"2026-08-01T07:40:00Z\",\"meter_decay_remainders\":{\"doom.probability\":0,\"trust.employees.grievance\":0,\"trust.employees.standing\":0,\"trust.investors.grievance\":0,\"trust.investors.standing\":0,\"trust.press.grievance\":0,\"trust.press.standing\":0,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":0,\"trust.users.grievance\":0,\"trust.users.standing\":0},\"meter_input_remainders\":{\"trust.users.standing:0\":0},\"meter_values\":{\"doom.probability\":50,\"trust.employees.grievance\":0,\"trust.employees.standing\":87,\"trust.investors.grievance\":0,\"trust.investors.standing\":87,\"trust.press.grievance\":0,\"trust.press.standing\":87,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":87,\"trust.users.grievance\":0,\"trust.users.standing\":87},\"network_slots\":[],\"next_opportunity_attended_ms\":0,\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[{\"from_ms\":1785570000000,\"to_ms\":1785571200000}],\"opportunity_spawn_seq\":0,\"pending_opportunity\":null,\"provision_remainders_ppm\":{\"generator.beige_tower\":0},\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785570000000,\"soul\":0,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_units\":0,\"structure_id\":\"\",\"tier\":1,\"upgrades_owned\":[]}",
+      "final_company_json": "{\"achievement_score_lifetime\":0,\"achievement_score_run\":6,\"achievements_earned_lifetime\":[],\"achievements_earned_run\":[\"achievement.first_gate\",\"achievement.old_hand\"],\"active_buffs\":[],\"advisor_mode\":false,\"age_ms\":0,\"balances\":{\"company.cash\":\"0\",\"company.permits\":\"0\"},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_burst_remaining_ms\":0,\"compute_credit_ms\":43200000,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"exit_history\":[],\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_provisioned\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":50000,\"manual_token_refilled_at\":\"2026-07-30T08:00:00Z\",\"meter_decay_remainders\":{\"doom.probability\":0,\"trust.employees.grievance\":0,\"trust.employees.standing\":0,\"trust.investors.grievance\":0,\"trust.investors.standing\":0,\"trust.press.grievance\":0,\"trust.press.standing\":0,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":0,\"trust.users.grievance\":0,\"trust.users.standing\":0},\"meter_input_remainders\":{\"trust.users.standing:0\":0},\"meter_values\":{\"doom.probability\":50,\"trust.employees.grievance\":0,\"trust.employees.standing\":87,\"trust.investors.grievance\":0,\"trust.investors.standing\":87,\"trust.press.grievance\":0,\"trust.press.standing\":87,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":87,\"trust.users.grievance\":0,\"trust.users.standing\":87},\"network_slots\":[],\"next_opportunity_attended_ms\":0,\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[{\"from_ms\":1785398400000,\"to_ms\":1785571200000}],\"opportunity_spawn_seq\":0,\"pending_opportunity\":null,\"provision_remainders_ppm\":{\"generator.beige_tower\":0},\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785398400000,\"soul\":0,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_units\":0,\"structure_id\":\"\",\"tier\":1,\"upgrades_owned\":[]}",
       "new_company_json": "{\"achievement_score_lifetime\":0,\"achievement_score_run\":0,\"achievements_earned_lifetime\":[],\"achievements_earned_run\":[],\"active_buffs\":[],\"advisor_mode\":false,\"age_ms\":0,\"balances\":{\"company.cash\":\"0\",\"company.permits\":\"0\"},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_burst_remaining_ms\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"exit_history\":[],\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_provisioned\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":50000,\"manual_token_refilled_at\":\"2026-08-01T08:00:00Z\",\"meter_decay_remainders\":{\"doom.probability\":0,\"trust.employees.grievance\":0,\"trust.employees.standing\":0,\"trust.investors.grievance\":0,\"trust.investors.standing\":0,\"trust.press.grievance\":0,\"trust.press.standing\":0,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":0,\"trust.users.grievance\":0,\"trust.users.standing\":0},\"meter_input_remainders\":{\"trust.users.standing:0\":0},\"meter_values\":{\"doom.probability\":50,\"trust.employees.grievance\":0,\"trust.employees.standing\":90,\"trust.investors.grievance\":0,\"trust.investors.standing\":90,\"trust.press.grievance\":0,\"trust.press.standing\":90,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":90,\"trust.users.grievance\":0,\"trust.users.standing\":90},\"network_slots\":[],\"next_opportunity_attended_ms\":3244,\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[],\"opportunity_spawn_seq\":0,\"pending_opportunity\":null,\"provision_remainders_ppm\":{\"generator.beige_tower\":0},\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":2,\"run_started_at_ms\":1785571200000,\"soul\":0,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_units\":0,\"structure_id\":\"\",\"tier\":0,\"upgrades_owned\":[]}",
       "founder_events_json": "[{\"intent_id\":\"01986666-0c00-7000-8000-000000000001\",\"kind\":\"founder_advanced\",\"payload\":{\"exit_type\":\"collapse\",\"founder_id\":\"01986666-2c00-7000-8000-000000000001\",\"occurred_at_ms\":1785571200000,\"reputation_delta\":0,\"route_knowledge\":25,\"run_id\":{\"company_stream_id\":\"01986666-1c00-7000-8000-000000000001\",\"run_seq\":1}},\"schema_version\":1}]",
-      "company_ended_events_json": "[{\"intent_id\":\"01986666-0c00-7000-8000-000000000001\",\"kind\":\"achievement_earned.v1\",\"payload\":{\"achievement_id\":\"achievement.first_gate\",\"condition_scope\":\"run\",\"run_id\":{\"company_stream_id\":\"01986666-1c00-7000-8000-000000000001\",\"run_seq\":1},\"score_grant\":2},\"schema_version\":1},{\"intent_id\":\"01986666-0c00-7000-8000-000000000001\",\"kind\":\"achievement_earned.v1\",\"payload\":{\"achievement_id\":\"achievement.old_hand\",\"condition_scope\":\"career\",\"run_id\":{\"company_stream_id\":\"01986666-1c00-7000-8000-000000000001\",\"run_seq\":1},\"score_grant\":4},\"schema_version\":1},{\"intent_id\":\"01986666-0c00-7000-8000-000000000001\",\"kind\":\"run_ended\",\"payload\":{\"assisted\":{\"advisor\":false,\"commons\":false},\"attended_ms\":0,\"ended_at_ms\":1785571200000,\"executed_routes\":[],\"exit_type\":\"collapse\",\"faction\":null,\"founder_id\":\"01986666-2c00-7000-8000-000000000001\",\"gates_crossed\":[],\"generators_purchased_total\":0,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"payout\":{\"clout_reach_note\":\"clout.reach.preserved\",\"network_slot_unlocks\":[],\"reputation_delta\":0,\"route_knowledge\":25},\"pre_timer\":false,\"rta_ms\":1200000,\"run_id\":{\"company_stream_id\":\"01986666-1c00-7000-8000-000000000001\",\"run_seq\":1},\"started_at_ms\":1785570000000,\"terminal_seq\":1,\"tier\":1},\"schema_version\":2}]",
+      "company_ended_events_json": "[{\"intent_id\":\"01986666-0c00-7000-8000-000000000001\",\"kind\":\"achievement_earned.v1\",\"payload\":{\"achievement_id\":\"achievement.first_gate\",\"condition_scope\":\"run\",\"run_id\":{\"company_stream_id\":\"01986666-1c00-7000-8000-000000000001\",\"run_seq\":1},\"score_grant\":2},\"schema_version\":1},{\"intent_id\":\"01986666-0c00-7000-8000-000000000001\",\"kind\":\"achievement_earned.v1\",\"payload\":{\"achievement_id\":\"achievement.old_hand\",\"condition_scope\":\"career\",\"run_id\":{\"company_stream_id\":\"01986666-1c00-7000-8000-000000000001\",\"run_seq\":1},\"score_grant\":4},\"schema_version\":1},{\"intent_id\":\"01986666-0c00-7000-8000-000000000001\",\"kind\":\"run_ended\",\"payload\":{\"assisted\":{\"advisor\":false,\"commons\":false},\"attended_ms\":0,\"ended_at_ms\":1785571200000,\"executed_routes\":[],\"exit_type\":\"collapse\",\"faction\":null,\"founder_id\":\"01986666-2c00-7000-8000-000000000001\",\"gates_crossed\":[],\"generators_purchased_total\":0,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"payout\":{\"clout_reach_note\":\"clout.reach.preserved\",\"network_slot_unlocks\":[],\"reputation_delta\":0,\"route_knowledge\":25},\"pre_timer\":false,\"rta_ms\":172800000,\"run_id\":{\"company_stream_id\":\"01986666-1c00-7000-8000-000000000001\",\"run_seq\":1},\"started_at_ms\":1785398400000,\"terminal_seq\":1,\"tier\":1},\"schema_version\":2}]",
       "company_started_events_json": "[{\"intent_id\":\"01986666-0c00-7000-8000-000000000001\",\"kind\":\"run_started\",\"payload\":{\"assisted\":{\"advisor\":false,\"commons\":false},\"founder_id\":\"01986666-2c00-7000-8000-000000000001\",\"run_id\":{\"company_stream_id\":\"01986666-1c00-7000-8000-000000000001\",\"run_seq\":2},\"started_at_ms\":1785571200000},\"schema_version\":1}]"
     }
   },
@@ -12771,7 +13024,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0001-7000-8000-000000000001",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -12812,7 +13065,7 @@
           "kind": "buy_generator"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0002-7000-8000-000000000002",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -12850,7 +13103,7 @@
           "tithe_ppm": 110000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0003-7000-8000-000000000003",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -12888,7 +13141,7 @@
           "kind": "incorporate"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0004-7000-8000-000000000004",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -12928,7 +13181,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0005-7000-8000-000000000005",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -12967,7 +13220,7 @@
           "route_id": null
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0006-7000-8000-000000000006",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13022,7 +13275,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0007-7000-8000-000000000007",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13061,7 +13314,7 @@
           "route_id": "route.ipo_sequence_break"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0008-7000-8000-000000000008",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13116,7 +13369,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0009-7000-8000-000000000009",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13156,7 +13409,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0010-7000-8000-000000000010",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13196,7 +13449,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0011-7000-8000-000000000011",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13236,7 +13489,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0012-7000-8000-000000000012",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13276,7 +13529,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0013-7000-8000-000000000013",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13316,7 +13569,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0014-7000-8000-000000000014",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13356,7 +13609,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0015-7000-8000-000000000015",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13396,7 +13649,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0016-7000-8000-000000000016",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13436,7 +13689,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0017-7000-8000-000000000017",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13476,7 +13729,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0018-7000-8000-000000000018",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13516,7 +13769,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0019-7000-8000-000000000019",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13556,7 +13809,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0020-7000-8000-000000000020",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13626,7 +13879,7 @@
             "intent_kind": "perform_manual_batch",
             "kind": "accrual"
           },
-          "v": 6
+          "v": 7
         },
         "receipt_json": "{\"applied_count\":1,\"evaluated_at\":\"2026-08-03T08:16:35Z\",\"intent_id\":\"01987777-0021-7000-8000-000000000021\",\"new_revision\":22,\"outcome\":\"applied\",\"receipt\":{\"changes\":[]},\"snapshot\":{\"balances\":{\"company.cash\":\"1e4000000000000000\"},\"collapsed_offline_ms\":0,\"compact_member\":true,\"compact_solidarity_ppm\":33711,\"compact_tithe_ppm\":130000,\"compute_credit_ms\":43200000,\"consumed_stock_units\":7,\"doctrines_by_transition\":{\"transition.t3_to_t4\":\"doctrine.capture\"},\"evaluated_through\":\"2026-08-03T08:16:35Z\",\"faction_id\":\"open_source\",\"gates_crossed\":{\"gate.t2_to_t3\":true,\"gate.t4_to_t5\":true},\"generators\":{\"generator.beige_tower\":9007199254740991},\"generators_provisioned\":{\"generator.beige_tower\":0},\"generators_purchased_total\":9007199254740991,\"guild_boundary_guild_id\":\"01987777-3000-7000-8000-000000000001\",\"guild_boundary_seq\":1,\"guild_consumed_window_units\":7,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":1785571220000,\"ledger_fact_kinds\":[],\"lifetime_value\":\"8e12\",\"manual_token_milli\":49000,\"manual_token_refilled_at\":\"2026-08-03T08:16:35Z\",\"meter_bands\":{},\"offer_state\":null,\"offline_spans\":[{\"from_ms\":1785571230000,\"to_ms\":1785572130000},{\"from_ms\":1785572145000,\"to_ms\":1785744945000}],\"provision_remainders_ppm\":{},\"provisioned_hardcaps\":{},\"region_traits\":[],\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785571200000,\"stock_progress_ms\":15000,\"stock_rate_remainder_ppm\":0,\"stock_resource\":\"libraries\",\"stock_units\":0,\"structure_id\":\"\",\"tier\":5,\"upgrades_owned\":[]}}",
         "events_json": "[{\"intent_id\":\"01987777-0021-7000-8000-000000000021\",\"kind\":\"compact_sampled\",\"payload\":{\"capacity\":\"0\",\"compliance_ppm\":1000000,\"enclosure\":\"0\",\"founder_id\":\"01986666-2000-7000-8000-000000000001\",\"run_id\":{\"company_stream_id\":\"01987777-1000-7000-8000-000000000001\",\"run_seq\":1},\"sampled_ms\":5000,\"solidarity_ppm\":33711,\"weight_ppm\":800000},\"schema_version\":1}]",
@@ -13642,7 +13895,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0022-7000-8000-000000000022",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13682,7 +13935,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0023-7000-8000-000000000023",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13722,7 +13975,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0024-7000-8000-000000000024",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13762,7 +14015,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0025-7000-8000-000000000025",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13802,7 +14055,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0026-7000-8000-000000000026",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13842,7 +14095,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0027-7000-8000-000000000027",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13882,7 +14135,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0028-7000-8000-000000000028",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13922,7 +14175,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0029-7000-8000-000000000029",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13962,7 +14215,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0030-7000-8000-000000000030",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14002,7 +14255,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0031-7000-8000-000000000031",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14042,7 +14295,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0032-7000-8000-000000000032",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14082,7 +14335,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0033-7000-8000-000000000033",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14122,7 +14375,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0034-7000-8000-000000000034",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14162,7 +14415,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0035-7000-8000-000000000035",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14202,7 +14455,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0036-7000-8000-000000000036",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14242,7 +14495,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0037-7000-8000-000000000037",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14282,7 +14535,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0038-7000-8000-000000000038",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14322,7 +14575,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0039-7000-8000-000000000039",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14362,7 +14615,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0040-7000-8000-000000000040",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14402,7 +14655,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0041-7000-8000-000000000041",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14442,7 +14695,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0042-7000-8000-000000000042",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14482,7 +14735,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0043-7000-8000-000000000043",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14522,7 +14775,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0044-7000-8000-000000000044",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14562,7 +14815,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0045-7000-8000-000000000045",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14602,7 +14855,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0046-7000-8000-000000000046",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14642,7 +14895,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0047-7000-8000-000000000047",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14682,7 +14935,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0048-7000-8000-000000000048",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14722,7 +14975,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0049-7000-8000-000000000049",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14762,7 +15015,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0050-7000-8000-000000000050",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14800,7 +15053,7 @@
           "kind": "wind_down"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0051-7000-8000-000000000051",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14967,7 +15220,7 @@
           "route_id": null
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0a01-7000-8000-000000000001",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15021,7 +15274,7 @@
           "transition_id": "transition.t3_to_t4"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0a02-7000-8000-000000000002",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15074,7 +15327,7 @@
           "transition_id": "transition.t3_to_t4"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0a03-7000-8000-000000000003",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15127,7 +15380,7 @@
           "target": "accelerate"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0a04-7000-8000-000000000004",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15180,7 +15433,7 @@
           "target": "accelerate"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0a05-7000-8000-000000000005",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15234,7 +15487,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0a06-7000-8000-000000000006",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15288,7 +15541,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0a07-7000-8000-000000000007",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15341,7 +15594,7 @@
           "target": "accelerate"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0a08-7000-8000-000000000008",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15394,7 +15647,7 @@
           "target": "accelerate"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0a09-7000-8000-000000000009",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15447,7 +15700,7 @@
           "target": "accelerate"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0a10-7000-8000-000000000010",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15500,7 +15753,7 @@
           "route_id": null
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01986666-0a11-7000-8000-000000000011",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15668,7 +15921,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0001-7000-8000-000000000001",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -15741,7 +15994,7 @@
           "opportunity_id": "00000000-102e-71f4-a871-f479fa7b2e89"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0002-7000-8000-000000000002",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -15817,7 +16070,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0003-7000-8000-000000000003",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -15890,7 +16143,7 @@
           "opportunity_id": "00000000-1eeb-7f70-9751-f9deb20fd5fe"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0004-7000-8000-000000000004",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -15966,7 +16219,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0005-7000-8000-000000000005",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16031,7 +16284,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0006-7000-8000-000000000006",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16111,7 +16364,7 @@
           "opportunity_id": "00000000-2f8c-78d5-90f4-efd1e986d1da"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0007-7000-8000-000000000007",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16187,7 +16440,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0008-7000-8000-000000000008",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16262,7 +16515,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-0009-7000-8000-000000000009",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16327,7 +16580,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-000a-7000-8000-00000000000a",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16390,7 +16643,7 @@
           "opportunity_id": "00000000-42d8-7ae1-b521-3078129a5a90"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-000b-7000-8000-00000000000b",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16455,7 +16708,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-000c-7000-8000-00000000000c",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16528,7 +16781,7 @@
           "opportunity_id": "00000000-5d65-7b61-8afa-8d2f7c6df7b2"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-000d-7000-8000-00000000000d",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16604,7 +16857,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-000e-7000-8000-00000000000e",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16669,7 +16922,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987777-000f-7000-8000-00000000000f",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16812,7 +17065,7 @@
           "kind": "buy_generator"
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987778-0001-7000-8000-000000000001",
             "company_stream_id": "01987778-1000-7000-8000-000000000001",
@@ -16851,7 +17104,7 @@
           "route_id": null
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987778-0002-7000-8000-000000000002",
             "company_stream_id": "01987778-1000-7000-8000-000000000001",
@@ -16915,7 +17168,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 6,
+          "v": 7,
           "command": {
             "intent_id": "01987778-0003-7000-8000-000000000003",
             "company_stream_id": "01987778-1000-7000-8000-000000000001",
@@ -18378,7 +18631,7 @@
       "session_id": "01986666-0900-7000-8000-000000000901"
     },
     "replay_inputs": {
-      "v": 6,
+      "v": 7,
       "command": {
         "intent_id": "01986666-0900-7000-8000-000000000901",
         "company_stream_id": "01986666-1900-7000-8000-000000000901",
@@ -18965,7 +19218,7 @@
       "session_id": "01986666-0950-7000-8000-000000000951"
     },
     "replay_inputs": {
-      "v": 6,
+      "v": 7,
       "command": {
         "intent_id": "01986666-0950-7000-8000-000000000951",
         "company_stream_id": "01986666-1950-7000-8000-000000000951",
@@ -19947,7 +20200,7 @@
       "kind": "wind_down"
     },
     "replay_inputs": {
-      "v": 6,
+      "v": 7,
       "command": {
         "intent_id": "01986666-2b00-7000-8000-000000000002",
         "company_stream_id": "01986666-1b00-4000-8000-000000000001",

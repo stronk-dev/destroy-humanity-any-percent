@@ -14,7 +14,7 @@ import (
 	"cloud-clicker/server/decimal"
 )
 
-const ReplayInputsVersion = 6
+const ReplayInputsVersion = 7
 
 type ReplayCommand struct {
 	IntentID        string `json:"intent_id"`
@@ -26,11 +26,22 @@ type ReplayCommand struct {
 }
 
 type replayInputsEnvelope struct {
-	Version        int             `json:"v"`
-	Command        ReplayCommand   `json:"command"`
-	EvaluatedAtMS  int64           `json:"evaluated_at_ms"`
-	EvaluationMode string          `json:"evaluation_mode"`
-	Resolved       json.RawMessage `json:"resolved"`
+	Version        int                   `json:"v"`
+	Command        ReplayCommand         `json:"command"`
+	EvaluatedAtMS  int64                 `json:"evaluated_at_ms"`
+	EvaluationMode string                `json:"evaluation_mode"`
+	OfflineCatchup *replayOfflineCatchup `json:"offline_catchup,omitempty"`
+	Resolved       json.RawMessage       `json:"resolved"`
+}
+
+type replayOfflineCatchup struct {
+	OpenedAtMS  int64             `json:"opened_at_ms"`
+	OfflineSpan replayOfflineSpan `json:"offline_span"`
+}
+
+type replayOfflineSpan struct {
+	FromMS int64 `json:"from_ms"`
+	ToMS   int64 `json:"to_ms"`
 }
 
 // ValidateReplayInputs validates the persistence-owned envelope and returns
@@ -54,6 +65,9 @@ func ValidateReplayInputs(data []byte, expected ReplayCommand) (json.RawMessage,
 		envelope.Command.RunLogSeq < 1 || envelope.Command.RunLogSeq > decimal.MaxExactInteger ||
 		envelope.EvaluatedAtMS <= 0 || envelope.EvaluatedAtMS > decimal.MaxExactInteger ||
 		(envelope.EvaluationMode != "online" && envelope.EvaluationMode != "offline") ||
+		envelope.OfflineCatchup != nil && (envelope.OfflineCatchup.OpenedAtMS != envelope.EvaluatedAtMS ||
+			envelope.OfflineCatchup.OfflineSpan.FromMS <= 0 || envelope.OfflineCatchup.OfflineSpan.ToMS != envelope.EvaluatedAtMS ||
+			envelope.OfflineCatchup.OfflineSpan.FromMS >= envelope.OfflineCatchup.OfflineSpan.ToMS) ||
 		resolvedErr != nil || len(resolved) < 2 || resolved[0] != '{' {
 		return nil, fmt.Errorf("%w: invalid replay inputs", ErrInvalidStream)
 	}

@@ -13,6 +13,7 @@ import (
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/commonsprojection"
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
 	"cloud-clicker/server/meters"
@@ -24,6 +25,148 @@ import (
 )
 
 type integrationAssignment struct{ serverID string }
+
+func TestSessionBoundaryOfflineCatchupPersistsAndReplaysIntegration(t *testing.T) {
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		t.Skip("TEST_DATABASE_URL not set")
+	}
+	ctx := context.Background()
+	db, err := save.OpenPostgres(ctx, databaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if err := save.Migrate(ctx, db); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,events,intent_records,save_revisions,save_streams CASCADE`); err != nil {
+		t.Fatal(err)
+	}
+	bundle := activeContentBundle(t)
+	seedProductionEpoch(t, db, bundle.ConstantsHash, bundle.Artifacts)
+	resolver := integrationCatalogs{
+		economy:  map[string]*economy.Catalog{bundle.ConstantsHash: bundle.Economy},
+		routes:   map[string]*routes.Catalog{bundle.ConstantsHash: bundle.Routes},
+		prestige: map[string]*prestigecore.Policy{bundle.ConstantsHash: bundle.Prestige},
+		factions: map[string]*faction.Catalog{bundle.ConstantsHash: bundle.Faction},
+	}
+	store, err := save.NewStore(db, resolver, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cursor := time.Date(2026, 8, 10, 8, 0, 0, 0, time.UTC)
+	now := cursor.Add(48 * time.Hour)
+	const founderID = "01986666-ac00-7000-8000-000000000001"
+	founder := replayFounderFixtureState(t, bundle, cursor)
+	founder.WireVersion, founder.MinigameRatings, founder.MinigameOfflineQuality, founder.Pets = 14, nil, nil, nil
+	company := replayFixtureState(t, bundle.Economy, cursor)
+	company.RunStartedAt, company.RunSeq = cursor, 1
+	initializer := FounderInitializer{Catalogs: fixedReplayBundleResolver{bundle: bundle}}
+	frozen, err := initializer.InitializeNewFounder(bundle.ConstantsHash, founderID, cursor, founder, company)
+	if err != nil {
+		t.Fatal(err)
+	}
+	company.GeneratorCounts["generator.beige_tower_v2"] = 1
+	company.GeneratorPurchasedTotal = 1
+	preCompany, err := cloneReplayState(company, bundle.Economy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected, err := cloneReplayState(company, bundle.Economy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	contributions, err := assembleContributions(expected, bundle.Economy, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	evaluation, err := Evaluate(expected, bundle.Economy, now, ModeOffline, contributions)
+	if err != nil || evaluation.ProductionMS != bundle.Economy.OfflinePolicy().AccrualCapMS {
+		t.Fatalf("offline reference evaluation=%+v err=%v", evaluation, err)
+	}
+	expectedCash, _ := expected.Ledger.Balance("company.cash")
+	companyRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeCompany},
+		bundle.ConstantsHash, company, save.WriteContext{Cause: "offline-catchup.integration"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	pinTx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	genesis, err := save.EncodeState(company)
+	if err == nil {
+		_, err = save.PinRunWithGenesisTx(ctx, pinTx, companyRevision.StreamID, founderID, 1,
+			bundle.ConstantsHash, save.VersionForState(company), genesis)
+	}
+	if err == nil {
+		err = save.InsertRunFrozenContributionsTx(ctx, pinTx, companyRevision.StreamID, 1, frozen)
+	}
+	if err == nil {
+		err = pinTx.Commit()
+	} else {
+		_ = pinTx.Rollback()
+	}
+	if err != nil {
+		t.Fatal(err)
+	}
+	founderRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeFounder},
+		bundle.ConstantsHash, founder, save.WriteContext{Cause: "offline-catchup.integration-founder"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	service, err := NewService(store, resolver, nil, nil, nil, WithProgressionRuntime(resolver),
+		WithCurrentConstantsHash(bundle.ConstantsHash), WithReplayCatalogs(ReplayCatalogSet{bundle.ConstantsHash: bundle}),
+		WithGuildSettlements(emptyGuildSettlements{}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := []byte(`{"intent_id":"01986666-ac00-7000-8000-000000000002","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`)
+	result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, body)
+	if err != nil || !strings.Contains(string(result.Receipt), `"outcome":"applied"`) {
+		t.Fatalf("catchup receipt=%s err=%v", result.Receipt, err)
+	}
+	loaded, err := store.LoadLatest(ctx, companyRevision.StreamID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	actualCash, _ := loaded.State.Ledger.Balance("company.cash")
+	if loaded.Revision.Number != 2 || !loaded.State.EvaluatedThrough.Equal(now) || !actualCash.Eq(expectedCash.Add(decimal.One)) ||
+		len(loaded.State.OfflineSpans) != 1 || !loaded.State.OfflineSpans[0].From.Equal(cursor) || !loaded.State.OfflineSpans[0].To.Equal(now) {
+		t.Fatalf("caught-up revision=%d evaluated=%s cash=%s want=%s spans=%+v", loaded.Revision.Number,
+			loaded.State.EvaluatedThrough, actualCash, expectedCash.Add(decimal.One), loaded.State.OfflineSpans)
+	}
+	var loggedPayload, replayInputs []byte
+	if err := db.QueryRowContext(ctx, `SELECT canonical_payload,replay_inputs FROM run_log WHERE company_stream_id=$1 AND intent_id=$2`,
+		companyRevision.StreamID, "01986666-ac00-7000-8000-000000000002").Scan(&loggedPayload, &replayInputs); err != nil {
+		t.Fatal(err)
+	}
+	var wire replayInputsWire
+	if err := decodeReplayStrict(replayInputs, &wire); err != nil || wire.Version != save.ReplayInputsVersion ||
+		wire.OfflineCatchup == nil || wire.OfflineCatchup.OpenedAtMS != now.UnixMilli() ||
+		wire.OfflineCatchup.OfflineSpan.FromMS != cursor.UnixMilli() || wire.OfflineCatchup.OfflineSpan.ToMS != now.UnixMilli() {
+		t.Fatalf("logged catchup=%+v err=%v", wire.OfflineCatchup, err)
+	}
+	replayed, err := ApplyLogged(preCompany, loggedPayload, bundle, replayInputs)
+	if err != nil || replayed.Outcome != save.IntentApplied {
+		t.Fatalf("catchup replay outcome=%s err=%v", replayed.Outcome, err)
+	}
+	wantState, err := save.EncodeState(loaded.State)
+	if err != nil {
+		t.Fatal(err)
+	}
+	gotState, err := save.EncodeState(preCompany)
+	if err != nil || string(gotState) != string(wantState) {
+		t.Fatalf("catchup replay state diverged err=%v\ngot=%s\nwant=%s", err, gotState, wantState)
+	}
+
+	staleExit := []byte(`{"intent_id":"01986666-ac00-7000-8000-000000000003","kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`)
+	exitResult, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, staleExit)
+	if err != nil || !strings.Contains(string(exitResult.Receipt), `"category":"revision_conflict"`) {
+		t.Fatalf("stale Exit race receipt=%s err=%v founder_revision=%d", exitResult.Receipt, err, founderRevision.Number)
+	}
+}
 
 func (value integrationAssignment) ResolveAssignment(string) (commonsprojection.AssignmentContext, bool) {
 	return commonsprojection.AssignmentContext{ServerID: value.serverID, ActivityBracket: "activity.standard"}, true

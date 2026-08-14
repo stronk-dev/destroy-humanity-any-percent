@@ -157,6 +157,47 @@ func TestReplayInputsAreClosedCanonicalInputs(t *testing.T) {
 	}
 }
 
+func TestOfflineCatchupIsFrozenAndRejectedCommandsRollBack(t *testing.T) {
+	catalogs := epoch5TestBundle(t)
+	cursor := time.Date(2026, 8, 10, 8, 0, 0, 0, time.UTC)
+	now := cursor.Add(48 * time.Hour)
+	state := replayFixtureState(t, catalogs.Economy, cursor)
+	state.GeneratorCounts["generator.beige_tower"] = 3
+	before := mustEncodeState(t, state)
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-ac01-7000-8000-000000000001","kind":"buy_generator","expected_revision":1,"generator_id":"generator.unknown","count":{"mode":"exact","value":1}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-ac01-7000-8000-000000000002",
+		FounderID: "01986666-ac01-7000-8000-000000000003", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	catchup, err := buildOfflineCatchup(state, catalogs.Economy, ModeOnline, now)
+	if err != nil || catchup == nil {
+		t.Fatalf("catchup=%+v err=%v", catchup, err)
+	}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+		RouteContextVersion: catalogs.Routes.ContextVersion(), OfflineCatchup: catchup})
+	if err != nil {
+		t.Fatal(err)
+	}
+	transition, err := ApplyLogged(state, request.CanonicalPayload, catalogs, inputs)
+	if err != nil || transition.Outcome != save.IntentRejected || string(mustEncodeState(t, state)) != string(before) {
+		t.Fatalf("rejected catchup outcome=%s err=%v state=%s want=%s", transition.Outcome, err, mustEncodeState(t, state), before)
+	}
+
+	var wire replayInputsWire
+	if err := decodeReplayStrict(inputs, &wire); err != nil {
+		t.Fatal(err)
+	}
+	wire.OfflineCatchup.OfflineSpan.FromMS++
+	tampered, err := json.Marshal(wire)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := ApplyLogged(state, request.CanonicalPayload, catalogs, tampered); !errors.Is(err, ErrInvalidReplayInputs) || string(mustEncodeState(t, state)) != string(before) {
+		t.Fatalf("tampered catchup error=%v state=%s", err, mustEncodeState(t, state))
+	}
+}
+
 func TestReplaySettlementBatchIsRepresentableAndOrdered(t *testing.T) {
 	valid := replayAccrual{Contributions: []replayContribution{}, CommonsWeightPPM: nil, RouteContextVersion: 1,
 		GuildSettlementBatch: replayGuildSettlementBatch{GuildID: "01985555-7100-7000-8000-000000000001", BaseSeq: 6, Settlements: []replayGuildSettlement{

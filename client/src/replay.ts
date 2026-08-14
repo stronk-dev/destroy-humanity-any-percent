@@ -116,7 +116,8 @@ interface ReplayAccrual { contributions: ReplayContribution[]; commons_weight_pp
 interface ActiveSpawnEvidence { sequence:number; sampled_interval_ms:number; effect_draw:string; generator_draw:string|null; effect_row_id:string; selected_generator_id:string|null; opportunity_id:string; spawned_attended_ms:number; expires_attended_ms:number }
 interface ActiveClaimEvidence { opportunity_id:string; effect_row_id:string; selected_target:string|null; buff_instance_id:string|null; requested_delta:string|null; actual_credited_delta:string|null; saturated:boolean|null; cap_reason_key:string|null; next_sampled_interval_ms:number; next_opportunity_attended_ms:number }
 interface ActiveScheduleEvidence { attended_now_ms:number; before_sequence:number; before_next_opportunity_attended_ms:number; after_sequence:number; after_next_opportunity_attended_ms:number; expired_buffs:{buff_instance_id:string}[]; missed_opportunity_id:string|null; spawned:ActiveSpawnEvidence|null; claim:ActiveClaimEvidence|null }
-interface ReplayWire { v: 2 | 3 | 4 | 5 | 6; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; resolved: Record<string, unknown> }
+interface ReplayOfflineCatchup { opened_at_ms: number; offline_span: { from_ms: number; to_ms: number } }
+interface ReplayWire { v: 2 | 3 | 4 | 5 | 6 | 7; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; offline_catchup: ReplayOfflineCatchup | null; resolved: Record<string, unknown> }
 interface NetworkSlot { readonly slot: string; readonly carried_ref: string }
 interface FounderExtensions {
   minigame_ratings: Record<string, { elo: number; season_member: string; games_counted: number }>;
@@ -975,6 +976,18 @@ function parseRatingChange(source: unknown): unknown { const row = exactObject(s
 function parseQualityChange(source: unknown): unknown { const row = exactObject(source, ["old", "new"], "quality change"); return { old: parseMinigameQuality(row.old), new: parseMinigameQuality(row.new) }; }
 async function sha256Canonical(value: unknown): Promise<string> { const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(canonicalJSONString(value)))); return `sha256:${[...digest].map((part) => part.toString(16).padStart(2, "0")).join("")}`; }
 
+function applyReplayOfflineCatchup(state: ReplayState, catalogs: ReplayCatalogBundle, wire: ReplayWire, contributions: ReplayContribution[], accrual: ReplayAccrual): ReplayEvent[] {
+  if (wire.v < 7) { if (wire.offline_catchup !== null) throw new RangeError("legacy offline catchup"); return []; }
+  const capMS = catalogs.economy.offlinePolicy?.accrualCapMs ?? 0;
+  const needed = wire.evaluation_mode === "online" && capMS > 0 && wire.evaluated_at_ms - state.evaluatedThroughMs > capMS;
+  if (needed !== (wire.offline_catchup !== null)) throw new RangeError("offline catchup presence mismatch");
+  if (!needed) return [];
+  const catchup = wire.offline_catchup!;
+  if (catchup.opened_at_ms !== wire.evaluated_at_ms || catchup.offline_span.from_ms !== state.evaluatedThroughMs || catchup.offline_span.to_ms !== wire.evaluated_at_ms) throw new RangeError("offline catchup coordinate mismatch");
+  const evaluation = evaluate(state, catalogs.economy, catchup.opened_at_ms, "offline", contributions);
+  return runHooks(state, catalogs, wire.command, evaluation, accrual);
+}
+
 export async function applyLogged(state: ReplayState, canonicalPayload: string, catalogs: ReplayCatalogBundle, replayInputs: unknown): Promise<LoggedTransition> {
   const wire = parseReplayWire(replayInputs, state, catalogs);
 	if (wire.resolved.kind === "soul_recovery_suppression") return applySuppressedLogged(state, canonicalPayload, catalogs, wire);
@@ -984,7 +997,7 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   if (request.kind === "buy_route_hint") throw new RangeError("founder-scope intent is not replayable");
   deriveFactionStockResource(state, catalogs.factions);
   const stateBefore = cloneReplayState(state, catalogs);
-  const revision = wire.command.revision; const before = { ...state.balances };
+  const revision = wire.command.revision; let before = { ...state.balances };
   if (request.invalid !== undefined) return rejected(state, request.intent_id, revision, "invalid", request.invalid);
   if (wire.evaluated_at_ms < state.evaluatedThroughMs) throw new ReplayClockViolation();
   const resolved = wire.resolved; const kind = string(resolved.kind); if (string(resolved.intent_kind) !== request.kind) throw new RangeError("resolved intent mismatch");
@@ -996,15 +1009,18 @@ export async function applyLogged(state: ReplayState, canonicalPayload: string, 
   if (state.compactMember !== (accrual.commons_weight_ppm !== null)) throw new RangeError("commons weight presence mismatch");
   const rejectState = (category: string, detail: string): LoggedTransition => { restoreReplaySnapshot(state, stateBefore); return rejected(state, request.intent_id, revision, category, detail); };
   try {
-  const activeEvents=activeEvidence===null?[]:await applyActiveSchedule(state,catalogs,wire.command,wire.evaluated_at_ms,activeEvidence);
   applyGuildSettlements(state, accrual.guild_settlement_batch, catalogs.factions.stockCap);
+  const baseContributions = assembleContributions(state, catalogs.economy, accrual.contributions);
+  const catchupEvents = applyReplayOfflineCatchup(state, catalogs, wire, baseContributions, { ...accrual, contributions: baseContributions });
+  before = { ...state.balances };
+  const activeEvents=activeEvidence===null?[]:await applyActiveSchedule(state,catalogs,wire.command,wire.evaluated_at_ms,activeEvidence);
   const activeValues=activeEvidence===null?[]:activeContributions(state,catalogs.opportunities!,activeEvidence.attended_now_ms);
   const contributions = assembleContributions(state, catalogs.economy, [...accrual.contributions,...activeValues]);
   const effectiveAccrual = { ...accrual, contributions };
   const preflight = preflightRejection(state, catalogs, request, wire.evaluated_at_ms);
   if (preflight !== null) return rejectState(preflight[0], preflight[1]);
   const evaluation = evaluate(state, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
-  const events = [...activeEvents,...runHooks(state, catalogs, wire.command, evaluation, effectiveAccrual)];
+  const events = [...catchupEvents,...activeEvents,...runHooks(state, catalogs, wire.command, evaluation, effectiveAccrual)];
   const postAccrualBalances = { ...state.balances };
   const invariants: ReplayInvariant[] = [];
   let appliedCount = 0;
@@ -1093,8 +1109,10 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const rejectState = (category: string, detail: string): LoggedExitTransition => { restoreReplaySnapshot(company, companyBefore); return rejectedExit(company, founder, request.intent_id, revision, category, detail); };
   if (minigameSessionActive) return rejectState("not_eligible", "minigame_session_active");
   try {
-  const activeEvents=activeEvidence===null?[]:await applyActiveSchedule(company,catalogs,wire.command,wire.evaluated_at_ms,activeEvidence);
   applyGuildSettlements(company, accrual.guild_settlement_batch, catalogs.factions.stockCap);
+  const baseContributions = assembleContributions(company, catalogs.economy, accrual.contributions);
+  const catchupEvents = applyReplayOfflineCatchup(company, catalogs, wire, baseContributions, { ...accrual, contributions: baseContributions });
+  const activeEvents=activeEvidence===null?[]:await applyActiveSchedule(company,catalogs,wire.command,wire.evaluated_at_ms,activeEvidence);
   const activeValues=activeEvidence===null?[]:activeContributions(company,catalogs.opportunities!,activeEvidence.attended_now_ms);const contributions = assembleContributions(company, catalogs.economy, [...accrual.contributions,...activeValues]);
   const effectiveAccrual = { ...accrual, contributions };
 
@@ -1102,7 +1120,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
     const preflight = preflightRejection(company, catalogs, request, wire.evaluated_at_ms);
     if (preflight !== null) return rejectState(preflight[0], preflight[1]);
     const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
-    prefix = [...activeEvents,...runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual)];
+    prefix = [...catchupEvents,...activeEvents,...runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual)];
     const postAccrualBalances = { ...company.balances };
     const result = crossGate(company, catalogs.routes, request, wire.command);
     if (result.rejection) return rejectState(result.rejection[0], result.rejection[1]);
@@ -1125,7 +1143,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
       exitType = company.offerState.exitType;
     } else if (request.kind !== "wind_down") throw new RangeError("non-terminal intent at terminal boundary");
     const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
-    prefix = [...activeEvents,...runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual)];
+    prefix = [...catchupEvents,...activeEvents,...runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual)];
     terms = computeExitTerms(company, founder, catalogs.prestige, exitType);
     if (promised) terms = promiseTerms(promised.payout_preview, applyTermsModifier(terms, promised.market_modifier_ppm));
   }
@@ -1599,7 +1617,17 @@ function sortedUniqueMechanical(source: unknown[]): string[] {
   return source.map((item) => { const value = mechanicalString(item); if (byteCompare(value, last) <= 0) throw new SyntaxError("values must be sorted and unique"); last = value; return value; });
 }
 
-function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire { const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", "resolved"], "replay inputs"); if (root.v !== 2 && root.v !== 3 && root.v !== 4 && root.v !== 5 && root.v !== 6 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline") throw new SyntaxError("invalid replay envelope"); const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command"); const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) }; if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch"); return { v: root.v as 2|3|4|5|6, command: parsed, evaluated_at_ms: safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER), evaluation_mode: root.evaluation_mode, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") }; }
+function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire {
+  const hasCatchupKey = isRecord(source) && "offline_catchup" in source; const hasCatchup = hasCatchupKey && source.offline_catchup !== null;
+  const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", ...(hasCatchupKey ? ["offline_catchup"] : []), "resolved"], "replay inputs");
+  if (root.v !== 2 && root.v !== 3 && root.v !== 4 && root.v !== 5 && root.v !== 6 && root.v !== 7 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline" || hasCatchup && root.v < 7) throw new SyntaxError("invalid replay envelope");
+  const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command");
+  const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) };
+  if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch");
+  const evaluatedAtMS = safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER); let catchup: ReplayOfflineCatchup | null = null;
+  if (hasCatchup) { const row = exactObject(root.offline_catchup, ["opened_at_ms", "offline_span"], "offline catchup"); const span = exactObject(row.offline_span, ["from_ms", "to_ms"], "offline catchup span"); catchup = { opened_at_ms: safeInteger(row.opened_at_ms, 1, MAX_EXACT_INTEGER), offline_span: { from_ms: safeInteger(span.from_ms, 1, MAX_EXACT_INTEGER), to_ms: safeInteger(span.to_ms, 1, MAX_EXACT_INTEGER) } }; if (catchup.opened_at_ms !== evaluatedAtMS || catchup.offline_span.to_ms !== evaluatedAtMS || catchup.offline_span.from_ms >= catchup.offline_span.to_ms) throw new SyntaxError("invalid offline catchup"); }
+  return { v: root.v as 2|3|4|5|6|7, command: parsed, evaluated_at_ms: evaluatedAtMS, evaluation_mode: root.evaluation_mode, offline_catchup: catchup, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") };
+}
 function parseFounderReplayWire(source: unknown): FounderReplayWire {
   const root = exactObject(source, ["v", "command", "evaluated_at_ms", "resolved"], "Founder replay inputs");
   if (root.v !== 1) throw new SyntaxError("invalid Founder replay version");
@@ -1794,7 +1822,7 @@ function parseFounderExtensions(source: unknown, catalogs: ReplayCatalogBundle):
   return { minigame_ratings, minigame_offline_quality, pets, fiscal_credit, fiscal_period_opened_wall_ms, fiscal_period_seq, fiscal_generator_levels, fiscal_unlocks, soul, soul_exhausted_source_ids, minigame_session_seq };
 }
 
-function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4 | 5 | 6): FounderCarry {
+function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4 | 5 | 6 | 7): FounderCarry {
   const legacyKeys = ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"];
   const floor = founderVersionFloor(catalogs);
   const keys = wireVersion >= 3 ? [...legacyKeys, "achievements_earned_lifetime", "achievement_score_lifetime"] : legacyKeys;

@@ -238,6 +238,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	}{
 		{name: "manual-online", payload: `{"intent_id":"01986666-0001-7000-8000-000000000001","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":3,"window_ms":10}`, advance: time.Second, mode: ModeOnline},
 		{name: "manual-offline-accrual", payload: `{"intent_id":"01986666-0002-7000-8000-000000000002","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":2,"window_ms":100}`, advance: 48 * time.Hour, mode: ModeOffline, configure: func(state *save.State) { state.GeneratorCounts["generator.beige_tower"] = 3 }},
+		{name: "session-boundary-offline-catchup", payload: `{"intent_id":"01986666-0019-7000-8000-000000000019","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":2,"window_ms":100}`, advance: 48 * time.Hour, mode: ModeOnline, configure: func(state *save.State) { state.GeneratorCounts["generator.beige_tower"] = 3 }},
 		{name: "buy-generator", payload: `{"intent_id":"01986666-0003-7000-8000-000000000003","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":4}}`, mode: ModeOnline, configure: func(state *save.State) { setCash(t, state, "1e4") }},
 		{name: "buy-generator-max", payload: `{"intent_id":"01986666-0014-7000-8000-000000000014","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"max"}}`, mode: ModeOnline, configure: func(state *save.State) { setCash(t, state, "1e1000") }},
 		{name: "purchase-total-cap-precedes-affordability", payload: `{"intent_id":"01986666-0018-7000-8000-000000000018","kind":"buy_generator","expected_revision":1,"generator_id":"generator.beige_tower","count":{"mode":"exact","value":1}}`, mode: ModeOnline,
@@ -315,16 +316,24 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001", FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: int64(index + 1)}
 		build := replayBuild{Command: command, Mode: definition.mode, Now: baseNow.Add(definition.advance), IntentKind: request.Kind,
 			Contributions: definition.contributions, CommonsWeightPPM: definition.weight, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: definition.carry}
+		build.OfflineCatchup, err = buildOfflineCatchup(state, catalogs.Economy, definition.mode, baseNow.Add(definition.advance))
+		if err != nil {
+			t.Fatalf("%s offline catchup: %v", definition.name, err)
+		}
 		inputs, err := buildReplayInputs(build)
 		if err != nil {
 			t.Fatalf("%s inputs: %v", definition.name, err)
 		}
-		if definition.name == "manual-online" {
+		if definition.name == "manual-online" || definition.name == "buy-generator" {
 			var historical replayInputsWire
 			if err := decodeReplayStrict(inputs, &historical); err != nil {
 				t.Fatal(err)
 			}
-			historical.Version = 5
+			if definition.name == "manual-online" {
+				historical.Version = 5
+			} else {
+				historical.Version = 6
+			}
 			inputs, err = json.Marshal(historical)
 			if err != nil {
 				t.Fatal(err)
@@ -1379,7 +1388,7 @@ func makeActiveFoundationExitFixture(t *testing.T, now time.Time) crossRuntimeAc
 func makeFirstContentExitFixture(t *testing.T, now time.Time) crossRuntimeActiveExit {
 	t.Helper()
 	catalogs := activeContentBundle(t)
-	company := replayFixtureState(t, catalogs.Economy, now.Add(-20*time.Minute))
+	company := replayFixtureState(t, catalogs.Economy, now.Add(-48*time.Hour))
 	company.WireVersion = 18
 	company.ActiveBuffs = []save.ActiveBuff{}
 	company.MeterBands = nil
@@ -1431,10 +1440,14 @@ func makeFirstContentExitFixture(t *testing.T, now time.Time) crossRuntimeActive
 	}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1c00-7000-8000-000000000001",
 		FounderID: "01986666-2c00-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	catchup, err := buildOfflineCatchup(company, catalogs.Economy, ModeOnline, now)
+	if err != nil || catchup == nil {
+		t.Fatalf("first-content Exit catchup=%+v err=%v", catchup, err)
+	}
 	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
 		RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
 		SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: catalogs.ConstantsHash,
-		ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn), MinigameSessionActive: &minigameActive})
+		ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn), MinigameSessionActive: &minigameActive, OfflineCatchup: catchup})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1474,7 +1487,12 @@ func makeActiveFoundationReplayFixture(t *testing.T, now time.Time, gap time.Dur
 	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1,
 		AchievementsEarnedLifetime: []string{definition.ID}, AchievementScoreLifetime: definition.ScoreGrant}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1400-7000-8000-000000000001", FounderID: "01986666-2400-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry})
+	catchup, err := buildOfflineCatchup(state, catalogs.Economy, ModeOnline, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+		RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, OfflineCatchup: catchup})
 	if err != nil {
 		t.Fatal(err)
 	}

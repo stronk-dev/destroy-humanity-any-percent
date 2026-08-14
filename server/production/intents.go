@@ -482,6 +482,13 @@ func (s *Service) Handle(
 		if !ok {
 			return save.IntentDecision{}, nil, fmt.Errorf("%w: unknown catalog %s", ErrInvalidIntent, revision.ConstantsHash)
 		}
+		if command.RunLogSeq > 0 {
+			catchup, catchupErr := buildOfflineCatchup(state, catalog, mode, now)
+			if catchupErr != nil {
+				return save.IntentDecision{}, nil, catchupErr
+			}
+			build.OfflineCatchup = catchup
+		}
 		var directContributions []multiplier.Contribution
 		if command.RunLogSeq > 0 {
 			contributions, settlements, err := s.resolveReplayAccrual(ctx, state, revision, catalog, bundle.Faction.StockCap, request)

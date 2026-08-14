@@ -350,6 +350,11 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 		GuildSettlementBatch: settlements,
 		RouteContextVersion:  current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true,
 		ExecutedRouteIDs: executedRoutes, SelectedExitType: selectedType, SelectedTerms: selectedTerms, NextConstantsHash: s.currentConstantsHash}
+	catchup, err := buildOfflineCatchup(company, current.Economy, mode, now)
+	if err != nil {
+		return save.ExitDecision{}, nil, err
+	}
+	build.OfflineCatchup = catchup
 	if current.MinigameAPI != nil {
 		if s.minigameActivity == nil {
 			return save.ExitDecision{}, nil, fmt.Errorf("%w: minigame activity resolver unavailable", ErrInvalidIntent)

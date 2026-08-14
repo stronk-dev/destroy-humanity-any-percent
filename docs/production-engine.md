@@ -55,6 +55,13 @@ commits one positive-accrual ledger transaction:
   accrual rounding and saturates atomically at the exact declared hardcap;
 - the authoritative accrual receipt carries a canonical applied delta that re-adds to its exact
   `after` value, including the one-ulp correction needed at some near-cap boundaries;
+
+For an authenticated Company command whose online cursor is more than the offline accrual cap
+behind the server clock, the logged boundary first applies one offline catchup and then evaluates
+the command online at the same timestamp. Replay inputs v7 freeze `opened_at_ms` and the exact
+`offline_span {from_ms,to_ms}`; both runtimes reject missing, extra, or drifted coordinates. The
+catchup and command share one Company transaction and run-log row, so a rejected command rolls the
+catchup back and an Exit racing the command is ordered by the existing Company stream lock.
 - production at an already reached cap succeeds with no ledger change and still advances the
   evaluation cursor, so it cannot block a following intent;
 - a server-clock rollback or sub-millisecond interval advances nothing and grants nothing.
