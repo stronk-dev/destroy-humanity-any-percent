@@ -13,7 +13,13 @@ import (
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/production"
+	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
+)
+
+const (
+	relevanceOwnerID  = "00000000-0000-4000-8000-000000000001"
+	relevanceStreamID = "00000000-0000-4000-8000-000000000002"
 )
 
 type relevanceCandidate struct {
@@ -310,17 +316,6 @@ func (suite *RelevanceSuite) RunRelevance() (RelevanceReport, error) {
 		}
 	}
 	report.RoleActivations = sortedRoleActivations(baselineRoles)
-	roleGenerators := map[string]bool{}
-	for _, role := range report.RoleActivations {
-		if role.Count > 0 {
-			roleGenerators[role.GeneratorID] = true
-		}
-	}
-	for _, item := range measuredItems {
-		if _, generator := suite.Catalog.GeneratorClass(item.PurchasableID); generator && !roleGenerators[item.PurchasableID] {
-			report.Failures = append(report.Failures, "role_floor:"+item.PurchasableID)
-		}
-	}
 	report.DeviationOracle = deviation
 	if deviation.Status == "counterexample" {
 		report.Failures = append(report.Failures, "greedy_oracle:deviation_gap")
@@ -648,14 +643,6 @@ func (suite *RelevanceSuite) runPersonaWithOpportunity(spec RelevanceRunSpec, se
 	policySuite := &Suite{Catalog: suite.Catalog, RoutesCatalog: suite.Routes, ConstantsHash: suite.ConstantsHash}
 	previousSession := int64(-1)
 	for _, offsetMS := range actionTimes(spec.PolicyID, suite.Scenario.HorizonMS) {
-		if reached, reachErr := suite.relevanceMilestoneReached(state); reachErr != nil {
-			return relevanceRunResult{}, reachErr
-		} else if reached {
-			copy := offsetMS
-			result.MilestoneMS = &copy
-			break
-		}
-		now := relevanceNow(offsetMS)
 		mode := production.ModeOnline
 		if spec.PolicyID == "casual.phase0" {
 			session := casualSession(offsetMS)
@@ -664,6 +651,20 @@ func (suite *RelevanceSuite) runPersonaWithOpportunity(spec RelevanceRunSpec, se
 			}
 			previousSession = session
 		}
+		currentMS := state.EvaluatedThrough.Sub(Epoch).Milliseconds()
+		_, activations, _, progressErr := suite.progressSegmentGates(state, &revision, currentMS, offsetMS, mode, mask, counter)
+		if progressErr != nil {
+			return relevanceRunResult{}, progressErr
+		}
+		mergeRoleActivations(result.Roles, activations)
+		if reached, reachErr := suite.relevanceMilestoneReached(state); reachErr != nil {
+			return relevanceRunResult{}, reachErr
+		} else if reached {
+			copy := offsetMS
+			result.MilestoneMS = &copy
+			break
+		}
+		now := relevanceNow(offsetMS)
 		intentBytes, _, intentErr := policySuite.intentBytes(spec.PolicyID, state, revision, now, random, uuids)
 		if intentErr != nil {
 			return relevanceRunResult{}, intentErr
@@ -765,6 +766,20 @@ func (suite *RelevanceSuite) runReferenceWithOpportunityTrace(mask, opportunityM
 		if !ok {
 			decisionGuardExhausted = false
 			break
+		}
+		progressedAt, activations, progressed, progressErr := suite.progressSegmentGates(state, &revision, nowMS, next,
+			production.ModeOnline, effectiveMask, counter)
+		if progressErr != nil {
+			return relevanceRunResult{}, progressErr
+		}
+		mergeRoleActivations(result.Roles, activations)
+		if progressed {
+			nowMS = progressedAt
+			next, ok = suite.nextDecisionHorizon(nowMS)
+			if !ok {
+				decisionGuardExhausted = false
+				break
+			}
 		}
 		allCandidates, bankProjection, bankReachable, bankAtMS, rankErr := suite.rankAllDecisionOptions(state, revision, nowMS, next, effectiveMask, counter)
 		if rankErr != nil {
@@ -1077,11 +1092,140 @@ func (suite *RelevanceSuite) earliestAffordable(state *save.State, revision, now
 }
 
 func (suite *RelevanceSuite) advance(state *save.State, revision, atMS int64, mask production.AblationMask, counter *relevanceCounter) (production.AdvanceSimulationResult, error) {
+	return suite.advanceMode(state, revision, atMS, production.ModeOnline, mask, counter)
+}
+
+func (suite *RelevanceSuite) advanceMode(state *save.State, revision, atMS int64, mode production.EvaluationMode,
+	mask production.AblationMask, counter *relevanceCounter) (production.AdvanceSimulationResult, error) {
 	if err := counter.add(); err != nil {
 		return production.AdvanceSimulationResult{}, err
 	}
 	return production.SimulateAdvance(state, suite.Catalog, production.SimulationDependencies{Routes: suite.Routes},
-		save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash}, production.ModeOnline, relevanceNow(atMS), nil, mask)
+		save.Revision{Number: revision, ConstantsHash: suite.ConstantsHash}, mode, relevanceNow(atMS), nil, mask)
+}
+
+// progressSegmentGates materializes every non-terminal segment boundary that
+// becomes eligible by limitMS. Eligibility is located on cloned states, while
+// the authoritative mutation is always the production cross_gate transition.
+// The final segment's to_gate is the optimization boundary and is never
+// crossed by the harness.
+func (suite *RelevanceSuite) progressSegmentGates(state *save.State, revision *int64, nowMS, limitMS int64,
+	mode production.EvaluationMode, mask production.AblationMask, counter *relevanceCounter) (int64, []production.RoleActivation, bool, error) {
+	currentMS := nowMS
+	activations := []production.RoleActivation{}
+	progressed := false
+	for _, gateID := range suite.segmentProgressionGateIDs() {
+		if state.GatesCrossed[gateID] {
+			continue
+		}
+		gate, ok := suite.Routes.Gate(gateID)
+		if !ok {
+			return currentMS, nil, progressed, fmt.Errorf("relevance segment gate %q is absent from the pinned routes catalog", gateID)
+		}
+		eligibleAt := func(atMS int64) (bool, error) {
+			candidate, err := cloneState(suite.Catalog, state)
+			if err != nil {
+				return false, err
+			}
+			if atMS > currentMS {
+				if _, err := suite.advanceMode(candidate, *revision, atMS, mode, mask, counter); err != nil {
+					return false, err
+				}
+			}
+			return gateRequirementsMet(candidate, gate), nil
+		}
+		eligible, err := eligibleAt(currentMS)
+		if err != nil {
+			return currentMS, nil, progressed, err
+		}
+		crossAt := currentMS
+		if !eligible {
+			if limitMS <= currentMS {
+				break
+			}
+			eligible, err = eligibleAt(limitMS)
+			if err != nil {
+				return currentMS, nil, progressed, err
+			}
+			if !eligible {
+				break
+			}
+			low, high := currentMS+1, limitMS
+			for low < high {
+				middle := low + (high-low)/2
+				at, searchErr := eligibleAt(middle)
+				if searchErr != nil {
+					return currentMS, nil, progressed, searchErr
+				}
+				if at {
+					high = middle
+				} else {
+					low = middle + 1
+				}
+			}
+			crossAt = low
+			advanced, advanceErr := suite.advanceMode(state, *revision, crossAt, mode, mask, counter)
+			if advanceErr != nil {
+				return currentMS, nil, progressed, advanceErr
+			}
+			activations = append(activations, advanced.RoleActivations...)
+		}
+		request := production.IntentRequest{IntentID: relevanceIntentID(*revision), Kind: production.IntentCrossGate,
+			ExpectedRevision: *revision, GateID: gateID}
+		if err := counter.add(); err != nil {
+			return currentMS, nil, progressed, err
+		}
+		simulation, err := production.SimulateTransition(request, state, suite.Catalog,
+			production.SimulationDependencies{Routes: suite.Routes}, relevanceRevision(*revision, suite.ConstantsHash),
+			mode, relevanceNow(crossAt), nil, nil, mask)
+		if err != nil {
+			return currentMS, nil, progressed, fmt.Errorf("relevance segment gate %q transition: %w", gateID, err)
+		}
+		if simulation.Decision.Outcome != save.IntentApplied {
+			return currentMS, nil, progressed, fmt.Errorf("relevance segment gate %q rejected: %s", gateID, simulation.Decision.Receipt)
+		}
+		activations = append(activations, simulation.RoleActivations...)
+		*revision++
+		currentMS, progressed = crossAt, true
+	}
+	return currentMS, activations, progressed, nil
+}
+
+func (suite *RelevanceSuite) segmentProgressionGateIDs() []string {
+	// Schema v1's concrete from_gate was evidence metadata, and its accepted
+	// reports retain their historical bytes. Executable segment progression is
+	// the schema-v2 multi-segment contract introduced for the T0–T1 candidate.
+	if suite.Scenario.SchemaVersion < 2 {
+		return nil
+	}
+	terminal := ""
+	if len(suite.Scenario.Segments) > 0 && suite.Scenario.Segments[len(suite.Scenario.Segments)-1].ToGate != nil {
+		terminal = *suite.Scenario.Segments[len(suite.Scenario.Segments)-1].ToGate
+	}
+	result := []string{}
+	seen := map[string]bool{}
+	for _, segment := range suite.Scenario.Segments {
+		if segment.FromGate == nil || *segment.FromGate == terminal || seen[*segment.FromGate] {
+			continue
+		}
+		seen[*segment.FromGate] = true
+		result = append(result, *segment.FromGate)
+	}
+	return result
+}
+
+func gateRequirementsMet(state *save.State, gate routes.Gate) bool {
+	for _, requirement := range gate.Requirement {
+		balance, ok := state.Ledger.Balance(requirement.ResourceID)
+		if !ok || balance.Lt(requirement.Amount) {
+			return false
+		}
+	}
+	return true
+}
+
+func relevanceRevision(number int64, constantsHash string) save.Revision {
+	return save.Revision{StreamID: relevanceStreamID, OwnerID: relevanceOwnerID, Number: number, ConstantsHash: constantsHash}
 }
 
 func (suite *RelevanceSuite) candidateCost(state *save.State, id string) (string, decimal.Decimal, error) {
@@ -1580,6 +1724,18 @@ func (suite *RelevanceSuite) runBeamWithOpportunity(effectiveMask production.Abl
 			if !ok {
 				continue
 			}
+			progressedAt, _, progressed, progressErr := suite.progressSegmentGates(current.state, &current.revision,
+				current.atMS, next, production.ModeOnline, effectiveMask, counter)
+			if progressErr != nil {
+				return nil, progressErr
+			}
+			if progressed {
+				current.atMS = progressedAt
+				next, ok = suite.nextDecisionHorizon(current.atMS)
+				if !ok {
+					continue
+				}
+			}
 			candidates, bank, bankAtMS, rankErr := suite.rankDecisionOptions(current.state, current.revision,
 				current.atMS, next, suite.Scenario.BeamChildren, effectiveMask, counter)
 			if rankErr != nil {
@@ -1782,6 +1938,20 @@ func (suite *RelevanceSuite) runRankedCompletionCached(state *save.State, revisi
 		if !ok {
 			decisionGuardExhausted = false
 			break
+		}
+		progressedAt, activations, progressed, progressErr := suite.progressSegmentGates(state, &revision, nowMS, next,
+			production.ModeOnline, mask, counter)
+		if progressErr != nil {
+			return relevanceRunResult{}, progressErr
+		}
+		mergeRoleActivations(result.Roles, activations)
+		if progressed {
+			nowMS = progressedAt
+			next, ok = suite.nextDecisionHorizon(nowMS)
+			if !ok {
+				decisionGuardExhausted = false
+				break
+			}
 		}
 		candidates, bank, bankAtMS, err := suite.rankDecisionOptions(state, revision, nowMS, next, 1, mask, counter)
 		if err != nil {

@@ -112,6 +112,19 @@ evidence comes only from unmasked baseline execution. Report schema v5 replaces 
 `greedy_oracle` result with `deviation_oracle`; the legacy field remains null so a cheap probe cannot
 be mistaken for a beam result.
 
+Internal segment boundaries are part of the measured trajectory. At the first decision boundary
+where the pinned Routes requirements are reachable, every relevance arm advances to that point and
+applies the real production `cross_gate` transition. The transition burns the real requirement,
+advances tier, consumes counted work, and fails the run if production rejects it; the optimization
+segment's terminal gate is never crossed automatically. The runner does not write `Tier` or
+`GatesCrossed` directly.
+
+Generic-persona role activations remain observational report evidence, not a content floor: stock,
+manual, provision, and synergy roles require different honest execution contexts. The mandatory
+`make t0-t1-role-check` gate instead enumerates every generator-role row in the pinned T0–T1 economy
+candidate, exercises its minimum real production context, and pairs it with a generator-masked
+control that must remove both the activation and its non-neutral effect.
+
 Production candidates use phase-scoped relevance policies. The T0 scenario measures rows whose
 windows close at `gate.t0_to_t1`; the cumulative T1 optimizer continues through `gate.t2_to_t3`,
 but its report and ablation budget include only rows in the T1 window that closes at that target.
@@ -125,7 +138,7 @@ has no such later scenario and is named coverage debt rather than silently exemp
 golden is discovered dynamically by the history and TypeScript schema gates. Each trap exemption's
 mechanical justification key must appear in the entry's reviewable changelog. The current
 schema-v5 entry is deliberately a test fixture: it proves a dead upgrade, a deliberate trap
-exemption, a roleless generator, group-supported substitution, and a registered forced-deviation
+exemption, observational role evidence, group-supported substitution, and a registered forced-deviation
 counterexample under its declared bound. Fixture findings are recorded in its golden report but do not block the production
 gate. When the active epoch first uses an economy schema v4 or later, its registry entry must bind
 the exact epoch-owned economy, Routes, and relevance-policy artifacts, use the current epoch
@@ -144,8 +157,10 @@ as a relevance baseline.
 - `make first-content-harness` validates the ratified first-content manifest and its complete
   16-artifact replay bundle, then writes the owner-facing candidate-versus-baseline pacing report.
   Pacing drift is reported rather than vetoed; deterministic invariant failures still fail the run.
-- `make t0-t1-relevance-all` runs the phase-scoped T0 and cumulative T1 candidate gates; either
-  target can be run alone with `make t0-t1-relevance` or `make t1-relevance`.
+- `make t0-t1-role-check` runs the candidate-specific role activation/control matrix.
+- `make t0-t1-relevance-all` first runs that role matrix, then the phase-scoped T0 and cumulative T1
+  relevance gates; either relevance target can still be run alone with `make t0-t1-relevance` or
+  `make t1-relevance`.
 - `make harness-update` deliberately regenerates those tracked artifacts for review.
 
 The successor `content_dynamics.v1` lane has an intentionally empty production registry until an

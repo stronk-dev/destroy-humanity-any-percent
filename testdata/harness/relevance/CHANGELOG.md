@@ -12,3 +12,6 @@
   `generator.beta` instead of banking at decision 8 improves 5,558 ms to 5,401 ms (29,068 ppm).
   The same routine run exercises visible opportunity-screen
   exclusions end to end; the beam is not invoked by any gate.
+- T01-C23 role evidence boundary — generic relevance personas retain observed role activations but
+  no longer manufacture `role_floor` findings from contexts they do not exercise. The candidate's
+  complete role contract is enforced separately by the real-engine, masked-control role gate.

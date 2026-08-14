@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness t0-t1-relevance t1-relevance t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check content-harness first-content-harness t0-t1-role-check t0-t1-relevance t1-relevance t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -140,6 +140,9 @@ first-content-harness:
 		-candidate-manifest=planning/first-content-epoch/promotion-manifest.candidate.v1.json \
 		-output=../planning/first-content-epoch/composed-harness-report.v1.json
 
+t0-t1-role-check:
+	$(MAKE) test-go GO_PACKAGES=./production GO_TEST_FLAGS='-run TestT0T1CandidateRoleActivations -count=1'
+
 t0-t1-relevance:
 	cd server && go run ./cmd/balance-harness -mode=relevance -root=.. \
 		-scenario=$(RELEVANCE_SCENARIO) \
@@ -150,7 +153,7 @@ t1-relevance:
 		RELEVANCE_SCENARIO=balance/testdata/t0-t1/relevance-scenario-t1-v2.json \
 		RELEVANCE_OUTPUT=planning/t0-t1-content/relevance-report-t1.v5.json
 
-t0-t1-relevance-all:
+t0-t1-relevance-all: t0-t1-role-check
 	$(MAKE) t0-t1-relevance
 	$(MAKE) t1-relevance
 
@@ -223,7 +226,7 @@ verify-server: vet test-go pitch-corpus-check formulas-check api-check harness-c
 
 verify-server-core: vet test-go-core pitch-corpus-check formulas-check api-check verify-routes-boundary verify-commons-boundary
 
-verify-harness: test-harness harness-check
+verify-harness: test-harness t0-t1-role-check harness-check
 
 verify-server-ci:
 	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test sh -c 'cd /workspace && make verify-server-core'

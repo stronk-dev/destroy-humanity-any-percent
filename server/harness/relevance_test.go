@@ -63,10 +63,10 @@ func TestRelevanceFixtureRunsDeterministicallyThroughProduction(t *testing.T) {
 		first.DeviationOracle.Witness == nil || first.DeviationOracle.Witness.DecisionOrdinal != 8 ||
 		first.DeviationOracle.Witness.ForcedArm != "generator.beta" || first.DeviationOracle.Witness.GapPPM != 29_068 ||
 		!containsString(first.Failures, "greedy_oracle:deviation_gap") {
-		t.Fatalf("deviation oracle=%+v", first.DeviationOracle)
+		t.Fatalf("deviation oracle=%+v witness=%+v", first.DeviationOracle, first.DeviationOracle.Witness)
 	}
 	joined := strings.Join(first.Failures, ",")
-	for _, expected := range []string{"relevance_floor:upgrade.dead", "trap_floor:upgrade.dead", "role_floor:generator.alpha"} {
+	for _, expected := range []string{"relevance_floor:upgrade.dead", "trap_floor:upgrade.dead"} {
 		if !strings.Contains(joined, expected) {
 			t.Fatalf("fixture did not discriminate %q: %v", expected, first.Failures)
 		}
@@ -296,6 +296,76 @@ func TestT0T1ReferenceBootstrapMakesNonEmptyPurchaseThroughPinnedManualClamp(t *
 
 }
 
+func TestT1SegmentProgressionUsesTheRealGateTransition(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-t1-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	state, err := suite.newRelevanceState()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := state.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{
+		ResourceID: "company.cash", Delta: decimal.FromString("2.0836e7"),
+	}}}); err != nil {
+		t.Fatal(err)
+	}
+	before, err := cloneState(suite.Catalog, state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := candidateIntent("upgrade.rack_rail_standardization", 1)
+	rejected, err := production.SimulateTransition(request, before, suite.Catalog,
+		production.SimulationDependencies{Routes: suite.Routes}, relevanceRevision(1, suite.ConstantsHash),
+		production.ModeOnline, relevanceNow(0), nil, nil, production.AblationMask{})
+	if err != nil || rejected.Decision.Outcome != save.IntentRejected || before.UpgradesOwned[request.UpgradeID] {
+		t.Fatalf("pre-gate decision=%+v owned=%v err=%v", rejected.Decision, before.UpgradesOwned, err)
+	}
+
+	revision := int64(1)
+	counter := &relevanceCounter{limit: 100}
+	atMS, _, progressed, err := suite.progressSegmentGates(state, &revision, 0, 0,
+		production.ModeOnline, production.AblationMask{}, counter)
+	if err != nil || !progressed || atMS != 0 || revision != 2 || !state.GatesCrossed["gate.t0_to_t1"] ||
+		state.GatesCrossed["gate.t2_to_t3"] || state.Tier != 1 || counter.value != 1 {
+		t.Fatalf("progressed=%v at=%d revision=%d gates=%v tier=%d work=%d err=%v",
+			progressed, atMS, revision, state.GatesCrossed, state.Tier, counter.value, err)
+	}
+	request = candidateIntent("upgrade.rack_rail_standardization", revision)
+	applied, err := production.SimulateTransition(request, state, suite.Catalog,
+		production.SimulationDependencies{Routes: suite.Routes}, relevanceRevision(revision, suite.ConstantsHash),
+		production.ModeOnline, relevanceNow(0), nil, nil, production.AblationMask{})
+	if err != nil || applied.Decision.Outcome != save.IntentApplied || !state.UpgradesOwned[request.UpgradeID] {
+		t.Fatalf("post-gate decision=%+v owned=%v err=%v", applied.Decision, state.UpgradesOwned, err)
+	}
+}
+
+func TestT1SegmentProgressionFindsTheFirstEligibleDecisionBoundary(t *testing.T) {
+	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-t1-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	state, err := suite.newRelevanceState()
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.GeneratorCounts["generator.beige_tower"] = 1
+	state.GeneratorPurchasedTotal = 1
+	if _, err := state.Ledger.ApplyAccrual(economy.Transaction{Entries: []economy.Entry{{
+		ResourceID: "company.cash", Delta: decimal.FromString("9.9999e4"),
+	}}}); err != nil {
+		t.Fatal(err)
+	}
+	revision := int64(1)
+	counter := &relevanceCounter{limit: 100}
+	atMS, _, progressed, err := suite.progressSegmentGates(state, &revision, 0, 60_000,
+		production.ModeOnline, production.AblationMask{}, counter)
+	if err != nil || !progressed || atMS != 1_000 || !state.GatesCrossed["gate.t0_to_t1"] ||
+		state.GatesCrossed["gate.t2_to_t3"] {
+		t.Fatalf("progressed=%v at=%d gates=%v work=%d err=%v", progressed, atMS, state.GatesCrossed, counter.value, err)
+	}
+}
+
 func TestT0T1BeamUsesTheReferenceProjectedMilestoneRanking(t *testing.T) {
 	suite, err := LoadRelevanceSuite("../..", "balance/testdata/t0-t1/relevance-scenario-v2.json")
 	if err != nil {
@@ -431,7 +501,7 @@ func TestT1ProjectedMilestoneMeasurement(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if result.DecisionStarved || result.MilestoneMS == nil || *result.MilestoneMS != 4_208_672 || result.Decisions != 315 {
+	if result.DecisionStarved || result.MilestoneMS == nil || *result.MilestoneMS != 4_299_108 || result.Decisions != 297 {
 		t.Fatalf("T1 projected measurement milestone=%v decisions=%d at=%d transitions=%d starved=%v",
 			result.MilestoneMS, result.Decisions, result.FinalVirtualMS, counter.value, result.DecisionStarved)
 	}
