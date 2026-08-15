@@ -3237,3 +3237,29 @@ pivot an upgrade; neither touches the split.
 **No findings. APPROVED.** The candidate hashes are ready for owner ratification:
 curriculum `a39a91f2…c42955`, copy candidate `b17ff1c…2bbe`, generated copy `9e81629…c0e13`,
 with the tuple `A=200, B=2e0, R=50, S=1e4, G=10`.
+
+## 2026-08-15 — OWNER RATIFICATION: the epoch-8 first-hour payoff candidate
+
+Ratified by Marco (recorded by Claude from the owner's explicit selection). Consumed verdict:
+`ecb4bf9` over `f22e695..62e0190`.
+
+**Ratified bytes:**
+- `balance/testdata/t0-t1/curriculum-v2.json`
+  `sha256:a39a91f2bcf0e62c4f1fa4846003b69df368007963db0cdef052847937c42955`
+- `copy/catalog/game-ui-candidate.json` `sha256:b17ff1c…2bbe`
+- `client/src/copy/generated/catalog.json` `sha256:9e81629…c0e13`
+
+**Ratified literals** (T01-C31/C35 open tuple, now closed): `A = 200` purchased generators,
+`B = 2e0` cheapest-price factor, `R = 50` Route Knowledge (burnout +50, pivot +25, acquihire +0),
+`S = 1e4` seed capital, `G = 10` generated Beige Towers.
+
+**Codex is authorized to mint epoch 8** from these bytes under the epoch protocol (immutable
+snapshot, changelog, registered baselines), then run T01-C33's composed proof at one pinned seed
+against real Postgres, and hand the whole span back for designated review. **Nothing about epoch 7
+is touched.**
+
+After that review passes, AC1 and AC4 close and T01 goes to archival — the first hour finished:
+a player clicks, builds, crosses into the garage at ~7 minutes, watches their first company end in
+one of three ways decided by how they played, and starts again measurably ahead.
+
+**Still not started and still owner-only:** THE PUSH.
