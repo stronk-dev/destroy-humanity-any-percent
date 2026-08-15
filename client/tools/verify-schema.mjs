@@ -613,11 +613,22 @@ async function main() {
     throw new Error(`${path.relative(repositoryDirectory, relevanceRegistryPath)}: invalid relevance registry`);
   }
   const relevanceRegistryKeys = ["economy_catalog", "golden_report", "justification_changelog", "relevance_policy", "scenario"];
+  const relevanceRegistryBranchKeys = [...relevanceRegistryKeys, "branch_report"].sort();
   for (const [index, entry] of relevanceRegistry.entries.entries()) {
-    if (entry === null || typeof entry !== "object" || Array.isArray(entry) || JSON.stringify(Object.keys(entry).sort()) !== JSON.stringify(relevanceRegistryKeys)) {
+    const entryKeys = entry === null || typeof entry !== "object" || Array.isArray(entry) ? [] : Object.keys(entry).sort();
+    if (
+      entry === null ||
+      typeof entry !== "object" ||
+      Array.isArray(entry) ||
+      (JSON.stringify(entryKeys) !== JSON.stringify(relevanceRegistryKeys) &&
+        JSON.stringify(entryKeys) !== JSON.stringify(relevanceRegistryBranchKeys))
+    ) {
       throw new Error(`${path.relative(repositoryDirectory, relevanceRegistryPath)}: entry ${index} fields are not exact`);
     }
-    if (relevanceRegistryKeys.some((key) => typeof entry[key] !== "string" || entry[key].length === 0)) {
+    if (
+      relevanceRegistryKeys.some((key) => typeof entry[key] !== "string" || entry[key].length === 0) ||
+      ("branch_report" in entry && (typeof entry.branch_report !== "string" || entry.branch_report.length === 0))
+    ) {
       throw new Error(`${path.relative(repositoryDirectory, relevanceRegistryPath)}: entry ${index} paths are invalid`);
     }
     const policyFile = path.join(repositoryDirectory, entry.relevance_policy);
@@ -635,6 +646,13 @@ async function main() {
     }
     if (!validateRelevanceReport(await readJSON(goldenFile))) {
       throw new Error(`${path.relative(repositoryDirectory, goldenFile)}: ${validationErrors(validateRelevanceReport)}`);
+    }
+    if ("branch_report" in entry) {
+      const branchFile = path.join(repositoryDirectory, entry.branch_report);
+      const branchData = await readJSON(branchFile);
+      if (branchData.schema_version !== 2 || !Array.isArray(branchData.proofs) || !Array.isArray(branchData.failures)) {
+        throw new Error(`${path.relative(repositoryDirectory, branchFile)}: invalid relevance branch report`);
+      }
     }
   }
 
