@@ -12,13 +12,16 @@ runners, deployment credentials, or deployment steps.
 | Job | Repository command | Coverage |
 |---|---|---|
 | `server` | `make verify-server-core` | Cold Go vet/tests outside the parallel harness lane, plus generated production-formula/API drift |
+| `harness` | `make verify-harness HARNESS_WORKERS=12` | Cold harness tests, role proofs, pacing/relevance regeneration, and complete balance/epoch history guards |
 | `client` | `make verify-client` | strict TypeScript and Node/V8 tests; full Git history is required by KV-1 |
 | `browser` | `make test-browser` | Chromium, Firefox, and WebKit functional suites, then isolated Chromium performance |
 | `schema` | `make verify-schema` | schema compilation plus production and fixture catalogs |
 
-The server, browser, and composed-browser jobs have ten-minute timeouts; the remaining blocking
-jobs keep five-minute timeouts. The complete blocking workflow has a normative five-minute
-elapsed-time target, measured by parallel wall time rather than the sum of job ceilings.
+The isolated harness job has a thirty-minute timeout because the ratified first-hour evidence runs
+millions of deterministic transitions from cold caches. Server, browser, and composed-browser jobs
+have ten-minute timeouts; the remaining blocking jobs keep five-minute timeouts. Jobs run in
+parallel, so the harness lane is the current blocking-workflow critical path rather than serializing
+the server suite.
 
 ## Nightly numeric maintenance
 
@@ -95,6 +98,7 @@ make test-browser
 make test-browser-ci
 make test-game-ui-performance
 make verify-server-ci
+make verify-harness-ci HARNESS_WORKERS=12
 make fuzz-ci
 make vectors-check
 make vectors-check-ci

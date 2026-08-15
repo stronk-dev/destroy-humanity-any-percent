@@ -53,7 +53,10 @@ jobs:
     # Relevance and content-dynamics evidence are isolated from the core lane
     # so their cold, uncached simulation work does not serialize every server
     # package or run twice in one job.
-    timeout-minutes: 15
+    # The ratified T0-T1 evidence runs millions of deterministic transitions.
+    # Keep a real failure ceiling while leaving headroom above the measured
+    # cold run; this lane is isolated so it does not serialize core checks.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v6
         with:
@@ -62,7 +65,7 @@ jobs:
         with:
           go-version-file: server/go.mod
           cache-dependency-path: server/go.sum
-      - run: make verify-harness
+      - run: make verify-harness HARNESS_WORKERS=12
 
   client:
     runs-on: ubuntu-latest
