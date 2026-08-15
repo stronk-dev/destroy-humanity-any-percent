@@ -2915,3 +2915,36 @@ residuals:
 
 No candidate byte was consumed or modified, and implementation remains paused at the owner
 ratification gate. The user's `AGENTS.md` remains untouched.
+
+## 2026-08-15 — OWNER RULING + RATIFICATION: chaos model correction affirmed; `first_hour_policy.v1` v3 ratified
+
+Ruled by Marco (recorded by Claude from explicit selections):
+
+1. **The chaos plausibility correction is AFFIRMED as a MODEL defect, not an economy defect.**
+   v1 allowed a player holding zero cash and zero income to draw `wait` with equal weight; waiting
+   at zero income cannot change affordability, so no player model may choose it there. `wait` is
+   legal only when production income is positive. Chaos then reaches its first generator inside
+   30 s ~96.9 % of the time (median ≈ 22 s). **The T0 economy is NOT retuned on this evidence** —
+   click yield and the first generator's price stand. This is the anti-circularity rule's narrow
+   exemption exercised deliberately and on the record: the model was unrealistic, the envelope was
+   not lowered, and the content was left alone.
+   Note on authority: Codex *recommended* affirming; a persona change requires the OWNER's ruling.
+   The recommendation was correct and is now owner-ruled rather than adopted from the implementer.
+2. **RATIFIED:** `balance/testdata/t0-t1/first-hour-policy-v1.json` document version 3 at
+   `sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3`. Its hash joins
+   scenario identity. Versions 1 (`c56653c9…021c`) and 2 (`3c5c20bd…cd7c`) are WITHDRAWN and must
+   not be consumed. Any later change to the three player models reopens this lane.
+
+**T01-C34 and T01-C37–C39 are CLOSED.** Codex may now implement the C34 runner against the
+ratified policy document, then C32's exit rule, then the first-hour payoff mechanism (C31+C35, the
+starter package selected by the branched ending, shipping as epoch 8 with the `curriculum`
+artifact), then C33's composed proof at one pinned seed. AC1 and AC4 close out of that work.
+
+**Record of the three review rounds on this document** (worth keeping, because it is the
+cross-party gate running in its less common direction — Codex reviewing Claude's design):
+round 1 produced the document; round 2 (C37–C39) found incomplete RNG bytes, an undefined session
+clock, a single-objective ranker, and an envelope that was unreachable by construction; round 3
+found that v2's jitter was a pure phase shift producing zero seed diversity — measured and
+confirmed before fixing. Each round carried at least one substantive finding. A fourth round of
+*specification* findings would indicate the document is the wrong shape; implementation findings
+from here are ordinary.
