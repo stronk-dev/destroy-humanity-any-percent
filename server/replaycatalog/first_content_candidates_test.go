@@ -13,30 +13,46 @@ import (
 	"cloud-clicker/server/save"
 )
 
-func TestT0T1MintPromotesRatifiedBytesAndPreservesFirstContent(t *testing.T) {
+func TestFirstHourPayoffMintPromotesRatifiedCurriculumAndPreservesEpochSeven(t *testing.T) {
 	root := filepath.Join("..", "..")
 	manifest := t0T1CandidateManifest(t)
 	bundle, err := epochseed.Load(root)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if bundle.Seed.CurrentEpochID != 7 || len(bundle.Artifacts) != 18 || bundle.Hash != manifest.ConstantsHash ||
-		!epochseed.Accepts(epochseed.Current(bundle.Seed), manifest.ConstantsHash) {
+	if bundle.Seed.CurrentEpochID != 8 || len(bundle.Artifacts) != 19 ||
+		bundle.Hash != "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6" ||
+		!epochseed.Accepts(epochseed.Current(bundle.Seed), bundle.Hash) {
 		t.Fatalf("mint identity epoch=%d artifacts=%d hash=%s", bundle.Seed.CurrentEpochID, len(bundle.Artifacts), bundle.Hash)
 	}
+	epoch7Artifacts := make(map[string][]byte, len(manifest.Artifacts))
 	for _, row := range manifest.Artifacts {
 		source, sourceErr := os.ReadFile(filepath.Join(root, row.SourcePath))
 		production, productionErr := os.ReadFile(filepath.Join(root, row.ProductionPath))
 		if sourceErr != nil || productionErr != nil || !bytes.Equal(source, production) {
 			t.Fatalf("%s source/production mismatch source_err=%v production_err=%v", row.Name, sourceErr, productionErr)
 		}
+		epoch7Artifacts[row.Name] = source
+	}
+	curriculumCandidate, candidateErr := os.ReadFile(filepath.Join(root, "balance", "testdata", "t0-t1", "curriculum-v2.json"))
+	curriculumProduction, productionErr := os.ReadFile(filepath.Join(root, "balance", "curriculum", "t0-t1.json"))
+	if candidateErr != nil || productionErr != nil || !bytes.Equal(curriculumCandidate, curriculumProduction) {
+		t.Fatalf("curriculum source/production mismatch candidate_err=%v production_err=%v", candidateErr, productionErr)
 	}
 	loaded, err := Load(bundle.Hash, bundle.Artifacts)
 	if err != nil {
 		t.Fatalf("load minted bundle: %v", err)
 	}
-	if loaded.Opportunities == nil || loaded.Relevance == nil {
-		t.Fatal("epoch-7 bundle omitted its new artifact owners")
+	if loaded.Opportunities == nil || loaded.Relevance == nil || loaded.Curriculum == nil {
+		t.Fatal("epoch-8 bundle omitted an activated artifact owner")
+	}
+
+	epoch7Hash, err := save.ConstantsHashArtifacts(epoch7Artifacts)
+	if err != nil || epoch7Hash != manifest.ConstantsHash || epoch7Hash != bundle.Seed.Epochs[6].AcceptedHashes[0] {
+		t.Fatalf("epoch-7 fixture hash=%s manifest=%s err=%v", epoch7Hash, manifest.ConstantsHash, err)
+	}
+	if historical, err := Load(epoch7Hash, epoch7Artifacts); err != nil || historical.Curriculum != nil {
+		t.Fatalf("historical epoch-7 bundle curriculum=%v err=%v", historical.Curriculum != nil, err)
 	}
 
 	epoch6Artifacts := firstContentCandidateArtifacts(t)

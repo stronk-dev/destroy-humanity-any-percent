@@ -91,7 +91,7 @@ func TestFirstHourSuiteBindsPolicyIntoScenarioIdentity(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if suite.PolicyHash != RatifiedFirstHourPolicyHash || suite.ConstantsHash != "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789" {
+	if suite.PolicyHash != RatifiedFirstHourPolicyHash || suite.ConstantsHash != "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6" {
 		t.Fatalf("policy=%s constants=%s", suite.PolicyHash, suite.ConstantsHash)
 	}
 	if suite.ScenarioHash != FirstHourScenarioIdentity(suite.ScenarioBytes, suite.PolicyBytes) {

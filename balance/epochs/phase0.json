@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "current_epoch_id": 7,
+  "current_epoch_id": 8,
   "artifacts": [
     { "name": "commons", "path": "balance/commons/phase0.json" },
     { "name": "economy", "path": "balance/catalogs/phase0.json" },
@@ -19,7 +19,8 @@
     { "name": "pitch", "path": "balance/pitch.json" },
     { "name": "soul", "path": "balance/soul/first-content.json" },
     { "name": "opportunities", "path": "balance/opportunities/t0-t1.json" },
-    { "name": "relevance", "path": "balance/relevance/t0-t1.json" }
+    { "name": "relevance", "path": "balance/relevance/t0-t1.json" },
+    { "name": "curriculum", "path": "balance/curriculum/t0-t1.json" }
   ],
   "epochs": [
     {
@@ -77,6 +78,14 @@
       "changelog_ref": "changelog/epoch-7.md",
       "accepted_hashes": [
         "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789"
+      ]
+    },
+    {
+      "epoch_id": 8,
+      "name": "First-Hour Payoff",
+      "changelog_ref": "changelog/epoch-8.md",
+      "accepted_hashes": [
+        "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6"
       ]
     }
   ]

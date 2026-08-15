@@ -28,7 +28,7 @@ func activeContentBundle(t *testing.T) CatalogBundle {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if bundle.Seed.CurrentEpochID != 7 || bundle.Hash != "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789" {
+	if bundle.Seed.CurrentEpochID != 8 || bundle.Hash != "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6" {
 		t.Fatalf("active epoch=%d hash=%s", bundle.Seed.CurrentEpochID, bundle.Hash)
 	}
 	return loadCompleteReplayTestBundle(t, bundle.Hash, bundle.Artifacts)

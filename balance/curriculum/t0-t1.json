@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "first_failure": {
+    "run_seq": 1,
+    "founder_exit_count": 0,
+    "attended_ms": 900000,
+    "gate_id": "gate.t0_to_t1",
+    "exit_type": "scripted_first",
+    "evaluation": "first_player_company_command_after_accrual",
+    "requested_command_effect": "replaced_by_terminal_transition",
+    "next_run_key": "curriculum.scripted_first_failure.next_run",
+    "branches": [
+      {
+        "branch": "acquihire",
+        "minimum_purchased_generators": 200,
+        "minimum_owned_upgrades": 1,
+        "route_knowledge_bonus": 0,
+        "starter_package": {
+          "kind": "resource_grant",
+          "resource_id": "company.cash",
+          "amount": "1e4"
+        },
+        "title_key": "curriculum.first_failure.acquihire.title",
+        "body_key": "curriculum.first_failure.acquihire.body"
+      },
+      {
+        "branch": "burnout",
+        "cheapest_price_factor": "2e0",
+        "route_knowledge_bonus": 50,
+        "starter_package": {
+          "kind": "generated_generators",
+          "generator_id": "generator.beige_tower",
+          "count": 10
+        },
+        "title_key": "curriculum.first_failure.burnout.title",
+        "body_key": "curriculum.first_failure.burnout.body"
+      },
+      {
+        "branch": "pivot",
+        "route_knowledge_bonus": 25,
+        "starter_package": {
+          "kind": "preowned_upgrade",
+          "upgrade_id": "upgrade.reply_all_macro"
+        },
+        "title_key": "curriculum.first_failure.pivot.title",
+        "body_key": "curriculum.first_failure.pivot.body"
+      }
+    ]
+  }
+}

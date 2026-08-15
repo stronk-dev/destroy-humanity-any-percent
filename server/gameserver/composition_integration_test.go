@@ -219,12 +219,15 @@ func TestComposedGameserverPostgresSocketClearingAndGCIntegration(t *testing.T) 
 	}) {
 		t.Fatalf("Game UI snapshot=%+v", uiSnapshot)
 	}
-	if composition.CurrentHash != "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789" {
+	if composition.CurrentHash != "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6" {
 		t.Fatalf("composed constants hash=%s", composition.CurrentHash)
 	}
 	currentBundle, ok := composition.Catalogs.bundle(composition.CurrentHash)
 	if !ok {
 		t.Fatal("current replay bundle unavailable")
+	}
+	if currentBundle.Curriculum == nil {
+		t.Fatal("epoch-8 current replay bundle omitted curriculum")
 	}
 	activeCompany, err := composition.Accounts.ActiveCompanyState(ctx, created.AccountID)
 	if err != nil {
