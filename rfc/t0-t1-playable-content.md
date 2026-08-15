@@ -336,6 +336,62 @@ replay. The browser AC remains Game UI's separate live-content acceptance gate; 
 to duplicate two virtual hours in Playwright. A mutation that removes the automatic scripted Exit
 or bypasses the composed catalog must make the Postgres test fail.
 
+## AC1/AC4 implementation blockers (Codex, 2026-08-15 — T01-C34–T01-C36)
+
+The C30–C33 rulings close the product direction, but source-level implementation exposed three
+remaining executable choices. These are not test conveniences: each changes either the pacing
+answer or replay authority, so the implementer cannot choose it silently.
+
+### T01-C34 — C30 specifies a registry shape, not the three policies' literal behavior
+
+The accepted C30 contract says the registry must pin cadence/session windows, command ordering,
+bank/wait behavior, gate crossing, run-2 continuation, and Exit choice. It still supplies none of
+those bytes for `chaos.t0_t1`, `casual.t0_t1`, or `reference.greedy`. In particular, it does not
+choose cadence literals, Chaos's seeded choice distribution/substream, Casual's purchase order,
+or the exact wait edge. Those choices determine every AC1 percentile. Codex briefly authored one
+plausible registry while implementing C30, then removed it append-only when this authority gap was
+identified; treating implementer-selected policy bytes as an owner-ratified pacing contract would
+make the acceptance result circular.
+
+**Proposed contract:** owner-ratify the literal `first_hour_policy.v1` document before the runner
+uses it. A complete proposal may be derived from the already-shipped relevance ranker, but it must
+enumerate all three policies to the byte, including the seed derivation and every deterministic
+tie-break. The policy document, not Go defaults, is the authority.
+
+### T01-C35 — no shipped run-2 accelerator can satisfy the same-seed relation
+
+The candidate requires `run2_garage_gate < garage_gate` for the same Chaos seed. The production
+reset in `prestige.NewRunState` creates a zero-balance, zero-generator, zero-upgrade Company and
+does not apply Founder Reputation, Route Knowledge, or Network state to production. The archived
+prestige substrate stores those Founder fields, but no multiplier or starter-package consumer
+exists. At the scripted first failure, the live prestige threshold is `1e12`; the curriculum's
+early run does not thereby create an implemented production accelerator. Consequently the same
+policy against the same economy has no content-derived reason for run 2 to be faster. Making Chaos
+draw a luckier run-2 path would test RNG luck, not the design/02 prestige promise.
+
+**Proposed contract:** name and rule the smallest real run-2 accelerator before retaining this
+relation. The design-native choice is the existing Reputation bonus/unlock mechanism, but that is
+new production behavior and needs its own exact activation/arithmetic contract. If acceleration is
+still intentionally deferred, revise the relation rather than manufacturing it in the harness.
+
+### T01-C36 — C31 has no pinned production authority or replay/wire shape
+
+The ruled branch selector calls `A`/`B`/`R` balance data and requires automatic live production
+behavior, while also forbidding changes to the prestige artifact and the ratified epoch-7
+manifest. The only newly named data document is a harness-side policy registry; production's
+`CatalogBundle` has no first-hour/curriculum artifact. Reading fixture or deployment-current bytes
+inside the server would create a second replay authority, while compiling the literals into Go
+would turn ruled balance data into kernel policy. The wire is likewise not closed: `run_ended` is
+schema v2 with no branch field, terminal replay inputs freeze only `selected_exit_type`, and the
+client exact-object decoder rejects extra payload keys. The accepted copy has no ruled key family
+or branch-to-key binding yet.
+
+**Proposed contract:** either add a pinned curriculum/first-hour artifact owner to the bundle, or
+explicitly rule `A`/`B`/`R` as versioned kernel constants. In the same ruling, pin the replay input
+arm, the append-only `run_ended` schema widening and branch union, and the exact copy keys used by
+the three outcomes. Historical v2 events and pre-branch replay inputs must remain accepted and
+byte-identical.
+
 ## Candidate-round blocker (2026-08-10 — T01-C10)
 
 ### T01-C10 — Relevance cannot encode a pre-first-gate availability window

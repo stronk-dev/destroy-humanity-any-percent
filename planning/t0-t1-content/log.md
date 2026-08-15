@@ -2768,3 +2768,26 @@ pinned seed, the decision replays byte-identically, and removing the selector mu
 C30 policy registry → C32 exit rule → C31 branched scripted failure (+ measured literals) → C33
 composed proof at one pinned seed. AC1's grown milestone set and AC4's composed run close out of
 that work; T01 archives after their designated review.
+
+## 2026-08-15 — Codex implementation trace: BLOCKED on T01-C34–T01-C36
+
+Codex began the ruled closeout in the required order and built a strict C30 registry draft. The
+draft passed its focused cold Go test, but source tracing showed that accepting it would require
+three choices the owner has not actually made. Codex removed the speculative bytes append-only
+rather than letting an implementer-authored pacing policy become its own acceptance oracle.
+
+The blockers are filed in the RFC with complete proposals:
+
+1. **T01-C34:** C30 ratified the registry's shape but no literal cadence, selection, seed, tie-break,
+   or wait semantics for any of the three policies. Those bytes determine AC1 and need owner
+   ratification.
+2. **T01-C35:** `prestige.NewRunState` resets Company economy state and no shipped consumer applies
+   Founder Reputation/Network/Route Knowledge to production. The same-seed run-2-faster relation
+   therefore has no real accelerator; the harness may not manufacture one through luck.
+3. **T01-C36:** C31 calls `A`/`B`/`R` balance data while forbidding every pinned artifact from
+   moving. Production has no curriculum catalog owner, and `run_ended` v2/replay inputs/client
+   grammar have no branch arm. The authority plus exact wire/copy binding must be ruled together.
+
+No production behavior, ratified content, golden, acceptance box, or archival state changed. The
+user's uncommitted `AGENTS.md` remains untouched. Implementation is ready to resume once these
+three executable contracts land.
