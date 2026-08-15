@@ -18918,9 +18918,11 @@
         "intent_id": "01986666-0800-7000-8000-000000000803",
         "constants_hash": "sha256:cccb799506231f1d7810a7bb333203f71890efd9c4f2c1199ef5d9c8792ec8b6",
         "canonical_payload": {
-          "expected_founder_revision": 2,
+          "action_id": "manual.click",
+          "count": 1,
           "expected_revision": 1,
-          "kind": "wind_down"
+          "kind": "perform_manual_batch",
+          "window_ms": 5000
         },
         "replay_inputs": {
           "command": {

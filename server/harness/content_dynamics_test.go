@@ -12,23 +12,25 @@ import (
 	"cloud-clicker/server/save"
 )
 
-func TestContentDynamicsProductionRegistryPinsEpochSevenSnapshot(t *testing.T) {
+func TestContentDynamicsProductionRegistryPinsImmutableEpochSnapshots(t *testing.T) {
 	entries, err := LoadContentDynamicsRegistry("../..")
-	if err != nil || len(entries) != 1 {
+	if err != nil || len(entries) != 2 {
 		t.Fatalf("entries=%+v err=%v", entries, err)
 	}
-	entry := entries[0]
-	if entry.EpochID != 7 || entry.EpochSeedPath != epochseed.Path ||
-		entry.BundleSnapshotManifest != "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/manifest.v1.json" ||
-		entry.Scenario != "testdata/harness/content-dynamics/scenarios/epoch-7-candidate.v1.json" ||
-		entry.GoldenReport != "testdata/harness/content-dynamics/goldens/epoch-7.v1.json" {
-		t.Fatalf("unexpected epoch-7 registry entry: %+v", entry)
+	if entries[0].EpochID != 7 || entries[0].BundleSnapshotManifest != "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/manifest.v1.json" ||
+		entries[1].EpochID != 8 || entries[1].EpochSeedPath != epochseed.Path ||
+		entries[1].BundleSnapshotManifest != "testdata/harness/content-dynamics/bundles/sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6/manifest.v1.json" ||
+		entries[1].Scenario != "testdata/harness/content-dynamics/scenarios/epoch-8.v1.json" ||
+		entries[1].GoldenReport != "testdata/harness/content-dynamics/goldens/epoch-8.v1.json" {
+		t.Fatalf("unexpected content-dynamics registry: %+v", entries)
 	}
 	if err := GenerateRegisteredContentSnapshots("../.."); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := LoadContentBundleSnapshot("../..", entry); err != nil {
-		t.Fatal(err)
+	for _, entry := range entries {
+		if _, err := LoadContentBundleSnapshot("../..", entry); err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 

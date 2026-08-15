@@ -46,6 +46,15 @@ type FirstHourRunResult struct {
 	InvariantFailures []string               `json:"invariant_failures"`
 }
 
+// FirstHourScriptCommand is one player decision emitted by the ratified
+// first-hour policy. Persistence revisions and intent IDs are coordinates the
+// composed executor supplies; they are not policy decisions.
+type FirstHourScriptCommand struct {
+	AtMS    int64                     `json:"at_ms"`
+	Mode    production.EvaluationMode `json:"mode"`
+	Request production.IntentRequest  `json:"-"`
+}
+
 type FirstHourExperimentReport struct {
 	SchemaVersion int                  `json:"schema_version"`
 	ScenarioID    string               `json:"scenario_id"`
@@ -78,34 +87,51 @@ type firstHourRuntime struct {
 	milestones        map[string]*int64
 	ending            *FirstHourEndingSample
 	lastSession       int64
+	commands          *[]FirstHourScriptCommand
 }
 
 func (suite *FirstHourSuite) RunExperiment(spec RunSpec, seed uint64, experiment FirstHourExperiment) FirstHourRunResult {
+	result, _ := suite.runExperiment(spec, seed, experiment, false)
+	return result
+}
+
+// RunExperimentScript returns the exact ordered player decisions consumed by
+// the headless measurement. It is intentionally a single-run proof seam; the
+// scenario and policy registry remain the only script authority.
+func (suite *FirstHourSuite) RunExperimentScript(spec RunSpec, seed uint64, experiment FirstHourExperiment) (FirstHourRunResult, []FirstHourScriptCommand) {
+	return suite.runExperiment(spec, seed, experiment, true)
+}
+
+func (suite *FirstHourSuite) runExperiment(spec RunSpec, seed uint64, experiment FirstHourExperiment, capture bool) (FirstHourRunResult, []FirstHourScriptCommand) {
 	result := FirstHourRunResult{Key: suite.RunKey(spec, seed), PolicyHash: suite.PolicyHash, Outcome: "completed", InvariantFailures: []string{}}
+	commands := []FirstHourScriptCommand{}
 	if err := validateFirstHourExperiment(experiment); err != nil {
-		return failFirstHour(result, err)
+		return failFirstHour(result, err), commands
 	}
 	policy, ok := suite.Policy.Policy(spec.PolicyID, spec.PolicyVersion)
 	if !ok {
-		return failFirstHour(result, fmt.Errorf("unknown first-hour policy %s v%d", spec.PolicyID, spec.PolicyVersion))
+		return failFirstHour(result, fmt.Errorf("unknown first-hour policy %s v%d", spec.PolicyID, spec.PolicyVersion)), commands
 	}
 	company, err := newFirstHourCompany(suite.Bundle.Economy)
 	if err != nil {
-		return failFirstHour(result, err)
+		return failFirstHour(result, err), commands
 	}
 	founder := &save.State{ReputationLevel: 0, RouteKnowledgeBalance: 0, LedgerFactKinds: map[string]bool{}, NetworkSlots: []save.NetworkSlot{}, ExitHistory: []save.ExitRecord{}}
 	runtime := firstHourRuntime{suite: suite, spec: spec, policy: policy, seed: seed, experiment: experiment,
 		company: company, founder: founder, revision: 1, milestones: map[string]*int64{}, lastSession: -1}
+	if capture {
+		runtime.commands = &commands
+	}
 	boundaries, err := firstHourBoundaries(policy, seed, spec.HorizonMS)
 	if err != nil {
-		return failFirstHour(result, err)
+		return failFirstHour(result, err), commands
 	}
 	for _, boundary := range boundaries {
 		if runtime.transitions >= suite.Scenario.TransitionBudget {
-			return failFirstHour(result, fmt.Errorf("first-hour transition budget exceeded: executed %d, maximum %d", runtime.transitions, suite.Scenario.TransitionBudget))
+			return failFirstHour(result, fmt.Errorf("first-hour transition budget exceeded: executed %d, maximum %d", runtime.transitions, suite.Scenario.TransitionBudget)), commands
 		}
 		if err := runtime.step(boundary); err != nil {
-			return failFirstHour(result, err)
+			return failFirstHour(result, err), commands
 		}
 		if runtime.milestones["milestone.first_elective_exit"] != nil {
 			break
@@ -116,7 +142,7 @@ func (suite *FirstHourSuite) RunExperiment(spec RunSpec, seed uint64, experiment
 	if len(result.InvariantFailures) != 0 {
 		result.Outcome = "failed"
 	}
-	return result
+	return result, commands
 }
 
 func (suite *FirstHourSuite) RunAllExperiments(experiment FirstHourExperiment, workerLimit int) (FirstHourExperimentReport, error) {
@@ -300,7 +326,9 @@ func (runtime *firstHourRuntime) step(boundary firstHourBoundary) error {
 		return nil
 	}
 	mode := production.ModeOnline
-	if boundary.first && runtime.lastSession >= 0 && boundary.sessionIndex != runtime.lastSession {
+	firstSessionGap := boundary.first && runtime.lastSession < 0 && boundary.atMS > 0
+	laterSessionGap := boundary.first && runtime.lastSession >= 0 && boundary.sessionIndex != runtime.lastSession
+	if firstSessionGap || laterSessionGap {
 		mode = production.ModeOffline
 		if err := prestigecore.RecordOfflineSpan(runtime.company, runtime.company.EvaluatedThrough, now, runtime.suite.Bundle.Prestige.CatchupCeilingMS); err != nil {
 			return err
@@ -320,9 +348,11 @@ func (runtime *firstHourRuntime) step(boundary firstHourBoundary) error {
 	}
 	founderAttended := runtime.founderAttendedMS + attended
 	if runtime.scriptedFailureDue(attended) {
+		runtime.recordCommand(boundary.atMS, mode, runtime.manualRequest())
 		return runtime.applyEnding(now, boundary.atMS, attended)
 	}
 	if runtime.electiveExitReady(founderAttended) {
+		runtime.recordCommand(boundary.atMS, mode, production.IntentRequest{Kind: production.IntentWindDown})
 		runtime.observeRunEnded(boundary.atMS, "collapse")
 		return nil
 	}
@@ -343,7 +373,7 @@ func (runtime *firstHourRuntime) step(boundary firstHourBoundary) error {
 	if wait {
 		return nil
 	}
-	return runtime.apply(request, now, boundary.atMS, production.ModeOnline)
+	return runtime.apply(request, now, boundary.atMS, mode)
 }
 
 func (runtime *firstHourRuntime) companyRevision() save.Revision {
@@ -554,6 +584,7 @@ func (runtime *firstHourRuntime) observeReferencePurchase(atMS int64, id string)
 }
 
 func (runtime *firstHourRuntime) apply(request production.IntentRequest, now time.Time, atMS int64, mode production.EvaluationMode) error {
+	runtime.recordCommand(atMS, mode, request)
 	result, err := production.SimulateTransition(request, runtime.company, runtime.suite.Bundle.Economy,
 		production.SimulationDependencies{Routes: runtime.suite.Bundle.Routes}, runtime.companyRevision(), mode, now, nil, nil, production.AblationMask{})
 	if err != nil {
@@ -566,6 +597,12 @@ func (runtime *firstHourRuntime) apply(request production.IntentRequest, now tim
 	runtime.revision++
 	runtime.observeDecision(atMS, request.Kind, result.Decision)
 	return validateFirstHourCompany(runtime.suite.Bundle.Economy, runtime.company)
+}
+
+func (runtime *firstHourRuntime) recordCommand(atMS int64, mode production.EvaluationMode, request production.IntentRequest) {
+	if runtime.commands != nil {
+		*runtime.commands = append(*runtime.commands, FirstHourScriptCommand{AtMS: atMS, Mode: mode, Request: request})
+	}
 }
 
 func (runtime *firstHourRuntime) applyEnding(now time.Time, wallMS, attended int64) error {

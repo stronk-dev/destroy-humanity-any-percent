@@ -133,47 +133,72 @@ func buildFounderExitAudit(command save.ReplayCommand, founderRevision save.Revi
 	return resolved, auditReceipt, err
 }
 
-func verifyFounderExitLiveParity(command save.ReplayCommand, founderRevision save.Revision, request IntentRequest,
+func applyFounderExitLive(founderCommand save.FounderReplayCommand, request IntentRequest,
 	before, wantAfter *save.State, decision save.ExitDecision, resolvedJSON, receiptJSON json.RawMessage,
 	catalogs CatalogBundle,
-) error {
-	var resolved founderExitResolvedWire
-	if err := decodeReplayStrict(resolvedJSON, &resolved); err != nil {
-		return err
+) (FounderLoggedTransition, error) {
+	if founderCommand.IntentID != request.IntentID || founderCommand.FounderStreamID == "" ||
+		founderCommand.FounderID == "" || founderCommand.Revision < 1 || founderCommand.FounderLogSeq < 1 ||
+		founderCommand.ServerTSMS < 1 {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: live Founder Exit command", ErrInvalidEngineState)
+	}
+	inputs, err := save.MarshalFounderReplayInputs(founderCommand, json.RawMessage(resolvedJSON))
+	if err != nil {
+		return FounderLoggedTransition{}, err
 	}
 	working, err := cloneFounderReplayState(before, catalogs.Economy)
 	if err != nil {
-		return err
+		return FounderLoggedTransition{}, err
 	}
-	founderCommand := save.FounderReplayCommand{IntentID: command.IntentID,
-		FounderStreamID: founderRevision.StreamID, FounderID: founderRevision.OwnerID,
-		Revision: founderRevision.Number, FounderLogSeq: 1, ServerTSMS: 1}
-	replayed, err := applyFounderExitResolved(working, founderCommand, request, catalogs, resolved)
-	if err != nil || replayed.Outcome != decision.Outcome || !jsonSemanticallyEqual(replayed.Receipt, receiptJSON) ||
-		len(replayed.Events) != len(decision.FounderEvents) {
-		return fmt.Errorf("%w: live Founder Exit parity", ErrInvalidEngineState)
+	replayed, err := ApplyFounderLogged(working, request.CanonicalPayload, catalogs, inputs)
+	if err != nil || replayed.Outcome != decision.Outcome {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: live Founder Exit parity", ErrInvalidEngineState)
+	}
+	baseReceipt, err := founderReceiptWithoutFiscalSweep(replayed.Receipt)
+	if err != nil || !jsonSemanticallyEqual(baseReceipt, receiptJSON) {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: live Founder Exit receipt parity", ErrInvalidEngineState)
 	}
 	if decision.Outcome == save.IntentApplied {
 		wantState, cloneErr := cloneFounderReplayState(before, catalogs.Economy)
 		if cloneErr != nil || applyFounderReplayOutput(wantState, wantAfter) != nil {
-			return fmt.Errorf("%w: live Founder Exit expected state", ErrInvalidEngineState)
+			return FounderLoggedTransition{}, fmt.Errorf("%w: live Founder Exit expected state", ErrInvalidEngineState)
+		}
+		if catalogs.Fiscal != nil {
+			fiscalState := fiscalStateFromSave(wantState)
+			if _, sweepErr := catalogs.Fiscal.Sweep(&fiscalState, founderCommand.ServerTSMS); sweepErr != nil {
+				return FounderLoggedTransition{}, fmt.Errorf("%w: live Founder Exit Fiscal sweep", ErrInvalidEngineState)
+			}
+			fiscalStateToSave(wantState, fiscalState)
 		}
 		got, gotErr := save.EncodeState(replayed.State)
 		want, wantErr := save.EncodeState(wantState)
 		if gotErr != nil || wantErr != nil || !bytes.Equal(got, want) {
-			return fmt.Errorf("%w: live Founder Exit state parity at %s (got=%v want=%v)", ErrInvalidEngineState,
+			return FounderLoggedTransition{}, fmt.Errorf("%w: live Founder Exit state parity at %s (got=%v want=%v)", ErrInvalidEngineState,
 				firstStateDifference(got, want), gotErr, wantErr)
 		}
 	}
-	for index := range replayed.Events {
-		if replayed.Events[index].Kind != decision.FounderEvents[index].Kind ||
-			replayed.Events[index].SchemaVersion != decision.FounderEvents[index].SchemaVersion ||
-			replayed.Events[index].IntentID != decision.FounderEvents[index].IntentID ||
-			!jsonSemanticallyEqual(replayed.Events[index].Payload, decision.FounderEvents[index].Payload) {
-			return fmt.Errorf("%w: live Founder Exit event parity", ErrInvalidEngineState)
+	offset := len(replayed.Events) - len(decision.FounderEvents)
+	if offset < 0 || offset > 1 || offset == 1 && replayed.Events[0].Kind != save.EventFiscalPeriodHarvested {
+		return FounderLoggedTransition{}, fmt.Errorf("%w: live Founder Exit event cardinality", ErrInvalidEngineState)
+	}
+	for index := range decision.FounderEvents {
+		actual := replayed.Events[index+offset]
+		want := decision.FounderEvents[index]
+		if actual.Kind != want.Kind || actual.SchemaVersion != want.SchemaVersion ||
+			actual.IntentID != want.IntentID || !jsonSemanticallyEqual(actual.Payload, want.Payload) {
+			return FounderLoggedTransition{}, fmt.Errorf("%w: live Founder Exit event parity", ErrInvalidEngineState)
 		}
 	}
-	return nil
+	return replayed, nil
+}
+
+func founderReceiptWithoutFiscalSweep(receipt json.RawMessage) (json.RawMessage, error) {
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(receipt, &fields); err != nil || fields == nil {
+		return nil, ErrInvalidEngineState
+	}
+	delete(fields, "fiscal_sweep")
+	return json.Marshal(fields)
 }
 
 func firstStateDifference(left, right []byte) string {

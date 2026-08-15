@@ -36,7 +36,8 @@ type ExitVersionFloors struct {
 }
 
 type ExitMutation func(founder *State, founderRevision Revision, company *State, companyRevision Revision) (ExitDecision, error)
-type LoggedExitMutation func(founder *State, founderRevision Revision, company *State, companyRevision Revision, command ReplayCommand) (ExitDecision, json.RawMessage, error)
+type LoggedExitMutation func(founder *State, founderRevision Revision, company *State, companyRevision Revision,
+	command ReplayCommand, founderCommand FounderReplayCommand) (ExitDecision, json.RawMessage, error)
 type ExitFaultInjector func(step string) error
 
 type ExitRevisionConflict struct {
@@ -229,7 +230,7 @@ func (s *Store) applyExitTransaction(
 	var decision ExitDecision
 	var replayInputs json.RawMessage
 	if loggedMutate != nil {
-		decision, replayInputs, err = loggedMutate(founder, founderRevision, company, companyRevision, command)
+		decision, replayInputs, err = loggedMutate(founder, founderRevision, company, companyRevision, command, founderCommand)
 	} else {
 		decision, err = mutate(founder, founderRevision, company, companyRevision)
 	}

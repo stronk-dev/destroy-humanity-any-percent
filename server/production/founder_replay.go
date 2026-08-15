@@ -131,7 +131,8 @@ func ApplyFounderLogged(state *save.State, canonicalPayload []byte, catalogs Cat
 	case IntentSpendFiscalCredit:
 		return applyFounderFiscalSpendResolved(state, request, revision, catalogs, wire.Command.ServerTSMS, wire.Resolved)
 	case founderExitResolvedKind:
-		if request.Kind != IntentCrossGate && request.ExpectedFounderRevision != wire.Command.Revision {
+		explicitExit := request.Kind == IntentAcceptExitOffer || request.Kind == IntentWindDown || request.Kind == IntentFileIPO
+		if explicitExit && request.ExpectedFounderRevision != wire.Command.Revision {
 			return FounderLoggedTransition{}, fmt.Errorf("%w: Exit Founder revision", ErrInvalidReplayInputs)
 		}
 		var resolved founderExitResolvedWire

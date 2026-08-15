@@ -130,8 +130,8 @@ func (s *Service) handleExit(ctx context.Context, streamID string, mode Evaluati
 		return HandleResult{}, err
 	}
 	result, err := s.applyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, request.ExpectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
-		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand) (save.ExitDecision, json.RawMessage, error) {
-			return s.applyLoggedExit(ctx, request, founder, founderRevision, company, companyRevision, command, mode, now, executedRoutes)
+		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand, founderCommand save.FounderReplayCommand) (save.ExitDecision, json.RawMessage, error) {
+			return s.applyLoggedExit(ctx, request, founder, founderRevision, company, companyRevision, command, founderCommand, mode, now, executedRoutes)
 		})
 	if err != nil {
 		if errors.Is(err, soul.ErrRecoveryActive) {
@@ -194,8 +194,8 @@ func (s *Service) handleScriptedCrossGateExit(ctx context.Context, streamID stri
 		return HandleResult{}, err
 	}
 	result, err := s.applyExitTransactionLogged(ctx, streamID, request.ExpectedRevision, expectedFounderRevision, request.IntentID, request.RequestHash, request.CanonicalPayload,
-		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand) (save.ExitDecision, json.RawMessage, error) {
-			return s.applyLoggedExit(ctx, request, founder, founderRevision, company, companyRevision, command, mode, now, executedRoutes)
+		func(founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand, founderCommand save.FounderReplayCommand) (save.ExitDecision, json.RawMessage, error) {
+			return s.applyLoggedExit(ctx, request, founder, founderRevision, company, companyRevision, command, founderCommand, mode, now, executedRoutes)
 		})
 	if err != nil {
 		if errors.Is(err, soul.ErrRecoveryActive) {
@@ -342,7 +342,7 @@ func rejectedExitDecision(request IntentRequest, revision int64, category, detai
 	return save.ExitDecision{Outcome: save.IntentRejected, Receipt: marshalRejection(request.IntentID, revision, category, detail)}
 }
 
-func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand, mode EvaluationMode, now time.Time, executedRoutes []string) (save.ExitDecision, json.RawMessage, error) {
+func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, command save.ReplayCommand, founderCommand save.FounderReplayCommand, mode EvaluationMode, now time.Time, executedRoutes []string) (save.ExitDecision, json.RawMessage, error) {
 	if err := requireFounderCatalogCoherence(founderRevision, companyRevision); err != nil {
 		return save.ExitDecision{}, nil, err
 	}
@@ -447,17 +447,15 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 	if err != nil {
 		return save.ExitDecision{}, nil, err
 	}
-	if err := verifyFounderExitLiveParity(command, founderRevision, request, founder, transition.Founder,
-		transition.Decision, founderResolved, founderReceipt, current); err != nil {
+	founderTransition, err := applyFounderExitLive(founderCommand, request, founder, transition.Founder,
+		transition.Decision, founderResolved, founderReceipt, current)
+	if err != nil {
 		return save.ExitDecision{}, nil, err
 	}
 	transition.Decision.FounderReplayResolved = founderResolved
-	transition.Decision.FounderAuditReceipt = founderReceipt
-	if transition.Decision.Outcome == save.IntentApplied {
-		if err := applyFounderReplayOutput(founder, transition.Founder); err != nil {
-			return save.ExitDecision{}, nil, err
-		}
-	}
+	transition.Decision.FounderAuditReceipt = founderTransition.Receipt
+	transition.Decision.FounderEvents = founderTransition.Events
+	*founder = *founderTransition.State
 	return transition.Decision, replayInputs, nil
 }
 

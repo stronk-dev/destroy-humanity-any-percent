@@ -133,6 +133,35 @@ func TestFirstHourRunnerUsesRatifiedPolicyAndRealTransitions(t *testing.T) {
 	}
 }
 
+func TestFirstHourCasualInitialJitterIsOfflineFromFounderGenesis(t *testing.T) {
+	repositoryRoot := filepath.Clean(filepath.Join("..", ".."))
+	suite, err := LoadFirstHourSuite(repositoryRoot,
+		"balance/testdata/t0-t1/harness-scenario-v1.json",
+		"balance/testdata/t0-t1/first-hour-policy-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var spec RunSpec
+	for _, candidate := range suite.Scenario.Runs {
+		if candidate.PolicyID == "casual.t0_t1" {
+			spec = candidate
+			break
+		}
+	}
+	policy, _ := suite.Policy.Policy(spec.PolicyID, spec.PolicyVersion)
+	boundaries, err := firstHourBoundaries(policy, 0, spec.HorizonMS)
+	if err != nil || len(boundaries) == 0 || boundaries[0].atMS <= 0 {
+		t.Fatalf("casual boundaries=%v err=%v", boundaries, err)
+	}
+	experiment := FirstHourExperiment{AcquihirePurchasedMinimum: 200, BurnoutPriceFactor: "2e0",
+		RouteKnowledgeBonus: 50, SeedCapital: "1e4", GeneratedBeigeTowers: 10}
+	result := suite.RunExperiment(spec, 0, experiment)
+	first := milestoneValue(result.Milestones, "milestone.first_manual")
+	if result.Outcome != "completed" || first == nil || *first != 0 {
+		t.Fatalf("initial offline jitter leaked into attended clock: result=%+v", result)
+	}
+}
+
 func TestFirstHourReferenceReusesProjectedTimeRanker(t *testing.T) {
 	repositoryRoot := filepath.Clean(filepath.Join("..", ".."))
 	suite, err := LoadFirstHourSuite(repositoryRoot,

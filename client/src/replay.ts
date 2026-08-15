@@ -1717,7 +1717,8 @@ function applyFounderExit(state: FounderReplayState, request: Intent, wire: Foun
 	const activatesSoul = probedVersion >= 20 && state.wireVersion < 20;
   const keys = ["kind", "outcome", "company_stream_id", "run_seq", "run_log_seq", "result_constants_hash", "reputation_delta", "route_knowledge_delta", "attended_ms", "age_ms_before", "age_ms_after", "achievement_score_delta", "added_network_slots", "added_ledger_fact_kinds", "added_lifetime_achievements", "exit_record", "result_founder_wire_version", "rejection", ...(activatesSoul ? ["next_soul"] : [])];
 	const raw = exactObject(wire.resolved, keys, "Founder Exit inputs");
-  if (request.kind !== "cross_gate" && request.expected_founder_revision !== wire.command.revision) throw new RangeError("Founder Exit revision mismatch");
+  const explicitExit = request.kind === "accept_exit_offer" || request.kind === "wind_down" || request.kind === "file_ipo";
+  if (explicitExit && request.expected_founder_revision !== wire.command.revision) throw new RangeError("Founder Exit revision mismatch");
   const companyStreamId = uuidString(raw.company_stream_id); const runSeq = safeInteger(raw.run_seq, 1, MAX_EXACT_INTEGER); safeInteger(raw.run_log_seq, 1, MAX_EXACT_INTEGER);
   const resultHash = string(raw.result_constants_hash); if (!hashPattern.test(resultHash)) throw new SyntaxError("invalid Founder result hash");
   const ageBefore = safeInteger(raw.age_ms_before, 0, MAX_EXACT_INTEGER); const ageAfter = safeInteger(raw.age_ms_after, 0, MAX_EXACT_INTEGER); const attended = safeInteger(raw.attended_ms, 0, MAX_EXACT_INTEGER);

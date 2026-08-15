@@ -264,7 +264,7 @@ func exitTestMutation(ownerID, companyStreamID, intentID, hash string, now time.
 
 func loggedExitTestMutation(t *testing.T, ownerID, companyStreamID, intentID, hash string, now time.Time) LoggedExitMutation {
 	base := exitTestMutation(ownerID, companyStreamID, intentID, hash, now)
-	return func(founder *State, founderRevision Revision, company *State, companyRevision Revision, command ReplayCommand) (ExitDecision, json.RawMessage, error) {
+	return func(founder *State, founderRevision Revision, company *State, companyRevision Revision, command ReplayCommand, _ FounderReplayCommand) (ExitDecision, json.RawMessage, error) {
 		decision, err := base(founder, founderRevision, company, companyRevision)
 		decision.FounderReplayResolved, _ = json.Marshal(map[string]any{"kind": "exit.v1",
 			"company_stream_id": command.CompanyStreamID, "run_seq": command.RunSeq,

@@ -73,7 +73,12 @@ func decodeContentDynamicsRegistry(data []byte) ([]ContentDynamicsRegistryEntry,
 		}
 		entry := ContentDynamicsRegistryEntry{EpochSeedPath: *row.EpochSeedPath, EpochID: *row.EpochID,
 			BundleSnapshotManifest: *row.BundleSnapshotManifest, Scenario: *row.Scenario, GoldenReport: *row.GoldenReport}
-		for _, path := range []string{entry.EpochSeedPath, entry.BundleSnapshotManifest, entry.Scenario, entry.GoldenReport} {
+		if !validRepositoryPath(entry.EpochSeedPath) {
+			return nil, fmt.Errorf("invalid content-dynamics epoch seed path %q", entry.EpochSeedPath)
+		}
+		// Every historical entry reads the same append-only epoch authority. Only
+		// the generated snapshot, scenario, and report are entry-owned paths.
+		for _, path := range []string{entry.BundleSnapshotManifest, entry.Scenario, entry.GoldenReport} {
 			if !validRepositoryPath(path) || owned[path] {
 				return nil, fmt.Errorf("invalid or duplicate content-dynamics path %q", path)
 			}

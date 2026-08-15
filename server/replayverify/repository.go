@@ -645,10 +645,10 @@ func (repository *Repository) events(ctx context.Context, companyStreamID, inten
 		FROM events e
 		JOIN save_streams company ON company.id=$1 AND company.owner_kind='founder' AND company.scope='company'
 		WHERE e.intent_id=$2 AND (
-			e.stream_id=company.id OR e.stream_id IN (
+			e.stream_id=company.id OR (e.kind='founder_advanced' AND e.stream_id IN (
 				SELECT founder.id FROM save_streams founder
 				WHERE founder.owner_kind='founder' AND founder.scope='founder' AND founder.owner_id=company.owner_id
-			)
+			))
 		)
 		ORDER BY CASE WHEN e.stream_id=company.id THEN 1 ELSE 0 END,e.event_seq,e.event_id`, companyStreamID, intentID)
 	if err != nil {
