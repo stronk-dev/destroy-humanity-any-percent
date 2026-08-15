@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "operations": [
+    {"operation_id": "create_minigame_session", "version": 1},
+    {"operation_id": "get_current_minigame_session", "version": 1},
+    {"operation_id": "play_minigame_command", "version": 1},
+    {"operation_id": "resolve_minigame_session", "version": 1}
+  ],
+  "tenants": [
+    {"engine_ref": "pitch", "engine_version": "1.0.0", "minigame_id": "pitch"}
+  ]
+}

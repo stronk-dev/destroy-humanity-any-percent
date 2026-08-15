@@ -1,0 +1,303 @@
+{
+  "schema_version": 4,
+  "resources": [
+    {
+      "id": "company.cash",
+      "scope": "company",
+      "numeric_kind": "decimal",
+      "initial": "0",
+      "minimum": "0",
+      "hardcap": { "amount": "1e1000", "reason_key": "resource.company_cash.cap.phase0" }
+    },
+    {
+      "id": "company.permits",
+      "scope": "company",
+      "numeric_kind": "decimal",
+      "initial": "0",
+      "minimum": "0",
+      "hardcap": { "amount": "2.4e1", "reason_key": "resource.company_permits.cap.phase0" }
+    }
+  ],
+  "generator_classes": [
+    {
+      "id": "generator.beige_tower",
+      "tier": 0,
+      "category": "category.hardware",
+      "price": { "resource_id": "company.cash", "base": "1e1", "curve": { "kind": "geometric", "ratio": "1.13e0" } },
+      "production": { "resource_id": "company.cash", "base_rate": "1e0" },
+      "provisioned_hardcap": { "count": 9007199254740991, "reason_key": "generator.beige_tower.provisioned_cap" },
+      "ladder": [
+        { "purchased_at": 25, "multiplier_ppm": 2000000 },
+        { "purchased_at": 50, "multiplier_ppm": 2000000 },
+        { "purchased_at": 100, "multiplier_ppm": 2000000 }
+      ],
+      "roles": [
+        { "kind": "synergy_feed", "pool_id": "pool.operational_excellence" },
+        { "kind": "manual_output", "action_id": "manual.click", "per_purchased_ppm": 5000 },
+        { "kind": "stock_rate", "per_purchased_ppm": 1000 }
+      ]
+    },
+    {
+      "id": "generator.dot_matrix_queue",
+      "tier": 0,
+      "category": "category.hardware",
+      "price": { "resource_id": "company.cash", "base": "1.2e2", "curve": { "kind": "geometric", "ratio": "1.12e0" } },
+      "production": { "resource_id": "company.cash", "base_rate": "6.5e0" },
+      "ladder": [
+        { "purchased_at": 20, "multiplier_ppm": 2000000 },
+        { "purchased_at": 50, "multiplier_ppm": 2000000 },
+        { "purchased_at": 100, "multiplier_ppm": 2000000 }
+      ],
+      "roles": [{ "kind": "synergy_feed", "pool_id": "pool.operational_excellence" }]
+    },
+    {
+      "id": "generator.answering_machine",
+      "tier": 0,
+      "category": "category.office",
+      "price": { "resource_id": "company.cash", "base": "1.44e3", "curve": { "kind": "geometric", "ratio": "1.11e0" } },
+      "production": { "resource_id": "company.cash", "base_rate": "4.225e1" },
+      "ladder": [
+        { "purchased_at": 25, "multiplier_ppm": 2000000 },
+        { "purchased_at": 55, "multiplier_ppm": 2000000 },
+        { "purchased_at": 100, "multiplier_ppm": 2000000 }
+      ],
+      "roles": [{ "kind": "manual_output", "action_id": "manual.click", "per_purchased_ppm": 10000 }]
+    },
+    {
+      "id": "generator.nephew_intern",
+      "tier": 0,
+      "category": "category.people",
+      "price": { "resource_id": "company.cash", "base": "1.728e4", "curve": { "kind": "geometric", "ratio": "1.1e0" } },
+      "production": { "resource_id": "company.cash", "base_rate": "2.74625e2" },
+      "ladder": [
+        { "purchased_at": 30, "multiplier_ppm": 2000000 },
+        { "purchased_at": 60, "multiplier_ppm": 2000000 },
+        { "purchased_at": 100, "multiplier_ppm": 2000000 }
+      ],
+      "roles": [{ "kind": "stock_rate", "per_purchased_ppm": 2000 }]
+    },
+    {
+      "id": "generator.garage_rack",
+      "tier": 1,
+      "category": "category.hardware",
+      "price": { "resource_id": "company.cash", "base": "2.0736e5", "curve": { "kind": "geometric", "ratio": "1.13e0" } },
+      "production": { "resource_id": "company.cash", "base_rate": "1.7850625e3" },
+      "ladder": [
+        { "purchased_at": 25, "multiplier_ppm": 2000000 },
+        { "purchased_at": 50, "multiplier_ppm": 2000000 },
+        { "purchased_at": 100, "multiplier_ppm": 2000000 }
+      ],
+      "roles": [{ "kind": "synergy_feed", "pool_id": "pool.institutional_knowledge" }]
+    },
+    {
+      "id": "generator.crt_wall",
+      "tier": 1,
+      "category": "category.hardware",
+      "price": { "resource_id": "company.cash", "base": "2.48832e6", "curve": { "kind": "geometric", "ratio": "1.12e0" } },
+      "production": { "resource_id": "company.cash", "base_rate": "1.160290625e4" },
+      "ladder": [
+        { "purchased_at": 20, "multiplier_ppm": 2000000 },
+        { "purchased_at": 50, "multiplier_ppm": 2000000 },
+        { "purchased_at": 100, "multiplier_ppm": 2000000 }
+      ],
+      "roles": [{ "kind": "synergy_feed", "pool_id": "pool.institutional_knowledge" }]
+    },
+    {
+      "id": "generator.first_hire",
+      "tier": 1,
+      "category": "category.people",
+      "price": { "resource_id": "company.cash", "base": "2.985984e7", "curve": { "kind": "geometric", "ratio": "1.11e0" } },
+      "production": { "resource_id": "company.cash", "base_rate": "7.5418890625e4" },
+      "ladder": [
+        { "purchased_at": 25, "multiplier_ppm": 2000000 },
+        { "purchased_at": 55, "multiplier_ppm": 2000000 },
+        { "purchased_at": 100, "multiplier_ppm": 2000000 }
+      ],
+      "roles": [{ "kind": "manual_output", "action_id": "manual.click", "per_purchased_ppm": 20000 }]
+    },
+    {
+      "id": "generator.beige_tower_v2",
+      "tier": 1,
+      "category": "category.hardware",
+      "price": { "resource_id": "company.cash", "base": "3.5831808e8", "curve": { "kind": "geometric", "ratio": "1.1e0" } },
+      "production": { "resource_id": "company.cash", "base_rate": "4.90222789063e5" },
+      "provisions": { "generator_id": "generator.beige_tower", "rate_ppm": 100000 },
+      "ladder": [
+        { "purchased_at": 30, "multiplier_ppm": 2000000 },
+        { "purchased_at": 60, "multiplier_ppm": 2000000 },
+        { "purchased_at": 100, "multiplier_ppm": 2000000 }
+      ],
+      "roles": [{ "kind": "provision", "generator_id": "generator.beige_tower" }]
+    },
+    {
+      "id": "generator.legal_dept",
+      "tier": 3,
+      "category": "category.legal",
+      "price": { "resource_id": "company.cash", "base": "1e8", "curve": { "kind": "geometric", "ratio": "1.15e0" } },
+      "production": { "resource_id": "company.permits", "base_rate": "1e-3" },
+      "ladder": [],
+      "roles": [{ "kind": "synergy_feed", "pool_id": "pool.institutional_knowledge" }]
+    }
+  ],
+  "upgrades": [
+    {
+      "id": "upgrade.reply_all_macro",
+      "cost": { "resource": "company.cash", "amount": "4e1" },
+      "window": { "from_gate": null, "to_gate": "gate.t0_to_t1" },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "4e1" }],
+      "effects": [{ "source_id": "upgrade.reply_all_macro.factor", "slot": "upgrades", "target": "manual.click", "factor": "2e0" }],
+      "roles": ["synergy_feed"],
+      "copy_key": "upgrade.reply_all_macro"
+    },
+    {
+      "id": "upgrade.beige_tower_cache",
+      "cost": { "resource": "company.cash", "amount": "1e3" },
+      "window": { "from_gate": null, "to_gate": "gate.t0_to_t1" },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "1e3" }],
+      "effects": [{ "source_id": "upgrade.beige_tower_cache.factor", "slot": "upgrades", "target": "generator.beige_tower", "factor": "2e0" }],
+      "roles": ["synergy_feed"],
+      "copy_key": "upgrade.beige_tower_cache"
+    },
+    {
+      "id": "upgrade.continuous_feed_paper",
+      "cost": { "resource": "company.cash", "amount": "1.2e4" },
+      "window": { "from_gate": null, "to_gate": "gate.t0_to_t1" },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "1.2e4" }],
+      "effects": [{ "source_id": "upgrade.continuous_feed_paper.factor", "slot": "upgrades", "target": "generator.dot_matrix_queue", "factor": "2e0" }],
+      "roles": ["synergy_feed"],
+      "copy_key": "upgrade.continuous_feed_paper"
+    },
+    {
+      "id": "upgrade.hold_music_license",
+      "cost": { "resource": "company.cash", "amount": "2e4" },
+      "window": { "from_gate": null, "to_gate": "gate.t0_to_t1" },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "2e4" }],
+      "effects": [{ "source_id": "upgrade.hold_music_license.factor", "slot": "upgrades", "target": "generator.answering_machine", "factor": "2e0" }],
+      "roles": ["synergy_feed"],
+      "copy_key": "upgrade.hold_music_license"
+    },
+    {
+      "id": "upgrade.nephew_business_cards",
+      "cost": { "resource": "company.cash", "amount": "2e4" },
+      "window": { "from_gate": null, "to_gate": "gate.t0_to_t1" },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "2e4" }],
+      "effects": [{ "source_id": "upgrade.nephew_business_cards.factor", "slot": "upgrades", "target": "generator.nephew_intern", "factor": "2e0" }],
+      "roles": ["synergy_feed"],
+      "copy_key": "upgrade.nephew_business_cards"
+    },
+    {
+      "id": "upgrade.rack_rail_standardization",
+      "cost": { "resource": "company.cash", "amount": "2.0736e7" },
+      "window": { "from_gate": "gate.t0_to_t1", "to_gate": "gate.t2_to_t3" },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "2.0736e7" }],
+      "effects": [{ "source_id": "upgrade.rack_rail_standardization.factor", "slot": "upgrades", "target": "generator.garage_rack", "factor": "2e0" }],
+      "roles": ["synergy_feed"],
+      "copy_key": "upgrade.rack_rail_standardization"
+    },
+    {
+      "id": "upgrade.crt_degauss_button",
+      "cost": { "resource": "company.cash", "amount": "2.48832e8" },
+      "window": { "from_gate": "gate.t0_to_t1", "to_gate": "gate.t2_to_t3" },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "2.48832e8" }],
+      "effects": [{ "source_id": "upgrade.crt_degauss_button.factor", "slot": "upgrades", "target": "generator.crt_wall", "factor": "2e0" }],
+      "roles": ["synergy_feed"],
+      "copy_key": "upgrade.crt_degauss_button"
+    },
+    {
+      "id": "upgrade.employee_handbook_v0",
+      "cost": { "resource": "company.cash", "amount": "7.5e7" },
+      "window": { "from_gate": "gate.t0_to_t1", "to_gate": "gate.t2_to_t3" },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "7.5e7" }],
+      "effects": [{ "source_id": "upgrade.employee_handbook_v0.factor", "slot": "upgrades", "target": "generator.first_hire", "factor": "2e0" }],
+      "roles": ["synergy_feed"],
+      "copy_key": "upgrade.employee_handbook_v0"
+    },
+    {
+      "id": "upgrade.refurbished_sticker",
+      "cost": { "resource": "company.cash", "amount": "2e8" },
+      "window": { "from_gate": "gate.t0_to_t1", "to_gate": "gate.t2_to_t3" },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "2e8" }],
+      "effects": [{ "source_id": "upgrade.refurbished_sticker.factor", "slot": "upgrades", "target": "generator.beige_tower_v2", "factor": "2e0" }],
+      "roles": ["synergy_feed"],
+      "copy_key": "upgrade.refurbished_sticker"
+    },
+    {
+      "id": "upgrade.institutional_memory",
+      "cost": { "resource": "company.cash", "amount": "1e8" },
+      "window": { "from_gate": "gate.t0_to_t1", "to_gate": "gate.t2_to_t3" },
+      "requires": [{ "kind": "resource_at_least", "resource_id": "company.cash", "value": "1e8" }],
+      "effects": [{ "source_id": "upgrade.institutional_memory.factor", "slot": "upgrades", "target": "generator.garage_rack", "factor": "2e0" }],
+      "roles": ["synergy_feed"],
+      "copy_key": "upgrade.institutional_memory"
+    }
+  ],
+  "synergy_pools": [
+    {
+      "id": "pool.operational_excellence",
+      "sources": [
+        { "kind": "generator", "id_or_class": "generator.beige_tower", "per_count_ppm": 1000 },
+        { "kind": "generator", "id_or_class": "generator.dot_matrix_queue", "per_count_ppm": 2000 },
+        { "kind": "upgrade", "id_or_class": "upgrade.reply_all_macro", "per_count_ppm": 10000 },
+        { "kind": "upgrade", "id_or_class": "upgrade.beige_tower_cache", "per_count_ppm": 10000 },
+        { "kind": "upgrade", "id_or_class": "upgrade.continuous_feed_paper", "per_count_ppm": 10000 },
+        { "kind": "upgrade", "id_or_class": "upgrade.hold_music_license", "per_count_ppm": 10000 },
+        { "kind": "upgrade", "id_or_class": "upgrade.nephew_business_cards", "per_count_ppm": 10000 }
+      ],
+      "slot": "upgrades",
+      "curve": "linear"
+    },
+    {
+      "id": "pool.institutional_knowledge",
+      "sources": [
+        { "kind": "generator", "id_or_class": "generator.garage_rack", "per_count_ppm": 2000 },
+        { "kind": "generator", "id_or_class": "generator.crt_wall", "per_count_ppm": 3000 },
+        { "kind": "generator", "id_or_class": "generator.legal_dept", "per_count_ppm": 4000 },
+        { "kind": "upgrade", "id_or_class": "upgrade.rack_rail_standardization", "per_count_ppm": 20000 },
+        { "kind": "upgrade", "id_or_class": "upgrade.crt_degauss_button", "per_count_ppm": 20000 },
+        { "kind": "upgrade", "id_or_class": "upgrade.employee_handbook_v0", "per_count_ppm": 20000 },
+        { "kind": "upgrade", "id_or_class": "upgrade.refurbished_sticker", "per_count_ppm": 20000 },
+        { "kind": "upgrade", "id_or_class": "upgrade.institutional_memory", "per_count_ppm": 20000 }
+      ],
+      "slot": "upgrades",
+      "curve": "log"
+    }
+  ],
+  "provision_tick_ms": 60000,
+  "manual_actions": [
+    { "id": "manual.click", "output": { "resource_id": "company.cash", "amount_per_action": "1e0" } }
+  ],
+  "multiplier_sources": [
+    { "id": "active.building.generator.beige_tower", "slot": "event_buffs", "target": "generator.beige_tower", "provider": "active_play" },
+    { "id": "active.click", "slot": "event_buffs", "target": "manual.click", "provider": "active_play" },
+    { "id": "active.production", "slot": "event_buffs", "target": "all", "provider": "active_play" },
+    { "id": "commons.member", "slot": "commons", "target": "all", "provider": "commons" },
+    { "id": "fiscal.generator.beige_tower", "slot": "prestige", "target": "generator.beige_tower", "provider": "fiscal" },
+    { "id": "fiscal.hoard", "slot": "prestige", "target": "all", "provider": "fiscal" },
+    { "id": "guild.stock_consumption", "slot": "faction", "target": "all", "provider": "faction" },
+    { "id": "pool.institutional_knowledge", "slot": "upgrades", "target": "all", "provider": "pool.institutional_knowledge" },
+    { "id": "pool.operational_excellence", "slot": "upgrades", "target": "all", "provider": "pool.operational_excellence" }
+  ],
+  "progress_coordinates": [
+    { "tier": 0, "kind": "resource_log", "resource": "company.cash", "target": "1e3" },
+    {
+      "tier": 1,
+      "kind": "composite",
+      "terms": [
+        { "weight": "5e-1", "kind": "count_fraction", "count": "generators.total_owned", "required": 25 },
+        { "weight": "5e-1", "kind": "resource_log", "resource": "company.cash", "target": "1e6" }
+      ]
+    },
+    { "tier": 2, "kind": "resource_log", "resource": "company.cash", "target": "1e9" },
+    { "tier": 3, "kind": "resource_log", "resource": "company.cash", "target": "1e12" }
+  ],
+  "manual_policy": { "refill_milli_per_ms": 25, "bucket_cap_milli": 50000 },
+  "offline_policy": {
+    "efficiency": "9e-1",
+    "accrual_cap_ms": 86400000,
+    "bank_ratio_numerator": 1,
+    "bank_ratio_denominator": 2,
+    "bank_cap_ms": 259200000,
+    "burst_speed": "2e0",
+    "burst_max_duration_ms": 14400000
+  }
+}

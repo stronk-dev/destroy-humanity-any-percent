@@ -7,6 +7,13 @@
       "bundle_snapshot_manifest": "testdata/harness/content-dynamics/bundles/sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789/manifest.v1.json",
       "scenario": "testdata/harness/content-dynamics/scenarios/epoch-7-candidate.v1.json",
       "golden_report": "testdata/harness/content-dynamics/goldens/epoch-7.v1.json"
+    },
+    {
+      "epoch_seed_path": "balance/epochs/phase0.json",
+      "epoch_id": 8,
+      "bundle_snapshot_manifest": "testdata/harness/content-dynamics/bundles/sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6/manifest.v1.json",
+      "scenario": "testdata/harness/content-dynamics/scenarios/epoch-8.v1.json",
+      "golden_report": "testdata/harness/content-dynamics/goldens/epoch-8.v1.json"
     }
   ]
 }
