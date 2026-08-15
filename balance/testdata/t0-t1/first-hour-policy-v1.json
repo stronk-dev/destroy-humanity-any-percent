@@ -1,25 +1,59 @@
 {
   "schema_version": 1,
   "id": "first_hour_policy.v1",
-  "version": 1,
+  "version": 2,
   "seed_derivation": {
     "kind": "sha256_substream",
-    "material": ["policy_id", "policy_version", "seed", "run_seq", "decision_ordinal"],
+    "domain_tags": {
+      "decision": "decision",
+      "session_jitter": "jitter"
+    },
+    "material": [
+      "domain_tag",
+      "policy_id",
+      "policy_version",
+      "seed",
+      "run_seq",
+      "decision_ordinal"
+    ],
+    "integer_encoding": "decimal_ascii_no_padding",
     "separator": "0x1f",
-    "draw": "first_8_bytes_big_endian_uint64"
+    "draw": "first_8_bytes_big_endian_uint64",
+    "reduction": "modulo_legal_command_count"
   },
-  "enumeration_order": "raw_byte_ascending_purchasable_id",
+  "enumeration_order": {
+    "kind": "fixed_command_class_then_raw_byte_id",
+    "classes": [
+      "perform_manual_batch",
+      "buy_generator",
+      "buy_upgrade",
+      "wait"
+    ],
+    "within_class": "raw_byte_ascending_purchasable_id",
+    "note": "perform_manual_batch always index 0; wait always last; purchasables sorted by raw-byte id within their class"
+  },
   "policies": [
     {
       "policy_id": "chaos.t0_t1",
       "policy_version": 1,
       "model": "first-session enthusiast: one unbroken sitting, frequent uninformed actions",
-      "sessions": [{ "start_ms": 0, "duration_ms": 7200000, "repeat_every_ms": 0 }],
+      "sessions": [
+        {
+          "start_ms": 0,
+          "duration_ms": 7200000,
+          "repeat_every_ms": 0
+        }
+      ],
       "session_start_jitter_ms": 0,
       "action_cadence_ms": 2000,
       "decision": {
         "kind": "seeded_uniform_over_legal",
-        "legal_commands": ["perform_manual_batch", "buy_generator", "buy_upgrade", "wait"],
+        "legal_commands": [
+          "perform_manual_batch",
+          "buy_generator",
+          "buy_upgrade",
+          "wait"
+        ],
         "manual_batch_count": 1,
         "affordability": "current_balance_only",
         "wait_advances_to": "next_action_boundary"
@@ -32,49 +66,117 @@
       "policy_id": "casual.t0_t1",
       "policy_version": 1,
       "model": "returns between other things: fixed windows, unhurried, buys what is cheap",
-      "sessions": [{ "start_ms": 0, "duration_ms": 900000, "repeat_every_ms": 1800000 }],
+      "sessions": [
+        {
+          "start_ms": 0,
+          "duration_ms": 900000,
+          "repeat_every_ms": 1800000
+        }
+      ],
       "session_start_jitter_ms": 300000,
       "action_cadence_ms": 5000,
       "decision": {
         "kind": "cheapest_affordable_then_manual",
-        "legal_commands": ["perform_manual_batch", "buy_generator", "buy_upgrade", "wait"],
+        "legal_commands": [
+          "perform_manual_batch",
+          "buy_generator",
+          "buy_upgrade",
+          "wait"
+        ],
         "manual_batch_count": 1,
         "affordability": "current_balance_only",
         "wait_advances_to": "next_action_boundary"
       },
       "gate_crossing": "first_boundary_requirements_met",
       "run_continuation": "same_policy_new_run",
-      "exit_rule": "t01_c32_readiness"
+      "exit_rule": "t01_c32_readiness",
+      "sessions_clock": {
+        "origin": "founder_genesis",
+        "units": "wall_ms",
+        "spans_runs": true,
+        "restart_on_run_end": false,
+        "gap_is_offline": true,
+        "on_session_open": "apply_offline_catchup_then_evaluate_online"
+      },
+      "session_jitter": {
+        "drawn_once_per": "policy_id_and_seed",
+        "domain_tag": "jitter",
+        "range_ms": [
+          0,
+          300000
+        ],
+        "applied_to": "every_session_start_uniformly"
+      }
     },
     {
       "policy_id": "reference.greedy",
       "policy_version": 1,
       "model": "optimal-play upper bound: the shipped projected-time ranker, no second economy model",
-      "sessions": [{ "start_ms": 0, "duration_ms": 7200000, "repeat_every_ms": 0 }],
+      "sessions": [
+        {
+          "start_ms": 0,
+          "duration_ms": 7200000,
+          "repeat_every_ms": 0
+        }
+      ],
       "session_start_jitter_ms": 0,
       "action_cadence_ms": 1000,
       "decision": {
         "kind": "t01_c20_projected_time_ranker",
-        "legal_commands": ["perform_manual_batch", "buy_generator", "buy_upgrade", "wait"],
+        "legal_commands": [
+          "perform_manual_batch",
+          "buy_generator",
+          "buy_upgrade",
+          "wait"
+        ],
         "manual_batch_count": 1,
         "affordability": "earliest_affordable",
         "wait_advances_to": "bank_or_next_boundary"
       },
       "gate_crossing": "first_boundary_requirements_met",
       "run_continuation": "same_policy_new_run",
-      "exit_rule": "t01_c32_readiness"
+      "exit_rule": "t01_c32_readiness",
+      "objectives": {
+        "kind": "ordered_next_unmet_progression_requirement",
+        "sequence": [
+          {
+            "phase": "pre_gate",
+            "target": "requirement_of_next_uncrossed_gate"
+          },
+          {
+            "phase": "post_final_gate",
+            "target": "exit_readiness_predicate"
+          }
+        ],
+        "note": "the T01-C20 ranker is re-aimed at each phase boundary; it never ranks toward an already-satisfied objective"
+      }
     }
   ],
   "exit_rules": [
     {
       "id": "t01_c32_readiness",
       "all": [
-        { "kind": "run_seq_at_least", "run_seq": 2 },
-        { "kind": "gate_crossed", "gate_id": "gate.t0_to_t1" },
-        { "kind": "founder_attended_ms_at_least", "attended_ms": 2700000 },
-        { "kind": "previewed_exit_grants_any_persistent_value" }
+        {
+          "kind": "run_seq_at_least",
+          "run_seq": 2
+        },
+        {
+          "kind": "gate_crossed",
+          "gate_id": "gate.t0_to_t1"
+        },
+        {
+          "kind": "founder_attended_ms_at_least",
+          "attended_ms": 2700000
+        },
+        {
+          "kind": "previewed_exit_grants_any_persistent_value"
+        }
       ],
       "action": "wind_down_at_first_true_boundary"
     }
-  ]
+  ],
+  "wait_legality": {
+    "rule": "legal_only_when_production_income_positive",
+    "rationale": "waiting cannot change affordability at zero income, so no player model may choose it there"
+  }
 }

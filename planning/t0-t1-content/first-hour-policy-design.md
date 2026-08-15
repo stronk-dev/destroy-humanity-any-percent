@@ -1,6 +1,9 @@
 # `first_hour_policy.v1` — draft for owner ratification (T01-C34)
 
-Candidate bytes: `balance/testdata/t0-t1/first-hour-policy-v1.json`.
+Candidate bytes: `balance/testdata/t0-t1/first-hour-policy-v1.json` — **document version 2**,
+`sha256:3c5c20bd109c2b57395e9fd539b04e12c13d1b3cb54f03ecf34a599f3397cd7c`. Version 1
+(`c56653c9…021c`) is **withdrawn**: Codex's cross-party review (T01-C37–C39) found it
+under-specified and quantitatively unable to meet its own envelope. Do not ratify v1.
 Drafted by Claude (design lane) per the 2026-08-15 ruling. **Nothing may consume it until ratified.**
 
 ## The anti-circularity rule this document exists to enforce
@@ -59,3 +62,43 @@ economy — which is the whole point of running the personas against it.
 
 Ratify `first-hour-policy-v1.json` as drafted, or name the model changes you want first. On
 ratification its hash joins scenario identity and Codex implements C34's runner against it.
+
+
+## Revision 2 — what Codex's review changed, and the one thing it costs an owner ruling
+
+Codex reviewed v1 and was right on every count. Recorded plainly because this is the cross-party
+gate working in the direction it less often runs (Codex reviewing Claude's design):
+
+- **T01-C37 — RNG bytes were incomplete.** v2 pins integer encoding (`decimal_ascii_no_padding`),
+  a fixed command-class enumeration (`perform_manual_batch` always index 0, purchasables by
+  raw-byte ID within class, `wait` always last) so manual/wait ordering is no longer ambiguous,
+  and separate **domain tags** (`decision` vs `jitter`) so the session-jitter draw cannot collide
+  with a decision draw on the same material.
+- **T01-C38 — casual's session clock was undefined.** v2 pins origin (founder genesis), units
+  (wall ms), that sessions span runs and do **not** restart at run end, that inter-session gaps are
+  offline spans, and that a session opens by applying offline catchup and then evaluating online —
+  which is exactly the AC0 seam this project just built, so casual now exercises it every session.
+- **T01-C39 — the ranker had one objective and then stopped.** v2 gives `reference.greedy` an
+  ordered objective sequence: aim the shipped T01-C20 ranker at the next uncrossed gate's
+  requirement, and after the final gate at the exit-readiness predicate. It is re-aimed at each
+  phase boundary and never ranks toward an already-satisfied objective.
+
+### The chaos plausibility correction — this one needs your affirmation
+
+Codex computed that chaos v1 could reach its first generator inside 30 s only 4.4–7.9 % of the
+time; I independently get 12.5 %. Either way it cannot produce a **p50** ≤ 30 s, so v1's own
+envelope was unreachable by construction.
+
+**Diagnosis: the model was wrong, not the economy.** v1 let chaos draw `wait` with equal weight
+while holding zero cash and zero income — but waiting at zero income *cannot change affordability*,
+so no real player would ever choose it. A person who has just opened an idle game with nothing to
+buy clicks; they do not flip a coin every two seconds between clicking and doing nothing.
+
+v2 therefore adds a general legality rule — **`wait` is legal only when production income is
+positive** — which is independently justified rather than tuned to pass. Under it, chaos clicks
+until it can afford something, and reaches its first generator by 30 s about **96.9 %** of the
+time, median ≈ 22 s.
+
+Per the anti-circularity rule written into this document, a persona may only be changed on an
+owner ruling that **the model itself was unrealistic**. That is the claim here, and it is the one
+thing in revision 2 that is yours to affirm rather than mine to assert.
