@@ -36,7 +36,17 @@ devDependencies (vite, vitest, playwright, typescript, …) are build-time only 
 
 ## Owner items
 
-1. **The repository itself has NO LICENSE file.** Published at
+1. **RESOLVED 2026-08-15 — MIT.** `LICENSE` added at the repository root, copyright Marco van
+   Dijk. The owner's first preference was the Unlicense; assessed as viable but the weakest
+   footing of the options — public-domain dedication is not fully recognised under Dutch/EU law
+   (moral rights are inalienable), so it degrades to its embedded permissive grant, and some
+   organisations refuse Unlicense dependencies for that ambiguity. Under the owner's own stated
+   condition ("is that viable, else MIT is fine") this resolved to MIT, which is practically
+   identical, cleanly enforceable in the EU, and matches every dependency already shipped.
+   Note recorded for completeness: neither MIT nor the Unlicense prevents a monetised closed
+   fork; the owner considered and declined AGPL-3.0 with that trade-off stated.
+
+   *Original finding:* **The repository itself has NO LICENSE file.** Published at
    `github.com/stronk-dev/destroy-humanity-any-percent` — legally "all rights reserved," which
    may be intended, but it is currently an accident of omission rather than a decision. Design
    law 1 (free, no money ever) suggests the *game* being freely playable; that does not force
