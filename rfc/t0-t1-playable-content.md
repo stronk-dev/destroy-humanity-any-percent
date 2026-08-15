@@ -253,6 +253,89 @@ remain excluded and unknown kinds fail load rather than deriving prose from an I
   logged bootstrap catchup; single-script harness rows; literal gate + era activation; closed
   event-copy set. The content candidate round is Codex-draftable NOW.
 
+## AC1/AC4 closeout blockers (Codex, 2026-08-15 — T01-C30–T01-C33)
+
+The post-mint acceptance sweep correctly found that AC1 and AC4 are absent. The exact proposed
+scenario still exists at `balance/testdata/t0-t1/harness-scenario-v1.json` with its reviewed
+`e74e271b…` fingerprint, seven milestone IDs, clocks, envelopes, same-seed relation, invariants,
+and transition ceiling. The missing pieces are executable semantics, not missing JSON. They need
+owner reconciliation before an implementation can produce evidence rather than choose the result.
+
+### T01-C30 — the three versioned first-hour policies have no command semantics
+
+The candidate names `chaos.t0_t1` v1, `casual.t0_t1` v1, and `reference.greedy` v1, but no loader,
+registry, RFC, or canonical doc defines their action cadence, purchase selection, gate-crossing,
+waiting, run-2 continuation, or Exit choice. The current harness recognizes only the materially
+different `chaos.phase0`/`casual.phase0` policies: neither buys upgrades, crosses gates, or Exits,
+and the Chaos policy acts only every five minutes, so relabelling them would violate the candidate's
+30-second/2-minute/8–10-minute envelopes by construction. Policy behavior determines every AC1
+number; it is balance authority and cannot be invented in the runner.
+
+**Proposed contract:** add a closed `first_hour_policy.v1` registry beside the scenario. Each row
+pins (a) attended action cadence/session windows, (b) deterministic legal-command ordering and
+raw-byte tie breaks, (c) bank/wait behavior, (d) the exact point at which each reachable gate is
+crossed through the production transition, (e) run-2 continuation, and (f) the elective-Exit rule.
+`reference.greedy` SHOULD reuse the shipped T01-C20 projected-time ranker and production rate seam,
+not author a second economy model. Chaos and Casual may differ, but every random choice derives
+from the scenario seed and every command goes through the real transition. The registry bytes join
+scenario identity; unknown policy/version fails load. The alternative is to replace the three
+candidate rows with one explicitly scripted acceptance policy and re-ratify the scenario; silently
+assigning semantics to the existing IDs is rejected.
+
+### T01-C31 — the scripted-failure contract was explicitly deferred but AC4 requires it live
+
+The candidate curriculum says that after run 1 has `gate.t0_to_t1`, zero Founder Exits, and
+900,000 attended milliseconds, the first later player Company command is replaced by a terminal
+`scripted_first` Exit. T01-C14 later moved that automatic curriculum transition to a successor RFC
+and said it was not a mint precondition. Shipped production therefore does something narrower:
+an explicit `wind_down` with empty history is typed `scripted_first`, and a `cross_gate` becomes a
+scripted Exit only when the attended trigger is already due. An ordinary post-trigger command is
+not replaced. A composed test that simply submits `wind_down` at 900,000 ms would prove P5b, but it
+would not prove T2's promised automatic first failure and would let the human path run forever if
+the player never opens Wind Down.
+
+**Proposed contract:** close the deferred successor here with the already-reviewed candidate arm:
+on the first eligible authenticated Company command after the three trigger predicates, the
+coordinator runs ordinary preflight/accrual, replaces that requested mutation with the terminal
+`scripted_first` Exit in the same Founder→Company transaction, and records/replays the frozen
+trigger coordinate. The requested action never commits; retry returns the same terminal receipt;
+rejection/fault is no mutation. Existing explicit Wind Down and due-cross-gate behavior remain
+compatible entry paths to the same terminal core. If the owner instead intends AC4 to script an
+explicit Wind Down and keep automatic curriculum deferred, the RFC must say so and T2's
+"scripted first failure fires" claim remains open product debt rather than an acceptance claim.
+
+### T01-C32 — `first_elective_exit` has a clock but no decision rule
+
+The candidate pins the observation (`run_ended`, `exit_type != scripted_first`, Founder-attended
+clock) and the `[2,700,000,5,400,000]` ms envelope, but never says when a policy elects to Exit.
+Wind Down is intentionally always available after Tier 0, so a runner can make this number any
+value in the interval merely by waiting. That would make the headline AC1 gate tautological.
+
+**Proposed contract:** define one observable, content-derived readiness predicate, evaluated by
+the first-hour policies through shipped prestige terms, and Exit on its first true action boundary.
+Recommended predicate: run 2 has crossed `gate.t0_to_t1`, Founder-attended time is at least
+2,700,000 ms, and the previewed Wind Down terms have a non-zero persistent grant; then submit the
+real `wind_down` immediately. The lower bound models the deliberate curriculum/session beat while
+the upper bound can still fail if progression or payout becomes unavailable. If "available" is
+intended to mean a market offer, or to require Reputation rather than Route Knowledge, name that
+instead; those choices produce different balance evidence.
+
+### T01-C33 — AC4's composed boundary and shared-script authority are not pinned
+
+AC4 says "against the composed gameserver" while T01-C7 says the composed human path references
+the same milestone IDs, but it does not state whether the proof drives production services inside
+`composition_integration_test.go`, authenticated HTTP, or the real browser/socket path. Those
+boundaries cover different defects, and duplicating the action sequence in Go and JavaScript would
+violate the one-script ruling.
+
+**Proposed contract:** make the scenario plus `first_hour_policy.v1` the sole script authority.
+The pacing runner consumes it headlessly through production simulation; one real-Postgres composed
+gameserver test consumes the same ordered command decisions for a single pinned seed and asserts
+the seven milestone IDs, terminal event ordering, run-2 state, and persisted Founder/Company
+replay. The browser AC remains Game UI's separate live-content acceptance gate; AC4 does not need
+to duplicate two virtual hours in Playwright. A mutation that removes the automatic scripted Exit
+or bypasses the composed catalog must make the Postgres test fail.
+
 ## Candidate-round blocker (2026-08-10 — T01-C10)
 
 ### T01-C10 — Relevance cannot encode a pre-first-gate availability window

@@ -2690,3 +2690,20 @@ I re-walked all six T01 criteria against the tree rather than the log:
 the remaining work, and both are game work rather than instrument work — the grown milestone set
 with real pacing targets, and the first-session script fixture through the composed stack. Epoch 7
 is minted and green; the RFC closes when a scripted persona can play the first hour end to end.
+
+## 2026-08-15 — Codex AC1/AC4 executable-contract review: BLOCKED on T01-C30–C33
+
+Codex re-anchored on the approved closeout and inspected the tree rather than manufacturing the
+missing tests. The seven-milestone candidate is present byte-exact at
+`balance/testdata/t0-t1/harness-scenario-v1.json` (`e74e271b…`), but its three policy IDs have no
+command semantics anywhere. More seriously, the candidate's automatic next-command curriculum
+trigger was explicitly deferred by T01-C14 and is not the behavior production ships. The exact
+elective-Exit decision is also undefined; because Wind Down is always available, a test can choose
+any passing timestamp and make the `[45,90]` minute gate tautological.
+
+Four detailed blockers and complete proposed contracts are filed in the RFC as T01-C30–C33:
+closed versioned policy bytes; reconciliation of the deferred automatic scripted failure; a
+content-derived elective-Exit rule; and one shared script authority consumed by the headless
+pacing runner plus a real-Postgres composed gameserver proof. No production or golden byte was
+changed, no acceptance box was flipped, and no self-review/archival is claimed. The user's
+uncommitted `AGENTS.md` remains untouched.
