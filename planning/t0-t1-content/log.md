@@ -3184,3 +3184,56 @@ Self-checks read to completion, all exit 0:
 **Deliberately not started:** owner ratification, the epoch-8 mint/epoch-seed entry, T01-C33's one
 pinned-seed composed proof, AC1/AC4 closure, T01 archival, push, or deployment. Those remain behind
 the designated cross-party verdict and owner ratification.
+
+## 2026-08-15 — Claude designated cross-party review of the epoch-8 payoff candidate `f22e695..62e0190` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `{8e5ce89, c1e29e5, d840814, 62e0190}`.
+- **Gates executed:** `make verify-harness` 0; `make verify-server` 0; `make verify-kernel-version`
+  0 at **0.3.99** in three-file lockstep; the real-Postgres lane GREEN; `make first-hour-harness`
+  on the newly ratified C40 envelope exits **0** with zero failures, endings 64/16/17, and
+  garage-gate p50 unchanged at 418,000 ms.
+
+### Every acceptance clause of the ruled payoff design, checked individually
+
+1. **All three branches reachable** — 64 acquihire / 16 burnout / 17 pivot across 97 runs.
+2. **Run 2 strictly faster** — relation green in the zero-finding report.
+3. **Reputation branch-neutral (the ruled no-tax property)** —
+   `TestCurriculumReplayBranchesKeepReputationNeutralAndApplyTheirStarter` runs all three branches
+   and asserts an identical `ReputationLevel` across them while Route Knowledge differs 25/75/50.
+   Only `terms.RouteKnowledge` is ever incremented in `prestige.go`, and only by a non-negative
+   bonus, with overflow guarded.
+4. **Removing the mechanism must fail a test — verified adversarially.** I disabled
+   `ApplyStarter` in a scratch worktree: the suite fails with `pivot starter upgrade missing`.
+   The clause discriminates.
+5. **Historical v2 stays byte-identical** — `TestRunEndedV3RequiresAnExactCurriculumBranchAndStarter`
+   pins the exact v3 union AND rejects a v2 event carrying v3 fields; `run_ended` emits schema 2
+   unless a branch is present, so the widening is genuinely append-only. Migration `00074` widens
+   only the `run_ended` CHECK to `(1,2,3)` and has a correct inverse `Down`.
+
+### Owner-authored copy: shipped verbatim
+
+I compared all six adopted strings (three titles, three bodies) against the shipped copy catalog
+character-for-character after whitespace normalisation: **EXACT MATCH on all six**. No implementer
+edit of ruled copy. Rule 6 holds.
+
+### Doctrine
+
+Burnout's starter lands as `GeneratorProvisioned["generator.beige_tower"] = 10` with
+`GeneratorCounts = 0` — **generated, not purchased** — so §11b's purchased/generated split is
+preserved exactly as the design argued rather than quietly violated. Acquihire grants a resource,
+pivot an upgrade; neither touches the split.
+
+### Notes
+
+- The candidate artifact encodes the proposed tuple faithfully: `A=200`, `B=2e0`, `R=50` (burnout
+  +50, pivot +25, acquihire +0), `S=1e4`, `G=10`.
+- `d840814` (`SAVE_TEST_HOST_PORT`) earned its place during this review: my first Postgres run
+  died on a host-port collision with an orphan container, and that knob is exactly what let the
+  lane run isolated. Worth keeping.
+- **Review-process note:** my first Postgres invocation reported success while the container had
+  actually failed to start — the error was below my `tail` window. Caught only by re-reading the
+  full output. Recorded because "exit 0 from a wrapper" is not the same as "the lane ran".
+
+**No findings. APPROVED.** The candidate hashes are ready for owner ratification:
+curriculum `a39a91f2…c42955`, copy candidate `b17ff1c…2bbe`, generated copy `9e81629…c0e13`,
+with the tuple `A=200, B=2e0, R=50, S=1e4, G=10`.
