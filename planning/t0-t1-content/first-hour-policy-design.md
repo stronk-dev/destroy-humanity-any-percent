@@ -1,8 +1,8 @@
 # `first_hour_policy.v1` — draft for owner ratification (T01-C34)
 
-Candidate bytes: `balance/testdata/t0-t1/first-hour-policy-v1.json` — **document version 2**,
-`sha256:3c5c20bd109c2b57395e9fd539b04e12c13d1b3cb54f03ecf34a599f3397cd7c`. Version 1
-(`c56653c9…021c`) is **withdrawn**: Codex's cross-party review (T01-C37–C39) found it
+Candidate bytes: `balance/testdata/t0-t1/first-hour-policy-v1.json` — **document version 3**,
+`sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3`. Versions 1
+(`c56653c9…021c`) and 2 (`3c5c20bd…cd7c`) are **withdrawn**: Codex's cross-party review (T01-C37–C39) found it
 under-specified and quantitatively unable to meet its own envelope. Do not ratify v1.
 Drafted by Claude (design lane) per the 2026-08-15 ruling. **Nothing may consume it until ratified.**
 
@@ -102,3 +102,32 @@ time, median ≈ 22 s.
 Per the anti-circularity rule written into this document, a persona may only be changed on an
 owner ruling that **the model itself was unrealistic**. That is the claim here, and it is the one
 thing in revision 2 that is yours to affirm rather than mine to assert.
+
+
+## Revision 3 — the jitter in v2 was decorative, and I proved it
+
+Codex's second-round review found three residuals in v2. All three were real; one was not a
+detail.
+
+- **Jitter diversity was unproven — and false.** v2 applied ONE offset to every session start,
+  which is a pure phase shift: I measured it across offsets and got identical session count,
+  identical inter-session gaps, and identical attended totals every time. All 32 casual seeds
+  would have produced the same run, which would have made casual's **p95** Exit envelope a
+  statistic over 32 copies of one number. v3 replaces it with **independent per-session draws**
+  for both start offset and duration, keyed on `(policy_id, seed, session_index)`. Sampled over
+  six seeds that now yields six distinct attended totals and varying session counts, so the p95
+  measures something.
+- **Non-decision draw material was ambiguous.** v3 pins `run_seq = 0` and the session index in
+  the ordinal slot for jitter draws, so a jitter stream can never collide with a decision stream;
+  and it pins **half-open** range semantics (lower inclusive, upper exclusive) everywhere.
+- **First-action timing was unspecified.** v3: the first action of a session occurs **at** the
+  session-start boundary, with `action_cadence_ms` from there.
+- **Ranker scope was loose.** v3 pins the gate scope (only gates declared by the scenario's
+  segments), multi-resource ordering (raw-byte ascending resource ID, largest remaining deficit
+  first), the terminal objective (exit-readiness), and that the **C32 exit rule preempts the
+  ranker** at any boundary where it is true.
+
+Three rounds of review on one document is worth noting rather than hiding: each round moved from
+structure → encoding → byte-level residuals, which is convergence, and one finding per round was
+substantive rather than pedantic. A fourth round of *specification* findings would be a signal
+that this document is the wrong shape; a fourth round of implementation findings would be normal.

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "first_hour_policy.v1",
-  "version": 2,
+  "version": 3,
   "seed_derivation": {
     "kind": "sha256_substream",
     "domain_tags": {
@@ -19,7 +19,13 @@
     "integer_encoding": "decimal_ascii_no_padding",
     "separator": "0x1f",
     "draw": "first_8_bytes_big_endian_uint64",
-    "reduction": "modulo_legal_command_count"
+    "reduction": "modulo_legal_command_count",
+    "fixed_material_for_non_decision_draws": {
+      "run_seq": "0",
+      "decision_ordinal": "session_index",
+      "note": "non-decision draws pin run_seq to 0 and use the session index in the ordinal slot, so they can never collide with a decision stream"
+    },
+    "range_semantics": "half_open_lower_inclusive_upper_exclusive"
   },
   "enumeration_order": {
     "kind": "fixed_command_class_then_raw_byte_id",
@@ -73,7 +79,6 @@
           "repeat_every_ms": 1800000
         }
       ],
-      "session_start_jitter_ms": 300000,
       "action_cadence_ms": 5000,
       "decision": {
         "kind": "cheapest_affordable_then_manual",
@@ -99,13 +104,23 @@
         "on_session_open": "apply_offline_catchup_then_evaluate_online"
       },
       "session_jitter": {
-        "drawn_once_per": "policy_id_and_seed",
+        "kind": "independent_per_session",
         "domain_tag": "jitter",
-        "range_ms": [
-          0,
-          300000
+        "drawn_per": [
+          "policy_id",
+          "seed",
+          "session_index"
         ],
-        "applied_to": "every_session_start_uniformly"
+        "start_offset_ms": [
+          0,
+          600000
+        ],
+        "duration_ms": [
+          600000,
+          1200000
+        ],
+        "range_semantics": "half_open_lower_inclusive_upper_exclusive",
+        "rationale": "a single phase offset shifts every session equally and leaves gaps, attended total and session count identical across seeds \u2014 proven degenerate. Independent per-session draws make gaps, offline spans and resulting states genuinely differ."
       }
     },
     {
@@ -138,17 +153,11 @@
       "exit_rule": "t01_c32_readiness",
       "objectives": {
         "kind": "ordered_next_unmet_progression_requirement",
-        "sequence": [
-          {
-            "phase": "pre_gate",
-            "target": "requirement_of_next_uncrossed_gate"
-          },
-          {
-            "phase": "post_final_gate",
-            "target": "exit_readiness_predicate"
-          }
-        ],
-        "note": "the T01-C20 ranker is re-aimed at each phase boundary; it never ranks toward an already-satisfied objective"
+        "gate_scope": "gates_declared_by_the_scenario_segments_only",
+        "multi_resource_ordering": "raw_byte_ascending_resource_id_then_largest_remaining_deficit_first",
+        "terminal_objective": "exit_readiness_predicate",
+        "exit_precedence": "c32_exit_rule_preempts_the_ranker_at_any_boundary_where_it_is_true",
+        "note": "re-aimed at each phase boundary; never ranks toward an already-satisfied objective"
       }
     }
   ],
@@ -178,5 +187,9 @@
   "wait_legality": {
     "rule": "legal_only_when_production_income_positive",
     "rationale": "waiting cannot change affordability at zero income, so no player model may choose it there"
+  },
+  "first_action_timing": {
+    "kind": "at_session_start",
+    "note": "the first action of a session occurs AT its start boundary; subsequent actions follow action_cadence_ms"
   }
 }
