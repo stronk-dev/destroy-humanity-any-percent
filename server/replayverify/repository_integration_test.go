@@ -323,9 +323,17 @@ func TestVerificationEventsAreStreamPairScopedAndIterationFailsClosedIntegration
 		t.Fatal(err)
 	}
 	intentID := "01989999-0001-7000-8000-000000000001"
-	for _, streamID := range []string{victimCompany, victimFounder, attackerCompany} {
+	for _, row := range []struct {
+		streamID string
+		kind     string
+	}{
+		{victimCompany, "generator_purchased"},
+		{victimFounder, "founder_advanced"},
+		{victimFounder, "fiscal_period_harvested.v1"},
+		{attackerCompany, "generator_purchased"},
+	} {
 		if _, err := db.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,payload)
-			VALUES($1,1,1,'generator_purchased',$2,$3,'{}')`, streamID, intentID, integrationHash); err != nil {
+			VALUES($1,1,1,$2,$3,$4,'{}')`, row.streamID, row.kind, intentID, integrationHash); err != nil {
 			t.Fatal(err)
 		}
 	}

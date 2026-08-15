@@ -403,6 +403,7 @@ func composedMinigameRepositoryRoot(t *testing.T, repositoryRoot string) string 
 	// schema-v3 economy; those artifacts activate together in the real epoch.
 	delete(artifacts, "opportunities")
 	delete(artifacts, "relevance")
+	delete(artifacts, "curriculum")
 	artifacts["economy"] = composedEconomyCatalog(t, repositoryRoot)
 	artifacts["routes"] = readCompositionFixture(t, repositoryRoot, "balance/testdata/permits-t3-gate-candidate-v1.json")
 	artifacts["categories"] = composedCategoryCatalog(t, artifacts["categories"])

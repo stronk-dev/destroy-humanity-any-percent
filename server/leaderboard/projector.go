@@ -40,7 +40,9 @@ type terminalRun struct {
 		Commons bool `json:"commons"`
 		Advisor bool `json:"advisor"`
 	} `json:"assisted"`
-	Faction *string `json:"faction"`
+	Faction        *string         `json:"faction"`
+	Branch         *string         `json:"branch,omitempty"`
+	StarterPackage json.RawMessage `json:"starter_package,omitempty"`
 }
 
 type terminalRunID struct {
@@ -226,7 +228,12 @@ func loadTerminalRun(ctx context.Context, tx *sql.Tx, streamID string, runSeq in
 	if err := rows.Err(); err != nil {
 		return terminalRun{}, "", time.Time{}, err
 	}
-	if schema != 2 || decodeProjectorStrict([]byte(payload), &terminal) != nil || terminal.RunID.CompanyStreamID != streamID || terminal.RunID.RunSeq != runSeq ||
+	if decodeProjectorStrict([]byte(payload), &terminal) != nil {
+		return terminalRun{}, "", time.Time{}, fmt.Errorf("%w: invalid run_ended", ErrInvalidEpoch)
+	}
+	validSchema := schema == 2 && terminal.Branch == nil && len(terminal.StarterPackage) == 0 ||
+		schema == 3 && terminal.Branch != nil && mechanicalPattern.MatchString(*terminal.Branch) && jsonObjectBytes(terminal.StarterPackage)
+	if !validSchema || terminal.RunID.CompanyStreamID != streamID || terminal.RunID.RunSeq != runSeq ||
 		terminal.FounderID == "" || terminal.TerminalSeq < 1 || terminal.RTAMS < 0 || terminal.AttendedMS < 0 || terminal.AttendedMS > terminal.RTAMS ||
 		!sortedUniqueMechanical(terminal.LedgerFactKinds) || !sortedUniqueMechanical(terminal.ExecutedRoutes) || terminal.GatesCrossed == nil ||
 		!sortedUniqueMechanical(*terminal.GatesCrossed) || terminal.GeneratorsPurchasedTotal == nil || *terminal.GeneratorsPurchasedTotal < 0 {
@@ -240,6 +247,11 @@ func loadTerminalRun(ctx context.Context, tx *sql.Tx, streamID string, runSeq in
 		return terminalRun{}, "", time.Time{}, fmt.Errorf("%w: terminal sequence", ErrInvalidEpoch)
 	}
 	return terminal, eventID, occurredAt.UTC(), nil
+}
+
+func jsonObjectBytes(data json.RawMessage) bool {
+	var value map[string]json.RawMessage
+	return json.Unmarshal(data, &value) == nil && value != nil
 }
 
 func scanRunVariables(ctx context.Context, tx *sql.Tx, streamID string, runSeq int64) (*string, bool, error) {

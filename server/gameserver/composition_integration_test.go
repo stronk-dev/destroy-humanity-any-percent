@@ -832,7 +832,7 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 		t.Fatalf("pinned genesis version=%d does not restore: %v", pinnedVersion, err)
 	}
 	var pinnedArtifactCount int
-	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM catalog_artifacts WHERE constants_hash=$1`, composition.CurrentHash).Scan(&pinnedArtifactCount); err != nil || pinnedArtifactCount != 18 {
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM catalog_artifacts WHERE constants_hash=$1`, composition.CurrentHash).Scan(&pinnedArtifactCount); err != nil || pinnedArtifactCount != 19 {
 		t.Fatalf("pinned artifact count=%d err=%v", pinnedArtifactCount, err)
 	}
 	var pinnedReplayBundle production.CatalogBundle
@@ -847,6 +847,9 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	var runHash string
 	if err := db.QueryRowContext(ctx, `SELECT constants_hash FROM run_epochs WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&runHash); err != nil || runHash != composition.CurrentHash {
 		t.Fatalf("run pin hash=%s want=%s err=%v", runHash, composition.CurrentHash, err)
+	}
+	if verdict, err := composition.Verification.VerifyStoredRun(ctx, companyRevision.StreamID, 1); err != nil || verdict != production.ReplayVerified {
+		t.Fatalf("stored run verdict=%s err=%v", verdict, err)
 	}
 
 	deadline := time.Now().Add(3 * time.Second)
@@ -883,7 +886,7 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 			}
 			loadedFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
 			if err != nil || len(loadedFounder.State.ExitHistory) != 1 ||
-				loadedFounder.State.MinigameSessionSeq != 0 || loadedFounder.State.FiscalCredit != 2 ||
+				loadedFounder.State.MinigameSessionSeq != 0 || loadedFounder.State.FiscalCredit != pinnedReplayBundle.Fiscal.Credit.Hardcap ||
 				loadedFounder.State.Soul != 80 {
 				t.Fatalf("persisted founder exit history=%+v session_seq=%d fiscal_credit=%d soul=%d err=%v",
 					loadedFounder.State.ExitHistory, loadedFounder.State.MinigameSessionSeq,
@@ -897,7 +900,12 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	var boardRows int
 	_ = db.QueryRowContext(ctx, `SELECT status,COALESCE(verdict,'') FROM verification_queue WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&status, &verdict)
 	_ = db.QueryRowContext(ctx, `SELECT count(*) FROM verified_runs WHERE run_id=$1`, companyRevision.StreamID+":1").Scan(&boardRows)
-	t.Fatalf("terminal run did not reach board: status=%s verdict=%s rows=%d", status, verdict, boardRows)
+	var backgroundErr error
+	select {
+	case backgroundErr = <-composition.Server.Failures():
+	default:
+	}
+	t.Fatalf("terminal run did not reach board: status=%s verdict=%s rows=%d background=%v", status, verdict, boardRows, backgroundErr)
 }
 
 func progressedCompositionStates(t *testing.T, catalogs *runtimeCatalogs, constantsHash string, now time.Time) (*save.State, *save.State, []save.FrozenContribution) {

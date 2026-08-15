@@ -38,17 +38,10 @@ func TestCurriculumAutomaticFailurePersistsAndReplaysIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	current := activeContentBundle(t)
-	artifacts := cloneArtifactMap(current.Artifacts)
-	curriculumBytes, err := os.ReadFile("../../balance/testdata/t0-t1/curriculum-v2.json")
-	if err != nil {
-		t.Fatal(err)
+	if current.Curriculum == nil {
+		t.Fatal("minted curriculum artifact is unavailable")
 	}
-	artifacts["curriculum"] = curriculumBytes
-	nextHash, err := save.ConstantsHashArtifacts(artifacts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	next := loadCompleteReplayTestBundle(t, nextHash, artifacts)
+	next := current
 	seedProductionEpoch(t, db, current.ConstantsHash, current.Artifacts)
 	resolver := integrationCatalogs{
 		economy:  map[string]*economy.Catalog{current.ConstantsHash: current.Economy, next.ConstantsHash: next.Economy},
@@ -117,10 +110,6 @@ func TestCurriculumAutomaticFailurePersistsAndReplaysIntegration(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `UPDATE epochs SET ended_at=now() WHERE ended_at IS NULL`); err != nil {
-		t.Fatal(err)
-	}
-	seedProductionEpoch(t, db, next.ConstantsHash, next.Artifacts)
 	minigameRepository, err := minigame.NewRepository(db)
 	if err != nil {
 		t.Fatal(err)
