@@ -2827,3 +2827,32 @@ Ruled by Marco (recorded by Claude from explicit selections):
 the mechanism and data authority are ruled above. Codex may implement C34's runner against the
 policy document once Claude lands it, and the payoff mechanism once its literals are measured and
 ratified. Open literals: `A`,`B`,`R`,`S`,`G`.
+
+## 2026-08-15 — Claude drafts `first_hour_policy.v1` (T01-C34) — OWNER RATIFICATION REQUIRED
+
+Candidate bytes `balance/testdata/t0-t1/first-hour-policy-v1.json`
+(`sha256:c56653c9e6a23eb480867df54a6a6c2d9359fc4911ae8d89edf2c3d582aa021c`); rationale at
+`planning/t0-t1-content/first-hour-policy-design.md`.
+
+- **chaos.t0_t1** — one unbroken 2 h sitting, action every 2 s, **uniform random choice among
+  whatever is legal** (click / affordable purchase / wait). Unweighted on purpose: it makes the
+  30-second first-generator envelope a real test of click yield and starting price instead of a
+  scripted certainty. 64 seeds.
+- **casual.t0_t1** — attended 15 min every 30 min (≈60 min attended inside the 2 h horizon, which
+  is what makes the 45-minute FOUNDER-attended Exit envelope reachable at all), action every 5 s,
+  always takes the cheapest affordable purchase. Deterministic by construction, so its 32 seeds are
+  made meaningful by up to 5 min of **session-start jitter**; without that the 32 runs would be
+  identical copies.
+- **reference.greedy** — reuses the shipped T01-C20 projected-time ranker with banking as a
+  first-class candidate. Authors no second economy model, as C30 required. 1 seed.
+- Determinism: SHA-256 over (policy_id, version, seed, run_seq, decision_ordinal) joined by `0x1f`,
+  first 8 bytes big-endian, modulo the legal-command count enumerated in raw-byte ascending ID
+  order. No wall clock, no global RNG, no map iteration. Keying on `run_seq` gives run 2 a fresh
+  stream rather than a replay of run 1's choices.
+- All three share the ruled C32 exit predicate.
+
+**The anti-circularity rule is written into the document and is the point of ratifying it:** the
+personas model players and are chosen for plausibility; the CONTENT is what gets tuned to fit the
+envelopes. A failing envelope is a finding against the economy, never a licence to retune a
+persona. Cadence/session literals may change only on an owner ruling that the model itself was
+unrealistic.
