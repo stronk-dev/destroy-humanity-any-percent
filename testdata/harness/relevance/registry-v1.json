@@ -5,9 +5,9 @@
       "economy_catalog": "balance/catalogs/phase0.json",
       "scenario": "testdata/harness/relevance/scenario-epoch-7-t1-v2.json",
       "relevance_policy": "balance/relevance/t0-t1.json",
-      "golden_report": "testdata/harness/relevance/golden-report-epoch-7-v6.json",
-      "branch_report": "testdata/harness/relevance/branch-report-epoch-7-v2.json",
-      "justification_changelog": "changelog/epoch-7.md"
+      "golden_report": "testdata/harness/relevance/golden-report-epoch-8-v1.json",
+      "branch_report": "testdata/harness/relevance/branch-report-epoch-8-v1.json",
+      "justification_changelog": "changelog/epoch-8.md"
     },
     {
       "economy_catalog": "testdata/harness/relevance/economy-v4.json",
