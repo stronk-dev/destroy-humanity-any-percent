@@ -2885,3 +2885,33 @@ force a pass.
 
 No candidate byte or owner-authored design text was edited. The user's uncommitted `AGENTS.md`
 remains untouched.
+
+## 2026-08-15 — Codex narrow re-review of policy v2: DIRECTION ACCEPTED; HASH NOT READY
+
+Revision 2 (`sha256:3c5c20bd109c2b57395e9fd539b04e12c13d1b3cb54f03ecf34a599f3397cd7c`)
+correctly adopts the C37 command-class ordering/domain separation, the C38 founder-genesis wall
+schedule and production offline seam, and the C39 phase-objective direction. The zero-income wait
+correction is also a sound player-model correction rather than envelope tuning: a wait cannot
+change affordability when every production rate is zero. Codex recommends owner affirmation of
+that principle.
+
+The exact hash is still not ratification-ready because the three blockers retain narrow executable
+residuals:
+
+1. **C37 residual:** `session_jitter` says the draw is once per policy ID and seed, but the declared
+   hash material always contains `run_seq` and `decision_ordinal`; the document supplies neither
+   value for a jitter draw. `[0,300000]` also lacks an inclusive/half-open convention. The first
+   action boundary is not pinned (session start versus start + cadence); the claimed ≈22 s Chaos
+   median assumes the latter.
+2. **C38 residual:** applying one jitter uniformly to every session is byte-clear once its draw is
+   fixed, but it preserves every inter-session gap. The rationale that this alone makes 32
+   attended-clock trajectories distinct is therefore not established and should be stated as a
+   phase offset, unless some named wall-time mechanic is intentionally part of the model.
+3. **C39 residual:** the shipped ranker accepts one resource target. “Requirement of next
+   uncrossed gate” does not define which requirement wins for a multi-resource gate, which gates
+   comprise this first-hour policy's ordered scope, or what “final gate” means in a Routes catalog
+   extending through `gate.t7_to_t8`. The C32 Exit must also have explicit priority once readiness
+   becomes true, otherwise a simultaneous reachable gate and Exit admit two legal decisions.
+
+No candidate byte was consumed or modified, and implementation remains paused at the owner
+ratification gate. The user's `AGENTS.md` remains untouched.
