@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -230,16 +231,35 @@ func TestComposedGameserverReplaysRatifiedFirstHourAtPinnedSeed(t *testing.T) {
 	if runOneStream == "" || runTwoStream == "" {
 		t.Fatalf("run streams run1=%q run2=%q", runOneStream, runTwoStream)
 	}
-	if verdict, err := composition.Verification.VerifyStoredRun(ctx, runOneStream, 1); err != nil || verdict != production.ReplayVerified {
-		t.Fatalf("run-1 persisted replay verdict=%s err=%v", verdict, err)
-	}
-	if verdict, err := composition.Verification.VerifyStoredRun(ctx, runTwoStream, 2); err != nil || verdict != production.ReplayVerified {
-		t.Fatalf("run-2 persisted replay verdict=%s err=%v", verdict, err)
-	}
+	waitFirstHourRunVerifiedAndArchived(t, ctx, db, runOneStream, 1)
+	waitFirstHourRunVerifiedAndArchived(t, ctx, db, runTwoStream, 2)
 	founderHistory, err := store.LoadFounderHistory(ctx, activeFounderStreamID(t, ctx, db, founder.ID))
 	if err != nil || production.VerifyFounderHistory(founderHistory, composition.Catalogs.replay) != production.ReplayVerified {
 		t.Fatalf("Founder persisted replay verdict=%s err=%v", production.VerifyFounderHistory(founderHistory, composition.Catalogs.replay), err)
 	}
+}
+
+func waitFirstHourRunVerifiedAndArchived(t *testing.T, ctx context.Context, db *sql.DB, streamID string, runSeq int64) {
+	t.Helper()
+	deadline := time.Now().Add(5 * time.Second)
+	var status, verdict string
+	var archiveHash string
+	var terminalSeq int64
+	for time.Now().Before(deadline) {
+		err := db.QueryRowContext(ctx, `SELECT queue.status,COALESCE(queue.verdict,''),archive.sha256,archive.terminal_seq
+			FROM verification_queue queue JOIN run_log_archive archive
+			  ON archive.company_stream_id=queue.company_stream_id AND archive.run_seq=queue.run_seq
+			WHERE queue.company_stream_id=$1 AND queue.run_seq=$2`, streamID, runSeq).
+			Scan(&status, &verdict, &archiveHash, &terminalSeq)
+		if err == nil && status == "verified" && verdict == "verified" && strings.HasPrefix(archiveHash, "sha256:") && terminalSeq > 0 {
+			return
+		}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			t.Fatal(err)
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	t.Fatalf("run %d persisted verification status=%q verdict=%q archive=%q terminal_seq=%d", runSeq, status, verdict, archiveHash, terminalSeq)
 }
 
 func composedFirstHourIntentID(index int) string {
