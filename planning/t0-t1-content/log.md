@@ -2940,6 +2940,56 @@ ratified policy document, then C32's exit rule, then the first-hour payoff mecha
 starter package selected by the branched ending, shipping as epoch 8 with the `curriculum`
 artifact), then C33's composed proof at one pinned seed. AC1 and AC4 close out of that work.
 
+## 2026-08-15 — Codex C34 measurement checkpoint: tuple proposed; pacing finding blocks balance authority
+
+Codex implemented a strict, separately versioned first-hour suite against the owner-ratified
+`first_hour_policy.v1` v3 bytes (`sha256:e5e5de70…d10c3`) and the immutable epoch-7 replay bundle.
+The policy bytes join scenario identity at `sha256:14f775b3…361b`; withdrawn v1/v2 bytes cannot
+load. The runner uses `production.SimulateTransition` / `SimulateAdvance`, the shipped offline
+attendance seam for Casual's session gaps, the real Routes crossing transition, the T01-C20
+projected-time comparison for Reference, the ruled scripted-ending preemption, and C32 at the
+first true boundary. `make first-hour-harness` requires all five experimental literals explicitly;
+it cannot silently mint defaults.
+
+The proposed measurement tuple is **NOT balance authority and is NOT implemented in production**:
+
+- `A = 200` purchased generators;
+- `B = 2e0` times the cheapest unowned generator price;
+- `R = 50` Route Knowledge (burnout +50, pivot +25, acquihire +0; even and aligned to the shipped
+  50-RK route-hint cost);
+- `S = 1e4` company.cash seed capital;
+- `G = 10` generated Beige Towers.
+
+Canonical non-authoritative report:
+`planning/t0-t1-content/first-hour-experiment-proposed.v1.json`
+(`sha256:d2d765efb9f739f814c2a7f47993e8625721beb5267776a6e66a9058518dffe3`).
+Across 97 runs it reaches acquihire 64 times, burnout 16, and pivot 17. Every same-seed run 2 is
+strictly faster: minimum / p50 / maximum savings are 80,000 / 140,000 / 216,000 ms for acquihire,
+341,593 / 577,613 / 637,469 ms for burnout, and 10,000 / 284,071 / 639,711 ms for pivot. No
+curriculum, epoch, copy, wire, replay-input, or production starter-package byte moved.
+
+The target exits nonzero on one honest content finding:
+`chaos.t0_t1/milestone.garage_gate/p50 = 418000`, below the accepted `[480000,600000]` envelope.
+The other six envelopes pass exactly (first generator 22,000; first upgrade 62,000; scripted
+failure 900,000; run-2 gate 274,000; Chaos elective Exit 2,700,000; Casual p95 elective Exit
+2,704,711 ms). The ratified persona may not move merely to make this green.
+
+### T01-C40 — owner pacing disposition required before AC1 can close
+
+The new executable gate proves the ratified epoch-7 economy is about 62 seconds faster than the
+accepted lower bound for Chaos's first gate. Under the policy's anti-circularity rule this is a
+content finding, not permission for an implementer to rewrite the player model or envelope.
+Owner must either (a) retain the 8–10 minute envelope and authorize a measured economy retune with
+fresh artifact ratification, or (b) rule that the historical envelope is stale and replace it with
+a new product target. Codex recommends (a) because the 8–10 minute first-gate target has repeatedly
+served as the design coordinate; no byte changes are authorized by this recommendation.
+
+The weakest starter margin is Reference/Pivot at 10,000 ms (356,000 → 346,000, 2.8%). The formal
+AC relation is strict and passes; the payoff design also says “materially faster.” Owner should
+ratify the tuple knowing that exact minimum, or define a quantitative materiality floor before
+production bytes land. The Pivot starter shape is already ruled, so none of `A/B/R/S/G` can enlarge
+that particular margin.
+
 **Record of the three review rounds on this document** (worth keeping, because it is the
 cross-party gate running in its less common direction — Codex reviewing Claude's design):
 round 1 produced the document; round 2 (C37–C39) found incomplete RNG bytes, an undefined session
