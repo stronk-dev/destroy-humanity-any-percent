@@ -2740,3 +2740,31 @@ Ruled by Marco (recorded by Claude from explicit selections and follow-up discus
    NOT touched). **Three owner decisions remain open on that document: predicate shapes, the three
    copy drafts (owner-authored), and the no-tax reading.** Codex does not implement C31 until
    those land; C30/C32/C33 are implementable now.
+
+## 2026-08-15 — OWNER RULING + COPY ADOPTION: the branched first failure is fully specified
+
+Ruled by Marco (recorded by Claude from explicit selections):
+
+1. **Predicate shapes ACCEPTED** exactly as drafted: acquihire = `GeneratorPurchasedTotal` ≥ A
+   with ≥1 upgrade owned; burnout = cash below B × cheapest-unowned-generator price; pivot =
+   default. Evaluated in that fixed order at the trigger, first match wins, over already-persisted
+   state only — no new tracked fields, no new mechanics.
+2. **All three copy drafts ADOPTED VERBATIM as owner-authored content** (`first-failure-branch-
+   design.md` §Copy drafts). Titles: "Your First Company Was Acquired" / "Your First Company
+   Failed" (ratified title retained for burnout) / "Your First Company Pivoted". The burnout body
+   deliberately preserves the ratified closing line — the survivorship-bias joke is the beat and
+   does not move. The shared next-run line is unchanged ratified copy. **Implementers may not edit
+   this text**; detector-forced rewrites come back for adoption.
+3. **No-tax reading CONFIRMED:** Reputation is identical and full in every branch; Route Knowledge
+   varies only as a non-negative bonus. `balance/prestige/phase0.json` and the ratified epoch-7
+   manifest are not touched, so no hash or ratification reopens.
+
+**T01-C31 is now fully specified and implementable.** Open literals `A`/`B`/`R` are measured, with
+the ruled acceptance that every branch is reachable by at least one first-hour persona at the
+pinned seed, the decision replays byte-identically, and removing the selector must fail a test.
+
+### Codex's implementable queue (all four contracts now ruled)
+
+C30 policy registry → C32 exit rule → C31 branched scripted failure (+ measured literals) → C33
+composed proof at one pinned seed. AC1's grown milestone set and AC4's composed run close out of
+that work; T01 archives after their designated review.

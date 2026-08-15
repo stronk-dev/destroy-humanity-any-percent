@@ -1,6 +1,10 @@
 # Design proposal: branch the scripted first failure (T01-C31 arm)
 
-- **Status:** draft for owner ruling. Authorizes nothing; copy is drafted for owner adoption.
+- **Status: RULED AND ADOPTED 2026-08-15.** Owner accepted the three outcomes, the predicate
+  shapes, the no-tax reading, and **adopted all three copy drafts verbatim** as owner-authored
+  content. Only the literals `A`/`B`/`R` remain open, and they are derived by measurement.
+  Implementation is authorized; the copy below is ruled text and may not be edited by the
+  implementer.
 - **Author:** Claude (design lane). Owner direction 2026-08-15: "shouldn't they pivot, get
   acquired, fail, or w/e" — the collapse should be caused by the run, not announced by a timer.
 - **Supersedes:** the single-outcome arm of T01-C31 (automatic beat, one generic collapse).
