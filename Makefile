@@ -1,4 +1,4 @@
-.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-guard-check content-harness epoch7-content-harness first-content-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
+.PHONY: setup install-browsers install-browsers-ci test test-go test-go-core test-harness test-go-ci test-save-integration validate-migrations test-client test-browser test-browser-ci test-game-ui-composed test-game-ui-performance typecheck build-client build-gameserver vectors vectors-check vectors-check-ci replay-fixture replay-fixture-check pitch-corpus pitch-corpus-check formulas formulas-check api-generate api-schema api-pin api-check harness harness-check harness-guard-check content-harness epoch7-content-harness first-content-harness first-hour-harness t0-t1-role-check t0-t1-relevance t1-relevance relevance-branches t0-t1-branch-check t0-t1-branch-check-from-reports t0-t1-upgrade-check t0-t1-relevance-all relevance-beam commons-harness-check harness-update epoch-hash game-ui-copy-candidate game-ui-copy-candidate-check copy-generate copy-check vet fuzz fuzz-ci verify-schema verify-routes-boundary verify-commons-boundary verify-client-boundary verify-kernel-version verify-combat-boundary verify-meters-boundary verify-achievements-boundary verify-server verify-server-core verify-harness verify-server-ci verify-harness-ci verify-client verify
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -21,6 +21,14 @@ RELEVANCE_SCENARIO ?= balance/testdata/t0-t1/relevance-scenario-v2.json
 RELEVANCE_OUTPUT ?= planning/t0-t1-content/relevance-report.v5.json
 RELEVANCE_BRANCH_INPUT ?=
 RELEVANCE_BRANCH_OUTPUT ?= planning/t0-t1-content/branch-report.v2.json
+FIRST_HOUR_SCENARIO ?= balance/testdata/t0-t1/harness-scenario-v1.json
+FIRST_HOUR_POLICY ?= balance/testdata/t0-t1/first-hour-policy-v1.json
+FIRST_HOUR_OUTPUT ?= planning/t0-t1-content/first-hour-experiment.v1.json
+FIRST_HOUR_ACQUIHIRE_MINIMUM ?=
+FIRST_HOUR_BURNOUT_FACTOR ?=
+FIRST_HOUR_ROUTE_KNOWLEDGE_BONUS ?=
+FIRST_HOUR_SEED_CAPITAL ?=
+FIRST_HOUR_GENERATED_TOWERS ?=
 
 setup:
 	pnpm --dir client install --frozen-lockfile
@@ -154,6 +162,21 @@ first-content-harness:
 		-workers=$(HARNESS_WORKERS) \
 		-candidate-manifest=planning/first-content-epoch/promotion-manifest.candidate.v1.json \
 		-output=../planning/first-content-epoch/composed-harness-report.v1.json
+
+# Measurement lane for the owner-ratified first-hour personas. The five payoff
+# values are explicit experiment inputs; this target never mints curriculum
+# bytes or turns a measurement into balance authority.
+first-hour-harness:
+	@test -n "$(FIRST_HOUR_ACQUIHIRE_MINIMUM)" -a -n "$(FIRST_HOUR_BURNOUT_FACTOR)" \
+		-a -n "$(FIRST_HOUR_ROUTE_KNOWLEDGE_BONUS)" -a -n "$(FIRST_HOUR_SEED_CAPITAL)" \
+		-a -n "$(FIRST_HOUR_GENERATED_TOWERS)" || \
+		(echo "FIRST_HOUR_ACQUIHIRE_MINIMUM, FIRST_HOUR_BURNOUT_FACTOR, FIRST_HOUR_ROUTE_KNOWLEDGE_BONUS, FIRST_HOUR_SEED_CAPITAL, and FIRST_HOUR_GENERATED_TOWERS are required" >&2; exit 1)
+	cd server && go run ./cmd/balance-harness -mode=first-hour -root=.. \
+		-workers=$(HARNESS_WORKERS) -scenario=$(FIRST_HOUR_SCENARIO) \
+		-first-hour-policy=$(FIRST_HOUR_POLICY) -output=../$(FIRST_HOUR_OUTPUT) \
+		-acquihire-minimum=$(FIRST_HOUR_ACQUIHIRE_MINIMUM) -burnout-factor=$(FIRST_HOUR_BURNOUT_FACTOR) \
+		-route-knowledge-bonus=$(FIRST_HOUR_ROUTE_KNOWLEDGE_BONUS) -seed-capital=$(FIRST_HOUR_SEED_CAPITAL) \
+		-generated-towers=$(FIRST_HOUR_GENERATED_TOWERS)
 
 t0-t1-role-check:
 	$(MAKE) test-go GO_PACKAGES=./production GO_TEST_FLAGS='-run TestT0T1CandidateRoleActivations -count=1'

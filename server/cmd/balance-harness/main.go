@@ -12,13 +12,19 @@ import (
 )
 
 func main() {
-	mode := flag.String("mode", "check", "run, check, update, guard, candidate, content-candidate, content, relevance, relevance-branches, relevance-beam, or epoch-hash")
+	mode := flag.String("mode", "check", "run, check, update, guard, candidate, content-candidate, content, relevance, relevance-branches, relevance-beam, first-hour, or epoch-hash")
 	output := flag.String("output", "", "explicit output path for run mode")
 	root := flag.String("root", "..", "repository root")
 	candidateManifest := flag.String("candidate-manifest", "", "repository-relative ratified candidate manifest for candidate mode")
 	scenario := flag.String("scenario", "", "repository-relative scenario for relevance mode")
 	relevanceReport := flag.String("relevance-report", "", "validated relevance report used to derive branch rows")
 	workers := flag.Int("workers", 4, "parallel workers for the standard pacing suite")
+	firstHourPolicy := flag.String("first-hour-policy", "", "repository-relative ratified first-hour policy for first-hour mode")
+	acquihireMinimum := flag.Int64("acquihire-minimum", 0, "measurement-only first-hour acquihire purchased-generator threshold")
+	burnoutFactor := flag.String("burnout-factor", "", "measurement-only canonical burnout price factor")
+	routeKnowledgeBonus := flag.Int64("route-knowledge-bonus", 0, "measurement-only first-hour Route Knowledge bonus")
+	seedCapital := flag.String("seed-capital", "", "measurement-only canonical seed-capital amount")
+	generatedTowers := flag.Int64("generated-towers", 0, "measurement-only generated Beige Tower count")
 	flag.Parse()
 	if *mode == "epoch-hash" {
 		hash, err := harness.ComputeEpochSeedHash(*root)
@@ -50,6 +56,15 @@ func main() {
 	}
 	if *mode == "relevance-beam" {
 		if err := runRelevanceBeam(*root, *output, *scenario); err != nil {
+			fail(err)
+		}
+		return
+	}
+	if *mode == "first-hour" {
+		if err := runFirstHour(*root, *output, *scenario, *firstHourPolicy, *workers, harness.FirstHourExperiment{
+			AcquihirePurchasedMinimum: *acquihireMinimum, BurnoutPriceFactor: *burnoutFactor,
+			RouteKnowledgeBonus: *routeKnowledgeBonus, SeedCapital: *seedCapital, GeneratedBeigeTowers: *generatedTowers,
+		}); err != nil {
 			fail(err)
 		}
 		return
@@ -222,6 +237,31 @@ func main() {
 	default:
 		fail(fmt.Errorf("unsupported mode %q", *mode))
 	}
+}
+
+func runFirstHour(root, output, scenarioPath, policyPath string, workers int, experiment harness.FirstHourExperiment) error {
+	if output == "" || scenarioPath == "" || policyPath == "" {
+		return fmt.Errorf("-output, -scenario, and -first-hour-policy are required in first-hour mode")
+	}
+	suite, err := harness.LoadFirstHourSuite(root, scenarioPath, policyPath)
+	if err != nil {
+		return err
+	}
+	report, err := suite.RunAllExperiments(experiment, workers)
+	if err != nil {
+		return err
+	}
+	data, err := harness.CanonicalJSON(report)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(output, data, 0o644); err != nil {
+		return err
+	}
+	if len(report.Aggregate.Failures) != 0 {
+		return fmt.Errorf("first-hour harness findings: %v", report.Aggregate.Failures)
+	}
+	return nil
 }
 
 func validateHarnessRepositoryGuards(root string) error {
