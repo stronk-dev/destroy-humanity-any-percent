@@ -2604,3 +2604,22 @@ for the designated cross-party review; no approval or archival is claimed.
   un-bricked with exactly the canonical 90%/24h offline-policy accrual, then online evaluation
   proceeds from the caught-up cursor. Owner-ruled arm and fixture wording are already pinned in
   the RFC's T0 section; no new ruling is required — only the implementation and its proof.
+
+## 2026-08-15 — Codex AC0 implementation — READY FOR DESIGNATED REVIEW
+
+- **Implementation:** `aba9399`, within the declared closeout range `fd5c641^..133d13f`.
+  Session-boundary catchup is frozen into replay-inputs v7 and applied through the ordinary logged
+  Company transition before the player's online command; Exit uses the same order. Rejection
+  restores the pre-catchup state, the client cannot choose the interval, and v2-v6 replay inputs
+  remain accepted with no implicit catchup.
+- **Discriminating evidence:** the shared Go/TypeScript corpus includes a nonterminal catchup row,
+  a 48-hour first-content Exit row, and explicit v5/v6 history rows. The real-Postgres integration
+  fixture starts from active epoch-7 provisioning state, idles beyond the accrual cap, proves the
+  exact canonical 90%/24h offline reference plus the subsequent manual mutation, then compares the
+  persisted Founder/Company and Go replay bytes and rejects a stale Exit revision. Coordinate
+  tamper and rejected-command rollback have focused unit coverage.
+- **Checks:** focused and full `make test-save-integration`, replay-fixture parity, client replay
+  tests, cold Linux `make verify-server-ci`, `make verify-client`, and the complete EH-C16 harness,
+  schema, and browser gates listed in `planning/epoch7-content-harness/log.md` are GREEN at the
+  handed-off tree. This is ready for the designated cross-party review; it is not self-approved or
+  archival-eligible on Codex's word.

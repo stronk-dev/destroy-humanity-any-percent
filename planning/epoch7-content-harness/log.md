@@ -353,3 +353,42 @@ content: the first-session script, screens, minigames):
 3. The generated immutable snapshot/goldens may then be committed under the balance-change guard,
    `make verify-harness-ci` must go green, and the complete mint range comes back for the
    designated cross-party review and archival chain.
+
+## 2026-08-15 — Codex EH-C16 + AC0 closeout — READY FOR DESIGNATED REVIEW
+
+- **Declared implementation range:** `fd5c641^..133d13f`. This is an implementation/self-check
+  handoff only; it is not a designated verdict, archival authorization, or publication action.
+- **EH-C16:** the active epoch-7 relevance row binds the minted `relevance` artifact and one exact
+  schema-v2 branch report. The gate requires byte-identical scenario/constants/policy identity,
+  zero branch failures, and exact set equality between the five whole-path misses and the five
+  passing branch proofs. The governed proof regenerated from production bytes at **1,858,591
+  transitions**; its proof set is `generator.beige_tower_v2`, `upgrade.crt_degauss_button`,
+  `upgrade.institutional_memory`, `upgrade.rack_rail_standardization`, and
+  `upgrade.refurbished_sticker`.
+- **Historical evidence:** isolated commit `a0e6788` (`BALANCE-CHANGE:`) adds the immutable
+  eighteen-artifact snapshot at constants hash `sha256:6c7fab29…f789`, the first epoch-7
+  content-dynamics golden (`sha256:18999011…1fc1`), the active whole-path report
+  (`sha256:ab9c99ce…2394`), the branch report (`sha256:133312ba…e7b`), and the refreshed epoch-7
+  pacing/golden baselines. No production content byte changed.
+- **Testing-flow repairs found while executing the real gates:** update now validates sources
+  before simulation and alone may materialize missing generated evidence; normal checks remain
+  fail-closed. The history guard accepts the ruled input-then-isolated-baseline protocol while
+  requiring every immutable byte to be added atomically and never changed later. A fast
+  `make harness-guard-check` exposes packaging failures before long simulation. Routine
+  `harness-check` recomputes the whole-path verdict but loads the committed identity-bound branch
+  evidence instead of repeating its expensive derivation. The Docker lane now propagates
+  `HARNESS_WORKERS`; canonical worker-count byte parity remains pinned.
+- **AC0:** `aba9399` applies the frozen session-boundary offline interval through `ApplyLogged`
+  before the online command (and before Exit), preserves reject-equals-no-mutation, and advances
+  the replay-input grammar to v7 while retaining v2-v6 histories. A real-Postgres fixture idles an
+  epoch-7 founder with provisioning state for 48 hours and proves the canonical 90%/24h catchup,
+  persisted replay coordinates, byte-identical replay, the following online mutation, and stale
+  Exit conflict behavior.
+- **Terminal checks read through final exit:** `make harness-update HARNESS_WORKERS=12` GREEN;
+  `make harness-guard-check` GREEN; native `make harness-check HARNESS_WORKERS=12` GREEN; exact
+  cold Linux/Docker `make verify-harness-ci HARNESS_WORKERS=12` GREEN; exact cold Linux/Docker
+  `make verify-server-ci` GREEN; full real-Postgres `make test-save-integration` GREEN; `make
+  verify-client` GREEN (typecheck/build, **6,651 passed**, kernel **0.3.98**); `make verify-schema`
+  GREEN; hosted-equivalent `make test-browser-ci` GREEN (**19,995 passed / 3 skipped** plus the
+  performance arm). `git diff --check` is clean. The user's `AGENTS.md` remains the sole working
+  tree change and was never staged or modified by Codex. Nothing was pushed or archived.
