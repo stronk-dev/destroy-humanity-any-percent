@@ -3331,3 +3331,44 @@ blocker.
 
 **After the rewrite:** rerun `make verify-harness-ci` and the full `make verify`, then hand the
 epoch-8 mint span back for designated review. No published commit may be touched.
+
+## 2026-08-15 — IMPLEMENTATION HANDOFF: epoch-8 mint + composed first-hour proof ready for designated review
+
+Implemented by Codex. This is an implementation handoff, not a review verdict and not archival
+authority. Review the full post-ratification range `0af2ea6..a6328df`, including both rewritten
+protocol records and the CI-capacity follow-up.
+
+**Authorized rewrite result and remap:**
+- The first rewrite split old mixed commit `3ec99a5` into relevance-registry commit `9d03a19`
+  and artifact-only `BALANCE-CHANGE:` commit `5f126e1`. Its final replayed descendants are
+  `811e392` (old `6a23791`) and `624d42c` (old `e440fa6`). The pre/post-rewrite HEAD trees were
+  byte-identical at tree `b8431567cfd207cca3f6c03fccda2dcb77ec6adb`.
+- The second rewrite maps old mint `fbb34f2` to `cddd66f` and old composed-proof commit
+  `5bbe55f` to `1914b3b`. It changes exactly one file relative to the authorized pre-rewrite
+  tree: `balance/epochs/phase0.json`, moving `curriculum` from the middle of the artifact array
+  to nineteenth/final position. Every production artifact byte is identical and `make
+  epoch-hash` remains exactly
+  `sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`.
+- The replayed protocol-record commits are `2ee42a5` (old `7380db2`) and `bcf7ee7` (old
+  `0577c56`). No published commit was rewritten.
+
+**Implemented behavior:** epoch 8 activates the owner-ratified curriculum and payoff tuple;
+T01-C33 drives the ratified `casual.t0_t1` seed through the real composed gameserver/Postgres
+boundary, asserts all seven milestone coordinates and both terminal runs, verifies Founder
+history, and waits for the durable replay-verification verdict plus immutable run archive. The
+range also closes the live/replay Founder-boundary divergence found by that proof, accepts
+`run_ended` schema v3 in the leaderboard projector while preserving v2, and corrects stale cold-CI
+fixtures exposed only by the full Linux lane.
+
+**Completed gates (full output read):** `make harness-guard-check`, `make verify-harness-ci
+HARNESS_WORKERS=12 SAVE_TEST_HOST_PORT=55434` (cold Linux/amd64, exit 0), `make verify
+HARNESS_WORKERS=12 SAVE_TEST_HOST_PORT=55434` (aggregate, exit 0), `make verify-server-ci
+SAVE_TEST_HOST_PORT=55434`, `make test-save-integration SAVE_TEST_HOST_PORT=55434`, `make
+validate-migrations SAVE_TEST_HOST_PORT=55434`, `make verify-client`, `make test-browser-ci`, and
+`make test-game-ui-composed SAVE_TEST_HOST_PORT=55434`. The isolated hosted harness job now uses
+the same 12-worker command and a finite 30-minute timeout; the prior 15-minute ceiling was below
+the measured native aggregate runtime.
+
+**Handoff:** implemented, all self-checks green, ready for the designated cross-party review.
+Nothing pushed or archived. The owner's unrelated `AGENTS.md` worktree edit remained untouched and
+unstaged throughout.
