@@ -37,7 +37,7 @@ model, which is exactly what C30 required. 1 seed; fully deterministic.
 
 ## Determinism
 
-Every draw derives from `SHA-256` over `policy_id`, `policy_version`, `seed`, `run_seq`, `decision_ordinal` joined by the unit separator `0x1f`,,
+Every draw derives from `SHA-256` over `policy_id`, `policy_version`, `seed`, `run_seq`, `decision_ordinal` joined by the unit separator `0x1f`,
 first 8 bytes big-endian, modulo the count of legal commands enumerated in **raw-byte ascending
 purchasable-ID order**. No wall clock, no global RNG, no map iteration. Keying on `run_seq` means
 run 2 draws a fresh stream rather than replaying run 1's choices.
