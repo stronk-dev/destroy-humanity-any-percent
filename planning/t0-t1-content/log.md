@@ -3102,3 +3102,30 @@ Ruled by Marco (recorded by Claude from explicit selections):
   the data; this is not that. It also preserves the old upper bound and moves only the bound the
   owner ruled stale.
 - **No findings. APPROVED for owner ratification.**
+
+## 2026-08-15 — OWNER RATIFICATION: T01-C40 first-gate envelope
+
+Ratified by Marco (recorded by Claude from the owner's explicit selection):
+
+**`scenario.t0_t1_first_hour` at `sha256:8798abb885db89bde52349d3de87cb6687381cb5f2c33bbd92e561c07cb2029c`**,
+whose sole change from the prior ratified bytes is the ruled `milestone.garage_gate` /
+`chaos.t0_t1` p50 envelope moving from `[480000,600000]` to **`[360000,480000]`** — a 6–8 minute
+band centred at 7 minutes. Consumed verdict: `aae08f1` over `{4767061}`, including an independent
+byte-identical reproduction of the candidate proof
+(`sha256:3188ab784541ae159d9117c475aaf4101a25e772747fee67e5a03972c75b322f`, 97 runs, exit 0).
+
+The prior scenario hash `sha256:e74e271b…02a5` is superseded. Codex may now replace the active
+scenario bytes and the compiled `RatifiedFirstHourScenarioHash` pin, and re-run the normal gates.
+
+**No economy, persona, policy, milestone, relation, or other envelope byte is ratified by this
+entry.** T01-C40 is CLOSED.
+
+### Codex's remaining queue to close T01
+
+1. Land the ratified C40 scenario bytes + compiled pin; gates green.
+2. **Epoch-8 first-hour payoff** — branched endings, starter packages, the `curriculum` artifact,
+   `run_ended` v3 append-only widening, the adopted copy bound to
+   `curriculum.first_failure.<branch>.{title,body}`. `A=200, B=2e0, R=50, S=1e4, G=10` are
+   measured and proposed but **UNRATIFIED**; they ratify with that batch.
+3. **T01-C33 composed proof** at one pinned seed against real Postgres.
+4. AC1 and AC4 then close; T01 archives after its designated review.
