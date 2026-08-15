@@ -1,7 +1,10 @@
 # Design: the first-hour payoff — branched endings that hand run 2 a head start
 
-- **Status:** draft for owner ruling. Authorizes nothing. Resolves T01-C31 (branch), T01-C35
-  (run-2 accelerator) and T01-C36 (production authority + wire) as ONE mechanism.
+- **Status: RULED 2026-08-15.** Mechanism, data authority (epoch 8 + `curriculum` artifact) and
+  wire arm are owner-ruled; the three copy texts are owner-adopted verbatim. Literals `A/B/R/S/G`
+  are MEASURED and PROPOSED but **not yet ratified** — they ratify with the epoch-8 payoff batch.
+  Resolves T01-C31 (branch), T01-C35 (run-2 accelerator) and T01-C36 (production authority + wire)
+  as ONE mechanism.
 - **Owner direction 2026-08-15:** absorb both into T01; the accelerator is a starter package
   derived from which ending you got.
 - **Author:** Claude (design lane). Literals measured by Codex before ratification.
@@ -80,8 +83,8 @@ measurement of the mechanism, which is what the acceptance criterion was always 
 ## Open literals (measured, then owner-ratified)
 
 `A`, `B` (branch predicates), `R` (Route-Knowledge bonus), `S` (seed capital), `G` (rebuilt
-generators). Derived so that all three branches are reachable AND each produces a materially
-faster run 2 without trivialising the tier — Codex measures across the three personas and returns
+generators). Derived so that all three branches are reachable AND every same-seed run 2 is
+strictly faster without trivialising the tier — Codex measures across the three personas and returns
 the tuple with its pacing evidence. **Measured 2026-08-15 and proposed:** `A=200`, `B=2e0`,
 `R=50`, `S=1e4`, `G=10`; all three branches reachable (64/16/17 of 97 runs), zero invariant
 failures, every same-seed run 2 strictly faster.
