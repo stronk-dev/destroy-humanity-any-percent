@@ -3296,3 +3296,38 @@ edit to the carve-out text by its author at some later point — filed, not bloc
 **After the rewrite:** rerun `make verify-harness-ci` and the full `make verify`, then hand the
 epoch-8 mint span back for designated review with the byte-identity statement. No other commit,
 published or unpublished, may be touched.
+
+## 2026-08-15 — PROTOCOL AUTHORIZATION: the `fbb34f2` local rewrite is APPROVED
+
+Authorized by Marco (recorded by Claude from the owner's explicit selection). This is a SECOND,
+separate authorization; the `3ec99a5` one (`7380db2`) explicitly did not cover it.
+
+**Defect:** `fbb34f2` (`BALANCE-CHANGE: mint first-hour payoff epoch`) inserted the new
+`curriculum` artifact at index 7 of a 19-row list instead of appending it. That violates the
+append-only epoch law and contradicts the owner's own ruling, which named curriculum the
+**nineteenth** artifact. The epoch guard checks the offending commit forever, so it cannot be
+fixed forward, and the corrections ledger is the published-history mechanism only.
+
+**Scope: rewrite ONLY `fbb34f2` and replay its descendants**, changing nothing but the
+`curriculum` row's position to last. Every production artifact byte stays identical.
+
+**Preconditions and the load-bearing claim verified by the designated reviewer, by execution:**
+- **Unpublished** — on no remote ref. **Cited by no verdict** — grep of `planning/` and `rfc/`
+  is empty for the hash.
+- **The ratified epoch-8 identity survives the reorder.** `save.ConstantsHashArtifacts` builds a
+  map, **sorts the names**, and hashes name+data in sorted-name order, so it is structurally
+  independent of the seed file's array order. I did not stop at reading that: I recomputed the
+  hash from the real artifact bytes in three orders — as committed, with `curriculum` appended,
+  and under a random permutation — and all three yield
+  `baa890501b28…`, matching the owner-ratified epoch-8 hash exactly. **No re-ratification is
+  owed and none may be claimed from this rewrite.**
+
+**Note on the pattern:** this is the second packaging/ordering defect exposed in one mint span,
+each surfacing only once the previous guard was unblocked. Both were caught by guards working as
+designed rather than by review, and both were escalated rather than assumed — the right outcome.
+Worth a later look at whether the mint path can validate artifact-list position and commit
+packaging *before* a mint commit is authored, rather than after; filed as an observation, not a
+blocker.
+
+**After the rewrite:** rerun `make verify-harness-ci` and the full `make verify`, then hand the
+epoch-8 mint span back for designated review. No published commit may be touched.
