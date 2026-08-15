@@ -3372,3 +3372,50 @@ the measured native aggregate runtime.
 **Handoff:** implemented, all self-checks green, ready for the designated cross-party review.
 Nothing pushed or archived. The owner's unrelated `AGENTS.md` worktree edit remained untouched and
 unstaged throughout.
+
+## 2026-08-16 — Claude designated cross-party review of the epoch-8 mint + composed proof `0af2ea6..00f5eda` — APPROVED
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** ten commits, implementation endpoint
+  `a6328df`.
+- **Gates executed:** `make verify-harness` 0; `make verify-kernel-version` 0;
+  `make harness-guard-check` 0 (the full history/epoch guard that was red through both rewrites);
+  real-Postgres composed proof green.
+
+### Both authorized rewrites verified end-to-end, against the original commits
+
+The pre-rewrite tip `e440fa6` is still reachable, so I diffed it directly against its post-rewrite
+equivalent `624d42c` rather than trusting either byte-identity claim. **The entire diff across
+both rewrites is four lines in `balance/epochs/phase0.json`: the `curriculum` row moving from
+index 7 to index 18.** Nothing else in the tree changed — every production artifact byte, every
+report, every test is identical. That is exactly and only what the two authorizations permitted.
+
+- The split is clean: `9d03a19` touches the relevance registry alone (3 lines); `5f126e1` is the
+  isolated `BALANCE-CHANGE:` carrying 27 artifact files and nothing else.
+- `curriculum` is now the **nineteenth and final** artifact, as ruled.
+- The ratified epoch-8 identity is unchanged:
+  `sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`. **No re-ratification
+  is owed.**
+- Both PROTOCOL AUTHORIZATION entries survived the replay with **content-identical** bodies
+  (verified by diffing the originals `7380db2`/`0577c56` against the replayed `2ee42a5`/`bcf7ee7`).
+  A rewrite that silently altered its own authorization record would be the worst possible
+  outcome here; it did not happen.
+- Registered snapshots: two immutable bundles, epoch 7 at 18 rows and epoch 8 at 19.
+
+### The composed first-hour proof is real, and it discriminates
+
+`TestComposedGameserverReplaysRatifiedFirstHourAtPinnedSeed` takes the headless authority's seven
+milestones and asserts a real Chromium-free composed gameserver over **real Postgres** reproduces
+them — honouring the C33 "one script authority" ruling rather than duplicating the sequence. I ran
+it explicitly (10.4 s, `--- PASS`, not skipped), then mutated the automatic scripted failure so it
+never fires and re-ran: it **fails**, naming the exact divergent command and showing the run
+continuing past 990,000 attended ms. The proof cannot pass with the beat removed.
+
+**No findings. APPROVED.**
+
+### What this closes
+
+The first hour now exists end to end and is proven through the real stack: a player clicks, buys,
+crosses into the garage at ~7 minutes, has their first company end in one of three ways decided by
+how they actually played, and starts run 2 measurably ahead with a head start matching that
+ending. **AC1 and AC4 are met on evidence.** T01's remaining step is archival: acceptance sweep,
+status → implemented, RFC and planning directories moved to their archives, `docs/` canonical.
