@@ -3129,3 +3129,58 @@ entry.** T01-C40 is CLOSED.
    measured and proposed but **UNRATIFIED**; they ratify with that batch.
 3. **T01-C33 composed proof** at one pinned seed against real Postgres.
 4. AC1 and AC4 then close; T01 archives after its designated review.
+
+## 2026-08-15 — Codex epoch-8 payoff candidate handoff: implemented, ready for designated review + ratification
+
+- **Implemented/inspected by:** Codex. **Recorded by:** Codex. **Implementation range:**
+  `f22e695..d840814`, comprising `{8e5ce89, c1e29e5, d840814}`. This is an implementation
+  handoff, not an owner ratification, designated verdict, epoch mint, acceptance claim, archival,
+  push, or deployment.
+- `8e5ce89` installs the owner-ratified C40 scenario bytes and compiled pin at
+  `sha256:8798abb885db89bde52349d3de87cb6687381cb5f2c33bbd92e561c07cb2029c`.
+- `c1e29e5` implements the T01-C31/C35/C36 candidate: a strict Go/TypeScript `curriculum.v2`
+  loader; bundle/replay identity; automatic first-failure branch selection; the three starter
+  packages; additive `run_ended` v3 wire support; replay-inputs v8 with v2-v7 continuity; exact
+  Go/TypeScript replay fixtures; owner-adopted copy through the copy authority; migration `00074`;
+  and kernel `0.3.99`. The requested command is replaced only after ordinary frozen terminal
+  accrual has been evaluated. A discriminating test makes that ordering observable: a state that
+  is burnout before accrual and pivot after accrual must select pivot while leaving preview state
+  untouched. The terminal does not trigger on the gate-crossing command itself; it triggers on the
+  next eligible command after the crossed gate is persisted.
+- `d840814` makes the existing Docker-owned save-test lane composable with other local database
+  stacks through `SAVE_TEST_HOST_PORT`, defaulting to the historical `55432`. It changes no game,
+  schema, or replay semantics.
+
+Exact candidate fingerprints awaiting owner ratification:
+
+- `balance/testdata/t0-t1/curriculum-v2.json`:
+  **`sha256:a39a91f2bcf0e62c4f1fa4846003b69df368007963db0cdef052847937c42955`**;
+- `copy/catalog/game-ui-candidate.json`:
+  **`sha256:b17ff1cd1660001f6dae397ba41cc09258ace7dc3703238ef726c819910b2bbe`**;
+- `client/src/copy/generated/catalog.json`:
+  **`sha256:9e816294f84e6c50e5050f59d33f49a1f09d42780abdb7f5b40bb5a5442c0e13`**.
+
+The candidate consumes the measured tuple **`A=200, B=2e0, R=50, S=1e4, G=10`**, which remains
+**UNRATIFIED** pending the owner decision after designated review. The 97-run first-hour gate was
+regenerated with those exact five inputs against the active C40 scenario and emitted the reviewed
+report byte-identically at
+`sha256:3188ab784541ae159d9117c475aaf4101a25e772747fee67e5a03972c75b322f`.
+
+Self-checks read to completion, all exit 0:
+
+- `make verify HARNESS_WORKERS=12 SAVE_TEST_HOST_PORT=55434` — canonical root aggregate, including
+  server, harness, typecheck (0 errors/0 warnings), production client build, 6,655 client tests,
+  copy/schema/boundary/kernel guards, 20,007 browser tests, and the performance arm;
+- `make verify-server-ci SAVE_TEST_HOST_PORT=55434` — cold Linux/amd64 server-core lane;
+- `make verify-harness-ci SAVE_TEST_HOST_PORT=55434 HARNESS_WORKERS=12` — uncached Linux/amd64
+  harness package plus the full canonical report check;
+- `make test-browser-ci SAVE_TEST_HOST_PORT=55434` — containerized Chromium/WebKit/Firefox lane,
+  123 files and 20,007 tests plus the performance arm;
+- `make validate-migrations SAVE_TEST_HOST_PORT=55434` and the focused real-Postgres production
+  integration lane — migration chain, transaction, retry, persistence, and event write green;
+- `make first-hour-harness HARNESS_WORKERS=12` with the five tuple inputs above and the C40 report
+  output — 97-run report byte-identical; `git diff --check` clean.
+
+**Deliberately not started:** owner ratification, the epoch-8 mint/epoch-seed entry, T01-C33's one
+pinned-seed composed proof, AC1/AC4 closure, T01 archival, push, or deployment. Those remain behind
+the designated cross-party verdict and owner ratification.
