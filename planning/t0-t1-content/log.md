@@ -2707,3 +2707,36 @@ content-derived elective-Exit rule; and one shared script authority consumed by 
 pacing runner plus a real-Postgres composed gameserver proof. No production or golden byte was
 changed, no acceptance box was flipped, and no self-review/archival is claimed. The user's
 uncommitted `AGENTS.md` remains untouched.
+
+## 2026-08-15 — OWNER RULINGS on T01-C30/C32/C33 + C31 branch direction
+
+Ruled by Marco (recorded by Claude from explicit selections and follow-up discussion):
+
+1. **T01-C30 ACCEPTED as proposed.** A closed `first_hour_policy.v1` registry defines all three
+   personas (cadence, deterministic command ordering, bank/wait, gate crossing, run-2
+   continuation, Exit rule); `reference.greedy` reuses the shipped T01-C20 ranker and rate seam
+   rather than authoring a second economy model; registry bytes join scenario identity. The
+   single-scripted-policy alternative is REJECTED — it would collapse the pacing spread that
+   makes the targets meaningful.
+2. **T01-C32 RULED, with the reviewer's framing corrected.** The proposal offered Route Knowledge
+   and Reputation as alternatives; that was wrong — exit terms grant Reputation, Route Knowledge
+   and Network slots together and design/02 varies only the MIX. **The rule is therefore: exit at
+   the first action boundary where run 2 has crossed `gate.t0_to_t1`, Founder-attended time is at
+   least 2,700,000 ms, AND the previewed Wind Down terms grant ANY persistent value.** No single
+   currency is named. The market-offer arm is REJECTED for the acceptance gate (it would couple
+   this gate to opportunity spawn tuning); offers remain the diegetic path in play.
+3. **T01-C33 ACCEPTED as proposed, scoped small.** Scenario + policy registry are the sole script
+   authority; the headless pacing runner produces the distributions and ONE real-Postgres composed
+   gameserver run at ONE pinned seed replays the same decisions and asserts milestones, terminal
+   ordering, run-2 state, and persisted replay. Browser coverage stays Game-UI's separate gate.
+   Justification recorded: AC0 was a brick invisible to the headless harness and only reachable
+   through the real engine/state path — the composed run is the lane that catches that class.
+4. **T01-C31 — the single-outcome arm is SUPERSEDED. The owner ruled BRANCHED outcomes:** the
+   first company's ending is decided by how the run was actually played, not announced by a timer.
+   Design drafted at `planning/t0-t1-content/first-failure-branch-design.md` (acquihire / burnout
+   / pivot; predicates over already-persisted state; terminal type stays `scripted_first` so full
+   first-Exit Reputation and the no-tax rule are preserved; Route Knowledge varies as a
+   non-negative bonus only; `balance/prestige/phase0.json` and the ratified epoch-7 manifest are
+   NOT touched). **Three owner decisions remain open on that document: predicate shapes, the three
+   copy drafts (owner-authored), and the no-tax reading.** Codex does not implement C31 until
+   those land; C30/C32/C33 are implementable now.
