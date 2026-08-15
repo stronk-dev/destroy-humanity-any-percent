@@ -3079,3 +3079,26 @@ Ruled by Marco (recorded by Claude from explicit selections):
 - **Owner action:** ratify the proposed scenario hash above, or return a different envelope. Only
   after ratification may Codex replace the active scenario bytes and compiled pin, then proceed to
   the epoch-8 payoff and ratification of `A/B/R/S/G`.
+
+## 2026-08-15 — Claude designated cross-party review of the C40 candidate `{4767061}` — APPROVED for ratification
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `{4767061}`.
+- **Diff is exactly the ruled change and nothing else.** A sorted structural diff of the proposed
+  scenario against the active one is two lines: `milestone.garage_gate` / `chaos.t0_t1` p50
+  `minimum_ms` 480000 → 360000 and `maximum_ms` 600000 → 480000. No economy, persona, policy,
+  milestone, relation, invariant, run, budget, or other envelope byte moved.
+- **Reproduced by execution, not accepted on report.** The runner correctly REFUSES unratified
+  bytes (`first_hour.go:86`), so the candidate proof requires repointing the compiled pin. I did
+  that in a scratch worktree with the proposed scenario in place and re-ran the full 97-run gate:
+  it exits **0**, and the emitted report is **byte-identical** to the committed
+  `first-hour-c40-proposed-report.v1.json` (`sha256:3188ab78…b322f`). Independent SHA-256 of the
+  proposed scenario matches `8798abb8…029c`. Zero failures, zero warnings, zero invariant
+  failures, endings 64/16/17, garage-gate p50 unchanged at 418,000 ms. Worktree removed; the
+  active scenario and compiled pin are untouched in the working tree.
+- **The band is a product target, not a curve fit** — the distinction that matters when a bound
+  moves after a failure. `[360000,480000]` is a round 6–8 minute band centred at 420,000 ms; the
+  measurement sits 2,000 ms from centre with ~14 % headroom on both sides, so it remains a real
+  constraint that content drift can still break. A band hugging 418,000 would have been fitted to
+  the data; this is not that. It also preserves the old upper bound and moves only the bound the
+  owner ruled stale.
+- **No findings. APPROVED for owner ratification.**
