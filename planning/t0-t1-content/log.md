@@ -2623,3 +2623,70 @@ for the designated cross-party review; no approval or archival is claimed.
   schema, and browser gates listed in `planning/epoch7-content-harness/log.md` are GREEN at the
   handed-off tree. This is ready for the designated cross-party review; it is not self-approved or
   archival-eligible on Codex's word.
+
+## 2026-08-15 — Claude designated cross-party review of the EH-C16 + AC0 closeout `fd5c641^..c6ae5be` — APPROVED; acceptance sweep filed
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `fd5c641^..c6ae5be`, twelve commits
+  (`fd5c641, aba9399, 34d9da5, 19b46dd, 6ee5a70, 4c6871b, a0e6788, d250f3c, e96dbf7, fcb6b45,
+  133d13f, c6ae5be`). Together with the mint range this closes the epoch-7 implementation span.
+- **Executed:** `make verify-harness` — **GREEN** (the gate that was red on EH-C16, including
+  full `harness-check` over the registered baselines); `make verify-server` exit 0;
+  `make verify-schema` exit 0; `make verify-kernel-version` exit 0 with 0.3.98 in three-file
+  lockstep; `make copy-check` exit 0; `make t0-t1-role-check` GREEN; the declared Postgres lane
+  (`docker compose -f compose.save-test.yml run --rm test`) GREEN.
+
+### AC0 is genuinely met — proven adversarially, not read
+
+`TestSessionBoundaryOfflineCatchupPersistsAndReplaysIntegration` skips without a database, so I
+ran it explicitly and verbosely in the Postgres container: **`--- PASS`**, not skipped. Then I
+mutated `buildOfflineCatchup` to never catch up and re-ran it: it fails with
+**`invalid production engine state: invalid provision bucket horizon`** — verbatim the brick the
+RFC's F1 precondition describes. The fixture therefore discriminates the exact defect it exists
+to prevent. The implementation is the ruled ARM (offline catchup at the session boundary, then
+online evaluation from the caught-up cursor), not the rejected clamp: a 48-hour-idle founder on
+the provisioning epoch-7 catalog resumes with `ProductionMS == AccrualCapMS` of canonical
+90%/24h accrual, the span is recorded, the run log carries the catchup coordinates, and
+`ApplyLogged` reproduces byte-identical state. Replay v7 rejects legacy carriers and mismatched
+coordinates.
+
+### EH-C16 is the ruled shape
+
+`branch_report` binds by identity (scenario/constants/policy hashes must match the whole-path
+report AND the registry entry) and by **strict set equality**: items failing relevance must
+correspond exactly to passing branch proofs, every whole-path failure string must map to one of
+them, and any branch failure fails the gate. The registered pair is exactly the ratified state —
+nine whole-path findings across five purchasables, five passing proofs (BTv2 328,099 ms; CRT
+616,212; Institutional Memory 2,448,096; Rack Rail 2,589,974; Refurbished Sticker 163,564). The
+stale `relevance_policy` authority lookup is reconciled to the minted `relevance`. Fixture
+entries without a branch report still take the strict zero-failure path — the old rule survives
+where it belongs.
+
+### The mint is additive and matches the signature
+
+`38eaffd` appends epoch 7 (`current_epoch_id` 6→7, two artifacts added) without altering any
+earlier accepted hash; the accepted identity is the pinned
+`sha256:6c7fab29…f789`. Changelog present and states the eighteen-row provenance.
+
+**No findings. APPROVED.**
+
+### Acceptance-criteria sweep (filed per the AC0 lesson — the record is not the reality)
+
+I re-walked all six T01 criteria against the tree rather than the log:
+
+- **AC0 — MET** (this batch, proven above).
+- **AC2 — MET.** Zero dead purchasables (main path or branch proof); role matrix green.
+- **AC3 — MET.** Strict loaders, epoch protocol, goldens regenerate.
+- **AC5 — MET.** `make copy-check` exit 0.
+- **AC1 — NOT MET (both halves).** `testdata/harness/pacing-baseline.json` still carries only the
+  four phase-0 fixture milestones (`first_manual`, `first_generator_purchase`,
+  `generator_count_1`, `t0_progress_1`). The RFC's own summary says "the milestone set grows with
+  this RFC's content" — it has not — and **there is no elective-Exit milestone at all**, so the
+  ruled `[45,90]` minute gate is not merely failing, it does not exist.
+- **AC4 — NOT MET.** No scripted-first-failure / curriculum run exists in
+  `server/gameserver/composition_integration_test.go`; the composed harness has no
+  content-driven first-session run.
+
+**Consequence: this batch is approved, but T01 remains NOT archival-eligible.** AC1 and AC4 are
+the remaining work, and both are game work rather than instrument work — the grown milestone set
+with real pacing targets, and the first-session script fixture through the composed stack. Epoch 7
+is minted and green; the RFC closes when a scripted persona can play the first hour end to end.
