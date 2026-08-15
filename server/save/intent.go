@@ -574,7 +574,7 @@ func validateIntentDecision(decision IntentDecision, intentID string) error {
 
 func validEventSchemaVersion(event EventWrite) bool {
 	if event.Kind == EventRunEnded {
-		return event.SchemaVersion == 2
+		return event.SchemaVersion == 2 || event.SchemaVersion == 3
 	}
 	if event.Kind == EventOpportunityClaimed || event.Kind == EventBuffStarted {
 		return event.SchemaVersion == 1 || event.SchemaVersion == 2
@@ -1089,6 +1089,10 @@ func validateEventPayload(event EventWrite) error {
 		if value, err := decimal.ParseCanonical(payload.LifetimeValue); err != nil || value.Lt(decimal.Zero) {
 			return fmt.Errorf("%w: invalid run_ended lifetime value", ErrInvalidStream)
 		}
+		if event.SchemaVersion == 2 && (payload.Branch != nil || payload.StarterPackage != nil) ||
+			event.SchemaVersion == 3 && !validCurriculumStarter(payload.Branch, payload.StarterPackage) {
+			return fmt.Errorf("%w: invalid run_ended curriculum payload", ErrInvalidStream)
+		}
 	case EventRunStarted:
 		var payload struct {
 			FounderID   string        `json:"founder_id"`
@@ -1318,6 +1322,37 @@ type eventRunEnded struct {
 	GeneratorsPurchasedTotal *int64             `json:"generators_purchased_total"`
 	Assisted                 eventAssisted      `json:"assisted"`
 	Faction                  *string            `json:"faction"`
+	Branch                   *string            `json:"branch,omitempty"`
+	StarterPackage           *eventStarter      `json:"starter_package,omitempty"`
+}
+
+type eventStarter struct {
+	Kind        string `json:"kind"`
+	ResourceID  string `json:"resource_id,omitempty"`
+	Amount      string `json:"amount,omitempty"`
+	GeneratorID string `json:"generator_id,omitempty"`
+	Count       int64  `json:"count,omitempty"`
+	UpgradeID   string `json:"upgrade_id,omitempty"`
+}
+
+func validCurriculumStarter(branch *string, starter *eventStarter) bool {
+	if branch == nil || starter == nil {
+		return false
+	}
+	switch *branch {
+	case "acquihire":
+		amount, err := decimal.ParseCanonical(starter.Amount)
+		return starter.Kind == "resource_grant" && mechanicalIDPattern.MatchString(starter.ResourceID) && err == nil && amount.Gt(decimal.Zero) && amount.IsStateValue() &&
+			starter.GeneratorID == "" && starter.Count == 0 && starter.UpgradeID == ""
+	case "burnout":
+		return starter.Kind == "generated_generators" && mechanicalIDPattern.MatchString(starter.GeneratorID) && starter.Count > 0 && starter.Count <= decimal.MaxExactInteger &&
+			starter.ResourceID == "" && starter.Amount == "" && starter.UpgradeID == ""
+	case "pivot":
+		return starter.Kind == "preowned_upgrade" && mechanicalIDPattern.MatchString(starter.UpgradeID) &&
+			starter.ResourceID == "" && starter.Amount == "" && starter.GeneratorID == "" && starter.Count == 0
+	default:
+		return false
+	}
 }
 
 func validatePrestigeTerms(terms eventPrestigeTerms) error {

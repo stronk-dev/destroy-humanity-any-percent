@@ -167,6 +167,10 @@ describe("Game UI decoded event boundary", () => {
     }));
     expect(ended).toMatchObject({ kind: "run_ended", payload: { rta_ms: 1_000, tier: 1 } });
     expect(() => decodeGameUIEvent(envelope("run_ended", { ...(ended as { payload: object }).payload, snapshot: {} }))).toThrow(/exact/);
+    const branched = decodeGameUIEvent(envelope("run_ended", { ...(ended as { payload: object }).payload, branch: "burnout", starter_package: { kind: "generated_generators", generator_id: "generator.beige_tower", count: 10 } }));
+    expect(branched).toMatchObject({ kind: "run_ended", payload: { branch: "burnout", starter_package: { count: 10 } } });
+    expect(decodeGameUIEvent(envelope("run_ended", { ...(ended as { payload: object }).payload, branch: "burnout", starter_package: { kind: "generated_generators", generator_id: "generator.beige_tower", count: 9 } }))).toMatchObject({ payload: { starter_package: { count: 9 } } });
+    expect(() => decodeGameUIEvent(envelope("run_ended", { ...(ended as { payload: object }).payload, branch: "burnout", starter_package: { kind: "generated_generators", generator_id: "generator.beige_tower", count: 0 } }))).toThrow(/integer/);
   });
 
   it("owns restart and resync system payloads", () => {

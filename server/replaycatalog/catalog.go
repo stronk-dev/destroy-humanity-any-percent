@@ -12,6 +12,7 @@ import (
 	"cloud-clicker/server/commons"
 	"cloud-clicker/server/commonsbinding"
 	"cloud-clicker/server/copykeys"
+	"cloud-clicker/server/curriculum"
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/faction"
@@ -223,19 +224,34 @@ func Load(constantsHash string, artifacts map[string][]byte) (production.Catalog
 		}
 		bundle.Relevance = relevanceCatalog
 	}
+	if curriculumBytes, active := artifacts["curriculum"]; active {
+		keys := make(map[string]struct{})
+		for _, key := range copykeys.All() {
+			keys[key] = struct{}{}
+		}
+		gateIDs := make(map[string]struct{}, len(gates))
+		for _, gate := range gates {
+			gateIDs[gate.ID] = struct{}{}
+		}
+		curriculumCatalog, curriculumErr := curriculum.Load(curriculumBytes, curriculum.Declarations{Economy: economyCatalog, CopyKeys: keys, GateIDs: gateIDs})
+		if curriculumErr != nil {
+			return production.CatalogBundle{}, curriculumErr
+		}
+		bundle.Curriculum = curriculumCatalog
+	}
 	return bundle, nil
 }
 
 func validArtifactNames(artifacts map[string][]byte) bool {
 	base := [...]string{"categories", "commons", "economy", "factions", "guilds", "prestige", "routes"}
-	allowed := make(map[string]bool, len(base)+11)
+	allowed := make(map[string]bool, len(base)+12)
 	for _, name := range base {
 		allowed[name] = true
 		if len(artifacts[name]) == 0 {
 			return false
 		}
 	}
-	for _, name := range [...]string{"achievements", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "relevance", "soul"} {
+	for _, name := range [...]string{"achievements", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "relevance", "soul"} {
 		allowed[name] = true
 	}
 	for name, data := range artifacts {
@@ -254,9 +270,10 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 	_, minigameAPIActive := artifacts["minigame_api"]
 	_, opportunitiesActive := artifacts["opportunities"]
 	_, relevanceActive := artifacts["relevance"]
+	_, curriculumActive := artifacts["curriculum"]
 	if meters != achievements || doctrines && !meters || minigames && !meters || pets && !minigames || fiscalActive && !pets ||
 		soulActive && !fiscalActive || pitchActive && !soulActive || minigameAPIActive && !pitchActive ||
-		opportunitiesActive && !doctrines || relevanceActive && !opportunitiesActive {
+		opportunitiesActive && !doctrines || relevanceActive && !opportunitiesActive || curriculumActive && !relevanceActive {
 		return false
 	}
 	want := len(base)
@@ -288,6 +305,9 @@ func validArtifactNames(artifacts map[string][]byte) bool {
 		want++
 	}
 	if relevanceActive {
+		want++
+	}
+	if curriculumActive {
 		want++
 	}
 	return len(artifacts) == want

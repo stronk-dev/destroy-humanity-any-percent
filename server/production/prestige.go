@@ -9,6 +9,7 @@ import (
 	"sort"
 	"time"
 
+	"cloud-clicker/server/curriculum"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/multiplier"
@@ -142,10 +143,19 @@ func (s *Service) handleExit(ctx context.Context, streamID string, mode Evaluati
 	return s.finishExitResult(ctx, result)
 }
 
-func (s *Service) scriptedExitDue(ctx context.Context, companyStreamID string, now time.Time) (bool, int64, error) {
+func (s *Service) scriptedExitDue(ctx context.Context, companyStreamID string, now time.Time, crossingGateID string) (bool, int64, error) {
 	company, err := s.store.LoadLatest(ctx, companyStreamID)
 	if err != nil {
 		return false, 0, err
+	}
+	var curriculumCatalog *curriculum.Catalog
+	if s.replayCatalogs != nil {
+		if next, active := s.replayCatalogs.ResolveReplayCatalogs(s.currentConstantsHash); active {
+			curriculumCatalog = next.Curriculum
+		}
+	}
+	if curriculumCatalog == nil && crossingGateID == "" {
+		return false, 0, nil
 	}
 	founder, err := s.store.LoadSiblingLatest(ctx, companyStreamID, economy.ScopeFounder)
 	if err != nil {
@@ -153,6 +163,14 @@ func (s *Service) scriptedExitDue(ctx context.Context, companyStreamID string, n
 	}
 	if len(founder.State.ExitHistory) != 0 || company.State.RunStartedAt.IsZero() {
 		return false, founder.Revision.Number, nil
+	}
+	minimumAttended := int64(900_000)
+	if curriculumCatalog != nil {
+		minimumAttended = curriculumCatalog.FirstFailure.AttendedMS
+		if company.State.RunSeq != curriculumCatalog.FirstFailure.RunSeq ||
+			!company.State.GatesCrossed[curriculumCatalog.FirstFailure.GateID] {
+			return false, founder.Revision.Number, nil
+		}
 	}
 	copyState := *company.State
 	copyState.OfflineSpans = append([]save.OfflineSpan(nil), company.State.OfflineSpans...)
@@ -167,7 +185,7 @@ func (s *Service) scriptedExitDue(ctx context.Context, companyStreamID string, n
 		}
 	}
 	attended, err := prestigecore.AttendedMS(&copyState, effectiveNow)
-	return attended >= 900_000, founder.Revision.Number, err
+	return attended >= minimumAttended, founder.Revision.Number, err
 }
 
 func (s *Service) handleScriptedCrossGateExit(ctx context.Context, streamID string, mode EvaluationMode, now time.Time, request IntentRequest, expectedFounderRevision int64) (HandleResult, error) {
@@ -206,10 +224,10 @@ func (s *Service) finishExit(request IntentRequest, founder *save.State, founder
 		}
 		nextActive = spawnEvidence(spawn)
 	}
-	return finishExitResolved(request, founder, founderRevision, company, companyRevision, now, exitType, terms, endedPrefix, executedRoutes, current, next, nextActive)
+	return finishExitResolved(request, founder, founderRevision, company, companyRevision, now, exitType, terms, nil, endedPrefix, executedRoutes, current, next, nextActive)
 }
 
-func finishExitResolved(request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, now time.Time, exitType string, terms prestigecore.Terms, endedPrefix []save.EventWrite, executedRoutes []string, currentBundle, nextBundle CatalogBundle, nextActive *activePlaySpawnEvidence) (save.ExitDecision, error) {
+func finishExitResolved(request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, now time.Time, exitType string, terms prestigecore.Terms, branch *curriculum.Branch, endedPrefix []save.EventWrite, executedRoutes []string, currentBundle, nextBundle CatalogBundle, nextActive *activePlaySpawnEvidence) (save.ExitDecision, error) {
 	now = save.CanonicalServerTime(now)
 	attended, err := prestigecore.AttendedMS(company, now)
 	if err != nil {
@@ -220,6 +238,13 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 	}
 	if terms.RouteKnowledge > decimal.MaxExactInteger-founder.RouteKnowledgeBalance {
 		return save.ExitDecision{}, ErrInvalidEngineState
+	}
+	if branch != nil {
+		if exitType != "scripted_first" || nextBundle.Curriculum == nil || branch.RouteKnowledgeBonus > decimal.MaxExactInteger-terms.RouteKnowledge ||
+			terms.RouteKnowledge+branch.RouteKnowledgeBonus > decimal.MaxExactInteger-founder.RouteKnowledgeBalance {
+			return save.ExitDecision{}, ErrInvalidEngineState
+		}
+		terms.RouteKnowledge += branch.RouteKnowledgeBonus
 	}
 	founder.ReputationLevel += terms.ReputationDelta
 	founder.RouteKnowledgeBalance += terms.RouteKnowledge
@@ -246,6 +271,11 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 	if err := settleAndActivateFoundations(currentBundle, nextBundle, founder, company, newCompany); err != nil {
 		return save.ExitDecision{}, err
 	}
+	if branch != nil {
+		if err := nextBundle.Curriculum.ApplyStarter(newCompany, *branch); err != nil {
+			return save.ExitDecision{}, err
+		}
+	}
 	if (nextBundle.Opportunities != nil) != (nextActive != nil) {
 		return save.ExitDecision{}, ErrInvalidEngineState
 	}
@@ -262,12 +292,19 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 		value := company.FactionID
 		factionID = &value
 	}
-	endedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType,
+	endedPayloadMap := map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType,
 		"started_at_ms": company.RunStartedAt.UnixMilli(), "ended_at_ms": now.UnixMilli(), "rta_ms": now.Sub(company.RunStartedAt).Milliseconds(),
 		"attended_ms": attended, "pre_timer": company.RunPreTimer, "terminal_seq": companyRevision.RunLogSequence, "payout": terms, "tier": company.Tier,
 		"lifetime_value": company.LifetimeValue.String(), "ledger_fact_kinds": sortedBoolKeys(company.LedgerFactKinds), "executed_routes": executedRoutes,
 		"gates_crossed": sortedBoolKeys(company.GatesCrossed), "generators_purchased_total": company.GeneratorPurchasedTotal,
-		"assisted": assisted, "faction": factionID})
+		"assisted": assisted, "faction": factionID}
+	endedSchema := 2
+	if branch != nil {
+		endedSchema = 3
+		endedPayloadMap["branch"] = branch.Branch
+		endedPayloadMap["starter_package"] = branch.StarterPackage
+	}
+	endedPayload, _ := json.Marshal(endedPayloadMap)
 	startedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": newCompany.RunSeq}, "started_at_ms": now.UnixMilli(), "assisted": map[string]bool{"commons": false, "advisor": founder.AdvisorMode}})
 	advancedPayload, _ := json.Marshal(map[string]any{"founder_id": companyRevision.OwnerID, "run_id": runID, "exit_type": exitType, "reputation_delta": terms.ReputationDelta, "route_knowledge": terms.RouteKnowledge, "occurred_at_ms": now.UnixMilli()})
 	receipt, _ := json.Marshal(map[string]any{"intent_id": request.IntentID, "outcome": "applied", "applied_count": 1, "receipt": map[string]any{"changes": []any{}}, "new_revision": companyRevision.Number + 2, "founder_revision": founderRevision.Number + 1, "evaluated_at": now.Format(time.RFC3339Nano), "snapshot": wireSnapshot(newCompany, nextBundle.Economy)})
@@ -276,7 +313,7 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 		resolvedPayload, _ := json.Marshal(map[string]string{"offer_id": request.OfferID, "resolution": "accepted"})
 		endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventExitOfferResolved, SchemaVersion: 1, IntentID: request.IntentID, Payload: resolvedPayload})
 	}
-	endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventRunEnded, SchemaVersion: 2, IntentID: request.IntentID, Payload: endedPayload})
+	endedEvents = append(endedEvents, save.EventWrite{Kind: save.EventRunEnded, SchemaVersion: endedSchema, IntentID: request.IntentID, Payload: endedPayload})
 	frozen, err := FrozenFiscalContributions(nextBundle.Fiscal, founder)
 	if err != nil {
 		return save.ExitDecision{}, err
@@ -330,14 +367,16 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 	carry.FounderConstantsHash = founderRevision.ConstantsHash
 	selectedType := "collapse"
 	selectedTerms := json.RawMessage(`{}`)
-	switch request.Kind {
-	case IntentCrossGate:
+	switch {
+	case request.ScriptedExit:
 		selectedType = "scripted_first"
-	case IntentWindDown:
+	case request.Kind == IntentCrossGate:
+		selectedType = "scripted_first"
+	case request.Kind == IntentWindDown:
 		if len(founder.ExitHistory) == 0 {
 			selectedType = "scripted_first"
 		}
-	case IntentAcceptExitOffer:
+	case request.Kind == IntentAcceptExitOffer:
 		selectedType = "unresolved"
 		if company.OfferState != nil && company.OfferState.OfferID == request.OfferID {
 			selectedType = company.OfferState.ExitType
@@ -385,6 +424,16 @@ func (s *Service) applyLoggedExit(ctx context.Context, request IntentRequest, fo
 			return save.ExitDecision{}, nil, weightErr
 		}
 		build.CommonsWeightPPM = &weight
+	}
+	if selectedType == "scripted_first" && next.Curriculum != nil {
+		if request.Kind == IntentCrossGate {
+			return save.ExitDecision{}, nil, ErrInvalidEngineState
+		}
+		branch, branchErr := previewCurriculumBranch(company, current, next, request, build)
+		if branchErr != nil {
+			return save.ExitDecision{}, nil, branchErr
+		}
+		build.SelectedBranch = &branch.Branch
 	}
 	replayInputs, err := buildReplayInputs(build)
 	if err != nil {

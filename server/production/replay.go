@@ -13,6 +13,7 @@ import (
 	"cloud-clicker/server/accrualhook"
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/activeplay"
+	"cloud-clicker/server/curriculum"
 	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
@@ -54,6 +55,7 @@ type CatalogBundle struct {
 	Pitch         *pitch.Catalog
 	Opportunities *activeplay.Catalog
 	Relevance     *relevancepolicy.RelevancePolicy
+	Curriculum    *curriculum.Catalog
 	Next          *CatalogBundle
 }
 
@@ -132,6 +134,7 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	withMinigameAPI := bundle.MinigameAPI != nil
 	withOpportunities := bundle.Opportunities != nil
 	withRelevance := bundle.Relevance != nil
+	withCurriculum := bundle.Curriculum != nil
 	expectedArtifacts := 7
 	if withFoundations {
 		expectedArtifacts = 9
@@ -163,6 +166,9 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 	if withRelevance {
 		expectedArtifacts++
 	}
+	if withCurriculum {
+		expectedArtifacts++
+	}
 	if constantsHash == "" || bundle.ConstantsHash != constantsHash || len(bundle.Artifacts) != expectedArtifacts || bundle.Economy == nil ||
 		bundle.Routes == nil || bundle.Commons == nil || bundle.Prestige == nil || bundle.Faction == nil || bundle.Guild == nil {
 		return false
@@ -187,7 +193,8 @@ func (bundle CatalogBundle) valid(constantsHash string) bool {
 		withPitch && (!withSoul || len(bundle.Artifacts["pitch"]) == 0) ||
 		withMinigameAPI && (!withPitch || len(bundle.Artifacts["minigame_api"]) == 0) ||
 		withOpportunities && (!withDoctrines || len(bundle.Artifacts["opportunities"]) == 0) ||
-		withRelevance && (!withOpportunities || len(bundle.Artifacts["relevance"]) == 0) {
+		withRelevance && (!withOpportunities || len(bundle.Artifacts["relevance"]) == 0) ||
+		withCurriculum && (!withRelevance || len(bundle.Artifacts["curriculum"]) == 0) {
 		return false
 	}
 	if withOpportunities && (bundle.Opportunities.Schedule.MinimumIntervalMS > decimal.MaxExactInteger-bundle.Opportunities.Schedule.LifetimeMS ||
@@ -638,22 +645,30 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		}
 		actionDebits = transition.ActionDebits
 		attended, attendedErr := prestigecore.AttendedMS(company, save.CanonicalServerTime(now))
-		if attendedErr != nil || attended < 900_000 || len(founder.ExitHistory) != 0 {
+		minimumAttended := int64(900_000)
+		if resolved.SelectedBranch != nil {
+			if next.Curriculum == nil || request.GateID != next.Curriculum.FirstFailure.GateID || company.RunSeq != next.Curriculum.FirstFailure.RunSeq {
+				return LoggedExitTransition{}, fmt.Errorf("%w: scripted curriculum trigger", ErrInvalidReplayInputs)
+			}
+			minimumAttended = next.Curriculum.FirstFailure.AttendedMS
+		}
+		if attendedErr != nil || attended < minimumAttended || len(founder.ExitHistory) != 0 {
 			return LoggedExitTransition{}, ErrInvalidEngineState
 		}
 		exitType, prefix = "scripted_first", append(append(catchupEvents, activeEvents...), transition.Events...)
 		terms, err = prestigecore.ComputeTerms(company, founder, catalogs.Prestige, exitType)
 	} else {
-		if request.Kind == IntentFileIPO {
+		scripted := resolved.SelectedBranch != nil
+		if request.Kind == IntentFileIPO && !scripted {
 			decision := rejectedExitDecision(request, revision.Number, "not_eligible", "ipo_chain")
 			return LoggedExitTransition{Founder: founder, Company: company, Decision: decision}, nil
 		}
-		if request.Kind == IntentWindDown && company.Tier < 1 {
+		if request.Kind == IntentWindDown && company.Tier < 1 && !scripted {
 			decision := rejectedExitDecision(request, revision.Number, "not_eligible", "tier")
 			return LoggedExitTransition{Founder: founder, Company: company, Decision: decision}, nil
 		}
 		exitType = "collapse"
-		if request.Kind == IntentWindDown && len(founder.ExitHistory) == 0 {
+		if scripted || request.Kind == IntentWindDown && len(founder.ExitHistory) == 0 {
 			exitType = "scripted_first"
 		}
 		var promised *prestigecore.StoredOfferTerms
@@ -681,6 +696,13 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		}
 		prefix, err = runAccrualHook(hook, request.IntentID, company, catalogs.Economy, revision, evaluation, contributions)
 		prefix = append(append(catchupEvents, activeEvents...), prefix...)
+		if err == nil && resolved.SelectedBranch != nil && request.Kind != IntentWindDown {
+			attended, attendedErr := prestigecore.AttendedMS(company, save.CanonicalServerTime(now))
+			if next.Curriculum == nil || attendedErr != nil || company.RunSeq != next.Curriculum.FirstFailure.RunSeq || len(founder.ExitHistory) != 0 ||
+				!company.GatesCrossed[next.Curriculum.FirstFailure.GateID] || attended < next.Curriculum.FirstFailure.AttendedMS {
+				return LoggedExitTransition{}, fmt.Errorf("%w: scripted curriculum trigger", ErrInvalidReplayInputs)
+			}
+		}
 		if err == nil {
 			terms, err = prestigecore.ComputeTerms(company, founder, catalogs.Prestige, exitType)
 		}
@@ -694,6 +716,19 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 		}
 		return LoggedExitTransition{}, fmt.Errorf("%w: selected exit type", ErrInvalidReplayInputs)
 	}
+	var selectedBranch *curriculum.Branch
+	if resolved.SelectedBranch != nil {
+		if exitType != "scripted_first" || next.Curriculum == nil || request.Kind == IntentCrossGate {
+			return LoggedExitTransition{}, fmt.Errorf("%w: selected branch", ErrInvalidReplayInputs)
+		}
+		branch, branchErr := next.Curriculum.SelectBranch(company, catalogs.Economy)
+		if branchErr != nil || branch.Branch != *resolved.SelectedBranch {
+			return LoggedExitTransition{}, fmt.Errorf("%w: selected branch", ErrInvalidReplayInputs)
+		}
+		selectedBranch = &branch
+	} else if exitType == "scripted_first" && next.Curriculum != nil {
+		return LoggedExitTransition{}, fmt.Errorf("%w: missing selected branch", ErrInvalidReplayInputs)
+	}
 	if catalogs.foundationsActive() && wire.Version >= 4 {
 		if err := validateFoundationHookInputs(catalogs, company, founder); err != nil {
 			return LoggedExitTransition{}, err
@@ -704,12 +739,74 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	}
 	founderRevision := save.Revision{StreamID: "", OwnerID: wire.Command.FounderID, Number: resolved.FounderCarry.FounderRevision,
 		ConstantsHash: catalogs.ConstantsHash}
-	decision, err := finishExitResolved(request, founder, founderRevision, company, revision, now, exitType, terms, prefix,
+	decision, err := finishExitResolved(request, founder, founderRevision, company, revision, now, exitType, terms, selectedBranch, prefix,
 		resolved.ExecutedRouteIDs, catalogs, *next, resolved.NextActivePlay)
 	if err != nil {
 		return LoggedExitTransition{}, err
 	}
 	return LoggedExitTransition{Founder: founder, Company: company, Decision: decision}, nil
+}
+
+// previewCurriculumBranch runs the exact frozen terminal accrual on a clone and
+// stops before the requested command mutation. The selected branch can then be
+// persisted in replay inputs without introducing a second accrual model.
+func previewCurriculumBranch(company *save.State, current, next CatalogBundle, request IntentRequest, build replayBuild) (curriculum.Branch, error) {
+	if company == nil || next.Curriculum == nil || request.Kind == IntentCrossGate {
+		return curriculum.Branch{}, ErrInvalidEngineState
+	}
+	preview, err := cloneReplayState(company, current.Economy)
+	if err != nil {
+		return curriculum.Branch{}, err
+	}
+	if err := deriveFactionStockResource(preview, current.Faction); err != nil {
+		return curriculum.Branch{}, err
+	}
+	accrual, err := makeReplayAccrual(build.Contributions, build.CommonsWeightPPM, build.GuildSettlementBatch, build.RouteContextVersion)
+	if err != nil {
+		return curriculum.Branch{}, err
+	}
+	if err := applyReplayGuildSettlements(preview, accrual.GuildSettlementBatch, current.Faction.StockCap); err != nil {
+		return curriculum.Branch{}, err
+	}
+	externalContributions, err := contributionsFromReplay(accrual)
+	if err != nil {
+		return curriculum.Branch{}, err
+	}
+	baseContributions, err := assembleContributions(preview, current.Economy, externalContributions)
+	if err != nil {
+		return curriculum.Branch{}, err
+	}
+	wire := replayInputsWire{Version: save.ReplayInputsVersion, Command: build.Command, EvaluatedAtMS: build.Now.UnixMilli(), EvaluationMode: build.Mode, OfflineCatchup: build.OfflineCatchup}
+	revision := save.Revision{StreamID: build.Command.CompanyStreamID, OwnerID: build.Command.FounderID, Number: build.Command.Revision, ConstantsHash: current.ConstantsHash, RunLogSequence: build.Command.RunLogSeq}
+	hook := closedReplayAccrualHook(current, accrual.CommonsWeightPPM)
+	if _, err := applyReplayOfflineCatchup(preview, current.Economy, wire, baseContributions, hook, revision, request.IntentID); err != nil {
+		return curriculum.Branch{}, err
+	}
+	if build.ActivePlay != nil {
+		if _, err := applyActivePlaySchedule(preview, current.Opportunities, current.Prestige, build.Command.FounderID, save.CanonicalServerTime(build.Now), *build.ActivePlay); err != nil {
+			return curriculum.Branch{}, err
+		}
+	}
+	contributionInputs := append([]multiplier.Contribution(nil), externalContributions...)
+	if build.ActivePlay != nil {
+		activeContributions, activeErr := activePlayContributions(preview, current.Opportunities, build.ActivePlay.AttendedNowMS)
+		if activeErr != nil {
+			return curriculum.Branch{}, activeErr
+		}
+		contributionInputs = append(contributionInputs, activeContributions...)
+	}
+	contributions, err := assembleContributions(preview, current.Economy, contributionInputs)
+	if err != nil {
+		return curriculum.Branch{}, err
+	}
+	evaluation, err := Evaluate(preview, current.Economy, build.Now, build.Mode, contributions)
+	if err != nil {
+		return curriculum.Branch{}, err
+	}
+	if _, err := runAccrualHook(hook, request.IntentID, preview, current.Economy, revision, evaluation, contributions); err != nil {
+		return curriculum.Branch{}, err
+	}
+	return next.Curriculum.SelectBranch(preview, current.Economy)
 }
 
 func jsonSemanticallyEqual(left, right []byte) bool {
@@ -988,6 +1085,7 @@ type replayExitResolved struct {
 	FounderCarry          replayFounderCarry          `json:"founder_carry"`
 	ExecutedRouteIDs      []string                    `json:"executed_route_ids"`
 	SelectedExitType      string                      `json:"selected_exit_type"`
+	SelectedBranch        *string                     `json:"selected_branch,omitempty"`
 	SelectedTerms         json.RawMessage             `json:"selected_terms"`
 	NextConstantsHash     string                      `json:"next_constants_hash"`
 	ActivePlay            *activePlayScheduleEvidence `json:"active_play,omitempty"`
@@ -1009,6 +1107,7 @@ type replayBuild struct {
 	Terminal               bool
 	ExecutedRouteIDs       []string
 	SelectedExitType       string
+	SelectedBranch         *string
 	SelectedTerms          json.RawMessage
 	NextConstantsHash      string
 	ActivePlay             *activePlayScheduleEvidence
@@ -1045,7 +1144,8 @@ func buildReplayInputs(input replayBuild) (json.RawMessage, error) {
 		carry := normalizedFounderCarry(*input.FounderCarry)
 		resolved, err = json.Marshal(replayExitResolved{Kind: "exit", IntentKind: input.IntentKind, Accrual: accrual,
 			FounderCarry: carry, ExecutedRouteIDs: routes, SelectedExitType: input.SelectedExitType,
-			SelectedTerms: append(json.RawMessage(nil), input.SelectedTerms...), NextConstantsHash: input.NextConstantsHash,
+			SelectedBranch: input.SelectedBranch,
+			SelectedTerms:  append(json.RawMessage(nil), input.SelectedTerms...), NextConstantsHash: input.NextConstantsHash,
 			ActivePlay: input.ActivePlay, NextActivePlay: input.NextActivePlay,
 			MinigameSessionActive: input.MinigameSessionActive})
 	case input.IntentKind == IntentCrossGate:
@@ -1303,7 +1403,7 @@ func boolMapFromSorted(values []string) map[string]bool {
 
 func parseReplayInputs(data []byte) (replayInputsWire, error) {
 	var wire replayInputsWire
-	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != save.ReplayInputsVersion) ||
+	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != 7 && wire.Version != save.ReplayInputsVersion) ||
 		(wire.EvaluationMode != ModeOnline && wire.EvaluationMode != ModeOffline) || wire.EvaluatedAtMS <= 0 {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}

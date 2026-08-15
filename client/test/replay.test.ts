@@ -133,6 +133,9 @@ const fixture = fixtureJSON as {
   readonly first_content_exit: {
     readonly constants_hash: string; readonly artifacts: ReplayArtifacts; readonly next_constants_hash: string; readonly next_artifacts: ReplayArtifacts; readonly case: TerminalFixtureCase;
   };
+  readonly curriculum_exit: {
+    readonly constants_hash: string; readonly artifacts: ReplayArtifacts; readonly next_constants_hash: string; readonly next_artifacts: ReplayArtifacts; readonly case: TerminalFixtureCase;
+  };
   readonly founder_constants_hash: string;
   readonly founder_artifacts: ReplayArtifacts;
   readonly founder_cases: readonly FounderFixtureCase[];
@@ -615,6 +618,81 @@ describe("TypeScript ApplyLogged cross-runtime fixture", () => {
     expect(transition.founder.founder_extensions?.fiscal_credit).toBe(2);
     expect(transition.founder.founder_extensions?.soul).toBe(80);
     expect(transition.founder.founder_extensions?.minigame_session_seq).toBe(0);
+  });
+
+  it("replays the curriculum burnout branch and starter byte-identically", async () => {
+    const fixtureExit = fixture.curriculum_exit;
+    const current = await loadReplayCatalogBundle(fixtureExit.constants_hash, fixtureExit.artifacts);
+    const next = await loadReplayCatalogBundle(fixtureExit.next_constants_hash, fixtureExit.next_artifacts);
+    const bundle = withNextReplayCatalogBundle(current, next);
+    expect(next.curriculum?.first_failure.branches.map((row) => row.branch)).toEqual(["acquihire", "burnout", "pivot"]);
+    const testCase = fixtureExit.case;
+    const state = restoreReplayState(testCase.pre_state, 18, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
+    const transition = await applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs);
+    expect(transition.outcome).toBe("applied");
+    expect(canonicalJSONString(transition.receipt)).toBe(testCase.receipt_json);
+    expect(canonicalJSONString(transition.founder)).toBe(testCase.founder_output_json);
+    expect(canonicalJSONString(encodeReplayState(transition.finalCompany))).toBe(testCase.final_company_json);
+    expect(canonicalJSONString(encodeReplayState(transition.newCompany!))).toBe(testCase.new_company_json);
+    expect(canonicalJSONString(transition.founderEvents)).toBe(testCase.founder_events_json);
+    expect(canonicalJSONString(transition.companyEndedEvents)).toBe(testCase.company_ended_events_json);
+    expect(canonicalJSONString(transition.companyStartedEvents)).toBe(testCase.company_started_events_json);
+    expect(transition.newCompany!.generatorsProvisioned["generator.beige_tower"]).toBe(10);
+    expect(transition.companyEndedEvents.at(-1)).toMatchObject({ kind: "run_ended", schema_version: 3, payload: { branch: "burnout" } });
+
+    const beforeGate = structuredClone(testCase.pre_state) as Record<string, any>;
+    beforeGate.gates_crossed = {};
+    const invalid = restoreReplayState(beforeGate, 18, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
+    await expect(applyLoggedExit(invalid, canonicalJSONString(testCase.canonical_payload), bundle, testCase.replay_inputs)).rejects.toThrow(/scripted curriculum trigger/);
+  });
+
+  it("keeps curriculum Reputation neutral while each branch applies its own Route Knowledge and starter", async () => {
+    const fixtureExit = fixture.curriculum_exit;
+    const current = await loadReplayCatalogBundle(fixtureExit.constants_hash, fixtureExit.artifacts);
+    const next = await loadReplayCatalogBundle(fixtureExit.next_constants_hash, fixtureExit.next_artifacts);
+    const bundle = withNextReplayCatalogBundle(current, next);
+    const testCase = fixtureExit.case;
+    const cases = [
+      {
+        branch: "acquihire",
+        routeKnowledge: 25,
+        prepare: (state: ReturnType<typeof restoreReplayState>) => {
+          state.generators["generator.answering_machine"] = 200;
+          state.generatorPurchasedTotal = 200;
+          state.upgradesOwned.add("upgrade.reply_all_macro");
+        },
+        assertStarter: (state: NonNullable<Awaited<ReturnType<typeof applyLoggedExit>>["newCompany"]>) => expect(state.balances["company.cash"]).toBe("1e4"),
+      },
+      {
+        branch: "burnout",
+        routeKnowledge: 75,
+        prepare: (_state: ReturnType<typeof restoreReplayState>) => undefined,
+        assertStarter: (state: NonNullable<Awaited<ReturnType<typeof applyLoggedExit>>["newCompany"]>) => {
+          expect(state.generatorsProvisioned["generator.beige_tower"]).toBe(10);
+          expect(state.generators["generator.beige_tower"]).toBe(0);
+        },
+      },
+      {
+        branch: "pivot",
+        routeKnowledge: 50,
+        prepare: (state: ReturnType<typeof restoreReplayState>) => { state.balances["company.cash"] = "1e9"; },
+        assertStarter: (state: NonNullable<Awaited<ReturnType<typeof applyLoggedExit>>["newCompany"]>) => expect(state.upgradesOwned.has("upgrade.reply_all_macro")).toBe(true),
+      },
+    ] as const;
+    let reputation: number | null = null;
+
+    for (const row of cases) {
+      const state = restoreReplayState(testCase.pre_state, 18, bundle.economy, { meters: bundle.meters!, achievements: bundle.achievements!, doctrines: bundle.doctrines, opportunities: bundle.opportunities });
+      row.prepare(state);
+      const inputs = structuredClone(testCase.replay_inputs) as Record<string, any>;
+      inputs.resolved.selected_branch = row.branch;
+      const transition = await applyLoggedExit(state, canonicalJSONString(testCase.canonical_payload), bundle, inputs);
+      expect(transition.founder.route_knowledge_balance).toBe(row.routeKnowledge);
+      if (reputation === null) reputation = transition.founder.reputation_level;
+      expect(transition.founder.reputation_level).toBe(reputation);
+      row.assertStarter(transition.newCompany!);
+      expect(transition.companyEndedEvents.at(-1)).toMatchObject({ kind: "run_ended", schema_version: 3, payload: { branch: row.branch } });
+    }
   });
 
   it("rejects an active Exit whose run set overlaps Founder lifetime ownership", async () => {

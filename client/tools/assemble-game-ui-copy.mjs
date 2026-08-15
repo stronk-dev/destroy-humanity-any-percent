@@ -50,6 +50,17 @@ const termAdditions = Object.freeze([
   { key: "terms.route_knowledge.frame", text: "Route Knowledge +{delta}", params: [{ name: "delta", type: "integer" }], era_variants: null, provenance: [], tone: "diegetic" },
 ]);
 
+// Owner-adopted verbatim in T01-C31. These rows are assembled here so the
+// candidate remains reproducible instead of accepting hand-edited catalog bytes.
+const curriculumAdditions = Object.freeze([
+  { key: "curriculum.first_failure.acquihire.body", text: "Someone with a bigger office read your rate sheet and made an offer for the people, not the product. The product was turned off on a Tuesday. You are told this is a success, and by every metric that gets published, it is.", params: [], era_variants: null, provenance: [], tone: "diegetic" },
+  { key: "curriculum.first_failure.acquihire.title", text: "Your First Company Was Acquired", params: [], era_variants: null, provenance: [], tone: "diegetic" },
+  { key: "curriculum.first_failure.burnout.body", text: "You bought the future faster than the present could pay for it. The machines are still warm. Statistically, this is the most realistic thing in this game.", params: [], era_variants: null, provenance: [], tone: "diegetic" },
+  { key: "curriculum.first_failure.burnout.title", text: "Your First Company Failed", params: [], era_variants: null, provenance: [], tone: "diegetic" },
+  { key: "curriculum.first_failure.pivot.body", text: "Nothing here ran unless you were touching it, so what you actually built was a job. The pivot is the part where you admit that and keep the contacts.", params: [], era_variants: null, provenance: [], tone: "diegetic" },
+  { key: "curriculum.first_failure.pivot.title", text: "Your First Company Pivoted", params: [], era_variants: null, provenance: [], tone: "diegetic" },
+]);
+
 const paramTypes = Object.freeze({
   ago: "string",
   amount: "string",
@@ -180,8 +191,9 @@ const entries = ruled
   .filter((row) => !omitted.has(row.key))
   .concat(additions.map(([key, text, tone]) => ({ key, text, params: [], era_variants: null, provenance: [], tone })))
   .concat(termAdditions)
+  .concat(curriculumAdditions)
   .sort((left, right) => Buffer.from(left.key).compare(Buffer.from(right.key)));
-if (entries.length !== 137 || new Set(entries.map((row) => row.key)).size !== 137) fail(`expected 137 new unique rows; found ${entries.length}`);
+if (entries.length !== 143 || new Set(entries.map((row) => row.key)).size !== 143) fail(`expected 143 new unique rows; found ${entries.length}`);
 
 for (const entry of entries) {
   if (entry.text_kind === "longform") validateLongformCopyText(entry.text, entry.key);

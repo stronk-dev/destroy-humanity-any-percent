@@ -39,6 +39,7 @@ type crossRuntimeFixture struct {
 	ActiveExit         crossRuntimeActiveExit        `json:"active_foundation_exit"`
 	ActivePlayExit     crossRuntimeActiveExit        `json:"active_play_exit"`
 	FirstContentExit   crossRuntimeActiveExit        `json:"first_content_exit"`
+	CurriculumExit     crossRuntimeActiveExit        `json:"curriculum_exit"`
 	FullRun            crossRuntimeFullRun           `json:"full_run"`
 	DoctrineRun        crossRuntimeFullRun           `json:"doctrine_run"`
 	ActivePlayRun      crossRuntimeFullRun           `json:"active_play_run"`
@@ -370,6 +371,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 	result.ActiveExit = makeActiveFoundationExitFixture(t, baseNow)
 	result.ActivePlayExit = makeActivePlayExitFixture(t, baseNow)
 	result.FirstContentExit = makeFirstContentExitFixture(t, baseNow)
+	result.CurriculumExit = makeCurriculumExitFixture(t, baseNow)
 	result.FullRun = makeFullRunFixture(t, catalogs, catalogs.ConstantsHash, baseNow)
 	result.DoctrineRun = makeDoctrineReplayRunFixture(t, baseNow)
 	result.ActivePlayRun = makeActivePlayReplayRunFixture(t, baseNow)
@@ -984,7 +986,7 @@ func TestExitResetsComputeBurst(t *testing.T) {
 	founderRevision := save.Revision{StreamID: "01986666-2a00-7000-8000-000000000010", OwnerID: "01986666-2a00-7000-8000-000000000011", Number: 1, ConstantsHash: catalogs.ConstantsHash}
 	companyRevision := save.Revision{StreamID: "01986666-1a00-7000-8000-000000000010", OwnerID: founderRevision.OwnerID, Number: 1, ConstantsHash: catalogs.ConstantsHash}
 	decision, err := finishExitResolved(IntentRequest{IntentID: "01986666-0a12-7000-8000-000000000012"}, founder, founderRevision, activated, companyRevision,
-		startedAt.Add(time.Second), "collapse", prestigecore.Terms{}, nil, []string{}, catalogs, catalogs, nil)
+		startedAt.Add(time.Second), "collapse", prestigecore.Terms{}, nil, nil, []string{}, catalogs, catalogs, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1454,6 +1456,98 @@ func makeFirstContentExitFixture(t *testing.T, now time.Time) crossRuntimeActive
 	result := executeTerminalFixture(t, "first-content-same-epoch-exit", catalogs, company, preState, request, inputs, carry)
 	return crossRuntimeActiveExit{ConstantsHash: catalogs.ConstantsHash, Artifacts: stringArtifacts(catalogs.Artifacts),
 		NextConstantsHash: catalogs.ConstantsHash, NextArtifacts: stringArtifacts(catalogs.Artifacts), Case: result}
+}
+
+func makeCurriculumExitFixture(t *testing.T, now time.Time) crossRuntimeActiveExit {
+	t.Helper()
+	current := activeContentBundle(t)
+	artifacts := cloneArtifactMap(current.Artifacts)
+	curriculumBytes, err := os.ReadFile("../../balance/testdata/t0-t1/curriculum-v2.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts["curriculum"] = curriculumBytes
+	nextHash, err := save.ConstantsHashArtifacts(artifacts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	next := loadCompleteReplayTestBundle(t, nextHash, artifacts)
+	current.Next = &next
+	founderID := "01986666-2d00-7000-8000-000000000001"
+	company := replayFixtureState(t, current.Economy, now.Add(-15*time.Minute))
+	company.WireVersion, company.Tier = 18, 1
+	company.GatesCrossed["gate.t0_to_t1"] = true
+	company.MeterBands = nil
+	meterState, meterErr := meters.NewRunState(current.Meters, 0)
+	if meterErr != nil {
+		t.Fatal(meterErr)
+	}
+	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
+	company.AchievementsEarnedRun = map[string]bool{}
+	if _, err := initializeActivePlayState(company, current.Opportunities, founderID); err != nil {
+		t.Fatal(err)
+	}
+	advanceActivePlayFixtureAttendance(t, company, current.Opportunities, current.Prestige, founderID, now)
+	company.ManualTokenRefilledAt = now
+	founder := replayFounderFixtureState(t, current, now)
+	founder.WireVersion = 21
+	if err := activateMinigameState(founder, current.Minigames); err != nil {
+		t.Fatal(err)
+	}
+	founder.Pets = map[string]pet.CareState{}
+	founder.FiscalPeriodOpenedWallMS, founder.FiscalGeneratorLevels, founder.FiscalUnlocks = now.UnixMilli(), map[string]int64{}, map[string]bool{}
+	for _, row := range current.Fiscal.GeneratorLevelRows() {
+		founder.FiscalGeneratorLevels[row.GeneratorID] = 0
+	}
+	founder.Soul, founder.SoulExhaustedSourceIDs = 80, []string{}
+	preState := mustEncodeState(t, company)
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0d00-7000-8000-000000000001","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	carry := founderCarry(founder)
+	carry.FounderRevision, carry.FounderConstantsHash = 1, current.ConstantsHash
+	minigameActive := false
+	activeEvidence, err := resolveActivePlaySchedule(company, current.Opportunities, current.Prestige, founderID, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	nextSpawn, err := next.Opportunities.Spawn(founderID, company.RunSeq+1, 0, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	branch, err := next.Curriculum.SelectBranch(company, current.Economy)
+	if err != nil || branch.Branch != "burnout" {
+		t.Fatalf("curriculum fixture branch=%q err=%v", branch.Branch, err)
+	}
+	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1d00-7000-8000-000000000001", FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 1}
+	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+		RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
+		SelectedExitType: "scripted_first", SelectedBranch: &branch.Branch, SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: next.ConstantsHash,
+		ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn), MinigameSessionActive: &minigameActive})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result := executeTerminalFixture(t, "curriculum-burnout-preempts-manual", current, company, preState, request, inputs, carry)
+	if result.CompanyEndedEvents[len(result.CompanyEndedEvents)-1].SchemaVersion != 3 {
+		t.Fatal("curriculum exit did not emit run_ended v3")
+	}
+	return crossRuntimeActiveExit{ConstantsHash: current.ConstantsHash, Artifacts: stringArtifacts(current.Artifacts),
+		NextConstantsHash: next.ConstantsHash, NextArtifacts: stringArtifacts(next.Artifacts), Case: result}
+}
+
+func advanceActivePlayFixtureAttendance(t *testing.T, state *save.State, catalog *activeplay.Catalog, policy *prestigecore.Policy, founderID string, end time.Time) {
+	t.Helper()
+	for cursor := state.EvaluatedThrough.Add(5 * time.Second); !cursor.After(end); cursor = cursor.Add(5 * time.Second) {
+		state.EvaluatedThrough = cursor
+		evidence, err := resolveActivePlaySchedule(state, catalog, policy, founderID, cursor)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := applyActivePlaySchedule(state, catalog, policy, founderID, cursor, evidence); err != nil {
+			t.Fatal(err)
+		}
+	}
 }
 
 func stringArtifacts(source map[string][]byte) map[string]string {

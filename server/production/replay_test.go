@@ -1,10 +1,12 @@
 package production
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -510,4 +512,176 @@ func TestFounderCarryVersionBoundaryKeepsLegacyV2Replayable(t *testing.T) {
 	if validFounderCarry(legacy, save.ReplayInputsVersion, CatalogBundle{}) {
 		t.Fatal("replay-inputs v3 accepted missing lifetime achievement fields")
 	}
+}
+
+func TestCurriculumReplayRejectsASelectedBranchBeforeItsGate(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/replay/apply-logged-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture crossRuntimeFixture
+	if err := json.Unmarshal(data, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	row := fixture.CurriculumExit
+	currentArtifacts := artifactBytes(row.Artifacts)
+	nextArtifacts := artifactBytes(row.NextArtifacts)
+	current := loadCompleteReplayTestBundle(t, row.ConstantsHash, currentArtifacts)
+	next := loadCompleteReplayTestBundle(t, row.NextConstantsHash, nextArtifacts)
+	current.Next = &next
+	var canonicalPayload bytes.Buffer
+	if err := json.Compact(&canonicalPayload, row.Case.CanonicalPayload); err != nil {
+		t.Fatal(err)
+	}
+	state, err := save.RestoreState(row.Case.PreState, 18, current.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.GatesCrossed = map[string]bool{}
+	if _, err := ApplyLoggedExit(state, canonicalPayload.Bytes(), current, row.Case.ReplayInputs); !errors.Is(err, ErrInvalidReplayInputs) || !strings.Contains(err.Error(), "scripted curriculum trigger") {
+		t.Fatalf("selected curriculum branch without its gate error=%v", err)
+	}
+}
+
+func TestCurriculumReplayBranchesKeepReputationNeutralAndApplyTheirStarter(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/replay/apply-logged-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture crossRuntimeFixture
+	if err := json.Unmarshal(data, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	row := fixture.CurriculumExit
+	current := loadCompleteReplayTestBundle(t, row.ConstantsHash, artifactBytes(row.Artifacts))
+	next := loadCompleteReplayTestBundle(t, row.NextConstantsHash, artifactBytes(row.NextArtifacts))
+	current.Next = &next
+	var canonicalPayload bytes.Buffer
+	if err := json.Compact(&canonicalPayload, row.Case.CanonicalPayload); err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		branch         string
+		routeKnowledge int64
+		prepare        func(*save.State)
+		assertStarter  func(*testing.T, *save.State)
+	}{
+		{branch: "acquihire", routeKnowledge: 25, prepare: func(state *save.State) {
+			state.GeneratorCounts["generator.answering_machine"] = 200
+			state.GeneratorPurchasedTotal = 200
+			state.UpgradesOwned["upgrade.reply_all_macro"] = true
+		}, assertStarter: func(t *testing.T, state *save.State) {
+			cash, _ := state.Ledger.Balance("company.cash")
+			if cash.String() != "1e4" {
+				t.Fatalf("acquihire cash=%s", cash.String())
+			}
+		}},
+		{branch: "burnout", routeKnowledge: 75, prepare: func(*save.State) {}, assertStarter: func(t *testing.T, state *save.State) {
+			if state.GeneratorProvisioned["generator.beige_tower"] != 10 || state.GeneratorCounts["generator.beige_tower"] != 0 {
+				t.Fatalf("burnout starter purchased=%d generated=%d", state.GeneratorCounts["generator.beige_tower"], state.GeneratorProvisioned["generator.beige_tower"])
+			}
+		}},
+		{branch: "pivot", routeKnowledge: 50, prepare: func(state *save.State) {
+			setCash(t, state, "1e9")
+		}, assertStarter: func(t *testing.T, state *save.State) {
+			if !state.UpgradesOwned["upgrade.reply_all_macro"] {
+				t.Fatal("pivot starter upgrade missing")
+			}
+		}},
+	}
+
+	var reputation *int64
+	for _, test := range tests {
+		t.Run(test.branch, func(t *testing.T) {
+			state, restoreErr := save.RestoreState(row.Case.PreState, 18, current.Economy, economy.ScopeCompany, time.Time{})
+			if restoreErr != nil {
+				t.Fatal(restoreErr)
+			}
+			test.prepare(state)
+
+			wire, parseErr := parseReplayInputs(row.Case.ReplayInputs)
+			if parseErr != nil {
+				t.Fatal(parseErr)
+			}
+			var resolved replayExitResolved
+			if err := json.Unmarshal(wire.Resolved, &resolved); err != nil {
+				t.Fatal(err)
+			}
+			resolved.SelectedBranch = &test.branch
+			wire.Resolved, err = json.Marshal(resolved)
+			if err != nil {
+				t.Fatal(err)
+			}
+			inputs, err := json.Marshal(wire)
+			if err != nil {
+				t.Fatal(err)
+			}
+			transition, applyErr := ApplyLoggedExit(state, canonicalPayload.Bytes(), current, inputs)
+			if applyErr != nil {
+				t.Fatal(applyErr)
+			}
+			if transition.Founder.RouteKnowledgeBalance != test.routeKnowledge {
+				t.Fatalf("route knowledge=%d want=%d", transition.Founder.RouteKnowledgeBalance, test.routeKnowledge)
+			}
+			if reputation == nil {
+				value := transition.Founder.ReputationLevel
+				reputation = &value
+			} else if transition.Founder.ReputationLevel != *reputation {
+				t.Fatalf("reputation=%d want branch-neutral %d", transition.Founder.ReputationLevel, *reputation)
+			}
+			test.assertStarter(t, transition.Decision.NewCompanyState)
+			last := transition.Decision.CompanyEndedEvents[len(transition.Decision.CompanyEndedEvents)-1]
+			var payload struct {
+				Branch string `json:"branch"`
+			}
+			if last.Kind != save.EventRunEnded || last.SchemaVersion != 3 || json.Unmarshal(last.Payload, &payload) != nil || payload.Branch != test.branch {
+				t.Fatalf("run_ended=%+v branch=%q", last, payload.Branch)
+			}
+		})
+	}
+}
+
+func TestCurriculumBranchPreviewObservesAccrualBeforeReplacingTheCommand(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/replay/apply-logged-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture crossRuntimeFixture
+	if err := json.Unmarshal(data, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	row := fixture.CurriculumExit
+	current := loadCompleteReplayTestBundle(t, row.ConstantsHash, artifactBytes(row.Artifacts))
+	next := loadCompleteReplayTestBundle(t, row.NextConstantsHash, artifactBytes(row.NextArtifacts))
+	state, err := save.RestoreState(row.Case.PreState, 18, current.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.GeneratorProvisioned["generator.beige_tower"] = 100
+	before, err := next.Curriculum.SelectBranch(state, current.Economy)
+	if err != nil || before.Branch != "burnout" {
+		t.Fatalf("pre-accrual branch=%q err=%v", before.Branch, err)
+	}
+	request, err := ParseIntent([]byte(`{"intent_id":"01986666-0d00-7000-8000-000000000001","kind":"perform_manual_batch","expected_revision":1,"action_id":"manual.click","count":1,"window_ms":1}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	build := replayBuild{Command: save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1d00-7000-8000-000000000001", FounderID: "01986666-2d00-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1},
+		Mode: ModeOnline, Now: state.EvaluatedThrough.Add(time.Second), IntentKind: request.Kind, GuildSettlementBatch: guild.SettlementBatch{}, RouteContextVersion: current.Routes.ContextVersion()}
+	after, err := previewCurriculumBranch(state, current, next, request, build)
+	if err != nil || after.Branch != "pivot" {
+		t.Fatalf("post-accrual branch=%q err=%v", after.Branch, err)
+	}
+	if cash, _ := state.Ledger.Balance("company.cash"); cash.String() != "0" {
+		t.Fatalf("preview mutated persisted cash=%s", cash.String())
+	}
+}
+
+func artifactBytes(source map[string]string) map[string][]byte {
+	result := make(map[string][]byte, len(source))
+	for name, value := range source {
+		result[name] = []byte(value)
+	}
+	return result
 }

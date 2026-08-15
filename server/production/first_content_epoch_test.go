@@ -7,6 +7,7 @@ import (
 	"cloud-clicker/server/achievements"
 	"cloud-clicker/server/activeplay"
 	"cloud-clicker/server/copykeys"
+	"cloud-clicker/server/curriculum"
 	"cloud-clicker/server/doctrine"
 	"cloud-clicker/server/economy"
 	"cloud-clicker/server/epochseed"
@@ -96,6 +97,16 @@ func loadCompleteReplayTestBundle(t *testing.T, hash string, artifacts map[strin
 	}
 	if data := artifacts["relevance"]; len(data) != 0 {
 		bundle.Relevance, err = relevancepolicy.Load(data, bundle.Economy, bundle.Routes, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	if data := artifacts["curriculum"]; len(data) != 0 {
+		gateIDs := map[string]struct{}{}
+		for _, gate := range bundle.Routes.Gates() {
+			gateIDs[gate.ID] = struct{}{}
+		}
+		bundle.Curriculum, err = curriculum.Load(data, curriculum.Declarations{Economy: bundle.Economy, CopyKeys: keys, GateIDs: gateIDs})
 		if err != nil {
 			t.Fatal(err)
 		}

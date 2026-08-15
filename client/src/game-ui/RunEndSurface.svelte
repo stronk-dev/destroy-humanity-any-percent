@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { t, type CopyEra } from "../copy";
+  import { t, type CopyEra, type CopyKey } from "../copy";
   import type { RunEndSurfaceProps } from "./events";
   import { GAME_UI_PRESENTATION, requirePresentation } from "./presentation";
   import { renderPrestigeTermRows } from "./prestige-terms";
@@ -17,14 +17,38 @@
   function exitTitle(exitType: string): string {
     return t(requirePresentation(GAME_UI_PRESENTATION.exitTypes, exitType).title_key, {}, era);
   }
+
+  const curriculumCopy = {
+    acquihire: {
+      title: "curriculum.first_failure.acquihire.title",
+      body: "curriculum.first_failure.acquihire.body",
+    },
+    burnout: {
+      title: "curriculum.first_failure.burnout.title",
+      body: "curriculum.first_failure.burnout.body",
+    },
+    pivot: {
+      title: "curriculum.first_failure.pivot.title",
+      body: "curriculum.first_failure.pivot.body",
+    },
+  } as const satisfies Record<"acquihire" | "burnout" | "pivot", Record<"title" | "body", CopyKey>>;
+
+  function curriculumKey(member: "title" | "body"): CopyKey {
+    const branch = ended.payload.branch;
+    if (branch !== undefined) return curriculumCopy[branch][member];
+    return member === "title" ? "curriculum.scripted_first_failure.title" : "curriculum.scripted_first_failure.body";
+  }
+
+  const curriculumTitle = $derived(curriculumKey("title"));
+  const curriculumBody = $derived(curriculumKey("body"));
 </script>
 
 <section class="surface" aria-labelledby="run-end-heading">
-  <h1 id="run-end-heading">{ended.payload.exit_type === "scripted_first" ? t("curriculum.scripted_first_failure.title", {}, era) : t("screen.run_end.standard.title", {}, era)}</h1>
+  <h1 id="run-end-heading">{ended.payload.exit_type === "scripted_first" ? t(curriculumTitle, {}, era) : t("screen.run_end.standard.title", {}, era)}</h1>
   <p>{t("screen.run_end.exit_frame", { exit_type: exitTitle(ended.payload.exit_type), tier: ended.payload.tier }, era)}</p>
   <p>{t("screen.run_end.attended_frame", { attended: duration(ended.payload.attended_ms) }, era)}</p>
   {#if ended.payload.exit_type === "scripted_first"}
-    <p>{t("curriculum.scripted_first_failure.body", {}, era)}</p>
+    <p>{t(curriculumBody, {}, era)}</p>
     <p>{t("curriculum.scripted_first_failure.next_run", {}, era)}</p>
   {:else}
     <p>{t("screen.run_end.founder_note", {}, era)}</p>

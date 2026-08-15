@@ -232,6 +232,30 @@ func TestRunEndedV2RequiresTerminalCategoryFacts(t *testing.T) {
 	}
 }
 
+func TestRunEndedV3RequiresAnExactCurriculumBranchAndStarter(t *testing.T) {
+	base := `{"founder_id":"22222222-2222-4222-8222-222222222222","run_id":{"company_stream_id":"11111111-1111-4111-8111-111111111111","run_seq":1},"exit_type":"scripted_first","started_at_ms":100,"ended_at_ms":200,"rta_ms":100,"attended_ms":90,"pre_timer":false,"terminal_seq":1,"payout":{"reputation_delta":0,"network_slot_unlocks":[],"route_knowledge":50,"clout_reach_note":"clout.reach.preserved"},"tier":1,"lifetime_value":"1e0","ledger_fact_kinds":[],"executed_routes":[],"gates_crossed":[],"generators_purchased_total":0,"assisted":{"commons":false,"advisor":false},"faction":null,%s}`
+	valid := EventWrite{Kind: EventRunEnded, SchemaVersion: 3, IntentID: testIntentID,
+		Payload: json.RawMessage(fmt.Sprintf(base, `"branch":"burnout","starter_package":{"kind":"generated_generators","generator_id":"generator.beige_tower","count":10}`))}
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: []EventWrite{valid}}, testIntentID); err != nil {
+		t.Fatal(err)
+	}
+	for _, replacement := range []string{
+		`"branch":"burnout","starter_package":{"kind":"generated_generators","generator_id":"generator.beige_tower","count":0}`,
+		`"branch":"pivot","starter_package":{"kind":"generated_generators","generator_id":"generator.beige_tower","count":10}`,
+	} {
+		invalid := valid
+		invalid.Payload = json.RawMessage(fmt.Sprintf(base, replacement))
+		if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: []EventWrite{invalid}}, testIntentID); !errors.Is(err, ErrInvalidStream) {
+			t.Fatalf("invalid v3 curriculum event accepted: %s err=%v", replacement, err)
+		}
+	}
+	legacy := valid
+	legacy.SchemaVersion = 2
+	if err := validateIntentDecision(IntentDecision{Outcome: IntentApplied, Receipt: json.RawMessage(`{}`), Events: []EventWrite{legacy}}, testIntentID); !errors.Is(err, ErrInvalidStream) {
+		t.Fatalf("v2 accepted v3 fields: %v", err)
+	}
+}
+
 func TestAcceptedExitOfferResolutionPayloadIsExact(t *testing.T) {
 	valid := EventWrite{Kind: EventExitOfferResolved, SchemaVersion: 1, IntentID: testIntentID,
 		Payload: json.RawMessage(`{"offer_id":"018f6b7c-9abc-7def-8abc-0123456789ac","resolution":"accepted"}`)}

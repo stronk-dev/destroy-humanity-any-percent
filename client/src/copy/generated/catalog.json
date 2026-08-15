@@ -325,6 +325,54 @@
       "tone": "diegetic"
     },
     {
+      "key": "curriculum.first_failure.acquihire.body",
+      "text": "Someone with a bigger office read your rate sheet and made an offer for the people, not the product. The product was turned off on a Tuesday. You are told this is a success, and by every metric that gets published, it is.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "curriculum.first_failure.acquihire.title",
+      "text": "Your First Company Was Acquired",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "curriculum.first_failure.burnout.body",
+      "text": "You bought the future faster than the present could pay for it. The machines are still warm. Statistically, this is the most realistic thing in this game.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "curriculum.first_failure.burnout.title",
+      "text": "Your First Company Failed",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "curriculum.first_failure.pivot.body",
+      "text": "Nothing here ran unless you were touching it, so what you actually built was a job. The pivot is the part where you admit that and keep the contacts.",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
+      "key": "curriculum.first_failure.pivot.title",
+      "text": "Your First Company Pivoted",
+      "params": [],
+      "era_variants": null,
+      "provenance": [],
+      "tone": "diegetic"
+    },
+    {
       "key": "curriculum.scripted_first_failure.body",
       "text": "Your first company failed. Statistically, this is the most realistic thing in this game. Everything it taught you survives it — see below.",
       "params": [],

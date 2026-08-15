@@ -1,4 +1,4 @@
-import { parseCanonical } from "../numeric";
+import { isStateValue, parseCanonical } from "../numeric";
 import type { TransportEnvelope } from "../transport";
 
 type RunID = Readonly<{ company_stream_id: string; run_seq: number }>;
@@ -31,6 +31,8 @@ export type RunEndedEvent = Readonly<{ cursor: number; kind: "run_ended"; occurr
   started_at_ms: number;
   terminal_seq: number;
   tier: number;
+  branch?: "acquihire" | "burnout" | "pivot";
+  starter_package?: Readonly<{ kind: "resource_grant"; resource_id: string; amount: string }> | Readonly<{ kind: "generated_generators"; generator_id: string; count: number }> | Readonly<{ kind: "preowned_upgrade"; upgrade_id: string }>;
 }> }>;
 export type RunEndSurfaceProps = Readonly<{ ended: RunEndedEvent }>;
 export type GameUILifecycleEvent = GateCrossedEvent | ExitOfferSpawnedEvent | ExitOfferResolvedEvent | RunEndedEvent;
@@ -106,18 +108,36 @@ export function decodeGameUIEvent(envelope: TransportEnvelope): GameUILifecycleE
     return { cursor: envelope.rev, kind, occurred_at_ms: occurredAtMS, payload: { offer_id: uuidString(payload.offer_id), resolution: payload.resolution, run_seq: null } };
   }
   if (kind !== "run_ended") return undefined;
-  exact(payload, ["assisted", "attended_ms", "ended_at_ms", "executed_routes", "exit_type", "faction", "founder_id", "gates_crossed", "generators_purchased_total", "ledger_fact_kinds", "lifetime_value", "payout", "pre_timer", "rta_ms", "run_id", "started_at_ms", "terminal_seq", "tier"], "run_ended");
+  const branched = "branch" in payload || "starter_package" in payload;
+  exact(payload, ["assisted", "attended_ms", "ended_at_ms", "executed_routes", "exit_type", "faction", "founder_id", "gates_crossed", "generators_purchased_total", "ledger_fact_kinds", "lifetime_value", "payout", "pre_timer", "rta_ms", "run_id", "started_at_ms", "terminal_seq", "tier", ...(branched ? ["branch", "starter_package"] : [])], "run_ended");
   const assisted = object(payload.assisted, "run_ended.assisted"); exact(assisted, ["advisor", "commons"], "run_ended.assisted");
   if (typeof assisted.advisor !== "boolean" || typeof assisted.commons !== "boolean" || typeof payload.pre_timer !== "boolean" ||
       payload.faction !== null && typeof payload.faction !== "string" || typeof payload.exit_type !== "string") throw new SyntaxError("invalid run-ended flags");
   const started = safe(payload.started_at_ms, 1), ended = safe(payload.ended_at_ms, started), rta = safe(payload.rta_ms);
   if (rta !== ended - started || typeof payload.lifetime_value !== "string" || parseCanonical(payload.lifetime_value).lt(0)) throw new SyntaxError("invalid run-ended timing");
+  let branchFields: Pick<RunEndedEvent["payload"], "branch" | "starter_package"> = {};
+  if (branched) {
+    if (payload.branch !== "acquihire" && payload.branch !== "burnout" && payload.branch !== "pivot") throw new SyntaxError("invalid curriculum branch");
+    const starter = object(payload.starter_package, "starter package");
+    if (payload.branch === "acquihire") {
+      exact(starter, ["kind", "resource_id", "amount"], "starter package");
+      if (starter.kind !== "resource_grant" || typeof starter.resource_id !== "string" || !mechanicalID.test(starter.resource_id) || typeof starter.amount !== "string") throw new SyntaxError("invalid starter package");
+      const amount = parseCanonical(starter.amount); if (!amount.gt(0) || !isStateValue(amount)) throw new SyntaxError("invalid starter package");
+    } else if (payload.branch === "burnout") {
+      exact(starter, ["kind", "generator_id", "count"], "starter package");
+      if (starter.kind !== "generated_generators" || typeof starter.generator_id !== "string" || !mechanicalID.test(starter.generator_id) || safe(starter.count, 1) !== starter.count) throw new SyntaxError("invalid starter package");
+    } else {
+      exact(starter, ["kind", "upgrade_id"], "starter package");
+      if (starter.kind !== "preowned_upgrade" || typeof starter.upgrade_id !== "string" || !mechanicalID.test(starter.upgrade_id)) throw new SyntaxError("invalid starter package");
+    }
+    branchFields = { branch: payload.branch, starter_package: starter as RunEndedEvent["payload"]["starter_package"] };
+  }
   return { cursor: envelope.rev, kind, occurred_at_ms: occurredAtMS, payload: {
     assisted: { advisor: assisted.advisor, commons: assisted.commons }, attended_ms: safe(payload.attended_ms), ended_at_ms: ended,
     executed_routes: sortedIDs(payload.executed_routes), exit_type: id(payload.exit_type), faction: payload.faction === null ? null : id(payload.faction),
     founder_id: uuidString(payload.founder_id), gates_crossed: sortedIDs(payload.gates_crossed), generators_purchased_total: safe(payload.generators_purchased_total),
     ledger_fact_kinds: sortedIDs(payload.ledger_fact_kinds), lifetime_value: payload.lifetime_value, payout: prestigeTerms(payload.payout),
-    pre_timer: payload.pre_timer, rta_ms: rta, run_id: runID(payload.run_id), started_at_ms: started, terminal_seq: safe(payload.terminal_seq, 1), tier: safe(payload.tier),
+    pre_timer: payload.pre_timer, rta_ms: rta, run_id: runID(payload.run_id), started_at_ms: started, terminal_seq: safe(payload.terminal_seq, 1), tier: safe(payload.tier), ...branchFields,
   } };
 }
 

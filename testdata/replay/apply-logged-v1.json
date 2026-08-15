@@ -300,7 +300,7 @@
         "window_ms": 100
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0002-7000-8000-000000000002",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -532,7 +532,7 @@
         "window_ms": 100
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0019-7000-8000-000000000019",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1008,7 +1008,7 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0014-7000-8000-000000000014",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1244,7 +1244,7 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0018-7000-8000-000000000018",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1408,7 +1408,7 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0004-7000-8000-000000000004",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1663,7 +1663,7 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0011-7000-8000-000000000011",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1961,7 +1961,7 @@
         "tithe_ppm": 110000
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0005-7000-8000-000000000005",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2189,7 +2189,7 @@
         "kind": "leave_compact"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0006-7000-8000-000000000006",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2418,7 +2418,7 @@
         "kind": "incorporate"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0007-7000-8000-000000000007",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2677,7 +2677,7 @@
         "offer_id": "01986666-0008-7000-8000-000000000099"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0008-7000-8000-000000000008",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2916,7 +2916,7 @@
         "window_ms": 1
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0015-7000-8000-000000000015",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3146,7 +3146,7 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0016-7000-8000-000000000016",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3401,7 +3401,7 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0017-7000-8000-000000000017",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3657,7 +3657,7 @@
         "window_ms": 60000
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0009-7000-8000-000000000009",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3941,7 +3941,7 @@
         "window_ms": 1
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0010-7000-8000-000000000010",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4108,7 +4108,7 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0101-7000-8000-000000000101",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4272,7 +4272,7 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0102-7000-8000-000000000102",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4439,7 +4439,7 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0103-7000-8000-000000000103",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4606,7 +4606,7 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0104-7000-8000-000000000104",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4772,7 +4772,7 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0105-7000-8000-000000000105",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4937,7 +4937,7 @@
         "window_ms": 1
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0106-7000-8000-000000000106",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -5102,7 +5102,7 @@
         "window_ms": 0
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0107-7000-8000-000000000107",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -5266,7 +5266,7 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0108-7000-8000-000000000108",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -5432,7 +5432,7 @@
         "route_id": "INVALID"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0109-7000-8000-000000000109",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -5597,7 +5597,7 @@
         "tithe_ppm": 1000001
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0110-7000-8000-000000000110",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -5760,7 +5760,7 @@
         "kind": "incorporate"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0111-7000-8000-000000000111",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -5923,7 +5923,7 @@
         "offer_id": "INVALID"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0112-7000-8000-000000000112",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -6087,7 +6087,7 @@
         "offer_id": "INVALID"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0113-7000-8000-000000000113",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -6250,7 +6250,7 @@
         "kind": "wind_down"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0114-7000-8000-000000000114",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -6413,7 +6413,7 @@
         "kind": "leave_compact"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0115-7000-8000-000000000115",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -6580,7 +6580,7 @@
         "kind": "buy_generator"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0012-7000-8000-000000000012",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -6743,7 +6743,7 @@
         "tithe_ppm": 110000
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0013-7000-8000-000000000013",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -6908,7 +6908,7 @@
         "kind": "wind_down"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0100-7000-8000-000000000100",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -7315,7 +7315,7 @@
         "offer_id": "01986666-0200-7000-8000-000000000200"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0200-7000-8000-000000000201",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -7739,7 +7739,7 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0300-7000-8000-000000000300",
           "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -8174,7 +8174,7 @@
           "kind": "buy_generator"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0201-7000-8000-000000000201",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -8432,7 +8432,7 @@
           "upgrade_id": "upgrade.click"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0301-7000-8000-000000000301",
             "company_stream_id": "01986666-1300-7000-8000-000000000001",
@@ -8698,7 +8698,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0302-7000-8000-000000000302",
             "company_stream_id": "01986666-1300-7000-8000-000000000001",
@@ -8949,7 +8949,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0303-7000-8000-000000000303",
             "company_stream_id": "01986666-1300-7000-8000-000000000001",
@@ -9212,7 +9212,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0304-7000-8000-000000000304",
             "company_stream_id": "01986666-1300-7000-8000-000000000001",
@@ -9497,7 +9497,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0400-7000-8000-000000000401",
             "company_stream_id": "01986666-1400-7000-8000-000000000001",
@@ -9872,7 +9872,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0400-7000-8000-000000000401",
             "company_stream_id": "01986666-1400-7000-8000-000000000001",
@@ -10254,7 +10254,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0400-7000-8000-000000000403",
             "company_stream_id": "01986666-1400-7000-8000-000000000003",
@@ -10635,7 +10635,7 @@
           "route_id": null
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0400-7000-8000-000000000402",
             "company_stream_id": "01986666-1400-7000-8000-000000000002",
@@ -11036,7 +11036,7 @@
         "offer_id": "01986666-0600-7000-8000-000000000600"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0600-7000-8000-000000000601",
           "company_stream_id": "01986666-1600-7000-8000-000000000001",
@@ -11650,7 +11650,7 @@
         "route_id": null
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01987777-0300-7000-8000-000000000300",
           "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -12328,7 +12328,7 @@
         "kind": "wind_down"
       },
       "replay_inputs": {
-        "v": 7,
+        "v": 8,
         "command": {
           "intent_id": "01986666-0c00-7000-8000-000000000001",
           "company_stream_id": "01986666-1c00-7000-8000-000000000001",
@@ -12943,6 +12943,797 @@
       "company_started_events_json": "[{\"intent_id\":\"01986666-0c00-7000-8000-000000000001\",\"kind\":\"run_started\",\"payload\":{\"assisted\":{\"advisor\":false,\"commons\":false},\"founder_id\":\"01986666-2c00-7000-8000-000000000001\",\"run_id\":{\"company_stream_id\":\"01986666-1c00-7000-8000-000000000001\",\"run_seq\":2},\"started_at_ms\":1785571200000},\"schema_version\":1}]"
     }
   },
+  "curriculum_exit": {
+    "constants_hash": "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789",
+    "artifacts": {
+      "achievements": "{\n  \"schema_version\": 1,\n  \"achievements\": [\n    {\n      \"id\": \"achievement.career_attended_day\",\n      \"condition_scope\": \"career\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"age_ms\",\n        \"minimum\": 86400000\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"founder_advanced\"\n        ]\n      },\n      \"score_grant\": 4,\n      \"copy_key\": \"achievement.career_attended_day\"\n    },\n    {\n      \"id\": \"achievement.career_attended_hour\",\n      \"condition_scope\": \"career\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"age_ms\",\n        \"minimum\": 3600000\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"founder_advanced\"\n        ]\n      },\n      \"score_grant\": 2,\n      \"copy_key\": \"achievement.career_attended_hour\"\n    },\n    {\n      \"id\": \"achievement.exit_count_5\",\n      \"condition_scope\": \"career\",\n      \"condition\": {\n        \"kind\": \"exit_count_at_least\",\n        \"count\": 5\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"founder_advanced\",\n          \"run_ended\"\n        ]\n      },\n      \"score_grant\": 8,\n      \"copy_key\": \"achievement.exit_count_5\"\n    },\n    {\n      \"id\": \"achievement.first_gate\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"tier\",\n        \"minimum\": 1\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"gate_crossed\"\n        ]\n      },\n      \"score_grant\": 2,\n      \"copy_key\": \"achievement.first_gate\"\n    },\n    {\n      \"id\": \"achievement.gate_burn_t3\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"tier\",\n        \"minimum\": 3\n      },\n      \"proof\": {\n        \"kind\": \"burn\",\n        \"event_kind\": \"gate_crossed\",\n        \"resource_id\": \"company.cash\",\n        \"minimum\": \"1e9\"\n      },\n      \"score_grant\": 8,\n      \"copy_key\": \"achievement.gate_burn_t3\"\n    },\n    {\n      \"id\": \"achievement.generators_owned_100\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"owns_generator_at_least\",\n        \"generator_id\": \"generator.beige_tower\",\n        \"count\": 100\n      },\n      \"proof\": {\n        \"kind\": \"possession\",\n        \"justification_copy_key\": \"achievement.possession_warning\"\n      },\n      \"score_grant\": 4,\n      \"copy_key\": \"achievement.generators_owned_100\"\n    },\n    {\n      \"id\": \"achievement.generators_owned_300\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"owns_generator_at_least\",\n        \"generator_id\": \"generator.beige_tower\",\n        \"count\": 300\n      },\n      \"proof\": {\n        \"kind\": \"possession\",\n        \"justification_copy_key\": \"achievement.possession_warning\"\n      },\n      \"score_grant\": 8,\n      \"copy_key\": \"achievement.generators_owned_300\"\n    },\n    {\n      \"id\": \"achievement.generators_purchased_1\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"generators_purchased_total\",\n        \"minimum\": 1\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"generator_purchased\"\n        ]\n      },\n      \"score_grant\": 2,\n      \"copy_key\": \"achievement.generators_purchased_1\"\n    },\n    {\n      \"id\": \"achievement.generators_purchased_25\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"generators_purchased_total\",\n        \"minimum\": 25\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"generator_purchased\"\n        ]\n      },\n      \"score_grant\": 4,\n      \"copy_key\": \"achievement.generators_purchased_25\"\n    },\n    {\n      \"id\": \"achievement.generators_purchased_25_tier_3\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"all_of\",\n        \"conditions\": [\n          {\n            \"kind\": \"counter_at_least\",\n            \"counter\": \"generators_purchased_total\",\n            \"minimum\": 25\n          },\n          {\n            \"kind\": \"counter_at_least\",\n            \"counter\": \"tier\",\n            \"minimum\": 3\n          }\n        ]\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"gate_crossed\",\n          \"generator_purchased\"\n        ]\n      },\n      \"score_grant\": 8,\n      \"copy_key\": \"achievement.generators_purchased_25_tier_3\"\n    },\n    {\n      \"id\": \"achievement.old_hand\",\n      \"condition_scope\": \"career\",\n      \"condition\": {\n        \"kind\": \"exit_count_at_least\",\n        \"count\": 1\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"founder_advanced\",\n          \"run_ended\"\n        ]\n      },\n      \"score_grant\": 4,\n      \"copy_key\": \"achievement.old_hand\"\n    },\n    {\n      \"id\": \"achievement.tier_5\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"tier\",\n        \"minimum\": 5\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"gate_crossed\"\n        ]\n      },\n      \"score_grant\": 8,\n      \"copy_key\": \"achievement.tier_5\"\n    }\n  ]\n}",
+      "categories": "{\n  \"schema_version\": 1,\n  \"full_gate_set\": [\"gate.t0_to_t1\", \"gate.t2_to_t3\", \"gate.t3_to_t4\", \"gate.t4_to_t5\", \"gate.t7_to_t8\"],\n  \"fact_sets\": {\n    \"completion_set\": [],\n    \"forbidden_set\": [\"darkpattern.\", \"externality.\"]\n  },\n  \"categories\": [\n    {\n      \"id\": \"any_percent\",\n      \"name_key\": \"category.any_percent\",\n      \"timer\": \"rta\",\n      \"predicate\": { \"kind\": \"any\" }\n    },\n    {\n      \"id\": \"hundred_percent\",\n      \"name_key\": \"category.hundred_percent\",\n      \"timer\": \"rta\",\n      \"predicate\": {\n        \"kind\": \"all_of\",\n        \"all\": [\n          { \"kind\": \"all_gates\" },\n          { \"kind\": \"facts_superset\", \"set_ref\": \"completion_set\" }\n        ]\n      }\n    },\n    {\n      \"id\": \"ethical_percent\",\n      \"name_key\": \"category.ethical_percent\",\n      \"timer\": \"attended\",\n      \"predicate\": { \"kind\": \"facts_disjoint\", \"set_ref\": \"forbidden_set\" }\n    },\n    {\n      \"id\": \"low_percent\",\n      \"name_key\": \"category.low_percent\",\n      \"timer\": \"rta\",\n      \"predicate\": {\n        \"kind\": \"count_at_most\",\n        \"field\": \"generators_purchased_total\",\n        \"literal\": 40\n      }\n    },\n    {\n      \"id\": \"valuation\",\n      \"name_key\": \"category.valuation\",\n      \"timer\": \"none\",\n      \"predicate\": { \"kind\": \"any\" }\n    }\n  ]\n}\n",
+      "commons": "{\n  \"schema_version\": 1,\n  \"source_weights\": [],\n  \"default_tithe_ppm\": 100000,\n  \"minimum_tithe_ppm\": 50000,\n  \"maximum_tithe_ppm\": 150000,\n  \"guild_health_weight_ppm\": 500000,\n  \"cohort_health_weight_ppm\": 300000,\n  \"server_health_weight_ppm\": 200000,\n  \"collective_weight_ppm\": 600000,\n  \"collective_exponent_ppm\": 1500000,\n  \"collapse_health_ppm\": 350000,\n  \"healthy_health_ppm\": 800000,\n  \"maximum_bonus\": \"5e0\",\n  \"health_recovery_ppm_per_hour\": 100000,\n  \"health_decay_ppm_per_hour\": 40000,\n  \"solidarity_window_ms\": 2592000000,\n  \"cohort_target_size\": 150,\n  \"cohort_merge_floor\": 40,\n  \"npc_population_floor\": 40,\n  \"npc_weight_ppm\": 500000,\n  \"npc_compliance_ppm\": 750000,\n  \"population_tolerance_ppm\": 100\n}\n",
+      "doctrines": "{\n  \"schema_version\": 1,\n  \"transitions\": [\n    {\n      \"transition_id\": \"transition.t3_to_t4\",\n      \"source_tier\": 3,\n      \"gate_id\": \"gate.t3_to_t4\",\n      \"doctrine_ids\": [\"doctrine.capture\", \"doctrine.ethical\"]\n    }\n  ]\n}\n",
+      "economy": "{\n  \"schema_version\": 4,\n  \"resources\": [\n    {\n      \"id\": \"company.cash\",\n      \"scope\": \"company\",\n      \"numeric_kind\": \"decimal\",\n      \"initial\": \"0\",\n      \"minimum\": \"0\",\n      \"hardcap\": { \"amount\": \"1e1000\", \"reason_key\": \"resource.company_cash.cap.phase0\" }\n    },\n    {\n      \"id\": \"company.permits\",\n      \"scope\": \"company\",\n      \"numeric_kind\": \"decimal\",\n      \"initial\": \"0\",\n      \"minimum\": \"0\",\n      \"hardcap\": { \"amount\": \"2.4e1\", \"reason_key\": \"resource.company_permits.cap.phase0\" }\n    }\n  ],\n  \"generator_classes\": [\n    {\n      \"id\": \"generator.beige_tower\",\n      \"tier\": 0,\n      \"category\": \"category.hardware\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"1e1\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.13e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"1e0\" },\n      \"provisioned_hardcap\": { \"count\": 9007199254740991, \"reason_key\": \"generator.beige_tower.provisioned_cap\" },\n      \"ladder\": [\n        { \"purchased_at\": 25, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 50, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [\n        { \"kind\": \"synergy_feed\", \"pool_id\": \"pool.operational_excellence\" },\n        { \"kind\": \"manual_output\", \"action_id\": \"manual.click\", \"per_purchased_ppm\": 5000 },\n        { \"kind\": \"stock_rate\", \"per_purchased_ppm\": 1000 }\n      ]\n    },\n    {\n      \"id\": \"generator.dot_matrix_queue\",\n      \"tier\": 0,\n      \"category\": \"category.hardware\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"1.2e2\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.12e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"6.5e0\" },\n      \"ladder\": [\n        { \"purchased_at\": 20, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 50, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"synergy_feed\", \"pool_id\": \"pool.operational_excellence\" }]\n    },\n    {\n      \"id\": \"generator.answering_machine\",\n      \"tier\": 0,\n      \"category\": \"category.office\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"1.44e3\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.11e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"4.225e1\" },\n      \"ladder\": [\n        { \"purchased_at\": 25, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 55, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"manual_output\", \"action_id\": \"manual.click\", \"per_purchased_ppm\": 10000 }]\n    },\n    {\n      \"id\": \"generator.nephew_intern\",\n      \"tier\": 0,\n      \"category\": \"category.people\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"1.728e4\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.1e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"2.74625e2\" },\n      \"ladder\": [\n        { \"purchased_at\": 30, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 60, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"stock_rate\", \"per_purchased_ppm\": 2000 }]\n    },\n    {\n      \"id\": \"generator.garage_rack\",\n      \"tier\": 1,\n      \"category\": \"category.hardware\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"2.0736e5\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.13e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"1.7850625e3\" },\n      \"ladder\": [\n        { \"purchased_at\": 25, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 50, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"synergy_feed\", \"pool_id\": \"pool.institutional_knowledge\" }]\n    },\n    {\n      \"id\": \"generator.crt_wall\",\n      \"tier\": 1,\n      \"category\": \"category.hardware\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"2.48832e6\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.12e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"1.160290625e4\" },\n      \"ladder\": [\n        { \"purchased_at\": 20, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 50, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"synergy_feed\", \"pool_id\": \"pool.institutional_knowledge\" }]\n    },\n    {\n      \"id\": \"generator.first_hire\",\n      \"tier\": 1,\n      \"category\": \"category.people\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"2.985984e7\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.11e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"7.5418890625e4\" },\n      \"ladder\": [\n        { \"purchased_at\": 25, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 55, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"manual_output\", \"action_id\": \"manual.click\", \"per_purchased_ppm\": 20000 }]\n    },\n    {\n      \"id\": \"generator.beige_tower_v2\",\n      \"tier\": 1,\n      \"category\": \"category.hardware\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"3.5831808e8\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.1e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"4.90222789063e5\" },\n      \"provisions\": { \"generator_id\": \"generator.beige_tower\", \"rate_ppm\": 100000 },\n      \"ladder\": [\n        { \"purchased_at\": 30, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 60, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"provision\", \"generator_id\": \"generator.beige_tower\" }]\n    },\n    {\n      \"id\": \"generator.legal_dept\",\n      \"tier\": 3,\n      \"category\": \"category.legal\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"1e8\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.15e0\" } },\n      \"production\": { \"resource_id\": \"company.permits\", \"base_rate\": \"1e-3\" },\n      \"ladder\": [],\n      \"roles\": [{ \"kind\": \"synergy_feed\", \"pool_id\": \"pool.institutional_knowledge\" }]\n    }\n  ],\n  \"upgrades\": [\n    {\n      \"id\": \"upgrade.reply_all_macro\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"4e1\" },\n      \"window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"4e1\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.reply_all_macro.factor\", \"slot\": \"upgrades\", \"target\": \"manual.click\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.reply_all_macro\"\n    },\n    {\n      \"id\": \"upgrade.beige_tower_cache\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"1e3\" },\n      \"window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"1e3\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.beige_tower_cache.factor\", \"slot\": \"upgrades\", \"target\": \"generator.beige_tower\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.beige_tower_cache\"\n    },\n    {\n      \"id\": \"upgrade.continuous_feed_paper\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"1.2e4\" },\n      \"window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"1.2e4\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.continuous_feed_paper.factor\", \"slot\": \"upgrades\", \"target\": \"generator.dot_matrix_queue\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.continuous_feed_paper\"\n    },\n    {\n      \"id\": \"upgrade.hold_music_license\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"2e4\" },\n      \"window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"2e4\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.hold_music_license.factor\", \"slot\": \"upgrades\", \"target\": \"generator.answering_machine\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.hold_music_license\"\n    },\n    {\n      \"id\": \"upgrade.nephew_business_cards\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"2e4\" },\n      \"window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"2e4\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.nephew_business_cards.factor\", \"slot\": \"upgrades\", \"target\": \"generator.nephew_intern\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.nephew_business_cards\"\n    },\n    {\n      \"id\": \"upgrade.rack_rail_standardization\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"2.0736e7\" },\n      \"window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"2.0736e7\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.rack_rail_standardization.factor\", \"slot\": \"upgrades\", \"target\": \"generator.garage_rack\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.rack_rail_standardization\"\n    },\n    {\n      \"id\": \"upgrade.crt_degauss_button\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"2.48832e8\" },\n      \"window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"2.48832e8\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.crt_degauss_button.factor\", \"slot\": \"upgrades\", \"target\": \"generator.crt_wall\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.crt_degauss_button\"\n    },\n    {\n      \"id\": \"upgrade.employee_handbook_v0\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"7.5e7\" },\n      \"window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"7.5e7\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.employee_handbook_v0.factor\", \"slot\": \"upgrades\", \"target\": \"generator.first_hire\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.employee_handbook_v0\"\n    },\n    {\n      \"id\": \"upgrade.refurbished_sticker\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"2e8\" },\n      \"window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"2e8\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.refurbished_sticker.factor\", \"slot\": \"upgrades\", \"target\": \"generator.beige_tower_v2\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.refurbished_sticker\"\n    },\n    {\n      \"id\": \"upgrade.institutional_memory\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"1e8\" },\n      \"window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"1e8\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.institutional_memory.factor\", \"slot\": \"upgrades\", \"target\": \"generator.garage_rack\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.institutional_memory\"\n    }\n  ],\n  \"synergy_pools\": [\n    {\n      \"id\": \"pool.operational_excellence\",\n      \"sources\": [\n        { \"kind\": \"generator\", \"id_or_class\": \"generator.beige_tower\", \"per_count_ppm\": 1000 },\n        { \"kind\": \"generator\", \"id_or_class\": \"generator.dot_matrix_queue\", \"per_count_ppm\": 2000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.reply_all_macro\", \"per_count_ppm\": 10000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.beige_tower_cache\", \"per_count_ppm\": 10000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.continuous_feed_paper\", \"per_count_ppm\": 10000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.hold_music_license\", \"per_count_ppm\": 10000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.nephew_business_cards\", \"per_count_ppm\": 10000 }\n      ],\n      \"slot\": \"upgrades\",\n      \"curve\": \"linear\"\n    },\n    {\n      \"id\": \"pool.institutional_knowledge\",\n      \"sources\": [\n        { \"kind\": \"generator\", \"id_or_class\": \"generator.garage_rack\", \"per_count_ppm\": 2000 },\n        { \"kind\": \"generator\", \"id_or_class\": \"generator.crt_wall\", \"per_count_ppm\": 3000 },\n        { \"kind\": \"generator\", \"id_or_class\": \"generator.legal_dept\", \"per_count_ppm\": 4000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.rack_rail_standardization\", \"per_count_ppm\": 20000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.crt_degauss_button\", \"per_count_ppm\": 20000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.employee_handbook_v0\", \"per_count_ppm\": 20000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.refurbished_sticker\", \"per_count_ppm\": 20000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.institutional_memory\", \"per_count_ppm\": 20000 }\n      ],\n      \"slot\": \"upgrades\",\n      \"curve\": \"log\"\n    }\n  ],\n  \"provision_tick_ms\": 60000,\n  \"manual_actions\": [\n    { \"id\": \"manual.click\", \"output\": { \"resource_id\": \"company.cash\", \"amount_per_action\": \"1e0\" } }\n  ],\n  \"multiplier_sources\": [\n    { \"id\": \"active.building.generator.beige_tower\", \"slot\": \"event_buffs\", \"target\": \"generator.beige_tower\", \"provider\": \"active_play\" },\n    { \"id\": \"active.click\", \"slot\": \"event_buffs\", \"target\": \"manual.click\", \"provider\": \"active_play\" },\n    { \"id\": \"active.production\", \"slot\": \"event_buffs\", \"target\": \"all\", \"provider\": \"active_play\" },\n    { \"id\": \"commons.member\", \"slot\": \"commons\", \"target\": \"all\", \"provider\": \"commons\" },\n    { \"id\": \"fiscal.generator.beige_tower\", \"slot\": \"prestige\", \"target\": \"generator.beige_tower\", \"provider\": \"fiscal\" },\n    { \"id\": \"fiscal.hoard\", \"slot\": \"prestige\", \"target\": \"all\", \"provider\": \"fiscal\" },\n    { \"id\": \"guild.stock_consumption\", \"slot\": \"faction\", \"target\": \"all\", \"provider\": \"faction\" },\n    { \"id\": \"pool.institutional_knowledge\", \"slot\": \"upgrades\", \"target\": \"all\", \"provider\": \"pool.institutional_knowledge\" },\n    { \"id\": \"pool.operational_excellence\", \"slot\": \"upgrades\", \"target\": \"all\", \"provider\": \"pool.operational_excellence\" }\n  ],\n  \"progress_coordinates\": [\n    { \"tier\": 0, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e3\" },\n    {\n      \"tier\": 1,\n      \"kind\": \"composite\",\n      \"terms\": [\n        { \"weight\": \"5e-1\", \"kind\": \"count_fraction\", \"count\": \"generators.total_owned\", \"required\": 25 },\n        { \"weight\": \"5e-1\", \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e6\" }\n      ]\n    },\n    { \"tier\": 2, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e9\" },\n    { \"tier\": 3, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e12\" }\n  ],\n  \"manual_policy\": { \"refill_milli_per_ms\": 25, \"bucket_cap_milli\": 50000 },\n  \"offline_policy\": {\n    \"efficiency\": \"9e-1\",\n    \"accrual_cap_ms\": 86400000,\n    \"bank_ratio_numerator\": 1,\n    \"bank_ratio_denominator\": 2,\n    \"bank_cap_ms\": 259200000,\n    \"burst_speed\": \"2e0\",\n    \"burst_max_duration_ms\": 14400000\n  }\n}\n",
+      "factions": "{\n  \"schema_version\": 1,\n  \"stock_cap\": 100000,\n  \"stock_interval_ms\": 60000,\n  \"factions\": [\n    {\n      \"id\": \"bootstrapper\",\n      \"produces\": \"revenue\",\n      \"consumes\": \"compliance\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.bootstrapper\"\n    },\n    {\n      \"id\": \"vc_funded\",\n      \"produces\": \"hype\",\n      \"consumes\": \"revenue\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.vc_funded\"\n    },\n    {\n      \"id\": \"open_source\",\n      \"produces\": \"libraries\",\n      \"consumes\": \"hype\",\n      \"compact\": { \"auto_sign\": true, \"tithe_ppm\": 130000 },\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.open_source\"\n    },\n    {\n      \"id\": \"enterprise\",\n      \"produces\": \"compliance\",\n      \"consumes\": \"libraries\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.enterprise\"\n    }\n  ]\n}\n",
+      "fiscal": "{\n  \"schema_version\": 1,\n  \"clock_policy\": {\n    \"early_ms\": 100,\n    \"guaranteed_ms\": 200,\n    \"auto_ms\": 300,\n    \"early_success_ppm\": 500000\n  },\n  \"credit_policy\": {\n    \"credit_per_period\": 3,\n    \"hardcap\": 1000,\n    \"hardcap_reason_key\": \"cap.fiscal_credit\"\n  },\n  \"hoard_policy\": {\n    \"ppm_per_credit\": 10000,\n    \"cap_credits\": 100,\n    \"slot\": \"prestige\",\n    \"source_id\": \"fiscal.hoard\",\n    \"target\": \"all\"\n  },\n  \"generator_level_rows\": [\n    {\n      \"generator_id\": \"generator.beige_tower\",\n      \"ppm_per_level\": 10000,\n      \"level_hardcap\": 100,\n      \"hardcap_reason_key\": \"cap.fiscal_level.beige_tower\",\n      \"slot\": \"prestige\",\n      \"source_id\": \"fiscal.generator.beige_tower\"\n    }\n  ],\n  \"unlock_rows\": [\n    {\"unlock_id\": \"minigame.pitch\", \"cost\": 3},\n    {\"unlock_id\": \"unlock.arcade\", \"cost\": 5}\n  ]\n}\n",
+      "guilds": "{\n  \"schema_version\": 1,\n  \"guild_tithe_ppm\": 20000,\n  \"clearing_rate_ppm\": 500000,\n  \"npc_exchange_ppm\": 250000,\n  \"stock_intake_cap\": 120,\n  \"consumption_bonus_ppm_per_unit\": 0,\n  \"max_members\": 50,\n  \"min_members\": 2,\n  \"grace_days\": 7,\n  \"guild_xp_target_per_founder\": 250000,\n  \"clearing_interval_ms\": 300000\n}\n",
+      "meters": "{\n  \"schema_version\": 1,\n  \"trust_reseed\": {\n    \"base_value\": 90,\n    \"notoriety_numerator\": 35,\n    \"notoriety_denominator\": 100,\n    \"floor_value\": 55,\n    \"ceiling_value\": 90\n  },\n  \"meters\": [\n    {\n      \"id\": \"doom.probability\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [\n        { \"kind\": \"ledger_fact\", \"fact_kind\": \"externality.emitted\", \"delta\": 3 }\n      ],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    },\n    {\n      \"id\": \"trust.employees.grievance\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 0,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 0, \"rate_per_attended_hour\": 1 }\n    },\n    {\n      \"id\": \"trust.employees.standing\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    },\n    {\n      \"id\": \"trust.investors.grievance\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 0,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 0, \"rate_per_attended_hour\": 1 }\n    },\n    {\n      \"id\": \"trust.investors.standing\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    },\n    {\n      \"id\": \"trust.press.grievance\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 0,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 0, \"rate_per_attended_hour\": 1 }\n    },\n    {\n      \"id\": \"trust.press.standing\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    },\n    {\n      \"id\": \"trust.regulators.grievance\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 0,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 0, \"rate_per_attended_hour\": 1 }\n    },\n    {\n      \"id\": \"trust.regulators.standing\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    },\n    {\n      \"id\": \"trust.users.grievance\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 0,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 0, \"rate_per_attended_hour\": 1 }\n    },\n    {\n      \"id\": \"trust.users.standing\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [\n        { \"kind\": \"contribution_slot\", \"slot\": \"commons\", \"source_id\": \"commons.member\", \"delta_per_attended_hour\": 1 }\n      ],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    }\n  ]\n}\n",
+      "minigame_api": "{\n  \"schema_version\": 1,\n  \"operations\": [\n    {\"operation_id\": \"create_minigame_session\", \"version\": 1},\n    {\"operation_id\": \"get_current_minigame_session\", \"version\": 1},\n    {\"operation_id\": \"play_minigame_command\", \"version\": 1},\n    {\"operation_id\": \"resolve_minigame_session\", \"version\": 1}\n  ],\n  \"tenants\": [\n    {\"engine_ref\": \"pitch\", \"engine_version\": \"1.0.0\", \"minigame_id\": \"pitch\"}\n  ]\n}\n",
+      "minigames": "{\n  \"schema_version\": 3,\n  \"rating_seasons\": [\"s1\"],\n  \"minigames\": [\n    {\n      \"minigame_id\": \"pitch\",\n      \"engine_ref\": \"pitch\",\n      \"engine_version\": \"1.0.0\",\n      \"modes\": [\"solo\"],\n      \"result_score_fact_ids\": [\"pitch.best_hand_exponent\", \"pitch.final_round\"],\n      \"scaling\": {\n        \"schema_version\": 1,\n        \"scaling_inputs\": [\n          {\n            \"destination\": \"minigame.pitch\",\n            \"destination_class\": \"breadth\",\n            \"source_kind\": \"literal\",\n            \"source_ref\": \"1\",\n            \"op\": \"identity\",\n            \"operand\": 0,\n            \"clamp_min\": 1,\n            \"clamp_max\": 1\n          }\n        ]\n      },\n      \"payout\": {\n        \"credited_resource_id\": \"company.cash\",\n        \"sends_per_day\": 5,\n        \"per_send_cap\": 300,\n        \"conversion_ppm\": 500000,\n        \"payout_score_fact_id\": \"pitch.final_round\",\n        \"cap_reason_key\": \"cap.minigame_faucet\"\n      },\n      \"fallback\": {\"kind\": \"solo\"},\n      \"offline_quality\": {\n        \"score_fact\": \"pitch.final_round\",\n        \"grade_curve\": [\n          {\"score_threshold\": 1, \"grade_ppm\": 200000},\n          {\"score_threshold\": 3, \"grade_ppm\": 500000},\n          {\"score_threshold\": 5, \"grade_ppm\": 800000},\n          {\"score_threshold\": 8, \"grade_ppm\": 1000000}\n        ],\n        \"decay_grid_ms\": 3600000,\n        \"decay_ppm_per_grid\": 10000,\n        \"neutral_floor_ppm\": 200000,\n        \"automation_destination\": \"minigame.pitch\"\n      },\n      \"rating_policy\": {\n        \"starting_elo\": 1000,\n        \"elo_floor\": 0,\n        \"elo_ceiling\": 3000,\n        \"provisional_games\": 10,\n        \"season_member\": \"s1\"\n      },\n      \"unlock_condition\": {\"kind\": \"fiscal_unlock\", \"unlock_id\": \"minigame.pitch\"},\n      \"soul_gate\": \"human_hobby\"\n    }\n  ]\n}\n",
+      "opportunities": "{\n  \"schema_version\": 1,\n  \"schedule_policy\": {\n    \"sampler_version\": \"gamma6_exp.v1\",\n    \"substream_label\": \"active_play.spawn.v1\",\n    \"minimum_interval_ms\": 1000,\n    \"scale_ms\": 500,\n    \"lifetime_ms\": 4500,\n    \"max_due_transitions\": 16\n  },\n  \"effects\": [\n    {\n      \"effect_row_id\": \"active.building\",\n      \"kind\": \"building_special\",\n      \"weight\": 2,\n      \"per_owned_ppm\": 100000,\n      \"duration_ms\": 2000,\n      \"eligible_generator_ids\": [\"generator.beige_tower\"]\n    },\n    {\n      \"effect_row_id\": \"active.click\",\n      \"kind\": \"click_frenzy\",\n      \"weight\": 3,\n      \"factor\": \"7e0\",\n      \"duration_ms\": 1000,\n      \"action_ids\": [\"manual.click\"]\n    },\n    {\n      \"effect_row_id\": \"active.lucky\",\n      \"kind\": \"lucky_payout\",\n      \"weight\": 1,\n      \"lucky_bank_frac\": \"1.5e-1\",\n      \"lucky_rate_cap\": \"9e2\",\n      \"epsilon\": \"1.3e1\",\n      \"resource_id\": \"company.cash\",\n      \"hardcap_reason_key\": \"cap.cash\"\n    },\n    {\n      \"effect_row_id\": \"active.production\",\n      \"kind\": \"production_frenzy\",\n      \"weight\": 4,\n      \"factor\": \"7e0\",\n      \"duration_ms\": 5000,\n      \"targets\": [\"generator_production\"]\n    }\n  ],\n  \"combo_policy\": { \"combo_cap\": \"1e4\", \"hardcap_reason_key\": \"cap.active_combo\" }\n}\n",
+      "pets": "{\n  \"schema_version\": 2,\n  \"stat_policy\": {\n    \"grid_ms\": 360000,\n    \"stats\": [\n      { \"stat_id\": \"hunger\", \"initial_ppm\": 750000, \"floor_ppm\": 100000, \"decay_ppm_per_grid\": 2000 },\n      { \"stat_id\": \"energy\", \"initial_ppm\": 750000, \"floor_ppm\": 100000, \"decay_ppm_per_grid\": 2000 },\n      { \"stat_id\": \"cleanliness\", \"initial_ppm\": 750000, \"floor_ppm\": 100000, \"decay_ppm_per_grid\": 2000 },\n      { \"stat_id\": \"affection\", \"initial_ppm\": 750000, \"floor_ppm\": 100000, \"decay_ppm_per_grid\": 2000 }\n    ],\n    \"diminishing_threshold_ppm\": 900000,\n    \"diminishing_factor_ppm\": 500000\n  },\n  \"actions\": [\n    { \"action_id\": \"care.feed\", \"stat_id\": \"hunger\", \"delta_ppm\": 400000, \"cooldown_attended_ms\": 3600000, \"min_eligible_ppm\": 100000, \"soul_gate\": \"essential\" },\n    { \"action_id\": \"care.groom\", \"stat_id\": \"cleanliness\", \"delta_ppm\": 250000, \"cooldown_attended_ms\": 3600000, \"min_eligible_ppm\": 100000, \"soul_gate\": \"essential\" },\n    { \"action_id\": \"care.pet\", \"stat_id\": \"affection\", \"delta_ppm\": 200000, \"cooldown_attended_ms\": 600000, \"min_eligible_ppm\": 100000, \"soul_gate\": \"ordinary\" },\n    { \"action_id\": \"care.play\", \"stat_id\": \"affection\", \"delta_ppm\": 250000, \"cooldown_attended_ms\": 1800000, \"min_eligible_ppm\": 100000, \"soul_gate\": \"ordinary\" },\n    { \"action_id\": \"care.rest\", \"stat_id\": \"energy\", \"delta_ppm\": 250000, \"cooldown_attended_ms\": 3600000, \"min_eligible_ppm\": 100000, \"soul_gate\": \"essential\" }\n  ],\n  \"trust_policy\": {\n    \"initial_ppm\": 500000,\n    \"neutral_ppm\": 500000,\n    \"floor_ppm\": 0,\n    \"cap_ppm\": 1000000,\n    \"gain_ppm_per_effective_action\": 20000,\n    \"decay_ppm_per_grid\": 42\n  },\n  \"mood_policy\": [\n    { \"mood_member\": \"withdrawn\", \"floor_ppm\": 0 },\n    { \"mood_member\": \"restless\", \"floor_ppm\": 250000 },\n    { \"mood_member\": \"neutral\", \"floor_ppm\": 500000 },\n    { \"mood_member\": \"engaged\", \"floor_ppm\": 750000 }\n  ],\n  \"behavior_policy\": [\n    { \"from_state\": \"idle\", \"event\": \"care_applied\", \"to_state\": \"care_response\", \"duration_grid_ticks\": 1 },\n    { \"from_state\": \"idle\", \"event\": \"care_rejected\", \"to_state\": \"resting\", \"duration_grid_ticks\": 1 },\n    { \"from_state\": \"idle\", \"event\": \"grid_tick\", \"to_state\": \"active\", \"duration_grid_ticks\": 2 },\n    { \"from_state\": \"active\", \"event\": \"care_applied\", \"to_state\": \"care_response\", \"duration_grid_ticks\": 1 },\n    { \"from_state\": \"active\", \"event\": \"grid_tick\", \"to_state\": \"resting\", \"duration_grid_ticks\": 2 },\n    { \"from_state\": \"care_response\", \"event\": \"grid_tick\", \"to_state\": \"idle\", \"duration_grid_ticks\": 1 },\n    { \"from_state\": \"resting\", \"event\": \"care_applied\", \"to_state\": \"care_response\", \"duration_grid_ticks\": 1 },\n    { \"from_state\": \"resting\", \"event\": \"grid_tick\", \"to_state\": \"idle\", \"duration_grid_ticks\": 2 }\n  ]\n}\n",
+      "pitch": "{\n  \"schema_version\": 1,\n  \"policy\": {\n    \"hand_size\": 7,\n    \"play_size\": 4,\n    \"hands_per_round\": 3,\n    \"hack_slots\": 4,\n    \"start_currency\": 4,\n    \"shop_size\": 3,\n    \"round_clear_currency\": 3,\n    \"hand_size_reason_key\": \"cap.pitch_hand\",\n    \"play_size_reason_key\": \"cap.pitch_play\",\n    \"hands_per_round_reason_key\": \"cap.pitch_hands\",\n    \"hack_slots_reason_key\": \"cap.pitch_hack_slots\",\n    \"rounds_reason_key\": \"cap.pitch_rounds\",\n    \"exponent_reason_key\": \"cap.pitch_exponent\",\n    \"best_exponent_hardcap\": 1000000\n  },\n  \"metric_cards\": [\n    {\"card_id\":\"api_call\",\"base_metric\":\"1.5e1\",\"copies\":2,\"copy_key\":\"pitch.card.api_call\"},\n    {\"card_id\":\"beta_invite\",\"base_metric\":\"3e1\",\"copies\":2,\"copy_key\":\"pitch.card.beta_invite\"},\n    {\"card_id\":\"cache_hit\",\"base_metric\":\"2e1\",\"copies\":2,\"copy_key\":\"pitch.card.cache_hit\"},\n    {\"card_id\":\"demo_day\",\"base_metric\":\"9e1\",\"copies\":2,\"copy_key\":\"pitch.card.demo_day\"},\n    {\"card_id\":\"newsletter\",\"base_metric\":\"2.5e1\",\"copies\":2,\"copy_key\":\"pitch.card.newsletter\"},\n    {\"card_id\":\"page_views\",\"base_metric\":\"1e1\",\"copies\":2,\"copy_key\":\"pitch.card.page_views\"},\n    {\"card_id\":\"patch_release\",\"base_metric\":\"4e1\",\"copies\":2,\"copy_key\":\"pitch.card.patch_release\"},\n    {\"card_id\":\"press_mention\",\"base_metric\":\"7.5e1\",\"copies\":2,\"copy_key\":\"pitch.card.press_mention\"},\n    {\"card_id\":\"referral_loop\",\"base_metric\":\"6e1\",\"copies\":2,\"copy_key\":\"pitch.card.referral_loop\"},\n    {\"card_id\":\"testimonial\",\"base_metric\":\"5e1\",\"copies\":2,\"copy_key\":\"pitch.card.testimonial\"},\n    {\"card_id\":\"uptime_nines\",\"base_metric\":\"4.5e1\",\"copies\":2,\"copy_key\":\"pitch.card.uptime_nines\"},\n    {\"card_id\":\"users_signup\",\"base_metric\":\"3.5e1\",\"copies\":2,\"copy_key\":\"pitch.card.users_signup\"}\n  ],\n  \"growth_hacks\": [\n    {\"hack_id\":\"ab_test\",\"price\":3,\"draft_weight\":10,\"effect\":{\"kind\":\"card_factor\",\"factor\":\"1.5e0\"},\"copy_key\":\"pitch.hack.ab_test\"},\n    {\"hack_id\":\"buzzword\",\"price\":2,\"draft_weight\":12,\"effect\":{\"kind\":\"flat_add\",\"amount\":\"2.5e1\"},\"copy_key\":\"pitch.hack.buzzword\"},\n    {\"hack_id\":\"dark_pattern\",\"price\":4,\"draft_weight\":8,\"effect\":{\"kind\":\"shape_factor\",\"shape\":\"pair\",\"factor\":\"3e0\"},\"copy_key\":\"pitch.hack.dark_pattern\"},\n    {\"hack_id\":\"growth_loop\",\"price\":5,\"draft_weight\":6,\"effect\":{\"kind\":\"card_factor\",\"factor\":\"2e0\"},\"copy_key\":\"pitch.hack.growth_loop\"},\n    {\"hack_id\":\"infinite_scroll\",\"price\":3,\"draft_weight\":10,\"effect\":{\"kind\":\"flat_add\",\"amount\":\"5e1\"},\"copy_key\":\"pitch.hack.infinite_scroll\"},\n    {\"hack_id\":\"pivot\",\"price\":6,\"draft_weight\":4,\"effect\":{\"kind\":\"shape_factor\",\"shape\":\"full_hand\",\"factor\":\"4e0\"},\"copy_key\":\"pitch.hack.pivot\"},\n    {\"hack_id\":\"stealth_mode\",\"price\":4,\"draft_weight\":6,\"effect\":{\"kind\":\"chain_factor\",\"partner_hack_id\":\"pivot\",\"factor\":\"2.5e0\"},\"copy_key\":\"pitch.hack.stealth_mode\"},\n    {\"hack_id\":\"synergy_deck\",\"price\":4,\"draft_weight\":6,\"effect\":{\"kind\":\"chain_factor\",\"partner_hack_id\":\"ab_test\",\"factor\":\"2e0\"},\"copy_key\":\"pitch.hack.synergy_deck\"}\n  ],\n  \"funding_curve\": [\n    {\"round\":1,\"funding_target\":\"1e2\"},\n    {\"round\":2,\"funding_target\":\"3e2\"},\n    {\"round\":3,\"funding_target\":\"1e3\"},\n    {\"round\":4,\"funding_target\":\"5e3\"},\n    {\"round\":5,\"funding_target\":\"2.5e4\"},\n    {\"round\":6,\"funding_target\":\"2e5\"},\n    {\"round\":7,\"funding_target\":\"2e6\"},\n    {\"round\":8,\"funding_target\":\"5e7\"}\n  ]\n}\n",
+      "prestige": "{\n  \"schema_version\": 1,\n  \"value_resource_id\": \"company.cash\",\n  \"threshold\": \"1e12\",\n  \"exit_modifiers_ppm\": {\n    \"acquihire\": 900000,\n    \"acquisition\": 1000000,\n    \"ipo\": 1250000,\n    \"collapse\": 750000,\n    \"scripted_first\": 1000000\n  },\n  \"collapse_route_knowledge\": 25,\n  \"catchup_ceiling_ms\": 5000,\n  \"offer_duration_ms\": 900000,\n  \"decline_drift_ppm\": 50000,\n  \"spawn_gate_ppm\": [0, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1000000],\n  \"advisor_per_run_ppm\": 20000,\n  \"advisor_cap_ppm\": 500000\n}\n",
+      "relevance": "{\n  \"schema_version\": 2,\n  \"items\": [\n    { \"purchasable_id\": \"generator.answering_machine\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.beige_tower\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.beige_tower_v2\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.crt_wall\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.dot_matrix_queue\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.first_hire\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.garage_rack\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.nephew_intern\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.beige_tower_cache\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.continuous_feed_paper\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.crt_degauss_button\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.employee_handbook_v0\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.hold_music_license\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.institutional_memory\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.nephew_business_cards\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.rack_rail_standardization\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.refurbished_sticker\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.reply_all_macro\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] }\n  ],\n  \"groups\": []\n}\n",
+      "routes": "{\n  \"schema_version\": 1,\n  \"context_version\": 1,\n  \"depletion_distinct_routes_required\": 5,\n  \"knowledge\": {\n    \"registry_first_bonus\": 100,\n    \"founder_first_grant\": 25,\n    \"repeat_grant\": 5,\n    \"hint_cost\": 50\n  },\n  \"gates\": [\n    {\n      \"gate_id\": \"gate.t0_to_t1\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e5\" }],\n      \"routes\": []\n    },\n    {\n      \"gate_id\": \"gate.t2_to_t3\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e9\" }],\n      \"routes\": []\n    },\n    {\n      \"gate_id\": \"gate.t3_to_t4\",\n      \"requirement\": [\n        { \"resource_id\": \"company.cash\", \"amount\": \"1e12\" },\n        { \"resource_id\": \"company.permits\", \"amount\": \"1.2e1\" }\n      ],\n      \"routes\": []\n    },\n    {\n      \"gate_id\": \"gate.t4_to_t5\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e15\" }],\n      \"routes\": [\n        {\n          \"route_id\": \"route.regulatory_capture\",\n          \"house_name\": \"Regulatory Capture Skip\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.ethical\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.ethical\" },\n            { \"kind\": \"meter_band\", \"meter_id\": \"trust.regulators.standing\", \"min\": 70, \"max\": 100 },\n            { \"kind\": \"meter_band\", \"meter_id\": \"trust.regulators.grievance\", \"min\": 0, \"max\": 20 }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"4e-1\" }\n        },\n        {\n          \"route_id\": \"route.ipo_sequence_break\",\n          \"house_name\": \"IPO Sequence Break\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.capture\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.capture\" },\n            { \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"4e8\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"4e-1\" }\n        },\n        {\n          \"route_id\": \"route.acquihire_out_of_bounds\",\n          \"house_name\": \"Acquihire Out-of-Bounds\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.capture\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.capture\" },\n            { \"kind\": \"ledger_fact_present\", \"fact_kind\": \"exit.acquihire\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"5e-1\" }\n        },\n        {\n          \"route_id\": \"route.non_road_engine_clip\",\n          \"house_name\": \"Non-Road Engine Clip\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.corporation\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.corporation\" },\n            { \"kind\": \"region_trait\", \"trait_id\": \"trait.non_road\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"6e-1\" }\n        },\n        {\n          \"route_id\": \"route.nonprofit_wrapper_zip\",\n          \"house_name\": \"Nonprofit Wrapper Zip\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.nonprofit\",\n          \"predicate\": [{ \"kind\": \"structure_is\", \"structure_id\": \"structure.nonprofit\" }],\n          \"effect\": { \"kind\": \"substitute\" }\n        },\n        {\n          \"route_id\": \"route.offset_warp\",\n          \"house_name\": \"Offset Warp\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.nonprofit\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.nonprofit\" },\n            { \"kind\": \"meter_band\", \"meter_id\": \"planet.offset_coverage\", \"min\": 90, \"max\": 100 }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"2e-1\" }\n        }\n      ]\n    },\n    {\n      \"gate_id\": \"gate.t7_to_t8\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e24\" }],\n      \"routes\": [\n        {\n          \"route_id\": \"route.sovereign_ai_early_warp\",\n          \"house_name\": \"Sovereign AI Early Warp\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.corporation\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.corporation\" },\n            { \"kind\": \"region_trait\", \"trait_id\": \"trait.sovereign_compute\" }\n          ],\n          \"effect\": { \"kind\": \"substitute\" }\n        }\n      ]\n    }\n  ]\n}\n",
+      "soul": "{\n  \"schema_version\": 1,\n  \"policy\": {\n    \"soul_floor\": 0,\n    \"soul_initial\": 100,\n    \"soul_max\": 100,\n    \"recovery_beat_ceiling_ms\": 5000,\n    \"max_session_wall_ms\": 86400000\n  },\n  \"bands\": [\n    {\"band_member\":\"near_zero\",\"min_inclusive\":0,\"max_inclusive\":9,\"human_content_locked\":true,\"reason_key\":\"category.low_percent\"},\n    {\"band_member\":\"hollow\",\"min_inclusive\":10,\"max_inclusive\":39,\"human_content_locked\":false,\"reason_key\":\"category.ethical_percent\"},\n    {\"band_member\":\"dimming\",\"min_inclusive\":40,\"max_inclusive\":74,\"human_content_locked\":false,\"reason_key\":\"category.hundred_percent\"},\n    {\"band_member\":\"whole\",\"min_inclusive\":75,\"max_inclusive\":100,\"human_content_locked\":false,\"reason_key\":\"category.any_percent\"}\n  ],\n  \"debit_sources\": [],\n  \"recovery_activities\": [\n    {\"activity_id\":\"defrag\",\"duration_attended_ms\":900000,\"recovery_amount\":12,\"toy_kind\":\"defrag\",\"reason_key\":\"soul.recovery.defrag.reason\",\"title_copy_key\":\"soul.recovery.defrag.title\",\"description_copy_key\":\"soul.recovery.defrag.description\",\"disclosure_copy_key\":\"soul.recovery.defrag.disclosure\"},\n    {\"activity_id\":\"repot\",\"duration_attended_ms\":300000,\"recovery_amount\":5,\"toy_kind\":\"repot\",\"reason_key\":\"soul.recovery.repot.reason\",\"title_copy_key\":\"soul.recovery.repot.title\",\"description_copy_key\":\"soul.recovery.repot.description\",\"disclosure_copy_key\":\"soul.recovery.repot.disclosure\"},\n    {\"activity_id\":\"server_room\",\"duration_attended_ms\":2700000,\"recovery_amount\":30,\"toy_kind\":\"server_room\",\"reason_key\":\"soul.recovery.server_room.reason\",\"title_copy_key\":\"soul.recovery.server_room.title\",\"description_copy_key\":\"soul.recovery.server_room.description\",\"disclosure_copy_key\":\"soul.recovery.server_room.disclosure\"}\n  ],\n  \"ending_policy\": {\"whole_variant\":\"earnest_ascension\",\"depleted_variant\":\"training_data\"}\n}\n"
+    },
+    "next_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+    "next_artifacts": {
+      "achievements": "{\n  \"schema_version\": 1,\n  \"achievements\": [\n    {\n      \"id\": \"achievement.career_attended_day\",\n      \"condition_scope\": \"career\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"age_ms\",\n        \"minimum\": 86400000\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"founder_advanced\"\n        ]\n      },\n      \"score_grant\": 4,\n      \"copy_key\": \"achievement.career_attended_day\"\n    },\n    {\n      \"id\": \"achievement.career_attended_hour\",\n      \"condition_scope\": \"career\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"age_ms\",\n        \"minimum\": 3600000\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"founder_advanced\"\n        ]\n      },\n      \"score_grant\": 2,\n      \"copy_key\": \"achievement.career_attended_hour\"\n    },\n    {\n      \"id\": \"achievement.exit_count_5\",\n      \"condition_scope\": \"career\",\n      \"condition\": {\n        \"kind\": \"exit_count_at_least\",\n        \"count\": 5\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"founder_advanced\",\n          \"run_ended\"\n        ]\n      },\n      \"score_grant\": 8,\n      \"copy_key\": \"achievement.exit_count_5\"\n    },\n    {\n      \"id\": \"achievement.first_gate\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"tier\",\n        \"minimum\": 1\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"gate_crossed\"\n        ]\n      },\n      \"score_grant\": 2,\n      \"copy_key\": \"achievement.first_gate\"\n    },\n    {\n      \"id\": \"achievement.gate_burn_t3\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"tier\",\n        \"minimum\": 3\n      },\n      \"proof\": {\n        \"kind\": \"burn\",\n        \"event_kind\": \"gate_crossed\",\n        \"resource_id\": \"company.cash\",\n        \"minimum\": \"1e9\"\n      },\n      \"score_grant\": 8,\n      \"copy_key\": \"achievement.gate_burn_t3\"\n    },\n    {\n      \"id\": \"achievement.generators_owned_100\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"owns_generator_at_least\",\n        \"generator_id\": \"generator.beige_tower\",\n        \"count\": 100\n      },\n      \"proof\": {\n        \"kind\": \"possession\",\n        \"justification_copy_key\": \"achievement.possession_warning\"\n      },\n      \"score_grant\": 4,\n      \"copy_key\": \"achievement.generators_owned_100\"\n    },\n    {\n      \"id\": \"achievement.generators_owned_300\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"owns_generator_at_least\",\n        \"generator_id\": \"generator.beige_tower\",\n        \"count\": 300\n      },\n      \"proof\": {\n        \"kind\": \"possession\",\n        \"justification_copy_key\": \"achievement.possession_warning\"\n      },\n      \"score_grant\": 8,\n      \"copy_key\": \"achievement.generators_owned_300\"\n    },\n    {\n      \"id\": \"achievement.generators_purchased_1\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"generators_purchased_total\",\n        \"minimum\": 1\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"generator_purchased\"\n        ]\n      },\n      \"score_grant\": 2,\n      \"copy_key\": \"achievement.generators_purchased_1\"\n    },\n    {\n      \"id\": \"achievement.generators_purchased_25\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"generators_purchased_total\",\n        \"minimum\": 25\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"generator_purchased\"\n        ]\n      },\n      \"score_grant\": 4,\n      \"copy_key\": \"achievement.generators_purchased_25\"\n    },\n    {\n      \"id\": \"achievement.generators_purchased_25_tier_3\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"all_of\",\n        \"conditions\": [\n          {\n            \"kind\": \"counter_at_least\",\n            \"counter\": \"generators_purchased_total\",\n            \"minimum\": 25\n          },\n          {\n            \"kind\": \"counter_at_least\",\n            \"counter\": \"tier\",\n            \"minimum\": 3\n          }\n        ]\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"gate_crossed\",\n          \"generator_purchased\"\n        ]\n      },\n      \"score_grant\": 8,\n      \"copy_key\": \"achievement.generators_purchased_25_tier_3\"\n    },\n    {\n      \"id\": \"achievement.old_hand\",\n      \"condition_scope\": \"career\",\n      \"condition\": {\n        \"kind\": \"exit_count_at_least\",\n        \"count\": 1\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"founder_advanced\",\n          \"run_ended\"\n        ]\n      },\n      \"score_grant\": 4,\n      \"copy_key\": \"achievement.old_hand\"\n    },\n    {\n      \"id\": \"achievement.tier_5\",\n      \"condition_scope\": \"run\",\n      \"condition\": {\n        \"kind\": \"counter_at_least\",\n        \"counter\": \"tier\",\n        \"minimum\": 5\n      },\n      \"proof\": {\n        \"kind\": \"provenance\",\n        \"event_kinds\": [\n          \"gate_crossed\"\n        ]\n      },\n      \"score_grant\": 8,\n      \"copy_key\": \"achievement.tier_5\"\n    }\n  ]\n}",
+      "categories": "{\n  \"schema_version\": 1,\n  \"full_gate_set\": [\"gate.t0_to_t1\", \"gate.t2_to_t3\", \"gate.t3_to_t4\", \"gate.t4_to_t5\", \"gate.t7_to_t8\"],\n  \"fact_sets\": {\n    \"completion_set\": [],\n    \"forbidden_set\": [\"darkpattern.\", \"externality.\"]\n  },\n  \"categories\": [\n    {\n      \"id\": \"any_percent\",\n      \"name_key\": \"category.any_percent\",\n      \"timer\": \"rta\",\n      \"predicate\": { \"kind\": \"any\" }\n    },\n    {\n      \"id\": \"hundred_percent\",\n      \"name_key\": \"category.hundred_percent\",\n      \"timer\": \"rta\",\n      \"predicate\": {\n        \"kind\": \"all_of\",\n        \"all\": [\n          { \"kind\": \"all_gates\" },\n          { \"kind\": \"facts_superset\", \"set_ref\": \"completion_set\" }\n        ]\n      }\n    },\n    {\n      \"id\": \"ethical_percent\",\n      \"name_key\": \"category.ethical_percent\",\n      \"timer\": \"attended\",\n      \"predicate\": { \"kind\": \"facts_disjoint\", \"set_ref\": \"forbidden_set\" }\n    },\n    {\n      \"id\": \"low_percent\",\n      \"name_key\": \"category.low_percent\",\n      \"timer\": \"rta\",\n      \"predicate\": {\n        \"kind\": \"count_at_most\",\n        \"field\": \"generators_purchased_total\",\n        \"literal\": 40\n      }\n    },\n    {\n      \"id\": \"valuation\",\n      \"name_key\": \"category.valuation\",\n      \"timer\": \"none\",\n      \"predicate\": { \"kind\": \"any\" }\n    }\n  ]\n}\n",
+      "commons": "{\n  \"schema_version\": 1,\n  \"source_weights\": [],\n  \"default_tithe_ppm\": 100000,\n  \"minimum_tithe_ppm\": 50000,\n  \"maximum_tithe_ppm\": 150000,\n  \"guild_health_weight_ppm\": 500000,\n  \"cohort_health_weight_ppm\": 300000,\n  \"server_health_weight_ppm\": 200000,\n  \"collective_weight_ppm\": 600000,\n  \"collective_exponent_ppm\": 1500000,\n  \"collapse_health_ppm\": 350000,\n  \"healthy_health_ppm\": 800000,\n  \"maximum_bonus\": \"5e0\",\n  \"health_recovery_ppm_per_hour\": 100000,\n  \"health_decay_ppm_per_hour\": 40000,\n  \"solidarity_window_ms\": 2592000000,\n  \"cohort_target_size\": 150,\n  \"cohort_merge_floor\": 40,\n  \"npc_population_floor\": 40,\n  \"npc_weight_ppm\": 500000,\n  \"npc_compliance_ppm\": 750000,\n  \"population_tolerance_ppm\": 100\n}\n",
+      "curriculum": "{\n  \"schema_version\": 1,\n  \"first_failure\": {\n    \"run_seq\": 1,\n    \"founder_exit_count\": 0,\n    \"attended_ms\": 900000,\n    \"gate_id\": \"gate.t0_to_t1\",\n    \"exit_type\": \"scripted_first\",\n    \"evaluation\": \"first_player_company_command_after_accrual\",\n    \"requested_command_effect\": \"replaced_by_terminal_transition\",\n    \"next_run_key\": \"curriculum.scripted_first_failure.next_run\",\n    \"branches\": [\n      {\n        \"branch\": \"acquihire\",\n        \"minimum_purchased_generators\": 200,\n        \"minimum_owned_upgrades\": 1,\n        \"route_knowledge_bonus\": 0,\n        \"starter_package\": {\n          \"kind\": \"resource_grant\",\n          \"resource_id\": \"company.cash\",\n          \"amount\": \"1e4\"\n        },\n        \"title_key\": \"curriculum.first_failure.acquihire.title\",\n        \"body_key\": \"curriculum.first_failure.acquihire.body\"\n      },\n      {\n        \"branch\": \"burnout\",\n        \"cheapest_price_factor\": \"2e0\",\n        \"route_knowledge_bonus\": 50,\n        \"starter_package\": {\n          \"kind\": \"generated_generators\",\n          \"generator_id\": \"generator.beige_tower\",\n          \"count\": 10\n        },\n        \"title_key\": \"curriculum.first_failure.burnout.title\",\n        \"body_key\": \"curriculum.first_failure.burnout.body\"\n      },\n      {\n        \"branch\": \"pivot\",\n        \"route_knowledge_bonus\": 25,\n        \"starter_package\": {\n          \"kind\": \"preowned_upgrade\",\n          \"upgrade_id\": \"upgrade.reply_all_macro\"\n        },\n        \"title_key\": \"curriculum.first_failure.pivot.title\",\n        \"body_key\": \"curriculum.first_failure.pivot.body\"\n      }\n    ]\n  }\n}\n",
+      "doctrines": "{\n  \"schema_version\": 1,\n  \"transitions\": [\n    {\n      \"transition_id\": \"transition.t3_to_t4\",\n      \"source_tier\": 3,\n      \"gate_id\": \"gate.t3_to_t4\",\n      \"doctrine_ids\": [\"doctrine.capture\", \"doctrine.ethical\"]\n    }\n  ]\n}\n",
+      "economy": "{\n  \"schema_version\": 4,\n  \"resources\": [\n    {\n      \"id\": \"company.cash\",\n      \"scope\": \"company\",\n      \"numeric_kind\": \"decimal\",\n      \"initial\": \"0\",\n      \"minimum\": \"0\",\n      \"hardcap\": { \"amount\": \"1e1000\", \"reason_key\": \"resource.company_cash.cap.phase0\" }\n    },\n    {\n      \"id\": \"company.permits\",\n      \"scope\": \"company\",\n      \"numeric_kind\": \"decimal\",\n      \"initial\": \"0\",\n      \"minimum\": \"0\",\n      \"hardcap\": { \"amount\": \"2.4e1\", \"reason_key\": \"resource.company_permits.cap.phase0\" }\n    }\n  ],\n  \"generator_classes\": [\n    {\n      \"id\": \"generator.beige_tower\",\n      \"tier\": 0,\n      \"category\": \"category.hardware\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"1e1\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.13e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"1e0\" },\n      \"provisioned_hardcap\": { \"count\": 9007199254740991, \"reason_key\": \"generator.beige_tower.provisioned_cap\" },\n      \"ladder\": [\n        { \"purchased_at\": 25, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 50, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [\n        { \"kind\": \"synergy_feed\", \"pool_id\": \"pool.operational_excellence\" },\n        { \"kind\": \"manual_output\", \"action_id\": \"manual.click\", \"per_purchased_ppm\": 5000 },\n        { \"kind\": \"stock_rate\", \"per_purchased_ppm\": 1000 }\n      ]\n    },\n    {\n      \"id\": \"generator.dot_matrix_queue\",\n      \"tier\": 0,\n      \"category\": \"category.hardware\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"1.2e2\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.12e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"6.5e0\" },\n      \"ladder\": [\n        { \"purchased_at\": 20, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 50, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"synergy_feed\", \"pool_id\": \"pool.operational_excellence\" }]\n    },\n    {\n      \"id\": \"generator.answering_machine\",\n      \"tier\": 0,\n      \"category\": \"category.office\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"1.44e3\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.11e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"4.225e1\" },\n      \"ladder\": [\n        { \"purchased_at\": 25, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 55, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"manual_output\", \"action_id\": \"manual.click\", \"per_purchased_ppm\": 10000 }]\n    },\n    {\n      \"id\": \"generator.nephew_intern\",\n      \"tier\": 0,\n      \"category\": \"category.people\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"1.728e4\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.1e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"2.74625e2\" },\n      \"ladder\": [\n        { \"purchased_at\": 30, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 60, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"stock_rate\", \"per_purchased_ppm\": 2000 }]\n    },\n    {\n      \"id\": \"generator.garage_rack\",\n      \"tier\": 1,\n      \"category\": \"category.hardware\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"2.0736e5\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.13e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"1.7850625e3\" },\n      \"ladder\": [\n        { \"purchased_at\": 25, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 50, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"synergy_feed\", \"pool_id\": \"pool.institutional_knowledge\" }]\n    },\n    {\n      \"id\": \"generator.crt_wall\",\n      \"tier\": 1,\n      \"category\": \"category.hardware\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"2.48832e6\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.12e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"1.160290625e4\" },\n      \"ladder\": [\n        { \"purchased_at\": 20, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 50, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"synergy_feed\", \"pool_id\": \"pool.institutional_knowledge\" }]\n    },\n    {\n      \"id\": \"generator.first_hire\",\n      \"tier\": 1,\n      \"category\": \"category.people\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"2.985984e7\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.11e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"7.5418890625e4\" },\n      \"ladder\": [\n        { \"purchased_at\": 25, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 55, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"manual_output\", \"action_id\": \"manual.click\", \"per_purchased_ppm\": 20000 }]\n    },\n    {\n      \"id\": \"generator.beige_tower_v2\",\n      \"tier\": 1,\n      \"category\": \"category.hardware\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"3.5831808e8\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.1e0\" } },\n      \"production\": { \"resource_id\": \"company.cash\", \"base_rate\": \"4.90222789063e5\" },\n      \"provisions\": { \"generator_id\": \"generator.beige_tower\", \"rate_ppm\": 100000 },\n      \"ladder\": [\n        { \"purchased_at\": 30, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 60, \"multiplier_ppm\": 2000000 },\n        { \"purchased_at\": 100, \"multiplier_ppm\": 2000000 }\n      ],\n      \"roles\": [{ \"kind\": \"provision\", \"generator_id\": \"generator.beige_tower\" }]\n    },\n    {\n      \"id\": \"generator.legal_dept\",\n      \"tier\": 3,\n      \"category\": \"category.legal\",\n      \"price\": { \"resource_id\": \"company.cash\", \"base\": \"1e8\", \"curve\": { \"kind\": \"geometric\", \"ratio\": \"1.15e0\" } },\n      \"production\": { \"resource_id\": \"company.permits\", \"base_rate\": \"1e-3\" },\n      \"ladder\": [],\n      \"roles\": [{ \"kind\": \"synergy_feed\", \"pool_id\": \"pool.institutional_knowledge\" }]\n    }\n  ],\n  \"upgrades\": [\n    {\n      \"id\": \"upgrade.reply_all_macro\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"4e1\" },\n      \"window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"4e1\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.reply_all_macro.factor\", \"slot\": \"upgrades\", \"target\": \"manual.click\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.reply_all_macro\"\n    },\n    {\n      \"id\": \"upgrade.beige_tower_cache\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"1e3\" },\n      \"window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"1e3\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.beige_tower_cache.factor\", \"slot\": \"upgrades\", \"target\": \"generator.beige_tower\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.beige_tower_cache\"\n    },\n    {\n      \"id\": \"upgrade.continuous_feed_paper\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"1.2e4\" },\n      \"window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"1.2e4\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.continuous_feed_paper.factor\", \"slot\": \"upgrades\", \"target\": \"generator.dot_matrix_queue\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.continuous_feed_paper\"\n    },\n    {\n      \"id\": \"upgrade.hold_music_license\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"2e4\" },\n      \"window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"2e4\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.hold_music_license.factor\", \"slot\": \"upgrades\", \"target\": \"generator.answering_machine\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.hold_music_license\"\n    },\n    {\n      \"id\": \"upgrade.nephew_business_cards\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"2e4\" },\n      \"window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"2e4\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.nephew_business_cards.factor\", \"slot\": \"upgrades\", \"target\": \"generator.nephew_intern\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.nephew_business_cards\"\n    },\n    {\n      \"id\": \"upgrade.rack_rail_standardization\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"2.0736e7\" },\n      \"window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"2.0736e7\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.rack_rail_standardization.factor\", \"slot\": \"upgrades\", \"target\": \"generator.garage_rack\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.rack_rail_standardization\"\n    },\n    {\n      \"id\": \"upgrade.crt_degauss_button\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"2.48832e8\" },\n      \"window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"2.48832e8\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.crt_degauss_button.factor\", \"slot\": \"upgrades\", \"target\": \"generator.crt_wall\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.crt_degauss_button\"\n    },\n    {\n      \"id\": \"upgrade.employee_handbook_v0\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"7.5e7\" },\n      \"window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"7.5e7\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.employee_handbook_v0.factor\", \"slot\": \"upgrades\", \"target\": \"generator.first_hire\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.employee_handbook_v0\"\n    },\n    {\n      \"id\": \"upgrade.refurbished_sticker\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"2e8\" },\n      \"window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"2e8\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.refurbished_sticker.factor\", \"slot\": \"upgrades\", \"target\": \"generator.beige_tower_v2\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.refurbished_sticker\"\n    },\n    {\n      \"id\": \"upgrade.institutional_memory\",\n      \"cost\": { \"resource\": \"company.cash\", \"amount\": \"1e8\" },\n      \"window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" },\n      \"requires\": [{ \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"1e8\" }],\n      \"effects\": [{ \"source_id\": \"upgrade.institutional_memory.factor\", \"slot\": \"upgrades\", \"target\": \"generator.garage_rack\", \"factor\": \"2e0\" }],\n      \"roles\": [\"synergy_feed\"],\n      \"copy_key\": \"upgrade.institutional_memory\"\n    }\n  ],\n  \"synergy_pools\": [\n    {\n      \"id\": \"pool.operational_excellence\",\n      \"sources\": [\n        { \"kind\": \"generator\", \"id_or_class\": \"generator.beige_tower\", \"per_count_ppm\": 1000 },\n        { \"kind\": \"generator\", \"id_or_class\": \"generator.dot_matrix_queue\", \"per_count_ppm\": 2000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.reply_all_macro\", \"per_count_ppm\": 10000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.beige_tower_cache\", \"per_count_ppm\": 10000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.continuous_feed_paper\", \"per_count_ppm\": 10000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.hold_music_license\", \"per_count_ppm\": 10000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.nephew_business_cards\", \"per_count_ppm\": 10000 }\n      ],\n      \"slot\": \"upgrades\",\n      \"curve\": \"linear\"\n    },\n    {\n      \"id\": \"pool.institutional_knowledge\",\n      \"sources\": [\n        { \"kind\": \"generator\", \"id_or_class\": \"generator.garage_rack\", \"per_count_ppm\": 2000 },\n        { \"kind\": \"generator\", \"id_or_class\": \"generator.crt_wall\", \"per_count_ppm\": 3000 },\n        { \"kind\": \"generator\", \"id_or_class\": \"generator.legal_dept\", \"per_count_ppm\": 4000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.rack_rail_standardization\", \"per_count_ppm\": 20000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.crt_degauss_button\", \"per_count_ppm\": 20000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.employee_handbook_v0\", \"per_count_ppm\": 20000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.refurbished_sticker\", \"per_count_ppm\": 20000 },\n        { \"kind\": \"upgrade\", \"id_or_class\": \"upgrade.institutional_memory\", \"per_count_ppm\": 20000 }\n      ],\n      \"slot\": \"upgrades\",\n      \"curve\": \"log\"\n    }\n  ],\n  \"provision_tick_ms\": 60000,\n  \"manual_actions\": [\n    { \"id\": \"manual.click\", \"output\": { \"resource_id\": \"company.cash\", \"amount_per_action\": \"1e0\" } }\n  ],\n  \"multiplier_sources\": [\n    { \"id\": \"active.building.generator.beige_tower\", \"slot\": \"event_buffs\", \"target\": \"generator.beige_tower\", \"provider\": \"active_play\" },\n    { \"id\": \"active.click\", \"slot\": \"event_buffs\", \"target\": \"manual.click\", \"provider\": \"active_play\" },\n    { \"id\": \"active.production\", \"slot\": \"event_buffs\", \"target\": \"all\", \"provider\": \"active_play\" },\n    { \"id\": \"commons.member\", \"slot\": \"commons\", \"target\": \"all\", \"provider\": \"commons\" },\n    { \"id\": \"fiscal.generator.beige_tower\", \"slot\": \"prestige\", \"target\": \"generator.beige_tower\", \"provider\": \"fiscal\" },\n    { \"id\": \"fiscal.hoard\", \"slot\": \"prestige\", \"target\": \"all\", \"provider\": \"fiscal\" },\n    { \"id\": \"guild.stock_consumption\", \"slot\": \"faction\", \"target\": \"all\", \"provider\": \"faction\" },\n    { \"id\": \"pool.institutional_knowledge\", \"slot\": \"upgrades\", \"target\": \"all\", \"provider\": \"pool.institutional_knowledge\" },\n    { \"id\": \"pool.operational_excellence\", \"slot\": \"upgrades\", \"target\": \"all\", \"provider\": \"pool.operational_excellence\" }\n  ],\n  \"progress_coordinates\": [\n    { \"tier\": 0, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e3\" },\n    {\n      \"tier\": 1,\n      \"kind\": \"composite\",\n      \"terms\": [\n        { \"weight\": \"5e-1\", \"kind\": \"count_fraction\", \"count\": \"generators.total_owned\", \"required\": 25 },\n        { \"weight\": \"5e-1\", \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e6\" }\n      ]\n    },\n    { \"tier\": 2, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e9\" },\n    { \"tier\": 3, \"kind\": \"resource_log\", \"resource\": \"company.cash\", \"target\": \"1e12\" }\n  ],\n  \"manual_policy\": { \"refill_milli_per_ms\": 25, \"bucket_cap_milli\": 50000 },\n  \"offline_policy\": {\n    \"efficiency\": \"9e-1\",\n    \"accrual_cap_ms\": 86400000,\n    \"bank_ratio_numerator\": 1,\n    \"bank_ratio_denominator\": 2,\n    \"bank_cap_ms\": 259200000,\n    \"burst_speed\": \"2e0\",\n    \"burst_max_duration_ms\": 14400000\n  }\n}\n",
+      "factions": "{\n  \"schema_version\": 1,\n  \"stock_cap\": 100000,\n  \"stock_interval_ms\": 60000,\n  \"factions\": [\n    {\n      \"id\": \"bootstrapper\",\n      \"produces\": \"revenue\",\n      \"consumes\": \"compliance\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.bootstrapper\"\n    },\n    {\n      \"id\": \"vc_funded\",\n      \"produces\": \"hype\",\n      \"consumes\": \"revenue\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.vc_funded\"\n    },\n    {\n      \"id\": \"open_source\",\n      \"produces\": \"libraries\",\n      \"consumes\": \"hype\",\n      \"compact\": { \"auto_sign\": true, \"tithe_ppm\": 130000 },\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.open_source\"\n    },\n    {\n      \"id\": \"enterprise\",\n      \"produces\": \"compliance\",\n      \"consumes\": \"libraries\",\n      \"compact\": null,\n      \"modifier_slots\": [],\n      \"incorporation_copy_key\": \"incorporate.enterprise\"\n    }\n  ]\n}\n",
+      "fiscal": "{\n  \"schema_version\": 1,\n  \"clock_policy\": {\n    \"early_ms\": 100,\n    \"guaranteed_ms\": 200,\n    \"auto_ms\": 300,\n    \"early_success_ppm\": 500000\n  },\n  \"credit_policy\": {\n    \"credit_per_period\": 3,\n    \"hardcap\": 1000,\n    \"hardcap_reason_key\": \"cap.fiscal_credit\"\n  },\n  \"hoard_policy\": {\n    \"ppm_per_credit\": 10000,\n    \"cap_credits\": 100,\n    \"slot\": \"prestige\",\n    \"source_id\": \"fiscal.hoard\",\n    \"target\": \"all\"\n  },\n  \"generator_level_rows\": [\n    {\n      \"generator_id\": \"generator.beige_tower\",\n      \"ppm_per_level\": 10000,\n      \"level_hardcap\": 100,\n      \"hardcap_reason_key\": \"cap.fiscal_level.beige_tower\",\n      \"slot\": \"prestige\",\n      \"source_id\": \"fiscal.generator.beige_tower\"\n    }\n  ],\n  \"unlock_rows\": [\n    {\"unlock_id\": \"minigame.pitch\", \"cost\": 3},\n    {\"unlock_id\": \"unlock.arcade\", \"cost\": 5}\n  ]\n}\n",
+      "guilds": "{\n  \"schema_version\": 1,\n  \"guild_tithe_ppm\": 20000,\n  \"clearing_rate_ppm\": 500000,\n  \"npc_exchange_ppm\": 250000,\n  \"stock_intake_cap\": 120,\n  \"consumption_bonus_ppm_per_unit\": 0,\n  \"max_members\": 50,\n  \"min_members\": 2,\n  \"grace_days\": 7,\n  \"guild_xp_target_per_founder\": 250000,\n  \"clearing_interval_ms\": 300000\n}\n",
+      "meters": "{\n  \"schema_version\": 1,\n  \"trust_reseed\": {\n    \"base_value\": 90,\n    \"notoriety_numerator\": 35,\n    \"notoriety_denominator\": 100,\n    \"floor_value\": 55,\n    \"ceiling_value\": 90\n  },\n  \"meters\": [\n    {\n      \"id\": \"doom.probability\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [\n        { \"kind\": \"ledger_fact\", \"fact_kind\": \"externality.emitted\", \"delta\": 3 }\n      ],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    },\n    {\n      \"id\": \"trust.employees.grievance\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 0,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 0, \"rate_per_attended_hour\": 1 }\n    },\n    {\n      \"id\": \"trust.employees.standing\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    },\n    {\n      \"id\": \"trust.investors.grievance\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 0,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 0, \"rate_per_attended_hour\": 1 }\n    },\n    {\n      \"id\": \"trust.investors.standing\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    },\n    {\n      \"id\": \"trust.press.grievance\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 0,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 0, \"rate_per_attended_hour\": 1 }\n    },\n    {\n      \"id\": \"trust.press.standing\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    },\n    {\n      \"id\": \"trust.regulators.grievance\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 0,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 0, \"rate_per_attended_hour\": 1 }\n    },\n    {\n      \"id\": \"trust.regulators.standing\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    },\n    {\n      \"id\": \"trust.users.grievance\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 0,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [],\n      \"decay\": { \"toward_value\": 0, \"rate_per_attended_hour\": 1 }\n    },\n    {\n      \"id\": \"trust.users.standing\",\n      \"scope\": \"company\",\n      \"min_value\": 0,\n      \"max_value\": 100,\n      \"initial_value\": 50,\n      \"bands\": [\n        { \"id\": \"low\", \"floor_value\": 0 },\n        { \"id\": \"high\", \"floor_value\": 70 }\n      ],\n      \"inputs\": [\n        { \"kind\": \"contribution_slot\", \"slot\": \"commons\", \"source_id\": \"commons.member\", \"delta_per_attended_hour\": 1 }\n      ],\n      \"decay\": { \"toward_value\": 50, \"rate_per_attended_hour\": 2 }\n    }\n  ]\n}\n",
+      "minigame_api": "{\n  \"schema_version\": 1,\n  \"operations\": [\n    {\"operation_id\": \"create_minigame_session\", \"version\": 1},\n    {\"operation_id\": \"get_current_minigame_session\", \"version\": 1},\n    {\"operation_id\": \"play_minigame_command\", \"version\": 1},\n    {\"operation_id\": \"resolve_minigame_session\", \"version\": 1}\n  ],\n  \"tenants\": [\n    {\"engine_ref\": \"pitch\", \"engine_version\": \"1.0.0\", \"minigame_id\": \"pitch\"}\n  ]\n}\n",
+      "minigames": "{\n  \"schema_version\": 3,\n  \"rating_seasons\": [\"s1\"],\n  \"minigames\": [\n    {\n      \"minigame_id\": \"pitch\",\n      \"engine_ref\": \"pitch\",\n      \"engine_version\": \"1.0.0\",\n      \"modes\": [\"solo\"],\n      \"result_score_fact_ids\": [\"pitch.best_hand_exponent\", \"pitch.final_round\"],\n      \"scaling\": {\n        \"schema_version\": 1,\n        \"scaling_inputs\": [\n          {\n            \"destination\": \"minigame.pitch\",\n            \"destination_class\": \"breadth\",\n            \"source_kind\": \"literal\",\n            \"source_ref\": \"1\",\n            \"op\": \"identity\",\n            \"operand\": 0,\n            \"clamp_min\": 1,\n            \"clamp_max\": 1\n          }\n        ]\n      },\n      \"payout\": {\n        \"credited_resource_id\": \"company.cash\",\n        \"sends_per_day\": 5,\n        \"per_send_cap\": 300,\n        \"conversion_ppm\": 500000,\n        \"payout_score_fact_id\": \"pitch.final_round\",\n        \"cap_reason_key\": \"cap.minigame_faucet\"\n      },\n      \"fallback\": {\"kind\": \"solo\"},\n      \"offline_quality\": {\n        \"score_fact\": \"pitch.final_round\",\n        \"grade_curve\": [\n          {\"score_threshold\": 1, \"grade_ppm\": 200000},\n          {\"score_threshold\": 3, \"grade_ppm\": 500000},\n          {\"score_threshold\": 5, \"grade_ppm\": 800000},\n          {\"score_threshold\": 8, \"grade_ppm\": 1000000}\n        ],\n        \"decay_grid_ms\": 3600000,\n        \"decay_ppm_per_grid\": 10000,\n        \"neutral_floor_ppm\": 200000,\n        \"automation_destination\": \"minigame.pitch\"\n      },\n      \"rating_policy\": {\n        \"starting_elo\": 1000,\n        \"elo_floor\": 0,\n        \"elo_ceiling\": 3000,\n        \"provisional_games\": 10,\n        \"season_member\": \"s1\"\n      },\n      \"unlock_condition\": {\"kind\": \"fiscal_unlock\", \"unlock_id\": \"minigame.pitch\"},\n      \"soul_gate\": \"human_hobby\"\n    }\n  ]\n}\n",
+      "opportunities": "{\n  \"schema_version\": 1,\n  \"schedule_policy\": {\n    \"sampler_version\": \"gamma6_exp.v1\",\n    \"substream_label\": \"active_play.spawn.v1\",\n    \"minimum_interval_ms\": 1000,\n    \"scale_ms\": 500,\n    \"lifetime_ms\": 4500,\n    \"max_due_transitions\": 16\n  },\n  \"effects\": [\n    {\n      \"effect_row_id\": \"active.building\",\n      \"kind\": \"building_special\",\n      \"weight\": 2,\n      \"per_owned_ppm\": 100000,\n      \"duration_ms\": 2000,\n      \"eligible_generator_ids\": [\"generator.beige_tower\"]\n    },\n    {\n      \"effect_row_id\": \"active.click\",\n      \"kind\": \"click_frenzy\",\n      \"weight\": 3,\n      \"factor\": \"7e0\",\n      \"duration_ms\": 1000,\n      \"action_ids\": [\"manual.click\"]\n    },\n    {\n      \"effect_row_id\": \"active.lucky\",\n      \"kind\": \"lucky_payout\",\n      \"weight\": 1,\n      \"lucky_bank_frac\": \"1.5e-1\",\n      \"lucky_rate_cap\": \"9e2\",\n      \"epsilon\": \"1.3e1\",\n      \"resource_id\": \"company.cash\",\n      \"hardcap_reason_key\": \"cap.cash\"\n    },\n    {\n      \"effect_row_id\": \"active.production\",\n      \"kind\": \"production_frenzy\",\n      \"weight\": 4,\n      \"factor\": \"7e0\",\n      \"duration_ms\": 5000,\n      \"targets\": [\"generator_production\"]\n    }\n  ],\n  \"combo_policy\": { \"combo_cap\": \"1e4\", \"hardcap_reason_key\": \"cap.active_combo\" }\n}\n",
+      "pets": "{\n  \"schema_version\": 2,\n  \"stat_policy\": {\n    \"grid_ms\": 360000,\n    \"stats\": [\n      { \"stat_id\": \"hunger\", \"initial_ppm\": 750000, \"floor_ppm\": 100000, \"decay_ppm_per_grid\": 2000 },\n      { \"stat_id\": \"energy\", \"initial_ppm\": 750000, \"floor_ppm\": 100000, \"decay_ppm_per_grid\": 2000 },\n      { \"stat_id\": \"cleanliness\", \"initial_ppm\": 750000, \"floor_ppm\": 100000, \"decay_ppm_per_grid\": 2000 },\n      { \"stat_id\": \"affection\", \"initial_ppm\": 750000, \"floor_ppm\": 100000, \"decay_ppm_per_grid\": 2000 }\n    ],\n    \"diminishing_threshold_ppm\": 900000,\n    \"diminishing_factor_ppm\": 500000\n  },\n  \"actions\": [\n    { \"action_id\": \"care.feed\", \"stat_id\": \"hunger\", \"delta_ppm\": 400000, \"cooldown_attended_ms\": 3600000, \"min_eligible_ppm\": 100000, \"soul_gate\": \"essential\" },\n    { \"action_id\": \"care.groom\", \"stat_id\": \"cleanliness\", \"delta_ppm\": 250000, \"cooldown_attended_ms\": 3600000, \"min_eligible_ppm\": 100000, \"soul_gate\": \"essential\" },\n    { \"action_id\": \"care.pet\", \"stat_id\": \"affection\", \"delta_ppm\": 200000, \"cooldown_attended_ms\": 600000, \"min_eligible_ppm\": 100000, \"soul_gate\": \"ordinary\" },\n    { \"action_id\": \"care.play\", \"stat_id\": \"affection\", \"delta_ppm\": 250000, \"cooldown_attended_ms\": 1800000, \"min_eligible_ppm\": 100000, \"soul_gate\": \"ordinary\" },\n    { \"action_id\": \"care.rest\", \"stat_id\": \"energy\", \"delta_ppm\": 250000, \"cooldown_attended_ms\": 3600000, \"min_eligible_ppm\": 100000, \"soul_gate\": \"essential\" }\n  ],\n  \"trust_policy\": {\n    \"initial_ppm\": 500000,\n    \"neutral_ppm\": 500000,\n    \"floor_ppm\": 0,\n    \"cap_ppm\": 1000000,\n    \"gain_ppm_per_effective_action\": 20000,\n    \"decay_ppm_per_grid\": 42\n  },\n  \"mood_policy\": [\n    { \"mood_member\": \"withdrawn\", \"floor_ppm\": 0 },\n    { \"mood_member\": \"restless\", \"floor_ppm\": 250000 },\n    { \"mood_member\": \"neutral\", \"floor_ppm\": 500000 },\n    { \"mood_member\": \"engaged\", \"floor_ppm\": 750000 }\n  ],\n  \"behavior_policy\": [\n    { \"from_state\": \"idle\", \"event\": \"care_applied\", \"to_state\": \"care_response\", \"duration_grid_ticks\": 1 },\n    { \"from_state\": \"idle\", \"event\": \"care_rejected\", \"to_state\": \"resting\", \"duration_grid_ticks\": 1 },\n    { \"from_state\": \"idle\", \"event\": \"grid_tick\", \"to_state\": \"active\", \"duration_grid_ticks\": 2 },\n    { \"from_state\": \"active\", \"event\": \"care_applied\", \"to_state\": \"care_response\", \"duration_grid_ticks\": 1 },\n    { \"from_state\": \"active\", \"event\": \"grid_tick\", \"to_state\": \"resting\", \"duration_grid_ticks\": 2 },\n    { \"from_state\": \"care_response\", \"event\": \"grid_tick\", \"to_state\": \"idle\", \"duration_grid_ticks\": 1 },\n    { \"from_state\": \"resting\", \"event\": \"care_applied\", \"to_state\": \"care_response\", \"duration_grid_ticks\": 1 },\n    { \"from_state\": \"resting\", \"event\": \"grid_tick\", \"to_state\": \"idle\", \"duration_grid_ticks\": 2 }\n  ]\n}\n",
+      "pitch": "{\n  \"schema_version\": 1,\n  \"policy\": {\n    \"hand_size\": 7,\n    \"play_size\": 4,\n    \"hands_per_round\": 3,\n    \"hack_slots\": 4,\n    \"start_currency\": 4,\n    \"shop_size\": 3,\n    \"round_clear_currency\": 3,\n    \"hand_size_reason_key\": \"cap.pitch_hand\",\n    \"play_size_reason_key\": \"cap.pitch_play\",\n    \"hands_per_round_reason_key\": \"cap.pitch_hands\",\n    \"hack_slots_reason_key\": \"cap.pitch_hack_slots\",\n    \"rounds_reason_key\": \"cap.pitch_rounds\",\n    \"exponent_reason_key\": \"cap.pitch_exponent\",\n    \"best_exponent_hardcap\": 1000000\n  },\n  \"metric_cards\": [\n    {\"card_id\":\"api_call\",\"base_metric\":\"1.5e1\",\"copies\":2,\"copy_key\":\"pitch.card.api_call\"},\n    {\"card_id\":\"beta_invite\",\"base_metric\":\"3e1\",\"copies\":2,\"copy_key\":\"pitch.card.beta_invite\"},\n    {\"card_id\":\"cache_hit\",\"base_metric\":\"2e1\",\"copies\":2,\"copy_key\":\"pitch.card.cache_hit\"},\n    {\"card_id\":\"demo_day\",\"base_metric\":\"9e1\",\"copies\":2,\"copy_key\":\"pitch.card.demo_day\"},\n    {\"card_id\":\"newsletter\",\"base_metric\":\"2.5e1\",\"copies\":2,\"copy_key\":\"pitch.card.newsletter\"},\n    {\"card_id\":\"page_views\",\"base_metric\":\"1e1\",\"copies\":2,\"copy_key\":\"pitch.card.page_views\"},\n    {\"card_id\":\"patch_release\",\"base_metric\":\"4e1\",\"copies\":2,\"copy_key\":\"pitch.card.patch_release\"},\n    {\"card_id\":\"press_mention\",\"base_metric\":\"7.5e1\",\"copies\":2,\"copy_key\":\"pitch.card.press_mention\"},\n    {\"card_id\":\"referral_loop\",\"base_metric\":\"6e1\",\"copies\":2,\"copy_key\":\"pitch.card.referral_loop\"},\n    {\"card_id\":\"testimonial\",\"base_metric\":\"5e1\",\"copies\":2,\"copy_key\":\"pitch.card.testimonial\"},\n    {\"card_id\":\"uptime_nines\",\"base_metric\":\"4.5e1\",\"copies\":2,\"copy_key\":\"pitch.card.uptime_nines\"},\n    {\"card_id\":\"users_signup\",\"base_metric\":\"3.5e1\",\"copies\":2,\"copy_key\":\"pitch.card.users_signup\"}\n  ],\n  \"growth_hacks\": [\n    {\"hack_id\":\"ab_test\",\"price\":3,\"draft_weight\":10,\"effect\":{\"kind\":\"card_factor\",\"factor\":\"1.5e0\"},\"copy_key\":\"pitch.hack.ab_test\"},\n    {\"hack_id\":\"buzzword\",\"price\":2,\"draft_weight\":12,\"effect\":{\"kind\":\"flat_add\",\"amount\":\"2.5e1\"},\"copy_key\":\"pitch.hack.buzzword\"},\n    {\"hack_id\":\"dark_pattern\",\"price\":4,\"draft_weight\":8,\"effect\":{\"kind\":\"shape_factor\",\"shape\":\"pair\",\"factor\":\"3e0\"},\"copy_key\":\"pitch.hack.dark_pattern\"},\n    {\"hack_id\":\"growth_loop\",\"price\":5,\"draft_weight\":6,\"effect\":{\"kind\":\"card_factor\",\"factor\":\"2e0\"},\"copy_key\":\"pitch.hack.growth_loop\"},\n    {\"hack_id\":\"infinite_scroll\",\"price\":3,\"draft_weight\":10,\"effect\":{\"kind\":\"flat_add\",\"amount\":\"5e1\"},\"copy_key\":\"pitch.hack.infinite_scroll\"},\n    {\"hack_id\":\"pivot\",\"price\":6,\"draft_weight\":4,\"effect\":{\"kind\":\"shape_factor\",\"shape\":\"full_hand\",\"factor\":\"4e0\"},\"copy_key\":\"pitch.hack.pivot\"},\n    {\"hack_id\":\"stealth_mode\",\"price\":4,\"draft_weight\":6,\"effect\":{\"kind\":\"chain_factor\",\"partner_hack_id\":\"pivot\",\"factor\":\"2.5e0\"},\"copy_key\":\"pitch.hack.stealth_mode\"},\n    {\"hack_id\":\"synergy_deck\",\"price\":4,\"draft_weight\":6,\"effect\":{\"kind\":\"chain_factor\",\"partner_hack_id\":\"ab_test\",\"factor\":\"2e0\"},\"copy_key\":\"pitch.hack.synergy_deck\"}\n  ],\n  \"funding_curve\": [\n    {\"round\":1,\"funding_target\":\"1e2\"},\n    {\"round\":2,\"funding_target\":\"3e2\"},\n    {\"round\":3,\"funding_target\":\"1e3\"},\n    {\"round\":4,\"funding_target\":\"5e3\"},\n    {\"round\":5,\"funding_target\":\"2.5e4\"},\n    {\"round\":6,\"funding_target\":\"2e5\"},\n    {\"round\":7,\"funding_target\":\"2e6\"},\n    {\"round\":8,\"funding_target\":\"5e7\"}\n  ]\n}\n",
+      "prestige": "{\n  \"schema_version\": 1,\n  \"value_resource_id\": \"company.cash\",\n  \"threshold\": \"1e12\",\n  \"exit_modifiers_ppm\": {\n    \"acquihire\": 900000,\n    \"acquisition\": 1000000,\n    \"ipo\": 1250000,\n    \"collapse\": 750000,\n    \"scripted_first\": 1000000\n  },\n  \"collapse_route_knowledge\": 25,\n  \"catchup_ceiling_ms\": 5000,\n  \"offer_duration_ms\": 900000,\n  \"decline_drift_ppm\": 50000,\n  \"spawn_gate_ppm\": [0, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1000000],\n  \"advisor_per_run_ppm\": 20000,\n  \"advisor_cap_ppm\": 500000\n}\n",
+      "relevance": "{\n  \"schema_version\": 2,\n  \"items\": [\n    { \"purchasable_id\": \"generator.answering_machine\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.beige_tower\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.beige_tower_v2\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.crt_wall\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.dot_matrix_queue\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.first_hire\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.garage_rack\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"generator.nephew_intern\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.beige_tower_cache\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.continuous_feed_paper\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.crt_degauss_button\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.employee_handbook_v0\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.hold_music_license\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.institutional_memory\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.nephew_business_cards\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.rack_rail_standardization\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.refurbished_sticker\", \"availability_window\": { \"from_gate\": \"gate.t0_to_t1\", \"to_gate\": \"gate.t2_to_t3\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] },\n    { \"purchasable_id\": \"upgrade.reply_all_macro\", \"availability_window\": { \"from_gate\": null, \"to_gate\": \"gate.t0_to_t1\" }, \"epsilon_ms\": 1000, \"trap_exempt\": false, \"justification_key\": null, \"group_ids\": [] }\n  ],\n  \"groups\": []\n}\n",
+      "routes": "{\n  \"schema_version\": 1,\n  \"context_version\": 1,\n  \"depletion_distinct_routes_required\": 5,\n  \"knowledge\": {\n    \"registry_first_bonus\": 100,\n    \"founder_first_grant\": 25,\n    \"repeat_grant\": 5,\n    \"hint_cost\": 50\n  },\n  \"gates\": [\n    {\n      \"gate_id\": \"gate.t0_to_t1\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e5\" }],\n      \"routes\": []\n    },\n    {\n      \"gate_id\": \"gate.t2_to_t3\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e9\" }],\n      \"routes\": []\n    },\n    {\n      \"gate_id\": \"gate.t3_to_t4\",\n      \"requirement\": [\n        { \"resource_id\": \"company.cash\", \"amount\": \"1e12\" },\n        { \"resource_id\": \"company.permits\", \"amount\": \"1.2e1\" }\n      ],\n      \"routes\": []\n    },\n    {\n      \"gate_id\": \"gate.t4_to_t5\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e15\" }],\n      \"routes\": [\n        {\n          \"route_id\": \"route.regulatory_capture\",\n          \"house_name\": \"Regulatory Capture Skip\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.ethical\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.ethical\" },\n            { \"kind\": \"meter_band\", \"meter_id\": \"trust.regulators.standing\", \"min\": 70, \"max\": 100 },\n            { \"kind\": \"meter_band\", \"meter_id\": \"trust.regulators.grievance\", \"min\": 0, \"max\": 20 }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"4e-1\" }\n        },\n        {\n          \"route_id\": \"route.ipo_sequence_break\",\n          \"house_name\": \"IPO Sequence Break\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.capture\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.capture\" },\n            { \"kind\": \"resource_at_least\", \"resource_id\": \"company.cash\", \"value\": \"4e8\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"4e-1\" }\n        },\n        {\n          \"route_id\": \"route.acquihire_out_of_bounds\",\n          \"house_name\": \"Acquihire Out-of-Bounds\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"doctrine:transition.t3_to_t4\",\n          \"exclusion_value\": \"doctrine.capture\",\n          \"predicate\": [\n            { \"kind\": \"doctrine_is\", \"transition\": \"transition.t3_to_t4\", \"doctrine_id\": \"doctrine.capture\" },\n            { \"kind\": \"ledger_fact_present\", \"fact_kind\": \"exit.acquihire\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"5e-1\" }\n        },\n        {\n          \"route_id\": \"route.non_road_engine_clip\",\n          \"house_name\": \"Non-Road Engine Clip\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.corporation\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.corporation\" },\n            { \"kind\": \"region_trait\", \"trait_id\": \"trait.non_road\" }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"6e-1\" }\n        },\n        {\n          \"route_id\": \"route.nonprofit_wrapper_zip\",\n          \"house_name\": \"Nonprofit Wrapper Zip\",\n          \"active\": true,\n          \"requires_context_version\": 1,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.nonprofit\",\n          \"predicate\": [{ \"kind\": \"structure_is\", \"structure_id\": \"structure.nonprofit\" }],\n          \"effect\": { \"kind\": \"substitute\" }\n        },\n        {\n          \"route_id\": \"route.offset_warp\",\n          \"house_name\": \"Offset Warp\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.nonprofit\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.nonprofit\" },\n            { \"kind\": \"meter_band\", \"meter_id\": \"planet.offset_coverage\", \"min\": 90, \"max\": 100 }\n          ],\n          \"effect\": { \"kind\": \"discount\", \"fraction\": \"2e-1\" }\n        }\n      ]\n    },\n    {\n      \"gate_id\": \"gate.t7_to_t8\",\n      \"requirement\": [{ \"resource_id\": \"company.cash\", \"amount\": \"1e24\" }],\n      \"routes\": [\n        {\n          \"route_id\": \"route.sovereign_ai_early_warp\",\n          \"house_name\": \"Sovereign AI Early Warp\",\n          \"active\": false,\n          \"requires_context_version\": 2,\n          \"exclusion_slot\": \"structure\",\n          \"exclusion_value\": \"structure.corporation\",\n          \"predicate\": [\n            { \"kind\": \"structure_is\", \"structure_id\": \"structure.corporation\" },\n            { \"kind\": \"region_trait\", \"trait_id\": \"trait.sovereign_compute\" }\n          ],\n          \"effect\": { \"kind\": \"substitute\" }\n        }\n      ]\n    }\n  ]\n}\n",
+      "soul": "{\n  \"schema_version\": 1,\n  \"policy\": {\n    \"soul_floor\": 0,\n    \"soul_initial\": 100,\n    \"soul_max\": 100,\n    \"recovery_beat_ceiling_ms\": 5000,\n    \"max_session_wall_ms\": 86400000\n  },\n  \"bands\": [\n    {\"band_member\":\"near_zero\",\"min_inclusive\":0,\"max_inclusive\":9,\"human_content_locked\":true,\"reason_key\":\"category.low_percent\"},\n    {\"band_member\":\"hollow\",\"min_inclusive\":10,\"max_inclusive\":39,\"human_content_locked\":false,\"reason_key\":\"category.ethical_percent\"},\n    {\"band_member\":\"dimming\",\"min_inclusive\":40,\"max_inclusive\":74,\"human_content_locked\":false,\"reason_key\":\"category.hundred_percent\"},\n    {\"band_member\":\"whole\",\"min_inclusive\":75,\"max_inclusive\":100,\"human_content_locked\":false,\"reason_key\":\"category.any_percent\"}\n  ],\n  \"debit_sources\": [],\n  \"recovery_activities\": [\n    {\"activity_id\":\"defrag\",\"duration_attended_ms\":900000,\"recovery_amount\":12,\"toy_kind\":\"defrag\",\"reason_key\":\"soul.recovery.defrag.reason\",\"title_copy_key\":\"soul.recovery.defrag.title\",\"description_copy_key\":\"soul.recovery.defrag.description\",\"disclosure_copy_key\":\"soul.recovery.defrag.disclosure\"},\n    {\"activity_id\":\"repot\",\"duration_attended_ms\":300000,\"recovery_amount\":5,\"toy_kind\":\"repot\",\"reason_key\":\"soul.recovery.repot.reason\",\"title_copy_key\":\"soul.recovery.repot.title\",\"description_copy_key\":\"soul.recovery.repot.description\",\"disclosure_copy_key\":\"soul.recovery.repot.disclosure\"},\n    {\"activity_id\":\"server_room\",\"duration_attended_ms\":2700000,\"recovery_amount\":30,\"toy_kind\":\"server_room\",\"reason_key\":\"soul.recovery.server_room.reason\",\"title_copy_key\":\"soul.recovery.server_room.title\",\"description_copy_key\":\"soul.recovery.server_room.description\",\"disclosure_copy_key\":\"soul.recovery.server_room.disclosure\"}\n  ],\n  \"ending_policy\": {\"whole_variant\":\"earnest_ascension\",\"depleted_variant\":\"training_data\"}\n}\n"
+    },
+    "case": {
+      "name": "curriculum-burnout-preempts-manual",
+      "pre_state": {
+        "achievement_score_lifetime": 0,
+        "achievement_score_run": 0,
+        "achievements_earned_lifetime": [],
+        "achievements_earned_run": [],
+        "active_buffs": [],
+        "advisor_mode": false,
+        "age_ms": 0,
+        "balances": {
+          "company.cash": "0",
+          "company.permits": "0"
+        },
+        "clout_lifetime": 0,
+        "collapsed_offline_ms": 0,
+        "compact_member": false,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "compact_tithe_ppm": 0,
+        "compute_burst_remaining_ms": 0,
+        "compute_credit_ms": 0,
+        "consumed_stock_units": 0,
+        "doctrines_by_transition": {},
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "exit_history": [],
+        "faction_id": null,
+        "gates_crossed": {
+          "gate.t0_to_t1": true
+        },
+        "generators": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_provisioned": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_purchased_total": 0,
+        "guild_boundary_guild_id": null,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "hints_unlocked": [],
+        "incorporated_at_ms": null,
+        "ledger_fact_kinds": [],
+        "lifetime_value": "0",
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "meter_decay_remainders": {
+          "doom.probability": 0,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 0,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 0,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 0,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 0,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 0
+        },
+        "meter_input_remainders": {
+          "trust.users.standing:0": 0
+        },
+        "meter_values": {
+          "doom.probability": 50,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 90,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 90,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 90,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 90,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 90
+        },
+        "network_slots": [],
+        "next_opportunity_attended_ms": 0,
+        "notoriety": 0,
+        "offer_state": null,
+        "offline_spans": [],
+        "opportunity_spawn_seq": 107,
+        "pending_opportunity": {
+          "opportunity_id": "0000000d-aa9a-7905-b0f3-b6e2e48cac01",
+          "spawned_attended_ms": 895642,
+          "expires_attended_ms": 900142,
+          "effect_row_id": "active.click",
+          "selected_generator_id": null
+        },
+        "provision_remainders_ppm": {
+          "generator.beige_tower": 0
+        },
+        "region_traits": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "route_knowledge_balance": 0,
+        "run_pre_timer": false,
+        "run_seq": 1,
+        "run_started_at_ms": 1785570300000,
+        "soul": 0,
+        "stock_progress_ms": 0,
+        "stock_rate_remainder_ppm": 0,
+        "stock_units": 0,
+        "structure_id": "",
+        "tier": 1,
+        "upgrades_owned": []
+      },
+      "canonical_payload": {
+        "action_id": "manual.click",
+        "count": 1,
+        "expected_revision": 1,
+        "kind": "perform_manual_batch",
+        "window_ms": 1
+      },
+      "replay_inputs": {
+        "v": 8,
+        "command": {
+          "intent_id": "01986666-0d00-7000-8000-000000000001",
+          "company_stream_id": "01986666-1d00-7000-8000-000000000001",
+          "founder_id": "01986666-2d00-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 1
+        },
+        "evaluated_at_ms": 1785571200000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "exit",
+          "intent_kind": "perform_manual_batch",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": {
+              "guild_id": "",
+              "base_seq": 0,
+              "settlements": []
+            },
+            "route_context_version": 1
+          },
+          "founder_carry": {
+            "founder_revision": 1,
+            "founder_constants_hash": "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789",
+            "reputation_level": 0,
+            "route_knowledge_balance": 0,
+            "age_ms": 0,
+            "notoriety": 0,
+            "advisor_mode": false,
+            "network_slots": [],
+            "ledger_fact_kinds": [],
+            "exit_history_count": 0,
+            "achievements_earned_lifetime": [],
+            "achievement_score_lifetime": 0,
+            "founder_extensions": {
+              "minigame_ratings": {
+                "pitch": {
+                  "elo": 1000,
+                  "season_member": "s1",
+                  "games_counted": 0
+                }
+              },
+              "minigame_offline_quality": {
+                "pitch": {
+                  "grade_ppm": 200000,
+                  "last_founder_attended_ms": 0,
+                  "decay_remainder_ppm": 0
+                }
+              },
+              "pets": {},
+              "fiscal_credit": 0,
+              "fiscal_period_opened_wall_ms": 1785571200000,
+              "fiscal_period_seq": 0,
+              "fiscal_generator_levels": {
+                "generator.beige_tower": 0
+              },
+              "fiscal_unlocks": [],
+              "soul": 80,
+              "soul_exhausted_source_ids": [],
+              "minigame_session_seq": 0
+            }
+          },
+          "executed_route_ids": [],
+          "selected_exit_type": "scripted_first",
+          "selected_branch": "burnout",
+          "selected_terms": {},
+          "next_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+          "active_play": {
+            "attended_now_ms": 900000,
+            "before_sequence": 107,
+            "before_next_opportunity_attended_ms": 0,
+            "after_sequence": 107,
+            "after_next_opportunity_attended_ms": 0,
+            "expired_buffs": [],
+            "missed_opportunity_id": null,
+            "spawned": null,
+            "claim": null
+          },
+          "next_active_play": {
+            "sequence": 0,
+            "sampled_interval_ms": 4850,
+            "effect_draw": "7",
+            "generator_draw": null,
+            "effect_row_id": "active.production",
+            "selected_generator_id": null,
+            "opportunity_id": "00000000-12f2-740f-93e4-19985c7c7be2",
+            "spawned_attended_ms": 4850,
+            "expires_attended_ms": 9350
+          },
+          "minigame_session_active": false
+        }
+      },
+      "outcome": "applied",
+      "receipt": {
+        "applied_count": 1,
+        "evaluated_at": "2026-08-01T08:00:00Z",
+        "founder_revision": 2,
+        "intent_id": "01986666-0d00-7000-8000-000000000001",
+        "new_revision": 3,
+        "outcome": "applied",
+        "receipt": {
+          "changes": []
+        },
+        "snapshot": {
+          "achievement_score_run": 0,
+          "achievements_earned_run": [],
+          "active_buffs": [],
+          "balances": {
+            "company.cash": "0",
+            "company.permits": "0"
+          },
+          "collapsed_offline_ms": 0,
+          "compact_member": false,
+          "compact_solidarity_ppm": 0,
+          "compact_tithe_ppm": 0,
+          "compute_burst_remaining_ms": 0,
+          "compute_credit_ms": 0,
+          "consumed_stock_units": 0,
+          "doctrines_by_transition": {},
+          "evaluated_through": "2026-08-01T08:00:00Z",
+          "faction_id": null,
+          "gates_crossed": {},
+          "generators": {
+            "generator.answering_machine": 0,
+            "generator.beige_tower": 0,
+            "generator.beige_tower_v2": 0,
+            "generator.crt_wall": 0,
+            "generator.dot_matrix_queue": 0,
+            "generator.first_hire": 0,
+            "generator.garage_rack": 0,
+            "generator.legal_dept": 0,
+            "generator.nephew_intern": 0
+          },
+          "generators_provisioned": {
+            "generator.answering_machine": 0,
+            "generator.beige_tower": 10,
+            "generator.beige_tower_v2": 0,
+            "generator.crt_wall": 0,
+            "generator.dot_matrix_queue": 0,
+            "generator.first_hire": 0,
+            "generator.garage_rack": 0,
+            "generator.legal_dept": 0,
+            "generator.nephew_intern": 0
+          },
+          "generators_purchased_total": 0,
+          "guild_boundary_guild_id": null,
+          "guild_boundary_seq": 0,
+          "guild_consumed_window_units": 0,
+          "guild_tithe_carry_ppm": 0,
+          "hints_unlocked": [],
+          "incorporated_at_ms": null,
+          "ledger_fact_kinds": [],
+          "lifetime_value": "0",
+          "manual_token_milli": 50000,
+          "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+          "meter_decay_remainders": {
+            "doom.probability": 0,
+            "trust.employees.grievance": 0,
+            "trust.employees.standing": 0,
+            "trust.investors.grievance": 0,
+            "trust.investors.standing": 0,
+            "trust.press.grievance": 0,
+            "trust.press.standing": 0,
+            "trust.regulators.grievance": 0,
+            "trust.regulators.standing": 0,
+            "trust.users.grievance": 0,
+            "trust.users.standing": 0
+          },
+          "meter_input_remainders": {
+            "trust.users.standing:0": 0
+          },
+          "meter_values": {
+            "doom.probability": 50,
+            "trust.employees.grievance": 0,
+            "trust.employees.standing": 90,
+            "trust.investors.grievance": 0,
+            "trust.investors.standing": 90,
+            "trust.press.grievance": 0,
+            "trust.press.standing": 90,
+            "trust.regulators.grievance": 0,
+            "trust.regulators.standing": 90,
+            "trust.users.grievance": 0,
+            "trust.users.standing": 90
+          },
+          "next_opportunity_attended_ms": 4850,
+          "offer_state": null,
+          "offline_spans": [],
+          "opportunity_spawn_seq": 0,
+          "pending_opportunity": null,
+          "provision_remainders_ppm": {
+            "generator.beige_tower": 0
+          },
+          "provisioned_hardcaps": {
+            "generator.beige_tower": {
+              "count": 9007199254740991,
+              "reason_key": "generator.beige_tower.provisioned_cap"
+            }
+          },
+          "region_traits": [],
+          "route_knowledge_balance": 0,
+          "run_pre_timer": false,
+          "run_seq": 2,
+          "run_started_at_ms": 1785571200000,
+          "stock_progress_ms": 0,
+          "stock_rate_remainder_ppm": 0,
+          "stock_resource": null,
+          "stock_units": 0,
+          "structure_id": "",
+          "tier": 0,
+          "upgrades_owned": []
+        }
+      },
+      "founder_output": {
+        "founder_revision": 1,
+        "founder_constants_hash": "sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789",
+        "reputation_level": 0,
+        "route_knowledge_balance": 75,
+        "age_ms": 900000,
+        "notoriety": 0,
+        "advisor_mode": false,
+        "network_slots": [],
+        "ledger_fact_kinds": [],
+        "exit_history_count": 1,
+        "achievements_earned_lifetime": [
+          "achievement.first_gate",
+          "achievement.old_hand"
+        ],
+        "achievement_score_lifetime": 6,
+        "founder_extensions": {
+          "minigame_ratings": {
+            "pitch": {
+              "elo": 1000,
+              "season_member": "s1",
+              "games_counted": 0
+            }
+          },
+          "minigame_offline_quality": {
+            "pitch": {
+              "grade_ppm": 200000,
+              "last_founder_attended_ms": 0,
+              "decay_remainder_ppm": 0
+            }
+          },
+          "pets": {},
+          "fiscal_credit": 0,
+          "fiscal_period_opened_wall_ms": 1785571200000,
+          "fiscal_period_seq": 0,
+          "fiscal_generator_levels": {
+            "generator.beige_tower": 0
+          },
+          "fiscal_unlocks": [],
+          "soul": 80,
+          "soul_exhausted_source_ids": [],
+          "minigame_session_seq": 0
+        }
+      },
+      "final_company": {
+        "achievement_score_lifetime": 0,
+        "achievement_score_run": 6,
+        "achievements_earned_lifetime": [],
+        "achievements_earned_run": [
+          "achievement.first_gate",
+          "achievement.old_hand"
+        ],
+        "active_buffs": [],
+        "advisor_mode": false,
+        "age_ms": 0,
+        "balances": {
+          "company.cash": "0",
+          "company.permits": "0"
+        },
+        "clout_lifetime": 0,
+        "collapsed_offline_ms": 0,
+        "compact_member": false,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "compact_tithe_ppm": 0,
+        "compute_burst_remaining_ms": 0,
+        "compute_credit_ms": 0,
+        "consumed_stock_units": 0,
+        "doctrines_by_transition": {},
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "exit_history": [],
+        "faction_id": null,
+        "gates_crossed": {
+          "gate.t0_to_t1": true
+        },
+        "generators": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_provisioned": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_purchased_total": 0,
+        "guild_boundary_guild_id": null,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "hints_unlocked": [],
+        "incorporated_at_ms": null,
+        "ledger_fact_kinds": [],
+        "lifetime_value": "0",
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "meter_decay_remainders": {
+          "doom.probability": 0,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 0,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 0,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 0,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 0,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 0
+        },
+        "meter_input_remainders": {
+          "trust.users.standing:0": 0
+        },
+        "meter_values": {
+          "doom.probability": 50,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 90,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 90,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 90,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 90,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 90
+        },
+        "network_slots": [],
+        "next_opportunity_attended_ms": 0,
+        "notoriety": 0,
+        "offer_state": null,
+        "offline_spans": [],
+        "opportunity_spawn_seq": 107,
+        "pending_opportunity": {
+          "opportunity_id": "0000000d-aa9a-7905-b0f3-b6e2e48cac01",
+          "spawned_attended_ms": 895642,
+          "expires_attended_ms": 900142,
+          "effect_row_id": "active.click",
+          "selected_generator_id": null
+        },
+        "provision_remainders_ppm": {
+          "generator.beige_tower": 0
+        },
+        "region_traits": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "route_knowledge_balance": 0,
+        "run_pre_timer": false,
+        "run_seq": 1,
+        "run_started_at_ms": 1785570300000,
+        "soul": 0,
+        "stock_progress_ms": 0,
+        "stock_rate_remainder_ppm": 0,
+        "stock_units": 0,
+        "structure_id": "",
+        "tier": 1,
+        "upgrades_owned": []
+      },
+      "new_company": {
+        "achievement_score_lifetime": 0,
+        "achievement_score_run": 0,
+        "achievements_earned_lifetime": [],
+        "achievements_earned_run": [],
+        "active_buffs": [],
+        "advisor_mode": false,
+        "age_ms": 0,
+        "balances": {
+          "company.cash": "0",
+          "company.permits": "0"
+        },
+        "clout_lifetime": 0,
+        "collapsed_offline_ms": 0,
+        "compact_member": false,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "compact_tithe_ppm": 0,
+        "compute_burst_remaining_ms": 0,
+        "compute_credit_ms": 0,
+        "consumed_stock_units": 0,
+        "doctrines_by_transition": {},
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "exit_history": [],
+        "faction_id": null,
+        "gates_crossed": {},
+        "generators": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_provisioned": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 10,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_purchased_total": 0,
+        "guild_boundary_guild_id": null,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "hints_unlocked": [],
+        "incorporated_at_ms": null,
+        "ledger_fact_kinds": [],
+        "lifetime_value": "0",
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "meter_decay_remainders": {
+          "doom.probability": 0,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 0,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 0,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 0,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 0,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 0
+        },
+        "meter_input_remainders": {
+          "trust.users.standing:0": 0
+        },
+        "meter_values": {
+          "doom.probability": 50,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 90,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 90,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 90,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 90,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 90
+        },
+        "network_slots": [],
+        "next_opportunity_attended_ms": 4850,
+        "notoriety": 0,
+        "offer_state": null,
+        "offline_spans": [],
+        "opportunity_spawn_seq": 0,
+        "pending_opportunity": null,
+        "provision_remainders_ppm": {
+          "generator.beige_tower": 0
+        },
+        "region_traits": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "route_knowledge_balance": 0,
+        "run_pre_timer": false,
+        "run_seq": 2,
+        "run_started_at_ms": 1785571200000,
+        "soul": 0,
+        "stock_progress_ms": 0,
+        "stock_rate_remainder_ppm": 0,
+        "stock_units": 0,
+        "structure_id": "",
+        "tier": 0,
+        "upgrades_owned": []
+      },
+      "founder_events": [
+        {
+          "kind": "founder_advanced",
+          "schema_version": 1,
+          "intent_id": "01986666-0d00-7000-8000-000000000001",
+          "payload": {
+            "exit_type": "scripted_first",
+            "founder_id": "01986666-2d00-7000-8000-000000000001",
+            "occurred_at_ms": 1785571200000,
+            "reputation_delta": 0,
+            "route_knowledge": 75,
+            "run_id": {
+              "company_stream_id": "01986666-1d00-7000-8000-000000000001",
+              "run_seq": 1
+            }
+          }
+        }
+      ],
+      "company_ended_events": [
+        {
+          "kind": "achievement_earned.v1",
+          "schema_version": 1,
+          "intent_id": "01986666-0d00-7000-8000-000000000001",
+          "payload": {
+            "achievement_id": "achievement.first_gate",
+            "condition_scope": "run",
+            "run_id": {
+              "company_stream_id": "01986666-1d00-7000-8000-000000000001",
+              "run_seq": 1
+            },
+            "score_grant": 2
+          }
+        },
+        {
+          "kind": "achievement_earned.v1",
+          "schema_version": 1,
+          "intent_id": "01986666-0d00-7000-8000-000000000001",
+          "payload": {
+            "achievement_id": "achievement.old_hand",
+            "condition_scope": "career",
+            "run_id": {
+              "company_stream_id": "01986666-1d00-7000-8000-000000000001",
+              "run_seq": 1
+            },
+            "score_grant": 4
+          }
+        },
+        {
+          "kind": "run_ended",
+          "schema_version": 3,
+          "intent_id": "01986666-0d00-7000-8000-000000000001",
+          "payload": {
+            "assisted": {
+              "advisor": false,
+              "commons": false
+            },
+            "attended_ms": 900000,
+            "branch": "burnout",
+            "ended_at_ms": 1785571200000,
+            "executed_routes": [],
+            "exit_type": "scripted_first",
+            "faction": null,
+            "founder_id": "01986666-2d00-7000-8000-000000000001",
+            "gates_crossed": [
+              "gate.t0_to_t1"
+            ],
+            "generators_purchased_total": 0,
+            "ledger_fact_kinds": [],
+            "lifetime_value": "0",
+            "payout": {
+              "reputation_delta": 0,
+              "network_slot_unlocks": [],
+              "route_knowledge": 75,
+              "clout_reach_note": "clout.reach.preserved"
+            },
+            "pre_timer": false,
+            "rta_ms": 900000,
+            "run_id": {
+              "company_stream_id": "01986666-1d00-7000-8000-000000000001",
+              "run_seq": 1
+            },
+            "started_at_ms": 1785570300000,
+            "starter_package": {
+              "kind": "generated_generators",
+              "generator_id": "generator.beige_tower",
+              "count": 10
+            },
+            "terminal_seq": 1,
+            "tier": 1
+          }
+        }
+      ],
+      "company_started_events": [
+        {
+          "kind": "run_started",
+          "schema_version": 1,
+          "intent_id": "01986666-0d00-7000-8000-000000000001",
+          "payload": {
+            "assisted": {
+              "advisor": false,
+              "commons": false
+            },
+            "founder_id": "01986666-2d00-7000-8000-000000000001",
+            "run_id": {
+              "company_stream_id": "01986666-1d00-7000-8000-000000000001",
+              "run_seq": 2
+            },
+            "started_at_ms": 1785571200000
+          }
+        }
+      ],
+      "receipt_json": "{\"applied_count\":1,\"evaluated_at\":\"2026-08-01T08:00:00Z\",\"founder_revision\":2,\"intent_id\":\"01986666-0d00-7000-8000-000000000001\",\"new_revision\":3,\"outcome\":\"applied\",\"receipt\":{\"changes\":[]},\"snapshot\":{\"achievement_score_run\":0,\"achievements_earned_run\":[],\"active_buffs\":[],\"balances\":{\"company.cash\":\"0\",\"company.permits\":\"0\"},\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_tithe_ppm\":0,\"compute_burst_remaining_ms\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_provisioned\":{\"generator.answering_machine\":0,\"generator.beige_tower\":10,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":50000,\"manual_token_refilled_at\":\"2026-08-01T08:00:00Z\",\"meter_decay_remainders\":{\"doom.probability\":0,\"trust.employees.grievance\":0,\"trust.employees.standing\":0,\"trust.investors.grievance\":0,\"trust.investors.standing\":0,\"trust.press.grievance\":0,\"trust.press.standing\":0,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":0,\"trust.users.grievance\":0,\"trust.users.standing\":0},\"meter_input_remainders\":{\"trust.users.standing:0\":0},\"meter_values\":{\"doom.probability\":50,\"trust.employees.grievance\":0,\"trust.employees.standing\":90,\"trust.investors.grievance\":0,\"trust.investors.standing\":90,\"trust.press.grievance\":0,\"trust.press.standing\":90,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":90,\"trust.users.grievance\":0,\"trust.users.standing\":90},\"next_opportunity_attended_ms\":4850,\"offer_state\":null,\"offline_spans\":[],\"opportunity_spawn_seq\":0,\"pending_opportunity\":null,\"provision_remainders_ppm\":{\"generator.beige_tower\":0},\"provisioned_hardcaps\":{\"generator.beige_tower\":{\"count\":9007199254740991,\"reason_key\":\"generator.beige_tower.provisioned_cap\"}},\"region_traits\":[],\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":2,\"run_started_at_ms\":1785571200000,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_resource\":null,\"stock_units\":0,\"structure_id\":\"\",\"tier\":0,\"upgrades_owned\":[]}}",
+      "founder_output_json": "{\"achievement_score_lifetime\":6,\"achievements_earned_lifetime\":[\"achievement.first_gate\",\"achievement.old_hand\"],\"advisor_mode\":false,\"age_ms\":900000,\"exit_history_count\":1,\"founder_constants_hash\":\"sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789\",\"founder_extensions\":{\"fiscal_credit\":0,\"fiscal_generator_levels\":{\"generator.beige_tower\":0},\"fiscal_period_opened_wall_ms\":1785571200000,\"fiscal_period_seq\":0,\"fiscal_unlocks\":[],\"minigame_offline_quality\":{\"pitch\":{\"decay_remainder_ppm\":0,\"grade_ppm\":200000,\"last_founder_attended_ms\":0}},\"minigame_ratings\":{\"pitch\":{\"elo\":1000,\"games_counted\":0,\"season_member\":\"s1\"}},\"minigame_session_seq\":0,\"pets\":{},\"soul\":80,\"soul_exhausted_source_ids\":[]},\"founder_revision\":1,\"ledger_fact_kinds\":[],\"network_slots\":[],\"notoriety\":0,\"reputation_level\":0,\"route_knowledge_balance\":75}",
+      "final_company_json": "{\"achievement_score_lifetime\":0,\"achievement_score_run\":6,\"achievements_earned_lifetime\":[],\"achievements_earned_run\":[\"achievement.first_gate\",\"achievement.old_hand\"],\"active_buffs\":[],\"advisor_mode\":false,\"age_ms\":0,\"balances\":{\"company.cash\":\"0\",\"company.permits\":\"0\"},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_burst_remaining_ms\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"exit_history\":[],\"faction_id\":null,\"gates_crossed\":{\"gate.t0_to_t1\":true},\"generators\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_provisioned\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":50000,\"manual_token_refilled_at\":\"2026-08-01T08:00:00Z\",\"meter_decay_remainders\":{\"doom.probability\":0,\"trust.employees.grievance\":0,\"trust.employees.standing\":0,\"trust.investors.grievance\":0,\"trust.investors.standing\":0,\"trust.press.grievance\":0,\"trust.press.standing\":0,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":0,\"trust.users.grievance\":0,\"trust.users.standing\":0},\"meter_input_remainders\":{\"trust.users.standing:0\":0},\"meter_values\":{\"doom.probability\":50,\"trust.employees.grievance\":0,\"trust.employees.standing\":90,\"trust.investors.grievance\":0,\"trust.investors.standing\":90,\"trust.press.grievance\":0,\"trust.press.standing\":90,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":90,\"trust.users.grievance\":0,\"trust.users.standing\":90},\"network_slots\":[],\"next_opportunity_attended_ms\":0,\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[],\"opportunity_spawn_seq\":107,\"pending_opportunity\":{\"effect_row_id\":\"active.click\",\"expires_attended_ms\":900142,\"opportunity_id\":\"0000000d-aa9a-7905-b0f3-b6e2e48cac01\",\"selected_generator_id\":null,\"spawned_attended_ms\":895642},\"provision_remainders_ppm\":{\"generator.beige_tower\":0},\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785570300000,\"soul\":0,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_units\":0,\"structure_id\":\"\",\"tier\":1,\"upgrades_owned\":[]}",
+      "new_company_json": "{\"achievement_score_lifetime\":0,\"achievement_score_run\":0,\"achievements_earned_lifetime\":[],\"achievements_earned_run\":[],\"active_buffs\":[],\"advisor_mode\":false,\"age_ms\":0,\"balances\":{\"company.cash\":\"0\",\"company.permits\":\"0\"},\"clout_lifetime\":0,\"collapsed_offline_ms\":0,\"compact_member\":false,\"compact_solidarity_ppm\":0,\"compact_solidarity_samples\":[],\"compact_tithe_ppm\":0,\"compute_burst_remaining_ms\":0,\"compute_credit_ms\":0,\"consumed_stock_units\":0,\"doctrines_by_transition\":{},\"evaluated_through\":\"2026-08-01T08:00:00Z\",\"exit_history\":[],\"faction_id\":null,\"gates_crossed\":{},\"generators\":{\"generator.answering_machine\":0,\"generator.beige_tower\":0,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_provisioned\":{\"generator.answering_machine\":0,\"generator.beige_tower\":10,\"generator.beige_tower_v2\":0,\"generator.crt_wall\":0,\"generator.dot_matrix_queue\":0,\"generator.first_hire\":0,\"generator.garage_rack\":0,\"generator.legal_dept\":0,\"generator.nephew_intern\":0},\"generators_purchased_total\":0,\"guild_boundary_guild_id\":null,\"guild_boundary_seq\":0,\"guild_consumed_window_units\":0,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":null,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"manual_token_milli\":50000,\"manual_token_refilled_at\":\"2026-08-01T08:00:00Z\",\"meter_decay_remainders\":{\"doom.probability\":0,\"trust.employees.grievance\":0,\"trust.employees.standing\":0,\"trust.investors.grievance\":0,\"trust.investors.standing\":0,\"trust.press.grievance\":0,\"trust.press.standing\":0,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":0,\"trust.users.grievance\":0,\"trust.users.standing\":0},\"meter_input_remainders\":{\"trust.users.standing:0\":0},\"meter_values\":{\"doom.probability\":50,\"trust.employees.grievance\":0,\"trust.employees.standing\":90,\"trust.investors.grievance\":0,\"trust.investors.standing\":90,\"trust.press.grievance\":0,\"trust.press.standing\":90,\"trust.regulators.grievance\":0,\"trust.regulators.standing\":90,\"trust.users.grievance\":0,\"trust.users.standing\":90},\"network_slots\":[],\"next_opportunity_attended_ms\":4850,\"notoriety\":0,\"offer_state\":null,\"offline_spans\":[],\"opportunity_spawn_seq\":0,\"pending_opportunity\":null,\"provision_remainders_ppm\":{\"generator.beige_tower\":0},\"region_traits\":[],\"reputation_level\":0,\"reputation_unlock_ppm\":0,\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":2,\"run_started_at_ms\":1785571200000,\"soul\":0,\"stock_progress_ms\":0,\"stock_rate_remainder_ppm\":0,\"stock_units\":0,\"structure_id\":\"\",\"tier\":0,\"upgrades_owned\":[]}",
+      "founder_events_json": "[{\"intent_id\":\"01986666-0d00-7000-8000-000000000001\",\"kind\":\"founder_advanced\",\"payload\":{\"exit_type\":\"scripted_first\",\"founder_id\":\"01986666-2d00-7000-8000-000000000001\",\"occurred_at_ms\":1785571200000,\"reputation_delta\":0,\"route_knowledge\":75,\"run_id\":{\"company_stream_id\":\"01986666-1d00-7000-8000-000000000001\",\"run_seq\":1}},\"schema_version\":1}]",
+      "company_ended_events_json": "[{\"intent_id\":\"01986666-0d00-7000-8000-000000000001\",\"kind\":\"achievement_earned.v1\",\"payload\":{\"achievement_id\":\"achievement.first_gate\",\"condition_scope\":\"run\",\"run_id\":{\"company_stream_id\":\"01986666-1d00-7000-8000-000000000001\",\"run_seq\":1},\"score_grant\":2},\"schema_version\":1},{\"intent_id\":\"01986666-0d00-7000-8000-000000000001\",\"kind\":\"achievement_earned.v1\",\"payload\":{\"achievement_id\":\"achievement.old_hand\",\"condition_scope\":\"career\",\"run_id\":{\"company_stream_id\":\"01986666-1d00-7000-8000-000000000001\",\"run_seq\":1},\"score_grant\":4},\"schema_version\":1},{\"intent_id\":\"01986666-0d00-7000-8000-000000000001\",\"kind\":\"run_ended\",\"payload\":{\"assisted\":{\"advisor\":false,\"commons\":false},\"attended_ms\":900000,\"branch\":\"burnout\",\"ended_at_ms\":1785571200000,\"executed_routes\":[],\"exit_type\":\"scripted_first\",\"faction\":null,\"founder_id\":\"01986666-2d00-7000-8000-000000000001\",\"gates_crossed\":[\"gate.t0_to_t1\"],\"generators_purchased_total\":0,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"payout\":{\"clout_reach_note\":\"clout.reach.preserved\",\"network_slot_unlocks\":[],\"reputation_delta\":0,\"route_knowledge\":75},\"pre_timer\":false,\"rta_ms\":900000,\"run_id\":{\"company_stream_id\":\"01986666-1d00-7000-8000-000000000001\",\"run_seq\":1},\"started_at_ms\":1785570300000,\"starter_package\":{\"count\":10,\"generator_id\":\"generator.beige_tower\",\"kind\":\"generated_generators\"},\"terminal_seq\":1,\"tier\":1},\"schema_version\":3}]",
+      "company_started_events_json": "[{\"intent_id\":\"01986666-0d00-7000-8000-000000000001\",\"kind\":\"run_started\",\"payload\":{\"assisted\":{\"advisor\":false,\"commons\":false},\"founder_id\":\"01986666-2d00-7000-8000-000000000001\",\"run_id\":{\"company_stream_id\":\"01986666-1d00-7000-8000-000000000001\",\"run_seq\":2},\"started_at_ms\":1785571200000},\"schema_version\":1}]"
+    }
+  },
   "full_run": {
     "constants_hash": "sha256:5d0829c5c498b59e92e4b2d0107ac5fcf2b1c729161565c9ec42c5d435725d2f",
     "artifacts": {
@@ -13024,7 +13815,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0001-7000-8000-000000000001",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13065,7 +13856,7 @@
           "kind": "buy_generator"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0002-7000-8000-000000000002",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13103,7 +13894,7 @@
           "tithe_ppm": 110000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0003-7000-8000-000000000003",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13141,7 +13932,7 @@
           "kind": "incorporate"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0004-7000-8000-000000000004",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13181,7 +13972,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0005-7000-8000-000000000005",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13220,7 +14011,7 @@
           "route_id": null
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0006-7000-8000-000000000006",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13275,7 +14066,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0007-7000-8000-000000000007",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13314,7 +14105,7 @@
           "route_id": "route.ipo_sequence_break"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0008-7000-8000-000000000008",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13369,7 +14160,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0009-7000-8000-000000000009",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13409,7 +14200,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0010-7000-8000-000000000010",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13449,7 +14240,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0011-7000-8000-000000000011",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13489,7 +14280,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0012-7000-8000-000000000012",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13529,7 +14320,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0013-7000-8000-000000000013",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13569,7 +14360,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0014-7000-8000-000000000014",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13609,7 +14400,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0015-7000-8000-000000000015",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13649,7 +14440,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0016-7000-8000-000000000016",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13689,7 +14480,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0017-7000-8000-000000000017",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13729,7 +14520,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0018-7000-8000-000000000018",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13769,7 +14560,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0019-7000-8000-000000000019",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13809,7 +14600,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0020-7000-8000-000000000020",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13879,7 +14670,7 @@
             "intent_kind": "perform_manual_batch",
             "kind": "accrual"
           },
-          "v": 7
+          "v": 8
         },
         "receipt_json": "{\"applied_count\":1,\"evaluated_at\":\"2026-08-03T08:16:35Z\",\"intent_id\":\"01987777-0021-7000-8000-000000000021\",\"new_revision\":22,\"outcome\":\"applied\",\"receipt\":{\"changes\":[]},\"snapshot\":{\"balances\":{\"company.cash\":\"1e4000000000000000\"},\"collapsed_offline_ms\":0,\"compact_member\":true,\"compact_solidarity_ppm\":33711,\"compact_tithe_ppm\":130000,\"compute_credit_ms\":43200000,\"consumed_stock_units\":7,\"doctrines_by_transition\":{\"transition.t3_to_t4\":\"doctrine.capture\"},\"evaluated_through\":\"2026-08-03T08:16:35Z\",\"faction_id\":\"open_source\",\"gates_crossed\":{\"gate.t2_to_t3\":true,\"gate.t4_to_t5\":true},\"generators\":{\"generator.beige_tower\":9007199254740991},\"generators_provisioned\":{\"generator.beige_tower\":0},\"generators_purchased_total\":9007199254740991,\"guild_boundary_guild_id\":\"01987777-3000-7000-8000-000000000001\",\"guild_boundary_seq\":1,\"guild_consumed_window_units\":7,\"guild_tithe_carry_ppm\":0,\"hints_unlocked\":[],\"incorporated_at_ms\":1785571220000,\"ledger_fact_kinds\":[],\"lifetime_value\":\"8e12\",\"manual_token_milli\":49000,\"manual_token_refilled_at\":\"2026-08-03T08:16:35Z\",\"meter_bands\":{},\"offer_state\":null,\"offline_spans\":[{\"from_ms\":1785571230000,\"to_ms\":1785572130000},{\"from_ms\":1785572145000,\"to_ms\":1785744945000}],\"provision_remainders_ppm\":{},\"provisioned_hardcaps\":{},\"region_traits\":[],\"route_knowledge_balance\":0,\"run_pre_timer\":false,\"run_seq\":1,\"run_started_at_ms\":1785571200000,\"stock_progress_ms\":15000,\"stock_rate_remainder_ppm\":0,\"stock_resource\":\"libraries\",\"stock_units\":0,\"structure_id\":\"\",\"tier\":5,\"upgrades_owned\":[]}}",
         "events_json": "[{\"intent_id\":\"01987777-0021-7000-8000-000000000021\",\"kind\":\"compact_sampled\",\"payload\":{\"capacity\":\"0\",\"compliance_ppm\":1000000,\"enclosure\":\"0\",\"founder_id\":\"01986666-2000-7000-8000-000000000001\",\"run_id\":{\"company_stream_id\":\"01987777-1000-7000-8000-000000000001\",\"run_seq\":1},\"sampled_ms\":5000,\"solidarity_ppm\":33711,\"weight_ppm\":800000},\"schema_version\":1}]",
@@ -13895,7 +14686,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0022-7000-8000-000000000022",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13935,7 +14726,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0023-7000-8000-000000000023",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -13975,7 +14766,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0024-7000-8000-000000000024",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14015,7 +14806,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0025-7000-8000-000000000025",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14055,7 +14846,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0026-7000-8000-000000000026",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14095,7 +14886,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0027-7000-8000-000000000027",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14135,7 +14926,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0028-7000-8000-000000000028",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14175,7 +14966,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0029-7000-8000-000000000029",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14215,7 +15006,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0030-7000-8000-000000000030",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14255,7 +15046,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0031-7000-8000-000000000031",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14295,7 +15086,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0032-7000-8000-000000000032",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14335,7 +15126,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0033-7000-8000-000000000033",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14375,7 +15166,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0034-7000-8000-000000000034",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14415,7 +15206,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0035-7000-8000-000000000035",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14455,7 +15246,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0036-7000-8000-000000000036",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14495,7 +15286,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0037-7000-8000-000000000037",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14535,7 +15326,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0038-7000-8000-000000000038",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14575,7 +15366,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0039-7000-8000-000000000039",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14615,7 +15406,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0040-7000-8000-000000000040",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14655,7 +15446,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0041-7000-8000-000000000041",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14695,7 +15486,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0042-7000-8000-000000000042",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14735,7 +15526,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0043-7000-8000-000000000043",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14775,7 +15566,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0044-7000-8000-000000000044",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14815,7 +15606,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0045-7000-8000-000000000045",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14855,7 +15646,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0046-7000-8000-000000000046",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14895,7 +15686,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0047-7000-8000-000000000047",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14935,7 +15726,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0048-7000-8000-000000000048",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -14975,7 +15766,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0049-7000-8000-000000000049",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -15015,7 +15806,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0050-7000-8000-000000000050",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -15053,7 +15844,7 @@
           "kind": "wind_down"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0051-7000-8000-000000000051",
             "company_stream_id": "01987777-1000-7000-8000-000000000001",
@@ -15220,7 +16011,7 @@
           "route_id": null
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0a01-7000-8000-000000000001",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15274,7 +16065,7 @@
           "transition_id": "transition.t3_to_t4"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0a02-7000-8000-000000000002",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15327,7 +16118,7 @@
           "transition_id": "transition.t3_to_t4"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0a03-7000-8000-000000000003",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15380,7 +16171,7 @@
           "target": "accelerate"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0a04-7000-8000-000000000004",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15433,7 +16224,7 @@
           "target": "accelerate"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0a05-7000-8000-000000000005",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15487,7 +16278,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0a06-7000-8000-000000000006",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15541,7 +16332,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0a07-7000-8000-000000000007",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15594,7 +16385,7 @@
           "target": "accelerate"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0a08-7000-8000-000000000008",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15647,7 +16438,7 @@
           "target": "accelerate"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0a09-7000-8000-000000000009",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15700,7 +16491,7 @@
           "target": "accelerate"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0a10-7000-8000-000000000010",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15753,7 +16544,7 @@
           "route_id": null
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01986666-0a11-7000-8000-000000000011",
             "company_stream_id": "01986666-1a00-7000-8000-000000000001",
@@ -15921,7 +16712,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0001-7000-8000-000000000001",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -15994,7 +16785,7 @@
           "opportunity_id": "00000000-102e-71f4-a871-f479fa7b2e89"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0002-7000-8000-000000000002",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16070,7 +16861,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0003-7000-8000-000000000003",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16143,7 +16934,7 @@
           "opportunity_id": "00000000-1eeb-7f70-9751-f9deb20fd5fe"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0004-7000-8000-000000000004",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16219,7 +17010,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0005-7000-8000-000000000005",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16284,7 +17075,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0006-7000-8000-000000000006",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16364,7 +17155,7 @@
           "opportunity_id": "00000000-2f8c-78d5-90f4-efd1e986d1da"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0007-7000-8000-000000000007",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16440,7 +17231,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0008-7000-8000-000000000008",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16515,7 +17306,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-0009-7000-8000-000000000009",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16580,7 +17371,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-000a-7000-8000-00000000000a",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16643,7 +17434,7 @@
           "opportunity_id": "00000000-42d8-7ae1-b521-3078129a5a90"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-000b-7000-8000-00000000000b",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16708,7 +17499,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-000c-7000-8000-00000000000c",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16781,7 +17572,7 @@
           "opportunity_id": "00000000-5d65-7b61-8afa-8d2f7c6df7b2"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-000d-7000-8000-00000000000d",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16857,7 +17648,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-000e-7000-8000-00000000000e",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -16922,7 +17713,7 @@
           "window_ms": 1
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987777-000f-7000-8000-00000000000f",
             "company_stream_id": "01987777-1a00-7000-8000-000000000001",
@@ -17065,7 +17856,7 @@
           "kind": "buy_generator"
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987778-0001-7000-8000-000000000001",
             "company_stream_id": "01987778-1000-7000-8000-000000000001",
@@ -17104,7 +17895,7 @@
           "route_id": null
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987778-0002-7000-8000-000000000002",
             "company_stream_id": "01987778-1000-7000-8000-000000000001",
@@ -17168,7 +17959,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 7,
+          "v": 8,
           "command": {
             "intent_id": "01987778-0003-7000-8000-000000000003",
             "company_stream_id": "01987778-1000-7000-8000-000000000001",
@@ -18631,7 +19422,7 @@
       "session_id": "01986666-0900-7000-8000-000000000901"
     },
     "replay_inputs": {
-      "v": 7,
+      "v": 8,
       "command": {
         "intent_id": "01986666-0900-7000-8000-000000000901",
         "company_stream_id": "01986666-1900-7000-8000-000000000901",
@@ -19218,7 +20009,7 @@
       "session_id": "01986666-0950-7000-8000-000000000951"
     },
     "replay_inputs": {
-      "v": 7,
+      "v": 8,
       "command": {
         "intent_id": "01986666-0950-7000-8000-000000000951",
         "company_stream_id": "01986666-1950-7000-8000-000000000951",
@@ -20200,7 +20991,7 @@
       "kind": "wind_down"
     },
     "replay_inputs": {
-      "v": 7,
+      "v": 8,
       "command": {
         "intent_id": "01986666-2b00-7000-8000-000000000002",
         "company_stream_id": "01986666-1b00-4000-8000-000000000001",

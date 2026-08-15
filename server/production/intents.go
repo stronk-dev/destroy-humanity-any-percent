@@ -317,6 +317,7 @@ type IntentRequest struct {
 	Target                  string
 	FiscalTarget            fiscal.SpendTarget
 	OpportunityID           string
+	ScriptedExit            bool
 }
 
 type CompactTitheBand struct {
@@ -391,17 +392,22 @@ func (s *Service) Handle(
 			return HandleResult{Receipt: marshalExclusiveActivityRejection(request.IntentID, loaded.Revision.Number, expired)}, nil
 		}
 	}
-	if request.InvalidDetail == "" && (request.Kind == IntentAcceptExitOffer || request.Kind == IntentWindDown || request.Kind == IntentFileIPO) {
-		return s.handleExit(ctx, streamID, mode, now, request)
-	}
-	if request.InvalidDetail == "" && request.Kind == IntentCrossGate && s.prestigePolicies != nil {
-		trigger, founderRevision, err := s.scriptedExitDue(ctx, streamID, now)
-		if err != nil {
-			return HandleResult{}, err
+	if request.InvalidDetail == "" && isCompanyIntent(request.Kind) && s.prestigePolicies != nil {
+		crossingGateID := ""
+		if request.Kind == IntentCrossGate {
+			crossingGateID = request.GateID
+		}
+		trigger, founderRevision, triggerErr := s.scriptedExitDue(ctx, streamID, now, crossingGateID)
+		if triggerErr != nil {
+			return HandleResult{}, triggerErr
 		}
 		if trigger {
+			request.ScriptedExit = true
 			return s.handleScriptedCrossGateExit(ctx, streamID, mode, now, request, founderRevision)
 		}
+	}
+	if request.InvalidDetail == "" && (request.Kind == IntentAcceptExitOffer || request.Kind == IntentWindDown || request.Kind == IntentFileIPO) {
+		return s.handleExit(ctx, streamID, mode, now, request)
 	}
 	if request.Kind == IntentBuyRouteHint {
 		return s.handleFounderRouteHint(ctx, streamID, mode, request)
@@ -626,6 +632,10 @@ func (s *Service) Handle(
 	}
 	s.recordCommittedInvariants(result, collector.reports)
 	return HandleResult{Receipt: result.Receipt, Replay: result.Replay}, nil
+}
+
+func isCompanyIntent(kind string) bool {
+	return kind != IntentBuyRouteHint && kind != IntentCareAction && kind != IntentHarvestFiscalPeriod && kind != IntentSpendFiscalCredit
 }
 
 type founderRouteHintResolved struct {

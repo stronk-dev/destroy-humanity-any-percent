@@ -5,6 +5,7 @@ import { activePlayBuffId, activePlayLuckyRequested, activePlayOpportunityId, lo
 import { achievementScore, newlyEarned, type AchievementObservation } from "./achievements/evaluate";
 import { enclosureIndex, parseCommonsCatalog, type CommonsCatalog } from "./commons";
 import { COPY_KEYS } from "./copy";
+import { parseCurriculumCatalog, type CurriculumBranch, type CurriculumCatalog, type CurriculumStarter } from "./curriculum";
 import { loadDoctrineCatalog, validateDoctrineRoutes, type DoctrineCatalog } from "./doctrines";
 import { ladderSourceId, manualRoleSourceId, parseCatalog, subProgressValue, validateCatalogGateReferences, type EconomyCatalog, type MultiplierSlot, MULTIPLIER_SLOT_ORDER } from "./economy-kernel";
 import { parseFactionCatalog, type FactionCatalog } from "./faction";
@@ -30,12 +31,12 @@ const uuidV7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]
 const hashPattern = /^sha256:[0-9a-f]{64}$/;
 const mechanical = /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
 
-export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly meters?: string; readonly achievements?: string; readonly doctrines?: string; readonly minigames?: string; readonly pets?: string; readonly fiscal?: string; readonly opportunities?: string; readonly relevance?: string; readonly soul?: string; readonly pitch?: string; readonly minigame_api?: string }
+export interface ReplayArtifacts { readonly categories: string; readonly economy: string; readonly routes: string; readonly commons: string; readonly prestige: string; readonly factions: string; readonly guilds: string; readonly meters?: string; readonly achievements?: string; readonly curriculum?: string; readonly doctrines?: string; readonly minigames?: string; readonly pets?: string; readonly fiscal?: string; readonly opportunities?: string; readonly relevance?: string; readonly soul?: string; readonly pitch?: string; readonly minigame_api?: string }
 export interface MinigameAPIPolicy { readonly schemaVersion: 1; readonly tenants: readonly { readonly engineRef: string; readonly engineVersion: string; readonly minigameId: string }[] }
 export interface ReplayCatalogBundle {
   readonly constantsHash: string; readonly artifacts: ReplayArtifacts; readonly economy: EconomyCatalog; readonly routes: RoutesCatalog;
   readonly commons: CommonsCatalog; readonly prestige: PrestigePolicy; readonly factions: FactionCatalog; readonly guilds: GuildCatalog;
-  readonly meters?: MeterCatalog; readonly achievements?: AchievementCatalog; readonly doctrines?: DoctrineCatalog; readonly minigames?: MinigameCatalog; readonly pets?: PetCatalog; readonly fiscal?: FiscalCatalog; readonly opportunities?: ActivePlayCatalog; readonly relevance?: RelevancePolicy; readonly soul?: SoulCatalog; readonly pitch?: PitchCatalog; readonly minigameAPI?: MinigameAPIPolicy;
+  readonly meters?: MeterCatalog; readonly achievements?: AchievementCatalog; readonly curriculum?: CurriculumCatalog; readonly doctrines?: DoctrineCatalog; readonly minigames?: MinigameCatalog; readonly pets?: PetCatalog; readonly fiscal?: FiscalCatalog; readonly opportunities?: ActivePlayCatalog; readonly relevance?: RelevancePolicy; readonly soul?: SoulCatalog; readonly pitch?: PitchCatalog; readonly minigameAPI?: MinigameAPIPolicy;
   readonly next?: ReplayCatalogBundle;
 }
 export interface ReplayContribution { readonly slot: MultiplierSlot; readonly source_id: string; readonly target: string; readonly factor: string }
@@ -117,7 +118,7 @@ interface ActiveSpawnEvidence { sequence:number; sampled_interval_ms:number; eff
 interface ActiveClaimEvidence { opportunity_id:string; effect_row_id:string; selected_target:string|null; buff_instance_id:string|null; requested_delta:string|null; actual_credited_delta:string|null; saturated:boolean|null; cap_reason_key:string|null; next_sampled_interval_ms:number; next_opportunity_attended_ms:number }
 interface ActiveScheduleEvidence { attended_now_ms:number; before_sequence:number; before_next_opportunity_attended_ms:number; after_sequence:number; after_next_opportunity_attended_ms:number; expired_buffs:{buff_instance_id:string}[]; missed_opportunity_id:string|null; spawned:ActiveSpawnEvidence|null; claim:ActiveClaimEvidence|null }
 interface ReplayOfflineCatchup { opened_at_ms: number; offline_span: { from_ms: number; to_ms: number } }
-interface ReplayWire { v: 2 | 3 | 4 | 5 | 6 | 7; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; offline_catchup: ReplayOfflineCatchup | null; resolved: Record<string, unknown> }
+interface ReplayWire { v: 2 | 3 | 4 | 5 | 6 | 7 | 8; command: ReplayCommand; evaluated_at_ms: number; evaluation_mode: "online" | "offline"; offline_catchup: ReplayOfflineCatchup | null; resolved: Record<string, unknown> }
 interface NetworkSlot { readonly slot: string; readonly carried_ref: string }
 interface FounderExtensions {
   minigame_ratings: Record<string, { elo: number; season_member: string; games_counted: number }>;
@@ -138,14 +139,14 @@ interface ExitTerms { reputation_delta: number; network_slot_unlocks: NetworkSlo
 export async function loadReplayCatalogBundle(constantsHash: string, artifacts: ReplayArtifacts): Promise<ReplayCatalogBundle> {
   const names = Object.keys(artifacts).sort(byteCompare);
   const required = ["categories", "commons", "economy", "factions", "guilds", "prestige", "routes"];
-  const allowed = new Set([...required, "achievements", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "relevance", "soul"]);
+  const allowed = new Set([...required, "achievements", "curriculum", "doctrines", "fiscal", "meters", "minigame_api", "minigames", "opportunities", "pets", "pitch", "relevance", "soul"]);
   const foundations = artifacts.meters !== undefined || artifacts.achievements !== undefined;
   if (!hashPattern.test(constantsHash) || names.some((name) => !allowed.has(name)) || required.some((name) => !names.includes(name)) ||
       (artifacts.meters === undefined) !== (artifacts.achievements === undefined) || artifacts.doctrines !== undefined && !foundations ||
       artifacts.minigames !== undefined && !foundations || artifacts.pets !== undefined && artifacts.minigames === undefined ||
       artifacts.fiscal !== undefined && artifacts.pets === undefined || artifacts.soul !== undefined && artifacts.fiscal === undefined || artifacts.pitch !== undefined && artifacts.soul === undefined ||
       artifacts.minigame_api !== undefined && artifacts.pitch === undefined || artifacts.opportunities !== undefined && artifacts.doctrines === undefined ||
-      artifacts.relevance !== undefined && artifacts.opportunities === undefined) throw new SyntaxError("invalid replay artifact set");
+      artifacts.relevance !== undefined && artifacts.opportunities === undefined || artifacts.curriculum !== undefined && artifacts.relevance === undefined) throw new SyntaxError("invalid replay artifact set");
   const computed = await constantsHashArtifacts(artifacts);
   if (computed !== constantsHash) throw new SyntaxError("replay artifact label mismatch");
   const economy = parseCatalog(parseJSON(artifacts.economy)); const routes = parseRoutesCatalog(parseJSON(artifacts.routes));
@@ -175,7 +176,8 @@ export async function loadReplayCatalogBundle(constantsHash: string, artifacts: 
     generators: economy.generatorClasses.map((row) => ({ id: row.id, tier: row.tier, category: row.category })),
     upgradeIds: economy.upgrades.map((row) => row.id),
   }, gateIds, false);
-	return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, doctrines, minigames, pets, fiscal, opportunities, relevance, soul, pitch, minigameAPI });
+  const curriculum = artifacts.curriculum === undefined ? undefined : parseCurriculumCatalog(parseJSON(artifacts.curriculum), economy, new Set(COPY_KEYS), gateIds);
+	return Object.freeze({ constantsHash, artifacts: Object.freeze({ ...artifacts }), economy, routes, commons, prestige, factions, guilds, meters, achievements, curriculum, doctrines, minigames, pets, fiscal, opportunities, relevance, soul, pitch, minigameAPI });
 }
 
 function parseMinigameAPIPolicy(source: unknown): MinigameAPIPolicy {
@@ -1084,7 +1086,7 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const request = parseIntent(canonicalPayload, wire.command.intent_id);
   if (request.expected_revision !== wire.command.revision || wire.command.run_seq !== company.runSeq) throw new RangeError("terminal command/state mismatch");
   const resolved = wire.resolved;
-  const hasActive="active_play" in resolved,hasNextActive="next_active_play" in resolved,hasMinigameActivity="minigame_session_active" in resolved;onlyKeys(resolved, ["kind", "intent_kind", "accrual", "founder_carry", "executed_route_ids", "selected_exit_type", "selected_terms", "next_constants_hash",...(hasActive?["active_play"]:[]),...(hasNextActive?["next_active_play"]:[]),...(hasMinigameActivity?["minigame_session_active"]:[])], "terminal resolved inputs");
+  const hasActive="active_play" in resolved,hasNextActive="next_active_play" in resolved,hasMinigameActivity="minigame_session_active" in resolved,hasBranch="selected_branch" in resolved;onlyKeys(resolved, ["kind", "intent_kind", "accrual", "founder_carry", "executed_route_ids", "selected_exit_type", "selected_terms", "next_constants_hash",...(hasBranch?["selected_branch"]:[]),...(hasActive?["active_play"]:[]),...(hasNextActive?["next_active_play"]:[]),...(hasMinigameActivity?["minigame_session_active"]:[])], "terminal resolved inputs");
   if (resolved.kind !== "exit" || resolved.intent_kind !== request.kind || typeof resolved.selected_exit_type !== "string" || !hashPattern.test(string(resolved.next_constants_hash))) throw new RangeError("terminal resolved union mismatch");
   const selectedTerms = exactObject(resolved.selected_terms, Object.keys(resolved.selected_terms as object), "selected terms");
   const nextHash = string(resolved.next_constants_hash);
@@ -1100,6 +1102,16 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
   const executedRoutes = sortedUniqueMechanical(array(resolved.executed_route_ids, "executed route ids"));
   deriveFactionStockResource(company, catalogs.factions);
   const companyBefore = cloneReplayState(company, catalogs);
+  let selectedBranch: CurriculumBranch | null = null;
+  if (hasBranch) {
+    if (!next.curriculum || request.kind === "cross_gate" || resolved.selected_exit_type !== "scripted_first" || typeof resolved.selected_branch !== "string") throw new RangeError("selected branch mismatch");
+  } else if (next.curriculum && resolved.selected_exit_type === "scripted_first") throw new RangeError("missing selected branch");
+  const resolveSelectedBranch = (): CurriculumBranch | null => {
+    if (!hasBranch) return null;
+    const branch = selectCurriculumBranch(next.curriculum!, company, catalogs.economy);
+    if (branch.branch !== resolved.selected_branch) throw new RangeError("selected branch mismatch");
+    return branch;
+  };
   const revision = wire.command.revision;
   if (wire.evaluated_at_ms < company.evaluatedThroughMs) throw new ReplayClockViolation();
   let prefix: ReplayEvent[] = [];
@@ -1131,9 +1143,10 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
     exitType = "scripted_first";
     terms = computeExitTerms(company, founder, catalogs.prestige, exitType);
   } else {
-    if (request.kind === "file_ipo") return rejectState("not_eligible", "ipo_chain");
-    if (request.kind === "wind_down" && company.tier < 1) return rejectState("not_eligible", "tier");
-    exitType = request.kind === "wind_down" && founder.exit_history_count === 0 ? "scripted_first" : "collapse";
+    const scripted = hasBranch;
+    if (request.kind === "file_ipo" && !scripted) return rejectState("not_eligible", "ipo_chain");
+    if (request.kind === "wind_down" && company.tier < 1 && !scripted) return rejectState("not_eligible", "tier");
+    exitType = scripted || request.kind === "wind_down" && founder.exit_history_count === 0 ? "scripted_first" : "collapse";
     let promised: { payout_preview: ExitTerms; market_modifier_ppm: number } | null = null;
     if (request.kind === "accept_exit_offer") {
       if (!company.offerState || company.offerState.offerId !== request.offer_id) return rejectState("not_eligible", "exit_offer");
@@ -1141,15 +1154,17 @@ export async function applyLoggedExit(company: ReplayState, canonicalPayload: st
       if (canonicalJSONString(company.offerState.terms) !== canonicalJSONString(selectedTerms)) throw new RangeError("selected offer terms mismatch");
       promised = decodeStoredOfferTerms(selectedTerms);
       exitType = company.offerState.exitType;
-    } else if (request.kind !== "wind_down") throw new RangeError("non-terminal intent at terminal boundary");
+    } else if (request.kind !== "wind_down" && !scripted) throw new RangeError("non-terminal intent at terminal boundary");
     const evaluation = evaluate(company, catalogs.economy, wire.evaluated_at_ms, wire.evaluation_mode, contributions);
     prefix = [...catchupEvents,...activeEvents,...runHooks(company, catalogs, wire.command, evaluation, effectiveAccrual)];
+    selectedBranch = resolveSelectedBranch();
+    if (scripted && request.kind !== "wind_down" && (company.runSeq !== next.curriculum!.first_failure.run_seq || founder.exit_history_count !== 0 || !company.gatesCrossed[next.curriculum!.first_failure.gate_id] || attendedMS(company, wire.evaluated_at_ms) < next.curriculum!.first_failure.attended_ms)) throw new RangeError("invalid scripted curriculum trigger");
     terms = computeExitTerms(company, founder, catalogs.prestige, exitType);
     if (promised) terms = promiseTerms(promised.payout_preview, applyTermsModifier(terms, promised.market_modifier_ppm));
   }
   if (resolved.selected_exit_type !== exitType) throw new RangeError("selected exit type mismatch");
   if (foundationsActive(catalogs) && wire.v >= 4) applyFoundationTransition(catalogs, companyBefore, company, founder, wire.command, request, wire.evaluated_at_ms, contributions, actionDebits, true, prefix);
-  return await finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, prefix, executedRoutes, request.kind === "accept_exit_offer" ? request.offer_id : null, catalogs, next,nextActive);
+  return await finishLoggedExit(company, founder, request.intent_id, wire.command, wire.evaluated_at_ms, exitType, terms, selectedBranch, prefix, executedRoutes, request.kind === "accept_exit_offer" ? request.offer_id : null, catalogs, next,nextActive);
   } catch (error) { restoreReplaySnapshot(company, companyBefore); throw error; }
 }
 
@@ -1518,6 +1533,31 @@ function applyTermsModifier(terms: ExitTerms, factor: number): ExitTerms {
   return { ...terms, reputation_delta: ppmFloor(terms.reputation_delta, factor), route_knowledge: ppmFloor(terms.route_knowledge, factor) };
 }
 
+function selectCurriculumBranch(catalog: CurriculumCatalog, state: ReplayState, economy: EconomyCatalog): CurriculumBranch {
+  const acquihire = catalog.first_failure.branches[0]!;
+  if (state.generatorPurchasedTotal >= (acquihire.minimum_purchased_generators ?? MAX_EXACT_INTEGER) && state.upgradesOwned.size >= (acquihire.minimum_owned_upgrades ?? MAX_EXACT_INTEGER)) return acquihire;
+  const burnout = catalog.first_failure.branches[1]!;
+  let cheapest: Decimal | null = null;
+  for (const generator of economy.generatorClasses.filter((candidate) => economy.resource(candidate.price.resourceId)?.scope === "company").sort((left, right) => byteCompare(left.id, right.id))) {
+    const cost = economy.bulkCost(generator.id, state.generators[generator.id] ?? 0, 1);
+    if (cheapest === null || cost.lt(cheapest)) cheapest = cost;
+  }
+  if (cheapest === null) throw new RangeError("curriculum economy has no generator");
+  const threshold = quantize(cheapest.mul(parseCanonical(burnout.cheapest_price_factor!)));
+  if (parseCanonical(state.balances["company.cash"]!).lt(threshold)) return burnout;
+  return catalog.first_failure.branches[2]!;
+}
+
+function applyCurriculumStarter(state: ReplayState, economy: EconomyCatalog, starter: CurriculumStarter): void {
+  if (starter.kind === "resource_grant") {
+    applyLedger(state, economy, [{ resource: starter.resource_id, delta: parseCanonical(starter.amount) }], false);
+  } else if (starter.kind === "generated_generators") {
+    state.generatorsProvisioned[starter.generator_id] = starter.count;
+  } else {
+    state.upgradesOwned.add(starter.upgrade_id);
+  }
+}
+
 function promiseTerms(preview: ExitTerms, current: ExitTerms): ExitTerms {
   const slots = new Map<string, NetworkSlot>();
   for (const slot of current.network_slot_unlocks) slots.set(slot.slot, slot);
@@ -1559,9 +1599,9 @@ function advanceFounderExtensions(founder: FounderCarry, current: ReplayCatalogB
   founder.founder_extensions = parseFounderExtensions(extensions, next);
 }
 
-async function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId: string, command: ReplayCommand, nowMs: number, exitType: string, inputTerms: ExitTerms, prefix: ReplayEvent[], executedRoutes: string[], acceptedOfferId: string | null, current: ReplayCatalogBundle, next: ReplayCatalogBundle,nextActive:ActiveSpawnEvidence|null): Promise<LoggedExitTransition> {
+async function finishLoggedExit(company: ReplayState, founder: FounderCarry, intentId: string, command: ReplayCommand, nowMs: number, exitType: string, inputTerms: ExitTerms, branch: CurriculumBranch | null, prefix: ReplayEvent[], executedRoutes: string[], acceptedOfferId: string | null, current: ReplayCatalogBundle, next: ReplayCatalogBundle,nextActive:ActiveSpawnEvidence|null): Promise<LoggedExitTransition> {
   const attended = attendedMS(company, nowMs);
-  const terms = { ...inputTerms, reputation_delta: Math.min(inputTerms.reputation_delta, MAX_EXACT_INTEGER - founder.reputation_level) };
+  const terms = { ...inputTerms, reputation_delta: Math.min(inputTerms.reputation_delta, MAX_EXACT_INTEGER - founder.reputation_level), route_knowledge: inputTerms.route_knowledge + (branch?.route_knowledge_bonus ?? 0) };
   if (terms.route_knowledge > MAX_EXACT_INTEGER - founder.route_knowledge_balance || attended > MAX_EXACT_INTEGER - founder.age_ms) throw new RangeError("founder carry overflow");
   founder.reputation_level += terms.reputation_delta;
   founder.route_knowledge_balance += terms.route_knowledge;
@@ -1587,11 +1627,13 @@ async function finishLoggedExit(company: ReplayState, founder: FounderCarry, int
   }
   advanceFounderExtensions(founder, current, next, nowMs);
   const newCompany = newRunState(next, company, founder, nowMs);
+  if (branch !== null) applyCurriculumStarter(newCompany, next.economy, branch.starter_package);
   if(next.opportunities){if(nextActive===null||nextActive.sequence!==0||nextActive.spawned_attended_ms!==nextActive.sampled_interval_ms||nextActive.expires_attended_ms-nextActive.spawned_attended_ms!==next.opportunities.schedule.lifetimeMs)throw new RangeError("missing next active schedule");const seed=await founderSeed(command.founder_id,newCompany.runSeq),selection=selectActivePlayEffect(next.opportunities,seed,0);if(selection.effectRowId!==nextActive.effect_row_id||selection.effectDraw.toString()!==nextActive.effect_draw||(selection.generatorDraw?.toString()??null)!==nextActive.generator_draw||selection.selectedGenerator!==nextActive.selected_generator_id||activePlayOpportunityId(seed,0,nextActive.spawned_attended_ms)!==nextActive.opportunity_id)throw new RangeError("next active selection mismatch");newCompany.nextOpportunityAttendedMs=nextActive.spawned_attended_ms;}else if(nextActive!==null)throw new RangeError("unexpected next active schedule");
   const runID = { company_stream_id: command.company_stream_id, run_seq: company.runSeq };
   const founderEvent = event("founder_advanced", intentId, { exit_type: exitType, founder_id: command.founder_id, occurred_at_ms: nowMs, reputation_delta: terms.reputation_delta, route_knowledge: terms.route_knowledge, run_id: runID });
   if (acceptedOfferId !== null) prefix.push(event("exit_offer_resolved", intentId, { offer_id: acceptedOfferId, resolution: "accepted" }));
-  const endedEvent = event("run_ended", intentId, { assisted: { advisor: founder.advisor_mode, commons: company.compactMember }, attended_ms: attended, ended_at_ms: nowMs, executed_routes: executedRoutes, exit_type: exitType, faction: company.factionId || null, founder_id: command.founder_id, gates_crossed: Object.keys(company.gatesCrossed).filter((gate) => company.gatesCrossed[gate]).sort(byteCompare), generators_purchased_total: company.generatorPurchasedTotal, ledger_fact_kinds: [...company.ledgerFactKinds].sort(byteCompare), lifetime_value: company.lifetimeValue, payout: terms, pre_timer: company.runPreTimer, rta_ms: nowMs - company.runStartedAtMs, run_id: runID, started_at_ms: company.runStartedAtMs, terminal_seq: command.run_log_seq, tier: company.tier }, 2);
+  const endedBase = { assisted: { advisor: founder.advisor_mode, commons: company.compactMember }, attended_ms: attended, ended_at_ms: nowMs, executed_routes: executedRoutes, exit_type: exitType, faction: company.factionId || null, founder_id: command.founder_id, gates_crossed: Object.keys(company.gatesCrossed).filter((gate) => company.gatesCrossed[gate]).sort(byteCompare), generators_purchased_total: company.generatorPurchasedTotal, ledger_fact_kinds: [...company.ledgerFactKinds].sort(byteCompare), lifetime_value: company.lifetimeValue, payout: terms, pre_timer: company.runPreTimer, rta_ms: nowMs - company.runStartedAtMs, run_id: runID, started_at_ms: company.runStartedAtMs, terminal_seq: command.run_log_seq, tier: company.tier };
+  const endedEvent = branch === null ? event("run_ended", intentId, endedBase, 2) : event("run_ended", intentId, { ...endedBase, branch: branch.branch, starter_package: branch.starter_package }, 3);
   const startedEvent = event("run_started", intentId, { assisted: { advisor: founder.advisor_mode, commons: false }, founder_id: command.founder_id, run_id: { company_stream_id: command.company_stream_id, run_seq: newCompany.runSeq }, started_at_ms: nowMs });
   const receipt = { applied_count: 1, evaluated_at: rfc3339(nowMs), founder_revision: founder.founder_revision + 1, intent_id: intentId, new_revision: command.revision + 2, outcome: "applied", receipt: { changes: [] }, snapshot: wireSnapshot(newCompany, next.economy) };
   return { founder, finalCompany: company, newCompany, outcome: "applied", receipt, founderEvents: [founderEvent], companyEndedEvents: [...prefix, endedEvent], companyStartedEvents: [startedEvent] };
@@ -1620,13 +1662,13 @@ function sortedUniqueMechanical(source: unknown[]): string[] {
 function parseReplayWire(source: unknown, state: ReplayState, catalogs: ReplayCatalogBundle): ReplayWire {
   const hasCatchupKey = isRecord(source) && "offline_catchup" in source; const hasCatchup = hasCatchupKey && source.offline_catchup !== null;
   const root = exactObject(source, ["v", "command", "evaluated_at_ms", "evaluation_mode", ...(hasCatchupKey ? ["offline_catchup"] : []), "resolved"], "replay inputs");
-  if (root.v !== 2 && root.v !== 3 && root.v !== 4 && root.v !== 5 && root.v !== 6 && root.v !== 7 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline" || hasCatchup && root.v < 7) throw new SyntaxError("invalid replay envelope");
+  if (root.v !== 2 && root.v !== 3 && root.v !== 4 && root.v !== 5 && root.v !== 6 && root.v !== 7 && root.v !== 8 || foundationsActive(catalogs) && root.v < 3 || root.evaluation_mode !== "online" && root.evaluation_mode !== "offline" || hasCatchup && root.v < 7) throw new SyntaxError("invalid replay envelope");
   const command = objectWithOnlyKeys(root.command, ["intent_id", "company_stream_id", "founder_id", "revision", "run_seq", "run_log_seq"], "command");
   const parsed: ReplayCommand = { intent_id: uuidV7String(command.intent_id), company_stream_id: command.company_stream_id === undefined ? "" : string(command.company_stream_id), founder_id: command.founder_id === undefined ? "" : string(command.founder_id), revision: safeInteger(command.revision, 1, MAX_EXACT_INTEGER), run_seq: safeInteger(command.run_seq, 1, MAX_EXACT_INTEGER), run_log_seq: safeInteger(command.run_log_seq, 1, MAX_EXACT_INTEGER) };
   if (parsed.run_seq !== state.runSeq || !hashPattern.test(catalogs.constantsHash)) throw new RangeError("replay command mismatch");
   const evaluatedAtMS = safeInteger(root.evaluated_at_ms, 1, MAX_EXACT_INTEGER); let catchup: ReplayOfflineCatchup | null = null;
   if (hasCatchup) { const row = exactObject(root.offline_catchup, ["opened_at_ms", "offline_span"], "offline catchup"); const span = exactObject(row.offline_span, ["from_ms", "to_ms"], "offline catchup span"); catchup = { opened_at_ms: safeInteger(row.opened_at_ms, 1, MAX_EXACT_INTEGER), offline_span: { from_ms: safeInteger(span.from_ms, 1, MAX_EXACT_INTEGER), to_ms: safeInteger(span.to_ms, 1, MAX_EXACT_INTEGER) } }; if (catchup.opened_at_ms !== evaluatedAtMS || catchup.offline_span.to_ms !== evaluatedAtMS || catchup.offline_span.from_ms >= catchup.offline_span.to_ms) throw new SyntaxError("invalid offline catchup"); }
-  return { v: root.v as 2|3|4|5|6|7, command: parsed, evaluated_at_ms: evaluatedAtMS, evaluation_mode: root.evaluation_mode, offline_catchup: catchup, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") };
+  return { v: root.v as 2|3|4|5|6|7|8, command: parsed, evaluated_at_ms: evaluatedAtMS, evaluation_mode: root.evaluation_mode, offline_catchup: catchup, resolved: objectWithOnlyKeys(root.resolved, Object.keys(root.resolved as object), "resolved") };
 }
 function parseFounderReplayWire(source: unknown): FounderReplayWire {
   const root = exactObject(source, ["v", "command", "evaluated_at_ms", "resolved"], "Founder replay inputs");
@@ -1822,7 +1864,7 @@ function parseFounderExtensions(source: unknown, catalogs: ReplayCatalogBundle):
   return { minigame_ratings, minigame_offline_quality, pets, fiscal_credit, fiscal_period_opened_wall_ms, fiscal_period_seq, fiscal_generator_levels, fiscal_unlocks, soul, soul_exhausted_source_ids, minigame_session_seq };
 }
 
-function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4 | 5 | 6 | 7): FounderCarry {
+function parseFounderCarry(source: unknown, catalogs: ReplayCatalogBundle, wireVersion: 2 | 3 | 4 | 5 | 6 | 7 | 8): FounderCarry {
   const legacyKeys = ["founder_revision", "founder_constants_hash", "reputation_level", "route_knowledge_balance", "age_ms", "notoriety", "advisor_mode", "network_slots", "ledger_fact_kinds", "exit_history_count"];
   const floor = founderVersionFloor(catalogs);
   const keys = wireVersion >= 3 ? [...legacyKeys, "achievements_earned_lifetime", "achievement_score_lifetime"] : legacyKeys;
