@@ -65,8 +65,13 @@ measurement of the mechanism, which is what the acceptance criterion was always 
 
 1. Each branch is reached by at least one ruled persona at the pinned seed; an unreachable branch
    is a finding, not a feature.
-2. Each branch's run 2 crosses `gate.t0_to_t1` strictly faster than its run 1, same seed, and the
-   pacing report records the margin per branch.
+2. Each branch's run 2 crosses `gate.t0_to_t1` **strictly faster** than its run 1 at the same
+   seed, and the report records the **per-branch savings distribution** (min/p50/max) so a
+   regression is visible. *(Revised 2026-08-15, owner-adopted: the original text said "materially
+   faster" without defining materiality, which acceptance could not test. Measured reality: the
+   weakest pair is Reference/Pivot at 10,000 ms while pivot's p50 saving is 284,071 ms — the small
+   margin is a tail, not the typical case, and pivot's starter is a pre-owned upgrade whose value
+   no literal in `A/B/R/S/G` can enlarge.)*
 3. Reputation is identical and full across branches (the ruled no-tax property); a mutation
    reducing it in any branch fails.
 4. Removing the branch selector, or the starter-package application, must each fail a test.
@@ -77,4 +82,6 @@ measurement of the mechanism, which is what the acceptance criterion was always 
 `A`, `B` (branch predicates), `R` (Route-Knowledge bonus), `S` (seed capital), `G` (rebuilt
 generators). Derived so that all three branches are reachable AND each produces a materially
 faster run 2 without trivialising the tier — Codex measures across the three personas and returns
-the tuple with its pacing evidence.
+the tuple with its pacing evidence. **Measured 2026-08-15 and proposed:** `A=200`, `B=2e0`,
+`R=50`, `S=1e4`, `G=10`; all three branches reachable (64/16/17 of 97 runs), zero invariant
+failures, every same-seed run 2 strictly faster.

@@ -3031,3 +3031,27 @@ ruling-author rule the correction is mine to propose and the owner's to adopt. *
 "materially" and state the testable property — *strictly faster in every same-seed pair, with the
 per-branch savings distribution recorded in the report* — since the pivot p50 (284,071 ms) shows
 the small margin is a tail, not the typical case.
+
+## 2026-08-15 — OWNER RULINGS: T01-C40 resolved by updating the target; R-A resolved by dropping "materially"
+
+Ruled by Marco (recorded by Claude from explicit selections):
+
+1. **T01-C40 — the 8–10 minute first-gate target is STALE; measured reality replaces it.** The
+   ratified epoch-7 economy is not retuned. Chaos crosses `gate.t0_to_t1` at p50 **418,000 ms**
+   (~7 min); the envelope's `[480000,600000]` lower bound is superseded by a target derived from
+   this measurement. Reasoning recorded: the scripted collapse fires at 15 min, so a 7-minute gate
+   leaves ~8 minutes of garage before the beat versus 5–7 at the old figure — more room for the
+   tier to land, not less. **Codex's recommendation to retune the economy instead is declined**;
+   it was correctly offered and correctly refused to act on unilaterally.
+   Implementation: revise `milestone.garage_gate`'s chaos envelope in
+   `balance/testdata/t0-t1/harness-scenario-v1.json` to a band centred on the measured value,
+   propose the exact bytes and new scenario hash, and return them for owner ratification. No
+   economy, persona, or policy byte moves. **This is an envelope change ruled by the OWNER on
+   product grounds — it is not, and must never be cited as, licence to move a bound to make a gate
+   pass.**
+2. **R-A — "materially faster" is REMOVED from the payoff design.** Acceptance is the strict
+   same-seed relation (satisfied by all 97 runs) plus the recorded per-branch savings distribution
+   so regressions stay visible. The design document is reconciled in this same change by its
+   author, per the ruling-author rule.
+3. **The proposed tuple `A=200, B=2e0, R=50, S=1e4, G=10` is recorded as measured and remains
+   UNRATIFIED**, pending the epoch-8 payoff implementation that will consume it.
