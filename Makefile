@@ -15,6 +15,8 @@ SAVE_TEST_COUNT ?= 1
 CI_TEST_PACKAGES ?= ./...
 CI_TEST_FLAGS ?=
 CI_TEST_COUNT ?= 1
+SAVE_TEST_HOST_PORT ?= 55432
+export SAVE_TEST_HOST_PORT
 CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
 BROWSER_TEST_FLAGS ?=
 RELEVANCE_SCENARIO ?= balance/testdata/t0-t1/relevance-scenario-v2.json

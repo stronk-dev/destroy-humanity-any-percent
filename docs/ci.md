@@ -103,6 +103,11 @@ make vectors-check-ci
 `make test-go-ci` reproduces the complete Go suite cold on Linux/amd64 with
 Postgres, including packages whose integration tests are not selected by the
 focused `test-save-integration` target.
+The save-test compose stack publishes Postgres on `SAVE_TEST_HOST_PORT` (default
+`55432`); pass a different Make value, for example
+`make test-go-ci SAVE_TEST_HOST_PORT=55434`, when another isolated test stack is
+already using the default host port. The test container always uses the service
+name and port `5432`, so this flexibility does not change the CI database path.
 
 `make vectors-check-ci` regenerates the shared Decimal corpus under Node 24 on
 Linux/amd64 and rejects any byte drift. This complements the host
