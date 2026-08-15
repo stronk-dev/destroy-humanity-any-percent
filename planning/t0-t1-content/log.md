@@ -2998,3 +2998,36 @@ found that v2's jitter was a pure phase shift producing zero seed diversity — 
 confirmed before fixing. Each round carried at least one substantive finding. A fourth round of
 *specification* findings would indicate the document is the wrong shape; implementation findings
 from here are ordinary.
+
+## 2026-08-15 — Claude designated cross-party review of C34/C32 `{b7e2c16, f248a32}` — APPROVED; T01-C40 is a real content finding
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `d8d5dfa..f248a32`.
+- **Executed:** `make first-hour-harness` with the proposed tuple — the committed report
+  regenerates **byte-identical** (`sha256:d2d765ef…ffe3`); `make verify-harness` exit 0;
+  `make verify-kernel-version` exit 0; full harness package `-count=1` GREEN (66.5 s).
+- **Independently recomputed from the report rather than trusting the summary:** endings
+  acquihire 64 / burnout 16 / pivot 17 — **all three branches reachable**, satisfying the payoff
+  design's first acceptance clause; **zero** invariant failures across 97 runs; every same-seed
+  run 2 strictly faster, savings acquihire 80,000/140,000/216,000, burnout
+  341,593/577,613/637,469, pivot 10,000/284,071/639,711 (min/p50/max). The report binds the
+  ratified policy hash `e5e5de70…d10c3` and epoch-7 constants `6c7fab29…f789`.
+- **The chaos model correction is independently validated by measurement:** first generator
+  p50 = **22,000 ms**, matching to the millisecond the median I predicted when arguing the
+  zero-income wait rule. The persona model was the defect, as ruled.
+- **The anti-circularity rule held under its first real test.** The ratified persona produced a
+  failing envelope and Codex neither moved the persona nor the bound — it filed T01-C40 and
+  stopped. That is precisely the behaviour the rule exists to produce, and it is the first time it
+  has been exercised against a live failure rather than in the abstract. Recorded as precedent.
+- **No findings against the implementation. APPROVED.**
+
+### Finding R-A against MY OWN design text (reviewer self-report)
+
+`first-hour-payoff-design.md` requires run 2 be "materially faster" without defining materiality,
+so acceptance cannot test it — the ratified scenario relation is merely strict (`<`), which all 97
+runs satisfy. The weakest pair is Reference/Pivot at 10,000 ms (356,000 → 346,000, 2.8 %), and
+Codex correctly notes the pivot starter is a pre-owned upgrade whose value no literal in
+`A/B/R/S/G` can enlarge. This is undefined prose I authored and the owner adopted; under the
+ruling-author rule the correction is mine to propose and the owner's to adopt. **Proposed:** drop
+"materially" and state the testable property — *strictly faster in every same-seed pair, with the
+per-branch savings distribution recorded in the report* — since the pivot p50 (284,071 ms) shows
+the small margin is a tail, not the typical case.
