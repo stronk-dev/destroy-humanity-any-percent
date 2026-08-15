@@ -3263,3 +3263,36 @@ a player clicks, builds, crosses into the garage at ~7 minutes, watches their fi
 one of three ways decided by how they played, and starts again measurably ahead.
 
 **Still not started and still owner-only:** THE PUSH.
+
+## 2026-08-15 — PROTOCOL AUTHORIZATION: the `3ec99a5` local rewrite is APPROVED
+
+Authorized by Marco (recorded by Claude from the owner's explicit selection).
+
+**Scope: rewrite ONLY `3ec99a5` and its two descendants `6a23791`, `e440fa6`.** `3ec99a5`
+(`BALANCE-CHANGE: pin epoch-8 harness evidence`) combines the relevance/content-dynamics
+registry with generated baseline artifacts, which `validateBaselineCommit` rejects permanently —
+the commit can never pass its guard in any future. Split it into (1) a relevance-registry commit
+and (2) an artifact-only `BALANCE-CHANGE:` commit. **The resulting tree must be byte-identical**;
+verify that explicitly and state it in the handoff.
+
+**Preconditions verified by the designated reviewer, not taken on report:**
+- **Unpublished** — `git branch -r --contains 3ec99a5` returns nothing; the commit is on no
+  remote ref.
+- **Cited by no verdict** — grep of `planning/` and `rfc/` finds no reference to any of the three
+  hashes.
+- **Same defect class the corrections ledger already names** (`kind: "mixed_artifact_commit"`),
+  whose sole existing entry (`d05dc13`) took a ledger exception *specifically because it was
+  already published*. That is the clean partition: **published → forward correction in the
+  ledger; unpublished → rewrite.** `3ec99a5` falls on the rewrite side and the ledger is NOT the
+  mechanism for it.
+
+**Reviewer note recorded for the rule's own sake:** Codex escalated because it read the AGENTS.md
+carve-out as not covering this packaging class. The reviewer's reading is that it does — "a wrong
+subject (`BALANCE-CHANGE:`/`CONSTANTS-IDENTITY:` classes)" covers a `BALANCE-CHANGE:` commit whose
+contents violate that class, which is precisely this. Escalating rather than assuming was still
+the correct instinct for anything that rewrites history, and the ambiguity is worth a clarifying
+edit to the carve-out text by its author at some later point — filed, not blocking.
+
+**After the rewrite:** rerun `make verify-harness-ci` and the full `make verify`, then hand the
+epoch-8 mint span back for designated review with the byte-identity statement. No other commit,
+published or unpublished, may be touched.
