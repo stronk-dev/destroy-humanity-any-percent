@@ -3055,3 +3055,27 @@ Ruled by Marco (recorded by Claude from explicit selections):
    author, per the ruling-author rule.
 3. **The proposed tuple `A=200, B=2e0, R=50, S=1e4, G=10` is recorded as measured and remains
    UNRATIFIED**, pending the epoch-8 payoff implementation that will consume it.
+
+## 2026-08-15 — Codex T01-C40 candidate handoff: revised envelope bytes ready for ratification
+
+- **Implemented/inspected by:** Codex. **Recorded by:** Codex. This is a candidate handoff, not
+  owner ratification, balance authority, or an archival verdict.
+- Proposed `milestone.garage_gate` / `chaos.t0_t1` p50 envelope: **`[360000,480000]` ms**. This is
+  a product-readable 6–8 minute band centred at 7 minutes, two seconds from the measured
+  `418000 ms`; it preserves the old upper bound and changes only the stale lower bound. No
+  economy, persona, policy, milestone, relation, or other envelope byte changes.
+- Exact proposed scenario document:
+  `planning/t0-t1-content/harness-scenario-c40-proposed-v1.json`, SHA-256
+  **`8798abb885db89bde52349d3de87cb6687381cb5f2c33bbd92e561c07cb2029c`**. Its diff against
+  the currently ratified scenario is exactly the one ruled envelope row. The active document and
+  the compiled ratified hash remain untouched until owner ratification.
+- Candidate proof report:
+  `planning/t0-t1-content/first-hour-c40-proposed-report.v1.json`, SHA-256
+  **`3188ab784541ae159d9117c475aaf4101a25e772747fee67e5a03972c75b322f`**. The combined
+  scenario-plus-policy identity is `sha256:18a6f16a6d9b4a66469750c728599d32768136ee22f5b9178832d19b627f85ba`.
+  A full 97-run `make first-hour-harness` candidate execution exits 0 with zero failures; all seven
+  measured values remain identical (including garage-gate p50 `418000`), all three endings remain
+  reachable at 64/16/17, and every same-seed run-2 relation remains strict.
+- **Owner action:** ratify the proposed scenario hash above, or return a different envelope. Only
+  after ratification may Codex replace the active scenario bytes and compiled pin, then proceed to
+  the epoch-8 payoff and ratification of `A/B/R/S/G`.
