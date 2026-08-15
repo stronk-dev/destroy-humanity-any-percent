@@ -2791,3 +2791,39 @@ The blockers are filed in the RFC with complete proposals:
 No production behavior, ratified content, golden, acceptance box, or archival state changed. The
 user's uncommitted `AGENTS.md` remains untouched. Implementation is ready to resume once these
 three executable contracts land.
+
+## 2026-08-15 — OWNER RULINGS on T01-C34/C35/C36: absorb into T01; the ending IS the accelerator
+
+Ruled by Marco (recorded by Claude from explicit selections):
+
+1. **T01-C35 — the finding is CONFIRMED and is the most consequential of the closeout.** Verified
+   independently at source: `prestige.NewRunState` resets the Company to zero; Reputation and
+   Route Knowledge appear only in exit bookkeeping and feed no production multiplier; at the
+   scripted first exit Reputation computes to level 0 and the 25 Route Knowledge cannot afford the
+   50-cost hint. The prestige loop — design/02's central structure — has no first-hour payoff.
+   **RULED: absorb the fix into T01** (the split-to-successor arm was declined). T01 stays open
+   until the first hour actually delivers its promise.
+2. **The accelerator is the STARTER PACKAGE derived from the ending** — one mechanism serving both
+   C31 and C35 rather than two disconnected ones. Design drafted at
+   `planning/t0-t1-content/first-hour-payoff-design.md`: acquihire → seed capital; burnout →
+   partially rebuilt *generated* generators (preserving §11b's purchased/generated split); pivot →
+   a pre-owned manual-output upgrade. AC1's `run2 < run1` relation then holds for a content-derived
+   reason instead of RNG luck.
+3. **T01-C36 RESOLVED by protocol, not by preference.** Epoch 7 is immutable history (snapshot
+   committed at `sha256:6c7fab29…f789`; `TestEpochGuardRejectsArtifactAdditionAsHotfix` rejects
+   artifact addition to a minted epoch), so the payoff content ships as **epoch 8** with a
+   nineteenth `curriculum` artifact holding all branch/starter literals. The "versioned kernel
+   constants" arm is REJECTED under design law 4 (balance data is declarative, never constants in
+   code). No epoch-7 byte, hash, or ratification is touched; T01 mints twice.
+   `run_ended` widens append-only to v3 with a closed branch union; historical v2 events and
+   pre-branch replay inputs must stay byte-identical; copy binds to
+   `curriculum.first_failure.<branch>.{title,body}`.
+4. **T01-C34 — Claude drafts the literal `first_hour_policy.v1` document** (design lane) for owner
+   ratification before the runner consumes it; implementer-selected policy bytes would make the
+   pacing result circular, exactly as Codex argued. Codex's append-only retraction of its own
+   drafted literals (`6201fa9`) was the correct call and is commended on the record.
+
+**Blocked on:** owner ruling of the payoff design's three open decisions is NOT required to start —
+the mechanism and data authority are ruled above. Codex may implement C34's runner against the
+policy document once Claude lands it, and the payoff mechanism once its literals are measured and
+ratified. Open literals: `A`,`B`,`R`,`S`,`G`.
