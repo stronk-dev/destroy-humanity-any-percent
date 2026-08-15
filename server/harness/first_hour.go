@@ -20,7 +20,7 @@ import (
 )
 
 const (
-	RatifiedFirstHourScenarioHash = "sha256:e74e271be3b844bfde411887af16de06890a9a281596d45b8ad9deb7b1a502a5"
+	RatifiedFirstHourScenarioHash = "sha256:8798abb885db89bde52349d3de87cb6687381cb5f2c33bbd92e561c07cb2029c"
 	RatifiedFirstHourPolicyHash   = "sha256:e5e5de7051beb0340e54f7013ce7d4a48c35bfcc3343220310290478445d10c3"
 )
 

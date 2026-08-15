@@ -20,7 +20,7 @@
   "envelopes": [
     { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.first_generator", "statistic": "p50", "maximum_ms": 30000 },
     { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.first_upgrade", "statistic": "p50", "maximum_ms": 120000 },
-    { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.garage_gate", "statistic": "p50", "minimum_ms": 480000, "maximum_ms": 600000 },
+    { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.garage_gate", "statistic": "p50", "minimum_ms": 360000, "maximum_ms": 480000 },
     { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.scripted_failure", "statistic": "p50", "minimum_ms": 840000, "maximum_ms": 960000 },
     { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.run2_garage_gate", "statistic": "p50", "maximum_ms": 480000 },
     { "policy_id": "chaos.t0_t1", "milestone_id": "milestone.first_elective_exit", "statistic": "p50", "minimum_ms": 2700000, "maximum_ms": 5400000 },
