@@ -392,6 +392,46 @@ arm, the append-only `run_ended` schema widening and branch union, and the exact
 the three outcomes. Historical v2 events and pre-branch replay inputs must remain accepted and
 byte-identical.
 
+### T01-C37 — the candidate RNG does not define a byte-complete draw
+
+The proposed `seed_derivation` names five values and a separator, but does not define the byte
+encoding of the numeric values. More importantly, `enumeration_order` orders purchasable IDs only;
+the Chaos draw ranges over manual input, every affordable purchase, and wait, so the positions of
+the two non-purchase arms remain undefined. The Casual session jitter also has no draw label,
+ordinal, range convention, or statement whether one phase offset or every session is drawn.
+Different conforming implementations therefore produce different commands at the pinned seed.
+
+**Proposed contract:** pin canonical UTF-8 material for every integer, canonical command keys for
+all arms (including manual and wait), raw-byte ordering over those complete keys, modulo/rejection
+semantics, and a separately labelled jitter substream with an exact inclusive/exclusive range.
+
+### T01-C38 — session time has no authoritative coordinate
+
+The Casual row does not state whether its repeating windows are anchored to scenario wall time,
+Founder-attended time, or each Company's run clock; whether the schedule restarts after the
+scripted Exit; or whether time outside a window advances through the production offline path.
+Those choices change accrual, the automatic-failure boundary, and the founder-attended elective
+Exit. A single global start offset would leave all inter-session gaps identical and would not make
+32 attended-clock runs meaningfully distinct, contrary to the candidate rationale.
+
+**Proposed contract:** define one global scenario wall-time schedule, or an explicit per-run
+schedule, and state how every off-window span is applied through production. If jitter is intended
+to create distinct economy trajectories, draw it per named session and pin how overlaps/order are
+resolved; if it is only a phase offset, remove the claim that it makes the attended results distinct.
+
+### T01-C39 — T01-C20 has no post-milestone policy to reuse
+
+The shipped T01-C20 ranker is not a free-standing purchase policy. It ranks buy-versus-bank against
+one `RelevanceSuite.Scenario.Milestone` resource target and stops at that milestone. The first-hour
+candidate says only `t01_c20_projected_time_ranker`: it does not name the target before the garage
+gate, after that gate while the branch predicates are forming, or after the run-2 garage gate while
+waiting for the elective Exit. Those phases materially determine the ending and payout evidence.
+
+**Proposed contract:** enumerate the ordered target sequence and the exact transition between
+targets (normally the next reachable gate requirement), plus the behavior after the last target.
+Reuse the T01-C20 comparison/rate seam for each target; do not treat its current T1 relevance
+scenario as ambient policy.
+
 ## Candidate-round blocker (2026-08-10 — T01-C10)
 
 ### T01-C10 — Relevance cannot encode a pre-first-gate availability window

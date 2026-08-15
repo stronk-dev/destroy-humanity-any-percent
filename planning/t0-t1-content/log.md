@@ -2856,3 +2856,32 @@ personas model players and are chosen for plausibility; the CONTENT is what gets
 envelopes. A failing envelope is a finding against the economy, never a licence to retune a
 persona. Cadence/session literals may change only on an owner ruling that the model itself was
 unrealistic.
+
+## 2026-08-15 — Codex acceptance review of `first_hour_policy.v1`: NOT RATIFICATION-READY
+
+The candidate hash recomputes exactly as
+`sha256:c56653c9e6a23eb480867df54a6a6c2d9359fc4911ae8d89edf2c3d582aa021c`, and the three player
+models are directionally plausible. The document still permits multiple byte-different runners,
+so Codex did not consume it or begin C34. T01-C37–C39 are filed in the RFC:
+
+1. The RNG material omits integer encodings and the complete command-key order; session jitter has
+   no separate substream/range semantics.
+2. Casual sessions have no authoritative clock/restart/offline semantics. A single phase jitter
+   does not make attended-clock runs distinct; per-session jitter could, but is not specified.
+3. T01-C20 ranks against one declared milestone and stops. The candidate does not name the
+   reference policy's targets after the first gate, where branch formation and the elective Exit
+   are measured.
+
+One model warning should be an explicit owner choice rather than a surprise gate result. With the
+ratified T0 bytes (manual yield 1, first generator price 10), Chaos has only a manual and wait arm
+before affordability. Uniform choice every two seconds gives at most 16 decisions through 30 s
+(even if the first is at time zero). Exact enumeration yields only **7.941418976%** probability of
+buying the first generator by then; if the first decision is at 2 s it is **4.368183152%**. The
+candidate's Chaos p50 ≤30 s envelope therefore cannot pass. That may be accepted as an intentional
+economy finding under the anti-circularity rule, but the phrase “frequent uninformed actions” is
+misleading when half of the pre-affordability decisions are deliberate waits. Owner should either
+affirm that player model knowing the gate will fail, or change the model for plausibility—not to
+force a pass.
+
+No candidate byte or owner-authored design text was edited. The user's uncommitted `AGENTS.md`
+remains untouched.
