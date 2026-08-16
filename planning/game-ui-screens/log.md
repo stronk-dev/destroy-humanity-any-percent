@@ -748,3 +748,100 @@ other Actions job). It needs its own declared range.
 **The Game UI Screens RFC carries NO blocking findings in the reviewed span.** Remaining before
 archival: AC1's epoch-7-mint-gated live script; the three content hashes' owner ratification;
 02d00d7's review; the final status/move.
+
+## 2026-08-16 — Codex archival acceptance sweep: AC2–AC5 MET; AC1 NOT MET (GU-C25–GU-C28)
+
+- **Review by:** Codex (implementation-side acceptance sweep; not the designated cross-party
+  verdict). **Recorded by:** Codex. **Archival is NOT authorized by this entry.** The sweep was
+  performed against the current tree after the T0–T1 archival, not inferred from the historical
+  implementation log.
+- **AC1 — NOT MET.** The current `make test-game-ui-composed` stops after bootstrap, the first live
+  schema-v2 snapshot, WebSocket presence, and the visitor counter. A discrimination probe replaced
+  every post-bootstrap `act(...)` call with an unconditional throw; the composed test still exited
+  0 and printed its unchanged bootstrap/snapshot/socket PASS line. The production UI also has no
+  gate-crossing control, no `wind_down` control, and no control that leaves Run End for the already
+  active next run. `game_ui_snapshot.v2` exposes no authoritative transition-action projection,
+  and the ratified Copy package has no CTA rows for those three operations. The archived first-hour
+  script necessarily contains `cross_gate` and `wind_down`; therefore the missing behavior is a
+  contract/product gap, not merely a missing assertion.
+- **AC2 — MET on the current tree.** `make verify-client` exited 0: TypeScript/Svelte reported zero
+  diagnostics, 6,655 unit tests passed, the shell/Game-UI import boundary passed, generated API and
+  Copy mirrors matched their governed hashes, and the kernel/history guards passed at `0.3.100`.
+- **AC3/AC4 — MET on the current tree.** `make test-browser` ran Chromium, Firefox, and WebKit:
+  20,007 assertions passed (3 skipped). This includes the compile-time no-snapshot Run End fixture,
+  byte-only terminal rendering, cap explanation, drain and resync story beats, renderer
+  substitution, and the C11 axe gate on every Phase-A surface/system state.
+- **AC5 — MET on the current tree.** The dedicated performance arm in that same Make flow passed
+  at the ruled 20 Hz input / 10 Hz formatting contract (1 test passed, 10 deliberately skipped by
+  the performance-only filter).
+- **Aggregate disclosure:** `make verify` was run, not assumed. Server packages, generators, drift
+  checks, and the first harness invariant completed green, but the aggregate was interrupted after
+  23 minutes of silent `balance-harness -mode=check` work. It is not recorded as green. That command
+  sequentially recomputes every registered relevance suite without a progress marker; the Game-UI
+  closeout should gain an explicit root Make lane rather than requiring an opaque unrelated balance
+  recomputation for every UI iteration.
+
+### GU-C25 — AC1 still names a stale/ambiguous script rather than the archived authority
+
+The RFC says “full T2 script,” while the now-archived content authority defines a precise
+two-run first-hour script with seven milestones. A browser driver must not invent a different play
+policy or silently replace UI actions with direct API calls.
+
+**Proposed contract:** bind Game-UI AC1 to `casual.t0_t1` v1, seed `0`, from the owner-ratified
+`scenario.t0_t1_first_hour` and policy artifact. The browser proof consumes the exact command list
+produced by the shared `RunExperimentScript` authority. Wait edges advance only the fixture clock;
+every non-wait command originates from an enabled, visible DOM control and reaches the server only
+through `runtime.ts`. The proof asserts all seven archived milestones, both run-end surfaces, the
+run-2 Garage crossing, and the later elective Exit. Direct browser-test `fetch` calls to
+`/api/v1/intents` are forbidden. Reconcile “T2” to this exact archived authority rather than
+leaving two legal interpretations.
+
+### GU-C26 — the wire has no authoritative gate/Exit action projection
+
+The Desk can buy only generators/upgrades and perform the manual action. Inferring transition
+eligibility from progress, balances, or tier would violate U2's no-client-authority rule; always
+showing an enabled button would turn ordinary gameplay rejections into the current generic offline
+state.
+
+**Proposed contract:** `game_ui_snapshot.v3` adds exactly one `transitions` object:
+`{cross_gate:null|{eligible:boolean,gate_id:string,route_id:null},wind_down:{eligible:boolean}}`.
+The server computes both advisory booleans through one pure production-kernel preview over the
+pinned bundle and replay-owned state; it does not duplicate requirement math, mutate state, emit an
+event, or create replay input. Phase A permits only the standard `gate.t0_to_t1` row and
+`route_id:null`; any route choice or later gate remains successor work and fails closed. The two
+buttons submit the existing `cross_gate` and `wind_down` intents with current Company revision;
+`wind_down` also carries the observed Founder revision. Receipts remain authoritative. Stored v1
+and v2 bootstrap receipts remain legal and render no transition controls; v3 is the current mint.
+
+### GU-C27 — terminal navigation and its Copy bytes do not exist
+
+`RunEndSurface` correctly accepts only the decoded `run_ended` payload, but nothing lets the player
+enter the already-created next run. Adding a snapshot prop to that component would regress AC3.
+
+**Proposed contract:** the parent screen owns a copy-backed continuation control adjacent to the
+byte-only Run End component. Activation performs only `runtime.snapshot()`; it must receive
+`run_seq == ended.run_seq + 1`, then clear terminal/offer UI state and select Desk. A mismatch or
+request failure stays on Run End and renders the existing offline state; no new intent or local
+run authority is created. Add three owner-authored Copy rows through the governed pipeline:
+`desk.cross_gate`, `desk.wind_down`, and `screen.run_end.continue`. Proposed launch text, pending
+owner adoption: “Move Into the Garage”, “Wind Down Company”, and “Start the Next Company”.
+
+### GU-C28 — the real-browser topology cannot run governed time without a fixture seam
+
+The archived script spans attended minutes and offline gaps; sleeping wall-clock time in CI is not
+an acceptable implementation, while a production clock-control endpoint would be a security bug.
+
+**Proposed contract:** add a fixture-only composed gameserver executable/harness that uses the real
+`Compose` graph and real Postgres with its injected mutable clock. A localhost-only fixture control
+channel may expose the next shared-authority command and advance time, but cannot submit an intent
+or mutate a save. Chromium must locate and activate the matching visible UI control, then assert
+the authoritative revision and visible milestone before advancing. Add root targets
+`test-game-ui-first-hour` and `verify-game-ui`; the latter composes `verify-client`,
+`test-browser`, `test-game-ui-composed`, and the new first-hour lane. Hosted CI runs that explicit
+lane. Mutation requirements: disconnect any one transition button or suppress either terminal
+surface and the first-hour test must fail; disabling all `act(...)` calls must fail before the
+first manual milestone.
+
+**Handoff boundary:** owner rulings are required on GU-C25–GU-C28 before implementation. AC2–AC5
+are evidence-backed; AC1 and both remaining plan boxes stay open. No status change, archival move,
+deployment, push, or completion claim is authorized.
