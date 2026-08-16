@@ -891,3 +891,16 @@ Ruled by Marco (recorded by Claude from explicit selections and follow-up direct
 
 **Codex is unblocked on GU-C25–C28 as ruled.** AC2–AC5 stand as evidence-backed; AC1 and both
 remaining plan boxes stay open until the narrowed proof lands and passes its designated review.
+
+## 2026-08-16 — Codex pre-implementation body-reconciliation blocker
+
+- **Recorded by:** Codex. This is a process blocker, not a new product question.
+- The GU-C25/C28 ruling narrows the browser's obligation to the three transition/continuation
+  controls and explicitly rejects replaying the full seven-milestone/two-hour script in Chromium.
+  The normative RFC Acceptance Criterion 1 still says: “the full T2 script (T0–T1 RFC) completed
+  through the real UI against the composed gameserver.” These are mutually incompatible legal
+  acceptance bars.
+- Per the binding same-edit body-reconciliation rule, the ruling author must reconcile that AC1
+  sentence. The implementer may not choose one arm silently or edit the owner's normative text.
+  Implementation resumes immediately after the owner-authored body fix; GU-C26/C27 mechanics and
+  adopted Copy need no further ruling.
