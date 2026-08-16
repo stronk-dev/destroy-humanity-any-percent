@@ -1,7 +1,10 @@
 # RFC: Permits & the T3→T4 Gate (pre-mint)
 
-- **Status:** candidate implemented — byte-exact fixtures assembled and gated; awaiting owner
-  ratification of the manifest hashes and designated implementation review before acceptance.
+- **Status:** promoted — the candidate is live in production content through epochs 6/7/8
+  (`generator.legal_dept` and the Routes artifact ship in the current bundle). Archival pending:
+  the RFC still owes its final acceptance sweep, docs reconciliation, and designated archival
+  verdict. (Status corrected 2026-08-16 by record audit; it previously read as awaiting owner
+  action that had already been taken.)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-07
 - **Design refs:** `design/02 §1` (Permits = a Company-run constraint resource alongside

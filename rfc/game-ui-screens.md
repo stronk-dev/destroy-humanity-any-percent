@@ -1,6 +1,6 @@
 # RFC: Game UI Screens (the play surfaces)
 
-- **Status:** accepted — GU-C1–GU-C8 ruled; implementing (GU-C9–GU-C12 implementation blockers recorded)
+- **Status:** accepted — GU-C1–GU-C24 ruled; implementing (GU-C9–GU-C12 implementation blockers recorded)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/11-ux-writing.md` (first-session narrative, voice), `design/08 §speedrun` (run-title bar, splits panel, PB/gold deltas), `design/06` (DOM-first, Svelte 5 runes, `$derived` bound to visible tab only), client-shell docs (reconciliation, `reason_key` caps, activity_ppm never-frozen)

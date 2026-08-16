@@ -1,10 +1,10 @@
 # RFC: The First Content Epoch (epoch 6 — the owner-gated production mint)
 
-- **Status:** implementing — the epoch-6 mint has landed and its designated cross-party review is
-  **APPROVED**; the authorized dependent archival moves are in progress. This RFC exists so the
-  completed owner sign-off approved a fully enumerated, precondition-checked change instead of a
-  judgment call. Named successor of TP-C18 (The Pitch, ruled option a: fixture-first) and SR-C13
-  (Soul Recovery, ruled: fixture-only now, minted together here).
+- **Status:** implementing — epoch 6 minted and designated-approved; epochs 7
+  (`T0-T1 Playable Content`) and 8 (`First-Hour Payoff`) have since minted on the same protocol,
+  so the mint machinery is proven three times over. Remaining: this RFC's own dependent-archival
+  chain. (Status corrected 2026-08-16 by record audit; it previously described the epoch-6 review
+  as still pending.)
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-07
 - **Design refs:** none new — this RFC mints already-designed, already-ruled content. Balance law:

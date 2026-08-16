@@ -14,7 +14,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [WebSocket Transport & Fan-out](websocket-transport-and-fanout.md) | implementing | Production Engine / Client Shell / Account Bootstrap |
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
-| [API Foundation](api-foundation.md) | accepted — C1–C17 ruled; implementing | Account API / Transport / Gameserver Composition |
+| [API Foundation](api-foundation.md) | accepted — C1–C20 ruled; implementing | Account API / Transport / Gameserver Composition |
 | [Minigame Platform Foundation](minigame-platform-foundation.md) | accepted — C1–C40 ruled; implementing | Gameserver Composition / Founder Attendance / Combat |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | implementing | — |
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |

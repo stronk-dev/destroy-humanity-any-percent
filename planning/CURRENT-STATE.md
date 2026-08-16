@@ -61,6 +61,32 @@ The detailed T0–T1 instrument, balance, mint, rewrite, and review history is f
   network-slot row must be ruled before such content ships.
 - Deployment and any push remain owner-gated.
 
+## 4b. Record audit — 2026-08-16 (what it found, so the next one is cheaper)
+
+A mechanical completeness audit of the record itself. Method: cross-check every RFC file against
+the index both directions, every index status against its own file's status line, every planning
+directory against its RFC's lifecycle stage.
+
+- **RFC index is COMPLETE** — 22 active + 46 archived files, zero missing in either direction.
+- **Four status drifts, all corrected:** Game-UI understated its own ruled range (GU-C8 → C24);
+  Permits still read "awaiting owner" for action already taken (its content ships in epochs 6/7/8);
+  First Content Epoch still described the epoch-6 review as pending (it completed, and two epochs
+  minted on top); the index understated API Foundation (C17 → C20).
+- **13 empty untracked planning shells removed** — `git mv` leftovers, never in git, cosmetic only.
+- **One orphaned tracked planning thread:** `planning/run-genesis-archival-remediation/` — its RFC
+  is archived but the directory never moved, and its log ended on an "honestly open"
+  `PendingSettlements` item. **That item is resolved** (verified in tree:
+  `guild/clearing_store.go:163` + `gameserver/composition.go:283`), and the log now says so.
+  **TODO: move that directory to `planning/archive/` in the next archival batch** — flagged, not
+  moved, because relocating a tracked thread belongs in the normal lane with its own verdict.
+- **The coverage map is 11 days stale and now carries a staleness stamp.** Its headline counts
+  moved (I: 14 → ~16). **A full re-validation sweep of the six domain slices in
+  `planning/coverage-map/validated/` is OWED** — the stamp is a delta, not a re-validation.
+
+**Nothing was found missing from the record.** Every in-flight thread, every archived system, and
+the ~28 design-only backlog are all written down and findable. The defects were staleness, not
+absence.
+
 ## 5. Conventions established in-session that are NOT in CLAUDE.md's original text
 
 CLAUDE.md's "Evidence discipline" section now carries rules 1–6; they are not repeated here. Two

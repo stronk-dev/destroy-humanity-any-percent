@@ -94,3 +94,16 @@ ratified as written; the changelog gains this ratification line.
 
 Honestly open, agreed: real `guild.Service.PendingSettlements` composition — blocked on the two
 owner contracts drafted today (Commons participation weight; world snapshot schema).
+
+## 2026-08-16 — Record audit: the last "honestly open" item is RESOLVED
+
+This thread's final entry left `guild.Service.PendingSettlements` composition open, blocked on two
+owner contracts. **It shipped.** Verified in the tree, not from a record:
+`server/guild/clearing_store.go:163` implements it, and `server/gameserver/composition.go:283`
+composes it into the running server via `production.WithGuildSettlements(guildService)`;
+`docs/guilds.md` documents the live behavior.
+
+Nothing in this thread is open. It is retained only as history and should move to
+`planning/archive/` alongside its already-archived RFC (`rfc/archive/run-genesis-and-replay.md`)
+in the next archival batch — flagged rather than moved here, because relocating a tracked planning
+thread belongs in the normal archival lane with its own verdict, not in a record-tidying commit.
