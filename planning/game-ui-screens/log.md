@@ -845,3 +845,49 @@ first manual milestone.
 **Handoff boundary:** owner rulings are required on GU-C25–GU-C28 before implementation. AC2–AC5
 are evidence-backed; AC1 and both remaining plan boxes stay open. No status change, archival move,
 deployment, push, or completion claim is authorized.
+
+## 2026-08-16 — OWNER RULINGS on GU-C25–GU-C28
+
+Ruled by Marco (recorded by Claude from explicit selections and follow-up direction).
+
+1. **GU-C26 ACCEPTED as proposed.** `game_ui_snapshot.v3` gains exactly one `transitions` object
+   with server-computed advisory booleans for `cross_gate` and `wind_down`, derived from a single
+   pure production-kernel preview over the pinned bundle and replay-owned state — no duplicated
+   requirement math, no mutation, no event, no replay input. Buttons submit the existing intents;
+   receipts stay authoritative. Stored v1/v2 receipts remain legal and render no controls. The
+   always-enabled alternative is REJECTED: it would route ordinary gameplay rejections through the
+   same generic error surface as real faults.
+2. **GU-C27 ACCEPTED, and the three Copy rows are ADOPTED VERBATIM** as owner-authored content:
+   `desk.cross_gate` = **"Move Into the Garage"**, `desk.wind_down` = **"Wind Down Company"**,
+   `screen.run_end.continue` = **"Start the Next Company"**. Implementers may not edit this text.
+   The continuation control is owned by the parent screen (never a prop on the byte-only Run End
+   component, which would regress AC3), performs only `runtime.snapshot()`, requires
+   `run_seq == ended.run_seq + 1`, and on mismatch or failure stays on Run End rendering the
+   existing offline state.
+3. **GU-C28 REJECTED as proposed — no fixture clock seam, no fixture-only binary, no localhost
+   control channel.** Owner's direction, verbatim in substance: *do a normal test; do not prove
+   the game in CI.* The first hour is already proven twice — 97 headless runs and a composed
+   real-Postgres test asserting all seven milestones at a pinned seed. Replaying two virtual hours
+   through Chromium to prove it a third time is verification cost compounding, which the
+   2026-08-13 ruling exists to stop. **Ruled instead:** the browser proves the UI's own job — that
+   each of the three controls renders only when the server says eligible, submits the correct
+   intent through `runtime.ts`, and handles its receipt; and that Run End reaches the next run.
+   Preconditions may be established server-side as ordinary test setup rather than by playing
+   them out. No new `test-game-ui-first-hour` lane and no fixture gameserver executable.
+   `verify-game-ui` composing the EXISTING lanes is still welcome, and the disclosed
+   23-minute opaque `balance-harness -mode=check` dependency should stop gating UI iteration.
+4. **The discrimination requirement SURVIVES the narrowing and is mandatory.** AC1 failed because
+   a composed test exited 0 with every post-bootstrap action replaced by a throw. Therefore:
+   disconnecting any one transition control, or suppressing either terminal surface, MUST fail the
+   test; and disabling the driver's actions MUST fail before the first asserted milestone. A cheap
+   test that cannot fail is not what was ruled here — a cheap test that *can* is.
+5. **GU-C25 ACCEPTED, narrowed by (3) — consequence stated explicitly for owner correction.** AC1
+   binds to the archived authority in the sense that the browser may not invent its own play
+   policy and may not bypass the UI with direct `fetch` to `/api/v1/intents`: every non-wait
+   command originates from an enabled, visible DOM control and reaches the server through
+   `runtime.ts`. It does **not** require the browser to replay all seven milestones across two
+   virtual hours — that claim is carried by the archived headless and composed proofs. If the
+   owner intended the full seven-milestone browser replay, this clause is the one to correct.
+
+**Codex is unblocked on GU-C25–C28 as ruled.** AC2–AC5 stand as evidence-backed; AC1 and both
+remaining plan boxes stay open until the narrowed proof lands and passes its designated review.
