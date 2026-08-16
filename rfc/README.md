@@ -29,7 +29,6 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Permits & the T3→T4 Gate](permits-and-t3-gate.md) | promoted in reviewed epoch 6; archival pending | Economy Kernel / Route Registry / First Content Epoch |
 | [First Content Epoch](first-content-epoch.md) | epoch 6 minted and designated-approved; dependent archival in progress | ALL fixture-first content foundations |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
-| [T0–T1 Playable Content](t0-t1-playable-content.md) | accepted — T01-C1–C27 ruled; instrument repaired; branch-aware tuple in flight | Production / Purchasable Content / Copy Pipeline |
 
 **Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
 **Coverage map:** `planning/coverage-map/` (internal, unpublished) — the validated research→design→RFC→impl tracker and the
@@ -86,6 +85,7 @@ Implemented behavior lives in `docs/`; these frozen RFCs are historical specific
 | [Achievements Foundation](archive/clout-and-achievements-foundation.md) | implemented | [Achievements](../docs/achievements.md), [Production engine](../docs/production-engine.md), [Save layer](../docs/save-layer.md) |
 | [Pet Care Foundation](archive/pet-care-foundation.md) | implemented; combat AC3 carried | [Pet care](../docs/pet-care.md), [Founder transitions](../docs/founder-transitions.md), [Save layer](../docs/save-layer.md) |
 | [UI Foundation](archive/ui-foundation.md) | implemented | [UI foundation](../docs/ui-foundation.md) |
+| [T0–T1 Playable Content](archive/t0-t1-playable-content.md) | implemented | [T0–T1 playable content](../docs/t0-t1-playable-content.md), [Balance harness](../docs/balance-harness.md), [Prestige and Exits](../docs/prestige-and-exits.md) |
 
 **Phase-0 contract status (reconciled 2026-08-05 against the coverage-map sweep):** the contracts
 previously listed here as "not yet drafted" — Layer-1 events engine, doctrine intents, Compute

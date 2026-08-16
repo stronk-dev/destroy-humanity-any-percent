@@ -1,22 +1,23 @@
 # RFC: T0–T1 Playable Content (the first hour)
 
-- **Status:** accepted — T01-C1–C27 ruled; implementing (C26/C27 instrument repairs in flight; coordinated price tuple next; four relevance hashes UNRATIFIED pending it)
+- **Status:** implemented — epochs 7 and 8 are minted; T01-C1–C40, AC0–AC5, and the
+  composed first-hour proof are shipped and designated-review approved (`df56b6f`).
 - **Author:** Marco (drafted by Claude)
 - **Created:** 2026-08-03
 - **Design refs:** `design/01 §Tier 0–1` (Sole Proprietor 1995 / Garage 2000s, era beats), `design/02 §2, §11` (curves, pacing targets: scripted failure ~15 min, first elective Exit [45,90] min), `design/03` (T0–1 arcade toys free, staggered unlocks), `design/08` (voice rules, era presentation), UX docs (first-session narrative)
 - **Depends on:** Purchasable Content Foundation and Relevance Harness (both archived); epoch 6
   `First Content` is the byte-preserved baseline for this owner-gated next-epoch candidate.
 - **Closes:** the oldest line in `rfc/README.md`'s remaining-contracts list
-- **Planning:** `planning/t0-t1-content/` (once implementing)
+- **Planning:** `planning/archive/t0-t1-content/`
 
 ## Summary
 
 Epoch 6 has a live permits-gated ladder and the original Phase-0 economy rows. This RFC turns
 tiers 0–1 into a playable,
 funny, correctly-paced first hour: the full T0–T1 catalog (generators, upgrades, gates, manual
-actions), the first-session script, and the copy — all as data on existing schemas, gated by the
-existing harness. One owner-gated content epoch mints the complete candidate only after its
-mandatory pacing and relevance reports pass. (Correction 2026-08-03: the original draft claimed
+actions), the first-session script, and the copy — all as data on strict schemas and guarded by the
+existing harness. Epoch 7 minted the measured catalog and epoch 8 added the branch-specific
+first-company payoff without rewriting epoch 7. (Correction 2026-08-03: the original draft claimed
 "no new engine code" and "16 milestones" — both false; the Foundation RFC owns the engine work,
 and HEAD had 4 milestones × 4 persona-runs = 16 observations. The milestone set grows with this
 RFC's content.)
@@ -55,18 +56,18 @@ exactly the offline-policy accrual.
 - Era-authentic **event copy** for the existing event kinds (threshold crossings, gate
   crossings, offers) — Layer-1 authored events are OUT of scope (the events-engine RFC owns the
   evaluator; this RFC writes only copy for events the engine already emits).
-- All values are provisional balance data; the epoch mint requires a REAL relevance report over
-  the complete candidate bundle.
+- The owner-ratified values are live epoch-7 balance data. Both phase-scoped relevance reports,
+  the role matrix, branch proofs, and the composed content-dynamics report guard those bytes.
 
 ### T2 — The first session script
 
 Deterministic sequence on existing machinery: boot → one manual click pays → first generator
-affordable ≤ 30 s → first upgrade ≤ 2 min → `gate.t0_to_t1` crossable at ~8–10 min (chaos
-persona) → **the scripted first failure fires ~15 min** (the candidate defines its lazy logged
-transition and copy binding; implementation remains acceptance debt) → this RFC writes its
-narrative copy — the wind-down screen, the "run 2 opens with" beat) → run 2 reaches Tier 1
-faster (D6 assembly working as designed) → first elective Exit lands in [45,90] min (the
-existing harness gate now measures REAL content instead of placeholder values — AC1).
+affordable ≤ 30 s → first upgrade ≤ 2 min → `gate.t0_to_t1` crosses in the ruled 6–8 minute Chaos
+median envelope → **the scripted first failure fires in the 14–16 minute envelope** and selects
+acquihire, burnout, or pivot from the accrued run state → the branch's starter package makes run 2
+reach the Garage strictly sooner at the same seed → the first elective Exit lands in [45,90]
+minutes. The 97-run harness and the pinned-seed composed Postgres proof measure real content rather
+than placeholder values.
 
 ### T3 — Copy discipline
 
@@ -75,12 +76,10 @@ carries verified provenance in the claim registry; anything not yet verified is 
 shipped. The copy lands as catalog/copy-system data (the content pipeline design), reviewable
 like any diff.
 
-**Carried debt (PT-C4, 2026-08-07):** generator presentation copy has NO binding surface in the
-economy grammar (rows carry no copy field, and the Copy Pipeline forbids deriving display text
-from mechanical IDs) — this RFC owns defining how generators become player-facing (either the
-generator-copy grammar extension PT-C4 declined to add, or a presentation-layer binding). The
-first two consumers waiting on it: `generator.beige_tower` (shipped, presentation-less) and
-`generator.legal_dept` (Permits RFC; its title/description explicitly carried here).
+**PT-C4 closure:** generator presentation is deliberately separate from the economy grammar.
+Presentation schema v3 binds each generator ID to title, description, and optional cap-reason Copy
+keys; the Game UI requires that binding and never renders a mechanical ID. Both
+`generator.beige_tower` and `generator.legal_dept` have shipped bindings and pipeline-owned copy.
 
 ## Acceptance criteria
 
@@ -108,6 +107,8 @@ first two consumers waiting on it: `generator.beige_tower` (shipped, presentatio
 
 - 2026-08-03: created (draft) — the oldest remaining contract, now the critical path to a game.
 - 2026-08-06: non-normative reference cleanup for publication; no spec change.
+- 2026-08-16: implemented and archived after epochs 7 and 8, all six acceptance criteria, and
+  the real-Postgres composed proof passed designated review (`df56b6f`).
 
 ## Codex acceptance-review blockers (2026-08-10 — T01-C1–T01-C9)
 

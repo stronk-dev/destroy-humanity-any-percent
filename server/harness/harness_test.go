@@ -217,7 +217,7 @@ func TestLoadRatifiedFirstContentCandidateSuite(t *testing.T) {
 
 func TestLoadRatifiedT0T1CandidateManifest(t *testing.T) {
 	root := filepath.Join("..", "..")
-	manifestPath := "planning/t0-t1-content/promotion-manifest.candidate.v1.json"
+	manifestPath := "planning/archive/t0-t1-content/promotion-manifest.candidate.v1.json"
 	manifest, artifacts, productionPaths, err := loadCandidateManifest(root, manifestPath)
 	if err != nil {
 		t.Fatal(err)

@@ -821,7 +821,7 @@ says the content-dynamics candidate mode loads “the complete ratified promotio
 epoch-7 path, row count, status, or relationship to the four scenario/policy pins is defined.
 
 **Proposed contract:** add
-`planning/t0-t1-content/promotion-manifest.candidate.v1.json`, using the shipped manifest-v1 row
+`planning/archive/t0-t1-content/promotion-manifest.candidate.v1.json`, using the shipped manifest-v1 row
 grammar and status `ratified`, with the exact eighteen rows from EH-C11. Carryover rows retain their
 production hashes and consumed verdicts; the five epoch-7 coordinates cite their own designated
 chains and owner ratifications. Generalize the loader's cardinality check, while the epoch-6 test

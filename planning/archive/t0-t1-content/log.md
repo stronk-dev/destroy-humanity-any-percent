@@ -3419,3 +3419,49 @@ crosses into the garage at ~7 minutes, has their first company end in one of thr
 how they actually played, and starts run 2 measurably ahead with a head start matching that
 ending. **AC1 and AC4 are met on evidence.** T01's remaining step is archival: acceptance sweep,
 status → implemented, RFC and planning directories moved to their archives, `docs/` canonical.
+
+## 2026-08-16 — Codex archival acceptance sweep and handoff
+
+- **Consumed designated verdict:** `df56b6f`, covering implementation range
+  `0af2ea6..00f5eda` with no findings. This archival change does not relabel Codex self-checks as
+  the designated pass.
+- **AC0 — MET:** the real-Postgres idle-beyond-cap fixture resumes through canonical offline
+  catchup and its mutation probe reproduces the provision-horizon brick.
+- **AC1 — MET:** the owner-ratified 97-run scenario enforces all seven milestones, the 45–90 minute
+  elective-Exit envelope, and the strict same-seed run-2-before-run-1 Garage relation.
+- **AC2 — MET:** both phase-scoped relevance gates, the eleven-row role matrix with masked
+  controls, and identity-bound branch proofs leave zero dead purchasables.
+- **AC3 — MET:** strict loaders, epoch 7/8 artifact identities, immutable snapshots, replay
+  continuity, and regenerated reports are guarded and green.
+- **AC4 — MET:** the pinned Casual seed reproduces the full scripted sequence through the composed
+  gameserver and real Postgres; disabling the automatic ending makes the proof fail at the exact
+  divergent command.
+- **AC5 — MET:** Copy/Presentation catalogs are pipeline-owned and `make copy-check` is green with
+  no unverified-statistic escape.
+
+**Archival handoff:** status and plan reconciled, canonical docs finalized, RFC and complete
+planning directory moved byte-faithfully to their archives, and every live build/test reference
+retargeted to the archived evidence paths. Ready for designated review of the archival commit;
+nothing pushed.
+
+### Archival verification read through completion
+
+- `make verify HARNESS_WORKERS=12 SAVE_TEST_HOST_PORT=55434` — exit 0: all Go packages, governed
+  harness baselines, generated API/formula drift, TypeScript/Svelte (0 diagnostics), production
+  build, 6,655 client tests, 20,007 browser tests, performance, schema, Copy, and boundary/history
+  guards.
+- `make verify-server-ci SAVE_TEST_HOST_PORT=55434` — the first cold Linux run correctly failed on
+  one split `filepath.Join` reference to the pre-archive manifest path in
+  `server/replaycatalog/first_content_candidates_test.go`. The reference was fixed, a static test
+  now rejects both slash-form and split-join old paths across active Make/Go/tool sources, and the
+  complete cold Linux server lane then exited 0.
+- `make verify-harness-ci HARNESS_WORKERS=12 SAVE_TEST_HOST_PORT=55434` — exit 0 under the same
+  linux/amd64 container used to reproduce hosted semantics; harness package and role matrix ran
+  cold before the full deterministic corpus comparison.
+- `TestComposedGameserverReplaysRatifiedFirstHourAtPinnedSeed` — explicit real-Postgres run, PASS
+  in 12.66 seconds (13.23-second package exit); not skipped.
+- Focused `make copy-check`, cold `make test-harness`, `make harness-guard-check`, archive-path
+  regression, and epoch-8 promotion test all exited 0.
+
+The owner's unrelated `AGENTS.md` edit remained untouched and unstaged. No push or deployment was
+performed.

@@ -5,7 +5,7 @@ import path from "node:path";
 import { containsStatistic, repositoryRoot, validateLongformCopyText, validatePlainCopyText, validateProvenanceRegistry } from "./copy-pipeline.mjs";
 
 const check = process.argv.slice(2).includes("--check");
-const rulingPath = path.join(repositoryRoot, "planning/t0-t1-content/screen-copy-ruling-v1.md");
+const rulingPath = path.join(repositoryRoot, "planning/archive/t0-t1-content/screen-copy-ruling-v1.md");
 const candidatePath = path.join(repositoryRoot, "copy/catalog/game-ui-candidate.json");
 const phase0Path = path.join(repositoryRoot, "copy/catalog/phase0.json");
 const presentationV1Path = path.join(repositoryRoot, "balance/testdata/t0-t1/presentation-v1.json");

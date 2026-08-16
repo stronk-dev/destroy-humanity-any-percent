@@ -107,9 +107,10 @@ offline accounting, and exact parsing. Real-Postgres tests inject failure at eve
 boundary, assert byte-identical replay, execute elective and scripted Exits end to end, preserve
 executed-route facts, and prove a progressed offer never pays below its preview. The suite also
 mints an epoch with changed artifact bytes while a run is active and exits it across the boundary,
-and migrates a literal v6 Company through a successful pre-timer scripted Exit. The first elective
-Exit pacing envelope remains gated on the explicitly missing T0–T1 playable-content contract; no
-fixture timing is presented as shipped balance.
+and migrates a literal v6 Company through a successful pre-timer scripted Exit. The live T0–T1
+first-hour scenario now measures the first elective Exit at 45–90 minutes of Founder attended
+time. Its 97-run evidence and the pinned-seed real-Postgres composed proof cover both the scripted
+first-company ending and a later elective Exit; no fixture timing is presented as shipped balance.
 
 ## Offer resolution events
 

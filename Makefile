@@ -20,12 +20,12 @@ export SAVE_TEST_HOST_PORT
 CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
 BROWSER_TEST_FLAGS ?=
 RELEVANCE_SCENARIO ?= balance/testdata/t0-t1/relevance-scenario-v2.json
-RELEVANCE_OUTPUT ?= planning/t0-t1-content/relevance-report.v5.json
+RELEVANCE_OUTPUT ?= planning/archive/t0-t1-content/relevance-report.v5.json
 RELEVANCE_BRANCH_INPUT ?=
-RELEVANCE_BRANCH_OUTPUT ?= planning/t0-t1-content/branch-report.v2.json
+RELEVANCE_BRANCH_OUTPUT ?= planning/archive/t0-t1-content/branch-report.v2.json
 FIRST_HOUR_SCENARIO ?= balance/testdata/t0-t1/harness-scenario-v1.json
 FIRST_HOUR_POLICY ?= balance/testdata/t0-t1/first-hour-policy-v1.json
-FIRST_HOUR_OUTPUT ?= planning/t0-t1-content/first-hour-experiment.v1.json
+FIRST_HOUR_OUTPUT ?= planning/archive/t0-t1-content/first-hour-experiment.v1.json
 FIRST_HOUR_ACQUIHIRE_MINIMUM ?=
 FIRST_HOUR_BURNOUT_FACTOR ?=
 FIRST_HOUR_ROUTE_KNOWLEDGE_BONUS ?=
@@ -155,7 +155,7 @@ content-harness:
 
 epoch7-content-harness:
 	cd server && go run ./cmd/balance-harness -mode=content-candidate -root=.. \
-		-candidate-manifest=planning/t0-t1-content/promotion-manifest.candidate.v1.json \
+		-candidate-manifest=planning/archive/t0-t1-content/promotion-manifest.candidate.v1.json \
 		-scenario=testdata/harness/content-dynamics/scenarios/epoch-7-candidate.v1.json \
 		-output=../planning/epoch7-content-harness/candidate-report.v1.json
 
@@ -191,7 +191,7 @@ t0-t1-relevance:
 t1-relevance:
 	$(MAKE) t0-t1-relevance \
 		RELEVANCE_SCENARIO=balance/testdata/t0-t1/relevance-scenario-t1-v2.json \
-		RELEVANCE_OUTPUT=planning/t0-t1-content/relevance-report-t1.v5.json
+		RELEVANCE_OUTPUT=planning/archive/t0-t1-content/relevance-report-t1.v5.json
 
 relevance-branches:
 	cd server && go run ./cmd/balance-harness -mode=relevance-branches -root=.. \
@@ -203,18 +203,18 @@ t0-t1-branch-check:
 	$(MAKE) relevance-branches || status=1; \
 	$(MAKE) relevance-branches \
 		RELEVANCE_SCENARIO=balance/testdata/t0-t1/relevance-scenario-t1-v2.json \
-		RELEVANCE_BRANCH_OUTPUT=planning/t0-t1-content/branch-report-t1.v2.json || status=1; \
+		RELEVANCE_BRANCH_OUTPUT=planning/archive/t0-t1-content/branch-report-t1.v2.json || status=1; \
 	exit $$status
 
 # Fast path for a combined run that has just produced hash-matched diagnostics.
 t0-t1-branch-check-from-reports:
 	@status=0; \
 	$(MAKE) relevance-branches \
-		RELEVANCE_BRANCH_INPUT=planning/t0-t1-content/relevance-report.v5.diagnostic.json || status=1; \
+		RELEVANCE_BRANCH_INPUT=planning/archive/t0-t1-content/relevance-report.v5.diagnostic.json || status=1; \
 	$(MAKE) relevance-branches \
 		RELEVANCE_SCENARIO=balance/testdata/t0-t1/relevance-scenario-t1-v2.json \
-		RELEVANCE_BRANCH_INPUT=planning/t0-t1-content/relevance-report-t1.v5.diagnostic.json \
-		RELEVANCE_BRANCH_OUTPUT=planning/t0-t1-content/branch-report-t1.v2.json || status=1; \
+		RELEVANCE_BRANCH_INPUT=planning/archive/t0-t1-content/relevance-report-t1.v5.diagnostic.json \
+		RELEVANCE_BRANCH_OUTPUT=planning/archive/t0-t1-content/branch-report-t1.v2.json || status=1; \
 	exit $$status
 
 # Compatibility alias for the pre-C29 upgrade-only gate name.

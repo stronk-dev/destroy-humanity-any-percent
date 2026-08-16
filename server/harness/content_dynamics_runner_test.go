@@ -13,7 +13,7 @@ func TestCandidateContentDynamicsScenarioAndReport(t *testing.T) {
 	root := filepath.Join("..", "..")
 	suite, err := LoadCandidateContentDynamicsSuite(root,
 		"testdata/harness/content-dynamics/scenarios/epoch-7-candidate.v1.json",
-		"planning/t0-t1-content/promotion-manifest.candidate.v1.json")
+		"planning/archive/t0-t1-content/promotion-manifest.candidate.v1.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -104,7 +104,7 @@ func TestContentDynamicsScenarioRejectsInexactAndVacuousInputs(t *testing.T) {
 				}
 				suite, suiteErr := LoadCandidateContentDynamicsSuite(root,
 					"testdata/harness/content-dynamics/scenarios/epoch-7-candidate.v1.json",
-					"planning/t0-t1-content/promotion-manifest.candidate.v1.json")
+					"planning/archive/t0-t1-content/promotion-manifest.candidate.v1.json")
 				if suiteErr != nil {
 					t.Fatal(suiteErr)
 				}

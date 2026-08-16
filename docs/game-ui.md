@@ -50,8 +50,9 @@ Four-times CPU throttling and the five-percent dropped-frame allowance remain th
 mid-range-Android release profile; deterministic CI gates the observable commits and long tasks
 as ruled.
 
-## Open content dependency
+## Live-content boundary
 
-The exact T0→T2 browser progression remains tied to the ratified epoch-7 content mint. The current
-composed path proves real bootstrap, snapshot, WebSocket, and rendered-screen behavior without
-substituting fixture mechanics for content that is not live.
+Epochs 7 and 8 now provide the live T0–T1 economy and first-hour curriculum. The content contract's
+pinned-seed proof drives that sequence through the real composed gameserver and Postgres. The Game
+UI archival gate separately owns the full browser rendition of the live sequence; its existing
+composed path already proves real bootstrap, snapshot, WebSocket, and rendered-screen behavior.

@@ -191,7 +191,7 @@ func firstContentCandidateManifest(t *testing.T) firstContentManifest {
 
 func t0T1CandidateManifest(t *testing.T) firstContentManifest {
 	t.Helper()
-	data, err := os.ReadFile(filepath.Join("..", "..", "planning", "t0-t1-content", "promotion-manifest.candidate.v1.json"))
+	data, err := os.ReadFile(filepath.Join("..", "..", "planning", "archive", "t0-t1-content", "promotion-manifest.candidate.v1.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

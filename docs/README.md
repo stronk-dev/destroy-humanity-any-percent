@@ -58,6 +58,8 @@ Implemented systems:
   generation, and the completeness gates.
 - [Purchasable content](purchasable-content.md) — catalog-driven upgrade/purchase surfaces on the
   economy kernel.
+- [T0–T1 playable content](t0-t1-playable-content.md) — the live first-hour catalogs, measured
+  player policies, scripted first-company ending, branch-specific run-2 starters, and proof gates.
 - [Guilds](guilds.md) — guild model, tithe, and reserved-credit clearing.
 - [Combat](combat.md) — the shared combat data model and arithmetic kernel.
 - [Meters](meters.md) — the live Company meter catalog: bands, decay, inputs, and Trust reseed.
