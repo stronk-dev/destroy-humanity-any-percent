@@ -3465,3 +3465,50 @@ nothing pushed.
 
 The owner's unrelated `AGENTS.md` edit remained untouched and unstaged. No push or deployment was
 performed.
+
+## 2026-08-16 — Claude designated ARCHIVAL review of `df56b6f..755f428` — APPROVED. T0–T1 is archived.
+
+- **Review by:** Claude. **Recorded by:** Claude. **Range:** `{755f428}`.
+
+### Acceptance sweep — all six re-walked against the TREE, not the log
+
+This is the discipline the AC0 miss bought, applied to the RFC's own closing gate. Each criterion
+was executed, not read:
+
+| AC | Claim | How verified | Result |
+|---|---|---|---|
+| **AC0** | idle founder past the offline cap evaluates | Postgres integration run explicitly; mutation disabling catchup reproduces `invalid provision bucket horizon` | **MET** |
+| **AC1** | pacing on real content, grown milestone set, [45,90] Exit gate | scenario carries **7** milestones (up from the 4 fixture ones) and both elective-Exit envelopes; `make first-hour-harness` exit **0**, zero failures | **MET** |
+| **AC2** | zero dead purchasables; every generator class shows a non-production role | `t0-t1-role-check` green; `t0-t1-branch-check` exit 0 with both branch reports empty-failure and all 7 proofs passing | **MET** |
+| **AC3** | strict loaders, epoch protocol, goldens regenerate | `harness-check` 0, `harness-guard-check` 0, `verify-schema` 0 | **MET** |
+| **AC4** | scripted persona completes the sequence on the composed gameserver | composed proof run against real Postgres (10.4 s, genuinely executed); mutation removing the scripted ending makes it fail | **MET** |
+| **AC5** | copy audit, no unverified statistics | `copy-check` 0 | **MET** |
+
+### Archival mechanics
+
+RFC moved to `rfc/archive/` with status `implemented`; planning log moved to
+`planning/archive/t0-t1-content/`; `docs/t0-t1-playable-content.md` is canonical and accurate
+(spot-checked against the shipped scenario, curriculum and epoch identities); the RFC index row
+points at the archive and the docs. A new regression test —
+`TestActiveSourcesDoNotReferencePreArchiveT0T1Evidence` — prevents active sources from reaching
+back to the pre-archive planning path, and a grep confirms none do.
+
+### One clarifying note for future readers (not a finding)
+
+The elective-Exit envelope's **lower** bound is satisfied by construction: the ruled C32 predicate
+fires at the first boundary where founder-attended ≥ 2,700,000 ms and the other conditions hold, so
+both measured values land exactly at 2,700,000. The gate therefore proves *"by 45 minutes a player
+can profitably Exit"* — the real product question — and the **upper** bound is what retains teeth
+(if progression or payout broke, the Exit would come late or never). It does **not** measure how
+long players choose to wait. Recorded so nobody later reads the [45,90] band as a behavioural
+distribution.
+
+### Verdict
+
+**APPROVED. T0–T1 Playable Content is ARCHIVED.** Twelve-plus foundations, two content epochs, and
+a first hour that a person can actually play — click, build, cross into the Garage around seven
+minutes, watch the first company end in the way your own play chose, and start again measurably
+ahead.
+
+**Next on the critical path:** Game-UI acceptance sweep and archival, then Deployment Foundation,
+then THE PUSH — which remains the owner's alone, with ~38 verified commits still unpushed.
