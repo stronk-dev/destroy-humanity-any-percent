@@ -15,7 +15,7 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 | Play The Pitch | `design/03`, minigame RFCs | Pitch tenant + minigame session/resolve service | Generated DTO metadata only; no HTTP client/component/table | Minted Pitch content | Cold real-Postgres/HTTP create→reconnect→commands→terminal/retries; resolver-sever negative | **Backend proven; surface absent/spec-blocked** |
 | Recover Soul through a cozy activity | Soul RFCs | Recovery session coordinator | Framework scheduler only; no constructor/surface/toy | Three minted activities | Cold authenticated composed lifecycle including rotation/heartbeats/resolve/watchdog; no UI | **Backend proven; surface absent/spec-blocked** |
 | Care for a pet | `design/04` | Pet state, decay, actions, replay | Catalog/TS helpers only | Minted policy, no acquired pet workflow | Unit/cross-runtime fixtures | **Mechanical fragment** |
-| Fight a pet/lane battle | Combat RFC family | Exact arithmetic and RNG | None | Fixture arithmetic only | Golden/unit tests | **Mechanical fragment** |
+| Fight a pet/lane battle | Combat RFC family | Proven dual-runtime arithmetic/RNG/chart kernel | No engine or surface | Shared arithmetic vectors only; no combat catalog | Cold Go/client vectors with independent stage/label/chart mutations; client slash gate | **Kernel proven; gameplay absent/spec-blocked** |
 | Join and experience an MMO community | `design/05` | Commons/guild/presence/clearing | No game UI surface | Structural server data only | Server/Postgres integration tests | **Mechanical fragment** |
 | View or submit leaderboards | `design/05 §6` | Run logs, replay verdicts, board projection | Public API/UI incomplete | Live categories exist | Projection tests | **Mechanical fragment** |
 | Build against the documented API | API Foundation | Schema/operation DSL, generator, compatibility checker | 10 generated private operations; 12 hand-mounted routes; no public client/router | No public catalog/board/evidence workflow | Registered drift mutation fails; unregistered handler and raw-fetch-lint probes pass incorrectly | **Mechanical fragment; authority incomplete** |
@@ -59,6 +59,9 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 14. Minigame API's body still claims no persistence, a catalog command budget, `session_expired`,
     and stale dependencies despite opposite rulings; AC4 omits Recovery enumeration and AC5 has no
     exact surface contract, HTTP client, components, or player workflow.
+15. Combat's ledger says chart/lint are unimplemented although the client gate and both-runtime
+    chart properties exist; the RFC still lacks effect/table contracts, and its all-path native
+    division ban is enforced only for client modules while Go Combat divides natively.
 
 ## Genuine proofs worth preserving
 

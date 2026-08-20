@@ -25,14 +25,15 @@ second AC1–AC4 set and reported 115 rows.
 | State family | Rows | Meaning now |
 |---|---:|---|
 | Draft / not a completion claim | 39 | Eight draft RFCs have no implementation claim. |
-| Mechanically backed or cold-witness green, proof/range replay pending | 7 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
-| Proven or historically proven with a named qualification | 17 | Reconciled lifecycle rows plus Minigame API AC1, Game UI AC2/AC3, CI AC2/AC4, Transport AC1, and Account AC1/AC4's current integration/security proofs; qualifications remain explicit. |
-| Unmet or partial | 35 | API/Combat/consumer gaps plus Account/Transport/Game UI/Minigame API and literal-witness gaps. |
-| Contradicted or failed at current HEAD | 9 | Exact current contradictions plus Minigame API AC4, Game UI AC4, API AC4, failed Leaderboards AC5, Minigame Platform AC2, and CI AC5. |
+| Mechanically backed or cold-witness green, proof/range replay pending | 5 | Remaining rows are held for exact archival review/provenance, not unexecuted lifecycle audits. |
+| Proven or historically proven with a named qualification | 20 | Reconciled lifecycle rows plus Combat AC2–AC4, Minigame API AC1, Game UI AC2/AC3, CI AC2/AC4, Transport AC1, and Account AC1/AC4; qualifications remain explicit. |
+| Unmet or partial | 33 | API/Combat/consumer gaps plus Account/Transport/Game UI/Minigame API and literal-witness gaps. |
+| Contradicted or failed at current HEAD | 10 | Exact current contradictions plus Combat AC6, Minigame API AC4, Game UI AC4, API AC4, failed Leaderboards AC5, Minigame Platform AC2, and CI AC5. |
 | Withdrawn / refuted | 4 | Dispatch Integrity is not implementable work. |
 
-The seven mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
-specific witness/range route rather than treating them as a green block.
+The five mechanically backed/cold-witness rows are the remaining exact-review population. Every
+active RFC lifecycle has now been re-walked; these rows retain their named range route rather than
+being promoted by arithmetic.
 
 ## Confirmed criterion-level downgrades
 
@@ -144,9 +145,13 @@ The criterion and lifecycle pass is recorded in `websocket-transport-lifecycle-a
 
 ### Combat Shared Data
 
-- AC1, AC4, AC5, and AC6 remain open with the full catalog, roster properties, Obedience/Soul
-  tables, and combat division lint. Arithmetic and PRNG rows exist but await cold dual-runtime
-  execution and discrimination review.
+- AC2 and AC3 are proven in both runtimes: independent ATK-stage and substream-label mutations fail
+  the shared vector corpus. AC4 is also proven; removing one winning edge fails Go and TypeScript.
+- AC1 and AC5 are specification-blocked. The RFC never enumerates its closed effect/spell unions or
+  literal Trust/Obedience/Soul tables, and neither loaders nor fixtures exist (RP-072).
+- AC6's client half is proven by internal controls and an external nested `.mts` mutation, but the
+  literal all-combat-path claim is contradicted: server Combat uses native division and is outside
+  the gate (RP-074).
 
 ## Lifecycle rows that need transactional reconciliation
 

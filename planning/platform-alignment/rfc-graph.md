@@ -42,7 +42,7 @@ content scope, and an integrated run.
 ## Existing gameplay producers and consumers
 
 ```
-Combat Shared Data
+Combat Shared C2/C5/slash-scope ruling -> strict catalog + input tables + current review
     -> Duel Engine ----\
     -> Lane Engine -----+-> Bots & Integration -> pet/minigame player surfaces
 

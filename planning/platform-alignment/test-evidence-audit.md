@@ -59,7 +59,8 @@ rerun above reached its objective. RP-025 owns selector safety.
 
 - Demonstrate a discriminating failure or relevant mutation for every remaining row promoted
   beyond mechanical presence.
-- Reconcile the remaining seven mechanical/cold-witness rows in Combat Shared.
+- Preserve the remaining five mechanically/cold-backed rows at their named exact-review routes;
+  every active RFC lifecycle pass is now complete.
 - Construct exact current-history review unions before any active RFC archive; the lifecycle
   audits name the missing Account and Transport ranges rather than treating old green prose as a
   verdict.
@@ -169,3 +170,20 @@ Postgres service and collided during destructive test setup, yielding deadlocks/
 keys. Sequential cold reruns immediately passed. AC1 is promoted; AC2/AC3 remain partial, AC4 is a
 failed enumeration oracle, and AC5 remains absent/body-blocked. RP-068–RP-071 and
 `minigame-api-surface-lifecycle-audit.md` carry the repair and review route.
+
+## Batch H — Combat Shared Data & Arithmetic discrimination
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| Cold `./combat ./determinism -count=1` | Combat green; Determinism has no package-local tests | Go kernel is exercised through Combat; shared authority ownership remains cross-package. |
+| Full cold client population | 39 files passed/2 skipped; 6,655 passed/15 skipped | TypeScript Combat plus every downstream shared-RNG consumer executed. |
+| Removed ATK scaling independently in Go and TS | each population failed `atk_scaling_non_identity` with 100 versus 156 | AC2's non-identity arithmetic stage discriminates in both runtimes. |
+| Collapsed every substream label to `crit` independently | Go failed the obedience vector; TS failed Combat plus Fiscal/Pitch/replay consumers | AC3's labeled shared authority and real consumers discriminate in both runtimes. |
+| Removed one chart winning edge independently | Go and TS each failed with one win instead of two | AC4's exact cycle property discriminates in both runtimes. |
+| Added nested client `combat/audit_nested/violation.mts` with `4 / 2` | boundary exit 2 naming the exact file | AC6's client half is recursive and discriminating on the real scanned tree. |
+| Restored boundary/typecheck/product diff | gate exit 0; zero diagnostics; no product diff | Every mutation and temporary file was removed. |
+
+AC2–AC4 are promoted. AC1/AC5 remain specification-blocked because their closed effect and literal
+input-table contracts do not exist. AC6 is contradicted under the literal all-combat-path wording:
+the proven gate scans only client modules while Go Combat contains native division. RP-072–RP-074
+and `combat-shared-lifecycle-audit.md` carry body, implementation, and review-provenance repair.

@@ -337,3 +337,27 @@
 - Wrote `minigame-api-surface-lifecycle-audit.md`. Made no persistent product, RFC/design,
   canonical product-doc, generated artifact, player-copy, or checkbox edit; did not archive, push,
   or touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — Combat Shared Data & Arithmetic lifecycle reconciliation
+
+- Read the complete Combat parent RFC/plan/log, Go/TypeScript arithmetic and shared RNG,
+  cross-runtime vector corpus, recursive AST boundary, canonical doc, child status, implementation
+  history, historical review entries, and current acceptance ledgers.
+- Ran cold Combat/Determinism, the full 6,655-test client population, the combat boundary, and
+  TypeScript/Svelte checks green after restoration.
+- Executed and restored seven one-seam probes: ATK-stage removal, label collapse, and one chart-edge
+  removal independently in both runtimes, plus a real nested `.mts` native-division file. Every
+  claimed implemented behavior failed at the exact oracle; all probe bytes were removed.
+- Promoted AC2–AC4. Kept AC1/AC5 specification-blocked because the RFC supplies neither exact
+  effect/spell unions nor literal Trust/Obedience/Soul tables. Marked AC6 contradicted under its
+  all-path wording: the client gate is proven, while server Combat's native division is unscanned.
+- Confirmed canonical docs honestly describe only the kernel and gaps. The active plan/ledger are
+  stale, all historical review hashes are non-resolving and lack current provenance/ranges, and no
+  designated pass follows the final round-three remediation at current hashes.
+- Filed RP-072–RP-074 for missing owner contracts, stale lifecycle/review truth, and the C3/AC6
+  runtime-scope contradiction. Recomputed the 111-row distribution: 39 draft, five
+  mechanical/cold-pending, 20 proven/qualified, 33 partial/unmet, ten contradicted/failed, and four
+  withdrawn.
+- Wrote `combat-shared-lifecycle-audit.md`. Made no persistent product, RFC/design, canonical
+  product-doc, balance/content, or checkbox edit; did not archive, push, or touch the user's
+  `AGENTS.md` edit.
