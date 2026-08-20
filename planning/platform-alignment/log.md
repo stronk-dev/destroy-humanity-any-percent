@@ -917,3 +917,24 @@
 - Added `partial_mounted` rather than falsely forcing those rows into either `proven_mounted_*` or
   `backend_active`. Every use must name the missing selection/effect/refusal/integrated witness.
   The structural denominator and authority limit are unchanged; no content verdict exists yet.
+
+## 2026-08-21 — Deploy-current gameplay-content evidence attachment
+
+- Added the 579-row evidence ledger, validator, and audit. Final distribution: zero proven mounted
+  effects/presentations, 173 partial-mounted, 180 backend-active, 141 registered-dormant, 55
+  measurement-only, 21 zero/empty placeholders, and nine contradicted.
+- Zero proven mounted rows is a witness result, not a claim that the UI has no data. The composed
+  browser proof stops at Desk without a gameplay transition; screen tests inject snapshots/events;
+  server content tests do not mount the production browser. Those lanes support partial rows only.
+- The dormant pass traces pets with no acquisition, meters with no current source, later-tier
+  routes/economy/offers/achievements, and lower Soul bands/recovery made unreachable by empty debit
+  sources. All 39 structural empties remain classified rather than removed from the denominator.
+- Filed RP-110 in both ledgers: `upgrade.reply_all_macro` multiplies a manual action but binding
+  Tier-1 intent calls it automation. Exact current contradictions also retain RP-109 for four
+  missing hardcap reason keys and RP-017 for the three Soul recovery rows.
+- Reproduced structural payload identity and ran the verdict validator. Seeded dropped/duplicate,
+  backend-as-mounted, empty-as-active, and missing-route cases all failed.
+- After the three new tracked artifacts land, planning contains 229 tracked plus 25 ignored/local-
+  only files; platform alignment contains 75 tracked plus one ignored file. No product, test,
+  design/RFC body, balance/copy/content, canonical product doc, migration, deployment,
+  implementation-plan checkbox, push, or `AGENTS.md` edit occurred.

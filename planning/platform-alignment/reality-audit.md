@@ -103,6 +103,12 @@ workflow summary and grants no inherited proof to mixed child outcomes.
     backend/data-only, seven client/fixture-only, three claimed-only, 188 absent, and two blocked.
     The three integrated rows are duplicate design views of the same server-anonymous bootstrap,
     not three distinct integrated gameplay systems.
+30. The 19 deploy-current gameplay artifacts contain 579 authored object/edge/empty/policy units.
+    None has a row-discriminating mounted witness: 173 have separate/incomplete mounted paths, 180
+    are backend-active, 141 are registered but dormant, 55 are measurement-only, 21 are zero/empty,
+    and nine are contradicted. The contradictions are the reply-all automation mismatch, four
+    missing current hardcap reason keys, and three default-unreachable/self-contradicted Soul
+    recovery rows.
 
 ## Genuine proofs worth preserving
 

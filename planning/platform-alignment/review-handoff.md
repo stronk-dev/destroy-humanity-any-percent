@@ -18,8 +18,8 @@ also classified. Routed author repairs and authorized planning closeouts remain 
 audit may infer. The deployed actor/worker/event boundary is now exact; its absent player/match
 actors and orphaned retention/Route-name schedulers remain routed defects. The 208-key copy
 producer/consumer population is complete and routes RP-108/RP-109; the 579-unit gameplay-content
-population is structurally complete but lacks row verdicts, and semantic oracle consumption remains
-before finalization. The 433-child outcome population is
+population is evidence-complete and adds RP-110, while semantic oracle consumption remains before
+finalization. The 433-child outcome population is
 complete but requires the eventual designated cross-party pass with the rest of the range. The
 archive replay itself is complete and adds RP-105–RP-107; neither bounded pass substitutes for
 those remaining row-level populations.

@@ -150,6 +150,10 @@ larger product capability to proven integration.
   579-unit current-content population with payload identity and empty/root-policy controls.
 - `gameplay-content-row-structure-audit.md` — structural distribution, retained empty collections,
   and explicit no-verdict limit before evidence attachment.
+- `gameplay-content-row-ledger.tsv` / `gameplay-content-row-validator.mjs` — exact reachability and
+  authority trace for all 579 current units with seeded promotion/empty/route failures.
+- `gameplay-content-row-audit.md` — mounted/backend/dormant/measurement/empty/contradiction result
+  and its repository-evidence limit.
 - `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
   counts, authority, current state, and exact closeout gap.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,
