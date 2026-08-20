@@ -52,8 +52,8 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 ## Handoff
 
 The 433-child capability evidence trace and 208-key copy-consumption population are complete. The
-19-artifact gameplay-content row audit is now predeclared and is the active program action; the
-semantic-oracle population follows.
+19 gameplay artifacts now reconcile to 579 structural units; attaching exact reachability evidence
+to those units is the active program action. The semantic-oracle population follows.
 Then finalize `review-handoff.md` and obtain the designated Claude review over the complete
 Codex-authored audit range. Only after that green verdict should the
 three accepted-scope batches in `ready-batch-manifest.tsv` execute serially: Q-001 Account witnesses,

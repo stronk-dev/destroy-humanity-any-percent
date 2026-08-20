@@ -887,3 +887,24 @@
   platform alignment contains 69 tracked plus one ignored file. No product, test, design/RFC body,
   balance/copy/content, canonical product doc, migration, deployment, implementation-plan checkbox,
   push, or `AGENTS.md` edit occurred.
+
+## 2026-08-21 — Deploy-current gameplay-content structural population
+
+- Added the deterministic JSON-unit extractor, 579-row structural ledger, and bounded structural
+  audit. All 19 epoch artifacts reconcile exactly. Units split into 297 array-object rows, 135
+  nested objects, 48 primitive edges, 39 empty collections, 43 root policies, and 17 singleton
+  policies.
+- Family counts are achievements 50, economy 175, categories 21, Commons 21, curriculum seven,
+  doctrines three, factions 11, Fiscal six, guilds ten, meters 56, Minigame API five, minigames 16,
+  opportunities nine, pets 23, Pitch 37, Prestige 19, Relevance 55, routes 45, and Soul ten.
+- The 39 explicit empties include Relevance groups/edges, meter inputs, faction modifier slots,
+  early-gate routes, the final generator ladder, category completion facts, Commons source weights,
+  and Soul debit sources. They receive no automatic defect or acceptance verdict, but cannot vanish
+  from the subsequent evidence denominator.
+- A rerun reproduced the structure byte-for-byte. Seeded dropped-unit, duplicate-unit,
+  empty-collection omission, and root-policy omission cases all failed. Payload hashes and valid
+  epoch inclusion remain structural facts only.
+- After these three new tracked artifacts land, planning contains 226 tracked plus 25 ignored/local-
+  only files; platform alignment contains 72 tracked plus one ignored file. No product, test,
+  design/RFC body, balance/copy/content, canonical product doc, migration, deployment,
+  implementation-plan checkbox, push, or `AGENTS.md` edit occurred.

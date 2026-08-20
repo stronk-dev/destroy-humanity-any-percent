@@ -146,6 +146,10 @@ larger product capability to proven integration.
   authority-bounded consequences of the atomic trace.
 - `gameplay-content-row-plan.md` — frozen 19-artifact JSON-unit grammar, evidence lanes, verdicts,
   controls, manual pass, and authority limit for the remaining deploy-current content audit.
+- `gameplay-content-row-extractor.mjs` / `gameplay-content-row-structure.tsv` — reproducible
+  579-unit current-content population with payload identity and empty/root-policy controls.
+- `gameplay-content-row-structure-audit.md` — structural distribution, retained empty collections,
+  and explicit no-verdict limit before evidence attachment.
 - `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
   counts, authority, current state, and exact closeout gap.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,

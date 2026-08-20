@@ -146,6 +146,10 @@ verified populations and reconciliation defects; it is not yet the completed per
   four platform configs, 15 schemas, and 53 positive/negative/historical/candidate/measurement
   fixtures. A fixture is never counted as deploy-current content merely because a harness consumes
   it.
+- `gameplay-content-row-structure.tsv` expands those 19 epoch artifacts into 579 exact JSON units:
+  297 array-object records, 135 nested objects, 48 primitive edges, 39 explicit empty collections,
+  43 root policy fields, and 17 singleton policies. This is a structural denominator pending
+  per-row reachability evidence, not proof that every valid row affects gameplay.
 - `catalog-family-inventory.tsv` traces 23 live/platform families. The current epoch has 19
   artifacts and resolves to epoch 8 hash
   `sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`;
@@ -233,9 +237,9 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
 
 ## Remaining semantic-depth work
 
-- Extend the completed file/family map into row-level gameplay-content. The 433-outcome evidence
-  trace and all 208 copy-key call sites now reconcile; neither broad parent states nor the old
-  non-discriminating orphan report may be used for capability/release claims.
+- Attach loader/producer/consumer/trigger/witness verdicts to the structurally complete 579-unit
+  deploy-current gameplay-content population. The 433-outcome evidence trace and all 208 copy-key
+  call sites already reconcile; neither broad parent states nor file validity may be inherited.
 - Complete semantic row-level fixture/oracle/negative-control maps now that every executable file,
   target, job, and skip population is structurally bounded.
 - Reconcile the four routed historical/complete live planning threads transactionally after their
