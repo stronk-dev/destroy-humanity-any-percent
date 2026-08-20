@@ -57,6 +57,8 @@ Closed verdict vocabulary:
   in the default mounted workflow, with a row-discriminating witness;
 - `proven_mounted_presentation` — current row is presentation/curriculum data consumed on a mounted
   path with a discriminating render/selection witness;
+- `partial_mounted` — a real production row and mounted consumer exist, but the default workflow,
+  exact row selection/effect, refusal path, or integrated executable witness is incomplete;
 - `backend_active` — the row is loaded and reaches a production backend transition/projection, but
   its intended player surface is absent or incomplete;
 - `backend_registered_dormant` — the row is accepted/registered, but no deploy-current trigger,
@@ -110,7 +112,7 @@ the file or family row.
 - Invalid harness runs, warm-cache summaries, schema acceptance, and fixture-only consumers cannot
   satisfy executable gameplay evidence.
 
-Manual second pass: every mounted, dormant, zero/empty, contradicted, or blocked row; every row in
+Manual second pass: every proven/partial mounted, dormant, zero/empty, contradicted, or blocked row; every row in
 economy, curriculum, Prestige, routes, opportunities, Soul, minigames, meters, pets, and relevance;
 and every family whose children receive more than one verdict. A contradiction pass must reconcile
 the final result with `catalog-family-inventory.tsv`, `capability-outcome-ledger.tsv`,

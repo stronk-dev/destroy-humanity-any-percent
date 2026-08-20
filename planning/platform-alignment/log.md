@@ -908,3 +908,12 @@
   only files; platform alignment contains 72 tracked plus one ignored file. No product, test,
   design/RFC body, balance/copy/content, canonical product doc, migration, deployment,
   implementation-plan checkbox, push, or `AGENTS.md` edit occurred.
+
+## 2026-08-21 — Gameplay-content verdict vocabulary correction
+
+- Before attaching any of the 579 row verdicts, source/witness inspection exposed a missing state in
+  the predeclaration: several deploy-current rows have a real producer and mounted consumer, but
+  only separate server/component fixtures rather than a row-discriminating default-workflow proof.
+- Added `partial_mounted` rather than falsely forcing those rows into either `proven_mounted_*` or
+  `backend_active`. Every use must name the missing selection/effect/refusal/integrated witness.
+  The structural denominator and authority limit are unchanged; no content verdict exists yet.
