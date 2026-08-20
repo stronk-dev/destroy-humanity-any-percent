@@ -237,3 +237,29 @@
   separately from Account token rotation. Made no product, schema, RFC/design, canonical
   product-doc, or player-copy edits; flipped no plan boxes; did not archive or touch the user's
   `AGENTS.md` edit.
+
+## 2026-08-20 — CI Baseline lifecycle reconciliation
+
+- Read the complete CI RFC/plan/log, current workflow and Make graph, all 20 schemas and their
+  verifier bindings, canonical CI docs, R-001 diagnosis/queue, public Actions metadata, successor
+  harness/Game UI records, primary setup-go cache documentation, and relevant review history.
+- Reconfirmed public run `32404232364` at remote `cb162a3`: server, client, browser, schema, and
+  composed-browser succeed in roughly 0.5–2 minutes; the harness step runs 30m02s and is cancelled,
+  cancelling the workflow. This is the same product/workflow coordinate despite local planning-only
+  audit commits.
+- Executed and restored two predeclared failing probes. Changing shared Decimal `0^0` expectation
+  from `1` to `2` made `make test-client` fail exactly one row (6,654 passed); adding a malformed
+  production catalog made `make verify-schema` exit 2. After restoration, client returned to 6,655
+  passed/15 skipped and the complete schema population passed.
+- Promoted CI AC2 and AC4. Kept AC1/AC3 contradicted and marked AC5 contradicted: harness/numeric
+  setup-go defaults cache Go build outputs despite dependency-only claims; schedule/manual runs all
+  blocking jobs; and numeric-maintenance has no non-blocking failure behavior. Scheduled run
+  `31562066740` proves a numeric failure fails the workflow.
+- Filed RP-056 for the four-job/sub-five-minute/harness-excluded body and stale “first hosted run”
+  plan; RP-057 for cache/nightly workflow contradiction; RP-058 for the fragmented full-range
+  review union; and RP-059 because R-001 instrumentation has no active accepted RFC owner.
+- Recomputed the 111-row distribution: 39 draft, 16 mechanical/cold-pending, 14 proven/qualified,
+  32 partial or unmet, six contradicted/failed, and four withdrawn.
+- Wrote `ci-baseline-lifecycle-audit.md`. Made no persistent workflow, Make, schema, product,
+  RFC/design, canonical product-doc, or player-copy edit; flipped no plan boxes; did not archive,
+  push, or touch the user's `AGENTS.md` edit.

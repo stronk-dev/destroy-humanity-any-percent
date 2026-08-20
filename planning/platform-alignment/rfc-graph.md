@@ -6,7 +6,8 @@ producer, content, migration, refusal, or acceptance witness appear by assertion
 ## Release spine
 
 ```
-R-001 CI measurement
+R-001 first-wave diagnosis -> accepted CI/harness observability owner
+    -> authority-preserving hosted measurement
     -> CI Baseline repair/current-head green
 
 R-002 release audit -> D-001 milestone floor -> D-007 content scope

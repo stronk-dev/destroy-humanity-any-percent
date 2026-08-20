@@ -13,6 +13,9 @@ research question; they authorize only the stated downstream action.
   current local green completion at 12 workers, workload expansion since the last hosted green,
   and that worker control excludes relevance. It also rejects scenario-only relevance runs as a
   substitute for active registry authority.
+- **Authority gate:** RP-059. The active CI RFC explicitly excludes the balance harness and the
+  relevant harness/content RFCs are archived; accept a CI amendment or harness-observability RFC
+  before adding the measurement instrument.
 - **Remaining arms:** instrumented native macOS and hosted Linux at 12 workers, split by standard
   pacing phase and authority-preserving registry row. Run 1/4-worker comparisons only for phases
   whose dispatcher actually accepts that control; the original whole-command 1/4/12 arm would be

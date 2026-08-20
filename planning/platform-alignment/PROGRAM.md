@@ -77,6 +77,8 @@ larger product capability to proven integration.
 - `release-platform-audit.md` — release/readiness evidence at the audit coordinate.
 - `reality-audit.md` — producer/consumer/content/proof traces.
 - `active-rfc-audit.md` — lifecycle truth for every active RFC.
+- `*-lifecycle-audit.md` — full criterion/producer/consumer/range traces for each reconciled active
+  implementation RFC.
 - `research-queue.md` — predeclared empirical and verification work.
 - `r001-harness-diagnosis.md` — first-wave hosted/local harness evidence and instrument gap.
 - `decision-queue.md` — choices implementation agents may not infer.

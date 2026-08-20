@@ -59,7 +59,8 @@ rerun above reached its objective. RP-025 owns selector safety.
 
 - Demonstrate a discriminating failure or relevant mutation for every remaining row promoted
   beyond mechanical presence.
-- Reconcile the remaining 19 mechanical/cold-witness rows, beginning with CI AC2/AC4/AC5.
+- Reconcile the remaining 16 mechanical/cold-witness rows, beginning with API, Game UI, Minigame
+  API/Surface, and Combat Shared.
 - Construct exact current-history review unions before any active RFC archive; the lifecycle
   audits name the missing Account and Transport ranges rather than treating old green prose as a
   verdict.
@@ -103,3 +104,20 @@ Typed overflow and bounded drain are also server-only halves: the close listener
 and `resume_after_ms` has no scheduling consumer. AC3's connected stall is under one second and
 allows in-flight plus newest; AC6 has no non-member Guild negative. RP-052–RP-055 and
 `websocket-transport-lifecycle-audit.md` carry the exact remediation and review-range requirements.
+
+## Batch D — CI hosted lifecycle and discrimination replay
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| Public Actions run `32404232364` at remote `cb162a3` | server/client/browser/schema/game-ui-composed success; harness cancelled after 30m02s; workflow cancelled | Same product/workflow coordinate as the audit. Individual jobs are useful; AC1/AC3 are false. |
+| Restored shared-vector mutation (`0^0` expectation `1`→`2`) | `make test-client` exit 2; one failed/6,654 passed/15 skipped | AC2's broken-vector arm discriminates in the actual client job population. |
+| Restored malformed production catalog | `make verify-schema` exit 2 with required/additional-field diagnostics | AC4's command fails on a malformed production-path input, not only on an expected-invalid fixture. |
+| Restored current populations | client 6,655 passed/15 skipped; schema full population exit 0 | Both temporary probes were removed; no probe byte remains in the worktree. |
+| Scheduled Actions run `31562066740` | workflow conclusion failure when numeric-maintenance failed | The job is outside PR latency but not non-blocking in workflow-result semantics. |
+
+Static population enumeration found 20 `*.schema.json` files and 20 explicit schema loads in the
+verifier. AC2 and AC4 are proven. AC5 is contradicted: harness/numeric setup-go steps leave default
+module-plus-build-output caching enabled, while D2/docs claim dependency-only; schedule/manual
+runs the entire blocking workflow and does not tolerate numeric-maintenance failure. RP-056–RP-059
+carry body/plan, workflow, review-union, and R-001 authority defects. Full reasoning is in
+`ci-baseline-lifecycle-audit.md`.

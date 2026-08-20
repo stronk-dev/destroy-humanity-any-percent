@@ -25,13 +25,13 @@ second AC1–AC4 set and reported 115 rows.
 | State family | Rows | Meaning now |
 |---|---:|---|
 | Draft / not a completion claim | 39 | Eight draft RFCs have no implementation claim. |
-| Mechanically backed or cold-witness green, proof/range replay pending | 19 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
-| Proven or historically proven with a named qualification | 12 | Reconciled lifecycle rows plus Transport AC1 and Account AC1/AC4's current integration/security proofs; qualifications remain explicit. |
+| Mechanically backed or cold-witness green, proof/range replay pending | 16 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
+| Proven or historically proven with a named qualification | 14 | Reconciled lifecycle rows plus CI AC2/AC4, Transport AC1, and Account AC1/AC4's current integration/security proofs; qualifications remain explicit. |
 | Unmet or partial | 32 | API/Combat/consumer gaps plus Account/Transport/Game UI and literal-witness gaps. |
-| Contradicted or failed at current HEAD | 5 | Exact current contradictions plus failed Leaderboards AC5 and Minigame Platform AC2. |
+| Contradicted or failed at current HEAD | 6 | Exact current contradictions plus failed Leaderboards AC5, Minigame Platform AC2, and CI AC5. |
 | Withdrawn / refuted | 4 | Dispatch Integrity is not implementable work. |
 
-The 19 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
+The 16 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
 specific witness/range route rather than treating them as a green block.
 
 ## Confirmed criterion-level downgrades
@@ -44,9 +44,15 @@ specific witness/range route rather than treating them as a green block.
 - **AC3 false twice:** the blocking workflow does not finish under five minutes, and it does not
   finish under its later 30-minute harness ceiling on hosted public runners. R-001 carries the
   exact run evidence.
-- AC2 and AC4 have mechanical gates, but their seeded-failure discrimination still requires a
-  current replay. AC5's permission, trigger, concurrency, and declared cache shape mechanically
-  match D2/D3; behavioral and history review remains.
+- **AC2 proven:** current hosted Node and three-engine browser jobs pass; a restored shared-vector
+  corruption makes the actual client gate fail exactly at the corrupted row.
+- **AC4 proven:** the verifier explicitly consumes all 20 schema files, passes current production,
+  and a restored malformed production catalog makes the command exit nonzero.
+- **AC5 false:** permissions and cancellation match, but harness/numeric cache Go build outputs
+  despite dependency-only claims; schedule/manual runs all blocking jobs, and numeric failure can
+  fail the supposedly non-blocking nightly workflow (RP-057).
+- RFC/plan topology is stale (RP-056), review ranges are fragmented (RP-058), and R-001's next
+  harness instrumentation has no active accepted implementation owner (RP-059).
 
 ### Minigame Platform
 

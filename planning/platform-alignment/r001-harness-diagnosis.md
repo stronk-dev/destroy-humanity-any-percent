@@ -106,8 +106,11 @@ authority-preserving selector before recording per-row measurements.
 
 ## Next experiment required before a fix
 
-Under the active CI Baseline RFC (or an accepted amendment if its body does not authorize the
-instrument), add diagnostic-only phase and registry-row timing with:
+The CI lifecycle audit resolved the parenthetical authority question: the active CI Baseline RFC
+explicitly declares the balance harness out of scope, while the relevant harness/content RFCs are
+archived. RP-059 therefore blocks instrumentation until an accepted CI amendment or active
+harness-observability RFC owns it. After that authority exists, add diagnostic-only phase and
+registry-row timing with:
 
 - phase/row start and completion records;
 - declared and executed runs/transitions;

@@ -20,7 +20,7 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 | View or submit leaderboards | `design/05 §6` | Run logs, replay verdicts, board projection | Public API/UI incomplete | Live categories exist | Projection tests | **Mechanical fragment** |
 | Experience events/world narrative | `design/09`, `design/13` | Meters/routes can feed future evaluators | None | No Layer-1/2/3 event content | None | **Absent** |
 | Reach the designed ending | `design/01`, `design/11` | Early Exit machinery only | Early Run End component | T0–T1 only | First-company ending proof | **Absent as designed product** |
-| Trust hosted CI at HEAD | CI RFC | Six Actions jobs | Branch/release gate | Current `main` | Runs 32009994004, 32096019304, 32212696707, 32328790752 | **No current verdict** |
+| Trust hosted CI at HEAD | CI RFC | Six blocking Actions jobs plus scheduled numeric maintenance | Branch/release gate | Current `main` | Runs 32009994004, 32096019304, 32212696707, 32328790752, 32404232364 | **Contradicted: harness cancellation** |
 | Self-host/recover service | `design/06`, sunset research | Gameserver binary; migrations | No production packaging/runbook | Test Compose only | No clean-host rehearsal | **Absent** |
 
 ## False or stale claims found
@@ -46,6 +46,9 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
    are not repository-shared memory for a fresh clone. `backlog.md` is the tracked interim ledger.
 10. Transport T3/T4 and canonical docs call the per-scope cursor/recovery path client authority,
     but the production Game UI neither imports that cursor nor stores positions/reconnects.
+11. CI's body/plan still describe a four-job, under-five-minute baseline awaiting its first hosted
+    run; current topology has six blocking jobs, repeated hosted cancellations, and cache/nightly
+    behavior that contradicts canonical claims.
 
 ## Genuine proofs worth preserving
 
