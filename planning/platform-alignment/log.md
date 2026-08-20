@@ -136,3 +136,24 @@
   verdict. Wrote `prestige-lifecycle-audit.md` with exact evidence and the safe closeout order.
 - Made no product, balance, schema, RFC, canonical product-doc, or player-copy edits; flipped no
   plan boxes; did not archive or touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — Leaderboards & Balance Epochs lifecycle reconciliation
+
+- Read the complete active Leaderboards RFC/plan/log, design outcomes, current epoch/board/category
+  implementation, canonical docs, the archived Run Genesis RFC/log, its live remediation thread,
+  replay corpus, public API registry, gameserver composition, client tree, and all relevant review
+  entries and commit history.
+- Ran cold `./leaderboard ./production ./replaycatalog ./epochseed`, all client tests, real-Postgres
+  Integration tests for `./leaderboard ./production ./gameserver`, focused epoch-guard tests, and
+  the live repository history guard; all passed.
+- Promoted AC2 and AC4 only to cold-witness green pending archival review. Kept AC1 and AC3 partial,
+  classified AC6 as missing, and marked AC5 failed: Exit serializes current Compact membership,
+  leaving clears it, and the projector trusts the terminal boolean without reading membership
+  history. The existing fixture hard-codes true and cannot falsify this path.
+- Filed RP-039–RP-043 for the Assisted defect, missing runtime/client consumers, missing literal
+  witnesses, body/scope contradictions, and lifecycle/range-provenance defects. Confirmed the
+  player capability has no production board/epoch HTTP binding, client reader/page, historical
+  browse, archive-validator workflow, or combined Route Registry surface.
+- Wrote `leaderboards-lifecycle-audit.md` with producer→consumer classification and safe closeout
+  order. Made no product, balance, schema, RFC, canonical product-doc, or player-copy edits; flipped
+  no plan boxes; did not archive or touch the user's `AGENTS.md` edit.
