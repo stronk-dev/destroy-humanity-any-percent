@@ -1,0 +1,433 @@
+capability_id	parent_id	design_ref	user_outcome	parent_preliminary_state	parent_route
+V-001.01	V-001	design/00 satire thesis	Play without real-money purchase or payout paths	mechanical_presence	dependency/runtime/legal surface audit
+V-001.02	V-001	design/00 satire thesis	Play without advertising	mechanical_presence	dependency/runtime/legal surface audit
+V-001.03	V-001	design/00 satire thesis	Play without functional NFT or token monetization	mechanical_presence	dependency/runtime/legal surface audit
+V-002.01	V-002	design/00 pillar 1	Progress through a viable idle build	bounded_server_evidence	full milestone/persona relevance trace
+V-002.02	V-002	design/00 pillar 1	Progress through a viable active build	bounded_server_evidence	full milestone/persona relevance trace
+V-002.03	V-002	design/00 pillar 1	Choose genuinely different idle and active verbs	bounded_server_evidence	full milestone/persona relevance trace
+V-003.01	V-003	design/00 pillar 2	Use a bot fallback for global milestone participation	mechanical_fragments	per-feature producer/consumer/fallback matrix
+V-003.02	V-003	design/00 pillar 2	Use a bot fallback for guild-dependent play	mechanical_fragments	per-feature producer/consumer/fallback matrix
+V-003.03	V-003	design/00 pillar 2	Use a bot fallback for direct PvP	mechanical_fragments	per-feature producer/consumer/fallback matrix
+V-003.04	V-003	design/00 pillar 2	Use a bot fallback for each multiplayer minigame	mechanical_fragments	per-feature producer/consumer/fallback matrix
+V-003.05	V-003	design/00 pillar 2	See every bot identified honestly	mechanical_fragments	per-feature producer/consumer/fallback matrix
+V-003.06	V-003	design/00 pillar 2	Run every bot through the same validation rules as a human	mechanical_fragments	per-feature producer/consumer/fallback matrix
+V-004.01	V-004	design/00 pillar 3	Reach a designed terminal ending	absent	D-001/D-007 plus tier/endgame RFC DAG
+V-004.02	V-004	design/00 pillar 3	Choose among three terminal endings	absent	D-001/D-007 plus tier/endgame RFC DAG
+V-004.03	V-004	design/00 pillar 3	Submit a completed run to a leaderboard	absent	D-001/D-007 plus tier/endgame RFC DAG
+V-005.01	V-005	design/00 pillar 4	Encounter a distinct mechanic grammar at each tier	absent_beyond_t1	stable tier capability traces
+V-005.02	V-005	design/00 pillar 4	Have each new tier automate prior-tier work	absent_beyond_t1	stable tier capability traces
+V-006.01	V-006	design/00 pillar 5	Use attended-time mechanics	mechanical_fragments	clock/persistence/offline workflow audit
+V-006.02	V-006	design/00 pillar 5	Use wall-clock mechanics	mechanical_fragments	clock/persistence/offline workflow audit
+V-006.03	V-006	design/00 pillar 5	Use fixed-budget or swap-clock mechanics	mechanical_fragments	clock/persistence/offline workflow audit
+V-006.04	V-006	design/00 pillar 5	Use production-immune Fiscal time	mechanical_fragments	clock/persistence/offline workflow audit
+V-007.01	V-007	design/00 pillar 6	Play without paid FOMO or absence cost	claimed_and_partial	D-016 then R-009 plus privacy/telemetry/honesty appendix release audit
+V-007.02	V-007	design/00 pillar 6	See every parodied dark pattern disclosed	claimed_and_partial	D-016 then R-009 plus privacy/telemetry/honesty appendix release audit
+V-007.03	V-007	design/00 pillar 6	Have gameplay telemetry minimized	claimed_and_partial	D-016 then R-009 plus privacy/telemetry/honesty appendix release audit
+V-007.04	V-007	design/00 pillar 6	See collected gameplay telemetry disclosed	claimed_and_partial	D-016 then R-009 plus privacy/telemetry/honesty appendix release audit
+V-008.01	V-008	design/00 pillar 7	Have production results decided server-side	bounded_server_evidence	public consumer/formula proof
+V-008.02	V-008	design/00 pillar 7	Read published community/contribution formulas	bounded_server_evidence	public consumer/formula proof
+V-009.01	V-009	design/00 anti-goals	Play in a browser	partial	accessibility/mobile/formula/fallback audits
+V-009.02	V-009	design/00 anti-goals	Complete core play on a mobile-width viewport	partial	accessibility/mobile/formula/fallback audits
+V-009.03	V-009	design/00 anti-goals	See every cap as a visible hard number	partial	accessibility/mobile/formula/fallback audits
+V-009.04	V-009	design/00 anti-goals	Use in-game tools instead of a required external wiki	partial	accessibility/mobile/formula/fallback audits
+V-009.05	V-009	design/00 anti-goals	Compete without bots or players receiving unearned rule exceptions	partial	accessibility/mobile/formula/fallback audits
+T-000.01	T-000	design/01 Tier 0	Perform the Tier-0 manual action	partial_browser_integration	full first-session workflow
+T-000.02	T-000	design/01 Tier 0	Buy and benefit from Tier-0 generators	partial_browser_integration	full first-session workflow
+T-000.03	T-000	design/01 Tier 0	Use the honest 1995 presentation	partial_browser_integration	full first-session workflow
+T-000.04	T-000	design/01 Tier 0	Understand Tier-0 play through diegetic teaching	partial_browser_integration	full first-session workflow
+T-001.01	T-001	design/01 Tier 1	Progress through the Tier-1 generator cost curve	partial_browser_integration	full first-hour workflow and content trace
+T-001.02	T-001	design/01 Tier 1	Buy and benefit from Tier-1 upgrades	partial_browser_integration	full first-hour workflow and content trace
+T-001.03	T-001	design/01 Tier 1	Make a meaningful Tier-1 buy-order choice	partial_browser_integration	full first-hour workflow and content trace
+T-001.04	T-001	design/01 Tier 1	Automate Tier-0 manual work	partial_browser_integration	full first-hour workflow and content trace
+T-001.05	T-001	design/01 Tier 1	Encounter the free-shop satire	partial_browser_integration	full first-hour workflow and content trace
+T-002.01	T-002	design/01 Tier 2	Allocate finite Tier-2 headcount among roles	absent_beyond_foundations	content/RFC DAG
+T-002.02	T-002	design/01 Tier 2	Observe Soul in Tier 2	absent_beyond_foundations	content/RFC DAG
+T-002.03	T-002	design/01 Tier 2	Change Soul through Tier-2 choices	absent_beyond_foundations	content/RFC DAG
+T-002.04	T-002	design/01 Tier 2	Choose a faction through a Faustian bargain	absent_beyond_foundations	content/RFC DAG
+T-002.05	T-002	design/01 Tier 2	Access the first major minigames	absent_beyond_foundations	content/RFC DAG
+T-002.06	T-002	design/01 Tier 2	Take the first elective Exit	absent_beyond_foundations	content/RFC DAG
+T-003.01	T-003	design/01 Tier 3	Price cloud capacity against tenant demand	absent_beyond_foundations	content/RFC DAG
+T-003.02	T-003	design/01 Tier 3	Manage distinct tenant workload curves	absent_beyond_foundations	content/RFC DAG
+T-003.03	T-003	design/01 Tier 3	Meet tenant SLA constraints	absent_beyond_foundations	content/RFC DAG
+T-003.04	T-003	design/01 Tier 3	Choose an irreversible enshittification stage	absent_beyond_foundations	content/RFC DAG
+T-003.05	T-003	design/01 Tier 3	Automate headcount management	absent_beyond_foundations	content/RFC DAG
+T-003.06	T-003	design/01 Tier 3	Operate the Bakery tenant	absent_beyond_foundations	content/RFC DAG
+T-003.07	T-003	design/01 Tier 3	Use the tenant daemon lifecycle	absent_beyond_foundations	content/RFC DAG
+T-004.01	T-004	design/01 Tier 4	Draft a region on the shared map	absent	world/content/RFC DAG
+T-004.02	T-004	design/01 Tier 4	Manage physical capacity constraints	absent	world/content/RFC DAG
+T-004.03	T-004	design/01 Tier 4	See every rack/site in the diorama	absent	world/content/RFC DAG
+T-004.04	T-004	design/01 Tier 4	Record addressed Externality entries	absent	world/content/RFC DAG
+T-004.05	T-004	design/01 Tier 4	Automate pricing	absent	world/content/RFC DAG
+T-005.01	T-005	design/01 Tier 5	Allocate compute data and safety research	absent	content/RFC DAG
+T-005.02	T-005	design/01 Tier 5	Commit to timed model-training runs	absent	content/RFC DAG
+T-005.03	T-005	design/01 Tier 5	Experience recursive model collapse	absent	content/RFC DAG
+T-005.04	T-005	design/01 Tier 5	Choose a Safety or e/acc research route	absent	content/RFC DAG
+T-005.05	T-005	design/01 Tier 5	Automate datacenter operation	absent	content/RFC DAG
+T-006.01	T-006	design/01 Tier 6	Author a founder policy script	absent	content/RFC DAG
+T-006.02	T-006	design/01 Tier 6	Execute a founder policy script	absent	content/RFC DAG
+T-006.03	T-006	design/01 Tier 6	Save a policy script	absent	content/RFC DAG
+T-006.04	T-006	design/01 Tier 6	Name a policy script	absent	content/RFC DAG
+T-006.05	T-006	design/01 Tier 6	Share a policy script	absent	content/RFC DAG
+T-006.06	T-006	design/01 Tier 6	Manage founder mortality through longevity choices	absent	content/RFC DAG
+T-006.07	T-006	design/01 Tier 6	Use billionaire-layer Personal Wealth	absent	content/RFC DAG
+T-006.08	T-006	design/01 Tier 6	Automate active lower-tier play	absent	content/RFC DAG
+T-007.01	T-007	design/01 Tier 7	Optimize an increasingly self-playing system	absent	content/RFC DAG
+T-007.02	T-007	design/01 Tier 7	Use TAS-like route planning	absent	content/RFC DAG
+T-007.03	T-007	design/01 Tier 7	Choose a Transcendence path	absent	content/RFC DAG
+T-007.04	T-007	design/01 Tier 7	Resolve founder Soul consequences	absent	content/RFC DAG
+T-008.01	T-008	design/01 Tier 8	Manage Planet depletion as the terminal grammar	absent	world/endgame RFC DAG
+T-008.02	T-008	design/01 Tier 8	Choose a terminal response to depletion	absent	world/endgame RFC DAG
+T-008.03	T-008	design/01 Tier 8	See the shared world resolve the ending	absent	world/endgame RFC DAG
+T-009.01	T-009	design/01 endings	Reach the Ascension ending	absent	owner release scope plus verified content contracts
+T-009.02	T-009	design/01 endings	Reach the Long Decay ending	absent	owner release scope plus verified content contracts
+T-009.03	T-009	design/01 endings	Reach the Both Graphs ending	absent	owner release scope plus verified content contracts
+T-009.04	T-009	design/01 endings	Reach designed ending variants	absent	owner release scope plus verified content contracts
+T-010.01	T-010	design/01 prestige	Receive tier-flavored Exit offers	bounded_t0_t1_only	Prestige closeout plus later-tier content
+T-010.02	T-010	design/01 prestige	Choose to accept or decline an Exit offer	bounded_t0_t1_only	Prestige closeout plus later-tier content
+T-010.03	T-010	design/01 prestige	Carry Founder progression across runs	bounded_t0_t1_only	Prestige closeout plus later-tier content
+T-010.04	T-010	design/01 prestige	Complete a multi-run arc	bounded_t0_t1_only	Prestige closeout plus later-tier content
+E-001.01	E-001	design/02 §1	Persist Company-scoped state	mechanical_fragments	per-scope persistence and consumer audit
+E-001.02	E-001	design/02 §1	Persist Founder-scoped state	mechanical_fragments	per-scope persistence and consumer audit
+E-001.03	E-001	design/02 §1	Persist World-scoped state	mechanical_fragments	per-scope persistence and consumer audit
+E-001.04	E-001	design/02 §1	Persist Guild-scoped state	mechanical_fragments	per-scope persistence and consumer audit
+E-002.01	E-002	design/02 §2.1	Apply declarative geometric generator costs	proven_bounded	preserve golden/cold witnesses
+E-002.02	E-002	design/02 §2.1	Compute exact bulk affordability	proven_bounded	preserve golden/cold witnesses
+E-003.01	E-003	design/02 §2.2	Apply the production stack in declared order	partial	all named multiplier producers and formula UI
+E-003.02	E-003	design/02 §2.2	Show the contribution formula to the player	partial	all named multiplier producers and formula UI
+E-003.03	E-003	design/02 §2.2	Clamp each configured production hardcap visibly	partial	all named multiplier producers and formula UI
+E-004.01	E-004	design/02 §2.3	Activate deterministic attended-time buff windows	partial	active-play plus missing daemons/UI trace
+E-004.02	E-004	design/02 §2.3	Apply the Lucky bank formula	partial	active-play plus missing daemons/UI trace
+E-004.03	E-004	design/02 §2.3	Validate active clicks server-side	partial	active-play plus missing daemons/UI trace
+E-004.04	E-004	design/02 §2.3	Use attach accrue and pop daemon mechanics	partial	active-play plus missing daemons/UI trace
+E-005.01	E-005	design/02 §2.4	Accrue offline production at 90 percent	proven_bounded	browser return presentation pending
+E-005.02	E-005	design/02 §2.4	Clamp one offline span to 24 hours	proven_bounded	browser return presentation pending
+E-005.03	E-005	design/02 §2.4	Show the credited offline result on return	proven_bounded	browser return presentation pending
+E-006.01	E-006	design/02 §2c	Apply mandatory economy sinks	partial	catalog/economy/achievement audit
+E-006.02	E-006	design/02 §2c	Mint currencies only through declared cap owners	partial	catalog/economy/achievement audit
+E-006.03	E-006	design/02 §2c	Evaluate achievement provenance proof	partial	catalog/economy/achievement audit
+E-006.04	E-006	design/02 §2c	Evaluate achievement possession proof	partial	catalog/economy/achievement audit
+E-006.05	E-006	design/02 §2c	Evaluate achievement burn proof	partial	catalog/economy/achievement audit
+E-007.01	E-007	design/02 §3	Earn and spend Reputation	partial	per-currency producer/consumer workflow
+E-007.02	E-007	design/02 §3	Carry designated Network slots	partial	per-currency producer/consumer workflow
+E-007.03	E-007	design/02 §3	Earn and spend Route Knowledge	partial	per-currency producer/consumer workflow
+E-007.04	E-007	design/02 §3	Earn and use Clout	partial	per-currency producer/consumer workflow
+E-007.05	E-007	design/02 §3	Extract and spend Personal Wealth	partial	per-currency producer/consumer workflow
+E-007.06	E-007	design/02 §3	Advance Founder Age	partial	per-currency producer/consumer workflow
+E-008.01	E-008	design/02 §3.3	Receive full-terms acquihire or acquisition offers	partial	T0-T1 scripted offer only; broader content absent
+E-008.02	E-008	design/02 §3.3	Wind Down a run on demand	partial	T0-T1 scripted offer only; broader content absent
+E-008.03	E-008	design/02 §3.3	Complete a doctrine-gated IPO Exit	partial	T0-T1 scripted offer only; broader content absent
+E-008.04	E-008	design/02 §3.3	Strip-mine a branch before Exit	partial	T0-T1 scripted offer only; broader content absent
+E-009.01	E-009	design/02 §4	Observe the shared Planet ratchet	mechanical_fragments	world/player consumers absent
+E-009.02	E-009	design/02 §4	Contribute to a community milestone	mechanical_fragments	world/player consumers absent
+E-009.03	E-009	design/02 §4	Accrue and spend guild tithe value	mechanical_fragments	world/player consumers absent
+E-009.04	E-009	design/02 §4	Earn and spend Influence	mechanical_fragments	world/player consumers absent
+E-010.01	E-010	design/02 §5	Advance an Earnings Call on wall time only	backend_fragment	player ritual/UI proof
+E-010.02	E-010	design/02 §5	Harvest early with declared failure probability	backend_fragment	player ritual/UI proof
+E-010.03	E-010	design/02 §5	Receive guaranteed or automatic harvest	backend_fragment	player ritual/UI proof
+E-010.04	E-010	design/02 §5	Spend Investor Confidence	backend_fragment	player ritual/UI proof
+E-010.05	E-010	design/02 §5	Choose between hoarding and spending Confidence	backend_fragment	player ritual/UI proof
+E-011.01	E-011	design/02 §6	Mint Clout from the single declared social source	mechanical_fragment	mint ownership and player consumers
+E-011.02	E-011	design/02 §6	Persist Clout without adding it directly to production	mechanical_fragment	mint ownership and player consumers
+E-011.03	E-011	design/02 §6	Spend lifetime Clout on reach	mechanical_fragment	mint ownership and player consumers
+E-011.04	E-011	design/02 §6	Use run-local Clout through declared production effects	mechanical_fragment	mint ownership and player consumers
+E-012.01	E-012	design/02 §7	Observe ten independent Trust bars	mechanical_fragment	full moral content and decorrelation gate
+E-012.02	E-012	design/02 §7	Observe Soul separately from Trust	mechanical_fragment	full moral content and decorrelation gate
+E-012.03	E-012	design/02 §7	Record Externality as addressed ledger entries	mechanical_fragment	full moral content and decorrelation gate
+E-012.04	E-012	design/02 §7	Keep p-doom as a pressure meter	mechanical_fragment	full moral content and decorrelation gate
+E-012.05	E-012	design/02 §7	Gate routes on dated facts	mechanical_fragment	full moral content and decorrelation gate
+E-012.06	E-012	design/02 §7	Gate endings on dated facts	mechanical_fragment	full moral content and decorrelation gate
+E-012.07	E-012	design/02 §7	Detect Trust-Soul correlation drift	mechanical_fragment	full moral content and decorrelation gate
+E-013.01	E-013	design/02 §8	Drain Soul from declared choices	backend_fragment	player recovery surface and endgame
+E-013.02	E-013	design/02 §8	Lock human content by Soul band	backend_fragment	player recovery surface and endgame
+E-013.03	E-013	design/02 §8	Recover Soul through attended zero-output activity	backend_fragment	player recovery surface and endgame
+E-013.04	E-013	design/02 §8	Prevent passive idle Soul refill	backend_fragment	player recovery surface and endgame
+E-013.05	E-013	design/02 §8	Resolve the terminal ending from Soul	backend_fragment	player recovery surface and endgame
+E-014.01	E-014	design/02 §9	Accrue capped Compute Credits from offline time	mechanical_fragment	HUD/auto-spend/return workflow
+E-014.02	E-014	design/02 §9	Spend Compute Credits on chosen acceleration	mechanical_fragment	HUD/auto-spend/return workflow
+E-014.03	E-014	design/02 §9	See banked time in the primary HUD	mechanical_fragment	HUD/auto-spend/return workflow
+E-014.04	E-014	design/02 §9	Opt into automatic Compute Credit spending	mechanical_fragment	HUD/auto-spend/return workflow
+E-014.05	E-014	design/02 §9	Receive a visible return bonus after absence	mechanical_fragment	HUD/auto-spend/return workflow
+E-015.01	E-015	design/02 §10	Complete a daily activity bar with a done state	absent	future accepted RFCs
+E-015.02	E-015	design/02 §10	Accumulate lifetime streak days without reset	absent	future accepted RFCs
+E-015.03	E-015	design/02 §10	Use the published weekly theme calendar	absent	future accepted RFCs
+E-015.04	E-015	design/02 §10	Compare with one bracketed weekly rival	absent	future accepted RFCs
+E-015.05	E-015	design/02 §10	Spend event scrip at posted exchange-shop prices	absent	future accepted RFCs
+E-015.06	E-015	design/02 §10	Auto-convert leftover event scrip	absent	future accepted RFCs
+E-015.07	E-015	design/02 §10	Keep daily systems from gating tier or Fiscal progress	absent	future accepted RFCs
+E-016.01	E-016	design/02 §11	Reach the first generator within target	proven_t0_t1_only	R-001 plus later-tier scenarios
+E-016.02	E-016	design/02 §11	Reach Tier 1 within target	proven_t0_t1_only	R-001 plus later-tier scenarios
+E-016.03	E-016	design/02 §11	Reach the first minigame within target	proven_t0_t1_only	R-001 plus later-tier scenarios
+E-016.04	E-016	design/02 §11	Reach the first elective Exit within target	proven_t0_t1_only	R-001 plus later-tier scenarios
+E-016.05	E-016	design/02 §11	Reach Tier 3 within target	proven_t0_t1_only	R-001 plus later-tier scenarios
+E-016.06	E-016	design/02 §11	Establish the first Earnings Call within target	proven_t0_t1_only	R-001 plus later-tier scenarios
+E-016.07	E-016	design/02 §11	Reach Tier 4 within target	proven_t0_t1_only	R-001 plus later-tier scenarios
+E-016.08	E-016	design/02 §11	Reach Tier 5 within target	proven_t0_t1_only	R-001 plus later-tier scenarios
+E-016.09	E-016	design/02 §11	Reach Tier 6 within target	proven_t0_t1_only	R-001 plus later-tier scenarios
+E-016.10	E-016	design/02 §11	Reach the first ending within target	proven_t0_t1_only	R-001 plus later-tier scenarios
+E-017.01	E-017	design/02 §11b	Keep each purchasable relevant to at least one persona	bounded_t0_t1_evidence	R-001 current-head validity
+E-017.02	E-017	design/02 §11b	Detect trap purchases in the reference persona	bounded_t0_t1_evidence	R-001 current-head validity
+E-017.03	E-017	design/02 §11b	Publish per-tier contribution shares by epoch	bounded_t0_t1_evidence	R-001 current-head validity
+E-018.01	E-018	design/02 §12	Preserve Go and TypeScript big-number parity	proven_integration	preserve golden vectors
+E-018.02	E-018	design/02 §12	Use canonical decimal strings on the wire	proven_integration	preserve golden vectors
+E-018.03	E-018	design/02 §12	Refuse to persist NaN state	proven_integration	preserve golden vectors
+M-001.01	M-001	design/03 contract	Declare the clock for every minigame	claimed_framework	per-minigame implementation matrix
+M-001.02	M-001	design/03 contract	Declare the economy hook for every minigame	claimed_framework	per-minigame implementation matrix
+M-001.03	M-001	design/03 contract	Provide an honest fallback for every multiplayer minigame	claimed_framework	per-minigame implementation matrix
+M-001.04	M-001	design/03 contract	Stagger minigame unlocks	claimed_framework	per-minigame implementation matrix
+M-001.05	M-001	design/03 contract	Persist minigame state and results	claimed_framework	per-minigame implementation matrix
+M-001.06	M-001	design/03 contract	Freeze scaling inputs at session creation	claimed_framework	per-minigame implementation matrix
+M-001.07	M-001	design/03 contract	Apply offline-quality policy	claimed_framework	per-minigame implementation matrix
+M-002.01	M-002	design/03 §1	Server Garden	absent	future RFC
+M-003.01	M-003	design/03 §2	Advisory Board	absent	future RFC
+M-004.01	M-004	design/03 §3	Ship-It Spellbook	absent	future RFC
+M-005.01	M-005	design/03 §4	The Market	absent	future RFC
+M-006.01	M-006	design/03 §5	Play each designed board game	absent	research/license checks and future RFC
+M-006.02	M-006	design/03 §5	Enter flat ranked board-game play	absent	research/license checks and future RFC
+M-006.03	M-006	design/03 §5	Receive bot matchmaking for board games	absent	research/license checks and future RFC
+M-007.01	M-007	design/03 §5b	Enter a regional parlor	absent	milestone/content decisions and RFC graph
+M-007.02	M-007	design/03 §5b	Use social parlor rituals	absent	milestone/content decisions and RFC graph
+M-007.03	M-007	design/03 §5b	Play the declared parlor game taxonomy	absent	milestone/content decisions and RFC graph
+M-008.01	M-008	design/03 missing §5c	Zero-reward cozy minigames as sole Soul recovery source	contradictory_missing_section	RP-017 author reconciliation
+M-009.01	M-009	design/03 §6	Incident Response	absent	future RFC
+M-010.01	M-010	design/03 §7	Terminal Typer	absent	future RFC
+M-011.01	M-011	design/03 §8	Open the Demo Disc Arcade	static_parody_fragment	RP-017 plus actual minigame/content RFC
+M-011.02	M-011	design/03 §8	Play a real arcade tenant from the Demo Disc	static_parody_fragment	RP-017 plus actual minigame/content RFC
+M-012.01	M-012	design/03 §9	Bakery Inc.	absent	future RFC
+M-013.01	M-013	design/03 §10	Play the lane-pusher minigame	arithmetic_only	combat parent/child RFCs
+M-013.02	M-013	design/03 §10	Receive an honest lane-pusher bot opponent	arithmetic_only	combat parent/child RFCs
+M-014.01	M-014	design/03 §10b	Play a pet battle	arithmetic_only	combat parent/child RFCs
+M-014.02	M-014	design/03 §10b	Receive an honest pet-battle bot opponent	arithmetic_only	combat parent/child RFCs
+M-015.01	M-015	design/03 §12a	Complete a five-minute daily minigame session	absent	future RFC
+M-015.02	M-015	design/03 §12a	Stop without losing progress or rewards after the daily session	absent	future RFC
+M-016.01	M-016	design/03 §12b	Freeze tier scaling inputs at minigame creation	backend_fragment	platform body reconciliation and player consumers
+M-016.02	M-016	design/03 §12b	Apply declared fairness bounds	backend_fragment	platform body reconciliation and player consumers
+M-016.03	M-016	design/03 §12b	Decay offline automation quality visibly	backend_fragment	platform body reconciliation and player consumers
+M-017.01	M-017	archived Pitch RFC/The Pitch design seam	Create and play a Pitch session	backend_proven_surface_absent	Minigame API Surface MA-C9
+M-017.02	M-017	archived Pitch RFC/The Pitch design seam	Reconnect to an in-progress Pitch session	backend_proven_surface_absent	Minigame API Surface MA-C9
+M-017.03	M-017	archived Pitch RFC/The Pitch design seam	Resolve Pitch rewards	backend_proven_surface_absent	Minigame API Surface MA-C9
+M-017.04	M-017	archived Pitch RFC/The Pitch design seam	Complete Pitch through a mounted player surface	backend_proven_surface_absent	Minigame API Surface MA-C9
+P-001.01	P-001	design/04 §1	Acquire a Founder companion	backend_policy_fragment	acquisition and UI workflow RFC
+P-001.02	P-001	design/04 §1	Apply offline-safe pet care decay	backend_policy_fragment	acquisition and UI workflow RFC
+P-001.03	P-001	design/04 §1	Perform a pet care action	backend_policy_fragment	acquisition and UI workflow RFC
+P-001.04	P-001	design/04 §1	Observe pet behavior state	backend_policy_fragment	acquisition and UI workflow RFC
+P-001.05	P-001	design/04 §1	Observe pet bond or trust	backend_policy_fragment	acquisition and UI workflow RFC
+P-002.01	P-002	design/04 §2	Resolve a hardcapped pet battle	arithmetic_only	combat RFC sequence
+P-002.02	P-002	design/04 §2	Apply care state to battle reliability	arithmetic_only	combat RFC sequence
+P-002.03	P-002	design/04 §2	Play pet battles against an honest bot	arithmetic_only	combat RFC sequence
+P-003.01	P-003	design/04 §3	Decorate a cosmetic house	absent	future RFC
+P-003.02	P-003	design/04 §3	Visit another player's house without destructive interaction	absent	future RFC
+P-004.01	P-004	design/04 §4	Open a free cosmetic lootbox	copy_static_fragment	catalog/acquisition/UI/legal proof
+P-004.02	P-004	design/04 §4	See exact cosmetic odds and dark-pattern disclosure	copy_static_fragment	catalog/acquisition/UI/legal proof
+P-004.03	P-004	design/04 §4	Equip a cosmetic reward	copy_static_fragment	catalog/acquisition/UI/legal proof
+P-005.01	P-005	design/04 §5	Breed cosmetic pet traits	absent	future RFC
+P-005.02	P-005	design/04 §5	Retire an elder pet without punitive loss	absent	future RFC
+P-006.01	P-006	design/04 §6	Render a pet from CSS parts	absent	client/rendering RFC
+P-006.02	P-006	design/04 §6	Respect reduced motion in creature rendering	absent	client/rendering RFC
+S-001.01	S-001	design/05 §1	Contribute to a global milestone	structural_fragments	World/Events accepted RFCs and telemetry research
+S-001.02	S-001	design/05 §1	Receive a personal contribution reward	structural_fragments	World/Events accepted RFCs and telemetry research
+S-001.03	S-001	design/05 §1	Unlock a global milestone tier	structural_fragments	World/Events accepted RFCs and telemetry research
+S-001.04	S-001	design/05 §1	Observe canonical milestone failure	structural_fragments	World/Events accepted RFCs and telemetry research
+S-001.05	S-001	design/05 §1	Receive mercy-scaled NPC contribution	structural_fragments	World/Events accepted RFCs and telemetry research
+S-002.01	S-002	design/05 §2	Read a live activity feed	transport_fragment	Feed/World UI and real content
+S-002.02	S-002	design/05 §2	Observe truthful live world counters	transport_fragment	Feed/World UI and real content
+S-002.03	S-002	design/05 §2	See player ghosts without exposing hidden data	transport_fragment	Feed/World UI and real content
+S-002.04	S-002	design/05 §2	See labeled NPC activity when population is low	transport_fragment	Feed/World UI and real content
+S-003.01	S-003	design/05 §3	Create join leave and dissolve a guild	backend_fragment	Commons Onboarding acceptance and UI
+S-003.02	S-003	design/05 §3	Exchange guild resources through declared verbs	backend_fragment	Commons Onboarding acceptance and UI
+S-003.03	S-003	design/05 §3	Participate in a weekly guild ritual	backend_fragment	Commons Onboarding acceptance and UI
+S-003.04	S-003	design/05 §3	Interact with an NPC guild network	backend_fragment	Commons Onboarding acceptance and UI
+S-004.01	S-004	design/05 §4	Play non-destructive direct PvP	absent_beyond_platform	combat/minigame/social RFCs
+S-004.02	S-004	design/05 §4	Receive honest bot fallback for each PvP mode	absent_beyond_platform	combat/minigame/social RFCs
+S-005.01	S-005	design/05 §5	Enter the Commons from a player surface	backend_foundation	Commons Onboarding accepted RFC and UI
+S-005.02	S-005	design/05 §5	Choose Commons governance actions	backend_foundation	Commons Onboarding accepted RFC and UI
+S-005.03	S-005	design/05 §5	Receive a stable cohort assignment	backend_foundation	Commons Onboarding accepted RFC and UI
+S-005.04	S-005	design/05 §5	Inspect the published Commons formula	backend_foundation	Commons Onboarding accepted RFC and UI
+S-006.01	S-006	design/05 §6	Submit a verified run to a board	mechanical_fragment	Leaderboards/API/UI closeout
+S-006.02	S-006	design/05 §6	Browse derived leaderboard ranks	mechanical_fragment	Leaderboards/API/UI closeout
+S-006.03	S-006	design/05 §6	Choose a declared run category	mechanical_fragment	Leaderboards/API/UI closeout
+S-006.04	S-006	design/05 §6	Register and execute named routes	mechanical_fragment	Leaderboards/API/UI closeout
+S-006.05	S-006	design/05 §6	Inspect public run evidence	mechanical_fragment	Leaderboards/API/UI closeout
+S-007.01	S-007	design/05 §8	Optional Discord embedding	deferred_post_launch	no current action
+S-008.01	S-008	design/05 UGC ownership	Retain ownership of player-authored content	claimed_policy	legal copy plus schema enforcement before UGC
+S-008.02	S-008	design/05 UGC ownership	Receive attribution for player-authored content	claimed_policy	legal copy plus schema enforcement before UGC
+S-008.03	S-008	design/05 UGC ownership	Preserve fork lineage for player-authored content	claimed_policy	legal copy plus schema enforcement before UGC
+A-001.01	A-001	design/06 stack	Run the authoritative Go game server	partial_integration	Astro/Caddy/deploy and runtime topology gaps
+A-001.02	A-001	design/06 stack	Persist production state in Postgres	partial_integration	Astro/Caddy/deploy and runtime topology gaps
+A-001.03	A-001	design/06 stack	Use the Svelte browser application	partial_integration	Astro/Caddy/deploy and runtime topology gaps
+A-001.04	A-001	design/06 stack	Receive realtime updates through Centrifuge	partial_integration	Astro/Caddy/deploy and runtime topology gaps
+A-001.05	A-001	design/06 stack	Serve site pages through Astro	partial_integration	Astro/Caddy/deploy and runtime topology gaps
+A-001.06	A-001	design/06 stack	Proxy production traffic through Caddy	partial_integration	Astro/Caddy/deploy and runtime topology gaps
+A-001.07	A-001	design/06 stack	Deploy the production stack through Compose	partial_integration	Astro/Caddy/deploy and runtime topology gaps
+A-002.01	A-002	design/06 idle math	Evaluate idle production lazily from elapsed time	proven_bounded	threshold mechanics audit
+A-002.02	A-002	design/06 idle math	Keep authoritative production on the server	proven_bounded	threshold mechanics audit
+A-002.03	A-002	design/06 idle math	Keep client prediction numerically aligned with authoritative production	proven_bounded	threshold mechanics audit
+A-003.01	A-003	design/06 anti-cheat	Rate-limit abusive requests	mechanical_fragments	end-to-end abuse/refusal audit
+A-003.02	A-003	design/06 anti-cheat	Deduplicate repeated intents	mechanical_fragments	end-to-end abuse/refusal audit
+A-003.03	A-003	design/06 anti-cheat	Reject invariant-violating transitions	mechanical_fragments	end-to-end abuse/refusal audit
+A-003.04	A-003	design/06 anti-cheat	Validate minigame commands authoritatively	mechanical_fragments	end-to-end abuse/refusal audit
+A-003.05	A-003	design/06 anti-cheat	Verify ranked runs before projection	mechanical_fragments	end-to-end abuse/refusal audit
+A-003.06	A-003	design/06 anti-cheat	Reject invalid or poisoned saves	mechanical_fragments	end-to-end abuse/refusal audit
+A-004.01	A-004	design/06 minigame AI	Match a player to a minigame opponent	absent	future research/RFCs
+A-004.02	A-004	design/06 minigame AI	Run an honest AI opponent through human validation	absent	future research/RFCs
+A-004.03	A-004	design/06 minigame AI	Isolate per-game engine rules	absent	future research/RFCs
+A-005.01	A-005	design/06 anonymous play	Start with a server-anonymous identity by default	body_drift_and_missing_fallback	RP-007 author reconciliation/account successor
+A-005.02	A-005	design/06 anonymous play	Continue in a labeled local-only outage mode	body_drift_and_missing_fallback	RP-007 author reconciliation/account successor
+A-005.03	A-005	design/06 anonymous play	Import local outage progress into the server account	body_drift_and_missing_fallback	RP-007 author reconciliation/account successor
+RD-000.01	RD-000	design/07 Phase 0	Ship the numeric foundation	partially_proven_public_repo	full browser first-hour and R-001
+RD-000.02	RD-000	design/07 Phase 0	Ship the economy and production foundation	partially_proven_public_repo	full browser first-hour and R-001
+RD-000.03	RD-000	design/07 Phase 0	Ship versioned save persistence	partially_proven_public_repo	full browser first-hour and R-001
+RD-000.04	RD-000	design/07 Phase 0	Ship the balance harness foundation	partially_proven_public_repo	full browser first-hour and R-001
+RD-000.05	RD-000	design/07 Phase 0	Ship the client shell foundation	partially_proven_public_repo	full browser first-hour and R-001
+RD-000.06	RD-000	design/07 Phase 0	Complete a private Tier-0-to-Tier-1 vertical slice	partially_proven_public_repo	full browser first-hour and R-001
+RD-001.01	RD-001	design/07 Phase 1	Ship public Tier-0-to-Tier-2 play	absent_beyond_t1	D-001/D-007
+RD-001.02	RD-001	design/07 Phase 1	Ship early player minigames	absent_beyond_t1	D-001/D-007
+RD-001.03	RD-001	design/07 Phase 1	Ship the player pet loop	absent_beyond_t1	D-001/D-007
+RD-001.04	RD-001	design/07 Phase 1	Ship player presence	absent_beyond_t1	D-001/D-007
+RD-002.01	RD-002	design/07 Phase 2	Ship Tier-3 player progression	absent_beyond_foundations	dependency DAG
+RD-002.02	RD-002	design/07 Phase 2	Ship player faction workflows	absent_beyond_foundations	dependency DAG
+RD-002.03	RD-002	design/07 Phase 2	Ship player guild workflows	absent_beyond_foundations	dependency DAG
+RD-002.04	RD-002	design/07 Phase 2	Ship global milestones	absent_beyond_foundations	dependency DAG
+RD-002.05	RD-002	design/07 Phase 2	Ship personal events	absent_beyond_foundations	dependency DAG
+RD-002.06	RD-002	design/07 Phase 2	Ship pressure-meter events	absent_beyond_foundations	dependency DAG
+RD-003.01	RD-003	design/07 Phase 3	Ship Tier-4 player progression	absent_beyond_foundations	dependency DAG
+RD-003.02	RD-003	design/07 Phase 3	Ship the shared world workflow	absent_beyond_foundations	dependency DAG
+RD-003.03	RD-003	design/07 Phase 3	Ship the Lane minigame	absent_beyond_foundations	dependency DAG
+RD-003.04	RD-003	design/07 Phase 3	Ship player leaderboard workflows	absent_beyond_foundations	dependency DAG
+RD-003.05	RD-003	design/07 Phase 3	Ship server-wide Situation events	absent_beyond_foundations	dependency DAG
+RD-004.01	RD-004	design/07 Phase 4	Ship Tier-5 player progression	absent_beyond_foundations	dependency DAG
+RD-004.02	RD-004	design/07 Phase 4	Ship the Commons player workflow	absent_beyond_foundations	dependency DAG
+RD-004.03	RD-004	design/07 Phase 4	Ship combat gameplay	absent_beyond_foundations	dependency DAG
+RD-004.04	RD-004	design/07 Phase 4	Ship challenge runs	absent_beyond_foundations	dependency DAG
+RD-004.05	RD-004	design/07 Phase 4	Ship the Founder arc	absent_beyond_foundations	dependency DAG
+RD-005.01	RD-005	design/07 Phase 5	Ship Tier-6 player progression	absent	D-001/D-007 and dependency DAG
+RD-005.02	RD-005	design/07 Phase 5	Ship Tier-7 player progression	absent	D-001/D-007 and dependency DAG
+RD-005.03	RD-005	design/07 Phase 5	Ship Tier-8 player progression	absent	D-001/D-007 and dependency DAG
+RD-005.04	RD-005	design/07 Phase 5	Ship every designed terminal ending	absent	D-001/D-007 and dependency DAG
+F-001.01	F-001	design/08 §1	Render player text in the declared voice	mechanical_pipeline	full shipped-copy citation/editorial audit
+F-001.02	F-001	design/08 §1	Ship factual claims only with verified sourcing	mechanical_pipeline	full shipped-copy citation/editorial audit
+F-001.03	F-001	design/08 §1	Keep player text within declared target bounds	mechanical_pipeline	full shipped-copy citation/editorial audit
+F-002.01	F-002	design/08 §2	Render an era-appropriate presentation for each tier	T0_fragment	later era UI/content
+F-002.02	F-002	design/08 §2	Degrade presentation in step with enshittification	T0_fragment	later era UI/content
+F-003.01	F-003	design/08 §3	Ship the launch-scale generator copy bank	absent_at_scale	ignored research and copy production program
+F-003.02	F-003	design/08 §3	Ship the launch-scale event copy bank	absent_at_scale	ignored research and copy production program
+F-003.03	F-003	design/08 §3	Ship the launch-scale achievement copy bank	absent_at_scale	ignored research and copy production program
+F-003.04	F-003	design/08 §3	Ship the launch-scale lore copy bank	absent_at_scale	ignored research and copy production program
+F-004.01	F-004	design/08 §4	Encounter the designed conspiracy narrative arc	absent	Events/content RFCs
+F-004.02	F-004	design/08 §4	See conspiracy pressure respond to current world state	absent	Events/content RFCs
+F-005.01	F-005	design/08 §5	Trigger media canonization events from Clout	absent	Events/content RFCs
+F-005.02	F-005	design/08 §5	Choose a response to media canonization	absent	Events/content RFCs
+F-006.01	F-006	design/08 §6	See the speedrun timer and per-tier splits	mechanical_fragment	Game UI/Leaderboards/API/content consumers
+F-006.02	F-006	design/08 §6	Choose a governed speedrun category	mechanical_fragment	Game UI/Leaderboards/API/content consumers
+F-006.03	F-006	design/08 §6	Discover and name a route	mechanical_fragment	Game UI/Leaderboards/API/content consumers
+F-006.04	F-006	design/08 §6	Review a completed run retrospectively	mechanical_fragment	Game UI/Leaderboards/API/content consumers
+F-007.01	F-007	design/08 §7	Open the shipped honesty appendix	absent	release-floor/content RFC
+F-007.02	F-007	design/08 §7	Inspect every parodied dark pattern and its real-world mechanism	absent	release-floor/content RFC
+EV-001.01	EV-001	design/09 §1	Load declarative event definitions	absent	Events L1 acceptance/body review
+EV-001.02	EV-001	design/09 §1	Dispatch eligible events on an action	absent	Events L1 acceptance/body review
+EV-001.03	EV-001	design/09 §1	Apply only closed event effects	absent	Events L1 acceptance/body review
+EV-001.04	EV-001	design/09 §1	Persist event choices and outcomes	absent	Events L1 acceptance/body review
+EV-002.01	EV-002	design/09 §2	Receive a personal event	absent	Events/content RFCs
+EV-002.02	EV-002	design/09 §2	Progress a founder story cycle	absent	Events/content RFCs
+EV-002.03	EV-002	design/09 §2	See personal-event consequences in later choices	absent	Events/content RFCs
+EV-003.01	EV-003	design/09 §3	Observe a visible pressure meter	meter_kernel_fragment	Events/content/UI
+EV-003.02	EV-003	design/09 §3	Forecast pressure-meter movement	meter_kernel_fragment	Events/content/UI
+EV-003.03	EV-003	design/09 §3	Trigger content at a meter band transition	meter_kernel_fragment	Events/content/UI
+EV-004.01	EV-004	design/09 §4	Participate in a phased Situation	absent	World/Events RFCs
+EV-004.02	EV-004	design/09 §4	Participate in a Major Order	absent	World/Events RFCs
+EV-004.03	EV-004	design/09 §4	Receive a personal objective floor during world events	absent	World/Events RFCs
+EV-005.01	EV-005	design/09 §5	Earn event scrip	absent	Events/economy RFC
+EV-005.02	EV-005	design/09 §5	Spend scrip at posted prices	absent	Events/economy RFC
+EV-005.03	EV-005	design/09 §5	Receive deterministic event-end conversion	absent	Events/economy RFC
+EV-006.01	EV-006	design/09 §6	Play a seasonal story arc	absent	ops/content program
+EV-006.02	EV-006	design/09 §6	Access an evergreen version after the season	absent	ops/content program
+EV-007.01	EV-007	design/09 §7	Operate events through a GM dashboard	absent	ops/Events RFC
+EV-007.02	EV-007	design/09 §7	Read a public war log	absent	ops/Events RFC
+EV-007.03	EV-007	design/09 §7	Detect stuck or invalid events through watchdogs	absent	ops/Events RFC
+PS-001.01	PS-001	design/10 §1	Choose one of four rule-distinct factions	backend_fragment	player selection and later faction verbs
+PS-001.02	PS-001	design/10 §1	Produce a resource another faction consumes	backend_fragment	player selection and later faction verbs
+PS-001.03	PS-001	design/10 §1	Use a faction-specific gameplay verb	backend_fragment	player selection and later faction verbs
+PS-002.01	PS-002	design/10 §2	Play an active build	mechanical_fragments	full loops and board consumers
+PS-002.02	PS-002	design/10 §2	Play an idle build	mechanical_fragments	full loops and board consumers
+PS-002.03	PS-002	design/10 §2	Play a check-in build	mechanical_fragments	full loops and board consumers
+PS-002.04	PS-002	design/10 §2	Play a banker build	mechanical_fragments	full loops and board consumers
+PS-002.05	PS-002	design/10 §2	Compete on a build-specific board	mechanical_fragments	full loops and board consumers
+PS-003.01	PS-003	design/10 §3	Toggle a reversible ideology	absent	future RFC
+PS-003.02	PS-003	design/10 §3	Use each ideology as a viable rule set	absent	future RFC
+PS-004.01	PS-004	design/10 §3b	Choose one of three doctrines at a tier transition	catalog_kernel_fragment	later transitions/content/harness
+PS-004.02	PS-004	design/10 §3b	Keep doctrine choice irreversible within the run	catalog_kernel_fragment	later transitions/content/harness
+PS-004.03	PS-004	design/10 §3b	Reach viable content and endings through each doctrine	catalog_kernel_fragment	later transitions/content/harness
+PS-005.01	PS-005	design/10 §4	Start a rule-modified challenge run	absent	future RFC
+PS-005.02	PS-005	design/10 §4	Complete and verify a challenge run	absent	future RFC
+PS-006.01	PS-006	design/10 §5	Complete the Canon moral route	mechanical_fragments	full content/endings
+PS-006.02	PS-006	design/10 §5	Complete Ethical percent	mechanical_fragments	full content/endings
+PS-006.03	PS-006	design/10 §5	Carry moral history across runs	mechanical_fragments	full content/endings
+PS-007.01	PS-007	design/10 §6	Author an AGI policy script	absent	future RFC
+PS-007.02	PS-007	design/10 §6	Share an AGI policy script	absent	future RFC
+PS-007.03	PS-007	design/10 §6	Execute a policy script authoritatively	absent	future RFC
+UX-001.01	UX-001	design/11 §1	Read an honest cold-open contract	partial	RP-018 plus full browser workflow
+UX-001.02	UX-001	design/11 §1	Begin the first attempt from the contract screen	partial	RP-018 plus full browser workflow
+UX-001.03	UX-001	design/11 §1	Return to a bounded post-absence summary	partial	RP-018 plus full browser workflow
+UX-002.01	UX-002	design/11 §1b	Receive a server-anonymous account by default	partial	RP-007 plus full first-session proof
+UX-002.02	UX-002	design/11 §1b	Continue locally during a server outage	partial	RP-007 plus full first-session proof
+UX-002.03	UX-002	design/11 §1b	Use the Vision Slide first-session surface	partial	RP-007 plus full first-session proof
+UX-002.04	UX-002	design/11 §1b	Observe the run-one presence budget	partial	RP-007 plus full first-session proof
+UX-003.01	UX-003	design/11 §2	Learn mechanics through diegetic prompts	partial_static	D-001/D-007 then R-008 first-session study
+UX-003.02	UX-003	design/11 §2	Discover the core loop within ten minutes	partial_static	D-001/D-007 then R-008 first-session study
+UX-003.03	UX-003	design/11 §2	Dismiss guidance without losing access to it	partial_static	D-001/D-007 then R-008 first-session study
+UX-004.01	UX-004	design/11 §3	See the run-ending cause	server_content_plus_partial_UI	full browser AC1
+UX-004.02	UX-004	design/11 §3	See attended-time and Exit context	server_content_plus_partial_UI	full browser AC1
+UX-004.03	UX-004	design/11 §3	See Founder progression deltas	server_content_plus_partial_UI	full browser AC1
+UX-004.04	UX-004	design/11 §3	See the chosen route or new-route consequence	server_content_plus_partial_UI	full browser AC1
+UX-004.05	UX-004	design/11 §3	Continue into the next run	server_content_plus_partial_UI	full browser AC1
+UX-004.06	UX-004	design/11 §3	Experience the scripted first-failure branch	server_content_plus_partial_UI	full browser AC1
+UX-005.01	UX-005	design/11 §3	Enable Advisor Mode	absent	owner release floor/future RFC
+UX-005.02	UX-005	design/11 §3	Receive Advisor guidance without hidden rule changes	absent	owner release floor/future RFC
+UX-006.01	UX-006	design/11 §4	Progress through a multi-run first-ending arc	absent_beyond_first_exit	D-007/content DAG
+UX-006.02	UX-006	design/11 §4	See run-count pacing communicate long-term commitment	absent_beyond_first_exit	D-007/content DAG
+UX-007.01	UX-007	design/11 §5	Ship the declared launch copy surface count	absent_at_scale	copy production/research program
+UX-007.02	UX-007	design/11 §5	Cover every mounted launch surface with governed copy	absent_at_scale	copy production/research program
+UX-008.01	UX-008	design/11 §6	Resolve player copy from data keys	mechanical_pipeline	full real-content/editorial coverage
+UX-008.02	UX-008	design/11 §6	Reject invalid copy parameters	mechanical_pipeline	full real-content/editorial coverage
+UX-008.03	UX-008	design/11 §6	Lint prohibited or unsupported claims	mechanical_pipeline	full real-content/editorial coverage
+UX-008.04	UX-008	design/11 §6	Attach citations to verified claims	mechanical_pipeline	full real-content/editorial coverage
+UX-008.05	UX-008	design/11 §6	Preserve a localization-ready copy shape	mechanical_pipeline	full real-content/editorial coverage
+UX-009.01	UX-009	design/11 §7	Reach core actions within navigation depth two	partial	task-level accessibility/reflow/mobile audit
+UX-009.02	UX-009	design/11 §7	Reflow core UI at mobile width	partial	task-level accessibility/reflow/mobile audit
+UX-009.03	UX-009	design/11 §7	Reflow core UI at supported zoom	partial	task-level accessibility/reflow/mobile audit
+UX-009.04	UX-009	design/11 §7	Complete core play by keyboard	partial	task-level accessibility/reflow/mobile audit
+UX-009.05	UX-009	design/11 §7	Complete core play with assistive technology	partial	task-level accessibility/reflow/mobile audit
+CP-001.01	CP-001	design/12 §1	Load a versioned additive content pack	absent_as_described	design/RFC reconciliation and future contract
+CP-001.02	CP-001	design/12 §1	Stage a content pack before activation	absent_as_described	design/RFC reconciliation and future contract
+CP-001.03	CP-001	design/12 §1	Activate a pack without mutating historical epochs	absent_as_described	design/RFC reconciliation and future contract
+CP-002.01	CP-002	design/12 §2	Extend economy content through data	partial_catalog_families	pack/extension ownership audit
+CP-002.02	CP-002	design/12 §2	Extend routes through data	partial_catalog_families	pack/extension ownership audit
+CP-002.03	CP-002	design/12 §2	Extend achievements through data	partial_catalog_families	pack/extension ownership audit
+CP-002.04	CP-002	design/12 §2	Extend factions through data	partial_catalog_families	pack/extension ownership audit
+CP-002.05	CP-002	design/12 §2	Extend guilds through data	partial_catalog_families	pack/extension ownership audit
+CP-002.06	CP-002	design/12 §2	Extend minigames through their socket	partial_catalog_families	pack/extension ownership audit
+CP-002.07	CP-002	design/12 §2	Extend events through the closed effect vocabulary	partial_catalog_families	pack/extension ownership audit
+CP-002.08	CP-002	design/12 §2	Extend presentation copy through governed catalogs	partial_catalog_families	pack/extension ownership audit
+CP-003.01	CP-003	design/12 §3	Create every minigame through one API socket	body_drift	RP-019/Minigame Platform reconciliation
+CP-003.02	CP-003	design/12 §3	Persist every minigame through the shared session contract	body_drift	RP-019/Minigame Platform reconciliation
+CP-004.01	CP-004	design/12 §4	Select event effects from a closed vocabulary	absent	Events RFC
+CP-004.02	CP-004	design/12 §4	Reject an event with an undeclared effect verb	absent	Events RFC
+CP-005.01	CP-005	design/12 §5	Research a current event before authoring	body_contradiction_absent_runtime	RP-020 plus deployment/content RFCs
+CP-005.02	CP-005	design/12 §5	Activate current-event content in a new epoch	body_contradiction_absent_runtime	RP-020 plus deployment/content RFCs
+CP-005.03	CP-005	design/12 §5	Retain prior-epoch replay behavior	body_contradiction_absent_runtime	RP-020 plus deployment/content RFCs
+CP-006.01	CP-006	design/12 §7	Load saves against their pinned pack set	absent_as_pack_system	future accepted RFC
+CP-006.02	CP-006	design/12 §7	Migrate compatible pack-set saves	absent_as_pack_system	future accepted RFC
+CP-006.03	CP-006	design/12 §7	Retire a pack without corrupting historical saves	absent_as_pack_system	future accepted RFC
+W-001.01	W-001	design/13 §2	Render a state-derived personal diorama	absent	world/rendering RFC
+W-001.02	W-001	design/13 §2	Fast-forward the diorama on return	absent	world/rendering RFC
+W-001.03	W-001	design/13 §2	Keep the diorama non-authoritative	absent	world/rendering RFC
+W-002.01	W-002	design/13 §3	Place adoption or regulation pressure on regions	absent	v1.0 future RFC
+W-002.02	W-002	design/13 §3	Watch the spatial campaign respond to player actions	absent	v1.0 future RFC
+W-003.01	W-003	design/13 §4	Observe shared world state	world_snapshot_fragment	World RFC plus map/content/UI
+W-003.02	W-003	design/13 §4	Observe a regional Planet ratchet	world_snapshot_fragment	World RFC plus map/content/UI
+W-003.03	W-003	design/13 §4	Inspect a public immutable world artifact	world_snapshot_fragment	World RFC plus map/content/UI
+W-004.01	W-004	design/13 §5	Draft one of offered regions	absent	World/content RFC
+W-004.02	W-004	design/13 §5	Place infrastructure under the Thermal Law	absent	World/content RFC
+W-004.03	W-004	design/13 §5	Reveal world geography through placement	absent	World/content RFC
+W-005.01	W-005	design/13 §6	Interact with the Pixi or WebGPU world view	absent	rendering research/RFC
+W-005.02	W-005	design/13 §6	Open a baked accessible world overview	absent	rendering research/RFC
+W-005.03	W-005	design/13 §6	Use world rendering at supported scale	absent	rendering research/RFC

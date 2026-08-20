@@ -51,8 +51,9 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 
 ## Handoff
 
-The next program action is to finish the row-level Wave-2/3 capability, gameplay-content, and
-semantic-oracle populations named in `plan.md`; the 208-key copy-consumption population is complete.
+The next program action is to attach exact evidence verdicts to the 432 structural capability
+children and finish the row-level gameplay-content and semantic-oracle populations named in
+`plan.md`; the 208-key copy-consumption population is complete.
 Then finalize `review-handoff.md` and obtain the designated Claude review over the complete
 Codex-authored audit range. Only after that green verdict should the
 three accepted-scope batches in `ready-batch-manifest.tsv` execute serially: Q-001 Account witnesses,

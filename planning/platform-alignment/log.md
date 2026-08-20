@@ -817,3 +817,24 @@
   balance/copy/content, migration, deployment, plan checkbox, or authored player prose. After it
   lands there are 217 tracked planning files and 63 tracked plus one ignored file in platform
   alignment; no push or `AGENTS.md` touch occurred.
+
+## 2026-08-21 — Structural capability atomization
+
+- Added a reproducible structural extractor and inventory. All 121 parent IDs map to 432 unique,
+  sequential child outcomes: V 32, T 55, E 84, M 36, P 17, S 28, A 22, roadmap 30, flavor 19,
+  events 21, playstyles 21, UX 32, content pipeline 21, and world 14.
+- One hundred twelve parents split; only nine single-purpose rows remain atomic (eight named/deferred
+  minigame/social features and one missing Soul-recovery section). Mandatory controls split
+  multiplayer fallback, Tier 2, six Founder currencies, minigame contracts, guilds, six anti-cheat
+  boundaries, Run End beats, and content families.
+- The recorded run rejected three seeded structural failures: removal of an atomic parent's only
+  child, duplicate child identity, and collapsing the required anti-cheat split to one row. A rerun
+  reproduced the checked-in TSV byte-for-byte.
+- This checkpoint is intentionally structural: `parent_preliminary_state` and `parent_route` are
+  carried only as review leads. No child is called proven/partial/absent until the 14-column outcome
+  ledger attaches the predeclared producer, consumer, current-data, workflow, executable-witness,
+  failure/refusal, verdict, route, and limitation lanes.
+- After these two new tracked artifacts land, planning contains 219 tracked plus 25 ignored/local-
+  only files; platform alignment contains 65 tracked plus one ignored file. No design intent,
+  product, test, canonical product doc, RFC/archive body, balance/copy/content, migration,
+  deployment, plan checkbox, push, or `AGENTS.md` edit occurred.

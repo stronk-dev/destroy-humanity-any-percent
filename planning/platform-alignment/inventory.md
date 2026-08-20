@@ -12,7 +12,7 @@ verified populations and reconciliation defects; it is not yet the completed per
 | Active-directory RFC Markdown files | 24 | Process + index + template + 21 product/process RFC files | All 111 true acceptance rows are extracted and evidence-reconciled; five remain intentionally open for exact review/provenance. |
 | Archived RFCs | 46 | Files in `rfc/archive/` | All 46 pair structurally; the predeclared 20-row/ten-domain deep replay is complete with 26 rows honestly structural-only. |
 | Live top-level planning directories | 23 | Includes RFC plans and non-RFC maintenance/review threads | Every thread is mapped; four explicitly complete/historical threads remain live pending authorized closeout. |
-| Tracked planning files after this checkpoint | 217 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the capability-atomization predeclaration lands. |
+| Tracked planning files after this checkpoint | 219 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the structural capability atomization lands. |
 | Ignored local planning files | 25 | Seventeen coverage-map files, seven diagnostics, and one historical Codex fix record | Local-only records are not shared memory and receive no fresh-clone evidence credit. |
 | Canonical docs | 38 | Includes three generated artifacts | Every file is classified against lifecycle/release evidence; only the numeric foundation is currently unqualified. |
 | Go source files | 340 | All `server/**/*.go` | 189 production plus 151 test files; both exact ledgers reconcile. |
@@ -189,7 +189,7 @@ verified populations and reconciliation defects; it is not yet the completed per
   `production-review-round2`, and `run-genesis-archival-remediation`. The last already requests a
   future move to `planning/archive/`. The audit records that lifecycle defect but does not infer an
   archival move or rewrite review provenance.
-- At the current capability-atomization-plan checkpoint, planning contains 217 tracked
+- At the current structural capability-atomization checkpoint, planning contains 219 tracked
   files. Another 25 files are ignored and local-only: 17 coverage-map records, six archived T0-T1
   diagnostics, one platform-alignment diagnostic, and one historical Codex fix record. Their local
   presence cannot support a fresh-clone/shared-memory claim.
@@ -233,7 +233,8 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
 
 ## Remaining semantic-depth work
 
-- Split the 121 section-level design IDs until each names one independently falsifiable workflow.
+- Attach exact producer/consumer/data/workflow/witness/failure verdicts to the structurally complete
+  432-child capability population; the 121 parents now reconcile with no missing or duplicate child.
 - Extend the completed file/family map into row-level gameplay-content and all 208 copy-key call
   sites; replace the non-discriminating orphan report before using it for cleanup/release claims.
 - Complete semantic row-level fixture/oracle/negative-control maps now that every executable file,
@@ -246,5 +247,7 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
   chain baseline; account ownership/export/deletion/retention and backup/restore implications now
   have release dossiers and exact blocked routes.
 
-The first section-level ID pass is recorded in `design-capability-ledger.tsv`. Rows deliberately
-remain coarse until Wave 2 splits each outcome to one independently falsifiable workflow.
+The parent ID pass is recorded in `design-capability-ledger.tsv`; the reproducible structural split
+is in `capability-atomization-inventory.tsv` (121 parents -> 432 unique children). Those child rows
+are not capability verdicts until `capability-outcome-ledger.tsv` supplies every predeclared
+evidence lane.
