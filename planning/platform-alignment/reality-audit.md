@@ -8,8 +8,8 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 | Recover realtime delivery after disconnect | Transport D4/T4, AC2/AC4/AC5 | Centrifuge positions/history, typed closes, full-state endpoint, per-scope cursor | Game UI opens one unpositioned socket; cursor is test-only | Initial live subscription only | Server protocol-driver recovery/overflow/drain tests; no browser recovery witness | **Proven server; consumer absent** |
 | Complete the accepted Game UI transition path | T0–T1 RFC + Game UI C25–C28/AC1 | Live curriculum, gate/Exit events, run-end payload; v3 transition preview absent | Offer Sheet and Run End render; Gate/Wind Down/continue controls absent | Nine generators, ten upgrades, three first-ending branches | Server/Postgres first hour proven; browser stops at Desk and accepted control proof is absent | **Mechanical fragment; body-blocked** |
 | Play with keyboard/assistive tech | Game UI accessibility clause | Semantic Svelte controls, focus styles, reduced-motion tokens | Browser DOM | Five Phase-A surfaces | Axe on all surfaces; Enter begins attempt | **Mechanical fragment** |
-| Recover an anonymous account | Account RFC | One-time recovery code, session endpoint | Credential stored in browser localStorage | Automatic account bootstrap | Backend integration tests only | **No player workflow** |
-| Export/delete own data | Account/privacy intent | Delete endpoint exists; no export endpoint | No settings controls | Settings displays one paragraph | Delete backend test only | **Mechanical deletion; export absent** |
+| Recover an anonymous account | Account RFC | One-time recovery code, session/refresh endpoints | Credential hidden with tokens in one localStorage document; refresh never consumed | Automatic account bootstrap only; missing/malformed storage creates replacement or generic offline state | Backend integration tests only | **No player recovery workflow** |
+| Export/delete own data | Account/privacy intent | Delete endpoint exists; no export endpoint | No settings controls; destructive-confirmation helper is test-only | Settings displays status and one paragraph | Delete backend test only | **Mechanical deletion; export absent** |
 | Continue locally during an outage and import later | `design/11 §1b`; older Account D4/`design/06` need reconciliation | Import endpoint exists | No local save runtime | Production startup creates the ruled anonymous server account | No fallback witness | **Claimed fallback only** |
 | Receive offline progress | Design law 7 | Production accrual and session-boundary application | Snapshot/UI offline status | T0–T1 economy | Composed 48 h offline catch-up regression | **Proven integration** |
 | Play The Pitch | `design/03`, minigame RFCs | Pitch tenant + minigame session/resolve service | Generated DTO metadata only; no HTTP client/component/table | Minted Pitch content | Cold real-Postgres/HTTP create→reconnect→commands→terminal/retries; resolver-sever negative | **Backend proven; surface absent/spec-blocked** |
@@ -67,6 +67,10 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
     proxy depth to zero, and exposes no previous-key configuration.
 17. Deployment and the RFC index still center a future “THE PUSH,” even though the public remote
     and hosted Actions prove that external phase transition already occurred.
+18. Account D1 says the recovery code is shown once; production hides it in localStorage. Missing
+    or malformed credentials have no recovery branch, and the refresh token is never used.
+19. Settings says offline progress is parked locally even though the client has no local gameplay
+    save, durable intent queue, or reconnect/import flush path.
 
 ## Genuine proofs worth preserving
 

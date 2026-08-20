@@ -59,6 +59,11 @@ The audit was fixed to `190a4fa04958cc2a3b4e689804cd55682f6c6420`.
     static client.
 15. **RP-078:** Deployment AC5's public push is already true, while the draft/index still route
     “THE PUSH” as future work; AC1–AC4 remain unmet, primitive-only, contradicted, or partial.
+16. **RP-079/RP-081:** invalid or missing browser credentials have no recover-existing-account
+    branch; the production Settings surface has no rights/recovery controls even though a test-only
+    destructive-confirmation navigation primitive exists.
+17. **RP-080:** Settings claims offline progress is parked locally, but the runtime persists no
+    gameplay save or intent queue and has no later flush/import consumer.
 
 ## Provider-off posture
 
@@ -68,6 +73,7 @@ packaging, secrets validation, clean-host boot, backup, and restore.
 
 The deeper artifact/configuration trace and criterion verdicts are in
 `deployment-foundation-lifecycle-audit.md`.
+The complete player recovery/rights trace is in `account-rights-release-audit.md`.
 
 ## Conclusion
 

@@ -384,3 +384,20 @@
   execution/research records, and wrote `deployment-foundation-lifecycle-audit.md`. Made no product,
   RFC/design, canonical product-doc, deployment, balance/content, or secret edit; did not push or
   touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — Account recovery and player-rights release audit
+
+- Traced production bootstrap credentials through localStorage, every runtime HTTP/WebSocket use,
+  Settings rendering, Account recovery/refresh/logout/email/Founder/import/delete endpoints, the
+  export population, and the existing same-coordinate Postgres/browser evidence.
+- Confirmed a strong atomic backend but no player rights/recovery consumer: the recovery and refresh
+  secrets are silently stored, refresh is never called, Settings has no account action, email is
+  hard-501, deletion is backend-only, and export is absent.
+- Confirmed missing/malformed storage either starts replacement bootstrap or strands the Desk in a
+  generic offline state. The unit-tested destructive Settings deferral has no production caller.
+- Confirmed Settings' “progress is parked on this machine” copy is false at HEAD: no local gameplay
+  save, durable intent queue, fallback owner, reconnect flush, or import consumer exists.
+- Filed RP-079–RP-081, deepened RP-004–RP-007/RP-048, expanded R-003's failure population, and wrote
+  `account-rights-release-audit.md`. Re-used already-recorded cold evidence rather than relabeling
+  backend/component tests as a player workflow. Made no product/API/copy/RFC/design/canonical-doc/
+  schema/player-data edit; did not push or touch the user's `AGENTS.md` edit.

@@ -49,14 +49,15 @@ research question; they authorize only the stated downstream action.
 
 - **Question:** Can a first-time player preserve, recover, export, and delete an anonymous account
   without developer tools or operator help?
-- **Population:** at least five nontechnical participants on a clean browser profile; include one
-  storage-loss case and one second-device case.
+- **Population:** at least five nontechnical participants on a clean browser profile; include
+  storage-loss, malformed/empty credential storage, expired access token, and second-device cases.
 - **Tasks:** find/save recovery credential, recover after logout/storage loss, export data, delete
   account, understand retained anonymized history.
 - **Threshold:** 5/5 complete each shipped task without help; zero unrecoverable accounts; every
   destructive action accurately previews retained/deleted data.
 - **Controls:** a deliberately unavailable task must be reported unavailable, not inferred from
-  Settings copy; network failure during each mutation must preserve a recoverable state.
+  Settings copy; network failure during each mutation must preserve a recoverable state; corrupt
+  credentials must not silently mint a replacement account.
 - **May authorize:** account UX/RFC acceptance evidence and copy questions for owner adoption.
 - **Cannot authorize:** retention policy or user-facing wording.
 
