@@ -217,8 +217,9 @@ P-002.03	P-002	design/04 §2	Play pet battles against an honest bot	arithmetic_o
 P-003.01	P-003	design/04 §3	Decorate a cosmetic house	absent	future RFC
 P-003.02	P-003	design/04 §3	Visit another player's house without destructive interaction	absent	future RFC
 P-004.01	P-004	design/04 §4	Open a free cosmetic lootbox	copy_static_fragment	catalog/acquisition/UI/legal proof
-P-004.02	P-004	design/04 §4	See exact cosmetic odds and dark-pattern disclosure	copy_static_fragment	catalog/acquisition/UI/legal proof
-P-004.03	P-004	design/04 §4	Equip a cosmetic reward	copy_static_fragment	catalog/acquisition/UI/legal proof
+P-004.02	P-004	design/04 §4	See exact cosmetic odds	copy_static_fragment	catalog/acquisition/UI/legal proof
+P-004.03	P-004	design/04 §4	See the cosmetic dark-pattern disclosure	copy_static_fragment	catalog/acquisition/UI/legal proof
+P-004.04	P-004	design/04 §4	Equip a cosmetic reward	copy_static_fragment	catalog/acquisition/UI/legal proof
 P-005.01	P-005	design/04 §5	Breed cosmetic pet traits	absent	future RFC
 P-005.02	P-005	design/04 §5	Retire an elder pet without punitive loss	absent	future RFC
 P-006.01	P-006	design/04 §6	Render a pet from CSS parts	absent	client/rendering RFC

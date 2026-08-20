@@ -1,6 +1,8 @@
 # Capability reality audit
 
-Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness, not a prose claim.
+Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness, not a prose claim. The
+433-row `capability-outcome-ledger.tsv` is the authoritative atomic denominator; this table is a
+workflow summary and grants no inherited proof to mixed child outcomes.
 
 | Outcome | Intent | Producer / primitive | Consumer | Real content / workflow | Executable witness | Verdict |
 |---|---|---|---|---|---|---|
@@ -11,7 +13,7 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 | Recover an anonymous account | Account RFC | One-time recovery code, session/refresh endpoints | Credential hidden with tokens in one localStorage document; refresh never consumed | Automatic account bootstrap only; missing/malformed storage creates replacement or generic offline state | Backend integration tests only | **No player recovery workflow** |
 | Export/delete own data | Account/privacy intent | Delete endpoint exists; no export endpoint | No settings controls; destructive-confirmation helper is test-only | Settings displays status and one paragraph | Delete backend test only | **Mechanical deletion; export absent** |
 | Continue locally during an outage and import later | `design/11 §1b`; older Account D4/`design/06` need reconciliation | Import endpoint exists | No local save runtime | Production startup creates the ruled anonymous server account | No fallback witness | **Claimed fallback only** |
-| Receive offline progress | Design law 7 | Production accrual and session-boundary application | Snapshot/UI offline status | T0–T1 economy | Composed 48 h offline catch-up regression | **Proven integration** |
+| Receive offline progress | Design law 7 | Production accrual and session-boundary application | Snapshot amount; no explicit return summary | T0–T1 economy | Composed 48 h offline catch-up regression | **Accrual/cap bounded primitives proven; return explanation partial** |
 | Play The Pitch | `design/03`, minigame RFCs | Pitch tenant + minigame session/resolve service | Generated DTO metadata only; no HTTP client/component/table | Minted Pitch content | Cold real-Postgres/HTTP create→reconnect→commands→terminal/retries; resolver-sever negative | **Backend proven; surface absent/spec-blocked** |
 | Recover Soul through a cozy activity | Soul RFCs | Recovery session coordinator | Framework scheduler only; no constructor/surface/toy | Three minted activities | Cold authenticated composed lifecycle including rotation/heartbeats/resolve/watchdog; no UI | **Backend proven; surface absent/spec-blocked** |
 | Care for a pet | `design/04` | Pet state, decay, actions, replay | Catalog/TS helpers only | Minted policy, no acquired pet workflow | Unit/cross-runtime fixtures | **Mechanical fragment** |
@@ -96,6 +98,11 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 28. Current Fiscal and Opportunities artifacts contain `cap.fiscal_credit`,
     `cap.fiscal_level.beige_tower`, `cap.cash`, and `cap.active_combo`, none of which exists in the
     generated application copy catalog.
+29. The 121 section-level capability rows concealed independently different states. Atomization
+    produces 433 outcomes: only three integrated, 41 bounded primitives, 55 partial, 134
+    backend/data-only, seven client/fixture-only, three claimed-only, 188 absent, and two blocked.
+    The three integrated rows are duplicate design views of the same server-anonymous bootstrap,
+    not three distinct integrated gameplay systems.
 
 ## Genuine proofs worth preserving
 

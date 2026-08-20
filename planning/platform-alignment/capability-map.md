@@ -1,10 +1,12 @@
 # Capability map at `190a4fa`
 
 This map describes user outcomes, not package count. Evidence details are in `reality-audit.md`.
+The authoritative fine-grained denominator is now the 433-row `capability-outcome-ledger.tsv`;
+these family summaries must not be used to grant umbrella credit to their mixed child outcomes.
 
 | Capability family | Classification | What is real now | What prevents the larger claim |
 |---|---|---|---|
-| Numeric, economy, save, production, offline accrual | **Proven integration (bounded)** | Shared Go/TypeScript numeric vectors, versioned Postgres saves, authoritative intents, and 90%/24 h offline accrual are exercised through the composed first-hour proof. | The proof covers the live T0–T1 content, not the nine-tier game. |
+| Numeric, economy, save, production, offline accrual | **Proven bounded primitives; partial player integration** | Shared Go/TypeScript numeric vectors, versioned Postgres saves, authoritative intents, and 90%/24 h offline accrual have discriminating witnesses. | No explicit return summary exists, and the proof covers the live T0–T1 content rather than the nine-tier game. |
 | T0–T1 first-hour content | **Proven integration (server path)** | Epochs 7/8 contain nine generators, ten upgrades, a scripted first ending, and run-2 starter consequences; the composed server/Postgres proof is archived. | Full rendition of that path in the browser is still Game UI AC1, which is blocked on unreconciled normative text and missing browser acceptance seams. |
 | Account/session security | **Proven backend; mechanical user capability** | Anonymous account creation, recovery authentication, rotation/revocation, import, and deletion have real-Postgres tests. | The UI hides the one-time recovery code in localStorage, never refreshes the 15-minute token, and has no recover/logout/export/import/delete/email surface; invalid storage has no recover-existing branch. |
 | Offline-anonymous outage fallback | **Claimed only** | `design/11 §1b` rules server-anonymous as default and labeled local-only play when unreachable; the backend import path exists. | The production client has no local gameplay-save owner or offline play path. Older `design/06`/Account D4 wording must be reconciled to the newer default/fallback ruling. |
@@ -27,5 +29,7 @@ This map describes user outcomes, not package count. Evidence details are in `re
 | Data retention | **Contradicted/incomplete** | Expired credentials are collected; save snapshots retain five ordinary revisions; authoritative histories are intentionally append-only. | The documented 30-day intent pruner is never scheduled, and inactive accounts/archives/events/dead letters/projections/logs lack one accepted schedule and player disclosure. |
 | Sunset/preservation | **Claimed only as intent** | The research corpus proposes a covenant and the architecture is amenable to self-hosting. | No accepted covenant, export, self-host bundle, artifact mirroring, or end-of-life runbook exists. |
 
-The safe product statement is therefore: **a strong, tested T0–T1 server-authoritative vertical
-slice with a partially integrated browser shell—not a coherent 1.0 game or release platform.**
+The safe product statement is therefore: **strong, tested server foundations and a narrow
+server-anonymous bootstrap integration, with partial T0–T1 player paths—not a coherent 1.0 game or
+release platform.** Of 433 atomic outcomes, only three integration rows are proven, and all three
+describe the same bootstrap path from different binding design authorities.

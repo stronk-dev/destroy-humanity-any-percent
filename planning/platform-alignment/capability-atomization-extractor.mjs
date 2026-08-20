@@ -56,7 +56,7 @@ const split = {
   "P-001": ["Acquire a Founder companion", "Apply offline-safe pet care decay", "Perform a pet care action", "Observe pet behavior state", "Observe pet bond or trust"],
   "P-002": ["Resolve a hardcapped pet battle", "Apply care state to battle reliability", "Play pet battles against an honest bot"],
   "P-003": ["Decorate a cosmetic house", "Visit another player's house without destructive interaction"],
-  "P-004": ["Open a free cosmetic lootbox", "See exact cosmetic odds and dark-pattern disclosure", "Equip a cosmetic reward"],
+  "P-004": ["Open a free cosmetic lootbox", "See exact cosmetic odds", "See the cosmetic dark-pattern disclosure", "Equip a cosmetic reward"],
   "P-005": ["Breed cosmetic pet traits", "Retire an elder pet without punitive loss"],
   "P-006": ["Render a pet from CSS parts", "Respect reduced motion in creature rendering"],
   "S-001": ["Contribute to a global milestone", "Receive a personal contribution reward", "Unlock a global milestone tier", "Observe canonical milestone failure", "Receive mercy-scaled NPC contribution"],

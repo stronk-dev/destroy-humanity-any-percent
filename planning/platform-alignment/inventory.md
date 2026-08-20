@@ -189,8 +189,8 @@ verified populations and reconciliation defects; it is not yet the completed per
   `production-review-round2`, and `run-genesis-archival-remediation`. The last already requests a
   future move to `planning/archive/`. The audit records that lifecycle defect but does not infer an
   archival move or rewrite review provenance.
-- At the current structural capability-atomization checkpoint, planning contains 219 tracked
-  files. Another 25 files are ignored and local-only: 17 coverage-map records, six archived T0-T1
+- At the current atomic capability-evidence checkpoint, planning contains 222 tracked files, 68 of
+  them in platform alignment. Another 25 files are ignored and local-only: 17 coverage-map records, six archived T0-T1
   diagnostics, one platform-alignment diagnostic, and one historical Codex fix record. Their local
   presence cannot support a fresh-clone/shared-memory claim.
 - `docs-file-inventory.tsv` exactly equals all 38 files under `docs/`. Three generated artifacts
@@ -233,10 +233,9 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
 
 ## Remaining semantic-depth work
 
-- Attach exact producer/consumer/data/workflow/witness/failure verdicts to the structurally complete
-  432-child capability population; the 121 parents now reconcile with no missing or duplicate child.
-- Extend the completed file/family map into row-level gameplay-content and all 208 copy-key call
-  sites; replace the non-discriminating orphan report before using it for cleanup/release claims.
+- Extend the completed file/family map into row-level gameplay-content. The 433-outcome evidence
+  trace and all 208 copy-key call sites now reconcile; neither broad parent states nor the old
+  non-discriminating orphan report may be used for capability/release claims.
 - Complete semantic row-level fixture/oracle/negative-control maps now that every executable file,
   target, job, and skip population is structurally bounded.
 - Reconcile the four routed historical/complete live planning threads transactionally after their
@@ -248,6 +247,6 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
   have release dossiers and exact blocked routes.
 
 The parent ID pass is recorded in `design-capability-ledger.tsv`; the reproducible structural split
-is in `capability-atomization-inventory.tsv` (121 parents -> 432 unique children). Those child rows
-are not capability verdicts until `capability-outcome-ledger.tsv` supplies every predeclared
-evidence lane.
+is in `capability-atomization-inventory.tsv` (121 parents -> 433 unique children). The complete
+14-lane verdict trace is in `capability-outcome-ledger.tsv`; `capability-outcome-audit.md` records
+the distribution, corrections, and evidence limits.

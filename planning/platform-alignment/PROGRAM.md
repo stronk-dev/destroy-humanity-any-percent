@@ -139,8 +139,11 @@ larger product capability to proven integration.
 - `capability-atomization-plan.md` — frozen 121-parent split rules, child trace schema, mandatory
   anti-aggregation controls, verdict vocabulary, and reconciliation gates for Wave 2.
 - `capability-atomization-extractor.mjs` / `capability-atomization-inventory.tsv` — reproducible
-  structural expansion of 121 parents into 432 child outcomes with coverage/sequence controls; no
-  child verdicts are implied yet.
+  structural expansion of 121 parents into 433 child outcomes with coverage/sequence controls.
+- `capability-outcome-ledger.tsv` / `capability-outcome-validator.mjs` — exact 14-lane evidence and
+  verdict trace for all 433 outcomes, with denominator, identity, vacuity, and route controls.
+- `capability-outcome-audit.md` — distribution, material parent-summary corrections, limits, and
+  authority-bounded consequences of the atomic trace.
 - `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
   counts, authority, current state, and exact closeout gap.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,

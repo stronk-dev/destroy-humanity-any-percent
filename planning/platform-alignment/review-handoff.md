@@ -7,8 +7,8 @@ reviewer.
 State: **not the final repository-audit handoff.** The 2026-08-21 mechanical first filter found
 that Wave 1 lacked complete package/route/migration/client/catalog/executable/archive-risk
 inventories; those structural populations now reconcile, including the 46-row archive inventory
-and 20-row/ten-domain deep replay. Wave 2 now has 432 structurally atomized design outcomes but not
-their complete evidence verdicts. This document remains useful as the
+and 20-row/ten-domain deep replay. Wave 2 now has 433 structurally atomized, fully evidence-traced
+design outcomes. This document remains useful as the
 review contract for the completed active-RFC/release/decision/dependency/queue milestone, but a
 designated verdict over it must not be represented as approval of the unfinished exhaustive audit.
 The server package/operation/migration boundary, client source/workflow boundary, and balance/copy
@@ -17,8 +17,9 @@ file/family boundary have since been reconciled. The Make/CI/client-test-artifac
 also classified. Routed author repairs and authorized planning closeouts remain work, not facts the
 audit may infer. The deployed actor/worker/event boundary is now exact; its absent player/match
 actors and orphaned retention/Route-name schedulers remain routed defects. The 208-key copy
-producer/consumer population is complete and routes RP-108/RP-109; row-level gameplay-content,
-semantic oracle consumption, and evidence attachment to the 432 children remain before finalization. The
+producer/consumer population is complete and routes RP-108/RP-109; row-level gameplay-content and
+semantic oracle consumption remain before finalization. The 433-child outcome population is
+complete but requires the eventual designated cross-party pass with the rest of the range. The
 archive replay itself is complete and adds RP-105–RP-107; neither bounded pass substitutes for
 those remaining row-level populations.
 
@@ -33,7 +34,8 @@ through Wave 6 was:
 
 That range contains 19 planning/documentation commits beginning with `cb162a3`; `c7eb024` is the
 subsequent queue/handoff commit. Do not start the final designated pass from that historical range.
-After Waves 1–2 close, the reviewer must resolve the then-current local tip and cite literal hashes;
+After the remaining Wave-1/3 semantic populations close, the reviewer must resolve the then-current
+local tip and cite literal hashes;
 `HEAD`, “latest,” or a branch name is not acceptable provenance.
 
 The range changes README/current-state/RFC-index claims and adds the platform-alignment control
@@ -71,6 +73,9 @@ Review adversarially, not as a prose polish pass:
    product/owner scope is explicit.
 10. Confirm no active RFC is marked implemented/archived and no plan checkbox was flipped from
     audit inference.
+11. Recompute all 433 atomic outcome verdicts from their named evidence lanes. In particular,
+    attempt to promote a backend-only row, collapse the cosmetic odds/disclosure split, and treat
+    the three bootstrap-authority rows as three independent integrations; each must be rejected.
 
 ## Required verdict format
 

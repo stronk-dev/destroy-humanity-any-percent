@@ -838,3 +838,35 @@
   only files; platform alignment contains 65 tracked plus one ignored file. No design intent,
   product, test, canonical product doc, RFC/archive body, balance/copy/content, migration,
   deployment, plan checkbox, push, or `AGENTS.md` edit occurred.
+
+## 2026-08-21 — Atomic capability evidence attachment
+
+- Evidence attachment caught and corrected one defect in the committed structural denominator:
+  `P-004.02` had combined exact cosmetic odds with dark-pattern disclosure even though the former
+  is absent and the latter is mounted. The structural extractor now emits 433 children (Pets 18),
+  not 432 (Pets 17). The prior checkpoint remains an append-only record of the discovered error.
+- Added `capability-outcome-ledger.tsv`, `capability-outcome-validator.mjs`, and
+  `capability-outcome-audit.md`. Every child has the predeclared actor, producer, consumer,
+  deploy-current data, default workflow, executable witness, failure/refusal, verdict, authority
+  route, and evidence limitation. No parent preliminary state grants proof.
+- Final distribution: three `proven_integration`, 41 `proven_bounded_primitive`, 55
+  `partial_integration`, 134 `backend_or_data_only`, seven `client_or_fixture_only`, three
+  `claimed_only`, 188 `absent`, and two `blocked`. The three integrated rows are three binding
+  design views of one server-anonymous bootstrap path, not three independent gameplay systems.
+- The manual promoted/partial and mandatory-family pass split several false umbrella claims:
+  server authority from absent public formulas; manual multiplication from absent automation;
+  mounted disclosure from absent odds/acquisition/equipment; early Run End fields from absent
+  continuation and unmounted route consequence; registry data from absent category choice; and
+  semantic fixture structure from failed/unevidenced accessibility workflows. Historical pacing
+  results cannot promote the current coordinate.
+- Re-ran the structural extractor and compared its 433-row output byte-for-byte with the checked-in
+  inventory. The outcome validator accepted all 433 ordered 14-field rows and rejected seeded
+  dropped-outcome, duplicate-outcome, vacuous-promotion, and missing-route cases. Exact verdict
+  recount reproduced the audit table.
+- Reconciled the capability map, reality audit, program/inventory/plan, execution queue, tracked RP
+  route, and review draft. Wave 2 is complete at `190a4fa`; row-level gameplay-content and semantic
+  oracle populations remain before the final designated cross-party review.
+- After the three new tracked artifacts land, planning contains 222 tracked plus 25 ignored/local-
+  only files; platform alignment contains 68 tracked plus one ignored file. No design intent,
+  product, test, canonical product doc, RFC/archive body, balance/copy/content, migration,
+  deployment, implementation-plan checkbox, push, or `AGENTS.md` edit occurred.
