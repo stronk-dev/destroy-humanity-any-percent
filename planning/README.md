@@ -4,6 +4,10 @@
 > actually is, what is blocking what, what is ratified, and the open debts. Read it after
 > `CLAUDE.md` and before touching anything.
 
+Repository-wide capability/release truth and the only current executable queue live in
+[`platform-alignment/`](platform-alignment/PROGRAM.md). Per-RFC plans remain the implementation
+record; the program layer detects when those records disagree with each other or with `HEAD`.
+
 One directory per RFC under implementation: `planning/<rfc-slug>/` containing:
 
 - **`plan.md`** — task breakdown, sequencing, acceptance gates, who/what is assigned (human, Claude, Codex).

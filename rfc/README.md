@@ -30,9 +30,12 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [First Content Epoch](first-content-epoch.md) | epoch 6 minted and designated-approved; dependent archival in progress | ALL fixture-first content foundations |
 | [Deployment Foundation](deployment-foundation.md) | draft — THE PUSH | Gameserver / CI / all archived guards |
 
-**Current handoff:** `planning/codex-batch-2026-07-29.md` — the ordered implementable-now queue.
-**Coverage map:** `planning/coverage-map/` (internal, unpublished) — the validated research→design→RFC→impl tracker and the
-dependency-ordered gap backlog for the still-uncontracted (design-only) systems.
+**Current handoff:** [`planning/platform-alignment/execution-queue.md`](../planning/platform-alignment/execution-queue.md)
+— the evidence-derived READY/BLOCKED queue at `190a4fa`. The older July batch manifest is history,
+not current authorization.
+**Coverage map:** `planning/coverage-map/` is the 2026-08-05 historical sweep. Its own staleness
+stamp applies; use the platform-alignment capability and active-RFC audits until all six slices are
+revalidated.
 
 ## Archive
 
@@ -95,11 +98,11 @@ owns board binding; doctrine intents must define doctrine-pick ordering before s
 routes can ship. Later named work: an outcome-sensitive near-cap Guild reserved-credit regression
 before either a nonzero stock-consumption modifier or multi-worker clearing topology ships.
 
-The **still-uncontracted (design-only) systems** — the ~28 gameplay elements that are researched
-and designed but have no RFC yet (individual minigames, the monetization-satire content, the
-narrative layer, tiers 2–8) — are tracked with their build-on dependencies and draft-order waves in
-`planning/coverage-map/gap-backlog.md`. That backlog, not this paragraph, is the source of truth for
-what remains to be drafted.
+The **still-uncontracted (design-only) systems** were counted as ~28 in the 2026-08-05 coverage
+sweep (individual minigames, monetization-satire content, narrative, tiers 2–8). Its internal
+`planning/coverage-map/gap-backlog.md` retains the historical dependency analysis, but it is
+gitignored and stale. Do not treat either the count or queue as current authority until the six
+slices are revalidated and D-002 establishes their durable shared home.
 
 ### Deferred decisions register
 

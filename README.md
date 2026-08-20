@@ -4,12 +4,14 @@
 
 A free, browser-based MMO idle game: climb from a 1995 garage — where you own your tools and cheat codes work — to a world-consuming AI megacorp, while a speedrun timer counts and the game slowly enshittifies itself around you. Cookie Clicker's spiritual successor with the two things it never had: **other people** and **an ending**.
 
-**Status:** design complete; the shared numeric core, economy catalog/kernel, versioned Postgres
-save layer, authoritative production/intent engine, and gate/Route Registry foundation are
-implemented, along with the Commons Compact server foundation and the Svelte/Worker client shell.
-Anonymous account/session and Founder lifecycle infrastructure is also implemented. A runnable
-gameserver now composes those systems, the Postgres workers, and authenticated realtime transport;
-the shell still has no live transport adapter, so the game is not yet playable end to end.
+**Status:** a tested T0–T1 vertical slice, not a 1.0 game. The shared numeric, economy, save,
+production, route, account/session, realtime, and replay foundations are implemented, and a real
+Chromium path now bootstraps through the composed gameserver/Postgres/WebSocket stack into the
+Svelte Game UI. The complete first-hour browser workflow is still unproved; tiers 2–8, most
+minigames, player-facing MMO/world/events systems, production packaging, backup/restore, and the
+designed ending remain incomplete. See
+[`planning/CURRENT-STATE.md`](planning/CURRENT-STATE.md) and the
+[`platform-alignment capability map`](planning/platform-alignment/capability-map.md).
 
 ## Development setup
 

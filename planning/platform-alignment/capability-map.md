@@ -1,0 +1,28 @@
+# Capability map at `190a4fa`
+
+This map describes user outcomes, not package count. Evidence details are in `reality-audit.md`.
+
+| Capability family | Classification | What is real now | What prevents the larger claim |
+|---|---|---|---|
+| Numeric, economy, save, production, offline accrual | **Proven integration (bounded)** | Shared Go/TypeScript numeric vectors, versioned Postgres saves, authoritative intents, and 90%/24 h offline accrual are exercised through the composed first-hour proof. | The proof covers the live T0–T1 content, not the nine-tier game. |
+| T0–T1 first-hour content | **Proven integration (server path)** | Epochs 7/8 contain nine generators, ten upgrades, a scripted first ending, and run-2 starter consequences; the composed server/Postgres proof is archived. | Full rendition of that path in the browser is still Game UI AC1, which is blocked on unreconciled normative text and missing browser acceptance seams. |
+| Account/session security | **Proven backend; mechanical user capability** | Anonymous account creation, recovery authentication, rotation/revocation, import, and deletion have real-Postgres tests. | The UI silently stores the one-time recovery code; there is no recovery, export, import, deletion, or email-attach surface. |
+| Offline-anonymous play | **Claimed only** | The account RFC and docs promise local saves plus later import. | The production client immediately bootstraps a server account and stores credentials; no local save owner or offline play path exists. |
+| Game UI | **Mechanical fragment** | Five Svelte surfaces, real snapshot/WebSocket wiring, all-engine axe checks, reduced motion, and a real Chromium bootstrap-to-Desk test exist. | The full first-hour/Exit/run-end keyboard workflow is not executable; AC1 is open. Settings is status text only. |
+| Accessibility | **Mechanical fragment** | Axe WCAG 2.2 AA checks cover five Phase-A surfaces; reduced-motion and focus-preservation checks exist. | The only explicit keyboard workflow drives Begin with Enter. No full keyboard first hour, screen-reader workflow, zoom/reflow, touch/motor, or account-lifecycle proof exists. |
+| Minigames and Soul recovery | **Proven backend; absent player surface** | The Pitch engine, frozen sessions, authenticated create/command/resolve/current APIs, and Soul Recovery lifecycle are composed and tested. | `minigame-api-and-surface` still has its surface checkbox open; the only real minigame is The Pitch. |
+| Pets | **Mechanical fragment** | Care catalogs, decay, state/replay, and Soul/combat input projection are implemented. | Pet acquisition, visible care workflow, battle engine, and player surface do not exist. |
+| Combat | **Mechanical fragment** | Shared exact arithmetic and RNG exist in Go/TypeScript. | The strict catalog, fixture, duel engine, lane engine, bots, and integration are incomplete or draft-only. |
+| Commons/guild/MMO | **Mechanical fragment** | Server-side Commons, guild membership, tithe, clearing, presence, and bot-compatible structural primitives exist. | No player onboarding/governance surface, feed, world layer, social ritual, or end-to-end multiplayer user workflow exists. |
+| Leaderboards/epochs/replay | **Mechanical fragment** | Immutable epoch/run identities, projections, categories, ranks, and replay verification exist in server code. | Initial-state/archive compaction work, public readers/router, UI consumer, current closeout docs, and archival review remain open. |
+| Public API | **Mechanical fragment** | Descriptor DSL, generated OpenAPI/TypeScript, cursors, middleware, and authenticated operations exist. | Public DTO/readers, evidence endpoints, composed public router, and full privacy/conformance proof are open. |
+| Events, feed, world, narrative | **Absent beyond foundations** | Meters, achievements, routes, and transport are usable producers. | World, feed/dispatch, and Layer-1 events remain drafts; Layer-2/3 narrative and late-tier content have no accepted RFCs. |
+| Full nine-tier game and designed ending | **Absent** | Tiers 0–1 are live data and one early ending exists. | Tiers 2–8, most minigames, world story, and the three designed terminal endings are unimplemented. A 1.0 content floor has not been ruled. |
+| CI as a release guard | **Claimed only at current HEAD** | Server, client, schema, browser, and composed-browser jobs passed individually on current HEAD. | Every current-head workflow is cancelled because the harness exceeds its 30-minute job budget. There is no successful current-head run. |
+| Deployment/self-hosting | **Absent** | A gameserver binary and drain primitives exist; test-only Compose files exist. | No production Dockerfile, Caddyfile, full-stack Compose contract, secret validation, deploy/rollback flow, or backup/restore rehearsal exists. |
+| Player data rights and recovery | **Mechanical fragment** | Backend account deletion anonymizes relational ownership and preserves ranked-exclusion history. | No player-visible export, delete, credential backup/recovery, or restore workflow exists. |
+| Packaging/licensing | **Mechanical fragment** | The repository has an MIT `LICENSE`. | The client bundle lacks the recorded `third-party-licenses.txt`; production packages do not exist. |
+| Sunset/preservation | **Claimed only as intent** | The research corpus proposes a covenant and the architecture is amenable to self-hosting. | No accepted covenant, export, self-host bundle, artifact mirroring, or end-of-life runbook exists. |
+
+The safe product statement is therefore: **a strong, tested T0–T1 server-authoritative vertical
+slice with a partially integrated browser shell—not a coherent 1.0 game or release platform.**

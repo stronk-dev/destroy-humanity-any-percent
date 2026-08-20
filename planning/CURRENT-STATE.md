@@ -1,111 +1,101 @@
-# CURRENT STATE — read this after CLAUDE.md, before anything else
+# CURRENT STATE — read this after `AGENTS.md`
 
-**Last updated: 2026-08-16.** Written so a fresh agent (either side) can resume with no
-conversational context. `CLAUDE.md` has the process laws; `rfc/README.md` has the RFC index;
-this file has **where the project actually is right now and what is blocking what.**
+**Last updated: 2026-08-20 at commit `190a4fa`.** This file is a mutable resume brief. The
+evidence-backed repository program lives in `planning/platform-alignment/`; RFC lifecycle truth
+still lives in `rfc/README.md` after reconciliation.
 
----
+## 1. What genuinely exists
 
-## 1. Where the project is
-
-- **The repository is published.** `origin/main` exists at the owner-controlled GitHub remote.
-  Published commits are immutable; unpublished rewrites remain limited to the explicit protocol
-  carve-out and require owner authorization plus byte-identity proof.
-- Epoch 6 (`First Content`), epoch 7 (`T0-T1 Playable Content`), and epoch 8
-  (`First-Hour Payoff`) are minted. Epoch 8 pins nineteen artifacts at
+- `HEAD` and `origin/main` are identical (`0` ahead, `0` behind). The GitHub repository is public.
+- The numeric core, economy/save/production engines, offline accrual, route/gate foundation,
+  Commons/guild server foundations, account/session backend, realtime transport, replay/epoch
+  machinery, and T0–T1 content have substantial executable evidence.
+- Epoch 7 identity is
+  `sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789`.
+  Epoch 8 identity is
   `sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`.
-- **The T0–T1 first hour is implemented, designated-approved, and ARCHIVED** (archival verdict
-  `b5d161d` over `755f428`): 97 deterministic pacing runs, zero dead purchasables,
-  branch-specific first-company endings, run-2 starter packages, and a pinned-seed proof through
-  the real gameserver and Postgres. All six acceptance criteria were re-walked against the tree
-  and executed, with AC0 and AC4 each backed by a mutation probe. Canonical behavior now lives in
-  `docs/t0-t1-playable-content.md`; the RFC and its full history are in `rfc/archive/` and
-  `planning/archive/t0-t1-content/`.
-- The Phase-A screens exist and work. A real Chromium drives a real gameserver against Postgres
-  over a live WebSocket: bootstrap → Vision Slide → Desk → intents → visitor counter.
-- **The working branch is 39 commits ahead of `origin/main`.** Everything since `ebcfc15` — the
-  instrument repairs, both content epochs, AC0's offline-catchup fix, the whole first-hour payoff,
-  the MIT licence — is local only, so hosted CI has not seen any of it (including a browser-gate
-  repair that stays red on Actions purely because the fix has not reached the remote). Pushing and
-  deployment remain owner-only actions.
+- The live content is a bounded vertical slice: nine generators, ten upgrades, tiers 0–1, one real
+  minigame (The Pitch), a scripted first-company ending, and run-2 starter consequences.
+- A real Chromium path proves account bootstrap, Postgres, snapshot v2, and the world WebSocket
+  subscription through the production Game UI runtime. It reaches the Desk; it does not yet prove
+  the complete first-hour browser workflow.
 
-## 2. Critical path
+## 2. Current release truth
+
+The repository is **not a coherent 1.0 release platform** at this commit.
+
+- Current-head hosted CI has no successful workflow conclusion. Push run `32009994004` and the
+  next three nightly runs were cancelled because the harness remained inside
+  `balance-harness -mode=check` when its 30-minute budget expired. Server, client, schema, browser,
+  and composed-browser jobs passed individually.
+- No production Dockerfile, Caddyfile, full-stack Compose contract, deploy/rollback flow,
+  backup/restore rehearsal, or clean-host self-host proof exists.
+- Account import/deletion/security primitives exist on the backend, but the UI has no recovery,
+  export, import, deletion, or email-attach workflow. The one-time recovery code is silently stored
+  in localStorage.
+- Fully offline-anonymous play is promised by the Account RFC/design but absent from the production
+  client, which bootstraps a server account.
+- Accessibility proof covers axe, reduced motion, focus preservation, and Begin-via-Enter; it does
+  not cover the full keyboard/screen-reader/zoom/touch release workflow.
+- Tiers 2–8, most minigames, combat engines, player-facing social/world/events systems, and the
+  designed terminal endings remain unimplemented.
+
+See `planning/platform-alignment/release-platform-audit.md` and `capability-map.md` for the trace.
+
+## 3. Record and lifecycle truth
+
+- Game UI AC1 is blocked because its normative body still contradicts accepted GU-C25–GU-C28
+  rulings. The ruling author must reconcile it before implementation resumes.
+- Permits and First Content Epoch behavior appears landed and reviewed, but their live plans still
+  show mint-time work open. They require a transactional closeout/range-union audit, not blind box
+  flipping.
+- Minigame Platform, Account, Transport, Prestige, and CI plans contain blockers or composition
+  claims superseded by later work. Each requires acceptance reconciliation against the tree.
+- `planning/run-genesis-archival-remediation/` still needs its recorded resolved state moved through
+  the normal reviewed archival lane.
+- The 2026-08-05 coverage map is historical and stale. It must not be used as a current count until
+  its six slices are revalidated.
+- `design/research/README.md` still contains a ruled-looking private-repository disposition that
+  contradicts the public remote. This is owner decision D-002; an implementation agent must not
+  silently rewrite the policy.
+- The mandated design backlog, research dossiers/matrix, and coverage map are gitignored and absent
+  from a fresh clone. The tracked interim ledger is `planning/platform-alignment/backlog.md` until
+  D-002 establishes a durable public/private shared-memory model.
+
+## 4. Critical path
 
 ```
-[HERE] Game-UI acceptance sweep + archival → Deployment Foundation → THE PUSH
+R-001 current-head harness diagnosis
+        +
+active-RFC / planning closeout reconciliation
+        +
+owner release decisions and Game UI body reconciliation
+        -> accepted, dependency-ordered implementation
+        -> integrated release proof
 ```
 
-The detailed T0–T1 instrument, balance, mint, rewrite, and review history is frozen in
-`planning/archive/t0-t1-content/log.md`. Canonical shipped behavior lives in
-`docs/t0-t1-playable-content.md`.
+Only the first two lanes are presently `READY`. The exact queue and blocked work are in
+`planning/platform-alignment/execution-queue.md`.
 
-## 3. Ratified live identities
+## 5. Owner decisions now required
 
-- Epoch 7: `sha256:6c7fab29c24fae68e3067c883177bc78fe61b9d91704b6d936b3e4f3cfd8f789`.
-- Epoch 8: `sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`.
-- The exact scenario, policy, curriculum, content, copy, and report hashes are recorded in the
-  archived T0–T1 RFC and planning log. Changing any live balance byte requires the normal epoch
-  and owner-ratification protocol.
+- Next public milestone label and exact release floor.
+- Public/private repository disposition.
+- Sunset/self-host covenant and deliverable.
+- Fully offline-anonymous play versus automatic anonymous server accounts.
+- Recovery credential UX, data-export scope, and deletion disclosure.
+- Supported deployment/backup topology.
+- T0–T1 vertical slice versus nine-tier/ending content scope for the chosen milestone.
 
-## 4. Open debts
+The full decision records and evidence prerequisites are in
+`planning/platform-alignment/decision-queue.md`.
 
-- Game UI still needs its post-content acceptance sweep and archival verdict. **Sweep it against
-  the tree, not the log** — the T0–T1 close found AC0 unmet after the record implied otherwise, and
-  found AC1/AC4 absent entirely after a mint had already been signed.
-- Deployment carries two recorded items from the licence audit: the repo now has an MIT `LICENSE`,
-  and the client bundle still needs a `third-party-licenses.txt` (three dependency MIT texts)
-  served alongside it, since minification strips the notices MIT requires.
-- Minigame surfaces (MA-C9), Soul Recovery's carried UI debt, Minigame Platform AC6, and Pet Care
-  AC3 remain with their named successors.
-- The Offer Sheet's “nothing on this sheet is hidden” copy versus withholding an unbound future
-  network-slot row must be ruled before such content ships.
-- Deployment and any push remain owner-gated.
+## 6. Working rules
 
-## 4b. Record audit — 2026-08-16 (what it found, so the next one is cheaper)
-
-A mechanical completeness audit of the record itself. Method: cross-check every RFC file against
-the index both directions, every index status against its own file's status line, every planning
-directory against its RFC's lifecycle stage.
-
-- **RFC index is COMPLETE** — 22 active + 46 archived files, zero missing in either direction.
-- **Four status drifts, all corrected:** Game-UI understated its own ruled range (GU-C8 → C24);
-  Permits still read "awaiting owner" for action already taken (its content ships in epochs 6/7/8);
-  First Content Epoch still described the epoch-6 review as pending (it completed, and two epochs
-  minted on top); the index understated API Foundation (C17 → C20).
-- **13 empty untracked planning shells removed** — `git mv` leftovers, never in git, cosmetic only.
-- **One orphaned tracked planning thread:** `planning/run-genesis-archival-remediation/` — its RFC
-  is archived but the directory never moved, and its log ended on an "honestly open"
-  `PendingSettlements` item. **That item is resolved** (verified in tree:
-  `guild/clearing_store.go:163` + `gameserver/composition.go:283`), and the log now says so.
-  **TODO: move that directory to `planning/archive/` in the next archival batch** — flagged, not
-  moved, because relocating a tracked thread belongs in the normal lane with its own verdict.
-- **The coverage map is 11 days stale and now carries a staleness stamp.** Its headline counts
-  moved (I: 14 → ~16). **A full re-validation sweep of the six domain slices in
-  `planning/coverage-map/validated/` is OWED** — the stamp is a delta, not a re-validation.
-
-**Nothing was found missing from the record.** Every in-flight thread, every archived system, and
-the ~28 design-only backlog are all written down and findable. The defects were staleness, not
-absence.
-
-## 5. Conventions established in-session that are NOT in CLAUDE.md's original text
-
-CLAUDE.md's "Evidence discipline" section now carries rules 1–6; they are not repeated here. Two
-additions that live only in this brief:
-
-1. **Decision rounds go to Marco as `AskUserQuestion` dialogs WITH the context embedded in the
-   question/option text** — prose written before a tool call is invisible to him. Plain language;
-   no project jargon ("ceiling", "budget", "oracle") without a one-line translation.
-2. **The instrument is a tool, not the project.** 2026-08-13's owner ruling exists because 48
-   harness commits accumulated against 2 content commits. When verification cost starts compounding
-   (tiers, attestations, identity hashes), stop and ask the owner what the check is FOR.
-
-## 6. Working rhythm
-
-Claude drafts RFCs and rules blockers; Codex implements and files blockers; **every batch gets a
-designated cross-party review by the other side before archival** (Claude reviews Codex's
-implementations; Codex reviews Claude's RFC/ruling commits). Marco rules design questions and
-ratifies content hashes. Reviews are delegated to subagents with explicit probe instructions —
-note the per-session subagent cap (`CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION`); it is cumulative,
-not concurrent, and resuming an agent is free.
-
-**THE PUSH is Marco's alone**, always.
+- Do not start from old handoff prose. Start from the platform-alignment execution queue and the
+  exact active RFC.
+- Do not turn backend primitives into shipped-feature claims without a consumer, real workflow,
+  and executable witness.
+- Do not weaken or extend a measurement budget from a run that did not reach its objective.
+- Claude/Codex cross-party designated review and full range-union remain mandatory before archival.
+- Push, publish, deploy, and PR creation remain owner-authorized external actions only.

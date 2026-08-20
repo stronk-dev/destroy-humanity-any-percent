@@ -1,0 +1,75 @@
+# Repository alignment program
+
+This program is the repository-wide control plane for turning design ambition into proven user
+outcomes. It does not replace RFC-0000 or per-RFC planning. It exists because those records can be
+individually plausible while disagreeing with each other and with `HEAD`.
+
+## Authority chain
+
+Every material claim must travel through this chain without skipping a gate:
+
+```
+observation / complaint
+        -> BACKLOG defect or question
+        -> reality audit at a named commit
+        -> bounded research or owner decision
+        -> reconciled design intent
+        -> accepted RFC and dependency owner
+        -> implementation
+        -> integrated user-workflow proof
+        -> code + docs + RFC + plan + ledger closeout in one reviewed range
+```
+
+Research answers what is true. Owner decisions choose between legitimate product or risk
+positions. Design states intent. RFCs specify authorized implementation. Tests and runtime
+evidence prove outcomes. None substitutes for another.
+
+## Classification
+
+| Class | Meaning |
+|---|---|
+| **Proven integration** | Producer, consumer, real content/workflow, and a current executable witness all exist. |
+| **Mechanical fragment** | A schema, package, route, component, or test fixture exists, but the real user workflow is incomplete. |
+| **Claimed only** | A current record says it exists, but the trace is missing or contradicted at `HEAD`. |
+| **Absent** | No implementation for the named outcome exists. |
+| **Blocked** | The next gate is named and cannot be passed by implementation judgment alone. |
+
+An archived RFC proves only the bounded behavior it specified. It does not automatically promote a
+larger product capability to proven integration.
+
+## Program gates
+
+1. Audit claims against the exact commit and, for hosted behavior, the exact remote run.
+2. Put every discovered defect, contradiction, unknown, and owner choice in the internal
+   `design/BACKLOG.md` and mirror repository/release findings in tracked `backlog.md` until D-002
+   establishes a durable shared store.
+3. Trace intent -> producer -> consumer -> real data/content -> executable witness.
+4. Predeclare measurements and negative controls before running them.
+5. Treat a fired criterion or negative result as completed evidence.
+6. Do not draft an RFC that silently decides a research or owner question.
+7. Mark only currently authorized, dependency-satisfied work `READY`.
+8. Close code, canonical docs, RFC/index state, plan, and ledgers transactionally.
+9. Preserve the cross-party review and full-range-union archival gates in `AGENTS.md`.
+
+## Current audit coordinate
+
+- Local and remote commit: `190a4fa04958cc2a3b4e689804cd55682f6c6420`.
+- Audit date: 2026-08-20.
+- Product changes during audit: none.
+- Existing dirty work preserved: `AGENTS.md` only.
+- Hosted evidence: current-head push run `32009994004` and nightly runs `32096019304`,
+  `32212696707`, and `32328790752` all ended cancelled; the harness job exhausted its 30-minute
+  budget while `balance-harness -mode=check` was still running.
+
+## Artifact index
+
+- `capability-map.md` — product outcomes and their actual stage.
+- `backlog.md` — tracked interim defect/question ledger while the internal design ledger is ignored.
+- `release-platform-audit.md` — release/readiness evidence at the audit coordinate.
+- `reality-audit.md` — producer/consumer/content/proof traces.
+- `active-rfc-audit.md` — lifecycle truth for every active RFC.
+- `research-queue.md` — predeclared empirical and verification work.
+- `decision-queue.md` — choices implementation agents may not infer.
+- `rfc-graph.md` — dependency and resource ownership.
+- `execution-queue.md` — the only presently authorized queue.
+- `log.md` — append-only program history.
