@@ -5,7 +5,7 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 | Order | State | Work | Exit |
 |---|---|---|---|
 | 1 | **READY — research/diagnosis** | Execute R-001 and identify the current-head harness cost/non-termination cause. Do not change budgets or scenarios during measurement. | Complete artifact with per-row work/cost, visible invalid terminations, and a proposed bounded RFC change. |
-| 2 | **READY — record reconciliation** | Re-walk Permits, First Content Epoch, Minigame Platform, Account, Transport, Prestige, and CI plans against current tests and exact review ranges. | Each checkbox is proven, remains open with a named blocker, or is split to a successor; no archival without range-union and designated verdict. |
+| 2 | **READY — record reconciliation** | Permits/FCE pass complete with RP-027–RP-033 filed. Continue Minigame Platform, Account, Transport, Prestige, and CI plans against current tests and exact review ranges. | Each checkbox is proven, remains open with a named blocker, or is split to a successor; no archival without range-union and designated verdict. |
 | 3 | **BLOCKED — author action** | Reconcile Game UI AC1 body with GU-C25–GU-C28. | Normative body no longer contradicts accepted rulings. |
 | 3a | **BLOCKED — author action** | Reconcile Minigame Platform header, MP1, MP5, C3/C8/C9/C12/C14, and AC6 around the absent combat-duel tenant. | Normative body no longer claims combat code/catalog/adapter that does not exist. |
 | 4 | **BLOCKED on 3** | Implement and execute R-004 full browser first-hour acceptance under the existing Game UI RFC. | All branches/re-entry/offline/keyboard/negative fixtures pass; complete range ready for designated review. |

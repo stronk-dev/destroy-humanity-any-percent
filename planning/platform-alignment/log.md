@@ -90,3 +90,29 @@
   map are gitignored from the public repository. The internal ledgers were updated locally, while
   `backlog.md` and `release-platform-audit.md` carry the same program evidence in tracked form.
   Nothing was force-added or published; D-002 owns the durable public/private model.
+
+## 2026-08-20 — Permits and First Content lifecycle reconciliation
+
+- Read both active RFCs and their complete plan/log authority chains, inspected the exact candidate,
+  mint, repair, baseline, archival, and cold-cache commits, and reconciled their cross-party verdict
+  ranges. The Permits candidate set `{7d9cb37, 90633a6, d30ab9e}` and the FCE mint set
+  `{3ff34bf, 84cf570, c41b388, 08c995e}` are genuinely designated-review-covered; later F1 and
+  cold-cache repairs also have exact designated verdicts.
+- Promoted only the criteria that survived fixture inspection and range review. Permits AC1/AC2
+  are proven; FCE AC1/AC3 are proven; FCE AC2 is historically proven but its HEAD witness drifted;
+  FCE AC5 is proven only under the accepted range-head ruling. Kept Permits AC3 and FCE AC4 partial.
+- Filed RP-027–RP-033. Permits never landed the required exact two-resource Go/TypeScript replay
+  row; the existing doctrine replay fixture constructs a cash-only T3→T4 gate. The Permits body
+  still contradicts PT-C1/PT-C2/PT-C4. FCE's changelog does not resolve every consumed artifact to
+  an exact reviewed range, and FCE5.5/AC5 still contradict the range-head ruling.
+- Confirmed current canonical-doc drift: Economy/Purchasable docs call the active catalog pre-mint
+  schema v3, Routes says production has no T3→T4 gate, and Pitch still says no production epoch pins
+  its content. No canonical docs were silently rewritten because closeout also needs missing proof,
+  authority reconciliation, and a new designated range.
+- Current cold evidence passed: `./production ./replaycatalog ./harness -count=1` (4.758 s,
+  5.759 s, 35.667 s); client (39 files passed, 2 skipped; 6,655 tests passed, 15 skipped);
+  real-Postgres Integration tests for `./production ./gameserver`; `./economy ./routes ./doctrine
+  ./epochseed -count=1`; schema, copy, and deployment-content-manifest checks.
+- Wrote `permits-first-content-lifecycle-audit.md` with criterion-level verdicts and the smallest
+  honest closeout order. Did not flip either implementation plan, edit owner-authored RFC text,
+  archive, change product bytes, or touch the user's `AGENTS.md` edit.

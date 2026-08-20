@@ -20,17 +20,18 @@ second AC1–AC4 set and reported 115 rows.
   unimplemented RFC is defective merely for being draft.
 - **Withdrawn** retains the refuted Dispatch Integrity proposal as history, not active work.
 
-## First-pass distribution
+## Distribution after completed cold/lifecycle batches
 
 | State family | Rows | Meaning now |
 |---|---:|---|
 | Draft / not a completion claim | 39 | Eight draft RFCs have no implementation claim. |
-| Mechanically backed or cold-witness green, proof/range replay pending | 52 | Code/tests appear to exist; 13 rows have now run cold, but none is promoted to proven without discrimination and range review. |
-| Unmet or partial | 13 | API/Combat/consumer gaps plus newly separated Account/WebSocket/Game UI criterion fragments. |
+| Mechanically backed or cold-witness green, proof/range replay pending | 43 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
+| Proven or historically proven with a named qualification | 7 | Permits/FCE rows whose witnesses and designated implementation ranges were reconciled; qualifications remain explicit. |
+| Unmet or partial | 15 | API/Combat/consumer gaps plus Account/WebSocket/Game UI and two newly confirmed Permits/FCE witness/provenance gaps. |
 | Contradicted at current HEAD | 3 | CI AC1/AC3 and Minigame Platform AC6 are false now. |
 | Withdrawn / refuted | 4 | Dispatch Integrity is not implementable work. |
 
-The 52 mechanically backed/cold-witness rows are the Wave-3 proof population. The ledger names their
+The 43 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
 specific witness/range route rather than treating them as a green block.
 
 ## Confirmed criterion-level downgrades
@@ -85,11 +86,21 @@ specific witness/range route rather than treating them as a green block.
 
 ## Lifecycle rows that need transactional reconciliation
 
-Permits and First Content Epoch look implemented in later epoch 6–8 code and tests while their live
-plans retain mint/review/activation boxes as open. Minigame Platform and epoch-7 planning show the
-same successor-landed pattern. Those rows cannot be closed by flipping boxes from code inspection:
-the exact exercising tests and designated review ranges must be shown to cover the implementation
-span, then the plan/RFC/docs/archive move must be one reviewed closeout.
+The Permits/First Content lifecycle pass is now recorded in
+`permits-first-content-lifecycle-audit.md`.
+
+- Permits AC1/AC2 are proven integration. AC3 is partial: atomic two-resource rejection/debit is
+  discriminating, but the promised Go/TypeScript replay row for that exact crossing is absent.
+  AC4's implemented review/activation chronology follows PT-C1, while the normative criterion
+  still says the ruled-impossible opposite. Canonical Economy/Routes docs remain pre-mint.
+- First Content AC1/AC3 are proven. AC2 was proven at the mint but its exact epoch-6 test later
+  drifted to deploy-current epoch 8. AC4 is partial because the changelog does not resolve every
+  consumed verdict to an exact reviewed range. AC5 is proven under the accepted range-head
+  interpretation, but FCE5.5/AC5 still retain the contradicted mint-commit wording.
+
+The historical implementation ranges and designated verdicts are real; they do not erase these
+closeout defects. No plan box or archive state was changed by audit inference. Minigame Platform
+and epoch-7 planning still require the same successor/range reconciliation.
 
 ## Next execution batches
 

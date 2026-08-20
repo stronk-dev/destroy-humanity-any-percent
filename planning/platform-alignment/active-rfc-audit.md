@@ -23,8 +23,8 @@ The status below is evidence-derived. It does not change an RFC's formal status 
 | Feed & Dispatch Foundation | draft | No player feed implementation. | Transport/API/achievement dependencies and owner acceptance. |
 | Events Engine Layer 1 | draft | No evaluator/content workflow. | Meter/achievement semantics and owner acceptance. |
 | Minigame & Recovery API + Surface | accepted / implementing | Backend API lifecycle is composed and reviewed in slices; surface and complete range review are open. | Implement MA-C9 surface only after Game UI/UI dependencies; full-range review. |
-| Permits & T3 Gate | promoted | Candidate was reviewed and activated in epochs 6–8; plan still shows all mint-time proof boxes open. | Reconcile each activation proof against current tests and review ranges; archive only if union and docs are complete. |
-| First Content Epoch | implementing | Epoch 6 was minted and designated-approved; epochs 7/8 build on it. Plan still shows the mint/archival item open. | Transactional closeout audit of dependent RFCs and exact range citations. |
+| Permits & T3 Gate | promoted | Candidate and atomic epoch-6 activation ranges are designated-reviewed; AC1/AC2 are cold-proven. AC3 lacks the exact two-resource Go/TS replay row; P2/P4/AC4 contradict their rulings; canonical docs are pre-mint. | RP-027–RP-029: author body reconciliation, missing witness, docs correction, then a new complete designated range before archival. |
+| First Content Epoch | implementing | Epoch 6 mint and repairs were designated-approved; AC1/AC3 are proven. AC2's fixed witness drifted to epoch 8, AC4 lacks exact range citations, AC5 body contradicts its range-head ruling, and epoch-7 harness scope was grafted into this bounded mint RFC. | RP-030–RP-033: reconcile authority/successor scope, restore exact witness and provenance, then transactional closeout. |
 | Deployment Foundation | draft | Draft's central “local-only / THE PUSH” premise is false. Production packaging is still absent. | Owner rules release floor and repository disposition; author rewrites the body before acceptance. |
 
 ## Planning-record defects
