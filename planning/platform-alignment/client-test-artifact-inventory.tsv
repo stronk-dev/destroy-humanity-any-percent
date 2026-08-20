@@ -1,0 +1,57 @@
+file	tracked	kind	subject	production_relationship	evidence_limit
+client/test/achievements.test.ts	yes	unit_parity	achievements	module outside entry graph	mechanical parity, not player workflow
+client/test/active-play.test.ts	yes	unit_parity	active play	module outside entry graph	mechanical parity, not player workflow
+client/test/browser-error-guard.ts	yes	browser_helper	uncaught async errors	browser suites	guard helper, not independent acceptance
+client/test/combat-arithmetic.test.ts	yes	unit_parity	Combat arithmetic/RNG	module outside entry graph	kernel proof, no tenant/catalog/surface
+client/test/commons.test.ts	yes	unit_parity	Commons math	module outside entry graph	mechanical parity, not player workflow
+client/test/copy.test.ts	yes	unit	generated copy runtime	main entry graph	hash/resolve behavior; not complete call-site consumption
+client/test/curriculum.test.ts	yes	unit_parity	curriculum	module outside entry graph	parser proof, no continuation workflow
+client/test/decimal-vectors.test.ts	yes	cross_runtime_parity	Decimal/economy	shared runtime primitive	strong numeric primitive, not player outcome
+client/test/doctrines.test.ts	yes	unit_parity	doctrines/routes	module outside entry graph	mechanical parity, not player workflow
+client/test/economy-kernel.test.ts	yes	cross_runtime_parity	economy kernel	module outside entry graph	server parity; live client uses snapshot projection
+client/test/first-content-candidates.test.ts	yes	candidate_validation	first-content catalogs	fixtures only	candidate/schema proof, not deploy-current player workflow
+client/test/fiscal.test.ts	yes	unit_parity	fiscal	module outside entry graph	mechanical parity, not player workflow
+client/test/fixed-grid.test.ts	yes	cross_runtime_parity	fixed-grid	module outside entry graph	primitive proof, not player workflow
+client/test/game-ui-run-end-contract.ts	yes	typecheck_fixture	Run End props	compile boundary	negative type contract only
+client/test/game-ui-runtime.test.ts	yes	unit	HTTP/WebSocket runtime	main entry graph	mocked boundary; no real server/browser composition
+client/test/game-ui-screens-browser.test.ts	yes	browser	five surfaces/system beats	main entry graph	fixed viewport; behavior/focus/reflow gaps survive
+client/test/game-ui.test.ts	yes	unit	Game UI contracts/navigation/performance	main entry graph	component/contract proof; several AC oracles non-discriminating
+client/test/meters.test.ts	yes	unit_parity	meters	module outside entry graph	mechanical parity, not player workflow
+client/test/minigame-catalog.test.ts	yes	unit_parity	minigame catalog	module outside entry graph	parser proof, no production minigame surface
+client/test/minigame-offline-quality.test.ts	yes	unit_parity	minigame offline quality	module outside entry graph	math proof, output consumer absent
+client/test/minigame-resolution.test.ts	yes	unit_parity	minigame resolution	module outside entry graph	transition proof, receipt surface absent
+client/test/permits-candidate.test.ts	yes	candidate_validation	Permits gate/content	fixtures only	candidate proof; exact accepted T3-T4 crossing witness missing
+client/test/pet-catalog.test.ts	yes	unit_parity	pet catalog	module outside entry graph	parser proof, no player pet surface
+client/test/pet-combat-inputs.test.ts	yes	cross_runtime_parity	pet combat inputs	module outside entry graph	primitive proof, no combat/pet workflow
+client/test/pet-grammar.test.ts	yes	cross_runtime_parity	pet grammar	module outside entry graph	primitive proof, no player pet surface
+client/test/pet-state.test.ts	yes	cross_runtime_parity	pet state	module outside entry graph	state proof, no player pet surface
+client/test/pet-transition.test.ts	yes	cross_runtime_parity	pet transition	module outside entry graph	transition proof, no player pet surface
+client/test/pitch-content-gate.test.ts	yes	cross_runtime_parity	Pitch corpus	module outside entry graph	engine/content proof, no production Pitch surface
+client/test/pitch.test.ts	yes	unit_parity	Pitch catalog/engine	module outside entry graph	engine proof, no production Pitch surface
+client/test/prestige.test.ts	yes	cross_runtime_parity	prestige math	module outside entry graph	math proof; live UI uses server projection
+client/test/production-accrual.test.ts	yes	cross_runtime_parity	production accrual	Worker entry graph	prediction primitive only
+client/test/relevance.test.ts	yes	unit_measurement	relevance policy	module outside entry graph	policy/oracle tests; complete hosted measurement invalid
+client/test/replay.test.ts	yes	cross_runtime_parity	replay engine	module outside entry graph	large parity proof, not shipped browser workflow
+client/test/routes.test.ts	yes	unit_parity	routes	module outside entry graph	catalog proof; registry/history surface absent
+client/test/shell-browser.test.ts	yes	browser	UI primitives/themes	FixtureHost test-only surface	primitive accessibility, not complete player tasks
+client/test/shell.test.ts	yes	unit	Shell controller/Worker	main+Worker entry graph	controller proof; production telemetry/export/offline queue absent
+client/test/soul-catalog.test.ts	yes	unit_parity	Soul catalog	module outside entry graph	parser proof, no recovery surface
+client/test/soul-recovery-scheduler.test.ts	yes	unit	Soul heartbeat scheduler	module outside entry graph	scheduler proof, no production consumer
+client/test/transport.test.ts	yes	unit	transport decoder/cursor	main entry graph	cursor primitive not composed by production runtime
+client/test/ui/amount-format.test.ts	yes	unit	amount formatting	main entry graph	primitive proof
+client/test/ui/render-scheduler.test.ts	yes	unit	render scheduling	main entry graph	primitive proof
+client/test/ui/surfaces.test.ts	yes	unit	surface registry	main entry graph	mechanical registry, not complete workflows
+client/test/ui/themes.test.ts	yes	unit	theme tokens	main entry graph	CSS reduction only; numeric/live preference gaps
+client/test/__screenshots__/game-ui-screens-browser.test.ts/feeds-authoritative-Game-UI-snapshots-through-the-archived-20-Hz-shell-worker-1.png	no	ignored_browser_capture	Game UI shell feed	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/game-ui-screens-browser.test.ts/passes-the-C11-axe-gate-on-all-five-Phase-A-surfaces-and-the-two-system-beats-1.png	no	ignored_browser_capture	five-surface axe	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/game-ui-screens-browser.test.ts/records-immutable-gate-timing-locally-and-lets-lifecycle-events-preempt-the-Desk-1.png	no	ignored_browser_capture	gate timing/lifecycle	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/game-ui-screens-browser.test.ts/renders-ruled-constants-and-complete-decoded-payout-terms-without-mechanical-substitutes-1.png	no	ignored_browser_capture	payout terms	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/game-ui-screens-browser.test.ts/renders-run-end-from-the-decoded-terminal-payload-without-a-snapshot-input-1.png	no	ignored_browser_capture	Run End	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/game-ui-screens-browser.test.ts/renders-save-age-from-the-last-authoritative-snapshot-1.png	no	ignored_browser_capture	Settings save age	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/game-ui-screens-browser.test.ts/replays-a-v1-bootstrap-receipt-fail-closed--then-accepts-from-a-v2-Founder-coordinate-1.png	no	ignored_browser_capture	bootstrap version transition	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/game-ui-screens-browser.test.ts/runs-bootstrap-and-player-actions-through-the-mounted-Phase-A-UI-1.png	no	ignored_browser_capture	mounted bootstrap/actions	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/game-ui-screens-browser.test.ts/switches-the-authoritative-tier-era-without-replacing-persistent-focus-1.png	no	ignored_browser_capture	theme/focus	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/game-ui.test.ts/Game-UI-payout-presentation-formats-display-deltas-and-withholds-unknown-governed-IDs-1.png	no	ignored_browser_capture	payout presentation	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/shell-browser.test.ts/meets-the-primitive-accessibility--focus--and-naming-baseline-1.png	no	ignored_browser_capture	primitive accessibility	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/shell-browser.test.ts/renders-Amount-synchronously-for-cap-changes-and-coalesces-a-20-Hz-feed-1.png	no	ignored_browser_capture	Amount/render feed	local generated artifact	not asserted or available in fresh clone
+client/test/__screenshots__/shell-browser.test.ts/switches-the-full-primitive-fixture-between-eras-without-changing-DOM-structure-1.png	no	ignored_browser_capture	theme structure	local generated artifact	not asserted or available in fresh clone

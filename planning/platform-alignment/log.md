@@ -590,3 +590,32 @@
 - Updated the program/inventory/plan/review draft and both backlog ledgers. No balance/copy/
   generated artifact/product/test/RFC/design/canonical-product-doc edit was made; no push or
   `AGENTS.md` touch occurred.
+
+## 2026-08-21 — Make, CI, and client-test evidence inventory
+
+- Added `make-target-inventory.tsv` and reconciled it exactly against all 72 names on the root
+  `.PHONY` line. Only 26 currently have bounded-valid evidence. Ten are intentional mutators, nine
+  are partial, five are release-invalid aggregates, and the rest are setup, aliases,
+  manual/historical measurements, parameterized tools, or pending/authority-blocked lanes. Filed
+  RP-100 so target count cannot stand in for executable proof.
+- Added `ci-job-inventory.tsv` for all seven jobs with trigger scope, timeout, command, current
+  hosted verdict, and exact capability limit. Preserved run `32404232364`: server, client, browser,
+  game-ui-composed, and schema passed; harness cancelled at 30m02s; numeric was skipped. The
+  workflow still has no current aggregate verdict and scheduled/manual numeric failure is blocking.
+- Added `client-test-artifact-inventory.tsv` and reconciled it exactly against the current 56-file
+  local tree. Only 43 TypeScript sources are tracked. Thirteen PNGs are generated under ignored
+  `client/test/__screenshots__/`, no test calls a screenshot assertion, and a fresh clone cannot
+  receive them. Filed RP-098 and split the inventory rather than treating local captures as
+  acceptance artifacts.
+- Classified every client test source by kind, subject, production relationship, and evidence
+  limit. Two are browser suites; one is the browser error helper; one is a typecheck fixture; the
+  other 39 are unit/parity/candidate/measurement sources. Module parity remains distinct from a
+  mounted production workflow.
+- Found two root recipes that contradict the current command/cache protocol:
+  `verify-routes-boundary` and `verify-commons-boundary` create task-named `/tmp` Go caches instead
+  of consuming the exported repository-local `GOCACHE`. Filed RP-099 without editing the Makefile;
+  implementation requires accepted scope and a failing import fixture.
+- Updated the program/inventory/plan/review draft and both backlog ledgers. No Make/workflow/
+  product/test/RFC/design/canonical-product-doc edit was made; no push or `AGENTS.md` touch
+  occurred. The remaining executable Wave-1 population is all 151 server test files and their
+  row-level oracles/negative controls.

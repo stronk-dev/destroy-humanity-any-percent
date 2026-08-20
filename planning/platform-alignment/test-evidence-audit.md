@@ -262,3 +262,18 @@ non-proven. RP-094 prevents the outside 41 modules from being promoted by direct
 `balance-file-inventory.tsv`, `catalog-family-inventory.tsv`, and `copy-file-inventory.tsv` retain
 the exact populations and prevent green schema/copy checks from being stretched into player-
 workflow or source-lifecycle claims.
+
+## Batch N — executable target, hosted-job, and client-artifact boundary
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| Exact `.PHONY` reconciliation | 72 rows; 26 bounded-valid, ten mutators, nine partial, five release-invalid, remainder setup/manual/historical/parameterized/pending | RP-100: a target name is not necessarily a check or current evidence. |
+| Exact workflow-job reconciliation | seven rows | Current hosted facts and trigger/cache/topology defects have one row per job. |
+| Hosted run `32404232364` | server/client/browser/composed/schema successful; harness cancelled at 30m02s; numeric skipped | Individual green jobs do not produce a green aggregate. |
+| Exact `client/test` filesystem reconciliation | 56 local files = 43 tracked TS + 13 ignored PNG | RP-098: ignored captures are not asserted/fresh-clone acceptance artifacts. |
+| Screenshot assertion source scan | no `screenshot`, `toMatchScreenshot`, or `toHaveScreenshot` call in tracked client tests | Current PNGs are runner captures, not visual baselines. |
+| Root Make recipe trace | route/Commons boundary recipes assign task-named `/tmp` `GOCACHE` values | RP-099: recipes contradict the current repository-local cache protocol. |
+
+This batch classifies rather than re-runs every target. Individual cold/mutation evidence remains in
+Batches A–M and the lifecycle dossiers; all 151 server test files still require exhaustive
+file/oracle mapping before the executable-evidence slice closes.

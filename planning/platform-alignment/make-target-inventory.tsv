@@ -1,0 +1,73 @@
+target	category	tracked_or_external_mutation	ci_consumer	current_evidence_state	evidence_limit_or_gap
+setup	setup	external_dependencies+browsers	none	not_a_gate	installs packages/browser binaries
+install-browsers	setup	external_browser_binaries	none	not_a_gate	local setup only
+install-browsers-ci	setup	external_system+browser_binaries	browser jobs	not_a_gate	CI setup only
+test	aggregate	none	none	unverified_aggregate	includes all Go/client/browser populations; no current complete verdict
+test-go	go_test	none	local/selectors	parameterized	default all packages includes long harness; use cold count explicitly
+test-go-core	go_test	none	server job	bounded_valid	excludes harness by package name; cold count controlled
+test-harness	go_test	none	harness job	bounded_valid	package tests only; not complete harness measurement
+test-go-ci	docker_go_test	containers/db	local reproduction	bounded_valid	full cold server package population in Docker
+test-save-integration	docker_go_test	containers/db	local/selectors	partial	unquoted SAVE_TEST_FLAGS rejects parenthesized regex selectors (RP-025)
+validate-migrations	docker_go_test	containers/db	none	bounded_valid	current chain/integration green; does not isolate semantic Down restoration
+test-client	client_test	none	verify-client	bounded_valid	unit/parity population; many modules are not production consumers
+test-browser	browser_test	ignored screenshots	browser job	partial	green declared viewport; focus/reflow and copy behavior gaps survive
+test-browser-ci	docker_browser	containers+ignored screenshots	local reproduction	partial	same browser oracle limits inside Docker
+test-game-ui-composed	browser_integration	containers/db	game-ui-composed job	bounded_valid	bootstrap/Desk/WebSocket witness only
+test-game-ui-performance	browser_measurement	ignored screenshots	browser job	partial	count/long-task arm only; throttle/dropped-frame claim absent
+typecheck	compile_check	none	client job	bounded_valid	compile contract, not runtime workflow
+build-client	build	ignored client/dist	client job	bounded_valid	build/source-map proof only
+build-gameserver	build	ignored .cache/bin	none	bounded_valid	disk-dependent server binary; not release package
+vectors	generator	tracked decimal vectors	none	mutator	intentional source generation
+vectors-check	generation_check	generator then diff	numeric-maintenance	bounded_valid	working-tree drift check
+vectors-check-ci	docker_generation_check	containers+generator then diff	none	bounded_valid	architecture parity plus drift
+replay-fixture	generator	tracked replay fixture	none	mutator	intentional golden update
+replay-fixture-check	go_test	none	none	bounded_valid	one cross-runtime fixture
+pitch-corpus	generator	tracked Pitch corpus	none	mutator	intentional corpus update
+pitch-corpus-check	go_test	none	verify-server	bounded_valid	Pitch content gate only
+formulas	generator	tracked generated formulas	none	mutator	intentional documentation generation
+formulas-check	generation_check	generator then diff	server job	bounded_valid	formula drift only
+api-generate	generator	tracked API docs/types	none	mutator	covers registry operations only
+api-schema	generator_alias	tracked API docs/types	none	mutator	name is not a check; alias of api-generate
+api-pin	generator	tracked compatibility pin	none	mutator	intentional compatibility update
+api-check	generation_check	generator then diff	server job	partial	green for ten registry operations; eleven hand routes absent
+harness	measurement	caller output	none	parameterized	requires output; measurement validity depends on mode/objective fields
+harness-check	measurement_gate	none	verify-server/verify-harness	release_invalid	current hosted lane exceeds 30-minute ceiling and lacks fail-loud progress
+harness-guard-check	measurement_guard	none	none	bounded_pending	guard mode exists; not a substitute for complete objective
+content-harness	measurement	stdout/artifacts by mode	none	bounded_historical	content measurement, not epoch mint authority
+epoch7-content-harness	measurement	planning report	none	historical	writes archived-era candidate report
+first-content-harness	measurement	planning report	none	historical	writes active-plan report from candidate manifest
+first-hour-harness	measurement	planning report	none	authority_blocked	requires five owner-ratified inputs; cannot be run by convenience
+t0-t1-role-check	go_test	none	t0-t1-relevance-all	bounded_valid	one candidate role activation test
+t0-t1-relevance	measurement	planning report	none	historical_or_manual	long measurement; not current CI
+t1-relevance	measurement	planning report	none	historical_or_manual	T1 alias of relevance measurement
+relevance-branches	measurement	planning report	none	historical_or_manual	branch diagnostic depends on report identity
+t0-t1-branch-check	measurement_aggregate	planning reports	none	historical_or_manual	runs both branch populations
+t0-t1-branch-check-from-reports	measurement_aggregate	planning reports	none	historical_or_manual	fast path trusts hash-matched diagnostic inputs
+t0-t1-upgrade-check	compatibility_alias	planning reports	none	historical_or_manual	alias name no longer describes branch-wide scope
+t0-t1-relevance-all	measurement_aggregate	planning reports	none	historical_or_manual	long historical combined population
+relevance-beam	manual_diagnostic	optional output	none	not_a_gate	explicitly excluded from verify/CI/release
+commons-harness-check	go_test	none	harness-check	bounded_valid	one population-invariance test
+harness-update	generator	tracked harness baselines	none	mutator	must never loosen bounds from incomplete run
+epoch-hash	identity_check	none	none	bounded_valid	reproduces current constants hash
+game-ui-copy-candidate	generator	tracked copy/presentation inputs+outputs	none	mutator	candidate name belies shipped source boundary
+game-ui-copy-candidate-check	generation_check	none	copy-check	bounded_valid	drift check; does not decide candidate adoption
+copy-generate	generator	tracked client/server copy+manifest	none	mutator	merges every source catalog including candidates
+copy-check	generation_check	none	client job	partial	drift/hash valid; 161-key orphan report is non-discriminating
+vet	go_static_check	none	server jobs	bounded_valid	parameterized package population
+fuzz	manual_fuzz	none	none	not_a_bounded_gate	no fuzztime; runs until interrupted
+fuzz-ci	bounded_fuzz	none	numeric-maintenance	bounded_valid	30-second numeric fuzz window
+verify-schema	schema_check	none	schema job	bounded_valid	current schema/catalog structure only
+verify-routes-boundary	architecture_check	/tmp Go cache	server jobs	process_defect	overrides mandated repository-local cache (RP-099)
+verify-commons-boundary	architecture_check	/tmp Go cache	server jobs	process_defect	overrides mandated repository-local cache (RP-099)
+verify-client-boundary	architecture_check	none	client job	partial	component boundary green but ignores runtime direct-fetch authority
+verify-kernel-version	history_check	none	client job	bounded_valid	full-history kernel guard plus failing fixtures
+verify-combat-boundary	architecture_check	none	client job	partial	recursive client check; Go Combat native division outside scope
+verify-meters-boundary	architecture_check	none	client job	bounded_valid	structural meter boundary only
+verify-achievements-boundary	architecture_check	none	client job	bounded_valid	structural achievement boundary only
+verify-server	aggregate	none	none	release_invalid	includes harness-check whose current hosted objective times out
+verify-server-core	aggregate	none	server job	bounded_valid	server CI slice excluding harness
+verify-harness	aggregate	none	harness job	release_invalid	package/role tests green but complete harness objective times out hosted
+verify-server-ci	docker_aggregate	containers/db	none	bounded_valid	local reproduction of core server job
+verify-harness-ci	docker_aggregate	containers/db	none	release_invalid	local reproduction retains invalid complete harness objective
+verify-client	aggregate	ignored dist	none	partial	build/tests/structure green; copy/client workflow oracles retain gaps
+verify	aggregate	ignored dist+screenshots	none	release_invalid	includes invalid server harness plus partial browser/client proofs

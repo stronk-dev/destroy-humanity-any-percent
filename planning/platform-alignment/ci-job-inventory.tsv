@@ -1,0 +1,8 @@
+job	trigger_scope	timeout	command	current_hosted_verdict	capability_limit_or_defect
+server	push;pull_request;schedule;workflow_dispatch	10m	make verify-server-core	success_1m33s	core excludes harness; module-only cache explicit
+harness	push;pull_request;schedule;workflow_dispatch	30m	make verify-harness HARNESS_WORKERS=12	cancelled_30m02s	no objective/progress artifact; invalid aggregate and five current cancellations
+client	push;pull_request;schedule;workflow_dispatch	5m	make verify-client	success_1m12s	build/unit/structure green; client/copy workflow oracles remain partial
+browser	push;pull_request;schedule;workflow_dispatch	10m	make test-browser	success_under_2m	three engines green at fixed viewport; focus/reflow failures unobserved
+game-ui-composed	push;pull_request;schedule;workflow_dispatch	10m	make test-game-ui-composed	success_58s	bounded bootstrap/Desk/WebSocket flow only
+schema	push;pull_request;schedule;workflow_dispatch	5m	make verify-schema	success_under_1s_after_setup	structural catalog/schema validity only
+numeric-maintenance	schedule;workflow_dispatch	10m	make fuzz-ci; make vectors-check	skipped_on_current_push	not non-blocking; historical failure fails whole scheduled workflow; setup-go build cache enabled

@@ -110,6 +110,12 @@ larger product capability to proven integration.
   loader, server/client consumers, and capability verdict.
 - `copy-file-inventory.tsv` — all ten copy source/control/report files, shipped merge behavior,
   record counts, consumers, and evidence limits.
+- `make-target-inventory.tsv` — all 72 phony targets classified as setup, mutator, bounded check,
+  partial/invalid aggregate, measurement, alias, or manual tool with CI consumer and exact limit.
+- `ci-job-inventory.tsv` — all seven hosted jobs, triggers, budgets, commands, current verdicts, and
+  capability limits.
+- `client-test-artifact-inventory.tsv` — all 43 tracked client test sources plus 13 ignored local
+  captures, their subject, production relationship, and evidence limit.
 - `execution-queue.md` — the only presently authorized queue.
 - `ready-batch-manifest.tsv` — exact accepted-scope READY batches, negative controls, cold gates,
   forbidden scope, conflicts, and review protocol.

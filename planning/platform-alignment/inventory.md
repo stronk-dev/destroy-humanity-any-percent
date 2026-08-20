@@ -18,11 +18,12 @@ not yet the completed per-capability trace.
 | Server package directories | 45 | Second-level directories under `server/` containing Go | All are mapped in `server-package-inventory.tsv`; Combat is uncomposed and several composed backends have no player consumer. |
 | SQL migrations | 74 | Append-only files `00001` through `00074` | Sequence contiguous; each has one Up/Down marker and the cold migration lane passes. Per-migration semantic rollback remains unisolated. |
 | Client source files | 82 | `client/src/**` | All rows mapped: 41 in the shipped entry/type graph and 41 outside; the build emits 38 authored runtime/style sources plus three type-erased contracts. |
-| Client test artifacts | 56 | `client/test/**` | 43 TS and 13 screenshots; discrimination audit pending. |
+| Tracked client test sources | 43 | `client/test/**/*.ts` | Two browser suites, one browser helper, one type fixture, and 39 unit/parity/candidate/measurement sources; every row names its production relationship. |
+| Ignored local browser captures | 13 | `client/test/__screenshots__/**/*.png` | Generated local files, not tracked baselines or asserted evidence; absent from a fresh clone. |
 | Game UI registered surfaces | 5 | Desk, Offer Sheet, Run End, Settings, Vision Slide | Real bootstrap reaches Desk; full workflow remains unproved. |
 | Balance files | 91 | 19 epoch artifacts, four platform configs, 15 schemas, 53 fixtures | Every filename has a boundary/consumer row; live families have loader and server/client traces. |
 | Copy files | 10 | Four source catalogs plus six policy/reference/report files | All four catalogs ship despite three `candidate` names; the 161-key orphan report includes live UI calls. |
-| Make targets declared phony | 72 | Development, generation, verification, harness, browser, integration | Valid-objective and negative-control audit pending. |
+| Make targets declared phony | 72 | Development, generation, verification, harness, browser, integration | Exact classification complete: only 26 currently have bounded-valid evidence; raw target count is not check count. |
 | GitHub CI jobs | 7 | Six push/PR jobs plus scheduled numeric maintenance | Current-head workflow never completes because the harness lane is cancelled at 30 minutes. |
 | Exposed HTTP/WebSocket operations | 24 | Three gameserver-hand, 11 account-hand, ten private-registry operations | Only bootstrap, snapshot, intents, and WebSocket have production browser consumers; see `route-operation-inventory.tsv`. |
 | Server commands | 5 | Gameserver, balance harness, API generator, content-manifest generator, formula generator | Only gameserver is a deployable runtime; no production package exists. |
@@ -80,6 +81,24 @@ not yet the completed per-capability trace.
   prediction Worker. `make typecheck verify-client-boundary` passed with zero TypeScript/Svelte
   diagnostics and the declared 14 shell / eight UI / two Game UI component boundaries green. Those
   are valid build/structure witnesses, not proof of the 22 non-proven workflows.
+
+### Executable evidence boundary
+
+- `make-target-inventory.tsv` exactly equals the 72-name `.PHONY` population. It distinguishes 26
+  bounded-valid targets from ten mutators, nine partial targets, five release-invalid aggregates,
+  and setup/manual/historical/alias/parameterized/pending lanes. A generator or aggregate name is
+  never counted as a passing check by existence.
+- `ci-job-inventory.tsv` traces all seven jobs. In hosted run `32404232364`, server, client,
+  browser, composed Game UI, and schema passed; harness was cancelled after 30m02s; numeric was
+  skipped on the push. Scheduled/manual triggers run the ordinary blocking jobs too, and historical
+  numeric failure fails the whole workflow.
+- `client-test-artifact-inventory.tsv` exactly equals the current 56-file local test tree, but only
+  43 TypeScript sources are tracked. The 13 PNGs under ignored `__screenshots__` are generated local
+  captures with no screenshot assertion and no fresh-clone availability; they are not acceptance
+  witnesses.
+- `verify-routes-boundary` and `verify-commons-boundary` override the mandated repository-local Go
+  cache with task-named `/tmp` caches. The checks may still detect their import conditions, but the
+  recipes contradict the repository's current routine-command/cache protocol.
 
 ### Declarative data
 
@@ -154,8 +173,8 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
   ownership; retain the 17 backend-only and one unimplemented route verdicts.
 - Extend the completed file/family map into row-level gameplay-content and all 208 copy-key call
   sites; replace the non-discriminating orphan report before using it for cleanup/release claims.
-- Inventory all 56 client test artifacts and every remaining test/gate population, oracle, negative
-  control, timeout, exclusion, and artifact.
+- Inventory all 151 server test files and complete row-level fixture/oracle/negative-control maps;
+  the Make/CI/client-artifact populations are now bounded.
 - Reconcile all 23 live planning directories and 46 archived RFC ranges bidirectionally.
 - Continue migration semantic rollback discrimination beyond the now-proven contiguous/marker/cold-
   chain baseline; account ownership/export/deletion/retention and backup/restore implications now

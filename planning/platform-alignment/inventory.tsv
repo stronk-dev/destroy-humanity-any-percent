@@ -9,12 +9,13 @@ server	go_files	340	in_progress	151 test files
 server	package_directories	45	bounded_complete	all rows mapped to production consumers/runtime position; player gaps retained
 database	sql_migrations	74	structural_complete	contiguous 00001-00074; one Up/Down marker each; cold migration gate green; isolated semantic rollback pending
 client	source_files	82	bounded_complete	41 in shipped entry/type graph and 41 outside; 38 emitted authored runtime/style sources plus 3 type-erased contracts
-client	test_artifacts	56	pending	43 TS; 13 PNG
+client	tracked_test_sources	43	bounded_complete	2 browser suites; 1 browser helper; 1 type fixture; 39 unit/parity/candidate/measurement sources
+client	ignored_local_screenshots	13	defect	generated PNG captures are untracked, unasserted, and unavailable to a fresh clone
 ui	registered_game_surfaces	5	bounded_complete	25 workflows traced; 3 proven bounded, 9 partial, 1 mechanical, 8 backend-only, 2 absent, 2 failed
 balance	files	91	bounded_complete	19 epoch artifacts; 4 platform configs; 15 schemas; 53 fixtures; all exact rows classified
 copy	files	10	bounded_complete	4 source catalogs all ship into 208-key artifact; 6 policy/reference/report files; orphan report is non-discriminating
-verification	phony_make_targets	72	pending	oracle and negative-control audit pending
-ci	jobs	7	defect	current-head aggregate has no completed verdict
+verification	phony_make_targets	72	bounded_complete	26 bounded-valid; 10 mutators; 9 partial; 5 release-invalid; remainder setup/manual/historical/parameterized/pending
+ci	jobs	7	bounded_complete	6 ordinary jobs hosted-green individually; harness cancels at 30m; numeric skipped on push and blocking on schedule/manual
 runtime	exposed_operations	24	bounded_complete	3 gameserver-hand + 11 account-hand + 10 private-registry; only 4 have production browser consumers
 runtime	server_commands	5	bounded_complete	one deployable runtime command; balance harness plus three generators are tools
 deployment	production_files	1	defect	content manifest only
