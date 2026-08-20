@@ -530,3 +530,34 @@
   review/provenance rows open; archived risk sampling is not complete. No self/delegated review was
   represented as the required Claude-side designated pass, and no push or `AGENTS.md` touch
   occurred.
+
+## 2026-08-21 — Client entry graph and workflow inventory
+
+- Traced `client/src/main.ts` through every ordinary static import and the Vite Worker URL, then
+  reconciled that graph against the actual production sourcemaps. Added
+  `client-source-inventory.tsv` with one row for every source file; its filenames exactly equal the
+  82-file source population.
+- The exact split is 41 files in the shipped entry/type graph and 41 outside it. The build emits 37
+  authored JS/data/Svelte sources plus one CSS asset; three additional graph rows are type-erased
+  compile contracts. Outside modules may remain legitimate parity/test/validator assets, but they
+  are not mounted player consumers. Filed RP-094 to prevent client module breadth from being
+  relabeled product breadth.
+- Added `client-workflow-inventory.tsv` with 25 bounded default, failure, and accessibility paths:
+  three proven-bounded, nine partial, one mechanical-only, eight backend-only, two absent, and two
+  failed. It binds each workflow to a backend producer, production consumer, real/default data,
+  witness, verdict, and exact route.
+- Confirmed the shipped runtime makes exactly three HTTP calls—bootstrap, Game UI snapshot, and
+  intents—plus the WebSocket connection. Refresh, Account rights/recovery, New Founder, Guild,
+  Minigame, Soul, leaderboard/route readers, and later-domain surfaces have no production client.
+  The client graph therefore agrees with the 24-operation inventory rather than merely with
+  generated operation types.
+- Confirmed `ShellController` records reconciliation and Worker metrics, but only a unit test calls
+  `telemetry()` and no production exporter exists. Filed RP-095 under D-016/R-009 rather than
+  claiming operational/gameplay instrumentation.
+- The first root `pnpm --filter` build attempt was invalid because the repository has no root
+  package manifest; it is excluded. The required root target `make build-client` then passed,
+  transforming 152 dependency modules and emitting main JS/CSS plus the prediction Worker.
+  `make typecheck verify-client-boundary` passed with zero diagnostics and the declared structural
+  boundary population green.
+- Updated the program/inventory/plan and both backlog ledgers. No product/client/test/RFC/design/
+  canonical-product-doc/copy/catalog edit was made; no push or `AGENTS.md` touch occurred.

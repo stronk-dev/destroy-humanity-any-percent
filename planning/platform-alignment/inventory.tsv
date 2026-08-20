@@ -8,9 +8,9 @@ docs	canonical_files	38	pending	claim-to-code reconciliation pending
 server	go_files	340	in_progress	151 test files
 server	package_directories	45	bounded_complete	all rows mapped to production consumers/runtime position; player gaps retained
 database	sql_migrations	74	structural_complete	contiguous 00001-00074; one Up/Down marker each; cold migration gate green; isolated semantic rollback pending
-client	source_files	82	in_progress	72 TS; 5 Svelte; 3 JSON; 1 CSS; 1 text
+client	source_files	82	bounded_complete	41 in shipped entry/type graph and 41 outside; 38 emitted authored runtime/style sources plus 3 type-erased contracts
 client	test_artifacts	56	pending	43 TS; 13 PNG
-ui	registered_game_surfaces	5	in_progress	bootstrap-to-Desk only proven
+ui	registered_game_surfaces	5	bounded_complete	25 workflows traced; 3 proven bounded, 9 partial, 1 mechanical, 8 backend-only, 2 absent, 2 failed
 balance	files	91	pending	live/candidate/test boundary pending
 copy	files	10	pending	shipped/candidate consumption pending
 verification	phony_make_targets	72	pending	oracle and negative-control audit pending

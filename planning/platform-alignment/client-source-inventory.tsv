@@ -1,0 +1,83 @@
+file	kind	entry_graph	build_artifact	mounted_consumer	evidence_class	current_gap
+achievements/catalog.ts	domain_library	outside	absent	none	mechanical_only	server parity/tests only; no player achievement surface
+achievements/evaluate.ts	domain_library	outside	absent	none	mechanical_only	server parity/tests only; no player achievement surface
+active-play.ts	domain_library	outside	absent	none	mechanical_only	server parity/tests only; no player opportunity surface
+ad-notations.d.ts	compile_declaration	project_compile	type_only	TypeScript	compile_only	no runtime behavior
+api/generated/types.ts	generated_contract	main_type_graph	type_erased	Game UI compile boundary	compile_contract	operations metadata/types exist but no generated HTTP client
+combat/arithmetic.ts	domain_library	outside	absent	none	mechanical_only	shared vectors only; no combat catalog/tenant/surface
+combat/rng.ts	domain_library	outside	absent	none	mechanical_only	shared vectors only; no combat catalog/tenant/surface
+commons.ts	domain_library	outside	absent	none	mechanical_only	catalog parser only; no player Commons surface
+copy/generated/catalog.json	generated_data	main_runtime_graph	main_js	GameUIApp	mounted_bounded	current Game UI copy only
+copy/generated/copy-hash.txt	generated_identity	verification_only	absent	none	mechanical_only	copy-check identity; not a player consumer
+copy/generated/types.ts	generated_runtime_contract	main_runtime_graph	main_js	copy/index.ts	mounted_bounded	current Game UI key/parameter authority only
+copy/index.ts	runtime_library	main_runtime_graph	main_js	GameUIApp	mounted_bounded	current Game UI copy only
+curriculum.ts	domain_library	outside	absent	none	mechanical_only	parser/tests only; no mounted curriculum workflow
+doctrines.ts	domain_library	outside	absent	none	mechanical_only	parser/tests only; no mounted doctrine workflow
+economy-kernel.ts	domain_library	outside	absent	none	mechanical_only	parity/replay tests; browser uses server snapshot projection
+economy.ts	domain_library	outside	absent	none	mechanical_only	catalog parser/tests; no direct mounted economy catalog consumer
+faction.ts	domain_library	outside	absent	none	mechanical_only	parser/tests only; no player faction workflow
+fiscal.ts	domain_library	outside	absent	none	mechanical_only	parity/tests only; no player fiscal workflow
+fixed-grid.ts	shared_library	outside	absent	none	mechanical_only	pet/minigame test consumers only
+game-ui/GameUIApp.svelte	production_surface	main_runtime_graph	main_js	App.svelte	partial_player_integration	five surfaces registered; bounded bootstrap/Desk/Offer/Run End only
+game-ui/RunEndSurface.svelte	production_surface	main_runtime_graph	main_js	GameUIApp	partial_player_integration	terminal display exists; next-run continuation absent
+game-ui/contracts.ts	runtime_contract	main_runtime_graph	main_js	GameUIApp/runtime/shell	mounted_bounded	snapshot v2 only in live path
+game-ui/events.ts	runtime_contract	main_runtime_graph	main_js	GameUI runtime	mounted_bounded	selected lifecycle/system events only
+game-ui/navigation.ts	runtime_library	main_runtime_graph	main_js	GameUIApp	partial_player_integration	focus handoff on lifecycle replacement is broken
+game-ui/performance.ts	test_helper	outside	absent	tests	measurement_only	declared CPU/frame claims not consumed by fixture
+game-ui/presentation.generated.json	generated_data	main_runtime_graph	main_js	GameUI presentation	mounted_bounded	current bounded mechanical-to-copy mapping
+game-ui/presentation.ts	runtime_library	main_runtime_graph	main_js	GameUIApp	mounted_bounded	current bounded presentation mapping
+game-ui/prestige-terms.ts	runtime_library	main_runtime_graph	main_js	GameUIApp	partial_player_integration	Offer/Run End terms only; Advisor control absent
+game-ui/runtime.ts	production_boundary	main_runtime_graph	main_js	GameUIApp	partial_player_integration	three HTTP calls plus WebSocket; no refresh/recovery/offline queue
+game-ui/shell-bridge.ts	production_binding	main_runtime_graph	main_js	GameUIApp	partial_player_integration	eager intents and snapshot bridge; flush is empty
+game-ui/surface-catalog.ts	runtime_library	main_runtime_graph	main_js	GameUIApp	mounted_bounded	default surface selection only
+game-ui/surfaces.json	generated_data	main_runtime_graph	main_js	GameUI surface catalog	mounted_bounded	five registered surfaces do not imply five complete workflows
+game-ui/timing.ts	runtime_library	main_runtime_graph	main_js	GameUIApp	mounted_bounded	local run timing only; not gameplay save/offline state
+guild.ts	domain_library	outside	absent	none	mechanical_only	catalog parser/tests only; no player guild surface
+integer.ts	shared_library	outside	absent	none	mechanical_only	unmounted parity helper
+kernel/version.ts	generated_identity	outside	absent	none	mechanical_only	verification/replay consumer only
+main.ts	production_entry	main_runtime_graph	main_js	index.html	player_integrated	mounts one Game UI application
+meters/catalog.ts	domain_library	outside	absent	none	mechanical_only	catalog parser/tests only; no player meter workflow
+meters/transition.ts	domain_library	outside	absent	none	mechanical_only	parity/tests only; no player meter workflow
+minigame/catalog.ts	domain_library	outside	absent	none	mechanical_only	catalog parser/tests only; no production minigame surface
+minigame/offline-quality.ts	domain_library	outside	absent	none	mechanical_only	parity/tests only; decay has no player output consumer
+minigame/resolution.ts	domain_library	outside	absent	none	mechanical_only	parity/tests only; no player receipt surface
+numeric.ts	shared_runtime	main_and_worker_runtime_graph	main_js;worker_js	Game UI/Shell Worker	proven_primitive	primitive is integrated but not itself a user outcome
+pet/catalog.ts	domain_library	outside	absent	none	mechanical_only	catalog parser/tests only; no pet surface
+pet/combat-inputs.ts	domain_library	outside	absent	none	mechanical_only	parity/tests only; no pet/combat surface
+pet/grammar.ts	domain_library	outside	absent	none	mechanical_only	grammar/tests only; no pet surface
+pet/state.ts	domain_library	outside	absent	none	mechanical_only	state/tests only; no pet surface
+pet/transition.ts	domain_library	outside	absent	none	mechanical_only	transition/tests only; no pet surface
+pitch/catalog.ts	domain_library	outside	absent	none	mechanical_only	catalog/parser tests; no Pitch production surface
+pitch/engine.ts	domain_library	outside	absent	none	mechanical_only	cross-runtime engine/tests; no Pitch production surface
+prestige.ts	domain_library	outside	absent	none	mechanical_only	parity/tests only; Game UI uses server projection instead
+production.ts	worker_runtime	worker_runtime_graph	worker_js	prediction.ts	mounted_bounded	closed-form local display prediction only
+raw-imports.d.ts	compile_declaration	project_compile	type_only	TypeScript	compile_only	no runtime behavior
+relevance.ts	domain_library	outside	absent	none	measurement_only	harness/replay tests only; invalid hosted measurement lane
+replay.ts	domain_library	outside	absent	none	mechanical_only	large parity/replay authority not mounted in production browser
+routes.ts	domain_library	outside	absent	none	mechanical_only	catalog parser/tests only; no complete route registry surface
+shell/App.svelte	production_surface	main_runtime_graph	main_js	main.ts	player_integrated	thin mount of GameUIApp
+shell/contracts.ts	runtime_contract	main_runtime_graph	main_js	Shell runtime/controller	mounted_bounded	projection/prediction contract only
+shell/controller.ts	runtime_controller	main_runtime_graph	main_js	GameUI shell bridge	partial_player_integration	reduced-motion value hardcoded false by caller
+shell/display.ts	runtime_library	main_runtime_graph	main_js	Shell controller	mounted_bounded	resource interpolation only
+shell/intents.ts	library	outside	absent	none	mechanical_only	intent queue helper has no production consumer
+shell/lifecycle.ts	runtime_library	main_runtime_graph	main_js	Shell runtime/controller	partial_player_integration	return story primitive lacks durable offline state
+shell/policy.ts	runtime_contract	main_runtime_graph	main_js	GameUI shell bridge	mounted_bounded	client-shell catalog parsed at runtime
+shell/prediction.ts	worker_runtime	worker_runtime_graph	worker_js	prediction worker	mounted_bounded	visual prediction only; never authoritative
+shell/prediction.worker.ts	worker_entry	worker_url_graph	worker_js	worker-client	mounted_bounded	fixed 20 Hz prediction worker composed
+shell/reconciliation.ts	runtime_library	main_runtime_graph	main_js	Shell controller	mounted_bounded	discrete reconciliation primitive
+shell/runtime.ts	runtime_controller	main_runtime_graph	main_js	GameUI shell bridge	partial_player_integration	requests snapshots; no durable intent/offline queue
+shell/styles.css	production_style	main_asset_graph	main_css	App/Game UI	partial_player_integration	320 px reflow failure remains
+shell/telemetry.ts	runtime_library	main_runtime_graph	main_js	Shell controller	orphaned_runtime_data	in-memory counters have no exporter/consumer
+shell/worker-client.ts	production_boundary	main_runtime_graph	main_js	Shell runtime	mounted_bounded	spawns prediction worker; errors rethrow asynchronously
+shell/worker-protocol.ts	compile_contract	main_and_worker_type_graph	type_erased	worker/client compile boundary	compile_contract	no runtime validator for worker messages
+soul/catalog.ts	domain_library	outside	absent	none	mechanical_only	catalog parser/tests only; no recovery surface
+soul/recovery-scheduler.ts	domain_library	outside	absent	none	mechanical_only	scheduler/tests only; no recovery surface
+transport.ts	runtime_contract	main_runtime_graph	main_js	Game UI runtime	partial_player_integration	decoders mounted; production cursor recovery incomplete
+ui/Amount.svelte	production_component	main_runtime_graph	main_js	GameUIApp	mounted_bounded	amount rendering only
+ui/FixtureHost.svelte	test_fixture	outside	absent	browser tests	test_only	not a production surface
+ui/amount-format.ts	runtime_library	main_runtime_graph	main_js	Amount/GameUIApp	mounted_bounded	formatting primitive
+ui/amount-types.ts	compile_contract	main_type_graph	type_erased	Amount compile boundary	compile_contract	no runtime behavior
+ui/index.ts	library_barrel	outside	absent	none	mechanical_only	unmounted public barrel
+ui/render-scheduler.ts	runtime_library	main_runtime_graph	main_js	Amount component	mounted_bounded	DOM update scheduling only
+ui/surfaces.ts	runtime_library	main_runtime_graph	main_js	Game UI catalog	mounted_bounded	mechanical IDs/regions only
+ui/themes.ts	runtime_library	main_runtime_graph	main_js	GameUIApp	partial_player_integration	CSS token motion reduction only; numeric/live changes absent

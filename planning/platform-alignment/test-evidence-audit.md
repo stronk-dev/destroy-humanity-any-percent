@@ -231,3 +231,19 @@ artifact witness at the audited coordinate.
 RP-092 records the sequencing failure that exposed these unfinished populations; RP-093 records
 the false package/command counts. `server-package-inventory.tsv`,
 `route-operation-inventory.tsv`, and `migration-inventory.tsv` preserve the exact row populations.
+
+## Batch L — client build reachability and workflow boundary
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| Static `main.ts` import graph plus `new URL(...prediction.worker.ts)` edge | 41 of 82 source files in the shipped entry/type graph; 41 outside | A parity/catalog/test module outside the graph is not a production player consumer. |
+| Production Vite sourcemaps | 37 authored JS/data/Svelte sources plus one CSS asset emitted; three graph contracts type-erased | Reconciles static reachability with actual output without treating type imports as runtime JS. |
+| Invalid root `pnpm --filter ... build` attempt | exit 1: no root `package.json` | Excluded invocation; repository law requires the root Make target. It is not a product failure. |
+| `make build-client` | exit 0; 152 total modules transformed; main JS/CSS and prediction Worker emitted | Production client is buildable at the coordinate. Buildability does not prove unmounted workflows. |
+| `make typecheck verify-client-boundary` | exit 0; zero diagnostics; 14 shell, eight UI, two Game UI component files accepted | Current type/component boundary is structurally green. Prior runtime-fetch mutation proves this gate does not cover all HTTP authority. |
+| Production fetch/socket source trace | three HTTP paths plus one WebSocket path | Agrees with `route-operation-inventory.tsv`: only four operations have browser consumers. |
+| `ShellController.telemetry()` reference trace | production declaration/recording; only `client/test/shell.test.ts` reads the snapshot | RP-095 is an orphaned instrumentation primitive, not telemetry capability. |
+
+`client-source-inventory.tsv` exactly matches every `client/src/**` filename.
+`client-workflow-inventory.tsv` records 25 user/failure/accessibility paths and preserves 22 as
+non-proven. RP-094 prevents the outside 41 modules from being promoted by directory or test breadth.

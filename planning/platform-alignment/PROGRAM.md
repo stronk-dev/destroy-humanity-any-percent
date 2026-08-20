@@ -100,6 +100,10 @@ larger product capability to proven integration.
   witness, production consumer, and exact player/operator gap.
 - `migration-inventory.tsv` — all 74 contiguous migrations, domain ownership, structural Up/Down
   presence, current cold migration evidence, and the remaining semantic rollback limit.
+- `client-source-inventory.tsv` — all 82 client source files, entry/build reachability, mounted
+  consumer, evidence class, and exact gap.
+- `client-workflow-inventory.tsv` — 25 bounded default/failure/accessibility workflows from backend
+  producer through production client, real data, witness, verdict, and route.
 - `execution-queue.md` — the only presently authorized queue.
 - `ready-batch-manifest.tsv` — exact accepted-scope READY batches, negative controls, cold gates,
   forbidden scope, conflicts, and review protocol.

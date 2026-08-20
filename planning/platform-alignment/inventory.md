@@ -17,7 +17,7 @@ not yet the completed per-capability trace.
 | Go source files | 340 | All `server/**/*.go` | 151 are tests; package/producer ownership inventory begun. |
 | Server package directories | 45 | Second-level directories under `server/` containing Go | All are mapped in `server-package-inventory.tsv`; Combat is uncomposed and several composed backends have no player consumer. |
 | SQL migrations | 74 | Append-only files `00001` through `00074` | Sequence contiguous; each has one Up/Down marker and the cold migration lane passes. Per-migration semantic rollback remains unisolated. |
-| Client source files | 82 | `client/src/**` | 72 TS, five Svelte, three JSON, one CSS, one text declaration asset. |
+| Client source files | 82 | `client/src/**` | All rows mapped: 41 in the shipped entry/type graph and 41 outside; the build emits 38 authored runtime/style sources plus three type-erased contracts. |
 | Client test artifacts | 56 | `client/test/**` | 43 TS and 13 screenshots; discrimination audit pending. |
 | Game UI registered surfaces | 5 | Desk, Offer Sheet, Run End, Settings, Vision Slide | Real bootstrap reaches Desk; full workflow remains unproved. |
 | Balance files | 91 | Live catalogs, schemas, candidates, and test fixtures | Catalog-family producer/consumer/epoch map pending. |
@@ -56,6 +56,18 @@ not yet the completed per-capability trace.
 
 ### Client consumers
 
+- `client-source-inventory.tsv` accounts for all 82 files exactly. Starting at `main.ts` and
+  following static imports plus the Worker URL yields 41 source dependencies; 41 files remain
+  outside that graph. Production source maps identify 37 authored JS/data/Svelte sources plus one
+  CSS asset; three additional graph rows are compile-only contracts.
+- The outside half is not dead code by definition: many rows own cross-runtime parity, replay,
+  validators, or test fixtures. It is nevertheless not a mounted player consumer. Achievements,
+  active play, Combat, Commons, curriculum, doctrines, faction, fiscal, guild, meters, minigames,
+  pets, Pitch, routes, Soul, and the full replay engine receive no player-capability credit from
+  their TypeScript module presence.
+- `client-workflow-inventory.tsv` traces 25 bounded default, failure, and accessibility paths. The
+  distribution is three proven-bounded, nine partial, one mechanical-only, eight backend-only, two
+  absent, and two failed.
 - The only production Svelte game surfaces are implemented by `GameUIApp.svelte` and
   `RunEndSurface.svelte`; UI Foundation has `Amount.svelte` and the test-only `FixtureHost.svelte`.
 - `game-ui/runtime.ts` owns account bootstrap, HTTP intents/snapshots, WebSocket frames, and browser
@@ -64,6 +76,10 @@ not yet the completed per-capability trace.
   export, deletion, email, or session-management controls.
 - TypeScript modules exist for many server-side mechanics, but module parity is not a player
   consumer. Each still requires a mounted workflow trace.
+- `make build-client` transformed 152 total dependency modules and emitted the main JS/CSS plus the
+  prediction Worker. `make typecheck verify-client-boundary` passed with zero TypeScript/Svelte
+  diagnostics and the declared 14 shell / eight UI / two Game UI component boundaries green. Those
+  are valid build/structure witnesses, not proof of the 22 non-proven workflows.
 
 ### Declarative data
 
@@ -114,7 +130,8 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
 - Extend the completed 24-operation route/consumer map into actor, worker, event, and background-job
   ownership; retain the 17 backend-only and one unimplemented route verdicts.
 - Map all catalog rows and copy keys through loaders, epoch identity, and real workflows.
-- Inventory every test/gate population, oracle, negative control, timeout, exclusion, and artifact.
+- Inventory all 56 client test artifacts and every remaining test/gate population, oracle, negative
+  control, timeout, exclusion, and artifact.
 - Reconcile all 23 live planning directories and 46 archived RFC ranges bidirectionally.
 - Continue migration semantic rollback discrimination beyond the now-proven contiguous/marker/cold-
   chain baseline; account ownership/export/deletion/retention and backup/restore implications now
