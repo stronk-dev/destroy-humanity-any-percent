@@ -25,13 +25,13 @@ second AC1–AC4 set and reported 115 rows.
 | State family | Rows | Meaning now |
 |---|---:|---|
 | Draft / not a completion claim | 39 | Eight draft RFCs have no implementation claim. |
-| Mechanically backed or cold-witness green, proof/range replay pending | 23 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
-| Proven or historically proven with a named qualification | 11 | Reconciled lifecycle rows plus Account AC1/AC4's current integration/security proofs; qualifications remain explicit. |
-| Unmet or partial | 29 | API/Combat/consumer gaps plus Account/WebSocket/Game UI and literal-witness gaps. |
+| Mechanically backed or cold-witness green, proof/range replay pending | 19 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
+| Proven or historically proven with a named qualification | 12 | Reconciled lifecycle rows plus Transport AC1 and Account AC1/AC4's current integration/security proofs; qualifications remain explicit. |
+| Unmet or partial | 32 | API/Combat/consumer gaps plus Account/Transport/Game UI and literal-witness gaps. |
 | Contradicted or failed at current HEAD | 5 | Exact current contradictions plus failed Leaderboards AC5 and Minigame Platform AC2. |
 | Withdrawn / refuted | 4 | Dispatch Integrity is not implementable work. |
 
-The 23 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
+The 19 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
 specific witness/range route rather than treating them as a green block.
 
 ## Confirmed criterion-level downgrades
@@ -77,6 +77,25 @@ The criterion and lifecycle pass is recorded in `account-session-lifecycle-audit
   absent export/delete/recovery/local-fallback user workflows.
 - The active review record cites obsolete hashes and does not union current successor work
   (RP-050); anonymous account storage retention remains unowned (RP-051).
+
+### WebSocket Transport & Fan-out
+
+The criterion and lifecycle pass is recorded in `websocket-transport-lifecycle-audit.md`.
+
+- AC1 is proven: 5,000 actual in-memory WebSockets each expose a terminal trace across ten world
+  ticks, with monotonic subsequences and wrong-kind/public-receipt negative cases in the oracle.
+- AC2 is partial. The server's real Centrifuge recovery returns missed private receipts and the
+  newest world snapshot, but the production Game UI never stores epoch/offset, requests recovery,
+  or reconnects (RP-052).
+- AC3 is partial because the live stall is under one second and permits one in-flight frame plus
+  the newest rather than the literal 10 seconds/exactly one (RP-054).
+- AC4/AC5 are partial: typed overflow and bounded server drain are real, while the browser discards
+  close codes, ignores `resume_after_ms`, and has no reconnect/full-sync path (RP-052).
+- AC6 is partial. Denied Match and positive member cases exist, but no non-member Guild fixture can
+  falsify an authorize-every-Guild resolver (RP-054).
+- The per-scope revision cursor is unit-tested but unused by production, so duplicate/gap/
+  historical-compensation behavior is an orphaned primitive rather than a shipped safety property
+  (RP-053). Plan/body/review history also require current-range reconciliation (RP-055).
 
 ### Game UI
 

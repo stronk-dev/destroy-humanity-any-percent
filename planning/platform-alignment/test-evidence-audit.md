@@ -57,10 +57,12 @@ rerun above reached its objective. RP-025 owns selector safety.
 
 ## Pending evidence work
 
-- Demonstrate a discriminating failure or relevant mutation for every row promoted beyond
-  mechanical presence.
-- Map exact implementation and designated-review ranges for Account and WebSocket RFCs.
-- Execute remaining 98 active-acceptance rows in the batches named by `acceptance-audit.md`.
+- Demonstrate a discriminating failure or relevant mutation for every remaining row promoted
+  beyond mechanical presence.
+- Reconcile the remaining 19 mechanical/cold-witness rows, beginning with CI AC2/AC4/AC5.
+- Construct exact current-history review unions before any active RFC archive; the lifecycle
+  audits name the missing Account and Transport ranges rather than treating old green prose as a
+  verdict.
 - Record skips, exclusions, guards, caches, and architecture differences as visible fields rather
   than silently narrowing the population.
 
@@ -81,3 +83,23 @@ Foundation browser fixture, while the Game UI test simultaneously forces drain a
 asserts only axe and absence of mechanical IDs. It has no assertion for restart timing/copy,
 resync copy/button, refresh invocation, failure behavior, or return to a synchronized surface.
 Filed RP-026.
+
+## Batch C — Transport production-consumer and lifecycle replay
+
+| Command | Result | Interpretation |
+|---|---|---|
+| `make test-go GO_PACKAGES='./transport ./gameserver' GO_TEST_FLAGS='-count=1'` | exit 0; Transport 4.104 s, gameserver 0.486 s | Cold actual-socket, 5k soak, queue/history/authz, and server drain populations. |
+| `make test-client` | exit 0; 39 files passed/2 skipped, 6,655 tests passed/15 skipped | Complete Node client population, including isolated cursor and Game UI runtime tests. |
+| root `pnpm --filter ...` attempt | did not start; no root package manifest | Invalid command, excluded from evidence; the root Make target supplied the client result. |
+
+Fixture and consumer inspection promotes only Transport AC1. The 5,000-socket oracle validates
+each subscriber's trace across ten world ticks, requires a strictly increasing subsequence ending
+at the terminal revision, rejects public receipt-shaped publication, and has a
+malformed/private-push negative.
+
+AC2–AC6 remain partial. Actual server recovery is real, but `game-ui/runtime.ts` sends unpositioned
+subscribe commands, discards offsets, never reconnects, and does not import the per-scope cursor.
+Typed overflow and bounded drain are also server-only halves: the close listener discards the code,
+and `resume_after_ms` has no scheduling consumer. AC3's connected stall is under one second and
+allows in-flight plus newest; AC6 has no non-member Guild negative. RP-052–RP-055 and
+`websocket-transport-lifecycle-audit.md` carry the exact remediation and review-range requirements.

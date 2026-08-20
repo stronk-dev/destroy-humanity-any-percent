@@ -207,3 +207,33 @@
 - Wrote `account-session-lifecycle-audit.md` with the criterion trace and safe closeout order. Made
   no product, schema, RFC/design, canonical product-doc, or player-copy edits; flipped no plan
   boxes; did not archive or touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — WebSocket Transport & Fan-out lifecycle reconciliation
+
+- Read the complete Transport RFC/plan/log, embedded node, policy/wire/history/queue/outbox code,
+  actual-socket/soak/drain/authz tests, production gameserver composition, current browser runtime,
+  canonical docs, successor review records, rewrite map, and relevant implementation history.
+- Ran cold `./transport ./gameserver` and all client tests; 5,000-socket fan-out remains green in
+  the normal Transport package, and the client result is 6,655 passed/15 skipped. The preceding
+  same-coordinate Account wave supplies the real-Postgres gameserver and composed browser
+  handshake. A root `pnpm --filter` attempt never started because no root manifest exists and is
+  explicitly excluded from evidence.
+- Promoted AC1 only. The soak uses 5,000 real WebSockets over ten ticks, terminal monotonic
+  subsequences, and wrong-kind/public-receipt negatives. Kept AC2–AC6 partial against integrated
+  or literal requirements.
+- Confirmed RP-052: the production Game UI stores no Centrifuge epoch/offset, never requests
+  recovery, reconnects, resubscribes, interprets typed close codes, or honors `resume_after_ms`.
+  Server recovery, overflow, and drain therefore stop at test protocol drivers.
+- Confirmed RP-053: `PlayerRevisionCursor` is imported only by its unit test. Production event
+  consumption has no per-scope gap detection, duplicate suppression, snapshot reset, or historical
+  cursor behavior despite the RFC and canonical doc claiming that authority.
+- Filed RP-054 for AC3's sub-second/two-frame witness and AC6's absent non-member Guild negative;
+  filed RP-055 for stale T6/plan/log truth and the missing current full-span review union. The
+  designated F2/F3 verdict exists in a successor log and maps through checked-in rewritten hashes,
+  but later protocol-aware soak/composition/browser ranges remain outside it.
+- Recomputed the 111-row acceptance distribution: 39 draft, 19 mechanical/cold-pending, 12
+  proven/qualified, 32 partial or unmet, five contradicted/failed, and four withdrawn.
+- Wrote `websocket-transport-lifecycle-audit.md` and exposed the accepted-scope recovery completion
+  separately from Account token rotation. Made no product, schema, RFC/design, canonical
+  product-doc, or player-copy edits; flipped no plan boxes; did not archive or touch the user's
+  `AGENTS.md` edit.

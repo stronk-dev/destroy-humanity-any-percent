@@ -5,6 +5,7 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 | Outcome | Intent | Producer / primitive | Consumer | Real content / workflow | Executable witness | Verdict |
 |---|---|---|---|---|---|---|
 | Start and play the live game | `design/11`, Game UI RFC | Bootstrap, snapshot v2, production intents, world channel | `GameUIApp.svelte` via `game-ui/runtime.ts` | Vision Slide -> Desk on epoch-7/8 catalogs | `make test-game-ui-composed`; current-head hosted job passed | **Proven to Desk only** |
+| Recover realtime delivery after disconnect | Transport D4/T4, AC2/AC4/AC5 | Centrifuge positions/history, typed closes, full-state endpoint, per-scope cursor | Game UI opens one unpositioned socket; cursor is test-only | Initial live subscription only | Server protocol-driver recovery/overflow/drain tests; no browser recovery witness | **Proven server; consumer absent** |
 | Complete the first hour in-browser | T0–T1 RFC + Game UI AC1 | Live curriculum, gate/Exit events, run-end payload | Offer Sheet and Run End components | Nine generators, ten upgrades, three first-ending branches | Server/Postgres proof exists; no full browser script | **Mechanical fragment** |
 | Play with keyboard/assistive tech | Game UI accessibility clause | Semantic Svelte controls, focus styles, reduced-motion tokens | Browser DOM | Five Phase-A surfaces | Axe on all surfaces; Enter begins attempt | **Mechanical fragment** |
 | Recover an anonymous account | Account RFC | One-time recovery code, session endpoint | Credential stored in browser localStorage | Automatic account bootstrap | Backend integration tests only | **No player workflow** |
@@ -43,6 +44,8 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
    matrix calls both covered.
 9. The mandated design backlog, research matrix/dossiers, and coverage map are gitignored, so they
    are not repository-shared memory for a fresh clone. `backlog.md` is the tracked interim ledger.
+10. Transport T3/T4 and canonical docs call the per-scope cursor/recovery path client authority,
+    but the production Game UI neither imports that cursor nor stores positions/reconnects.
 
 ## Genuine proofs worth preserving
 
