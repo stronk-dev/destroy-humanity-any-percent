@@ -401,3 +401,22 @@
   `account-rights-release-audit.md`. Re-used already-recorded cold evidence rather than relabeling
   backend/component tests as a player workflow. Made no product/API/copy/RFC/design/canonical-doc/
   schema/player-data edit; did not push or touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — Accessibility release audit
+
+- Read UI Foundation/Game UI accessibility contracts and docs, theme and shell motion wiring, every
+  current Svelte surface, browser configuration/tests, responsive CSS, and internal compliance/
+  rendering/mobile research.
+- Preserved the strong bounded baseline: five-surface axe WCAG 2.2 AA across three engines, native
+  controls/text states, visible focus, Enter activation, Amount naming, and theme-duration reduction.
+- Added two temporary desired-behavior probes, ran them through Chromium/Firefox/WebKit, and removed
+  them plus generated screenshots. Lifecycle Offer preemption failed by dropping focus to `<body>`;
+  complete Desk reflow failed at `647 > 320` CSS pixels in every engine.
+- Confirmed production reduced motion samples the media query for CSS only: numeric shell counters
+  retain `reducedMotion=false`, and no listener handles a preference change after mount.
+- Restored `make test-browser BROWSER_TEST_FLAGS='test/game-ui-screens-browser.test.ts'` passed 30
+  functional rows/3 skips across engines and 1 performance row/10 skips, proving probe cleanup and
+  the declared suite's blindness to both failures.
+- Filed RP-082–RP-084, expanded R-005 and the evidence/release/capability queues, and wrote
+  `accessibility-release-audit.md`. Made no persistent product/test/RFC/design/copy/canonical-doc/
+  theme change; did not push or touch the user's `AGENTS.md` edit.

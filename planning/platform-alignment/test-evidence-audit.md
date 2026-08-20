@@ -187,3 +187,17 @@ AC2–AC4 are promoted. AC1/AC5 remain specification-blocked because their close
 input-table contracts do not exist. AC6 is contradicted under the literal all-combat-path wording:
 the proven gate scans only client modules while Go Combat contains native division. RP-072–RP-074
 and `combat-shared-lifecycle-audit.md` carry body, implementation, and review-provenance repair.
+
+## Batch I — Accessibility workflow discrimination
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| Temporary desired lifecycle-focus test | failed in Chromium, Firefox, WebKit; focused Desk button removal leaves `<body>` active instead of the Offer heading | Axe/component semantics do not protect dynamic surface context. RP-082 is a reproduced implementation/oracle defect. |
+| Temporary complete-Desk 320 px reflow test | failed in all three engines with `scrollWidth=647`, `clientWidth=320` | The fixed 1280×720 browser population cannot detect the real responsive failure. Source inspection identifies the unbreakable README row as the likely intrinsic-width source; that cause is an inference, not a mutation result. |
+| Production reduced-motion source trace | CSS theme samples `matchMedia`; `GameUIShell` constructs `ShellController` with default false; no media-query change listener | Token reduction is real, but numeric interpolation/pulse and live preference changes are not integrated. |
+| Restored declared Game UI browser target | functional 30 passed/3 skipped across engines; performance 1 passed/10 skipped | Both failed probes and screenshots were removed; the green baseline confirms current oracle blindness rather than residue. |
+
+No screen-reader, 200%/400% zoom, coarse-pointer, or full-keyboard participant/manual record exists.
+Missing Account, Minigame/Recovery, Gate/Wind Down, next-run, and later-tier surfaces cannot receive
+accessibility credit from the five current fixture renders. RP-009/RP-082–RP-084 and
+`accessibility-release-audit.md` carry the release contract and dependency route.

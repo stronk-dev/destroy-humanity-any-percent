@@ -64,6 +64,10 @@ The audit was fixed to `190a4fa04958cc2a3b4e689804cd55682f6c6420`.
     destructive-confirmation navigation primitive exists.
 17. **RP-080:** Settings claims offline progress is parked locally, but the runtime persists no
     gameplay save or intent queue and has no later flush/import consumer.
+18. **RP-082/RP-083:** restored desired-behavior probes fail in Chromium, Firefox, and WebKit:
+    lifecycle preemption drops focus to `<body>`, and Desk width is 647 px in a 320 px container.
+19. **RP-084:** the production reduced-motion preference reaches CSS tokens but not the numeric
+    shell's interpolation/pulse mode, and mid-session preference changes have no listener.
 
 ## Provider-off posture
 
@@ -74,6 +78,7 @@ packaging, secrets validation, clean-host boot, backup, and restore.
 The deeper artifact/configuration trace and criterion verdicts are in
 `deployment-foundation-lifecycle-audit.md`.
 The complete player recovery/rights trace is in `account-rights-release-audit.md`.
+The task-level accessibility trace is in `accessibility-release-audit.md`.
 
 ## Conclusion
 

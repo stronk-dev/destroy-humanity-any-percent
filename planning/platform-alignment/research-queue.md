@@ -82,6 +82,9 @@ research question; they authorize only the stated downstream action.
 - **Thresholds:** WCAG 2.2 AA automated checks plus successful manual workflows; no focus trap,
   inaccessible dynamic update, motion-only information, or pointer-only action.
 - **Controls:** seeded focus-trap and unlabeled-status fixtures must be caught.
+- **Observed negatives to retain:** lifecycle Offer/Run-End replacement must not drop focus to
+  `<body>`; the complete Desk must not exceed a 320 CSS-pixel viewport; CSS-only reduction must not
+  mask an unreduced numeric shell.
 - **May authorize:** accessibility acceptance and release-floor closure.
 - **Cannot authorize:** unsupported disability categories or later-tier surfaces not tested.
 

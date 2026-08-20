@@ -7,7 +7,7 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 | Start and play the live game | `design/11`, Game UI RFC | Bootstrap, snapshot v2, production intents, world channel | `GameUIApp.svelte` via `game-ui/runtime.ts` | Vision Slide -> Desk on epoch-7/8 catalogs | `make test-game-ui-composed`; current-head hosted job passed | **Proven to Desk only** |
 | Recover realtime delivery after disconnect | Transport D4/T4, AC2/AC4/AC5 | Centrifuge positions/history, typed closes, full-state endpoint, per-scope cursor | Game UI opens one unpositioned socket; cursor is test-only | Initial live subscription only | Server protocol-driver recovery/overflow/drain tests; no browser recovery witness | **Proven server; consumer absent** |
 | Complete the accepted Game UI transition path | T0–T1 RFC + Game UI C25–C28/AC1 | Live curriculum, gate/Exit events, run-end payload; v3 transition preview absent | Offer Sheet and Run End render; Gate/Wind Down/continue controls absent | Nine generators, ten upgrades, three first-ending branches | Server/Postgres first hour proven; browser stops at Desk and accepted control proof is absent | **Mechanical fragment; body-blocked** |
-| Play with keyboard/assistive tech | Game UI accessibility clause | Semantic Svelte controls, focus styles, reduced-motion tokens | Browser DOM | Five Phase-A surfaces | Axe on all surfaces; Enter begins attempt | **Mechanical fragment** |
+| Play with keyboard/assistive tech | Game UI accessibility clause | Semantic Svelte controls, focus styles, reduced-motion tokens | Browser DOM; numeric shell preference unbound | Five Phase-A surfaces only | Axe/one Enter pass; restored three-engine probes fail lifecycle focus and 320 px reflow | **Mechanical fragment with confirmed defects** |
 | Recover an anonymous account | Account RFC | One-time recovery code, session/refresh endpoints | Credential hidden with tokens in one localStorage document; refresh never consumed | Automatic account bootstrap only; missing/malformed storage creates replacement or generic offline state | Backend integration tests only | **No player recovery workflow** |
 | Export/delete own data | Account/privacy intent | Delete endpoint exists; no export endpoint | No settings controls; destructive-confirmation helper is test-only | Settings displays status and one paragraph | Delete backend test only | **Mechanical deletion; export absent** |
 | Continue locally during an outage and import later | `design/11 §1b`; older Account D4/`design/06` need reconciliation | Import endpoint exists | No local save runtime | Production startup creates the ruled anonymous server account | No fallback witness | **Claimed fallback only** |
@@ -71,6 +71,10 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
     or malformed credentials have no recovery branch, and the refresh token is never used.
 19. Settings says offline progress is parked locally even though the client has no local gameplay
     save, durable intent queue, or reconnect/import flush path.
+20. Green five-surface axe checks hide failed user behavior: lifecycle preemption loses focus in
+    every browser engine and the Desk overflows 647 px at a 320 px container.
+21. Reduced-motion design says production motion follows the OS preference and live changes;
+    GameUIShell keeps its counter controller at the non-reduced default and no change listener exists.
 
 ## Genuine proofs worth preserving
 
