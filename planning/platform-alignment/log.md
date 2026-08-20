@@ -770,3 +770,33 @@
   product docs, RFC/archive body, balance/catalog, migration, deployment, plan checkbox, or authored
   prose. After it lands there are 213 tracked planning files and 59 tracked plus one ignored file
   in platform alignment; no push or `AGENTS.md` touch occurred.
+
+## 2026-08-21 — Copy-key producer/consumer measurement
+
+- Added the reproducible `copy-key-consumption-extractor.mjs`, its exact 208-row TSV, and the
+  bounded audit. A rerun reproduced the checked-in inventory byte-for-byte. It emits the full
+  denominator, 161 current warnings, 14 bounded computed resolver sites, and visible verdict
+  counts; parser/denominator/dynamic drift fails loud.
+- Classified all generated keys: 128 mounted player copy, 63 deploy-current backend/data-only, one
+  shipped-but-currently-unselectable binding, eight fixture/tool-only event rows, and eight bounded
+  no-reference candidates. The manual second pass covered every non-mounted row, every dynamic
+  binding family, and all computed call sites; no real row remains ambiguous.
+- Demonstrated the instrument's negative controls in the recorded run: it rejected a dropped row,
+  a mounted key relabelled unused, and a backend-only key relabelled mounted. The absent fake is
+  unreferenced, while an unbounded synthetic selector becomes `ambiguous_dynamic`.
+- The current orphan report labels 105 mounted keys orphan. Its 47 `referenced` rows are exactly 45
+  keys reached by the seven registered artifact paths plus the two explicit Go sites, but 24 of
+  those are still backend/data-only. It therefore proves registry membership only, not use or
+  player reachability; RP-097 is now numerically bounded.
+- Filed RP-108: 50 exact generated-key references in current Pitch (26), Soul (16), Curriculum
+  (seven), and Minigames (one) artifacts sit outside the registry. This is why the report also calls
+  mounted Curriculum and 39 backend/data rows orphan.
+- Filed RP-109: current Fiscal and Opportunities artifacts carry four exact hardcap reason keys
+  absent from the application catalog: `cap.fiscal_credit`, `cap.fiscal_level.beige_tower`,
+  `cap.cash`, and `cap.active_combo`. Economy upgrade prefixes were explicitly expanded and are not
+  part of this mismatch. The audit did not invent the missing owner-authored prose.
+- Reconciled program/inventory/plan/reality/queue/review-draft and both backlog ledgers. After the
+  three new tracked artifacts land, planning contains 216 tracked plus 25 ignored/local-only files;
+  platform alignment contains 62 tracked plus one ignored file. No copy source/report/generator,
+  balance artifact, product code, test, canonical product doc, RFC/archive body, migration,
+  deployment, plan checkbox, push, or `AGENTS.md` edit occurred.

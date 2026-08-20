@@ -25,6 +25,7 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 | Self-host/recover service | `design/06`, sunset research, Deployment draft | Buildable disk-dependent gameserver; migrations/readiness/drain; current-key refusal | No static client, production package, deploy owner, or recovery runbook | Test Compose only; public origin remains localhost and proxy/previous-key inputs are uncomposed | Binary build + missing-secret refusal only; no clean-host/backup/restore/rollback rehearsal | **Absent; useful primitives only** |
 | Operate and observe the service | Deployment intent; compliance research | health/readiness, job failure channel, drain, JSON invariant logs, optional counter seam | Entry point consumes fatal job failures; Production counter is nil; no metrics/request middleware | Credential GC is the only retention job | Cold gameserver/cmd/account/save suites; source trace finds no exporter or intent-GC caller | **Mechanical supervision; operator capability absent** |
 | Enforce and explain data retention | compliance and Save docs | credential pruners, five-snapshot pruning, orphaned intent pruner, append-only histories | minute credential job only | no inactive-account/history/log schedule or player disclosure | package retention tests only; no composed 30-day/inactivity witness | **Contradicted/incomplete** |
+| Resolve shipped player copy from every current producer | Copy RFC/docs | 208-key catalog, seven JSON reference paths, two Go sites, runtime resolver | Game UI has 71 literal-key rows plus 14 bounded computed resolver sites | 128 mounted keys; 63 backend/data-only; one unmounted; eight fixture-only; eight unreferenced | Reproducible 208-row extraction with dropped/live/backend/unbounded controls | **Mounted subset proven; registry/completeness contradicted** |
 
 ## False or stale claims found
 
@@ -86,6 +87,15 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
     in the Meters log, so the Copy resume path cannot establish its own final state.
 25. T0–T1 archive prose calls its explicitly Chromium-free composed-server proof player-playable
     and end-to-end; the production browser still lacks Gate/Wind Down/next-run controls.
+26. The Copy orphan report calls 105 mounted Game UI keys orphan and cannot distinguish 39 more
+    current backend/data references, one unselectable binding, eight fixture rows, and eight actual
+    no-reference candidates inside its 161 warnings.
+27. The Copy registry omits 50 exact generated-key references in current Pitch, Soul, Curriculum,
+    and Minigame artifacts; its seven JSON paths plus two Go sites are a declared subset, not a
+    repository/current-epoch consumption inventory.
+28. Current Fiscal and Opportunities artifacts contain `cap.fiscal_credit`,
+    `cap.fiscal_level.beige_tower`, `cap.cash`, and `cap.active_combo`, none of which exists in the
+    generated application copy catalog.
 
 ## Genuine proofs worth preserving
 

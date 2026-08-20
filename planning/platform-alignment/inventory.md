@@ -12,7 +12,7 @@ verified populations and reconciliation defects; it is not yet the completed per
 | Active-directory RFC Markdown files | 24 | Process + index + template + 21 product/process RFC files | All 111 true acceptance rows are extracted and evidence-reconciled; five remain intentionally open for exact review/provenance. |
 | Archived RFCs | 46 | Files in `rfc/archive/` | All 46 pair structurally; the predeclared 20-row/ten-domain deep replay is complete with 26 rows honestly structural-only. |
 | Live top-level planning directories | 23 | Includes RFC plans and non-RFC maintenance/review threads | Every thread is mapped; four explicitly complete/historical threads remain live pending authorized closeout. |
-| Tracked planning files after this checkpoint | 213 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the copy-consumption predeclaration lands. |
+| Tracked planning files after this checkpoint | 216 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the copy-consumption measurement lands. |
 | Ignored local planning files | 25 | Seventeen coverage-map files, seven diagnostics, and one historical Codex fix record | Local-only records are not shared memory and receive no fresh-clone evidence credit. |
 | Canonical docs | 38 | Includes three generated artifacts | Every file is classified against lifecycle/release evidence; only the numeric foundation is currently unqualified. |
 | Go source files | 340 | All `server/**/*.go` | 189 production plus 151 test files; both exact ledgers reconcile. |
@@ -171,6 +171,12 @@ verified populations and reconciliation defects; it is not yet the completed per
   `chrome.run_title.company_fallback`, `desk.buy_one`, and `screen.run_end.founder_note` orphaned.
   The pipeline enumerates selected artifact references and two explicit Go sites, but not client
   `t()` call sites. True unused copy and live UI copy are therefore mixed in one green report.
+- `copy-key-consumption-inventory.tsv` closes the 208-key row population: 128 mounted, 63
+  deploy-current backend/data-only, one shipped-but-currently-unselectable, eight fixture-only,
+  and eight bounded no-reference candidates. The current report calls 105 mounted rows orphan.
+  Fifty current Pitch/Soul/Curriculum/Minigame references sit outside its registry, and Fiscal plus
+  Opportunities carry four exact hardcap reason keys absent from the application catalog
+  (RP-108/RP-109).
 
 ### Planning and canonical-record boundary
 
@@ -183,7 +189,7 @@ verified populations and reconciliation defects; it is not yet the completed per
   `production-review-round2`, and `run-genesis-archival-remediation`. The last already requests a
   future move to `planning/archive/`. The audit records that lifecycle defect but does not infer an
   archival move or rewrite review provenance.
-- At the current copy-consumption-plan checkpoint, planning contains 213 tracked
+- At the current copy-consumption-audit checkpoint, planning contains 216 tracked
   files. Another 25 files are ignored and local-only: 17 coverage-map records, six archived T0-T1
   diagnostics, one platform-alignment diagnostic, and one historical Codex fix record. Their local
   presence cannot support a fresh-clone/shared-memory claim.

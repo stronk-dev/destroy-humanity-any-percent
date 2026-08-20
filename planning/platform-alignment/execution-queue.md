@@ -14,6 +14,7 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 | 2e | **BLOCKED — Fiscal ruling/record author action** | Reconcile archived F1/F11 commit-under-rejection text to the accepted rollback correction, then reconcile the seven stale plan boxes without pretending the audit performed implementation. | Frozen normative body, plan, code/tests, and canonical docs state one rollback contract; the exact author-owned record delta receives cross-party review. |
 | 2f | **BLOCKED — Copy record-owner action** | Add an append-only Copy-owner coordinate for Amendment A1 remediation `ebb081f` and its cross-party closure currently recorded only in the Meters archive. | A fresh reader following Copy's own RFC→plan→log path reaches the actual closure without relabeling its historical Darwin verdict. |
 | 2g | **BLOCKED — Soul/First-Content record closeout** | Reconcile `docs/soul.md` with the current epoch and `docs/soul-recovery.md`; retain the archive's historically valid fixture-first boundary and carried UI work. | Canonical docs agree that the Soul artifact and three recovery activities are live while toys/disclosure UI and production debit sources remain absent. |
+| 2h | **BLOCKED — accepted Copy successor and owner-authored content** | Replace the report's nine-site proxy with exhaustive mounted-client and strict current-artifact discovery; cover RP-096–RP-097/RP-108 and add the four RP-109 reason-key rows only after their prose is explicitly adopted. | Held-vs-shipped source status is enforced; live/backend/fixture/unmounted/unreferenced classes are separate; all current copy fields resolve; dropped/live/backend/unbounded mutations fail. |
 | 3 | **BLOCKED — Game UI ruling-author action** | Reconcile the RFC header, U1/U2, and AC1 plus canonical full-rendition prose with GU-C7/GU-C25–GU-C28. | Normative body no longer contradicts accepted rulings; docs do not claim v3 before it ships. |
 | 3a | **BLOCKED — author action** | Reconcile Minigame Platform header, MP1, MP5, C3/C8/C9/C12/C14, and AC6 around the absent combat-duel tenant. | Normative body no longer claims combat code/catalog/adapter that does not exist. |
 | 3b | **BLOCKED on 3a / accepted scope** | Repair Minigame AC2's observable offline-quality decay/application; either prove async under AC1 or route it to its accepted successor; keep bot/duel work blocked on Combat. | No-play decay reaches its real output consumer with a stale-grade mutation; every retained criterion has a composed workflow; exact cross-RFC range union is review-ready. |
@@ -50,9 +51,10 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 
 ## Handoff
 
-The next program action is to finish the row-level Wave-2/3 capability, content-call, and semantic-
-oracle populations named in `plan.md`. Then finalize `review-handoff.md` and obtain the designated
-Claude review over the complete Codex-authored audit range. Only after that green verdict should the
+The next program action is to finish the row-level Wave-2/3 capability, gameplay-content, and
+semantic-oracle populations named in `plan.md`; the 208-key copy-consumption population is complete.
+Then finalize `review-handoff.md` and obtain the designated Claude review over the complete
+Codex-authored audit range. Only after that green verdict should the
 three accepted-scope batches in `ready-batch-manifest.tsv` execute serially: Q-001 Account witnesses,
 Q-002 Minigame API backend witnesses, then higher-risk Q-003 Transport production recovery. R-001
 remains blocked on accepted instrumentation authority; active lifecycle and archived-risk replay are

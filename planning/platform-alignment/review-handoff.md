@@ -15,10 +15,11 @@ file/family boundary have since been reconciled. The Make/CI/client-test-artifac
 151-file/40-skip server-test structural boundary, and all 23 planning threads/38 canonical docs are
 also classified. Routed author repairs and authorized planning closeouts remain work, not facts the
 audit may infer. The deployed actor/worker/event boundary is now exact; its absent player/match
-actors and orphaned retention/Route-name schedulers remain routed defects. Row-level gameplay/copy
-and semantic oracle consumption plus Wave-2 capability splitting remain before finalization. The
-archive replay itself is complete and adds RP-105–RP-107; it is not a substitute for those remaining
-row-level populations.
+actors and orphaned retention/Route-name schedulers remain routed defects. The 208-key copy
+producer/consumer population is complete and routes RP-108/RP-109; row-level gameplay-content and
+semantic oracle consumption plus Wave-2 capability splitting remain before finalization. The
+archive replay itself is complete and adds RP-105–RP-107; neither bounded pass substitutes for
+those remaining row-level populations.
 
 ## Range to review
 
