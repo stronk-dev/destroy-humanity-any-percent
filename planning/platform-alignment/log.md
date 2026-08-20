@@ -663,3 +663,39 @@
 - Updated the program/inventory/plan/review draft and both backlog ledgers. No canonical product
   doc, product code, test, Make/workflow, RFC body, balance/copy/catalog, migration, or deployment
   file was edited; no archival move, push, or `AGENTS.md` touch occurred.
+
+## 2026-08-21 — Runtime concurrency, background-job, and event-family inventory
+
+- Added `runtime-concurrency-inventory.tsv` and traced the deployed gameserver from `main` through
+  composition, startup, readiness, failure, drain, and shutdown. The repository-authored runtime
+  launches exactly 11 long-lived goroutine instances: HTTP listener, root-context monitor, player
+  relay, six attached jobs, job waiter, and transport world coalescer. Dependency-internal
+  Centrifuge/HTTP goroutines are explicitly excluded from the count.
+- Mapped all six composed jobs with their prime pass, cadence, producer/consumer boundary, failure
+  behavior, shutdown, and witness: world aggregation, replay verification, guild presence relay,
+  guild clearing, guild disband sweep, and credential GC. Retained RP-086 because the separate
+  30-day intent-record pruner still has no production caller.
+- Filed RP-103. Binding `design/06` promises a goroutine-per-player actor and one World goroutine,
+  but no player actor/type/mailbox/launch exists and runtime world work is split between aggregation
+  and transport coalescing. Match actor and Matchmaker are also absent and explicitly deferred by
+  the accepted Minigame Platform text. This requires author/authority reconciliation, not an
+  implementation guess.
+- Added `event-family-inventory.tsv`. It bounds the 48 player EventKinds, two outbox message kinds,
+  five transport envelope kinds, three system codes, five disconnect codes, six decoded Game UI
+  lifecycle event kinds, seven guild-domain kinds, two presence kinds, six replay verdicts, five
+  projection idempotency ledgers, and three runtime invariant kinds. The Game UI's six lifecycle
+  decoders remain distinct from backend event-registry breadth.
+- Ran `make test-go GO_PACKAGES='./gameserver ./transport ./routeprojection'
+  GO_TEST_FLAGS='-count=1'`; all three packages passed cold. Separate structural checks proved the
+  48-kind registry, six explicit source launch sites resolving to 11 instances, six attached jobs,
+  and that `ExpireNames` occurs in exactly one server file (its own declaration). This does not
+  promote skipped Postgres cases or source counts into semantic acceptance.
+- Filed RP-104: Route Registry's documented 72-hour naming reservation expiry is represented by
+  `Projector.ExpireNames`, but the method has no production caller, test caller, cadence, batch,
+  failure owner, or metrics. No scheduler was invented without accepted authority.
+- Updated the program/inventory/plan/review draft and both backlog ledgers. No product/server/client/
+  test/Make/workflow/RFC/design/canonical-product-doc/balance/copy/catalog/migration/deployment edit
+  was made; no archival move, push, or `AGENTS.md` touch occurred.
+- Reconciled the self-changing planning denominator in the same checkpoint: after the two new
+  ledgers land, there are 209 tracked planning files, 25 ignored/local-only records, and 55 tracked
+  plus one ignored file inside the 56-file platform-alignment thread.

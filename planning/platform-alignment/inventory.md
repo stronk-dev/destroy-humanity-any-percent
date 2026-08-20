@@ -12,7 +12,7 @@ not yet the completed per-capability trace.
 | Active-directory RFC Markdown files | 24 | Process + index + template + 21 product/process RFC files | All 111 true acceptance rows are extracted and evidence-reconciled; five remain intentionally open for exact review/provenance. |
 | Archived RFCs | 46 | Files in `rfc/archive/` | File/index bidirectionality previously checked; risk-ranked acceptance re-execution pending. |
 | Live top-level planning directories | 23 | Includes RFC plans and non-RFC maintenance/review threads | Every thread is mapped; four explicitly complete/historical threads remain live pending authorized closeout. |
-| Tracked planning files after this checkpoint | 207 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the two new inventories land. |
+| Tracked planning files after this checkpoint | 209 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the runtime/event inventories land. |
 | Ignored local planning files | 25 | Seventeen coverage-map files, seven diagnostics, and one historical Codex fix record | Local-only records are not shared memory and receive no fresh-clone evidence credit. |
 | Canonical docs | 38 | Includes three generated artifacts | Every file is classified against lifecycle/release evidence; only the numeric foundation is currently unqualified. |
 | Go source files | 340 | All `server/**/*.go` | 189 production plus 151 test files; both exact ledgers reconcile. |
@@ -29,6 +29,10 @@ not yet the completed per-capability trace.
 | Exposed HTTP/WebSocket operations | 24 | Three gameserver-hand, 11 account-hand, ten private-registry operations | Only bootstrap, snapshot, intents, and WebSocket have production browser consumers; see `route-operation-inventory.tsv`. |
 | Server commands | 5 | Gameserver, balance harness, API generator, content-manifest generator, formula generator | Only gameserver is a deployable runtime; no production package exists. |
 | Production deployment files | 1 | Content identity manifest only | Five Compose files are test harnesses; no production Docker/Caddy/Compose/runbook, metrics exporter, backup/restore tool, or sunset artifact. |
+| Explicit deployed goroutine instances | 11 | Repository-authored long-lived launches in the gameserver path | HTTP listener, context monitor, relay, six jobs, job waiter, and transport world coalescer are exact; dependency-internal goroutines are excluded. |
+| Attached background jobs | 6 | Jobs composed by `gameserver.Compose` and primed before readiness | World aggregation, replay verification, guild presence, guild clearing, disband sweep, credential GC. |
+| Closed player event kinds | 48 | `save.AllEventKinds` persisted/replayed event authority | Backend boundary exact; production Game UI decodes six lifecycle wire kinds. |
+| Closed transport envelope kinds | 5 | Receipt, snapshot, event, presence, system | Producer/channel rules exact; consumer payload subsets remain explicit. |
 
 ## Initial boundary inventory
 
@@ -111,6 +115,31 @@ not yet the completed per-capability trace.
   and Go's non-verbose output does not make that denominator visible. Docker/hosted Postgres lanes
   are required for any integration claim.
 
+### Runtime concurrency, jobs, and events
+
+- `runtime-concurrency-inventory.tsv` accounts for the deployed gameserver's 11 explicit long-lived
+  goroutine instances: the HTTP listener, root-context monitor, player outbox relay, six attached
+  background jobs, their waiter, and the transport world coalescer. Centrifuge and `net/http`
+  internals are dependency-owned and deliberately excluded from the exact source count.
+- Every attached job runs one synchronous prime pass before readiness, then gets its own goroutine.
+  A job error cancels all jobs, lowers readiness, and reports to the main runtime-failure channel.
+  The six jobs are world aggregation, replay verification, guild presence relay, deterministic
+  guild clearing, guild disband sweep, and session/bootstrap credential GC.
+- Binding `design/06` is not runtime truth: no player actor or Matchmaker launch/type exists, and
+  world aggregation plus transport coalescing are two goroutines rather than one. Match actor and
+  matchmaking lifecycle are explicitly deferred by the Minigame Platform RFC. Filed RP-103 for
+  author reconciliation and accepted successor authority; transactional handlers are not silently
+  relabeled actors.
+- `event-family-inventory.tsv` maps the closed 48-kind player event registry, two player-outbox
+  kinds, five transport envelopes, three system codes, five disconnect codes, six Game UI lifecycle
+  wire kinds, seven guild-domain event kinds, two guild-presence kinds, six replay verdicts, five
+  projection-idempotency ledgers, and three runtime invariant kinds. Backend registry breadth does
+  not imply Game UI consumption: the shipped lifecycle decoder understands six event kinds.
+- Two cleanup obligations have no runtime lane. The already-recorded 30-day intent-record pruner is
+  absent (RP-086), and Route Registry's 72-hour naming expiration method has neither production nor
+  test caller, cadence, batching, failure owner, or metrics. Filed RP-104; the audit does not invent
+  a scheduler contract.
+
 ### Declarative data
 
 - `balance-file-inventory.tsv` exactly equals the 91-file tree: 19 deploy-current epoch artifacts,
@@ -154,7 +183,7 @@ not yet the completed per-capability trace.
   `production-review-round2`, and `run-genesis-archival-remediation`. The last already requests a
   future move to `planning/archive/`. The audit records that lifecycle defect but does not infer an
   archival move or rewrite review provenance.
-- Once the two exact inventories in this checkpoint are tracked, planning contains 207 tracked
+- At the current runtime/event checkpoint, planning contains 209 tracked
   files. Another 25 files are ignored and local-only: 17 coverage-map records, six archived T0-T1
   diagnostics, one platform-alignment diagnostic, and one historical Codex fix record. Their local
   presence cannot support a fresh-clone/shared-memory claim.
@@ -201,8 +230,6 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
 - Split the 121 section-level design IDs until each names one independently falsifiable workflow.
 - Extend the completed 111-row active acceptance audit into a risk-ranked archived-RFC sample;
   preserve the five exact review/provenance rows as open rather than unaudited.
-- Extend the completed 24-operation route/consumer map into actor, worker, event, and background-job
-  ownership; retain the 17 backend-only and one unimplemented route verdicts.
 - Extend the completed file/family map into row-level gameplay-content and all 208 copy-key call
   sites; replace the non-discriminating orphan report before using it for cleanup/release claims.
 - Complete semantic row-level fixture/oracle/negative-control maps now that every executable file,

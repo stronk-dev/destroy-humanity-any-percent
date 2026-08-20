@@ -120,6 +120,10 @@ larger product capability to proven integration.
   dependency signal, and structural kind.
 - `server-test-skip-inventory.tsv` — all 40 explicit skip sites in 28 server test files and the lane
   required to execute them.
+- `runtime-concurrency-inventory.tsv` — every explicit deployed goroutine/job lane plus absent
+  actor/scheduler claims, with trigger, message boundary, shutdown, witness, and exact route.
+- `event-family-inventory.tsv` — exact closed event/protocol families and their producer,
+  persistence, consumer, and capability limit.
 - `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
   counts, authority, current state, and exact closeout gap.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,

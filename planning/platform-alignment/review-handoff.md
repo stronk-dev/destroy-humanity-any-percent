@@ -13,8 +13,10 @@ The server package/operation/migration boundary, client source/workflow boundary
 file/family boundary have since been reconciled. The Make/CI/client-test-artifact boundary, the
 151-file/40-skip server-test structural boundary, and all 23 planning threads/38 canonical docs are
 also classified. Routed author repairs and authorized planning closeouts remain work, not facts the
-audit may infer. Row-level gameplay/copy and semantic oracle consumption, actor/worker/event depth,
-archived-RFC risk sampling, and Wave-2 capability splitting remain before finalization.
+audit may infer. The deployed actor/worker/event boundary is now exact; its absent player/match
+actors and orphaned retention/Route-name schedulers remain routed defects. Row-level gameplay/copy
+and semantic oracle consumption, archived-RFC risk sampling, and Wave-2 capability splitting remain
+before finalization.
 
 ## Range to review
 
