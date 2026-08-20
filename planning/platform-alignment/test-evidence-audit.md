@@ -275,5 +275,20 @@ workflow or source-lifecycle claims.
 | Root Make recipe trace | route/Commons boundary recipes assign task-named `/tmp` `GOCACHE` values | RP-099: recipes contradict the current repository-local cache protocol. |
 
 This batch classifies rather than re-runs every target. Individual cold/mutation evidence remains in
-Batches A–M and the lifecycle dossiers; all 151 server test files still require exhaustive
-file/oracle mapping before the executable-evidence slice closes.
+Batches A–M and the lifecycle dossiers. Batch O closes the 151-file structural population while
+leaving semantic per-oracle discrimination open.
+
+## Batch O — server test-file and conditional-denominator boundary
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| Exact `server/**/*_test.go` reconciliation | 151 rows | Every server test filename now has package, Test/Fuzz count, dependency signal, and structural kind. |
+| Top-level function scan | 591 `Test*` functions plus one `Fuzz*` target | Function count is a source population, not oracle discrimination. |
+| Structural kind scan | 25 filename-declared integration, 124 unit/package, one corpus/fuzz, one fixture helper | `epoch5_fixture_test.go` contributes helpers but no top-level test. Raw file count is not test count. |
+| Direct dependency-signal scan | 15 files mention DB/HTTP/WebSocket composition signals | Source signal helps routing but cannot prove real dependency execution. |
+| Explicit skip scan | 40 sites in 28 files | Thirty-nine sites across 27 files skip without `TEST_DATABASE_URL`; one is architecture-guarded. |
+
+RP-101 records the denominator defect: a non-verbose host `make test-go` can be green while the
+Postgres tests are skipped. `server-test-file-inventory.tsv` and
+`server-test-skip-inventory.tsv` make that population visible. Semantic per-oracle review remains
+open and is not inferred from this structural pass.

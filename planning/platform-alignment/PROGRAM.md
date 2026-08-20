@@ -116,6 +116,10 @@ larger product capability to proven integration.
   capability limits.
 - `client-test-artifact-inventory.tsv` — all 43 tracked client test sources plus 13 ignored local
   captures, their subject, production relationship, and evidence limit.
+- `server-test-file-inventory.tsv` — all 151 Go test files with package, top-level Test/Fuzz counts,
+  dependency signal, and structural kind.
+- `server-test-skip-inventory.tsv` — all 40 explicit skip sites in 28 server test files and the lane
+  required to execute them.
 - `execution-queue.md` — the only presently authorized queue.
 - `ready-batch-manifest.tsv` — exact accepted-scope READY batches, negative controls, cold gates,
   forbidden scope, conflicts, and review protocol.

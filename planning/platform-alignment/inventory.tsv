@@ -5,8 +5,10 @@ rfc	active_directory_markdown	24	bounded_complete	includes process index and tem
 rfc	archived_rfc_files	46	pending	risk-ranked acceptance replay pending
 planning	live_top_level_directories	23	in_progress	active RFC lifecycle reconciled; non-RFC closeout mapping pending
 docs	canonical_files	38	pending	claim-to-code reconciliation pending
-server	go_files	340	in_progress	151 test files
+server	go_files	340	bounded_complete	189 production plus 151 test files; exact package and test-file ledgers reconcile
 server	package_directories	45	bounded_complete	all rows mapped to production consumers/runtime position; player gaps retained
+server	top_level_test_functions	592	structural_complete	591 Test functions plus 1 Fuzz target; semantic oracle discrimination remains per-row work
+server	conditional_skip_sites	40	defect	39 missing-Postgres skips across 27 files plus 1 architecture guard; ordinary local Go green can exclude them
 database	sql_migrations	74	structural_complete	contiguous 00001-00074; one Up/Down marker each; cold migration gate green; isolated semantic rollback pending
 client	source_files	82	bounded_complete	41 in shipped entry/type graph and 41 outside; 38 emitted authored runtime/style sources plus 3 type-erased contracts
 client	tracked_test_sources	43	bounded_complete	2 browser suites; 1 browser helper; 1 type fixture; 39 unit/parity/candidate/measurement sources

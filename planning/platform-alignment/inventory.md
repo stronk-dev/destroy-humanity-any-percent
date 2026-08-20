@@ -14,7 +14,7 @@ not yet the completed per-capability trace.
 | Live top-level planning directories | 23 | Includes RFC plans and non-RFC maintenance/review threads | Several have no declared closeout location; exact mapping pending. |
 | Planning files total | 190 | Includes ignored/internal coverage material visible in this checkout | Fresh-clone and generation provenance differ from local visibility. |
 | Canonical docs | 38 | Includes three generated artifacts | Claims/index inventory begun; code/runtime agreement pending per system. |
-| Go source files | 340 | All `server/**/*.go` | 151 are tests; package/producer ownership inventory begun. |
+| Go source files | 340 | All `server/**/*.go` | 189 production plus 151 test files; both exact ledgers reconcile. |
 | Server package directories | 45 | Second-level directories under `server/` containing Go | All are mapped in `server-package-inventory.tsv`; Combat is uncomposed and several composed backends have no player consumer. |
 | SQL migrations | 74 | Append-only files `00001` through `00074` | Sequence contiguous; each has one Up/Down marker and the cold migration lane passes. Per-migration semantic rollback remains unisolated. |
 | Client source files | 82 | `client/src/**` | All rows mapped: 41 in the shipped entry/type graph and 41 outside; the build emits 38 authored runtime/style sources plus three type-erased contracts. |
@@ -99,6 +99,16 @@ not yet the completed per-capability trace.
 - `verify-routes-boundary` and `verify-commons-boundary` override the mandated repository-local Go
   cache with task-named `/tmp` caches. The checks may still detect their import conditions, but the
   recipes contradict the repository's current routine-command/cache protocol.
+- `server-test-file-inventory.tsv` exactly equals all 151 `*_test.go` files. Structurally they hold
+  591 top-level `Test*` functions and one fuzz target: 25 filename-declared integration files, 124
+  unit/package files, one corpus/fuzz file, and one fixture-helper file with no test function.
+  Fifteen files directly show database/HTTP/WebSocket composition signals. These are source facts,
+  not semantic oracle verdicts.
+- `server-test-skip-inventory.tsv` records 40 explicit skip sites in 28 files. Thirty-nine sites in
+  27 files skip when `TEST_DATABASE_URL` is absent; the remaining site is an architecture-size
+  guard. Ordinary host `make test-go` can therefore exit green without the Postgres population,
+  and Go's non-verbose output does not make that denominator visible. Docker/hosted Postgres lanes
+  are required for any integration claim.
 
 ### Declarative data
 
@@ -173,8 +183,8 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
   ownership; retain the 17 backend-only and one unimplemented route verdicts.
 - Extend the completed file/family map into row-level gameplay-content and all 208 copy-key call
   sites; replace the non-discriminating orphan report before using it for cleanup/release claims.
-- Inventory all 151 server test files and complete row-level fixture/oracle/negative-control maps;
-  the Make/CI/client-artifact populations are now bounded.
+- Complete semantic row-level fixture/oracle/negative-control maps now that every executable file,
+  target, job, and skip population is structurally bounded.
 - Reconcile all 23 live planning directories and 46 archived RFC ranges bidirectionally.
 - Continue migration semantic rollback discrimination beyond the now-proven contiguous/marker/cold-
   chain baseline; account ownership/export/deletion/retention and backup/restore implications now

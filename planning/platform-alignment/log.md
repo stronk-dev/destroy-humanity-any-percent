@@ -619,3 +619,25 @@
   product/test/RFC/design/canonical-product-doc edit was made; no push or `AGENTS.md` touch
   occurred. The remaining executable Wave-1 population is all 151 server test files and their
   row-level oracles/negative controls.
+
+## 2026-08-21 — Server test-file and skip-denominator inventory
+
+- Added `server-test-file-inventory.tsv` and reconciled it exactly against all 151 `*_test.go`
+  files. The population contains 591 top-level `Test*` functions and one fuzz target: 25
+  filename-declared integration files, 124 unit/package files, one corpus/fuzz file, and one
+  fixture helper with no test function. Fifteen files directly show DB/HTTP/WebSocket composition
+  signals.
+- Kept this classification explicitly structural. Neither an `_integration_test.go` suffix nor a
+  top-level function count establishes a discriminating oracle. Existing lifecycle dossiers and
+  Batches A–N retain the semantic mutations already performed; remaining row-level oracle review
+  is still open.
+- Added `server-test-skip-inventory.tsv` for all 40 explicit skip sites in 28 files. Thirty-nine
+  sites across 27 files skip on missing `TEST_DATABASE_URL`; one Commons projection property skips
+  on an architecture-sized target. Filed RP-101 because ordinary host `make test-go` can exit green
+  while silently excluding the Postgres population.
+- Preserved lane truth: Postgres integration claims require the declared Docker/hosted service,
+  whereas ordinary package runs prove only their executed non-skipped denominator. No environment
+  convenience was used to promote a local green.
+- Updated the program/inventory/plan/review draft and both backlog ledgers. No server/product/test/
+  Make/workflow/RFC/design/canonical-product-doc edit was made; no push or `AGENTS.md` touch
+  occurred.
