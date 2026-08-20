@@ -11,6 +11,9 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 | 2b | **BLOCKED on 2a** | Add only Prestige AC2–AC6's missing literal witnesses, reconcile docs/plan, and hand the full span to cross-party review. | Discriminating witnesses green; exact post-rewrite range union receives a tracked designated verdict. |
 | 2c | **BLOCKED — Leaderboards author/owner action** | Reconcile D2/D4/D5/D6/L1 and accept ownership for the absent reader/player surfaces. | Normative body matches the six-verdict/five-category backend and deferred capability work has an accepted home. |
 | 2d | **BLOCKED on 2c** | Repair Leaderboards AC5, add AC1/AC3/AC6 literal witnesses, reconcile the stale plan/thread, and hand the complete claimed span to cross-party review. | Any-membership ranking and exact witnesses discriminate; exact post-rewrite range union receives a tracked designated verdict. |
+| 2e | **BLOCKED — Fiscal ruling/record author action** | Reconcile archived F1/F11 commit-under-rejection text to the accepted rollback correction, then reconcile the seven stale plan boxes without pretending the audit performed implementation. | Frozen normative body, plan, code/tests, and canonical docs state one rollback contract; the exact author-owned record delta receives cross-party review. |
+| 2f | **BLOCKED — Copy record-owner action** | Add an append-only Copy-owner coordinate for Amendment A1 remediation `ebb081f` and its cross-party closure currently recorded only in the Meters archive. | A fresh reader following Copy's own RFC→plan→log path reaches the actual closure without relabeling its historical Darwin verdict. |
+| 2g | **BLOCKED — Soul/First-Content record closeout** | Reconcile `docs/soul.md` with the current epoch and `docs/soul-recovery.md`; retain the archive's historically valid fixture-first boundary and carried UI work. | Canonical docs agree that the Soul artifact and three recovery activities are live while toys/disclosure UI and production debit sources remain absent. |
 | 3 | **BLOCKED — Game UI ruling-author action** | Reconcile the RFC header, U1/U2, and AC1 plus canonical full-rendition prose with GU-C7/GU-C25–GU-C28. | Normative body no longer contradicts accepted rulings; docs do not claim v3 before it ships. |
 | 3a | **BLOCKED — author action** | Reconcile Minigame Platform header, MP1, MP5, C3/C8/C9/C12/C14, and AC6 around the absent combat-duel tenant. | Normative body no longer claims combat code/catalog/adapter that does not exist. |
 | 3b | **BLOCKED on 3a / accepted scope** | Repair Minigame AC2's observable offline-quality decay/application; either prove async under AC1 or route it to its accepted successor; keep bot/duel work blocked on Combat. | No-play decay reaches its real output consumer with a stale-grade mutation; every retained criterion has a composed workflow; exact cross-RFC range union is review-ready. |
@@ -47,8 +50,10 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 
 ## Handoff
 
-The next program action is the designated Claude review in `review-handoff.md` over the complete
-Codex-authored audit range. It is review, not implementation. After a green verdict, execute the
-three accepted-scope batches in `ready-batch-manifest.tsv` serially: Q-001 Account witnesses, Q-002
-Minigame API backend witnesses, then higher-risk Q-003 Transport production recovery. R-001 remains
-blocked on accepted instrumentation authority; active lifecycle reconciliation is complete.
+The next program action is to finish the row-level Wave-2/3 capability, content-call, and semantic-
+oracle populations named in `plan.md`. Then finalize `review-handoff.md` and obtain the designated
+Claude review over the complete Codex-authored audit range. Only after that green verdict should the
+three accepted-scope batches in `ready-batch-manifest.tsv` execute serially: Q-001 Account witnesses,
+Q-002 Minigame API backend witnesses, then higher-risk Q-003 Transport production recovery. R-001
+remains blocked on accepted instrumentation authority; active lifecycle and archived-risk replay are
+complete.

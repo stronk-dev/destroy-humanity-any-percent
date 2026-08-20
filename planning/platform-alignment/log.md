@@ -715,3 +715,42 @@
 - No archive/RFC body, product, test, canonical product doc, plan checkbox, or authored copy was
   changed. After this checkpoint there are 210 tracked planning files and 56 tracked plus one
   ignored file in the platform-alignment thread; no push or `AGENTS.md` touch occurred.
+
+## 2026-08-21 — Archived-RFC structural and deep replay
+
+- Added `archived-rfc-risk-inventory.tsv`; all 46 archived RFC files reconcile one-to-one with 46
+  planning archives after exactly the three predeclared slug mappings. Every row records status,
+  RFC lines, open plan boxes, review/range tokens, active direct references, canonical docs,
+  existing RP ownership, formula-derived score, selection reason, and verdict. An independent AWK
+  recomputation found zero score mismatches.
+- Completed the mandatory 20-row deep sample in `archived-rfc-risk-audit.md`. It contains both
+  open-plan archives, all nine rows scoring at least nine, all required current-CI/dependency risk
+  owners, numeric/economy/save/production/client/content/runtime/multiplayer/replay/harness domains,
+  and four low-risk controls. The other 26 rows remain explicitly structural-only rather than
+  receiving inferred semantic approval.
+- Filed RP-105: Fiscal is archived with all seven implementation/review boxes open and with F1/F11
+  commit-under-rejection clauses contradicting the accepted rollback correction, code, tests, and
+  canonical docs. The ruling/record authors own reconciliation; the audit edited no frozen body or
+  checkbox.
+- Filed RP-106: Copy Amendment A1 ends `not approved` in the Copy owner log; `ebb081f` and its
+  cross-party A1-F1 closure exist only in the Meters archive. Retained RP-097 because current
+  `make copy-check` passes at 208 keys while its 161-key orphan report calls live Game UI `t()`
+  sites orphan.
+- Filed RP-107: `docs/soul.md` says no Soul artifact/recovery activity is live while the current
+  epoch and `docs/soul-recovery.md` prove `defrag`, `repot`, and `server_room` are minted. The Soul
+  Foundation archive remains historically valid fixture-first; the successor closeout is stale.
+- Downgraded T0–T1's player-facing “end to end” wording without weakening its genuine backend
+  evidence: the archive's composed proof is explicitly Chromium-free, while current browser audit
+  proves the production UI stops at Desk and lacks Gate/Wind Down/continue. RP-008/RP-033 already
+  own the missing consumer and lifecycle split.
+- Cold selected Go packages passed with `-count=1`; the harness package completed in 27.855 s.
+  `make test-save-integration` passed through the declared Docker/Postgres service and exposed its
+  real executed/no-test denominators. `make copy-check` passed with the non-discriminating warning
+  qualification. A focused client Fiscal run emitted no denominator for more than 60 seconds and
+  was terminated, so it is recorded invalid rather than green or used to change a budget.
+- Reconciled program/inventory/plan/reality/execution-queue/review-draft, the affected row ledgers,
+  and both backlog ledgers. After the two
+  new tracked artifacts land, planning contains 212 tracked plus 25 ignored/local-only files; the
+  platform-alignment thread contains 58 tracked plus one ignored file. No product, test, Make,
+  workflow, RFC/archive body, canonical product doc, balance/copy/catalog, migration, deployment,
+  plan-checkbox, push, or `AGENTS.md` edit occurred.

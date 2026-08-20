@@ -126,6 +126,10 @@ larger product capability to proven integration.
   persistence, consumer, and capability limit.
 - `archived-rfc-risk-plan.md` — predeclared 46-row archive population, risk score, mandatory deep
   strata, fired criteria, exit conditions, and authority limit.
+- `archived-rfc-risk-inventory.tsv` — all 46 archive/planning pairs with structural risk inputs,
+  selection reason, exact score, canonical docs/RP routing, and replay verdict.
+- `archived-rfc-risk-audit.md` — the 20-row, ten-domain deep replay, commands, invalid run, fired
+  criteria, and authority-bounded consequences.
 - `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
   counts, authority, current state, and exact closeout gap.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,
@@ -134,5 +138,5 @@ larger product capability to proven integration.
 - `ready-batch-manifest.tsv` — exact accepted-scope READY batches, negative controls, cold gates,
   forbidden scope, conflicts, and review protocol.
 - `review-handoff.md` — bounded cross-party review draft; it is not the final audit handoff until
-  the remaining Wave-1/2 inventories and contradiction pass close.
+  the remaining Wave-2/3 semantic ledgers and contradiction pass close.
 - `log.md` — append-only program history.

@@ -2,9 +2,9 @@ slice	population	count	state	detail
 design	top_level_design_docs	14	in_progress	read in full; 121 preliminary outcome IDs; workflow splitting pending
 research	tracked_research_files	1	defect	33 referenced dossiers absent from fresh clone
 rfc	active_directory_markdown	24	bounded_complete	includes process index and template; 111 true acceptance rows evidence-reconciled, five exact review/provenance rows open
-rfc	archived_rfc_files	46	measurement_predeclared	all-row structural pass plus minimum-15 ten-domain deep replay; scoring and fired criteria frozen
+rfc	archived_rfc_files	46	bounded_complete	all 46 structurally reconciled; predeclared 20-row ten-domain deep replay complete; 26 honestly structural-only
 planning	live_top_level_directories	23	bounded_complete	every thread mapped to authority/state/closeout; four explicitly historical/complete threads remain live
-planning	tracked_files_after_checkpoint	210	bounded_complete	includes alignment control plane and five top-level records
+planning	tracked_files_after_checkpoint	212	bounded_complete	includes alignment control plane and five top-level records
 planning	ignored_local_files	25	defect	17 coverage-map files; 7 diagnostics; 1 historical Codex fix record; absent from fresh clone
 docs	canonical_files	38	bounded_complete	all exact rows classified from lifecycle/release evidence; only numeric foundation currently unqualified
 server	go_files	340	bounded_complete	189 production plus 151 test files; exact package and test-file ledgers reconcile

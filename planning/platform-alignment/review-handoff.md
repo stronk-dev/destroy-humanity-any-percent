@@ -5,8 +5,9 @@ designated reviewer under `AGENTS.md`: Claude (the other party), not a Codex-spa
 reviewer.
 
 State: **not the final repository-audit handoff.** The 2026-08-21 mechanical first filter found
-that Wave 1 still lacked complete package/route/migration/client/catalog/executable/archive-risk
-inventories and Wave 2 still retained coarse design rows. This document remains useful as the
+that Wave 1 lacked complete package/route/migration/client/catalog/executable/archive-risk
+inventories; those structural populations now reconcile, including the 46-row archive inventory
+and 20-row/ten-domain deep replay. Wave 2 still retains coarse design rows. This document remains useful as the
 review contract for the completed active-RFC/release/decision/dependency/queue milestone, but a
 designated verdict over it must not be represented as approval of the unfinished exhaustive audit.
 The server package/operation/migration boundary, client source/workflow boundary, and balance/copy
@@ -15,8 +16,9 @@ file/family boundary have since been reconciled. The Make/CI/client-test-artifac
 also classified. Routed author repairs and authorized planning closeouts remain work, not facts the
 audit may infer. The deployed actor/worker/event boundary is now exact; its absent player/match
 actors and orphaned retention/Route-name schedulers remain routed defects. Row-level gameplay/copy
-and semantic oracle consumption, archived-RFC risk sampling, and Wave-2 capability splitting remain
-before finalization.
+and semantic oracle consumption plus Wave-2 capability splitting remain before finalization. The
+archive replay itself is complete and adds RP-105–RP-107; it is not a substitute for those remaining
+row-level populations.
 
 ## Range to review
 
@@ -88,7 +90,7 @@ authorize product implementation merely by approving the audit control plane.
 
 ## Post-review routing
 
-- Only after the remaining Wave-1/2 inventories close and the complete audit range is approved may
+- Only after the remaining Wave-2/3 semantic ledgers close and the complete audit range is approved may
   this verdict be called the repository-audit review. The owner can then rule the READY decisions in
   `owner-ruling-packet.md`, and Q-001/Q-002/Q-003 remain the only implementation-ready batches.
 - If findings change factual classifications, repair the ledgers/dossiers transactionally and

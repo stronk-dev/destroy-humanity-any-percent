@@ -33,7 +33,7 @@ docs/purchasable-content.md	Purchasable content	canonical_system_doc	bounded_bac
 docs/routes.md	Routes	canonical_system_doc	partial	registry/projection backend real; player registry/history and accepted Permit crossing proof absent
 docs/save-layer.md	Save/persistence	canonical_system_doc	contradicted_retention_claim	30-day scheduler prose has no production caller; backup/restore/export absent (RP-086)
 docs/soul-recovery.md	Soul recovery	canonical_system_doc	bounded_backend	backend lifecycle exists; production client surface absent
-docs/soul.md	Soul	canonical_system_doc	bounded_backend	foundation exists; owner design contradiction and player surface open
+docs/soul.md	Soul	canonical_system_doc	stale_activation_claim	denies the live Soul artifact/recovery rows; player surface and debit sources also remain open (RP-107)
 docs/t0-t1-playable-content.md	T0-T1 content	canonical_system_doc	partial	current content/harness exists; mounted client reaches only bounded Desk/Offer/Run End slice
 docs/transport.md	Transport	canonical_system_doc	partial	normal stream composed; client cursor recovery/reauth/deployment origin gaps open
 docs/ui-foundation.md	UI foundation	canonical_system_doc	mechanical_foundation	primitives/themes exist; complete task accessibility/reflow/focus fails

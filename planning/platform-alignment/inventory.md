@@ -1,7 +1,7 @@
 # Repository inventory at product coordinate `190a4fa`
 
-State: **Wave 1 in progress.** This records verified populations and reconciliation defects; it is
-not yet the completed per-capability trace.
+State: **Wave 1 structurally complete; row-level semantic depth remains in Waves 2–3.** This records
+verified populations and reconciliation defects; it is not yet the completed per-capability trace.
 
 ## Counted populations
 
@@ -10,9 +10,9 @@ not yet the completed per-capability trace.
 | Top-level design documents | 14 | `design/00` through `design/13` | Read in full; 121 preliminary stable outcome rows recorded, with Wave-2 splitting still required. |
 | Tracked design research files | 1 | Only `provenance-extracts.md` survives the ignore policy | 33 distinct research dossiers are referenced from tracked design but absent from a fresh clone. |
 | Active-directory RFC Markdown files | 24 | Process + index + template + 21 product/process RFC files | All 111 true acceptance rows are extracted and evidence-reconciled; five remain intentionally open for exact review/provenance. |
-| Archived RFCs | 46 | Files in `rfc/archive/` | Risk method predeclared; all-row structural pass plus mandatory minimum-15/ten-domain deep replay pending. |
+| Archived RFCs | 46 | Files in `rfc/archive/` | All 46 pair structurally; the predeclared 20-row/ten-domain deep replay is complete with 26 rows honestly structural-only. |
 | Live top-level planning directories | 23 | Includes RFC plans and non-RFC maintenance/review threads | Every thread is mapped; four explicitly complete/historical threads remain live pending authorized closeout. |
-| Tracked planning files after this checkpoint | 210 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the archived-RFC replay plan lands. |
+| Tracked planning files after this checkpoint | 212 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the archive inventory/audit land. |
 | Ignored local planning files | 25 | Seventeen coverage-map files, seven diagnostics, and one historical Codex fix record | Local-only records are not shared memory and receive no fresh-clone evidence credit. |
 | Canonical docs | 38 | Includes three generated artifacts | Every file is classified against lifecycle/release evidence; only the numeric foundation is currently unqualified. |
 | Go source files | 340 | All `server/**/*.go` | 189 production plus 151 test files; both exact ledgers reconcile. |
@@ -183,7 +183,7 @@ not yet the completed per-capability trace.
   `production-review-round2`, and `run-genesis-archival-remediation`. The last already requests a
   future move to `planning/archive/`. The audit records that lifecycle defect but does not infer an
   archival move or rewrite review provenance.
-- At the current archive-plan checkpoint, planning contains 210 tracked
+- At the current archive-replay checkpoint, planning contains 212 tracked
   files. Another 25 files are ignored and local-only: 17 coverage-map records, six archived T0-T1
   diagnostics, one platform-alignment diagnostic, and one historical Codex fix record. Their local
   presence cannot support a fresh-clone/shared-memory claim.
@@ -225,18 +225,17 @@ author must reconcile it; implementation and archival cannot infer the intended 
 These are recorded rather than edited because the relevant text is owner-authored or an accepted
 RFC body. The body-reconciliation rule assigns the correction to its author.
 
-## Remaining Wave 1 work
+## Remaining semantic-depth work
 
 - Split the 121 section-level design IDs until each names one independently falsifiable workflow.
-- Extend the completed 111-row active acceptance audit into a risk-ranked archived-RFC sample;
-  preserve the five exact review/provenance rows as open rather than unaudited.
 - Extend the completed file/family map into row-level gameplay-content and all 208 copy-key call
   sites; replace the non-discriminating orphan report before using it for cleanup/release claims.
 - Complete semantic row-level fixture/oracle/negative-control maps now that every executable file,
   target, job, and skip population is structurally bounded.
 - Reconcile the four routed historical/complete live planning threads transactionally after their
-  exact review/provenance dependencies are satisfied, and audit the 46 archived RFCs by the
-  declared risk-ranked method.
+  exact review/provenance dependencies are satisfied. The 46-row archive structure and 20-row
+  deep replay are complete; the remaining 26 archives retain structural-only status rather than
+  inferred semantic approval.
 - Continue migration semantic rollback discrimination beyond the now-proven contiguous/marker/cold-
   chain baseline; account ownership/export/deletion/retention and backup/restore implications now
   have release dossiers and exact blocked routes.

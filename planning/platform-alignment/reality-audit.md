@@ -77,6 +77,15 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
     every browser engine and the Desk overflows 647 px at a 320 px container.
 21. Reduced-motion design says production motion follows the OS preference and live changes;
     GameUIShell keeps its counter controller at the non-reduced default and no change listener exists.
+22. `docs/soul.md` says no production Soul artifact or recovery activity exists; the current epoch
+    and `docs/soul-recovery.md` prove all three activities are live.
+23. Fiscal's archive says implemented while its plan leaves all seven implementation/review boxes
+    open and earlier normative F1/F11 clauses still require the opposite of the accepted rollback
+    correction and current implementation.
+24. Copy Amendment A1's owner log ends `not approved`; its fix and cross-party closure exist only
+    in the Meters log, so the Copy resume path cannot establish its own final state.
+25. T0–T1 archive prose calls its explicitly Chromium-free composed-server proof player-playable
+    and end-to-end; the production browser still lacks Gate/Wind Down/next-run controls.
 
 ## Genuine proofs worth preserving
 
