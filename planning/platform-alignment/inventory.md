@@ -9,7 +9,7 @@ not yet the completed per-capability trace.
 |---|---:|---|---|
 | Top-level design documents | 14 | `design/00` through `design/13` | Read in full; 121 preliminary stable outcome rows recorded, with Wave-2 splitting still required. |
 | Tracked design research files | 1 | Only `provenance-extracts.md` survives the ignore policy | 33 distinct research dossiers are referenced from tracked design but absent from a fresh clone. |
-| Active-directory RFC Markdown files | 24 | Process + index + template + 21 product/process RFC files | Initial lifecycle table exists; 111 true acceptance rows extracted after excluding a nested hardening list that a naive heading parser miscounted. Evidence reconciliation pending. |
+| Active-directory RFC Markdown files | 24 | Process + index + template + 21 product/process RFC files | All 111 true acceptance rows are extracted and evidence-reconciled; five remain intentionally open for exact review/provenance. |
 | Archived RFCs | 46 | Files in `rfc/archive/` | File/index bidirectionality previously checked; risk-ranked acceptance re-execution pending. |
 | Live top-level planning directories | 23 | Includes RFC plans and non-RFC maintenance/review threads | Several have no declared closeout location; exact mapping pending. |
 | Planning files total | 190 | Includes ignored/internal coverage material visible in this checkout | Fresh-clone and generation provenance differ from local visibility. |
@@ -25,7 +25,7 @@ not yet the completed per-capability trace.
 | Make targets declared phony | 72 | Development, generation, verification, harness, browser, integration | Valid-objective and negative-control audit pending. |
 | GitHub CI jobs | 7 | Six push/PR jobs plus scheduled numeric maintenance | Current-head workflow never completes because the harness lane is cancelled at 30 minutes. |
 | Server commands | 4 | Gameserver, balance harness, API generator, content-manifest generator | Only gameserver is a deployable runtime; no production package exists. |
-| Production deployment files | 1 | Content identity manifest only | Five Compose files are test harnesses; no production Docker/Caddy/Compose/runbook. |
+| Production deployment files | 1 | Content identity manifest only | Five Compose files are test harnesses; no production Docker/Caddy/Compose/runbook, metrics exporter, backup/restore tool, or sunset artifact. |
 
 ## Initial boundary inventory
 
@@ -94,14 +94,15 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
 ## Remaining Wave 1 work
 
 - Split the 121 section-level design IDs until each names one independently falsifiable workflow.
-- Audit the 111-row `active-acceptance-ledger.tsv` against plan, implementation, docs, test,
-  review range, and current verdict.
+- Extend the completed 111-row active acceptance audit into a risk-ranked archived-RFC sample;
+  preserve the five exact review/provenance rows as open rather than unaudited.
 - Enumerate route/operation descriptors and match them to actual client/default consumers.
 - Map all catalog rows and copy keys through loaders, epoch identity, and real workflows.
 - Inventory every test/gate population, oracle, negative control, timeout, exclusion, and artifact.
 - Reconcile all 23 live planning directories and 46 archived RFC ranges bidirectionally.
-- Audit migration Up/Down contracts, account data ownership, export/deletion retention, and
-  backup/restore implications.
+- Continue migration Up/Down discrimination beyond the current contiguous/count and selected
+  lifecycle evidence; account ownership/export/deletion/retention and backup/restore implications
+  now have release dossiers and exact blocked routes.
 
 The first section-level ID pass is recorded in `design-capability-ledger.tsv`. Rows deliberately
 remain coarse until Wave 2 splits each outcome to one independently falsifiable workflow.

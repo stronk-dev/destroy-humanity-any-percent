@@ -68,6 +68,15 @@ The audit was fixed to `190a4fa04958cc2a3b4e689804cd55682f6c6420`.
     lifecycle preemption drops focus to `<body>`, and Desk width is 647 px in a 320 px container.
 19. **RP-084:** the production reduced-motion preference reaches CSS tokens but not the numeric
     shell's interpolation/pulse mode, and mid-session preference changes have no listener.
+20. **RP-085:** health/readiness, job failure propagation, and drain are real, but production has
+    no metrics export, request/access correlation, SLO/alert/dashboard/runbook, and composes the
+    optional Production invariant counter as nil.
+21. **RP-086/RP-087:** the documented 30-day intent-record pruner is never scheduled, and no
+    complete retention schedule governs inactive anonymous accounts, archived identities,
+    append-only histories, dead letters, projections, or application logs.
+22. **RP-088:** designed-sunset research falsely treats a one-command self-host bundle as an
+    existing near-zero-cost deliverable; current packaging has no production Compose/client,
+    export, bots-default workflow, final artifact, mirror, or sunset rehearsal.
 
 ## Provider-off posture
 
@@ -79,6 +88,8 @@ The deeper artifact/configuration trace and criterion verdicts are in
 `deployment-foundation-lifecycle-audit.md`.
 The complete player recovery/rights trace is in `account-rights-release-audit.md`.
 The task-level accessibility trace is in `accessibility-release-audit.md`.
+The supervision/observability/retention/preservation trace is in
+`operations-retention-preservation-audit.md`.
 
 ## Conclusion
 

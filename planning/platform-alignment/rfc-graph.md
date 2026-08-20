@@ -21,9 +21,11 @@ R-002 release audit -> D-001 milestone floor -> D-007 content scope
                        +------ R-006 clean-host proof-+
 
 D-002 repo disposition ------------------------------^
-D-003 sunset deliverable -> export/self-host successor^
+D-003 sunset deliverable -> refreshed current-state research -> export/self-host successor^
 account default/fallback body reconciliation + D-005/D-008/D-009
     -> account rights + recovery RFC -> R-003
+D-006 topology/operator + D-009 retention disclosure + D-011 observability/incident floor
+    -> operations/retention RFC -> R-007 fired cleanup/alert/privacy rehearsal
 Transport D4/T4 client recovery + Account token rotation
     -> durable Game UI sessions and drain recovery
 API AC4/C18 body reconciliation

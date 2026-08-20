@@ -100,3 +100,22 @@ research question; they authorize only the stated downstream action.
 - **Controls:** restore into the wrong epoch/artifact set and a truncated backup must be rejected.
 - **May authorize:** deployment/recovery archival and a self-host claim.
 - **Cannot authorize:** a durability or disaster-recovery promise beyond the rehearsed topology.
+
+## R-007 — retention and observability rehearsal
+
+- **Precondition:** D-001/D-006/D-009 and an accepted operations/retention owner.
+- **Question:** Can the chosen operator detect, diagnose, retain, delete, restore, and disclose the
+  ruled production data without silent loss, indefinite accidental retention, or identifier/IP
+  leakage?
+- **Population:** every persisted table/data family, application/security logs, metrics labels,
+  request/job identities, dead letters, credential/intent/inactivity cleanup, alert path, backup,
+  and deletion/export disclosure in the chosen topology.
+- **Threshold:** every family has purpose, legal/product basis, duration/event trigger, cleanup
+  owner, export/deletion behavior, and observable success/failure; fired alerts reach the named
+  operator; cleanup is bounded/idempotent and preserves ruled immutable history.
+- **Controls:** a stuck cleanup job, expired intent row, inactive anonymous account, dead-letter
+  buildup, failed backup, high-cardinality/private metric label, raw-IP log, and missing request ID
+  must each fail the corresponding gate loudly.
+- **May authorize:** operations/retention acceptance and exact privacy/incident documentation.
+- **Cannot authorize:** deleting replay authority, choosing retention periods, or selecting a
+  monitoring vendor without the owner/legal rulings.

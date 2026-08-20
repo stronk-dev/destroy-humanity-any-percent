@@ -13,6 +13,7 @@ Implementation agents may gather evidence and frame options; they may not infer 
 | **D-008** | Decide whether player data export includes only current state, all save revisions/events, leaderboard history, or a portable self-host import bundle. | Data inventory, privacy/legal review, R-003. | Account/data-portability design. | Export schema and UI. |
 | **D-009** | Rule the account deletion disclosure: which anonymized gameplay records remain and for how long. | Current schema trace and legal review. | Account design/copy. | Player-facing deletion workflow. |
 | **D-010** | Decide the lifecycle location for withdrawn RFCs and completed non-RFC maintenance threads. | Active RFC audit. | RFC-0000 amendment if needed. | A mechanically checkable active-work index. |
+| **D-011** | Choose the production observability/incident floor: named operator, metrics/log destinations, privacy budget, alert/SLO set, escalation and breach ownership. | Operations dossier, R-007 plan, chosen topology. | Deployment/operations RFC and runbooks. | Monitoring, request correlation, retention failure handling, release operations. |
 
 Already-blocked authored action: the author of GU-C25–GU-C28 must reconcile Game UI AC1's
 normative body. This is not a new option for an implementer to choose.

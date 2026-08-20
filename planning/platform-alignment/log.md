@@ -420,3 +420,24 @@
 - Filed RP-082–RP-084, expanded R-005 and the evidence/release/capability queues, and wrote
   `accessibility-release-audit.md`. Made no persistent product/test/RFC/design/copy/canonical-doc/
   theme change; did not push or touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — Operations, retention, and preservation release audit
+
+- Traced production health/readiness, background-job supervision, shutdown, logging/metrics,
+  request identity, scheduled cleanup, all major retained-data families, and designed-sunset claims
+  from primitives through actual gameserver composition.
+- Ran cold `./gameserver ./cmd/gameserver ./account ./save -count=1`; all four packages passed.
+  Preserved the proven supervision/drain and credential/bootstrap-GC strengths without promoting
+  them to an operator workflow.
+- Confirmed no production metrics exporter/route, request/access correlation, alert/SLO/dashboard/
+  runbook, and that Production's optional invariant counter is composed as nil.
+- Confirmed `Store.PruneIntentRecords` has no production caller despite canonical 30-day scheduler
+  prose. Anonymous accounts, archives, append-only histories, dead letters, projections, and logs
+  have no complete accepted retention schedule/disclosure.
+- Confirmed the designed-sunset report's “deliverable already exists / not an engineering project”
+  premise is false at the product coordinate: only test Compose exists and client/export/bots-
+  default/final-artifact/mirror/runbook capabilities are absent.
+- Filed RP-085–RP-088, added R-007/D-011 and blocked execution routes, completed Wave 4's bounded
+  coordinate pass, and wrote `operations-retention-preservation-audit.md`. Made no product/test/
+  schema/RFC/design/canonical-product-doc/player-copy/retention edit; did not push or touch the
+  user's `AGENTS.md` edit.

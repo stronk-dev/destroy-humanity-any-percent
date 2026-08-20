@@ -201,3 +201,18 @@ No screen-reader, 200%/400% zoom, coarse-pointer, or full-keyboard participant/m
 Missing Account, Minigame/Recovery, Gate/Wind Down, next-run, and later-tier surfaces cannot receive
 accessibility credit from the five current fixture renders. RP-009/RP-082–RP-084 and
 `accessibility-release-audit.md` carry the release contract and dependency route.
+
+## Batch J — operations, retention, and preservation trace
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| Cold `./gameserver ./cmd/gameserver ./account ./save -count=1` | all four packages green | Supervision, entry point, credential GC, and persistence primitives have a healthy cold baseline. |
+| Production composition trace | health/readiness, fatal worker channel, bounded drain, and credential/bootstrap GC are wired | These are genuine operator primitives, not a full observability/retention surface. |
+| Metrics and logging call-site trace | no exporter or `/metrics`; Production receives nil metrics; request-ID exists only in uncomposed public policy; JSON logs cover termination/save rejection/invariants | RP-085 is a production composition gap, despite Centrifuge's internal metrics-label configuration. |
+| `PruneIntentRecords` reference trace | declaration plus package test only; no production caller | `docs/save-layer.md`'s 30-day deployment-scheduler behavior is not implemented. RP-086. |
+| Persisted-family/cleanup trace | credential rows expire; ordinary save snapshots prune; events/logs/dead letters/accounts/archives lack one schedule | RP-051/RP-087 require policy before deletion code; append-only replay authority cannot be pruned by convenience. |
+| Sunset artifact trace | only test Compose files; disk-dependent server; no packaged client/export/bots-default/final artifact/mirror/runbook | RP-088 falsifies the research premise that the supported deliverable already exists and costs nearly zero. |
+
+This batch intentionally does not use the green package suite as proof of operator task success.
+There is no clean-host, fired-alert, cleanup-failure, inactive-account, backup/restore, or sunset
+artifact witness at the audited coordinate.

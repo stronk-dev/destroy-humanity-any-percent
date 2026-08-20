@@ -1,7 +1,8 @@
 # CURRENT STATE — read this after `AGENTS.md`
 
-**Last updated: 2026-08-20 at repository commit `cb162a3`, product coordinate `190a4fa`.** This
-file is a mutable resume brief. The evidence-backed repository program lives in
+**Last updated: 2026-08-20 through the platform-alignment Wave-4 audit, product coordinate
+`190a4fa`.** This file is a mutable resume brief. Planning-only checkpoints after `cb162a3` do not
+change product capability. The evidence-backed repository program lives in
 `planning/platform-alignment/`; RFC lifecycle truth still lives in `rfc/README.md` after
 reconciliation.
 
@@ -42,7 +43,17 @@ The repository is **not a coherent 1.0 release platform** at this commit.
 - The ruled local-only outage fallback is absent from the production client. Silent anonymous
   server bootstrap is the adopted default; older Account/tech text still needs body reconciliation.
 - Accessibility proof covers axe, reduced motion, focus preservation, and Begin-via-Enter; it does
-  not cover the full keyboard/screen-reader/zoom/touch release workflow.
+  not cover the full keyboard/screen-reader/zoom/touch release workflow. Restored three-engine
+  probes directly fail lifecycle focus and 320 px reflow; numeric shell motion is unbound.
+- Health/readiness, fatal-job propagation, drain, and credential cleanup are real. Production has
+  no metrics export, request/access correlation, alerts/SLOs/dashboard/runbook, and the optional
+  invariant counter is composed as nil.
+- The documented 30-day intent-record pruner is never scheduled. Inactive anonymous accounts,
+  archives, immutable histories, dead letters, projections, and logs have no complete accepted
+  retention schedule or player disclosure.
+- Designed-sunset research overstates current reality: there is no supported one-command bundle,
+  packaged client, export/import path, bots-default self-host flow, final-world artifact, mirror,
+  or sunset runbook.
 - Tiers 2–8, most minigames, combat engines, player-facing social/world/events systems, and the
   designed terminal endings remain unimplemented.
 
@@ -52,11 +63,13 @@ See `planning/platform-alignment/release-platform-audit.md` and `capability-map.
 
 - Game UI AC1 is blocked because its normative body still contradicts accepted GU-C25–GU-C28
   rulings. The ruling author must reconcile it before implementation resumes.
-- Permits and First Content Epoch behavior appears landed and reviewed, but their live plans still
-  show mint-time work open. They require a transactional closeout/range-union audit, not blind box
-  flipping.
-- Minigame Platform, Account, Transport, Prestige, and CI plans contain blockers or composition
-  claims superseded by later work. Each requires acceptance reconciliation against the tree.
+- Every active-RFC lifecycle and all 111 active-directory acceptance rows have now been audited at
+  the product coordinate. Twenty are proven/qualified, five remain mechanical/review-pending,
+  33 are partial/unmet, ten contradicted/failed, 39 draft, and four withdrawn. Five rows remain
+  deliberately open for exact review/provenance rather than unaudited.
+- Permits/First Content, Prestige, Leaderboards, Minigame Platform/API, Account, Transport, CI,
+  API Foundation, Game UI, and Combat each have a lifecycle dossier and exact repair/author route.
+  None is archival-eligible from this audit alone.
 - `planning/run-genesis-archival-remediation/` still needs its recorded resolved state moved through
   the normal reviewed archival lane.
 - The 2026-08-05 coverage map is historical and stale. It must not be used as a current count until
@@ -71,16 +84,18 @@ See `planning/platform-alignment/release-platform-audit.md` and `capability-map.
 ## 4. Critical path
 
 ```
-R-001 current-head harness diagnosis
+accepted R-001 instrumentation owner, then hosted measurement
         +
-active-RFC / planning closeout reconciliation
+owner release/operations/retention/sunset decisions
         +
-owner release decisions and Game UI body reconciliation
+Game UI and other ruling-author body reconciliation
         -> accepted, dependency-ordered implementation
         -> integrated release proof
 ```
 
-Only the first two lanes are presently `READY`. The exact queue and blocked work are in
+The active lifecycle audit itself is complete. Witness-only Account/Transport/Minigame-API batches
+are the only accepted-scope implementation rows marked `READY`; every broader release lane is
+blocked on a named authority or owner decision. The exact queue is in
 `planning/platform-alignment/execution-queue.md`.
 
 ## 5. Owner decisions now required
@@ -90,6 +105,7 @@ Only the first two lanes are presently `READY`. The exact queue and blocked work
 - Sunset/self-host covenant and deliverable.
 - Recovery credential UX, data-export scope, and deletion disclosure.
 - Supported deployment/backup topology.
+- Production observability, incident, logging/privacy, and operator floor.
 - T0–T1 vertical slice versus nine-tier/ending content scope for the chosen milestone.
 
 The full decision records and evidence prerequisites are in

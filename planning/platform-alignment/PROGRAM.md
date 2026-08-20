@@ -79,6 +79,8 @@ larger product capability to proven integration.
   draft Deployment RFC's five criterion verdicts.
 - `account-rights-release-audit.md` — player credential/recovery/export/deletion workflow trace.
 - `accessibility-release-audit.md` — task/viewport/focus/reduced-motion evidence and failed probes.
+- `operations-retention-preservation-audit.md` — runtime supervision, observability, cleanup,
+  retention, and sunset current-state trace.
 - `reality-audit.md` — producer/consumer/content/proof traces.
 - `active-rfc-audit.md` — lifecycle truth for every active RFC.
 - `*-lifecycle-audit.md` — full criterion/producer/consumer/range traces for each reconciled active
