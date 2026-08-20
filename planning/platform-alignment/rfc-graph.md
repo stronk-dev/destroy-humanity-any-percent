@@ -26,6 +26,8 @@ account default/fallback body reconciliation + D-005/D-008/D-009
     -> account rights + recovery RFC -> R-003
 D-006 topology/operator + D-009 retention disclosure + D-011 observability/incident floor
     -> operations/retention RFC -> R-007 fired cleanup/alert/privacy rehearsal
+D-016 gameplay telemetry posture -> aggregate instrument -> R-009 -> first public milestone
+D-017 UGC/social scope -> moderation/rights contract -> Feed/Guild player surfaces
 Transport D4/T4 client recovery + Account token rotation
     -> durable Game UI sessions and drain recovery
 API AC4/C18 body reconciliation
@@ -35,6 +37,7 @@ Game UI C7/C25-C28 body reconciliation -> snapshot-v3 controls and narrowed AC1 
 Minigame API C1/C3/C5/C8/C9 body reconciliation + generated browser client
     -> exact tenant/recovery surface contracts -> Pitch + Soul Recovery visible workflows
 accessibility release contract -----------------------> R-005
+complete ruled first-session surface -----------------> R-008
 ```
 
 The release is not the Deployment RFC alone. It is the intersection of a current CI verdict,

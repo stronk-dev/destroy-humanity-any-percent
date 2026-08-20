@@ -91,7 +91,8 @@ The restored cold command was:
 ## Smallest honest next order
 
 1. D-001 chooses the milestone. D-006 chooses topology, operator, RPO/RTO, backup and secret
-   ownership. D-009 chooses retained-account/history disclosure. D-003 chooses covenant posture.
+   ownership. D-009/D-015 choose retained-account/history disclosure and complete retention.
+   D-003 chooses covenant posture.
 2. Complete a bounded data inventory and legal/product retention ruling before adding cleanup.
    Deleting immutable replay authority by convenience would break accepted history semantics.
 3. Reconcile `docs/save-layer.md` so the 30-day scheduler is explicitly future until an accepted

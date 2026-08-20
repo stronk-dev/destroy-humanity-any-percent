@@ -88,6 +88,8 @@ larger product capability to proven integration.
 - `research-queue.md` — predeclared empirical and verification work.
 - `r001-harness-diagnosis.md` — first-wave hosted/local harness evidence and instrument gap.
 - `decision-queue.md` — choices implementation agents may not infer.
+- `owner-ruling-packet.md` — exact release/program options, sequencing, recommendation, and
+  readiness for the owner/ruling authors.
 - `rfc-graph.md` — dependency and resource ownership.
 - `execution-queue.md` — the only presently authorized queue.
 - `log.md` — append-only program history.

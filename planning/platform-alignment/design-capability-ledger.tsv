@@ -5,7 +5,7 @@ V-003	design/00 pillar 2	Every multiplayer feature has honest AI/solo fallback	m
 V-004	design/00 pillar 3	Reach a designed ending with choice and leaderboard	absent	D-001/D-007 plus tier/endgame RFC DAG
 V-005	design/00 pillar 4	Each tier introduces a new grammar and automates the prior tier	absent_beyond_t1	stable tier capability traces
 V-006	design/00 pillar 5	Systems use distinct clocks	mechanical_fragments	clock/persistence/offline workflow audit
-V-007	design/00 pillar 6	Free, minimal disclosed gameplay telemetry, curtain-pulled dark patterns	claimed_and_partial	privacy/telemetry/honesty appendix release audit
+V-007	design/00 pillar 6	Free, minimal disclosed gameplay telemetry, curtain-pulled dark patterns	claimed_and_partial	D-016 then R-009 plus privacy/telemetry/honesty appendix release audit
 V-008	design/00 pillar 7	Server authority and published community formulas	bounded_server_evidence	public consumer/formula proof
 V-009	design/00 anti-goals	Browser-first, mobile-usable, no softcaps/wiki dependence/unearned edge	partial	accessibility/mobile/formula/fallback audits
 T-000	design/01 Tier 0	Manual action, first generators, honest 1995 UI, tutorial satire	partial_browser_integration	full first-session workflow
@@ -102,7 +102,7 @@ PS-006	design/10 §5	Canon/Ethical routes and persistent moral ledger	mechanical
 PS-007	design/10 §6	Shareable AGI policy scripts	absent	future RFC
 UX-001	design/11 §1	Honest contract screen and bounded return sequence	partial	RP-018 plus full browser workflow
 UX-002	design/11 §1b	Server-anonymous default, local fallback, Vision Slide and run-1 presence budget	partial	RP-007 plus full first-session proof
-UX-003	design/11 §2	Diegetic progressive teaching and first-10-minute outcomes	partial_static	full first-session usability research
+UX-003	design/11 §2	Diegetic progressive teaching and first-10-minute outcomes	partial_static	D-001/D-007 then R-008 first-session study
 UX-004	design/11 §3	Five-part run-end narrative and scripted first failure	server_content_plus_partial_UI	full browser AC1
 UX-005	design/11 §3	Advisor Mode accessibility path	absent	owner release floor/future RFC
 UX-006	design/11 §4	Multi-run first ending and completion pyramid	absent_beyond_first_exit	D-007/content DAG

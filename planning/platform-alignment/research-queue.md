@@ -41,12 +41,17 @@ research question; they authorize only the stated downstream action.
   baseline; the internal research copy follows its local-only policy.
 - **Controls:** include at least one intentionally absent capability and one backend-only capability
   so the instrument cannot equate a route with a user outcome.
+- **Completed baseline:** the release audit and four bounded dossiers cover packaging/config,
+  account rights, accessibility, operations/retention, provider-off behavior, and preservation at
+  the product coordinate. `owner-ruling-packet.md` presents exact label/floor options.
 - **Exit:** owner rules D-001 with an explicit in/out/deferred list and canonical design home.
 - **May authorize:** deployment/account/accessibility/sunset RFC drafting.
 - **Cannot authorize:** implementation or a release label by itself.
 
 ## R-003 — nontechnical account recovery and rights study
 
+- **Precondition:** D-005/D-008/D-009 semantics adopted and an accepted prototype exposes every
+  task. The study validates the posture; it cannot choose recovery/export/retention policy.
 - **Question:** Can a first-time player preserve, recover, export, and delete an anonymous account
   without developer tools or operator help?
 - **Population:** at least five nontechnical participants on a clean browser profile; include
@@ -76,6 +81,8 @@ research question; they authorize only the stated downstream action.
 
 ## R-005 — accessibility release audit
 
+- **Precondition:** D-001 names the exact release tasks and their surfaces exist under accepted
+  owners. Already-observed focus/reflow/shell-motion failures remain valid implementation inputs.
 - **Question:** Does the ruled release workflow work with keyboard, screen reader, 200%/400% zoom,
   reduced motion, coarse pointer, and common color-vision states?
 - **Population:** every release-floor task, not just all rendered components.
@@ -119,3 +126,43 @@ research question; they authorize only the stated downstream action.
 - **May authorize:** operations/retention acceptance and exact privacy/incident documentation.
 - **Cannot authorize:** deleting replay authority, choosing retention periods, or selecting a
   monitoring vendor without the owner/legal rulings.
+
+## R-008 — first-session comprehension and guidance study
+
+- **Precondition:** D-001/D-007 choose the milestone and an accepted UI/content build exposes its
+  complete first-session path. Owner-authored copy remains owner-controlled.
+- **Question:** Can a first-time nontechnical player understand the contract, discover the core
+  loop, recover from a refusal/outage, and explain the first Exit without outside instructions?
+- **Population:** at least eight new-to-repository participants across desktop and supported mobile
+  input; include keyboard-only and reduced-motion users without conflating this with R-005's AT
+  conformance study.
+- **Tasks:** start, identify the resource/rate/cap, buy and change quantity, understand an
+  authoritative refusal, leave/return, handle a connection loss, reach the chosen session goal,
+  and explain the consequence before confirming Exit.
+- **Threshold:** 8/8 finish the required safety/recovery tasks; at least 7/8 finish the core loop
+  without intervention; zero participants accept a destructive/terminal action under a materially
+  false expectation.
+- **Controls:** one intentionally unavailable action must be reported unavailable; a misleading
+  hint and a hidden cap explanation must be detected by the observation rubric rather than scored
+  as participant failure.
+- **May authorize:** guidance/hint density, discoverability acceptance, and exact copy questions for
+  owner adoption.
+- **Cannot authorize:** changing mechanics, accessibility conformance, or invented player copy.
+
+## R-009 — aggregate gameplay telemetry and milestone calibration
+
+- **Precondition:** D-016 adopts a telemetry schema/privacy posture and an accepted instrument owner
+  exists. No public milestone may launch first and use its failure as calibration.
+- **Question:** Does the ruled aggregate-only population measure throughput and uncertainty well
+  enough to set a community threshold without collecting unnecessary player histories?
+- **Population:** synthetic discriminators plus a consent/lawful-basis-reviewed preview population
+  representing idle, check-in, active, new, returning, bot-only, and low-population conditions.
+- **Threshold:** published aggregation reproduces known synthetic totals/bounds, suppresses or
+  widens low-population estimates as ruled, and a predeclared threshold remains inside its target
+  completion interval under uncertainty margins.
+- **Controls:** duplicate/replayed events, missing cohorts, bot-only traffic, late events, clock
+  skew, private identifiers, and a 48-hour burn-through scenario must fail or be visibly excluded.
+- **May authorize:** one exact milestone threshold and its published formula under an accepted
+  content epoch.
+- **Cannot authorize:** hidden DDA, per-player profiling, indefinite raw events, or a reusable
+  threshold for later populations.

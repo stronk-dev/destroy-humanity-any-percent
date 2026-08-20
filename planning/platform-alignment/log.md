@@ -441,3 +441,23 @@
   coordinate pass, and wrote `operations-retention-preservation-audit.md`. Made no product/test/
   schema/RFC/design/canonical-product-doc/player-copy/retention edit; did not push or touch the
   user's `AGENTS.md` edit.
+
+## 2026-08-20 — Research/decision dependency and owner-ruling preparation
+
+- Re-read the complete design capability ledger, all tracked RP routes, research/decision queues,
+  roadmap/vision, research coverage matrix, Deployment draft, and active RFC index.
+- Found and repaired RP-089's circular gate: D-005 required R-003, while R-003 required an absent
+  workflow that only the recovery/export/deletion decisions could authorize. The sequence is now
+  owner posture -> accepted prototype -> participant validation.
+- Marked R-002's repository baseline complete while preserving D-001 as its owner-only exit. Added
+  exact preconditions to R-003/R-005 and predeclared R-008 first-session comprehension and R-009
+  aggregate telemetry/milestone calibration with failing controls.
+- Expanded the owner queue through D-017 for Advisor Mode, async minigame scope, measured CI
+  topology, complete data retention, gameplay telemetry, and UGC/social scope. These were choices
+  previously hidden inside vague remediation routes.
+- Wrote `owner-ruling-packet.md` with exact next-milestone options, a recommended bounded Phase-0
+  preview route, required ruling fields, repository/account/operations/sunset option sets, and a
+  readiness table. No option was adopted and no owner-authored design body was edited.
+- Updated the dependency graph and executable queue so research follows decisions/prototypes rather
+  than answering them. Made no product/test/schema/RFC/design/canonical-product-doc/player-copy edit;
+  did not push or touch the user's `AGENTS.md` edit.

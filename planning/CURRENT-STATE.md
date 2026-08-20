@@ -109,7 +109,8 @@ blocked on a named authority or owner decision. The exact queue is in
 - T0–T1 vertical slice versus nine-tier/ending content scope for the chosen milestone.
 
 The full decision records and evidence prerequisites are in
-`planning/platform-alignment/decision-queue.md`.
+`planning/platform-alignment/decision-queue.md`; the exact option/readiness handoff is
+`planning/platform-alignment/owner-ruling-packet.md`.
 
 ## 6. Working rules
 
