@@ -25,13 +25,13 @@ second AC1–AC4 set and reported 115 rows.
 | State family | Rows | Meaning now |
 |---|---:|---|
 | Draft / not a completion claim | 39 | Eight draft RFCs have no implementation claim. |
-| Mechanically backed or cold-witness green, proof/range replay pending | 43 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
-| Proven or historically proven with a named qualification | 7 | Permits/FCE rows whose witnesses and designated implementation ranges were reconciled; qualifications remain explicit. |
-| Unmet or partial | 15 | API/Combat/consumer gaps plus Account/WebSocket/Game UI and two newly confirmed Permits/FCE witness/provenance gaps. |
+| Mechanically backed or cold-witness green, proof/range replay pending | 37 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
+| Proven or historically proven with a named qualification | 8 | Reconciled Permits/FCE rows plus Prestige AC8's governed-policy availability proof; qualifications remain explicit. |
+| Unmet or partial | 20 | API/Combat/consumer gaps plus Account/WebSocket/Game UI, Permits/FCE, and Prestige literal-witness gaps. |
 | Contradicted at current HEAD | 3 | CI AC1/AC3 and Minigame Platform AC6 are false now. |
 | Withdrawn / refuted | 4 | Dispatch Integrity is not implementable work. |
 
-The 43 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
+The 37 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
 specific witness/range route rather than treating them as a green block.
 
 ## Confirmed criterion-level downgrades
@@ -102,13 +102,27 @@ The historical implementation ranges and designated verdicts are real; they do n
 closeout defects. No plan box or archive state was changed by audit inference. Minigame Platform
 and epoch-7 planning still require the same successor/range reconciliation.
 
+### Prestige & Exits
+
+The criterion and range pass is recorded in `prestige-lifecycle-audit.md`.
+
+- AC1 and AC7 have current cold witnesses but no archival-qualifying full-range designated review.
+- AC2–AC6 are partial against their literal text: the current suite lacks an offer-age property,
+  a full reseed/non-empty repeated-ledger witness, an integrated New-Founder lifecycle, an
+  eligible-state/mid-event-chain matrix, and the required checked-in run-2 golden.
+- AC8 is proven under the owner-approved first-hour policy: 97/97 current runs complete with no
+  failures and the successor implementation range is designated-reviewed. Its 45-minute lower
+  edge is a policy precondition, so this is availability evidence rather than human-choice timing.
+- RP-034–RP-036 capture stale body/docs, the absent Advisor control, and the deferred Quarter
+  bridge; RP-038 captures the missing tracked post-rewrite full-range review authority.
+
 ## Next execution batches
 
 1. Account AC1–AC7 against the real Postgres lane, including fixture discrimination and transport
    subscribe revocation.
 2. WebSocket AC1–AC6 cold, including actual 5k population, dropped subscriber, overflow, drain,
    and authz negatives.
-3. Leaderboards/Prestige/FCE/Permits range-union and current-bundle acceptance replay.
+3. Leaderboards range-union, compaction, and current-bundle acceptance replay.
 4. API, Game UI, and Minigame consumer traces; keep incomplete rows downgraded.
 5. Risk-ranked archived-RFC replay, starting with release, account data, epoch identity, replay,
    and harness instruments rather than sampling only cheap unit suites.

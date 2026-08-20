@@ -116,3 +116,23 @@
 - Wrote `permits-first-content-lifecycle-audit.md` with criterion-level verdicts and the smallest
   honest closeout order. Did not flip either implementation plan, edit owner-authored RFC text,
   archive, change product bytes, or touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — Prestige & Exits lifecycle reconciliation
+
+- Read the complete active Prestige RFC/plan/log, its post-rewrite implementation history, the
+  current Exit/store/arithmetic/UI witnesses, the successor T0–T1 curriculum and first-hour
+  authority, canonical docs, and all review references. The ignored local round-4 review file is
+  not repository authority and lacks the explicit provenance required by today's archival law.
+- Ran cold `./prestige ./production ./save`, all client tests, and real-Postgres Integration tests
+  for `./production ./save ./gameserver`; all passed. Regenerated the governed first-hour
+  experiment: 97/97 completed, no warnings/failures, Chaos elective p50 and Casual p95 both
+  2,700,000 ms.
+- Promoted AC8 only, with the explicit qualification that its lower bound is policy-constructed and
+  proves availability under the governed persona, not unaided human choice timing. Kept AC1/AC7 at
+  cold-witness green pending review and downgraded AC2–AC6 to partial against their literal proof
+  requirements.
+- Filed RP-034–RP-038 for stale normative/canonical contracts, the missing Advisor control, the
+  deferred Quarter bridge, missing literal witnesses, and the absent tracked full-range designated
+  verdict. Wrote `prestige-lifecycle-audit.md` with exact evidence and the safe closeout order.
+- Made no product, balance, schema, RFC, canonical product-doc, or player-copy edits; flipped no
+  plan boxes; did not archive or touch the user's `AGENTS.md` edit.
