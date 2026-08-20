@@ -157,3 +157,27 @@
 - Wrote `leaderboards-lifecycle-audit.md` with producer→consumer classification and safe closeout
   order. Made no product, balance, schema, RFC, canonical product-doc, or player-copy edits; flipped
   no plan boxes; did not archive or touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — Minigame Platform Foundation lifecycle reconciliation
+
+- Read the complete active platform RFC/plan/log, current minigame/production/gameserver and
+  TypeScript implementation, canonical docs, production Pitch artifact/composition, archived Pitch
+  authority, API successor tests/log, combat state, and relevant review histories.
+- Ran cold `./minigame ./pitch ./replaycatalog ./production`, all client tests, TypeScript/Svelte
+  checks, and real-Postgres Integration tests for `./minigame ./production ./gameserver`; all
+  passed. These prove substantial solo/session/payout/API mechanics, not absent async/bot/decay
+  workflows.
+- Marked AC2 failed. The only decay call occurs during result resolution, whose fresh grade then
+  overwrites the decayed value and zeroes its remainder; production start reads stored grades
+  unchanged. No other transition advances the grade and no automated-output consumer uses the
+  declared destination, so lapse-time decay is behaviorally dead.
+- Kept AC1/AC3 partial: production hardcodes solo, while async-snapshot is only a fixture/enum; bot
+  fallback has exact schema and reduction arithmetic but no bot tenant or match. Promoted AC5 from
+  mechanical to proven because production Pitch completes through authenticated composition with
+  a solo fallback and no peer. Kept AC4 cold-green pending final cross-RFC range reconciliation and
+  AC6 contradicted because the duel tenant does not exist.
+- Filed RP-044–RP-047 for offline-quality decay/application, async/bot acceptance gaps, RFC/plan/
+  docs/successor contradictions, and missing final cross-RFC range union. Wrote
+  `minigame-platform-lifecycle-audit.md` with the exact defect trace and safe closeout order.
+- Made no product, balance, schema, RFC, canonical product-doc, or player-copy edits; flipped no
+  plan boxes; did not archive or touch the user's `AGENTS.md` edit.

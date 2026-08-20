@@ -25,13 +25,13 @@ second AC1–AC4 set and reported 115 rows.
 | State family | Rows | Meaning now |
 |---|---:|---|
 | Draft / not a completion claim | 39 | Eight draft RFCs have no implementation claim. |
-| Mechanically backed or cold-witness green, proof/range replay pending | 37 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
-| Proven or historically proven with a named qualification | 8 | Reconciled Permits/FCE rows plus Prestige AC8's governed-policy availability proof; qualifications remain explicit. |
-| Unmet or partial | 20 | API/Combat/consumer gaps plus Account/WebSocket/Game UI, Permits/FCE, and Prestige literal-witness gaps. |
-| Contradicted at current HEAD | 3 | CI AC1/AC3 and Minigame Platform AC6 are false now. |
+| Mechanically backed or cold-witness green, proof/range replay pending | 33 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
+| Proven or historically proven with a named qualification | 9 | Reconciled Permits/FCE rows, Prestige AC8, and Minigame Platform's zero-peer fallback proof; qualifications remain explicit. |
+| Unmet or partial | 22 | API/Combat/consumer gaps plus Account/WebSocket/Game UI and literal-witness gaps. |
+| Contradicted at current HEAD | 4 | CI AC1/AC3 plus Minigame Platform AC2/AC6 are false now. |
 | Withdrawn / refuted | 4 | Dispatch Integrity is not implementable work. |
 
-The 37 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
+The 33 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
 specific witness/range route rather than treating them as a green block.
 
 ## Confirmed criterion-level downgrades
@@ -50,10 +50,17 @@ specific witness/range route rather than treating them as a green block.
 
 ### Minigame Platform
 
+- **AC2 false:** ranked-power/breadth loaders work, but quality decay is called only when a new
+  result immediately replaces it; start reads stale stored grades, and no automated-output
+  consumer uses the destination. The active/idle bridge cannot occur (RP-044).
+- **AC1 partial:** solo Pitch is proven through the composed API; production hardcodes solo and no
+  async-snapshot tenant lifecycle exists (RP-045).
+- **AC3 partial:** cap/forfeit and reduction arithmetic are proven; an actual bot match is absent
+  because no bot tenant/content exists (RP-045).
+- **AC4 cold-green pending final range reconciliation; AC5 proven integration.**
 - **AC6 false:** no combat duel tenant exists or registers. Only The Pitch is present in production
-  catalog and gameserver composition. The later C9 ruling agrees with runtime reality while the
-  header, MP1, MP5, C3/C8/C12/C14, and AC6 retain the opposite requirement. RP-016 blocks authorial
-  reconciliation and archival.
+  catalog and gameserver composition. The draft duel child and combat docs confirm the absence.
+  RP-016 and RP-046 block authorial reconciliation and archival.
 
 ### Game UI
 
