@@ -1,13 +1,13 @@
 slice	population	count	state	detail
 design	top_level_design_docs	14	in_progress	read in full; 121 preliminary outcome IDs; workflow splitting pending
 research	tracked_research_files	1	defect	33 referenced dossiers absent from fresh clone
-rfc	active_directory_markdown	24	in_progress	includes process index and template; 111 true acceptance rows extracted
+rfc	active_directory_markdown	24	bounded_complete	includes process index and template; 111 true acceptance rows evidence-reconciled, five exact review/provenance rows open
 rfc	archived_rfc_files	46	pending	risk-ranked acceptance replay pending
-planning	live_top_level_directories	23	in_progress	lifecycle reconciliation pending
+planning	live_top_level_directories	23	in_progress	active RFC lifecycle reconciled; non-RFC closeout mapping pending
 docs	canonical_files	38	pending	claim-to-code reconciliation pending
 server	go_files	340	in_progress	151 test files
-server	package_directories	44	in_progress	producer/consumer ownership pending
-database	sql_migrations	74	pending	contiguous 00001-00074
+server	package_directories	45	bounded_complete	all rows mapped to production consumers/runtime position; player gaps retained
+database	sql_migrations	74	structural_complete	contiguous 00001-00074; one Up/Down marker each; cold migration gate green; isolated semantic rollback pending
 client	source_files	82	in_progress	72 TS; 5 Svelte; 3 JSON; 1 CSS; 1 text
 client	test_artifacts	56	pending	43 TS; 13 PNG
 ui	registered_game_surfaces	5	in_progress	bootstrap-to-Desk only proven
@@ -15,5 +15,6 @@ balance	files	91	pending	live/candidate/test boundary pending
 copy	files	10	pending	shipped/candidate consumption pending
 verification	phony_make_targets	72	pending	oracle and negative-control audit pending
 ci	jobs	7	defect	current-head aggregate has no completed verdict
-runtime	server_commands	4	in_progress	one deployable runtime command
+runtime	exposed_operations	24	bounded_complete	3 gameserver-hand + 11 account-hand + 10 private-registry; only 4 have production browser consumers
+runtime	server_commands	5	bounded_complete	one deployable runtime command; balance harness plus three generators are tools
 deployment	production_files	1	defect	content manifest only

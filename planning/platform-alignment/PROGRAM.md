@@ -57,7 +57,7 @@ larger product capability to proven integration.
   `cb162a3bd8b00ea7378293c5d7179995688151ec`.
 - Last product-behavior commit: `190a4fa04958cc2a3b4e689804cd55682f6c6420`; the intervening
   `cb162a3` changes planning/research only, so product capability verdicts stay pinned to `190a4fa`.
-- Audit date: 2026-08-20.
+- Audit dates: 2026-08-20 through 2026-08-21.
 - Product changes during audit: none.
 - Existing dirty work preserved: `AGENTS.md` only.
 - Hosted evidence: current-head push run `32009994004` and nightly runs `32096019304`,
@@ -69,7 +69,8 @@ larger product capability to proven integration.
 - `plan.md` — exhaustive eight-wave audit plan and exit gates.
 - `inventory.md` / `inventory.tsv` — counted repository populations and reconciliation state.
 - `design-capability-ledger.tsv` — stable design-outcome IDs and preliminary trace state.
-- `active-acceptance-ledger.tsv` — all 111 true active-RFC acceptance rows awaiting evidence verdicts.
+- `active-acceptance-ledger.tsv` — all 111 true active-RFC acceptance rows with current bounded
+  verdicts; five remain open on exact review/provenance closeout.
 - `acceptance-audit.md` — criterion-level classification, downgrades, and execution batches.
 - `test-evidence-audit.md` — cold command outcomes, populations, oracle gaps, and invalid runs.
 - `capability-map.md` — product outcomes and their actual stage.
@@ -93,8 +94,15 @@ larger product capability to proven integration.
 - `rfc-graph.md` — dependency and resource ownership.
 - `dependency-resource-ledger.tsv` — machine-readable producer/consumer/transformation/refusal/
   witness ownership for the dependency graph.
+- `server-package-inventory.tsv` — all 45 second-level Go package directories, their production
+  consumers, runtime position, evidence class, and current integration gap.
+- `route-operation-inventory.tsv` — all 24 exposed HTTP/WebSocket operations, authority, backend
+  witness, production consumer, and exact player/operator gap.
+- `migration-inventory.tsv` — all 74 contiguous migrations, domain ownership, structural Up/Down
+  presence, current cold migration evidence, and the remaining semantic rollback limit.
 - `execution-queue.md` — the only presently authorized queue.
 - `ready-batch-manifest.tsv` — exact accepted-scope READY batches, negative controls, cold gates,
   forbidden scope, conflicts, and review protocol.
-- `review-handoff.md` — designated cross-party adversarial review range and required verdict.
+- `review-handoff.md` — bounded cross-party review draft; it is not the final audit handoff until
+  the remaining Wave-1/2 inventories and contradiction pass close.
 - `log.md` — append-only program history.

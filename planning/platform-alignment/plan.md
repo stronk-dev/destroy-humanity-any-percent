@@ -32,15 +32,15 @@ current product coordinate.
 | 5. Research and owner rulings | prepared; owner/ruling-author actions pending | Convert genuine unknowns to predeclared studies; collect choices evidence cannot make; reconcile ruled design bodies before RFC work. | `research-queue.md`, `decision-queue.md`, `owner-ruling-packet.md`, adopted design updates | No RFC is being asked to answer an empirical or owner question. |
 | 6. Dependency and resource graph | complete at the audited coordinate; author repairs pending | Bind producers, consumers, shared schemas, content, migrations, versioning, refusal paths, accessibility, and acceptance witnesses. | `rfc-graph.md`, `dependency-resource-ledger.tsv` | DAG has no consumer without producer/content/proof ownership and no duplicate shared-resource owner. |
 | 7. Executable program | complete at the audited coordinate | Rank only accepted, dependency-satisfied work; define transactional closeout and review ranges. | `execution-queue.md`, `ready-batch-manifest.tsv`, reconciled backlog/registers | READY means implementable now; every other row names the exact blocker. |
-| 8. Contradiction and independent review | handoff prepared; designated Claude verdict pending | Cross-check all ledgers/indexes/docs against the product coordinate; obtain designated cross-party adversarial review over the complete research/planning range. | `review-handoff.md`; append-only verdict in `log.md` | No uncovered commit range, contradictory normative text, stale current-status claim, or unowned finding. |
+| 8. Contradiction and independent review | bounded handoff draft only; final handoff blocked on Waves 1–2 | Cross-check all ledgers/indexes/docs against the product coordinate; obtain designated cross-party adversarial review over the complete research/planning range. | Finalized `review-handoff.md`; append-only verdict in `log.md` | No uncovered commit range, contradictory normative text, stale current-status claim, or unowned finding. |
 
 ## Wave 1 inventory slices
 
 | Slice | State | Reconciliation target |
 |---|---|---|
 | Design promises and release obligations | initial section-level pass | 121 bounded rows now have stable IDs; Wave 2 must split coarse rows until each has one independently falsifiable workflow. |
-| RFC lifecycle and acceptance | row population complete; evidence pass pending | Every active/archive file appears exactly once; 111 active-directory acceptance rows are now indexed; status, plan, docs, review ranges, and implementation must agree. |
-| Server producers and persistence | pending | Packages, commands, routes, actors, migrations, events, registries, workers, and external boundaries. |
+| RFC lifecycle and acceptance | active population/evidence pass complete; archived risk sample pending | Every active/archive file appears exactly once; 111 active-directory acceptance rows are evidence-reconciled; archived risk sampling still must test status, plan, docs, review ranges, and implementation. |
+| Server producers and persistence | package/operation/migration boundary complete; actor/event/worker depth pending | All 45 package directories, five commands, 24 exposed operations, and 74 migrations now have bounded rows; isolated semantic rollback and worker/event ownership remain. |
 | Client consumers and workflows | pending | Routes/screens, runtime intents, storage, accessibility states, error/offline flows, generated/manual API use. |
 | Declarative content and copy | pending | Every catalog family, epoch identity, copy key, locale, generator, validator, and real workflow consumer. |
 | Executable evidence | pending | Make targets, Go/TS/browser/Postgres tests, fixtures, oracles, mutation probes, CI jobs, time/resource budgets. |

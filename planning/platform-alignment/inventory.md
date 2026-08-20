@@ -15,8 +15,8 @@ not yet the completed per-capability trace.
 | Planning files total | 190 | Includes ignored/internal coverage material visible in this checkout | Fresh-clone and generation provenance differ from local visibility. |
 | Canonical docs | 38 | Includes three generated artifacts | Claims/index inventory begun; code/runtime agreement pending per system. |
 | Go source files | 340 | All `server/**/*.go` | 151 are tests; package/producer ownership inventory begun. |
-| Server package directories | 44 | Second-level directories under `server/` containing Go | Several are primitives with no player consumer. |
-| SQL migrations | 74 | Append-only files `00001` through `00074` | Sequence contiguous; Up/Down and behavior ownership audit pending. |
+| Server package directories | 45 | Second-level directories under `server/` containing Go | All are mapped in `server-package-inventory.tsv`; Combat is uncomposed and several composed backends have no player consumer. |
+| SQL migrations | 74 | Append-only files `00001` through `00074` | Sequence contiguous; each has one Up/Down marker and the cold migration lane passes. Per-migration semantic rollback remains unisolated. |
 | Client source files | 82 | `client/src/**` | 72 TS, five Svelte, three JSON, one CSS, one text declaration asset. |
 | Client test artifacts | 56 | `client/test/**` | 43 TS and 13 screenshots; discrimination audit pending. |
 | Game UI registered surfaces | 5 | Desk, Offer Sheet, Run End, Settings, Vision Slide | Real bootstrap reaches Desk; full workflow remains unproved. |
@@ -24,13 +24,18 @@ not yet the completed per-capability trace.
 | Copy files | 10 | Live/candidate catalogs, provenance, references, generated reports | Shipped/candidate boundary and real surface consumption pending. |
 | Make targets declared phony | 72 | Development, generation, verification, harness, browser, integration | Valid-objective and negative-control audit pending. |
 | GitHub CI jobs | 7 | Six push/PR jobs plus scheduled numeric maintenance | Current-head workflow never completes because the harness lane is cancelled at 30 minutes. |
-| Server commands | 4 | Gameserver, balance harness, API generator, content-manifest generator | Only gameserver is a deployable runtime; no production package exists. |
+| Exposed HTTP/WebSocket operations | 24 | Three gameserver-hand, 11 account-hand, ten private-registry operations | Only bootstrap, snapshot, intents, and WebSocket have production browser consumers; see `route-operation-inventory.tsv`. |
+| Server commands | 5 | Gameserver, balance harness, API generator, content-manifest generator, formula generator | Only gameserver is a deployable runtime; no production package exists. |
 | Production deployment files | 1 | Content identity manifest only | Five Compose files are test harnesses; no production Docker/Caddy/Compose/runbook, metrics exporter, backup/restore tool, or sunset artifact. |
 
 ## Initial boundary inventory
 
 ### Server producers
 
+- `server-package-inventory.tsv` reconciles all 45 second-level package directories: 189 production
+  files plus 151 tests equal the counted 340 Go files. Production-import consumers are named rather
+  than inferred from directory names. `combat` has no production importer; `harness` and the
+  grouped `internal` packages are tooling lanes, not player runtime composition.
 - The account router declares 11 hand-wired account/session/founder/intent operations and mounts
   ten registry-owned Game UI, minigame, and Soul operations.
 - The composed service exposes `/healthz`, `/readyz`, and `/connection/websocket`.
@@ -38,6 +43,16 @@ not yet the completed per-capability trace.
   guilds, leaderboards, transport, minigames, pets, Soul, attendance, and Exits.
 - The production minigame tenant registry composes exactly `pitch.NewTenant()` at
   `server/gameserver/composition.go`; no combat tenant is registered.
+
+### Persistence boundary
+
+- `migration-inventory.tsv` enumerates the contiguous 00001–00074 population and assigns each row
+  a domain owner. Every file has exactly one Goose Up and one Goose Down marker.
+- `make validate-migrations` ran cold on 2026-08-21 and passed the Postgres integration/migration
+  population; `make verify-schema` passed all current catalogs and schemas.
+- Those aggregates prove current-chain execution and structural Down presence. They do **not**
+  prove that each individual Down restores all prior data/constraints, so semantic rollback remains
+  explicitly open rather than being promoted from marker presence.
 
 ### Client consumers
 
@@ -96,13 +111,14 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
 - Split the 121 section-level design IDs until each names one independently falsifiable workflow.
 - Extend the completed 111-row active acceptance audit into a risk-ranked archived-RFC sample;
   preserve the five exact review/provenance rows as open rather than unaudited.
-- Enumerate route/operation descriptors and match them to actual client/default consumers.
+- Extend the completed 24-operation route/consumer map into actor, worker, event, and background-job
+  ownership; retain the 17 backend-only and one unimplemented route verdicts.
 - Map all catalog rows and copy keys through loaders, epoch identity, and real workflows.
 - Inventory every test/gate population, oracle, negative control, timeout, exclusion, and artifact.
 - Reconcile all 23 live planning directories and 46 archived RFC ranges bidirectionally.
-- Continue migration Up/Down discrimination beyond the current contiguous/count and selected
-  lifecycle evidence; account ownership/export/deletion/retention and backup/restore implications
-  now have release dossiers and exact blocked routes.
+- Continue migration semantic rollback discrimination beyond the now-proven contiguous/marker/cold-
+  chain baseline; account ownership/export/deletion/retention and backup/restore implications now
+  have release dossiers and exact blocked routes.
 
 The first section-level ID pass is recorded in `design-capability-ledger.tsv`. Rows deliberately
 remain coarse until Wave 2 splits each outcome to one independently falsifiable workflow.

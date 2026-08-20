@@ -1,0 +1,25 @@
+operation_id	method	path	authority	backend_witness	production_consumer	capability_state	exact_gap
+health	GET	/healthz	gameserver_hand	gameserver/server_test.go	operator_only	operator_primitive	no monitoring/alert/runbook consumer
+readiness	GET	/readyz	gameserver_hand	gameserver/server_test.go;gameserver/composition_integration_test.go	operator_only	operator_primitive	no deployment/rollback orchestration consumer
+realtime	GET	/connection/websocket	gameserver_hand	gameserver/composition_integration_test.go	game-ui/runtime.ts	partial_player_integration	normal subscription works; cursor-loss recovery and reauth boundary incomplete
+create_account	POST	/api/v1/account	account_hand	account/account_integration_test.go;gameserver/composition_integration_test.go	none	backend_only	bootstrap client bypasses this explicit recovery-code workflow
+create_session	POST	/api/v1/session	account_hand	account/account_integration_test.go;gameserver/composition_integration_test.go	none	backend_only	no sign-in/recovery client
+refresh_session	POST	/api/v1/session/refresh	account_hand	account/account_integration_test.go;gameserver/minigame_api_integration_test.go	none	backend_only	refresh token is stored but never consumed by production client
+attach_email	POST	/api/v1/account/email	account_hand	account handler tests	none	unimplemented	returns not-implemented and has no player control
+delete_account	DELETE	/api/v1/account	account_hand	account/account_integration_test.go	none	backend_only	no disclosure/confirmation/export/player workflow
+delete_session	DELETE	/api/v1/session	account_hand	account handler tests	none	backend_only	no logout/session-management workflow
+create_founder	POST	/api/v1/founder	account_hand	account/account_integration_test.go;gameserver/composition_integration_test.go	none	backend_only	no New Founder player control/continuation
+get_founder	GET	/api/v1/founder	account_hand	account/account_integration_test.go	none	backend_only	production client uses the separate Game UI snapshot
+import_founder	POST	/api/v1/founder/import	account_hand	account/account_integration_test.go	none	backend_only	no import/export/recovery player workflow
+submit_intent	POST	/api/v1/intents	account_hand	gameserver/composition_integration_test.go;account/account_integration_test.go	game-ui/runtime.ts	bounded_player_integration	Desk/Offer intents only; no durable offline/retry queue
+submit_guild_intent	POST	/api/v1/guild/intents	account_hand	gameserver/composition_integration_test.go;account/account_integration_test.go	none	backend_only	no player guild surface
+cancel_soul_recovery	POST	/api/v1/soul-recovery/cancel	private_registry	gameserver/minigame_api_integration_test.go;account/account_integration_test.go	none	backend_only	no Soul recovery surface
+create_bootstrap	POST	/api/v1/bootstrap	private_registry	gameserver/composition_integration_test.go;account/bootstrap_integration_test.go	game-ui/runtime.ts	player_integrated	default first-session bootstrap reaches Desk; credential failure recovery absent
+create_minigame_session	POST	/api/v1/minigames/{minigame_id}/sessions	private_registry	gameserver/minigame_api_integration_test.go;account/account_integration_test.go	none	backend_only	generated types exist but no production HTTP client/surface
+get_current_minigame_session	GET	/api/v1/minigames/sessions/current	private_registry	gameserver/minigame_api_integration_test.go	none	backend_only	no reconnecting minigame client
+get_game_ui_snapshot	GET	/api/v1/founder/state	private_registry	gameserver/composition_integration_test.go	game-ui/runtime.ts	player_integrated	bounded snapshot-v2 Desk path; transition eligibility/continuation incomplete
+play_minigame_command	POST	/api/v1/minigames/sessions/{session_id}/commands	private_registry	gameserver/minigame_api_integration_test.go	none	backend_only	no Pitch player command surface
+progress_soul_recovery	POST	/api/v1/soul-recovery/progress	private_registry	gameserver/minigame_api_integration_test.go;account/account_integration_test.go	none	backend_only	no heartbeat/progress player surface
+resolve_minigame_session	POST	/api/v1/minigames/sessions/{session_id}/resolve	private_registry	gameserver/minigame_api_integration_test.go	none	backend_only	no minigame terminal/receipt surface
+resolve_soul_recovery	POST	/api/v1/soul-recovery/resolve	private_registry	gameserver/minigame_api_integration_test.go	none	backend_only	no recovery completion surface
+start_soul_recovery	POST	/api/v1/soul-recovery/start	private_registry	gameserver/minigame_api_integration_test.go;account/account_integration_test.go	none	backend_only	no activity selection/recovery player surface

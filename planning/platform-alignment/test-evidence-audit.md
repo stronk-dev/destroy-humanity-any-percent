@@ -216,3 +216,18 @@ accessibility credit from the five current fixture renders. RP-009/RP-082–RP-0
 This batch intentionally does not use the green package suite as proof of operator task success.
 There is no clean-host, fired-alert, cleanup-failure, inactive-account, backup/restore, or sunset
 artifact witness at the audited coordinate.
+
+## Batch K — server boundary and migration population reconciliation
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| Exact Go file/package recount | 45 second-level package directories; 189 production + 151 test = 340 Go files | Corrects the stale 44-package inventory and gives every package a production-consumer/runtime-position row. |
+| Exact process-entrypoint recount | five `server/cmd/**/main.go` files | Corrects the stale four-command inventory: one runtime, one harness, three generators. |
+| Router/registry/source consumer trace | 24 exposed operations = three gameserver-hand + 11 account-hand + ten private-registry | Browser runtime consumes only bootstrap, snapshot, intents, and WebSocket; route presence cannot promote the other player workflows. |
+| Migration marker/sequence scan | 74 contiguous rows, 00001–00074; exactly one Goose Up and Down marker per file | Structural population reconciles; marker presence alone is not semantic rollback evidence. |
+| `make validate-migrations` | exit 0; Postgres `./save` Integration/Migration population cold with `-count=1` | Current migration chain and its declared integration population execute. It does not isolate every Down transition. |
+| `make verify-schema` | exit 0; every current catalog/schema family reported `schema ok` | Current declarative schema set is internally valid; live/candidate/default-workflow consumption remains a separate inventory. |
+
+RP-092 records the sequencing failure that exposed these unfinished populations; RP-093 records
+the false package/command counts. `server-package-inventory.tsv`,
+`route-operation-inventory.tsv`, and `migration-inventory.tsv` preserve the exact row populations.

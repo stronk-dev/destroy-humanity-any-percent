@@ -1,22 +1,28 @@
-# Cross-party adversarial review handoff
+# Bounded cross-party adversarial review draft
 
 Prepared 2026-08-20. Product coordinate: `190a4fa`. Implementer/audit author: Codex. Required
 designated reviewer under `AGENTS.md`: Claude (the other party), not a Codex-spawned or self-named
 reviewer.
 
+State: **not the final repository-audit handoff.** The 2026-08-21 mechanical first filter found
+that Wave 1 still lacked complete package/route/migration/client/catalog/executable/archive-risk
+inventories and Wave 2 still retained coarse design rows. This document remains useful as the
+review contract for the completed active-RFC/release/decision/dependency/queue milestone, but a
+designated verdict over it must not be represented as approval of the unfinished exhaustive audit.
+
 ## Range to review
 
-The substantive audit program starts after product commit `190a4fa`. At preparation time the
-completed core through Wave 6 is:
+The substantive audit program starts after product commit `190a4fa`. The original bounded core
+through Wave 6 was:
 
 ```text
 190a4fa..1e47752
 ```
 
-That range contains 19 planning/documentation commits beginning with `cb162a3`. Before starting,
-the reviewer must resolve the then-current local tip and include any later Wave-7 handoff/record
-commits in the cited exact range. The verdict must name literal hashes; `HEAD`, “latest,” or a
-branch name is not acceptable provenance.
+That range contains 19 planning/documentation commits beginning with `cb162a3`; `c7eb024` is the
+subsequent queue/handoff commit. Do not start the final designated pass from that historical range.
+After Waves 1–2 close, the reviewer must resolve the then-current local tip and cite literal hashes;
+`HEAD`, “latest,” or a branch name is not acceptable provenance.
 
 The range changes README/current-state/RFC-index claims and adds the platform-alignment control
 plane. It must contain no product code, schema, balance, copy, migration, active RFC normative-body,
@@ -40,7 +46,7 @@ Review adversarially, not as a prose polish pass:
 5. Challenge all release claims: provider-off, packaging/config, account rights, accessibility,
    operations/retention, and preservation. In particular verify RP-080, RP-083, RP-086, and RP-088
    from production consumers/call sites rather than prose.
-6. Verify all RP-001–RP-091 rows exist in the tracked ledger and each has a research, owner,
+6. Verify every RP row through the final audit tip exists in the tracked ledger and each has a research, owner,
    ruling-author, accepted-RFC, review, or explicit completed-process route.
 7. Validate all 30 rows of `dependency-resource-ledger.tsv`: ten columns, unique IDs, one canonical
    owner/gate, named consumer, refusal owner, witness owner, state, and exact blocker. Look for
@@ -74,7 +80,8 @@ authorize product implementation merely by approving the audit control plane.
 
 ## Post-review routing
 
-- If the audit range is approved, the owner can rule the READY decisions in
+- Only after the remaining Wave-1/2 inventories close and the complete audit range is approved may
+  this verdict be called the repository-audit review. The owner can then rule the READY decisions in
   `owner-ruling-packet.md`, and Q-001/Q-002/Q-003 remain the only implementation-ready batches.
 - If findings change factual classifications, repair the ledgers/dossiers transactionally and
   obtain a new exact-range verdict over the repair edge.

@@ -499,3 +499,34 @@
 - Marked Wave 7 complete and Wave 8 prepared/pending external designated review. No self-review was
   relabeled designated, no implementation or archival was authorized, no product/test/schema/RFC/
   design/canonical-doc/copy edit was made, and no push or `AGENTS.md` touch occurred.
+
+## 2026-08-21 — Mechanical first filter and server boundary inventory
+
+- Resumed after the workstation crash with branch `main` ahead of `origin/main` by 19 commits and
+  only the user's tracked `AGENTS.md` edit dirty. Reconfirmed product evidence remains pinned to
+  `190a4fa`; no product tree change was made.
+- The first filter rejected the prior near-final sequencing claim: Wave 1 still explicitly left
+  package, route, migration, client, catalog, executable, planning/docs, and archived-RFC
+  populations incomplete, and Wave 2 still retained coarse design rows. Filed RP-092 and
+  downgraded `review-handoff.md` to a bounded draft rather than relabeling a partial pass final.
+- Recounted the server exactly. The prior 44-package/four-command summary was false: there are 45
+  second-level package directories and five `main.go` entrypoints. Their 189 production files plus
+  151 test files reconcile to all 340 Go files. Filed RP-093 and added
+  `server-package-inventory.tsv` with production importers, runtime position, evidence class, and
+  exact integration gap for every row.
+- Enumerated all 24 exposed operations: three gameserver-hand infrastructure operations, 11
+  account-hand `/api/v1` operations, and ten private-registry operations. Added
+  `route-operation-inventory.tsv`. The production browser consumes only bootstrap, Game UI
+  snapshot, intents, and WebSocket; 17 operations are backend-only, two are operator primitives,
+  and `attach_email` remains unimplemented. This preserves backend-only routes as mechanical
+  fragments rather than shipped player capability.
+- Enumerated migrations 00001–00074 with domain ownership. Every file has exactly one Goose Up and
+  Down marker. `make validate-migrations` passed cold against Postgres (`./save`, `-count=1`) and
+  `make verify-schema` passed the current catalog/schema population. Added
+  `migration-inventory.tsv`; explicitly retained isolated semantic rollback as open because marker
+  presence and a current-chain aggregate cannot prove per-migration data/constraint restoration.
+- Corrected stale `PROGRAM.md`, `acceptance-audit.md`, `plan.md`, `inventory.md`, and
+  `inventory.tsv` claims. Active 111-row evidence reconciliation is complete with five exact
+  review/provenance rows open; archived risk sampling is not complete. No self/delegated review was
+  represented as the required Claude-side designated pass, and no push or `AGENTS.md` touch
+  occurred.

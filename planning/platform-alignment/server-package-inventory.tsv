@@ -1,0 +1,46 @@
+package	production_files	test_files	production_consumers	runtime_position	evidence_class	current_gap
+account	11	7	cmd,gameserver,transport	direct_gameserver_composition	composed_backend	player account/recovery/rights workflows absent
+accrualhook	1	0	commonsbinding,faction,guild,prestige,production	transitive_runtime_library	mechanical	no package-local falsification; covered only through consumers
+achievements	2	1	production,replaycatalog	transitive_runtime_domain	composed_backend	no mounted player achievement surface
+activeplay	1	2	production,replaycatalog	transitive_runtime_domain	composed_backend	no mounted player opportunity surface
+cmd	5	4	-	five_process_entrypoints	mixed	gameserver is runtime; four entries are generation/harness tools
+combat	1	1	-	uncomposed_domain_primitive	mechanical_only	no production consumer, catalog, tenant, or player workflow
+commons	4	1	cmd,commonsbinding,commonsprojection,gameserver,harness,replaycatalog	transitive_runtime_domain	composed_backend	no complete player Commons surface
+commonsbinding	3	1	gameserver,replaycatalog	transitive_runtime_binding	composed_backend	no independent player consumer
+commonsprojection	1	2	gameserver	direct_gameserver_composition	composed_backend	no public/player projection reader
+copykeys	1	0	commonsprojection,pitch,production,replaycatalog,routeprojection	transitive_runtime_validation	mechanical	no package-local falsification; generated-copy gates own proof
+curriculum	1	1	production,replaycatalog	transitive_runtime_domain	composed_backend	first-failure behavior only; no complete curriculum surface
+decimal	4	3	account,achievements,activeplay,commons,commonsbinding,commonsprojection,curriculum,doctrine,economy,faction,fiscal,gameui,guild,harness,leaderboard,minigame,multiplier,pitch,prestige,production,publicapi,routeprojection,routes,save,soul	shared_runtime_primitive	proven_primitive	not itself a player capability
+determinism	1	0	activeplay,fiscal,harness,pitch,production	transitive_runtime_primitive	mechanical	proof owned by cross-runtime consumer vectors
+doctrine	1	1	production,replaycatalog	transitive_runtime_domain	composed_backend	no mounted player doctrine surface
+economy	3	5	account,accrualhook,activeplay,cmd,commonsbinding,curriculum,faction,fiscal,gameserver,gameui,guild,harness,internal,prestige,production,relevancepolicy,replaycatalog,save	transitive_runtime_foundation	proven_foundation	bounded T0-T1 consumer only
+epochseed	1	1	cmd,gameserver,harness,leaderboard	direct_gameserver_seed	composed_backend	repository-disk dependent; no packaged release manifest consumer
+faction	4	3	gameserver,production,replaycatalog	transitive_runtime_domain	composed_backend	no mounted player faction workflow
+fiscal	2	2	production,replaycatalog	transitive_runtime_domain	composed_backend	no mounted player quarter workflow
+fixedgrid	1	1	minigame,pet	transitive_runtime_primitive	proven_primitive	not itself a player capability
+gameserver	7	7	cmd	runtime_composition_root	composed_backend	no static client/package/operations surface
+gameui	1	2	gameserver	direct_gameserver_projection	composed_backend	five registered surfaces but only bounded Desk flow integrated
+guild	13	6	cmd,faction,gameserver,production,replaycatalog,transport	direct_gameserver_domain	composed_backend	no mounted player guild controls
+harness	16	10	cmd	offline_measurement_tool	invalid_current_release_gate	current complete check exceeds hosted budget and lacks fail-loud progress
+httpapi	1	1	account,publicapi	transitive_runtime_boundary	mechanical	middleware primitive, not operation authority
+internal	5	0	-	grouped_generation_import_tools	tooling_only	second-level count groups internal subpackages; not runtime composition
+kernel	1	1	replayverify,save,transport	transitive_runtime_identity	proven_primitive	not itself a player capability
+leaderboard	5	4	gameserver,replaycatalog	direct_gameserver_projection	composed_backend	no HTTP/client board or epoch reader
+meters	2	2	cmd,production,replaycatalog	transitive_runtime_domain	composed_backend	no mounted player meter workflow
+minigame	10	9	account,cmd,gameserver,pitch,production,replaycatalog	direct_gameserver_domain	composed_backend	Pitch backend only; no production client minigame surface
+minigameapi	1	1	production,replaycatalog	transitive_runtime_policy	composed_backend	API policy has no player surface
+multiplier	1	1	accrualhook,activeplay,cmd,commons,commonsbinding,economy,faction,fiscal,gameui,guild,meters,prestige,production,save	shared_runtime_primitive	proven_primitive	not itself a player capability
+pet	6	6	production,replaycatalog,save	transitive_runtime_domain	composed_backend	no mounted player pet workflow
+pitch	2	3	gameserver,production,replaycatalog	direct_gameserver_tenant	composed_backend	backend tenant has no production client consumer
+prestige	4	2	gameserver,harness,production,replaycatalog	transitive_runtime_domain	composed_backend	Offer/Run End partial; Advisor and full continuation absent
+production	26	28	account,gameserver,gameui,harness,replaycatalog,replayverify	direct_gameserver_service	composed_backend	broad backend exceeds mounted player outcome breadth
+publicapi	7	4	account,cmd	transitive_runtime_contract	partial_authority	only 10 registry routes; 11 hand-wired routes and all public readers absent
+relevancepolicy	1	0	harness,production,replaycatalog	transitive_runtime_policy	mechanical	measurement lane invalid at hosted budget
+replaycatalog	1	3	gameserver,harness,replayverify	direct_gameserver_catalog_loader	composed_backend	repository/DB artifact dependency blocks standalone package
+replayverify	1	1	gameserver	direct_gameserver_worker	composed_backend	no operator/public verification surface
+routeprojection	1	1	gameserver	direct_gameserver_projection	composed_backend	no mounted player registry/history reader
+routes	2	2	doctrine,economy,gameserver,gameui,harness,leaderboard,production,relevancepolicy,replaycatalog,routeprojection	transitive_runtime_domain	composed_backend	bounded gate facts only; no complete registry surface
+runidentity	1	0	activeplay,fiscal,prestige,production,save	transitive_runtime_primitive	mechanical	proof owned by consumers
+save	15	14	account,accrualhook,cmd,commonsbinding,commonsprojection,curriculum,epochseed,faction,gameserver,gameui,guild,harness,internal,leaderboard,prestige,production,replaycatalog,routeprojection,transport	direct_gameserver_persistence	composed_backend	backup/restore/export/retention workflows absent
+soul	3	1	account,gameserver,production,replaycatalog	direct_gameserver_domain	composed_backend	recovery endpoints have no production client consumer
+transport	8	6	gameserver	direct_gameserver_realtime	partial_integration	normal stream works; production cursor recovery/resync incomplete
