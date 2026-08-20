@@ -21,7 +21,8 @@ R-002 release audit -> D-001 milestone floor -> D-007 content scope
 
 D-002 repo disposition ------------------------------^
 D-003 sunset deliverable -> export/self-host successor^
-D-004/D-005/D-008/D-009 -> account rights + recovery RFC -> R-003
+account default/fallback body reconciliation + D-005/D-008/D-009
+    -> account rights + recovery RFC -> R-003
 Game UI body reconciliation -> AC1 implementation -> R-004
 accessibility release contract -----------------------> R-005
 ```

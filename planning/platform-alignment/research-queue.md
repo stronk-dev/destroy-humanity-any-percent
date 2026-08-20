@@ -9,8 +9,14 @@ research question; they authorize only the stated downstream action.
   budget at `190a4fa`, despite older records claiming a measured green lane?
 - **Population:** every active relevance-registry entry and scenario dispatched by `mode=check` at
   current HEAD.
-- **Arms:** native macOS at 1/4/12 workers; hosted Linux 12-worker evidence; focused per-registry-row
-  runs if the current tool exposes or first adds a diagnostic-only selector.
+- **Completed first wave:** `r001-harness-diagnosis.md` proves five hosted cancellations, a
+  current local green completion at 12 workers, workload expansion since the last hosted green,
+  and that worker control excludes relevance. It also rejects scenario-only relevance runs as a
+  substitute for active registry authority.
+- **Remaining arms:** instrumented native macOS and hosted Linux at 12 workers, split by standard
+  pacing phase and authority-preserving registry row. Run 1/4-worker comparisons only for phases
+  whose dispatcher actually accepts that control; the original whole-command 1/4/12 arm would be
+  structurally misleading because relevance ignores the flag.
 - **Measurements:** task cardinality, transitions, exclusions, guard exhaustion, wall time per row,
   CPU utilization, and final objective reached.
 - **Controls:** a tiny known-completing fixture; an intentionally non-completing/guard-fired fixture

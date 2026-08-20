@@ -34,8 +34,9 @@ The audit was fixed to `190a4fa04958cc2a3b4e689804cd55682f6c6420`.
    Settings exposes neither capability.
 4. **RP-006:** the one-time recovery code is silently stored with tokens in localStorage. There is
    no display/download, second-device recovery, or recovery UI. Optional email is unconfigured.
-5. **RP-007:** RFC/design promise fully offline-anonymous local play plus later import; production
-   startup instead creates a server account, and no local gameplay-save owner exists.
+5. **RP-007:** `design/11 §1b` rules silent server-anonymous startup plus a labeled local-only
+   outage fallback and later import. Startup implements the default; no local gameplay-save owner
+   or fallback exists, and older Account/tech wording remains unreconciled.
 6. **RP-008:** the composed browser witness reaches Desk. The full first-hour/Exit/run-end browser
    path remains Game UI AC1 and is blocked on body reconciliation.
 7. **RP-009:** accessibility evidence is strong at component level but does not cover the complete

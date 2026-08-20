@@ -1,0 +1,122 @@
+id	design_ref	bounded_outcome	preliminary_state	next_evidence_or_route
+V-001	design/00 satire thesis	No real-money, ads, or functional monetization	mechanical_presence	dependency/runtime/legal surface audit
+V-002	design/00 pillar 1	Idle and active are distinct viable builds	bounded_server_evidence	full milestone/persona relevance trace
+V-003	design/00 pillar 2	Every multiplayer feature has honest AI/solo fallback	mechanical_fragments	per-feature producer/consumer/fallback matrix
+V-004	design/00 pillar 3	Reach a designed ending with choice and leaderboard	absent	D-001/D-007 plus tier/endgame RFC DAG
+V-005	design/00 pillar 4	Each tier introduces a new grammar and automates the prior tier	absent_beyond_t1	stable tier capability traces
+V-006	design/00 pillar 5	Systems use distinct clocks	mechanical_fragments	clock/persistence/offline workflow audit
+V-007	design/00 pillar 6	Free, minimal disclosed gameplay telemetry, curtain-pulled dark patterns	claimed_and_partial	privacy/telemetry/honesty appendix release audit
+V-008	design/00 pillar 7	Server authority and published community formulas	bounded_server_evidence	public consumer/formula proof
+V-009	design/00 anti-goals	Browser-first, mobile-usable, no softcaps/wiki dependence/unearned edge	partial	accessibility/mobile/formula/fallback audits
+T-000	design/01 Tier 0	Manual action, first generators, honest 1995 UI, tutorial satire	partial_browser_integration	full first-session workflow
+T-001	design/01 Tier 1	Generator economy, upgrades, buy-order play, automation and free shop satire	partial_browser_integration	full first-hour workflow and content trace
+T-002	design/01 Tier 2	Headcount allocation, Soul, factions, minigames, first elective Exit	absent_beyond_foundations	content/RFC DAG
+T-003	design/01 Tier 3	Cloud tenant market, enshittification, daemons and named minigames	absent_beyond_foundations	content/RFC DAG
+T-004	design/01 Tier 4	Region draft, physical constraints, addressed Externality	absent	world/content/RFC DAG
+T-005	design/01 Tier 5	Research allocation, model collapse, p(doom), conspiracy	absent	content/RFC DAG
+T-006	design/01 Tier 6	Policies, founder mortality, billionaire and Soul choices	absent	content/RFC DAG
+T-007	design/01 Tier 7	Optimization fold, TAS, transcendence choice	absent	content/RFC DAG
+T-008	design/01 Tier 8	Planet-depletion endgame	absent	world/endgame RFC DAG
+T-009	design/01 endings	Ascension, Long Decay, Both Graphs and variants	absent	owner release scope plus verified content contracts
+T-010	design/01 prestige	Tier-flavored Exits inside a completable multi-run arc	bounded_t0_t1_only	Prestige closeout plus later-tier content
+E-001	design/02 §1	Company/Founder/World/Guild persistence scopes	mechanical_fragments	per-scope persistence and consumer audit
+E-002	design/02 §2.1	Declarative geometric generator costs and bulk affordability	proven_bounded	preserve golden/cold witnesses
+E-003	design/02 §2.2	Ordered, visible, hardcapped production stack	partial	all named multiplier producers and formula UI
+E-004	design/02 §2.3	Active buff windows, bank formula, validated clicks and daemons	partial	active-play plus missing daemons/UI trace
+E-005	design/02 §2.4	90%/24h authoritative offline gains	proven_bounded	browser return presentation pending
+E-006	design/02 §2c	Mandatory sinks, cap-minted currencies and achievement proof modes	partial	catalog/economy/achievement audit
+E-007	design/02 §3	Reputation/Network/Route Knowledge/Clout/Wealth/Age founder layer	partial	per-currency producer/consumer workflow
+E-008	design/02 §3.3	Offer, Wind Down and IPO Exit paths	partial	T0-T1 scripted offer only; broader content absent
+E-009	design/02 §4	Planet, milestones, guild tithe and Influence	mechanical_fragments	world/player consumers absent
+E-010	design/02 §5	Production-immune Fiscal Quarter lifecycle	backend_fragment	player ritual/UI proof
+E-011	design/02 §6	Single-mint Clout and social/achievement reach economy	mechanical_fragment	mint ownership and player consumers
+E-012	design/02 §7	Visible Trust/Soul plus addressed Externality; facts gate routes	mechanical_fragment	full moral content and decorrelation gate
+E-013	design/02 §8	Soul drains, zero-output recovery and endgame consequence	backend_fragment	player recovery surface and endgame
+E-014	design/02 §9	Compute Credits and optional return bonus	mechanical_fragment	HUD/auto-spend/return workflow
+E-015	design/02 §10	Non-punitive daily/weekly clocks and exchange shop	absent	future accepted RFCs
+E-016	design/02 §11	Pacing targets through first ending	proven_t0_t1_only	R-001 plus later-tier scenarios
+E-017	design/02 §11b	Every purchasable retains a measured role	bounded_t0_t1_evidence	R-001 current-head validity
+E-018	design/02 §12	Cross-runtime big-number parity and canonical strings	proven_integration	preserve golden vectors
+M-001	design/03 contract	Every minigame has clock, economy hook, fallback, stagger and persistence	claimed_framework	per-minigame implementation matrix
+M-002	design/03 §1	Server Garden	absent	future RFC
+M-003	design/03 §2	Advisory Board	absent	future RFC
+M-004	design/03 §3	Ship-It Spellbook	absent	future RFC
+M-005	design/03 §4	The Market	absent	future RFC
+M-006	design/03 §5	Board-game suite, flat ranked layer and bot matchmaking	absent	research/license checks and future RFC
+M-007	design/03 §5b	Regional/social parlor taxonomy	absent	milestone/content decisions and RFC graph
+M-008	design/03 missing §5c	Zero-reward cozy minigames as sole Soul recovery source	contradictory_missing_section	RP-017 author reconciliation
+M-009	design/03 §6	Incident Response	absent	future RFC
+M-010	design/03 §7	Terminal Typer	absent	future RFC
+M-011	design/03 §8	Demo Disc Arcade	static_parody_fragment	RP-017 plus actual minigame/content RFC
+M-012	design/03 §9	Bakery Inc.	absent	future RFC
+M-013	design/03 §10	The Lane	arithmetic_only	combat parent/child RFCs
+M-014	design/03 §10b	Pet battles	arithmetic_only	combat parent/child RFCs
+M-015	design/03 §12a	Non-punitive five-minute daily scaffold	absent	future RFC
+M-016	design/03 §12b	Frozen scaling inputs, fairness and offline quality	backend_fragment	platform body reconciliation and player consumers
+M-017	archived Pitch RFC/The Pitch design seam	The Pitch full player minigame	backend_proven_surface_absent	Minigame API Surface MA-C9
+P-001	design/04 §1	Founder companion acquisition, offline care, behavior, visible state and bond	backend_policy_fragment	acquisition and UI workflow RFC
+P-002	design/04 §2	Hardcapped pet battles with care reliability and honest bots	arithmetic_only	combat RFC sequence
+P-003	design/04 §3	Cosmetic house and visits	absent	future RFC
+P-004	design/04 §4	Free lootbox/cosmetic parody with disclosures	copy_static_fragment	catalog/acquisition/UI/legal proof
+P-005	design/04 §5	Cosmetic breeding and elder retirement	absent	future RFC
+P-006	design/04 §6	CSS creature rendering and reduced motion	absent	client/rendering RFC
+S-001	design/05 §1	Global milestones, contribution, failure and NPC scaling	structural_fragments	World/Events accepted RFCs and telemetry research
+S-002	design/05 §2	Live feed, counters, ghosts and NPC activity	transport_fragment	Feed/World UI and real content
+S-003	design/05 §3	Player guild lifecycle, exchange, ritual and NPC network	backend_fragment	Commons Onboarding acceptance and UI
+S-004	design/05 §4	Non-destructive PvP and honest fallback per mode	absent_beyond_platform	combat/minigame/social RFCs
+S-005	design/05 §5	Commons front door, governance, cohorts and visible formula	backend_foundation	Commons Onboarding accepted RFC and UI
+S-006	design/05 §6	Derived verified boards, categories, routes and public evidence	mechanical_fragment	Leaderboards/API/UI closeout
+S-007	design/05 §8	Optional Discord embedding	deferred_post_launch	no current action
+S-008	design/05 UGC ownership	Creator ownership, attribution and lineage	claimed_policy	legal copy plus schema enforcement before UGC
+A-001	design/06 stack	Go/Postgres/Svelte/Centrifuge/chi/browser architecture	partial_integration	Astro/Caddy/deploy and runtime topology gaps
+A-002	design/06 idle math	Lazy closed-form server authority and prediction parity	proven_bounded	threshold mechanics audit
+A-003	design/06 anti-cheat	Rate/idempotency/invariant/minigame/board/save protections	mechanical_fragments	end-to-end abuse/refusal audit
+A-004	design/06 minigame AI	Honest bots, matchmaker and per-game engines	absent	future research/RFCs
+A-005	design/06 anonymous play	Server identity plus local-only outage path	body_drift_and_missing_fallback	RP-007 author reconciliation/account successor
+RD-000	design/07 Phase 0	Private T0-T1 click-to-first-Exit build with harness	partially_proven_public_repo	full browser first-hour and R-001
+RD-001	design/07 Phase 1	Public tiers 0-2 plus early minigames/pet/presence	absent_beyond_t1	D-001/D-007
+RD-002	design/07 Phase 2	Tier 3, factions/guilds, milestones and Events L1-2	absent_beyond_foundations	dependency DAG
+RD-003	design/07 Phase 3	Tier 4, world, Lane, boards and Events L3	absent_beyond_foundations	dependency DAG
+RD-004	design/07 Phase 4	Tier 5, commons, combat, challenges, founder arc	absent_beyond_foundations	dependency DAG
+RD-005	design/07 Phase 5	Tiers 6-8 and all endings	absent	D-001/D-007 and dependency DAG
+F-001	design/08 §1	Player-facing text follows voice, sourcing and target rules	mechanical_pipeline	full shipped-copy citation/editorial audit
+F-002	design/08 §2	Era presentation from T0 through T8	T0_fragment	later era UI/content
+F-003	design/08 §3	Launch-scale researched content banks	absent_at_scale	ignored research and copy production program
+F-004	design/08 §4	Conspiracy narrative arc	absent	Events/content RFCs
+F-005	design/08 §5	Media canonization response events	absent	Events/content RFCs
+F-006	design/08 §6	Speedrun chrome, categories, route discovery and retrospective	mechanical_fragment	Game UI/Leaderboards/API/content consumers
+F-007	design/08 §7	Shipped honesty appendix	absent	release-floor/content RFC
+EV-001	design/09 §1	Declarative event DSL and on-action dispatch	absent	Events L1 acceptance/body review
+EV-002	design/09 §2	Personal events and founder story cycles	absent	Events/content RFCs
+EV-003	design/09 §3	Visible forecastable pressure meters	meter_kernel_fragment	Events/content/UI
+EV-004	design/09 §4	Situations, Major Orders and personal objective floor	absent	World/Events RFCs
+EV-005	design/09 §5	Posted-price event-scrip shop with conversion	absent	Events/economy RFC
+EV-006	design/09 §6	Seasonal arcs and evergreen fold-in	absent	ops/content program
+EV-007	design/09 §7	GM dashboard, public war log and watchdogs	absent	ops/Events RFC
+PS-001	design/10 §1	Four rule-distinct factions and interdependence	backend_fragment	player selection and later faction verbs
+PS-002	design/10 §2	Active/idle/check-in/banker builds and separate boards	mechanical_fragments	full loops and board consumers
+PS-003	design/10 §3	Reversible ideology toggles with two viable games	absent	future RFC
+PS-004	design/10 §3b	Irreversible tier doctrines with viable ending routes	catalog_kernel_fragment	later transitions/content/harness
+PS-005	design/10 §4	Rule-modified challenge runs	absent	future RFC
+PS-006	design/10 §5	Canon/Ethical routes and persistent moral ledger	mechanical_fragments	full content/endings
+PS-007	design/10 §6	Shareable AGI policy scripts	absent	future RFC
+UX-001	design/11 §1	Honest contract screen and bounded return sequence	partial	RP-018 plus full browser workflow
+UX-002	design/11 §1b	Server-anonymous default, local fallback, Vision Slide and run-1 presence budget	partial	RP-007 plus full first-session proof
+UX-003	design/11 §2	Diegetic progressive teaching and first-10-minute outcomes	partial_static	full first-session usability research
+UX-004	design/11 §3	Five-part run-end narrative and scripted first failure	server_content_plus_partial_UI	full browser AC1
+UX-005	design/11 §3	Advisor Mode accessibility path	absent	owner release floor/future RFC
+UX-006	design/11 §4	Multi-run first ending and completion pyramid	absent_beyond_first_exit	D-007/content DAG
+UX-007	design/11 §5	Launch-scale copy surface targets	absent_at_scale	copy production/research program
+UX-008	design/11 §6	Data-driven copy, lint, citations and localization shape	mechanical_pipeline	full real-content/editorial coverage
+UX-009	design/11 §7	Depth-2, responsive, accessible core UI	partial	task-level accessibility/reflow/mobile audit
+CP-001	design/12 §1	Versioned additive content packs and staging	absent_as_described	design/RFC reconciliation and future contract
+CP-002	design/12 §2	Data-first extensibility with code only for new verbs	partial_catalog_families	pack/extension ownership audit
+CP-003	design/12 §3	One minigame socket	body_drift	RP-019/Minigame Platform reconciliation
+CP-004	design/12 §4	Closed event-effects vocabulary	absent	Events RFC
+CP-005	design/12 §5	Research-to-epoch current-events pipeline	body_contradiction_absent_runtime	RP-020 plus deployment/content RFCs
+CP-006	design/12 §7	Pack-set save compatibility and graceful retirement	absent_as_pack_system	future accepted RFC
+W-001	design/13 §2	State-derived personal diorama with return fast-forward	absent	world/rendering RFC
+W-002	design/13 §3	Adoption/regulation spatial campaign	absent	v1.0 future RFC
+W-003	design/13 §4	Shared world, regional Planet ratchet and public artifact	world_snapshot_fragment	World RFC plus map/content/UI
+W-004	design/13 §5	Region draft and Thermal Law	absent	World/content RFC
+W-005	design/13 §6	Pixi/WebGPU interactive view plus baked overview	absent	rendering research/RFC

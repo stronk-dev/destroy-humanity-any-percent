@@ -1,12 +1,15 @@
 # CURRENT STATE — read this after `AGENTS.md`
 
-**Last updated: 2026-08-20 at commit `190a4fa`.** This file is a mutable resume brief. The
-evidence-backed repository program lives in `planning/platform-alignment/`; RFC lifecycle truth
-still lives in `rfc/README.md` after reconciliation.
+**Last updated: 2026-08-20 at repository commit `cb162a3`, product coordinate `190a4fa`.** This
+file is a mutable resume brief. The evidence-backed repository program lives in
+`planning/platform-alignment/`; RFC lifecycle truth still lives in `rfc/README.md` after
+reconciliation.
 
 ## 1. What genuinely exists
 
-- `HEAD` and `origin/main` are identical (`0` ahead, `0` behind). The GitHub repository is public.
+- `HEAD` and `origin/main` were identical at `cb162a3` (`0` ahead, `0` behind) when this wave
+  began. The GitHub repository is public; `cb162a3` is planning-only and the last product change
+  remains `190a4fa`.
 - The numeric core, economy/save/production engines, offline accrual, route/gate foundation,
   Commons/guild server foundations, account/session backend, realtime transport, replay/epoch
   machinery, and T0–T1 content have substantial executable evidence.
@@ -24,17 +27,20 @@ still lives in `rfc/README.md` after reconciliation.
 
 The repository is **not a coherent 1.0 release platform** at this commit.
 
-- Current-head hosted CI has no successful workflow conclusion. Push run `32009994004` and the
-  next three nightly runs were cancelled because the harness remained inside
+- Current-product hosted CI has no successful workflow conclusion. Runs `32009994004`,
+  `32096019304`, `32212696707`, `32328790752`, and the planning-only checkpoint run
+  `32404232364` were cancelled because the harness remained inside
   `balance-harness -mode=check` when its 30-minute budget expired. Server, client, schema, browser,
-  and composed-browser jobs passed individually.
+  and composed-browser jobs passed individually. The same harness check completes locally at 12
+  workers in roughly 18 minutes, but exposes no phase/row timings; R-001's instrumentation wave
+  remains open.
 - No production Dockerfile, Caddyfile, full-stack Compose contract, deploy/rollback flow,
   backup/restore rehearsal, or clean-host self-host proof exists.
 - Account import/deletion/security primitives exist on the backend, but the UI has no recovery,
   export, import, deletion, or email-attach workflow. The one-time recovery code is silently stored
   in localStorage.
-- Fully offline-anonymous play is promised by the Account RFC/design but absent from the production
-  client, which bootstraps a server account.
+- The ruled local-only outage fallback is absent from the production client. Silent anonymous
+  server bootstrap is the adopted default; older Account/tech text still needs body reconciliation.
 - Accessibility proof covers axe, reduced motion, focus preservation, and Begin-via-Enter; it does
   not cover the full keyboard/screen-reader/zoom/touch release workflow.
 - Tiers 2–8, most minigames, combat engines, player-facing social/world/events systems, and the
@@ -82,7 +88,6 @@ Only the first two lanes are presently `READY`. The exact queue and blocked work
 - Next public milestone label and exact release floor.
 - Public/private repository disposition.
 - Sunset/self-host covenant and deliverable.
-- Fully offline-anonymous play versus automatic anonymous server accounts.
 - Recovery credential UX, data-export scope, and deletion disclosure.
 - Supported deployment/backup topology.
 - T0–T1 vertical slice versus nine-tier/ending content scope for the chosen milestone.

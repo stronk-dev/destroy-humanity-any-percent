@@ -53,7 +53,10 @@ larger product capability to proven integration.
 
 ## Current audit coordinate
 
-- Local and remote commit: `190a4fa04958cc2a3b4e689804cd55682f6c6420`.
+- Local and remote repository commit at this wave's start:
+  `cb162a3bd8b00ea7378293c5d7179995688151ec`.
+- Last product-behavior commit: `190a4fa04958cc2a3b4e689804cd55682f6c6420`; the intervening
+  `cb162a3` changes planning/research only, so product capability verdicts stay pinned to `190a4fa`.
 - Audit date: 2026-08-20.
 - Product changes during audit: none.
 - Existing dirty work preserved: `AGENTS.md` only.
@@ -63,12 +66,19 @@ larger product capability to proven integration.
 
 ## Artifact index
 
+- `plan.md` — exhaustive eight-wave audit plan and exit gates.
+- `inventory.md` / `inventory.tsv` — counted repository populations and reconciliation state.
+- `design-capability-ledger.tsv` — stable design-outcome IDs and preliminary trace state.
+- `active-acceptance-ledger.tsv` — all 111 true active-RFC acceptance rows awaiting evidence verdicts.
+- `acceptance-audit.md` — criterion-level classification, downgrades, and execution batches.
+- `test-evidence-audit.md` — cold command outcomes, populations, oracle gaps, and invalid runs.
 - `capability-map.md` — product outcomes and their actual stage.
 - `backlog.md` — tracked interim defect/question ledger while the internal design ledger is ignored.
 - `release-platform-audit.md` — release/readiness evidence at the audit coordinate.
 - `reality-audit.md` — producer/consumer/content/proof traces.
 - `active-rfc-audit.md` — lifecycle truth for every active RFC.
 - `research-queue.md` — predeclared empirical and verification work.
+- `r001-harness-diagnosis.md` — first-wave hosted/local harness evidence and instrument gap.
 - `decision-queue.md` — choices implementation agents may not infer.
 - `rfc-graph.md` — dependency and resource ownership.
 - `execution-queue.md` — the only presently authorized queue.

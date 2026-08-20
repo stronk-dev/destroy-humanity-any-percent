@@ -1,14 +1,68 @@
-# Platform alignment audit plan
+# Platform alignment program plan
 
-| Work | Status |
-|---|---|
-| Read repository authority, process, architecture, vision, voice, current state, backlog, research matrix, coverage map, active RFC headers, and live plans. | complete |
-| Pin the audit to local/remote `190a4fa` and preserve the existing `AGENTS.md` dirty change. | complete |
-| Re-derive current GitHub visibility and hosted CI status. | complete |
-| Trace the principal product/release capabilities from intent through executable witness. | complete |
-| Create the program, capability map, reality audit, RFC audit, queues, dependency graph, and append-only log. | complete |
-| Register every new defect/question in the internal and tracked interim backlogs. | complete |
-| Obtain designated cross-party review of this planning/research range before it is used to accept or archive implementation work. | pending |
+The 2026-08-20 checkpoint at `cb162a3` created the control-plane structure and a principal-risk
+scan. It did **not** complete the exhaustive repository audit. Product evidence remains pinned to
+`190a4fa`; planning-only commits after that coordinate do not upgrade any capability verdict.
 
-Acceptance for this audit is consistency and falsifiability, not a green product gate. Every
-“proven” row names an executable witness; every larger missing claim is classified and routed.
+## Evidence contract
+
+Every audit claim must record:
+
+- the exact intent/design source and bounded user outcome;
+- the backend producer or primitive, if any;
+- the frontend or external consumer, if any;
+- the real catalog/content/data row and default workflow that exercise it;
+- an executable witness run cold with a fixture capable of falsifying the claim;
+- failure/refusal/offline/accessibility behavior where relevant;
+- the owning backlog, research, decision, RFC, or closeout route.
+
+Reading code can establish mechanical presence. It cannot establish working integration. A test
+name or prior verdict is a lead until the test is inspected for discrimination and executed at the
+current product coordinate.
+
+## Waves and gates
+
+| Wave | State | Population and work | Required artifact | Exit gate |
+|---|---|---|---|---|
+| 0. Authority and coordinate | complete | Process law, design authority, active RFC index, current state, remote coordinate, dirty-work preservation. | `PROGRAM.md`, initial `log.md` | Authority chain and immutable product coordinate named. |
+| 1. Exhaustive inventory | in progress | Every design capability/promise; every active and archived RFC acceptance claim; every live/archive planning record; canonical docs; server/client packages; balance/copy catalogs; migrations; HTTP/WebSocket routes; UI surfaces; build/deploy/CI entry points. | `inventory.md` plus machine-readable row ledger | Bidirectional counts reconcile: no unindexed RFC, package, surface, route, catalog family, migration, or claimed capability. |
+| 2. Capability trace | pending | For each bounded outcome, trace intent -> producer -> consumer -> real data/workflow -> executable witness. Split aggregate families until each row has one independently falsifiable outcome. | Expanded `reality-audit.md` and `capability-map.md` | Every row is proven, mechanical, claimed-only, absent, or blocked with exact evidence and route. No “principal capabilities” sampling remains. |
+| 3. Acceptance and test audit | first classification pass complete; execution pending | Re-walk every active RFC AC and a risk-ranked sample of archived ACs. Inspect fixtures/oracles; run cold gates; add mutation/negative probes only under accepted RFC authority. Record caches, exclusions, guard exhaustion, truncation, and hosted/local differences. | `acceptance-audit.md`, `test-evidence-audit.md` | Every current completion claim has a discriminating executable witness or is downgraded/filed. Current-head gates reach valid objectives or fail loudly. |
+| 4. Runtime/release audit | pending | Browser workflows, account rights/recovery, offline/outage behavior, accessibility, provider-off operation, packaging/licensing, secrets, deploy/rollback, backup/restore, observability, data retention, self-host/sunset. | Expanded `release-platform-audit.md`; bounded research dossiers | Each release claim has an integrated workflow proof or a named research/decision/RFC blocker. |
+| 5. Research and owner rulings | pending | Convert genuine unknowns to predeclared studies; collect choices evidence cannot make; reconcile ruled design bodies before RFC work. | `research-queue.md`, `decision-queue.md`, adopted design updates | No RFC is being asked to answer an empirical or owner question. |
+| 6. Dependency and resource graph | pending | Bind producers, consumers, shared schemas, content, migrations, versioning, refusal paths, accessibility, and acceptance witnesses. | `rfc-graph.md` | DAG has no consumer without producer/content/proof ownership and no duplicate shared-resource owner. |
+| 7. Executable program | pending | Rank only accepted, dependency-satisfied work; define transactional closeout and review ranges. | `execution-queue.md`, reconciled backlog/registers | READY means implementable now; every other row names the exact blocker. |
+| 8. Contradiction and independent review | pending | Cross-check all ledgers/indexes/docs against the product coordinate; obtain designated cross-party adversarial review over the complete research/planning range. | Append-only verdict in `log.md` | No uncovered commit range, contradictory normative text, stale current-status claim, or unowned finding. |
+
+## Wave 1 inventory slices
+
+| Slice | State | Reconciliation target |
+|---|---|---|
+| Design promises and release obligations | initial section-level pass | 121 bounded rows now have stable IDs; Wave 2 must split coarse rows until each has one independently falsifiable workflow. |
+| RFC lifecycle and acceptance | row population complete; evidence pass pending | Every active/archive file appears exactly once; 111 active-directory acceptance rows are now indexed; status, plan, docs, review ranges, and implementation must agree. |
+| Server producers and persistence | pending | Packages, commands, routes, actors, migrations, events, registries, workers, and external boundaries. |
+| Client consumers and workflows | pending | Routes/screens, runtime intents, storage, accessibility states, error/offline flows, generated/manual API use. |
+| Declarative content and copy | pending | Every catalog family, epoch identity, copy key, locale, generator, validator, and real workflow consumer. |
+| Executable evidence | pending | Make targets, Go/TS/browser/Postgres tests, fixtures, oracles, mutation probes, CI jobs, time/resource budgets. |
+| Release and operations | initial risk scan only | Build/package artifacts, dependency rights, provider requirements, secrets, deploy, backup/restore, rollback, monitoring, export/deletion, preservation. |
+| Shared-memory integrity | initial defect found | Tracked/ignored/private artifacts, generation provenance, freshness stamps, and fresh-clone availability. |
+
+## Required negative controls
+
+- At least one backend-only primitive must remain non-proven without a user consumer.
+- At least one component-only UI must remain non-proven without a real producer/content path.
+- At least one intentionally absent capability must be detected as absent.
+- Each audited gate must demonstrate that a relevant mutation or failing fixture makes it fail.
+- Any timeout, guard exhaustion, exclusion, truncation, or skipped population invalidates the
+  measurement rather than shrinking its denominator.
+- Offline/provider-off/recovery claims must be tested with the dependency actually unavailable.
+- Accessibility claims must include task-level keyboard/assistive workflows, not axe alone.
+
+## Commit and review protocol
+
+- Commit inventory/research waves separately from product implementation.
+- Do not change product behavior during truth establishment.
+- Append findings and command outcomes to `log.md` in the same research commit.
+- Do not flip implementation-plan completion boxes from audit inference.
+- No planning/research wave authorizes archival. The full range requires the designated
+  cross-party review required by `AGENTS.md`.
