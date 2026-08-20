@@ -12,8 +12,8 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 | Export/delete own data | Account/privacy intent | Delete endpoint exists; no export endpoint | No settings controls | Settings displays one paragraph | Delete backend test only | **Mechanical deletion; export absent** |
 | Continue locally during an outage and import later | `design/11 §1b`; older Account D4/`design/06` need reconciliation | Import endpoint exists | No local save runtime | Production startup creates the ruled anonymous server account | No fallback witness | **Claimed fallback only** |
 | Receive offline progress | Design law 7 | Production accrual and session-boundary application | Snapshot/UI offline status | T0–T1 economy | Composed 48 h offline catch-up regression | **Proven integration** |
-| Play The Pitch | `design/03`, minigame RFCs | Pitch tenant + minigame session/resolve service | API only | Minted Pitch content | Real-socket create -> command -> terminal resolve | **Backend proven; surface absent** |
-| Recover Soul through a cozy activity | Soul RFCs | Recovery session coordinator | Scheduler/API only | Three minted activities | Authenticated composed lifecycle | **Backend proven; surface absent** |
+| Play The Pitch | `design/03`, minigame RFCs | Pitch tenant + minigame session/resolve service | Generated DTO metadata only; no HTTP client/component/table | Minted Pitch content | Cold real-Postgres/HTTP create→reconnect→commands→terminal/retries; resolver-sever negative | **Backend proven; surface absent/spec-blocked** |
+| Recover Soul through a cozy activity | Soul RFCs | Recovery session coordinator | Framework scheduler only; no constructor/surface/toy | Three minted activities | Cold authenticated composed lifecycle including rotation/heartbeats/resolve/watchdog; no UI | **Backend proven; surface absent/spec-blocked** |
 | Care for a pet | `design/04` | Pet state, decay, actions, replay | Catalog/TS helpers only | Minted policy, no acquired pet workflow | Unit/cross-runtime fixtures | **Mechanical fragment** |
 | Fight a pet/lane battle | Combat RFC family | Exact arithmetic and RNG | None | Fixture arithmetic only | Golden/unit tests | **Mechanical fragment** |
 | Join and experience an MMO community | `design/05` | Commons/guild/presence/clearing | No game UI surface | Structural server data only | Server/Postgres integration tests | **Mechanical fragment** |
@@ -56,6 +56,9 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 13. Game UI's RFC and canonical doc still require the full browser first-hour even though C25/C28
     rejected that obligation; the accepted v3 controls are absent, AC4's three outcomes can all be
     removed without a red test, and AC5's throttle/drop-frame profile is unexecuted.
+14. Minigame API's body still claims no persistence, a catalog command budget, `session_expired`,
+    and stale dependencies despite opposite rulings; AC4 omits Recovery enumeration and AC5 has no
+    exact surface contract, HTTP client, components, or player workflow.
 
 ## Genuine proofs worth preserving
 

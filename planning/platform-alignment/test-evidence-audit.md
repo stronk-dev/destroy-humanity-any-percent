@@ -59,8 +59,7 @@ rerun above reached its objective. RP-025 owns selector safety.
 
 - Demonstrate a discriminating failure or relevant mutation for every remaining row promoted
   beyond mechanical presence.
-- Reconcile the remaining 11 mechanical/cold-witness rows, beginning with Minigame API/Surface
-  and Combat Shared.
+- Reconcile the remaining seven mechanical/cold-witness rows in Combat Shared.
 - Construct exact current-history review unions before any active RFC archive; the lifecycle
   audits name the missing Account and Transport ranges rather than treating old green prose as a
   verdict.
@@ -152,3 +151,21 @@ The current composed browser proof still ends at bootstrap-to-Desk. Snapshot v3,
 eligibility and controls, and Run End→next-run continuation are absent. AC1 is also body-blocked:
 its full first-hour obligation contradicts GU-C25–C28's later narrowed browser ruling. RP-008,
 RP-026, RP-066, RP-067, and `game-ui-lifecycle-audit.md` carry the exact repair and review route.
+
+## Batch G — Minigame API & Surface lifecycle discrimination
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| Cold `./account ./minigame ./minigameapi ./gameserver -count=1` | all four packages green | Current unit/schema/coordinator populations execute without cache reuse. |
+| Sequential Account and gameserver Compose/Postgres populations | both exit 0 | Mounted authenticated API, complete Pitch/Recovery lifecycle, limiter and repository paths are green against real Postgres. |
+| Severed production tenant-content resolver | gameserver integration exit 2 at Pitch create with `500 internal_invariant/minigame_api` | AC1's composed producer/resolver/API seam is discriminating. |
+| Bypassed Recovery progress limiter | Account integration exit 2 because seventh heartbeat returned 200 | Rejection is discriminating; the fixture is stateless and does not establish AC3's no-mutation clause. |
+| Allowed `founder_id` in Recovery finish schema | complete cold Account unit population exit 0 | AC4's enumeration omits Recovery finish/progress families; four minigame operations are not “every” registered RFC operation. |
+| Appended a byte to `minigame_revision` rejection | complete cold Account unit population exit 0 | AC2's alleged byte-match table uses substring containment; runtime is mechanically correct but the literal oracle is blind. |
+| Restored `make api-check` and `make typecheck` | generation unchanged; zero diagnostics | Every temporary mutation was removed before this planning checkpoint. |
+
+An attempted parallel launch of both Compose package targets is excluded: they share one declared
+Postgres service and collided during destructive test setup, yielding deadlocks/duplicate seed
+keys. Sequential cold reruns immediately passed. AC1 is promoted; AC2/AC3 remain partial, AC4 is a
+failed enumeration oracle, and AC5 remains absent/body-blocked. RP-068–RP-071 and
+`minigame-api-surface-lifecycle-audit.md` carry the repair and review route.

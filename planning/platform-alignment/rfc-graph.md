@@ -30,6 +30,8 @@ API AC4/C18 body reconciliation
     -> all-v1 registry/query/header/raw-client authority
     -> generated browser client + public formula/readers/evidence/privacy proof
 Game UI C7/C25-C28 body reconciliation -> snapshot-v3 controls and narrowed AC1 proof -> R-004
+Minigame API C1/C3/C5/C8/C9 body reconciliation + generated browser client
+    -> exact tenant/recovery surface contracts -> Pitch + Soul Recovery visible workflows
 accessibility release contract -----------------------> R-005
 ```
 

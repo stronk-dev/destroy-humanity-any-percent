@@ -311,3 +311,29 @@
 - Wrote `game-ui-lifecycle-audit.md`. Made no persistent product, RFC/design, canonical product-doc,
   or player-copy edit; flipped no plan boxes; did not archive, push, or touch the user's
   `AGENTS.md` edit.
+
+## 2026-08-20 — Minigame API & Surface lifecycle reconciliation
+
+- Read the complete MA RFC and fifteen rulings, plan/log, generated registry/OpenAPI/DTO authority,
+  handlers, composed Minigame/Pitch and Soul Recovery paths, client tree, canonical docs,
+  implementation history, successor verdicts, and current acceptance ledgers.
+- Ran cold Account/Minigame/Minigame-API/gameserver units, Account and gameserver Postgres suites,
+  API generation drift, and TypeScript/Svelte checks green. One parallel Compose attempt collided
+  on the shared test database and is explicitly invalid/excluded; sequential reruns passed.
+- Executed and restored four probes. Severing tenant content failed the composed lifecycle exactly;
+  bypassing Recovery rate limiting failed its 429 check; accepting Recovery finish `founder_id`
+  left Account unit tests green; and appending bytes to a supposedly byte-exact rejection also
+  left them green.
+- Promoted AC1 as composed backend proof. Kept AC2 partial because error-pair authority and exact
+  bytes are not closed, kept AC3 partial because Recovery rejection has no authoritative-state
+  comparison, contradicted AC4's every-endpoint enumeration, and kept AC5 unmet/body-blocked.
+- Confirmed the absent consumer chain: no generated HTTP client, exact C9 component contract,
+  tenant-surface registry, Pitch table mount, Recovery surface/toy/scheduler constructor, or
+  browser/a11y human workflow. Canonical backend docs accurately preserve this limitation.
+- Filed RP-068–RP-071 for error/byte authority, Recovery nonmutation, privacy enumeration, stale
+  ruling body/status/plan, absent surface/client, and unassembled current review provenance.
+- Recomputed the 111-row distribution: 39 draft, seven mechanical/cold-pending, 17
+  proven/qualified, 35 partial/unmet, nine contradicted/failed, and four withdrawn.
+- Wrote `minigame-api-surface-lifecycle-audit.md`. Made no persistent product, RFC/design,
+  canonical product-doc, generated artifact, player-copy, or checkbox edit; did not archive, push,
+  or touch the user's `AGENTS.md` edit.

@@ -25,13 +25,13 @@ second AC1–AC4 set and reported 115 rows.
 | State family | Rows | Meaning now |
 |---|---:|---|
 | Draft / not a completion claim | 39 | Eight draft RFCs have no implementation claim. |
-| Mechanically backed or cold-witness green, proof/range replay pending | 11 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
-| Proven or historically proven with a named qualification | 16 | Reconciled lifecycle rows plus Game UI AC2/AC3, CI AC2/AC4, Transport AC1, and Account AC1/AC4's current integration/security proofs; qualifications remain explicit. |
-| Unmet or partial | 33 | API/Combat/consumer gaps plus Account/Transport/Game UI and literal-witness gaps. |
-| Contradicted or failed at current HEAD | 8 | Exact current contradictions plus Game UI AC4, API AC4, failed Leaderboards AC5, Minigame Platform AC2, and CI AC5. |
+| Mechanically backed or cold-witness green, proof/range replay pending | 7 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
+| Proven or historically proven with a named qualification | 17 | Reconciled lifecycle rows plus Minigame API AC1, Game UI AC2/AC3, CI AC2/AC4, Transport AC1, and Account AC1/AC4's current integration/security proofs; qualifications remain explicit. |
+| Unmet or partial | 35 | API/Combat/consumer gaps plus Account/Transport/Game UI/Minigame API and literal-witness gaps. |
+| Contradicted or failed at current HEAD | 9 | Exact current contradictions plus Minigame API AC4, Game UI AC4, API AC4, failed Leaderboards AC5, Minigame Platform AC2, and CI AC5. |
 | Withdrawn / refuted | 4 | Dispatch Integrity is not implementable work. |
 
-The 11 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
+The seven mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
 specific witness/range route rather than treating them as a green block.
 
 ## Confirmed criterion-level downgrades
@@ -131,8 +131,16 @@ The criterion and lifecycle pass is recorded in `websocket-transport-lifecycle-a
 
 ### Minigame API & Surface
 
-- AC5 remains explicitly open. The backend lifecycle, schema, limiter, and privacy rows have
-  mechanical evidence; no production `minigame_session` surface mounts The Pitch as required.
+- AC1 is proven as a composed backend integration. The cold Postgres/HTTP lifecycle covers Pitch
+  and Recovery, and severing the production tenant-content resolver fails at the exact create seam.
+- AC2 is partial: generation/registration and drift checks are real, while the error schema allows
+  invalid category/detail pairs and an extra-byte rejection mutation survives its substring oracle.
+- AC3 is partial: command-flood nonmutation is byte-compared; Recovery flooding proves only a 429
+  against a stateless adapter, not unchanged authoritative progress/session state.
+- AC4's enumeration oracle fails: it covers four minigame operations, while a Recovery finish
+  identity-field mutation leaves all Account unit tests green.
+- AC5 remains unmet and body-blocked. No generated HTTP client, exact C9 contract, surface
+  components, Pitch child mount, Recovery scheduler wiring, or browser/a11y workflow exists.
 
 ### Combat Shared Data
 
