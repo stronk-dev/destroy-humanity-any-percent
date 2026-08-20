@@ -870,3 +870,20 @@
   only files; platform alignment contains 68 tracked plus one ignored file. No design intent,
   product, test, canonical product doc, RFC/archive body, balance/copy/content, migration,
   deployment, implementation-plan checkbox, push, or `AGENTS.md` edit occurred.
+
+## 2026-08-21 — Deploy-current gameplay-content row predeclaration
+
+- Froze the next audit population before row extraction: exactly the 19 files already classified
+  `epoch_artifact` in `balance-file-inventory.tsv`. Schemas, platform configs, fixtures, Copy, and
+  design prose retain their separate audited populations.
+- `gameplay-content-row-plan.md` defines a generic JSON-unit grammar rather than hand-picking known
+  IDs: every non-root object, primitive array edge, empty collection, and root policy scalar is
+  retained. Empty Soul sources, empty route sets, zero-weight lists, and similar missing content
+  therefore cannot disappear by construction.
+- Predeclared 14 output lanes, nine closed verdicts, exact producer/consumer/current-trigger/witness
+  requirements, seeded denominator/vacuity controls, the promoted/dormant/zero/manual review set,
+  and planning-only authority. No content verdict or denominator count has been measured yet.
+- After this predeclaration lands, planning contains 223 tracked plus 25 ignored/local-only files;
+  platform alignment contains 69 tracked plus one ignored file. No product, test, design/RFC body,
+  balance/copy/content, canonical product doc, migration, deployment, implementation-plan checkbox,
+  push, or `AGENTS.md` edit occurred.
