@@ -124,6 +124,8 @@ larger product capability to proven integration.
   actor/scheduler claims, with trigger, message boundary, shutdown, witness, and exact route.
 - `event-family-inventory.tsv` — exact closed event/protocol families and their producer,
   persistence, consumer, and capability limit.
+- `archived-rfc-risk-plan.md` — predeclared 46-row archive population, risk score, mandatory deep
+  strata, fired criteria, exit conditions, and authority limit.
 - `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
   counts, authority, current state, and exact closeout gap.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,

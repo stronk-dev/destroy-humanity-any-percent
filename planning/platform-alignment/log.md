@@ -699,3 +699,19 @@
 - Reconciled the self-changing planning denominator in the same checkpoint: after the two new
   ledgers land, there are 209 tracked planning files, 25 ignored/local-only records, and 55 tracked
   plus one ignored file inside the 56-file platform-alignment thread.
+
+## 2026-08-21 — Archived-RFC replay predeclaration
+
+- Added `archived-rfc-risk-plan.md` before classifying the archive population. It freezes the exact
+  46-RFC/46-planning population, three historical slug mappings, additive risk weights, mandatory
+  minimum-15 and ten-domain deep strata, three low-risk controls, deep trace, fired criteria, exit
+  conditions, and authority limit.
+- An exploratory read had already exposed a possible Fiscal Quarters plan/body contradiction. The
+  plan explicitly withholds finding/sample credit until Fiscal is replayed under the same declared
+  rules; the observation was not used to weaken thresholds or choose a convenient population.
+- The score is triage, not a retroactive verdict: missing current-style `Reviewed range:` tokens
+  raise provenance risk but do not automatically invalidate archives completed before the current
+  protocol. Negative fixture-only/backend-only/superseded results remain valid research outputs.
+- No archive/RFC body, product, test, canonical product doc, plan checkbox, or authored copy was
+  changed. After this checkpoint there are 210 tracked planning files and 56 tracked plus one
+  ignored file in the platform-alignment thread; no push or `AGENTS.md` touch occurred.

@@ -10,9 +10,9 @@ not yet the completed per-capability trace.
 | Top-level design documents | 14 | `design/00` through `design/13` | Read in full; 121 preliminary stable outcome rows recorded, with Wave-2 splitting still required. |
 | Tracked design research files | 1 | Only `provenance-extracts.md` survives the ignore policy | 33 distinct research dossiers are referenced from tracked design but absent from a fresh clone. |
 | Active-directory RFC Markdown files | 24 | Process + index + template + 21 product/process RFC files | All 111 true acceptance rows are extracted and evidence-reconciled; five remain intentionally open for exact review/provenance. |
-| Archived RFCs | 46 | Files in `rfc/archive/` | File/index bidirectionality previously checked; risk-ranked acceptance re-execution pending. |
+| Archived RFCs | 46 | Files in `rfc/archive/` | Risk method predeclared; all-row structural pass plus mandatory minimum-15/ten-domain deep replay pending. |
 | Live top-level planning directories | 23 | Includes RFC plans and non-RFC maintenance/review threads | Every thread is mapped; four explicitly complete/historical threads remain live pending authorized closeout. |
-| Tracked planning files after this checkpoint | 209 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the runtime/event inventories land. |
+| Tracked planning files after this checkpoint | 210 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the archived-RFC replay plan lands. |
 | Ignored local planning files | 25 | Seventeen coverage-map files, seven diagnostics, and one historical Codex fix record | Local-only records are not shared memory and receive no fresh-clone evidence credit. |
 | Canonical docs | 38 | Includes three generated artifacts | Every file is classified against lifecycle/release evidence; only the numeric foundation is currently unqualified. |
 | Go source files | 340 | All `server/**/*.go` | 189 production plus 151 test files; both exact ledgers reconcile. |
@@ -183,7 +183,7 @@ not yet the completed per-capability trace.
   `production-review-round2`, and `run-genesis-archival-remediation`. The last already requests a
   future move to `planning/archive/`. The audit records that lifecycle defect but does not infer an
   archival move or rewrite review provenance.
-- At the current runtime/event checkpoint, planning contains 209 tracked
+- At the current archive-plan checkpoint, planning contains 210 tracked
   files. Another 25 files are ignored and local-only: 17 coverage-map records, six archived T0-T1
   diagnostics, one platform-alignment diagnostic, and one historical Codex fix record. Their local
   presence cannot support a fresh-clone/shared-memory claim.

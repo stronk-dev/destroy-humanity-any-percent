@@ -39,13 +39,13 @@ current product coordinate.
 | Slice | State | Reconciliation target |
 |---|---|---|
 | Design promises and release obligations | initial section-level pass | 121 bounded rows now have stable IDs; Wave 2 must split coarse rows until each has one independently falsifiable workflow. |
-| RFC lifecycle and acceptance | active population/evidence pass complete; archived risk sample pending | Every active/archive file appears exactly once; 111 active-directory acceptance rows are evidence-reconciled; archived risk sampling still must test status, plan, docs, review ranges, and implementation. |
+| RFC lifecycle and acceptance | active population/evidence pass complete; archived replay predeclared | Every active/archive file appears exactly once; 111 active-directory rows are reconciled; the 46-row archive score, minimum-15/ten-domain sample, fired criteria, and authority limit are frozen before classification. |
 | Server producers and persistence | package/operation/migration/actor/event/worker boundary complete; semantic rollback pending | All 45 package directories, five commands, 24 operations, 74 migrations, 11 explicit deployed goroutine instances, six jobs, 48 player event kinds, and protocol families have bounded rows; isolated semantic rollback remains. |
 | Client consumers and workflows | source/workflow boundary complete; test-artifact oracle depth pending | All 82 sources and 25 default/failure/accessibility workflows now trace entry/build reachability, HTTP/WebSocket use, storage, surfaces, real data, witnesses, and exact gaps. |
 | Declarative content and copy | file/family/shipped-source boundary complete; row-level gameplay-content trace pending | All 91 balance and ten copy files plus 23 live/platform families now have exact boundaries, loaders, consumers, and gaps; 208 copy keys still need a discriminating live-call/orphan map. |
 | Executable evidence | all file/target/job populations structurally complete; semantic oracle depth pending | All 72 phony targets, seven CI jobs, 56 local client artifacts, 151 server test files, 592 top-level Test/Fuzz functions, and 40 skip sites are classified; row-level fixtures/oracles/negative controls still require exhaustive mapping. |
 | Release and operations | bounded coordinate pass complete; implementation/rehearsal blocked on owner and RFC gates | Build/package artifacts, dependency rights, provider requirements, secrets, deploy, backup/restore, rollback, monitoring, export/deletion, preservation. |
-| Planning/docs/shared memory | file/thread boundary complete; author closeout repairs pending | All 23 planning threads, 38 docs, 209 tracked planning files, and 25 ignored planning files are classified; owner/ruling-author body fixes and archival moves remain routed, not inferred. |
+| Planning/docs/shared memory | file/thread boundary complete; author closeout repairs pending | All 23 planning threads, 38 docs, 210 tracked planning files, and 25 ignored planning files are classified; owner/ruling-author body fixes and archival moves remain routed, not inferred. |
 
 ## Required negative controls
 
