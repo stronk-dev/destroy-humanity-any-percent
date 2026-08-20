@@ -800,3 +800,20 @@
   platform alignment contains 62 tracked plus one ignored file. No copy source/report/generator,
   balance artifact, product code, test, canonical product doc, RFC/archive body, migration,
   deployment, plan checkbox, push, or `AGENTS.md` edit occurred.
+
+## 2026-08-21 — Capability atomization predeclaration
+
+- Added `capability-atomization-plan.md` before producing child rows. It freezes all 121 unique
+  parent IDs across the 14 binding design documents, an actor/producer/consumer/data/workflow/
+  witness/failure split grammar, exact 14-column output, closed verdicts, coverage checks, and the
+  manual second-pass population.
+- Mandatory controls prevent the known umbrella rows for multiplayer fallbacks, Tier 2, Founder
+  currencies, minigame contracts, guilds, anti-cheat, Run End, and content-family extensibility from
+  receiving one convenient verdict. Atomic foundation contracts may remain single only when their
+  witness and failure boundary are actually shared.
+- Parent preliminary states are explicitly non-authoritative leads. No child may inherit “proven”
+  from a broad row, file/module, RFC archive, generated type, fixture, or aggregate green check.
+- This checkpoint changes no design intent, product, test, canonical product doc, RFC/archive body,
+  balance/copy/content, migration, deployment, plan checkbox, or authored player prose. After it
+  lands there are 217 tracked planning files and 63 tracked plus one ignored file in platform
+  alignment; no push or `AGENTS.md` touch occurred.

@@ -136,6 +136,8 @@ larger product capability to proven integration.
   208-row producer/consumer classification with seeded denominator/live/backend failures.
 - `copy-key-consumption-audit.md` — orphan cross-tab, bounded dynamic-site review, missing current
   reason keys, fired criteria, and successor routing.
+- `capability-atomization-plan.md` — frozen 121-parent split rules, child trace schema, mandatory
+  anti-aggregation controls, verdict vocabulary, and reconciliation gates for Wave 2.
 - `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
   counts, authority, current state, and exact closeout gap.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,
