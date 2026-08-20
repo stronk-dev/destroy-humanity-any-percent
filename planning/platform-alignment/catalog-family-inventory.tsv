@@ -1,0 +1,24 @@
+artifact_name	production_path	boundary	schema_or_validator	loader	server_consumer	client_consumer	capability_state_or_gap
+commons	balance/commons/phase0.json	epoch_8_artifact	balance/commons.schema.json	epochseed/replaycatalog	commons projection/production	none	composed backend; no full player Commons surface
+economy	balance/catalogs/phase0.json	epoch_8_artifact	balance/economy.schema.json	epochseed/replaycatalog	production/gameui	Game UI Desk	bounded player integration through T0-T1
+prestige	balance/prestige/phase0.json	epoch_8_artifact	balance/prestige.schema.json	epochseed/replaycatalog	production/gameui	Offer Sheet/Run End	partial player integration; Advisor/continuation absent
+routes	balance/routes/phase0.json	epoch_8_artifact	balance/routes.schema.json	epochseed/replaycatalog	production/routeprojection/gameui	gate facts only	partial; no Route Registry/history workflow
+factions	balance/factions/phase0.json	epoch_8_artifact	balance/factions.schema.json	epochseed/replaycatalog	production/faction	none	backend only; no player faction workflow
+guilds	balance/guilds/phase0.json	epoch_8_artifact	balance/guilds.schema.json	epochseed/replaycatalog	guild/production	none	backend only; no player guild workflow
+categories	balance/categories/phase0.json	epoch_8_artifact	balance/leaderboards.schema.json	epochseed/replaycatalog	leaderboard/gameui	category title mapping only	boards/epoch browse absent
+achievements	balance/achievements/first-content.json	epoch_8_artifact	balance/achievements.schema.json	epochseed/replaycatalog	production	none	backend only; client modules outside entry graph
+doctrines	balance/doctrines/first-content.json	epoch_8_artifact	balance/doctrines.schema.json	epochseed/replaycatalog	production	none	backend only; client module outside entry graph
+fiscal	balance/fiscal/first-content.json	epoch_8_artifact	balance/fiscal.schema.json	epochseed/replaycatalog	production	none	backend only; client module outside entry graph
+meters	balance/meters/first-content.json	epoch_8_artifact	balance/meters.schema.json	epochseed/replaycatalog	production	none	backend only; client modules outside entry graph
+minigame_api	balance/minigame-api/first-content.json	epoch_8_artifact	server/minigameapi validator	epochseed/replaycatalog	production/minigame API	none	backend only; no production HTTP client/surface
+minigames	balance/minigames/first-content.json	epoch_8_artifact	server/minigame validator	epochseed/replaycatalog	minigame/production	none	Pitch registered backend only
+pets	balance/pets/first-content.json	epoch_8_artifact	server/pet validator	epochseed/replaycatalog	production/save	none	backend only; client modules outside entry graph
+pitch	balance/pitch.json	epoch_8_artifact	server/pitch validator	epochseed/replaycatalog	pitch tenant/production	none	backend tenant only; no player surface
+soul	balance/soul/first-content.json	epoch_8_artifact	server/soul validator	epochseed/replaycatalog	production/Soul API	none	backend only; no recovery surface
+opportunities	balance/opportunities/t0-t1.json	epoch_8_artifact	balance/opportunities.schema.json	epochseed/replaycatalog	production	none	backend only; active-play client module outside entry graph
+relevance	balance/relevance/t0-t1.json	epoch_8_artifact	balance/relevance.schema.json	epochseed/replaycatalog	harness/production	none	policy composed; hosted measurement invalid and no player surface
+curriculum	balance/curriculum/t0-t1.json	epoch_8_artifact	server/curriculum validator	epochseed/replaycatalog	production/gameui	Run End copy branches only	partial; next-run curriculum workflow absent
+epoch_seed	balance/epochs/phase0.json	production_platform	strict epochseed parser	epochseed.Load	gameserver/leaderboard/harness	indirect snapshot identity	composed but repository-disk dependent
+transport	balance/transport/phase0.json	production_platform	balance/transport.schema.json	transport.LoadPolicy	gameserver/WebSocket	game-ui/runtime indirect	partial; localhost origin and cursor recovery gaps
+client_shell	balance/client-shell/phase0.json	production_platform	balance/client-shell.schema.json	static JSON import	client only	GameUIShell/Worker	bounded prediction; no durable offline/intent queue
+api_policy	balance/api/phase0.json	test_only_platform	publicapi policy parser	policy tests only	none	none	uncomposed; accepted public API policy has no production runtime

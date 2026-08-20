@@ -561,3 +561,32 @@
   boundary population green.
 - Updated the program/inventory/plan and both backlog ledgers. No product/client/test/RFC/design/
   canonical-product-doc/copy/catalog edit was made; no push or `AGENTS.md` touch occurred.
+
+## 2026-08-21 — Balance, epoch, and copy-source boundary inventory
+
+- Added `balance-file-inventory.tsv` and reconciled its filenames exactly against all 91 balance
+  files: 19 deploy-current epoch artifacts, four platform configs, 15 schemas, and 53 test,
+  candidate, historical, positive/negative, or measurement fixtures. No fixture was promoted to
+  live content by harness use.
+- Added `catalog-family-inventory.tsv` for the 23 live/platform families. The epoch seed owns 19
+  artifacts; Client Shell, Transport, and epoch identity are additional composed platform inputs;
+  API policy remains test-only/uncomposed. Each family names its schema/validator, loader, server
+  consumer, client consumer, and exact capability gap.
+- `make epoch-hash` reproduced epoch 8 hash
+  `sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`,
+  matching `deployment/content-manifest.v1.json` and the current epoch registry.
+- Added `copy-file-inventory.tsv` and reconciled it exactly against all ten copy files. Read the
+  generator rather than trusting names: it merges every `copy/catalog/*.json`, so the three
+  `*-candidate.json` sources ship alongside `phase0.json`. The resulting 208 keys split 13 + 143 +
+  1 + 51 across those files. Filed RP-096 for the absent machine-enforced held/shipped boundary.
+- Ran `make copy-check` green. It verified the 208-key artifact, copy hash
+  `sha256:9e816294f84e6c50e5050f59d33f49a1f09d42780abdb7f5b40bb5a5442c0e13`,
+  Game UI presentation artifacts, and deployment manifest, while reporting 161 orphan warnings.
+- Proved the orphan output is non-discriminating without mutating product code: it calls direct
+  production keys in `GameUIApp.svelte` and `RunEndSurface.svelte` orphaned because the reference
+  model covers selected epoch fields and two explicit Go sites, not client `t()` calls. Filed
+  RP-097; the report cannot authorize cleanup or consumption claims until live/orphan negatives
+  discriminate.
+- Updated the program/inventory/plan/review draft and both backlog ledgers. No balance/copy/
+  generated artifact/product/test/RFC/design/canonical-product-doc edit was made; no push or
+  `AGENTS.md` touch occurred.

@@ -11,8 +11,8 @@ database	sql_migrations	74	structural_complete	contiguous 00001-00074; one Up/Do
 client	source_files	82	bounded_complete	41 in shipped entry/type graph and 41 outside; 38 emitted authored runtime/style sources plus 3 type-erased contracts
 client	test_artifacts	56	pending	43 TS; 13 PNG
 ui	registered_game_surfaces	5	bounded_complete	25 workflows traced; 3 proven bounded, 9 partial, 1 mechanical, 8 backend-only, 2 absent, 2 failed
-balance	files	91	pending	live/candidate/test boundary pending
-copy	files	10	pending	shipped/candidate consumption pending
+balance	files	91	bounded_complete	19 epoch artifacts; 4 platform configs; 15 schemas; 53 fixtures; all exact rows classified
+copy	files	10	bounded_complete	4 source catalogs all ship into 208-key artifact; 6 policy/reference/report files; orphan report is non-discriminating
 verification	phony_make_targets	72	pending	oracle and negative-control audit pending
 ci	jobs	7	defect	current-head aggregate has no completed verdict
 runtime	exposed_operations	24	bounded_complete	3 gameserver-hand + 11 account-hand + 10 private-registry; only 4 have production browser consumers

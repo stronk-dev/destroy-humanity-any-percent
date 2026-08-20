@@ -20,8 +20,8 @@ not yet the completed per-capability trace.
 | Client source files | 82 | `client/src/**` | All rows mapped: 41 in the shipped entry/type graph and 41 outside; the build emits 38 authored runtime/style sources plus three type-erased contracts. |
 | Client test artifacts | 56 | `client/test/**` | 43 TS and 13 screenshots; discrimination audit pending. |
 | Game UI registered surfaces | 5 | Desk, Offer Sheet, Run End, Settings, Vision Slide | Real bootstrap reaches Desk; full workflow remains unproved. |
-| Balance files | 91 | Live catalogs, schemas, candidates, and test fixtures | Catalog-family producer/consumer/epoch map pending. |
-| Copy files | 10 | Live/candidate catalogs, provenance, references, generated reports | Shipped/candidate boundary and real surface consumption pending. |
+| Balance files | 91 | 19 epoch artifacts, four platform configs, 15 schemas, 53 fixtures | Every filename has a boundary/consumer row; live families have loader and server/client traces. |
+| Copy files | 10 | Four source catalogs plus six policy/reference/report files | All four catalogs ship despite three `candidate` names; the 161-key orphan report includes live UI calls. |
 | Make targets declared phony | 72 | Development, generation, verification, harness, browser, integration | Valid-objective and negative-control audit pending. |
 | GitHub CI jobs | 7 | Six push/PR jobs plus scheduled numeric maintenance | Current-head workflow never completes because the harness lane is cancelled at 30 minutes. |
 | Exposed HTTP/WebSocket operations | 24 | Three gameserver-hand, 11 account-hand, ten private-registry operations | Only bootstrap, snapshot, intents, and WebSocket have production browser consumers; see `route-operation-inventory.tsv`. |
@@ -83,12 +83,35 @@ not yet the completed per-capability trace.
 
 ### Declarative data
 
+- `balance-file-inventory.tsv` exactly equals the 91-file tree: 19 deploy-current epoch artifacts,
+  four platform configs, 15 schemas, and 53 positive/negative/historical/candidate/measurement
+  fixtures. A fixture is never counted as deploy-current content merely because a harness consumes
+  it.
+- `catalog-family-inventory.tsv` traces 23 live/platform families. The current epoch has 19
+  artifacts and resolves to epoch 8 hash
+  `sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`;
+  `make epoch-hash` reproduces the deployment manifest value. Client Shell, Transport, and the
+  epoch seed are additional composed platform inputs. API policy is test-only and uncomposed.
 - Live data exists for economy, routes, categories, epochs, Commons, factions, guilds, prestige,
   transport, achievements, doctrines, fiscal, meters, minigames, opportunities, pets, Pitch,
   Soul, curriculum, API policy, and client shell.
 - No `balance/combat/` catalog exists even though Combat Shared Data AC1 requires a complete
   fixture and the Minigame Platform RFC top/body claim a combat duel tenant.
 - `balance/minigames/first-content.json` contains only The Pitch.
+
+### Copy boundary
+
+- `copy-file-inventory.tsv` exactly equals the ten-file copy tree. The generator reads every JSON
+  file in `copy/catalog/`, so `achievements-candidate.json`, `game-ui-candidate.json`, and
+  `permits-candidate.json` are shipped sources, not held candidates. Their 13 + 143 + 1 rows join
+  the 51-row `phase0.json` catalog in the 208-key client/server artifact.
+- `make copy-check` is cold-green for drift, copy hash
+  `sha256:9e816294f84e6c50e5050f59d33f49a1f09d42780abdb7f5b40bb5a5442c0e13`,
+  and deployment-manifest identity. It emits 161 orphan warnings.
+- The orphan output is not a consumption oracle: it marks direct production calls such as
+  `chrome.run_title.company_fallback`, `desk.buy_one`, and `screen.run_end.founder_note` orphaned.
+  The pipeline enumerates selected artifact references and two explicit Go sites, but not client
+  `t()` call sites. True unused copy and live UI copy are therefore mixed in one green report.
 
 ## Confirmed reconciliation defect: Minigame Platform
 
@@ -129,7 +152,8 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
   preserve the five exact review/provenance rows as open rather than unaudited.
 - Extend the completed 24-operation route/consumer map into actor, worker, event, and background-job
   ownership; retain the 17 backend-only and one unimplemented route verdicts.
-- Map all catalog rows and copy keys through loaders, epoch identity, and real workflows.
+- Extend the completed file/family map into row-level gameplay-content and all 208 copy-key call
+  sites; replace the non-discriminating orphan report before using it for cleanup/release claims.
 - Inventory all 56 client test artifacts and every remaining test/gate population, oracle, negative
   control, timeout, exclusion, and artifact.
 - Reconcile all 23 live planning directories and 46 archived RFC ranges bidirectionally.

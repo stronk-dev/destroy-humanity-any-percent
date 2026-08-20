@@ -247,3 +247,18 @@ the false package/command counts. `server-package-inventory.tsv`,
 `client-source-inventory.tsv` exactly matches every `client/src/**` filename.
 `client-workflow-inventory.tsv` records 25 user/failure/accessibility paths and preserves 22 as
 non-proven. RP-094 prevents the outside 41 modules from being promoted by directory or test breadth.
+
+## Batch M — epoch/catalog/copy boundary discrimination
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| Exact balance filename reconciliation | 91 rows: 19 epoch artifacts, four platform configs, 15 schemas, 53 fixtures | Candidates/historical/testdata are separated from deploy-current content. |
+| Epoch artifact registry trace | 19 named artifacts at current epoch 8 | Each family has a loader/server/client row; artifact presence alone does not prove a player consumer. |
+| `make epoch-hash` | `sha256:baa890...128f6`, matching epoch registry and deployment manifest | Current catalog identity is reproducible. It remains repository-disk dependent. |
+| Copy source-directory trace | all four JSON catalogs are merged; 208 total keys = 13 + 143 + 1 + 51 | RP-096: three candidate-labelled files are shipped inputs, not held candidates. |
+| `make copy-check` | exit 0; 208 keys; copy hash `sha256:9e8162...c0e13`; deployment manifest green; 161 orphan warnings | Drift/identity proof is valid; consumption/orphan proof is not. |
+| Orphan report versus production call sites | direct calls for `chrome.run_title.company_fallback`, `desk.buy_one`, and `screen.run_end.founder_note` appear in the orphan list | RP-097: the detector cannot distinguish live client calls from true unused copy. |
+
+`balance-file-inventory.tsv`, `catalog-family-inventory.tsv`, and `copy-file-inventory.tsv` retain
+the exact populations and prevent green schema/copy checks from being stretched into player-
+workflow or source-lifecycle claims.

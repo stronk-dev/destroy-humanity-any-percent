@@ -9,9 +9,10 @@ that Wave 1 still lacked complete package/route/migration/client/catalog/executa
 inventories and Wave 2 still retained coarse design rows. This document remains useful as the
 review contract for the completed active-RFC/release/decision/dependency/queue milestone, but a
 designated verdict over it must not be represented as approval of the unfinished exhaustive audit.
-The server package/operation/migration boundary and the client source/workflow boundary have since
-been reconciled; catalog/copy, executable/test-artifact, planning/docs, actor/worker/event depth,
-archived-RFC risk sampling, and Wave-2 capability splitting remain before finalization.
+The server package/operation/migration boundary, client source/workflow boundary, and balance/copy
+file/family boundary have since been reconciled. Row-level gameplay/copy consumption,
+executable/test-artifact, planning/docs, actor/worker/event depth, archived-RFC risk sampling, and
+Wave-2 capability splitting remain before finalization.
 
 ## Range to review
 

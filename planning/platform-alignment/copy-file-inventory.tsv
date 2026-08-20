@@ -1,0 +1,11 @@
+file	role	entry_count	shipped_merge	production_consumer_or_output	current_evidence_or_gap
+copy/catalog/achievements-candidate.json	copy_source_catalog	13	yes	generated client/server catalog	candidate-labelled source is shipped; all 13 keys artifact-referenced
+copy/catalog/game-ui-candidate.json	copy_source_catalog	143	yes	generated client catalog/Game UI	candidate-labelled source is shipped; orphan report marks 122, including live calls
+copy/catalog/permits-candidate.json	copy_source_catalog	1	yes	generated client/server catalog	candidate-labelled source is shipped; key is artifact-referenced despite absent player Permit workflow
+copy/catalog/phase0.json	copy_source_catalog	51	yes	generated client/server catalog	39 orphan warnings; source boundary is mixed with candidates
+copy/code-reference-sites.v1.json	explicit_go_reference_registry	2	generation_input	server/copykeys generated constants	does not enumerate client `t()` call sites
+copy/config.v1.json	pipeline_policy	0	generation_input	copy validator	limits/statistic detector only; no source-status boundary
+copy/generated/code-references.v1.json	generated_reference_report	2	generated_output	copy pipeline	Go-only explicit sites; not complete shipped consumption
+copy/generated/orphans.v1.json	generated_orphan_report	161	generated_output	warning/report only	contains visibly live Game UI keys; cannot distinguish true unused copy
+copy/provenance.v1.json	claim_registry	3	generation_input	copy safety validator	provenance authority; no player consumer
+copy/references.v1.json	artifact_reference_registry	7	generation_input	copy pipeline	covers selected epoch JSON fields, not client runtime call sites
