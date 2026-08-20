@@ -94,4 +94,7 @@ larger product capability to proven integration.
 - `dependency-resource-ledger.tsv` — machine-readable producer/consumer/transformation/refusal/
   witness ownership for the dependency graph.
 - `execution-queue.md` — the only presently authorized queue.
+- `ready-batch-manifest.tsv` — exact accepted-scope READY batches, negative controls, cold gates,
+  forbidden scope, conflicts, and review protocol.
+- `review-handoff.md` — designated cross-party adversarial review range and required verdict.
 - `log.md` — append-only program history.

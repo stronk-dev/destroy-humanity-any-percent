@@ -481,3 +481,21 @@
 - Marked Wave 6 complete at the coordinate. No RFC header/body was edited because the dependency
   defects require their ruling authors; no product/test/schema/design/canonical-doc/copy edit was
   made, and no push or `AGENTS.md` touch occurred.
+
+## 2026-08-20 — Executable program and cross-party review handoff
+
+- Reconciled the dependency ledger with the executable queue and the three genuinely accepted-
+  scope READY batches. Detected RP-091: the old handoff still called authority-blocked R-001 and
+  already-complete lifecycle reconciliation the smallest next batch.
+- Added `ready-batch-manifest.tsv` for Q-001 Account witnesses, Q-002 Minigame API backend witnesses,
+  and higher-risk Q-003 Transport production recovery. Each row records authority, exact scope,
+  forbidden scope, failing controls, cold population, closeout/review protocol, and file/test
+  conflict order. The batches are serial, not a parallel pile.
+- Added `review-handoff.md` for the mandatory Claude-side designated adversarial pass. The core
+  substantive range is `190a4fa..1e47752`; the reviewer must include these handoff commits and cite
+  literal final hashes at review time. The checklist re-derives counts, promoted/contradicted rows,
+  negative controls, release defects, all 91 RP routes, all 30 shared resources, owner-decision
+  neutrality, READY authority, and the absence of product/RFC/archive changes.
+- Marked Wave 7 complete and Wave 8 prepared/pending external designated review. No self-review was
+  relabeled designated, no implementation or archival was authorized, no product/test/schema/RFC/
+  design/canonical-doc/copy edit was made, and no push or `AGENTS.md` touch occurred.

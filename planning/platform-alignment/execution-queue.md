@@ -47,5 +47,8 @@ Only `READY` rows are presently authorized. “Blocked” is a routing fact, not
 
 ## Handoff
 
-The smallest safe next batch is R-001 plus lifecycle reconciliation. It changes neither game
-mechanics nor balance bytes and exposes the exact work that can legitimately follow.
+The next program action is the designated Claude review in `review-handoff.md` over the complete
+Codex-authored audit range. It is review, not implementation. After a green verdict, execute the
+three accepted-scope batches in `ready-batch-manifest.tsv` serially: Q-001 Account witnesses, Q-002
+Minigame API backend witnesses, then higher-risk Q-003 Transport production recovery. R-001 remains
+blocked on accepted instrumentation authority; active lifecycle reconciliation is complete.
