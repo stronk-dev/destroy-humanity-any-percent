@@ -130,6 +130,8 @@ larger product capability to proven integration.
   selection reason, exact score, canonical docs/RP routing, and replay verdict.
 - `archived-rfc-risk-audit.md` — the 20-row, ten-domain deep replay, commands, invalid run, fired
   criteria, and authority-bounded consequences.
+- `copy-key-consumption-plan.md` — predeclared 208-key population, seven reference lanes, mounted-
+  workflow verdicts, controls, failure rules, and authority limit.
 - `planning-thread-inventory.tsv` — all 23 top-level planning directories with tracked/local file
   counts, authority, current state, and exact closeout gap.
 - `docs-file-inventory.tsv` — all 38 canonical/generated docs with system owner, artifact kind,

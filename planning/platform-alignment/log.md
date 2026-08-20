@@ -754,3 +754,19 @@
   platform-alignment thread contains 58 tracked plus one ignored file. No product, test, Make,
   workflow, RFC/archive body, canonical product doc, balance/copy/catalog, migration, deployment,
   plan-checkbox, push, or `AGENTS.md` edit occurred.
+
+## 2026-08-21 — Copy-key consumption predeclaration
+
+- Added `copy-key-consumption-plan.md` before generating any row classification. It freezes the
+  exact 208-key generated-catalog population; mounted literal/dynamic, registered current-artifact,
+  explicit Go producer, other strict catalog, test/tool, and no-reference lanes; six closed
+  verdicts; exact row fields; manual ambiguous-row review; failure rules; and authority limit.
+- Predeclared controls force the known live keys that the current orphan report mislabels to resolve
+  as mounted, keep deploy-current achievement/Pitch/Soul copy backend-only without a player surface,
+  keep FixtureHost-only calls non-production, reject an injected absent fake key, and disclose
+  unbounded dynamic selection as ambiguous. Catalog/type presence cannot earn player-capability
+  credit.
+- This checkpoint changes no copy source/generated report/tool, product code, tests, canonical
+  product docs, RFC/archive body, balance/catalog, migration, deployment, plan checkbox, or authored
+  prose. After it lands there are 213 tracked planning files and 59 tracked plus one ignored file
+  in platform alignment; no push or `AGENTS.md` touch occurred.
