@@ -18,6 +18,7 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 | Fight a pet/lane battle | Combat RFC family | Exact arithmetic and RNG | None | Fixture arithmetic only | Golden/unit tests | **Mechanical fragment** |
 | Join and experience an MMO community | `design/05` | Commons/guild/presence/clearing | No game UI surface | Structural server data only | Server/Postgres integration tests | **Mechanical fragment** |
 | View or submit leaderboards | `design/05 §6` | Run logs, replay verdicts, board projection | Public API/UI incomplete | Live categories exist | Projection tests | **Mechanical fragment** |
+| Build against the documented API | API Foundation | Schema/operation DSL, generator, compatibility checker | 10 generated private operations; 12 hand-mounted routes; no public client/router | No public catalog/board/evidence workflow | Registered drift mutation fails; unregistered handler and raw-fetch-lint probes pass incorrectly | **Mechanical fragment; authority incomplete** |
 | Experience events/world narrative | `design/09`, `design/13` | Meters/routes can feed future evaluators | None | No Layer-1/2/3 event content | None | **Absent** |
 | Reach the designed ending | `design/01`, `design/11` | Early Exit machinery only | Early Run End component | T0–T1 only | First-company ending proof | **Absent as designed product** |
 | Trust hosted CI at HEAD | CI RFC | Six blocking Actions jobs plus scheduled numeric maintenance | Branch/release gate | Current `main` | Runs 32009994004, 32096019304, 32212696707, 32328790752, 32404232364 | **Contradicted: harness cancellation** |
@@ -49,6 +50,9 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 11. CI's body/plan still describe a four-job, under-five-minute baseline awaiting its first hosted
     run; current topology has six blocking jobs, repeated hosted cancellations, and cache/nightly
     behavior that contradicts canonical claims.
+12. API A5/C1 claim one operation authority, but only 10 of 21 live v1 routes are registered; the
+    generated document has zero public routes and the accepted C9 client-only rule is neither
+    implemented nor enforced.
 
 ## Genuine proofs worth preserving
 

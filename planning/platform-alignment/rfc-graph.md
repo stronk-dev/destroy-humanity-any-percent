@@ -26,6 +26,9 @@ account default/fallback body reconciliation + D-005/D-008/D-009
     -> account rights + recovery RFC -> R-003
 Transport D4/T4 client recovery + Account token rotation
     -> durable Game UI sessions and drain recovery
+API AC4/C18 body reconciliation
+    -> all-v1 registry/query/header/raw-client authority
+    -> generated browser client + public formula/readers/evidence/privacy proof
 Game UI body reconciliation -> AC1 implementation -> R-004
 accessibility release contract -----------------------> R-005
 ```

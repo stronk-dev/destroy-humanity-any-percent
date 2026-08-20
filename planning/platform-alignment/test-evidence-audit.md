@@ -59,7 +59,7 @@ rerun above reached its objective. RP-025 owns selector safety.
 
 - Demonstrate a discriminating failure or relevant mutation for every remaining row promoted
   beyond mechanical presence.
-- Reconcile the remaining 16 mechanical/cold-witness rows, beginning with API, Game UI, Minigame
+- Reconcile the remaining 14 mechanical/cold-witness rows, beginning with Game UI, Minigame
   API/Surface, and Combat Shared.
 - Construct exact current-history review unions before any active RFC archive; the lifecycle
   audits name the missing Account and Transport ranges rather than treating old green prose as a
@@ -121,3 +121,19 @@ module-plus-build-output caching enabled, while D2/docs claim dependency-only; s
 runs the entire blocking workflow and does not tolerate numeric-maintenance failure. RP-056–RP-059
 carry body/plan, workflow, review-union, and R-001 authority defects. Full reasoning is in
 `ci-baseline-lifecycle-audit.md`.
+
+## Batch E — API authority, generation, and client-boundary discrimination
+
+| Evidence | Result | Interpretation |
+|---|---|---|
+| `make test-go GO_PACKAGES='./publicapi ./account ./gameserver' GO_TEST_FLAGS='-count=1'` | exit 0; publicapi/account/gameserver green | Current foundation, mounting, and bounded composition populations are cold-green. |
+| `make api-check`; registered optional-field mutation | baseline exit 0; mutation exit 2 with exact OpenAPI/TS diffs; restored exit 0 | Generated drift discriminates for operations already inside the registry. |
+| Removed registered nested response field | `make api-schema` exit 2, but diagnostic only `schema GameUISnapshot: invalid API schema` | Compatibility rejects removal but does not name the removed `GameUIResource.rate_per_second` required by AC2. |
+| Added field to live hand-mounted Founder response | `make api-check` exit 0 | Eleven live v1 routes are outside generation/pins; AC1 does not cover the full handler surface. |
+| Added direct `/api/v1` fetch to `game-ui/runtime.ts` | `make verify-client-boundary` exit 0 | The C9 lint scans only Game UI Svelte components and is blind to the production runtime. |
+| `make typecheck` | exit 0, zero diagnostics | Current generated types compile; this does not create or prove a generated HTTP client. |
+
+Generated OpenAPI has 10 private paths, zero public paths, and zero response-header descriptors.
+Production code never constructs the public policy/cursor runtime. AC1/AC2 are partial, AC3/AC5
+unmet, and AC4 contradicted under C9. Every temporary mutation was restored; RP-060–RP-065 and
+`api-foundation-lifecycle-audit.md` carry the exact authority/body/composition/review defects.

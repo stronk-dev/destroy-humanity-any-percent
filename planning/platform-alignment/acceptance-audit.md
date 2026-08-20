@@ -25,13 +25,13 @@ second AC1–AC4 set and reported 115 rows.
 | State family | Rows | Meaning now |
 |---|---:|---|
 | Draft / not a completion claim | 39 | Eight draft RFCs have no implementation claim. |
-| Mechanically backed or cold-witness green, proof/range replay pending | 16 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
+| Mechanically backed or cold-witness green, proof/range replay pending | 14 | Code/tests appear to exist, but the remaining rows have not completed discrimination and range review. |
 | Proven or historically proven with a named qualification | 14 | Reconciled lifecycle rows plus CI AC2/AC4, Transport AC1, and Account AC1/AC4's current integration/security proofs; qualifications remain explicit. |
-| Unmet or partial | 32 | API/Combat/consumer gaps plus Account/Transport/Game UI and literal-witness gaps. |
-| Contradicted or failed at current HEAD | 6 | Exact current contradictions plus failed Leaderboards AC5, Minigame Platform AC2, and CI AC5. |
+| Unmet or partial | 33 | API/Combat/consumer gaps plus Account/Transport/Game UI and literal-witness gaps. |
+| Contradicted or failed at current HEAD | 7 | Exact current contradictions plus API AC4, failed Leaderboards AC5, Minigame Platform AC2, and CI AC5. |
 | Withdrawn / refuted | 4 | Dispatch Integrity is not implementable work. |
 
-The 16 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
+The 14 mechanically backed/cold-witness rows are the remaining Wave-3 proof population. The ledger names their
 specific witness/range route rather than treating them as a green block.
 
 ## Confirmed criterion-level downgrades
@@ -117,9 +117,15 @@ The criterion and lifecycle pass is recorded in `websocket-transport-lifecycle-a
 
 ### API Foundation
 
-- AC3 and AC5 remain unfinished with the public DTO/readers/router/privacy integration in the live
-  plan. AC4 is partial: generated types exist, but deletion of every superseded hand-written client
-  layer has not been traced.
+- AC1 is partial: registered descriptor drift fails the generator gate, but 11 of 21 live v1 routes
+  bypass the registry and a restored Founder-response mutation leaves `api-check` green.
+- AC2 is partial: optional growth passes and removal rejects, but the failure names only the root
+  schema rather than the removed nested field; unregistered live routes have no pins.
+- AC3 and AC5 remain unfinished: there are zero production public paths, and policy/cursor runtime,
+  readers, evidence, formula bytes, privacy enumeration, and composition are absent.
+- AC4 is contradicted under C9. There is no generated HTTP client; production uses an injected raw
+  fetcher, and a direct runtime `/api/v1` fetch mutation passes the boundary lint. The normative AC
+  body also retains the pre-ruling “diff shows deletion” language.
 
 ### Minigame API & Surface
 

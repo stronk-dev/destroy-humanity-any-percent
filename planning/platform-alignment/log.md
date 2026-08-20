@@ -263,3 +263,25 @@
 - Wrote `ci-baseline-lifecycle-audit.md`. Made no persistent workflow, Make, schema, product,
   RFC/design, canonical product-doc, or player-copy edit; flipped no plan boxes; did not archive,
   push, or touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — API Foundation lifecycle reconciliation
+
+- Read the complete API RFC/plan/log, schema/registry/cursor/policy/generator code, all generated
+  artifacts, account/gameserver mounting, production Game UI callers, canonical API doc, tests,
+  implementation history, and designated review records.
+- Ran cold `./publicapi ./account ./gameserver`, `make api-check`, root `make typecheck`, and the
+  client boundary gate green. A root `pnpm type-check` invocation did not launch due to the absent
+  root manifest and is excluded from evidence.
+- Executed and restored four discrimination probes: registered optional-field drift failed with
+  exact generated diffs; nested-field removal rejected without naming the removed field; a direct
+  production-runtime API fetch passed the boundary lint; and a live hand-mounted Founder response
+  change passed `api-check`.
+- Classified AC1/AC2 partial, AC3/AC5 unmet, and AC4 contradicted under C9. Recomputed the 111-row
+  distribution to 39 draft, 14 mechanical/cold-pending, 14 proven/qualified, 33 partial/unmet,
+  seven contradicted/failed, and four withdrawn.
+- Filed RP-060–RP-065 for incomplete route authority, absent public composition/formula artifact,
+  AC2 diagnostic/pin gaps, C9 body/client/lint contradiction, missing query/header/raw-success
+  generator contracts, and stale lifecycle/review provenance.
+- Wrote `api-foundation-lifecycle-audit.md`. Made no persistent product, schema, RFC/design,
+  canonical product-doc, generated-artifact, or player-copy edit; flipped no plan boxes; did not
+  archive, push, or touch the user's `AGENTS.md` edit.
