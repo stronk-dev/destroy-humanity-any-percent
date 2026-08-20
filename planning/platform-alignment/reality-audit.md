@@ -22,7 +22,7 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 | Experience events/world narrative | `design/09`, `design/13` | Meters/routes can feed future evaluators | None | No Layer-1/2/3 event content | None | **Absent** |
 | Reach the designed ending | `design/01`, `design/11` | Early Exit machinery only | Early Run End component | T0–T1 only | First-company ending proof | **Absent as designed product** |
 | Trust hosted CI at HEAD | CI RFC | Six blocking Actions jobs plus scheduled numeric maintenance | Branch/release gate | Current `main` | Runs 32009994004, 32096019304, 32212696707, 32328790752, 32404232364 | **Contradicted: harness cancellation** |
-| Self-host/recover service | `design/06`, sunset research | Gameserver binary; migrations | No production packaging/runbook | Test Compose only | No clean-host rehearsal | **Absent** |
+| Self-host/recover service | `design/06`, sunset research, Deployment draft | Buildable disk-dependent gameserver; migrations/readiness/drain; current-key refusal | No static client, production package, deploy owner, or recovery runbook | Test Compose only; public origin remains localhost and proxy/previous-key inputs are uncomposed | Binary build + missing-secret refusal only; no clean-host/backup/restore/rollback rehearsal | **Absent; useful primitives only** |
 
 ## False or stale claims found
 
@@ -62,6 +62,11 @@ Coordinate: `190a4fa`, 2026-08-20. “Proof” means a named executable witness,
 15. Combat's ledger says chart/lint are unimplemented although the client gate and both-runtime
     chart properties exist; the RFC still lacks effect/table contracts, and its all-path native
     division ban is enforced only for client modules while Go Combat divides natively.
+16. Deployment says catalogs are embedded and origin/proxy/rotating secrets are host-injected;
+    composition reads the repository tree, pins WebSocket origin to localhost, hardcodes Account
+    proxy depth to zero, and exposes no previous-key configuration.
+17. Deployment and the RFC index still center a future “THE PUSH,” even though the public remote
+    and hosted Actions prove that external phase transition already occurred.
 
 ## Genuine proofs worth preserving
 

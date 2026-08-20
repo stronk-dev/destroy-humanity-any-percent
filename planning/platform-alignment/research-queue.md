@@ -88,7 +88,8 @@ research question; they authorize only the stated downstream action.
 
 - **Precondition:** a reconciled Deployment RFC and owner decisions D-002/D-003/D-006.
 - **Population:** clean supported host; empty database; populated database; corrupt/partial backup;
-  old supported save schema; missing secret; gameserver restart mid-write.
+  old supported save schema; missing/current/previous secrets; wrong public origin/proxy depth;
+  gameserver restart mid-write; package with repository source tree unavailable.
 - **Threshold:** documented install reaches readiness; backup restores byte/identity-equivalent
   player and epoch state; missing secrets and invalid backups fail closed; rollback preserves the
   migration invariant.

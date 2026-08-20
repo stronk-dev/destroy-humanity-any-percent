@@ -48,12 +48,26 @@ The audit was fixed to `190a4fa04958cc2a3b4e689804cd55682f6c6420`.
 10. **RP-013/RP-015:** GitHub says the repo is public, while internal research says private and the
     ignore policy removes the shared backlog/research/coverage records from fresh clones.
 11. **RP-014:** multiple tracked current-status and planning records contain superseded claims.
+12. **RP-075:** the current runtime cannot accept its declared deployment origin/proxy policy.
+    WebSocket origin is pinned to `http://localhost:5173`; Account trusted-proxy depth is hardcoded
+    to zero while the uncomposed public API policy declares one.
+13. **RP-076:** key-rotation primitives exist in Account, but production composition supplies only
+    one JWT key (with hardcoded ID `runtime`) and one bootstrap key. Previous/cursor keys cannot be
+    deployment-configured.
+14. **RP-077:** the deployable-binary claim overstates the artifact. The built 29 MB gameserver
+    reads repository files at runtime, embeds neither catalogs nor client assets, and serves no
+    static client.
+15. **RP-078:** Deployment AC5's public push is already true, while the draft/index still route
+    “THE PUSH” as future work; AC1–AC4 remain unmet, primitive-only, contradicted, or partial.
 
 ## Provider-off posture
 
 **[V]** No mandatory external identity, mail, analytics, ad, payment, or AI provider exists in the
 implemented runtime. This is a genuine strength, but not a self-hosting proof without production
 packaging, secrets validation, clean-host boot, backup, and restore.
+
+The deeper artifact/configuration trace and criterion verdicts are in
+`deployment-foundation-lifecycle-audit.md`.
 
 ## Conclusion
 

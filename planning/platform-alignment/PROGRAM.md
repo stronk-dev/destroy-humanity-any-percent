@@ -75,6 +75,8 @@ larger product capability to proven integration.
 - `capability-map.md` — product outcomes and their actual stage.
 - `backlog.md` — tracked interim defect/question ledger while the internal design ledger is ignored.
 - `release-platform-audit.md` — release/readiness evidence at the audit coordinate.
+- `deployment-foundation-lifecycle-audit.md` — artifact/configuration/operations trace and the
+  draft Deployment RFC's five criterion verdicts.
 - `reality-audit.md` — producer/consumer/content/proof traces.
 - `active-rfc-audit.md` — lifecycle truth for every active RFC.
 - `*-lifecycle-audit.md` — full criterion/producer/consumer/range traces for each reconciled active

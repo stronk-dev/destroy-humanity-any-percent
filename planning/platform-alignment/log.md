@@ -361,3 +361,26 @@
 - Wrote `combat-shared-lifecycle-audit.md`. Made no persistent product, RFC/design, canonical
   product-doc, balance/content, or checkbox edit; did not archive, push, or touch the user's
   `AGENTS.md` edit.
+
+## 2026-08-20 — Deployment/package/configuration release audit
+
+- Read the complete draft Deployment RFC, active index, gameserver entry point/composition,
+  transport and API policies, Make/Actions topology, all Compose/packaging files, license audit,
+  canonical operations docs, Git remote state, and current alignment records.
+- Built the real gameserver successfully as a 29 MB arm64 executable and invoked it without
+  credentials; it failed closed with `invalid gameserver composition`. A tracked-file credential
+  pattern scan found only disposable test database values and no private-key/GitHub-token pattern.
+- Confirmed that every Compose file is test-only and no Dockerfile/Caddyfile/production Compose,
+  client static server, backup/restore/rollback tool, release workflow, or third-party-license
+  deliverable exists.
+- Confirmed the binary is not the claimed embedded artifact: it reads moderation and transport
+  policy from `CLOUD_CLICKER_REPOSITORY_ROOT`, embeds/serves no client, pins WebSocket origin to
+  localhost, hardcodes Account trusted-proxy depth to zero, and cannot configure previous JWT,
+  bootstrap, or cursor keys.
+- Classified Deployment AC1 unmet, AC2 primitive-only, AC3 contradicted/incomplete, AC4 partial,
+  and AC5 proven as an external-state fact. The draft's local-only/THE-PUSH center is stale even
+  though the remaining release capability is absent.
+- Filed RP-075–RP-078, deepened RP-002/RP-003/RP-011, updated the release/capability/reality and
+  execution/research records, and wrote `deployment-foundation-lifecycle-audit.md`. Made no product,
+  RFC/design, canonical product-doc, deployment, balance/content, or secret edit; did not push or
+  touch the user's `AGENTS.md` edit.
