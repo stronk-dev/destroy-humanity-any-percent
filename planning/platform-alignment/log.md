@@ -461,3 +461,23 @@
 - Updated the dependency graph and executable queue so research follows decisions/prototypes rather
   than answering them. Made no product/test/schema/RFC/design/canonical-product-doc/player-copy edit;
   did not push or touch the user's `AGENTS.md` edit.
+
+## 2026-08-20 — Dependency and shared-resource graph
+
+- Re-read all active RFC headers against the completed lifecycle dossiers, implementation reality,
+  release decisions, research prerequisites, and actual browser/runtime composition.
+- Replaced the feature-list sketch with a release-authority, runtime/player-surface, and gameplay/
+  content DAG. Classified every active RFC by its actual graph position and exact current gate.
+- Added `dependency-resource-ledger.tsv`: 30 bounded resources with one canonical owner/gate,
+  current producer, consumers, transformation/binding, refusal owner, integrated witness owner,
+  state, and exact blocker.
+- Confirmed RP-090: multiple headers treat optimistic whole-RFC status as a dependency and omit
+  required edges. In particular, UI lacks API/Account authority; Commons lacks Account/API/Game UI;
+  World lacks D-016/R-009 and public/player consumers; Combat Bots lacks Minigame integration; and
+  Deployment omits client/license/Account/API/operations contracts.
+- Preserved single-owner boundaries: API wire/client generation, Account credential/data rights,
+  Transport delivery recovery, Game UI presentation, distinct operations metrics/gameplay
+  telemetry, and one versioned release manifest.
+- Marked Wave 6 complete at the coordinate. No RFC header/body was edited because the dependency
+  defects require their ruling authors; no product/test/schema/design/canonical-doc/copy edit was
+  made, and no push or `AGENTS.md` touch occurred.

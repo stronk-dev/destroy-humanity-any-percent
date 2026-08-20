@@ -91,5 +91,7 @@ larger product capability to proven integration.
 - `owner-ruling-packet.md` — exact release/program options, sequencing, recommendation, and
   readiness for the owner/ruling authors.
 - `rfc-graph.md` — dependency and resource ownership.
+- `dependency-resource-ledger.tsv` — machine-readable producer/consumer/transformation/refusal/
+  witness ownership for the dependency graph.
 - `execution-queue.md` — the only presently authorized queue.
 - `log.md` — append-only program history.
