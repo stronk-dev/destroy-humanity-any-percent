@@ -10,10 +10,11 @@ inventories and Wave 2 still retained coarse design rows. This document remains 
 review contract for the completed active-RFC/release/decision/dependency/queue milestone, but a
 designated verdict over it must not be represented as approval of the unfinished exhaustive audit.
 The server package/operation/migration boundary, client source/workflow boundary, and balance/copy
-file/family boundary have since been reconciled. The Make/CI/client-test-artifact boundary is also
-complete, as is the 151-file/40-skip server-test structural boundary. Row-level gameplay/copy and
-semantic oracle consumption, planning/docs, actor/worker/event depth, archived-RFC risk sampling,
-and Wave-2 capability splitting remain before finalization.
+file/family boundary have since been reconciled. The Make/CI/client-test-artifact boundary, the
+151-file/40-skip server-test structural boundary, and all 23 planning threads/38 canonical docs are
+also classified. Routed author repairs and authorized planning closeouts remain work, not facts the
+audit may infer. Row-level gameplay/copy and semantic oracle consumption, actor/worker/event depth,
+archived-RFC risk sampling, and Wave-2 capability splitting remain before finalization.
 
 ## Range to review
 

@@ -11,9 +11,10 @@ not yet the completed per-capability trace.
 | Tracked design research files | 1 | Only `provenance-extracts.md` survives the ignore policy | 33 distinct research dossiers are referenced from tracked design but absent from a fresh clone. |
 | Active-directory RFC Markdown files | 24 | Process + index + template + 21 product/process RFC files | All 111 true acceptance rows are extracted and evidence-reconciled; five remain intentionally open for exact review/provenance. |
 | Archived RFCs | 46 | Files in `rfc/archive/` | File/index bidirectionality previously checked; risk-ranked acceptance re-execution pending. |
-| Live top-level planning directories | 23 | Includes RFC plans and non-RFC maintenance/review threads | Several have no declared closeout location; exact mapping pending. |
-| Planning files total | 190 | Includes ignored/internal coverage material visible in this checkout | Fresh-clone and generation provenance differ from local visibility. |
-| Canonical docs | 38 | Includes three generated artifacts | Claims/index inventory begun; code/runtime agreement pending per system. |
+| Live top-level planning directories | 23 | Includes RFC plans and non-RFC maintenance/review threads | Every thread is mapped; four explicitly complete/historical threads remain live pending authorized closeout. |
+| Tracked planning files after this checkpoint | 207 | Includes the alignment control plane and five tracked top-level records | Fresh-clone population is exact after the two new inventories land. |
+| Ignored local planning files | 25 | Seventeen coverage-map files, seven diagnostics, and one historical Codex fix record | Local-only records are not shared memory and receive no fresh-clone evidence credit. |
+| Canonical docs | 38 | Includes three generated artifacts | Every file is classified against lifecycle/release evidence; only the numeric foundation is currently unqualified. |
 | Go source files | 340 | All `server/**/*.go` | 189 production plus 151 test files; both exact ledgers reconcile. |
 | Server package directories | 45 | Second-level directories under `server/` containing Go | All are mapped in `server-package-inventory.tsv`; Combat is uncomposed and several composed backends have no player consumer. |
 | SQL migrations | 74 | Append-only files `00001` through `00074` | Sequence contiguous; each has one Up/Down marker and the cold migration lane passes. Per-migration semantic rollback remains unisolated. |
@@ -142,6 +143,27 @@ not yet the completed per-capability trace.
   The pipeline enumerates selected artifact references and two explicit Go sites, but not client
   `t()` call sites. True unused copy and live UI copy are therefore mixed in one green report.
 
+### Planning and canonical-record boundary
+
+- `planning-thread-inventory.tsv` exactly equals the 23 top-level planning directories and records
+  tracked/local file counts, authority, current state, and closeout gap for each. Twelve are active
+  RFC planning threads, one is a blocked draft child, and the others are archive, provenance,
+  maintenance, historical measurement/review, or the alignment control plane.
+- Four threads explicitly describe their work as complete, withdrawn-history-only, or superseded
+  while remaining live: `archived-four-review`, `harness-dispatch-cardinality`,
+  `production-review-round2`, and `run-genesis-archival-remediation`. The last already requests a
+  future move to `planning/archive/`. The audit records that lifecycle defect but does not infer an
+  archival move or rewrite review provenance.
+- Once the two exact inventories in this checkpoint are tracked, planning contains 207 tracked
+  files. Another 25 files are ignored and local-only: 17 coverage-map records, six archived T0-T1
+  diagnostics, one platform-alignment diagnostic, and one historical Codex fix record. Their local
+  presence cannot support a fresh-clone/shared-memory claim.
+- `docs-file-inventory.tsv` exactly equals all 38 files under `docs/`. Three generated artifacts
+  are drift-checked, the numeric contract is a proven foundation, and every other current-state,
+  backend-only, partial, stale, or contradicted claim is tied to an existing RP repair/authority
+  route. Classifying a doc does not silently repair author-owned text or promote backend mechanics
+  to a player workflow.
+
 ## Confirmed reconciliation defect: Minigame Platform
 
 The RFC header says “normative body reconciled,” its dependency line says the Combat Shared Kernel
@@ -185,7 +207,9 @@ RFC body. The body-reconciliation rule assigns the correction to its author.
   sites; replace the non-discriminating orphan report before using it for cleanup/release claims.
 - Complete semantic row-level fixture/oracle/negative-control maps now that every executable file,
   target, job, and skip population is structurally bounded.
-- Reconcile all 23 live planning directories and 46 archived RFC ranges bidirectionally.
+- Reconcile the four routed historical/complete live planning threads transactionally after their
+  exact review/provenance dependencies are satisfied, and audit the 46 archived RFCs by the
+  declared risk-ranked method.
 - Continue migration semantic rollback discrimination beyond the now-proven contiguous/marker/cold-
   chain baseline; account ownership/export/deletion/retention and backup/restore implications now
   have release dossiers and exact blocked routes.

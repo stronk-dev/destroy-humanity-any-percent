@@ -641,3 +641,25 @@
 - Updated the program/inventory/plan/review draft and both backlog ledgers. No server/product/test/
   Make/workflow/RFC/design/canonical-product-doc edit was made; no push or `AGENTS.md` touch
   occurred.
+
+## 2026-08-21 — Planning-thread and canonical-doc inventory
+
+- Added `planning-thread-inventory.tsv` and reconciled it exactly against all 23 top-level
+  planning directories. Each row names tracked/local file counts, authority, current state, and
+  exact closeout gap. Twelve are active RFC planning threads; the remaining rows are archive,
+  provenance, maintenance, historical measurement/review, a blocked draft child, or this audit.
+- Identified four threads that explicitly describe their work as complete, withdrawn-history-only,
+  or superseded while remaining live: `archived-four-review`, `harness-dispatch-cardinality`,
+  `production-review-round2`, and `run-genesis-archival-remediation`. Filed RP-102. No directory was
+  moved because exact provenance and authorized transactional closeout must precede archival.
+- Reconciled the fresh-clone boundary. After this checkpoint there are 207 tracked planning files
+  and 25 ignored/local-only files: 17 coverage-map records, six archived T0-T1 diagnostics, one
+  platform-alignment diagnostic, and one historical Codex fix record. Deepened RP-015 rather than
+  granting evidence credit to local files.
+- Added `docs-file-inventory.tsv` and reconciled it exactly against all 38 canonical/generated docs.
+  Every file now names its owning system, artifact kind, truth class, and evidence/repair route.
+  Only the numeric foundation is currently unqualified; three generated artifacts are
+  drift-checked and all partial/stale/contradicted claims retain their existing RP routes.
+- Updated the program/inventory/plan/review draft and both backlog ledgers. No canonical product
+  doc, product code, test, Make/workflow, RFC body, balance/copy/catalog, migration, or deployment
+  file was edited; no archival move, push, or `AGENTS.md` touch occurred.

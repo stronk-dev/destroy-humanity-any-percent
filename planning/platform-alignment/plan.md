@@ -45,7 +45,7 @@ current product coordinate.
 | Declarative content and copy | file/family/shipped-source boundary complete; row-level gameplay-content trace pending | All 91 balance and ten copy files plus 23 live/platform families now have exact boundaries, loaders, consumers, and gaps; 208 copy keys still need a discriminating live-call/orphan map. |
 | Executable evidence | all file/target/job populations structurally complete; semantic oracle depth pending | All 72 phony targets, seven CI jobs, 56 local client artifacts, 151 server test files, 592 top-level Test/Fuzz functions, and 40 skip sites are classified; row-level fixtures/oracles/negative controls still require exhaustive mapping. |
 | Release and operations | bounded coordinate pass complete; implementation/rehearsal blocked on owner and RFC gates | Build/package artifacts, dependency rights, provider requirements, secrets, deploy, backup/restore, rollback, monitoring, export/deletion, preservation. |
-| Shared-memory integrity | initial defect found | Tracked/ignored/private artifacts, generation provenance, freshness stamps, and fresh-clone availability. |
+| Planning/docs/shared memory | file/thread boundary complete; author closeout repairs pending | All 23 planning threads, 38 docs, 207 tracked planning files, and 25 ignored planning files are classified; owner/ruling-author body fixes and archival moves remain routed, not inferred. |
 
 ## Required negative controls
 

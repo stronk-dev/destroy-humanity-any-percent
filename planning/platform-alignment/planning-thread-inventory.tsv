@@ -1,0 +1,24 @@
+thread	tracked_files	local_files	authority_or_role	current_state	exact_closeout_or_gap
+account-and-session-bootstrap	2	2	active RFC planning	implementation mechanically complete; review pending	lifecycle dossier retains missing composed/player witnesses and exact designated range
+api-foundation	2	2	active RFC planning	implementing	public DTO/readers/client and full route authority incomplete
+archive	107	113	archived RFC planning/history	historical plus six ignored diagnostics	46 archived RFC planning sets tracked; ignored T0-T1 diagnostic reports are non-authoritative local state
+archived-four-review	2	2	maintenance/review thread	claims review work complete	live top-level despite no remaining thread work; downstream rulings owned elsewhere
+ci-remediation-2026-08-10	2	2	maintenance implementation thread	implementation/checklist complete	live top-level; no declared archival home/current exact cross-party closeout
+combat-duel-engine	2	2	active draft child RFC planning	blocked	parent exact catalog/tables and owner rulings required
+combat-shared-data	2	2	active RFC planning	implementing	exact catalog/effect/table contracts and current designated range missing
+coverage-map	0	17	ignored historical capability tracker	stale/local-only	fresh clone loses all 17 files; replaced provisionally by tracked alignment control plane
+epoch7-content-harness	3	3	active historical content-measurement planning	implementation/evidence largely complete	plan retains post-mint boxes despite epoch 7/8 mint; lifecycle closeout unclear
+first-content-epoch	4	4	active RFC planning	epoch 6 minted; archival pending	body/provenance/epoch-specific witness defects retained in lifecycle dossier
+game-ui-screens	2	2	active RFC planning	implementing/body-blocked	C25-C28 body reconciliation, behavior witnesses, accessibility and range union open
+harness-dispatch-cardinality	1	1	withdrawn-RFC maintenance log	historical	log-only live thread; Darwin review is not current cross-party archival gate
+history-rewrites	2	2	history provenance map	permanent historical authority	must remain available while old review hashes are referenced
+leaderboards-and-epochs	2	2	active RFC planning	implementing	membership semantics, witnesses, public/player consumers, docs and review open
+minigame-api-and-surface	2	2	active RFC planning	backend implementing; surface absent	body/API/error/privacy/limiter witnesses and visible workflows open
+minigame-platform-foundation	2	2	active RFC planning	implementing/body-contradicted	combat tenant claim and offline-quality/async/review closeout open
+permits-and-t3-gate	2	2	active RFC planning	promoted; archival pending	owner/body/proof/provenance closeout defects retained in lifecycle dossier
+platform-alignment	51	52	repository audit control plane	in progress	one ignored diagnostic is non-authoritative; Waves 1-2/review remain open
+prestige-and-exits	2	2	active RFC planning	implementing	body/docs/witnesses/player controls and exact designated review open
+production-review-round2	2	2	historical review/remediation thread	historical work superseded by archived RFCs	live top-level without current authority or declared closeout home
+run-genesis-archival-remediation	2	2	archival remediation thread	explicitly complete	log says nothing open and requests later move to planning/archive; still live
+scaffolding-and-ci	2	2	active RFC planning	implementing; hosted acceptance failed	current harness timeout/body/topology/cache/review blockers
+websocket-transport-and-fanout	2	2	active RFC planning	implementing	plan stale on composition; recovery/reauth/consumer/range closeout open

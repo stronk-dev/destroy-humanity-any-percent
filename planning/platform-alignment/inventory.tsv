@@ -3,8 +3,10 @@ design	top_level_design_docs	14	in_progress	read in full; 121 preliminary outcom
 research	tracked_research_files	1	defect	33 referenced dossiers absent from fresh clone
 rfc	active_directory_markdown	24	bounded_complete	includes process index and template; 111 true acceptance rows evidence-reconciled, five exact review/provenance rows open
 rfc	archived_rfc_files	46	pending	risk-ranked acceptance replay pending
-planning	live_top_level_directories	23	in_progress	active RFC lifecycle reconciled; non-RFC closeout mapping pending
-docs	canonical_files	38	pending	claim-to-code reconciliation pending
+planning	live_top_level_directories	23	bounded_complete	every thread mapped to authority/state/closeout; four explicitly historical/complete threads remain live
+planning	tracked_files_after_checkpoint	207	bounded_complete	includes alignment control plane and five top-level records
+planning	ignored_local_files	25	defect	17 coverage-map files; 7 diagnostics; 1 historical Codex fix record; absent from fresh clone
+docs	canonical_files	38	bounded_complete	all exact rows classified from lifecycle/release evidence; only numeric foundation currently unqualified
 server	go_files	340	bounded_complete	189 production plus 151 test files; exact package and test-file ledgers reconcile
 server	package_directories	45	bounded_complete	all rows mapped to production consumers/runtime position; player gaps retained
 server	top_level_test_functions	592	structural_complete	591 Test functions plus 1 Fuzz target; semantic oracle discrimination remains per-row work

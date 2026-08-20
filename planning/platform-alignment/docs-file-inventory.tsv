@@ -1,0 +1,39 @@
+file	system_or_role	artifact_kind	current_truth_state	exact_gap_or_evidence_route
+docs/README.md	canonical docs index	index	stale_summary_risk	must reconcile every link/status against lifecycle and capability ledgers
+docs/accounts-and-sessions.md	Account/session	canonical_system_doc	contradicted_or_partial	backend atomicity real; offline/recovery/export/delete player claims bounded by RP-004-RP-007/RP-079-RP-081
+docs/achievements.md	Achievements	canonical_system_doc	bounded_backend	foundation exists; no mounted player achievement surface
+docs/active-play.md	Active play	canonical_system_doc	bounded_backend	foundation exists; no mounted player opportunity surface
+docs/api-foundation.md	API	canonical_system_doc	stale_or_partial	older authenticated slice; 11 hand routes/public readers/client absent (RP-060-RP-065)
+docs/balance-harness.md	Harness	canonical_system_doc	contradicted_release_claim	local primitives exist; current hosted complete objective invalid (RP-001/RP-021-RP-023)
+docs/ci.md	CI	canonical_system_doc	contradicted	job count/cache/nightly/topology claims disagree with workflow (RP-055-RP-058)
+docs/client-shell.md	Client Shell	canonical_system_doc	partial	prediction/reconciliation mounted; durable offline intent/save and live reduced-motion ownership absent
+docs/combat.md	Combat	canonical_system_doc	bounded_foundation	doc describes kernel; exact catalog/tables/tenant/surface absent
+docs/commons.md	Commons	canonical_system_doc	bounded_backend	projection/domain composed; no complete player/public Commons surface
+docs/copy-pipeline.md	Copy	canonical_system_doc	stale_oracle_boundary	candidate-labelled sources ship and orphan report misses client calls (RP-096/RP-097)
+docs/doctrine-and-compute-credit.md	Doctrine	canonical_system_doc	bounded_backend	backend catalog/intents exist; no mounted player workflow
+docs/economy-kernel.md	Economy	canonical_system_doc	stale_mint_claim	current epoch content exists; pre-mint/schema/gate text defect retained by RP-029
+docs/factions.md	Factions	canonical_system_doc	bounded_backend	backend foundation exists; no mounted player workflow
+docs/fiscal-quarters.md	Fiscal	canonical_system_doc	bounded_backend	backend foundation exists; no mounted player workflow
+docs/founder-transitions.md	Founder lifecycle	canonical_system_doc	partial	backend transitions exist; New Founder/recovery/continuation player workflow absent
+docs/game-ui.md	Game UI	canonical_system_doc	stale_or_partial	C7/C25-C28/lifecycle/accessibility/current range defects (RP-008/RP-066/RP-067/RP-082-RP-084)
+docs/gameserver.md	Gameserver	canonical_system_doc	bounded_backend	composition/supervision real; standalone package/static client/operations absent
+docs/generated/api-compat-v1.json	API compatibility	generated_artifact	drift_checked	registry-only compatibility pin; 11 hand routes outside authority
+docs/generated/api.json	OpenAPI	generated_artifact	drift_checked	10 private operations; zero public paths/headers/client implementation
+docs/generated/production-formulas.json	Production formulas	generated_artifact	drift_checked	formula source identity only; not player publication workflow proof
+docs/guilds.md	Guilds	canonical_system_doc	bounded_backend	backend runtime composed; no mounted player controls/readers
+docs/leaderboards-and-epochs.md	Leaderboards/epochs	canonical_system_doc	contradicted_or_partial	membership semantics/docs/witnesses and public/player readers open (RP-039-RP-042)
+docs/meters.md	Meters	canonical_system_doc	bounded_backend	foundation exists; no mounted player meter workflow
+docs/minigame-platform.md	Minigame platform	canonical_system_doc	partial	Pitch backend composed; combat tenant and production client absent
+docs/minigame-the-pitch.md	The Pitch	canonical_system_doc	bounded_backend	deterministic tenant exists; no production player surface
+docs/numeric-core.md	Numeric core	canonical_system_doc	proven_foundation	cross-runtime primitive/golden evidence current; not itself player capability
+docs/pet-care.md	Pets	canonical_system_doc	bounded_backend	foundation exists; combat/player surface absent
+docs/prestige-and-exits.md	Prestige/Exits	canonical_system_doc	stale_or_partial	trigger/revision/body/witness/player continuation gaps (RP-034-RP-038)
+docs/production-engine.md	Production	canonical_system_doc	partial	closed-form authoritative engine real; broader domain/player workflows incomplete
+docs/purchasable-content.md	Purchasable content	canonical_system_doc	bounded_backend	backend foundation exists; no general player purchase/content surface
+docs/routes.md	Routes	canonical_system_doc	partial	registry/projection backend real; player registry/history and accepted Permit crossing proof absent
+docs/save-layer.md	Save/persistence	canonical_system_doc	contradicted_retention_claim	30-day scheduler prose has no production caller; backup/restore/export absent (RP-086)
+docs/soul-recovery.md	Soul recovery	canonical_system_doc	bounded_backend	backend lifecycle exists; production client surface absent
+docs/soul.md	Soul	canonical_system_doc	bounded_backend	foundation exists; owner design contradiction and player surface open
+docs/t0-t1-playable-content.md	T0-T1 content	canonical_system_doc	partial	current content/harness exists; mounted client reaches only bounded Desk/Offer/Run End slice
+docs/transport.md	Transport	canonical_system_doc	partial	normal stream composed; client cursor recovery/reauth/deployment origin gaps open
+docs/ui-foundation.md	UI foundation	canonical_system_doc	mechanical_foundation	primitives/themes exist; complete task accessibility/reflow/focus fails
